@@ -5,11 +5,7 @@ require 'spec_helper'
 RSpec.describe API::Pages, feature_category: :pages do
   let_it_be_with_reload(:project) { create(:project, path: 'my.project', pages_https_only: false) }
   let_it_be(:admin) { create(:admin) }
-  let_it_be(:user) { create(:user) }
-
-  before do
-    project.add_maintainer(user)
-  end
+  let_it_be(:user) { create(:user, maintainer_of: project) }
 
   describe 'DELETE /projects/:id/pages' do
     let(:path) { "/projects/#{project.id}/pages" }

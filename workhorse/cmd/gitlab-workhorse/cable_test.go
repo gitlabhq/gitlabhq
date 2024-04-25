@@ -26,7 +26,8 @@ func TestSingleBackend(t *testing.T) {
 
 	cableURL := websocketURL(workhorse.URL, cablePath)
 
-	client, _, err := dialWebsocket(cableURL, nil)
+	client, http, err := dialWebsocket(cableURL, nil)
+	defer http.Body.Close()
 	require.NoError(t, err)
 	defer client.Close()
 
@@ -41,7 +42,7 @@ func TestSingleBackend(t *testing.T) {
 }
 
 func TestSeparateCableBackend(t *testing.T) {
-	authBackendServer := testhelper.TestServerWithHandler(regexp.MustCompile(`.`), http.HandlerFunc(http.NotFound))
+	authBackendServer := testhelper.TestServerWithHandler(regexp.MustCompile(`.`), http.HandlerFunc(http.NotFoundHandler().ServeHTTP))
 	defer authBackendServer.Close()
 
 	cableServerConns, cableBackendServer := startCableServer()
@@ -52,7 +53,8 @@ func TestSeparateCableBackend(t *testing.T) {
 
 	cableURL := websocketURL(workhorse.URL, cablePath)
 
-	client, _, err := dialWebsocket(cableURL, nil)
+	client, http, err := dialWebsocket(cableURL, nil)
+	defer http.Body.Close()
 	require.NoError(t, err)
 	defer client.Close()
 

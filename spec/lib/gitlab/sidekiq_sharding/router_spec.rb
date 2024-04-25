@@ -106,6 +106,25 @@ RSpec.describe Gitlab::SidekiqSharding::Router, feature_category: :scalability d
         end
       end
 
+      context 'when shard is migrated' do
+        before do
+          stub_env('SIDEKIQ_MIGRATED_SHARDS', "[\"queues_shard_test\"]")
+
+          if described_class.instance_variable_defined?(:@migrated_shards)
+            described_class.remove_instance_variable(:@migrated_shards)
+          end
+        end
+
+        it 'returns shard without checking feature flag' do
+          expect(Feature).not_to receive(:enabled?)
+
+          name, redis = get_test_shard
+
+          expect(name).to eq('queues_shard_test')
+          expect(redis).to eq(shard_sidekiq_redis)
+        end
+      end
+
       context 'when feature flag is enabled' do
         before do
           allow(Feature).to receive(:enabled?)

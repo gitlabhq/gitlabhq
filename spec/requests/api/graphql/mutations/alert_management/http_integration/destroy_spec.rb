@@ -6,7 +6,7 @@ RSpec.describe 'Removing an HTTP Integration', feature_category: :incident_manag
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project) { create(:project, maintainers: user) }
   let_it_be(:integration) { create(:alert_management_http_integration, project: project) }
 
   let(:mutation) do
@@ -31,10 +31,6 @@ RSpec.describe 'Removing an HTTP Integration', feature_category: :incident_manag
   end
 
   let(:mutation_response) { graphql_mutation_response(:http_integration_destroy) }
-
-  before do
-    project.add_maintainer(user)
-  end
 
   it 'removes the integration' do
     post_graphql_mutation(mutation, current_user: user)

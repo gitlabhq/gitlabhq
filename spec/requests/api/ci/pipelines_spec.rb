@@ -9,7 +9,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
 
   # We need to reload as the shared example 'pipelines visibility table' is changing project
   let_it_be(:project, reload: true) do
-    create(:project, :repository, creator: user)
+    create(:project, :repository, creator: user, maintainers: user)
   end
 
   let_it_be(:pipeline) do
@@ -21,10 +21,6 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
       user: user,
       name: 'Build pipeline'
     )
-  end
-
-  before do
-    project.add_maintainer(user)
   end
 
   describe 'GET /projects/:id/pipelines ' do

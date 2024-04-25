@@ -468,6 +468,17 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
           let(:expected_mr) { [merge_request1, merge_request2] }
 
           it { is_expected.to contain_exactly(*expected_mr) }
+
+          context 'with reviewer state' do
+            let(:params) { { reviewer_id: user2.id, review_state: 'requested_changes' } }
+            let(:expected_mr) { [merge_request1] }
+
+            before do
+              merge_request1.merge_request_reviewers.update_all(state: :requested_changes)
+            end
+
+            it { is_expected.to contain_exactly(*expected_mr) }
+          end
         end
 
         context 'by NOT reviewer_id' do
@@ -482,6 +493,17 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
           let(:expected_mr) { [merge_request1, merge_request2] }
 
           it { is_expected.to contain_exactly(*expected_mr) }
+
+          context 'with review state' do
+            let(:params) { { reviewer_username: user2.username, review_state: 'requested_changes' } }
+            let(:expected_mr) { [merge_request1] }
+
+            before do
+              merge_request1.merge_request_reviewers.update_all(state: :requested_changes)
+            end
+
+            it { is_expected.to contain_exactly(*expected_mr) }
+          end
         end
 
         context 'by NOT reviewer_username' do
@@ -516,6 +538,19 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
 
           it { is_expected.to be_empty }
         end
+      end
+
+      context 'review state filtering' do
+        let(:params) { { review_state: 'requested_changes' } }
+        let(:expected_mr) { [merge_request1] }
+
+        subject { described_class.new(user, params).execute }
+
+        before do
+          merge_request1.merge_request_reviewers.update_all(state: :requested_changes)
+        end
+
+        it { is_expected.to contain_exactly(*expected_mr) }
       end
 
       context 'filtering by group milestone' do

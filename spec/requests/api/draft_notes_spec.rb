@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe API::DraftNotes, feature_category: :code_review_workflow do
   let_it_be(:user) { create(:user) }
   let_it_be(:user_2) { create(:user) }
-  let_it_be(:project) { create(:project, :public, :repository) }
+  let_it_be(:project) { create(:project, :public, :repository, developers: user) }
   let_it_be(:merge_request) { create(:merge_request, source_project: project, target_project: project, author: user) }
 
   let_it_be(:private_project) { create(:project, :private) }
@@ -18,10 +18,6 @@ RSpec.describe API::DraftNotes, feature_category: :code_review_workflow do
   let!(:draft_note_by_random_user) { create(:draft_note, merge_request: merge_request) }
 
   let_it_be(:base_url) { "/projects/#{project.id}/merge_requests/#{merge_request.iid}/draft_notes" }
-
-  before do
-    project.add_developer(user)
-  end
 
   describe "Get a list of merge request draft notes" do
     it "returns 200 OK status" do

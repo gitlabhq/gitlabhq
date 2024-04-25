@@ -152,6 +152,10 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
     let_it_be(:merge_request4) { create(:merge_request, :prepared, :draft_merge_request) }
 
+    before_all do
+      merge_request1.merge_request_reviewers.update_all(state: :requested_changes)
+    end
+
     describe '.preload_target_project_with_namespace' do
       subject(:mr) { described_class.preload_target_project_with_namespace.first }
 
@@ -174,8 +178,28 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
 
     describe '.review_requested_to' do
+      let(:state) { nil }
+
+      subject(:merge_requests) { described_class.review_requested_to(user1, state) }
+
       it 'returns MRs that the user has been requested to review' do
-        expect(described_class.review_requested_to(user1)).to eq([merge_request1])
+        expect(merge_requests).to eq([merge_request1])
+      end
+
+      context 'when state is requested_changes' do
+        let(:state) { 'requested_changes' }
+
+        it 'returns MRs that the user has been requested to review and has the passed state' do
+          expect(merge_requests).to eq([merge_request1])
+        end
+      end
+
+      context 'when state is approved' do
+        let(:state) { 'approved' }
+
+        it 'returns MRs that the user has been requested to review and has the passed state' do
+          expect(merge_requests).to eq([])
+        end
       end
     end
 
@@ -183,6 +207,12 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       it 'returns MRs that the user has not been requested to review' do
         expect(described_class.no_review_requested_to(user1))
           .to eq([merge_request2, merge_request3, merge_request4])
+      end
+    end
+
+    describe '.review_state' do
+      it 'returns MRs that have a reviewer with the passed state' do
+        expect(described_class.review_state(:requested_changes)).to eq([merge_request1])
       end
     end
 

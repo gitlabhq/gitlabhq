@@ -6,7 +6,7 @@ RSpec.describe 'Removing an incident timeline event', feature_category: :inciden
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project) { create(:project, developers: user) }
   let_it_be(:incident) { create(:incident, project: project) }
   let_it_be(:timeline_event) { create(:incident_management_timeline_event, incident: incident, project: project) }
 
@@ -34,10 +34,6 @@ RSpec.describe 'Removing an incident timeline event', feature_category: :inciden
   end
 
   let(:mutation_response) { graphql_mutation_response(:timeline_event_destroy) }
-
-  before do
-    project.add_developer(user)
-  end
 
   it 'removes incident timeline event', :aggregate_failures do
     post_graphql_mutation(mutation, current_user: user)

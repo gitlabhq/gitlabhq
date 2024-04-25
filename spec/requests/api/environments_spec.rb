@@ -6,13 +6,8 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
   let_it_be(:user) { create(:user) }
   let_it_be(:developer) { create(:user) }
   let_it_be(:non_member) { create(:user) }
-  let_it_be(:project) { create(:project, :private, :repository, namespace: user.namespace) }
+  let_it_be(:project) { create(:project, :private, :repository, namespace: user.namespace, maintainers: user, developers: developer) }
   let_it_be_with_reload(:environment) { create(:environment, project: project) }
-
-  before do
-    project.add_maintainer(user)
-    project.add_developer(developer)
-  end
 
   describe 'GET /projects/:id/environments', :aggregate_failures do
     context 'as member of the project' do

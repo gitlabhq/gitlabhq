@@ -9,15 +9,11 @@ RSpec.describe 'Todo Query', feature_category: :team_planning do
   let_it_be(:project) { create(:project) }
   let_it_be(:issue) { create(:issue, project: project) }
 
-  let_it_be(:todo_owner) { create(:user) }
+  let_it_be(:todo_owner) { create(:user, developer_of: project) }
 
   let_it_be(:todo) { create(:todo, user: todo_owner, target: issue) }
 
   let(:todo_subject) { todo }
-
-  before do
-    project.add_developer(todo_owner)
-  end
 
   let(:fields) do
     <<~GRAPHQL

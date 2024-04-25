@@ -38,11 +38,16 @@ module Gitlab
           end
         end
 
+        def migrated_shards
+          @migrated_shards ||= Set.new(Gitlab::Json.parse(ENV.fetch('SIDEKIQ_MIGRATED_SHARDS', '[]')))
+        end
+
         private
 
         def route_to(shard_name)
           # early return if main since we do not want a redundant feature flag check
           return shard_name if shard_name == Gitlab::Redis::Queues::SIDEKIQ_MAIN_SHARD_INSTANCE_NAME
+          return shard_name if migrated_shards.include?(shard_name)
 
           if shard_name.nil? ||
               Feature.disabled?(:"sidekiq_route_to_#{shard_name}", type: :worker, default_enabled_if_undefined: false)

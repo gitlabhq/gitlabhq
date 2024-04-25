@@ -28,7 +28,6 @@ swap:
   developer permission: the Developer role
   developer permissions: the Developer role
   disallow: prevent
-  '(?<!GitLab )Duo': GitLab Duo
   frontmatter: front matter
   GitLab self hosted: GitLab self-managed # https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html#gitlab-self-managed
   GitLab self-hosted: GitLab self-managed # https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html#gitlab-self-managed

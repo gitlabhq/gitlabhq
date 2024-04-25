@@ -6,12 +6,8 @@ RSpec.describe 'getting custom emoji within namespace', feature_category: :share
   include GraphqlHelpers
 
   let_it_be(:current_user) { create(:user) }
-  let_it_be(:group) { create(:group, :private) }
+  let_it_be(:group) { create(:group, :private, developers: current_user) }
   let_it_be(:custom_emoji) { create(:custom_emoji, group: group, file: 'http://example.com/test.png') }
-
-  before do
-    group.add_developer(current_user)
-  end
 
   describe "Query CustomEmoji on Group" do
     def custom_emoji_query(group)

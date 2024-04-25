@@ -389,6 +389,7 @@ For large collections, you should use keyset pagination
 ### Offset-based pagination
 
 > - The `users` endpoint was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/426547) for offset-based pagination in GitLab 16.5 and is planned for removal in 17.0. This change is a breaking change. Use keyset-based pagination for this endpoint instead.
+> - The `users` endpoint enforces keyset-based pagination when the number of requested records is greater than 50,000 in GitLab 17.0.
 
 Sometimes, the returned result spans many pages. When listing resources, you can
 pass the following parameters:

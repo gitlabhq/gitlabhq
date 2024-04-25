@@ -44,7 +44,8 @@ func TestChannelHappyPath(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			serverConns, clientURL := wireupChannel(t, test.channelPath, nil, "channel.k8s.io")
 
-			client, _, err := dialWebsocket(clientURL, nil, "terminal.gitlab.com")
+			client, http, err := dialWebsocket(clientURL, nil, "terminal.gitlab.com")
+			defer http.Body.Close()
 			require.NoError(t, err)
 
 			server := (<-serverConns).conn
@@ -71,14 +72,16 @@ func TestChannelHappyPath(t *testing.T) {
 func TestChannelBadTLS(t *testing.T) {
 	_, clientURL := wireupChannel(t, envTerminalPath, badCA, "channel.k8s.io")
 
-	_, _, err := dialWebsocket(clientURL, nil, "terminal.gitlab.com")
+	_, http, err := dialWebsocket(clientURL, nil, "terminal.gitlab.com")
+	defer http.Body.Close()
 	require.Equal(t, websocket.ErrBadHandshake, err, "unexpected error %v", err)
 }
 
 func TestChannelSessionTimeout(t *testing.T) {
 	serverConns, clientURL := wireupChannel(t, envTerminalPath, timeout, "channel.k8s.io")
 
-	client, _, err := dialWebsocket(clientURL, nil, "terminal.gitlab.com")
+	client, http, err := dialWebsocket(clientURL, nil, "terminal.gitlab.com")
+	defer http.Body.Close()
 	require.NoError(t, err)
 
 	sc := <-serverConns
@@ -95,7 +98,8 @@ func TestChannelProxyForwardsHeadersFromUpstream(t *testing.T) {
 	hdr.Set("Random-Header", "Value")
 	serverConns, clientURL := wireupChannel(t, envTerminalPath, setHeader(hdr), "channel.k8s.io")
 
-	client, _, err := dialWebsocket(clientURL, nil, "terminal.gitlab.com")
+	client, http, err := dialWebsocket(clientURL, nil, "terminal.gitlab.com")
+	defer http.Body.Close()
 	require.NoError(t, err)
 	defer client.Close()
 
@@ -109,7 +113,8 @@ func TestChannelProxyForwardsXForwardedForFromClient(t *testing.T) {
 
 	hdr := make(http.Header)
 	hdr.Set("X-Forwarded-For", "127.0.0.2")
-	client, _, err := dialWebsocket(clientURL, hdr, "terminal.gitlab.com")
+	client, http, err := dialWebsocket(clientURL, hdr, "terminal.gitlab.com")
+	defer http.Body.Close()
 	require.NoError(t, err)
 	defer client.Close()
 

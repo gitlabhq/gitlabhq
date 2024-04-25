@@ -9,7 +9,7 @@ RSpec.describe 'RunnerCreate', feature_category: :fleet_visibility do
   let_it_be(:group_owner) { create(:user) }
   let_it_be(:admin) { create(:admin) }
 
-  let_it_be(:group) { create(:group) }
+  let_it_be(:group) { create(:group, owners: group_owner) }
   let_it_be(:other_group) { create(:group) }
 
   let(:mutation_params) do
@@ -52,10 +52,6 @@ RSpec.describe 'RunnerCreate', feature_category: :fleet_visibility do
   end
 
   let(:mutation_response) { graphql_mutation_response(:runner_create) }
-
-  before do
-    group.add_owner(group_owner)
-  end
 
   shared_context 'when model is invalid returns error' do
     let(:mutation_params) do

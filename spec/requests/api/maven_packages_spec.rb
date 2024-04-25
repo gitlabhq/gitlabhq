@@ -11,7 +11,7 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
   let_it_be_with_refind(:package_settings) { create(:namespace_package_setting, :group) }
   let_it_be_with_refind(:group) { package_settings.namespace }
   let_it_be(:user) { create(:user) }
-  let_it_be(:project, reload: true) { create(:project, :public, namespace: group) }
+  let_it_be(:project, reload: true) { create(:project, :public, namespace: group, developers: user) }
   let_it_be(:package, reload: true) { create(:maven_package, project: project, name: project.full_path) }
   let_it_be(:maven_metadatum, reload: true) { package.maven_metadatum }
   let_it_be(:package_file) { package.package_files.with_file_name_like('%.xml').first }
@@ -38,10 +38,6 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
 
   let(:version) { '1.0-SNAPSHOT' }
   let(:param_path) { "#{package_name}/#{version}" }
-
-  before do
-    project.add_developer(user)
-  end
 
   shared_examples 'handling groups and subgroups for' do |shared_example_name, shared_example_args = {}, visibilities: { public: :redirect }|
     context 'within a group' do

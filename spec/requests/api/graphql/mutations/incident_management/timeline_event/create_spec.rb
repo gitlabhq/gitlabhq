@@ -6,7 +6,7 @@ RSpec.describe 'Creating an incident timeline event', feature_category: :inciden
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project) { create(:project, developers: user) }
   let_it_be(:incident) { create(:incident, project: project) }
   let_it_be(:event_occurred_at) { Time.current }
   let_it_be(:note) { 'demo note' }
@@ -40,10 +40,6 @@ RSpec.describe 'Creating an incident timeline event', feature_category: :inciden
   end
 
   let(:mutation_response) { graphql_mutation_response(:timeline_event_create) }
-
-  before do
-    project.add_developer(user)
-  end
 
   it 'creates incident timeline event', :aggregate_failures do
     post_graphql_mutation(mutation, current_user: user)

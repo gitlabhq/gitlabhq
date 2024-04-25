@@ -12,7 +12,7 @@ RSpec.describe Resolvers::MergeRequestsResolver do
   let_it_be(:current_user) { create(:user) }
   let_it_be(:other_user) { create(:user) }
   let_it_be(:common_attrs) { { author: current_user, source_project: project, target_project: project } }
-  let_it_be(:merge_request_1) { create(:merge_request, :simple, **common_attrs) }
+  let_it_be(:merge_request_1) { create(:merge_request, :simple, reviewers: create_list(:user, 2), **common_attrs) }
   let_it_be(:merge_request_2) { create(:merge_request, :rebased, **common_attrs) }
   let_it_be(:merge_request_3) { create(:merge_request, :unique_branches, **common_attrs) }
   let_it_be(:merge_request_4) { create(:merge_request, :unique_branches, :locked, **common_attrs) }
@@ -307,6 +307,24 @@ RSpec.describe Resolvers::MergeRequestsResolver do
         result = resolve_mr(project, not: { milestone_title: milestone.title })
 
         expect(result).not_to include(merge_request_with_milestone)
+      end
+    end
+
+    context 'with review state argument' do
+      before_all do
+        merge_request_1.merge_request_reviewers.first.update!(state: :requested_changes)
+      end
+
+      it 'filters merge requests by reviewers state' do
+        result = resolve_mr(project, review_state: :requested_changes)
+
+        expect(result).to contain_exactly(merge_request_1)
+      end
+
+      it 'does not find anything' do
+        result = resolve_mr(project, review_state: :reviewed)
+
+        expect(result).to be_empty
       end
     end
 

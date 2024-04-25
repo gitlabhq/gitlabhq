@@ -29,7 +29,7 @@ RSpec.describe API::Files, feature_category: :source_code_management do
   let_it_be(:inherited_reporter) { create(:user, reporter_of: group) }
   let_it_be(:inherited_developer) { create(:user, developer_of: group) }
 
-  let_it_be_with_reload(:project) { create(:project, :repository, namespace: user.namespace) }
+  let_it_be_with_reload(:project) { create(:project, :repository, namespace: user.namespace, developers: user) }
   let_it_be_with_reload(:public_project) { create(:project, :public, :repository) }
   let_it_be_with_reload(:private_project) { create(:project, :private, :repository, group: group) }
   let_it_be_with_reload(:public_project_private_repo) { create(:project, :public, :repository, :repository_private, group: group) }
@@ -63,10 +63,6 @@ RSpec.describe API::Files, feature_category: :source_code_management do
   shared_context 'with author parameters' do
     let(:author_email) { 'user@example.org' }
     let(:author_name) { 'John Doe' }
-  end
-
-  before do
-    project.add_developer(user)
   end
 
   def route(file_path = nil)

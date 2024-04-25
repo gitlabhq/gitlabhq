@@ -7,11 +7,7 @@ RSpec.describe API::GroupBoards, :with_license, feature_category: :team_planning
   let_it_be(:non_member) { create(:user) }
   let_it_be(:guest) { create(:user) }
   let_it_be(:admin) { create(:user, :admin) }
-  let_it_be(:board_parent) { create(:group, :public) }
-
-  before do
-    board_parent.add_owner(user)
-  end
+  let_it_be(:board_parent) { create(:group, :public, owners: user) }
 
   let_it_be(:project) { create(:project, :public, namespace: board_parent) }
 

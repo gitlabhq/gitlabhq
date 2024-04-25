@@ -6,7 +6,7 @@ RSpec.describe 'getting Alert Management Alert Assignees', feature_category: :gr
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project) }
-  let_it_be(:current_user) { create(:user) }
+  let_it_be(:current_user) { create(:user, developer_of: project) }
   let_it_be(:first_alert) { create(:alert_management_alert, project: project, assignees: [current_user]) }
   let_it_be(:second_alert) { create(:alert_management_alert, project: project) }
 
@@ -37,10 +37,6 @@ RSpec.describe 'getting Alert Management Alert Assignees', feature_category: :gr
   let(:assignees) { alerts.to_h { |alert| [alert['iid'], alert['assignees']['nodes']] } }
   let(:first_assignees) { assignees[first_alert.iid.to_s] }
   let(:second_assignees) { assignees[second_alert.iid.to_s] }
-
-  before do
-    project.add_developer(current_user)
-  end
 
   it 'returns the correct assignees' do
     post_graphql(query, current_user: current_user)

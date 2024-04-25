@@ -7,7 +7,7 @@ RSpec.describe 'Promote an incident timeline event from a comment', feature_cate
   include NotesHelper
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project) { create(:project, developers: user) }
   let_it_be(:incident) { create(:incident, project: project) }
   let_it_be(:comment) { create(:note, project: project, noteable: incident, note: 'a' * 281) }
 
@@ -31,10 +31,6 @@ RSpec.describe 'Promote an incident timeline event from a comment', feature_cate
   end
 
   let(:mutation_response) { graphql_mutation_response(:timeline_event_promote_from_note) }
-
-  before do
-    project.add_developer(user)
-  end
 
   it 'creates incident timeline event from the note', :aggregate_failures do
     post_graphql_mutation(mutation, current_user: user)

@@ -6,7 +6,7 @@ RSpec.describe 'getting Alert Management Alert Notes', feature_category: :team_p
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project) }
-  let_it_be(:current_user) { create(:user) }
+  let_it_be(:current_user) { create(:user, developer_of: project) }
   let_it_be(:first_alert) { create(:alert_management_alert, project: project, assignees: [current_user]) }
   let_it_be(:second_alert) { create(:alert_management_alert, project: project) }
   let_it_be(:first_system_note) { create(:note_on_alert, :with_system_note_metadata, noteable: first_alert, project: project) }
@@ -41,10 +41,6 @@ RSpec.describe 'getting Alert Management Alert Notes', feature_category: :team_p
   let(:notes_result) { alerts_result.to_h { |alert| [alert['iid'], alert['notes']['nodes']] } }
   let(:first_notes_result) { notes_result[first_alert.iid.to_s] }
   let(:second_notes_result) { notes_result[second_alert.iid.to_s] }
-
-  before do
-    project.add_developer(current_user)
-  end
 
   it 'includes expected data' do
     post_graphql(query, current_user: current_user)

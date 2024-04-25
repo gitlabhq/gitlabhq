@@ -341,11 +341,7 @@ RSpec.describe 'Group.runners' do
   include GraphqlHelpers
 
   let_it_be(:group) { create(:group) }
-  let_it_be(:group_owner) { create_default(:user) }
-
-  before do
-    group.add_owner(group_owner)
-  end
+  let_it_be(:group_owner) { create_default(:user, owner_of: group) }
 
   describe 'edges' do
     let_it_be(:runner) do

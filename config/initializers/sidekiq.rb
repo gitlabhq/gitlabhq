@@ -15,6 +15,9 @@ def load_cron_jobs!
   end
 end
 
+# initialise migrated_shards on start-up to catch any malformed SIDEKIQ_MIGRATED_SHARD lists.
+Gitlab::SidekiqSharding::Router.migrated_shards
+
 # Custom Queues configuration
 #
 # We omit :command_builder since Sidekiq::RedisConnection performs a deep clone using

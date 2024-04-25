@@ -25,7 +25,7 @@ func okHandler(w http.ResponseWriter, _ *http.Request, _ *api.Response) {
 	fmt.Fprint(w, "{\"status\":\"ok\"}")
 }
 
-func runPreAuthorizeHandler(t *testing.T, ts *httptest.Server, suffix string, url *regexp.Regexp, apiResponse interface{}, returnCode, expectedCode int) *httptest.ResponseRecorder {
+func runPreAuthorizeHandler(t *testing.T, ts *httptest.Server, suffix string, url *regexp.Regexp, apiResponse interface{}, returnCode, expectedCode int) {
 	if ts == nil {
 		ts = testAuthServer(t, url, nil, returnCode, apiResponse)
 	}
@@ -41,7 +41,6 @@ func runPreAuthorizeHandler(t *testing.T, ts *httptest.Server, suffix string, ur
 	response := httptest.NewRecorder()
 	a.PreAuthorizeHandler(okHandler, suffix).ServeHTTP(response, httpRequest)
 	require.Equal(t, expectedCode, response.Code)
-	return response
 }
 
 func TestPreAuthorizeHappyPath(t *testing.T) {

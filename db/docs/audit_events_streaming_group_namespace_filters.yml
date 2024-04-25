@@ -1,0 +1,13 @@
+---
+table_name: audit_events_streaming_group_namespace_filters
+classes:
+- AuditEvents::Group::NamespaceFilter
+feature_categories:
+- audit_events
+description: Stores audit event namespace filters for top-level group external audit
+  event destinations.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150092
+milestone: '17.0'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  namespace_id: namespaces

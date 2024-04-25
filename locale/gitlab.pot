@@ -60220,6 +60220,9 @@ msgstr ""
 msgid "archived:"
 msgstr ""
 
+msgid "are limited to %{max_count} per destination"
+msgstr ""
+
 msgid "artifacts"
 msgstr ""
 
@@ -60808,6 +60811,9 @@ msgid "design"
 msgstr ""
 
 msgid "disabled"
+msgstr ""
+
+msgid "does not belong to the top-level group of the namespace."
 msgstr ""
 
 msgid "does not exist"

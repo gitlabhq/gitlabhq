@@ -5034,6 +5034,23 @@ CREATE SEQUENCE audit_events_streaming_event_type_filters_id_seq
 
 ALTER SEQUENCE audit_events_streaming_event_type_filters_id_seq OWNED BY audit_events_streaming_event_type_filters.id;
 
+CREATE TABLE audit_events_streaming_group_namespace_filters (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    external_streaming_destination_id bigint NOT NULL,
+    namespace_id bigint NOT NULL
+);
+
+CREATE SEQUENCE audit_events_streaming_group_namespace_filters_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE audit_events_streaming_group_namespace_filters_id_seq OWNED BY audit_events_streaming_group_namespace_filters.id;
+
 CREATE TABLE audit_events_streaming_headers (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -18912,6 +18929,8 @@ ALTER TABLE ONLY audit_events_instance_streaming_event_type_filters ALTER COLUMN
 
 ALTER TABLE ONLY audit_events_streaming_event_type_filters ALTER COLUMN id SET DEFAULT nextval('audit_events_streaming_event_type_filters_id_seq'::regclass);
 
+ALTER TABLE ONLY audit_events_streaming_group_namespace_filters ALTER COLUMN id SET DEFAULT nextval('audit_events_streaming_group_namespace_filters_id_seq'::regclass);
+
 ALTER TABLE ONLY audit_events_streaming_headers ALTER COLUMN id SET DEFAULT nextval('audit_events_streaming_headers_id_seq'::regclass);
 
 ALTER TABLE ONLY audit_events_streaming_http_group_namespace_filters ALTER COLUMN id SET DEFAULT nextval('audit_events_streaming_http_group_namespace_filters_id_seq'::regclass);
@@ -20712,6 +20731,9 @@ ALTER TABLE ONLY audit_events
 
 ALTER TABLE ONLY audit_events_streaming_event_type_filters
     ADD CONSTRAINT audit_events_streaming_event_type_filters_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY audit_events_streaming_group_namespace_filters
+    ADD CONSTRAINT audit_events_streaming_group_namespace_filters_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY audit_events_streaming_headers
     ADD CONSTRAINT audit_events_streaming_headers_pkey PRIMARY KEY (id);
@@ -24187,6 +24209,8 @@ CREATE INDEX idx_security_scans_on_scan_type ON security_scans USING btree (scan
 CREATE UNIQUE INDEX idx_software_license_policies_unique_on_project_and_scan_policy ON software_license_policies USING btree (project_id, software_license_id, scan_result_policy_id);
 
 CREATE INDEX idx_status_check_responses_on_id_and_status ON status_check_responses USING btree (id, status);
+
+CREATE INDEX idx_streaming_group_namespace_filters_on_namespace_id ON audit_events_streaming_group_namespace_filters USING btree (namespace_id);
 
 CREATE INDEX idx_streaming_headers_on_external_audit_event_destination_id ON audit_events_streaming_headers USING btree (external_audit_event_destination_id);
 
@@ -28088,6 +28112,8 @@ CREATE UNIQUE INDEX uniq_google_cloud_logging_configuration_namespace_id_and_nam
 
 CREATE UNIQUE INDEX uniq_idx_packages_packages_on_project_id_name_version_ml_model ON packages_packages USING btree (project_id, name, version) WHERE (package_type = 14);
 
+CREATE UNIQUE INDEX uniq_idx_streaming_group_destination_id_and_namespace_id ON audit_events_streaming_group_namespace_filters USING btree (external_streaming_destination_id, namespace_id);
+
 CREATE UNIQUE INDEX uniq_idx_user_add_on_assignments_on_add_on_purchase_and_user ON subscription_user_add_on_assignments USING btree (add_on_purchase_id, user_id);
 
 CREATE UNIQUE INDEX uniq_pkgs_deb_grp_architectures_on_distribution_id_and_name ON packages_debian_group_architectures USING btree (distribution_id, name);
@@ -30472,6 +30498,9 @@ ALTER TABLE ONLY protected_tags
 ALTER TABLE ONLY merge_request_review_llm_summaries
     ADD CONSTRAINT fk_8ec009c6ab FOREIGN KEY (merge_request_diff_id) REFERENCES merge_request_diffs(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY audit_events_streaming_group_namespace_filters
+    ADD CONSTRAINT fk_8ed182d7da FOREIGN KEY (external_streaming_destination_id) REFERENCES audit_events_group_external_streaming_destinations(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY todos
     ADD CONSTRAINT fk_91d1f47b13 FOREIGN KEY (note_id) REFERENCES notes(id) ON DELETE CASCADE;
 
@@ -30546,6 +30575,9 @@ ALTER TABLE ONLY deployment_merge_requests
 
 ALTER TABLE ONLY issues
     ADD CONSTRAINT fk_a194299be1 FOREIGN KEY (moved_to_id) REFERENCES issues(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY audit_events_streaming_group_namespace_filters
+    ADD CONSTRAINT fk_a1a4486a96 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY ml_candidates
     ADD CONSTRAINT fk_a1d5f1bc45 FOREIGN KEY (package_id) REFERENCES packages_packages(id) ON DELETE SET NULL;

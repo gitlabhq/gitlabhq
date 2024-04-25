@@ -88,6 +88,10 @@ module Resolvers
     argument :milestone_title, GraphQL::Types::String,
              required: false,
              description: 'Title of the milestone.'
+    argument :review_state, ::Types::MergeRequestReviewStateEnum,
+            required: false,
+            description: 'Reviewer state of the merge request.',
+            alpha: { milestone: '17.0' }
     argument :sort, Types::MergeRequestSortEnum,
              description: 'Sort merge requests by this criteria.',
              required: false,

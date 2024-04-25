@@ -7,7 +7,7 @@ RSpec.describe 'Query.project(fullPath).pipelines.jobs.manualVariables', feature
 
   let_it_be(:project) { create(:project) }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user) { create(:user, maintainer_of: project) }
 
   let(:query) do
     %(
@@ -29,10 +29,6 @@ RSpec.describe 'Query.project(fullPath).pipelines.jobs.manualVariables', feature
         }
       }
     )
-  end
-
-  before do
-    project.add_maintainer(user)
   end
 
   it 'returns the manual variables for actionable jobs' do
