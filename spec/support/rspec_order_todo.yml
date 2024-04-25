@@ -4271,7 +4271,6 @@
 - './spec/graphql/resolvers/ci/runner_platforms_resolver_spec.rb'
 - './spec/graphql/resolvers/ci/runner_setup_resolver_spec.rb'
 - './spec/graphql/resolvers/ci/runners_resolver_spec.rb'
-- './spec/graphql/resolvers/ci/runner_status_resolver_spec.rb'
 - './spec/graphql/resolvers/ci/template_resolver_spec.rb'
 - './spec/graphql/resolvers/ci/test_report_summary_resolver_spec.rb'
 - './spec/graphql/resolvers/ci/test_suite_resolver_spec.rb'

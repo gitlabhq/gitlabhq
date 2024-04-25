@@ -93,8 +93,7 @@ module Types
       field :status,
             Types::Ci::RunnerStatusEnum,
             null: false,
-            description: 'Status of the runner.',
-            resolver: ::Resolvers::Ci::RunnerStatusResolver # TODO: Remove :resolver in %17.0
+            description: 'Status of the runner.'
       field :tag_list, [GraphQL::Types::String], null: true,
                                                  description: 'Tags associated with the runner.'
       field :token_expires_at, Types::TimeType, null: true,

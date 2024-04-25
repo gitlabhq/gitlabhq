@@ -24,7 +24,7 @@ contribution model in a cellular architecture.
 A Cells 1.0 is meant to target enterprise customers that have the following expectations:
 
 1. They want to use our multi-tenant SaaS solution (GitLab.com) to serve their Organization.
-1. They accept that they may receive updates later than the rest of GitLab.com. Note that when GitLab does a security release, the Delivery team makes sure that production (every cell) runs the security release version before making the release public. This does not mean that outside of a security release, all the cells run the same version of GitLab. See [this private discussion](https://gitlab.com/gitlab-com/gl-security/appsec/threat-models/-/issues/45#note_1794904358) for more information.
+1. They accept that they may receive updates later than the rest of GitLab.com. Note that when GitLab does a patch release, the Delivery team makes sure that production (every cell) runs the patch release version before making the release public. This does not mean that outside of a patch release, all the cells run the same version of GitLab. See [this private discussion](https://gitlab.com/gitlab-com/gl-security/appsec/threat-models/-/issues/45#note_1794904358) for more information.
 1. They want to use an environment with higher degree of isolation to rest of the system.
 1. They want to control all users that contribute to their Organization.
 1. Their groups and projects are meant to be private.

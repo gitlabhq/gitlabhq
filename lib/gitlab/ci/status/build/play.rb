@@ -18,7 +18,7 @@ module Gitlab
           end
 
           def action_title
-            'Play'
+            'Run'
           end
 
           def action_button_title

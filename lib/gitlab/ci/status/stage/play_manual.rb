@@ -12,7 +12,7 @@ module Gitlab
           end
 
           def action_title
-            'Play all manual'
+            'Run all manual'
           end
 
           def action_path
@@ -26,7 +26,7 @@ module Gitlab
           end
 
           def action_button_title
-            _('Play all manual')
+            _('Run all manual')
           end
 
           def self.matches?(stage, user)

@@ -8,7 +8,7 @@ describe('New project push tip popover', () => {
   let wrapper;
   const targetId = 'target';
   const pushToCreateProjectCommand = 'command';
-  const workingWithProjectsHelpPath = 'path';
+  const projectHelpPath = 'path';
 
   const findPopover = () => wrapper.findComponent(GlPopover);
   const findClipboardButton = () => wrapper.findComponent(ClipboardButton);
@@ -26,7 +26,7 @@ describe('New project push tip popover', () => {
       },
       provide: {
         pushToCreateProjectCommand,
-        workingWithProjectsHelpPath,
+        projectHelpPath,
       },
     });
   };
@@ -70,7 +70,7 @@ describe('New project push tip popover', () => {
 
   it('displays a link to open the push command help page reference', () => {
     expect(findHelpLink().attributes().href).toBe(
-      `${workingWithProjectsHelpPath}#create-a-new-project-with-git-push`,
+      `${projectHelpPath}#create-a-new-project-with-git-push`,
     );
   });
 });

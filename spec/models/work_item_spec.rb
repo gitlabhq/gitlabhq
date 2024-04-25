@@ -319,6 +319,16 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
         end
       end
     end
+
+    context 'with title containing preceding or trailing spaces' do
+      let_it_be(:work_item) { build(:work_item, project: reusable_project, title: " some title ") }
+
+      it 'removes spaces from title' do
+        work_item.save!
+
+        expect(work_item.title).to eq("some title")
+      end
+    end
   end
 
   describe 'validations' do

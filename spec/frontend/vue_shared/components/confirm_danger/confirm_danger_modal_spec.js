@@ -4,6 +4,8 @@ import {
   CONFIRM_DANGER_MODAL_BUTTON,
   CONFIRM_DANGER_MODAL_ID,
   CONFIRM_DANGER_MODAL_CANCEL,
+  CONFIRM_DANGER_MODAL_TITLE,
+  CONFIRM_DANGER_WARNING,
 } from '~/vue_shared/components/confirm_danger/constants';
 import ConfirmDangerModal from '~/vue_shared/components/confirm_danger/confirm_danger_modal.vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -25,7 +27,7 @@ describe('Confirm Danger Modal', () => {
   const findCancelAction = () => findModal().props('actionCancel');
   const findPrimaryActionAttributes = (attr) => findPrimaryAction().attributes[attr];
 
-  const createComponent = ({ props = {}, provide = {} } = {}) => {
+  const createComponent = ({ props = {}, provide = {}, slots = {} } = {}) => {
     wrapper = shallowMountExtended(ConfirmDangerModal, {
       propsData: {
         modalId,
@@ -34,6 +36,7 @@ describe('Confirm Danger Modal', () => {
         ...props,
       },
       provide,
+      slots,
       stubs: { GlSprintf },
     });
   };
@@ -135,6 +138,87 @@ describe('Confirm Danger Modal', () => {
       await nextTick();
 
       expect(wrapper.emitted('change')).toEqual([[false]]);
+    });
+  });
+
+  describe('modal title', () => {
+    describe('with no prop', () => {
+      beforeEach(() => {
+        createComponent();
+      });
+
+      it('renders default title', () => {
+        expect(findModal().props('title')).toBe(CONFIRM_DANGER_MODAL_TITLE);
+      });
+    });
+
+    describe('with custom prop', () => {
+      const MOCK_TITLE = 'New Title';
+
+      beforeEach(() => {
+        createComponent({ props: { modalTitle: MOCK_TITLE } });
+      });
+
+      it('renders custom title', () => {
+        expect(findModal().props('title')).toBe(MOCK_TITLE);
+      });
+    });
+  });
+
+  describe('modal body slot', () => {
+    describe('when not using slot', () => {
+      beforeEach(() => {
+        createComponent();
+      });
+
+      it('renders default body', () => {
+        expect(wrapper.findByTestId('confirm-danger-warning').text()).toBe(CONFIRM_DANGER_WARNING);
+      });
+    });
+
+    describe('when using slot', () => {
+      const MOCK_BODY = 'New Body Text';
+
+      beforeEach(() => {
+        createComponent({
+          slots: {
+            'modal-body': `<span>${MOCK_BODY}</span>`,
+          },
+        });
+      });
+
+      it('renders custom body', () => {
+        expect(wrapper.findByTestId('confirm-danger-warning').exists()).toBe(false);
+        expect(wrapper.text()).toContain(MOCK_BODY);
+      });
+    });
+  });
+
+  describe('modal footer slot', () => {
+    const MOCK_FOOTER = 'New Footer';
+
+    describe('when not using slot', () => {
+      beforeEach(() => {
+        createComponent();
+      });
+
+      it('does not render custom footer', () => {
+        expect(wrapper.text()).not.toContain(MOCK_FOOTER);
+      });
+    });
+
+    describe('when using slot', () => {
+      beforeEach(() => {
+        createComponent({
+          slots: {
+            'modal-footer': `<span>${MOCK_FOOTER}</span>`,
+          },
+        });
+      });
+
+      it('renders custom footer', () => {
+        expect(wrapper.text()).toContain(MOCK_FOOTER);
+      });
     });
   });
 });

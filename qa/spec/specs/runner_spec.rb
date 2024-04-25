@@ -44,6 +44,10 @@ RSpec.describe QA::Specs::Runner do
         allow(StringIO).to receive(:new).and_return(out)
       end
 
+      after do
+        QA::Runtime::Scenario.attributes.delete(:count_examples_only)
+      end
+
       it 'sets the `--dry-run` flag' do
         expect_rspec_runner_arguments(
           ['--dry-run'] + DEFAULT_SKIPPED_TAGS + ['--tag', '~geo', *described_class::DEFAULT_TEST_PATH_ARGS],
@@ -92,10 +96,6 @@ RSpec.describe QA::Specs::Runner do
           subject.perform
         end
       end
-
-      after do
-        QA::Runtime::Scenario.attributes.delete(:count_examples_only)
-      end
     end
 
     context 'when test_metadata_only is set as an option' do
@@ -107,6 +107,10 @@ RSpec.describe QA::Specs::Runner do
         allow(RSpec).to receive(:configure).and_yield(rspec_config)
         allow(rspec_config).to receive(:add_formatter)
         allow(rspec_config).to receive(:fail_if_no_examples=)
+      end
+
+      after do
+        QA::Runtime::Scenario.attributes.delete(:test_metadata_only)
       end
 
       it 'sets the `--dry-run` flag' do
@@ -129,10 +133,6 @@ RSpec.describe QA::Specs::Runner do
         allow(RSpec::Core::Runner).to receive(:run).and_return(0)
 
         subject.perform
-      end
-
-      after do
-        QA::Runtime::Scenario.attributes.delete(:test_metadata_only)
       end
     end
 

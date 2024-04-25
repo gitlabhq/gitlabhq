@@ -324,7 +324,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
           find('#ci-badge-manual-build .ci-action-icon-container').click
           wait_for_requests
 
-          expect(page).not_to have_content('Play job')
+          expect(page).not_to have_content('Run job')
           within_testid('pipeline-header') do
             expect(page).to have_selector('[data-testid="ci-icon"]', text: 'Running')
           end
@@ -1076,7 +1076,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
       expect(page).to have_content(build_external.id)
       expect(page).to have_content('Retry')
       expect(page).to have_content('Cancel pipeline')
-      expect(page).to have_button('Play')
+      expect(page).to have_button('Run')
     end
 
     context 'page tabs' do
@@ -1122,7 +1122,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
     context 'playing manual job' do
       before do
         within_testid 'jobs-tab-table' do
-          click_button('Play')
+          click_button('Run')
 
           wait_for_requests
         end
@@ -1139,7 +1139,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
       end
 
       it 'unschedules the delayed job and shows play button as a manual job' do
-        expect(page).to have_button('Play')
+        expect(page).to have_button('Run')
         expect(page).not_to have_button('Unschedule')
       end
     end

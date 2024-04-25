@@ -5,9 +5,9 @@ require_relative "qa"
 Dir['tasks/*.rake'].each { |file| load file }
 
 desc "Deletes subgroups within a provided group"
-task :delete_subgroups, [:delete_before] do |_, args|
-  args.with_defaults(delete_before: (Date.today - 3).to_s)
-  QA::Tools::DeleteSubgroups.new(delete_before: args[:delete_before]).run
+task :delete_subgroups, [:dry_run] do |_, args|
+  args.with_defaults(dry_run: false)
+  QA::Tools::DeleteSubgroups.new(dry_run: args[:dry_run]).run
 end
 
 desc "Initialize GitLab with an access token"
@@ -51,9 +51,9 @@ task :delete_test_ssh_keys, [:title_portion, :delete_before, :dry_run] do |_, ar
 end
 
 desc "Deletes projects directly under the provided group"
-task :delete_projects, [:delete_before] do |_, args|
-  args.with_defaults(delete_before: (Date.today - 3).to_s)
-  QA::Tools::DeleteProjects.new(delete_before: args[:delete_before]).run
+task :delete_projects, [:dry_run] do |_, args|
+  args.with_defaults(dry_run: false)
+  QA::Tools::DeleteProjects.new(dry_run: args[:dry_run]).run
 end
 
 desc "Deletes test users"
@@ -62,8 +62,9 @@ task :delete_test_users, [:delete_before, :dry_run, :exclude_users] do |_, args|
 end
 
 desc "Deletes snippets"
-task :delete_test_snippets, [:delete_before, :dry_run] do |_, args|
-  QA::Tools::DeleteTestSnippets.new(args).run
+task :delete_test_snippets, [:dry_run] do |_, args|
+  args.with_defaults(dry_run: false)
+  QA::Tools::DeleteTestSnippets.new(dry_run: args[:dry_run]).run
 end
 
 namespace :test_resources do
@@ -84,11 +85,9 @@ namespace :test_resources do
 end
 
 desc "Deletes user's projects"
-task :delete_user_projects, [:delete_before, :dry_run] do |_, args|
-  args.with_defaults(delete_before: (Date.today - 3).to_s, dry_run: false)
-  QA::Tools::DeleteUserProjects.new(
-    delete_before: args[:delete_before],
-    dry_run: !!(args[:dry_run] =~ /true|1|y/i)).run
+task :delete_user_projects, [:dry_run] do |_, args|
+  args.with_defaults(dry_run: false)
+  QA::Tools::DeleteUserProjects.new(dry_run: args[:dry_run]).run
 end
 
 desc "Revokes user's personal access tokens"

@@ -11,6 +11,8 @@ class WorkItem < Issue
   self.table_name = 'issues'
   self.inheritance_column = :_type_disabled
 
+  strip_attributes! :title
+
   belongs_to :namespace, inverse_of: :work_items
 
   has_one :parent_link, class_name: '::WorkItems::ParentLink', foreign_key: :work_item_id

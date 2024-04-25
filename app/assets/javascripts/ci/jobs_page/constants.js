@@ -17,7 +17,7 @@ export const FILE_TYPE_ARCHIVE = 'ARCHIVE';
 export const ACTIONS_DOWNLOAD_ARTIFACTS = __('Download artifacts');
 export const ACTIONS_START_NOW = s__('DelayedJobs|Start now');
 export const ACTIONS_UNSCHEDULE = s__('DelayedJobs|Unschedule');
-export const ACTIONS_PLAY = __('Play');
+export const ACTIONS_PLAY = __('Run');
 export const ACTIONS_RETRY = __('Retry');
 export const ACTIONS_RUN_AGAIN = __('Run again');
 

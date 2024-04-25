@@ -9,7 +9,7 @@ module Gitlab
       #
       # In many cases this could introduce a breaking change
       # so enforcement is optional.
-      ENFORCED_TYPES = [Group, User].freeze
+      ENFORCED_TYPES = [Group].freeze
 
       def self.available_for_type?(relation)
         relation.klass.respond_to?(:supported_keyset_orderings)

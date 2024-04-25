@@ -461,7 +461,7 @@ On GitLab.com, SSO is enforced:
 
 - When SAML SSO is enabled.
 - For users with an existing SAML identity when accessing groups and projects in the organization's
-  group hierarchy. Users can view other groups and projects as well as their user settings without SSO sign in by using their GitLab.com credentials.
+  group hierarchy. By using their GitLab.com credentials, users can view other groups and projects outside their organization, as well as their user settings, without signing in through SAML SSO.
 
 A user has a SAML identity if one or both of the following are true:
 
@@ -491,7 +491,7 @@ When the **Enforce SSO-only authentication for web activity for this group** opt
   to access group resources, regardless of whether they have an existing SAML
   identity.
 - SSO is enforced when users access groups and projects in the organization's
-  group hierarchy. Users can view other groups and projects without SSO sign in.
+  group hierarchy. Users can view other groups and projects outside their organization without signing in through SAML SSO.
 - Users cannot be added as new members manually.
 - Users with the Owner role can use the standard sign in process to make
   necessary changes to top-level group settings.

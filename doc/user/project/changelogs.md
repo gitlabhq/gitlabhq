@@ -40,7 +40,7 @@ of these sections can be changed. The section names derive from the values of th
 Git trailer used to include or exclude commits.
 
 Commits for changelogs can be retrieved when operating on a mirror. GitLab itself
-uses this feature, because security releases can include changes from both public
+uses this feature, because patch releases can include changes from both public
 projects and private security mirrors.
 
 ## Add a trailer to a Git commit

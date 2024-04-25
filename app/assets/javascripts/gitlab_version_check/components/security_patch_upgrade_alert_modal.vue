@@ -16,7 +16,7 @@ import {
 export default {
   name: 'SecurityPatchUpgradeAlertModal',
   i18n: {
-    modalTitle: s__('VersionCheck|Important notice - Critical security release'),
+    modalTitle: s__('VersionCheck|Important notice - Critical patch release'),
     modalBodyNoStableVersions: s__(
       'VersionCheck|You are currently on version %{currentVersion}! We strongly recommend upgrading your GitLab installation immediately.',
     ),
@@ -27,7 +27,7 @@ export default {
       'VersionCheck|Additionally, there is an available stable patch for your current GitLab minor version: %{latestStableVersionOfMinor}',
     ),
     modalDetails: s__('VersionCheck|%{details}'),
-    learnMore: s__('VersionCheck|Learn more about this critical security release.'),
+    learnMore: s__('VersionCheck|Learn more about this critical patch release.'),
     primaryButtonText: s__('VersionCheck|Upgrade now'),
     secondaryButtonText: s__('VersionCheck|Remind me again in 3 days'),
   },

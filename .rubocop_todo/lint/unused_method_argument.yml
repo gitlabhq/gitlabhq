@@ -27,7 +27,6 @@ Lint/UnusedMethodArgument:
     - 'app/graphql/resolvers/ci/runner_groups_resolver.rb'
     - 'app/graphql/resolvers/ci/runner_platforms_resolver.rb'
     - 'app/graphql/resolvers/ci/runner_setup_resolver.rb'
-    - 'app/graphql/resolvers/ci/runner_status_resolver.rb'
     - 'app/graphql/resolvers/ci/test_report_summary_resolver.rb'
     - 'app/graphql/resolvers/clusters/agent_activity_events_resolver.rb'
     - 'app/graphql/resolvers/concerns/caching_array_resolver.rb'

@@ -167,7 +167,6 @@ Layout/ArgumentAlignment:
     - 'app/graphql/resolvers/ci/runner_projects_resolver.rb'
     - 'app/graphql/resolvers/ci/runner_resolver.rb'
     - 'app/graphql/resolvers/ci/runner_setup_resolver.rb'
-    - 'app/graphql/resolvers/ci/runner_status_resolver.rb'
     - 'app/graphql/resolvers/ci/runners_resolver.rb'
     - 'app/graphql/resolvers/ci/template_resolver.rb'
     - 'app/graphql/resolvers/ci/variables_resolver.rb'

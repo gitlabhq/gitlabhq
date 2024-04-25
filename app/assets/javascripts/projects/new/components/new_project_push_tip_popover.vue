@@ -9,7 +9,7 @@ export default {
     GlFormInputGroup,
     ClipboardButton,
   },
-  inject: ['pushToCreateProjectCommand', 'workingWithProjectsHelpPath'],
+  inject: ['pushToCreateProjectCommand', 'projectHelpPath'],
   props: {
     target: {
       type: [Function, HTMLElement],
@@ -56,7 +56,7 @@ export default {
     </p>
     <p>
       <a
-        :href="`${workingWithProjectsHelpPath}#create-a-new-project-with-git-push`"
+        :href="`${projectHelpPath}#create-a-new-project-with-git-push`"
         class="gl-font-sm"
         target="_blank"
         >{{ $options.i18n.helpLinkText }}</a

@@ -69,7 +69,7 @@ RSpec.describe Gitlab::Ci::Status::Build::Play do
   end
 
   describe '#action_title' do
-    it { expect(subject.action_title).to eq 'Play' }
+    it { expect(subject.action_title).to eq 'Run' }
   end
 
   describe '#action_button_title' do

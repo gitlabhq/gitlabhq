@@ -13,4 +13,4 @@ export const SECURITY_MODAL_FIXTURE = `<div id="js-security-patch-upgrade-alert-
 
 export const SECURITY_MODAL_FINDER = '[data-testid="alert-modal-title"]';
 
-export const SECURITY_MODAL_TEXT = 'Important notice - Critical security release';
+export const SECURITY_MODAL_TEXT = 'Important notice - Critical patch release';

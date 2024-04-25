@@ -15,13 +15,13 @@ RSpec.describe Gitlab::Ci::Status::Stage::PlayManual, feature_category: :continu
   describe '#action_button_title' do
     subject { play_manual.action_button_title }
 
-    it { is_expected.to eq('Play all manual') }
+    it { is_expected.to eq('Run all manual') }
   end
 
   describe '#action_title' do
     subject { play_manual.action_title }
 
-    it { is_expected.to eq('Play all manual') }
+    it { is_expected.to eq('Run all manual') }
   end
 
   describe '#action_path' do

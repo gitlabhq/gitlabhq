@@ -219,6 +219,7 @@ export default {
       :modal-id="modalId"
       :phrase="group.fullName"
       :confirm-loading="isActionDeleteLoading"
+      :group="group"
       @confirm.prevent="$emit('delete', group)"
       @change="isDeleteModalVisible = arguments[0]"
     />

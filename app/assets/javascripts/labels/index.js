@@ -3,19 +3,29 @@ import Vue from 'vue';
 import { BV_SHOW_MODAL } from '~/lib/utils/constants';
 import Translate from '~/vue_shared/translate';
 import DeleteLabelModal from './components/delete_label_modal.vue';
+import LabelActions from './components/label_actions.vue';
 import PromoteLabelModal from './components/promote_label_modal.vue';
-import eventHub from './event_hub';
+import eventHub, {
+  EVENT_DELETE_LABEL_MODAL_SUCCESS,
+  EVENT_OPEN_DELETE_LABEL_MODAL,
+} from './event_hub';
 import GroupLabelSubscription from './group_label_subscription';
 import LabelManager from './label_manager';
 import ProjectLabelSubscription from './project_label_subscription';
 
 export function initDeleteLabelModal(optionalProps = {}) {
+  document.querySelectorAll('.js-delete-label-modal-button').forEach((button) => {
+    button.addEventListener('click', (e) => {
+      e.preventDefault();
+      eventHub.$emit(EVENT_OPEN_DELETE_LABEL_MODAL, button.dataset);
+    });
+  });
+
   new Vue({
     name: 'DeleteLabelModalRoot',
     render(h) {
       return h(DeleteLabelModal, {
         props: {
-          selector: '.js-delete-label-modal-button',
           ...optionalProps,
         },
       });
@@ -114,13 +124,30 @@ export function initLabelIndex() {
   });
 }
 
+export function initLabelActions(el) {
+  const { labelId, labelName, editPath, destroyPath } = el.dataset;
+  return new Vue({
+    el,
+    render(createElement) {
+      return createElement(LabelActions, {
+        props: {
+          labelId,
+          labelName,
+          editPath,
+          destroyPath,
+        },
+      });
+    },
+  });
+}
+
 export function initAdminLabels() {
   const labelsContainer = document.querySelector('.js-admin-labels-container');
   const pagination = labelsContainer?.querySelector('.gl-pagination');
   const emptyState = document.querySelector('.js-admin-labels-empty-state');
 
-  function removeLabelSuccessCallback() {
-    this.closest('.js-label-list-item').classList.add('gl-display-none!');
+  function removeLabelSuccessCallback(labelId) {
+    document.getElementById(`label_${labelId}`).classList.add('gl-display-none!');
 
     const labelsCount = document.querySelectorAll(
       'ul.manage-labels-list .js-label-list-item:not(.gl-display-none\\!)',
@@ -136,7 +163,7 @@ export function initAdminLabels() {
     }
   }
 
-  document.querySelectorAll('.js-remove-label').forEach((row) => {
-    row.addEventListener('ajax:success', removeLabelSuccessCallback);
-  });
+  initDeleteLabelModal({ remoteDestroy: true });
+  eventHub.$on(EVENT_DELETE_LABEL_MODAL_SUCCESS, removeLabelSuccessCallback);
+  document.querySelectorAll('.js-label-actions-dropdown').forEach(initLabelActions);
 }

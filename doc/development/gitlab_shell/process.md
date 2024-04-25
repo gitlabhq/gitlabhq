@@ -37,14 +37,14 @@ Rails application:
 GitLab Shell is included in the packages we create for GitLab. Each version of
 GitLab specifies the version of GitLab Shell it uses in the `GITLAB_SHELL_VERSION`
 file. Because of this specification, security fixes in GitLab Shell are tightly coupled to the
-[GitLab security release](https://handbook.gitlab.com/handbook/engineering/workflow/#security-issues) workflow.
+[GitLab patch release](https://handbook.gitlab.com/handbook/engineering/workflow/#security-issues) workflow.
 
 For a security fix in GitLab Shell, two sets of merge requests are required:
 
 1. The fix itself, in the `gitlab-org/security/gitlab-shell` repository and its
    backports to the previous versions of GitLab Shell.
 1. Merge requests to change the versions of GitLab Shell included in the GitLab
-   security release, in the `gitlab-org/security/gitlab` repository.
+   patch release, in the `gitlab-org/security/gitlab` repository.
 
 The first step could be to create a merge request with a fix targeting `main`
 in `gitlab-org/security/gitlab-shell`. When the merge request is approved by maintainers,
@@ -62,10 +62,10 @@ git fetch security 13-9-stable-ee
 git show refs/remotes/security/13-9-stable-ee:GITLAB_SHELL_VERSION
 ```
 
-Close to the GitLab security release, a maintainer should merge the fix and backports,
+Close to the GitLab patch release, a maintainer should merge the fix and backports,
 and cut all the necessary GitLab Shell versions. This allows bumping the
 `GITLAB_SHELL_VERSION` for `gitlab-org/security/gitlab`. The GitLab merge request
-is handled by the general GitLab security release process.
+is handled by the general GitLab patch release process.
 
-After the security release is done, a GitLab Shell maintainer is responsible for
+After the patch release is done, a GitLab Shell maintainer is responsible for
 syncing tags and `main` to the `gitlab-org/gitlab-shell` repository.
