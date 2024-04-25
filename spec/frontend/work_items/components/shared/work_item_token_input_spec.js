@@ -137,7 +137,7 @@ describe('WorkItemTokenInput', () => {
       areWorkItemsToAddValid: false,
     });
 
-    expect(findTokenSelector().props('containerClass')).toBe('gl-inset-border-1-red-500!');
+    expect(findTokenSelector().props('containerClass')).toBe('!gl-shadow-inner-1-red-500');
   });
 
   describe('when input data is provided', () => {

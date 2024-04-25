@@ -79,7 +79,7 @@ export default {
   },
   methods: {
     linkClass(index) {
-      return index === this.currentTabIndex ? 'gl-inset-border-b-2-theme-accent' : '';
+      return index === this.currentTabIndex ? 'gl-shadow-inner-b-2-theme-accent' : '';
     },
     updateCurrentTab() {
       const hasKubernetesIntegration = this.environment?.clusterAgent;

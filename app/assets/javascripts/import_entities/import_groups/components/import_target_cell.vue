@@ -82,8 +82,8 @@ export default {
           ref="newName"
           class="gl-rounded-top-left-none gl-rounded-bottom-left-none"
           :class="{
-            'gl-inset-border-1-gray-200!': isPathSelectionAvailable,
-            'gl-inset-border-1-gray-100!': !isPathSelectionAvailable,
+            '!gl-shadow-inner-1-gray-200': isPathSelectionAvailable,
+            '!gl-shadow-inner-1-gray-100': !isPathSelectionAvailable,
           }"
           debounce="500"
           data-testid="target-namespace-input"

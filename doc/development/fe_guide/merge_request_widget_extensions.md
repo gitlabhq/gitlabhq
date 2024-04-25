@@ -6,8 +6,6 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # Merge request widget extensions
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/44616) in GitLab 13.6.
-
 Extensions in the merge request widget enable you to add new features
 into the merge request widget that match the design framework.
 With extensions we get a lot of benefits out of the box without much effort required, like:

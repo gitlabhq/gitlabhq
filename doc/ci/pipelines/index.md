@@ -200,8 +200,7 @@ For each `var` or `file_var`, a key and value are required.
 [Manual jobs](../jobs/job_control.md#create-a-job-that-must-be-run-manually),
 allow you to require manual interaction before moving forward in the pipeline.
 
-You can do this straight from the pipeline graph. Just select the play button
-to execute that particular job.
+You can do this straight from the pipeline graph. Select **Run** (**{play}**) to execute that particular job.
 
 For example, your pipeline can start automatically, but require a manual action to
 [deploy to production](../environments/index.md#configure-manual-deployments).
@@ -212,7 +211,7 @@ In the example below, the `production` stage has a job with a manual action:
 #### Start all manual jobs in a stage
 
 If a stage contains only manual jobs, you can start all the jobs at the same time
-by selecting **Play all manual** (**{play}**) above the stage. If the stage contains
+by selecting **Run all manual** (**{play}**) above the stage. If the stage contains
 non-manual jobs, the option is not displayed.
 
 ### Skip a pipeline

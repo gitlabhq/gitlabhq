@@ -57,7 +57,8 @@ RSpec.describe API::GroupPackages, feature_category: :package_registry do
         let(:another_project) { create(:project, :public, namespace: group, name: 'project B') }
         let!(:package4) { create(:npm_package, project: another_project, version: '3.1.0', name: "@#{project.root_namespace.path}/bar") }
 
-        let(:packages) { [package1, package2, package3, package4] }
+        let(:packages) { [package3, package2, package1, package4] }
+        let(:package_ids_desc) { [package4.id, package3.id, package2.id, package1.id] }
       end
     end
 

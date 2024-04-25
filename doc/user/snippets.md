@@ -62,7 +62,7 @@ You can create snippets in multiple ways, depending on whether you want to creat
 1. Select a visibility level, and select **Create snippet**.
 
 After you create a snippet, you can still [add more files to it](#add-or-remove-multiple-files).
-In GitLab 13.0 and later, snippets are [versioned by default](#versioned-snippets).
+Snippets are [versioned by default](#versioned-snippets).
 
 ## Discover snippets
 
@@ -98,19 +98,13 @@ default visibility:
 
 ## Versioned snippets
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/239) in GitLab 13.0.
-
-In GitLab 13.0 and later, snippets (both personal and project snippets)
-have version control enabled by default.
+Both personal and project snippets use version control by default.
 
 This means that all snippets get their own underlying repository initialized with
 a default branch at the moment the snippet is created. Whenever a change to the snippet is saved, a
 new commit to the default branch is recorded. Commit messages are automatically
 generated. The snippet's repository has only one branch. You can't delete this branch,
 or create other branches.
-
-Existing snippets were automatically migrated in GitLab 13.0. Their current
-content was saved as the initial commit to the snippets' repository.
 
 ## Filenames
 
@@ -132,8 +126,6 @@ repository. As snippets are stored by ID, changing their filenames breaks
 direct or embedded links to the snippet.
 
 ## Add or remove multiple files
-
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2829) in GitLab 13.5.
 
 A single snippet can support up to 10 files, which helps keep related files together, such as:
 

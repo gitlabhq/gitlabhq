@@ -143,7 +143,7 @@ export default {
     <div v-if="isDetailsShown" class="gl-display-flex">
       <div class="gl-w-7"></div>
       <div
-        class="gl-display-flex gl-flex-direction-column gl-flex-grow-1 gl-bg-gray-10 gl-rounded-base gl-inset-border-1-gray-100 gl-mb-3"
+        class="gl-display-flex gl-flex-direction-column gl-flex-grow-1 gl-bg-gray-10 gl-rounded-base gl-shadow-inner-1-gray-100 gl-mb-3"
       >
         <div
           v-for="(row, detailIndex) in detailsSlots"

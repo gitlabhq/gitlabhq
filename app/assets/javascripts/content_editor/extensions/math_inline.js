@@ -26,7 +26,7 @@ export default Mark.create({
       {
         title: __('Inline math'),
         'data-toggle': 'tooltip',
-        class: 'gl-inset-border-1-gray-400',
+        class: 'gl-shadow-inner-1-gray-400',
         ...HTMLAttributes,
       },
       0,

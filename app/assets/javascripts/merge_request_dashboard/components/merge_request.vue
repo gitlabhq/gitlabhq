@@ -98,7 +98,7 @@ export default {
             v-gl-tooltip="__('Comments')"
             class="gl-align-self-center gl-ml-4"
           >
-            <gl-icon name="comments" class="gl-vertical-align-middle!" />
+            <gl-icon name="comments" class="!gl-align-middle" />
             {{ mergeRequest.userDiscussionsCount }}
           </li>
         </ul>

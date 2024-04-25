@@ -90,7 +90,7 @@ When an older deployment job starts, it fails and is labeled:
 - `The deployment job is older than the latest deployment, and therefore failed.`
   when viewing the completed job.
 
-When an older deployment job is manual, the play button is disabled with a message
+When an older deployment job is manual, the **Run** (**{play}**) button is disabled with a message
 `This deployment job does not run automatically and must be started manually, but it's older than the latest deployment, and therefore can't run.`.
 
 Job age is determined by the job start time, not the commit time, so a newer commit

@@ -10,8 +10,6 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/31025) in GitLab 12.3.
-
 Configure GitLab to serve repository static objects (such as archives or raw blobs) from external
 storage such as a content delivery network (CDN).
 

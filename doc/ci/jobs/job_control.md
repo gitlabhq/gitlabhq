@@ -63,7 +63,7 @@ To run a manual job, you must have permission to merge to the assigned branch:
 
 1. Go to the pipeline, job, [environment](../environments/index.md#configure-manual-deployments),
    or deployment view.
-1. Next to the manual job, select **Play** (**{play}**).
+1. Next to the manual job, select **Run** (**{play}**).
 
 You can also [add custom CI/CD variables when running a manual job](index.md#specifying-variables-when-running-manual-jobs).
 
@@ -143,7 +143,7 @@ timed rollout 10%:
 To stop the active timer of a delayed job, select **Unschedule** (**{time-out}**).
 This job can no longer be scheduled to run automatically. You can, however, execute the job manually.
 
-To start a delayed job manually, select **Unschedule** (**{time-out}**) to stop the delay timer and then select **Play** (**{play}**).
+To start a delayed job manually, select **Unschedule** (**{time-out}**) to stop the delay timer and then select **Run** (**{play}**).
 Soon GitLab Runner starts the job.
 
 ## Parallelize large jobs

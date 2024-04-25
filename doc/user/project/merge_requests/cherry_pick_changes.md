@@ -11,8 +11,6 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> Feature flag `pick_into_project` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/324154) in GitLab 14.0.
-
 In Git, *cherry-picking* is taking a single commit from one branch and adding it
 as the latest commit on another branch. The rest of the commits in the source branch
 are not added to the target. Cherry-pick a commit when you need the

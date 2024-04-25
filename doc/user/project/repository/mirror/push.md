@@ -11,8 +11,6 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40137) in GitLab 13.5: LFS support over HTTPS.
-
 A _push mirror_ is a downstream repository that [mirrors](index.md) the commits made
 to the upstream repository. Push mirrors passively receive copies of the commits made to the
 upstream repository. To prevent the mirror from diverging from the upstream
@@ -59,8 +57,6 @@ You can also create and modify project push mirrors through the
 [remote mirrors API](../../../../api/remote_mirrors.md).
 
 ## Keep divergent refs
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/208828) in GitLab 13.0.
 
 By default, if any ref (branch or tag) on the remote (downstream) mirror diverges from the
 local repository, the upstream repository overwrites any changes on the remote:

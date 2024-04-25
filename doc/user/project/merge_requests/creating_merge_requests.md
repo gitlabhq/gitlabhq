@@ -34,8 +34,6 @@ already exists for this branch, a link to the existing merge request is shown.
 
 ## From an issue
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/349566) the behavior of the **Create merge request** button to open the merge request creation form in GitLab 14.8.
-
 If your development workflow requires an issue for every merge
 request, you can create a branch directly from the issue to speed the process up.
 The new branch, and later its merge request, are marked as related to this issue.

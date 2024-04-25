@@ -12,9 +12,7 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - `reference` was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20354) in GitLab 12.7.
-> - `draft` was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63473) as a replacement for `work_in_progress` in GitLab 14.0.
 > - `merged_by` was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/350534) in GitLab 14.7.
-> - `merge_user` was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/349031) as an eventual replacement for `merged_by` in GitLab 14.7.
 > - `merge_status` was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/3169#note_1162532204) in favor of `detailed_merge_status` in GitLab 15.6.
 > - `with_merge_status_recheck` [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115948) in GitLab 15.11  [with a flag](../administration/feature_flags.md) named `restrict_merge_status_recheck` to be ignored for requests from users insufficient permissions. Disabled by default.
 > - `approvals_before_merge` was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119503) in GitLab 16.0.
@@ -215,7 +213,7 @@ Example response:
 
 ### Merge requests list response notes
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/31890) in GitLab 13.0, listing merge requests might
+- Listing merge requests might
   not proactively update `merge_status` (which also affects the `has_conflicts`), as this can be an expensive operation.
   If you need the value of these fields from this endpoint, set the `with_merge_status_recheck` parameter to
   `true` in the query.
@@ -256,7 +254,7 @@ Supported attributes:
 | `milestone`                     | string         | No       | Returns merge requests for a specific milestone. `None` returns merge requests with no milestone. `Any` returns merge requests that have an assigned milestone. |
 | `my_reaction_emoji`             | string         | No       | Returns merge requests reacted by the authenticated user by the given `emoji`. `None` returns issues not given a reaction. `Any` returns issues given at least one reaction. |
 | `not`                           | Hash           | No       | Returns merge requests that do not match the parameters supplied. Accepts: `labels`, `milestone`, `author_id`, `author_username`, `assignee_id`, `assignee_username`, `reviewer_id`, `reviewer_username`, `my_reaction_emoji`. |
-| `order_by`                      | string         | No       | Returns requests ordered by `created_at`, `title` or `updated_at` fields. Default is `created_at`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/331625) in GitLab 14.8. |
+| `order_by`                      | string         | No       | Returns requests ordered by `created_at`, `title` or `updated_at` fields. Default is `created_at`. |
 | `reviewer_id`                   | integer        | No       | Returns merge requests which have the user as a [reviewer](../user/project/merge_requests/reviews/index.md) with the given user `id`. `None` returns merge requests with no reviewers. `Any` returns merge requests with any reviewer. Mutually exclusive with `reviewer_username`.  |
 | `reviewer_username`             | string         | No       | Returns merge requests which have the user as a [reviewer](../user/project/merge_requests/reviews/index.md) with the given `username`. `None` returns merge requests with no reviewers. `Any` returns merge requests with any reviewer. Mutually exclusive with `reviewer_id`. |
 | `scope`                         | string         | No       | Returns merge requests for the given scope: `created_by_me`, `assigned_to_me`, or `all`. |
@@ -443,7 +441,7 @@ Supported attributes:
 | `my_reaction_emoji`             | string         | No       | Returns merge requests reacted by the authenticated user by the given `emoji`. `None` returns issues not given a reaction. `Any` returns issues given at least one reaction. |
 | `non_archived`                  | boolean        | No       | Returns merge requests from non archived projects only. Default is `true`. |
 | `not`                           | Hash           | No       | Returns merge requests that do not match the parameters supplied. Accepts: `labels`, `milestone`, `author_id`, `author_username`, `assignee_id`, `assignee_username`, `reviewer_id`, `reviewer_username`, `my_reaction_emoji`. |
-| `order_by`                      | string         | No       | Returns merge requests ordered by `created_at`, `title` or `updated_at` fields. Default is `created_at`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/331625) in GitLab 14.8. |
+| `order_by`                      | string         | No       | Returns merge requests ordered by `created_at`, `title` or `updated_at` fields. Default is `created_at`. |
 | `reviewer_id`                   | integer        | No       | Returns merge requests which have the user as a [reviewer](../user/project/merge_requests/reviews/index.md) with the given user `id`. `None` returns merge requests with no reviewers. `Any` returns merge requests with any reviewer. Mutually exclusive with `reviewer_username`. |
 | `reviewer_username`             | string         | No       | Returns merge requests which have the user as a [reviewer](../user/project/merge_requests/reviews/index.md) with the given `username`. `None` returns merge requests with no reviewers. `Any` returns merge requests with any reviewer. Mutually exclusive with `reviewer_id`. |
 | `scope`                         | string         | No       | Returns merge requests for the given scope: `created_by_me`, `assigned_to_me` or `all`. |
@@ -636,7 +634,7 @@ Supported attributes:
 | `latest_build_started_at` | datetime | Timestamp of when the latest build for the merge request started. |
 | `merge_commit_sha` | string | SHA of the merge request commit. Returns `null` until merged. |
 | `merge_error` | string | Error message shown when a merge has failed. To check mergeability, use `detailed_merge_status` instead  |
-| `merge_user` | object | The user who merged this merge request, the user who set it to auto-merge, or `null`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/349031) in GitLab 14.7. |
+| `merge_user` | object | The user who merged this merge request, the user who set it to auto-merge, or `null`.  |
 | `merge_status` | string | Status of the merge request. Can be `unchecked`, `checking`, `can_be_merged`, `cannot_be_merged`, or `cannot_be_merged_recheck`. Affects the `has_conflicts` property. For important notes on response data, see [Single merge request response notes](#single-merge-request-response-notes). [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/3169#note_1162532204) in GitLab 15.6. Use `detailed_merge_status` instead. |
 | `merge_when_pipeline_succeeds` | boolean | Indicates if the merge has been set to be merged when its pipeline succeeds. |
 | `merged_at` | datetime | Timestamp of when the merge request was merged. |

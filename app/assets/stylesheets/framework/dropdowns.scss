@@ -152,7 +152,7 @@
   width: 160px;
 
   &:hover {
-    @include gl-inset-border-1-gray-400;
+    @apply gl-shadow-inner-1-gray-400;
   }
 
   &:hover,

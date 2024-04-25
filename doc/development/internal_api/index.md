@@ -465,7 +465,6 @@ Example response:
 
 ## GitLab agent endpoints
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41045) in GitLab 13.4.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/432773) in GitLab 16.7.
 
 The following endpoints are used by the GitLab agent server (`kas`)
@@ -1258,8 +1257,6 @@ Example response:
 DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/9388) in GitLab 11.10.
 
 The group SCIM API partially implements the [RFC7644 protocol](https://www.rfc-editor.org/rfc/rfc7644). This API provides the `/groups/:group_path/Users` and `/groups/:group_path/Users/:id` endpoints. The base URL is `<http|https>://<GitLab host>/api/scim/v2`. Because this API is for
 **system** use for SCIM provider integration, it is subject to change without notice.

@@ -10,7 +10,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78373) in GitLab 14.7 [with a flag](../feature_flags.md) named `rate_limit_gitlab_shell`. Available by default without a feature flag from 15.8.
+> - [Available by default](https://gitlab.com/gitlab-org/gitlab/-/issues/367998) in GitLab 15.8. [Feature flag](../feature_flags.md) `rate_limit_gitlab_shell` removed.
 
 GitLab applies rate limits to Git operations that use SSH by user account and project. When the rate limit is exceeded, GitLab rejects
 further connection requests from that user for the project.

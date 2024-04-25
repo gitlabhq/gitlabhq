@@ -154,8 +154,6 @@ details may have changed, it should still serve as a good introduction.
 
 ## Including LFS blobs in project archives
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15079) in GitLab 13.5.
-
 The following diagram illustrates how GitLab resolves LFS files for project archives:
 
 ```mermaid
@@ -211,7 +209,7 @@ sequenceDiagram
 1. The archive data is sent back to the client.
 
 In step 7, the `gitaly-lfs-smudge` filter must talk to Workhorse, not to
-Rails, or an invalid LFS blob is saved. To support this, GitLab 13.5
+Rails, or an invalid LFS blob is saved. To support this, GitLab 
 [changed the default Omnibus configuration to have Gitaly talk to the Workhorse](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/4592)
 instead of Rails.
 

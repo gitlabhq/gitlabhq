@@ -27,8 +27,6 @@ can access the object pool connected to the source project.
 
 ## Create a fork
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15013) a new form in GitLab 13.11 [with a flag](../../../user/feature_flags.md) named `fork_project_form`. Disabled by default.
-> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77181) in GitLab 14.8. Feature flag `fork_project_form` removed.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24894) in GitLab 16.6.
 
 To fork an existing project in GitLab:

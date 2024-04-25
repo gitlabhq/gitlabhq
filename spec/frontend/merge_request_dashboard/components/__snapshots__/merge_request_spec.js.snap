@@ -84,7 +84,7 @@ exports[`Merge request dashboard merge request component renders template 1`] = 
           class="gl-align-self-center gl-ml-4"
         >
           <gl-icon-stub
-            class="gl-vertical-align-middle!"
+            class="!gl-align-middle"
             name="comments"
             size="16"
           />

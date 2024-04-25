@@ -10,8 +10,6 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/58583) in GitLab 12.1.
-
 Merge requests in a public repository are also public, even when the merge
 request is created for a [confidential issue](../issues/confidential_issues.md).
 To avoid leaking confidential information when working on a confidential issue,

@@ -218,9 +218,6 @@ a merge request. You can choose to hide or show whitespace changes:
 
 ## Mark files as viewed
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/51513) in GitLab 13.9 [with a flag](../../../administration/feature_flags.md) named `local_file_reviews`. Enabled by default.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/296674) in GitLab 14.3.
-
 When reviewing a merge request with many files multiple times, you can ignore files
 you've already reviewed. To hide files that haven't changed since your last review:
 
@@ -236,7 +233,6 @@ Files marked as viewed are not shown to you again unless either:
 
 ## Show merge request conflicts in diff
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/232484) in GitLab 13.5 [with a flag](../../../administration/feature_flags.md) named `display_merge_conflicts_in_diff`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/276918) in GitLab 15.7.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/276918) in GitLab 15.8. Feature flag `display_merge_conflicts_in_diff` removed.
 

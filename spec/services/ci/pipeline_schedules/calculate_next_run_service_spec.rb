@@ -30,6 +30,8 @@ RSpec.describe Ci::PipelineSchedules::CalculateNextRunService, feature_category:
         # 1.day / 2.hours => 12 times a day and it is invalid because there is a minimum for plan limits.
         # See: https://docs.gitlab.com/ee/administration/instance_limits.html#limit-the-number-of-pipelines-created-by-a-pipeline-schedule-per-day
         '*/5 * * * *' | '0 * * * *'   | 1.day / 2.hours | Time.zone.local(2021, 5, 27, 11, 0) | Time.zone.local(2021, 5, 27, 12, 5)
+        '*/5 * * * *' | '0 * * * *'   | 2000            | Time.zone.local(2021, 5, 27, 11, 0) | Time.zone.local(2021, 5, 27, 12, 5)
+        '*/5 * * * *' | '0 * * * *'   | -24             | Time.zone.local(2021, 5, 27, 11, 0) | Time.zone.local(2021, 5, 27, 12, 5)
       end
 
       with_them do

@@ -362,8 +362,8 @@ Parameters:
 | `id`      | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
 | `sha` | string | yes | The commit hash  |
 | `branch` | string | yes | The name of the branch  |
-| `dry_run` | boolean | no | Does not commit any changes. Default is false. [Introduced in GitLab 13.3](https://gitlab.com/gitlab-org/gitlab/-/issues/231032) |
-| `message` | string | no | A custom commit message to use for the new commit. [Introduced in GitLab 14.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62481) |
+| `dry_run` | boolean | no | Does not commit any changes. Default is false. |
+| `message` | string | no | A custom commit message to use for the new commit. |
 
 ```shell
 curl --request POST \
@@ -437,7 +437,7 @@ Parameters:
 | `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
 | `sha`     | string         | yes      | Commit SHA to revert                                                            |
 | `branch`  | string         | yes      | Target branch name                                                              |
-| `dry_run` | boolean        | no       | Does not commit any changes. Default is false. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/231032) in GitLab 13.3 |
+| `dry_run` | boolean        | no       | Does not commit any changes. Default is false. |
 
 ```shell
 curl --request POST \

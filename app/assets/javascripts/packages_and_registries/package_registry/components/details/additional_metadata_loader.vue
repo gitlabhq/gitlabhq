@@ -14,7 +14,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-bg-gray-50 gl-inset-border-1-gray-100 gl-rounded-base">
+  <div class="gl-bg-gray-50 gl-shadow-inner-1-gray-100 gl-rounded-base">
     <div
       v-for="index in $options.loader.repeat"
       :key="index"

@@ -132,9 +132,6 @@ Supported attributes:
 
 ## Get file archive
 
-> - Support for [including Git LFS blobs](../topics/git/lfs/index.md#lfs-objects-in-project-archives) was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15079) in GitLab 13.5.
-> - Support for downloading a subfolder was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/28827) in GitLab 14.4.
-
 Get an archive of the repository. This endpoint can be accessed without
 authentication if the repository is publicly accessible.
 
@@ -235,9 +232,6 @@ Example response:
 
 ## Contributors
 
-> - Attributes `additions` and `deletions` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/39653) in GitLab 13.4, because they [always returned `0`](https://gitlab.com/gitlab-org/gitlab/-/issues/233119).
-> - Attributes `additions` and `deletions` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38920) in GitLab 14.0.
-
 Get repository contributors list. This endpoint can be accessed without
 authentication if the repository is publicly accessible.
 
@@ -312,7 +306,6 @@ Example response:
 
 ## Add changelog data to a changelog file
 
-> - [Introduced](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/351) in GitLab 13.9.
 > - Commit range limits [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89032) in GitLab 15.1 [with a flag](../administration/feature_flags.md) named `changelog_commits_limitation`. Enabled by default.
 
 Generate changelog data based on commits in a repository.
@@ -434,8 +427,6 @@ curl --request POST --header "PRIVATE-TOKEN: token" \
 ```
 
 ## Generate changelog data
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345934) in GitLab 14.6.
 
 Generate changelog data based on commits in a repository, without committing
 them to a changelog file.

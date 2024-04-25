@@ -183,8 +183,7 @@ references to these objects. You can use
 [`git filter-repo`](https://github.com/newren/git-filter-repo) to produce a list of objects (in a
 `commit-map` file) that can be used with repository cleanup.
 
-[Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45058) in GitLab 13.6,
-safely cleaning the repository requires it to be made read-only for the duration
+Safely cleaning the repository requires it to be made read-only for the duration
 of the operation. This happens automatically, but submitting the cleanup request
 fails if any writes are ongoing, so cancel any outstanding `git push`
 operations before continuing.

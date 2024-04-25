@@ -101,8 +101,6 @@ prompted to open Xcode.
 
 ### Clone and open in Visual Studio Code
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/220957) in GitLab 13.10.
-
 All projects can be cloned into Visual Studio Code from the GitLab user interface, but you
 can also install the [GitLab Workflow VS Code extension](../../../editor_extensions/visual_studio_code/index.md) to clone from
 Visual Studio Code:
@@ -213,8 +211,6 @@ These files can either be plain text or have the extension of a
   takes precedence over `README`.
 
 ### OpenAPI viewer
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/19515) in GitLab 12.6.
 
 GitLab can render OpenAPI specification files. The filename must include `openapi` or `swagger` and the extension must be `yaml`,
 `yml`, or `json`. The following examples are all correct:

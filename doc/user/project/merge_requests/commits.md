@@ -37,9 +37,6 @@ need to [include more commits for context](#show-commits-from-previous-merge-req
 
 ### Show commits from previous merge requests
 
-> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/320757) in GitLab 14.8.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/320757) in GitLab 14.9. [Feature flag `context_commits`](https://gitlab.com/gitlab-org/gitlab/-/issues/320757) removed.
-
 When you review a merge request, you might need information from previous commits
 to help understand the commits you're reviewing. You might need more context
 if another merge request:

@@ -632,7 +632,7 @@ Select it to see the runner's output.
 
 ![pipeline page](img/pipeline_page.png)
 
-After our code passed through the pipeline successfully, we can deploy to our production server by selecting the **play** button on the right side.
+After our code passed through the pipeline successfully, we can deploy to our production server by selecting **Run** (**{play}**) on the right side.
 
 ![pipelines page deploy button](img/pipelines_page_deploy_button.png)
 

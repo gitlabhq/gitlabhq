@@ -88,6 +88,8 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
     RSpec.shared_examples 'package sorting by attribute' do |order_by|
       subject { described_class.where(id: packages.map(&:id)).sort_by_attribute("#{order_by}_#{sort}").to_a }
 
+      let(:packages_desc) { packages.reverse }
+
       context "sorting by #{order_by}" do
         context 'ascending order' do
           let(:sort) { 'asc' }
@@ -98,7 +100,7 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
         context 'descending order' do
           let(:sort) { 'desc' }
 
-          it { is_expected.to eq packages.reverse }
+          it { is_expected.to eq(packages_desc) }
         end
       end
     end
@@ -123,7 +125,8 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
       let_it_be(:another_project) { create(:project, :public, namespace: group, name: 'project B', path: 'project-b') }
       let_it_be(:package4) { create(:npm_package, project: another_project, version: '3.1.0', name: "@#{project.root_namespace.path}/bar") }
 
-      let(:packages) { [package1, package2, package3, package4] }
+      let(:packages) { [package3, package2, package1, package4] }
+      let(:packages_desc) { [package4, package3, package2, package1] }
     end
   end
 
@@ -1056,8 +1059,8 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
   end
 
   context 'sorting' do
-    let_it_be(:project) { create(:project, name: 'aaa') }
-    let_it_be(:project2) { create(:project, name: 'bbb') }
+    let_it_be(:project) { create(:project, path: 'aaa') }
+    let_it_be(:project2) { create(:project, path: 'bbb') }
     let_it_be(:package1) { create(:package, project: project) }
     let_it_be(:package2) { create(:package, project: project2) }
 
@@ -1073,20 +1076,13 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
       let_it_be(:package3) { create(:package, project: project2) }
       let_it_be(:package4) { create(:package, project: project) }
 
-      shared_examples 'order_project_path scope' do
-        it 'orders packages by their projects path asc, then package id asc' do
-          expect(described_class.order_project_path).to eq([package1, package4, package2, package3])
-        end
+      it 'orders packages by their projects path asc, then package id desc' do
+        expect(described_class.order_project_path).to eq([package4, package1, package3, package2])
       end
 
-      shared_examples 'order_project_path_desc scope' do
-        it 'orders packages by their projects path desc, then package id desc' do
-          expect(described_class.order_project_path_desc).to eq([package3, package2, package4, package1])
-        end
+      it 'orders packages by their projects path desc, then package id desc' do
+        expect(described_class.order_project_path_desc).to eq([package3, package2, package4, package1])
       end
-
-      it_behaves_like 'order_project_path scope'
-      it_behaves_like 'order_project_path_desc scope'
     end
   end
 
@@ -1101,33 +1097,6 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
       create(:package_file, :xml, package: package1)
 
       expect(project.packages.order_by_package_file).to match_array([package1, package1, package1, package2, package2, package2, package1])
-    end
-  end
-
-  describe '.keyset_pagination_order' do
-    let(:join_class) { nil }
-    let(:column_name) { nil }
-    let(:direction) { nil }
-
-    subject { described_class.keyset_pagination_order(join_class: join_class, column_name: column_name, direction: direction) }
-
-    it { expect { subject }.to raise_error(NoMethodError) }
-
-    context 'with valid params' do
-      let(:join_class) { Project }
-      let(:column_name) { :name }
-
-      context 'ascending direction' do
-        let(:direction) { :asc }
-
-        it { is_expected.to eq('"projects"."name" ASC NULLS LAST, "packages_packages"."id" ASC') }
-      end
-
-      context 'descending direction' do
-        let(:direction) { :desc }
-
-        it { is_expected.to eq('"projects"."name" DESC NULLS FIRST, "packages_packages"."id" DESC') }
-      end
     end
   end
 

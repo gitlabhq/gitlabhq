@@ -10,8 +10,6 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49228) in GitLab 13.8.
-
 Snippet repositories can be moved between storages. This API can help you when
 [migrating to Gitaly Cluster](../administration/gitaly/index.md#migrate-to-gitaly-cluster), for
 example.
@@ -217,8 +215,6 @@ Example response:
 
 ## Schedule a repository storage move for a snippet
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49228) in GitLab 13.8.
-
 ```plaintext
 POST /snippets/:snippet_id/repository_storage_moves
 ```
@@ -228,7 +224,7 @@ Supported attributes:
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `snippet_id` | integer | yes | ID of the snippet. |
-| `destination_storage_name` | string | no | Name of the destination storage shard. In [GitLab 13.5 and later](https://gitlab.com/gitlab-org/gitaly/-/issues/3209), the storage is selected [automatically based on storage weights](../administration/repository_storage_paths.md#configure-where-new-repositories-are-stored) if not provided. |
+| `destination_storage_name` | string | no | Name of the destination storage shard. The storage is selected [automatically based on storage weights](../administration/repository_storage_paths.md#configure-where-new-repositories-are-stored) if not provided. |
 
 Example request:
 
@@ -265,8 +261,6 @@ Example response:
 ```
 
 ## Schedule repository storage moves for all snippets on a storage shard
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49228) in GitLab 13.8.
 
 Schedules repository storage moves for each snippet repository stored on the source storage shard.
 This endpoint migrates all snippets at once. For more information, see

@@ -208,15 +208,23 @@ class Packages::Package < ApplicationRecord
   scope :order_by_package_file, -> { joins(:package_files).order('packages_package_files.created_at ASC') }
 
   scope :order_project_path, -> do
-    keyset_order = keyset_pagination_order(join_class: Project, column_name: :path, direction: :asc)
-
-    joins(:project).reorder(keyset_order)
+    build_keyset_order_on_joined_column(
+      scope: joins(:project),
+      attribute_name: 'project_path',
+      column: Project.arel_table[:path],
+      direction: :asc,
+      nullable: :nulls_last
+    )
   end
 
   scope :order_project_path_desc, -> do
-    keyset_order = keyset_pagination_order(join_class: Project, column_name: :path, direction: :desc)
-
-    joins(:project).reorder(keyset_order)
+    build_keyset_order_on_joined_column(
+      scope: joins(:project),
+      attribute_name: 'project_path',
+      column: Project.arel_table[:path],
+      direction: :desc,
+      nullable: :nulls_first
+    )
   end
 
   def self.inheritance_column = 'package_type'
@@ -292,33 +300,6 @@ class Packages::Package < ApplicationRecord
     else
       order_created_desc
     end
-  end
-
-  def self.keyset_pagination_order(join_class:, column_name:, direction: :asc)
-    join_table = join_class.table_name
-    asc_order_expression = join_class.arel_table[column_name].asc.nulls_last
-    desc_order_expression = join_class.arel_table[column_name].desc.nulls_first
-    order_direction = direction == :asc ? asc_order_expression : desc_order_expression
-    reverse_order_direction = direction == :asc ? desc_order_expression : asc_order_expression
-    arel_order_classes = ::Gitlab::Pagination::Keyset::ColumnOrderDefinition::AREL_ORDER_CLASSES.invert
-
-    ::Gitlab::Pagination::Keyset::Order.build(
-      [
-        ::Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-          attribute_name: "#{join_table}_#{column_name}",
-          column_expression: join_class.arel_table[column_name],
-          order_expression: order_direction,
-          reversed_order_expression: reverse_order_direction,
-          order_direction: direction,
-          distinct: false,
-          add_to_projections: true
-        ),
-        ::Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-          attribute_name: 'id',
-          order_expression: arel_order_classes[direction].new(Packages::Package.arel_table[:id]),
-          add_to_projections: true
-        )
-      ])
   end
 
   def versions

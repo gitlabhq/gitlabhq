@@ -70,7 +70,7 @@ export default {
 
 <template>
   <fieldset
-    class="gl-rounded-base gl-inset-border-1-gray-400 gl-py-4 gl-px-5"
+    class="gl-rounded-base gl-shadow-inner-1-gray-400 gl-py-4 gl-px-5"
     :class="{
       'gl-outline-none! gl-focus-ring-border-1-gray-900!': isFocused,
     }"

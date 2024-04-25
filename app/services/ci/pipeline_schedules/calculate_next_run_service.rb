@@ -47,7 +47,13 @@ module Ci
 
           every_x_minutes = (1.day.in_minutes / daily_limit).to_i
 
-          Gitlab::Ci::CronParser.parse_natural("every #{every_x_minutes} minutes", Time.zone.name)
+          begin
+            Gitlab::Ci::CronParser.parse_natural("every #{every_x_minutes} minutes", Time.zone.name)
+          rescue ZeroDivisionError
+            # Fugit returns ZeroDivision Error if provided a number
+            # less than 1 in the expression.
+            nil
+          end
         end
       end
     end

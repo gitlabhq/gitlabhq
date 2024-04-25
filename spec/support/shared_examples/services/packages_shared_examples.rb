@@ -131,6 +131,8 @@ end
 RSpec.shared_examples 'package sorting' do |order_by|
   subject { get api(url), params: { sort: sort, order_by: order_by } }
 
+  let(:package_ids_desc) { packages.reverse.map(&:id) }
+
   context "sorting by #{order_by}" do
     context 'ascending order' do
       let(:sort) { 'asc' }
@@ -148,7 +150,7 @@ RSpec.shared_examples 'package sorting' do |order_by|
       it 'returns the sorted packages' do
         subject
 
-        expect(json_response.pluck('id')).to eq(packages.reverse.map(&:id))
+        expect(json_response.pluck('id')).to eq(package_ids_desc)
       end
     end
   end

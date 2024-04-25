@@ -10,9 +10,6 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/228893) in GitLab 13.4.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/258206) in GitLab 13.8
-
 With [Gitpod](https://www.gitpod.io/), you can describe your development environment as code to get fully
 set up, compiled, and tested development environments for any GitLab project. The development
 environments are not only automated but also prebuilt which means that Gitpod continuously builds

@@ -62,7 +62,7 @@ the next scheduled time:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Build > Pipeline schedules**.
 1. On the right of the list, for
-   the pipeline you want to run, select **Play** (**{play}**).
+   the pipeline you want to run, select **Run** (**{play}**).
 
 You can manually run scheduled pipelines once per minute.
 

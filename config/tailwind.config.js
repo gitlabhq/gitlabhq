@@ -110,6 +110,20 @@ module.exports = {
         sm: '0 1px 2px var(--t-gray-a-08, #1f1e2414)',
         md: '0 2px 8px var(--t-gray-a-16, #1f1e2429), 0 0 2px var(--t-gray-a-16, #1f1e2429)',
         lg: '0 4px 12px var(--t-gray-a-16, #1f1e2429), 0 0 4px var(--t-gray-a-16, #1f1e2429)',
+
+        // TODO: backport these inset box shadows to GitLab UI
+        'inner-1-gray-100': 'inset 0 0 0 1px var(--gray-100, #dcdcde)',
+        'inner-1-gray-200': 'inset 0 0 0 1px var(--gray-200, #bfbfc3)',
+        'inner-l-4-gray-100': 'inset 4px 0 0 0 var(--gray-100, #dcdcde)',
+        'inner-1-red-400': 'inset 0 0 0 1px var(--red-400, #ec5941)',
+        'inner-1-gray-400': 'inset 0 0 0 1px var(--gray-400, #89888d)',
+        'inner-1-blue-500': 'inset 0 0 0 1px var(--blue-500, #1f75cb)',
+        'inner-1-red-500': 'inset 0 0 0 1px var(--red-500, #dd2b0e)',
+        'inner-l-3-red-600': 'inset 3px 0 0 0 var(--red-600, #c91c00)',
+        'inner-b-2-theme-accent':
+          'inset 0 -2px 0 0 var(--gl-theme-accent, var(--theme-indigo-500, #6666c4))',
+        'x0-y2-b4-s0': '0 2px 4px 0 #0000001a',
+        'x0-y0-b3-s1-blue-500': 'inset 0 0 3px 1px var(--blue-500, #1f75cb)',
       },
     },
   },

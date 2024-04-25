@@ -77,7 +77,7 @@ export default {
     },
     previewColorClasses() {
       const borderStyle =
-        this.state === false ? 'gl-inset-border-1-red-500' : 'gl-inset-border-1-gray-400';
+        this.state === false ? 'gl-shadow-inner-1-red-500' : 'gl-shadow-inner-1-gray-400';
 
       return `${PREVIEW_COLOR_DEFAULT_CLASSES} ${borderStyle}`;
     },

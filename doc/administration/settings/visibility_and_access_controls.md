@@ -61,7 +61,6 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** Self-managed
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/255449) in GitLab 14.2 for groups created after August 12, 2021.
 > - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/352960) from default delayed project deletion in GitLab 15.1.
 > - [Enabled for projects in personal namespaces](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89466) in GitLab 15.1.
 > - [Disabled for projects in personal namespaces](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95495) in GitLab 15.3.
@@ -195,7 +194,7 @@ To restrict visibility levels for groups, projects, snippets, and selected pages
       - User profiles are only visible to authenticated users through the Web interface.
       - User attributes through the GraphQL API are:
          - Not visible in [GitLab 15.1 and later](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88020).
-         - Only visible to authenticated users between [GitLab 13.1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/33195) and GitLab 15.0.
+         - Visible only to authenticated users on GitLab 15.0.
    - If you restrict the **Internal** level:
      - Only administrators are able to create internal groups, projects, and snippets.
    - If you restrict the **Private** level:
@@ -241,8 +240,6 @@ GitLab [10.7 and later](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_reques
 allows the HTTP(S) protocol for Git clone or fetch requests performed [with GitLab CI/CD job tokens](../../ci/jobs/ci_job_token.md), even if you select **Only SSH**. This is required for GitLab Runner and CI/CD jobs.
 
 ## Customize Git clone URL for HTTP(S)
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18422) in GitLab 12.4.
 
 You can customize project Git clone URLs for HTTP(S), which affects the clone
 panel:

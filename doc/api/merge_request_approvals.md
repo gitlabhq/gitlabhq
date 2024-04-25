@@ -11,7 +11,6 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - Changing approval configuration with the `/approvals` endpoint was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/11132) in GitLab 12.3.
 > - Endpoint `/approvals` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/353097) in GitLab 16.0.
 
 Configuration for
@@ -239,7 +238,7 @@ Example response:
 
 ## Project-level MR approvals
 
-> - The `approvers` and `approver_groups` fields were deprecated in GitLab 12.3 and always return empty. Use the [project level approval rules](#get-project-level-rules) to access this information.
+> - Use the [project level approval rules](#get-project-level-rules) to access this information.
 
 You can request information about a project's approval configuration using the
 following endpoint:
@@ -292,7 +291,7 @@ Supported attributes:
 
 ```json
 {
-  "approvals_before_merge": 2, // Deprecated in GitLab 12.3, use Approval Rules instead
+  "approvals_before_merge": 2, // Use Approval Rules instead
   "reset_approvals_on_push": true,
   "selective_code_owner_removals": false,
   "disable_overriding_approvers_per_merge_request": false,
@@ -963,8 +962,6 @@ Supported attributes:
 ```
 
 ### Get a single merge request level rule
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82767) in GitLab 14.10.
 
 You can request information about a single merge request approval rule using the following endpoint:
 

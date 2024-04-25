@@ -184,8 +184,6 @@ For example, to customize the commit message to output
 
 ## Batch suggestions
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/326168) custom commit messages for batch suggestions in GitLab 14.4.
-
 Prerequisites:
 
 - You must have a role in the project that allows you to commit to the source branch.
@@ -206,7 +204,7 @@ suggestions in a single commit.
    approver for this merge request.
 
 1. Optional. Provide a custom commit message for [batch suggestions](#batch-suggestions)
-   (GitLab 14.4 and later) to describe your change. If you don't specify one,
+   to describe your change. If you don't specify one,
    the default commit message is used.
 
 ## Related topics

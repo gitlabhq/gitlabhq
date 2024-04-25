@@ -582,7 +582,12 @@ experience, refactors the existing code). Then:
   - Consider using the [Conventional Comment format](https://conventionalcomments.org#format) to
     convey your intent.
   - For non-mandatory suggestions, decorate with (non-blocking) so the author knows they can
-    optionally resolve within the merge request or follow-up at a later stage.
+    optionally resolve within the merge request or follow-up at a later stage. When the only suggestions are
+    non-blocking, move the MR onto the next stage to reduce async cycles. When you are a first round
+    reviewer, pass to a maintainer to review. When you are the final approving maintainer,
+    generate follow-ups from the non-blocking suggestions and merge or set auto-merge.
+    The author then has the option to either cancel the auto-merge by implementing the non-blocking suggestions, 
+    they provide a follow-up MR after the MR got merged, or decide to not implement the suggestions.
   - There's a [Chrome/Firefox add-on](https://gitlab.com/conventionalcomments/conventional-comments-button) which you can use to apply [Conventional Comment](https://conventionalcomments.org/) prefixes.
 - Ensure there are no open dependencies. Check [linked issues](../user/project/issues/related_issues.md) for blockers. Clarify with the authors
   if necessary. If blocked by one or more open MRs, set an [MR dependency](../user/project/merge_requests/dependencies.md).

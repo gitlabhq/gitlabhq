@@ -134,7 +134,7 @@ export default {
       return WORK_ITEMS_TYPE_MAP[this.childrenType]?.name;
     },
     tokenSelectorContainerClass() {
-      return !this.areWorkItemsToAddValid ? 'gl-inset-border-1-red-500!' : '';
+      return !this.areWorkItemsToAddValid ? '!gl-shadow-inner-1-red-500' : '';
     },
     queryVariables() {
       return {

@@ -2,10 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Resolvers::GroupPackagesResolver' do
+RSpec.describe Resolvers::GroupPackagesResolver, feature_category: :package_registry do
   include GraphqlHelpers
 
-  let_it_be(:described_class) { Resolvers::GroupPackagesResolver }
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group, :public) }
   let_it_be(:project) { create(:project, :public, group: group, path: 'a') }
@@ -26,16 +25,16 @@ RSpec.describe 'Resolvers::GroupPackagesResolver' do
       let_it_be(:package3) { create(:package, project: project) }
       let_it_be(:package4) { create(:package, project: project2) }
 
-      context 'filter by package_name' do
+      context 'when sorting desc' do
         let(:args) { { sort: 'PROJECT_PATH_DESC' } }
 
         it { is_expected.to eq([package4, package2, package3, package]) }
       end
 
-      context 'filter by package_type' do
+      context 'when sorting asc' do
         let(:args) { { sort: 'PROJECT_PATH_ASC' } }
 
-        it { is_expected.to eq([package, package3, package2, package4]) }
+        it { is_expected.to eq([package3, package, package4, package2]) }
       end
     end
   end

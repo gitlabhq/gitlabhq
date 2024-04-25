@@ -264,7 +264,7 @@ When running manual jobs you can supply additional job specific variables.
 
 You can do this from the job page of the manual job you want to run with
 additional variables. To access this page, select the **name** of the manual job in
-the pipeline view, *not* the play (**{play}**) button.
+the pipeline view, *not* **Run** (**{play}**).
 
 Define CI/CD variables here when you want to alter the execution of a job that uses
 [CI/CD variables](../variables/index.md).

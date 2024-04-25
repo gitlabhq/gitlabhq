@@ -141,7 +141,7 @@
     margin-bottom: $gl-spacing-scale-3;
     margin-left: 0;
     margin-right: 0;
-    @include gl-inset-border-l-4-gray-100;
+    @apply gl-shadow-inner-l-4-gray-100;
 
     &:dir(rtl) {
       border-left: 0;

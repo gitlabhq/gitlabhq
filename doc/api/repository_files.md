@@ -28,8 +28,6 @@ in the following table.
 
 ## Get file from repository
 
-> - The `execute_filemode` field in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/83499) in GitLab 14.10.
-
 Allows you to receive information about file in repository like name, size, and
 content. File content is Base64 encoded. This endpoint can be accessed
 without authentication if the repository is publicly accessible.
@@ -230,8 +228,6 @@ Like [Get file from repository](repository_files.md#get-file-from-repository), y
 
 ## Create new file in repository
 
-> - The `execute_filemode` parameter was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/83499) in GitLab 14.10.
-
 Allows you to create a single file. For creating multiple files with a single request,
 refer to the [commits API](commits.md#create-a-commit-with-multiple-files-and-actions).
 
@@ -270,8 +266,6 @@ Example response:
 ```
 
 ## Update existing file in repository
-
-> - The `execute_filemode` parameter was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/83499) in GitLab 14.10.
 
 Allows you to update a single file. For updating multiple files with a single request,
 refer to the [commits API](commits.md#create-a-commit-with-multiple-files-and-actions).

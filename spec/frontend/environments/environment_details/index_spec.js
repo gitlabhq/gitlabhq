@@ -93,7 +93,7 @@ describe('~/environments/environment_details/index.vue', () => {
     });
 
     it('sets proper CSS class to the active tab', () => {
-      expect(findTabByIndex(0).props('titleLinkClass')).toBe('gl-inset-border-b-2-theme-accent');
+      expect(findTabByIndex(0).props('titleLinkClass')).toBe('gl-shadow-inner-b-2-theme-accent');
       expect(findTabByIndex(1).props('titleLinkClass')).toBe('');
     });
 
@@ -102,7 +102,7 @@ describe('~/environments/environment_details/index.vue', () => {
       await nextTick();
 
       expect(findTabByIndex(0).props('titleLinkClass')).toBe('');
-      expect(findTabByIndex(1).props('titleLinkClass')).toBe('gl-inset-border-b-2-theme-accent');
+      expect(findTabByIndex(1).props('titleLinkClass')).toBe('gl-shadow-inner-b-2-theme-accent');
     });
   });
 

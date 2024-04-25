@@ -18,6 +18,8 @@ export const mismatchAllowList = [
   '.shadow-sm',
   '.shadow-md',
   '.shadow-lg',
+  '.shadow-x0-y2-b4-s0',
+  '.shadow-x0-y0-b3-s1-blue-500',
   // Difference between tailwind and gitlab ui: border-width: 0 vs border: 0
   '.sr-only',
   // tailwind uses --tw-rotate and --tw-translate custom properties

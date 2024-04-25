@@ -71,7 +71,7 @@ describe('ColorPicker', () => {
       expect(colorPreview().attributes('style')).toBe(undefined);
       expect(colorPicker().attributes('value')).toBe(undefined);
       expect(colorTextInput().props('value')).toBe('');
-      expect(colorPreview().attributes('class')).toContain('gl-inset-border-1-gray-400');
+      expect(colorPreview().attributes('class')).toContain('gl-shadow-inner-1-gray-400');
     });
 
     it('has a color set on initialization', () => {
@@ -92,7 +92,7 @@ describe('ColorPicker', () => {
       await colorTextInput().setValue(`    ${setColor}    `);
 
       expect(wrapper.emitted().input[0]).toStrictEqual([setColor]);
-      expect(colorPreview().attributes('class')).toContain('gl-inset-border-1-gray-400');
+      expect(colorPreview().attributes('class')).toContain('gl-shadow-inner-1-gray-400');
       expect(colorTextInput().attributes('class')).not.toContain('is-invalid');
     });
 
@@ -100,7 +100,7 @@ describe('ColorPicker', () => {
       createComponent(mount, { invalidFeedback: invalidText, state: false });
 
       expect(invalidFeedback().text()).toBe(invalidText);
-      expect(colorPreview().attributes('class')).toContain('gl-inset-border-1-red-500');
+      expect(colorPreview().attributes('class')).toContain('gl-shadow-inner-1-red-500');
       expect(colorTextInput().attributes('class')).toContain('is-invalid');
     });
   });
