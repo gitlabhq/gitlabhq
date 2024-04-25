@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Kas do
+RSpec.describe Gitlab::Kas, feature_category: :deployment_management do
   let(:jwt_secret) { SecureRandom.random_bytes(described_class::SECRET_LENGTH) }
 
   before do
@@ -184,23 +184,70 @@ RSpec.describe Gitlab::Kas do
     end
   end
 
-  describe '.version' do
-    it 'returns gitlab_kas version config' do
-      version_file = Rails.root.join(described_class::VERSION_FILE)
-
-      expect(described_class.version).to eq(version_file.read.chomp)
-    end
-  end
-
-  describe '.version_info' do
-    let(:version) { '15.6.0-rc1' }
-
-    before do
-      allow(described_class).to receive(:version).and_return(version)
+  describe 'version information' do
+    it 'has valid version_infos' do
+      expect(described_class.version_info).to be_valid
+      expect(described_class.display_version_info).to be_valid
+      expect(described_class.install_version_info).to be_valid
     end
 
-    it 'returns gitlab_kas version config, including suffix' do
-      expect(described_class.version_info.to_s).to eq(version)
+    it 'has a version based on the version_info' do
+      expect(described_class.version).to eq described_class.version_info.to_s
+    end
+
+    describe 'versioning according to the KAS version file content' do
+      before do
+        kas_version_file_double = instance_double(File, read: version_file_content)
+        allow(Rails.root).to receive(:join).with(Gitlab::Kas::VERSION_FILE).and_return(kas_version_file_double)
+      end
+
+      let(:version_file_content) { 'v16.10.1' }
+
+      it 'has a version and version_infos based on the KAS version file' do
+        expected_version_string = version_file_content.sub('v', '')
+
+        expect(described_class.version).to eq expected_version_string
+        expect(described_class.version_info.to_s).to eq expected_version_string
+        expect(described_class.display_version_info.to_s).to eq expected_version_string
+        expect(described_class.install_version_info.to_s).to eq expected_version_string
+      end
+
+      context 'when the KAS version file content is a release candidate version' do
+        let(:version_file_content) { 'v16.10.1-rc42' }
+
+        it 'has a version and version_infos based on the KAS version file' do
+          expected_version_string = version_file_content.sub('v', '')
+
+          expect(described_class.version).to eq expected_version_string
+          expect(described_class.version_info.to_s).to eq expected_version_string
+          expect(described_class.display_version_info.to_s).to eq expected_version_string
+          expect(described_class.install_version_info.to_s).to eq expected_version_string
+        end
+      end
+
+      context 'when the KAS version file content is a SHA' do
+        before do
+          allow(Gitlab).to receive(:version_info).and_return(gitlab_version_info)
+        end
+
+        let(:gitlab_version_info) { Gitlab::VersionInfo.parse('16.11.2') }
+        let(:version_file_content) { '5bbaac6e3d907fba9568a2e36aa1e521f589c897' }
+
+        it 'uses the Gitlab version with the SHA as suffix' do
+          expected_kas_version = '16.11.2+5bbaac6e3d907fba9568a2e36aa1e521f589c897'
+
+          expect(described_class.version_info.to_s).to eq expected_kas_version
+          expect(described_class.version).to eq expected_kas_version
+        end
+
+        it 'uses the Gitlab version without suffix as the display_version_info' do
+          expect(described_class.display_version_info.to_s).to eq '16.11.2'
+        end
+
+        it 'uses the Gitlab version with 0 patch version as the install_version_info' do
+          expect(described_class.install_version_info.to_s).to eq '16.11.0'
+        end
+      end
     end
   end
 

@@ -31,11 +31,44 @@ module Gitlab
       #
       # @return [String] version
       def version
-        @_version ||= Rails.root.join(VERSION_FILE).read.chomp
+        version_info.to_s
       end
 
+      # Return GitLab KAS version info
+      #
+      # @return [Gitlab::VersionInfo] version_info
       def version_info
-        Gitlab::VersionInfo.parse(version, parse_suffix: true)
+        return version_info_from_file if version_info_from_file.valid?
+
+        version_info_from_gitlab_and_file_sha
+      end
+
+      # Return GitLab KAS version info for display
+      # This is the version that is displayed on the `frontend`. This is also used to
+      # check if the version of an existing agent does not match the latest agent version.
+      # If the GITLAB_KAS_VERSION file contains a SHA, we defer instead to the Gitlab version.
+      #
+      # For further details, see: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149794
+      #
+      # @return [Gitlab::VersionInfo] version_info
+      def display_version_info
+        return version_info_from_file if version_info_from_file.valid?
+
+        Gitlab.version_info
+      end
+
+      # Return GitLab KAS version info for installation
+      # This is the version used as the image tag when generating the command to install a Gitlab agent.
+      # If the GITLAB_KAS_VERSION file contains a SHA, we defer instead to the Gitlab version without the patch.
+      # This could mean that it might point to a Gitlab agent version that is several patches behind the latest one.
+      #
+      # Further details: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149794
+      #
+      # @return [Gitlab::VersionInfo] version_info
+      def install_version_info
+        return version_info_from_file if version_info_from_file.valid?
+
+        Gitlab.version_info.without_patch
       end
 
       # Return GitLab KAS external_url
@@ -77,6 +110,18 @@ module Gitlab
       end
 
       private
+
+      def version_file_content
+        Rails.root.join(VERSION_FILE).read.chomp
+      end
+
+      def version_info_from_file
+        Gitlab::VersionInfo.parse(version_file_content, parse_suffix: true)
+      end
+
+      def version_info_from_gitlab_and_file_sha
+        Gitlab::VersionInfo.parse("#{Gitlab.version_info}+#{version_file_content}", parse_suffix: true)
+      end
 
       def ssl?
         URI(tunnel_url).scheme === 'https'
