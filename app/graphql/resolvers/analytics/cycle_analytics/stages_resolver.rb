@@ -6,8 +6,10 @@ module Resolvers
       class StagesResolver < BaseResolver
         type [Types::Analytics::CycleAnalytics::ValueStreams::StageType], null: true
 
-        def resolve
-          list_stages({ value_stream: object })
+        argument :id, ID, required: false, description: 'Value stream stage id.'
+
+        def resolve(id: nil)
+          list_stages(stage_params(id: id).merge(value_stream: object))
         end
 
         private
@@ -22,6 +24,12 @@ module Resolvers
 
         def namespace
           object.project.project_namespace
+        end
+
+        def stage_params(id: nil)
+          list_params = {}
+          list_params[:stage_ids] = [::GitlabSchema.parse_gid(id).model_id] if id
+          list_params
         end
       end
     end

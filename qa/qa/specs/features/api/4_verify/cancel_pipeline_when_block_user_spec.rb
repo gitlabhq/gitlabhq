@@ -2,8 +2,7 @@
 
 module QA
   RSpec.describe 'Verify', :requires_admin, :blocking, product_group: :pipeline_execution do
-    describe 'When user is blocked', feature_flag: { name: 'enforce_full_refs_for_pipeline_schedules,
-                                                                         scope: :project' } do
+    describe 'When user is blocked' do
       let!(:admin_api_client) { Runtime::API::Client.as_admin }
       let!(:user_api_client) { Runtime::API::Client.new(:gitlab, user: user) }
 

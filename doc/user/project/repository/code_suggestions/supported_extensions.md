@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Supported extensions and languages
 
 DETAILS:
-**Tier:** Premium or Ultimate with GitLab Duo Pro
+**Tier:** Premium or Ultimate with [GitLab Duo Pro](../../../../subscriptions/subscription-add-ons.md)
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Code Suggestions is available in the following editor extensions and

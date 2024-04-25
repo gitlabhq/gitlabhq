@@ -183,7 +183,9 @@ document:
 
 Whenever possible, exclude only the problematic rule and lines.
 
-For more information, see
+Ignore statements do not work for Vale rules with the `raw` scope. For more information, see this [issue](https://github.com/errata-ai/vale/issues/194).
+
+For more information on Vale scoping rules, see
 [Vale's documentation](https://vale.sh/docs/topics/scoping/).
 
 ## Show Vale warnings on push

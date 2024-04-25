@@ -152,7 +152,7 @@ RSpec.describe ::Gitlab::Housekeeper::Git do
 
       it 'pushes to the housekeeper remote' do
         expect(::Gitlab::Housekeeper::Shell).to receive(:execute)
-          .with('git', 'push', '-f', 'housekeeper', 'the-branch-name:the-branch-name')
+          .with('git', 'push', '-u', '-f', 'housekeeper', 'the-branch-name:the-branch-name')
 
         git.push('the-branch-name', push_options)
       end
@@ -160,7 +160,7 @@ RSpec.describe ::Gitlab::Housekeeper::Git do
 
     it 'pushes to origin' do
       expect(::Gitlab::Housekeeper::Shell).to receive(:execute)
-        .with('git', 'push', '-f', 'origin', 'the-branch-name:the-branch-name')
+        .with('git', 'push', '-u', '-f', 'origin', 'the-branch-name:the-branch-name')
 
       git.push('the-branch-name', push_options)
     end
@@ -168,7 +168,7 @@ RSpec.describe ::Gitlab::Housekeeper::Git do
     context 'with push options defined' do
       it 'pushes with push options set' do
         expect(::Gitlab::Housekeeper::Shell).to receive(:execute)
-          .with('git', 'push', '-f', 'origin', 'the-branch-name:the-branch-name', '-o ci.skip')
+          .with('git', 'push', '-u', '-f', 'origin', 'the-branch-name:the-branch-name', '-o ci.skip')
 
         push_options.ci_skip = true
 

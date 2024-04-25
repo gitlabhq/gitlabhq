@@ -192,7 +192,7 @@ export default {
       return this.invalidFeedbackMessage ? null : this.$options.labels.placeHolder;
     },
     shouldShowSeatOverageNotification() {
-      return this.errorReason === BLOCKED_SEAT_OVERAGES_ERROR_REASON;
+      return this.errorReason === BLOCKED_SEAT_OVERAGES_ERROR_REASON && this.addSeatsHref;
     },
   },
   watch: {

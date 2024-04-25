@@ -3,20 +3,16 @@
 require 'spec_helper'
 
 RSpec.describe Ci::PipelineTriggers::UpdateService, feature_category: :continuous_integration do
-  let_it_be_with_reload(:user) { create(:user) }
   let_it_be_with_reload(:project) { create(:project, :public) }
+  let_it_be_with_reload(:user) { create(:user, maintainer_of: project) }
+  let_it_be(:another_maintainer) { create(:user, maintainer_of: project) }
   let_it_be_with_reload(:pipeline_trigger) do
     create(:ci_trigger, project: project, owner: user, description: "Old description")
   end
 
-  let_it_be(:another_maintainer) { create(:user) }
-
   subject(:service) { described_class.new(user: user, trigger: pipeline_trigger, description: description) }
 
   before_all do
-    project.add_maintainer(user)
-    project.add_maintainer(another_maintainer)
-
     pipeline_trigger.reload
   end
 

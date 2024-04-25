@@ -183,9 +183,27 @@ class Member < ApplicationRecord
   scope :with_source_id, ->(source_id) { where(source_id: source_id) }
   scope :including_source, -> { includes(:source) }
 
-  scope :distinct_on_user_with_max_access_level, -> do
+  scope :distinct_on_user_with_max_access_level, -> (for_object) do
+    valid_objects = %w[Project Namespace]
+    obj_class = if for_object.is_a?(Group)
+                  'Namespace'
+                else
+                  for_object.class.name
+                end
+
+    raise ArgumentError, "Invalid object: #{obj_class}" unless valid_objects.include?(obj_class)
+
+    # in case a user has same access_level in multiple groups/project, we always want to retrieve the one
+    # that belongs to the object we request for
+    order = <<~SQL
+      user_id, invite_email,
+      CASE WHEN source_id = #{for_object.id} and source_type = '#{obj_class}'
+      THEN access_level + 1 ELSE access_level END DESC,
+      expires_at DESC, created_at ASC
+    SQL
+
     distinct_members = select('DISTINCT ON (user_id, invite_email) *')
-                       .order('user_id, invite_email, access_level DESC, expires_at DESC, created_at ASC')
+                       .order(Arel.sql(order))
 
     unscoped.from(distinct_members, :members)
   end

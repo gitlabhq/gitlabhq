@@ -205,16 +205,7 @@ class Projects::BlobController < Projects::ApplicationController
   def editor_variables
     @branch_name = params[:branch_name]
 
-    @file_path =
-      if action_name.to_s == 'create'
-        params[:file_name] = params[:file].original_filename if params[:file].present?
-
-        File.join(@path, params[:file_name])
-      elsif params[:file_path].present?
-        params[:file_path]
-      else
-        @path
-      end
+    @file_path = fetch_file_path
 
     params[:content] = params[:file] if params[:file].present?
 
@@ -226,6 +217,22 @@ class Projects::BlobController < Projects::ApplicationController
       file_content_encoding: params[:encoding],
       last_commit_sha: params[:last_commit_sha]
     }
+  end
+
+  def fetch_file_path
+    file_params = params.permit(:file, :file_name)
+
+    if action_name.to_s == 'create'
+      file_name = file_params[:file].present? ? file_params[:file].original_filename : file_params[:file_name]
+
+      return if file_name.nil?
+
+      return File.join(@path, file_name)
+    end
+
+    return file_params[:file_path] if file_params[:file_path].present?
+
+    @path
   end
 
   def validate_diff_params

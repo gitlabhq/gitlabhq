@@ -230,7 +230,6 @@ Gitlab/StrongMemoizeAttr:
     - 'app/workers/concerns/packages/cleanup_artifact_worker.rb'
     - 'app/workers/container_expiration_policies/cleanup_container_repository_worker.rb'
     - 'app/workers/container_registry/delete_container_repository_worker.rb'
-    - 'app/workers/container_registry/migration/enqueuer_worker.rb'
     - 'app/workers/database/batched_background_migration/execution_worker.rb'
     - 'app/workers/database/batched_background_migration/single_database_worker.rb'
     - 'app/workers/error_tracking_issue_link_worker.rb'

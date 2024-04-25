@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe NotesFinder do
-  let(:user) { create :user }
+  let(:user) { create(:user) }
   let(:project) { create(:project) }
 
   before do

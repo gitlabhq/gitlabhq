@@ -210,7 +210,6 @@ Style/GuardClause:
     - 'app/validators/x509_certificate_credentials_validator.rb'
     - 'app/workers/clusters/agents/delete_expired_events_worker.rb'
     - 'app/workers/concerns/application_worker.rb'
-    - 'app/workers/container_registry/migration/guard_worker.rb'
     - 'app/workers/deployments/hooks_worker.rb'
     - 'app/workers/deployments/link_merge_request_worker.rb'
     - 'app/workers/google_cloud/create_cloudsql_instance_worker.rb'

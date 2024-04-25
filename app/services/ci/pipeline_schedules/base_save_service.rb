@@ -16,8 +16,7 @@ module Ci
         return forbidden_to_save unless allowed_to_save?
         return forbidden_to_save_variables unless allowed_to_save_variables?
 
-        unless valid_ref_format? || Feature.disabled?(:enforce_full_refs_for_pipeline_schedules,
-          schedule.project)
+        unless valid_ref_format?
           schedule.expand_short_ref
           return ServiceResponse.error(payload: schedule, message: INVALID_REF_MESSAGE) unless valid_ref_format?
         end

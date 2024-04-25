@@ -455,6 +455,60 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
     end
   end
 
+  context 'with development widget' do
+    context 'for the related merge requests field' do
+      before do
+        [item1, item2].each do |item|
+          create(
+            :merge_requests_closing_issues,
+            issue: item,
+            merge_request: create(:merge_request, source_project: project, target_branch: "feature#{item.id}")
+          )
+        end
+      end
+
+      let(:fields) do
+        <<~GRAPHQL
+          nodes {
+            id
+            widgets {
+              type
+              ... on WorkItemWidgetDevelopment {
+                relatedMergeRequests {
+                  nodes {
+                    closesWorkItem
+                    mergeRequest { id }
+                  }
+                }
+              }
+            }
+          }
+        GRAPHQL
+      end
+
+      it 'avoids N+1 queries' do
+        post_graphql(query, current_user: current_user) # warmup
+
+        control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+          post_graphql(query, current_user: current_user)
+        end
+        expect(graphql_errors).to be_blank
+
+        2.times do
+          new_work_item = create(:work_item, project: project)
+          create(
+            :merge_requests_closing_issues,
+            issue: new_work_item,
+            merge_request: create(:merge_request, source_project: project, target_branch: "feature#{new_work_item.id}")
+          )
+        end
+
+        expect { post_graphql(query, current_user: current_user) }.to issue_same_number_of_queries_as(control)
+        expect(graphql_errors).to be_blank
+      end
+    end
+  end
+
   def item_ids
     graphql_dig_at(items_data, :id)
   end

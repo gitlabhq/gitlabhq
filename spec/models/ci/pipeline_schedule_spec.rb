@@ -8,10 +8,6 @@ RSpec.describe Ci::PipelineSchedule, feature_category: :continuous_integration d
 
   subject { build(:ci_pipeline_schedule, project: project) }
 
-  before do
-    stub_feature_flags(enforce_full_refs_for_pipeline_schedules: false)
-  end
-
   it { is_expected.to belong_to(:project) }
   it { is_expected.to belong_to(:owner) }
 

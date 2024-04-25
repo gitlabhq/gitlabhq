@@ -92,7 +92,7 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
     end
 
     it 'allows guests to read issues' do
-      expect(permissions(guest, issue)).to be_allowed(:read_issue, :read_issue_iid, :admin_issue_relation)
+      expect(permissions(guest, issue)).to be_allowed(:read_issue, :read_issue_iid, :admin_issue_relation, :admin_issue_link)
       expect(permissions(guest, issue)).to be_disallowed(:update_issue, :admin_issue, :set_issue_metadata, :set_confidentiality, :mark_note_as_internal)
 
       expect(permissions(guest, issue_no_assignee)).to be_allowed(:read_issue, :read_issue_iid, :admin_issue_relation)
@@ -147,13 +147,13 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
       let(:confidential_issue_no_assignee) { create(:issue, :confidential, project: project) }
 
       it 'does not allow non-members to read confidential issues' do
-        expect(permissions(non_member, confidential_issue)).to be_disallowed(:read_issue, :read_issue_iid, :update_issue, :admin_issue, :admin_issue_relation, :award_emoji)
-        expect(permissions(non_member, confidential_issue_no_assignee)).to be_disallowed(:read_issue, :read_issue_iid, :update_issue, :admin_issue, :set_issue_metadata, :set_confidentiality, :admin_issue_relation, :award_emoji)
+        expect(permissions(non_member, confidential_issue)).to be_disallowed(:read_issue, :read_issue_iid, :update_issue, :admin_issue, :admin_issue_relation, :award_emoji, :admin_issue_link)
+        expect(permissions(non_member, confidential_issue_no_assignee)).to be_disallowed(:read_issue, :read_issue_iid, :update_issue, :admin_issue, :set_issue_metadata, :set_confidentiality, :admin_issue_relation, :award_emoji, :admin_issue_link)
       end
 
       it 'does not allow guests to read confidential issues' do
-        expect(permissions(guest, confidential_issue)).to be_disallowed(:read_issue, :read_issue_iid, :update_issue, :admin_issue, :admin_issue_relation, :award_emoji)
-        expect(permissions(guest, confidential_issue_no_assignee)).to be_disallowed(:read_issue, :read_issue_iid, :update_issue, :admin_issue, :set_issue_metadata, :set_confidentiality, :admin_issue_relation, :award_emoji)
+        expect(permissions(guest, confidential_issue)).to be_disallowed(:read_issue, :read_issue_iid, :update_issue, :admin_issue, :admin_issue_relation, :award_emoji, :admin_issue_link)
+        expect(permissions(guest, confidential_issue_no_assignee)).to be_disallowed(:read_issue, :read_issue_iid, :update_issue, :admin_issue, :set_issue_metadata, :set_confidentiality, :admin_issue_relation, :award_emoji, :admin_issue_link)
       end
 
       it 'allows reporters to read, update, and admin confidential issues' do
@@ -214,14 +214,23 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
       create(:project_group_link, group: group, project: project)
     end
 
-    it 'allows guests to award emoji' do
-      expect(permissions(guest, issue)).to be_allowed(:award_emoji)
-    end
-
     it 'does not allow anonymous user to create todos' do
       expect(permissions(nil, issue)).to be_allowed(:read_issue)
       expect(permissions(nil, issue)).to be_disallowed(:create_todo, :update_subscription, :set_issue_metadata, :set_confidentiality, :admin_issue_relation)
       expect(permissions(nil, new_issue)).to be_disallowed(:create_issue, :set_issue_metadata, :set_confidentiality)
+    end
+
+    it 'does not allow anonymous user to admin issue links' do
+      expect(permissions(nil, issue)).to be_disallowed(:admin_issue_link)
+    end
+
+    it 'allows guests to award emoji' do
+      expect(permissions(guest, issue)).to be_allowed(:award_emoji)
+      expect(permissions(guest, issue_no_assignee)).to be_allowed(:award_emoji)
+    end
+
+    it 'allows guests to admin issue links' do
+      expect(permissions(guest, issue)).to be_allowed(:admin_issue_link)
     end
 
     it 'allows guests to read issues' do

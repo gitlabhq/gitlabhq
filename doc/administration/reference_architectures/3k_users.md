@@ -39,7 +39,7 @@ For a full list of reference architectures, see
 | Sidekiq<sup>7</sup>                       | 2     | 4 vCPU, 15 GB memory  | `n1-standard-4` | `m5.xlarge`  | `D2s v3` |
 | GitLab Rails<sup>7</sup>                  | 3     | 8 vCPU, 7.2 GB memory | `n1-highcpu-8`  | `c5.2xlarge` | `F8s v2` |
 | Monitoring node                           | 1     | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
-| Object storage <sup>4</sup>                | -     | -                     | -               | -            | -        |
+| Object storage<sup>4</sup>                | -     | -                     | -               | -            | -        |
 
 **Footnotes:**
 

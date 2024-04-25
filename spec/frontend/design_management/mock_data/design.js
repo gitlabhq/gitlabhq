@@ -7,6 +7,7 @@ export default {
   fullPath: 'full-design-path',
   image: 'test.jpg',
   imageV432x230: 'test.jpg',
+  imported: true,
   currentUserTodos: null,
   description: 'Test description',
   descriptionHtml: 'Test description',

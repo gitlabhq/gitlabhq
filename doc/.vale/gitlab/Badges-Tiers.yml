@@ -6,7 +6,7 @@
 extends: existence
 message: "Tiers should be capitalized, comma-separated, and ordered lowest to highest without `and`."
 link: https://docs.gitlab.com/ee/development/documentation/styleguide/#available-product-tier-badges
-level: error
+level: suggestion
 scope: raw
 raw:
 - (?<=\n\*\*Tier:\*\*)[^\n]*(and|free|premium|ultimate|, Free|Ultimate,)

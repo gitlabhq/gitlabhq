@@ -304,7 +304,7 @@ Dangerfile
 /ee/spec/services/software_license_policies/**
 /spec/finders/security/license_compliance_jobs_finder_spec.rb
 
-^[Secure::Static Analysis] @gitlab-org/secure/static-analysis
+[Secure::Secret Detection] @gitlab-org/secure/secret-detection
 /ee/lib/gitlab/checks/secrets_check.rb
 /ee/spec/lib/gitlab/checks/secrets_check_spec.rb
 /ee/spec/support/shared_contexts/secrets_check_shared_contexts.rb

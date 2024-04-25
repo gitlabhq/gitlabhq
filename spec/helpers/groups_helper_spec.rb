@@ -105,10 +105,10 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
     end
 
     it 'enqueues the elements in the breadcrumb schema list' do
-      expect(helper).to receive(:push_to_schema_breadcrumb).with(group.name, group_path(group))
-      expect(helper).to receive(:push_to_schema_breadcrumb).with(nested_group.name, group_path(nested_group))
-      expect(helper).to receive(:push_to_schema_breadcrumb).with(deep_nested_group.name, group_path(deep_nested_group))
-      expect(helper).to receive(:push_to_schema_breadcrumb).with(very_deep_nested_group.name, group_path(very_deep_nested_group))
+      expect(helper).to receive(:push_to_schema_breadcrumb).with(group.name, group_path(group), nil)
+      expect(helper).to receive(:push_to_schema_breadcrumb).with(nested_group.name, group_path(nested_group), nil)
+      expect(helper).to receive(:push_to_schema_breadcrumb).with(deep_nested_group.name, group_path(deep_nested_group), nil)
+      expect(helper).to receive(:push_to_schema_breadcrumb).with(very_deep_nested_group.name, group_path(very_deep_nested_group), nil)
 
       subject
     end

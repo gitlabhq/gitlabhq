@@ -892,7 +892,7 @@ module ProjectsHelper
   def build_project_breadcrumb_link(project)
     project_name = simple_sanitize(project.name)
 
-    push_to_schema_breadcrumb(project_name, project_path(project))
+    push_to_schema_breadcrumb(project_name, project_path(project), project.try(:avatar_url))
 
     link_to project_path(project), class: 'gl-display-inline-flex!' do
       icon = render Pajamas::AvatarComponent.new(project, alt: project.name, size: 16, class: 'avatar-tile') if project.avatar_url && !Rails.env.test?

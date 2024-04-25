@@ -96,7 +96,6 @@ module Ci
     end
 
     def expand_short_ref
-      return if Feature.disabled?(:enforce_full_refs_for_pipeline_schedules, project)
       return if ref.blank? || VALID_REF_FORMAT_REGEX.match?(ref) || ambiguous_ref?
 
       # In case the ref doesn't exist default to the initial value

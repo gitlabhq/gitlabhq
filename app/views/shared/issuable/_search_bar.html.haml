@@ -7,8 +7,8 @@
 - block_css_class = type != :productivity_analytics ? 'row-content-block second-block' : ''
 
 .issues-filters
-  .issues-details-filters.filtered-search-block.d-flex.flex-column.flex-lg-row{ class: block_css_class }
-    .d-flex.flex-column.flex-md-row.flex-grow-1.mb-lg-0.mb-md-2.mb-sm-0.gl-w-full
+  .issues-details-filters.filtered-search-block.gl-display-flex.gl-flex-direction-column.gl-lg-flex-direction-row.gl-gap-3{ class: block_css_class }
+    .gl-display-flex.gl-flex-direction-column.gl-md-flex-direction-row.gl-flex-grow-1.gl-w-full
       = form_tag page_filter_path, method: :get, class: 'filter-form js-filter-form gl-w-full' do
         - if params[:search].present?
           = hidden_field_tag :search, params[:search]
@@ -18,13 +18,13 @@
               - c.with_label do
                 %span.gl-sr-only
                   = _('Select all')
-        .issues-other-filters.filtered-search-wrapper.d-flex.flex-column.flex-md-row
+        .issues-other-filters.filtered-search-wrapper.gl-display-flex.gl-flex-direction-column.gl-md-flex-direction-row
           .filtered-search-box
             - if type != :boards
-              - text = tag.span(sprite_icon('history'), class: "d-md-none") + tag.span(_('Recent searches'), class: "d-none d-md-inline")
+              - text = tag.span(sprite_icon('history')) + tag.span(_('Recent searches'), class: "gl-sr-only")
               = dropdown_tag(text,
                 options: { wrapper_class: "filtered-search-history-dropdown-wrapper",
-                toggle_class: "gl-button btn btn-default filtered-search-history-dropdown-toggle-button",
+                toggle_class: "gl-button btn btn-default filtered-search-history-dropdown-toggle-button gl-pl-4! gl-pr-5!",
                 dropdown_class: "filtered-search-history-dropdown",
                 content_class: "filtered-search-history-dropdown-content" }) do
                 .js-filtered-search-history-dropdown{ data: { full_path: search_history_storage_prefix } }
@@ -205,8 +205,7 @@
 
               = render_if_exists 'shared/issuable/filter_epic', type: type
 
-            %button.clear-search.hidden.gl-rounded-base{ type: 'button' }
-              = sprite_icon('close', size: 16, css_class: 'clear-search-icon')
+            = render Pajamas::ButtonComponent.new(category: :tertiary, size: :small, icon: 'clear', icon_classes: "clear-search-icon", button_options: { class: 'clear-search hidden gl-align-self-center gl-mr-1 has-tooltip', title: _('Clear') })
     .filter-dropdown-container.gl-display-flex.gl-flex-direction-column.gl-md-flex-direction-row.gl-align-items-flex-start
       - if type != :productivity_analytics && show_sorting_dropdown
         = render 'shared/issuable/sort_dropdown'

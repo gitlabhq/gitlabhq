@@ -15144,6 +15144,29 @@ The edge type for [`WorkItem`](#workitem).
 | <a id="workitemedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="workitemedgenode"></a>`node` | [`WorkItem`](#workitem) | The item at the end of the edge. |
 
+#### `WorkItemRelatedMergeRequestConnection`
+
+The connection type for [`WorkItemRelatedMergeRequest`](#workitemrelatedmergerequest).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemrelatedmergerequestconnectionedges"></a>`edges` | [`[WorkItemRelatedMergeRequestEdge]`](#workitemrelatedmergerequestedge) | A list of edges. |
+| <a id="workitemrelatedmergerequestconnectionnodes"></a>`nodes` | [`[WorkItemRelatedMergeRequest]`](#workitemrelatedmergerequest) | A list of nodes. |
+| <a id="workitemrelatedmergerequestconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `WorkItemRelatedMergeRequestEdge`
+
+The edge type for [`WorkItemRelatedMergeRequest`](#workitemrelatedmergerequest).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemrelatedmergerequestedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="workitemrelatedmergerequestedgenode"></a>`node` | [`WorkItemRelatedMergeRequest`](#workitemrelatedmergerequest) | The item at the end of the edge. |
+
 #### `WorkItemTimelogConnection`
 
 The connection type for [`WorkItemTimelog`](#workitemtimelog).
@@ -16793,7 +16816,6 @@ Represents a list for an issue board.
 | <a id="boardlistposition"></a>`position` | [`Int`](#int) | Position of list within the board. |
 | <a id="boardlisttitle"></a>`title` | [`String!`](#string) | Title of the list. |
 | <a id="boardlisttotalissueweight"></a>`totalIssueWeight` | [`BigInt`](#bigint) | Total weight of all issues in the list, encoded as a string. |
-| <a id="boardlisttotalweight"></a>`totalWeight` **{warning-solid}** | [`Int`](#int) | **Deprecated** in GitLab 16.2. Use `totalIssueWeight`. |
 
 #### Fields with arguments
 
@@ -20958,7 +20980,6 @@ GPG signature for a signed commit.
 | <a id="grouptwofactorgraceperiod"></a>`twoFactorGracePeriod` | [`Int`](#int) | Time before two-factor authentication is enforced. |
 | <a id="groupuserpermissions"></a>`userPermissions` | [`GroupPermissions!`](#grouppermissions) | Permissions for the current user on the resource. |
 | <a id="groupvaluestreamanalytics"></a>`valueStreamAnalytics` | [`ValueStreamAnalytics`](#valuestreamanalytics) | Information about Value Stream Analytics within the group. |
-| <a id="groupvaluestreams"></a>`valueStreams` | [`ValueStreamConnection`](#valuestreamconnection) | Value streams available to the group. (see [Connections](#connections)) |
 | <a id="groupvisibility"></a>`visibility` | [`String`](#string) | Visibility of the namespace. |
 | <a id="groupvulnerabilityscanners"></a>`vulnerabilityScanners` | [`VulnerabilityScannerConnection`](#vulnerabilityscannerconnection) | Vulnerability scanners reported on the project vulnerabilities of the group and its subgroups. (see [Connections](#connections)) |
 | <a id="groupweburl"></a>`webUrl` | [`String!`](#string) | Web URL of the group. |
@@ -21853,6 +21874,22 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="groupreleasessort"></a>`sort` | [`GroupReleaseSort`](#groupreleasesort) | Sort group releases by given criteria. |
 
+##### `Group.remoteDevelopmentClusterAgents`
+
+Cluster agents in the namespace with remote development capabilities.
+
+Returns [`ClusterAgentConnection`](#clusteragentconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupremotedevelopmentclusteragentsfilter"></a>`filter` | [`NamespaceClusterAgentFilter!`](#namespaceclusteragentfilter) | Filter the types of cluster agents to return. |
+
 ##### `Group.runnerCloudProvisioning`
 
 Information used for provisioning the runner on a cloud provider. Returns `null` if `:google_cloud_support_feature_flag` feature flag is disabled, or the GitLab instance is not a SaaS instance.
@@ -22026,6 +22063,22 @@ Returns [`ValueStreamDashboardCount`](#valuestreamdashboardcount).
 | ---- | ---- | ----------- |
 | <a id="groupvaluestreamdashboardusageoverviewidentifier"></a>`identifier` | [`ValueStreamDashboardMetric!`](#valuestreamdashboardmetric) | Type of counts to retrieve. |
 | <a id="groupvaluestreamdashboardusageoverviewtimeframe"></a>`timeframe` | [`Timeframe!`](#timeframe) | Counts recorded during this time frame, usually from beginning of the month until the end of the month (the system runs monthly aggregations). |
+
+##### `Group.valueStreams`
+
+Value streams available to the group.
+
+Returns [`ValueStreamConnection`](#valuestreamconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupvaluestreamsid"></a>`id` | [`ID`](#id) | Value stream id. |
 
 ##### `Group.vulnerabilities`
 
@@ -25202,6 +25255,22 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="namespaceprojectswithissuesenabled"></a>`withIssuesEnabled` | [`Boolean`](#boolean) | Return only projects with issues enabled. |
 | <a id="namespaceprojectswithmergerequestsenabled"></a>`withMergeRequestsEnabled` | [`Boolean`](#boolean) | Return only projects with merge requests enabled. |
 
+##### `Namespace.remoteDevelopmentClusterAgents`
+
+Cluster agents in the namespace with remote development capabilities.
+
+Returns [`ClusterAgentConnection`](#clusteragentconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="namespaceremotedevelopmentclusteragentsfilter"></a>`filter` | [`NamespaceClusterAgentFilter!`](#namespaceclusteragentfilter) | Filter the types of cluster agents to return. |
+
 ##### `Namespace.scanExecutionPolicies`
 
 Scan Execution Policies of the namespace.
@@ -26510,7 +26579,6 @@ Represents generic policy violation information.
 | <a id="projectuseraccessauthorizedagents"></a>`userAccessAuthorizedAgents` | [`ClusterAgentAuthorizationUserAccessConnection`](#clusteragentauthorizationuseraccessconnection) | Authorized cluster agents for the project through user_access keyword. (see [Connections](#connections)) |
 | <a id="projectuserpermissions"></a>`userPermissions` | [`ProjectPermissions!`](#projectpermissions) | Permissions for the current user on the resource. |
 | <a id="projectvaluestreamanalytics"></a>`valueStreamAnalytics` | [`ValueStreamAnalytics`](#valuestreamanalytics) | Information about Value Stream Analytics within the project. |
-| <a id="projectvaluestreams"></a>`valueStreams` | [`ValueStreamConnection`](#valuestreamconnection) | Value streams available to the project. (see [Connections](#connections)) |
 | <a id="projectvisibility"></a>`visibility` | [`String`](#string) | Visibility of the project. |
 | <a id="projectvulnerabilityimages"></a>`vulnerabilityImages` | [`VulnerabilityContainerImageConnection`](#vulnerabilitycontainerimageconnection) | Container images reported on the project vulnerabilities. (see [Connections](#connections)) |
 | <a id="projectvulnerabilityscanners"></a>`vulnerabilityScanners` | [`VulnerabilityScannerConnection`](#vulnerabilityscannerconnection) | Vulnerability scanners reported on the project vulnerabilities. (see [Connections](#connections)) |
@@ -27987,6 +28055,22 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="projecttimelogsstartdate"></a>`startDate` | [`Time`](#time) | List timelogs within a date range where the logged date is equal to or after startDate. |
 | <a id="projecttimelogsstarttime"></a>`startTime` | [`Time`](#time) | List timelogs within a time range where the logged time is equal to or after startTime. |
 | <a id="projecttimelogsusername"></a>`username` | [`String`](#string) | List timelogs for a user. |
+
+##### `Project.valueStreams`
+
+Value streams available to the project.
+
+Returns [`ValueStreamConnection`](#valuestreamconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectvaluestreamsid"></a>`id` | [`ID`](#id) | Value stream id. |
 
 ##### `Project.visibleForks`
 
@@ -30492,7 +30576,20 @@ fields relate to interactions between the two entities.
 | <a id="valuestreamname"></a>`name` | [`String!`](#string) | Name of the value stream. |
 | <a id="valuestreamnamespace"></a>`namespace` | [`Namespace!`](#namespace) | Namespace the value stream belongs to. |
 | <a id="valuestreamproject"></a>`project` **{warning-solid}** | [`Project`](#project) | **Introduced** in GitLab 15.6. **Status**: Experiment. Project the value stream belongs to, returns empty if it belongs to a group. |
-| <a id="valuestreamstages"></a>`stages` | [`[ValueStreamStage!]`](#valuestreamstage) | Value Stream stages. |
+
+#### Fields with arguments
+
+##### `ValueStream.stages`
+
+Value Stream stages.
+
+Returns [`[ValueStreamStage!]`](#valuestreamstage).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="valuestreamstagesid"></a>`id` | [`ID`](#id) | Value stream stage id. |
 
 ### `ValueStreamAnalytics`
 
@@ -30544,10 +30641,13 @@ Represents a recorded measurement (object count) for the requested group.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="valuestreamstagecustom"></a>`custom` | [`Boolean!`](#boolean) | Whether the stage is customized. |
+| <a id="valuestreamstageendeventhtmldescription"></a>`endEventHtmlDescription` | [`String!`](#string) | HTML description of the end event. |
 | <a id="valuestreamstageendeventidentifier"></a>`endEventIdentifier` | [`ValueStreamStageEvent!`](#valuestreamstageevent) | End event identifier. |
 | <a id="valuestreamstageendeventlabel"></a>`endEventLabel` | [`Label`](#label) | Label associated with end event. |
 | <a id="valuestreamstagehidden"></a>`hidden` | [`Boolean!`](#boolean) | Whether the stage is hidden. |
+| <a id="valuestreamstageid"></a>`id` | [`AnalyticsCycleAnalyticsStageID!`](#analyticscycleanalyticsstageid) | ID of the value stream. |
 | <a id="valuestreamstagename"></a>`name` | [`String!`](#string) | Name of the stage. |
+| <a id="valuestreamstagestarteventhtmldescription"></a>`startEventHtmlDescription` | [`String!`](#string) | HTML description of the start event. |
 | <a id="valuestreamstagestarteventidentifier"></a>`startEventIdentifier` | [`ValueStreamStageEvent!`](#valuestreamstageevent) | Start event identifier. |
 | <a id="valuestreamstagestarteventlabel"></a>`startEventLabel` | [`Label`](#label) | Label associated with start event. |
 
@@ -31287,6 +31387,15 @@ Check permissions for the current user on a work item.
 | <a id="workitempermissionssetworkitemmetadata"></a>`setWorkItemMetadata` | [`Boolean!`](#boolean) | If `true`, the user can perform `set_work_item_metadata` on this resource. |
 | <a id="workitempermissionsupdateworkitem"></a>`updateWorkItem` | [`Boolean!`](#boolean) | If `true`, the user can perform `update_work_item` on this resource. |
 
+### `WorkItemRelatedMergeRequest`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemrelatedmergerequestclosesworkitem"></a>`closesWorkItem` | [`Boolean!`](#boolean) | Whether the related merge request will close the work item when it is merged. |
+| <a id="workitemrelatedmergerequestmergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Related merge request. |
+
 ### `WorkItemStateCountsType`
 
 Represents total number of work items for the represented states.
@@ -31469,6 +31578,7 @@ Represents a development widget.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="workitemwidgetdevelopmentfeatureflags"></a>`featureFlags` | [`FeatureFlagConnection`](#featureflagconnection) | Feature flags associated with the work item. (see [Connections](#connections)) |
+| <a id="workitemwidgetdevelopmentrelatedmergerequests"></a>`relatedMergeRequests` | [`WorkItemRelatedMergeRequestConnection`](#workitemrelatedmergerequestconnection) | Merge requests related to the work item. (see [Connections](#connections)) |
 | <a id="workitemwidgetdevelopmenttype"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
 
 ### `WorkItemWidgetHealthStatus`
@@ -33581,6 +33691,14 @@ Different toggles for changing mutator behavior.
 | <a id="mutationoperationmoderemove"></a>`REMOVE` | Performs a removal operation. |
 | <a id="mutationoperationmodereplace"></a>`REPLACE` | Performs a replace operation. |
 
+### `NamespaceClusterAgentFilter`
+
+Possible filter types for remote development cluster agents in a namespace.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="namespaceclusteragentfilteravailable"></a>`AVAILABLE` | Cluster agents in the namespace that can be used for hosting workspaces. |
+
 ### `NamespaceProjectSort`
 
 Values for sorting projects.
@@ -34762,6 +34880,12 @@ An example `AlertManagementAlertID` is: `"gid://gitlab/AlertManagement::Alert/1"
 A `AlertManagementHttpIntegrationID` is a global ID. It is encoded as a string.
 
 An example `AlertManagementHttpIntegrationID` is: `"gid://gitlab/AlertManagement::HttpIntegration/1"`.
+
+### `AnalyticsCycleAnalyticsStageID`
+
+A `AnalyticsCycleAnalyticsStageID` is a global ID. It is encoded as a string.
+
+An example `AnalyticsCycleAnalyticsStageID` is: `"gid://gitlab/Analytics::CycleAnalytics::Stage/1"`.
 
 ### `AnalyticsCycleAnalyticsValueStreamID`
 

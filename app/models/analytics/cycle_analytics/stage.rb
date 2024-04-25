@@ -21,6 +21,13 @@ module Analytics
       alias_attribute :parent_id, :group_id
       alias_attribute :value_stream_id, :group_value_stream_id
 
+      def to_global_id
+        return super if persisted?
+
+        # Returns default name as the id for built in stages at the FOSS level
+        name
+      end
+
       def self.distinct_stages_within_hierarchy(namespace)
         # Looking up the whole hierarchy including all kinds (type) of Namespace records.
         # We're doing a custom traversal_ids query because:

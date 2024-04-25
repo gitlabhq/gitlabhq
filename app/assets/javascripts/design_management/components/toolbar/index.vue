@@ -4,7 +4,9 @@ import { GlButton, GlIcon, GlTooltipDirective, GlSkeletonLoader } from '@gitlab/
 import permissionsQuery from 'shared_queries/design_management/design_permissions.query.graphql';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { __, s__, sprintf } from '~/locale';
+import { TYPE_DESIGN } from '~/import/constants';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
+import ImportedBadge from '~/vue_shared/components/imported_badge.vue';
 import { DESIGNS_ROUTE_NAME } from '../../router/constants';
 import DeleteButton from '../delete_button.vue';
 import DesignTodoButton from '../design_todo_button.vue';
@@ -25,6 +27,7 @@ export default {
     DeleteButton,
     DesignTodoButton,
     CloseButton,
+    ImportedBadge,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -117,6 +120,9 @@ export default {
     issueTitle() {
       return this.design.issue.title;
     },
+    isImported() {
+      return this.design.imported;
+    },
     toggleCommentsButtonLabel() {
       return this.isSidebarOpen
         ? this.$options.i18n.hideCommentsButtonLabel
@@ -124,6 +130,7 @@ export default {
     },
   },
   DESIGNS_ROUTE_NAME,
+  TYPE_DESIGN,
 };
 </script>
 
@@ -136,12 +143,21 @@ export default {
     >
       <div class="gl-overflow-hidden gl-display-flex gl-mr-3">
         <gl-skeleton-loader v-if="isLoading" :lines="1" />
-        <h2 v-else class="gl-display-flex gl-overflow-hidden gl-m-0 gl-font-base">
+        <h2
+          v-else
+          class="gl-display-flex gl-align-items-center gl-overflow-hidden gl-m-0 gl-font-base"
+        >
           <span class="gl-text-truncate gl-text-gray-900 gl-text-decoration-none">
             {{ issueTitle }}
           </span>
           <gl-icon name="chevron-right" class="gl-text-gray-200 gl-flex-shrink-0" />
           <span class="gl-text-truncate gl-font-weight-normal">{{ filename }}</span>
+          <imported-badge
+            v-if="isImported"
+            :importable-type="$options.TYPE_DESIGN"
+            size="sm"
+            class="gl-ml-2"
+          />
         </h2>
         <small v-if="updatedAt" class="gl-text-gray-500">{{ updatedText }}</small>
       </div>

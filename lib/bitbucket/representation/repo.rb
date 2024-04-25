@@ -15,12 +15,18 @@ module Bitbucket
         owner_and_slug.last
       end
 
-      def clone_url(token = nil)
+      def clone_url(token = nil, auth_type: nil)
         url = raw['links']['clone'].find { |link| link['name'] == 'https' }.fetch('href')
 
         if token.present?
           clone_url = URI.parse(url)
-          clone_url.user = "x-token-auth:#{token}"
+
+          clone_url.user = if auth_type == :basic
+                             token
+                           else
+                             "x-token-auth:#{token}"
+                           end
+
           clone_url.to_s
         else
           url
@@ -65,6 +71,10 @@ module Bitbucket
 
       def to_s
         full_name
+      end
+
+      def error
+        raw['error']
       end
     end
   end

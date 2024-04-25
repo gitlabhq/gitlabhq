@@ -501,7 +501,8 @@ RSpec.describe Projects::BlobController, feature_category: :source_code_manageme
   end
 
   describe 'POST create' do
-    let(:user) { create(:user) }
+    let_it_be(:user) { create(:user) }
+
     let(:target_event) { 'g_edit_by_sfe' }
     let(:default_params) do
       {
@@ -532,6 +533,29 @@ RSpec.describe Projects::BlobController, feature_category: :source_code_manageme
       request
 
       expect(response).to redirect_to(project_blob_path(project, 'master/docs/EXAMPLE_FILE'))
+    end
+
+    context 'when file_name is missing' do
+      let(:default_params) do
+        {
+          namespace_id: project.namespace,
+          project_id: project,
+          id: 'master',
+          branch_name: 'master',
+          content: 'Added changes',
+          commit_message: 'Create CHANGELOG'
+        }
+      end
+
+      render_views
+
+      it 'renders an error message' do
+        request
+
+        expect(response).to be_successful
+        expect(response).to render_template(:new)
+        expect(response.body).to include('You must provide a file path')
+      end
     end
   end
 end

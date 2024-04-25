@@ -3,7 +3,7 @@
 - items = issuable_sort_options(viewing_issues, viewing_merge_requests)
 - selected = issuable_sort_option_overrides[@sort] || @sort
 
-.gl-ml-3
+%div
   .btn-group{ role: 'group' }
     = gl_redirect_listbox_tag(items, selected, class: 'btn-group', data: { placement: 'right' })
     = issuable_sort_direction_button(@sort)

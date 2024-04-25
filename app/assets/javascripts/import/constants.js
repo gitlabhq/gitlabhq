@@ -1,6 +1,8 @@
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { __, s__ } from '~/locale';
 
+export const TYPE_DESIGN = 'design';
+
 export const BULK_IMPORT_STATIC_ITEMS = {
   badges: __('Badge'),
   boards: s__('IssueBoards|Board'),

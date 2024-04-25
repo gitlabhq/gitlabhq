@@ -194,6 +194,9 @@ RSpec.describe Member, feature_category: :groups_and_projects do
       @maintainer_user = create(:user, maintainer_of: project)
       @maintainer = project.members.find_by(user_id: @maintainer_user.id)
 
+      @developer_user = create(:user).tap { |u| group.add_developer(u) }
+      @developer = project.members.find_by(user_id: @developer_user.id)
+
       @blocked_maintainer_user = create(:user).tap do |u|
         project.add_maintainer(u)
 
@@ -647,20 +650,78 @@ RSpec.describe Member, feature_category: :groups_and_projects do
 
     describe '.distinct_on_user_with_max_access_level' do
       let_it_be(:other_group) { create(:group) }
+      let_it_be(:group_project) { create(:project, group: group) }
       let_it_be(:member_with_lower_access_level) { create(:group_member, :developer, group: other_group, user: @owner_user) }
+      let_it_be(:member_with_same_access_level) { create(:group_member, :maintainer, group: other_group, user: @maintainer_user) }
+      let_it_be(:project_member_with_same_access_level) { create(:project_member, :maintainer, project: group_project, user: @maintainer_user) }
+      let_it_be(:member_with_higher_access_level) { create(:group_member, :maintainer, group: other_group, user: @developer_user) }
 
-      subject { described_class.default_scoped.distinct_on_user_with_max_access_level.to_a }
+      let(:for_object) { group }
 
-      it { is_expected.not_to include member_with_lower_access_level }
-      it { is_expected.to include @owner }
-      it { is_expected.to include @maintainer }
-      it { is_expected.to include @invited_member }
-      it { is_expected.to include @accepted_invite_member }
-      it { is_expected.to include @requested_member }
-      it { is_expected.to include @accepted_request_member }
-      it { is_expected.to include @blocked_maintainer }
-      it { is_expected.to include @blocked_developer }
-      it { is_expected.to include @member_with_minimal_access }
+      subject { described_class.default_scoped.distinct_on_user_with_max_access_level(for_object).to_a }
+
+      context 'for group' do
+        it { is_expected.not_to include member_with_lower_access_level }
+        it { is_expected.not_to include member_with_same_access_level }
+        it { is_expected.not_to include @developer }
+        it { is_expected.to include @owner }
+        it { is_expected.to include @maintainer }
+        it { is_expected.to include @invited_member }
+        it { is_expected.to include @accepted_invite_member }
+        it { is_expected.to include @requested_member }
+        it { is_expected.to include @accepted_request_member }
+        it { is_expected.to include @blocked_maintainer }
+        it { is_expected.to include @blocked_developer }
+        it { is_expected.to include @member_with_minimal_access }
+        it { is_expected.to include member_with_higher_access_level }
+      end
+
+      context 'for other_group' do
+        let(:for_object) { other_group }
+
+        it { is_expected.not_to include member_with_lower_access_level }
+        it { is_expected.not_to include @developer }
+        it { is_expected.not_to include @maintainer }
+
+        it { is_expected.to include @owner }
+        it { is_expected.to include @invited_member }
+        it { is_expected.to include @accepted_invite_member }
+        it { is_expected.to include @requested_member }
+        it { is_expected.to include @accepted_request_member }
+        it { is_expected.to include @blocked_maintainer }
+        it { is_expected.to include @blocked_developer }
+        it { is_expected.to include @member_with_minimal_access }
+        it { is_expected.to include member_with_same_access_level }
+        it { is_expected.to include member_with_higher_access_level }
+      end
+
+      context 'for project' do
+        let(:for_object) { group_project }
+
+        it { is_expected.not_to include member_with_lower_access_level }
+        it { is_expected.not_to include @developer }
+        it { is_expected.not_to include @maintainer }
+        it { is_expected.not_to include member_with_same_access_level }
+
+        it { is_expected.to include @owner }
+        it { is_expected.to include @invited_member }
+        it { is_expected.to include @accepted_invite_member }
+        it { is_expected.to include @requested_member }
+        it { is_expected.to include @accepted_request_member }
+        it { is_expected.to include @blocked_maintainer }
+        it { is_expected.to include @blocked_developer }
+        it { is_expected.to include @member_with_minimal_access }
+        it { is_expected.to include project_member_with_same_access_level }
+        it { is_expected.to include member_with_higher_access_level }
+      end
+
+      context 'for other object' do
+        let(:for_object) { build(:organization) }
+
+        it 'raises an error' do
+          expect { subject }.to raise_error ArgumentError, "Invalid object: Organizations::Organization"
+        end
+      end
 
       context 'with where conditions' do
         let_it_be(:example_member) { create(:group_member, invite_email: 'user@example.com') }
@@ -669,7 +730,7 @@ RSpec.describe Member, feature_category: :groups_and_projects do
           described_class
             .default_scoped
             .where(invite_email: 'user@example.com')
-            .distinct_on_user_with_max_access_level
+            .distinct_on_user_with_max_access_level(group)
             .to_a
         end
 

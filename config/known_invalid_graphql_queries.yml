@@ -1,3 +1,4 @@
 ---
 filenames:
   - ee/app/assets/javascripts/oncall_schedules/graphql/mutations/update_oncall_schedule_rotation.mutation.graphql
+  - app/assets/javascripts/security_configuration/graphql/set_container_scanning_for_registry.graphql

@@ -168,18 +168,6 @@ In Linux package installations, find the logs in `/var/log/gitlab/gitlab-kas/`.
 
 You can also [troubleshoot issues with individual agents](../../user/clusters/agent/troubleshooting.md).
 
-### GitOps: failed to get project information
-
-If you get the following error message:
-
-```json
-{"level":"warn","time":"2020-10-30T08:37:26.123Z","msg":"GitOps: failed to get project info","agent_id":4,"project_id":"root/kas-manifest001","error":"error kind: 0; status: 404"}
-```
-
-The project specified by the manifest (`root/kas-manifest001`)
-doesn't exist or the project where the manifest is kept is private. To fix this issue,
-ensure the project path is correct and that the project's visibility is [set to public](../../user/public_access.md).
-
 ### Configuration file not found
 
 If you get the following error message:

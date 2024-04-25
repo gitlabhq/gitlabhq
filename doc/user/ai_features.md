@@ -18,22 +18,22 @@ GitLab is [transparent](https://handbook.gitlab.com/handbook/values/#transparenc
 
 | Goal | Feature | Tier/Offering/Status |
 |---|---|---|
-| Helps you write code more efficiently by showing code suggestions as you type. <br><br><i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=hCAyCTacdAQ) | [Code Suggestions](project/repository/code_suggestions/index.md) | **Tier:** Premium or Ultimate with [GitLab Duo Pro](../subscriptions/subscription-add-ons.md) <br>**Offering:** GitLab.com, Self-managed, GitLab Dedicated |
-| Processes and generates text and code in a conversational manner. Helps you quickly identify useful information in large volumes of text in issues, epics, code, and GitLab documentation. | [Chat](gitlab_duo_chat.md) | **Tier:** For a limited time, freely available for Premium and Ultimate<br>**Offering:** GitLab.com, Self-managed, GitLab Dedicated |
-| Helps you discover or recall Git commands when and where you need them. | [Git suggestions](../editor_extensions/gitlab_cli/index.md#gitlab-duo-commands) | **Tier:** Ultimate <br>**Offering:** GitLab.com <br>**Status:** Experiment |
-| Assists with quickly getting everyone up to speed on lengthy conversations to help ensure you are all on the same page.  <br><br><i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=IcdxLfTIUgc) | [Discussion summary](#summarize-issue-discussions-with-discussion-summary) | **Tier:** Ultimate <br>**Offering:** GitLab.com <br>**Status:** Experiment |
-| Generates issue descriptions. | [Issue description generation](#summarize-an-issue-with-issue-description-generation) | **Tier:** Ultimate<br>**Offering:** GitLab.com <br>**Status:** Experiment |
-| Automates repetitive tasks and helps catch bugs early. <br><br><i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=g6MS1JsRWgs) | [Test generation](gitlab_duo_chat.md#write-tests-in-the-ide) | **Tier:** Ultimate <br>**Offering:** GitLab.com, Self-managed, GitLab Dedicated <br>**Status:** Beta |
-| Generates a description for the merge request based on the contents of the template. | [Merge request template population](project/merge_requests/ai_in_merge_requests.md#fill-in-merge-request-templates) | **Tier:** Ultimate<br>**Offering:** GitLab.com <br>**Status:** Experiment |
+| Helps you write code more efficiently by showing code suggestions as you type.<br><br><i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=hCAyCTacdAQ) | [Code Suggestions](project/repository/code_suggestions/index.md) | **Tier:** Premium and Ultimate with [GitLab Duo Pro](../subscriptions/subscription-add-ons.md)<br>**Offering:** GitLab.com, Self-managed, GitLab Dedicated |
+| Processes and generates text and code in a conversational manner. Helps you quickly identify useful information in large volumes of text in issues, epics, code, and GitLab documentation. | [Chat](gitlab_duo_chat.md) | **Tier:** Freely available for Premium and Ultimate for a limited time<br>**Offering:** GitLab.com, Self-managed, GitLab Dedicated |
+| Helps you discover or recall Git commands when and where you need them. | [Git suggestions](../editor_extensions/gitlab_cli/index.md#gitlab-duo-commands) | **Tier:** Freely available for Ultimate for a limited time<br>In the future, will require Ultimate with [GitLab Duo Enterprise](../subscriptions/subscription-add-ons.md)<br>**Offering:** GitLab.com<br>**Status:** Experiment |
+| Assists with quickly getting everyone up to speed on lengthy conversations to help ensure you are all on the same page.  <br><br><i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=IcdxLfTIUgc) | [Discussion summary](#summarize-issue-discussions-with-discussion-summary) | **Tier:** Freely available for Ultimate for a limited time<br>In the future, will require [GitLab Duo Enterprise](../subscriptions/subscription-add-ons.md)<br>**Offering:** GitLab.com <br>**Status:** Experiment |
+| Generates issue descriptions. | [Issue description generation](#summarize-an-issue-with-issue-description-generation) | **Tier:** Freely available for Ultimate for a limited time<br>In the future, will require Ultimate with [GitLab Duo Enterprise](../subscriptions/subscription-add-ons.md)<br>**Offering:** GitLab.com <br>**Status:** Experiment |
+| Automates repetitive tasks and helps catch bugs early. <br><br><i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=g6MS1JsRWgs) | [Test generation](gitlab_duo_chat.md#write-tests-in-the-ide) | **Tier:** Freely available for Premium and Ultimate for a limited time<br>In the future, will require Premium or Ultimate with [GitLab Duo Pro](../subscriptions/subscription-add-ons.md)<br>**Offering:** GitLab.com, Self-managed, GitLab Dedicated <br>**Status:** Beta |
+| Generates a description for the merge request based on the contents of the template. | [Merge request template population](project/merge_requests/ai_in_merge_requests.md#fill-in-merge-request-templates) | **Tier:** Freely available for Ultimate for a limited time<br>In the future, will require Ultimate with [GitLab Duo Enterprise](../subscriptions/subscription-add-ons.md)<br>**Offering:** GitLab.com<br>**Status:** Experiment |
 | Assists in creating faster and higher-quality reviews by automatically suggesting reviewers for your merge request. <br><br><i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=ivwZQgh4Rxw) | [Suggested Reviewers](project/merge_requests/reviews/index.md#gitlab-duo-suggested-reviewers) | **Tier:** Ultimate <br>**Offering:** GitLab.com<br>**Status:** Generally Available  |
-| Efficiently communicates the impact of your merge request changes. | [Merge request summary](project/merge_requests/ai_in_merge_requests.md#summarize-merge-request-changes) | **Tier:** Ultimate <br>**Offering:** GitLab.com <br>**Status:** Beta |
-| Helps ease merge request handoff between authors and reviewers and help reviewers efficiently understand suggestions. | [Code review summary](project/merge_requests/ai_in_merge_requests.md#summarize-my-merge-request-review) | **Tier:** Ultimate <br>**Offering:** GitLab.com <br>**Status:** Experiment |
-| Helps you remediate vulnerabilities more efficiently, boost your skills, and write more secure code. <br><br><i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=6sDf73QOav8) | [Vulnerability explanation](application_security/vulnerabilities/index.md#explaining-a-vulnerability) | **Tier:** Ultimate <br>**Offering:** GitLab.com <br>**Status:** Beta |
-| Generates a merge request containing the changes required to mitigate a vulnerability. | [Vulnerability resolution](application_security/vulnerabilities/index.md#vulnerability-resolution) | **Tier:** Ultimate <br>**Offering:** GitLab.com <br>**Status:** Experiment |
-| Helps you understand code by explaining it in English language. <br><br><i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=1izKaLmmaCA) | [Code explanation](#explain-code-in-the-web-ui-with-code-explanation) | **Tier:** Ultimate <br>**Offering:** GitLab.com <br>**Status:** Experiment |
-| Assists you in determining the root cause for a pipeline failure and failed CI/CD build. | [Root cause analysis](#root-cause-analysis) | **Tier:** Ultimate <br>**Offering:** GitLab.com <br>**Status:** Experiment |
-| Assists you with predicting productivity metrics and identifying anomalies across your software development lifecycle. | [Value stream forecasting](#forecast-deployment-frequency-with-value-stream-forecasting) | **Tier:** Ultimate <br>**Offering:** GitLab.com, Self-managed, GitLab Dedicated <br>**Status:** Experiment |
-| Processes and responds to your questions about your application's usage data. | [Product Analytics](analytics/analytics_dashboards.md#generate-a-custom-visualization-with-gitlab-duo)             | **Tier:** Ultimate <br>**Offering:** GitLab.com <br>**Status:** Experiment |
+| Efficiently communicates the impact of your merge request changes. | [Merge request summary](project/merge_requests/ai_in_merge_requests.md#summarize-merge-request-changes) | **Tier:** Freely available for Ultimate for a limited time<br>In the future, will require Ultimate with [GitLab Duo Enterprise](../subscriptions/subscription-add-ons.md)<br>**Offering:** GitLab.com <br>**Status:** Beta |
+| Helps ease merge request handoff between authors and reviewers and help reviewers efficiently understand suggestions. | [Code review summary](project/merge_requests/ai_in_merge_requests.md#summarize-my-merge-request-review) | **Tier:** Freely available for Ultimate for a limited time<br>In the future, will require Ultimate with [GitLab Duo Enterprise](../subscriptions/subscription-add-ons.md)<br>**Offering:** GitLab.com <br>**Status:** Experiment |
+| Helps you remediate vulnerabilities more efficiently, boost your skills, and write more secure code. <br><br><i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=6sDf73QOav8) | [Vulnerability explanation](application_security/vulnerabilities/index.md#explaining-a-vulnerability) | **Tier:** Freely available for Ultimate for a limited time<br>In the future, will require Ultimate with [GitLab Duo Enterprise](../subscriptions/subscription-add-ons.md) <br>**Offering:** GitLab.com <br>**Status:** Beta |
+| Generates a merge request containing the changes required to mitigate a vulnerability. | [Vulnerability resolution](application_security/vulnerabilities/index.md#vulnerability-resolution) | **Tier:** Freely available for Ultimate for a limited time<br>In the future, will require Ultimate with [GitLab Duo Enterprise](../subscriptions/subscription-add-ons.md)<br>**Offering:** GitLab.com <br>**Status:** Experiment |
+| Helps you understand code by explaining it in English language. <br><br><i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=1izKaLmmaCA) | [Code explanation](#explain-code-in-the-web-ui-with-code-explanation) | **Tier:** Freely available for Premium and Ultimate for a limited time<br>In the future, will require Premium or Ultimate with [GitLab Duo Pro](../subscriptions/subscription-add-ons.md) <br>**Offering:** GitLab.com <br>**Status:** Experiment |
+| Assists you in determining the root cause for a pipeline failure and failed CI/CD build. | [Root cause analysis](#root-cause-analysis) | **Tier:** Freely available for Ultimate for a limited time<br>In the future, will require Ultimate with [GitLab Duo Enterprise](../subscriptions/subscription-add-ons.md)<br>**Offering:** GitLab.com <br>**Status:** Experiment |
+| Assists you with predicting productivity metrics and identifying anomalies across your software development lifecycle. | [Value stream forecasting](#forecast-deployment-frequency-with-value-stream-forecasting) | **Tier:** Freely available for Ultimate for a limited time<br>In the future, will require Ultimate with [GitLab Duo Enterprise](../subscriptions/subscription-add-ons.md) <br>**Offering:** GitLab.com, Self-managed, GitLab Dedicated <br>**Status:** Experiment |
+| Processes and responds to your questions about your application's usage data. | [Product Analytics](analytics/analytics_dashboards.md#generate-a-custom-visualization-with-gitlab-duo)             | **Tier:** Freely available for Ultimate for a limited time<br>In the future, will require Ultimate with [GitLab Duo Enterprise](../subscriptions/subscription-add-ons.md) <br>**Offering:** GitLab.com <br>**Status:** Experiment |
 
 ## Controlling GitLab Duo features
 
@@ -149,7 +149,7 @@ The following subsections describe the experimental AI features in more detail.
 ### Explain code in the Web UI with Code explanation
 
 DETAILS:
-**Tier:** Ultimate
+**Tier:** Freely available for Premium and Ultimate for a limited time. In the future, will require Premium or Ultimate with [GitLab Duo Pro](../subscriptions/subscription-add-ons.md).
 **Offering:** GitLab.com
 **Status:** Experiment
 
@@ -201,7 +201,7 @@ We cannot guarantee that the large language model produces results that are corr
 ### Summarize issue discussions with Discussion summary
 
 DETAILS:
-**Tier:** Ultimate
+**Tier:** Freely available for Ultimate for a limited time. In the future, will require Ultimate with [GitLab Duo Enterprise](../subscriptions/subscription-add-ons.md).
 **Offering:** GitLab.com
 **Status:** Experiment
 
@@ -231,7 +231,7 @@ language model referenced above.
 ### Forecast deployment frequency with Value stream forecasting
 
 DETAILS:
-**Tier:** Ultimate
+**Tier:** Freely available for Ultimate for a limited time. In the future, will require Ultimate with [GitLab Duo Enterprise](../subscriptions/subscription-add-ons.md).
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Status:** Experiment
 
@@ -263,7 +263,7 @@ Provide feedback on this experimental feature in [issue 416833](https://gitlab.c
 ### Root cause analysis
 
 DETAILS:
-**Tier:** Ultimate
+**Tier:** Freely available for Ultimate for a limited time. In the future, will require Ultimate with [GitLab Duo Enterprise](../subscriptions/subscription-add-ons.md).
 **Offering:** GitLab.com
 **Status:** Experiment
 
@@ -284,7 +284,7 @@ reason for the failure.
 ### Summarize an issue with Issue description generation
 
 DETAILS:
-**Tier:** Ultimate
+**Tier:** Freely available for Ultimate for a limited time. In the future, will require Ultimate with [GitLab Duo Enterprise](../subscriptions/subscription-add-ons.md).
 **Offering:** GitLab.com
 **Status:** Experiment
 

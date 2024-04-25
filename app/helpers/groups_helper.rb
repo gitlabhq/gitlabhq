@@ -59,13 +59,13 @@ module GroupsHelper
         full_title << breadcrumb_list_item(group_title_link(parent, hidable: false))
       end
 
-      push_to_schema_breadcrumb(simple_sanitize(parent.name), group_path(parent))
+      push_to_schema_breadcrumb(simple_sanitize(parent.name), group_path(parent), parent.try(:avatar_url))
     end
 
     full_title << render("layouts/nav/breadcrumbs/collapsed_inline_list", location: :before, title: _("Show all breadcrumbs"))
 
     full_title << breadcrumb_list_item(group_title_link(group))
-    push_to_schema_breadcrumb(simple_sanitize(group.name), group_path(group))
+    push_to_schema_breadcrumb(simple_sanitize(group.name), group_path(group), group.try(:avatar_url))
 
     full_title.join.html_safe
   end

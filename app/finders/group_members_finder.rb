@@ -35,7 +35,7 @@ class GroupMembersFinder < UnionFinder
     groups = groups_by_relations(include_relations)
 
     members = all_group_members(groups)
-    members = members.distinct_on_user_with_max_access_level if static_roles_only?
+    members = members.distinct_on_user_with_max_access_level(group) if static_roles_only?
 
     filter_members(members)
   end

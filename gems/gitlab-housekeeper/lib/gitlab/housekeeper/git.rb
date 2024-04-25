@@ -44,7 +44,7 @@ module Gitlab
       end
 
       def push(branch_name, push_options = PushOptions.new)
-        push_command = ['git', 'push', '-f', housekeeper_remote, "#{branch_name}:#{branch_name}"]
+        push_command = ['git', 'push', '-u', '-f', housekeeper_remote, "#{branch_name}:#{branch_name}"]
         push_command << '-o ci.skip' if push_options.ci_skip
 
         Shell.execute(*push_command)

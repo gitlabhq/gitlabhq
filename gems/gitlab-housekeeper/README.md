@@ -55,6 +55,7 @@ mandatory, while others are optional.
 | `assignees`            | Array   | No       | Default is `[]`. Array of usernames to which the MR should be assigned upon creation                           | `change.assignees = ['gitlab-bot', 'gitlab-qa']`                                                  |
 | `reviewers`            | Array   | No       | Default is `[]`. Array of usernames to which the MR should be assigned for review upon creation                | `change.reviewers = ['gitlab-bot', 'gitlab-qa']`                                                  |
 | `changelog_type`       | String  | No       | Default is `other`. Used to set a changelog type in the commit message                                       | `change.changelog_type = 'fixed'`                                                                 |
+| `changelog_ee`         | Boolean | No       | Default is `false`. Setting to `true` adds the `EE:true` trailer in the commit message                       | `change.changelog_ee = true`                                                                 |
 | `push_options.ci_skip` | Boolean | No       | Default is `false`. Setting to `true` creates an MR without kicking off a new pipeline | `change.push_options.ci_skip = true ` |
 
 ### Example

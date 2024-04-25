@@ -31,8 +31,8 @@ module BreadcrumbsHelper
     @breadcrumb_collapsed_links[location] << link
   end
 
-  def push_to_schema_breadcrumb(text, link)
-    list_item = schema_list_item(text, link, schema_breadcrumb_list.size + 1)
+  def push_to_schema_breadcrumb(text, link, avatar = nil)
+    list_item = schema_list_item(text, link, schema_breadcrumb_list.size + 1, avatar)
 
     schema_breadcrumb_list.push(list_item)
   end
@@ -41,8 +41,18 @@ module BreadcrumbsHelper
     {
       '@context': 'https://schema.org',
       '@type': 'BreadcrumbList',
-      'itemListElement': build_item_list_elements
+      'itemListElement': build_item_list_elements&.map { |item| item.except('avatar') }
     }.to_json
+  end
+
+  def breadcrumbs_as_json
+    schema_breadcrumb_list.map do |breadcrumb|
+      {
+        text: breadcrumb['name'],
+        href: breadcrumb['item'],
+        avatarPath: breadcrumb['avatar']
+      }
+    end.to_json
   end
 
   private
@@ -64,12 +74,13 @@ module BreadcrumbsHelper
     schema_breadcrumb_list.push(last_element)
   end
 
-  def schema_list_item(text, link, position)
+  def schema_list_item(text, link, position, avatar = nil)
     {
       '@type' => 'ListItem',
       'position' => position,
       'name' => text,
-      'item' => ensure_absolute_link(link)
+      'item' => ensure_absolute_link(link),
+      'avatar' => avatar
     }
   end
 

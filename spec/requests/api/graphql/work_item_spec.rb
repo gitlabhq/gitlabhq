@@ -1073,6 +1073,96 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
       end
     end
 
+    describe 'development widget' do
+      context 'when fetching related feature flags' do
+        let_it_be(:merge_request1) { create(:merge_request, source_project: project) }
+        let_it_be(:merge_request2) { create(:merge_request, source_project: project, target_branch: 'feature2') }
+        let_it_be(:private_project) { create(:project, :repository, :private) }
+        let_it_be(:private_merge_request) { create(:merge_request, source_project: private_project) }
+        let(:work_item_fields) do
+          <<~GRAPHQL
+            id
+            widgets {
+              type
+              ... on WorkItemWidgetDevelopment {
+                relatedMergeRequests {
+                  nodes {
+                    closesWorkItem
+                    mergeRequest { id }
+                  }
+                }
+              }
+            }
+          GRAPHQL
+        end
+
+        before_all do
+          [merge_request1, merge_request2].each do |merge_request|
+            create(
+              :merge_requests_closing_issues,
+              merge_request: merge_request,
+              issue: work_item,
+              closes_work_item: false
+            )
+          end
+        end
+
+        before do
+          post_graphql(query, current_user: current_user)
+        end
+
+        context 'when user is developer' do
+          let(:current_user) { developer }
+
+          it 'returns related merge requests in the response' do
+            expect(work_item_data).to include(
+              'id' => work_item.to_global_id.to_s,
+              'widgets' => array_including(
+                hash_including(
+                  'type' => 'DEVELOPMENT',
+                  'relatedMergeRequests' => {
+                    'nodes' => containing_exactly(
+                      {
+                        'mergeRequest' => { 'id' => merge_request1.to_global_id.to_s },
+                        'closesWorkItem' => false
+                      },
+                      {
+                        'mergeRequest' => { 'id' => merge_request2.to_global_id.to_s },
+                        'closesWorkItem' => false
+                      }
+                    )
+                  }
+                )
+              )
+            )
+          end
+
+          it 'avoids N + 1 queries', :use_sql_query_cache do
+            # warm-up already done in the before block
+            control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+              post_graphql(query, current_user: current_user)
+            end
+            expect(graphql_errors).to be_blank
+
+            merge_request3 = create(:merge_request, source_project: project, target_branch: 'feature3')
+            [merge_request1, merge_request2, merge_request3].each do |merge_request|
+              create(
+                :merge_requests_closing_issues,
+                merge_request: merge_request,
+                issue: work_item,
+                closes_work_item: true
+              )
+            end
+
+            expect do
+              post_graphql(query, current_user: current_user)
+            end.to issue_same_number_of_queries_as(control)
+            expect(graphql_errors).to be_blank
+          end
+        end
+      end
+    end
+
     context 'when an Issue Global ID is provided' do
       let(:global_id) { Issue.find(work_item.id).to_gid.to_s }
 

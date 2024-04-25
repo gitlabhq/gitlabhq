@@ -38,37 +38,22 @@ NOTE:
 
 CPU requirements are dependent on the number of users and expected workload. Your exact needs may be more, depending on your workload. Your workload is influenced by factors such as - but not limited to - how active your users are, how much automation you use, mirroring, and repository/change size.
 
-The following is the recommended minimum CPU hardware guidance for a handful of example GitLab user base sizes.
+Refer below for CPU recommendations depending on user count / load:
 
-- **4 cores** is the **recommended** minimum number of cores and supports up to 500 users
-- 8 cores supports up to 1000 users
-- More users? Consult the [reference architectures page](../administration/reference_architectures/index.md)
+- Up to 20 Requests per Second (RPS) or 1000 users - 8 vCPU.
+- More users or load? Consult the [reference architectures page](../administration/reference_architectures/index.md).
 
 ### Memory
 
 Memory requirements are dependent on the number of users and expected workload. Your exact needs may be more, depending on your workload. Your workload is influenced by factors such as - but not limited to - how active your users are, how much automation you use, mirroring, and repository/change size.
 
-The following is the recommended minimum Memory hardware guidance for a handful of example GitLab user base sizes.
+Refer below for Memory recommendations depending on user count / load:
 
-- **4 GB RAM** is the **required** minimum memory size and supports up to 500 users
-- 8 GB RAM supports up to 1000 users
-- More users? Consult the [reference architectures page](../administration/reference_architectures/index.md)
-
-For smaller installations, you should:
-
-- Have at least 2 GB of swap on your server, even if you have enough available RAM. Having swap helps to reduce the chance of
-  errors occurring if your available memory changes.
-- Configure the kernel's swappiness setting to a low value like `10` to make the most of your RAM while still having the swap available when needed.
-
-For larger installations that follow our reference architectures, you [shouldn't configure swap](../administration/reference_architectures/index.md#no-swap).
+- Up to 20 Requests per Second (RPS) or 1000 users - 8 GB (Minimum), 16 GB (Recommended).
+- More users or load? Consult the [reference architectures page](../administration/reference_architectures/index.md).
 
 NOTE:
-Although excessive swapping is undesired and degrades performance, it is an
-extremely important last resort against out-of-memory conditions. During
-unexpected system load, such as OS updates or other services on the same host,
-peak memory load spikes could be much higher than average. Having plenty of swap
-helps avoid the Linux OOM killer unsafely terminating a potentially critical
-process, such as PostgreSQL, which can have disastrous consequences.
+While not recommended, in certain circumstances GitLab may run in a [memory constrained environment](https://docs.gitlab.com/omnibus/settings/memory_constrained_envs.html).
 
 ## Database
 

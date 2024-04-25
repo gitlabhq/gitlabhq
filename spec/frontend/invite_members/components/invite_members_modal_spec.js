@@ -68,11 +68,12 @@ describe('InviteMembersModal', () => {
       property,
     });
 
-  const createComponent = (props = {}, stubs = {}) => {
+  const createComponent = (props = {}, stubs = {}, provide = {}) => {
     wrapper = shallowMountExtended(InviteMembersModal, {
       provide: {
         newProjectPath,
         name: propsData.name,
+        ...provide,
       },
       propsData: {
         usersLimitDataset: {},
@@ -111,8 +112,9 @@ describe('InviteMembersModal', () => {
     usersLimitDataset = {},
     activeTrialDataset = {},
     stubs = {},
+    provide = {},
   ) => {
-    createComponent({ usersLimitDataset, activeTrialDataset, isProject: false }, stubs);
+    createComponent({ usersLimitDataset, activeTrialDataset, isProject: false }, stubs, provide);
   };
 
   beforeEach(() => {
@@ -833,14 +835,24 @@ describe('InviteMembersModal', () => {
     });
 
     describe('blocked seat overage error notifications', () => {
-      it('shows the notification alert when seat overage limit is reached', async () => {
-        createInviteMembersToGroupWrapper();
+      it('shows the notification alert when seat overage limit is reached and the purchase seats href is present', async () => {
+        createInviteMembersToGroupWrapper({}, {}, {}, { addSeatsHref: 'url_to_add_seats' });
         await triggerMembersTokenSelect([user1]);
         mockInvitationsApi(HTTP_STATUS_CREATED, invitationsApiResponse.ERROR_SEAT_LIMIT_REACHED);
         clickInviteButton();
         await waitForPromises();
 
         expect(findSeatOveragesAlert().exists()).toBe(true);
+      });
+
+      it('does not show the notification alert when seat overage limit is reached and the purchase seats href is absent', async () => {
+        createInviteMembersToGroupWrapper();
+        await triggerMembersTokenSelect([user1]);
+        mockInvitationsApi(HTTP_STATUS_CREATED, invitationsApiResponse.ERROR_SEAT_LIMIT_REACHED);
+        clickInviteButton();
+        await waitForPromises();
+
+        expect(findSeatOveragesAlert().exists()).toBe(false);
       });
     });
   });

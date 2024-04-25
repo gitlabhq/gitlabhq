@@ -33,7 +33,6 @@ Layout/MultilineOperationIndentation:
     - 'app/services/webauthn/authenticate_service.rb'
     - 'app/validators/feature_flag_strategies_validator.rb'
     - 'app/workers/container_expiration_policies/cleanup_container_repository_worker.rb'
-    - 'app/workers/container_registry/migration/guard_worker.rb'
     - 'config/initializers/devise_dynamic_password_length_validation.rb'
     - 'danger/utility_css/Dangerfile'
     - 'ee/app/controllers/projects/integrations/jira/issues_controller.rb'

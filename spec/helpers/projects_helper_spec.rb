@@ -877,7 +877,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
 
     it 'enqueues the elements in the breadcrumb schema list' do
       expect(helper).to receive(:push_to_schema_breadcrumb).with(project.namespace.name, user_path(project.owner))
-      expect(helper).to receive(:push_to_schema_breadcrumb).with(project.name, project_path(project))
+      expect(helper).to receive(:push_to_schema_breadcrumb).with(project.name, project_path(project), nil)
 
       subject
     end

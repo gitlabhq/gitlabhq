@@ -4,13 +4,9 @@ require 'spec_helper'
 
 RSpec.describe ProjectAccessTokenSerializer do
   let_it_be(:project) { create(:project) }
-  let_it_be(:bot) { create(:user, :project_bot) }
+  let_it_be(:bot) { create(:user, :project_bot, developer_of: project) }
 
   subject(:serializer) { described_class.new }
-
-  before do
-    project.add_developer(bot)
-  end
 
   describe '#represent' do
     it 'can render a single token' do

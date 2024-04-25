@@ -2,7 +2,14 @@
 
 require 'spec_helper'
 
-RSpec.describe BreadcrumbsHelper do
+RSpec.describe BreadcrumbsHelper, feature_category: :navigation do
+  let(:elements) do
+    [
+      %w[element1 http://test.host/link1 http://test.host/uploads/avatar1.png],
+      %w[element2 http://test.host/link2 http://test.host/uploads/avatar2.png]
+    ]
+  end
+
   describe '#push_to_schema_breadcrumb' do
     let(:element_name) { 'BreadCrumbElement' }
     let(:link) { 'http://test.host/foo' }
@@ -52,13 +59,6 @@ RSpec.describe BreadcrumbsHelper do
   end
 
   describe '#schema_breadcrumb_json' do
-    let(:elements) do
-      [
-        %w[element1 http://test.host/link1],
-        %w[element2 http://test.host/link2]
-      ]
-    end
-
     subject { helper.schema_breadcrumb_json }
 
     it 'returns the breadcrumb schema in json format' do
@@ -135,11 +135,32 @@ RSpec.describe BreadcrumbsHelper do
         expect(subject).to eq expected_result
       end
     end
+  end
 
-    def enqueue_breadcrumb_elements
-      elements.each do |el|
-        helper.push_to_schema_breadcrumb(el[0], el[1])
+  describe '#breadcrumbs_as_json' do
+    subject { helper.breadcrumbs_as_json }
+
+    it 'is a JSON array of breadcrumb items incl their avatar' do
+      enqueue_breadcrumb_elements
+
+      expected_result = [
+        { text: elements[0][0], href: elements[0][1], avatarPath: elements[0][2] },
+        { text: elements[1][0], href: elements[1][1], avatarPath: elements[1][2] }
+      ].to_json
+
+      expect(subject).to eq expected_result
+    end
+
+    context 'without breadcrumb elements' do
+      it 'is an empty JSON array' do
+        expect(subject).to eq [].to_json
       end
+    end
+  end
+
+  def enqueue_breadcrumb_elements
+    elements.each do |el|
+      helper.push_to_schema_breadcrumb(el[0], el[1], el[2])
     end
   end
 end

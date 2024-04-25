@@ -73,8 +73,6 @@ SidekiqLoadBalancing/WorkerDataConsistency:
     - 'app/workers/container_expiration_policy_worker.rb'
     - 'app/workers/container_registry/cleanup_worker.rb'
     - 'app/workers/container_registry/delete_container_repository_worker.rb'
-    - 'app/workers/container_registry/migration/enqueuer_worker.rb'
-    - 'app/workers/container_registry/migration/guard_worker.rb'
     - 'app/workers/counters/cleanup_refresh_worker.rb'
     - 'app/workers/create_commit_signature_worker.rb'
     - 'app/workers/create_note_diff_file_worker.rb'

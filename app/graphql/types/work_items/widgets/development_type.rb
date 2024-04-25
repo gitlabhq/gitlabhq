@@ -11,6 +11,19 @@ module Types
         description 'Represents a development widget'
 
         implements Types::WorkItems::WidgetInterface
+
+        field :related_merge_requests,
+          Types::WorkItems::RelatedMergeRequestType.connection_type,
+          null: true,
+          description: 'Merge requests related to the work item.'
+
+        def related_merge_requests
+          if object.related_merge_requests.loaded?
+            object.related_merge_requests
+          else
+            object.related_merge_requests.preload_merge_request_for_authorization
+          end
+        end
       end
       # rubocop:enable Graphql/AuthorizeTypes
     end

@@ -13,7 +13,7 @@ DETAILS:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117695) as an [Experiment](../policy/experiment-beta-support.md#experiment) for SaaS in GitLab 16.0.
 > - Changed to [Beta](../policy/experiment-beta-support.md#beta) for SaaS in GitLab 16.6.
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11251) as a [Beta](../policy/experiment-beta-support.md#beta) for self-managed in GitLab 16.8.
-> - Changed from Ultimate to [Premium](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142808) tier in GitLab 16.9.
+> - Changed from Ultimate to [Premium](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142808) tier in GitLab 16.9 while in [Beta](../policy/experiment-beta-support.md#beta).
 > - Changed to [Generally Available](../policy/experiment-beta-support.md#generally-available-ga) in GitLab 16.11.
 > - Freely available for Ultimate and Premium users for a limited time.
 
@@ -26,20 +26,21 @@ It can assist various tasks of your daily work with the AI-generated content.
 > - GitLab self-managed users with a Premium or Ultimate subscription.
 > - GitLab Dedicated users.
 >
-> Eventually a subscription add-on will be required for continued access to GitLab Duo Chat.
+> Eventually a subscription add-on will be required for continued access to GitLab Duo Chat. 
+> Learn more about [Duo Pro and Duo Enterprise pricing](https://about.gitlab.com/gitlab-duo/#pricing).
 
 Here are examples of common use cases:
 
-| Feature                                                    | Use case example                                     | Supported interfaces         | Supported deployments |
-| -------------------------------------                      | ----------------                                     | --------------------------   | --------------------- |
-| [Ask about GitLab](#ask-about-gitlab)                      | I want to know how to create an issue in GitLab.     | GitLab, VS Code, JetBrains IDEs, and Web IDE | GitLab.com            |
-| [Ask about a specific issue](#ask-about-a-specific-issue)  | I want to summarize this issue.                      | GitLab, VS Code, JetBrains IDEs, and Web IDE | GitLab.com, self-managed, and GitLab Dedicated |
-| [Ask about a specific epic](#ask-about-a-specific-epic)    | I want to summarize this epic.                       | GitLab, VS Code, JetBrains IDEs, and Web IDE | GitLab.com, self-managed, and GitLab Dedicated |
-| [Ask about code](#ask-about-code)                          | I want to understand how this code works.            | GitLab, VS Code, JetBrains IDEs, and Web IDE | GitLab.com, self-managed, and GitLab Dedicated |
-| [Ask about CI/CD](#ask-about-cicd)                         | I want to create a new CI/CD pipeline configuration. | GitLab, VS Code, JetBrains IDEs, and Web IDE | GitLab.com, self-managed, and GitLab Dedicated |
-| [Explain code in the IDE](#explain-code-in-the-ide)        | I want to understand how this code works.            | VS Code, JetBrains IDEs, and Web IDE          | GitLab.com, self-managed, and GitLab Dedicated |
-| [Refactor code in the IDE](#refactor-code-in-the-ide)      | I want to refactor this code.                        | VS Code, JetBrains IDEs, and Web IDE          | GitLab.com, self-managed, and GitLab Dedicated |
-| [Write tests in the IDE](#write-tests-in-the-ide)          | I want to write a test for this code.                | VS Code, JetBrains IDEs, and Web IDE          | GitLab.com, self-managed, and GitLab Dedicated |
+| Feature                                                    | Use case example                                     | [License requirement](https://about.gitlab.com/gitlab-duo/#pricing)      | Supported interfaces                         | Supported deployments |
+| -------------------------------------                      | ----------------                                     | ------------------------- | --------------------------                   | --------------------- |
+| [Ask about GitLab](#ask-about-gitlab)                      | I want to know how to create an issue in GitLab.     | Duo Pro or Duo Enterprise | GitLab, VS Code, JetBrains IDEs, and Web IDE | GitLab.com            |
+| [Ask about code](#ask-about-code)                          | I want to understand how this code works.            | Duo Pro or Duo Enterprise | GitLab, VS Code, JetBrains IDEs, and Web IDE | GitLab.com, self-managed, and GitLab Dedicated |
+| [Ask about CI/CD](#ask-about-cicd)                         | I want to create a new CI/CD pipeline configuration. | Duo Pro or Duo Enterprise | GitLab, VS Code, JetBrains IDEs, and Web IDE | GitLab.com, self-managed, and GitLab Dedicated |
+| [Explain code in the IDE](#explain-code-in-the-ide)        | I want to understand how this code works.            | Duo Pro or Duo Enterprise | VS Code, JetBrains IDEs, and Web IDE         | GitLab.com, self-managed, and GitLab Dedicated |
+| [Refactor code in the IDE](#refactor-code-in-the-ide)      | I want to refactor this code.                        | Duo Pro or Duo Enterprise | VS Code, JetBrains IDEs, and Web IDE         | GitLab.com, self-managed, and GitLab Dedicated |
+| [Write tests in the IDE](#write-tests-in-the-ide)          | I want to write a test for this code.                | Duo Pro or Duo Enterprise | VS Code, JetBrains IDEs, and Web IDE         | GitLab.com, self-managed, and GitLab Dedicated |
+| [Ask about a specific issue](#ask-about-a-specific-issue)  | I want to summarize this issue.                      | Duo Enterprise            | GitLab, VS Code, JetBrains IDEs, and Web IDE | GitLab.com, self-managed, and GitLab Dedicated |
+| [Ask about a specific epic](#ask-about-a-specific-epic)    | I want to summarize this epic.                       | Duo Enterprise            | GitLab, VS Code, JetBrains IDEs, and Web IDE | GitLab.com, self-managed, and GitLab Dedicated |
 
 ## Watch a demo and get tips
 
@@ -69,38 +70,6 @@ NOTE:
 This feature is not currently supported in self-managed instances.
 For more information, see [issue 451215](https://gitlab.com/gitlab-org/gitlab/-/issues/451215).
 
-### Ask about a specific issue
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122235) for SaaS in GitLab 16.0.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122235) for self-managed in GitLab 16.8.
-
-You can ask about a specific GitLab issue. For example:
-
-- `Generate a summary for the issue identified via this link: <link to your issue>`
-- When you are viewing an issue in GitLab, you can ask `Generate a concise summary of the current issue.`
-- `How can I improve the description of <link to your issue> so that readers understand the value and problems to be solved?`
-
-NOTE:
-If the issue contains a large amount of text (more than 40,000 words), GitLab Duo Chat might not be able to consider every word. The AI model has a limit to the amount of input it can process at one time.
-
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For tips on how GitLab Duo Chat can improve your productivity with issues and epics, see [Boost your productivity with GitLab Duo Chat](https://youtu.be/RJezT5_V6dI).
-<!-- Video published on 2024-04-17 -->
-
-### Ask about a specific epic
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128487) for SaaS in GitLab 16.3.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128487) for self-managed in GitLab 16.8.
-
-You can ask about a specific GitLab epic. For example:
-
-- `Generate a summary for the epic identified via this link: <link to your epic>`
-- When you are viewing an epic in GitLab, you can ask `Generate a concise summary of the opened epic.`
-- `What are the unique use cases raised by commenters in <link to your epic>?`
-
-NOTE:
-If the epic contains a large amount of text (more than 40,000 words), GitLab Duo Chat might not be able to consider every word. The AI model has a limit to the amount of input it can process at one time.
-
 ### Ask about code
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122235) for SaaS in GitLab 16.1.
@@ -120,18 +89,6 @@ And you can ask GitLab Duo Chat to explain code:
 - `Provide a clear explanation of the given Ruby code: def sum(a, b) a + b end. Describe what this code does and how it works.`
 
 Alternatively, you can use the [`/explain` command](#explain-code-in-the-ide) to explain the selected code in your editor.
-
-For more practical examples, see the [GitLab Duo examples](gitlab_duo_examples.md).
-
-### Ask about errors
-
-Programming languages that require compiling the source code may throw cryptic error messages. Similarly, a script or a web application could throw a stack trace. You can ask GitLab Duo Chat by prefixing the copied error message with, for example, `Please explain this error message:`. Add the specific context, like the programming language.
-
-- `Explain this error message in Java: Int and system cannot be resolved to a type`
-- `Explain when this C function would cause a segmentation fault: sqlite3_prepare_v2()`
-- `Explain what would cause this error in Python: ValueError: invalid literal for int()`
-- `Why is "this" undefined in VueJS? Provide common error cases, and explain how to avoid them.`
-- `How to debug a Ruby on Rails stacktrace? Share common strategies and an example exception.`
 
 For more practical examples, see the [GitLab Duo examples](gitlab_duo_examples.md).
 
@@ -220,6 +177,50 @@ See [Use GitLab Duo Chat in the VS Code](#use-gitlab-duo-chat-in-vs-code) for mo
 
 For more practical examples, see the [GitLab Duo examples](gitlab_duo_examples.md).
 
+### Ask about a specific issue
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122235) for SaaS in GitLab 16.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122235) for self-managed in GitLab 16.8.
+
+You can ask about a specific GitLab issue. For example:
+
+- `Generate a summary for the issue identified via this link: <link to your issue>`
+- When you are viewing an issue in GitLab, you can ask `Generate a concise summary of the current issue.`
+- `How can I improve the description of <link to your issue> so that readers understand the value and problems to be solved?`
+
+NOTE:
+If the issue contains a large amount of text (more than 40,000 words), GitLab Duo Chat might not be able to consider every word. The AI model has a limit to the amount of input it can process at one time.
+
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For tips on how GitLab Duo Chat can improve your productivity with issues and epics, see [Boost your productivity with GitLab Duo Chat](https://youtu.be/RJezT5_V6dI).
+<!-- Video published on 2024-04-17 -->
+
+### Ask about a specific epic
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128487) for SaaS in GitLab 16.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128487) for self-managed in GitLab 16.8.
+
+You can ask about a specific GitLab epic. For example:
+
+- `Generate a summary for the epic identified via this link: <link to your epic>`
+- When you are viewing an epic in GitLab, you can ask `Generate a concise summary of the opened epic.`
+- `What are the unique use cases raised by commenters in <link to your epic>?`
+
+NOTE:
+If the epic contains a large amount of text (more than 40,000 words), GitLab Duo Chat might not be able to consider every word. The AI model has a limit to the amount of input it can process at one time.
+
+### Ask about errors
+
+Programming languages that require compiling the source code may throw cryptic error messages. Similarly, a script or a web application could throw a stack trace. You can ask GitLab Duo Chat by prefixing the copied error message with, for example, `Please explain this error message:`. Add the specific context, like the programming language.
+
+- `Explain this error message in Java: Int and system cannot be resolved to a type`
+- `Explain when this C function would cause a segmentation fault: sqlite3_prepare_v2()`
+- `Explain what would cause this error in Python: ValueError: invalid literal for int()`
+- `Why is "this" undefined in VueJS? Provide common error cases, and explain how to avoid them.`
+- `How to debug a Ruby on Rails stacktrace? Share common strategies and an example exception.`
+
+For more practical examples, see the [GitLab Duo examples](gitlab_duo_examples.md).
+
 ### Ask follow up questions
 
 You can ask follow-up questions to delve deeper into the topic or task at hand.
@@ -302,8 +303,8 @@ Learn about [data usage when using GitLab Duo Chat](ai_features.md#data-usage).
 
 You can [manually synchronize your subscription](../subscriptions/self_managed/index.md#manually-synchronize-your-subscription-details) if either:
 
-- You have just purchased a subscription for the Premium or Ultimate tier and have upgraded to GitLab 16.8.
-- You already have a subscription for the Premium or Ultimate tier and have upgraded to GitLab 16.8.
+- You have just purchased a subscription for the Premium or Ultimate tier, or have recently assigned seats for Duo Pro, and you have upgraded to GitLab 16.8.
+- You already have a subscription for the Premium or Ultimate tier, or you have recently assigned seats for Duo Pro, and you have upgraded to GitLab 16.8.
 
 Without the manual synchronization, it might take up to 24 hours to activate GitLab Duo Chat on your instance.
 

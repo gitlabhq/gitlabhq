@@ -41,7 +41,6 @@ To install the agent in your cluster:
 The agent configuration file can be added to multiple directories (or subdirectories) of the repository.
 For configuration settings, the agent uses a YAML file in the GitLab project. You must create this file if:
 
-- You use [a GitOps workflow](../gitops/agent.md#gitops-workflow-steps).
 - You use [a GitLab CI/CD workflow](../ci_cd_workflow.md#use-gitlab-cicd-with-your-cluster) and want to authorize a different project to use the agent.
 - You [allow specific project or group members to access Kubernetes](../user_access.md).
 
@@ -196,7 +195,6 @@ GitLab also provides a [KPT package for the agent](https://gitlab.com/gitlab-org
 
 To configure your agent, add content to the `config.yaml` file:
 
-- For a GitOps workflow, [view the configuration reference](../gitops/agent.md#gitops-configuration-reference).
 - For a GitLab CI/CD workflow, [authorize the agent to access your projects](../ci_cd_workflow.md#authorize-the-agent). Then
   [add `kubectl` commands to your `.gitlab-ci.yml` file](../ci_cd_workflow.md#update-your-gitlab-ciyml-file-to-run-kubectl-commands).
 
@@ -234,7 +232,6 @@ As a workaround, you can:
 
 The following example projects can help you get started with the agent.
 
-- [Configuration repository with minimal manifests](https://gitlab.com/gitlab-examples/ops/gitops-demo/k8s-agents)
 - [Distinct application and manifest repository example](https://gitlab.com/gitlab-examples/ops/gitops-demo/hello-world-service-gitops)
 - [Auto DevOps setup that uses the CI/CD workflow](https://gitlab.com/gitlab-examples/ops/gitops-demo/hello-world-service)
 - [Cluster management project template example that uses the CI/CD workflow](https://gitlab.com/gitlab-examples/ops/gitops-demo/cluster-management)

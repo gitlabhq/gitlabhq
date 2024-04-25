@@ -7,8 +7,8 @@ RSpec.describe ForkNamespaceEntity do
   include ProjectForksHelper
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project) }
-  let_it_be(:namespace) { create(:group, :with_avatar, description: 'test') }
+  let_it_be(:project) { create(:project, maintainers: user) }
+  let_it_be(:namespace) { create(:group, :with_avatar, description: 'test', developers: user) }
   let_it_be(:forked_project) { build(:project) }
 
   let(:memberships) do
@@ -20,11 +20,6 @@ RSpec.describe ForkNamespaceEntity do
   let(:entity) { described_class.new(namespace, current_user: user, project: project, memberships: memberships, forked_projects: forked_projects) }
 
   subject(:json) { entity.as_json }
-
-  before do
-    namespace.add_developer(user)
-    project.add_maintainer(user)
-  end
 
   it 'renders json' do
     is_expected.not_to be_nil

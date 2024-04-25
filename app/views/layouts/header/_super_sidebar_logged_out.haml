@@ -8,7 +8,7 @@
           = brand_header_logo
         - if Gitlab.com_and_canary?
           = gl_badge_tag({ variant: :success, size: :sm }, { href: Gitlab::Saas.canary_toggle_com_url, data: { testid: 'canary_badge_link' }, target: :_blank, rel: 'noopener noreferrer', class: 'canary-badge' }) do
-            = _('Next')
+            = s_('GitLab Next|Next')
 
       %ul.gl-list-style-none.gl-p-0.gl-m-0.gl-display-flex.gl-gap-3.gl-align-items-center.gl-flex-grow-1
         - if Gitlab.com?

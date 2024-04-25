@@ -9924,6 +9924,15 @@ msgstr ""
 msgid "CVE|Why Request a CVE ID?"
 msgstr ""
 
+msgid "CVS|Continuous Container Scanning"
+msgstr ""
+
+msgid "CVS|Scan for vulnerabilities when a container image or the advisory database is updated."
+msgstr ""
+
+msgid "CVS|Toggle CVS"
+msgstr ""
+
 msgid "Cadence is not automated"
 msgstr ""
 
@@ -14987,6 +14996,9 @@ msgid "Couldn't link %{issuable}. You must have at least the Reporter role in bo
 msgstr ""
 
 msgid "Couldn't link epics. You must have at least the Guest role in the epic's group."
+msgstr ""
+
+msgid "Couldn't link issues. You must have at least the Guest role in both projects."
 msgstr ""
 
 msgid "Couldn't reorder child due to an internal error."
@@ -23227,6 +23239,9 @@ msgid "GitLab KAS"
 msgstr ""
 
 msgid "GitLab Logo"
+msgstr ""
+
+msgid "GitLab Next|Next"
 msgstr ""
 
 msgid "GitLab Pages"
@@ -46141,6 +46156,9 @@ msgstr ""
 msgid "SecurityOrchestration|%{boldStart}Add branches%{boldEnd} first before selection."
 msgstr ""
 
+msgid "SecurityOrchestration|%{boldStart}Send a bot message%{boldEnd} as comment to merge request creator."
+msgstr ""
+
 msgid "SecurityOrchestration|%{branchName}"
 msgstr ""
 
@@ -46569,6 +46587,9 @@ msgstr ""
 msgid "SecurityOrchestration|Require %{approvals} %{plural} from %{approvers} if any of the following occur:"
 msgstr ""
 
+msgid "SecurityOrchestration|Require Approvers"
+msgstr ""
+
 msgid "SecurityOrchestration|Required approvals exceed eligible approvers."
 msgstr ""
 
@@ -46651,6 +46672,9 @@ msgid "SecurityOrchestration|Select security policy project"
 msgstr ""
 
 msgid "SecurityOrchestration|Select users"
+msgstr ""
+
+msgid "SecurityOrchestration|Send bot message"
 msgstr ""
 
 msgid "SecurityOrchestration|Several merge result policy criteria have been deprecated. Policies using these elements will not work after GitLab 17.0 (May 10, 2024). You must edit these policies to remove the deprecated criteria."
@@ -46812,7 +46836,7 @@ msgstr ""
 msgid "SecurityOrchestration|YAML"
 msgstr ""
 
-msgid "SecurityOrchestration|You already have the maximum %{maximumAllowed} %{policyType} policies."
+msgid "SecurityOrchestration|You already have the maximum %{maximumAllowed} %{policyType} %{instance}."
 msgstr ""
 
 msgid "SecurityOrchestration|You can't change the default branch because its protection is enforced by one or more %{security_policies_link_start}security policies%{security_policies_link_end}. %{learn_more_link_start}Learn more%{learn_more_link_end}."
@@ -59505,6 +59529,9 @@ msgstr ""
 msgid "You must have maintainer access to force delete a lock"
 msgstr ""
 
+msgid "You must provide a file path"
+msgstr ""
+
 msgid "You must provide a valid current password"
 msgstr ""
 
@@ -61918,6 +61945,11 @@ msgstr ""
 
 msgid "point"
 msgid_plural "points"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "policy"
+msgid_plural "policies"
 msgstr[0] ""
 msgstr[1] ""
 

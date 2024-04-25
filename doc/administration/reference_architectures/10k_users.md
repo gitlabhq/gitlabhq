@@ -40,7 +40,7 @@ specifically the [Before you start](index.md#before-you-start) and [Deciding whi
 | Sidekiq<sup>7</sup>                      | 4     | 4 vCPU, 15 GB memory    | `n1-standard-4`  | `m5.xlarge`    | `D4s v3`  |
 | GitLab Rails<sup>7</sup>                 | 3     | 32 vCPU, 28.8 GB memory | `n1-highcpu-32`  | `c5.9xlarge`   | `F32s v2` |
 | Monitoring node                          | 1     | 4 vCPU, 3.6 GB memory   | `n1-highcpu-4`   | `c5.xlarge`    | `F4s v2`  |
-| Object storage <sup>4</sup>               | -     | -                       | -                | -              | -         |
+| Object storage<sup>4</sup>               | -     | -                       | -                | -              | -         |
 
 **Footnotes:**
 

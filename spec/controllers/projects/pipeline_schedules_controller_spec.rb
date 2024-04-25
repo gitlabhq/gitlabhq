@@ -7,12 +7,8 @@ RSpec.describe Projects::PipelineSchedulesController, feature_category: :continu
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:user) { create(:user) }
-  let_it_be_with_reload(:project) { create(:project, :public, :repository) }
+  let_it_be_with_reload(:project) { create(:project, :public, :repository, developers: user) }
   let_it_be_with_reload(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project) }
-
-  before do
-    project.add_developer(user)
-  end
 
   shared_examples 'access update schedule' do
     describe 'security' do

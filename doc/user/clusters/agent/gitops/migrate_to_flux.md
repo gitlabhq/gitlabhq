@@ -10,7 +10,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-Most users can migrate from their [legacy agent-based GitOps solution](agent.md)
+Most users can migrate from their legacy agent-based GitOps solution
 to Flux without additional work or downtime. In most cases, Flux can
 take over existing workloads without any restarts.
 

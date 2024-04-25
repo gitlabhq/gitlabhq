@@ -12,6 +12,12 @@ module Files
 
     private
 
+    def validate!
+      super
+
+      raise_error(_('You must provide a file path')) if @file_path.nil?
+    end
+
     def create_transformed_commit(content_or_lfs_pointer)
       repository.create_file(
         current_user,

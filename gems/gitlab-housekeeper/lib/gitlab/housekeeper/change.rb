@@ -12,6 +12,7 @@ module Gitlab
         :labels,
         :keep_class,
         :changelog_type,
+        :changelog_ee,
         :mr_web_url,
         :push_options,
         :non_housekeeper_changes
@@ -48,12 +49,13 @@ module Gitlab
       end
 
       def commit_message
-        <<~MARKDOWN
+        <<~MARKDOWN.chomp
         #{title}
 
         #{mr_description}
 
         Changelog: #{changelog_type || 'other'}
+        #{changelog_ee ? "EE: true\n" : ''}
         MARKDOWN
       end
 

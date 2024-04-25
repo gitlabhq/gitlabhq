@@ -1134,10 +1134,10 @@ services where applicable):
 
 | Service                     | Nodes | Configuration          | GCP             | AWS         |
 |-----------------------------|-------|------------------------|-----------------|-------------|
-| PostgreSQL <sup>1</sup>     | 1     | 2 vCPU, 7.5 GB memory  | `n1-standard-2` | `m5.large`  |
-| Redis <sup>2</sup>          | 1     | 1 vCPU, 3.75 GB memory | `n1-standard-1` | `m5.large`  |
+| PostgreSQL<sup>1</sup>      | 1     | 2 vCPU, 7.5 GB memory  | `n1-standard-2` | `m5.large`  |
+| Redis<sup>2</sup>           | 1     | 1 vCPU, 3.75 GB memory | `n1-standard-1` | `m5.large`  |
 | Gitaly                      | 1     | 4 vCPU, 15 GB memory   | `n1-standard-4` | `m5.xlarge` |
-| Object storage <sup>3</sup> | -     | -                      | -               | -           |
+| Object storage<sup>3</sup>  | -     | -                      | -               | -           |
 
 **Footnotes:**
 

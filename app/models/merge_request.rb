@@ -96,6 +96,7 @@ class MergeRequest < ApplicationRecord
 
   has_many :merge_requests_closing_issues,
     class_name: 'MergeRequestsClosingIssues',
+    inverse_of: :merge_request,
     dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
   has_many :merge_requests_closing_issues_closes_work_item,
     -> { closes_work_item },

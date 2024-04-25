@@ -23,7 +23,7 @@ To manage linked issues through our API, see [Issue links API](../../../api/issu
 
 Prerequisites:
 
-- You must have at least the Reporter role for both projects.
+- You must have at least the Guest role for both projects.
 
 To link one issue to another:
 

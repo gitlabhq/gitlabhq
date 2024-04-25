@@ -208,12 +208,17 @@ Before implementing a reference architecture, refer to the following requirement
 
 ### Supported CPUs
 
-These reference architectures were built and tested on Google Cloud Platform (GCP) using the
-[Intel Xeon E5 v3 (Haswell)](https://cloud.google.com/compute/docs/cpu-platforms)
-CPU platform as the lowest common denominator baseline ([Sysbench benchmark](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Reference-Architectures/GCP-CPU-Benchmarks)).
-Newer, similarly-sized CPUs are supported and may have improved performance as a result.
+The reference architectures are built and tested across various cloud providers, primarily GCP and AWS, with
+CPU targets being the lowest common denominator to ensure the widest range of compatibility:
 
-ARM CPUs are supported for Linux package environments as well as for any [Cloud Provider services](#cloud-provider-services) where applicable.
+- The [`n1` series](https://cloud.google.com/compute/docs/general-purpose-machines#n1_machines) for GCP.
+- The [`m5` series](https://aws.amazon.com/ec2/instance-types/) for AWS.
+
+Depending on other requirements such as memory or network bandwidth as well as cloud provider availability, different machine types are used accordingly throughout the architectures, but it is expected that the target CPUs above should perform well.
+
+If you want, you can select a newer machine type series and have improved performance as a result.
+
+Additionally, ARM CPUs are supported for Linux package environments as well as for any [Cloud Provider services](#cloud-provider-services) where applicable.
 
 NOTE:
 Any "burstable" instance types are not recommended due to inconsistent performance.
@@ -758,6 +763,8 @@ You can find a full history of changes [on the GitLab project](https://gitlab.co
 
 **2024:**
 
+- [2024-04](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149528): Updated 20 RPS / 1,000 User architecture specs to follow recommended memory target of 16 GB.
+- [2024-04](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148313): Updated Reference Architecture titles to include RPS for further clarity and to help right sizing.
 - [2024-02](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145436): Updated recommended sizings for Load Balancer nodes if deployed on VMs. Also added notes on network bandwidth considerations.
 - [2024-02](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143539): Remove the Sidekiq Max Concurrency setting in examples as this is deprecated and no longer required to be set explicitly.
 - [2024-02](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143539): Adjusted the Sidekiq recommendations on 2k to disable Sidekiq on Rails nodes and updated architecture diagram.

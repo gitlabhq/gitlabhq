@@ -2995,8 +2995,6 @@ RSpec/ContextWording:
     - 'spec/workers/concerns/application_worker_spec.rb'
     - 'spec/workers/container_expiration_policies/cleanup_container_repository_worker_spec.rb'
     - 'spec/workers/container_expiration_policy_worker_spec.rb'
-    - 'spec/workers/container_registry/migration/enqueuer_worker_spec.rb'
-    - 'spec/workers/container_registry/migration/guard_worker_spec.rb'
     - 'spec/workers/create_commit_signature_worker_spec.rb'
     - 'spec/workers/database/ci_namespace_mirrors_consistency_check_worker_spec.rb'
     - 'spec/workers/database/ci_project_mirrors_consistency_check_worker_spec.rb'

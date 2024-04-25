@@ -36,6 +36,18 @@ For self-managed instances that have enabled Code Suggestions and for SaaS accou
 
 Code Suggestions inferences against the currently opened file, the content before and after the cursor, the filename, and the extension type. For more information on possible future context expansion to improve the quality of suggestions, see [epic 11669](https://gitlab.com/groups/gitlab-org/-/epics/11669).
 
+### Truncation of file content
+
+Because of LLM limits and performance reasons, the content of the currently
+opened file is truncated:
+
+- **For code completion**: to 2048 tokens (roughly 8192 characters).
+- **For code generation**: to 50,000 characters.
+
+Content above the cursor is prioritized over content below the cursor. The content
+above the cursor is truncated from the left side, and content below the cursor
+is truncated from the right side.
+
 ## Training data
 
 GitLab does not train generative AI models based on private (non-public) data. The vendors we work with also do not train models based on private data.

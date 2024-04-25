@@ -46,17 +46,22 @@ RSpec.describe Bitbucket::ExponentialBackoff, feature_category: :importers do
         allow(Random).to receive(:rand).and_return(0.001)
       end
 
-      it 'raises a RateLimitError if the maximum number of retries is exceeded' do
-        allow(response_caller).to receive(:call).and_raise(OAuth2::Error, error)
+      shared_examples 'raises a RateLimitError' do |exception|
+        it 'raises a RateLimitError if the maximum number of retries is exceeded' do
+          allow(response_caller).to receive(:call).and_raise(exception, error)
 
-        message = "Maximum number of retries (#{max_retries}) exceeded. #{error}"
+          message = "Maximum number of retries (#{max_retries}) exceeded. #{error}"
 
-        expect do
-          execute
-        end.to raise_error(described_class::RateLimitError, message)
+          expect do
+            execute
+          end.to raise_error(described_class::RateLimitError, message)
 
-        expect(response_caller).to have_received(:call).exactly(max_retries).times
+          expect(response_caller).to have_received(:call).exactly(max_retries).times
+        end
       end
+
+      include_examples 'raises a RateLimitError', OAuth2::Error
+      include_examples 'raises a RateLimitError', HTTParty::ResponseError
     end
   end
 end

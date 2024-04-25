@@ -11,7 +11,7 @@ exports[`Design management toolbar component renders design and updated data 1`]
       class="gl-display-flex gl-mr-3 gl-overflow-hidden"
     >
       <h2
-        class="gl-display-flex gl-font-base gl-m-0 gl-overflow-hidden"
+        class="gl-align-items-center gl-display-flex gl-font-base gl-m-0 gl-overflow-hidden"
       >
         <span
           class="gl-text-decoration-none gl-text-gray-900 gl-text-truncate"
@@ -28,6 +28,11 @@ exports[`Design management toolbar component renders design and updated data 1`]
         >
           test.jpg
         </span>
+        <imported-badge-stub
+          class="gl-ml-2"
+          importabletype="design"
+          size="sm"
+        />
       </h2>
       <small
         class="gl-text-gray-500"

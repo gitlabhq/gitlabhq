@@ -14,11 +14,6 @@ module Projects
       ::Projects::RepositoryStorageMove.find(repository_storage_move_id)
     end
 
-    override :find_container
-    def find_container(container_id)
-      Project.find(container_id)
-    end
-
     override :update_repository_storage
     def update_repository_storage(repository_storage_move)
       ::Projects::UpdateRepositoryStorageService.new(repository_storage_move).execute

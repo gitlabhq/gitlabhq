@@ -26,7 +26,6 @@ Gitlab/AvoidGitlabInstanceChecks:
     - 'app/models/release_highlight.rb'
     - 'app/policies/base_policy.rb'
     - 'app/workers/container_registry/cleanup_worker.rb'
-    - 'app/workers/container_registry/migration/guard_worker.rb'
     - 'app/workers/container_registry/record_data_repair_detail_worker.rb'
     - 'app/workers/gitlab_service_ping_worker.rb'
     - 'app/workers/users/deactivate_dormant_users_worker.rb'

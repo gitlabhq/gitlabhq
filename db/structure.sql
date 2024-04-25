@@ -1206,7 +1206,7 @@ PARTITION BY LIST (partition_id);
 
 CREATE TABLE p_ci_finished_build_ch_sync_events (
     build_id bigint NOT NULL,
-    partition bigint DEFAULT 1 NOT NULL,
+    partition bigint DEFAULT 2 NOT NULL,
     build_finished_at timestamp without time zone NOT NULL,
     processed boolean DEFAULT false NOT NULL
 )
@@ -27377,8 +27377,6 @@ CREATE INDEX index_sop_configurations_project_id_policy_project_id ON security_o
 CREATE INDEX index_sop_schedules_on_sop_configuration_id ON security_orchestration_policy_rule_schedules USING btree (security_orchestration_policy_configuration_id);
 
 CREATE INDEX index_sop_schedules_on_user_id ON security_orchestration_policy_rule_schedules USING btree (user_id);
-
-CREATE INDEX index_source_package_names_on_component_and_purl ON sbom_components USING btree (component_type, source_package_name, purl_type);
 
 CREATE INDEX index_spam_logs_on_user_id ON spam_logs USING btree (user_id);
 

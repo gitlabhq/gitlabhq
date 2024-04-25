@@ -109,6 +109,10 @@ class IssuePolicy < IssuablePolicy
     enable :admin_issue_relation
   end
 
+  rule { can?(:guest_access) & can?(:read_issue) & is_project_member }.policy do
+    enable :admin_issue_link
+  end
+
   rule { support_bot & service_desk_enabled }.enable :admin_issue_relation
 
   rule { can_read_crm_contacts }.policy do

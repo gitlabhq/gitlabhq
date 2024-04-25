@@ -10,10 +10,11 @@ import { REPORT_TYPE_DAST } from '~/vue_shared/security_reports/constants';
  * This function takes the nested securityFeatures config and flattens it to the top level object.
  * It then filters out any scanner features that lack a security config for rednering in the UI
  * @param [{}] features
+ * @param {Object} securityFeatures Object containing client side UI options
  * @returns {Object} Object with enriched features from constants divided into Security and Compliance Features
  */
 
-export const augmentFeatures = (features = []) => {
+export const augmentFeatures = (securityFeatures, features = []) => {
   const featuresByType = features.reduce((acc, feature) => {
     acc[feature.type] = convertObjectPropsToCamelCase(feature, { deep: true });
     return acc;
@@ -30,6 +31,7 @@ export const augmentFeatures = (features = []) => {
     const augmented = {
       ...feature,
       ...featuresByType[feature.type],
+      ...securityFeatures[feature.type],
     };
 
     // Secondary layer copies some values from the first layer

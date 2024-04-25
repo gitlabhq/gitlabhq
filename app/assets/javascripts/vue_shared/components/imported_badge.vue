@@ -3,8 +3,10 @@ import { GlBadge, GlTooltipDirective } from '@gitlab/ui';
 import { __, s__, sprintf } from '~/locale';
 
 import { TYPE_EPIC, TYPE_ISSUE, TYPE_MERGE_REQUEST } from '~/issues/constants';
+import { TYPE_DESIGN } from '~/import/constants';
 
 const importableTypeText = {
+  [TYPE_DESIGN]: __('design'),
   [TYPE_EPIC]: __('epic'),
   [TYPE_ISSUE]: __('issue'),
   [TYPE_MERGE_REQUEST]: __('merge request'),
@@ -23,6 +25,11 @@ export default {
       required: false,
       default: '',
     },
+    size: {
+      type: String,
+      required: false,
+      default: undefined,
+    },
   },
   computed: {
     title() {
@@ -35,7 +42,7 @@ export default {
 </script>
 
 <template>
-  <gl-badge v-gl-tooltip="title">
+  <gl-badge v-gl-tooltip="title" :size="size">
     {{ __('Imported') }}
   </gl-badge>
 </template>

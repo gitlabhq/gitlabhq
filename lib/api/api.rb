@@ -265,6 +265,7 @@ module API
         mount ::API::GroupPackages
         mount ::API::GroupVariables
         mount ::API::HelmPackages
+        mount ::API::ImportBitbucket
         mount ::API::ImportBitbucketServer
         mount ::API::ImportGithub
         mount ::API::Integrations

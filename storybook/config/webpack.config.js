@@ -95,22 +95,24 @@ function sassSmartImporter(url, prev) {
 }
 
 const sassLoaderOptions = {
-  functions: {
-    'image-url($url)': function sassImageUrlStub() {
-      return new sass.types.String(TRANSPARENT_1X1_PNG);
+  sassOptions: {
+    functions: {
+      'image-url($url)': function sassImageUrlStub() {
+        return new sass.types.String(TRANSPARENT_1X1_PNG);
+      },
+      'asset_path($url)': function sassAssetPathStub() {
+        return new sass.types.String(TRANSPARENT_1X1_PNG);
+      },
+      'asset_url($url)': function sassAssetUrlStub() {
+        return new sass.types.String(TRANSPARENT_1X1_PNG);
+      },
+      'url($url)': function sassUrlStub() {
+        return new sass.types.String(TRANSPARENT_1X1_PNG);
+      },
     },
-    'asset_path($url)': function sassAssetPathStub() {
-      return new sass.types.String(TRANSPARENT_1X1_PNG);
-    },
-    'asset_url($url)': function sassAssetUrlStub() {
-      return new sass.types.String(TRANSPARENT_1X1_PNG);
-    },
-    'url($url)': function sassUrlStub() {
-      return new sass.types.String(TRANSPARENT_1X1_PNG);
-    },
+    includePaths: SASS_INCLUDE_PATHS,
+    importer: sassSmartImporter,
   },
-  includePaths: SASS_INCLUDE_PATHS,
-  importer: sassSmartImporter,
 };
 
 // Some dependencies need to be transpiled for webpack to be happy

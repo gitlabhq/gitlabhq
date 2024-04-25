@@ -23,9 +23,16 @@ For a full list of reference architectures, see
 >  can follow a [modified hybrid reference architecture](#cloud-native-hybrid-reference-architecture-with-helm-charts).
 > - **Unsure which Reference Architecture to use?** [Go to this guide for more info](index.md#deciding-which-architecture-to-use).
 
-| Users        | Configuration           | GCP            | AWS          | Azure    |
-|--------------|-------------------------|----------------|--------------|----------|
-| Up to 1,000 or 20 RPS | 8 vCPU, 7.2 GB memory   | `n1-highcpu-8` | `c5.2xlarge` | `F8s v2` |
+| Users        | Configuration        | GCP            | AWS          | Azure    |
+|--------------|----------------------|----------------|--------------|----------|
+| Up to 1,000 or 20 RPS | 8 vCPU, 16 GB memory | `n1-standard-8`<sup>1</sup> | `c5.2xlarge` | `F8s v2` |
+
+**Footnotes:**
+
+<!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
+<!-- markdownlint-disable MD029 -->
+1. For GCP, the closest and equivalent standard machine type has been selected that matches the recommended requirement of 8 vCPU and 16 GB of RAM. A [custom machine type](https://cloud.google.com/compute/docs/instances/creating-instance-with-custom-machine-type) can also be used if desired.
+<!-- markdownlint-enable MD029 -->
 
 ```plantuml
 @startuml 1k
