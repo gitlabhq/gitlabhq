@@ -177,15 +177,6 @@ class ProjectsController < Projects::ApplicationController
 
     @ref_type = 'heads'
 
-    if !Feature.enabled?(:ambiguous_ref_modal, @project) && ambiguous_ref?(@project, @ref)
-      branch = @project.repository.find_branch(@ref)
-
-      # The files view would render a ref other than the default branch
-      # This redirect can be removed once the view is fixed
-      redirect_to(project_tree_path(@project, branch.target), alert: _("The default branch of this project clashes with another ref"))
-      return
-    end
-
     respond_to do |format|
       format.html do
         @project = @project.present(current_user: current_user)

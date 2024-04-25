@@ -148,6 +148,7 @@ Dangerfile
 /app/presenters/projects/security/
 /spec/presenters/projects/security/
 /ee/app/finders/security/
+/ee/app/finders/sbom/
 /ee/app/models/security/
 /ee/app/models/vulnerabilities/
 /ee/app/policies/vulnerabilities/
@@ -159,6 +160,33 @@ Dangerfile
 ^[Threat Insights frontend] @gitlab-org/govern/threat-insights-frontend-team
 /ee/app/assets/javascripts/license_compliance/components/detected_licenses_table.vue
 /ee/spec/frontend/license_compliance/components/detected_licenses_table_spec.js
+
+^[Composition Analysis backend] @gitlab-org/secure/composition-analysis-be
+/app/events/package_metadata/
+/app/models/concerns/enums/package_metadata.rb
+/ee/app/finders/sbom/possibly_affected_occurences_finder.rb
+/ee/app/models/package_metadata/
+/ee/app/models/sbom/
+/ee/app/services/package_metadata/
+/ee/app/services/sbom/ingestion/
+/ee/app/services/security/ingestion/
+/ee/app/workers/package_metadata/
+/ee/lib/gitlab/license_scanning.rb
+/ee/lib/gitlab/license_scanning/
+/ee/lib/gitlab/vulnerability_scanning/
+/ee/lib/sbom/
+/ee/spec/lib/gitlab/license_scanning/
+/ee/spec/lib/gitlab/license_scanning_spec.rb
+/ee/spec/lib/gitlab/vulnerability_scanning/
+/ee/spec/lib/sbom/
+/ee/spec/models/package_metadata/
+/ee/spec/models/sbom/
+/lib/gitlab/ci/parsers/sbom/
+/lib/gitlab/ci/reports/sbom/
+/lib/sbom/
+/spec/lib/gitlab/ci/parsers/sbom/
+/spec/lib/gitlab/ci/reports/sbom/
+/spec/lib/sbom/
 
 ^[Secure] @gitlab-org/secure/dynamic-analysis-be
 /ee/app/services/app_sec/dast/

@@ -97,14 +97,10 @@ class Projects::ApplicationController < ApplicationController
   def set_is_ambiguous_ref
     return @is_ambiguous_ref if defined? @is_ambiguous_ref
 
-    @is_ambiguous_ref = if Feature.enabled?(:ambiguous_ref_modal, @project)
-                          ExtractsRef::RequestedRef
+    @is_ambiguous_ref = ExtractsRef::RequestedRef
                                                 .new(@project.repository, ref_type: ref_type, ref: @ref)
                                                 .find
                                                 .fetch(:ambiguous, false)
-                        else
-                          false
-                        end
   end
 
   def handle_update_result(result)

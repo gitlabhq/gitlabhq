@@ -29,14 +29,6 @@ class Projects::TreeController < Projects::ApplicationController
     return render_404 unless @commit
 
     @ref_type = ref_type
-    if !Feature.enabled?(:ambiguous_ref_modal,
-      @project) && (@ref_type == BRANCH_REF_TYPE && ambiguous_ref?(@project, @ref))
-      branch = @project.repository.find_branch(@ref)
-      if branch
-        redirect_to project_tree_path(@project, branch.target)
-        return
-      end
-    end
 
     if tree.entries.empty?
       if @repository.blob_at(@commit.id, @path)

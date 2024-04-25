@@ -156,12 +156,6 @@ class Projects::BlobController < Projects::ApplicationController
 
   def check_for_ambiguous_ref
     @ref_type = ref_type
-    return if Feature.enabled?(:ambiguous_ref_modal, @project)
-
-    if @ref_type == ExtractsRef::RefExtractor::BRANCH_REF_TYPE && ambiguous_ref?(@project, @ref)
-      branch = @project.repository.find_branch(@ref)
-      redirect_to project_blob_path(@project, File.join(branch.target, @path))
-    end
   end
 
   def commit

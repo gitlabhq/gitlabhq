@@ -29,27 +29,10 @@ RSpec.describe Projects::BlobController, feature_category: :source_code_manageme
         let(:id) { "#{ref}/#{path}" }
 
         it_behaves_like '#set_is_ambiguous_ref when ref is ambiguous'
-
-        context 'and explicitly requesting a branch' do
-          let(:ref_type) { 'heads' }
-
-          it 'redirects to blob#show with sha for the branch' do
-            expect(response).to redirect_to(project_blob_path(project, "#{RepoHelpers.another_sample_commit.id}/#{path}"))
-          end
-        end
-
-        context 'and explicitly requesting a tag' do
-          let(:ref_type) { 'tags' }
-
-          it 'responds with success' do
-            expect(response).to be_ok
-          end
-        end
       end
 
       describe '#set_is_ambiguous_ref with no ambiguous ref' do
         let(:id) { 'master/invalid-path.rb' }
-        let(:ambiguous_ref_modal) { true }
 
         it_behaves_like '#set_is_ambiguous_ref when ref is not ambiguous'
       end
