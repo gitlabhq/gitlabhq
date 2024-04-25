@@ -27,7 +27,8 @@ module ClustersHelper
       project_path: clusterable_project_path(clusterable),
       kas_address: Gitlab::Kas.external_url,
       gitlab_version: Gitlab.version_info,
-      kas_version: Gitlab::Kas.version_info
+      kas_install_version: Gitlab::Kas.install_version_info,
+      kas_check_version: Gitlab::Kas.display_version_info
     }
   end
 

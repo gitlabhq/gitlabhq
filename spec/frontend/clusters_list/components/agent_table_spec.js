@@ -13,7 +13,7 @@ const defaultConfigHelpUrl =
 
 const provideData = {
   gitlabVersion: '14.8',
-  kasVersion: '14.8.0',
+  kasCheckVersion: '14.8.0',
 };
 const defaultProps = {
   agents: clusterAgents,
@@ -133,7 +133,7 @@ describe('AgentTable', () => {
     });
 
     describe.each`
-      agentMockIdx | agentVersion | kasVersion      | versionMismatch | versionOutdated | title
+      agentMockIdx | agentVersion | kasCheckVersion | versionMismatch | versionOutdated | title
       ${0}         | ${''}        | ${'14.8.0'}     | ${false}        | ${false}        | ${''}
       ${1}         | ${'14.8.0'}  | ${'14.8.0'}     | ${false}        | ${false}        | ${''}
       ${2}         | ${'14.6.0'}  | ${'14.8.0'}     | ${false}        | ${true}         | ${outdatedTitle}
@@ -145,8 +145,15 @@ describe('AgentTable', () => {
       ${8}         | ${'14.8.0'}  | ${'14.8.10'}    | ${false}        | ${false}        | ${''}
       ${9}         | ${''}        | ${'14.8.0'}     | ${false}        | ${false}        | ${''}
     `(
-      'when agent version is "$agentVersion", KAS version is "$kasVersion" and version mismatch is "$versionMismatch"',
-      ({ agentMockIdx, agentVersion, kasVersion, versionMismatch, versionOutdated, title }) => {
+      'when agent version is "$agentVersion", KAS version is "$kasCheckVersion" and version mismatch is "$versionMismatch"',
+      ({
+        agentMockIdx,
+        agentVersion,
+        kasCheckVersion,
+        versionMismatch,
+        versionOutdated,
+        title,
+      }) => {
         const currentAgent = clusterAgents[agentMockIdx];
 
         const findIcon = () => findVersionText(0).findComponent(GlIcon);
@@ -154,12 +161,12 @@ describe('AgentTable', () => {
 
         const versionWarning = versionMismatch || versionOutdated;
         const outdatedText = sprintf(I18N_AGENT_TABLE.versionOutdatedText, {
-          version: kasVersion,
+          version: kasCheckVersion,
         });
 
         beforeEach(() => {
           createWrapper({
-            provide: { gitlabVersion: '14.8', kasVersion },
+            provide: { gitlabVersion: '14.8', kasCheckVersion },
             propsData: { agents: [currentAgent] },
           });
         });

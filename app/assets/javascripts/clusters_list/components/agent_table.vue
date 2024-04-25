@@ -47,7 +47,7 @@ export default {
   configHelpLink: helpPagePath('user/clusters/agent/install/index', {
     anchor: 'create-an-agent-configuration-file',
   }),
-  inject: ['gitlabVersion', 'kasVersion'],
+  inject: ['gitlabVersion', 'kasCheckVersion'],
   props: {
     agents: {
       required: true,
@@ -122,7 +122,7 @@ export default {
       });
     },
     serverVersion() {
-      return this.kasVersion || this.gitlabVersion;
+      return this.kasCheckVersion || this.gitlabVersion;
     },
     showPagination() {
       return !this.maxAgents && this.agents.length > this.limit;

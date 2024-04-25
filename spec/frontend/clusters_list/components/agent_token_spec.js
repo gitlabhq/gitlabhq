@@ -14,7 +14,7 @@ import CodeBlock from '~/vue_shared/components/code_block.vue';
 const kasAddress = 'kas.example.com';
 const agentName = 'my-agent';
 const agentToken = 'agent-token';
-const kasVersion = '15.0.0';
+const kasInstallVersion = '15.0.0';
 const modalId = INSTALL_AGENT_MODAL_ID;
 
 describe('InstallAgentModal', () => {
@@ -30,7 +30,7 @@ describe('InstallAgentModal', () => {
   const createWrapper = (newAgentName = agentName) => {
     const provide = {
       kasAddress,
-      kasVersion,
+      kasInstallVersion,
     };
 
     const propsData = {
@@ -83,7 +83,7 @@ describe('InstallAgentModal', () => {
         text: generateAgentRegistrationCommand({
           name: agentName,
           token: agentToken,
-          version: kasVersion,
+          version: kasInstallVersion,
           address: kasAddress,
         }),
         modalId,
@@ -99,7 +99,7 @@ describe('InstallAgentModal', () => {
       expect(findCodeBlock().props('code')).toContain(`--namespace gitlab-agent-${agentName}`);
       expect(findCodeBlock().props('code')).toContain(`--set config.token=${agentToken}`);
       expect(findCodeBlock().props('code')).toContain(`--set config.kasAddress=${kasAddress}`);
-      expect(findCodeBlock().props('code')).toContain(`--set image.tag=v${kasVersion}`);
+      expect(findCodeBlock().props('code')).toContain(`--set image.tag=v${kasInstallVersion}`);
     });
 
     it('truncates the namespace name if it exceeds the maximum length', () => {
