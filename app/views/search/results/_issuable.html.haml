@@ -4,7 +4,7 @@
       = gl_badge_tag issuable_state_text(issuable), variant: issuable_state_to_badge_class(issuable), size: :sm
       = sprite_icon('eye-slash', css_class: 'gl-text-gray-500 gl-ml-2') if issuable.respond_to?(:confidential?) && issuable.confidential?
       = link_to issuable_path(issuable), data: { track_action: 'click_text', track_label: "#{issuable.class.name.downcase}_title", track_property: 'search_result' }, class: 'gl-w-full' do
-        %span.term.str-truncated.gl-font-weight-bold.gl-ml-2= issuable.title
+        %span.term.str-truncated.gl-font-weight-bold.gl-ml-2= simple_search_highlight_and_truncate(issuable.title, @search_term)
     .gl-text-gray-500.gl-my-3
       = issuable_project_reference(issuable)
       &middot;

@@ -336,7 +336,7 @@ export default {
         class="gl-md-display-flex gl-flex-direction-column gl-align-items-flex-end gl-flex-shrink-0 gl-mt-3 gl-md-pl-0 gl-md-mt-0"
         :class="showProjectIcon ? 'gl-pl-12' : 'gl-pl-10'"
       >
-        <div class="gl-display-flex gl-align-items-center gl-gap-x-3 gl-md-h-9">
+        <div class="gl-display-flex gl-align-items-center gl-column-gap-3 gl-md-h-9">
           <project-list-item-inactive-badge :project="project" />
           <gl-link
             v-gl-tooltip="$options.i18n.stars"

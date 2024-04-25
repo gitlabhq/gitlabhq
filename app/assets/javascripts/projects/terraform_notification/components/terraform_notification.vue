@@ -42,7 +42,7 @@ export default {
 <template>
   <user-callout-dismisser ref="calloutDismisser" feature-name="terraform_notification_dismissed">
     <template #default="{ shouldShowCallout }">
-      <div v-if="shouldShowCallout" class="gl-py-5">
+      <div v-if="shouldShowCallout" class="gl-pt-5">
         <gl-banner
           :title="$options.i18n.title"
           :button-text="$options.i18n.buttonText"

@@ -5,6 +5,6 @@
     .user-info
       = link_to user_path(user) do
         .item-title
-          = user.name
+          = simple_search_highlight_and_truncate(user.name, @search_term)
           = user_status(user)
-        .cgray= user.to_reference
+        .cgray= simple_search_highlight_and_truncate(user.to_reference, @search_term)

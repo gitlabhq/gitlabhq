@@ -1,0 +1,9 @@
+---
+name: skip_copy_operation_in_terraform_module_upload
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/439811
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150713
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/457927
+milestone: '17.0'
+group: group::package registry
+type: gitlab_com_derisk
+default_enabled: false

@@ -35,7 +35,10 @@
                 = project.namespace.human_name
                 \/
             %span.project-name<
-              = project.name
+              - if @search_term.present?
+                = simple_search_highlight_and_truncate(project.name, @search_term)
+              - else
+                = project.name
 
         = visibility_level_content(project, css_class: 'gl-mr-2')
 

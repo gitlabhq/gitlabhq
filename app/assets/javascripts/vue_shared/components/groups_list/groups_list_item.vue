@@ -172,7 +172,7 @@ export default {
         </gl-avatar-labeled>
       </div>
       <div
-        class="gl-display-flex gl-align-items-center gl-gap-x-3 gl-flex-shrink-0 gl-mt-3 gl-md-pl-0 gl-md-mt-0 gl-md-ml-3 gl-md-h-9"
+        class="gl-display-flex gl-align-items-center gl-column-gap-3 gl-flex-shrink-0 gl-mt-3 gl-md-pl-0 gl-md-mt-0 gl-md-ml-3 gl-md-h-9"
         :class="statsPadding"
       >
         <group-list-item-inactive-badge :group="group" />

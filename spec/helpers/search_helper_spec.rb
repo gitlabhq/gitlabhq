@@ -819,13 +819,13 @@ RSpec.describe SearchHelper, feature_category: :global_search do
       using RSpec::Parameterized::TableSyntax
 
       where(:description, :expected) do
-        'test'                                                                 | '<span class="gl-text-gray-900 gl-font-weight-bold">test</span>'
-        '<span style="color: blue;">this test should not be blue</span>'       | 'this <span class="gl-text-gray-900 gl-font-weight-bold">test</span> should not be blue'
-        '<a href="#" onclick="alert(\'XSS\')">Click Me test</a>'               | '<a href="#">Click Me <span class="gl-text-gray-900 gl-font-weight-bold">test</span></a>'
-        '<script type="text/javascript">alert(\'Another XSS\');</script> test' | ' <span class="gl-text-gray-900 gl-font-weight-bold">test</span>'
-        'Lorem test ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec.' | 'Lorem <span class="gl-text-gray-900 gl-font-weight-bold">test</span> ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Don...'
+        'test'                                                                 | '<mark>test</mark>'
+        '<span style="color: blue;">this test should not be blue</span>'       | 'this <mark>test</mark> should not be blue'
+        '<a href="#" onclick="alert(\'XSS\')">Click Me test</a>'               | '<a href="#">Click Me <mark>test</mark></a>'
+        '<script type="text/javascript">alert(\'Another XSS\');</script> test' | ' <mark>test</mark>'
+        'Lorem test ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec.' | 'Lorem <mark>test</mark> ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Don...'
         '<img src="https://random.foo.com/test.png" width="128" height="128" />some image' | 'some image'
-        '<h2 data-sourcepos="11:1-11:26" dir="auto"><a id="user-content-additional-information" class="anchor" href="#additional-information" aria-hidden="true"></a>Additional information test:</h2><textarea data-update-url="/freepascal.org/fpc/source/-/issues/6163.json" dir="auto" data-testid="textarea" class="hidden js-task-list-field"></textarea>' | '<a class="anchor" href="#additional-information"></a>Additional information <span class="gl-text-gray-900 gl-font-weight-bold">test</span>:'
+        '<h2 data-sourcepos="11:1-11:26" dir="auto"><a id="user-content-additional-information" class="anchor" href="#additional-information" aria-hidden="true"></a>Additional information test:</h2><textarea data-update-url="/freepascal.org/fpc/source/-/issues/6163.json" dir="auto" data-testid="textarea" class="hidden js-task-list-field"></textarea>' | '<a class="anchor" href="#additional-information"></a>Additional information <mark>test</mark>:'
       end
 
       with_them do

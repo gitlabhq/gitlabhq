@@ -20,6 +20,14 @@ $language-filter-max-height: 20rem;
       margin-right: -5px;
     }
   }
+
+  mark {
+    position: relative;
+    background-color: $orange-100;
+    padding: 0;
+    box-shadow: 0 0 0 $gl-spacing-scale-1 $orange-100;
+    z-index: -1;
+  }
 }
 
 .hr-x {

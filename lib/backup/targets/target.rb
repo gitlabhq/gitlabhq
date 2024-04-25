@@ -6,7 +6,7 @@ module Backup
       # Backup creation and restore option flags
       #
       # @return [Backup::Options]
-      attr_reader :options
+      attr_reader :options, :progress
 
       def initialize(progress, options:)
         @progress = progress

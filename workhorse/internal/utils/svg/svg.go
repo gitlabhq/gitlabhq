@@ -4,6 +4,7 @@
 // license that can be found in the LICENSE file or at
 // https://github.com/h2non/go-is-svg/blob/master/LICENSE.
 
+// Package svg provides utilities for working with SVG (Scalable Vector Graphics) files.
 package svg
 
 import (

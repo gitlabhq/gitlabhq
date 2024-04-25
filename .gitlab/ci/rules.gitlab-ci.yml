@@ -207,6 +207,9 @@
   - "scripts/gitaly-test-spawn"
   - "spec/support/gitlab-git-test.git/**/*"
   - "spec/support/helpers/gitaly_setup.rb"
+  # Verify that Gitaly does not break Workhorse
+  - "GITALY_SERVER_VERSION"
+  - "lib/gitlab/setup_helper.rb"
 
 .yaml-lint-patterns: &yaml-lint-patterns
   - "**/*.{yml,yaml}{,.*}"
@@ -579,9 +582,15 @@
   - ".dockerignore"
   - "{,jh/}qa/**/*"
   # Workhorse changes
+  - ".gitlab/ci/workhorse.gitlab-ci.yml"
   - "GITLAB_WORKHORSE_VERSION"
   - "workhorse/**/*"
-  - ".gitlab/ci/workhorse.gitlab-ci.yml"
+  - "scripts/gitaly-test-build"
+  - "scripts/gitaly-test-spawn"
+  - "spec/support/gitlab-git-test.git/**/*"
+  - "spec/support/helpers/gitaly_setup.rb"
+  - "GITALY_SERVER_VERSION"
+  - "lib/gitlab/setup_helper.rb"
   # CI Templates changes
   - "scripts/lint_templates_bash.rb"
   - "lib/gitlab/ci/templates/**/*.gitlab-ci.yml"

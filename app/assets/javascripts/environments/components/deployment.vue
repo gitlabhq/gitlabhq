@@ -169,7 +169,7 @@ export default {
   ],
   deploymentStatusClasses: [
     'gl-display-flex',
-    'gl-gap-x-3',
+    'gl-column-gap-3',
     'gl-mr-0',
     'gl-md-mr-5',
     'gl-mb-3',
@@ -193,7 +193,7 @@ export default {
           </gl-badge>
           <gl-badge v-if="latest" variant="info">{{ $options.i18n.latestBadge }}</gl-badge>
         </div>
-        <div class="gl-display-flex gl-align-items-center gl-gap-x-5">
+        <div class="gl-display-flex gl-align-items-center gl-column-gap-5">
           <div
             v-if="iid"
             v-gl-tooltip

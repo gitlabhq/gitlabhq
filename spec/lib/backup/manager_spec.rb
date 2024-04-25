@@ -125,6 +125,7 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
                                    .tap { |task| allow(task).to receive(:target).and_return(target) }
     end
 
+    let(:task_name) { 'terraform_state' }
     let(:pre_restore_warning) { '' }
     let(:post_restore_warning) { '' }
     let(:target) { instance_double(::Backup::Targets::Target) }
@@ -134,6 +135,16 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
     end
 
     let(:backup_information) { { backup_created_at: Time.zone.parse('2019-01-01'), gitlab_version: '12.3' } }
+    let(:backup_id) { "1546300800_2019_01_01_#{Gitlab::VERSION}" }
+    let(:backup_path) { Pathname.new('tmp/backups') }
+    let(:restore_process) do
+      Backup::Restore::Process.new(
+        backup_id: backup_id,
+        backup_path: backup_path,
+        backup_task: backup_tasks[task_name],
+        logger: logger
+      )
+    end
 
     before do
       allow_next_instance_of(Backup::Metadata) do |metadata|
@@ -150,7 +161,7 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
       expect(logger).to receive(:info).with('Restoring terraform states ... ').ordered
       expect(logger).to receive(:info).with('Restoring terraform states ... done').ordered
 
-      subject.run_restore_task(terraform_state)
+      restore_process.execute!
     end
 
     describe 'disabled' do
@@ -160,59 +171,95 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
         expect(target).not_to receive(:restore)
         expect(logger).to receive(:info).with('Restoring terraform states ... [DISABLED]').ordered
 
-        subject.run_restore_task(terraform_state)
+        restore_process.execute!
       end
     end
 
     describe 'pre_restore_warning' do
       let(:pre_restore_warning) { 'Watch out!' }
 
-      it 'displays and waits for the user' do
-        expect(logger).to receive(:info).with('Restoring terraform states ... ').ordered
-        expect(logger).to receive(:warn).with('Watch out!').ordered
-        expect(logger).to receive(:info).with('Restoring terraform states ... done').ordered
-        expect(Gitlab::TaskHelpers).to receive(:ask_to_continue)
-        expect(target).to receive(:restore)
+      describe 'skip prompt' do
+        before do
+          stub_env('GITLAB_ASSUME_YES', 1)
+        end
 
-        subject.run_restore_task(terraform_state)
+        it 'does not ask to continue' do
+          expect(logger).to receive(:info).with('Restoring terraform states ... ').ordered
+          expect(logger).to receive(:warn).with('Watch out!').ordered
+          expect(logger).to receive(:info).with('Restoring terraform states ... done').ordered
+          expect(Gitlab::TaskHelpers).not_to receive(:prompt)
+          expect(target).to receive(:restore)
+
+          restore_process.execute!
+        end
       end
 
-      it 'does not continue when the user quits' do
-        expect(logger).to receive(:info).with('Restoring terraform states ... ').ordered
-        expect(logger).to receive(:warn).with('Watch out!').ordered
-        expect(logger).to receive(:error).with('Quitting...').ordered
-        expect(Gitlab::TaskHelpers).to receive(:ask_to_continue).and_raise(Gitlab::TaskAbortedByUserError)
+      describe 'with prompt' do
+        it 'displays and waits for the user' do
+          expect(logger).to receive(:info).with('Restoring terraform states ... ').ordered
+          expect(logger).to receive(:warn).with('Watch out!').ordered
+          expect(logger).to receive(:info).with('Restoring terraform states ... done').ordered
+          expect(Gitlab::TaskHelpers).to receive(:ask_to_continue)
+          expect(target).to receive(:restore)
 
-        expect do
-          subject.run_restore_task(terraform_state)
-        end.to raise_error(SystemExit)
+          restore_process.execute!
+        end
+
+        it 'does not continue when the user quits' do
+          expect(logger).to receive(:info).with('Restoring terraform states ... ').ordered
+          expect(logger).to receive(:warn).with('Watch out!').ordered
+          expect(logger).to receive(:error).with('Quitting...').ordered
+          expect(Gitlab::TaskHelpers).to receive(:ask_to_continue).and_raise(Gitlab::TaskAbortedByUserError)
+
+          expect do
+            restore_process.execute!
+          end.to raise_error(SystemExit)
+        end
       end
     end
 
     describe 'post_restore_warning' do
       let(:post_restore_warning) { 'Watch out!' }
 
-      it 'displays and waits for the user' do
-        expect(logger).to receive(:info).with('Restoring terraform states ... ').ordered
-        expect(logger).to receive(:info).with('Restoring terraform states ... done').ordered
-        expect(logger).to receive(:warn).with('Watch out!').ordered
-        expect(Gitlab::TaskHelpers).to receive(:ask_to_continue)
-        expect(target).to receive(:restore)
+      describe 'skip prompt' do
+        before do
+          stub_env('GITLAB_ASSUME_YES', 1)
+        end
 
-        subject.run_restore_task(terraform_state)
+        it "does not ask to continue" do
+          expect(logger).to receive(:info).with('Restoring terraform states ... ').ordered
+          expect(logger).to receive(:info).with('Restoring terraform states ... done').ordered
+          expect(logger).to receive(:warn).with('Watch out!').ordered
+          expect(Gitlab::TaskHelpers).not_to receive(:prompt)
+          expect(target).to receive(:restore)
+
+          restore_process.execute!
+        end
       end
 
-      it 'does not continue when the user quits' do
-        expect(logger).to receive(:info).with('Restoring terraform states ... ').ordered
-        expect(logger).to receive(:info).with('Restoring terraform states ... done').ordered
-        expect(logger).to receive(:warn).with('Watch out!').ordered
-        expect(logger).to receive(:error).with('Quitting...').ordered
-        expect(target).to receive(:restore)
-        expect(Gitlab::TaskHelpers).to receive(:ask_to_continue).and_raise(Gitlab::TaskAbortedByUserError)
+      describe "prompt" do
+        it 'displays and waits for the user' do
+          expect(logger).to receive(:info).with('Restoring terraform states ... ').ordered
+          expect(logger).to receive(:info).with('Restoring terraform states ... done').ordered
+          expect(logger).to receive(:warn).with('Watch out!').ordered
+          expect(Gitlab::TaskHelpers).to receive(:ask_to_continue)
+          expect(target).to receive(:restore)
 
-        expect do
-          subject.run_restore_task(terraform_state)
-        end.to raise_error(SystemExit)
+          restore_process.execute!
+        end
+
+        it 'does not continue when the user quits' do
+          expect(logger).to receive(:info).with('Restoring terraform states ... ').ordered
+          expect(logger).to receive(:info).with('Restoring terraform states ... done').ordered
+          expect(logger).to receive(:warn).with('Watch out!').ordered
+          expect(logger).to receive(:error).with('Quitting...').ordered
+          expect(target).to receive(:restore)
+          expect(Gitlab::TaskHelpers).to receive(:ask_to_continue).and_raise(Gitlab::TaskAbortedByUserError)
+
+          expect do
+            restore_process.execute!
+          end.to raise_error(SystemExit)
+        end
       end
     end
   end
@@ -769,7 +816,7 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
         end
 
         it 'unpacks and packs the backup' do
-          expect(subject).to receive(:unpack).and_call_original
+          expect(subject).to receive(:run_unpack).and_call_original
           expect(subject).to receive(:pack).and_call_original
 
           travel_to(backup_time) do
@@ -861,7 +908,7 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
         end
 
         it 'unpacks and packs the backup' do
-          expect(subject).to receive(:unpack).and_call_original
+          expect(subject).to receive(:run_unpack).and_call_original
           expect(subject).to receive(:pack).and_call_original
 
           travel_to(backup_time) do

@@ -24,7 +24,7 @@ RSpec.describe API::Terraform::Modules::V1::ProjectPackages, feature_category: :
     let(:url) { api("/projects/#{project.id}/packages/terraform/modules/mymodule/mysystem/1.0.0/file/authorize") }
     let(:headers) { {} }
 
-    subject { put(url, headers: headers) }
+    subject(:api_request) { put(url, headers: headers) }
 
     context 'with valid project' do
       where(:visibility, :user_role, :member, :token_header, :token_type, :shared_examples_name, :expected_status) do
@@ -77,6 +77,36 @@ RSpec.describe API::Terraform::Modules::V1::ProjectPackages, feature_category: :
         end
 
         it_behaves_like params[:shared_examples_name], params[:user_role], params[:expected_status], params[:member]
+      end
+    end
+
+    context 'for use_final_store_path' do
+      let(:headers) { workhorse_headers.merge('PRIVATE-TOKEN' => personal_access_token.token) }
+
+      before do
+        project.add_developer(user)
+      end
+
+      it 'sends use_final_store_path with true' do
+        expect(::Packages::PackageFileUploader).to receive(:workhorse_authorize).with(
+          hash_including(use_final_store_path: true, final_store_path_root_id: project.id)
+        ).and_call_original
+
+        api_request
+      end
+
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(skip_copy_operation_in_terraform_module_upload: false)
+        end
+
+        it 'sends use_final_store_path with false' do
+          expect(::Packages::PackageFileUploader).to receive(:workhorse_authorize).with(
+            hash_including(use_final_store_path: false)
+          ).and_call_original
+
+          api_request
+        end
       end
     end
   end

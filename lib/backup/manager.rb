@@ -27,7 +27,8 @@ module Backup
       # Deprecation: Using backup_id (ENV['BACKUP']) to specify previous backup was deprecated in 15.0
       previous_backup = options.previous_backup || options.backup_id
 
-      unpack(previous_backup) if options.incremental?
+      run_unpack(previous_backup) if options.incremental?
+
       create_all_tasks_result = run_all_create_tasks
 
       logger.warn "Warning: Your gitlab.rb and gitlab-secrets.json files contain sensitive data \n" \
@@ -63,7 +64,7 @@ module Backup
     end
 
     def restore
-      unpack(options.backup_id)
+      run_unpack(options.backup_id)
       run_all_restore_tasks
 
       logger.warn "Warning: Your gitlab.rb and gitlab-secrets.json files contain sensitive data \n" \
@@ -75,32 +76,14 @@ module Backup
     def run_restore_task(task)
       read_backup_information
 
-      unless task.enabled?
-        logger.info "Restoring #{task.human_name} ... " + "[DISABLED]"
-        return
-      end
+      restore_process = Backup::Restore::Process.new(
+        backup_id: backup_id,
+        backup_task: task,
+        backup_path: backup_path,
+        logger: logger
+      )
 
-      logger.info "Restoring #{task.human_name} ... "
-
-      warning = task.pre_restore_warning
-      if warning.present?
-        logger.warn warning
-        Gitlab::TaskHelpers.ask_to_continue
-      end
-
-      task.restore!(backup_path, backup_id)
-
-      logger.info "Restoring #{task.human_name} ... done"
-
-      warning = task.post_restore_warning
-      if warning.present?
-        logger.warn warning
-        Gitlab::TaskHelpers.ask_to_continue
-      end
-
-    rescue ::Gitlab::TaskAbortedByUserError
-      logger.error "Quitting..."
-      exit 1
+      restore_process.execute!
     end
 
     # Finds a task by id
@@ -136,11 +119,12 @@ module Backup
     def run_all_create_tasks
       if options.incremental?
         read_backup_information
-        verify_backup_version
+        check_preconditions
         update_backup_information
       end
 
       build_backup_information
+
       create_task_result = []
       backup_tasks.each_value { |task| create_task_result << run_create_task(task) }
 
@@ -153,7 +137,6 @@ module Backup
       end
 
       create_task_result.all?
-
     ensure
       cleanup unless options.skippable_operations.archive
       remove_tmp
@@ -161,20 +144,29 @@ module Backup
 
     def run_all_restore_tasks
       read_backup_information
-      verify_backup_version
+      check_preconditions
 
       backup_tasks.each_value do |task|
-        if !options.skip_task?(task.id) && task.enabled?
-          run_restore_task(task)
-        end
+        next unless !options.skip_task?(task.id) && task.enabled?
+
+        run_restore_task(task)
       end
 
       Rake::Task['gitlab:shell:setup'].invoke
       Rake::Task['cache:clear'].invoke
-
     ensure
       cleanup unless options.skippable_operations.archive
       remove_tmp
+    end
+
+    def run_unpack(backup_id)
+      Backup::Restore::Unpack.new(
+        backup_id: backup_id,
+        backup_path: backup_path,
+        manifest_filepath: manifest_filepath,
+        options: options,
+        logger: logger
+      ).run!
     end
 
     def read_backup_information
@@ -335,89 +327,12 @@ module Backup
       logger.info "Deleting old backups ... done. (#{removed} removed)"
     end
 
-    def verify_backup_version
-      Dir.chdir(backup_path) do
-        # restoring mismatching backups can lead to unexpected problems
-        if backup_information[:gitlab_version] != Gitlab::VERSION
-          logger.error(<<~HEREDOC)
-            GitLab version mismatch:
-              Your current GitLab version (#{Gitlab::VERSION}) differs from the GitLab version in the backup!
-              Please switch to the following version and try again:
-              version: #{backup_information[:gitlab_version]}
-          HEREDOC
-          logger.error ""
-          logger.error "Hint: git checkout v#{backup_information[:gitlab_version]}"
-          exit 1
-        end
-      end
-    end
-
-    def puts_available_timestamps
-      available_timestamps.each do |available_timestamp|
-        logger.info " " + available_timestamp
-      end
-    end
-
-    def unpack(source_backup_id)
-      if source_backup_id.blank? && non_tarred_backup?
-        logger.info "Non tarred backup found in #{backup_path}, using that"
-        return
-      end
-
-      Dir.chdir(backup_path) do
-        # check for existing backups in the backup dir
-        if backup_file_list.empty?
-          logger.error "No backups found in #{backup_path}"
-          logger.error "Please make sure that file name ends with #{FILE_NAME_SUFFIX}"
-          exit 1
-        elsif backup_file_list.many? && source_backup_id.nil?
-          logger.warn 'Found more than one backup:'
-          # print list of available backups
-          puts_available_timestamps
-
-          if options.incremental?
-            logger.info 'Please specify which one you want to create an incremental backup for:'
-            logger.info 'rake gitlab:backup:create INCREMENTAL=true PREVIOUS_BACKUP=timestamp_of_backup'
-          else
-            logger.info 'Please specify which one you want to restore:'
-            logger.info 'rake gitlab:backup:restore BACKUP=timestamp_of_backup'
-          end
-
-          exit 1
-        end
-
-        tar_file = if source_backup_id.present?
-                     File.basename(source_backup_id) + FILE_NAME_SUFFIX
-                   else
-                     backup_file_list.first
-                   end
-
-        unless File.exist?(tar_file)
-          logger.error "The backup file #{tar_file} does not exist!"
-          exit 1
-        end
-
-        logger.info 'Unpacking backup ... '
-
-        if Kernel.system(*%W[tar -xf #{tar_file}])
-          logger.info 'Unpacking backup ... ' + 'done'
-        else
-          logger.error 'Unpacking backup failed'
-          exit 1
-        end
-      end
-    end
-
     def tar_version
       Gitlab::Backup::Cli::Utils::Tar.new.version
     end
 
     def backup_file?(file)
       file.match(/^(\d{10})(?:_\d{4}_\d{2}_\d{2}(_\d+\.\d+\.\d+((-|\.)(pre|rc\d))?(-ee)?)?)?_gitlab_backup\.tar$/)
-    end
-
-    def non_tarred_backup?
-      File.exist?(manifest_filepath)
     end
 
     def manifest_filepath
@@ -430,10 +345,6 @@ module Backup
 
     def backup_file_list
       @backup_file_list ||= Dir.glob("*#{FILE_NAME_SUFFIX}")
-    end
-
-    def available_timestamps
-      @backup_file_list.map { |item| item.gsub("#{FILE_NAME_SUFFIX}", "") }
     end
 
     def backup_contents
@@ -451,8 +362,7 @@ module Backup
     def full_backup_id
       full_backup_id = backup_information[:full_backup_id]
       full_backup_id ||= File.basename(options.previous_backup) if options.previous_backup.present?
-      full_backup_id ||= backup_id
-      full_backup_id
+      full_backup_id || backup_id
     end
 
     def backup_id
@@ -466,6 +376,15 @@ module Backup
       else
         "#{backup_information[:backup_created_at].strftime('%s_%Y_%m_%d_')}#{backup_information[:gitlab_version]}"
       end
+    end
+
+    def check_preconditions
+      preconditions = Backup::Restore::Preconditions.new(
+        backup_information: backup_information,
+        logger: logger
+      )
+
+      preconditions.ensure_supported_backup_version!
     end
   end
 end
