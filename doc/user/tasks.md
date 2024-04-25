@@ -540,10 +540,7 @@ If you find a bug, [comment on the feedback issue](https://gitlab.com/gitlab-org
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416558) in GitLab 16.5 [with a flag](../administration/feature_flags.md) named `linked_work_items`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139394) in GitLab 16.7.
 > - Adding related items by entering their URLs and IDs [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/427594) in GitLab 16.8.
-
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature, an administrator can [disable the feature flag](../administration/feature_flags.md) named `linked_work_items`.
-On GitLab.com, this feature is available. On GitLab Dedicated, this feature is not available.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150148) in GitLab 17.0. Feature flag `linked_work_items` removed.
 
 Linked items are a bi-directional relationship and appear in a block below
 the emoji reactions section. You can link an objective, key result, or a task in the same project with each other.

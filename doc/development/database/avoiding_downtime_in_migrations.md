@@ -109,9 +109,7 @@ class RemoveUsersUpdatedAtColumn < Gitlab::Database::Migration[2.1]
   end
 
   def down
-    unless column_exists?(:users, :updated_at)
-      add_column :users, :updated_at, :datetime
-    end
+    add_column(:users, :updated_at, :datetime, if_not_exists: true)
 
     # Make sure to add back any indexes or constraints,
     # that were dropped in the `up` method. For example:

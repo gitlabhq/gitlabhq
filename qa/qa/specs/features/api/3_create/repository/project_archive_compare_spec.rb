@@ -29,7 +29,12 @@ module QA
       end
 
       it 'download archives of each user project then check they are different', :blocking,
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347748' do
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347748',
+        quarantine: {
+          type: :test_environment,
+          issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/457099",
+          only: :production
+        } do
         archive_checksums = {}
 
         users.each do |user_key, user_info|

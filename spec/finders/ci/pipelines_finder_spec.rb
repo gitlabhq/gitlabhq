@@ -75,6 +75,14 @@ RSpec.describe Ci::PipelinesFinder do
       it 'filters out child pipelines and shows only the parents by default' do
         is_expected.to eq([parent_pipeline])
       end
+
+      context 'when source is parent_pipeline' do
+        let(:params) { { source: 'parent_pipeline' } }
+
+        it 'does not filter out child pipelines' do
+          is_expected.to eq([child_pipeline])
+        end
+      end
     end
 
     Ci::HasStatus::AVAILABLE_STATUSES.each do |target|

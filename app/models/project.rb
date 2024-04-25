@@ -3200,10 +3200,6 @@ class Project < ApplicationRecord
     group&.work_items_mvc_2_feature_flag_enabled? || Feature.enabled?(:work_items_mvc_2)
   end
 
-  def linked_work_items_feature_flag_enabled?
-    group&.linked_work_items_feature_flag_enabled? || Feature.enabled?(:linked_work_items, self)
-  end
-
   def enqueue_record_project_target_platforms
     return unless Gitlab.com?
 

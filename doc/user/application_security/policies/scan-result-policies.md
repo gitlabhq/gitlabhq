@@ -49,10 +49,10 @@ The following video gives you an overview of GitLab merge request approval polic
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/379108) in GitLab 16.2 [with a flag](../../../administration/feature_flags.md) named `multi_pipeline_scan_result_policies`. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/409482) in GitLab 16.3. Feature flag `multi_pipeline_scan_result_policies` removed.
 > - Support for parent-child pipelines [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/428591) in GitLab 16.11 [with a flag](../../../administration/feature_flags.md) named `approval_policy_parent_child_pipeline`. Disabled by default.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/451597) in GitLab 17.0.
 
 FLAG:
 On self-managed GitLab, by default support for parent-child pipelines is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `approval_policy_parent_child_pipeline`.
-On GitLab.com and GitLab Dedicated, this feature is not available.
 
 A project can have multiple pipeline types configured. A single commit can initiate multiple
 pipelines, each of which may contain a security scan.

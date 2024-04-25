@@ -48,7 +48,6 @@ class Projects::IssuesController < Projects::ApplicationController
     push_frontend_feature_flag(:issues_grid_view)
     push_frontend_feature_flag(:service_desk_ticket)
     push_frontend_feature_flag(:issues_list_drawer, project)
-    push_frontend_feature_flag(:linked_work_items, project)
     push_frontend_feature_flag(:display_work_item_epic_issue_sidebar, project)
     push_frontend_feature_flag(:notifications_todos_buttons, current_user)
   end
@@ -69,7 +68,6 @@ class Projects::IssuesController < Projects::ApplicationController
     push_force_frontend_feature_flag(:work_items_mvc_2, project&.work_items_mvc_2_feature_flag_enabled?)
     push_frontend_feature_flag(:epic_widget_edit_confirmation, project)
     push_frontend_feature_flag(:display_work_item_epic_issue_sidebar, project)
-    push_force_frontend_feature_flag(:linked_work_items, project.linked_work_items_feature_flag_enabled?)
     push_frontend_feature_flag(:mention_autocomplete_backend_filtering, project)
   end
 

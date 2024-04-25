@@ -9275,7 +9275,6 @@
 - './spec/workers/ci/pipeline_artifacts/create_quality_report_worker_spec.rb'
 - './spec/workers/ci/pipeline_artifacts/expire_artifacts_worker_spec.rb'
 - './spec/workers/ci/pipeline_bridge_status_worker_spec.rb'
-- './spec/workers/ci/pipeline_success_unlock_artifacts_worker_spec.rb'
 - './spec/workers/ci_platform_metrics_update_cron_worker_spec.rb'
 - './spec/workers/ci/ref_delete_unlock_artifacts_worker_spec.rb'
 - './spec/workers/ci/resource_groups/assign_resource_from_resource_group_worker_spec.rb'

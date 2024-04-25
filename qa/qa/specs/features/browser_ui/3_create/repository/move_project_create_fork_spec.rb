@@ -11,7 +11,12 @@ module QA
         parent_project.add_member(user)
       end
 
-      it 'creates a 2nd fork after moving the parent project', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347787' do
+      it 'creates a 2nd fork after moving the parent project',
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347787',
+        quarantine: {
+          type: :flaky,
+          issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/456092"
+        } do
         Flow::Login.sign_in(as: user)
 
         fork_project.visit!

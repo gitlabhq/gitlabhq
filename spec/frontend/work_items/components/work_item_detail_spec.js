@@ -102,7 +102,6 @@ describe('WorkItemDetail component', () => {
     error = undefined,
     workItemsMvc2Enabled = false,
     workItemsBeta = false,
-    linkedWorkItemsEnabled = false,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemDetail, {
       apolloProvider: createMockApollo([
@@ -125,7 +124,6 @@ describe('WorkItemDetail component', () => {
       provide: {
         glFeatures: {
           workItemsMvc2: workItemsMvc2Enabled,
-          linkedWorkItems: linkedWorkItemsEnabled,
           workItemsBeta,
         },
         hasIssueWeightsFeature: true,
@@ -516,8 +514,13 @@ describe('WorkItemDetail component', () => {
   });
 
   describe('relationship widget', () => {
-    it('does not render linked items by default', async () => {
-      createComponent();
+    it('does not render when no linkedItems present', async () => {
+      const mockEmptyLinkedItems = workItemByIidResponseFactory({
+        linkedItems: [],
+      });
+      const handler = jest.fn().mockResolvedValue(mockEmptyLinkedItems);
+
+      createComponent({ handler });
       await waitForPromises();
 
       expect(findWorkItemRelationships().exists()).toBe(false);
@@ -530,7 +533,7 @@ describe('WorkItemDetail component', () => {
       const handler = jest.fn().mockResolvedValue(mockWorkItemLinkedItem);
 
       it('renders relationship widget when work item has linked items', async () => {
-        createComponent({ handler, linkedWorkItemsEnabled: true });
+        createComponent({ handler });
         await waitForPromises();
 
         expect(findWorkItemRelationships().exists()).toBe(true);
@@ -539,7 +542,6 @@ describe('WorkItemDetail component', () => {
       it('opens the modal with the linked item when `showModal` is emitted', async () => {
         createComponent({
           handler,
-          linkedWorkItemsEnabled: true,
           workItemsMvc2Enabled: true,
         });
         await waitForPromises();
@@ -564,7 +566,6 @@ describe('WorkItemDetail component', () => {
             isModal: true,
             handler,
             workItemsMvc2Enabled: true,
-            linkedWorkItemsEnabled: true,
           });
 
           await waitForPromises();

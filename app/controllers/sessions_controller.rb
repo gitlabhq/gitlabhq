@@ -38,7 +38,7 @@ class SessionsController < Devise::SessionsController
   after_action :log_failed_login, if: :action_new_and_failed_login?
   after_action :verify_known_sign_in, only: [:create]
 
-  helper_method :captcha_enabled?, :captcha_on_login_required?
+  helper_method :captcha_enabled?, :captcha_on_login_required?, :onboarding_status_tracking_label
 
   # protect_from_forgery is already prepended in ApplicationController but
   # authenticate_with_two_factor which signs in the user is prepended before
@@ -314,6 +314,9 @@ class SessionsController < Devise::SessionsController
   def set_invite_params
     @invite_email = ActionController::Base.helpers.sanitize(params[:invite_email])
   end
+
+  # overridden by EE module
+  def onboarding_status_tracking_label; end
 end
 
 SessionsController.prepend_mod_with('SessionsController')

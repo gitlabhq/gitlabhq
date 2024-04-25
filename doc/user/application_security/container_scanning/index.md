@@ -35,16 +35,14 @@ to ensure coverage for all of these dependency types. To cover as much of your r
 possible, we encourage you to use all of our security scanners. For a comparison of these features, see
 [Dependency Scanning compared to Container Scanning](../comparison_dependency_and_container_scanning.md).
 
-GitLab integrates with open-source tools for vulnerability static analysis in containers:
-
-- [Trivy](https://github.com/aquasecurity/trivy)
-- [Grype](https://github.com/anchore/grype)
+GitLab integrates with the [Trivy](https://github.com/aquasecurity/trivy) security scanner to perform vulnerability static analysis in containers.
 
 WARNING:
-Support for Grype was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/439164) in GitLab
-16.9 and is planned for removal in 17.0. Use Trivy instead.
-In GitLab 17.0 and later, the Grype analyzer will no longer be maintained, except for limited fixes as explained in our [statement of support](https://about.gitlab.com/support/statement-of-support/#version-support).
-The existing current major version for the Grype analyzer image will continue to be updated with the latest advisory database, and operating system packages until GitLab 19.0, at which point the analyzer will stop working.
+The Grype analyzer is no longer maintained, except for limited fixes as explained in our
+[statement of support](https://about.gitlab.com/support/statement-of-support/#version-support).
+The existing current major version for the Grype analyzer image will continue to be updated with the
+latest advisory database, and operating system packages until GitLab 19.0, at which point the analyzer
+will stop working.
 
 To integrate GitLab with security scanners other than those listed here, see
 [Security scanner integration](../../../development/integrations/secure.md).
@@ -71,7 +69,6 @@ information directly in the merge request.
 | Ability to enable container scanning via an MR in the GitLab UI | **{check-circle}** Yes | **{check-circle}** Yes |
 | [UBI Image Support](#fips-enabled-images) | **{check-circle}** Yes | **{check-circle}** Yes |
 | Support for Trivy | **{check-circle}** Yes | **{check-circle}** Yes |
-| Support for Grype | **{check-circle}** Yes | **{check-circle}** Yes |
 | Inclusion of GitLab Advisory Database | Limited to the time-delayed content from GitLab [advisories-communities](https://gitlab.com/gitlab-org/advisories-community/) project | Yes - all the latest content from [Gemnasium DB](https://gitlab.com/gitlab-org/security-products/gemnasium-db) |
 | Presentation of Report data in Merge Request and Security tab of the CI pipeline job | **{dotted-circle}** No | **{check-circle}** Yes |
 | [Interaction with Vulnerabilities](#interacting-with-the-vulnerabilities) such as merge request approvals | **{dotted-circle}** No | **{check-circle}** Yes |
@@ -219,11 +216,7 @@ container_scanning:
 #### Report language-specific findings
 
 The `CS_DISABLE_LANGUAGE_VULNERABILITY_SCAN` CI/CD variable controls whether the scan reports
-findings related to programming languages. The languages supported depend on the
-[scanner used](#change-scanners):
-
-- [Trivy](https://aquasecurity.github.io/trivy/v0.41/docs/scanner/vulnerability/language/)
-- [Grype](https://github.com/anchore/grype#features).
+findings related to programming languages. For more information about the supported languages, see [Language-specific Packages](https://aquasecurity.github.io/trivy/v0.41/docs/scanner/vulnerability/language/) in the Trivy documentation.
 
 By default, the report only includes packages managed by the Operating System (OS) package manager
 (for example, `yum`, `apt`, `apk`, `tdnf`). To report security findings in non-OS packages, set
@@ -268,7 +261,7 @@ including a large number of false positives.
 | `CS_DISABLE_LANGUAGE_VULNERABILITY_SCAN` | `"true"` | Disable scanning for language-specific packages installed in the scanned image. | All |
 | `CS_DOCKER_INSECURE`           | `"false"`     | Allow access to secure Docker registries using HTTPS without validating the certificates. | All |
 | `CS_DOCKERFILE_PATH`              | `Dockerfile`  | The path to the `Dockerfile` to use for generating remediations. By default, the scanner looks for a file named `Dockerfile` in the root directory of the project. You should configure this variable only if your `Dockerfile` is in a non-standard location, such as a subdirectory. See [Solutions for vulnerabilities](#solutions-for-vulnerabilities-auto-remediation) for more details. | All |
-| `CS_IGNORE_STATUSES`<sup><b><a href="#notes-regarding-cs-ignore-statuses">1</a></b></sup> | `""` | Force the analyzer to ignore vulnerability findings with specified statuses in a comma-delimited list. For `trivy`, the following values are allowed: `unknown,not_affected,affected,fixed,under_investigation,will_not_fix,fix_deferred,end_of_life`. For `grype`, the following values are allowed: `fixed,not-fixed,unknown,wont-fix` | All |
+| `CS_IGNORE_STATUSES`<sup><b><a href="#notes-regarding-cs-ignore-statuses">1</a></b></sup> | `""` | Force the analyzer to ignore vulnerability findings with specified statuses in a comma-delimited list. For `trivy`, the following values are allowed: `unknown,not_affected,affected,fixed,under_investigation,will_not_fix,fix_deferred,end_of_life`. | All |
 | `CS_IGNORE_UNFIXED`            | `"false"`     | Ignore vulnerabilities that are not fixed. | All |
 | `CS_IMAGE`                 | `$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG` | The Docker image to be scanned. If set, this variable overrides the `$CI_APPLICATION_REPOSITORY` and `$CI_APPLICATION_TAG` variables. | All |
 | `CS_IMAGE_SUFFIX`              | `""`          | Suffix added to `CS_ANALYZER_IMAGE`. If set to `-fips`, `FIPS-enabled` image is used for scan. See [FIPS-enabled images](#fips-enabled-images) for more details. | All |
@@ -291,24 +284,21 @@ including a large number of false positives.
 
 ### Supported distributions
 
-Support depends on which scanner is used:
+The following Linux distributions are supported:
 
-| Distribution   | Grype                  | Trivy                  |
-|----------------|------------------------|------------------------|
-| Alma Linux     | **{dotted-circle}** No | **{check-circle}** Yes |
-| Alpine Linux   | **{check-circle}** Yes | **{check-circle}** Yes |
-| Amazon Linux   | **{check-circle}** Yes | **{check-circle}** Yes |
-| BusyBox        | **{check-circle}** Yes | **{dotted-circle}** No |
-| CentOS         | **{check-circle}** Yes | **{check-circle}** Yes |
-| CBL-Mariner    | **{dotted-circle}** No | **{check-circle}** Yes |
-| Debian         | **{check-circle}** Yes | **{check-circle}** Yes |
-| Distroless     | **{check-circle}** Yes | **{check-circle}** Yes |
-| Oracle Linux   | **{check-circle}** Yes | **{check-circle}** Yes |
-| Photon OS      | **{dotted-circle}** No | **{check-circle}** Yes |
-| Red Hat (RHEL) | **{check-circle}** Yes | **{check-circle}** Yes |
-| Rocky Linux    | **{dotted-circle}** No | **{check-circle}** Yes |
-| SUSE           | **{dotted-circle}** No | **{check-circle}** Yes |
-| Ubuntu         | **{check-circle}** Yes | **{check-circle}** Yes |
+- Alma Linux
+- Alpine Linux
+- Amazon Linux
+- CentOS
+- CBL-Mariner
+- Debian
+- Distroless
+- Oracle Linux
+- Photon OS
+- Red Hat (RHEL)
+- Rocky Linux
+- SUSE
+- Ubuntu
 
 #### FIPS-enabled images
 
@@ -316,12 +306,6 @@ GitLab also offers [FIPS-enabled Red Hat UBI](https://www.redhat.com/en/blog/int
 versions of the container-scanning images. You can therefore replace standard images with FIPS-enabled
 images. To configure the images, set the `CS_IMAGE_SUFFIX` to `-fips` or modify the `CS_ANALYZER_IMAGE` variable to the
 standard tag plus the `-fips` extension.
-
-| Scanner name    | `CS_ANALYZER_IMAGE` |
-| --------------- | ------------------- |
-| Default (Trivy) | `registry.gitlab.com/security-products/container-scanning:7-fips` |
-| Grype           | `registry.gitlab.com/security-products/container-scanning/grype:7-fips` |
-| Trivy           | `registry.gitlab.com/security-products/container-scanning/trivy:7-fips` |
 
 NOTE:
 
@@ -364,22 +348,6 @@ container_scanning:
   variables:
     GIT_STRATEGY: fetch
 ```
-
-### Change scanners
-
-The container-scanning analyzer can use different scanners, depending on the value of the
-`CS_ANALYZER_IMAGE` configuration variable.
-
-The following options are available:
-
-| Scanner name                                             | `CS_ANALYZER_IMAGE`                                                |
-|----------------------------------------------------------|--------------------------------------------------------------------|
-| Default ([Trivy](https://github.com/aquasecurity/trivy)) | `registry.gitlab.com/security-products/container-scanning:7`       |
-| [Grype](https://github.com/anchore/grype)                | `registry.gitlab.com/security-products/container-scanning/grype:7` |
-| Trivy                                                    | `registry.gitlab.com/security-products/container-scanning/trivy:7` |
-
-WARNING:
-Do not use the `:latest` tag when selecting the scanner image.
 
 ### Setting the default branch image
 
@@ -559,12 +527,7 @@ enables the use of updated scanners in your CI/CD pipelines.
 
 ##### Support for Custom Certificate Authorities
 
-Support for custom certificate authorities was introduced in the following versions:
-
-| Scanner | Version |
-| -------- | ------- |
-| `Trivy` | [4.0.0](https://gitlab.com/gitlab-org/security-products/analyzers/container-scanning/-/releases/4.0.0) |
-| `Grype` | [4.3.0](https://gitlab.com/gitlab-org/security-products/analyzers/container-scanning/-/releases/4.3.0) |
+Support for custom certificate authorities for Trivy was introduced in version [4.0.0](https://gitlab.com/gitlab-org/security-products/analyzers/container-scanning/-/releases/4.0.0).
 
 #### Make GitLab container scanning analyzer images available inside your Docker registry
 
@@ -573,7 +536,6 @@ For container scanning, import the following images from `registry.gitlab.com` i
 
 ```plaintext
 registry.gitlab.com/security-products/container-scanning:7
-registry.gitlab.com/security-products/container-scanning/grype:7
 registry.gitlab.com/security-products/container-scanning/trivy:7
 ```
 
@@ -756,26 +718,24 @@ the security vulnerabilities in your groups, projects and pipelines.
 
 All analyzer images are [updated daily](https://gitlab.com/gitlab-org/security-products/analyzers/container-scanning/-/blob/master/README.md#image-updates).
 
-The images use data from upstream advisory databases depending on which scanner is used:
+The images use data from upstream advisory databases:
 
-| Data Source                                                    | Trivy                  | Grype                  |
-|----------------------------------------------------------------|------------------------|------------------------|
-| AlmaLinux Security Advisory                                    | **{check-circle}** Yes | **{check-circle}** Yes |
-| Amazon Linux Security Center                                   | **{check-circle}** Yes | **{check-circle}** Yes |
-| Arch Linux Security Tracker                                    | **{check-circle}** Yes | **{dotted-circle}** No |
-| SUSE CVRF                                                      | **{check-circle}** Yes | **{check-circle}** Yes |
-| CWE Advisories                                                 | **{check-circle}** Yes | **{dotted-circle}** No |
-| Debian Security Bug Tracker                                    | **{check-circle}** Yes | **{check-circle}** Yes |
-| GitHub Security Advisory                                       | **{check-circle}** Yes | **{check-circle}** Yes |
-| Go Vulnerability Database                                      | **{check-circle}** Yes | **{dotted-circle}** No |
-| CBL-Mariner Vulnerability Data                                 | **{check-circle}** Yes | **{dotted-circle}** No |
-| NVD                                                            | **{check-circle}** Yes | **{check-circle}** Yes |
-| OSV                                                            | **{check-circle}** Yes | **{dotted-circle}** No |
-| Red Hat OVAL v2                                                | **{check-circle}** Yes | **{check-circle}** Yes |
-| Red Hat Security Data API                                      | **{check-circle}** Yes | **{check-circle}** Yes |
-| Photon Security Advisories                                     | **{check-circle}** Yes | **{dotted-circle}** No |
-| Rocky Linux UpdateInfo                                         | **{check-circle}** Yes | **{dotted-circle}** No |
-| Ubuntu CVE Tracker (only data sources from mid 2021 and later) | **{check-circle}** Yes | **{check-circle}** Yes |
+- AlmaLinux Security Advisory
+- Amazon Linux Security Center
+- Arch Linux Security Tracker
+- SUSE CVRF
+- CWE Advisories
+- Debian Security Bug Tracker
+- GitHub Security Advisory
+- Go Vulnerability Database
+- CBL-Mariner Vulnerability Data
+- NVD
+- OSV
+- Red Hat OVAL v2
+- Red Hat Security Data API
+- Photon Security Advisories
+- Rocky Linux UpdateInfo
+- Ubuntu CVE Tracker (only data sources from mid 2021 and later)
 
 In addition to the sources provided by these scanners, GitLab maintains the following vulnerability databases:
 

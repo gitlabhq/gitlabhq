@@ -24,9 +24,12 @@ Read more on [pagination](rest/index.md#pagination).
 > - `name` in request [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115310) in 15.11 [with a flag](../administration/feature_flags.md) named `pipeline_name_search`. Disabled by default.
 > - `name` in response [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/398131) in GitLab 16.3. Feature flag `pipeline_name_in_api` removed.
 > - `name` in request [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/385864) in GitLab 16.9. Feature flag `pipeline_name_search` removed.
+> - Support for returning child pipelines with `source` set to `parent_pipeline` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/39503) in GitLab 17.0.
 
-List pipelines in a project. Child pipelines are not included in the results,
-but you can [get child pipeline](pipelines.md#get-a-single-pipeline) individually.
+List pipelines in a project.
+
+By default, [child pipelines](../ci/pipelines/downstream_pipelines.md#parent-child-pipelines)
+are not included in the results. To return child pipelines, set `source` to `parent_pipeline`.
 
 ```plaintext
 GET /projects/:id/pipelines

@@ -108,13 +108,5 @@ RSpec.describe "Remove items linked to a work item", feature_category: :portfoli
 
       it_behaves_like 'a mutation that returns top-level errors', errors: ['workItemsIds cannot be empty']
     end
-
-    context 'when `linked_work_items` feature flag is disabled' do
-      before do
-        stub_feature_flags(linked_work_items: false)
-      end
-
-      it_behaves_like 'a mutation that returns a top-level access error'
-    end
   end
 end

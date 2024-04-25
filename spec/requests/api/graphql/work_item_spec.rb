@@ -695,24 +695,6 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
             expect(widget_data.dig("nodes", 0, "linkType")).to eq('relates_to')
           end
         end
-
-        context 'when `linked_work_items` feature flag is disabled' do
-          before do
-            stub_feature_flags(linked_work_items: false)
-            post_graphql(query, current_user: current_user)
-          end
-
-          it 'returns empty result' do
-            expect(work_item_data).to include(
-              'widgets' => include(
-                hash_including(
-                  'type' => 'LINKED_ITEMS',
-                  'linkedItems' => { "nodes" => [] }
-                )
-              )
-            )
-          end
-        end
       end
     end
 

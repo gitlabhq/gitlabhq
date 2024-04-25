@@ -28,7 +28,11 @@
 - if allow_signup?
   .gl-mt-3.gl-text-center
     = _("Don't have an account yet?")
-    = link_to _("Register now"), new_registration_path(:user, invite_email: @invite_email), data: { testid: 'register-link' }
+    = link_to _("Register now"),
+      new_registration_path(:user, invite_email: @invite_email),
+      data: { testid: 'register-link',
+        track_action: 'click_register_from_sign_in_page',
+        track_label: onboarding_status_tracking_label }
 
 - if omniauth_enabled? && devise_mapping.omniauthable? && button_based_providers_enabled?
   = render 'devise/shared/omniauth_box'

@@ -241,9 +241,6 @@ export default {
     showIntersectionObserver() {
       return !this.isModal && !this.editMode;
     },
-    hasLinkedWorkItems() {
-      return this.glFeatures.linkedWorkItems;
-    },
     workItemLinkedItems() {
       return this.isWidgetPresent(WIDGET_TYPE_LINKED_ITEMS);
     },
@@ -251,9 +248,6 @@ export default {
       return [WORK_ITEM_TYPE_VALUE_OBJECTIVE, WORK_ITEM_TYPE_VALUE_EPIC].includes(
         this.workItemType,
       );
-    },
-    showWorkItemLinkedItems() {
-      return this.hasLinkedWorkItems && this.workItemLinkedItems;
     },
     titleClassHeader() {
       return {
@@ -609,7 +603,7 @@ export default {
             @addChild="$emit('addChild')"
           />
           <work-item-relationships
-            v-if="showWorkItemLinkedItems"
+            v-if="workItemLinkedItems"
             :work-item-id="workItem.id"
             :work-item-iid="workItemIid"
             :work-item-full-path="fullPath"

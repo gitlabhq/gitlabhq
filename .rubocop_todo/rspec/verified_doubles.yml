@@ -949,7 +949,6 @@ RSpec/VerifiedDoubles:
     - 'spec/workers/ci/build_prepare_worker_spec.rb'
     - 'spec/workers/ci/create_downstream_pipeline_worker_spec.rb'
     - 'spec/workers/ci/pipeline_bridge_status_worker_spec.rb'
-    - 'spec/workers/ci/pipeline_success_unlock_artifacts_worker_spec.rb'
     - 'spec/workers/ci/ref_delete_unlock_artifacts_worker_spec.rb'
     - 'spec/workers/clusters/agents/delete_expired_events_worker_spec.rb'
     - 'spec/workers/concerns/application_worker_spec.rb'

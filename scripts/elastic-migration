@@ -151,7 +151,7 @@ end
       'version' => timestamp,
       'description' => options.description,
       'group' => "group::#{options.group}",
-      'milestone' => options.milestone,
+      'milestone' => options.milestone.to_s,
       'introduced_by_url' => options.introduced_by_url,
       'obsolete' => false,
       'marked_obsolete_by_url' => nil,

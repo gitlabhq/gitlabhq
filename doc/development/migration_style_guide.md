@@ -634,7 +634,7 @@ disable_ddl_transaction!
 
 def up
   with_lock_retries do
-    add_column :users, :name, :text unless column_exists?(:users, :name)
+    add_column(:users, :name, :text, if_not_exists: true)
   end
 
   add_text_limit :users, :name, 255 # Includes constraint validation (full table scan)
