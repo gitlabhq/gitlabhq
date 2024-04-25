@@ -26,7 +26,8 @@ module ClustersHelper
       default_branch_name: default_branch_name(clusterable),
       project_path: clusterable_project_path(clusterable),
       kas_address: Gitlab::Kas.external_url,
-      kas_version: Gitlab::Kas.version_info
+      kas_install_version: Gitlab::Kas.install_version_info,
+      kas_check_version: Gitlab::Kas.display_version_info
     }
   end
 

@@ -86,8 +86,9 @@ RSpec.describe ClustersHelper, feature_category: :deployment_management do
       expect(subject[:kas_address]).to eq(Gitlab::Kas.external_url)
     end
 
-    it 'displays KAS version' do
-      expect(subject[:kas_version]).to eq(Gitlab::Kas.version_info)
+    it 'displays KAS versions' do
+      expect(subject[:kas_install_version]).to eq(Gitlab::Kas.install_version_info)
+      expect(subject[:kas_check_version]).to eq(Gitlab::Kas.display_version_info)
     end
 
     context 'user has no permissions to create a cluster' do
