@@ -1035,7 +1035,7 @@ CREATE TABLE p_ci_builds (
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
     started_at timestamp without time zone,
-    runner_id integer,
+    runner_id_convert_to_bigint integer,
     coverage double precision,
     commit_id_convert_to_bigint integer,
     name character varying,
@@ -1079,7 +1079,7 @@ CREATE TABLE p_ci_builds (
     commit_id bigint,
     erased_by_id_convert_to_bigint bigint,
     project_id_convert_to_bigint bigint,
-    runner_id_convert_to_bigint bigint,
+    runner_id bigint,
     trigger_request_id_convert_to_bigint bigint,
     upstream_pipeline_id bigint,
     user_id_convert_to_bigint bigint,
@@ -6109,7 +6109,7 @@ CREATE TABLE ci_builds (
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
     started_at timestamp without time zone,
-    runner_id integer,
+    runner_id_convert_to_bigint integer,
     coverage double precision,
     commit_id_convert_to_bigint integer,
     name character varying,
@@ -6153,7 +6153,7 @@ CREATE TABLE ci_builds (
     commit_id bigint,
     erased_by_id_convert_to_bigint bigint,
     project_id_convert_to_bigint bigint,
-    runner_id_convert_to_bigint bigint,
+    runner_id bigint,
     trigger_request_id_convert_to_bigint bigint,
     upstream_pipeline_id bigint,
     user_id_convert_to_bigint bigint,
@@ -11320,7 +11320,7 @@ CREATE TABLE merge_request_metrics (
     merged_at timestamp without time zone,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
-    pipeline_id integer,
+    pipeline_id_convert_to_bigint integer,
     merged_by_id integer,
     latest_closed_by_id integer,
     latest_closed_at timestamp with time zone,
@@ -11337,7 +11337,7 @@ CREATE TABLE merge_request_metrics (
     target_project_id integer,
     id bigint NOT NULL,
     first_contribution boolean DEFAULT false NOT NULL,
-    pipeline_id_convert_to_bigint bigint,
+    pipeline_id bigint,
     CONSTRAINT check_e03d0900bf CHECK ((target_project_id IS NOT NULL))
 );
 
@@ -11546,7 +11546,7 @@ CREATE TABLE merge_trains (
     id bigint NOT NULL,
     merge_request_id integer NOT NULL,
     user_id integer NOT NULL,
-    pipeline_id integer,
+    pipeline_id_convert_to_bigint integer,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     target_project_id integer NOT NULL,
@@ -11554,7 +11554,7 @@ CREATE TABLE merge_trains (
     status smallint DEFAULT 0 NOT NULL,
     merged_at timestamp with time zone,
     duration integer,
-    pipeline_id_convert_to_bigint bigint
+    pipeline_id bigint
 );
 
 CREATE SEQUENCE merge_trains_id_seq
@@ -24333,10 +24333,6 @@ CREATE INDEX p_ci_builds_project_id_bigint_id_idx ON ONLY p_ci_builds USING btre
 
 CREATE INDEX index_3591adffe4 ON ci_builds USING btree (project_id_convert_to_bigint, id);
 
-CREATE INDEX p_ci_builds_status_type_runner_id_bigint_idx ON ONLY p_ci_builds USING btree (status, type, runner_id_convert_to_bigint);
-
-CREATE INDEX index_9f1fa3baee ON ci_builds USING btree (status, type, runner_id_convert_to_bigint);
-
 CREATE INDEX index_abuse_events_on_abuse_report_id ON abuse_events USING btree (abuse_report_id);
 
 CREATE INDEX index_abuse_events_on_category_and_source ON abuse_events USING btree (category, source);
@@ -24378,10 +24374,6 @@ CREATE UNIQUE INDEX "index_achievements_on_namespace_id_LOWER_name" ON achieveme
 CREATE UNIQUE INDEX index_activity_pub_releases_sub_on_project_id_inbox_url ON activity_pub_releases_subscriptions USING btree (project_id, lower(subscriber_inbox_url));
 
 CREATE UNIQUE INDEX index_activity_pub_releases_sub_on_project_id_sub_url ON activity_pub_releases_subscriptions USING btree (project_id, lower(subscriber_url));
-
-CREATE INDEX p_ci_builds_runner_id_bigint_id_idx ON ONLY p_ci_builds USING btree (runner_id_convert_to_bigint, id DESC);
-
-CREATE INDEX index_adafd086ad ON ci_builds USING btree (runner_id_convert_to_bigint, id DESC);
 
 CREATE INDEX index_agent_activity_events_on_agent_id_and_recorded_at_and_id ON agent_activity_events USING btree (agent_id, recorded_at, id);
 
@@ -24550,10 +24542,6 @@ CREATE INDEX index_award_emoji_on_awardable_type_and_awardable_id ON award_emoji
 CREATE UNIQUE INDEX index_aws_roles_on_role_external_id ON aws_roles USING btree (role_external_id);
 
 CREATE UNIQUE INDEX index_aws_roles_on_user_id ON aws_roles USING btree (user_id);
-
-CREATE INDEX p_ci_builds_runner_id_bigint_idx ON ONLY p_ci_builds USING btree (runner_id_convert_to_bigint) WHERE (((status)::text = 'running'::text) AND ((type)::text = 'Ci::Build'::text));
-
-CREATE INDEX index_b4cf879bcf ON ci_builds USING btree (runner_id_convert_to_bigint) WHERE (((status)::text = 'running'::text) AND ((type)::text = 'Ci::Build'::text));
 
 CREATE INDEX index_background_migration_jobs_for_partitioning_migrations ON background_migration_jobs USING btree (((arguments ->> 2))) WHERE (class_name = 'Gitlab::Database::PartitioningMigrationHelpers::BackfillPartitionedTable'::text);
 
@@ -29736,12 +29724,6 @@ ALTER INDEX p_ci_stages_pkey ATTACH PARTITION ci_stages_pkey;
 ALTER INDEX p_ci_job_artifacts_job_id_file_type_partition_id_idx ATTACH PARTITION idx_ci_job_artifacts_on_job_id_file_type_and_partition_id_uniq;
 
 ALTER INDEX p_ci_builds_project_id_bigint_id_idx ATTACH PARTITION index_3591adffe4;
-
-ALTER INDEX p_ci_builds_status_type_runner_id_bigint_idx ATTACH PARTITION index_9f1fa3baee;
-
-ALTER INDEX p_ci_builds_runner_id_bigint_id_idx ATTACH PARTITION index_adafd086ad;
-
-ALTER INDEX p_ci_builds_runner_id_bigint_idx ATTACH PARTITION index_b4cf879bcf;
 
 ALTER INDEX p_ci_builds_metadata_build_id_idx ATTACH PARTITION index_ci_builds_metadata_on_build_id_and_has_exposed_artifacts;
 

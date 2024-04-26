@@ -130,8 +130,8 @@ to be automatically enforced, reducing the risk of developers unconsciously goin
 introduce automated verification of repository pattern implementation including:
 
 1. Utilize `ActiveRecord` query subscribers in a similar way to[Database::PreventCrossJoins](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/support/database/prevent_cross_joins.rb) in order to detect queries to ClickHouse executed outside of _Strategies_
-1. Expanding [`CodeReuse`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/rubocop/cop/code_reuse) rubocop rules to flag all usage of ClickHouse driver outside of _Strategies_
-1. Create rubocop rule that detects calls to utility method that checks the presence of ClickHouse instance (ie: `CurrentSettings.click_house_enabled?`) that are being made outside of _Repositories_
+1. Expanding [`CodeReuse`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/rubocop/cop/code_reuse) RuboCop rules to flag all usage of ClickHouse driver outside of _Strategies_
+1. Create RuboCop rule that detects calls to utility method that checks the presence of ClickHouse instance (ie: `CurrentSettings.click_house_enabled?`) that are being made outside of _Repositories_
 
 At this development stage, authors see all of the listed options as viable and promising, therefore a decision about which ones to use would be deferred to the moment when the first repository pattern implementation for ClickHouse will emerge.
 

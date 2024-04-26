@@ -6559,7 +6559,10 @@ msgstr ""
 msgid "ApprovalRule|Rule name"
 msgstr ""
 
-msgid "ApprovalRule|Search in"
+msgid "ApprovalRule|Search in all groups"
+msgstr ""
+
+msgid "ApprovalRule|Search in project groups"
 msgstr ""
 
 msgid "ApprovalRule|Search users or groups"
@@ -6574,16 +6577,10 @@ msgstr ""
 msgid "ApprovalRule|Try for free"
 msgstr ""
 
-msgid "ApprovalRule|all groups"
-msgstr ""
-
 msgid "ApprovalRule|day(s)"
 msgstr ""
 
 msgid "ApprovalRule|month(s)"
-msgstr ""
-
-msgid "ApprovalRule|project groups"
 msgstr ""
 
 msgid "ApprovalRule|week(s)"

@@ -114,7 +114,7 @@ In progress.
   - In a package `ci`, all the classes would be nested under `Ci::` namespace. There can be also nested namespaces like `Ci::PipelineProcessing::`.
   - In a package `ci-pipeline_creation` all classes are nested under `Ci::PipelineCreation`, like `Ci::PipelineCreation::Chain::Command`.
   - In a package `ci` a class named `MergeRequests::UpdateHeadPipelineService` would not be allowed because it would not match the package's namespace.
-  - This can be enforced easily with [Packwerk's based Rubocop Cops](https://github.com/rubyatscale/rubocop-packs/blob/main/lib/rubocop/cop/packs/root_namespace_is_pack_name.rb).
+  - This can be enforced easily with [Packwerk's based RuboCop Cops](https://github.com/rubyatscale/rubocop-packs/blob/main/lib/rubocop/cop/packs/root_namespace_is_pack_name.rb).
 - `bounded context` is a top-level Packwerk package that represents a macro aspect of the domain. For example: `Ci::`, `MergeRequests::`, `Packages::`, etc.
   - A bounded context is represented by a single Ruby module/namespace. For example, `Ci::` and not `Ci::JobArtifacts::`.
   - A bounded context can be made of 1 or multiple Packwerk packages. Nested packages would be recommended if the domain is quite complex and we want to enforce privacy among all the implementation details. For example: `Ci::PipelineProcessing::` and `Ci::PipelineCreation::` could be separate packages of the same bounded context and expose their public API while keeping implementation details private.

@@ -73,8 +73,8 @@ RSpec.describe MigrateSidekiqQueuedAndFutureJobs, :clean_gitlab_redis_queues, fe
         let(:job) { '{foo: 1}' }
 
         before do
-          Gitlab::SidekiqSharding::Validator.allow_unrouted_sidekiq_calls do
-            Sidekiq.redis { |conn| conn.lpush("queue:email_receiver", job) }
+          Sidekiq.redis do |conn|
+            conn.lpush("queue:email_receiver", job)
           end
         end
 
@@ -94,16 +94,14 @@ RSpec.describe MigrateSidekiqQueuedAndFutureJobs, :clean_gitlab_redis_queues, fe
       end
 
       def queue_length(queue_name)
-        Gitlab::SidekiqSharding::Validator.allow_unrouted_sidekiq_calls do
-          Sidekiq.redis { |conn| conn.llen("queue:#{queue_name}") }
+        Sidekiq.redis do |conn|
+          conn.llen("queue:#{queue_name}")
         end
       end
 
       def list_jobs(queue_name)
-        Gitlab::SidekiqSharding::Validator.allow_unrouted_sidekiq_calls do
-          Sidekiq.redis { |conn| conn.lrange("queue:#{queue_name}", 0, -1) }
-                 .map { |item| Sidekiq.load_json item }
-        end
+        Sidekiq.redis { |conn| conn.lrange("queue:#{queue_name}", 0, -1) }
+               .map { |item| Sidekiq.load_json item }
       end
     end
 
@@ -124,10 +122,8 @@ RSpec.describe MigrateSidekiqQueuedAndFutureJobs, :clean_gitlab_redis_queues, fe
         EmailReceiverWorker.perform_in(1.hour, 'foo')
         EmailReceiverWorker.perform_in(2.hours, 'bar')
         EmailReceiverWorker.perform_in(3.hours, 'baz')
-        Gitlab::SidekiqSharding::Validator.allow_unrouted_sidekiq_calls do
-          retry_in(EmailReceiverWorker, 1.hour, 0)
-          retry_in(EmailReceiverWorker, 2.hours, 0)
-        end
+        retry_in(EmailReceiverWorker, 1.hour, 0)
+        retry_in(EmailReceiverWorker, 2.hours, 0)
       end
 
       shared_examples 'migrates scheduled and retried jobs' do
@@ -165,7 +161,7 @@ RSpec.describe MigrateSidekiqQueuedAndFutureJobs, :clean_gitlab_redis_queues, fe
         end
       end
 
-      context 'with worker_queue_mappings mocked', :allow_unrouted_sidekiq_calls do
+      context 'with worker_queue_mappings mocked' do
         let(:mappings_mocked) { true }
 
         it_behaves_like 'migrates scheduled and retried jobs'
@@ -198,7 +194,7 @@ RSpec.describe MigrateSidekiqQueuedAndFutureJobs, :clean_gitlab_redis_queues, fe
         end
       end
 
-      context 'without worker_queue_mappings mocked', :allow_unrouted_sidekiq_calls do
+      context 'without worker_queue_mappings mocked' do
         let(:mappings_mocked) { false }
 
         it_behaves_like 'migrates scheduled and retried jobs'

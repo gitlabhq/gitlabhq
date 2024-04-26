@@ -3,7 +3,7 @@ require 'gitlab/redis'
 
 RSpec.configure do |config|
   config.after(:each, :redis) do
-    redis_queues_cleanup!
+    Sidekiq.redis(&:flushdb)
     redis_queues_metadata_cleanup!
   end
 

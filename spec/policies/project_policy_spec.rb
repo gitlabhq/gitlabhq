@@ -3403,6 +3403,20 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     end
   end
 
+  describe 'webhooks' do
+    context 'when the current_user is a maintainer' do
+      let(:current_user) { maintainer }
+
+      it { expect_allowed(:read_web_hook, :admin_web_hook) }
+    end
+
+    context 'when the current_user is a developer' do
+      let(:current_user) { developer }
+
+      it { expect_disallowed(:read_web_hook, :admin_web_hook) }
+    end
+  end
+
   private
 
   def project_subject(project_type)

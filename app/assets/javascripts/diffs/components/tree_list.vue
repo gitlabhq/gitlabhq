@@ -1,5 +1,11 @@
 <script>
-import { GlTooltipDirective, GlIcon, GlBadge, GlButtonGroup, GlButton } from '@gitlab/ui';
+import {
+  GlTooltipDirective,
+  GlBadge,
+  GlButtonGroup,
+  GlButton,
+  GlSearchBoxByType,
+} from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapActions, mapGetters, mapState } from 'vuex';
 import micromatch from 'micromatch';
@@ -20,9 +26,9 @@ export default {
     GlButtonGroup,
     GlButton,
     TreeListHeight,
-    GlIcon,
     DiffFileRow,
     RecycleScroller,
+    GlSearchBoxByType,
   },
   props: {
     hideFileStats: {
@@ -136,9 +142,6 @@ export default {
   },
   methods: {
     ...mapActions('diffs', ['toggleTreeOpen', 'goToFile', 'setRenderTreeList']),
-    clearSearch() {
-      this.search = '';
-    },
   },
   searchPlaceholder: sprintf(s__('MergeRequest|Search (e.g. *.vue) (%{MODIFIER_KEY}P)'), {
     MODIFIER_KEY,
@@ -172,30 +175,16 @@ export default {
         />
       </gl-button-group>
     </div>
-    <div class="gl-pb-3 position-relative tree-list-search d-flex">
-      <div class="flex-fill d-flex">
-        <gl-icon name="search" class="gl-absolute gl-top-3 gl-left-3 tree-list-icon" />
-        <label for="diff-tree-search" class="sr-only">{{ $options.searchPlaceholder }}</label>
-        <input
-          id="diff-tree-search"
-          v-model="search"
-          :placeholder="$options.searchPlaceholder"
-          type="search"
-          name="diff-tree-search"
-          class="form-control"
-          data-testid="diff-tree-search"
-        />
-        <button
-          v-show="search"
-          :aria-label="__('Clear search')"
-          type="button"
-          class="gl-absolute gl-top-3 bg-transparent tree-list-icon tree-list-clear-icon border-0 p-0"
-          @click="clearSearch"
-        >
-          <gl-icon name="close" class="gl-top-3 gl-right-1 tree-list-icon" />
-        </button>
-      </div>
-    </div>
+    <label for="diff-tree-search" class="sr-only">{{ $options.searchPlaceholder }}</label>
+    <gl-search-box-by-type
+      id="diff-tree-search"
+      v-model="search"
+      :placeholder="$options.searchPlaceholder"
+      name="diff-tree-search"
+      data-testid="diff-tree-search"
+      :clear-button-title="__('Clear search')"
+      class="gl-mb-3"
+    />
     <tree-list-height class="gl-flex-grow-1 gl-min-h-0" :items-count="treeList.length">
       <template #default="{ scrollerHeight, rowHeight }">
         <div :class="{ 'tree-list-blobs': !renderTreeList || search }" class="mr-tree-list">
@@ -237,9 +226,5 @@ export default {
 <style>
 .tree-list-blobs .file-row-name {
   margin-left: 12px;
-}
-
-.tree-list-icon:not(button) {
-  pointer-events: none;
 }
 </style>

@@ -13,7 +13,7 @@ goal of reducing the number of vulnerabilities released over time.
 
 ## SAST coverage
 
-For each of the guidelines listed in this document, AppSec aims to have a SAST rule either in the form of a semgrep rule (or a rubocop) that runs in the CI pipeline. Below is a table of all existing guidelines and their coverage status:
+For each of the guidelines listed in this document, AppSec aims to have a SAST rule either in the form of a semgrep rule (or a RuboCop rule) that runs in the CI pipeline. Below is a table of all existing guidelines and their coverage status:
 
 | Guideline | Rule | Status |
 |---|---|---|
@@ -44,7 +44,7 @@ guidelines for a new vulnerability type, open an MR! Try to
 include links to examples of the vulnerability found, and link to any resources
 used in defined mitigations. If you have questions or when ready for a review, ping `gitlab-com/gl-security/appsec`.
 
-All guidelines should have supporting semgrep rules or rubocops. If you add
+All guidelines should have supporting semgrep rules or RuboCop rules. If you add
 a guideline, open an issue for this, and link to it in your Guidelines
 MR. Also add the Guideline to the "SAST Coverage" table above.
 
@@ -55,9 +55,9 @@ MR. Also add the Guideline to the "SAST Coverage" table above.
 1. Each rule should have a well-defined `message` field in the YAML file, with clear instructions for the developer.
 1. The severity should be set to `INFO` for low-severity issues not requiring involvement from AppSec, and `WARNING` for issues that require AppSec review. The bot will ping AppSec accordingly.
 
-### Creating new rubocops
+### Creating new RuboCop rule
 
-1. Follow the [Rubocop development doc](rubocop_development_guide.md#creating-new-rubocop-cops).
+1. Follow the [RuboCop development doc](rubocop_development_guide.md#creating-new-rubocop-cops).
 For an example, see [this merge request](https://gitlab.com/gitlab-org/gitlab-qa/-/merge_requests/1280) on adding a rule to the `gitlab-qa` project.
 1. The cop itself should reside in the `gitlab-security` [gem project](https://gitlab.com/gitlab-org/ruby/gems/gitlab-styles/-/tree/master/lib/rubocop/cop/gitlab_security)
 

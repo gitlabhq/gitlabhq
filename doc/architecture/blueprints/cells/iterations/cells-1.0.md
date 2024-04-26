@@ -9,7 +9,7 @@ description: 'Cells: 1.0'
 This document describes a technical proposal for a Cells 1.0.
 
 Cells 1.0 is a first iteration of the cellular architecture. The Cells 1.0 target is to deliver a solution
-for new enterprise customers using the SaaS GitLab.com offering.
+for internal customers only, and be a foundational step for next iterations, to be able to deliver something with a smaller scope.
 
 Cells 1.0 is a complete working feature that is meant to be deployed to GitLab.com SaaS.
 
@@ -21,7 +21,7 @@ contribution model in a cellular architecture.
 
 ## Preamble
 
-A Cells 1.0 is meant to target enterprise customers that have the following expectations:
+A Cells 1.0 is meant to target internal customers that have the following expectations:
 
 1. They want to use our multi-tenant SaaS solution (GitLab.com) to serve their Organization.
 1. They accept that they may receive updates later than the rest of GitLab.com. Note that when GitLab does a patch release, the Delivery team makes sure that production (every cell) runs the patch release version before making the release public. This does not mean that outside of a patch release, all the cells run the same version of GitLab. See [this private discussion](https://gitlab.com/gitlab-com/gl-security/appsec/threat-models/-/issues/45#note_1794904358) for more information.
@@ -47,7 +47,7 @@ This proposal is designed to cut as much scope as possible but it must not make 
 
 1. Users can interact with many Organizations.
 1. Cells can be re-balanced by moving Organizations between Cells.
-1. The routing solution can dynamically route customers.
+1. The routing solution can dynamically route requests.
 
 ## Proposal
 
@@ -61,7 +61,7 @@ The following statements describe a high-level proposal to achieve a Cells 1.0:
 
 1. Organization properties:
 
-   1. We allow customers to create a new Organization on a Secondary Cell.
+   1. We allow users to create a new Organization on a Secondary Cell.
       The chosen Cell would be controlled by GitLab Administrators.
    1. The Organization is private, and cannot be made public.
    1. Groups and projects can be made private, but not public.
@@ -589,9 +589,10 @@ The table below is a comparison between the existing GitLab.com features, and no
 
 1. What about data migration between Cells?
 
-   Cells 1.0 is targeted towards **new** customers. Migrating existing customers is a big undertaking on its own:
+   Cells 1.0 is targeted towards **internal** customers. Migrating existing customers, and onboarding new customers is a big undertaking on its own:
 
    - Customers to be migrated need to opt into the Organization model first.
+   - New Customers are not willing to have [missing features](#features-on-gitlabcom-that-are-not-supported-on-cells)
    - We expect most of the isolation features to work.
    - We have to transparently move data from the source Cell to the target Cell. Initially we would
      follow a model of Cell split. We would clone the Cell and mark where the given record is located.

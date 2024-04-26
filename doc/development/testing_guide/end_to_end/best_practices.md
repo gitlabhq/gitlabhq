@@ -132,7 +132,7 @@ end
 1. The outermost `Rspec.describe` block should be [the DevOps stage name](https://handbook.gitlab.com/handbook/product/categories/#devops-stages)
 1. Inside the `Rspec.describe` block is a `describe` block with the name of the feature being tested
 1. Optional `context` blocks define what the conditions being tested are
-    1. `context` blocks descriptions should begin with `when`, `with`, `without`, `for`, `and`, `on`, `in`, `as`, or `if` to match the [rubocop rule](https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/ContextWording)
+    1. `context` blocks descriptions should begin with `when`, `with`, `without`, `for`, `and`, `on`, `in`, `as`, or `if` to match the [RuboCop rule](https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/ContextWording)
 1. The `it` block describes the pass/fail criteria for the test
     1. In `shared_examples` with a single example a `specify` block can be used instead of a named `it` block
 

@@ -2,8 +2,7 @@
 
 require 'spec_helper'
 
-# allow_unrouted_sidekiq_calls as this is run on every startup, so shard awareness is not needed
-RSpec.describe Gitlab::SidekiqVersioning, :clean_gitlab_redis_queues, :allow_unrouted_sidekiq_calls do
+RSpec.describe Gitlab::SidekiqVersioning, :clean_gitlab_redis_queues do
   before do
     allow(Gitlab::SidekiqConfig).to receive(:routing_queues).and_return(%w[foo bar])
   end

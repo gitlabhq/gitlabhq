@@ -26,7 +26,7 @@ RSpec.describe ApplicationWorker, feature_category: :shared do
   before do
     # Set up Sidekiq.default_configuration's Thread.current[:sidekiq_redis_pool].
     # Creating a RedisConnection during spec's runtime will perform Sidekiq.info which messes with our spec expectations.
-    Gitlab::SidekiqSharding::Validator.allow_unrouted_sidekiq_calls { Sidekiq.redis(&:ping) }
+    Sidekiq.redis(&:ping)
 
     allow(Feature).to receive(:enabled?).and_call_original
     allow(Feature).to receive(:enabled?).with(:route_to_main, type: :ops).and_return(true)

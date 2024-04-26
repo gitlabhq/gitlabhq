@@ -136,14 +136,7 @@ Sidekiq.configure_client do |config|
   config.client_middleware(&Gitlab::SidekiqMiddleware.client_configurator)
 end
 
-Gitlab::Application.configure do |config|
-  config.middleware.use(Gitlab::Middleware::SidekiqShardAwarenessValidation)
-end
-
 Sidekiq::Scheduled::Poller.prepend Gitlab::Patch::SidekiqPoller
 Sidekiq::Cron::Poller.prepend Gitlab::Patch::SidekiqPoller
 Sidekiq::Cron::Poller.prepend Gitlab::Patch::SidekiqCronPoller
-
-Sidekiq::Client.prepend Gitlab::SidekiqSharding::Validator::Client
-Sidekiq::RedisClientAdapter::CompatMethods.prepend Gitlab::SidekiqSharding::Validator
 Sidekiq::Job::Setter.prepend Gitlab::Patch::SidekiqJobSetter

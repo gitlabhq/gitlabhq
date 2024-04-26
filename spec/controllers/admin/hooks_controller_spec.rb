@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Admin::HooksController do
+RSpec.describe Admin::HooksController, feature_category: :webhooks do
   let_it_be(:admin) { create(:admin) }
 
   before do

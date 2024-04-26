@@ -8,26 +8,18 @@ RSpec.describe API::Admin::Sidekiq, :clean_gitlab_redis_queues, feature_category
   describe 'DELETE /admin/sidekiq/queues/:queue_name' do
     context 'when the user is an admin' do
       around do |example|
-        Gitlab::SidekiqSharding::Validator.allow_unrouted_sidekiq_calls do
-          Sidekiq::Queue.new('authorized_projects').clear
-        end
-
+        Sidekiq::Queue.new('authorized_projects').clear
         Sidekiq::Testing.disable!(&example)
-
-        Gitlab::SidekiqSharding::Validator.allow_unrouted_sidekiq_calls do
-          Sidekiq::Queue.new('authorized_projects').clear
-        end
+        Sidekiq::Queue.new('authorized_projects').clear
       end
 
       def add_job(user, args)
-        Gitlab::SidekiqSharding::Validator.allow_unrouted_sidekiq_calls do
-          Sidekiq::Client.push(
-            'class' => 'AuthorizedProjectsWorker',
-            'queue' => 'authorized_projects',
-            'args' => args,
-            'meta.user' => user.username
-          )
-        end
+        Sidekiq::Client.push(
+          'class' => 'AuthorizedProjectsWorker',
+          'queue' => 'authorized_projects',
+          'args' => args,
+          'meta.user' => user.username
+        )
       end
 
       context 'valid request' do

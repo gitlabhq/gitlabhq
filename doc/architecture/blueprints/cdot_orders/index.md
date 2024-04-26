@@ -201,7 +201,7 @@ end
 ```
 
 - Attempting to save (e.g. create, update, or destroy) one of these models would raise an error (e.g. `ActiveRecord::ReadOnlyRecord: Subscription is marked as readonly`)
-- Even with this code, a record could still be deleted with `record.delete`. We could write a rubocop cop for avoiding using delete (possibly even for just these ReadOnlyModels). We could also overwrite this method to raise an error as well.
+- Even with this code, a record could still be deleted with `record.delete`. We could write a RuboCop rule for avoiding using delete (possibly even for just these ReadOnlyModels). We could also overwrite this method to raise an error as well.
 - Within certain namespaces like the Zuora cache sync service, we want access to a model that have write privileges.
 
 #### Rollout of Zuora Cache models

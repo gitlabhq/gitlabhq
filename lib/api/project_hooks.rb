@@ -7,7 +7,10 @@ module API
     project_hooks_tags = %w[project_hooks]
 
     before { authenticate! }
-    before { authorize_admin_project }
+    before do
+      ability = route.request_method == 'GET' ? :read_web_hook : :admin_web_hook
+      authorize! ability, user_project
+    end
 
     feature_category :webhooks
 

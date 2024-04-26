@@ -11,7 +11,6 @@ module Gitlab
       lambda do |chain|
         # Size limiter should be placed at the top
         chain.add ::Gitlab::SidekiqMiddleware::SizeLimiter::Server
-        chain.add ::Gitlab::SidekiqMiddleware::ShardAwarenessValidator
         chain.add ::Gitlab::SidekiqMiddleware::Monitor
 
         # Labkit wraps the job in the `Labkit::Context` resurrected from

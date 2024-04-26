@@ -89,7 +89,7 @@ The main goals of the PoC were:
 - RubyAtScale provides also tools to track metrics about modularization and adoption which we
   would need to monitor and drive as an engineering organization.
 - Packwerk has IDE extensions (e.g. for VSCode) to provide realtime feedback on violations
-  (like Rubocop). It can also be run via CLI during the development workflow against a single
+  (like RuboCop). It can also be run via CLI during the development workflow against a single
   package. It could be integrated into pre-push Git hooks or Danger during code reviews.
 
 ### Challenges
@@ -107,7 +107,7 @@ during the PoC and are more generically related to the process of modularization
   We may have modules that are partially migrated and we need to ensure JiHu is up-to-date
   with the current progresses.
 - After privacy/dependency checks are enabled, Packwerk will log a lot of violations
-  (like Rubocop TODOs) since constant references in a Rails codebase are very entangled.
+  (like RuboCop TODOs) since constant references in a Rails codebase are very entangled.
   - The team owning the package needs to define a vision for the package.
     What would the package look like once all violations have been fixed?
     This may mean specifying where the package fits in the

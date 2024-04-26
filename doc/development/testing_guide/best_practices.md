@@ -54,7 +54,7 @@ When using spring and guard together, use `SPRING=1 bundle exec guard` instead t
 - Use a single, top-level `RSpec.describe ClassName` block.
 - Use `.method` to describe class methods and `#method` to describe instance
   methods.
-- Use `context` to test branching logic (`RSpec/AvoidConditionalStatements` Rubocop Cop - [MR](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117152)).
+- Use `context` to test branching logic (`RSpec/AvoidConditionalStatements` RuboCop Cop - [MR](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117152)).
 - Try to match the ordering of tests to the ordering in the class.
 - Try to follow the [Four-Phase Test](https://thoughtbot.com/blog/four-phase-test) pattern, using newlines
   to separate phases.

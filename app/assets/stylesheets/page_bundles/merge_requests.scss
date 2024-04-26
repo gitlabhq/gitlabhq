@@ -290,21 +290,6 @@ $tabs-holder-z-index: 250;
   height: $grid-size;
 }
 
-.tree-list-search {
-  flex: 0 0 34px;
-
-  .form-control {
-    padding-left: 30px;
-  }
-}
-
-.tree-list-icon {
-  &,
-  svg {
-    fill: var(--gray-400, $gray-400);
-  }
-}
-
 .tree-list-clear-icon {
   right: 10px;
   left: auto;

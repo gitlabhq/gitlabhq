@@ -4,20 +4,18 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::SidekiqQueue, :clean_gitlab_redis_queues, :clean_gitlab_redis_queues_metadata do
   around do |example|
-    Gitlab::SidekiqSharding::Validator.allow_unrouted_sidekiq_calls { Sidekiq::Queue.new('foobar').clear }
+    Sidekiq::Queue.new('foobar').clear
     Sidekiq::Testing.disable!(&example)
-    Gitlab::SidekiqSharding::Validator.allow_unrouted_sidekiq_calls { Sidekiq::Queue.new('foobar').clear }
+    Sidekiq::Queue.new('foobar').clear
   end
 
   def add_job(args, user:, klass: 'AuthorizedProjectsWorker')
-    Gitlab::SidekiqSharding::Validator.allow_unrouted_sidekiq_calls do
-      Sidekiq::Client.push(
-        'class' => klass,
-        'queue' => 'foobar',
-        'args' => args,
-        'meta.user' => user.username
-      )
-    end
+    Sidekiq::Client.push(
+      'class' => klass,
+      'queue' => 'foobar',
+      'args' => args,
+      'meta.user' => user.username
+    )
   end
 
   describe '#drop_jobs!' do

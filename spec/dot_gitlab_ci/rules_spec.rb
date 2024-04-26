@@ -74,14 +74,12 @@ RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', feature_category: :tooling do
     end
   end
 
-  describe '.rails:rules:ee-and-foss-default-rules' do
-    let(:base_rules) { config.dig('.rails:rules:ee-and-foss-default-rules', 'rules') }
-
-    context 'with .rails:rules:rspec-predictive' do
-      let(:derived_rules) { config.dig('.rails:rules:rspec-predictive', 'rules') }
-
+  shared_examples 'predictive is inverse of non-predictive' do
+    context 'with derived rules' do
       it 'has the "when: never" in reverse compared to the base' do
-        base_rules.zip(derived_rules).each do |(base, derived)|
+        rules_pairs = base_rules.zip(derived_rules)
+
+        cut_point = rules_pairs.each.with_index do |(base, derived), index|
           # exception: `.if-merge-request-labels-pipeline-expedite` should both be set to "never",
           #            because when we set this label on an MR, we don't want to run either jobs.
           if base['if'] == config['.if-merge-request-labels-pipeline-expedite']['if']
@@ -96,7 +94,10 @@ RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', feature_category: :tooling do
           if base['if'] == config['.if-merge-request-not-approved']['if']
             expect(derived).to eq(base.merge(config['.if-merge-request-approved']))
             expect(derived['when']).to eq('never')
-            next
+
+            # The following rules should match exactly, because after the
+            # approval rules, the logic is flipped.
+            break index
           end
 
           if base['when'] == 'never'
@@ -105,7 +106,20 @@ RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', feature_category: :tooling do
             expect(derived).to eq(base.merge('when' => 'never'))
           end
         end
+
+        # Match the remaining rules that should be the same
+        rules_pairs.drop(cut_point + 1).each do |(base, derived)|
+          expect(derived).to eq(base)
+        end
       end
+    end
+  end
+
+  describe '.rails:rules:ee-and-foss-default-rules' do
+    it_behaves_like 'predictive is inverse of non-predictive' do
+      let(:base_rules) { config.dig('.rails:rules:ee-and-foss-default-rules', 'rules') }
+
+      let(:derived_rules) { config.dig('.rails:rules:rspec-predictive', 'rules') }
 
       it 'contains an additional allow rule about code-backstage-patterns not present in the base' do
         expected_rule = {
@@ -116,6 +130,30 @@ RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', feature_category: :tooling do
         expect(base_rules).not_to include(expected_rule)
         expect(derived_rules).to include(expected_rule)
       end
+    end
+  end
+
+  describe '.rails:rules:single-db' do
+    it_behaves_like 'predictive is inverse of non-predictive' do
+      let(:base_rules) do
+        config.dig('.rails:rules:single-db', 'rules').reject do |rule|
+          rule['if'].start_with?('$ENABLE_') # We don't handle this yet
+        end
+      end
+
+      let(:derived_rules) { config.dig('.rails:rules:rspec-predictive:single-db', 'rules') }
+    end
+  end
+
+  describe '.rails:rules:single-db-ci-connection' do
+    it_behaves_like 'predictive is inverse of non-predictive' do
+      let(:base_rules) do
+        config.dig('.rails:rules:single-db-ci-connection', 'rules').reject do |rule|
+          rule['if'].start_with?('$ENABLE_') # We don't handle this yet
+        end
+      end
+
+      let(:derived_rules) { config.dig('.rails:rules:rspec-predictive:single-db-ci-connection', 'rules') }
     end
   end
 

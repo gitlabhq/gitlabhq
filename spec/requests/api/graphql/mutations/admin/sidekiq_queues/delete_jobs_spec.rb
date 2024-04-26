@@ -28,26 +28,19 @@ RSpec.describe 'Deleting Sidekiq jobs', :clean_gitlab_redis_queues, feature_cate
 
     context 'when valid request' do
       around do |example|
-        Gitlab::SidekiqSharding::Validator.allow_unrouted_sidekiq_calls do
-          Sidekiq::Queue.new(queue).clear
-        end
+        Sidekiq::Queue.new(queue).clear
         Sidekiq::Testing.disable!(&example)
-
-        Gitlab::SidekiqSharding::Validator.allow_unrouted_sidekiq_calls do
-          Sidekiq::Queue.new(queue).clear
-        end
+        Sidekiq::Queue.new(queue).clear
       end
 
       def add_job(user, args)
-        Gitlab::SidekiqSharding::Validator.allow_unrouted_sidekiq_calls do
-          Sidekiq::Client.push(
-            'class' => 'AuthorizedProjectsWorker',
-            'queue' => queue,
-            'args' => args,
-            'meta.user' => user.username
-          )
-          raise 'Not enqueued!' if Sidekiq::Queue.new(queue).size.zero? # rubocop:disable Style/ZeroLengthPredicate -- Sidekiq::Queue doesn't implement #blank? or #empty?
-        end
+        Sidekiq::Client.push(
+          'class' => 'AuthorizedProjectsWorker',
+          'queue' => queue,
+          'args' => args,
+          'meta.user' => user.username
+        )
+        raise 'Not enqueued!' if Sidekiq::Queue.new(queue).size.zero? # rubocop:disable Style/ZeroLengthPredicate -- Sidekiq::Queue doesn't implement #blank? or #empty?
       end
 
       it 'returns info about the deleted jobs' do

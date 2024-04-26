@@ -294,14 +294,12 @@ jest predictive:
 
 jest predictive as-if-foss:
   extends:
-    - .jest-base
+    - jest predictive
     - .frontend:rules:jest:predictive-as-if-foss
     - .as-if-foss
   needs:
     - "rspec-all frontend_fixture as-if-foss"
     - "detect-tests"
-  script:
-    - if [[ -s "$RSPEC_CHANGED_FILES_PATH" ]] || [[ -s "$RSPEC_MATCHING_JS_FILES_PATH" ]]; then run_timed_command "yarn jest:ci:predictive"; fi
 
 jest-integration:
   extends:

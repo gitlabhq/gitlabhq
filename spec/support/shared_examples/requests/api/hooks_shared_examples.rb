@@ -313,7 +313,7 @@ RSpec.shared_examples 'web-hook API endpoints' do |prefix|
     end
   end
 
-  describe "DELETE /projects/:id/hooks/:hook_id", :aggregate_failures do
+  describe "DELETE #{prefix}/hooks/:hook_id", :aggregate_failures do
     it "deletes hook from project" do
       expect do
         delete api(hook_uri, user, admin_mode: user.admin?)

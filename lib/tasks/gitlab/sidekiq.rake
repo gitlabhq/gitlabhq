@@ -6,33 +6,26 @@ namespace :gitlab do
       File.write(path, banner + YAML.dump(object).gsub(/ *$/m, ''))
     end
 
-    # TODO: make shard-aware. See https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/3430
     namespace :migrate_jobs do
       desc 'GitLab | Sidekiq | Migrate jobs in the scheduled set to new queue names'
       task schedule: :environment do
-        Gitlab::SidekiqSharding::Validator.allow_unrouted_sidekiq_calls do
-          ::Gitlab::SidekiqMigrateJobs
-            .new(::Gitlab::SidekiqConfig.worker_queue_mappings, logger: Logger.new($stdout))
-            .migrate_set('schedule')
-        end
+        ::Gitlab::SidekiqMigrateJobs
+          .new(::Gitlab::SidekiqConfig.worker_queue_mappings, logger: Logger.new($stdout))
+          .migrate_set('schedule')
       end
 
       desc 'GitLab | Sidekiq | Migrate jobs in the retry set to new queue names'
       task retry: :environment do
-        Gitlab::SidekiqSharding::Validator.allow_unrouted_sidekiq_calls do
-          ::Gitlab::SidekiqMigrateJobs
-            .new(::Gitlab::SidekiqConfig.worker_queue_mappings, logger: Logger.new($stdout))
-            .migrate_set('retry')
-        end
+        ::Gitlab::SidekiqMigrateJobs
+          .new(::Gitlab::SidekiqConfig.worker_queue_mappings, logger: Logger.new($stdout))
+          .migrate_set('retry')
       end
 
       desc 'GitLab | Sidekiq | Migrate jobs in queues outside of routing rules'
       task queued: :environment do
-        Gitlab::SidekiqSharding::Validator.allow_unrouted_sidekiq_calls do
-          ::Gitlab::SidekiqMigrateJobs
-            .new(::Gitlab::SidekiqConfig.worker_queue_mappings, logger: Logger.new($stdout))
-            .migrate_queues
-        end
+        ::Gitlab::SidekiqMigrateJobs
+          .new(::Gitlab::SidekiqConfig.worker_queue_mappings, logger: Logger.new($stdout))
+          .migrate_queues
       end
     end
 

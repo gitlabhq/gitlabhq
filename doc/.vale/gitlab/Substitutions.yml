@@ -55,6 +55,7 @@ swap:
   reporter access: the Reporter role
   reporter permission: the Reporter role
   reporter permissions: the Reporter role
+  rubocop: RuboCop
   self hosted GitLab: GitLab self-managed # https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html#gitlab-self-managed
   self-hosted GitLab: GitLab self-managed # https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html#gitlab-self-managed
   styleguide: style guide

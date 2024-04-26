@@ -12,11 +12,13 @@ module Packages
             required_python: params[:requires_python] || '',
             metadata_version: params[:metadata_version],
             author_email: params[:author_email],
-            description: params[:description]&.truncate(::Packages::Pypi::Metadatum::MAX_DESCRIPTION_LENGTH),
+            description: params[:description],
             description_content_type: params[:description_content_type],
             summary: params[:summary],
-            keywords: params[:keywords]&.truncate(::Packages::Pypi::Metadatum::MAX_KEYWORDS_LENGTH)
+            keywords: params[:keywords]
           )
+
+          truncate_fields(meta)
 
           raise ActiveRecord::RecordInvalid, meta unless meta.valid?
 
@@ -47,6 +49,16 @@ module Packages
           file_md5: params[:md5_digest],
           file_sha256: params[:sha256_digest]
         }
+      end
+
+      def truncate_fields(meta)
+        return if meta.valid?
+
+        meta.errors.select { |error| error.type == :too_long }.each do |error|
+          field = error.attribute
+
+          meta[field] = meta[field].truncate(error.options[:count])
+        end
       end
     end
   end

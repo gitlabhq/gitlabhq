@@ -13,11 +13,6 @@ RSpec.describe Gitlab::BackgroundMigration::JobCoordinator do
     Sidekiq::RedisConnection.create(params) # rubocop:disable Rails/SaveBang -- RedisConnection only has .create
   end
 
-  before do
-    allow(Gitlab::Redis::Queues).to receive(:instances)
-      .and_return({ 'main' => Gitlab::Redis::Queues, 'shard' => Gitlab::Redis::Queues })
-  end
-
   describe '.for_tracking_database' do
     it 'returns an executor with the correct worker class and database' do
       coordinator = described_class.for_tracking_database(tracking_database)
@@ -244,16 +239,12 @@ RSpec.describe Gitlab::BackgroundMigration::JobCoordinator do
         Sidekiq::Testing.disable! do
           worker_class.perform_in(10.minutes, 'Object')
 
-          Gitlab::SidekiqSharding::Validator.allow_unrouted_sidekiq_calls do
-            expect(Sidekiq::ScheduledSet.new).to be_one
-          end
+          expect(Sidekiq::ScheduledSet.new).to be_one
           expect(coordinator).to receive(:perform).with('Object', any_args)
 
           coordinator.steal('Object')
 
-          Gitlab::SidekiqSharding::Validator.allow_unrouted_sidekiq_calls do
-            expect(Sidekiq::ScheduledSet.new).to be_none
-          end
+          expect(Sidekiq::ScheduledSet.new).to be_none
         end
       end
     end

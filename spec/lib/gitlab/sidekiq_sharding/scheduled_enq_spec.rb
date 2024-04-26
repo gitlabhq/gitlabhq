@@ -2,10 +2,7 @@
 
 require 'spec_helper'
 
-# Gitlab::SidekiqSharding::ScheduledEnq does not need routing checks as it extends
-# Sidekiq::Scheduled::Enq which internally uses Sidekiq.redis. That is expected of the poller.
-RSpec.describe Gitlab::SidekiqSharding::ScheduledEnq, :allow_unrouted_sidekiq_calls,
-  feature_category: :scalability do
+RSpec.describe Gitlab::SidekiqSharding::ScheduledEnq, feature_category: :scalability do
   it 'extends Sidekiq::Scheduled::Enq' do
     expect(described_class <= ::Sidekiq::Scheduled::Enq).to eq(true)
   end

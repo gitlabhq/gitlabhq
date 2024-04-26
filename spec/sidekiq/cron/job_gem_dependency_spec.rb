@@ -2,8 +2,7 @@
 
 require 'spec_helper'
 
-# Only Sidekiq.redis interacts with cron jobs so unrouted calls are allowed.
-RSpec.describe Sidekiq::Cron::Job, :allow_unrouted_sidekiq_calls do
+RSpec.describe Sidekiq::Cron::Job do
   describe 'cron jobs' do
     context 'when Fugit depends on ZoTime or EoTime' do
       before do

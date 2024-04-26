@@ -632,6 +632,7 @@ rspec:predictive:trigger:
   variables:
     PARENT_PIPELINE_ID: $CI_PIPELINE_ID
     GIT_STRATEGY: $GIT_STRATEGY
+    PIPELINE_NAME: 'rspec:predictive'
   trigger:
     strategy: depend
     forward:
@@ -641,12 +642,48 @@ rspec:predictive:trigger:
       - artifact: "${RSPEC_PREDICTIVE_PIPELINE_TEMPLATE_YML}.yml"
         job: rspec-predictive:pipeline-generate
 
+rspec:predictive:trigger single-db:
+  extends:
+    - rspec:predictive:trigger
+    - .single-db-rspec
+    - .rails:rules:rspec-predictive:single-db
+  variables:
+    PIPELINE_NAME: 'rspec:predictive single-db'
+
+rspec:predictive:trigger single-db-ci-connection:
+  extends:
+    - rspec:predictive:trigger
+    - .single-db-ci-connection-rspec
+    - .rails:rules:rspec-predictive:single-db-ci-connection
+  variables:
+    PIPELINE_NAME: 'rspec:predictive single-db-ci-connection'
+
 rspec-ee:predictive:trigger:
   extends: rspec:predictive:trigger
   trigger:
     include:
       - artifact: "${RSPEC_PREDICTIVE_PIPELINE_TEMPLATE_YML}-ee.yml"
         job: rspec-predictive:pipeline-generate
+  variables:
+    PIPELINE_NAME: 'rspec-ee:predictive'
+
+rspec-ee:predictive:trigger single-db:
+  extends: rspec:predictive:trigger single-db
+  trigger:
+    include:
+      - artifact: "${RSPEC_PREDICTIVE_PIPELINE_TEMPLATE_YML}-ee.yml"
+        job: rspec-predictive:pipeline-generate
+  variables:
+    PIPELINE_NAME: 'rspec-ee:predictive single-db'
+
+rspec-ee:predictive:trigger single-db-ci-connection:
+  extends: rspec:predictive:trigger single-db-ci-connection
+  trigger:
+    include:
+      - artifact: "${RSPEC_PREDICTIVE_PIPELINE_TEMPLATE_YML}-ee.yml"
+        job: rspec-predictive:pipeline-generate
+  variables:
+    PIPELINE_NAME: 'rspec-ee:predictive single-db-ci-connection'
 
 .rspec-ee-base-gitlab-duo:
   extends:

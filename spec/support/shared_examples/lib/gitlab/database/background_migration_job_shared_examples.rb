@@ -29,7 +29,7 @@ RSpec.shared_examples 'marks background migration job records' do
 end
 
 RSpec.shared_examples 'finalized background migration' do |worker_class|
-  it 'processed the scheduled sidekiq queue', :allow_unrouted_sidekiq_calls do
+  it 'processed the scheduled sidekiq queue' do
     queued = Sidekiq::ScheduledSet
       .new
       .select do |scheduled|
@@ -39,7 +39,7 @@ RSpec.shared_examples 'finalized background migration' do |worker_class|
     expect(queued.size).to eq(0)
   end
 
-  it 'processed the async sidekiq queue', :allow_unrouted_sidekiq_calls do
+  it 'processed the async sidekiq queue' do
     queued = Sidekiq::Queue.new(worker_class.name)
       .select { |scheduled| scheduled.klass == job_class_name }
     expect(queued.size).to eq(0)

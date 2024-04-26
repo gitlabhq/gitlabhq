@@ -527,7 +527,6 @@ metric counters.
 |:--------------------------------------------------------------------------|:--------------|:---------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `counters`                                                                | hash          | no       | Hash of counters                                                                                                                                                |
 | `counters["k8s_api_proxy_request"]`                                       | integer       | no       | The number to increase the `k8s_api_proxy_request` counter by                                                                                                   |
-| `counters["gitops_sync"]`                                                 | integer       | no       | The number to increase the `gitops_sync` counter by                                                                                                             |
 | `counters["flux_git_push_notifications_total"]`                           | integer       | no       | The number to increase the `flux_git_push_notifications_total` counter by                                                                                       |
 | `counters["k8s_api_proxy_requests_via_ci_access"]`                        | integer       | no       | The number to increase the `k8s_api_proxy_requests_via_ci_access` counter by                                                                                    |
 | `counters["k8s_api_proxy_requests_via_user_access"]`                      | integer       | no       | The number to increase the `k8s_api_proxy_requests_via_user_access` counter by                                                                                  |
@@ -549,7 +548,7 @@ Example Request:
 
 ```shell
 curl --request POST --header "Gitlab-Kas-Api-Request: <JWT token>" --header "Content-Type: application/json" \
-     --data '{"counters": {"gitops_sync":1}}' "http://localhost:3000/api/v4/internal/kubernetes/usage_metrics"
+     --data '{"counters": {"k8s_api_proxy_request":1}}' "http://localhost:3000/api/v4/internal/kubernetes/usage_metrics"
 ```
 
 ### GitLab agent events

@@ -232,10 +232,10 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware, :clean_
         context 'when job is executed first' do
           it 'raises an error and retries', :aggregate_failures do
             expect do
-              Gitlab::SidekiqSharding::Validator.allow_unrouted_sidekiq_calls { process_job(job) }
+              process_job(job)
             end.to raise_error(Sidekiq::JobRetry::Skip)
 
-            job_for_retry = Gitlab::SidekiqSharding::Validator.allow_unrouted_sidekiq_calls { Sidekiq::RetrySet.new.first }
+            job_for_retry = Sidekiq::RetrySet.new.first
             expect(job_for_retry['error_class']).to eq('Gitlab::Database::LoadBalancing::SidekiqServerMiddleware::JobReplicaNotUpToDate')
           end
 

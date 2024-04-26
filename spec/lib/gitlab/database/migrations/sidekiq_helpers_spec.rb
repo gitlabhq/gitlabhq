@@ -65,13 +65,11 @@ RSpec.describe Gitlab::Database::Migrations::SidekiqHelpers do
 
     describe "#sidekiq_remove_jobs", :clean_gitlab_redis_queues do
       def clear_queues
-        Gitlab::SidekiqSharding::Validator.allow_unrouted_sidekiq_calls do
-          Sidekiq::Queue.new("test").clear
-          Sidekiq::Queue.new("test_two").clear
-          Sidekiq::Queue.new("unrelated").clear
-          Sidekiq::RetrySet.new.clear
-          Sidekiq::ScheduledSet.new.clear
-        end
+        Sidekiq::Queue.new("test").clear
+        Sidekiq::Queue.new("test_two").clear
+        Sidekiq::Queue.new("unrelated").clear
+        Sidekiq::RetrySet.new.clear
+        Sidekiq::ScheduledSet.new.clear
       end
 
       around do |example|
@@ -116,38 +114,32 @@ RSpec.describe Gitlab::Database::Migrations::SidekiqHelpers do
         end
 
         it "removes all related job instances from the job classes' queues" do
-          Gitlab::SidekiqSharding::Validator.allow_unrouted_sidekiq_calls do
-            worker.perform_async
-            worker_two.perform_async
-            same_queue_different_worker.perform_async
-            unrelated_worker.perform_async
-          end
+          worker.perform_async
+          worker_two.perform_async
+          same_queue_different_worker.perform_async
+          unrelated_worker.perform_async
 
           worker_queue = Sidekiq::Queue.new(worker.queue)
           worker_two_queue = Sidekiq::Queue.new(worker_two.queue)
           unrelated_queue = Sidekiq::Queue.new(unrelated_worker.queue)
 
-          Gitlab::SidekiqSharding::Validator.allow_unrouted_sidekiq_calls do
-            expect(worker_queue.size).to eq(2)
-            expect(worker_two_queue.size).to eq(1)
-            expect(unrelated_queue.size).to eq(1)
-          end
+          expect(worker_queue.size).to eq(2)
+          expect(worker_two_queue.size).to eq(1)
+          expect(unrelated_queue.size).to eq(1)
 
           model.sidekiq_remove_jobs(job_klasses: [worker.name, worker_two.name])
 
-          Gitlab::SidekiqSharding::Validator.allow_unrouted_sidekiq_calls do
-            expect(worker_queue.size).to eq(1)
-            expect(worker_two_queue.size).to eq(0)
-            expect(worker_queue.map(&:klass)).not_to include(worker.name)
-            expect(worker_queue.map(&:klass)).to include(
-              same_queue_different_worker.name
-            )
-            expect(worker_two_queue.map(&:klass)).not_to include(worker_two.name)
-            expect(unrelated_queue.size).to eq(1)
-          end
+          expect(worker_queue.size).to eq(1)
+          expect(worker_two_queue.size).to eq(0)
+          expect(worker_queue.map(&:klass)).not_to include(worker.name)
+          expect(worker_queue.map(&:klass)).to include(
+            same_queue_different_worker.name
+          )
+          expect(worker_two_queue.map(&:klass)).not_to include(worker_two.name)
+          expect(unrelated_queue.size).to eq(1)
         end
 
-        context "when job instances are in the scheduled set", :allow_unrouted_sidekiq_calls do
+        context "when job instances are in the scheduled set" do
           it "removes all related job instances from the scheduled set" do
             worker.perform_in(1.hour)
             worker_two.perform_in(1.hour)
@@ -171,7 +163,7 @@ RSpec.describe Gitlab::Database::Migrations::SidekiqHelpers do
           end
         end
 
-        context "when job instances are in the retry set", :allow_unrouted_sidekiq_calls do
+        context "when job instances are in the retry set" do
           include_context "when handling retried jobs"
 
           it "removes all related job instances from the retry set" do
@@ -200,7 +192,7 @@ RSpec.describe Gitlab::Database::Migrations::SidekiqHelpers do
         end
 
         # Imitate job deletion returning zero and then non zero.
-        context "when job fails to be deleted", :allow_unrouted_sidekiq_calls do
+        context "when job fails to be deleted" do
           let(:job_double) do
             instance_double(
               "Sidekiq::JobRecord",
@@ -268,7 +260,7 @@ RSpec.describe Gitlab::Database::Migrations::SidekiqHelpers do
                   jid: 'random_jid' })
       end
 
-      it "migrates jobs from one sidekiq queue to another", :allow_unrouted_sidekiq_calls do
+      it "migrates jobs from one sidekiq queue to another" do
         Sidekiq::Testing.disable! do
           worker.perform_async("Something", [1])
           worker.perform_async("Something", [2])
@@ -292,10 +284,8 @@ RSpec.describe Gitlab::Database::Migrations::SidekiqHelpers do
           Sidekiq::Testing.disable! do
             # .perform_async internally calls Sidekiq::Client.via and re-route the job to
             # Gitlab::Redis::Queues's Redis instance.
-            Gitlab::SidekiqSharding::Validator.allow_unrouted_sidekiq_calls do
-              shard_instance.sidekiq_redis.with { |c| c.lpush('queue:test', job_hash) }
-              Gitlab::Redis::Queues.sidekiq_redis.with { |c| c.lpush('queue:test', job_hash) }
-            end
+            shard_instance.sidekiq_redis.with { |c| c.lpush('queue:test', job_hash) }
+            Gitlab::Redis::Queues.sidekiq_redis.with { |c| c.lpush('queue:test', job_hash) }
 
             # 1 job in each instance's queue
             Sidekiq::Client.via(shard_instance.sidekiq_redis) do
@@ -305,21 +295,17 @@ RSpec.describe Gitlab::Database::Migrations::SidekiqHelpers do
               end
             end
 
-            Gitlab::SidekiqSharding::Validator.allow_unrouted_sidekiq_calls do
-              Sidekiq.redis do |c|
-                expect(c.llen("queue:test")).to eq 1
-                expect(c.llen("queue:destination")).to eq 0
-              end
+            Sidekiq.redis do |c|
+              expect(c.llen("queue:test")).to eq 1
+              expect(c.llen("queue:destination")).to eq 0
             end
 
             model.sidekiq_queue_migrate("test", to: "destination")
 
             # 2 job in the main instance's queue
-            Gitlab::SidekiqSharding::Validator.allow_unrouted_sidekiq_calls do
-              Sidekiq.redis do |c|
-                expect(c.llen("queue:test")).to eq main_from_size
-                expect(c.llen("queue:destination")).to eq main_to_size
-              end
+            Sidekiq.redis do |c|
+              expect(c.llen("queue:test")).to eq main_from_size
+              expect(c.llen("queue:destination")).to eq main_to_size
             end
 
             # queues in shard get emptied
@@ -340,23 +326,19 @@ RSpec.describe Gitlab::Database::Migrations::SidekiqHelpers do
 
         it 'stores migrated job in a buffer' do
           Sidekiq::Testing.disable! do
-            Gitlab::SidekiqSharding::Validator.allow_unrouted_sidekiq_calls do
-              worker.perform_async("Something", [1])
-              worker.perform_async("Something", [2])
+            worker.perform_async("Something", [1])
+            worker.perform_async("Something", [2])
 
-              Sidekiq.redis do |c|
-                expect(c.llen("queue:test")).to eq 2
-                expect(c.llen("queue:destination")).to eq 0
-              end
+            Sidekiq.redis do |c|
+              expect(c.llen("queue:test")).to eq 2
+              expect(c.llen("queue:destination")).to eq 0
             end
 
             expect { model.sidekiq_queue_migrate("test", to: "destination") }.to raise_error(StandardError)
 
-            Gitlab::SidekiqSharding::Validator.allow_unrouted_sidekiq_calls do
-              Sidekiq.redis do |c|
-                expect(c.llen("queue:test")).to eq 1
-                expect(c.llen("migration_buffer:queue:test")).to eq 1
-              end
+            Sidekiq.redis do |c|
+              expect(c.llen("queue:test")).to eq 1
+              expect(c.llen("migration_buffer:queue:test")).to eq 1
             end
           end
         end
@@ -453,7 +435,7 @@ RSpec.describe Gitlab::Database::Migrations::SidekiqHelpers do
         end
 
         context 'when there is 1 source and 1 destination store' do
-          context 'when it is the same instance', :allow_unrouted_sidekiq_calls do
+          context 'when it is the same instance' do
             before do
               allow(Gitlab::SidekiqConfig::WorkerRouter.global)
                 .to receive(:stores_with_queue).and_return(['main'])
@@ -487,7 +469,7 @@ RSpec.describe Gitlab::Database::Migrations::SidekiqHelpers do
             it_behaves_like 'holds jobs in buffer until migration completes'
           end
 
-          context 'when routing is disabled', :allow_unrouted_sidekiq_calls do
+          context 'when routing is disabled' do
             before do
               allow(Gitlab::SidekiqSharding::Router).to receive(:enabled?).and_return(false)
               allow(Gitlab::SidekiqConfig::WorkerRouter.global)

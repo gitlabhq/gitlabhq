@@ -84,7 +84,7 @@ accessed internally, as long as there is consistency in related code.
 
 ### Newlines style guide
 
-In addition to the RuboCops `Layout/EmptyLinesAroundMethodBody` and `Cop/LineBreakAroundConditionalBlock` that enforce some newline styles, we have the following guidelines that are not backed by RuboCop.
+In addition to the RuboCop's `Layout/EmptyLinesAroundMethodBody` and `Cop/LineBreakAroundConditionalBlock` that enforce some newline styles, we have the following guidelines that are not backed by RuboCop.
 
 #### Rule: separate code with newlines only to group together related logic
 

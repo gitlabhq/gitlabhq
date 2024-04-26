@@ -920,6 +920,8 @@ class ProjectPolicy < BasePolicy
   rule { can?(:admin_project) }.policy do
     enable :read_usage_quotas
     enable :view_edit_page
+    enable :read_web_hook
+    enable :admin_web_hook
   end
 
   rule { can?(:project_bot_access) }.policy do

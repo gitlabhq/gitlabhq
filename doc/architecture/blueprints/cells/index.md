@@ -21,9 +21,9 @@ For more information about Cells, see also:
 ## Cells Iterations
 
 - The [Cells 1.0](iterations/cells-1.0.md) target is to deliver a solution
-  for new enterprise customers using the SaaS GitLab.com offering.
+  for internal customers using the SaaS GitLab.com offering, and foundational work for Cells.
 - The [Cells 1.5](iterations/cells-1.5.md) target is to deliver a migration solution
-  for existing enterprise customers using the SaaS GitLab.com offering, built on top of architecture
+  for existing and new enterprise customers using the SaaS GitLab.com offering, built on top of architecture
   of Cells 1.0.
 - The [Cells 2.0](iterations/cells-2.0.md) target is to support a public and open source contribution
   model in a cellular architecture.

@@ -12,11 +12,7 @@ module Gitlab
       rescue Gitlab::SidekiqDaemon::Monitor::CancelledError
         # push job to DeadSet
         payload = ::Sidekiq.dump_json(job)
-        Gitlab::SidekiqSharding::Validator.allow_unrouted_sidekiq_calls do
-          # DeadSet is shard-local. It is correct to directly use Sidekiq.redis rather than to
-          # route to another shard's DeadSet.
-          ::Sidekiq::DeadSet.new.kill(payload, notify_failure: false)
-        end
+        ::Sidekiq::DeadSet.new.kill(payload, notify_failure: false)
 
         # ignore retries
         raise ::Sidekiq::JobRetry::Skip

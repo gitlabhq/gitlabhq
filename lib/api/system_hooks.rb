@@ -10,7 +10,8 @@ module API
 
     before do
       authenticate!
-      authenticated_as_admin!
+      ability = route.request_method == 'GET' ? :read_web_hook : :admin_web_hook
+      authorize! ability
     end
 
     helpers ::API::Helpers::WebHooksHelpers

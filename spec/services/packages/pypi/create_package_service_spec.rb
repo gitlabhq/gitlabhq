@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Packages::Pypi::CreatePackageService, :aggregate_failures, feature_category: :package_registry do
   include PackagesManagerApiSpecHelpers
+  using RSpec::Parameterized::TableSyntax
 
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
@@ -94,36 +95,34 @@ RSpec.describe Packages::Pypi::CreatePackageService, :aggregate_failures, featur
       end
     end
 
-    shared_examples 'saves a very long metadata field' do |field_name:, max_length:|
-      let(:truncated_field) { ('x' * (max_length + 1)).truncate(max_length) }
-
-      before do
-        params.merge!(
-          { field_name.to_sym => 'x' * (max_length + 1) }
-        )
+    context 'with a very long metadata field' do
+      where(:field_name, :param_name, :max_length) do
+        :required_python          | :requires_python | ::Packages::Pypi::Metadatum::MAX_REQUIRED_PYTHON_LENGTH
+        :keywords                 | nil              | ::Packages::Pypi::Metadatum::MAX_KEYWORDS_LENGTH
+        :metadata_version         | nil              | ::Packages::Pypi::Metadatum::MAX_METADATA_VERSION_LENGTH
+        :description              | nil              | ::Packages::Pypi::Metadatum::MAX_DESCRIPTION_LENGTH
+        :summary                  | nil              | ::Packages::Pypi::Metadatum::MAX_SUMMARY_LENGTH
+        :description_content_type | nil              | ::Packages::Pypi::Metadatum::MAX_DESCRIPTION_CONTENT_TYPE_LENGTH
+        :author_email             | nil              | ::Packages::Pypi::Metadatum::MAX_AUTHOR_EMAIL_LENGTH
       end
 
-      it 'truncates the field' do
-        expect { subject }.to change { Packages::Package.pypi.count }.by(1)
+      with_them do
+        let(:truncated_field) { ('x' * (max_length + 1)).truncate(max_length) }
 
-        expect(created_package.pypi_metadatum.public_send(field_name)).to eq(truncated_field)
-      end
-    end
+        before do
+          key = param_name || field_name
 
-    it_behaves_like 'saves a very long metadata field',
-      field_name: 'keywords',
-      max_length: ::Packages::Pypi::Metadatum::MAX_KEYWORDS_LENGTH
+          params.merge!(
+            { key.to_sym => 'x' * (max_length + 1) }
+          )
+        end
 
-    it_behaves_like 'saves a very long metadata field',
-      field_name: 'description',
-      max_length: ::Packages::Pypi::Metadatum::MAX_DESCRIPTION_LENGTH
+        it 'truncates the field and creates the package and its metadata' do
+          expect { execute_service }.to change { Packages::Package.pypi.count }.by(1)
+                                    .and change { Packages::Pypi::Metadatum.count }.by(1)
 
-    context 'with an invalid metadata' do
-      let(:requires_python) { 'x' * 256 }
-
-      it_behaves_like 'returning an error service response',
-        message: 'Validation failed: Required python is too long (maximum is 255 characters)' do
-        it { is_expected.to have_attributes(reason: :invalid_parameter) }
+          expect(created_package.pypi_metadatum.public_send(field_name)).to eq(truncated_field)
+        end
       end
     end
 

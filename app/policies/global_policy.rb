@@ -127,6 +127,8 @@ class GlobalPolicy < BasePolicy
     enable :reject_user
     enable :read_usage_trends_measurement
     enable :create_instance_runner
+    enable :read_web_hook
+    enable :admin_web_hook
   end
 
   # We can't use `read_statistics` because the user may have different permissions for different projects

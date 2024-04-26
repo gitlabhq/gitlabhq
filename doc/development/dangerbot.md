@@ -76,7 +76,7 @@ often face similar challenges, after all. Think about how you could fulfill the
 same need while ensuring everyone can benefit from the work, and do that instead
 if you can.
 
-If a standard tool (for example, `rubocop`) exists for a task, it's better to
+If a standard tool (for example, RuboCop) exists for a task, it's better to
 use it directly, rather than calling it by using Danger. Running and debugging
 the results of those tools locally is easier if Danger isn't involved, and
 unless you're using some Danger-specific functionality, there's no benefit to

@@ -38,7 +38,7 @@ The general steps of refactoring existing code to modularization could be:
      by Packwer privacy violations. By enforcing privacy afterwards we gain an understanding of coupling between various
      constants and domains.
    - This way we know what constants need to be made public (as they are used by other packages) and what can
-     remain private (taking the benefit of encapsulation). We will use Packwerk's recorded violations (like Rubocop TODOs)
+     remain private (taking the benefit of encapsulation). We will use Packwerk's recorded violations (like RuboCop TODOs)
      to refactor the code over time.
    - We can update the dependency graph to see where it fit in the overall architecture.
 1. Work off Packwerk's recorded violations to make refactorings. **This is a long term phase** that the DRIs of the

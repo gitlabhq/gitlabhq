@@ -70,16 +70,11 @@ RSpec.describe 'gitlab:snippets namespace rake task', :silence_stdout do
     it 'fails if the snippet background migration is running' do
       Sidekiq::Testing.disable! do
         BackgroundMigrationWorker.perform_in(180, 'BackfillSnippetRepositories', [non_migrated.first.id, non_migrated.last.id])
-
-        Gitlab::SidekiqSharding::Validator.allow_unrouted_sidekiq_calls do
-          expect(Sidekiq::ScheduledSet.new).to be_one
-        end
+        expect(Sidekiq::ScheduledSet.new).to be_one
 
         expect { subject }.to raise_error(RuntimeError, /There are already snippet migrations running/)
 
-        Gitlab::SidekiqSharding::Validator.allow_unrouted_sidekiq_calls do
-          Sidekiq::ScheduledSet.new.clear
-        end
+        Sidekiq::ScheduledSet.new.clear
       end
     end
   end
@@ -102,15 +97,11 @@ RSpec.describe 'gitlab:snippets namespace rake task', :silence_stdout do
     it 'returns a message saying that the background migration is running' do
       Sidekiq::Testing.disable! do
         BackgroundMigrationWorker.perform_in(180, 'BackfillSnippetRepositories', [non_migrated.first.id, non_migrated.last.id])
-        Gitlab::SidekiqSharding::Validator.allow_unrouted_sidekiq_calls do
-          expect(Sidekiq::ScheduledSet.new).to be_one
-        end
+        expect(Sidekiq::ScheduledSet.new).to be_one
 
         expect { subject }.to output("There are snippet migrations running\n").to_stdout
 
-        Gitlab::SidekiqSharding::Validator.allow_unrouted_sidekiq_calls do
-          Sidekiq::ScheduledSet.new.clear
-        end
+        Sidekiq::ScheduledSet.new.clear
       end
     end
   end

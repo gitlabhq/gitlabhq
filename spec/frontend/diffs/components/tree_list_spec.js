@@ -175,8 +175,7 @@ describe('Diffs tree list component', () => {
       it('hides scroller for no matches', async () => {
         const input = findDiffTreeSearch();
 
-        input.element.value = '*.md';
-        input.trigger('input');
+        input.vm.$emit('input', '*.md');
 
         await nextTick();
 
@@ -193,8 +192,7 @@ describe('Diffs tree list component', () => {
       `('returns $itemSize item for $extension', async ({ extension, itemSize }) => {
         const input = findDiffTreeSearch();
 
-        input.element.value = extension;
-        input.trigger('input');
+        input.vm.$emit('input', extension);
 
         await nextTick();
 

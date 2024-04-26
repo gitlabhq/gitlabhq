@@ -79,7 +79,7 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
       let!(:agent_token) { create(:cluster_agent_token) }
 
       it 'returns no_content for valid events' do
-        counters = { gitops_sync: 10, k8s_api_proxy_request: 5 }
+        counters = { k8s_api_proxy_request: 5 }
         unique_counters = { k8s_api_proxy_requests_unique_users_via_ci_access: [10] }
 
         send_request(params: { counters: counters, unique_counters: unique_counters })
@@ -88,7 +88,7 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
       end
 
       it 'returns no_content for counts of zero' do
-        counters = { gitops_sync: 0, k8s_api_proxy_request: 0 }
+        counters = { k8s_api_proxy_request: 0 }
         unique_counters = { k8s_api_proxy_requests_unique_users_via_ci_access: [] }
 
         send_request(params: { counters: counters, unique_counters: unique_counters })
@@ -97,7 +97,7 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
       end
 
       it 'returns 400 for non counter number' do
-        counters = { gitops_sync: 'string', k8s_api_proxy_request: 0 }
+        counters = { k8s_api_proxy_request: 'string' }
 
         send_request(params: { counters: counters })
 
@@ -115,7 +115,6 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
       it 'tracks events and unique events', :aggregate_failures do
         request_count = 2
         counters = {
-          gitops_sync: 10,
           k8s_api_proxy_request: 5,
           flux_git_push_notifications_total: 42,
           k8s_api_proxy_requests_via_ci_access: 43,
@@ -136,7 +135,6 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
           k8s_api_proxy_requests_unique_users_via_pat_access: user_ids
         }
         expected_counters = {
-          kubernetes_agent_gitops_sync: request_count * counters[:gitops_sync],
           kubernetes_agent_k8s_api_proxy_request: request_count * counters[:k8s_api_proxy_request],
           kubernetes_agent_flux_git_push_notifications_total: request_count * counters[:flux_git_push_notifications_total],
           kubernetes_agent_k8s_api_proxy_requests_via_ci_access: request_count * counters[:k8s_api_proxy_requests_via_ci_access],
