@@ -16,6 +16,7 @@ module Banzai
           # Must always be before the SanitizationFilter to prevent XSS attacks
           Filter::SpacedLinkFilter,
           Filter::SanitizationFilter,
+          Filter::EscapedCharFilter,
           Filter::KrokiFilter,
           Filter::GollumTagsFilter,
           Filter::AssetProxyFilter,

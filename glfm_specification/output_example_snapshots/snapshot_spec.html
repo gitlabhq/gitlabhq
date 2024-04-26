@@ -238,7 +238,144 @@
 <h1 class="title">GitLab Flavored Markdown Internal Extensions</h1>
 <div class="version">Version alpha</div>
 
-
+<ul class="section-nav">
+<li>
+<a href="#preliminaries">Preliminaries</a><ul>
+<li><a href="#characters-and-lines">Characters and lines</a></li>
+<li><a href="#tabs">Tabs</a></li>
+<li><a href="#insecure-characters">Insecure characters</a></li>
+</ul>
+</li>
+<li>
+<a href="#blocks-and-inlines">Blocks and inlines</a><ul>
+<li><a href="#precedence">Precedence</a></li>
+<li><a href="#container-blocks-and-leaf-blocks">Container blocks and leaf blocks</a></li>
+</ul>
+</li>
+<li>
+<a href="#leaf-blocks">Leaf blocks</a><ul>
+<li><a href="#thematic-breaks">Thematic breaks</a></li>
+<li><a href="#atx-headings">ATX headings</a></li>
+<li><a href="#setext-headings">Setext headings</a></li>
+<li><a href="#indented-code-blocks">Indented code blocks</a></li>
+<li><a href="#fenced-code-blocks">Fenced code blocks</a></li>
+<li><a href="#html-blocks">HTML blocks</a></li>
+<li><a href="#link-reference-definitions">Link reference definitions</a></li>
+<li><a href="#paragraphs">Paragraphs</a></li>
+<li><a href="#blank-lines">Blank lines</a></li>
+<li><a href="#tables-extension">Tables (extension)</a></li>
+</ul>
+</li>
+<li>
+<a href="#container-blocks">Container blocks</a><ul>
+<li><a href="#block-quotes">Block quotes</a></li>
+<li>
+<a href="#list-items">List items</a><ul><li><a href="#motivation">Motivation</a></li></ul>
+</li>
+<li><a href="#task-list-items-extension">Task list items (extension)</a></li>
+<li><a href="#lists">Lists</a></li>
+</ul>
+</li>
+<li>
+<a href="#inlines">Inlines</a><ul>
+<li><a href="#backslash-escapes">Backslash escapes</a></li>
+<li><a href="#entity-and-numeric-character-references">Entity and numeric character references</a></li>
+<li><a href="#code-spans">Code spans</a></li>
+<li><a href="#emphasis-and-strong-emphasis">Emphasis and strong emphasis</a></li>
+<li><a href="#strikethrough-extension">Strikethrough (extension)</a></li>
+<li><a href="#links">Links</a></li>
+<li><a href="#images">Images</a></li>
+<li><a href="#autolinks">Autolinks</a></li>
+<li><a href="#autolinks-extension">Autolinks (extension)</a></li>
+<li><a href="#raw-html">Raw HTML</a></li>
+<li><a href="#disallowed-raw-html-extension">Disallowed Raw HTML (extension)</a></li>
+<li><a href="#hard-line-breaks">Hard line breaks</a></li>
+<li><a href="#soft-line-breaks">Soft line breaks</a></li>
+<li><a href="#textual-content">Textual content</a></li>
+</ul>
+</li>
+<li>
+<a href="#gitlab-official-specification-markdown">GitLab Official Specification Markdown</a><ul>
+<li><a href="#task-list-items">Task list items</a></li>
+<li><a href="#front-matter">Front matter</a></li>
+<li><a href="#table-of-contents">Table of contents</a></li>
+</ul>
+</li>
+<li>
+<a href="#gitlab-internal-extension-markdown">GitLab Internal Extension Markdown</a><ul>
+<li><a href="#audio">Audio</a></li>
+<li><a href="#video">Video</a></li>
+<li><a href="#markdown-preview-api-request-overrides">Markdown Preview API Request Overrides</a></li>
+<li>
+<a href="#migrated-golden-master-examples">Migrated golden master examples</a><ul>
+<li><a href="#attachment_image_for_group">attachment_image_for_group</a></li>
+<li><a href="#attachment_image_for_project">attachment_image_for_project</a></li>
+<li><a href="#attachment_image_for_project_wiki">attachment_image_for_project_wiki</a></li>
+<li><a href="#attachment_link_for_group">attachment_link_for_group</a></li>
+<li><a href="#attachment_link_for_project">attachment_link_for_project</a></li>
+<li><a href="#attachment_link_for_project_wiki">attachment_link_for_project_wiki</a></li>
+<li><a href="#attachment_link_for_group_wiki">attachment_link_for_group_wiki</a></li>
+<li><a href="#audio-1">audio</a></li>
+<li><a href="#audio_and_video_in_lists">audio_and_video_in_lists</a></li>
+<li><a href="#blockquote">blockquote</a></li>
+<li><a href="#bold">bold</a></li>
+<li><a href="#bullet_list_style_1">bullet_list_style_1</a></li>
+<li><a href="#bullet_list_style_2">bullet_list_style_2</a></li>
+<li><a href="#bullet_list_style_3">bullet_list_style_3</a></li>
+<li><a href="#code_block_javascript">code_block_javascript</a></li>
+<li><a href="#code_block_plaintext">code_block_plaintext</a></li>
+<li><a href="#code_block_unknown">code_block_unknown</a></li>
+<li><a href="#color_chips">color_chips</a></li>
+<li><a href="#description_list">description_list</a></li>
+<li><a href="#details">details</a></li>
+<li><a href="#diagram_kroki_nomnoml">diagram_kroki_nomnoml</a></li>
+<li><a href="#diagram_plantuml">diagram_plantuml</a></li>
+<li><a href="#diagram_plantuml_unicode">diagram_plantuml_unicode</a></li>
+<li><a href="#div">div</a></li>
+<li><a href="#emoji">emoji</a></li>
+<li><a href="#emphasis">emphasis</a></li>
+<li><a href="#figure">figure</a></li>
+<li><a href="#footnotes">footnotes</a></li>
+<li><a href="#frontmatter_json">frontmatter_json</a></li>
+<li><a href="#frontmatter_toml">frontmatter_toml</a></li>
+<li><a href="#frontmatter_yaml">frontmatter_yaml</a></li>
+<li><a href="#hard_break">hard_break</a></li>
+<li><a href="#headings">headings</a></li>
+<li><a href="#horizontal_rule">horizontal_rule</a></li>
+<li><a href="#html_marks">html_marks</a></li>
+<li><a href="#image">image</a></li>
+<li><a href="#inline_code">inline_code</a></li>
+<li><a href="#inline_diff">inline_diff</a></li>
+<li><a href="#label">label</a></li>
+<li><a href="#link">link</a></li>
+<li><a href="#math">math</a></li>
+<li><a href="#ordered_list">ordered_list</a></li>
+<li><a href="#ordered_list_with_start_order">ordered_list_with_start_order</a></li>
+<li><a href="#ordered_task_list">ordered_task_list</a></li>
+<li><a href="#ordered_task_list_with_order">ordered_task_list_with_order</a></li>
+<li><a href="#reference_for_project_wiki">reference_for_project_wiki</a></li>
+<li><a href="#strike">strike</a></li>
+<li><a href="#table">table</a></li>
+<li><a href="#table_of_contents">table_of_contents</a></li>
+<li><a href="#task_list">task_list</a></li>
+<li><a href="#video-1">video</a></li>
+<li><a href="#word_break">word_break</a></li>
+</ul>
+</li>
+<li><a href="#image-attributes">Image Attributes</a></li>
+<li><a href="#footnotes-1">Footnotes</a></li>
+</ul>
+</li>
+<li>
+<a href="#gfm-undocumented-extensions-and-more-robust-test">GFM undocumented extensions and more robust test</a><ul>
+<li><a href="#footnotes-2">Footnotes</a></li>
+<li><a href="#when-a-footnote-is-used-multiple-times-we-insert-multiple-backrefs">When a footnote is used multiple times, we insert multiple backrefs.</a></li>
+<li><a href="#footnote-reference-labels-are-href-escaped">Footnote reference labels are href escaped</a></li>
+<li><a href="#interop">Interop</a></li>
+<li><a href="#task-lists">Task lists</a></li>
+</ul>
+</li>
+</ul>
 <h1 data-sourcepos="3:1-3:15" dir="auto">
 <a href="#preliminaries" aria-hidden="true" class="anchor" id="user-content-preliminaries"></a>Preliminaries</h1>
 <h2 data-sourcepos="5:1-5:23" dir="auto">
@@ -6721,7 +6858,7 @@ not have their usual Markdown meanings:</p>
 <span id="LC6" class="line" lang="plaintext">\* not a list</span>
 <span id="LC7" class="line" lang="plaintext">\# not a heading</span>
 <span id="LC8" class="line" lang="plaintext">\[foo]: /url "not a reference"</span>
-<span id="LC9" class="line" lang="plaintext">\ö not a character entity</span></code></pre>
+<span id="LC9" class="line" lang="plaintext">\&amp;ouml; not a character entity</span></code></pre>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">

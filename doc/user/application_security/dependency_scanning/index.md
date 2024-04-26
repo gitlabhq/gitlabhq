@@ -128,14 +128,14 @@ The following languages and dependency managers are supported:
       <td>Y</td>
     </tr>
     <tr>
-      <td rowspan="2">Java and Kotlin<sup><b><a href="#notes-regarding-supported-languages-and-package-managers-1">1</a></b></sup></td>
+      <td rowspan="2">Java and Kotlin</td>
       <td rowspan="2">
         8 LTS,
         11 LTS,
         17 LTS,
-        or 21 LTS<sup><b><a href="#notes-regarding-supported-languages-and-package-managers-2">2</a></b></sup>
+        or 21 LTS<sup><b><a href="#notes-regarding-supported-languages-and-package-managers-1">1</a></b></sup>
       </td>
-      <td><a href="https://gradle.org/">Gradle</a><sup><b><a href="#notes-regarding-supported-languages-and-package-managers-3">3</a></b></sup></td>
+      <td><a href="https://gradle.org/">Gradle</a><sup><b><a href="#notes-regarding-supported-languages-and-package-managers-2">2</a></b></sup></td>
       <td>
         <ul>
             <li><code>build.gradle</code></li>
@@ -145,7 +145,7 @@ The following languages and dependency managers are supported:
       <td>N</td>
     </tr>
     <tr>
-      <td><a href="https://maven.apache.org/">Maven</a><sup><b><a href="#notes-regarding-supported-languages-and-package-managers-8">8</a></b></sup></td>
+      <td><a href="https://maven.apache.org/">Maven</a><sup><b><a href="#notes-regarding-supported-languages-and-package-managers-7">7</a></b></sup></td>
       <td><code>pom.xml</code></td>
       <td>N</td>
     </tr>
@@ -167,7 +167,7 @@ The following languages and dependency managers are supported:
       <td>Y</td>
     </tr>
     <tr>
-      <td><a href="https://pnpm.io/">pnpm</a><sup><b><a href="#notes-regarding-supported-languages-and-package-managers-4">4</a></b></sup></td>
+      <td><a href="https://pnpm.io/">pnpm</a><sup><b><a href="#notes-regarding-supported-languages-and-package-managers-3">3</a></b></sup></td>
       <td><code>pnpm-lock.yaml</code></td>
       <td>Y</td>
     </tr>
@@ -180,7 +180,7 @@ The following languages and dependency managers are supported:
     </tr>
     <tr>
       <td rowspan="4">Python</td>
-      <td rowspan="4">3.9<sup><b><a href="#notes-regarding-supported-languages-and-package-managers-9">9</a></b></sup>, 3.10<sup><b><a href="#notes-regarding-supported-languages-and-package-managers-5">5</a></b></sup></td>
+      <td rowspan="4">3.9<sup><b><a href="#notes-regarding-supported-languages-and-package-managers-8">8</a></b></sup>, 3.10<sup><b><a href="#notes-regarding-supported-languages-and-package-managers-4">4</a></b></sup></td>
       <td><a href="https://setuptools.readthedocs.io/en/latest/">setuptools</a></td>
       <td><code>setup.py</code></td>
       <td>N</td>
@@ -207,7 +207,7 @@ The following languages and dependency managers are supported:
       <td>N</td>
     </tr>
     <tr>
-      <td><a href="https://python-poetry.org/">Poetry</a><sup><b><a href="#notes-regarding-supported-languages-and-package-managers-6">6</a></b></sup></td>
+      <td><a href="https://python-poetry.org/">Poetry</a><sup><b><a href="#notes-regarding-supported-languages-and-package-managers-5">5</a></b></sup></td>
       <td><code>poetry.lock</code></td>
       <td>N</td>
     </tr>
@@ -226,7 +226,7 @@ The following languages and dependency managers are supported:
     <tr>
       <td>Scala</td>
       <td>All versions</td>
-      <td><a href="https://www.scala-sbt.org/">sbt</a><sup><b><a href="#notes-regarding-supported-languages-and-package-managers-7">7</a></b></sup></td>
+      <td><a href="https://www.scala-sbt.org/">sbt</a><sup><b><a href="#notes-regarding-supported-languages-and-package-managers-6">6</a></b></sup></td>
       <td><code>build.sbt</code></td>
       <td>N</td>
     </tr>
@@ -237,30 +237,24 @@ The following languages and dependency managers are supported:
   <li>
     <a id="notes-regarding-supported-languages-and-package-managers-1"></a>
     <p>
-      Android is supported when <a href="#analyzer-specific-settings"><code>DS_EXPERIMENTAL_GRADLE_BUILTIN_PARSER</code></a> is set to <code>true</code>.
-    </p>
-  </li>
-  <li>
-    <a id="notes-regarding-supported-languages-and-package-managers-2"></a>
-    <p>
       Java 21 LTS for <a href="https://www.scala-sbt.org/">sbt</a> is limited to version 1.9.7. Support for more <a href="https://www.scala-sbt.org/">sbt</a> versions can be tracked in <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/430335">issue 430335</a>.
       It is not supported when <a href="https://docs.gitlab.com/ee/development/fips_compliance.html#enable-fips-mode">FIPS mode</a> is enabled.
     </p>
   </li>
   <li>
-    <a id="notes-regarding-supported-languages-and-package-managers-3"></a>
+    <a id="notes-regarding-supported-languages-and-package-managers-2"></a>
     <p>
       Gradle is not supported when <a href="https://docs.gitlab.com/ee/development/fips_compliance.html#enable-fips-mode">FIPS mode</a> is enabled.
     </p>
   </li>
   <li>
-    <a id="notes-regarding-supported-languages-and-package-managers-4"></a>
+    <a id="notes-regarding-supported-languages-and-package-managers-3"></a>
     <p>
       Support for <code>pnpm</code> lockfiles was <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/336809">introduced in GitLab 15.11</a>. <code>pnpm</code> lockfiles do not store bundled dependencies, so the reported dependencies may differ from <code>npm</code> or <code>yarn</code>.
     </p>
   </li>
   <li>
-    <a id="notes-regarding-supported-languages-and-package-managers-5"></a>
+    <a id="notes-regarding-supported-languages-and-package-managers-4"></a>
     <p>
       For support of <code>Python 3.10</code>, add the following stanza to the GitLab CI/CD configuration file. This specifies that the <code>Python 3.10</code> image is to be used, instead of the default <code>Python 3.9</code>.
       <div class="language-yaml highlighter-rouge">
@@ -271,7 +265,7 @@ The following languages and dependency managers are supported:
     </p>
   </li>
   <li>
-    <a id="notes-regarding-supported-languages-and-package-managers-6"></a>
+    <a id="notes-regarding-supported-languages-and-package-managers-5"></a>
     <p>
       Support for <a href="https://python-poetry.org/">Poetry</a> projects with a <code>poetry.lock</code> file was <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/7006">added in GitLab 15.0</a>.
       Support for projects without a <code>poetry.lock</code> file is tracked in issue:
@@ -279,19 +273,19 @@ The following languages and dependency managers are supported:
     </p>
   </li>
   <li>
-    <a id="notes-regarding-supported-languages-and-package-managers-7"></a>
+    <a id="notes-regarding-supported-languages-and-package-managers-6"></a>
     <p>
       Support for sbt 1.0.x was <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/415835">deprecated</a> in GitLab 16.8.
     </p>
   </li>
   <li>
-    <a id="notes-regarding-supported-languages-and-package-managers-8"></a>
+    <a id="notes-regarding-supported-languages-and-package-managers-7"></a>
     <p>
       Support for Maven below 3.8.8 was <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/438772">deprecated</a> in GitLab 16.9 and will be removed in GitLab 17.0.
     </p>
   </li>
   <li>
-    <a id="notes-regarding-supported-languages-and-package-managers-9"></a>
+    <a id="notes-regarding-supported-languages-and-package-managers-8"></a>
     <p>
       Support for Python 3.9 was <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/441201">deprecated</a> in GitLab 16.9 and will be removed in GitLab 17.0.
     </p>
@@ -843,8 +837,7 @@ The following variables configure the behavior of specific dependency scanning a
 | `DS_JAVA_VERSION`                    | `gemnasium-maven`  | `17`                         | Version of Java. Available versions: `8`, `11`, `17`, `21`. |
 | `MAVEN_CLI_OPTS`                     | `gemnasium-maven`  | `"-DskipTests --batch-mode"` | List of command line arguments that are passed to `maven` by the analyzer. See an example for [using private repositories](../index.md#using-private-maven-repositories). |
 | `GRADLE_CLI_OPTS`                    | `gemnasium-maven`  |                              | List of command line arguments that are passed to `gradle` by the analyzer. |
-| `GRADLE_PLUGIN_INIT_PATH`            | `gemnasium-maven`  | `"gemnasium-init.gradle"`    | Specifies the path to the Gradle initialization script. When using the `DS_EXPERIMENTAL_GRADLE_BUILTIN_PARSER` feature, the init script must include `allprojects { apply plugin: 'project-report' }` to ensure compatibility. |
-| `DS_EXPERIMENTAL_GRADLE_BUILTIN_PARSER` | `gemnasium-maven` | `"false"` | Enable the experimental Gradle parser to improve dependency scanning in Gradle projects. **Note:** Using `org.gradle.parallel=true` in your `gradle.properties` file may cause non-deterministic scanning results, so you should set `org.gradle.parallel=false` when using this feature. [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12361) in GitLab 16.11. |
+| `GRADLE_PLUGIN_INIT_PATH`            | `gemnasium-maven`  | `"gemnasium-init.gradle"`    | Specifies the path to the Gradle initialization script. The init script must include `allprojects { apply plugin: 'project-report' }` to ensure compatibility. |
 | `SBT_CLI_OPTS`                       | `gemnasium-maven`  |                              | List of command-line arguments that the analyzer passes to `sbt`. |
 | `PIP_INDEX_URL`                      | `gemnasium-python` | `https://pypi.org/simple`    | Base URL of Python Package Index. |
 | `PIP_EXTRA_INDEX_URL`                | `gemnasium-python` |                              | Array of [extra URLs](https://pip.pypa.io/en/stable/reference/pip_install/#cmdoption-extra-index-url) of package indexes to use in addition to `PIP_INDEX_URL`. Comma-separated. **Warning:** Read [the following security consideration](#python-projects) when using this environment variable. |

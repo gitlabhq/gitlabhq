@@ -29,6 +29,9 @@ module Banzai
           allowlist[:attributes]['pre'] = %w[data-canonical-lang data-lang-params
             data-math-style data-mermaid-style data-kroki-style]
 
+          # Allow data-escaped-chars span attribute
+          allowlist[:attributes]['span'].push('data-escaped-chars')
+
           # Allow html5 details/summary elements
           allowlist[:elements].push('details')
           allowlist[:elements].push('summary')

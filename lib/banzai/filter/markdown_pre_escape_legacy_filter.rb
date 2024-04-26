@@ -2,6 +2,11 @@
 
 module Banzai
   module Filter
+    # TODO: This is now a legacy filter, and is only used with the Ruby parser.
+    # The current markdown parser now properly handles escaping characters.
+    # The Ruby parser is now only for benchmarking purposes.
+    # issue: https://gitlab.com/gitlab-org/gitlab/-/issues/454601
+    #
     # In order to allow a user to short-circuit our reference shortcuts
     # (such as # or !), the user should be able to escape them, like \#.
     # CommonMark supports this, however it removes all information about
@@ -25,9 +30,9 @@ module Banzai
     #
     # https://spec.commonmark.org/0.29/#backslash-escapes
     #
-    # This filter does the initial surrounding, and MarkdownPostEscapeFilter
+    # This filter does the initial surrounding, and MarkdownPostEscapeLegacyFilter
     # does the conversion into span tags.
-    class MarkdownPreEscapeFilter < HTML::Pipeline::TextFilter
+    class MarkdownPreEscapeLegacyFilter < HTML::Pipeline::TextFilter
       # Table of characters that need this special handling. It consists of the
       # GitLab special reference characters and special LaTeX characters.
       #
@@ -41,7 +46,7 @@ module Banzai
       # original escaped version, `\$`.  However if we detect `cmliteral-+a-cmliteral`,
       # then we know markdown considered it an escaped character, and we should replace it
       # with the non-escaped version, `$`.
-      # See the MarkdownPostEscapeFilter for how this is done.
+      # See the MarkdownPostEscapeLegacyFilter for how this is done.
       ESCAPABLE_CHARS = [
         { char: '$', escaped: '\$', token: '\+a', reference: true, latex: true },
         { char: '%', escaped: '\%', token: '\+b', reference: true, latex: true },
@@ -61,6 +66,8 @@ module Banzai
       LITERAL_KEYWORD      = 'cmliteral'
 
       def call
+        return @text if MarkdownFilter.glfm_markdown?(context)
+
         @text.gsub(ASCII_PUNCTUATION) do |match|
           # The majority of markdown does not have literals.  If none
           # are found, we can bypass the post filter

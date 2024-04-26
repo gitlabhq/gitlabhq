@@ -8,10 +8,14 @@ module Gitlab
       # for monitoring.
       queues = ::Gitlab::SidekiqConfig.routing_queues
       if queues.any?
-        Sidekiq.redis do |conn|
-          conn.multi do |multi|
-            multi.del('queues')
-            multi.sadd('queues', queues)
+        # Allow unrouted calls as this operation is idempotent and can be safely performed
+        # by all Sidekiq processes
+        SidekiqSharding::Validator.allow_unrouted_sidekiq_calls do
+          Sidekiq.redis do |conn|
+            conn.multi do |multi|
+              multi.del('queues')
+              multi.sadd('queues', queues)
+            end
           end
         end
       end

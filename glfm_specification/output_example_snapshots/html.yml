@@ -420,7 +420,7 @@
   canonical: |
     <p>## foo</p>
   static: |-
-    <p data-sourcepos="1:1-1:28" dir="auto"><span data-escaped-char>#</span># foo</p>
+    <p data-sourcepos="1:1-1:7" dir="auto"><span data-escaped-char data-sourcepos="1:1-1:2">#</span># foo</p>
   wysiwyg: |-
     <p dir="auto">## foo</p>
 04_02_00__leaf_blocks__atx_headings__005:
@@ -530,12 +530,12 @@
     <h2>foo ###</h2>
     <h1>foo #</h1>
   static: |-
-    <h3 data-sourcepos="1:1-1:33" dir="auto">
-    <a href="#foo-c" aria-hidden="true" class="anchor" id="user-content-foo-&lt;span data-escaped-char&gt;c&lt;/span&gt;"></a>foo <span data-escaped-char>#</span>##</h3>
-    <h2 data-sourcepos="2:1-2:32" dir="auto">
-    <a href="#foo-c-1" aria-hidden="true" class="anchor" id="user-content-foo-&lt;span data-escaped-char&gt;c&lt;/span&gt;-1"></a>foo #<span data-escaped-char>#</span>#</h2>
-    <h1 data-sourcepos="3:1-3:29" dir="auto">
-    <a href="#foo-c-2" aria-hidden="true" class="anchor" id="user-content-foo-&lt;span data-escaped-char&gt;c&lt;/span&gt;-2"></a>foo <span data-escaped-char>#</span>
+    <h3 data-sourcepos="1:1-1:12" dir="auto">
+    <a href="#foo-" aria-hidden="true" class="anchor" id="user-content-foo-"></a>foo <span data-escaped-char data-sourcepos="1:9-1:10">#</span>##</h3>
+    <h2 data-sourcepos="2:1-2:11" dir="auto">
+    <a href="#foo--1" aria-hidden="true" class="anchor" id="user-content-foo--1"></a>foo #<span data-escaped-char data-sourcepos="2:9-2:10">#</span>#</h2>
+    <h1 data-sourcepos="3:1-3:8" dir="auto">
+    <a href="#foo--2" aria-hidden="true" class="anchor" id="user-content-foo--2"></a>foo <span data-escaped-char data-sourcepos="3:7-3:8">#</span>
     </h1>
   wysiwyg: |-
     <h3 dir="auto">foo ###</h3>
@@ -4777,7 +4777,7 @@
   canonical: |
     <p>!&quot;#$%&amp;'()*+,-./:;&lt;=&gt;?@[\]^_`{|}~</p>
   static: |-
-    <p data-sourcepos="1:1-1:295" dir="auto"><span data-escaped-char>!</span>"<span data-escaped-char>#</span><span data-escaped-char>$</span><span data-escaped-char>%</span><span data-escaped-char>&amp;</span>'()*+,-./:;&lt;=&gt;?<span data-escaped-char>@</span>[\]<span data-escaped-char>^</span>_`{|}<span data-escaped-char>~</span></p>
+    <p data-sourcepos="1:1-1:64" dir="auto"><span data-escaped-char data-sourcepos="1:1-1:2">!</span>"<span data-escaped-char data-sourcepos="1:5-1:6">#</span><span data-escaped-char data-sourcepos="1:7-1:8">$</span><span data-escaped-char data-sourcepos="1:9-1:10">%</span><span data-escaped-char data-sourcepos="1:11-1:12">&amp;</span>'()*+,-./:;&lt;=&gt;?<span data-escaped-char data-sourcepos="1:43-1:44">@</span>[\]<span data-escaped-char data-sourcepos="1:51-1:52">^</span>_`{|}<span data-escaped-char data-sourcepos="1:63-1:64">~</span></p>
   wysiwyg: |-
     <p dir="auto">!"#$%&amp;'()*+,-./:;&lt;=&gt;?@[\]^_`{|}~</p>
 06_02_00__inlines__backslash_escapes__002:
@@ -4796,15 +4796,15 @@
     [foo]: /url &quot;not a reference&quot;
     &amp;ouml; not a character entity</p>
   static: |-
-    <p data-sourcepos="1:1-9:51" dir="auto">*not emphasized*
+    <p data-sourcepos="1:1-9:30" dir="auto">*not emphasized*
     &lt;br/&gt; not a tag
-    <a data-sourcepos="1:1-1:18" href="/foo">not a link</a>
+    [not a link](/foo)
     `not code`
     1. not a list
     * not a list
-    <span data-escaped-char>#</span> not a heading
+    <span data-escaped-char data-sourcepos="7:1-7:2">#</span> not a heading
     [foo]: /url "not a reference"
-    <span data-escaped-char>&amp;</span>ouml; not a character entity</p>
+    <span data-escaped-char data-sourcepos="9:1-9:2">&amp;</span>ouml; not a character entity</p>
   wysiwyg: |-
     <p dir="auto">*not emphasized*
     &lt;br/&gt; not a tag
@@ -5921,7 +5921,7 @@
   canonical: |
     <p>foo <em>_</em></p>
   static: |-
-    <p data-sourcepos="1:1-1:29" dir="auto">foo <em data-sourcepos="1:5-1:29">_</em></p>
+    <p data-sourcepos="1:1-1:8" dir="auto">foo <em data-sourcepos="1:5-1:8">_</em></p>
   wysiwyg: |-
     <p dir="auto">foo <em>_</em></p>
 06_05_00__inlines__emphasis_and_strong_emphasis__100:
@@ -5942,7 +5942,7 @@
   canonical: |
     <p>foo <strong>_</strong></p>
   static: |-
-    <p data-sourcepos="1:1-1:31" dir="auto">foo <strong data-sourcepos="1:5-1:31">_</strong></p>
+    <p data-sourcepos="1:1-1:10" dir="auto">foo <strong data-sourcepos="1:5-1:10">_</strong></p>
   wysiwyg: |-
     <p dir="auto">foo <strong>_</strong></p>
 06_05_00__inlines__emphasis_and_strong_emphasis__103:
@@ -6236,7 +6236,7 @@
   canonical: |
     <p>[link](&lt;foo&gt;)</p>
   static: |-
-    <p data-sourcepos="1:1-1:14" dir="auto"><a data-sourcepos="1:1-1:19" href="%3Cfoo%3E">link</a></p>
+    <p data-sourcepos="1:1-1:14" dir="auto">[link](&lt;foo&gt;)</p>
   wysiwyg: |-
     <p dir="auto">[link](&lt;foo&gt;)</p>
 06_07_00__inlines__links__011:
@@ -6631,7 +6631,7 @@
   canonical: |
     <p>[bar][foo!]</p>
   static: |-
-    <p data-sourcepos="1:1-1:33" dir="auto">[bar][foo<span data-escaped-char>!</span>]</p>
+    <p data-sourcepos="1:1-1:12" dir="auto">[bar][foo<span data-escaped-char data-sourcepos="1:10-1:11">!</span>]</p>
   wysiwyg: |-
     <p dir="auto">[bar][foo!]</p>
     <pre>[foo!]: /url</pre>
@@ -7035,7 +7035,7 @@
   canonical: |
     <p>!<a href="/url" title="title">foo</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:28" dir="auto"><span data-escaped-char>!</span><a data-sourcepos="1:24-1:28" href="/url" title="title">foo</a></p>
+    <p data-sourcepos="1:1-1:7" dir="auto"><span data-escaped-char data-sourcepos="1:1-1:2">!</span><a data-sourcepos="1:3-1:7" href="/url" title="title">foo</a></p>
   wysiwyg: |-
     <p dir="auto">!<a target="_blank" rel="noopener noreferrer nofollow" href="/url" title="title">foo</a></p>
     <pre>[foo]: /url "title"</pre>
@@ -7127,7 +7127,7 @@
   canonical: |
     <p>&lt;foo+@bar.example.com&gt;</p>
   static: |-
-    <p data-sourcepos="1:1-1:23" dir="auto">&lt;<a href="mailto:foo+@bar.example.com">foo+@bar.example.com</a>&gt;</p>
+    <p data-sourcepos="1:1-1:23" dir="auto">&lt;foo+@bar.example.com&gt;</p>
   wysiwyg: |-
     <p dir="auto">&lt;<a target="_blank" rel="noopener noreferrer nofollow" href="mailto:foo+@bar.example.com">foo+@bar.example.com</a>&gt;</p>
 06_09_00__inlines__autolinks__014:

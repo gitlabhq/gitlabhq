@@ -10,12 +10,12 @@ module Banzai
       # markdown processing
       def self.filters
         FilterArray[
-          Filter::MarkdownPreEscapeFilter,
+          Filter::MarkdownPreEscapeLegacyFilter,
           Filter::DollarMathPreFilter,
           Filter::BlockquoteFenceFilter,
           Filter::MarkdownFilter,
           Filter::DollarMathPostFilter,
-          Filter::MarkdownPostEscapeFilter
+          Filter::MarkdownPostEscapeLegacyFilter
         ]
       end
     end

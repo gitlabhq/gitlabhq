@@ -11,6 +11,7 @@ module Banzai
       class GlfmMarkdown < Base
         OPTIONS = {
           autolink: true,
+          escaped_char_spans: true,
           footnotes: true,
           full_info_string: true,
           github_pre_lang: true,

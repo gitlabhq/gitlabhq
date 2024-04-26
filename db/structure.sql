@@ -643,6 +643,67 @@ $$;
 
 COMMENT ON FUNCTION table_sync_function_0992e728d3() IS 'Partitioning migration: table sync for merge_request_diff_commits table';
 
+CREATE FUNCTION table_sync_function_3f39f64fc3() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF (TG_OP = 'DELETE') THEN
+  DELETE FROM merge_request_diff_files_99208b8fac where "merge_request_diff_id" = OLD."merge_request_diff_id" AND "relative_order" = OLD."relative_order";
+ELSIF (TG_OP = 'UPDATE') THEN
+  UPDATE merge_request_diff_files_99208b8fac
+  SET "new_file" = NEW."new_file",
+    "renamed_file" = NEW."renamed_file",
+    "deleted_file" = NEW."deleted_file",
+    "too_large" = NEW."too_large",
+    "a_mode" = NEW."a_mode",
+    "b_mode" = NEW."b_mode",
+    "new_path" = NEW."new_path",
+    "old_path" = NEW."old_path",
+    "diff" = NEW."diff",
+    "binary" = NEW."binary",
+    "external_diff_offset" = NEW."external_diff_offset",
+    "external_diff_size" = NEW."external_diff_size",
+    "generated" = NEW."generated"
+  WHERE merge_request_diff_files_99208b8fac."merge_request_diff_id" = NEW."merge_request_diff_id" AND merge_request_diff_files_99208b8fac."relative_order" = NEW."relative_order";
+ELSIF (TG_OP = 'INSERT') THEN
+  INSERT INTO merge_request_diff_files_99208b8fac ("new_file",
+    "renamed_file",
+    "deleted_file",
+    "too_large",
+    "a_mode",
+    "b_mode",
+    "new_path",
+    "old_path",
+    "diff",
+    "binary",
+    "external_diff_offset",
+    "external_diff_size",
+    "generated",
+    "merge_request_diff_id",
+    "relative_order")
+  VALUES (NEW."new_file",
+    NEW."renamed_file",
+    NEW."deleted_file",
+    NEW."too_large",
+    NEW."a_mode",
+    NEW."b_mode",
+    NEW."new_path",
+    NEW."old_path",
+    NEW."diff",
+    NEW."binary",
+    NEW."external_diff_offset",
+    NEW."external_diff_size",
+    NEW."generated",
+    NEW."merge_request_diff_id",
+    NEW."relative_order");
+END IF;
+RETURN NULL;
+
+END
+$$;
+
+COMMENT ON FUNCTION table_sync_function_3f39f64fc3() IS 'Partitioning migration: table sync for merge_request_diff_files table';
+
 CREATE FUNCTION trigger_10ee1357e825() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -1166,6 +1227,25 @@ CREATE TABLE merge_request_diff_commits_b5377a7a34 (
     trailers jsonb DEFAULT '{}'::jsonb NOT NULL,
     commit_author_id bigint,
     committer_id bigint,
+    merge_request_diff_id bigint NOT NULL,
+    relative_order integer NOT NULL
+)
+PARTITION BY RANGE (merge_request_diff_id);
+
+CREATE TABLE merge_request_diff_files_99208b8fac (
+    new_file boolean NOT NULL,
+    renamed_file boolean NOT NULL,
+    deleted_file boolean NOT NULL,
+    too_large boolean NOT NULL,
+    a_mode character varying NOT NULL,
+    b_mode character varying NOT NULL,
+    new_path text NOT NULL,
+    old_path text NOT NULL,
+    diff text,
+    "binary" boolean,
+    external_diff_offset integer,
+    external_diff_size integer,
+    generated boolean,
     merge_request_diff_id bigint NOT NULL,
     relative_order integer NOT NULL
 )
@@ -21701,6 +21781,9 @@ ALTER TABLE ONLY merge_request_diff_commits
 ALTER TABLE ONLY merge_request_diff_details
     ADD CONSTRAINT merge_request_diff_details_pkey PRIMARY KEY (merge_request_diff_id);
 
+ALTER TABLE ONLY merge_request_diff_files_99208b8fac
+    ADD CONSTRAINT merge_request_diff_files_99208b8fac_pkey PRIMARY KEY (merge_request_diff_id, relative_order);
+
 ALTER TABLE ONLY merge_request_diff_files
     ADD CONSTRAINT merge_request_diff_files_pkey PRIMARY KEY (merge_request_diff_id, relative_order);
 
@@ -29789,6 +29872,8 @@ CREATE TRIGGER projects_loose_fk_trigger AFTER DELETE ON projects REFERENCING OL
 CREATE TRIGGER push_rules_loose_fk_trigger AFTER DELETE ON push_rules REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
 CREATE TRIGGER table_sync_trigger_57c8465cd7 AFTER INSERT OR DELETE OR UPDATE ON merge_request_diff_commits FOR EACH ROW EXECUTE FUNCTION table_sync_function_0992e728d3();
+
+CREATE TRIGGER table_sync_trigger_cd362c20e2 AFTER INSERT OR DELETE OR UPDATE ON merge_request_diff_files FOR EACH ROW EXECUTE FUNCTION table_sync_function_3f39f64fc3();
 
 CREATE TRIGGER tags_loose_fk_trigger AFTER DELETE ON tags REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 

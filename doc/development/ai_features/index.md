@@ -142,6 +142,8 @@ it will print useful error messages with links to the docs on how to resolve the
 GITLAB_SIMULATE_SAAS=1 RAILS_ENV=development bundle exec rake 'gitlab:duo:setup[<test-group-name>]'
 ```
 
+[AI Gateway](#local-setup) still needs to be setup when using the automated setup.
+
 **Manual way**
 
 1. Ensure you have followed [the process to obtain an EE license](https://handbook.gitlab.com/handbook/developer-onboarding/#working-on-gitlab-ee-developer-licenses) for your local instance and you applied Ultimate license.
@@ -168,6 +170,11 @@ GITLAB_SIMULATE_SAAS=1 RAILS_ENV=development bundle exec rake 'gitlab:duo:setup[
 ### Help
 
 - [Here's how to reach us!](https://handbook.gitlab.com/handbook/engineering/development/data-science/ai-powered/ai-framework/#-how-to-reach-us)
+
+## Tips for local development
+
+1. When responses are taking too long to appear in the user interface, consider restarting Sidekiq by running `gdk restart rails-background-jobs`. If that doesn't work, try `gdk kill` and then `gdk start`.
+1. Alternatively, bypass Sidekiq entirely and run the service synchronously. This can help with debugging errors as GraphQL errors are now available in the network inspector instead of the Sidekiq logs. To do that temporary alter `perform_for` method in `Llm::CompletionWorker` class by changing `perform_async` to `perform_inline`.
 
 ## Feature development (Abstraction Layer)
 
@@ -587,8 +594,3 @@ end
 ## Security
 
 Refer to the [secure coding guidelines for Artificial Intelligence (AI) features](../secure_coding_guidelines.md#artificial-intelligence-ai-features).
-
-## Tips for local development
-
-1. When responses are taking too long to appear in the user interface, consider restarting Sidekiq by running `gdk restart rails-background-jobs`. If that doesn't work, try `gdk kill` and then `gdk start`.
-1. Alternatively, bypass Sidekiq entirely and run the service synchronously. This can help with debugging errors as GraphQL errors are now available in the network inspector instead of the Sidekiq logs. To do that temporary alter `perform_for` method in `Llm::CompletionWorker` class by changing `perform_async` to `perform_inline`.

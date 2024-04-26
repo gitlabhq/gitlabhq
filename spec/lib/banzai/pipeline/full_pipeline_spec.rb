@@ -180,6 +180,8 @@ RSpec.describe Banzai::Pipeline::FullPipeline, feature_category: :team_planning 
     let_it_be(:issue)   { create(:issue, project: project) }
 
     it 'does not convert an escaped reference' do
+      stub_commonmark_sourcepos_disabled
+
       markdown = "\\#{issue.to_reference}"
       output = described_class.to_html(markdown, project: project)
 

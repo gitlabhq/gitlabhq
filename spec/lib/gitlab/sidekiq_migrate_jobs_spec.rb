@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::SidekiqMigrateJobs, :clean_gitlab_redis_queues,
-  :clean_gitlab_redis_queues_metadata do
+  :clean_gitlab_redis_queues_metadata, :allow_unrouted_sidekiq_calls do
   def clear_queues
     Sidekiq::Queue.new('authorized_projects').clear
     Sidekiq::Queue.new('post_receive').clear
