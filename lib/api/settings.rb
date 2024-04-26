@@ -68,8 +68,8 @@ module API
       optional :disable_feed_token, type: Boolean, desc: 'Disable display of RSS/Atom and Calendar `feed_tokens`'
       optional :disabled_oauth_sign_in_sources, type: Array[String], coerce_with: Validations::Types::CommaSeparatedToArray.coerce, desc: 'Disable certain OAuth sign-in sources'
       optional :domain_denylist_enabled, type: Boolean, desc: 'Enable domain denylist for sign ups'
-      optional :domain_denylist, type: Array[String], coerce_with: Validations::Types::CommaSeparatedToArray.coerce, desc: 'Users with e-mail addresses that match these domain(s) will NOT be able to sign-up. Wildcards allowed. Use separate lines for multiple entries. Ex: domain.com, *.domain.com'
-      optional :domain_allowlist, type: Array[String], coerce_with: Validations::Types::CommaSeparatedToArray.coerce, desc: 'ONLY users with e-mail addresses that match these domain(s) will be able to sign-up. Wildcards allowed. Use separate lines for multiple entries. Ex: domain.com, *.domain.com'
+      optional :domain_denylist, type: Array[String], coerce_with: Validations::Types::CommaSeparatedToArray.coerce, desc: 'Users with e-mail addresses that match these domain(s) will NOT be able to sign-up. Wildcards allowed. Enter multiple entries on separate lines. Ex: domain.com, *.domain.com'
+      optional :domain_allowlist, type: Array[String], coerce_with: Validations::Types::CommaSeparatedToArray.coerce, desc: 'ONLY users with e-mail addresses that match these domain(s) will be able to sign-up. Wildcards allowed. Enter multiple entries on separate lines. Ex: domain.com, *.domain.com'
       optional :eks_integration_enabled, type: Boolean, desc: 'Enable integration with Amazon EKS'
       given eks_integration_enabled: -> (val) { val } do
         requires :eks_account_id, type: String, desc: 'Amazon account ID for EKS integration'

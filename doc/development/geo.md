@@ -634,44 +634,6 @@ If a new feature introduces a new kind of data which is not a Git repository, or
 
 As an example, container registry data does not easily fit into the above categories. It is backed by a registry service which owns the data, and GitLab interacts with the registry service's API. So a one off approach is required for Geo support of container registry. Still, we are able to reuse much of the glue code of [the Geo self-service framework](geo/framework.md#repository-replicator-strategy).
 
-## History of communication channel
-
-The communication channel has changed since first iteration, you can
-check here historic decisions and why we moved to new implementations.
-
-### Custom code (GitLab 8.6 and earlier)
-
-In GitLab versions before 8.6, custom code is used to handle
-notification from **primary** site to **secondary** sites by HTTP
-requests.
-
-### System hooks (GitLab 8.7 to 9.5)
-
-Later, it was decided to move away from custom code and begin using
-system hooks. More people were using them, so
-many would benefit from improvements made to this communication layer.
-
-There is a specific **internal** endpoint in our API code (Grape),
-that receives all requests from this System Hooks:
-`/api/v4/geo/receive_events`.
-
-We switch and filter from each event by the `event_name` field.
-
-### Geo Log Cursor (GitLab 10.0 and up)
-
-In GitLab 10.0 and later, [System Webhooks](#system-hooks-gitlab-87-to-95) are no longer
-used and [Geo Log Cursor](#geo-log-cursor-daemon) is used instead. The Log Cursor traverses the
-`Geo::EventLog` rows to see if there are changes since the last time
-the log was checked and will handle repository updates, deletes,
-changes, and renames.
-
-The table is within the replicated database. This has two advantages over the
-old method:
-
-- Replication is synchronous and we preserve the order of events.
-- Replication of the events happen at the same time as the changes in the
-  database.
-
 ## Self-service framework
 
 If you want to add easy Geo replication of a resource you're working

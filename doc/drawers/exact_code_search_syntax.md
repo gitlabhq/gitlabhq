@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 source: /doc/user/search/exact_code_search.md
 ---
 
-# Search tips
+# Syntax options
 
 | Query                | Regular expression mode                               | Exact match mode               |
 | -------------------- | ----------------------------------------------------- | ------------------------------ |

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe WorkItems::Callbacks::TimeTracking, feature_category: :team_planning do
+RSpec.describe Issuable::Callbacks::TimeTracking, feature_category: :team_planning do
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, :private, group: group) }
   let_it_be(:reporter) do
@@ -38,8 +38,8 @@ RSpec.describe WorkItems::Callbacks::TimeTracking, feature_category: :team_plann
   let(:callback) { described_class.new(issuable: issuable, current_user: current_user, params: params) }
 
   describe '#after_initialize' do
-    shared_examples 'raises a WidgetError' do
-      it { expect { subject }.to raise_error(::WorkItems::Widgets::BaseService::WidgetError, message) }
+    shared_examples 'raises an Error' do
+      it { expect { subject }.to raise_error(::Issuable::Callbacks::Base::Error, message) }
     end
 
     shared_examples 'sets work item time tracking data' do
@@ -212,7 +212,7 @@ RSpec.describe WorkItems::Callbacks::TimeTracking, feature_category: :team_plann
       context 'when time_estimate is invalid' do
         let(:params) { { time_estimate: "12abc" } }
 
-        it_behaves_like 'raises a WidgetError' do
+        it_behaves_like 'raises an Error' do
           let(:message) { 'Time estimate must be formatted correctly. For example: 1h 30m.' }
         end
       end
@@ -220,7 +220,7 @@ RSpec.describe WorkItems::Callbacks::TimeTracking, feature_category: :team_plann
       context 'when time_spent is invalid' do
         let(:params) { { timelog: { time_spent: "2abc" } } }
 
-        it_behaves_like 'raises a WidgetError' do
+        it_behaves_like 'raises an Error' do
           let(:message) { 'Time spent must be formatted correctly. For example: 1h 30m.' }
         end
       end

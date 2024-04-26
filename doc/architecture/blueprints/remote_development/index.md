@@ -521,7 +521,7 @@ Once such a feature is available, Personal Access Tokens for each workspace woul
 
 We need to only allow certain users to access workspaces. Currently, we are restricting this to the creator/owner of the workspace. After the workspace is created, it needs to be exposed to the network so that the user can connect to it.
 Thus, any traffic incoming to the workspace needs to be authenticated and authorized.
-[`gitlab-workspaces-proxy`](https://gitlab.com/gitlab-org/remote-development/gitlab-workspaces-proxy) handles discovery, authentication and authorization of the workspaces running in a Kubernetes cluster.
+[`gitlab-workspaces-proxy`](../../../user/workspace/set_up_workspaces_proxy.md) handles discovery, authentication and authorization of the workspaces running in a Kubernetes cluster.
 
 It will proxy all HTTP and WebSocket calls to the correct workspace. It will perform the following tasks:
 

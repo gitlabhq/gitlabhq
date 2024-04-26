@@ -3,6 +3,7 @@
 module Issuable
   module Callbacks
     class Base
+      Error = Class.new(StandardError)
       include Gitlab::Allowable
 
       def initialize(issuable:, current_user:, params: {})
@@ -26,6 +27,10 @@ module Issuable
 
       def has_permission?(permission)
         can?(current_user, permission, issuable)
+      end
+
+      def raise_error(message)
+        raise ::Issuable::Callbacks::Base::Error, message
       end
     end
   end

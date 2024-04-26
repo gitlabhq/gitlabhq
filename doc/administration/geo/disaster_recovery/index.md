@@ -295,25 +295,6 @@ changing Git remotes and API URLs.
    This command uses the changed `external_url` configuration defined
    in `/etc/gitlab/gitlab.rb`.
 
-1. For GitLab 12.0 through 12.7, you may need to update the **primary**
-   site's name in the database. This bug has been fixed in GitLab 12.8.
-
-   To determine if you need to do this, search for the
-   `gitlab_rails["geo_node_name"]` setting in your `/etc/gitlab/gitlab.rb`
-   file. If it is commented out with `#` or not found at all, then you
-   need to update the **primary** site's name in the database. You can search for it
-   like so:
-
-   ```shell
-   grep "geo_node_name" /etc/gitlab/gitlab.rb
-   ```
-
-   To update the **primary** site's name in the database:
-
-   ```shell
-   gitlab-rails runner 'Gitlab::Geo.primary_node.update!(name: GeoNode.current_node_name)'
-   ```
-
 1. Verify you can connect to the newly promoted **primary** using its URL.
    If you updated the DNS records for the primary domain, these changes may
    not have yet propagated depending on the previous DNS records TTL.

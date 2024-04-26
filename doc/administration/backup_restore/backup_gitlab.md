@@ -168,10 +168,10 @@ including:
 - CI/CD job output logs
 - CI/CD job artifacts
 - LFS objects
-- Terraform states ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/331806) in GitLab 14.7)
+- Terraform states
 - Container registry images
 - GitLab Pages content
-- Packages ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/332006) in GitLab 14.7)
+- Packages
 - Snippets
 - [Group wikis](../../user/project/wiki/group.md)
 - Project-level Secure Files ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121142) in GitLab 16.1)
@@ -563,21 +563,16 @@ sudo -u git -H bundle exec rake gitlab:backup:create REPOSITORIES_SERVER_SIDE=tr
 
 #### Back up Git repositories concurrently
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37158) in GitLab 13.3.
-> - [Concurrent restore introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/69330) in GitLab 14.3
-
 When using [multiple repository storages](../repository_storage_paths.md),
 repositories can be backed up or restored concurrently to help fully use CPU time. The
 following variables are available to modify the default behavior of the Rake
 task:
 
 - `GITLAB_BACKUP_MAX_CONCURRENCY`: The maximum number of projects to back up at
-  the same time. Defaults to the number of logical CPUs (in GitLab 14.1 and
-  earlier, defaults to `1`).
+  the same time. Defaults to the number of logical CPUs.
 - `GITLAB_BACKUP_MAX_STORAGE_CONCURRENCY`: The maximum number of projects to
   back up at the same time on each storage. This allows the repository backups
-  to be spread across storages. Defaults to `2` (in GitLab 14.1 and earlier,
-  defaults to `1`).
+  to be spread across storages. Defaults to `2`.
 
 For example, with 4 repository storages:
 
@@ -599,8 +594,6 @@ sudo -u git -H bundle exec rake gitlab:backup:create GITLAB_BACKUP_MAX_CONCURREN
 
 #### Incremental repository backups
 
-> - Introduced in GitLab 14.9 [with a flag](../feature_flags.md) named `incremental_repository_backup`. Disabled by default.
-> - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/355945) in GitLab 14.10.
 > - `PREVIOUS_BACKUP` option [introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/4184) in GitLab 15.0.
 > - Server-side support for creating incremental backups [introduced](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/6475) in GitLab 16.6.
 
@@ -617,26 +610,17 @@ support incremental backups for all subtasks.
 
 Incremental repository backups can be faster than full repository backups because they only pack changes since the last backup into the backup bundle for each repository.
 The incremental backup archives are not linked to each other: each archive is a self-contained backup of the instance. There must be an existing backup
-to create an incremental backup from:
+to create an incremental backup from.
 
-- In GitLab 14.9 and 14.10, use the `BACKUP=<backup-id>` option to choose the backup to use. The chosen previous backup is overwritten.
-- In GitLab 15.0 and later, use the `PREVIOUS_BACKUP=<backup-id>` option to choose the backup to use. By default, a backup file is created
-  as documented in the [Backup ID](index.md#backup-id) section. You can override the `<backup-id>` portion of the filename by setting the
-  [`BACKUP` environment variable](#backup-filename).
+Use the `PREVIOUS_BACKUP=<backup-id>` option to choose the backup to use. By default, a backup file is created
+as documented in the [Backup ID](index.md#backup-id) section. You can override the `<backup-id>` portion of the filename by setting the
+[`BACKUP` environment variable](#backup-filename).
 
 To create an incremental backup, run:
 
-- In GitLab 15.0 or later:
-
-  ```shell
-  sudo gitlab-backup create INCREMENTAL=yes PREVIOUS_BACKUP=<backup-id>
-  ```
-
-- In GitLab 14.9 and 14.10:
-
-  ```shell
-  sudo gitlab-backup create INCREMENTAL=yes BACKUP=<backup-id>
-  ```
+```shell
+sudo gitlab-backup create INCREMENTAL=yes PREVIOUS_BACKUP=<backup-id>
+```
 
 To create an [untarred](#skipping-tar-creation) incremental backup from a tarred backup, use `SKIP=tar`:
 
@@ -739,8 +723,6 @@ For Linux package (Omnibus):
    for the changes to take effect
 
 ##### S3 Encrypted Buckets
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64765) in GitLab 14.3.
 
 AWS supports these [modes for server side encryption](https://docs.aws.amazon.com/AmazonS3/latest/userguide/serv-side-encryption.html):
 
@@ -981,8 +963,6 @@ For self-compiled installations:
    for the changes to take effect
 
 ##### Using Azure Blob storage
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25877) in GitLab 13.4.
 
 ::Tabs
 
@@ -1333,10 +1313,6 @@ See the [PostgreSQL documentation](https://www.postgresql.org/docs/12/libpq-enva
 for more details on what these parameters do.
 
 #### `gitaly-backup` for repository backup and restore
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/333034) in GitLab 14.2.
-> - [Deployed behind a feature flag](../../user/feature_flags.md), enabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/333034) in GitLab 14.10. [Feature flag `gitaly_backup`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/83254) removed.
 
 The `gitaly-backup` binary is used by the backup Rake task to create and restore repository backups from Gitaly.
 `gitaly-backup` replaces the previous backup method that directly calls RPCs on Gitaly from GitLab.

@@ -80,10 +80,8 @@ export default {
         fullPath: this.fullPath,
         sort: this.isGroupPage ? undefined : this.sort,
         groupSort: this.isGroupPage ? this.sort : undefined,
-        packageName: this.filters?.packageName,
-        packageType: this.filters?.packageType,
-        packageVersion: this.filters?.packageVersion,
         first: GRAPHQL_PAGE_SIZE,
+        ...this.packageParams,
         ...this.pageParams,
       };
     },
@@ -93,14 +91,32 @@ export default {
     pageInfo() {
       return this.packages?.pageInfo ?? {};
     },
+    packageParams() {
+      return {
+        packageName: this.filters?.packageName,
+        packageType: this.filters?.packageType,
+        packageVersion: this.filters?.packageVersion,
+        packageStatus: this.filters?.packageStatus,
+      };
+    },
     packagesCount() {
       return this.packages?.count;
     },
     hasFilters() {
-      return this.filters.packageName || this.filters.packageType || this.filters.packageVersion;
+      return (
+        this.filters.packageName ||
+        this.filters.packageType ||
+        this.filters.packageVersion ||
+        this.filters.packageStatus
+      );
     },
     emptySearch() {
-      return !this.filters.packageName && !this.filters.packageType && !this.filters.packageVersion;
+      return (
+        !this.filters.packageName &&
+        !this.filters.packageType &&
+        !this.filters.packageVersion &&
+        !this.filters.packageStatus
+      );
     },
     emptyStateTitle() {
       return this.emptySearch

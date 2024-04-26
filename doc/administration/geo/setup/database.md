@@ -616,15 +616,13 @@ On all GitLab Geo **secondary** sites:
 
 ## Multi-node database replication
 
-In GitLab 14.0, Patroni replaced `repmgr` as the supported
-[highly available PostgreSQL solution](../../postgresql/replication_and_failover.md).
-
 NOTE:
-If you still haven't [migrated from repmgr to Patroni](#migrating-from-repmgr-to-patroni) you're highly advised to do so.
+Patroni is the supported
+[highly available PostgreSQL solution](../../postgresql/replication_and_failover.md). If you still haven't [migrated from repmgr to Patroni](#migrating-from-repmgr-to-patroni), you're highly advised to do so.
 
 ### Migrating from repmgr to Patroni
 
-1. Before migrating, you should ensure there is no replication lag between the **primary** and **secondary** sites and that replication is paused. In GitLab 13.2 and later, you can pause and resume replication with `gitlab-ctl geo-replication-pause` and `gitlab-ctl geo-replication-resume` on a Geo secondary database node.
+1. Before migrating, you should ensure there is no replication lag between the **primary** and **secondary** sites and that replication is paused. You can pause and resume replication with `gitlab-ctl geo-replication-pause` and `gitlab-ctl geo-replication-resume` on a Geo secondary database node.
 1. Follow the [instructions to migrate repmgr to Patroni](../../postgresql/replication_and_failover.md#switching-from-repmgr-to-patroni). When configuring Patroni on each **primary** site database node, add `patroni['replication_slots'] = { '<slot_name>' => 'physical' }`
    to `gitlab.rb` where `<slot_name>` is the name of the replication slot for your **secondary** site. This ensures that Patroni recognizes the replication slot as permanent and doesn't drop it upon restarting.
 1. If database replication to the **secondary** site was paused before migration, resume replication after Patroni is confirmed as working on the **primary** site.

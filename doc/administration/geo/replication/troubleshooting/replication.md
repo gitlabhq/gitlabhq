@@ -187,10 +187,6 @@ to respect the CIDR format (for example, `10.0.0.1/32`).
 This happens if data is detected in the `projects` table. When one or more projects are detected, the operation
 is aborted to prevent accidental data loss. To bypass this message, pass the `--force` option to the command.
 
-In GitLab 13.4, a seed project is added when GitLab is first installed. This makes it necessary to pass `--force` even
-on a new Geo secondary site. There is an [issue to account for seed projects](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5618)
-when checking the database.
-
 ### Message: `FATAL:  could not map anonymous shared memory: Cannot allocate memory`
 
 If you see this message, it means that the secondary site's PostgreSQL tries to request memory that is higher than the available memory. There is an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/381585) that tracks this problem.
@@ -380,8 +376,6 @@ This iterates over all package files on the secondary, looking at the
 and then calculate this value on the secondary to check if they match. This
 does not change anything in the UI.
 
-For GitLab 14.4 and later:
-
 ```ruby
 # Run on secondary
 status = {}
@@ -389,28 +383,6 @@ status = {}
 Packages::PackageFile.find_each do |package_file|
   primary_checksum = package_file.verification_checksum
   secondary_checksum = Packages::PackageFile.sha256_hexdigest(package_file.file.path)
-  verification_status = (primary_checksum == secondary_checksum)
-
-  status[verification_status.to_s] ||= []
-  status[verification_status.to_s] << package_file.id
-end
-
-# Count how many of each value we get
-status.keys.each {|key| puts "#{key} count: #{status[key].count}"}
-
-# See the output in its entirety
-status
-```
-
-For GitLab 14.3 and earlier:
-
-```ruby
-# Run on secondary
-status = {}
-
-Packages::PackageFile.find_each do |package_file|
-  primary_checksum = package_file.verification_checksum
-  secondary_checksum = Packages::PackageFile.hexdigest(package_file.file.path)
   verification_status = (primary_checksum == secondary_checksum)
 
   status[verification_status.to_s] ||= []

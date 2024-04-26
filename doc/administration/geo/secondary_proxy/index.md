@@ -10,9 +10,6 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** Self-managed
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5914) in GitLab 14.4 [with a flag](../../feature_flags.md) named `geo_secondary_proxy`. Disabled by default.
-> - [Enabled by default for unified URLs](https://gitlab.com/gitlab-org/gitlab/-/issues/325732) in GitLab 14.6.
-> - [Disabled by default for different URLs](https://gitlab.com/gitlab-org/gitlab/-/issues/325732) in GitLab 14.6 [with a flag](../../feature_flags.md) named `geo_secondary_proxy_separate_urls`.
 > - [Enabled by default for different URLs](https://gitlab.com/gitlab-org/gitlab/-/issues/346112) in GitLab 15.1.
 
 Use Geo proxying to:

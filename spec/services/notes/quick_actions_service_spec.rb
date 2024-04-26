@@ -153,10 +153,11 @@ RSpec.describe Notes::QuickActionsService, feature_category: :team_planning do
 
       shared_examples 'does not update time_estimate and displays the correct error message' do
         it 'shows validation error message' do
-          content = execute(note)
+          content, update_params = service.execute(note)
+          service_response = service.apply_updates(update_params, note)
 
           expect(content).to be_empty
-          expect(note.noteable.errors[:time_estimate]).to include('must have a valid format and be greater than or equal to zero.')
+          expect(service_response.message).to include('Time estimate must have a valid format and be greater than or equal to zero.')
           expect(note.noteable.reload.time_estimate).to eq(600)
         end
       end

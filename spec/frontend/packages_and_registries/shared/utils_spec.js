@@ -41,21 +41,22 @@ describe('Packages And Registries shared utils', () => {
   });
   describe('extractFilterAndSorting', () => {
     it.each`
-      search     | type        | version    | sort     | orderBy  | result
-      ${['one']} | ${'myType'} | ${'1.0.1'} | ${'asc'} | ${'foo'} | ${{ sorting: { sort: 'asc', orderBy: 'foo' }, filters: [{ type: 'type', value: { data: 'myType' } }, { type: 'version', value: { data: '1.0.1' } }, { type: FILTERED_SEARCH_TERM, value: { data: 'one' } }] }}
-      ${['one']} | ${null}     | ${null}    | ${'asc'} | ${'foo'} | ${{ sorting: { sort: 'asc', orderBy: 'foo' }, filters: [{ type: FILTERED_SEARCH_TERM, value: { data: 'one' } }] }}
-      ${[]}      | ${null}     | ${null}    | ${'asc'} | ${'foo'} | ${{ sorting: { sort: 'asc', orderBy: 'foo' }, filters: [] }}
-      ${null}    | ${null}     | ${null}    | ${'asc'} | ${'foo'} | ${{ sorting: { sort: 'asc', orderBy: 'foo' }, filters: [] }}
-      ${null}    | ${null}     | ${null}    | ${null}  | ${'foo'} | ${{ sorting: { orderBy: 'foo' }, filters: [] }}
-      ${null}    | ${null}     | ${null}    | ${null}  | ${null}  | ${{ sorting: {}, filters: [] }}
+      search       | type         | version      | status       | sort         | orderBy      | result
+      ${['one']}   | ${'myType'}  | ${'1.0.1'}   | ${'DEFAULT'} | ${'asc'}     | ${'foo'}     | ${{ sorting: { sort: 'asc', orderBy: 'foo' }, filters: [{ type: 'type', value: { data: 'myType' } }, { type: 'version', value: { data: '1.0.1' } }, { type: 'status', value: { data: 'DEFAULT' } }, { type: FILTERED_SEARCH_TERM, value: { data: 'one' } }] }}
+      ${['one']}   | ${undefined} | ${undefined} | ${undefined} | ${'asc'}     | ${'foo'}     | ${{ sorting: { sort: 'asc', orderBy: 'foo' }, filters: [{ type: FILTERED_SEARCH_TERM, value: { data: 'one' } }] }}
+      ${[]}        | ${undefined} | ${undefined} | ${undefined} | ${'asc'}     | ${'foo'}     | ${{ sorting: { sort: 'asc', orderBy: 'foo' }, filters: [] }}
+      ${undefined} | ${undefined} | ${undefined} | ${undefined} | ${'asc'}     | ${'foo'}     | ${{ sorting: { sort: 'asc', orderBy: 'foo' }, filters: [] }}
+      ${undefined} | ${undefined} | ${undefined} | ${undefined} | ${undefined} | ${'foo'}     | ${{ sorting: { orderBy: 'foo' }, filters: [] }}
+      ${undefined} | ${undefined} | ${undefined} | ${undefined} | ${undefined} | ${undefined} | ${{ sorting: {}, filters: [] }}
     `(
       'returns sorting and filters objects in the correct form',
-      ({ search, type, version, sort, orderBy, result }) => {
+      ({ search, type, version, sort, status, orderBy, result }) => {
         const queryObject = {
           search,
           type,
           version,
           sort,
+          status,
           orderBy,
         };
         expect(extractFilterAndSorting(queryObject)).toStrictEqual(result);

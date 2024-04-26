@@ -22,7 +22,7 @@ module WorkItems
       else
         error(updated_work_item.errors.full_messages, :unprocessable_entity, pass_back: payload(updated_work_item))
       end
-    rescue ::WorkItems::Widgets::BaseService::WidgetError => e
+    rescue ::WorkItems::Widgets::BaseService::WidgetError, ::Issuable::Callbacks::Base::Error => e
       error(e.message, :unprocessable_entity)
     end
 

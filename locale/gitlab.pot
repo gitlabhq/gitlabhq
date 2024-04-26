@@ -6307,7 +6307,7 @@ msgstr ""
 msgid "ApplicationSettings|Off"
 msgstr ""
 
-msgid "ApplicationSettings|Only users with e-mail addresses that match these domain(s) can sign up. Wildcards allowed. Use separate lines for multiple entries. Example: domain.com, *.domain.com"
+msgid "ApplicationSettings|Only users with e-mail addresses that match these domain(s) can sign up. Wildcards allowed. Enter multiple entries on separate lines. Example: domain.com, *.domain.com"
 msgstr ""
 
 msgid "ApplicationSettings|Require admin approval for new sign-ups"
@@ -6361,7 +6361,7 @@ msgstr ""
 msgid "ApplicationSettings|User cap"
 msgstr ""
 
-msgid "ApplicationSettings|Users with e-mail addresses that match these domain(s) cannot sign up. Wildcards allowed. Use separate lines for multiple entries. Example: domain.com, *.domain.com"
+msgid "ApplicationSettings|Users with e-mail addresses that match these domain(s) cannot sign up. Wildcards allowed. Enter multiple entries on separate lines. Example: domain.com, *.domain.com"
 msgstr ""
 
 msgid "ApplicationSettings|Users with e-mail addresses that match these domain(s) cannot sign up. Wildcards allowed. Use separate lines or commas for multiple entries."
@@ -17926,6 +17926,9 @@ msgstr ""
 msgid "Deployment|Approved"
 msgstr ""
 
+msgid "Deployment|Approved as %{role}"
+msgstr ""
+
 msgid "Deployment|Branch"
 msgstr ""
 
@@ -17990,6 +17993,9 @@ msgid "Deployment|Reject"
 msgstr ""
 
 msgid "Deployment|Rejected"
+msgstr ""
+
+msgid "Deployment|Rejected as %{role}"
 msgstr ""
 
 msgid "Deployment|Related Tags"
@@ -36415,6 +36421,9 @@ msgstr ""
 msgid "PackageRegistry|Debian"
 msgstr ""
 
+msgid "PackageRegistry|Default"
+msgstr ""
+
 msgid "PackageRegistry|Delete %{count} assets"
 msgstr ""
 
@@ -36461,6 +36470,9 @@ msgid "PackageRegistry|Enforce %{packageType} setting for all subgroups"
 msgstr ""
 
 msgid "PackageRegistry|Enforce %{package_type} setting for all subgroups"
+msgstr ""
+
+msgid "PackageRegistry|Error"
 msgstr ""
 
 msgid "PackageRegistry|Error publishing"
@@ -36518,6 +36530,9 @@ msgid "PackageRegistry|Gradle Kotlin DSL install command"
 msgstr ""
 
 msgid "PackageRegistry|Helm"
+msgstr ""
+
+msgid "PackageRegistry|Hidden"
 msgstr ""
 
 msgid "PackageRegistry|If you haven't already done so, you will need to add the below to your %{codeStart}.pypirc%{codeEnd} file."
@@ -36621,6 +36636,9 @@ msgstr ""
 msgid "PackageRegistry|Packages deleted successfully"
 msgstr ""
 
+msgid "PackageRegistry|Pending deletion"
+msgstr ""
+
 msgid "PackageRegistry|Permanently delete"
 msgstr ""
 
@@ -36628,6 +36646,9 @@ msgid "PackageRegistry|Permanently delete assets"
 msgstr ""
 
 msgid "PackageRegistry|Pip Command"
+msgstr ""
+
+msgid "PackageRegistry|Processing"
 msgstr ""
 
 msgid "PackageRegistry|Project-level"
@@ -43883,6 +43904,9 @@ msgstr ""
 msgid "Runners|%{linkStart}Create a new runner%{linkEnd} to get started."
 msgstr ""
 
+msgid "Runners|%{linkStart}View available zones%{linkEnd}. Must have the format %{format}. Example: %{example}."
+msgstr ""
+
 msgid "Runners|%{link_start}These runners%{link_end} are available to all groups and projects."
 msgstr ""
 
@@ -44177,7 +44201,7 @@ msgstr ""
 msgid "Runners|Fleet dashboard"
 msgstr ""
 
-msgid "Runners|For most CI/CD jobs, use a %{linkStart}N2D standard machine type%{linkEnd}."
+msgid "Runners|For most CI/CD jobs, use a %{linkStart}N2D standard machine type%{linkEnd}. Must have the format %{format}. Example: %{example}."
 msgstr ""
 
 msgid "Runners|Get started with runners"
@@ -44279,7 +44303,7 @@ msgstr ""
 msgid "Runners|Machine type is required."
 msgstr ""
 
-msgid "Runners|Machine type must have the format `family-series-size`. Example: n2d-standard-2"
+msgid "Runners|Machine type must have the right format."
 msgstr ""
 
 msgid "Runners|Machine type with preset amounts of virtual machines processors (vCPUs) and memory"
@@ -44313,6 +44337,9 @@ msgid "Runners|Most recent failures"
 msgstr ""
 
 msgid "Runners|Most used instance runners"
+msgstr ""
+
+msgid "Runners|Must have the format %{format}. Example: %{example}."
 msgstr ""
 
 msgid "Runners|Never contacted"
@@ -44415,7 +44442,7 @@ msgstr ""
 msgid "Runners|Project ID is required."
 msgstr ""
 
-msgid "Runners|Project ID must be 6 to 30 lowercase letters, digits, or hyphens. It needs to start with a lowercase letter and end with a letter or number."
+msgid "Runners|Project ID must have the right format."
 msgstr ""
 
 msgid "Runners|Project runners"
@@ -44442,7 +44469,7 @@ msgstr ""
 msgid "Runners|Region is required."
 msgstr ""
 
-msgid "Runners|Region must have the correct format. Example: us-central1"
+msgid "Runners|Region must have the right format."
 msgstr ""
 
 msgid "Runners|Register"
@@ -44758,7 +44785,7 @@ msgstr ""
 msgid "Runners|To follow the setup instructions, %{gcloudLinkStart}install the Google Cloud CLI%{gcloudLinkEnd} and %{terraformLinkStart}install Terraform%{terraformLinkEnd}."
 msgstr ""
 
-msgid "Runners|To improve security, use a dedicated project for CI/CD, separate from resources and identity management projects. %{linkStart}Where’s my project ID in Google Cloud?%{linkEnd}"
+msgid "Runners|To improve security, use a project just for CI/CD. %{linkStart}Where's my project ID?%{linkEnd} Can be 6 to 30 lowercase letters, digits, or hyphens. Must start with a letter and end with a letter or number. Example: %{example}."
 msgstr ""
 
 msgid "Runners|To install Runner in Kubernetes follow the instructions described in the GitLab documentation."
@@ -44845,9 +44872,6 @@ msgstr ""
 msgid "Runners|Version starts with"
 msgstr ""
 
-msgid "Runners|View available zones"
-msgstr ""
-
 msgid "Runners|View installation instructions"
 msgstr ""
 
@@ -44902,7 +44926,7 @@ msgstr ""
 msgid "Runners|Zone is required."
 msgstr ""
 
-msgid "Runners|Zone must have the correct format. Example: us-central1-a"
+msgid "Runners|Zone must have the right format."
 msgstr ""
 
 msgid "Runners|active"

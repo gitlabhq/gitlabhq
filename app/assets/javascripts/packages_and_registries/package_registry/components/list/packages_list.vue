@@ -170,6 +170,7 @@ export default {
     <template v-else>
       <gl-alert
         v-if="showErrorPackageAlert"
+        class="gl-mt-5"
         variant="danger"
         :title="errorTitleAlert"
         :primary-button-text="$options.i18n.deleteThisPackage"

@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 
-module WorkItems
+module Issuable
   module Callbacks
     class TimeTracking < Base
+      ALLOWED_PARAMS = %i[time_estimate spend_time timelog].freeze
+
       def after_initialize
         if excluded_in_new_type?
           params.delete(:time_estimate)
@@ -10,7 +12,7 @@ module WorkItems
           params.delete(:timelog)
         end
 
-        return unless has_permission?(:admin_work_item)
+        return unless has_permission?(:"admin_#{issuable.to_ability_name}")
 
         # below 2 parse_*_data methods, parse the data coming in from `time_tracking_widget` argument, in
         # work item update mutation.
@@ -19,8 +21,8 @@ module WorkItems
 
         # we still need to set the data here, in case when we had no data coming in from the `time_tracking_widget`
         # argument, but data was still set through updating the description and using quick actions.
-        work_item.time_estimate = params[:time_estimate] if params[:time_estimate].present?
-        work_item.spend_time = params[:spend_time] if params[:spend_time].present?
+        issuable.time_estimate = params[:time_estimate] if params.has_key?(:time_estimate)
+        issuable.spend_time = params[:spend_time] if params[:spend_time].present?
       end
 
       private

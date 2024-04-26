@@ -1,4 +1,10 @@
-import { periodToDate } from '~/observability/utils';
+import { periodToDate, dateFilterObjToQuery, queryToDateFilterObj } from '~/observability/utils';
+import {
+  CUSTOM_DATE_RANGE_OPTION,
+  DATE_RANGE_QUERY_KEY,
+  DATE_RANGE_START_QUERY_KEY,
+  DATE_RANGE_END_QUERY_KEY,
+} from '~/observability/constants';
 
 describe('periodToDate', () => {
   const realDateNow = Date.now;
@@ -31,5 +37,74 @@ describe('periodToDate', () => {
 
   it('should return an empty object if unit is not "m", "h", or "d"', () => {
     expect(periodToDate('2w')).toEqual({});
+  });
+});
+
+describe('queryToDateFilterObj', () => {
+  it('returns default date range if no query params provided', () => {
+    expect(queryToDateFilterObj({})).toEqual({ value: '1h' });
+  });
+
+  it('returns query params with provided value', () => {
+    expect(
+      queryToDateFilterObj({
+        [DATE_RANGE_QUERY_KEY]: '7d',
+      }),
+    ).toEqual({ value: '7d' });
+  });
+
+  it('returns custom range if custom params provided', () => {
+    const query = {
+      [DATE_RANGE_QUERY_KEY]: CUSTOM_DATE_RANGE_OPTION,
+      [DATE_RANGE_START_QUERY_KEY]: '2020-01-01T00:00:00.000Z',
+      [DATE_RANGE_END_QUERY_KEY]: '2020-01-02T00:00:00.000Z',
+    };
+    expect(queryToDateFilterObj(query)).toEqual({
+      value: CUSTOM_DATE_RANGE_OPTION,
+      startDate: new Date('2020-01-01T00:00:00.000Z'),
+      endDate: new Date('2020-01-02T00:00:00.000Z'),
+    });
+  });
+
+  it('returns default range if custom params invalid', () => {
+    const query = {
+      [DATE_RANGE_QUERY_KEY]: CUSTOM_DATE_RANGE_OPTION,
+      [DATE_RANGE_START_QUERY_KEY]: 'invalid',
+      [DATE_RANGE_END_QUERY_KEY]: 'invalid',
+    };
+    expect(queryToDateFilterObj(query)).toEqual({ value: '1h' });
+  });
+});
+
+describe('dateFilterObjToQuery', () => {
+  it('converts a default date filter', () => {
+    expect(
+      dateFilterObjToQuery({
+        value: '7d',
+      }),
+    ).toEqual({
+      [DATE_RANGE_QUERY_KEY]: '7d',
+    });
+  });
+
+  it('converts custom filter', () => {
+    const filter = {
+      value: CUSTOM_DATE_RANGE_OPTION,
+      startDate: new Date('2020-01-01T00:00:00.000Z'),
+      endDate: new Date('2020-01-02T00:00:00.000Z'),
+    };
+    expect(dateFilterObjToQuery(filter)).toEqual({
+      [DATE_RANGE_QUERY_KEY]: CUSTOM_DATE_RANGE_OPTION,
+      [DATE_RANGE_START_QUERY_KEY]: '2020-01-01T00:00:00.000Z',
+      [DATE_RANGE_END_QUERY_KEY]: '2020-01-02T00:00:00.000Z',
+    });
+  });
+
+  it('returns empty object if filter is empty', () => {
+    expect(dateFilterObjToQuery({})).toEqual({});
+  });
+
+  it('returns empty object if filter undefined', () => {
+    expect(dateFilterObjToQuery()).toEqual({});
   });
 });

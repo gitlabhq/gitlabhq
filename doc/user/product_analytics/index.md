@@ -395,6 +395,14 @@ The current month displays events counted to date.
 
 The usage quota excludes projects that are not onboarded with product analytics.
 
+## Best practices
+
+- Define key metrics and goals from the start. Decide what questions you want to answer so you know how to use collected data.
+- Use event data from all stages of the user journey. This data provides a comprehensive view of the user experience.
+- Build dashboards aligned with team needs. Different teams need different data insights.
+- Review dashboards regularly. This way, you can verify customer outcomes, identify trends in data, and update visualizations.
+- Export raw data periodically. Dashboards provide only an overview of a subset of data, so you should export the data for a deeper analysis.
+
 ## Troubleshooting
 
 ### No events are collected

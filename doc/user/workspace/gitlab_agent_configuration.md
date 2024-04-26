@@ -28,7 +28,7 @@ provided that the agent is properly configured for remote development.
 |-------------------------------------------------------------------------------------------|----------|-----------------------------------------|-------------|
 | [`enabled`](#enabled)                                                                     | Yes      | `false`                                 | Indicates whether remote development is enabled for the GitLab agent. |
 | [`dns_zone`](#dns_zone)                                                                   | Yes      | None                                    | DNS zone where workspaces are available. |
-| [`gitlab_workspaces_proxy`](#gitlab_workspaces_proxy)                                     | No       | `gitlab-workspaces`                     | Namespace where [`gitlab-workspaces-proxy`](https://gitlab.com/gitlab-org/remote-development/gitlab-workspaces-proxy) is installed. |
+| [`gitlab_workspaces_proxy`](#gitlab_workspaces_proxy)                                     | No       | `gitlab-workspaces`                     | Namespace where [`gitlab-workspaces-proxy`](set_up_workspaces_proxy.md) is installed. |
 | [`network_policy`](#network_policy)                                                       | No       | See [`network_policy`](#network_policy) | Firewall rules for workspaces. |
 | [`default_resources_per_workspace_container`](#default_resources_per_workspace_container) | No       | `{}`                                    | Default requests and limits for CPU and memory per workspace container. |
 | [`max_resources_per_workspace`](#max_resources_per_workspace)                             | No       | `{}`                                    | Maximum requests and limits for CPU and memory per workspace. |
@@ -71,7 +71,7 @@ remote_development:
 ### `gitlab_workspaces_proxy`
 
 Use this setting to define the namespace where
-[`gitlab-workspaces-proxy`](https://gitlab.com/gitlab-org/remote-development/gitlab-workspaces-proxy) is installed.
+[`gitlab-workspaces-proxy`](set_up_workspaces_proxy.md) is installed.
 The default value for `gitlab_workspaces_proxy.namespace` is `gitlab-workspaces`.
 
 **Example configuration:**

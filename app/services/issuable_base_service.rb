@@ -5,7 +5,8 @@ class IssuableBaseService < ::BaseContainerService
 
   def available_callbacks
     [
-      Issuable::Callbacks::Milestone
+      Issuable::Callbacks::Milestone,
+      Issuable::Callbacks::TimeTracking
     ].freeze
   end
 

@@ -35,7 +35,7 @@ which you can customize to meet the specific needs of each project.
     - In development environments, add an entry to the `/etc/hosts` file or update your DNS records.
     - In production environments, point `*.<workspaces.example.dev>` and `<workspaces.example.dev>`
       to the load balancer exposed by the Ingress controller.
-  - [Install `gitlab-workspaces-proxy`](https://gitlab.com/gitlab-org/remote-development/gitlab-workspaces-proxy#installation-instructions).
+  - [Set up the GitLab workspaces proxy](set_up_workspaces_proxy.md).
   - [Install](../clusters/agent/install/index.md) and [configure](gitlab_agent_configuration.md) the GitLab agent.
 - You must have at least the Developer role in the root group.
 - In each project you want to use this feature for, create a [devfile](index.md#devfile):
@@ -76,7 +76,7 @@ You also have access to the terminal and can install any necessary dependencies.
 Prerequisites:
 
 - SSH must be enabled for the workspace.
-- You must have a TCP load balancer that points to [`gitlab-workspaces-proxy`](https://gitlab.com/gitlab-org/remote-development/gitlab-workspaces-proxy).
+- You must have a TCP load balancer that points to the [GitLab workspaces proxy](set_up_workspaces_proxy.md).
 
 To connect to a workspace with an SSH client:
 
@@ -94,13 +94,13 @@ When you connect to `gitlab-workspaces-proxy` through the TCP load balancer,
 - The personal access token
 - User access to the workspace
 
-### Set up `gitlab-workspaces-proxy` for SSH connections
+### Set up the GitLab workspaces proxy for SSH connections
 
 Prerequisites:
 
 - You must have an SSH host key for client verification.
 
-SSH is now enabled by default in [`gitlab-workspaces-proxy`](https://gitlab.com/gitlab-org/remote-development/gitlab-workspaces-proxy).
+SSH is now enabled by default in the [GitLab workspaces proxy](set_up_workspaces_proxy.md).
 To set up `gitlab-workspaces-proxy` with the GitLab Helm chart:
 
 1. Run this command:

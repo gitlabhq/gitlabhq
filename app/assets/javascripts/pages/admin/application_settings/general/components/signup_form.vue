@@ -216,7 +216,7 @@ export default {
     ),
     domainAllowListLabel: s__('ApplicationSettings|Allowed domains for sign-ups'),
     domainAllowListDescription: s__(
-      'ApplicationSettings|Only users with e-mail addresses that match these domain(s) can sign up. Wildcards allowed. Use separate lines for multiple entries. Example: domain.com, *.domain.com',
+      'ApplicationSettings|Only users with e-mail addresses that match these domain(s) can sign up. Wildcards allowed. Enter multiple entries on separate lines. Example: domain.com, *.domain.com',
     ),
     userCapLabel: s__('ApplicationSettings|User cap'),
     userCapDescription: s__(
@@ -232,7 +232,7 @@ export default {
     ),
     domainDenyListListLabel: s__('ApplicationSettings|Denied domains for sign-ups'),
     domainDenyListListDescription: s__(
-      'ApplicationSettings|Users with e-mail addresses that match these domain(s) cannot sign up. Wildcards allowed. Use separate lines for multiple entries. Example: domain.com, *.domain.com',
+      'ApplicationSettings|Users with e-mail addresses that match these domain(s) cannot sign up. Wildcards allowed. Enter multiple entries on separate lines. Example: domain.com, *.domain.com',
     ),
     domainPlaceholder: s__('ApplicationSettings|domain.com'),
     emailRestrictionsEnabledGroupLabel: s__('ApplicationSettings|Email restrictions'),

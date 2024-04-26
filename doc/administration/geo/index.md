@@ -25,7 +25,7 @@ to clone and fetch large repositories, speeding up development and increasing th
 
 Geo secondary sites transparently proxy write requests to the primary site. All Geo sites can be configured to respond to a single GitLab URL, to deliver a consistent, seamless, and comprehensive experience whichever site the user lands on.
 
-To make sure you're using the right version of the documentation, go to [the Geo page on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/administration/geo/index.md) and choose the appropriate release from the **Switch branch/tag** dropdown list. For example, [`v13.7.6-ee`](https://gitlab.com/gitlab-org/gitlab/-/blob/v13.7.6-ee/doc/administration/geo/index.md).
+To make sure you're using the right version of the documentation, go to [the Geo page on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/administration/geo/index.md) and choose the appropriate release from the **Switch branch/tag** dropdown list. For example, [`v15.7.6-ee`](https://gitlab.com/gitlab-org/gitlab/-/blob/v15.7.6-ee/doc/administration/geo/index.md).
 
 Geo uses a set of defined terms that are described in the [Geo Glossary](glossary.md).
 Be sure to familiarize yourself with those terms.
@@ -236,8 +236,6 @@ For information on configuring Geo, see [Geo configuration](replication/configur
 For information on how to update your Geo sites to the latest GitLab version, see [Upgrading the Geo sites](replication/upgrading_the_geo_sites.md).
 
 ### Pausing and resuming replication
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35913) in GitLab 13.2.
 
 WARNING:
 Pausing and resuming of replication is only supported for Geo installations using a

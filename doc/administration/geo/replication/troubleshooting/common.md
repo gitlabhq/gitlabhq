@@ -281,8 +281,6 @@ sudo gitlab-rake gitlab:geo:check
   Ensure you have added the secondary site in the Admin Area under **Geo > Sites** on the web interface for the **primary** site.
   Also ensure you entered the `gitlab_rails['geo_node_name']`
   when adding the secondary site in the Admin Area of the **primary** site.
-  In GitLab 12.3 and earlier, edit the secondary site in the Admin Area of the **primary**
-  site and ensure that there is a trailing `/` in the `Name` field.
 
 - Check returns `Exception: PG::UndefinedTable: ERROR:  relation "geo_nodes" does not exist`.
 

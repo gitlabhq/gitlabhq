@@ -10,6 +10,7 @@ query getPackages(
   $packageName: String
   $packageType: PackageTypeEnum
   $packageVersion: String
+  $packageStatus: PackageStatus
   $first: Int
   $last: Int
   $after: String
@@ -22,6 +23,7 @@ query getPackages(
       packageName: $packageName
       packageType: $packageType
       packageVersion: $packageVersion
+      status: $packageStatus
       after: $after
       before: $before
       first: $first
@@ -46,6 +48,7 @@ query getPackages(
       packageName: $packageName
       packageType: $packageType
       packageVersion: $packageVersion
+      status: $packageStatus
       after: $after
       before: $before
       first: $first

@@ -46,14 +46,6 @@ export default {
     stepTwoDescription: s__(
       'Runners|To view the setup instructions, complete the previous form. The instructions help you set up an autoscaling fleet of runners to execute your CI/CD jobs in Google Cloud.',
     ),
-    projectIdLabel: s__('Runners|Google Cloud project ID'),
-    projectIdDescription: s__(
-      'Runners|To improve security, use a dedicated project for CI/CD, separate from resources and identity management projects. %{linkStart}Where’s my project ID in Google Cloud?%{linkEnd}',
-    ),
-    zonesLinkText: s__('Runners|View available zones'),
-    machineTypeDescription: s__(
-      'Runners|For most CI/CD jobs, use a %{linkStart}N2D standard machine type%{linkEnd}.',
-    ),
     runnerSetupBtnText: s__('Runners|Setup instructions'),
     copyCommands: __('Copy commands'),
     emptyFieldsAlertMessage: s__(
@@ -329,18 +321,20 @@ export default {
       ref="cloudProjectId"
       v-model="cloudProjectId"
       name="cloudProjectId"
-      :label="$options.i18n.projectIdLabel"
+      :label="s__('Runners|Google Cloud project ID')"
       :invalid-feedback-if-empty="s__('Runners|Project ID is required.')"
-      :invalid-feedback-if-malformed="
-        s__(
-          'Runners|Project ID must be 6 to 30 lowercase letters, digits, or hyphens. It needs to start with a lowercase letter and end with a letter or number.',
-        )
-      "
+      :invalid-feedback-if-malformed="s__('Runners|Project ID must have the right format.')"
       :regexp="$options.GC_PROJECT_PATTERN"
       data-testid="project-id-input"
     >
       <template #description>
-        <gl-sprintf :message="$options.i18n.projectIdDescription">
+        <gl-sprintf
+          :message="
+            s__(
+              'Runners|To improve security, use a project just for CI/CD. %{linkStart}Where\'s my project ID?%{linkEnd} Can be 6 to 30 lowercase letters, digits, or hyphens. Must start with a letter and end with a letter or number. Example: %{example}.',
+            )
+          "
+        >
           <template #link="{ content }">
             <gl-link
               :href="$options.links.projectIdLink"
@@ -351,6 +345,11 @@ export default {
               <gl-icon name="external-link" :aria-label="$options.i18n.externalLink" />
             </gl-link>
           </template>
+          <!-- eslint-disable @gitlab/vue-require-i18n-strings -->
+          <template #example>
+            <code>my-sample-project-191923</code>
+          </template>
+          <!-- eslint-enable @gitlab/vue-require-i18n-strings -->
         </gl-sprintf>
       </template>
     </google-cloud-field-group>
@@ -360,9 +359,7 @@ export default {
       v-model="region"
       name="region"
       :invalid-feedback-if-empty="s__('Runners|Region is required.')"
-      :invalid-feedback-if-malformed="
-        s__('Runners|Region must have the correct format. Example: us-central1')
-      "
+      :invalid-feedback-if-malformed="s__('Runners|Region must have the right format.')"
       :regexp="$options.GC_REGION_PATTERN"
       data-testid="region-input"
     >
@@ -377,6 +374,18 @@ export default {
           </help-popover>
         </div>
       </template>
+      <template #description>
+        <gl-sprintf :message="s__('Runners|Must have the format %{format}. Example: %{example}.')">
+          <!-- eslint-disable @gitlab/vue-require-i18n-strings -->
+          <template #format>
+            <code>&lt;location&gt;-&lt;sublocation&gt;&lt;number&gt;</code>
+          </template>
+          <template #example>
+            <code>us-central1</code>
+          </template>
+          <!-- eslint-enable @gitlab/vue-require-i18n-strings -->
+        </gl-sprintf>
+      </template>
     </google-cloud-field-group>
 
     <google-cloud-field-group
@@ -384,9 +393,7 @@ export default {
       v-model="zone"
       name="zone"
       :invalid-feedback-if-empty="s__('Runners|Zone is required.')"
-      :invalid-feedback-if-malformed="
-        s__('Runners|Zone must have the correct format. Example: us-central1-a')
-      "
+      :invalid-feedback-if-malformed="s__('Runners|Zone must have the right format.')"
       :regexp="$options.GC_ZONE_PATTERN"
       data-testid="zone-input"
     >
@@ -406,10 +413,28 @@ export default {
         </div>
       </template>
       <template #description>
-        <gl-link :href="$options.links.zonesLink" target="_blank" data-testid="zone-link">
-          {{ $options.i18n.zonesLinkText }}
-          <gl-icon name="external-link" :aria-label="$options.i18n.externalLink" />
-        </gl-link>
+        <gl-sprintf
+          :message="
+            s__(
+              'Runners|%{linkStart}View available zones%{linkEnd}. Must have the format %{format}. Example: %{example}.',
+            )
+          "
+        >
+          <template #link="{ content }">
+            <gl-link :href="$options.links.zonesLink" target="_blank" data-testid="zone-link">
+              {{ content }}
+              <gl-icon name="external-link" :aria-label="$options.i18n.externalLink" />
+            </gl-link>
+          </template>
+          <!-- eslint-disable @gitlab/vue-require-i18n-strings -->
+          <template #format>
+            <code>&lt;region&gt;-&lt;zone_letter&gt;</code>
+          </template>
+          <template #example>
+            <code>us-central1-a</code>
+          </template>
+          <!-- eslint-enable @gitlab/vue-require-i18n-strings -->
+        </gl-sprintf>
       </template>
     </google-cloud-field-group>
 
@@ -418,11 +443,7 @@ export default {
       v-model="machineType"
       name="machineType"
       :invalid-feedback-if-empty="s__('Runners|Machine type is required.')"
-      :invalid-feedback-if-malformed="
-        s__(
-          'Runners|Machine type must have the format `family-series-size`. Example: n2d-standard-2',
-        )
-      "
+      :invalid-feedback-if-malformed="s__('Runners|Machine type must have the right format.')"
       :regexp="$options.GC_MACHINE_TYPE_PATTERN"
       data-testid="machine-type-input"
     >
@@ -442,7 +463,13 @@ export default {
         </div>
       </template>
       <template #description>
-        <gl-sprintf :message="$options.i18n.machineTypeDescription">
+        <gl-sprintf
+          :message="
+            s__(
+              'Runners|For most CI/CD jobs, use a %{linkStart}N2D standard machine type%{linkEnd}. Must have the format %{format}. Example: %{example}.',
+            )
+          "
+        >
           <template #link="{ content }">
             <gl-link
               :href="$options.links.n2dMachineTypesLink"
@@ -453,6 +480,14 @@ export default {
               <gl-icon name="external-link" :aria-label="$options.i18n.externalLink" />
             </gl-link>
           </template>
+          <!-- eslint-disable @gitlab/vue-require-i18n-strings -->
+          <template #format>
+            <code>&lt;series&gt;-&lt;type&gt;</code>
+          </template>
+          <template #example>
+            <code>n2d-standard-2</code>
+          </template>
+          <!-- eslint-enable @gitlab/vue-require-i18n-strings -->
         </gl-sprintf>
       </template>
     </google-cloud-field-group>

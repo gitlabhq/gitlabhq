@@ -182,7 +182,7 @@ follow these steps to avoid unnecessary data loss:
      - Revoke object storage permissions from the **primary** site.
      - Physically disconnect a machine.
 
-### Promoting the **secondary** site running GitLab 14.5 and later
+### Promoting the **secondary** site
 
 1. SSH to every Sidekiq, PostgreSQL, and Gitaly node in the **secondary** site and run one of the following commands:
 
@@ -214,72 +214,8 @@ follow these steps to avoid unnecessary data loss:
 
 1. Verify you can connect to the newly promoted **primary** site using the URL used
    previously for the **secondary** site.
+
 1. If successful, the **secondary** site is now promoted to the **primary** site.
-
-### Promoting the **secondary** site running GitLab 14.4 and earlier
-
-WARNING:
-The `gitlab-ctl promote-to-primary-node` and `gitlab-ctl promoted-db` commands are
-deprecated in GitLab 14.5 and later, and [removed in GitLab 15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/345207).
-Use `gitlab-ctl geo promote` instead.
-
-NOTE:
-A new **secondary** should not be added at this time. If you want to add a new
-**secondary**, do this after you have completed the entire process of promoting
-the **secondary** to the **primary**.
-
-WARNING:
-If you encounter an `ActiveRecord::RecordInvalid: Validation failed: Name has already been taken` error during this process, read
-[the troubleshooting advice](../../replication/troubleshooting/failover.md#fixing-errors-during-a-failover-or-when-promoting-a-secondary-to-a-primary-site).
-
-The `gitlab-ctl promote-to-primary-node` command cannot be used in
-conjunction with multiple servers, as it can only
-perform changes on a **secondary** with only a single machine. Instead, you must
-do this manually.
-
-WARNING:
-In GitLab 13.2 and 13.3, promoting a secondary site to a primary while the
-secondary is paused fails. Do not pause replication before promoting a
-secondary. If the site is paused, be sure to resume before promoting. This
-issue has been fixed in GitLab 13.4 and later.
-
-WARNING:
-If the secondary site [has been paused](../../../geo/index.md#pausing-and-resuming-replication), this performs
-a point-in-time recovery to the last known state.
-Data that was created on the primary while the secondary was paused is lost.
-
-1. SSH in to the PostgreSQL node in the **secondary** and promote PostgreSQL separately:
-
-   ```shell
-   sudo gitlab-ctl promote-db
-   ```
-
-1. Edit `/etc/gitlab/gitlab.rb` on every machine in the **secondary** to
-   reflect its new status as **primary** by removing any lines that enabled the
-   `geo_secondary_role`:
-
-   ```ruby
-   ## In pre-11.5 documentation, the role was enabled as follows. Remove this line.
-   geo_secondary_role['enable'] = true
-
-   ## In 11.5+ documentation, the role was enabled as follows. Remove this line.
-   roles ['geo_secondary_role']
-   ```
-
-   After making these changes, [reconfigure GitLab](../../../restart_gitlab.md#reconfigure-a-linux-package-installation) each
-   machine so the changes take effect.
-
-1. Promote the **secondary** to **primary**. SSH into a single Rails node
-   server and execute:
-
-   ```shell
-   sudo gitlab-rake geo:set_secondary_as_primary
-   ```
-
-1. Verify you can connect to the newly promoted **primary** using the URL used
-   previously for the **secondary**.
-
-1. Success! The **secondary** has now been promoted to **primary**.
 
 ### Next steps
 

@@ -405,8 +405,6 @@ Selective synchronization:
 
 ### Git operations on unreplicated repositories
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2562) in GitLab 12.10 for HTTP(S) and in GitLab 13.0 for SSH.
-
 Git clone, pull, and push operations over HTTP(S) and SSH are supported for repositories that
 exist on the **primary** site but not on **secondary** sites. This situation can occur
 when:

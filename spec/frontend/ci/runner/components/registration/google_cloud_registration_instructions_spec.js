@@ -251,13 +251,13 @@ describe('GoogleCloudRegistrationInstructions', () => {
         ${'correct'}                         | ${'correct-project-name'}            | ${undefined} | ${''}
         ${'correct'}                         | ${'correct-project-name-1'}          | ${undefined} | ${''}
         ${'correct'}                         | ${'project'}                         | ${undefined} | ${''}
-        ${'invalid (too short)'}             | ${'short'}                           | ${'true'}    | ${'Project ID must be'}
-        ${'invalid (starts with a number)'}  | ${'1number'}                         | ${'true'}    | ${'Project ID must be'}
-        ${'invalid (starts with uppercase)'} | ${'Project'}                         | ${'true'}    | ${'Project ID must be'}
-        ${'invalid (contains uppercase)'}    | ${'pRoject'}                         | ${'true'}    | ${'Project ID must be'}
-        ${'invalid (contains symbol)'}       | ${'pro!ect'}                         | ${'true'}    | ${'Project ID must be'}
-        ${'invalid (too long)'}              | ${'a-project-name-that-is-too-long'} | ${'true'}    | ${'Project ID must be'}
-        ${'invalid (ends with hyphen)'}      | ${'a-project-'}                      | ${'true'}    | ${'Project ID must be'}
+        ${'invalid (too short)'}             | ${'short'}                           | ${'true'}    | ${'Project ID must have'}
+        ${'invalid (starts with a number)'}  | ${'1number'}                         | ${'true'}    | ${'Project ID must have'}
+        ${'invalid (starts with uppercase)'} | ${'Project'}                         | ${'true'}    | ${'Project ID must have'}
+        ${'invalid (contains uppercase)'}    | ${'pRoject'}                         | ${'true'}    | ${'Project ID must have'}
+        ${'invalid (contains symbol)'}       | ${'pro!ect'}                         | ${'true'}    | ${'Project ID must have'}
+        ${'invalid (too long)'}              | ${'a-project-name-that-is-too-long'} | ${'true'}    | ${'Project ID must have'}
+        ${'invalid (ends with hyphen)'}      | ${'a-project-'}                      | ${'true'}    | ${'Project ID must have'}
         ${'invalid (missing)'}               | ${''}                                | ${'true'}    | ${'Project ID is required'}
       `('"$input" as $case', async ({ input, ariaInvalid, feedback }) => {
         await fillInTextField(findProjectIdInput(), input);

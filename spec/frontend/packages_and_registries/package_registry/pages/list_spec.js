@@ -44,7 +44,12 @@ describe('PackagesListApp', () => {
 
   const searchPayload = {
     sort: 'VERSION_DESC',
-    filters: { packageName: 'foo', packageType: 'CONAN', packageVersion: '1.0.1' },
+    filters: {
+      packageName: 'foo',
+      packageType: 'CONAN',
+      packageVersion: '1.0.1',
+      packageStatus: 'DEFAULT',
+    },
   };
 
   const findPackageTitle = () => wrapper.findComponent(PackageTitle);

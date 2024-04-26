@@ -10,8 +10,6 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** Self-managed
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2149) in GitLab 13.9.
-
 Maintenance Mode allows administrators to reduce write operations to a minimum while maintenance tasks are performed. The main goal is to block all external actions that change the internal state. The internal state includes the PostgreSQL database, but especially files, Git repositories, and Container repositories.
 
 When Maintenance Mode is enabled, in-progress actions finish relatively quickly because no new actions are coming in, and internal state changes are minimal.

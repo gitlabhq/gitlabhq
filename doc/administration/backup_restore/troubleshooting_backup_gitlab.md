@@ -63,25 +63,13 @@ after which users must reactivate 2FA.
 
 1. Enter the database console:
 
-   For the Linux package (Omnibus) GitLab 14.1 and earlier:
-
-   ```shell
-   sudo gitlab-rails dbconsole
-   ```
-
-   For the Linux package (Omnibus) GitLab 14.2 and later:
+   For the Linux package (Omnibus):
 
    ```shell
    sudo gitlab-rails dbconsole --database main
    ```
 
-   For self-compiled installations, GitLab 14.1 and earlier:
-
-   ```shell
-   sudo -u git -H bundle exec rails dbconsole -e production
-   ```
-
-   For self-compiled installations, GitLab 14.2 and later:
+   For self-compiled installations:
 
    ```shell
    sudo -u git -H bundle exec rails dbconsole -e production --database main
@@ -116,25 +104,13 @@ You may need to reconfigure or restart GitLab for the changes to take effect.
 
 1. Enter the database console:
 
-   For the Linux package (Omnibus) GitLab 14.1 and earlier:
-
-   ```shell
-   sudo gitlab-rails dbconsole
-   ```
-
-   For the Linux package (Omnibus) GitLab 14.2 and later:
+   For the Linux package (Omnibus):
 
    ```shell
    sudo gitlab-rails dbconsole --database main
    ```
 
-   For self-compiled installations, GitLab 14.1 and earlier:
-
-   ```shell
-   sudo -u git -H bundle exec rails dbconsole -e production
-   ```
-
-   For self-compiled installations, GitLab 14.2 and later:
+   For self-compiled installations:
 
    ```shell
    sudo -u git -H bundle exec rails dbconsole -e production --database main
@@ -165,25 +141,13 @@ You may need to reconfigure or restart GitLab for the changes to take effect.
 
 1. Enter the database console:
 
-   For the Linux package (Omnibus) GitLab 14.1 and earlier:
-
-   ```shell
-   sudo gitlab-rails dbconsole
-   ```
-
-   For the Linux package (Omnibus) GitLab 14.2 and later:
+   For the Linux package (Omnibus):
 
    ```shell
    sudo gitlab-rails dbconsole --database main
    ```
 
-   For self-compiled installations, GitLab 14.1 and earlier:
-
-   ```shell
-   sudo -u git -H bundle exec rails dbconsole -e production
-   ```
-
-   For self-compiled installations, GitLab 14.2 and later:
+   For self-compiled installations:
 
    ```shell
    sudo -u git -H bundle exec rails dbconsole -e production --database main
@@ -220,25 +184,13 @@ You should verify that the secrets are the root cause before deleting any data.
 
 1. Enter the database console:
 
-   For the Linux package (Omnibus) GitLab 14.1 and earlier:
-
-   ```shell
-   sudo gitlab-rails dbconsole
-   ```
-
-   For the Linux package (Omnibus) GitLab 14.2 and later:
+   For the Linux package (Omnibus):
 
    ```shell
    sudo gitlab-rails dbconsole --database main
    ```
 
-   For self-compiled installations, GitLab 14.1 and earlier:
-
-   ```shell
-   sudo -u git -H bundle exec rails dbconsole -e production
-   ```
-
-   For self-compiled installations, GitLab 14.2 and later:
+   For self-compiled installations:
 
    ```shell
    sudo -u git -H bundle exec rails dbconsole -e production --database main
@@ -355,28 +307,16 @@ Truncate the filenames in the `uploads` table:
 
 1. Enter the database console:
 
-   For the Linux package (Omnibus) GitLab 14.2 and later:
+   For the Linux package (Omnibus):
 
    ```shell
    sudo gitlab-rails dbconsole --database main
    ```
 
-   For the Linux package (Omnibus) GitLab 14.1 and earlier:
-
-   ```shell
-   sudo gitlab-rails dbconsole
-   ```
-
-   For self-compiled installations, GitLab 14.2 and later:
+   For self-compiled installations:
 
    ```shell
    sudo -u git -H bundle exec rails dbconsole -e production --database main
-   ```
-
-   For self-compiled installations, GitLab 14.1 and earlier:
-
-   ```shell
-   sudo -u git -H bundle exec rails dbconsole -e production
    ```
 
 1. Search the `uploads` table for filenames longer than 246 characters:

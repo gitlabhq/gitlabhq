@@ -36,19 +36,13 @@ You successfully promoted this node!
 ```
 
 If you encounter this message when running `gitlab-rake geo:set_secondary_as_primary`
-or `gitlab-ctl promote-to-primary-node`, either:
-
-- Enter a Rails console and run:
+or `gitlab-ctl promote-to-primary-node`, enter a Rails console and run:
 
   ```ruby
   Rails.application.load_tasks; nil
   Gitlab::Geo.expire_cache!
   Rake::Task['geo:set_secondary_as_primary'].invoke
   ```
-
-- Upgrade to GitLab 12.6.3 or later if it is safe to do so. For example,
-  if the failover was just a test. A
-  [caching-related bug](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/22021) was fixed.
 
 ### Message: ``NoMethodError: undefined method `secondary?' for nil:NilClass``
 
