@@ -1199,7 +1199,7 @@ From GitLab 16.4 to 17.0, lookups for the legacy routes will automatically be re
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
-### GitLab Helm chart values `gitlab.kas.privateApi.*` are deprecated
+### GitLab Helm chart values `gitlab.kas.privateApi.tls.*` are deprecated
 
 <div class="deprecation-notes">
 - Announced in GitLab <span class="milestone">15.8</span>

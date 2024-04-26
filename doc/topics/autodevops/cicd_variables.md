@@ -22,7 +22,6 @@ Use these variables to customize and deploy your build.
 | `AUTO_BUILD_IMAGE_VERSION`              | Customize the image version used for the `build` job. See [list of versions](https://gitlab.com/gitlab-org/cluster-integration/auto-build-image/-/releases). |
 | `AUTO_DEPLOY_IMAGE_VERSION`             | Customize the image version used for Kubernetes deployment jobs. See [list of versions](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image/-/releases). |
 | `AUTO_DEVOPS_ATOMIC_RELEASE`            | Auto DevOps uses [`--atomic`](https://v2.helm.sh/docs/helm/#options-43) for Helm deployments by default. Set this variable to `false` to disable the use of `--atomic` |
-| `AUTO_DEVOPS_BUILD_IMAGE_CNB_ENABLED`   | Set to `false` to use Herokuish instead of Cloud Native Buildpacks with Auto Build. [More details](stages.md#auto-build-using-cloud-native-buildpacks). |
 | `AUTO_DEVOPS_BUILD_IMAGE_CNB_BUILDER`   | The builder used when building with Cloud Native Buildpacks. The default builder is `heroku/buildpacks:18`. [More details](stages.md#auto-build-using-cloud-native-buildpacks). |
 | `AUTO_DEVOPS_BUILD_IMAGE_EXTRA_ARGS`    | Extra arguments to be passed to the `docker build` command. Using quotes doesn't prevent word splitting. [More details](customize.md#pass-arguments-to-docker-build). |
 | `AUTO_DEVOPS_BUILD_IMAGE_FORWARDED_CI_VARIABLES` | A [comma-separated list of CI/CD variable names](customize.md#forward-cicd-variables-to-the-build-environment) to be forwarded to the build environment (the buildpack builder or `docker build`). |
@@ -39,7 +38,7 @@ Use these variables to customize and deploy your build.
 | `AUTO_DEVOPS_COMMON_NAME`               | From GitLab 15.5, set to a valid domain name to customize the common name used for the TLS certificate. Defaults to `le-$CI_PROJECT_ID.$KUBE_INGRESS_BASE_DOMAIN`. Set to `false` to not set this alternative host on the Ingress. |
 | `AUTO_DEVOPS_DEPLOY_DEBUG`              | If this variable is present, Helm outputs debug logs. |
 | `AUTO_DEVOPS_ALLOW_TO_FORCE_DEPLOY_V<N>` | From [auto-deploy-image](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image) v1.0.0, if this variable is present, a new major version of chart is forcibly deployed. For more information, see [Ignore warnings and continue deploying](upgrading_auto_deploy_dependencies.md#ignore-warnings-and-continue-deploying). |
-| `BUILDPACK_URL`                         | A full Buildpack URL. [Must point to a URL supported by Pack or Herokuish](customize.md#custom-buildpacks). |
+| `BUILDPACK_URL`                         | A full Buildpack URL. [Must point to a URL supported by Pack](customize.md#custom-buildpacks). |
 | `CANARY_ENABLED`                        | Used to define a [deploy policy for canary environments](#deploy-policy-for-canary-environments). |
 | `BUILDPACK_VOLUMES`                     | Specify one or more [Buildpack volumes to mount](stages.md#mount-volumes-into-the-build-container). Use a pipe `|` as list separator. |
 | `CANARY_PRODUCTION_REPLICAS`            | Number of canary replicas to deploy for [Canary Deployments](../../user/project/canary_deployments.md) in the production environment. Takes precedence over `CANARY_REPLICAS`. Defaults to 1. |

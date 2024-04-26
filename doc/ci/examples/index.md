@@ -166,9 +166,13 @@ For examples of others who have implemented GitLab CI/CD, see:
 
 ### Migrating to GitLab from third-party CI tools
 
-- [Migrating from CircleCI to GitLab](../migration/circleci.md)
-- [Migrating from Jenkins to GitLab](../migration/jenkins.md)
-- Video: [Migrating from Jenkins to GitLab](https://youtu.be/RlEVGOpYF5Y)
+Examples of migration to GitLab CI/CD from other tools:
+
+- [Bamboo](../migration/bamboo.md)
+- [CircleCI](../migration/circleci.md)
+- [GitHub Actions](../migration/github_actions.md)
+- [Jenkins](../migration/jenkins.md)
+- [TeamCity](../migration/teamcity.md)
 
 ### Integrating GitLab CI/CD with other systems
 

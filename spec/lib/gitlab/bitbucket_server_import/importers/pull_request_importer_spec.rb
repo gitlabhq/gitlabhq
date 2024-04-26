@@ -37,6 +37,24 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestImporter, fe
       )
     end
 
+    describe 'refs/merge-requests/:iid/head creation' do
+      before do
+        project.repository.create_branch(pull_request.source_branch_name, 'master')
+      end
+
+      after do
+        project.repository.delete_branch(pull_request.source_branch_name)
+      end
+
+      it 'creates head refs for imported merge requests' do
+        importer.execute
+
+        expect(
+          project.repository.commit("refs/#{Repository::REF_MERGE_REQUEST}/#{pull_request.iid}/head")
+        ).to be_present
+      end
+    end
+
     context 'when the `bitbucket_server_user_mapping_by_username` flag is disabled' do
       before do
         stub_feature_flags(bitbucket_server_user_mapping_by_username: false)

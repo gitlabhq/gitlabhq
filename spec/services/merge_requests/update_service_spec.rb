@@ -285,24 +285,6 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
         end
       end
 
-      it 'executes hooks with update action' do
-        expect(service).to have_received(:execute_hooks)
-          .with(
-            @merge_request,
-            'update',
-            old_associations: {
-              labels: [],
-              mentioned_users: [user2],
-              assignees: [user3],
-              reviewers: [],
-              milestone: nil,
-              total_time_spent: 0,
-              time_change: 0,
-              description: "FYI #{user2.to_reference}"
-            }
-          )
-      end
-
       context 'with reviewers' do
         let(:opts) { { reviewer_ids: [user2.id] } }
 

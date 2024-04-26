@@ -350,7 +350,7 @@ export default {
 };
 </script>
 <template>
-  <div class="pipelines-container">
+  <div class="pipelines-container gl-mt-2">
     <div
       v-if="shouldRenderTabs || shouldRenderButtons"
       class="top-area scrolling-tabs-container inner-page-scroll-tabs gl-border-none"

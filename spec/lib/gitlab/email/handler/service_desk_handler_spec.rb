@@ -59,13 +59,21 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
       end
 
       it 'sends thank you email' do
-        expect { receiver.execute }.to have_enqueued_job.on_queue('mailers')
+        expect(Notify).to receive(:service_desk_thank_you_email).once
+          .and_return(instance_double(ActionMailer::MessageDelivery, deliver_later: true))
+
+        receiver.execute
       end
 
       it 'adds metric events for incoming and reply emails' do
-        metric_transaction = double('Gitlab::Metrics::WebTransaction', increment: true, observe: true)
+        metric_transaction = instance_double(Gitlab::Metrics::WebTransaction, increment: true, observe: true)
         allow(::Gitlab::Metrics::BackgroundTransaction).to receive(:current).and_return(metric_transaction)
-        expect(metric_transaction).to receive(:add_event).with(:receive_email_service_desk, { handler: 'Gitlab::Email::Handler::ServiceDeskHandler' })
+        # Because IssueEmailParticipants::CreateService sends new_participant email
+        expect(metric_transaction).to receive(:add_event).with(:service_desk_new_participant_email)
+          .exactly(issue_email_participants_count - 1).times
+        expect(metric_transaction).to receive(:add_event).with(:receive_email_service_desk, {
+          handler: 'Gitlab::Email::Handler::ServiceDeskHandler'
+        })
         expect(metric_transaction).to receive(:add_event).with(:service_desk_thank_you_email)
 
         receiver.execute
@@ -340,7 +348,8 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
           end
 
           it 'sends thank you email once' do
-            expect(Notify).to receive(:service_desk_thank_you_email).once.and_return(double(deliver_later: true))
+            expect(Notify).to receive(:service_desk_thank_you_email).once
+              .and_return(instance_double(ActionMailer::MessageDelivery, deliver_later: true))
 
             subject
           end

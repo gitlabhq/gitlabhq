@@ -41,10 +41,13 @@ module IssueEmailParticipants
         end
 
         new_participant = target.issue_email_participants.create(email: email)
-        if new_participant.persisted?
-          added_emails << email
-          existing_emails_count += 1
-        end
+        next unless new_participant.persisted?
+
+        added_emails << email
+        existing_emails_count += 1
+
+        Notify.service_desk_new_participant_email(target.id, new_participant).deliver_later
+        Gitlab::Metrics::BackgroundTransaction.current&.add_event(:service_desk_new_participant_email)
       end
 
       added_emails

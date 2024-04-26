@@ -31,6 +31,8 @@ GITALY_SERVER_VERSION @project_278964_bot6 @gitlab-org/maintainers/rails-backend
 /scripts/lint-doc.sh @marcel.amirault @eread @axil @sarahgerman @gitlab-org/tw-leadership
 /scripts/lint-docs-metadata.sh @marcel.amirault @eread @axil @sarahgerman @gitlab-org/tw-leadership
 
+config/bounded_contexts.yml @fabiopitino @grzesiek @stanhu @cwoolley-gitlab @tkuah
+
 ^[Source code editing]
 .solargraph.yml.example @igor.drozdov
 

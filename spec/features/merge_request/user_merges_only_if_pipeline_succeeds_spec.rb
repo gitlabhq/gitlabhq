@@ -258,7 +258,7 @@ RSpec.describe 'Merge request > User merges only if pipeline succeeds', :js, fea
               wait_for_requests
 
               page.within('.mr-state-widget') do
-                expect(page).to have_content('Ready to merge')
+                expect(page).to have_content('to be merged automatically')
               end
             end
           end
@@ -274,7 +274,7 @@ RSpec.describe 'Merge request > User merges only if pipeline succeeds', :js, fea
               wait_for_requests
 
               page.within('.mr-state-widget') do
-                expect(page).to have_content('Ready to merge')
+                expect(page).to have_content('to be merged automatically')
               end
             end
           end

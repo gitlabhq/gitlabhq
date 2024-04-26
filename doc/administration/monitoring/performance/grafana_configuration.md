@@ -17,17 +17,6 @@ DETAILS:
 series metrics through graphs and dashboards. GitLab writes performance data to Prometheus,
 and Grafana allows you to query the data to display graphs.
 
-## Import GitLab dashboards
-
-You can import a set of default dashboards to start displaying information. GitLab has published a set of default
-[Grafana dashboards](https://gitlab.com/gitlab-org/grafana-dashboards) to get you started. To use them:
-
-1. Clone the repository, or download a ZIP file or tarball.
-1. Follow these steps to [import each dashboard JSON file individually](https://grafana.com/docs/grafana/latest/dashboards/build-dashboards/import-dashboards/)
-
-Alternatively, you can import all the dashboards into your Grafana instance. For more information about this process,
-see the [GitLab Grafana dashboards](https://gitlab.com/gitlab-org/grafana-dashboards).
-
 ## Integrate with GitLab UI
 
 After setting up Grafana, you can enable a link to access it from the

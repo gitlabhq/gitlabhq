@@ -10,7 +10,8 @@ module Emails
     VERIFICATION_EMAIL_TIMEOUT = 7
 
     included do
-      layout 'service_desk', only: [:service_desk_thank_you_email, :service_desk_new_note_email]
+      layout 'service_desk',
+        only: [:service_desk_thank_you_email, :service_desk_new_note_email, :service_desk_new_participant_email]
     end
 
     def service_desk_thank_you_email(issue_id)
@@ -58,6 +59,26 @@ module Emails
       # Add attachments after email init to guide ActiveMailer
       # to choose the correct multipart content types
       add_uploads_as_attachments
+      inject_service_desk_custom_email
+    end
+
+    def service_desk_new_participant_email(issue_id, recipient)
+      setup_service_desk_mail(issue_id, recipient)
+
+      email_sender = sender(
+        @support_bot.id,
+        send_from_user_email: false,
+        sender_name: @service_desk_setting&.outgoing_name,
+        sender_email: service_desk_sender_email_address
+      )
+
+      options = {
+        from: email_sender,
+        to: recipient.email,
+        subject: "Re: #{subject_base}"
+      }
+
+      mail_new_thread(@issue, options)
       inject_service_desk_custom_email
     end
 

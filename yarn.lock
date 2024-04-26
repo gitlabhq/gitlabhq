@@ -6185,10 +6185,10 @@ dommatrix@^1.0.3:
   resolved "https://registry.yarnpkg.com/dommatrix/-/dommatrix-1.0.3.tgz#e7c18e8d6f3abdd1fef3dd4aa74c4d2e620a0525"
   integrity sha512-l32Xp/TLgWb8ReqbVJAFIvXmY7go4nTxxlWiAFyhoQw9RKEOHBZNnyGvJWqDVSPmq3Y9HlM4npqF/T6VMOXhww==
 
-dompurify@^3.0.5, dompurify@^3.1.0:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-3.1.0.tgz#8c6b9fe986969a33aa4686bd829cbe8e14dd9445"
-  integrity sha512-yoU4rhgPKCo+p5UrWWWNKiIq+ToGqmVVhk0PmMYBK4kRsR3/qhemNFL8f6CFmBd4gMwm3F4T7HBoydP5uY07fA==
+dompurify@^3.0.5, dompurify@^3.1.1:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-3.1.1.tgz#e83de1e0ba7f1014f36686fbc63a2a3a1bdb93f6"
+  integrity sha512-tVP8C/GJwnABOn/7cx/ymx/hXpmBfWIPihC1aOEvS8GbMqy3pgeYtJk1HXN3CO7tu+8bpY18f6isjR5Cymj0TQ==
 
 dropzone@^4.2.0:
   version "4.2.0"

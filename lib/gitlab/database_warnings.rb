@@ -49,6 +49,8 @@ module Gitlab
           Your database has a single connection, and single connections were
           deprecated in GitLab 15.9 https://docs.gitlab.com/ee/update/deprecations.html#single-database-connection-is-deprecated.
 
+          In GitLab 17.0 and later, you must have the two main: and ci: sections in your database.yml.
+
           Please add a :ci section to your database, following these instructions:
           https://docs.gitlab.com/ee/install/installation.html#configure-gitlab-db-settings.
         ******************************************************************************

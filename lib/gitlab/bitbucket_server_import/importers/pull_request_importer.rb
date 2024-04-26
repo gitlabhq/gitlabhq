@@ -39,7 +39,10 @@ module Gitlab
 
           creator = Gitlab::Import::MergeRequestCreator.new(project)
 
-          creator.execute(attributes)
+          merge_request = creator.execute(attributes)
+
+          # Create refs/merge-requests/iid/head reference for the merge request
+          merge_request.fetch_ref!
 
           log_info(import_stage: 'import_pull_request', message: 'finished', iid: object[:iid])
         end

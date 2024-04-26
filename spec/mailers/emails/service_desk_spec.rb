@@ -531,6 +531,26 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
     end
   end
 
+  describe '.service_desk_new_participant_email' do
+    let_it_be(:reply_in_subject) { true }
+    let_it_be(:expected_text) { "You have been added to ticket #{issue.to_reference}" }
+    let_it_be(:expected_html) { expected_text }
+
+    before do
+      issue.update!(external_author: email)
+    end
+
+    subject { ServiceEmailClass.service_desk_new_participant_email(issue.id, issue_email_participant) }
+
+    it_behaves_like 'a service desk notification email'
+
+    context 'when custom email is enabled' do
+      subject { Notify.service_desk_new_participant_email(issue.id, issue_email_participant) }
+
+      it_behaves_like 'a service desk notification email that uses custom email'
+    end
+  end
+
   describe '.service_desk_custom_email_verification_email' do
     # Use strict definition here because Mail::SMTP.new({}).settings
     # might have been changed before.

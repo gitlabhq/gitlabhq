@@ -472,8 +472,10 @@ class Namespace < ApplicationRecord
     Project.where(namespace: namespace)
   end
 
-  # Includes projects from this namespace and projects from all subgroups
-  # that belongs to this namespace, except the ones that are soft deleted
+  def all_catalog_resources
+    Ci::Catalog::Resource.where(project: all_projects)
+  end
+
   def all_projects_except_soft_deleted
     all_projects.not_aimed_for_deletion
   end

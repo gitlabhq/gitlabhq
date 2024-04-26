@@ -21,7 +21,7 @@ You can resolve some problems with Auto DevOps deployment by changing advanced A
 
 ## Unable to select a buildpack
 
-Auto Build and Auto Test may fail to detect your language or framework with the
+Auto Test may fail to detect your language or framework with the
 following error:
 
 ```plaintext

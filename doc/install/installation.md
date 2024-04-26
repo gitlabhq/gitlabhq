@@ -640,8 +640,6 @@ sudo -u git -H chmod o-rwx config/database.yml
 
 You should have two sections in your `database.yml`: `main:` and `ci:`. The `ci`:
 connection [must be to the same database](../administration/postgresql/multiple_databases.md).
-If, for any reason, you wish to remain on a single database connection, remove the `ci:`
-section from `config/database.yml`.
 
 ### Install Gems
 

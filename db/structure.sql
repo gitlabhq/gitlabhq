@@ -1286,7 +1286,7 @@ PARTITION BY LIST (partition_id);
 
 CREATE TABLE p_ci_finished_build_ch_sync_events (
     build_id bigint NOT NULL,
-    partition bigint DEFAULT 2 NOT NULL,
+    partition bigint DEFAULT 1 NOT NULL,
     build_finished_at timestamp without time zone NOT NULL,
     processed boolean DEFAULT false NOT NULL
 )

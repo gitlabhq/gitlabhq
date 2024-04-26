@@ -1598,7 +1598,8 @@ class MergeRequest < ApplicationRecord
   end
 
   def mergeable_ci_state?
-    return true unless only_allow_merge_if_pipeline_succeeds?
+    # When using MWCP auto merge strategy, the ci must be mergeable, regardless of the project setting
+    return true unless only_allow_merge_if_pipeline_succeeds? || (auto_merge_strategy == ::AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS && project.has_ci?)
     return false unless diff_head_pipeline
 
     return true if project.allow_merge_on_skipped_pipeline?(inherit_group_setting: true) && diff_head_pipeline.skipped?

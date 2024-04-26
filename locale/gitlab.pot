@@ -43001,6 +43001,9 @@ msgstr ""
 msgid "Reply to this email directly or %{view_it_on_gitlab}."
 msgstr ""
 
+msgid "Reply to this email to participate in the discussion. All other participants of the ticket will receive notifications of your reply."
+msgstr ""
+
 msgid "Reply…"
 msgstr ""
 
@@ -59305,6 +59308,9 @@ msgstr ""
 msgid "You can still use and manage existing tokens. %{link_start}Learn more.%{link_end}"
 msgstr ""
 
+msgid "You can unsubscribe from further updates to this ticket. To receive updates in the future, you will have to be added again as a participant."
+msgstr ""
+
 msgid "You can view the source or %{linkStart}%{cloneIcon} clone the repository%{linkEnd}"
 msgstr ""
 
@@ -59474,6 +59480,9 @@ msgid "You have already reported this user"
 msgstr ""
 
 msgid "You have already requested access."
+msgstr ""
+
+msgid "You have been added to ticket #%{issue_iid}."
 msgstr ""
 
 msgid "You have been granted %{access_level} access to the %{source_link} %{source_type}."

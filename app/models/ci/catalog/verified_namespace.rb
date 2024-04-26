@@ -21,6 +21,10 @@ module Ci
       def self.for_project(project)
         find_by(namespace: project.root_namespace)
       end
+
+      def self.find_or_create_by_namespace!(namespace)
+        find_or_create_by!(namespace: namespace)
+      end
     end
   end
 end

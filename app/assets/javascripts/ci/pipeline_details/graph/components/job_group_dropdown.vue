@@ -1,5 +1,11 @@
 <script>
-import { GlDisclosureDropdown, GlDisclosureDropdownItem, GlTooltipDirective } from '@gitlab/ui';
+import {
+  GlDisclosureDropdown,
+  GlDisclosureDropdownItem,
+  GlTooltipDirective,
+  GlResizeObserverDirective,
+} from '@gitlab/ui';
+import { GlBreakpointInstance } from '@gitlab/ui/dist/utils';
 import { reportToSentry } from '~/ci/utils';
 import { JOB_DROPDOWN, SINGLE_JOB } from '../constants';
 import JobItem from './job_item.vue';
@@ -18,6 +24,7 @@ export default {
   },
   directives: {
     GlTooltip: GlTooltipDirective,
+    GlResizeObserver: GlResizeObserverDirective,
   },
   props: {
     group: {
@@ -44,6 +51,11 @@ export default {
     jobDropdown: JOB_DROPDOWN,
     singleJob: SINGLE_JOB,
   },
+  data() {
+    return {
+      isMobile: false,
+    };
+  },
   computed: {
     computedJobId() {
       return this.pipelineId > -1 ? `${this.group.name}-${this.pipelineId}` : '';
@@ -64,6 +76,14 @@ export default {
 
       return textBuilder.join(' ');
     },
+    placement() {
+      // MR !49053:
+      // We change the placement of the dropdown based on the breakpoint.
+      // This is not an ideal solution, but rather a temporary solution
+      // until we find a better solution in
+      // https://gitlab.com/gitlab-org/gitlab-ui/-/issues/2615
+      return this.isMobile ? 'left' : 'right-start';
+    },
   },
   errorCaptured(err, _vm, info) {
     reportToSentry('job_group_dropdown', `error: ${err}, info: ${info}`);
@@ -78,18 +98,22 @@ export default {
         href: job.status?.detailsPath,
       };
     },
+    handleResize() {
+      this.isMobile = GlBreakpointInstance.getBreakpointSize() === 'xs';
+    },
   },
 };
 </script>
 <template>
   <gl-disclosure-dropdown
     :id="computedJobId"
+    v-gl-resize-observer="handleResize"
     v-gl-tooltip.viewport.left
     :title="jobStatusText"
     class="ci-job-group-dropdown"
     block
     fluid-width
-    placement="right-start"
+    :placement="placement"
     data-testid="job-dropdown-container"
   >
     <template #toggle>
