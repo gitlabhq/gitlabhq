@@ -6,9 +6,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Troubleshooting
 
-## DAST API job times out after N hours
+## API security testing job times out after N hours
 
-For larger repositories, the DAST API job could time out on the [small hosted runner on Linux](../../../ci/runners/hosted_runners/linux.md#machine-types-available-for-linux-x86-64), which is set per default. If this happens in your jobs, you should scale up to a [larger runner](performance.md#using-a-larger-runner).
+For larger repositories, the API security testing job could time out on the [small hosted runner on Linux](../../../ci/runners/hosted_runners/linux.md#machine-types-available-for-linux-x86-64), which is set per default. If this happens in your jobs, you should scale up to a [larger runner](performance.md#using-a-larger-runner).
 
 See the following documentation sections for assistance:
 
@@ -17,13 +17,13 @@ See the following documentation sections for assistance:
 - [Excluding operations by path](configuration/customizing_analyzer_settings.md#exclude-paths)
 - [Excluding slow operations](performance.md#excluding-slow-operations)
 
-## DAST API job takes too long to complete
+## API security testing job takes too long to complete
 
 See [Performance Tuning and Testing Speed](performance.md#performance-tuning-and-testing-speed)
 
 ## Error: `Error waiting for DAST API 'http://127.0.0.1:5000' to become available`
 
-A bug exists in versions of the DAST API analyzer prior to v1.6.196 that can cause a background process to fail under certain conditions. The solution is to update to a newer version of the DAST API analyzer.
+A bug exists in versions of the API security testing analyzer prior to v1.6.196 that can cause a background process to fail under certain conditions. The solution is to update to a newer version of the API security testing analyzer.
 
 The version information can be found in the job details for the `dast_api` job.
 
@@ -41,7 +41,7 @@ If the issue is occurring with versions v1.6.196 or greater, contact Support and
 
 ## `Failed to start scanner session (version header not found)`
 
-The DAST API engine outputs an error message when it cannot establish a connection with the scanner application component. The error message is shown in the job output window of the `dast_api` job. A common cause of this issue is changing the `DAST_API_API` variable from its default.
+The API security testing engine outputs an error message when it cannot establish a connection with the scanner application component. The error message is shown in the job output window of the `dast_api` job. A common cause of this issue is changing the `DAST_API_API` variable from its default.
 
 **Error message**
 
@@ -49,12 +49,12 @@ The DAST API engine outputs an error message when it cannot establish a connecti
 
 **Solution**
 
-- Remove the `DAST_API_API` variable from the `.gitlab-ci.yml` file. The value inherits from the DAST API CI/CD template. We recommend this method instead of manually setting a value.
-- If removing the variable is not possible, check to see if this value has changed in the latest version of the [DAST API CI/CD template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/DAST-API.gitlab-ci.yml). If so, update the value in the `.gitlab-ci.yml` file.
+- Remove the `DAST_API_API` variable from the `.gitlab-ci.yml` file. The value inherits from the API security testing CI/CD template. We recommend this method instead of manually setting a value.
+- If removing the variable is not possible, check to see if this value has changed in the latest version of the [API security testing CI/CD template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/DAST-API.gitlab-ci.yml). If so, update the value in the `.gitlab-ci.yml` file.
 
 ## `Failed to start session with scanner. Please retry, and if the problem persists reach out to support.`
 
-The DAST API engine outputs an error message when it cannot establish a connection with the scanner application component. The error message is shown in the job output window of the `dast_api` job. A common cause for this issue is that the background component cannot use the selected port as it's already in use. This error can occur intermittently if timing plays a part (race condition). This issue occurs most often with Kubernetes environments when other services are mapped into the container causing port conflicts.
+The API security testing engine outputs an error message when it cannot establish a connection with the scanner application component. The error message is shown in the job output window of the `dast_api` job. A common cause for this issue is that the background component cannot use the selected port as it's already in use. This error can occur intermittently if timing plays a part (race condition). This issue occurs most often with Kubernetes environments when other services are mapped into the container causing port conflicts.
 
 Before proceeding with a solution, it is important to confirm that the error message was produced because the port was already taken. To confirm this was the cause:
 
@@ -91,13 +91,13 @@ Once you have confirmed the issue was produced because the port was already take
 
 ## `Application cannot determine the base URL for the target API`
 
-The DAST API engine outputs an error message when it cannot determine the target API after inspecting the OpenAPI document. This error message is shown when the target API has not been set in the `.gitlab-ci.yml` file, it is not available in the `environment_url.txt` file, and it could not be computed using the OpenAPI document.
+The API security testing engine outputs an error message when it cannot determine the target API after inspecting the OpenAPI document. This error message is shown when the target API has not been set in the `.gitlab-ci.yml` file, it is not available in the `environment_url.txt` file, and it could not be computed using the OpenAPI document.
 
-There is a order of precedence in which the DAST API engine tries to get the target API when checking the different sources. First, it tries to use the `DAST_API_TARGET_URL`. If the environment variable has not been set, then the DAST API engine attempts to use the `environment_url.txt` file. If there is no file `environment_url.txt`, then the DAST API engine uses the OpenAPI document contents and the URL provided in `DAST_API_OPENAPI` (if a URL is provided) to try to compute the target API.
+There is a order of precedence in which the API security testing engine tries to get the target API when checking the different sources. First, it tries to use the `DAST_API_TARGET_URL`. If the environment variable has not been set, then the API security testing engine attempts to use the `environment_url.txt` file. If there is no file `environment_url.txt`, then the API security testing engine uses the OpenAPI document contents and the URL provided in `DAST_API_OPENAPI` (if a URL is provided) to try to compute the target API.
 
 The best-suited solution depends on whether or not your target API changes for each deployment. In static environments, the target API is the same for each deployment, in this case refer to the [static environment solution](#static-environment-solution). If the target API changes for each deployment a [dynamic environment solution](#dynamic-environment-solutions) should be applied.
 
-## DAST API job excludes some paths from operations
+## API security testing job excludes some paths from operations
 
 If you find that some paths are being excluded from operations, ensure that the `consumes` array is defined and has a valid type in the target definition JSON file. This is required.
 
@@ -129,7 +129,7 @@ In a dynamic environment your target API changes for each different deployment. 
 
 **Use environment_url.txt**
 
-To support dynamic environments in which the target API URL changes during each pipeline, DAST API engine supports the use of an `environment_url.txt` file that contains the URL to use. This file is not checked into the repository, instead it's created during the pipeline by the job that deploys the test target and collected as an artifact that can be used by later jobs in the pipeline. The job that creates the `environment_url.txt` file must run before the DAST API engine job.
+To support dynamic environments in which the target API URL changes during each pipeline, API security testing engine supports the use of an `environment_url.txt` file that contains the URL to use. This file is not checked into the repository, instead it's created during the pipeline by the job that deploys the test target and collected as an artifact that can be used by later jobs in the pipeline. The job that creates the `environment_url.txt` file must run before the API security testing engine job.
 
 1. Modify the test target deployment job adding the base URL in an `environment_url.txt` file at the root of your project.
 1. Modify the test target deployment job collecting the `environment_url.txt` as an artifact.
@@ -150,7 +150,7 @@ deploy-test-target:
 
 ## Use OpenAPI with an invalid schema
 
-There are cases where the document is autogenerated with an invalid schema or cannot be edited manually in a timely manner. In those scenarios, the DAST API is able to perform a relaxed validation by setting the variable `DAST_API_OPENAPI_RELAXED_VALIDATION`. We recommend providing a fully compliant OpenAPI document to prevent unexpected behaviors.
+There are cases where the document is autogenerated with an invalid schema or cannot be edited manually in a timely manner. In those scenarios, the API security testing is able to perform a relaxed validation by setting the variable `DAST_API_OPENAPI_RELAXED_VALIDATION`. We recommend providing a fully compliant OpenAPI document to prevent unexpected behaviors.
 
 ### Edit a non-compliant OpenAPI file
 
@@ -167,7 +167,7 @@ If your OpenAPI document is generated manually, load your document in the editor
 
 Relaxed validation is meant for cases when the OpenAPI document cannot meet OpenAPI specifications, but it still has enough content to be consumed by different tools. A validation is performed but less strictly in regards to document schema.
 
-DAST API can still try to consume an OpenAPI document that does not fully comply with OpenAPI specifications. To instruct DAST API to perform a relaxed validation, set the variable `DAST_API_OPENAPI_RELAXED_VALIDATION` to any value, for example:
+API security testing can still try to consume an OpenAPI document that does not fully comply with OpenAPI specifications. To instruct API security testing to perform a relaxed validation, set the variable `DAST_API_OPENAPI_RELAXED_VALIDATION` to any value, for example:
 
 ```yaml
 stages:
@@ -185,7 +185,7 @@ variables:
 
 ## `No operation in the OpenAPI document is consuming any supported media type`
 
-DAST API uses the specified media types in the OpenAPI document to generate requests. If no request can be created due to the lack of supported media types, then an error is thrown.
+API security testing uses the specified media types in the OpenAPI document to generate requests. If no request can be created due to the lack of supported media types, then an error is thrown.
 
 **Error message**
 
@@ -198,8 +198,8 @@ DAST API uses the specified media types in the OpenAPI document to generate requ
 
 ## ``Error, error occurred trying to download `<URL>`: There was an error when retrieving content from Uri:' <URL>'. Error:The SSL connection could not be established, see inner exception.``
 
-DAST API is compatible with a broad range of TLS configurations, including outdated protocols and ciphers.
-Despite broad support, you might encounter connection errors. This error occurs because DAST API could not establish a secure connection with the server at the given URL.
+API security testing is compatible with a broad range of TLS configurations, including outdated protocols and ciphers.
+Despite broad support, you might encounter connection errors. This error occurs because API security testing could not establish a secure connection with the server at the given URL.
 
 To resolve the issue:
 

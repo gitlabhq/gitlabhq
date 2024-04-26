@@ -11,3 +11,4 @@ module WorkItems
     end
   end
 end
+WorkItems::Callbacks::Base.prepend_mod

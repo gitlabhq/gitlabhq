@@ -93,7 +93,7 @@ namespace :gitlab do
       cmd += '> /dev/null 2>&1' if args[:silent].present?
 
       unless system(cmd)
-        abort 'Error: Unable to build Tailwind CSS bundle.'.color(:red)
+        abort Rainbow('Error: Unable to build Tailwind CSS bundle.').red
       end
     end
 
@@ -125,7 +125,7 @@ namespace :gitlab do
         puts "You can inspect the webpack log here: #{ENV['CI_JOB_URL']}/artifacts/file/#{log_path}" if log_path && ENV['CI_JOB_URL']
 
         unless system(cmd)
-          abort 'Error: Unable to compile webpack production bundle.'.color(:red)
+          abort Rainbow('Error: Unable to compile webpack production bundle.').red
         end
 
         Gitlab::TaskHelpers.invoke_and_time_task('gitlab:assets:fix_urls')
@@ -173,14 +173,14 @@ namespace :gitlab do
     desc 'GitLab | Assets | Compile vendor assets'
     task :vendor do
       unless system('yarn webpack-vendor')
-        abort 'Error: Unable to compile webpack DLL.'.color(:red)
+        abort Rainbow('Error: Unable to compile webpack DLL.').red
       end
     end
 
     desc 'GitLab | Assets | Check that scss mixins do not introduce any sideffects'
     task :check_page_bundle_mixins_css_for_sideeffects do
       unless system('./scripts/frontend/check_page_bundle_mixins_css_for_sideeffects.js')
-        abort 'Error: At least one CSS changes introduces an unwanted sideeffect'.color(:red)
+        abort Rainbow('Error: At least one CSS changes introduces an unwanted sideeffect').red
       end
     end
   end

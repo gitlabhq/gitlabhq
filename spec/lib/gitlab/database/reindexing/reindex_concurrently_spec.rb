@@ -119,7 +119,7 @@ RSpec.describe Gitlab::Database::Reindexing::ReindexConcurrently, '#perform' do
   end
 
   def iname(name, suffix = '')
-    "#{name[0...63 - suffix.size]}#{suffix}"
+    "#{name[0...(63 - suffix.size)]}#{suffix}"
   end
 
   def expect_to_execute_in_order(*queries)

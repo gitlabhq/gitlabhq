@@ -11,13 +11,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 | CI/CD variable                                       | Description        |
 |------------------------------------------------------|--------------------|
 | `SECURE_ANALYZERS_PREFIX`                            | Specify the Docker registry base address from which to download the analyzer. |
-| `DAST_API_DISABLED`                                  | Set to 'true' or '1' to disable DAST API scanning. |
-| `DAST_API_DISABLED_FOR_DEFAULT_BRANCH`               | Set to 'true' or '1' to disable DAST API scanning for only the default (production) branch. |
-| `DAST_API_VERSION`                                   | Specify DAST API container version. Defaults to `3`. |
+| `DAST_API_DISABLED`                                  | Set to 'true' or '1' to disable API security testing scanning. |
+| `DAST_API_DISABLED_FOR_DEFAULT_BRANCH`               | Set to 'true' or '1' to disable API security testing scanning for only the default (production) branch. |
+| `DAST_API_VERSION`                                   | Specify API security testing container version. Defaults to `3`. |
 | `DAST_API_IMAGE_SUFFIX`                              | Specify a container image suffix. Defaults to none. |
-| `DAST_API_API_PORT`                                  | Specify the communication port number used by DAST API engine. Defaults to `5500`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367734) in GitLab 15.5. |
+| `DAST_API_API_PORT`                                  | Specify the communication port number used by API security testing engine. Defaults to `5500`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367734) in GitLab 15.5. |
 | `DAST_API_TARGET_URL`                                 | Base URL of API testing target. |
-|[`DAST_API_CONFIG`](#configuration-files)              | DAST API configuration file. Defaults to `.gitlab-dast-api.yml`. |
+|[`DAST_API_CONFIG`](#configuration-files)              | API security testing configuration file. Defaults to `.gitlab-dast-api.yml`. |
 |[`DAST_API_PROFILE`](#configuration-files)             | Configuration profile to use during testing. Defaults to `Quick`. |
 |[`DAST_API_EXCLUDE_PATHS`](customizing_analyzer_settings.md#exclude-paths)              | Exclude API URL paths from testing. |
 |[`DAST_API_EXCLUDE_URLS`](customizing_analyzer_settings.md#exclude-urls)               | Exclude API URL from testing. |

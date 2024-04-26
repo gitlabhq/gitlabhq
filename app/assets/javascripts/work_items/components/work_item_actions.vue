@@ -22,6 +22,7 @@ import {
   sprintfWorkItem,
   I18N_WORK_ITEM_DELETE,
   I18N_WORK_ITEM_ARE_YOU_SURE_DELETE,
+  I18N_WORK_ITEM_ARE_YOU_SURE_DELETE_HIERARCHY,
   TEST_ID_CONFIDENTIALITY_TOGGLE_ACTION,
   TEST_ID_NOTIFICATIONS_TOGGLE_FORM,
   TEST_ID_DELETE_ACTION,
@@ -157,6 +158,11 @@ export default {
       required: false,
       default: false,
     },
+    hasChildren: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -184,7 +190,6 @@ export default {
     i18n() {
       return {
         deleteWorkItem: sprintfWorkItem(I18N_WORK_ITEM_DELETE, this.workItemType),
-        areYouSureDelete: sprintfWorkItem(I18N_WORK_ITEM_ARE_YOU_SURE_DELETE, this.workItemType),
         convertError: sprintfWorkItem(I18N_WORK_ITEM_ERROR_CONVERTING, this.workItemType),
         copyCreateNoteEmail: sprintfWorkItem(
           I18N_WORK_ITEM_COPY_CREATE_NOTE_EMAIL,
@@ -196,6 +201,11 @@ export default {
           this.workItemType,
         ),
       };
+    },
+    areYouSureDeleteMessage() {
+      return this.hasChildren
+        ? sprintfWorkItem(I18N_WORK_ITEM_ARE_YOU_SURE_DELETE_HIERARCHY, this.workItemType)
+        : sprintfWorkItem(I18N_WORK_ITEM_ARE_YOU_SURE_DELETE, this.workItemType);
     },
     canLockWorkItem() {
       return this.canUpdate && this.glFeatures.workItemsBeta;
@@ -463,7 +473,7 @@ export default {
       @ok="handleDeleteWorkItem"
       @hide="handleCancelDeleteWorkItem"
     >
-      {{ i18n.areYouSureDelete }}
+      {{ areYouSureDeleteMessage }}
     </gl-modal>
   </div>
 </template>

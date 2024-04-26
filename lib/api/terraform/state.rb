@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_dependency 'api/validations/validators/limit'
-
 module API
   module Terraform
     class State < ::API::Base

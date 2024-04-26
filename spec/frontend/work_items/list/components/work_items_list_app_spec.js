@@ -1,4 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
+import { cloneDeep } from 'lodash';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
@@ -66,6 +67,17 @@ describe('WorkItemsListApp component', () => {
       showWorkItemTypeIcon: true,
       sortOptions,
       tabs: WorkItemsListApp.issuableListTabs,
+    });
+  });
+
+  it('renders tab counts', async () => {
+    mountComponent();
+    await waitForPromises();
+
+    expect(cloneDeep(findIssuableList().props('tabCounts'))).toEqual({
+      all: 3,
+      closed: 1,
+      opened: 2,
     });
   });
 

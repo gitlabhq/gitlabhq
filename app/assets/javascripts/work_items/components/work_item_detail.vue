@@ -233,6 +233,9 @@ export default {
     children() {
       return this.workItem ? findHierarchyWidgetChildren(this.workItem) : [];
     },
+    hasChildren() {
+      return !isEmpty(this.children);
+    },
     workItemBodyClass() {
       return {
         'gl-pt-5': !this.updateError && !this.isModal,
@@ -500,6 +503,7 @@ export default {
               :work-item-create-note-email="workItem.createNoteEmail"
               :is-modal="isModal"
               :work-item-state="workItem.state"
+              :has-children="hasChildren"
               @deleteWorkItem="$emit('deleteWorkItem', { workItemType, workItemId: workItem.id })"
               @toggleWorkItemConfidentiality="toggleConfidentiality"
               @error="updateError = $event"

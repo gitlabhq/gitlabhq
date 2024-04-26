@@ -120,6 +120,7 @@ describe('WorkItemActions component', () => {
     workItemReference = mockWorkItemReference,
     workItemCreateNoteEmail = mockWorkItemCreateNoteEmail,
     hideSubscribe = undefined,
+    hasChildren = false,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemActions, {
       isLoggedIn: isLoggedIn(),
@@ -136,6 +137,7 @@ describe('WorkItemActions component', () => {
         workItemState: STATE_OPEN,
         fullPath: 'gitlab-org/gitlab-test',
         workItemId: 'gid://gitlab/WorkItem/1',
+        workItemIid: '1',
         canUpdate,
         canDelete,
         isConfidential,
@@ -146,6 +148,7 @@ describe('WorkItemActions component', () => {
         workItemReference,
         workItemCreateNoteEmail,
         hideSubscribe,
+        hasChildren,
       },
       provide: {
         isGroup: false,
@@ -310,12 +313,25 @@ describe('WorkItemActions component', () => {
   });
 
   describe('delete action', () => {
-    it('shows confirm modal when clicked', () => {
+    it('shows confirm modal with delete confirmation message when clicked', () => {
       createComponent();
 
       findDeleteButton().vm.$emit('action');
 
       expect(modalShowSpy).toHaveBeenCalled();
+      expect(findModal().text()).toBe(
+        'Are you sure you want to delete the task? This action cannot be reversed.',
+      );
+    });
+
+    it('shows confirm modal with delete hierarchy confirmation message when clicked', () => {
+      createComponent({ hasChildren: true });
+
+      findDeleteButton().vm.$emit('action');
+
+      expect(findModal().text()).toBe(
+        'Delete this task and release all child items? This action cannot be reversed.',
+      );
     });
 
     it('emits event when clicking OK button', () => {

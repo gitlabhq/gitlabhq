@@ -1,11 +1,11 @@
 ---
 key_path: counts_weekly.aggregated_metrics.xmau_plan
-description: Unique users interacting with Plan features
+description: Removed as duplicate was counts_weekly.aggregated_metrics.users_work_items
 product_section: dev
 product_stage: plan
 product_group: project_management
 value_type: number
-status: active
+status: removed
 milestone: '14.9'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81336
 instrumentation_class: RedisHLLMetric
@@ -36,3 +36,5 @@ tier:
 - free
 - premium
 - ultimate
+milestone_removed: '17.0'
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150643

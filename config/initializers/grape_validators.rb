@@ -14,3 +14,4 @@ Grape::Validations.register_validator(:project_portable, ::API::Validations::Val
 Grape::Validations.register_validator(:destination_namespace_path, ::API::Validations::Validators::BulkImports::DestinationNamespacePath) # rubocop: disable Layout/LineLength
 Grape::Validations.register_validator(:destination_slug_path, ::API::Validations::Validators::BulkImports::DestinationSlugPath) # rubocop: disable Layout/LineLength
 Grape::Validations.register_validator(:source_full_path, ::API::Validations::Validators::BulkImports::SourceFullPath)
+Grape::Validations.register_validator(:limit, ::API::Validations::Validators::Limit)

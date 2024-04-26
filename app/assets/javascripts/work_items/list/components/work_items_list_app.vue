@@ -2,7 +2,7 @@
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import IssueCardStatistics from 'ee_else_ce/issues/list/components/issue_card_statistics.vue';
 import IssueCardTimeInfo from 'ee_else_ce/issues/list/components/issue_card_time_info.vue';
-import { STATUS_OPEN } from '~/issues/constants';
+import { STATUS_ALL, STATUS_CLOSED, STATUS_OPEN } from '~/issues/constants';
 import setSortPreferenceMutation from '~/issues/list/queries/set_sort_preference.mutation.graphql';
 import { deriveSortKey } from '~/issues/list/utils';
 import { __, s__ } from '~/locale';
@@ -27,6 +27,7 @@ export default {
       searchTokens: [],
       sortKey: deriveSortKey({ sort: this.initialSort, sortMap: urlSortParams }),
       state: STATUS_OPEN,
+      tabCounts: {},
       workItems: [],
     };
   },
@@ -42,6 +43,14 @@ export default {
       },
       update(data) {
         return data.group.workItems.nodes ?? [];
+      },
+      result({ data }) {
+        const { all, closed, opened } = data?.group.workItemStateCounts ?? {};
+        this.tabCounts = {
+          [STATUS_OPEN]: opened,
+          [STATUS_CLOSED]: closed,
+          [STATUS_ALL]: all,
+        };
       },
       error(error) {
         this.error = s__(
@@ -104,6 +113,7 @@ export default {
     :search-tokens="searchTokens"
     show-work-item-type-icon
     :sort-options="$options.sortOptions"
+    :tab-counts="tabCounts"
     :tabs="$options.issuableListTabs"
     @click-tab="handleClickTab"
     @dismiss-alert="error = undefined"

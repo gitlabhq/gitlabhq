@@ -100,7 +100,7 @@ describe('DeleteIssueModal component', () => {
       it('renders', () => {
         wrapper = mountComponent({ issueType: 'epic' });
 
-        expect(findForm().text()).toBe('Delete this epic and all descendants?');
+        expect(findForm().text()).toBe('Delete this epic and release all child items?');
       });
     });
   });

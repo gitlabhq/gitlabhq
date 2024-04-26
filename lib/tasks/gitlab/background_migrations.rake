@@ -7,7 +7,7 @@ namespace :gitlab do
     desc 'Synchronously finish executing a batched background migration'
     task :finalize, [:job_class_name, :table_name, :column_name, :job_arguments] => :environment do |_, args|
       if Gitlab::Database.db_config_names(with_schema: :gitlab_shared).size > 1
-        puts "Please specify the database".color(:red)
+        puts Rainbow("Please specify the database").red
         exit 1
       end
 
@@ -77,7 +77,7 @@ namespace :gitlab do
         connection: connection
       )
 
-      puts "Done.".color(:green)
+      puts Rainbow("Done.").green
     end
 
     def display_migration_status(database_name, connection)
@@ -104,7 +104,7 @@ namespace :gitlab do
     def validate_finalization_arguments!(args)
       [:job_class_name, :table_name, :column_name, :job_arguments].each do |argument|
         unless args[argument]
-          puts "Must specify #{argument} as an argument".color(:red)
+          puts Rainbow("Must specify #{argument} as an argument").red
           exit 1
         end
       end

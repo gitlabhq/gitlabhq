@@ -68,7 +68,7 @@ module Tasks
           yield
         ensure
           backup_progress.puts(
-            "#{Time.current} " + '-- Deleting backup and restore PID file ... '.color(:blue) + 'done'.color(:green)
+            "#{Time.current} #{Rainbow('-- Deleting backup and restore PID file ...').blue} #{Rainbow('done').green}"
           )
           File.delete(PID_FILE)
         end
@@ -77,7 +77,7 @@ module Tasks
       def self.read_pid(file_content)
         Process.getpgid(file_content.to_i)
 
-        backup_progress.puts(<<~MESSAGE.color(:red))
+        backup_progress.puts(Rainbow(<<~MESSAGE).red)
           Backup and restore in progress:
             There is a backup and restore task in progress (PID #{file_content}).
             Try to run the current task once the previous one ends.
@@ -85,7 +85,7 @@ module Tasks
 
         exit 1
       rescue Errno::ESRCH
-        backup_progress.puts(<<~MESSAGE.color(:blue))
+        backup_progress.puts(Rainbow(<<~MESSAGE).blue)
           The PID file #{PID_FILE} exists and contains #{file_content}, but the process is not running.
           The PID file will be rewritten with the current process ID #{PID}.
         MESSAGE

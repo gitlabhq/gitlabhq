@@ -3,6 +3,11 @@
 query getWorkItems($fullPath: ID!, $sort: WorkItemSort, $state: IssuableState) {
   group(fullPath: $fullPath) {
     id
+    workItemStateCounts(sort: $sort, state: $state, types: EPIC) {
+      all
+      closed
+      opened
+    }
     workItems(sort: $sort, state: $state, types: EPIC) {
       nodes {
         id

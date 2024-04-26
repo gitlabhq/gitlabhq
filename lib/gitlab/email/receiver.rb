@@ -50,6 +50,7 @@ module Gitlab
           delivered_to: delivered_to.map(&:value),
           envelope_to: envelope_to.map(&:value),
           x_envelope_to: x_envelope_to.map(&:value),
+          x_original_to: x_original_to.map(&:value),
           cc_address: cc,
           # reduced down to what looks like an email in the received headers
           received_recipients: recipients_from_received_headers,
@@ -112,6 +113,7 @@ module Gitlab
           find_first_key_from(envelope_to) ||
           find_first_key_from(x_envelope_to) ||
           find_first_key_from(recipients_from_received_headers) ||
+          find_first_key_from(x_original_to) ||
           find_first_key_from(cc)
       end
 
@@ -161,6 +163,10 @@ module Gitlab
 
       def received
         Array(mail[:received])
+      end
+
+      def x_original_to
+        Array(mail[:x_original_to])
       end
 
       def recipients_from_received_headers

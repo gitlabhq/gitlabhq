@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Performance tuning and testing speed
 
-Security tools that perform dynamic analysis testing, such as DAST API, perform testing by sending requests to an instance of your running application. The requests are engineered to test for specific vulnerabilities that might exist in your application. The speed of a dynamic analysis test depends on the following:
+Security tools that perform dynamic analysis testing, such as API security testing, perform testing by sending requests to an instance of your running application. The requests are engineered to test for specific vulnerabilities that might exist in your application. The speed of a dynamic analysis test depends on the following:
 
 - How many requests per second can be sent to your application by our tooling
 - How fast your application responds to requests
@@ -14,13 +14,13 @@ Security tools that perform dynamic analysis testing, such as DAST API, perform 
   - How many operations your API is comprised of
   - How many fields are in each operation (think JSON bodies, headers, query string, cookies, etc.)
 
-If the DAST API testing job still takes longer than expected reach after following the advice in this performance guide, reach out to support for further assistance.
+If the API security testing job still takes longer than expected reach after following the advice in this performance guide, reach out to support for further assistance.
 
 ## Diagnosing performance issues
 
 The first step to resolving performance issues is to understand what is contributing to the slower-than-expected testing time. Some common issues we see are:
 
-- DAST API is running on a low-vCPU runner
+- API security testing is running on a low-vCPU runner
 - The application deployed to a slow/single-CPU instance and is not able to keep up with the testing load
 - The application contains a slow operation that impacts the overall test speed (> 1/2 second)
 - The application contains an operation that returns a large amount of data (> 500K+)
@@ -28,7 +28,7 @@ The first step to resolving performance issues is to understand what is contribu
 
 ### The application contains a slow operation that impacts the overall test speed (> 1/2 second)
 
-The DAST API job output contains helpful information about how fast we are testing, how fast each operation being tested responds, and summary information. Let's take a look at some sample output to see how it can be used in tracking down performance issues:
+The API security testing job output contains helpful information about how fast we are testing, how fast each operation being tested responds, and summary information. Let's take a look at some sample output to see how it can be used in tracking down performance issues:
 
 ```shell
 DAST API: Loaded 10 operations from: assets/har-large-response/large_responses.har
@@ -45,22 +45,22 @@ DAST API:  - Average call time: 2 seconds and 82.69 milliseconds (2.082693 secon
 DAST API:  - Time to complete: 14 minutes, 8 seconds and 788.36 milliseconds (848.788358 seconds)
 ```
 
-This job console output snippet starts by telling us how many operations were found (10), followed by notifications that testing has started on a specific operation and a summary of the operation has been completed. The summary is the most interesting part of this log output. In the summary, we can see that it took DAST API 767 requests to fully test this operation and its related fields. We can also see that the average response time was 2 seconds and the time to complete was 14 minutes for this one operation.
+This job console output snippet starts by telling us how many operations were found (10), followed by notifications that testing has started on a specific operation and a summary of the operation has been completed. The summary is the most interesting part of this log output. In the summary, we can see that it took API security testing 767 requests to fully test this operation and its related fields. We can also see that the average response time was 2 seconds and the time to complete was 14 minutes for this one operation.
 
 An average response time of 2 seconds is a good initial indicator that this specific operation takes a long time to test. Further, we can see that the response body size is quite large. The large body size is the culprit here, transferring that much data on each request is what takes the majority of that 2 seconds.
 
 For this issue, the team might decide to:
 
-- Use a runner with more vCPUs, as this allows DAST API to parallelize the work being performed. This helps lower the test time, but getting the test down under 10 minutes might still be problematic without moving to a high CPU machine due to how long the operation takes to test. While larger runners are more costly, you also pay for less minutes if the job executions are quicker.
-- [Exclude this operation](#excluding-slow-operations) from the DAST API test. While this is the simplest, it has the downside of a gap in security test coverage.
-- [Exclude the operation from feature branch DAST API tests, but include it in the default branch test](#excluding-operations-in-feature-branches-but-not-default-branch).
-- [Split up the DAST API testing into multiple jobs](#splitting-a-test-into-multiple-jobs).
+- Use a runner with more vCPUs, as this allows API security testing to parallelize the work being performed. This helps lower the test time, but getting the test down under 10 minutes might still be problematic without moving to a high CPU machine due to how long the operation takes to test. While larger runners are more costly, you also pay for less minutes if the job executions are quicker.
+- [Exclude this operation](#excluding-slow-operations) from API security testing. While this is the simplest, it has the downside of a gap in security test coverage.
+- [Exclude the operation from feature branch API security testing, but include it in the default branch test](#excluding-operations-in-feature-branches-but-not-default-branch).
+- [Split up API security testing into multiple jobs](#splitting-a-test-into-multiple-jobs).
 
 The likely solution is to use a combination of these solutions to reach an acceptable test time, assuming your team's requirements are in the 5-7 minute range.
 
 ## Addressing performance issues
 
-The following sections document various options for addressing performance issues for DAST API:
+The following sections document various options for addressing performance issues for API security testing:
 
 - [Using a larger runner](#using-a-larger-runner)
 - [Excluding slow operations](#excluding-slow-operations)
@@ -69,7 +69,7 @@ The following sections document various options for addressing performance issue
 
 ### Using a larger runner
 
-One of the easiest performance boosts can be achieved using a [larger runner](../../../ci/runners/hosted_runners/linux.md#machine-types-available-for-linux-x86-64) with DAST API. This table shows statistics collected during benchmarking of a Java Spring Boot REST API. In this benchmark, the target and DAST API share a single runner instance.
+One of the easiest performance boosts can be achieved using a [larger runner](../../../ci/runners/hosted_runners/linux.md#machine-types-available-for-linux-x86-64) with API security testing. This table shows statistics collected during benchmarking of a Java Spring Boot REST API. In this benchmark, the target and API security testing share a single runner instance.
 
 | Hosted runner on Linux tag           | Requests per Second |
 |------------------------------------|-----------|
@@ -78,7 +78,7 @@ One of the easiest performance boosts can be achieved using a [larger runner](..
 
 As we can see from this table, increasing the size of the runner and vCPU count can have a large impact on testing speed/performance.
 
-Here is an example job definition for DAST API that adds a `tags` section to use the medium SaaS runner on Linux. The job extends the job definition included through the DAST API template.
+Here is an example job definition for API security testing that adds a `tags` section to use the medium SaaS runner on Linux. The job extends the job definition included through the API security testing template.
 
 ```yaml
 dast_api:
@@ -98,7 +98,7 @@ In the case of one or two slow operations, the team might decide to skip testing
 
 In this example, we have an operation that returns a large amount of data. The operation is `GET http://target:7777/api/large_response_json`. To exclude it we provide the `DAST_API_EXCLUDE_PATHS` configuration variable with the path portion of our operation URL `/api/large_response_json`.
 
-To verify the operation is excluded, run the DAST API job and review the job console output. It includes a list of included and excluded operations at the end of the test.
+To verify the operation is excluded, run the API security testing job and review the job console output. It includes a list of included and excluded operations at the end of the test.
 
 ```yaml
 dast_api:
@@ -111,9 +111,9 @@ Excluding operations from testing could allow some vulnerabilities to go undetec
 
 ### Splitting a test into multiple jobs
 
-Splitting a test into multiple jobs is supported by DAST API through the use of [`DAST_API_EXCLUDE_PATHS`](configuration/customizing_analyzer_settings.md#exclude-paths) and [`DAST_API_EXCLUDE_URLS`](configuration/customizing_analyzer_settings.md#exclude-urls). When splitting a test up, a good pattern is to disable the `dast_api` job and replace it with two jobs with identifying names. In this example we have two jobs, each job is testing a version of the API, so our names reflect that. However, this technique can be applied to any situation, not just with versions of an API.
+Splitting a test into multiple jobs is supported by API security testing through the use of [`DAST_API_EXCLUDE_PATHS`](configuration/customizing_analyzer_settings.md#exclude-paths) and [`DAST_API_EXCLUDE_URLS`](configuration/customizing_analyzer_settings.md#exclude-urls). When splitting a test up, a good pattern is to disable the `dast_api` job and replace it with two jobs with identifying names. In this example we have two jobs, each job is testing a version of the API, so our names reflect that. However, this technique can be applied to any situation, not just with versions of an API.
 
-The rules we are using in the `dast_api_v1` and `dast_api_v2` jobs are copied from the [DAST API template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/DAST-API.gitlab-ci.yml).
+The rules we are using in the `dast_api_v1` and `dast_api_v2` jobs are copied from the [API security testing template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/DAST-API.gitlab-ci.yml).
 
 ```yaml
 # Disable the main dast_api job
@@ -166,7 +166,7 @@ In the case of one or two slow operations, the team might decide to skip testing
 
 In this example, we have an operation that returns a large amount of data. The operation is `GET http://target:7777/api/large_response_json`. To exclude it we provide the `DAST_API_EXCLUDE_PATHS` configuration variable with the path portion of our operation URL `/api/large_response_json`. Our configuration disables the main `dast_api` job and creates two new jobs `dast_api_main` and `dast_api_branch`. The `dast_api_branch` is set up to exclude the long operation and only run on non-default branches (for example, feature branches). The `dast_api_main` branch is set up to only execute on the default branch (`main` in this example). The `dast_api_branch` jobs run faster, allowing for quick development cycles, while the `dast_api_main` job which only runs on default branch builds, takes longer to run.
 
-To verify the operation is excluded, run the DAST API job and review the job console output. It includes a list of included and excluded operations at the end of the test.
+To verify the operation is excluded, run the API security testing job and review the job console output. It includes a list of included and excluded operations at the end of the test.
 
 ```yaml
 # Disable the main job so we can create two jobs with
@@ -176,7 +176,7 @@ dast_api:
   - if: $CI_COMMIT_BRANCH
     when: never
 
-# DAST API for feature branch work, excludes /api/large_response_json
+# API security testing for feature branch work, excludes /api/large_response_json
 dast_api_branch:
   extends: dast_api
   variables:
@@ -198,7 +198,7 @@ dast_api_branch:
     when: never
   - if: $CI_COMMIT_BRANCH
 
-# DAST API for default branch (main in our case)
+# API security testing for default branch (main in our case)
 # Includes the long running operations
 dast_api_main:
   extends: dast_api

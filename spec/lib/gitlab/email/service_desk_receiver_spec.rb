@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Email::ServiceDeskReceiver do
+RSpec.describe Gitlab::Email::ServiceDeskReceiver, feature_category: :service_desk do
   let(:email) { fixture_file('emails/service_desk_custom_address.eml') }
   let(:receiver) { described_class.new(email) }
 
@@ -31,6 +31,8 @@ RSpec.describe Gitlab::Email::ServiceDeskReceiver do
     end
 
     context 'when the email contains a valid email address in a header' do
+      let(:service_desk_email) { "support+project_slug-project_key@example.com" }
+
       context 'when in a Delivered-To header' do
         let(:email) { fixture_file('emails/service_desk_custom_address_reply.eml') }
 
@@ -49,12 +51,27 @@ RSpec.describe Gitlab::Email::ServiceDeskReceiver do
         it_behaves_like 'received successfully'
       end
 
+      context 'when in a X-Original-To header' do
+        let(:email) do
+          <<~EMAIL
+          From: from@example.com
+          To: to@example.com
+          X-Original-To: #{service_desk_email}
+          Subject: Issue titile
+
+          Issue description
+          EMAIL
+        end
+
+        it_behaves_like 'received successfully'
+      end
+
       context 'when in a Cc header' do
         let(:email) do
           <<~EMAIL
           From: from@example.com
           To: to@example.com
-          Cc: support+project_slug-project_key@example.com
+          Cc: #{service_desk_email}
           Subject: Issue titile
 
           Issue description

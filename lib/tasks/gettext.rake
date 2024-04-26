@@ -12,7 +12,7 @@ namespace :gettext do
       "--output-dir", Rails.root.join('app/assets/javascripts/locale').to_s
     ]
 
-    abort 'Error: Unable to convert gettext files to js.'.color(:red) unless Kernel.system(*command)
+    abort Rainbow('Error: Unable to convert gettext files to js.').red unless Kernel.system(*command)
   end
 
   desc 'Regenerate gitlab.pot file'

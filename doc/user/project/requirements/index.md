@@ -213,6 +213,14 @@ requirements_confirmation:
       requirements: tmp/requirements.json
 ```
 
+Because requirements and [test cases](../../../ci/test_cases/index.md) are being
+[migrated to work items](https://gitlab.com/groups/gitlab-org/-/epics/5171), if you have enabled work items
+in a project, you must replace `requirements` in above configs with `requirements_v2`:
+
+```yaml
+      requirements_v2: tmp/requirements.json
+```
+
 ## Import requirements from a CSV file
 
 You must have at least the Reporter role.

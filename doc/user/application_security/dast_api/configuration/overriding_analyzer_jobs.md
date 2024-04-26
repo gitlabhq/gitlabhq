@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference, howto
 ---
 
-# Overriding DAST API jobs
+# Overriding API security testing jobs
 
 To override a job definition, (for example, change properties like `variables`, `dependencies`, or [`rules`](../../../../ci/yaml/index.md#rules)),
 declare a job with the same name as the DAST job to override. Place this new job after the template

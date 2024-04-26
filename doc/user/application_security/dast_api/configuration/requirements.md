@@ -33,7 +33,7 @@ type: reference, howto
 ## Recommendations
 
 - Configure runners to use the [always pull policy](https://docs.gitlab.com/runner/executors/docker.html#using-the-always-pull-policy) to run the latest versions of the analyzers.
-- By default, DAST API downloads all artifacts defined by previous jobs in the pipeline. If
+- By default, API security testing downloads all artifacts defined by previous jobs in the pipeline. If
   your DAST job does not rely on `environment_url.txt` to define the URL under test or any other files created
   in previous jobs, we recommend you don't download artifacts. To avoid downloading
   artifacts, extend the analyzer CI/CD job to specify no dependencies. For example, for the DAST proxy-based analyzer add the following to your `.gitlab-ci.yml` file:
@@ -45,10 +45,10 @@ type: reference, howto
 
 ## Application deployment options
 
-DAST API requires a deployed application to be available to scan.
+API security testing requires a deployed application to be available to scan.
 
 Depending on the complexity of the target application, there are a few options as to how to deploy and configure
-the DAST API template.
+the API security testing template.
 
 ### Review Apps
 

@@ -146,7 +146,7 @@ module Gitlab
             if finished_at
               job_finished_at = Random.rand(job_started_at..finished_at)
             elsif job_status == 'running'
-              job_finished_at = job_started_at + Random.rand(1 * 60..PIPELINE_FINISH_RANGE_MAX_IN_SECONDS)
+              job_finished_at = job_started_at + Random.rand((1 * 60)..PIPELINE_FINISH_RANGE_MAX_IN_SECONDS)
             end
 
             # Do not use the first 2 runner tags ('runner-fleet', "#{registration_prefix}runner").

@@ -12,6 +12,8 @@ RSpec.describe 'Database::WithoutCheckConstraint' do
     let(:model) { table(table_name) }
 
     before do
+      connection.schema_cache.clear!
+
       # Drop test table in case it's left from a previous execution.
       connection.exec_query("DROP TABLE IF EXISTS #{table_name}")
       # Model has an attribute called 'name' that can't be NULL.

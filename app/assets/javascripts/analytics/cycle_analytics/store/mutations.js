@@ -1,4 +1,3 @@
-import Vue from 'vue';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { formatMedianValues } from '../utils';
 import { PAGINATION_SORT_DIRECTION_DESC, PAGINATION_SORT_FIELD_DURATION } from '../constants';
@@ -15,11 +14,11 @@ export default {
     state.createdAfter = createdAfter;
     state.features = features;
 
-    Vue.set(state, 'pagination', {
+    state.pagination = {
       page: pagination.page ?? state.pagination.page,
       sort: pagination.sort ?? state.pagination.sort,
       direction: pagination.direction ?? state.pagination.direction,
-    });
+    };
   },
   [types.SET_LOADING](state, loadingState) {
     state.isLoading = loadingState;
@@ -38,12 +37,12 @@ export default {
     state.predefinedDateRange = predefinedDateRange;
   },
   [types.SET_PAGINATION](state, { page, hasNextPage, sort, direction }) {
-    Vue.set(state, 'pagination', {
+    state.pagination = {
       page,
       hasNextPage,
       sort: sort || PAGINATION_SORT_FIELD_DURATION,
       direction: direction || PAGINATION_SORT_DIRECTION_DESC,
-    });
+    };
   },
   [types.SET_NO_ACCESS_ERROR](state) {
     state.hasNoAccessError = true;

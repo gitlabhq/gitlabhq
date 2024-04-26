@@ -1,20 +1,20 @@
 # frozen_string_literal: true
 
 RSpec.shared_context 'GroupPolicy context' do
-  let_it_be(:guest) { create(:user) }
-  let_it_be(:reporter) { create(:user) }
-  let_it_be(:developer) { create(:user) }
-  let_it_be(:maintainer) { create(:user) }
-  let_it_be(:owner) { create(:user) }
-  let_it_be(:admin) { create(:admin, :without_default_org) }
-  let_it_be(:non_group_member) { create(:user) }
-
   let_it_be(:organization) { create(:organization) }
-  let_it_be(:organization_owner) { create(:organization_user, :owner, organization: organization).user }
-
   let_it_be(:group, refind: true) do
     create(:group, :private, :owner_subgroup_creation_only, organization: organization)
   end
+
+  let_it_be(:guest) { create(:user, guest_of: group) }
+  let_it_be(:reporter) { create(:user, reporter_of: group) }
+  let_it_be(:developer) { create(:user, developer_of: group) }
+  let_it_be(:maintainer) { create(:user, maintainer_of: group) }
+  let_it_be(:owner) { create(:user, owner_of: group) }
+  let_it_be(:admin) { create(:admin, :without_default_org) }
+  let_it_be(:non_group_member) { create(:user) }
+
+  let_it_be(:organization_owner) { create(:organization_user, :owner, organization: organization).user }
 
   let(:public_permissions) do
     %i[
@@ -92,14 +92,6 @@ RSpec.shared_context 'GroupPolicy context' do
   end
 
   let(:admin_permissions) { %i[read_confidential_issues read_internal_note] }
-
-  before_all do
-    group.add_guest(guest)
-    group.add_reporter(reporter)
-    group.add_developer(developer)
-    group.add_maintainer(maintainer)
-    group.add_owner(owner)
-  end
 
   subject { described_class.new(current_user, group) }
 end

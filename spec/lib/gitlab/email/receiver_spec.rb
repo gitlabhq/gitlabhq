@@ -33,7 +33,7 @@ RSpec.describe Gitlab::Email::Receiver, feature_category: :shared do
 
       metadata = receiver.mail_metadata
 
-      expect(metadata.keys).to match_array(%i[mail_uid from_address to_address mail_key references delivered_to envelope_to x_envelope_to meta received_recipients cc_address])
+      expect(metadata.keys).to match_array(%i[mail_uid from_address to_address mail_key references delivered_to envelope_to x_envelope_to meta received_recipients cc_address x_original_to])
       expect(metadata[:meta]).to include(client_id: client_id, project: project.full_path)
       expect(metadata[meta_key]).to eq(meta_value)
     end
@@ -57,6 +57,9 @@ RSpec.describe Gitlab::Email::Receiver, feature_category: :shared do
   end
 
   context 'when the email contains a valid email address in a header' do
+    let(:incoming_email) { "incoming+gitlabhq/gitlabhq+auth_token@appmail.example.com" }
+    let(:meta_value) { [incoming_email] }
+
     before do
       stub_incoming_email_setting(enabled: true, address: "incoming+%{key}@appmail.example.com")
     end
@@ -64,7 +67,7 @@ RSpec.describe Gitlab::Email::Receiver, feature_category: :shared do
     context 'when in a Delivered-To header' do
       let(:email_raw) { fixture_file('emails/forwarded_new_issue.eml') }
       let(:meta_key) { :delivered_to }
-      let(:meta_value) { ["incoming+gitlabhq/gitlabhq+auth_token@appmail.example.com", "support@example.com"] }
+      let(:meta_value) { [incoming_email, "support@example.com"] }
 
       it_behaves_like 'successful receive'
     end
@@ -72,7 +75,6 @@ RSpec.describe Gitlab::Email::Receiver, feature_category: :shared do
     context 'when in an Envelope-To header' do
       let(:email_raw) { fixture_file('emails/envelope_to_header.eml') }
       let(:meta_key) { :envelope_to }
-      let(:meta_value) { ["incoming+gitlabhq/gitlabhq+auth_token@appmail.example.com"] }
 
       it_behaves_like 'successful receive'
     end
@@ -80,7 +82,6 @@ RSpec.describe Gitlab::Email::Receiver, feature_category: :shared do
     context 'when in an X-Envelope-To header' do
       let(:email_raw) { fixture_file('emails/x_envelope_to_header.eml') }
       let(:meta_key) { :x_envelope_to }
-      let(:meta_value) { ["incoming+gitlabhq/gitlabhq+auth_token@appmail.example.com"] }
 
       it_behaves_like 'successful receive'
     end
@@ -88,7 +89,7 @@ RSpec.describe Gitlab::Email::Receiver, feature_category: :shared do
     context 'when enclosed with angle brackets in an Envelope-To header' do
       let(:email_raw) { fixture_file('emails/envelope_to_header_with_angle_brackets.eml') }
       let(:meta_key) { :envelope_to }
-      let(:meta_value) { ["<incoming+gitlabhq/gitlabhq+auth_token@appmail.example.com>"] }
+      let(:meta_value) { ["<#{incoming_email}>"] }
 
       it_behaves_like 'successful receive'
     end
@@ -106,7 +107,7 @@ RSpec.describe Gitlab::Email::Receiver, feature_category: :shared do
     context 'when all other headers are missing' do
       let(:email_raw) { fixture_file('emails/missing_delivered_to_header.eml') }
       let(:meta_key) { :received_recipients }
-      let(:meta_value) { ['incoming+gitlabhq/gitlabhq+auth_token@appmail.example.com', 'incoming+gitlabhq/gitlabhq@example.com'] }
+      let(:meta_value) { [incoming_email, 'incoming+gitlabhq/gitlabhq@example.com'] }
 
       describe 'it uses receive headers to find the key' do
         it_behaves_like 'successful receive'
@@ -118,7 +119,7 @@ RSpec.describe Gitlab::Email::Receiver, feature_category: :shared do
         <<~EMAIL
         From: jake@example.com
         To: to@example.com
-        Cc: incoming+gitlabhq/gitlabhq+auth_token@appmail.example.com
+        Cc: #{incoming_email}
         Subject: Issue titile
 
         Issue description
@@ -126,7 +127,23 @@ RSpec.describe Gitlab::Email::Receiver, feature_category: :shared do
       end
 
       let(:meta_key) { :cc_address }
-      let(:meta_value) { ["incoming+gitlabhq/gitlabhq+auth_token@appmail.example.com"] }
+
+      it_behaves_like 'successful receive'
+    end
+
+    context 'when in a X-Original-To header' do
+      let(:email_raw) do
+        <<~EMAIL
+        From: jake@example.com
+        To: to@example.com
+        X-Original-To: #{incoming_email}
+        Subject: Issue titile
+
+        Issue description
+        EMAIL
+      end
+
+      let(:meta_key) { :x_original_to }
 
       it_behaves_like 'successful receive'
     end

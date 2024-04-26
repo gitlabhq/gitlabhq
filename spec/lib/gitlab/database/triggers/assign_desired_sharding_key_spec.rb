@@ -21,6 +21,10 @@ RSpec.describe Gitlab::Database::Triggers::AssignDesiredShardingKey, feature_cat
     }
   end
 
+  before do
+    connection.schema_cache.clear!
+  end
+
   describe '#create' do
     let(:model) { Class.new(ActiveRecord::Base) }
 

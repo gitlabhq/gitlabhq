@@ -4,13 +4,15 @@ group: Dynamic Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# DAST API vulnerability checks
+# API security testing vulnerability checks
 
 DETAILS:
 **Tier:** Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-[DAST API](../index.md) provides vulnerability checks that are used to
+> - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/457449) from **DAST API vulnerability checks** to **API security testing vulnerability checks** in GitLab 17.0.
+
+[API security testing](../index.md) provides vulnerability checks that are used to
 scan for vulnerabilities in the API under test.
 
 ## Passive checks
@@ -45,7 +47,7 @@ scan for vulnerabilities in the API under test.
 | [XML external entity](xml_external_entity.md)                                | High     | Active  | Active Full, Full |
 | [XML injection](xml_injection_check.md)                                      | Medium   | Active  | Active-Quick, Active Full, Quick, Full |
 
-## DAST API checks by profile
+## API security testing checks by profile
 
 ### Passive-Quick
 

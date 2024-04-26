@@ -189,14 +189,14 @@ namespace :tw do
     File.write(codeowners_path, new_codeowners_content)
 
     if current_codeowners_content == new_codeowners_content
-      puts "~ CODEOWNERS already up to date".color(:yellow)
+      puts Rainbow("~ CODEOWNERS already up to date").yellow
     else
-      puts "✓ CODEOWNERS updated".color(:green)
+      puts Rainbow("✓ CODEOWNERS updated").green
     end
 
     if errors.present?
       puts ""
-      puts "✘ Files with missing metadata found:".color(:red)
+      puts Rainbow("✘ Files with missing metadata found:").red
       errors.map { |file| puts file }
     end
   end

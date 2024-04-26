@@ -5783,7 +5783,6 @@
 - './spec/lib/gitlab/database/transaction/observer_spec.rb'
 - './spec/lib/gitlab/database/type/color_spec.rb'
 - './spec/lib/gitlab/database/type/json_pg_safe_spec.rb'
-- './spec/lib/gitlab/database/unidirectional_copy_trigger_spec.rb'
 - './spec/lib/gitlab/database/with_lock_retries_outside_transaction_spec.rb'
 - './spec/lib/gitlab/database/with_lock_retries_spec.rb'
 - './spec/lib/gitlab/data_builder/alert_spec.rb'

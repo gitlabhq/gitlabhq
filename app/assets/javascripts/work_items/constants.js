@@ -79,6 +79,9 @@ export const I18N_WORK_ITEM_DELETE = s__('WorkItem|Delete %{workItemType}');
 export const I18N_WORK_ITEM_ARE_YOU_SURE_DELETE = s__(
   'WorkItem|Are you sure you want to delete the %{workItemType}? This action cannot be reversed.',
 );
+export const I18N_WORK_ITEM_ARE_YOU_SURE_DELETE_HIERARCHY = s__(
+  'WorkItem|Delete this %{workItemType} and release all child items? This action cannot be reversed.',
+);
 export const I18N_WORK_ITEM_DELETED = s__('WorkItem|%{workItemType} deleted');
 
 export const I18N_WORK_ITEM_FETCH_ITERATIONS_ERROR = s__(
