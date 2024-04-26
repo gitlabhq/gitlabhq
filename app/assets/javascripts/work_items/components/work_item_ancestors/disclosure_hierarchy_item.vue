@@ -51,7 +51,7 @@ export default {
         :name="item.icon"
         class="gl-mx-2 gl-text-gray-600 gl-flex-shrink-0"
       />
-      <span class="gl-z-index-200 gl-text-truncate">{{ item.title }}</span>
+      <span class="gl-z-200 gl-text-truncate">{{ item.title }}</span>
     </gl-link>
     <!--
       @slot Additional content to be displayed in an item.

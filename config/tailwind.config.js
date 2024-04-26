@@ -125,6 +125,13 @@ module.exports = {
         'x0-y2-b4-s0': '0 2px 4px 0 #0000001a',
         'x0-y0-b3-s1-blue-500': 'inset 0 0 3px 1px var(--blue-500, #1f75cb)',
       },
+      zIndex: {
+        1: '1',
+        2: '2',
+        3: '3',
+        200: '200',
+        9999: '9999',
+      },
     },
   },
   plugins: [

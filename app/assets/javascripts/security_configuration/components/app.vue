@@ -121,7 +121,7 @@ export default {
     <gl-alert
       v-if="errorMessage"
       sticky
-      class="gl-top-8 gl-z-index-1"
+      class="gl-top-8 gl-z-1"
       data-testid="manage-via-mr-error-alert"
       variant="danger"
       @dismiss="dismissAlert"

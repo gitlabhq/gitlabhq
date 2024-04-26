@@ -59,7 +59,7 @@ export default {
       :size="12"
       :aria-label="iconAriaLabel"
       :data-testid="`status-${iconName}-icon`"
-      class="gl-relative gl-z-index-1"
+      class="gl-relative gl-z-1"
     />
   </div>
 </template>

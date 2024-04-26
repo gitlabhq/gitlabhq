@@ -8,10 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
-
-> - It's enabled on GitLab.com.
-> - It's recommended for production use.
+**Offering:** GitLab.com, Self-managed
 
 Usage Trends gives you an overview of how much data your instance contains, and how quickly this volume is changing over time.
 Usage Trends data refreshes daily.

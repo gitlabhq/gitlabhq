@@ -187,6 +187,7 @@ semgrep-appsec-custom-rules:
     expire_in: 30 days
     paths:
       - gl-sast-report.json
+    access: 'developer'
 
 audit-event-types-verify:
   variables:

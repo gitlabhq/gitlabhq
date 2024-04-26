@@ -184,6 +184,21 @@ RSpec.shared_examples 'shared package filtering' do
         'sort' => 'desc'
       )
     end
+
+    context 'when cleared' do
+      before do
+        wait_for_requests
+        click_button 'Clear'
+      end
+
+      it 'resets query params' do
+        queryparams = Rack::Utils.parse_query(URI.parse(current_url).query)
+        expect(queryparams).to eq(
+          'orderBy' => 'created_at',
+          'sort' => 'desc'
+        )
+      end
+    end
   end
 end
 

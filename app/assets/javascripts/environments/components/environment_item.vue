@@ -814,7 +814,7 @@ export default {
         <stop-component
           v-if="canStopEnvironment"
           :environment="model"
-          class="gl-z-index-2"
+          class="gl-z-2"
           data-track-action="click_button"
           data-track-label="environment_stop"
         />

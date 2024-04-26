@@ -187,11 +187,11 @@ export default {
       <div
         v-if="isCodeSuggestion"
         :contenteditable="false"
-        class="gl-relative gl-z-index-0"
+        class="gl-relative gl-z-0"
         data-testid="code-suggestion-box"
       >
         <div
-          class="md-suggestion-header gl-flex-wrap gl-z-index-1 gl-w-full gl-border-none! gl-font-regular gl-px-4 gl-py-3 gl-border-b-1! gl-border-b-solid! gl-mr-n10!"
+          class="md-suggestion-header gl-flex-wrap gl-z-1 gl-w-full gl-border-none! gl-font-regular gl-px-4 gl-py-3 gl-border-b-1! gl-border-b-solid! gl-mr-n10!"
         >
           <div class="gl-font-weight-bold gl-pr-3">
             {{ __('Suggested change') }}
@@ -280,7 +280,7 @@ export default {
           >
         </div>
       </div>
-      <node-view-content ref="nodeViewContent" as="code" class="gl-relative gl-z-index-1" />
+      <node-view-content ref="nodeViewContent" as="code" class="gl-relative gl-z-1" />
     </node-view-wrapper>
   </editor-state-observer>
 </template>

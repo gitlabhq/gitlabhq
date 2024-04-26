@@ -55,7 +55,7 @@ export default {
 </script>
 
 <template>
-  <gl-button-group class="gl-z-index-1">
+  <gl-button-group class="gl-z-1">
     <gl-button
       icon="dash"
       :disabled="disableDecrease"

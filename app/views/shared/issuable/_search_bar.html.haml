@@ -24,7 +24,7 @@
               - text = tag.span(sprite_icon('history')) + tag.span(_('Recent searches'), class: "gl-sr-only")
               = dropdown_tag(text,
                 options: { wrapper_class: "filtered-search-history-dropdown-wrapper",
-                toggle_class: "gl-button btn btn-default filtered-search-history-dropdown-toggle-button gl-pl-4! gl-pr-5!",
+                toggle_class: "gl-button btn btn-default filtered-search-history-dropdown-toggle-button",
                 dropdown_class: "filtered-search-history-dropdown",
                 content_class: "filtered-search-history-dropdown-content" }) do
                 .js-filtered-search-history-dropdown{ data: { full_path: search_history_storage_prefix } }

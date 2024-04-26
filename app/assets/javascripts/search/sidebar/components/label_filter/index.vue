@@ -211,7 +211,7 @@ export default {
       v-if="isFocused"
       v-outside="closeDropdown"
       data-testid="header-search-dropdown-menu"
-      class="header-search-dropdown-menu gl-overflow-y-auto gl-absolute gl-bg-white gl-border-1 gl-rounded-base gl-border-solid gl-border-gray-200 gl-shadow-x0-y2-b4-s0 gl-mt-3 gl-z-index-2 gl-w-full! gl-min-w-full! gl-max-w-none!"
+      class="header-search-dropdown-menu gl-overflow-y-auto gl-absolute gl-bg-white gl-border-1 gl-rounded-base gl-border-solid gl-border-gray-200 gl-shadow-x0-y2-b4-s0 gl-mt-3 gl-z-2 gl-w-full! gl-min-w-full! gl-max-w-none!"
     >
       <div class="header-search-dropdown-content gl-py-2">
         <dropdown-keyboard-navigation

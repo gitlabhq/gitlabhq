@@ -20,6 +20,7 @@ describe('Registry Search', () => {
   };
 
   const defaultQueryChangedPayload = {
+    foo: null,
     orderBy: 'name',
     search: null,
     sort: 'asc',

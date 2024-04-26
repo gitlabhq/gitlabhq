@@ -37,6 +37,13 @@ module Gitlab
           config.send_default_pii = true
           config.send_modules = false
           config.traces_sample_rate = 0.2 if Gitlab::Utils.to_boolean(ENV['ENABLE_SENTRY_PERFORMANCE_MONITORING'])
+          # Reason for disabling the below configs https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150771#note_1881953691
+          config.metrics.enabled = false
+          config.metrics.enable_code_locations = false
+          config.propagate_traces = false
+          config.trace_propagation_targets = []
+          config.enabled_patches = []
+          config.enable_tracing = false
 
           yield config if block_given?
         end

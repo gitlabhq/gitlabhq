@@ -89,7 +89,7 @@ export default {
         v-for="(n, index) in totalLines"
         :key="index"
         data-testid="line-numbers"
-        class="gl-p-0! gl-z-index-3 diff-line-num gl-border-r gl-display-flex line-links line-numbers"
+        class="gl-p-0! gl-z-3 diff-line-num gl-border-r gl-display-flex line-links line-numbers"
       >
         <a
           class="gl-select-none gl-shadow-none! file-line-blame"
