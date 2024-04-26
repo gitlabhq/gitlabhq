@@ -865,7 +865,7 @@ class User < MainClusterwide::ApplicationRecord
         END
       SQL
 
-      sanitized_order_sql = Arel.sql(sanitize_sql_array([order, query: query]))
+      sanitized_order_sql = Arel.sql(sanitize_sql_array([order, { query: query }]))
 
       scope = options[:with_private_emails] ? with_primary_or_secondary_email(query) : with_public_email(query)
       scope = scope.or(search_by_name_or_username(query, use_minimum_char_limit: options[:use_minimum_char_limit]))

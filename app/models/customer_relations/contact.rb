@@ -134,14 +134,14 @@ class CustomerRelations::Contact < ApplicationRecord
       JOIN #{table_name} AS new_contacts ON new_contacts.group_id = :old_group_id AND LOWER(new_contacts.email) = LOWER(existing_contacts.email)
       WHERE existing_contacts.group_id = :new_group_id AND contact_id = existing_contacts.id
     SQL
-    connection.execute(sanitize_sql([update_query, old_group_id: group.root_ancestor.id, new_group_id: group.id]))
+    connection.execute(sanitize_sql([update_query, { old_group_id: group.root_ancestor.id, new_group_id: group.id }]))
 
     dupes_query = <<~SQL
       DELETE FROM #{table_name} AS existing_contacts
       USING #{table_name} AS new_contacts
       WHERE existing_contacts.group_id = :new_group_id AND new_contacts.group_id = :old_group_id AND LOWER(new_contacts.email) = LOWER(existing_contacts.email)
     SQL
-    connection.execute(sanitize_sql([dupes_query, old_group_id: group.root_ancestor.id, new_group_id: group.id]))
+    connection.execute(sanitize_sql([dupes_query, { old_group_id: group.root_ancestor.id, new_group_id: group.id }]))
 
     where(group: group).update_all(group_id: group.root_ancestor.id)
   end

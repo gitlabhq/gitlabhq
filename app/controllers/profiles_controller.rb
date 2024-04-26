@@ -104,7 +104,7 @@ class ProfilesController < Profiles::ApplicationController
       :pronouns,
       :pronunciation,
       :validation_password,
-      status: [:emoji, :message, :availability, :clear_status_after]
+      { status: [:emoji, :message, :availability, :clear_status_after] }
     ]
   end
 

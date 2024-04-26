@@ -582,6 +582,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
             create(:label_link, label: label_b, target: issue)
             create(:label_link, label: label_c, target: issue)
           end
+
           it 'tests N+1' do
             control = ActiveRecord::QueryRecorder.new do
               get api('/issues', user), params: { labels: [label.title, label_b.title, label_c.title] }

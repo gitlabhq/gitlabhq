@@ -88,6 +88,7 @@ RSpec.describe Gitlab::SidekiqMiddleware, feature_category: :shared do
           Sidekiq::Testing.inline! { example.run }
         end
       end
+
       let(:gitaly_histogram) { double(:gitaly_histogram) }
 
       before do

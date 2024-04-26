@@ -117,7 +117,6 @@ POST /projects/:id/protected_environments
 | `id`                            | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `name`                          | string         | yes | The name of the environment. |
 | `deploy_access_levels`          | array          | yes | Array of access levels allowed to deploy, with each described by a hash. |
-| `required_approval_count` | integer        | no       | The number of approvals required to deploy to this environment. |
 | `approval_rules`                | array          | no  | Array of access levels allowed to approve, with each described by a hash. See [Multiple approval rules](../ci/environments/deployment_approvals.md#add-multiple-approval-rules). |
 
 Elements in the `deploy_access_levels` and `approval_rules` array should be one of `user_id`, `group_id` or
@@ -187,7 +186,6 @@ PUT /projects/:id/protected_environments/:name
 | `id`                            | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `name`                          | string         | yes | The name of the environment. |
 | `deploy_access_levels`          | array          | no  | Array of access levels allowed to deploy, with each described by a hash. |
-| `required_approval_count`       | integer        | no  | The number of approvals required to deploy to this environment. |
 | `approval_rules`                | array          | no  | Array of access levels allowed to approve, with each described by a hash. See [Multiple approval rules](../ci/environments/deployment_approvals.md#add-multiple-approval-rules) for more information. |
 
 Elements in the `deploy_access_levels` and `approval_rules` array should be one of `user_id`, `group_id` or
@@ -207,7 +205,7 @@ To delete:
 
 ```shell
 curl --header 'Content-Type: application/json' --request PUT \
-     --data '{"deploy_access_levels": [{"group_id": 9899829, access_level: 40}], "required_approval_count": 1}' \
+     --data '{"deploy_access_levels": [{"group_id": 9899829, access_level: 40}]' \
      --header "PRIVATE-TOKEN: <your_access_token>" \
      "https://gitlab.example.com/api/v4/projects/22034114/protected_environments/production"
 ```
@@ -235,7 +233,7 @@ Example response:
 
 ```shell
 curl --header 'Content-Type: application/json' --request PUT \
-     --data '{"deploy_access_levels": [{"id": 12, "group_id": 22034120}], "required_approval_count": 2}' \
+     --data '{"deploy_access_levels": [{"id": 12, "group_id": 22034120}]}' \
      --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/22034114/protected_environments/production"
 ```
 
@@ -260,7 +258,7 @@ curl --header 'Content-Type: application/json' --request PUT \
 
 ```shell
 curl --header 'Content-Type: application/json' --request PUT \
-     --data '{"deploy_access_levels": [{"id": 12, "_destroy": true}], "required_approval_count": 0}' \
+     --data '{"deploy_access_levels": [{"id": 12, "_destroy": true}]}' \
      --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/22034114/protected_environments/production"
 ```
 

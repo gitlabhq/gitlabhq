@@ -479,7 +479,7 @@ RSpec.shared_examples 'work items award emoji' do
       # As the user2 has already awarded the `:thumbsup:` emoji, the emoji count will be 2
       expect(first(award_button_selector)).to have_content '2'
     end
-    expect(page.find(tooltip_selector)).to have_content("You and John reacted with :thumbsup:")
+    expect(page.find(tooltip_selector)).to have_content("John and you reacted with :thumbsup:")
   end
 
   it 'removes award from work item for current user' do

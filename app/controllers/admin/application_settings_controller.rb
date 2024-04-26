@@ -190,12 +190,12 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :notes_create_limit,
       :pipeline_limit_per_project_user_sha,
       :default_branch_name,
-      disabled_oauth_sign_in_sources: [],
-      import_sources: [],
-      package_metadata_purl_types: [],
-      restricted_visibility_levels: [],
-      repository_storages_weighted: {},
-      valid_runner_registrars: []
+      { disabled_oauth_sign_in_sources: [],
+        import_sources: [],
+        package_metadata_purl_types: [],
+        restricted_visibility_levels: [],
+        repository_storages_weighted: {},
+        valid_runner_registrars: [] }
     ]
   end
 

@@ -12,6 +12,7 @@
 - add_page_specific_style 'page_bundles/pipelines'
 - add_page_specific_style 'page_bundles/reports'
 - add_page_specific_style 'page_bundles/ci_status'
+- identity_verification_required = false
 
 - add_page_startup_api_call @endpoint_metadata_url
 - add_page_startup_api_call @pinned_file_url if @pinned_file_url
@@ -67,6 +68,8 @@
                 .detail-page-description.gl-pb-0
                   = render "projects/merge_requests/description"
               = render "projects/merge_requests/awards_block"
+              - if identity_verification_required
+                .js-verification-alert{ data: { identity_verification_path: '#' } }
               = render "projects/merge_requests/widget"
               - if mr_action === "show"
                 - add_page_startup_api_call discussions_path(@merge_request, per_page: 20)

@@ -2882,6 +2882,7 @@ RSpec.describe User, feature_category: :user_profile do
         before do
           stub_application_setting(user_deactivation_emails_enabled: false)
         end
+
         it 'does not send deactivated user an email' do
           expect(NotificationService).not_to receive(:new)
 
@@ -7695,6 +7696,7 @@ RSpec.describe User, feature_category: :user_profile do
       before do
         user.public_email = "hello@hello.com"
       end
+
       it 'returns public email' do
         expect(user.webhook_email).to eq(user.public_email)
       end

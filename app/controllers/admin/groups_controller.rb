@@ -104,9 +104,9 @@ class Admin::GroupsController < Admin::ApplicationController
       :project_creation_level,
       :subgroup_creation_level,
       :organization_id,
-      admin_note_attributes: [
+      { admin_note_attributes: [
         :note
-      ]
+      ] }
     ]
   end
 end

@@ -22,7 +22,9 @@ export default {
   data() {
     return {
       candidates: {},
-      errorMessage: undefined,
+      errorMessage: '',
+      skipQueries: true,
+      queryVariables: undefined,
     };
   },
   apollo: {
@@ -37,6 +39,9 @@ export default {
       error(error) {
         this.handleError(error);
       },
+      skip() {
+        return !this.queryVariables;
+      },
     },
   },
   computed: {
@@ -49,31 +54,18 @@ export default {
     pageInfo() {
       return this.candidates?.pageInfo ?? {};
     },
-    queryVariables() {
-      return {
-        id: this.gid,
-        first: GRAPHQL_PAGE_SIZE,
-      };
-    },
     items() {
       return this.candidates?.nodes ?? [];
     },
   },
   methods: {
-    fetchPage(newPageInfo) {
-      const variables = {
-        ...this.queryVariables,
-        ...newPageInfo,
+    fetchPage(variables) {
+      this.errorMessage = '';
+      this.queryVariables = {
+        id: this.gid,
+        first: GRAPHQL_PAGE_SIZE,
+        ...variables,
       };
-
-      this.$apollo.queries.candidates
-        .fetchMore({
-          variables,
-          updateQuery: (previousResult, { fetchMoreResult }) => {
-            return fetchMoreResult;
-          },
-        })
-        .catch(this.handleError);
     },
     handleError(error) {
       this.errorMessage = makeLoadCandidatesErrorMessage(error.message);
@@ -91,6 +83,7 @@ export default {
       :page-info="pageInfo"
       :items="items"
       :error-message="errorMessage"
+      :is-loading="isLoading"
       @fetch-page="fetchPage"
     >
       <template #empty-state>

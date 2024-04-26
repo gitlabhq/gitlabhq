@@ -8,7 +8,7 @@ RSpec.describe Gitlab::Redis::MultiStoreConnectionPool, feature_category: :scala
     let(:conn_b) { Redis.new(url: 'redis://localhost:6380') }
     let(:pool_a) { ConnectionPool.new(size: 2) { conn_a } }
     let(:pool_b) { ConnectionPool.new(size: 2) { conn_b } }
-    let(:multistore) { Gitlab::Redis::MultiStore.new(pool_a, pool_b, 'test') }
+    let(:multistore) { Gitlab::Redis::MultiStore.create_using_pool(pool_a, pool_b, 'test') }
     let(:multistore_pool) { described_class.new(size: 2) { multistore } }
 
     before do

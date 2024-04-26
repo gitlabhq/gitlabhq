@@ -122,7 +122,7 @@ RSpec.describe Git::BranchHooksService, :clean_gitlab_redis_shared_state, featur
         let!(:commit_author) { create(:user, email: sample_commit.author_email) }
 
         let(:tracking_params) do
-          ['o_pipeline_authoring_unique_users_committing_ciconfigfile', values: commit_author.id]
+          ['o_pipeline_authoring_unique_users_committing_ciconfigfile', { values: commit_author.id }]
         end
 
         it 'tracks the event' do

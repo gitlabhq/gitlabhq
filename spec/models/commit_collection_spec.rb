@@ -69,8 +69,8 @@ RSpec.describe CommitCollection, feature_category: :source_code_management do
         allow(commit).to receive(:committer_email).and_return(committer_email)
       end
 
-      it 'uses author email to identify committers' do
-        expect(collection.committers).to eq([author])
+      it 'users committer email to identify committers' do
+        expect(collection.committers).to eq([committer])
       end
 
       context 'when web_ui_commit_author_change feature flag is disabled' do
@@ -80,6 +80,22 @@ RSpec.describe CommitCollection, feature_category: :source_code_management do
 
         it 'users committer email to identify committers' do
           expect(collection.committers).to eq([committer])
+        end
+      end
+
+      context 'when include_author_when_signed is true' do
+        it 'uses author email to identify committers' do
+          expect(collection.committers(include_author_when_signed: true)).to eq([author])
+        end
+
+        context 'when web_ui_commit_author_change feature flag is disabled' do
+          before do
+            stub_feature_flags(web_ui_commit_author_change: false)
+          end
+
+          it 'users committer email to identify committers' do
+            expect(collection.committers(include_author_when_signed: true)).to eq([committer])
+          end
         end
       end
     end

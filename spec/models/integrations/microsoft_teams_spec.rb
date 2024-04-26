@@ -236,6 +236,7 @@ RSpec.describe Integrations::MicrosoftTeams, feature_category: :integrations do
       before do
         chat_integration.branches_to_be_notified = branches_to_be_notified if branches_to_be_notified
       end
+
       it 'does not call Microsoft Teams API for pipeline events' do
         data = Gitlab::DataBuilder::Pipeline.build(pipeline)
         result = chat_integration.execute(data)

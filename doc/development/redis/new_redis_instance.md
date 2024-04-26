@@ -143,7 +143,7 @@ module Gitlab
     class Foo < ::Gitlab::Redis::MultiStoreWrapper
       ...
       def self.multistore
-        MultiStore.new(self.pool, config_fallback.pool, store_name)
+        MultiStore.create_using_pool(self.pool, config_fallback.pool, store_name)
       end
     end
   end

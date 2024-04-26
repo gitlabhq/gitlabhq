@@ -92,7 +92,10 @@ end
 
 desc "Revokes user's personal access tokens"
 task :revoke_user_pats, [:revoke_before, :dry_run] do |_, args|
-  QA::Tools::RevokeUserPersonalAccessTokens.new(args).run
+  args.with_defaults(revoke_before: (Date.today - 3).to_s, dry_run: false)
+  QA::Tools::RevokeUserPersonalAccessTokens.new(
+    revoke_before: args[:revoke_before],
+    dry_run: !!(args[:dry_run].to_s =~ /true|1|y/i)).run
 end
 
 desc "Generate group with multiple projects for direct transfer test"

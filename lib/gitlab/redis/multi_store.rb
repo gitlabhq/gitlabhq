@@ -34,7 +34,7 @@ module Gitlab
         end
       end
 
-      attr_reader :primary_pool, :secondary_pool, :instance_name, :primary_store, :secondary_store, :borrow_counter
+      attr_reader :primary_pool, :secondary_pool, :instance_name, :primary_store, :secondary_store
 
       FAILED_TO_READ_ERROR_MESSAGE = 'Failed to read from the redis default_store.'
       FAILED_TO_WRITE_ERROR_MESSAGE = 'Failed to write to the redis non_default_store.'
@@ -128,6 +128,36 @@ module Gitlab
         multi
       ].freeze
 
+      class << self
+        # This initialises a MultiStore instance with references to 2 pools.
+        # All method calls must be wrapped in a `.with_borrowed_connection` scope.
+        #
+        # This is the preferred way to use MultiStore as re-using connections from connection
+        # pools is more efficient than spinning up new ones.
+        def create_using_pool(primary_pool, secondary_pool, instance_name)
+          new(
+            primary_pool: primary_pool,
+            secondary_pool: secondary_pool,
+            instance_name: instance_name,
+            primary_store: nil,
+            secondary_store: nil
+          )
+        end
+
+        # Initialises a MultiStore with 2 client connections. This is used in situations where the
+        # caller does not use connection pools and holds long-running connections,e.g. ActionCable pubsub.
+        # This would create additional connections to the primary and secondary store on per MultiStore instance.
+        def create_using_client(primary_store, secondary_store, instance_name)
+          new(
+            primary_store: primary_store,
+            secondary_store: secondary_store,
+            instance_name: instance_name,
+            primary_pool: nil,
+            secondary_pool: nil
+          )
+        end
+      end
+
       # To transition between two Redis store, `primary_pool` should be the connection pool for the target store,
       # and `secondary_pool` should be the connection pool for the current store.
       #
@@ -139,15 +169,16 @@ module Gitlab
       # - Turning use_primary_store_as_default_for_<instance_name> on: The behavior is the same as above,
       #   but other commands are executed in the primary now.
       # - Turning use_primary_and_secondary_stores_for_<instance_name> off: commands are executed in the primary store.
-      def initialize(primary_pool, secondary_pool, instance_name)
+      def initialize(primary_pool:, secondary_pool:, primary_store:, secondary_store:, instance_name:)
         @instance_name = instance_name
         @primary_pool = primary_pool
         @secondary_pool = secondary_pool
+        @primary_store = primary_store
+        @secondary_store = secondary_store
 
-        @borrow_counter = :"multi_store_borrowed_connection_#{instance_name}"
-
-        validate_stores!
+        validate_attributes!
       end
+      private_class_method :new
 
       # Pipelines are sent to both instances by default since
       # they could execute both read and write commands.
@@ -213,12 +244,12 @@ module Gitlab
       end
 
       def with_borrowed_connection
+        return yield if @primary_pool.nil? && @secondary_pool.nil? && @primary_store && @secondary_store
+
         primary_pool.with do |ps|
           secondary_pool.with do |ss|
-            # nested borrows are allowed as ConnectionPool returns the existing connection
-            # which the thread already checked out.
-            Thread.current[borrow_counter] ||= 0
-            Thread.current[borrow_counter] += 1
+            original_primary_store = @primary_store
+            original_secondary_store = @secondary_store
 
             # borrow from both pool as feature-flag could change during the period where connections are borrowed
             # this guarantees that we avoids a NilClass error
@@ -227,12 +258,9 @@ module Gitlab
 
             yield
           ensure
-            # only set to nil after all nested borrows are yielded
-            Thread.current[borrow_counter] -= 1
-            if Thread.current[borrow_counter] == 0
-              @primary_store = nil
-              @secondary_store = nil
-            end
+            # resets value
+            @primary_store = original_primary_store
+            @secondary_store = original_secondary_store
           end
         end
       end
@@ -432,7 +460,11 @@ module Gitlab
         strong_memoize(:same_redis_store) do
           # <Redis client v4.7.1 for unix:///path_to/redis/redis.socket/5>"
           # no borrowed connections due to endless recursion
-          primary_pool.with(&:inspect) == secondary_pool.with(&:inspect) # rubocop:disable CodeReuse/ActiveRecord
+          if @primary_pool && @secondary_pool
+            primary_pool.with(&:inspect) == secondary_pool.with(&:inspect) # rubocop:disable CodeReuse/ActiveRecord -- `.with ` is called on a ConnectionPool instance
+          else
+            primary_store.inspect == secondary_store.inspect
+          end
         end
       end
 
@@ -457,16 +489,28 @@ module Gitlab
         @instance = nil
       end
 
-      def redis_store?(pool)
-        pool.with { |c| c.instance_of?(Gitlab::Redis::MultiStore) || c.is_a?(::Redis) || c.is_a?(::Redis::Cluster) }
+      def redis_pool?(pool)
+        pool.with { |c| redis_store?(c) }
       end
 
-      def validate_stores!
-        raise ArgumentError, 'primary_store is required' if primary_pool.nil?
-        raise ArgumentError, 'secondary_store is required' if secondary_pool.nil?
+      def redis_store?(conn)
+        conn.instance_of?(Gitlab::Redis::MultiStore) || conn.is_a?(::Redis) || conn.is_a?(::Redis::Cluster)
+      end
+
+      def validate_attributes!
+        validate_redis!(primary_store, primary_pool, 'primary')
+        validate_redis!(secondary_store, secondary_pool, 'secondary')
         raise ArgumentError, 'instance_name is required' unless instance_name
-        raise ArgumentError, 'invalid primary_store' unless redis_store?(primary_pool)
-        raise ArgumentError, 'invalid secondary_store' unless redis_store?(secondary_pool)
+      end
+
+      def validate_redis!(store, pool, type)
+        if pool
+          raise ArgumentError, "invalid #{type}_pool" unless redis_pool?(pool)
+        elsif store
+          raise ArgumentError, "invalid #{type}_store" unless redis_store?(store)
+        else
+          raise ArgumentError, "either #{type}_store or #{type}_pool is required"
+        end
       end
     end
   end

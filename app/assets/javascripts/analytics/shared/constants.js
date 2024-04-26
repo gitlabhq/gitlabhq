@@ -170,8 +170,8 @@ export const METRIC_TOOLTIPS = {
     description: s__('ValueStreamAnalytics|Median time from issue created to issue closed.'),
     groupLink: '-/analytics/value_stream_analytics',
     projectLink: '-/value_stream_analytics',
-    docsLink: helpPagePath('user/analytics/value_stream_analytics', {
-      anchor: 'view-the-lead-time-and-cycle-time-for-issues',
+    docsLink: helpPagePath('user/group/value_stream_analytics/index', {
+      anchor: 'lifecycle-metrics',
     }),
   },
   [FLOW_METRICS.CYCLE_TIME]: {
@@ -180,8 +180,8 @@ export const METRIC_TOOLTIPS = {
     ),
     groupLink: '-/analytics/value_stream_analytics',
     projectLink: '-/value_stream_analytics',
-    docsLink: helpPagePath('user/analytics/value_stream_analytics', {
-      anchor: 'view-the-lead-time-and-cycle-time-for-issues',
+    docsLink: helpPagePath('user/group/value_stream_analytics/index', {
+      anchor: 'lifecycle-metrics',
     }),
   },
   [FLOW_METRICS.ISSUES]: {
@@ -247,7 +247,7 @@ export const METRIC_TOOLTIPS = {
     ),
     groupLink: '',
     projectLink: '',
-    docsLink: helpPagePath('user/analytics'),
+    docsLink: helpPagePath('user/project/repository/code_suggestions/index'),
   },
 };
 

@@ -33,7 +33,7 @@ RSpec.describe Gitlab::Redis::ClusterUtil, feature_category: :scalability do
           secondary_redis = sec_store == :cluster ? Redis::Cluster.new(nodes: ['redis://localhost:6000']) : Redis.new
           primary_pool = ConnectionPool.new { primary_redis }
           secondary_pool = ConnectionPool.new { secondary_redis }
-          multistore = Gitlab::Redis::MultiStore.new(primary_pool, secondary_pool, 'teststore')
+          multistore = Gitlab::Redis::MultiStore.create_using_pool(primary_pool, secondary_pool, 'teststore')
 
           multistore.with_borrowed_connection do
             expect(described_class.cluster?(multistore)).to eq(expected_val)

@@ -21,7 +21,7 @@ module Preloaders
     def preload_all
       ActiveRecord::Associations::Preloader.new(
         records: project_labels,
-        associations: { project: [:project_feature, namespace: :route] }
+        associations: { project: [:project_feature, { namespace: :route }] }
       ).call
 
       ActiveRecord::Associations::Preloader.new(

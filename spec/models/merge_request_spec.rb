@@ -2145,21 +2145,38 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     let(:commits) { double }
     let(:committers) { double }
 
-    context 'when not given with_merge_commits and lazy' do
+    context 'when not given with_merge_commits, lazy and include_author_when_signed' do
       it 'calls committers on the commits object with the expected param' do
         expect(subject).to receive(:commits).and_return(commits)
-        expect(commits).to receive(:committers).with(with_merge_commits: false, lazy: false).and_return(committers)
+
+        expect(commits)
+          .to receive(:committers)
+          .with(
+            with_merge_commits: false,
+            lazy: false,
+            include_author_when_signed: false
+          )
+          .and_return(committers)
 
         expect(subject.committers).to eq(committers)
       end
 
-      context 'when with_merge_commits and lazy arguments changes' do
+      context 'when with_merge_commits, lazy and include_author_when_signed arguments changes' do
         it 'does not use memoized value' do
           subject.committers # this memoizes the value with with_merge_commits and lazy as false
 
           expect(subject).to receive(:commits).and_return(commits)
-          expect(commits).to receive(:committers).with(with_merge_commits: true, lazy: true).and_return(committers)
-          subject.committers(with_merge_commits: true, lazy: true)
+
+          expect(commits)
+            .to receive(:committers)
+            .with(
+              with_merge_commits: true,
+              lazy: true,
+              include_author_when_signed: true
+            )
+            .and_return(committers)
+
+          subject.committers(with_merge_commits: true, lazy: true, include_author_when_signed: true)
         end
       end
     end
@@ -2167,7 +2184,15 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     context 'when given with_merge_commits true' do
       it 'calls committers on the commits object with the expected param' do
         expect(subject).to receive(:commits).and_return(commits)
-        expect(commits).to receive(:committers).with(with_merge_commits: true, lazy: false).and_return(committers)
+
+        expect(commits)
+          .to receive(:committers)
+          .with(
+            with_merge_commits: true,
+            lazy: false,
+            include_author_when_signed: false
+          )
+          .and_return(committers)
 
         expect(subject.committers(with_merge_commits: true)).to eq(committers)
       end
@@ -2176,9 +2201,34 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     context 'when given lazy true' do
       it 'calls committers on the commits object with the expected param' do
         expect(subject).to receive(:commits).and_return(commits)
-        expect(commits).to receive(:committers).with(with_merge_commits: false, lazy: true).and_return(committers)
+
+        expect(commits)
+          .to receive(:committers)
+          .with(
+            with_merge_commits: false,
+            lazy: true,
+            include_author_when_signed: false
+          )
+          .and_return(committers)
 
         expect(subject.committers(lazy: true)).to eq(committers)
+      end
+    end
+
+    context 'when given include_author_when_signed true' do
+      it 'calls committers on the commits object with the expected param' do
+        expect(subject).to receive(:commits).and_return(commits)
+
+        expect(commits)
+          .to receive(:committers)
+          .with(
+            with_merge_commits: false,
+            lazy: false,
+            include_author_when_signed: true
+          )
+          .and_return(committers)
+
+        expect(subject.committers(include_author_when_signed: true)).to eq(committers)
       end
     end
   end

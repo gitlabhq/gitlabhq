@@ -31,7 +31,7 @@ export default {
   data() {
     return {
       modelVersions: {},
-      errorMessage: undefined,
+      errorMessage: '',
       skipQueries: true,
       queryVariables: {},
     };
@@ -78,7 +78,7 @@ export default {
         sort: variables.sort?.toUpperCase() || SORT_KEY_ORDER,
       };
 
-      this.errorMessage = null;
+      this.errorMessage = '';
       this.skipQueries = false;
 
       this.$apollo.queries.modelVersions.fetchMore({});

@@ -38,6 +38,7 @@ RSpec.describe 'User views pipeline editor button on root ci config file', :js, 
     before do
       sign_in(user)
     end
+
     it 'does not shows the Pipeline Editor button' do
       visit project_blob_path(project, File.join('master', '.my-config.yml'))
 

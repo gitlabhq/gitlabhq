@@ -2,7 +2,7 @@
 
 module RackAttackSpecHelpers
   def api_get_args_with_token_headers(partial_url, token_headers)
-    ["/api/#{API::API.version}#{partial_url}", params: nil, headers: token_headers]
+    ["/api/#{API::API.version}#{partial_url}", { params: nil, headers: token_headers }]
   end
 
   def rss_url(user)

@@ -248,9 +248,9 @@ module IssuableActions
       :state_event,
       :subscription_event,
       :confidential,
-      assignee_ids: [],
-      add_label_ids: [],
-      remove_label_ids: []
+      { assignee_ids: [],
+        add_label_ids: [],
+        remove_label_ids: [] }
     ]
   end
 

@@ -24,14 +24,27 @@ class CommitCollection
     commits.each(&block)
   end
 
-  def committers(with_merge_commits: false, lazy: false)
-    return committers_lazy(with_merge_commits: with_merge_commits).flatten if lazy
+  def committers(with_merge_commits: false, lazy: false, include_author_when_signed: false)
+    if lazy
+      return committers_lazy(
+        with_merge_commits: with_merge_commits,
+        include_author_when_signed: include_author_when_signed
+      ).flatten
+    end
 
-    User.by_any_email(committers_emails(with_merge_commits: with_merge_commits))
+    User.by_any_email(
+      committers_emails(
+        with_merge_commits: with_merge_commits,
+        include_author_when_signed: include_author_when_signed
+      )
+    )
   end
 
-  def committers_lazy(with_merge_commits: false)
-    emails = committers_emails(with_merge_commits: with_merge_commits)
+  def committers_lazy(with_merge_commits: false, include_author_when_signed: false)
+    emails = committers_emails(
+      with_merge_commits: with_merge_commits,
+      include_author_when_signed: include_author_when_signed
+    )
 
     emails.map do |email|
       BatchLoader.for(email.downcase).batch(default_value: []) do |committer_emails, loader|
@@ -155,19 +168,21 @@ class CommitCollection
 
   private
 
-  def committers_emails(with_merge_commits: false)
-    return committer_emails_for(commits) if with_merge_commits
+  def committers_emails(with_merge_commits: false, include_author_when_signed: false)
+    return committer_emails_for(commits, include_author_when_signed: include_author_when_signed) if with_merge_commits
 
-    committer_emails_for(without_merge_commits)
+    committer_emails_for(without_merge_commits, include_author_when_signed: include_author_when_signed)
   end
 
-  def committer_emails_for(commits)
-    if ::Feature.enabled?(:web_ui_commit_author_change, project)
+  def committer_emails_for(commits, include_author_when_signed: false)
+    commit_author_change_enabled = ::Feature.enabled?(:web_ui_commit_author_change, project)
+
+    if commit_author_change_enabled
       commits.each(&:signature) # preload signatures
     end
 
     commits.filter_map do |commit|
-      if ::Feature.enabled?(:web_ui_commit_author_change, project) && commit.signature&.verified_system?
+      if commit_author_change_enabled && commit.signature&.verified_system? && include_author_when_signed
         commit.author_email
       else
         commit.committer_email

@@ -311,6 +311,7 @@ RSpec.describe Notes::CreateService, feature_category: :team_planning do
           before do
             project_with_repo.add_maintainer(user)
           end
+
           context 'when eligible to have a note diff file' do
             let(:new_opts) do
               opts.merge(

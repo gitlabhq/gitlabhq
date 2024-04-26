@@ -104,13 +104,13 @@ class Projects::FeatureFlagsController < Projects::ApplicationController
       :version,
       scopes_attributes: [
         :environment_scope, :active,
-        strategies: [:name, parameters: [:groupId, :percentage, :userIds]]
+        { strategies: [:name, { parameters: [:groupId, :percentage, :userIds] }] }
       ],
       strategies_attributes: [
         :name,
         :user_list_id,
-        parameters: [:groupId, :percentage, :userIds, :rollout, :stickiness],
-        scopes_attributes: [:environment_scope]
+        { parameters: [:groupId, :percentage, :userIds, :rollout, :stickiness],
+          scopes_attributes: [:environment_scope] }
       ]
     )
   end
@@ -125,15 +125,15 @@ class Projects::FeatureFlagsController < Projects::ApplicationController
         :environment_scope,
         :active,
         :_destroy,
-        strategies: [:name, parameters: [:groupId, :percentage, :userIds]]
+        { strategies: [:name, { parameters: [:groupId, :percentage, :userIds] }] }
       ],
       strategies_attributes: [
         :id,
         :name,
         :user_list_id,
         :_destroy,
-        parameters: [:groupId, :percentage, :userIds, :rollout, :stickiness],
-        scopes_attributes: [:id, :environment_scope, :_destroy]
+        { parameters: [:groupId, :percentage, :userIds, :rollout, :stickiness],
+          scopes_attributes: [:id, :environment_scope, :_destroy] }
       ]
     )
   end

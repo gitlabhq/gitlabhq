@@ -4,6 +4,13 @@
 # up to a given date (Date.today - 1 by default)
 # Required environment variables: USER_ID, GITLAB_QA_ACCESS_TOKEN and GITLAB_ADDRESS
 # Run `rake revoke_user_pats`
+#
+# @example
+#   # Do a dry run of revoking access tokens for gitlab-qa-user1 up to 2024-04-20
+#   GITLAB_ADDRESS=https://gitlab.com \
+#   GITLAB_QA_ACCESS_TOKEN=<token for gitlab-qa-user1> \
+#   USER_ID=<user id for gitlab-qa-user1> \
+#   bundle exec rake "revoke_user_pats[2024-04-20, true]"
 
 module QA
   module Tools
@@ -23,69 +30,84 @@ module QA
         @dry_run = dry_run
         @api_client = Runtime::API::Client.new(ENV['GITLAB_ADDRESS'],
           personal_access_token: ENV['GITLAB_QA_ACCESS_TOKEN'])
+        @page_no = '1'
       end
 
       def run
-        $stdout.puts 'Running...'
+        puts "Fetching QA access tokens for user (id: #{ENV['USER_ID']}) on #{ENV['GITLAB_ADDRESS']}..."
 
-        tokens_head_response = head Runtime::API::Request.new(@api_client,
-          "/personal_access_tokens?user_id=#{ENV['USER_ID']}",
-          per_page: "100").url
+        fetch_tokens do |tokens|
+          revoke_tokens(tokens) unless tokens.empty?
+        end
 
-        total_token_pages = tokens_head_response.headers[:x_total_pages]
-        total_tokens = tokens_head_response.headers[:x_total]
-
-        $stdout.puts "Total tokens: #{total_tokens}. Total pages: #{total_token_pages}"
-
-        tokens = fetch_tokens
-
-        revoke_tokens(tokens, @api_client, @dry_run) unless tokens.empty?
-        $stdout.puts "\nDone"
+        puts "\nDone"
       end
 
       private
 
+      attr_reader :dry_run, :page_no, :api_client
+      alias_method :dry_run?, :dry_run
+
       def fetch_tokens
         fetched_tokens = []
 
-        page_no = 1
+        while page_no.present?
+          puts "Page no: #{@page_no}"
 
-        while page_no > 0
-          tokens_response = get Runtime::API::Request.new(@api_client,
+          response = get Runtime::API::Request.new(@api_client,
             "/personal_access_tokens?user_id=#{ENV['USER_ID']}",
             page: page_no.to_s, per_page: "100").url
 
-          fetched_tokens
-            .concat(JSON.parse(tokens_response.body)
-                        .select { |token| Date.parse(token["created_at"]) < @revoke_before && token['active'] }
-                        .map { |token| { id: token["id"], name: token["name"], created_at: token["created_at"] } }
-                   )
+          if response.code != 200
+            puts "Failed to get tokens (response code: #{response.code}): #{response.body}"
+            exit 1
+          end
 
-          page_no = tokens_response.headers[:x_next_page].to_i
+          tokens = JSON.parse(response.body)
+            .select { |token| Date.parse(token["created_at"]) < @revoke_before }
+            .map do |token|
+              {
+                id: token["id"],
+                name: token["name"],
+                created_at: token["created_at"],
+                active: token['active']
+              }
+            end
+          fetched_tokens.concat(tokens)
+
+          # When we reach the last page, the x-next-page header is a blank string
+          @page_no = response.headers[:x_next_page].to_i
+
+          yield tokens if block_given?
+
+          if page_no.to_i > 100
+            puts "Finishing early to avoid timing out the CI job"
+            break
+          end
         end
 
         fetched_tokens
       end
 
-      def revoke_tokens(tokens, api_client, dry_run = false)
-        if dry_run
-          $stdout.puts "Following #{tokens.count} tokens would be revoked:"
+      def revoke_tokens(tokens)
+        if dry_run?
+          puts "Following #{tokens.count} tokens would be revoked:"
         else
-          $stdout.puts "Revoking #{tokens.count} tokens..."
+          puts "Revoking #{tokens.count} tokens..."
         end
 
         tokens.each do |token|
-          if dry_run
-            $stdout.puts "Token name: #{token[:name]}, id: #{token[:id]}, created at: #{token[:created_at]}"
+          if dry_run?
+            puts "Token name: #{token[:name]}, id: #{token[:id]}, created at: #{token[:created_at]}"
           else
             request_url = Runtime::API::Request.new(api_client, "/personal_access_tokens/#{token[:id]}").url
 
-            $stdout.puts "\nRevoking token with name: #{token[:name]}, " \
-             "id: #{token[:id]}, created at: #{token[:created_at]}"
+            print "Revoking token with name: #{token[:name]}, " \
+             "id: #{token[:id]}, created at: #{token[:created_at]} "
 
             delete_response = delete(request_url)
             dot_or_f = delete_response.code == 204 ? "\e[32m.\e[0m" : "\e[31mF - #{delete_response}\e[0m"
-            print dot_or_f
+            print "#{dot_or_f}\n"
           end
         end
       end

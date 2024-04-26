@@ -390,7 +390,7 @@ class Admin::UsersController < Admin::ApplicationController
       :website_url,
       :note,
       :private_profile,
-      credit_card_validation_attributes: [:credit_card_validated_at]
+      { credit_card_validation_attributes: [:credit_card_validated_at] }
     ]
   end
 

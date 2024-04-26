@@ -27,7 +27,7 @@ module Ci
       # `find_by_sql` performs a write in this case and we need to wrap it in
       # a transaction to stick to the primary database.
       Ci::DeletedObject.transaction do
-        Ci::DeletedObject.find_by_sql([next_batch_sql, new_pick_up_at: RETRY_IN.from_now])
+        Ci::DeletedObject.find_by_sql([next_batch_sql, { new_pick_up_at: RETRY_IN.from_now }])
       end
     end
     # rubocop: enable CodeReuse/ActiveRecord

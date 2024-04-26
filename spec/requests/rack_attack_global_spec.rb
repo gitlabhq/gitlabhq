@@ -185,8 +185,8 @@ RSpec.describe 'Rack Attack global throttles', :use_clean_rails_memory_store_cac
     let(:throttle_setting_prefix) { 'throttle_authenticated_web' }
 
     context 'with the token in the query string' do
-      let(:request_args) { [rss_url(user), params: nil] }
-      let(:other_user_request_args) { [rss_url(other_user), params: nil] }
+      let(:request_args) { [rss_url(user), { params: nil }] }
+      let(:other_user_request_args) { [rss_url(other_user), { params: nil }] }
 
       it_behaves_like 'rate-limited user based token-authenticated requests'
     end
@@ -654,8 +654,8 @@ RSpec.describe 'Rack Attack global throttles', :use_clean_rails_memory_store_cac
     let(:throttle_setting_prefix) { 'throttle_authenticated_web' }
     let(:jwt_token) { build_jwt(user) }
     let(:other_jwt_token) { build_jwt(other_user) }
-    let(:request_args) { [path, headers: jwt_token_authorization_headers(jwt_token)] }
-    let(:other_user_request_args) { [other_path, headers: jwt_token_authorization_headers(other_jwt_token)] }
+    let(:request_args) { [path, { headers: jwt_token_authorization_headers(jwt_token) }] }
+    let(:other_user_request_args) { [other_path, { headers: jwt_token_authorization_headers(other_jwt_token) }] }
 
     before do
       group.add_owner(user)

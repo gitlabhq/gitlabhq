@@ -127,7 +127,7 @@ module Projects
             :integrated,
             :api_host,
             :token,
-            project: [:slug, :name, :organization_slug, :organization_name, :sentry_project_id]
+            { project: [:slug, :name, :organization_slug, :organization_name, :sentry_project_id] }
           ]
         }
       end

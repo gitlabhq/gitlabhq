@@ -26075,6 +26075,9 @@ msgstr ""
 msgid "IdentityVerification|A new code has been sent."
 msgstr ""
 
+msgid "IdentityVerification|Before you can run concurrent pipelines, we need to verify your account."
+msgstr ""
+
 msgid "IdentityVerification|Before you finish creating your account, we need to verify your identity. On the verification page, enter the following code."
 msgstr ""
 
@@ -26213,6 +26216,9 @@ msgstr ""
 msgid "IdentityVerification|Verify email address"
 msgstr ""
 
+msgid "IdentityVerification|Verify my account"
+msgstr ""
+
 msgid "IdentityVerification|Verify payment method"
 msgstr ""
 
@@ -26229,6 +26235,9 @@ msgid "IdentityVerification|Verify your identity"
 msgstr ""
 
 msgid "IdentityVerification|We sent a new code to +%{phoneNumber}"
+msgstr ""
+
+msgid "IdentityVerification|We won't ask you for this information again. It will never be used for marketing purposes."
 msgstr ""
 
 msgid "IdentityVerification|We've sent a verification code to %{email}"
@@ -41718,6 +41727,9 @@ msgstr ""
 msgid "ProtectedEnvironment|Only specified users can execute deployments in a protected environment."
 msgstr ""
 
+msgid "ProtectedEnvironment|Parameter 'required_approval_count' is deprecated and shouldn't be used. See https://gitlab.com/groups/gitlab-org/-/epics/9662"
+msgstr ""
+
 msgid "ProtectedEnvironment|Parent group"
 msgstr ""
 
@@ -46798,6 +46810,9 @@ msgid "SecurityOrchestration|Unlinking a security project removes all policies s
 msgstr ""
 
 msgid "SecurityOrchestration|Update scan policies"
+msgstr ""
+
+msgid "SecurityOrchestration|Update via merge request"
 msgstr ""
 
 msgid "SecurityOrchestration|Use a merge request approval policy to create rules that check for security vulnerabilities and license compliance before merging a merge request."

@@ -2,3 +2,5 @@ include:
   - local: gems/gem.gitlab-ci.yml
     inputs:
       gem_name: "csv_builder"
+      # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/458131
+      skip_gem_validation: true

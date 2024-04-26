@@ -182,6 +182,7 @@ RSpec.describe 'Overview tab on a user profile', :js, feature_category: :user_pr
         visit user.username
         click_nav 'Followers'
       end
+
       it 'shows paginated followers' do
         page.within('#followers') do
           other_users.each_with_index do |follower, i|
@@ -242,6 +243,7 @@ RSpec.describe 'Overview tab on a user profile', :js, feature_category: :user_pr
         visit user.username
         click_nav 'Following'
       end
+
       it 'shows paginated following' do
         page.within('#following') do
           other_users.each_with_index do |followee, i|

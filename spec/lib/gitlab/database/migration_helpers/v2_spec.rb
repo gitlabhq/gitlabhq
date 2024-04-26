@@ -276,9 +276,9 @@ RSpec.describe Gitlab::Database::MigrationHelpers::V2, feature_category: :databa
     context 'when the renamed column exists' do
       let(:triggers) do
         [
-          ['trigger_020dbcb8cdd0', 'function_for_trigger_020dbcb8cdd0', before: 'insert'],
-          ['trigger_6edaca641d03', 'function_for_trigger_6edaca641d03', before: 'update'],
-          ['trigger_a3fb9f3add34', 'function_for_trigger_a3fb9f3add34', before: 'update']
+          ['trigger_020dbcb8cdd0', 'function_for_trigger_020dbcb8cdd0', { before: 'insert' }],
+          ['trigger_6edaca641d03', 'function_for_trigger_6edaca641d03', { before: 'update' }],
+          ['trigger_a3fb9f3add34', 'function_for_trigger_a3fb9f3add34', { before: 'update' }]
         ]
       end
 
