@@ -621,7 +621,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
 
             within_testid('mini-pipeline-graph-dropdown') do
               build_element = page.find('.ci-job-component [data-testid="job-name"]')
-              expect(build_element['title']).to eq('build - failed - (unknown failure)')
+              expect(build_element['title']).to eq('Failed - (unknown failure)')
             end
           end
         end

@@ -1,12 +1,12 @@
 ---
 data_category: optional
 key_path: analytics_unique_visits.i_analytics_instance_statistics
-description: Unique visitors to/admin/usage_trends
+description: Removed as duplicate of redis_hll_counters.analytics.i_analytics_instance_statistics_weekly
 product_section: dev
 product_stage: manage
 product_group: optimize
 value_type: number
-status: active
+status: removed
 time_frame: 7d
 data_source: redis_hll
 instrumentation_class: RedisHLLMetric
@@ -21,3 +21,5 @@ tier:
 - premium
 - ultimate
 milestone: "<13.9"
+milestone_removed: "17.0"
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150986

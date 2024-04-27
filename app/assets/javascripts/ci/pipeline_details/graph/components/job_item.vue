@@ -182,21 +182,11 @@ export default {
       return this.hasDetails ? 'job-with-link' : 'job-without-link';
     },
     tooltipText() {
-      const textBuilder = [];
-      const { name: jobName } = this.job;
-
-      if (jobName) {
-        textBuilder.push(jobName);
-      }
-
-      return textBuilder.join(' ');
-    },
-    jobStatusText() {
       if (!this.hideTooltip) {
         const textBuilder = [];
         const { tooltip: statusTooltip } = this.status;
 
-        if (this.hasDetails && statusTooltip) {
+        if (statusTooltip) {
           const statusText = statusTooltip.charAt(0).toUpperCase() + statusTooltip.slice(1);
 
           if (this.isDelayedJob) {
@@ -324,7 +314,7 @@ export default {
     <component
       :is="nameComponent"
       v-gl-tooltip.viewport.left
-      :title="jobStatusText"
+      :title="tooltipText"
       :class="jobClasses"
       :href="detailsPath"
       class="js-pipeline-graph-job-link menu-item gl-text-gray-900 gl-active-text-decoration-none gl-focus-text-decoration-none gl-hover-text-decoration-none gl-hover-bg-gray-50 gl-focus-bg-gray-50 gl-w-full"
@@ -337,7 +327,7 @@ export default {
         <div class="gl-pl-3 gl-pr-3 gl-display-flex gl-flex-direction-column gl-pipeline-job-width">
           <div
             class="gl-text-truncate gl-pr-9 gl-line-height-normal gl-text-left gl-text-gray-700"
-            :title="tooltipText"
+            :title="job.name"
           >
             {{ job.name }}
           </div>

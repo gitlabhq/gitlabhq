@@ -37,6 +37,8 @@ This chart contains several types of items:
 
 ```mermaid
   flowchart TB
+    accTitle: Component rendering
+    accDescr: Flowchart of how components are rendered in the GitLab front end
     classDef code font-family: monospace;
 
     A["diffs~~app.vue"]
@@ -310,6 +312,8 @@ it easier for the diffs app to render the diffs lines.
 
 ```mermaid
 graph TD
+    accTitle: Formatting diffs
+    accDescr: A flowchart of steps taken when rendering a diff, including retrieval and display preparations
     A[fetchDiffFilesBatch] -->
     B[commit SET_DIFF_DATA_BATCH] -->
     C[prepareDiffData] -->
@@ -348,6 +352,8 @@ This chart gives a brief overview of the pipeline that happens:
 
 ```mermaid
 graph TD
+    accTitle: Render queue pipeline
+    accDescr: Flowchart of the steps in the render queue pipeline
     A[startRenderDiffsQueue] -->B
     B[commit RENDER_FILE current file index] -->C
     C[canRenderNextFile?]

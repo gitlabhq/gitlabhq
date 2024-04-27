@@ -473,7 +473,7 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
 
     context 'when group has a parent' do
       it 'returns expected hash' do
-        expect(subgroup_creation_data(subgroup)).to eq({
+        expect(subgroup_creation_data(subgroup)).to include({
           import_existing_group_path: '/groups/new#import-group-pane',
           parent_group_name: name,
           parent_group_url: group_url(group),
@@ -484,7 +484,7 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
 
     context 'when group does not have a parent' do
       it 'returns expected hash' do
-        expect(subgroup_creation_data(group)).to eq({
+        expect(subgroup_creation_data(group)).to include({
           import_existing_group_path: '/groups/new#import-group-pane',
           parent_group_name: nil,
           parent_group_url: nil,

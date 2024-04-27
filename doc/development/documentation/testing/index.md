@@ -13,11 +13,12 @@ those used for code.
 
 Merge requests containing changes to Markdown (`.md`) files run these CI/CD jobs:
 
-- `docs-lint markdown`: Tests the documentation content with [Vale](vale.md),
-  the Markdown structure with [markdownlint](markdownlint.md), and other tests
-  [in `lint-docs.sh`](#tests-in-lint-docsh).
+- `docs-lint markdown`: Runs several types of tests, including:
+  - Documentation content: [Vale](vale.md)
+  - Markdown structure: [markdownlint](markdownlint.md)
+  - Miscellaneous tests: [`lint-docs.sh`](#tests-in-lint-docsh), including
+    [`mermaidlint`](#mermaid-chart-linting) for invalid Mermaid charts
 - `docs-lint links`: Checks the validity of internal links in the documentation suite.
-- `mermaidlint`: Checks for invalid Mermaid charts in the documentation.
 - `ui-docs-links lint`: Checks the validity of links from UI elements, such as files in `app/views` files.
 
 ## Tests in `lint-doc.sh`
@@ -36,6 +37,20 @@ The `docs-lint markdown` job fails if any of these `lint-doc.sh` tests fail:
 - Use `index.md` instead of `README.md`.
 - Directories and filenames must use underscores instead of dashes.
 - Directories and filenames must be in lower case.
+- Mermaid charts must render without errors.
+
+### Mermaid chart linting
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144328) in GitLab 16.10.
+
+[Mermaid](https://mermaid.js.org/) builds charts and diagrams from code.
+
+The script (`scripts/lint/check_mermaid.mjs`) runs during `lint-doc.sh` checks on
+all merge requests that contain changes to Markdown files. The script returns an
+error if any Markdown files return a Mermaid syntax error.
+
+To help debug your Mermaid charts, use the
+[Mermaid Live Editor](https://mermaid-js.github.io/mermaid-live-editor/edit).
 
 ## Tests in `docs-lint links`
 
@@ -66,19 +81,6 @@ For example, failures in the `internal_anchors` test follow this format:
 
 Check for multiple instances of the same broken link on each page reporting an error.
 Even if a specific broken link appears multiple times on a page, the test reports it only once.
-
-## Tests in `mermaidlint`
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144328) in GitLab 16.10.
-
-[Mermaid](https://mermaid.js.org/) builds charts and diagrams from code.
-
-The `mermaidlint` job runs on merge requests that contain changes to Markdown files.
-The script (`scripts/lint/check_mermaid.mjs`) returns an error if any Markdown
-files return a Mermaid syntax error.
-
-To help debug your Mermaid charts, use the
-[Mermaid Live Editor](https://mermaid-js.github.io/mermaid-live-editor/edit).
 
 ## Tests in `ui-docs-links lint`
 

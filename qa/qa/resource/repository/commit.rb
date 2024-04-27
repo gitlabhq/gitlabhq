@@ -4,14 +4,7 @@ module QA
   module Resource
     module Repository
       class Commit < Base
-        attr_accessor :author_email,
-          :author_name,
-          :branch,
-          :commit_message,
-          :file_path,
-          :sha,
-          :start_branch,
-          :actions
+        attr_accessor :branch, :commit_message, :file_path, :sha, :start_branch, :actions
 
         attribute :short_id
 
@@ -52,8 +45,6 @@ module QA
         def api_post_body
           {
             branch: branch || project.default_branch,
-            author_email: author_email || api_client.user&.email || Runtime::User.default_email,
-            author_name: author_name || api_client.user&.name || Runtime::User.username,
             commit_message: commit_message,
             actions: actions
           }.merge(new_branch)

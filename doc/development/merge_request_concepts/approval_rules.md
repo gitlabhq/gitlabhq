@@ -27,6 +27,8 @@ are added.
 
 ```mermaid
 erDiagram
+  accTitle: Approval rules data model
+  accDescr: Entity relationship diagram of approval rules
   Project ||--o{ MergeRequest: " "
   Project ||--o{ ApprovalProjectRule: " "
   ApprovalProjectRule }o--o{ User: " "
@@ -52,6 +54,8 @@ merge request approvals are defined here.
 
 ```mermaid
 erDiagram
+  accTitle: ApprovalState
+  accDescr: Entity relationship diagram between MergeRequest and ApprovalState
   MergeRequest ||--|| ApprovalState: " "
 ```
 
@@ -73,6 +77,8 @@ merge request (`ApprovalMergeRequestRule`) and wraps it as `ApprovalWrappedRule`
 
 ```mermaid
 erDiagram
+  accTitle: ApprovalProjectRule diagram
+  accDescr: Entity relationship diagram between projects and ApprovalProjectRule
   Project ||--o{ ApprovalProjectRule: " "
   ApprovalProjectRule }o--o{ User: " "
   ApprovalProjectRule }o--o{ Group: " "
@@ -94,6 +100,8 @@ for more information about the feature.
 
 ```mermaid
 erDiagram
+  accTitle: ApprovalMergeRequestRule diagram
+  accDescr: Entity relationship diagram between MergeRequest and ApprovalMergeRequestRule
   MergeRequest ||--o{ ApprovalMergeRequestRule: " "
   ApprovalMergeRequestRule }o--o{ User: " "
   ApprovalMergeRequestRule }o--o{ Group: " "
@@ -114,6 +122,8 @@ them from the `approval_project_rule` if not overridden.
 
 ```mermaid
 erDiagram
+  accTitle: ApprovalWrappedRule diagram
+  accDescr: Entity relationship diagram between ApprovalState and ApprovalWrappedRule
   ApprovalState ||--o{ ApprovalWrappedRule: " "
 ```
 
@@ -138,6 +148,8 @@ the merge request.
 
 ```mermaid
 erDiagram
+  accTitle: Approval diagram
+  accDescr: Entity relationship diagram between MergeRequest and Approval
   MergeRequest ||--o{ Approval: " "
 ```
 
@@ -250,6 +262,8 @@ straightforward.
 
 ```mermaid
 graph LR
+  accTitle: Merge request creation in the UI
+  accDescr: Flowchart of the creation of a merge request in the web UI, when the merge request contains approval rules
   Projects::MergeRequests::CreationsController --> MergeRequests::CreateService
   MergeRequests::CreateService --> ApprovalRules::ParamsFilteringService
   ApprovalRules::ParamsFilteringService --> MergeRequests::CreateService
@@ -270,6 +284,8 @@ and executes `MergeRequests::UpdateService` instead.
 
 ```mermaid
 graph LR
+  accTitle: Viewing approval rules on a merge request
+  accDescr: Flowchart of how the frontend retrieves, then displays, approval rule information on a merge request page
   API::MergeRequestApprovals --> MergeRequest
   MergeRequest --> ApprovalState
   ApprovalState --> id1{approval rules are overridden}
@@ -286,6 +302,8 @@ used to display information on the MR widget.
 
 ```mermaid
 graph LR
+  accTitle: Approval data flowchart
+  accDescr: Flowchart of how an approval call to the API reaches the database
   API::MergeRequestApprovals --> MergeRequests::ApprovalService
   MergeRequests::ApprovalService --> Approval
   Approval --> db[(Database)]

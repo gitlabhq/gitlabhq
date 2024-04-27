@@ -22,9 +22,7 @@ module QA
           project: @project,
           name: 'second',
           content: 'second file content',
-          commit_message: @commit_message,
-          author_name: @user.name,
-          author_email: @user.public_email)
+          commit_message: @commit_message)
       end
 
       def view_commit

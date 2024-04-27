@@ -216,7 +216,7 @@ describe('pipeline graph job item', () => {
       expect(findJobWithoutLink().attributes('title')).toBe('');
     });
 
-    it('should not render status label when it is  provided', () => {
+    it('should render status label when it is provided', () => {
       createWrapper({
         props: {
           job: {
@@ -231,7 +231,7 @@ describe('pipeline graph job item', () => {
         },
       });
 
-      expect(findJobWithoutLink().attributes('title')).toBe('');
+      expect(findJobWithoutLink().attributes('title')).toBe('Success');
     });
   });
 

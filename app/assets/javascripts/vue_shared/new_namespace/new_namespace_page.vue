@@ -1,9 +1,9 @@
 <script>
-import { GlBreadcrumb, GlIcon } from '@gitlab/ui';
+import { GlBreadcrumb, GlIcon, GlAlert } from '@gitlab/ui';
 import NewTopLevelGroupAlert from '~/groups/components/new_top_level_group_alert.vue';
-
 import SuperSidebarToggle from '~/super_sidebar/components/super_sidebar_toggle.vue';
 import { sidebarState, JS_TOGGLE_EXPAND_CLASS } from '~/super_sidebar/constants';
+import { s__ } from '~/locale';
 import LegacyContainer from './components/legacy_container.vue';
 import WelcomePage from './components/welcome.vue';
 
@@ -13,10 +13,14 @@ export default {
     NewTopLevelGroupAlert,
     GlBreadcrumb,
     GlIcon,
+    GlAlert,
     WelcomePage,
     LegacyContainer,
     SuperSidebarToggle,
   },
+
+  inject: ['identityVerificationRequired', 'identityVerificationPath'],
+
   props: {
     title: {
       type: String,
@@ -115,6 +119,18 @@ export default {
       }
     },
   },
+
+  i18n: {
+    restrictedAlert: {
+      title: s__(
+        'IdentityVerification|Before you can create additional groups, we need to verify your account.',
+      ),
+      description: s__(
+        `IdentityVerification|We won't ask you for this information again. It will never be used for marketing purposes.`,
+      ),
+      buttonText: s__('IdentityVerification|Verify my account'),
+    },
+  },
 };
 </script>
 
@@ -150,8 +166,21 @@ export default {
 
         <slot name="extra-description"></slot>
       </div>
-      <div>
+
+      <gl-alert
+        v-if="identityVerificationRequired"
+        :title="$options.i18n.restrictedAlert.title"
+        :dismissible="false"
+        :primary-button-text="$options.i18n.restrictedAlert.buttonText"
+        :primary-button-link="identityVerificationPath"
+        variant="danger"
+      >
+        {{ $options.i18n.restrictedAlert.description }}
+      </gl-alert>
+
+      <div v-else>
         <new-top-level-group-alert v-if="showNewTopLevelGroupAlert" />
+
         <legacy-container :key="activePanel.name" :selector="activePanel.selector" />
       </div>
     </template>

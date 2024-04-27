@@ -32,6 +32,8 @@ dependency prevents your work from merging too soon:
 
 ```mermaid
 graph TB
+  accTitle: Merge request dependencies
+  accDescr: Shows how a merge request dependency prevents work from merging too soon.
   A['me/myexample' project]
   B['myfriend/library' project]
   C[Merge request #1:<br>Create new version 2.5]
@@ -63,6 +65,8 @@ depends on `herfriend/another-lib!1`, which in turn depends on `mycorp/example!1
 
 ```mermaid
 graph LR;
+    accTitle: Merge request dependency chain
+    accDescr: Flowchart that shows how merge request A depends on merge request B, while merge request B depends on merge request C
     A[myfriend/library!10]-->|depends on| B[herfriend/another-lib!1]
     B-->|depends on| C[mycorp/example!100]
 ```

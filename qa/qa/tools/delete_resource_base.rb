@@ -29,7 +29,7 @@ module QA
 
         @api_client = Runtime::API::Client.new(ENV['GITLAB_ADDRESS'],
           personal_access_token: ENV['GITLAB_QA_ACCESS_TOKEN'])
-        @delete_before = Date.parse(ENV['DELETE_BEFORE'] || (Date.today - 3).to_s)
+        @delete_before = Date.parse(ENV['DELETE_BEFORE'] || (Date.today - 1).to_s)
         @dry_run = dry_run
         @type = nil
       end

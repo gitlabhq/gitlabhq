@@ -38,6 +38,11 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  tooltipConfig: {
+    boundary: 'viewport',
+    placement: 'top',
+    customClass: 'gl-pointer-events-none',
+  },
   props: {
     stage: {
       type: Object,
@@ -120,7 +125,8 @@ export default {
   >
     <template #toggle>
       <gl-button
-        v-gl-tooltip.ds0="isDropdownOpen ? '' : stage.title"
+        v-gl-tooltip.ds0="$options.tooltipConfig"
+        :title="isDropdownOpen ? '' : stage.title"
         variant="link"
         class="gl-rounded-full!"
         data-testid="mini-pipeline-graph-dropdown-toggle"

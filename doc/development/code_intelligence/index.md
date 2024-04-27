@@ -17,6 +17,9 @@ Here is a sequence diagram for uploading an LSIF artifact:
 
 ```mermaid
 sequenceDiagram
+    accTitle: Sequence diagram for LSIF artifact uploads
+    accDescr: The process of how Runner, Workhorse, Rails, and object storage work together to upload an artifact.
+
     participant Runner
     participant Workhorse
     participant Rails

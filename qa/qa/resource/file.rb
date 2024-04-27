@@ -3,12 +3,7 @@
 module QA
   module Resource
     class File < Base
-      attr_accessor :author_email,
-        :author_name,
-        :content,
-        :commit_message,
-        :name,
-        :start_branch
+      attr_accessor :content, :commit_message, :name, :start_branch
       attr_writer :branch
 
       attribute :project do
@@ -60,8 +55,6 @@ module QA
         {
           branch: branch,
           start_branch: start_branch,
-          author_email: @author_email || Runtime::User.default_email,
-          author_name: @author_name || Runtime::User.username,
           content: content,
           commit_message: commit_message
         }

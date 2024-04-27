@@ -36,11 +36,6 @@ export default {
   i18n: {
     runAgainTooltipText: s__('Pipeline|Run again'),
   },
-  tooltipConfig: {
-    boundary: 'viewport',
-    placement: 'top',
-    customClass: 'gl-pointer-events-none',
-  },
   components: {
     ActionComponent,
     JobNameComponent,
@@ -72,15 +67,6 @@ export default {
     },
   },
   computed: {
-    alternativeTooltipConfig() {
-      const boundary = this.dropdownLength === 1 ? 'viewport' : 'scrollParent';
-
-      return {
-        boundary,
-        placement: 'bottom',
-        customClass: 'gl-pointer-events-none',
-      };
-    },
     detailsPath() {
       return this.status?.details_path;
     },
@@ -96,28 +82,20 @@ export default {
     status() {
       return this.job?.status ? this.job.status : {};
     },
-    tooltipConfig() {
-      return this.hasDetails ? this.$options.tooltipConfig : this.alternativeTooltipConfig;
-    },
     tooltipText() {
       const textBuilder = [];
-      const { name: jobName } = this.job;
-
-      if (jobName) {
-        textBuilder.push(jobName);
-      }
-
       const { tooltip: statusTooltip } = this.status;
-      if (jobName && statusTooltip) {
-        textBuilder.push('-');
-      }
 
       if (statusTooltip) {
+        const statusText = statusTooltip.charAt(0).toUpperCase() + statusTooltip.slice(1);
+
         if (this.isDelayedJob) {
-          textBuilder.push(sprintf(statusTooltip, { remainingTime: this.remainingTime }));
+          textBuilder.push(sprintf(statusText, { remainingTime: this.remainingTime }));
         } else {
-          textBuilder.push(statusTooltip);
+          textBuilder.push(statusText);
         }
+      } else {
+        textBuilder.push(this.status?.text);
       }
 
       return textBuilder.join(' ');
@@ -165,7 +143,7 @@ export default {
         class="gl-display-flex gl-align-items-center gl-justify-content-space-between gl-mt-n2 gl-mb-n2 gl-ml-n2"
       >
         <job-name-component
-          v-gl-tooltip="tooltipConfig"
+          v-gl-tooltip.viewport.left
           :title="tooltipText"
           :name="job.name"
           :status="job.status"

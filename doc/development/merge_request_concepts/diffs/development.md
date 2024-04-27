@@ -34,6 +34,8 @@ to [Gitaly](../../gitaly.md). Additionally, they provide a logical place for:
 
 ```mermaid
 erDiagram
+  accTitle: Data model of diffs
+  accDescr: Data model of the four ActiveRecord models used in diffs
   MergeRequest ||--|{ MergeRequestDiff: ""
   MergeRequestDiff |{--|{ MergeRequestDiffCommit: ""
   MergeRequestDiff |{--|| MergeRequestDiffDetail: ""
@@ -192,6 +194,8 @@ This flowchart shows a basic explanation of how each component is used in this c
 
 ```mermaid
 flowchart TD
+    accTitle: Flowchart of generating a new diff version
+    accDescr: High-level flowchart of components used when creating a new diff version, based on a Git push to a branch
     A[PostReceive worker] --> B[MergeRequests::RefreshService]
     B --> C[Reload diff of merge requests]
     C --> D[Create merge request diff]
@@ -217,6 +221,8 @@ This sequence diagram shows a more detailed explanation of this flow.
 
 ```mermaid
 sequenceDiagram
+    accTitle: Data flow of building a new diff
+    accDescr: Detailed model of the data flow through the components that build a new diff version
     PostReceive-->>+MergeRequests_RefreshService: execute()
     Note over MergeRequests_RefreshService: Reload diff of merge requests
     MergeRequests_RefreshService-->>+MergeRequest: reload_diff()
@@ -274,6 +280,8 @@ a `HEAD` diff.
 
 ```mermaid
 flowchart TD
+    accTitle: Generating a HEAD diff (high-level view)
+    accDescr: High-level flowchart of components used when generating a HEAD diff
     A[MergeRequestMergeabilityCheckWorker] --> B[MergeRequests::MergeabilityCheckService]
     B --> C[Merge changes to ref]
     C --> L[Gitaly]
@@ -298,6 +306,8 @@ This sequence diagram shows a more detailed explanation of this flow.
 
 ```mermaid
 sequenceDiagram
+    accTitle: Generating a HEAD diff (detail view)
+    accDescr: Detailed sequence diagram of generating a new HEAD diff
     MergeRequestMergeabilityCheckWorker-->>+MergeRequests_MergeabilityCheckService: execute()
     Note over MergeRequests_MergeabilityCheckService: Merge changes to ref
     MergeRequests_MergeabilityCheckService-->>+MergeRequests_MergeToRefService: execute()
@@ -356,6 +366,8 @@ This flowchart shows a basic explanation of how each component is used in a
 
 ```mermaid
 flowchart TD
+    accTitle: Viewing a diff
+    accDescr: High-level flowchart a diffs_batch request, which renders diffs for browser display
     A[Frontend] --> B[diffs_batch.json]
     B --> C[Preload diffs and ivars]
     C -->D[Gitaly]
@@ -383,6 +395,8 @@ have the same flow.
 
 ```mermaid
 sequenceDiagram
+    accTitle: Viewing the most recent diff
+    accDescr: Sequence diagram showing how a particular diff is chosen for display, first with the HEAD diff, then the latest diff, followed by a specific version if it's requested
     Frontend-->>+.#diffs_batch: API call
     Note over .#diffs_batch: Preload diffs and ivars
     .#diffs_batch-->>+.#define_diff_vars: before_action
@@ -432,6 +446,8 @@ However, if **Show whitespace changes** is not selected when viewing diffs:
 
 ```mermaid
 sequenceDiagram
+    accTitle: Viewing diffs without whitespace changes
+    accDescr: Sequence diagram showing how a particular diff is chosen for display, if whitespace changes are not requested - first with the HEAD diff, then the latest diff, followed by a specific version if it's requested
     Frontend-->>+.#diffs_batch: API call
     Note over .#diffs_batch: Preload diffs and ivars
     .#diffs_batch-->>+.#define_diff_vars: before_action
@@ -486,6 +502,8 @@ diff versions. It also doesn't use Redis for highlight and stats caches.
 
 ```mermaid
 sequenceDiagram
+    accTitle: Comparing diffs
+    accDescr: Sequence diagram of how diffs are compared against each other
     Frontend-->>+.#diffs_batch: API call
     Note over .#diffs_batch: Preload diffs and ivars
     .#diffs_batch-->>+.#define_diff_vars: before_action
@@ -529,6 +547,8 @@ also doesn't use Redis for the highlight and stats caches.
 
 ```mermaid
 sequenceDiagram
+    accTitle: Viewing commit diff
+    accDescr: Sequence diagram showing how viewing the diff of a specific commit is different from the default diff view flow
     Frontend-->>+.#diffs_batch: API call
     Note over .#diffs_batch: Preload diffs and ivars
     .#diffs_batch-->>+.#define_diff_vars: before_action
@@ -576,6 +596,8 @@ This flowchart shows a basic explanation of how each component is used in a
 
 ```mermaid
 flowchart TD
+    accTitle: Diff request flow (high level)
+    accDescr: High-level flowchart of the components used in a diffs request
     A[Frontend] --> B[diffs.json]
     B --> C[Build merge request]
     C --> D[Get diffs]
@@ -588,6 +610,8 @@ This sequence diagram shows a more detailed explanation of this flow.
 
 ```mermaid
 sequenceDiagram
+    accTitle: Diff request flow (low level)
+    accDescr: Sequence diagram with a deeper view of the components used in a diffs request
     Frontend-->>+.#diffs: API call
     Note over .#diffs: Build merge request
     .#diffs-->>+MergeRequests_BuildService: execute
