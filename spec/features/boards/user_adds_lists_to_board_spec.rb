@@ -37,7 +37,7 @@ RSpec.describe 'User adds lists', :js, feature_category: :team_planning do
     end
 
     it 'creates new column for label containing labeled issue', :aggregate_failures do
-      click_button 'Create list'
+      click_button 'New list'
       wait_for_all_requests
 
       select_label(group_label)
@@ -47,12 +47,12 @@ RSpec.describe 'User adds lists', :js, feature_category: :team_planning do
     end
 
     it 'creates new list for Backlog and closed labels' do
-      click_button 'Create list'
+      click_button 'New list'
       wait_for_requests
 
       select_label(backlog)
 
-      click_button 'Create list'
+      click_button 'New list'
       wait_for_requests
 
       select_label(closed)

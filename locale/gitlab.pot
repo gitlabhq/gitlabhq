@@ -8815,6 +8815,9 @@ msgstr ""
 msgid "Boards|Failed to fetch blocking %{issuableType}s"
 msgstr ""
 
+msgid "Boards|Got it"
+msgstr ""
+
 msgid "Boards|Move to end of list"
 msgstr ""
 
@@ -8830,10 +8833,16 @@ msgstr ""
 msgid "Boards|Retrieving blocking %{issuableType}s"
 msgstr ""
 
+msgid "Boards|The \"New list\" button has moved"
+msgstr ""
+
 msgid "Boards|View all blocking %{issuableType}s"
 msgstr ""
 
 msgid "Boards|View scope"
+msgstr ""
+
+msgid "Boards|You can add a new list to the board here"
 msgstr ""
 
 msgid "Board|Are you sure you want to delete this board?"
@@ -15157,9 +15166,6 @@ msgid "Create issue"
 msgstr ""
 
 msgid "Create label"
-msgstr ""
-
-msgid "Create list"
 msgstr ""
 
 msgid "Create lists from labels. Issues with that label appear in that list."
@@ -51894,9 +51900,6 @@ msgid "The license was successfully uploaded and will be active from %{starts_at
 msgstr ""
 
 msgid "The license you uploaded is invalid. If the issue persists, contact support at %{link}."
-msgstr ""
-
-msgid "The list creation wizard is already open"
 msgstr ""
 
 msgid "The map can not be displayed because there was an error loading the GeoJSON file."

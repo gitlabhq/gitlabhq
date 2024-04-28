@@ -4,6 +4,7 @@ import { sortBy } from 'lodash';
 import produce from 'immer';
 import Draggable from 'vuedraggable';
 import BoardAddNewColumn from 'ee_else_ce/boards/components/board_add_new_column.vue';
+import BoardAddNewColumnTrigger from '~/boards/components/board_add_new_column_trigger.vue';
 import { s__ } from '~/locale';
 import { defaultSortableOptions, DRAG_DELAY } from '~/sortable/constants';
 import {
@@ -20,6 +21,7 @@ export default {
   draggableItemTypes: DraggableItemTypes,
   components: {
     BoardAddNewColumn,
+    BoardAddNewColumnTrigger,
     BoardColumn,
     BoardContentSidebar: () => import('~/boards/components/board_content_sidebar.vue'),
     EpicBoardContentSidebar: () =>
@@ -217,7 +219,14 @@ export default {
         @setFilters="$emit('setFilters', $event)"
       />
 
-      <transition name="slide" @after-enter="afterFormEnters">
+      <transition mode="out-in" name="slide" @after-enter="afterFormEnters">
+        <div v-if="!addColumnFormVisible" class="gl-display-inline-block gl-pr-3">
+          <board-add-new-column-trigger
+            v-if="canAdminList"
+            :is-new-list-showing="addColumnFormVisible"
+            @setAddColumnFormVisibility="$emit('setAddColumnFormVisibility', $event)"
+          />
+        </div>
         <board-add-new-column
           v-if="addColumnFormVisible"
           :board-id="boardId"
@@ -241,6 +250,18 @@ export default {
       @move-list="updateListPosition"
       @setFilters="$emit('setFilters', $event)"
     >
+      <template #create-list-button>
+        <div
+          v-if="!addColumnFormVisible"
+          class="gl-mt-5 gl-display-inline-block gl-px-3 gl-sticky gl-top-5"
+        >
+          <board-add-new-column-trigger
+            v-if="canAdminList"
+            :is-new-list-showing="addColumnFormVisible"
+            @setAddColumnFormVisibility="$emit('setAddColumnFormVisibility', $event)"
+          />
+        </div>
+      </template>
       <board-add-new-column
         v-if="addColumnFormVisible"
         class="gl-sticky gl-top-5"

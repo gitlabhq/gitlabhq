@@ -1,5 +1,4 @@
 <script>
-import BoardAddNewColumnTrigger from '~/boards/components/board_add_new_column_trigger.vue';
 import { s__ } from '~/locale';
 import BoardsSelector from 'ee_else_ce/boards/components/boards_selector.vue';
 import IssueBoardFilteredSearch from 'ee_else_ce/boards/components/issue_board_filtered_search.vue';
@@ -12,7 +11,6 @@ import ToggleFocus from './toggle_focus.vue';
 
 export default {
   components: {
-    BoardAddNewColumnTrigger,
     BoardsSelector,
     IssueBoardFilteredSearch,
     ConfigToggle,
@@ -25,7 +23,6 @@ export default {
   },
   inject: [
     'swimlanesFeatureAvailable',
-    'canAdminList',
     'isSignedIn',
     'isIssueBoard',
     'fullPath',
@@ -35,10 +32,6 @@ export default {
   props: {
     boardId: {
       type: String,
-      required: true,
-    },
-    addColumnFormVisible: {
-      type: Boolean,
       required: true,
     },
     isSwimlanesOn: {
@@ -140,11 +133,7 @@ export default {
           />
         </div>
         <config-toggle @showBoardModal="setCurrentForm" />
-        <board-add-new-column-trigger
-          v-if="canAdminList"
-          :is-new-list-showing="addColumnFormVisible"
-          @setAddColumnFormVisibility="$emit('setAddColumnFormVisibility', $event)"
-        />
+
         <toggle-focus />
       </div>
     </div>

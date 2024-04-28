@@ -6,7 +6,6 @@ import waitForPromises from 'helpers/wait_for_promises';
 
 import { formType } from '~/boards/constants';
 import BoardTopBar from '~/boards/components/board_top_bar.vue';
-import BoardAddNewColumnTrigger from '~/boards/components/board_add_new_column_trigger.vue';
 import BoardsSelector from '~/boards/components/boards_selector.vue';
 import ConfigToggle from '~/boards/components/config_toggle.vue';
 import IssueBoardFilteredSearch from '~/boards/components/issue_board_filtered_search.vue';
@@ -52,7 +51,6 @@ describe('BoardTopBar', () => {
       },
       provide: {
         swimlanesFeatureAvailable: false,
-        canAdminList: false,
         isSignedIn: false,
         fullPath: 'gitlab-org',
         boardType: 'group',
@@ -99,10 +97,6 @@ describe('BoardTopBar', () => {
       expect(wrapper.findComponent(ToggleFocus).exists()).toBe(true);
     });
 
-    it('does not render BoardAddNewColumnTrigger component', () => {
-      expect(wrapper.findComponent(BoardAddNewColumnTrigger).exists()).toBe(false);
-    });
-
     it('emits setFilters when setFilters is emitted by filtered search', () => {
       wrapper.findComponent(IssueBoardFilteredSearch).vm.$emit('setFilters');
       expect(wrapper.emitted('setFilters')).toHaveLength(1);
@@ -117,16 +111,6 @@ describe('BoardTopBar', () => {
       wrapper.findComponent(ConfigToggle).vm.$emit('showBoardModal', formType.edit);
       await nextTick();
       expect(findBoardsSelector().props('boardModalForm')).toEqual(formType.edit);
-    });
-  });
-
-  describe('when user can admin list', () => {
-    beforeEach(() => {
-      createComponent({ provide: { canAdminList: true } });
-    });
-
-    it('renders BoardAddNewColumnTrigger component', () => {
-      expect(wrapper.findComponent(BoardAddNewColumnTrigger).exists()).toBe(true);
     });
   });
 

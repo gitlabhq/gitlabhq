@@ -139,7 +139,6 @@ export default {
   <div class="boards-app gl-relative" :class="{ 'is-compact': isAnySidebarOpen }">
     <board-top-bar
       :board-id="boardId"
-      :add-column-form-visible="addColumnFormVisible"
       :is-swimlanes-on="isSwimlanesOn"
       :filters="filterParams"
       @switchBoard="switchBoard"
