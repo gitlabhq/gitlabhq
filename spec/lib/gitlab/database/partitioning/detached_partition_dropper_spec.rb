@@ -42,13 +42,13 @@ RSpec.describe Gitlab::Database::Partitioning::DetachedPartitionDropper do
   end
 
   def create_partition(name:, from:, to:, attached:, drop_after:, table: :_test_parent_table)
-    from = from.beginning_of_month
-    to = to.beginning_of_month
+    from = from.beginning_of_month.to_date
+    to = to.beginning_of_month.to_date
     full_name = "#{Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA}.#{name}"
     connection.execute(<<~SQL)
       CREATE TABLE #{full_name}
       PARTITION OF #{table}
-      FOR VALUES FROM ('#{from.strftime('%Y-%m-%d')}') TO ('#{to.strftime('%Y-%m-%d')}')
+      FOR VALUES FROM ('#{from.iso8601}') TO ('#{to.iso8601}')
     SQL
 
     unless attached

@@ -449,7 +449,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
 
   describe 'PUT /projects/:id/issues/:issue_iid to update due date' do
     it 'creates a new project issue', :aggregate_failures do
-      due_date = 2.weeks.from_now.strftime('%Y-%m-%d')
+      due_date = 2.weeks.from_now.to_date.iso8601
 
       put api_for_user, params: { due_date: due_date }
 

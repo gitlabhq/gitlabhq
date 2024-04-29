@@ -17,7 +17,7 @@ RSpec.describe 'Update of an existing issue', feature_category: :team_planning d
       'title' => 'new title',
       'description' => 'new description',
       'confidential' => true,
-      'dueDate' => Date.tomorrow.strftime('%Y-%m-%d'),
+      'dueDate' => Date.tomorrow.iso8601,
       'type' => 'ISSUE'
     }
   end

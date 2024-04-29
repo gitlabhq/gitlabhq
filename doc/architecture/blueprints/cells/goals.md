@@ -55,9 +55,8 @@ We should evaluate if the small to medium business and mid-market segment is int
 ### Self-managed
 
 For reasons of consistency, it is expected that self-managed instances will
-adopt the cells architecture as well. To expand, self-managed instances can
-continue with just a single Cell while supporting the option of adding additional
-Cells. Organizations, and possible User decomposition will also be adopted for
+adopt the single cell architecture as well. Self-managed instances can
+continue with just a single Cell without needing the additional Cell services like routing or topology. Organizations, and possible User decomposition will also be adopted for
 self-managed instances.
 
 ## Requirements

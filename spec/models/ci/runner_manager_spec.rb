@@ -497,7 +497,7 @@ RSpec.describe Ci::RunnerManager, feature_category: :fleet_visibility, type: :mo
           expect(Ci::Runners::ProcessRunnerVersionUpdateWorker).not_to have_received(:perform_async)
         end
 
-        Ci::Runner::EXECUTOR_NAME_TO_TYPES.each_key do |executor|
+        described_class::EXECUTOR_NAME_TO_TYPES.each_key do |executor|
           context "with #{executor} executor" do
             let(:executor) { executor }
 

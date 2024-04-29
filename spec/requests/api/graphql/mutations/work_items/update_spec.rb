@@ -893,7 +893,7 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
               expect(mutation_response['workItem']['title']).to eq('Foo')
               expect(mutation_response['workItem']['widgets']).to include(
                 'type' => 'START_AND_DUE_DATE',
-                'dueDate' => Date.tomorrow.strftime('%Y-%m-%d'),
+                'dueDate' => Date.tomorrow.iso8601,
                 'startDate' => nil
               )
             end

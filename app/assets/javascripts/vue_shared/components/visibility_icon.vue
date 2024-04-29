@@ -1,5 +1,6 @@
 <script>
 import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
+import { __ } from '~/locale';
 import {
   GROUP_VISIBILITY_TYPE,
   PROJECT_VISIBILITY_TYPE,
@@ -30,10 +31,17 @@ export default {
     },
   },
   computed: {
+    isBannedProject() {
+      return !this.isGroup && this.visibilityLevel === 'banned';
+    },
     visibilityIcon() {
-      return VISIBILITY_TYPE_ICON[this.visibilityLevel];
+      return this.isBannedProject ? 'spam' : VISIBILITY_TYPE_ICON[this.visibilityLevel];
     },
     visibilityTooltip() {
+      if (this.isBannedProject) {
+        return __('This project is hidden because its creator has been banned');
+      }
+
       if (this.isGroup) {
         return GROUP_VISIBILITY_TYPE[this.visibilityLevel];
       }

@@ -7,7 +7,7 @@ module Ci
 
       def initialize(registration_token, attributes)
         @registration_token = registration_token
-        @attributes = attributes
+        @attributes = attributes.except(*deprecated_columns)
       end
 
       def execute
@@ -37,6 +37,12 @@ module Ci
       private
 
       attr_reader :registration_token, :attributes
+
+      def deprecated_columns
+        return [] unless Feature.enabled?(:hide_duplicate_runner_manager_fields_in_runner)
+
+        %i[version revision platform architecture ip_address executor config]
+      end
 
       def attrs_from_token
         if runner_registration_token_valid?(registration_token)

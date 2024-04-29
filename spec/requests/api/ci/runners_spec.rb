@@ -152,12 +152,11 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
         it 'filters runners by scope' do
           get api('/runners/all?scope=shared', admin, admin_mode: true)
 
-          shared = json_response.all? { |r| r['is_shared'] }
           expect(response).to have_gitlab_http_status(:ok)
           expect(response).to include_pagination_headers
-          expect(json_response).to be_an Array
-          expect(json_response[0]).to have_key('ip_address')
-          expect(shared).to be_truthy
+          expect(json_response).to contain_exactly(
+            a_hash_including('description' => 'Shared runner', 'is_shared' => true)
+          )
         end
 
         it 'filters runners by scope' do

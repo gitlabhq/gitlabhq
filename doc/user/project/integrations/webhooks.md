@@ -11,30 +11,19 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-[Webhooks](https://en.wikipedia.org/wiki/Webhook) are custom HTTP callbacks
-that you define. They are usually triggered by an
-event, such as pushing code to a repository or posting a comment on an issue.
-When the event occurs, the source app makes an HTTP request to the URI
-configured for the webhook. The action to take may be anything. For example,
-you can use webhooks to:
+Webhooks are custom HTTP callbacks triggered by an event
+such as pushing code to a repository or posting a comment on an issue.
+Webhooks send JSON data about the event to the URI configured for the webhook.
+For more information about these events and the JSON data sent in the webhook payload,
+see [webhook events](webhook_events.md).
+
+You can use webhooks to:
 
 - Trigger continuous integration (CI) jobs, update external issue trackers,
   update a backup mirror, or deploy to your production server.
-- Send a notification to
-  [Slack](https://api.slack.com/incoming-webhooks) every time a job fails.
 - [Integrate with Twilio to be notified via SMS](https://www.datadoghq.com/blog/send-alerts-sms-customizable-webhooks-twilio/)
   every time an issue is created for a specific project or group in GitLab.
 - [Automatically assign labels to merge requests](https://about.gitlab.com/blog/2016/08/19/applying-gitlab-labels-automatically/).
-
-You can configure your GitLab project or [group](#group-webhooks) to trigger a
-[percent-encoded](https://developer.mozilla.org/en-US/docs/Glossary/percent-encoding) webhook URL
-when an event occurs. For example, when new code is pushed or a new issue is created. The webhook
-listens for specific [events](#events) and GitLab sends a POST request with data to the webhook URL.
-
-Usually, you set up your own [webhook receiver](#create-an-example-webhook-receiver)
-to receive information from GitLab and send it to another app, according to your requirements.
-We have a [built-in receiver](gitlab_slack_application.md#slack-notifications)
-for sending [Slack](https://api.slack.com/incoming-webhooks) notifications per project.
 
 GitLab.com enforces [webhook limits](../../../user/gitlab_com/index.md#webhooks),
 including:
@@ -59,20 +48,22 @@ specific to a group, including:
 - [Group member events](webhook_events.md#group-member-events)
 - [Subgroup events](webhook_events.md#subgroup-events)
 
-## Configure a webhook in GitLab
+## Configure webhooks in GitLab
 
-To configure a webhook for a project or group:
+### Create a webhook
+
+To create a webhook for a project or group:
 
 1. In your project or group, on the left sidebar, select **Settings > Webhooks**.
 1. Select **Add new webhook**.
 1. In **URL**, enter the URL of the webhook endpoint.
    The URL must be percent-encoded if it contains one or more special characters.
-1. In **Secret token**, enter the [secret token](#validate-payloads-by-using-a-secret-token) to validate payloads.
+1. In **Secret token**, enter the [secret token](#validate-payloads-with-a-secret-token) to validate payloads.
 1. In the **Trigger** section, select the [events](webhook_events.md) to trigger the webhook.
 1. Optional. Clear the **Enable SSL verification** checkbox to disable [SSL verification](index.md#ssl-verification).
 1. Select **Add webhook**.
 
-## Mask sensitive portions of webhook URLs
+### Mask sensitive portions of webhook URLs
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/99995) in GitLab 15.5 [with a flag](../../../administration/feature_flags.md) named `webhook_form_mask_url`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/376106) in GitLab 15.6.
@@ -107,7 +98,7 @@ You can define URL variables directly with the REST API.
 The host portion of the URL (such as `webhook.example.com`) must remain valid without using a mask variable.
 Otherwise, a `URI is invalid` error occurs.
 
-## Custom headers
+### Custom headers
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146702) in GitLab 16.11 [with a flag](../../../administration/feature_flags.md) named `custom_webhook_headers`. Enabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/448604) in GitLab 17.0. Feature flag `custom_webhook_headers` removed.
@@ -124,7 +115,7 @@ The header name must:
 
 Custom headers appear in [recent deliveries](#recently-triggered-webhook-payloads-in-gitlab-settings) with masked values.
 
-## Custom webhook template
+### Custom webhook template
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142738) in GitLab 16.10 [with a flag](../../../administration/feature_flags.md) named `custom_webhook_template`. Enabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/439610) in GitLab 17.0. Feature flag `custom_webhook_template` removed.
@@ -153,7 +144,31 @@ You'll have this request payload that combines the template with a `push` event:
 }
 ```
 
-## Configure your webhook receiver endpoint
+### Validate payloads with a secret token
+
+You can specify a secret token to validate received payloads.
+The token is sent with the hook request in the
+`X-Gitlab-Token` HTTP header. Your webhook endpoint can check the token to verify
+that the request is legitimate.
+
+### Filter push events by branch
+
+You can filter push events by branch. Use one of the following options to filter which push events are sent to your webhook endpoint:
+
+- **All branches**: push events from all branches.
+- **Wildcard pattern**: push events from a branch that matches a wildcard pattern (for example, `*-stable` or `production/*`).
+- **Regular expression**: push events from a branch that matches a regular expression (regex).
+  The regex pattern must follow the [RE2 syntax](https://github.com/google/re2/wiki/Syntax).
+  For example, to exclude `main`, you can use:
+
+  ```plaintext
+  \b(?:m(?!ain\b)|ma(?!in\b)|mai(?!n\b)|[a-l]|[n-z])\w*|\b\w{1,3}\b|\W+
+  ```
+
+To configure branch filtering for a project or group, see
+[Configure a webhook in GitLab](#configure-webhooks-in-gitlab)
+
+## Webhook receiver requirements
 
 Webhook receiver endpoints should be fast and stable.
 Slow and unstable receivers might be [disabled automatically](#auto-disabled-webhooks) to ensure system reliability. Webhooks that fail might lead to [duplicate events](#webhook-fails-or-multiple-webhook-requests-are-triggered).
@@ -242,11 +257,66 @@ You can also test a webhook from its edit page.
 
 ![Webhook testing](img/webhook_testing.png)
 
-## Create an example webhook receiver
+## Delivery headers
 
-To test how GitLab webhooks work, you can use
-an echo script running in a console session. For the following script to
-work you must have Ruby installed.
+> - `X-Gitlab-Event-UUID` header [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/329743) in GitLab 14.8.
+> - `X-Gitlab-Instance` header [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31333) in GitLab 15.5.
+> - `X-Gitlab-Webhook-UUID` header [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/230830) in GitLab 16.2.
+
+Webhook requests to your endpoint include the following headers:
+
+| Header | Description | Example |
+| ------ | ------ | ------ |
+| `User-Agent` | User agent in the format `"Gitlab/<VERSION>"`. | `"GitLab/15.5.0-pre"` |
+| `X-Gitlab-Instance` | Hostname of the GitLab instance that sent the webhook. | `"https://gitlab.com"` |
+| `X-Gitlab-Webhook-UUID` | Unique ID per webhook. | `"02affd2d-2cba-4033-917d-ec22d5dc4b38"` |
+| `X-Gitlab-Event` | Name of the webhook type. Corresponds to [event types](webhook_events.md) but in the format `"<EVENT> Hook"`. | `"Push Hook"` |
+| `X-Gitlab-Event-UUID` | Unique ID per webhook that is not recursive. A hook is recursive if triggered by an earlier webhook that hit the GitLab instance. Recursive webhooks have the same value for this header. | `"13792a34-cac6-4fda-95a8-c58e00a3954e"` |
+
+## Debug webhooks
+
+To debug GitLab webhooks and capture payloads, you can use:
+
+- [Public webhook inspection and testing tools](#public-webhook-inspection-and-testing-tools)
+- [The GitLab Development Kit (GDK)](#gitlab-development-kit-gdk)
+- [Recently triggered webhook payloads in GitLab settings](#recently-triggered-webhook-payloads-in-gitlab-settings)
+- [A private webhook receiver](#create-a-private-webhook-receiver)
+
+For information about webhook events and the JSON data sent in the webhook payload,
+see [webhook events](webhook_events.md).
+
+### Public webhook inspection and testing tools
+
+You can use public tools to inspect and test webhook payloads. These tools act as catch-all endpoints for HTTP requests and respond with a `200 OK` HTTP status code. You can use these payloads to develop your webhook services.
+
+You should exercise caution when using these tools as you might be sending sensitive data to external tools.
+You should use test tokens with these tools and rotate any secrets inadvertently sent to a third party.
+To keep your webhook payloads private, [create a private webhook receiver](#create-a-private-webhook-receiver) instead.
+
+These public tools include:
+
+- [Beeceptor](https://beeceptor.com) to create a temporary HTTPS endpoint and inspect incoming payloads
+- [Webhook.site](https://webhook.site) to review incoming payloads
+- [Webhook Tester](https://webhook-test.com) to inspect and debug incoming payloads
+
+### GitLab Development Kit (GDK)
+
+For a safer development environment, you can use the [GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit) to develop against GitLab webhooks locally. With the GDK, you can send webhooks from your local GitLab instance to a webhook receiver running locally on your machine. To use this approach, you must install and configure the GDK.
+
+### Recently triggered webhook payloads in GitLab settings
+
+You can [review recently triggered webhook payloads](#troubleshooting) in GitLab settings. For each webhook event, a detail page exists with information about the data GitLab sends and receives from the webhook endpoint.
+
+### Create a private webhook receiver
+
+Prerequisites:
+
+- You must have Ruby installed.
+
+If you cannot send webhook payloads to a [public receiver](#public-webhook-inspection-and-testing-tools),
+you can create your own private webhook receiver.
+
+To create a private webhook receiver:
 
 1. Save the following file as `print_http_body.rb`:
 
@@ -270,7 +340,7 @@ work you must have Ruby installed.
    ruby print_http_body.rb 8000
    ```
 
-1. In GitLab, [configure the webhook](#configure-a-webhook-in-gitlab) and add your
+1. In GitLab, [configure the webhook](#configure-webhooks-in-gitlab) and add your
    receiver's URL, for example, `http://receiver.example.com:8000/`.
 
 1. Select **Test**. You should see something like this in the console:
@@ -284,30 +354,6 @@ work you must have Ruby installed.
 NOTE:
 You may need to [allow requests to the local network](../../../security/webhooks.md) for this
 receiver to be added.
-
-## Validate payloads by using a secret token
-
-You can specify a secret token to validate received payloads.
-The token is sent with the hook request in the
-`X-Gitlab-Token` HTTP header. Your webhook endpoint can check the token to verify
-that the request is legitimate.
-
-## Filter push events by branch
-
-You can filter push events by branch. Use one of the following options to filter which push events are sent to your webhook endpoint:
-
-- **All branches**: push events from all branches.
-- **Wildcard pattern**: push events from a branch that matches a wildcard pattern (for example, `*-stable` or `production/*`).
-- **Regular expression**: push events from a branch that matches a regular expression (regex).
-  The regex pattern must follow the [RE2 syntax](https://github.com/google/re2/wiki/Syntax).
-  For example, to exclude `main`, you can use:
-
-  ```plaintext
-  \b(?:m(?!ain\b)|ma(?!in\b)|mai(?!n\b)|[a-l]|[n-z])\w*|\b\w{1,3}\b|\W+
-  ```
-
-To configure branch filtering for a project or group, see
-[Configure a webhook in GitLab](#configure-a-webhook-in-gitlab).
 
 ## How image URLs are displayed in the webhook body
 
@@ -336,54 +382,6 @@ Image URLs are not rewritten if:
 - They already point to HTTP, HTTPS, or
   protocol-relative URLs.
 - They use advanced Markdown features like link labels.
-
-## Events
-
-For more information about supported events for webhooks, see [webhook events](webhook_events.md).
-
-## Delivery headers
-
-> - `X-Gitlab-Event-UUID` header [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/329743) in GitLab 14.8.
-> - `X-Gitlab-Instance` header [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31333) in GitLab 15.5.
-> - `X-Gitlab-Webhook-UUID` header [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/230830) in GitLab 16.2.
-
-Webhook requests to your endpoint include the following headers:
-
-| Header | Description | Example |
-| ------ | ------ | ------ |
-| `User-Agent` | User agent in the format `"Gitlab/<VERSION>"`. | `"GitLab/15.5.0-pre"` |
-| `X-Gitlab-Instance` | Hostname of the GitLab instance that sent the webhook. | `"https://gitlab.com"` |
-| `X-Gitlab-Webhook-UUID` | Unique ID per webhook. | `"02affd2d-2cba-4033-917d-ec22d5dc4b38"` |
-| `X-Gitlab-Event` | Name of the webhook type. Corresponds to [event types](webhook_events.md) but in the format `"<EVENT> Hook"`. | `"Push Hook"` |
-| `X-Gitlab-Event-UUID` | Unique ID per webhook that is not recursive. A hook is recursive if triggered by an earlier webhook that hit the GitLab instance. Recursive webhooks have the same value for this header. | `"13792a34-cac6-4fda-95a8-c58e00a3954e"` |
-
-## Develop webhooks
-
-If you don't have an existing HTTPS endpoint or URL for your webhook setup, you must deploy one on a server. This HTTPS endpoint is used in configuration. To develop against GitLab webhooks and capture the payloads, you can use:
-
-- [Public webhook inspection and testing tools](#public-webhook-inspection-and-testing-tools)
-- [The GitLab Development Kit (GDK)](#gitlab-development-kit-gdk)
-- [Recently triggered webhook payloads in GitLab settings](#recently-triggered-webhook-payloads-in-gitlab-settings)
-
-### Public webhook inspection and testing tools
-
-You can use public tools to inspect and test webhook payloads. These tools act as catch-all endpoints for HTTP requests and respond with a `200 OK` HTTP status code. You can use these payloads to develop your webhook services.
-
-You should exercise caution when using these tools as you might be sending sensitive data to external tools. You should use test tokens with these tools and rotate any secrets inadvertently sent to a third party.
-
-These public tools include:
-
-- [Beeceptor](https://beeceptor.com) to create a temporary HTTPS endpoint and inspect incoming payloads
-- [Webhook.site](https://webhook.site) to review incoming payloads
-- [Webhook Tester](https://webhook-test.com) to inspect and debug incoming payloads
-
-### GitLab Development Kit (GDK)
-
-For a safer development environment, you can use the [GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit) to develop against GitLab webhooks locally. With the GDK, you can send webhooks from your local GitLab instance to a webhook receiver running locally on your machine. To use this approach, you must install and configure the GDK.
-
-### Recently triggered webhook payloads in GitLab settings
-
-You can [review recently triggered webhook payloads](#troubleshooting) in GitLab settings. For each webhook event, a detail page exists with information about the data GitLab sends and receives from the webhook endpoint.
 
 ## Configure webhooks to support mutual TLS
 
@@ -468,6 +466,7 @@ To configure the certificate, follow the instructions below.
 
 ## Related topics
 
+- [Webhook events and webhook JSON payloads](webhook_events.md)
 - [Project hooks API](../../../api/projects.md#hooks)
 - [Group hooks API](../../../api/groups.md#hooks)
 - [System hooks API](../../../api/system_hooks.md)

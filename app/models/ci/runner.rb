@@ -90,6 +90,8 @@ module Ci
     has_one :owner_runner_namespace, -> { order(:id) }, class_name: 'Ci::RunnerNamespace'
 
     has_one :last_build, -> { order('id DESC') }, class_name: 'Ci::Build'
+
+    # TODO: Remove in 17.1 after hide_duplicate_runner_manager_fields_in_runner is removed
     has_one :runner_version, primary_key: :version, foreign_key: :version, class_name: 'Ci::RunnerVersion'
 
     belongs_to :creator, class_name: 'User', optional: true
@@ -241,7 +243,25 @@ module Ci
 
     after_destroy :cleanup_runner_queue
 
-    cached_attr_reader :version, :revision, :platform, :architecture, :ip_address, :contacted_at, :executor_type
+    # NOTE: Remove in 17.1 only leaving :contacted_at once hide_duplicate_runner_manager_fields_in_runner is removed
+    def self.deprecated_cached_attr_reader(*attributes)
+      attributes.each do |attribute|
+        define_method(attribute) do
+          unless self.has_attribute?(attribute)
+            raise ArgumentError,
+              "`deprecated_cached_attr_reader` requires the #{self.class.name}\##{attribute} attribute to have a database column"
+          end
+
+          return if Feature.enabled?(:hide_duplicate_runner_manager_fields_in_runner)
+
+          cached_attribute(attribute) || read_attribute(attribute)
+        end
+      end
+    end
+
+    deprecated_cached_attr_reader :version, :revision, :platform, :architecture, :ip_address, :executor_type
+
+    cached_attr_reader :contacted_at
 
     chronic_duration_attr :maximum_timeout_human_readable, :maximum_timeout,
       error_message: 'Maximum job timeout has a value which could not be accepted'
@@ -253,6 +273,7 @@ module Ci
       allow_nil: false,
       numericality: { greater_than_or_equal_to: 0.0, message: 'needs to be non-negative' }
 
+    # TODO: Remove in 17.1. See https://gitlab.com/gitlab-org/gitlab/-/issues/415185
     validates :config, json_schema: { filename: 'ci_runner_config' }
 
     validates :maintenance_note, length: { maximum: 1024 }
@@ -458,37 +479,47 @@ module Ci
       # database after heartbeat write happens.
       #
       ::Gitlab::Database::LoadBalancing::Session.without_sticky_writes do
-        values = values&.slice(:version, :revision, :platform, :architecture, :ip_address, :config, :executor) || {}
+        if Feature.enabled?(:hide_duplicate_runner_manager_fields_in_runner)
+          values = {}
+        else
+          values = values&.slice(:version, :revision, :platform, :architecture, :ip_address, :config, :executor) || {}
+
+          if values.include?(:executor)
+            values[:executor_type] = Ci::RunnerManager::EXECUTOR_NAME_TO_TYPES.fetch(values.delete(:executor), :unknown)
+          end
+
+          new_version = values[:version]
+          schedule_runner_version_update(new_version) if new_version && new_version != version
+        end
 
         if update_contacted_at
           values.merge!(contacted_at: Time.current, creation_state: :finished)
         end
 
-        if values.include?(:executor)
-          values[:executor_type] = EXECUTOR_NAME_TO_TYPES.fetch(values.delete(:executor), :unknown)
-        end
-
-        new_version = values[:version]
-        schedule_runner_version_update(new_version) if new_version && new_version != version
-
         merge_cache_attributes(values)
 
         # We save data without validation, it will always change due to `contacted_at`
-        update_columns(values) if persist_cached_data?
+        update_columns(values) if values.any? && persist_cached_data?
       end
     end
 
     def clear_heartbeat
-      cleared_attributes = {
-        version: nil,
-        revision: nil,
-        platform: nil,
-        architecture: nil,
-        ip_address: nil,
-        executor_type: nil,
-        config: {},
-        contacted_at: nil
-      }
+      cleared_attributes =
+        if Feature.enabled?(:hide_duplicate_runner_manager_fields_in_runner)
+          { contacted_at: nil }
+        else
+          {
+            version: nil,
+            revision: nil,
+            platform: nil,
+            architecture: nil,
+            ip_address: nil,
+            executor_type: nil,
+            config: {},
+            contacted_at: nil
+          }
+        end
+
       merge_cache_attributes(cleared_attributes)
       update_columns(cleared_attributes)
     end
@@ -541,25 +572,6 @@ module Ci
     scope :with_upgrade_status, ->(upgrade_status) do
       joins(:runner_managers).merge(RunnerManager.with_upgrade_status(upgrade_status))
     end
-
-    EXECUTOR_NAME_TO_TYPES = {
-      'unknown' => :unknown,
-      'custom' => :custom,
-      'shell' => :shell,
-      'docker' => :docker,
-      'docker-windows' => :docker_windows,
-      'docker-ssh' => :docker_ssh,
-      'ssh' => :ssh,
-      'parallels' => :parallels,
-      'virtualbox' => :virtualbox,
-      'docker+machine' => :docker_machine,
-      'docker-ssh+machine' => :docker_ssh_machine,
-      'kubernetes' => :kubernetes,
-      'docker-autoscaler' => :docker_autoscaler,
-      'instance' => :instance
-    }.freeze
-
-    EXECUTOR_TYPE_TO_NAMES = EXECUTOR_NAME_TO_TYPES.invert.freeze
 
     def compute_token_expiration_instance
       return unless expiration_interval = Gitlab::CurrentSettings.runner_token_expiration_interval
@@ -632,6 +644,7 @@ module Ci
     # For now, heartbeats with version updates might result in two Sidekiq jobs being queued if a runner has a system_id
     # This is not a problem since the jobs are deduplicated on the version
     def schedule_runner_version_update(new_version)
+      return if Feature.enabled?(:hide_duplicate_runner_manager_fields_in_runner)
       return unless new_version && Gitlab::Ci::RunnerReleases.instance.enabled?
 
       Ci::Runners::ProcessRunnerVersionUpdateWorker.perform_async(new_version)

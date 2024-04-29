@@ -89,7 +89,7 @@ RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute', feature_categor
           }
         end
 
-        it 'creates runner with specified values', :aggregate_failures do
+        it 'creates runner with relevant values', :aggregate_failures do
           expect(execute).to be_success
 
           expect(runner).to be_an_instance_of(::Ci::Runner)
@@ -103,14 +103,44 @@ RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute', feature_categor
           expect(runner.access_level).to eq args[:access_level]
           expect(runner.maximum_timeout).to eq args[:maximum_timeout]
           expect(runner.name).to eq args[:name]
-          expect(runner.version).to eq args[:version]
-          expect(runner.revision).to eq args[:revision]
-          expect(runner.platform).to eq args[:platform]
-          expect(runner.architecture).to eq args[:architecture]
-          expect(runner.ip_address).to eq args[:ip_address]
+          expect(runner.version).to be_nil
+          expect(runner.revision).to be_nil
+          expect(runner.platform).to be_nil
+          expect(runner.architecture).to be_nil
+          expect(runner.ip_address).to be_nil
 
           expect(Ci::Runner.tagged_with('tag1')).to include(runner)
           expect(Ci::Runner.tagged_with('tag2')).to include(runner)
+        end
+
+        context 'when hide_duplicate_runner_manager_fields_in_runner FF is disabled' do
+          before do
+            stub_feature_flags(hide_duplicate_runner_manager_fields_in_runner: false)
+          end
+
+          it 'creates runner with specified values', :aggregate_failures do
+            expect(execute).to be_success
+
+            expect(runner).to be_an_instance_of(::Ci::Runner)
+            expect(runner.active).to eq args[:active]
+            expect(runner.locked).to eq args[:locked]
+            expect(runner.run_untagged).to eq args[:run_untagged]
+            expect(runner.tags).to contain_exactly(
+              an_object_having_attributes(name: 'tag1'),
+              an_object_having_attributes(name: 'tag2')
+            )
+            expect(runner.access_level).to eq args[:access_level]
+            expect(runner.maximum_timeout).to eq args[:maximum_timeout]
+            expect(runner.name).to eq args[:name]
+            expect(runner.version).to eq args[:version]
+            expect(runner.revision).to eq args[:revision]
+            expect(runner.platform).to eq args[:platform]
+            expect(runner.architecture).to eq args[:architecture]
+            expect(runner.ip_address).to eq args[:ip_address]
+
+            expect(Ci::Runner.tagged_with('tag1')).to include(runner)
+            expect(Ci::Runner.tagged_with('tag2')).to include(runner)
+          end
         end
       end
 

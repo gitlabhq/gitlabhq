@@ -37,7 +37,7 @@ module QA
         end
 
         def fill_expiry_date(date)
-          date = date.strftime('%Y-%m-%d') if date.is_a?(Date)
+          date = date.iso8601 if date.is_a?(Date)
           begin
             Date.strptime(date, '%Y-%m-%d')
           rescue ArgumentError

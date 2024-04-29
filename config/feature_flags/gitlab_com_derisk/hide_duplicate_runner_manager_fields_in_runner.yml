@@ -1,0 +1,9 @@
+---
+name: hide_duplicate_runner_manager_fields_in_runner
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/415185
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149997
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/456957
+milestone: '17.0'
+group: group::runner
+type: gitlab_com_derisk
+default_enabled: false

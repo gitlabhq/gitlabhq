@@ -200,7 +200,7 @@ module Gitlab
             scope_name = scope.class.name if scope
             logger.info(message: 'Creating runner', scope: scope_name, name: name)
 
-            executor = ::Ci::Runner::EXECUTOR_NAME_TO_TYPES.keys.sample
+            executor = ::Ci::RunnerManager::EXECUTOR_NAME_TO_TYPES.keys.sample
             args.merge!(additional_runner_args(name, executor))
 
             runners_token = if scope.nil?
