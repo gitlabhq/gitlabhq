@@ -74,29 +74,6 @@ RSpec.describe 'Admin::Users', feature_category: :user_management do
       end
     end
 
-    context 'when :admin_user_filtered_nav feature flag is disabled' do
-      before do
-        stub_feature_flags(admin_user_filtered_nav: false)
-        visit admin_users_path
-      end
-
-      describe 'tabs' do
-        it 'has multiple tabs to filter users' do
-          expect(page).to have_link('Active', href: admin_users_path)
-          expect(page).to have_link('Admins', href: admin_users_path(filter: 'admins'))
-          expect(page).to have_link('2FA Enabled', href: admin_users_path(filter: 'two_factor_enabled'))
-          expect(page).to have_link('2FA Disabled', href: admin_users_path(filter: 'two_factor_disabled'))
-          expect(page).to have_link('External', href: admin_users_path(filter: 'external'))
-          expect(page).to have_link('Blocked', href: admin_users_path(filter: 'blocked'))
-          expect(page).to have_link('Banned', href: admin_users_path(filter: 'banned'))
-          expect(page).to have_link('Pending approval', href: admin_users_path(filter: 'blocked_pending_approval'))
-          expect(page).to have_link('Deactivated', href: admin_users_path(filter: 'deactivated'))
-          expect(page).to have_link('Without projects', href: admin_users_path(filter: 'wop'))
-          expect(page).to have_link('Trusted', href: admin_users_path(filter: 'trusted'))
-        end
-      end
-    end
-
     describe 'search and sort' do
       before_all do
         create(:user, name: 'Foo Bar', last_activity_on: 3.days.ago)

@@ -10,10 +10,10 @@ module QA
       end
 
       let!(:runner) do
-        Resource::ProjectRunner.fabricate! do |runner|
+        Resource::UserRunners.fabricate! do |runner|
+          runner.runner_type = 'project_type'
           runner.project = project
-          runner.name = executor
-          runner.tags = [executor]
+          runner.tag_list = [executor]
         end
       end
 

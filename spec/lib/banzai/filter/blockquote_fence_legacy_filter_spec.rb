@@ -6,14 +6,14 @@ require 'spec_helper'
 # The current markdown parser now properly handles multiline block quotes.
 # The Ruby parser is now only for benchmarking purposes.
 # issue: https://gitlab.com/gitlab-org/gitlab/-/issues/454601
-RSpec.describe Banzai::Filter::BlockquoteFenceFilter, feature_category: :team_planning do
+RSpec.describe Banzai::Filter::BlockquoteFenceLegacyFilter, feature_category: :team_planning do
   include FilterSpecHelper
 
   let_it_be(:context) { { markdown_engine: Banzai::Filter::MarkdownFilter::CMARK_ENGINE } }
 
   it 'converts blockquote fences to blockquote lines', :unlimited_max_formatted_output_length do
-    content = File.read(Rails.root.join('spec/fixtures/blockquote_fence_before.md'))
-    expected = File.read(Rails.root.join('spec/fixtures/blockquote_fence_after.md'))
+    content = File.read(Rails.root.join('spec/fixtures/blockquote_fence_legacy_before.md'))
+    expected = File.read(Rails.root.join('spec/fixtures/blockquote_fence_legacy_after.md'))
 
     output = filter(content, context)
 

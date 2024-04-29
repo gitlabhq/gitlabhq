@@ -129,6 +129,7 @@ Dangerfile
 
 ^[End-to-end] @gl-quality
 /qa/
+/gems/gitlab-cng/
 
 ^[LDAP] @dblessing @mkozono
 /ee/lib/ee/gitlab/auth/ldap/

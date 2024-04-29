@@ -53,8 +53,4 @@
       = f.label :after_sign_out_path, _('Sign-out page URL'), class: 'label-bold'
       = f.text_field :after_sign_out_path, class: 'form-control gl-form-input', placeholder: 'http://company.example.com', :'aria-describedby' => 'after_sign_out_path_help_block'
       %span.form-text.text-muted#home_help_block= _("Direct users to this page after they sign out.")
-    .form-group
-      = f.label :sign_in_text, _('Sign-in text'), class: 'label-bold'
-      = f.text_area :sign_in_text, class: 'form-control gl-form-input', rows: 4
-      %span.form-text.text-muted#home_help_block= _("Add text to the sign-in page. Markdown enabled.")
   = f.submit _('Save changes'), pajamas_button: true

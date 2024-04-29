@@ -6,7 +6,7 @@ require 'spec_helper'
 # The current markdown parser now properly handles adding anchors to headers.
 # The Ruby parser is now only for benchmarking purposes.
 # issue: https://gitlab.com/gitlab-org/gitlab/-/issues/454601
-RSpec.describe Banzai::Filter::TableOfContentsFilter, feature_category: :team_planning do
+RSpec.describe Banzai::Filter::TableOfContentsLegacyFilter, feature_category: :team_planning do
   include FilterSpecHelper
 
   def header(level, text)
@@ -131,7 +131,7 @@ RSpec.describe Banzai::Filter::TableOfContentsFilter, feature_category: :team_pl
       expect(links.last.text).to eq 'Header 2'
     end
 
-    context 'table of contents nesting' do
+    context 'when table of contents nesting' do
       let(:results) do
         result(
           header(1, 'Header 1') +
@@ -167,7 +167,7 @@ RSpec.describe Banzai::Filter::TableOfContentsFilter, feature_category: :team_pl
       end
     end
 
-    context 'header text contains escaped content' do
+    context 'when header text contains escaped content' do
       let(:content) { '&lt;img src="x" onerror="alert(42)"&gt;' }
       let(:results) { result(header(1, content)) }
 

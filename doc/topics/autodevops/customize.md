@@ -224,7 +224,7 @@ For more information, see [Limit the environment scope of CI/CD variables](../..
 ## Customize `.gitlab-ci.yml`
 
 Auto DevOps is highly customizable because the [Auto DevOps template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml)
-is an implementation of a [`.gitlab-ci.yml` file](../../ci/index.md#the-gitlab-ciyml-file).
+is an implementation of a `.gitlab-ci.yml` file.
 The template uses only features available to any implementation of `.gitlab-ci.yml`.
 
 To add custom behaviors to the CI/CD pipeline used by Auto DevOps:

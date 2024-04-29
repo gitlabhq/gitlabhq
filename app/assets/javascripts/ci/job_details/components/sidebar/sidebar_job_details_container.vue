@@ -22,6 +22,11 @@ export default {
     coverage() {
       return `${this.job.coverage}%`;
     },
+    showCoverage() {
+      const jobCoverage = this.job.coverage;
+
+      return jobCoverage || jobCoverage === 0;
+    },
     duration() {
       return timeIntervalInWords(this.job.duration);
     },
@@ -143,7 +148,7 @@ export default {
       :title="$options.i18n.RUNNER"
       :path="runnerAdminPath"
     />
-    <detail-row v-if="job.coverage" :value="coverage" :title="$options.i18n.COVERAGE" />
+    <detail-row v-if="showCoverage" :value="coverage" :title="$options.i18n.COVERAGE" />
     <detail-row
       v-if="hasTestSummaryDetails"
       :value="testSummaryDescription"

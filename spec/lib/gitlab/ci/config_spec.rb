@@ -109,6 +109,38 @@ RSpec.describe Gitlab::Ci::Config, feature_category: :pipeline_composition do
         it { is_expected.to eq %w[.pre stage1 stage2 .post] }
       end
     end
+
+    context 'when pipeline ref is provided' do
+      let_it_be(:project) { create(:project, :repository) }
+      let(:ref) { 'master' }
+
+      let(:yml) do
+        <<-EOS
+          rspec:
+            script: exit 0
+        EOS
+      end
+
+      context 'when feature :project_ref_name_in_pipeline is enabled' do
+        it 'sets the ref in the pipeline' do
+          expect(Ci::Pipeline).to receive(:new).with(hash_including(ref: ref)).and_call_original
+
+          described_class.new(yml, project: project, ref: ref, user: user)
+        end
+      end
+
+      context 'when feature is disabled' do
+        before do
+          stub_feature_flags(project_ref_name_in_pipeline: false)
+        end
+
+        it 'does not set the ref in the pipeline' do
+          expect(Ci::Pipeline).to receive(:new).with(hash_not_including(ref: ref)).and_call_original
+
+          described_class.new(yml, project: project, ref: ref, user: user)
+        end
+      end
+    end
   end
 
   describe '#included_templates' do

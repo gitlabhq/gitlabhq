@@ -18,22 +18,14 @@ module Projects
 
       def show_ml_model_data(model, user)
         project = model.project
-        presenter = model.present
 
         data = {
           projectPath: project.full_path,
           index_models_path: project_ml_models_path(project),
           can_write_model_registry: can_write_model_registry?(user, project),
           mlflow_tracking_url: mlflow_tracking_url(project),
-          model: {
-            id: presenter.id,
-            name: presenter.name,
-            path: presenter.path,
-            description: presenter.description,
-            latest_version: latest_version_view_model(presenter.latest_version, user),
-            version_count: presenter.version_count,
-            candidate_count: presenter.candidate_count
-          }
+          model_id: model.id,
+          model_name: model.name
         }
 
         to_json(data)
@@ -70,21 +62,6 @@ module Projects
         path = path.delete_suffix('api/2.0/mlflow/registered-models/create')
 
         expose_url(path)
-      end
-
-      def latest_version_view_model(model_version, user)
-        return unless model_version
-
-        presenter = model_version.present
-
-        {
-          version: presenter.version,
-          description: presenter.description,
-          path: presenter.path,
-          project_path: project_path(presenter.project),
-          package_id: presenter.package_id,
-          **::Ml::CandidateDetailsPresenter.new(presenter.candidate, user).present
-        }
       end
     end
   end

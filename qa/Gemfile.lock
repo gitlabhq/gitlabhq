@@ -1,4 +1,11 @@
 PATH
+  remote: ../gems/gitlab-cng
+  specs:
+    gitlab-cng (0.0.1)
+      require_all (~> 3.0)
+      thor (~> 1.3)
+
+PATH
   remote: ../gems/gitlab-utils
   specs:
     gitlab-utils (0.1.0)
@@ -128,7 +135,7 @@ GEM
       rainbow (>= 3, < 4)
       table_print (= 1.5.7)
       zeitwerk (>= 2, < 3)
-    gitlab_quality-test_tooling (1.23.0)
+    gitlab_quality-test_tooling (1.24.0)
       activesupport (>= 6.1, < 7.2)
       amatch (~> 0.4.1)
       gitlab (~> 4.19)
@@ -321,6 +328,7 @@ GEM
     table_print (1.5.7)
     terminal-table (3.0.2)
       unicode-display_width (>= 1.1.1, < 3)
+    thor (1.3.1)
     tins (1.32.1)
       sync
     trailblazer-option (0.1.2)
@@ -360,9 +368,10 @@ DEPENDENCIES
   faraday-retry (~> 2.2, >= 2.2.1)
   fog-core (= 2.1.0)
   fog-google (~> 1.19)
+  gitlab-cng!
   gitlab-qa (~> 14, >= 14.8.1)
   gitlab-utils!
-  gitlab_quality-test_tooling (~> 1.23.0)
+  gitlab_quality-test_tooling (~> 1.24.0)
   influxdb-client (~> 3.1)
   junit_merge (~> 0.1.2)
   knapsack (~> 4.0)

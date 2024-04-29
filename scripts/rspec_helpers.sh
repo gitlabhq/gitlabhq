@@ -304,6 +304,10 @@ function retry_failed_e2e_rspec_examples() {
     exit 1
   fi
 
+  if last_run_has_no_failures; then
+    exit 1
+  fi
+
   local junit_retry_file="tmp/retried-rspec-${CI_JOB_ID}.xml"
 
   export QA_RSPEC_RETRIED="true"
@@ -513,6 +517,18 @@ function is_rspec_last_run_results_file_missing() {
   # Sometimes the file isn't created or is empty.
   if [[ ! -f "${RSPEC_LAST_RUN_RESULTS_FILE}" ]] || [[ ! -s "${RSPEC_LAST_RUN_RESULTS_FILE}" ]]; then
     echoerr "The file set inside RSPEC_LAST_RUN_RESULTS_FILE ENV variable does not exist or is empty. As a result, we won't retry failed specs."
+    return 0
+  else
+    return 1
+  fi
+}
+
+# when rspec process fails outside of examples, it can create last run results that has no failures to retry
+# this will lead in passed retry run due to not running any examples
+function last_run_has_no_failures() {
+  failed_examples=$(grep -o "failed" ${RSPEC_LAST_RUN_RESULTS_FILE} | wc -l)
+  if [ $failed_examples -lt 1 ]; then
+    echoerr "The file set inside RSPEC_LAST_RUN_RESULTS_FILE ENV variable does not have any specs with status 'failed'. As a result, we won't retry failed specs."
     return 0
   else
     return 1

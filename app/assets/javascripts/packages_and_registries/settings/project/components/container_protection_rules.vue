@@ -301,7 +301,6 @@ export default {
             <gl-keyset-pagination
               v-bind="protectionRulesQueryPageInfo"
               class="gl-mb-3"
-              :prev-text="__('Previous')"
               @prev="onPrevPage"
               @next="onNextPage"
             />

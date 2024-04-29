@@ -421,7 +421,6 @@ export default {
       <div v-if="showPagination" class="gl-display-flex gl-justify-content-center gl-mt-5">
         <gl-keyset-pagination
           v-bind="pageInfo"
-          :prev-text="__('Previous')"
           @prev="$emit('handle-prev-page')"
           @next="$emit('handle-next-page')"
         />

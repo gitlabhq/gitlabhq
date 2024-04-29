@@ -7,9 +7,9 @@
 module Banzai
   module Filter
     # HTML filter that implements our dollar math syntax, one of three filters:
-    # DollarMathPreFilter, DollarMathPostFilter, and MathFilter
+    # DollarMathPreLegacyFilter, DollarMathPostLegacyFilter, and MathFilter
     #
-    class DollarMathPreFilter < HTML::Pipeline::TextFilter
+    class DollarMathPreLegacyFilter < HTML::Pipeline::TextFilter
       # Based on the Pandoc heuristics,
       # https://pandoc.org/MANUAL.html#extension-tex_math_dollars
       #

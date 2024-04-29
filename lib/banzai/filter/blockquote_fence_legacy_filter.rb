@@ -6,7 +6,7 @@
 # issue: https://gitlab.com/gitlab-org/gitlab/-/issues/454601
 module Banzai
   module Filter
-    class BlockquoteFenceFilter < TimeoutTextPipelineFilter
+    class BlockquoteFenceLegacyFilter < TimeoutTextPipelineFilter
       MARKDOWN_CODE_BLOCK_REGEX = %r{
         (?<code>
           # Code blocks:
@@ -82,7 +82,7 @@ module Banzai
             # keep the same number of source lines/positions by replacing the
             # fence lines with newlines
             indent = $~[:indent]
-            "\n" + $~[:blockquote].gsub(/^#{Regexp.quote(indent)}/, "#{indent}> ").gsub(/^> $/, ">") + "\n"
+            "\n#{$~[:blockquote].gsub(/^#{Regexp.quote(indent)}/, "#{indent}> ").gsub(/^> $/, '>')}\n"
           else
             $~[0]
           end

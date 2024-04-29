@@ -6,42 +6,42 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Get started with GitLab CI/CD
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
-
 CI/CD is a continuous method of software development, where you continuously build,
 test, deploy, and monitor iterative code changes.
 
 This iterative process helps reduce the chance that you develop new code based on
 buggy or failed previous versions. GitLab CI/CD can catch bugs early in the development cycle,
-and help ensure that all the code deployed to production complies with your established code standards.
+and help ensure that the code deployed to production complies with your established code standards.
 
-## Common terms
+This process is part of a larger workflow:
 
-If you're new to GitLab CI/CD, start by reviewing some of the commonly used terms.
+![Workflow](img/get_started_cicd_v16_11.png)
 
-### The `.gitlab-ci.yml` file
+## Step 1: Create a `.gitlab-ci.yml` file
 
-To use GitLab CI/CD, you start with a `.gitlab-ci.yml` file at the root of your project
-which contains the configuration for your CI/CD pipeline. This file follows the YAML format
-and has its own syntax.
+To use GitLab CI/CD, you start with a `.gitlab-ci.yml` file at the root of your project.
+This file specifies the stages, jobs, and scripts to be executed during your CI/CD pipeline.
+It is a YAML file with its own custom syntax.
 
-You can name this file anything you want, but `.gitlab-ci.yml` is the most common name.
+In this file, you define variables, dependencies between jobs, and specify when
+and how each job should be executed.
 
-**Get started:**
+You can name this file anything you want, but `.gitlab-ci.yml` is the most common name,
+and the product documentation refers to it as the `.gitlab-ci.yml` file or the CI/CD configuration file.
 
-- [Create your first `.gitlab-ci.yml` file](quick_start/index.md).
-- View all the possible keywords that you can use in the `.gitlab-ci.yml` file in
-  the [CI/CD YAML syntax reference](../ci/yaml/index.md).
-- Use the [pipeline editor](pipeline_editor/index.md) to edit or [visualize](pipeline_editor/index.md#visualize-ci-configuration)
-  your CI/CD configuration.
+For more information, see:
 
-### Runners
+- [Tutorial: Create your first `.gitlab-ci.yml` file](quick_start/index.md)
+- [The CI/CD YAML syntax reference](../ci/yaml/index.md), which lists all possible keywords
+- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [GitLab CI/CD demo](https://www.youtube-nocookie.com/embed/ljth1Q5oJoo)
+- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [GitLab CI/CD and the Web IDE](https://youtu.be/l5705U8s_nQ?t=369)
+- [Mastering continuous software development webcast](https://about.gitlab.com/webcast/mastering-ci-cd/)
+
+## Step 2: Find or create runners
 
 Runners are the agents that run your jobs. These agents can run on physical machines or virtual instances.
 In your `.gitlab-ci.yml` file, you can specify a container image you want to use when running the job.
-The runner loads the image, clones your project and runs the job either locally or in the container.
+The runner loads the image, clones your project, and runs the job either locally or in the container.
 
 If you use GitLab.com, runners on Linux, Windows, and macOS are already available for use. And you can register your own
 runners on GitLab.com if you'd like.
@@ -51,53 +51,65 @@ If you don't use GitLab.com, you can:
 - Register runners or use runners already registered for your self-managed instance.
 - Create a runner on your local machine.
 
-**Get started:**
+For more information, see:
 
-- [Create a runner on your local machine](../tutorials/create_register_first_runner/index.md).
-- [Learn more about runners](https://docs.gitlab.com/runner/).
+- [Create a runner on your local machine](../tutorials/create_register_first_runner/index.md)
+- [More information about runners](https://docs.gitlab.com/runner/)
 
-### Pipelines
+## Step 3: Define your pipelines
+
+A pipeline is what you're defining in the `.gitlab-ci.yml` file,
+and is what happens when the contents of the file are run on a runner.
 
 Pipelines are made up of jobs and stages:
 
-- **Jobs** define what you want to do. For example, test code changes, or deploy
-  to a staging environment.
-- Jobs are grouped into **stages**. Each stage contains at least one job.
-  Typical stages might be `build`, `test`, and `deploy`.
+- Stages define the order of execution. Typical stages might be `build`, `test`, and `deploy`.
+- Jobs specify the tasks to be performed in each stage. For example, a job can compile or test code.
 
-**Get started:**
+Pipelines can be triggered by various events, like commits or merges, or can be on schedule.
+In your pipeline, you can integrate with a wide range of tools and platforms.
 
-- [Learn more about pipelines](pipelines/index.md).
+For more information, see:
 
-### CI/CD variables
+- [Pipeline editor](pipeline_editor/index.md), which you use to edit your configuration
+- [Visualize your pipeline](pipeline_editor/index.md#visualize-ci-configuration)
+- [Pipelines](pipelines/index.md)
 
-CI/CD variables help you customize jobs by making values defined elsewhere accessible to jobs.
-They can be hard-coded in your `.gitlab-ci.yml` file, project settings, or dynamically generated.
+## Step 4: Use CI/CD variables as part of jobs
 
-**Get started:**
+GitLab CI/CD variables are key-value pairs you use to store and pass configuration settings
+and sensitive information, like passwords or API keys, to jobs in a pipeline.
 
-- [Learn more about CI/CD variables](variables/index.md).
-- [Learn about dynamically generated predefined variables](variables/predefined_variables.md).
+Use CI/CD variables to customize jobs by making values defined elsewhere accessible to jobs.
+You can hard-code CI/CD variables in your `.gitlab-ci.yml` file, set them in your project settings,
+or generate them dynamically. You can define them for the project, group, or instance.
 
-### CI/CD components
+Two types of variables exist: custom variables and predefined.
 
-A CI/CD component is a reusable single pipeline configuration unit. Use them to compose an entire pipeline configuration or a small part of a larger pipeline.
+- Custom variables are user-defined. Create and manage them in the GitLab UI, API, or in configuration files.
+- Predefined variables are automatically set by GitLab and provide information about the current job, pipeline, and environment.
 
-**Get started:**
+Variables can be marked as "protected" or "masked" for added security.
 
-- [Learn more about CI/CD components](components/index.md).
+- Protected variables are only available to jobs running on protected branches or tags.
+- Masked variables have their values hidden in job logs to prevent sensitive information from being exposed.
 
-## Videos
+For more information, see:
 
-- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [GitLab CI/CD demo](https://www.youtube-nocookie.com/embed/ljth1Q5oJoo).
-- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [GitLab CI/CD and the Web IDE](https://youtu.be/l5705U8s_nQ?t=369).
-- Webcast: [Mastering continuous software development](https://about.gitlab.com/webcast/mastering-ci-cd/).
+- [CI/CD variables](variables/index.md)
+- [Dynamically generated predefined variables](variables/predefined_variables.md)
 
-## Related topics
+## Step 5: Use CI/CD components
 
-- [Five teams that made the switch to GitLab CI/CD](https://about.gitlab.com/blog/2019/04/25/5-teams-that-made-the-switch-to-gitlab-ci-cd/).
-- [Make the case for CI/CD in your organization](https://about.gitlab.com/why-gitlab/).
-- Learn how [Verizon reduced rebuilds](https://about.gitlab.com/blog/2019/02/14/verizon-customer-story/) from 30 days to under 8 hours with GitLab.
-- Use the [GitLab Workflow VS Code extension](../editor_extensions/visual_studio_code/index.md) to
-  [validate your configuration](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#validate-gitlab-ci-configuration)
-  and [view your pipeline status](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#information-about-your-branch-pipelines-mr-closing-issue).
+A CI/CD component is a reusable pipeline configuration unit.
+Use a CI/CD component to compose an entire pipeline configuration or a small part of a larger pipeline.
+
+You can add a component to your pipeline configuration with `include:component`.
+
+Reusable components help reduce duplication, improve maintainability, and promote consistency across projects. Create a component project and publish it to the CI/CD Catalog to share your component across multiple projects.
+
+GitLab also has CI/CD component templates for common tasks and integrations.
+
+For more information, see:
+
+- [CI/CD components](components/index.md)

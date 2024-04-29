@@ -10,8 +10,6 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/2772) in GitLab 9.0.
-
 You can organize GitLab [groups](../index.md) into subgroups. You can use subgroups to:
 
 - Separate internal and external content. Because every subgroup can have its own

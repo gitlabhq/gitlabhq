@@ -169,7 +169,6 @@ module API
         requires :shared_runners_text, type: String, desc: 'Shared runners text '
       end
       optional :valid_runner_registrars, type: Array[String], desc: 'List of types which are allowed to register a GitLab runner'
-      optional :sign_in_text, type: String, desc: 'The sign in text of the GitLab application'
       optional :signin_enabled, type: Boolean, desc: 'Flag indicating if password authentication is enabled for the web interface' # support legacy names, can be removed in v5
       optional :signup_enabled, type: Boolean, desc: 'Flag indicating if sign up is enabled'
       optional :sourcegraph_enabled, type: Boolean, desc: 'Enable Sourcegraph'

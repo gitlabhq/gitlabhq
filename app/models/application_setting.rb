@@ -83,7 +83,6 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   serialize :asset_proxy_allowlist, Array # rubocop:disable Cop/ActiveRecordSerialize
   serialize :asset_proxy_whitelist, Array # rubocop:disable Cop/ActiveRecordSerialize
 
-  cache_markdown_field :sign_in_text
   cache_markdown_field :help_page_text
   cache_markdown_field :shared_runners_text, pipeline: :plain_markdown
   cache_markdown_field :after_sign_up_text

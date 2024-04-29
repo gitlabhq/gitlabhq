@@ -44,6 +44,14 @@ module Ci
 
     attr_reader :group, :project
 
+    def runner_type
+      @params[:type_type]&.to_sym
+    end
+
+    def membership
+      @params[:membership]&.to_sym
+    end
+
     def allowed_sorts
       %w[contacted_asc contacted_desc created_at_asc created_at_desc created_date token_expires_at_asc token_expires_at_desc]
     end
@@ -57,7 +65,7 @@ module Ci
     def group_runners
       raise Gitlab::Access::AccessDeniedError unless can?(@current_user, :read_group_runners, @group)
 
-      case @params[:membership]
+      case membership
       when :direct
         Ci::Runner.belonging_to_group(@group.id)
       when :descendants, nil
@@ -109,7 +117,6 @@ module Ci
     end
 
     def by_runner_type(items)
-      runner_type = @params[:type_type].presence
       return items unless runner_type
 
       items.with_runner_type(runner_type)

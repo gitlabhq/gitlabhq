@@ -365,7 +365,6 @@ module ApplicationSettingsHelper
       :session_expire_delay,
       :shared_runners_enabled,
       :shared_runners_text,
-      :sign_in_text,
       :signup_enabled,
       :silent_mode_enabled,
       :slack_app_enabled,

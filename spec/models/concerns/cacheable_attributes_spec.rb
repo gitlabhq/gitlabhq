@@ -115,7 +115,7 @@ RSpec.describe CacheableAttributes do
             record = ApplicationSetting.build_from_defaults
 
             expect(record).not_to be_persisted
-            expect(record.sign_in_text).to be_nil
+            expect(record.shared_runners_text).to be_nil
           end
         end
       end

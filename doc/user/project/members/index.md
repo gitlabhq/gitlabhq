@@ -59,9 +59,6 @@ flowchart RL
 
 ## Add users to a project
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/247208) in GitLab 13.11 from a form to a modal window [with a flag](../../feature_flags.md). Disabled by default.
-> - Modal window [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/247208) in GitLab 14.8.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/352526) in GitLab 14.9. [Feature flag `invite_members_group_modal`](https://gitlab.com/gitlab-org/gitlab/-/issues/352526) removed.
 > - Expiring access email notification [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12704) in GitLab 16.2.
 
 Add users to a project so they become direct members and have permission
@@ -111,7 +108,6 @@ role for the group. For example, the maximum role you can set is:
 - Owner (`50`), if you have the Owner role for the project.
 - Maintainer (`40`), if you have the Maintainer role on the project.
 
-In GitLab 14.8 and earlier, direct members of a project have a maximum role of Maintainer.
 The Owner [role](../../permissions.md#project-members-permissions) can be added for the group only.
 
 ## Inherited membership
@@ -161,9 +157,6 @@ If a user is:
 
 ## Add groups to a project
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/247208) in GitLab 13.11 from a form to a modal window [with a flag](../../feature_flags.md). Disabled by default.
-> - Modal window [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/247208) in GitLab 14.8.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/352526) in GitLab 14.9. [Feature flag `invite_members_group_modal`](https://gitlab.com/gitlab-org/gitlab/-/issues/352526) removed.
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/219230) to display invited group members on the Members tab of the Members page in GitLab 16.10 [with a flag](../../../administration/feature_flags.md) named `webui_members_inherited_users`. Disabled by default.
 
 FLAG:
@@ -281,10 +274,6 @@ To avoid this problem, GitLab administrators can:
 - Change the password for the malicious user account.
 
 ## Filter and sort project members
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21727) in GitLab 12.6.
-> - [Improved](https://gitlab.com/groups/gitlab-org/-/epics/4901) in GitLab 13.9.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/299954) in GitLab 13.10.
 
 You can filter and sort members in a project.
 

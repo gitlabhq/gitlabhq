@@ -76,6 +76,7 @@ eslint-sast:
     - when: never
 
 flawfinder-sast:
+  extends: .sast-analyzer
   script:
     - echo "This job was deprecated in GitLab 16.8 and removed in GitLab 17.0"
     - echo "For more information see https://gitlab.com/gitlab-org/gitlab/-/issues/425085"

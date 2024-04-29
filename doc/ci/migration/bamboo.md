@@ -81,7 +81,7 @@ Bamboo Specs can also be [repository-stored](https://confluence.atlassian.com/ba
 
 #### `.gitlab-ci.yml` configuration file
 
-GitLab, by default, uses a [`.gitlab-ci.yml` file](../index.md#the-gitlab-ciyml-file) for CI/CD configuration.
+GitLab, by default, uses a `.gitlab-ci.yml` file for CI/CD configuration.
 Alternatively, [Auto DevOps](../../topics/autodevops/index.md) can automatically build,
 test, and deploy your application without a manually configured `.gitlab-ci.yml` file.
 

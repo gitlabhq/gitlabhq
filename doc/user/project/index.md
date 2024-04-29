@@ -72,8 +72,6 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/6860) in GitLab 11.2.
-
 Custom project templates are available at:
 
 - The [instance-level](../../administration/custom_project_templates.md)
@@ -101,8 +99,6 @@ DETAILS:
 **Tier:** Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13756) in GitLab 12.10
-
 The HIPAA Audit Protocol template contains issues for audit inquiries in the
 HIPAA Audit Protocol published by the U.S Department of Health and Human Services.
 
@@ -125,8 +121,6 @@ To create a project from the HIPAA Audit Protocol template:
 1. Select **Create project**.
 
 ## Create a new project with Git push
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/26388) in GitLab 10.5.
 
 Use `git push` to push a local project repository to GitLab. After you push a repository,
 GitLab creates your project in your chosen namespace.

@@ -28,11 +28,11 @@
 %section.settings.as-help-page.no-animate#js-help-settings{ class: ('expanded' if expanded_by_default?) }
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-      = _('Sign-in and Help page')
+      = _('Help page')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p.gl-text-secondary
-      = _('Additional text for the sign-in and Help page.')
+      = _('Additional text for the Help page.')
       = link_to _('Learn more.'), help_page_path('administration/settings/help_page'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content
     = render 'help_page'

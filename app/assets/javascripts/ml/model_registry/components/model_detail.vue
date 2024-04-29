@@ -31,7 +31,7 @@ export default {
     <h3 class="gl-font-lg">
       {{ s__('MlModelRegistry|Latest version') }}:
 
-      <gl-link :href="model.latestVersion.path" data-testid="model-version-link">
+      <gl-link :href="model.latestVersion._links.showPath" data-testid="model-version-link">
         {{ model.latestVersion.version }}
       </gl-link>
     </h3>

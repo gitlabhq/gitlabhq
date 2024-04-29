@@ -35,7 +35,7 @@ describe('ml/model_registry/components/candidate_list.vue', () => {
     wrapper = mount(CandidateList, {
       apolloProvider,
       propsData: {
-        modelId: 2,
+        modelId: 'gid://gitlab/Ml::Model/2',
         ...props,
       },
     });

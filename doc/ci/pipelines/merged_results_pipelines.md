@@ -33,7 +33,7 @@ and is labeled as `merge request`.
 
 To use merged results pipelines:
 
-- Your project's [`.gitlab-ci.yml` file](../index.md#the-gitlab-ciyml-file) must be configured to
+- Your project's `.gitlab-ci.yml` file must be configured to
   [run jobs in merge request pipelines](merge_request_pipelines.md#prerequisites).
 - Your repository must be a GitLab repository, not an
   [external repository](../ci_cd_for_external_repos/index.md).

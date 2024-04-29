@@ -35,7 +35,7 @@ and target branches together, use merged results pipelines.
 
 To use merge request pipelines:
 
-- Your project's [`.gitlab-ci.yml` file](../index.md#the-gitlab-ciyml-file) must be
+- Your project's `.gitlab-ci.yml` file must be
   [configured with jobs that run in merge request pipelines](#add-jobs-to-merge-request-pipelines).
 - You must have at least the Developer role in the
   source project to run a merge request pipeline.
@@ -116,7 +116,7 @@ GitLab shows a warning that you must accept before the pipeline runs. Otherwise,
 
 Prerequisites:
 
-- The parent project's [`.gitlab-ci.yml` file](../index.md#the-gitlab-ciyml-file) must be configured to
+- The parent project's `.gitlab-ci.yml` file must be configured to
   [run jobs in merge request pipelines](#prerequisites).
 - You must be a member of the parent project with [permissions to run CI/CD pipelines](../../user/permissions.md#gitlab-cicd-permissions).
   You might need additional permissions if the branch is protected.

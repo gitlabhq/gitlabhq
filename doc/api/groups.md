@@ -16,8 +16,6 @@ The fields returned in responses vary based on the [permissions](../user/permiss
 
 ## List groups
 
-> - Support for keyset pagination introduced in GitLab 14.3.
-
 Get a list of visible groups for the authenticated user. When accessed without
 authentication, only public groups are returned.
 
@@ -35,7 +33,7 @@ Parameters:
 | `skip_groups`                         | array of integers | no       | Skip the group IDs passed |
 | `all_available`                       | boolean           | no       | Show all the groups you have access to (defaults to `false` for authenticated users, `true` for administrators); Attributes `owned` and `min_access_level` have precedence |
 | `search`                              | string            | no       | Return the list of authorized groups matching the search criteria |
-| `order_by`                            | string            | no       | Order groups by `name`, `path`, `id`, or `similarity` (if searching, [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/332889) in GitLab 14.1). Default is `name` |
+| `order_by`                            | string            | no       | Order groups by `name`, `path`, `id`, or `similarity`. Default is `name` |
 | `sort`                                | string            | no       | Order groups in `asc` or `desc` order. Default is `asc` |
 | `statistics`                          | boolean           | no       | Include group statistics (administrators only).<br>*Note:* The REST API response does not provide the full `RootStorageStatistics` data that is shown in the UI. To match the data in the UI, use GraphQL instead of REST. For more information, see the [Group GraphQL API resources](../api/graphql/reference/index.md#group).|
 | `visibility`                          | string            | no       | Limit to groups with `public`, `internal`, or `private` visibility. |
@@ -215,8 +213,6 @@ Users of [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also se
 `duo_features_enabled`, and `lock_duo_features_enabled` attributes.
 
 ## List a group's descendant groups
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217115) in GitLab 13.5
 
 Get a list of visible descendant groups of this group.
 When accessed without authentication, only public groups are returned.
@@ -529,8 +525,6 @@ Example response:
 
 ## Details of a group
 
-> - The `membership_lock` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82271) in GitLab 14.10.
-
 Get all details of a group. This endpoint can be accessed without authentication
 if the group is publicly accessible. In case the user that requests is an administrator
 if the group is publicly accessible. With authentication, it returns the `runners_token` and `enabled_git_access_protocol`
@@ -556,12 +550,7 @@ To get the details of all projects within a group, use either the [list a group'
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/4"
 ```
 
-This endpoint returns:
-
-- All projects and shared projects in GitLab 12.5 and earlier.
-- A maximum of 100 projects and shared projects [in GitLab 12.6](https://gitlab.com/gitlab-org/gitlab/-/issues/31031)
-  and later. To get the details of all projects within a group, use the
-  [list a group's projects endpoint](#list-a-groups-projects) instead.
+This endpoint returns a maximum of 100 projects and shared projects. To get the details of all projects within a group, use the [list a group's projects endpoint](#list-a-groups-projects) instead.
 
 Example response:
 
@@ -811,25 +800,6 @@ curl --header "PRIVATE-TOKEN: $GITLAB_LOCAL_TOKEN" \
   "https://gitlab.example.com/api/v4/groups/4/avatar"
 ```
 
-### Disable the results limit
-
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
-
-The 100 results limit can break integrations developed using GitLab 12.4 and earlier.
-
-For GitLab 12.5 to GitLab 13.12, the limit can be disabled while migrating to using the
-[list a group's projects](#list-a-groups-projects) endpoint.
-
-Ask a GitLab administrator with Rails console access to run the following command:
-
-```ruby
-Feature.disable(:limit_projects_in_groups_api)
-```
-
-For GitLab 14.0 and later, the [limit cannot be disabled](https://gitlab.com/gitlab-org/gitlab/-/issues/257829).
-
 ## New group
 
 NOTE:
@@ -849,7 +819,7 @@ Parameters:
 | `name`                                                  | string  | yes      | The name of the group.                                                                                                                                                                          |
 | `path`                                                  | string  | yes      | The path of the group.                                                                                                                                                                          |
 | `auto_devops_enabled`                                   | boolean | no       | Default to Auto DevOps pipeline for all projects within this group.                                                                                                                             |
-| `avatar`                                                | mixed   | no       | Image file for avatar of the group. [Introduced in GitLab 12.9](https://gitlab.com/gitlab-org/gitlab/-/issues/36681)                                                                            |
+| `avatar`                                                | mixed   | no       | Image file for avatar of the group.                                                                                                                                                             |
 | `default_branch`                                        | string  | no       | The [default branch](../user/project/repository/branches/default.md) name for group's projects. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/442298) in GitLab 16.11.             |
 | `default_branch_protection`                             | integer | no       | See [Options for `default_branch_protection`](#options-for-default_branch_protection). Default to the global level default branch protection setting.                                           |
 | `default_branch_protection_defaults`                    | hash    | no       | See [Options for `default_branch_protection_defaults`](#options-for-default_branch_protection_defaults).                                                                                        |
@@ -978,8 +948,6 @@ Example response:
 
 ## Transfer a group to a new parent group / Turn a subgroup to a top-level group
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23831) in GitLab 14.6.
-
 Transfer a group to a new parent group or turn a subgroup to a top-level group. Available to administrators and users:
 
 - With the Owner role for the group to transfer.
@@ -1023,7 +991,7 @@ PUT /groups/:id
 | `name`                                                  | string  | no       | The name of the group. |
 | `path`                                                  | string  | no       | The path of the group. |
 | `auto_devops_enabled`                                   | boolean | no       | Default to Auto DevOps pipeline for all projects within this group. |
-| `avatar`                                                | mixed   | no       | Image file for avatar of the group. [Introduced in GitLab 12.9](https://gitlab.com/gitlab-org/gitlab/-/issues/36681) |
+| `avatar`                                                | mixed   | no       | Image file for avatar of the group. |
 | `default_branch`                                        | string  | no       | The [default branch](../user/project/repository/branches/default.md) name for group's projects. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/442298) in GitLab 16.11. |
 | `default_branch_protection`                             | integer | no       | See [Options for `default_branch_protection`](#options-for-default_branch_protection). |
 | `default_branch_protection_defaults`                    | hash    | no       | See [Options for `default_branch_protection_defaults`](#options-for-default_branch_protection_defaults). |
@@ -1033,7 +1001,7 @@ PUT /groups/:id
 | `emails_enabled`                                        | boolean | no       | Enable email notifications. |
 | `lfs_enabled`                                           | boolean | no       | Enable/disable Large File Storage (LFS) for the projects in this group. |
 | `mentions_disabled`                                     | boolean | no       | Disable the capability of a group from getting mentioned. |
-| `prevent_sharing_groups_outside_hierarchy`              | boolean | no       | See [Prevent group sharing outside the group hierarchy](../user/group/access_and_permissions.md#prevent-group-sharing-outside-the-group-hierarchy). This attribute is only available on top-level groups. [Introduced in GitLab 14.1](https://gitlab.com/gitlab-org/gitlab/-/issues/333721) |
+| `prevent_sharing_groups_outside_hierarchy`              | boolean | no       | See [Prevent group sharing outside the group hierarchy](../user/group/access_and_permissions.md#prevent-group-sharing-outside-the-group-hierarchy). This attribute is only available on top-level groups. |
 | `project_creation_level`                                | string  | no       | Determine if developers can create projects in the group. Can be `noone` (No one), `maintainer` (users with the Maintainer role), or `developer` (users with the Developer or Maintainer role). |
 | `request_access_enabled`                                | boolean | no       | Allow users to request member access. |
 | `require_two_factor_authentication`                     | boolean | no       | Require all users in this group to set up two-factor authentication. |
@@ -1068,11 +1036,7 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
      "https://gitlab.example.com/api/v4/groups/5?name=Experimental"
 ```
 
-This endpoint returns:
-
-- All projects and shared projects in GitLab 12.5 and earlier.
-- A maximum of 100 projects and shared projects [in GitLab 12.6](https://gitlab.com/gitlab-org/gitlab/-/issues/31031)
-  and later. To get the details of all projects within a group, use the
+This endpoint returns a maximum of 100 projects and shared projects. To get the details of all projects within a group, use the
   [list a group's projects endpoint](#list-a-groups-projects) instead.
 
 Example response:
@@ -1147,25 +1111,6 @@ The `prevent_sharing_groups_outside_hierarchy` attribute is present in the respo
 Users of [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also see the `wiki_access_level`,
 `duo_features_enabled`, and`lock_duo_features_enabled` attributes.
 
-### Disable the results limit
-
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
-
-The 100 results limit can break integrations developed using GitLab 12.4 and earlier.
-
-For GitLab 12.5 to GitLab 13.12, the limit can be disabled while migrating to using the
-[list a group's projects](#list-a-groups-projects) endpoint.
-
-Ask a GitLab administrator with Rails console access to run the following command:
-
-```ruby
-Feature.disable(:limit_projects_in_groups_api)
-```
-
-For GitLab 14.0 and later, the [limit cannot be disabled](https://gitlab.com/gitlab-org/gitlab/-/issues/257829).
-
 ### Options for `shared_runners_setting`
 
 The `shared_runners_setting` attribute determines whether shared runners are enabled for a group's subgroups and projects.
@@ -1178,8 +1123,6 @@ The `shared_runners_setting` attribute determines whether shared runners are ena
 | `disabled_with_override`       | (Deprecated. Use `disabled_and_overridable`) Disables shared runners for all projects and subgroups in this group, but allows subgroups to override this setting. |
 
 ### Upload a group avatar
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36681) in GitLab 12.9.
 
 To upload an avatar file from your file system, use the `--form` argument. This causes
 curl to post data using the header `Content-Type: multipart/form-data`. The
@@ -1242,8 +1185,6 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33257) in GitLab 12.8.
-
 Restores a group marked for deletion.
 
 ```plaintext
@@ -1280,8 +1221,6 @@ GET /groups?search=foobar
 DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
-
-> - Introduced in GitLab 14.8.
 
 Get a list of users provisioned by a given group. Does not include subgroups.
 
@@ -2035,8 +1974,6 @@ DELETE /groups/:id/share/:group_id
 DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
-
-> - Introduced in GitLab 13.4.
 
 ### Get group push rules
 

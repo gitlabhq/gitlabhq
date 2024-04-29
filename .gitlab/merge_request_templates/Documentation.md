@@ -1,3 +1,5 @@
+- [ ] Please check this box if this contribution uses AI-generated content as outlined in the [GitLab DCO & CLA](https://about.gitlab.com/community/contribute/dco-cla/).
+
 ## What does this MR do?
 
 <!-- Briefly describe what this MR is about. -->

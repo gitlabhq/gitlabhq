@@ -15,11 +15,12 @@ import setWindowLocation from 'helpers/set_window_location_helper';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { visitUrlWithAlerts } from '~/lib/utils/url_utility';
 import destroyModelMutation from '~/ml/model_registry/graphql/mutations/destroy_model.mutation.graphql';
+import getModelQuery from '~/ml/model_registry/graphql/queries/get_model.query.graphql';
 import ActionsDropdown from '~/ml/model_registry/components/actions_dropdown.vue';
 import DeleteDisclosureDropdownItem from '~/ml/model_registry/components/delete_disclosure_dropdown_item.vue';
 import DeleteModel from '~/ml/model_registry/components/functional/delete_model.vue';
-import { destroyModelResponses } from '../graphql_mock_data';
-import { MODEL } from '../mock_data';
+import LoadOrErrorOrShow from '~/ml/model_registry/components/load_or_error_or_show.vue';
+import { destroyModelResponses, model, modelDetailQuery } from '../graphql_mock_data';
 
 // Vue Test Utils `stubs` option does not stub components mounted
 // in <router-view>. Use mocking instead:
@@ -66,24 +67,29 @@ describe('ml/model_registry/apps/show_ml_model', () => {
   });
 
   const createWrapper = ({
-    model = MODEL,
+    modelId = 1,
     mountFn = shallowMountExtended,
-    resolver = jest.fn().mockResolvedValue(destroyModelResponses.success),
+    modelDetailsResolver = jest.fn().mockResolvedValue(modelDetailQuery),
+    destroyMutationResolver = jest.fn().mockResolvedValue(destroyModelResponses.success),
     canWriteModelRegistry = true,
   } = {}) => {
-    const requestHandlers = [[destroyModelMutation, resolver]];
+    const requestHandlers = [
+      [getModelQuery, modelDetailsResolver],
+      [destroyModelMutation, destroyMutationResolver],
+    ];
     apolloProvider = createMockApollo(requestHandlers);
 
     wrapper = mountFn(ShowMlModel, {
       apolloProvider,
       propsData: {
-        model,
+        modelId,
+        modelName: 'MyModel',
         projectPath: 'project/path',
         indexModelsPath: 'index/path',
         mlflowTrackingUrl: 'path/to/tracking',
         canWriteModelRegistry,
       },
-      stubs: { GlTab, DeleteModel },
+      stubs: { GlTab, DeleteModel, LoadOrErrorOrShow },
     });
 
     return waitForPromises();
@@ -103,20 +109,21 @@ describe('ml/model_registry/apps/show_ml_model', () => {
   const findActionsDropdown = () => wrapper.findComponent(ActionsDropdown);
   const findDeleteButton = () => wrapper.findComponent(DeleteDisclosureDropdownItem);
   const findDeleteModel = () => wrapper.findComponent(DeleteModel);
+  const findLoadOrErrorOrShow = () => wrapper.findComponent(LoadOrErrorOrShow);
 
   describe('Title', () => {
     beforeEach(() => createWrapper());
 
     it('title is set to model name', () => {
-      expect(findTitleArea().props('title')).toBe(MODEL.name);
+      expect(findTitleArea().props('title')).toBe('MyModel');
     });
 
     it('subheader is set to description', () => {
-      expect(findTitleArea().text()).toContain(MODEL.description);
+      expect(findTitleArea().text()).toContain(model.description);
     });
 
     it('sets version metadata item to version count', () => {
-      expect(findVersionCountMetadataItem().props('text')).toBe(`${MODEL.versionCount} versions`);
+      expect(findVersionCountMetadataItem().props('text')).toBe(`${model.versionCount} version`);
     });
 
     it('renders the extra actions button', () => {
@@ -150,21 +157,41 @@ describe('ml/model_registry/apps/show_ml_model', () => {
     });
 
     it('shows the number of versions in the tab', () => {
-      expect(findVersionsCountBadge().text()).toBe(MODEL.versionCount.toString());
+      expect(findVersionsCountBadge().text()).toBe(model.versionCount.toString());
     });
 
     it('shows the number of candidates in the tab', () => {
-      expect(findCandidatesCountBadge().text()).toBe(MODEL.candidateCount.toString());
+      expect(findCandidatesCountBadge().text()).toBe(model.candidateCount.toString());
+    });
+  });
+
+  describe('Model loading', () => {
+    it('displays model detail when query is successful', async () => {
+      await createWrapper({ mountFn: mountExtended });
+
+      expect(findModelDetail().props('model')).toMatchObject(model);
+    });
+
+    it('shows error when query fails', async () => {
+      const error = new Error('Failure!');
+      await createWrapper({ modelDetailsResolver: jest.fn().mockRejectedValue(error) });
+
+      expect(findLoadOrErrorOrShow().props('errorMessage')).toBe(
+        'Failed to load model with error: Failure!',
+      );
+      expect(Sentry.captureException).toHaveBeenCalled();
+      expect(findModelDetail().exists()).toBe(false);
     });
   });
 
   describe('Navigation', () => {
     it.each(['#/', '#/unknown-tab'])('shows details when location hash is `%s`', async (path) => {
-      createWrapper({ mountFn: mountExtended });
+      await createWrapper({ mountFn: mountExtended });
+
       await wrapper.vm.$router.push({ path });
 
       expect(findTabs().props('value')).toBe(0);
-      expect(findModelDetail().props('model')).toBe(MODEL);
+      expect(findModelDetail().exists()).toBe(true);
       expect(findModelVersionList().exists()).toBe(false);
       expect(findCandidateList().exists()).toBe(false);
     });
@@ -176,7 +203,7 @@ describe('ml/model_registry/apps/show_ml_model', () => {
 
       expect(findTabs().props('value')).toBe(1);
       expect(findModelDetail().exists()).toBe(false);
-      expect(findModelVersionList().props('modelId')).toBe(MODEL.id);
+      expect(findModelVersionList().props('modelId')).toBe(model.id);
       expect(findCandidateList().exists()).toBe(false);
     });
 
@@ -188,7 +215,7 @@ describe('ml/model_registry/apps/show_ml_model', () => {
       expect(findTabs().props('value')).toBe(2);
       expect(findModelDetail().exists()).toBe(false);
       expect(findModelVersionList().exists()).toBe(false);
-      expect(findCandidateList().props('modelId')).toBe(MODEL.id);
+      expect(findCandidateList().props('modelId')).toBe(model.id);
     });
 
     describe.each`
@@ -218,7 +245,7 @@ describe('ml/model_registry/apps/show_ml_model', () => {
     it('sets up DeleteModel', () => {
       createWrapper();
 
-      expect(findDeleteModel().props('modelId')).toBe('gid://gitlab/Ml::Model/1234');
+      expect(findDeleteModel().props('modelId')).toBe('gid://gitlab/Ml::Model/1');
     });
 
     describe('When deletion is successful', () => {
@@ -237,9 +264,9 @@ describe('ml/model_registry/apps/show_ml_model', () => {
 
     describe('When deletion results in error', () => {
       it('shows error message', async () => {
-        const resolver = jest.fn().mockResolvedValue(destroyModelResponses.failure);
+        const destroyMutationResolver = jest.fn().mockResolvedValue(destroyModelResponses.failure);
 
-        createWrapper({ resolver });
+        createWrapper({ destroyMutationResolver });
 
         findDeleteButton().vm.$emit('confirm-deletion', { preventDefault: () => {} });
 

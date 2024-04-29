@@ -22,5 +22,12 @@ module Ml
 
       project_package_path(candidate.project, package_id)
     end
+
+    delegator_override :ci_build
+    def ci_build
+      return unless candidate.from_ci? && Ability.allowed?(current_user, :read_build, candidate.ci_build)
+
+      candidate.ci_build
+    end
   end
 end

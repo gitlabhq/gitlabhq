@@ -23,7 +23,7 @@ module Banzai
     # Results:
     #   :toc - String containing Table of Contents data as a `ul` element with
     #          `li` child elements.
-    class TableOfContentsFilter < HTML::Pipeline::Filter
+    class TableOfContentsLegacyFilter < HTML::Pipeline::Filter
       include Gitlab::Utils::Markdown
 
       CSS   = 'h1, h2, h3, h4, h5, h6'
@@ -39,7 +39,8 @@ module Banzai
         header_root = current_header = HeaderNode.new
 
         doc.xpath(XPATH).each do |node|
-          next unless header_content = node.children.first
+          header_content = node.children.first
+          next unless header_content
 
           id = string_to_anchor(node.text[0...255])
 

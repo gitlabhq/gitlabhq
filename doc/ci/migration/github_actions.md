@@ -42,7 +42,7 @@ functionality.
 ### Configuration file
 
 GitHub Actions can be configured with a [workflow YAML file](https://docs.github.com/en/actions/learn-github-actions/understanding-github-actions#understanding-the-workflow-file).
-GitLab CI/CD uses a [`.gitlab-ci.yml` YAML file](../../ci/index.md#the-gitlab-ciyml-file) by default.
+GitLab CI/CD uses a `.gitlab-ci.yml` YAML file by default.
 
 For example, in a GitHub Actions `workflow` file:
 
@@ -91,7 +91,7 @@ from GitHub Actions to GitLab CI/CD.
 generate automated CI/CD jobs that are triggered when certain event take place, for example
 pushing a new commit. A GitHub Action workflow is a YAML file defined in the `.github/workflows`
 directory located in the root of the repository. The GitLab equivalent is the
-[`.gitlab-ci.yml` configuration file](../../ci/index.md#the-gitlab-ciyml-file) which also resides
+`.gitlab-ci.yml` configuration file, which also resides
 in the repository's root directory.
 
 #### Jobs

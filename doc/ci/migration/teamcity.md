@@ -36,7 +36,7 @@ A TeamCity build configuration is a set of instructions that defines how a softw
 tested, and deployed. The configuration includes parameters and settings necessary for automating
 the CI/CD process in TeamCity.
 
-In GitLab, the equivalent of a TeamCity build configuration is the [`.gitlab-ci.yml` file](../index.md#the-gitlab-ciyml-file).
+In GitLab, the equivalent of a TeamCity build configuration is the `.gitlab-ci.yml` file.
 This file defines the CI/CD pipeline for a project, specifying the stages, jobs,
 and commands needed to build, test, and deploy the project.
 

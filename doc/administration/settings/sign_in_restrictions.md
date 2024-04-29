@@ -178,29 +178,15 @@ see [Email notification for unknown sign-ins](../../user/profile/notifications.m
 
 ## Sign-in information
 
+> - **Sign-in text** setting [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/410885) in GitLab 17.0.
+
 All users that are not logged in are redirected to the page represented by the configured
 **Home page URL** if value is not empty.
 
 All users are redirected to the page represented by the configured **Sign-out page URL**
 after sign out if value is not empty.
 
-In the **Sign-in restrictions** section, scroll to the **Sign-in text** field. You can add a
-custom message for your users in Markdown format.
-
-For example, if you include the following information in the noted text box:
-
-```markdown
-# Custom sign-in text
-
-To access this text box:
-
-1. On the left sidebar, at the bottom, select **Admin Area**.
-1. Select **Settings > General**.
-1. Expand the **Sign-in restrictions** section.
-```
-
-Your users see the **Custom sign-in text** when they go to the sign-in screen for your
-GitLab instance.
+To add a help message to the sign-in page, [customize your sign-in and register pages](../appearance.md#customize-your-sign-in-and-register-pages).
 
 ## Troubleshooting
 

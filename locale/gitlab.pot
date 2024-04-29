@@ -3191,9 +3191,6 @@ msgstr ""
 msgid "Add tag"
 msgstr ""
 
-msgid "Add text to the sign-in page. Markdown enabled."
-msgstr ""
-
 msgid "Add time entry"
 msgstr ""
 
@@ -3302,13 +3299,10 @@ msgstr ""
 msgid "Additional text for deactivation email"
 msgstr ""
 
-msgid "Additional text for the sign-in and Help page."
+msgid "Additional text for the Help page."
 msgstr ""
 
 msgid "Additional text to show on the Help page"
-msgstr ""
-
-msgid "Additional text to show on the sign-in page"
 msgstr ""
 
 msgid "Additional units"
@@ -4025,12 +4019,6 @@ msgstr ""
 msgid "AdminStatistics|Snippets"
 msgstr ""
 
-msgid "AdminUsers|2FA Disabled"
-msgstr ""
-
-msgid "AdminUsers|2FA Enabled"
-msgstr ""
-
 msgid "AdminUsers|A user can validate themselves by inputting a credit/debit card, or an admin can manually validate a user. Validated users can use free CI minutes on instance runners."
 msgstr ""
 
@@ -4052,9 +4040,6 @@ msgstr ""
 msgid "AdminUsers|Activate user %{username}?"
 msgstr ""
 
-msgid "AdminUsers|Active"
-msgstr ""
-
 msgid "AdminUsers|Adjust the user cap setting on your instance"
 msgstr ""
 
@@ -4062,9 +4047,6 @@ msgid "AdminUsers|Admin"
 msgstr ""
 
 msgid "AdminUsers|Administrator"
-msgstr ""
-
-msgid "AdminUsers|Admins"
 msgstr ""
 
 msgid "AdminUsers|An error occurred while fetching this user's contributions, and the request cannot return the number of issues, merge requests, groups, and projects linked to this user. If you proceed with deleting the user, all their contributions will still be deleted."
@@ -4275,9 +4257,6 @@ msgid "AdminUsers|Restore user access to the account, including web, Git and API
 msgstr ""
 
 msgid "AdminUsers|Search by name, email, or username"
-msgstr ""
-
-msgid "AdminUsers|Search users"
 msgstr ""
 
 msgid "AdminUsers|Send email to users"
@@ -25665,6 +25644,9 @@ msgstr ""
 msgid "Help"
 msgstr ""
 
+msgid "Help page"
+msgstr ""
+
 msgid "Help translate GitLab into your language"
 msgstr ""
 
@@ -36902,6 +36884,9 @@ msgstr ""
 msgid "Pagination|Prev"
 msgstr ""
 
+msgid "Pagination|Previous"
+msgstr ""
+
 msgid "Pagination|« First"
 msgstr ""
 
@@ -38838,9 +38823,6 @@ msgid "Preview diagram"
 msgstr ""
 
 msgid "Preview payload"
-msgstr ""
-
-msgid "Previous"
 msgstr ""
 
 msgid "Previous commit"
@@ -48699,9 +48681,6 @@ msgstr ""
 msgid "Sign up for your free trial with:"
 msgstr ""
 
-msgid "Sign-in and Help page"
-msgstr ""
-
 msgid "Sign-in count:"
 msgstr ""
 
@@ -48709,9 +48688,6 @@ msgid "Sign-in page"
 msgstr ""
 
 msgid "Sign-in restrictions"
-msgstr ""
-
-msgid "Sign-in text"
 msgstr ""
 
 msgid "Sign-in using %{provider} auth failed"
@@ -59657,7 +59633,7 @@ msgstr ""
 msgid "You see projects here when you're added to a group or project."
 msgstr ""
 
-msgid "You should add a %{linkStart}.gitlab-ci.yml%{linkEnd} file to this project to avoid pipeline failures. %{compliancePipelineLinkStart}Why?%{compliancePipelineLinkEnd}"
+msgid "You should add a .gitlab-ci.yml file to this project to avoid pipeline failures. %{compliancePipelineLinkStart}Why?%{compliancePipelineLinkEnd}"
 msgstr ""
 
 msgid "You successfully declined the invitation"

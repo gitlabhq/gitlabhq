@@ -5,7 +5,7 @@ module Banzai
     class NotePipeline < FullPipeline
       def self.transform_context(context)
         super(context).merge(
-          # TableOfContentsFilter
+          # TableOfContentsLegacyFilter
           no_header_anchors: true
         )
       end

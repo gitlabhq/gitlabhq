@@ -85,9 +85,6 @@ For more information about our solution to mitigate this timeout risk, see [issu
 
 ## Change the default branch protection of a group
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7583) in GitLab 12.9.
-> - [Settings moved and renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/340403) in GitLab 14.9.
-
 By default, every group inherits the branch protection set at the global level.
 
 To change this setting for a specific group, see [group level default branch protection](../project/repository/branches/default.md#group-level-default-branch-protection).
@@ -99,19 +96,12 @@ In [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/), GitLab admin
 
 ## Use a custom name for the initial branch
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/43290) in GitLab 13.6.
-
 When you create a new project in GitLab, a default branch is created with the
 first push. The group owner can
 [customize the initial branch](../project/repository/branches/default.md#group-level-custom-initial-branch-name)
 for the group's projects to meet your group's needs.
 
 ## Share a group with another group
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18328) in GitLab 12.7.
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/247208) in GitLab 13.11 from a form to a modal window [with a flag](../feature_flags.md). Disabled by default.
-> - Modal window [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/247208) in GitLab 14.8.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/352526) in GitLab 14.9. [Feature flag `invite_members_group_modal`](https://gitlab.com/gitlab-org/gitlab/-/issues/352526) removed.
 
 Similar to how you [share a project with a group](../project/members/share_project_with_groups.md),
 you can share a group with another group by invitation.
@@ -179,8 +169,6 @@ To transfer a group:
 
 ## Disable email notifications
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23585) in GitLab 12.2.
-
 You can disable all email notifications related to the group, which includes its subgroups and projects.
 
 To disable email notifications:
@@ -192,8 +180,6 @@ To disable email notifications:
 1. Select **Save changes**.
 
 ## Disable group mentions
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21301) in GitLab 12.6.
 
 You can prevent users from being added to a conversation and getting notified when
 anyone [mentions a group](../discussions/index.md#mentions)
@@ -217,9 +203,6 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/287940) in GitLab 14.2.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/336520) in GitLab 14.5.
-
 You can export a list of members in a group or subgroup as a CSV.
 
 1. On the left sidebar, select **Search or go to** and find your group or subgroup.
@@ -233,7 +216,7 @@ For members with `Minimal Access` in the selected group, their `Max Role` and `S
 
 ## User cap for groups
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330027) in GitLab 14.7 [with a flag](../../administration/feature_flags.md) named `saas_user_caps`. Disabled by default.
+> - Behind a [feature flag](../../administration/feature_flags.md) named `saas_user_caps`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/9263) in GitLab 16.3.
 
 For more information about user caps for GitLab self-managed, see [User cap](../../administration/settings/sign_up_restrictions.md#user-cap).
@@ -427,10 +410,6 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/285458) in GitLab 13.9. [Deployed behind the `group_merge_request_approval_settings_feature_flag` flag](../../administration/feature_flags.md), disabled by default.
-> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/285410) in GitLab 14.5.
-> - [Feature flag `group_merge_request_approval_settings_feature_flag`](https://gitlab.com/gitlab-org/gitlab/-/issues/343872) removed in GitLab 14.9.
-
 Group approval settings manage [project merge request approval settings](../project/merge_requests/approvals/settings.md)
 for all projects in a top-level group. These settings [cascade to all projects](../project/merge_requests/approvals/settings.md#cascade-settings-from-the-instance-or-top-level-group)
 that belong to the group.
@@ -479,13 +458,7 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207164) in GitLab 12.10 as a [Beta feature](../../policy/experiment-beta-support.md#beta).
-
 For a group, you can view how many merge requests, issues, and members were created in the last 90 days.
-
-These Group Activity Analytics can be enabled with the `group_activity_analytics` [feature flag](../../development/feature_flags/index.md#enabling-a-feature-flag-locally-in-development).
-
-![Recent Group Activity](img/group_activity_analytics_v13_10.png)
 
 Changes to [group wikis](../project/wiki/group.md) do not appear in group activity analytics.
 

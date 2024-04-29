@@ -1,6 +1,5 @@
 <script>
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { makeLoadCandidatesErrorMessage, NO_CANDIDATES_LABEL } from '../translations';
 import getModelCandidatesQuery from '../graphql/queries/get_model_candidates.query.graphql';
 import { GRAPHQL_PAGE_SIZE } from '../constants';
@@ -15,7 +14,7 @@ export default {
   },
   props: {
     modelId: {
-      type: Number,
+      type: String,
       required: true,
     },
   },
@@ -45,9 +44,6 @@ export default {
     },
   },
   computed: {
-    gid() {
-      return convertToGraphQLId('Ml::Model', this.modelId);
-    },
     isLoading() {
       return this.$apollo.queries.candidates.loading;
     },
@@ -62,7 +58,7 @@ export default {
     fetchPage(variables) {
       this.errorMessage = '';
       this.queryVariables = {
-        id: this.gid,
+        id: this.modelId,
         first: GRAPHQL_PAGE_SIZE,
         ...variables,
       };

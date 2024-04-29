@@ -136,7 +136,8 @@ RSpec.describe QA::Resource::User do
         allow(QA::Page::Admin::Menu).to receive(:perform)
         allow(QA::Page::Admin::Overview::Users::Index).to receive(:perform).and_yield(index_mock)
 
-        expect(index_mock).to receive(:search_user).with(username)
+        expect(index_mock).to receive(:choose_search_user).with(username)
+        expect(index_mock).to receive(:click_search)
         expect(index_mock).to receive(:has_username?).with(username).and_return(found)
 
         expect(subject.has_user?(subject)).to eq(found)

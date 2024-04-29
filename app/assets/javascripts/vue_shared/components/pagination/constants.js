@@ -1,6 +1,6 @@
 import { s__ } from '~/locale';
 
-export const PREV = s__('Pagination|Prev');
+export const PREV = s__('Pagination|Previous');
 export const NEXT = s__('Pagination|Next');
 export const FIRST = s__('Pagination|« First');
 export const LAST = s__('Pagination|Last »');

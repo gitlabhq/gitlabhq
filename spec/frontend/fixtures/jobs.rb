@@ -47,6 +47,7 @@ RSpec.describe 'Jobs (JavaScript fixtures)' do
     let!(:scheduled) { create(:ci_build, :scheduled, name: 'scheduled', pipeline: pipeline) }
     let!(:with_artifact) { create(:ci_build, :success, name: 'with_artifact', job_artifacts: [artifact], pipeline: pipeline) }
     let!(:with_coverage) { create(:ci_build, :success, name: 'with_coverage', coverage: 40.0, pipeline: pipeline) }
+    let!(:with_coverage_zero) { create(:ci_build, :success, name: 'with_coverage_zero', coverage: 0, pipeline: pipeline) }
 
     shared_examples 'graphql queries' do |path, jobs_query, skip_non_defaults = false|
       let_it_be(:variables) { {} }

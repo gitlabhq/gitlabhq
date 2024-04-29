@@ -137,7 +137,7 @@ RSpec.describe Ci::RunnersFinder, feature_category: :fleet_visibility do
             Ci::Runner.runner_types.each_key do |runner_type|
               context "when runner type is #{runner_type}" do
                 it "calls the corresponding scope on Ci::Runner" do
-                  expect(Ci::Runner).to receive(:with_runner_type).with(runner_type).and_call_original
+                  expect(Ci::Runner).to receive(:with_runner_type).with(runner_type.to_sym).and_call_original
 
                   described_class.new(current_user: admin, params: { type_type: runner_type }).execute
                 end
