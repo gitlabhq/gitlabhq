@@ -179,6 +179,31 @@ module Gitlab
           Gitlab::Diff::Parser.new.parse(raw_diff.each_line, diff_file: self).to_a
       end
 
+      def diff_lines_by_hunk
+        [].tap do |a|
+          lines = { added: [], removed: [] }
+
+          diff_lines.each do |line|
+            lines[:added] << line if line.added?
+            lines[:removed] << line if line.removed?
+
+            next unless line.type == 'match'
+
+            # If diff hunk is first line on diff file, skip it and continue iterating
+            # without resetting lines.
+            next if lines[:added].empty? && lines[:removed].empty?
+
+            a << lines
+
+            # Reset lines since we'll be creating a new hunk when a new diff
+            # hunk is seen.
+            lines = { added: [], removed: [] }
+          end
+
+          a << lines
+        end
+      end
+
       # Changes diff_lines according to the given position. That is,
       # it checks whether the position requires blob lines into the diff
       # in order to be presented.
@@ -383,6 +408,10 @@ module Gitlab
       def add_blobs_to_batch_loader
         new_blob_lazy
         old_blob_lazy
+      end
+
+      def ai_reviewable?
+        diffable? && !deleted_file?
       end
 
       private

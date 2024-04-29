@@ -148,12 +148,6 @@ FactoryBot.define do
       last_sign_in_ip { '127.0.0.1' }
     end
 
-    trait :with_credit_card_validation do
-      after :create do |user|
-        create :credit_card_validation, user: user
-      end
-    end
-
     trait :two_factor_via_otp do
       before(:create) do |user|
         user.otp_required_for_login = true

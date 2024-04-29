@@ -175,6 +175,57 @@ RSpec.describe Gitlab::Diff::File do
     it { expect(diff_lines.first).to be_kind_of(Gitlab::Diff::Line) }
   end
 
+  describe '#diff_lines_by_hunk' do
+    let(:diff_lines) do
+      [
+        instance_double(Gitlab::Diff::Line, type: 'match', added?: false, removed?: false),
+        instance_double(Gitlab::Diff::Line, type: nil, added?: false, removed?: false),
+        instance_double(Gitlab::Diff::Line, type: nil, added?: false, removed?: false),
+        instance_double(Gitlab::Diff::Line, type: nil, added?: false, removed?: false),
+        instance_double(Gitlab::Diff::Line, type: 'new', added?: true, removed?: false, text: 'First Hunk Added 1'),
+        instance_double(Gitlab::Diff::Line, type: 'new', added?: true, removed?: false, text: 'First Hunk Added 2'),
+        instance_double(Gitlab::Diff::Line, type: 'old', added?: false, removed?: true, text: 'First Hunk Removed 1'),
+        instance_double(Gitlab::Diff::Line, type: 'old', added?: false, removed?: true, text: 'First Hunk Removed 2'),
+        instance_double(Gitlab::Diff::Line, type: nil, added?: false, removed?: false),
+        instance_double(Gitlab::Diff::Line, type: nil, added?: false, removed?: false),
+        instance_double(Gitlab::Diff::Line, type: nil, added?: false, removed?: false),
+        instance_double(Gitlab::Diff::Line, type: 'match', added?: false, removed?: false),
+        instance_double(Gitlab::Diff::Line, type: nil, added?: false, removed?: false),
+        instance_double(Gitlab::Diff::Line, type: nil, added?: false, removed?: false),
+        instance_double(Gitlab::Diff::Line, type: nil, added?: false, removed?: false),
+        instance_double(Gitlab::Diff::Line, type: 'old', added?: false, removed?: true, text: 'Second Hunk Removed')
+      ]
+    end
+
+    before do
+      allow(diff_file).to receive(:diff_lines).and_return(diff_lines)
+    end
+
+    subject(:diff_lines_by_hunk) { diff_file.diff_lines_by_hunk }
+
+    it 'returns lines grouped by hunk' do
+      expect(diff_lines_by_hunk.size).to eq(2)
+
+      expect(diff_lines_by_hunk.first[:added].size).to eq(2)
+      expect(diff_lines_by_hunk.first[:added].map(&:text)).to eq([
+        'First Hunk Added 1',
+        'First Hunk Added 2'
+      ])
+
+      expect(diff_lines_by_hunk.first[:removed].size).to eq(2)
+      expect(diff_lines_by_hunk.first[:removed].map(&:text)).to eq([
+        'First Hunk Removed 1',
+        'First Hunk Removed 2'
+      ])
+
+      expect(diff_lines_by_hunk.last[:added].size).to eq(0)
+      expect(diff_lines_by_hunk.last[:removed].size).to eq(1)
+      expect(diff_lines_by_hunk.last[:removed].map(&:text)).to eq([
+        'Second Hunk Removed'
+      ])
+    end
+  end
+
   describe '#highlighted_diff_lines' do
     it 'highlights the diff and memoises the result' do
       expect(Gitlab::Diff::Highlight).to receive(:new)
@@ -1156,6 +1207,36 @@ RSpec.describe Gitlab::Diff::File do
           expect(diff_file.fully_expanded?).to be_truthy
         end
       end
+    end
+  end
+
+  describe '#ai_reviewable?' do
+    let(:diffable?) { true }
+    let(:deleted_file?) { false }
+
+    before do
+      allow(diff_file).to receive(:diffable?).and_return(diffable?)
+      allow(diff_file).to receive(:deleted_file?).and_return(deleted_file?)
+    end
+
+    subject(:ai_reviewable?) { diff_file.ai_reviewable? }
+
+    it { is_expected.to eq(true) }
+
+    it 'returns true' do
+      expect(diff_file.ai_reviewable?).to eq(true)
+    end
+
+    context 'when not diffable' do
+      let(:diffable?) { false }
+
+      it { is_expected.to eq(false) }
+    end
+
+    context 'when deleted file' do
+      let(:deleted_file?) { true }
+
+      it { is_expected.to eq(false) }
     end
   end
 end

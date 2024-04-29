@@ -26,23 +26,23 @@ namespace :gitlab do
       go_version = run_and_match(%w[go version], /go version (.+)/).to_a
 
       puts ""
-      puts "System information".color(:yellow)
-      puts "System:\t\t#{os_name || "unknown".color(:red)}"
+      puts Rainbow("System information").yellow
+      puts "System:\t\t#{os_name || Rainbow("unknown").red}"
 
       if Gitlab.ee?
-        puts "Proxy:\t\t#{proxies.present? ? proxies.color(:green) : "no"}"
+        puts "Proxy:\t\t#{proxies.present? ? Rainbow(proxies).green : "no"}"
       end
 
       puts "Current User:\t#{run_command(%w[whoami])}"
-      puts "Using RVM:\t#{rvm_version.present? ? "yes".color(:green) : "no"}"
+      puts "Using RVM:\t#{rvm_version.present? ? Rainbow("yes").green : "no"}"
       puts "RVM Version:\t#{rvm_version}" if rvm_version.present?
-      puts "Ruby Version:\t#{ruby_version || "unknown".color(:red)}"
-      puts "Gem Version:\t#{gem_version || "unknown".color(:red)}"
-      puts "Bundler Version:#{bunder_version || "unknown".color(:red)}"
-      puts "Rake Version:\t#{rake_version || "unknown".color(:red)}"
-      puts "Redis Version:\t#{redis_version[1] || "unknown".color(:red)}"
+      puts "Ruby Version:\t#{ruby_version || Rainbow("unknown").red}"
+      puts "Gem Version:\t#{gem_version || Rainbow("unknown").red}"
+      puts "Bundler Version:#{bunder_version || Rainbow("unknown").red}"
+      puts "Rake Version:\t#{rake_version || Rainbow("unknown").red}"
+      puts "Redis Version:\t#{redis_version[1] || Rainbow("unknown").red}"
       puts "Sidekiq Version:#{Sidekiq::VERSION}"
-      puts "Go Version:\t#{go_version[1] || "unknown".color(:red)}"
+      puts "Go Version:\t#{go_version[1] || Rainbow("unknown").red}"
 
       project = Group.new(path: "some-group").projects.build(path: "some-project")
       # construct clone URLs
@@ -54,14 +54,14 @@ namespace :gitlab do
           if Gitlab::Geo.current_node
             Gitlab::Geo.current_node.primary ? 'Primary' : 'Secondary'
           else
-            'Undefined'.color(:red)
+            Rainbow('Undefined').red
           end
       end
 
       omniauth_providers = Gitlab.config.omniauth.providers.map { |provider| provider['name'] }
 
       puts ""
-      puts "GitLab information".color(:yellow)
+      puts Rainbow("GitLab information").yellow
       puts "Version:\t#{Gitlab::VERSION}"
       puts "Revision:\t#{Gitlab.revision}"
       puts "Directory:\t#{Rails.root}"
@@ -72,19 +72,19 @@ namespace :gitlab do
       puts "SSH Clone URL:\t#{ssh_clone_url}"
 
       if Gitlab.ee?
-        puts "Elasticsearch:\t#{Gitlab::CurrentSettings.current_application_settings.elasticsearch_indexing? ? "yes".color(:green) : "no"}"
-        puts "Geo:\t\t#{Gitlab::Geo.enabled? ? "yes".color(:green) : "no"}"
+        puts "Elasticsearch:\t#{Gitlab::CurrentSettings.current_application_settings.elasticsearch_indexing? ? Rainbow("yes").green : "no"}"
+        puts "Geo:\t\t#{Gitlab::Geo.enabled? ? Rainbow("yes").green : "no"}"
         puts "Geo node:\t#{geo_node_type}" if Gitlab::Geo.enabled?
       end
 
-      puts "Using LDAP:\t#{Gitlab.config.ldap.enabled ? "yes".color(:green) : "no"}"
-      puts "Using Omniauth:\t#{Gitlab::Auth.omniauth_enabled? ? "yes".color(:green) : "no"}"
+      puts "Using LDAP:\t#{Gitlab.config.ldap.enabled ? Rainbow("yes").green : "no"}"
+      puts "Using Omniauth:\t#{Gitlab::Auth.omniauth_enabled? ? Rainbow("yes").green : "no"}"
       puts "Omniauth Providers: #{omniauth_providers.join(', ')}" if Gitlab::Auth.omniauth_enabled?
 
       # check Gitlab Shell version
       puts ""
-      puts "GitLab Shell".color(:yellow)
-      puts "Version:\t#{Gitlab::Shell.version || "unknown".color(:red)}"
+      puts Rainbow("GitLab Shell").yellow
+      puts "Version:\t#{Gitlab::Shell.version || Rainbow("unknown").red}"
       puts "Repository storages:"
       Gitlab.config.repositories.storages.each do |name, repository_storage|
         puts "- #{name}: \t#{repository_storage.gitaly_address}"
@@ -93,7 +93,7 @@ namespace :gitlab do
 
       # check Gitaly version
       puts ""
-      puts "Gitaly".color(:yellow)
+      puts Rainbow("Gitaly").yellow
       Gitlab.config.repositories.storages.each do |storage_name, storage|
         gitaly_server_service = Gitlab::GitalyClient::ServerService.new(storage_name)
         gitaly_server_info = gitaly_server_service.info
@@ -101,7 +101,7 @@ namespace :gitlab do
         puts "- #{storage_name} Version: \t#{gitaly_server_info.server_version}"
         puts "- #{storage_name} Git Version: \t#{gitaly_server_info.git_version}"
       rescue GRPC::DeadlineExceeded
-        puts "Unable to reach storage #{storage_name}".color(red)
+        puts Rainbow("Unable to reach storage #{storage_name}").red
       end
     end
   end

@@ -1,0 +1,8 @@
+---
+name: load_balancer_ignore_replication_lag_time
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147323
+rollout_issue_url:
+milestone: '17.0'
+group: group::database
+type: ops
+default_enabled: false

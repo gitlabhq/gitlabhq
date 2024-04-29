@@ -12068,6 +12068,7 @@ CREATE TABLE namespace_settings (
     duo_features_enabled boolean,
     lock_duo_features_enabled boolean DEFAULT false NOT NULL,
     disable_personal_access_tokens boolean DEFAULT false NOT NULL,
+    enable_auto_assign_gitlab_duo_pro_seats boolean DEFAULT false NOT NULL,
     CONSTRAINT check_0ba93c78c7 CHECK ((char_length(default_branch_name) <= 255)),
     CONSTRAINT namespace_settings_unique_project_download_limit_alertlist_size CHECK ((cardinality(unique_project_download_limit_alertlist) <= 100)),
     CONSTRAINT namespace_settings_unique_project_download_limit_allowlist_size CHECK ((cardinality(unique_project_download_limit_allowlist) <= 100))

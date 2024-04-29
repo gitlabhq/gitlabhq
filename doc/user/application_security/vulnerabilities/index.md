@@ -165,9 +165,8 @@ When dismissing a vulnerability, one of the following reasons must be chosen to 
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
-- To add the ability to change a vulnerability status, add the `admin_vulnerability`
-  permission to a custom role.
+- You must have at least the Maintainer role for the project, or a custom role with the
+  `admin_vulnerability` permission.
 
 To change a vulnerability's status from its Vulnerability Page:
 

@@ -2,7 +2,7 @@ import { GlIcon, GlLink } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import CiVerificationBadge from '~/ci/catalog/components/shared/ci_verification_badge.vue';
-import { VerificationLevel } from '~/ci/catalog/constants';
+import { VERIFICATION_LEVELS } from '~/ci/catalog/constants';
 
 describe('Catalog Verification Badge', () => {
   let wrapper;
@@ -73,12 +73,14 @@ describe('Catalog Verification Badge', () => {
     });
 
     it('renders the correct icon', () => {
-      expect(findVerificationIcon().props('name')).toBe(VerificationLevel[verificationLevel].icon);
+      expect(findVerificationIcon().props('name')).toBe(
+        VERIFICATION_LEVELS[verificationLevel].icon,
+      );
     });
 
     it('displays the correct badge text', () => {
       expect(findVerificationText().text()).toContain(
-        VerificationLevel[verificationLevel].badgeText,
+        VERIFICATION_LEVELS[verificationLevel].badgeText,
       );
     });
   });

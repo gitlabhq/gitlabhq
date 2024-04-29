@@ -2,14 +2,14 @@
 import { GlIcon, GlLink, GlPopover, GlSprintf } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import { VerificationLevel } from '../../constants';
+import { VERIFICATION_LEVELS } from '../../constants';
 
 export default {
   i18n: {
     verificationLevelPopoverLink: s__('CiCatalog|Learn more about designated creators'),
   },
-  VerificationLevel,
   verificationHelpPagePath: helpPagePath('ci/components/index', { anchor: 'verified-components' }),
+  verificationLevelOptions: VERIFICATION_LEVELS,
   components: {
     GlIcon,
     GlLink,
@@ -44,20 +44,20 @@ export default {
     <span :id="popoverTarget">
       <gl-icon
         class="gl-text-blue-500 gl-ml-1"
-        :name="$options.VerificationLevel[verificationLevel].icon"
+        :name="$options.verificationLevelOptions[verificationLevel].icon"
       />
       <span
         v-if="showText"
         data-testid="verification-badge-text"
         class="gl-text-blue-500 gl-font-weight-bold gl-cursor-default"
       >
-        {{ $options.VerificationLevel[verificationLevel].badgeText }}
+        {{ $options.verificationLevelOptions[verificationLevel].badgeText }}
       </span>
     </span>
     <gl-popover :target="popoverTarget" triggers="hover focus">
       <div class="gl-display-flex gl-flex-direction-column gl-gap-4">
         <span>
-          <gl-sprintf :message="$options.VerificationLevel[verificationLevel].popoverText">
+          <gl-sprintf :message="$options.verificationLevelOptions[verificationLevel].popoverText">
             <template #bold="{ content }">
               <strong>
                 {{ content }}

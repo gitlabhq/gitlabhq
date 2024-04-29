@@ -339,6 +339,10 @@ module MergeRequestsHelper
       is_signed_in: current_user.present?.to_s
     }
   end
+
+  def merge_request_dashboard_enabled?(current_user)
+    Feature.enabled?(:merge_request_dashboard, current_user, type: :wip)
+  end
 end
 
 MergeRequestsHelper.prepend_mod_with('MergeRequestsHelper')

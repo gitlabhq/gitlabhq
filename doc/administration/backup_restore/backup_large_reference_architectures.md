@@ -103,7 +103,7 @@ Configure AWS Backup to back up S3 data. This can be done at the same time when 
 
 ### Configure backup of Git repositories
 
-If using Cloud native hybrid, provision a VM running the GitLab Linux package:
+If using scaled reference architectures or cloud native hybrid, provision a VM running the GitLab Linux package:
 
 1. Spin up a VM with 8 vCPU and 7.2 GB memory. This node will be used to back up Git repositories.
    Adding support for Gitaly server-side backups to `backup-utility` is proposed in

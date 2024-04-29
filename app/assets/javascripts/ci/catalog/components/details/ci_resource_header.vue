@@ -14,6 +14,7 @@ import { cleanLeadingSeparator } from '~/lib/utils/url_utility';
 import { formatDate } from '~/lib/utils/datetime_utility';
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
 import Markdown from '~/vue_shared/components/markdown/non_gfm_markdown.vue';
+import { VERIFICATION_LEVEL_UNVERIFIED } from '../../constants';
 import CiVerificationBadge from '../shared/ci_verification_badge.vue';
 import CiResourceAbout from './ci_resource_about.vue';
 import CiResourceHeaderSkeletonLoader from './ci_resource_header_skeleton_loader.vue';
@@ -84,7 +85,7 @@ export default {
       return this.latestVersion?.name;
     },
     isVerified() {
-      return this.resource?.verificationLevel !== 'UNVERIFIED';
+      return this.resource?.verificationLevel !== VERIFICATION_LEVEL_UNVERIFIED;
     },
     lastReleaseText() {
       if (this.latestVersion?.createdAt) {

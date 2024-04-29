@@ -15,6 +15,7 @@ import { toNounSeriesText } from '~/lib/utils/grammar';
 import { cleanLeadingSeparator } from '~/lib/utils/url_utility';
 import Markdown from '~/vue_shared/components/markdown/non_gfm_markdown.vue';
 import { CI_RESOURCE_DETAILS_PAGE_NAME } from '../../router/constants';
+import { VERIFICATION_LEVEL_UNVERIFIED } from '../../constants';
 import CiVerificationBadge from '../shared/ci_verification_badge.vue';
 
 export default {
@@ -86,7 +87,7 @@ export default {
       return Boolean(this.latestVersion?.createdAt);
     },
     isVerified() {
-      return this.resource?.verificationLevel !== 'UNVERIFIED';
+      return this.resource?.verificationLevel !== VERIFICATION_LEVEL_UNVERIFIED;
     },
     latestVersion() {
       return this.resource?.versions?.nodes[0] || [];
@@ -139,7 +140,7 @@ export default {
     data-testid="catalog-resource-item"
   >
     <gl-avatar
-      class="gl-mr-4"
+      class="gl-mr-4 gl-align-self-start"
       :entity-id="entityId"
       :entity-name="resource.name"
       shape="rect"

@@ -1911,7 +1911,7 @@ RSpec.describe User, feature_category: :user_profile do
   end
 
   describe '#credit_card_validated_at' do
-    let_it_be(:user) { create(:user) }
+    let(:user) { build_stubbed(:user) }
 
     context 'when credit_card_validation does not exist' do
       it 'returns nil' do
@@ -1923,7 +1923,7 @@ RSpec.describe User, feature_category: :user_profile do
       it 'returns the credit card validated time' do
         credit_card_validated_time = Time.current - 1.day
 
-        create(:credit_card_validation, credit_card_validated_at: credit_card_validated_time, user: user)
+        build_stubbed(:credit_card_validation, credit_card_validated_at: credit_card_validated_time, user: user)
 
         expect(user.credit_card_validated_at).to eq(credit_card_validated_time)
       end
@@ -7706,26 +7706,6 @@ RSpec.describe User, feature_category: :user_profile do
       it 'returns [REDACTED]' do
         expect(user.webhook_email).to eq(_('[REDACTED]'))
       end
-    end
-  end
-
-  describe 'user credit card validation' do
-    context 'when user is initialized' do
-      let(:user) { build(:user) }
-
-      it { expect(user.credit_card_validation).not_to be_present }
-    end
-
-    context 'when create user without credit card validation' do
-      let(:user) { create(:user) }
-
-      it { expect(user.credit_card_validation).not_to be_present }
-    end
-
-    context 'when user credit card validation exists' do
-      let(:user) { create(:user, :with_credit_card_validation) }
-
-      it { expect(user.credit_card_validation).to be_persisted }
     end
   end
 

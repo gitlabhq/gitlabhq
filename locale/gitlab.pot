@@ -15478,6 +15478,12 @@ msgstr ""
 msgid "Created on:"
 msgstr ""
 
+msgid "Creates a LLM-generated review"
+msgstr ""
+
+msgid "Creates a LLM-generated review."
+msgstr ""
+
 msgid "Creates a branch and a merge request to resolve this issue."
 msgstr ""
 
@@ -43366,6 +43372,9 @@ msgid "Request data is too large"
 msgstr ""
 
 msgid "Request details"
+msgstr ""
+
+msgid "Request for review queued."
 msgstr ""
 
 msgid "Request review from"
