@@ -100,8 +100,6 @@ This setting limits the request rate on the Packages API per user or IP. For mor
 
 ### Git LFS
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68642) in GitLab 14.3.
-
 This setting limits the request rate on the [Git LFS](../topics/git/lfs/index.md)
 requests per user. For more information, read
 [GitLab Git Large File Storage (LFS) Administration](../administration/lfs/index.md).
@@ -110,17 +108,12 @@ requests per user. For more information, read
 
 ### Files API
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68561) in GitLab 14.3 [with a flag](../administration/feature_flags.md) named `files_api_throttling`. Disabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75918) in GitLab 14.6. [Feature flag `files_api_throttling`](https://gitlab.com/gitlab-org/gitlab/-/issues/338903) removed.
-
 This setting limits the request rate on the Packages API per user or IP address. For more information, read
 [Files API rate limits](settings/files_api_rate_limits.md).
 
 - **Default rate limit**: Disabled by default.
 
 ### Deprecated API endpoints
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68645) in GitLab 14.4.
 
 This setting limits the request rate on deprecated API endpoints per user or IP address. For more information, read
 [Deprecated API rate limits](settings/deprecated_api_rate_limits.md).
@@ -151,8 +144,6 @@ Limit the maximum daily member invitations allowed per group hierarchy.
 
 ### Webhook rate limit
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61151) in GitLab 13.12.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/330133) in GitLab 14.1.
 > - [Limit changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89591) from per-hook to per-top-level namespace in GitLab 15.1.
 
 Limit the number of times a webhook can be called per minute, per top-level namespace.
@@ -176,7 +167,6 @@ Set the limit to `0` to disable it.
 
 ### Search rate limit
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80631) in GitLab 14.9.
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104208) in GitLab 15.9 to include issue, merge request, and epic searches in the rate limit.
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118525) in GitLab 16.0 to apply rate limits to [search scopes](../user/search/index.md#global-search-scopes) for authenticated requests.
 
@@ -330,8 +320,6 @@ To change the webhook timeout value:
 See also [webhook limits for GitLab.com](../user/gitlab_com/index.md#other-limits).
 
 ### Recursive webhooks
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/329743) in GitLab 14.8.
 
 GitLab detects and blocks webhooks that are recursive or that exceed the limit
 of webhooks that can be triggered from other webhooks. This enables GitLab to
@@ -488,8 +476,6 @@ Set the limit to `0` to disable it.
 
 ### Limit the number of pipeline triggers
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33696) in GitLab 14.6.
-
 You can set a limit on the maximum number of pipeline triggers per project. This
 limit is checked every time a new trigger is created.
 
@@ -529,8 +515,6 @@ Plan.default.actual_limits.update!(ci_pipeline_schedules: 100)
 ```
 
 ### Limit the number of pipelines created by a pipeline schedule per day
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/323066) in GitLab 14.0.
 
 You can limit the number of pipelines that pipeline schedules can trigger per day.
 
@@ -685,12 +669,6 @@ To set a limit on your self-managed instance, use the
 
 ### Number of registered runners per scope
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/321368) in GitLab 13.12. Disabled by default.
-> - Enabled on GitLab.com in GitLab 14.3.
-> - Enabled on self-managed in GitLab 14.4.
-> - Feature flag `ci_runner_limits` removed in GitLab 14.4.
-> - Feature flag `ci_runner_limits_override` removed in GitLab 14.6.
-
 The total number of registered runners is limited at the group and project levels. Each time a new runner is registered,
 GitLab checks these limits against runners that have been active in the last 3 months.
 A runner's registration fails if it exceeds the limit for the scope determined by the runner registration token.
@@ -716,9 +694,6 @@ Plan.default.actual_limits.update!(ci_registered_project_runners: 100)
 
 ### Maximum file size for job logs
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/276192) in GitLab 14.1, disabled by default.
-> - Enabled by default and [feature flag `ci_jobs_trace_size_limit` removed](https://gitlab.com/gitlab-org/gitlab/-/issues/335259) in GitLab 14.2.
-
 The job log file size limit in GitLab is 100 megabytes by default. Any job that exceeds the
 limit is marked as failed, and dropped by the runner.
 
@@ -735,8 +710,6 @@ that configures the maximum log size in a runner. Jobs that exceed the runner li
 continue to run, but the log is truncated when it hits the limit.
 
 ### Maximum number of active DAST profile schedules per project
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68551) in GitLab 14.3.
 
 Limit the number of active DAST profile schedules per project. A DAST profile schedule can be active or inactive.
 
@@ -791,8 +764,6 @@ ApplicationSetting.update(ci_max_total_yaml_size_bytes: 20.megabytes)
 
 ### Limit dotenv variables
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/321552) in GitLab 14.5.
-
 You can set a limit on the maximum number of variables inside of a dotenv artifact.
 This limit is checked every time a dotenv file is exported as an artifact.
 
@@ -808,8 +779,6 @@ Plan.default.actual_limits.update!(dotenv_variables: 100)
 This limit is [enabled on GitLab.com](../user/gitlab_com/index.md#gitlab-cicd).
 
 ### Limit dotenv file size
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/321552) in GitLab 14.5.
 
 You can set a limit on the maximum size of a dotenv artifact. This limit is checked
 every time a dotenv file is exported as an artifact.
@@ -1101,8 +1070,6 @@ When asking for versions of a given NuGet package name, the GitLab package regis
 
 ## Dependency Proxy Limits
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6396) in GitLab 14.5.
-
 The maximum file size for an image cached in the
 [Dependency Proxy](../user/packages/dependency_proxy/index.md)
 varies by file type:
@@ -1129,8 +1096,6 @@ In addition to application-based limits, GitLab.com is configured to use Cloudfl
 Container repository tags are in the container registry and, as such, each tag deletion triggers network requests to the container registry. Because of this, we limit the number of tags that a single API call can delete to 20.
 
 ## Project-level Secure Files API limits
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78227) in GitLab 14.8.
 
 The [secure files API](../api/secure_files.md) enforces the following limits:
 

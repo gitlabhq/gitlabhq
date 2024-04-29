@@ -498,8 +498,6 @@ which ideally should not have Redis or Sentinels on it for a HA setup.
 
 ### Step 5. Enable Monitoring
 
-> - [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/3786) in GitLab 12.0.
-
 If you enable Monitoring, it must be enabled on **all** Redis servers.
 
 1. Make sure to collect [`CONSUL_SERVER_NODES`](../postgresql/replication_and_failover.md#consul-information), which are the IP addresses or DNS records of the Consul server nodes, for the next step. Note they are presented as `Y.Y.Y.Y consul1.gitlab.example.com Z.Z.Z.Z`

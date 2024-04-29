@@ -10,9 +10,6 @@ DETAILS:
 **Tier:** Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3869) in GitLab 14.0, disabled behind the `:ff_external_status_checks` feature flag.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/320783) in GitLab 14.1.
-
 ## Get project external status check services
 
 You can request information about a project's external status check services using the following endpoint:
@@ -130,10 +127,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/status_checks
 
 ## Set status of an external status check
 
-> - Introduced in GitLab 14.9, `passed` status to pass external status checks. Introduced [with a flag](../administration/feature_flags.md) named `status_checks_add_status_field`. Disabled by default.
-> - Introduced in GitLab 14.9, `failed` status to fail external status checks. Introduced [with a flag](../administration/feature_flags.md) named `status_checks_add_status_field`. Disabled by default.
-> - `pass` status to pass checks is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/339039) in GitLab 14.9. Replaced with `passed`.
-> - Support for `failed` and `passed` [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/353836) in GitLab 15.0 and feature flag removed.
+> - Support for `failed` and `passed` [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/353836) in GitLab 15.0
 > - Support for `pending` in GitLab 16.5 [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/413723) in GitLab 16.5
 
 For a single merge request, use the API to inform GitLab that a merge request has passed a check by an external service.

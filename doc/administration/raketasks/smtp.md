@@ -10,8 +10,6 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67802) in GitLab 14.2.
-
 The following are SMTP-related Rake tasks.
 
 ## Secrets

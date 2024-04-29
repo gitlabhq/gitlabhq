@@ -10,8 +10,6 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45712) in GitLab 13.7.
-
 GitLab can read settings for certain features from encrypted settings files. The supported features are:
 
 - [Incoming email `user` and `password`](incoming_email.md#use-encrypted-credentials).

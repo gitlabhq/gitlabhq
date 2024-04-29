@@ -16,13 +16,11 @@ You can only import from a [compatible](../../user/project/settings/import_expor
 
 ## Import large projects
 
-> - The [Rake task](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/tasks/gitlab/import_export/import.rake) was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20724) in GitLab 12.6, replacing a GitLab.com Ruby script.
+The [Rake task](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/tasks/gitlab/import_export/import.rake) is used for importing large GitLab project exports.
 
-This script was introduced in GitLab 12.6 for importing large GitLab project exports.
+As part of this task, we also disable direct upload. This avoids uploading a huge archive to GCS, which can cause idle transaction timeouts.
 
-As part of this script, we also disable direct upload. This avoids uploading a huge archive to GCS, which can cause idle transaction timeouts.
-
-We can run this script from the terminal:
+We can run this task from the terminal:
 
 Parameters:
 
@@ -44,8 +42,6 @@ gitlab-rake "gitlab:import_export:import[root, group/subgroup, testingprojectimp
 ```
 
 ## Export large projects
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25598) in GitLab 12.9.
 
 You can use a Rake task to export large project.
 

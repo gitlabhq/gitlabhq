@@ -10,10 +10,6 @@ DETAILS:
 **Tier:** Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3156) in GitLab 13.9, disabled behind `ff_evaluate_group_level_compliance_pipeline` [feature flag](../../administration/feature_flags.md).
-> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/300324) in GitLab 13.11.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/331231) in GitLab 14.2.
-
 Group owners can configure a compliance pipeline in a project separate to other projects. By default, the compliance
 pipeline configuration (for example, `.compliance-gitlab-ci.yml`) is run instead of the pipeline configuration (for example, `.gitlab-ci.yml`) of labeled
 projects.
@@ -270,24 +266,6 @@ cannot change them:
 - Explicitly set any relevant GitLab pre-defined [job keywords](../../ci/yaml/index.md#job-keywords).
   This ensures that your job uses the settings you intend and that they are not overridden by
   project-level pipelines.
-
-## Avoid parent and child pipelines in GitLab 14.7 and earlier
-
-NOTE:
-This advice does not apply to GitLab 14.8 and later because [a fix](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78878) added
-compatibility for combining compliance pipelines, and parent and child pipelines.
-
-Compliance pipelines start on the run of _every_ pipeline in a labeled project. This means that if a pipeline in the labeled project
-triggers a child pipeline, the compliance pipeline runs first. This can trigger the parent pipeline, instead of the child pipeline.
-
-Therefore, in projects with compliance frameworks, you should replace
-[parent-child pipelines](../../ci/pipelines/downstream_pipelines.md#parent-child-pipelines) with the following:
-
-- Direct [`include`](../../ci/yaml/index.md#include) statements that provide the parent pipeline with child pipeline configuration.
-- Child pipelines placed in another project that are run using the [trigger API](../../ci/triggers/index.md) rather than the parent-child
-  pipeline feature.
-
-This alternative ensures the compliance pipeline does not re-start the parent pipeline.
 
 ## Troubleshooting
 

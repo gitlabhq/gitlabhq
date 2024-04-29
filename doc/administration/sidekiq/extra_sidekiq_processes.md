@@ -19,10 +19,6 @@ The information in this page applies only to Linux package installations.
 
 ## Start multiple processes
 
-> - [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/4006) in GitLab 12.10, starting multiple processes with Sidekiq cluster.
-> - [Sidekiq cluster moved](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/181) to GitLab Free in 12.10.
-> - [Sidekiq cluster became default](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/4140) in GitLab 13.0.
-
 When starting multiple processes, the number of processes should at most equal
 (and **not** exceed) the number of CPU cores you want to dedicate to Sidekiq.
 The Sidekiq worker process uses no more than one CPU core.

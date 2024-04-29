@@ -111,9 +111,7 @@ rm go1.20.8.linux-amd64.tar.gz
 To check you are running the minimum required Git version, see
 [Git versions](../install/installation.md#software-requirements).
 
-From GitLab 13.6, you should use the
-[Git version provided by Gitaly](https://gitlab.com/gitlab-org/gitaly/-/issues/2729)
-that:
+Use the [Git version provided by Gitaly](https://gitlab.com/gitlab-org/gitaly/-/issues/2729) that:
 
 - Is always at the version required by GitLab.
 - May contain custom patches required for proper operation.
@@ -131,7 +129,7 @@ sudo make git GIT_PREFIX=/usr/local
 ```
 
 Replace `<X-Y-stable>` with the stable branch that matches the GitLab version you want to
-install. For example, if you want to install GitLab 13.6, use the branch name `13-6-stable`.
+install. For example, if you want to install GitLab 16.7, use the branch name `16-7-stable`.
 
 Remember to set `git -> bin_path` to `/usr/local/bin/git` in `config/gitlab.yml`.
 
@@ -406,8 +404,8 @@ steps that apply to self-compiled installations.
 To revert to a previous version, you must follow the upgrading guides
 for the previous version.
 
-For example, if you have upgraded to GitLab 12.6 and want to revert back to
-12.5, follow the guides for upgrading from 12.4 to 12.5. You can
+For example, if you have upgraded to GitLab 16.6 and want to revert back to
+16.5, follow the guides for upgrading from 16.4 to 16.5. You can
 use the version dropdown list at the top of the page to select the right version.
 
 When reverting, you should **not** follow the database migration guides, as the

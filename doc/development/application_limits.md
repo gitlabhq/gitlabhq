@@ -139,8 +139,6 @@ end
 
 ### Subscription Plans
 
-> - The `opensource` plan was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/346399) in GitLab 14.7.
-
 Self-managed:
 
 - `default`: Everyone.

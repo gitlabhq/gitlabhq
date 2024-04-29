@@ -496,7 +496,7 @@ Connect to your GitLab instance via **Bastion Host A** using [SSH Agent Forwardi
 
 #### Disable Let's Encrypt
 
-Because we're adding our SSL certificate at the load balancer, we do not need the GitLab built-in support for Let's Encrypt. Let's Encrypt [is enabled by default](https://docs.gitlab.com/omnibus/settings/ssl/index.html#enable-the-lets-encrypt-integration) when using an `https` domain in GitLab 10.7 and later, so we must explicitly disable it:
+Because we're adding our SSL certificate at the load balancer, we do not need the GitLab built-in support for Let's Encrypt. Let's Encrypt [is enabled by default](https://docs.gitlab.com/omnibus/settings/ssl/index.html#enable-the-lets-encrypt-integration) when using an `https` domain, so we must explicitly disable it:
 
 1. Open `/etc/gitlab/gitlab.rb` and disable it:
 
@@ -783,9 +783,6 @@ To back up GitLab:
    sudo gitlab-backup create
    ```
 
-NOTE:
-For GitLab 12.1 and earlier, use `gitlab-rake gitlab:backup:create`.
-
 ### Restoring GitLab from a backup
 
 To restore GitLab, first review the [restore documentation](../../administration/backup_restore/index.md#restore-gitlab),
@@ -803,9 +800,6 @@ released, you can update your GitLab instance:
    ```shell
    sudo gitlab-backup create
    ```
-
-NOTE:
-For GitLab 12.1 and earlier, use `gitlab-rake gitlab:backup:create`.
 
 1. Update the repositories and install GitLab:
 

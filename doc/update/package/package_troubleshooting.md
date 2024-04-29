@@ -76,16 +76,8 @@ To fix this issue:
 
 1. Start a database console:
 
-   In GitLab 14.2 and later:
-
    ```shell
    sudo gitlab-rails dbconsole --database main
-   ```
-
-   In GitLab 14.1 and earlier:
-
-   ```shell
-   sudo gitlab-rails dbconsole
    ```
 
 1. Manually add the missing `commit_message_negative_regex` column:

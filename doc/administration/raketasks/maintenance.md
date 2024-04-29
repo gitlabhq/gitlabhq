@@ -83,9 +83,6 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** Self-managed
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20501) in GitLab 12.6.
-> - Moved to GitLab Premium in 13.9.
-
 This command shows information about your [GitLab license](../../administration/license.md) and
 how many seats are used. It is only available on GitLab Enterprise
 installations: a license cannot be installed into GitLab Community Edition.

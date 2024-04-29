@@ -100,9 +100,6 @@ The following managed PostgreSQL services are known to be incompatible and shoul
 |----------------|-------------------------------------------------------|
 | 14.4+          | Amazon Aurora (see [14.4.0](../update/versions/gitlab_14_changes.md#1440)) |
 
-NOTE:
-Support for [PostgreSQL 9.6 and 10 was removed in GitLab 13.0](https://about.gitlab.com/releases/2020/05/22/gitlab-13-0-released/#postgresql-11-is-now-the-minimum-required-version-to-install-gitlab) so that GitLab can benefit from PostgreSQL 11 improvements, such as partitioning.
-
 #### Additional requirements for GitLab Geo
 
 If you're using [GitLab Geo](../administration/geo/index.md), we strongly recommend running instances installed by using the Linux package or using
@@ -302,9 +299,6 @@ are configured so that a **single job** runs in a **single instance** with:
 - 3.75 GB of RAM.
 
 ## Supported web browsers
-
-WARNING:
-With GitLab 13.0 (May 2020) we have removed official support for Internet Explorer 11.
 
 GitLab supports the following web browsers:
 

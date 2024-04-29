@@ -2196,12 +2196,6 @@ There are two ways of specifying object storage configuration in GitLab:
 
 The consolidated form is used in the following examples when available.
 
-NOTE:
-When using the [storage-specific form](../object_storage.md#configure-each-object-type-to-define-its-own-storage-connection-storage-specific-form)
-in GitLab 14.x and earlier, you should enable [direct upload mode](../../development/uploads/index.md#direct-upload).
-The previous [background upload](../../development/uploads/index.md#direct-upload) mode,
-which was deprecated in 14.9, requires shared storage such as NFS.
-
 Using separate buckets for each data type is the recommended approach for GitLab.
 This ensures there are no collisions across the various types of data GitLab stores.
 There are plans to [enable the use of a single bucket](https://gitlab.com/gitlab-org/gitlab/-/issues/292958)

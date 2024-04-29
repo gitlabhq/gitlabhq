@@ -27,7 +27,6 @@ choose one or the other; there is no particular benefit in combining them.
 
 ## Routing rules
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/59604) in GitLab 13.12.
 > - [Default routing rule value](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/97908) added in GitLab 15.4.
 
 NOTE:
@@ -111,11 +110,6 @@ not a recommendation.
 <!--- start_remove The following content will be removed on remove_date: '2024-08-22' -->
 
 ## Queue selectors (deprecated)
-
-> - [Introduced](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/45) in GitLab 12.8.
-> - [Sidekiq cluster, including queue selector, moved](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/181) to GitLab Free in 12.10.
-> - [Renamed from `experimental_queue_selector` to `queue_selector`](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/147) in GitLab 13.6.
-> - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/390787) in GitLab 15.9.
 
 WARNING:
 This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/390787) in GitLab 15.9
@@ -311,8 +305,6 @@ query syntax is employed by both [routing rules](#routing-rules) and
 - Operators used to construct a query.
 
 ### Available attributes
-
-> - [Introduced](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/261) in GitLab 13.1 (`tags`).
 
 Queue matching query works upon the worker attributes, described in
 [Sidekiq style guide](../../development/sidekiq/index.md). We support querying

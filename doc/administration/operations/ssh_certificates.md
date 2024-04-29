@@ -10,8 +10,6 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/19911) in GitLab 11.2.
-
 The default SSH authentication for GitLab requires users to upload their SSH
 public keys before they can use the SSH transport.
 

@@ -77,8 +77,6 @@ To upgrade both the operating system (OS) and GitLab:
 
 ## Packages for ARM64
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-omnibus-builder/-/issues/27) in GitLab 13.4.
-
 GitLab provides arm64/aarch64 packages for some supported operating systems.
 You can see if your operating system architecture is supported in the table
 above.

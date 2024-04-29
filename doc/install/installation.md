@@ -129,7 +129,7 @@ you might have to install 1.1 manually.
 
 ### Git
 
-From GitLab 13.6, we recommend you use the
+You should use the
 [Git version provided by Gitaly](https://gitlab.com/gitlab-org/gitaly/-/issues/2729)
 that:
 
@@ -144,7 +144,7 @@ that:
 
 1. Clone the Gitaly repository and compile Git. Replace `<X-Y-stable>` with the
    stable branch that matches the GitLab version you want to install. For example,
-   if you want to install GitLab 13.6, use the branch name `13-6-stable`:
+   if you want to install GitLab 16.7, use the branch name `16-7-stable`:
 
    ```shell
    git clone https://gitlab.com/gitlab-org/gitaly.git -b <X-Y-stable> /tmp/gitaly
@@ -293,7 +293,8 @@ sudo adduser --disabled-login --gecos 'GitLab' git
 ## 7. Database
 
 NOTE:
-In GitLab 12.1 and later, only PostgreSQL is supported. In GitLab 16.0 and later, we [require PostgreSQL 13+](requirements.md#postgresql-requirements).
+Only PostgreSQL is supported. 
+In GitLab 16.0 and later, we [require PostgreSQL 13+](requirements.md#postgresql-requirements).
 
 1. Install the database packages.
 
@@ -339,7 +340,7 @@ In GitLab 12.1 and later, only PostgreSQL is supported. In GitLab 16.0 and later
    sudo -u postgres psql -d template1 -c "CREATE EXTENSION IF NOT EXISTS pg_trgm;"
    ```
 
-1. Create the `btree_gist` extension (required for GitLab 13.1+):
+1. Create the `btree_gist` extension:
 
    ```shell
    sudo -u postgres psql -d template1 -c "CREATE EXTENSION IF NOT EXISTS btree_gist;"

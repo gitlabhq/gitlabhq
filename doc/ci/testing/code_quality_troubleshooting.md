@@ -28,21 +28,20 @@ is still used.
 
 ## No Code Quality report is displayed in a merge request
 
-This can be due to multiple reasons:
+Code Quality reports from the source or target branch may be missing for comparison on the merge request, so no information can be displayed.
 
-- You just added the Code Quality job in your `.gitlab-ci.yml`. The report does not have anything to
-  compare to yet, so no information can be displayed. It only displays after future merge requests
-  have something to compare to.
-- Your pipeline is not set to run the code quality job on your target branch. If there is no report
-  generated from the target branch, your merge request branch reports have nothing to compare to. In this
-  situation you get an error stating `Base pipeline codequality artifact not found`.
-- The [`artifacts:expire_in`](../yaml/index.md#artifactsexpire_in) CI/CD setting can cause the Code
-  Quality artifacts to expire faster than desired.
-- The widgets use the pipeline of the latest commit to the target branch. If commits are made to the
-  default branch that do not run the code quality job, this may cause the merge request widget to
-  have no base report for comparison.
-- If you use the [`REPORT_STDOUT` environment variable](https://gitlab.com/gitlab-org/ci-cd/codequality#environment-variables),
-  no report file is generated and nothing displays in the merge request.
+Missing report on the source branch can be due to:
+
+1. Use of the [`REPORT_STDOUT` environment variable](https://gitlab.com/gitlab-org/ci-cd/codequality#environment-variables), no report file is generated and nothing displays in the merge request.
+
+Missing report on the target branch can be due to:
+
+- Newly added Code Quality job in your `.gitlab-ci.yml`.
+- Your pipeline is not set to run the Code Quality job on your target branch.
+- Commits are made to the default branch that do not run the Code Quality job.
+- The [`artifacts:expire_in`](../yaml/index.md#artifactsexpire_in) CI/CD setting can cause the Code Quality artifacts to expire faster than desired.
+
+Verify the presence of report on the base commit by obtaining the `base_sha` using the [merge request API](../../api/merge_requests.md#get-single-mr) and use the [pipelines API with the `sha` attribute](../../api/pipelines.md#list-project-pipelines) to check if pipelines ran.
 
 ## Only a single Code Quality report is displayed, but more are defined
 
