@@ -2240,20 +2240,25 @@ class MergeRequest < ApplicationRecord
     merge_request_diff.get_patch_id_sha
   end
 
-  def auto_merge_available_when_pipeline_succeeds?
+  def diff_head_pipeline_considered_in_progress?
     pipeline = diff_head_pipeline
-    return unless pipeline
+    return false unless pipeline
 
+    # We allow auto-merge on blocked pipelines when "Pipelines must succeed" is
+    # enabled, because in that case the pipeline blocks the merge. When
+    # "Pipelines must succeed" is disabled, immediate merges are neither blocked
+    # nor discouraged on blocked pipelines, so auto merge should not wait for
+    # the pipeline to finish.
     if auto_merge_when_incomplete_pipeline_succeeds_enabled?
-      !pipeline.complete?
+      if only_allow_merge_if_pipeline_succeeds?
+        !pipeline.complete?
+      else
+        pipeline.active? || pipeline.created?
+      end
     else
       pipeline.active?
     end
   end
-
-  private
-
-  attr_accessor :skip_fetch_ref
 
   def auto_merge_when_incomplete_pipeline_succeeds_enabled?
     Feature.enabled?(
@@ -2262,6 +2267,10 @@ class MergeRequest < ApplicationRecord
       type: :gitlab_com_derisk
     )
   end
+
+  private
+
+  attr_accessor :skip_fetch_ref
 
   def check_mergeability_states(checks:, execute_all: false, **params)
     execute_merge_checks(

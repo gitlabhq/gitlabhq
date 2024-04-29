@@ -65,6 +65,14 @@ class PagesDeployment < ApplicationRecord
     update(deleted_at: Time.now.utc)
   end
 
+  def self.count_versioned_deployments_for(project, limit)
+    project_id_in(project.root_ancestor.all_projects)
+      .active
+      .versioned
+      .limit(limit)
+      .count
+  end
+
   def url
     base_url = ::Gitlab::Pages::UrlBuilder
       .new(project)

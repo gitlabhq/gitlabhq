@@ -1,6 +1,3 @@
-- issuable_type = 'merge_request'
-- notification_email = @current_user.present? ? @current_user.notification_email_or_default : nil
-
 - if @can_bulk_update
   = render Pajamas::ButtonComponent.new(type: :submit, button_options: { class: 'gl-mr-3 js-bulk-update-toggle' }) do
     = _("Bulk edit")
@@ -9,17 +6,4 @@
     button_options: { data: { event_tracking: 'click_new_merge_request_list' } }) do
     = _("New merge request")
 
-.dropdown.gl-dropdown
-  = render Pajamas::ButtonComponent.new(type: :button, category: :tertiary, variant: :default, icon: 'ellipsis_v', button_options: { data: { toggle: 'dropdown' }, class: 'has-tooltip gl-display-none! gl-md-display-inline-flex!', title: _("Actions")})
-  = render Pajamas::ButtonComponent.new(type: :button, variant: :default, button_options: { data: { 'toggle' => 'dropdown' }, class: 'gl-md-display-none!'}) do
-    = _('Actions')
-    = sprite_icon "chevron-down", size: 16, css_class: "dropdown-icon gl-icon"
-  .dropdown-menu.dropdown-menu-right
-    .gl-dropdown-inner
-      .gl-dropdown-contents
-        %ul
-          .js-csv-import-export-buttons{ data: { show_export_button: "true", issuable_type: issuable_type, issuable_count: issuables_count_for_state(issuable_type.to_sym, params[:state]), email: notification_email, export_csv_path: export_csv_project_merge_requests_path(@project, request.query_parameters) } }
-          %li.gl-dropdown-divider
-            %hr.dropdown-divider
-          %li.gl-dropdown-item
-            = render 'shared/issuable/feed_buttons', show_calendar_button: false
+#js-vue-mr-list-more-actions{ data: project_merge_requests_list_more_actions_data(@project, current_user) }

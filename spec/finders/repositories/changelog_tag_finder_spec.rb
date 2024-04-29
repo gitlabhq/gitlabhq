@@ -46,41 +46,6 @@ RSpec.describe Repositories::ChangelogTagFinder, feature_category: :source_code_
         expect(finder.execute('v2.1.0')).to eq(tag3)
         expect { finder.execute('wrong_version') }.to raise_error(Gitlab::Changelog::Error)
       end
-
-      context 'when feature flag "update_changelog_logic" is disabled' do
-        before do
-          stub_feature_flags(update_changelog_logic: false)
-        end
-
-        it 'returns the previous tag' do
-          tag1 = double(:tag1, name: 'v1.0.0')
-          tag2 = double(:tag2, name: 'v1.1.0')
-          tag3 = double(:tag3, name: 'v2.0.0')
-          tag4 = double(:tag4, name: '0.9.0')
-          tag5 = double(:tag5, name: 'v0.8.0-pre1')
-          tag6 = double(:tag6, name: 'v0.7.0')
-          tag7 = double(:tag7, name: '0.5.0+42.ee.0')
-
-          allow(project.repository)
-            .to receive(:tags)
-            .and_return([tag1, tag3, tag2, tag4, tag5, tag6, tag7])
-
-          expect(finder.execute('2.1.0')).to eq(tag3)
-          expect(finder.execute('2.0.0')).to eq(tag2)
-          expect(finder.execute('1.5.0')).to eq(tag2)
-          expect(finder.execute('1.0.1')).to eq(tag1)
-          expect(finder.execute('1.0.0')).to eq(tag4)
-          expect(finder.execute('0.9.0')).to eq(tag6)
-          expect(finder.execute('0.6.0')).to eq(tag7)
-
-          # with a pre-release version
-          expect(finder.execute('0.6.0-rc1')).to eq(tag7)
-
-          # with v at the beginning
-          expect(finder.execute('v2.1.0')).to eq(nil)
-          expect(finder.execute('wrong_version')).to eq(nil)
-        end
-      end
     end
 
     context 'when GitLab release process' do
@@ -98,17 +63,6 @@ RSpec.describe Repositories::ChangelogTagFinder, feature_category: :source_code_
       it 'supports GitLab release process' do
         expect(finder.execute('16.9.0')).to eq(previous_tag)
         expect(finder.execute('16.8.0')).to eq(nil)
-      end
-
-      context 'when feature flag "update_changelog_logic" is disabled' do
-        before do
-          stub_feature_flags(update_changelog_logic: false)
-        end
-
-        it 'supports GitLab release process' do
-          expect(finder.execute('16.9.0')).to eq(previous_tag)
-          expect(finder.execute('16.8.0')).to eq(nil)
-        end
       end
     end
 
@@ -130,18 +84,6 @@ RSpec.describe Repositories::ChangelogTagFinder, feature_category: :source_code_
         expect(finder.execute('16.8.0')).to eq(previous_tag)
         expect(finder.execute('16.7.0')).to eq(nil)
       end
-
-      context 'when feature flag "update_changelog_logic" is disabled' do
-        before do
-          stub_feature_flags(update_changelog_logic: false)
-        end
-
-        it 'supports Omnibus release process' do
-          expect(finder.execute('16.9.0')).to eq(previous_tag)
-          expect(finder.execute('16.8.0')).to eq(previous_tag)
-          expect(finder.execute('16.7.0')).to eq(nil)
-        end
-      end
     end
 
     context 'when Gitaly release process' do
@@ -157,17 +99,6 @@ RSpec.describe Repositories::ChangelogTagFinder, feature_category: :source_code_
       it 'supports Gitaly release process' do
         expect(finder.execute('16.9.0')).to eq(previous_tag)
         expect(finder.execute('16.8.0')).to eq(nil)
-      end
-
-      context 'when feature flag "update_changelog_logic" is disabled' do
-        before do
-          stub_feature_flags(update_changelog_logic: false)
-        end
-
-        it 'supports Gitaly release process' do
-          expect(finder.execute('16.9.0')).to eq(previous_tag)
-          expect(finder.execute('16.8.0')).to eq(nil)
-        end
       end
     end
 

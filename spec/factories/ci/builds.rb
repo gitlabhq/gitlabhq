@@ -314,6 +314,20 @@ FactoryBot.define do
       end
     end
 
+    trait :pages do
+      ref { "HEAD" }
+      name { 'pages' }
+
+      after(:create) do |build, _evaluator|
+        file = fixture_file_upload("spec/fixtures/pages.zip")
+        metadata = fixture_file_upload("spec/fixtures/pages.zip.meta")
+
+        create(:ci_job_artifact, :correct_checksum, file: file, job: build)
+        create(:ci_job_artifact, file_type: :metadata, file_format: :gzip, file: metadata, job: build)
+        build.reload
+      end
+    end
+
     trait :artifacts do
       after(:create) do |build, evaluator|
         create(:ci_job_artifact, :archive, :public, job: build, expire_at: build.artifacts_expire_at)

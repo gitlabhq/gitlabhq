@@ -155,6 +155,10 @@ const triggerEditCommitInput = () =>
   wrapper.find('[data-testid="widget_edit_commit_message"]').vm.$emit('input', true);
 const findMergeHelperText = () => wrapper.find('[data-testid="auto-merge-helper-text"]');
 
+beforeEach(() => {
+  gon.features = { autoMergeWhenIncompletePipelineSucceeds: true };
+});
+
 describe('ReadyToMerge', () => {
   beforeEach(() => {
     service = createTestService();
@@ -228,18 +232,85 @@ describe('ReadyToMerge', () => {
   });
 
   describe('merge immediately dropdown', () => {
-    it('dropdown should be hidden if no pipeline is active', () => {
+    it('dropdown should be visible if auto merge is available', () => {
       createComponent({
-        mr: { isPipelineActive: false, onlyAllowMergeIfPipelineSucceeds: false },
+        mr: {
+          availableAutoMergeStrategies: [MWPS_MERGE_STRATEGY],
+          mergeable: true,
+          headPipeline: { active: false },
+          onlyAllowMergeIfPipelineSucceeds: false,
+        },
+      });
+
+      expect(findMergeImmediatelyDropdown().exists()).toBe(true);
+    });
+
+    it('dropdown should be hidden if auto merge is unavailable', () => {
+      createComponent({
+        mr: {
+          availableAutoMergeStrategies: [],
+          mergeable: true,
+          headPipeline: { active: true },
+          onlyAllowMergeIfPipelineSucceeds: false,
+        },
       });
 
       expect(findMergeImmediatelyDropdown().exists()).toBe(false);
     });
 
-    it('dropdown should be hidden if "Pipelines must succeed" is enabled', () => {
-      createComponent({ mr: { isPipelineActive: true, onlyAllowMergeIfPipelineSucceeds: true } });
+    it('dropdown should be hidden if the MR is not mergeable', () => {
+      createComponent({
+        mr: {
+          availableAutoMergeStrategies: [MWPS_MERGE_STRATEGY],
+          mergeable: false,
+          headPipeline: { active: true },
+          onlyAllowMergeIfPipelineSucceeds: false,
+        },
+      });
 
       expect(findMergeImmediatelyDropdown().exists()).toBe(false);
+    });
+
+    describe('when ff auto_merge_when_incomplete_pipeline_succeeds is disabled', () => {
+      beforeEach(() => {
+        gon.features = {};
+      });
+
+      it('dropdown should be visible if pipeline is active', () => {
+        createComponent({
+          mr: {
+            availableAutoMergeStrategies: [],
+            headPipeline: { active: true },
+            onlyAllowMergeIfPipelineSucceeds: false,
+          },
+        });
+
+        expect(findMergeImmediatelyDropdown().exists()).toBe(true);
+      });
+
+      it('dropdown should be hidden if no pipeline is active', () => {
+        createComponent({
+          mr: {
+            availableAutoMergeStrategies: [MWPS_MERGE_STRATEGY],
+            headPipeline: { active: false },
+            onlyAllowMergeIfPipelineSucceeds: false,
+          },
+        });
+
+        expect(findMergeImmediatelyDropdown().exists()).toBe(false);
+      });
+
+      it('dropdown should be hidden if "Pipelines must succeed" is enabled', () => {
+        createComponent({
+          mr: {
+            availableAutoMergeStrategies: [MWPS_MERGE_STRATEGY],
+            headPipeline: { active: true },
+            onlyAllowMergeIfPipelineSucceeds: true,
+          },
+        });
+
+        expect(findMergeImmediatelyDropdown().exists()).toBe(false);
+      });
     });
   });
 

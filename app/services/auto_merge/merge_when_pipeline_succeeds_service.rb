@@ -34,7 +34,7 @@ module AutoMerge
 
     def available_for?(merge_request)
       super do
-        merge_request.auto_merge_available_when_pipeline_succeeds?
+        merge_request.diff_head_pipeline_considered_in_progress?
       end
     end
 

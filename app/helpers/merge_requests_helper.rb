@@ -229,6 +229,17 @@ module MergeRequestsHelper
     }
   end
 
+  def project_merge_requests_list_more_actions_data(project, current_user)
+    {
+      is_signed_in: current_user.present?.to_s,
+      issuable_type: :merge_request,
+      issuable_count: issuables_count_for_state(:merge_request, params[:state]),
+      email: current_user.present? ? current_user.notification_email_or_default : nil,
+      export_csv_path: export_csv_project_merge_requests_path(project, request.query_parameters),
+      rss_url: url_for(safe_params.merge(rss_url_options))
+    }
+  end
+
   private
 
   def review_requested_merge_requests_count

@@ -732,12 +732,6 @@ class Issue < ApplicationRecord
     work_item_type_with_default.base_type
   end
 
-  def unsubscribe_email_participant(email)
-    return if email.blank?
-
-    issue_email_participants.find_by_email(email)&.destroy
-  end
-
   def hook_attrs
     Gitlab::HookData::IssueBuilder.new(self).build
   end

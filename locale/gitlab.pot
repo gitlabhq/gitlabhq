@@ -33264,6 +33264,9 @@ msgstr ""
 msgid "Namespace or project is required"
 msgstr ""
 
+msgid "Namespace reached its allowed limit of %{limit} extra deployments"
+msgstr ""
+
 msgid "Namespace:"
 msgstr ""
 
@@ -62382,6 +62385,9 @@ msgid "type parameter is missing and is required"
 msgstr ""
 
 msgid "unicode domains should use IDNA encoding"
+msgstr ""
+
+msgid "unsubscribed %{emails}"
 msgstr ""
 
 msgid "updated"

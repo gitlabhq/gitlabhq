@@ -77,7 +77,7 @@ module Projects
         stage.project = build.project
       end
     end
-    strong_memoize_attr :commit_status
+    strong_memoize_attr :stage
     # rubocop: enable Performance/ActiveRecordSubtransactionMethods
 
     def create_pages_deployment(artifacts_path, build)

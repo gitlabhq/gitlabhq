@@ -9,7 +9,7 @@ RSpec.describe 'Project Merge Requests RSS', feature_category: :code_review_work
   let_it_be(:merge_request) { create(:merge_request, source_project: project, assignees: [user]) }
   let_it_be(:path) { project_merge_requests_path(project) }
 
-  context 'when signed in' do
+  context 'when signed in', :js do
     let_it_be(:user) { create(:user) }
 
     before_all do
@@ -19,15 +19,17 @@ RSpec.describe 'Project Merge Requests RSS', feature_category: :code_review_work
     before do
       sign_in(user)
       visit path
+      click_button 'Actions', match: :first
     end
 
     it_behaves_like "it has an RSS link with current_user's feed token"
     it_behaves_like "an autodiscoverable RSS feed with current_user's feed token"
   end
 
-  context 'when signed out' do
+  context 'when signed out', :js do
     before do
       visit path
+      click_button 'Actions', match: :first
     end
 
     it_behaves_like "it has an RSS link without a feed token"

@@ -1050,7 +1050,7 @@ CREATE TABLE p_ci_builds (
     type character varying,
     target_url character varying,
     description character varying,
-    project_id integer,
+    project_id_convert_to_bigint integer,
     erased_by_id integer,
     erased_at timestamp without time zone,
     artifacts_expire_at timestamp without time zone,
@@ -1078,7 +1078,7 @@ CREATE TABLE p_ci_builds (
     auto_canceled_by_id bigint,
     commit_id bigint,
     erased_by_id_convert_to_bigint bigint,
-    project_id_convert_to_bigint bigint,
+    project_id bigint,
     runner_id bigint,
     trigger_request_id_convert_to_bigint bigint,
     upstream_pipeline_id bigint,
@@ -6141,7 +6141,7 @@ CREATE TABLE ci_builds (
     type character varying,
     target_url character varying,
     description character varying,
-    project_id integer,
+    project_id_convert_to_bigint integer,
     erased_by_id integer,
     erased_at timestamp without time zone,
     artifacts_expire_at timestamp without time zone,
@@ -6169,7 +6169,7 @@ CREATE TABLE ci_builds (
     auto_canceled_by_id bigint,
     commit_id bigint,
     erased_by_id_convert_to_bigint bigint,
-    project_id_convert_to_bigint bigint,
+    project_id bigint,
     runner_id bigint,
     trigger_request_id_convert_to_bigint bigint,
     upstream_pipeline_id bigint,
@@ -13580,7 +13580,8 @@ CREATE TABLE plan_limits (
     ci_job_annotations_num integer DEFAULT 20 NOT NULL,
     file_size_limit_mb double precision DEFAULT 100.0 NOT NULL,
     audit_events_amazon_s3_configurations integer DEFAULT 5 NOT NULL,
-    ci_max_artifact_size_repository_xray bigint DEFAULT 1073741824 NOT NULL
+    ci_max_artifact_size_repository_xray bigint DEFAULT 1073741824 NOT NULL,
+    active_versioned_pages_deployments_limit_by_namespace integer DEFAULT 0 NOT NULL
 );
 
 CREATE SEQUENCE plan_limits_id_seq
@@ -24342,10 +24343,6 @@ CREATE INDEX idx_vulnerability_reads_project_id_scanner_id_vulnerability_id ON v
 
 CREATE UNIQUE INDEX idx_work_item_types_on_namespace_id_and_name_null_namespace ON work_item_types USING btree (btrim(lower(name)), ((namespace_id IS NULL))) WHERE (namespace_id IS NULL);
 
-CREATE INDEX p_ci_builds_project_id_bigint_id_idx ON ONLY p_ci_builds USING btree (project_id_convert_to_bigint, id);
-
-CREATE INDEX index_3591adffe4 ON ci_builds USING btree (project_id_convert_to_bigint, id);
-
 CREATE INDEX index_abuse_events_on_abuse_report_id ON abuse_events USING btree (abuse_report_id);
 
 CREATE INDEX index_abuse_events_on_category_and_source ON abuse_events USING btree (category, source);
@@ -29737,8 +29734,6 @@ ALTER INDEX p_ci_pipeline_variables_pkey ATTACH PARTITION ci_pipeline_variables_
 ALTER INDEX p_ci_stages_pkey ATTACH PARTITION ci_stages_pkey;
 
 ALTER INDEX p_ci_job_artifacts_job_id_file_type_partition_id_idx ATTACH PARTITION idx_ci_job_artifacts_on_job_id_file_type_and_partition_id_uniq;
-
-ALTER INDEX p_ci_builds_project_id_bigint_id_idx ATTACH PARTITION index_3591adffe4;
 
 ALTER INDEX p_ci_builds_metadata_build_id_idx ATTACH PARTITION index_ci_builds_metadata_on_build_id_and_has_exposed_artifacts;
 

@@ -65,7 +65,7 @@ FactoryBot.define do
 
       # Kubernetes agents
       create(:cluster_agent, project: projects[0])
-      create(:cluster_agent_token, agent: create(:cluster_agent, project: projects[1]) )
+      create(:cluster_agent_token, agent: create(:cluster_agent, project: projects[1]))
 
       # Enabled clusters
       gcp_cluster = create(:cluster_provider_gcp, :created).cluster

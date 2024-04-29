@@ -39,21 +39,17 @@ module Repositories
       # https://docs.gitlab.com/ee/user/project/changelogs.html#customize-the-tag-format-when-extracting-versions
       custom_regex_matcher = matcher(@regex)
 
-      if Feature.enabled?(:update_changelog_logic, @project)
-        # Default regex macher extracts the user provided version
-        # The regex is different here, because it must match API documentation requirements
-        # https://gitlab.com/gitlab-org/gitlab/-/blob/44ab4e5bccdea01642b2f42bcccef706409ebfec/doc/api/repositories.md#L338
-        default_regex_matcher = matcher(Gitlab::Changelog::Config::DEFAULT_TAG_REGEX)
+      # Default regex macher extracts the user provided version
+      # The regex is different here, because it must match API documentation requirements
+      # https://gitlab.com/gitlab-org/gitlab/-/blob/44ab4e5bccdea01642b2f42bcccef706409ebfec/doc/api/repositories.md#L338
+      default_regex_matcher = matcher(Gitlab::Changelog::Config::DEFAULT_TAG_REGEX)
 
-        version_components = default_regex_matcher.match(new_version)
-        requested_version = assemble_version(version_components)
+      version_components = default_regex_matcher.match(new_version)
+      requested_version = assemble_version(version_components)
 
-        unless requested_version
-          raise Gitlab::Changelog::Error,
-            _("The requested `version` attribute format is not correct. Use formats such as `1.0.0` or `v1.0.0`.")
-        end
-      else
-        requested_version = new_version
+      unless requested_version
+        raise Gitlab::Changelog::Error,
+          _("The requested `version` attribute format is not correct. Use formats such as `1.0.0` or `v1.0.0`.")
       end
 
       versions = [requested_version]

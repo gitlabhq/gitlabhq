@@ -10,7 +10,7 @@ RSpec.describe IssueEmailParticipants::DestroyService, feature_category: :servic
       issue.reset
       note = issue.notes.last
       expect(note.system?).to be true
-      expect(note.author).to eq(user)
+      expect(note.author).to eq(expected_user)
 
       participants_emails = issue.email_participants_emails_downcase
 
@@ -18,6 +18,7 @@ RSpec.describe IssueEmailParticipants::DestroyService, feature_category: :servic
         expect(participants_emails).not_to include(email)
         expect(response.message).to include(email)
         expect(note.note).to include(email)
+        expect(note.note).to include(expected_text_part)
       end
     end
   end
@@ -35,7 +36,8 @@ RSpec.describe IssueEmailParticipants::DestroyService, feature_category: :servic
     let_it_be_with_reload(:issue) { create(:issue, project: project) }
 
     let(:emails) { nil }
-    let(:service) { described_class.new(target: issue, current_user: user, emails: emails) }
+    let(:options) { {} }
+    let(:service) { described_class.new(target: issue, current_user: user, emails: emails, options: options) }
     let(:expected_emails) { emails }
 
     let(:error_feature_flag) { "Feature flag issue_email_participants is not enabled for this project." }
@@ -44,12 +46,32 @@ RSpec.describe IssueEmailParticipants::DestroyService, feature_category: :servic
       _("No email participants were removed. Either none were provided, or they don't exist.")
     end
 
+    let(:expected_user) { user }
+    let(:expected_text_part) { 'removed' }
+
     subject(:response) { service.execute }
 
     context 'when the user is not a project member' do
       let(:error_message) { error_underprivileged }
 
       it_behaves_like 'a failed service execution'
+
+      context 'when skip_permission_check option is provided' do
+        let(:error_message) { error_no_participants_removed }
+        let(:options) { { skip_permission_check: true } }
+
+        it_behaves_like 'a failed service execution'
+
+        context 'when email is a participant of the issue' do
+          let(:emails) { ['user@example.com'] }
+
+          before do
+            issue.issue_email_participants.create!(email: 'user@example.com')
+          end
+
+          it_behaves_like 'a successful service execution'
+        end
+      end
     end
 
     context 'when user has reporter role in project' do
@@ -75,6 +97,14 @@ RSpec.describe IssueEmailParticipants::DestroyService, feature_category: :servic
           end
 
           it_behaves_like 'a successful service execution'
+
+          context 'when context option with :unsubscribe is passed' do
+            let(:expected_user) { Users::Internal.support_bot }
+            let(:expected_text_part) { 'unsubscribed' }
+            let(:options) { { context: :unsubscribe } }
+
+            it_behaves_like 'a successful service execution'
+          end
 
           context 'when email is formatted in a different case' do
             let(:emails) { ['USER@example.com'] }
@@ -132,16 +162,6 @@ RSpec.describe IssueEmailParticipants::DestroyService, feature_category: :servic
 
         it_behaves_like 'a successful service execution'
       end
-    end
-
-    context 'when feature flag issue_email_participants is disabled' do
-      let(:error_message) { error_feature_flag }
-
-      before do
-        stub_feature_flags(issue_email_participants: false)
-      end
-
-      it_behaves_like 'a failed service execution'
     end
   end
 end

@@ -5,7 +5,7 @@ import IssuableFilteredSearchTokenKeys from '~/filtered_search/issuable_filtered
 import { FILTERED_SEARCH } from '~/filtered_search/constants';
 import { initBulkUpdateSidebar, initCsvImportExportButtons, initIssuableByEmail } from '~/issuable';
 import initFilteredSearch from '~/pages/search/init_filtered_search';
-import { mountMergeRequestListsApp } from '~/merge_requests/list';
+import { mountMoreActionsDropdown, mountMergeRequestListsApp } from '~/merge_requests/list';
 
 initBulkUpdateSidebar('merge_request_');
 
@@ -22,4 +22,5 @@ addShortcutsExtension(ShortcutsNavigation);
 
 initIssuableByEmail();
 initCsvImportExportButtons();
+mountMoreActionsDropdown();
 mountMergeRequestListsApp();

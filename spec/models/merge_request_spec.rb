@@ -6560,10 +6560,10 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
   end
 
-  describe '#auto_merge_available_when_pipeline_succeeds?' do
+  describe '#diff_head_pipeline_considered_in_progress?' do
     let(:merge_request) { build(:merge_request, project: project) }
 
-    subject { merge_request.auto_merge_available_when_pipeline_succeeds? }
+    subject { merge_request.diff_head_pipeline_considered_in_progress? }
 
     context 'when there is no pipeline' do
       it { is_expected.to be_falsy }
@@ -6572,18 +6572,27 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     context 'when there is a pipeline' do
       before do
         merge_request.head_pipeline = build(:ci_pipeline, sha: merge_request.diff_head_sha, status: pipeline_status)
+        allow(merge_request).to receive(:only_allow_merge_if_pipeline_succeeds?).and_return(pipelines_must_succeed)
       end
 
-      where(:pipeline_status, :expected) do
-        'success'   | false
-        'failed'    | false
-        'canceled'  | false
-        'skipped'   | false
-        'created'   | true
-        'pending'   | true
-        'running'   | true
-        'scheduled' | true
-        'manual'    | true
+      where(:pipeline_status, :pipelines_must_succeed, :expected) do
+        # completed statuses
+        'success'   | false | false
+        'failed'    | false | false
+        'canceled'  | false | false
+        'skipped'   | false | false
+        # not completed, pipeline must succeed disabled
+        'created'   | false | true
+        'pending'   | false | true
+        'running'   | false | true
+        'scheduled' | false | false
+        'manual'    | false | false
+        # not completed, pipeline must succeed enabled
+        'created'   | true  | true
+        'pending'   | true  | true
+        'running'   | true  | true
+        'scheduled' | true  | true
+        'manual'    | true  | true
       end
 
       with_them do
@@ -6595,11 +6604,15 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
           stub_feature_flags(auto_merge_when_incomplete_pipeline_succeeds: false)
         end
 
+        let(:pipelines_must_succeed) { false }
+
         where(:pipeline_status, :expected) do
+          # completed statuses
           'success'   | false
           'failed'    | false
           'canceled'  | false
           'skipped'   | false
+          # not completed statuses
           'created'   | false
           'pending'   | true
           'running'   | true

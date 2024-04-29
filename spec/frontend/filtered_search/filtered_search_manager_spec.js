@@ -565,7 +565,7 @@ describe('Filtered Search Manager', () => {
 
       expect(DropdownUtils.getSearchQuery()).toEqual(inputValue);
 
-      manager.clearSearchButton.click();
+      manager.clearSearch();
 
       expect(manager.filteredSearchInput.value).toEqual('');
       expect(DropdownUtils.getSearchQuery()).toEqual('');

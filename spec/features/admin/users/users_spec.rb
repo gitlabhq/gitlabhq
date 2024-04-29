@@ -50,7 +50,7 @@ RSpec.describe 'Admin::Users', feature_category: :user_management do
       expect(page).to have_content('Password')
     end
 
-    it 'shows the user popover on hover', :js do
+    it 'shows the user popover on hover', :js, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/444684' do
       expect(has_testid?('user-popover', count: 0)).to eq(true)
 
       find_link(user.email).hover

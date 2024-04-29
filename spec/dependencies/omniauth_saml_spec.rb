@@ -17,7 +17,7 @@ RSpec.describe 'processing of SAMLResponse in dependencies' do
     allow_next_instance_of(OneLogin::RubySaml::Response) do |instance|
       allow(instance).to receive(:is_valid?).and_return(true)
     end
-    saml_strategy.send(:handle_response, mock_saml_response, {}, settings ) {}
+    saml_strategy.send(:handle_response, mock_saml_response, {}, settings) {}
   end
 
   it 'can extract AuthnContextClassRef from SAMLResponse param' do

@@ -40,7 +40,7 @@ RSpec.shared_examples "it has an RSS link without a feed token" do
 end
 
 RSpec.shared_examples "updates atom feed link" do |type|
-  it "for #{type}" do
+  it "for #{type}", :js do
     sign_in(user)
     visit path
     click_button 'Actions', match: :first

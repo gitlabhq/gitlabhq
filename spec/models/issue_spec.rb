@@ -2113,30 +2113,6 @@ RSpec.describe Issue, feature_category: :team_planning do
     it { is_expected.to eq(WorkItems::Type.default_by_type(::Issue::DEFAULT_ISSUE_TYPE)) }
   end
 
-  describe '#unsubscribe_email_participant' do
-    let_it_be(:email) { 'email@example.com' }
-
-    let_it_be(:issue1) do
-      create(:issue, project: reusable_project, external_author: email) do |issue|
-        issue.issue_email_participants.create!(email: email)
-      end
-    end
-
-    let_it_be(:issue2) do
-      create(:issue, project: reusable_project, external_author: email) do |issue|
-        issue.issue_email_participants.create!(email: email)
-      end
-    end
-
-    it 'deletes email for issue1' do
-      expect { issue1.unsubscribe_email_participant(email) }.to change { issue1.issue_email_participants.count }.by(-1)
-    end
-
-    it 'does not delete email for issue2 when issue1 is used' do
-      expect { issue1.unsubscribe_email_participant(email) }.not_to change { issue2.issue_email_participants.count }
-    end
-  end
-
   describe '#update_search_data!' do
     it 'copies namespace_id to search data' do
       issue = create(:issue)

@@ -7,8 +7,8 @@ module IssueEmailParticipants
     MAX_NUMBER_OF_RECORDS = 10
 
     def execute
-      response = response_from_guard_checks
-      return response unless response.nil?
+      return error_feature_flag unless Feature.enabled?(:issue_email_participants, target.project)
+      return error_underprivileged unless user_privileged?
       return error_no_participants_added unless emails.present?
 
       added_emails = add_participants(deduplicate_and_limit_emails)

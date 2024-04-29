@@ -115,6 +115,112 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
       end
     end
 
+    context 'exists with patterns' do
+      let(:config) do
+        <<-YAML
+        job1:
+          script: echo Hello, World!
+          rules:
+            - exists:
+              - 'docs/*.md' # does not match
+              - 'config/*.rb' # matches
+
+        job2:
+          script: echo Hello, World!
+          rules:
+            - exists:
+              - 'docs/*.md' # does not match
+              - '**/app.rb' # matches
+
+        job3:
+          script: echo Hello, World!
+          rules:
+            - exists:
+              - 'config/*.yml' # does not match
+              - '**/app.rb' # matches
+
+        job4:
+          script: echo Hello, World!
+          rules:
+            - exists:
+              - '**/app.rb' # matches
+        YAML
+      end
+
+      context 'with matches' do
+        let_it_be(:project_files) do
+          {
+            'config/app.rb' => '',
+            'hello1.yml' => '',
+            'hello2.yml' => ''
+          }
+        end
+
+        let_it_be(:project) do
+          create(:project, :custom_repo, files: project_files)
+        end
+
+        let_it_be(:number_of_project_files) { project_files.size }
+
+        it 'creates all jobs' do
+          expect(pipeline).to be_persisted
+          expect(build_names).to contain_exactly('job1', 'job2', 'job3', 'job4')
+        end
+
+        context 'on checking cache', :request_store do
+          it 'does not evaluate the same glob more than once' do
+            expect(File).to receive(:fnmatch?)
+              .with('docs/*.md', anything, anything)
+              .exactly(number_of_project_files).times # it iterates all files
+              .and_call_original
+            expect(File).to receive(:fnmatch?)
+              .with('config/*.rb', anything, anything)
+              .once # it iterates once and finds the file
+              .and_call_original
+            expect(File).to receive(:fnmatch?)
+              .with('config/*.yml', anything, anything)
+              .exactly(number_of_project_files).times # it iterates all files
+              .and_call_original
+            expect(File).to receive(:fnmatch?)
+              .with('**/app.rb', anything, anything)
+              .once # it iterates once and finds the file
+              .and_call_original
+
+            expect(pipeline).to be_persisted
+            expect(build_names).to contain_exactly('job1', 'job2', 'job3', 'job4')
+          end
+
+          context 'when the FF ci_rules_exists_pattern_matches_cache is disabled' do
+            before do
+              stub_feature_flags(ci_rules_exists_pattern_matches_cache: false)
+            end
+
+            it 'does not use the cache' do
+              expect(File).to receive(:fnmatch?)
+                .with('docs/*.md', anything, anything)
+                .exactly(2 * number_of_project_files).times # it iterates all files twice
+                .and_call_original
+              expect(File).to receive(:fnmatch?)
+                .with('config/*.rb', anything, anything)
+                .once # it iterates once and finds the file once
+                .and_call_original
+              expect(File).to receive(:fnmatch?)
+                .with('config/*.yml', anything, anything)
+                .exactly(number_of_project_files).times # it iterates all files once
+                .and_call_original
+              expect(File).to receive(:fnmatch?)
+                .with('**/app.rb', anything, anything)
+                .exactly(3).times # it iterates once and finds the file three times
+                .and_call_original
+
+              expect(pipeline).to be_persisted
+              expect(build_names).to contain_exactly('job1', 'job2', 'job3', 'job4')
+            end
+          end
+        end
+      end
+    end
+
     context 'with allow_failure and exit_codes', :aggregate_failures do
       let(:config) do
         <<-EOY

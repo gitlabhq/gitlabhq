@@ -6,8 +6,8 @@ module Gitlab
     class Release
       attr_reader :version
 
-      def initialize(version:, date:, config:, project: nil)
-        @version = Feature.enabled?(:update_changelog_logic, project) ? version.to_s.delete_prefix('v') : version
+      def initialize(version:, date:, config:)
+        @version = version.to_s.delete_prefix('v')
         @date = date
         @config = config
         @entries = Hash.new { |h, k| h[k] = [] }

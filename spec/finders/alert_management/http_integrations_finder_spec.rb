@@ -4,10 +4,10 @@ require 'spec_helper'
 
 RSpec.describe AlertManagement::HttpIntegrationsFinder, feature_category: :incident_management do
   let_it_be(:project) { create(:project) }
-  let_it_be_with_reload(:integration) { create(:alert_management_http_integration, project: project ) }
-  let_it_be(:extra_integration) { create(:alert_management_http_integration, project: project ) }
-  let_it_be(:prometheus_integration) { create(:alert_management_prometheus_integration, :inactive, project: project ) }
-  let_it_be(:extra_prometheus_integration) { create(:alert_management_prometheus_integration, project: project ) }
+  let_it_be_with_reload(:integration) { create(:alert_management_http_integration, project: project) }
+  let_it_be(:extra_integration) { create(:alert_management_http_integration, project: project) }
+  let_it_be(:prometheus_integration) { create(:alert_management_prometheus_integration, :inactive, project: project) }
+  let_it_be(:extra_prometheus_integration) { create(:alert_management_prometheus_integration, project: project) }
   let_it_be(:alt_project_integration) { create(:alert_management_http_integration) }
 
   let(:params) { {} }

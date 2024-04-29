@@ -40,7 +40,7 @@ module Gitlab
 
           exact_matches?(paths, exact_globs) ||
             matches_extension?(paths, extension_globs) ||
-            pattern_matches?(paths, pattern_globs)
+            pattern_matches?(paths, pattern_globs, context)
         end
 
         private
@@ -95,7 +95,24 @@ module Gitlab
           end
         end
 
-        def pattern_matches?(paths, pattern_globs)
+        def pattern_matches?(paths, pattern_globs, context)
+          if ::Feature.disabled?(:ci_rules_exists_pattern_matches_cache, context.project)
+            return legacy_pattern_matches?(paths, pattern_globs)
+          end
+
+          comparisons = 0
+
+          pattern_globs.any? do |glob|
+            Gitlab::SafeRequestStore.fetch("ci_rules_exists_pattern_matches_#{context.project&.id}_#{glob}") do
+              paths.any? do |path|
+                comparisons += 1
+                comparisons > MAX_PATTERN_COMPARISONS || pattern_match?(glob, path)
+              end
+            end
+          end
+        end
+
+        def legacy_pattern_matches?(paths, pattern_globs)
           comparisons = 0
 
           pattern_globs.any? do |glob|

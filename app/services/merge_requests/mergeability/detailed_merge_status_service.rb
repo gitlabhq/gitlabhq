@@ -61,7 +61,7 @@ module MergeRequests
       end
 
       def ci_check_failed_check
-        if merge_request.auto_merge_available_when_pipeline_succeeds?
+        if merge_request.diff_head_pipeline_considered_in_progress?
           :ci_still_running
         else
           check_ci_results.payload.fetch(:identifier)
