@@ -158,7 +158,7 @@ For other examples, see the [`examples` projects](https://gitlab.com/gitlab-org/
 This container image is for demonstration purposes only.
 To use your own container image, see [Arbitrary user IDs](#arbitrary-user-ids).
 
-## GitLab VS Code fork
+## Workspace container requirements
 
 By default, workspaces inject and start the [GitLab VS Code fork](https://gitlab.com/gitlab-org/gitlab-web-ide-vscode-fork)
 in the container that has a defined `gl/inject-editor` attribute in the devfile.

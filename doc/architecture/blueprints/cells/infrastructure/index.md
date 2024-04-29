@@ -149,6 +149,7 @@ frame "Google Cloud Platform" <<gcp>> {
     primaryGitaly .r[#F4B400].* gprdVPC
 
     frame "gitlab-gprd-cell-1" <<gcp_project>> {
+      frame "gprd-cell-1 (VPC Network)" <<vpc>> as cell1VPC {
         node cell1gke [
         <b> GKE
         ===
@@ -164,17 +165,19 @@ frame "Google Cloud Platform" <<gcp>> {
         ---
         ]
 
-       rectangle "Storage" as cell1Storage {
-        database "Postgres" as cell1Postgres
-        database "Redis" as cell1Redis
-        file "object storage" as cell1ObjectStorage
-        file "gitaly" as cell1Gitaly
-      }
+        rectangle "Storage" as cell1Storage {
+          database "Postgres" as cell1Postgres
+          database "Redis" as cell1Redis
+          file "object storage" as cell1ObjectStorage
+          file "gitaly" as cell1Gitaly
+        }
 
-      cell1gke <--> cell1Storage
+        cell1gke <--> cell1Storage
+      }
     }
 
     frame "gitlab-gprd-cell-2" <<gcp_project>> {
+      frame "gprd-cell-2 (VPC Network)" <<vpc>> as cell2VPC {
         node cell2gke [
         <b> GKE
         ===
@@ -190,18 +193,19 @@ frame "Google Cloud Platform" <<gcp>> {
         ---
         ]
 
-       rectangle "Storage" as cell2Storage {
-        database "Postgres" as cell2Postgres
-        database "Redis" as cell2Redis
-        file "object storage" as cell2ObjectStorage
-        file "gitaly" as cell2Gitaly
-      }
+        rectangle "Storage" as cell2Storage {
+          database "Postgres" as cell2Postgres
+          database "Redis" as cell2Redis
+          file "object storage" as cell2ObjectStorage
+          file "gitaly" as cell2Gitaly
+        }
 
-      cell2gke <--> cell2Storage
+        cell2gke <--> cell2Storage
+      }
     }
 
-    "gitlab-gprd-cell-2" .r[#F4B400].* gprdVPC
-    "gitlab-gprd-cell-1" .r[#F4B400].* gprdVPC
+    cell1VPC <. gprdVPC : Private Service Connect
+    cell2VPC <. gprdVPC : Private Service Connect
   }
 
   "Cell Cluster" -u-> cloud.gitlab.com

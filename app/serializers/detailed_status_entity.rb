@@ -44,5 +44,6 @@ class DetailedStatusEntity < Grape::Entity
     expose :action_path, as: :path, documentation: { type: 'string', example: '/namespace1/project1/-/jobs/2/cancel' }
     expose :action_method, as: :method, documentation: { type: 'string', example: 'post' }
     expose :action_button_title, as: :button_title, documentation: { type: 'string', example: 'Cancel this job' }
+    expose :confirmation_message, as: :confirmation_message, documentation: { type: 'string', example: 'Are you sure?' }
   end
 end

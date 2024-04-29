@@ -153,12 +153,6 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
     params[:application_setting][:package_metadata_purl_types]&.delete("")
     params[:application_setting][:package_metadata_purl_types]&.map!(&:to_i)
 
-    if params[:application_setting].key?(:required_instance_ci_template)
-      if params[:application_setting][:required_instance_ci_template].empty?
-        params[:application_setting][:required_instance_ci_template] = nil
-      end
-    end
-
     remove_blank_params_for!(:elasticsearch_aws_secret_access_key, :eks_secret_access_key)
 
     # TODO Remove domain_denylist_raw in APIv5 (See https://gitlab.com/gitlab-org/gitlab-foss/issues/67204)

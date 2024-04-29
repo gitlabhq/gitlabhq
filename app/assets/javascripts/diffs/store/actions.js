@@ -17,7 +17,6 @@ import { sortTree } from '~/ide/stores/utils';
 import { containsSensitiveToken, confirmSensitiveAction } from '~/lib/utils/secret_detection';
 import { isCollapsed } from '~/diffs/utils/diff_file';
 import {
-  PARALLEL_DIFF_VIEW_TYPE,
   INLINE_DIFF_VIEW_TYPE,
   DIFF_VIEW_COOKIE_NAME,
   MR_TREE_SHOW_KEY,
@@ -475,24 +474,19 @@ export const renderFileForDiscussionId = ({ commit, rootState, state }, discussi
   }
 };
 
-export const setInlineDiffViewType = ({ commit }) => {
-  commit(types.SET_DIFF_VIEW_TYPE, INLINE_DIFF_VIEW_TYPE);
+export const setDiffViewType = ({ commit }, diffViewType) => {
+  commit(types.SET_DIFF_VIEW_TYPE, diffViewType);
 
-  setCookie(DIFF_VIEW_COOKIE_NAME, INLINE_DIFF_VIEW_TYPE);
-  const url = mergeUrlParams({ view: INLINE_DIFF_VIEW_TYPE }, window.location.href);
+  setCookie(DIFF_VIEW_COOKIE_NAME, diffViewType);
+  const url = mergeUrlParams({ view: diffViewType }, window.location.href);
   historyPushState(url);
 
-  queueRedisHllEvents([TRACKING_CLICK_DIFF_VIEW_SETTING, TRACKING_DIFF_VIEW_INLINE]);
-};
-
-export const setParallelDiffViewType = ({ commit }) => {
-  commit(types.SET_DIFF_VIEW_TYPE, PARALLEL_DIFF_VIEW_TYPE);
-
-  setCookie(DIFF_VIEW_COOKIE_NAME, PARALLEL_DIFF_VIEW_TYPE);
-  const url = mergeUrlParams({ view: PARALLEL_DIFF_VIEW_TYPE }, window.location.href);
-  historyPushState(url);
-
-  queueRedisHllEvents([TRACKING_CLICK_DIFF_VIEW_SETTING, TRACKING_DIFF_VIEW_PARALLEL]);
+  queueRedisHllEvents([
+    TRACKING_CLICK_DIFF_VIEW_SETTING,
+    diffViewType === INLINE_DIFF_VIEW_TYPE
+      ? TRACKING_DIFF_VIEW_INLINE
+      : TRACKING_DIFF_VIEW_PARALLEL,
+  ]);
 };
 
 export const showCommentForm = ({ commit }, { lineCode, fileHash }) => {

@@ -90,7 +90,7 @@ RSpec.describe 'Batch diffs', :js, feature_category: :code_review_workflow do
   context 'when user switches view styles' do
     before do
       find('.js-show-diff-settings').click
-      click_button 'Side-by-side'
+      find_by_testid('listbox-item-parallel').click
 
       wait_for_requests
     end

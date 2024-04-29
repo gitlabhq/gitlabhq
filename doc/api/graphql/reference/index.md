@@ -29717,6 +29717,7 @@ Progress of standards adherence checks.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="statusactionbuttontitle"></a>`buttonTitle` | [`String`](#string) | Title for the button, for example: Retry this job. |
+| <a id="statusactionconfirmationmessage"></a>`confirmationMessage` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 17.0. **Status**: Experiment. Custom confirmation message for a manual job. |
 | <a id="statusactionicon"></a>`icon` | [`String`](#string) | Icon used in the action button. |
 | <a id="statusactionid"></a>`id` | [`String!`](#string) | ID for a status action. |
 | <a id="statusactionmethod"></a>`method` | [`String`](#string) | Method for the action, for example: :post. |

@@ -199,6 +199,13 @@ module Ci
       blocked? || skipped?
     end
 
+    # We only check jobs that are played by `Ci::PlayManualStageService`.
+    def confirm_manual_job?
+      processables.manual.any? do |job|
+        job.playable? && job.manual_confirmation_message
+      end
+    end
+
     # This will be removed with ci_remove_ensure_stage_service
     def latest_stage_status
       statuses.latest.composite_status || 'skipped'

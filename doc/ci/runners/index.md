@@ -60,7 +60,7 @@ You can find all GitLab Runner breaking changes under [Deprecations and removals
 
 ## Security for GitLab-hosted runners
 
-Hosted runners on Linux and Windows for GitLab.com run on Google Compute Platform.
+Hosted runners on Linux and Windows for GitLab.com run on Google Cloud Compute Engine.
 The [Google Infrastructure Security Design Overview whitepaper](https://cloud.google.com/docs/security/infrastructure/design/resources/google_infrastructure_whitepaper_fa.pdf)
 provides an overview of how Google designs security into its technical infrastructure.
 The GitLab [Trust Center](https://about.gitlab.com/security/) and

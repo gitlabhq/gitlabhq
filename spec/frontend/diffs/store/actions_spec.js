@@ -885,32 +885,21 @@ describe('DiffsStoreActions', () => {
     });
   });
 
-  describe('setInlineDiffViewType', () => {
-    it('should set diff view type to inline and also set the cookie properly', async () => {
-      await testAction(
-        diffActions.setInlineDiffViewType,
-        null,
-        {},
-        [{ type: types.SET_DIFF_VIEW_TYPE, payload: INLINE_DIFF_VIEW_TYPE }],
-        [],
-      );
-      expect(window.location.toString()).toContain('?view=inline');
-      expect(Cookies.get('diff_view')).toEqual(INLINE_DIFF_VIEW_TYPE);
-    });
-  });
-
-  describe('setParallelDiffViewType', () => {
-    it('should set diff view type to parallel and also set the cookie properly', async () => {
-      await testAction(
-        diffActions.setParallelDiffViewType,
-        null,
-        {},
-        [{ type: types.SET_DIFF_VIEW_TYPE, payload: PARALLEL_DIFF_VIEW_TYPE }],
-        [],
-      );
-      expect(window.location.toString()).toContain('?view=parallel');
-      expect(Cookies.get(DIFF_VIEW_COOKIE_NAME)).toEqual(PARALLEL_DIFF_VIEW_TYPE);
-    });
+  describe('setDiffViewType', () => {
+    it.each([['inline'], ['parallel']])(
+      'should set the diff view type to $p and set the cookie',
+      async (diffViewType) => {
+        await testAction(
+          diffActions.setDiffViewType,
+          diffViewType,
+          {},
+          [{ type: types.SET_DIFF_VIEW_TYPE, payload: diffViewType }],
+          [],
+        );
+        expect(window.location.toString()).toContain(`?view=${diffViewType}`);
+        expect(Cookies.get(DIFF_VIEW_COOKIE_NAME)).toEqual(diffViewType);
+      },
+    );
   });
 
   describe('showCommentForm', () => {

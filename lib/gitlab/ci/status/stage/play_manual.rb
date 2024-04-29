@@ -33,6 +33,13 @@ module Gitlab
             stage.manual_playable?
           end
 
+          def confirmation_message
+            return unless subject.confirm_manual_job?
+
+            _('This stage has one or more manual jobs that require ' \
+              'confirmation before retrying. Do you want to proceed?')
+          end
+
           def has_action?
             true
           end

@@ -97,6 +97,16 @@ workflow:
         GITLAB_DEPENDENCY_PROXY_ADDRESS: ""
         PIPELINE_NAME: 'Ruby $RUBY_VERSION MR (community contribution)'
         NO_SOURCEMAPS: 'true'
+    # This work around https://gitlab.com/gitlab-org/gitlab/-/issues/332411 which prevents usage of dependency proxy
+    # when pipeline is triggered by a project access token.
+    # Example of project bot usernames (the format changed over time):
+    # - project_278964_bot2
+    # - project_278964_bot_7fb4d1cca8242cb399a0b8f483783120
+    - if: '$CI_MERGE_REQUEST_IID && $GITLAB_USER_LOGIN =~ /project_\d+_bot/'
+      variables:
+        <<: *default-ruby-variables
+        GITLAB_DEPENDENCY_PROXY_ADDRESS: ""
+        PIPELINE_NAME: 'Ruby $RUBY_VERSION MR (triggered by a project token)'
     - <<: *if-merge-request-security-canonical-sync
       variables:
         <<: *default-ruby-variables
@@ -127,7 +137,7 @@ workflow:
     # Example of project bot usernames (the format changed over time):
     # - project_278964_bot2
     # - project_278964_bot_7fb4d1cca8242cb399a0b8f483783120
-    - if: '$GITLAB_USER_LOGIN =~ /project_\d+_bot/'
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $GITLAB_USER_LOGIN =~ /project_\d+_bot/'
       variables:
         <<: [*default-ruby-variables, *default-branch-pipeline-failure-variables]
         GITLAB_DEPENDENCY_PROXY_ADDRESS: ""

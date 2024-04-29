@@ -2,6 +2,7 @@ import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { __, s__ } from '~/locale';
 
 export const TYPE_DESIGN = 'design';
+export const TYPE_SNIPPET = 'snippet';
 
 export const BULK_IMPORT_STATIC_ITEMS = {
   badges: __('Badge'),

@@ -55,6 +55,8 @@ describe('GlobalSearchTopbar', () => {
   const findSyntaxOptionButton = () => wrapper.findComponent(GlButton);
   const findSyntaxOptionDrawer = () => wrapper.findComponent(MarkdownDrawer);
   const findSearchTypeIndicator = () => wrapper.findComponent(SearchTypeIndicator);
+  const findRegulareExpressionToggle = () =>
+    wrapper.findComponent('[data-testid="reqular-expression-toggle"]');
 
   describe('template', () => {
     beforeEach(() => {
@@ -176,6 +178,22 @@ describe('GlobalSearchTopbar', () => {
 
       findGlSearchBox().vm.$emit('keydown', new KeyboardEvent({ key: ENTER_KEY }));
       expect(actionSpies.applyQuery).toHaveBeenCalled();
+    });
+  });
+
+  describe.each`
+    search    | reload
+    ${''}     | ${0}
+    ${'test'} | ${2}
+  `('clicking regular expression button', ({ search, reload }) => {
+    beforeEach(() => {
+      createComponent({ query: { search }, searchType: 'zoekt' }, '', { GlSearchBoxByType });
+    });
+
+    it(`calls setQuery and ${!reload ? 'NOT ' : ''}applyQuery if there is a search term`, () => {
+      findRegulareExpressionToggle().vm.$emit('click');
+      expect(actionSpies.setQuery).toHaveBeenCalled();
+      expect(actionSpies.applyQuery).toHaveBeenCalledTimes(reload);
     });
   });
 

@@ -172,6 +172,14 @@ FactoryBot.define do
       manual
     end
 
+    trait :with_manual_confirmation do
+      options do
+        {
+          manual_confirmation: 'Please confirm. Do you want to proceed?'
+        }
+      end
+    end
+
     trait :retryable do
       success
     end

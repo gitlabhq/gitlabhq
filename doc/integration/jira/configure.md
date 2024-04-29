@@ -154,14 +154,14 @@ You can also filter the issues by:
 DETAILS:
 **Tier:** Premium, Ultimate
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440430) in GitLab 16.11 [with a flag](../../administration/feature_flags.md) named `jira_multiple_project_keys`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440430) in GitLab 16.10 [with a flag](../../administration/feature_flags.md) named `jira_multiple_project_keys`. Disabled by default.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available.
 To make it available, an administrator can enable the feature flag named `jira_multiple_project_keys`.
 On GitLab.com and GitLab Dedicated, this feature is not available.
 
-When you enable `jira_multiple_project_keys`, you can:
+When `jira_multiple_project_keys` is enabled, you can:
 
 - [View issues](#view-jira-issues) from multiple Jira projects in a GitLab project.
 - [Filter Jira issues](#filter-jira-issues) by project.

@@ -474,7 +474,6 @@ export default {
         :exception-state="exceptionState"
         :users-filter="usersFilter"
         :filter-id="filterId"
-        :group-id="id"
         :invalid-members="invalidMembers"
         @clear="clearValidation"
         @token-remove="removeToken"

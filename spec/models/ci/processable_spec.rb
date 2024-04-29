@@ -563,6 +563,36 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
     end
   end
 
+  describe 'manual_job?' do
+    context 'when job is manual' do
+      subject { build(:ci_build, :manual) }
+
+      it { expect(subject.manual_job?).to be_truthy }
+    end
+
+    context 'when job is not manual' do
+      subject { build(:ci_build) }
+
+      it { expect(subject.manual_job?).to be_falsey }
+    end
+  end
+
+  describe 'manual_confirmation_message' do
+    context 'when job is manual' do
+      subject { build(:ci_build, :manual, :with_manual_confirmation) }
+
+      it 'return manual_confirmation from option' do
+        expect(subject.manual_confirmation_message).to eq('Please confirm. Do you want to proceed?')
+      end
+    end
+
+    context 'when job is not manual' do
+      subject { build(:ci_build) }
+
+      it { expect(subject.manual_confirmation_message).to be_nil }
+    end
+  end
+
   describe 'state transition: any => [:failed]' do
     let!(:processable) { create(:ci_build, :running, pipeline: pipeline, user: create(:user)) }
 

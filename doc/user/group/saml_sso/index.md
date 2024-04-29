@@ -153,7 +153,7 @@ For more information, see an [example configuration page](example_saml_config.md
 
 ### OneLogin
 
-OneLogin supports its own [GitLab (SaaS) application](https://onelogin.service-now.com/support?id=kb_article&sys_id=92e4160adbf16cd0ca1c400e0b961923&kb_category=50984e84db738300d5505eea4b961913).
+OneLogin supports its own [GitLab (SaaS) application](https://onelogin.service-now.com/support?id=kb_article&sys_id=08e6b9d9879a6990c44486e5cebb3556&kb_category=50984e84db738300d5505eea4b961913).
 
 To set up OneLogin as your identity provider:
 

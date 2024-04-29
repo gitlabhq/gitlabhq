@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'RunnerCreate', feature_category: :fleet_visibility do
+RSpec.describe 'RunnerCreate', feature_category: :runner do
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }

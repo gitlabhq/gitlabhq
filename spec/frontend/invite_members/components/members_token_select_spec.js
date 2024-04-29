@@ -10,7 +10,6 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 
 const label = 'testgroup';
 const placeholder = 'Search for a member';
-const groupId = '31';
 const user1 = { id: 1, name: 'John Smith', username: 'one_1', avatar_url: '' };
 const user2 = { id: 2, name: 'Jane Doe', username: 'two_2', avatar_url: '' };
 const allUsers = [user1, user2];
@@ -22,7 +21,6 @@ const createComponent = (props = {}, glFeatures = {}) => {
       ariaLabelledby: label,
       invalidMembers: {},
       placeholder,
-      groupId,
       ...props,
     },
     provide: { glFeatures },

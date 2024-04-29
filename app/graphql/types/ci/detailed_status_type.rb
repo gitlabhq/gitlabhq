@@ -60,7 +60,8 @@ module Types
           icon: object.action_icon,
           method: object.action_method,
           path: object.action_path,
-          title: object.action_title
+          title: object.action_title,
+          confirmation_message: object.confirmation_message
         }
       end
     end

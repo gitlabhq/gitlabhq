@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'rails'
 require 'net/http'
 require 'webmock' if Rails.env.test?
 

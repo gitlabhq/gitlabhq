@@ -5,7 +5,6 @@ import followers from 'test_fixtures/api/users/followers/get.json';
 import following from 'test_fixtures/api/users/following/get.json';
 import {
   getUsers,
-  getGroupUsers,
   followUser,
   unfollowUser,
   associationsCount,
@@ -48,19 +47,6 @@ describe('~/api/user_api', () => {
       const { url, params } = axiosMock.history.get[0];
       expect(url).toBe(expectedUrl);
       expect(params).toMatchObject({ search: 'den', without_project_bots: true });
-    });
-  });
-
-  describe('getSAMLUsers', () => {
-    it('calls correct URL with expected query parameters', async () => {
-      const expectedUrl = '/api/v4/groups/34/users.json';
-      axiosMock.onGet(expectedUrl).replyOnce(HTTP_STATUS_OK);
-
-      await getGroupUsers('den', '34', { include_service_accounts: true });
-
-      const { url, params } = axiosMock.history.get[0];
-      expect(url).toBe(expectedUrl);
-      expect(params).toMatchObject({ search: 'den', include_service_accounts: true });
     });
   });
 

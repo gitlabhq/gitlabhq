@@ -230,6 +230,14 @@ module Ci
       end
     end
 
+    def manual_job?
+      self.when == 'manual'
+    end
+
+    def manual_confirmation_message
+      options[:manual_confirmation] if manual_job?
+    end
+
     private
 
     def dependencies

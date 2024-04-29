@@ -1,6 +1,5 @@
-import { mount } from '@vue/test-utils';
-
-import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import { GlCollapsibleListbox } from '@gitlab/ui';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 
 import SettingsDropdown from '~/diffs/components/settings_dropdown.vue';
 import { PARALLEL_DIFF_VIEW_TYPE, INLINE_DIFF_VIEW_TYPE } from '~/diffs/constants';
@@ -10,14 +9,22 @@ import store from '~/mr_notes/stores';
 jest.mock('~/mr_notes/stores', () => jest.requireActual('helpers/mocks/mr_notes/stores'));
 
 describe('Diff settings dropdown component', () => {
+  let wrapper;
+
+  const findDropdown = () => wrapper.findComponent(GlCollapsibleListbox);
+  const findInlineListItem = () => wrapper.findByTestId('listbox-item-inline');
+  const findInlineListItemCheckbox = () =>
+    findInlineListItem().find('[data-testid="dropdown-item-checkbox"]');
+  const findParallelListItem = () => wrapper.findByTestId('listbox-item-parallel');
+  const findParallelListItemCheckbox = () =>
+    findParallelListItem().find('[data-testid="dropdown-item-checkbox"]');
+
   const createComponent = () =>
-    extendedWrapper(
-      mount(SettingsDropdown, {
-        mocks: {
-          $store: store,
-        },
-      }),
-    );
+    mountExtended(SettingsDropdown, {
+      mocks: {
+        $store: store,
+      },
+    });
 
   function getFileByFileCheckbox(vueWrapper) {
     return vueWrapper.findByTestId('file-by-file');
@@ -35,39 +42,36 @@ describe('Diff settings dropdown component', () => {
       store.state.diffs = { diffViewType: INLINE_DIFF_VIEW_TYPE };
       store.getters['diffs/isInlineView'] = true;
 
-      const wrapper = createComponent();
+      wrapper = createComponent();
 
-      expect(wrapper.find('.js-inline-diff-button').classes('selected')).toBe(true);
-      expect(wrapper.find('.js-parallel-diff-button').classes('selected')).toBe(false);
+      expect(findInlineListItemCheckbox().classes()).not.toContain('gl-visibility-hidden');
+      expect(findParallelListItemCheckbox().classes()).toContain('gl-visibility-hidden');
     });
 
     it('sets parallel button as selected', () => {
       store.state.diffs = { diffViewType: PARALLEL_DIFF_VIEW_TYPE };
       store.getters['diffs/isParallelView'] = true;
 
-      const wrapper = createComponent();
+      wrapper = createComponent();
 
-      expect(wrapper.find('.js-inline-diff-button').classes('selected')).toBe(false);
-      expect(wrapper.find('.js-parallel-diff-button').classes('selected')).toBe(true);
+      expect(findInlineListItemCheckbox().classes()).toContain('gl-visibility-hidden');
+      expect(findParallelListItemCheckbox().classes()).not.toContain('gl-visibility-hidden');
     });
 
-    it('calls setInlineDiffViewType when clicking inline button', () => {
-      const wrapper = createComponent();
+    it('calls setDiffViewType when clicking inline button', () => {
+      wrapper = createComponent();
 
-      wrapper.find('.js-inline-diff-button').trigger('click');
+      findDropdown().vm.$emit('select', 'inline');
 
-      expect(store.dispatch).toHaveBeenCalledWith('diffs/setInlineDiffViewType', expect.anything());
+      expect(store.dispatch).toHaveBeenCalledWith('diffs/setDiffViewType', INLINE_DIFF_VIEW_TYPE);
     });
 
-    it('calls setParallelDiffViewType when clicking parallel button', () => {
-      const wrapper = createComponent();
+    it('calls setDiffViewType when clicking parallel button', () => {
+      wrapper = createComponent();
 
-      wrapper.find('.js-parallel-diff-button').trigger('click');
+      findDropdown().vm.$emit('select', 'parallel');
 
-      expect(store.dispatch).toHaveBeenCalledWith(
-        'diffs/setParallelDiffViewType',
-        expect.anything(),
-      );
+      expect(store.dispatch).toHaveBeenCalledWith('diffs/setDiffViewType', PARALLEL_DIFF_VIEW_TYPE);
     });
   });
 
@@ -75,7 +79,7 @@ describe('Diff settings dropdown component', () => {
     it('does not set as checked when showWhitespace is false', () => {
       store.state.diffs = { showWhitespace: false };
 
-      const wrapper = createComponent();
+      wrapper = createComponent();
 
       expect(wrapper.findByTestId('show-whitespace').element.checked).toBe(false);
     });
@@ -83,13 +87,13 @@ describe('Diff settings dropdown component', () => {
     it('sets as checked when showWhitespace is true', () => {
       store.state.diffs = { showWhitespace: true };
 
-      const wrapper = createComponent();
+      wrapper = createComponent();
 
       expect(wrapper.findByTestId('show-whitespace').element.checked).toBe(true);
     });
 
     it('calls setShowWhitespace on change', async () => {
-      const wrapper = createComponent();
+      wrapper = createComponent();
       const checkbox = wrapper.findByTestId('show-whitespace');
       const { checked } = checkbox.element;
 
@@ -115,7 +119,7 @@ describe('Diff settings dropdown component', () => {
       ({ fileByFile, checked }) => {
         store.state.diffs = { viewDiffsFileByFile: fileByFile };
 
-        const wrapper = createComponent();
+        wrapper = createComponent();
 
         expect(getFileByFileCheckbox(wrapper).element.checked).toBe(checked);
       },
@@ -130,7 +134,7 @@ describe('Diff settings dropdown component', () => {
       async ({ start, setting }) => {
         store.state.diffs = { viewDiffsFileByFile: start };
 
-        const wrapper = createComponent();
+        wrapper = createComponent();
         await getFileByFileCheckbox(wrapper).setChecked(setting);
 
         expect(store.dispatch).toHaveBeenCalledWith('diffs/setFileByFile', {

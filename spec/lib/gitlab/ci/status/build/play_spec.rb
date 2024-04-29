@@ -76,6 +76,20 @@ RSpec.describe Gitlab::Ci::Status::Build::Play do
     it { expect(subject.action_button_title).to eq 'Run job' }
   end
 
+  describe '#confirmation_message' do
+    context 'when build does not have manual_confirmation' do
+      it { expect(subject.confirmation_message).to be_nil }
+    end
+
+    context 'when build is manual and has manual_confirmation' do
+      let(:build) do
+        create(:ci_build, :playable, :with_manual_confirmation)
+      end
+
+      it { expect(subject.confirmation_message).to eq 'Please confirm. Do you want to proceed?' }
+    end
+  end
+
   describe '.matches?' do
     subject { described_class.matches?(build, user) }
 

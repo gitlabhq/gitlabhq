@@ -7,6 +7,9 @@ module Types
 
       field :button_title, GraphQL::Types::String, null: true,
                                                    description: 'Title for the button, for example: Retry this job.'
+      field :confirmation_message, GraphQL::Types::String, null: true,
+                                                           description: 'Custom confirmation message for a manual job.',
+                                                           alpha: { milestone: '17.0' }
       field :icon, GraphQL::Types::String, null: true,
                                            description: 'Icon used in the action button.'
       field :id, GraphQL::Types::String, null: false,

@@ -412,8 +412,8 @@ The settings contained in `GITLAB_OMNIBUS_CONFIG` aren't written to the
 `gitlab.rb` configuration file, and are evaluated on load. To provide multiple
 settings, separate them with a colon (`;`).
 
-Here's an example that sets the external URL and enables LFS while starting
-the container:
+Here's an example that sets the external URL, enables LFS, and starts
+the container with a [minimal shm size required for Prometheus](docker_troubleshooting.md#devshm-mount-not-having-enough-space-in-docker-container):
 
 ```shell
 sudo docker run --detach \
@@ -700,3 +700,7 @@ docker exec -t <container name> gitlab-backup create SKIP=artifacts,repositories
 
 The backup is written to `/var/opt/gitlab/backups` which should be on a
 [volume mounted by Docker](#set-up-the-volumes-location).
+
+## Troubleshooting
+
+See [Troubleshooting GitLab installations that use Docker](docker_troubleshooting.md).

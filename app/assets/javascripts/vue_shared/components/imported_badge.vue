@@ -3,13 +3,14 @@ import { GlBadge, GlTooltipDirective } from '@gitlab/ui';
 import { __, s__, sprintf } from '~/locale';
 
 import { TYPE_EPIC, TYPE_ISSUE, TYPE_MERGE_REQUEST } from '~/issues/constants';
-import { TYPE_DESIGN } from '~/import/constants';
+import { TYPE_DESIGN, TYPE_SNIPPET } from '~/import/constants';
 
 const importableTypeText = {
   [TYPE_DESIGN]: __('design'),
   [TYPE_EPIC]: __('epic'),
   [TYPE_ISSUE]: __('issue'),
   [TYPE_MERGE_REQUEST]: __('merge request'),
+  [TYPE_SNIPPET]: __('snippet'),
 };
 
 export default {

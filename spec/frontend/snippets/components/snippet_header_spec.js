@@ -23,6 +23,7 @@ import { Blob, BinaryBlob } from 'jest/blob/components/mock_data';
 import { differenceInMilliseconds } from '~/lib/utils/datetime_utility';
 import SnippetHeader, { i18n } from '~/snippets/components/snippet_header.vue';
 import SnippetCodeDropdown from '~/vue_shared/components/code_dropdown/snippet_code_dropdown.vue';
+import ImportedBadge from '~/vue_shared/components/imported_badge.vue';
 import DeleteSnippetMutation from '~/snippets/mutations/delete_snippet.mutation.graphql';
 import axios from '~/lib/utils/axios_utils';
 import { createAlert, VARIANT_DANGER, VARIANT_SUCCESS } from '~/alert';
@@ -113,6 +114,7 @@ describe('Snippet header component', () => {
   const findTooltip = () => getBinding(findIcon().element, 'gl-tooltip');
   const findSpamIcon = () => wrapper.findByTestId('snippets-spam-icon');
   const findCodeDropdown = () => wrapper.findComponent(SnippetCodeDropdown);
+  const findImportedBadge = () => wrapper.findComponent(ImportedBadge);
 
   const webUrl = 'http://foo.bar';
   const dummyHTTPUrl = webUrl;
@@ -207,6 +209,24 @@ describe('Snippet header component', () => {
     expect(findDropdownItemAt(0).href).toBe(`${snippet.webUrl}/edit`);
     expect(findDropdownItemAt(1).text).toBe('Submit as spam');
     expect(findDropdownItemAt(2).text).toBe('Delete');
+  });
+
+  describe('imported badge', () => {
+    it('renders when snippet is imported', () => {
+      createComponent({
+        snippetProps: { imported: true },
+      });
+
+      expect(findImportedBadge().props('importableType')).toBe('snippet');
+    });
+
+    it('does not render when snippet is not imported', () => {
+      createComponent({
+        snippetProps: { imported: false },
+      });
+
+      expect(findImportedBadge().exists()).toBe(false);
+    });
   });
 
   it.each`

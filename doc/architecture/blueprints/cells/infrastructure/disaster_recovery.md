@@ -22,7 +22,8 @@ status: proposed
 Cells 1.0 is the first iteration of cells where multiple Secondary Cells can be operated independently of the Primary Cell.
 Though it can be operated independently it has a dependency on the Global Service and Routing Service.
 For Disaster Recovery, the Global Service might still have dependencies on the Primary Cell in Cells 1.0. [^cells-1.0]
-A decision on whether or not we use Geo for Cells DR is pending in the [Using Geo for Cells 1.0 tracking issue](https://gitlab.com/gitlab-com/gl-infra/production-engineering/-/issues/25246).
+The Cells 1.0 target is to use Geo for Disaster Recovery which is the current DR strategy for GitLab Dedicated.
+After Cells 1.0, we intend to leverage [Next Gen Scalable Backup and Restore] for restoring data from backups.
 
 This document focuses only on defining the strategy for recovering secondary Cells.
 It does not cover recovering the Global Service, Routing Service, Primary Cell, or any other external service.
@@ -105,6 +106,7 @@ This testing is done once a quarter and is completed by running game-days using 
    [Recovery Time Objective]: https://en.wikipedia.org/wiki/Disaster_recovery#Recovery_Time_Objective
    [Recovery Point Objective]: https://en.wikipedia.org/wiki/Disaster_recovery#Recovery_Point_Objective
    [Write-ahead logging]: https://en.wikipedia.org/wiki/Write-ahead_logging
+   [Next Gen Scalable Backup and Restore]: https://gitlab.com/groups/gitlab-org/-/epics/11577
 
    [^cells-1.0]: See the [Cells 1.0 blueprint](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/architecture/blueprints/cells/iterations/cells-1.0.md)
    [^blueprint-dr]: See the [DR Blueprint](https://gitlab.com/gitlab-org/gitlab/-/tree/master/doc/architecture/blueprints/disaster_recovery?ref_type=heads#current-recovery-time-objective-rto-and-recovery-point-objective-rpo-for-zonal-recovery)

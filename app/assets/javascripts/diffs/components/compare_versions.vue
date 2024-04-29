@@ -122,7 +122,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions('diffs', ['setInlineDiffViewType', 'setParallelDiffViewType', 'setShowTreeList']),
+    ...mapActions('diffs', ['setShowTreeList']),
     expandAllFiles() {
       eventHub.$emit(EVT_EXPAND_ALL_FILES);
     },

@@ -5921,11 +5921,9 @@ CREATE TABLE catalog_resource_components (
     created_at timestamp with time zone NOT NULL,
     resource_type smallint DEFAULT 1 NOT NULL,
     name text NOT NULL,
-    path text,
     spec jsonb DEFAULT '{}'::jsonb NOT NULL,
     last_30_day_usage_count integer DEFAULT 0 NOT NULL,
     last_30_day_usage_count_updated_at timestamp with time zone DEFAULT '1970-01-01 00:00:00+00'::timestamp with time zone NOT NULL,
-    CONSTRAINT check_a76bfd47fe CHECK ((char_length(path) <= 255)),
     CONSTRAINT check_ddca729980 CHECK ((char_length(name) <= 255))
 );
 

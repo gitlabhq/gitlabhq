@@ -707,7 +707,6 @@ RSpec/FeatureCategory:
     - 'ee/spec/lib/gitlab/ci/config/entry/secret_spec.rb'
     - 'ee/spec/lib/gitlab/ci/config/entry/vault/engine_spec.rb'
     - 'ee/spec/lib/gitlab/ci/config/entry/vault/secret_spec.rb'
-    - 'ee/spec/lib/gitlab/ci/config/required/processor_spec.rb'
     - 'ee/spec/lib/gitlab/ci/minutes/cached_quota_spec.rb'
     - 'ee/spec/lib/gitlab/ci/minutes/cost_factor_spec.rb'
     - 'ee/spec/lib/gitlab/ci/parsers/license_compliance/license_scanning_spec.rb'

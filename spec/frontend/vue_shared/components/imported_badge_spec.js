@@ -3,7 +3,7 @@ import { shallowMount } from '@vue/test-utils';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 
 import { TYPE_EPIC, TYPE_ISSUE, TYPE_MERGE_REQUEST } from '~/issues/constants';
-import { TYPE_DESIGN } from '~/import/constants';
+import { TYPE_DESIGN, TYPE_SNIPPET } from '~/import/constants';
 
 import ImportedBadge from '~/vue_shared/components/imported_badge.vue';
 
@@ -40,6 +40,7 @@ describe('ImportedBadge', () => {
     ${TYPE_EPIC}          | ${'This epic was imported from another instance.'}
     ${TYPE_ISSUE}         | ${'This issue was imported from another instance.'}
     ${TYPE_MERGE_REQUEST} | ${'This merge request was imported from another instance.'}
+    ${TYPE_SNIPPET}       | ${'This snippet was imported from another instance.'}
   `('renders tooltip for $importableType', ({ importableType, tooltipText }) => {
     createComponent({
       props: {

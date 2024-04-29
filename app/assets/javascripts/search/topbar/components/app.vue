@@ -2,6 +2,7 @@
 import { GlButton } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapState, mapActions } from 'vuex';
+import { InternalEvents } from '~/tracking';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { s__ } from '~/locale';
 import MarkdownDrawer from '~/vue_shared/components/markdown_drawer/markdown_drawer.vue';
@@ -16,6 +17,8 @@ import { loadDataFromLS } from '../../store/utils';
 
 import SearchTypeIndicator from './search_type_indicator.vue';
 import GlSearchBoxByType from './search_box_by_type.vue';
+
+const trackingMixin = InternalEvents.mixin();
 
 export default {
   name: 'GlobalSearchTopbar',
@@ -32,7 +35,7 @@ export default {
     MarkdownDrawer,
     SearchTypeIndicator,
   },
-  mixins: [glFeatureFlagsMixin()],
+  mixins: [glFeatureFlagsMixin(), trackingMixin],
   data() {
     return {
       regexEnabled: false,
@@ -91,10 +94,14 @@ export default {
     },
     regexButtonHandler() {
       this.addReguralExpressionToQuery();
+      this.trackEvent('click_regex_button_in_search_page_input');
     },
     addReguralExpressionToQuery(value = !this.regexEnabled) {
       this.setQuery({ key: REGEX_PARAM, value });
-      this.applyQuery();
+      this.regexEnabled = value;
+      if (this.search) {
+        this.applyQuery();
+      }
     },
   },
 };

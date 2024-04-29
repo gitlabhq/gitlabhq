@@ -440,4 +440,24 @@ RSpec.describe Ci::Stage, :models, feature_category: :continuous_integration do
       end
     end
   end
+
+  describe 'confirm_manual_job?' do
+    context 'when a stage has a `manual`-status playable job with manual_confirmation_message' do
+      before do
+        create(:ci_build, :success, pipeline: pipeline, stage_id: stage.id)
+        create(:ci_build, :manual, :with_manual_confirmation, pipeline: pipeline, stage_id: stage.id)
+      end
+
+      it { expect(stage.confirm_manual_job?).to be_truthy }
+    end
+
+    context 'when a stage does not have a `manual`-status playable job' do
+      before do
+        create(:ci_build, :success, pipeline: pipeline, stage_id: stage.id)
+        create(:ci_build, status: :skipped, pipeline: pipeline, stage_id: stage.id)
+      end
+
+      it { expect(stage.confirm_manual_job?).to be_falsy }
+    end
+  end
 end

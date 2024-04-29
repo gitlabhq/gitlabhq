@@ -416,7 +416,6 @@ RSpec.describe 'GraphQL', feature_category: :shared do
               stub_feature_flags(graphql_minimal_auth_methods: false)
             end
 
-            # expect(graphql_data['currentUser']).to be_nil
             it 'does not authenticate user from header' do
               post '/api/graphql', params: { query: query }, headers: headers
 

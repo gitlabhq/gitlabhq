@@ -452,11 +452,6 @@ msgid_plural "%d tags per image name"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "%d template found"
-msgid_plural "%d templates found"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "%d unresolved thread"
 msgid_plural "%d unresolved threads"
 msgstr[0] ""
@@ -3841,9 +3836,6 @@ msgstr ""
 msgid "AdminSettings|New CI/CD variables in projects and groups default to protected."
 msgstr ""
 
-msgid "AdminSettings|No required configuration"
-msgstr ""
-
 msgid "AdminSettings|Only enable search after installing the plugin, enabling indexing, and recreating the index."
 msgstr ""
 
@@ -3877,9 +3869,6 @@ msgstr ""
 msgid "AdminSettings|Require users to prove ownership of custom domains"
 msgstr ""
 
-msgid "AdminSettings|Required pipeline configuration"
-msgstr ""
-
 msgid "AdminSettings|Requires %{linkStart}email notifications%{linkEnd}"
 msgstr ""
 
@@ -3890,9 +3879,6 @@ msgid "AdminSettings|Save %{name} limits"
 msgstr ""
 
 msgid "AdminSettings|Search with Elasticsearch enabled"
-msgstr ""
-
-msgid "AdminSettings|Select a CI/CD template"
 msgstr ""
 
 msgid "AdminSettings|Select a group to use as a source of custom templates for new projects. %{link_start}Learn more%{link_end}."
@@ -3914,9 +3900,6 @@ msgid "AdminSettings|Service ping is disabled in your configuration file, and ca
 msgstr ""
 
 msgid "AdminSettings|Session duration for Git operations when 2FA is enabled (minutes)"
-msgstr ""
-
-msgid "AdminSettings|Set a CI/CD template as the required pipeline configuration for all projects in the instance. Project CI/CD configuration merges into the required pipeline configuration when the pipeline runs. %{link_start}What is a required pipeline configuration?%{link_end}"
 msgstr ""
 
 msgid "AdminSettings|Set options for cost factors of forks"
@@ -3973,9 +3956,6 @@ msgstr ""
 msgid "AdminSettings|The selected level must be different from the selected default group and project visibility."
 msgstr ""
 
-msgid "AdminSettings|The template for the required pipeline configuration can be one of the GitLab-provided templates, or a custom template added to an instance template repository. %{link_start}How do I create an instance template repository?%{link_end}"
-msgstr ""
-
 msgid "AdminSettings|There are Advanced Search migrations pending that require indexing to pause. Indexing must remain paused until GitLab completes the migrations."
 msgstr ""
 
@@ -4019,9 +3999,6 @@ msgid "AdminSettings|You can enable Registration Features because optional data 
 msgstr ""
 
 msgid "AdminSettings|You can't delete projects before the warning email is sent."
-msgstr ""
-
-msgid "AdminSettings|templates found"
 msgstr ""
 
 msgid "AdminStatistics|Active Users"
@@ -31516,9 +31493,6 @@ msgstr ""
 msgid "MemberRole|Are you sure you want to delete this custom role? Before you delete this custom role, make sure no group member has this role."
 msgstr ""
 
-msgid "MemberRole|Are you sure you want to delete this role?"
-msgstr ""
-
 msgid "MemberRole|Base role"
 msgstr ""
 
@@ -31603,9 +31577,6 @@ msgstr ""
 msgid "MemberRole|New role"
 msgstr ""
 
-msgid "MemberRole|No custom roles found"
-msgstr ""
-
 msgid "MemberRole|No description"
 msgstr ""
 
@@ -31616,9 +31587,6 @@ msgid "MemberRole|Permissions"
 msgstr ""
 
 msgid "MemberRole|Role is assigned to one or more group members. Remove role from all group members, then delete role."
-msgstr ""
-
-msgid "MemberRole|Role successfully created."
 msgstr ""
 
 msgid "MemberRole|Role successfully deleted."
@@ -31636,13 +31604,7 @@ msgstr ""
 msgid "MemberRole|Standard roles"
 msgstr ""
 
-msgid "MemberRole|To create a role select 'New role'."
-msgstr ""
-
 msgid "MemberRole|To delete custom role, remove role from all group members."
-msgstr ""
-
-msgid "MemberRole|To delete the custom role make sure no group member has this custom role"
 msgstr ""
 
 msgid "MemberRole|You can create a custom role by adding specific %{linkStart}permissions to a base role.%{linkEnd}"
@@ -53173,6 +53135,9 @@ msgstr ""
 msgid "This setting is allowed for forked projects only"
 msgstr ""
 
+msgid "This stage has one or more manual jobs that require confirmation before retrying. Do you want to proceed?"
+msgstr ""
+
 msgid "This suggestion already matches its content."
 msgstr ""
 
@@ -55770,6 +55735,9 @@ msgid "Use .gitlab-ci.yml"
 msgstr ""
 
 msgid "Use CRON syntax. %{linkStart}Learn more.%{linkEnd}"
+msgstr ""
+
+msgid "Use Regular Expression"
 msgstr ""
 
 msgid "Use Secure Files to store files used by your pipelines such as Android keystores, or Apple provisioning profiles and signing certificates."
