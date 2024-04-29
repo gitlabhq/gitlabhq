@@ -1,0 +1,44 @@
+query getWorkItemDesignList($id: WorkItemID!, $atVersion: DesignManagementVersionID) {
+  workItem(id: $id) {
+    id
+    workItemType {
+      id
+      name
+    }
+    widgets {
+      type
+      ... on WorkItemWidgetDesigns {
+        designCollection {
+          copyState
+          designs(atVersion: $atVersion) {
+            nodes {
+              id
+              event
+              filename
+              notesCount
+              image
+              imageV432x230
+              currentUserTodos(state: pending) {
+                nodes {
+                  id
+                }
+              }
+            }
+          }
+          versions {
+            nodes {
+              id
+              sha
+              createdAt
+              author {
+                id
+                name
+                avatarUrl
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

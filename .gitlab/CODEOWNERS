@@ -320,20 +320,33 @@ Dangerfile
 /ee/spec/lib/gitlab/code_owners/
 /doc/user/project/code_owners.md
 
-^[Merge Requests backend] @garyh @patrickbajao @marc_shaw @kerrizor
+[Merge Requests backend] @code-review-be/engineers
+/app/controllers/projects/merge_requests_controller.rb
 /app/controllers/projects/merge_requests/
-/app/models/merge_request.rb @garyh @patrickbajao @marc_shaw @kerrizor @dskim_gitlab
-/app/services/merge_requests/ @garyh @patrickbajao @marc_shaw @kerrizor @dskim_gitlab
-/app/workers/merge_requests/ @garyh @patrickbajao @marc_shaw @kerrizor @dskim_gitlab
-/app/workers/merge_request_mergeability_check_worker.rb @garyh @patrickbajao @marc_shaw @kerrizor @dskim_gitlab
-/lib/gitlab/diff/ @garyh @patrickbajao @marc_shaw @kerrizor @dskim_gitlab
-/lib/gitlab/discussions_diff/ @garyh @patrickbajao @marc_shaw @kerrizor @dskim_gitlab
-/lib/gitlab/quick_actions/ @garyh @patrickbajao @marc_shaw @kerrizor @dskim_gitlab
-
-/ee/app/models/ee/merge_request.rb @garyh @patrickbajao @marc_shaw @kerrizor @dskim_gitlab
-/ee/app/services/merge_requests/ @garyh @patrickbajao @marc_shaw @kerrizor @dskim_gitlab
-/ee/app/workers/merge_requests/ @garyh @patrickbajao @marc_shaw @kerrizor @dskim_gitlab
-/ee/app/workers/merge_request_reset_approvals_worker.rb @garyh @patrickbajao @marc_shaw @kerrizor @dskim_gitlab
+/app/models/merge_request.rb
+/app/services/merge_requests/
+/app/workers/merge_requests/
+/app/workers/merge_request_cleanup_refs_worker.rb
+/app/workers/merge_request_mergeability_check_worker.rb
+/app/workers/new_merge_request_worker.rb
+/app/workers/schedule_merge_request_cleanup_refs_worker.rb
+/app/workers/update_head_pipeline_for_merge_request_worker.rb
+/app/workers/update_merge_requests_worker.rb
+/ee/app/controllers/ee/projects/merge_requests_controller.rb
+/ee/app/controllers/ee/projects/merge_requests/
+/ee/app/models/ee/merge_request.rb
+/ee/app/services/merge_requests/
+/ee/app/services/ee/merge_requests
+/ee/app/workers/merge_requests/
+/ee/app/workers/ee/merge_requests
+/ee/app/workers/merge_request_reset_approvals_worker.rb
+/ee/lib/ee/gitlab/quick_actions/merge_request_actions.rb
+/lib/gitlab/diff/file_collection/merge_request_diff.rb
+/lib/gitlab/diff/file_collection/merge_request_diff_base.rb
+/lib/gitlab/diff/file_collection/merge_request_diff_batch.rb
+/lib/gitlab/diff/file_collection/paginated_diffs.rb
+/lib/gitlab/diff/file_collection/paginated_merge_request_diff.rb
+/lib/gitlab/quick_actions/merge_request_actions.rb
 
 ^[Merge Requests frontend] @slashmanov @iamphill @thomasrandolph
 /app/assets/javascripts/diffs

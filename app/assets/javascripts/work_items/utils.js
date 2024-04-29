@@ -1,5 +1,6 @@
 import {
   WIDGET_TYPE_ASSIGNEES,
+  WIDGET_TYPE_DESIGNS,
   WIDGET_TYPE_HEALTH_STATUS,
   WIDGET_TYPE_HIERARCHY,
   WIDGET_TYPE_LABELS,
@@ -34,6 +35,9 @@ export const findHierarchyWidgetChildren = (workItem) =>
 
 export const findHierarchyWidgetAncestors = (workItem) =>
   findHierarchyWidgets(workItem?.widgets)?.ancestors?.nodes || [];
+
+export const findDesignWidget = (widgets) =>
+  widgets?.find((widget) => widget.type === WIDGET_TYPE_DESIGNS);
 
 export const getWorkItemIcon = (icon) => {
   if (icon === ISSUABLE_EPIC) return WORK_ITEMS_TYPE_MAP[WORK_ITEM_TYPE_ENUM_EPIC].icon;

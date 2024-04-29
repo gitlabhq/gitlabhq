@@ -22,6 +22,7 @@ import {
   WORK_ITEM_TYPE_VALUE_EPIC,
   WIDGET_TYPE_NOTES,
   WIDGET_TYPE_LINKED_ITEMS,
+  WIDGET_TYPE_DESIGNS,
   LINKED_ITEMS_ANCHOR,
 } from '../constants';
 
@@ -46,6 +47,7 @@ import WorkItemStickyHeader from './work_item_sticky_header.vue';
 import WorkItemAncestors from './work_item_ancestors/work_item_ancestors.vue';
 import WorkItemTitleWithEdit from './work_item_title_with_edit.vue';
 import WorkItemLoading from './work_item_loading.vue';
+import DesignWidget from './design_management/design_management_widget.vue';
 
 export default {
   i18n,
@@ -54,6 +56,7 @@ export default {
   },
   isLoggedIn: isLoggedIn(),
   components: {
+    DesignWidget,
     GlAlert,
     GlButton,
     GlEmptyState,
@@ -205,6 +208,9 @@ export default {
     },
     hasDescriptionWidget() {
       return this.isWidgetPresent(WIDGET_TYPE_DESCRIPTION);
+    },
+    hasDesignWidget() {
+      return this.isWidgetPresent(WIDGET_TYPE_DESIGNS);
     },
     workItemNotificationsSubscribed() {
       return Boolean(this.isWidgetPresent(WIDGET_TYPE_NOTIFICATIONS)?.subscribed);
@@ -580,6 +586,7 @@ export default {
               @error="updateError = $event"
               @emoji-updated="$emit('work-item-emoji-updated', $event)"
             />
+            <design-widget v-if="!workItemLoading && hasDesignWidget" :work-item-id="workItem.id" />
           </section>
           <aside
             data-testid="work-item-overview-right-sidebar"

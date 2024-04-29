@@ -1,0 +1,193 @@
+<script>
+import { GlLoadingIcon, GlIcon, GlIntersectionObserver, GlTooltipDirective } from '@gitlab/ui';
+import { n__, __ } from '~/locale';
+import Timeago from '~/vue_shared/components/time_ago_tooltip.vue';
+
+export default {
+  components: {
+    GlLoadingIcon,
+    GlIntersectionObserver,
+    GlIcon,
+    Timeago,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
+  },
+  props: {
+    id: {
+      type: [Number, String],
+      required: true,
+    },
+    event: {
+      type: String,
+      required: true,
+    },
+    notesCount: {
+      type: Number,
+      required: true,
+    },
+    image: {
+      type: String,
+      required: true,
+    },
+    filename: {
+      type: String,
+      required: true,
+    },
+    updatedAt: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    isUploading: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+    imageV432x230: {
+      type: String,
+      required: false,
+      default: null,
+    },
+  },
+  data() {
+    return {
+      imageLoading: true,
+      imageError: false,
+      wasInView: false,
+    };
+  },
+  computed: {
+    icon() {
+      const normalizedEvent = this.event.toLowerCase();
+      const icons = {
+        creation: {
+          name: 'file-addition-solid',
+          classes: 'gl-text-green-500',
+          tooltip: __('Added in this version'),
+        },
+        modification: {
+          name: 'file-modified-solid',
+          classes: 'gl-text-blue-500',
+          tooltip: __('Modified in this version'),
+        },
+        deletion: {
+          name: 'file-deletion-solid',
+          classes: 'gl-text-red-500',
+          tooltip: __('Archived in this version'),
+        },
+      };
+
+      return icons[normalizedEvent] ? icons[normalizedEvent] : {};
+    },
+    notesLabel() {
+      return n__('%d comment', '%d comments', this.notesCount);
+    },
+    imageLink() {
+      return this.wasInView ? this.imageV432x230 || this.image : '';
+    },
+    showLoadingSpinner() {
+      return this.imageLoading || this.isUploading;
+    },
+    showImageErrorIcon() {
+      return this.wasInView && this.imageError;
+    },
+    showImage() {
+      return !this.showLoadingSpinner && !this.showImageErrorIcon;
+    },
+  },
+  methods: {
+    onImageLoad() {
+      this.imageLoading = false;
+      this.imageError = false;
+    },
+    onImageError() {
+      this.imageLoading = false;
+      this.imageError = true;
+    },
+    onAppear() {
+      // do nothing if image has previously
+      // been in view
+      if (this.wasInView) {
+        return;
+      }
+
+      this.wasInView = true;
+      this.imageLoading = true;
+    },
+  },
+};
+</script>
+
+<template>
+  <div class="card gl-cursor-pointer text-plain js-design-list-item design-list-item gl-mb-0">
+    <div
+      class="card-body gl-p-0 gl-display-flex gl-align-items-center gl-justify-content-center gl-overflow-hidden gl-relative gl-rounded-top-base"
+    >
+      <div
+        v-if="icon.name"
+        data-testid="design-event"
+        class="gl-absolute gl-top-3 gl-right-3 gl-mr-1"
+      >
+        <span :title="icon.tooltip" :aria-label="icon.tooltip">
+          <gl-icon
+            :name="icon.name"
+            :size="16"
+            :class="icon.classes"
+            data-testid="design-status-icon"
+            :data-qa-status="icon.name"
+          />
+        </span>
+      </div>
+      <gl-intersection-observer
+        class="gl-flex-grow-1"
+        data-testid="design-image"
+        :data-qa-filename="filename"
+        @appear="onAppear"
+      >
+        <gl-loading-icon v-if="showLoadingSpinner" size="lg" />
+        <gl-icon
+          v-else-if="showImageErrorIcon"
+          name="media-broken"
+          class="text-secondary"
+          :size="32"
+        />
+        <img
+          v-show="showImage"
+          :src="imageLink"
+          :alt="filename"
+          class="gl-display-block gl-mx-auto gl-max-w-full gl-max-h-full gl-w-auto design-img"
+          :data-testid="`design-img-${id}`"
+          @load="onImageLoad"
+          @error="onImageError"
+        />
+      </gl-intersection-observer>
+    </div>
+    <div class="card-footer gl-display-flex gl-w-full gl-bg-white gl-py-3 gl-px-4">
+      <div
+        class="gl-display-flex gl-flex-direction-column str-truncated-100"
+        data-testid="design-file-name"
+      >
+        <span
+          v-gl-tooltip
+          class="gl-font-sm str-truncated-100"
+          :data-testid="`design-img-filename-${id}`"
+          :title="filename"
+          >{{ filename }}</span
+        >
+        <span v-if="updatedAt" class="str-truncated-100">
+          {{ __('Updated') }} <timeago :time="updatedAt" tooltip-placement="bottom" />
+        </span>
+      </div>
+      <div
+        v-if="notesCount"
+        class="gl-ml-auto gl-display-flex gl-align-items-center gl-text-gray-500"
+      >
+        <gl-icon name="comments" class="gl-ml-2" />
+        <span :aria-label="notesLabel" class="gl-font-sm gl-ml-2">
+          {{ notesCount }}
+        </span>
+      </div>
+    </div>
+  </div>
+</template>

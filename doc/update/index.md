@@ -211,8 +211,9 @@ When upgrading:
      [large pipeline variables history](versions/gitlab_16_changes.md#1610)) >
      [`16.1.6`](versions/gitlab_16_changes.md#1610) (instances with NPM packages in their package registry) >
      [`16.2.9`](versions/gitlab_16_changes.md#1620) (only instances with [large pipeline variables history](versions/gitlab_16_changes.md#1630)) >
-     [`16.3.7`](versions/gitlab_16_changes.md#1630) > [`16.7.z`](versions/gitlab_16_changes.md#1670)
-     > [latest `16.Y.Z`](https://gitlab.com/gitlab-org/gitlab/-/releases).
+     [`16.3.7`](versions/gitlab_16_changes.md#1630) > [`16.7.z`](versions/gitlab_16_changes.md#1670) >
+     [`16.11.z`](https://gitlab.com/gitlab-org/gitlab/-/releases).
+   - GitLab 17: [`17.y.z`](versions/gitlab_17_changes.md#1700).
 
 1. Check for [required upgrade stops](#required-upgrade-stops).
 1. Consult the [version-specific upgrade instructions](#version-specific-upgrading-instructions).

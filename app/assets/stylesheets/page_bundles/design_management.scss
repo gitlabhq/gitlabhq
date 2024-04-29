@@ -60,6 +60,10 @@ $t-gray-a-16-design-pin: rgba($black, 0.16);
     right: 10px;
     top: 10px;
   }
+
+  &:hover {
+    border-color: var(--gray-400, $gray-400);
+  }
 }
 
 .design-note-pin {
