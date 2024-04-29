@@ -76,20 +76,13 @@ module Ci
           strategy: :ci_sliding_list,
           next_partition_if: ->(latest_partition) do
             latest_partition.blank? ||
-              (Ci::Partitionable.create_partitions_102? &&
-                Ci::Pipeline::NEXT_PARTITION_VALUE > latest_partition.values.max)
+              ::Ci::Partitionable::Organizer.new_partition_required?(latest_partition.values.max)
           end,
           detach_partition_if: proc { false },
           # Most of the db tasks are run in a weekly basis, e.g. execute_batched_migrations.
           # Therefore, let's start with 1.week and see how it'd go.
           analyze_interval: 1.week
       end
-    end
-
-    # This method is evaluated before the stubs are set in place for the test environment
-    # so we need to return true to create the partitions.
-    def self.create_partitions_102?
-      ::Gitlab.dev_or_test_env? || Feature.enabled?(:ci_create_partitions_102, :instance)
     end
   end
 end

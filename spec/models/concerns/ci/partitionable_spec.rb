@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::Partitionable do
+RSpec.describe Ci::Partitionable, feature_category: :continuous_integration do
   let(:ci_model) { Class.new(Ci::ApplicationRecord) }
 
   around do |ex|
@@ -98,6 +98,27 @@ RSpec.describe Ci::Partitionable do
 
         context 'without any existing partitions' do
           it { is_expected.to eq(true) }
+
+          context 'with ci_partitioning_first_records disabled' do
+            before do
+              stub_feature_flags(ci_partitioning_first_records: false)
+            end
+
+            it 'does not create the first record' do
+              expect { subject }.not_to change { Ci::Partition.count }
+            end
+          end
+
+          context 'with ci_partitioning_first_records enabled' do
+            before do
+              stub_feature_flags(ci_partitioning_first_records: true)
+              Ci::Partitionable::Organizer.clear_memoization(:insert_first_partitions)
+            end
+
+            it 'creates the first record' do
+              expect { subject }.to change { Ci::Partition.count }
+            end
+          end
         end
 
         context 'with initial partition attached' do

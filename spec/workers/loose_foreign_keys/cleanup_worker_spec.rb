@@ -143,8 +143,7 @@ RSpec.describe LooseForeignKeys::CleanupWorker, feature_category: :cell do
 
         if database_base_models.has_key?(:ci)
           Gitlab::Database::SharedModel.using_connection(database_base_models[:ci].connection) do
-            LooseForeignKeys::DeletedRecord.create!(fully_qualified_table_name: 'public._test_loose_fk_parent_table_1', primary_key_value: 999)
-            LooseForeignKeys::DeletedRecord.create!(fully_qualified_table_name: 'public._test_loose_fk_parent_table_1', primary_key_value: 9991)
+            LooseForeignKeys::DeletedRecord.create!(fully_qualified_table_name: 'public._test_loose_fk_parent_table_1', primary_key_value: 1)
           end
         end
       end
@@ -162,6 +161,10 @@ RSpec.describe LooseForeignKeys::CleanupWorker, feature_category: :cell do
 
         travel_to DateTime.new(2019, 1, 1, 10, current_minute) do
           described_class.new.perform
+        end
+
+        Gitlab::Database::SharedModel.using_connection(expected_connection) do
+          expect(LooseForeignKeys::DeletedRecord.load_batch_for_table('public._test_loose_fk_parent_table_1', 10)).to be_empty
         end
       end
     end

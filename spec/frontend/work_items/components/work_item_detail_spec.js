@@ -732,7 +732,6 @@ describe('WorkItemDetail component', () => {
         });
 
         it('work item description component shows in edit mode', () => {
-          expect(findWorkItemDescription().props('disableInlineEditing')).toBe(true);
           expect(findWorkItemDescription().props('editMode')).toBe(true);
         });
       });

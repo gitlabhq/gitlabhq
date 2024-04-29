@@ -2,8 +2,12 @@ import { GlDaterangePicker } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import DateRangesDropdown from '~/analytics/shared/components/date_ranges_dropdown.vue';
 import DateRangeFilter from '~/observability/components/date_range_filter.vue';
+import { useFakeDate } from 'helpers/fake_date';
 
 describe('DateRangeFilter', () => {
+  // Apr 23th, 2024 4:00 (3 = April)
+  useFakeDate(2024, 3, 23, 4);
+
   let wrapper;
 
   const defaultTimeRange = {
@@ -34,62 +38,62 @@ describe('DateRangeFilter', () => {
     expect(dateRangesDropdown.props('dateRangeOptions')).toMatchInlineSnapshot(`
       Array [
         Object {
-          "endDate": 2020-07-06T00:00:00.000Z,
-          "startDate": 2020-07-05T23:55:00.000Z,
+          "endDate": 2024-04-23T04:00:00.000Z,
+          "startDate": 2024-04-23T03:55:00.000Z,
           "text": "Last 5 minutes",
           "value": "5m",
         },
         Object {
-          "endDate": 2020-07-06T00:00:00.000Z,
-          "startDate": 2020-07-05T23:45:00.000Z,
+          "endDate": 2024-04-23T04:00:00.000Z,
+          "startDate": 2024-04-23T03:45:00.000Z,
           "text": "Last 15 minutes",
           "value": "15m",
         },
         Object {
-          "endDate": 2020-07-06T00:00:00.000Z,
-          "startDate": 2020-07-05T23:30:00.000Z,
+          "endDate": 2024-04-23T04:00:00.000Z,
+          "startDate": 2024-04-23T03:30:00.000Z,
           "text": "Last 30 minutes",
           "value": "30m",
         },
         Object {
-          "endDate": 2020-07-06T00:00:00.000Z,
-          "startDate": 2020-07-05T23:00:00.000Z,
+          "endDate": 2024-04-23T04:00:00.000Z,
+          "startDate": 2024-04-23T03:00:00.000Z,
           "text": "Last 1 hour",
           "value": "1h",
         },
         Object {
-          "endDate": 2020-07-06T00:00:00.000Z,
-          "startDate": 2020-07-05T20:00:00.000Z,
+          "endDate": 2024-04-23T04:00:00.000Z,
+          "startDate": 2024-04-23T00:00:00.000Z,
           "text": "Last 4 hours",
           "value": "4h",
         },
         Object {
-          "endDate": 2020-07-06T00:00:00.000Z,
-          "startDate": 2020-07-05T12:00:00.000Z,
+          "endDate": 2024-04-23T04:00:00.000Z,
+          "startDate": 2024-04-22T16:00:00.000Z,
           "text": "Last 12 hours",
           "value": "12h",
         },
         Object {
-          "endDate": 2020-07-06T00:00:00.000Z,
-          "startDate": 2020-07-05T00:00:00.000Z,
+          "endDate": 2024-04-23T04:00:00.000Z,
+          "startDate": 2024-04-22T04:00:00.000Z,
           "text": "Last 24 hours",
           "value": "24h",
         },
         Object {
-          "endDate": 2020-07-06T00:00:00.000Z,
-          "startDate": 2020-06-29T00:00:00.000Z,
+          "endDate": 2024-04-23T04:00:00.000Z,
+          "startDate": 2024-04-16T04:00:00.000Z,
           "text": "Last 7 days",
           "value": "7d",
         },
         Object {
-          "endDate": 2020-07-06T00:00:00.000Z,
-          "startDate": 2020-06-22T00:00:00.000Z,
+          "endDate": 2024-04-23T04:00:00.000Z,
+          "startDate": 2024-04-09T04:00:00.000Z,
           "text": "Last 14 days",
           "value": "14d",
         },
         Object {
-          "endDate": 2020-07-06T00:00:00.000Z,
-          "startDate": 2020-06-06T00:00:00.000Z,
+          "endDate": 2024-04-23T04:00:00.000Z,
+          "startDate": 2024-03-24T04:00:00.000Z,
           "text": "Last 30 days",
           "value": "30d",
         },
@@ -170,5 +174,13 @@ describe('DateRangeFilter', () => {
 
       expect(findDateRangesPicker().props('startOpened')).toBe(true);
     });
+  });
+
+  it('sets the max-date to tomorrow', async () => {
+    await findDateRangesDropdown().vm.$emit('customDateRangeSelected');
+
+    expect(findDateRangesPicker().props('defaultMaxDate').toISOString()).toBe(
+      '2024-04-24T00:00:00.000Z',
+    );
   });
 });

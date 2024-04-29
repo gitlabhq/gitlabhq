@@ -29,11 +29,6 @@ export default {
       type: Boolean,
       required: true,
     },
-    disableInlineEditing: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
   },
   data() {
     return {
@@ -48,14 +43,8 @@ export default {
     descriptionHtml() {
       return this.workItemDescription?.descriptionHtml;
     },
-    descriptionEmpty() {
+    isDescriptionEmpty() {
       return this.descriptionHtml?.trim() === '';
-    },
-    showEmptyDescription() {
-      return this.descriptionEmpty && !this.disableInlineEditing;
-    },
-    showEditButton() {
-      return this.canEdit && !this.disableInlineEditing;
     },
     isTruncated() {
       return this.truncated && !this.disableTruncation && this.glFeatures.workItemsMvc2;
@@ -137,29 +126,9 @@ export default {
 </script>
 
 <template>
-  <div class="gl-mb-5">
-    <div class="gl-display-inline-flex gl-align-items-center gl-mb-3">
-      <label v-if="!disableInlineEditing" class="d-block col-form-label gl-mr-5">{{
-        __('Description')
-      }}</label>
-      <gl-button
-        v-if="showEditButton"
-        v-gl-tooltip
-        class="gl-ml-auto"
-        icon="pencil"
-        data-testid="edit-description"
-        :aria-label="__('Edit description')"
-        :title="__('Edit description')"
-        @click="$emit('startEditing')"
-      />
-    </div>
-
-    <div v-if="showEmptyDescription" class="gl-text-secondary gl-mb-5">{{ __('None') }}</div>
-    <div
-      v-else-if="!descriptionEmpty"
-      ref="description"
-      class="work-item-description md gl-mb-5 gl-min-h-8 gl-clearfix gl-relative"
-    >
+  <div class="gl-my-5">
+    <div v-if="isDescriptionEmpty" class="gl-text-secondary">{{ __('No description') }}</div>
+    <div v-else ref="description" class="work-item-description md gl-clearfix gl-relative">
       <div
         ref="gfm-content"
         v-safe-html="descriptionHtml"

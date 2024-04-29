@@ -3,6 +3,7 @@ import { GlDaterangePicker } from '@gitlab/ui';
 import { periodToDate } from '~/observability/utils';
 import DateRangesDropdown from '~/analytics/shared/components/date_ranges_dropdown.vue';
 import { TIME_RANGE_OPTIONS, CUSTOM_DATE_RANGE_OPTION } from '~/observability/constants';
+import { dayAfter, getCurrentUtcDate } from '~/lib/utils/datetime_utility';
 
 export default {
   components: {
@@ -44,6 +45,9 @@ export default {
       return (
         this.shouldShowDateRangePicker && (!this.dateRange.startDate || !this.dateRange.endDate)
       );
+    },
+    defaultMaxDate() {
+      return dayAfter(getCurrentUtcDate(), { utc: true });
     },
   },
   methods: {
@@ -90,6 +94,7 @@ export default {
       :start-opened="shouldStartOpened"
       :default-start-date="dateRange.startDate"
       :default-end-date="dateRange.endDate"
+      :default-max-date="defaultMaxDate"
       @input="onCustomRangeSelected"
     />
   </div>

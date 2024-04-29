@@ -9,7 +9,6 @@ jest.mock('~/behaviors/markdown/render_gfm');
 describe('WorkItemDescription', () => {
   let wrapper;
 
-  const findEditButton = () => wrapper.find('[data-testid="edit-description"]');
   const findCheckboxAtIndex = (index) => wrapper.findAll('input[type="checkbox"]').at(index);
 
   const defaultWorkItemDescription = {
@@ -20,7 +19,6 @@ describe('WorkItemDescription', () => {
   const createComponent = ({
     workItemDescription = defaultWorkItemDescription,
     canEdit = false,
-    disableInlineEditing = false,
     mockComputed = {},
     hasWorkItemsMvc2 = false,
   } = {}) => {
@@ -28,7 +26,6 @@ describe('WorkItemDescription', () => {
       propsData: {
         workItemDescription,
         canEdit,
-        disableInlineEditing,
       },
       computed: mockComputed,
       provide: {
@@ -123,37 +120,6 @@ describe('WorkItemDescription', () => {
 
       const updatedDescription = `- [ ] todo 1\n- [ ] todo 2`;
       expect(wrapper.emitted('descriptionUpdated')).toEqual([[updatedDescription]]);
-    });
-  });
-
-  describe('Edit button', () => {
-    it('is not visible when canUpdate = false', () => {
-      createComponent({
-        canUpdate: false,
-      });
-
-      expect(findEditButton().exists()).toBe(false);
-    });
-
-    it('toggles edit mode', async () => {
-      createComponent({
-        canEdit: true,
-      });
-
-      findEditButton().vm.$emit('click');
-
-      await nextTick();
-
-      expect(wrapper.emitted('startEditing')).toEqual([[]]);
-    });
-
-    it('is not visible when `disableInlineEditing` is true and the user can edit', () => {
-      createComponent({
-        disableInlineEditing: true,
-        canEdit: true,
-      });
-
-      expect(findEditButton().exists()).toBe(false);
     });
   });
 });

@@ -566,7 +566,6 @@ export default {
           <section>
             <work-item-description
               v-if="hasDescriptionWidget"
-              disable-inline-editing
               :edit-mode="editMode"
               :full-path="fullPath"
               :work-item-id="workItem.id"

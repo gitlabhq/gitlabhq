@@ -32,7 +32,7 @@ module Mutations
             validates: { allow_blank: false },
             description:
             'Minimum GitLab access level allowed to delete container images to the container registry. ' \
-            'For example, `DEVELOPER`, `MAINTAINER`, `OWNER`, or `ADMIN`.'
+            'For example, `MAINTAINER`, `OWNER`, or `ADMIN`.'
 
           argument :minimum_access_level_for_push,
             Types::ContainerRegistry::Protection::RuleAccessLevelEnum,
@@ -40,7 +40,7 @@ module Mutations
             validates: { allow_blank: false },
             description:
               'Minimum GitLab access level allowed to push container images to the container registry. ' \
-              'For example, `DEVELOPER`, `MAINTAINER`, `OWNER`, or `ADMIN`.'
+              'For example, `MAINTAINER`, `OWNER`, or `ADMIN`.'
 
           field :container_registry_protection_rule,
             Types::ContainerRegistry::Protection::RuleType,

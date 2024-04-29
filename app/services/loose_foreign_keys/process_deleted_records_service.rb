@@ -30,6 +30,7 @@ module LooseForeignKeys
             parent_table: table,
             loose_foreign_key_definitions: loose_foreign_key_definitions,
             deleted_parent_records: records,
+            connection: connection,
             modification_tracker: modification_tracker)
           .execute
 
@@ -61,8 +62,10 @@ module LooseForeignKeys
     end
 
     def load_batch_for_table(table)
-      fully_qualified_table_name = "#{current_schema}.#{table}"
-      LooseForeignKeys::DeletedRecord.load_batch_for_table(fully_qualified_table_name, BATCH_SIZE)
+      Gitlab::Database::SharedModel.using_connection(connection) do
+        fully_qualified_table_name = "#{current_schema}.#{table}"
+        LooseForeignKeys::DeletedRecord.load_batch_for_table(fully_qualified_table_name, BATCH_SIZE)
+      end
     end
 
     def current_schema

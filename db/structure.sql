@@ -6516,15 +6516,6 @@ CREATE TABLE ci_partitions (
     updated_at timestamp with time zone NOT NULL
 );
 
-CREATE SEQUENCE ci_partitions_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE ci_partitions_id_seq OWNED BY ci_partitions.id;
-
 CREATE TABLE ci_pending_builds (
     id bigint NOT NULL,
     build_id bigint NOT NULL,
@@ -19141,8 +19132,6 @@ ALTER TABLE ONLY ci_minutes_additional_packs ALTER COLUMN id SET DEFAULT nextval
 ALTER TABLE ONLY ci_namespace_mirrors ALTER COLUMN id SET DEFAULT nextval('ci_namespace_mirrors_id_seq'::regclass);
 
 ALTER TABLE ONLY ci_namespace_monthly_usages ALTER COLUMN id SET DEFAULT nextval('ci_namespace_monthly_usages_id_seq'::regclass);
-
-ALTER TABLE ONLY ci_partitions ALTER COLUMN id SET DEFAULT nextval('ci_partitions_id_seq'::regclass);
 
 ALTER TABLE ONLY ci_pending_builds ALTER COLUMN id SET DEFAULT nextval('ci_pending_builds_id_seq'::regclass);
 

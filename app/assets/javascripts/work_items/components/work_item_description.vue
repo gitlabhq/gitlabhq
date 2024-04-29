@@ -1,6 +1,5 @@
 <script>
 import { GlAlert, GlButton, GlForm, GlFormGroup, GlFormTextarea } from '@gitlab/ui';
-import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { getDraft, clearDraft, updateDraft } from '~/lib/utils/autosave';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
@@ -9,7 +8,6 @@ import EditedAt from '~/issues/show/components/edited.vue';
 import Tracking from '~/tracking';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import { autocompleteDataSources, markdownPreviewPath } from '../utils';
-import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
 import groupWorkItemByIidQuery from '../graphql/group_work_item_by_iid.query.graphql';
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
 import { i18n, TRACKING_CATEGORY_SHOW, WIDGET_TYPE_DESCRIPTION } from '../constants';
@@ -40,11 +38,6 @@ export default {
     workItemIid: {
       type: String,
       required: true,
-    },
-    disableInlineEditing: {
-      type: Boolean,
-      required: false,
-      default: false,
     },
     editMode: {
       type: Boolean,
@@ -158,7 +151,6 @@ export default {
     },
     formGroupClass() {
       return {
-        'gl-border-t gl-pt-6': !this.disableInlineEditing,
         'gl-mb-5 common-note-form': true,
       };
     },
@@ -224,56 +216,16 @@ export default {
         this.isSubmittingWithKeydown = true;
       }
 
-      if (this.disableInlineEditing) {
-        this.$emit('updateWorkItem');
-        return;
-      }
-
-      this.isSubmitting = true;
-
-      try {
-        this.track('updated_description');
-
-        const {
-          data: { workItemUpdate },
-        } = await this.$apollo.mutate({
-          mutation: updateWorkItemMutation,
-          variables: {
-            input: {
-              id: this.workItem.id,
-              descriptionWidget: {
-                description: this.descriptionText,
-              },
-            },
-          },
-        });
-
-        if (workItemUpdate.errors?.length) {
-          throw new Error(workItemUpdate.errors[0]);
-        }
-
-        this.isEditing = false;
-        clearDraft(this.autosaveKey);
-        this.conflictedDescription = '';
-      } catch (error) {
-        this.$emit('error', error.message);
-        Sentry.captureException(error);
-      }
-
-      this.isSubmitting = false;
+      this.$emit('updateWorkItem');
     },
     setDescriptionText(newText) {
       this.descriptionText = newText;
-      if (this.disableInlineEditing) {
-        this.$emit('updateDraft', this.descriptionText);
-      }
+      this.$emit('updateDraft', this.descriptionText);
       updateDraft(this.autosaveKey, this.descriptionText);
     },
     handleDescriptionTextUpdated(newText) {
       this.descriptionText = newText;
-      if (this.disableInlineEditing) {
-        this.$emit('updateDraft', this.descriptionText);
-      }
+      this.$emit('updateDraft', this.descriptionText);
       this.updateWorkItem();
     },
   },
@@ -286,7 +238,7 @@ export default {
       <gl-form-group
         :class="formGroupClass"
         :label="__('Description')"
-        :label-sr-only="disableInlineEditing"
+        label-sr-only
         label-for="work-item-description"
       >
         <markdown-editor
@@ -358,7 +310,6 @@ export default {
     </gl-form>
     <work-item-description-rendered
       v-else
-      :disable-inline-editing="disableInlineEditing"
       :work-item-description="workItemDescription"
       :can-edit="canEdit"
       :disable-truncation="disableTruncation"

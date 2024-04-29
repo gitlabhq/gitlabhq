@@ -20,21 +20,21 @@ module Types
           null: false,
           description:
             'Container repository path pattern protected by the protection rule. ' \
-            'For example `my-project/my-container-*`. Wildcard character `*` allowed.'
+            'For example, `my-project/my-container-*`. Wildcard character `*` allowed.'
 
         field :minimum_access_level_for_push,
           Types::ContainerRegistry::Protection::RuleAccessLevelEnum,
           null: false,
           description:
             'Minimum GitLab access level to allow to push container images to the container registry. ' \
-            'For example `DEVELOPER`, `MAINTAINER`, or `OWNER`.'
+            'For example, `MAINTAINER`, `OWNER`, or `ADMIN`.'
 
         field :minimum_access_level_for_delete,
           Types::ContainerRegistry::Protection::RuleAccessLevelEnum,
           null: false,
           description:
             'Minimum GitLab access level to allow to push container images to the container registry. ' \
-            'For example `DEVELOPER`, `MAINTAINER`, or `OWNER`.'
+            'For example, `MAINTAINER`, `OWNER`, or `ADMIN`.'
       end
     end
   end
