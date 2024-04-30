@@ -221,7 +221,6 @@ export default {
           :allow-registration-token="allowRegistrationToken"
           :registration-token="registrationToken"
           :type="$options.INSTANCE_TYPE"
-          placement="right"
         />
       </template>
     </runner-list-header>

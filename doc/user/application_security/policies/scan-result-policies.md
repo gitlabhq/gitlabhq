@@ -68,7 +68,6 @@ For more information see [Use security scanning tools with merge request pipelin
 
 ## Merge request approval policy editor
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77814) in GitLab 14.8.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/369473) in GitLab 15.6.
 
 NOTE:

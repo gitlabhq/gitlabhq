@@ -1,16 +1,28 @@
 <script>
+import { GlFilteredSearchToken } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import IssueCardStatistics from 'ee_else_ce/issues/list/components/issue_card_statistics.vue';
 import IssueCardTimeInfo from 'ee_else_ce/issues/list/components/issue_card_time_info.vue';
+import { TYPENAME_USER } from '~/graphql_shared/constants';
+import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { STATUS_ALL, STATUS_CLOSED, STATUS_OPEN } from '~/issues/constants';
 import setSortPreferenceMutation from '~/issues/list/queries/set_sort_preference.mutation.graphql';
-import { deriveSortKey } from '~/issues/list/utils';
+import { convertToApiParams, convertToSearchQuery, deriveSortKey } from '~/issues/list/utils';
 import { __, s__ } from '~/locale';
+import {
+  OPERATORS_IS,
+  TOKEN_TITLE_AUTHOR,
+  TOKEN_TITLE_SEARCH_WITHIN,
+  TOKEN_TYPE_AUTHOR,
+  TOKEN_TYPE_SEARCH_WITHIN,
+} from '~/vue_shared/components/filtered_search_bar/constants';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
 import { issuableListTabs } from '~/vue_shared/issuable/list/constants';
 import { STATE_CLOSED } from '../../constants';
 import { sortOptions, urlSortParams } from '../constants';
 import getWorkItemsQuery from '../queries/get_work_items.query.graphql';
+
+const UserToken = () => import('~/vue_shared/components/filtered_search_bar/tokens/user_token.vue');
 
 export default {
   issuableListTabs,
@@ -24,7 +36,7 @@ export default {
   data() {
     return {
       error: undefined,
-      searchTokens: [],
+      filterTokens: [],
       sortKey: deriveSortKey({ sort: this.initialSort, sortMap: urlSortParams }),
       state: STATUS_OPEN,
       tabCounts: {},
@@ -39,6 +51,8 @@ export default {
           fullPath: this.fullPath,
           sort: this.sortKey,
           state: this.state,
+          search: this.searchQuery,
+          ...this.apiFilterParams,
         };
       },
       update(data) {
@@ -60,6 +74,54 @@ export default {
       },
     },
   },
+  computed: {
+    apiFilterParams() {
+      return convertToApiParams(this.filterTokens);
+    },
+    searchQuery() {
+      return convertToSearchQuery(this.filterTokens);
+    },
+    searchTokens() {
+      const preloadedUsers = [];
+
+      if (gon.current_user_id) {
+        preloadedUsers.push({
+          id: convertToGraphQLId(TYPENAME_USER, gon.current_user_id),
+          name: gon.current_user_fullname,
+          username: gon.current_username,
+          avatar_url: gon.current_user_avatar_url,
+        });
+      }
+
+      return [
+        {
+          type: TOKEN_TYPE_AUTHOR,
+          title: TOKEN_TITLE_AUTHOR,
+          icon: 'pencil',
+          token: UserToken,
+          dataType: 'user',
+          defaultUsers: [],
+          operators: OPERATORS_IS,
+          fullPath: this.fullPath,
+          isProject: false,
+          recentSuggestionsStorageKey: `${this.fullPath}-issues-recent-tokens-author`,
+          preloadedUsers,
+        },
+        {
+          type: TOKEN_TYPE_SEARCH_WITHIN,
+          title: TOKEN_TITLE_SEARCH_WITHIN,
+          icon: 'search',
+          token: GlFilteredSearchToken,
+          unique: true,
+          operators: OPERATORS_IS,
+          options: [
+            { icon: 'title', value: 'TITLE', title: __('Titles') },
+            { icon: 'text-description', value: 'DESCRIPTION', title: __('Descriptions') },
+          ],
+        },
+      ];
+    },
+  },
   methods: {
     getStatus(issue) {
       return issue.state === STATE_CLOSED ? __('Closed') : undefined;
@@ -70,6 +132,9 @@ export default {
       }
 
       this.state = state;
+    },
+    handleFilter(tokens) {
+      this.filterTokens = tokens;
     },
     handleSort(sortKey) {
       if (this.sortKey === sortKey) {
@@ -117,6 +182,7 @@ export default {
     :tabs="$options.issuableListTabs"
     @click-tab="handleClickTab"
     @dismiss-alert="error = undefined"
+    @filter="handleFilter"
     @sort="handleSort"
   >
     <template #nav-actions>

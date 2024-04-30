@@ -109,8 +109,6 @@ To view group security dashboard:
 
 ## Security Center
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3426) in GitLab 13.4.
-
 The Security Center is a configurable personal space where you can view vulnerabilities across all the
 projects you belong to. The Security Center includes:
 

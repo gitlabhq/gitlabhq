@@ -10,8 +10,6 @@ DETAILS:
 **Tier:** Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/321258) in GitLab 14.4. Feature flag `security_orchestration_policies_configuration` removed.
-
 Policies provide security and compliance teams with a way to enforce controls globally in
 their organization.
 
@@ -264,8 +262,6 @@ policies:
 ![Policies List Page](img/policies_list_v15_1.png)
 
 ## Policy editor
-
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3403) in GitLab 13.4.
 
 You can use the policy editor to create, edit, and delete policies:
 

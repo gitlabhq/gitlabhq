@@ -267,7 +267,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
         sign_in(user)
 
         expect_next_instance_of(Repository) do |repository|
-          expect(repository).to receive(:root_ref).and_raise(Gitlab::Git::CommandError, 'get default branch').twice
+          expect(repository).to receive(:root_ref).and_raise(Gitlab::Git::CommandError, 'get default branch')
         end
       end
 

@@ -1,6 +1,13 @@
 #import "ee_else_ce/work_items/list/queries/work_item_widgets.fragment.graphql"
 
-query getWorkItems($fullPath: ID!, $sort: WorkItemSort, $state: IssuableState) {
+query getWorkItems(
+  $fullPath: ID!
+  $search: String
+  $sort: WorkItemSort
+  $state: IssuableState
+  $authorUsername: String
+  $in: [IssuableSearchableField!]
+) {
   group(fullPath: $fullPath) {
     id
     workItemStateCounts(sort: $sort, state: $state, types: EPIC) {
@@ -8,7 +15,14 @@ query getWorkItems($fullPath: ID!, $sort: WorkItemSort, $state: IssuableState) {
       closed
       opened
     }
-    workItems(sort: $sort, state: $state, types: EPIC) {
+    workItems(
+      search: $search
+      sort: $sort
+      state: $state
+      authorUsername: $authorUsername
+      in: $in
+      types: EPIC
+    ) {
       nodes {
         id
         author {

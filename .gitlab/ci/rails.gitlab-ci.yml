@@ -599,7 +599,7 @@ rspec:merge-auto-explain-logs:
 # EE: default refs (MRs, default branch, schedules) jobs #
 rspec-predictive:pipeline-generate:
   extends:
-    - .rails:rules:rspec-predictive
+    - .rails:rules:rspec-predictive:pipeline-generate
   stage: prepare
   needs: ["detect-tests", "retrieve-tests-metadata"]
   script:

@@ -20895,6 +20895,7 @@ GPG signature for a signed commit.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="groupachievementspath"></a>`achievementsPath` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 17.0. **Status**: Experiment. Path for the namespace's achievements. Returns `null` if the namespace is not a group, or the `achievements` feature flag is disabled. |
 | <a id="groupactualrepositorysizelimit"></a>`actualRepositorySizeLimit` | [`Float`](#float) | Size limit for repositories in the namespace in bytes. This limit only applies to namespaces under Project limit enforcement. |
 | <a id="groupactualsizelimit"></a>`actualSizeLimit` | [`Float`](#float) | The actual storage size limit (in bytes) based on the enforcement type of either repository or namespace. This limit is agnostic of enforcement type. |
 | <a id="groupadditionalpurchasedstoragesize"></a>`additionalPurchasedStorageSize` | [`Float`](#float) | Additional storage purchased for the root namespace in bytes. |
@@ -25084,6 +25085,7 @@ Product analytics events for a specific month and year.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="namespaceachievementspath"></a>`achievementsPath` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 17.0. **Status**: Experiment. Path for the namespace's achievements. Returns `null` if the namespace is not a group, or the `achievements` feature flag is disabled. |
 | <a id="namespaceactualrepositorysizelimit"></a>`actualRepositorySizeLimit` | [`Float`](#float) | Size limit for repositories in the namespace in bytes. This limit only applies to namespaces under Project limit enforcement. |
 | <a id="namespaceactualsizelimit"></a>`actualSizeLimit` | [`Float`](#float) | The actual storage size limit (in bytes) based on the enforcement type of either repository or namespace. This limit is agnostic of enforcement type. |
 | <a id="namespaceadditionalpurchasedstoragesize"></a>`additionalPurchasedStorageSize` | [`Float`](#float) | Additional storage purchased for the root namespace in bytes. |

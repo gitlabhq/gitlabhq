@@ -661,6 +661,7 @@ listed in the descriptions of the relevant settings.
 | `asciidoc_max_includes`                  | integer          | no                                   | Maximum limit of AsciiDoc include directives being processed in any one document. Default: 32. Maximum: 64. |
 | `duo_features_enabled`                   | boolean          | no                                   | Indicates whether GitLab Duo features are enabled for this instance. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144931) in GitLab 16.10. Self-managed, Premium and Ultimate only. |
 | `lock_duo_features_enabled`              | boolean          | no                                   | Indicates whether the GitLab Duo features enabled setting is enforced for all subgroups. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144931) in GitLab 16.10. Self-managed, Premium and Ultimate only. |
+| `nuget_skip_metadata_url_validation` | boolean     | no                                   | Indicates whether to skip metadata URL validation for the NuGet package. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145887) in GitLab 17.0. |
 
 ### Configure inactive project deletion
 

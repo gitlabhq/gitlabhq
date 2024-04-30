@@ -34,6 +34,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { expect(setting.concurrent_github_import_jobs_limit).to eq(1000) }
     it { expect(setting.concurrent_bitbucket_import_jobs_limit).to eq(100) }
     it { expect(setting.concurrent_bitbucket_server_import_jobs_limit).to eq(100) }
+    it { expect(setting.nuget_skip_metadata_url_validation).to eq(false) }
   end
 
   describe 'validations' do
@@ -65,6 +66,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     end
 
     it { expect(described_class).to validate_jsonb_schema(['application_setting_rate_limits']) }
+    it { expect(described_class).to validate_jsonb_schema(['application_setting_package_registry']) }
 
     it { expect(described_class).to validate_jsonb_schema(['application_setting_service_ping_settings']) }
 

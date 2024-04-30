@@ -43,21 +43,10 @@ RSpec.describe DeviseEmailValidator do
         expect(user.errors.added?(:public_email)).to be true
       end
 
-      context 'for email with invalid characters' do
+      context 'for email with encoded-word' do
         %w[
-          lol!'+=?><#$%^&*()@gmail.com
-          test?invalidcharacter@example.com
-          test!invalidcharacter@example.com
-          test#invalidcharacter@example.com
-          test$invalidcharacter@example.com
-          test%invalidcharacter@example.com
-          test&invalidcharacter@example.com
-          test*invalidcharacter@example.com
-          test/invalidcharacter@example.com
-          test=invalidcharacter@example.com
-          test^invalidcharacter@example.com
-          test<invalidcharacter@example.com
-          test>invalidcharacter@example.com
+          test=?invalidcharacter?=@example.com
+          user+company=?example?=@example.com
           =?iso-8859-1?q?testencodedformat=40new.example.com=3e=20?=testencodedformat@example.com
           =?iso-8859-1?q?testencodedformat=40new.example.com?=testencodedformat@example.com
         ].each do |invalid_email|

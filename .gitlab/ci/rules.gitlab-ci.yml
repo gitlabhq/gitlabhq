@@ -2046,6 +2046,36 @@
     - <<: *if-default-refs
       changes: *db-patterns
 
+# Union rules of:
+#   .rails:rules:rspec-predictive
+#   .rails:rules:rspec-predictive:single-db
+#   .rails:rules:rspec-predictive:single-db-ci-connection
+.rails:rules:rspec-predictive:pipeline-generate:
+  rules:
+    - <<: *if-fork-merge-request
+      changes: *code-backstage-patterns
+    - <<: *if-merge-request-labels-pipeline-expedite
+      when: never
+    - <<: *if-merge-request
+      changes: *db-patterns
+    - <<: *if-merge-request
+      changes: *decomposed-db-models-patterns
+    - <<: *if-merge-request-labels-run-all-rspec
+      when: never
+    - <<: *if-merge-request
+      changes: *core-backend-patterns
+      when: never
+    - <<: *if-automated-merge-request
+      changes: *backend-patterns
+      when: never
+    - <<: *if-security-merge-request
+      changes: *backend-patterns
+      when: never
+    - <<: *if-merge-request-approved
+      when: never
+    - <<: *if-merge-request
+      changes: *code-backstage-patterns
+
 # Inverse rules compared to .rails:rules:ee-and-foss-default-rules
 #
 # See CI specs in spec/dot_gitlab_ci/rules_spec.rb for details.

@@ -10,6 +10,8 @@
 
     .settings-content
       = render_if_exists 'admin/application_settings/ee_package_registry'
+      = render 'admin/application_settings/nuget_skip_metadata_url_validation' unless Gitlab.ee?
+
 
       .gl-mt-7
         %h4

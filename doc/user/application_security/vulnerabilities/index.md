@@ -304,8 +304,6 @@ To manually apply the patch that GitLab generated for a vulnerability:
 
 ## Enable security training for vulnerabilities
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6176) in GitLab 14.9.
-
 NOTE:
 Security training is not accessible in an environment that is offline, meaning computers that are isolated from the public internet as a security measure. Specifically, the GitLab server needs the ability to query the API endpoints for any training provider you choose to enable. Some third-party training vendors may require you to sign up for a _free_ account. Sign up for an account by going to
 any of [Secure Code Warrior](https://www.securecodewarrior.com/), [Kontra](https://application.security/), or [SecureFlag](https://www.secureflag.com/).
@@ -323,8 +321,6 @@ To enable security training for vulnerabilities in your project:
 Each integration submits the Vulnerability identifier, for example CWE or OWASP, and the language to the security training vendor. The resulting link to the vendor training is what appears in a GitLab Vulnerability.
 
 ## View security training for a vulnerability
-
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6176) in GitLab 14.9.
 
 The vulnerability page may include a training link relevant to the detected vulnerability if security training is enabled.
 The availability of training depends on whether the enabled training vendor has content matching the particular vulnerability.

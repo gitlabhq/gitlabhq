@@ -52,7 +52,7 @@ func TestLoadEmptyConfig(t *testing.T) {
 	require.NoError(t, err)
 
 	require.Empty(t, cfg.AltDocumentRoot)
-	require.Equal(t, cfg.ImageResizerConfig.MaxFilesize, uint64(250000))
+	require.Equal(t, uint64(250000), cfg.ImageResizerConfig.MaxFilesize)
 	require.GreaterOrEqual(t, cfg.ImageResizerConfig.MaxScalerProcs, uint32(2))
 
 	require.Equal(t, ObjectStorageCredentials{}, cfg.ObjectStorageCredentials)

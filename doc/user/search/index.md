@@ -16,7 +16,7 @@ and [**exact code search**](exact_code_search.md).
 All three types are available for code search.
 GitLab uses these types in this order of priority:
 
-- **Exact code search:** regular expressions and exact strings are supported.
+- **Exact code search:** where you can use regular expression and exact match modes.
 - **Advanced search:** when exact code search is not available.
 - **Basic search:** when exact code search and advanced search are not available
   or when you search against a non-default branch.

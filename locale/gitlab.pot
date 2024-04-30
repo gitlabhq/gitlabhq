@@ -36339,6 +36339,9 @@ msgstr ""
 msgid "PackageRegistry|Built by pipeline %{link} triggered %{datetime} by %{author}"
 msgstr ""
 
+msgid "PackageRegistry|By default, the NuGet package validates the %{code_open}projectUrl%{code_close}, %{code_open}iconUrl%{code_close}, and %{code_open}licenseUrl%{code_close} metadata. In an offline environment, you cannot upload the NuGet package with this validation because these URLs cannot be resolved. You might want to select the checkbox to skip validation."
+msgstr ""
+
 msgid "PackageRegistry|Composer"
 msgstr ""
 
@@ -36728,6 +36731,9 @@ msgstr ""
 msgid "PackageRegistry|Show Yarn commands"
 msgstr ""
 
+msgid "PackageRegistry|Skip metadata URL validation for the NuGet package"
+msgstr ""
+
 msgid "PackageRegistry|Some of the selected package formats allow request forwarding. Deleting a package while request forwarding is enabled for the project can pose a security risk. Do you want to proceed with deleting the selected packages? %{docLinkStart}What are the risks?%{docLinkEnd}"
 msgstr ""
 
@@ -36807,6 +36813,9 @@ msgid "PackageRegistry|Unable to load package"
 msgstr ""
 
 msgid "PackageRegistry|Users with at least the Developer role for this project will be able to publish, edit, and delete packages."
+msgstr ""
+
+msgid "PackageRegistry|Validate these URLs manually to ensure malicious packages are not uploaded to the NuGet package registry. Selecting and clearing the checkbox might lead to invalid records in the package registry that you cannot update."
 msgstr ""
 
 msgid "PackageRegistry|When a package is protected then only certain user roles are able to update and delete the protected package. This helps to avoid tampering with the package."
@@ -58932,9 +58941,6 @@ msgstr ""
 msgid "Workspaces|The branch, tag, or commit hash GitLab uses to create your workspace."
 msgstr ""
 
-msgid "Workspaces|To create a workspace for this project, an administrator must %{linkStart}configure a cluster agent%{linkEnd} for the project's group."
-msgstr ""
-
 msgid "Workspaces|To create a workspace, add a devfile to this project. A devfile is a configuration file for your workspace."
 msgstr ""
 
@@ -58957,6 +58963,9 @@ msgid "Workspaces|Workspaces Settings"
 msgstr ""
 
 msgid "Workspaces|You can't create a workspace for this project"
+msgstr ""
+
+msgid "Workspaces|You must have access to a cluster agent. An administrator can configure an agent for the project or group."
 msgstr ""
 
 msgid "Workspaces|Your workspaces"
@@ -61205,6 +61214,9 @@ msgid "is already present in ancestors"
 msgstr ""
 
 msgid "is an invalid IP address range"
+msgstr ""
+
+msgid "is an invalid URL"
 msgstr ""
 
 msgid "is blocked by"

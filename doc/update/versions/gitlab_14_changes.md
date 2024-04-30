@@ -4,6 +4,8 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
+<!--- start_remove The following content will be removed on remove_date: '2024-08-30' -->
+
 # GitLab 14 changes
 
 DETAILS:
@@ -949,3 +951,5 @@ DETAILS:
      - 14.1.0 or a later 14.1.Z patch release.
   1. [Batched background migrations must finish](../background_migrations.md#batched-background-migrations)
      before you upgrade to a later version [and may take longer than usual](#1400).
+
+<!--- end_remove -->

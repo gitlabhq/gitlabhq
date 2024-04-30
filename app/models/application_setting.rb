@@ -33,6 +33,8 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   # matches the size set in the database constraint
   DEFAULT_BRANCH_PROTECTIONS_DEFAULT_MAX_SIZE = 1.kilobyte
 
+  PACKAGE_REGISTRY_SETTINGS = [:nuget_skip_metadata_url_validation].freeze
+
   enum whats_new_variant: { all_tiers: 0, current_tier: 1, disabled: 2 }, _prefix: true
   enum email_confirmation_setting: { off: 0, soft: 1, hard: 2 }, _prefix: true
 
@@ -620,6 +622,10 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     throttle_unauthenticated_git_http_period_in_seconds: [:integer, { default: 3600 }]
 
   validates :rate_limits, json_schema: { filename: "application_setting_rate_limits" }
+
+  jsonb_accessor :package_registry, nuget_skip_metadata_url_validation: [:boolean, { default: false }]
+
+  validates :package_registry, json_schema: { filename: 'application_setting_package_registry' }
 
   validates :search_rate_limit_allowlist,
     length: { maximum: 100, message: N_('is too long (maximum is 100 entries)') },
