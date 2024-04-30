@@ -179,12 +179,15 @@ module Gitlab
         yield response_enum.next.commit_id
 
         request_enum.push(Gitaly::UserMergeBranchRequest.new(apply: true))
+        request_enum.close
 
         second_response = response_enum.next
 
         branch_update = second_response.branch_update
         return if branch_update.nil?
         raise Gitlab::Git::CommitError, 'failed to apply merge to branch' unless branch_update.commit_id.present?
+
+        consume_final_message(response_enum)
 
         Gitlab::Git::OperationService::BranchUpdate.from_gitaly(branch_update)
       rescue GRPC::BadStatus => e
@@ -369,7 +372,10 @@ module Gitlab
 
         # Second request confirms with gitaly to finalize the rebase
         request_enum.push(Gitaly::UserRebaseConfirmableRequest.new(apply: true))
+        request_enum.close
         response_enum.next
+
+        consume_final_message(response_enum)
 
         rebase_sha
       rescue GRPC::BadStatus => e
@@ -571,6 +577,15 @@ module Gitlab
       end
 
       private
+
+      # consume_final_message consumes the final message that contains the status from the response
+      # stream and raises an exception if it wasn't the last one.
+      def consume_final_message(response_enum)
+        response_enum.next
+      rescue StopIteration
+      else
+        raise 'expected response stream to finish'
+      end
 
       # rubocop:disable Metrics/ParameterLists
       def user_commit_files_request_header(

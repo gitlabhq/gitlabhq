@@ -44,8 +44,7 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
       'sprints.group_id',
       'subscription_add_on_purchases.namespace_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/444338
       'temp_notes_backup.project_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/443667'
-      *['todos.project_id', 'todos.group_id'],
-      *['vulnerability_exports.project_id', 'vulnerability_exports.group_id']
+      *['todos.project_id', 'todos.group_id']
     ]
   end
 

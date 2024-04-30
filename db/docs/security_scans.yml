@@ -8,3 +8,4 @@ description: Stores information about the security scans that are a part of Ci::
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/23669
 milestone: '12.8'
 gitlab_schema: gitlab_main
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/454948

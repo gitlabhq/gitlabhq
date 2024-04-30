@@ -294,30 +294,39 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
       ) {}
     end
 
-    it 'sends a user_merge_branch message', :freeze_time do
-      first_request =
-        Gitaly::UserMergeBranchRequest.new(
-          repository: repository.gitaly_repository,
-          user: gitaly_user,
-          commit_id: source_sha,
-          branch: target_branch,
-          expected_old_oid: target_sha,
-          message: message,
-          timestamp: Google::Protobuf::Timestamp.new(seconds: Time.now.utc.to_i)
-        )
-
-      second_request = Gitaly::UserMergeBranchRequest.new(apply: true)
-
-      expect_next_instance_of(Gitlab::GitalyClient::QueueEnumerator) do |instance|
-        expect(instance).to receive(:push).with(first_request).and_call_original
-        expect(instance).to receive(:push).with(second_request).and_call_original
-        expect(instance).to receive(:close)
-      end
-
+    it 'succeeds' do
       expect(subject).to be_a(Gitlab::Git::OperationService::BranchUpdate)
       expect(subject.newrev).to be_present
       expect(subject.repo_created).to be(false)
       expect(subject.branch_created).to be(false)
+    end
+
+    it 'receives a bad status' do
+      expect(client).to receive(:gitaly_client_call)
+        .and_wrap_original { |original, *args, **kwargs|
+          response_enum = original.call(*args, **kwargs)
+          Enumerator.new do |y|
+            y << response_enum.next
+            y << response_enum.next
+            raise 'bad status'
+          end
+        }
+
+      expect { subject }.to raise_error(RuntimeError, 'bad status')
+    end
+
+    it 'receives an unexpected response' do
+      expect(client).to receive(:gitaly_client_call)
+        .and_wrap_original { |original, *args, **kwargs|
+          response_enum = original.call(*args, **kwargs)
+          Enumerator.new do |y|
+            y << response_enum.next
+            y << response_enum.next
+            y << 'unexpected response'
+          end
+        }
+
+      expect { subject }.to raise_error(RuntimeError, 'expected response stream to finish')
     end
 
     context 'with an exception with the UserMergeBranchError' do
@@ -834,17 +843,51 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
   end
 
   describe '#rebase' do
-    let(:response) { Gitaly::UserRebaseConfirmableResponse.new }
-
     subject do
       client.rebase(
         user,
         '',
-        branch: 'master',
-        branch_sha: 'b83d6e391c22777fca1ed3012fce84f633d7fed0',
+        branch: 'feature',
+        branch_sha: '0b4bc9a49b562e85de7cc9e834518ea6828729b9',
         remote_repository: repository,
         remote_branch: 'master'
-      )
+      ) {}
+    end
+
+    context 'with clean repository' do
+      let(:project) { create(:project, :repository) }
+
+      it 'succeeds' do
+        expect(subject).to be_present
+      end
+
+      it 'receives a bad status' do
+        expect(client).to receive(:gitaly_client_call)
+          .and_wrap_original { |original, *args, **kwargs|
+            response_enum = original.call(*args, **kwargs)
+            Enumerator.new do |y|
+              y << response_enum.next
+              y << response_enum.next
+              raise 'bad status'
+            end
+          }
+
+        expect { subject }.to raise_error(RuntimeError, 'bad status')
+      end
+
+      it 'receives an unexpected response' do
+        expect(client).to receive(:gitaly_client_call)
+          .and_wrap_original { |original, *args, **kwargs|
+            response_enum = original.call(*args, **kwargs)
+            Enumerator.new do |y|
+              y << response_enum.next
+              y << response_enum.next
+              y << 'unexpected response'
+            end
+          }
+
+        expect { subject }.to raise_error(RuntimeError, 'expected response stream to finish')
+      end
     end
 
     shared_examples '#rebase with an error' do

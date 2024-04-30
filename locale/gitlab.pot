@@ -16152,6 +16152,9 @@ msgstr ""
 msgid "DORA4Metrics|Not included"
 msgstr ""
 
+msgid "DORA4Metrics|Number of deployments"
+msgstr ""
+
 msgid "DORA4Metrics|Number of incidents divided by the number of deployments to a production environment in the given time period."
 msgstr ""
 
@@ -16159,9 +16162,6 @@ msgid "DORA4Metrics|Past 6 Months"
 msgstr ""
 
 msgid "DORA4Metrics|Percentage of failed deployments"
-msgstr ""
-
-msgid "DORA4Metrics|Predicted number of deployments"
 msgstr ""
 
 msgid "DORA4Metrics|Show forecast"

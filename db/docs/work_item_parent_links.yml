@@ -23,3 +23,4 @@ desired_sharding_key:
         table: issues
         sharding_key: namespace_id
         belongs_to: work_item
+desired_sharding_key_migration_job_name: BackfillWorkItemParentLinksNamespaceId

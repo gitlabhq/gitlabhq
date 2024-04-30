@@ -35,6 +35,7 @@ class SwapMergeRequestMetricsPipelineIdConvertToBigint < Gitlab::Database::Migra
       swap_columns(TABLE_NAME, COLUMN_NAME, BIGINT_COLUMN_NAME)
 
       reset_trigger_function(:trigger_fd041fe2d1a7)
+      reset_trigger_function(:nullify_merge_request_metrics_build_data)
 
       # No defaults to swap as the column is not a PK one
 
