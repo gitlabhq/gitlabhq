@@ -96,7 +96,7 @@ Also, keep the following guidance in mind:
   use **custom settings for project integrations**.
 - Format [dates and times](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/term-collections/date-time-terms)
   consistently and for an international audience.
-- Use [images](#images), including screenshots, sparingly.
+- Use [illustrations](#illustrations), including screenshots, sparingly.
 - For [UI text](#ui-text), allow for up to 30% expansion and contraction in translation.
   To see how much a string expands or contracts in another language, paste the string
   into [Google Translate](https://translate.google.com/) and review the results.
@@ -568,7 +568,7 @@ indentation as the list item. You can do this with:
 - [Code blocks](#code-blocks)
 - [Blockquotes](#blockquotes)
 - [Alert boxes](#alert-boxes)
-- [Images](#images)
+- [Illustrations](#illustrations)
 - [Tabs](#tabs)
 
 Nested items should always align with the first character of the list
@@ -1121,21 +1121,71 @@ To describe multiple fields, use unordered list items:
    - **Branch name** must be a regular expression.
    - **User** must be a user with at least the **Maintainer** role.
 
-## Images
+## Illustrations
 
-Images, including screenshots, can help a reader better understand a concept.
-However, they should be used sparingly because:
+Use illustrations only to supplement text, not replace it.
 
-- They tend to become out-of-date.
-- They are difficult and expensive to localize.
-- They cannot be read by screen readers.
+Illustrations can help the reader understand:
 
-When needed, use images to help the reader understand:
-
+- A concept.
 - Where they are in a complicated process.
 - How they should interact with the application.
 
-### Capture the image
+Use illustrations sparingly because:
+
+- They tend to become out-of-date.
+- They are difficult and expensive to localize.
+- Their content cannot be read by screen readers.
+
+Types of illustrations used in GitLab documentation are:
+
+- Diagram. Use a diagram to illustrate a process or the relationship between entities, for example.
+- Screenshot. Use a screenshot when you need to show a portion of the GitLab user interface.
+
+Use a diagram instead of a screenshot when possible because:
+
+- A diagram's file size is usually much smaller than that of a screenshot.
+- A screenshot often needs to be compressed, which generally reduces the image's quality.
+- A diagram in SVG format can be displayed at any size without affecting the image's quality.
+
+### Diagram
+
+Use a diagram to illustrate a process or the relationship between entities, for example.
+
+Use [Mermaid](https://mermaid.js.org/#/) to create a diagram. This method has several advantages
+over a static image format (screenshot):
+
+- The Mermaid format is easier to maintain because:
+  - Their definition is stored as a code block in the documentation's Markdown source.
+  - The diagram is rendered dynamically at runtime.
+  - Text content that may change over time, such as feature names, can be found using text search
+    tools and edited.
+- The diagram is rendered as an scalable image, better suited to various output devices and sizes.
+
+#### Create a diagram
+
+To create a diagram:
+
+1. Use the [Mermaid Live Editor](https://mermaid.live/) to create the diagram.
+1. Copy the content of the **Code** pane into a `mermaid` code block in the Markdown file. For more
+   details, see [Mermaid](../../../user/markdown.md#mermaid).
+1. To improve accessibility of diagrams, add a title and description. Add these lines on the next
+   line after declaring the type of diagram, like `flowchart` or `sequenceDiagram`:
+
+   ```yaml
+   accTitle: your diagram title here
+   accDescr: describe what your diagram does in a single sentence, with no line breaks.
+   ``` 
+
+The Mermaid diagram syntax can be difficult to learn. To make this a little easier, see the Mermaid
+[Beginner's Guide](https://mermaid.js.org/intro/getting-started.html) and the examples on the
+Mermaid site.
+
+### Screenshot
+
+Use a screenshot when you need to show a portion of the GitLab user interface.
+
+#### Capture the screenshot
 
 When you take screenshots:
 
@@ -1155,7 +1205,7 @@ When you take screenshots:
   a documentation page for a consistent reading experience. Ensure your navigation theme
   is **Indigo** and the syntax highlighting theme is **Light**. These are the default preferences.
 
-### Add callouts
+#### Add callouts
 
 If you need to emphasize an area in a screenshot, use an arrow.
 
@@ -1166,7 +1216,7 @@ If you need to emphasize an area in a screenshot, use an arrow.
 
 ![callout example](img/callouts.png)
 
-### Save the image
+#### Save the image
 
 - Resize any wide or tall screenshots if needed, but make sure the screenshot is
   still clear after being resized and compressed.
@@ -1184,23 +1234,9 @@ If you need to emphasize an area in a screenshot, use an arrow.
   the `.md` document that you're working on is located.
 - Consider using PNG images instead of JPEG.
 - Compress GIFs with <https://ezgif.com/optimize> or similar tool.
-- Images should be used (only when necessary) to illustrate the description
-  of a process, not to replace it.
 - See also how to link and embed [videos](#videos) to illustrate the documentation.
 
-### Add the image link to content
-
-The Markdown code for including an image in a document is:
-`![Image description which will be the alt tag](img/document_image_title_vX_Y.png)`
-
-The image description is the alt text for the rendered image on the
-documentation site. For accessibility and SEO, use [descriptions](https://webaim.org/techniques/alttext/)
-that:
-
-- Are accurate, succinct, and unique.
-- Don't use **image of** or **graphic of** to describe the image.
-
-### Compress images
+#### Compress images
 
 You should always compress any new images you add to the documentation. One
 known tool is [`pngquant`](https://pngquant.org/), which is cross-platform and
@@ -1239,7 +1275,7 @@ copy of `https://gitlab.com/gitlab-org/gitlab`, run in a terminal:
   bin/pngquant compress doc/user/img
   ```
 
-### Animated images
+#### Animated images
 
 Avoid using animated images (such as animated GIFs). They can be distracting
 and annoying for users.
@@ -1250,7 +1286,18 @@ include a visual representation to help readers understand it, you can:
 - Use a static image (screenshot) and if necessary, add callouts to emphasize an area of the screen.
 - Create a short video of the interaction and link to it.
 
-### Automatic screenshot generator
+#### Add the image link to content
+
+The Markdown code for including an image in a document is:
+`![Image description, used for alt tag](img/document_image_title_vX_Y.png)`
+
+The image description is the alt text for the rendered image on the
+documentation site. For accessibility and SEO, use [descriptions](https://webaim.org/techniques/alttext/)
+that are accurate, succinct, and unique.
+
+Don't use **image of** or **graphic of** to describe the image.
+
+#### Automatic screenshot generator
 
 You can use an automatic screenshot generator to take and compress screenshots.
 
@@ -1262,7 +1309,7 @@ You can use an automatic screenshot generator to take and compress screenshots.
 1. Identify the location of the screenshots, based on the `gitlab/doc` location defined by the `it` parameter in your script.
 1. Commit the newly created screenshots.
 
-#### Extending the tool
+##### Extending the tool
 
 To add an additional screenshot generator:
 
@@ -1289,7 +1336,7 @@ To add an additional screenshot generator:
 You can take a screenshot of a page with `visit <path>`.
 To avoid blank screenshots, use `expect` to wait for the content to load.
 
-##### Single-element screenshots
+###### Single-element screenshots
 
 You can take a screenshot of a single element.
 

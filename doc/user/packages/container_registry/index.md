@@ -10,8 +10,6 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - Searching by image repository name was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/31322) in GitLab 13.0.
-
 You can use the integrated container registry to store container images for each GitLab project.
 
 To enable the container registry for your GitLab instance, see the [administrator documentation](../../../administration/packages/container_registry.md).

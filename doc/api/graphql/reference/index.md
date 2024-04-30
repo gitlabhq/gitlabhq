@@ -34414,6 +34414,7 @@ Name of the feature that the callout is for.
 | <a id="usercalloutfeaturenameenumci_deprecation_warning_for_types_keyword"></a>`CI_DEPRECATION_WARNING_FOR_TYPES_KEYWORD` | Callout feature name for ci_deprecation_warning_for_types_keyword. |
 | <a id="usercalloutfeaturenameenumcloud_licensing_subscription_activation_banner"></a>`CLOUD_LICENSING_SUBSCRIPTION_ACTIVATION_BANNER` | Callout feature name for cloud_licensing_subscription_activation_banner. |
 | <a id="usercalloutfeaturenameenumcluster_security_warning"></a>`CLUSTER_SECURITY_WARNING` | Callout feature name for cluster_security_warning. |
+| <a id="usercalloutfeaturenameenumdeployment_approvals_empty_state"></a>`DEPLOYMENT_APPROVALS_EMPTY_STATE` | Callout feature name for deployment_approvals_empty_state. |
 | <a id="usercalloutfeaturenameenumdeployment_details_feedback"></a>`DEPLOYMENT_DETAILS_FEEDBACK` | Callout feature name for deployment_details_feedback. |
 | <a id="usercalloutfeaturenameenumduo_chat_callout"></a>`DUO_CHAT_CALLOUT` | Callout feature name for duo_chat_callout. |
 | <a id="usercalloutfeaturenameenumduo_chat_ga_alert"></a>`DUO_CHAT_GA_ALERT` | Callout feature name for duo_chat_ga_alert. |

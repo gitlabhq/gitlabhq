@@ -24,7 +24,7 @@ export default {
   i18n: {
     toggleLabelTitle: s__('CICD|Limit access %{italicStart}to%{italicEnd} this project'),
     toggleHelpText: s__(
-      `CICD|Prevent access to this project from other project CI/CD job tokens, unless the other project is added to the allowlist. It is a security risk to disable this feature, because unauthorized projects might attempt to retrieve an active token and access the API. %{linkStart}Learn more.%{linkEnd}`,
+      `CICD|Prevent access to this project from other project CI/CD job tokens, unless the other project is added to the allowlist. It is a security risk to disable this feature, because unauthorized projects might attempt to retrieve an active token and access the API. %{linkStart}Learn more%{linkEnd}.`,
     ),
     cardHeaderTitle: s__(
       'CICD|Allow CI job tokens from the following projects to access this project',
@@ -218,9 +218,9 @@ export default {
         <template #help>
           <gl-sprintf :message="$options.i18n.toggleHelpText">
             <template #link="{ content }">
-              <gl-link :href="ciJobTokenHelpPage" class="inline-link" target="_blank">
-                {{ content }}
-              </gl-link>
+              <gl-link :href="ciJobTokenHelpPage" class="inline-link" target="_blank">{{
+                content
+              }}</gl-link>
             </template>
           </gl-sprintf>
         </template>

@@ -88,7 +88,8 @@ module Users
       duo_pro_trial_alert: 86, # EE-only
       deployment_details_feedback: 87,
       duo_chat_ga_alert: 88, # EE-only
-      board_add_new_column_trigger_popover: 89
+      board_add_new_column_trigger_popover: 89,
+      deployment_approvals_empty_state: 90
     }
 
     validates :feature_name,

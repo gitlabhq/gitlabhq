@@ -957,6 +957,10 @@ response to events happening in the registry.
 Read more about the container registry notifications configuration options in the
 [Docker Registry notifications documentation](https://distribution.github.io/distribution/about/notifications/).
 
+WARNING:
+Support for the `threshold` parameter was [deprecated](https://gitlab.com/gitlab-org/container-registry/-/issues/1243)
+in GitLab 17.0, and is planned for removal in 18.0. Use `maxretries` instead.
+
 You can configure multiple endpoints for the container registry.
 
 ::Tabs
@@ -973,7 +977,8 @@ To configure a notification endpoint for a Linux package installation:
        'name' => 'test_endpoint',
        'url' => 'https://gitlab.example.com/notify',
        'timeout' => '500ms',
-       'threshold' => 5,
+       'threshold' => 5, # DEPRECATED: use `maxretries` instead.
+       'maxretries' => 5,
        'backoff' => '1s',
        'headers' => {
          "Authorization" => ["AUTHORIZATION_EXAMPLE_TOKEN"]
@@ -999,7 +1004,8 @@ notifications:
       url: https://my.listener.com/event
       headers: <http.Header>
       timeout: 500
-      threshold: 5
+      threshold: 5 # DEPRECATED: use `maxretries` instead.
+      maxretries: 5
       backoff: 1000
 ```
 

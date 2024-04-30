@@ -1,10 +1,20 @@
-%ul.content-list
-  %li
-    .avatar-cell
-      = user_avatar(user: user, size: 40, user_name: user.name)
-    .user-info
-      = link_to user_path(user) do
-        .item-title
-          = simple_search_highlight_and_truncate(user.name, @search_term)
-          = user_status(user)
-        .cgray= simple_search_highlight_and_truncate(user.to_reference, @search_term)
+%tr
+  %td{ data: { label: _('User') } }
+    %div
+      %div{ class: 'gl-display-inline-flex!' }
+        = render Pajamas::AvatarComponent.new(user, size: 32, alt: '')
+        .gl-ml-3{ class: 'gl-text-left!' }
+          = link_to user_path(user), class: 'gl-text-body' do
+            .gl-display-inline-block.gl-font-weight-bold= simple_search_highlight_and_truncate(user.name, @search_term)
+            = user_status(user)
+            %div{ class: 'gl-text-left!' }= simple_search_highlight_and_truncate(user.to_reference, @search_term)
+  %td.gl-text-right{ data: { label: _('Activity') } }
+    %div
+      %span.gl-font-weight-bold= _('User created:')
+      = l(user.created_at.to_date, format: :long)
+    %div
+      %span.gl-font-weight-bold= _('Last activity:')
+      - if user.last_activity_on
+        = l(user.last_activity_on.to_date, format: :long)
+      - else
+        = _('Never')

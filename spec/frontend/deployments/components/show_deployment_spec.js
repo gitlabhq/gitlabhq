@@ -10,6 +10,8 @@ import ShowDeployment from '~/deployments/components/show_deployment.vue';
 import DeploymentHeader from '~/deployments/components/deployment_header.vue';
 import DeploymentDeployBlock from '~/deployments/components/deployment_deploy_block.vue';
 import DetailsFeedback from '~/deployments/components/details_feedback.vue';
+import DeploymentAside from '~/deployments/components/deployment_aside.vue';
+import ApprovalsEmptyState from 'ee_else_ce/deployments/components/approvals_empty_state.vue';
 import deploymentQuery from '~/deployments/graphql/queries/deployment.query.graphql';
 import environmentQuery from '~/deployments/graphql/queries/environment.query.graphql';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -24,6 +26,7 @@ const PROJECT_PATH = 'group/project';
 const ENVIRONMENT_NAME = mockEnvironmentFixture.data.project.environment.name;
 const DEPLOYMENT_IID = mockDeploymentFixture.data.project.deployment.iid;
 const GRAPHQL_ETAG_KEY = 'project/environments';
+const PROTECTED_ENVIRONMENTS_SETTINGS_PATH = '/settings/ci_cd#js-protected-environments-settings';
 
 describe('~/deployments/components/show_deployment.vue', () => {
   let wrapper;
@@ -48,6 +51,8 @@ describe('~/deployments/components/show_deployment.vue', () => {
         environmentName: ENVIRONMENT_NAME,
         deploymentIid: DEPLOYMENT_IID,
         graphqlEtagKey: GRAPHQL_ETAG_KEY,
+        protectedEnvironmentsAvailable: true,
+        protectedEnvironmentsSettingsPath: PROTECTED_ENVIRONMENTS_SETTINGS_PATH,
       },
       stubs: {
         GlSprintf,
@@ -58,6 +63,7 @@ describe('~/deployments/components/show_deployment.vue', () => {
 
   const findHeader = () => wrapper.findComponent(DeploymentHeader);
   const findAlert = () => wrapper.findComponent(GlAlert);
+  const findApprovalsEmptyState = () => wrapper.findComponent(ApprovalsEmptyState);
 
   describe('errors', () => {
     it('shows an error message when the deployment query fails', async () => {
@@ -84,6 +90,24 @@ describe('~/deployments/components/show_deployment.vue', () => {
       await createComponent();
 
       expect(captureException).toHaveBeenCalledWith(error);
+    });
+  });
+
+  describe('loading', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
+    it('shows the header component in a loading state', () => {
+      expect(findHeader().props('loading')).toBe(true);
+    });
+
+    it('shows the aside component in a loading state', () => {
+      expect(wrapper.findComponent(DeploymentAside).props('loading')).toBe(true);
+    });
+
+    it("doesn't show the approvals empty state", () => {
+      expect(findApprovalsEmptyState().exists()).toBe(false);
     });
   });
 
@@ -115,6 +139,10 @@ describe('~/deployments/components/show_deployment.vue', () => {
       expect(wrapper.findComponent(DeploymentDeployBlock).props()).toEqual({
         deployment: mockDeploymentFixture.data.project.deployment,
       });
+    });
+
+    it('shows the approvals empty state', () => {
+      expect(findApprovalsEmptyState().exists()).toBe(true);
     });
   });
 

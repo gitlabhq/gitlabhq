@@ -21,7 +21,7 @@ module Members
 
       result
     rescue ArgumentError, ImportProjectTeamForbiddenError, SeatLimitExceededError => e
-      ServiceResponse.error(message: e.message, reason: :unprocessable_entity)
+      ServiceResponse.error(message: e.message, reason: e.class.name.demodulize.underscore.to_sym)
     end
 
     private
@@ -34,7 +34,7 @@ module Members
       if members.is_a?(Array)
         members.each { |member| check_member_validity(member) }
       else
-        @result = ServiceResponse.error(message: 'Import failed', reason: :unprocessable_entity)
+        @result = ServiceResponse.error(message: 'Import failed', reason: :import_failed_error)
       end
     end
 

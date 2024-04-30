@@ -110,7 +110,12 @@ const NO_COLLAPSE_IMPORT_ERRORS = {
   total_members_count: '2',
   status: 'error',
 };
+const SEAT_OVERAGE_IMPORT_ERRORS = {
+  message: 'There are not enough available seats to invite this many users.',
+  reason: 'seat_limit_exceeded_error',
+};
 export const importProjectMembersApiResponse = {
   EXPANDED_IMPORT_ERRORS,
   NO_COLLAPSE_IMPORT_ERRORS,
+  SEAT_OVERAGE_IMPORT_ERRORS,
 };

@@ -204,7 +204,6 @@ possible selectors include:
 - A semantic attribute like `name` (also verifies that `name` was setup properly)
 - A `data-testid` attribute ([recommended by maintainers of `@vue/test-utils`](https://github.com/vuejs/vue-test-utils/issues/1498#issuecomment-610133465))
   optionally combined with [`shallowMountExtended` or `mountExtended`](#shallowmountextended-and-mountextended)
-- a Vue `ref` (if using `@vue/test-utils`)
 
 ```javascript
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper'
@@ -223,9 +222,9 @@ it('exists', () => {
   wrapper.find('input[name=foo]');
   wrapper.find('[data-testid="my-foo-id"]');
   wrapper.findByTestId('my-foo-id'); // with shallowMountExtended or mountExtended – check below
-  wrapper.find({ ref: 'foo'});
 
   // Bad
+  wrapper.find({ ref: 'foo'});
   wrapper.find('.js-foo');
   wrapper.find('.btn-primary');
 });
@@ -234,6 +233,7 @@ it('exists', () => {
 You should use `kebab-case` for `data-testid` attribute.
 
 It is not recommended that you add `.js-*` classes just for testing purposes. Only do this if there are no other feasible options available.
+Avoid using Vue template refs to query DOM elements in tests because they're an implementation detail of the component, not a public API.
 
 ### Querying for child components
 

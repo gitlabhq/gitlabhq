@@ -9829,7 +9829,7 @@ msgstr ""
 msgid "CICD|Prevent CI/CD job tokens from this project from being used to access other projects unless the other project is added to the allowlist. It is a security risk to disable this feature, because unauthorized projects might attempt to retrieve an active token and access the API. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
-msgid "CICD|Prevent access to this project from other project CI/CD job tokens, unless the other project is added to the allowlist. It is a security risk to disable this feature, because unauthorized projects might attempt to retrieve an active token and access the API. %{linkStart}Learn more.%{linkEnd}"
+msgid "CICD|Prevent access to this project from other project CI/CD job tokens, unless the other project is added to the allowlist. It is a security risk to disable this feature, because unauthorized projects might attempt to retrieve an active token and access the API. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
 msgid "CICD|The %{boldStart}Limit access %{boldEnd}%{italicAndBoldStart}from%{italicAndBoldEnd}%{boldStart} this project%{boldEnd} setting is deprecated and will be removed in the 18.0 milestone. Use the %{boldStart}Limit access %{boldEnd}%{italicAndBoldStart}to%{italicAndBoldEnd}%{boldStart} this project%{boldEnd} setting and allowlist instead. %{linkStart}How do I do this?%{linkEnd}"
@@ -17887,6 +17887,9 @@ msgstr ""
 msgid "Deployments|No deployment history"
 msgstr ""
 
+msgid "Deployment|A colleague"
+msgstr ""
+
 msgid "Deployment|Add approval comment"
 msgstr ""
 
@@ -17920,6 +17923,9 @@ msgstr ""
 msgid "Deployment|Deployment ID"
 msgstr ""
 
+msgid "Deployment|Deployment approvals require a Premium or Ultimate subscription"
+msgstr ""
+
 msgid "Deployment|Failed"
 msgstr ""
 
@@ -17944,6 +17950,9 @@ msgstr ""
 msgid "Deployment|Flux sync status is unknown"
 msgstr ""
 
+msgid "Deployment|Improve your continuous delivery practices with deployment approvals. Configure rules for required approvals, control which users can deploy to your environments, and collaborate throughout the delivery process."
+msgstr ""
+
 msgid "Deployment|Job"
 msgstr ""
 
@@ -17960,6 +17969,9 @@ msgid "Deployment|Open URL"
 msgstr ""
 
 msgid "Deployment|Ready to be deployed."
+msgstr ""
+
+msgid "Deployment|Ready to use deployment approvals?"
 msgstr ""
 
 msgid "Deployment|Reject"
@@ -17980,6 +17992,15 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Deployment|Running"
+msgstr ""
+
+msgid "Deployment|Set up Deployment Approvals"
+msgstr ""
+
+msgid "Deployment|Set up deployment approvals to get more our of your deployments"
+msgstr ""
+
+msgid "Deployment|Set up deployment approvals to get started"
 msgstr ""
 
 msgid "Deployment|Skipped"
@@ -18015,6 +18036,9 @@ msgstr ""
 msgid "Deployment|Unknown"
 msgstr ""
 
+msgid "Deployment|Upgrade to get more our of your deployments"
+msgstr ""
+
 msgid "Deployment|Waiting"
 msgstr ""
 
@@ -18025,6 +18049,9 @@ msgid "Deployment|We know this page is a bit empty at the moment, but we're work
 msgstr ""
 
 msgid "Deployment|What would you like to see here?"
+msgstr ""
+
+msgid "Deployment|You"
 msgstr ""
 
 msgid "Deprecated API rate limits"
@@ -23235,6 +23262,9 @@ msgstr ""
 msgid "GitLab Pages has moved"
 msgstr ""
 
+msgid "GitLab Premium"
+msgstr ""
+
 msgid "GitLab Shell"
 msgstr ""
 
@@ -25915,6 +25945,9 @@ msgid "How the job limiter handles jobs exceeding the thresholds specified below
 msgstr ""
 
 msgid "How to track time"
+msgstr ""
+
+msgid "HttpDestinationValidator validates only http external audit event destinations."
 msgstr ""
 
 msgid "I am sorry, I am unable to find what you are looking for."
@@ -29954,6 +29987,9 @@ msgid "Last accessed on"
 msgstr ""
 
 msgid "Last activity"
+msgstr ""
+
+msgid "Last activity:"
 msgstr ""
 
 msgid "Last attempted number:"
@@ -55943,6 +55979,9 @@ msgstr ""
 msgid "User created at"
 msgstr ""
 
+msgid "User created:"
+msgstr ""
+
 msgid "User deleted own account on %{timestamp}"
 msgstr ""
 
@@ -62253,6 +62292,9 @@ msgstr ""
 msgid "should be greater than or equal to %{access} inherited membership from group %{group_name}"
 msgstr ""
 
+msgid "should have length between 16 to 24 characters."
+msgstr ""
+
 msgid "show %{count} more"
 msgstr ""
 
@@ -62407,6 +62449,9 @@ msgid "updated %{time_ago}"
 msgstr ""
 
 msgid "uploads"
+msgstr ""
+
+msgid "url is already taken."
 msgstr ""
 
 msgid "user"

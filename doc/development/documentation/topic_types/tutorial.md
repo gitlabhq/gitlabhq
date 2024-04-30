@@ -94,7 +94,7 @@ do not use `Tutorial` in the title.
 ## Screenshots
 
 You can include screenshots in a tutorial to illustrate important steps in the process.
-In the core product documentation, you should [use screenshots sparingly](../styleguide/index.md#images).
+In the core product documentation, you should [use illustrations sparingly](../styleguide/index.md#illustrations).
 However, in tutorials, screenshots can help users understand where they are in a complex process.
 
 Try to balance the number of screenshots in the tutorial so they don't disrupt

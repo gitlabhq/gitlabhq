@@ -52,7 +52,7 @@ When working with directories and files:
 1. When creating or renaming a file or directory and it has more than one word
    in its name, use underscores (`_`) instead of spaces or dashes. For example,
    proper naming would be `import_project/import_from_github.md`. This applies
-   to both [image files](../styleguide/index.md#images) and Markdown files.
+   to both [image files](../styleguide/index.md#illustrations) and Markdown files.
 1. Do not upload video files to the product repositories.
    [Link or embed videos](../styleguide/index.md#videos) instead.
 1. In the `doc/user/` directory:

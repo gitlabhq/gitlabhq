@@ -270,7 +270,7 @@
 {"name":"googleauth","version":"1.8.1","platform":"ruby","checksum":"814adadaaa1221dce72a67131e3ecbd6d23491a161ec84fb15fd353b87d8c9e7"},
 {"name":"gpgme","version":"2.0.23","platform":"ruby","checksum":"c87bbafdb8719da7c58ebcac08297aa1fb227022ac6cd2972829ba68adc91c04"},
 {"name":"grape","version":"2.0.0","platform":"ruby","checksum":"3aeff94c17e84ccead4ff98833df691e7da0c108878cc128ca31f80c1047494a"},
-{"name":"grape-entity","version":"0.10.2","platform":"ruby","checksum":"9eb584548135419d1c8ada7d21f7c174a7644e56a8b8e5bfc65d1a7a3421b571"},
+{"name":"grape-entity","version":"1.0.1","platform":"ruby","checksum":"e00f9e94e407aff77aa2945d741f544d07e48501927942988799913151d02634"},
 {"name":"grape-path-helpers","version":"2.0.1","platform":"ruby","checksum":"ad5216e52c6e796738a9118087352ab4c962900dbad1d8f8c0f96e093c6702d7"},
 {"name":"grape-swagger","version":"2.0.2","platform":"ruby","checksum":"a7139a56ba36fab2e8465f10d668a8c73c30cf44ebe8af960f5a4e3beb200805"},
 {"name":"grape-swagger-entity","version":"0.5.1","platform":"ruby","checksum":"f51e372d00ac96cf90d948f87b3f4eb287ab053976ca57ad503d442ad8605523"},

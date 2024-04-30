@@ -59,18 +59,30 @@ module API
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
+      # This is a separate method so that EE can extend its behaviour, without
+      # having to modify this code directly.
+      #
       def create_group
-        # This is a separate method so that EE can extend its behaviour, without
-        # having to modify this code directly.
-        ::Groups::CreateService.new(current_user, declared_params(include_missing: false)).execute
+        ::Groups::CreateService
+          .new(current_user, translate_params_for_compatibility)
+          .execute
       end
 
+      # This is a separate method so that EE can extend its behaviour, without
+      # having to modify this code directly.
+      #
       def update_group(group)
-        # This is a separate method so that EE can extend its behaviour, without
-        # having to modify this code directly.
         ::Groups::UpdateService
-          .new(group, current_user, declared_params(include_missing: false))
+          .new(group, current_user, translate_params_for_compatibility)
           .execute
+      end
+
+      def translate_params_for_compatibility
+        temp_params = declared_params(include_missing: false)
+
+        temp_params[:emails_enabled] = !temp_params.delete(:emails_disabled) if temp_params.key?(:emails_disabled)
+
+        temp_params
       end
 
       def find_group_projects(params, finder_options)

@@ -23,6 +23,8 @@ export default {
     DeploymentApprovals: () =>
       import('ee_component/deployments/components/deployment_approvals.vue'),
     DeploymentTimeline: () => import('ee_component/deployments/components/deployment_timeline.vue'),
+    ApprovalsEmptyState: () =>
+      import('ee_else_ce/deployments/components/approvals_empty_state.vue'),
   },
   inject: ['projectPath', 'deploymentIid', 'environmentName', 'graphqlEtagKey'],
   apollo: {
@@ -70,6 +72,9 @@ export default {
     isManual() {
       return this.deployment.job?.manualJob;
     },
+    isLoading() {
+      return this.$apollo.queries.deployment.loading;
+    },
   },
   mounted() {
     toggleQueryPollingByVisibility(
@@ -99,7 +104,7 @@ export default {
           v-else
           :deployment="deployment"
           :environment="environment"
-          :loading="$apollo.queries.deployment.loading"
+          :loading="isLoading"
         />
         <details-feedback class="gl-mt-6 gl-w-90p" />
         <deployment-approvals
@@ -119,10 +124,15 @@ export default {
           :approval-summary="deployment.approvalSummary"
           class="gl-w-90p"
         />
+        <approvals-empty-state
+          v-if="!isLoading"
+          :approval-summary="deployment.approvalSummary"
+          class="gl-w-90p"
+        />
       </div>
       <deployment-aside
         v-if="!hasError"
-        :loading="$apollo.queries.deployment.loading"
+        :loading="isLoading"
         :deployment="deployment"
         :environment="environment"
         class="gl-w-20p"

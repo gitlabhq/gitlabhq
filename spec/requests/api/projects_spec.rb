@@ -3945,6 +3945,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
 
       expect(response).to have_gitlab_http_status(:unprocessable_entity)
       expect(json_response['message']).to eq('Import failed')
+      expect(json_response['reason']).to eq('import_failed_error')
     end
 
     context 'when importing of members did not work for some or all members' do
@@ -3960,6 +3961,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         error_message = { project_bot.username => 'User project bots cannot be added to other groups / projects' }
         expect(json_response['message']).to eq(error_message)
         expect(json_response['total_members_count']).to eq(3)
+        expect(json_response['status']).to eq('error')
       end
     end
   end

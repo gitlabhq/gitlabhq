@@ -2,17 +2,6 @@
 # Cop supports --autocorrect.
 Layout/SpaceInsideParens:
   Exclude:
-    - 'ee/app/models/ee/dependency_proxy/blob.rb'
-    - 'ee/app/models/ee/dependency_proxy/manifest.rb'
-    - 'ee/app/services/gitlab_subscriptions/notify_seats_exceeded_batch_service.rb'
-    - 'ee/lib/ee/gitlab/auth/ldap/access.rb'
-    - 'ee/lib/gitlab/auth/smartcard/session.rb'
-    - 'ee/lib/system_check/geo/current_node_check.rb'
-    - 'ee/spec/controllers/projects/mirrors_controller_spec.rb'
-    - 'ee/spec/features/groups/saml_enforcement_spec.rb'
-    - 'ee/spec/finders/ee/alert_management/http_integrations_finder_spec.rb'
-    - 'ee/spec/finders/epics_finder_spec.rb'
-    - 'ee/spec/finders/security/pipeline_vulnerabilities_finder_spec.rb'
     - 'ee/spec/finders/security/vulnerability_feedbacks_finder_spec.rb'
     - 'ee/spec/frontend/fixtures/analytics/devops_reports/devops_adoption/enabled_namespaces.rb'
     - 'ee/spec/frontend/fixtures/epic.rb'
