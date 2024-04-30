@@ -217,11 +217,18 @@ On multinode deployments, make sure that the issuer configured on the Sidekiq no
 
 ### Manually trigger a container registry sync event
 
-To help with troubleshooting, you can manually trigger the container registry replication process by running the following commands on the secondary's Rails console:
+To help with troubleshooting, you can manually trigger the container registry replication process:
+
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Geo > Sites**.
+1. In **Replication Details** for a **Secondary Site**, select **Container Repositories**.
+1. Select **Resync** for one row, or **Resync all**.
+
+You can also manually trigger a resync by running the following commands on the secondary's Rails console:
 
 ```ruby
 registry = Geo::ContainerRepositoryRegistry.first # Choose a Geo registry entry
-registry.replicator.sync_repository # Resync the container repository
+registry.replicator.resync # Resync the container repository
 pp registry.reload # Look at replication state fields
 
 #<Geo::ContainerRepositoryRegistry:0x00007f54c2a36060

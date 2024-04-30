@@ -17,10 +17,10 @@ class Projects::MirrorsController < Projects::ApplicationController
   end
 
   def update
-    result = ::Projects::UpdateService.new(project, current_user, mirror_params).execute
+    result = ::Projects::UpdateService.new(project, current_user, safe_mirror_params).execute
 
     if result[:status] == :success
-      flash[:notice] = _('Mirroring settings were successfully updated.')
+      flash[:notice] = notice_message
     else
       flash[:alert] = project.errors.full_messages.join(', ').html_safe
     end
@@ -63,6 +63,14 @@ class Projects::MirrorsController < Projects::ApplicationController
   end
 
   private
+
+  def safe_mirror_params
+    mirror_params
+  end
+
+  def notice_message
+    _('Mirroring settings were successfully updated.')
+  end
 
   def remote_mirror
     @remote_mirror = project.remote_mirrors.first_or_initialize

@@ -33,14 +33,22 @@ To connect a feature in an existing backend service to Cloud Connector:
 
 #### GitLab Rails
 
-1. Call `CloudConnector::AccessService.new.access_token(scopes: [...])` with the list of scopes your feature requires and include
-this token in the `Authorization` HTTP header field.
-Note that this can return `nil` if there is no valid token available. If there is no token, the call to Cloud Connector will
-not pass authorization, so it is recommended to return early.
+1. Call `CloudConnector::AvailableServices.find_by_name(:feature_name).access_token(user_or_namespace)`
+and include this token in the `Authorization` HTTP header field.
+
+On GitLab.com, it will self-issue a token with scopes that depend on the provided resource:
+
+- For a user: scopes will be based on the user's seat assignment
+- For a namespace: scopes will be based on purchased add-ons for this namespace
+- If a feature is a `free_access?` (no addon purchase is required): the token will include all available scopes for that feature
+
+On self-managed, it will always return `::CloudConnector::ServiceAccessToken` instance token.
+
 The backend service must validate this token and any scopes it carries when receiving the request.
 If you need to embed additional claims in the token specific to your use case, you can pass these
 in the `extra_claims` argument. **Scopes and other claims passed here will only be included in self-issued tokens on GitLab.com.**
 Refer to [CustomersDot](#customersdot) to see how custom claims are handled for self-managed instances.
+
 1. Ensure your request sends the required headers to the [backend service](#backend-service).
 
    These headers are:
@@ -53,26 +61,27 @@ Refer to [CustomersDot](#customersdot) to see how custom claims are handled for 
    Some of these headers can be injected by merging the result of the `API::Helpers::CloudConnector#cloud_connector_headers`
    method to your payload.
 
-The following example is for a request that includes the `new_feature_scope` scope.
+The following example is for a request to the feature called `:new_feature`.
 Here we assume your backend service is called `foo` and is already reachable at `https://cloud.gitlab.com/foo`.
 We also assume that the backend service exposes the feature using a `/new_feature_endpoint` endpoint.
 This allows clients to access the feature at `https://cloud.gitlab.com/foo/new_feature_endpoint`.
 
-Here, the parameters you pass to `access_token` have the following meaning:
-
-- `audience`: The name of the backend service. The token is bound to this backend
-  using the JWT `aud` claim.
-- `scopes`: The list of access scopes carried in this token. They should map to access points
-  in your backend, which could be HTTP endpoints or RPC calls.
-
 ```ruby
 include API::Helpers::CloudConnector
 
-token = ::CloudConnector::AccessService.new.access_token(
-  audience: 'foo',
-  scopes: [:new_feature_scope]
-)
-return unauthorized! if token.nil?
+new_feature = ::CloudConnector::AvailableServices.find_by_name(:new_feature)
+
+# (Optional) Handle the free access case separately, if needed
+if new_feature.free_access?
+  # ...
+  return
+end
+
+# Check if the feature is available for the given user based on seat assignment, add-on purchases
+return unauthorized! unless new_feature.allowed_for?(current_user)
+
+# Obtain a token
+token = new_feature.access_token(current_user)
 
 Gitlab::HTTP.post(
   "https://cloud.gitlab.com/foo/new_feature_endpoint",
@@ -83,7 +92,7 @@ Gitlab::HTTP.post(
 ```
 
 NOTE:
-Any arguments you pass to `access_token` that configure the token returned only take hold for
+Any arguments you pass to `access_token`  that configure the token returned (`user` or `namespace`, `extra_claims`) only take hold for
 tokens issued on GitLab.com. For self-managed GitLab instances the token is read as-is from
 the database and never modified.
 

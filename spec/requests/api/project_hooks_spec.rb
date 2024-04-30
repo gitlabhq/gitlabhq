@@ -67,11 +67,36 @@ RSpec.describe API::ProjectHooks, 'ProjectHooks', feature_category: :webhooks do
       { push_events: true, confidential_note_events: nil }
     end
 
-    context "when trigger project webhook test", :aggregate_failures do
+    context "when trigger project webhook test", :aggregate_failures, :clean_gitlab_redis_rate_limiting do
       using RSpec::Parameterized::TableSyntax
 
       before do
         stub_full_request(hook.url, method: :post).to_return(status: 200)
+      end
+
+      specify do
+        expect(post(api("#{hook_uri}/test/push_events", user), params: {}))
+          .to have_request_urgency(:low)
+      end
+
+      it_behaves_like 'rate limited endpoint', rate_limit_key: :web_hook_test_api_endpoint do
+        let(:current_user) { user }
+
+        def request
+          post api("#{hook_uri}/test/push_events", user), params: {}
+        end
+
+        context 'when ops flag is disabled' do
+          before do
+            stub_feature_flags(web_hook_test_api_endpoint_rate_limit: false)
+          end
+
+          it 'does not block the request' do
+            request
+
+            expect(response).to have_gitlab_http_status(:created)
+          end
+        end
       end
 
       context 'when testing is not available for trigger' do

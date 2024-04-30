@@ -342,3 +342,5 @@ export const EPIC_COLORS = [
 ];
 
 export const DEFAULT_EPIC_COLORS = '#1068bf';
+
+export const CREATE_NEW_WORK_ITEM_MODAL = 'create_new_work_item_modal';

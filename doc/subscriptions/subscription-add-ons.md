@@ -172,3 +172,18 @@ Prerequisites:
 1. Select **Submit**.
 
 The trial automatically syncs to your instance within 24 hours. After the trial has synced, [assign seats](#assign-gitlab-duo-pro-seats) to users that you want to access GitLab Duo Pro.
+
+## Automatic seat removal for seat overages
+
+If your quantity of purchased GitLab Duo Pro seats is reduced, seat assignments are automatically removed to match the seat quantity available in the subscription.
+
+For example:
+
+- You have a 50 seat GitLab Duo Pro subscription with all seats assigned.
+- You renew the subscription for 30 seats. The 20 users over subscription are automatically removed from GitLab Duo Pro seat assignment.
+- If only 20 users were assigned a GitLab Duo Pro seat before renewal, then no removal of seats would occur.
+
+Seats are selected for removal based on the following criteria, in this order:
+
+1. Users who have not yet used Code Suggestions, ordered by most recently assigned.
+1. Users who have used Code Suggestions, ordered by least recent usage of Code Suggestions.

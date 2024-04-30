@@ -63,15 +63,22 @@ To enable Beta and Experimental AI-powered features, use the [Experiment and Bet
 
 To enable Beta and Experimental AI-powered features for GitLab versions where GitLab Duo Chat is not yet generally available, see the [GitLab Duo Chat documentation](gitlab_duo_chat.md#for-self-managed).
 
-### Enable outbound connections to enable GitLab Duo features on self-managed instances
+### Network Requirements to enable GitLab Duo features for self-managed GitLab 
+
+#### Enable outbound connections from GitLab instances
 
 - Your firewalls and HTTP/S proxy servers must allow outbound connections
-  to `cloud.gitlab.com` and `customers.gitlab.com` on port `443` both with `https://` and `wws://`.
-- Both `HTTP2` and the `'upgrade'` header must be allowed, because GitLab Duo
-  uses both REST and WebSockets.
+  to `cloud.gitlab.com` and `customers.gitlab.com` on port `443` both with `https://`.
 - To use an HTTP/S proxy, both `gitLab_workhorse` and `gitLab_rails` must have the necessary
   [web proxy environment variables](https://docs.gitlab.com/omnibus/settings/environment-variables.html) set.
-- Check for restrictions on WebSocket (`wss://`) traffic to `wss://gitlab.com/-/cable` and other `.com` domains.
+
+#### Enable inbound connections from Clients to GitLab instances
+
+- GitLab instances must allow inbound connections from Duo clients (IDEs, Code Editors, and GitLab Web Frontend) 
+  on port 443 with `https://` and `wss://`.
+- Both `HTTP2` and the `'upgrade'` header must be allowed, because GitLab Duo
+  uses both REST and WebSockets.
+- Check for restrictions on WebSocket (`wss://`) traffic to `wss://gitlab.example.com/-/cable` and other `.com` domains.
   Network policy restrictions on `wss://` traffic can cause issues with some GitLab Duo Chat
   services. Consider policy updates to allow these services.
 

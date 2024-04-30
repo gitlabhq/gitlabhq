@@ -46587,6 +46587,9 @@ msgstr ""
 msgid "SecurityOrchestration|No exceptions"
 msgstr ""
 
+msgid "SecurityOrchestration|No policies in the security policy project will be enforced until the invalid policies are fixed."
+msgstr ""
+
 msgid "SecurityOrchestration|No rules defined - policy will not run."
 msgstr ""
 
@@ -46634,6 +46637,9 @@ msgstr ""
 msgid "SecurityOrchestration|Policies"
 msgstr ""
 
+msgid "SecurityOrchestration|Policies are invalid"
+msgstr ""
+
 msgid "SecurityOrchestration|Policy Type"
 msgstr ""
 
@@ -46646,13 +46652,13 @@ msgstr ""
 msgid "SecurityOrchestration|Policy changes may take some time to be applied."
 msgstr ""
 
-msgid "SecurityOrchestration|Policy contains deprecated syntax"
-msgstr ""
-
 msgid "SecurityOrchestration|Policy definition"
 msgstr ""
 
 msgid "SecurityOrchestration|Policy editor"
+msgstr ""
+
+msgid "SecurityOrchestration|Policy is invalid"
 msgstr ""
 
 msgid "SecurityOrchestration|Policy scope"
@@ -46847,9 +46853,6 @@ msgstr ""
 msgid "SecurityOrchestration|This policy is inherited from the %{linkStart}namespace%{linkEnd} and must be edited there"
 msgstr ""
 
-msgid "SecurityOrchestration|This policy won't work after GitLab 17.0 (May 16, 2024). You must edit the policy and replace the deprecated syntax%{deprecatedProperties}. For details on which syntax has been deprecated, see %{linkStart}Documentation%{linkEnd}."
-msgstr ""
-
 msgid "SecurityOrchestration|This project"
 msgstr ""
 
@@ -46938,6 +46941,9 @@ msgid "SecurityOrchestration|You can't unprotect this branch because its protect
 msgstr ""
 
 msgid "SecurityOrchestration|You don't have any security policies yet"
+msgstr ""
+
+msgid "SecurityOrchestration|You must edit the policy and replace the deprecated syntax%{deprecatedProperties}. For details on it's replacement, see the %{linkStart}policy documentation%{linkEnd}."
 msgstr ""
 
 msgid "SecurityOrchestration|You must select one or more compliance frameworks to which this policy should apply."

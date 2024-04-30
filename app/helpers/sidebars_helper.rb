@@ -113,8 +113,13 @@ module SidebarsHelper
       is_impersonating: impersonating?,
       stop_impersonation_path: admin_impersonation_path,
       shortcut_links: shortcut_links(user: user, project: project),
-      track_visits_path: track_namespace_visits_path
+      track_visits_path: track_namespace_visits_path,
+      work_items: work_items_modal_data(group)
     })
+  end
+
+  def work_items_modal_data(group)
+    { full_path: group.full_path } if group
   end
 
   def super_sidebar_nav_panel(

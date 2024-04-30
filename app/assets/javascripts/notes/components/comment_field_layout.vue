@@ -68,7 +68,7 @@ export default {
     ></div>
     <noteable-warning
       v-if="hasWarning"
-      class="gl-pt-4 gl-pb-5 gl-mb-n3 gl-rounded-lg gl-rounded-bottom-left-none gl-rounded-bottom-right-none"
+      class="gl-pt-4 gl-pb-5 -gl-mb-3 gl-rounded-lg gl-rounded-bottom-left-none gl-rounded-bottom-right-none"
       :is-locked="isLocked"
       :is-confidential="isConfidential"
       :noteable-type="noteableType"
@@ -80,14 +80,14 @@ export default {
       v-if="showAttachmentWarning"
       :class="{
         'gl-py-3': !showEmailParticipantsWarning,
-        'gl-pt-4 gl-pb-3 gl-mt-n3': showEmailParticipantsWarning,
+        'gl-pt-4 gl-pb-3 -gl-mt-3': showEmailParticipantsWarning,
       }"
     />
     <email-participants-warning
       v-if="showEmailParticipantsWarning"
       class="gl-border-t-1 gl-rounded-lg gl-rounded-top-left-none! gl-rounded-top-right-none!"
       :class="{
-        'gl-pt-4 gl-pb-3 gl-mt-n3': !showAttachmentWarning,
+        'gl-pt-4 gl-pb-3 -gl-mt-3': !showAttachmentWarning,
         'gl-py-3 gl-mt-1': showAttachmentWarning,
       }"
       :emails="emailParticipants"

@@ -399,7 +399,7 @@ export default {
         </template>
 
         <template v-if="showBatchCommentsActions">
-          <div class="gl-display-flex gl-flex-wrap gl-mb-n3">
+          <div class="gl-display-flex gl-flex-wrap -gl-mb-3">
             <gl-button
               :disabled="isDisabled"
               category="primary"

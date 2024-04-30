@@ -11,14 +11,15 @@
 - filter_by_done = params[:state] == 'done'
 - open_todo_count = todos_has_filtered_results? && !filter_by_done ? @allowed_todos.count : todos_pending_count
 - done_todo_count = todos_has_filtered_results? && filter_by_done ? @allowed_todos.count : todos_done_count
-- show_header = @allowed_todos.any? || current_user.todos.any?
+- user_have_todos = current_user.todos.any?
+- show_header = @allowed_todos.any? || user_have_todos
 
 - if show_header
   .page-title-holder.d-flex.gl-align-items-center
     %h1.page-title.gl-font-size-h-display= _("To-Do List")
 
 .js-todos-all
-  - if current_user.todos.any?
+  - if user_have_todos
     .top-area
       = gl_tabs_nav({ class: 'gl-flex-grow-1 gl-border-0' }) do
         = gl_tab_link_to todos_filter_path(state: 'pending'), item_active: params[:state].blank? || params[:state] == 'pending', class: "js-todos-pending" do
@@ -92,7 +93,7 @@
       = render Pajamas::EmptyStateComponent.new(svg_path: 'illustrations/empty-todos-all-done-md.svg',
         title: s_("Todos|You're all done!"))
 
-  - elsif current_user.todos.any?
+  - elsif user_have_todos
     - empty_state_image = (!todos_filter_empty? && !todos_has_filtered_results?) ? 'illustrations/empty-todos-all-done-md.svg' : 'illustrations/empty-todos-md.svg'
     - empty_state_title = s_("Todos|Nothing is on your to-do list. Nice work!")
     - if todos_filter_empty?

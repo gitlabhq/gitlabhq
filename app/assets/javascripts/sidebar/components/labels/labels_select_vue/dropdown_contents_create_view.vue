@@ -96,7 +96,7 @@ export default {
       <div class="color-input-container gl-display-flex">
         <gl-form-input
           v-model.trim="selectedColor"
-          class="gl-rounded-top-right-none gl-rounded-bottom-right-none gl-mr-n1 gl-mb-2 gl-w-8"
+          class="gl-rounded-top-right-none gl-rounded-bottom-right-none -gl-mr-1 gl-mb-2 gl-w-8"
           type="color"
           :value="selectedColor"
           :placeholder="__('Open color picker')"

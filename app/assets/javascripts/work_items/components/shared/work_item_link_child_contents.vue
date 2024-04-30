@@ -236,7 +236,7 @@ export default {
     <div v-if="canUpdate">
       <gl-button
         v-gl-tooltip
-        class="gl-mt-n2 gl-mr-n2"
+        class="-gl-mt-2 -gl-mr-2"
         category="tertiary"
         size="small"
         icon="close"

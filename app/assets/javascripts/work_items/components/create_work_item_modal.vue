@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlModal } from '@gitlab/ui';
+import { GlButton, GlModal, GlDisclosureDropdownItem } from '@gitlab/ui';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { I18N_NEW_WORK_ITEM_BUTTON_LABEL, sprintfWorkItem } from '../constants';
 import CreateWorkItem from './create_work_item.vue';
@@ -9,12 +9,18 @@ export default {
     CreateWorkItem,
     GlButton,
     GlModal,
+    GlDisclosureDropdownItem,
   },
   props: {
     workItemType: {
       type: String,
       required: false,
       default: null,
+    },
+    asDropdownItem: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   data() {
@@ -25,6 +31,12 @@ export default {
   computed: {
     newWorkItemText() {
       return sprintfWorkItem(I18N_NEW_WORK_ITEM_BUTTON_LABEL, this.workItemType);
+    },
+    dropdownItem() {
+      return {
+        text: this.newWorkItemText,
+        action: this.showModal,
+      };
     },
   },
   methods: {
@@ -43,7 +55,9 @@ export default {
 
 <template>
   <div>
+    <gl-disclosure-dropdown-item v-if="asDropdownItem" :item="dropdownItem" />
     <gl-button
+      v-else
       category="primary"
       variant="confirm"
       data-testid="new-epic-button"

@@ -179,7 +179,8 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
         pinned_items: %w[foo bar],
         update_pins_url: pins_path,
         shortcut_links: global_shortcut_links,
-        track_visits_path: track_namespace_visits_path
+        track_visits_path: track_namespace_visits_path,
+        work_items: { full_path: group.full_path }
       })
     end
 

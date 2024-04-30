@@ -11,6 +11,7 @@ import {
   TOP_NAV_INVITE_MEMBERS_COMPONENT,
   TRIGGER_ELEMENT_DISCLOSURE_DROPDOWN,
 } from '~/invite_members/constants';
+import { WORK_ITEM_TYPE_ENUM_EPIC, CREATE_NEW_WORK_ITEM_MODAL } from '~/work_items/constants';
 import { DROPDOWN_Y_OFFSET, IMPERSONATING_OFFSET } from '../constants';
 
 // Left offset required for the dropdown to be aligned with the super sidebar
@@ -23,6 +24,7 @@ export default {
     GlDisclosureDropdownGroup,
     GlDisclosureDropdownItem,
     InviteMembersTrigger,
+    CreateWorkItemModal: () => import('~/work_items/components/create_work_item_modal.vue'),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -54,9 +56,13 @@ export default {
     isInvitedMembers(groupItem) {
       return groupItem.component === TOP_NAV_INVITE_MEMBERS_COMPONENT;
     },
+    isCreateWorkItem(groupItem) {
+      return groupItem.component === CREATE_NEW_WORK_ITEM_MODAL;
+    },
   },
   toggleId: 'create-menu-toggle',
   TRIGGER_ELEMENT_DISCLOSURE_DROPDOWN,
+  WORK_ITEM_TYPE_ENUM_EPIC,
 };
 </script>
 
@@ -86,6 +92,12 @@ export default {
           :key="`${groupItem.text}-trigger`"
           trigger-source="top_nav"
           :trigger-element="$options.TRIGGER_ELEMENT_DISCLOSURE_DROPDOWN"
+        />
+        <create-work-item-modal
+          v-else-if="isCreateWorkItem(groupItem)"
+          :key="`${groupItem.text}-modal-trigger`"
+          as-dropdown-item
+          :work-item-type="$options.WORK_ITEM_TYPE_ENUM_EPIC"
         />
         <gl-disclosure-dropdown-item v-else :key="groupItem.text" :item="groupItem" />
       </template>

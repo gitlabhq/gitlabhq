@@ -146,7 +146,8 @@ module API
         failure [
           { code: 400, message: 'Bad request' },
           { code: 404, message: 'Not found' },
-          { code: 422, message: 'Unprocessable entity' }
+          { code: 422, message: 'Unprocessable entity' },
+          { code: 429, message: 'Too many requests' }
         ]
       end
       params do
@@ -155,8 +156,13 @@ module API
           desc: 'The type of trigger hook',
           values: ProjectHook.triggers.values.map(&:to_s)
       end
-      post ":id/hooks/:hook_id/test/:trigger" do
+      post ":id/hooks/:hook_id/test/:trigger", urgency: :low do
         hook = find_hook
+
+        if Feature.enabled?(:web_hook_test_api_endpoint_rate_limit)
+          check_rate_limit!(:web_hook_test_api_endpoint, scope: hook)
+        end
+
         result = TestHooks::ProjectService.new(hook, current_user, params[:trigger]).execute
         success = (200..299).cover?(result.payload[:http_status])
         if success

@@ -3,7 +3,7 @@ import { GlToast } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_utils';
 import createDefaultClient from '~/lib/graphql';
-import { JS_TOGGLE_EXPAND_CLASS } from './constants';
+import { JS_TOGGLE_EXPAND_CLASS, CONTEXT_NAMESPACE_GROUPS } from './constants';
 import createStore from './components/global_search/store';
 import {
   bindSuperSidebarCollapsedEvents,
@@ -104,6 +104,8 @@ export const initSuperSidebar = () => {
   const { searchPath, issuesPath, mrPath, autocompletePath, searchContext } = searchData;
   const isImpersonating = parseBoolean(sidebarData.is_impersonating);
 
+  const isGroup = Boolean(sidebarData.current_context?.namespace === CONTEXT_NAMESPACE_GROUPS);
+
   return new Vue({
     el,
     name: 'SuperSidebarRoot',
@@ -121,6 +123,8 @@ export const initSuperSidebar = () => {
       projectBlobPath,
       projectsPath,
       groupsPath,
+      fullPath: sidebarData.work_items?.full_path,
+      isGroup,
     },
     store: createStore({
       searchPath,

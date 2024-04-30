@@ -208,7 +208,7 @@ export default {
     <div v-else class="gl-display-flex gl-flex-wrap gl-gap-5">
       <gl-form-group
         class="gl-display-flex gl-align-items-center gl-m-0"
-        :class="{ 'gl-ml-n3': isReadonlyWithOnlyDueDate }"
+        :class="{ '-gl-ml-3': isReadonlyWithOnlyDueDate }"
         :label="$options.i18n.startDate"
         :label-for="$options.startDateInputId"
         :label-sr-only="!showStartDateInput"
@@ -238,7 +238,7 @@ export default {
       <gl-form-group
         v-if="!isReadonlyWithOnlyStartDate"
         class="gl-display-flex gl-align-items-center gl-m-0"
-        :class="{ 'gl-ml-n3': isReadonlyWithOnlyDueDate }"
+        :class="{ '-gl-ml-3': isReadonlyWithOnlyDueDate }"
         :label="$options.i18n.dueDate"
         :label-for="$options.dueDateInputId"
         :label-sr-only="!showDueDateInput"

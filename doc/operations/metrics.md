@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 DETAILS:
 **Tier:** Ultimate
 **Offering:** GitLab.com
-**Status:** Experiment
+**Status:** Beta
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124966) in GitLab 16.7 [with a flag](../administration/feature_flags.md) named `observability_metrics`. Disabled by default. This feature is an [Experiment](../policy/experiment-beta-support.md#experiment).
 
@@ -67,13 +67,36 @@ You can view the metrics for a given project:
 A list of metrics is displayed.
 Select a metric to view its details.
 
-![list of metrics](img/metrics_list_v16_8.png)
+![list of metrics](img/metrics_list_v17_0.png)
+
+Each metric contains one or more attributes. You can filter
+metrics by attribute with the search bar.
 
 ### Metric details
 
 Metrics are displayed as either a sum, a gauge, or a histogram.
 The metric details page displays a chart depending on the type of metric.
 
-On the metric details page, you can also view a metric for a specific time range.
+On the metric details page, you can also view metrics for a specific time range, and
+aggregate metrics by attribute:
 
-![metrics details](img/metrics_details_v16_8.png)
+![metrics details](img/metrics_detail_v17_0.png)
+
+To make data lookups fast, depending on what time period you filter by,
+GitLab automatically chooses the proper aggregation.
+For example, if you search for more than seven days of data, the API returns only daily aggregates.
+
+### Aggregations by search period
+
+The following table shows what type of aggregation is used for each search period:
+
+|Period|Aggregation used|
+|---|---|
+| Less than 30 minutes | Raw data as ingested |
+| More than 30 minutes and less than one hour | By minute |
+| More than one hour and less than 72 hours | Hourly |
+| More than 72 hours | Daily |
+
+### Data retention
+
+GitLab has a retention limit of 30 days for all ingested metrics.

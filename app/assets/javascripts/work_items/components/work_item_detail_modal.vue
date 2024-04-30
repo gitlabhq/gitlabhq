@@ -127,7 +127,7 @@ export default {
       is-modal
       :work-item-iid="displayedWorkItemIid"
       :modal-work-item-full-path="workItemFullPath"
-      class="gl-p-5 gl-mt-n3 gl-reset-bg gl-isolate"
+      class="gl-p-5 -gl-mt-3 gl-reset-bg gl-isolate"
       @close="hide"
       @deleteWorkItem="deleteWorkItem"
       @update-modal="updateModal"

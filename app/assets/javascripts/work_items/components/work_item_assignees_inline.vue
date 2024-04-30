@@ -355,7 +355,7 @@ export default {
           :title="token.name"
           :data-user-id="getUserId(token.id)"
           data-placement="top"
-          class="gl-ml-n2 gl-text-decoration-none! gl-text-body! gl-display-flex gl-md-display-inline-flex! gl-align-items-center js-user-link"
+          class="-gl-ml-2 gl-text-decoration-none! gl-text-body! gl-display-flex gl-md-display-inline-flex! gl-align-items-center js-user-link"
         >
           <gl-avatar :size="24" :src="token.avatarUrl" />
           <span class="gl-pl-2">{{ token.name }}</span>

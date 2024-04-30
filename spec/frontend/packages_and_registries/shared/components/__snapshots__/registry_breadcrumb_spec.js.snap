@@ -12,79 +12,16 @@ exports[`Registry Breadcrumb when is not rootRoute renders 1`] = `
     <li
       class="gl-breadcrumb-item"
     >
-      <div
-        class="gl-disclosure-dropdown gl-new-dropdown"
-        style="height: 16px;"
+      <a
+        target="_self"
       >
-        <button
-          aria-controls="reference-1"
-          aria-expanded="false"
-          aria-labelledby="reference-0"
-          class="btn btn-default btn-icon btn-sm gl-button gl-new-dropdown-icon-only gl-new-dropdown-toggle gl-new-dropdown-toggle-no-caret"
-          data-testid="base-dropdown-toggle"
-          id="reference-0"
-          type="button"
-        >
-          <svg
-            aria-hidden="true"
-            class="gl-button-icon gl-icon s16"
-            data-testid="ellipsis_h-icon"
-            role="img"
-          >
-            <use
-              href="file-mock#ellipsis_h"
-            />
-          </svg>
-          <span
-            class="gl-button-text"
-          >
-            <span
-              class="gl-new-dropdown-button-text gl-sr-only"
-            >
-              Show more breadcrumbs
-            </span>
-          </span>
-        </button>
-        <div
-          class="gl-new-dropdown-panel"
-          data-testid="base-dropdown-menu"
-          id="reference-1"
-        >
-          <div
-            class="gl-new-dropdown-inner"
-          >
-            <ul
-              aria-labelledby="reference-0"
-              class="gl-new-dropdown-contents"
-              data-testid="disclosure-content"
-              id="reference-2"
-              tabindex="-1"
-            >
-              <li
-                class="gl-new-dropdown-item"
-                data-testid="disclosure-dropdown-item"
-                tabindex="0"
-              >
-                <a
-                  class="gl-new-dropdown-item-content"
-                  tabindex="-1"
-                  target="_self"
-                >
-                  <span
-                    class="gl-new-dropdown-item-text-wrapper"
-                  >
-                    mock name
-                  </span>
-                </a>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
+        <span>
+          mock name
+        </span>
+      </a>
     </li>
     <li
       class="gl-breadcrumb-item"
-      style="flex-shrink: 1; text-overflow: ellipsis; overflow-x: hidden; text-wrap: nowrap;"
     >
       <a
         aria-current="page"
