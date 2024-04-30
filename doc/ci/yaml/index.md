@@ -1028,6 +1028,9 @@ The following topics explain how to use keywords to configure CI/CD pipelines.
 Use `after_script` to define an array of commands that run after a job's `script` section, including failed jobs with failure type of `script_failure`.
 `after_script` commands do not run after [other failure types](#retrywhen).
 
+NOTE:
+In GitLab 17.0, `after_script` commands will run when a [job is cancelled](script.md#run-after_script-on-cancel).
+
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
 
@@ -1066,8 +1069,8 @@ Scripts you specify in `after_script` execute in a new shell, separate from any
 - Don't affect the job's exit code. If the `script` section succeeds and the
   `after_script` times out or fails, the job exits with code `0` (`Job Succeeded`).
 
-If a job times out or is cancelled, the `after_script` commands do not execute.
-[An issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/15603) to add support for executing `after_script` commands for timed-out or cancelled jobs.
+If a job times out, the `after_script` commands do not execute.
+[An issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/15603) to add support for executing `after_script` commands for timed-out jobs.
 
 **Related topics**:
 

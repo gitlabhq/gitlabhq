@@ -8,6 +8,7 @@ import PromoteLabelModal from './components/promote_label_modal.vue';
 import eventHub, {
   EVENT_DELETE_LABEL_MODAL_SUCCESS,
   EVENT_OPEN_DELETE_LABEL_MODAL,
+  EVENT_OPEN_PROMOTE_LABEL_MODAL,
 } from './event_hub';
 import GroupLabelSubscription from './group_label_subscription';
 import LabelManager from './label_manager';
@@ -33,6 +34,43 @@ export function initDeleteLabelModal(optionalProps = {}) {
   }).$mount();
 }
 
+export function initLabelActions(el) {
+  const {
+    labelId,
+    labelName,
+    labelColor,
+    labelTextColor,
+    subjectName,
+    groupName,
+    editPath,
+    promotePath,
+    destroyPath,
+  } = el.dataset;
+
+  return new Vue({
+    el,
+    render(createElement) {
+      return createElement(LabelActions, {
+        props: {
+          labelId,
+          labelName,
+          labelColor,
+          labelTextColor,
+          subjectName,
+          groupName,
+          editPath,
+          promotePath,
+          destroyPath,
+        },
+      });
+    },
+  });
+}
+
+export function initLabelsActions() {
+  document.querySelectorAll('.js-vue-label-actions').forEach(initLabelActions);
+}
+
 export function initLabels() {
   if ($('.prioritized-labels').length) {
     new LabelManager(); // eslint-disable-line no-new
@@ -46,6 +84,7 @@ export function initLabels() {
       new ProjectLabelSubscription($el); // eslint-disable-line no-new
     }
   });
+  initLabelsActions();
 }
 
 export function initLabelIndex() {
@@ -53,26 +92,6 @@ export function initLabelIndex() {
 
   initLabels();
   initDeleteLabelModal();
-
-  const onRequestFinished = ({ labelUrl, successful }) => {
-    const button = document.querySelector(
-      `.js-promote-project-label-button[data-url="${labelUrl}"]`,
-    );
-
-    if (!successful) {
-      button.removeAttribute('disabled');
-    }
-  };
-
-  const onRequestStarted = (labelUrl) => {
-    const button = document.querySelector(
-      `.js-promote-project-label-button[data-url="${labelUrl}"]`,
-    );
-    button.setAttribute('disabled', '');
-    eventHub.$once('promoteLabelModal.requestFinished', onRequestFinished);
-  };
-
-  const promoteLabelButtons = document.querySelectorAll('.js-promote-project-label-button');
 
   return new Vue({
     el: '#js-promote-label-modal',
@@ -89,53 +108,24 @@ export function initLabelIndex() {
       };
     },
     mounted() {
-      eventHub.$on('promoteLabelModal.props', this.setModalProps);
+      eventHub.$on(EVENT_OPEN_PROMOTE_LABEL_MODAL, this.openModal);
       eventHub.$emit('promoteLabelModal.mounted');
-
-      promoteLabelButtons.forEach((button) => {
-        button.removeAttribute('disabled');
-        button.addEventListener('click', () => {
-          this.$root.$emit(BV_SHOW_MODAL, 'promote-label-modal');
-          eventHub.$once('promoteLabelModal.requestStarted', onRequestStarted);
-
-          this.setModalProps({
-            labelTitle: button.dataset.labelTitle,
-            labelColor: button.dataset.labelColor,
-            labelTextColor: button.dataset.labelTextColor,
-            url: button.dataset.url,
-            groupName: button.dataset.groupName,
-          });
-        });
-      });
     },
     beforeDestroy() {
-      eventHub.$off('promoteLabelModal.props', this.setModalProps);
+      eventHub.$off(EVENT_OPEN_PROMOTE_LABEL_MODAL, this.openModal);
     },
     methods: {
       setModalProps(modalProps) {
         this.modalProps = modalProps;
       },
+      openModal(modalProps) {
+        this.setModalProps(modalProps);
+        this.$root.$emit(BV_SHOW_MODAL, 'promote-label-modal');
+      },
     },
     render(createElement) {
       return createElement(PromoteLabelModal, {
         props: this.modalProps,
-      });
-    },
-  });
-}
-
-export function initLabelActions(el) {
-  const { labelId, labelName, editPath, destroyPath } = el.dataset;
-  return new Vue({
-    el,
-    render(createElement) {
-      return createElement(LabelActions, {
-        props: {
-          labelId,
-          labelName,
-          editPath,
-          destroyPath,
-        },
       });
     },
   });
@@ -165,5 +155,5 @@ export function initAdminLabels() {
 
   initDeleteLabelModal({ remoteDestroy: true });
   eventHub.$on(EVENT_DELETE_LABEL_MODAL_SUCCESS, removeLabelSuccessCallback);
-  document.querySelectorAll('.js-label-actions-dropdown').forEach(initLabelActions);
+  initLabelsActions();
 }

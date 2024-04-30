@@ -8,7 +8,12 @@ import { mockTracking } from 'helpers/tracking_helper';
 
 import { InternalEvents } from '~/tracking';
 import { updateHistory } from '~/lib/utils/url_utility';
-import { PARAM_KEY_PLATFORM, DEFAULT_PLATFORM, WINDOWS_PLATFORM } from '~/ci/runner/constants';
+import {
+  PARAM_KEY_PLATFORM,
+  DEFAULT_PLATFORM,
+  WINDOWS_PLATFORM,
+  GOOGLE_CLOUD_PLATFORM,
+} from '~/ci/runner/constants';
 import GroupRegisterRunnerApp from '~/ci/runner/group_register_runner/group_register_runner_app.vue';
 import RegistrationInstructions from '~/ci/runner/components/registration/registration_instructions.vue';
 import { runnerForRegistration } from '../mock_data';
@@ -66,6 +71,31 @@ describe('GroupRegisterRunnerApp', () => {
           'click_view_runners_button_in_new_group_runner_form',
         );
         expect(findBtn().props('variant')).toBe('confirm');
+      });
+    });
+
+    describe('when runner is registered', () => {
+      beforeEach(() => {
+        jest.spyOn(InternalEvents, 'trackEvent');
+      });
+
+      it('does not track event for platforms', () => {
+        findRegistrationInstructions().vm.$emit('selectPlatform', WINDOWS_PLATFORM);
+        findRegistrationInstructions().vm.$emit('runnerRegistered');
+
+        expect(InternalEvents.trackEvent).toHaveBeenCalledTimes(0);
+      });
+
+      it('tracks event for google cloud platform', () => {
+        findRegistrationInstructions().vm.$emit('selectPlatform', GOOGLE_CLOUD_PLATFORM);
+        findRegistrationInstructions().vm.$emit('runnerRegistered');
+
+        expect(InternalEvents.trackEvent).toHaveBeenCalledTimes(1);
+        expect(InternalEvents.trackEvent).toHaveBeenCalledWith(
+          'provision_group_runner_on_google_cloud',
+          expect.any(Object),
+          undefined,
+        );
       });
     });
 

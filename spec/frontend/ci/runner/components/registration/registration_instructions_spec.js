@@ -147,14 +147,6 @@ describe('RegistrationInstructions', () => {
       await findPlatformsDrawer().vm.$emit('close');
       expect(findPlatformsDrawer().props('open')).toBe(false);
     });
-
-    it('selects a new platform from the drawer', () => {
-      createComponent();
-
-      findPlatformsDrawer().vm.$emit('selectPlatform', WINDOWS_PLATFORM);
-
-      expect(wrapper.emitted('selectPlatform')).toEqual([[WINDOWS_PLATFORM]]);
-    });
   });
 
   describe('step 1', () => {
@@ -220,13 +212,18 @@ describe('RegistrationInstructions', () => {
         expect(mockRunnerQuery).toHaveBeenCalledTimes(3);
       });
 
-      it('when runner is online, stops polling', async () => {
+      it('when runner is online, stops polling and announces runner is registered', async () => {
+        expect(wrapper.emitted('runnerRegistered')).toBeUndefined();
+
         mockResolvedRunner({ ...mockRunner, status: STATUS_ONLINE });
         await waitForPolling();
+
+        expect(wrapper.emitted('runnerRegistered')).toHaveLength(1);
 
         expect(mockRunnerQuery).toHaveBeenCalledTimes(2);
         await waitForPolling();
 
+        expect(wrapper.emitted('runnerRegistered')).toHaveLength(1);
         expect(mockRunnerQuery).toHaveBeenCalledTimes(2);
       });
 

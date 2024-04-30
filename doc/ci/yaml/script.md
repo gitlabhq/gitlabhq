@@ -4,7 +4,7 @@ group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Format scripts and job logs
+# Scripts and job logs
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -95,6 +95,28 @@ job2:
     - echo "but the job does not use the default `after_script`."
   after_script: []
 ```
+
+## Run `after_script` on cancel
+
+DETAILS:
+**Offering:** GitLab.com, Self-managed
+
+> - [Introduced on self-managed](https://gitlab.com/groups/gitlab-org/-/epics/10158) in GitLab 17.0 [with a flag](../../administration/feature_flags.md) named `ci_canceling_status`. Disabled by default.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/17520) in GitLab 17.0.
+
+FLAG:
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+`after_script` commands will run after a job is set to cancel if the job is `running` the `before_script` or `script` section of the job when it was set to cancel. This applies when the runner version is 16.9 and above and the `ci_canceling_status` flag is enabled.
+
+The jobs status will be `canceling` while the `after_script` commands are processed and will transition to `canceled` after the `after_script` commands are finished.
+
+**Additional details:**
+
+- In runner version 17.0 and above, you can opt-out of running `after_script` on cancel when the `$CI_JOB_STATUS` predefined variable is `canceled`.
+- Between runner version 16.10 and 17.0, `canceled` is not supported for `$CI_JOB_STATUS`. The `$CI_JOB_STATUS` variable will be set to `failed` during the `after_script` run.
+- For shared runners on GitLab.com, the `ci_canceling_status` flag will be turned on during the last breaking change window in GitLab version 17.0 while runner is still on version 16.11.
 
 ## Split long commands
 

@@ -2,4 +2,4 @@
   .label-content.gl-px-3.gl-py-2.gl-rounded-base
     = render "shared/label_row", label: label.present(issuable_subject: nil)
     .label-actions-list.gl-display-inline-block
-      .js-label-actions-dropdown{ data: { label_id: label.id, label_name: label.name, edit_path: edit_admin_label_path(label), destroy_path: admin_label_path(label) } }
+      .js-vue-label-actions{ data: { label_id: label.id, label_name: label.name, edit_path: edit_admin_label_path(label), destroy_path: admin_label_path(label) } }

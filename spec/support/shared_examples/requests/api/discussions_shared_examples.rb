@@ -118,12 +118,6 @@ RSpec.shared_examples 'discussions API' do |parent_type, noteable_type, id_name,
       expect(response).to have_gitlab_http_status(:unauthorized)
     end
 
-    it 'tracks a Notes::CreateService event', :snowplow do
-      post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/discussions", user), params: { body: 'hi!' }
-
-      expect_snowplow_event(category: 'Notes::CreateService', action: 'execute', label: 'note', value: anything)
-    end
-
     context 'when an admin or owner makes the request' do
       it 'accepts the creation date to be set' do
         creation_time = 2.weeks.ago

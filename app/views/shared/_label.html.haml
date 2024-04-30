@@ -43,22 +43,15 @@
               = label_subscription_toggle_button_text(label, @project)
       - if can?(current_user, :admin_label, label)
         %li.gl-display-inline-block
-          .dropdown
-            = render Pajamas::ButtonComponent.new(category: :tertiary,
-              size: :small,
-              icon: 'ellipsis_v',
-              button_options: { class: 'js-label-options-dropdown gl-ml-3', 'aria_label': _('Label actions dropdown'), title: _('Label actions dropdown'), data: { toggle: 'dropdown' } })
-            .dropdown-menu.dropdown-menu-right
-              %ul
-                %li
-                  = render Pajamas::ButtonComponent.new(category: :tertiary, href: label.edit_path, variant: :link) do
-                    = _('Edit')
-                - if label.project_label? && label.project.group && can?(current_user, :admin_label, label.project.group)
-                  %li
-                    = render Pajamas::ButtonComponent.new(category: :tertiary, variant: :link,
-                      button_options: { class: 'js-promote-project-label-button', data: { url: promote_project_label_path(label.project, label), label_title: label.title, label_color: label.color, label_text_color: label.text_color, group_name: label.project.group.name } }) do
-                      = _('Promote to group label')
-                %li
-                  = render Pajamas::ButtonComponent.new(category: :tertiary, variant: :link,
-                    button_options: { class: 'text-danger js-delete-label-modal-button', data: { label_name: label.name, subject_name: label.subject_name, destroy_path: label.destroy_path } }) do
-                    = _('Delete')
+          - can_promote = label.project_label? && label.project.group && can?(current_user, :admin_label, label.project.group)
+          .js-vue-label-actions{ data: {
+            label_id: label.id,
+            label_name: label.name,
+            label_color: label.color,
+            label_text_color: label.text_color,
+            subject_name: label.subject_name,
+            edit_path: label.edit_path,
+            destroy_path: label.destroy_path,
+            promote_path: can_promote ? promote_project_label_path(label.project, label) : '',
+            group_name: can_promote ? label.project.group.name : ''
+          } }

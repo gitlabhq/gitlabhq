@@ -1,4 +1,3 @@
-import { GlSprintf } from '@gitlab/ui';
 import { s__ } from '~/locale';
 
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -6,13 +5,7 @@ import { createAlert, VARIANT_SUCCESS } from '~/alert';
 
 import AdminNewRunnerApp from '~/ci/runner/admin_new_runner/admin_new_runner_app.vue';
 import { saveAlertToLocalStorage } from '~/ci/runner/local_storage_alert/save_alert_to_local_storage';
-import RunnerPlatformsRadioGroup from '~/ci/runner/components/runner_platforms_radio_group.vue';
-import {
-  PARAM_KEY_PLATFORM,
-  INSTANCE_TYPE,
-  DEFAULT_PLATFORM,
-  WINDOWS_PLATFORM,
-} from '~/ci/runner/constants';
+import { INSTANCE_TYPE } from '~/ci/runner/constants';
 import RunnerCreateForm from '~/ci/runner/components/runner_create_form.vue';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { runnerCreateResult } from '../mock_data';
@@ -29,25 +22,14 @@ const mockCreatedRunner = runnerCreateResult.data.runnerCreate.runner;
 describe('AdminNewRunnerApp', () => {
   let wrapper;
 
-  const findRunnerPlatformsRadioGroup = () => wrapper.findComponent(RunnerPlatformsRadioGroup);
   const findRunnerCreateForm = () => wrapper.findComponent(RunnerCreateForm);
 
   const createComponent = () => {
-    wrapper = shallowMountExtended(AdminNewRunnerApp, {
-      stubs: {
-        GlSprintf,
-      },
-    });
+    wrapper = shallowMountExtended(AdminNewRunnerApp);
   };
 
   beforeEach(() => {
     createComponent();
-  });
-
-  describe('Platform', () => {
-    it('shows the platforms radio group', () => {
-      expect(findRunnerPlatformsRadioGroup().props('value')).toBe(DEFAULT_PLATFORM);
-    });
   });
 
   describe('Runner form', () => {
@@ -72,22 +54,7 @@ describe('AdminNewRunnerApp', () => {
       });
 
       it('redirects to the registration page', () => {
-        const url = `${mockCreatedRunner.ephemeralRegisterUrl}?${PARAM_KEY_PLATFORM}=${DEFAULT_PLATFORM}`;
-
-        expect(visitUrl).toHaveBeenCalledWith(url);
-      });
-    });
-
-    describe('When another platform is selected and a runner is saved', () => {
-      beforeEach(() => {
-        findRunnerPlatformsRadioGroup().vm.$emit('input', WINDOWS_PLATFORM);
-        findRunnerCreateForm().vm.$emit('saved', mockCreatedRunner);
-      });
-
-      it('redirects to the registration page with the platform', () => {
-        const url = `${mockCreatedRunner.ephemeralRegisterUrl}?${PARAM_KEY_PLATFORM}=${WINDOWS_PLATFORM}`;
-
-        expect(visitUrl).toHaveBeenCalledWith(url);
+        expect(visitUrl).toHaveBeenCalledWith(mockCreatedRunner.ephemeralRegisterUrl);
       });
     });
 

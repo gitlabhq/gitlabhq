@@ -11,7 +11,7 @@ namespace :gitlab do
       registry_config = Gitlab.config.registry
 
       unless registry_config.enabled && registry_config.api_url.presence
-        puts "Registry is not enabled or registry api url is not present.".color(:yellow)
+        puts Rainbow("Registry is not enabled or registry api url is not present.").yellow
         return
       end
 

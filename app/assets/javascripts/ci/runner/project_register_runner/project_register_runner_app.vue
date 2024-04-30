@@ -1,8 +1,8 @@
 <script>
 import { GlButton } from '@gitlab/ui';
 import { getParameterByName, updateHistory, mergeUrlParams } from '~/lib/utils/url_utility';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { PARAM_KEY_PLATFORM, DEFAULT_PLATFORM } from '../constants';
+import { InternalEvents } from '~/tracking';
+import { PARAM_KEY_PLATFORM, GOOGLE_CLOUD_PLATFORM, DEFAULT_PLATFORM } from '../constants';
 import RegistrationInstructions from '../components/registration/registration_instructions.vue';
 
 export default {
@@ -11,7 +11,7 @@ export default {
     GlButton,
     RegistrationInstructions,
   },
-  mixins: [glFeatureFlagsMixin()],
+  mixins: [InternalEvents.mixin()],
   props: {
     runnerId: {
       type: String,
@@ -42,6 +42,11 @@ export default {
     onSelectPlatform(platform) {
       this.platform = platform;
     },
+    onRunnerRegistered() {
+      if (this.platform === GOOGLE_CLOUD_PLATFORM) {
+        this.trackEvent('provision_project_runner_on_google_cloud');
+      }
+    },
   },
 };
 </script>
@@ -52,6 +57,7 @@ export default {
       :project-path="projectPath"
       :platform="platform"
       @selectPlatform="onSelectPlatform"
+      @runnerRegistered="onRunnerRegistered"
     >
       <template #runner-list-name>{{ s__('Runners|Project › CI/CD Settings › Runners') }}</template>
     </registration-instructions>

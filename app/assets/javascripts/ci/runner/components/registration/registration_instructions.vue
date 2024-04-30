@@ -6,6 +6,9 @@ import { createAlert } from '~/alert';
 import { s__, sprintf } from '~/locale';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_CI_RUNNER } from '~/graphql_shared/constants';
+import RunnerPlatformsRadioGroup from '~/ci/runner/components/runner_platforms_radio_group.vue';
+import RunnerGoogleCloudOption from '~/ci/runner/components/runner_google_cloud_option.vue';
+
 import runnerForRegistrationQuery from '../../graphql/register/runner_for_registration.query.graphql';
 import {
   STATUS_ONLINE,
@@ -33,6 +36,8 @@ export default {
     CliCommand,
     GoogleCloudRegistrationInstructions,
     PlatformsDrawer,
+    RunnerPlatformsRadioGroup,
+    RunnerGoogleCloudOption,
   },
   mixins: [glFeatureFlagsMixin()],
   props: {
@@ -138,10 +143,20 @@ export default {
     isRunnerOnline() {
       return this.runner?.status === STATUS_ONLINE;
     },
+    showGoogleCloudPlatformOption() {
+      return this.glFeatures?.googleCloudSupportFeatureFlag;
+    },
     showGoogleCloudRegistration() {
       return (
         this.glFeatures?.googleCloudSupportFeatureFlag && this.platform === GOOGLE_CLOUD_PLATFORM
       );
+    },
+  },
+  watch: {
+    isRunnerOnline(newVal, oldVal) {
+      if (!oldVal && newVal) {
+        this.$emit('runnerRegistered');
+      }
     },
   },
   created() {
@@ -176,6 +191,16 @@ export default {
 <template>
   <div class="gl-mt-5">
     <h1 class="gl-heading-1">{{ heading }}</h1>
+
+    <h2 class="gl-heading-2">
+      {{ s__('Runners|Platform') }}
+    </h2>
+    <runner-platforms-radio-group :value="platform" @input="onSelectPlatform">
+      <template v-if="showGoogleCloudPlatformOption" #cloud-options>
+        <runner-google-cloud-option :checked="platform" @input="onSelectPlatform" />
+      </template>
+    </runner-platforms-radio-group>
+    <hr aria-hidden="true" />
 
     <template v-if="showGoogleCloudRegistration">
       <google-cloud-registration-instructions
@@ -273,12 +298,7 @@ export default {
         </p>
       </section>
 
-      <platforms-drawer
-        :platform="platform"
-        :open="isDrawerOpen"
-        @selectPlatform="onSelectPlatform"
-        @close="onToggleDrawer(false)"
-      />
+      <platforms-drawer :platform="platform" :open="isDrawerOpen" @close="onToggleDrawer(false)" />
     </template>
 
     <section v-if="isRunnerOnline" class="gl-mt-6">

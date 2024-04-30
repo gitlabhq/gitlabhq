@@ -1066,7 +1066,6 @@ RSpec/NamedSubject:
     - 'ee/spec/services/merge_trains/check_status_service_spec.rb'
     - 'ee/spec/services/merge_trains/refresh_merge_request_service_spec.rb'
     - 'ee/spec/services/merge_trains/refresh_service_spec.rb'
-    - 'ee/spec/services/notes/create_visual_review_service_spec.rb'
     - 'ee/spec/services/onboarding/create_iterable_trigger_service_spec.rb'
     - 'ee/spec/services/personal_access_tokens/groups/update_lifetime_service_spec.rb'
     - 'ee/spec/services/personal_access_tokens/instance/update_lifetime_service_spec.rb'

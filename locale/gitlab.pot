@@ -29880,9 +29880,6 @@ msgstr ""
 msgid "Label %{labelName} was not found"
 msgstr ""
 
-msgid "Label actions"
-msgstr ""
-
 msgid "Label actions dropdown"
 msgstr ""
 
@@ -29936,7 +29933,16 @@ msgstr ""
 msgid "Labels|%{spanStart}Promote label%{spanEnd} %{labelTitle} %{spanStart}to Group Label?%{spanEnd}"
 msgstr ""
 
+msgid "Labels|Label actions"
+msgstr ""
+
+msgid "Labels|Label actions dropdown"
+msgstr ""
+
 msgid "Labels|Promote Label"
+msgstr ""
+
+msgid "Labels|Promote to group label"
 msgstr ""
 
 msgid "Labels|Promoting %{labelTitle} will make it available for all projects inside %{groupName}. Existing project labels with the same title will be merged. If a group label with the same title exists, it will also be merged. This action cannot be reversed."
@@ -41308,9 +41314,6 @@ msgstr ""
 msgid "Promote to epic"
 msgstr ""
 
-msgid "Promote to group label"
-msgstr ""
-
 msgid "Promote to objective"
 msgstr ""
 
@@ -44231,9 +44234,6 @@ msgid "Runners|Ensure you have the %{linkStart}Owner%{linkEnd} IAM role on your 
 msgstr ""
 
 msgid "Runners|Enter the job timeout in seconds. Must be a minimum of 600 seconds."
-msgstr ""
-
-msgid "Runners|Environment"
 msgstr ""
 
 msgid "Runners|Environment in Google Cloud where runners execute CI/CD jobs. Runners are created in temporary virtual machines based on demand."

@@ -19,11 +19,9 @@ RSpec.describe "User removes labels", feature_category: :team_planning do
     end
 
     it "removes label", :js do
-      page.within(".other-labels") do
-        page.first(".js-label-list-item") do
-          first('.js-label-options-dropdown').click
-          first('.js-delete-label-modal-button').click
-        end
+      page.within "#project_label_#{label.id}" do
+        find_by_testid('label-actions-dropdown-toggle').click
+        click_button('Delete')
       end
 
       expect(page).to have_content("#{label.title} will be permanently deleted from #{project.name}. This cannot be undone.")
@@ -46,8 +44,10 @@ RSpec.describe "User removes labels", feature_category: :team_planning do
         li = page.first(".js-label-list-item", minimum: 0)
         break unless li
 
-        li.find('.js-label-options-dropdown').click
-        li.click_button("Delete")
+        page.within li do
+          find_by_testid('label-actions-dropdown-toggle').click
+          click_button('Delete')
+        end
         click_link("Delete label")
       end
 

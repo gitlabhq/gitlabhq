@@ -3,11 +3,12 @@
 require "influxdb-client"
 require "terminal-table"
 require "slack-notifier"
-require "colorize"
+require 'rainbow/refinement'
 
 module QA
   module Tools
     class ReliableReport
+      using Rainbow
       include Support::InfluxdbTools
       include Support::API
 
@@ -66,7 +67,7 @@ module QA
         puts "#{summary_table(stable: true)}\n\n"
         puts "Total amount: #{stable_test_runs.sum { |_k, v| v.count }}\n\n"
         print_results(stable_results_tables)
-        return puts("No unstable blocking tests present!".colorize(:yellow)) if unstable_blocking_test_runs.empty?
+        return puts("No unstable blocking tests present!".yellow) if unstable_blocking_test_runs.empty?
 
         puts "#{summary_table(stable: false)}\n\n"
         puts "Total amount: #{unstable_blocking_test_runs.sum { |_k, v| v.count }}\n\n"
@@ -77,7 +78,7 @@ module QA
       #
       # @return [void]
       def report_in_issue_and_slack
-        puts "Creating report".colorize(:green)
+        puts "Creating report".green
         issue = api_update(
           :post,
           "projects/#{PROJECT_ID}/issues",
@@ -89,7 +90,7 @@ module QA
         @report_web_url = issue[:web_url]
         puts "Created report issue: #{@report_web_url}"
 
-        puts "Sending slack notification".colorize(:green)
+        puts "Sending slack notification".green
         notifier.post(
           icon_emoji: ":tanuki-protect:",
           text: <<~TEXT
@@ -106,7 +107,7 @@ module QA
       #
       # @return [void]
       def close_previous_reports
-        puts "Closing previous reports".colorize(:green)
+        puts "Closing previous reports".green
         issues = api_get("projects/#{PROJECT_ID}/issues?labels=#{RELIABLE_REPORT_LABEL}&state=opened")
 
         issues
@@ -402,7 +403,7 @@ module QA
       end
 
       def log_fetching_query_data(reliable)
-        puts("Fetching data on #{reliable ? 'reliable ' : ''}test execution for past #{range} days\n".colorize(:green))
+        puts("Fetching data on #{reliable ? 'reliable ' : ''}test execution for past #{range} days\n".green)
       end
 
       def specs_attributes(blocking:)

@@ -1134,7 +1134,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def create_merge_request_diff
-    fetch_ref! unless skip_fetch_ref
+    fetch_ref!
 
     # n+1: https://gitlab.com/gitlab-org/gitlab/-/issues/19377
     Gitlab::GitalyClient.allow_n_plus_1_calls do
@@ -2269,8 +2269,6 @@ class MergeRequest < ApplicationRecord
   end
 
   private
-
-  attr_accessor :skip_fetch_ref
 
   def check_mergeability_states(checks:, execute_all: false, **params)
     execute_merge_checks(
