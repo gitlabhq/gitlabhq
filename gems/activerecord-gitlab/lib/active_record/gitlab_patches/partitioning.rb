@@ -15,10 +15,6 @@ module ActiveRecord
     #     -> (build) { where(partition_id: build.partition_id) },
     #     partition_foreign_key: :partition_id
     #
-    #   To control the join filter
-    #   def self.use_partition_id_filter?
-    #     Feature.enabled?(...)
-    #   end
     # end
     module Partitioning
       ActiveSupport.on_load(:active_record) do

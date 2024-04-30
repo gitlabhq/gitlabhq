@@ -96,7 +96,7 @@ module Gitlab
         end
 
         def prometheus_metrics_enabled_unmemoized
-          !error? && metrics_folder_present? && Gitlab::CurrentSettings.prometheus_metrics_enabled || false
+          (!error? && metrics_folder_present? && Gitlab::CurrentSettings.prometheus_metrics_enabled) || false
         end
       end
     end

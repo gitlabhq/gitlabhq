@@ -15,8 +15,10 @@ type Preparer interface {
 	Prepare(a *api.Response) (*destination.UploadOpts, error)
 }
 
+// DefaultPreparer implements the Preparer interface.
 type DefaultPreparer struct{}
 
+// Prepare prepares the upload options based on the API response.
 func (s *DefaultPreparer) Prepare(a *api.Response) (*destination.UploadOpts, error) {
 	return destination.GetOpts(a)
 }

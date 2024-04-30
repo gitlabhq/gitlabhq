@@ -230,7 +230,7 @@ module Gitlab
         def compute_relative_position
           return unless max_relative_position
 
-          max_relative_position + (@relation_index + 1) * Gitlab::RelativePositioning::IDEAL_DISTANCE
+          max_relative_position + ((@relation_index + 1) * Gitlab::RelativePositioning::IDEAL_DISTANCE)
         end
 
         def max_relative_position

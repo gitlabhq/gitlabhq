@@ -26,9 +26,5 @@ module Ci
         .pluck(:build_id, :runner_manager_id)
         .to_h
     end
-
-    def self.use_partition_id_filter?
-      Ci::Pipeline.use_partition_id_filter?
-    end
   end
 end

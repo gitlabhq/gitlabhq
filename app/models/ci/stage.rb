@@ -137,10 +137,6 @@ module Ci
       end
     end
 
-    def self.use_partition_id_filter?
-      Ci::Pipeline.use_partition_id_filter?
-    end
-
     # rubocop: disable Metrics/CyclomaticComplexity -- breaking apart hurts readability, consider refactoring issue #439268
     def set_status(new_status)
       retry_optimistic_lock(self, name: 'ci_stage_set_status') do

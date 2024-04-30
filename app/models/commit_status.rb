@@ -247,10 +247,6 @@ class CommitStatus < Ci::ApplicationRecord
     false
   end
 
-  def self.use_partition_id_filter?
-    Ci::Pipeline.use_partition_id_filter?
-  end
-
   def locking_enabled?
     will_save_change_to_status?
   end

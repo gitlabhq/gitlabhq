@@ -96,6 +96,7 @@ module Ci
       scope :failed_or_canceled, -> { with_status(:failed, :canceled, :canceling) }
       scope :complete, -> { with_status(completed_statuses) }
       scope :incomplete, -> { without_statuses(completed_statuses) }
+      scope :complete_or_manual, -> { with_status(completed_with_manual_statuses) }
       scope :waiting_for_resource_or_upcoming, -> { with_status(:created, :scheduled, :waiting_for_resource) }
 
       scope :cancelable, -> do

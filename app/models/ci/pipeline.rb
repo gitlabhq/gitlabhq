@@ -588,10 +588,6 @@ module Ci
       ::Gitlab::Ci::PipelineObjectHierarchy.new(relation, options: options)
     end
 
-    def self.use_partition_id_filter?
-      true
-    end
-
     def uses_needs?
       processables.where(scheduling_type: :dag).any?
     end

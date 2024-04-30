@@ -77,7 +77,7 @@ module Gitlab
 
           Gitlab::Pagination::OffsetHeaderBuilder.new(
             request_context: request_context, per_page: per_page, page: 1, next_page: 2,
-            total: total, total_pages: total / per_page + 1
+            total: total, total_pages: (total / per_page) + 1
           ).execute
         end
       end

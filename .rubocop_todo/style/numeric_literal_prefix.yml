@@ -47,7 +47,6 @@ Style/NumericLiteralPrefix:
     - 'spec/lib/gitlab/grape_logging/loggers/cloudflare_logger_spec.rb'
     - 'spec/lib/gitlab/grape_logging/loggers/queue_duration_logger_spec.rb'
     - 'spec/lib/gitlab/import_export/command_line_util_spec.rb'
-    - 'spec/lib/gitlab/import_export/file_importer_spec.rb'
     - 'spec/lib/gitlab/jwt_authenticatable_spec.rb'
     - 'spec/lib/gitlab/puma_logging/json_formatter_spec.rb'
     - 'spec/lib/gitlab/relative_positioning/range_spec.rb'

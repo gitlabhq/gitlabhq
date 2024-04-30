@@ -1435,7 +1435,7 @@ job:
 
 #### `artifacts:access`
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145206) in GitLab 16.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145206) in GitLab 16.11.
 
 Use `artifacts:access` to determine who can access the job artifacts.
 

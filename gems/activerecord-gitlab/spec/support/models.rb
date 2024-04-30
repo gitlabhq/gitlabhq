@@ -3,10 +3,6 @@
 class PartitionedRecord < ActiveRecord::Base
   self.abstract_class = true
 
-  def self.use_partition_id_filter?
-    true
-  end
-
   alias_method :reset, :reload
 end
 

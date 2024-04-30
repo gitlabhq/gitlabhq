@@ -10,10 +10,6 @@ module ActiveRecord
     module Partitioning
       module Base
         def _query_constraints_hash
-          constraints_hash = super
-
-          return constraints_hash unless self.class.use_partition_id_filter?
-
           if self.class.query_constraints_list.nil?
             { @primary_key => id_in_database }
           else
@@ -24,10 +20,6 @@ module ActiveRecord
         end
 
         module ClassMethods
-          def use_partition_id_filter?
-            false
-          end
-
           def query_constraints(*columns_list)
             raise ArgumentError, "You must specify at least one column to be used in querying" if columns_list.empty?
 

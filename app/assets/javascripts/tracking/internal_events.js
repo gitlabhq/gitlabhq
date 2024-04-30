@@ -9,6 +9,8 @@ import {
   validateAdditionalProperties,
 } from './utils';
 
+const elementsWithBinding = new WeakMap();
+
 const InternalEvents = {
   /**
    *
@@ -52,23 +54,30 @@ const InternalEvents = {
   /**
    * Attaches event handlers for data-attributes powered events.
    *
-   * @param {HTMLElement} parent - element containing data-attributes
-   * @returns {Object} handler - object containing name of the event and its corresponding function
+   * @param {HTMLElement} parent - element containing data-attributes to which the event listener
+   * will be attached.
+   * @returns {Function|null} A dispose function that can be called to remove the event listener and
+   * unmark the element, or null if no event handler was attached.
    */
   bindInternalEventDocument(parent = document) {
-    if (!Tracker.enabled() || parent.internalEventsTrackingBound) {
-      return [];
+    if (!Tracker.enabled() || elementsWithBinding.has(parent)) {
+      return null;
     }
 
-    // eslint-disable-next-line no-param-reassign
-    parent.internalEventsTrackingBound = true;
+    elementsWithBinding.set(parent, true);
 
-    const handler = {
-      name: 'click',
-      func: (e) => InternalEventHandler(e, this.trackEvent.bind(this)),
+    const eventName = 'click';
+    const eventFunc = (e) => InternalEventHandler(e, this.trackEvent.bind(this));
+
+    parent.addEventListener(eventName, eventFunc);
+
+    const dispose = () => {
+      elementsWithBinding.delete(parent);
+
+      parent.removeEventListener(eventName, eventFunc);
     };
-    parent.addEventListener(handler.name, handler.func);
-    return handler;
+
+    return dispose;
   },
   /**
    * Attaches internal event handlers for load events.

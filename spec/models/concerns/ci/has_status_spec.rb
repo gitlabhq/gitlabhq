@@ -368,6 +368,18 @@ RSpec.describe Ci::HasStatus, feature_category: :continuous_integration do
       end
     end
 
+    describe '.complete_or_manual' do
+      subject { CommitStatus.complete_or_manual }
+
+      (described_class::COMPLETED_STATUSES + [:manual]).each do |status|
+        it_behaves_like 'containing the job', status
+      end
+
+      described_class::ACTIVE_STATUSES.each do |status|
+        it_behaves_like 'not containing the job', status
+      end
+    end
+
     describe '.waiting_for_resource_or_upcoming' do
       subject { CommitStatus.waiting_for_resource_or_upcoming }
 

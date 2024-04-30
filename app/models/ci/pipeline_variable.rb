@@ -25,9 +25,5 @@ module Ci
     def hook_attrs
       { key: key, value: value }
     end
-
-    def self.use_partition_id_filter?
-      Ci::Pipeline.use_partition_id_filter?
-    end
   end
 end

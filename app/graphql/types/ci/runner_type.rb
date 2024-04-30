@@ -146,9 +146,7 @@ module Types
             .group(:id) # rubocop: disable CodeReuse/ActiveRecord
             .index_by(&:id)
 
-          ids.each do |id|
-            loader.call(id, counts[id]&.count)
-          end
+          ids.each { |id| loader.call(id, counts[id]&.count) }
         end
       end
 

@@ -269,3 +269,148 @@ For Haml:
 ```haml
 = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle',  data: { event_tracking: 'action', event_label: 'group_runner_form', event_property: dynamic_property_var, event_value: 2 }}) do
 ```
+
+#### Frontend testing
+
+If you are using the `trackEvent` method in any of your code, whether it is in raw JavaScript or a Vue component, you can use the `useMockInternalEventsTracking` helper method to assert if `trackEvent` is called.
+
+For example, if we need to test the below Vue component,
+
+```vue
+<script>
+import { GlButton } from '@gitlab/ui';
+import { InternalEvents } from '~/tracking';
+import { __ } from '~/locale';
+
+export default {
+  components: {
+    GlButton,
+  },
+  mixins: [InternalEvents.mixin()],
+  methods: {
+    handleButtonClick() {
+      // some application logic
+      // when some event happens fire tracking call
+      this.trackEvent('click_view_runners_button', {
+        label: 'group_runner_form',
+        property: 'property_value',
+        value: 3,
+      });
+    },
+  },
+  i18n: {
+    button1: __('Sample Button'),
+  },
+};
+</script>
+<template>
+  <div style="display: flex; height: 90vh; align-items: center; justify-content: center">
+    <gl-button class="sample-button" @click="handleButtonClick">
+      {{ $options.i18n.button1 }}
+    </gl-button>
+  </div>
+</template>
+```
+
+Below would be the test case for above component.
+
+```javascript
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import DeleteApplication from '~/admin/applications/components/delete_application.vue';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
+
+describe('DeleteApplication', () => {
+  /** @type {import('helpers/vue_test_utils_helper').ExtendedWrapper} */
+  let wrapper;
+
+  const createComponent = () => {
+    wrapper = shallowMountExtended(DeleteApplication);
+  };
+
+  beforeEach(() => {
+    createComponent();
+  });
+
+  describe('sample button 1', () => {
+    const { bindInternalEventDocument } = useMockInternalEventsTracking();
+    it('should call trackEvent method when clicked on sample button', async () => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+      await wrapper.find('.sample-button').vm.$emit('click');
+
+      expect(trackEventSpy).toHaveBeenCalledWith(
+        'click_view_runners_button',
+        {
+          label: 'group_runner_form',
+          property: 'property_value',
+          value: 3,
+        },
+        undefined,
+      );
+    });
+  });
+});
+```
+
+If you are using tracking attributes for in Vue/View templates like below,
+
+```vue
+<script>
+import { GlButton } from '@gitlab/ui';
+import { InternalEvents } from '~/tracking';
+import { __ } from '~/locale';
+
+export default {
+  components: {
+    GlButton,
+  },
+  mixins: [InternalEvents.mixin()],
+  i18n: {
+    button1: __('Sample Button'),
+  },
+};
+</script>
+<template>
+  <div style="display: flex; height: 90vh; align-items: center; justify-content: center">
+    <gl-button
+      class="sample-button"
+      data-event-tracking="click_view_runners_button"
+      data-event-label="group_runner_form"
+    >
+      {{ $options.i18n.button1 }}
+    </gl-button>
+  </div>
+</template>
+```
+
+Below would be the test case for above component.
+
+```javascript
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import DeleteApplication from '~/admin/applications/components/delete_application.vue';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
+
+describe('DeleteApplication', () => {
+  /** @type {import('helpers/vue_test_utils_helper').ExtendedWrapper} */
+  let wrapper;
+
+  const createComponent = () => {
+    wrapper = shallowMountExtended(DeleteApplication);
+  };
+
+  beforeEach(() => {
+    createComponent();
+  });
+
+  describe('sample button', () => {
+    const { bindInternalEventDocument } = useMockInternalEventsTracking();
+    it('should call trackEvent method when clicked on sample button', () => {
+      const { triggerEvent, trackEventSpy } = bindInternalEventDocument(wrapper.element);
+      triggerEvent('.sample-button');
+      expect(trackEventSpy).toHaveBeenCalledWith('click_view_runners_button', {
+        label: 'group_runner_form',
+      });
+    });
+  });
+});
+```

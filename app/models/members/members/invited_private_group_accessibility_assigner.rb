@@ -45,7 +45,7 @@ module Members
       return [] if current_user.nil?
 
       private_invited_groups = private_invited_group_members.map(&:source).uniq
-      private_invited_groups.select { |group| current_user.can?(:read_group, group) }
+      Group.groups_user_can(private_invited_groups, current_user, :read_group)
     end
     strong_memoize_attr(:authorized_groups)
 

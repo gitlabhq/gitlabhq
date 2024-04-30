@@ -795,6 +795,10 @@ func gitOkBody(t *testing.T) *api.Response {
 		Repository: gitalypb.Repository{
 			StorageName:  "default",
 			RelativePath: "foo/bar.git",
+			// Gitaly requires a GlRepository to be set in requests that invoke the hooks.
+			// Set a placeholder to pass the validation. The value doesn't actually matter
+			// as the calls into Rails' internal API are disabled in tests.
+			GlRepository: "placeholder-1",
 		},
 	}
 }

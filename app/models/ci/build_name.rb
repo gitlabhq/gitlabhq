@@ -24,9 +24,5 @@ module Ci
     def name=(value)
       super(value&.truncate(MAX_JOB_NAME_LENGTH))
     end
-
-    def self.use_partition_id_filter?
-      Ci::Pipeline.use_partition_id_filter?
-    end
   end
 end

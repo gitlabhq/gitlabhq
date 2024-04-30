@@ -3092,6 +3092,9 @@ msgstr ""
 msgid "Add environment"
 msgstr ""
 
+msgid "Add exclusions"
+msgstr ""
+
 msgid "Add existing confidential %{issuableType}"
 msgstr ""
 
@@ -27434,6 +27437,9 @@ msgstr ""
 msgid "Integrations|Add an integration"
 msgstr ""
 
+msgid "Integrations|Add exclusions"
+msgstr ""
+
 msgid "Integrations|All details"
 msgstr ""
 
@@ -27471,6 +27477,9 @@ msgid "Integrations|Comment settings:"
 msgstr ""
 
 msgid "Integrations|Configure the scope of notifications."
+msgstr ""
+
+msgid "Integrations|Confirm %{type} exclusion removal"
 msgstr ""
 
 msgid "Integrations|Connection details"
@@ -27518,6 +27527,9 @@ msgstr ""
 msgid "Integrations|Error: You are trying to upload something other than an allowed file."
 msgstr ""
 
+msgid "Integrations|Exclusions"
+msgstr ""
+
 msgid "Integrations|GitLab administrators can set up integrations that all groups and projects inherit and use by default. These integrations apply to all groups and projects that don't already use custom settings. You can override custom settings for a group or project if the settings are necessary at that level. Learn more about %{integrations_link_start}instance-level integration management%{link_end}."
 msgstr ""
 
@@ -27563,6 +27575,12 @@ msgstr ""
 msgid "Integrations|Perform common tasks with slash commands."
 msgstr ""
 
+msgid "Integrations|Project exclusion removed"
+msgstr ""
+
+msgid "Integrations|Projects in this list no longer require commits to be signed."
+msgstr ""
+
 msgid "Integrations|Projects using custom settings"
 msgstr ""
 
@@ -27570,6 +27588,9 @@ msgid "Integrations|Projects using custom settings will not be affected."
 msgstr ""
 
 msgid "Integrations|Projects using custom settings will not be impacted unless the project owner chooses to use parent level defaults."
+msgstr ""
+
+msgid "Integrations|Remove exclusion"
 msgstr ""
 
 msgid "Integrations|Reset integration?"
@@ -27611,6 +27632,9 @@ msgstr ""
 msgid "Integrations|The slash command verification request has expired. Please run the command again."
 msgstr ""
 
+msgid "Integrations|There are no exclusions"
+msgstr ""
+
 msgid "Integrations|There are no projects using custom settings"
 msgstr ""
 
@@ -27639,6 +27663,9 @@ msgid "Integrations|You can use this alias in your Slack commands"
 msgstr ""
 
 msgid "Integrations|You haven't activated any integrations yet."
+msgstr ""
+
+msgid "Integrations|You're removing an exclusion for %{name}. Are you sure you want to continue?"
 msgstr ""
 
 msgid "Integrations|You've activated every integration 🎉"
@@ -33870,6 +33897,9 @@ msgid "No %{label}"
 msgstr ""
 
 msgid "No %{providerTitle} repositories found"
+msgstr ""
+
+msgid "No %{title} have been added."
 msgstr ""
 
 msgid "No Epic"
@@ -42657,6 +42687,9 @@ msgstr ""
 msgid "Remove epic reference"
 msgstr ""
 
+msgid "Remove exclusion for %{name}"
+msgstr ""
+
 msgid "Remove favicon"
 msgstr ""
 
@@ -45708,6 +45741,9 @@ msgstr ""
 msgid "Search templates"
 msgstr ""
 
+msgid "Search to add %{title}"
+msgstr ""
+
 msgid "Search users"
 msgstr ""
 
@@ -47381,6 +47417,9 @@ msgid "SecurityReports|There was an error creating the issue."
 msgstr ""
 
 msgid "SecurityReports|There was an error creating the issue. Please try again."
+msgstr ""
+
+msgid "SecurityReports|There was an error creating the merge request"
 msgstr ""
 
 msgid "SecurityReports|There was an error creating the merge request."
@@ -62138,9 +62177,6 @@ msgid "seat"
 msgid_plural "seats"
 msgstr[0] ""
 msgstr[1] ""
-
-msgid "security Reports|There was an error creating the merge request"
-msgstr ""
 
 msgid "security policy bot users cannot be added to other projects"
 msgstr ""

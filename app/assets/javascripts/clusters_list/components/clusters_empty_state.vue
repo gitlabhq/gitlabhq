@@ -1,6 +1,7 @@
 <script>
 import { GlEmptyState, GlLink, GlSprintf, GlAlert } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
+import { PROMO_URL } from '~/lib/utils/url_utility';
 import { I18N_CLUSTERS_EMPTY_STATE } from '../constants';
 
 export default {
@@ -15,8 +16,7 @@ export default {
   clustersHelpUrl: helpPagePath('user/infrastructure/clusters/index', {
     anchor: 'certificate-based-kubernetes-integration-deprecated',
   }),
-  blogPostUrl:
-    'https://about.gitlab.com/blog/2021/11/15/deprecating-the-cert-based-kubernetes-integration/',
+  blogPostUrl: `${PROMO_URL}/blog/2021/11/15/deprecating-the-cert-based-kubernetes-integration/`,
 };
 </script>
 

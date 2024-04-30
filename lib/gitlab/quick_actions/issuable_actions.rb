@@ -333,7 +333,7 @@ module Gitlab
         end
 
         def confidential_execution_message
-          confidential_error_message.presence || _("Made this %{type} confidential.") % { type: target_issuable_name }
+          confidential_error_message.presence || (_("Made this %{type} confidential.") % { type: target_issuable_name })
         end
 
         def confidential_error_message

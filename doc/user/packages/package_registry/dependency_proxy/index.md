@@ -90,7 +90,7 @@ The dependency proxy uses the [same permissions as the package registry](../inde
 | Internal           | Developer                                             | **{check-circle}** Yes  | **{check-circle}** Yes   | Package file returned from either the cache or the remote registry. The file is published to the cache. |
 | Private            | Anonymous                                             | **{dotted-circle}** No  | **{dotted-circle}** No   | Request rejected |
 | Private            | Reporter                                              | **{check-circle}** Yes  | **{dotted-circle}** No   | Package file returned from either the cache or the remote registry. |
-| Internal           | Developer                                             | **{check-circle}** Yes  | **{check-circle}** Yes   | Package file returned from either the cache or the remote registry. The file is published to the cache. |
+| Private           | Developer                                             | **{check-circle}** Yes  | **{check-circle}** Yes   | Package file returned from either the cache or the remote registry. The file is published to the cache. |
 
 At a minimum, any user who can use the dependency proxy can also use the project's package registry.
 

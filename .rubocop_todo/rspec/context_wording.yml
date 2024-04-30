@@ -1790,7 +1790,6 @@ RSpec/ContextWording:
     - 'spec/lib/gitlab/import_export/command_line_util_spec.rb'
     - 'spec/lib/gitlab/import_export/decompressed_archive_size_validator_spec.rb'
     - 'spec/lib/gitlab/import_export/fast_hash_serializer_spec.rb'
-    - 'spec/lib/gitlab/import_export/file_importer_spec.rb'
     - 'spec/lib/gitlab/import_export/group/object_builder_spec.rb'
     - 'spec/lib/gitlab/import_export/group/relation_factory_spec.rb'
     - 'spec/lib/gitlab/import_export/group/tree_restorer_spec.rb'

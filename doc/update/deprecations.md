@@ -455,6 +455,20 @@ From GitLab 18.0 and later, the runner registration methods implemented by the n
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
+### The GitLab legacy requirement IID is deprecated in favor of work item IID
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">15.9</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/390263).
+</div>
+
+We will be transitioning to a new IID as a result of moving requirements to a [work item type](https://docs.gitlab.com/ee/development/work_items.html#work-items-and-work-item-types). Users should begin using the new IID as support for the legacy IID and existing formatting will end in GitLab 18.0. The legacy requirement IID remains available until its removal in GitLab 18.0.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
 ### The `Project.services` GraphQL field is deprecated
 
 <div class="deprecation-notes">
@@ -1992,20 +2006,6 @@ In GitLab 16.6 the [GitHub importer Rake task](https://docs.gitlab.com/ee/admini
 In GitLab 17.0, the Rake task will be removed.
 
 Instead, GitHub repositories can be imported by using the [API](https://docs.gitlab.com/ee/api/import.html#import-repository-from-github) or the [UI](https://docs.gitlab.com/ee/user/project/import/github.html).
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="17.0">
-
-### The GitLab legacy requirement IID is deprecated in favor of work item IID
-
-<div class="deprecation-notes">
-- Announced in GitLab <span class="milestone">15.9</span>
-- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/390263).
-</div>
-
-We will be transitioning to a new IID as a result of moving requirements to a [work item type](https://docs.gitlab.com/ee/development/work_items.html#work-items-and-work-item-types). Users should begin using the new IID as support for the legacy IID and existing formatting will end in GitLab 17.0. The legacy requirement IID remains available until its removal in GitLab 17.0.
 
 </div>
 

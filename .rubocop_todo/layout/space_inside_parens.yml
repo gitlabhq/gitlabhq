@@ -129,7 +129,6 @@ Layout/SpaceInsideParens:
     - 'spec/lib/gitlab/health_checks/simple_check_shared.rb'
     - 'spec/lib/gitlab/highlight_spec.rb'
     - 'spec/lib/gitlab/import_export/attributes_permitter_spec.rb'
-    - 'spec/lib/gitlab/import_export/file_importer_spec.rb'
     - 'spec/lib/gitlab/import_export/json/streaming_serializer_spec.rb'
     - 'spec/lib/gitlab/import_export/project/export_task_spec.rb'
     - 'spec/lib/gitlab/import_export/project/tree_saver_spec.rb'

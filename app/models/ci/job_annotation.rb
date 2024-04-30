@@ -20,9 +20,5 @@ module Ci
     validates :data, json_schema: { filename: 'ci_job_annotation_data' }
     validates :name, presence: true,
       length: { maximum: 255 }
-
-    def self.use_partition_id_filter?
-      Ci::Pipeline.use_partition_id_filter?
-    end
   end
 end

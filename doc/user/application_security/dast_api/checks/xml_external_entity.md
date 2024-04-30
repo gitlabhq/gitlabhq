@@ -1,20 +1,11 @@
 ---
-stage: Secure
-group: Dynamic Analysis
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+redirect_to: '../../api_security_testing/checks/xml_external_entity_check.md'
+remove_date: '2024-07-30'
 ---
 
-# XML external entity
+This document was moved to [another location](../../api_security_testing/checks/xml_external_entity_check.md).
 
-## Description
-
-Check for XML DTD processing vulnerabilities.
-
-## Remediation
-
-XML external entity Attack is a type of attack against an application that parses XML input. This attack occurs when XML input containing a reference to an external entity is processed by a weakly configured XML parser. This attack may lead to the disclosure of confidential data, denial of service, server side request forgery, port scanning from the perspective of the machine where the parser is located, and other system impacts.
-
-## Links
-
-- [OWASP](https://owasp.org/Top10/A03_2021-Injection)
-- [CWE](https://cwe.mitre.org/data/definitions/611.html)
+<!-- This redirect file can be deleted after <2024-07-30>. -->
+<!-- Redirects that point to other docs in the same project expire in three months. -->
+<!-- Redirects that point to docs in a different project or site (for example, link is not relative and starts with `https:`) expire in one year. -->
+<!-- Before deletion, see: https://docs.gitlab.com/ee/development/documentation/redirects.html -->

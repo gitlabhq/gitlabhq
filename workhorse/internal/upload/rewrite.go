@@ -91,7 +91,7 @@ func rewriteFormFilesFromMultipart(r *http.Request, writer *multipart.Writer, fi
 			// Unfortunately as described in https://github.com/golang/go/issues/54133,
 			// we don't have a good way to determine the actual error cause of NextPart()
 			// without an ugly string comparison.
-			// Note that io.EOF is treated differently from an unexpected EOF:
+			// io.EOF is treated differently from an unexpected EOF:
 			// https://github.com/golang/go/blob/69d6c7b8ee62b4db5a8f6399e15f27d47b209a29/src/mime/multipart/multipart.go#L395-L405
 			if err.Error() == "multipart: NextPart: EOF" {
 				return ErrUnexpectedMultipartEOF
@@ -157,7 +157,11 @@ func (rew *rewriter) handleFilePart(r *http.Request, name string, p *multipart.P
 	if err != nil {
 		return err
 	}
-	defer inputReader.Close()
+	defer func() {
+		if err = inputReader.Close(); err != nil {
+			fmt.Printf("error closing multipart file: %v", err)
+		}
+	}()
 
 	fh, err := destination.Upload(ctx, inputReader, -1, filename, opts)
 	if err != nil {
@@ -175,7 +179,9 @@ func (rew *rewriter) handleFilePart(r *http.Request, name string, p *multipart.P
 	}
 
 	for key, value := range fields {
-		rew.writer.WriteField(key, value)
+		if err := rew.writer.WriteField(key, value); err != nil {
+			return err
+		}
 		rew.finalizedFields[key] = true
 	}
 
@@ -207,7 +213,7 @@ type fileAuthorizer interface {
 
 type eagerAuthorizer struct{ response *api.Response }
 
-func (ea *eagerAuthorizer) AuthorizeFile(r *http.Request) (*api.Response, error) {
+func (ea *eagerAuthorizer) AuthorizeFile(_ *http.Request) (*api.Response, error) {
 	return ea.response, nil
 }
 

@@ -1,6 +1,7 @@
 <script>
 import { GlAlert, GlLink } from '@gitlab/ui';
 import { s__, sprintf } from '~/locale';
+import { PROMO_URL } from '~/lib/utils/url_utility';
 
 export default {
   name: 'IncubationAlert',
@@ -41,6 +42,7 @@ export default {
     learnMoreLabel: s__('Incubation|Learn more about incubating features'),
     feedbackLabel: s__('Incubation|Give feedback on this feature'),
   },
+  learnMoreUrl: `${PROMO_URL}/handbook/engineering/incubation/`,
 };
 </script>
 
@@ -54,7 +56,7 @@ export default {
     @dismiss="dismissAlert"
   >
     {{ $options.i18n.contentLabel }}
-    <gl-link href="https://about.gitlab.com/handbook/engineering/incubation/" target="_blank">{{
+    <gl-link :href="$options.learnMoreUrl" target="_blank">{{
       $options.i18n.learnMoreLabel
     }}</gl-link>
   </gl-alert>

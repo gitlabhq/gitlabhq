@@ -5,4 +5,8 @@
 %h1.page-title.gl-font-size-h-display
   = @integration.title
 
-.js-vue-integration-overrides{ data: integration_overrides_data(@integration, project: @project, group: @group) }
+- if @integration.title == 'Beyond Identity' && Feature.enabled?(:beyond_identity_exclusions)
+  .js-vue-beyond-identity-exclusions{ data: integration_overrides_data(@integration) }
+
+- else
+  .js-vue-integration-overrides{ data: integration_overrides_data(@integration, project: @project, group: @group) }

@@ -5,7 +5,7 @@ import (
 )
 
 const (
-	// This header carries the JWT token for gitlab-rails
+	// RequestHeader carries the JWT token for gitlab-rails
 	RequestHeader = "Gitlab-Workhorse-Api-Request"
 )
 

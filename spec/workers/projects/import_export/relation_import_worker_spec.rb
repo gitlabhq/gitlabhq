@@ -18,6 +18,14 @@ RSpec.describe Projects::ImportExport::RelationImportWorker, feature_category: :
   end
 
   context 'when the import succeeds' do
+    it 'schedules the relation restoration' do
+      expect_next_instance_of(Gitlab::ImportExport::Project::RelationTreeRestorer) do |restorer|
+        expect(restorer).to receive(:restore_single_relation).with(tracker.relation)
+      end
+
+      perform
+    end
+
     it 'marks the tracker as finished' do
       expect { perform }.to change { tracker.reload.finished? }.from(false).to(true)
     end

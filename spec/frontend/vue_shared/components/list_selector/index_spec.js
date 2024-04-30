@@ -2,11 +2,13 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlCard, GlIcon, GlCollapsibleListbox, GlSearchBoxByType } from '@gitlab/ui';
 import Api from '~/api';
+import RestApi from '~/rest_api';
 import { createAlert } from '~/alert';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import ListSelector from '~/vue_shared/components/list_selector/index.vue';
 import UserItem from '~/vue_shared/components/list_selector/user_item.vue';
 import GroupItem from '~/vue_shared/components/list_selector/group_item.vue';
+import ProjectItem from '~/vue_shared/components/list_selector/project_item.vue';
 import DeployKeyItem from '~/vue_shared/components/list_selector/deploy_key_item.vue';
 import groupsAutocompleteQuery from '~/graphql_shared/queries/groups_autocomplete.query.graphql';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -14,6 +16,14 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { USERS_RESPONSE_MOCK, GROUPS_RESPONSE_MOCK } from './mock_data';
 
 jest.mock('~/alert');
+jest.mock('~/rest_api', () => ({
+  getProjects: jest.fn().mockResolvedValue({
+    data: [
+      { name: 'Project 1', id: '1' },
+      { name: 'Project 2', id: '2' },
+    ],
+  }),
+}));
 Vue.use(VueApollo);
 
 describe('List Selector spec', () => {
@@ -34,6 +44,10 @@ describe('List Selector spec', () => {
   const DEPLOY_KEYS_MOCK_PROPS = {
     projectPath: 'some/project/path',
     type: 'deployKeys',
+  };
+
+  const PROJECTS_MOCK_PROPS = {
+    type: 'projects',
   };
 
   const groupsAutocompleteQuerySuccess = jest.fn().mockResolvedValue(GROUPS_RESPONSE_MOCK);
@@ -60,11 +74,20 @@ describe('List Selector spec', () => {
   const findSearchBox = () => wrapper.findComponent(GlSearchBoxByType);
   const findAllUserComponents = () => wrapper.findAllComponents(UserItem);
   const findAllGroupComponents = () => wrapper.findAllComponents(GroupItem);
+  const findAllProjectComponents = () => wrapper.findAllComponents(ProjectItem);
   const findAllDeployKeyComponents = () => wrapper.findAllComponents(DeployKeyItem);
 
   beforeEach(() => {
     jest.spyOn(Api, 'projectUsers').mockResolvedValue(USERS_RESPONSE_MOCK);
     jest.spyOn(Api, 'groupMembers').mockResolvedValue({ data: USERS_RESPONSE_MOCK });
+  });
+
+  describe('empty state', () => {
+    beforeEach(() => createComponent(USERS_MOCK_PROPS));
+
+    it('renders an empty placeholder', () => {
+      expect(wrapper.findByText('No users have been added.').exists()).toBe(true);
+    });
   });
 
   describe('Users type', () => {
@@ -131,7 +154,6 @@ describe('List Selector spec', () => {
 
         it('renders a List box component with the correct props', () => {
           expect(findSearchResultsDropdown().props()).toMatchObject({
-            multiple: true,
             items: searchResponse,
           });
         });
@@ -142,7 +164,7 @@ describe('List Selector spec', () => {
 
         it('emits an event when a search result is selected', () => {
           const firstSearchResult = searchResponse[0];
-          findAllUserComponents().at(0).vm.$emit('select', firstSearchResult.username);
+          findSearchResultsDropdown().vm.$emit('select', firstSearchResult.username);
 
           expect(wrapper.emitted('select')).toEqual([
             [{ ...firstSearchResult, text: 'Administrator', value: 'root' }],
@@ -214,7 +236,6 @@ describe('List Selector spec', () => {
 
       it('renders a dropdown for the search results', () => {
         expect(findSearchResultsDropdown().props()).toMatchObject({
-          multiple: true,
           items: searchResponse,
         });
       });
@@ -225,7 +246,7 @@ describe('List Selector spec', () => {
 
       it('emits an event when a search result is selected', () => {
         const firstSearchResult = searchResponse[0];
-        findAllGroupComponents().at(0).vm.$emit('select', firstSearchResult.name);
+        findSearchResultsDropdown().vm.$emit('select', firstSearchResult.name);
 
         expect(wrapper.emitted('select')).toEqual([
           [{ ...firstSearchResult, text: 'Flightjs', value: 'Flightjs' }],
@@ -299,6 +320,73 @@ describe('List Selector spec', () => {
 
       // TODO - add a test for the select event once we have API integration
       // https://gitlab.com/gitlab-org/gitlab/-/issues/432494
+    });
+  });
+
+  describe('Projects type', () => {
+    beforeEach(() => createComponent(PROJECTS_MOCK_PROPS));
+
+    it('renders a correct title', () => {
+      expect(findTitle().text()).toContain('Projects');
+    });
+
+    it('renders the correct icon', () => {
+      expect(findIcon().props('name')).toBe('project');
+    });
+
+    describe('searching', () => {
+      const searchResponse = [
+        { name: 'Project 1', id: '1' },
+        { name: 'Project 2', id: '2' },
+      ];
+      const search = 'Project';
+
+      const emitSearchInput = async () => {
+        findSearchBox().vm.$emit('input', search);
+        await waitForPromises();
+      };
+
+      beforeEach(() => emitSearchInput());
+
+      it('calls query with correct variables when Search box receives an input', () => {
+        expect(RestApi.getProjects).toHaveBeenCalledWith(search, { membership: false });
+      });
+
+      it('renders a dropdown for the search results', () => {
+        expect(findSearchResultsDropdown().props()).toMatchObject({
+          items: searchResponse,
+        });
+      });
+
+      it('renders a project component for each search result', () => {
+        expect(findAllProjectComponents().length).toBe(searchResponse.length);
+      });
+    });
+
+    describe('selected items', () => {
+      const selectedGroup = { name: 'Flightjs' };
+      const selectedItems = [selectedGroup];
+      beforeEach(() => createComponent({ ...GROUPS_MOCK_PROPS, selectedItems }));
+
+      it('renders a heading with the total selected items', () => {
+        expect(findTitle().text()).toContain('Groups');
+        expect(findTitle().text()).toContain('1');
+      });
+
+      it('renders a group component for each selected item', () => {
+        expect(findAllGroupComponents().length).toBe(selectedItems.length);
+        expect(findAllGroupComponents().at(0).props()).toMatchObject({
+          data: selectedGroup,
+          canDelete: true,
+        });
+      });
+
+      it('emits a delete event when a delete event is emitted from the group component', () => {
+        const name = 'Flightjs';
+        findAllGroupComponents().at(0).vm.$emit('delete', name);
+
+        expect(wrapper.emitted('delete')).toEqual([[name]]);
+      });
     });
   });
 });
