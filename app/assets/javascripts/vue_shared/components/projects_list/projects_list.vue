@@ -45,7 +45,7 @@ export default {
 </script>
 
 <template>
-  <ul class="gl-p-0 gl-list-style-none">
+  <ul class="gl-p-0 gl-list-none">
     <projects-list-item
       v-for="project in projects"
       :key="project.id"

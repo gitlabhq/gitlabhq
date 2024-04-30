@@ -24,8 +24,8 @@ module WikiPages
       )
     end
 
-    def usage_counter_action
-      :update
+    def internal_event_name
+      'update_wiki_page'
     end
 
     def external_action

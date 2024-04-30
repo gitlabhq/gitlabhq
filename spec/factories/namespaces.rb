@@ -37,6 +37,13 @@ FactoryBot.define do
       end
     end
 
+    trait :allow_runner_registration_token do
+      after(:create) do |namespace|
+        create(:namespace_settings, namespace: namespace) unless namespace.namespace_settings
+        namespace.namespace_settings.update!(allow_runner_registration_token: true)
+      end
+    end
+
     trait :shared_runners_disabled do
       shared_runners_enabled { false }
     end

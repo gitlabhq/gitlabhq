@@ -25,7 +25,7 @@ The **Homepage** button is located on the upper-left corner of the left sidebar.
 Replace the default **GitLab logo** **{tanuki}** with any image.
 
 - The file should be less than 1 MB.
-- The image should be 28 pixels high. Images more than 28 px high will be resized.
+- The image should be 24 pixels high. Images more than 24 px high will be resized.
 
 To customize your **Homepage** icon image:
 

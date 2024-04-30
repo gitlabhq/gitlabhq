@@ -29,7 +29,7 @@ export default {
 
 <template>
   <nav data-testid="search-filter" class="gl-py-2 gl-relative">
-    <ul class="gl-px-2 gl-list-style-none">
+    <ul class="gl-px-2 gl-list-none">
       <nav-item v-for="item in navigationItems" :key="`menu-${item.title}`" :item="item" />
     </ul>
   </nav>

@@ -1334,11 +1334,23 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
   end
 
   describe 'update_runners_registration_token' do
+    let(:allow_runner_registration_token) { true }
+
+    before do
+      stub_application_setting(allow_runner_registration_token: allow_runner_registration_token)
+    end
+
     context 'admin' do
       let(:current_user) { admin }
 
       context 'when admin mode is enabled', :enable_admin_mode do
         it { is_expected.to be_allowed(:update_runners_registration_token) }
+
+        context 'with registration tokens disabled' do
+          let(:allow_runner_registration_token) { false }
+
+          it { is_expected.to be_disallowed(:update_runners_registration_token) }
+        end
       end
 
       context 'when admin mode is disabled' do
@@ -1350,6 +1362,12 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       let(:current_user) { owner }
 
       it { is_expected.to be_allowed(:update_runners_registration_token) }
+
+      context 'with registration tokens disabled' do
+        let(:allow_runner_registration_token) { false }
+
+        it { is_expected.to be_disallowed(:update_runners_registration_token) }
+      end
     end
 
     context 'with maintainer' do
@@ -1384,11 +1402,23 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
   end
 
   describe 'register_group_runners' do
+    let(:allow_runner_registration_token) { true }
+
+    before do
+      stub_application_setting(allow_runner_registration_token: allow_runner_registration_token)
+    end
+
     context 'admin' do
       let(:current_user) { admin }
 
       context 'when admin mode is enabled', :enable_admin_mode do
         it { is_expected.to be_allowed(:register_group_runners) }
+
+        context 'with registration tokens disabled' do
+          let(:allow_runner_registration_token) { false }
+
+          it { is_expected.to be_disallowed(:register_group_runners) }
+        end
 
         context 'with specific group runner registration disabled' do
           before do
@@ -1404,6 +1434,12 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
           end
 
           it { is_expected.to be_allowed(:register_group_runners) }
+
+          context 'with registration tokens disabled' do
+            let(:allow_runner_registration_token) { false }
+
+            it { is_expected.to be_disallowed(:register_group_runners) }
+          end
 
           context 'with specific group runner registration disabled' do
             before do
@@ -1432,6 +1468,12 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       let(:current_user) { owner }
 
       it { is_expected.to be_allowed(:register_group_runners) }
+
+      context 'with registration tokens disabled' do
+        let(:allow_runner_registration_token) { false }
+
+        it { is_expected.to be_disallowed(:register_group_runners) }
+      end
 
       context 'with group runner registration disabled' do
         before do

@@ -25,7 +25,7 @@ RSpec.describe Gitlab::Doctor::ResetTokens, feature_category: :fleet_visibility 
     end
   end
 
-  let(:broken_group) { create(:group, runners_token_encrypted: 'aaa') }
+  let(:broken_group) { create(:group, :allow_runner_registration_token, runners_token_encrypted: 'aaa') }
 
   subject(:run!) do
     expect(logger).to receive(:info).with(

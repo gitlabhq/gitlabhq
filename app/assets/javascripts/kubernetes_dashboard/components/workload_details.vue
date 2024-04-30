@@ -68,7 +68,7 @@ export default {
 </script>
 
 <template>
-  <ul class="gl-list-style-none">
+  <ul class="gl-list-none">
     <workload-details-item :label="$options.i18n.name">
       <span class="gl-word-break-word"> {{ item.name }}</span>
     </workload-details-item>

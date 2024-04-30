@@ -151,7 +151,7 @@ export default {
     </template>
 
     <template #default>
-      <ul class="gl-list-style-none gl-border-b-initial gl-mb-0 gl-pb-0!">
+      <ul class="gl-list-none gl-border-b-initial gl-mb-0 gl-pb-0!">
         <drawer-item
           v-if="activeElement.title"
           :description="$options.i18n.name"

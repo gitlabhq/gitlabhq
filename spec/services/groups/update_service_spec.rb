@@ -468,6 +468,7 @@ RSpec.describe Groups::UpdateService, feature_category: :groups_and_projects do
 
   context 'when updating #allow_runner_registration_token' do
     let(:params) { { allow_runner_registration_token: false } }
+    let!(:internal_group) { create(:group, :internal, :allow_runner_registration_token) }
 
     let(:service) do
       described_class.new(internal_group, user, **params)

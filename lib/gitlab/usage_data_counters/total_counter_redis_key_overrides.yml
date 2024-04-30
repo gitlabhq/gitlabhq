@@ -16,3 +16,7 @@
 '{event_counters}_web_ide_viewed': WEB_IDE_VIEWS_COUNT
 '{event_counters}_status_page_incident_published': USAGE_STATUS_PAGE_INCIDENT_PUBLISHES
 '{event_counters}_status_page_incident_unpublished': USAGE_STATUS_PAGE_INCIDENT_UNPUBLISHES
+'{event_counters}_create_wiki_page': USAGE_WIKI_PAGES_CREATE
+'{event_counters}_delete_wiki_page': USAGE_WIKI_PAGES_DELETE
+'{event_counters}_update_wiki_page': USAGE_WIKI_PAGES_UPDATE
+'{event_counters}_view_wiki_page': USAGE_WIKI_PAGES_VIEW

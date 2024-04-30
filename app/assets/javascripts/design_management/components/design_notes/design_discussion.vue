@@ -291,7 +291,7 @@ export default {
   <div class="design-discussion-wrapper" @click="$emit('update-active-discussion')">
     <design-note-pin :is-resolved="discussion.resolved" :label="discussion.index" />
     <ul
-      class="design-discussion bordered-box gl-relative gl-p-0 gl-list-style-none"
+      class="design-discussion bordered-box gl-relative gl-p-0 gl-list-none"
       :class="{ 'gl-bg-blue-50': isDiscussionActive }"
       data-testid="design-discussion-content"
     >

@@ -44,7 +44,7 @@ module Ci
       def associate_new_projects(new_project_ids, current_project_ids)
         missing_projects = Project.id_in(new_project_ids - current_project_ids)
 
-        unless missing_projects.all? { |project| current_user.can?(:register_project_runners, project) }
+        unless missing_projects.all? { |project| current_user.can?(:create_runner, project) }
           return ServiceResponse.error(message: 'user is not authorized to add runners to project')
         end
 

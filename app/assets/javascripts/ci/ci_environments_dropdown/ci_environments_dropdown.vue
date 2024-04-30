@@ -160,7 +160,7 @@ export default {
     <template #footer>
       <gl-dropdown-divider v-if="shouldRenderDivider" />
       <div data-testid="max-envs-notice">
-        <gl-dropdown-item class="gl-list-style-none" disabled>
+        <gl-dropdown-item class="gl-list-none" disabled>
           <gl-sprintf :message="$options.i18n.maxEnvsNote" class="gl-font-sm">
             <template #limit>
               {{ $options.ENVIRONMENT_QUERY_LIMIT }}
@@ -171,7 +171,7 @@ export default {
       <div v-if="shouldRenderCreateButton">
         <!-- TODO: Rethink create wildcard button. https://gitlab.com/gitlab-org/gitlab/-/issues/396928 -->
         <gl-dropdown-item
-          class="gl-list-style-none"
+          class="gl-list-none"
           data-testid="create-wildcard-button"
           @click="createEnvironmentScope"
         >

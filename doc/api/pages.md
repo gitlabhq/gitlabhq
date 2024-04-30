@@ -103,7 +103,7 @@ Example response:
 
 ## Update Pages settings for a project
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147227) in GitLab 16.11.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147227) in GitLab 17.0.
 
 Prerequisites:
 

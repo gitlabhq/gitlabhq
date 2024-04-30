@@ -595,7 +595,7 @@ export default {
                 </gl-form-checkbox>
               </div>
               <div v-if="editCommitMessage" class="gl-w-full" data-testid="edit_commit_message">
-                <ul class="border-top commits-list flex-list gl-list-style-none gl-p-0 gl-pt-4">
+                <ul class="border-top commits-list flex-list gl-list-none gl-p-0 gl-pt-4">
                   <commit-edit
                     v-if="shouldShowSquashEdit"
                     :value="squashCommitMessage"

@@ -23,7 +23,7 @@ export default {
 </script>
 
 <template>
-  <ul class="gl-p-0 gl-list-style-none">
+  <ul class="gl-p-0 gl-list-none">
     <groups-list-item
       v-for="group in groups"
       :key="group.id"

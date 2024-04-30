@@ -238,12 +238,12 @@ RSpec.shared_examples 'wiki controller actions' do
           let(:expected_value) { instance_of(String) }
         end
 
-        it 'increases the page view counter' do
-          expect do
-            request
+        it_behaves_like 'internal event tracking' do
+          let(:event) { 'view_wiki_page' }
+          let(:project) { container if container.is_a?(Project) }
+          let(:namespace) { container.is_a?(Group) ? container : container.namespace }
 
-            expect(response).to have_gitlab_http_status(:ok)
-          end.to change { Gitlab::UsageDataCounters::WikiPageCounter.read(:view) }.by(1)
+          subject(:track_event) { request }
         end
       end
 

@@ -77,12 +77,7 @@ export default {
     />
     <div class="gl-overflow-y-auto release-tag-list">
       <div v-if="tags.length || release.tagName">
-        <gl-dropdown-item
-          v-if="selectedNotShown"
-          is-checked
-          is-check-item
-          class="gl-list-style-none"
-        >
+        <gl-dropdown-item v-if="selectedNotShown" is-checked is-check-item class="gl-list-none">
           {{ release.tagName }}
         </gl-dropdown-item>
         <gl-dropdown-item
@@ -90,7 +85,7 @@ export default {
           :key="tag.name"
           :is-checked="selected(tag.name)"
           is-check-item
-          class="gl-list-style-none"
+          class="gl-list-none"
           @click="$emit('select', tag.name)"
         >
           {{ tag.name }}

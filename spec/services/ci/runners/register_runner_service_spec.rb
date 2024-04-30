@@ -7,12 +7,12 @@ RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute', feature_categor
   let(:token) {}
   let(:args) { {} }
   let(:runner) { execute.payload[:runner] }
-  let(:allow_runner_registration_token) { true }
 
   before do
-    stub_application_setting(runners_registration_token: registration_token)
-    stub_application_setting(valid_runner_registrars: ApplicationSetting::VALID_RUNNER_REGISTRAR_TYPES)
-    stub_application_setting(allow_runner_registration_token: allow_runner_registration_token)
+    stub_application_setting(
+      runners_registration_token: registration_token,
+      valid_runner_registrars: ApplicationSetting::VALID_RUNNER_REGISTRAR_TYPES
+    )
   end
 
   subject(:execute) { described_class.new(token, args).execute }
@@ -62,7 +62,9 @@ RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute', feature_categor
       end
 
       context 'when registering instance runners is disallowed' do
-        let(:allow_runner_registration_token) { false }
+        before do
+          stub_application_setting(allow_runner_registration_token: false)
+        end
 
         it_behaves_like 'runner registration is disallowed'
       end
@@ -159,9 +161,10 @@ RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute', feature_categor
     end
 
     context 'when project registration token is used' do
-      let_it_be(:project) { create(:project, :with_namespace_settings) }
-      let_it_be(:token) { project.runners_token }
+      let_it_be_with_reload(:project) { create(:project, :allow_runner_registration_token) }
 
+      # Ensure we have a valid token to start with (runners_token is nil when allow_runner_registration_token is false)
+      let!(:token) { project.runners_token }
       let(:allow_group_runner_registration_token) { true }
 
       before do
@@ -180,7 +183,9 @@ RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute', feature_categor
       end
 
       context 'with runner registration disabled at instance level' do
-        let(:allow_runner_registration_token) { false }
+        before do
+          stub_application_setting(allow_runner_registration_token: false)
+        end
 
         it_behaves_like 'runner registration is disallowed'
       end
@@ -238,9 +243,10 @@ RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute', feature_categor
     end
 
     context 'when group registration token is used' do
-      let_it_be_with_refind(:group) { create(:group) }
-      let_it_be(:token) { group.runners_token }
+      let_it_be_with_reload(:group) { create(:group, :allow_runner_registration_token) }
 
+      # Ensure we have a valid token to start with (runners_token is nil when allow_runner_registration_token is false)
+      let!(:token) { group.runners_token }
       let(:allow_group_runner_registration_token) { true }
 
       before do
@@ -259,7 +265,9 @@ RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute', feature_categor
       end
 
       context 'with runner registration disabled at instance level' do
-        let(:allow_runner_registration_token) { false }
+        before do
+          stub_application_setting(allow_runner_registration_token: false)
+        end
 
         it_behaves_like 'runner registration is disallowed'
       end

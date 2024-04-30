@@ -27,7 +27,7 @@ export default {
 
 <template>
   <div>
-    <ul class="gl-p-0 gl-list-style-none">
+    <ul class="gl-p-0 gl-list-none">
       <organizations-list-item
         v-for="organization in nodes"
         :key="organization.id"

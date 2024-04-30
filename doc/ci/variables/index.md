@@ -576,6 +576,43 @@ test-job6:
     - build-job2
 ```
 
+### Pass an environment variable from the `script` section to another section in the same job
+
+Use `$GITLAB_ENV` to pass environment variables defined in the `script` section to another section.
+
+For example:
+
+```yaml
+build-job:
+  stage: build
+  script:
+    - echo "ARCH=$(arch)" >> $GITLAB_ENV
+    - touch some-file-$(arch)
+  artifacts:
+    paths:
+      - some-file-$ARCH
+```
+
+To also reference the variable in other stages, write the variable to both the `$GITLAB_ENV` and `.env` files:
+
+```yaml
+build-job:
+  stage: build
+  script:
+    - echo "ARCH=$(arch)" | tee >> $GITLAB_ENV build.env
+    - touch some-file-$(arch)
+  artifacts:
+    paths:
+      - some-file-$ARCH
+    reports:
+      dotenv: build.env
+
+release-job:
+  stage: release
+  script:
+    - curl --upload-file some-file-$ARCH "https://example.com/some-file-$ARCH"
+```
+
 ### Store multiple values in one variable
 
 You cannot create a CI/CD variable that is an array of values, but you

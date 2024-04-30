@@ -48,6 +48,7 @@ module WikiActions
     end
 
     track_event :show, name: 'wiki_action'
+    track_internal_event :show, name: 'view_wiki_page'
 
     helper_method :view_file_button, :diff_file_html_data
 
@@ -120,8 +121,6 @@ module WikiActions
       # Assign vars expected by MarkupHelper
       @ref = params[:version_id]
       @path = page.path
-
-      Gitlab::UsageDataCounters::WikiPageCounter.count(:view)
 
       render 'shared/wikis/show'
     elsif file_blob
@@ -362,6 +361,19 @@ module WikiActions
     return false if skip_actions.include?(params[:action])
 
     true
+  end
+
+  def tracking_project_source
+    container if container.is_a?(Project)
+  end
+
+  def tracking_namespace_source
+    case container
+    when Project
+      container.namespace
+    when Group
+      container
+    end
   end
 end
 

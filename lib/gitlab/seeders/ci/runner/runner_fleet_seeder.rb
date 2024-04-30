@@ -201,15 +201,9 @@ module Gitlab
             logger.info(message: 'Creating runner', scope: scope_name, name: name)
 
             executor = ::Ci::RunnerManager::EXECUTOR_NAME_TO_TYPES.keys.sample
-            args.merge!(additional_runner_args(name, executor))
-
-            runners_token = if scope.nil?
-                              Gitlab::CurrentSettings.runners_registration_token
-                            else
-                              scope.runners_token
-                            end
-
-            response = ::Ci::Runners::RegisterRunnerService.new(runners_token, name: name, **args).execute
+            response = ::Ci::Runners::CreateRunnerService.new(
+              user: @user, params: args.merge(additional_runner_args(name, scope, executor))
+            ).execute
             runner = response.payload[:runner]
 
             ::Ci::Runners::ProcessRunnerVersionUpdateWorker.new.perform(args[:version])
@@ -223,18 +217,29 @@ module Gitlab
             ensure_success(runner)
           end
 
-          def additional_runner_args(name, executor)
+          def additional_runner_args(name, scope, executor)
             base_tags = ['runner-fleet', "#{@registration_prefix}runner", executor]
             tag_limit = ::Ci::Runner::TAG_LIST_MAX_LENGTH - base_tags.length
 
+            runner_type =
+              if scope.is_a?(::Group)
+                'group_type'
+              elsif scope.is_a?(::Project)
+                'project_type'
+              else
+                'instance_type'
+              end
+
             {
+              scope: scope,
+              runner_type: runner_type,
               tag_list: base_tags + TAG_LIST.sample(Random.rand(1..tag_limit)),
               description: "Runner fleet #{name}",
               run_untagged: false,
               active: Random.rand(1..3) != 1,
               version: ::Gitlab::Ci::RunnerReleases.instance.releases.sample.to_s,
               ip_address: '127.0.0.1'
-            }
+            }.compact
           end
 
           def assign_runner(runner, project)

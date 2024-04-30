@@ -14,10 +14,12 @@ RSpec.shared_examples 'WikiPages::DestroyService#execute' do |container_type|
     service.execute(page)
   end
 
-  it 'increments the delete count' do
-    counter = Gitlab::UsageDataCounters::WikiPageCounter
+  it_behaves_like 'internal event tracking' do
+    let(:event) { 'delete_wiki_page' }
+    let(:project) { container if container.is_a?(Project) }
+    let(:namespace) { container.is_a?(Group) ? container : container.namespace }
 
-    expect { service.execute(page) }.to change { counter.read(:delete) }.by 1
+    subject(:track_event) { service.execute(page) }
   end
 
   it 'creates a new wiki page deletion event' do
@@ -43,8 +45,9 @@ RSpec.shared_examples 'WikiPages::DestroyService#execute' do |container_type|
     end
 
     it 'does not increment the delete count if the deletion failed' do
-      counter = Gitlab::UsageDataCounters::WikiPageCounter
-      expect { service.execute(page) }.not_to change { counter.read(:delete) }
+      expect(Gitlab::InternalEvents).not_to receive(:track_event)
+
+      service.execute(page)
     end
   end
 end

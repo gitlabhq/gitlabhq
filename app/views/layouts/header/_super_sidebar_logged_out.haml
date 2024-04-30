@@ -10,7 +10,7 @@
           = gl_badge_tag({ variant: :success, size: :sm }, { href: Gitlab::Saas.canary_toggle_com_url, data: { testid: 'canary_badge_link' }, target: :_blank, rel: 'noopener noreferrer', class: 'canary-badge' }) do
             = s_('GitLab Next|Next')
 
-      %ul.gl-list-style-none.gl-p-0.gl-m-0.gl-display-flex.gl-gap-3.gl-align-items-center.gl-flex-grow-1
+      %ul.gl-list-none.gl-p-0.gl-m-0.gl-display-flex.gl-gap-3.gl-align-items-center.gl-flex-grow-1
         - if Gitlab.com?
           %li.header-logged-out-nav-item.header-logged-out-dropdown.gl-md-display-none
             %button.header-logged-out-toggle{ type: "button", data: { toggle: "dropdown" } }
@@ -43,7 +43,7 @@
           = link_to _("Explore"), explore_root_path, class: ''
 
       - if header_link?(:sign_in)
-        %ul.gl-list-style-none.gl-p-0.gl-m-0.gl-display-flex.gl-gap-3.gl-align-items-center.gl-justify-content-end
+        %ul.gl-list-none.gl-p-0.gl-m-0.gl-display-flex.gl-gap-3.gl-align-items-center.gl-justify-content-end
           %li.header-logged-out-nav-item
             = link_to _('Sign in'), new_session_path(:user, redirect_to_referer: 'yes')
           - if allow_signup?

@@ -1,0 +1,20 @@
+---
+description: Wiki page is viewed
+internal_events: true
+action: view_wiki_page
+identifiers:
+- project
+- namespace
+- user
+product_section: dev
+product_stage: plan
+product_group: knowledge
+milestone: '17.0'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149271
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

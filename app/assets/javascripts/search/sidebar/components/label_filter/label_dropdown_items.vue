@@ -15,7 +15,7 @@ export default {
 };
 </script>
 <template>
-  <ul class="gl-list-style-none gl-px-0">
+  <ul class="gl-list-none gl-px-0">
     <li
       v-for="label in labels"
       :id="label.key"

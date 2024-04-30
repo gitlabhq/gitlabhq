@@ -32,7 +32,7 @@ exports[`Merge request dashboard merge request component renders template 1`] = 
       class="gl-display-flex gl-flex-direction-column gl-ml-auto"
     >
       <ul
-        class="gl-display-flex gl-justify-content-end gl-list-style-none gl-m-0 gl-p-0"
+        class="gl-display-flex gl-justify-content-end gl-list-none gl-m-0 gl-p-0"
       >
         <li>
           <user-avatar-link-stub

@@ -47,7 +47,7 @@ export default {
 
 <template>
   <div>
-    <ul class="gl-list-style-none gl-display-flex gl-p-0 gl-m-0 gl-justify-content-space-between">
+    <ul class="gl-list-none gl-display-flex gl-p-0 gl-m-0 gl-justify-content-space-between">
       <li v-for="grade in $options.grades" :key="grade.value">
         <gl-button
           v-gl-tooltip="grade.title"

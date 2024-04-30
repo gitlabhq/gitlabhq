@@ -7,9 +7,21 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
   include AdminModeHelper
   include_context 'ProjectPolicy context'
 
+  let_it_be_with_reload(:project_with_runner_registration_token) do
+    create(:project, :public, :allow_runner_registration_token)
+  end
+
   let(:project) { public_project }
 
   subject { described_class.new(current_user, project) }
+
+  before_all do
+    project_with_runner_registration_token.add_guest(guest)
+    project_with_runner_registration_token.add_reporter(reporter)
+    project_with_runner_registration_token.add_developer(developer)
+    project_with_runner_registration_token.add_maintainer(maintainer)
+    project_with_runner_registration_token.add_owner(owner)
+  end
 
   def expect_allowed(*permissions)
     permissions.each { |p| is_expected.to be_allowed(p) }
@@ -2851,6 +2863,14 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
   end
 
   describe 'update_runners_registration_token' do
+    # Override project with a version with namespace_settings
+    let(:project) { project_with_runner_registration_token }
+    let(:allow_runner_registration_token) { true }
+
+    before do
+      stub_application_setting(allow_runner_registration_token: allow_runner_registration_token)
+    end
+
     context 'when anonymous' do
       let(:current_user) { anonymous }
 
@@ -2862,6 +2882,12 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
 
       context 'when admin mode is enabled', :enable_admin_mode do
         it { is_expected.to be_allowed(:update_runners_registration_token) }
+
+        context 'with registration tokens disabled' do
+          let(:allow_runner_registration_token) { false }
+
+          it { is_expected.to be_disallowed(:update_runners_registration_token) }
+        end
       end
 
       context 'when admin mode is disabled' do
@@ -2882,11 +2908,25 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
         let(:current_user) { send(role) }
 
         it { is_expected.to be_allowed(:update_runners_registration_token) }
+
+        context 'with registration tokens disabled' do
+          let(:allow_runner_registration_token) { false }
+
+          it { is_expected.to be_disallowed(:update_runners_registration_token) }
+        end
       end
     end
   end
 
   describe 'register_project_runners' do
+    # Override project with a version with namespace_settings
+    let(:project) { project_with_runner_registration_token }
+    let(:allow_runner_registration_token) { true }
+
+    before do
+      stub_application_setting(allow_runner_registration_token: allow_runner_registration_token)
+    end
+
     context 'admin' do
       let(:current_user) { admin }
 
@@ -2899,6 +2939,12 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
           end
 
           it { is_expected.to be_allowed(:register_project_runners) }
+
+          context 'with registration tokens disabled' do
+            let(:allow_runner_registration_token) { false }
+
+            it { is_expected.to be_disallowed(:register_project_runners) }
+          end
         end
 
         context 'with specific project runner registration disabled' do
@@ -2919,6 +2965,12 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
       let(:current_user) { owner }
 
       it { is_expected.to be_allowed(:register_project_runners) }
+
+      context 'with registration tokens disabled' do
+        let(:allow_runner_registration_token) { false }
+
+        it { is_expected.to be_disallowed(:register_project_runners) }
+      end
 
       context 'with project runner registration disabled' do
         before do
@@ -2941,6 +2993,12 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
       let(:current_user) { maintainer }
 
       it { is_expected.to be_allowed(:register_project_runners) }
+
+      context 'with registration tokens disabled' do
+        let(:allow_runner_registration_token) { false }
+
+        it { is_expected.to be_disallowed(:register_project_runners) }
+      end
     end
 
     context 'with reporter' do

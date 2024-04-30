@@ -114,7 +114,7 @@ export default {
     </div>
     <gl-accordion v-if="hasStats" :header-level="3">
       <gl-accordion-item :title="__('Details')">
-        <ul class="gl-p-0 gl-mb-3 gl-list-style-none gl-font-sm">
+        <ul class="gl-p-0 gl-mb-3 gl-list-none gl-font-sm">
           <li v-for="key in knownStats" :key="key">
             <div class="gl-display-flex gl-w-20 gl-align-items-center">
               <gl-icon

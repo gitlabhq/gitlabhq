@@ -179,11 +179,7 @@ export default {
 
 <template>
   <div class="gl-p-2 gl-relative">
-    <ul
-      v-if="hasStaticItems"
-      class="gl-list-style-none gl-p-0 gl-m-0"
-      data-testid="static-items-section"
-    >
+    <ul v-if="hasStaticItems" class="gl-list-none gl-p-0 gl-m-0" data-testid="static-items-section">
       <nav-item v-for="item in staticItems" :key="item.id" :item="item" is-static />
     </ul>
     <pinned-section
@@ -202,7 +198,7 @@ export default {
     />
     <ul
       aria-labelledby="super-sidebar-context-header"
-      class="gl-p-0 gl-mb-0 gl-list-style-none"
+      class="gl-p-0 gl-mb-0 gl-list-none"
       data-testid="non-static-items-section"
     >
       <template v-for="item in nonStaticItems">

@@ -50,7 +50,7 @@ export default {
 
 <template>
   <div>
-    <ul class="gl-m-0 gl-p-0 gl-pb-2 gl-list-style-none" data-testid="scoped-items">
+    <ul class="gl-m-0 gl-p-0 gl-pb-2 gl-list-none" data-testid="scoped-items">
       <gl-disclosure-dropdown-group :group="group" bordered>
         <template #list-item="{ item }">
           <search-result-hover-layover :text-message="$options.i18n.OVERLAY_SEARCH">

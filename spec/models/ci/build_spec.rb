@@ -8,7 +8,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   include AfterNextHelpers
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:group, reload: true) { create_default(:group) }
+  let_it_be(:group, reload: true) { create_default(:group, :allow_runner_registration_token) }
   let_it_be(:project, reload: true) { create_default(:project, :repository, group: group) }
 
   let_it_be(:pipeline, reload: true) do
@@ -22,6 +22,12 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   end
 
   let_it_be(:build, refind: true) { create(:ci_build, pipeline: pipeline) }
+
+  let(:allow_runner_registration_token) { false }
+
+  before do
+    stub_application_setting(allow_runner_registration_token: allow_runner_registration_token)
+  end
 
   it { is_expected.to belong_to(:runner) }
   it { is_expected.to belong_to(:trigger_request) }
@@ -1555,6 +1561,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
     context 'hide runners token' do
       let(:data) { "new #{project.runners_token} data" }
+      let(:allow_runner_registration_token) { true }
 
       it { is_expected.to match(/^new x+ data$/) }
 

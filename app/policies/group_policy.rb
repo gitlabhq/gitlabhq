@@ -410,6 +410,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
 
   rule { ~runner_registration_token_enabled }.policy do
     prevent :register_group_runners
+    prevent :update_runners_registration_token
   end
 
   rule { migration_bot }.policy do

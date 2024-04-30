@@ -70,7 +70,7 @@ export default {
         </div>
       </div>
       <div class="gl-ml-auto gl-display-flex gl-flex-direction-column">
-        <ul class="gl-display-flex gl-justify-content-end gl-m-0 gl-p-0 gl-list-style-none">
+        <ul class="gl-display-flex gl-justify-content-end gl-m-0 gl-p-0 gl-list-none">
           <li v-if="mergeRequest.assignees.nodes.length">
             <user-avatar-link
               v-for="(assignee, index) in mergeRequest.assignees.nodes"

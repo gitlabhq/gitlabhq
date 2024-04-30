@@ -236,8 +236,9 @@ class ProjectPolicy < BasePolicy
     !@subject.restrict_user_defined_variables?
   end
 
-  with_scope :subject
-  condition(:packages_disabled) { !@subject.packages_enabled }
+  condition(:packages_disabled, scope: :subject) { !@subject.packages_enabled }
+
+  condition(:runner_registration_token_enabled, scope: :subject) { @subject.namespace.allow_runner_registration_token? }
 
   features = %w[
     merge_requests
@@ -944,6 +945,11 @@ class ProjectPolicy < BasePolicy
   rule { ~admin & ~project_runner_registration_allowed }.policy do
     prevent :register_project_runners
     prevent :create_runner
+  end
+
+  rule { ~runner_registration_token_enabled }.policy do
+    prevent :register_project_runners
+    prevent :update_runners_registration_token
   end
 
   rule { can?(:admin_project_member) }.policy do

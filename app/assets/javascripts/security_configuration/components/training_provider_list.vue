@@ -239,7 +239,7 @@ export default {
         <rect width="100" height="8" x="10" y="35" rx="4" />
       </gl-skeleton-loader>
     </div>
-    <ul v-else class="gl-list-style-none gl-m-0 gl-p-0">
+    <ul v-else class="gl-list-none gl-m-0 gl-p-0">
       <li v-for="provider in securityTrainingProviders" :key="provider.id" class="gl-mb-6">
         <gl-card :body-class="{ 'gl-bg-gray-10': !securityTrainingEnabled }">
           <div class="gl-display-flex">

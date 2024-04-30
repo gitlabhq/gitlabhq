@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Admin::GroupsController, feature_category: :groups_and_projects do
-  let_it_be(:group) { create(:group) }
+  let_it_be_with_reload(:group) { create(:group, :allow_runner_registration_token) }
   let_it_be(:project) { create(:project, namespace: group) }
   let_it_be(:admin) { create(:admin) }
 
@@ -162,11 +162,17 @@ RSpec.describe Admin::GroupsController, feature_category: :groups_and_projects d
   end
 
   describe 'PUT #update' do
+    let(:allow_runner_registration_token) { false }
+
     subject(:update!) do
       put :update, params: { id: group.to_param, group: { runner_registration_enabled: new_value } }
     end
 
-    context 'with runner registration disabled' do
+    before do
+      stub_application_setting(allow_runner_registration_token: allow_runner_registration_token)
+    end
+
+    context 'when enabling runner registration' do
       let(:runner_registration_enabled) { false }
       let(:new_value) { '1' }
 
@@ -185,22 +191,33 @@ RSpec.describe Admin::GroupsController, feature_category: :groups_and_projects d
       end
     end
 
-    context 'with runner registration enabled' do
+    context 'when disabling runner registration' do
       let(:runner_registration_enabled) { true }
       let(:new_value) { '0' }
 
-      it 'updates the setting successfully' do
-        update!
-
-        expect(response).to have_gitlab_http_status(:found)
-        expect(group.reload.runner_registration_enabled).to eq(false)
-      end
-
-      it 'changes the registration token' do
+      it 'does not change the registration token' do
         expect do
           update!
           group.reload
-        end.to change(group, :runners_token)
+        end.not_to change(group, :runners_token)
+      end
+
+      context 'with registration tokens enabled' do
+        let(:allow_runner_registration_token) { true }
+
+        it 'updates the setting successfully' do
+          update!
+
+          expect(response).to have_gitlab_http_status(:found)
+          expect(group.reload.runner_registration_enabled).to eq(false)
+        end
+
+        it 'changes the registration token' do
+          expect do
+            update!
+            group.reload
+          end.to change(group, :runners_token)
+        end
       end
     end
   end

@@ -8,17 +8,17 @@ namespace :gitlab do
       count = scope.count
 
       if count > 0
-        puts "This will disable 2FA for #{count.to_s.color(:red)} users..."
+        puts "This will disable 2FA for #{Rainbow(count.to_s).red} users..."
 
         begin
           ask_to_continue
           scope.find_each(&:disable_two_factor!)
-          puts "Successfully disabled 2FA for #{count} users.".color(:green)
+          puts Rainbow("Successfully disabled 2FA for #{count} users.").green
         rescue Gitlab::TaskAbortedByUserError
-          puts "Quitting...".color(:red)
+          puts Rainbow("Quitting...").red
         end
       else
-        puts "There are currently no users with 2FA enabled.".color(:yellow)
+        puts Rainbow("There are currently no users with 2FA enabled.").yellow
       end
     end
 

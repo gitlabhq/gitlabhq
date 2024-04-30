@@ -63,7 +63,7 @@ export default {
 };
 </script>
 <template>
-  <ul class="gl-list-style-none gl-pl-0">
+  <ul class="gl-list-none gl-pl-0">
     <li v-for="template in templates" :key="template.name">
       <div
         class="gl-display-flex gl-align-items-center gl-justify-content-space-between gl-border-b-solid gl-border-b-1 gl-border-b-gray-100 gl-pb-3 gl-pt-3"

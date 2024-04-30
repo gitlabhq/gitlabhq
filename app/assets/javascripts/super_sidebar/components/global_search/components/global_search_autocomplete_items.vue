@@ -113,7 +113,7 @@ export default {
       {{ $options.i18n.AUTOCOMPLETE_ERROR_MESSAGE }}
     </gl-alert>
 
-    <ul v-if="!loading && hasResults" class="gl-m-0 gl-p-0 gl-list-style-none">
+    <ul v-if="!loading && hasResults" class="gl-m-0 gl-p-0 gl-list-none">
       <gl-disclosure-dropdown-group
         v-for="(group, index) in groups"
         :key="group.name"

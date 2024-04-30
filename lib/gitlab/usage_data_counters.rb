@@ -11,7 +11,6 @@ module Gitlab
       NoteCounter,
       SearchCounter,
       WebIdeCounter,
-      WikiPageCounter,
       SnippetCounter,
       SourceCodeCounter,
       MergeRequestWidgetExtensionCounter

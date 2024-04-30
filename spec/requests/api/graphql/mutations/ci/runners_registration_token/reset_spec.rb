@@ -8,11 +8,15 @@ RSpec.describe 'RunnersRegistrationTokenReset', feature_category: :runner do
   let(:mutation) { graphql_mutation(:runners_registration_token_reset, input) }
   let(:mutation_response) { graphql_mutation_response(:runners_registration_token_reset) }
 
-  subject { post_graphql_mutation(mutation, current_user: user) }
+  subject(:request) { post_graphql_mutation(mutation, current_user: user) }
+
+  before do
+    stub_application_setting(allow_runner_registration_token: true)
+  end
 
   shared_examples 'unauthorized' do
     it 'returns an error' do
-      subject
+      request
 
       expect(graphql_errors).not_to be_empty
       expect(graphql_errors).to include(a_hash_including('message' => Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR))
@@ -39,24 +43,42 @@ RSpec.describe 'RunnersRegistrationTokenReset', feature_category: :runner do
   end
 
   shared_context 'when authorized' do |scope|
-    it 'resets runner registration token' do
-      expect { subject }.to change { get_token }
-      expect(response).to have_gitlab_http_status(:success)
+    let(:allow_runner_registration_token) { false }
 
-      expect(mutation_response).not_to be_nil
-      expect(mutation_response['errors']).to be_empty
-      expect(mutation_response['token']).not_to be_empty
-      expect(mutation_response['token']).to eq(get_token)
+    before do
+      stub_application_setting(allow_runner_registration_token: allow_runner_registration_token)
+    end
+
+    it 'does not reset runner registration token', :aggregate_failures do
+      request
+
+      expect(graphql_errors).not_to be_empty
+      expect(graphql_errors).to include(a_hash_including('message' => Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR))
+      expect(mutation_response).to be_nil
     end
 
     context 'when malformed id is provided' do
       let(:input) { { type: "#{scope.upcase}_TYPE", id: 'some string' } }
 
       it 'returns errors' do
-        expect { subject }.not_to change { get_token }
+        expect { request }.not_to change { get_token }
 
         expect(graphql_errors).not_to be_empty
         expect(mutation_response).to be_nil
+      end
+    end
+
+    context 'when runner registration is allowed' do
+      let(:allow_runner_registration_token) { true }
+
+      it 'resets runner registration token' do
+        expect { request }.to change { get_token }
+        expect(response).to have_gitlab_http_status(:success)
+
+        expect(mutation_response).not_to be_nil
+        expect(mutation_response['errors']).to be_empty
+        expect(mutation_response['token']).not_to be_empty
+        expect(mutation_response['token']).to eq(get_token)
       end
     end
   end
@@ -79,7 +101,7 @@ RSpec.describe 'RunnersRegistrationTokenReset', feature_category: :runner do
   end
 
   context 'applied to group' do
-    let_it_be(:group) { create_default(:group) }
+    let_it_be(:group) { create(:group, :allow_runner_registration_token) }
 
     let(:target) { group }
     let(:input) { { type: 'GROUP_TYPE', id: group.to_global_id.to_s } }

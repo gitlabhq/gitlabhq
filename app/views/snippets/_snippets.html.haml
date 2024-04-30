@@ -6,7 +6,7 @@
 - primary_button_link = new_snippet_path if can?(current_user, :create_snippet)
 - visitor_empty_message = s_('UserProfile|No snippets found')
 
-%ul.gl-p-0.gl-list-style-none
+%ul.gl-p-0.gl-list-none
   = render partial: 'shared/snippets/snippet', collection: @snippets, locals: { link_project: link_project }
   - if @snippets.empty?
     %li

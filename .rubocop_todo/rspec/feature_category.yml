@@ -3986,7 +3986,6 @@ RSpec/FeatureCategory:
     - 'spec/lib/gitlab/usage_data_counters/source_code_counter_spec.rb'
     - 'spec/lib/gitlab/usage_data_counters/vscode_extension_activity_unique_counter_spec.rb'
     - 'spec/lib/gitlab/usage_data_counters/web_ide_counter_spec.rb'
-    - 'spec/lib/gitlab/usage_data_counters/wiki_page_counter_spec.rb'
     - 'spec/lib/gitlab/usage_data_counters/work_item_activity_unique_counter_spec.rb'
     - 'spec/lib/gitlab/usage_data_counters_spec.rb'
     - 'spec/lib/gitlab/usage_data_non_sql_metrics_spec.rb'
