@@ -3,10 +3,14 @@ import VueApollo from 'vue-apollo';
 import { shallowMount } from '@vue/test-utils';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import setWindowLocation from 'helpers/set_window_location_helper';
 import { getCountsQueryResponse, getQueryResponse } from 'jest/merge_requests/list/mock_data';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
-import { TOKEN_TYPE_AUTHOR } from '~/vue_shared/components/filtered_search_bar/constants';
+import {
+  TOKEN_TYPE_AUTHOR,
+  TOKEN_TYPE_DRAFT,
+} from '~/vue_shared/components/filtered_search_bar/constants';
 import { mergeRequestListTabs } from '~/vue_shared/issuable/list/constants';
 import { getSortOptions } from '~/issues/list/utils';
 import MergeRequestsListApp from '~/merge_requests/list/components/merge_requests_list_app.vue';
@@ -94,12 +98,14 @@ describe('Merge requests list app', () => {
       it('does not have preloaded users when gon.current_user_id does not exist', () => {
         expect(findIssuableList().props('searchTokens')).toMatchObject([
           { type: TOKEN_TYPE_AUTHOR, preloadedUsers: [] },
+          { type: TOKEN_TYPE_DRAFT },
         ]);
       });
     });
 
     describe('when all tokens are available', () => {
       beforeEach(async () => {
+        setWindowLocation('?draft=yes');
         window.gon = {
           current_user_id: mockCurrentUser.id,
           current_user_fullname: mockCurrentUser.name,
@@ -114,6 +120,7 @@ describe('Merge requests list app', () => {
 
       afterEach(() => {
         window.gon = {};
+        setWindowLocation('?');
       });
 
       it('renders all tokens', () => {
@@ -123,6 +130,13 @@ describe('Merge requests list app', () => {
 
         expect(findIssuableList().props('searchTokens')).toMatchObject([
           { type: TOKEN_TYPE_AUTHOR, preloadedUsers },
+          { type: TOKEN_TYPE_DRAFT },
+        ]);
+      });
+
+      it('pre-displays tokens that are in the url search parameters', () => {
+        expect(findIssuableList().props('initialFilterValue')).toMatchObject([
+          { type: TOKEN_TYPE_DRAFT },
         ]);
       });
     });

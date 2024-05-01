@@ -8,6 +8,7 @@ query getMergeRequests(
   $sort: MergeRequestSort
   $state: MergeRequestState
   $authorUsername: String
+  $draft: Boolean
   $beforeCursor: String
   $afterCursor: String
   $firstPageSize: Int
@@ -19,6 +20,7 @@ query getMergeRequests(
       sort: $sort
       state: $state
       authorUsername: $authorUsername
+      draft: $draft
       before: $beforeCursor
       after: $afterCursor
       first: $firstPageSize

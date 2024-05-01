@@ -151,6 +151,7 @@ export default {
               v-gl-tooltip
               size="sm"
               class="gl-ml-3 gl-my-1"
+              variant="info"
               :href="latestVersion.path"
               :title="lastReleaseText"
             >

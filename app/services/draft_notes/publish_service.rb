@@ -28,7 +28,7 @@ module DraftNotes
     end
 
     def publish_draft_notes
-      return if draft_notes.empty?
+      return if draft_notes.blank?
 
       review = Review.create!(author: current_user, merge_request: merge_request, project: project)
 
@@ -57,7 +57,7 @@ module DraftNotes
       draft.diff_file&.unfold_diff_lines(draft.original_position)
 
       note_params = draft.publish_params.merge(skip_keep_around_commits: skip_keep_around_commits)
-      note = Notes::CreateService.new(draft.project, draft.author, note_params).execute(
+      note = Notes::CreateService.new(project, current_user, note_params).execute(
         skip_capture_diff_note_position: skip_capture_diff_note_position,
         skip_merge_status_trigger: skip_merge_status_trigger
       )

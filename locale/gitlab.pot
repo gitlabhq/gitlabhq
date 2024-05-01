@@ -32153,6 +32153,9 @@ msgstr ""
 msgid "MergeRequests|Create issue to resolve thread"
 msgstr ""
 
+msgid "MergeRequests|Draft"
+msgstr ""
+
 msgid "MergeRequests|Drafts cannot be merged until marked ready."
 msgstr ""
 

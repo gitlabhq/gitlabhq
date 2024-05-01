@@ -224,6 +224,22 @@ RSpec.describe DraftNotes::PublishService, feature_category: :code_review_workfl
     end
   end
 
+  context 'with many draft notes', :use_sql_query_cache do
+    let(:merge_request) { create(:merge_request) }
+
+    it 'reduce N+1 queries' do
+      create(:draft_note_on_text_diff, merge_request: merge_request, author: user, note: 'note 1')
+      create(:draft_note_on_text_diff, merge_request: merge_request, author: user, note: 'note 2')
+      create(:draft_note_on_text_diff, merge_request: merge_request, author: user, note: 'note 3')
+      create(:draft_note_on_text_diff, merge_request: merge_request, author: user, note: 'note 4')
+      create(:draft_note_on_text_diff, merge_request: merge_request, author: user, note: 'note 5')
+
+      recorder = ActiveRecord::QueryRecorder.new(skip_cached: false) { publish }
+
+      expect(recorder.count).not_to be > 186
+    end
+  end
+
   context 'draft notes with suggestions' do
     let(:project) { create(:project, :repository) }
     let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }

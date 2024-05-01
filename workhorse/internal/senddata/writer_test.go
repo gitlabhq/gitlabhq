@@ -41,7 +41,7 @@ func TestWriter(t *testing.T) {
 
 			n, err := rw.Write([]byte(upstreamResponse))
 			require.NoError(t, err)
-			require.Equal(t, len(upstreamResponse), n, "bytes written")
+			require.Len(t, upstreamResponse, n, "bytes written")
 
 			recorder.Flush()
 
@@ -62,7 +62,7 @@ const (
 
 type testInjecter struct{}
 
-func (ti *testInjecter) Inject(w http.ResponseWriter, r *http.Request, sendData string) {
+func (ti *testInjecter) Inject(w http.ResponseWriter, _ *http.Request, _ string) {
 	io.WriteString(w, testInjecterData)
 }
 

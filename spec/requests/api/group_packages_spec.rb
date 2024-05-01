@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe API::GroupPackages, feature_category: :package_registry do
   let_it_be(:group) { create(:group, :public) }
-  let_it_be(:project) { create(:project, :public, namespace: group, name: 'project A') }
+  let_it_be(:project) { create(:project, :public, namespace: group, name: 'project A', path: 'project-a') }
   let_it_be(:user) { create(:user) }
 
   let(:params) { {} }
@@ -54,8 +54,8 @@ RSpec.describe API::GroupPackages, feature_category: :package_registry do
       end
 
       it_behaves_like 'package sorting', 'project_path' do
-        let(:another_project) { create(:project, :public, namespace: group, name: 'project B') }
-        let!(:package4) { create(:npm_package, project: another_project, version: '3.1.0', name: "@#{project.root_namespace.path}/bar") }
+        let_it_be(:another_project) { create(:project, :public, namespace: group, name: 'project B', path: 'project-b') }
+        let_it_be(:package4) { create(:npm_package, project: another_project, version: '3.1.0', name: "@#{project.root_namespace.path}/bar") }
 
         let(:packages) { [package3, package2, package1, package4] }
         let(:package_ids_desc) { [package4.id, package3.id, package2.id, package1.id] }
