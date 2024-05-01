@@ -9,7 +9,7 @@
 #   - USER_ID to the id of the user whose projects are to be deleted.
 
 # Optional environment variables: DELETE_BEFORE
-#   - Set DELETE_BEFORE to delete only projects that were created before the given date (default: 3 days ago)
+#   - Set DELETE_BEFORE to delete only projects that were created before the given date (default: 1 day ago)
 
 # Run `rake delete_user_projects`
 
@@ -103,26 +103,10 @@ module QA
         user_ids = []
 
         QA_USERNAMES.each do |qa_username|
-          user_response = get Runtime::API::Request.new(@api_client, "/users", username: qa_username).url
-
-          unless user_response.code == HTTP_STATUS_OK
-            logger.error("Request for #{qa_username} returned (#{user_response.code}): `#{user_response}` ")
-            next
-          end
-
-          parsed_response = parse_body(user_response)
-
-          if parsed_response.empty?
-            logger.error("User #{qa_username} not found")
-            next
-          end
-
-          user_ids << parsed_response.first[:id]
-        rescue StandardError => e
-          logger.error("Failed to fetch user ID for #{qa_username}: #{e.message}")
+          user_ids << fetch_qa_user_id(qa_username)
         end
 
-        user_ids.uniq
+        user_ids.uniq.compact
       end
 
       def fetch_qa_username(user_id)

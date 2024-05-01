@@ -8,25 +8,25 @@
 # Optional environment variables: TOP_LEVEL_GROUP_NAME (default: 'gitlab-qa-sandbox-group-<current weekday #>'),
 #                                 CLEANUP_ALL_QA_SANDBOX_GROUPS (default: false),
 #                                 PERMANENTLY_DELETE (default: false),
-#                                 DELETE_BEFORE (default: 3 days ago)
+#                                 DELETE_BEFORE (default: 1 day ago)
 # - Set TOP_LEVEL_GROUP_NAME to the name of the qa sandbox group that you would like to delete projects under.
 # - Set CLEANUP_ALL_QA_SANDBOX_GROUPS to true if you would like to delete all subgroups under all
 # 'gitlab-qa-sandbox-group-*' groups. Otherwise, this will fall back to TOP_LEVEL_GROUP_NAME.
 # - Set PERMANENTLY_DELETE to true if you would like to permanently delete subgroups on an environment with
 # deletion protection enabled. Otherwise, subgroups will remain available during the retention period specified
 # in admin settings. On environments with deletion protection disabled, subgroups will always be permanently deleted.
-# - Set DELETE_BEFORE to only delete snippets that were created before a given date, otherwise defaults to 3 days ago
+# - Set DELETE_BEFORE to only delete snippets that were created before a given date, otherwise defaults to 1 day ago
 
 # Run `rake delete_subgroups`
 
 module QA
   module Tools
     class DeleteSubgroups < DeleteResourceBase
-      # @example mark subgroups for deletion that are older than 3 days under 'gitlab-qa-sandbox-group-<current weekday #>'
+      # @example mark subgroups for deletion that are older than 1 day under 'gitlab-qa-sandbox-group-<current weekday #>'
       #   GITLAB_ADDRESS=<address> \
       #   GITLAB_QA_ACCESS_TOKEN=<token> bundle exec rake delete_subgroups
       #
-      # @examplem permanently delete subgroups older than 3 days under all gitlab-qa-sandbox-group-* groups
+      # @examplem permanently delete subgroups older than 1 day under all gitlab-qa-sandbox-group-* groups
       #   GITLAB_ADDRESS=<address> \
       #   GITLAB_QA_ACCESS_TOKEN=<token> \
       #   CLEANUP_ALL_QA_SANDBOX_GROUPS=true \

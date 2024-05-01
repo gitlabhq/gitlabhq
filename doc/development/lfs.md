@@ -209,7 +209,7 @@ sequenceDiagram
 1. The archive data is sent back to the client.
 
 In step 7, the `gitaly-lfs-smudge` filter must talk to Workhorse, not to
-Rails, or an invalid LFS blob is saved. To support this, GitLab 
+Rails, or an invalid LFS blob is saved. To support this, GitLab
 [changed the default Omnibus configuration to have Gitaly talk to the Workhorse](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/4592)
 instead of Rails.
 

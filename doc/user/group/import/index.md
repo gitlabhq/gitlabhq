@@ -67,6 +67,11 @@ groups are in the same GitLab instance. Transferring groups is a faster and more
 - In GitLab 16.9 and earlier, because of [issue 438422](https://gitlab.com/gitlab-org/gitlab/-/issues/438422), you might see the
   `DiffNote::NoteDiffFileCreationError` error. When this error occurs, the diff of a note on a merge request's diff
   is missing, but the note and the merge request are still imported.
+- When imported from the source instance, shared members are created as direct members on the destination unless those
+  memberships already exist on the destination. This means that importing a top-level group on the source instance to a
+  top-level group on the destination instance always creates direct members in projects, even though the source top-level
+  group contains the necessary shared membership hierarchy details. Support for full replication of shared memberships is
+  proposed in [issue 458345](https://gitlab.com/gitlab-org/gitlab/-/issues/458345).
 
 ## Estimating migration duration
 
@@ -169,8 +174,10 @@ All [direct and indirect](../../../user/project/members/index.md#membership-type
 
 Indirect members are imported as [direct members](../../project/members/index.md#membership-types) if:
 
-- They are not already an indirect member.
+- They are not already an indirect member of the target namespace.
 - They are an indirect member, but have a lower [permission](../../../user/permissions.md).
+
+There is a [known issue](#known-issues) affecting the transfer of shared memberships.
 
 ## Prerequisites
 

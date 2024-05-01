@@ -293,7 +293,7 @@ sudo adduser --disabled-login --gecos 'GitLab' git
 ## 7. Database
 
 NOTE:
-Only PostgreSQL is supported. 
+Only PostgreSQL is supported.
 In GitLab 16.0 and later, we [require PostgreSQL 13+](requirements.md#postgresql-requirements).
 
 1. Install the database packages.

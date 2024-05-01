@@ -90,6 +90,26 @@ module QA
         end
       end
 
+      def fetch_qa_user_id(qa_username)
+        user_response = get Runtime::API::Request.new(@api_client, "/users", username: qa_username).url
+
+        unless user_response.code == HTTP_STATUS_OK
+          logger.error("Request for #{qa_username} returned (#{user_response.code}): `#{user_response}` ")
+          return
+        end
+
+        parsed_response = parse_body(user_response)
+
+        if parsed_response.empty?
+          logger.error("User #{qa_username} not found")
+          return
+        end
+
+        parsed_response.first[:id]
+      rescue StandardError => e
+        logger.error("Failed to fetch user ID for #{qa_username}: #{e.message}")
+      end
+
       # Fetches resources by api path that were created before the @delete_before date
       #
       # @param api_path [String] api path to fetch resources from

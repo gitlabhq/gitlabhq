@@ -1,0 +1,16 @@
+- title: "GraphQL API access through unsupported methods"
+  # The milestones for the deprecation announcement, and the removal.
+  removal_milestone: "17.0"
+  announcement_milestone: "17.0"
+  # Change breaking_change to false if needed.
+  breaking_change: true
+  # The stage and GitLab username of the person reporting the change,
+  # and a link to the deprecation issue
+  reporter: adil.farrukh
+  stage: govern
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/442520
+  body: |  # (required) Don't change this line.
+   From GitLab 17.0, we limiting access to GraphQL to only through the
+   [already documented supported token types](https://docs.gitlab.com/ee/api/graphql/#token-authentication).
+
+   For customers already using documented and supported token types, there are no breaking changes.

@@ -1175,7 +1175,7 @@ To create a diagram:
    ```yaml
    accTitle: your diagram title here
    accDescr: describe what your diagram does in a single sentence, with no line breaks.
-   ``` 
+   ```
 
 The Mermaid diagram syntax can be difficult to learn. To make this a little easier, see the Mermaid
 [Beginner's Guide](https://mermaid.js.org/intro/getting-started.html) and the examples on the

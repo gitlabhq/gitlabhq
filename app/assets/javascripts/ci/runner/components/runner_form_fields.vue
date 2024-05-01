@@ -104,7 +104,7 @@ export default {
           <gl-sprintf
             :message="
               s__(
-                'Runners|Add tags to specify jobs that the runner can run. %{helpLinkStart}Learn more.%{helpLinkEnd}',
+                'Runners|Add tags to specify jobs that the runner can run. %{helpLinkStart}Learn more%{helpLinkEnd}.',
               )
             "
           >

@@ -44015,7 +44015,7 @@ msgstr ""
 msgid "Runners|Add notes such as the runner owner or what it should be used for."
 msgstr ""
 
-msgid "Runners|Add tags to specify jobs that the runner can run. %{helpLinkStart}Learn more.%{helpLinkEnd}"
+msgid "Runners|Add tags to specify jobs that the runner can run. %{helpLinkStart}Learn more%{helpLinkEnd}."
 msgstr ""
 
 msgid "Runners|Admin area › Runners"
@@ -56199,6 +56199,9 @@ msgid "UserProfile|Copy user ID: %{id}"
 msgstr ""
 
 msgid "UserProfile|Edit profile"
+msgstr ""
+
+msgid "UserProfile|Email verification last sent at:"
 msgstr ""
 
 msgid "UserProfile|Explore public groups to find projects to contribute to"

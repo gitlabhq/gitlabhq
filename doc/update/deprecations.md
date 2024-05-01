@@ -1248,6 +1248,23 @@ Runners generate provenance metadata and currently defaults to generating statem
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
+### GraphQL API access through unsupported methods
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">17.0</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/442520).
+</div>
+
+From GitLab 17.0, we limiting access to GraphQL to only through the
+[already documented supported token types](https://docs.gitlab.com/ee/api/graphql/#token-authentication).
+
+For customers already using documented and supported token types, there are no breaking changes.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
 ### GraphQL deprecation of `dependencyProxyTotalSizeInBytes` field
 
 <div class="deprecation-notes">

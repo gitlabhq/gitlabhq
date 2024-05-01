@@ -206,9 +206,9 @@ gem 'seed-fu', '~> 2.3.7' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'elasticsearch-model', '~> 7.2' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'elasticsearch-rails', '~> 7.2', require: 'elasticsearch/rails/instrumentation' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'elasticsearch-api',   '7.13.3' # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'aws-sdk-core', '~> 3.193.0' # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'aws-sdk-core', '~> 3.194.0' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'aws-sdk-cloudformation', '~> 1' # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'aws-sdk-s3', '~> 1.148.0' # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'aws-sdk-s3', '~> 1.149.0' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'faraday_middleware-aws-sigv4', '~>0.3.0' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'typhoeus', '~> 1.4.0' # Used with Elasticsearch to support http keep-alive connections # rubocop:todo Gemfile/MissingFeatureCategory
 
@@ -547,7 +547,7 @@ group :test do
   gem 'webmock', '~> 3.23.0', feature_category: :shared
   gem 'rails-controller-testing' # rubocop:todo Gemfile/MissingFeatureCategory
   gem 'concurrent-ruby', '~> 1.1' # rubocop:todo Gemfile/MissingFeatureCategory
-  gem 'test-prof', '~> 1.3.2', feature_category: :tooling
+  gem 'test-prof', '~> 1.3.3', feature_category: :tooling
   gem 'rspec_junit_formatter' # rubocop:todo Gemfile/MissingFeatureCategory
   gem 'guard-rspec' # rubocop:todo Gemfile/MissingFeatureCategory
   gem 'axe-core-rspec', '~> 4.9.0', feature_category: :tooling

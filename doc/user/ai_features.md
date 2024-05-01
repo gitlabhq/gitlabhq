@@ -63,7 +63,7 @@ To enable Beta and Experimental AI-powered features, use the [Experiment and Bet
 
 To enable Beta and Experimental AI-powered features for GitLab versions where GitLab Duo Chat is not yet generally available, see the [GitLab Duo Chat documentation](gitlab_duo_chat.md#for-self-managed).
 
-### Network Requirements to enable GitLab Duo features for self-managed GitLab 
+### Network Requirements to enable GitLab Duo features for self-managed GitLab
 
 #### Enable outbound connections from GitLab instances
 
@@ -74,7 +74,7 @@ To enable Beta and Experimental AI-powered features for GitLab versions where Gi
 
 #### Enable inbound connections from Clients to GitLab instances
 
-- GitLab instances must allow inbound connections from Duo clients (IDEs, Code Editors, and GitLab Web Frontend) 
+- GitLab instances must allow inbound connections from Duo clients (IDEs, Code Editors, and GitLab Web Frontend)
   on port 443 with `https://` and `wss://`.
 - Both `HTTP2` and the `'upgrade'` header must be allowed, because GitLab Duo
   uses both REST and WebSockets.

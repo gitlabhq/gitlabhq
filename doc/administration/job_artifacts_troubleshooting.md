@@ -144,7 +144,7 @@ The worker can be enabled on self-managed instances:
 1. Start a [Rails console](operations/rails_console.md#starting-a-rails-console-session).
 
 1. Check if the feature is enabled.
-   
+
    ```ruby
    Feature.enabled?(:ci_job_artifacts_backlog_work)
    ```

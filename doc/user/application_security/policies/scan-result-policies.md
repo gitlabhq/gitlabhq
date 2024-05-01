@@ -249,7 +249,7 @@ On GitLab.com and GitLab Dedicated, this feature is not available.
 
 | Field  | Type     | Required | Possible values    | Description                                                                                                          |
 |--------|----------|----------|--------------------|----------------------------------------------------------------------------------------------------------------------|
-| `fail` | `string` | false    | `open` or `closed` | `closed` (default): Invalid or unenforceable rules of a policy do not require approval. `open`: Invalid or unenforceable rules of a policy require approval. |
+| `fail` | `string` | false    | `open` or `closed` | `closed` (default): Invalid or unenforceable rules of a policy require approval. `open`: Invalid or unenforceable rules of a policy do not require approval. |
 
 ## Example security merge request approval policies project
 

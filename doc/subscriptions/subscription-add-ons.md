@@ -88,7 +88,7 @@ You can assign or remove seats in bulk for multiple users.
 1. Select **Settings > Usage Quotas**.
 1. Select the **GitLab Duo Pro** tab.
 1. Select the users to assign or remove seats for:
-   - To select multiple users, to the left of each user, select the checkbox. 
+   - To select multiple users, to the left of each user, select the checkbox.
    - To select all, select the checkbox at the top of the table.
 1. Assign or remove seats:
    - To assign seats, select **Assign seat**, then **Assign seats** to confirm.

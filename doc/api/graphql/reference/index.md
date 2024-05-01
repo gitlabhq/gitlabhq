@@ -2379,6 +2379,34 @@ Input type: `BranchRuleExternalStatusCheckCreateInput`
 | <a id="mutationbranchruleexternalstatuscheckcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationbranchruleexternalstatuscheckcreateexternalstatuscheck"></a>`externalStatusCheck` | [`ExternalStatusCheck`](#externalstatuscheck) | New status check after mutation. |
 
+### `Mutation.branchRuleExternalStatusCheckUpdate`
+
+Update an external status check from a branch rule.
+
+DETAILS:
+**Introduced** in GitLab 17.0.
+**Status**: Experiment.
+
+Input type: `BranchRuleExternalStatusCheckUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationbranchruleexternalstatuscheckupdatebranchruleid"></a>`branchRuleId` | [`ProjectsBranchRuleID!`](#projectsbranchruleid) | Global ID of the branch rule. |
+| <a id="mutationbranchruleexternalstatuscheckupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationbranchruleexternalstatuscheckupdateexternalurl"></a>`externalUrl` | [`String!`](#string) | External URL of the external status check. |
+| <a id="mutationbranchruleexternalstatuscheckupdateid"></a>`id` | [`MergeRequestsExternalStatusCheckID!`](#mergerequestsexternalstatuscheckid) | Global ID of the external status check to update. |
+| <a id="mutationbranchruleexternalstatuscheckupdatename"></a>`name` | [`String!`](#string) | Name of the external status check. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationbranchruleexternalstatuscheckupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationbranchruleexternalstatuscheckupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationbranchruleexternalstatuscheckupdateexternalstatuscheck"></a>`externalStatusCheck` | [`ExternalStatusCheck`](#externalstatuscheck) | Updated external status check after mutation. |
+
 ### `Mutation.branchRuleUpdate`
 
 DETAILS:
@@ -35456,6 +35484,12 @@ An example `MemberRoleID` is: `"gid://gitlab/MemberRole/1"`.
 A `MergeRequestID` is a global ID. It is encoded as a string.
 
 An example `MergeRequestID` is: `"gid://gitlab/MergeRequest/1"`.
+
+### `MergeRequestsExternalStatusCheckID`
+
+A `MergeRequestsExternalStatusCheckID` is a global ID. It is encoded as a string.
+
+An example `MergeRequestsExternalStatusCheckID` is: `"gid://gitlab/MergeRequests::ExternalStatusCheck/1"`.
 
 ### `MilestoneID`
 

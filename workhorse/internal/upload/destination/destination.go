@@ -1,4 +1,4 @@
-// The destination package handles uploading to a specific destination (delegates
+// Package destination handles uploading to a specific destination (delegates
 // to filestore or objectstore packages) based on options from the pre-authorization
 // API and finalizing the upload.
 package destination
@@ -21,6 +21,7 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload/destination/objectstore"
 )
 
+// SizeError represents an error related to the size of a file or data.
 type SizeError error
 
 // ErrEntityTooLarge means that the uploaded content is bigger then maximum allowed size
@@ -238,7 +239,9 @@ func (fh *FileHandler) newLocalFile(ctx context.Context, opts *UploadOpts) (cons
 
 	go func() {
 		<-ctx.Done()
-		os.Remove(file.Name())
+		if err := os.Remove(file.Name()); err != nil {
+			fmt.Printf("newLocalFile: remove file %q: %v", file.Name(), err)
+		}
 	}()
 
 	fh.LocalPath = file.Name()

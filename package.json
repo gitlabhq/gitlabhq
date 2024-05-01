@@ -290,7 +290,7 @@
     "timezone-mock": "^1.0.8",
     "vite": "^5.2.10",
     "vite-plugin-ruby": "^5.0.0",
-    "vue-loader-vue3": "npm:vue-loader@17",
+    "vue-loader-vue3": "npm:vue-loader@17.4.2",
     "vue-test-utils-compat": "0.0.14",
     "vuex-mock-store": "^0.1.0",
     "webpack-dev-server": "4.15.2",
