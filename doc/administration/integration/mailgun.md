@@ -50,6 +50,6 @@ you're ready to enable the Mailgun integration:
 1. On the left sidebar, go to **Settings > General** and expand the **Mailgun** section.
 1. Select the **Enable Mailgun** checkbox.
 1. Enter the Mailgun HTTP webhook signing key as described in
-   [the Mailgun documentation](https://documentation.mailgun.com/en/latest/user_manual.html#webhooks-1) and
+   [the Mailgun documentation](https://documentation.mailgun.com/docs/mailgun/user-manual/get-started/) and
    shown in the API security (`https://app.mailgun.com/app/account/security/api_keys`) section for your Mailgun account.
 1. Select **Save changes**.

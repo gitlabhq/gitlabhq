@@ -5,9 +5,9 @@ module MigrationHelpers
     # rubocop:disable Metrics/ParameterLists
     def create_finding!(
       project_id:, scanner_id:, primary_identifier_id:, vulnerability_id: nil,
-                        name: "test", severity: 7, confidence: 7, report_type: 0,
-                        project_fingerprint: '123qweasdzxc', location_fingerprint: 'test',
-                        metadata_version: 'test', raw_metadata: 'test', uuid: 'b1cee17e-3d7a-11ed-b878-0242ac120002')
+      name: "test", severity: 7, confidence: 7, report_type: 0,
+      project_fingerprint: '123qweasdzxc', location_fingerprint: 'test',
+      metadata_version: 'test', raw_metadata: 'test', uuid: 'b1cee17e-3d7a-11ed-b878-0242ac120002')
       table(:vulnerability_occurrences).create!(
         vulnerability_id: vulnerability_id,
         project_id: project_id,

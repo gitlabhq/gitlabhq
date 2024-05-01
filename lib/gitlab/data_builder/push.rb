@@ -97,8 +97,8 @@ module Gitlab
       # rubocop:disable Metrics/ParameterLists
       def build(
         project:, user:, ref:, oldrev: nil, newrev: nil,
-          commits: [], commits_count: nil, message: nil, push_options: {},
-          with_changed_files: true)
+        commits: [], commits_count: nil, message: nil, push_options: {},
+        with_changed_files: true)
 
         commits = Array(commits)
 

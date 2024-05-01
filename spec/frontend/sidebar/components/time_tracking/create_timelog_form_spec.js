@@ -9,6 +9,8 @@ import { convertToGraphQLId } from '~/graphql_shared/utils';
 import CreateTimelogForm from '~/sidebar/components/time_tracking/create_timelog_form.vue';
 import createTimelogMutation from '~/sidebar/queries/create_timelog.mutation.graphql';
 import { TYPENAME_ISSUE, TYPENAME_MERGE_REQUEST } from '~/graphql_shared/constants';
+import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
+import { updateWorkItemMutationResponse } from 'jest/work_items/mock_data';
 
 const mockMutationErrorMessage = 'Example error message';
 
@@ -36,6 +38,8 @@ const resolvedMutationWithErrorsMock = jest.fn().mockResolvedValue({
 
 const rejectedMutationMock = jest.fn().mockRejectedValue();
 const modalCloseMock = jest.fn();
+
+const updateWorkItemMutationHandler = jest.fn().mockResolvedValue(updateWorkItemMutationResponse);
 
 describe('Create Timelog Form', () => {
   Vue.use(VueApollo);
@@ -68,7 +72,10 @@ describe('Create Timelog Form', () => {
         issuableId: '1',
         ...props,
       },
-      apolloProvider: createMockApollo([[createTimelogMutation, mutationResolverMock]]),
+      apolloProvider: createMockApollo([
+        [createTimelogMutation, mutationResolverMock],
+        [updateWorkItemMutation, updateWorkItemMutationHandler],
+      ]),
       stubs: {
         GlModal: stubComponent(GlModal, {
           methods: { close: modalCloseMock },
@@ -221,6 +228,38 @@ describe('Create Timelog Form', () => {
 
       expect(findDocsLink().text()).toBe('How do I track and estimate time?');
       expect(findDocsLink().attributes('href')).toBe('/help/user/project/time_tracking.md');
+    });
+  });
+
+  describe('with work item task', () => {
+    beforeEach(() => {
+      mountComponent({
+        props: { workItemId: 'gid://gitlab/WorkItem/1', workItemType: 'Task' },
+        providedProps: { issuableType: null },
+      });
+    });
+
+    it('mentions the correct work item type', () => {
+      expect(wrapper.text()).toContain('Track time spent on this task.');
+    });
+
+    it('calls mutation to update work item when adding time entry', async () => {
+      findGlFormInput().vm.$emit('input', '2d');
+      submitForm();
+      await waitForPromises();
+
+      expect(updateWorkItemMutationHandler).toHaveBeenCalledWith({
+        input: {
+          id: 'gid://gitlab/WorkItem/1',
+          timeTrackingWidget: {
+            timelog: {
+              spentAt: '2020-07-06T00:00:00+0000',
+              summary: '',
+              timeSpent: '2d',
+            },
+          },
+        },
+      });
     });
   });
 });

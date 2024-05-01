@@ -817,7 +817,7 @@ The following IPs will be used as an example:
 ## Configure Redis
 
 Using [Redis](https://redis.io/) in scalable environment is possible using a **Primary** x **Replica**
-topology with a [Redis Sentinel](https://redis.io/docs/manual/sentinel/) service to watch and automatically
+topology with a [Redis Sentinel](https://redis.io/docs/latest/operate/oss_and_stack/management/sentinel/) service to watch and automatically
 start the failover procedure.
 
 NOTE:
@@ -829,10 +829,10 @@ For this size of architecture it's strongly recommended having separate Cache an
 Refer to the [scaling documentation](index.md#scaling-an-environment) for more information.
 
 Redis requires authentication if used with Sentinel. See
-[Redis Security](https://redis.io/docs/manual/security/) documentation for more
+[Redis Security](https://redis.io/docs/latest/operate/rc/security/) documentation for more
 information. We recommend using a combination of a Redis password and tight
 firewall rules to secure your Redis service.
-You are highly encouraged to read the [Redis Sentinel](https://redis.io/docs/manual/sentinel/) documentation
+You are highly encouraged to read the [Redis Sentinel](https://redis.io/docs/latest/operate/oss_and_stack/management/sentinel/) documentation
 before configuring Redis with GitLab to fully understand the topology and
 architecture.
 

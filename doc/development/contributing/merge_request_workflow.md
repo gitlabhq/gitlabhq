@@ -319,7 +319,7 @@ The following items are checked after the merge request has been merged:
    if relevant.
 1. Added to [the website](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/features.yml), if relevant.
 
-Contributions do not require approval from the [Product team](https://about.gitlab.com/handbook/product/product-processes/#gitlab-pms-arent-the-arbiters-of-community-contributions).
+Contributions do not require approval from the [Product team](https://handbook.gitlab.com/handbook/product/product-processes/#community-considerations).
 
 ## Dependencies
 

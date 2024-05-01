@@ -39,7 +39,7 @@ single-tenant SaaS service.
 
 ### Agents vs Runners
 
-Bamboo uses [agents](https://confluence.atlassian.com/confeval/development-tools-evaluator-resources/bamboo/bamboo-remote-agents-and-local-agents)
+Bamboo uses [agents](https://confluence.atlassian.com/bamboo/configuring-agents-289277172.html)
 to run builds and deployments. Agents can be local agents running on the Bamboo server or
 remote agents running external to the server.
 

@@ -1,0 +1,9 @@
+---
+name: project_daily_statistic_counter_attribute_fetch
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/426270
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149484
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/456523
+milestone: '17.0'
+group: group::source code
+type: beta
+default_enabled: false

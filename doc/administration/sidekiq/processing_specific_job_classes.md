@@ -311,7 +311,7 @@ Queue matching query works upon the worker attributes, described in
 based on a subset of worker attributes:
 
 - `feature_category` - the
-  [GitLab feature category](https://about.gitlab.com/direction/maturity/#category-maturity) the
+  [GitLab feature category](https://handbook.gitlab.com/handbook/product/categories/#categories-a-z) the
   queue belongs to. For example, the `merge` queue belongs to the
   `source_code_management` category.
 - `has_external_dependencies` - whether or not the queue connects to external

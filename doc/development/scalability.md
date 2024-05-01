@@ -221,7 +221,7 @@ only when the primary fails.
 
 ### Redis Sentinels
 
-[Redis Sentinel](https://redis.io/docs/manual/sentinel/) provides high
+[Redis Sentinel](https://redis.io/docs/latest/operate/oss_and_stack/management/sentinel/) provides high
 availability for Redis by watching the primary. If multiple Sentinels
 detect that the primary has gone away, the Sentinels performs an
 election to determine a new leader.

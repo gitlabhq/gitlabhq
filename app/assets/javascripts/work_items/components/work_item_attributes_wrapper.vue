@@ -257,8 +257,13 @@ export default {
     <work-item-time-tracking
       v-if="workItemTimeTracking"
       class="gl-mb-5 gl-pt-5 gl-border-t gl-border-gray-50"
+      :can-update="canUpdate"
       :time-estimate="workItemTimeTracking.timeEstimate"
+      :timelogs="workItemTimeTracking.timelogs.nodes"
       :total-time-spent="workItemTimeTracking.totalTimeSpent"
+      :work-item-id="workItem.id"
+      :work-item-iid="workItem.iid"
+      :work-item-type="workItemType"
     />
     <participants
       v-if="workItemParticipants"

@@ -15,7 +15,7 @@ one of the top two biggest tailwinds that are helping us grow faster as a
 company behind the project.
 
 This effort is described in a more details
-[in the infrastructure team handbook](https://handbook.gitlab.com/handbook/engineering/infrastructure/production/kubernetes/gitlab-com/).
+[in the infrastructure team handbook](https://handbook.gitlab.com/handbook/engineering/infrastructure/production/architecture/).
 
 ## Traditional build logs
 

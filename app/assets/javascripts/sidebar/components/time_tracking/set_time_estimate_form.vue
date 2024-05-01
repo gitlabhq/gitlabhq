@@ -2,7 +2,9 @@
 import { GlFormGroup, GlFormInput, GlModal, GlAlert, GlLink } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { issuableTypeText, TYPE_ISSUE, TYPE_MERGE_REQUEST } from '~/issues/constants';
+import { isPositiveInteger } from '~/lib/utils/number_utils';
 import { s__, __, sprintf } from '~/locale';
+import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import issueSetTimeEstimateMutation from '../../queries/issue_set_time_estimate.mutation.graphql';
 import mergeRequestSetTimeEstimateMutation from '../../queries/merge_request_set_time_estimate.mutation.graphql';
 import { SET_TIME_ESTIMATE_MODAL_ID } from './constants';
@@ -28,11 +30,13 @@ export default {
   props: {
     fullPath: {
       type: String,
-      required: true,
+      required: false,
+      default: '',
     },
     issuableIid: {
       type: String,
-      required: true,
+      required: false,
+      default: '',
     },
     /**
      * This object must contain the following keys, used to show
@@ -43,6 +47,16 @@ export default {
     timeTracking: {
       type: Object,
       required: true,
+    },
+    workItemId: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    workItemType: {
+      type: String,
+      required: false,
+      default: '',
     },
   },
   data() {
@@ -134,7 +148,41 @@ export default {
     updateEstimatedTime(timeEstimate) {
       this.saveError = '';
 
-      this.$apollo
+      if (this.workItemId) {
+        return this.$apollo
+          .mutate({
+            mutation: updateWorkItemMutation,
+            variables: {
+              input: {
+                id: this.workItemId,
+                timeTrackingWidget: {
+                  timeEstimate:
+                    isPositiveInteger(timeEstimate) && timeEstimate > 0
+                      ? `${timeEstimate}h`
+                      : timeEstimate,
+                },
+              },
+            },
+          })
+          .then(({ data }) => {
+            if (data.workItemUpdate.errors.length) {
+              throw new Error(data.workItemUpdate.errors);
+            }
+
+            this.close();
+          })
+          .catch((error) => {
+            this.saveError =
+              error?.message ||
+              s__('TimeTracking|An error occurred while saving the time estimate.');
+          })
+          .finally(() => {
+            this.isSaving = false;
+            this.isResetting = false;
+          });
+      }
+
+      return this.$apollo
         .mutate({
           mutation: MUTATIONS[this.issuableType],
           variables: {

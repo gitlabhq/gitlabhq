@@ -86,6 +86,7 @@ module Ci
       end
 
       after_transition any => [:failed] do |processable|
+        next if processable.allow_failure?
         next unless processable.can_auto_cancel_pipeline_on_job_failure?
 
         processable.run_after_commit do

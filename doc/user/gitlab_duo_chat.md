@@ -268,12 +268,9 @@ Prerequisites:
 
 - You must have GitLab version 16.8 or later. You should use the latest GitLab version to benefit from the latest improvements to GitLab Duo Chat. The generally available version of GitLab Duo Chat in GitLab 16.11 has significant improvements in the quality of the answers.
 - You must have a Premium or Ultimate subscription that is [synchronized with GitLab](https://about.gitlab.com/pricing/licensing-faq/cloud-licensing/). To make sure GitLab Duo Chat works immediately, administrators can
-   [manually synchronize your subscription](#manually-synchronize-your-subscription).
-- Your firewalls and HTTP proxy servers must allow outbound connections
-  to `cloud.gitlab.com`. To use an HTTP proxy, both
-  `gitLab _workhorse` and `gitLab_rails` have the necessary
-  [web proxy environment variables](https://docs.gitlab.com/omnibus/settings/environment-variables.html) set.
-- All of the users in your instance have the latest version of their IDE extension.
+  [manually synchronize your subscription](#manually-synchronize-your-subscription).
+- You must have [enabled network connectivity](ai_features_enable.md#enable-gitlab-duo-on-self-managed-instances).
+- All of the users in your instance must have the latest version of their IDE extension.
 
 Then, depending on the version of GitLab you have, you can enable GitLab Duo Chat.
 

@@ -169,7 +169,7 @@ Some use cases from the Remote Development team (from
 [this comment](https://gitlab.com/gitlab-org/ci-cd/section-showcases/-/issues/54#note_1658464245)):
 
 > A real world example of this is the Remote Development Teams work to implement
-> [a standard XP/Scrum style velocity-based process and workflow](https://about.gitlab.com/handbook/engineering/development/dev/create/ide/#remote-development-planning-process-overview)
+> [a standard XP/Scrum style velocity-based process and workflow](https://handbook.gitlab.com/handbook/engineering/development/dev/create/ide/#planning-process-overview)
 > in GitLab.
 >
 > There's
@@ -178,7 +178,7 @@ Some use cases from the Remote Development team (from
 >
 > To avoid the manual toil of making this process work in GitLab, we would like to automate it. However our efforts to
 > set up the
-> [several desired automations](https://about.gitlab.com/handbook/engineering/development/dev/create/ide/#automations)
+> [several desired automations](https://handbook.gitlab.com/handbook/engineering/development/dev/create/ide/#automations)
 > have been limited because of the barriers to implementing and testing them in
 > Triage Bot, especially for ones that contain more complex logic, or can't be implemented solely via quick actions.
 >

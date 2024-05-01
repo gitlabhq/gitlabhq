@@ -19,10 +19,10 @@ module Gitlab
 
     def add_check(
       klass,
-          actions: {},
-          positive_condition: nil,
-          negative_condition: nil,
-          skip: false)
+      actions: {},
+      positive_condition: nil,
+      negative_condition: nil,
+      skip: false)
 
       new_check = CheckInfo.new(actions,
                                 positive_condition,

@@ -130,7 +130,7 @@ Tracing is available in Development and Testing environment only.
 It's not available in Production environment.
 
 1. Access to [LangSmith](https://smith.langchain.com/) site and create an account.
-1. Create [an API key](https://docs.smith.langchain.com/setup#create-an-api-key).
+1. Create [an API key](https://docs.smith.langchain.com/#create-an-api-key).
 1. Set the following environment variables in GDK. You can define it in `env.runit` or directly `export` in the terminal.
 
     ```shell

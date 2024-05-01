@@ -849,6 +849,32 @@ export const workItemResponseFactory = ({
               __typename: 'WorkItemWidgetTimeTracking',
               type: 'TIME_TRACKING',
               timeEstimate: '5h',
+              timelogs: {
+                nodes: [
+                  {
+                    __typename: 'WorkItemTimelog',
+                    id: 'gid://gitlab/WorkItemTimelog/18',
+                    timeSpent: 14400,
+                    user: {
+                      id: 'user-1',
+                      name: 'John Doe18',
+                      __typename: 'UserCore',
+                    },
+                    spentAt: '2020-05-01T00:00:00Z',
+                    note: {
+                      id: 'note-1',
+                      body: 'A note',
+                      __typename: 'Note',
+                    },
+                    summary: 'A summary',
+                    userPermissions: {
+                      adminTimelog: true,
+                      __typename: 'TimelogPermissions',
+                    },
+                  },
+                ],
+                __typename: 'WorkItemTimelogConnection',
+              },
               totalTimeSpent: '3h',
             }
           : { type: 'MOCK TYPE' },

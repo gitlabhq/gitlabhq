@@ -352,7 +352,7 @@ reinforced when learning from production later.
 
 - Linkedin HODOR system
   - [https://www.youtube.com/watch?v=-haM4ZpYNko](https://www.youtube.com/watch?v=-haM4ZpYNko)
-  - [https://engineering.linkedin.com/blog/2022/hodor--detecting-and-addressing-overload-in-linkedin-microservic](https://engineering.linkedin.com/blog/2022/hodor--detecting-and-addressing-overload-in-linkedin-microservic)
+  - [Hodor: Detecting and addressing overload in LinkedIn microservices](https://www.linkedin.com/blog/engineering/data-management/hodor-detecting-and-addressing-overload-in-linkedin-microservic)
 - [https://www.linkedin.com/blog/engineering/infrastructure/hodor-overload-scenarios-and-the-evolution-of-their-detection-a](https://www.linkedin.com/blog/engineering/infrastructure/hodor-overload-scenarios-and-the-evolution-of-their-detection-a)
 - Google SRE chapters about load balancing and overload:
   - [https://sre.google/sre-book/load-balancing-frontend/](https://sre.google/sre-book/load-balancing-frontend/)

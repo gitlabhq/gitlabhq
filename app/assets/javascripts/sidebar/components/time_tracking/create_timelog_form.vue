@@ -14,6 +14,7 @@ import { formatDate } from '~/lib/utils/datetime_utility';
 import { TYPENAME_ISSUE, TYPENAME_MERGE_REQUEST } from '~/graphql_shared/constants';
 import { joinPaths } from '~/lib/utils/url_utility';
 import { s__, sprintf } from '~/locale';
+import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import createTimelogMutation from '../../queries/create_timelog.mutation.graphql';
 import { CREATE_TIMELOG_MODAL_ID } from './constants';
 
@@ -35,7 +36,18 @@ export default {
   props: {
     issuableId: {
       type: String,
-      required: true,
+      required: false,
+      default: '',
+    },
+    workItemId: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    workItemType: {
+      type: String,
+      required: false,
+      default: '',
     },
   },
   data() {
@@ -49,13 +61,13 @@ export default {
   },
   computed: {
     modalText() {
-      const issuableTypeName = issuableTypeText[this.issuableType];
+      const issuableTypeName = issuableTypeText[this.issuableType || this.workItemType];
       return sprintf(s__('TimeTracking|Track time spent on this %{issuableTypeName}.'), {
         issuableTypeName,
       });
     },
     submitDisabled() {
-      return this.isLoading || this.timeSpent.length === 0;
+      return this.isLoading || this.timeSpent?.length === 0;
     },
     primaryProps() {
       return {
@@ -91,14 +103,50 @@ export default {
     registerTimeSpent(event) {
       event.preventDefault();
 
-      if (this.timeSpent.length === 0) {
-        return;
+      if (this.timeSpent?.length === 0) {
+        return null;
       }
 
       this.isLoading = true;
       this.saveError = '';
 
-      this.$apollo
+      if (this.workItemId) {
+        return this.$apollo
+          .mutate({
+            mutation: updateWorkItemMutation,
+            variables: {
+              input: {
+                id: this.workItemId,
+                timeTrackingWidget: {
+                  timelog: {
+                    spentAt: this.spentAt
+                      ? formatDate(this.spentAt, 'isoDateTime')
+                      : formatDate(Date.now(), 'isoDateTime'),
+                    summary: this.summary,
+                    timeSpent: this.timeSpent,
+                  },
+                },
+              },
+            },
+          })
+          .then(({ data }) => {
+            if (data.workItemUpdate.errors.length) {
+              throw new Error(data.workItemUpdate.errors);
+            }
+
+            this.close();
+          })
+          .catch((error) => {
+            this.saveError =
+              error?.message ||
+              s__('TimeTracking|An error occurred while saving the time estimate.');
+          })
+          .finally(() => {
+            this.isLoading = false;
+          });
+      }
+
+      return this.$apollo
         .mutate({
           mutation: createTimelogMutation,
           variables: {

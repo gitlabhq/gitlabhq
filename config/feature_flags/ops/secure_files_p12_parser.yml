@@ -1,0 +1,9 @@
+---
+name: secure_files_p12_parser
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/441488
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151357
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/458736
+milestone: '17.0'
+group: group::mobile devops
+type: ops
+default_enabled: true

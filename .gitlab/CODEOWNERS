@@ -72,13 +72,29 @@ config/bounded_contexts.yml @fabiopitino @grzesiek @stanhu @cwoolley-gitlab @tku
 /ee/db/schema_migrations/
 # The following two lines only match db/ root files
 /db/*
+/spec/db/*
 /ee/db/*
+/ee/spec/db/*
 /lib/gitlab/background_migration/
+/spec/lib/gitlab/background_migration/
 /ee/lib/ee/gitlab/background_migration/
+/ee/spec/lib/ee/gitlab/background_migration/
+/lib/gitlab/database.rb
 /lib/gitlab/database/
+/spec/lib/gitlab/database_spec.rb
+/spec/lib/gitlab/database/
+/ee/lib/gitlab/database/
+/ee/spec/lib/gitlab/database/
+/ee/lib/ee/gitlab/database.rb
+/ee/lib/ee/gitlab/database/
+/ee/spec/lib/ee/gitlab/database/
+/ee/spec/lib/ee/gitlab/database_spec.rb
 /lib/gitlab/sql/
+/spec/lib/gitlab/sql/
 /app/finders/
+/spec/finders/
 /ee/app/finders/
+/ee/spec/finders/
 /rubocop/rubocop-migrations.yml
 
 [Pipeline configuration] @gl-quality/eng-prod

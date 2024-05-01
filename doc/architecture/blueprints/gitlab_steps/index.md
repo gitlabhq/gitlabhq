@@ -15,7 +15,7 @@ participating-stages: [ ]
 This document describes architecture of a new component called Step Runner, the GitLab Steps syntax it uses,
 and how the GitHub Actions support will be achieved.
 
-The competitive CI products [drone.io](https://drone.io/),
+The competitive CI products [drone.io](https://www.drone.io/),
 [GitHub Actions](https://docs.github.com/en/actions/creating-actions)
 have a composable CI jobs execution in form of steps, or actions.
 

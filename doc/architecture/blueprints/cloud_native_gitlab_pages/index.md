@@ -20,7 +20,7 @@ one of the top two biggest tailwinds that are helping us grow faster as a
 company behind the project.
 
 This effort is described in more detail
-[in the infrastructure team handbook page](https://handbook.gitlab.com/handbook/engineering/infrastructure/production/kubernetes/gitlab-com/).
+[in the infrastructure team handbook page](https://handbook.gitlab.com/handbook/engineering/infrastructure/production/architecture/).
 
 GitLab Pages is tightly coupled with NFS and to unblock Kubernetes
 migration a significant change to GitLab Pages' architecture is required. This

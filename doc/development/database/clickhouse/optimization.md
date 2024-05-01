@@ -6,7 +6,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # Optimizing query execution
 
-ClickHouse Inc has listed a [variety of optimization strategies](https://clickhouse.com/docs/en/optimize/).
+ClickHouse Inc has listed a [variety of optimization strategies](https://clickhouse.com/blog/clickhouse-faster-queries-with-projections-and-primary-indexes).
 
 ClickHouse relies heavily on the structure of the primary index. However, in some cases, it's possible that queries rely on a column that's part of the primary index, but isn't the first column. See [Using multiple primary indexes](https://clickhouse.com/docs/en/guides/improving-query-performance/sparse-primary-indexes/sparse-primary-indexes-multiple) which offers several options in such cases. For example: using a data skipping index as a secondary index.
 

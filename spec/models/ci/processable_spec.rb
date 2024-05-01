@@ -594,26 +594,30 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
   end
 
   describe 'state transition: any => [:failed]' do
+    using RSpec::Parameterized::TableSyntax
+
     let!(:processable) { create(:ci_build, :running, pipeline: pipeline, user: create(:user)) }
 
     before do
       allow(processable).to receive(:can_auto_cancel_pipeline_on_job_failure?).and_return(can_auto_cancel_pipeline_on_job_failure)
+      allow(processable).to receive(:allow_failure?).and_return(allow_failure)
     end
 
-    context 'when the processable can cancel the pipeline' do
-      let(:can_auto_cancel_pipeline_on_job_failure) { true }
-
-      it 'cancels the pipeline' do
-        expect(processable.pipeline).to receive(:cancel_async_on_job_failure)
-        processable.drop!
-      end
+    where(:can_auto_cancel_pipeline_on_job_failure, :allow_failure, :result) do
+      true  | true  | false
+      true  | false | true
+      false | true  | false
+      false | false | false
     end
 
-    context 'when the processable cannot cancel the pipeline' do
-      let(:can_auto_cancel_pipeline_on_job_failure) { false }
+    with_them do
+      it 'behaves as expected' do
+        if result
+          expect(processable.pipeline).to receive(:cancel_async_on_job_failure)
+        else
+          expect(processable.pipeline).not_to receive(:cancel_async_on_job_failure)
+        end
 
-      it 'does not cancel the pipeline' do
-        expect(processable.pipeline).not_to receive(:cancel_async_on_job_failure)
         processable.drop!
       end
     end

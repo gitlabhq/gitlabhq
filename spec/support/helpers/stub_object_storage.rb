@@ -11,11 +11,11 @@ module StubObjectStorage
 
   def stub_object_storage_uploader(
     config:,
-        uploader:,
-        enabled: true,
-        proxy_download: false,
-        direct_upload: false,
-        cdn: {}
+    uploader:,
+    enabled: true,
+    proxy_download: false,
+    direct_upload: false,
+    cdn: {}
   )
     old_config = ::GitlabSettings::Options.build(config.to_h.deep_stringify_keys)
     new_config = config.to_h.deep_symbolize_keys.merge({

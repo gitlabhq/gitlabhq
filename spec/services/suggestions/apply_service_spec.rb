@@ -457,7 +457,7 @@ RSpec.describe Suggestions::ApplyService, feature_category: :code_review_workflo
           expected_suggestion1_diff = <<-CONTENT.strip_heredoc
             @@ -10,7 +10,7 @@ module Popen
                  end
-             
+            #{' '}
                  path ||= Dir.pwd
             -
             +# v1 change
@@ -467,7 +467,7 @@ RSpec.describe Suggestions::ApplyService, feature_category: :code_review_workflo
           CONTENT
           expected_suggestion2_diff = <<-CONTENT.strip_heredoc
             @@ -28,7 +28,7 @@ module Popen
-             
+            #{' '}
                  Open3.popen3(vars, *cmd, options) do |stdin, stdout, stderr, wait_thr|
                    @cmd_output << stdout.read
             -      @cmd_output << stderr.read

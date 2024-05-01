@@ -27,7 +27,7 @@ and [must be enabled](#enable-beta-and-experimental-features).
 
 ## Enable GitLab Duo on self-managed instances
 
-To enable GitLab Duo, you must ensure connectivity exists.
+To enable GitLab Duo on a self-managed instance, you must ensure connectivity exists.
 
 ### Enable outbound connections from GitLab instances
 
@@ -97,6 +97,7 @@ To disable GitLab Duo for a project:
 
 ### Disable for an instance
 
+DETAILS:
 **Offering:** Self-managed
 
 You can disable GitLab Duo for the instance.

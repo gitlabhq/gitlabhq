@@ -156,7 +156,7 @@ The `Suggested Reviewers` and `Value stream forecasting` models are Convolutiona
 
 #### LLM-hosting
 
-Customers will self-manage LLM hosting. For Mistral, GitLab recommends following the [Mistral Self-Deployment documentation](https://docs.mistral.ai/self-deployment/overview/)
+Customers will self-manage LLM hosting. For Mistral, GitLab recommends following the [Mistral Self-Deployment documentation](https://docs.mistral.ai/deployment/self-deployment/overview/)
 
 #### GitLab Duo License Management
 

@@ -15,7 +15,7 @@ DETAILS:
 request the exact data you need, and therefore limit the number of requests you need.
 
 GraphQL data is arranged in types, so your client can use
-[client-side GraphQL libraries](https://graphql.org/code/#graphql-clients)
+[client-side GraphQL libraries](https://graphql.org/community/tools-and-libraries/)
 to consume the API and avoid manual parsing.
 
 The GraphQL API is [versionless](https://graphql.org/learn/best-practices/#versioning).

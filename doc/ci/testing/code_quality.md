@@ -612,7 +612,7 @@ To run Code Quality in Kubernetes:
 - The Docker daemon in the service container must listen on a TCP and UNIX socket, as both sockets are required by Code Quality.
 - The Docker socket must be shared with a volume.
 
-Due to a [Docker requirement](https://docs.docker.com/engine/reference/commandline/run/#privileged), the privileged flag
+Due to a [Docker requirement](https://docs.docker.com/reference/cli/docker/container/run/#privileged), the privileged flag
 must be enabled for the service container.
 
 ```toml

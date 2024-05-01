@@ -73,7 +73,6 @@ ClickHouse relies on a distributed coordination component (either Zookeeper or C
 ## Materialized views
 
 One of the defining features of ClickHouse is materialized views. Functionally they resemble insert triggers for ClickHouse.
-Materialized views can be used for a variety of use cases which are well [documented](https://www.polyscale.ai/blog/polyscale-metrics-materialized-views/) on the web.
 
 We recommended reading the [views](https://clickhouse.com/docs/en/sql-reference/statements/create/view#materialized-view) section from the official documentation to get a better understanding of how they work.
 
@@ -124,7 +123,7 @@ Files: `config.xml`
 | Topic | Security Requirement | Reason |
 | ----- | -------------------- | ------ |
 | `logger` | `Log` and `errorlog` **must** be defined and writable by `clickhouse`. | Make sure logs are stored. |
-| SIEM  | If hosted on GitLab.com, the ClickHouse instance or cluster **must** report [logs to our SIEM](https://internal-handbook.gitlab.io/handbook/security/infrastructure_security_logging/tooling/devo/) (internal link). | [GitLab logs critical information system activity](https://handbook.gitlab.com/handbook/security/audit-logging-policy/). |
+| SIEM  | If hosted on GitLab.com, the ClickHouse instance or cluster **must** report [logs to our SIEM](https://internal.gitlab.com/handbook/security/security_operations/security_logging/tooling/devo/) (internal link). | [GitLab logs critical information system activity](https://handbook.gitlab.com/handbook/security/audit-logging-policy/). |
 | Log sensitive data | Query masking rules **must** be used if sensitive data can be logged. See [example masking rules](#example-masking-rules). | [Column level encryption](https://clickhouse.com/docs/en/sql-reference/functions/encryption-functions) can be used and leak sensitive data (keys) in logs. |
 
 #### Example masking rules

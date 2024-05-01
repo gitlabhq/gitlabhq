@@ -475,7 +475,7 @@ Possible structure could include:
 </table>
 ```
 
-See [WAI tutorial on tables](https://www.w3.org/WAI/tutorials/tables) for
+See [WAI tutorial on tables](https://www.w3.org/WAI/tutorials/tables/) for
 more implementation guidelines.
 
 Each file table should include a short summary of changes that will read out:

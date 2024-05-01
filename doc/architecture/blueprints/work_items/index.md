@@ -135,8 +135,6 @@ Parent-child relationships form the basis of **hierarchy** in work items. Each w
 
 As types expand, and parent items have their own parent items, the hierarchy capability can grow exponentially.
 
-[Pajamas](https://design.gitlab.com/objects/work-item#hierarchy) documents how to display hierarchies depending on context.
-
 ### Work Item view
 
 The new frontend view that renders Work Items of any type using global Work Item `id` as an identifier.
@@ -186,7 +184,6 @@ Work Item architecture is designed with making all the features for all the type
 
 ### Links
 
-- [Work items in Pajamas Design System](https://design.gitlab.com/objects/work-item)
 - [Work items initiative epic](https://gitlab.com/groups/gitlab-org/-/epics/6033)
 - [Tasks roadmap](https://gitlab.com/groups/gitlab-org/-/epics/7103?_gl=1*zqatx*_ga*NzUyOTc3NTc1LjE2NjEzNDcwMDQ.*_ga_ENFH3X7M5Y*MTY2MjU0MDQ0MC43LjEuMTY2MjU0MDc2MC4wLjAuMA..)
 - [Work Item "Vision" Prototype](https://gitlab.com/gitlab-org/gitlab/-/issues/368607)

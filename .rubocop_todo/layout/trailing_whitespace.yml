@@ -1,8 +1,0 @@
----
-# Cop supports --autocorrect.
-Layout/TrailingWhitespace:
-  Exclude:
-    - 'app/models/concerns/analytics/cycle_analytics/stage_event_model.rb'
-    - 'lib/gitlab/pagination/keyset/sql_type_missing_error.rb'
-    - 'spec/services/suggestions/apply_service_spec.rb'
-    - 'spec/support/helpers/x509_helpers.rb'

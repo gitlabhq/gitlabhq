@@ -73,7 +73,7 @@ The following is a brief description of the main directions we can take to
 remove the pain points affecting our object storage implementation.
 
 This is also available as [a YouTube video](https://youtu.be/X9V_w8hsM8E) recorded for the
-[Object Storage Working Group](https://about.gitlab.com/company/team/structure/working-groups/object-storage/).
+[Object Storage Working Group](https://handbook.gitlab.com/handbook/company/working-groups/object-storage/).
 
 ### Simplify GitLab architecture by shipping MinIO
 

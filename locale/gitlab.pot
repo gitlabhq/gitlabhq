@@ -53438,6 +53438,12 @@ msgstr ""
 msgid "TimeTracking|%{time} remaining"
 msgstr ""
 
+msgid "TimeTracking|Add an %{estimateStart}estimate%{estimateEnd} or %{timeSpentStart}time spent%{timeSpentEnd}."
+msgstr ""
+
+msgid "TimeTracking|Add estimate"
+msgstr ""
+
 msgid "TimeTracking|An error occurred while removing the timelog."
 msgstr ""
 
@@ -53483,10 +53489,10 @@ msgstr ""
 msgid "TimeTracking|Time remaining: %{timeRemainingHumanReadable}"
 msgstr ""
 
-msgid "TimeTracking|To manage time, use /spend or /estimate."
+msgid "TimeTracking|Track time spent on this %{issuableTypeName}."
 msgstr ""
 
-msgid "TimeTracking|Track time spent on this %{issuableTypeName}."
+msgid "TimeTracking|View time tracking report"
 msgstr ""
 
 msgid "Timeago|%s days ago"

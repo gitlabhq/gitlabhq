@@ -66,17 +66,8 @@ Prerequisites:
 
 #### Configure network and proxy settings
 
-For self-managed instances, to enable AI-powered features:
-
-- Your firewalls and HTTP/S proxy servers must allow outbound connections
-  to `cloud.gitlab.com` and `customers.gitlab.com` on port `443` both with `https://` and `wws://`.
-- Both `HTTP2` and the `'upgrade'` header must be allowed, because GitLab Duo
-  uses both REST and WebSockets.
-- To use an HTTP/S proxy, both `gitLab_workhorse` and `gitLab_rails` must have the necessary
-  [web proxy environment variables](https://docs.gitlab.com/omnibus/settings/environment-variables.html) set.
-- Check for restrictions on WebSocket (`wss://`) traffic to `wss://gitlab.com/-/cable` and other `.com` domains.
-  Network policy restrictions on `wss://` traffic can cause issues with some GitLab Duo Chat
-  services. Consider policy updates to allow these services.
+For self-managed instances, to enable GitLab Duo features,
+You must [enable network connectivity](../user/ai_features_enable.md#enable-gitlab-duo-on-self-managed-instances).
 
 ## Assign and remove seats in bulk
 

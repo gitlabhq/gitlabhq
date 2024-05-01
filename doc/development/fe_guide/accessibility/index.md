@@ -54,8 +54,8 @@ Use these tools and learning resources to improve your web accessibility workflo
 
 We have two options for Web accessibility testing:
 
-- [axe](https://www.deque.com/axe/) for [Firefox](https://addons.mozilla.org/en-US/firefox/addon/axe-devtools/)
-- [axe](https://www.deque.com/axe/) for [Chrome](https://chrome.google.com/webstore/detail/axe-devtools-web-accessib/lhdoppojpmngadmnindnejefpokejbdd)
+- axe for [Firefox](https://www.deque.com/axe/devtools/firefox-browser-extension/)
+- axe for [Chrome](https://www.deque.com/axe/devtools/chrome-browser-extension/)
 
 ### Other links
 

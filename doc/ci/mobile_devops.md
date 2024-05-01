@@ -444,4 +444,4 @@ See the sample reference projects below for complete build, sign, and release pi
 
 ## Mobile DevOps Blog
 
-Additional reference material can be found in the [#mobile section](https://about.gitlab.com/blog/tags.html#mobile) of the GitLab blog.
+Additional reference material can be found in the [DevOps section](https://about.gitlab.com/blog/categories/devops/) of the GitLab blog.
