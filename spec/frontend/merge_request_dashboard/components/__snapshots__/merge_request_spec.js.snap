@@ -34,7 +34,9 @@ exports[`Merge request dashboard merge request component renders template 1`] = 
       <ul
         class="gl-display-flex gl-justify-content-end gl-list-none gl-m-0 gl-p-0"
       >
-        <li>
+        <li
+          class="gl-ml-4"
+        >
           <user-avatar-link-stub
             imgalt=""
             imgcssclasses=""
@@ -92,7 +94,7 @@ exports[`Merge request dashboard merge request component renders template 1`] = 
         </li>
       </ul>
       <div
-        class="gl-font-sm gl-mt-2 gl-text-secondary"
+        class="gl-font-sm gl-mt-2 gl-text-right gl-text-secondary"
       >
         <gl-sprintf-stub
           message="Updated at %{updatedAt}"

@@ -201,11 +201,11 @@ export default {
       </div>
     </template>
 
-    <template #right-primary>
+    <template v-if="!errorStatusRow" #right-primary>
       <publish-method :pipeline="pipeline" />
     </template>
 
-    <template #right-secondary>
+    <template v-if="!errorStatusRow" #right-secondary>
       <span data-testid="right-secondary">
         <gl-sprintf :message="publishedMessage">
           <template v-if="isGroupPage" #projectName>

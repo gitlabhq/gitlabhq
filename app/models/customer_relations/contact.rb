@@ -96,22 +96,22 @@ class CustomerRelations::Contact < ApplicationRecord
 
   def self.sort_by_name
     order(Gitlab::Pagination::Keyset::Order.build(
-            [
-              Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-                attribute_name: 'last_name',
-                order_expression: arel_table[:last_name].asc,
-                distinct: false
-              ),
-              Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-                attribute_name: 'first_name',
-                order_expression: arel_table[:first_name].asc,
-                distinct: false
-              ),
-              Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-                attribute_name: 'id',
-                order_expression: arel_table[:id].asc
-              )
-            ]))
+      [
+        Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+          attribute_name: 'last_name',
+          order_expression: arel_table[:last_name].asc,
+          distinct: false
+        ),
+        Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+          attribute_name: 'first_name',
+          order_expression: arel_table[:first_name].asc,
+          distinct: false
+        ),
+        Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+          attribute_name: 'id',
+          order_expression: arel_table[:id].asc
+        )
+      ]))
   end
 
   def self.find_ids_by_emails(group, emails)

@@ -266,3 +266,8 @@ pages:
 With this configuration, users will have the access to each GitLab Pages deployment through the UI.
 When using [environments](../../../ci/environments/index.md) for pages, all pages environments are
 listed on the project environment list.
+
+### Delete deployments
+
+Pages deployments created by a merge request, with a `path_prefix` are automatically deleted when the
+merge request is closed or merged.

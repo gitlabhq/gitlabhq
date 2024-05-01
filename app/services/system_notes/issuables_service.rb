@@ -210,7 +210,7 @@ module SystemNotes
       params = hierarchy_note_params(action, noteable, work_item)
 
       create_note(NoteSummary.new(noteable, project, author, params[:parent_note_body], action: params[:parent_action]))
-      create_note(NoteSummary.new(work_item, project, author, params[:child_note_body], action: params[:child_action]))
+      create_note(NoteSummary.new(work_item, work_item.project, author, params[:child_note_body], action: params[:child_action]))
     end
 
     # Called when the description of a Noteable is changed

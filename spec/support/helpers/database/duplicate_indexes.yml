@@ -28,9 +28,6 @@ ci_job_artifacts:
     - index_ci_job_artifacts_on_project_id
   index_ci_job_artifacts_on_project_id_and_id:
     - index_ci_job_artifacts_on_project_id
-ci_pipeline_artifacts:
-  index_ci_pipeline_artifacts_on_pipeline_id_and_file_type:
-    - index_ci_pipeline_artifacts_on_pipeline_id
 ci_stages:
   index_ci_stages_on_pipeline_id_and_position:
     - index_ci_stages_on_pipeline_id

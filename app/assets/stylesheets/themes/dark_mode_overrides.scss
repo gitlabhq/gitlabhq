@@ -168,3 +168,39 @@ aside.right-sidebar:not(.right-sidebar-merge-requests) {
   background-color: var(--gray-100);
   color: var(--gray-700);
 }
+
+.gl-dark  {
+  .gl-filtered-search-token-type, 
+  .gl-filtered-search-token-operator,
+  .gl-filtered-search-token-data,
+  .gl-filtered-search-suggestion-active {
+    background-color: $gray-100;
+  }
+
+  .gl-dropdown-item.gl-filtered-search-suggestion,
+  .gl-filtered-search-suggestion-active {
+    .dropdown-item:hover {
+      background-color: $gray-200;
+    } 
+  }
+
+  .filtered-search-token {
+    .name, .operator, .value-container {
+      background-color: $gray-100;
+    }
+
+    &:hover {
+      .operator, .value-container {
+        background-color: $gray-200;
+      }
+    }
+  }
+
+  .filtered-search-wrapper li.droplab-item-active button {
+    background-color: $gray-100;
+   
+    &:hover {
+     background-color: $gray-200;
+    }
+  }
+}

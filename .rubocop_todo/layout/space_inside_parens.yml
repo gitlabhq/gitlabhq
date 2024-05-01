@@ -2,21 +2,6 @@
 # Cop supports --autocorrect.
 Layout/SpaceInsideParens:
   Exclude:
-    - 'ee/spec/finders/security/vulnerability_feedbacks_finder_spec.rb'
-    - 'ee/spec/frontend/fixtures/analytics/devops_reports/devops_adoption/enabled_namespaces.rb'
-    - 'ee/spec/frontend/fixtures/epic.rb'
-    - 'ee/spec/lib/gitlab/search/index_curator_spec.rb'
-    - 'ee/spec/lib/world_spec.rb'
-    - 'ee/spec/mailers/notify_spec.rb'
-    - 'ee/spec/models/allowed_email_domain_spec.rb'
-    - 'ee/spec/models/boards/epic_board_position_spec.rb'
-    - 'ee/spec/models/dora/change_failure_rate_metric_spec.rb'
-    - 'ee/spec/models/ee/integrations/jira_spec.rb'
-    - 'ee/spec/models/ee/iterations/cadence_spec.rb'
-    - 'ee/spec/models/ee/key_spec.rb'
-    - 'ee/spec/models/ee/project_setting_spec.rb'
-    - 'ee/spec/models/ee/project_spec.rb'
-    - 'ee/spec/models/ee/system_note_metadata_spec.rb'
     - 'ee/spec/models/geo/every_geo_event_spec.rb'
     - 'ee/spec/models/incident_management/escalation_rule_spec.rb'
     - 'ee/spec/models/ip_restriction_spec.rb'

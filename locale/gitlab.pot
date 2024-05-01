@@ -5950,7 +5950,7 @@ msgstr ""
 msgid "Analytics|Start by choosing a metric"
 msgstr ""
 
-msgid "Analytics|Statistics on top-level namespace usage. Usage data is a cumulative count, and updated monthly."
+msgid "Analytics|Statistics on namespace usage. Usage data is a cumulative count, and updated monthly."
 msgstr ""
 
 msgid "Analytics|Tables"

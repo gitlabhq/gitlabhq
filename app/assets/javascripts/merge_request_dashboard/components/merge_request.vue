@@ -4,6 +4,7 @@ import { __, sprintf } from '~/locale';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
+import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import { isScopedLabel } from '~/lib/utils/common_utils';
 
 export default {
@@ -12,6 +13,7 @@ export default {
     GlSprintf,
     GlIcon,
     GlLabel,
+    CiIcon,
     TimeAgoTooltip,
     UserAvatarLink,
   },
@@ -71,7 +73,10 @@ export default {
       </div>
       <div class="gl-ml-auto gl-display-flex gl-flex-direction-column">
         <ul class="gl-display-flex gl-justify-content-end gl-m-0 gl-p-0 gl-list-none">
-          <li v-if="mergeRequest.assignees.nodes.length">
+          <li v-if="mergeRequest.headPipeline && mergeRequest.headPipeline.detailedStatus">
+            <ci-icon :status="mergeRequest.headPipeline.detailedStatus" use-link show-tooltip />
+          </li>
+          <li v-if="mergeRequest.assignees.nodes.length" class="gl-ml-4">
             <user-avatar-link
               v-for="(assignee, index) in mergeRequest.assignees.nodes"
               :key="`assignee_${assignee.id}`"
@@ -102,7 +107,10 @@ export default {
             {{ mergeRequest.userDiscussionsCount }}
           </li>
         </ul>
-        <div v-if="mergeRequest.updatedAt" class="gl-font-sm gl-mt-2 gl-text-secondary">
+        <div
+          v-if="mergeRequest.updatedAt"
+          class="gl-font-sm gl-mt-2 gl-text-secondary gl-text-right"
+        >
           <gl-sprintf :message="__('Updated at %{updatedAt}')">
             <template #updatedAt><time-ago-tooltip :time="mergeRequest.updatedAt" /></template>
           </gl-sprintf>

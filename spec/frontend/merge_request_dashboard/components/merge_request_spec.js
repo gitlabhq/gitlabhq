@@ -1,10 +1,11 @@
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import MergeRequest from '~/merge_request_dashboard/components/merge_request.vue';
+import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 
 describe('Merge request dashboard merge request component', () => {
   let wrapper;
 
-  function createComponent() {
+  function createComponent(mergeRequest = {}) {
     wrapper = shallowMountExtended(MergeRequest, {
       propsData: {
         mergeRequest: {
@@ -62,6 +63,7 @@ describe('Merge request dashboard merge request component', () => {
           userDiscussionsCount: 5,
           createdAt: '2024-04-22T10:13:09Z',
           updatedAt: '2024-04-19T14:34:42Z',
+          ...mergeRequest,
         },
       },
     });
@@ -71,5 +73,27 @@ describe('Merge request dashboard merge request component', () => {
     createComponent();
 
     expect(wrapper.element).toMatchSnapshot();
+  });
+
+  it('renders CI icon for headPipeline', () => {
+    createComponent({
+      headPipeline: {
+        id: 'gid://gitlab/Ci::Pipeline/1',
+        detailedStatus: {
+          id: 'success-1',
+          icon: 'status_success',
+          text: 'Passed',
+          detailsPath: '/',
+        },
+      },
+    });
+
+    expect(wrapper.findComponent(CiIcon).exists()).toBe(true);
+    expect(wrapper.findComponent(CiIcon).props('status')).toEqual({
+      id: 'success-1',
+      icon: 'status_success',
+      text: 'Passed',
+      detailsPath: '/',
+    });
   });
 });

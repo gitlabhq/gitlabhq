@@ -366,6 +366,10 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
         it 'allows admins to comment' do
           expect(permissions(admin, issue)).to be_allowed(:create_note)
         end
+
+        it 'allows admins to admin issue links' do
+          expect(permissions(admin, issue)).to be_allowed(:admin_issue_link)
+        end
       end
 
       context 'when admin mode is disabled' do

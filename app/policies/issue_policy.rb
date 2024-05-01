@@ -90,6 +90,7 @@ class IssuePolicy < IssuablePolicy
 
   rule { can?(:admin_issue) }.policy do
     enable :set_issue_metadata
+    enable :admin_issue_link
   end
 
   # guest members need to be able to set issue metadata per https://gitlab.com/gitlab-org/gitlab/-/issues/300100

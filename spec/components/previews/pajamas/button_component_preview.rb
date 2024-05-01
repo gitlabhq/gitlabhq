@@ -28,16 +28,16 @@ module Pajamas
       text: "Edit"
     )
       render(Pajamas::ButtonComponent.new(
-               category: category,
-               variant: variant,
-               size: size,
-               type: type,
-               disabled: disabled,
-               loading: loading,
-               block: block,
-               selected: selected,
-               icon: icon
-             )) do
+        category: category,
+        variant: variant,
+        size: size,
+        type: type,
+        disabled: disabled,
+        loading: loading,
+        block: block,
+        selected: selected,
+        icon: icon
+      )) do
         text.presence
       end
     end
@@ -49,9 +49,9 @@ module Pajamas
     # @param target select {{ Pajamas::ButtonComponent::TARGET_OPTIONS }}
     def link(target: nil)
       render(Pajamas::ButtonComponent.new(
-               href: "https://gitlab.com",
-               target: target
-             )) do
+        href: "https://gitlab.com",
+        target: target
+      )) do
         "This is a link"
       end
     end

@@ -16,11 +16,11 @@ module Pajamas
       variant: :promotion
     )
       render(Pajamas::BannerComponent.new(
-               button_text: button_text,
-               button_link: button_link,
-               svg_path: "illustrations/devops-sm.svg",
-               variant: variant
-             )) do |c|
+        button_text: button_text,
+        button_link: button_link,
+        svg_path: "illustrations/devops-sm.svg",
+        variant: variant
+      )) do |c|
         content_tag :p, content
       end
     end
