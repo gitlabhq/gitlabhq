@@ -33,6 +33,7 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: 
       pages.tar.gz
       packages.tar.gz
       ci_secure_files.tar.gz
+      uploads.tar.gz
     ]
   end
 
@@ -723,6 +724,16 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: 
       expect { run_rake_task('gitlab:backup:create') }.to output.to_stdout_from_any_process
 
       expect(backup_tar).to match(/\d+_\d{4}_\d{2}_\d{2}_\d+\.\d+\.\d+.*_gitlab_backup.tar$/)
+    end
+  end
+
+  describe 'verifying a backup' do
+    it 'delegates to Backup::Manager#verify!' do
+      expect_next_instance_of(::Backup::Manager) do |manager|
+        expect(manager).to receive(:verify!)
+      end
+
+      run_rake_task('gitlab:backup:verify')
     end
   end
 

@@ -218,18 +218,18 @@ Each user has a long-lived incoming email token that does not expire. This token
 
 This table shows available scopes per token. Scopes can be limited further on token creation.
 
-|                             | API access | Registry access | Repository access |
-|-----------------------------|------------|-----------------|-------------------|
-| Personal access token       | ✅         | ✅              | ✅                |
-| OAuth2 token                | ✅         | 🚫              | ✅                |
-| Impersonation token         | ✅         | ✅              | ✅                |
-| Project access token        | ✅(1)      | ✅(1)           | ✅(1)             |
-| Group access token          | ✅(2)      | ✅(2)           | ✅(2)             |
-| Deploy token                | 🚫         | ✅              | ✅                |
-| Deploy key                  | 🚫         | 🚫              | ✅                |
-| Runner registration token   | 🚫         | 🚫              | ✴️(3)              |
-| Runner authentication token | 🚫         | 🚫              | ✴️(3)              |
-| Job token                   | ✴️(4)       | 🚫              | ✅                |
+| Token name                  | API access                | Registry access           | Repository access |
+|-----------------------------|---------------------------|---------------------------|-------------------|
+| Personal access token       | **{check-circle}** Yes    | **{check-circle}** Yes    | **{check-circle}** Yes |
+| OAuth2 token                | **{check-circle}** Yes    | **{dotted-circle}** No    | **{check-circle}** Yes |
+| Impersonation token         | **{check-circle}** Yes    | **{check-circle}** Yes    | **{check-circle}** Yes |
+| Project access token        | **{check-circle}** Yes(1) | **{check-circle}** Yes(1) | **{check-circle}** Yes(1) |
+| Group access token          | **{check-circle}** Yes(2) | **{check-circle}** Yes(2) | **{check-circle}** Yes(2) |
+| Deploy token                | **{dotted-circle}** No    | **{check-circle}** Yes    | **{check-circle}** Yes |
+| Deploy key                  | **{dotted-circle}** No    | **{dotted-circle}** No    | **{check-circle}** Yes |
+| Runner registration token   | **{dotted-circle}** No    | **{dotted-circle}** No    | ✴️(3)              |
+| Runner authentication token | **{dotted-circle}** No    | **{dotted-circle}** No    | ✴️(3)              |
+| Job token                   | ✴️(4)                      | **{dotted-circle}** No    | **{check-circle}** Yes |
 
 1. Limited to the one project.
 1. Limited to the one group.
@@ -238,38 +238,25 @@ This table shows available scopes per token. Scopes can be limited further on to
 
 ## Token prefixes
 
-The following tables show the prefixes for each type of token where applicable.
-
-### GitLab tokens
+The following table shows the prefixes for each type of token.
 
 |            Token name             |      Prefix        |
 |-----------------------------------|--------------------|
 | Personal access token             | `glpat-`           |
 | OAuth Application Secret          | `gloas-`           |
-| Impersonation token               | Not applicable.    |
-| Project access token              | Not applicable.    |
-| Group access token                | Not applicable.    |
+| Impersonation token               | `glpat-`           |
+| Project access token              | `glpat-`           |
+| Group access token                | `glpat-`           |
 | Deploy token                      | `gldt-` ([Added in GitLab 16.7](https://gitlab.com/gitlab-org/gitlab/-/issues/376752)) |
-| Deploy key                        | Not applicable.    |
-| Runner registration token         | Not applicable.    |
 | Runner authentication token       | `glrt-`            |
 | CI/CD Job token                   | `glcbt-` <br /> &bull; ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/426137) in GitLab 16.8 behind a feature flag named `prefix_ci_build_tokens`. Disabled by default.) <br /> &bull; ([Generally available](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/17299) in GitLab 16.9. Feature flag `prefix_ci_build_tokens` removed.) |
 | Trigger token                     | `glptt-`           |
-| Legacy runner registration token  | GR1348941          |
 | Feed token                        | `glft-`            |
 | Incoming mail token               | `glimt-`           |
 | GitLab agent for Kubernetes token | `glagent-`         |
 | GitLab session cookies            | `_gitlab_session=` |
 | SCIM Tokens                       | `glsoat-` <br /> &bull; ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/435096) in GitLab 16.8 behind a feature flag named `prefix_scim_tokens`. Disabled by default.) <br > &bull; ([Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/435423) in GitLab 16.9. Feature flag `prefix_scim_tokens` removed.) |
 | Feature Flags Client token        | `glffct-`          |
-
-### External system tokens
-
-|   Token name    |     Prefix      |
-|-----------------|-----------------|
-| Omamori tokens  | `omamori_pat_`  |
-| AWS credentials | `AKIA`          |
-| GCP credentials | Not applicable. |
 
 ## Security considerations
 

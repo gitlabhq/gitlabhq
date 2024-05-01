@@ -72,6 +72,21 @@ module Backup
       logger.info "Restore task is done."
     end
 
+    # Verify whether a backup is compatible with current GitLab's version
+    def verify!
+      run_unpack(options.backup_id)
+      read_backup_information
+
+      preconditions = Backup::Restore::Preconditions.new(
+        backup_information: backup_information,
+        logger: logger
+      )
+
+      preconditions.validate_backup_version!
+    ensure
+      cleanup
+    end
+
     # @param [Gitlab::Backup::Tasks::Task] task
     def run_restore_task(task)
       read_backup_information

@@ -318,7 +318,7 @@ In GitLab 16.8, 16.9, and 16.10, on GitLab Dedicated, GitLab Duo Chat is availab
 ## Disable GitLab Duo Chat
 
 To disable GitLab Duo Chat, follow the instructions for
-[disabling GitLab Duo features](ai_features.md#disable-gitlab-duo-features-for-specific-groups-or-projects-or-an-entire-instance).
+[disabling GitLab Duo features](ai_features_enable.md).
 
 When you disable GitLab Duo features, GitLab Duo Chat no longer uses your organization's
 data when responding to questions. For example, you can no longer ask about your issues or epics.
@@ -460,7 +460,7 @@ ensure GitLab Duo Chat [is enabled](#enable-gitlab-duo-chat).
 
 The **GitLab Duo Chat** button is not displayed on personal projects,
 as well as
-[groups and projects with GitLab Duo features disabled](ai_features.md#disable-gitlab-duo-features-for-specific-groups-or-projects-or-an-entire-instance).
+[groups and projects with GitLab Duo features disabled](ai_features_enable.md).
 
 After you enable GitLab Duo Chat, it might take a few minutes for the
 button to appear.
@@ -468,7 +468,7 @@ button to appear.
 ### `This feature is only allowed in groups or projects that enable this feature`
 
 This error occurs when you ask about resources that do have
-GitLab Duo [disabled](ai_features.md#disable-gitlab-duo-features-for-specific-groups-or-projects-or-an-entire-instance).
+GitLab Duo [disabled](ai_features_enable.md).
 
 If any of the settings are not enabled, information about resources
 (like issues, epics, and merge requests) in the group or project

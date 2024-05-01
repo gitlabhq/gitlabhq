@@ -55,7 +55,7 @@ Prerequisites:
 - You must be a member of the project.
 - The vulnerability must be a SAST finding.
 
-Learn more about [how to enable all GitLab Duo features](../../ai_features.md#enabling-beta-and-experimental-ai-powered-features).
+Learn more about [how to enable all GitLab Duo features](../../ai_features_enable.md).
 
 To explain the vulnerability:
 
@@ -110,7 +110,7 @@ Prerequisites:
 - You must be a member of the project.
 - The vulnerability must be a SAST finding.
 
-Learn more about [how to enable all GitLab Duo features](../../ai_features.md#enabling-beta-and-experimental-ai-powered-features).
+Learn more about [how to enable all GitLab Duo features](../../ai_features_enable.md).
 
 To resolve the vulnerability:
 

@@ -355,6 +355,15 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
   end
 
+  describe '.no_tag' do
+    let_it_be(:pipeline) { create(:ci_pipeline) }
+    let_it_be(:tag_pipeline) { create(:ci_pipeline, tag: true) }
+
+    subject { described_class.no_tag }
+
+    it { is_expected.to contain_exactly(pipeline) }
+  end
+
   describe '.processables' do
     let_it_be(:pipeline) { create(:ci_empty_pipeline, :created) }
 

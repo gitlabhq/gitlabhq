@@ -22,6 +22,13 @@ module Tasks
         end
       end
 
+      # Verify backup file to ensure it is compatible with current GitLab's version
+      def self.verify_backup
+        lock_backup do
+          ::Backup::Manager.new(backup_progress).verify!
+        end
+      end
+
       def self.create_task(task_id)
         lock_backup do
           backup_manager = ::Backup::Manager.new(backup_progress)
@@ -111,6 +118,11 @@ namespace :gitlab do
     desc 'GitLab | Backup | Restore a previously created backup'
     task restore: :gitlab_environment do
       Tasks::Gitlab::Backup.restore_backup
+    end
+
+    desc 'GitLab | Backup | Verify a previously created backup'
+    task verify: :gitlab_environment do
+      Tasks::Gitlab::Backup.verify_backup
     end
 
     namespace :repo do

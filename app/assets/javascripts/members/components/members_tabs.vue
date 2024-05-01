@@ -95,7 +95,12 @@ export default {
           <span>{{ tab.title }}</span>
           <gl-badge size="sm" class="gl-tab-counter-badge">{{ getTabCount(tab) }}</gl-badge>
         </template>
-        <component :is="tab.component" v-if="tab.component" :namespace="tab.namespace" />
+        <component
+          :is="tab.component"
+          v-if="tab.component"
+          :namespace="tab.namespace"
+          :tab-query-param-value="tab.queryParamValue"
+        />
         <members-app
           v-else
           :namespace="tab.namespace"

@@ -9,6 +9,11 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
   let(:logger) { subject.logger }
   let(:backup_tasks) { nil }
   let(:options) { build(:backup_options, :skip_none) }
+  let(:backup_path) { Pathname(Dir.mktmpdir('backup-manager', TestEnv::TMP_TEST_PATH)) }
+  let(:fixtures_path) { Rails.root.join('spec/fixtures/backups') }
+  let(:backup_fixture_filename) { '1714155640_2024_04_26_17.0.0-pre_gitlab_backup.tar' }
+  let(:backup_fixture_version) { '17.0.0-pre' }
+  let(:backup_fixture) { fixtures_path.join(backup_fixture_filename) }
 
   subject { described_class.new(progress, backup_tasks: backup_tasks) }
 
@@ -20,10 +25,11 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
     allow(FileUtils).to receive(:rm_rf).and_call_original
 
     allow(progress).to receive(:puts).and_call_original
+    allow(Gitlab.config.backup).to receive(:path).and_return(backup_path)
   end
 
-  def backup_path
-    Pathname(Gitlab.config.backup.path)
+  after do
+    FileUtils.rm_rf(backup_path)
   end
 
   describe '#run_create_task' do
@@ -136,7 +142,6 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
 
     let(:backup_information) { { backup_created_at: Time.zone.parse('2019-01-01'), gitlab_version: '12.3' } }
     let(:backup_id) { "1546300800_2019_01_01_#{Gitlab::VERSION}" }
-    let(:backup_path) { Pathname.new('tmp/backups') }
     let(:restore_process) do
       Backup::Restore::Process.new(
         backup_id: backup_id,
@@ -513,7 +518,7 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
       end
 
       describe 'cloud storage' do
-        let(:backup_file) { Tempfile.new('backup', Gitlab.config.backup.path) }
+        let(:backup_file) { Tempfile.new('backup', backup_path) }
         let(:backup_filename) { File.basename(backup_file.path) }
 
         before do
@@ -1250,6 +1255,65 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
 
       expect(tar_version).to be_a(String)
       expect(tar_version).to match(/tar \(GNU tar\) [0-9]\.[0-9]+/)
+    end
+  end
+
+  describe '#verify!' do
+    let(:backup_id) { '1714155640_2024_04_26_17.0.0-pre' }
+
+    before do
+      FileUtils.cp(backup_fixture, backup_path)
+    end
+
+    it 'unpacks the backup and reads information from disk' do
+      expect(subject).to receive(:run_unpack).and_call_original
+      expect(subject).to receive(:read_backup_information).and_call_original
+
+      allow_next_instance_of(Backup::Restore::Preconditions) do |preconditions|
+        allow(preconditions).to receive(:validate_backup_version!)
+      end
+
+      metadata = subject.instance_variable_get(:@metadata)
+      expect { subject.verify! }.to change { metadata.backup_information.try(:backup_id) }.from(nil).to(backup_id)
+    end
+
+    context 'when backup version matches with running gitlab version' do
+      it 'runs precondition verification and exit 0' do
+        stub_const('Gitlab::VERSION', backup_fixture_version)
+
+        allow_next_instance_of(Backup::Restore::Preconditions) do |preconditions|
+          allow(preconditions).to receive(:validate_backup_version!).and_call_original
+        end
+
+        expect { subject.verify! }.to raise_error(SystemExit) do |error|
+          expect(error.status).to eq(0)
+        end
+      end
+    end
+
+    context 'when backup version doesnt match with running gitlab version' do
+      it 'runs precondition verification and exit 0' do
+        stub_const('Gitlab::VERSION', '13.5.0')
+
+        allow_next_instance_of(Backup::Restore::Preconditions) do |preconditions|
+          allow(preconditions).to receive(:validate_backup_version!).and_call_original
+        end
+
+        expect { subject.verify! }.to raise_error(SystemExit) do |error|
+          expect(error.status).to eq(1)
+        end
+      end
+    end
+
+    it 'cleans up the backup temporary folder after verification' do
+      allow_next_instance_of(Backup::Restore::Preconditions) do |preconditions|
+        allow(preconditions).to receive(:validate_backup_version!)
+      end
+
+      subject.verify!
+
+      expect(backup_path.children.size).to eq(1)
+      expect(backup_path.children[0]).to eq(backup_path.join(backup_fixture_filename))
     end
   end
 end
