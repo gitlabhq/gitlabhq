@@ -15,6 +15,7 @@ describe('GlobalSearch MergeRequestsFilters', () => {
 
   const defaultGetters = {
     currentScope: () => 'merge_requests',
+    showArchived: () => true,
   };
 
   const createComponent = (initialState = {}) => {
@@ -63,16 +64,13 @@ describe('GlobalSearch MergeRequestsFilters', () => {
     });
   });
 
-  describe('Renders correctly with wrong scope', () => {
+  describe('ShowArchived getter', () => {
     beforeEach(() => {
-      defaultGetters.currentScope = () => 'test';
+      defaultGetters.showArchived = () => false;
       createComponent();
     });
-    it("doesn't render StatusFilter", () => {
-      expect(findStatusFilter().exists()).toBe(false);
-    });
 
-    it("doesn't render ArchivedFilter", () => {
+    it('hides archived filter', () => {
       expect(findArchivedFilter().exists()).toBe(false);
     });
   });
