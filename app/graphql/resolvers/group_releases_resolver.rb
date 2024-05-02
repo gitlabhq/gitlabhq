@@ -5,8 +5,8 @@ module Resolvers
     type Types::ReleaseType.connection_type, null: true
 
     argument :sort, Types::GroupReleaseSortEnum,
-             required: false, default_value: :released_at_desc,
-             description: 'Sort group releases by given criteria.'
+      required: false, default_value: :released_at_desc,
+      description: 'Sort group releases by given criteria.'
 
     alias_method :group, :object
 

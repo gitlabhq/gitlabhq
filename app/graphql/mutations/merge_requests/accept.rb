@@ -22,28 +22,28 @@ module Mutations
       ALREADY_SCHEDULED = 'The merge request is already scheduled to be merged'
 
       argument :strategy,
-               ::Types::MergeStrategyEnum,
-               required: false,
-               as: :auto_merge_strategy,
-               description: 'How to merge the merge request.'
+        ::Types::MergeStrategyEnum,
+        required: false,
+        as: :auto_merge_strategy,
+        description: 'How to merge the merge request.'
 
       argument :commit_message, ::GraphQL::Types::String,
-               required: false,
-               description: 'Custom merge commit message.'
+        required: false,
+        description: 'Custom merge commit message.'
       argument :sha, ::GraphQL::Types::String,
-               required: true,
-               description: 'HEAD SHA at the time when the merge was requested.'
+        required: true,
+        description: 'HEAD SHA at the time when the merge was requested.'
       argument :squash_commit_message, ::GraphQL::Types::String,
-               required: false,
-               description: 'Custom squash commit message (if squash is true).'
+        required: false,
+        description: 'Custom squash commit message (if squash is true).'
 
       argument :should_remove_source_branch, ::GraphQL::Types::Boolean,
-               required: false,
-               description: 'Should the source branch be removed.'
+        required: false,
+        description: 'Should the source branch be removed.'
       argument :squash, ::GraphQL::Types::Boolean,
-               required: false,
-               default_value: false,
-               description: 'Squash commits on the source branch before merge.'
+        required: false,
+        default_value: false,
+        description: 'Squash commits on the source branch before merge.'
 
       def resolve(project_path:, iid:, **args)
         Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/4796')

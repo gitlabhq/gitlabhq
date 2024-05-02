@@ -401,6 +401,8 @@ Example of response
 
 > - `iid` in response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342223) in GitLab 14.6.
 
+Retry failed or canceled jobs in a pipeline. If there are no failed or canceled jobs in the pipeline, calling this endpoint has no effect.
+
 ```plaintext
 POST /projects/:id/pipelines/:pipeline_id/retry
 ```

@@ -163,7 +163,7 @@ RSpec.describe Projects::Ml::ExperimentsHelper, feature_category: :mlops do
 
       it 'generates the correct page_info' do
         is_expected.to include({
-          has_next_page:  false,
+          has_next_page: false,
           has_previous_page: true,
           start_cursor: second_page.cursor_for_previous_page,
           end_cursor: nil

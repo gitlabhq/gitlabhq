@@ -249,7 +249,7 @@ describe('List Selector spec', () => {
         findSearchResultsDropdown().vm.$emit('select', firstSearchResult.name);
 
         expect(wrapper.emitted('select')).toEqual([
-          [{ ...firstSearchResult, text: 'Flightjs', value: 'Flightjs' }],
+          [{ ...firstSearchResult, text: 'Flightjs', value: 'Flightjs', type: 'group' }],
         ]);
       });
     });

@@ -43,6 +43,11 @@ export default {
       required: false,
       default: null,
     },
+    autofocus: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -123,6 +128,7 @@ export default {
           data?.groups.nodes.map((group) => ({
             text: group.fullName,
             value: group.name,
+            type: 'group',
             ...group,
           })),
         );
@@ -191,7 +197,7 @@ export default {
             ref="search"
             v-model="searchValue"
             :placeholder="searchPlaceholder"
-            autofocus
+            :autofocus="autofocus"
             debounce="500"
             :is-loading="isLoading"
             @input="handleSearchInput"

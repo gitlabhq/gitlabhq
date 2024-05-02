@@ -126,9 +126,7 @@ export default {
 </script>
 
 <template>
-  <div
-    class="gl-md-display-flex gl-p-5 gl-bg-gray-10 gl-border-solid gl-border-1 gl-border-gray-100"
-  >
+  <div class="gl-md-display-flex row-content-block">
     <!-- `gl-w-full gl-md-w-15` forces fixed width needed to prevent
     filtered component to grow beyond available width -->
     <gl-filtered-search

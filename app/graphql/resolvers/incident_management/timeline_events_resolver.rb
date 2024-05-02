@@ -10,16 +10,16 @@ module Resolvers
       type ::Types::IncidentManagement::TimelineEventType.connection_type, null: true
 
       argument :incident_id,
-               ::Types::GlobalIDType[::Issue],
-               required: true,
-               description: 'ID of the incident.'
+        ::Types::GlobalIDType[::Issue],
+        required: true,
+        description: 'ID of the incident.'
 
       when_single do
         argument :id,
-                 ::Types::GlobalIDType[::IncidentManagement::TimelineEvent],
-                 required: true,
-                 description: 'ID of the timeline event.',
-                 prepare: ->(id, ctx) { id.model_id }
+          ::Types::GlobalIDType[::IncidentManagement::TimelineEvent],
+          required: true,
+          description: 'ID of the timeline event.',
+          prepare: ->(id, ctx) { id.model_id }
       end
 
       def resolve_with_lookahead(**args)

@@ -6,18 +6,18 @@ module Mutations
       graphql_name 'MergeRequestSetLabels'
 
       argument :label_ids,
-               [::Types::GlobalIDType[Label]],
-               required: true,
-               description: <<~DESC
+        [::Types::GlobalIDType[Label]],
+        required: true,
+        description: <<~DESC
                  Label IDs to set. Replaces existing labels by default.
-               DESC
+        DESC
 
       argument :operation_mode,
-               Types::MutationOperationModeEnum,
-               required: false,
-               description: <<~DESC
+        Types::MutationOperationModeEnum,
+        required: false,
+        description: <<~DESC
                  Changes the operation mode. Defaults to REPLACE.
-               DESC
+        DESC
 
       def resolve(project_path:, iid:, label_ids:, operation_mode: Types::MutationOperationModeEnum.enum[:replace])
         merge_request = authorized_find!(project_path: project_path, iid: iid)

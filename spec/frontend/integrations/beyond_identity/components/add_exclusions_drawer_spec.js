@@ -1,10 +1,11 @@
+import { nextTick } from 'vue';
 import { GlDrawer } from '@gitlab/ui';
 import AddExclusionsDrawer from '~/integrations/beyond_identity/components/add_exclusions_drawer.vue';
 import ListSelector from '~/vue_shared/components/list_selector/index.vue';
 import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
-import { exclusionsMock } from './mock_data';
+import { groupExclusionsMock, projectExclusionsMock } from './mock_data';
 
 jest.mock('~/lib/utils/dom_utils', () => ({
   getContentWrapperHeight: jest.fn(),
@@ -15,7 +16,9 @@ describe('AddExclusionsDrawer component', () => {
 
   const findTitle = () => wrapper.findByTestId('title');
   const findDrawer = () => wrapper.findComponent(GlDrawer);
-  const findListSelector = () => wrapper.findComponent(ListSelector);
+  const findListSelectors = () => wrapper.findAllComponents(ListSelector);
+  const findGroupsListSelector = () => findListSelectors().at(0);
+  const findProjectsListSelector = () => findListSelectors().at(1);
   const findAddExclusionsButton = () => wrapper.findByTestId('add-button');
 
   const createComponent = (props) => {
@@ -63,8 +66,18 @@ describe('AddExclusionsDrawer component', () => {
       expect(findTitle().text()).toEqual('Add exclusions');
     });
 
-    it('renders a project list selector', () => {
-      expect(findListSelector().props('type')).toBe('projects');
+    it('renders a list selector for groups', () => {
+      expect(findGroupsListSelector().props()).toMatchObject({
+        type: 'groups',
+        autofocus: true,
+      });
+    });
+
+    it('renders a list selector for projects', () => {
+      expect(findProjectsListSelector().props()).toMatchObject({
+        type: 'projects',
+        autofocus: false,
+      });
     });
 
     it('renders a button for adding exclusions', () => {
@@ -72,28 +85,23 @@ describe('AddExclusionsDrawer component', () => {
     });
   });
 
-  describe('when exclusions are selected', () => {
-    beforeEach(() => {
-      wrapper = createComponent({ showDrawer: true });
+  it.each`
+    type         | findSelector                | mockData
+    ${'group'}   | ${findGroupsListSelector}   | ${groupExclusionsMock}
+    ${'project'} | ${findProjectsListSelector} | ${projectExclusionsMock}
+  `('handles selected $type exclusions', async ({ findSelector, mockData }) => {
+    wrapper = createComponent({ showDrawer: true });
 
-      findListSelector().vm.$emit('select', exclusionsMock[0]);
-      findListSelector().vm.$emit('select', exclusionsMock[1]);
-    });
+    findSelector().vm.$emit('select', mockData[0]);
+    findSelector().vm.$emit('select', mockData[1]);
+    await nextTick();
 
-    it('adds it to the list of selected exclusions', () => {
-      expect(findListSelector().props('selectedItems')).toEqual(exclusionsMock);
-    });
+    expect(findSelector().props('selectedItems')).toEqual(mockData);
 
-    describe('when Add exclusions button is clicked', () => {
-      beforeEach(() => findAddExclusionsButton().vm.$emit('click'));
+    findAddExclusionsButton().vm.$emit('click');
+    await nextTick();
 
-      it('emits the selected exclusions', () => {
-        expect(wrapper.emitted('add')).toEqual([[exclusionsMock]]);
-      });
-
-      it('clears the list of selected exclusions', () => {
-        expect(findListSelector().props('selectedItems')).toEqual([]);
-      });
-    });
+    expect(wrapper.emitted('add')).toEqual([[mockData]]);
+    expect(findSelector().props('selectedItems').length).toBe(0);
   });
 });

@@ -9,33 +9,33 @@ module Mutations
       include ValidateTimeEstimate
 
       argument :title, GraphQL::Types::String,
-               required: false,
-               description: copy_field_description(Types::IssueType, :title)
+        required: false,
+        description: copy_field_description(Types::IssueType, :title)
 
       argument :milestone_id, GraphQL::Types::ID, # rubocop: disable Graphql/IDType
-               required: false,
-               description: 'ID of the milestone to assign to the issue. On update milestone will be removed if set to null.'
+        required: false,
+        description: 'ID of the milestone to assign to the issue. On update milestone will be removed if set to null.'
 
       argument :add_label_ids, [GraphQL::Types::ID],
-               required: false,
-               description: 'IDs of labels to be added to the issue.'
+        required: false,
+        description: 'IDs of labels to be added to the issue.'
 
       argument :remove_label_ids, [GraphQL::Types::ID],
-               required: false,
-               description: 'IDs of labels to be removed from the issue.'
+        required: false,
+        description: 'IDs of labels to be removed from the issue.'
 
       argument :label_ids, [GraphQL::Types::ID],
-               required: false,
-               description: 'IDs of labels to be set. Replaces existing issue labels.'
+        required: false,
+        description: 'IDs of labels to be set. Replaces existing issue labels.'
 
       argument :state_event, Types::IssueStateEventEnum,
-               description: 'Close or reopen an issue.',
-               required: false
+        description: 'Close or reopen an issue.',
+        required: false
 
       argument :time_estimate, GraphQL::Types::String,
-               required: false,
-               description: 'Estimated time to complete the issue. ' \
-                            'Use `null` or `0` to remove the current estimate.'
+        required: false,
+        description: 'Estimated time to complete the issue. ' \
+                     'Use `null` or `0` to remove the current estimate.'
 
       def resolve(project_path:, iid:, **args)
         issue = authorized_find!(project_path: project_path, iid: iid)

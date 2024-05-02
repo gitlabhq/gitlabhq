@@ -28,6 +28,12 @@ export default {
     getDrawerHeaderHeight() {
       return getContentWrapperHeight();
     },
+    groupExclusions() {
+      return this.exclusions.filter((exclusion) => exclusion.type === 'group');
+    },
+    projectExclusions() {
+      return this.exclusions.filter((exclusion) => exclusion.type === 'project');
+    },
   },
   methods: {
     handleSelectExclusion(exclusion) {
@@ -63,9 +69,18 @@ export default {
 
     <template #default>
       <list-selector
+        type="groups"
+        class="gl-m-5 gl-p-0!"
+        autofocus
+        :selected-items="groupExclusions"
+        @select="handleSelectExclusion"
+        @delete="handleRemoveExclusion"
+      />
+
+      <list-selector
         type="projects"
         class="gl-m-5 gl-p-0!"
-        :selected-items="exclusions"
+        :selected-items="projectExclusions"
         @select="handleSelectExclusion"
         @delete="handleRemoveExclusion"
       />

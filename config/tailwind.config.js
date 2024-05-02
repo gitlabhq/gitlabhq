@@ -62,13 +62,6 @@ module.exports = {
      */
     lineClamp: false,
     /*
-    Our opacity scale is 0 to 10, tailwind is 0, 100
-    So:
-    opacity-5 => opacity-50
-    opacity-10 => opacity-100
-     */
-    opacity: false,
-    /*
     outline-none in tailwind is 2px solid transparent, we have outline: none
 
     I assume that tailwind has it's reasons, and we probably could enable it
@@ -92,6 +85,20 @@ module.exports = {
     fontFamily: {
       regular:
         'var(--default-regular-font, "GitLab Sans"), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans", Ubuntu, Cantarell, "Helvetica Neue", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
+    },
+    // TODO: Backport to GitLab UI
+    opacity: {
+      0: '0',
+      1: '.1',
+      2: '.2',
+      3: '.3',
+      4: '.4',
+      5: '.5',
+      6: '.6',
+      7: '.7',
+      8: '.8',
+      9: '.9',
+      10: '1',
     },
     // These extends probably should be moved to GitLab UI:
     extend: {

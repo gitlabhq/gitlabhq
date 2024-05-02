@@ -17,7 +17,7 @@
     }
   }
 
-  &:has(.read-more-content--has-scrim:not(.is-expanded)) {
+  &:has(.read-more-content:not(.is-expanded)) {
     position: relative;
     max-height: var(--read-more-height, #{$fallback - $height});
     scroll-padding-top: 1000vh; // Fix anchor scroll, keep it up top

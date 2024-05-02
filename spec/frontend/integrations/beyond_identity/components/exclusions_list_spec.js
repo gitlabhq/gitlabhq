@@ -7,7 +7,7 @@ import ExclusionsTabs from '~/integrations/beyond_identity/components/exclusions
 import ExclusionsListItem from '~/integrations/beyond_identity/components/exclusions_list_item.vue';
 import ConfirmRemovalModal from '~/integrations/beyond_identity/components/remove_exclusion_confirmation_modal.vue';
 import showToast from '~/vue_shared/plugins/global_toast';
-import { exclusionsMock } from './mock_data';
+import { projectExclusionsMock } from './mock_data';
 
 jest.mock('~/vue_shared/plugins/global_toast');
 
@@ -35,7 +35,9 @@ describe('ExclusionsList component', () => {
 
     it('renders help text', () => {
       expect(
-        findByText('Projects in this list no longer require commits to be signed.').exists(),
+        findByText(
+          'Groups and projects in this list no longer require commits to be signed.',
+        ).exists(),
       ).toBe(true);
     });
 
@@ -60,13 +62,13 @@ describe('ExclusionsList component', () => {
     });
 
     describe('Exclusions added', () => {
-      beforeEach(() => findDrawer().vm.$emit('add', exclusionsMock));
+      beforeEach(() => findDrawer().vm.$emit('add', projectExclusionsMock));
 
-      it('lists the added exclusions, sorted by name', async () => {
+      it('lists the added exclusions, sorted by type', async () => {
         await nextTick();
 
-        expect(findListItems().at(0).props('exclusion')).toMatchObject(exclusionsMock[1]);
-        expect(findListItems().at(1).props('exclusion')).toMatchObject(exclusionsMock[0]);
+        expect(findListItems().at(0).props('exclusion')).toMatchObject(projectExclusionsMock[0]);
+        expect(findListItems().at(1).props('exclusion')).toMatchObject(projectExclusionsMock[1]);
       });
 
       it('closes the drawer', () => {
@@ -78,14 +80,14 @@ describe('ExclusionsList component', () => {
   describe('removing Exclusions', () => {
     beforeEach(async () => {
       findAddExclusionsButton().vm.$emit('click');
-      findDrawer().vm.$emit('add', exclusionsMock);
+      findDrawer().vm.$emit('add', projectExclusionsMock);
       await nextTick();
       findListItems().at(1).vm.$emit('remove');
     });
 
     it('opens a confirmation modal', () => {
       expect(findConfirmRemoveModal().props()).toMatchObject({
-        name: 'foo',
+        name: 'project bar',
         type: 'project',
         visible: true,
       });

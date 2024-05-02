@@ -69,7 +69,7 @@ export default {
 
 <template>
   <gl-card
-    class="gl-new-card gl-overflow-hidden"
+    class="gl-new-card"
     header-class="gl-new-card-header"
     body-class="gl-new-card-body gl-px-0"
   >

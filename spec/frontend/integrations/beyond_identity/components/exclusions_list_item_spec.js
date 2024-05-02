@@ -1,11 +1,11 @@
 import { GlButton, GlIcon, GlAvatar } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ExclusionsListItem from '~/integrations/beyond_identity/components/exclusions_list_item.vue';
-import { exclusionsMock } from './mock_data';
+import { projectExclusionsMock } from './mock_data';
 
 describe('ExclusionsListItem component', () => {
   let wrapper;
-  const exclusion = exclusionsMock[0];
+  const exclusion = projectExclusionsMock[0];
 
   const findIcon = () => wrapper.findComponent(GlIcon);
   const findAvatar = () => wrapper.findComponent(GlAvatar);

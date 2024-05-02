@@ -1,7 +1,8 @@
 <script>
 import { GlButton, GlEmptyState } from '@gitlab/ui';
-import { sortBy } from 'lodash';
-import { s__, __ } from '~/locale';
+import { sortBy, differenceBy } from 'lodash';
+import { s__, __, sprintf } from '~/locale';
+import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import globalToast from '~/vue_shared/plugins/global_toast';
 import ExclusionsTabs from './exclusions_tabs.vue';
 import ExclusionsListItem from './exclusions_list_item.vue';
@@ -33,7 +34,8 @@ export default {
           ...exclusion,
           icon: exclusion.type,
         })),
-        'name',
+        'type',
+        'desc',
       );
     },
   },
@@ -46,8 +48,9 @@ export default {
       this.exclusions = [];
     },
     handleAddExclusions(exclusions) {
+      const uniqueList = differenceBy(exclusions, this.exclusions, (v) => [v.id, v.type].join());
       // TODO: add backend call for POST/Mutate (follow-up)
-      this.exclusions.push(...exclusions);
+      this.exclusions.push(...uniqueList);
       this.isDrawerOpen = false;
     },
     showRemoveModal(exclusion) {
@@ -61,8 +64,9 @@ export default {
       const { exclusionToRemove } = this;
       // TODO: add backend call for DELETE/Mutate (follow-up)
       this.exclusions = this.exclusions.filter((item) => item.id !== exclusionToRemove.id);
+      const type = capitalizeFirstCharacter(exclusionToRemove.type);
 
-      globalToast(this.$options.i18n.exclusionRemoved, {
+      globalToast(sprintf(this.$options.i18n.exclusionRemoved, { type }), {
         action: {
           text: __('Undo'),
           onClick: (_, toast) => {
@@ -77,10 +81,12 @@ export default {
     },
   },
   i18n: {
-    exclusionRemoved: s__('Integrations|Project exclusion removed'),
+    exclusionRemoved: s__('Integrations|%{type} exclusion removed'),
     emptyText: s__('Integrations|There are no exclusions'),
     addExclusions: s__('Integrations|Add exclusions'),
-    helpText: s__('Integrations|Projects in this list no longer require commits to be signed.'),
+    helpText: s__(
+      'Integrations|Groups and projects in this list no longer require commits to be signed.',
+    ),
   },
 };
 </script>

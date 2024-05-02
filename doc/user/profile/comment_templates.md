@@ -2,6 +2,7 @@
 stage: Create
 group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: "Build templates for text frequently used in comments, and share those templates with your project or group."
 ---
 
 # Comment templates

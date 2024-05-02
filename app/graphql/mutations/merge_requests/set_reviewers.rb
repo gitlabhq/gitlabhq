@@ -6,15 +6,15 @@ module Mutations
       graphql_name 'MergeRequestSetReviewers'
 
       argument :reviewer_usernames,
-               [GraphQL::Types::String],
-               required: true,
-               description: 'Usernames of reviewers to assign. Replaces existing reviewers by default.'
+        [GraphQL::Types::String],
+        required: true,
+        description: 'Usernames of reviewers to assign. Replaces existing reviewers by default.'
 
       argument :operation_mode,
-               Types::MutationOperationModeEnum,
-               required: false,
-               default_value: Types::MutationOperationModeEnum.default_mode,
-               description: 'Operation to perform. Defaults to REPLACE.'
+        Types::MutationOperationModeEnum,
+        required: false,
+        default_value: Types::MutationOperationModeEnum.default_mode,
+        description: 'Operation to perform. Defaults to REPLACE.'
 
       def resolve(project_path:, iid:, reviewer_usernames:, operation_mode:)
         resource = authorized_find!(project_path: project_path, iid: iid)

@@ -846,7 +846,7 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
       let_it_be(:group_link_1) { create(:group_group_link, shared_group: shared_group, shared_with_group: group1) }
       let_it_be(:group_link_2) { create(:group_group_link, shared_group: shared_group, shared_with_group: group2_sub) }
 
-      subject(:shared_with_groups) { json_response['shared_with_groups'].map { _1['group_id']} }
+      subject(:shared_with_groups) { json_response['shared_with_groups'].map { _1['group_id'] } }
 
       context 'when authenticated as admin' do
         it 'returns all groups that share the group', :aggregate_failures do

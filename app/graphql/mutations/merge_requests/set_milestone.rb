@@ -6,12 +6,12 @@ module Mutations
       graphql_name 'MergeRequestSetMilestone'
 
       argument :milestone_id,
-               ::Types::GlobalIDType[::Milestone],
-               required: false,
-               loads: Types::MilestoneType,
-               description: <<~DESC
+        ::Types::GlobalIDType[::Milestone],
+        required: false,
+        loads: Types::MilestoneType,
+        description: <<~DESC
                  Milestone to assign to the merge request.
-               DESC
+        DESC
 
       def resolve(project_path:, iid:, milestone: nil)
         merge_request = authorized_find!(project_path: project_path, iid: iid)

@@ -9,13 +9,13 @@ module Resolvers
     type Types::LabelType.connection_type, null: true
 
     argument :search_term, GraphQL::Types::String,
-             required: false,
-             description: 'Search term to find labels with.'
+      required: false,
+      description: 'Search term to find labels with.'
 
     argument :include_ancestor_groups, GraphQL::Types::Boolean,
-             required: false,
-             description: 'Include labels from ancestor groups.',
-             default_value: false
+      required: false,
+      description: 'Include labels from ancestor groups.',
+      default_value: false
 
     before_connection_authorization do |nodes, current_user|
       Preloaders::LabelsPreloader.new(nodes, current_user).preload_all
