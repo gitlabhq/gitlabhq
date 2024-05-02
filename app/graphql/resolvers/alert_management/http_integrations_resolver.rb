@@ -8,8 +8,8 @@ module Resolvers
       alias_method :project, :object
 
       argument :id, Types::GlobalIDType[::AlertManagement::HttpIntegration],
-               required: false,
-               description: 'ID of the integration.'
+        required: false,
+        description: 'ID of the integration.'
 
       type Types::AlertManagement::HttpIntegrationType.connection_type, null: true
 

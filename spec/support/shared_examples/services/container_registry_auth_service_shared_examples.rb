@@ -213,25 +213,6 @@ RSpec.shared_examples 'a container registry auth service' do
     it_behaves_like 'not a container repository factory'
   end
 
-  describe '.import_access_token' do
-    let(:access) do
-      [{ 'type' => 'registry',
-         'name' => 'import',
-         'actions' => ['*'] }]
-    end
-
-    let(:token) { described_class.import_access_token }
-
-    subject { { token: token } }
-
-    it_behaves_like 'a valid token'
-    it_behaves_like 'not a container repository factory'
-
-    it 'has the correct scope' do
-      expect(payload).to include('access' => access)
-    end
-  end
-
   describe '.pull_access_token' do
     let_it_be(:project) { create(:project) }
 

@@ -16,7 +16,6 @@ import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_sel
 import Markdown from '~/vue_shared/components/markdown/non_gfm_markdown.vue';
 import { VERIFICATION_LEVEL_UNVERIFIED } from '../../constants';
 import CiVerificationBadge from '../shared/ci_verification_badge.vue';
-import CiResourceAbout from './ci_resource_about.vue';
 import CiResourceHeaderSkeletonLoader from './ci_resource_header_skeleton_loader.vue';
 
 export default {
@@ -28,7 +27,6 @@ export default {
   },
   components: {
     AbuseCategorySelector,
-    CiResourceAbout,
     CiResourceHeaderSkeletonLoader,
     CiVerificationBadge,
     GlAvatar,
@@ -44,23 +42,9 @@ export default {
   },
   inject: ['reportAbusePath'],
   props: {
-    isLoadingDetails: {
+    isLoadingData: {
       type: Boolean,
       required: true,
-    },
-    isLoadingSharedData: {
-      type: Boolean,
-      required: true,
-    },
-    openIssuesCount: {
-      type: Number,
-      required: false,
-      default: 0,
-    },
-    openMergeRequestsCount: {
-      type: Number,
-      required: false,
-      default: 0,
     },
     resource: {
       type: Object,
@@ -120,7 +104,7 @@ export default {
 </script>
 <template>
   <div>
-    <ci-resource-header-skeleton-loader v-if="isLoadingSharedData" class="gl-py-5" />
+    <ci-resource-header-skeleton-loader v-if="isLoadingData" class="gl-py-5" />
     <div v-else class="gl-display-flex gl-justify-content-space-between gl-py-5">
       <div class="gl-display-flex">
         <gl-avatar-link :href="resource.webPath">
@@ -189,17 +173,8 @@ export default {
         </gl-disclosure-dropdown>
       </div>
     </div>
-    <ci-resource-about
-      v-if="false"
-      :is-loading-details="isLoadingDetails"
-      :is-loading-shared-data="isLoadingSharedData"
-      :open-issues-count="openIssuesCount"
-      :open-merge-requests-count="openMergeRequestsCount"
-      :latest-version="latestVersion"
-      :web-path="resource.webPath"
-    />
     <div
-      v-if="isLoadingSharedData"
+      v-if="isLoadingData"
       class="gl-animate-skeleton-loader gl-h-4 gl-rounded-base gl-my-3 gl-max-w-20!"
     ></div>
     <markdown v-else class="gl-mt-2" :markdown="resource.description" />

@@ -172,8 +172,7 @@ To change the location of a group's dashboards:
 1. On the left sidebar, select **Search or go to** and find the project you want to store your dashboard files in.
    The project must belong to the group for which you create the dashboards.
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > General**.
-1. Expand **Analytics**.
+1. Select **Settings > Analytics**.
 1. In the **Analytics Dashboards** section, select your dashboard files project.
 1. Select **Save changes**.
 
@@ -192,8 +191,8 @@ To change the location of project dashboards:
    or select **Create new** (**{plus}**) and **New project/repository**
    to create the project to store your dashboard files.
 1. On the left sidebar, select **Search or go to** and find the analytics project.
-1. Select **Settings > General**.
-1. Expand **Analytics**.
+1. Select **Settings > Analytics**.
+1. Select **Expand** to see custom dashboard projects.
 1. In the **Analytics Dashboards** section, select your dashboard files project.
 1. Select **Save changes**.
 

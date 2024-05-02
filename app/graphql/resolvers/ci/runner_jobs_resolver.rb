@@ -12,8 +12,8 @@ module Resolvers
       extension ::Gitlab::Graphql::Limit::FieldCallCount, limit: 1
 
       argument :statuses, [::Types::Ci::JobStatusEnum],
-               required: false,
-               description: 'Filter jobs by status.'
+        required: false,
+        description: 'Filter jobs by status.'
 
       alias_method :runner, :object
 

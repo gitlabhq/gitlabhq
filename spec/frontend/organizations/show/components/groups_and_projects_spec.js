@@ -32,23 +32,33 @@ describe('OrganizationShowGroupsAndProjects', () => {
     expect(findCollapsibleListbox().props()).toMatchObject({
       items: [
         {
-          value: 'frequently_visited_projects',
-          text: 'Frequently visited projects',
+          value: 'updated_at_groups',
+          text: 'Recently updated groups',
         },
         {
-          value: 'frequently_visited_groups',
-          text: 'Frequently visited groups',
+          value: 'created_at_groups',
+          text: 'Recently created groups',
+        },
+        {
+          value: 'updated_at_projects',
+          text: 'Recently updated projects',
+        },
+        {
+          value: 'created_at_projects',
+          text: 'Recently created projects',
         },
       ],
-      selected: 'frequently_visited_projects',
+      selected: 'updated_at_groups',
     });
   });
 
   describe.each`
-    displayQueryParam                | expectedViewAllLinkQuery | expectedViewComponent | expectedDisplayListboxSelectedProp
-    ${'frequently_visited_projects'} | ${'?display=projects'}   | ${ProjectsView}       | ${'frequently_visited_projects'}
-    ${'frequently_visited_groups'}   | ${'?display=groups'}     | ${GroupsView}         | ${'frequently_visited_groups'}
-    ${'unsupported'}                 | ${'?display=projects'}   | ${ProjectsView}       | ${'frequently_visited_projects'}
+    displayQueryParam        | expectedViewAllLinkQuery | expectedViewComponent | expectedDisplayListboxSelectedProp
+    ${'created_at_projects'} | ${'?display=projects'}   | ${ProjectsView}       | ${'created_at_projects'}
+    ${'updated_at_projects'} | ${'?display=projects'}   | ${ProjectsView}       | ${'updated_at_projects'}
+    ${'created_at_groups'}   | ${'?display=groups'}     | ${GroupsView}         | ${'created_at_groups'}
+    ${'updated_at_groups'}   | ${'?display=groups'}     | ${GroupsView}         | ${'updated_at_groups'}
+    ${'unsupported'}         | ${'?display=groups'}     | ${GroupsView}         | ${'updated_at_groups'}
   `(
     'when display query param is $displayQueryParam',
     ({

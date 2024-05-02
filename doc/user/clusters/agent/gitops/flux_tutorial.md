@@ -46,8 +46,7 @@ You can also use a [project](../../../project/settings/project_access_tokens.md)
 ## Complete a bootstrap installation
 
 In this section, you'll bootstrap Flux into an empty GitLab repository with the
-[`flux bootstrap`](https://fluxcd.io/flux/installation/#gitlab-and-gitlab-enterprise)
-command.
+[`flux bootstrap`](https://fluxcd.io/flux/installation/bootstrap/gitlab/) command.
 
 To bootstrap a Flux installation:
 
@@ -55,6 +54,7 @@ To bootstrap a Flux installation:
 
   ```shell
   flux bootstrap gitlab \
+  --hostname=gitlab.example.org \
   --owner=example-org \
   --repository=my-repository \
   --branch=master \
@@ -62,12 +62,22 @@ To bootstrap a Flux installation:
   --deploy-token-auth
   ```
 
+The arguments of `bootstrap` are:
+
+| Argument | Description |
+|--------------|-------------|
+|`hostname` | Hostname of your GitLab instance. |
+|`owner` | GitLab group containing the Flux repository. |
+|`repository` | GitLab project containing the Flux repository. |
+|`branch` | Git branch the changes are committed to. |
+|`path` | File path to a folder where the Flux configuration is stored. |
+
 The bootstrap script does the following:
 
 1. Creates a deploy token and saves it as a Kubernetes `secret`.
-1. Creates an empty GitLab project, if the project specified by `--repository` doesn't exist.
-1. Generates Flux definition files for your project.
-1. Commits the definition files to the specified branch.
+1. Creates an empty GitLab project, if the project specified by the `--repository` argument doesn't exist.
+1. Generates Flux definition files for your project in a folder specified by the `--path` argument.
+1. Commits the definition files to the branch specified by the `--branch` argument.
 1. Applies the definition files to your cluster.
 
 After you run the script, Flux will be ready to manage itself and any other resources
@@ -104,6 +114,7 @@ In the next step, you'll use Flux to install `agentk` in your cluster.
 ## Install `agentk`
 
 Next, use Flux to create a namespace for `agentk` and install it in your cluster.
+Keep in mind it takes a few minutes for Flux to pick up and apply configuration changes defined in the repository.
 
 This tutorial uses the namespace `gitlab` for `agentk`.
 

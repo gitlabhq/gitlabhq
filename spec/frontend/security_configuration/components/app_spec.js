@@ -10,8 +10,9 @@ import AutoDevopsAlert from '~/security_configuration/components/auto_dev_ops_al
 import AutoDevopsEnabledAlert from '~/security_configuration/components/auto_dev_ops_enabled_alert.vue';
 import { AUTO_DEVOPS_ENABLED_ALERT_DISMISSED_STORAGE_KEY } from '~/security_configuration/constants';
 import FeatureCard from '~/security_configuration/components/feature_card.vue';
+import PreReceiveSecretDetectionFeatureCard from '~/security_configuration/components/pre_receive_secret_detection_feature_card.vue';
 import TrainingProviderList from '~/security_configuration/components/training_provider_list.vue';
-import { securityFeaturesMock, provideMock } from '../mock_data';
+import { securityFeaturesMock, provideMock, preReceiveSecretDetectionMock } from '../mock_data';
 
 const gitlabCiHistoryPath = 'test/historyPath';
 const { vulnerabilityTrainingDocsPath, projectFullPath } = provideMock;
@@ -55,6 +56,8 @@ describe('~/security_configuration/components/app', () => {
   const findGlTabs = () => wrapper.findComponent(GlTabs);
   const findByTestId = (id) => wrapper.findByTestId(id);
   const findFeatureCards = () => wrapper.findAllComponents(FeatureCard);
+  const findPreReceiveSecretDetection = () =>
+    wrapper.findComponent(PreReceiveSecretDetectionFeatureCard);
   const findTrainingProviderList = () => wrapper.findComponent(TrainingProviderList);
   const findManageViaMRErrorAlert = () => wrapper.findByTestId('manage-via-mr-error-alert');
   const findLink = ({ href, text, container = wrapper }) => {
@@ -277,6 +280,24 @@ describe('~/security_configuration/components/app', () => {
       createComponent({
         latestPipelinePath: 'test/path',
       });
+    });
+  });
+
+  describe('With pre receive secret detection', () => {
+    beforeEach(() => {
+      createComponent({
+        augmentedSecurityFeatures: [preReceiveSecretDetectionMock],
+      });
+    });
+
+    it('does not render feature card component', () => {
+      expect(findFeatureCards().length).toBe(0);
+    });
+    it('renders component with correct props', () => {
+      expect(findPreReceiveSecretDetection().exists()).toBe(true);
+      expect(findPreReceiveSecretDetection().props('feature')).toEqual(
+        preReceiveSecretDetectionMock,
+      );
     });
   });
 

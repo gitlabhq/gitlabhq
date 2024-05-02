@@ -8,18 +8,6 @@ module ContainerRegistry
     CANCEL_RESPONSE_STATUS_HEADER = 'status'
     GITLAB_REPOSITORIES_PATH = '/gitlab/v1/repositories'
 
-    IMPORT_RESPONSES = {
-      200 => :already_imported,
-      202 => :ok,
-      400 => :bad_request,
-      401 => :unauthorized,
-      404 => :not_found,
-      409 => :already_being_imported,
-      424 => :pre_import_failed,
-      425 => :already_being_imported,
-      429 => :too_many_imports
-    }.freeze
-
     RENAME_RESPONSES = {
       202 => :accepted,
       204 => :ok,
@@ -116,46 +104,6 @@ module ContainerRegistry
       end
     rescue ::Faraday::Error
       false
-    end
-
-    # Deprecated. Will be removed as part of https://gitlab.com/gitlab-org/gitlab/-/issues/409873.
-    def pre_import_repository(path)
-      response = start_import_for(path, pre: true)
-      IMPORT_RESPONSES.fetch(response.status, :error)
-    end
-
-    # Deprecated. Will be removed as part of https://gitlab.com/gitlab-org/gitlab/-/issues/409873.
-    def import_repository(path)
-      response = start_import_for(path, pre: false)
-      IMPORT_RESPONSES.fetch(response.status, :error)
-    end
-
-    # Deprecated. Will be removed as part of https://gitlab.com/gitlab-org/gitlab/-/issues/409873.
-    def cancel_repository_import(path, force: false)
-      response = with_import_token_faraday do |faraday_client|
-        faraday_client.delete(import_url_for(path)) do |req|
-          req.params['force'] = true if force
-        end
-      end
-
-      status = IMPORT_RESPONSES.fetch(response.status, :error)
-      actual_state = response.body[CANCEL_RESPONSE_STATUS_HEADER]
-
-      { status: status, migration_state: actual_state }
-    end
-
-    # Deprecated. Will be removed as part of https://gitlab.com/gitlab-org/gitlab/-/issues/409873.
-    def import_status(path)
-      with_import_token_faraday do |faraday_client|
-        response = faraday_client.get(import_url_for(path))
-
-        # Temporary solution for https://gitlab.com/gitlab-org/gitlab/-/issues/356085#solutions
-        # this will trigger a `retry_pre_import`
-        break 'pre_import_failed' unless response.success?
-
-        body_hash = response_body(response)
-        body_hash&.fetch('status') || 'error'
-      end
     end
 
     # https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/spec/gitlab/api.md#get-repository-details
@@ -263,31 +211,8 @@ module ContainerRegistry
 
     private
 
-    def start_import_for(path, pre:)
-      with_import_token_faraday do |faraday_client|
-        faraday_client.put(import_url_for(path)) do |req|
-          req.params['import_type'] = pre ? 'pre' : 'final'
-        end
-      end
-    end
-
     def with_token_faraday
       yield faraday
-    end
-
-    def with_import_token_faraday
-      yield faraday_with_import_token
-    end
-
-    def faraday_with_import_token(timeout_enabled: true)
-      @faraday_with_import_token ||= faraday_base(timeout_enabled: timeout_enabled) do |conn|
-        # initialize the connection with the :import_token instead of :token
-        initialize_connection(conn, @options.merge(token: @options[:import_token]), &method(:configure_connection))
-      end
-    end
-
-    def import_url_for(path)
-      "/gitlab/v1/import/#{path}/"
     end
 
     # overrides the default configuration

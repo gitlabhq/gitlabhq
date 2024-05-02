@@ -137,8 +137,15 @@ RSpec.describe ::Gitlab::Security::ScanConfiguration do
         help_path: "/help/user/application_security/container_scanning/index",
         configuration_help_path: "/help/user/application_security/container_scanning/index#configuration",
         type: "container_scanning" }
-      :secret_detection | { name: "Secret Detection",
-        description: "Analyze your source code and Git history for secrets.",
+      :pre_receive_secret_detection | { name: _("Pre-receive Secret Detection"),
+        description: "Block secrets such as keys and API tokens from being pushed to your repositories. " \
+                     "Pre-receive secret detection is triggered when commits are pushed to a repository. " \
+                     "If any secrets are detected, the push is blocked.",
+        help_path: Gitlab::Routing.url_helpers.help_page_path(
+          "user/application_security/secret_detection/pre_receive/index"),
+        type: "pre_receive_secret_detection" }
+      :secret_detection | { name: "Pipeline Secret Detection",
+        description: "Analyze your source code and Git history for secrets by using CI/CD pipelines.",
         help_path: "/help/user/application_security/secret_detection/pipeline/index",
         configuration_help_path: "/help/user/application_security/secret_detection/pipeline/index#configuration",
         type: "secret_detection" }
@@ -185,6 +192,21 @@ RSpec.describe ::Gitlab::Security::ScanConfiguration do
       let(:configured) { true }
 
       it { is_expected.to eq features_hash }
+    end
+  end
+
+  describe '#security_features - when feature flag is disabled' do
+    before do
+      stub_feature_flags(pre_receive_secret_detection_beta_release: false)
+    end
+
+    subject { scan.security_features }
+
+    with_them do
+      let(:type) { :pre_receive_secret_detection }
+      let(:configured) { true }
+
+      it { is_expected.not_to include features_hash }
     end
   end
 end

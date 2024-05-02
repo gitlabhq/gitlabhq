@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BitbucketServer::Representation::Comment do
+RSpec.describe BitbucketServer::Representation::Comment, feature_category: :importers do
   let(:activities) { Gitlab::Json.parse(fixture_file('importers/bitbucket_server/activities.json'))['values'] }
   let(:comment) { activities.first }
 
@@ -75,6 +75,41 @@ RSpec.describe BitbucketServer::Representation::Comment do
       expect(second.parent_comment).to eq(subject)
       expect(third.parent_comment).to eq(first)
       expect(fourth.parent_comment).to eq(first)
+    end
+  end
+
+  describe '#to_hash' do
+    it do
+      expect(subject.to_hash).to match(
+        a_hash_including(
+          id: 9,
+          author_email: 'test.user@example.com',
+          author_username: 'username',
+          note: 'is this a new line?',
+          comments: array_including(
+            hash_including(
+              note: 'Hello world',
+              comments: [],
+              parent_comment: { note: 'is this a new line?' }
+            ),
+            hash_including(
+              note: 'Ok',
+              comments: [],
+              parent_comment: { note: 'Hello world' }
+            ),
+            hash_including(
+              note: 'hi',
+              comments: [],
+              parent_comment: { note: 'Hello world' }
+            ),
+            hash_including(
+              note: 'hello',
+              comments: [],
+              parent_comment: { note: 'is this a new line?' }
+            )
+          )
+        )
+      )
     end
   end
 end

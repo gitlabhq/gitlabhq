@@ -59,8 +59,6 @@ module StubGitlabCalls
     allow(Gitlab.config.registry).to receive_messages(registry_settings)
     allow(Auth::ContainerRegistryAuthenticationService)
       .to receive(:full_access_token).and_return('token')
-    allow(Auth::ContainerRegistryAuthenticationService)
-      .to receive(:import_access_token).and_return('token')
   end
 
   def stub_container_registry_tags(repository: :any, tags: [], with_manifest: false)

@@ -11,12 +11,12 @@ module Resolvers
     authorize :read_issue_board_list
 
     argument :id, Types::GlobalIDType[List],
-             required: true,
-             description: 'Global ID of the list.'
+      required: true,
+      description: 'Global ID of the list.'
 
     argument :issue_filters, Types::Boards::BoardIssueInputType,
-             required: false,
-             description: 'Filters applied when getting issue metadata in the board list.'
+      required: false,
+      description: 'Filters applied when getting issue metadata in the board list.'
 
     def resolve(id: nil, issue_filters: {})
       Gitlab::Graphql::Lazy.with_value(find_list(id: id)) do |list|

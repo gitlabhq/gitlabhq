@@ -6,12 +6,12 @@ module Resolvers
       type Types::AlertManagement::AlertStatusCountsType, null: true
 
       argument :search, GraphQL::Types::String,
-                description: 'Search query for title, description, service, or monitoring_tool.',
-                required: false
+        description: 'Search query for title, description, service, or monitoring_tool.',
+        required: false
 
       argument :assignee_username, GraphQL::Types::String,
-                required: false,
-                description: 'Username of a user assigned to the issue.'
+        required: false,
+        description: 'Username of a user assigned to the issue.'
 
       def resolve(**args)
         ::Gitlab::AlertManagement::AlertStatusCounts.new(context[:current_user], object, args)

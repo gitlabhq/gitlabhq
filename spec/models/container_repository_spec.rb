@@ -769,46 +769,6 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
     end
   end
 
-  context 'registry migration' do
-    before do
-      allow(repository.gitlab_api_client).to receive(:supports_gitlab_api?).and_return(true)
-    end
-
-    shared_examples 'gitlab migration client request' do |step|
-      let(:client_response) { :foobar }
-
-      it 'returns the same response as the client' do
-        expect(repository.gitlab_api_client)
-          .to receive(step).with(repository.path).and_return(client_response)
-        expect(subject).to eq(client_response)
-      end
-
-      context 'when the gitlab_api feature is not supported' do
-        before do
-          allow(repository.gitlab_api_client).to receive(:supports_gitlab_api?).and_return(false)
-        end
-
-        it 'returns :error' do
-          expect(repository.gitlab_api_client).not_to receive(step)
-
-          expect(subject).to eq(:error)
-        end
-      end
-    end
-
-    shared_examples 'handling the migration step' do |step|
-      it_behaves_like 'gitlab migration client request', step
-
-      context 'too many imports' do
-        it 'raises an error when it receives too_many_imports as a response' do
-          expect(repository.gitlab_api_client)
-            .to receive(step).with(repository.path).and_return(:too_many_imports)
-          expect { subject }.to raise_error(described_class::TooManyImportsError)
-        end
-      end
-    end
-  end
-
   describe '.build_from_path' do
     let(:registry_path) do
       ContainerRegistry::Path.new(project.full_path + '/some/image')

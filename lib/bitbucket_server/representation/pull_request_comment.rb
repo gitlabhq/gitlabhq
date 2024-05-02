@@ -66,6 +66,16 @@ module BitbucketServer
         comment_anchor.fetch('path')
       end
 
+      def to_hash
+        super.merge(
+          from_sha: from_sha,
+          to_sha: to_sha,
+          file_path: file_path,
+          old_pos: old_pos,
+          new_pos: new_pos
+        )
+      end
+
       private
 
       def file_type

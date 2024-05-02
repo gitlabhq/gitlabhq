@@ -69,11 +69,11 @@ module QA
         end
       end
 
-      def public_email
-        @public_email ||= begin
-          api_public_email = api_resource&.dig(:public_email)
+      def commit_email
+        @commit_email ||= begin
+          api_commit_email = api_resource&.dig(:commit_email)
 
-          api_public_email && !api_public_email.empty? ? api_public_email : Runtime::User.default_email
+          api_commit_email && !api_commit_email.empty? ? api_commit_email : Runtime::User.default_email
         end
       end
 

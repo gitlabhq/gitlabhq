@@ -2,13 +2,14 @@
 import { GlCollapsibleListbox } from '@gitlab/ui';
 import { isEqual } from 'lodash';
 import { __ } from '~/locale';
-import { RESOURCE_TYPE_GROUPS, RESOURCE_TYPE_PROJECTS } from '~/organizations/constants';
 import GroupsView from '~/organizations/shared/components/groups_view.vue';
 import ProjectsView from '~/organizations/shared/components/projects_view.vue';
 import NewGroupButton from '~/organizations/shared/components/new_group_button.vue';
 import NewProjectButton from '~/organizations/shared/components/new_project_button.vue';
 import { onPageChange } from '~/organizations/shared/utils';
 import {
+  RESOURCE_TYPE_GROUPS,
+  RESOURCE_TYPE_PROJECTS,
   QUERY_PARAM_END_CURSOR,
   QUERY_PARAM_START_CURSOR,
   SORT_DIRECTION_ASC,

@@ -6,36 +6,36 @@ module Types
       graphql_name 'NegatedIssueFilterInput'
 
       argument :assignee_id, GraphQL::Types::String,
-                required: false,
-                description: 'ID of a user not assigned to the issues.'
+        required: false,
+        description: 'ID of a user not assigned to the issues.'
       argument :assignee_usernames, [GraphQL::Types::String],
-                required: false,
-                description: 'Usernames of users not assigned to the issue.'
+        required: false,
+        description: 'Usernames of users not assigned to the issue.'
       argument :author_username, [GraphQL::Types::String],
-                required: false,
-                description: "Username of a user who didn't author the issue."
+        required: false,
+        description: "Username of a user who didn't author the issue."
       argument :iids, [GraphQL::Types::String],
-                required: false,
-                description: 'List of IIDs of issues to exclude. For example, `[1, 2]`.'
+        required: false,
+        description: 'List of IIDs of issues to exclude. For example, `[1, 2]`.'
       argument :label_name, [GraphQL::Types::String],
-                required: false,
-                description: 'Labels not applied to this issue.'
+        required: false,
+        description: 'Labels not applied to this issue.'
       argument :milestone_title, [GraphQL::Types::String],
-                required: false,
-                description: 'Milestone not applied to this issue.'
+        required: false,
+        description: 'Milestone not applied to this issue.'
       argument :milestone_wildcard_id, ::Types::NegatedMilestoneWildcardIdEnum,
-                required: false,
-                description: 'Filter by negated milestone wildcard values.'
+        required: false,
+        description: 'Filter by negated milestone wildcard values.'
       argument :my_reaction_emoji, GraphQL::Types::String,
-                required: false,
-                description: 'Filter by reaction emoji applied by the current user.'
+        required: false,
+        description: 'Filter by reaction emoji applied by the current user.'
       argument :release_tag, [GraphQL::Types::String],
-                required: false,
-                description: "Release tag not associated with the issue's milestone. Ignored when parent is a group."
+        required: false,
+        description: "Release tag not associated with the issue's milestone. Ignored when parent is a group."
       argument :types, [Types::IssueTypeEnum],
-               as: :issue_types,
-               description: 'Filters out issues by the given issue types.',
-               required: false
+        as: :issue_types,
+        description: 'Filters out issues by the given issue types.',
+        required: false
     end
   end
 end

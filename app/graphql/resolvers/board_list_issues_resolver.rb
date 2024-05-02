@@ -5,8 +5,8 @@ module Resolvers
     include BoardItemFilterable
 
     argument :filters, Types::Boards::BoardIssueInputType,
-             required: false,
-             description: 'Filters applied when selecting issues in the board list.'
+      required: false,
+      description: 'Filters applied when selecting issues in the board list.'
 
     type Types::IssueType, null: true
 

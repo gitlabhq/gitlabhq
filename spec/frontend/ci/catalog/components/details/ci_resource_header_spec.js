@@ -3,25 +3,19 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
 import CiResourceHeader from '~/ci/catalog/components/details/ci_resource_header.vue';
-import CiResourceAbout from '~/ci/catalog/components/details/ci_resource_about.vue';
 import CiVerificationBadge from '~/ci/catalog/components/shared/ci_verification_badge.vue';
-import { catalogSharedDataMock, catalogAdditionalDetailsMock } from '../../mock';
+import { catalogSharedDataMock } from '../../mock';
 
 describe('CiResourceHeader', () => {
   let wrapper;
 
   const resource = { ...catalogSharedDataMock.data.ciCatalogResource };
-  const resourceAdditionalData = { ...catalogAdditionalDetailsMock.data.ciCatalogResource };
 
   const defaultProps = {
-    openIssuesCount: resourceAdditionalData.openIssuesCount,
-    openMergeRequestsCount: resourceAdditionalData.openMergeRequestsCount,
-    isLoadingDetails: false,
-    isLoadingSharedData: false,
+    isLoadingData: false,
     resource,
   };
 
-  const findAboutComponent = () => wrapper.findComponent(CiResourceAbout);
   const findReportAbuseButton = () => wrapper.findByTestId('report-abuse-button');
   const findAbuseCategorySelector = () => wrapper.findComponent(AbuseCategorySelector);
   const findAvatar = () => wrapper.findComponent(GlAvatar);
@@ -65,10 +59,6 @@ describe('CiResourceHeader', () => {
         entityId: getIdFromGraphQLId(id),
         entityName: name,
       });
-    });
-
-    it('does not render the catalog about section', () => {
-      expect(findAboutComponent().exists()).toBe(false);
     });
   });
 

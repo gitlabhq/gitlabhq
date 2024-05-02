@@ -9,9 +9,7 @@ module ContainerRegistry
       @options = options
       @path = @options[:path] || default_path
       @client = ContainerRegistry::Client.new(@uri, @options)
-
-      import_token = Auth::ContainerRegistryAuthenticationService.import_access_token
-      @gitlab_api_client = ContainerRegistry::GitlabApiClient.new(@uri, @options.merge(import_token: import_token))
+      @gitlab_api_client = ContainerRegistry::GitlabApiClient.new(@uri, @options)
     end
 
     private

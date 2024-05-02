@@ -7,19 +7,19 @@ module Types
     graphql_name 'JiraImport'
 
     field :created_at, Types::TimeType, null: true,
-                                        description: 'Timestamp of when the Jira import was created.'
+      description: 'Timestamp of when the Jira import was created.'
     field :failed_to_import_count, GraphQL::Types::Int, null: false,
-                                                        description: 'Count of issues that failed to import.'
+      description: 'Count of issues that failed to import.'
     field :imported_issues_count, GraphQL::Types::Int, null: false,
-                                                       description: 'Count of issues that were successfully imported.'
+      description: 'Count of issues that were successfully imported.'
     field :jira_project_key, GraphQL::Types::String, null: false,
-                                                     description: 'Project key for the imported Jira project.'
+      description: 'Project key for the imported Jira project.'
     field :scheduled_at, Types::TimeType, null: true,
-                                          description: 'Timestamp of when the Jira import was scheduled.'
+      description: 'Timestamp of when the Jira import was scheduled.'
     field :scheduled_by, Types::UserType, null: true,
-                                          description: 'User that started the Jira import.'
+      description: 'User that started the Jira import.'
     field :total_issue_count, GraphQL::Types::Int, null: false,
-                                                   description: 'Total count of issues that were attempted to import.'
+      description: 'Total count of issues that were attempted to import.'
   end
   # rubocop: enable Graphql/AuthorizeTypes
 end

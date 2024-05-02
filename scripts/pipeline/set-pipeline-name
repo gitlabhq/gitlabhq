@@ -4,12 +4,27 @@
 require 'gitlab'
 
 class SetPipelineName
-  DOCS                   = ['docs lint', 'docs-lint links'].freeze
+  DOCS                   = ['docs-lint markdown', 'docs-lint links'].freeze
   RSPEC_PREDICTIVE       = ['rspec:predictive:trigger', 'rspec-ee:predictive:trigger'].freeze
   CODE                   = ['retrieve-tests-metadata'].freeze
   QA_GDK                 = ['e2e:test-on-gdk'].freeze
   REVIEW_APP             = ['start-review-app-pipeline'].freeze
-  QA                     = ['package-and-qa', 'e2e:package-and-test-ee', 'e2e:package-and-test-ce'].freeze
+  #  TODO: Please remove `trigger-omnibus-and-follow-up-e2e` and `follow-up-e2e:package-and-test-ee`
+  #        after 2025-04-08 in this project
+  #
+  #   `trigger-omnibus-and-follow-up-e2e` was renamed to `follow-up:trigger-omnibus` on 2024-04-08 via
+  #    https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147908/diffs?pin=c11467759d7eae77ed84e02a5445e21704c8d8e5#c11467759d7eae77ed84e02a5445e21704c8d8e5_105_104
+  #
+  #   `follow-up-e2e:package-and-test-ee` was renamed to `follow-up:e2e:package-and-test-ee` on 2024-04-08 via
+  #    https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147908/diffs?pin=c11467759d7eae77ed84e02a5445e21704c8d8e5#c11467759d7eae77ed84e02a5445e21704c8d8e5_136_137
+  QA                     = [
+    'e2e:package-and-test-ce',
+    'e2e:package-and-test-ee',
+    'follow-up-e2e:package-and-test-ee',
+    'follow-up:e2e:package-and-test-ee',
+    'follow-up:trigger-omnibus',
+    'trigger-omnibus-and-follow-up-e2e'
+  ].freeze
   # Ordered by expected duration, DESC
   PIPELINE_TYPES_ORDERED = %w[qa review-app qa-gdk code rspec-predictive docs].freeze
 

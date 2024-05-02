@@ -5707,6 +5707,9 @@ msgstr ""
 msgid "Analytics|Analytics dashboards"
 msgstr ""
 
+msgid "Analytics|Analytics settings for '%{group_name}' were successfully updated."
+msgstr ""
+
 msgid "Analytics|Analytics settings for '%{project_name}' were successfully updated."
 msgstr ""
 
@@ -5968,6 +5971,9 @@ msgstr ""
 msgid "Analytics|URL"
 msgstr ""
 
+msgid "Analytics|Unable to update analytics settings. Please try again."
+msgstr ""
+
 msgid "Analytics|Updating dashboard %{dashboardSlug}"
 msgstr ""
 
@@ -6028,7 +6034,7 @@ msgstr ""
 msgid "Analyze your infrastructure as code configuration files for known vulnerabilities."
 msgstr ""
 
-msgid "Analyze your source code and Git history for secrets."
+msgid "Analyze your source code and Git history for secrets by using CI/CD pipelines."
 msgstr ""
 
 msgid "Analyze your source code for known vulnerabilities."
@@ -8501,6 +8507,9 @@ msgstr ""
 msgid "BlobViewer|View on %{environmentName}"
 msgstr ""
 
+msgid "Block secrets such as keys and API tokens from being pushed to your repositories. Pre-receive secret detection is triggered when commits are pushed to a repository. If any secrets are detected, the push is blocked."
+msgstr ""
+
 msgid "Block user"
 msgstr ""
 
@@ -10868,9 +10877,6 @@ msgstr ""
 msgid "CiCatalog|GitLab-maintained"
 msgstr ""
 
-msgid "CiCatalog|Go to the project"
-msgstr ""
-
 msgid "CiCatalog|How do I publish a component?"
 msgstr ""
 
@@ -10896,9 +10902,6 @@ msgid "CiCatalog|Readme"
 msgstr ""
 
 msgid "CiCatalog|Released %{date}"
-msgstr ""
-
-msgid "CiCatalog|Released %{timeAgo}"
 msgstr ""
 
 msgid "CiCatalog|Released %{timeAgo} by %{author}"
@@ -19843,6 +19846,9 @@ msgid "Enter a name for your comment template"
 msgstr ""
 
 msgid "Enter a number"
+msgstr ""
+
+msgid "Enter a number from 0 to 100."
 msgstr ""
 
 msgid "Enter admin mode"
@@ -35946,12 +35952,6 @@ msgstr ""
 msgid "Organization|Current organization"
 msgstr ""
 
-msgid "Organization|Frequently visited groups"
-msgstr ""
-
-msgid "Organization|Frequently visited projects"
-msgstr ""
-
 msgid "Organization|Get started with organizations"
 msgstr ""
 
@@ -36031,6 +36031,18 @@ msgid "Organization|Projects are hosted/created in groups. Before creating a pro
 msgstr ""
 
 msgid "Organization|Public - The organization can be accessed without any authentication."
+msgstr ""
+
+msgid "Organization|Recently created groups"
+msgstr ""
+
+msgid "Organization|Recently created projects"
+msgstr ""
+
+msgid "Organization|Recently updated groups"
+msgstr ""
+
+msgid "Organization|Recently updated projects"
 msgstr ""
 
 msgid "Organization|Search for an organization"
@@ -37373,6 +37385,9 @@ msgstr ""
 msgid "Pipeline Schedules"
 msgstr ""
 
+msgid "Pipeline Secret Detection"
+msgstr ""
+
 msgid "Pipeline URL"
 msgstr ""
 
@@ -38634,6 +38649,9 @@ msgid "Potentially unwanted character detected: Unicode BiDi Control"
 msgstr ""
 
 msgid "Pre-defined push rules"
+msgstr ""
+
+msgid "Pre-receive Secret Detection"
 msgstr ""
 
 msgid "Pre-receive secret detection skipped via"
@@ -45922,10 +45940,22 @@ msgstr ""
 msgid "Secret token."
 msgstr ""
 
+msgid "SecretDetection|Pre-receive Secret Detection is disabled"
+msgstr ""
+
+msgid "SecretDetection|Pre-receive Secret Detection is enabled"
+msgstr ""
+
 msgid "SecretDetection|This comment appears to have a token in it. Are you sure you want to add it?"
 msgstr ""
 
 msgid "SecretDetection|This description appears to have a token in it. Are you sure you want to add it?"
+msgstr ""
+
+msgid "SecretDetection|This feature has been disabled at the instance level. Please reach out to your instance administrator to request activation."
+msgstr ""
+
+msgid "SecretDetection||Feature not available"
 msgstr ""
 
 msgid "Secrets"
@@ -46232,6 +46262,9 @@ msgid "SecurityConfiguration|Something went wrong. Please refresh the page, or t
 msgstr ""
 
 msgid "SecurityConfiguration|The status of the tools only applies to the default branch and is based on the %{linkStart}latest pipeline%{linkEnd}."
+msgstr ""
+
+msgid "SecurityConfiguration|Toggle Pre-receive secret detection"
 msgstr ""
 
 msgid "SecurityConfiguration|Upgrade or start a free trial"

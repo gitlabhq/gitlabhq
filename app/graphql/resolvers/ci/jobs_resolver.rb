@@ -8,24 +8,24 @@ module Resolvers
       type ::Types::Ci::JobType.connection_type, null: true
 
       argument :security_report_types, [Types::Security::ReportTypeEnum],
-              required: false,
-              description: 'Filter jobs by the type of security report they produce.'
+        required: false,
+        description: 'Filter jobs by the type of security report they produce.'
 
       argument :statuses, [::Types::Ci::JobStatusEnum],
-              required: false,
-              description: 'Filter jobs by status.'
+        required: false,
+        description: 'Filter jobs by status.'
 
       argument :retried, ::GraphQL::Types::Boolean,
-              required: false,
-              description: 'Filter jobs by retry-status.'
+        required: false,
+        description: 'Filter jobs by retry-status.'
 
       argument :when_executed, [::GraphQL::Types::String],
-              required: false,
-              description: 'Filter jobs by when they are executed.'
+        required: false,
+        description: 'Filter jobs by when they are executed.'
 
       argument :job_kind, ::Types::Ci::JobKindEnum,
-              required: false,
-              description: 'Filter jobs by kind.'
+        required: false,
+        description: 'Filter jobs by kind.'
 
       def resolve(statuses: nil, security_report_types: [], retried: nil, when_executed: nil, job_kind: nil)
         jobs = init_collection(security_report_types)

@@ -6,9 +6,9 @@ module Resolvers
       type Types::Ci::RunnerType.connection_type, null: true
 
       argument :membership, ::Types::Ci::RunnerMembershipFilterEnum,
-               required: false,
-               default_value: :descendants,
-               description: 'Control which runners to include in the results.'
+        required: false,
+        default_value: :descendants,
+        description: 'Control which runners to include in the results.'
 
       protected
 

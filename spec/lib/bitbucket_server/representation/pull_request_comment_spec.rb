@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BitbucketServer::Representation::PullRequestComment do
+RSpec.describe BitbucketServer::Representation::PullRequestComment, feature_category: :importers do
   let(:activities) { Gitlab::Json.parse(fixture_file('importers/bitbucket_server/activities.json'))['values'] }
   let(:comment) { activities.second }
 
@@ -46,5 +46,20 @@ RSpec.describe BitbucketServer::Representation::PullRequestComment do
 
   describe '#file_path' do
     it { expect(subject.file_path).to eq('CHANGELOG.md') }
+  end
+
+  describe '#to_hash' do
+    it do
+      expect(subject.to_hash).to match(
+        a_hash_including(
+          id: 7,
+          from_sha: 'c5f4288162e2e6218180779c7f6ac1735bb56eab',
+          to_sha: 'a4c2164330f2549f67c13f36a93884cf66e976be',
+          file_path: 'CHANGELOG.md',
+          old_pos: 9,
+          new_pos: 11
+        )
+      )
+    end
   end
 end

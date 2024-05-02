@@ -22,6 +22,8 @@ module Projects
           security_training_enabled: project.security_training_available?,
           continuous_vulnerability_scans_enabled: continuous_vulnerability_scans_enabled,
           container_scanning_for_registry_enabled: container_scanning_for_registry_enabled,
+          pre_receive_secret_detection_available:
+            Gitlab::CurrentSettings.current_application_settings.pre_receive_secret_detection_enabled,
           pre_receive_secret_detection_enabled: pre_receive_secret_detection_enabled
         }
       end
@@ -80,7 +82,14 @@ module Projects
       end
 
       def scan_types
-        ::Security::SecurityJobsFinder.allowed_job_types + ::Security::LicenseComplianceJobsFinder.allowed_job_types
+        job_types = ::Security::SecurityJobsFinder.allowed_job_types +
+          ::Security::LicenseComplianceJobsFinder.allowed_job_types
+
+        unless Feature.enabled?(:pre_receive_secret_detection_beta_release)
+          job_types.delete(:pre_receive_secret_detection)
+        end
+
+        job_types
       end
 
       def project_settings

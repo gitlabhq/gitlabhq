@@ -533,19 +533,6 @@ export const catalogSharedDataMock = {
   },
 };
 
-export const catalogAdditionalDetailsMock = {
-  data: {
-    ciCatalogResource: {
-      __typename: 'CiCatalogResource',
-      id: `gid://gitlab/CiCatalogResource/1`,
-      webPath: '/twitter/project',
-      openIssuesCount: 4,
-      openMergeRequestsCount: 10,
-      readmeHtml: '<h1>Hello world</h1>',
-    },
-  },
-};
-
 const generateResourcesNodes = (count = 20, startId = 0) => {
   const nodes = [];
   for (let i = startId; i < startId + count; i += 1) {

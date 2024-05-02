@@ -25,8 +25,6 @@ class ContainerRepository < ApplicationRecord
   # from the cache expiration time.
   AUTH_TOKEN_USAGE_RESERVED_TIME_IN_SECS = 5
 
-  TooManyImportsError = Class.new(StandardError)
-
   belongs_to :project
 
   validates :name, length: { minimum: 0, allow_nil: false }

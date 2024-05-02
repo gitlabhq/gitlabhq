@@ -23,20 +23,14 @@ module Gitlab
           merge_request = project.merge_requests.find_by(iid: object[:iid]) # rubocop: disable CodeReuse/ActiveRecord
 
           if merge_request
-            activities = client.activities(project_key, repository_slug, merge_request.iid)
+            bitbucket_server_notes_separate_worker_enabled =
+              project.import_data&.data&.dig('bitbucket_server_notes_separate_worker')
 
-            comments, other_activities = activities.partition(&:comment?)
-
-            merge_event = other_activities.find(&:merge_event?)
-            import_merge_event(merge_request, merge_event) if merge_event
-
-            inline_comments, pr_comments = comments.partition(&:inline_comment?)
-
-            import_inline_comments(inline_comments.map(&:comment), merge_request)
-            import_standalone_pr_comments(pr_comments.map(&:comment), merge_request)
-
-            approved_events = other_activities.select(&:approved_event?)
-            approved_events.each { |event| import_approved_event(merge_request, event) }
+            if bitbucket_server_notes_separate_worker_enabled
+              import_notes_individually(merge_request, object)
+            else
+              import_notes_in_batch(merge_request)
+            end
           end
 
           log_info(import_stage: 'import_pull_request_notes', message: 'finished', iid: object[:iid])
@@ -45,6 +39,44 @@ module Gitlab
         private
 
         attr_reader :object, :project, :formatter, :user_finder, :mentions_converter
+
+        def import_notes_individually(merge_request, object)
+          # We should not use "OpenStruct"
+          # currently it is used under development feature flag
+          object_representation = Gitlab::Json.parse(
+            object[:comment].to_json,
+            symbolize_names: true,
+            object_class: 'OpenStruct'.constantize
+          )
+
+          case object[:comment_type]
+          when 'merge_event'
+            import_merge_event(merge_request, object_representation)
+          when 'inline'
+            import_inline_comments([object_representation], merge_request)
+          when 'standalone_notes'
+            import_standalone_pr_comments([object_representation], merge_request)
+          when 'approved_event'
+            import_approved_event(merge_request, object_representation)
+          end
+        end
+
+        def import_notes_in_batch(merge_request)
+          activities = client.activities(project_key, repository_slug, merge_request.iid)
+
+          comments, other_activities = activities.partition(&:comment?)
+
+          merge_event = other_activities.find(&:merge_event?)
+          import_merge_event(merge_request, merge_event) if merge_event
+
+          inline_comments, pr_comments = comments.partition(&:inline_comment?)
+
+          import_inline_comments(inline_comments.map(&:comment), merge_request)
+          import_standalone_pr_comments(pr_comments.map(&:comment), merge_request)
+
+          approved_events = other_activities.select(&:approved_event?)
+          approved_events.each { |event| import_approved_event(merge_request, event) }
+        end
 
         def import_data_valid?
           project.import_data&.credentials && project.import_data&.data

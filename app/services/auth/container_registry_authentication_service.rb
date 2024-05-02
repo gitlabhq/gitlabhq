@@ -37,10 +37,6 @@ module Auth
       access_token(names_and_actions)
     end
 
-    def self.import_access_token
-      access_token({ 'import' => %w[*] }, 'registry')
-    end
-
     def self.pull_access_token(*names)
       names_and_actions = names.index_with { %w[pull] }
       access_token(names_and_actions)

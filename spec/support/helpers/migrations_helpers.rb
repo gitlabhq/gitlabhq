@@ -121,8 +121,10 @@ module MigrationsHelpers
   end
 
   def finalized_by_version
-    ::Gitlab::Database::BackgroundMigration::BatchedBackgroundMigrationDictionary
+    finalized_by = ::Gitlab::Database::BackgroundMigration::BatchedBackgroundMigrationDictionary
       .entry(described_class.to_s.demodulize)&.finalized_by
+
+    finalized_by.to_i if finalized_by
   end
 
   def migration_schema_version

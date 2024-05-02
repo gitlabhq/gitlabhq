@@ -49,10 +49,12 @@ To enable GitLab Duo on a self-managed instance, you must ensure connectivity ex
 ## Disable GitLab Duo features
 
 You can disable GitLab Duo AI features for a group, project, or instance.
-When GitLab Duo is disabled, any attempt to use GitLab Duo features on the group,
+When GitLab Duo is disabled, any attempt to use GitLab Duo features on resources like epics,
+issues, and vulnerabilities of the group,
 project, or instance is blocked and an error is displayed.
-GitLab Duo features are also blocked for resources in the group or project, like epics,
-issues, and vulnerabilities.
+
+However, the **GitLab Duo Chat** button continues to be displayed in the upper-right corner 
+and on the left sidebar under **Help**, and users can continue to ask generic questions about GitLab or ask generic code questions.
 
 ### Disable for a group
 

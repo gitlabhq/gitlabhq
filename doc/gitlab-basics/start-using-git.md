@@ -4,7 +4,7 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Use additional Git commands
+# Common Git commands
 
 You can do many Git operations directly in GitLab. However, the command line is required for advanced tasks.
 

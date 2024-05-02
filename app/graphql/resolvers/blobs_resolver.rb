@@ -11,16 +11,16 @@ module Resolvers
     alias_method :repository, :object
 
     argument :paths, [GraphQL::Types::String],
-             required: true,
-             description: 'Array of desired blob paths.'
+      required: true,
+      description: 'Array of desired blob paths.'
     argument :ref, GraphQL::Types::String,
-             required: false,
-             default_value: nil,
-             description: 'Commit ref to get the blobs from. Default value is HEAD.'
+      required: false,
+      default_value: nil,
+      description: 'Commit ref to get the blobs from. Default value is HEAD.'
     argument :ref_type, Types::RefTypeEnum,
-             required: false,
-             default_value: nil,
-             description: 'Type of ref.'
+      required: false,
+      default_value: nil,
+      description: 'Type of ref.'
 
     # We fetch blobs from Gitaly efficiently but it still scales O(N) with the
     # number of paths being fetched, so apply a scaling limit to that.

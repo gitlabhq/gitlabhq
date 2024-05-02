@@ -1,9 +1,9 @@
 <script>
 import { __, s__ } from '~/locale';
 import { createAlert } from '~/alert';
-import { ORGANIZATION_USERS_PER_PAGE } from '~/organizations/constants';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import organizationUsersQuery from '../graphql/organization_users.query.graphql';
+import { ORGANIZATION_USERS_PER_PAGE } from '../constants';
 import UsersView from './users_view.vue';
 
 const defaultPagination = {

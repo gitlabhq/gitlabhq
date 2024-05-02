@@ -69,9 +69,18 @@ module Gitlab
               'user/application_security/container_scanning/index', anchor: 'configuration'),
             type: 'container_scanning'
           },
+          pre_receive_secret_detection: {
+            name: _('Pre-receive Secret Detection'),
+            description: _('Block secrets such as keys and API tokens from being pushed to your repositories. ' \
+                           'Pre-receive secret detection is triggered when commits are pushed to a repository. ' \
+                           'If any secrets are detected, the push is blocked.'),
+            help_path: Gitlab::Routing.url_helpers.help_page_path(
+              'user/application_security/secret_detection/pre_receive/index'),
+            type: 'pre_receive_secret_detection'
+          },
           secret_detection: {
-            name: _('Secret Detection'),
-            description: _('Analyze your source code and Git history for secrets.'),
+            name: _('Pipeline Secret Detection'),
+            description: _('Analyze your source code and Git history for secrets by using CI/CD pipelines.'),
             help_path: Gitlab::Routing.url_helpers.help_page_path(
               'user/application_security/secret_detection/pipeline/index'),
             configuration_help_path: Gitlab::Routing.url_helpers.help_page_path(

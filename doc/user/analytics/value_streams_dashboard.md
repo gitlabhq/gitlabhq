@@ -172,8 +172,7 @@ DETAILS:
 To enable or disable the overview count aggregation for the Value Streams Dashboard:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > General**.
-1. Expand **Analytics**.
+1. Select **Settings > Analytics**.
 1. In **Value Streams Dashboard**, select or clear the **Enable overview background aggregation for Value Streams Dashboard** checkbox.
 
 To retrieve aggregated usage counts in the group, use the [GraphQL API](../../api/graphql/reference/index.md#groupvaluestreamdashboardusageoverview).
@@ -232,8 +231,7 @@ Prerequisites:
 - You must have at least the Maintainer role for the group.
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > General**.
-1. Expand **Analytics**.
+1. Select **Settings > Analytics**.
 1. Select the project where you would like to store your YAML configuration file.
 1. Select **Save changes**.
 

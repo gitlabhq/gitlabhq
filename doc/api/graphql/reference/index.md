@@ -34261,6 +34261,7 @@ The status of the security scan.
 | <a id="securityreporttypeenumcoverage_fuzzing"></a>`COVERAGE_FUZZING` | COVERAGE FUZZING scan report. |
 | <a id="securityreporttypeenumdast"></a>`DAST` | DAST scan report. |
 | <a id="securityreporttypeenumdependency_scanning"></a>`DEPENDENCY_SCANNING` | DEPENDENCY SCANNING scan report. |
+| <a id="securityreporttypeenumpre_receive_secret_detection"></a>`PRE_RECEIVE_SECRET_DETECTION` | PRE RECEIVE SECRET DETECTION scan report. |
 | <a id="securityreporttypeenumsast"></a>`SAST` | SAST scan report. |
 | <a id="securityreporttypeenumsast_iac"></a>`SAST_IAC` | SAST IAC scan report. |
 | <a id="securityreporttypeenumsecret_detection"></a>`SECRET_DETECTION` | SECRET DETECTION scan report. |
@@ -34278,6 +34279,7 @@ The type of the security scanner.
 | <a id="securityscannertypecoverage_fuzzing"></a>`COVERAGE_FUZZING` | Coverage Fuzzing scanner. |
 | <a id="securityscannertypedast"></a>`DAST` | DAST scanner. |
 | <a id="securityscannertypedependency_scanning"></a>`DEPENDENCY_SCANNING` | Dependency Scanning scanner. |
+| <a id="securityscannertypepre_receive_secret_detection"></a>`PRE_RECEIVE_SECRET_DETECTION` | Pre Receive Secret Detection scanner. |
 | <a id="securityscannertypesast"></a>`SAST` | SAST scanner. |
 | <a id="securityscannertypesast_iac"></a>`SAST_IAC` | Sast Iac scanner. |
 | <a id="securityscannertypesecret_detection"></a>`SECRET_DETECTION` | Secret Detection scanner. |

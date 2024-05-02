@@ -3,7 +3,6 @@ import { GlEmptyState } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import { createAlert } from '~/alert';
 import { cleanLeadingSeparator } from '~/lib/utils/url_utility';
-import getCatalogCiResourceDetails from '../../graphql/queries/get_ci_catalog_resource_details.query.graphql';
 import getCatalogCiResourceSharedData from '../../graphql/queries/get_ci_catalog_resource_shared_data.query.graphql';
 import CiResourceDetails from '../details/ci_resource_details.vue';
 import CiResourceHeader from '../details/ci_resource_header.vue';
@@ -19,7 +18,6 @@ export default {
     return {
       isEmpty: false,
       resourceSharedData: {},
-      resourceAdditionalDetails: {},
     };
   },
   apollo: {
@@ -38,30 +36,12 @@ export default {
         createAlert({ message: e.message });
       },
     },
-    resourceAdditionalDetails: {
-      query: getCatalogCiResourceDetails,
-      variables() {
-        return {
-          fullPath: this.cleanFullPath,
-        };
-      },
-      update(data) {
-        return data.ciCatalogResource;
-      },
-      error(e) {
-        this.isEmpty = true;
-        createAlert({ message: e.message });
-      },
-    },
   },
   computed: {
     cleanFullPath() {
       return cleanLeadingSeparator(this.$route.params.id);
     },
-    isLoadingDetails() {
-      return this.$apollo.queries.resourceAdditionalDetails.loading;
-    },
-    isLoadingSharedData() {
+    isLoadingData() {
       return this.$apollo.queries.resourceSharedData.loading;
     },
     version() {
@@ -88,13 +68,7 @@ export default {
       />
     </div>
     <div v-else>
-      <ci-resource-header
-        :open-issues-count="resourceAdditionalDetails.openIssuesCount"
-        :open-merge-requests-count="resourceAdditionalDetails.openMergeRequestsCount"
-        :is-loading-details="isLoadingDetails"
-        :is-loading-shared-data="isLoadingSharedData"
-        :resource="resourceSharedData"
-      />
+      <ci-resource-header :is-loading-data="isLoadingData" :resource="resourceSharedData" />
       <ci-resource-details :resource-path="cleanFullPath" :version="version" />
     </div>
   </div>

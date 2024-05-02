@@ -43,7 +43,7 @@ module QA
 
         Page::Project::Commit::Show.perform(&:select_email_patches)
 
-        expect(page).to have_content(/From: "?#{Regexp.escape(@user.name)}"? <#{@user.public_email}>/)
+        expect(page).to have_content(/From: "?#{Regexp.escape(@user.name)}"? <#{@user.commit_email}>/)
         expect(page).to have_content('Subject: [PATCH] Add second file')
         expect(page).to have_content('diff --git a/second b/second')
       end

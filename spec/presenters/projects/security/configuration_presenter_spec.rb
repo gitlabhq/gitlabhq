@@ -303,6 +303,33 @@ RSpec.describe Projects::Security::ConfigurationPresenter, feature_category: :so
       end
     end
 
+    describe 'pre_receive_secret_detection' do
+      let_it_be(:project) { create(:project, :repository) }
+      let(:features) { Gitlab::Json.parse(html_data[:features]) }
+
+      context 'when the feature flag is disabled' do
+        before do
+          stub_feature_flags(pre_receive_secret_detection_beta_release: false)
+        end
+
+        it 'feature does not include pre_receive_secret_detection' do
+          feature = features.find { |scan| scan["type"] == 'pre_receive_secret_detection' }
+          expect(feature).to be_nil
+        end
+      end
+
+      context 'when the feature flag is enabled' do
+        before do
+          stub_feature_flags(pre_receive_secret_detection_beta_release: true)
+        end
+
+        it 'feature includes pre_receive_secret_detection' do
+          feature = features.find { |scan| scan["type"] == 'pre_receive_secret_detection' }
+          expect(feature).not_to be_nil
+        end
+      end
+    end
+
     def licensed_scan_types
       ::Security::SecurityJobsFinder.allowed_job_types + ::Security::LicenseComplianceJobsFinder.allowed_job_types - [:cluster_image_scanning]
     end

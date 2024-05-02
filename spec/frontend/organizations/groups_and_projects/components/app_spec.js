@@ -4,8 +4,9 @@ import GroupsView from '~/organizations/shared/components/groups_view.vue';
 import ProjectsView from '~/organizations/shared/components/projects_view.vue';
 import NewGroupButton from '~/organizations/shared/components/new_group_button.vue';
 import NewProjectButton from '~/organizations/shared/components/new_project_button.vue';
-import { RESOURCE_TYPE_GROUPS, RESOURCE_TYPE_PROJECTS } from '~/organizations/constants';
 import {
+  RESOURCE_TYPE_GROUPS,
+  RESOURCE_TYPE_PROJECTS,
   SORT_ITEM_NAME,
   SORT_ITEM_CREATED_AT,
   SORT_DIRECTION_DESC,
