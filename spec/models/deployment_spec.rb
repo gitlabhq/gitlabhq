@@ -1483,6 +1483,17 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
         end
       end
     end
+
+    context 'when each job status is passed' do
+      Deployment.statuses.each do |starting_status, _|
+        Ci::HasStatus::AVAILABLE_STATUSES.each do |status|
+          it "#{starting_status} to #{status} does not cause an error" do
+            deploy.update!(status: starting_status)
+            expect { deploy.update_status(status) }.not_to raise_error
+          end
+        end
+      end
+    end
   end
 
   describe '#sync_status_with' do
@@ -1662,6 +1673,18 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
 
     it_behaves_like 'sync status with a job' do
       let(:factory_type) { :ci_bridge }
+    end
+
+    context 'when each job status is passed' do
+      Deployment.statuses.each do |starting_status, _|
+        Ci::HasStatus::AVAILABLE_STATUSES.each do |status|
+          it "#{starting_status} to #{status} does not cause an error" do
+            deployment.update!(status: starting_status)
+            job = create(:ci_build, status: status)
+            expect { deployment.sync_status_with(job) }.not_to raise_error
+          end
+        end
+      end
     end
   end
 

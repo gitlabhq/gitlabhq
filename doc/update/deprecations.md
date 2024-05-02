@@ -592,6 +592,26 @@ We hope this will simplify infrastructure setup and add several improvements to 
 </div>
 </div>
 
+<div class="milestone-wrapper" data-milestone="17.3">
+
+## GitLab 17.3
+
+<div class="deprecation " data-milestone="17.3">
+
+### Group vulnerability report by OWASP top 10 2017 is deprecated
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">17.0</span>
+- Removal in GitLab <span class="milestone">17.3</span>
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/458835).
+</div>
+
+Grouping the vulnerability report by OWASP top 10 2017 is deprecated, replaced by grouping by OWASP top 10 2021.
+In the future we will support the most recent version of OWASP top 10 for grouping on the vulnerability report.
+
+</div>
+</div>
+
 <div class="milestone-wrapper" data-milestone="17.0">
 
 ## GitLab 17.0

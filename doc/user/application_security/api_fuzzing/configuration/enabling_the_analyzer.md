@@ -329,7 +329,7 @@ This example is a minimal configuration for API Fuzzing. From here you can:
 
 The [Postman API Client](https://www.postman.com/product/api-client/) is a popular tool that
 developers and testers use to call various types of APIs. The API definitions
-[can be exported as a Postman Collection file](https://learning.postman.com/docs/getting-started/importing-and-exporting-data/#exporting-postman-data)
+[can be exported as a Postman Collection file](https://learning.postman.com/docs/getting-started/importing-and-exporting/exporting-data/#export-collections)
 for use with API Fuzzing. When exporting, make sure to select a supported version of Postman
 Collection: v2.0 or v2.1.
 
@@ -509,7 +509,7 @@ Variables from other scopes are provided through the `FUZZAPI_POSTMAN_COLLECTION
 The configuration variable `FUZZAPI_POSTMAN_COLLECTION_VARIABLES` can be set to:
 
 - [Exported Global environment](https://learning.postman.com/docs/sending-requests/variables/#downloading-global-environments)
-- [Exported environments](https://learning.postman.com/docs/getting-started/importing-and-exporting-data/#exporting-environments)
+- [Exported environments](https://learning.postman.com/docs/getting-started/importing-and-exporting/exporting-data/#export-environments)
 - [API Fuzzing Custom JSON format](#api-fuzzing-scope-custom-json-file-format)
 
 #### Undefined Postman variables
@@ -675,7 +675,7 @@ variables:
 
 #### Example: Environment Scope
 
-In this example, [the _environment_ scope is exported](https://learning.postman.com/docs/getting-started/importing-and-exporting-data/#exporting-environments) from the Postman Client as `environment-scope.json` and provided to API Fuzzing through the `FUZZAPI_POSTMAN_COLLECTION_VARIABLES` configuration variable.
+In this example, [the _environment_ scope is exported](https://learning.postman.com/docs/getting-started/importing-and-exporting/exporting-data/#export-environments) from the Postman Client as `environment-scope.json` and provided to API Fuzzing through the `FUZZAPI_POSTMAN_COLLECTION_VARIABLES` configuration variable.
 
 Here is an example of using `FUZZAPI_POSTMAN_COLLECTION_VARIABLES`:
 
@@ -748,7 +748,7 @@ values. For example:
 In this example, a _global_ scope, _environment_ scope, and _collection_ scope are configured. The first step is to export our various scopes.
 
 - [Export the _global_ scope](https://learning.postman.com/docs/sending-requests/variables/#downloading-global-environments) as `global-scope.json`
-- [Export the _environment_ scope](https://learning.postman.com/docs/getting-started/importing-and-exporting-data/#exporting-environments) as `environment-scope.json`
+- [Export the _environment_ scope](https://learning.postman.com/docs/getting-started/importing-and-exporting/exporting-data/#export-environments) as `environment-scope.json`
 - Export the Postman Collection which includes the _collection_ scope as `postman-collection.json`
 
 The Postman Collection is provided using the `FUZZAPI_POSTMAN_COLLECTION` variable, while the other scopes are provided using the `FUZZAPI_POSTMAN_COLLECTION_VARIABLES`. API Fuzzing can identify which scope the provided files match using data provided in each file.
@@ -806,7 +806,7 @@ When using exported scopes, it's often the case that the value of a variable mus
 In this example, a _global_ scope, _environment_ scope, _collection_ scope, and _API Fuzzing_ scope are configured. The first step is to export and create our various scopes.
 
 - [Export the _global_ scope](https://learning.postman.com/docs/sending-requests/variables/#downloading-global-environments) as `global-scope.json`
-- [Export the _environment_ scope](https://learning.postman.com/docs/getting-started/importing-and-exporting-data/#exporting-environments) as `environment-scope.json`
+- [Export the _environment_ scope](https://learning.postman.com/docs/getting-started/importing-and-exporting/exporting-data/#export-environments) as `environment-scope.json`
 - Export the Postman Collection which includes the _collection_ scope as `postman-collection.json`
 
 The API Fuzzing scope is used by creating a file `api-fuzzing-scope.json` using our [custom JSON file format](#api-fuzzing-scope-custom-json-file-format). This JSON is an object with key-value pairs for properties. The keys are the variables' names, and the values are the variables'

@@ -123,3 +123,9 @@ If an imported repository does not contain all branches of the source repository
 1. Retry the import with a [different group, subgroup, or project name](https://about.gitlab.com/releases/2023/02/22/gitlab-15-9-released/#re-import-projects-from-external-providers).
 1. If some branches are still missing, inspect [`importer.log`](../../../administration/logs/index.md#importerlog)
    (for example, with [`jq`](../../../administration/logs/log_parsing.md#parsing-gitlab-railsimporterlog)).
+
+### Exception: `Error Importing repository - No such file or directory @ rb_sysopen - (filename)`
+
+The error occurs if you attempt to import a `tar.gz` file download of a repository's source code.
+
+Imports require a [GitLab export](../settings/import_export.md#export-a-project-and-its-data) file, not just a repository download file.

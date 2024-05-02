@@ -527,7 +527,7 @@ are used to iteratively assemble the `/sgrules/my-rules.yml` file, which
 is then provided to Semgrep as the ruleset. Each passthrough appends a
 single rule to the ruleset. The first passthrough is responsible for
 initialising the top-level `rules` object, according to the
-[Semgrep rule syntax](https://semgrep.dev/docs/writing-rules/rule-syntax/).
+[Semgrep rule syntax](https://semgrep.dev/docs/writing-rules/rule-syntax).
 
 ```toml
 [semgrep]

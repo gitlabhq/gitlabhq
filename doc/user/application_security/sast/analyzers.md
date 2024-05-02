@@ -289,4 +289,4 @@ normalized into common values, for example, `severity` and `confidence`.
 - ⚠ => Data is available, but it's partially reliable, or it has to be extracted from unstructured content.
 - ✗ => Data is not available or it would require specific, inefficient or unreliable, logic to obtain it.
 
-1. This analyzer has reached [End of Support](https://about.gitlab.com/handbook/product/gitlab-the-product/#end-of-support). For more information, see the [SAST analyzers](#sast-analyzers) section.
+1. This analyzer has reached End of Support. For more information, see the [SAST analyzers](#sast-analyzers) section.

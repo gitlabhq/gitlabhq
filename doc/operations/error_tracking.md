@@ -233,6 +233,18 @@ To rectify the following error, specify the deprecated DSN in **Sentry.io > Proj
 ERROR: Sentry failure builds=0 error=raven: dsn missing private key
 ```
 
+### Analyzing bar graph data
+
+The last seen timestamp gives specific details about the error itself. If you hover above the box with your mouse, you can see the specific timestamp of when
+the error last happened. In the following example, the error happened at 11:41 CEST.
+
+![MonitorDetailErrors](img/last_seen_v16.10.png)
+
+The graph below is measured as an hourly bucket, with the total number of errors in this hour counted. In this example, the 11 am hour bucket has seen 239 errors. The last seen field states 11 hours and will not be updated until the full hour is complete. This is because of the library we use for this
+call ([`import * as timeago from 'timeago.js'`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/lib/utils/datetime/timeago_utility.js#L1)).
+
+![MonitorDetailErrors](img/error_bucket_v16.10.png)
+
 ## Data retention
 
 GitLab has a retention limit of 90 days for all errors.

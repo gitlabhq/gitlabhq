@@ -111,7 +111,7 @@ publish-npm:
     - npm publish
 ```
 
-- Replace `@scope` with the [scope](https://docs.npmjs.com/cli/v10/using-npm/scope) of the package that is being published.
+- Replace `@scope` with the [scope](https://docs.npmjs.com/cli/v10/using-npm/scope/) of the package that is being published.
 
 Your package is published to the package registry when the `publish-npm` job in your pipeline runs.
 

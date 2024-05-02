@@ -54,7 +54,7 @@ knowledge. In particular, you should be familiar with:
 - [Kubernetes pods](https://kubernetes.io/docs/concepts/workloads/pods/)
 - [Kubernetes labels](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/)
 - [Kubernetes namespaces](https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/)
-- [Kubernetes canary deployments](https://kubernetes.io/docs/concepts/cluster-administration/manage-deployment/#canary-deployments)
+- [Kubernetes canary deployments](https://kubernetes.io/docs/concepts/workloads/management/#canary-deployments)
 
 ## Use cases
 
