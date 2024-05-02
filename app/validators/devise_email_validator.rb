@@ -20,7 +20,7 @@
 class DeviseEmailValidator < ActiveModel::EachValidator
   DEFAULT_OPTIONS = {
     regexp: Devise.email_regexp,
-    invalid_characters_regexp: %r{[?!#$%&*\/=^<>]}
+    encoded_word_regexp: %r{=[?].*[?]=}
   }.freeze
 
   def initialize(options)
@@ -40,6 +40,6 @@ class DeviseEmailValidator < ActiveModel::EachValidator
   private
 
   def valid_email?(value)
-    options[:regexp].match?(value) && !options[:invalid_characters_regexp].match?(value)
+    options[:regexp].match?(value) && !options[:encoded_word_regexp].match?(value)
   end
 end
