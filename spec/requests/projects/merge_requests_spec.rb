@@ -3,7 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe 'merge requests actions', feature_category: :source_code_management do
-  let_it_be(:project) { create(:project, :repository) }
+  # user should have `last_on_activity` set to today,
+  # so that `Users::ActivityService` does not register any more updates.
+  let_it_be(:user) { create(:user, :with_last_activity_on_today) }
+  let_it_be(:project) { create(:project, :repository, namespace: create(:namespace, owner: user)) }
 
   let(:merge_request) do
     create(
@@ -15,7 +18,6 @@ RSpec.describe 'merge requests actions', feature_category: :source_code_manageme
     )
   end
 
-  let(:user) { project.first_owner }
   let(:user2) { create(:user) }
 
   before do

@@ -2056,6 +2056,7 @@
       changes: *code-backstage-patterns
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
+    - if: '$ENABLE_RSPEC_PREDICTIVE_PIPELINE_GENERATE == "true"'
     - <<: *if-merge-request
       changes: *db-patterns
     - <<: *if-merge-request
@@ -2085,6 +2086,7 @@
       changes: *code-backstage-patterns
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
+    - if: '$ENABLE_RSPEC_PREDICTIVE_TRIGGER == "true"'
     - <<: *if-merge-request-labels-run-all-rspec
       when: never
     - <<: *if-merge-request
@@ -2112,6 +2114,7 @@
       when: never
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
+    - if: '$ENABLE_RSPEC_PREDICTIVE_TRIGGER_SINGLE_DB == "true"'
     - <<: *if-merge-request-approved
       when: never
     - <<: *if-merge-request
@@ -2130,6 +2133,7 @@
       when: never
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
+    - if: '$ENABLE_RSPEC_PREDICTIVE_TRIGGER_SINGLE_DB_CI_CONNECTION == "true"'
     - <<: *if-merge-request-approved
       when: never
     - <<: *if-merge-request
@@ -2370,19 +2374,6 @@
 .rails:rules:rerun-previous-failed-tests:
   rules:
     - !reference [".rails:rules:previous-failed-tests-default-rules", rules]
-
-.rails:rules:rspec-foss-impact:
-  rules:
-    - <<: *if-not-ee
-      when: never
-    - <<: *if-merge-request-labels-as-if-foss
-      when: never
-    - <<: *if-merge-request-labels-pipeline-expedite
-      when: never
-    - <<: *if-security-merge-request
-      changes: *code-backstage-patterns
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes: *code-backstage-patterns
 
 .rails:rules:rspec fail-fast:
   rules:

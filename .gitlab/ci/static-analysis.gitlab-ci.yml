@@ -108,7 +108,7 @@ rubocop:
   script:
     - |
       # For non-merge request, or when RUN_ALL_RUBOCOP is 'true', run all RuboCop rules
-      if [ -z "${CI_MERGE_REQUEST_IID}" ] || [ "${RUN_ALL_RUBOCOP}" == "true" ]; then
+      if [ -z "${CI_MERGE_REQUEST_IID:-$FIND_CHANGES_MERGE_REQUEST_IID}" ] || [ "${RUN_ALL_RUBOCOP}" == "true" ]; then
         # Silence cop offenses for rules with "grace period".
         # We won't notify Slack if offenses were silenced to avoid frequent messages.
         # Job `update-static-analysis-cache` takes care of Slack notifications every 2 hours.

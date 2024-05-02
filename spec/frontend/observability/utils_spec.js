@@ -4,6 +4,7 @@ import {
   DATE_RANGE_QUERY_KEY,
   DATE_RANGE_START_QUERY_KEY,
   DATE_RANGE_END_QUERY_KEY,
+  TIMESTAMP_QUERY_KEY,
 } from '~/observability/constants';
 
 describe('periodToDate', () => {
@@ -74,6 +75,15 @@ describe('queryToDateFilterObj', () => {
     };
     expect(queryToDateFilterObj(query)).toEqual({ value: '1h' });
   });
+
+  it('returns a date range object from a nano timestamp', () => {
+    expect(queryToDateFilterObj({ timestamp: '2024-02-19T16:10:15.4433398Z' })).toEqual({
+      value: CUSTOM_DATE_RANGE_OPTION,
+      startDate: new Date('2024-02-19T16:10:15.443Z'),
+      endDate: new Date('2024-02-19T16:10:15.443Z'),
+      timestamp: '2024-02-19T16:10:15.4433398Z',
+    });
+  });
 });
 
 describe('dateFilterObjToQuery', () => {
@@ -97,6 +107,11 @@ describe('dateFilterObjToQuery', () => {
       [DATE_RANGE_QUERY_KEY]: CUSTOM_DATE_RANGE_OPTION,
       [DATE_RANGE_START_QUERY_KEY]: '2020-01-01T00:00:00.000Z',
       [DATE_RANGE_END_QUERY_KEY]: '2020-01-02T00:00:00.000Z',
+    });
+  });
+  it('converts a filter with timestamp', () => {
+    expect(dateFilterObjToQuery({ timestamp: '2024-02-19T16:10:15.4433398Z' })).toEqual({
+      [TIMESTAMP_QUERY_KEY]: '2024-02-19T16:10:15.4433398Z',
     });
   });
 

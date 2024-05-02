@@ -5,6 +5,7 @@ import {
   DATE_RANGE_QUERY_KEY,
   DATE_RANGE_START_QUERY_KEY,
   DATE_RANGE_END_QUERY_KEY,
+  TIMESTAMP_QUERY_KEY,
 } from './constants';
 
 /**
@@ -83,7 +84,17 @@ export function queryToDateFilterObj(queryObj) {
     [DATE_RANGE_QUERY_KEY]: dateRangeValue,
     [DATE_RANGE_START_QUERY_KEY]: dateRangeStart,
     [DATE_RANGE_END_QUERY_KEY]: dateRangeEnd,
+    [TIMESTAMP_QUERY_KEY]: timestamp,
   } = queryObj;
+
+  if (timestamp) {
+    return {
+      value: CUSTOM_DATE_RANGE_OPTION,
+      startDate: new Date(timestamp),
+      endDate: new Date(timestamp),
+      timestamp,
+    };
+  }
 
   return validatedDateRangeQuery(dateRangeValue, dateRangeStart, dateRangeEnd);
 }
@@ -109,5 +120,6 @@ export function dateFilterObjToQuery(dateFilter = {}) {
           [DATE_RANGE_START_QUERY_KEY]: undefined,
           [DATE_RANGE_END_QUERY_KEY]: undefined,
         }),
+    [TIMESTAMP_QUERY_KEY]: dateFilter.timestamp,
   };
 }

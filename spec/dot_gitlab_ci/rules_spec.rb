@@ -102,6 +102,9 @@ RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', feature_category: :tooling do
 
           if base['when'] == 'never'
             expect(derived).to eq(base.except('when'))
+          elsif base['if'].start_with?('$ENABLE_')
+            derived_if = base['if'].sub('RSPEC', 'RSPEC_PREDICTIVE_TRIGGER')
+            expect(derived).to eq(base.merge('if' => derived_if))
           elsif base['when'].nil?
             expect(derived).to eq(base.merge('when' => 'never'))
           end
@@ -119,7 +122,13 @@ RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', feature_category: :tooling do
     it_behaves_like 'predictive is inverse of non-predictive' do
       let(:base_rules) { config.dig('.rails:rules:ee-and-foss-default-rules', 'rules') }
 
-      let(:derived_rules) { config.dig('.rails:rules:rspec-predictive', 'rules') }
+      let(:derived_rules) do
+        config.dig('.rails:rules:rspec-predictive', 'rules').reject do |rule|
+          # This happens in each specific rspec,
+          # which is outside of .rails:rules:ee-and-foss-default-rules
+          rule['if'].start_with?('$ENABLE_')
+        end
+      end
 
       it 'contains an additional allow rule about code-backstage-patterns not present in the base' do
         expected_rule = {
@@ -135,24 +144,14 @@ RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', feature_category: :tooling do
 
   describe '.rails:rules:single-db' do
     it_behaves_like 'predictive is inverse of non-predictive' do
-      let(:base_rules) do
-        config.dig('.rails:rules:single-db', 'rules').reject do |rule|
-          rule['if'].start_with?('$ENABLE_') # We don't handle this yet
-        end
-      end
-
+      let(:base_rules) { config.dig('.rails:rules:single-db', 'rules') }
       let(:derived_rules) { config.dig('.rails:rules:rspec-predictive:single-db', 'rules') }
     end
   end
 
   describe '.rails:rules:single-db-ci-connection' do
     it_behaves_like 'predictive is inverse of non-predictive' do
-      let(:base_rules) do
-        config.dig('.rails:rules:single-db-ci-connection', 'rules').reject do |rule|
-          rule['if'].start_with?('$ENABLE_') # We don't handle this yet
-        end
-      end
-
+      let(:base_rules) { config.dig('.rails:rules:single-db-ci-connection', 'rules') }
       let(:derived_rules) { config.dig('.rails:rules:rspec-predictive:single-db-ci-connection', 'rules') }
     end
   end

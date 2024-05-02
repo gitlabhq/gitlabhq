@@ -140,6 +140,10 @@ FactoryBot.define do
       avatar { fixture_file_upload('spec/fixtures/dk.png') }
     end
 
+    trait :with_last_activity_on_today do
+      last_activity_on { Date.today }
+    end
+
     trait :with_sign_ins do
       sign_in_count { 3 }
       current_sign_in_at { FFaker::Time.between(10.days.ago, 1.day.ago) }

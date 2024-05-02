@@ -75,10 +75,14 @@ Before you use a new Elasticsearch cluster in production, see the
 
 > - Support for Elasticsearch 6.8 [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/350275) in GitLab 15.0.
 
-You don't have to change the GitLab configuration when you upgrade Elasticsearch.
+When you upgrade Elasticsearch, you do not have to change the GitLab configuration.
 
-You should pause indexing during an Elasticsearch upgrade so changes can still be tracked.
-When the Elasticsearch cluster is fully upgraded and active, [resume indexing](#unpause-indexing).
+During an Elasticsearch upgrade, you must:
+
+- Pause indexing so changes can still be tracked.
+- Disable advanced search so searches do not fail with an `HTTP 500` error.
+
+When the Elasticsearch cluster is fully upgraded and active, [resume indexing](#unpause-indexing) and enable advanced search.
 
 When you upgrade to GitLab 15.0 and later, you must use Elasticsearch 7.x and later.
 

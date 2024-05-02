@@ -1290,44 +1290,6 @@ rspec-ee fail-fast:
   variables:
     MATCHING_TESTS_PATH: "${RSPEC_MATCHING_TESTS_EE_PATH}"
 
-rspec-foss-impact:pipeline-generate:
-  extends:
-    - .rails:rules:rspec-foss-impact
-  stage: prepare
-  needs: ["detect-tests", "retrieve-tests-metadata"]
-  script:
-    - scripts/generate_rspec_pipeline.rb -f "${RSPEC_MATCHING_TESTS_FOSS_PATH}" -t "${RSPEC_FOSS_IMPACT_PIPELINE_TEMPLATE_YML}" -k "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}"
-    - cat "${RSPEC_FOSS_IMPACT_PIPELINE_TEMPLATE_YML}.yml"
-  artifacts:
-    expire_in: 1 day
-    paths:
-      - "${RSPEC_FOSS_IMPACT_PIPELINE_TEMPLATE_YML}.yml"
-
-rspec-foss-impact:trigger:
-  extends:
-    - .rails:rules:rspec-foss-impact
-  stage: test
-  needs:
-    - job: "setup-test-env"
-      artifacts: false
-    - job: "retrieve-tests-metadata"
-      artifacts: false
-    - job: "compile-test-assets as-if-foss"
-      artifacts: false
-    - job: "rspec-foss-impact:pipeline-generate"
-      artifacts: true
-  variables:
-    PARENT_PIPELINE_ID: $CI_PIPELINE_ID
-    GIT_STRATEGY: $GIT_STRATEGY
-  trigger:
-    strategy: depend
-    forward:
-      yaml_variables: true
-      pipeline_variables: true
-    include:
-      - artifact: "${RSPEC_FOSS_IMPACT_PIPELINE_TEMPLATE_YML}.yml"
-        job: rspec-foss-impact:pipeline-generate
-
 fail-pipeline-early:
   extends:
     - .rails:rules:fail-pipeline-early

@@ -9,19 +9,8 @@ class MigrateZoektSettingsInApplicationSettings < Gitlab::Database::Migration[2.
   end
 
   def up
-    return unless Gitlab.ee? # zoekt_settings available only in EE version
-
-    ApplicationSetting.reset_column_information
-
-    application_setting = ApplicationSetting.last
-    return if application_setting.nil? || application_setting.zoekt_settings.any?
-
-    zoekt_settings = {
-      zoekt_indexing_enabled: Feature.enabled?(:index_code_with_zoekt),
-      zoekt_indexing_paused: Feature.enabled?(:zoekt_pause_indexing, type: :ops),
-      zoekt_search_enabled: Feature.enabled?(:search_code_with_zoekt)
-    }
-    application_setting.update!(zoekt_settings: zoekt_settings)
+    # no-op this was just a data migration which is already done in 16.11. The plan is to remove the feature-flags used
+    # in this migration. So better to disable this migration in 17.0 to avoid any migration issues.
   end
 
   def down

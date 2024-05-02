@@ -643,7 +643,11 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       it 'returns the confidential message' do
         _, _, message = service.execute(content, issuable)
 
-        issuable_type = issuable.to_ability_name.humanize(capitalize: false)
+        issuable_type = if issuable.to_ability_name == "work_item"
+                          'item'
+                        else
+                          issuable.to_ability_name.humanize(capitalize: false)
+                        end
 
         expect(message).to eq("Made this #{issuable_type} confidential.")
       end

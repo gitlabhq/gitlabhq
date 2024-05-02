@@ -7,8 +7,8 @@ module Types
     include Types::BaseInterface
 
     field :resolved_by, Types::UserType,
-          null: true,
-          description: 'User who resolved the object.'
+      null: true,
+      description: 'User who resolved the object.'
 
     def resolved_by
       return unless object.resolved_by_id
@@ -17,12 +17,12 @@ module Types
     end
 
     field :resolved, GraphQL::Types::Boolean, null: false,
-                                              description: 'Indicates if the object is resolved.',
-                                              method: :resolved?
+      description: 'Indicates if the object is resolved.',
+      method: :resolved?
     field :resolvable, GraphQL::Types::Boolean, null: false,
-                                                description: 'Indicates if the object can be resolved.',
-                                                method: :resolvable?
+      description: 'Indicates if the object can be resolved.',
+      method: :resolvable?
     field :resolved_at, Types::TimeType, null: true,
-                                         description: 'Timestamp of when the object was resolved.'
+      description: 'Timestamp of when the object was resolved.'
   end
 end

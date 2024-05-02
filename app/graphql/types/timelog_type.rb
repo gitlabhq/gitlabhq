@@ -11,47 +11,47 @@ module Types
     expose_permissions Types::PermissionTypes::Timelog
 
     field :id,
-          GraphQL::Types::ID,
-          null: false,
-          description: 'Internal ID of the timelog.'
+      GraphQL::Types::ID,
+      null: false,
+      description: 'Internal ID of the timelog.'
 
     field :spent_at,
-          Types::TimeType,
-          null: true,
-          description: 'Timestamp of when the time tracked was spent at.'
+      Types::TimeType,
+      null: true,
+      description: 'Timestamp of when the time tracked was spent at.'
 
     field :time_spent,
-          GraphQL::Types::Int,
-          null: false,
-          description: 'Time spent displayed in seconds.'
+      GraphQL::Types::Int,
+      null: false,
+      description: 'Time spent displayed in seconds.'
 
     field :user,
-          Types::UserType,
-          null: false,
-          description: 'User that logged the time.'
+      Types::UserType,
+      null: false,
+      description: 'User that logged the time.'
 
     field :issue,
-          Types::IssueType,
-          null: true,
-          description: 'Issue that logged time was added to.'
+      Types::IssueType,
+      null: true,
+      description: 'Issue that logged time was added to.'
 
     field :merge_request,
-          Types::MergeRequestType,
-          null: true,
-          description: 'Merge request that logged time was added to.'
+      Types::MergeRequestType,
+      null: true,
+      description: 'Merge request that logged time was added to.'
 
     field :note,
-          Types::Notes::NoteType,
-          null: true,
-          description: 'Note where the quick action was executed to add the logged time.'
+      Types::Notes::NoteType,
+      null: true,
+      description: 'Note where the quick action was executed to add the logged time.'
 
     field :summary, GraphQL::Types::String,
-          null: true,
-          description: 'Summary of how the time was spent.'
+      null: true,
+      description: 'Summary of how the time was spent.'
 
     field :project, Types::ProjectType,
-          null: false,
-          description: 'Target project of the timelog merge request or issue.'
+      null: false,
+      description: 'Target project of the timelog merge request or issue.'
 
     def user
       Gitlab::Graphql::Loaders::BatchModelLoader.new(User, object.user_id).find

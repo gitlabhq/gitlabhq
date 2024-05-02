@@ -53,15 +53,32 @@ RSpec.describe GenerateAsIfFossEnv, feature_category: :tooling do
       ]
     end
 
-    before do
-      messages = receive_message_chain(:client, :pipeline_jobs, :auto_paginate)
-
-      yield_jobs = jobs.inject(messages) do |stub, job|
-        stub.and_yield(double(name: job)) # rubocop:disable RSpec/VerifiedDoubles -- As explained at the top of this file, we do not load the Gitlab client
-      end
-
-      allow(Gitlab).to yield_jobs
+    let(:bridges) do
+      [
+        'rspec-predictive:pipeline-generate',
+        'rspec:predictive:trigger',
+        'rspec:predictive:trigger single-db',
+        'rspec:predictive:trigger single-db-ci-connection'
+      ]
     end
+
+    # rubocop:disable RSpec/VerifiedDoubles -- As explained at the top of this file, we do not load the Gitlab client
+    before do
+      client = double
+      allow(Gitlab).to receive(:client).and_return(client)
+
+      allow(client).to yield_jobs(:pipeline_jobs, jobs)
+      allow(client).to yield_jobs(:pipeline_bridges, bridges)
+    end
+
+    def yield_jobs(api_method, jobs)
+      messages = receive_message_chain(api_method, :auto_paginate)
+
+      jobs.inject(messages) do |stub, job_name|
+        stub.and_yield(double(name: job_name))
+      end
+    end
+    # rubocop:enable RSpec/VerifiedDoubles
   end
 
   describe '#variables' do
@@ -100,7 +117,11 @@ RSpec.describe GenerateAsIfFossEnv, feature_category: :tooling do
         ENABLE_RUBOCOP: 'true',
         ENABLE_QA_INTERNAL: 'true',
         ENABLE_QA_SELECTORS: 'true',
-        ENABLE_STATIC_ANALYSIS: 'true'
+        ENABLE_STATIC_ANALYSIS: 'true',
+        ENABLE_RSPEC_PREDICTIVE_PIPELINE_GENERATE: 'true',
+        ENABLE_RSPEC_PREDICTIVE_TRIGGER: 'true',
+        ENABLE_RSPEC_PREDICTIVE_TRIGGER_SINGLE_DB: 'true',
+        ENABLE_RSPEC_PREDICTIVE_TRIGGER_SINGLE_DB_CI_CONNECTION: 'true'
       })
     end
   end
@@ -142,6 +163,10 @@ RSpec.describe GenerateAsIfFossEnv, feature_category: :tooling do
         ENABLE_QA_INTERNAL=true
         ENABLE_QA_SELECTORS=true
         ENABLE_STATIC_ANALYSIS=true
+        ENABLE_RSPEC_PREDICTIVE_PIPELINE_GENERATE=true
+        ENABLE_RSPEC_PREDICTIVE_TRIGGER=true
+        ENABLE_RSPEC_PREDICTIVE_TRIGGER_SINGLE_DB=true
+        ENABLE_RSPEC_PREDICTIVE_TRIGGER_SINGLE_DB_CI_CONNECTION=true
       ENV
     end
   end

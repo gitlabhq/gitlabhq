@@ -6,6 +6,7 @@ require 'gitlab' unless Object.const_defined?(:Gitlab)
 require 'set' # rubocop:disable Lint/RedundantRequireStatement -- Ruby 3.1 and earlier needs this. Drop this line after Ruby 3.2+ is only supported.
 
 class GenerateAsIfFossEnv
+  # rubocop:disable Style/WordArray -- Probably a bug? It already is
   FOSS_JOBS = Set.new(%w[
     build-assets-image
     build-qa-image
@@ -16,11 +17,16 @@ class GenerateAsIfFossEnv
     eslint
     generate-apollo-graphql-schema
     graphql-schema-dump
+    rspec-predictive:pipeline-generate
+    rspec:predictive:trigger
+    rspec:predictive:trigger\ single-db
+    rspec:predictive:trigger\ single-db-ci-connection
     rubocop
     qa:internal
     qa:selectors
     static-analysis
   ]).freeze
+  # rubocop:enable Style/WordArray
 
   def initialize
     @client = Gitlab.client(
@@ -62,8 +68,10 @@ class GenerateAsIfFossEnv
   end
 
   def each_job
-    client.pipeline_jobs(ENV['CI_PROJECT_ID'], ENV['CI_PIPELINE_ID']).auto_paginate do |job|
-      yield(job)
+    %i[pipeline_jobs pipeline_bridges].each do |kind|
+      client.public_send(kind, ENV['CI_PROJECT_ID'], ENV['CI_PIPELINE_ID']).auto_paginate do |job| # rubocop:disable GitlabSecurity/PublicSend -- We're sending with static values, no concerns
+        yield(job)
+      end
     end
   end
 

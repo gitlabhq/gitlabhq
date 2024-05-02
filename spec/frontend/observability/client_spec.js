@@ -1171,6 +1171,22 @@ describe('buildClient', () => {
             'start_time=2020-07-05T00:00:00.000Z&end_time=2020-07-06T00:00:00.000Z',
           );
         });
+
+        it('handles exact timestamps', async () => {
+          await client.fetchLogs({
+            filters: {
+              dateRange: {
+                timestamp: '2024-02-19T16:10:15.4433398Z',
+                endDate: new Date('2024-02-19'),
+                startDate: new Date('2024-02-19'),
+                value: 'custom',
+              },
+            },
+          });
+          expect(getQueryParam()).toContain(
+            'start_time=2024-02-19T16:10:15.4433398Z&end_time=2024-02-19T16:10:15.4433398Z',
+          );
+        });
       });
 
       describe('attributes filters', () => {

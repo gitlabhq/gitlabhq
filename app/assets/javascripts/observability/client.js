@@ -121,8 +121,11 @@ function handleAttributeFilter(filterValue, filterOperator, searchParams, namePa
 function addDateRangeFilterToQueryParams(dateRangeFilter, params) {
   if (!dateRangeFilter || !params) return;
 
-  const { value, endDate, startDate } = dateRangeFilter;
-  if (value === CUSTOM_DATE_RANGE_OPTION) {
+  const { value, endDate, startDate, timestamp } = dateRangeFilter;
+  if (timestamp) {
+    params.append('start_time', timestamp);
+    params.append('end_time', timestamp);
+  } else if (value === CUSTOM_DATE_RANGE_OPTION) {
     if (isValidDate(startDate) && isValidDate(endDate)) {
       params.append('start_time', startDate.toISOString());
       params.append('end_time', endDate.toISOString());

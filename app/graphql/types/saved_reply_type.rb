@@ -7,11 +7,11 @@ module Types
     authorize :read_saved_replies
 
     field :content, GraphQL::Types::String,
-          null: false,
-          description: 'Content of the saved reply.'
+      null: false,
+      description: 'Content of the saved reply.'
 
     field :name, GraphQL::Types::String,
-          null: false,
-          description: 'Name of the saved reply.'
+      null: false,
+      description: 'Name of the saved reply.'
   end
 end

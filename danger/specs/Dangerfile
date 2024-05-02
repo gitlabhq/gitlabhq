@@ -19,7 +19,7 @@ This could be a sign that you're testing an EE-specific behavior in a FOSS test.
 Please make sure the spec files pass in AS-IF-FOSS mode either:
 
 1. Locally with `FOSS_ONLY=1 bin/rspec -- %<spec_files>s`.
-1. In the MR pipeline by verifying that the `rspec foss-impact` job has passed.
+1. In the MR pipeline by verifying that the `rspec:predictive:trigger` job has passed in the as-if-foss cross project downstream pipeline.
 1. In the MR pipelines by setting the ~"pipeline:run-as-if-foss" label on the MR (you can do it with the `/label ~"pipeline:run-as-if-foss"` quick action) and start a new MR pipeline.
 
 MSG

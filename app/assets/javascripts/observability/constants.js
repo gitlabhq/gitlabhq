@@ -49,5 +49,6 @@ export const CUSTOM_DATE_RANGE_OPTION = 'custom';
 export const DATE_RANGE_QUERY_KEY = 'date_range';
 export const DATE_RANGE_START_QUERY_KEY = 'date_start';
 export const DATE_RANGE_END_QUERY_KEY = 'date_end';
+export const TIMESTAMP_QUERY_KEY = 'timestamp';
 
 export const FILTERED_SEARCH_TERM_QUERY_KEY = 'search';
