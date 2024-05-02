@@ -4,8 +4,6 @@ group: Provision
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-<!-- To promote the workflow described in license.md, this page is not included in global left nav. -->
-
 # Activate GitLab EE with a license file or key
 
 If you receive a license file from GitLab (for example, for a trial), you can

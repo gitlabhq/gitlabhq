@@ -18,5 +18,5 @@ The resource tested supports the TRACE HTTP method. In combination with other cr
 
 ## Links
 
-- [OWASP](https://owasp.org/Top10/A05_2021-Security_Misconfiguration)
+- [OWASP](https://owasp.org/Top10/A05_2021-Security_Misconfiguration/)
 - [CWE](https://cwe.mitre.org/data/definitions/200.html)

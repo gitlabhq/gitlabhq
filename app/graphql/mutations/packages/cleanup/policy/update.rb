@@ -12,17 +12,17 @@ module Mutations
           authorize :admin_package
 
           argument :project_path,
-               GraphQL::Types::ID,
-               required: true,
-               description: 'Project path where the packages cleanup policy is located.'
+            GraphQL::Types::ID,
+            required: true,
+            description: 'Project path where the packages cleanup policy is located.'
 
           argument :keep_n_duplicated_package_files,
-               Types::Packages::Cleanup::KeepDuplicatedPackageFilesEnum,
-               required: false,
-               description: copy_field_description(
-                 Types::Packages::Cleanup::PolicyType,
-                 :keep_n_duplicated_package_files
-               )
+            Types::Packages::Cleanup::KeepDuplicatedPackageFilesEnum,
+            required: false,
+            description: copy_field_description(
+              Types::Packages::Cleanup::PolicyType,
+              :keep_n_duplicated_package_files
+            )
 
           field :packages_cleanup_policy,
             Types::Packages::Cleanup::PolicyType,

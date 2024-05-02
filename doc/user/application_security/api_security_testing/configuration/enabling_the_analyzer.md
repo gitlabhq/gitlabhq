@@ -339,7 +339,7 @@ This is a minimal configuration for API security testing. From here you can:
 #### Variables in Postman Client
 
 Postman allows the developer to define placeholders that can be used in different parts of the
-requests. These placeholders are called variables, as explained in [using variables](https://learning.postman.com/docs/sending-requests/variables/).
+requests. These placeholders are called variables, as explained in [using variables](https://learning.postman.com/docs/sending-requests/variables/variables/).
 You can use variables to store and reuse values in your requests and scripts. For example, you can
 edit the collection to add variables to the document:
 
@@ -374,7 +374,7 @@ The following is a summary of the variable scopes supported by the Postman Clien
   - Override values defined in the environment or collection
   - Defining variables from scripts
   - Define a single row of data from the unsupported _data scope_
-- **Data scope** is a group of variables in which their name and values come from JSON or CSV files. A Postman collection runner like [Newman](https://learning.postman.com/docs/running-collections/using-newman-cli/command-line-integration-with-newman/) or [Postman Collection Runner](https://learning.postman.com/docs/running-collections/intro-to-collection-runs/) executes the requests in a collection as many times as entries have the JSON or CSV file. A good use case for these variables is to automate tests using scripts in Postman.
+- **Data scope** is a group of variables in which their name and values come from JSON or CSV files. A Postman collection runner like [Newman](https://learning.postman.com/docs/collections/using-newman-cli/command-line-integration-with-newman/) or [Postman Collection Runner](https://learning.postman.com/docs/collections/running-collections/intro-to-collection-runs/) executes the requests in a collection as many times as entries have the JSON or CSV file. A good use case for these variables is to automate tests using scripts in Postman.
   API security testing does **not** support reading data from a CSV or JSON file.
 - **Local scope** are variables that are defined in Postman scripts. API security testing does **not** support Postman scripts and by extension, variables defined in scripts. You can still provide values for the script-defined variables by defining them in one of the supported scopes, or our custom JSON format.
 
@@ -404,8 +404,8 @@ To get the declaration for _environment_ scoped variables, you have to export a 
 
 For more details on exporting variables in different supported scopes, see:
 
-- [Exporting collections](https://learning.postman.com/docs/getting-started/importing-and-exporting-data/#exporting-collections)
-- [Exporting environments](https://learning.postman.com/docs/getting-started/importing-and-exporting-data/#exporting-environments)
+- [Exporting collections](https://learning.postman.com/docs/getting-started/importing-and-exporting/exporting-data/#export-collections)
+- [Exporting environments](https://learning.postman.com/docs/getting-started/importing-and-exporting/exporting-data/#export-environments)
 - [Downloading global environments](https://learning.postman.com/docs/sending-requests/variables/#downloading-global-environments)
 
 #### API security testing scope, custom JSON file format

@@ -6,7 +6,7 @@ description: 'Cells: 2.0'
 
 # Cells 2.0
 
-This document describes a technical proposal for a Cells 2.0 that builds on top of [Cells 1.0](cells-1.0.md).
+This document describes a technical proposal for a Cells 2.0 that builds on top of [Cells 1.5](cells-1.5.md).
 
 The Cells 2.0 target is to support a public and open source contribution model in a cellular architecture.
 

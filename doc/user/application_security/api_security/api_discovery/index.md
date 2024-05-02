@@ -32,7 +32,7 @@ The following projects demonstrate API Discovery:
 
 ## Java Spring-Boot
 
-[Spring Boot](https://spring.io/projects/spring-boot) is a popular framework for creating stand-alone, production-grade Spring-based applications.
+[Spring Boot](https://spring.io/projects/spring-boot/) is a popular framework for creating stand-alone, production-grade Spring-based applications.
 
 ### Supported Applications
 

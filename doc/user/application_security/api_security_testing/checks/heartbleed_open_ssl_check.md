@@ -18,5 +18,5 @@ Anyone on with access to the target API can use the Heartbleed vulnerability to 
 
 ## Links
 
-- [OWASP](https://owasp.org/Top10/A06_2021-Vulnerable_and_Outdated_Components)
+- [OWASP](https://owasp.org/Top10/A06_2021-Vulnerable_and_Outdated_Components/)
 - [CWE](https://cwe.mitre.org/data/definitions/119.html)

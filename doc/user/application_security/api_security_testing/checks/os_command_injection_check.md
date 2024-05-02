@@ -28,5 +28,5 @@ The application should have a hardcoded set of arguments that are to be passed t
 
 ## Links
 
-- [OWASP](https://owasp.org/Top10/A03_2021-Injection)
+- [OWASP](https://owasp.org/Top10/A03_2021-Injection/)
 - [CWE](https://cwe.mitre.org/data/definitions/78.html)

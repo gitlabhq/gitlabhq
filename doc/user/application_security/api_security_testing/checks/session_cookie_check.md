@@ -23,5 +23,5 @@ transaction.
 
 ## Links
 
-- [OWASP](https://owasp.org/Top10/A07_2021-Identification_and_Authentication_Failures)
+- [OWASP](https://owasp.org/Top10/A07_2021-Identification_and_Authentication_Failures/)
 - [CWE](https://cwe.mitre.org/data/definitions/930.html)

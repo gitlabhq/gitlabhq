@@ -220,7 +220,7 @@ any issue.
 
 ## Specialization labels
 
-These labels narrow the [specialization](https://about.gitlab.com/company/team/structure/#specialist) on a unit of work.
+These labels narrow the [specialization](https://handbook.gitlab.com/handbook/company/structure/#specialist) on a unit of work.
 
 - `~"frontend"`
 - `~"backend"`
@@ -302,7 +302,7 @@ If your MR for the `~"Community Challenge"` issue gets merged, you will also hav
 GitLab merchandise.
 
 If you've decided that you would like to work on an issue, @-mention
-the [appropriate product manager](https://about.gitlab.com/handbook/product/#who-to-talk-to-for-what)
+the [appropriate product manager](https://handbook.gitlab.com/handbook/product/how-to-engage/)
 as soon as possible. The product manager will then pull in appropriate GitLab team
 members to further discuss scope, design, and technical considerations. This will
 ensure that your contribution is aligned with the GitLab product and minimize

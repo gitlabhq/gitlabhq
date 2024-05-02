@@ -16,5 +16,5 @@ JSON hijacking allows an attacker to send a GET request via a malicious web site
 
 ## Links
 
-- [OWASP](https://owasp.org/Top10/A01_2021-Broken_Access_Control)
+- [OWASP](https://owasp.org/Top10/A01_2021-Broken_Access_Control/)
 - [CWE](https://cwe.mitre.org/data/definitions/352.html)

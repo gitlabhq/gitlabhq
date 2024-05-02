@@ -20,5 +20,5 @@ Software version numbers and verbose error messages (such as ASP.NET version num
 
 ## Links
 
-- [OWASP](https://owasp.org/Top10/A05_2021-Security_Misconfiguration)
+- [OWASP](https://owasp.org/Top10/A05_2021-Security_Misconfiguration/)
 - [CWE](https://cwe.mitre.org/data/definitions/200.html)

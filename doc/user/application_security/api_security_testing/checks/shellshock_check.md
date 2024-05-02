@@ -16,5 +16,5 @@ Shellshock vulnerability takes advantage of a bug in BASH, in which, BASH incorr
 
 ## Links
 
-- [OWASP](https://owasp.org/Top10/A03_2021-Injection)
+- [OWASP](https://owasp.org/Top10/A03_2021-Injection/)
 - [CWE](https://cwe.mitre.org/data/definitions/78.html)

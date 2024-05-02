@@ -421,7 +421,7 @@ General tips:
 - If some functionality can reasonably be achieved without adding extra libraries, avoid them.
 - Use page-specific JavaScript as described above to load libraries that are only needed on certain pages.
 - Use code-splitting dynamic imports wherever possible to lazy-load code that is not needed initially.
-- [High Performance Animations](https://www.html5rocks.com/en/tutorials/speed/high-performance-animations/)
+- [High Performance Animations](https://web.dev/articles/animations-guide)
 
 ---
 

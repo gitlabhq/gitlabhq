@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::CronParser do
+RSpec.describe Gitlab::Ci::CronParser, feature_category: :continuous_integration do
   shared_examples_for "returns time in the future" do
     it { is_expected.to be > Time.now }
   end
@@ -234,7 +234,9 @@ RSpec.describe Gitlab::Ci::CronParser do
   end
 
   describe '#next_time_from' do
-    subject { described_class.new(cron, cron_timezone).next_time_from(Time.now) }
+    subject { described_class.new(cron, cron_timezone).next_time_from(current_time) }
+
+    let(:current_time) { Time.now }
 
     it_behaves_like 'when cron and cron_timezone are valid', 'returns time in the future'
 
@@ -247,6 +249,27 @@ RSpec.describe Gitlab::Ci::CronParser do
     it_behaves_like 'when cron syntax is rufus-scheduler syntax'
 
     it_behaves_like 'when cron is scheduled to a non existent day'
+
+    context 'for modulo' do
+      let(:cron) { '0 6 * * tue%2' }
+      let(:cron_timezone) { 'America/Los_Angeles' }
+
+      context 'when before daylight saving' do
+        let(:current_time) { ActiveSupport::TimeZone.new(cron_timezone).parse('2024-02-01') }
+
+        it 'returns the correct future time' do
+          expect(subject.to_s).to eq('2024-02-13 14:00:00 UTC')
+        end
+      end
+
+      context 'when after daylight saving' do
+        let(:current_time) { ActiveSupport::TimeZone.new(cron_timezone).parse('2024-05-01') }
+
+        it 'returns the correct future time' do
+          expect(subject.to_s).to eq('2024-05-14 13:00:00 UTC')
+        end
+      end
+    end
   end
 
   describe '#previous_time_from' do

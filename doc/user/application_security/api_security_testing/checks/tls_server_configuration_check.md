@@ -25,5 +25,5 @@ Today, all modern browsers and websites use much stronger encryption, but some w
 
 ## Links
 
-- [OWASP](https://owasp.org/Top10/A02_2021-Cryptographic_Failures)
+- [OWASP](https://owasp.org/Top10/A02_2021-Cryptographic_Failures/)
 - [CWE](https://cwe.mitre.org/data/definitions/934.html)

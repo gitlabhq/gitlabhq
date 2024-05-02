@@ -351,6 +351,5 @@ After you provide your feedback, tidy up.
 
 - [Code review guidelines](https://handbook.gitlab.com/handbook/engineering/workflow/code-review/) in the GitLab handbook
 - [Merge request coaches](https://handbook.gitlab.com/job-families/expert/merge-request-coach/) in the GitLab handbook
-- [Reviewing merge requests](https://handbook.gitlab.com/handbook/marketing/digital-experience/website/merge-requests/) in the GitLab marketing website handbook
 - [Merge requests workflow](../../development/contributing/merge_request_workflow.md) for GitLab team members
 - [Efficient code review tips](https://about.gitlab.com/blog/2020/09/08/efficient-code-review-tips/)

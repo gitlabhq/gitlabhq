@@ -7,8 +7,8 @@ module Types
 
       ::Gitlab::Ci::Reports::TestCase::STATUS_TYPES.each do |status|
         value status,
-              description: "Test case that has a status of #{status}.",
-              value: status
+          description: "Test case that has a status of #{status}.",
+          value: status
       end
     end
   end

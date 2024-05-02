@@ -16,5 +16,5 @@ Authentication credentials are transported via unencrypted channel (HTTP). This 
 
 ## Links
 
-- [OWASP](https://owasp.org/Top10/A02_2021-Cryptographic_Failures)
+- [OWASP](https://owasp.org/Top10/A02_2021-Cryptographic_Failures/)
 - [CWE](https://cwe.mitre.org/data/definitions/319.html)

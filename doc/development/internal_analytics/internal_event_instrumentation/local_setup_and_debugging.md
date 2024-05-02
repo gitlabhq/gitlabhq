@@ -129,9 +129,9 @@ Monitored events: i_code_review_user_create_mr
 
 ## Snowplow Analytics Debugger Chrome Extension
 
-[Snowplow Analytics Debugger](https://chrome.google.com/webstore/detail/snowplow-analytics-debugg/jbnlcgeengmijcghameodeaenefieedm) is a browser extension for testing frontend events.
+[Snowplow Analytics Debugger](https://chromewebstore.google.com/detail/snowplow-analytics-debugg/jbnlcgeengmijcghameodeaenefieedm) is a browser extension for testing frontend events.
 It works in production, staging, and local development environments. It is especially suited to verifying correct events are getting sent in a deployed environment.
 
-1. Install the [Snowplow Analytics Debugger](https://chrome.google.com/webstore/detail/snowplow-analytics-debugg/jbnlcgeengmijcghameodeaenefieedm) Chrome browser extension.
+1. Install the [Snowplow Analytics Debugger](https://chromewebstore.google.com/detail/snowplow-analytics-debugg/jbnlcgeengmijcghameodeaenefieedm) Chrome browser extension.
 1. Open Chrome DevTools to the Snowplow Debugger tab.
 1. Any event triggered on a GitLab page should appear in the Snowplow Debugger tab.

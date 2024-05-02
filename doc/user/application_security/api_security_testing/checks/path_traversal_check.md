@@ -26,5 +26,5 @@ Even if the web server properly restricts Path traversal attempts in the URL pat
 
 ## Links
 
-- [OWASP](https://owasp.org/Top10/A01_2021-Broken_Access_Control)
+- [OWASP](https://owasp.org/Top10/A01_2021-Broken_Access_Control/)
 - [CWE](https://cwe.mitre.org/data/definitions/22.html)

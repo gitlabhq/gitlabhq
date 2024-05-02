@@ -78,7 +78,7 @@ const color = BLUE_500; // #428fdc
 
 ### Format
 
-Our design tokens use the [Design Tokens Format Module](https://tr.designtokens.org/format/) for defining design tokens that integrate with different tools and are converted to required file formats. It is a [community group draft report](https://www.w3.org/standards/types#reports), published by the [Design Tokens Community Group](https://www.w3.org/community/design-tokens/).
+Our design tokens use the [Design Tokens Format Module](https://tr.designtokens.org/format/) for defining design tokens that integrate with different tools and are converted to required file formats. It is a [community group draft report](https://www.w3.org/standards/types/#reports), published by the [Design Tokens Community Group](https://www.w3.org/community/design-tokens/).
 
 The Design Tokens Format Module promotes a `*.token.json` extension standard for design token files, with a format that includes [a name and `$value`](https://tr.designtokens.org/format/#name-and-value) and an explicit [`$type`](https://tr.designtokens.org/format/#type-0):
 

@@ -181,7 +181,7 @@ B3 -->|build and tag edge| D3[edge]
 Per our Continuous Deployment flow, for new components that do not have a counterpart in the GitLab
 Rails application, the component can be released at any time. Until the components
 are integrated with the existing application, iteration should not be blocked by
-[our standard release cycle and process](https://about.gitlab.com/product-process).
+[our standard release cycle and process](https://handbook.gitlab.com/handbook/product/product-processes/).
 
 ### Manual release process
 

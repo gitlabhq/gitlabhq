@@ -12,14 +12,14 @@ module Mutations
       authorize :destroy_package
 
       argument :project_path,
-            GraphQL::Types::ID,
-            required: true,
-            description: 'Project path where the packages cleanup policy is located.'
+        GraphQL::Types::ID,
+        required: true,
+        description: 'Project path where the packages cleanup policy is located.'
 
       argument :ids,
-               [::Types::GlobalIDType[::Packages::PackageFile]],
-               required: true,
-               description: 'IDs of the Package file.'
+        [::Types::GlobalIDType[::Packages::PackageFile]],
+        required: true,
+        description: 'IDs of the Package file.'
 
       def resolve(project_path:, ids:)
         project = authorized_find!(project_path)

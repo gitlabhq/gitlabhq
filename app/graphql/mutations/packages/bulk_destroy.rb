@@ -9,9 +9,9 @@ module Mutations
       TOO_MANY_IDS_ERROR = "Cannot delete more than #{MAX_PACKAGES} packages"
 
       argument :ids,
-               [::Types::GlobalIDType[::Packages::Package]],
-               required: true,
-               description: "Global IDs of the Packages. Max #{MAX_PACKAGES}"
+        [::Types::GlobalIDType[::Packages::Package]],
+        required: true,
+        description: "Global IDs of the Packages. Max #{MAX_PACKAGES}"
 
       def resolve(ids:)
         raise_resource_not_available_error!(TOO_MANY_IDS_ERROR) if ids.size > MAX_PACKAGES

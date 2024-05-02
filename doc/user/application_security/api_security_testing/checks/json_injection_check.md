@@ -16,5 +16,5 @@ JSON injection is an attack technique used to manipulate or compromise the logic
 
 ## Links
 
-- [OWASP](https://owasp.org/Top10/A03_2021-Injection)
+- [OWASP](https://owasp.org/Top10/A03_2021-Injection/)
 - [CWE](CWE-929: OWASP Top Ten 2013 Category A1 - Injection)

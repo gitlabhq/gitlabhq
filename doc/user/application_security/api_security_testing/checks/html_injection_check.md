@@ -24,5 +24,5 @@ Persistent attacks occur when the malicious code is submitted to a web site wher
 
 ## Links
 
-- [OWASP](https://owasp.org/Top10/A03_2021-Injection)
+- [OWASP](https://owasp.org/Top10/A03_2021-Injection/)
 - [CWE](https://cwe.mitre.org/data/definitions/79.html)

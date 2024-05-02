@@ -16,6 +16,6 @@ The Flask or ASP .NET framework was identified with debug mode enabled. This all
 
 ## Links
 
-- [OWASP](https://owasp.org/Top10/A05_2021-Security_Misconfiguration)
+- [OWASP](https://owasp.org/Top10/A05_2021-Security_Misconfiguration/)
 - [CWE-23: Relative Path Traversal](https://cwe.mitre.org/data/definitions/23.html)
 - [CWE-285: Improper Authorization](https://cwe.mitre.org/data/definitions/285.html)

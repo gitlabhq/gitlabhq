@@ -501,7 +501,7 @@ we need libraries like Action Cable that take care of these concerns. Action Cab
 
 Action Cable supports different implementations to track which client is subscribed to which
 `ActionCable::Channel`. At GitLab we use the Redis adapter, which uses
-[Redis PubSub](https://redis.io/docs/manual/pubsub/) channels as a distributed message bus.
+[Redis PubSub](https://redis.io/docs/latest/develop/interact/pubsub/) channels as a distributed message bus.
 Shared storage is necessary because different clients might connect to the same Action Cable channel
 from different Puma instances.
 

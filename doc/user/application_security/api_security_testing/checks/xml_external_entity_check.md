@@ -16,5 +16,5 @@ XML external entity Attack is a type of attack against an application that parse
 
 ## Links
 
-- [OWASP](https://owasp.org/Top10/A03_2021-Injection)
+- [OWASP](https://owasp.org/Top10/A03_2021-Injection/)
 - [CWE](https://cwe.mitre.org/data/definitions/611.html)

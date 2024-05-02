@@ -12,7 +12,7 @@ If you want to use feature flags to show and hide functionality in your own appl
 view [this feature flags information](../../operations/feature_flags.md) instead.
 
 WARNING:
-All newly-introduced feature flags should be [disabled by default](https://about.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/#feature-flags-in-gitlab-development).
+All newly-introduced feature flags should be [disabled by default](https://handbook.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/).
 
 WARNING:
 All newly-introduced feature flags should be [used with an actor](controls.md#percentage-based-actor-selection).
@@ -340,7 +340,7 @@ type: beta
 default_enabled: false
 ```
 
-All newly-introduced feature flags must be [**disabled by default**](https://about.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/#feature-flags-in-gitlab-development).
+All newly-introduced feature flags must be [**disabled by default**](https://handbook.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/).
 
 Features that are developed and merged behind a feature flag
 should not include a changelog entry. The entry should be added either in the merge

@@ -16,5 +16,5 @@ Unvalidated redirects and forwards are possible when a web application accepts u
 
 ## Links
 
-- [OWASP](https://owasp.org/Top10/A01_2021-Broken_Access_Control)
+- [OWASP](https://owasp.org/Top10/A01_2021-Broken_Access_Control/)
 - [CWE](https://cwe.mitre.org/data/definitions/601.html)

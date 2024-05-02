@@ -454,7 +454,7 @@ The Cloud Native GitLab CI pipeline generates images using several base images:
 
 UBI images ship with the same OpenSSL package as those used by
 RHEL. This makes it possible to build FIPS-compliant binaries without
-needing RHEL. Note that RHEL 8.2 ships a [FIPS-validated OpenSSL](https://access.redhat.com/articles/2918071), but 8.5 is in
+needing RHEL. Note that RHEL 8.2 ships a [FIPS-validated OpenSSL](https://access.redhat.com/articles/compliance_activities_and_gov_standards), but 8.5 is in
 review for FIPS validation.
 
 [This merge request](https://gitlab.com/gitlab-org/build/CNG/-/merge_requests/981)

@@ -2868,7 +2868,6 @@ RSpec/FeatureCategory:
     - 'spec/lib/gitlab/ci/config/normalizer_spec.rb'
     - 'spec/lib/gitlab/ci/config/yaml/tags/reference_spec.rb'
     - 'spec/lib/gitlab/ci/config/yaml/tags/resolver_spec.rb'
-    - 'spec/lib/gitlab/ci/cron_parser_spec.rb'
     - 'spec/lib/gitlab/ci/jwt_spec.rb'
     - 'spec/lib/gitlab/ci/mask_secret_spec.rb'
     - 'spec/lib/gitlab/ci/matching/build_matcher_spec.rb'

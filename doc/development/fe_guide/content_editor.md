@@ -327,8 +327,8 @@ sequenceDiagram
 ```
 
 Deserializers live in the extension modules. Read Tiptap documentation about
-[`parseHTML`](https://tiptap.dev/guide/custom-extensions#parse-html) and
-[`addAttributes`](https://tiptap.dev/guide/custom-extensions#attributes) to
+[`parseHTML`](https://tiptap.dev/docs/editor/guide/custom-extensions#parse-html) and
+[`addAttributes`](https://tiptap.dev/docs/editor/guide/custom-extensions#attributes) to
 learn how to implement them. The Tiptap API is a wrapper around ProseMirror's
 [schema spec API](https://prosemirror.net/docs/ref/#model.SchemaSpec).
 

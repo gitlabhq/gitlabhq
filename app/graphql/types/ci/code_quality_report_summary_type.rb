@@ -9,10 +9,10 @@ module Types
       description 'Code Quality report for a pipeline'
 
       field :count, GraphQL::Types::Int, null: true,
-                                         description: 'Total number of Code Quality reports.'
+        description: 'Total number of Code Quality reports.'
       ::Gitlab::Ci::Reports::CodequalityReports::SEVERITY_PRIORITIES.each_key do |status|
         field status, GraphQL::Types::Int, null: true,
-                                          description: "Total number of #{status} status."
+          description: "Total number of #{status} status."
       end
     end
     # rubocop: enable Graphql/AuthorizeTypes

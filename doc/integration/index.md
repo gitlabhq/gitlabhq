@@ -35,7 +35,7 @@ You can also integrate GitLab with the following security partners:
 <!-- vale gitlab.Spelling = NO -->
 
 - [Anchore](https://docs.anchore.com/current/docs/integration/ci_cd/gitlab/)
-- [Bridgecrew](https://docs.bridgecrew.io/docs/integrate-with-gitlab-self-managed)
+- [Prisma Cloud](https://docs.prismacloud.io/en/enterprise-edition/content-collections/application-security/get-started/connect-code-and-build-providers/code-repositories/add-gitlab)
 - [Checkmarx](https://checkmarx.atlassian.net/wiki/spaces/SD/pages/1929937052/GitLab+Integration)
 - [CodeSecure](https://codesecure.com/our-integrations/codesonar-sast-gitlab-ci-pipeline/)
 - [Deepfactor](https://www.deepfactor.io/docs/integrate-deepfactor-scanner-in-your-ci-cd-pipelines/#gitlab)
@@ -45,7 +45,7 @@ You can also integrate GitLab with the following security partners:
 - [Mend](https://www.mend.io/gitlab/)
 - [Semgrep](https://semgrep.dev/for/gitlab/)
 - [StackHawk](https://docs.stackhawk.com/continuous-integration/gitlab.html)
-- [Tenable](https://docs.tenable.com/vulnerability-management/Content/ContainerSecurity/GetStarted.htm)
+- [Tenable](https://docs.tenable.com/vulnerability-management/Content/ContainerSecurity/Dashboard.htm)
 - [Venafi](https://marketplace.venafi.com/xchange/620d2d6ed419fb06a5c5bd36/solution/6292c2ef7550f2ee553cf223)
 - [Veracode](https://community.veracode.com/s/knowledgeitem/gitlab-ci-MCEKSYPRWL35BRTGOVI55SK5RI4A)
 

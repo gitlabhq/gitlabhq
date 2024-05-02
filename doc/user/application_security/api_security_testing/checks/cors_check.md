@@ -16,5 +16,5 @@ A misconfigured CORS implementation may be overly permissive in which domains sh
 
 ## Links
 
-- [OWASP](https://owasp.org/Top10/A01_2021-Broken_Access_Control)
+- [OWASP](https://owasp.org/Top10/A01_2021-Broken_Access_Control/)
 - [CWE](https://cwe.mitre.org/data/definitions/942.html)

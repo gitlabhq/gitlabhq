@@ -187,7 +187,7 @@ an Azure application and get a client ID and secret key.
 1. Save the client ID and client secret. The client secret is only
    displayed once.
 
-   If required, you can [create a new application secret](https://learn.microsoft.com/en-us/azure/active-directory/develop/howto-create-service-principal-portal#option-2-create-a-new-application-secret).
+   If required, you can [create a new application secret](https://learn.microsoft.com/en-us/entra/identity-platform/howto-create-service-principal-portal#option-3-create-a-new-client-secret).
 
 `client ID` and `client secret` are terms associated with OAuth 2.0.
 In some Microsoft documentation, the terms are named `Application ID` and

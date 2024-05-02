@@ -11,17 +11,17 @@ module Mutations
       authorize :create_release
 
       argument :project_path, GraphQL::Types::ID,
-               required: true,
-               description: 'Full path of the project the asset link is associated with.'
+        required: true,
+        description: 'Full path of the project the asset link is associated with.'
 
       argument :tag_name, GraphQL::Types::String,
-               required: true, as: :tag,
-               description: "Name of the associated release's tag."
+        required: true, as: :tag,
+        description: "Name of the associated release's tag."
 
       field :link,
-            Types::ReleaseAssetLinkType,
-            null: true,
-            description: 'Asset link after mutation.'
+        Types::ReleaseAssetLinkType,
+        null: true,
+        description: 'Asset link after mutation.'
 
       def resolve(project_path:, tag:, **link_attrs)
         project = authorized_find!(project_path)

@@ -8,17 +8,17 @@ module Types
         graphql_name 'CiConfig'
 
         field :errors, [GraphQL::Types::String], null: true,
-                                                 description: 'Linting errors.'
+          description: 'Linting errors.'
         field :includes, [Types::Ci::Config::IncludeType], null: true,
-                                                           description: 'List of included files.'
+          description: 'List of included files.'
         field :merged_yaml, GraphQL::Types::String, null: true,
-                                                    description: 'Merged CI configuration YAML.'
+          description: 'Merged CI configuration YAML.'
         field :stages, Types::Ci::Config::StageType.connection_type, null: true,
-                                                                     description: 'Stages of the pipeline.'
+          description: 'Stages of the pipeline.'
         field :status, Types::Ci::Config::StatusEnum, null: true,
-                                                      description: 'Status of linting, can be either valid or invalid.'
+          description: 'Status of linting, can be either valid or invalid.'
         field :warnings, [GraphQL::Types::String], null: true,
-                                                   description: 'Linting warnings.'
+          description: 'Linting warnings.'
       end
     end
   end

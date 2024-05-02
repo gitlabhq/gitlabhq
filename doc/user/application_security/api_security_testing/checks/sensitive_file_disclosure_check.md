@@ -18,5 +18,5 @@ In the case of this failure, one or more files and/or folders are accessable tha
 
 ## Links
 
-- [OWASP](https://owasp.org/Top10/A01_2021-Broken_Access_Control)
+- [OWASP](https://owasp.org/Top10/A01_2021-Broken_Access_Control/)
 - [CWE](https://cwe.mitre.org/data/definitions/200.html)

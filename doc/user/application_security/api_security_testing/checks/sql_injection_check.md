@@ -20,5 +20,5 @@ SQL injection has become a common issue with database-driven websites. The flaw 
 
 ## Links
 
-- [OWASP](https://owasp.org/Top10/A03_2021-Injection)
+- [OWASP](https://owasp.org/Top10/A03_2021-Injection/)
 - [CWE](https://cwe.mitre.org/data/definitions/930.html)

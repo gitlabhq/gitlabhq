@@ -16,5 +16,5 @@ DNS rebinding allows a malicious host to spoof or redirect a request to an alter
 
 ## Links
 
-- [OWASP](https://owasp.org/Top10/A05_2021-Security_Misconfiguration)
+- [OWASP](https://owasp.org/Top10/A05_2021-Security_Misconfiguration/)
 - [CWE](https://cwe.mitre.org/data/definitions/350.html)
