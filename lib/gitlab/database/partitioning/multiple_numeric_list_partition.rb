@@ -6,22 +6,23 @@ module Gitlab
       class MultipleNumericListPartition
         include Comparable
 
-        def self.from_sql(table, partition_name, definition)
+        def self.from_sql(table, partition_name, definition, schema:)
           matches = definition.match(/\AFOR VALUES IN \((?<values>.*)\)\z/)
 
           raise ArgumentError, 'Unknown partition definition' unless matches
 
           values = matches[:values].scan(/\d+/).map { |value| Integer(value) }
 
-          new(table, values, partition_name: partition_name)
+          new(table, values, partition_name: partition_name, schema: schema)
         end
 
         attr_reader :table, :values
 
-        def initialize(table, values, partition_name: nil)
+        def initialize(table, values, partition_name: nil, schema: nil)
           @table = table
           @values = Array.wrap(values)
           @partition_name = partition_name
+          @schema = schema || Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA
         end
 
         def partition_name
@@ -69,7 +70,7 @@ module Gitlab
         delegate :execute, :quote, :quote_table_name, to: :conn, private: true
 
         def full_partition_name
-          format("%s.%s", Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA, partition_name)
+          format("%s.%s", @schema, partition_name)
         end
 
         def fully_qualified_partition

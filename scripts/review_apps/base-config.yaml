@@ -83,7 +83,7 @@ gitlab:
         memory: 800Mi
       limits:
         cpu: 900m
-        memory: 1200Mi
+        memory: 1500Mi
 
   sidekiq:
     resources:
@@ -94,7 +94,7 @@ gitlab:
         memory: 1500Mi
       limits:
         cpu: 700m
-        memory: 2800Mi
+        memory: 3200Mi
     hpa:
       cpu:
         targetAverageValue: 650m

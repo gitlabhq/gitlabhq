@@ -300,7 +300,6 @@ RSpec/BeforeAllRoleAssignment:
     - 'ee/spec/lib/gitlab/git_access_wiki_spec.rb'
     - 'ee/spec/lib/gitlab/llm/chain/agents/zero_shot/executor_spec.rb'
     - 'ee/spec/lib/gitlab/llm/chain/tools/gitlab_documentation/executor_spec.rb'
-    - 'ee/spec/lib/gitlab/llm/chain/tools/issue_identifier/executor_spec.rb'
     - 'ee/spec/lib/gitlab/llm/chain/tools/summarize_comments/executor_spec.rb'
     - 'ee/spec/lib/gitlab/quick_actions/users_extractor_spec.rb'
     - 'ee/spec/lib/gitlab/reference_extractor_spec.rb'

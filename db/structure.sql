@@ -6546,7 +6546,8 @@ ALTER SEQUENCE ci_namespace_monthly_usages_id_seq OWNED BY ci_namespace_monthly_
 CREATE TABLE ci_partitions (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL
+    updated_at timestamp with time zone NOT NULL,
+    status smallint DEFAULT 0 NOT NULL
 );
 
 CREATE TABLE ci_pending_builds (

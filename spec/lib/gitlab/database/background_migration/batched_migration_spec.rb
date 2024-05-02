@@ -818,6 +818,18 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
       end
     end
 
+    context 'when the migration is finalized' do
+      let(:migration) do
+        create(:batched_background_migration, :finalized, total_tuple_count: 1).tap do |record|
+          create(:batched_background_migration_job, :succeeded, batched_migration: record, batch_size: 1)
+        end
+      end
+
+      it 'returns 100' do
+        expect(subject).to be 100
+      end
+    end
+
     context 'when the status is finished' do
       let(:migration) do
         create(:batched_background_migration, :finished, total_tuple_count: 100).tap do |record|

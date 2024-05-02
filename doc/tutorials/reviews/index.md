@@ -54,6 +54,8 @@ To review a merge request:
 Merge requests have a secondary menu with four options. You'll use these areas of a
 merge request at different times during your review:
 
+![Screenshot of the top area of a merge request, with four main tabs](img/top_bar_v17_0.png)
+
 - **Overview**: The merge request's description, a report on its current mergeability,
   an **Activity** area with comments, and a sidebar with more information.
 - **Commits**: A list of commits in this merge request, newest commit first.
@@ -86,18 +88,22 @@ to a problem or a feature request in an issue.
 - **What's the goal?** Read the description to understand the author's intent.
 - **Is it a draft?** Drafts are often incomplete or theoretical solutions. A draft merge request might require
   a different level of scrutiny than fully-finished merge requests.
+- **How can you reproduce the problem?** If this merge request is a bugfix, does the
+  description explain how to reproduce the problem? Does it explain how to test the changes?
+  Does it include screenshots to guide you?
+
+Below the description, check the merge request widget to understand the
+current status of this work. This example shows a merge widget for a merge request
+that is missing approvals, is still in draft mode, and has unresolved discussion threads:
+
+![Merge widget that has multiple problems preventing merge](img/widget_v17_0.png)
+
 - **Does it cross-link to an issue?** Check the description and merge widget
   for links to other issues. Some merge requests are straightforward, but
   some require you to read the corresponding issue to understand how this merge request
   came to be. More complex merge requests should point back to issues with full information.
-- **How many comments does it have?** Do you see evidence of previous reviews in
-  the comments? A large number of comments might influence how deeply you want to
-  review this work.
 - **What's the pipeline status?** Is the pipeline green? Red pipelines point to problems.
   If you see incomplete or canceled pipelines, you can't assess the full mergeability of the work yet.
-- **How can you reproduce the problem?** If this merge request is a bugfix, does the
-  description explain how to reproduce the problem? Does it explain how to test the changes?
-  Does it include screenshots to guide you?
 
 ### Check related issues
 
@@ -120,6 +126,11 @@ more information, scan through the issue descriptions.
   - If the labels match areas of expertise you _don't_ have, you might need to
     reassign the merge request to a different reviewer.
   - Add any labels your workflow expects.
+
+  In this example, even if the exact labels are unfamiliar to you, you can determine this merge request is about a database bug:
+
+  ![Example of database-related labels in a merge request](img/labels_v17_0.png)
+
 - **Who are the reviewers?** Scan the names in the reviewer list. Do they match
   the type of work you'd expect, based on the description and (optionally) the labels?
   Consider both who is present, and who is absent. What do those names tell you
@@ -127,10 +138,19 @@ more information, scan through the issue descriptions.
 - **Have any reviewers already approved?** If you know those reviewers and their areas of expertise,
   you can gain some idea of what aspects of the proposed changes need your attention.
 
+  In this example, both Thomas and Nick are reviewers. Thomas has not yet reviewed
+  (**{dotted-circle}**) the merge request. Nick has reviewed and approved (**{check-circle}**):
+
+  ![f](img/reviewer_list_v17_0.png)
+
 ### Check the comments
 
 On the **Overview** page, read the comments left by the author and others.
 Keep those discussions in mind as you read the code changes.
+
+Do you see evidence of previous reviews in
+the comments? A large number of comments might influence how deeply you want to
+review this work.
 
 ## Read the code changes
 
@@ -150,6 +170,9 @@ When you first open the **Changes** page, focus on the broader details first:
 - **What files have changed?** Expand the file browser (**{file-tree}**) to see
   the list of changed files. Are you familiar with these files? What part of the
   codebase are these files in?
+
+  ![Example of a file tree showing two changed files](img/file_tree_v17_0.png)
+
 - **Does the file list match your expectations?** You've already read the description of
   the merge request. Are these the files you'd expect to see changed for this kind
   of work? Pay extra attention to changes to unexpected files, or if changes
@@ -227,6 +250,9 @@ haven't written any review comments yet, you're nearly ready.
 
 Go to the **Pipelines** tab of the merge request, and verify the pipeline status.
 Approve the merge request only if the pipeline has succeeded.
+In this example, multiple jobs have failed:
+
+![Widget showing a failed pipeline, with passing jobs in green and failed jobs in red](img/failed_pipeline_v17_0.png)
 
 - **Did all the expected tests run?** Make sure the pipeline isn't just green, but complete.
 - **Did any tests fail?** Expand **Failed jobs** to see which tests, if any, failed.
@@ -289,7 +315,10 @@ First, write your comments that should be attached to specific lines or files:
    the diff lines and displays a comment box.
 1. You can also
    [select multiple lines](../../user/project/merge_requests/reviews/suggestions.md#multi-line-suggestions),
-   or select an entire file to comment on.
+   or select an entire file to comment on:
+
+   ![Comment on a single line, or multiple lines](../../user/project/merge_requests/reviews/img/comment_on_any_diff_line_v16_6.png)
+
 1. In the text area, write your first comment. To keep your comments private until
    the end of your review, select **Start a review** below your comment.
 1. Provide suggestions, when the fixes are easy for you to draft, or if you want to

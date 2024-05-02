@@ -13,8 +13,8 @@ module Resolvers
       alias_method :snippet, :object
 
       argument :paths, [GraphQL::Types::String],
-               required: false,
-               description: 'Paths of the blobs.'
+        required: false,
+        description: 'Paths of the blobs.'
 
       def resolve(paths: [])
         return [snippet.blob] if snippet.empty_repo?

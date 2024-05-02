@@ -262,7 +262,7 @@ module Gitlab
         # estimated as `total_tuple_count` so the progress may not show 100%. For that reason when
         # we know migration completed successfully, we just return the 100 value
         def progress
-          return FINISHED_PROGRESS_VALUE if finished?
+          return FINISHED_PROGRESS_VALUE if finished? || finalized?
 
           return unless total_tuple_count.to_i > 0
 

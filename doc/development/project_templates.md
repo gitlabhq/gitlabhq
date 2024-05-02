@@ -70,6 +70,7 @@ To contribute a standard template:
    ```
 
 1. Add the details of the template in [`app/assets/javascripts/projects/default_project_templates.js`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/projects/default_project_templates.js).
+1. Add the template name to [`spec/support/helpers/project_template_test_helper.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/support/helpers/project_template_test_helper.rb).
 
 #### Enterprise template
 

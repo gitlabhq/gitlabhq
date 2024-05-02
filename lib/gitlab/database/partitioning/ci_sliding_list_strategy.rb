@@ -9,7 +9,8 @@ module Gitlab
 
         def current_partitions
           Gitlab::Database::PostgresPartition.for_parent_table(table_name).map do |partition|
-            MultipleNumericListPartition.from_sql(table_name, partition.name, partition.condition)
+            MultipleNumericListPartition.from_sql(table_name, partition.name, partition.condition,
+              schema: partition.schema)
           end.sort
         end
 
@@ -35,6 +36,12 @@ module Gitlab
 
         def active_partition
           super || initial_partition
+        end
+
+        def partition_for_id(partition_id)
+          current_partitions.find do |partition|
+            partition_id.in?(partition.values)
+          end
         end
 
         private

@@ -114,3 +114,11 @@ Security Findings detected in scan run on the default branch are saved as `Vulne
 `Vulnerability::Read` records are created via PostgreSQL database trigger upon the creation of a `Vulnerability::Finding` record and as such are part of our ingestion process, though they have no impact on it bar it's denormalization performance benefits on the report pages.
 
 This style of creation was intended to be fast and seamless, but has proven difficult to debug and maintain and may be [migrated to the application layer later](https://gitlab.com/gitlab-org/gitlab/-/issues/393912).
+
+## No longer detected
+
+The "No longer detected" badge on the vulnerability report is displayed if the `Vulnerability` record has `resolved_on_default_branch: true`.
+This is set by `Security::Ingestion::MarkAsResolvedService` when a pipeline runs on the default branch. Vulnerabilities which have
+`resolved_on_default_branch: false` and _are not_ present in the pipeline scan results are marked as resolved.
+[Secret Detection](../../user/application_security/secret_detection) and [manual](../../user/application_security/vulnerability_report#manually-add-a-vulnerability)
+vulnerabilities are excluded from this process.

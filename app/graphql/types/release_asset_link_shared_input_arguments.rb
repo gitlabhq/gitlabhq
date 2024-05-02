@@ -6,20 +6,20 @@ module Types
 
     included do
       argument :name, GraphQL::Types::String,
-             required: true,
-             description: 'Name of the asset link.'
+        required: true,
+        description: 'Name of the asset link.'
 
       argument :url, GraphQL::Types::String,
-             required: true,
-             description: 'URL of the asset link.'
+        required: true,
+        description: 'URL of the asset link.'
 
       argument :direct_asset_path, GraphQL::Types::String,
-             required: false, as: :filepath,
-             description: 'Relative path for a direct asset link.'
+        required: false, as: :filepath,
+        description: 'Relative path for a direct asset link.'
 
       argument :link_type, Types::ReleaseAssetLinkTypeEnum,
-             required: false, default_value: 'other',
-             description: 'Type of the asset link.'
+        required: false, default_value: 'other',
+        description: 'Type of the asset link.'
     end
   end
 end

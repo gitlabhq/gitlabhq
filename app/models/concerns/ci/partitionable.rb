@@ -37,6 +37,12 @@ module Ci
       end
     end
 
+    def self.registered_models
+      Gitlab::Database::Partitioning
+        .registered_models
+        .select { |model| model < Ci::ApplicationRecord && model < Ci::Partitionable }
+    end
+
     class_methods do
       def partitionable(scope:, through: nil, partitioned: false)
         handle_partitionable_through(through)

@@ -1188,32 +1188,6 @@ This breaking change could disrupt user workflows that depend on expanding a fil
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
-### Filepath field in Releases and Release Links APIs
-
-<div class="deprecation-notes">
-- Announced in GitLab <span class="milestone">15.9</span>
-- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/groups/gitlab-org/-/epics/9661).
-</div>
-
-Support for specifying a `filepath` for a direct asset link in the [Releases API](https://docs.gitlab.com/ee/api/releases)
-and [Release Links API](https://docs.gitlab.com/ee/api/releases/links.html) is deprecated in GitLab 15.9 and will be
-removed in GitLab 17.0. GitLab introduced a new field called `direct_asset_path` in GitLab 15.9 to replace `filepath`
-until it is finally removed.
-
-To avoid any disruptions, you should replace `filepath` with `direct_asset_path` in your calls to the following endpoints:
-
-- Releases API:
-  - [Create a release](https://docs.gitlab.com/ee/api/releases/#create-a-release)
-  - [Download a release asset](https://docs.gitlab.com/ee/api/releases/#download-a-release-asset)
-- Release Links API:
-  - [Create a release link](https://docs.gitlab.com/ee/api/releases/links.html#create-a-release-link)
-  - [Update a release link](https://docs.gitlab.com/ee/api/releases/links.html#update-a-release-link)
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="17.0">
-
 ### Geo: Legacy replication details routes for designs and projects deprecated
 
 <div class="deprecation-notes">

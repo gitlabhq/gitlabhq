@@ -12,21 +12,21 @@ module Resolvers
     alias_method :user, :object
 
     argument :author_id, ::Types::GlobalIDType[::User],
-              required: false,
-              description: 'ID of an author.'
+      required: false,
+      description: 'ID of an author.'
 
     argument :project_id, ::Types::GlobalIDType[::Project],
-              required: false,
-              description: 'ID of a project.'
+      required: false,
+      description: 'ID of a project.'
 
     argument :type, Types::Snippets::TypeEnum,
-              required: false,
-              description: 'Type of snippet.'
+      required: false,
+      description: 'Type of snippet.'
 
     argument :explore,
-              GraphQL::Types::Boolean,
-              required: false,
-              description: 'Explore personal snippets.'
+      GraphQL::Types::Boolean,
+      required: false,
+      description: 'Explore personal snippets.'
 
     def resolve(**args)
       if args[:author_id].present? && args[:project_id].present?
@@ -41,8 +41,8 @@ module Resolvers
     def snippet_finder_params(args)
       super
         .merge(author: resolve_ids(args[:author_id]),
-               project: resolve_ids(args[:project_id]),
-               explore: args[:explore])
+          project: resolve_ids(args[:project_id]),
+          explore: args[:explore])
     end
   end
 end

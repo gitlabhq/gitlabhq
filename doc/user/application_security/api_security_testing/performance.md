@@ -69,7 +69,7 @@ The following sections document various options for addressing performance issue
 
 ### Using a larger runner
 
-One of the easiest performance boosts can be achieved using a [larger runner](../../../ci/runners/hosted_runners/linux.md#machine-types-available-for-linux-x86-64) with API security testing. This table shows statistics collected during benchmarking of a Java Spring Boot REST API. In this benchmark, the target and API security testing share a single runner instance.
+One of the easiest performance boosts can be achieved using a [larger runner](../../../ci/runners/hosted_runners/linux.md#machine-types-available-for-linux---x86-64) with API security testing. This table shows statistics collected during benchmarking of a Java Spring Boot REST API. In this benchmark, the target and API security testing share a single runner instance.
 
 | Hosted runner on Linux tag           | Requests per Second |
 |------------------------------------|-----------|

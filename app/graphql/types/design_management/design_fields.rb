@@ -14,25 +14,25 @@ module Types
       field :full_path, GraphQL::Types::String, null: false, description: 'Full path to the design file.'
       field :image, GraphQL::Types::String, null: false, extras: [:parent], description: 'URL of the full-sized image.'
       field :image_v432x230,
-            GraphQL::Types::String,
-            null: true,
-            extras: [:parent],
-            description: 'The URL of the design resized to fit within the bounds of 432x230. ' \
-                         'This will be `null` if the image has not been generated'
+        GraphQL::Types::String,
+        null: true,
+        extras: [:parent],
+        description: 'The URL of the design resized to fit within the bounds of 432x230. ' \
+                     'This will be `null` if the image has not been generated'
       field :diff_refs, Types::DiffRefsType,
-            null: false,
-            calls_gitaly: true,
-            extras: [:parent],
-            description: 'Diff refs for this design.'
+        null: false,
+        calls_gitaly: true,
+        extras: [:parent],
+        description: 'Diff refs for this design.'
       field :event, Types::DesignManagement::DesignVersionEventEnum,
-            null: false,
-            extras: [:parent],
-            description: 'How this design was changed in the current version.'
+        null: false,
+        extras: [:parent],
+        description: 'How this design was changed in the current version.'
       field :notes_count,
-            GraphQL::Types::Int,
-            null: false,
-            method: :user_notes_count,
-            description: 'Total count of user-created notes for this design.'
+        GraphQL::Types::Int,
+        null: false,
+        method: :user_notes_count,
+        description: 'Total count of user-created notes for this design.'
 
       def diff_refs(parent:)
         version = cached_stateful_version(parent)

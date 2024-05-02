@@ -79,8 +79,6 @@ Style/RedundantReturn:
     - 'ee/app/workers/ee/repository_check/single_repository_worker.rb'
     - 'ee/lib/api/dependency_proxy/packages/maven.rb'
     - 'ee/lib/ee/api/entities/billable_member.rb'
-    - 'ee/lib/gitlab/llm/chain/tools/epic_identifier/executor.rb'
-    - 'ee/lib/gitlab/llm/chain/tools/issue_identifier/executor.rb'
     - 'lib/api/nuget_project_packages.rb'
     - 'lib/api/pagination_params.rb'
     - 'lib/feature/gitaly.rb'

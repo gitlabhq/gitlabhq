@@ -15,6 +15,6 @@
 = render "projects/settings/repository/protected_branches", protected_branch_entity: @project
 = render "shared/deploy_tokens/index", group_or_project: @project, description: deploy_token_description
 = render 'shared/deploy_keys/index'
-= render "projects/cleanup/show"
+= render "projects/maintenance/show"
 
 = render_if_exists 'shared/promotions/promote_repository_features'

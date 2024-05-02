@@ -1943,7 +1943,6 @@ Style/InlineDisableAnnotation:
     - 'ee/spec/lib/gitlab/geo/log_helpers_spec.rb'
     - 'ee/spec/lib/gitlab/import_export/group/relation_factory_spec.rb'
     - 'ee/spec/lib/gitlab/import_export/project/relation_factory_spec.rb'
-    - 'ee/spec/lib/gitlab/llm/chain/tools/epic_identifier/executor_spec.rb'
     - 'ee/spec/lib/gitlab/mirror_spec.rb'
     - 'ee/spec/lib/gitlab/patch/database_config_spec.rb'
     - 'ee/spec/lib/gitlab/sitemaps/sitemap_file_spec.rb'

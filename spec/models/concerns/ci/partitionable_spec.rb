@@ -186,4 +186,23 @@ RSpec.describe Ci::Partitionable, feature_category: :continuous_integration do
       end
     end
   end
+
+  describe '.registered_models' do
+    subject(:ci_partitioned_models) { described_class.registered_models }
+
+    it 'returns a list of CI models being partitioned' do
+      expected_list = %w[
+        Ci::BuildMetadata
+        Ci::BuildName
+        Ci::JobAnnotation
+        Ci::JobArtifact
+        Ci::PipelineVariable
+        Ci::RunnerManagerBuild
+        Ci::Stage
+        CommitStatus
+      ]
+
+      expect(ci_partitioned_models.map(&:name)).to eq(expected_list)
+    end
+  end
 end

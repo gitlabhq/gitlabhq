@@ -3,13 +3,13 @@
 module Resolvers
   class DeploymentsResolver < BaseResolver
     argument :statuses, [Types::DeploymentStatusEnum],
-             description: 'Statuses of the deployments.',
-             required: false,
-             as: :status
+      description: 'Statuses of the deployments.',
+      required: false,
+      as: :status
 
     argument :order_by, Types::DeploymentsOrderByInputType,
-             description: 'Order by a specified field.',
-             required: false
+      description: 'Order by a specified field.',
+      required: false
 
     type Types::DeploymentType, null: true
 

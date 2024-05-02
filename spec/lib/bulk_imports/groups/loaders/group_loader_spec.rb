@@ -6,12 +6,15 @@ RSpec.describe BulkImports::Groups::Loaders::GroupLoader, feature_category: :imp
   describe '#load' do
     let_it_be(:user) { create(:user) }
     let_it_be(:bulk_import) { create(:bulk_import, user: user) }
-    let_it_be(:entity) { create(:bulk_import_entity, bulk_import: bulk_import) }
+    let_it_be_with_reload(:entity) { create(:bulk_import_entity, bulk_import: bulk_import) }
     let_it_be(:tracker) { create(:bulk_import_tracker, entity: entity) }
     let_it_be(:context) { BulkImports::Pipeline::Context.new(tracker) }
+    let_it_be(:organization) { create(:organization, users: [user]) }
+    let_it_be(:destination_group) { create(:group, organization: organization, path: entity.destination_namespace) }
 
     let(:service_double) { instance_double(::Groups::CreateService) }
     let(:data) { { 'path' => 'test' } }
+    let(:create_group_params) { data.merge('organization_id' => organization.id) }
 
     subject { described_class.new }
 
@@ -25,7 +28,7 @@ RSpec.describe BulkImports::Groups::Loaders::GroupLoader, feature_category: :imp
       it 'raises an error' do
         entity.update!(destination_namespace: user.namespace.path)
 
-        expect { subject.load(context, data) }.to raise_error(described_class::GroupCreationError, 'Destination is not a group')
+        expect { subject.load(context, create_group_params) }.to raise_error(described_class::GroupCreationError, 'Destination is not a group')
       end
     end
 
@@ -57,7 +60,7 @@ RSpec.describe BulkImports::Groups::Loaders::GroupLoader, feature_category: :imp
 
           expect(::Groups::CreateService)
             .to receive(:new)
-            .with(context.current_user, data)
+            .with(context.current_user, create_group_params)
             .and_return(service_double)
 
           expect(service_double).to receive(:execute).and_return(service_response)
@@ -76,11 +79,21 @@ RSpec.describe BulkImports::Groups::Loaders::GroupLoader, feature_category: :imp
       end
 
       context 'when there is parent group' do
-        let(:parent) { create(:group) }
+        let(:parent) { create(:group, organization: organization) }
         let(:data) { { 'parent_id' => parent.id, 'path' => 'test' } }
 
         before do
           allow(Ability).to receive(:allowed?).with(user, :create_subgroup, parent).and_return(true)
+        end
+
+        include_examples 'calls Group Create Service to create a new group'
+      end
+
+      context 'when destination_namespace is not set' do
+        let(:create_group_params) { data.merge('organization_id' => user.namespace.organization_id) }
+
+        before do
+          entity.update!(destination_namespace: '')
         end
 
         include_examples 'calls Group Create Service to create a new group'

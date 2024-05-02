@@ -16,14 +16,14 @@ module Types
       implements ::Types::DesignManagement::DesignFields
 
       field :version,
-            Types::DesignManagement::VersionType,
-            null: false,
-            description: 'Version this design-at-versions is pinned to.'
+        Types::DesignManagement::VersionType,
+        null: false,
+        description: 'Version this design-at-versions is pinned to.'
 
       field :design,
-            Types::DesignManagement::DesignType,
-            null: false,
-            description: 'Underlying design.'
+        Types::DesignManagement::DesignType,
+        null: false,
+        description: 'Underlying design.'
 
       def cached_stateful_version(_parent)
         version

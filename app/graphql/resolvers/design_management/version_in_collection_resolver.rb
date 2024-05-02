@@ -16,12 +16,12 @@ module Resolvers
       VersionID = ::Types::GlobalIDType[::DesignManagement::Version]
 
       argument :id, VersionID,
-               as: :version_id,
-               required: false,
-               description: 'Global ID of the version.'
+        as: :version_id,
+        required: false,
+        description: 'Global ID of the version.'
       argument :sha, GraphQL::Types::String,
-               required: false,
-               description: "SHA256 of a specific version."
+        required: false,
+        description: "SHA256 of a specific version."
 
       def resolve(version_id: nil, sha: nil)
         check_args(version_id, sha)

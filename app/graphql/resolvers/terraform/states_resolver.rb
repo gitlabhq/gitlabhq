@@ -9,8 +9,8 @@ module Resolvers
 
       when_single do
         argument :name, GraphQL::Types::String,
-            required: true,
-            description: 'Name of the Terraform state.'
+          required: true,
+          description: 'Name of the Terraform state.'
       end
 
       def resolve(**args)

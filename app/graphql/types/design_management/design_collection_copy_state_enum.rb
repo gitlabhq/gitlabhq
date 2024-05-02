@@ -19,8 +19,8 @@ module Types
 
       ::DesignManagement::DesignCollection.state_machines[:copy_state].states.keys.each do |copy_state|
         value copy_state.upcase,
-              value: copy_state.to_s,
-              description: "The DesignCollection #{description_variant(copy_state)}"
+          value: copy_state.to_s,
+          description: "The DesignCollection #{description_variant(copy_state)}"
       end
     end
   end

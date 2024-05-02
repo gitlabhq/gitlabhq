@@ -291,6 +291,8 @@ GitLab-hosted runners have different cost factors, depending on the runner type 
 | Linux OS amd64               | `xlarge`               | 6           |
 | Linux OS amd64               | `2xlarge`              | 12          |
 | Linux OS amd64 + GPU-enabled | `medium`, GPU standard | 7           |
+| Linux arm64                  | `medium`               | 2           |
+| Linux arm64                  | `large`                | 3           |
 | macOS M1                     | `medium`               | 6 (**Status:** Beta) |
 | Windows Server               | -                      | 1 (**Status:** Beta) |
 

@@ -7,8 +7,8 @@ module Types
 
     ::Deployment.statuses.each_key do |status|
       value status.upcase,
-            description: "A deployment that is #{status.tr('_', ' ')}.",
-            value: status
+        description: "A deployment that is #{status.tr('_', ' ')}.",
+        value: status
     end
   end
 end

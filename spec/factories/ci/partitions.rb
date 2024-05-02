@@ -3,5 +3,14 @@
 FactoryBot.define do
   factory :ci_partition, class: 'Ci::Partition' do
     sequence(:id, 100)
+    status { 0 }
+
+    trait :ready do
+      status { 1 }
+    end
+
+    trait :current do
+      status { 2 }
+    end
   end
 end

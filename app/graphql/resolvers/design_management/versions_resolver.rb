@@ -10,14 +10,14 @@ module Resolvers
       VersionID = ::Types::GlobalIDType[::DesignManagement::Version]
 
       argument :earlier_or_equal_to_sha, GraphQL::Types::String,
-               as: :sha,
-               required: false,
-               description: 'SHA256 of the most recent acceptable version.'
+        as: :sha,
+        required: false,
+        description: 'SHA256 of the most recent acceptable version.'
 
       argument :earlier_or_equal_to_id, VersionID,
-               as: :id,
-               required: false,
-               description: 'Global ID of the most recent acceptable version.'
+        as: :id,
+        required: false,
+        description: 'Global ID of the most recent acceptable version.'
 
       # This resolver has a custom singular resolver
       def self.single

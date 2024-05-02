@@ -85,6 +85,11 @@ module Types
           description: 'Find a work item by IID directly associated with the namespace(project or group).  Returns ' \
                        '`null` for group level work items if the `namespace_level_work_items` feature flag is disabled.'
 
+    field :pages_deployments, Types::PagesDeploymentType.connection_type, null: true,
+          resolver: Resolvers::PagesDeploymentsResolver,
+          connection: true,
+          description: "List of the namespaces's Pages Deployments."
+
     markdown_field :description_html, null: true
 
     def achievements_path

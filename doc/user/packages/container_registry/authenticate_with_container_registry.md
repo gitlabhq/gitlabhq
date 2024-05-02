@@ -26,7 +26,7 @@ To authenticate, run the `docker login` command. For example:
 
 ```shell
 TOKEN=<token>
-docker login registry.example.com -u <username> --password-stdin <<<$TOKEN
+echo "$TOKEN" | docker login registry.example.com -u <username> --password-stdin
 ```
 
 ## Use GitLab CI/CD to authenticate
@@ -39,13 +39,13 @@ To use CI/CD to authenticate with the container registry, you can use:
   Its password is also automatically created and available in `CI_REGISTRY_PASSWORD`.
 
   ```shell
-  docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin <<<$CI_REGISTRY_PASSWORD
+  echo "$CI_REGISTRY_PASSWORD" | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin
   ```
 
 - A [CI job token](../../../ci/jobs/ci_job_token.md).
 
   ```shell
-  docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin <<<$CI_JOB_TOKEN
+  echo "$CI_JOB_TOKEN" | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin
   ```
 
 - A [deploy token](../../project/deploy_tokens/index.md#gitlab-deploy-token) with the minimum scope of:
@@ -53,7 +53,7 @@ To use CI/CD to authenticate with the container registry, you can use:
   - For write (push) access, `read_registry` and `write_registry`.
 
   ```shell
-  docker login $CI_REGISTRY -u $CI_DEPLOY_USER --password-stdin <<<$CI_DEPLOY_PASSWORD
+  echo "$CI_DEPLOY_PASSWORD" | docker login $CI_REGISTRY -u $CI_DEPLOY_USER --password-stdin
   ```
 
 - A [personal access token](../../profile/personal_access_tokens.md) with the minimum scope of:
@@ -61,5 +61,5 @@ To use CI/CD to authenticate with the container registry, you can use:
   - For write (push) access, `read_registry` and `write_registry`.
 
   ```shell
-  docker login $CI_REGISTRY -u <username> -p <access_token>
+  echo "<access_token>" | docker login $CI_REGISTRY -u <username> --password-stdin
   ```

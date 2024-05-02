@@ -10,8 +10,8 @@ module Resolvers
       authorize :read_design
 
       argument :id, ::Types::GlobalIDType[::DesignManagement::Version],
-               required: true,
-               description: 'Global ID of the version.'
+        required: true,
+        description: 'Global ID of the version.'
 
       def resolve(id:)
         authorized_find!(id: id)

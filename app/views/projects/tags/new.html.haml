@@ -1,5 +1,5 @@
 - add_to_breadcrumbs s_('TagsPage|Tags'), project_tags_path(@project)
-- page_title s_('TagsPage|New')
+- page_title s_('TagsPage|New tag')
 - default_ref = params[:ref] || @project.default_branch
 
 - if @error
@@ -8,7 +8,7 @@
       = @error
 
 %h1.page-title.gl-font-size-h-display
-  = s_('TagsPage|New Tag')
+  = s_('TagsPage|New tag')
 
 %p.gl-text-secondary
   - link = link_to('', new_namespace_project_release_path)

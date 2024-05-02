@@ -2,7 +2,9 @@
 
 # PagesDeployment stores a zip archive containing GitLab Pages web-site
 class PagesDeployment < ApplicationRecord
+  include GlobalID::Identification
   include EachBatch
+  include Sortable
   include FileStoreMounter
   include Gitlab::Utils::StrongMemoize
 
@@ -24,9 +26,10 @@ class PagesDeployment < ApplicationRecord
   # serve PagesDeployment which files are already uploaded.
   scope :upload_ready, -> { where(upload_ready: true) }
 
-  scope :active, -> { upload_ready.where(deleted_at: nil).order(created_at: :desc) }
+  scope :active, -> { upload_ready.where(deleted_at: nil) }
   scope :deactivated, -> { where('deleted_at < ?', Time.now.utc) }
   scope :versioned, -> { where.not(path_prefix: [nil, '']) }
+  scope :unversioned, -> { where(path_prefix: [nil, '']) }
 
   validates :file, presence: true
   validates :file_store, presence: true, inclusion: { in: ObjectStorage::SUPPORTED_STORES }
@@ -40,6 +43,10 @@ class PagesDeployment < ApplicationRecord
 
   skip_callback :save, :after, :store_file!
   after_commit :store_file_after_commit!, on: [:create, :update]
+
+  def self.declarative_policy_class
+    'Pages::DeploymentPolicy'
+  end
 
   def self.latest_pipeline_id
     Ci::Build.id_in(pluck(:ci_build_id)).maximum(:commit_id)
@@ -71,6 +78,10 @@ class PagesDeployment < ApplicationRecord
       .versioned
       .limit(limit)
       .count
+  end
+
+  def active?
+    deleted_at.nil?
   end
 
   def url

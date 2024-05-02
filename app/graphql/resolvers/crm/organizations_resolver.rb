@@ -11,21 +11,21 @@ module Resolvers
       type Types::CustomerRelations::OrganizationType, null: true
 
       argument :sort, Types::CustomerRelations::OrganizationSortEnum,
-               description: 'Criteria to sort organizations by.',
-               required: false,
-               default_value: { field: 'name', direction: :asc }
+        description: 'Criteria to sort organizations by.',
+        required: false,
+        default_value: { field: 'name', direction: :asc }
 
       argument :search, GraphQL::Types::String,
-               required: false,
-               description: 'Search term used to find organizations with.'
+        required: false,
+        description: 'Search term used to find organizations with.'
 
       argument :state, Types::CustomerRelations::OrganizationStateEnum,
-               required: false,
-               description: 'State of the organization to search for.'
+        required: false,
+        description: 'State of the organization to search for.'
 
       argument :ids, [Types::GlobalIDType[CustomerRelations::Organization]],
-               required: false,
-               description: 'Filter organizations by IDs.'
+        required: false,
+        description: 'Filter organizations by IDs.'
 
       def resolve(**args)
         args[:ids] = resolve_ids(args.delete(:ids))

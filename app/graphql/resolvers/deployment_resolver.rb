@@ -3,9 +3,9 @@
 module Resolvers
   class DeploymentResolver < BaseResolver
     argument :iid,
-             GraphQL::Types::ID,
-             required: true,
-             description: 'Project-level internal ID of the Deployment.'
+      GraphQL::Types::ID,
+      required: true,
+      description: 'Project-level internal ID of the Deployment.'
 
     type Types::DeploymentType, null: true
 

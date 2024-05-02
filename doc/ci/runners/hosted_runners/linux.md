@@ -16,17 +16,17 @@ The default region for the VMs is `us-east1`.
 Each VM uses the Google Container-Optimized OS (COS) and the latest version of Docker Engine running the `docker+machine`
 [executor](https://docs.gitlab.com/runner/executors/#docker-machine-executor).
 
-## Machine types available for Linux (x86-64)
+## Machine types available for Linux - x86-64
 
 GitLab offers a range of machine types for hosted runners on Linux.
 For Free, Premium, and Ultimate plan customers, jobs on these instances consume the compute quota allocated to your namespace.
 
-| Runner Tag                                    | vCPUs | Memory | Storage |
-|-----------------------------------------------|-------|--------|---------|
-| `saas-linux-small-amd64`                      | 2     | 8 GB   | 25 GB   |
-| `saas-linux-medium-amd64`                     | 4     | 16 GB  | 50 GB   |
-| `saas-linux-large-amd64` (Premium and Ultimate only)  | 8     | 32 GB  | 100 GB  |
-| `saas-linux-xlarge-amd64` (Premium and Ultimate only) | 16    | 64 GB  | 200 GB  |
+| Runner Tag                                             | vCPUs | Memory | Storage |
+|--------------------------------------------------------|-------|--------|---------|
+| `saas-linux-small-amd64`                               | 2     | 8 GB   | 25 GB   |
+| `saas-linux-medium-amd64`                              | 4     | 16 GB  | 50 GB   |
+| `saas-linux-large-amd64` (Premium and Ultimate only)   | 8     | 32 GB  | 100 GB  |
+| `saas-linux-xlarge-amd64` (Premium and Ultimate only)  | 16    | 64 GB  | 200 GB  |
 | `saas-linux-2xlarge-amd64` (Premium and Ultimate only) | 32    | 128 GB | 200 GB  |
 
 The `small` machine type is set as default. If no [tag](../../yaml/index.md#tags) keyword in your `.gitlab-ci.yml` file is specified,
@@ -34,14 +34,27 @@ the jobs will run on this default runner.
 
 There are [different rates of compute minutes consumption](../../pipelines/cicd_minutes.md#gitlab-hosted-runner-costs), based on the type of machine that is used.
 
-All hosted runners on Linux currently run on
-[`n2d-standard`](https://cloud.google.com/compute/docs/general-purpose-machines#n2d_machines) general-purpose compute from GCP.
+Hosted runners on Linux x86-64 currently run on the
+[`n2d-standard`](https://cloud.google.com/compute/docs/general-purpose-machines#n2d_machines) general-purpose compute from Google Cloud.
+The machine type and underlying processor type might change. Jobs optimized for a specific processor design might behave inconsistently.
+
+## Machine types available for Linux - Arm64
+
+GitLab offers the following machine type for hosted runners on Linux Arm.
+
+| Runner Tag                                            | vCPUs | Memory | Storage |
+|-------------------------------------------------------|-------|--------|---------|
+| `saas-linux-medium-arm64` (Premium and Ultimate only) | 4     | 16 GB  | 50 GB   |
+| `saas-linux-large-arm64` (Premium and Ultimate only)  | 8     | 32 GB  | 100 GB  |
+
+Hosted runners on Linux Arm run onthe [`t2a-standard`](https://cloud.google.com/compute/docs/general-purpose-machines#t2a_machine_types) general-purpose compute from Google Cloud.
 The machine type and underlying processor type can change. Jobs optimized for a specific processor design could behave inconsistently.
 
 ## Container images
 
 As runners on Linux are using the `docker+machine` [executor](https://docs.gitlab.com/runner/executors/#docker-machine-executor),
 you can choose any container image by defining the [`image`](../../../ci/yaml/index.md#image) in your `.gitlab-ci.yml` file.
+Please be mindful that the selected Docker image is compatible with the underlying processor architecture.
 
 If no image is set, the default is `ruby:3.1`.
 

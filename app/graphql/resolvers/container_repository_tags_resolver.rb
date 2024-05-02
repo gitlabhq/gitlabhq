@@ -5,24 +5,24 @@ module Resolvers
     type Types::ContainerRepositoryTagType.connection_type, null: true
 
     argument :sort, Types::ContainerRepositoryTagsSortEnum,
-        description: 'Sort tags by these criteria.',
-        required: false,
-        default_value: nil
+      description: 'Sort tags by these criteria.',
+      required: false,
+      default_value: nil
 
     argument :name, GraphQL::Types::String,
-        description: 'Search by tag name.',
-        required: false,
-        default_value: nil
+      description: 'Search by tag name.',
+      required: false,
+      default_value: nil
 
     argument :referrers, GraphQL::Types::Boolean,
-        description: 'Include tag referrers.',
-        required: false,
-        default_value: nil
+      description: 'Include tag referrers.',
+      required: false,
+      default_value: nil
 
     argument :referrer_type, GraphQL::Types::String,
-        description: 'Comma-separated list of artifact types used to filter referrers. Applies only when `referrers` is set to `true`.',
-        required: false,
-        default_value: nil
+      description: 'Comma-separated list of artifact types used to filter referrers. Applies only when `referrers` is set to `true`.',
+      required: false,
+      default_value: nil
 
     alias_method :container_repository, :object
 

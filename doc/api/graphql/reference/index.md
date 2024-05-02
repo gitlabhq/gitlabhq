@@ -13524,6 +13524,30 @@ The edge type for [`PackagesProtectionRule`](#packagesprotectionrule).
 | <a id="packagesprotectionruleedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="packagesprotectionruleedgenode"></a>`node` | [`PackagesProtectionRule`](#packagesprotectionrule) | The item at the end of the edge. |
 
+#### `PagesDeploymentConnection`
+
+The connection type for [`PagesDeployment`](#pagesdeployment).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="pagesdeploymentconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
+| <a id="pagesdeploymentconnectionedges"></a>`edges` | [`[PagesDeploymentEdge]`](#pagesdeploymentedge) | A list of edges. |
+| <a id="pagesdeploymentconnectionnodes"></a>`nodes` | [`[PagesDeployment]`](#pagesdeployment) | A list of nodes. |
+| <a id="pagesdeploymentconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `PagesDeploymentEdge`
+
+The edge type for [`PagesDeployment`](#pagesdeployment).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="pagesdeploymentedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="pagesdeploymentedgenode"></a>`node` | [`PagesDeployment`](#pagesdeployment) | The item at the end of the edge. |
+
 #### `PagesDeploymentRegistryConnection`
 
 The connection type for [`PagesDeploymentRegistry`](#pagesdeploymentregistry).
@@ -21322,10 +21346,6 @@ four standard [pagination arguments](#pagination-arguments):
 
 Visualizations of the group or associated configuration project.
 
-DETAILS:
-**Introduced** in GitLab 16.4.
-**Status**: Experiment.
-
 Returns [`CustomizableDashboardVisualizationConnection`](#customizabledashboardvisualizationconnection).
 
 This field returns a [connection](#connections). It accepts the
@@ -21341,10 +21361,6 @@ four standard [pagination arguments](#pagination-arguments):
 ##### `Group.customizableDashboards`
 
 Customizable dashboards for the group.
-
-DETAILS:
-**Introduced** in GitLab 16.4.
-**Status**: Experiment.
 
 Returns [`CustomizableDashboardConnection`](#customizabledashboardconnection).
 
@@ -21826,6 +21842,24 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="grouppackagespackageversion"></a>`packageVersion` | [`String`](#string) | Filter a package by version. If used in combination with `include_versionless`, then no versionless packages are returned. |
 | <a id="grouppackagessort"></a>`sort` | [`PackageGroupSort`](#packagegroupsort) | Sort packages by this criteria. |
 | <a id="grouppackagesstatus"></a>`status` | [`PackageStatus`](#packagestatus) | Filter a package by status. |
+
+##### `Group.pagesDeployments`
+
+List of the namespaces's Pages Deployments.
+
+Returns [`PagesDeploymentConnection`](#pagesdeploymentconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="grouppagesdeploymentsactive"></a>`active` | [`Boolean`](#boolean) | Filter by active or inactive state. |
+| <a id="grouppagesdeploymentssort"></a>`sort` | [`Sort`](#sort) | Sort results. |
+| <a id="grouppagesdeploymentsversioned"></a>`versioned` | [`Boolean`](#boolean) | Filter deployments that are versioned or unversioned. |
 
 ##### `Group.pipelineExecutionPolicies`
 
@@ -25253,6 +25287,24 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="namespacecomplianceframeworksids"></a>`ids` | [`[ComplianceManagementFrameworkID!]`](#compliancemanagementframeworkid) | List of Global IDs of compliance frameworks to return. |
 | <a id="namespacecomplianceframeworkssearch"></a>`search` | [`String`](#string) | Search framework with most similar names. |
 
+##### `Namespace.pagesDeployments`
+
+List of the namespaces's Pages Deployments.
+
+Returns [`PagesDeploymentConnection`](#pagesdeploymentconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="namespacepagesdeploymentsactive"></a>`active` | [`Boolean`](#boolean) | Filter by active or inactive state. |
+| <a id="namespacepagesdeploymentssort"></a>`sort` | [`Sort`](#sort) | Sort results. |
+| <a id="namespacepagesdeploymentsversioned"></a>`versioned` | [`Boolean`](#boolean) | Filter deployments that are versioned or unversioned. |
+
 ##### `Namespace.pipelineExecutionPolicies`
 
 Pipeline Execution Policies of the namespace.
@@ -25942,6 +25994,27 @@ Information about pagination in a connection.
 | <a id="pageinfohasnextpage"></a>`hasNextPage` | [`Boolean!`](#boolean) | When paginating forwards, are there more items?. |
 | <a id="pageinfohaspreviouspage"></a>`hasPreviousPage` | [`Boolean!`](#boolean) | When paginating backwards, are there more items?. |
 | <a id="pageinfostartcursor"></a>`startCursor` | [`String`](#string) | When paginating backwards, the cursor to continue. |
+
+### `PagesDeployment`
+
+Represents a pages deployment.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="pagesdeploymentactive"></a>`active` | [`Boolean!`](#boolean) | Whether the deployment is currently active. |
+| <a id="pagesdeploymentcibuildid"></a>`ciBuildId` | [`ID`](#id) | ID of the CI build that created the deployment. |
+| <a id="pagesdeploymentcreatedat"></a>`createdAt` | [`ISO8601DateTime!`](#iso8601datetime) | Time the deployment was created. |
+| <a id="pagesdeploymentdeletedat"></a>`deletedAt` | [`ISO8601DateTime`](#iso8601datetime) | Time the deployment was deleted. |
+| <a id="pagesdeploymentfilecount"></a>`fileCount` | [`Int`](#int) | Number of files that were published with the deployment. |
+| <a id="pagesdeploymentid"></a>`id` | [`ID!`](#id) | ID of the Pages Deployment. |
+| <a id="pagesdeploymentpathprefix"></a>`pathPrefix` | [`String`](#string) | URL path Prefix that points to the deployment. |
+| <a id="pagesdeploymentproject"></a>`project` | [`Project!`](#project) | Project the deployment belongs to. |
+| <a id="pagesdeploymentrootdirectory"></a>`rootDirectory` | [`String`](#string) | Path within the build assets that functions as the root directory for Pages sites. |
+| <a id="pagesdeploymentsize"></a>`size` | [`Int`](#int) | Size of the storage used. |
+| <a id="pagesdeploymentupdatedat"></a>`updatedAt` | [`ISO8601DateTime!`](#iso8601datetime) | Time the deployment was last updated. |
+| <a id="pagesdeploymenturl"></a>`url` | [`String!`](#string) | Publicly accessible URL of the deployment. |
 
 ### `PagesDeploymentRegistry`
 
@@ -35389,6 +35462,10 @@ Represents a unique identifier that is Base64 obfuscated. It is often used to re
 ### `ISO8601Date`
 
 An ISO 8601-encoded date.
+
+### `ISO8601DateTime`
+
+An ISO 8601-encoded datetime.
 
 ### `IncidentManagementEscalationPolicyID`
 

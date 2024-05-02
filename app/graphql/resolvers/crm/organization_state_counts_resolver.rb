@@ -11,12 +11,12 @@ module Resolvers
       type Types::CustomerRelations::OrganizationStateCountsType, null: true
 
       argument :search, GraphQL::Types::String,
-               required: false,
-               description: 'Search term to find organizations with.'
+        required: false,
+        description: 'Search term to find organizations with.'
 
       argument :state, Types::CustomerRelations::OrganizationStateEnum,
-               required: false,
-               description: 'State of the organizations to search for.'
+        required: false,
+        description: 'State of the organizations to search for.'
 
       def resolve(**args)
         ::Crm::OrganizationsFinder.counts_by_state(context[:current_user], args.merge({ group: object }))
