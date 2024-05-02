@@ -90,7 +90,6 @@ class Label < ApplicationRecord
           column_expression: order_expression,
           order_expression: order_expression.desc,
           order_direction: :desc,
-          distinct: false,
           add_to_projections: true
         ),
         Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(

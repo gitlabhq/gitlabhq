@@ -15,7 +15,7 @@ module Types
       field :id, ::Types::GlobalIDType[::Packages::Package], null: false, description: 'ID of the package.'
 
       field :_links, Types::Packages::PackageLinksType, null: false, method: :itself,
-                                                        description: 'Map of links to perform actions on the package.'
+        description: 'Map of links to perform actions on the package.'
       field :can_destroy, GraphQL::Types::Boolean,
         null: false,
         deprecated: {

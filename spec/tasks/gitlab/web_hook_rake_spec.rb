@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'gitlab:web_hook namespace rake tasks', :silence_stdout do
+RSpec.describe 'gitlab:web_hook namespace rake tasks', :silence_stdout, feature_category: :webhooks do
   let!(:group) { create(:group) }
   let!(:project1) { create(:project, namespace: group) }
   let!(:project2) { create(:project, namespace: group) }

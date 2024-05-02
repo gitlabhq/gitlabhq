@@ -421,8 +421,7 @@ class Issue < ApplicationRecord
       attribute_name: 'relative_position',
       column_expression: arel_table[:relative_position],
       order_expression: Issue.arel_table[:relative_position].asc.nulls_last,
-      nullable: :nulls_last,
-      distinct: false
+      nullable: :nulls_last
     )
   end
 

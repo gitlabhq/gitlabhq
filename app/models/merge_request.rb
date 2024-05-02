@@ -407,7 +407,6 @@ class MergeRequest < ApplicationRecord
           reversed_order_expression: column_expression_with_direction.reverse.nulls_first,
           order_direction: direction,
           nullable: :nulls_last,
-          distinct: false,
           add_to_projections: true
         ),
         Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(

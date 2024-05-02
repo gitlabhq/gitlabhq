@@ -514,3 +514,9 @@ Audit event types belong to the following product categories.
 | [`secure_ci_job_token_inbound_enabled`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115350) | Event triggered when CI_JOB_TOKEN permissions enabled for inbound| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.0](https://gitlab.com/gitlab-org/gitlab/-/issues/338255) | Project |
 | [`secure_ci_job_token_project_added`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115350) | Event triggered when project added to inbound CI_JOB_TOKEN scope| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.0](https://gitlab.com/gitlab-org/gitlab/-/issues/338255) | Project |
 | [`secure_ci_job_token_project_removed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115350) | Event triggered when project removed from inbound CI_JOB_TOKEN scope| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.0](https://gitlab.com/gitlab-org/gitlab/-/issues/338255) | Project |
+
+### Webhooks
+
+| Name | Description | Saved to database | Streamed | Introduced in | Scope |
+|:------------|:------------|:------------------|:---------|:--------------|:--------------|
+| [`webhook_destroyed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102342) | Event triggered when a webhook is destroyed.| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [17.0](https://gitlab.com/gitlab-org/gitlab/-/issues/458817) | Project, Group, Instance |

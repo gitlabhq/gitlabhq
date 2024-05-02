@@ -1,6 +1,6 @@
 ---
 key_path: redis_hll_counters.runner.g_runner_fleet_read_jobs_statistics_weekly
-description: Count of unique users (weekly) who read runner job statistics
+description: Count of unique users (weekly) who read runner job statistics. Originally wrong time_frame (28d). Fixed in 17.0
 product_section: ops
 product_stage: verify
 product_group: runner
@@ -8,7 +8,7 @@ value_type: number
 status: active
 milestone: "15.9"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/109113
-time_frame: 28d
+time_frame: 7d
 data_source: redis_hll
 data_category: optional
 instrumentation_class: RedisHLLMetric

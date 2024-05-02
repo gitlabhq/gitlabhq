@@ -20,14 +20,12 @@ module Achievements
         Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
           attribute_name: 'priority',
           order_expression: ::Achievements::UserAchievement.arel_table[:priority].asc,
-          nullable: :nulls_last,
-          distinct: false
+          nullable: :nulls_last
         ),
         Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
           attribute_name: 'id',
           order_expression: ::Achievements::UserAchievement.arel_table[:id].asc,
-          nullable: :not_nullable,
-          distinct: true
+          nullable: :not_nullable
         )
       ])
       reorder(keyset_order)

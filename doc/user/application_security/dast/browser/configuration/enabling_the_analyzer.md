@@ -42,7 +42,7 @@ To create the CI/CD job:
 
 1. Define the URL to be scanned by DAST by using one of these methods:
 
-    - Set the `DAST_WEBSITE` [CI/CD variable](../../../../../ci/yaml/index.md#variables).
+    - Set the `DAST_TARGET_URL` [CI/CD variable](../../../../../ci/yaml/index.md#variables).
       If set, this value takes precedence.
 
     - Adding the URL in an `environment_url.txt` file at your project's root is great for testing in
@@ -68,6 +68,6 @@ include:
 
 dast:
   variables:
-    DAST_WEBSITE: "https://example.com"
+    DAST_TARGET_URL: "https://example.com"
     DAST_BROWSER_SCAN: "true"
 ```

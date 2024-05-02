@@ -4607,6 +4607,36 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile 
     end
   end
 
+  describe 'PUT /user/avatar' do
+    let(:path) { "/user/avatar" }
+
+    it "returns 200 OK on success" do
+      workhorse_form_with_file(
+        api(path, user),
+        method: :put,
+        file_key: :avatar,
+        params: { avatar: fixture_file_upload('spec/fixtures/banana_sample.gif', 'image/gif') }
+      )
+
+      user.reload
+      expect(user.avatar).to be_present
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['avatar_url']).to include(user.avatar_path)
+    end
+
+    it "returns 400 when avatar file size over 200 KiB" do
+      workhorse_form_with_file(
+        api(path, user),
+        method: :put,
+        file_key: :avatar,
+        params: { avatar: fixture_file_upload('spec/fixtures/big-image.png', 'image/png') }
+      )
+
+      expect(response).to have_gitlab_http_status(:bad_request)
+      expect(json_response['message']).to include("Avatar is too big (should be at most 200 KiB)")
+    end
+  end
+
   describe 'POST /users/:user_id/personal_access_tokens' do
     let(:name) { 'new pat' }
     let(:expires_at) { 3.days.from_now.to_date.to_s }

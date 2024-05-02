@@ -99,13 +99,11 @@ class CustomerRelations::Contact < ApplicationRecord
       [
         Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
           attribute_name: 'last_name',
-          order_expression: arel_table[:last_name].asc,
-          distinct: false
+          order_expression: arel_table[:last_name].asc
         ),
         Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
           attribute_name: 'first_name',
-          order_expression: arel_table[:first_name].asc,
-          distinct: false
+          order_expression: arel_table[:first_name].asc
         ),
         Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
           attribute_name: 'id',

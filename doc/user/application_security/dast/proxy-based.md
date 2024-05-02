@@ -12,7 +12,9 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 WARNING:
-This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/430966) in GitLab 16.9 and will be removed in 17.0. Use [browser-based DAST](browser_based.md) instead. This change is a breaking change.
+The DAST proxy-based analyzer was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/430966) in GitLab 16.9 and
+is replaced by DAST version 5 in GitLab 17.0. This change is a breaking change. For instructions on how to migrate
+to DAST version 5, see the [migration guide](proxy_based_to_browser_based_migration_guide.md).
 
 The DAST proxy-based analyzer can be added to your [GitLab CI/CD](../../../ci/index.md) pipeline.
 This helps you discover vulnerabilities in web applications that do not use JavaScript heavily. For applications that do,

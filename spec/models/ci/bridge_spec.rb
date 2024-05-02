@@ -759,25 +759,9 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
       expect(bridge.variables.to_hash)
         .to eq(bridge.scoped_variables.concat(bridge.pipeline.persisted_variables).to_hash)
     end
-
-    context 'when bridge is for a trigger request' do
-      let(:trigger) { create(:ci_trigger, project: project) }
-      let(:trigger_request) { create(:ci_trigger_request, pipeline: pipeline, trigger: trigger) }
-
-      let(:predefined_trigger_variables) do
-        [{ key: 'CI_PIPELINE_TRIGGERED', value: 'true', public: true, masked: false },
-        { key: 'CI_TRIGGER_SHORT_TOKEN', value: trigger.short_token, public: true, masked: false }]
-      end
-
-      before do
-        bridge.trigger_request = trigger_request
-      end
-
-      it 'includes the trigger variables' do
-        expect(bridge.variables).to include(*predefined_trigger_variables)
-      end
-    end
   end
+
+  it_behaves_like 'a triggerable processable', :ci_bridge
 
   describe '#pipeline_variables' do
     it 'returns the pipeline variables' do

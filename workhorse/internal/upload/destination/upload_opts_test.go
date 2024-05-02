@@ -119,7 +119,7 @@ func TestGetOpts(t *testing.T) {
 			if test.customPutHeaders {
 				require.Equal(t, opts.PutHeaders, apiResponse.RemoteObject.PutHeaders)
 			} else {
-				require.Equal(t, opts.PutHeaders, map[string]string{"Content-Type": "application/octet-stream"})
+				require.Equal(t, map[string]string{"Content-Type": "application/octet-stream"}, opts.PutHeaders)
 			}
 
 			if test.multipart == nil {

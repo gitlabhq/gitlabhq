@@ -875,22 +875,19 @@ class User < MainClusterwide::ApplicationRecord
           Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
             attribute_name: 'users_match_priority',
             order_expression: sanitized_order_sql.asc,
-            add_to_projections: true,
-            distinct: false
+            add_to_projections: true
           ),
           Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
             attribute_name: 'users_name',
             order_expression: arel_table[:name].asc,
             add_to_projections: true,
-            nullable: :not_nullable,
-            distinct: false
+            nullable: :not_nullable
           ),
           Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
             attribute_name: 'users_id',
             order_expression: arel_table[:id].asc,
             add_to_projections: true,
-            nullable: :not_nullable,
-            distinct: true
+            nullable: :not_nullable
           )
         ])
       scope.reorder(order)

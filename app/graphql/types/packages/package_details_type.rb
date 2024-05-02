@@ -11,7 +11,7 @@ module Types
       authorize :read_package
 
       field :versions, ::Types::Packages::PackageBaseType.connection_type, null: true,
-                                                                           description: 'Other versions of the package.'
+        description: 'Other versions of the package.'
 
       field :package_files, Types::Packages::PackageFileType.connection_type, null: true, method: :installable_package_files, description: 'Package files.'
 

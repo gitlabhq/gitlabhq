@@ -133,6 +133,8 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     let(:job) { build }
   end
 
+  it_behaves_like 'a triggerable processable', :ci_build
+
   describe '.ref_protected' do
     subject { described_class.ref_protected }
 
@@ -3015,22 +3017,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
         it { is_expected.not_to include(protected_variable) }
       end
-    end
-
-    context 'when build is for triggers' do
-      let(:trigger) { create(:ci_trigger, project: project) }
-      let(:trigger_request) { create(:ci_trigger_request, pipeline: pipeline, trigger: trigger) }
-
-      let(:predefined_trigger_variables) do
-        [{ key: 'CI_PIPELINE_TRIGGERED', value: 'true', public: true, masked: false },
-        { key: 'CI_TRIGGER_SHORT_TOKEN', value: trigger.short_token, public: true, masked: false }]
-      end
-
-      before do
-        build.trigger_request = trigger_request
-      end
-
-      it { is_expected.to include(*predefined_trigger_variables) }
     end
 
     context 'when pipeline has a variable' do

@@ -16,14 +16,6 @@ RSpec.describe EnvironmentSerializer, feature_category: :continuous_delivery do
 
   it_behaves_like 'avoid N+1 on environments serialization'
 
-  context 'when :environment_stop_actions_include_all_finished_deployments FF is disabled' do
-    before do
-      stub_feature_flags(environment_stop_actions_include_all_finished_deployments: false)
-    end
-
-    it_behaves_like 'avoid N+1 on environments serialization'
-  end
-
   context 'when there is a collection of objects provided' do
     let(:resource) { project.environments }
 
@@ -272,7 +264,6 @@ RSpec.describe EnvironmentSerializer, feature_category: :continuous_delivery do
       before do
         environments.each do |env|
           allow(env).to receive(:last_finished_deployment_group).and_call_original
-          allow(env).to receive(:last_deployment_group).and_call_original
         end
 
         allow(resource).to receive(:to_a).and_return(environments)
@@ -282,18 +273,6 @@ RSpec.describe EnvironmentSerializer, feature_category: :continuous_delivery do
         expect(environments).to all(receive(:last_finished_deployment_group))
 
         json
-      end
-
-      context 'when :environment_stop_actions_include_all_finished_deployments FF is disabled' do
-        before do
-          stub_feature_flags(environment_stop_actions_include_all_finished_deployments: false)
-        end
-
-        it "batch loads each environment's last_deployment_group" do
-          expect(environments).to all(receive(:last_deployment_group))
-
-          json
-        end
       end
     end
   end

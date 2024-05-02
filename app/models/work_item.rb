@@ -55,14 +55,12 @@ class WorkItem < Issue
           attribute_name: :relative_position,
           column_expression: WorkItems::ParentLink.arel_table[:relative_position],
           order_expression: WorkItems::ParentLink.arel_table[:relative_position].asc.nulls_last,
-          nullable: :nulls_last,
-          distinct: false
+          nullable: :nulls_last
         ),
         Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
           attribute_name: :created_at,
           order_expression: WorkItem.arel_table[:created_at].asc,
-          nullable: :not_nullable,
-          distinct: false
+          nullable: :not_nullable
         )
       ])
 
@@ -76,8 +74,7 @@ class WorkItem < Issue
             attribute_name: 'issue_link_id',
             column_expression: IssueLink.arel_table[:id],
             order_expression: IssueLink.arel_table[:id].asc,
-            nullable: :not_nullable,
-            distinct: true
+            nullable: :not_nullable
           )
         ])
     end

@@ -267,16 +267,10 @@ class Environment < ApplicationRecord
     last_deployment&.deployable
   end
 
-  # TODO: remove this method when environment_stop_actions_include_all_finished_deployments FF is removed
-  #       - https://gitlab.com/gitlab-org/gitlab/-/issues/435132
+  # TODO: remove this method when legacy_last_deployment_group is removed
+  #       in https://gitlab.com/gitlab-org/gitlab/-/issues/439141
   def last_deployment_pipeline
     last_deployable&.pipeline
-  end
-
-  # TODO: remove this method when environment_stop_actions_include_all_finished_deployments FF is removed
-  #       - https://gitlab.com/gitlab-org/gitlab/-/issues/435132
-  def latest_successful_jobs
-    last_deployment_pipeline&.latest_successful_jobs
   end
 
   def last_finished_deployable
@@ -296,7 +290,9 @@ class Environment < ApplicationRecord
   # A pipeline contains
   #   - deploy job A => production environment
   #   - deploy job B => production environment
-  # In this case, `last_deployment_group` returns both deployments, whereas `last_deployable` returns only B.
+  # In this case, `legacy_last_deployment_group` returns both deployments, whereas `last_deployable` returns only B.
+  #
+  # TODO: to be removed in https://gitlab.com/gitlab-org/gitlab/-/issues/439141
   def legacy_last_deployment_group
     return Deployment.none unless last_deployment_pipeline
 
@@ -402,20 +398,12 @@ class Environment < ApplicationRecord
   end
 
   def stop_actions
-    if Feature.enabled?(:environment_stop_actions_include_all_finished_deployments, project, type: :gitlab_com_derisk)
-      return last_finished_deployment_group.map(&:stop_action).compact
-    end
-
-    last_deployment_group.map(&:stop_action).compact
+    last_finished_deployment_group.map(&:stop_action).compact
   end
   strong_memoize_attr :stop_actions
 
   def last_finished_deployment_group
     Deployment.last_finished_deployment_group_for_environment(self)
-  end
-
-  def last_deployment_group
-    Deployment.last_deployment_group_for_environment(self)
   end
 
   def reset_auto_stop

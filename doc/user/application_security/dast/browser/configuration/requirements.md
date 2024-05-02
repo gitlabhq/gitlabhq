@@ -88,8 +88,8 @@ dast:
       alias: yourapp
 
 variables:
-  DAST_WEBSITE: https://yourapp
-  DAST_FULL_SCAN_ENABLED: "true" # do a full scan
+  DAST_TARGET_URL: https://yourapp
+  DAST_FULL_SCAN: "true" # do a full scan
   DAST_BROWSER_SCAN: "true" # use the browser-based GitLab DAST crawler
 ```
 

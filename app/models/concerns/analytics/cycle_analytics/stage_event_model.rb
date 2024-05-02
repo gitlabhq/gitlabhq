@@ -21,8 +21,8 @@ module Analytics
         scope :end_event_is_not_happened_yet, -> { where(end_event_timestamp: nil) }
         scope :for_consistency_check_worker, -> (direction) do
           keyset_order(
-            :end_event_timestamp => { order_expression: arel_order(arel_table[:end_event_timestamp], direction), distinct: false, nullable: direction == :asc ? :nulls_last : :nulls_first },
-            issuable_id_column => { order_expression: arel_order(arel_table[issuable_id_column], direction), nullable: :not_nullable, distinct: true }
+            :end_event_timestamp => { order_expression: arel_order(arel_table[:end_event_timestamp], direction), nullable: direction == :asc ? :nulls_last : :nulls_first },
+            issuable_id_column => { order_expression: arel_order(arel_table[issuable_id_column], direction), nullable: :not_nullable }
           )
         end
         scope :order_by_end_event, -> (direction) do
@@ -30,9 +30,9 @@ module Analytics
           # start_event_timestamp must be included in the ORDER BY clause for the duration
           # calculation to work: SELECT end_event_timestamp - start_event_timestamp
           keyset_order(
-            :end_event_timestamp => { order_expression: arel_order(arel_table[:end_event_timestamp], direction), distinct: false, nullable: direction == :asc ? :nulls_last : :nulls_first },
-            issuable_id_column => { order_expression: arel_order(arel_table[issuable_id_column], direction), distinct: true },
-            :start_event_timestamp => { order_expression: arel_order(arel_table[:start_event_timestamp], direction), distinct: false }
+            :end_event_timestamp => { order_expression: arel_order(arel_table[:end_event_timestamp], direction), nullable: direction == :asc ? :nulls_last : :nulls_first },
+            issuable_id_column => { order_expression: arel_order(arel_table[issuable_id_column], direction) },
+            :start_event_timestamp => { order_expression: arel_order(arel_table[:start_event_timestamp], direction) }
           )
         end
         scope :order_by_end_event_with_db_duration, -> (direction) do
@@ -40,12 +40,12 @@ module Analytics
           # start_event_timestamp must be included in the ORDER BY clause for the duration
           # calculation to work: SELECT end_event_timestamp - start_event_timestamp
           keyset_order(
-            :end_event_timestamp => { order_expression: arel_order(arel_table[:end_event_timestamp], direction), distinct: false, nullable: direction == :asc ? :nulls_last : :nulls_first },
-            issuable_id_column => { order_expression: arel_order(arel_table[issuable_id_column], direction), distinct: true },
-            :start_event_timestamp => { order_expression: arel_order(arel_table[:start_event_timestamp], direction), distinct: false },
+            :end_event_timestamp => { order_expression: arel_order(arel_table[:end_event_timestamp], direction), nullable: direction == :asc ? :nulls_last : :nulls_first },
+            issuable_id_column => { order_expression: arel_order(arel_table[issuable_id_column], direction) },
+            :start_event_timestamp => { order_expression: arel_order(arel_table[:start_event_timestamp], direction) },
             :duration_in_milliseconds => {
               order_expression: arel_order(arel_table[:duration_in_milliseconds], direction),
-              distinct: false, nullable: direction == :asc ? :nulls_last : :nulls_first, sql_type: 'bigint'
+              nullable: direction == :asc ? :nulls_last : :nulls_first, sql_type: 'bigint'
             }
           )
         end
@@ -56,11 +56,11 @@ module Analytics
           keyset_order(
             :duration_in_milliseconds => {
               order_expression: arel_order(arel_table[:duration_in_milliseconds], direction),
-              distinct: false, nullable: direction == :asc ? :nulls_last : :nulls_first, sql_type: 'bigint'
+              nullable: direction == :asc ? :nulls_last : :nulls_first, sql_type: 'bigint'
             },
-            issuable_id_column => { order_expression: arel_order(arel_table[issuable_id_column], direction), distinct: true },
-            :end_event_timestamp => { order_expression: arel_order(arel_table[:end_event_timestamp], direction), distinct: true },
-            :start_event_timestamp => { order_expression: arel_order(arel_table[:start_event_timestamp], direction), distinct: true }
+            issuable_id_column => { order_expression: arel_order(arel_table[issuable_id_column], direction) },
+            :end_event_timestamp => { order_expression: arel_order(arel_table[:end_event_timestamp], direction) },
+            :start_event_timestamp => { order_expression: arel_order(arel_table[:start_event_timestamp], direction) }
           )
         end
       end

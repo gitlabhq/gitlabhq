@@ -50,10 +50,10 @@ By default, URLs matching the host of the target application are considered in-s
 
 Scope is configured using the following variables:
 
-- Use `DAST_BROWSER_ALLOWED_HOSTS` to add in-scope hosts.
-- Use `DAST_BROWSER_IGNORED_HOSTS` to add to out-of-scope hosts.
-- Use `DAST_BROWSER_EXCLUDED_HOSTS` to add to excluded-from-scope hosts.
-- Use `DAST_EXCLUDE_URLS` to set specific URLs to be excluded-from-scope.
+- Use `DAST_SCOPE_ALLOW_HOSTS` to add in-scope hosts.
+- Use `DAST_SCOPE_IGNORE_HOSTS` to add to out-of-scope hosts.
+- Use `DAST_SCOPE_EXCLUDE_HOSTS` to add to excluded-from-scope hosts.
+- Use `DAST_SCOPE_EXCLUDE_URLS` to set specific URLs to be excluded-from-scope.
 
 Rules:
 
@@ -69,11 +69,11 @@ include:
 
 dast:
   variables:
-    DAST_WEBSITE: "https://my.site.com"                   # my.site.com URLs are considered in-scope by default
-    DAST_BROWSER_ALLOWED_HOSTS: "api.site.com:8443"       # include the API as part of the scan
-    DAST_BROWSER_IGNORED_HOSTS: "analytics.site.com"      # explicitly disregard analytics from the scan
-    DAST_BROWSER_EXCLUDED_HOSTS: "ads.site.com"           # don't visit any URLs on the ads subdomain
-    DAST_EXCLUDE_URLS: "https://my.site.com/user/logout"  # don't visit this URL
+    DAST_TARGET_URL: "https://my.site.com"                   # my.site.com URLs are considered in-scope by default
+    DAST_SCOPE_ALLOW_HOSTS: "api.site.com:8443"       # include the API as part of the scan
+    DAST_SCOPE_IGNORE_HOSTS: "analytics.site.com"      # explicitly disregard analytics from the scan
+    DAST_SCOPE_EXCLUDE_HOSTS: "ads.site.com"           # don't visit any URLs on the ads subdomain
+    DAST_SCOPE_EXCLUDE_URLS: "https://my.site.com/user/logout"  # don't visit this URL
 ```
 
 ## Vulnerability detection
@@ -100,14 +100,14 @@ This can come at a cost of increased scan time.
 
 You can manage the trade-off between coverage and scan time with the following measures:
 
-- Vertically scale the runner and use a higher number of browsers with the [variable](variables.md) `DAST_BROWSER_NUMBER_OF_BROWSERS`. The default is `3`.
-- Limit the number of actions executed by the browser with the [variable](variables.md) `DAST_BROWSER_MAX_ACTIONS`. The default is `10,000`.
-- Limit the page depth that the browser-based crawler checks coverage on with the [variable](variables.md) `DAST_BROWSER_MAX_DEPTH`. The crawler uses a breadth-first search strategy, so pages with smaller depth are crawled first. The default is `10`.
-- Limit the time taken to crawl the target application with the [variable](variables.md) `DAST_BROWSER_CRAWL_TIMEOUT`. The default is `24h`. Scans continue with passive and active checks when the crawler times out.
-- Build the crawl graph with the [variable](variables.md) `DAST_BROWSER_CRAWL_GRAPH` to see what pages are being crawled.
-- Prevent pages from being crawled using the [variable](variables.md) `DAST_EXCLUDE_URLS`.
-- Prevent elements being selected using the [variable](variables.md) `DAST_BROWSER_EXCLUDED_ELEMENTS`. Use with caution, as defining this variable causes an extra lookup for each page crawled.
-- If the target application has minimal or fast rendering, consider reducing the [variable](variables.md) `DAST_BROWSER_DOM_READY_AFTER_TIMEOUT` to a smaller value. The default is `500ms`.
+- Vertically scale the runner and use a higher number of browsers with the [variable](variables.md) `DAST_CRAWL_WORKER_COUNT`. The default is `3`.
+- Limit the number of actions executed by the browser with the [variable](variables.md) `DAST_CRAWL_MAX_ACTIONS`. The default is `10,000`.
+- Limit the page depth that the browser-based crawler checks coverage on with the [variable](variables.md) `DAST_CRAWL_MAX_DEPTH`. The crawler uses a breadth-first search strategy, so pages with smaller depth are crawled first. The default is `10`.
+- Limit the time taken to crawl the target application with the [variable](variables.md) `DAST_CRAWL_TIMEOUT`. The default is `24h`. Scans continue with passive and active checks when the crawler times out.
+- Build the crawl graph with the [variable](variables.md) `DAST_CRAWL_GRAPH` to see what pages are being crawled.
+- Prevent pages from being crawled using the [variable](variables.md) `DAST_SCOPE_EXCLUDE_URLS`.
+- Prevent elements being selected using the [variable](variables.md) `DAST_SCOPE_EXCLUDE_ELEMENTS`. Use with caution, as defining this variable causes an extra lookup for each page crawled.
+- If the target application has minimal or fast rendering, consider reducing the [variable](variables.md) `DAST_PAGE_DOM_STABLE_WAIT` to a smaller value. The default is `500ms`.
 
 ## Timeouts
 
@@ -116,16 +116,16 @@ Due to poor network conditions or heavy application load, the default timeouts m
 Browser-based scans offer the ability to adjust various timeouts to ensure it continues smoothly as it transitions from one page to the next. These values are configured using a [Duration string](https://pkg.go.dev/time#ParseDuration), which allow you to configure durations with a prefix: `m` for minutes, `s` for seconds, and `ms` for milliseconds.
 
 Navigations, or the act of loading a new page, usually require the most amount of time because they are
-loading multiple new resources such as JavaScript or CSS files. Depending on the size of these resources, or the speed at which they are returned, the default `DAST_BROWSER_NAVIGATION_TIMEOUT` may not be sufficient.
+loading multiple new resources such as JavaScript or CSS files. Depending on the size of these resources, or the speed at which they are returned, the default `DAST_PAGE_READY_AFTER_NAVIGATION_TIMEOUT` may not be sufficient.
 
-Stability timeouts, such as those configurable with `DAST_BROWSER_NAVIGATION_STABILITY_TIMEOUT`, `DAST_BROWSER_STABILITY_TIMEOUT`, and `DAST_BROWSER_ACTION_STABILITY_TIMEOUT` can also be configured. Stability timeouts determine when browser-based scans consider
+Stability timeouts, such as those configurable with `DAST_PAGE_DOM_READY_TIMEOUT` or `DAST_PAGE_READY_AFTER_ACTION_TIMEOUT`, can also be configured. Stability timeouts determine when browser-based scans consider
 a page fully loaded. Browser-based scans consider a page loaded when:
 
 1. The [DOMContentLoaded](https://developer.mozilla.org/en-US/docs/Web/API/Document/DOMContentLoaded_event) event has fired.
 1. There are no open or outstanding requests that are deemed important, such as JavaScript and CSS. Media files are usually deemed unimportant.
 1. Depending on whether the browser executed a navigation, was forcibly transitioned, or action:
 
-   - There are no new Document Object Model (DOM) modification events after the `DAST_BROWSER_NAVIGATION_STABILITY_TIMEOUT`, `DAST_BROWSER_STABILITY_TIMEOUT`, or `DAST_BROWSER_ACTION_STABILITY_TIMEOUT` durations.
+   - There are no new Document Object Model (DOM) modification events after the `DAST_PAGE_DOM_READY_TIMEOUT` or `DAST_PAGE_READY_AFTER_ACTION_TIMEOUT` durations.
 
 After these events have occurred, browser-based scans consider the page loaded and ready, and attempt the next action.
 
@@ -137,12 +137,10 @@ include:
 
 dast:
   variables:
-    DAST_WEBSITE: "https://my.site.com"
-    DAST_BROWSER_NAVIGATION_TIMEOUT: "25s"
-    DAST_BROWSER_ACTION_TIMEOUT: "10s"
-    DAST_BROWSER_STABILITY_TIMEOUT: "15s"
-    DAST_BROWSER_NAVIGATION_STABILITY_TIMEOUT: "15s"
-    DAST_BROWSER_ACTION_STABILITY_TIMEOUT: "3s"
+    DAST_TARGET_URL: "https://my.site.com"
+    DAST_PAGE_READY_AFTER_NAVIGATION_TIMEOUT: "45s"
+    DAST_PAGE_READY_AFTER_ACTION_TIMEOUT: "15s"
+    DAST_PAGE_DOM_READY_TIMEOUT: "15s"
 ```
 
 NOTE:

@@ -23,8 +23,7 @@ RSpec.describe Gitlab::Pagination::Keyset::Iterator do
           order_expression: klass.arel_table[column].public_send(direction).public_send(nulls_position), # rubocop:disable GitlabSecurity/PublicSend
           reversed_order_expression: klass.arel_table[column].public_send(reverse_direction).public_send(reverse_nulls_position), # rubocop:disable GitlabSecurity/PublicSend
           order_direction: direction,
-          nullable: nulls_position,
-          distinct: false
+          nullable: nulls_position
         ),
         Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
           attribute_name: 'id',

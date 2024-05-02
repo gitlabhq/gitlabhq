@@ -30,8 +30,7 @@ class CustomEmoji < ApplicationRecord
       Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
         attribute_name: 'name',
         order_expression: CustomEmoji.arel_table[:name].asc,
-        nullable: :not_nullable,
-        distinct: true
+        nullable: :not_nullable
       ),
       Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
         attribute_name: 'current_namespace',

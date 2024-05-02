@@ -16,9 +16,8 @@ RSpec.describe Gitlab::Pagination::Keyset::SimpleOrderBuilder do
       expect(sql_with_order).to end_with('ORDER BY "projects"."id" DESC')
     end
 
-    it 'sets the column definition distinct and not nullable' do
+    it 'sets the column definition to not nullable' do
       expect(column_definition).to be_not_nullable
-      expect(column_definition).to be_distinct
     end
 
     context "when the order scope's model uses default_scope" do
@@ -53,10 +52,9 @@ RSpec.describe Gitlab::Pagination::Keyset::SimpleOrderBuilder do
       expect(sql_with_order).to end_with('ORDER BY "projects"."created_at" ASC, "projects"."id" DESC')
     end
 
-    it 'sets the column definition for created_at non-distinct and nullable' do
+    it 'sets the column definition for created_at' do
       expect(column_definition.attribute_name).to eq('created_at')
       expect(column_definition.nullable?).to eq(true) # be_nullable calls non_null? method for some reason
-      expect(column_definition).not_to be_distinct
     end
   end
 
@@ -71,10 +69,9 @@ RSpec.describe Gitlab::Pagination::Keyset::SimpleOrderBuilder do
   context 'when non-nullable column is given' do
     let(:scope) { Project.where(id: [1, 2, 3]).order(namespace_id: :asc, id: :asc) }
 
-    it 'sets the column definition for namespace_id non-distinct and non-nullable' do
+    it 'sets the column definition for namespace_id to non-nullable' do
       expect(column_definition.attribute_name).to eq('namespace_id')
       expect(column_definition).to be_not_nullable
-      expect(column_definition).not_to be_distinct
     end
   end
 
@@ -93,10 +90,9 @@ RSpec.describe Gitlab::Pagination::Keyset::SimpleOrderBuilder do
         SQL
       end
 
-      it 'sets the column definition for name non-distinct and nullable' do
+      it 'sets the column definition for name to nullable' do
         expect(column_definition.attribute_name).to eq('name')
         expect(column_definition.nullable?).to be_truthy
-        expect(column_definition).not_to be_distinct
       end
     end
 
@@ -108,10 +104,9 @@ RSpec.describe Gitlab::Pagination::Keyset::SimpleOrderBuilder do
         SQL
       end
 
-      it 'sets the column definition for name non-distinct and non-nullable' do
+      it 'sets the column definition for name to non-nullable' do
         expect(column_definition.attribute_name).to eq('name')
         expect(column_definition).to be_not_nullable
-        expect(column_definition).not_to be_distinct
       end
     end
   end

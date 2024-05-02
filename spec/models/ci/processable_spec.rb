@@ -6,12 +6,17 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
   let_it_be(:project) { create(:project) }
   let_it_be_with_refind(:pipeline) { create(:ci_pipeline, project: project) }
 
+  describe 'associations' do
+    it { is_expected.to belong_to(:trigger_request) }
+  end
+
   describe 'delegations' do
     subject { described_class.new }
 
     it { is_expected.to delegate_method(:merge_request?).to(:pipeline) }
     it { is_expected.to delegate_method(:merge_request_ref?).to(:pipeline) }
     it { is_expected.to delegate_method(:legacy_detached_merge_request_pipeline?).to(:pipeline) }
+    it { is_expected.to delegate_method(:trigger_short_token).to(:trigger_request) }
   end
 
   describe '#clone' do

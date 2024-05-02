@@ -11,9 +11,11 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 WARNING:
-Proxy-based DAST was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/430966) in GitLab
-16.9 and is planned for removal in 17.0. Use [browser-based DAST](browser_based.md) instead. This
-change is a breaking change.
+The DAST proxy-based analyzer was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/430966) in GitLab 16.9 and
+is replaced by DAST version 5 in GitLab 17.0. This change is a breaking change. For instructions on how to migrate from
+the DAST proxy-based analyzer to DAST version 5, see the [proxy-based migration guide](proxy_based_to_browser_based_migration_guide.md).
+For instructions on how to migrate from the DAST version 4 browser-based analyzer to DAST version 5,
+see the [browser-based migration guide](browser_based_4_to_5_migration_guide.md).
 
 Dynamic Application Security Testing (DAST) runs automated penetration tests to find vulnerabilities
 in your web applications and APIs as they are running. DAST automates a hacker’s approach and

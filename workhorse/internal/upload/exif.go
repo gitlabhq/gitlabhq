@@ -1,3 +1,4 @@
+// Package upload provides functionality for handling file uploads and processing image metadata.
 package upload
 
 import (
@@ -17,11 +18,12 @@ func handleExifUpload(ctx context.Context, r io.Reader, filename string, imageTy
 	if err != nil {
 		return nil, err
 	}
+
 	go func() {
 		<-ctx.Done()
-		tmpfile.Close()
+		_ = tmpfile.Close()
 	}()
-	if err := os.Remove(tmpfile.Name()); err != nil {
+	if err = os.Remove(tmpfile.Name()); err != nil {
 		return nil, err
 	}
 
@@ -30,7 +32,7 @@ func handleExifUpload(ctx context.Context, r io.Reader, filename string, imageTy
 		return nil, err
 	}
 
-	if _, err := tmpfile.Seek(0, io.SeekStart); err != nil {
+	if _, err = tmpfile.Seek(0, io.SeekStart); err != nil {
 		return nil, err
 	}
 
@@ -42,7 +44,7 @@ func handleExifUpload(ctx context.Context, r io.Reader, filename string, imageTy
 		isValidType = isTIFF(tmpfile)
 	}
 
-	if _, err := tmpfile.Seek(0, io.SeekStart); err != nil {
+	if _, err = tmpfile.Seek(0, io.SeekStart); err != nil {
 		return nil, err
 	}
 

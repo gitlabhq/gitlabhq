@@ -71,17 +71,9 @@ class EnvironmentSerializer < BaseSerializer
         environment.last_deployment&.commit&.try(:lazy_author)
         environment.upcoming_deployment&.commit&.try(:lazy_author)
 
-        # Batch loading last_deployment_group or last_finished_deployment_group,
+        # Batch loading last_finished_deployment_group,
         #   which is called later by environment.stop_actions
-        if Feature.enabled?(
-          :environment_stop_actions_include_all_finished_deployments,
-          environment.project,
-          type: :gitlab_com_derisk
-        )
-          environment.last_finished_deployment_group
-        else
-          environment.last_deployment_group
-        end
+        environment.last_finished_deployment_group
       end
     end
   end

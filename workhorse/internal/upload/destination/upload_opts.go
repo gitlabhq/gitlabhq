@@ -14,6 +14,7 @@ import (
 // DefaultObjectStoreTimeout is the timeout for ObjectStore upload operation
 const DefaultObjectStoreTimeout = 4 * time.Hour
 
+// ObjectStorageConfig holds configuration details for object storage destinations.
 type ObjectStorageConfig struct {
 	Provider string
 
@@ -54,7 +55,7 @@ type UploadOpts struct {
 	// The maximum accepted size in bytes of the upload
 	MaximumSize int64
 
-	//MultipartUpload parameters
+	// MultipartUpload parameters
 	// PartSize is the exact size of each uploaded part. Only the last one can be smaller
 	PartSize int64
 	// PresignedParts contains the presigned URLs for each part
@@ -140,18 +141,22 @@ func GetOpts(apiResponse *api.Response) (*UploadOpts, error) {
 	return &opts, nil
 }
 
+// IsAWS checks if the object storage provider is AWS S3.
 func (c *ObjectStorageConfig) IsAWS() bool {
 	return strings.EqualFold(c.Provider, "AWS") || strings.EqualFold(c.Provider, "S3")
 }
 
+// IsAzure checks if the object storage provider is Azure Blob Storage.
 func (c *ObjectStorageConfig) IsAzure() bool {
 	return strings.EqualFold(c.Provider, "AzureRM")
 }
 
+// IsGoCloud checks if the object storage provider is configured to use GoCloud.
 func (c *ObjectStorageConfig) IsGoCloud() bool {
 	return c.GoCloudConfig.URL != ""
 }
 
+// IsValid checks if the object storage configuration is valid.
 func (c *ObjectStorageConfig) IsValid() bool {
 	if c.IsAWS() {
 		return c.S3Config.Bucket != "" && c.s3CredentialsValid()

@@ -480,22 +480,11 @@ stop_review:
 #### Run a pipeline job when environment is stopped
 
 > - Feature flag `environment_stop_actions_include_all_finished_deployments` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/435128) in GitLab 16.9. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `environment_stop_actions_include_all_finished_deployments`.
-On GitLab.com and GitLab Dedicated, this feature is not available.
+> - Feature flag `environment_stop_actions_include_all_finished_deployments` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150932) in GitLab 17.0.
 
 You can define a stop job for the environment with an [`on_stop` action](../yaml/index.md#environmenton_stop) in the environment's deploy job.
 
-If `environment_stop_actions_include_all_finished_deployments` is disabled:
-
-- The stop jobs of successful deployments in the latest successful pipeline are run when an environment is stopped.
-
-If `environment_stop_actions_include_all_finished_deployments` is enabled:
-
-- The stop jobs of finished deployments in the latest finished pipeline are run when an environment is stopped.
-
-  A deployment or pipeline is _finished_ if it has the successful, canceled, or failed status.
+The stop jobs of finished deployments in the latest finished pipeline are run when an environment is stopped. A deployment or pipeline is _finished_ if it has the successful, canceled, or failed status.
 
 Prerequisites:
 

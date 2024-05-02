@@ -52,8 +52,7 @@ RSpec.describe UnnestedInFilters::Rewriter do
                   Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
                     attribute_name: 'user_type',
                     order_expression: User.arel_table['user_type'].desc,
-                    nullable: :not_nullable,
-                    distinct: false
+                    nullable: :not_nullable
                   )
                 ])
             end
@@ -202,8 +201,7 @@ RSpec.describe UnnestedInFilters::Rewriter do
               Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
                 attribute_name: 'user_type',
                 order_expression: User.arel_table['user_type'].desc,
-                nullable: :not_nullable,
-                distinct: false
+                nullable: :not_nullable
               )
             ])
         end
