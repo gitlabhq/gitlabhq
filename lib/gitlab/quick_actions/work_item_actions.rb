@@ -7,9 +7,9 @@ module Gitlab
       include Gitlab::QuickActions::Dsl
 
       included do
-        desc { _('Change work item type') }
+        desc { _('Change item type') }
         explanation do |target_type|
-          format(_("Converts work item to %{type}. Widgets not supported in new type are removed."), type: target_type)
+          format(_("Converts item to %{type}. Widgets not supported in new type are removed."), type: target_type)
         end
         types WorkItem
         params 'Task | Objective | Key Result | Issue'
@@ -17,9 +17,9 @@ module Gitlab
           @execution_message[:type] = update_type(type_name, :type)
         end
 
-        desc { _('Promote work item') }
+        desc { _('Promote item') }
         explanation do |type_name|
-          format(_("Promotes work item to %{type}."), type: type_name)
+          format(_("Promotes item to %{type}."), type: type_name)
         end
         types WorkItem
         params 'issue | objective'
@@ -28,9 +28,9 @@ module Gitlab
           @execution_message[:promote_to] = update_type(type_name, :promote_to)
         end
 
-        desc { _('Change work item parent') }
+        desc { _('Change parent') }
         explanation do |parent_param|
-          format(_("Change work item's parent to %{parent_ref}."), parent_ref: parent_param)
+          format(_("Change item's parent to %{parent_ref}."), parent_ref: parent_param)
         end
         types WorkItem
         params 'Parent #iid, reference or URL'
@@ -40,10 +40,10 @@ module Gitlab
           @execution_message[:set_parent] = success_msg[:set_parent]
         end
 
-        desc { _('Remove work item parent') }
+        desc { _('Remove parent') }
         explanation do
           format(
-            _("Remove %{parent_ref} as this work item's parent."),
+            _("Remove %{parent_ref} as this item's parent."),
             parent_ref: work_item_parent.to_reference(quick_action_target)
           )
         end
@@ -54,9 +54,9 @@ module Gitlab
           @execution_message[:remove_parent] = success_msg[:remove_parent]
         end
 
-        desc { _('Add children to work item') }
+        desc { _('Add child items') }
         explanation do |child_param|
-          format(_("Add %{child_ref} to this work item as child(ren)."), child_ref: child_param)
+          format(_("Add %{child_ref} as a child item."), child_ref: child_param)
         end
         types WorkItem
         params 'Children #iids, references or URLs'
@@ -66,9 +66,9 @@ module Gitlab
           @execution_message[:add_child] = success_msg[:add_child]
         end
 
-        desc { _('Remove child from work item') }
+        desc { _('Remove child') }
         explanation do |child_param|
-          format(_("Remove the child %{child_ref} from this work item."), child_ref: child_param)
+          format(_("Remove %{child_ref} as a child item."), child_ref: child_param)
         end
         types WorkItem
         params 'Child #iid, reference or URL'
@@ -150,11 +150,11 @@ module Gitlab
       def success_msg
         {
           type: _('Type changed successfully.'),
-          promote_to: _("Work item promoted successfully."),
-          set_parent: _('Work item parent set successfully'),
-          remove_parent: _('Work item parent removed successfully'),
-          add_child: _('Child work item(s) added successfully'),
-          remove_child: _('Child work item removed successfully')
+          promote_to: _("Promoted successfully."),
+          set_parent: _('Parent set successfully'),
+          remove_parent: _('Parent removed successfully'),
+          add_child: _('Child item(s) added successfully'),
+          remove_child: _('Child item removed successfully')
         }
       end
 

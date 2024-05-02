@@ -64,21 +64,11 @@ class LabelsFinder < UnionFinder
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
-  def similarity_enabled
-    if project?
-      Feature.enabled?(:label_similarity_sort, project)
-    else
-      Feature.enabled?(:label_similarity_sort, group)
-    end
-  end
-
   # rubocop: disable CodeReuse/ActiveRecord
   def sort(items)
     return items.reorder(title: :asc) unless params[:sort]
 
-    if params[:sort] == 'relevance' && params[:search].present? && similarity_enabled
-      return items.sorted_by_similarity_desc(params[:search])
-    end
+    return items.sorted_by_similarity_desc(params[:search]) if params[:sort] == 'relevance' && params[:search].present?
 
     items.order_by(params[:sort])
   end

@@ -22,7 +22,8 @@ WARNING:
 This feature is in [Beta](../../policy/experiment-beta-support.md#beta) and subject to change without notice.
 For more information, see [epic 9404](https://gitlab.com/groups/gitlab-org/-/epics/9404).
 
-With exact code search, you can use regular expression and exact match modes to search for code in one or more projects.
+With exact code search, you can use regular expression and exact match modes
+to search for code in all GitLab or in a specific project.
 
 Exact code search is powered by [Zoekt](https://github.com/sourcegraph/zoekt)
 and is used by default in groups where the feature is enabled.

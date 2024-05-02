@@ -36,13 +36,13 @@ func TestParse(t *testing.T) {
 	}
 
 	t.Run("Relative path cannot be calculated", func(t *testing.T) {
-		originalUri := "file:///Users/nested/folder/file.rb"
+		originalURI := "file:///Users/nested/folder/file.rb"
 		data := []byte(`{"id":"1","label":"metaData","projectRoot":"/a"}` + "\n")
-		data = append(data, createLine("2", "document", originalUri)...)
+		data = append(data, createLine("2", "document", originalURI)...)
 
 		require.NoError(t, d.Parse(bytes.NewReader(data)))
 
-		require.Equal(t, originalUri, d.Entries[2])
+		require.Equal(t, originalURI, d.Entries[2])
 	})
 }
 
@@ -56,7 +56,7 @@ func TestParseContainsLine(t *testing.T) {
 
 	require.NoError(t, d.Parse(bytes.NewReader(data)))
 
-	require.Equal(t, []Id{2, 3, 4}, d.DocRanges[1])
+	require.Equal(t, []ID{2, 3, 4}, d.DocRanges[1])
 }
 
 func TestParsingVeryLongLine(t *testing.T) {

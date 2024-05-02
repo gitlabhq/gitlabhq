@@ -6,9 +6,9 @@ module Mutations
       graphql_name 'IssueSetDueDate'
 
       argument :due_date,
-               Types::TimeType,
-               required: :nullable,
-               description: 'Desired due date for the issue. Due date is removed if null.'
+        Types::TimeType,
+        required: :nullable,
+        description: 'Desired due date for the issue. Due date is removed if null.'
 
       def resolve(project_path:, iid:, due_date:)
         issue = authorized_find!(project_path: project_path, iid: iid)

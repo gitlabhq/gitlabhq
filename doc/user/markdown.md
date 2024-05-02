@@ -1105,6 +1105,8 @@ Alt-H2
 
 ### Heading IDs and links
 
+> - Heading link generation [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/440733) in GitLab 17.0.
+
 [View this topic in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#heading-ids-and-links).
 
 All Markdown-rendered headings automatically
@@ -1131,19 +1133,18 @@ Example:
 ## This heading has spaces in it
 ### This heading has spaces in it
 ## This heading has 3.5 in it (and parentheses)
+## This heading has  multiple spaces and --- hyphens
 ```
 
 Would generate the following link IDs:
 
 1. `this-heading-has-spaces-in-it`
-1. `this-heading-has-a-in-it`
+1. `this-heading-has-a-thumbsup-in-it`
 1. `this-heading-has-unicode-in-it-한글`
 1. `this-heading-has-spaces-in-it-1`
 1. `this-heading-has-spaces-in-it-2`
-1. `this-heading-has-3-5-in-it-and-parentheses`
-
-Emoji processing happens before the heading IDs are generated. The
-emoji is converted to an image, which is then removed from the ID.
+1. `this-heading-has-35-in-it-and-parentheses`
+1. `this-heading-has--multiple-spaces-and-----hyphens`
 
 ## Horizontal rule
 

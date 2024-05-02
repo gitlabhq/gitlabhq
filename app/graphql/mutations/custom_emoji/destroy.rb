@@ -8,13 +8,13 @@ module Mutations
       authorize :delete_custom_emoji
 
       field :custom_emoji,
-            Types::CustomEmojiType,
-            null: true,
-            description: 'Deleted custom emoji.'
+        Types::CustomEmojiType,
+        null: true,
+        description: 'Deleted custom emoji.'
 
       argument :id, ::Types::GlobalIDType[::CustomEmoji],
-               required: true,
-               description: 'Global ID of the custom emoji to destroy.'
+        required: true,
+        description: 'Global ID of the custom emoji to destroy.'
 
       def resolve(id:)
         custom_emoji = authorized_find!(id: id)

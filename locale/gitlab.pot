@@ -2921,7 +2921,7 @@ msgstr ""
 msgid "Add \"%{value}\""
 msgstr ""
 
-msgid "Add %{child_ref} to this work item as child(ren)."
+msgid "Add %{child_ref} as a child item."
 msgstr ""
 
 msgid "Add %{linkStart}assets%{linkEnd} to your Release. GitLab automatically includes read-only assets, like source code and release evidence."
@@ -3053,7 +3053,7 @@ msgstr ""
 msgid "Add child epic to an epic"
 msgstr ""
 
-msgid "Add children to work item"
+msgid "Add child items"
 msgstr ""
 
 msgid "Add comment now"
@@ -10195,6 +10195,12 @@ msgstr ""
 msgid "Change failure rate"
 msgstr ""
 
+msgid "Change item type"
+msgstr ""
+
+msgid "Change item's parent to %{parent_ref}."
+msgstr ""
+
 msgid "Change label"
 msgstr ""
 
@@ -10202,6 +10208,9 @@ msgid "Change made by"
 msgstr ""
 
 msgid "Change milestone"
+msgstr ""
+
+msgid "Change parent"
 msgstr ""
 
 msgid "Change path"
@@ -10229,15 +10238,6 @@ msgid "Change template"
 msgstr ""
 
 msgid "Change title"
-msgstr ""
-
-msgid "Change work item parent"
-msgstr ""
-
-msgid "Change work item type"
-msgstr ""
-
-msgid "Change work item's parent to %{parent_ref}."
 msgstr ""
 
 msgid "Change your password"
@@ -10748,10 +10748,10 @@ msgstr ""
 msgid "Child issues and epics"
 msgstr ""
 
-msgid "Child work item removed successfully"
+msgid "Child item removed successfully"
 msgstr ""
 
-msgid "Child work item(s) added successfully"
+msgid "Child item(s) added successfully"
 msgstr ""
 
 msgid "Chinese language support using"
@@ -13874,9 +13874,6 @@ msgstr ""
 msgid "ContainerRegistry|Add rule"
 msgstr ""
 
-msgid "ContainerRegistry|Are you sure you want to delete the container protection rule?"
-msgstr ""
-
 msgid "ContainerRegistry|Build an image"
 msgstr ""
 
@@ -13952,13 +13949,16 @@ msgstr ""
 msgid "ContainerRegistry|Created %{time}"
 msgstr ""
 
+msgid "ContainerRegistry|Delete container protection rule"
+msgstr ""
+
+msgid "ContainerRegistry|Delete container protection rule?"
+msgstr ""
+
 msgid "ContainerRegistry|Delete image repository"
 msgstr ""
 
 msgid "ContainerRegistry|Delete image repository?"
-msgstr ""
-
-msgid "ContainerRegistry|Delete rule"
 msgstr ""
 
 msgid "ContainerRegistry|Delete selected tags"
@@ -14209,7 +14209,7 @@ msgstr ""
 msgid "ContainerRegistry|To widen your search, change or remove the filters above."
 msgstr ""
 
-msgid "ContainerRegistry|Users with at least the Developer role for this project will be able to push and delete container images."
+msgid "ContainerRegistry|Users with at least the Developer role for this project will be able to push and delete container images to this repository path."
 msgstr ""
 
 msgid "ContainerRegistry|We are having trouble connecting to the Container Registry. Please try refreshing the page. If this error persists, please review  %{docLinkStart}the troubleshooting documentation%{docLinkEnd}."
@@ -14225,6 +14225,9 @@ msgid "ContainerRegistry|With the Container Registry, every project can have its
 msgstr ""
 
 msgid "ContainerRegistry|With the Container Registry, every project can have its own space to store its Docker images. Push at least one Docker image in one of this group's projects in order to show up here. %{docLinkStart}More Information%{docLinkEnd}"
+msgstr ""
+
+msgid "ContainerRegistry|You are about to delete the container protection rule for %{repositoryPathPattern}."
 msgstr ""
 
 msgid "ContainerRegistry|You are about to remove %{item} tags. Are you sure?"
@@ -14593,7 +14596,7 @@ msgstr ""
 msgid "Control whether to display customer experience improvement content and third-party offers in GitLab."
 msgstr ""
 
-msgid "Converts work item to %{type}. Widgets not supported in new type are removed."
+msgid "Converts item to %{type}. Widgets not supported in new type are removed."
 msgstr ""
 
 msgid "Cookie Preferences"
@@ -30923,9 +30926,6 @@ msgstr ""
 msgid "Maintenance mode"
 msgstr ""
 
-msgid "Make %{type} confidential"
-msgstr ""
-
 msgid "Make adjustments to how your GitLab instance is set up."
 msgstr ""
 
@@ -33142,7 +33142,7 @@ msgstr ""
 msgid "Move test case"
 msgstr ""
 
-msgid "Move this issue to another project."
+msgid "Move this issue to another project"
 msgstr ""
 
 msgid "Move up"
@@ -36984,6 +36984,12 @@ msgid "Parameter"
 msgstr ""
 
 msgid "Parent"
+msgstr ""
+
+msgid "Parent removed successfully"
+msgstr ""
+
+msgid "Parent set successfully"
 msgstr ""
 
 msgid "Part of merge request changes"
@@ -41314,13 +41320,13 @@ msgstr ""
 msgid "Promote issue to incident"
 msgstr ""
 
+msgid "Promote item"
+msgstr ""
+
 msgid "Promote to epic"
 msgstr ""
 
 msgid "Promote to objective"
-msgstr ""
-
-msgid "Promote work item"
 msgstr ""
 
 msgid "PromoteMilestone|Only project milestones can be promoted."
@@ -41335,10 +41341,13 @@ msgstr ""
 msgid "Promoted issue to an epic."
 msgstr ""
 
+msgid "Promoted successfully."
+msgstr ""
+
 msgid "Promotes issue to incident"
 msgstr ""
 
-msgid "Promotes work item to %{type}."
+msgid "Promotes item to %{type}."
 msgstr ""
 
 msgid "Promotion is not supported."
@@ -42666,10 +42675,13 @@ msgstr ""
 msgid "Remove"
 msgstr ""
 
+msgid "Remove %{child_ref} as a child item."
+msgstr ""
+
 msgid "Remove %{displayReference}"
 msgstr ""
 
-msgid "Remove %{parent_ref} as this work item's parent."
+msgid "Remove %{parent_ref} as this item's parent."
 msgstr ""
 
 msgid "Remove Zoom meeting"
@@ -42711,10 +42723,10 @@ msgstr ""
 msgid "Remove card"
 msgstr ""
 
-msgid "Remove child epic from an epic"
+msgid "Remove child"
 msgstr ""
 
-msgid "Remove child from work item"
+msgid "Remove child epic from an epic"
 msgstr ""
 
 msgid "Remove customer relation contact(s)."
@@ -42804,6 +42816,9 @@ msgstr ""
 msgid "Remove milestone"
 msgstr ""
 
+msgid "Remove parent"
+msgstr ""
+
 msgid "Remove parent epic from an epic"
 msgstr ""
 
@@ -42825,9 +42840,6 @@ msgstr ""
 msgid "Remove summary"
 msgstr ""
 
-msgid "Remove the child %{child_ref} from this work item."
-msgstr ""
-
 msgid "Remove time estimate"
 msgstr ""
 
@@ -42844,9 +42856,6 @@ msgid "Remove user from project"
 msgstr ""
 
 msgid "Remove weight"
-msgstr ""
-
-msgid "Remove work item parent"
 msgstr ""
 
 msgid "Removed"
@@ -50270,13 +50279,13 @@ msgstr ""
 msgid "Subscribed"
 msgstr ""
 
-msgid "Subscribed to this %{quick_action_target}."
+msgid "Subscribed to notifications."
 msgstr ""
 
 msgid "Subscribed to this project"
 msgstr ""
 
-msgid "Subscribes to this %{quick_action_target}."
+msgid "Subscribes to notifications."
 msgstr ""
 
 msgid "Subscription"
@@ -54780,6 +54789,9 @@ msgstr ""
 msgid "Turn on"
 msgstr ""
 
+msgid "Turn on confidentiality"
+msgstr ""
+
 msgid "Two-Factor Authentication"
 msgstr ""
 
@@ -55236,10 +55248,10 @@ msgstr ""
 msgid "Unsubscribe from %{type}"
 msgstr ""
 
-msgid "Unsubscribed from this %{quick_action_target}."
+msgid "Unsubscribed from notifications."
 msgstr ""
 
-msgid "Unsubscribes from this %{quick_action_target}."
+msgid "Unsubscribes from notifications."
 msgstr ""
 
 msgid "Unsupported forecast type."
@@ -58381,15 +58393,6 @@ msgstr ""
 msgid "Work in progress limit: %{wipLimit}"
 msgstr ""
 
-msgid "Work item parent removed successfully"
-msgstr ""
-
-msgid "Work item parent set successfully"
-msgstr ""
-
-msgid "Work item promoted successfully."
-msgstr ""
-
 msgid "WorkItem|%{count} more assignees"
 msgstr ""
 
@@ -61387,6 +61390,9 @@ msgid "it is stored in LFS"
 msgstr ""
 
 msgid "it is too large"
+msgstr ""
+
+msgid "item"
 msgstr ""
 
 msgid "key result"

@@ -106,8 +106,8 @@ module Gitlab
       end
 
       def remaining
+        enqueued = Sidekiq::Queue.new(self.queue)
         Sidekiq::Client.via(sidekiq_redis_pool) do
-          enqueued = Sidekiq::Queue.new(self.queue)
           scheduled = Sidekiq::ScheduledSet.new
 
           [enqueued, scheduled].sum do |set|
@@ -119,8 +119,8 @@ module Gitlab
       end
 
       def exists?(migration_class, additional_queues = [])
+        enqueued = Sidekiq::Queue.new(self.queue)
         Sidekiq::Client.via(sidekiq_redis_pool) do
-          enqueued = Sidekiq::Queue.new(self.queue)
           scheduled = Sidekiq::ScheduledSet.new
 
           enqueued_job?([enqueued, scheduled], migration_class)

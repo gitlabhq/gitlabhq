@@ -20,9 +20,12 @@ class RemoveContainerRegistryMigrationWorkers < Gitlab::Database::Migration[2.2]
       container_registry_migration_enqueuer_worker
     ]
 
-    cron_job_keys.each do |job_key|
-      job_to_remove = Sidekiq::Cron::Job.find(job_key)
-      job_to_remove.destroy if job_to_remove
+    # TODO: make shard-aware. See https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/3430
+    Gitlab::SidekiqSharding::Validator.allow_unrouted_sidekiq_calls do
+      cron_job_keys.each do |job_key|
+        job_to_remove = Sidekiq::Cron::Job.find(job_key)
+        job_to_remove.destroy if job_to_remove
+      end
     end
 
     # Removes scheduled instances from Sidekiq queues

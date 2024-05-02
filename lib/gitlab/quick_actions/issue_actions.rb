@@ -137,7 +137,7 @@ module Gitlab
           @execution_message[:clone] = message
         end
 
-        desc { _('Move this issue to another project.') }
+        desc { _('Move this issue to another project') }
         explanation do |path_to_project|
           _("Moves this issue to %{path_to_project}.") % { path_to_project: path_to_project }
         end

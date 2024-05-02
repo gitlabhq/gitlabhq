@@ -116,7 +116,7 @@ Next, you'll generate an SSH host key and export the GitLab URL.
 
 ## Generate an SSH host key
 
-Let's generate an RSA key here:
+To generate an RSA key, run this command:
 
 ```shell
 ssh-keygen -f ssh-host-key -N '' -t rsa
@@ -127,11 +127,13 @@ You can also generate an ECDSA key instead.
 
 ## Export the GitLab URL
 
-Export the `GITLAB_URL` environment variable:
+To export the `GITLAB_URL` environment variable, run this command:
 
 ```shell
 export GITLAB_URL="https://gitlab.com"
 ```
+
+Next, you'll create a configuration secret for the proxy.
 
 ## Create a configuration secret
 
@@ -217,6 +219,8 @@ Let's now verify the Kubernetes resources.
 You can now start updating your DNS records.
 
 ## Update your DNS records
+
+To update your DNS records:
 
 1. Point `${GITLAB_WORKSPACES_PROXY_DOMAIN}` and `${GITLAB_WORKSPACES_WILDCARD_DOMAIN}`
    to the load balancer exposed by the Ingress controller.

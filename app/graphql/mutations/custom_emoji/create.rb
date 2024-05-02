@@ -10,22 +10,22 @@ module Mutations
       authorize :create_custom_emoji
 
       field :custom_emoji,
-            Types::CustomEmojiType,
-            null: true,
-            description: 'New custom emoji.'
+        Types::CustomEmojiType,
+        null: true,
+        description: 'New custom emoji.'
 
       argument :group_path, GraphQL::Types::ID,
-               required: true,
-               description: 'Namespace full path the emoji is associated with.'
+        required: true,
+        description: 'Namespace full path the emoji is associated with.'
 
       argument :name, GraphQL::Types::String,
-               required: true,
-               description: 'Name of the emoji.'
+        required: true,
+        description: 'Name of the emoji.'
 
       argument :url, GraphQL::Types::String,
-               required: true,
-               as: :file,
-               description: 'Location of the emoji file.'
+        required: true,
+        as: :file,
+        description: 'Location of the emoji file.'
 
       def resolve(group_path:, **args)
         group = authorized_find!(group_path: group_path)

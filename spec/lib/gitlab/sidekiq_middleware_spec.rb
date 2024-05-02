@@ -57,6 +57,7 @@ RSpec.describe Gitlab::SidekiqMiddleware, feature_category: :shared do
     let(:middleware_expected_args) { [a_kind_of(worker_class), hash_including({ 'args' => job_args }), queue] }
     let(:all_sidekiq_middlewares) do
       [
+        ::Gitlab::SidekiqMiddleware::ShardAwarenessValidator,
         ::Gitlab::SidekiqMiddleware::Monitor,
         ::Labkit::Middleware::Sidekiq::Server,
         ::Gitlab::SidekiqMiddleware::RequestStoreMiddleware,

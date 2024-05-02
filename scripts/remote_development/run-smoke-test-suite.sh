@@ -49,7 +49,7 @@ function run_rspec_fast {
 
 function run_jest {
   printf "\n\n${BBlue}Running Remote Development frontend Jest specs${Color_Off}\n\n"
-  yarn jest ee/spec/frontend/remote_development
+  yarn jest ee/spec/frontend/workspaces
 }
 
 function run_rspec_rails {

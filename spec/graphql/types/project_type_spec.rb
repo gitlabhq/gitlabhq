@@ -355,6 +355,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
         :assignee_username,
         :reviewer_username,
         :review_state,
+        :review_states,
         :milestone_title,
         :not,
         :sort

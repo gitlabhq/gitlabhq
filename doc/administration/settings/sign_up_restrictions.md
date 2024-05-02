@@ -30,6 +30,12 @@ To disable sign ups:
 1. Expand **Sign-up restrictions**.
 1. Clear the **Sign-up enabled** checkbox, then select **Save changes**.
 
+You can also disable new sign ups with the [Rails console](../operations/rails_console.md) by running the following command:
+
+```ruby
+::Gitlab::CurrentSettings.update!(signup_enabled: false)
+```
+
 ## Require administrator approval for new sign ups
 
 This setting is enabled by default for new GitLab instances.

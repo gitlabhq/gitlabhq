@@ -25,8 +25,9 @@ module Gitlab
         end
 
         def route(klass)
-          return yield unless enabled?
-          return yield unless klass.respond_to?(:get_sidekiq_options)
+          unless enabled? && klass.respond_to?(:get_sidekiq_options)
+            return Gitlab::SidekiqSharding::Validator.allow_unrouted_sidekiq_calls { yield }
+          end
 
           store_name = klass.get_sidekiq_options['store']
           redis_name, shard_redis_pool = get_shard_instance(store_name)

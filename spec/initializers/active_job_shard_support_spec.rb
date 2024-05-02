@@ -37,8 +37,8 @@ RSpec.describe 'ActionMailer::MailDeliveryJob', :sidekiq_mailers, feature_catego
     end
 
     it 'checks for shard instance and sets Sidekiq redis pool' do
-      expect(ActionMailer::MailDeliveryJob).to receive(:sidekiq_options).ordered.and_call_original
-      expect(Gitlab::SidekiqSharding::Router).to receive(:get_shard_instance).ordered.and_call_original
+      expect(Gitlab::SidekiqSharding::Router)
+        .to receive(:route).with(ActionMailer::MailDeliveryJob).ordered.and_call_original
       expect(Sidekiq::Client).to receive(:via).ordered.and_call_original
 
       mailer_class.test_mail.deliver_later

@@ -6,14 +6,14 @@ module Mutations
       graphql_name 'IssueSetCrmContacts'
 
       argument :contact_ids,
-               [::Types::GlobalIDType[::CustomerRelations::Contact]],
-               required: true,
-               description: 'Customer relations contact IDs to set. Replaces existing contacts by default.'
+        [::Types::GlobalIDType[::CustomerRelations::Contact]],
+        required: true,
+        description: 'Customer relations contact IDs to set. Replaces existing contacts by default.'
 
       argument :operation_mode,
-               Types::MutationOperationModeEnum,
-               required: false,
-               description: 'Changes the operation mode. Defaults to REPLACE.'
+        Types::MutationOperationModeEnum,
+        required: false,
+        description: 'Changes the operation mode. Defaults to REPLACE.'
 
       def resolve(project_path:, iid:, contact_ids:, operation_mode: Types::MutationOperationModeEnum.enum[:replace])
         issue = authorized_find!(project_path: project_path, iid: iid)

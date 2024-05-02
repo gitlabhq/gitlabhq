@@ -13,8 +13,7 @@ DETAILS:
 GitLab has three types of search: **basic search**, [**advanced search**](advanced_search.md),
 and [**exact code search**](exact_code_search.md).
 
-All three types are available for code search.
-GitLab uses these types in this order of priority:
+For code search, GitLab uses these types in this order:
 
 - **Exact code search:** where you can use regular expression and exact match modes.
 - **Advanced search:** when exact code search is not available.

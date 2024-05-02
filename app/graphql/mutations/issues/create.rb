@@ -12,57 +12,57 @@ module Mutations
       authorize :create_issue
 
       argument :project_path, GraphQL::Types::ID,
-               required: true,
-               description: 'Project full path the issue is associated with.'
+        required: true,
+        description: 'Project full path the issue is associated with.'
 
       argument :iid, GraphQL::Types::Int,
-               required: false,
-               description: 'IID (internal ID) of a project issue. Only admins and project owners can modify.'
+        required: false,
+        description: 'IID (internal ID) of a project issue. Only admins and project owners can modify.'
 
       argument :title, GraphQL::Types::String,
-               required: true,
-               description: copy_field_description(Types::IssueType, :title)
+        required: true,
+        description: copy_field_description(Types::IssueType, :title)
 
       argument :milestone_id, ::Types::GlobalIDType[::Milestone],
-               required: false,
-               description: 'ID of the milestone to assign to the issue. On update milestone will be removed if set to null.'
+        required: false,
+        description: 'ID of the milestone to assign to the issue. On update milestone will be removed if set to null.'
 
       argument :labels, [GraphQL::Types::String],
-               required: false,
-               description: copy_field_description(Types::IssueType, :labels)
+        required: false,
+        description: copy_field_description(Types::IssueType, :labels)
 
       argument :label_ids, [::Types::GlobalIDType[::Label]],
-               required: false,
-               description: 'IDs of labels to be added to the issue.'
+        required: false,
+        description: 'IDs of labels to be added to the issue.'
 
       argument :created_at, Types::TimeType,
-               required: false,
-               description: 'Timestamp when the issue was created. Available only for admins and project owners.'
+        required: false,
+        description: 'Timestamp when the issue was created. Available only for admins and project owners.'
 
       argument :merge_request_to_resolve_discussions_of, ::Types::GlobalIDType[::MergeRequest],
-               required: false,
-               description: 'IID of a merge request for which to resolve discussions.'
+        required: false,
+        description: 'IID of a merge request for which to resolve discussions.'
 
       argument :discussion_to_resolve, GraphQL::Types::String,
-               required: false,
-               description: 'ID of a discussion to resolve. Also pass `merge_request_to_resolve_discussions_of`.'
+        required: false,
+        description: 'ID of a discussion to resolve. Also pass `merge_request_to_resolve_discussions_of`.'
 
       argument :assignee_ids, [::Types::GlobalIDType[::User]],
-               required: false,
-               description: 'Array of user IDs to assign to the issue.'
+        required: false,
+        description: 'Array of user IDs to assign to the issue.'
 
       argument :move_before_id, ::Types::GlobalIDType[::Issue],
-               required: false,
-               description: 'Global ID of issue that should be placed before the current issue.'
+        required: false,
+        description: 'Global ID of issue that should be placed before the current issue.'
 
       argument :move_after_id, ::Types::GlobalIDType[::Issue],
-               required: false,
-               description: 'Global ID of issue that should be placed after the current issue.'
+        required: false,
+        description: 'Global ID of issue that should be placed after the current issue.'
 
       field :issue,
-            Types::IssueType,
-            null: true,
-            description: 'Issue after mutation.'
+        Types::IssueType,
+        null: true,
+        description: 'Issue after mutation.'
 
       def ready?(**args)
         if args.slice(*mutually_exclusive_label_args).size > 1
@@ -72,7 +72,7 @@ module Mutations
 
         if args[:discussion_to_resolve].present? && args[:merge_request_to_resolve_discussions_of].blank?
           raise Gitlab::Graphql::Errors::ArgumentError,
-                'to resolve a discussion please also provide `merge_request_to_resolve_discussions_of` parameter'
+            'to resolve a discussion please also provide `merge_request_to_resolve_discussions_of` parameter'
         end
 
         super

@@ -8,14 +8,14 @@ module Mutations
       authorize :destroy_container_image
 
       argument :id,
-               ::Types::GlobalIDType[::ContainerRepository],
-               required: true,
-               description: 'ID of the container repository.'
+        ::Types::GlobalIDType[::ContainerRepository],
+        required: true,
+        description: 'ID of the container repository.'
 
       field :container_repository,
-            Types::ContainerRepositoryType,
-            null: false,
-            description: 'Container repository policy after scheduling the deletion.'
+        Types::ContainerRepositoryType,
+        null: false,
+        description: 'Container repository policy after scheduling the deletion.'
 
       def resolve(id:)
         container_repository = authorized_find!(id: id)

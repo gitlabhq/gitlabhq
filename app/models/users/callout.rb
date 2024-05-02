@@ -89,7 +89,8 @@ module Users
       deployment_details_feedback: 87,
       duo_chat_ga_alert: 88, # EE-only
       board_add_new_column_trigger_popover: 89,
-      deployment_approvals_empty_state: 90
+      deployment_approvals_empty_state: 90,
+      period_in_terraform_state_name_alert: 91
     }
 
     validates :feature_name,

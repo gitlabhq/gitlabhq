@@ -245,17 +245,17 @@ class MergeRequestsFinder < IssuableFinder
     elsif params.filter_by_any_reviewer?
       items.review_requested
     elsif params.reviewer
-      items.review_requested_to(params.reviewer, params[:review_state])
+      items.review_requested_to(params.reviewer, params.review_state)
     else # reviewer not found
       items.none
     end
   end
 
   def by_review_state(items)
-    return items unless params[:review_state]
+    return items unless params.review_state.present?
     return items if params.reviewer_id? || params.reviewer_username?
 
-    items.review_state(params[:review_state])
+    items.review_states(params.review_state)
   end
 
   def by_negated_reviewer(items)

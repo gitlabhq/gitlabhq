@@ -13,41 +13,41 @@ module Mutations
       end
 
       argument :project_path, GraphQL::Types::ID,
-               required: true,
-               description: 'Project full path the branch is associated with.'
+        required: true,
+        description: 'Project full path the branch is associated with.'
 
       argument :branch, GraphQL::Types::String,
-               required: true,
-               description: 'Name of the branch to commit into, it can be a new branch.'
+        required: true,
+        description: 'Name of the branch to commit into, it can be a new branch.'
 
       argument :start_branch, GraphQL::Types::String,
-               required: false,
-               description: 'If on a new branch, name of the original branch.'
+        required: false,
+        description: 'If on a new branch, name of the original branch.'
 
       argument :message,
-               GraphQL::Types::String,
-               required: true,
-               description: copy_field_description(Types::CommitType, :message)
+        GraphQL::Types::String,
+        required: true,
+        description: copy_field_description(Types::CommitType, :message)
 
       argument :actions,
-               [Types::CommitActionType],
-               required: true,
-               description: 'Array of action hashes to commit as a batch.'
+        [Types::CommitActionType],
+        required: true,
+        description: 'Array of action hashes to commit as a batch.'
 
       field :commit_pipeline_path,
-            GraphQL::Types::String,
-            null: true,
-            description: "ETag path for the commit's pipeline."
+        GraphQL::Types::String,
+        null: true,
+        description: "ETag path for the commit's pipeline."
 
       field :commit,
-            Types::CommitType,
-            null: true,
-            description: 'Commit after mutation.'
+        Types::CommitType,
+        null: true,
+        description: 'Commit after mutation.'
 
       field :content,
-            [GraphQL::Types::String],
-            null: true,
-            description: 'Contents of the commit.'
+        [GraphQL::Types::String],
+        null: true,
+        description: 'Contents of the commit.'
 
       authorize :push_code
 

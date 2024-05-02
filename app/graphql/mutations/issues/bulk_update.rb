@@ -59,7 +59,7 @@ module Mutations
 
         if args[:ids].size > MAX_ISSUES
           raise Gitlab::Graphql::Errors::ArgumentError,
-                format(_('No more than %{max_issues} issues can be updated at the same time'), max_issues: MAX_ISSUES)
+            format(_('No more than %{max_issues} issues can be updated at the same time'), max_issues: MAX_ISSUES)
         end
 
         super

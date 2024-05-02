@@ -5,6 +5,7 @@ import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { s__ } from '~/locale';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
+import { joinPaths } from '~/lib/utils/url_utility';
 import getUserAchievements from './graphql/get_user_achievements.query.graphql';
 
 export const MAX_VISIBLE_ACHIEVEMENTS = 7;
@@ -53,7 +54,7 @@ export default {
             description,
             namespace: namespace && {
               fullPath: namespace.fullPath,
-              webUrl: this.rootUrl + namespace.fullPath,
+              webUrl: joinPaths(this.rootUrl, namespace.achievementsPath),
             },
             count,
           };

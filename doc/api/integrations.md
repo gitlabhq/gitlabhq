@@ -1189,6 +1189,8 @@ Parameters:
 | `commit_events` | boolean | false | Enable notifications for commit events. |
 | `merge_requests_events` | boolean | false | Enable notifications for merge request events. |
 | `comment_on_event_enabled` | boolean | false | Enable comments in Jira issues on each GitLab event (commit or merge request). |
+| `issues_enabled` | boolean | false | Enable viewing Jira issues in GitLab. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267015) in GitLab 17.0. |
+| `project_keys` | array of strings | false | Keys of Jira projects. When `issues_enabled` is `true`, this setting specifies which Jira projects to view issues from in GitLab. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267015) in GitLab 17.0. |
 
 ### Disable Jira
 

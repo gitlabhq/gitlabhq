@@ -363,6 +363,18 @@ module API
             },
             {
               required: false,
+              name: :issues_enabled,
+              type: ::Grape::API::Boolean,
+              desc: 'Enable viewing Jira issues in GitLab'
+            },
+            {
+              required: false,
+              name: :project_keys,
+              type: Array[String],
+              desc: 'Keys of Jira projects to view issues from in GitLab'
+            },
+            {
+              required: false,
               name: :comment_on_event_enabled,
               type: ::Grape::API::Boolean,
               desc: 'Enable comments inside Jira issues on each GitLab event (commit / merge request)'

@@ -92,6 +92,10 @@ module Resolvers
             required: false,
             description: 'Reviewer state of the merge request.',
             alpha: { milestone: '17.0' }
+    argument :review_states, [::Types::MergeRequestReviewStateEnum],
+            required: false,
+            description: 'Reviewer states of the merge request.',
+            alpha: { milestone: '17.0' }
     argument :sort, Types::MergeRequestSortEnum,
              description: 'Sort merge requests by this criteria.',
              required: false,

@@ -6,9 +6,9 @@ module Mutations
       graphql_name 'IssueMove'
 
       argument :target_project_path,
-               GraphQL::Types::ID,
-               required: true,
-               description: 'Project to move the issue to.'
+        GraphQL::Types::ID,
+        required: true,
+        description: 'Project to move the issue to.'
 
       def resolve(project_path:, iid:, target_project_path:)
         Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/20816')

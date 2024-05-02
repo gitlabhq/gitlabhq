@@ -268,7 +268,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       it 'returns the subscribe message' do
         _, _, message = service.execute(content, issuable)
 
-        expect(message).to eq("Subscribed to this #{issuable.to_ability_name.humanize(capitalize: false)}.")
+        expect(message).to eq("Subscribed to notifications.")
       end
     end
 
@@ -284,7 +284,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
         issuable.subscribe(developer, project)
         _, _, message = service.execute(content, issuable)
 
-        expect(message).to eq("Unsubscribed from this #{issuable.to_ability_name.humanize(capitalize: false)}.")
+        expect(message).to eq("Unsubscribed from notifications.")
       end
     end
 
@@ -643,7 +643,9 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       it 'returns the confidential message' do
         _, _, message = service.execute(content, issuable)
 
-        expect(message).to eq('Made this issue confidential.')
+        issuable_type = issuable.to_ability_name.humanize(capitalize: false)
+
+        expect(message).to eq("Made this #{issuable_type} confidential.")
       end
 
       context 'when issuable is already confidential' do
@@ -1607,6 +1609,12 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       it_behaves_like 'confidential command' do
         let(:content) { '/confidential' }
         let(:issuable) { issue }
+      end
+
+      it_behaves_like 'confidential command' do
+        let_it_be(:work_item) { create(:work_item, :task, project: project) }
+        let(:content) { '/confidential' }
+        let(:issuable) { work_item }
       end
 
       it_behaves_like 'confidential command' do
@@ -2857,7 +2865,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       it 'returns success message' do
         _, _, message = service.execute(content, work_item)
 
-        expect(message).to eq('Work item parent set successfully')
+        expect(message).to eq('Parent set successfully')
       end
 
       it 'sets correct update params' do
@@ -2891,14 +2899,14 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
           _, explanations = service.explain(content, work_item)
 
           expect(explanations)
-            .to contain_exactly("Remove #{parent.to_reference(work_item)} as this work item's parent.")
+            .to contain_exactly("Remove #{parent.to_reference(work_item)} as this item's parent.")
         end
 
         it 'returns success message' do
           _, updates, message = service.execute(content, work_item)
 
           expect(updates).to eq(remove_parent: true)
-          expect(message).to eq('Work item parent removed successfully')
+          expect(message).to eq('Parent removed successfully')
         end
       end
     end
@@ -3075,7 +3083,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       it 'includes issuable name' do
         _, explanations = service.explain(content, issue)
 
-        expect(explanations).to eq(['Subscribes to this issue.'])
+        expect(explanations).to eq(['Subscribes to notifications.'])
       end
     end
 
@@ -3086,7 +3094,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
         merge_request.subscribe(developer, project)
         _, explanations = service.explain(content, merge_request)
 
-        expect(explanations).to eq(['Unsubscribes from this merge request.'])
+        expect(explanations).to eq(['Unsubscribes from notifications.'])
       end
     end
 
@@ -3382,7 +3390,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
         _, explanations = service.explain(command, work_item)
 
         expect(explanations)
-          .to contain_exactly("Converts work item to issue. Widgets not supported in new type are removed.")
+          .to contain_exactly("Converts item to issue. Widgets not supported in new type are removed.")
       end
     end
 
@@ -3433,7 +3441,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
 
         it 'includes the value' do
           _, explanations = service.explain(content, task)
-          expect(explanations).to eq(['Promotes work item to issue.'])
+          expect(explanations).to eq(['Promotes item to issue.'])
         end
       end
 
@@ -3459,7 +3467,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
           _, explanations = service.explain(command, work_item)
 
           expect(explanations)
-            .to contain_exactly("Change work item's parent to #{parent_ref}.")
+            .to contain_exactly("Change item's parent to #{parent_ref}.")
         end
 
         it 'contains command' do
@@ -3508,7 +3516,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
           _, explanations = service.explain(command, work_item)
 
           expect(explanations)
-            .to contain_exactly("Add #{child_ref} to this work item as child(ren).")
+            .to contain_exactly("Add #{child_ref} as a child item.")
         end
 
         it 'contains command' do
@@ -3561,7 +3569,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
           _, explanations = service.explain(command, work_item)
 
           expect(explanations)
-            .to contain_exactly("Remove the child #{child_ref} from this work item.")
+            .to contain_exactly("Remove #{child_ref} as a child item.")
         end
 
         it 'contains command' do

@@ -166,12 +166,8 @@ module Gitlab
         end
 
         desc { _('Subscribe') }
-        explanation do
-          _('Subscribes to this %{quick_action_target}.') % { quick_action_target: target_issuable_name }
-        end
-        execution_message do
-          _('Subscribed to this %{quick_action_target}.') % { quick_action_target: target_issuable_name }
-        end
+        explanation { _('Subscribes to notifications.') }
+        execution_message { _('Subscribed to notifications.') }
         types ::Issuable
         condition do
           quick_action_target.persisted? &&
@@ -182,12 +178,8 @@ module Gitlab
         end
 
         desc { _('Unsubscribe') }
-        explanation do
-          _('Unsubscribes from this %{quick_action_target}.') % { quick_action_target: target_issuable_name }
-        end
-        execution_message do
-          _('Unsubscribed from this %{quick_action_target}.') % { quick_action_target: target_issuable_name }
-        end
+        explanation { _('Unsubscribes from notifications.') }
+        execution_message { _('Unsubscribed from notifications.') }
         types ::Issuable
         condition do
           quick_action_target.persisted? &&
@@ -259,7 +251,7 @@ module Gitlab
           end
         end
 
-        desc { _("Make %{type} confidential") % { type: target_issuable_name } }
+        desc { _("Turn on confidentiality") }
         explanation { _("Makes this %{type} confidential.") % { type: target_issuable_name } }
         types ::Issuable
         condition { quick_action_target.supports_confidentiality? && can_make_confidential? }
@@ -320,7 +312,11 @@ module Gitlab
         end
 
         def target_issuable_name
-          quick_action_target.to_ability_name.humanize(capitalize: false)
+          if quick_action_target.to_ability_name == "work_item"
+            _('item')
+          else
+            quick_action_target.to_ability_name.humanize(capitalize: false)
+          end
         end
 
         def can_make_confidential?

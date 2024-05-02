@@ -401,6 +401,12 @@ RSpec.configure do |config|
     end
   end
 
+  config.around(:example, :allow_unrouted_sidekiq_calls) do |example|
+    ::Gitlab::SidekiqSharding::Validator.allow_unrouted_sidekiq_calls do
+      example.run
+    end
+  end
+
   # previous test runs may have left some resources throttled
   config.before do
     ::Gitlab::ExclusiveLease.reset_all!("el:throttle:*")
@@ -433,6 +439,12 @@ RSpec.configure do |config|
       chain.add DisableQueryLimit
       chain.insert_after ::Gitlab::SidekiqMiddleware::RequestStoreMiddleware, IsolatedRequestStore
 
+      example.run
+    end
+  end
+
+  config.around do |example|
+    Gitlab::SidekiqSharding::Validator.enabled do
       example.run
     end
   end

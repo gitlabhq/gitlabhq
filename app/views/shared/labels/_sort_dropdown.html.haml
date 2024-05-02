@@ -1,3 +1,2 @@
-- show_relevance = Feature.enabled?(:label_similarity_sort, @project) || Feature.enabled?(:label_similarity_sort, @group)
-- label_sort_options = label_sort_options_hash(show_relevance).map { |value, text| { value: value, text: text, href: page_filter_path(sort: value) } }
+- label_sort_options = label_sort_options_hash.map { |value, text| { value: value, text: text, href: page_filter_path(sort: value) } }
 = gl_redirect_listbox_tag label_sort_options, @sort, data: { placement: 'right' }
