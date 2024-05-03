@@ -19,7 +19,7 @@ import WorkItemRelationships from '~/work_items/components/work_item_relationshi
 import WorkItemNotes from '~/work_items/components/work_item_notes.vue';
 import WorkItemDetailModal from '~/work_items/components/work_item_detail_modal.vue';
 import WorkItemStickyHeader from '~/work_items/components/work_item_sticky_header.vue';
-import WorkItemTitleWithEdit from '~/work_items/components/work_item_title_with_edit.vue';
+import WorkItemTitle from '~/work_items/components/work_item_title.vue';
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
 import WorkItemTodos from '~/work_items/components/work_item_todos.vue';
 import DesignWidget from '~/work_items/components/design_management/design_management_widget.vue';
@@ -75,7 +75,7 @@ describe('WorkItemDetail component', () => {
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findWorkItemLoading = () => wrapper.findComponent(WorkItemLoading);
   const findWorkItemActions = () => wrapper.findComponent(WorkItemActions);
-  const findWorkItemTitle = () => wrapper.findComponent(WorkItemTitleWithEdit);
+  const findWorkItemTitle = () => wrapper.findComponent(WorkItemTitle);
   const findCreatedUpdated = () => wrapper.findComponent(WorkItemCreatedUpdated);
   const findWorkItemDescription = () => wrapper.findComponent(WorkItemDescription);
   const findWorkItemAttributesWrapper = () => wrapper.findComponent(WorkItemAttributesWrapper);

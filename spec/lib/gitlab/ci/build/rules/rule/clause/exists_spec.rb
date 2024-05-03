@@ -35,7 +35,6 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Exists, feature_category:
 
     context 'when there are no globs' do
       let(:globs) { [] }
-      let(:project_path) { 'temp' } # Remove when FF `ci_support_rules_exists_paths_and_project` is removed
       let(:context) { Gitlab::Ci::Config::External::Context.new(project: project) }
 
       it { is_expected.to be_falsey }
@@ -77,125 +76,125 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Exists, feature_category:
 
         it { is_expected.to be_truthy }
       end
-    end
 
-    # Merge this into 'a rules:exists with a context' when FF `ci_support_rules_exists_paths_and_project` is removed
-    shared_examples 'when rules:exists:project is provided' do
-      let(:globs) { ['file.txt'] }
-      let(:project_path) { other_project.full_path }
+      context 'when rules:exists:project is provided' do
+        let(:globs) { ['file.txt'] }
+        let(:project_path) { other_project.full_path }
 
-      context 'when the user has access to the project' do
-        before_all do
-          other_project.add_developer(user)
-        end
-
-        it { is_expected.to be_truthy }
-
-        context 'when the file does not exist on the project' do
-          let(:globs) { ['file_does_not_exist.txt'] }
-
-          it { is_expected.to be_falsey }
-        end
-
-        context 'when the project path contains a variable' do
-          let(:globs) { ['$FILE_TXT'] }
-
-          it { is_expected.to be_truthy }
-        end
-
-        context 'when the project path is invalid' do
-          let(:project_path) { 'invalid/path' }
-
-          it 'raises an error' do
-            expect { satisfied_by? }.to raise_error(
-              Gitlab::Ci::Build::Rules::Rule::Clause::ParseError,
-              "rules:exists:project `invalid/path` is not a valid project path"
-            )
+        context 'when the user has access to the project' do
+          before_all do
+            other_project.add_developer(user)
           end
-
-          context 'when the project path contains a variable' do
-            let(:project_path) { 'invalid/path/$SUBDIR' }
-
-            it 'raises an error' do
-              expect { satisfied_by? }.to raise_error(
-                Gitlab::Ci::Build::Rules::Rule::Clause::ParseError,
-                "rules:exists:project `invalid/path/subdir` is not a valid project path"
-              )
-            end
-          end
-
-          context 'when the project path contains a masked variable' do
-            let(:project_path) { 'invalid/path/$MASKED_VAR' }
-
-            it 'raises an error with the variable masked' do
-              expect { satisfied_by? }.to raise_error(
-                Gitlab::Ci::Build::Rules::Rule::Clause::ParseError,
-                "rules:exists:project `invalid/path/xxxxxxxxxxxx` is not a valid project path"
-              )
-            end
-          end
-        end
-
-        context 'with ref:' do
-          let(:globs) { ['file_on_new_branch.txt'] }
-          let(:ref) { 'new_branch' }
 
           it { is_expected.to be_truthy }
 
-          context 'when the file does not exist on the ref' do
-            let(:ref) { other_project.commit.sha }
+          context 'when the file does not exist on the project' do
+            let(:globs) { ['file_does_not_exist.txt'] }
 
             it { is_expected.to be_falsey }
           end
 
-          context 'when the ref contains a variable' do
-            let(:ref) { '$NEW_BRANCH' }
+          context 'when the project path contains a variable' do
+            let(:globs) { ['$FILE_TXT'] }
 
             it { is_expected.to be_truthy }
           end
 
-          context 'when the ref is invalid' do
-            let(:ref) { 'invalid/ref' }
+          context 'when the project path is invalid' do
+            let(:project_path) { 'invalid/path' }
 
             it 'raises an error' do
               expect { satisfied_by? }.to raise_error(
                 Gitlab::Ci::Build::Rules::Rule::Clause::ParseError,
-                "rules:exists:ref `invalid/ref` is not a valid ref in project `#{other_project.full_path}`"
+                "rules:exists:project `invalid/path` is not a valid project path"
               )
             end
 
-            context 'when the ref contains a variable' do
-              let(:ref) { 'invalid/ref/$NEW_BRANCH' }
+            context 'when the project path contains a variable' do
+              let(:project_path) { 'invalid/path/$SUBDIR' }
 
               it 'raises an error' do
                 expect { satisfied_by? }.to raise_error(
                   Gitlab::Ci::Build::Rules::Rule::Clause::ParseError,
-                  "rules:exists:ref `invalid/ref/new_branch` is not a valid ref in project `#{other_project.full_path}`"
+                  "rules:exists:project `invalid/path/subdir` is not a valid project path"
                 )
               end
             end
 
-            context 'when the ref contains a masked variable' do
-              let(:ref) { 'invalid/ref/$MASKED_VAR' }
+            context 'when the project path contains a masked variable' do
+              let(:project_path) { 'invalid/path/$MASKED_VAR' }
 
-              it 'raises an error' do
+              it 'raises an error with the variable masked' do
                 expect { satisfied_by? }.to raise_error(
                   Gitlab::Ci::Build::Rules::Rule::Clause::ParseError,
-                  "rules:exists:ref `invalid/ref/xxxxxxxxxxxx` is not a valid ref " \
-                  "in project `#{other_project.full_path}`"
+                  "rules:exists:project `invalid/path/xxxxxxxxxxxx` is not a valid project path"
                 )
               end
             end
           end
-        end
-      end
 
-      context 'when the user does not have access to the project' do
-        it 'raises an error' do
-          expect { satisfied_by? }.to raise_error(
-            Gitlab::Ci::Build::Rules::Rule::Clause::ParseError,
-            "rules:exists:project access denied to project `#{other_project.full_path}`"
-          )
+          context 'with ref:' do
+            let(:globs) { ['file_on_new_branch.txt'] }
+            let(:ref) { 'new_branch' }
+
+            it { is_expected.to be_truthy }
+
+            context 'when the file does not exist on the ref' do
+              let(:ref) { other_project.commit.sha }
+
+              it { is_expected.to be_falsey }
+            end
+
+            context 'when the ref contains a variable' do
+              let(:ref) { '$NEW_BRANCH' }
+
+              it { is_expected.to be_truthy }
+            end
+
+            context 'when the ref is invalid' do
+              let(:ref) { 'invalid/ref' }
+
+              it 'raises an error' do
+                expect { satisfied_by? }.to raise_error(
+                  Gitlab::Ci::Build::Rules::Rule::Clause::ParseError,
+                  "rules:exists:ref `invalid/ref` is not a valid ref in project `#{other_project.full_path}`"
+                )
+              end
+
+              context 'when the ref contains a variable' do
+                let(:ref) { 'invalid/ref/$NEW_BRANCH' }
+
+                it 'raises an error' do
+                  expect { satisfied_by? }.to raise_error(
+                    Gitlab::Ci::Build::Rules::Rule::Clause::ParseError,
+                    "rules:exists:ref `invalid/ref/new_branch` is not a valid ref " \
+                    "in project `#{other_project.full_path}`"
+                  )
+                end
+              end
+
+              context 'when the ref contains a masked variable' do
+                let(:ref) { 'invalid/ref/$MASKED_VAR' }
+
+                it 'raises an error' do
+                  expect { satisfied_by? }.to raise_error(
+                    Gitlab::Ci::Build::Rules::Rule::Clause::ParseError,
+                    "rules:exists:ref `invalid/ref/xxxxxxxxxxxx` is not a valid ref " \
+                    "in project `#{other_project.full_path}`"
+                  )
+                end
+              end
+            end
+          end
+        end
+
+        context 'when the user does not have access to the project' do
+          it 'raises an error' do
+            expect { satisfied_by? }.to raise_error(
+              Gitlab::Ci::Build::Rules::Rule::Clause::ParseError,
+              "rules:exists:project access denied to project `#{other_project.full_path}`"
+            )
+          end
         end
       end
     end
@@ -205,7 +204,6 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Exists, feature_category:
       let(:context) { Gitlab::Ci::Build::Context::Build.new(pipeline) }
 
       it_behaves_like 'a rules:exists with a context'
-      it_behaves_like 'when rules:exists:project is provided'
     end
 
     context 'when the rules are being evaluated for an entire pipeline' do
@@ -213,7 +211,6 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Exists, feature_category:
       let(:context) { Gitlab::Ci::Build::Context::Global.new(pipeline, yaml_variables: {}) }
 
       it_behaves_like 'a rules:exists with a context'
-      it_behaves_like 'when rules:exists:project is provided'
     end
 
     context 'when rules are being evaluated with `include`' do
@@ -223,61 +220,12 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Exists, feature_category:
       end
 
       it_behaves_like 'a rules:exists with a context'
-      it_behaves_like 'when rules:exists:project is provided'
 
       context 'when context has no project' do
         let(:globs) { ['Dockerfile'] }
         let(:project) {}
 
         it { is_expected.to be_falsey }
-      end
-    end
-
-    context 'when FF `ci_support_rules_exists_paths_and_project` is disabled' do
-      # We don't need to stub the FF; we just need to pass in an Array instead of Hash
-      let(:clause) { globs }
-
-      context 'when there are no globs' do
-        let(:globs) { [] }
-        let(:context) { Gitlab::Ci::Config::External::Context.new(project: project, sha: project.commit.sha) }
-
-        it { is_expected.to be_falsey }
-
-        it 'fetches worktree paths' do
-          expect(context).to receive(:top_level_worktree_paths).once
-
-          satisfied_by?
-        end
-      end
-
-      context 'when the rules are being evaluated at job level' do
-        it_behaves_like 'a rules:exists with a context' do
-          let(:pipeline) { build(:ci_pipeline, project: project, sha: project.repository.commit.sha) }
-          let(:context) { Gitlab::Ci::Build::Context::Build.new(pipeline, sha: project.repository.commit.sha) }
-        end
-      end
-
-      context 'when the rules are being evaluated for an entire pipeline' do
-        it_behaves_like 'a rules:exists with a context' do
-          let(:pipeline) { build(:ci_pipeline, project: project, sha: project.repository.commit.sha) }
-          let(:context) { Gitlab::Ci::Build::Context::Global.new(pipeline, yaml_variables: {}) }
-        end
-      end
-
-      context 'when rules are being evaluated with `include`' do
-        let(:context) { Gitlab::Ci::Config::External::Context.new(project: project, sha: sha) }
-
-        it_behaves_like 'a rules:exists with a context' do
-          let(:sha) { project.repository.commit.sha }
-        end
-
-        context 'when context has no project' do
-          let(:globs) { ['Dockerfile'] }
-          let(:project) {}
-          let(:sha) { 'abc1234' }
-
-          it { is_expected.to eq(false) }
-        end
       end
     end
   end

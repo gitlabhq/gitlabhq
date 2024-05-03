@@ -23,7 +23,7 @@ type failedReader struct {
 	io.Reader
 }
 
-func (r *failedReader) Read(p []byte) (int, error) {
+func (r *failedReader) Read(_ []byte) (int, error) {
 	origErr := fmt.Errorf("entity is too large")
 	return 0, awserr.New("Read", "read failed", origErr)
 }

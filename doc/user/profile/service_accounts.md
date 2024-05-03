@@ -147,7 +147,7 @@ You cannot directly disable or delete a service account. Instead, you must:
 
    For more information, see the [API documentation on removing a member from a group or project](../../api/members.md#remove-a-member-from-a-group-or-project).
 
-1. Revoke the personal access token using the [UI](personal_access_tokens.md#revoke-a-personal-access-token) or the [API](../../api/personal_access_tokens.md#revoke-a-personal-access-token).
+1. Revoke the personal access token by using the [API](../../api/personal_access_tokens.md#revoke-a-personal-access-token).
 
 ## Related topics
 

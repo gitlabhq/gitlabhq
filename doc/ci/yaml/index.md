@@ -4266,11 +4266,7 @@ job:
 ##### `rules:exists:paths`
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386040) in GitLab 16.11 [with a flag](../../administration/feature_flags.md) named `ci_support_rules_exists_paths_and_project`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available.
-To make it available, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `ci_support_rules_exists_paths_and_project`.
-On GitLab.com and GitLab Dedicated, this feature is not available.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/386040) in GitLab 17.0. Feature flag `ci_support_rules_exists_paths_and_project` removed.
 
 `rules:exists:paths` is the same as using [`rules:exists`](#rulesexists) without
 any subkeys. All additional details are the same.
@@ -4305,11 +4301,7 @@ In this example, both jobs have the same behavior.
 ##### `rules:exists:project`
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386040) in GitLab 16.11 [with a flag](../../administration/feature_flags.md) named `ci_support_rules_exists_paths_and_project`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available.
-To make it available, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `ci_support_rules_exists_paths_and_project`.
-On GitLab.com and GitLab Dedicated, this feature is not available.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/386040) in GitLab 17.0. Feature flag `ci_support_rules_exists_paths_and_project` removed.
 
 Use `rules:exists:project` to specify the location in which to search for the files
 listed under [`rules:exists:paths`](#rulesexistspaths). Must be used with `rules:exists:paths`.

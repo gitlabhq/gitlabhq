@@ -14,10 +14,11 @@ type dirOpener struct {
 	tmpDir string
 }
 
-func (o *dirOpener) OpenBucketURL(ctx context.Context, u *url.URL) (*blob.Bucket, error) {
+func (o *dirOpener) OpenBucketURL(_ context.Context, _ *url.URL) (*blob.Bucket, error) {
 	return fileblob.OpenBucket(o.tmpDir, nil)
 }
 
+// SetupGoCloudFileBucket sets up a local GoCloud bucket for testing purposes and returns the URL mux and bucket directory.
 func SetupGoCloudFileBucket(t *testing.T, scheme string) (m *blob.URLMux, bucketDir string) {
 	tmpDir := t.TempDir()
 
@@ -28,6 +29,7 @@ func SetupGoCloudFileBucket(t *testing.T, scheme string) (m *blob.URLMux, bucket
 	return mux, tmpDir
 }
 
+// GoCloudObjectExists is a helper function for checking if a GoCloud object exists.
 func GoCloudObjectExists(t *testing.T, bucketDir string, objectName string) {
 	bucket, err := fileblob.OpenBucket(bucketDir, nil)
 	require.NoError(t, err)

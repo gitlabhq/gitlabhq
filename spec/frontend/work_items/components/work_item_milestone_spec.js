@@ -1,7 +1,7 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import WorkItemMilestone from '~/work_items/components/work_item_milestone_with_edit.vue';
-import WorkItemSidebarDropdownWidgetWithEdit from '~/work_items/components/shared/work_item_sidebar_dropdown_widget_with_edit.vue';
+import WorkItemMilestone from '~/work_items/components/work_item_milestone.vue';
+import WorkItemSidebarDropdownWidget from '~/work_items/components/shared/work_item_sidebar_dropdown_widget.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { mockTracking } from 'helpers/tracking_helper';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -17,7 +17,7 @@ import {
   updateWorkItemMutationResponse,
 } from '../mock_data';
 
-describe('WorkItemMilestoneWithEdit component', () => {
+describe('WorkItemMilestone component', () => {
   Vue.use(VueApollo);
 
   let wrapper;
@@ -25,8 +25,7 @@ describe('WorkItemMilestoneWithEdit component', () => {
   const workItemId = 'gid://gitlab/WorkItem/1';
   const workItemType = 'Task';
 
-  const findSidebarDropdownWidget = () =>
-    wrapper.findComponent(WorkItemSidebarDropdownWidgetWithEdit);
+  const findSidebarDropdownWidget = () => wrapper.findComponent(WorkItemSidebarDropdownWidget);
 
   const successSearchQueryHandler = jest.fn().mockResolvedValue(projectMilestonesResponse);
   const successSearchWithNoMatchingMilestones = jest

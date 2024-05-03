@@ -14,8 +14,8 @@ import projectLabelsQuery from '~/sidebar/components/labels/labels_select_widget
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import groupWorkItemByIidQuery from '~/work_items/graphql/group_work_item_by_iid.query.graphql';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
-import WorkItemLabelsWithEdit from '~/work_items/components/work_item_labels_with_edit.vue';
-import WorkItemSidebarDropdownWidgetWithEdit from '~/work_items/components/shared/work_item_sidebar_dropdown_widget_with_edit.vue';
+import WorkItemLabels from '~/work_items/components/work_item_labels.vue';
+import WorkItemSidebarDropdownWidget from '~/work_items/components/shared/work_item_sidebar_dropdown_widget.vue';
 import {
   groupWorkItemByIidResponseFactory,
   projectLabelsResponse,
@@ -31,7 +31,7 @@ Vue.use(VueApollo);
 
 const workItemId = 'gid://gitlab/WorkItem/1';
 
-describe('WorkItemLabelsWithEdit component', () => {
+describe('WorkItemLabels component', () => {
   let wrapper;
 
   const label1Id = mockLabels[0].id;
@@ -76,7 +76,7 @@ describe('WorkItemLabelsWithEdit component', () => {
     updateWorkItemMutationHandler = successUpdateWorkItemMutationHandler,
     workItemIid = '1',
   } = {}) => {
-    wrapper = shallowMountExtended(WorkItemLabelsWithEdit, {
+    wrapper = shallowMountExtended(WorkItemLabels, {
       apolloProvider: createMockApollo([
         [workItemByIidQuery, workItemQueryHandler],
         [groupWorkItemByIidQuery, groupWorkItemQuerySuccess],
@@ -99,7 +99,7 @@ describe('WorkItemLabelsWithEdit component', () => {
   };
 
   const findWorkItemSidebarDropdownWidget = () =>
-    wrapper.findComponent(WorkItemSidebarDropdownWidgetWithEdit);
+    wrapper.findComponent(WorkItemSidebarDropdownWidget);
   const findAllLabels = () => wrapper.findAllComponents(GlLabel);
   const findRegularLabel = () => findAllLabels().at(0);
   const findLabelWithDescription = () => findAllLabels().at(2);

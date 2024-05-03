@@ -45,7 +45,7 @@ import WorkItemAwardEmoji from './work_item_award_emoji.vue';
 import WorkItemRelationships from './work_item_relationships/work_item_relationships.vue';
 import WorkItemStickyHeader from './work_item_sticky_header.vue';
 import WorkItemAncestors from './work_item_ancestors/work_item_ancestors.vue';
-import WorkItemTitleWithEdit from './work_item_title_with_edit.vue';
+import WorkItemTitle from './work_item_title.vue';
 import WorkItemLoading from './work_item_loading.vue';
 import DesignWidget from './design_management/design_management_widget.vue';
 
@@ -74,7 +74,7 @@ export default {
     WorkItemRelationships,
     WorkItemStickyHeader,
     WorkItemAncestors,
-    WorkItemTitleWithEdit,
+    WorkItemTitle,
     WorkItemLoading,
   },
   mixins: [glFeatureFlagMixin()],
@@ -456,7 +456,7 @@ export default {
             :class="titleClassHeader"
             data-testid="work-item-type"
           >
-            <work-item-title-with-edit
+            <work-item-title
               v-if="workItem.title"
               ref="title"
               :is-editing="editMode"
@@ -527,7 +527,7 @@ export default {
           />
         </div>
         <div>
-          <work-item-title-with-edit
+          <work-item-title
             v-if="workItem.title && parentWorkItem"
             ref="title"
             :is-editing="editMode"

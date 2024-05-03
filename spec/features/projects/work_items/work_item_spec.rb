@@ -58,7 +58,7 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
 
       it 'reassigns to another user',
         quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/413074' do
-        within_testid('work-item-assignees-with-edit') do
+        within_testid('work-item-assignees') do
           click_button 'Edit'
         end
 
@@ -66,7 +66,7 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
 
         wait_for_requests
 
-        within_testid('work-item-assignees-with-edit') do
+        within_testid('work-item-assignees') do
           click_button 'Edit'
         end
 
@@ -145,13 +145,13 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
       end
 
       it 'hides the assignees edit button' do
-        within_testid('work-item-assignees-with-edit') do
+        within_testid('work-item-assignees') do
           expect(page).not_to have_button('Edit')
         end
       end
 
       it 'hides the labels edit button' do
-        within_testid('work-item-labels-with-edit') do
+        within_testid('work-item-labels') do
           expect(page).not_to have_button('Edit')
         end
       end

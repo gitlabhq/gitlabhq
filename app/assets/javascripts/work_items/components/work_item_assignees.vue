@@ -7,7 +7,7 @@ import usersSearchQuery from '~/graphql_shared/queries/workspace_autocomplete_us
 import InviteMembersTrigger from '~/invite_members/components/invite_members_trigger.vue';
 import SidebarParticipant from '~/sidebar/components/assignees/sidebar_participant.vue';
 import UncollapsedAssigneeList from '~/sidebar/components/assignees/uncollapsed_assignee_list.vue';
-import WorkItemSidebarDropdownWidgetWithEdit from '~/work_items/components/shared/work_item_sidebar_dropdown_widget_with_edit.vue';
+import WorkItemSidebarDropdownWidget from '~/work_items/components/shared/work_item_sidebar_dropdown_widget.vue';
 import { s__, sprintf, __ } from '~/locale';
 import Tracking from '~/tracking';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
@@ -15,7 +15,7 @@ import { i18n, TRACKING_CATEGORY_SHOW } from '../constants';
 
 export default {
   components: {
-    WorkItemSidebarDropdownWidgetWithEdit,
+    WorkItemSidebarDropdownWidget,
     InviteMembersTrigger,
     SidebarParticipant,
     GlButton,
@@ -294,7 +294,7 @@ export default {
 </script>
 
 <template>
-  <work-item-sidebar-dropdown-widget-with-edit
+  <work-item-sidebar-dropdown-widget
     :multi-select="allowsMultipleAssignees"
     class="issuable-assignees gl-mt-2"
     :dropdown-label="dropdownLabel"
@@ -309,7 +309,7 @@ export default {
     :update-in-progress="updateInProgress"
     :reset-button-label="__('Clear')"
     clear-search-on-item-select
-    data-testid="work-item-assignees-with-edit"
+    data-testid="work-item-assignees"
     @dropdownShown="onDropdownShown"
     @searchStarted="setSearchKey"
     @updateValue="handleAssigneesInput"
@@ -325,7 +325,7 @@ export default {
           :display-text="__('Invite members')"
           trigger-element="side-nav"
           icon="plus"
-          trigger-source="work-item-assignees-with-edit"
+          trigger-source="work-item-assignees"
           classes="gl-hover-text-decoration-none! gl-pb-2"
         />
       </gl-button>
@@ -349,5 +349,5 @@ export default {
         show-less-assignees-class="gl-hover-bg-transparent!"
       />
     </template>
-  </work-item-sidebar-dropdown-widget-with-edit>
+  </work-item-sidebar-dropdown-widget>
 </template>

@@ -27,7 +27,7 @@ func TestS3SessionSetup(t *testing.T) {
 	require.True(t, aws.BoolValue(sess.Config.S3ForcePathStyle))
 
 	sessionCache.Lock()
-	require.Equal(t, 1, len(sessionCache.sessions))
+	require.Len(t, sessionCache.sessions, 1)
 	sessionCache.Unlock()
 
 	anotherConfig := cfg
@@ -35,7 +35,7 @@ func TestS3SessionSetup(t *testing.T) {
 	require.NoError(t, err)
 
 	sessionCache.Lock()
-	require.Equal(t, 1, len(sessionCache.sessions))
+	require.Len(t, sessionCache.sessions, 1)
 	sessionCache.Unlock()
 }
 

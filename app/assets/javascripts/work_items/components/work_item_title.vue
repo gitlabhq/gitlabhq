@@ -1,105 +1,45 @@
 <script>
-import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import Tracking from '~/tracking';
-import {
-  sprintfWorkItem,
-  I18N_WORK_ITEM_ERROR_UPDATING,
-  TRACKING_CATEGORY_SHOW,
-  WORK_ITEM_TITLE_MAX_LENGTH,
-  I18N_MAX_CHARS_IN_WORK_ITEM_TITLE_MESSAGE,
-} from '../constants';
-import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
-import ItemTitle from './item_title.vue';
+import { GlFormGroup, GlFormInput } from '@gitlab/ui';
+import { __ } from '~/locale';
 
 export default {
   components: {
-    ItemTitle,
+    GlFormGroup,
+    GlFormInput,
   },
-  mixins: [Tracking.mixin()],
+  i18n: {
+    titleLabel: __('Title (required)'),
+  },
   props: {
-    workItemId: {
+    title: {
       type: String,
-      required: false,
-      default: '',
+      required: true,
     },
-    workItemTitle: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    workItemType: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    canUpdate: {
+    isEditing: {
       type: Boolean,
       required: false,
       default: false,
-    },
-    useH1: {
-      type: Boolean,
-      default: false,
-      required: false,
-    },
-  },
-  computed: {
-    tracking() {
-      return {
-        category: TRACKING_CATEGORY_SHOW,
-        label: 'item_title',
-        property: `type_${this.workItemType}`,
-      };
-    },
-  },
-  methods: {
-    async updateTitle(updatedTitle) {
-      if (updatedTitle === this.workItemTitle) {
-        return;
-      }
-
-      if (updatedTitle.length > WORK_ITEM_TITLE_MAX_LENGTH) {
-        this.$emit('error', sprintfWorkItem(I18N_MAX_CHARS_IN_WORK_ITEM_TITLE_MESSAGE));
-        return;
-      }
-
-      this.updateInProgress = true;
-
-      try {
-        this.track('updated_title');
-
-        const { data } = await this.$apollo.mutate({
-          mutation: updateWorkItemMutation,
-          variables: {
-            input: {
-              id: this.workItemId,
-              title: updatedTitle,
-            },
-          },
-        });
-
-        const errors = data.workItemUpdate?.errors;
-
-        if (errors?.length) {
-          throw new Error(errors[0]);
-        }
-      } catch (error) {
-        const msg = sprintfWorkItem(I18N_WORK_ITEM_ERROR_UPDATING, this.workItemType);
-        this.$emit('error', msg);
-        Sentry.captureException(error);
-      }
-
-      this.updateInProgress = false;
     },
   },
 };
 </script>
 
 <template>
-  <item-title
-    :title="workItemTitle"
-    :disabled="!canUpdate"
-    :use-h1="useH1"
-    @title-changed="updateTitle"
-  />
+  <gl-form-group v-if="isEditing" :label="$options.i18n.titleLabel" label-for="work-item-title">
+    <gl-form-input
+      class="gl-w-full"
+      :value="title"
+      data-testid="work-item-title-input"
+      @keydown.meta.enter="$emit('updateWorkItem')"
+      @keydown.ctrl.enter="$emit('updateWorkItem')"
+      @input="$emit('updateDraft', $event)"
+    />
+  </gl-form-group>
+  <h1
+    v-else
+    data-testid="work-item-title"
+    class="gl-w-full gl-font-weight-normal gl-sm-font-weight-bold gl-mb-1 gl-mt-0 gl-font-size-h-display"
+  >
+    {{ title }}
+  </h1>
 </template>

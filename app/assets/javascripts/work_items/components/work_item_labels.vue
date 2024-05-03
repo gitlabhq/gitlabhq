@@ -3,7 +3,7 @@ import { GlLabel } from '@gitlab/ui';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import { difference } from 'lodash';
 import { __, n__ } from '~/locale';
-import WorkItemSidebarDropdownWidgetWithEdit from '~/work_items/components/shared/work_item_sidebar_dropdown_widget_with_edit.vue';
+import WorkItemSidebarDropdownWidget from '~/work_items/components/shared/work_item_sidebar_dropdown_widget.vue';
 import groupLabelsQuery from '~/sidebar/components/labels/labels_select_widget/graphql/group_labels.query.graphql';
 import projectLabelsQuery from '~/sidebar/components/labels/labels_select_widget/graphql/project_labels.query.graphql';
 import { isScopedLabel } from '~/lib/utils/common_utils';
@@ -16,7 +16,7 @@ import { isLabelsWidget } from '../utils';
 
 export default {
   components: {
-    WorkItemSidebarDropdownWidgetWithEdit,
+    WorkItemSidebarDropdownWidget,
     GlLabel,
   },
   mixins: [Tracking.mixin()],
@@ -230,7 +230,7 @@ export default {
 </script>
 
 <template>
-  <work-item-sidebar-dropdown-widget-with-edit
+  <work-item-sidebar-dropdown-widget
     :dropdown-label="__('Labels')"
     :can-update="canUpdate"
     dropdown-name="label"
@@ -243,7 +243,7 @@ export default {
     :reset-button-label="__('Clear')"
     :multi-select="true"
     clear-search-on-item-select
-    data-testid="work-item-labels-with-edit"
+    data-testid="work-item-labels"
     @dropdownShown="onDropdownShown"
     @searchStarted="search"
     @updateValue="updateLabels"
@@ -274,5 +274,5 @@ export default {
         />
       </div>
     </template>
-  </work-item-sidebar-dropdown-widget-with-edit>
+  </work-item-sidebar-dropdown-widget>
 </template>

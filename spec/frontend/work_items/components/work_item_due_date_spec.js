@@ -7,14 +7,14 @@ import { stubComponent } from 'helpers/stub_component';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { Mousetrap } from '~/lib/mousetrap';
-import WorkItemDueDate from '~/work_items/components/work_item_due_date_with_edit.vue';
+import WorkItemDueDate from '~/work_items/components/work_item_due_date.vue';
 import { TRACKING_CATEGORY_SHOW } from '~/work_items/constants';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import { updateWorkItemMutationResponse, updateWorkItemMutationErrorResponse } from '../mock_data';
 
 Vue.use(VueApollo);
 
-describe('WorkItemDueDateWithEdit component', () => {
+describe('WorkItemDueDate component', () => {
   let wrapper;
 
   const startDateShowSpy = jest.fn();

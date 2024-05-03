@@ -43,7 +43,7 @@ var (
 	// (via curl http://169.254.169.254/latest/meta-data/iam/security-credentials/<role_name>),
 	// but this may be configurable from anywhere for 15 minutes to 12
 	// hours. To be safe, refresh AWS sessions every 10 minutes.
-	sessionExpiration = time.Duration(10 * time.Minute)
+	sessionExpiration = 10 * time.Minute
 	sessionCache      = &s3SessionCache{sessions: make(map[config.S3Config]*s3Session)}
 )
 

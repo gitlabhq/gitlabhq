@@ -13,27 +13,18 @@ module Gitlab
         WILDCARD_NESTED_PATTERN = "**/*"
 
         def initialize(clause)
-          # Remove this variable when FF `ci_support_rules_exists_paths_and_project` is removed
-          @clause = clause
-
-          if complex_exists_enabled?
-            @globs = Array(clause[:paths])
-            @project_path = clause[:project]
-            @ref = clause[:ref]
-          else
-            @globs = Array(clause)
-          end
+          @globs = Array(clause[:paths])
+          @project_path = clause[:project]
+          @ref = clause[:ref]
 
           @top_level_only = @globs.all?(&method(:top_level_glob?))
         end
 
         def satisfied_by?(_pipeline, context)
-          if complex_exists_enabled? && @project_path
-            # Return early to avoid redundant Gitaly calls
-            return false unless @globs.any?
+          # Return early to avoid redundant Gitaly calls
+          return false unless @globs.any?
 
-            context = change_context(context)
-          end
+          context = change_context(context) if @project_path
 
           paths = worktree_paths(context)
           exact_globs, extension_globs, pattern_globs = separate_globs(context)
@@ -54,8 +45,7 @@ module Gitlab
 
         def expand_globs(context)
           @globs.map do |glob|
-            # TODO: Replace w/ `expand_value(glob, context)` when FF `ci_support_rules_exists_paths_and_project` removed
-            ExpandVariables.expand_existing(glob, -> { context.variables_hash })
+            expand_value(glob, context)
           end
         end
 
@@ -210,15 +200,6 @@ module Gitlab
 
         def expand_value(value, context)
           ExpandVariables.expand_existing(value, -> { context.variables_hash })
-        end
-
-        def complex_exists_enabled?
-          # We do not need to check the FF `ci_support_rules_exists_paths_and_project` here.
-          # Instead, we can simply check if the value is a Hash because it can only be a Hash
-          # if the FF was on when `Entry::Rules::Rule::Exists` was composed. The entry is
-          # always composed before we reach this point. This also ensures we have the correct
-          # value type before processing, which is safer.
-          @clause.is_a?(Hash)
         end
       end
     end

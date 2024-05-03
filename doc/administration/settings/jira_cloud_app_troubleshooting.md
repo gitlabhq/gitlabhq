@@ -245,6 +245,10 @@ A `403 Forbidden` is returned if the user information cannot be fetched from Jir
 To resolve this issue, ensure the Jira user that installs and configures the app
 meets certain [requirements](jira_cloud_app.md#jira-user-requirements).
 
+This error might also occur if you use a rewrite or subfilter with a [reverse proxy](jira_cloud_app.md#using-a-reverse-proxy).
+The app key used in requests contains part of the server hostname, which some reverse proxy filters might capture.
+The app key in Atlassian and GitLab must match for authentication to work correctly.
+
 ## `Failed to load Jira Connect Application ID`
 
 When you sign in to the GitLab for Jira Cloud app after you point the app

@@ -2,8 +2,8 @@ import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { cloneDeep } from 'lodash';
 import { sortNameAlphabetically } from '~/work_items/utils';
-import WorkItemAssignees from '~/work_items/components/work_item_assignees_with_edit.vue';
-import WorkItemSidebarDropdownWidgetWithEdit from '~/work_items/components/shared/work_item_sidebar_dropdown_widget_with_edit.vue';
+import WorkItemAssignees from '~/work_items/components/work_item_assignees.vue';
+import WorkItemSidebarDropdownWidget from '~/work_items/components/shared/work_item_sidebar_dropdown_widget.vue';
 import groupUsersSearchQuery from '~/graphql_shared/queries/group_users_search.query.graphql';
 import usersSearchQuery from '~/graphql_shared/queries/workspace_autocomplete_users.query.graphql';
 import currentUserQuery from '~/graphql_shared/queries/current_user.query.graphql';
@@ -26,15 +26,14 @@ import { i18n, TRACKING_CATEGORY_SHOW } from '~/work_items/constants';
 
 const workItemId = 'gid://gitlab/WorkItem/1';
 
-describe('WorkItemAssigneesWithEdit component', () => {
+describe('WorkItemAssignees component', () => {
   Vue.use(VueApollo);
 
   let wrapper;
 
   const findInviteMembersTrigger = () => wrapper.findComponent(InviteMembersTrigger);
   const findAssignSelfButton = () => wrapper.findByTestId('assign-self');
-  const findSidebarDropdownWidget = () =>
-    wrapper.findComponent(WorkItemSidebarDropdownWidgetWithEdit);
+  const findSidebarDropdownWidget = () => wrapper.findComponent(WorkItemSidebarDropdownWidget);
   const findAssigneeList = () => wrapper.findComponent(UncollapsedAssigneeList);
 
   const successSearchQueryHandler = jest

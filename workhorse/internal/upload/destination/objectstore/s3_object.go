@@ -14,6 +14,7 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
 )
 
+// S3Object represents an object stored in Amazon S3.
 type S3Object struct {
 	credentials config.S3Credentials
 	config      config.S3Config
@@ -23,6 +24,7 @@ type S3Object struct {
 	*uploader
 }
 
+// NewS3Object creates a new S3Object with the provided object name, S3 credentials, and S3 config.
 func NewS3Object(objectName string, s3Credentials config.S3Credentials, s3Config config.S3Config) (*S3Object, error) {
 	o := &S3Object{
 		credentials: s3Credentials,
@@ -44,6 +46,7 @@ func setEncryptionOptions(input *s3manager.UploadInput, s3Config config.S3Config
 	}
 }
 
+// Upload uploads the S3 object with the provided context and reader.
 func (s *S3Object) Upload(ctx context.Context, r io.Reader) error {
 	sess, err := setupS3Session(s.credentials, s.config)
 	if err != nil {
@@ -73,14 +76,17 @@ func (s *S3Object) Upload(ctx context.Context, r io.Reader) error {
 	return nil
 }
 
+// ETag returns the ETag of the S3 object.
 func (s *S3Object) ETag() string {
 	return ""
 }
 
+// Abort aborts the multipart upload by deleting the object.
 func (s *S3Object) Abort() {
 	s.Delete()
 }
 
+// Delete deletes the S3 object if it has been uploaded.
 func (s *S3Object) Delete() {
 	if !s.uploaded {
 		return
@@ -98,7 +104,7 @@ func (s *S3Object) Delete() {
 		Key:    aws.String(s.objectName),
 	}
 
-	// Note we can't use the request context because in a successful
+	// We can't use the request context because in a successful
 	// case, the original request has already completed.
 	deleteCtx, cancel := context.WithTimeout(context.Background(), 60*time.Second) // lint:allow context.Background
 	defer cancel()

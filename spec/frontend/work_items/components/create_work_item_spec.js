@@ -7,7 +7,7 @@ import groupWorkItemTypesQueryResponse from 'test_fixtures/graphql/work_items/gr
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import CreateWorkItem from '~/work_items/components/create_work_item.vue';
-import WorkItemTitleWithEdit from '~/work_items/components/work_item_title_with_edit.vue';
+import WorkItemTitle from '~/work_items/components/work_item_title.vue';
 import { WORK_ITEM_TYPE_ENUM_EPIC } from '~/work_items/constants';
 import groupWorkItemTypesQuery from '~/work_items/graphql/group_work_item_types.query.graphql';
 import projectWorkItemTypesQuery from '~/work_items/graphql/project_work_item_types.query.graphql';
@@ -40,7 +40,7 @@ describe('Create work item component', () => {
   const errorHandler = jest.fn().mockRejectedValue('Houston, we have a problem');
 
   const findAlert = () => wrapper.findComponent(GlAlert);
-  const findTitleInput = () => wrapper.findComponent(WorkItemTitleWithEdit);
+  const findTitleInput = () => wrapper.findComponent(WorkItemTitle);
   const findSelect = () => wrapper.findComponent(GlFormSelect);
 
   const findCreateButton = () => wrapper.find('[data-testid="create-button"]');

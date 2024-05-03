@@ -58,7 +58,7 @@ To create a webhook for a project or group:
 1. Select **Add new webhook**.
 1. In **URL**, enter the URL of the webhook endpoint.
    The URL must be percent-encoded if it contains one or more special characters.
-1. In **Secret token**, enter the [secret token](#validate-payloads-with-a-secret-token) to validate payloads.
+1. Optional. In **Secret token**, enter the [secret token](#validate-requests-with-a-secret-token) to validate requests.
 1. In the **Trigger** section, select the [events](webhook_events.md) to trigger the webhook.
 1. Optional. Clear the **Enable SSL verification** checkbox to disable [SSL verification](index.md#ssl-verification).
 1. Select **Add webhook**.
@@ -113,7 +113,7 @@ The header name must:
 - Start with a letter and end with a letter or number.
 - Have no consecutive periods, dashes, or underscores.
 
-Custom headers appear in [recent deliveries](#recently-triggered-webhook-payloads-in-gitlab-settings) with masked values.
+Custom headers appear in [**Recent events**](#view-webhook-request-history) with masked values.
 
 ### Custom webhook template
 
@@ -144,9 +144,9 @@ You'll have this request payload that combines the template with a `push` event:
 }
 ```
 
-### Validate payloads with a secret token
+### Validate requests with a secret token
 
-You can specify a secret token to validate received payloads.
+You can specify a secret token to validate webhook requests.
 The token is sent with the hook request in the
 `X-Gitlab-Token` HTTP header. Your webhook endpoint can check the token to verify
 that the request is legitimate.
@@ -167,6 +167,58 @@ You can filter push events by branch. Use one of the following options to filter
 
 To configure branch filtering for a project or group, see
 [Configure a webhook in GitLab](#configure-webhooks-in-gitlab)
+
+## View webhook request history
+
+> - **Recent events** for group webhooks [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325642) in GitLab 15.3.
+
+Prerequisites:
+
+- For project webhooks, you must have at least the Maintainer role for the project.
+- For group webhooks, you must have the Owner role for the group.
+
+GitLab records the history of each webhook request.
+In **Recent events**, you can view all requests made to a webhook in the last two days.
+
+To view the request history for a webhook:
+
+1. On the left sidebar, select **Search or go to** and find your project or group.
+1. Select **Settings > Webhooks**.
+1. Select **Edit** for the webhook.
+1. Go to the **Recent events** section.
+
+The table includes the following details about each request:
+
+- HTTP status code (green for `200`-`299` codes, red for the others, and `internal error` for failed deliveries)
+- Triggered event
+- Elapsed time of the request
+- Relative time for when the request was made
+
+![Recent deliveries](img/webhook_logs.png)
+
+### Inspect request and response details
+
+Prerequisites:
+
+- For project webhooks, you must have at least the Maintainer role for the project.
+- For group webhooks, you must have the Owner role for the group.
+
+Each webhook request in [**Recent events**](#view-webhook-request-history) has a **Request details** page.
+This page contains the body and headers of:
+
+- The response GitLab received from the webhook receiver endpoint
+- The webhook request GitLab sent
+
+To inspect the request and response details of a webhook event:
+
+1. On the left sidebar, select **Search or go to** and find your project or group.
+1. Select **Settings > Webhooks**.
+1. Select **Edit** for the webhook.
+1. Go to the **Recent events** section.
+1. Select **View details** for the event.
+
+To send the request again with the same data, select **Resend Request**.
+If the webhook URL has changed, you cannot resend the request.
 
 ## Webhook receiver requirements
 
@@ -207,29 +259,44 @@ On GitLab.com, this feature is available. On GitLab Dedicated, this feature is n
 
 Project or group webhooks that fail four consecutive times are disabled automatically.
 
-Project or group webhooks that return response codes in the `5xx` range or experience a
-[timeout](#webhook-timeout-limits) or other HTTP errors are understood to be failing
-intermittently and are temporarily disabled. These webhooks are initially disabled
-for one minute, which is extended on each subsequent failure up to a maximum of 24 hours.
+To view auto-disabled webhooks:
 
-Project or group webhooks that return response codes in the `4xx` range are understood to be
-misconfigured and are permanently disabled until you [manually re-enable](#re-enable-disabled-webhooks)
-the webhooks yourself.
+1. On the left sidebar, select **Search or go to** and find your project or group.
+1. Select **Settings > Webhooks**.
+
+An auto-disabled webhook appears in the list of project or group webhooks as:
+
+- **Fails to connect** if the webhook is [temporarily disabled](#temporarily-disabled-webhooks)
+- **Failed to connect** if the webhook is [permanently disabled](#permanently-disabled-webhooks)
+
+![Badges on failing webhooks](img/failed_badges.png)
+
+### Temporarily disabled webhooks
+
+Project or group webhooks that return response codes in the `5xx` range
+or experience a [timeout](#webhook-timeout-limits) or other HTTP errors
+are considered to be failing intermittently and are temporarily disabled.
+These webhooks are initially disabled for one minute, which is extended
+on each subsequent failure up to a maximum of 24 hours.
+
+You can [re-enable temporarily disabled webhooks manually](#re-enable-disabled-webhooks)
+if the webhook receiver no longer returns an error.
+
+### Permanently disabled webhooks
+
+Project or group webhooks that return response codes in the `4xx` range
+are considered to be misconfigured and are permanently disabled.
+
+These webhooks remain disabled until you [re-enable them manually](#re-enable-disabled-webhooks).
 
 ### Re-enable disabled webhooks
 
 > - Introduced in GitLab 15.2 [with a flag](../../../administration/feature_flags.md) named `webhooks_failed_callout`. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/365535) in GitLab 15.7. Feature flag `webhooks_failed_callout` removed.
 
-Webhooks can be temporarily or permanently disabled:
-
-- When a webhook is **temporarily disabled**, a `Webhook fails to connect` error appears
-  with information on when the webhook is re-enabled automatically.
-- When a webhook is **permanently disabled**, a `Webhook failed to connect` error appears
-  with information on how to re-enable the webhook yourself.
-
 To re-enable a temporarily or permanently disabled webhook manually, [send a test request](#test-a-webhook).
-If the test request returns a response code in the `2xx` range, the webhook is re-enabled.
+
+The webhook is re-enabled if the test request returns a response code in the `2xx` range.
 
 ## Test a webhook
 
@@ -278,8 +345,8 @@ Webhook requests to your endpoint include the following headers:
 To debug GitLab webhooks and capture payloads, you can use:
 
 - [Public webhook inspection and testing tools](#public-webhook-inspection-and-testing-tools)
+- [Webhook request and response details](#inspect-request-and-response-details)
 - [The GitLab Development Kit (GDK)](#gitlab-development-kit-gdk)
-- [Recently triggered webhook payloads in GitLab settings](#recently-triggered-webhook-payloads-in-gitlab-settings)
 - [A private webhook receiver](#create-a-private-webhook-receiver)
 
 For information about webhook events and the JSON data sent in the webhook payload,
@@ -302,10 +369,6 @@ These public tools include:
 ### GitLab Development Kit (GDK)
 
 For a safer development environment, you can use the [GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit) to develop against GitLab webhooks locally. With the GDK, you can send webhooks from your local GitLab instance to a webhook receiver running locally on your machine. To use this approach, you must install and configure the GDK.
-
-### Recently triggered webhook payloads in GitLab settings
-
-You can [review recently triggered webhook payloads](#troubleshooting) in GitLab settings. For each webhook event, a detail page exists with information about the data GitLab sends and receives from the webhook endpoint.
 
 ### Create a private webhook receiver
 
@@ -472,47 +535,6 @@ To configure the certificate, follow the instructions below.
 - [System hooks API](../../../api/system_hooks.md)
 
 ## Troubleshooting
-
-> - **Recent events** for group webhooks [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325642) in GitLab 15.3.
-
-GitLab records the history of each webhook request.
-You can view requests made in the last 2 days in the **Recent events** table.
-
-Prerequisites:
-
-- To troubleshoot project webhooks, you must have at least the Maintainer role for the project.
-- To troubleshoot group webhooks, you must have the Owner role for the group.
-
-To view the table:
-
-1. In your project or group, on the left sidebar, select **Settings > Webhooks**.
-1. Scroll down to the webhooks.
-1. Each [auto-disabled webhook](#auto-disabled-webhooks) has a badge listing it as:
-
-   - **Failed to connect** if it's misconfigured and must be manually re-enabled.
-   - **Fails to connect** if it's temporarily disabled and is automatically
-     re-enabled after the timeout limit has elapsed.
-
-   ![Badges on failing webhooks](img/failed_badges.png)
-
-1. Select **Edit** for the webhook you want to view.
-
-The table includes the following details about each request:
-
-- HTTP status code (green for `200`-`299` codes, red for the others, and `internal error` for failed deliveries)
-- Triggered event
-- Elapsed time of the request
-- Relative time for when the request was made
-
-![Recent deliveries](img/webhook_logs.png)
-
-Each webhook event has a corresponding **Details** page. This page details the data that GitLab sent (request headers and body) and received (response headers and body).
-To view the **Details** page, select **View details** for the webhook event.
-
-To repeat the delivery with the same data, select **Resend Request**.
-
-NOTE:
-If you update the URL or secret token of the webhook, data is delivered to the new address.
 
 ### Unable to get local issuer certificate
 

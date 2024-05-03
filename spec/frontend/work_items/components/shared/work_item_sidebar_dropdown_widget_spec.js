@@ -3,9 +3,9 @@ import { nextTick } from 'vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { __ } from '~/locale';
 import { groupIterationsResponse } from 'jest/work_items/mock_data';
-import WorkItemSidebarDropdownWidgetWithEdit from '~/work_items/components/shared/work_item_sidebar_dropdown_widget_with_edit.vue';
+import WorkItemSidebarDropdownWidget from '~/work_items/components/shared/work_item_sidebar_dropdown_widget.vue';
 
-describe('WorkItemSidebarDropdownWidgetWithEdit component', () => {
+describe('WorkItemSidebarDropdownWidget component', () => {
   let wrapper;
 
   const findHeader = () => wrapper.find('h3');
@@ -30,7 +30,7 @@ describe('WorkItemSidebarDropdownWidgetWithEdit component', () => {
     clearSearchOnItemSelect = false,
     listItems = [],
   } = {}) => {
-    wrapper = mountExtended(WorkItemSidebarDropdownWidgetWithEdit, {
+    wrapper = mountExtended(WorkItemSidebarDropdownWidget, {
       propsData: {
         dropdownLabel: __('Iteration'),
         dropdownName: 'iteration',

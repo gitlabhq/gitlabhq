@@ -1,3 +1,4 @@
+// Package test provides testing utilities for the object store functionality related to Amazon S3.
 package test
 
 import (
@@ -20,10 +21,12 @@ import (
 	"github.com/johannesboyne/gofakes3/backend/s3mem"
 )
 
+// SetupS3 sets up a local S3 server with a default bucket for testing purposes and returns the necessary credentials, configuration, session, and server.
 func SetupS3(t *testing.T, encryption string) (config.S3Credentials, config.S3Config, *session.Session, *httptest.Server) {
 	return SetupS3WithBucket(t, "test-bucket", encryption)
 }
 
+// SetupS3WithBucket sets up a local S3 server for testing purposes and returns the necessary credentials, configuration, session, and server.
 func SetupS3WithBucket(t *testing.T, bucket string, encryption string) (config.S3Credentials, config.S3Config, *session.Session, *httptest.Server) {
 	backend := s3mem.New()
 	faker := gofakes3.New(backend)
@@ -82,6 +85,7 @@ func S3ObjectExists(t *testing.T, sess *session.Session, config config.S3Config,
 	})
 }
 
+// CheckS3Metadata is a helper function for testing S3 metadata.
 func CheckS3Metadata(t *testing.T, sess *session.Session, config config.S3Config, objectName string) {
 	// In a real S3 provider, s3crypto.NewDecryptionClient should probably be used
 	svc := s3.New(sess)

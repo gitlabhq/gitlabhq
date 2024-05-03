@@ -15,14 +15,14 @@ import projectWorkItemTypesQuery from '../graphql/project_work_item_types.query.
 import groupWorkItemByIidQuery from '../graphql/group_work_item_by_iid.query.graphql';
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
 
-import WorkItemTitleWithEdit from './work_item_title_with_edit.vue';
+import WorkItemTitle from './work_item_title.vue';
 
 export default {
   components: {
     GlButton,
     GlAlert,
     GlLoadingIcon,
-    WorkItemTitleWithEdit,
+    WorkItemTitle,
     GlFormSelect,
   },
   inject: ['fullPath', 'isGroup'],
@@ -156,7 +156,7 @@ export default {
   <form @submit.prevent="createWorkItem">
     <gl-alert v-if="error" variant="danger" @dismiss="error = null">{{ error }}</gl-alert>
     <div data-testid="content">
-      <work-item-title-with-edit
+      <work-item-title
         ref="title"
         data-testid="title-input"
         is-editing

@@ -52,6 +52,7 @@ func NewMultipart(partURLs []string, completeURL, abortURL, deleteURL string, pu
 	return m, nil
 }
 
+// Upload uploads the multipart content using the provided reader.
 func (m *Multipart) Upload(ctx context.Context, r io.Reader) error {
 	cmu := &s3api.CompleteMultipartUpload{}
 	for i, partURL := range m.PartURLs {
@@ -62,9 +63,8 @@ func (m *Multipart) Upload(ctx context.Context, r io.Reader) error {
 		}
 		if part == nil {
 			break
-		} else {
-			cmu.Part = append(cmu.Part, part)
 		}
+		cmu.Part = append(cmu.Part, part)
 	}
 
 	n, err := io.Copy(io.Discard, r)
@@ -82,13 +82,17 @@ func (m *Multipart) Upload(ctx context.Context, r io.Reader) error {
 	return nil
 }
 
+// ETag returns the ETag of the multipart upload.
 func (m *Multipart) ETag() string {
 	return m.etag
 }
+
+// Abort aborts the multipart upload by sending a DELETE request to the AbortURL.
 func (m *Multipart) Abort() {
 	deleteURL(m.AbortURL)
 }
 
+// Delete deletes the multipart upload by sending a DELETE request to the DeleteURL.
 func (m *Multipart) Delete() {
 	deleteURL(m.DeleteURL)
 }
@@ -98,9 +102,9 @@ func (m *Multipart) readAndUploadOnePart(ctx context.Context, partURL string, pu
 	if err != nil {
 		return nil, fmt.Errorf("create temporary buffer file: %v", err)
 	}
-	defer file.Close()
+	defer func() { _ = file.Close() }()
 
-	if err := os.Remove(file.Name()); err != nil {
+	if err = os.Remove(file.Name()); err != nil {
 		return nil, fmt.Errorf("remove temporary buffer file: %v", err)
 	}
 
@@ -162,7 +166,7 @@ func (m *Multipart) complete(ctx context.Context, cmu *s3api.CompleteMultipartUp
 	if err != nil {
 		return fmt.Errorf("CompleteMultipartUpload request %q: %v", mask.URL(m.CompleteURL), err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	if resp.StatusCode != http.StatusOK {
 		return fmt.Errorf("CompleteMultipartUpload request %v returned: %s", mask.URL(m.CompleteURL), resp.Status)

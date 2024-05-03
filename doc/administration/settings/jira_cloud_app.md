@@ -299,6 +299,9 @@ You can use a reverse proxy, but keep the following in mind:
   For more information, see [issue 434085](https://gitlab.com/gitlab-org/gitlab/-/issues/434085).
 - To secure the reverse proxy on the public internet, allow inbound traffic from
   [Atlassian IP addresses](https://support.atlassian.com/organization-administration/docs/ip-addresses-and-domains-for-atlassian-cloud-products/#Outgoing-Connections) only.
+- If you use a rewrite or subfilter with your proxy, ensure the proxy
+  does not rewrite or replace the `gitlab-jira-connect-${host}` app key.
+  Otherwise, you might get a [`Failed to link group`](jira_cloud_app_troubleshooting.md#failed-to-link-group) error.
 
 ### External NGINX
 

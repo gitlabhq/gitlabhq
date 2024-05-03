@@ -24,25 +24,25 @@ RSpec.describe 'Work item keyboard shortcuts', :js, feature_category: :team_plan
       it 'pressing m opens milestones dropdown for editing' do
         find('body').native.send_key('m')
 
-        expect(find_by_testid('work-item-milestone-with-edit')).to have_selector('.gl-new-dropdown-panel')
+        expect(find_by_testid('work-item-milestone')).to have_selector('.gl-new-dropdown-panel')
       end
 
       it 'pressing l opens labels dropdown for editing' do
         find('body').native.send_key('l')
 
-        expect(find_by_testid('work-item-labels-with-edit')).to have_selector('.gl-new-dropdown-panel')
+        expect(find_by_testid('work-item-labels')).to have_selector('.gl-new-dropdown-panel')
       end
 
       it 'pressing a opens assignee dropdown for editing' do
         find('body').native.send_key('a')
 
-        expect(find_by_testid('work-item-assignees-with-edit')).to have_selector('.gl-new-dropdown-panel')
+        expect(find_by_testid('work-item-assignees')).to have_selector('.gl-new-dropdown-panel')
       end
 
       it 'pressing e starts editing mode' do
         find('body').native.send_key('e')
 
-        expect(page).to have_selector('[data-testid="work-item-title-with-edit"]')
+        expect(page).to have_selector('[data-testid="work-item-title-input"]')
         expect(page).to have_selector('form textarea#work-item-description')
       end
     end

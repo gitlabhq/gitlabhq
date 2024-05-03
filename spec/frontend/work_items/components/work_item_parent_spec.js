@@ -1,12 +1,12 @@
-import { GlCollapsibleListbox, GlFormGroup } from '@gitlab/ui';
+import { GlForm, GlCollapsibleListbox } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
-import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-
+import { mountExtended } from 'helpers/vue_test_utils_helper';
+import { __ } from '~/locale';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import WorkItemParentInline from '~/work_items/components/work_item_parent_inline.vue';
+import WorkItemParent from '~/work_items/components/work_item_parent.vue';
 import { removeHierarchyChild } from '~/work_items/graphql/cache_utils';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import groupWorkItemsQuery from '~/work_items/graphql/group_work_items.query.graphql';
@@ -26,7 +26,7 @@ jest.mock('~/work_items/graphql/cache_utils', () => ({
   removeHierarchyChild: jest.fn(),
 }));
 
-describe('WorkItemParentInline component', () => {
+describe('WorkItemParent component', () => {
   Vue.use(VueApollo);
 
   let wrapper;
@@ -39,6 +39,15 @@ describe('WorkItemParentInline component', () => {
   const availableWorkItemsSuccessHandler = jest.fn().mockResolvedValue(availableObjectivesResponse);
   const availableWorkItemsFailureHandler = jest.fn().mockRejectedValue(new Error());
 
+  const findHeader = () => wrapper.find('h3');
+  const findEditButton = () => wrapper.find('[data-testid="edit-parent"]');
+  const findApplyButton = () => wrapper.find('[data-testid="apply-parent"]');
+
+  const findLoadingIcon = () => wrapper.find('[data-testid="loading-icon-parent"]');
+  const findLabel = () => wrapper.find('label');
+  const findForm = () => wrapper.findComponent(GlForm);
+  const findCollapsibleListbox = () => wrapper.findComponent(GlCollapsibleListbox);
+
   const successUpdateWorkItemMutationHandler = jest
     .fn()
     .mockResolvedValue(updateWorkItemMutationResponseFactory({ parent: mockParentWidgetResponse }));
@@ -48,9 +57,10 @@ describe('WorkItemParentInline component', () => {
     parent = null,
     searchQueryHandler = availableWorkItemsSuccessHandler,
     mutationHandler = successUpdateWorkItemMutationHandler,
+    isEditing = false,
     isGroup = false,
   } = {}) => {
-    wrapper = shallowMountExtended(WorkItemParentInline, {
+    wrapper = mountExtended(WorkItemParent, {
       apolloProvider: createMockApollo([
         [projectWorkItemsQuery, searchQueryHandler],
         [groupWorkItemsQuery, groupWorkItemsSuccessHandler],
@@ -67,28 +77,151 @@ describe('WorkItemParentInline component', () => {
         workItemType,
       },
     });
+
+    if (isEditing) {
+      findEditButton().trigger('click');
+    }
   };
 
   beforeEach(() => {
     createComponent();
   });
 
-  const findInputGroup = () => wrapper.findComponent(GlFormGroup);
-  const findParentText = () => wrapper.findByTestId('disabled-text');
-  const findCollapsibleListbox = () => wrapper.findComponent(GlCollapsibleListbox);
+  describe('label', () => {
+    it('shows header when not editing', () => {
+      createComponent();
 
-  describe('template', () => {
-    it('shows field label as Parent', () => {
-      expect(findInputGroup().exists()).toBe(true);
-      expect(findInputGroup().attributes('label')).toBe('Parent');
+      expect(findHeader().exists()).toBe(true);
+      expect(findHeader().classes('gl-sr-only')).toBe(false);
+      expect(findLabel().exists()).toBe(false);
     });
 
-    it('renders the collapsible listbox with required props', () => {
+    it('shows label and hides header while editing', async () => {
+      createComponent({ isEditing: true });
+
+      await nextTick();
+
+      expect(findLabel().exists()).toBe(true);
+      expect(findHeader().classes('gl-sr-only')).toBe(true);
+    });
+  });
+
+  describe('edit button', () => {
+    it('is not shown if user cannot edit', () => {
+      createComponent({ canUpdate: false });
+
+      expect(findEditButton().exists()).toBe(false);
+    });
+
+    it('is shown if user can edit', () => {
+      createComponent({ canUpdate: true });
+
+      expect(findEditButton().exists()).toBe(true);
+    });
+
+    it('triggers edit mode on click', async () => {
+      createComponent();
+
+      findEditButton().trigger('click');
+
+      await nextTick();
+
+      expect(findLabel().exists()).toBe(true);
+      expect(findForm().exists()).toBe(true);
+    });
+
+    it('is replaced by Apply button while editing', async () => {
+      createComponent();
+
+      findEditButton().trigger('click');
+
+      await nextTick();
+
+      expect(findEditButton().exists()).toBe(false);
+      expect(findApplyButton().exists()).toBe(true);
+    });
+  });
+
+  describe('loading icon', () => {
+    const selectWorkItem = async (workItem) => {
+      await findCollapsibleListbox().vm.$emit('select', workItem);
+    };
+
+    it('shows loading icon while update is in progress', async () => {
+      createComponent();
+      findEditButton().trigger('click');
+
+      await nextTick();
+
+      selectWorkItem('gid://gitlab/WorkItem/716');
+
+      await nextTick();
+      expect(findLoadingIcon().exists()).toBe(true);
+      await waitForPromises();
+
+      expect(findLoadingIcon().exists()).toBe(false);
+    });
+
+    it('shows loading icon when unassign is clicked', async () => {
+      createComponent({ parent: mockParentWidgetResponse });
+      findEditButton().trigger('click');
+
+      await nextTick();
+
+      findCollapsibleListbox().vm.$emit('reset');
+
+      await nextTick();
+      expect(findLoadingIcon().exists()).toBe(true);
+      await waitForPromises();
+
+      expect(findLoadingIcon().exists()).toBe(false);
+    });
+  });
+
+  describe('value', () => {
+    it('shows None when no parent is set', () => {
+      createComponent();
+
+      expect(wrapper.text()).toContain(__('None'));
+    });
+
+    it('shows parent when parent is set', () => {
+      createComponent({ parent: mockParentWidgetResponse });
+
+      expect(wrapper.text()).not.toContain(__('None'));
+      expect(wrapper.text()).toContain(mockParentWidgetResponse.title);
+    });
+  });
+
+  describe('form', () => {
+    it('is not shown while not editing', async () => {
+      await createComponent();
+
+      expect(findForm().exists()).toBe(false);
+    });
+
+    it('is shown while editing', async () => {
+      await createComponent({ isEditing: true });
+
+      expect(findForm().exists()).toBe(true);
+    });
+  });
+
+  describe('Parent Input', () => {
+    it('is not shown while not editing', async () => {
+      await createComponent();
+
+      expect(findCollapsibleListbox().exists()).toBe(false);
+    });
+
+    it('renders the collapsible listbox with required props', async () => {
+      await createComponent({ isEditing: true });
+
       expect(findCollapsibleListbox().exists()).toBe(true);
       expect(findCollapsibleListbox().props()).toMatchObject({
         items: [],
         headerText: 'Assign parent',
-        category: 'tertiary',
+        category: 'primary',
         loading: false,
         isCheckCentered: true,
         searchable: true,
@@ -100,15 +233,9 @@ describe('WorkItemParentInline component', () => {
         resetButtonLabel: 'Unassign',
       });
     });
-
-    it('displays parent text instead of listbox if canUpdate is false', () => {
-      createComponent({ canUpdate: false, parent: mockParentWidgetResponse });
-
-      expect(findCollapsibleListbox().exists()).toBe(false);
-      expect(findParentText().text()).toBe('Objective 101');
-    });
-
     it('shows loading while searching', async () => {
+      await createComponent({ isEditing: true });
+
       await findCollapsibleListbox().vm.$emit('shown');
       expect(findCollapsibleListbox().props('searching')).toBe(true);
     });
@@ -116,6 +243,7 @@ describe('WorkItemParentInline component', () => {
 
   describe('work items query', () => {
     it('loads work items in the listbox', async () => {
+      await createComponent({ isEditing: true });
       await findCollapsibleListbox().vm.$emit('shown');
 
       await waitForPromises();
@@ -130,7 +258,10 @@ describe('WorkItemParentInline component', () => {
     });
 
     it('emits error when the query fails', async () => {
-      createComponent({ searchQueryHandler: availableWorkItemsFailureHandler });
+      await createComponent({
+        searchQueryHandler: availableWorkItemsFailureHandler,
+        isEditing: true,
+      });
 
       await findCollapsibleListbox().vm.$emit('shown');
 
@@ -143,8 +274,9 @@ describe('WorkItemParentInline component', () => {
 
     it('searches item when input data is entered', async () => {
       const searchedItemQueryHandler = jest.fn().mockResolvedValue(searchedObjectiveResponse);
-      createComponent({
+      await createComponent({
         searchQueryHandler: searchedItemQueryHandler,
+        isEditing: true,
       });
 
       await findCollapsibleListbox().vm.$emit('shown');
@@ -157,6 +289,7 @@ describe('WorkItemParentInline component', () => {
         types: [WORK_ITEM_TYPE_ENUM_OBJECTIVE],
         in: undefined,
         iid: null,
+        isNumber: false,
         searchByIid: false,
         searchByText: true,
       });
@@ -169,6 +302,7 @@ describe('WorkItemParentInline component', () => {
         types: [WORK_ITEM_TYPE_ENUM_OBJECTIVE],
         in: 'TITLE',
         iid: null,
+        isNumber: false,
         searchByIid: false,
         searchByText: true,
       });
@@ -187,6 +321,7 @@ describe('WorkItemParentInline component', () => {
     };
 
     it('calls mutation when item is selected', async () => {
+      await createComponent({ isEditing: true });
       selectWorkItem('gid://gitlab/WorkItem/716');
 
       await waitForPromises();
@@ -213,14 +348,18 @@ describe('WorkItemParentInline component', () => {
       const unAssignParentWorkItemMutationHandler = jest
         .fn()
         .mockResolvedValue(updateWorkItemMutationResponseFactory({ parent: null }));
-      createComponent({
+      await createComponent({
         parent: {
           iid: '1',
         },
         mutationHandler: unAssignParentWorkItemMutationHandler,
       });
 
-      await findCollapsibleListbox().vm.$emit('reset');
+      findEditButton().trigger('click');
+
+      await nextTick();
+
+      findCollapsibleListbox().vm.$emit('reset');
 
       await waitForPromises();
 
@@ -242,8 +381,9 @@ describe('WorkItemParentInline component', () => {
     });
 
     it('emits error when mutation fails', async () => {
-      createComponent({
+      await createComponent({
         mutationHandler: jest.fn().mockResolvedValue(updateWorkItemMutationErrorResponse),
+        isEditing: true,
       });
 
       selectWorkItem('gid://gitlab/WorkItem/716');
@@ -255,8 +395,9 @@ describe('WorkItemParentInline component', () => {
 
     it('emits error and captures exception in sentry when network request fails', async () => {
       const error = new Error('error');
-      createComponent({
+      await createComponent({
         mutationHandler: jest.fn().mockRejectedValue(error),
+        isEditing: true,
       });
 
       selectWorkItem('gid://gitlab/WorkItem/716');
@@ -267,36 +408,6 @@ describe('WorkItemParentInline component', () => {
         ['Something went wrong while updating the objective. Please try again.'],
       ]);
       expect(Sentry.captureException).toHaveBeenCalledWith(error);
-    });
-  });
-
-  describe('when project context', () => {
-    beforeEach(() => {
-      createComponent();
-      findCollapsibleListbox().vm.$emit('shown');
-    });
-
-    it('calls the project work items query', () => {
-      expect(availableWorkItemsSuccessHandler).toHaveBeenCalled();
-    });
-
-    it('skips calling the group work items query', () => {
-      expect(groupWorkItemsSuccessHandler).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('when group context', () => {
-    beforeEach(() => {
-      createComponent({ isGroup: true });
-      findCollapsibleListbox().vm.$emit('shown');
-    });
-
-    it('skips calling the project work items query', () => {
-      expect(availableWorkItemsSuccessHandler).not.toHaveBeenCalled();
-    });
-
-    it('calls the group work items query', () => {
-      expect(groupWorkItemsSuccessHandler).toHaveBeenCalled();
     });
   });
 });

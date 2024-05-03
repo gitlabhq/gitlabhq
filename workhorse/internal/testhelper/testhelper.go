@@ -27,15 +27,18 @@ const (
 	geoProxyEndpointPath = "/api/v4/geo/proxy"
 )
 
+// ConfigureSecret sets the path for the secret used in tests.
 func ConfigureSecret() {
 	secret.SetPath(path.Join(RootDir(), "testdata/test-secret"))
 }
 
+// RequireResponseBody asserts that the response body matches the expected value.
 func RequireResponseBody(t *testing.T, response *httptest.ResponseRecorder, expectedBody string) {
 	t.Helper()
 	require.Equal(t, expectedBody, response.Body.String(), "response body")
 }
 
+// RequireResponseHeader checks if the HTTP response contains the expected header with the specified values.
 func RequireResponseHeader(t *testing.T, w interface{}, header string, expected ...string) {
 	t.Helper()
 	var actual []string
@@ -68,6 +71,7 @@ func TestServerWithHandler(url *regexp.Regexp, handler http.HandlerFunc) *httpte
 	}))
 }
 
+// TestServerWithHandlerWithGeoPolling creates a test server with the provided handler and URL pattern for geopolling tests.
 func TestServerWithHandlerWithGeoPolling(url *regexp.Regexp, handler http.HandlerFunc) *httptest.Server {
 	return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		logEntry := log.WithFields(log.Fields{
@@ -94,6 +98,7 @@ func TestServerWithHandlerWithGeoPolling(url *regexp.Regexp, handler http.Handle
 
 var workhorseExecutables = []string{"gitlab-workhorse", "gitlab-zip-cat", "gitlab-zip-metadata", "gitlab-resize-image"}
 
+// BuildExecutables compiles the executables needed for testing.
 func BuildExecutables() error {
 	rootDir := RootDir()
 
@@ -112,6 +117,7 @@ func BuildExecutables() error {
 	return nil
 }
 
+// RootDir returns the root directory path used in tests.
 func RootDir() string {
 	_, currentFile, _, ok := runtime.Caller(0)
 	if !ok {
@@ -120,13 +126,15 @@ func RootDir() string {
 	return path.Join(path.Dir(currentFile), "../..")
 }
 
+// LoadFile loads the content of a file specified by the given file path.
 func LoadFile(t *testing.T, filePath string) string {
 	t.Helper()
-	content, err := os.ReadFile(path.Join(RootDir(), filePath))
+	content, err := os.ReadFile(filepath.Clean(path.Join(RootDir(), filePath)))
 	require.NoError(t, err)
 	return string(content)
 }
 
+// ReadAll reads all data from the given io.Reader and returns it as a byte slice.
 func ReadAll(t *testing.T, r io.Reader) []byte {
 	t.Helper()
 
@@ -135,6 +143,7 @@ func ReadAll(t *testing.T, r io.Reader) []byte {
 	return b
 }
 
+// ParseJWT parses the given JWT token and returns the parsed claims.
 func ParseJWT(token *jwt.Token) (interface{}, error) {
 	// Don't forget to validate the alg is what you expect:
 	if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
@@ -156,15 +165,15 @@ type UploadClaims struct {
 	jwt.RegisteredClaims
 }
 
+// SetupStaticFileHelper creates a temporary static file with the specified content and directory structure for testing purposes.
 func SetupStaticFileHelper(t *testing.T, fpath, content, directory string) string {
 	cwd, err := os.Getwd()
 	require.NoError(t, err, "get working directory")
-
-	absDocumentRoot := path.Join(cwd, directory)
-	require.NoError(t, os.MkdirAll(path.Join(absDocumentRoot, path.Dir(fpath)), 0755), "create document root")
+	absDocumentRoot := filepath.Clean(path.Join(cwd, directory))
+	require.NoError(t, os.MkdirAll(path.Join(absDocumentRoot, path.Dir(fpath)), 0750), "create document root")
 
 	staticFile := path.Join(absDocumentRoot, fpath)
-	require.NoError(t, os.WriteFile(staticFile, []byte(content), 0666), "write file content")
+	require.NoError(t, os.WriteFile(staticFile, []byte(content), 0600), "write file content")
 
 	return absDocumentRoot
 }
@@ -193,7 +202,7 @@ func MustClose(tb testing.TB, closer io.Closer) {
 // executable.
 func WriteExecutable(tb testing.TB, path string, content []byte) string {
 	dir := filepath.Dir(path)
-	require.NoError(tb, os.MkdirAll(dir, 0o755))
+	require.NoError(tb, os.MkdirAll(dir, 0o750))
 	tb.Cleanup(func() {
 		require.NoError(tb, os.RemoveAll(dir))
 	})
@@ -207,7 +216,7 @@ func WriteExecutable(tb testing.TB, path string, content []byte) string {
 	//
 	// We thus need to perform file locking to ensure that all writeable references to this
 	// file have been closed before returning.
-	executable, err := os.OpenFile(path, os.O_CREATE|os.O_EXCL|os.O_WRONLY, 0o700)
+	executable, err := os.OpenFile(filepath.Clean(path), os.O_CREATE|os.O_EXCL|os.O_WRONLY, 0o700)
 	require.NoError(tb, err)
 	_, err = io.Copy(executable, bytes.NewReader(content))
 	require.NoError(tb, err)

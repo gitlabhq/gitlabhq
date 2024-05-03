@@ -266,6 +266,12 @@ module QA
         def copy_file_contents_to_comment(file_number = nil)
           click_copy_file_contents(file_number)
           send_keys_to_element('note-field', [:shift, :insert])
+
+          # on slow connections it takes time for text to appear
+          wait_until(reload: false, sleep_interval: 1, message: "Wait for text to be pasted into comment textarea") do
+            !find_element('note-field').value.empty?
+          end
+
           click_element('comment-button')
 
           unless has_element?('note-author-content')

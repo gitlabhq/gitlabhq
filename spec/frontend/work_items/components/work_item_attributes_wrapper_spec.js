@@ -1,11 +1,11 @@
 import { nextTick } from 'vue';
 import { shallowMount } from '@vue/test-utils';
 import Participants from '~/sidebar/components/participants/participants.vue';
-import WorkItemAssigneesWithEdit from '~/work_items/components/work_item_assignees_with_edit.vue';
-import WorkItemDueDateWithEdit from '~/work_items/components/work_item_due_date_with_edit.vue';
-import WorkItemLabelsWithEdit from '~/work_items/components/work_item_labels_with_edit.vue';
-import WorkItemMilestoneWithEdit from '~/work_items/components/work_item_milestone_with_edit.vue';
-import WorkItemParent from '~/work_items/components/work_item_parent_with_edit.vue';
+import WorkItemAssignees from '~/work_items/components/work_item_assignees.vue';
+import WorkItemDueDate from '~/work_items/components/work_item_due_date.vue';
+import WorkItemLabels from '~/work_items/components/work_item_labels.vue';
+import WorkItemMilestone from '~/work_items/components/work_item_milestone.vue';
+import WorkItemParent from '~/work_items/components/work_item_parent.vue';
 import WorkItemTimeTracking from '~/work_items/components/work_item_time_tracking.vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import WorkItemAttributesWrapper from '~/work_items/components/work_item_attributes_wrapper.vue';
@@ -23,10 +23,10 @@ describe('WorkItemAttributesWrapper component', () => {
 
   const workItemQueryResponse = workItemResponseFactory({ canUpdate: true, canDelete: true });
 
-  const findWorkItemAssignees = () => wrapper.findComponent(WorkItemAssigneesWithEdit);
-  const findWorkItemDueDate = () => wrapper.findComponent(WorkItemDueDateWithEdit);
-  const findWorkItemLabels = () => wrapper.findComponent(WorkItemLabelsWithEdit);
-  const findWorkItemMilestone = () => wrapper.findComponent(WorkItemMilestoneWithEdit);
+  const findWorkItemAssignees = () => wrapper.findComponent(WorkItemAssignees);
+  const findWorkItemDueDate = () => wrapper.findComponent(WorkItemDueDate);
+  const findWorkItemLabels = () => wrapper.findComponent(WorkItemLabels);
+  const findWorkItemMilestone = () => wrapper.findComponent(WorkItemMilestone);
   const findWorkItemParent = () => wrapper.findComponent(WorkItemParent);
   const findWorkItemTimeTracking = () => wrapper.findComponent(WorkItemTimeTracking);
   const findWorkItemParticipants = () => wrapper.findComponent(Participants);
@@ -109,7 +109,7 @@ describe('WorkItemAttributesWrapper component', () => {
       });
     });
 
-    it('renders WorkItemDueDateWithEdit', async () => {
+    it('renders WorkItemDueDate', async () => {
       createComponent();
 
       await waitForPromises();

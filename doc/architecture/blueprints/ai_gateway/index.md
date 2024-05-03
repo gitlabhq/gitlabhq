@@ -557,6 +557,7 @@ Alternative solutions were discussed in
 ## Decisions
 
 - [ADR-001: Allow direct connections](decisions/001_direct_connections.md)
+- [ADR-002: Exposing proxy endpoints to AI providers](decisions/002_proxy.md)
 
 ## Future work
 

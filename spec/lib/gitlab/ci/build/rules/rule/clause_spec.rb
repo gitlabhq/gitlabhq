@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause do
+RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause, feature_category: :pipeline_composition do
   describe '.fabricate' do
     using RSpec::Parameterized::TableSyntax
 
@@ -11,10 +11,10 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause do
     subject { described_class.fabricate(type, value) }
 
     context 'when type is valid' do
-      where(:type, :result) do
-        'changes' | Gitlab::Ci::Build::Rules::Rule::Clause::Changes
-        'exists'  | Gitlab::Ci::Build::Rules::Rule::Clause::Exists
-        'if'      | Gitlab::Ci::Build::Rules::Rule::Clause::If
+      where(:type, :value, :result) do
+        'changes' | 'some value'  | Gitlab::Ci::Build::Rules::Rule::Clause::Changes
+        'exists'  | { paths: [] } | Gitlab::Ci::Build::Rules::Rule::Clause::Exists
+        'if'      | 'some value'  | Gitlab::Ci::Build::Rules::Rule::Clause::If
       end
 
       with_them do

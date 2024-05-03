@@ -4,7 +4,7 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import Tracking from '~/tracking';
 import { s__, __ } from '~/locale';
 import { MILESTONE_STATE } from '~/sidebar/constants';
-import WorkItemSidebarDropdownWidgetWithEdit from '~/work_items/components/shared/work_item_sidebar_dropdown_widget_with_edit.vue';
+import WorkItemSidebarDropdownWidget from '~/work_items/components/shared/work_item_sidebar_dropdown_widget.vue';
 import projectMilestonesQuery from '~/sidebar/queries/project_milestones.query.graphql';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import {
@@ -24,7 +24,7 @@ export default {
     expiredText: __('(expired)'),
   },
   components: {
-    WorkItemSidebarDropdownWidgetWithEdit,
+    WorkItemSidebarDropdownWidget,
     GlLink,
   },
   mixins: [Tracking.mixin()],
@@ -181,7 +181,7 @@ export default {
 </script>
 
 <template>
-  <work-item-sidebar-dropdown-widget-with-edit
+  <work-item-sidebar-dropdown-widget
     :dropdown-label="$options.i18n.milestone"
     :can-update="canUpdate"
     dropdown-name="milestone"
@@ -192,7 +192,7 @@ export default {
     :toggle-dropdown-text="dropdownText"
     :header-text="__('Select milestone')"
     :reset-button-label="__('Clear')"
-    data-testid="work-item-milestone-with-edit"
+    data-testid="work-item-milestone"
     @dropdownShown="onDropdownShown"
     @searchStarted="search"
     @updateValue="updateMilestone"
@@ -206,5 +206,5 @@ export default {
         {{ localMilestone.title }}{{ expired }}
       </gl-link>
     </template>
-  </work-item-sidebar-dropdown-widget-with-edit>
+  </work-item-sidebar-dropdown-widget>
 </template>

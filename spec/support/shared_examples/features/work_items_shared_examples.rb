@@ -11,14 +11,13 @@ RSpec.shared_context 'with work_items_beta' do |flag|
 end
 
 RSpec.shared_examples 'work items title' do
-  let(:title_selector) { '[data-testid="work-item-title"]' }
-  let(:title_with_edit_selector) { '[data-testid="work-item-title-with-edit"]' }
+  let(:title_selector) { '[data-testid="work-item-title-input"]' }
 
   it 'successfully shows and changes the title of the work item' do
     expect(work_item.reload.title).to eq work_item.title
 
     click_button 'Edit', match: :first
-    find(title_with_edit_selector).set("Work item title")
+    find(title_selector).set("Work item title")
     send_keys([:command, :enter])
     wait_for_requests
 
@@ -150,7 +149,7 @@ RSpec.shared_examples 'work items comments' do |type|
 end
 
 RSpec.shared_examples 'work items assignees' do
-  let(:work_item_assignees_selector) { '[data-testid="work-item-assignees-with-edit"]' }
+  let(:work_item_assignees_selector) { '[data-testid="work-item-assignees"]' }
 
   it 'successfully assigns the current user by searching',
     quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/413074' do
@@ -202,7 +201,7 @@ end
 RSpec.shared_examples 'work items labels' do
   let(:label_title_selector) { '[data-testid="labels-title"]' }
   let(:labels_input_selector) { '[data-testid="work-item-labels-input"]' }
-  let(:work_item_labels_selector) { '[data-testid="work-item-labels-with-edit"]' }
+  let(:work_item_labels_selector) { '[data-testid="work-item-labels"]' }
 
   it 'successfully applies the label by searching' do
     expect(work_item.reload.labels).not_to include(label)
@@ -325,7 +324,7 @@ end
 RSpec.shared_examples 'work items invite members' do
   include Features::InviteMembersModalHelpers
 
-  let(:work_item_assignees_selector) { '[data-testid="work-item-assignees-with-edit"]' }
+  let(:work_item_assignees_selector) { '[data-testid="work-item-assignees"]' }
 
   it 'successfully assigns the current user by searching' do
     # The button is only when the mouse is over the input
@@ -341,7 +340,7 @@ RSpec.shared_examples 'work items invite members' do
 end
 
 RSpec.shared_examples 'work items milestone' do
-  let(:work_item_milestone_selector) { '[data-testid="work-item-milestone-with-edit"]' }
+  let(:work_item_milestone_selector) { '[data-testid="work-item-milestone"]' }
 
   it 'has the work item milestone with edit' do
     expect(page).to have_selector(work_item_milestone_selector)
@@ -552,7 +551,7 @@ def find_and_click_clear(selector)
 end
 
 RSpec.shared_examples 'work items iteration' do
-  let(:work_item_iteration_selector) { '[data-testid="work-item-iteration-with-edit"]' }
+  let(:work_item_iteration_selector) { '[data-testid="work-item-iteration"]' }
   let_it_be(:iteration_cadence) { create(:iterations_cadence, group: group, active: true) }
   let_it_be(:iteration) do
     create(
