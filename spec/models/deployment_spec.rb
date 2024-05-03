@@ -1265,17 +1265,18 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
       using RSpec::Parameterized::TableSyntax
 
       where(:status, :method) do
-        'running'  | :run!
-        'success'  | :succeed!
-        'failed'   | :drop!
-        'canceled' | :cancel!
-        'skipped'  | :skip!
-        'blocked'  | :block!
+        'running'   | :run!
+        'success'   | :succeed!
+        'failed'    | :drop!
+        'canceling' | nil
+        'canceled'  | :cancel!
+        'skipped'   | :skip!
+        'blocked'   | :block!
       end
 
       with_them do
         it 'calls the correct method for the given status' do
-          expect(deploy).to receive(method)
+          expect(deploy).to receive(method) if method
 
           deploy.update_status(status)
         end

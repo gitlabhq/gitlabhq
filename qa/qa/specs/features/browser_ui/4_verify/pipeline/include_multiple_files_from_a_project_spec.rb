@@ -44,8 +44,8 @@ module QA
 
         Page::Project::Job::Show.perform do |job|
           aggregate_failures 'main CI is not overridden' do
-            expect(job.output).not_to have_content("#{unexpected_text}")
-            expect(job.output).to have_content("#{expected_text}")
+            expect(job.output).not_to have_content(unexpected_text.to_s)
+            expect(job.output).to have_content(expected_text.to_s)
           end
         end
       end

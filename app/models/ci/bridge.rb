@@ -36,10 +36,6 @@ module Ci
         end
       end
 
-      event :canceling do
-        transition CANCELABLE_STATUSES.map(&:to_sym) => :canceling
-      end
-
       event :pending do
         transition all => :pending
       end
@@ -54,6 +50,14 @@ module Ci
 
       event :actionize do
         transition created: :manual
+      end
+
+      event :start_cancel do
+        transition CANCELABLE_STATUSES.map(&:to_sym) + [:manual] => :canceling
+      end
+
+      event :finish_cancel do
+        transition CANCELABLE_STATUSES.map(&:to_sym) + [:manual, :canceling] => :canceled
       end
     end
 
@@ -83,7 +87,7 @@ module Ci
       when 'success'
         success!
       when 'canceled'
-        cancel!
+        finish_cancel!
       when 'failed', 'skipped'
         drop!
       else

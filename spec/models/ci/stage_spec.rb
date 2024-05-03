@@ -118,13 +118,13 @@ RSpec.describe Ci::Stage, :models, feature_category: :continuous_integration do
     end
   end
 
-  describe '#canceling' do
+  describe '#start_cancel' do
     it 'transitions to canceling' do
       stage = create(:ci_stage, pipeline: pipeline, project: pipeline.project, status: 'running')
       create(:ci_build, :success, stage_id: stage.id)
       create(:ci_build, :running, stage_id: stage.id)
 
-      expect { stage.canceling }.to change { stage.status }.from('running').to('canceling')
+      expect { stage.start_cancel }.to change { stage.status }.from('running').to('canceling')
     end
   end
 

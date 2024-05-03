@@ -101,7 +101,7 @@ namespace :gettext do
       puts "  #{message_id}"
       errors.each do |error|
         spaces = ' ' * 4
-        error = error.lines.join("#{spaces}")
+        error = error.lines.join(spaces.to_s)
         puts "#{spaces}#{error}"
       end
     end

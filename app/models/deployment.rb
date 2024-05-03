@@ -461,6 +461,8 @@ class Deployment < ApplicationRecord
       succeed!
     when 'failed'
       drop!
+    when 'canceling'
+      # no-op
     when 'canceled'
       cancel!
     when 'skipped'

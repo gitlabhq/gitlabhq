@@ -122,6 +122,56 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
     end
   end
 
+  describe 'state machine events' do
+    describe 'start_cancel!' do
+      valid_statuses = Ci::HasStatus::CANCELABLE_STATUSES.map(&:to_sym) + [:manual]
+      # Invalid statuses are statuses that are COMPLETED_STATUSES or already canceling
+      invalid_statuses = Ci::HasStatus::AVAILABLE_STATUSES.map(&:to_sym) - valid_statuses
+
+      valid_statuses.each do |status|
+        it "transitions from #{status} to canceling" do
+          bridge = create(:ci_bridge, status: status)
+
+          bridge.start_cancel!
+
+          expect(bridge.status).to eq('canceling')
+        end
+      end
+
+      invalid_statuses.each do |status|
+        it "does not transition from #{status} to canceling" do
+          bridge = create(:ci_bridge, status: status)
+
+          expect { bridge.start_cancel! }
+            .to raise_error(StateMachines::InvalidTransition)
+        end
+      end
+    end
+
+    describe 'finish_cancel!' do
+      valid_statuses = Ci::HasStatus::CANCELABLE_STATUSES.map(&:to_sym) + [:manual, :canceling]
+      invalid_statuses = Ci::HasStatus::AVAILABLE_STATUSES.map(&:to_sym) - valid_statuses
+      valid_statuses.each do |status|
+        it "transitions from #{status} to canceling" do
+          bridge = create(:ci_bridge, status: status)
+
+          bridge.finish_cancel!
+
+          expect(bridge.status).to eq('canceled')
+        end
+      end
+
+      invalid_statuses.each do |status|
+        it "does not transition from #{status} to canceling" do
+          bridge = create(:ci_bridge, status: status)
+
+          expect { bridge.finish_cancel! }
+            .to raise_error(StateMachines::InvalidTransition)
+        end
+      end
+    end
+  end
+
   describe 'state machine transitions' do
     context 'when bridge points towards downstream' do
       %i[created manual].each do |status|

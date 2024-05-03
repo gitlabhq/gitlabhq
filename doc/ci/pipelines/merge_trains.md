@@ -244,7 +244,7 @@ notes. Check the **Activity** section in the **Overview** tab for a message simi
 
 ### Cannot use auto-merge
 
-You cannot use [auto-merge](../../user/project/merge_requests/merge_when_pipeline_succeeds.md)
+You cannot use [auto-merge](../../user/project/merge_requests/auto_merge.md)
 (formerly **Merge when pipeline succeeds**) to skip the merge train, when merge trains are enabled.
 See [issue 12267](https://gitlab.com/gitlab-org/gitlab/-/issues/12267) for more information.
 
@@ -264,7 +264,7 @@ You can:
 
 ### Unable to add to the merge train
 
-When [**Pipelines must succeed**](../../user/project/merge_requests/merge_when_pipeline_succeeds.md#require-a-successful-pipeline-for-merge)
+When [**Pipelines must succeed**](../../user/project/merge_requests/auto_merge.md#require-a-successful-pipeline-for-merge)
 is enabled, but the latest pipeline failed:
 
 - The **Set to auto-merge** or **Merge** options are not available.

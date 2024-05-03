@@ -176,7 +176,7 @@ class CommitStatus < Ci::ApplicationRecord
 
     event :cancel do
       transition running: :canceling, if: :supports_canceling?
-      transition [:created, :waiting_for_resource, :preparing, :waiting_for_callback, :pending, :manual, :scheduled, :running] => :canceled
+      transition CANCELABLE_STATUSES.map(&:to_sym) + [:manual] => :canceled
     end
 
     before_transition [:created, :waiting_for_resource, :preparing, :skipped, :manual, :scheduled] => :pending do |commit_status|

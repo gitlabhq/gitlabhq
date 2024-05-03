@@ -1495,9 +1495,9 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     let(:build_b) { create_build('build2', queued_at: 0) }
     let(:build_c) { create_build('build3', queued_at: 0) }
 
-    describe '#canceling' do
+    describe '#start_cancel' do
       it 'transitions to canceling' do
-        expect { pipeline.canceling }.to change { pipeline.status }.from('created').to('canceling')
+        expect { pipeline.start_cancel }.to change { pipeline.status }.from('created').to('canceling')
       end
     end
 

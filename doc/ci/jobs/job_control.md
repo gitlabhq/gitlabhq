@@ -50,7 +50,7 @@ In blocking manual jobs:
   defined inside [`rules`](../yaml/index.md#rules).
 - The pipeline stops at the stage where the job is defined. To let the pipeline
   continue running, [run the manual job](#run-a-manual-job).
-- Merge requests in projects with [**Pipelines must succeed**](../../user/project/merge_requests/merge_when_pipeline_succeeds.md#require-a-successful-pipeline-for-merge)
+- Merge requests in projects with [**Pipelines must succeed**](../../user/project/merge_requests/auto_merge.md#require-a-successful-pipeline-for-merge)
   enabled can't be merged with a blocked pipeline.
 - The pipeline shows a status of **blocked**.
 

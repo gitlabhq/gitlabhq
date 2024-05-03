@@ -17,7 +17,7 @@ module GC::Profiler
     attr_accessor :use_exclusive
 
     %i[enable disable clear].each do |method|
-      alias_method "#{method}_orig", "#{method}"
+      alias_method "#{method}_orig", method.to_s
 
       define_method(method) do
         if use_exclusive

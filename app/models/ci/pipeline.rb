@@ -228,7 +228,7 @@ module Ci
         transition any => :success
       end
 
-      event :canceling do
+      event :start_cancel do
         transition any - [:canceling, :canceled] => :canceling
       end
 
@@ -883,7 +883,7 @@ module Ci
         when 'running' then run
         when 'success' then succeed
         when 'failed' then drop
-        when 'canceling' then canceling
+        when 'canceling' then start_cancel
         when 'canceled' then cancel
         when 'skipped' then skip
         when 'manual' then block

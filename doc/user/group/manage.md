@@ -352,7 +352,7 @@ that inherited them.
 You can configure all child projects in your group to require a complete and successful pipeline before
 merge.
 
-See also [the project-level setting](../project/merge_requests/merge_when_pipeline_succeeds.md#require-a-successful-pipeline-for-merge).
+See also [the project-level setting](../project/merge_requests/auto_merge.md#require-a-successful-pipeline-for-merge).
 
 Prerequisites:
 
@@ -371,7 +371,7 @@ To enable this setting:
 
 You can configure [skipped pipelines](../../ci/pipelines/index.md#skip-a-pipeline) from preventing merge requests from being merged.
 
-See also [the project-level setting](../project/merge_requests/merge_when_pipeline_succeeds.md#allow-merge-after-skipped-pipelines).
+See also [the project-level setting](../project/merge_requests/auto_merge.md#allow-merge-after-skipped-pipelines).
 
 Prerequisites:
 

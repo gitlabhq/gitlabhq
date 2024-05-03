@@ -13,7 +13,6 @@ query getUserAchievements($id: UserID!) {
           namespace {
             id
             fullPath
-            achievementsPath
           }
         }
       }

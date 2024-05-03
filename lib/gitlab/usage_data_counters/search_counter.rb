@@ -16,7 +16,7 @@ module Gitlab
         private
 
         def counter_key(event)
-          "#{event}".to_sym
+          event.to_s.to_sym
         end
       end
     end

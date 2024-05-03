@@ -35,7 +35,7 @@ It's possible to have both branch pipelines and merge request pipelines in the
 **Pipelines** tab of a single merge request. This might be [by configuration](../yaml/workflow.md#switch-between-branch-pipelines-and-merge-request-pipelines),
 or [by accident](#two-pipelines-when-pushing-to-a-branch).
 
-When the project has [**Pipelines must succeed**](../../user/project/merge_requests/merge_when_pipeline_succeeds.md#require-a-successful-pipeline-for-merge) enabled
+When the project has [**Pipelines must succeed**](../../user/project/merge_requests/auto_merge.md#require-a-successful-pipeline-for-merge) enabled
 and both pipelines types are present, the merge request pipelines are checked,
 not the branch pipelines.
 

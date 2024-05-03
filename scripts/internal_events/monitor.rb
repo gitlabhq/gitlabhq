@@ -74,7 +74,19 @@ def generate_snowplow_table
   @initial_max_timestamp ||= events.map { |e| e['rawEvent']['parameters']['dtm'].to_i }.max || 0
 
   rows = []
-  rows << ['Event Name', 'Collector Timestamp', 'Category', 'user_id', 'namespace_id', 'project_id', 'plan']
+  rows << [
+    'Event Name',
+    'Collector Timestamp',
+    'Category',
+    'user_id',
+    'namespace_id',
+    'project_id',
+    'plan',
+    'Label',
+    'Property',
+    'Value'
+  ]
+
   rows << :separator
 
   events.each do |event|
@@ -87,7 +99,10 @@ def generate_snowplow_table
       standard_context[:user_id],
       standard_context[:namespace_id],
       standard_context[:project_id],
-      standard_context[:plan]
+      standard_context[:plan],
+      event['event']['se_label'],
+      event['event']['se_property'],
+      event['event']['se_value']
     ]
 
     row.map! { |value| red(value) } if event['rawEvent']['parameters']['dtm'].to_i > @initial_max_timestamp
