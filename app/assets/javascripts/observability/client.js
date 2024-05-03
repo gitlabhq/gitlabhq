@@ -512,6 +512,7 @@ async function fetchMetricSearchMetadata(searchMetadataUrl, name, type) {
 const SUPPORTED_LOGS_FILTERS = {
   service: ['=', '!='],
   severityName: ['=', '!='],
+  severityNumber: ['=', '!='],
   traceId: ['='],
   spanId: ['='],
   fingerprint: ['='],
@@ -527,6 +528,7 @@ const SUPPORTED_LOGS_FILTERS = {
 const LOGS_FILTER_TO_QUERY_PARAM = {
   service: 'service_name',
   severityName: 'severity_name',
+  severityNumber: 'severity_number',
   traceId: 'trace_id',
   spanId: 'span_id',
   fingerprint: 'fingerprint',

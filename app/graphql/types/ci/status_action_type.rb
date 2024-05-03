@@ -6,22 +6,22 @@ module Types
       graphql_name 'StatusAction'
 
       field :button_title, GraphQL::Types::String, null: true,
-                                                   description: 'Title for the button, for example: Retry this job.'
+        description: 'Title for the button, for example: Retry this job.'
       field :confirmation_message, GraphQL::Types::String, null: true,
-                                                           description: 'Custom confirmation message for a manual job.',
-                                                           alpha: { milestone: '17.0' }
+        description: 'Custom confirmation message for a manual job.',
+        alpha: { milestone: '17.0' }
       field :icon, GraphQL::Types::String, null: true,
-                                           description: 'Icon used in the action button.'
+        description: 'Icon used in the action button.'
       field :id, GraphQL::Types::String, null: false,
-                                         description: 'ID for a status action.',
-                                         extras: [:parent]
+        description: 'ID for a status action.',
+        extras: [:parent]
       field :method, GraphQL::Types::String, null: true,
-                                             description: 'Method for the action, for example: :post.',
-                                             resolver_method: :action_method
+        description: 'Method for the action, for example: :post.',
+        resolver_method: :action_method
       field :path, GraphQL::Types::String, null: true,
-                                           description: 'Path for the action.'
+        description: 'Path for the action.'
       field :title, GraphQL::Types::String, null: true,
-                                            description: 'Title for the action, for example: Retry.'
+        description: 'Title for the action, for example: Retry.'
 
       def id(parent:)
         # parent is a SimpleDelegator

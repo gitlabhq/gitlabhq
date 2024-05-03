@@ -1,7 +1,12 @@
 <script>
 import { GlButton, GlModal, GlDisclosureDropdownItem } from '@gitlab/ui';
 import { visitUrl } from '~/lib/utils/url_utility';
-import { I18N_NEW_WORK_ITEM_BUTTON_LABEL, sprintfWorkItem } from '../constants';
+import { __ } from '~/locale';
+import {
+  I18N_NEW_WORK_ITEM_BUTTON_LABEL,
+  I18N_WORK_ITEM_CREATED,
+  sprintfWorkItem,
+} from '../constants';
 import CreateWorkItem from './create_work_item.vue';
 
 export default {
@@ -12,7 +17,7 @@ export default {
     GlDisclosureDropdownItem,
   },
   props: {
-    workItemType: {
+    workItemTypeName: {
       type: String,
       required: false,
       default: null,
@@ -30,7 +35,10 @@ export default {
   },
   computed: {
     newWorkItemText() {
-      return sprintfWorkItem(I18N_NEW_WORK_ITEM_BUTTON_LABEL, this.workItemType);
+      return sprintfWorkItem(I18N_NEW_WORK_ITEM_BUTTON_LABEL, this.workItemTypeName);
+    },
+    workItemCreatedText() {
+      return sprintfWorkItem(I18N_WORK_ITEM_CREATED, this.workItemTypeName);
     },
     dropdownItem() {
       return {
@@ -46,8 +54,17 @@ export default {
     showModal() {
       this.visible = true;
     },
-    handleCreation(workItem) {
-      visitUrl(workItem.webUrl);
+    handleCreated(workItem) {
+      this.$toast.show(this.workItemCreatedText, {
+        action: {
+          text: __('View details'),
+          onClick: () => {
+            visitUrl(workItem.webUrl);
+          },
+        },
+      });
+      this.$emit('workItemCreated', workItem);
+      this.hideModal();
     },
   },
 };
@@ -67,14 +84,17 @@ export default {
     <gl-modal
       modal-id="create-work-item-modal"
       :visible="visible"
+      :title="newWorkItemText"
+      size="lg"
       hide-footer
       no-focus-on-show
       @hide="hideModal"
     >
       <create-work-item
-        :work-item-type="workItemType"
+        :work-item-type-name="workItemTypeName"
+        hide-form-title
         @cancel="hideModal"
-        @workItemCreated="handleCreation"
+        @workItemCreated="handleCreated"
       />
     </gl-modal>
   </div>

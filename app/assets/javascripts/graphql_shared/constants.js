@@ -8,6 +8,7 @@ export const TYPENAME_CI_VARIABLE = 'Ci::Variable';
 export const TYPENAME_COMMIT_STATUS = 'CommitStatus';
 export const TYPENAME_CRM_CONTACT = 'CustomerRelations::Contact';
 export const TYPENAME_CRM_ORGANIZATION = 'CustomerRelations::Organization';
+export const TYPENAME_DESIGN_VERSION = 'DesignManagement::Version';
 export const TYPENAME_DISCUSSION = 'Discussion';
 export const TYPENAME_EPIC = 'Epic';
 export const TYPENAME_EPIC_BOARD = 'Boards::EpicBoard';

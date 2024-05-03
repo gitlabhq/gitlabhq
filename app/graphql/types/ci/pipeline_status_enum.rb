@@ -21,8 +21,8 @@ module Types
 
       STATUSES_DESCRIPTION.each do |state, description|
         value state.to_s.upcase,
-              description: description,
-              value: state.to_s
+          description: description,
+          value: state.to_s
       end
     end
   end

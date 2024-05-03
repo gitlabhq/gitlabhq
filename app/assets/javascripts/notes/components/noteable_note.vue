@@ -486,6 +486,7 @@ export default {
           :created-at="note.created_at"
           :note-id="note.id"
           :is-internal-note="note.internal"
+          :is-imported="note.imported"
           :noteable-type="noteableType"
           :email-participant="note.external_author"
         >

@@ -420,7 +420,7 @@ spec:
 $[[ inputs.environment | expand_vars ]] job:
   script: echo
   rules:
-    - if: '"$[[ inputs.environment1 | expand_vars ]]" == "production"'
+    - if: '"$[[ inputs.environment | expand_vars ]]" == "production"'
 ```
 
 In this example, quoting the input block and also the entire variable expression

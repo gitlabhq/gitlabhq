@@ -113,10 +113,6 @@ All documentation can be found on <https://docs.gitlab.com>.
 
 Please see [Getting help for GitLab](https://about.gitlab.com/getting-help/) on our website for the many options to get help.
 
-## Why? Is it any good?
+## Why should I use GitLab?
 
 Read [why our customers choose GitLab](https://about.gitlab.com/why-gitlab/).
-
-## Is it awesome?
-
-[These people](https://about.gitlab.com/customers/) seem to like it.

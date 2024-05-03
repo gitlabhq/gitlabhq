@@ -26,19 +26,32 @@ export const mockDesign2 = {
   __typename: 'Design',
 };
 
-export const mockVersion = {
-  id: 'gid://gitlab/DesignManagement::Version/40',
-  sha: 'f03f7c6f421ebb006d210bae9ad9145963a0c48d',
-  createdAt: '2024-04-10T02:41:14Z',
-  author: {
-    id: 'gid://gitlab/User/1',
-    name: 'Administrator',
-    avatarUrl:
-      'https://www.gravatar.com/avatar/258d8dc916db8cea2cafb6c3cd0cb0246efe061421dbd83ec3a350428cabda4f?s=80&d=identicon',
-    __typename: 'UserCore',
+export const mockAllVersions = [
+  {
+    __typename: 'DesignVersion',
+    id: 'gid://gitlab/DesignManagement::Version/1',
+    sha: 'b389071a06c153509e11da1f582005b316667001',
+    createdAt: '2021-08-09T06:05:00Z',
+    author: {
+      __typename: 'UserCore',
+      id: 'gid://gitlab/User/1',
+      name: 'Adminstrator',
+      avatarUrl: 'avatar.png',
+    },
   },
-  __typename: 'DesignVersion',
-};
+  {
+    __typename: 'DesignVersion',
+    id: 'gid://gitlab/DesignManagement::Version/2',
+    sha: 'b389071a06c153509e11da1f582005b316667021',
+    createdAt: '2021-08-09T06:05:00Z',
+    author: {
+      __typename: 'UserCore',
+      id: 'gid://gitlab/User/1',
+      name: 'Adminstrator',
+      avatarUrl: 'avatar.png',
+    },
+  },
+];
 
 export const designCollectionResponse = (mockDesigns = [mockDesign]) => ({
   data: {
@@ -56,7 +69,7 @@ export const designCollectionResponse = (mockDesigns = [mockDesign]) => ({
           designCollection: {
             copyState: 'READY',
             designs: { nodes: mockDesigns },
-            versions: { nodes: [mockVersion] },
+            versions: { nodes: mockAllVersions },
           },
         },
       ],

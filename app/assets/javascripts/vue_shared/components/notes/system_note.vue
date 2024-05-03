@@ -167,6 +167,7 @@ export default {
           :created-at="note.created_at"
           :note-id="note.id"
           :is-system-note="true"
+          :is-imported="note.imported"
         >
           <span ref="gfm-content" v-safe-html="actionTextHtml"></span>
           <template

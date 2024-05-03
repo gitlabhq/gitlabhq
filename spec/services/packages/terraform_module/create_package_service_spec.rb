@@ -148,5 +148,12 @@ RSpec.describe Packages::TerraformModule::CreatePackageService, feature_category
       it { expect(subject[:reason]).to eq :bad_request }
       it { expect(subject[:message]).to eq 'Version is empty.' }
     end
+
+    context 'with invalid name' do
+      let(:overrides) { { module_name: 'foo@bar' } }
+
+      it { expect(subject[:reason]).to eq :unprocessable_entity }
+      it { expect(subject[:message]).to eq 'Validation failed: Name is invalid' }
+    end
   end
 end

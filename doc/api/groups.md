@@ -1428,7 +1428,7 @@ POST /groups/:id/service_accounts/:user_id/personal_access_tokens
 This API endpoint works on top-level groups only. It does not work on subgroups.
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/35/service_accounts/71/personal_access_tokens" --data "scopes[]=api" --data "name=service_accounts_token"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/35/service_accounts/71/personal_access_tokens" --data "scopes[]=api,read_user,read_repository" --data "name=service_accounts_token"
 ```
 
 Example response:
@@ -1450,6 +1450,8 @@ Example response:
 
 | Attribute | Type            | Required | Description |
 | --------- | --------------- | -------- | ----------- |
+| `name`    | string          | yes      | Name of the personal access token |
+| `scopes`     | array   | yes      | Array of scopes of the personal access token. See [personal access token scopes](../user/profile/personal_access_tokens.md#personal-access-token-scopes) for possible values. |
 | `expires_at`      | date | no      | Personal access token expiry date. When left blank, the token follows the [standard rule of expiry for personal access tokens](../user/profile/personal_access_tokens.md#when-personal-access-tokens-expire). |
 
 ### Rotate a Personal Access Token for Service Account User

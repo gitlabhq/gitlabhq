@@ -55,14 +55,6 @@ export default {
     hasDeploymentMetrics() {
       return this.isPostMerge;
     },
-    visualReviewAppMeta() {
-      return {
-        appUrl: this.mr.appUrl,
-        mergeRequestId: this.mr.iid,
-        sourceProjectId: this.mr.sourceProjectId,
-        sourceProjectPath: this.mr.sourceProjectFullPath,
-      };
-    },
     pipeline() {
       return this.isPostMerge ? this.mr.mergePipeline : this.mr.pipeline;
     },

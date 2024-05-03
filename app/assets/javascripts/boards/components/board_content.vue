@@ -202,7 +202,7 @@ export default {
       v-if="!isSwimlanesOn"
       ref="list"
       v-bind="draggableOptions"
-      class="boards-list gl-w-full gl-py-5 gl-pr-3 gl-white-space-nowrap gl-overflow-x-auto"
+      class="boards-list gl-w-full gl-py-5 gl-pl-0 gl-pr-5 xl:gl-pl-3 xl:gl-pr-6 gl-white-space-nowrap gl-overflow-x-auto"
       @end="updateListPosition"
     >
       <board-column
@@ -220,7 +220,7 @@ export default {
       />
 
       <transition mode="out-in" name="slide" @after-enter="afterFormEnters">
-        <div v-if="!addColumnFormVisible" class="gl-display-inline-block gl-pr-3">
+        <div v-if="!addColumnFormVisible" class="gl-display-inline-block gl-pl-2">
           <board-add-new-column-trigger
             v-if="canAdminList"
             :is-new-list-showing="addColumnFormVisible"
@@ -253,7 +253,7 @@ export default {
       <template #create-list-button>
         <div
           v-if="!addColumnFormVisible"
-          class="gl-mt-5 gl-display-inline-block gl-px-3 gl-sticky gl-top-5"
+          class="gl-mt-5 gl-display-inline-block gl-pl-3 gl-sticky gl-top-5"
         >
           <board-add-new-column-trigger
             v-if="canAdminList"
@@ -262,16 +262,17 @@ export default {
           />
         </div>
       </template>
-      <board-add-new-column
-        v-if="addColumnFormVisible"
-        class="gl-sticky gl-top-5"
-        :filter-params="filterParams"
-        :list-query-variables="listQueryVariables"
-        :board-id="boardId"
-        :lists="boardListsById"
-        @setAddColumnFormVisibility="$emit('setAddColumnFormVisibility', $event)"
-        @highlight-list="highlightList"
-      />
+      <div v-if="addColumnFormVisible" class="gl-pl-2">
+        <board-add-new-column
+          class="gl-sticky gl-top-5"
+          :filter-params="filterParams"
+          :list-query-variables="listQueryVariables"
+          :board-id="boardId"
+          :lists="boardListsById"
+          @setAddColumnFormVisibility="$emit('setAddColumnFormVisibility', $event)"
+          @highlight-list="highlightList"
+        />
+      </div>
     </epics-swimlanes>
 
     <board-content-sidebar v-if="isIssueBoard" data-testid="issue-boards-sidebar" />

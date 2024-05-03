@@ -7,8 +7,8 @@ module Types
 
       ::Ci::Runner.access_levels.keys.each do |type|
         value type.upcase,
-              description: "A runner that is #{type.tr('_', ' ')}.",
-              value: type
+          description: "A runner that is #{type.tr('_', ' ')}.",
+          value: type
       end
     end
   end

@@ -6,12 +6,12 @@ module Mutations
       authorize :create_saved_replies
 
       argument :name, GraphQL::Types::String,
-               required: true,
-               description: copy_field_description(::Types::SavedReplyType, :name)
+        required: true,
+        description: copy_field_description(::Types::SavedReplyType, :name)
 
       argument :content, GraphQL::Types::String,
-               required: true,
-               description: copy_field_description(::Types::SavedReplyType, :content)
+        required: true,
+        description: copy_field_description(::Types::SavedReplyType, :content)
     end
   end
 end

@@ -8,8 +8,8 @@ module Mutations
       ERROR_MSG = 'Error deleting the snippet'
 
       argument :id, ::Types::GlobalIDType[::Snippet],
-               required: true,
-               description: 'Global ID of the snippet to destroy.'
+        required: true,
+        description: 'Global ID of the snippet to destroy.'
 
       def resolve(id:)
         snippet = authorized_find!(id: id)

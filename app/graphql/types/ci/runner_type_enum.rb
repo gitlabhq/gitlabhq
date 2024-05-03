@@ -7,8 +7,8 @@ module Types
 
       ::Ci::Runner::AVAILABLE_TYPES.each do |runner_type|
         value runner_type.upcase,
-              description: "A runner that is #{runner_type.tr('_', ' ')}.",
-              value: runner_type
+          description: "A runner that is #{runner_type.tr('_', ' ')}.",
+          value: runner_type
       end
     end
   end

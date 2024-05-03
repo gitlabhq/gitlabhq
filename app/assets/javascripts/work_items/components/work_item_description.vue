@@ -33,13 +33,20 @@ export default {
     },
     workItemId: {
       type: String,
-      required: true,
+      required: false,
+      default: '',
     },
     workItemIid: {
       type: String,
-      required: true,
+      required: false,
+      default: '',
     },
     editMode: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    autofocus: {
       type: Boolean,
       required: false,
       default: false,
@@ -48,6 +55,11 @@ export default {
       type: Boolean,
       required: false,
       default: false,
+    },
+    showButtonsBelowField: {
+      type: Boolean,
+      required: false,
+      default: true,
     },
   },
   markdownDocsPath: helpPagePath('user/markdown'),
@@ -73,6 +85,9 @@ export default {
       query() {
         return this.isGroup ? groupWorkItemByIidQuery : workItemByIidQuery;
       },
+      skip() {
+        return !this.workItemIid;
+      },
       variables() {
         return {
           fullPath: this.fullPath,
@@ -94,7 +109,7 @@ export default {
   },
   computed: {
     autosaveKey() {
-      return this.workItemId;
+      return this.workItemId || `new-${this.workItemType}-description-draft`;
     },
     canEdit() {
       return this.workItem?.userPermissions?.updateWorkItem || false;
@@ -139,12 +154,11 @@ export default {
       return markdownPreviewPath({ fullPath, iid, isGroup });
     },
     autocompleteDataSources() {
-      const {
-        fullPath,
-        isGroup,
-        workItem: { iid },
-      } = this;
-      return autocompleteDataSources({ fullPath, iid, isGroup });
+      return autocompleteDataSources({
+        fullPath: this.fullPath,
+        isGroup: this.isGroup,
+        iid: this.workItem?.iid,
+      });
     },
     saveButtonText() {
       return this.editMode ? __('Save changes') : __('Save');
@@ -251,7 +265,7 @@ export default {
           :autocomplete-data-sources="autocompleteDataSources"
           enable-autocomplete
           supports-quick-actions
-          autofocus
+          :autofocus="autofocus"
           @input="setDescriptionText"
           @keydown.meta.enter="updateWorkItem"
           @keydown.ctrl.enter="updateWorkItem"
@@ -292,7 +306,7 @@ export default {
               </gl-button>
             </template>
           </gl-alert>
-          <template v-else>
+          <template v-else-if="showButtonsBelowField">
             <gl-button
               category="primary"
               variant="confirm"

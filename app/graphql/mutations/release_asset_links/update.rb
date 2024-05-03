@@ -10,34 +10,34 @@ module Mutations
       ReleaseAssetLinkID = ::Types::GlobalIDType[::Releases::Link]
 
       argument :id, ReleaseAssetLinkID,
-               required: true,
-               description: 'ID of the release asset link to update.'
+        required: true,
+        description: 'ID of the release asset link to update.'
 
       argument :name, GraphQL::Types::String,
-               required: false,
-               description: 'Name of the asset link.'
+        required: false,
+        description: 'Name of the asset link.'
 
       argument :url, GraphQL::Types::String,
-               required: false,
-               description: 'URL of the asset link.'
+        required: false,
+        description: 'URL of the asset link.'
 
       argument :direct_asset_path, GraphQL::Types::String,
-               required: false, as: :filepath,
-               description: 'Relative path for a direct asset link.'
+        required: false, as: :filepath,
+        description: 'Relative path for a direct asset link.'
 
       argument :link_type, Types::ReleaseAssetLinkTypeEnum,
-               required: false,
-               description: 'Type of the asset link.'
+        required: false,
+        description: 'Type of the asset link.'
 
       field :link,
-            Types::ReleaseAssetLinkType,
-            null: true,
-            description: 'Asset link after mutation.'
+        Types::ReleaseAssetLinkType,
+        null: true,
+        description: 'Asset link after mutation.'
 
       def ready?(**args)
         if args.key?(:link_type) && args[:link_type].nil?
           raise Gitlab::Graphql::Errors::ArgumentError,
-                'if the linkType argument is provided, it cannot be null'
+            'if the linkType argument is provided, it cannot be null'
         end
 
         super

@@ -52,6 +52,7 @@ describe('WorkItemDescription', () => {
     isGroup = false,
     workItemIid = '1',
     editMode = false,
+    showButtonsBelowField,
   } = {}) => {
     workItemResponseHandler = jest.fn().mockResolvedValue(workItemResponse);
     groupWorkItemResponseHandler = jest
@@ -70,6 +71,7 @@ describe('WorkItemDescription', () => {
         workItemId: id,
         workItemIid,
         editMode,
+        showButtonsBelowField,
       },
       provide: {
         isGroup,
@@ -168,6 +170,16 @@ describe('WorkItemDescription', () => {
 
       expect(findCancelButton().attributes('type')).toBe('reset');
       expect(findSubmitButton().attributes('type')).toBe('submit');
+    });
+
+    it('hides buttons when showButtonsBelowField is false', async () => {
+      await createComponent({
+        isEditing: true,
+        showButtonsBelowField: false,
+      });
+
+      expect(findCancelButton().exists()).toBe(false);
+      expect(findSubmitButton().exists()).toBe(false);
     });
   });
 

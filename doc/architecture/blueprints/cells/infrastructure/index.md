@@ -51,6 +51,16 @@ Below is the Cell architecture. You can find the current GitLab.com architecture
 
 ```plantuml
 @startuml
+!include <k8s/Common>
+!include <k8s/Context>
+!include <k8s/Simplified>
+!include <k8s/OSS/all>
+!include <gcp/GCPCommon>
+!include <gcp/Compute/all>
+!include <gcp/Databases/all>
+!include <gcp/Security/all>
+!include <gcp/Storage/all>
+
 skinparam actorStyle awesome
 skinparam frame {
   borderColor<<gcp_project>> #4285F4
@@ -78,6 +88,11 @@ cloud "cloud.gitlab.com" <<cloudflare>> {
 }
 :User:->gitlab.com
 :User:->cloud.gitlab.com
+
+cloud "ClickHouse Cloud" {
+  database "ClickHouse" as cell1Clickhouse
+  database "ClickHouse" as cell2Clickhouse
+}
 
 frame "Google Cloud Platform" <<gcp>> {
   frame "Cell Cluster" <<cluster>> {
@@ -148,59 +163,56 @@ frame "Google Cloud Platform" <<gcp>> {
     primaryCompute <--> primaryGitaly
     primaryGitaly .r[#F4B400].* gprdVPC
 
-    frame "gitlab-gprd-cell-1" <<gcp_project>> {
-      frame "gprd-cell-1 (VPC Network)" <<vpc>> as cell1VPC {
-        node cell1gke [
-        <b> GKE
-        ===
-        webservice
-        ---
-        gitlab-shell
-        ---
-        registry
-        ---
-        sidekiq
-        ---
-        kas
-        ---
-        ]
-
-        rectangle "Storage" as cell1Storage {
-          database "Postgres" as cell1Postgres
-          database "Redis" as cell1Redis
-          file "object storage" as cell1ObjectStorage
-          file "gitaly" as cell1Gitaly
+    frame "cell-01HV3FBWXHSYBAR2R2" as cell1 <<gcp_project>> {
+      frame "cell-01HV3FBWXHSYBAR2R2 VPC" <<vpc>> as cell1VPC {
+        Cluster_Boundary(cell1gke, "cell1gke") {
+          Namespace_Boundary(cell1gitlab, "gitlab") {
+            KubernetesPod(cell1web, "Web", "")
+            KubernetesPod(cell1shell, "Shell", "")
+            KubernetesPod(cell1registry, "Registry", "")
+            KubernetesPod(cell1sidekiq, "Sidekiq", "")
+          }
+          Namespace_Boundary(cell1Observability, "monitoring") {
+            KubernetesPod(cell1Prom, "Prometheus", "")
+          }
         }
 
+        storage "Storage" as cell1Storage {
+          Cloud_SQL(cell1Postgres, "PostgreSQL", "")
+          Cloud_Memorystore(cell1Redis, "Redis", "")
+          Cloud_Storage(cell1ObjectStorage, "GCS", "")
+          Key_Management_Service(cell1SecretStorage, "GKMS", "")
+          Compute_Engine(cell1Gitaly, "Gitaly", "")
+        }
         cell1gke <--> cell1Storage
+        cell1gke <---> cell1Clickhouse
       }
     }
 
-    frame "gitlab-gprd-cell-2" <<gcp_project>> {
-      frame "gprd-cell-2 (VPC Network)" <<vpc>> as cell2VPC {
-        node cell2gke [
-        <b> GKE
-        ===
-        webservice
-        ---
-        gitlab-shell
-        ---
-        registry
-        ---
-        sidekiq
-        ---
-        kas
-        ---
-        ]
+    frame "cell-01HV3FBYX37C18SW05" as cell2 <<gcp_project>> {
+      frame "cell-01HV3FBYX37C18SW05 VPC" <<vpc>> as cell2VPC {
+        Cluster_Boundary(cell2gke, "cell2gke") {
+          Namespace_Boundary(cell2gitlab, "gitlab") {
+            KubernetesPod(cell2web, "Web", "")
+            KubernetesPod(cell2shell, "Shell", "")
+            KubernetesPod(cell2registry, "Registry", "")
+            KubernetesPod(cell2sidekiq, "Sidekiq", "")
+          }
+          Namespace_Boundary(cell2Observability, "monitoring") {
+            KubernetesPod(cell2Prom, "Prometheus", "")
+          }
+        }
 
-        rectangle "Storage" as cell2Storage {
-          database "Postgres" as cell2Postgres
-          database "Redis" as cell2Redis
-          file "object storage" as cell2ObjectStorage
-          file "gitaly" as cell2Gitaly
+        storage "Storage" as cell2Storage {
+          Cloud_SQL(cell2Postgres, "PostgreSQL", "")
+          Cloud_Memorystore(cell2Redis, "Redis", "")
+          Cloud_Storage(cell2ObjectStorage, "GCS", "")
+          Key_Management_Service(cell2SecretStorage, "GKMS", "")
+          Compute_Engine(cell2Gitaly, "Gitaly", "")
         }
 
         cell2gke <--> cell2Storage
+        cell2gke <---> cell2Clickhouse
       }
     }
 
@@ -328,27 +340,27 @@ skinparam frame {
 left to right direction
 
 frame "Ring 3" <<cells 1.5+>> {
-  component "NjkwYzdhNzYtMjljNS00Y"
-  component "ZjNkOTJhMGUtNTExZC00Y"
-  component "Mzg5OGE0ZDEtMmM4OC00M"
-  component "ZDQ2MTg0MmUtYTEzZC00Y"
+  component "01HWRY6Y73W6TW3BHC"
+  component "01HWRY6Y740CZSBCGB"
+  component "01HWRY6Y74AHZ0AFZ1"
+  component "01HWRY6Y743018H2N7"
 
   frame "Ring 2" <<Cells 1.0>> {
-    component "NDBiMWNhNmYtZGY0Yi00M"
-    component "OTI2MmYwMWMtMDk5Zi00Z"
-    component "NjExNWY2MDctNDBhOS00Y"
-    component "NTIxM2YyYmEtZjhjZC00O"
-    component "OTQ0MzRhNjMtMTA1Ni00Y"
-    component "N2M1MWZiOGEtZTRkMy00Z"
-    component "YjA0ZGI3ZTQtOGRhOS00N"
-    component "MWY2Y2U4ZGMtMzBhYS00Y"
-    component "ZGM2YWZhMmYtM2JiZC00M"
-    component "OTg0YWE3OTUtMjEyNC00Y"
+    component "01HWRY6Y74HM0SKTZ9"
+    component "01HWRY6Y74YZF5DX5C"
+    component "01HWRY6Y74QYG7VV2Y"
+    component "01HWRY6Y745BE459Y6"
+    component "01HWRY6Y74915AAS8E"
+    component "01HWRY6Y74EV3ZVXF5"
+    component "01HWRY6Y74REVKJK3P"
+    component "01HWRY6Y748ZBGR9G1"
+    component "01HWRY6Y74AR5HHJ4H"
+    component "01HWRY6Y743V5085XK"
 
     frame "Ring 1" <<Cells 1.0>> {
       frame "Ring 0" <<Cells 1.0>> {
         component "Canary stage" <<legacy>> as cny
-        component "NmY1ZjlkY2YtZjZhZS00N"
+        component "01HWRY6Y745RS405F6"
       }
 
       component "Main stage\nPrimary Cell" <<legacy>> as Primary
@@ -400,7 +412,7 @@ When we have a blueprint merged ideally the confidence should move to 👍 becau
 | Databases                        | team::Database Reliability        | [Blueprint](postgresql.md)                                                | 👍         |
 | Deployments                      | group::Delivery                   | [Blueprint](deployments.md)                                               | 👍         |
 | Observability                    | team::Scalability-Observability   | [Blueprint](observability.md)                                             | 👎         |
-| Cell Architecture and Tooling    | team::Foundations                 | [To-Do](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/1209)       | 👎         |
+| Cell Architecture and Tooling    | team::Foundations                 | [Blueprint](cell_arch_tooling.md)       | 👍         |
 | Provisioning                     | team::Foundations                 | To-Do                                                                     | 👎         |
 | Configuration Management/Rollout | team::Foundations                 | To-Do                                                                     | 👎         |
 | Disaster Recovery                 | team::Production Engineering       | [Blueprint](disaster_recovery.md)                                         | 👍         |

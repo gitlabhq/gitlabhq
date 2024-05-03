@@ -1,4 +1,5 @@
 <script>
+import { uniqueId } from 'lodash';
 import { GlFormGroup, GlFormInput } from '@gitlab/ui';
 import { __ } from '~/locale';
 
@@ -9,6 +10,7 @@ export default {
   },
   i18n: {
     titleLabel: __('Title (required)'),
+    requiredFieldFeedback: __('A title is required'),
   },
   props: {
     title: {
@@ -20,15 +22,34 @@ export default {
       required: false,
       default: false,
     },
+    isValid: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+  },
+  data() {
+    return {
+      inputId: uniqueId('work-item-title-'),
+    };
   },
 };
 </script>
 
 <template>
-  <gl-form-group v-if="isEditing" :label="$options.i18n.titleLabel" label-for="work-item-title">
+  <gl-form-group
+    v-if="isEditing"
+    :label="$options.i18n.titleLabel"
+    :label-for="inputId"
+    :invalid-feedback="$options.i18n.requiredFieldFeedback"
+    :state="isValid"
+  >
     <gl-form-input
+      :id="inputId"
       class="gl-w-full"
       :value="title"
+      :state="isValid"
+      autofocus
       data-testid="work-item-title-input"
       @keydown.meta.enter="$emit('updateWorkItem')"
       @keydown.ctrl.enter="$emit('updateWorkItem')"

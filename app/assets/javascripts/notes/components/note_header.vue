@@ -3,11 +3,14 @@ import { GlIcon, GlBadge, GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapActions } from 'vuex';
 import { isGid, getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { TYPE_ACTIVITY, TYPE_COMMENT } from '~/import/constants';
 import { __, s__ } from '~/locale';
+import ImportedBadge from '~/vue_shared/components/imported_badge.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
 export default {
   components: {
+    ImportedBadge,
     TimeAgoTooltip,
     GlIcon,
     GlBadge,
@@ -58,6 +61,11 @@ export default {
       default: true,
     },
     isInternalNote: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    isImported: {
       type: Boolean,
       required: false,
       default: false,
@@ -129,6 +137,9 @@ export default {
     },
     internalNoteTooltip() {
       return s__('Notes|This internal note will always remain confidential');
+    },
+    importableType() {
+      return this.isSystemNote ? TYPE_ACTIVITY : TYPE_COMMENT;
     },
   },
   methods: {
@@ -234,6 +245,12 @@ export default {
         </a>
         <time-ago-tooltip v-else ref="noteTimestamp" :time="createdAt" tooltip-placement="bottom" />
       </template>
+
+      <template v-if="isImported">
+        <span>·</span>
+        <imported-badge :text-only="isSystemNote" :importable-type="importableType" size="sm" />
+      </template>
+
       <gl-badge
         v-if="isInternalNote"
         v-gl-tooltip:tooltipcontainer.bottom

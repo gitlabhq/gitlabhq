@@ -35103,6 +35103,9 @@ msgstr ""
 msgid "ObservabilityLogs|Severity"
 msgstr ""
 
+msgid "ObservabilityLogs|Severity Number"
+msgstr ""
+
 msgid "ObservabilityLogs|Showing %{count} logs"
 msgstr ""
 
@@ -58447,6 +58450,9 @@ msgstr ""
 msgid "WorkItem|%{usersLength} assignees"
 msgstr ""
 
+msgid "WorkItem|%{workItemType} created"
+msgstr ""
+
 msgid "WorkItem|%{workItemType} deleted"
 msgstr ""
 
@@ -58853,6 +58859,9 @@ msgid "WorkItem|The current task"
 msgstr ""
 
 msgid "WorkItem|This %{workItemType} is confidential and should only be visible to team members with at least Reporter access"
+msgstr ""
+
+msgid "WorkItem|This %{workItemType} is confidential and should only be visible to users having at least Reporter access."
 msgstr ""
 
 msgid "WorkItem|This %{workItemType} is currently blocked by the following items:"
@@ -60354,6 +60363,9 @@ msgid "access:"
 msgstr ""
 
 msgid "active project"
+msgstr ""
+
+msgid "activity"
 msgstr ""
 
 msgid "add at least one file to the repository"

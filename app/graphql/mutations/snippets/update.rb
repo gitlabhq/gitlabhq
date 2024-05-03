@@ -10,24 +10,24 @@ module Mutations
       include Gitlab::InternalEventsTracking
 
       argument :id, ::Types::GlobalIDType[::Snippet],
-               required: true,
-               description: 'Global ID of the snippet to update.'
+        required: true,
+        description: 'Global ID of the snippet to update.'
 
       argument :title, GraphQL::Types::String,
-               required: false,
-               description: 'Title of the snippet.'
+        required: false,
+        description: 'Title of the snippet.'
 
       argument :description, GraphQL::Types::String,
-               required: false,
-               description: 'Description of the snippet.'
+        required: false,
+        description: 'Description of the snippet.'
 
       argument :visibility_level, Types::VisibilityLevelsEnum,
-               description: 'Visibility level of the snippet.',
-               required: false
+        description: 'Visibility level of the snippet.',
+        required: false
 
       argument :blob_actions, [Types::Snippets::BlobActionInputType],
-               description: 'Actions to perform over the snippet repository and blobs.',
-               required: false
+        description: 'Actions to perform over the snippet repository and blobs.',
+        required: false
 
       def resolve(id:, **args)
         snippet = authorized_find!(id: id)

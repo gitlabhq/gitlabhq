@@ -27,7 +27,9 @@ module Packages
           ::Packages::TerraformModule::ProcessPackageFileWorker.perform_async(package_file.id)
         end
 
-        package
+        ServiceResponse.success(payload: { package: package })
+      rescue ActiveRecord::RecordInvalid => e
+        ServiceResponse.error(message: e.message, reason: :unprocessable_entity)
       end
 
       private

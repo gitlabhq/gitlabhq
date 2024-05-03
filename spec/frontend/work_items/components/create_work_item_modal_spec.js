@@ -3,11 +3,8 @@ import { GlDisclosureDropdownItem, GlModal } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import CreateWorkItem from '~/work_items/components/create_work_item.vue';
 import CreateWorkItemModal from '~/work_items/components/create_work_item_modal.vue';
-import { visitUrl } from '~/lib/utils/url_utility';
 
-jest.mock('~/lib/utils/url_utility', () => ({
-  visitUrl: jest.fn(),
-}));
+const showToast = jest.fn();
 
 describe('CreateWorkItemModal', () => {
   let wrapper;
@@ -17,27 +14,29 @@ describe('CreateWorkItemModal', () => {
   const findModal = () => wrapper.findComponent(GlModal);
   const findForm = () => wrapper.findComponent(CreateWorkItem);
 
-  const createComponent = ({ workItemType, asDropdownItem = false } = {}) => {
+  const createComponent = (propsData = {}) => {
     wrapper = shallowMount(CreateWorkItemModal, {
-      propsData: {
-        workItemType,
-        asDropdownItem,
+      propsData,
+      mocks: {
+        $toast: {
+          show: showToast,
+        },
       },
     });
   };
 
-  it('passes workItemType to CreateWorkItem', () => {
-    createComponent({ workItemType: 'issue' });
+  it('passes workItemTypeName to CreateWorkItem', () => {
+    createComponent({ workItemTypeName: 'issue' });
 
-    expect(findForm().props('workItemType')).toBe('issue');
+    expect(findForm().props('workItemTypeName')).toBe('issue');
   });
 
-  it('calls visitUrl on workItemCreated', () => {
+  it('shows toast on workItemCreated', () => {
     createComponent();
 
     findForm().vm.$emit('workItemCreated', { webUrl: '/' });
 
-    expect(visitUrl).toHaveBeenCalledWith('/');
+    expect(showToast).toHaveBeenCalledWith('Item created', expect.any(Object));
   });
 
   describe('default trigger', () => {

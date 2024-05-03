@@ -97,7 +97,7 @@ export default {
           v-else-if="isCreateWorkItem(groupItem)"
           :key="`${groupItem.text}-modal-trigger`"
           as-dropdown-item
-          :work-item-type="$options.WORK_ITEM_TYPE_ENUM_EPIC"
+          :work-item-type-name="$options.WORK_ITEM_TYPE_ENUM_EPIC"
         />
         <gl-disclosure-dropdown-item v-else :key="groupItem.text" :item="groupItem" />
       </template>

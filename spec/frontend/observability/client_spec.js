@@ -1202,6 +1202,10 @@ describe('buildClient', () => {
                   { operator: '=', value: 'info' },
                   { operator: '!=', value: 'warning' },
                 ],
+                severityNumber: [
+                  { operator: '=', value: '9' },
+                  { operator: '!=', value: '10' },
+                ],
                 traceId: [{ operator: '=', value: 'traceId' }],
                 spanId: [{ operator: '=', value: 'spanId' }],
                 fingerprint: [{ operator: '=', value: 'fingerprint' }],
@@ -1218,6 +1222,7 @@ describe('buildClient', () => {
           expect(getQueryParam()).toEqual(
             `service_name=serviceName&not[service_name]=serviceName2` +
               `&severity_name=info&not[severity_name]=warning` +
+              `&severity_number=9&not[severity_number]=10` +
               `&trace_id=traceId` +
               `&span_id=spanId` +
               `&fingerprint=fingerprint` +

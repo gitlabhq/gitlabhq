@@ -6,12 +6,12 @@ module Mutations
       authorize :update_saved_replies
 
       argument :name, GraphQL::Types::String,
-               required: true,
-               description: copy_field_description(::Types::SavedReplyType, :name)
+        required: true,
+        description: copy_field_description(::Types::SavedReplyType, :name)
 
       argument :content, GraphQL::Types::String,
-               required: true,
-               description: copy_field_description(::Types::SavedReplyType, :content)
+        required: true,
+        description: copy_field_description(::Types::SavedReplyType, :content)
 
       def resolve(id:, name:, content:)
         saved_reply = authorized_find!(id: id)
