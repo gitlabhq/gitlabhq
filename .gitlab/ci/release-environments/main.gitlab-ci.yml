@@ -57,7 +57,11 @@ release-environments-notification-start:
 
 release-environments-deploy:
   stage: deploy
-  extends: .inherit_variables
+  inherit:
+    variables: false
+  variables:
+    VERSIONS: "${VERSIONS}"
+    ENVIRONMENT: "${ENVIRONMENT}"
   trigger:
     project: gitlab-com/gl-infra/release-environments
     branch: main
