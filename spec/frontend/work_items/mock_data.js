@@ -3907,6 +3907,13 @@ export const groupWorkItemsQueryResponse = {
         opened: 2,
       },
       workItems: {
+        pageInfo: {
+          hasNextPage: true,
+          hasPreviousPage: false,
+          startCursor: 'startCursor',
+          endCursor: 'endCursor',
+          __typename: 'PageInfo',
+        },
         nodes: [
           {
             id: 'gid://gitlab/WorkItem/58',

@@ -7,7 +7,13 @@ import { TYPENAME_USER } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { STATUS_ALL, STATUS_CLOSED, STATUS_OPEN } from '~/issues/constants';
 import setSortPreferenceMutation from '~/issues/list/queries/set_sort_preference.mutation.graphql';
-import { convertToApiParams, convertToSearchQuery, deriveSortKey } from '~/issues/list/utils';
+import {
+  convertToApiParams,
+  convertToSearchQuery,
+  deriveSortKey,
+  getInitialPageParams,
+} from '~/issues/list/utils';
+import { scrollUp } from '~/lib/utils/scroll_utils';
 import { __, s__ } from '~/locale';
 import {
   OPERATORS_IS,
@@ -17,7 +23,7 @@ import {
   TOKEN_TYPE_SEARCH_WITHIN,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
-import { issuableListTabs } from '~/vue_shared/issuable/list/constants';
+import { DEFAULT_PAGE_SIZE, issuableListTabs } from '~/vue_shared/issuable/list/constants';
 import { STATE_CLOSED } from '../../constants';
 import { sortOptions, urlSortParams } from '../constants';
 import getWorkItemsQuery from '../queries/get_work_items.query.graphql';
@@ -37,6 +43,8 @@ export default {
     return {
       error: undefined,
       filterTokens: [],
+      pageInfo: {},
+      pageParams: getInitialPageParams(),
       sortKey: deriveSortKey({ sort: this.initialSort, sortMap: urlSortParams }),
       state: STATUS_OPEN,
       tabCounts: {},
@@ -53,6 +61,7 @@ export default {
           state: this.state,
           search: this.searchQuery,
           ...this.apiFilterParams,
+          ...this.pageParams,
         };
       },
       update(data) {
@@ -60,6 +69,8 @@ export default {
       },
       result({ data }) {
         const { all, closed, opened } = data?.group.workItemStateCounts ?? {};
+
+        this.pageInfo = data?.group.workItems.pageInfo ?? {};
         this.tabCounts = {
           [STATUS_OPEN]: opened,
           [STATUS_CLOSED]: closed,
@@ -121,6 +132,9 @@ export default {
         },
       ];
     },
+    showPaginationControls() {
+      return this.pageInfo.hasNextPage || this.pageInfo.hasPreviousPage;
+    },
   },
   methods: {
     getStatus(issue) {
@@ -132,9 +146,25 @@ export default {
       }
 
       this.state = state;
+      this.pageParams = getInitialPageParams();
     },
     handleFilter(tokens) {
       this.filterTokens = tokens;
+      this.pageParams = getInitialPageParams();
+    },
+    handleNextPage() {
+      this.pageParams = {
+        afterCursor: this.pageInfo.endCursor,
+        firstPageSize: DEFAULT_PAGE_SIZE,
+      };
+      scrollUp();
+    },
+    handlePreviousPage() {
+      this.pageParams = {
+        beforeCursor: this.pageInfo.startCursor,
+        lastPageSize: DEFAULT_PAGE_SIZE,
+      };
+      scrollUp();
     },
     handleSort(sortKey) {
       if (this.sortKey === sortKey) {
@@ -142,6 +172,7 @@ export default {
       }
 
       this.sortKey = sortKey;
+      this.pageParams = getInitialPageParams();
 
       if (this.isSignedIn) {
         this.saveSortPreference(sortKey);
@@ -170,19 +201,25 @@ export default {
   <issuable-list
     :current-tab="state"
     :error="error"
+    :has-next-page="pageInfo.hasNextPage"
+    :has-previous-page="pageInfo.hasPreviousPage"
     :initial-sort-by="sortKey"
     :issuables="workItems"
     :issuables-loading="$apollo.queries.workItems.loading"
     namespace="work-items"
     recent-searches-storage-key="issues"
     :search-tokens="searchTokens"
+    :show-pagination-controls="showPaginationControls"
     show-work-item-type-icon
     :sort-options="$options.sortOptions"
     :tab-counts="tabCounts"
     :tabs="$options.issuableListTabs"
+    use-keyset-pagination
     @click-tab="handleClickTab"
     @dismiss-alert="error = undefined"
     @filter="handleFilter"
+    @next-page="handleNextPage"
+    @previous-page="handlePreviousPage"
     @sort="handleSort"
   >
     <template #nav-actions>

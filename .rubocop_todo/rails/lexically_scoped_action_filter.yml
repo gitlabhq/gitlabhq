@@ -12,7 +12,6 @@ Rails/LexicallyScopedActionFilter:
     - 'app/controllers/dashboard_controller.rb'
     - 'app/controllers/groups/group_members_controller.rb'
     - 'app/controllers/groups/milestones_controller.rb'
-    - 'app/controllers/groups/runners_controller.rb'
     - 'app/controllers/groups/settings/repository_controller.rb'
     - 'app/controllers/groups/uploads_controller.rb'
     - 'app/controllers/groups_controller.rb'

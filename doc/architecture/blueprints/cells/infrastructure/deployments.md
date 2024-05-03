@@ -133,6 +133,123 @@ The general rule is that:
    - A `graduated` package is rolled out to the rest of the rings automatically.
    - Deployments must be automated: inside the perimeter are responsibility of Release Managers, outside of it are responsibility of Team:Ops.
 
+#### Application changes lifecycle
+
+In this section, we describe how new packages are deployed in the new infrastructure, explaining the interactions and hooks with the existing tooling and processes.
+
+GitLab.com deployment process is described in great detail in [the handbook](https://handbook.gitlab.com/handbook/engineering/deployments-and-releases/deployments/), we are going to make some simplifications here to reduce the cognitive load to what is necessary to talk about ring deployments.
+
+##### Today's process
+
+Today GitLab.com deployments consist of two main processes:
+
+1. The **release-tools coordinator pipeline** for auto-deploy packages is responsible for sequencing deployments and QA through staging and production environments. The timeline of this process depends on the available release managers, but it usually happens ten times a day.
+1. The **Post Deployment Migrations** pipeline executes the post-deployment migrations of the current package running in production, completing the quality assurance of the deployed changes. This process is usually executed only once a day because it marks a point where it is no longer possible to rollback an environment.
+
+```mermaid
+flowchart TB
+    subgraph release_tools [Release-tools coordinator pipeline]
+        direction LR
+        gstg_cny[GSTG\n Canary] --> gstg_cny_qa[QA]
+        gstg_cny_qa --> gprd_cny[GPRD\n Canary]
+        gprd_cny --> gprd_cny_qa[QA]
+        gprd_cny_qa --> baking_time[1hr\n baking time]
+        baking_time --> promotion[▶️\n manual\npromotion]
+        promotion --> gstg[GSTG\nMain] --> gstg_qa[QA]
+        promotion --> |delay 30m|gprd[GPRD\nMain]
+    end
+    pkg((Auto-deploy\npackage\ntagging)) --> release_tools
+    subgraph pdm [Post Deployment Migrations]
+        direction LR
+        pdm_gstg[GSTG] --> pdm_gstg_qa[QA] --> pdm_gprd[GPRD]
+    end
+    %% invisible link to help content layout
+    release_tools ~~~ pdm
+```
+
+A package can be released to self-managed customers only after running its post deployment migrations.
+
+##### Co-existence of the legacy infrastructure and Cells
+
+For some time the existing (legacy) deployment and Cells will co-exist. Initially our ring deployment implementation will only consist of three rings:
+
+- Ring 0: hosting a QA Cell and eventually other experimental builds, this ring is kept in sync with the legacy production canary stage.
+- Ring 1: an empty placeholder for the legacy production main stage. As we will be able to begin extracting existing users from the legacy deployment, this ring could host ourselves, our free users, and more in general every organization interested in having a fast track to our new features.
+- Ring 2: hosting our first cell for customers.
+
+Because of the nature of our release process, those first rings will be controlled by the existing release-tools tooling.
+
+```mermaid
+flowchart LR
+    subgraph release_tools [Release-tools coordinator pipeline]
+        direction LR
+        gstg_cny[GSTG\n Canary] --> gstg_cny_qa[QA]
+        gstg_cny_qa --> gprd_cny[GPRD\n Canary]
+        gprd_cny --> gprd_cny_qa[QA]
+        gprd_cny_qa --> baking_time[1hr\n baking time]
+        baking_time --> promotion[▶️\n manual\npromotion]
+        promotion --> gstg[GSTG\nMain] --> gstg_qa[QA]
+        promotion --> |delay 30m|gprd[GPRD\nMain]
+    end
+    subgraph pdm [Post Deployment Migrations]
+        direction LR
+        pdm_gstg[GSTG] --> pdm_gstg_qa[QA] --> pdm_gprd[GPRD]
+    end
+    subgraph Ring Deployment
+        direction LR
+        ring_0[Ring 0] --> ring_0_qa[QA]
+        ring_1[Ring 1]
+        ring_2[Ring 2]
+
+        %%% invisible link to help content layout
+        ring_1 ~~~ ring_2
+    end
+    pkg((Auto-deploy\npackage\ntagging)) --> release_tools
+    %% ring deployment hooks
+    gstg_cny_qa --> ring_0
+    ring_0_qa --> baking_time
+    pdm_gprd ---> |pkg graduation|ring_2
+    promotion --> |delay 30m| ring_1
+```
+
+##### Future - Only Cells
+
+For the sake of completeness we are also describing a potential future scenario where the legacy infrastructure is decommissioned and all of our users are migrated to a new cell.
+
+This is subject to change as the project evolves, as an example, the future of our staging environment will likely be affected by the development of Cells, but here we leave it in place to reduce the scope of this document.
+
+```mermaid
+flowchart LR
+    subgraph release_tools [Release-tools coordinator pipeline]
+        direction LR
+        gstg_cny[GSTG\n Canary] --> gstg_cny_qa[QA]
+        baking_time[1hr\n baking time] --> promotion[▶️\n manual\npromotion]
+        promotion --> gstg[GSTG\nMain] --> gstg_qa[QA]
+    end
+    subgraph Post Deployment Migrations
+        direction LR
+        pdm_gstg[GSTG] --> pdm_gstg_qa[QA] --> pdm_gprd[Ring 1]
+    end
+    subgraph Ring Deployment
+        direction LR
+        ring_0[Ring 0] --> ring_0_qa[QA]
+        ring_1[Ring 1]
+        ring_2[Ring 2] --> ring_3[Ring 3] --> ring_N[Ring N]
+    end
+    pkg((Auto-deploy\npackage\ntagging)) --> release_tools
+    %% ring deployment hooks
+    gstg_cny_qa --> ring_0
+    ring_0_qa --> baking_time
+    pdm_gprd ---> |pkg graduation|ring_2
+    promotion ---> |delay 30m| ring_1
+```
+
+The changes from the co-existing scenario are the following ones:
+
+1. New rings exist after Ring 2. The progression of packages is coordinated by the ring-deployment engine enforcing the gates on each ring.
+1. The release-tools coordinator pipeline only manage rings, there is no longer a concept of canary and main stage in production.
+1. The post deployment migration pipeline controls the execution of the migrations in Ring 1 (Subject to further discussion that are not necessary at this stage of the project).
+
 ### Reference materials
 
 - [Cell 1.0 blueprint](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/architecture/blueprints/cells/iterations/cells-1.0.md)

@@ -43,12 +43,12 @@ export default {
 
 <template>
   <div class="gl-bg-white gl-p-5 gl-rounded-base">
-    <div class="gl-display-flex gl-mb-2">
+    <div class="gl-display-flex" :class="{ 'gl-mb-2': mergeRequest.labels.length }">
       <div class="gl-display-flex gl-flex-direction-column">
         <h4 class="gl-mb-0 gl-mt-0 gl-font-base">
           <gl-link
             v-safe-html="mergeRequest.titleHtml"
-            href="#"
+            :href="mergeRequest.webUrl"
             class="gl-text-body gl-hover-text-gray-900"
           />
         </h4>
@@ -65,8 +65,10 @@ export default {
               </gl-link>
             </template>
             <template #milestone>
-              <gl-icon :size="16" class="gl-ml-2" name="milestone" />
-              {{ mergeRequest.milestone.title }}
+              <template v-if="mergeRequest.milestone">
+                <gl-icon :size="16" class="gl-ml-2" name="milestone" />
+                {{ mergeRequest.milestone.title }}
+              </template>
             </template>
           </gl-sprintf>
         </div>

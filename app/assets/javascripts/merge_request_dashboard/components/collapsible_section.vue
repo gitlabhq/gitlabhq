@@ -37,6 +37,11 @@ export default {
       );
     },
   },
+  watch: {
+    count(newVal) {
+      this.open = newVal > 0;
+    },
+  },
   methods: {
     toggleOpen() {
       this.open = !this.open;
@@ -54,6 +59,7 @@ export default {
         category="tertiary"
         class="gl-mr-3"
         :aria-label="toggleButtonLabel"
+        :disabled="count === 0"
         data-testid="section-toggle-button"
         @click="toggleOpen"
       />

@@ -18,6 +18,7 @@ Default.args = {
   mergeRequest: {
     reference: '!123456',
     titleHtml: 'Merge request title',
+    webUrl: '#',
     author: {
       name: 'John Smith',
       webUrl: 'https://gitlab.com/root',

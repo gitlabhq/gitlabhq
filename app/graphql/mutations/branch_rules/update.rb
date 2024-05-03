@@ -15,17 +15,21 @@ module Mutations
         required: true,
         description: 'Branch name, with wildcards, for the branch rules.'
 
+      argument :branch_protection, Types::BranchRules::BranchProtectionInputType,
+        required: false,
+        description: 'Branch protections configured for the branch rule.'
+
       field :branch_rule,
         Types::Projects::BranchRuleType,
         null: true,
         description: 'Branch rule after mutation.'
 
-      def resolve(id:, name:)
+      def resolve(id:, **params)
         branch_rule = authorized_find!(id: id)
 
-        response = ::BranchRules::UpdateService.new(branch_rule, current_user, { name: name }).execute
+        response = ::BranchRules::UpdateService.new(branch_rule, current_user, params).execute
 
-        { branch_rule: branch_rule, errors: response.errors }
+        { branch_rule: (branch_rule if response.success?), errors: response.errors }
       end
     end
   end

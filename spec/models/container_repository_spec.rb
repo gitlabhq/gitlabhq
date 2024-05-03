@@ -33,19 +33,6 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
     end
   end
 
-  describe 'validations' do
-    it { is_expected.to validate_presence_of(:migration_retries_count) }
-    it { is_expected.to validate_numericality_of(:migration_retries_count).is_greater_than_or_equal_to(0) }
-
-    it { is_expected.to validate_inclusion_of(:migration_aborted_in_state).in_array(described_class::ABORTABLE_MIGRATION_STATES) }
-    it { is_expected.to allow_value(nil).for(:migration_aborted_in_state) }
-
-    context 'migration_state' do
-      it { is_expected.to validate_presence_of(:migration_state) }
-      it { is_expected.to validate_inclusion_of(:migration_state).in_array(described_class::MIGRATION_STATES) }
-    end
-  end
-
   context 'when triggering registry API requests' do
     let(:repository_state) { nil }
     let(:repository) { create(:container_repository, repository_state) }

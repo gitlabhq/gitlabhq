@@ -187,8 +187,7 @@ For example, to upload to component `main` of distribution `sid` using a persona
 
 ```shell
 curl --request PUT --user "<username>:<personal_access_token>" \
-  --get --data "distribution=sid" --data "component=main" \
-  "https://gitlab.example.com/api/v4/projects/<project_id>/packages/debian/" \
+  "https://gitlab.example.com/api/v4/projects/<project_id>/packages/debian/your.deb?distribution=sid&component=main" \
   --upload-file  /path/to/your.deb
 ```
 

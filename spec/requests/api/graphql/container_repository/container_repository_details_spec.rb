@@ -553,4 +553,27 @@ RSpec.describe 'container repository details', feature_category: :container_regi
       end
     end
   end
+
+  context 'migration_state field' do
+    let(:migration_state_response) { container_repository_details_response.dig('migrationState') }
+    let(:variables) do
+      { id: container_repository_global_id }
+    end
+
+    let(:query) do
+      <<~GQL
+        query($id: ContainerRepositoryID!) {
+          containerRepository(id: $id) {
+            migrationState
+          }
+        }
+      GQL
+    end
+
+    it 'returns an empty string' do
+      subject
+
+      expect(migration_state_response).to eq('')
+    end
+  end
 end

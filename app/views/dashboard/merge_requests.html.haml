@@ -17,7 +17,7 @@
   groups_requiring_saml_reauth: user_groups_requiring_reauth
 
 - if merge_request_dashboard_enabled?(current_user)
-  #js-merge-request-dashboard
+  #js-merge-request-dashboard{ data: { initial_data: merge_request_dashboard_data.to_json } }
     .page-title-holder
       %h1.page-title.gl-font-size-h-display= _('Merge Requests')
     = gl_loading_icon(size: 'lg')

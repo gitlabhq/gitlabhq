@@ -16,6 +16,7 @@ import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { STATUS_CLOSED, STATUS_OPEN } from '~/issues/constants';
 import { CREATED_DESC, UPDATED_DESC } from '~/issues/list/constants';
 import setSortPreferenceMutation from '~/issues/list/queries/set_sort_preference.mutation.graphql';
+import { scrollUp } from '~/lib/utils/scroll_utils';
 import {
   FILTERED_SEARCH_TERM,
   OPERATOR_IS,
@@ -28,6 +29,7 @@ import { sortOptions, urlSortParams } from '~/work_items/list/constants';
 import getWorkItemsQuery from '~/work_items/list/queries/get_work_items.query.graphql';
 import { groupWorkItemsQueryResponse } from '../../mock_data';
 
+jest.mock('~/lib/utils/scroll_utils', () => ({ scrollUp: jest.fn() }));
 jest.mock('~/sentry/sentry_browser_wrapper');
 
 describe('WorkItemsListApp component', () => {
@@ -100,6 +102,25 @@ describe('WorkItemsListApp component', () => {
     expect(findIssueCardTimeInfo().exists()).toBe(true);
   });
 
+  describe('pagination controls', () => {
+    describe.each`
+      description                                                | pageInfo                                          | exists
+      ${'when hasNextPage=true and hasPreviousPage=true'}        | ${{ hasNextPage: true, hasPreviousPage: true }}   | ${true}
+      ${'when hasNextPage=true'}                                 | ${{ hasNextPage: true, hasPreviousPage: false }}  | ${true}
+      ${'when hasPreviousPage=true'}                             | ${{ hasNextPage: false, hasPreviousPage: true }}  | ${true}
+      ${'when neither hasNextPage nor hasPreviousPage are true'} | ${{ hasNextPage: false, hasPreviousPage: false }} | ${false}
+    `('$description', ({ pageInfo, exists }) => {
+      it(`${exists ? 'renders' : 'does not render'} pagination controls`, async () => {
+        const response = cloneDeep(groupWorkItemsQueryResponse);
+        Object.assign(response.data.group.workItems.pageInfo, pageInfo);
+        mountComponent({ queryHandler: jest.fn().mockResolvedValue(response) });
+        await waitForPromises();
+
+        expect(findIssuableList().props('showPaginationControls')).toBe(exists);
+      });
+    });
+  });
+
   it('renders work items', async () => {
     mountComponent();
     await waitForPromises();
@@ -116,6 +137,7 @@ describe('WorkItemsListApp component', () => {
       fullPath: 'full/path',
       sort: CREATED_DESC,
       state: STATUS_OPEN,
+      firstPageSize: 20,
     });
   });
 
@@ -202,7 +224,29 @@ describe('WorkItemsListApp component', () => {
           search: 'find issues',
           authorUsername: 'homer',
           in: 'TITLE',
+          firstPageSize: 20,
         });
+      });
+    });
+
+    describe.each`
+      event              | params
+      ${'next-page'}     | ${{ afterCursor: 'endCursor', firstPageSize: 20 }}
+      ${'previous-page'} | ${{ beforeCursor: 'startCursor', lastPageSize: 20 }}
+    `('when "$event" event is emitted by IssuableList', ({ event, params }) => {
+      beforeEach(async () => {
+        mountComponent();
+        await waitForPromises();
+
+        findIssuableList().vm.$emit(event);
+      });
+
+      it('scrolls to the top', () => {
+        expect(scrollUp).toHaveBeenCalled();
+      });
+
+      it('fetches next/previous work items', () => {
+        expect(defaultQueryHandler).toHaveBeenLastCalledWith(expect.objectContaining(params));
       });
     });
 

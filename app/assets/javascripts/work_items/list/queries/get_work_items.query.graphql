@@ -1,3 +1,4 @@
+#import "~/graphql_shared/fragments/page_info.fragment.graphql"
 #import "ee_else_ce/work_items/list/queries/work_item_widgets.fragment.graphql"
 
 query getWorkItems(
@@ -7,6 +8,10 @@ query getWorkItems(
   $state: IssuableState
   $authorUsername: String
   $in: [IssuableSearchableField!]
+  $afterCursor: String
+  $beforeCursor: String
+  $firstPageSize: Int
+  $lastPageSize: Int
 ) {
   group(fullPath: $fullPath) {
     id
@@ -22,7 +27,14 @@ query getWorkItems(
       authorUsername: $authorUsername
       in: $in
       types: EPIC
+      after: $afterCursor
+      before: $beforeCursor
+      first: $firstPageSize
+      last: $lastPageSize
     ) {
+      pageInfo {
+        ...PageInfo
+      }
       nodes {
         id
         author {

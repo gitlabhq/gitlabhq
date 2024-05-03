@@ -8412,6 +8412,7 @@ CREATE TABLE design_management_designs (
     description text,
     description_html text,
     imported smallint DEFAULT 0 NOT NULL,
+    imported_from smallint DEFAULT 0 NOT NULL,
     CONSTRAINT check_07155e2715 CHECK ((char_length((filename)::text) <= 255)),
     CONSTRAINT check_aaf9fa6ae5 CHECK ((char_length(description) <= 1000000)),
     CONSTRAINT check_cfb92df01a CHECK ((iid IS NOT NULL))
@@ -8925,6 +8926,7 @@ CREATE TABLE epics (
     total_closed_issue_count integer DEFAULT 0 NOT NULL,
     issue_id integer,
     imported smallint DEFAULT 0 NOT NULL,
+    imported_from smallint DEFAULT 0 NOT NULL,
     CONSTRAINT check_ca608c40b3 CHECK ((char_length(color) <= 7)),
     CONSTRAINT check_fcfb4a93ff CHECK ((lock_version IS NOT NULL))
 );
@@ -9021,6 +9023,7 @@ CREATE TABLE events (
     id bigint NOT NULL,
     target_id bigint,
     imported smallint DEFAULT 0 NOT NULL,
+    imported_from smallint DEFAULT 0 NOT NULL,
     CONSTRAINT check_97e06e05ad CHECK ((octet_length(fingerprint) <= 128))
 );
 
@@ -10625,6 +10628,7 @@ CREATE TABLE issues (
     start_date date,
     tmp_epic_id bigint,
     imported smallint DEFAULT 0 NOT NULL,
+    imported_from smallint DEFAULT 0 NOT NULL,
     CONSTRAINT check_2addf801cd CHECK ((work_item_type_id IS NOT NULL)),
     CONSTRAINT check_c33362cd43 CHECK ((namespace_id IS NOT NULL)),
     CONSTRAINT check_fba63f706d CHECK ((lock_version IS NOT NULL))
@@ -11526,6 +11530,7 @@ CREATE TABLE merge_requests (
     override_requested_changes boolean DEFAULT false NOT NULL,
     head_pipeline_id_convert_to_bigint bigint,
     imported smallint DEFAULT 0 NOT NULL,
+    imported_from smallint DEFAULT 0 NOT NULL,
     CONSTRAINT check_970d272570 CHECK ((lock_version IS NOT NULL))
 );
 
@@ -12215,7 +12220,8 @@ CREATE TABLE notes (
     internal boolean DEFAULT false NOT NULL,
     id bigint NOT NULL,
     namespace_id bigint,
-    imported smallint DEFAULT 0 NOT NULL
+    imported smallint DEFAULT 0 NOT NULL,
+    imported_from smallint DEFAULT 0 NOT NULL
 );
 
 CREATE SEQUENCE notes_id_seq
@@ -15442,7 +15448,8 @@ CREATE TABLE resource_label_events (
     cached_markdown_version integer,
     reference text,
     reference_html text,
-    imported smallint DEFAULT 0 NOT NULL
+    imported smallint DEFAULT 0 NOT NULL,
+    imported_from smallint DEFAULT 0 NOT NULL
 );
 
 CREATE SEQUENCE resource_label_events_id_seq
@@ -15482,7 +15489,8 @@ CREATE TABLE resource_milestone_events (
     action smallint NOT NULL,
     state smallint NOT NULL,
     created_at timestamp with time zone NOT NULL,
-    imported smallint DEFAULT 0 NOT NULL
+    imported smallint DEFAULT 0 NOT NULL,
+    imported_from smallint DEFAULT 0 NOT NULL
 );
 
 CREATE SEQUENCE resource_milestone_events_id_seq
@@ -15507,6 +15515,7 @@ CREATE TABLE resource_state_events (
     close_auto_resolve_prometheus_alert boolean DEFAULT false NOT NULL,
     source_merge_request_id bigint,
     imported smallint DEFAULT 0 NOT NULL,
+    imported_from smallint DEFAULT 0 NOT NULL,
     CONSTRAINT check_f0bcfaa3a2 CHECK ((char_length(source_commit) <= 40)),
     CONSTRAINT state_events_must_belong_to_issue_or_merge_request_or_epic CHECK ((((issue_id <> NULL::bigint) AND (merge_request_id IS NULL) AND (epic_id IS NULL)) OR ((issue_id IS NULL) AND (merge_request_id <> NULL::bigint) AND (epic_id IS NULL)) OR ((issue_id IS NULL) AND (merge_request_id IS NULL) AND (epic_id <> NULL::integer))))
 );
@@ -16333,7 +16342,8 @@ CREATE TABLE snippets (
     encrypted_secret_token_iv character varying(255),
     secret boolean DEFAULT false NOT NULL,
     repository_read_only boolean DEFAULT false NOT NULL,
-    imported smallint DEFAULT 0 NOT NULL
+    imported smallint DEFAULT 0 NOT NULL,
+    imported_from smallint DEFAULT 0 NOT NULL
 );
 
 CREATE SEQUENCE snippets_id_seq
@@ -16760,7 +16770,8 @@ CREATE TABLE temp_notes_backup (
     internal boolean NOT NULL,
     id bigint NOT NULL,
     namespace_id bigint,
-    imported smallint DEFAULT 0 NOT NULL
+    imported smallint DEFAULT 0 NOT NULL,
+    imported_from smallint DEFAULT 0 NOT NULL
 );
 
 CREATE TABLE term_agreements (
@@ -31081,7 +31092,7 @@ ALTER TABLE ONLY emails
     ADD CONSTRAINT fk_emails_user_id FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY epics
-    ADD CONSTRAINT fk_epics_issue_id_with_on_delete_nullify FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE SET NULL;
+    ADD CONSTRAINT fk_epics_issue_id_with_on_delete_cascade FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY epics
     ADD CONSTRAINT fk_epics_on_parent_id_with_on_delete_nullify FOREIGN KEY (parent_id) REFERENCES epics(id) ON DELETE SET NULL;

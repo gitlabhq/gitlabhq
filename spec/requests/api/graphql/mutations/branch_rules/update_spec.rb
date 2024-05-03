@@ -7,44 +7,49 @@ RSpec.describe 'BranchRuleUpdate', feature_category: :source_code_management do
 
   let_it_be(:project) { create(:project, :public) }
   let_it_be(:user) { create(:user) }
-  let!(:protected_branch_1) { create(:protected_branch, project: project, name: name_1) }
-  let!(:protected_branch_2) { create(:protected_branch, project: project, name: name_2) }
-  let(:branch_rule) { Projects::BranchRule.new(project, protected_branch_1) }
-  let(:name_1) { "name_1" }
-  let(:name_2) { "name_2" }
-  let(:new_name) { "new name" }
+  let_it_be(:protected_branch) do
+    create(:protected_branch, project: project)
+  end
+
+  let!(:allow_force_push) { !protected_branch.allow_force_push }
+
+  let(:current_user) { user }
+  let(:branch_rule) { Projects::BranchRule.new(project, protected_branch) }
   let(:global_id) { branch_rule.to_global_id }
-  let(:name) { new_name }
+  let(:name) { 'new_name' }
+  let(:merge_access_levels) { [{ access_level: 0 }] }
+  let(:push_access_levels) { [{ access_level: 0 }] }
+  let(:mutation) { graphql_mutation(:branch_rule_update, params) }
+  let(:mutation_response) { graphql_mutation_response(:branch_rule_update) }
   let(:params) do
     {
       id: global_id,
-      name: name
+      name: name,
+      branch_protection: {
+        allow_force_push: allow_force_push,
+        merge_access_levels: merge_access_levels,
+        push_access_levels: push_access_levels
+      }
     }
   end
 
-  let(:mutation) { graphql_mutation(:branch_rule_update, params) }
-
   subject(:post_mutation) { post_graphql_mutation(mutation, current_user: user) }
-
-  def mutation_response
-    graphql_mutation_response(:branch_rule_update)
-  end
 
   context 'when the user does not have permission' do
     before_all do
       project.add_developer(user)
     end
 
-    it 'does not update the branch rule' do
-      post_mutation
+    it_behaves_like 'a mutation that returns top-level errors', errors: [<<~ERROR.chomp]
+      The resource that you are attempting to access does not exist or you don't have permission to perform this action
+    ERROR
 
-      expect(protected_branch_1.reload.name).to eq(name_1)
+    it 'does not update the branch rule' do
+      expect { post_mutation }.not_to change { protected_branch.reload.attributes }
     end
   end
 
   context 'when the user can update a branch rules' do
-    let(:current_user) { user }
-
     before_all do
       project.add_maintainer(user)
     end
@@ -52,23 +57,27 @@ RSpec.describe 'BranchRuleUpdate', feature_category: :source_code_management do
     it 'updates the branch rule' do
       post_mutation
 
-      expect(protected_branch_1.reload.name).to eq(new_name)
+      expect(protected_branch.reload.name).to eq(name)
+      expect(protected_branch.allow_force_push).to eq(allow_force_push)
+
+      merge_access_level = an_object_having_attributes(**merge_access_levels.first)
+      expect(protected_branch.merge_access_levels).to contain_exactly(merge_access_level)
+
+      push_access_level = an_object_having_attributes(**push_access_levels.first)
+      expect(protected_branch.push_access_levels).to contain_exactly(push_access_level)
     end
 
     it 'returns the updated branch rule' do
       post_mutation
 
       expect(mutation_response).to have_key('branchRule')
-      expect(mutation_response['branchRule']['name']).to eq(new_name)
+      expect(mutation_response['branchRule']['name']).to eq(name)
       expect(mutation_response['errors']).to be_empty
     end
 
     context 'when name already exists for the project' do
-      let(:params) do
-        {
-          id: global_id,
-          name: name_2
-        }
+      before do
+        create(:protected_branch, project: project, name: name)
       end
 
       it 'returns an error' do

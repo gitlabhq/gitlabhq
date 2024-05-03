@@ -2419,6 +2419,7 @@ Input type: `BranchRuleUpdateInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="mutationbranchruleupdatebranchprotection"></a>`branchProtection` | [`BranchProtectionInput`](#branchprotectioninput) | Branch protections configured for the branch rule. |
 | <a id="mutationbranchruleupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationbranchruleupdateid"></a>`id` | [`ProjectsBranchRuleID!`](#projectsbranchruleid) | Global ID of the branch rule to update. |
 | <a id="mutationbranchruleupdatename"></a>`name` | [`String!`](#string) | Branch name, with wildcards, for the branch rules. |
@@ -18177,7 +18178,7 @@ A container repository.
 | <a id="containerrepositoryid"></a>`id` | [`ID!`](#id) | ID of the container repository. |
 | <a id="containerrepositorylastcleanupdeletedtagscount"></a>`lastCleanupDeletedTagsCount` | [`Int`](#int) | Number of deleted tags from the last cleanup. |
 | <a id="containerrepositorylocation"></a>`location` | [`String!`](#string) | URL of the container repository. |
-| <a id="containerrepositorymigrationstate"></a>`migrationState` | [`String!`](#string) | Migration state of the container repository. |
+| <a id="containerrepositorymigrationstate"></a>`migrationState` **{warning-solid}** | [`String!`](#string) | **Deprecated** in GitLab 17.0. Returns an empty string. This was used for the migration of GitLab.com, which is now complete. Not used by Self-managed instances. |
 | <a id="containerrepositoryname"></a>`name` | [`String!`](#string) | Name of the container repository. |
 | <a id="containerrepositorypath"></a>`path` | [`String!`](#string) | Path of the container repository. |
 | <a id="containerrepositoryproject"></a>`project` | [`Project!`](#project) | Project of the container registry. |
@@ -18201,7 +18202,7 @@ Details of a container repository.
 | <a id="containerrepositorydetailsid"></a>`id` | [`ID!`](#id) | ID of the container repository. |
 | <a id="containerrepositorydetailslastcleanupdeletedtagscount"></a>`lastCleanupDeletedTagsCount` | [`Int`](#int) | Number of deleted tags from the last cleanup. |
 | <a id="containerrepositorydetailslocation"></a>`location` | [`String!`](#string) | URL of the container repository. |
-| <a id="containerrepositorydetailsmigrationstate"></a>`migrationState` | [`String!`](#string) | Migration state of the container repository. |
+| <a id="containerrepositorydetailsmigrationstate"></a>`migrationState` **{warning-solid}** | [`String!`](#string) | **Deprecated** in GitLab 17.0. Returns an empty string. This was used for the migration of GitLab.com, which is now complete. Not used by Self-managed instances. |
 | <a id="containerrepositorydetailsname"></a>`name` | [`String!`](#string) | Name of the container repository. |
 | <a id="containerrepositorydetailspath"></a>`path` | [`String!`](#string) | Path of the container repository. |
 | <a id="containerrepositorydetailsproject"></a>`project` | [`Project!`](#project) | Project of the container registry. |
@@ -35322,6 +35323,12 @@ A `DependencyProxyManifestID` is a global ID. It is encoded as a string.
 
 An example `DependencyProxyManifestID` is: `"gid://gitlab/DependencyProxy::Manifest/1"`.
 
+### `DeployKeyID`
+
+A `DeployKeyID` is a global ID. It is encoded as a string.
+
+An example `DeployKeyID` is: `"gid://gitlab/DeployKey/1"`.
+
 ### `DeploymentID`
 
 A `DeploymentID` is a global ID. It is encoded as a string.
@@ -37011,6 +37018,17 @@ Field that are available while modifying the custom mapping attributes for an HT
 | <a id="boardissueinputweight"></a>`weight` | [`String`](#string) | Filter by weight. |
 | <a id="boardissueinputweightwildcardid"></a>`weightWildcardId` | [`WeightWildcardId`](#weightwildcardid) | Filter by weight ID wildcard. Incompatible with weight. |
 
+### `BranchProtectionInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="branchprotectioninputallowforcepush"></a>`allowForcePush` | [`Boolean`](#boolean) | Allows users with write access to the branch rule target to force push changes. |
+| <a id="branchprotectioninputcodeownerapprovalrequired"></a>`codeOwnerApprovalRequired` | [`Boolean`](#boolean) | Enforce code owner approvals before allowing a merge. |
+| <a id="branchprotectioninputmergeaccesslevels"></a>`mergeAccessLevels` | [`[MergeAccessLevelInput!]`](#mergeaccesslevelinput) | Details about who can merge into the branch rule target. |
+| <a id="branchprotectioninputpushaccesslevels"></a>`pushAccessLevels` | [`[PushAccessLevelInput!]`](#pushaccesslevelinput) | Details about who can push to the branch rule target. |
+
 ### `CiVariableInput`
 
 Attributes for defining a CI/CD variable.
@@ -37226,6 +37244,18 @@ Represents an escalation rule.
 | <a id="jirausersmappinginputtypegitlabid"></a>`gitlabId` | [`Int`](#int) | ID of the GitLab user. |
 | <a id="jirausersmappinginputtypejiraaccountid"></a>`jiraAccountId` | [`String!`](#string) | Jira account ID of the user. |
 
+### `MergeAccessLevelInput`
+
+Defines which user roles, users, or groups can merge into a protected branch.
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergeaccesslevelinputaccesslevel"></a>`accessLevel` | [`Int`](#int) | Access level allowed to perform action. |
+| <a id="mergeaccesslevelinputgroupid"></a>`groupId` | [`GroupID`](#groupid) | Group associated with the access level. |
+| <a id="mergeaccesslevelinputuserid"></a>`userId` | [`UserID`](#userid) | User associated with the access level. |
+
 ### `MergeRequestsResolverNegatedParams`
 
 #### Arguments
@@ -37391,6 +37421,19 @@ Attributes for the pipeline schedule variable.
 | <a id="pipelineschedulevariableinputkey"></a>`key` | [`String!`](#string) | Name of the variable. |
 | <a id="pipelineschedulevariableinputvalue"></a>`value` | [`String!`](#string) | Value of the variable. |
 | <a id="pipelineschedulevariableinputvariabletype"></a>`variableType` | [`CiVariableType!`](#civariabletype) | Type of the variable. |
+
+### `PushAccessLevelInput`
+
+Defines which user roles, users, deploy keys, or groups can push to a protected branch.
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="pushaccesslevelinputaccesslevel"></a>`accessLevel` | [`Int`](#int) | Access level allowed to perform action. |
+| <a id="pushaccesslevelinputdeploykeyid"></a>`deployKeyId` | [`DeployKeyID`](#deploykeyid) | Deploy key assigned to the access level. |
+| <a id="pushaccesslevelinputgroupid"></a>`groupId` | [`GroupID`](#groupid) | Group associated with the access level. |
+| <a id="pushaccesslevelinputuserid"></a>`userId` | [`UserID`](#userid) | User associated with the access level. |
 
 ### `ReleaseAssetLinkInput`
 

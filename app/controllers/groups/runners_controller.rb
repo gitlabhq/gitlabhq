@@ -1,10 +1,15 @@
 # frozen_string_literal: true
 
 class Groups::RunnersController < Groups::ApplicationController
-  before_action :authorize_read_group_runners!, only: [:index, :show]
+  # overrriden in EE
+  def self.needs_authorize_read_group_runners
+    [:index, :show]
+  end
+
+  before_action :authorize_read_group_runners!, only: needs_authorize_read_group_runners
   before_action :authorize_create_group_runners!, only: [:new, :register]
-  before_action :authorize_update_runner!, only: [:edit, :update, :destroy, :pause, :resume]
-  before_action :runner, only: [:edit, :update, :destroy, :pause, :resume, :show, :register]
+  before_action :authorize_update_runner!, only: [:edit, :update]
+  before_action :runner, only: [:edit, :update, :show, :register]
 
   feature_category :runner
   urgency :low

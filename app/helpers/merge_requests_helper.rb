@@ -343,6 +343,65 @@ module MergeRequestsHelper
   def merge_request_dashboard_enabled?(current_user)
     Feature.enabled?(:merge_request_dashboard, current_user, type: :wip)
   end
+
+  def merge_request_dashboard_data
+    {
+      lists: [
+        {
+          title: _('Needs your review'),
+          query: 'reviewRequestedMergeRequests',
+          variables: {
+            reviewState: 'UNREVIEWED'
+          }
+        },
+        {
+          title: _('Returned to you'),
+          query: 'assignedMergeRequests',
+          variables: {
+            reviewStates: %w[REQUESTED_CHANGES REVIEWED]
+          }
+        },
+        {
+          title: _('Your approvals'),
+          query: 'reviewRequestedMergeRequests',
+          variables: {
+            reviewStates: %w[APPROVED UNAPPROVED]
+          }
+        },
+        {
+          title: _('Waiting for reviewers'),
+          query: 'assignedMergeRequests',
+          variables: {
+            reviewState: 'UNREVIEWED'
+          }
+        },
+        {
+          title: _('Waiting for assignees'),
+          query: 'reviewRequestedMergeRequests',
+          variables: {
+            reviewStates: %w[REQUESTED_CHANGES REVIEWED]
+          }
+        },
+        {
+          title: _('Merged as assignee (1 week ago)'),
+          query: 'assignedMergeRequests',
+          variables: {
+            status: 'merged',
+            mergedAfter: 1.week.ago.to_time.iso8601
+          }
+        },
+        {
+          title: _('Merged as reviewer (1 week ago)'),
+          query: 'reviewRequestedMergeRequests',
+          variables: {
+            status: 'merged',
+            mergedAfter: 1.week.ago.to_time.iso8601
+          }
+        }
+
+      ]
+    }
+  end
 end
 
 MergeRequestsHelper.prepend_mod_with('MergeRequestsHelper')

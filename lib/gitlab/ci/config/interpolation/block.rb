@@ -13,8 +13,6 @@ module Gitlab
         # manipulate the access value. Functions are evaluated in the order
         # they are presented.
         class Block
-          PREFIX = '$[['
-          PATTERN = /(?<block>\$\[\[\s*(?<data>\S{1}.*?\S{1})\s*\]\])/
           MAX_FUNCTIONS = 3
 
           attr_reader :data, :ctx, :errors

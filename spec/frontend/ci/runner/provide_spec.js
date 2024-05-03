@@ -1,17 +1,17 @@
-import { provide } from '~/ci/runner/admin_runners/provide';
+import { runnersAppProvide } from '~/ci/runner/provide';
 
 import { runnerInstallHelpPage } from 'jest/ci/runner/mock_data';
 import { ONLINE_CONTACT_TIMEOUT_SECS, STALE_TIMEOUT_SECS } from '~/ci/runner/constants';
 
 const mockDataset = {
   runnerInstallHelpPage,
-  onlineContactTimeoutSecs: ONLINE_CONTACT_TIMEOUT_SECS,
-  staleTimeoutSecs: STALE_TIMEOUT_SECS,
+  onlineContactTimeoutSecs: `${ONLINE_CONTACT_TIMEOUT_SECS}`,
+  staleTimeoutSecs: `${STALE_TIMEOUT_SECS}`,
 };
 
 describe('admin runners provide', () => {
   it('returns provide values', () => {
-    expect(provide(mockDataset)).toMatchObject({
+    expect(runnersAppProvide(mockDataset)).toMatchObject({
       runnerInstallHelpPage,
       onlineContactTimeoutSecs: ONLINE_CONTACT_TIMEOUT_SECS,
       staleTimeoutSecs: STALE_TIMEOUT_SECS,
@@ -24,7 +24,7 @@ describe('admin runners provide', () => {
       extraEntry: 'ANOTHER_ENTRY',
     };
 
-    expect(provide(dataset)).not.toMatchObject({
+    expect(runnersAppProvide(dataset)).not.toMatchObject({
       extraEntry: 'ANOTHER_ENTRY',
     });
   });

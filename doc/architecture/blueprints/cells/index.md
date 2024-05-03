@@ -66,7 +66,7 @@ Under this objective the following steps are expected:
 
 1. **Cluster-wide deletions**
 
-    If entities deleted in Cell 2 are cross-referenced, they are properly deleted or nullified across clusters. We will likely re-use existing [loose foreign keys](../../../development/database/loose_foreign_keys.md) to extend it with cross-Cells data removal.
+    If entities deleted in Cell 2 are cross-referenced, they are properly deleted or nullified across clusters. We will likely reuse existing [loose foreign keys](../../../development/database/loose_foreign_keys.md) to extend it with cross-Cells data removal.
 
 1. **Data access layer**
 
@@ -79,7 +79,7 @@ Under this objective the following steps are expected:
 ### 2. Workflows
 
 To make Cells viable we require to define and support essential workflows before we can consider the Cells to be of Beta quality.
-Workflows are meant to cover the majority of application functionality that makes the product mostly useable, but with some caveats.
+Workflows are meant to cover the majority of application functionality that makes the product mostly usable, but with some caveats.
 
 The current approach is to define workflows from top to bottom.
 The order defines the presumed priority of the items.
@@ -220,7 +220,7 @@ We are following the [Support for Experiment, Beta, and Generally Available feat
 
 Expectations:
 
-- We can deploy a Cell on staging or another testing environment by using a separate domain (for example `cell2.staging.gitlab.com`) using [infrastucture](#4-infrastructure) tooling.
+- We can deploy a Cell on staging or another testing environment by using a separate domain (for example `cell2.staging.gitlab.com`) using [infrastructure](#4-infrastructure) tooling.
 - User can create Organization, Group and Project, and run some of the [workflows](#2-workflows).
 - It is not expected to be able to run a router to serve all requests under a single domain.
 - We expect data loss of data stored on additional Cells.
@@ -385,6 +385,7 @@ The Tenant Scale team sees an opportunity to use GitLab Dedicated as a base for 
 - [ADR-004: One VPC per Cell, with Private Service Connect for internal communication between Cells](decisions/004_vpc_subnet_design.md)
 - [ADR-005: Cells use Flexible Reference Architectures](decisions/005_flexible_reference_architectures.md)
 - [ADR-006: Use Geo for Disaster Recovery](decisions/006_disaster_recovery_geo.md)
+- [ADR-007: Cells 1.0 for internal customers only](decisions/007_internal_customers.md)
 
 ## Links
 

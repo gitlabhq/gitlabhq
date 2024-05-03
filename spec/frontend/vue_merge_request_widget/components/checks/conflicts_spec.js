@@ -18,21 +18,22 @@ function factory({
   shouldBeRebased = false,
   sourceBranchProtected = false,
   mr = {},
+  project = {
+    id: 1,
+    mergeRequest: {
+      id: 1,
+      shouldBeRebased,
+      sourceBranchProtected,
+      userPermissions: { canMerge, pushToSourceBranch },
+    },
+  },
 } = {}) {
   apolloProvider = createMockApollo([
     [
       conflictsStateQuery,
       jest.fn().mockResolvedValue({
         data: {
-          project: {
-            id: 1,
-            mergeRequest: {
-              id: 1,
-              shouldBeRebased,
-              sourceBranchProtected,
-              userPermissions: { canMerge, pushToSourceBranch },
-            },
-          },
+          project,
         },
       }),
     ],
@@ -56,6 +57,14 @@ describe('Merge request merge checks conflicts component', () => {
     factory();
 
     expect(wrapper.text()).toEqual('Merge conflicts must be resolved.');
+  });
+
+  it('does not render action buttons when project is null', async () => {
+    factory({ status: 'FAILED', project: null });
+
+    await waitForPromises();
+
+    expect(wrapper.findAllByTestId('extension-actions-button')).toHaveLength(0);
   });
 
   it.each`

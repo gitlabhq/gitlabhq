@@ -74,6 +74,9 @@ export default {
     };
   },
   computed: {
+    isLoading() {
+      return this.$apollo.queries.approvals.loading || !this.approvals;
+    },
     isBasic() {
       return this.mr.approvalsWidgetType === 'base';
     },
@@ -265,7 +268,7 @@ export default {
 <template>
   <div v-if="approvals" class="js-mr-approvals mr-section-container mr-widget-workflow">
     <state-container
-      :is-loading="$apollo.queries.approvals.loading"
+      :is-loading="isLoading"
       :mr="mr"
       status="approval"
       is-collapsible
@@ -275,7 +278,7 @@ export default {
       :collapse-details-tooltip="__('Collapse eligible approvers')"
       @toggle="() => $emit('toggle')"
     >
-      <template v-if="$apollo.queries.approvals.loading">{{ $options.FETCH_LOADING }}</template>
+      <template v-if="isLoading">{{ $options.FETCH_LOADING }}</template>
       <template v-else>
         <div class="gl-display-flex gl-flex-direction-column">
           <div class="gl-display-flex gl-flex-direction-column gl-sm-flex-direction-row gl-gap-3">

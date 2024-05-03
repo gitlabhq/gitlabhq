@@ -7,15 +7,10 @@ class ContainerRepository < ApplicationRecord
   include Sortable
   include AfterCommitQueue
   include Packages::Destructible
+  include IgnorableColumns
 
   WAITING_CLEANUP_STATUSES = %i[cleanup_scheduled cleanup_unfinished].freeze
   REQUIRING_CLEANUP_STATUSES = %i[cleanup_unscheduled cleanup_scheduled].freeze
-
-  # These constants can be removed once we remove the columns migration_state and migration_aborted_in_state
-  IDLE_MIGRATION_STATES = %w[default pre_import_done import_done import_aborted import_skipped].freeze
-  ACTIVE_MIGRATION_STATES = %w[pre_importing importing].freeze
-  MIGRATION_STATES = (IDLE_MIGRATION_STATES + ACTIVE_MIGRATION_STATES).freeze
-  ABORTABLE_MIGRATION_STATES = (ACTIVE_MIGRATION_STATES + %w[pre_import_done default]).freeze
 
   MAX_TAGS_PAGES = 2000
 
@@ -27,29 +22,18 @@ class ContainerRepository < ApplicationRecord
 
   belongs_to :project
 
+  ignore_columns %i[
+    migration_retries_count
+    migration_aborted_in_state
+    migration_skipped_reason
+    migration_state
+  ], remove_with: '17.2', remove_after: '2024-06-24'
+
   validates :name, length: { minimum: 0, allow_nil: false }
   validates :name, uniqueness: { scope: :project_id }
-  validates :migration_state, presence: true, inclusion: { in: MIGRATION_STATES }
-  validates :migration_aborted_in_state, inclusion: { in: ABORTABLE_MIGRATION_STATES }, allow_nil: true
-
-  validates :migration_retries_count, presence: true,
-    numericality: { greater_than_or_equal_to: 0 },
-    allow_nil: false
 
   enum status: { delete_scheduled: 0, delete_failed: 1, delete_ongoing: 2 }
   enum expiration_policy_cleanup_status: { cleanup_unscheduled: 0, cleanup_scheduled: 1, cleanup_unfinished: 2, cleanup_ongoing: 3 }
-
-  enum migration_skipped_reason: {
-    not_in_plan: 0,
-    too_many_retries: 1,
-    too_many_tags: 2,
-    root_namespace_in_deny_list: 3,
-    migration_canceled: 4,
-    not_found: 5,
-    native_import: 6,
-    migration_forced_canceled: 7,
-    migration_canceled_by_registry: 8
-  }
 
   delegate :client, :gitlab_api_client, to: :registry
 
