@@ -114,7 +114,7 @@
           = sprite_icon('issues', size: 14, css_class: 'gl-mr-2')
           = badge_count(project.open_issues_count)
       = render_if_exists 'shared/projects/actions', project: project
-    .updated-note.gl-font-sm.gl-white-space-nowrap.gl-justify-content-end
+    .updated-note.gl-font-sm.gl-whitespace-nowrap.gl-justify-content-end
       %span
         = _('Updated')
         = updated_tooltip

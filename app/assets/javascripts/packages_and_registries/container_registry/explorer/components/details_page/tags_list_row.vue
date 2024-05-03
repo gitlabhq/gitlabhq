@@ -151,7 +151,7 @@ export default {
         <div
           v-gl-tooltip="{ title: tag.name }"
           data-testid="name"
-          class="gl-text-overflow-ellipsis gl-overflow-hidden gl-white-space-nowrap"
+          class="gl-text-overflow-ellipsis gl-overflow-hidden gl-whitespace-nowrap"
           :class="mobileClasses"
         >
           {{ tag.name }}

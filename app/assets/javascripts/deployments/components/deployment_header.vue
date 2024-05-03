@@ -149,7 +149,7 @@ export default {
       >
         <template #default="{ timeAgo }">
           <gl-icon name="calendar" class="gl-mr-2" />
-          <span class="gl-mr-2 gl-white-space-nowrap">
+          <span class="gl-mr-2 gl-whitespace-nowrap">
             <gl-sprintf :message="timeagoText">
               <template #timeago>{{ timeAgo }}</template>
               <template #username>

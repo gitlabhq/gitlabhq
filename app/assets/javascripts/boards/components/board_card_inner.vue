@@ -414,7 +414,7 @@ export default {
               v-if="item.iteration"
               data-testid="issue-iteration"
               :iteration="item.iteration"
-              class="gl-align-bottom gl-white-space-nowrap"
+              class="gl-align-bottom gl-whitespace-nowrap"
             />
             <issue-due-date
               v-if="item.dueDate"

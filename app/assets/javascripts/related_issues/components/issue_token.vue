@@ -48,7 +48,7 @@ export default {
 <template>
   <div
     :class="{
-      'issue-token gl-display-inline-flex gl-align-items-stretch gl-max-w-full gl-line-height-24 gl-white-space-nowrap': isCondensed,
+      'issue-token gl-display-inline-flex gl-align-items-stretch gl-max-w-full gl-line-height-24 gl-whitespace-nowrap': isCondensed,
       'flex-row issuable-info-container': !isCondensed,
     }"
   >

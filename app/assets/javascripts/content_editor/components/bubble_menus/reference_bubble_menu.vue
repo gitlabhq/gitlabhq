@@ -176,7 +176,7 @@ export default {
       :tippy-options="$options.tippyOptions"
     >
       <gl-button-group class="gl-display-flex gl-align-items-center">
-        <span class="gl-py-2 gl-px-3 gl-text-secondary gl-white-space-nowrap">
+        <span class="gl-py-2 gl-px-3 gl-text-secondary gl-whitespace-nowrap">
           {{ __('Display as:') }}
         </span>
         <gl-collapsible-listbox

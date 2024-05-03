@@ -181,7 +181,7 @@
             .gl-display-flex.gl-py-3
               .gl-mr-auto.gl-overflow-hidden.gl-text-overflow-ellipsis
                 = link_to project.full_name, admin_project_path(project)
-              %span.gl-white-space-nowrap.gl-text-right
+              %span.gl-whitespace-nowrap.gl-text-right
                 #{time_ago_with_tooltip(project.created_at)}
     .col-md-4.gl-mb-6
       = render Pajamas::CardComponent.new do |c|
@@ -192,7 +192,7 @@
               .gl-mr-auto.gl-overflow-hidden.gl-text-overflow-ellipsis
                 = link_to [:admin, user] do
                   = user.name
-              %span.gl-white-space-nowrap.gl-text-right
+              %span.gl-whitespace-nowrap.gl-text-right
                 #{time_ago_with_tooltip(user.created_at)}
     .col-md-4.gl-mb-6
       = render Pajamas::CardComponent.new do |c|
@@ -203,5 +203,5 @@
               .gl-mr-auto.gl-overflow-hidden.gl-text-overflow-ellipsis
                 = link_to [:admin, group] do
                   = group.full_name
-              %span.gl-white-space-nowrap.gl-text-right
+              %span.gl-whitespace-nowrap.gl-text-right
                 #{time_ago_with_tooltip(group.created_at)}

@@ -380,7 +380,7 @@ export default {
         </div>
         <div
           v-if="project.updatedAt"
-          class="gl-font-sm gl-white-space-nowrap gl-text-secondary gl-mt-3 gl-md-mt-0"
+          class="gl-font-sm gl-whitespace-nowrap gl-text-secondary gl-mt-3 gl-md-mt-0"
         >
           <span>{{ $options.i18n.updated }}</span>
           <time-ago-tooltip :time="project.updatedAt" />

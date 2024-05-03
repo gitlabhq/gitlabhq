@@ -76,7 +76,7 @@ RSpec.describe 'Projects members', :js, feature_category: :groups_and_projects d
     end
 
     it 'shows the project invitee' do
-      click_link 'Invited'
+      click_link 'Pending invitations'
 
       expect(members_table).to have_content('test1@abc.com')
       expect(members_table).not_to have_content('test2@abc.com')

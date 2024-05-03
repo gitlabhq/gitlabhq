@@ -31851,6 +31851,9 @@ msgstr ""
 msgid "Members|Membership"
 msgstr ""
 
+msgid "Members|Pending invitations"
+msgstr ""
+
 msgid "Members|Private group information is only accessible to its members."
 msgstr ""
 

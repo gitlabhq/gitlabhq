@@ -13,7 +13,7 @@ export default {
     {
       key: 'relation',
       label: __('Type'),
-      tdClass: 'gl-white-space-nowrap',
+      tdClass: 'gl-whitespace-nowrap',
     },
     {
       key: 'source_title',

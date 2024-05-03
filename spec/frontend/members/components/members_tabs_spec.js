@@ -122,7 +122,7 @@ describe('MembersTabs', () => {
 
       expect(tabs[0].text()).toBe('Members  10');
       expect(tabs[1].text()).toBe('Groups  10');
-      expect(tabs[2].text()).toBe('Invited  10');
+      expect(tabs[2].text()).toBe('Pending invitations  10');
       expect(tabs[3].text()).toBe('Access requests  10');
       expect(findActiveTab().text()).toContain('Members');
     });
@@ -149,7 +149,7 @@ describe('MembersTabs', () => {
 
       expect(findTabByText('Members')).not.toBeUndefined();
       expect(findTabByText('Groups')).toBeUndefined();
-      expect(findTabByText('Invited')).toBeUndefined();
+      expect(findTabByText('Pending invitations')).toBeUndefined();
       expect(findTabByText('Access requests')).toBeUndefined();
     });
 
@@ -179,14 +179,14 @@ describe('MembersTabs', () => {
   });
 
   describe('when `canManageMembers` is `false`', () => {
-    it('shows all tabs except `Invited` and `Access requests`', async () => {
+    it('shows all tabs except `Pending invitations` and `Access requests`', async () => {
       await createComponent({
         provide: { canManageMembers: false, canManageAccessRequests: false },
       });
 
       expect(findTabByText('Members')).not.toBeUndefined();
       expect(findTabByText('Groups')).not.toBeUndefined();
-      expect(findTabByText('Invited')).toBeUndefined();
+      expect(findTabByText('Pending invitations')).toBeUndefined();
       expect(findTabByText('Access requests')).toBeUndefined();
     });
   });

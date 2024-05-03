@@ -198,7 +198,7 @@ export default {
           </div>
 
           <div
-            class="gl-display-flex gl-flex-wrap gl-align-items-center gl-pl-3 gl-gap-2 gl-white-space-nowrap"
+            class="gl-display-flex gl-flex-wrap gl-align-items-center gl-pl-3 gl-gap-2 gl-whitespace-nowrap"
           >
             <gl-sprintf :message="__('From line %{line1} to %{line2}')">
               <template #line1>

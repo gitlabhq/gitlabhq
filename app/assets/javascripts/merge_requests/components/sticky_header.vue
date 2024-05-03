@@ -173,7 +173,7 @@ export default {
           <a
             v-safe-html:[$options.safeHtmlConfig]="titleHtml"
             href="#top"
-            class="gl-display-none gl-lg-display-block gl-font-weight-bold gl-overflow-hidden gl-white-space-nowrap gl-text-overflow-ellipsis gl-my-0 gl-ml-1 gl-mr-2 gl-text-black-normal"
+            class="gl-display-none gl-lg-display-block gl-font-weight-bold gl-overflow-hidden gl-whitespace-nowrap gl-text-overflow-ellipsis gl-my-0 gl-ml-1 gl-mr-2 gl-text-black-normal"
           ></a>
           <div class="gl-display-flex gl-align-items-center">
             <gl-sprintf :message="__('%{source} %{copyButton} into %{target}')">

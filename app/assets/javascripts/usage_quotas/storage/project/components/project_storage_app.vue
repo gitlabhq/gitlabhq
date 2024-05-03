@@ -206,7 +206,7 @@ export default {
           </p>
         </div>
         <p
-          class="gl-m-0 gl-font-size-h-display gl-font-weight-bold gl-white-space-nowrap"
+          class="gl-m-0 gl-font-size-h-display gl-font-weight-bold gl-whitespace-nowrap"
           data-testid="total-usage"
         >
           {{ totalUsage }}

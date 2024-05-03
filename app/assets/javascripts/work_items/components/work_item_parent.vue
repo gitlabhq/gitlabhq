@@ -282,7 +282,7 @@ export default {
     <template v-else-if="hasParent">
       <gl-link
         data-testid="work-item-parent-link"
-        class="gl-link gl-text-gray-900 gl-display-inline-block gl-max-w-full gl-white-space-nowrap gl-text-overflow-ellipsis gl-overflow-hidden"
+        class="gl-link gl-text-gray-900 gl-display-inline-block gl-max-w-full gl-whitespace-nowrap gl-text-overflow-ellipsis gl-overflow-hidden"
         :href="parent.webUrl"
         >{{ listboxText }}</gl-link
       >

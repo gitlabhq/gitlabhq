@@ -127,7 +127,7 @@ export default {
                     :class="item.name ? 'gl-text-truncate' : 'gl-italic gl-gray-400'"
                     >{{ item.text }}</span
                   >
-                  <span class="gl-ml-auto gl-white-space-nowrap" aria-hidden="true">
+                  <span class="gl-ml-auto gl-whitespace-nowrap" aria-hidden="true">
                     <span class="gl-text-green-600">+{{ item.added }}</span>
                     <span class="gl-text-red-500">-{{ item.removed }}</span>
                   </span>

@@ -577,7 +577,7 @@ module Gitlab
 
       LOOSE_APP_ASSETS = lambda do |logical_path, filename|
         filename.start_with?(*asset_roots) &&
-          !['.js', '.css', '.md', '.vue', '.graphql', ''].include?(File.extname(logical_path))
+          ['.js', '.css', '.md', '.vue', '.graphql', ''].exclude?(File.extname(logical_path))
       end
 
       app.config.assets.precompile << LOOSE_APP_ASSETS

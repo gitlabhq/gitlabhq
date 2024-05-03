@@ -123,7 +123,7 @@ module ApplicationSettingsHelper
 
   def oauth_providers_checkboxes(form)
     button_based_providers.map do |source|
-      checked = !@application_setting.disabled_oauth_sign_in_sources.include?(source.to_s)
+      checked = @application_setting.disabled_oauth_sign_in_sources.exclude?(source.to_s)
       name = Gitlab::Auth::OAuth::Provider.label_for(source)
 
       form.gitlab_ui_checkbox_component(

@@ -178,7 +178,7 @@ export default {
   <div class="js-pipeline-graph">
     <div
       ref="mainPipelineContainer"
-      class="pipeline-graph gl-display-flex gl-position-relative gl-white-space-nowrap gl-rounded-lg"
+      class="pipeline-graph gl-display-flex gl-position-relative gl-whitespace-nowrap gl-rounded-lg"
       :class="{
         'pipeline-graph-container gl-bg-gray-10 gl-pipeline-min-h gl-align-items-flex-start gl-pt-3 gl-pb-8 gl-mt-3 gl-overflow-auto': !isLinkedPipeline,
         'gl-bg-gray-50 gl-sm-ml-5': isLinkedPipeline,

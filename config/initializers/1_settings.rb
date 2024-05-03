@@ -1059,7 +1059,7 @@ Gitlab.ee do
   Settings.kerberos['https'] = Settings.gitlab.https if Settings.kerberos['https'].nil?
   Settings.kerberos['port'] ||= Settings.kerberos.https ? 8443 : 8088
 
-  if Settings.kerberos['enabled'] && !Settings.omniauth.providers.map(&:name).include?('kerberos')
+  if Settings.kerberos['enabled'] && Settings.omniauth.providers.map(&:name).exclude?('kerberos')
     Settings.omniauth.providers << GitlabSettings::Options.build({ 'name' => 'kerberos' })
   end
 end

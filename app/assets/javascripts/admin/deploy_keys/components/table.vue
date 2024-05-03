@@ -64,8 +64,8 @@ export default {
     {
       key: 'actions',
       label: __('Actions'),
-      tdClass: 'gl-lg-w-1px gl-white-space-nowrap',
-      thClass: 'gl-lg-w-1px gl-white-space-nowrap',
+      tdClass: 'gl-lg-w-1px gl-whitespace-nowrap',
+      thClass: 'gl-lg-w-1px gl-whitespace-nowrap',
     },
   ],
   modal: {

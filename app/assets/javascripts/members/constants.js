@@ -198,7 +198,7 @@ export const TABS = [
   },
   {
     namespace: MEMBER_TYPES.invite,
-    title: __('Invited'),
+    title: s__('Members|Pending invitations'),
     requiredPermissions: ['canManageMembers'],
     queryParamValue: TAB_QUERY_PARAM_VALUES.invite,
   },

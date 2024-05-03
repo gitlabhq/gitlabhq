@@ -105,7 +105,7 @@ module Integrations
 
         failed_jobs = builds.select do |build|
           # Select jobs which doesn't have a successful retry
-          build[:status] == 'failed' && !succeeded_job_names.include?(build[:name])
+          build[:status] == 'failed' && succeeded_job_names.exclude?(build[:name])
         end
 
         failed_jobs.uniq { |job| job[:name] }.reverse

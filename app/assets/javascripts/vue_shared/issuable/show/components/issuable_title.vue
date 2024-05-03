@@ -92,7 +92,7 @@ export default {
         >
           <div class="issue-sticky-header-text gl-display-flex gl-align-items-baseline gl-mx-auto">
             <gl-badge
-              class="gl-white-space-nowrap gl-mr-3 gl-align-self-center"
+              class="gl-whitespace-nowrap gl-mr-3 gl-align-self-center"
               :variant="badgeVariant"
             >
               <gl-icon v-if="statusIcon" class="gl-sm-display-none" :name="statusIcon" />
@@ -102,12 +102,12 @@ export default {
             </gl-badge>
             <confidentiality-badge
               v-if="issuable.confidential"
-              class="gl-white-space-nowrap gl-mr-3 gl-align-self-center"
+              class="gl-whitespace-nowrap gl-mr-3 gl-align-self-center"
               :issuable-type="issuable.type"
               :workspace-type="workspaceType"
             />
             <p
-              class="gl-font-weight-bold gl-overflow-hidden gl-white-space-nowrap gl-text-overflow-ellipsis gl-my-0"
+              class="gl-font-weight-bold gl-overflow-hidden gl-whitespace-nowrap gl-text-overflow-ellipsis gl-my-0"
               :title="issuable.title"
             >
               {{ issuable.title }}

@@ -49,7 +49,7 @@ export default {
       <div class="gl-display-flex gl-align-items-center">
         <div
           data-testid="name"
-          class="gl-text-overflow-ellipsis gl-overflow-hidden gl-white-space-nowrap"
+          class="gl-text-overflow-ellipsis gl-overflow-hidden gl-whitespace-nowrap"
         >
           {{ tag.name }}
         </div>

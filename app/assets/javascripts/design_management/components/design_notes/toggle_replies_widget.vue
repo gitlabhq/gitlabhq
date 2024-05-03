@@ -70,7 +70,7 @@ export default {
         :avatar-size="24"
         badge-tooltip-prop="name"
         :badge-sr-only-text="authorCollapsedTooltip"
-        class="gl-white-space-nowrap gl-mr-3"
+        class="gl-whitespace-nowrap gl-mr-3"
       >
         <template #avatar="{ avatar }">
           <gl-avatar-link v-gl-tooltip :href="avatar.webUrl" :title="avatar.name">

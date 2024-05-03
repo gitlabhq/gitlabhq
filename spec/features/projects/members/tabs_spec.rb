@@ -27,10 +27,10 @@ RSpec.describe 'Projects > Members > Tabs', :js, feature_category: :groups_and_p
 
   context 'tabs' do
     where(:tab, :count) do
-      'Members'         | 3
-      'Invited'         | 2
-      'Groups'          | 2
-      'Access requests' | 2
+      'Members'             | 3
+      'Pending invitations' | 2
+      'Groups'              | 2
+      'Access requests'     | 2
     end
 
     with_them do

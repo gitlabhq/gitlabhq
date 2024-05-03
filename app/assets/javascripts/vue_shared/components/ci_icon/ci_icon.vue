@@ -108,7 +108,7 @@ export default {
     @click="$emit('ciStatusBadgeClick')"
   >
     <span class="ci-icon-gl-icon-wrapper"><gl-icon :name="icon" /></span
-    ><span v-if="showStatusText" class="gl-mx-2 gl-white-space-nowrap" data-testid="ci-icon-text">{{
+    ><span v-if="showStatusText" class="gl-mx-2 gl-whitespace-nowrap" data-testid="ci-icon-text">{{
       status.text
     }}</span>
   </gl-badge>
