@@ -327,7 +327,7 @@
     <h2>Foo</h2>
     <p>bar</p>
   static: |-
-    <h2 data-sourcepos="1:1-3:3" dir="auto">
+    <h2 data-sourcepos="1:1-2:3" dir="auto">
     <a href="#foo" aria-hidden="true" class="anchor" id="user-content-foo"></a>Foo</h2>
     <p data-sourcepos="3:1-3:3" dir="auto">bar</p>
   wysiwyg: |-
@@ -587,7 +587,7 @@
     <h1>Foo <em>bar</em></h1>
     <h2>Foo <em>bar</em></h2>
   static: |-
-    <h1 data-sourcepos="1:1-3:0" dir="auto">
+    <h1 data-sourcepos="1:1-2:9" dir="auto">
     <a href="#foo-bar" aria-hidden="true" class="anchor" id="user-content-foo-bar"></a>Foo <em data-sourcepos="1:5-1:9">bar</em>
     </h1>
     <h2 data-sourcepos="4:1-5:9" dir="auto">
@@ -625,7 +625,7 @@
     <h2>Foo</h2>
     <h1>Foo</h1>
   static: |-
-    <h2 data-sourcepos="1:1-3:0" dir="auto">
+    <h2 data-sourcepos="1:1-2:25" dir="auto">
     <a href="#foo" aria-hidden="true" class="anchor" id="user-content-foo"></a>Foo</h2>
     <h1 data-sourcepos="4:1-5:1" dir="auto">
     <a href="#foo-1" aria-hidden="true" class="anchor" id="user-content-foo-1"></a>Foo</h1>
@@ -638,9 +638,9 @@
     <h2>Foo</h2>
     <h1>Foo</h1>
   static: |-
-    <h2 data-sourcepos="1:4-3:0" dir="auto">
+    <h2 data-sourcepos="1:4-2:3" dir="auto">
     <a href="#foo" aria-hidden="true" class="anchor" id="user-content-foo"></a>Foo</h2>
-    <h2 data-sourcepos="4:3-6:0" dir="auto">
+    <h2 data-sourcepos="4:3-5:5" dir="auto">
     <a href="#foo-1" aria-hidden="true" class="anchor" id="user-content-foo-1"></a>Foo</h2>
     <h1 data-sourcepos="7:3-8:5" dir="auto">
     <a href="#foo-2" aria-hidden="true" class="anchor" id="user-content-foo-2"></a>Foo</h1>
@@ -728,10 +728,10 @@
     <h2>&lt;a title=&quot;a lot</h2>
     <p>of dashes&quot;/&gt;</p>
   static: |-
-    <h2 data-sourcepos="1:1-3:1" dir="auto">
+    <h2 data-sourcepos="1:1-2:4" dir="auto">
     <a href="#foo" aria-hidden="true" class="anchor" id="user-content-foo"></a>`Foo</h2>
     <p data-sourcepos="3:1-3:1" dir="auto">`</p>
-    <h2 data-sourcepos="5:1-7:12" dir="auto">
+    <h2 data-sourcepos="5:1-6:3" dir="auto">
     <a href="#a-titlea-lot" aria-hidden="true" class="anchor" id="user-content-a-titlea-lot"></a>&lt;a title="a lot</h2>
     <p data-sourcepos="7:1-7:12" dir="auto">of dashes"/&gt;</p>
   wysiwyg: |-
@@ -806,7 +806,7 @@
     <pre data-sourcepos="1:1-3:3" data-canonical-lang="yaml" data-lang-params="frontmatter" class="code highlight js-syntax-highlight language-yaml" v-pre="true"><code><span id="LC1" class="line" lang="yaml"><span class="s">Foo</span></span></code></pre>
     <copy-code></copy-code>
     </div>
-    <h2 data-sourcepos="4:1-6:3" dir="auto">
+    <h2 data-sourcepos="4:1-5:3" dir="auto">
     <a href="#bar" aria-hidden="true" class="anchor" id="user-content-bar"></a>Bar</h2>
     <p data-sourcepos="6:1-6:3" dir="auto">Baz</p>
   wysiwyg: |-
@@ -888,7 +888,7 @@
     <p>baz</p>
   static: |-
     <p data-sourcepos="1:1-1:3" dir="auto">Foo</p>
-    <h2 data-sourcepos="3:1-5:3" dir="auto">
+    <h2 data-sourcepos="3:1-4:3" dir="auto">
     <a href="#bar" aria-hidden="true" class="anchor" id="user-content-bar"></a>bar</h2>
     <p data-sourcepos="5:1-5:3" dir="auto">baz</p>
   wysiwyg: |-
@@ -1095,7 +1095,7 @@
     <pre data-sourcepos="2:5-2:7" class="code highlight js-syntax-highlight language-plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">foo</span></code></pre>
     <copy-code></copy-code>
     </div>
-    <h2 data-sourcepos="3:1-5:7" dir="auto">
+    <h2 data-sourcepos="3:1-4:6" dir="auto">
     <a href="#heading-1" aria-hidden="true" class="anchor" id="user-content-heading-1"></a>Heading</h2>
     <div class="gl-relative markdown-code-block js-markdown-code">
     <pre data-sourcepos="5:5-5:7" class="code highlight js-syntax-highlight language-plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">foo</span></code></pre>
@@ -1447,7 +1447,7 @@
     </code></pre>
     <h1>baz</h1>
   static: |-
-    <h2 data-sourcepos="1:1-3:3" dir="auto">
+    <h2 data-sourcepos="1:1-2:3" dir="auto">
     <a href="#foo" aria-hidden="true" class="anchor" id="user-content-foo"></a>foo</h2>
     <div class="gl-relative markdown-code-block js-markdown-code">
     <pre data-sourcepos="3:1-5:3" class="code highlight js-syntax-highlight language-plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">bar</span></code></pre>
@@ -2359,7 +2359,7 @@
     <h1>bar</h1>
     <p><a href="/url">foo</a></p>
   static: |-
-    <h1 data-sourcepos="1:1-4:5" dir="auto">
+    <h1 data-sourcepos="1:1-3:3" dir="auto">
     <a href="#bar" aria-hidden="true" class="anchor" id="user-content-bar"></a>bar</h1>
     <p data-sourcepos="4:1-4:5" dir="auto"><a data-sourcepos="4:1-4:5" href="/url">foo</a></p>
   wysiwyg: |-
@@ -4145,7 +4145,7 @@
     <a href="#foo" aria-hidden="true" class="anchor" id="user-content-foo"></a>Foo</h1>
     </li>
     <li data-sourcepos="2:1-4:5">
-    <h2 data-sourcepos="2:3-4:5">
+    <h2 data-sourcepos="2:3-3:5">
     <a href="#bar" aria-hidden="true" class="anchor" id="user-content-bar"></a>Bar</h2>
     baz</li>
     </ul>

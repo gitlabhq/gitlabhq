@@ -68,7 +68,6 @@ class Projects::IssuesController < Projects::ApplicationController
     push_force_frontend_feature_flag(:work_items_mvc_2, project&.work_items_mvc_2_feature_flag_enabled?)
     push_frontend_feature_flag(:epic_widget_edit_confirmation, project)
     push_frontend_feature_flag(:display_work_item_epic_issue_sidebar, project)
-    push_frontend_feature_flag(:mention_autocomplete_backend_filtering, project)
   end
 
   around_action :allow_gitaly_ref_name_caching, only: [:discussions]

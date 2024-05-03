@@ -45,7 +45,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:notifications_todos_buttons, current_user)
     push_frontend_feature_flag(:merge_blocked_component, current_user)
     push_frontend_feature_flag(:auto_merge_when_incomplete_pipeline_succeeds, project)
-    push_frontend_feature_flag(:mention_autocomplete_backend_filtering, project)
     push_frontend_feature_flag(:pinned_file, project)
     push_frontend_feature_flag(:reviewer_assign_drawer, current_user)
   end

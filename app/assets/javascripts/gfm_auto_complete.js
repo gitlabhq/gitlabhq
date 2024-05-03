@@ -33,8 +33,6 @@ export const CONTACT_STATE_ACTIVE = 'active';
 export const CONTACTS_ADD_COMMAND = '/add_contacts';
 export const CONTACTS_REMOVE_COMMAND = '/remove_contacts';
 
-const useMentionsBackendFiltering = window.gon.features?.mentionAutocompleteBackendFiltering;
-
 const busyBadge = memoize(
   () =>
     renderVueComponentForLegacyJS(
@@ -414,7 +412,7 @@ class GfmAutoComplete {
       // eslint-disable-next-line no-template-curly-in-string
       insertTpl: '${atwho-at}${username}',
       limit: 10,
-      delay: useMentionsBackendFiltering ? DEFAULT_DEBOUNCE_AND_THROTTLE_MS : null,
+      delay: DEFAULT_DEBOUNCE_AND_THROTTLE_MS,
       searchKey: 'search',
       alwaysHighlightFirst: true,
       skipSpecialCharacterTest: true,
@@ -442,15 +440,10 @@ class GfmAutoComplete {
           return match && match.length ? match[1] : null;
         },
         filter(query, data) {
-          if (useMentionsBackendFiltering) {
-            if (GfmAutoComplete.isLoading(data) || instance.previousQuery !== query) {
-              instance.previousQuery = query;
+          if (GfmAutoComplete.isLoading(data) || instance.previousQuery !== query) {
+            instance.previousQuery = query;
 
-              fetchData(this.$inputor, this.at, query);
-              return data;
-            }
-          } else if (GfmAutoComplete.isLoading(data)) {
-            fetchData(this.$inputor, this.at);
+            fetchData(this.$inputor, this.at, query);
             return data;
           }
 
@@ -1070,11 +1063,7 @@ GfmAutoComplete.atTypeMap = {
   '[[': 'wikis',
 };
 
-GfmAutoComplete.typesWithBackendFiltering = ['vulnerabilities'];
-
-if (useMentionsBackendFiltering) {
-  GfmAutoComplete.typesWithBackendFiltering.push('members');
-}
+GfmAutoComplete.typesWithBackendFiltering = ['vulnerabilities', 'members'];
 
 GfmAutoComplete.isTypeWithBackendFiltering = (type) =>
   GfmAutoComplete.typesWithBackendFiltering.includes(GfmAutoComplete.atTypeMap[type]);

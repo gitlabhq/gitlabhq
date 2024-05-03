@@ -24907,8 +24907,6 @@ CREATE INDEX p_ci_job_artifacts_partition_id_job_id_idx ON ONLY p_ci_job_artifac
 
 CREATE INDEX index_ci_job_artifacts_on_partition_id_job_id ON ci_job_artifacts USING btree (partition_id, job_id);
 
-CREATE INDEX index_ci_job_artifacts_on_project_id ON ci_job_artifacts USING btree (project_id);
-
 CREATE INDEX p_ci_job_artifacts_project_id_id_idx1 ON ONLY p_ci_job_artifacts USING btree (project_id, id);
 
 CREATE INDEX index_ci_job_artifacts_on_project_id_and_id ON ci_job_artifacts USING btree (project_id, id);

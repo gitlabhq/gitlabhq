@@ -132,6 +132,15 @@ RSpec.describe PgFullTextSearchable, feature_category: :global_search do
         expect(model_class.pg_full_text_search('https://gitlab.com/gitlab-org/gitlab')).to contain_exactly(with_url)
         expect(model_class.pg_full_text_search('gopher://gitlab.com/gitlab-org/gitlab')).to contain_exactly(with_url)
       end
+
+      it 'allows searching for URLS with special characters' do
+        url_with_params_and_anchor = 'https://gitlab.com/gitlab-org/gitlab?param1=value1&param2=value2#some-anchor'
+
+        with_url.update!(description: url_with_params_and_anchor)
+        with_url.update_search_data!
+
+        expect(model_class.pg_full_text_search(url_with_params_and_anchor)).to contain_exactly(with_url)
+      end
     end
 
     context 'when search term is a path with underscores' do
@@ -199,18 +208,36 @@ RSpec.describe PgFullTextSearchable, feature_category: :global_search do
       end
     end
 
-    context 'with long words' do
-      let(:model) { model_class.create!(project: project, namespace: project.project_namespace, title: 'title ' + 'long/sequence+1' * 4, description: 'description ' + '@user1' * 20) }
+    it 'strips words containing @ with length >= 500' do
+      model = model_class.create!(project: project, namespace: project.project_namespace, title: 'title', description: 'description ' + '@user1' * 100)
+      model.update_search_data!
 
-      it 'strips words that are 50 characters or longer' do
+      expect(model.search_data.search_vector).to match(/'titl':1A/)
+      expect(model.search_data.search_vector).to match(/'descript':2B/)
+      expect(model.search_data.search_vector).not_to match(/@user1/)
+    end
+
+    context 'with long words' do
+      let(:long_word) { 'long/sequence' * 5 + ' ' }
+      let(:model) { model_class.create!(project: project, namespace: project.project_namespace, title: 'title', description: 'description ' + long_word * 51) }
+
+      it 'strips words with length >= 50 when there are more than 50 instances' do
         model.update_search_data!
 
         expect(model.search_data.search_vector).to match(/'titl':1A/)
+        expect(model.search_data.search_vector).to match(/'descript':2B/)
         expect(model.search_data.search_vector).not_to match(/long/)
         expect(model.search_data.search_vector).not_to match(/sequence/)
+      end
 
+      it 'does not strip long words when there are less than 51 instances' do
+        model.update!(description: 'description ' + long_word * 50)
+        model.update_search_data!
+
+        expect(model.search_data.search_vector).to match(/'titl':1A/)
         expect(model.search_data.search_vector).to match(/'descript':2B/)
-        expect(model.search_data.search_vector).not_to match(/@user1/)
+        expect(model.search_data.search_vector).to match(/long/)
+        expect(model.search_data.search_vector).to match(/sequence/)
       end
     end
 

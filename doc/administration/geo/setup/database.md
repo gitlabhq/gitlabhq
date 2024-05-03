@@ -616,17 +616,6 @@ On all GitLab Geo **secondary** sites:
 
 ## Multi-node database replication
 
-NOTE:
-Patroni is the supported
-[highly available PostgreSQL solution](../../postgresql/replication_and_failover.md). If you still haven't [migrated from repmgr to Patroni](#migrating-from-repmgr-to-patroni), you're highly advised to do so.
-
-### Migrating from repmgr to Patroni
-
-1. Before migrating, you should ensure there is no replication lag between the **primary** and **secondary** sites and that replication is paused. You can pause and resume replication with `gitlab-ctl geo-replication-pause` and `gitlab-ctl geo-replication-resume` on a Geo secondary database node.
-1. Follow the [instructions to migrate repmgr to Patroni](../../postgresql/replication_and_failover.md#switching-from-repmgr-to-patroni). When configuring Patroni on each **primary** site database node, add `patroni['replication_slots'] = { '<slot_name>' => 'physical' }`
-   to `gitlab.rb` where `<slot_name>` is the name of the replication slot for your **secondary** site. This ensures that Patroni recognizes the replication slot as permanent and doesn't drop it upon restarting.
-1. If database replication to the **secondary** site was paused before migration, resume replication after Patroni is confirmed as working on the **primary** site.
-
 ### Migrating a single PostgreSQL node to Patroni
 
 Before the introduction of Patroni, Geo had no support for Linux package installations for HA setups on the **secondary** site.
@@ -655,9 +644,6 @@ For instructions on how to set up Patroni on the primary site, see the
 #### Configuring Patroni cluster for a Geo secondary site
 
 In a Geo secondary site, the main PostgreSQL database is a read-only replica of the primary site's PostgreSQL database.
-
-If you are using `repmgr` on your Geo primary site, see [these instructions](#migrating-from-repmgr-to-patroni)
-for migrating from `repmgr` to Patroni.
 
 A production-ready and secure setup requires at least:
 

@@ -7505,6 +7505,9 @@ msgstr ""
 msgid "Authors: %{authors}"
 msgstr ""
 
+msgid "Auto Assign GitLab Duo Pro Seats"
+msgstr ""
+
 msgid "Auto DevOps"
 msgstr ""
 
@@ -25019,6 +25022,9 @@ msgstr ""
 msgid "GroupSettings|Emails are not encrypted. Concerned administrators may want to disable diff previews."
 msgstr ""
 
+msgid "GroupSettings|Enable Auto Assign GitLab Duo Pro Seats"
+msgstr ""
+
 msgid "GroupSettings|Enable GitLab Duo features for this group %{link_start}Learn more%{link_end}."
 msgstr ""
 
@@ -25071,6 +25077,9 @@ msgid "GroupSettings|If enabled, enterprise user accounts will not be able to us
 msgstr ""
 
 msgid "GroupSettings|If enabled, individual user accounts will be able to use only issued SSH certificates for Git access. It doesn't apply to service accounts, deploy keys, and other types of internal accounts."
+msgstr ""
+
+msgid "GroupSettings|If enabled, newly added eligible members will automatically receive Duo Pro seats."
 msgstr ""
 
 msgid "GroupSettings|If not specified at the group or instance level, the default is %{default_initial_branch_name}. Does not affect existing repositories."
@@ -26100,6 +26109,9 @@ msgid "IdentityVerification|Before you finish creating your account, we need to 
 msgstr ""
 
 msgid "IdentityVerification|Before you sign in, we need to verify your identity. Enter the following code on the sign-in page."
+msgstr ""
+
+msgid "IdentityVerification|Complete verification to proceed."
 msgstr ""
 
 msgid "IdentityVerification|Complete verification to sign up."
@@ -38612,6 +38624,9 @@ msgstr ""
 msgid "PolicyRuleMultiSelect|%{firstLabel} +%{numberOfAdditionalLabels} more"
 msgstr ""
 
+msgid "PolicyRuleMultiSelect|%{firstLabel}, %{secondLabel} %{moreLabel}"
+msgstr ""
+
 msgid "PolicyRuleMultiSelect|All %{itemTypeName}"
 msgstr ""
 
@@ -46342,6 +46357,9 @@ msgid "SecurityOrchestration|%{scanners}"
 msgstr ""
 
 msgid "SecurityOrchestration|%{state} and %{statuses}"
+msgstr ""
+
+msgid "SecurityOrchestration|+%{numberOfAdditionalLabels} more"
 msgstr ""
 
 msgid "SecurityOrchestration|, and %{count} more"

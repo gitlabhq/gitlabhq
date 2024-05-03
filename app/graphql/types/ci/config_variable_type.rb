@@ -7,21 +7,21 @@ module Types
       description 'CI/CD config variables.'
 
       field :key, GraphQL::Types::String,
-            null: true,
-            description: 'Name of the variable.'
+        null: true,
+        description: 'Name of the variable.'
 
       field :description, GraphQL::Types::String,
-            null: true,
-            description: 'Description for the CI/CD config variable.'
+        null: true,
+        description: 'Description for the CI/CD config variable.'
 
       field :value, GraphQL::Types::String,
-            null: true,
-            description: 'Value of the variable.'
+        null: true,
+        description: 'Value of the variable.'
 
       field :value_options, [GraphQL::Types::String],
-            hash_key: :options,
-            null: true,
-            description: 'Value options for the variable.'
+        hash_key: :options,
+        null: true,
+        description: 'Value options for the variable.'
     end
   end
 end

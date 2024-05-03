@@ -1,0 +1,24 @@
+---
+key_path: redis_hll_counters.count_distinct_user_id_from_click_comment_filter_toggle_user_comments_in_mr_weekly
+description: Weekly count of unique users who toggled the user comments option in the MR comment filter dropdown
+product_section: dev
+product_stage: create
+product_group: code_review
+performance_indicator_type: []
+value_type: number
+status: active
+milestone: '17.0'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146939
+time_frame: 7d
+data_source: internal_events
+data_category: optional
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate
+events:
+- name: click_comment_filter_toggle_user_comments_in_mr
+  unique: user.id

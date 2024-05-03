@@ -7,46 +7,46 @@ module Types
       graphql_name 'DetailedStatus'
 
       field :action,
-            Types::Ci::StatusActionType,
-            null: true,
-            calls_gitaly: true,
-            description: 'Action information for the status. This includes method, button title, icon, path, and title.'
+        Types::Ci::StatusActionType,
+        null: true,
+        calls_gitaly: true,
+        description: 'Action information for the status. This includes method, button title, icon, path, and title.'
       field :details_path, GraphQL::Types::String, null: true,
-                                                   description: 'Path of the details for the status.'
+        description: 'Path of the details for the status.'
       field :favicon, GraphQL::Types::String, null: true,
-                                              description: 'Favicon of the status.'
+        description: 'Favicon of the status.'
       field :group, GraphQL::Types::String, null: true,
-                                            description: 'Group of the status.',
-                                            deprecated: {
-                                              reason: 'The `group` attribute is deprecated. Use `name` instead',
-                                              milestone: '16.4'
-                                            }
+        description: 'Group of the status.',
+        deprecated: {
+          reason: 'The `group` attribute is deprecated. Use `name` instead',
+          milestone: '16.4'
+        }
       field :has_details, GraphQL::Types::Boolean, null: true,
-                                                   description: 'Indicates if the status has further details.',
-                                                   method: :has_details?
+        description: 'Indicates if the status has further details.',
+        method: :has_details?
       field :icon, GraphQL::Types::String, null: true,
-                                           description: 'Icon of the status.',
-                                           deprecated: {
-                                             reason: 'The `icon` attribute is deprecated. Use `name` to ' \
-                                                     'identify the status to display instead',
-                                             milestone: '16.4'
-                                           }
+        description: 'Icon of the status.',
+        deprecated: {
+          reason: 'The `icon` attribute is deprecated. Use `name` to ' \
+                  'identify the status to display instead',
+          milestone: '16.4'
+        }
       field :id, GraphQL::Types::String, null: false,
-                                         description: 'ID for a detailed status.',
-                                         extras: [:parent]
+        description: 'ID for a detailed status.',
+        extras: [:parent]
       field :label, GraphQL::Types::String, null: true,
-                                            description: 'Human-readable label of the status (e.g. success).'
+        description: 'Human-readable label of the status (e.g. success).'
       field :name, GraphQL::Types::String, null: true,
-                                            description: 'Machine-readable status name (e.g. SUCCESS).'
+        description: 'Machine-readable status name (e.g. SUCCESS).'
       field :text, GraphQL::Types::String, null: true,
-                                           description: 'Text of the status.',
-                                           deprecated: {
-                                             reason: 'The `text` attribute is being deprecated. Use `label` instead',
-                                             milestone: '16.4'
-                                           }
+        description: 'Text of the status.',
+        deprecated: {
+          reason: 'The `text` attribute is being deprecated. Use `label` instead',
+          milestone: '16.4'
+        }
       field :tooltip, GraphQL::Types::String, null: true,
-                                              description: 'Tooltip associated with the status.',
-                                              method: :status_tooltip
+        description: 'Tooltip associated with the status.',
+        method: :status_tooltip
 
       def id(parent:)
         "#{object.id}-#{parent.id}"

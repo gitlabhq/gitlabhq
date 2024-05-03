@@ -24,11 +24,10 @@
 module PgFullTextSearchable
   extend ActiveSupport::Concern
 
-  LONG_WORDS_REGEX = %r([A-Za-z0-9+/@]{50,})
+  VERY_LONG_WORDS_WITH_AT_REGEX = %r([A-Za-z0-9@]{500,})
+  LONG_WORDS_REGEX = %r([A-Za-z0-9+/]{50,})
   TSVECTOR_MAX_LENGTH = 1.megabyte.freeze
   TEXT_SEARCH_DICTIONARY = 'english'
-  URL_SCHEME_REGEX = %r{(?<=\A|\W)\w+://(?=\w+)}
-  TSQUERY_DISALLOWED_CHARACTERS_REGEX = %r{[^a-zA-Z0-9 .@/\-_"]}
   XML_TAG_REGEX = %r{</?([^>]+)>}
 
   def update_search_data!
@@ -56,7 +55,11 @@ module PgFullTextSearchable
   def tsvector_arel_node(column, weight)
     return if self[column].blank?
 
-    column_text = self[column].gsub(LONG_WORDS_REGEX, ' ')
+    # Remove strings like @user1@user1@user1... since they cause to_tsvector to time out
+    column_text = self[column].gsub(VERY_LONG_WORDS_WITH_AT_REGEX, ' ')
+    # Remove long strings when there are many instances since these can result in the tsvector going over the size limit
+    # This usually happens with base64 data split into multiple lines
+    column_text = column_text.gsub(LONG_WORDS_REGEX, ' ') if column_text.scan(LONG_WORDS_REGEX).size > 50
     column_text = column_text[0..(TSVECTOR_MAX_LENGTH - 1)]
     column_text = Gitlab::I18n.with_default_locale { ActiveSupport::Inflector.transliterate(column_text) }
     column_text = column_text.gsub(XML_TAG_REGEX, ' \1 ')
@@ -133,12 +136,8 @@ module PgFullTextSearchable
     end
 
     def build_tsquery(query, matched_columns)
-      # URLs get broken up into separate words when : is removed below, so we just remove the whole scheme.
-      query = remove_url_scheme(query)
       # Remove accents from search term to match indexed data
       query = Gitlab::I18n.with_default_locale { ActiveSupport::Inflector.transliterate(query) }
-      # Prevent users from using tsquery operators that can cause syntax errors.
-      query = filter_allowed_characters(query)
 
       weights = matched_columns.map do |column_name|
         pg_full_text_searchable_columns[column_name]
@@ -150,21 +149,13 @@ module PgFullTextSearchable
         when /\A\d+\z/ # Handles https://gitlab.com/gitlab-org/gitlab/-/issues/375337
           "(#{search_term + prefix_search_suffix} | -#{search_term + prefix_search_suffix})"
         when /\s/
-          search_term.split.map { |t| "#{t}:#{weights}" }.join(' <-> ')
+          search_term.split.map { |t| "#{Arel::Nodes.build_quoted(t).to_sql}:#{weights}" }.join(' <-> ')
         else
-          search_term + prefix_search_suffix
+          Arel::Nodes.build_quoted(search_term).to_sql + prefix_search_suffix
         end
       end.join(' & ')
 
       Arel::Nodes.build_quoted(tsquery)
-    end
-
-    def remove_url_scheme(query)
-      query.gsub(URL_SCHEME_REGEX, '')
-    end
-
-    def filter_allowed_characters(query)
-      query.gsub(TSQUERY_DISALLOWED_CHARACTERS_REGEX, ' ')
     end
   end
 end

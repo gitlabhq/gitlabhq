@@ -179,7 +179,7 @@ RSpec.describe 'GFM autocomplete', :js, feature_category: :team_planning do
       end
     end
 
-    shared_examples 'autocomplete user mentions' do
+    context 'autocomplete user mentions' do
       it 'does not wrap with quotes for assignee values' do
         fill_in 'Comment', with: "@#{user.username}"
 
@@ -246,8 +246,6 @@ RSpec.describe 'GFM autocomplete', :js, feature_category: :team_planning do
       end
     end
 
-    it_behaves_like 'autocomplete user mentions'
-
     context 'autocomplete wiki pages' do
       let_it_be(:wiki_page1) { create(:wiki_page, project: project, title: 'Home') }
       let_it_be(:wiki_page2) { create(:wiki_page, project: project, title: 'How to use GitLab') }
@@ -264,14 +262,6 @@ RSpec.describe 'GFM autocomplete', :js, feature_category: :team_planning do
 
         expect(find_field('Comment').value).to have_text('[[How to use GitLab|How-to-use-GitLab]]')
       end
-    end
-
-    context 'when mention_autocomplete_backend_filtering is disabled' do
-      before do
-        stub_feature_flags(mention_autocomplete_backend_filtering: false)
-      end
-
-      it_behaves_like 'autocomplete user mentions'
     end
 
     context 'if a selected value has special characters' do

@@ -259,8 +259,13 @@ Be aware of the following conditions between a vulnerability and a linked Jira i
 
 ## Resolve a vulnerability
 
-For some vulnerabilities a solution is already known. In those instances, a vulnerability's page
-includes a **Resolve with merge request** option.
+For some vulnerabilities a solution is already known but needs to be implemented manually. The
+**Solution** field in the Vulnerability page is provided by the security scanning tool that
+reported the security finding, or entered during the [manual creation of a vulnerability](../vulnerability_report/index.md#manually-add-a-vulnerability).
+The GitLab tools utilize information from the [GitLab Advisory Database](../gitlab_advisory_database/index.md).
+
+Additionally, some tools may include a software patch to apply the suggested solution. In those instances,
+a vulnerability's page includes a **Resolve with merge request** option.
 
 The following scanners are supported by this feature:
 

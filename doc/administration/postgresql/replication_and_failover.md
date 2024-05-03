@@ -264,11 +264,6 @@ Patroni honours any other PostgreSQL configuration that was made with the `postg
 `max_wal_senders` by default is set to `5`. If you wish to change this you must set it with the `patroni['postgresql']['max_wal_senders']`
 configuration key.
 
-NOTE:
-The configuration of a Patroni node is very similar to a repmgr but shorter. When Patroni is enabled, first you can ignore
-any replication setting of PostgreSQL (which is overwritten). Then, you can remove any `repmgr[...]` or
-repmgr-specific configuration as well. Especially, make sure that you remove `postgresql['shared_preload_libraries'] = 'repmgr_funcs'`.
-
 Here is an example:
 
 ```ruby
@@ -738,10 +733,7 @@ After deploying the configuration follow these steps:
 
 ## Patroni
 
-NOTE:
-Using Patroni instead of Repmgr is supported for PostgreSQL 11 and required for PostgreSQL 12. Starting with GitLab 14.0, only PostgreSQL 12 is available and hence Patroni is mandatory to achieve failover and replication.
-
-Patroni is an opinionated solution for PostgreSQL high-availability. It takes the control of PostgreSQL, overrides its configuration, and manages its lifecycle (start, stop, restart). Patroni is the only option for PostgreSQL 12 clustering and for cascading replication for Geo deployments.
+Patroni is an opinionated solution for PostgreSQL high-availability. It takes the control of PostgreSQL, overrides its configuration, and manages its lifecycle (start, stop, restart). Patroni is the only option for PostgreSQL 12+ clustering and for cascading replication for Geo deployments.
 
 The fundamental [architecture](#example-recommended-setup-manual-steps) (mentioned above) does not change for Patroni.
 You do not need any special consideration for Patroni while provisioning your database nodes. Patroni heavily relies on Consul to store the state of the cluster and elect a leader. Any failure in Consul cluster and its leader election propagates to the Patroni cluster as well.
@@ -967,46 +959,6 @@ sudo gitlab-ctl patroni resume
 ```
 
 For further details, see [Patroni documentation on this subject](https://patroni.readthedocs.io/en/latest/pause.html).
-
-### Switching from repmgr to Patroni
-
-WARNING:
-Switching from repmgr to Patroni is straightforward, the other way around is _not_. Rolling back from Patroni to repmgr can be complicated and may involve deletion of data directory. If you need to do that, contact GitLab support.
-
-You can switch an exiting database cluster to use Patroni instead of repmgr with the following steps:
-
-1. Stop repmgr on all replica nodes and lastly with the primary node:
-
-   ```shell
-   sudo gitlab-ctl stop repmgrd
-   ```
-
-1. Stop PostgreSQL on all replica nodes:
-
-   ```shell
-   sudo gitlab-ctl stop postgresql
-   ```
-
-   NOTE:
-   Ensure that there is no `walsender` process running on the primary node.
-   `ps aux | grep walsender` must not show any running process.
-
-1. On the primary node, [configure Patroni](#configuring-patroni-cluster). Remove `repmgr` and any other
-   repmgr-specific configuration. Also remove any configuration that is related to PostgreSQL replication.
-1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) on the primary node.
-   It makes it the leader. You can check this with:
-
-   ```shell
-   sudo gitlab-ctl tail patroni
-   ```
-
-1. Repeat the last two steps for all replica nodes. `gitlab.rb` should look the same on all nodes.
-1. If present, remove the `gitlab_repmgr` database and role on the primary. If you don't delete the `gitlab_repmgr`
-   database, upgrading PostgreSQL 11 to 12 fails with:
-
-   ```plaintext
-   could not load library "$libdir/repmgr_funcs": ERROR:  could not access file "$libdir/repmgr_funcs": No such file or directory
-   ```
 
 ### Upgrading PostgreSQL major version in a Patroni cluster
 

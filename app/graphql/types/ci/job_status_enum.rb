@@ -7,8 +7,8 @@ module Types
 
       ::Ci::HasStatus::AVAILABLE_STATUSES.each do |status|
         value status.upcase,
-              description: "A job that is #{status.tr('_', ' ')}.",
-              value: status
+          description: "A job that is #{status.tr('_', ' ')}.",
+          value: status
       end
     end
   end
