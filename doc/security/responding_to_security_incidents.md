@@ -50,7 +50,7 @@ Security incidents related to credentials exposure can vary in severity from low
 #### Event types
 
 - Review the available [audit events](../administration/audit_event_reports.md) for your group or namespace.
-- Adversaries may attempt to create tokens, SSH keys, or user accounts to maintain persistence. Look for [audit events](../administration/audit_event_streaming/audit_event_types.md) related to these activities.
+- Adversaries may attempt to create tokens, SSH keys, or user accounts to maintain persistence. Look for [audit events](../administration/audit_event_types.md) related to these activities.
 - Focus on CI-related [audit events](../administration/audit_event_types.md#continuous-integration) to identify any modifications to CI/CD variables.
 - Review [job logs](../administration/job_logs.md) for any pipelines ran by an adversary
 

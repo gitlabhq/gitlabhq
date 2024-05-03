@@ -2,7 +2,7 @@
 # README first!
 This MR should be created on `gitlab.com/gitlab-org/security/gitlab`.
 
-See [the general developer security release guidelines](https://gitlab.com/gitlab-org/release/docs/blob/master/general/security/developer.md).
+See [the general developer security guidelines](https://gitlab.com/gitlab-org/release/docs/blob/master/general/security/engineer.md).
 
 -->
 
@@ -13,7 +13,7 @@ See [the general developer security release guidelines](https://gitlab.com/gitla
 ## Developer checklist
 
 - [ ] **On "Related issues" section, write down the [GitLab Security] issue it belongs to (i.e. `Related to <issue_id>`).**
-- [ ] Familiarize yourself with the latest process to create Security merge requests: https://gitlab.com/gitlab-org/release/docs/blob/master/general/security/developer.md#process
+- [ ] Familiarize yourself with the latest process to create Security merge requests: https://gitlab.com/gitlab-org/release/docs/blob/master/general/security/engineer.md#process
 - [ ] Merge request targets `master`, or a versioned stable branch (`X-Y-stable-ee`).
 - [ ] Title of this merge request is the same as for all backports.
 - [ ] A [CHANGELOG entry] has been included, with `Changelog` trailer set to `security`.
@@ -21,7 +21,7 @@ See [the general developer security release guidelines](https://gitlab.com/gitla
   - [ ] Assign to a reviewer and maintainer, per our [Code Review process].
   - [ ] Ensure it's approved according to our [Approval Guidelines].
   - [ ] Ensure it's approved by an AppSec engineer.
-    - Please see the security release [Code reviews and Approvals] documentation for details on which AppSec team member to ping for approval.
+    - Please see the security [Code reviews and Approvals] documentation for details on which AppSec team member to ping for approval.
     - Trigger the [`e2e:package-and-test` job]. The docker image generated will be used by the AppSec engineer to validate the security vulnerability has been remediated.
 - [ ] For a backport MR targeting a versioned stable branch (`X-Y-stable-ee`).
   - [ ] Ensure it's approved by the same maintainer that reviewed and approved the merge request targeting the default branch.

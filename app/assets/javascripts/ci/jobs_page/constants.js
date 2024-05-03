@@ -34,34 +34,34 @@ export const DEFAULT_FIELDS = [
   {
     key: 'status',
     label: __('Status'),
-    columnClass: 'gl-w-10p',
+    columnClass: 'gl-w-2/20',
   },
   {
     key: 'job',
     label: __('Job'),
-    columnClass: 'gl-w-quarter',
+    columnClass: 'gl-w-5/20',
   },
   {
     key: 'pipeline',
     label: __('Pipeline'),
-    columnClass: 'gl-w-10p',
+    columnClass: 'gl-w-2/20',
   },
   {
     key: 'stage',
     label: __('Stage'),
-    columnClass: 'gl-w-10p',
+    columnClass: 'gl-w-2/20',
   },
   {
     key: 'coverage',
     label: __('Coverage'),
     tdClass: 'gl-display-none! gl-lg-display-table-cell!',
-    columnClass: 'gl-w-10p',
+    columnClass: 'gl-w-2/20',
   },
   {
     key: 'actions',
     label: '',
     tdClass: 'gl-text-right',
-    columnClass: 'gl-w-10p',
+    columnClass: 'gl-w-2/20',
   },
 ];
 

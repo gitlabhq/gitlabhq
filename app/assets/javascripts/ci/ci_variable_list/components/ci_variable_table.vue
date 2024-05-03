@@ -30,7 +30,7 @@ export default {
       label: s__('CiVariables|Key'),
       tdClass: 'text-plain',
       sortable: true,
-      thClass: 'gl-w-40p',
+      thClass: 'gl-w-2/5',
     },
     {
       key: 'value',

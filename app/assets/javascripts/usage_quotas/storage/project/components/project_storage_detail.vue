@@ -37,12 +37,12 @@ export default {
     {
       key: 'storageType',
       label: PROJECT_TABLE_LABEL_STORAGE_TYPE,
-      thClass: 'gl-w-90p',
+      thClass: 'gl-w-9/10',
     },
     {
       key: 'value',
       label: PROJECT_TABLE_LABEL_USAGE,
-      thClass: 'gl-w-10p',
+      thClass: 'gl-w-1/10',
     },
   ],
 };

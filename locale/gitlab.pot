@@ -27575,6 +27575,15 @@ msgstr ""
 msgid "Integrations|Exclusions"
 msgstr ""
 
+msgid "Integrations|Failed to add the exclusion. Try adding it again."
+msgstr ""
+
+msgid "Integrations|Failed to fetch the exclusions. Try refreshing the page."
+msgstr ""
+
+msgid "Integrations|Failed to remove the exclusion. Try removing it again."
+msgstr ""
+
 msgid "Integrations|GitLab administrators can set up integrations that all groups and projects inherit and use by default. These integrations apply to all groups and projects that don't already use custom settings. You can override custom settings for a group or project if the settings are necessary at that level. Learn more about %{integrations_link_start}instance-level integration management%{link_end}."
 msgstr ""
 
@@ -27591,9 +27600,6 @@ msgid "Integrations|Go back to your workspace"
 msgstr ""
 
 msgid "Integrations|Group-level integration management"
-msgstr ""
-
-msgid "Integrations|Groups and projects in this list no longer require commits to be signed."
 msgstr ""
 
 msgid "Integrations|Includes Standard, plus the entire commit message, commit hash, and issue IDs"
@@ -27621,6 +27627,9 @@ msgid "Integrations|Notification settings"
 msgstr ""
 
 msgid "Integrations|Perform common tasks with slash commands."
+msgstr ""
+
+msgid "Integrations|Projects in this list no longer require commits to be signed."
 msgstr ""
 
 msgid "Integrations|Projects using custom settings"

@@ -76,7 +76,7 @@ describe('AddExclusionsDrawer component', () => {
     it('renders a list selector for projects', () => {
       expect(findProjectsListSelector().props()).toMatchObject({
         type: 'projects',
-        autofocus: false,
+        autofocus: true,
       });
     });
 

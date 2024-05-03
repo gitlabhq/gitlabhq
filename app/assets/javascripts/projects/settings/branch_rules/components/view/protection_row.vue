@@ -70,11 +70,11 @@ export default {
     :class="{ 'gl-border-t-solid': showDivider }"
   >
     <div class="gl-display-flex gl-w-full gl-justify-content-space-between gl-align-items-center">
-      <div class="gl-mr-7 gl-w-quarter">{{ title }}</div>
+      <div class="gl-mr-7 gl-w-1/4">{{ title }}</div>
 
       <gl-avatars-inline
         v-if="users.length"
-        class="gl-w-quarter!"
+        class="!gl-w-1/4"
         :avatars="users"
         :collapsed="true"
         :max-visible="$options.MAX_VISIBLE_AVATARS"

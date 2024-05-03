@@ -24,7 +24,7 @@ Complementary reads:
 
 - [Avoiding required stops](avoiding_required_stops.md)
 - [Contribute to GitLab](contributing/index.md)
-- [Security process for developers](https://gitlab.com/gitlab-org/release/docs/blob/master/general/security/developer.md#security-releases-critical-non-critical-as-a-developer)
+- [Security process for developers](https://gitlab.com/gitlab-org/release/docs/blob/master/general/security/engineer.md#security-releases-critical-non-critical-as-a-developer)
 - [Patch release process for developers](https://gitlab.com/gitlab-org/release/docs/blob/master/general/patch/process.md#process-for-developers)
 - [Guidelines for implementing Enterprise Edition features](ee_features.md)
 - [Adding a new service component to GitLab](adding_service_component.md)

@@ -5,6 +5,6 @@
 
   [[semgrep.passthrough]]
     type  = "git"
-    value = "https://gitlab.com/gitlab-com/gl-security/appsec/sast-custom-rules.git"
+    value = "https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules.git"
     ref = "refs/heads/main"
     subdir = "gitlab-sast-rules"

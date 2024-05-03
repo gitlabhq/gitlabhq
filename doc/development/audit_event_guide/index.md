@@ -227,7 +227,7 @@ To add a new audit event type:
 
 ### Generate documentation
 
-Audit event types documentation is automatically generated and [published](../../administration/audit_event_streaming/audit_event_types.md)
+Audit event types documentation is automatically generated and [published](../../administration/audit_event_types.md)
 to the GitLab documentation site.
 
 If you add a new audit event type, run the

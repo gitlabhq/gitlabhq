@@ -172,7 +172,6 @@
 - ee/spec/models/ee/pages_domain_spec.rb
 - ee/spec/models/ee/project_member_spec.rb
 - ee/spec/models/ee/project_spec.rb
-- ee/spec/models/ee/project_wiki_spec.rb
 - ee/spec/models/elastic/migration_record_spec.rb
 - ee/spec/models/epic_spec.rb
 - ee/spec/models/gitlab_subscription_spec.rb

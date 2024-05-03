@@ -17,16 +17,16 @@ For each of the guidelines listed in this document, AppSec aims to have a SAST r
 
 | Guideline | Rule | Status |
 |---|---|---|
-| [Regular Expressions](#regular-expressions-guidelines)  | [Link](https://gitlab.com/gitlab-com/gl-security/appsec/sast-custom-rules/-/issues/13) | ⏳ In progress |
+| [Regular Expressions](#regular-expressions-guidelines)  | [Link](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/issues/13) | ⏳ In progress |
 | [ReDOS](#denial-of-service-redos--catastrophic-backtracking) | Pending  | ❌ |
-| [SSRF](#server-side-request-forgery-ssrf) | [1](https://gitlab.com/gitlab-com/gl-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby_insecure_url.yml), [2](https://gitlab.com/gitlab-com/gl-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby_insecure_http.yml?ref_type=heads)  | ✅ |
+| [SSRF](#server-side-request-forgery-ssrf) | [1](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby_insecure_url.yml), [2](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby_insecure_http.yml?ref_type=heads)  | ✅ |
 | [XSS](#xss-guidelines) | Pending  | ❌ |
-| [Path traversal](#path-traversal-guidelines) (Ruby) | [Link](https://gitlab.com/gitlab-com/gl-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby_path_traversal.yml?ref_type=heads) | ✅ |
+| [Path traversal](#path-traversal-guidelines) (Ruby) | [Link](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby_path_traversal.yml?ref_type=heads) | ✅ |
 | [Path traversal](#path-traversal-guidelines) (Go) | Pending  | ❌ |
-| [OS command injection](#os-command-injection-guidelines) (Ruby) | [Link](https://gitlab.com/gitlab-com/gl-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby_command_injection.yml?ref_type=heads) | ✅ |
+| [OS command injection](#os-command-injection-guidelines) (Ruby) | [Link](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby_command_injection.yml?ref_type=heads) | ✅ |
 | [OS command injection](#os-command-injection-guidelines) (Go) | Pending | ❌ |
-| [Insecure TLS ciphers](#tls-minimum-recommended-version) | [Link](https://gitlab.com/gitlab-com/gl-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby_insecure_ciphers.yml?ref_type=heads)  | ✅ |
-| [Archive operations](#working-with-archive-files) (Ruby) | [Link](https://gitlab.com/gitlab-com/gl-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby_insecure_archive_operations.yml?ref_type=heads)  | ✅ |
+| [Insecure TLS ciphers](#tls-minimum-recommended-version) | [Link](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby_insecure_ciphers.yml?ref_type=heads)  | ✅ |
+| [Archive operations](#working-with-archive-files) (Ruby) | [Link](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby_insecure_archive_operations.yml?ref_type=heads)  | ✅ |
 | [Archive operations](#working-with-archive-files) (Go) | Pending  | ❌ |
 | [URL spoofing](#url-spoofing) | Pending  | ❌ |
 | [GitLab internal authorization](#gitlab-internal-authorization) | N/A  | N/A |
@@ -50,7 +50,7 @@ MR. Also add the Guideline to the "SAST Coverage" table above.
 
 ### Creating new semgrep rules
 
-1. These should go in the [SAST custom rules](https://gitlab.com/gitlab-com/gl-security/appsec/sast-custom-rules/-/tree/main/secure-coding-guidelines) project.
+1. These should go in the [SAST custom rules](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/tree/main/secure-coding-guidelines) project.
 1. Each rule should have a test file with the name set to `rule_name.rb` or `rule_name.go`.
 1. Each rule should have a well-defined `message` field in the YAML file, with clear instructions for the developer.
 1. The severity should be set to `INFO` for low-severity issues not requiring involvement from AppSec, and `WARNING` for issues that require AppSec review. The bot will ping AppSec accordingly.
@@ -1239,7 +1239,7 @@ end
 
 ##### Go
 
-You are encouraged to use the secure archive utilities provided by [LabSec](https://gitlab.com/gitlab-com/gl-security/appsec/labsec) which will handle Zip Slip and symlink vulnerabilities for you. The LabSec utilities are also context aware which makes it possible to cancel or timeout extractions.
+You are encouraged to use the secure archive utilities provided by [LabSec](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/labsec) which will handle Zip Slip and symlink vulnerabilities for you. The LabSec utilities are also context aware which makes it possible to cancel or timeout extractions.
 
 In case the LabSec utilities do not fit your needs, here is an example for extracting a zip file with protection against symlink attacks:
 
@@ -1379,7 +1379,7 @@ Add the new prefix to:
 - [`gitlab/app/assets/javascripts/lib/utils/secret_detection.js`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/lib/utils/secret_detection.js)
 - The [GitLab Secret Detection gem](https://gitlab.com/gitlab-org/gitlab/-/tree/master/gems/gitlab-secret_detection)
 - GitLab [secrets SAST analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/secrets)
-- [Tokinator](https://gitlab.com/gitlab-com/gl-security/appsec/tokinator/-/blob/main/CONTRIBUTING.md?ref_type=heads) (internal tool / team members only)
+- [Tokinator](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/tokinator/-/blob/main/CONTRIBUTING.md?ref_type=heads) (internal tool / team members only)
 - [Token Overview](../security/token_overview.md) documentation
 
 ### Examples

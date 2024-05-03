@@ -187,8 +187,8 @@ RSpec.describe Gitlab::GitalyClient, feature_category: :gitaly do
     where(:storage, :address, :expected_target) do
       [
         ['default', 'unix:tmp/gitaly.sock', 'unix:tmp/gitaly.sock'],
-        ['default', 'tcp://localhost:9876', 'localhost:9876'],
-        ['default', 'tls://localhost:9876', 'localhost:9876'],
+        ['default', 'tcp://localhost:9876', 'dns:///localhost:9876'],
+        ['default', 'tls://localhost:9876', 'dns:///localhost:9876'],
         ['default', 'dns:///localhost:9876', 'dns:///localhost:9876'],
         ['default', 'dns:localhost:9876', 'dns:localhost:9876'],
         ['default', 'dns://1.1.1.1/localhost:9876', 'dns://1.1.1.1/localhost:9876']
@@ -275,7 +275,7 @@ RSpec.describe Gitlab::GitalyClient, feature_category: :gitaly do
 
       it 'strips tls:// prefix before passing it to GRPC::Core::Channel initializer' do
         expect(Gitaly::CommitService::Stub).to receive(:new).with(
-          address, nil, channel_override: be_a(GRPC::Core::Channel), interceptors: []
+          "dns:///#{address}", nil, channel_override: be_a(GRPC::Core::Channel), interceptors: []
         )
 
         described_class.stub(:commit_service, 'default')
@@ -299,7 +299,7 @@ RSpec.describe Gitlab::GitalyClient, feature_category: :gitaly do
 
       it 'strips tcp:// prefix before passing it to GRPC::Core::Channel initializer' do
         expect(Gitaly::CommitService::Stub).to receive(:new).with(
-          address, nil, channel_override: be_a(GRPC::Core::Channel), interceptors: []
+          "dns:///#{address}", nil, channel_override: be_a(GRPC::Core::Channel), interceptors: []
         )
 
         described_class.stub(:commit_service, 'default')

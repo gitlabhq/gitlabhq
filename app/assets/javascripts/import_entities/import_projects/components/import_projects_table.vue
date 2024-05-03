@@ -187,10 +187,10 @@ export default {
       <table class="table gl-table">
         <thead>
           <tr>
-            <th class="gl-w-half">
+            <th class="gl-w-1/2">
               {{ fromHeaderText }}
             </th>
-            <th class="gl-w-half">
+            <th class="gl-w-1/2">
               {{ __('To GitLab') }}
             </th>
             <th>

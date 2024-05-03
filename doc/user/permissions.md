@@ -60,7 +60,7 @@ The following table lists project permissions available for each role:
 
 | Action                                                                                                                                                                                       | Guest | Reporter | Developer | Maintainer | Owner | Notes |
 |----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------|----------|-----------|------------|-------|-------|
-| [Analytics](analytics/index.md):<br>View [issue analytics](analytics/issue_analytics.md)                                                                                                     | ✓     | ✓        | ✓         | ✓          | ✓     |       |
+| [Analytics](analytics/index.md):<br>View [issue analytics](group/issues_analytics/index.md)                                                                                                     | ✓     | ✓        | ✓         | ✓          | ✓     |       |
 | [Analytics](analytics/index.md):<br>View [value stream analytics](group/value_stream_analytics/index.md)                                                                                     | ✓     | ✓        | ✓         | ✓          | ✓     |       |
 | [Analytics](analytics/index.md):<br>View [DORA metrics](analytics/ci_cd_analytics.md)                                                                                                        |       | ✓        | ✓         | ✓          | ✓     |       |
 | [Analytics](analytics/index.md):<br>View [CI/CD analytics](analytics/ci_cd_analytics.md)                                                                                                     |       | ✓        | ✓         | ✓          | ✓     |       |
@@ -305,7 +305,7 @@ The following table lists group permissions available for each role:
 | View [group wiki](project/wiki/group.md) pages                                          | ✓     | ✓        | ✓         | ✓          | ✓     | Guests: In addition, if your group is public or internal, all users who can see the group can also see group wiki pages. |
 | View [Insights](project/insights/index.md)                                              | ✓     | ✓        | ✓         | ✓          | ✓     |       |
 | View [Insights](project/insights/index.md) charts                                       | ✓     | ✓        | ✓         | ✓          | ✓     |       |
-| View [Issue analytics](analytics/issue_analytics.md)                                    | ✓     | ✓        | ✓         | ✓          | ✓     |       |
+| View [Issue analytics](group/issues_analytics/index.md)                                    | ✓     | ✓        | ✓         | ✓          | ✓     |       |
 | View Contribution analytics                                                             | ✓     | ✓        | ✓         | ✓          | ✓     |       |
 | View group [epic](group/epics/index.md)                                                 | ✓     | ✓        | ✓         | ✓          | ✓     |       |
 | View value stream analytics                                                             | ✓     | ✓        | ✓         | ✓          | ✓     |       |

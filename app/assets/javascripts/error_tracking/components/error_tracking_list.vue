@@ -46,31 +46,31 @@ export default {
     {
       key: 'error',
       label: __('Error'),
-      thClass: 'gl-w-40p',
+      thClass: 'gl-w-8/20',
       tdClass: `${tableDataClass}`,
     },
     {
       key: 'timeline',
       label: __('Timeline'),
-      thClass: 'gl-text-center gl-w-20p',
+      thClass: 'gl-text-center gl-w-4/20',
       tdClass: `${tableDataClass} gl-text-center`,
     },
     {
       key: 'events',
       label: __('Events'),
-      thClass: 'gl-text-center gl-w-10p',
+      thClass: 'gl-text-center gl-w-2/20',
       tdClass: `${tableDataClass} gl-text-center`,
     },
     {
       key: 'users',
       label: __('Users'),
-      thClass: 'gl-text-center gl-w-10p',
+      thClass: 'gl-text-center gl-w-2/20',
       tdClass: `${tableDataClass} gl-text-center`,
     },
     {
       key: 'lastSeen',
       label: __('Last seen'),
-      thClass: 'gl-text-center gl-w-10p',
+      thClass: 'gl-text-center gl-w-2/20',
       tdClass: `${tableDataClass} gl-text-center`,
     },
     {

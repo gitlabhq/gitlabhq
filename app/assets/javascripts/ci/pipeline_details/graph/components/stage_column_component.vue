@@ -132,7 +132,7 @@ export default {
         data-testid="stage-column-title"
         class="stage-column-title gl-display-flex gl-justify-content-space-between gl-relative gl-font-weight-bold gl-pipeline-job-width gl-text-truncate gl-line-height-36 gl-pl-4 gl-mb-n2"
       >
-        <span :title="name" class="gl-text-truncate gl-pr-3 gl-w-85p">
+        <span :title="name" class="gl-text-truncate gl-pr-3 gl-w-17/20">
           {{ name }}
         </span>
         <action-component

@@ -1,0 +1,10 @@
+mutation integrationExclusionDelete($input: IntegrationExclusionDeleteInput!) {
+  integrationExclusionDelete(input: $input) {
+    exclusion {
+      project {
+        name
+      }
+    }
+    errors
+  }
+}

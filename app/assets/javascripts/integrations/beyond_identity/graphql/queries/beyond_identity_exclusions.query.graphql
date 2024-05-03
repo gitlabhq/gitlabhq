@@ -1,0 +1,22 @@
+#import "~/graphql_shared/fragments/page_info.fragment.graphql"
+
+query integrationExclusion($before: String, $after: String, $first: Int, $last: Int) {
+  integrationExclusions(
+    integrationName: BEYOND_IDENTITY
+    after: $after
+    before: $before
+    first: $first
+    last: $last
+  ) {
+    nodes {
+      project {
+        avatarUrl
+        name
+        id
+      }
+    }
+    pageInfo {
+      ...PageInfo
+    }
+  }
+}

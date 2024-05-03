@@ -7,3 +7,58 @@ export const groupExclusionsMock = [
   { id: 1, name: 'group foo', type: 'group', icon: 'group', avatarUrl: 'group-foo.png' },
   { id: 2, name: 'group bar', type: 'group', icon: 'group', avatarUrl: 'group-bar.png' },
 ];
+
+export const fetchExclusionsResponse = {
+  data: {
+    integrationExclusions: {
+      nodes: [
+        {
+          project: {
+            name: 'project foo',
+            avatarUrl: 'foo.png',
+            id: 'gid://gitlab/Project/1',
+          },
+        },
+        {
+          project: {
+            name: 'project bar',
+            avatarUrl: 'bar.png',
+            id: 'gid://gitlab/Project/2',
+          },
+        },
+      ],
+      pageInfo: {},
+    },
+  },
+};
+
+export const createExclusionMutationResponse = {
+  data: {
+    integrationExclusionCreate: {
+      exclusions: {
+        nodes: [
+          {
+            project: {
+              id: 'gid://gitlab/Project/97',
+              name: 'approval-rules-25096c16cef9687d',
+            },
+          },
+        ],
+      },
+      errors: [],
+    },
+  },
+};
+
+export const deleteExclusionMutationResponse = {
+  data: {
+    integrationExclusionDelete: {
+      exclusion: {
+        project: {
+          name: 'approval-rules-25096c16cef9687d',
+        },
+      },
+      errors: [],
+    },
+  },
+};

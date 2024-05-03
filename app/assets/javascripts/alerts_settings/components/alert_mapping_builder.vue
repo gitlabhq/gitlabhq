@@ -151,7 +151,7 @@ export default {
     </div>
 
     <div v-for="gitlabField in mappingData" :key="gitlabField.name" class="gl-display-table-row">
-      <div class="gl-display-table-cell gl-py-3 gl-pr-3 gl-w-30p gl-align-middle">
+      <div class="gl-display-table-cell gl-py-3 gl-pr-3 gl-w-3/10 gl-align-middle">
         <gl-form-input
           aria-labelledby="gitlabFieldsHeader"
           disabled
@@ -167,7 +167,7 @@ export default {
         </div>
       </div>
 
-      <div class="gl-display-table-cell gl-py-3 gl-pr-3 gl-w-30p gl-align-middle">
+      <div class="gl-display-table-cell gl-py-3 gl-pr-3 gl-w-3/10 gl-align-middle">
         <gl-collapsible-listbox
           :items="dropdownItems(gitlabField.searchTerm, gitlabField.mappingFields)"
           :selected="selectedValue(gitlabField.mapping)"
@@ -188,7 +188,7 @@ export default {
         </gl-collapsible-listbox>
       </div>
 
-      <div class="gl-display-table-cell gl-py-3 gl-w-30p">
+      <div class="gl-display-table-cell gl-py-3 gl-w-3/10">
         <gl-collapsible-listbox
           v-if="Boolean(gitlabField.numberOfFallbacks)"
           :items="dropdownItems(gitlabField.fallbackSearchTerm, gitlabField.mappingFields)"

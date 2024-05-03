@@ -57,3 +57,27 @@ To skip the push check for [service accounts](../../profile/service_accounts.md)
 1. Select **Beyond Identity**.
 1. Select the **Exclude service accounts** checkbox.
 1. Select **Save changes**.
+
+## Exclude projects from the Beyond Identity check
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/454372) in GitLab 17.0 [with a flag](../../../administration/feature_flags.md) named `beyond_identity_exclusions`. Disabled by default.
+
+FLAG:
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
+
+Prerequisites:
+
+- You must have administrator access to the GitLab instance.
+
+To exclude projects from the Beyond Identity check:
+
+1. Sign in to GitLab as an administrator.
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Settings > Integrations**.
+1. Select **Beyond Identity**.
+1. Select the **Exclusions** tab.
+1. Select **Add exclusions**.
+1. On the drawer, search and select projects to exclude.
+1. Select **Add exclusions**.

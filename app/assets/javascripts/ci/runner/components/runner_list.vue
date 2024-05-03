@@ -13,10 +13,10 @@ import RunnerStatusCell from './cells/runner_status_cell.vue';
 import RunnerOwnerCell from './cells/runner_owner_cell.vue';
 
 const defaultFields = [
-  tableField({ key: 'status', label: s__('Runners|Status'), thClasses: ['gl-w-15p'] }),
+  tableField({ key: 'status', label: s__('Runners|Status'), thClasses: ['gl-w-3/20'] }),
   tableField({ key: 'summary', label: s__('Runners|Runner configuration') }),
-  tableField({ key: 'owner', label: s__('Runners|Owner'), thClasses: ['gl-w-20p'] }),
-  tableField({ key: 'actions', label: '', thClasses: ['gl-w-15p'] }),
+  tableField({ key: 'owner', label: s__('Runners|Owner'), thClasses: ['gl-w-4/20'] }),
+  tableField({ key: 'actions', label: '', thClasses: ['gl-w-3/20'] }),
 ];
 
 export default {

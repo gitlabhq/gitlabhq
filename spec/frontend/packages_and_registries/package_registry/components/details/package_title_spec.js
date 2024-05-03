@@ -1,4 +1,4 @@
-import { GlSprintf } from '@gitlab/ui';
+import { GlSprintf, GlBadge } from '@gitlab/ui';
 import { GlBreakpointInstance } from '@gitlab/ui/dist/utils';
 import { nextTick } from 'vue';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
@@ -39,6 +39,7 @@ describe('PackageTitle', () => {
       provide,
       directives: {
         GlResizeObserver: createMockDirective('gl-resize-observer'),
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
     });
     await nextTick();
@@ -227,6 +228,65 @@ describe('PackageTitle', () => {
         text: 'Last downloaded Aug 17, 2021',
         icon: 'download',
         size: 'm',
+      });
+    });
+  });
+
+  describe('badge "protected"', () => {
+    const createComponentForBadgeProtected = async ({
+      packageEntityPackageProtectionRuleExists = true,
+      glFeaturesPackagesProtectedPackages = true,
+    } = {}) => {
+      await createComponent(
+        {
+          ...packageWithTags,
+          packageProtectionRuleExists: packageEntityPackageProtectionRuleExists,
+        },
+        {
+          ...defaultProvide,
+          glFeatures: { packagesProtectedPackages: glFeaturesPackagesProtectedPackages },
+        },
+      );
+    };
+
+    const findBadgeProtected = () => wrapper.findComponent(GlBadge);
+
+    describe('when a protection rule exists for the given package', () => {
+      it('shows badge', () => {
+        createComponentForBadgeProtected();
+
+        expect(findBadgeProtected().exists()).toBe(true);
+        expect(findBadgeProtected().text()).toBe('protected');
+      });
+
+      it('binds tooltip directive', () => {
+        createComponentForBadgeProtected();
+
+        const badgeProtectionRuleExistsTooltipBinding = getBinding(
+          findBadgeProtected().element,
+          'gl-tooltip',
+        );
+        expect(badgeProtectionRuleExistsTooltipBinding.value).toMatchObject({
+          title: 'A protection rule exists for this package.',
+        });
+      });
+    });
+
+    describe('when no protection rule exists for the given package', () => {
+      it('does not show badge', () => {
+        createComponentForBadgeProtected({
+          packageEntityPackageProtectionRuleExists: false,
+        });
+
+        expect(findBadgeProtected().exists()).toBe(false);
+      });
+    });
+
+    describe('when feature flag ":packages_protected_packages" is disabled', () => {
+      it('does not show badge', () => {
+        createComponentForBadgeProtected({ glFeaturesPackagesProtectedPackages: false });
+
+        expect(findBadgeProtected().exists()).toBe(false);
       });
     });
   });

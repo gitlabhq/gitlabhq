@@ -23,7 +23,7 @@ import {
 import TotalTime from './total_time.vue';
 
 const DEFAULT_WORKFLOW_TITLE_PROPERTIES = {
-  thClass: 'gl-w-half',
+  thClass: 'gl-w-1/2',
   key: FIELD_KEY_TITLE,
   sortable: false,
 };

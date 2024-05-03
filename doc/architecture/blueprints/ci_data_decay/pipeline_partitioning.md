@@ -647,7 +647,7 @@ hours, and always reading from two partitions through a routing table. The
 strategy to partition these tables is well understood, but requires a solid
 Ruby-based automation to manage the creation and deletion of these partitions.
 To achieve that we will collaborate with the Database team to adapt
-[existing database partitioning tools](../../../development/database/table_partitioning.md)
+[existing database partitioning tools](../../../development/database/partitioning/index.md)
 to support CI/CD data partitioning.
 
 ## Iterating to reduce the risk

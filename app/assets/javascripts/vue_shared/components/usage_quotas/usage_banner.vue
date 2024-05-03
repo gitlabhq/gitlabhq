@@ -42,7 +42,7 @@ export default {
                 'left-secondary-text'
               ]
             "
-            class="gl-display-flex gl-align-items-center gl-text-gray-500 gl-min-h-6 gl-min-w-0 gl-flex-grow-1 gl-w-70p gl-md-max-w-70p"
+            class="gl-display-flex gl-align-items-center gl-text-gray-500 gl-min-h-6 gl-min-w-0 gl-flex-grow-1 gl-w-7/10 gl-md-max-w-70p"
           >
             <slot name="left-secondary-text"></slot>
           </div>

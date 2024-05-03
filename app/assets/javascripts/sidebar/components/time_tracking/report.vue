@@ -193,7 +193,7 @@ export default {
     },
   },
   fields: [
-    { key: 'spentAt', label: __('Date'), tdClass: 'gl-w-quarter' },
+    { key: 'spentAt', label: __('Date'), tdClass: 'gl-w-1/4' },
     { key: 'timeSpent', label: __('Time spent'), tdClass: 'gl-w-15' },
     { key: 'user', label: __('User') },
     { key: 'summary', label: __('Summary') },

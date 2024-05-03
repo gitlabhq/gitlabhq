@@ -1604,7 +1604,6 @@
 - './ee/spec/models/ee/project_authorization_spec.rb'
 - './ee/spec/models/ee/project_group_link_spec.rb'
 - './ee/spec/models/ee/project_setting_spec.rb'
-- './ee/spec/models/ee/project_wiki_spec.rb'
 - './ee/spec/models/ee/protected_branch_spec.rb'
 - './ee/spec/models/ee/protected_ref_spec.rb'
 - './ee/spec/models/ee/release_spec.rb'

@@ -177,6 +177,7 @@ and alter them as needed:
 - `10.days.from_now`
 - `2.weeks.from_now`
 - `3.months.from_now`
+- `1.year.from_now`
 
 Each of the following scripts also limits the search to 50 results with `.limit(50)`, but this number can also be changed as needed:
 

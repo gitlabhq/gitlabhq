@@ -118,6 +118,11 @@ There's no exact formula to reliably estimate a migration. However, the average 
 | References                  | 5                                            |
 | Push Rule                   | 0.1                                          |
 
+Though it's difficult to predict migration duration, we've seen:
+
+- 100 projects (19.9k issues, 83k merge requests, 100k+ pipelines) migrated in 8 hours.
+- 1926 projects (22k issues, 160k merge requests, 1.1 million pipelines) migrated in 34 hours.
+
 If you are migrating large projects and encounter problems with timeouts or duration of the migration, see [Reducing migration duration](#reducing-migration-duration).
 
 ## Limits

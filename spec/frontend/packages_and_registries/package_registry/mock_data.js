@@ -166,6 +166,7 @@ export const packageData = (extend) => ({
     'http://__token__:<your_personal_token>@gdk.test:3000/api/v4/projects/1/packages/pypi/simple',
   publicPackage: false,
   pypiSetupUrl: 'http://gdk.test:3000/api/v4/projects/1/packages/pypi',
+  packageProtectionRuleExists: false,
   ...userPermissionsData,
   ...extend,
 });

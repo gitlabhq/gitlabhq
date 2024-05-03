@@ -1,1 +1,3 @@
-import '../performance_bar';
+import '~/webpack';
+import '~/commons';
+import '~/performance_bar';

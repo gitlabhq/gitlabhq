@@ -4,7 +4,7 @@ group: Gitaly
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Bundle URI
+# Bundle URIs
 
 DETAILS:
 **Status:** Experiment
@@ -20,10 +20,10 @@ is not ready for production use.
 
 Gitaly supports Git [bundle URIs](https://git-scm.com/docs/bundle-uri). Bundle
 URIs are locations where Git can download one or more bundles to bootstrap the
-object database before fetching the remaining objects from a remote. Bundle URI
-is built in to the Git protocol.
+object database before fetching the remaining objects from a remote. Bundle URIs
+are built in to the Git protocol.
 
-Using Bundle URI can:
+Using Bundle URIs can:
 
 - Speed up clones and fetches for users with a poor network connection to the
   GitLab server. The bundles can be stored on a CDN, making them available
@@ -32,15 +32,13 @@ Using Bundle URI can:
   bundles from somewhere else, the remaining work to incrementally fetch missing
   objects and references creates a lot less load on the server.
 
-Prerequisites:
+## Prerequisites
 
-- The Git config [`transfer.bundleURI`](https://git-scm.com/docs/git-config#Documentation/git-config.txt-transferbundleURI)
+- The Git configuration [`transfer.bundleURI`](https://git-scm.com/docs/git-config#Documentation/git-config.txt-transferbundleURI)
   must be enabled on Git clients.
 - GitLab Runner 16.6 or later.
-
 - In CI/CD pipeline configuration, the
-  [default Git strategy](../../ci/pipelines/settings.md#choose-the-default-git-strategy)
-  set to `git clone`.
+  [default Git strategy](../../ci/pipelines/settings.md#choose-the-default-git-strategy) set to `git clone`.
 
 ## Server configuration
 
@@ -228,7 +226,7 @@ sudo /opt/gitlab/embedded/bin/gitaly bundle-uri \
 ```
 
 This command generates the bundle and stores it on the configured storage service.
-Gitaly does not automatically refresh the generated bundle, so when want to generate
+Gitaly does not automatically refresh the generated bundle. When want to generate
 a more recent version of a bundle, you must the run command again.
 
 You can schedule this command with a tool like `cron(8)`.
@@ -261,9 +259,9 @@ Updating files: 100% (71304/71304), done.
 
 In the above example:
 
-- When not using Bundle URI, there were 5,271,177 objects received from the
+- When not using a Bundle URI, there were 5,271,177 objects received from the
   GitLab server.
-- When using Bundle URL, there were 1,322,255 objects received from the GitLab
+- When using a Bundle URI, there were 1,322,255 objects received from the GitLab
   server.
 
 This reduction means GitLab needs to pack together fewer objects (in the above

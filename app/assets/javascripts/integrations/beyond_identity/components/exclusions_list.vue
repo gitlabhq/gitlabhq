@@ -1,9 +1,22 @@
 <script>
-import { GlButton, GlEmptyState } from '@gitlab/ui';
-import { sortBy, differenceBy } from 'lodash';
+import { GlButton, GlLoadingIcon, GlEmptyState, GlKeysetPagination } from '@gitlab/ui';
+import { differenceBy } from 'lodash';
 import { s__, __, sprintf } from '~/locale';
+import { createAlert } from '~/alert';
+import { fetchPolicies } from '~/lib/graphql';
+import { TYPENAME_PROJECT } from '~/graphql_shared/constants';
+import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import globalToast from '~/vue_shared/plugins/global_toast';
+import fetchExclusions from '../graphql/queries/beyond_identity_exclusions.query.graphql';
+import createExclusion from '../graphql/mutations/create_beyond_identity_exclusion.mutation.graphql';
+import deleteExclusion from '../graphql/mutations/delete_beyond_identity_exclusion.mutation.graphql';
+import {
+  BEYOND_IDENTITY_INTEGRATION_NAME,
+  PROJECT_TYPE,
+  GROUP_TYPE,
+  DEFAULT_CURSOR,
+} from '../constants';
 import ExclusionsTabs from './exclusions_tabs.vue';
 import ExclusionsListItem from './exclusions_list_item.vue';
 import AddExclusionsDrawer from './add_exclusions_drawer.vue';
@@ -13,9 +26,11 @@ export default {
   name: 'ExclusionsList',
   components: {
     GlButton,
+    GlLoadingIcon,
     GlEmptyState,
     ExclusionsTabs,
     ExclusionsListItem,
+    GlKeysetPagination,
     AddExclusionsDrawer,
     ConfirmRemovalModal,
   },
@@ -25,33 +40,90 @@ export default {
       isConfirmRemovalModalOpen: false,
       exclusions: [],
       exclusionToRemove: null,
+      pageInfo: {},
+      cursor: DEFAULT_CURSOR,
     };
+  },
+  apollo: {
+    exclusions: {
+      query: fetchExclusions,
+      fetchPolicy: fetchPolicies.CACHE_AND_NETWORK,
+      variables() {
+        return this.cursor;
+      },
+      update({ integrationExclusions }) {
+        this.pageInfo = integrationExclusions?.pageInfo || {};
+        return integrationExclusions?.nodes || [];
+      },
+      error() {
+        this.handleError(this.$options.i18n.errorFetch);
+      },
+    },
   },
   computed: {
     formattedExclusions() {
-      return sortBy(
-        this.exclusions.map((exclusion) => ({
-          ...exclusion,
-          icon: exclusion.type,
-        })),
-        'type',
-        'desc',
-      );
+      return this.exclusions.map((exclusion) => {
+        const type = exclusion.project ? PROJECT_TYPE : GROUP_TYPE;
+        return {
+          ...exclusion[type],
+          icon: type,
+          type,
+        };
+      });
     },
-  },
-  created() {
-    this.loadExclusions();
+    showPagination() {
+      return this.pageInfo?.hasPreviousPage || this.pageInfo?.hasNextPage;
+    },
+    isLoading() {
+      return this.$apollo.queries.exclusions.loading;
+    },
+    isEmpty() {
+      return !this.isLoading && !this.exclusions.length;
+    },
   },
   methods: {
-    loadExclusions() {
-      // TODO: add backend call for GET/Query (follow-up)
-      this.exclusions = [];
-    },
-    handleAddExclusions(exclusions) {
+    async handleAddExclusions(exclusions) {
       const uniqueList = differenceBy(exclusions, this.exclusions, (v) => [v.id, v.type].join());
-      // TODO: add backend call for POST/Mutate (follow-up)
-      this.exclusions.push(...uniqueList);
+
+      const { data } = await this.$apollo.mutate({
+        mutation: createExclusion,
+        variables: {
+          input: {
+            projectIds: this.extractProjectIds(uniqueList),
+            integrationName: BEYOND_IDENTITY_INTEGRATION_NAME,
+          },
+        },
+      });
+
       this.isDrawerOpen = false;
+
+      if (data?.integrationExclusionCreate?.errors?.length) {
+        this.handleError(this.$options.i18n.errorCreate);
+        return;
+      }
+
+      if (this.pageInfo.hasPreviousPage) {
+        this.resetPagination();
+      } else {
+        this.$apollo.queries.exclusions.refetch();
+      }
+    },
+    extractProjectIds(exclusions) {
+      return exclusions
+        .filter((exclusion) => exclusion.type === PROJECT_TYPE)
+        .map((exclusion) => convertToGraphQLId(TYPENAME_PROJECT, exclusion.id));
+    },
+    nextPage(item) {
+      this.cursor = { after: item, last: null, before: null };
+    },
+    prevPage(item) {
+      this.cursor = { first: null, after: null, before: item };
+    },
+    resetPagination() {
+      this.cursor = DEFAULT_CURSOR;
+    },
+    handleError(message) {
+      createAlert({ message });
     },
     showRemoveModal(exclusion) {
       this.exclusionToRemove = exclusion;
@@ -60,10 +132,30 @@ export default {
     hideRemoveModal() {
       this.isConfirmRemovalModalOpen = false;
     },
-    confirmRemoveExclusion() {
+    async confirmRemoveExclusion() {
       const { exclusionToRemove } = this;
-      // TODO: add backend call for DELETE/Mutate (follow-up)
-      this.exclusions = this.exclusions.filter((item) => item.id !== exclusionToRemove.id);
+
+      const { data } = await this.$apollo.mutate({
+        mutation: deleteExclusion,
+        variables: {
+          input: {
+            projectId: exclusionToRemove.id,
+            integrationName: BEYOND_IDENTITY_INTEGRATION_NAME,
+          },
+        },
+      });
+
+      if (data?.integrationExclusionDelete?.errors?.length) {
+        this.handleError(this.$options.i18n.errorDelete);
+        return;
+      }
+
+      if (this.exclusions.length === 1 && this.pageInfo.hasPreviousPage) {
+        this.prevPage(this.pageInfo.startCursor);
+      } else {
+        this.$apollo.queries.exclusions.refetch();
+      }
+
       const type = capitalizeFirstCharacter(exclusionToRemove.type);
 
       globalToast(sprintf(this.$options.i18n.exclusionRemoved, { type }), {
@@ -81,12 +173,13 @@ export default {
     },
   },
   i18n: {
+    errorCreate: s__('Integrations|Failed to add the exclusion. Try adding it again.'),
+    errorDelete: s__('Integrations|Failed to remove the exclusion. Try removing it again.'),
+    errorFetch: s__('Integrations|Failed to fetch the exclusions. Try refreshing the page.'),
     exclusionRemoved: s__('Integrations|%{type} exclusion removed'),
     emptyText: s__('Integrations|There are no exclusions'),
     addExclusions: s__('Integrations|Add exclusions'),
-    helpText: s__(
-      'Integrations|Groups and projects in this list no longer require commits to be signed.',
-    ),
+    helpText: s__('Integrations|Projects in this list no longer require commits to be signed.'),
   },
 };
 </script>
@@ -104,7 +197,7 @@ export default {
       }}</gl-button>
     </div>
 
-    <gl-empty-state v-if="!exclusions.length" :title="$options.i18n.emptyText" />
+    <gl-empty-state v-if="isEmpty" :title="$options.i18n.emptyText" />
 
     <exclusions-list-item
       v-for="(exclusion, index) in formattedExclusions"
@@ -113,6 +206,17 @@ export default {
       :exclusion="exclusion"
       @remove="() => showRemoveModal(exclusion)"
     />
+
+    <gl-loading-icon v-if="isLoading" size="lg" class="gl-my-5" />
+
+    <div v-else class="gl-mt-5 gl-display-flex gl-justify-content-center">
+      <gl-keyset-pagination
+        v-if="showPagination"
+        v-bind="pageInfo"
+        @prev="prevPage"
+        @next="nextPage"
+      />
+    </div>
 
     <add-exclusions-drawer
       :is-open="isDrawerOpen"

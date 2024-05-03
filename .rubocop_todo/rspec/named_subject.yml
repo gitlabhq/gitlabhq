@@ -604,7 +604,6 @@ RSpec/NamedSubject:
     - 'ee/spec/models/ee/pages_domain_spec.rb'
     - 'ee/spec/models/ee/personal_access_token_spec.rb'
     - 'ee/spec/models/ee/project_spec.rb'
-    - 'ee/spec/models/ee/project_wiki_spec.rb'
     - 'ee/spec/models/ee/projects/branch_rule_spec.rb'
     - 'ee/spec/models/ee/protected_branch_spec.rb'
     - 'ee/spec/models/ee/resource_label_event_spec.rb'

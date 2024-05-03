@@ -22,7 +22,7 @@ developers receive the same permissions in your fork. This inheritance ensures:
 - Developer users have the needed permissions to view confidential issues and resolve them.
 - You do not need grant individual users access to your fork.
 
-The [security practices for confidential merge requests](https://gitlab.com/gitlab-org/release/docs/blob/master/general/security/developer.md#security-releases-critical-non-critical-as-a-developer) at GitLab are available to read.
+The [security practices for confidential merge requests](https://gitlab.com/gitlab-org/release/docs/blob/master/general/security/engineer.md#security-releases-critical-non-critical-as-a-developer) at GitLab are available to read.
 
 ## Create a confidential merge request
 
@@ -78,4 +78,4 @@ Open a merge request
 - [Confidential issues](../issues/confidential_issues.md)
 - [Make an epic confidential](../../group/epics/manage_epics.md#make-an-epic-confidential)
 - [Add an internal note](../../discussions/index.md#add-an-internal-note)
-- [Security practices for confidential merge requests](https://gitlab.com/gitlab-org/release/docs/blob/master/general/security/developer.md#security-releases-critical-non-critical-as-a-developer) at GitLab
+- [Security practices for confidential merge requests](https://gitlab.com/gitlab-org/release/docs/blob/master/general/security/engineer.md#security-releases-critical-non-critical-as-a-developer) at GitLab

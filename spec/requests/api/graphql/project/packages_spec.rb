@@ -90,7 +90,7 @@ RSpec.describe 'getting a package list for a project', feature_category: :packag
         post_graphql(query, current_user: current_user)
       end
 
-      it 'returns no package protection rules' do
+      it 'returns false for the field packageProtectionRuleExists for each package' do
         graphql_data_at(resource_type, :packages, :nodes).each do |package|
           expect(package['packageProtectionRuleExists']).to eq false
         end

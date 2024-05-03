@@ -1,6 +1,7 @@
 const path = require('path');
 const plugin = require('tailwindcss/plugin');
 const tailwindDefaults = require('@gitlab/ui/tailwind.defaults');
+const { range, round } = require('lodash');
 
 // Try loading the tailwind css_in_js, in case they exist
 let utilities = {};
@@ -32,6 +33,8 @@ function gitLabUIUtilities({ addUtilities }) {
     },
   });
 }
+
+const widthPercentageScales = [8, 10, 20];
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -132,6 +135,20 @@ module.exports = {
         'x0-y2-b4-s0': '0 2px 4px 0 #0000001a',
         'x0-y0-b3-s1-blue-500': 'inset 0 0 3px 1px var(--blue-500, #1f75cb)',
       },
+      // TODO: backport these width percentage classes to GitLab UI
+      width: widthPercentageScales.reduce((accumulator1, denominator) => {
+        return {
+          ...accumulator1,
+          ...range(1, denominator).reduce((accumulator2, numerator) => {
+            const width = (numerator / denominator) * 100;
+
+            return {
+              ...accumulator2,
+              [`${numerator}/${denominator}`]: `${round(width, 6)}%`,
+            };
+          }, {}),
+        };
+      }, {}),
       zIndex: {
         1: '1',
         2: '2',

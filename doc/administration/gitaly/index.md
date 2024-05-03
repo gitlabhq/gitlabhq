@@ -191,10 +191,10 @@ For more information on the other subcommands, run `gitaly --help`.
 When backing up or syncing repositories using tools other than GitLab, you must [prevent writes](../../administration/backup_restore/backup_gitlab.md#prevent-writes-and-copy-the-git-repository-data)
 while copying repository data.
 
-### Bundle URI
+### Bundle URIs
 
 You can use Git [bundle URIs](https://git-scm.com/docs/bundle-uri) with Gitaly.
-For more information, see the [Bundle URI documentation](bundle_uri.md).
+For more information, see the [Bundle URIs documentation](bundle_uris.md).
 
 ## Gitaly Cluster
 

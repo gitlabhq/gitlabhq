@@ -264,7 +264,7 @@ export default {
         <form>
           <gl-form-group label-for="agent-name">
             <available-agents-dropdown
-              class="gl-w-70p"
+              class="gl-w-7/10"
               :is-registering="registering"
               :available-agents="availableAgents"
               @agentSelected="setAgentName"

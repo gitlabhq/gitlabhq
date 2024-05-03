@@ -142,7 +142,7 @@ export default {
         this.canBulkDestroyArtifacts && {
           key: 'checkbox',
           label: '',
-          thClass: 'gl-w-5p',
+          thClass: 'gl-w-1/20',
         },
         ...this.$options.fields,
       ];
@@ -328,29 +328,29 @@ export default {
     {
       key: 'artifacts',
       label: I18N_ARTIFACTS,
-      thClass: 'gl-w-eighth',
+      thClass: 'gl-w-1/8',
     },
     {
       key: 'job',
       label: I18N_JOB,
-      thClass: 'gl-w-35p',
+      thClass: 'gl-w-7/20',
     },
     {
       key: 'size',
       label: I18N_SIZE,
-      thClass: 'gl-w-15p gl-text-right',
+      thClass: 'gl-w-3/20 gl-text-right',
       tdClass: 'gl-text-right',
     },
     {
       key: 'created',
       label: I18N_CREATED,
-      thClass: 'gl-w-eighth gl-text-center',
+      thClass: 'gl-w-1/8 gl-text-center',
       tdClass: 'gl-text-center',
     },
     {
       key: 'actions',
       label: '',
-      thClass: 'gl-w-20p',
+      thClass: 'gl-w-4/20',
       tdClass: 'gl-text-right',
     },
   ],

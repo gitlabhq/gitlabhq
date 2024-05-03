@@ -132,7 +132,7 @@ export default {
         data-testid="min-size-group"
       >
         <template #invalid-feedback>
-          <div class="gl-w-40p">{{ $options.i18n.minSizeMbInvalidFeedback }}</div>
+          <div class="gl-w-2/5">{{ $options.i18n.minSizeMbInvalidFeedback }}</div>
         </template>
         <gl-form-text class="gl-mt-0 gl-mb-3 gl-text-body!">
           {{ $options.i18n.minSizeMbDescription }}
@@ -169,7 +169,7 @@ export default {
           data-testid="delete-after-months-group"
         >
           <template #invalid-feedback>
-            <div class="gl-w-30p">{{ $options.i18n.deleteAfterMonthsInvalidFeedback }}</div>
+            <div class="gl-w-3/10">{{ $options.i18n.deleteAfterMonthsInvalidFeedback }}</div>
           </template>
           <gl-form-input-group data-testid="delete-after-months-input-group">
             <gl-form-input
@@ -202,7 +202,7 @@ export default {
           data-testid="send-warning-email-after-months-group"
         >
           <template #invalid-feedback>
-            <div class="gl-w-30p">
+            <div class="gl-w-3/10">
               {{ $options.i18n.sendWarningEmailAfterMonthsInvalidFeedback }}
             </div>
           </template>

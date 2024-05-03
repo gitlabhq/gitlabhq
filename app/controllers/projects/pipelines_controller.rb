@@ -15,7 +15,8 @@ class Projects::PipelinesController < Projects::ApplicationController
   before_action :pipeline, except: [:index, :new, :create, :charts]
   before_action :set_pipeline_path, only: [:show]
   before_action :authorize_read_pipeline!
-  before_action :authorize_read_build!, only: [:index, :show]
+  before_action :authorize_read_build!, only: [:index]
+  before_action :authorize_read_build_on_pipeline!, only: [:show]
   before_action :authorize_read_ci_cd_analytics!, only: [:charts]
   before_action :authorize_create_pipeline!, only: [:new, :create]
   before_action :authorize_update_pipeline!, only: [:retry]
@@ -319,6 +320,10 @@ class Projects::PipelinesController < Projects::ApplicationController
 
   def authorize_cancel_pipeline!
     return access_denied! unless can?(current_user, :cancel_pipeline, @pipeline)
+  end
+
+  def authorize_read_build_on_pipeline!
+    return access_denied! unless can?(current_user, :read_build, @pipeline)
   end
 
   def limited_pipelines_count(project, scope = nil)

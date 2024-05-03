@@ -30,4 +30,27 @@ RSpec.describe Projects::Packages::PackagesController, feature_category: :packag
       it { is_expected.to have_pushed_frontend_feature_flags(packagesProtectedPackages: false) }
     end
   end
+
+  describe 'GET #show' do
+    let_it_be(:package) { create(:package, project: project) }
+
+    subject do
+      get namespace_project_package_path(namespace_id: project.namespace, project_id: project, id: package.id)
+      response
+    end
+
+    it { is_expected.to have_gitlab_http_status(:ok) }
+
+    it { is_expected.to have_attributes(body: have_pushed_frontend_feature_flags(packagesProtectedPackages: true)) }
+
+    context 'when feature flag "packages_protected_packages" is disabled' do
+      before do
+        stub_feature_flags(packages_protected_packages: false)
+      end
+
+      it { is_expected.to have_gitlab_http_status(:ok) }
+
+      it { is_expected.to have_attributes(body: have_pushed_frontend_feature_flags(packagesProtectedPackages: false)) }
+    end
+  end
 end

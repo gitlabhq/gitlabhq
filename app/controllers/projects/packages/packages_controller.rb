@@ -8,7 +8,7 @@ module Projects
       feature_category :package_registry
       urgency :low
 
-      before_action :set_feature_flag_packages_protected_packages, only: :index
+      before_action :set_feature_flag_packages_protected_packages, only: [:index, :show]
 
       def index; end
 

@@ -106,28 +106,28 @@ export default {
           :environment="environment"
           :loading="isLoading"
         />
-        <details-feedback class="gl-mt-6 gl-w-90p" />
+        <details-feedback class="gl-mt-6 gl-w-9/10" />
         <deployment-approvals
           v-if="hasApprovalSummary"
           :approval-summary="deployment.approvalSummary"
           :deployment="deployment"
-          class="gl-mt-6 gl-w-90p"
+          class="gl-mt-6 gl-w-9/10"
           @change="$apollo.queries.deployment.refetch()"
         />
         <deployment-deploy-block
           v-if="isManual"
           :deployment="deployment"
-          class="gl-w-90p gl-mt-4"
+          class="gl-w-9/10 gl-mt-4"
         />
         <deployment-timeline
           v-if="hasApprovalSummary"
           :approval-summary="deployment.approvalSummary"
-          class="gl-w-90p"
+          class="gl-w-9/10"
         />
         <approvals-empty-state
           v-if="!isLoading"
           :approval-summary="deployment.approvalSummary"
-          class="gl-w-90p"
+          class="gl-w-9/10"
         />
       </div>
       <deployment-aside
@@ -135,7 +135,7 @@ export default {
         :loading="isLoading"
         :deployment="deployment"
         :environment="environment"
-        class="gl-w-20p"
+        class="gl-w-1/5"
       />
     </div>
   </div>

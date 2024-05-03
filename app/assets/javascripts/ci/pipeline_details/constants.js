@@ -49,23 +49,23 @@ export const DEFAULT_FIELDS = [
   {
     key: 'name',
     label: __('Name'),
-    columnClass: 'gl-w-20p',
+    columnClass: 'gl-w-1/5',
   },
   {
     key: 'stage',
     label: __('Stage'),
-    columnClass: 'gl-w-20p',
+    columnClass: 'gl-w-1/5',
   },
   {
     key: 'failureMessage',
     label: __('Failure'),
-    columnClass: 'gl-w-40p',
+    columnClass: 'gl-w-2/5',
   },
   {
     key: 'actions',
     label: '',
     tdClass: 'gl-text-right',
-    columnClass: 'gl-w-20p',
+    columnClass: 'gl-w-1/5',
   },
 ];
 
