@@ -5,12 +5,12 @@ module Mutations
     module Lists
       class BaseCreate < BaseMutation
         argument :backlog, GraphQL::Types::Boolean,
-                 required: false,
-                 description: 'Create the backlog list.'
+          required: false,
+          description: 'Create the backlog list.'
 
         argument :label_id, ::Types::GlobalIDType[::Label],
-                 required: false,
-                 description: 'Global ID of an existing label.'
+          required: false,
+          description: 'Global ID of an existing label.'
 
         def ready?(**args)
           if args.slice(*mutually_exclusive_args).size != 1

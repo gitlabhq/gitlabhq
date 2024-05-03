@@ -8,19 +8,19 @@ module Mutations
       authorize :award_emoji
 
       argument :awardable_id,
-               ::Types::GlobalIDType[::Awardable],
-               required: true,
-               description: 'Global ID of the awardable resource.'
+        ::Types::GlobalIDType[::Awardable],
+        required: true,
+        description: 'Global ID of the awardable resource.'
 
       argument :name,
-               GraphQL::Types::String,
-               required: true,
-               description: copy_field_description(Types::AwardEmojis::AwardEmojiType, :name)
+        GraphQL::Types::String,
+        required: true,
+        description: copy_field_description(Types::AwardEmojis::AwardEmojiType, :name)
 
       field :award_emoji,
-            Types::AwardEmojis::AwardEmojiType,
-            null: true,
-            description: 'Emoji reactions after mutation.'
+        Types::AwardEmojis::AwardEmojiType,
+        null: true,
+        description: 'Emoji reactions after mutation.'
 
       private
 

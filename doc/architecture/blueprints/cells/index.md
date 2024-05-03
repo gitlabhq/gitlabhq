@@ -383,6 +383,7 @@ The Tenant Scale team sees an opportunity to use GitLab Dedicated as a base for 
 - [ADR-002: One GCP Project per Cell](decisions/002_gcp_project_boundary.md)
 - [ADR-003: One GKE Cluster per Cell](decisions/003_num_gke_clusters_per_cell.md)
 - [ADR-004: One VPC per Cell, with Private Service Connect for internal communication between Cells](decisions/004_vpc_subnet_design.md)
+- [ADR-005: Cells use Flexible Reference Architectures](decisions/005_flexible_reference_architectures.md)
 - [ADR-006: Use Geo for Disaster Recovery](decisions/006_disaster_recovery_geo.md)
 
 ## Links

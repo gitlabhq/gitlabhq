@@ -10,66 +10,66 @@ module Mutations
         IssueID = ::GraphQL::Types::ID
 
         argument :board_id, BoardGID,
-                 required: true,
-                 loads: Types::BoardType,
-                 description: 'Global ID of the board that the issue is in.'
+          required: true,
+          loads: Types::BoardType,
+          description: 'Global ID of the board that the issue is in.'
 
         argument :project_path, GraphQL::Types::ID,
-                 required: true,
-                 description: 'Project the issue to mutate is in.'
+          required: true,
+          description: 'Project the issue to mutate is in.'
 
         argument :iid, GraphQL::Types::String,
-                 required: true,
-                 description: 'IID of the issue to mutate.'
+          required: true,
+          description: 'IID of the issue to mutate.'
 
         argument :from_list_id, ListID,
-                 required: false,
-                 description: 'ID of the board list that the issue will be moved from.'
+          required: false,
+          description: 'ID of the board list that the issue will be moved from.'
 
         argument :to_list_id, ListID,
-                 required: false,
-                 description: 'ID of the board list that the issue will be moved to.'
+          required: false,
+          description: 'ID of the board list that the issue will be moved to.'
 
         argument :move_before_id, IssueID,
-                 required: false,
-                 description: 'ID of issue that should be placed before the current issue.'
+          required: false,
+          description: 'ID of issue that should be placed before the current issue.'
 
         argument :move_after_id, IssueID,
-                 required: false,
-                 description: 'ID of issue that should be placed after the current issue.'
+          required: false,
+          description: 'ID of issue that should be placed after the current issue.'
 
         argument :position_in_list, GraphQL::Types::Int,
-                 required: false,
-                 description: "Position of issue within the board list. Positions start at 0. "\
-                              "Use #{::Boards::Issues::MoveService::LIST_END_POSITION} to move to the end of the list."
+          required: false,
+          description: "Position of issue within the board list. Positions start at 0. "\
+                       "Use #{::Boards::Issues::MoveService::LIST_END_POSITION} to move to the end of the list."
 
         def ready?(**args)
           if move_arguments(args).blank?
             raise Gitlab::Graphql::Errors::ArgumentError,
-                  'At least one of the arguments ' \
-                  'fromListId, toListId, positionInList, moveAfterId, or moveBeforeId is required'
+              'At least one of the arguments ' \
+              'fromListId, toListId, positionInList, moveAfterId, or moveBeforeId is required'
           end
 
           if move_list_arguments(args).one?
             raise Gitlab::Graphql::Errors::ArgumentError,
-                  'Both fromListId and toListId must be present'
+              'Both fromListId and toListId must be present'
           end
 
           if args[:position_in_list].present?
             if move_list_arguments(args).empty?
               raise Gitlab::Graphql::Errors::ArgumentError,
-                    'Both fromListId and toListId are required when positionInList is given'
+                'Both fromListId and toListId are required when positionInList is given'
             end
 
             if args[:move_before_id].present? || args[:move_after_id].present?
               raise Gitlab::Graphql::Errors::ArgumentError,
-                    'positionInList is mutually exclusive with any of moveBeforeId or moveAfterId'
+                'positionInList is mutually exclusive with any of moveBeforeId or moveAfterId'
             end
 
             if args[:position_in_list] != ::Boards::Issues::MoveService::LIST_END_POSITION &&
                 args[:position_in_list] < 0
               raise Gitlab::Graphql::Errors::ArgumentError,
-                    "positionInList must be >= 0 or #{::Boards::Issues::MoveService::LIST_END_POSITION}"
+                "positionInList must be >= 0 or #{::Boards::Issues::MoveService::LIST_END_POSITION}"
             end
           end
 

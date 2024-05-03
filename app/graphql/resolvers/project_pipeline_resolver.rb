@@ -9,12 +9,12 @@ module Resolvers
     alias_method :project, :object
 
     argument :iid, GraphQL::Types::ID,
-             required: false,
-             description: 'IID of the Pipeline. For example, "1".'
+      required: false,
+      description: 'IID of the Pipeline. For example, "1".'
 
     argument :sha, GraphQL::Types::String,
-             required: false,
-             description: 'SHA of the Pipeline. For example, "dyd0f15ay83993f5ab66k927w28673882x99100b".'
+      required: false,
+      description: 'SHA of the Pipeline. For example, "dyd0f15ay83993f5ab66k927w28673882x99100b".'
 
     def ready?(iid: nil, sha: nil, **args)
       raise Gitlab::Graphql::Errors::ArgumentError, 'Provide one of an IID or SHA' unless iid.present? ^ sha.present?

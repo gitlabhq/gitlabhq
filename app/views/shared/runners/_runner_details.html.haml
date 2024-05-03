@@ -3,7 +3,7 @@
   = render 'shared/runners/runner_type_badge', runner: runner
 
 -# Only shows details for one manager
-- runner_manager = runner.runner_managers.order_id_desc.first
+- runner_manager = runner.runner_managers.order_contacted_at_desc.first
 
 .table-holder
   %table.table

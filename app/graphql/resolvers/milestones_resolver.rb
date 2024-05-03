@@ -11,29 +11,29 @@ module Resolvers
     authorizes_object!
 
     argument :ids, [GraphQL::Types::ID],
-             required: false,
-             description: 'Array of global milestone IDs, e.g., `"gid://gitlab/Milestone/1"`.'
+      required: false,
+      description: 'Array of global milestone IDs, e.g., `"gid://gitlab/Milestone/1"`.'
 
     argument :state, Types::MilestoneStateEnum,
-             required: false,
-             description: 'Filter milestones by state.'
+      required: false,
+      description: 'Filter milestones by state.'
 
     argument :title, GraphQL::Types::String,
-             required: false,
-             description: 'Title of the milestone.'
+      required: false,
+      description: 'Title of the milestone.'
 
     argument :search_title, GraphQL::Types::String,
-             required: false,
-             description: 'Search string for the title.'
+      required: false,
+      description: 'Search string for the title.'
 
     argument :containing_date, Types::TimeType,
-             required: false,
-             description: 'Date the milestone contains.'
+      required: false,
+      description: 'Date the milestone contains.'
 
     argument :sort, Types::MilestoneSortEnum,
-             description: 'Sort milestones by this criteria.',
-             required: false,
-             default_value: :due_date_asc
+      description: 'Sort milestones by this criteria.',
+      required: false,
+      default_value: :due_date_asc
 
     type Types::MilestoneType.connection_type, null: true
 

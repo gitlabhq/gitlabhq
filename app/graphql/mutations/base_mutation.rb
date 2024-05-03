@@ -11,8 +11,8 @@ module Mutations
     argument_class ::Types::BaseArgument
 
     field :errors, [GraphQL::Types::String],
-          null: false,
-          description: 'Errors encountered during execution of the mutation.'
+      null: false,
+      description: 'Errors encountered during execution of the mutation.'
 
     def current_user
       context[:current_user]
@@ -57,7 +57,7 @@ module Mutations
       auth = ::Gitlab::Graphql::Authorize::ObjectAuthorization.new(:execute_graphql_mutation, :api)
 
       return true if auth.ok?(:global, context[:current_user],
-                              scope_validator: context[:scope_validator])
+        scope_validator: context[:scope_validator])
 
       # in our mutations we raise, rather than returning a null value.
       raise_resource_not_available_error!

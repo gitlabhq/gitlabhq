@@ -231,9 +231,10 @@ RSpec.describe Ci::RunnerManager, feature_category: :fleet_visibility, type: :mo
 
     let_it_be(:runner_manager1) { create(:ci_runner_machine, contacted_at: 1.second.ago) }
     let_it_be(:runner_manager2) { create(:ci_runner_machine, contacted_at: 3.seconds.ago) }
-    let_it_be(:runner_manager3) { create(:ci_runner_machine, contacted_at: 2.seconds.ago) }
+    let_it_be(:runner_manager3) { create(:ci_runner_machine, contacted_at: nil) }
+    let_it_be(:runner_manager4) { create(:ci_runner_machine, contacted_at: 2.seconds.ago) }
 
-    it { is_expected.to eq([runner_manager1, runner_manager3, runner_manager2]) }
+    it { is_expected.to eq([runner_manager1, runner_manager4, runner_manager2, runner_manager3]) }
   end
 
   describe '.with_upgrade_status' do

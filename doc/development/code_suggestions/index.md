@@ -37,21 +37,25 @@ This should enable everyone to see locally any change in an IDE being sent to th
    1. Set the AI Gateway URL environmental variable by running `export AI_GATEWAY_URL=http://localhost:5052`.
    1. Run your GDK server with `gdk start` if it's not already running.
 1. [Setup AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist):
-    1. Complete the steps to [run the server locally](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist#how-to-run-the-server-locally).
-    1. Uncomment or add the following variables in the `.env` file for all debugging insights.
-       You may need to adjust the filepath (remove `..`) for this log to show in the `ai-assist` root directory.
+   1. Run the AI Gateway as part of your GDK 
+      1. Follow the "How to set up and validate locally" steps in [this MR](https://gitlab.com/gitlab-org/gitlab-development-kit/-/merge_requests/3646#how-to-set-up-and-validate-locally)
+      1. Be sure to add your `ANTHROPIC_API_KEY` to your GDK's `gitlab-ai-gateway/.env` file
+   1. Run the AI Gateway externally
+      1. Complete the steps to [run the server locally](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist#how-to-run-the-server-locally).
+      1. Uncomment or add the following variables in the `.env` file for all debugging insights.
+         You may need to adjust the filepath (remove `..`) for this log to show in the `ai-assist` root directory.
 
-        ```plaintext
-        AIGW_LOGGING__LEVEL=debug
-        AIGW_LOGGING__FORMAT_JSON=false
-        AIGW_LOGGING__TO_FILE=../modelgateway_debug.log
-        ```
+         ```plaintext
+         AIGW_LOGGING__LEVEL=debug
+         AIGW_LOGGING__FORMAT_JSON=false
+         AIGW_LOGGING__TO_FILE=../modelgateway_debug.log
+         ```
 
-    1. Watch the new log file `modelgateway_debug.log`.
+      1. Watch the new log file `modelgateway_debug.log`.
 
-       ```shell
-       tail -f modelgateway_debug.log | fblog -a prefix -a suffix -a current_file_name -a suggestion -a language -a input -a parameters -a score -a exception
-       ```
+         ```shell
+         tail -f modelgateway_debug.log | fblog -a prefix -a suffix -a current_file_name -a suggestion -a language -a input -a parameters -a score -a exception
+         ```
 
 ### Setup instructions to use staging AI Gateway
 
@@ -92,3 +96,5 @@ To set up your GDK for local development using the add-on, please follow these s
    1. Go to `/admin/subscription`.
    1. Remove any active license.
    1. Add the new activation code.
+1. Inside your GDK, navigate to Admin Area > GitLab Duo Pro, go to `/admin/code_suggestions`
+1. Filter users to find `root` and click the toggle to assign a GitLab Duo Pro add-on seat to the root user 

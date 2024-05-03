@@ -377,6 +377,8 @@
   - 1
 - - groups_export_memberships
   - 1
+- - groups_reset_seat_callouts
+  - 1
 - - groups_schedule_bulk_repository_shard_moves
   - 1
 - - groups_update_repository_storage

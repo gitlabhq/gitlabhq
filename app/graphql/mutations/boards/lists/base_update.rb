@@ -5,12 +5,12 @@ module Mutations
     module Lists
       class BaseUpdate < BaseMutation
         argument :position, GraphQL::Types::Int,
-                  required: false,
-                  description: 'Position of list within the board.'
+          required: false,
+          description: 'Position of list within the board.'
 
         argument :collapsed, GraphQL::Types::Boolean,
-                  required: false,
-                  description: 'Indicates if the list is collapsed for the user.'
+          required: false,
+          description: 'Indicates if the list is collapsed for the user.'
 
         def resolve(list: nil, **args)
           raise_resource_not_available_error! if list.nil? || !can_read_list?(list)

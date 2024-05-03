@@ -648,8 +648,8 @@ Exceptions to this general guideline should be motivated and documented.
 ### Ruby versions testing
 
 We're running Ruby 3.1 on GitLab.com, as well as for the default branch.
-To prepare for the next Ruby version, we will run merge requests in Ruby 3.2,
-starting on February 2024. Please see the roadmap at
+To prepare for the next Ruby version, we run merge requests in Ruby 3.2.
+Please see the roadmap at
 [Ruby 3.2 epic](https://gitlab.com/groups/gitlab-org/-/epics/9684#plan)
 for more details.
 
@@ -659,19 +659,7 @@ suite on dedicated 2-hourly scheduled pipelines for each supported versions.
 For merge requests, you can add the following labels to run the respective
 Ruby version only:
 
-- `pipeline:run-in-ruby3_0`
 - `pipeline:run-in-ruby3_1`
-- `pipeline:run-in-ruby3_2`
-
-Note that when you do this, the test suite will no longer run in the default
-Ruby version for merge requests. In this case, an additional job
-`verify-default-ruby` will also run and always fail to remind us to remove
-the label and run in default Ruby before merging the merge request.
-
-This should let us:
-
-- Test changes for any supported Ruby versions
-- Make sure it will not break anything when it's merged into the default branch
 
 ### PostgreSQL versions testing
 

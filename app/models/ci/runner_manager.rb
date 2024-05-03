@@ -95,7 +95,7 @@ module Ci
     end
 
     scope :order_id_desc, -> { order(id: :desc) }
-    scope :order_contacted_at_desc, -> { order(contacted_at: :desc) }
+    scope :order_contacted_at_desc, -> { order(arel_table[:contacted_at].desc.nulls_last) }
 
     scope :with_version_prefix, ->(value) do
       regex = version_regex_expression_for_version(value)

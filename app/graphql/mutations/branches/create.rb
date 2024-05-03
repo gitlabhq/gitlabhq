@@ -8,22 +8,22 @@ module Mutations
       include FindsProject
 
       argument :project_path, GraphQL::Types::ID,
-               required: true,
-               description: 'Project full path the branch is associated with.'
+        required: true,
+        description: 'Project full path the branch is associated with.'
 
       argument :name, GraphQL::Types::String,
-               required: true,
-               description: 'Name of the branch.'
+        required: true,
+        description: 'Name of the branch.'
 
       argument :ref,
-               GraphQL::Types::String,
-               required: true,
-               description: 'Branch name or commit SHA to create branch from.'
+        GraphQL::Types::String,
+        required: true,
+        description: 'Branch name or commit SHA to create branch from.'
 
       field :branch,
-            Types::BranchType,
-            null: true,
-            description: 'Branch after mutation.'
+        Types::BranchType,
+        null: true,
+        description: 'Branch after mutation.'
 
       authorize :push_code
 

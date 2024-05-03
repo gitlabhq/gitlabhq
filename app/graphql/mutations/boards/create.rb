@@ -9,9 +9,9 @@ module Mutations
       include Mutations::Boards::CommonMutationArguments
 
       field :board,
-            Types::BoardType,
-            null: true,
-            description: 'Board after mutation.'
+        Types::BoardType,
+        null: true,
+        description: 'Board after mutation.'
 
       authorize :admin_issue_board
 

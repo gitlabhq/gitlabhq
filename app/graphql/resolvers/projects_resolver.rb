@@ -8,20 +8,20 @@ module Resolvers
     type Types::ProjectType.connection_type, null: true
 
     argument :ids, [GraphQL::Types::ID],
-             required: false,
-             description: 'Filter projects by IDs.'
+      required: false,
+      description: 'Filter projects by IDs.'
 
     argument :full_paths, [GraphQL::Types::String],
-             required: false,
-             description: 'Filter projects by full paths. You cannot provide more than 50 full paths.'
+      required: false,
+      description: 'Filter projects by full paths. You cannot provide more than 50 full paths.'
 
     argument :with_issues_enabled, GraphQL::Types::Boolean,
-             required: false,
-             description: "Return only projects with issues enabled."
+      required: false,
+      description: "Return only projects with issues enabled."
 
     argument :with_merge_requests_enabled, GraphQL::Types::Boolean,
-             required: false,
-             description: "Return only projects with merge requests enabled."
+      required: false,
+      description: "Return only projects with merge requests enabled."
 
     def resolve_with_lookahead(**args)
       validate_args!(args)

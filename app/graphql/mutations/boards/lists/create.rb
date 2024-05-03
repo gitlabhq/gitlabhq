@@ -7,13 +7,13 @@ module Mutations
         graphql_name 'BoardListCreate'
 
         argument :board_id, ::Types::GlobalIDType[::Board],
-                 required: true,
-                 description: 'Global ID of the issue board to mutate.'
+          required: true,
+          description: 'Global ID of the issue board to mutate.'
 
         field :list,
-              Types::BoardListType,
-              null: true,
-              description: 'Issue list in the issue board.'
+          Types::BoardListType,
+          null: true,
+          description: 'Issue list in the issue board.'
 
         authorize :admin_issue_board_list
 
