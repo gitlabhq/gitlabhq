@@ -1067,6 +1067,10 @@ export default {
       <template #list-body>
         <slot name="list-body"></slot>
       </template>
+
+      <template #title-icons="{ issuable }">
+        <slot name="title-icons" v-bind="{ issuable, apiFilterParams }"></slot>
+      </template>
     </issuable-list>
 
     <empty-state-without-any-issues

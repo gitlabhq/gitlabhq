@@ -146,6 +146,9 @@ describe('CE IssuesListApp component', () => {
     defaultQueryResponse.data.project.issues.nodes[0].blockingCount = 1;
     defaultQueryResponse.data.project.issues.nodes[0].healthStatus = null;
     defaultQueryResponse.data.project.issues.nodes[0].weight = 5;
+    defaultQueryResponse.data.project.issues.nodes[0].epic = {
+      id: 'gid://gitlab/Epic/1',
+    };
   }
 
   const mockIssuesQueryResponse = jest.fn().mockResolvedValue(defaultQueryResponse);

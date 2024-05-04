@@ -2557,7 +2557,7 @@ preceded by `@`. For example:
 Example request:
 
 ```shell
-curl --request PUT --header "Bearer: <your_access_token>" \
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
      --form "avatar=@avatar.png" \
      --url "https://gitlab.example.com/api/v4/user/avatar"
 ```

@@ -46617,6 +46617,9 @@ msgstr ""
 msgid "SecurityOrchestration|Filter and search projects"
 msgstr ""
 
+msgid "SecurityOrchestration|For any MR that matches this policy's rules, only the override project approval settings apply and bot message enabled. No additional approvals are required."
+msgstr ""
+
 msgid "SecurityOrchestration|For any MR that matches this policy's rules, only the override project approval settings apply. No additional approvals are required."
 msgstr ""
 
@@ -46735,6 +46738,9 @@ msgid "SecurityOrchestration|On runners with tag:"
 msgid_plural "SecurityOrchestration|On runners with the tags:"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "SecurityOrchestration|Only overriding settings and bot message will take effect"
+msgstr ""
 
 msgid "SecurityOrchestration|Only overriding settings will take effect"
 msgstr ""
@@ -47037,6 +47043,9 @@ msgid "SecurityOrchestration|Vulnerability age is less than %{vulnerabilityAge}.
 msgstr ""
 
 msgid "SecurityOrchestration|Vulnerability age requires previously existing vulnerability states (detected, confirmed, resolved, or dismissed)"
+msgstr ""
+
+msgid "SecurityOrchestration|What does an example message look like?"
 msgstr ""
 
 msgid "SecurityOrchestration|When %{scanners} %{vulnerabilitiesAllowed} %{vulnerability} in an open merge request %{targeting}%{branches}%{branchExceptionsString}%{criteriaApply}"

@@ -717,11 +717,14 @@ class ProjectPolicy < BasePolicy
   rule { public_or_internal & ~project_allowed_for_job_token }.policy do
     prevent :guest_access
     prevent :public_access
-    prevent :public_user_access
     prevent :reporter_access
     prevent :developer_access
     prevent :maintainer_access
     prevent :owner_access
+  end
+
+  rule { public_project & ~project_allowed_for_job_token }.policy do
+    prevent :public_user_access
   end
 
   rule { public_or_internal & job_token_container_registry }.policy do

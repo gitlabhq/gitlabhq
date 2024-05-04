@@ -265,7 +265,10 @@ export default {
       <span class="gl-sr-only">{{ issuable.title }}</span>
     </gl-form-checkbox>
     <div class="issuable-main-info">
-      <div data-testid="issuable-title" class="issue-title title">
+      <div
+        data-testid="issuable-title"
+        class="issue-title title gl-display-flex gl-align-items-center"
+      >
         <work-item-type-icon
           v-if="showWorkItemTypeIcon"
           class="gl-mr-2"
@@ -297,6 +300,7 @@ export default {
           {{ issuable.title }}
           <gl-icon v-if="isIssuableUrlExternal" name="external-link" class="gl-ml-2" />
         </gl-link>
+        <slot v-if="hasSlotContents('title-icons')" name="title-icons"></slot>
         <span
           v-if="taskStatus"
           class="task-status gl-display-none gl-sm-display-inline-block! gl-ml-2 gl-font-sm"

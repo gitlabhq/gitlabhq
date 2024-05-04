@@ -48,6 +48,28 @@
           "type": "integer"
         }
       }
+    },
+    "wal_receiver_saturation_sli_query": {
+      "type": "object",
+      "properties": {
+        "main": {
+          "type": "string"
+        },
+        "ci": {
+          "type": "string"
+        }
+      }
+    },
+    "wal_receiver_saturation_slo": {
+      "type": "object",
+      "properties": {
+        "main": {
+          "type": "number"
+        },
+        "ci": {
+          "type": "number"
+        }
+      }
     }
   },
   "additionalProperties": true
