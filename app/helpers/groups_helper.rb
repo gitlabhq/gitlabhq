@@ -54,7 +54,10 @@ module GroupsHelper
 
     sorted_ancestors(group).with_route.reverse_each.with_index do |parent, index|
       if index > 0
-        add_to_breadcrumb_collapsed_links(group_title_link(parent), location: :before)
+        add_to_breadcrumb_collapsed_links(
+          { text: simple_sanitize(parent.name), href: group_path(parent), avatar_url: parent.try(:avatar_url) },
+          location: :before
+        )
       else
         full_title << breadcrumb_list_item(group_title_link(parent, hidable: false))
       end

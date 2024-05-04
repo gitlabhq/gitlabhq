@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { GlToast } from '@gitlab/ui';
+import { GlBreadcrumb, GlToast } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_utils';
 import createDefaultClient from '~/lib/graphql';
@@ -167,3 +167,24 @@ export const initSuperSidebarToggle = () => {
     },
   });
 };
+
+export function initPageBreadcrumbs() {
+  const el = document.querySelector('#js-vue-page-breadcrumbs');
+  if (!el) return false;
+  const { breadcrumbsJson } = el.dataset;
+
+  const props = {
+    items: JSON.parse(breadcrumbsJson),
+  };
+
+  return new Vue({
+    el,
+    render(h) {
+      return h(GlBreadcrumb, {
+        props,
+        attrs: { 'data-testid': 'breadcrumb-links' },
+        class: 'gl-flex-grow-1',
+      });
+    },
+  });
+}

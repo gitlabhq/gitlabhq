@@ -339,6 +339,9 @@ RSpec.configure do |config|
 
       # Experimental merge request dashboard
       stub_feature_flags(merge_request_dashboard: false)
+
+      # Disable new Vue breadcrumbs while feature flag is still in wip state
+      stub_feature_flags(vue_page_breadcrumbs: false)
     else
       unstub_all_feature_flags
     end

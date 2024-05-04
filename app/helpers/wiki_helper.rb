@@ -44,7 +44,10 @@ module WikiHelper
     page_slug_split
       .map do |dir_or_page|
         current_slug = "#{current_slug}#{dir_or_page}/"
-        add_to_breadcrumb_collapsed_links link_to(WikiPage.unhyphenize(dir_or_page).capitalize, wiki_page_path(@wiki, current_slug)), location: :after
+        add_to_breadcrumb_collapsed_links(
+          { text: WikiPage.unhyphenize(dir_or_page).capitalize, href: wiki_page_path(@wiki, current_slug) },
+          location: :after
+        )
       end
   end
 

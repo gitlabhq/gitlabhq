@@ -17,43 +17,12 @@ RSpec.describe BreadcrumbsHelper, feature_category: :navigation do
 
     subject { helper.push_to_schema_breadcrumb(element_name, link) }
 
-    it 'enqueue element name, link and position' do
+    it 'enqueues element name, link' do
       subject
 
       aggregate_failures do
-        expect(breadcrumb_list[0]['name']).to eq element_name
-        expect(breadcrumb_list[0]['item']).to eq link
-        expect(breadcrumb_list[0]['position']).to eq(1)
-      end
-    end
-
-    context 'when link is relative' do
-      let(:link) { '/foo' }
-
-      it 'converts the url into absolute' do
-        subject
-
-        expect(breadcrumb_list[0]['item']).to eq "http://test.host#{link}"
-      end
-    end
-
-    describe 'when link is invalid' do
-      let(:link) { 'invalid://foo[]' }
-
-      it 'returns the current url' do
-        subject
-
-        expect(breadcrumb_list[0]['item']).to eq 'http://test.host'
-      end
-    end
-
-    describe 'when link is nil' do
-      let(:link) { nil }
-
-      it 'returns the current url' do
-        subject
-
-        expect(breadcrumb_list[0]['item']).to eq 'http://test.host'
+        expect(breadcrumb_list[0][:text]).to eq element_name
+        expect(breadcrumb_list[0][:href]).to eq link
       end
     end
   end
@@ -84,6 +53,33 @@ RSpec.describe BreadcrumbsHelper, feature_category: :navigation do
       }.to_json
 
       expect(subject).to eq expected_result
+    end
+
+    context 'when link is relative' do
+      let(:link) { '/foo' }
+
+      it 'converts the url into absolute' do
+        add_to_breadcrumbs('no base', link)
+        expect(Gitlab::Json.parse(subject)['itemListElement'][0]['item']).to eq "http://test.host#{link}"
+      end
+    end
+
+    describe 'when link is invalid' do
+      let(:link) { 'invalid://foo[]' }
+
+      it 'returns the current url' do
+        add_to_breadcrumbs('invalid', link)
+        expect(Gitlab::Json.parse(subject)['itemListElement'][0]['item']).to eq 'http://test.host'
+      end
+    end
+
+    describe 'when link is nil' do
+      let(:link) { nil }
+
+      it 'returns the current url' do
+        add_to_breadcrumbs('nil', link)
+        expect(Gitlab::Json.parse(subject)['itemListElement'][0]['item']).to eq 'http://test.host'
+      end
     end
 
     context 'when extra breadcrumb element is added' do

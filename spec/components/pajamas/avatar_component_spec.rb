@@ -50,6 +50,15 @@ RSpec.describe Pajamas::AvatarComponent, type: :component do
   end
 
   describe "avatar image" do
+    context "when src is a string" do
+      let(:item) { "https://uploads.example.com/avatars/123.png" }
+
+      it "uses that string as image src" do
+        render_inline(described_class.new(item))
+        expect(page).to have_css "img.gl-avatar[src='#{item}']"
+      end
+    end
+
     context "when it has an uploaded image" do
       let(:item) { project }
 
@@ -101,7 +110,7 @@ RSpec.describe Pajamas::AvatarComponent, type: :component do
       let(:item) { user }
 
       it "uses a gravatar" do
-        expect(rendered_content).to match /gravatar\.com/
+        expect(rendered_content).to match(/gravatar\.com/)
       end
     end
 
@@ -110,7 +119,7 @@ RSpec.describe Pajamas::AvatarComponent, type: :component do
         let(:item) { Pajamas::AvatarEmail.new('') }
 
         it "uses the default avatar" do
-          expect(rendered_content).to match /no_avatar/
+          expect(rendered_content).to match(/no_avatar/)
         end
       end
 
@@ -118,7 +127,7 @@ RSpec.describe Pajamas::AvatarComponent, type: :component do
         let(:item) { email }
 
         it "uses a agravatar" do
-          expect(rendered_content).to match /gravatar\.com/
+          expect(rendered_content).to match(/gravatar\.com/)
         end
       end
     end
