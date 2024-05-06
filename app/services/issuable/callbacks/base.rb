@@ -13,6 +13,7 @@ module Issuable
       end
 
       def after_initialize; end
+      def before_create; end
       def before_update; end
       def after_update_commit; end
       def after_save_commit; end

@@ -99,7 +99,7 @@ work-around was suggested in <https://gitlab.com/gitlab-org/omnibus-gitlab/-/iss
 A feature proposal to segregate access control regarding running pipelines from ability to push/merge was also created at <https://gitlab.com/gitlab-org/gitlab/-/issues/24585>.
 
 For more technical details on CI/CD setup and documentation on adding new test jobs to `e2e:package-and-test` pipeline, see
-[`e2e:package_and_test` setup documentation](test_pipelines.md).
+[`e2e:package-and-test` setup documentation](test_pipelines.md).
 
 #### Using the `test-on-gdk` job
 

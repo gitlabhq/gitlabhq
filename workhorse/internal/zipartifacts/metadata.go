@@ -14,9 +14,9 @@ import (
 type metadata struct {
 	Modified int64  `json:"modified,omitempty"`
 	Mode     string `json:"mode,omitempty"`
-	CRC      uint32 `json:"crc,omitempty"`
-	Size     uint64 `json:"size,omitempty"`
-	Zipped   uint64 `json:"zipped,omitempty"`
+	CRC      uint32 `json:"crc"`
+	Size     uint64 `json:"size"`
+	Zipped   uint64 `json:"zipped"`
 	Comment  string `json:"comment,omitempty"`
 }
 

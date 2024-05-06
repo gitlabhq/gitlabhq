@@ -221,8 +221,8 @@ module Gitlab
           @execution_message[:remove_zoom] = result.message
         end
 
-        desc { _('Add email participant(s)') }
-        explanation { _('Adds email participant(s).') }
+        desc { _("Add email participant(s) that don't have a GitLab account.") }
+        explanation { _("Adds email participant(s) that don't have a GitLab account.") }
         params 'email1@example.com email2@example.com (up to 6 emails)'
         types Issue
         condition do
@@ -230,14 +230,14 @@ module Gitlab
             Feature.enabled?(:issue_email_participants, parent) &&
             current_user.can?(:"admin_#{quick_action_target.to_ability_name}", quick_action_target)
         end
-        command :invite_email do |emails = ""|
+        command :add_email do |emails = ""|
           response = ::IssueEmailParticipants::CreateService.new(
             target: quick_action_target,
             current_user: current_user,
             emails: emails.split(' ')
           ).execute
 
-          @execution_message[:invite_email] = response.message
+          @execution_message[:add_email] = response.message
         end
 
         desc { _('Remove email participant(s)') }

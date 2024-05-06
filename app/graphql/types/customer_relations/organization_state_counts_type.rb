@@ -11,9 +11,9 @@ module Types
 
       AVAILABLE_STATES.each do |state|
         field state,
-              GraphQL::Types::Int,
-              null: true,
-              description: "Number of organizations with state `#{state.upcase}`"
+          GraphQL::Types::Int,
+          null: true,
+          description: "Number of organizations with state `#{state.upcase}`"
       end
 
       def all

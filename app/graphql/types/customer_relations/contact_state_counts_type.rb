@@ -14,9 +14,9 @@ module Types
 
       available_contact_states.each do |state|
         field state,
-              GraphQL::Types::Int,
-              null: true,
-              description: "Number of contacts with state `#{state.upcase}`"
+          GraphQL::Types::Int,
+          null: true,
+          description: "Number of contacts with state `#{state.upcase}`"
       end
     end
   end

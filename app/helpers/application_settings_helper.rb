@@ -499,6 +499,7 @@ module ApplicationSettingsHelper
       :bulk_import_concurrent_pipeline_batch_limit,
       :bulk_import_enabled,
       :bulk_import_max_download_file_size,
+      :silent_admin_exports_enabled,
       :allow_runner_registration_token,
       :user_defaults_to_private_profile,
       :deactivation_email_additional_text,
@@ -516,17 +517,7 @@ module ApplicationSettingsHelper
       :downstream_pipeline_trigger_limit_per_project_user_sha,
       :asciidoc_max_includes
     ].tap do |settings|
-      if Gitlab.com?
-        settings << :container_registry_import_max_tags_count
-        settings << :container_registry_import_max_retries
-        settings << :container_registry_import_start_max_retries
-        settings << :container_registry_import_max_step_duration
-        settings << :container_registry_pre_import_tags_rate
-        settings << :container_registry_pre_import_timeout
-        settings << :container_registry_import_timeout
-        settings << :container_registry_import_target_plan
-        settings << :container_registry_import_created_before
-      else
+      unless Gitlab.com?
         settings << :deactivate_dormant_users
         settings << :deactivate_dormant_users_period
         settings << :nuget_skip_metadata_url_validation

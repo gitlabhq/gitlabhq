@@ -52,4 +52,4 @@ curl "http://localhost:11434/api/chat" \
   }'
 ```
 
-It runs on the `11434` by default. If you are running into issues because this port is already in use by another application, you can follow [these instructions](https://github.com/ollama/ollama/blob/main/docs/faq.md#how-do-i-configure-ollama-server).
+It runs on the port `11434` by default. If you are running into issues because this port is already in use by another application, you can follow [these instructions](https://github.com/ollama/ollama/blob/main/docs/faq.md#how-do-i-configure-ollama-server).

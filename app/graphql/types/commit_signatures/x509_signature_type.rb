@@ -11,13 +11,13 @@ module Types
       authorize :download_code
 
       field :user, Types::UserType, null: true,
-                                    method: :signed_by_user,
-                                    calls_gitaly: true,
-                                    description: 'User associated with the key.'
+        method: :signed_by_user,
+        calls_gitaly: true,
+        description: 'User associated with the key.'
 
       field :x509_certificate, Types::X509CertificateType,
-                               null: true,
-                               description: 'Certificate used for the signature.'
+        null: true,
+        description: 'Certificate used for the signature.'
     end
   end
 end

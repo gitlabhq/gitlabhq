@@ -2375,15 +2375,15 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       end
     end
 
-    describe 'invite_email command' do
+    describe 'add_email command' do
       let_it_be(:issuable) { issue }
 
       it_behaves_like 'failed command', "No email participants were added. Either none were provided, or they already exist." do
-        let(:content) { '/invite_email' }
+        let(:content) { '/add_email' }
       end
 
       context 'with existing email participant' do
-        let(:content) { '/invite_email a@gitlab.com' }
+        let(:content) { '/add_email a@gitlab.com' }
 
         before do
           issuable.issue_email_participants.create!(email: "a@gitlab.com")
@@ -2393,7 +2393,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       end
 
       context 'with new email participants' do
-        let(:content) { '/invite_email a@gitlab.com b@gitlab.com' }
+        let(:content) { '/add_email a@gitlab.com b@gitlab.com' }
 
         subject(:add_emails) { service.execute(content, issuable) }
 
@@ -2408,7 +2408,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
         end
 
         context 'with mixed case email' do
-          let(:content) { '/invite_email FirstLast@GitLab.com' }
+          let(:content) { '/add_email FirstLast@GitLab.com' }
 
           it 'returns correctly cased message' do
             _, _, message = add_emails
@@ -2418,7 +2418,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
         end
 
         context 'with invalid email' do
-          let(:content) { '/invite_email a@gitlab.com bad_email' }
+          let(:content) { '/add_email a@gitlab.com bad_email' }
 
           it 'only adds valid emails' do
             expect { add_emails }.to change { issue.issue_email_participants.count }.by(1)
@@ -2426,7 +2426,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
         end
 
         context 'with existing email' do
-          let(:content) { '/invite_email a@gitlab.com existing@gitlab.com' }
+          let(:content) { '/add_email a@gitlab.com existing@gitlab.com' }
 
           it 'only adds new emails' do
             issue.issue_email_participants.create!(email: 'existing@gitlab.com')
@@ -2442,7 +2442,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
         end
 
         context 'with duplicate email' do
-          let(:content) { '/invite_email a@gitlab.com a@gitlab.com' }
+          let(:content) { '/add_email a@gitlab.com a@gitlab.com' }
 
           it 'only adds unique new emails' do
             expect { add_emails }.to change { issue.issue_email_participants.count }.by(1)
@@ -2450,7 +2450,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
         end
 
         context 'with more than 6 emails' do
-          let(:content) { '/invite_email a@gitlab.com b@gitlab.com c@gitlab.com d@gitlab.com e@gitlab.com f@gitlab.com g@gitlab.com' }
+          let(:content) { '/add_email a@gitlab.com b@gitlab.com c@gitlab.com d@gitlab.com e@gitlab.com f@gitlab.com g@gitlab.com' }
 
           it 'only adds 6 new emails' do
             expect { add_emails }.to change { issue.issue_email_participants.count }.by(6)
@@ -2463,7 +2463,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
             stub_const("IssueEmailParticipants::CreateService::MAX_NUMBER_OF_RECORDS", 1)
           end
 
-          let(:content) { '/invite_email a@gitlab.com' }
+          let(:content) { '/add_email a@gitlab.com' }
 
           it_behaves_like 'failed command',
             "No email participants were added. Either none were provided, or they already exist."
@@ -2474,7 +2474,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
             stub_const("IssueEmailParticipants::CreateService::MAX_NUMBER_OF_RECORDS", 1)
           end
 
-          let(:content) { '/invite_email a@gitlab.com b@gitlab.com' }
+          let(:content) { '/add_email a@gitlab.com b@gitlab.com' }
 
           it 'only adds one new email' do
             expect { add_emails }.to change { issue.issue_email_participants.count }.by(1)
@@ -2493,14 +2493,14 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       end
 
       it 'is part of the available commands' do
-        expect(service.available_commands(issuable)).to include(a_hash_including(name: :invite_email))
+        expect(service.available_commands(issuable)).to include(a_hash_including(name: :add_email))
       end
 
       context 'with non-persisted issue' do
         let(:issuable) { build(:issue) }
 
         it 'is not part of the available commands' do
-          expect(service.available_commands(issuable)).not_to include(a_hash_including(name: :invite_email))
+          expect(service.available_commands(issuable)).not_to include(a_hash_including(name: :add_email))
         end
       end
     end

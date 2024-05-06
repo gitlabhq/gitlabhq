@@ -58,10 +58,18 @@ module Gitlab
             break false unless key.externally_verified?
             break true if gpg_key.updated_at > INTEGRATION_VERIFICATION_PERIOD.ago
 
-            GpgKeys::ValidateIntegrationsService.new(gpg_key.dup).execute.tap do |verified|
-              key.update(externally_verified: verified)
+            verified_externally?(gpg_key).tap do |verified_externally|
+              key.update!(externally_verified: verified_externally)
             end
           end
+        end
+
+        def verified_externally?(key)
+          integration.execute({ key_id: key.primary_keyid, committer_email: key.user.email })
+
+          true
+        rescue ::Gitlab::BeyondIdentity::Client::ApiError => _
+          false
         end
       end
     end

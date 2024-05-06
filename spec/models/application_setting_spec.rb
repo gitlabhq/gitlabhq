@@ -35,6 +35,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { expect(setting.concurrent_bitbucket_import_jobs_limit).to eq(100) }
     it { expect(setting.concurrent_bitbucket_server_import_jobs_limit).to eq(100) }
     it { expect(setting.nuget_skip_metadata_url_validation).to eq(false) }
+    it { expect(setting.silent_admin_exports_enabled).to eq(false) }
   end
 
   describe 'validations' do
@@ -116,13 +117,6 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
 
     it { is_expected.to validate_inclusion_of(:container_registry_expiration_policies_caching).in_array([true, false]) }
 
-    it { is_expected.to validate_numericality_of(:container_registry_pre_import_tags_rate).is_greater_than_or_equal_to(0) }
-    it { is_expected.not_to allow_value(nil).for(:container_registry_pre_import_tags_rate) }
-    it { is_expected.to allow_value(1.5).for(:container_registry_pre_import_tags_rate) }
-
-    it { is_expected.to validate_presence_of(:container_registry_import_target_plan) }
-    it { is_expected.to validate_presence_of(:container_registry_import_created_before) }
-
     it { is_expected.to validate_numericality_of(:wiki_page_max_content_bytes).only_integer.is_greater_than_or_equal_to(1024) }
     it { is_expected.to validate_inclusion_of(:wiki_asciidoc_allow_uri_includes).in_array([true, false]) }
     it { is_expected.to validate_presence_of(:max_pages_size) }
@@ -201,6 +195,8 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
 
     it { is_expected.to validate_inclusion_of(:bulk_import_enabled).in_array([true, false]) }
 
+    it { is_expected.to validate_inclusion_of(:silent_admin_exports_enabled).in_array([true, false]) }
+
     it { is_expected.to validate_inclusion_of(:allow_runner_registration_token).in_array([true, false]) }
 
     it { is_expected.to validate_inclusion_of(:gitlab_dedicated_instance).in_array([true, false]) }
@@ -221,12 +217,6 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
           container_registry_data_repair_detail_worker_max_concurrency
           container_registry_delete_tags_service_timeout
           container_registry_expiration_policies_worker_capacity
-          container_registry_import_max_retries
-          container_registry_import_max_step_duration
-          container_registry_import_max_tags_count
-          container_registry_import_start_max_retries
-          container_registry_import_timeout
-          container_registry_pre_import_timeout
           decompress_archive_file_timeout
           dependency_proxy_ttl_group_policy_worker_capacity
           gitlab_shell_operation_limit

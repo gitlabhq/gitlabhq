@@ -1,0 +1,20 @@
+---
+description: Count usage of /add_email quickaction with a multiple arguments
+internal_events: true
+action: i_quickactions_add_email_multiple
+identifiers:
+- project
+- user
+- namespace
+product_section: analytics
+product_stage: monitor
+product_group: respond
+milestone: "17.0"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151776
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

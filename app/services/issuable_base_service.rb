@@ -254,6 +254,7 @@ class IssuableBaseService < ::BaseContainerService
     before_create(issuable)
 
     issuable_saved = issuable.with_transaction_returning_status do
+      @callbacks.each(&:before_create)
       transaction_create(issuable)
     end
 

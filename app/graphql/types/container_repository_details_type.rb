@@ -9,25 +9,25 @@ module Types
     authorize :read_container_image
 
     field :tags,
-          Types::ContainerRepositoryTagType.connection_type,
-          null: true,
-          description: 'Tags of the container repository.',
-          max_page_size: 20,
-          resolver: Resolvers::ContainerRepositoryTagsResolver,
-          connection_extension: Gitlab::Graphql::Extensions::ExternallyPaginatedArrayExtension
+      Types::ContainerRepositoryTagType.connection_type,
+      null: true,
+      description: 'Tags of the container repository.',
+      max_page_size: 20,
+      resolver: Resolvers::ContainerRepositoryTagsResolver,
+      connection_extension: Gitlab::Graphql::Extensions::ExternallyPaginatedArrayExtension
 
     field :manifest, GraphQL::Types::String,
-          null: true,
-          description: 'An image manifest from the container repository.' do
-            argument :reference, GraphQL::Types::String,
-              required: true,
-              description: 'Tag name or digest of the manifest.'
-          end
+      null: true,
+      description: 'An image manifest from the container repository.' do
+      argument :reference, GraphQL::Types::String,
+        required: true,
+        description: 'Tag name or digest of the manifest.'
+    end
 
     field :size,
-          GraphQL::Types::Float,
-          null: true,
-          description: 'Deduplicated size of the image repository in bytes. This is only available on GitLab.com for repositories created after `2021-11-04`.'
+      GraphQL::Types::Float,
+      null: true,
+      description: 'Deduplicated size of the image repository in bytes. This is only available on GitLab.com for repositories created after `2021-11-04`.'
 
     def can_delete
       Ability.allowed?(current_user, :destroy_container_image, object)

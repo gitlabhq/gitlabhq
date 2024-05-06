@@ -141,7 +141,7 @@ export default {
         class="gl-display-flex gl-align-items-center gl-justify-content-end gl-md-justify-content-start"
         data-testid="terraform-states-table-name"
       >
-        <p class="gl-font-weight-bold gl-m-0 gl-text-gray-900">
+        <p class="gl-m-0 gl-text-gray-900">
           {{ item.name }}
         </p>
 
@@ -188,16 +188,15 @@ export default {
     </template>
 
     <template #cell(pipeline)="{ item }">
-      <div data-testid="terraform-states-table-pipeline" class="gl-min-h-7">
+      <div
+        data-testid="terraform-states-table-pipeline"
+        class="gl-md-display-flex gl-align-items-center gl-gap-3"
+      >
         <gl-link v-if="pipelineID(item)" :href="pipelinePath(item)">
           #{{ pipelineID(item) }}
         </gl-link>
 
-        <div
-          v-if="pipelineDetailedStatus(item)"
-          :id="`terraformJobStatusContainer${item.name}`"
-          class="gl-my-2"
-        >
+        <div v-if="pipelineDetailedStatus(item)" :id="`terraformJobStatusContainer${item.name}`">
           <ci-icon
             :id="`terraformJobStatus${item.name}`"
             :status="pipelineDetailedStatus(item)"

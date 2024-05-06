@@ -116,14 +116,14 @@ To see a list of all external participants:
 
 ### Add an external participant
 
-Add an external participant using the `/invite_email` [quick action](../quick_actions.md) when you want
+Add an external participant using the `/add_email` [quick action](../quick_actions.md) when you want
 to include them in the conversation at any time.
 
 When added, the external participant starts receiving notifications using Service Desk emails.
 GitLab doesn't send a `thank_you` email for manually added external participants.
 
 You should add external participants in a dedicated comment because they don't receive a notification
-email for the comment that contains the `/invite_email` quick action.
+email for the comment that contains the `/add_email` quick action.
 
 Prerequisites:
 
@@ -132,8 +132,8 @@ Prerequisites:
 To add an external participant to an issue or ticket:
 
 1. Go to the issue or ticket.
-1. Add a comment that contains only the quick action `/invite_email user@example.com`.
-   You can chain up to 6 email addresses. For example `/invite_email user@example.com user2@example.com`
+1. Add a comment that contains only the quick action `/add_email user@example.com`.
+   You can chain up to 6 email addresses. For example `/add_email user@example.com user2@example.com`
 
 You should see a success message and a new system note with the email address.
 

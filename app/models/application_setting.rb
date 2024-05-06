@@ -14,6 +14,17 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   ignore_columns %i[instance_administration_project_id instance_administrators_group_id], remove_with: '16.2', remove_after: '2023-06-22'
   ignore_columns %i[repository_storages], remove_with: '16.8', remove_after: '2023-12-21'
   ignore_column :required_instance_ci_template, remove_with: '17.1', remove_after: '2024-05-10'
+  ignore_columns %i[
+    container_registry_import_max_tags_count
+    container_registry_import_max_retries
+    container_registry_import_start_max_retries
+    container_registry_import_max_step_duration
+    container_registry_pre_import_tags_rate
+    container_registry_pre_import_timeout
+    container_registry_import_timeout
+    container_registry_import_target_plan
+    container_registry_import_created_before
+  ], remove_with: '17.2', remove_after: '2024-06-24'
 
   INSTANCE_REVIEW_MIN_USERS = 50
   GRAFANA_URL_ERROR_MESSAGE = 'Please check your Grafana URL setting in ' \
@@ -369,12 +380,6 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   validates :container_registry_expiration_policies_caching,
     inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
-  validates :container_registry_pre_import_tags_rate,
-    allow_nil: false,
-    numericality: { greater_than_or_equal_to: 0 }
-  validates :container_registry_import_target_plan, presence: true
-  validates :container_registry_import_created_before, presence: true
-
   validates :invisible_captcha_enabled,
     inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
@@ -571,12 +576,6 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
       :container_registry_data_repair_detail_worker_max_concurrency,
       :container_registry_delete_tags_service_timeout,
       :container_registry_expiration_policies_worker_capacity,
-      :container_registry_import_max_retries,
-      :container_registry_import_max_step_duration,
-      :container_registry_import_max_tags_count,
-      :container_registry_import_start_max_retries,
-      :container_registry_import_timeout,
-      :container_registry_pre_import_timeout,
       :decompress_archive_file_timeout,
       :dependency_proxy_ttl_group_policy_worker_capacity,
       :gitlab_shell_operation_limit,
@@ -621,7 +620,12 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     throttle_unauthenticated_git_http_requests_per_period: [:integer, { default: 3600 }],
     throttle_unauthenticated_git_http_period_in_seconds: [:integer, { default: 3600 }]
 
+  jsonb_accessor :importers,
+    silent_admin_exports_enabled: [:boolean, { default: false }]
+
   validates :rate_limits, json_schema: { filename: "application_setting_rate_limits" }
+
+  validates :importers, json_schema: { filename: "application_setting_importers" }
 
   jsonb_accessor :package_registry, nuget_skip_metadata_url_validation: [:boolean, { default: false }]
 

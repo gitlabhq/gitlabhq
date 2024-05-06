@@ -80,6 +80,10 @@ RSpec.describe Gitlab::Checks::Integrations::BeyondIdentityCheck, feature_catego
             updated_at: (described_class::INTEGRATION_VERIFICATION_PERIOD + 1.day).ago
         end
 
+        before do
+          allow(Integrations::BeyondIdentity).to receive(:for_instance).and_return([beyond_identity_integration])
+        end
+
         context 'and the signature is verified' do
           before do
             allow_next_instances_of(CommitSignatures::GpgSignature, 3) do |signature|
@@ -103,9 +107,9 @@ RSpec.describe Gitlab::Checks::Integrations::BeyondIdentityCheck, feature_catego
 
           context 'when not verified by integrations' do
             before do
-              allow_next_instance_of(GpgKeys::ValidateIntegrationsService) do |service|
-                allow(service).to receive(:execute).and_return(false)
-              end
+              allow(beyond_identity_integration).to receive(:execute).and_raise(
+                ::Gitlab::BeyondIdentity::Client::ApiError.new('error', 403)
+              )
             end
 
             it 'raises an error' do
@@ -118,9 +122,7 @@ RSpec.describe Gitlab::Checks::Integrations::BeyondIdentityCheck, feature_catego
 
           context 'when verified by integrations' do
             before do
-              allow_next_instance_of(GpgKeys::ValidateIntegrationsService) do |service|
-                allow(service).to receive(:execute).and_return(true)
-              end
+              allow(beyond_identity_integration).to receive(:execute)
             end
 
             it 'does not raise an error' do

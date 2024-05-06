@@ -37,10 +37,9 @@ See [the general developer security guidelines](https://gitlab.com/gitlab-org/re
 /label ~security
 
 [GitLab Security]: https://gitlab.com/gitlab-org/security/gitlab
-[quick actions]: https://docs.gitlab.com/ee/user/project/quick_actions.html#quick-actions-for-issues-merge-requests-and-epics
 [CHANGELOG entry]: https://docs.gitlab.com/ee/development/changelog.html#overview
 [Code Review process]: https://docs.gitlab.com/ee/development/code_review.html
-[Code reviews and Approvals]: (https://gitlab.com/gitlab-org/release/docs/blob/master/general/security/developer.md#code-reviews-and-approvals)
+[Code reviews and Approvals]: (https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/security/engineer.md#code-reviews-and-approvals)
 [Approval Guidelines]: https://docs.gitlab.com/ee/development/code_review.html#approval-guidelines
 [Canonical repository]: https://gitlab.com/gitlab-org/gitlab
 [`e2e:package-and-test` job]: https://docs.gitlab.com/ee/development/testing_guide/end_to_end/#using-the-package-and-test-job
