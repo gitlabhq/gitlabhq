@@ -29,10 +29,10 @@ var (
 	buildHandler = metrics.NewHandlerFactory(metrics.WithNamespace(namespace), metrics.WithLabels("route"))
 )
 
-func instrumentRoute(next http.Handler, method string, regexpStr string) http.Handler {
+func instrumentRoute(next http.Handler, _ string, regexpStr string) http.Handler {
 	return buildHandler(next, metrics.WithLabelValues(map[string]string{"route": regexpStr}))
 }
 
-func instrumentGeoProxyRoute(next http.Handler, method string, regexpStr string) http.Handler {
+func instrumentGeoProxyRoute(next http.Handler, _ string, regexpStr string) http.Handler {
 	return promhttp.InstrumentHandlerCounter(httpGeoProxiedRequestsTotal.MustCurryWith(map[string]string{"route": regexpStr}), next)
 }

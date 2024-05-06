@@ -30,6 +30,15 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/testhelper"
 )
 
+const (
+	repoStorage      = "default"
+	repoRelativePath = "foo/bar.git"
+	unixPrefix       = "unix:"
+	oid              = "54fcc214b94e78d7a41a9a8fe6d87a5e59500e51"
+	leftCommit       = "8a0f2ee90d940bfb0ba1e14e8214b0649056e4ab"
+	rightCommit      = "e395f646b1499e8e0279445fc99a0596a65fab7e"
+)
+
 func TestFailedCloneNoGitaly(t *testing.T) {
 	authBody := &api.Response{
 		GL_ID:       "user-123",
@@ -53,7 +62,7 @@ func TestGetInfoRefsProxiedToGitalySuccessfully(t *testing.T) {
 	gitalyServer, socketPath := startGitalyServer(t, codes.OK)
 	defer gitalyServer.GracefulStop()
 
-	gitalyAddress := "unix:" + socketPath
+	gitalyAddress := unixPrefix + socketPath
 
 	apiResponse := gitOkBody(t)
 	apiResponse.GitalyServer.Address = gitalyAddress
@@ -77,16 +86,16 @@ func TestGetInfoRefsProxiedToGitalySuccessfully(t *testing.T) {
 
 	testCases := []struct {
 		showAllRefs bool
-		gitRpc      string
+		gitRPC      string
 	}{
-		{showAllRefs: false, gitRpc: "git-upload-pack"},
-		{showAllRefs: true, gitRpc: "git-upload-pack"},
-		{showAllRefs: false, gitRpc: "git-receive-pack"},
-		{showAllRefs: true, gitRpc: "git-receive-pack"},
+		{showAllRefs: false, gitRPC: "git-upload-pack"},
+		{showAllRefs: true, gitRPC: "git-upload-pack"},
+		{showAllRefs: false, gitRPC: "git-receive-pack"},
+		{showAllRefs: true, gitRPC: "git-receive-pack"},
 	}
 
 	for _, tc := range testCases {
-		t.Run(fmt.Sprintf("ShowAllRefs=%v,gitRpc=%v", tc.showAllRefs, tc.gitRpc), func(t *testing.T) {
+		t.Run(fmt.Sprintf("ShowAllRefs=%v,gitRPC=%v", tc.showAllRefs, tc.gitRPC), func(t *testing.T) {
 			apiResponse.ShowAllRefs = tc.showAllRefs
 
 			ts := testAuthServer(t, nil, nil, 200, apiResponse)
@@ -94,8 +103,9 @@ func TestGetInfoRefsProxiedToGitalySuccessfully(t *testing.T) {
 			ws := startWorkhorseServer(t, ts.URL)
 
 			gitProtocol := "fake git protocol"
-			resource := "/gitlab-org/gitlab-test.git/info/refs?service=" + tc.gitRpc
+			resource := "/gitlab-org/gitlab-test.git/info/refs?service=" + tc.gitRPC
 			resp, body := httpGet(t, ws.URL+resource, map[string]string{"Git-Protocol": gitProtocol})
+			resp.Body.Close()
 
 			require.Equal(t, 200, resp.StatusCode)
 
@@ -112,9 +122,9 @@ func TestGetInfoRefsProxiedToGitalySuccessfully(t *testing.T) {
 				require.Empty(t, gitalyRequest.GitConfigOptions)
 			}
 
-			require.Equal(t, tc.gitRpc, bodySplit[1])
+			require.Equal(t, tc.gitRPC, bodySplit[1])
 
-			require.Equal(t, string(testhelper.GitalyInfoRefsResponseMock), bodySplit[2], "GET %q: response body", resource)
+			require.Equal(t, testhelper.GitalyInfoRefsResponseMock, bodySplit[2], "GET %q: response body", resource)
 
 			md := gitalyServer.LastIncomingMetadata
 			for k, v := range goodMetadata {
@@ -136,7 +146,7 @@ func TestGetInfoRefsProxiedToGitalyInterruptedStream(t *testing.T) {
 	gitalyServer, socketPath := startGitalyServer(t, codes.OK)
 	defer gitalyServer.GracefulStop()
 
-	gitalyAddress := "unix:" + socketPath
+	gitalyAddress := unixPrefix + socketPath
 	apiResponse.GitalyServer.Address = gitalyAddress
 
 	ts := testAuthServer(t, nil, nil, 200, apiResponse)
@@ -164,7 +174,7 @@ func TestGetInfoRefsRouting(t *testing.T) {
 	defer gitalyServer.GracefulStop()
 
 	apiResponse := gitOkBody(t)
-	apiResponse.GitalyServer.Address = "unix:" + socketPath
+	apiResponse.GitalyServer.Address = unixPrefix + socketPath
 	ts := testAuthServer(t, nil, url.Values{"service": {"git-receive-pack"}}, 200, apiResponse)
 
 	ws := startWorkhorseServer(t, ts.URL)
@@ -229,7 +239,7 @@ func TestPostReceivePackProxiedToGitalySuccessfully(t *testing.T) {
 	gitalyServer, socketPath := startGitalyServer(t, codes.OK)
 	defer gitalyServer.GracefulStop()
 
-	apiResponse.GitalyServer.Address = "unix:" + socketPath
+	apiResponse.GitalyServer.Address = unixPrefix + socketPath
 	apiResponse.GitConfigOptions = []string{"git-config-hello=world"}
 	ts := testAuthServer(t, nil, nil, 200, apiResponse)
 
@@ -273,7 +283,7 @@ func TestPostReceivePackProxiedToGitalyInterrupted(t *testing.T) {
 	gitalyServer, socketPath := startGitalyServer(t, codes.OK)
 	defer gitalyServer.GracefulStop()
 
-	apiResponse.GitalyServer.Address = "unix:" + socketPath
+	apiResponse.GitalyServer.Address = unixPrefix + socketPath
 	ts := testAuthServer(t, nil, nil, 200, apiResponse)
 
 	ws := startWorkhorseServer(t, ts.URL)
@@ -304,7 +314,7 @@ func TestPostReceivePackRouting(t *testing.T) {
 	defer gitalyServer.GracefulStop()
 
 	apiResponse := gitOkBody(t)
-	apiResponse.GitalyServer.Address = "unix:" + socketPath
+	apiResponse.GitalyServer.Address = unixPrefix + socketPath
 	ts := testAuthServer(t, nil, nil, 200, apiResponse)
 
 	ws := startWorkhorseServer(t, ts.URL)
@@ -379,7 +389,7 @@ func TestPostUploadPackProxiedToGitalySuccessfully(t *testing.T) {
 			gitalyServer, socketPath := startGitalyServer(t, tc.code)
 			defer gitalyServer.GracefulStop()
 
-			apiResponse.GitalyServer.Address = "unix:" + socketPath
+			apiResponse.GitalyServer.Address = unixPrefix + socketPath
 			ts := testAuthServer(t, nil, nil, 200, apiResponse)
 
 			ws := startWorkhorseServer(t, ts.URL)
@@ -444,7 +454,7 @@ func TestPostUploadPackProxiedToGitalyInterrupted(t *testing.T) {
 	gitalyServer, socketPath := startGitalyServer(t, codes.OK)
 	defer gitalyServer.GracefulStop()
 
-	apiResponse.GitalyServer.Address = "unix:" + socketPath
+	apiResponse.GitalyServer.Address = unixPrefix + socketPath
 	ts := testAuthServer(t, nil, nil, 200, apiResponse)
 
 	ws := startWorkhorseServer(t, ts.URL)
@@ -475,7 +485,7 @@ func TestPostUploadPackRouting(t *testing.T) {
 	gitalyServer, socketPath := startGitalyServer(t, codes.OK)
 	defer gitalyServer.GracefulStop()
 
-	apiResponse.GitalyServer.Address = "unix:" + socketPath
+	apiResponse.GitalyServer.Address = unixPrefix + socketPath
 	ts := testAuthServer(t, nil, nil, 200, apiResponse)
 
 	ws := startWorkhorseServer(t, ts.URL)
@@ -531,16 +541,13 @@ func TestGetDiffProxiedToGitalySuccessfully(t *testing.T) {
 	gitalyServer, socketPath := startGitalyServer(t, codes.OK)
 	defer gitalyServer.GracefulStop()
 
-	gitalyAddress := "unix:" + socketPath
-	repoStorage := "default"
-	rightCommit := "e395f646b1499e8e0279445fc99a0596a65fab7e"
-	leftCommit := "8a0f2ee90d940bfb0ba1e14e8214b0649056e4ab"
-	repoRelativePath := "foo/bar.git"
+	gitalyAddress := unixPrefix + socketPath
 	jsonParams := fmt.Sprintf(`{"GitalyServer":{"Address":"%s","Token":""},"RawDiffRequest":"{\"repository\":{\"storageName\":\"%s\",\"relativePath\":\"%s\"},\"rightCommitId\":\"%s\",\"leftCommitId\":\"%s\"}"}`,
 		gitalyAddress, repoStorage, repoRelativePath, leftCommit, rightCommit)
 	expectedBody := testhelper.GitalyGetDiffResponseMock
 
 	resp, body, err := doSendDataRequest(t, "/something", "git-diff", jsonParams)
+	resp.Body.Close()
 	require.NoError(t, err)
 
 	require.Equal(t, 200, resp.StatusCode, "GET %q: status code", resp.Request.URL)
@@ -551,16 +558,13 @@ func TestGetPatchProxiedToGitalySuccessfully(t *testing.T) {
 	gitalyServer, socketPath := startGitalyServer(t, codes.OK)
 	defer gitalyServer.GracefulStop()
 
-	gitalyAddress := "unix:" + socketPath
-	repoStorage := "default"
-	rightCommit := "e395f646b1499e8e0279445fc99a0596a65fab7e"
-	leftCommit := "8a0f2ee90d940bfb0ba1e14e8214b0649056e4ab"
-	repoRelativePath := "foo/bar.git"
+	gitalyAddress := unixPrefix + socketPath
 	jsonParams := fmt.Sprintf(`{"GitalyServer":{"Address":"%s","Token":""},"RawPatchRequest":"{\"repository\":{\"storageName\":\"%s\",\"relativePath\":\"%s\"},\"rightCommitId\":\"%s\",\"leftCommitId\":\"%s\"}"}`,
 		gitalyAddress, repoStorage, repoRelativePath, leftCommit, rightCommit)
 	expectedBody := testhelper.GitalyGetPatchResponseMock
 
 	resp, body, err := doSendDataRequest(t, "/something", "git-format-patch", jsonParams)
+	resp.Body.Close()
 	require.NoError(t, err)
 
 	require.Equal(t, 200, resp.StatusCode, "GET %q: status code", resp.Request.URL)
@@ -572,9 +576,6 @@ func TestGetBlobProxiedToGitalyInterruptedStream(t *testing.T) {
 	defer gitalyServer.GracefulStop()
 
 	gitalyAddress := "unix:" + socketPath
-	repoStorage := "default"
-	oid := "54fcc214b94e78d7a41a9a8fe6d87a5e59500e51"
-	repoRelativePath := "foo/bar.git"
 	jsonParams := fmt.Sprintf(`{"GitalyServer":{"Address":"%s","Token":""},"GetBlobRequest":{"repository":{"storage_name":"%s","relative_path":"%s"},"oid":"%s","limit":-1}}`,
 		gitalyAddress, repoStorage, repoRelativePath, oid)
 
@@ -597,10 +598,8 @@ func TestGetArchiveProxiedToGitalySuccessfully(t *testing.T) {
 	gitalyServer, socketPath := startGitalyServer(t, codes.OK)
 	defer gitalyServer.GracefulStop()
 
-	gitalyAddress := "unix:" + socketPath
-	repoStorage := "default"
-	oid := "54fcc214b94e78d7a41a9a8fe6d87a5e59500e51"
-	repoRelativePath := "foo/bar.git"
+	gitalyAddress := unixPrefix + socketPath
+
 	archivePrefix := "repo-1"
 	expectedBody := testhelper.GitalyGetArchiveResponseMock
 	archiveLength := len(expectedBody)
@@ -617,11 +616,12 @@ func TestGetArchiveProxiedToGitalySuccessfully(t *testing.T) {
 		jsonParams := fmt.Sprintf(`{"GitalyServer":{"Address":"%s","Token":""},"GitalyRepository":{"storage_name":"%s","relative_path":"%s"},"ArchivePath":"%s","ArchivePrefix":"%s","CommitId":"%s","DisableCache":%v}`,
 			gitalyAddress, repoStorage, repoRelativePath, tc.archivePath, archivePrefix, oid, tc.cacheDisabled)
 		resp, body, err := doSendDataRequest(t, "/archive.tar.gz", "git-archive", jsonParams)
+		resp.Body.Close()
 		require.NoError(t, err)
 
 		require.Equal(t, 200, resp.StatusCode, "GET %q: status code", resp.Request.URL)
 		require.Equal(t, expectedBody, string(body), "GET %q: response body", resp.Request.URL)
-		require.Equal(t, archiveLength, len(body), "GET %q: body size", resp.Request.URL)
+		require.Len(t, body, archiveLength, "GET %q: body size", resp.Request.URL)
 
 		if tc.cacheDisabled {
 			_, err := os.Stat(tc.archivePath)
@@ -638,10 +638,7 @@ func TestGetArchiveProxiedToGitalyInterruptedStream(t *testing.T) {
 	gitalyServer, socketPath := startGitalyServer(t, codes.OK)
 	defer gitalyServer.GracefulStop()
 
-	gitalyAddress := "unix:" + socketPath
-	repoStorage := "default"
-	oid := "54fcc214b94e78d7a41a9a8fe6d87a5e59500e51"
-	repoRelativePath := "foo/bar.git"
+	gitalyAddress := unixPrefix + socketPath
 	archivePath := "my/path"
 	archivePrefix := "repo-1"
 	jsonParams := fmt.Sprintf(`{"GitalyServer":{"Address":"%s","Token":""},"GitalyRepository":{"storage_name":"%s","relative_path":"%s"},"ArchivePath":"%s","ArchivePrefix":"%s","CommitId":"%s"}`,
@@ -666,11 +663,7 @@ func TestGetDiffProxiedToGitalyInterruptedStream(t *testing.T) {
 	gitalyServer, socketPath := startGitalyServer(t, codes.OK)
 	defer gitalyServer.GracefulStop()
 
-	gitalyAddress := "unix:" + socketPath
-	repoStorage := "default"
-	rightCommit := "e395f646b1499e8e0279445fc99a0596a65fab7e"
-	leftCommit := "8a0f2ee90d940bfb0ba1e14e8214b0649056e4ab"
-	repoRelativePath := "foo/bar.git"
+	gitalyAddress := unixPrefix + socketPath
 	jsonParams := fmt.Sprintf(`{"GitalyServer":{"Address":"%s","Token":""},"RawDiffRequest":"{\"repository\":{\"storageName\":\"%s\",\"relativePath\":\"%s\"},\"rightCommitId\":\"%s\",\"leftCommitId\":\"%s\"}"}`,
 		gitalyAddress, repoStorage, repoRelativePath, leftCommit, rightCommit)
 
@@ -693,11 +686,7 @@ func TestGetPatchProxiedToGitalyInterruptedStream(t *testing.T) {
 	gitalyServer, socketPath := startGitalyServer(t, codes.OK)
 	defer gitalyServer.GracefulStop()
 
-	gitalyAddress := "unix:" + socketPath
-	repoStorage := "default"
-	rightCommit := "e395f646b1499e8e0279445fc99a0596a65fab7e"
-	leftCommit := "8a0f2ee90d940bfb0ba1e14e8214b0649056e4ab"
-	repoRelativePath := "foo/bar.git"
+	gitalyAddress := unixPrefix + socketPath
 	jsonParams := fmt.Sprintf(`{"GitalyServer":{"Address":"%s","Token":""},"RawPatchRequest":"{\"repository\":{\"storageName\":\"%s\",\"relativePath\":\"%s\"},\"rightCommitId\":\"%s\",\"leftCommitId\":\"%s\"}"}`,
 		gitalyAddress, repoStorage, repoRelativePath, leftCommit, rightCommit)
 
@@ -720,17 +709,18 @@ func TestGetSnapshotProxiedToGitalySuccessfully(t *testing.T) {
 	gitalyServer, socketPath := startGitalyServer(t, codes.OK)
 	defer gitalyServer.GracefulStop()
 
-	gitalyAddress := "unix:" + socketPath
+	gitalyAddress := unixPrefix + socketPath
 	expectedBody := testhelper.GitalyGetSnapshotResponseMock
 	archiveLength := len(expectedBody)
 
 	params := buildGetSnapshotParams(gitalyAddress, buildPbRepo("default", "foo/bar.git"))
 	resp, body, err := doSendDataRequest(t, "/api/v4/projects/:id/snapshot", "git-snapshot", params)
+	resp.Body.Close()
 	require.NoError(t, err)
 
 	require.Equal(t, http.StatusOK, resp.StatusCode, "GET %q: status code", resp.Request.URL)
 	require.Equal(t, expectedBody, string(body), "GET %q: body", resp.Request.URL)
-	require.Equal(t, archiveLength, len(body), "GET %q: body size", resp.Request.URL)
+	require.Len(t, body, archiveLength, "GET %q: body size", resp.Request.URL)
 
 	testhelper.RequireResponseHeader(t, resp, "Content-Disposition", `attachment; filename="snapshot.tar"`)
 	testhelper.RequireResponseHeader(t, resp, "Content-Type", "application/x-tar")
@@ -742,7 +732,7 @@ func TestGetSnapshotProxiedToGitalyInterruptedStream(t *testing.T) {
 	gitalyServer, socketPath := startGitalyServer(t, codes.OK)
 	defer gitalyServer.GracefulStop()
 
-	gitalyAddress := "unix:" + socketPath
+	gitalyAddress := unixPrefix + socketPath
 
 	params := buildGetSnapshotParams(gitalyAddress, buildPbRepo("default", "foo/bar.git"))
 	resp, _, err := doSendDataRequest(t, "/api/v4/projects/:id/snapshot", "git-snapshot", params)
@@ -773,7 +763,7 @@ type rpcArg struct {
 // Gitlab asks workhorse to perform some long-running RPCs for it by sending
 // the RPC arguments (which are protobuf messages) in HTTP response headers.
 // The messages are encoded to JSON objects using pbjson, The strings are then
-// re-encoded to JSON strings using json. We must replicate this behaviour here
+// re-encoded to JSON strings using json. We must replicate this behavior here
 func buildGitalyRPCParams(gitalyAddress string, rpcArgs ...rpcArg) string {
 	built := map[string]interface{}{
 		"GitalyServer": map[string]string{
@@ -833,7 +823,7 @@ func startGitalyServer(t *testing.T, finalMessageCode codes.Code) (*combinedServ
 	})
 
 	socketPath := path.Join(tmpFolder, fmt.Sprintf("gitaly-%d.sock", rand.Int()))
-	if err := os.Remove(socketPath); err != nil && !os.IsNotExist(err) {
+	if err = os.Remove(socketPath); err != nil && !os.IsNotExist(err) {
 		t.Fatal(err)
 	}
 	server := grpc.NewServer(testhelper.WithSidechannel())

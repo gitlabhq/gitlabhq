@@ -14,7 +14,7 @@ var httpHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) 
 	fmt.Fprintln(w, "OK")
 })
 
-func pausedHttpHandler(pauseCh chan struct{}) http.Handler {
+func pausedHTTPHandler(pauseCh chan struct{}) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		<-pauseCh
 		fmt.Fprintln(w, "OK")
@@ -38,7 +38,7 @@ func testSlowRequestProcessing(name string, count int, limit, queueLimit uint, q
 	pauseCh := make(chan struct{})
 	defer close(pauseCh)
 
-	handler := QueueRequests("Slow request processing: "+name, pausedHttpHandler(pauseCh), limit, queueLimit, queueTimeout, prometheus.NewRegistry())
+	handler := QueueRequests("Slow request processing: "+name, pausedHTTPHandler(pauseCh), limit, queueLimit, queueTimeout, prometheus.NewRegistry())
 
 	respCh := make(chan *httptest.ResponseRecorder, count)
 

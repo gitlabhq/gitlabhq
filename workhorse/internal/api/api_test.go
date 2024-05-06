@@ -20,6 +20,10 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upstream/roundtripper"
 )
 
+const (
+	customPath = "/my/api/path"
+)
+
 func TestGetGeoProxyDataForResponses(t *testing.T) {
 	testCases := []struct {
 		desc              string
@@ -57,7 +61,7 @@ func TestPreAuthorizeFixedPath_OK(t *testing.T) {
 	)
 
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path != "/my/api/path" {
+		if r.URL.Path != customPath {
 			return
 		}
 
@@ -74,7 +78,7 @@ func TestPreAuthorizeFixedPath_OK(t *testing.T) {
 	req.Header.Set("key1", "value1")
 
 	api := NewAPI(helper.URLMustParse(ts.URL), "123", http.DefaultTransport)
-	resp, err := api.PreAuthorizeFixedPath(req, "POST", "/my/api/path")
+	resp, err := api.PreAuthorizeFixedPath(req, "POST", customPath)
 	require.NoError(t, err)
 
 	require.Equal(t, "value1", upstreamHeaders.Get("key1"), "original headers must propagate")
@@ -85,7 +89,7 @@ func TestPreAuthorizeFixedPath_OK(t *testing.T) {
 
 func TestPreAuthorizeFixedPath_Unauthorized(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path != "/my/api/path" {
+		if r.URL.Path != customPath {
 			return
 		}
 
@@ -103,9 +107,9 @@ func TestPreAuthorizeFixedPath_Unauthorized(t *testing.T) {
 	require.ErrorAs(t, err, &preAuthError)
 }
 
-func getGeoProxyDataGivenResponse(t *testing.T, givenInternalApiResponse string) (*GeoProxyData, error) {
+func getGeoProxyDataGivenResponse(t *testing.T, givenInternalAPIResponse string) (*GeoProxyData, error) {
 	t.Helper()
-	ts := testRailsServer(regexp.MustCompile(`/api/v4/geo/proxy`), 200, givenInternalApiResponse)
+	ts := testRailsServer(regexp.MustCompile(`/api/v4/geo/proxy`), 200, givenInternalAPIResponse)
 	defer ts.Close()
 	backend := helper.URLMustParse(ts.URL)
 	version := "123"

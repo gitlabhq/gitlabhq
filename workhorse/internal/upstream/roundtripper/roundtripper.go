@@ -1,3 +1,9 @@
+/*
+Package roundtripper provides a custom HTTP roundtripper for handling requests.
+
+This package implements a custom HTTP transport for handling HTTP requests
+with additional features such as logging, tracing, and error handling.
+*/
 package roundtripper
 
 import (
@@ -41,16 +47,17 @@ func newBackendRoundTripper(backend *url.URL, socket string, proxyHeadersTimeout
 
 	dial := transport.DialContext
 
-	if backend != nil && socket == "" {
+	switch {
+	case backend != nil && socket == "":
 		address := mustParseAddress(backend.Host, backend.Scheme)
 		transport.DialContext = func(ctx context.Context, network, addr string) (net.Conn, error) {
 			return dial(ctx, "tcp", address)
 		}
-	} else if socket != "" {
+	case socket != "":
 		transport.DialContext = func(ctx context.Context, network, addr string) (net.Conn, error) {
 			return dial(ctx, "unix", socket)
 		}
-	} else {
+	default:
 		panic("backend is nil and socket is empty")
 	}
 

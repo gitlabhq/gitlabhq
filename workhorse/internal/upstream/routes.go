@@ -384,8 +384,8 @@ func configureRoutes(u *upstream) {
 	u.geoLocalRoutes = []routeEntry{
 		// Git and LFS requests
 		//
-		// Note that Geo already redirects pushes, with special terminal output.
-		// Note that excessive secondary lag can cause unexpected behavior since
+		// Geo already redirects pushes, with special terminal output.
+		// Excessive secondary lag can cause unexpected behavior since
 		// pulls are performed against a different source of truth. Ideally, we'd
 		// proxy/redirect pulls as well, when the secondary is not up-to-date.
 		//
