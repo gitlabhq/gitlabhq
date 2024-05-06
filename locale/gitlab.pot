@@ -544,6 +544,9 @@ msgstr ""
 msgid "%{argument_name} must be formatted correctly. For example: 1h 30m."
 msgstr ""
 
+msgid "%{attribute} is already taken."
+msgstr ""
+
 msgid "%{author_link} cloned %{original_issue} to %{new_issue}."
 msgstr ""
 
@@ -7623,6 +7626,9 @@ msgid "Awaiting user signup"
 msgstr ""
 
 msgid "AwardEmoji|No emoji found."
+msgstr ""
+
+msgid "AwsDestinationValidator validates only aws external audit event destinations."
 msgstr ""
 
 msgid "B"
@@ -62540,9 +62546,6 @@ msgid "updated %{time_ago}"
 msgstr ""
 
 msgid "uploads"
-msgstr ""
-
-msgid "url is already taken."
 msgstr ""
 
 msgid "user"

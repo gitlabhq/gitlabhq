@@ -508,8 +508,8 @@ module Gitlab
         allow do
           origins '*'
           resource openid_path,
-          credentials: false,
-          methods: %i[get head]
+            credentials: false,
+            methods: %i[get head]
         end
       end
 
@@ -518,8 +518,8 @@ module Gitlab
       allow do
         origins 'https://*.web-ide.gitlab-static.net'
         resource '/assets/webpack/*',
-                 credentials: false,
-                 methods: %i[get head]
+          credentials: false,
+          methods: %i[get head]
       end
     end
 

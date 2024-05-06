@@ -169,6 +169,24 @@ RSpec.describe API::GroupPackages, feature_category: :package_registry do
       it_behaves_like 'returning response status', :bad_request
     end
 
+    context 'with build info' do
+      let_it_be(:package1) { create(:npm_package, :with_build, project: project) }
+
+      it 'returns an empty array for the pipelines attribute' do
+        subject
+
+        expect(json_response.first['pipelines']).to be_empty
+      end
+    end
+
+    context 'without build info' do
+      it 'does not include the pipeline attributes' do
+        subject
+
+        expect(json_response).not_to include('pipeline', 'pipelines')
+      end
+    end
+
     it_behaves_like 'with versionless packages'
     it_behaves_like 'with status param'
     it_behaves_like 'does not cause n^2 queries'

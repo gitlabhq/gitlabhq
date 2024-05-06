@@ -612,6 +612,10 @@ You can learn more by following a practical example for [migrating the Go CI/CD 
 
 ## Use a GitLab.com component in a self-managed instance
 
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed, GitLab Dedicated
+
 The CI/CD catalog of a fresh install of a GitLab instance starts with no published CI/CD components.
 To populate your instance's catalog, you can:
 
@@ -622,7 +626,7 @@ To mirror a GitLab.com component in your self-managed instance:
 
 1. Make sure that [network outbound requests](../../security/webhooks.md) are allowed for `gitlab.com`.
 1. [Create a group](../../user/group/index.md#create-a-group) to host the component projects (recommended group: `components`).
-1. [Create a mirror of the component project](../../user/project/repository/mirror/index.md) in the new group.
+1. [Create a mirror of the component project](../../user/project/repository/mirror/pull.md) in the new group.
 1. Write a [project description](../../user/project/working_with_projects.md#edit-project-name-description-and-avatar)
    for the component project mirror because mirroring repositories does not copy the description.
 1. [Set the self-hosted component project as a catalog resource](#set-a-component-project-as-a-catalog-project).

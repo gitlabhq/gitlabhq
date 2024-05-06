@@ -7,10 +7,10 @@ module Enums
     }.with_indifferent_access.freeze
 
     PURL_TYPES = {
-      composer: 1, # refered to as `packagist` in gemnasium-db
+      composer: 1, # refered to as `packagist` in gemnasium-db and semver_dialects
       conan: 2,
       gem: 3,
-      golang: 4, # refered to as `go` in gemnasium-db
+      golang: 4, # refered to as `go` in gemnasium-db and semver_dialects
       maven: 5,
       npm: 6,
       nuget: 7,

@@ -152,10 +152,10 @@ fail nor succeed. They also do not leave a clear log. To check for this problem:
 
 If you receive this error while setting up mirroring over [SSH](index.md#ssh-authentication), make sure the URL is in a valid format.
 
-Mirroring does not support the short version of SSH clone URLs (`git@gitlab.com:gitlab-org/gitlab.git`)
-and requires the full version including the protocol (`ssh://git@gitlab.com/gitlab-org/gitlab.git`).
-
-Make sure that host and project path are separated using `/` instead of `:`.
+Mirroring **does not** support SCP-like clone URLs in the form of
+`git@gitlab.com:gitlab-org/gitlab.git`, with host and project path separated using `:`.
+It requires a [standard URL](https://git-scm.com/docs/git-clone#_git_urls)
+that includes the `ssh://` protocol, like `ssh://git@gitlab.com/gitlab-org/gitlab.git`.
 
 ## Host key verification failed
 

@@ -22,14 +22,14 @@ module Issues
 
       Issues::RebalancingWorker.bulk_perform_async_with_contexts(
         namespaces,
-        arguments_proc: -> (namespace) { [nil, nil, namespace.id] },
-        context_proc: -> (namespace) { { namespace: namespace } }
+        arguments_proc: ->(namespace) { [nil, nil, namespace.id] },
+        context_proc: ->(namespace) { { namespace: namespace } }
       )
 
       Issues::RebalancingWorker.bulk_perform_async_with_contexts(
         projects,
-        arguments_proc: -> (project) { [nil, project.id, nil] },
-        context_proc: -> (project) { { project: project } }
+        arguments_proc: ->(project) { [nil, project.id, nil] },
+        context_proc: ->(project) { { project: project } }
       )
     end
   end

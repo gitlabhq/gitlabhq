@@ -65,7 +65,7 @@ module IncidentManagement
             return ServiceResponse.error(message: _('There are no changed labels'))
           end
 
-          labels_note = -> (verb, labels) {
+          labels_note = ->(verb, labels) {
             "#{verb} #{labels.map(&:to_reference).join(' ')} #{'label'.pluralize(labels.count)}" if labels.present?
           }
 

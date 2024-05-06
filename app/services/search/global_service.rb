@@ -17,11 +17,11 @@ module Search
 
     def execute
       Gitlab::SearchResults.new(current_user,
-                                params[:search],
-                                projects,
-                                order_by: params[:order_by],
-                                sort: params[:sort],
-                                filters: filters)
+        params[:search],
+        projects,
+        order_by: params[:order_by],
+        sort: params[:sort],
+        filters: filters)
     end
 
     # rubocop: disable CodeReuse/ActiveRecord

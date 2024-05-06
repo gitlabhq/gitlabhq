@@ -42,6 +42,10 @@ GET /projects/:id/packages
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/:id/packages"
 ```
 
+> **Deprecation:**
+>
+> The `pipelines` attribute in the response is deprecated in favor of the [list package pipelines endpoint](#list-package-pipelines), which was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/341950) in GitLab 16.0. If the package does not have any pipelines, the `pipelines` attribute is not included in the response. Otherwise, the `pipelines` attribute returns an empty array.
+
 Example response:
 
 ```json
@@ -107,6 +111,10 @@ GET /groups/:id/packages
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/:id/packages?exclude_subgroups=false"
 ```
+
+> **Deprecation:**
+>
+> The `pipelines` attribute in the response is deprecated in favor of the [list package pipelines endpoint](#list-package-pipelines), which was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/341950) in GitLab 16.0. If the package does not have any pipelines, the `pipelines` attribute is not included in the response. Otherwise, the `pipelines` attribute returns an empty array.
 
 Example response:
 
@@ -193,6 +201,10 @@ GET /projects/:id/packages/:package_id
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/:id/packages/:package_id"
 ```
+
+> **Deprecation:**
+>
+> The `pipelines` attribute in the response is deprecated in favor of the [list package pipelines endpoint](#list-package-pipelines), which was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/341950) in GitLab 16.0. If the package does not have any pipelines, the `pipelines` attribute is not included in the response. Otherwise, the `pipelines` attribute returns an empty array.
 
 Example response:
 

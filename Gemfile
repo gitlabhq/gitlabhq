@@ -276,7 +276,7 @@ gem 're2', '2.7.0' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # Misc
 
-gem 'semver_dialects', '~> 2.0', '>= 2.0.2', feature_category: :static_application_security_testing
+gem 'semver_dialects', '~> 3.0', feature_category: :software_composition_analysis
 gem 'version_sorter', '~> 2.3' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'csv_builder', path: 'gems/csv_builder' # rubocop:todo Gemfile/MissingFeatureCategory
 
@@ -443,7 +443,7 @@ group :development do
 
   gem 'listen', '~> 3.7' # rubocop:todo Gemfile/MissingFeatureCategory
 
-  gem 'ruby-lsp', "~> 0.16.5", require: false, feature_category: :tooling
+  gem 'ruby-lsp', "~> 0.16.6", require: false, feature_category: :tooling
 
   gem 'ruby-lsp-rails', "~> 0.3.3", feature_category: :tooling
 

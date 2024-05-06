@@ -89,10 +89,10 @@ module QuickActions
         failed_parse(format(_("Failed to find users for %{missing}"), missing: err.message))
       when Gitlab::QuickActions::UsersExtractor::TooManyRefsError
         failed_parse(format(_('Too many references. Quick actions are limited to at most %{max_count} user references'),
-                 max_count: err.limit))
+          max_count: err.limit))
       when Gitlab::QuickActions::UsersExtractor::TooManyFoundError
         failed_parse(format(_("Too many users found. Quick actions are limited to at most %{max_count} users"),
-                 max_count: err.limit))
+          max_count: err.limit))
       else
         Gitlab::ErrorTracking.track_and_raise_for_dev_exception(err)
         failed_parse(_('Something went wrong'))

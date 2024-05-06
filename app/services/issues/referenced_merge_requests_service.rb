@@ -19,7 +19,7 @@ module Issues
     def referenced_merge_requests(issue)
       merge_requests = extract_merge_requests(issue)
 
-      cross_project_filter = -> (merge_requests) do
+      cross_project_filter = ->(merge_requests) do
         merge_requests.select { |mr| mr.target_project == project }
       end
 

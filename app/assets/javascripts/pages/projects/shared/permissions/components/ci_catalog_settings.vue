@@ -4,7 +4,6 @@ import { createAlert } from '~/alert';
 import { __, s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
 
-import BetaBadge from '~/vue_shared/components/badges/beta_badge.vue';
 import getCiCatalogSettingsQuery from '~/ci/catalog/graphql/queries/get_ci_catalog_settings.query.graphql';
 import catalogResourcesCreate from '~/ci/catalog/graphql/mutations/catalog_resources_create.mutation.graphql';
 import catalogResourcesDestroy from '~/ci/catalog/graphql/mutations/catalog_resources_destroy.mutation.graphql';
@@ -52,7 +51,6 @@ const releasesHelpPath = helpPagePath('user/project/releases/release_cicd_exampl
 
 export default {
   components: {
-    BetaBadge,
     GlLink,
     GlLoadingIcon,
     GlModal,
@@ -158,7 +156,6 @@ export default {
         <label class="gl-mb-1 gl-mr-3">
           {{ $options.i18n.ciCatalogLabel }}
         </label>
-        <beta-badge size="sm" />
       </div>
       <gl-sprintf :message="$options.i18n.ciCatalogHelpText">
         <template #link="{ content }">

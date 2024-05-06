@@ -4,7 +4,7 @@ group: AI Model Validation
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Enable and disable GitLab Duo features
+# Control GitLab Duo availability
 
 DETAILS:
 **Tier:** Premium, Ultimate

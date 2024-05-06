@@ -303,12 +303,12 @@ module Ci
 
     def pre_assign_runner_checks
       {
-        missing_dependency_failure: -> (build, _) { !build.has_valid_build_dependencies? },
-        runner_unsupported: -> (build, params) { !build.supported_runner?(params.dig(:info, :features)) },
-        archived_failure: -> (build, _) { build.archived? },
-        project_deleted: -> (build, _) { build.project.pending_delete? },
-        builds_disabled: -> (build, _) { !build.project.builds_enabled? },
-        user_blocked: -> (build, _) { build.user&.blocked? }
+        missing_dependency_failure: ->(build, _) { !build.has_valid_build_dependencies? },
+        runner_unsupported: ->(build, params) { !build.supported_runner?(params.dig(:info, :features)) },
+        archived_failure: ->(build, _) { build.archived? },
+        project_deleted: ->(build, _) { build.project.pending_delete? },
+        builds_disabled: ->(build, _) { !build.project.builds_enabled? },
+        user_blocked: ->(build, _) { build.user&.blocked? }
       }
     end
   end

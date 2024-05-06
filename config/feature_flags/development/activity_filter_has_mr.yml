@@ -1,8 +1,0 @@
----
-name: activity_filter_has_mr
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132575
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/426104
-milestone: '16.5'
-type: development
-group: group::threat insights
-default_enabled: true

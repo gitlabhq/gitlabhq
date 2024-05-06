@@ -11,7 +11,7 @@ class FeatureFlagUserXidsValidator < ActiveModel::EachValidator
     def validate_user_xids(record, attribute, user_xids, error_message_attribute_name)
       unless user_xids.is_a?(String) && !user_xids.match(/[\n\r\t]|,,/) && valid_xids?(user_xids.split(","))
         record.errors.add(attribute,
-                          "#{error_message_attribute_name} must be a string of unique comma separated values each #{USERXID_MAX_LENGTH} characters or less")
+          "#{error_message_attribute_name} must be a string of unique comma separated values each #{USERXID_MAX_LENGTH} characters or less")
       end
     end
 

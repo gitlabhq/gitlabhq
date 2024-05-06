@@ -482,7 +482,7 @@ limit is checked every time a new trigger is created.
 If a new trigger would cause the total number of pipeline triggers to exceed the
 limit, the trigger is considered invalid.
 
-Set the limit to `0` to disable it. Defaults to `150` on self-managed instances.
+Set the limit to `0` to disable it. Defaults to `25000` on self-managed instances.
 
 To set this limit to `100` on a self-managed installation, run the following in the
 [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):

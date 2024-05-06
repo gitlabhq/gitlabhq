@@ -56,10 +56,10 @@ class ProcessCommitWorker
   def close_issues(project, user, author, commit, issues)
     Issues::CloseWorker.bulk_perform_async_with_contexts(
       issues,
-      arguments_proc: -> (issue) {
+      arguments_proc: ->(issue) {
         [project.id, issue.id, issue.class.to_s, { closed_by: author.id, commit_hash: commit.to_hash }]
       },
-      context_proc: -> (issue) { { project: project } }
+      context_proc: ->(issue) { { project: project } }
     )
   end
 

@@ -16,7 +16,7 @@ module Ci
         file_type_values = Ci::JobArtifact.erasable_file_types.map { |file_type| [Ci::JobArtifact.file_types[file_type]] }
         from_sql = Arel::Nodes::Grouping.new(Arel::Nodes::ValuesList.new(file_type_values)).as('file_types (file_type)').to_sql
         array_scope = Ci::JobArtifact.from(from_sql).select(:file_type)
-        array_mapping_scope = -> (file_type_expression) { Ci::JobArtifact.where(Ci::JobArtifact.arel_table[:file_type].eq(file_type_expression)) }
+        array_mapping_scope = ->(file_type_expression) { Ci::JobArtifact.where(Ci::JobArtifact.arel_table[:file_type].eq(file_type_expression)) }
 
         Gitlab::Pagination::Keyset::Iterator
           .new(scope: scope, in_operator_optimization_options: { array_scope: array_scope, array_mapping_scope: array_mapping_scope })

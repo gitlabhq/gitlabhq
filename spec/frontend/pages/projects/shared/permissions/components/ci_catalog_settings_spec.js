@@ -7,7 +7,6 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
 
-import BetaBadge from '~/vue_shared/components/badges/beta_badge.vue';
 import catalogResourcesCreate from '~/ci/catalog/graphql/mutations/catalog_resources_create.mutation.graphql';
 import catalogResourcesDestroy from '~/ci/catalog/graphql/mutations/catalog_resources_destroy.mutation.graphql';
 import getCiCatalogSettingsQuery from '~/ci/catalog/graphql/queries/get_ci_catalog_settings.query.graphql';
@@ -55,7 +54,6 @@ describe('CiCatalogSettings', () => {
   };
 
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
-  const findBadge = () => wrapper.findComponent(BetaBadge);
   const findModal = () => wrapper.findComponent(GlModal);
   const findToggle = () => wrapper.findComponent(GlToggle);
   const findCiCatalogSettings = () => wrapper.findByTestId('ci-catalog-settings');
@@ -107,10 +105,6 @@ describe('CiCatalogSettings', () => {
 
     it('renders the CI Catalog settings', () => {
       expect(findCiCatalogSettings().exists()).toBe(true);
-    });
-
-    it('renders the beta badge', () => {
-      expect(findBadge().exists()).toBe(true);
     });
 
     it('renders the toggle', () => {
