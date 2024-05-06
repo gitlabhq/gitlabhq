@@ -19,8 +19,11 @@ Gem::Specification.new do |spec|
   spec.executables = "cng"
   spec.require_paths = ["lib"]
 
+  spec.add_dependency "rainbow", "~> 3.1"
   spec.add_dependency "require_all", "~> 3.0"
   spec.add_dependency "thor", "~> 1.3"
+  spec.add_dependency "tty-spinner", "~> 0.9.3"
+  spec.add_dependency "tty-which", "~> 0.5.0"
 
   spec.add_development_dependency "gitlab-styles", "~> 11.0"
   spec.add_development_dependency "pry", "~> 0.14.2"

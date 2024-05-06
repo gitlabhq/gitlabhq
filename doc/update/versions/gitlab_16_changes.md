@@ -308,6 +308,7 @@ take one of the following actions based on your configuration:
 
   | Affected minor releases | Affected patch releases | Fixed in |
   | ----------------------- | ----------------------- | -------- |
+  | 16.3                    |  All                    | None     |
   | 16.4                    |  All                    | None     |
   | 16.5                    |  All                    | None     |
   | 16.6                    |  16.6.0 - 16.6.5        | 16.6.6   |
@@ -354,6 +355,7 @@ take one of the following actions based on your configuration:
 
   | Affected minor releases | Affected patch releases | Fixed in |
   | ----------------------- | ----------------------- | -------- |
+  | 16.3                    |  All                    | None     |
   | 16.4                    |  All                    | None     |
   | 16.5                    |  All                    | None     |
   | 16.6                    |  16.6.0 - 16.6.5        | 16.6.6   |
@@ -494,6 +496,7 @@ Specific information applies to installations using Geo:
 
   | Affected minor releases | Affected patch releases | Fixed in |
   | ----------------------- | ----------------------- | -------- |
+  | 16.3                    |  All                    | None     |
   | 16.4                    |  All                    | None     |
   | 16.5                    |  All                    | None     |
   | 16.6                    |  16.6.0 - 16.6.5        | 16.6.6   |
@@ -674,6 +677,7 @@ Specific information applies to installations using Geo:
 
   | Affected minor releases | Affected patch releases | Fixed in |
   | ----------------------- | ----------------------- | -------- |
+  | 16.3                    |  All                    | None     |
   | 16.4                    |  All                    | None     |
   | 16.5                    |  All                    | None     |
   | 16.6                    |  16.6.0 - 16.6.5        | 16.6.6   |
@@ -784,6 +788,18 @@ Specific information applies to installations using Geo:
   For more information, see [issue 429617](https://gitlab.com/gitlab-org/gitlab/-/issues/429617).
 
 - An [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/419370) with sync states getting stuck in pending state results in replication being stuck indefinitely for impacted items leading to risk of data loss in the event of a failover. This mostly impact repository syncs but can also can also affect container registry syncs. You are advised to upgrade to a fixed version to avoid risk of data loss.
+
+- You might experience verification failures on a subset of projects due to checksum mismatch between the primary site and the secondary site. The details are tracked in [issue 427493](https://gitlab.com/gitlab-org/gitlab/-/issues/427493). There is no risk of data loss as the data is being correctly replicated to the secondary sites. Users cloning impacted projects from a Geo secondary site will always be redirected to the primary site. There are no known workarounds, you should upgrade to a version that contains the fix.
+
+  **Affected releases**:
+
+  | Affected minor releases | Affected patch releases | Fixed in |
+  | ----------------------- | ----------------------- | -------- |
+  | 16.3                    |  All                    | None     |
+  | 16.4                    |  All                    | None     |
+  | 16.5                    |  All                    | None     |
+  | 16.6                    |  16.6.0 - 16.6.5        | 16.6.6   |
+  | 16.7                    |  16.7.0 - 16.7.3        | 16.7.4   |
 
   **Affected releases**:
 

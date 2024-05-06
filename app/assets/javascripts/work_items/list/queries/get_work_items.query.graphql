@@ -12,10 +12,11 @@ query getWorkItems(
   $beforeCursor: String
   $firstPageSize: Int
   $lastPageSize: Int
+  $types: [IssueType!] = null
 ) {
   group(fullPath: $fullPath) {
     id
-    workItemStateCounts(sort: $sort, state: $state, types: EPIC) {
+    workItemStateCounts(sort: $sort, state: $state, types: $types) {
       all
       closed
       opened
@@ -26,11 +27,11 @@ query getWorkItems(
       state: $state
       authorUsername: $authorUsername
       in: $in
-      types: EPIC
       after: $afterCursor
       before: $beforeCursor
       first: $firstPageSize
       last: $lastPageSize
+      types: $types
     ) {
       pageInfo {
         ...PageInfo

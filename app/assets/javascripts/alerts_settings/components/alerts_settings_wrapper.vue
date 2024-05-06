@@ -369,7 +369,7 @@ export default {
       <gl-card
         class="gl-new-card gl-mt-2"
         header-class="gl-new-card-header"
-        body-class="gl-new-card-body gl-px-0 gl-overflow-hidden"
+        body-class="gl-new-card-body"
       >
         <template #header>
           <div class="gl-new-card-title-wrapper">

@@ -18,7 +18,7 @@
           - link_to_group = link_to(@group.name, @group, class: 'ml-md-1')
           = _("in group %{link_to_group}").html_safe % { link_to_group: link_to_group }
   .gl-display-flex
-    = render Pajamas::ButtonComponent.new(category: 'primary', icon: 'filter', button_options: {id: 'js-open-mobile-filters', class: 'gl-lg-display-none'}) do
+    = render Pajamas::ButtonComponent.new(category: 'primary', icon: 'filter', button_options: {id: 'js-open-mobile-filters', class: 'xl:gl-hidden'}) do
       = s_('GlobalSearch|Filters')
     - if @search_service_presenter.show_sort_dropdown? && !@search_objects.to_a.empty?
       .gl-ml-3

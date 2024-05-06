@@ -501,7 +501,7 @@ describe('CE IssuesListApp component', () => {
 
         it('shows an alert to tell the user that manual reordering is disabled', () => {
           expect(createAlert).toHaveBeenCalledWith({
-            message: IssuesListApp.i18n.issueRepositioningMessage,
+            message: 'Issues are being rebalanced at the moment, so manual reordering is disabled.',
             variant: VARIANT_INFO,
           });
         });
@@ -729,8 +729,8 @@ describe('CE IssuesListApp component', () => {
   describe('errors', () => {
     describe.each`
       error                      | mountOption                    | message
-      ${'fetching issues'}       | ${'issuesQueryResponse'}       | ${IssuesListApp.i18n.errorFetchingIssues}
-      ${'fetching issue counts'} | ${'issuesCountsQueryResponse'} | ${IssuesListApp.i18n.errorFetchingCounts}
+      ${'fetching issues'}       | ${'issuesQueryResponse'}       | ${'An error occurred while loading issues'}
+      ${'fetching issue counts'} | ${'issuesCountsQueryResponse'} | ${'An error occurred while getting issue counts'}
     `('when there is an error $error', ({ mountOption, message }) => {
       beforeEach(() => {
         wrapper = mountComponent({
@@ -899,7 +899,9 @@ describe('CE IssuesListApp component', () => {
           findIssuableList().vm.$emit('reorder', { oldIndex: 0, newIndex: 1 });
           await waitForPromises();
 
-          expect(findIssuableList().props('error')).toBe(IssuesListApp.i18n.reorderError);
+          expect(findIssuableList().props('error')).toBe(
+            'An error occurred while reordering issues.',
+          );
           expect(Sentry.captureException).toHaveBeenCalledWith(
             new Error('Request failed with status code 500'),
           );
@@ -944,7 +946,7 @@ describe('CE IssuesListApp component', () => {
 
         it('shows an alert to tell the user that manual reordering is disabled', () => {
           expect(createAlert).toHaveBeenCalledWith({
-            message: IssuesListApp.i18n.issueRepositioningMessage,
+            message: 'Issues are being rebalanced at the moment, so manual reordering is disabled.',
             variant: VARIANT_INFO,
           });
         });

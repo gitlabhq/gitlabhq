@@ -51,7 +51,7 @@ end
 RSpec.shared_examples 'error tracking show page' do
   it 'renders the error details', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/217810' } do
     content = page.find(".content")
-    nav = page.find("nav.breadcrumbs")
+    nav = find_by_testid("breadcrumb-links")
     header = page.find(".error-details-header")
 
     release_short_version = issue_response['firstRelease']['shortVersion']

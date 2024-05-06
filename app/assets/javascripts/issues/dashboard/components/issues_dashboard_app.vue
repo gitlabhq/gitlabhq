@@ -25,6 +25,7 @@ import { fetchPolicies } from '~/lib/graphql';
 import axios from '~/lib/utils/axios_utils';
 import { scrollUp } from '~/lib/utils/scroll_utils';
 import { getParameterByName } from '~/lib/utils/url_utility';
+import { __ } from '~/locale';
 import {
   OPERATORS_IS,
   OPERATORS_IS_NOT_OR,
@@ -163,12 +164,14 @@ export default {
     },
     dropdownItems() {
       return [
-        { href: this.rssPath, text: i18n.rssLabel },
-        { href: this.calendarPath, text: i18n.calendarLabel },
+        { href: this.rssPath, text: __('Subscribe to RSS feed') },
+        { href: this.calendarPath, text: __('Subscribe to calendar') },
       ];
     },
     emptyStateDescription() {
-      return this.hasSearch ? this.$options.i18n.noSearchResultsDescription : undefined;
+      return this.hasSearch
+        ? __('To widen your search, change or remove filters above')
+        : undefined;
     },
     emptyStateSvgPath() {
       return this.hasSearch
@@ -177,8 +180,8 @@ export default {
     },
     emptyStateTitle() {
       return this.hasSearch
-        ? this.$options.i18n.noSearchResultsTitle
-        : this.$options.i18n.noSearchNoFilterTitle;
+        ? __('Sorry, your filter produced no results')
+        : __('Please select at least one filter to see results');
     },
     hasSearch() {
       return Boolean(this.searchQuery || Object.keys(this.urlFilterParams).length);

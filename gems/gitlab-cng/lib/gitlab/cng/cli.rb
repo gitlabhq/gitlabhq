@@ -3,6 +3,7 @@
 require "thor"
 require "require_all"
 
+require_rel "helpers/**/*.rb"
 require_rel "commands/**/*.rb"
 
 module Gitlab
@@ -46,6 +47,7 @@ module Gitlab
       end
 
       register_commands(Commands::Version)
+      register_commands(Commands::Doctor)
     end
   end
 end

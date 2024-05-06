@@ -38,7 +38,7 @@ export default {
     IssueCardStatistics,
     IssueCardTimeInfo,
   },
-  inject: ['fullPath', 'initialSort', 'isSignedIn'],
+  inject: ['fullPath', 'initialSort', 'isSignedIn', 'workItemType'],
   data() {
     return {
       error: undefined,
@@ -62,6 +62,7 @@ export default {
           search: this.searchQuery,
           ...this.apiFilterParams,
           ...this.pageParams,
+          types: [this.workItemType],
         };
       },
       update(data) {

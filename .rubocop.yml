@@ -28,7 +28,7 @@ inherit_mode:
 
 AllCops:
   # The oldest supported Ruby version.
-  TargetRubyVersion: 3.0
+  TargetRubyVersion: 3.1
   TargetRailsVersion: 7.0
   Exclude:
     - 'gems/**/*'
@@ -1101,10 +1101,6 @@ SidekiqLoadBalancing/WorkerDataConsistency:
   Include:
     - 'app/workers/**/*'
     - 'ee/app/workers/**/*'
-
-# This cop is disabled for Ruby 3.0+ anyway.
-Lint/NonDeterministicRequireOrder:
-  Enabled: false
 
 Graphql/ResourceNotAvailableError:
   Exclude:

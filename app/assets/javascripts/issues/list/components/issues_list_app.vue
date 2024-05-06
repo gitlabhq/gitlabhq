@@ -36,6 +36,7 @@ import { fetchPolicies } from '~/lib/graphql';
 import { isPositiveInteger } from '~/lib/utils/number_utils';
 import { scrollUp } from '~/lib/utils/scroll_utils';
 import { getParameterByName, joinPaths } from '~/lib/utils/url_utility';
+import { __ } from '~/locale';
 import {
   OPERATORS_IS,
   OPERATORS_IS_NOT,
@@ -222,12 +223,12 @@ export default {
       subscribeDropdownOptions: {
         items: [
           {
-            text: i18n.rssLabel,
+            text: __('Subscribe to RSS feed'),
             href: this.rssPath,
             extraAttrs: { 'data-testid': 'subscribe-rss' },
           },
           {
-            text: i18n.calendarLabel,
+            text: __('Subscribe to calendar'),
             href: this.calendarPath,
             extraAttrs: { 'data-testid': 'subscribe-calendar' },
           },
@@ -736,7 +737,7 @@ export default {
           });
         })
         .catch((error) => {
-          this.issuesError = this.$options.i18n.reorderError;
+          this.issuesError = __('An error occurred while reordering issues.');
           Sentry.captureException(error);
         });
     },
@@ -887,7 +888,7 @@ export default {
           this.refetchIssuables();
         })
         .catch((error) => {
-          this.issuesError = this.$options.i18n.deleteError;
+          this.issuesError = __('An error occurred while deleting an issuable.');
           Sentry.captureException(error);
         });
     },
@@ -989,14 +990,14 @@ export default {
                 data-testid="list-view-type"
                 @click="switchViewType($options.ISSUES_LIST_VIEW_KEY)"
               >
-                {{ $options.i18n.listLabel }}
+                {{ __('List') }}
               </gl-button>
               <gl-button
                 :variant="isGridView ? 'confirm' : 'default'"
                 data-testid="grid-view-type"
                 @click="switchViewType($options.ISSUES_GRID_VIEW_KEY)"
               >
-                {{ $options.i18n.gridLabel }}
+                {{ __('Grid') }}
               </gl-button>
             </gl-button-group>
           </local-storage-sync>
@@ -1007,7 +1008,7 @@ export default {
             class="gl-flex-grow-1"
             @click="handleBulkUpdateClick"
           >
-            {{ $options.i18n.editIssues }}
+            {{ __('Bulk edit') }}
           </gl-button>
           <slot name="new-issuable-button">
             <gl-button
@@ -1016,7 +1017,7 @@ export default {
               variant="confirm"
               class="gl-flex-grow-1"
             >
-              {{ $options.i18n.newIssueLabel }}
+              {{ __('New issue') }}
             </gl-button>
           </slot>
           <new-resource-dropdown

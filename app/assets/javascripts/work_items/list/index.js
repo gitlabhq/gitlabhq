@@ -20,6 +20,7 @@ export const mountWorkItemsListApp = () => {
     hasIssueWeightsFeature,
     initialSort,
     isSignedIn,
+    workItemType,
   } = el.dataset;
 
   return new Vue({
@@ -36,6 +37,7 @@ export const mountWorkItemsListApp = () => {
       initialSort,
       isSignedIn: parseBoolean(isSignedIn),
       isGroup: true,
+      workItemType,
     },
     render: (createComponent) => createComponent(WorkItemsListApp),
   });

@@ -22,7 +22,7 @@ RSpec.describe "User browses artifacts", feature_category: :build_artifacts do
     end
 
     it "renders a link to the job in the breadcrumbs" do
-      page.within('.js-breadcrumbs-list') do
+      within_testid('breadcrumb-links') do
         expect(page).to have_link("##{job.id}", href: project_job_path(project, job))
       end
     end

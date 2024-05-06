@@ -31,16 +31,20 @@ import (
 
 var nilHandler = http.HandlerFunc(func(http.ResponseWriter, *http.Request) {})
 
+const (
+	urlPath = "/url/path"
+)
+
 type testFormProcessor struct{ SavedFileTracker }
 
-func (a *testFormProcessor) ProcessField(ctx context.Context, formName string, writer *multipart.Writer) error {
+func (a *testFormProcessor) ProcessField(_ context.Context, formName string, _ *multipart.Writer) error {
 	if formName != "token" && !strings.HasPrefix(formName, "file.") && !strings.HasPrefix(formName, "other.") {
 		return fmt.Errorf("illegal field: %v", formName)
 	}
 	return nil
 }
 
-func (a *testFormProcessor) Finalize(ctx context.Context) error {
+func (a *testFormProcessor) Finalize(_ context.Context) error {
 	return nil
 }
 
@@ -64,7 +68,7 @@ func TestUploadHandlerForwardingRawData(t *testing.T) {
 	})
 	defer ts.Close()
 
-	httpRequest, err := http.NewRequest("PATCH", ts.URL+"/url/path", bytes.NewBufferString("REQUEST"))
+	httpRequest, err := http.NewRequest("PATCH", ts.URL+urlPath, bytes.NewBufferString("REQUEST"))
 	require.NoError(t, err)
 
 	tempPath := t.TempDir()
@@ -127,7 +131,7 @@ func TestUploadHandlerRewritingMultiPartData(t *testing.T) {
 	fmt.Fprint(file, "test")
 	writer.Close()
 
-	httpRequest, err := http.NewRequest("PUT", ts.URL+"/url/path", nil)
+	httpRequest, err := http.NewRequest("PUT", ts.URL+urlPath, nil)
 	require.NoError(t, err)
 
 	ctx, cancel := context.WithCancel(context.Background())
@@ -193,7 +197,7 @@ func TestUploadHandlerDetectingInjectedMultiPartData(t *testing.T) {
 			writer.WriteField(test.field, "value")
 			writer.Close()
 
-			httpRequest, err := http.NewRequest("PUT", ts.URL+"/url/path", &buffer)
+			httpRequest, err := http.NewRequest("PUT", ts.URL+urlPath, &buffer)
 			require.NoError(t, err)
 
 			ctx, cancel := context.WithCancel(context.Background())
@@ -219,7 +223,7 @@ func TestUploadProcessingField(t *testing.T) {
 	writer.WriteField("token2", "test")
 	writer.Close()
 
-	httpRequest, err := http.NewRequest("PUT", "/url/path", &buffer)
+	httpRequest, err := http.NewRequest("PUT", urlPath, &buffer)
 	require.NoError(t, err)
 	httpRequest.Header.Set("Content-Type", writer.FormDataContentType())
 
@@ -248,7 +252,7 @@ func TestUploadProcessingFile(t *testing.T) {
 	objectStore, testServer := test.StartObjectStore()
 	defer testServer.Close()
 
-	storeUrl := testServer.URL + test.ObjectPath
+	storeURL := testServer.URL + test.ObjectPath
 
 	tests := []struct {
 		name    string
@@ -269,7 +273,7 @@ func TestUploadProcessingFile(t *testing.T) {
 		},
 		{
 			name:    "ObjectStore Upload",
-			preauth: &api.Response{RemoteObject: api.RemoteObject{StoreURL: storeUrl, ID: "123"}},
+			preauth: &api.Response{RemoteObject: api.RemoteObject{StoreURL: storeURL, ID: "123"}},
 			content: func(*testing.T) []byte { return objectStore.GetObject(test.ObjectPath) },
 		},
 	}
@@ -283,7 +287,7 @@ func TestUploadProcessingFile(t *testing.T) {
 			fmt.Fprint(file, "test")
 			writer.Close()
 
-			httpRequest, err := http.NewRequest("PUT", "/url/path", &buffer)
+			httpRequest, err := http.NewRequest("PUT", urlPath, &buffer)
 			require.NoError(t, err)
 			httpRequest.Header.Set("Content-Type", writer.FormDataContentType())
 
@@ -470,7 +474,7 @@ func TestContentDispositionRewrite(t *testing.T) {
 			for i := 0; ; i++ {
 				p, err := reader.NextPart()
 				if err == io.EOF {
-					require.Equal(t, i, 1)
+					require.Equal(t, 1, i)
 					break
 				}
 				require.NoError(t, err)
@@ -492,8 +496,8 @@ func TestUploadHandlerRemovingExif(t *testing.T) {
 
 		size, err := strconv.Atoi(r.FormValue("file.size"))
 		require.NoError(t, err)
-		require.True(t, size < len(content), "Expected the file to be smaller after removal of exif")
-		require.True(t, size > 0, "Expected to receive not empty file")
+		require.Less(t, size, len(content), "Expected the file to be smaller after removal of exif")
+		require.Greater(t, size, 0, "Expected to receive non-empty file")
 
 		w.WriteHeader(200)
 		fmt.Fprint(w, "RESPONSE")
@@ -510,8 +514,8 @@ func TestUploadHandlerRemovingExifTiff(t *testing.T) {
 
 		size, err := strconv.Atoi(r.FormValue("file.size"))
 		require.NoError(t, err)
-		require.True(t, size < len(content), "Expected the file to be smaller after removal of exif")
-		require.True(t, size > 0, "Expected to receive not empty file")
+		require.Less(t, size, len(content), "Expected the file to be smaller after removal of exif")
+		require.Greater(t, size, 0, "Expected to receive not empty file")
 
 		w.WriteHeader(200)
 		fmt.Fprint(w, "RESPONSE")
@@ -561,7 +565,7 @@ func runUploadTest(t *testing.T, image []byte, filename string, httpCode int, ts
 	ts := testhelper.TestServerWithHandler(regexp.MustCompile(`/url/path\z`), tsHandler)
 	defer ts.Close()
 
-	httpRequest, err := http.NewRequest("POST", ts.URL+"/url/path", &buffer)
+	httpRequest, err := http.NewRequest("POST", ts.URL+urlPath, &buffer)
 	require.NoError(t, err)
 
 	ctx, cancel := context.WithCancel(context.Background())
@@ -613,7 +617,7 @@ func setupMultipleFiles(t *testing.T) (*http.Request, *httptest.ResponseRecorder
 	}
 	require.NoError(t, writer.Close())
 
-	httpRequest, err := http.NewRequest("PUT", "/url/path", &buffer)
+	httpRequest, err := http.NewRequest("PUT", urlPath, &buffer)
 	require.NoError(t, err)
 	httpRequest.Header.Set("Content-Type", writer.FormDataContentType())
 

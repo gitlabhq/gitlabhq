@@ -171,6 +171,7 @@ class Group < Namespace
     format_with_prefix: :runners_token_prefix,
     require_prefix_for_validation: true
 
+  before_save :ensure_runner_registration_token_disabled_on_com
   after_create :post_create_hook
   after_create -> { create_or_load_association(:group_feature) }
   after_update :path_changed_hook, if: :saved_change_to_path?
@@ -598,6 +599,15 @@ class Group < Namespace
     Gitlab::AppLogger.info("Group \"#{name}\" was removed")
 
     system_hook_service.execute_hooks_for(self, :destroy)
+  end
+
+  def ensure_runner_registration_token_disabled_on_com
+    return unless parent.nil?
+    return if namespace_settings
+    return if ::Gitlab::CurrentSettings.gitlab_dedicated_instance?
+    return unless ::Gitlab.com? # rubocop: disable Gitlab/AvoidGitlabInstanceChecks -- this is not based on a feature, but indeed on the location of the code
+
+    self.namespace_settings = NamespaceSetting.new(namespace_id: id, allow_runner_registration_token: false)
   end
 
   # rubocop: disable CodeReuse/ServiceClass

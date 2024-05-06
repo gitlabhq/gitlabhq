@@ -402,7 +402,7 @@ RSpec.describe 'Group', feature_category: :groups_and_projects do
       expect(page).to have_content 'successfully updated'
       expect(find('#group_name').value).to eq(new_name)
 
-      page.within ".breadcrumbs" do
+      within_testid "breadcrumb-links" do
         expect(page).to have_content new_name
       end
     end

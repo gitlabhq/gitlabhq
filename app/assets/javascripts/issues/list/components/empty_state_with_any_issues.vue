@@ -1,9 +1,7 @@
 <script>
 import { GlButton, GlEmptyState } from '@gitlab/ui';
-import { i18n } from '../constants';
 
 export default {
-  i18n,
   components: {
     GlButton,
     GlEmptyState,
@@ -25,37 +23,37 @@ export default {
 <template>
   <gl-empty-state
     v-if="hasSearch"
-    :description="$options.i18n.noSearchResultsDescription"
-    :title="$options.i18n.noSearchResultsTitle"
+    :description="__('To widen your search, change or remove filters above')"
+    :title="__('Sorry, your filter produced no results')"
     :svg-path="emptyStateSvgPath"
     :svg-height="150"
     data-testid="issuable-empty-state"
   >
     <template #actions>
       <gl-button v-if="showNewIssueLink" :href="newIssuePath" variant="confirm">
-        {{ $options.i18n.newIssueLabel }}
+        {{ __('New issue') }}
       </gl-button>
     </template>
   </gl-empty-state>
 
   <gl-empty-state
     v-else-if="isOpenTab"
-    :description="$options.i18n.noOpenIssuesDescription"
-    :title="$options.i18n.noOpenIssuesTitle"
+    :description="__('To keep this project going, create a new issue')"
+    :title="__('There are no open issues')"
     :svg-path="emptyStateSvgPath"
     :svg-height="null"
     data-testid="issuable-empty-state"
   >
     <template #actions>
       <gl-button v-if="showNewIssueLink" :href="newIssuePath" variant="confirm">
-        {{ $options.i18n.newIssueLabel }}
+        {{ __('New issue') }}
       </gl-button>
     </template>
   </gl-empty-state>
 
   <gl-empty-state
     v-else
-    :title="$options.i18n.noClosedIssuesTitle"
+    :title="__('There are no closed issues')"
     :svg-path="emptyStateSvgPath"
     :svg-height="150"
     data-testid="issuable-empty-state"

@@ -57,7 +57,7 @@ If the highest number stable branch is unclear, check the [GitLab blog](https://
 
 ## GitLab directory structure
 
-When following the instructions on this page, you create this directory structure:
+The following directories are created as you go through the installation steps:
 
 ```plaintext
 |-- home
@@ -80,6 +80,8 @@ When following the instructions on this page, you create this directory structur
 
 The default locations for repositories can be configured in `config/gitlab.yml`
 of GitLab and `config.yml` of GitLab Shell.
+
+It is not necessary to create these directories manually now, and doing so can cause errors later in the installation.
 
 For a more in-depth overview, see the [GitLab architecture doc](../development/architecture.md).
 

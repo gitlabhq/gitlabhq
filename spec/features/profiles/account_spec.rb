@@ -78,14 +78,14 @@ RSpec.describe 'Profile > Account', :js, feature_category: :user_profile do
         update_username(new_username)
         visit new_project_path
         expect(page).to have_current_path(new_project_path, ignore_query: true)
-        expect(find('.breadcrumbs')).to have_content(user.name)
+        expect(find_by_testid('breadcrumb-links')).to have_content(user.name)
       end
 
       it 'the old project path redirects to the new path' do
         update_username(new_username)
         visit old_project_path
         expect(page).to have_current_path(new_project_path, ignore_query: true)
-        expect(find('.breadcrumbs')).to have_content(user.name)
+        expect(find_by_testid('breadcrumb-links')).to have_content(user.name)
       end
     end
   end

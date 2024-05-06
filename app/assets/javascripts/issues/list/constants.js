@@ -89,47 +89,19 @@ export const CLOSED_MOVED = __('Closed (moved)');
 
 export const i18n = {
   actionsLabel: __('Actions'),
-  calendarLabel: __('Subscribe to calendar'),
   closed: CLOSED,
   closedMoved: CLOSED_MOVED,
   confidentialNo: __('No'),
   confidentialYes: __('Yes'),
   downvotes: __('Downvotes'),
-  editIssues: __('Bulk edit'),
   errorFetchingCounts: __('An error occurred while getting issue counts'),
   errorFetchingIssues: __('An error occurred while loading issues'),
-  importIssues: __('Import issues'),
   issueRepositioningMessage: __(
     'Issues are being rebalanced at the moment, so manual reordering is disabled.',
   ),
-  jiraIntegrationMessage: s__(
-    'JiraService|%{jiraDocsLinkStart}Enable the Jira integration%{jiraDocsLinkEnd} to view your Jira issues in GitLab.',
-  ),
-  jiraIntegrationSecondaryMessage: s__('JiraService|This feature requires a Premium plan.'),
-  jiraIntegrationTitle: s__('JiraService|Using Jira for issue tracking?'),
-  newIssueLabel: __('New issue'),
-  newProjectLabel: __('New project'),
-  noClosedIssuesTitle: __('There are no closed issues'),
-  noGroupIssuesSignedInDescription: __(
-    'Issues exist in projects, so to create an issue, first create a project.',
-  ),
-  noOpenIssuesDescription: __('To keep this project going, create a new issue'),
-  noOpenIssuesTitle: __('There are no open issues'),
-  noIssuesDescription: __('Learn more about issues.'),
-  noIssuesTitle: __('Use issues to collaborate on ideas, solve problems, and plan work'),
-  noIssuesSignedOutButtonText: __('Register / Sign In'),
-  noSearchNoFilterTitle: __('Please select at least one filter to see results'),
-  noSearchResultsDescription: __('To widen your search, change or remove filters above'),
-  noSearchResultsTitle: __('Sorry, your filter produced no results'),
-  relatedMergeRequests: __('Related merge requests'),
-  reorderError: __('An error occurred while reordering issues.'),
-  deleteError: __('An error occurred while deleting an issuable.'),
-  rssLabel: __('Subscribe to RSS feed'),
   upvotes: __('Upvotes'),
   titles: __('Titles'),
   descriptions: __('Descriptions'),
-  listLabel: __('List'),
-  gridLabel: __('Grid'),
 };
 
 export const urlSortParams = {

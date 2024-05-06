@@ -74,7 +74,7 @@ RSpec.describe 'Edit group settings', feature_category: :groups_and_projects do
         visit new_project_full_path
 
         expect(page).to have_current_path(new_project_full_path, ignore_query: true)
-        expect(find('.breadcrumbs')).to have_content(project.name)
+        expect(find_by_testid('breadcrumb-links')).to have_content(project.name)
       end
 
       it 'the old project path redirects to the new path' do
@@ -82,7 +82,7 @@ RSpec.describe 'Edit group settings', feature_category: :groups_and_projects do
         visit old_project_full_path
 
         expect(page).to have_current_path(new_project_full_path, ignore_query: true)
-        expect(find('.breadcrumbs')).to have_content(project.name)
+        expect(find_by_testid('breadcrumb-links')).to have_content(project.name)
       end
     end
   end

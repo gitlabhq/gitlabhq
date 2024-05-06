@@ -57,6 +57,7 @@ describe('WorkItemsListApp component', () => {
         fullPath: 'full/path',
         initialSort: CREATED_DESC,
         isSignedIn: true,
+        workItemType: null,
         ...provide,
       },
     });
@@ -138,6 +139,24 @@ describe('WorkItemsListApp component', () => {
       sort: CREATED_DESC,
       state: STATUS_OPEN,
       firstPageSize: 20,
+      types: [null],
+    });
+  });
+
+  it('filters work items by workItemType', () => {
+    const type = 'EPIC';
+    mountComponent({
+      provide: {
+        workItemType: type,
+      },
+    });
+
+    expect(defaultQueryHandler).toHaveBeenCalledWith({
+      fullPath: 'full/path',
+      sort: CREATED_DESC,
+      state: STATUS_OPEN,
+      firstPageSize: 20,
+      types: [type],
     });
   });
 
@@ -225,6 +244,7 @@ describe('WorkItemsListApp component', () => {
           authorUsername: 'homer',
           in: 'TITLE',
           firstPageSize: 20,
+          types: [null],
         });
       });
     });

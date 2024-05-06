@@ -357,9 +357,9 @@ Audit event types belong to the following product categories.
 
 | Name | Description | Saved to database | Streamed | Introduced in | Scope |
 |:------------|:------------|:------------------|:---------|:--------------|:--------------|
-| [`member_role_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137087) | Event triggered when a custom role is created.| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.7](https://gitlab.com/gitlab-org/gitlab/-/issues/388934) | Group |
-| [`member_role_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141630) | Event triggered when a custom role is deleted.| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.9](https://gitlab.com/gitlab-org/gitlab/-/issues/437672) | Group |
-| [`member_role_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141630) | Event triggered when a custom role is updated.| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.9](https://gitlab.com/gitlab-org/gitlab/-/issues/437672) | Group |
+| [`member_role_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137087) | Event triggered when a custom role is created.| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.7](https://gitlab.com/gitlab-org/gitlab/-/issues/388934) | Group, Instance |
+| [`member_role_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141630) | Event triggered when a custom role is deleted.| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.9](https://gitlab.com/gitlab-org/gitlab/-/issues/437672) | Group, Instance |
+| [`member_role_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141630) | Event triggered when a custom role is updated.| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.9](https://gitlab.com/gitlab-org/gitlab/-/issues/437672) | Group, Instance |
 
 ### Portfolio management
 

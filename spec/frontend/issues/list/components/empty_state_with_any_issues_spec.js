@@ -1,16 +1,9 @@
 import { GlEmptyState } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import EmptyStateWithAnyIssues from '~/issues/list/components/empty_state_with_any_issues.vue';
-import IssuesListApp from '~/issues/list/components/issues_list_app.vue';
 
 describe('EmptyStateWithAnyIssues component', () => {
   let wrapper;
-
-  const defaultProvide = {
-    emptyStateSvgPath: 'empty/state/svg/path',
-    newIssuePath: 'new/issue/path',
-    showNewIssueLink: false,
-  };
 
   const findGlEmptyState = () => wrapper.findComponent(GlEmptyState);
 
@@ -21,7 +14,11 @@ describe('EmptyStateWithAnyIssues component', () => {
         isOpenTab: true,
         ...props,
       },
-      provide: defaultProvide,
+      provide: {
+        emptyStateSvgPath: 'empty/state/svg/path',
+        newIssuePath: 'new/issue/path',
+        showNewIssueLink: false,
+      },
     });
   };
 
@@ -32,9 +29,9 @@ describe('EmptyStateWithAnyIssues component', () => {
 
     it('shows empty state', () => {
       expect(findGlEmptyState().props()).toMatchObject({
-        description: IssuesListApp.i18n.noSearchResultsDescription,
-        title: IssuesListApp.i18n.noSearchResultsTitle,
-        svgPath: defaultProvide.emptyStateSvgPath,
+        description: 'To widen your search, change or remove filters above',
+        title: 'Sorry, your filter produced no results',
+        svgPath: 'empty/state/svg/path',
       });
     });
   });
@@ -46,9 +43,9 @@ describe('EmptyStateWithAnyIssues component', () => {
 
     it('shows empty state', () => {
       expect(findGlEmptyState().props()).toMatchObject({
-        description: IssuesListApp.i18n.noOpenIssuesDescription,
-        title: IssuesListApp.i18n.noOpenIssuesTitle,
-        svgPath: defaultProvide.emptyStateSvgPath,
+        description: 'To keep this project going, create a new issue',
+        title: 'There are no open issues',
+        svgPath: 'empty/state/svg/path',
       });
     });
   });
@@ -60,8 +57,8 @@ describe('EmptyStateWithAnyIssues component', () => {
 
     it('shows empty state', () => {
       expect(findGlEmptyState().props()).toMatchObject({
-        title: IssuesListApp.i18n.noClosedIssuesTitle,
-        svgPath: defaultProvide.emptyStateSvgPath,
+        title: 'There are no closed issues',
+        svgPath: 'empty/state/svg/path',
       });
     });
   });

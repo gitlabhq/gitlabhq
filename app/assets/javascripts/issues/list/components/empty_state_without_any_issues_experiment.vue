@@ -4,11 +4,9 @@ import { TYPE_ISSUE } from '~/issues/constants';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import IssuableByEmail from '~/issuable/components/issuable_by_email.vue';
 import CsvImportModal from '~/issuable/components/csv_import_modal.vue';
-import { i18n } from '../constants';
 import GlCardEmptyStateExperiment from './gl_card_empty_state_experiment.vue';
 
 export default {
-  i18n,
   issuesHelpPagePath: helpPagePath('user/project/issues/index'),
   components: {
     GlCardEmptyStateExperiment,
@@ -74,7 +72,7 @@ export default {
     ></iframe>
 
     <h1 class="gl-font-size-h-display gl-max-w-75 gl-m-auto gl-pt-8">
-      {{ $options.i18n.noIssuesTitle }}
+      {{ __('Use issues to collaborate on ideas, solve problems, and plan work') }}
     </h1>
 
     <p class="gl-max-w-75 gl-m-auto gl-pt-4 gl-pb-5">

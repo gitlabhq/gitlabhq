@@ -52,8 +52,8 @@ RSpec.describe 'Projects > Show > User sees Git instructions', feature_category:
     let(:user_has_ssh_key) { false }
 
     it 'shows details', :js do
-      page.within('.breadcrumbs .js-breadcrumb-item-text') do
-        expect(page).to have_content(project.title)
+      within_testid('breadcrumb-links') do
+        expect(find('li:last-of-type')).to have_content(project.title)
       end
 
       find_by_testid('code-dropdown').click

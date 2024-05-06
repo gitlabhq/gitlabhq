@@ -22,7 +22,7 @@ RSpec.describe 'User page', feature_category: :user_profile do
   it 'shows name on breadcrumbs' do
     subject
 
-    page.within '.breadcrumbs' do
+    within_testid('breadcrumb-links') do
       expect(page).to have_content(user.name)
     end
   end

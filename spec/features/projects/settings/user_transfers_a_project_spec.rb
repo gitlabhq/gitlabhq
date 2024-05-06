@@ -52,13 +52,13 @@ RSpec.describe 'Projects > Settings > User transfers a project', :js, feature_ca
     wait_for_requests
 
     expect(page).to have_current_path(new_path, ignore_query: true)
-    expect(find('.breadcrumbs')).to have_content(project.name)
+    expect(find_by_testid('breadcrumb-links')).to have_content(project.name)
 
     visit old_path
     wait_for_requests
 
     expect(page).to have_current_path(new_path, ignore_query: true)
-    expect(find('.breadcrumbs')).to have_content(project.name)
+    expect(find_by_testid('breadcrumb-links')).to have_content(project.name)
   end
 
   context 'and a new project is added with the same path' do
@@ -70,7 +70,7 @@ RSpec.describe 'Projects > Settings > User transfers a project', :js, feature_ca
       visit old_path
 
       expect(page).to have_current_path(old_path, ignore_query: true)
-      expect(find('.breadcrumbs')).to have_content(new_project.name)
+      expect(find_by_testid('breadcrumb-links')).to have_content(new_project.name)
     end
   end
 

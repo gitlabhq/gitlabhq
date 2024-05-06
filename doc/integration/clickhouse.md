@@ -32,8 +32,7 @@ of builds that run on your instance each month, the selected hardware, the data 
 Regardless, the cost should not be significant.
 
 NOTE:
-ClickHouse is a secondary data store for GitLab. All your data is still stored in Postgres,
-and only duplicated in ClickHouse for analytics purposes.
+ClickHouse is a secondary data store for GitLab. Only specific data is stored in ClickHouse for analytics purposes.
 
 To create necessary user and database objects:
 

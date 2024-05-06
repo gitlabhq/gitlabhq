@@ -8,6 +8,7 @@ import (
 	"net/url"
 
 	"github.com/gorilla/websocket"
+	"gitlab.com/gitlab-org/labkit/log"
 )
 
 type ChannelSettings struct {
@@ -39,12 +40,17 @@ func (t *ChannelSettings) Dialer() *websocket.Dialer {
 		Subprotocols: t.Subprotocols,
 	}
 
-	if len(t.CAPem) > 0 {
-		pool := x509.NewCertPool()
-		pool.AppendCertsFromPEM([]byte(t.CAPem))
-		dialer.TLSClientConfig = &tls.Config{RootCAs: pool}
+	pool, err := x509.SystemCertPool()
+	if err != nil {
+		log.WithError(err).Print("failed to load system cert pool")
+		pool = x509.NewCertPool()
 	}
 
+	if len(t.CAPem) > 0 {
+		pool.AppendCertsFromPEM([]byte(t.CAPem))
+	}
+
+	dialer.TLSClientConfig = &tls.Config{RootCAs: pool}
 	return dialer
 }
 

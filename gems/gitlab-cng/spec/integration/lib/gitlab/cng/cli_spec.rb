@@ -12,4 +12,25 @@ RSpec.describe Gitlab::Cng::CLI do
       expect { cli.invoke(:version) }.to output(/#{Gitlab::Cng::VERSION}/o).to_stdout
     end
   end
+
+  describe "doctor command" do
+    let(:command_instance) { Gitlab::Cng::Commands::Doctor.new }
+
+    before do
+      allow(Gitlab::Cng::Commands::Doctor).to receive(:new).and_return(command_instance)
+      allow(command_instance).to receive(:doctor)
+    end
+
+    it "shows doctor command help" do
+      expect { cli.invoke(:help, ["doctor"]) }.to output(
+        /Validate presence of all required system dependencies/
+      ).to_stdout
+    end
+
+    it "invokes doctor command" do
+      cli.invoke(:doctor)
+
+      expect(command_instance).to have_received(:doctor)
+    end
+  end
 end

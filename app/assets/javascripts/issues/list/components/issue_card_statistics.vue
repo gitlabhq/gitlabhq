@@ -45,7 +45,7 @@ export default {
       v-if="issue.mergeRequestsCount"
       v-gl-tooltip
       class="gl-display-none gl-sm-display-block"
-      :title="$options.i18n.relatedMergeRequests"
+      :title="__('Related merge requests')"
       data-testid="merge-requests"
     >
       <gl-icon name="merge-request" />

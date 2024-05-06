@@ -169,7 +169,7 @@ RSpec.describe 'New/edit issue', :js, feature_category: :team_planning do
         end
       end
 
-      page.within '.breadcrumbs' do
+      within_testid 'breadcrumb-links' do
         issue = Issue.find_by(title: 'title')
 
         expect(page).to have_text("Issues #{issue.to_reference}")

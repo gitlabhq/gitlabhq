@@ -5,7 +5,6 @@ import CsvImportExportButtons from '~/issuable/components/csv_import_export_butt
 import EmptyStateWithoutAnyIssues from '~/issues/list/components/empty_state_without_any_issues.vue';
 import EmptyStateWithoutAnyIssuesExperiment from '~/issues/list/components/empty_state_without_any_issues_experiment.vue';
 import NewResourceDropdown from '~/vue_shared/components/new_resource_dropdown/new_resource_dropdown.vue';
-import { i18n } from '~/issues/list/constants';
 import GitlabExperiment from '~/experimentation/components/gitlab_experiment.vue';
 
 describe('EmptyStateWithoutAnyIssues component', () => {
@@ -36,12 +35,12 @@ describe('EmptyStateWithoutAnyIssues component', () => {
   const findGlEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findGlLink = () => wrapper.findComponent(GlLink);
   const findIssuesHelpPageLink = () =>
-    wrapper.findByRole('link', { name: i18n.noIssuesDescription });
+    wrapper.findByRole('link', { name: 'Learn more about issues.' });
   const findJiraDocsLink = () =>
     wrapper.findByRole('link', { name: 'Enable the Jira integration' });
   const findNewResourceDropdown = () => wrapper.findComponent(NewResourceDropdown);
-  const findNewIssueLink = () => wrapper.findByRole('link', { name: i18n.newIssueLabel });
-  const findNewProjectLink = () => wrapper.findByRole('link', { name: i18n.newProjectLabel });
+  const findNewIssueLink = () => wrapper.findByRole('link', { name: 'New issue' });
+  const findNewProjectLink = () => wrapper.findByRole('link', { name: 'New project' });
 
   const mountComponent = ({ props = {}, provide = {} } = {}) => {
     wrapper = mountExtended(EmptyStateWithoutAnyIssues, {
@@ -66,7 +65,7 @@ describe('EmptyStateWithoutAnyIssues component', () => {
         mountComponent();
 
         expect(findGlEmptyState().props()).toMatchObject({
-          title: i18n.noIssuesTitle,
+          title: 'Use issues to collaborate on ideas, solve problems, and plan work',
           svgPath: defaultProvide.emptyStateSvgPath,
         });
       });
@@ -85,7 +84,9 @@ describe('EmptyStateWithoutAnyIssues component', () => {
             it('renders', () => {
               mountComponent({ provide: { canCreateProjects: true } });
 
-              expect(findGlEmptyState().text()).toContain(i18n.noGroupIssuesSignedInDescription);
+              expect(findGlEmptyState().text()).toContain(
+                'Issues exist in projects, so to create an issue, first create a project.',
+              );
             });
           });
 
@@ -94,7 +95,7 @@ describe('EmptyStateWithoutAnyIssues component', () => {
               mountComponent({ provide: { canCreateProjects: false } });
 
               expect(findGlEmptyState().text()).not.toContain(
-                i18n.noGroupIssuesSignedInDescription,
+                'Issues exist in projects, so to create an issue, first create a project.',
               );
             });
           });
@@ -271,9 +272,11 @@ describe('EmptyStateWithoutAnyIssues component', () => {
 
       it('shows Jira integration information', () => {
         const paragraphs = wrapper.findAll('p');
-        expect(paragraphs.at(1).text()).toContain(i18n.jiraIntegrationTitle);
-        expect(paragraphs.at(2).text()).toMatchInterpolatedText(i18n.jiraIntegrationMessage);
-        expect(paragraphs.at(3).text()).toContain(i18n.jiraIntegrationSecondaryMessage);
+        expect(paragraphs.at(1).text()).toContain('Using Jira for issue tracking?');
+        expect(paragraphs.at(2).text()).toMatchInterpolatedText(
+          'Enable the Jira integration to view your Jira issues in GitLab.',
+        );
+        expect(paragraphs.at(3).text()).toContain('This feature requires a Premium plan.');
       });
 
       it('renders Jira integration docs link', () => {
@@ -304,16 +307,16 @@ describe('EmptyStateWithoutAnyIssues component', () => {
 
     it('renders empty state', () => {
       expect(findGlEmptyState().props()).toMatchObject({
-        title: i18n.noIssuesTitle,
+        title: 'Use issues to collaborate on ideas, solve problems, and plan work',
         svgPath: defaultProvide.emptyStateSvgPath,
-        primaryButtonText: i18n.noIssuesSignedOutButtonText,
+        primaryButtonText: 'Register / Sign In',
         primaryButtonLink: defaultProvide.signInPath,
       });
     });
 
     it('renders issues docs link', () => {
       expect(findGlLink().attributes('href')).toBe(EmptyStateWithoutAnyIssues.issuesHelpPagePath);
-      expect(findGlLink().text()).toBe(i18n.noIssuesDescription);
+      expect(findGlLink().text()).toBe('Learn more about issues.');
     });
   });
 });
