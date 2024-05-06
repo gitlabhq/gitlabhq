@@ -51,7 +51,7 @@ Meanwhile:
 
 - [Configure Service Desk](configure.md)
   - [Improve your project's security](configure.md#improve-your-projects-security)
-  - [Customize emails sent to the requester](configure.md#customize-emails-sent-to-the-requester)
+  - [Customize emails sent to external participants](configure.md#customize-emails-sent-to-external-participants)
   - [Use a custom template for Service Desk tickets](configure.md#use-a-custom-template-for-service-desk-tickets)
   - [Support Bot user](configure.md#support-bot-user)
   - [Reopen issues when an external participant comments](configure.md#reopen-issues-when-an-external-participant-comments)

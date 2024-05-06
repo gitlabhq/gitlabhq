@@ -48,7 +48,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Key do
       describe '#errors' do
         it 'saves errors' do
           expect(entry.errors.first)
-            .to match /should be a hash, a string or a symbol/
+            .to match(/should be a hash, a string or a symbol/)
         end
       end
     end

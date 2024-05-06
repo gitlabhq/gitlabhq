@@ -118,3 +118,12 @@ export default {
     </template>
   </div>
 </template>
+
+<style lang="scss">
+/* This is to override a margin caused by bootstrap */
+.non-gfm-markdown-block {
+  p {
+    margin-bottom: 0;
+  }
+}
+</style>

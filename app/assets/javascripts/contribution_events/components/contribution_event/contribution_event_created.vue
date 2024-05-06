@@ -39,24 +39,10 @@ export default {
           return 'status_open';
       }
     },
-    iconClass() {
-      switch (this.target?.type) {
-        case TARGET_TYPE_DESIGN:
-          return null;
-
-        default:
-          return 'gl-text-green-500';
-      }
-    },
   },
 };
 </script>
 
 <template>
-  <contribution-event-base
-    :event="event"
-    :message="message"
-    :icon-name="iconName"
-    :icon-class="iconClass"
-  />
+  <contribution-event-base :event="event" :message="message" :icon-name="iconName" />
 </template>

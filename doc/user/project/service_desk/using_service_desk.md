@@ -170,7 +170,7 @@ into a Service Desk ticket. This assigns the provided email address as the exter
 and adds them to the list of external participants. They receive Service Desk emails for any public
 comment on the ticket and can reply to these emails. Replies add a new comment on the ticket.
 
-GitLab doesn't send [the default `thank_you` email](configure.md#customize-emails-sent-to-the-requester).
+GitLab doesn't send [the default `thank_you` email](configure.md#customize-emails-sent-to-external-participants).
 You can add a public comment on the ticket to let the end user know that the ticket has been created.
 
 ## Privacy considerations

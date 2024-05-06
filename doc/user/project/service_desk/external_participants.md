@@ -11,6 +11,7 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3758) in GitLab 17.0 [with a flag](../../../administration/feature_flags.md) named `issue_email_participants`. Disabled by default.
+> - [Enabled on GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/3758) in GitLab 17.0.
 
 FLAG:
 The availability of this feature is controlled by a feature flag.
@@ -18,7 +19,7 @@ For more information, see the history.
 This feature is available for testing, but not ready for production use.
 
 External participants are users without a GitLab account that can interact with an issue or Service Desk ticket only by email.
-They get notified of public comments on an issue or ticket by [Service Desk emails](configure.md#customize-emails-sent-to-the-requester).
+They get notified of public comments on an issue or ticket by [Service Desk emails](configure.md#customize-emails-sent-to-external-participants).
 
 The maximum number of external participants on an issue or ticket is 10.
 
@@ -32,7 +33,9 @@ That usually is the email address from the `From` header of the initial email th
 By default GitLab only adds the sender of the email that creates the Service Desk ticket as an external participant.
 
 You can configure GitLab to also add all email addresses from the `Cc` header to the Service Desk ticket.
-This works for the initial email and all replies to the [`thank_you` email](configure.md#customize-emails-sent-to-the-requester).
+This works for the initial email and all replies to the [`thank_you` email](configure.md#customize-emails-sent-to-external-participants).
+
+External participants added from the `Cc` header receive the `new_participant` email instead of the `thank_you` email to let them know they were added to the ticket.
 
 Prerequisites:
 
@@ -49,7 +52,7 @@ To enable the setting for the project:
 ## As an external participant
 
 An external participant receives a notification for each public comment on the issue or ticket
-using [Service Desk emails](configure.md#customize-emails-sent-to-the-requester).
+using [Service Desk emails](configure.md#customize-emails-sent-to-external-participants).
 
 ### Replying to notification emails
 
@@ -64,7 +67,7 @@ instead of a GitLab username. The email address is followed by `(external partic
 External participants can use the unsubscribe link in the default Service Desk email template to
 unsubscribe from the issue or ticket.
 
-If you [customize your `thank_you` and `new_note` email templates](configure.md#customize-emails-sent-to-the-requester),
+If you [customize your `thank_you`, `new_participant`, and `new_note` email templates](configure.md#customize-emails-sent-to-external-participants),
 you can use the `%{UNSUBSCRIBE_URL}` placeholder to add the unsubscribe link to the templates.
 
 Your GitLab instance must be reachable (for example, from the public internet) for the external participant to successfully unsubscribe.
@@ -120,6 +123,8 @@ Add an external participant using the `/add_email` [quick action](../quick_actio
 to include them in the conversation at any time.
 
 When added, the external participant starts receiving notifications using Service Desk emails.
+
+New external participants receive the `new_participant` email to let them know they were added to the ticket.
 GitLab doesn't send a `thank_you` email for manually added external participants.
 
 You should add external participants in a dedicated comment because they don't receive a notification

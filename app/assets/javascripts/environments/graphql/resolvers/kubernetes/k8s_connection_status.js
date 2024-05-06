@@ -16,6 +16,12 @@ export const updateConnectionStatus = (client, params) => {
     [k8sResourceType.k8sServices]: {
       connectionStatus: connectionStatus.disconnected,
     },
+    [k8sResourceType.fluxKustomizations]: {
+      connectionStatus: connectionStatus.disconnected,
+    },
+    [k8sResourceType.fluxHelmReleases]: {
+      connectionStatus: connectionStatus.disconnected,
+    },
   };
 
   const updatedStatusData = {

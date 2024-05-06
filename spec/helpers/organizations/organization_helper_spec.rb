@@ -19,6 +19,7 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
   let_it_be(:preview_markdown_organizations_path) { '/-/organizations/preview_markdown' }
   let_it_be(:groups_and_projects_organization_path) { '/-/organizations/default/groups_and_projects' }
   let_it_be(:users_organization_path) { '/-/organizations/default/users' }
+  let_it_be(:activity_organization_path) { '/-/organizations/default/activity.json' }
 
   let(:stubbed_results) do
     {
@@ -336,6 +337,22 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
             'full_name' => project.full_name,
             'description' => project.description
           }
+        }
+      )
+    end
+  end
+
+  describe '#organization_activity_app_data' do
+    before do
+      allow(helper).to receive(:activity_organization_path)
+        .with(organization, { format: :json })
+        .and_return(activity_organization_path)
+    end
+
+    it 'returns expected data object' do
+      expect(Gitlab::Json.parse(helper.organization_activity_app_data(organization))).to eq(
+        {
+          'organization_activity_path' => activity_organization_path
         }
       )
     end

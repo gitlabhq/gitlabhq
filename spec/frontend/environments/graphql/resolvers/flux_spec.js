@@ -3,7 +3,14 @@ import { WatchApi } from '@gitlab/cluster-client';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_OK, HTTP_STATUS_UNAUTHORIZED } from '~/lib/utils/http_status';
 import { resolvers } from '~/environments/graphql/resolvers';
+import { updateConnectionStatus } from '~/environments/graphql/resolvers/kubernetes/k8s_connection_status';
+import {
+  connectionStatus,
+  k8sResourceType,
+} from '~/environments/graphql/resolvers/kubernetes/constants';
 import { fluxKustomizationsMock } from '../mock_data';
+
+jest.mock('~/environments/graphql/resolvers/kubernetes/k8s_connection_status');
 
 describe('~/frontend/environments/graphql/resolvers', () => {
   let mockResolvers;
@@ -119,6 +126,12 @@ describe('~/frontend/environments/graphql/resolvers', () => {
               fieldSelector: `metadata.name=${decodeURIComponent(resourceName)}`,
             },
           );
+          expect(updateConnectionStatus).toHaveBeenCalledWith(expect.anything(), {
+            configuration,
+            namespace: resourceNamespace,
+            resourceType: k8sResourceType.fluxKustomizations,
+            status: connectionStatus.connecting,
+          });
         });
 
         it('should return data when received from the library', async () => {

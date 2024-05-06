@@ -22,6 +22,12 @@ describe('~/environments/environment_details/graphql/resolvers/k8s_connection_st
       [k8sResourceType.k8sPods]: {
         connectionStatus: connectionStatus.disconnected,
       },
+      [k8sResourceType.fluxKustomizations]: {
+        connectionStatus: connectionStatus.disconnected,
+      },
+      [k8sResourceType.fluxHelmReleases]: {
+        connectionStatus: connectionStatus.disconnected,
+      },
     };
 
     const statusPodsConnecting = {
@@ -30,6 +36,12 @@ describe('~/environments/environment_details/graphql/resolvers/k8s_connection_st
       },
       [k8sResourceType.k8sPods]: {
         connectionStatus: connectionStatus.connecting,
+      },
+      [k8sResourceType.fluxKustomizations]: {
+        connectionStatus: connectionStatus.disconnected,
+      },
+      [k8sResourceType.fluxHelmReleases]: {
+        connectionStatus: connectionStatus.disconnected,
       },
     };
 

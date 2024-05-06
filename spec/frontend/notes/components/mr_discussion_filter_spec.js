@@ -9,6 +9,7 @@ import {
   MR_FILTER_OPTIONS,
   MR_FILTER_TRACKING_OPENED,
   MR_FILTER_TRACKING_USER_COMMENTS,
+  MR_FILTER_TRACKING_BOT_COMMENTS,
 } from '~/notes/constants';
 
 Vue.use(Vuex);
@@ -164,8 +165,9 @@ describe('Merge request discussion filter component', () => {
     });
 
     it.each`
-      item          | trackingEvent
-      ${'comments'} | ${MR_FILTER_TRACKING_USER_COMMENTS}
+      item              | trackingEvent
+      ${'comments'}     | ${MR_FILTER_TRACKING_USER_COMMENTS}
+      ${'bot_comments'} | ${MR_FILTER_TRACKING_BOT_COMMENTS}
     `(
       'Send the correct event ($trackingEvent) for clicks on the filter item "$item"',
       ({ item, trackingEvent }) => {

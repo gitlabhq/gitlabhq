@@ -76,6 +76,12 @@ module Organizations
       }.to_json
     end
 
+    def organization_activity_app_data(organization)
+      {
+        organization_activity_path: activity_organization_path(organization, { format: :json })
+      }.to_json
+    end
+
     private
 
     def shared_groups_and_projects_app_data(organization)

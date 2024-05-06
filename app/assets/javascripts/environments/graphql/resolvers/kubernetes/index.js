@@ -6,6 +6,10 @@ import {
   buildWatchPath,
   mapWorkloadItem,
 } from '~/kubernetes_dashboard/graphql/helpers/resolver_helpers';
+import {
+  watchFluxKustomization,
+  watchFluxHelmRelease,
+} from '~/environments/graphql/resolvers/flux';
 import { humanizeClusterErrors } from '../../../helpers/k8s_integration_helper';
 import k8sPodsQuery from '../../queries/k8s_pods.query.graphql';
 import k8sServicesQuery from '../../queries/k8s_services.query.graphql';
@@ -26,20 +30,29 @@ const watchPods = ({ configuration, namespace, client }) => {
 };
 
 export const kubernetesMutations = {
-  reconnectToCluster(_, { configuration, namespace, resourceType }, { client }) {
+  reconnectToCluster(_, { configuration, namespace, resourceTypeParam }, { client }) {
     const errors = [];
     try {
+      const { resourceType, connectionParams } = resourceTypeParam;
       if (resourceType === k8sResourceType.k8sServices) {
         watchServices({ configuration, namespace, client });
       }
       if (resourceType === k8sResourceType.k8sPods) {
         watchPods({ configuration, namespace, client });
       }
+      if (resourceType === k8sResourceType.fluxKustomizations) {
+        const { fluxResourcePath } = connectionParams;
+        watchFluxKustomization({ configuration, client, fluxResourcePath });
+      }
+      if (resourceType === k8sResourceType.fluxHelmReleases) {
+        const { fluxResourcePath } = connectionParams;
+        watchFluxHelmRelease({ configuration, client, fluxResourcePath });
+      }
     } catch (error) {
       errors.push(error);
     }
 
-    return errors;
+    return { errors };
   },
 };
 

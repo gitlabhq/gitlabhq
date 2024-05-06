@@ -20064,12 +20064,6 @@ msgstr ""
 msgid "Environments|Create an environment"
 msgstr ""
 
-msgid "Environments|Dashboard is up to date"
-msgstr ""
-
-msgid "Environments|Dashboard synced"
-msgstr ""
-
 msgid "Environments|Delete"
 msgstr ""
 
@@ -20172,10 +20166,16 @@ msgstr ""
 msgid "Environments|Re-deploy to environment"
 msgstr ""
 
-msgid "Environments|Refresh dashboard"
+msgid "Environments|Refresh"
 msgstr ""
 
 msgid "Environments|Refresh to sync new data"
+msgstr ""
+
+msgid "Environments|Resource is up to date"
+msgstr ""
+
+msgid "Environments|Retrieving resource status"
 msgstr ""
 
 msgid "Environments|Rollback environment"
@@ -20223,6 +20223,9 @@ msgstr ""
 msgid "Environments|Stopping %{environmentName}"
 msgstr ""
 
+msgid "Environments|Synced"
+msgstr ""
+
 msgid "Environments|There are no deployments for this environment yet. %{linkStart}Learn more about setting up deployments.%{linkEnd}"
 msgstr ""
 
@@ -20247,9 +20250,6 @@ msgstr ""
 msgid "Environments|Updating"
 msgstr ""
 
-msgid "Environments|Updating dashboard"
-msgstr ""
-
 msgid "Environments|by %{avatar}"
 msgstr ""
 
@@ -20268,6 +20268,9 @@ msgstr ""
 msgid "Environment|Cluster agent not found."
 msgstr ""
 
+msgid "Environment|Dashboard"
+msgstr ""
+
 msgid "Environment|Deployment tier"
 msgstr ""
 
@@ -20275,6 +20278,9 @@ msgid "Environment|Environment status"
 msgstr ""
 
 msgid "Environment|External IP"
+msgstr ""
+
+msgid "Environment|Flux Sync"
 msgstr ""
 
 msgid "Environment|Forbidden to access the cluster agent from this environment."
@@ -20305,9 +20311,6 @@ msgid "Environment|Services"
 msgstr ""
 
 msgid "Environment|Stalled"
-msgstr ""
-
-msgid "Environment|Sync status"
 msgstr ""
 
 msgid "Environment|There are no Kubernetes cluster connections configured for this environment. Connect a cluster to add the status of your workloads, resources, and the Flux reconciliation state to the dashboard. %{linkStart}Learn more about Kubernetes integration.%{linkEnd}"
@@ -35956,6 +35959,9 @@ msgid "Organization|An error occurred deleting the project. Please refresh the p
 msgstr ""
 
 msgid "Organization|An error occurred loading organizations. Please refresh the page to try again."
+msgstr ""
+
+msgid "Organization|An error occurred loading the activity. Please refresh the page to try again."
 msgstr ""
 
 msgid "Organization|An error occurred loading the groups. Please refresh the page to try again."

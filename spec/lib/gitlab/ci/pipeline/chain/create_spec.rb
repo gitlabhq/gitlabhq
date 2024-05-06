@@ -53,7 +53,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Create do
 
     it 'appends validation error' do
       expect(pipeline.errors.to_a)
-        .to include /Failed to persist the pipeline/
+        .to include(/Failed to persist the pipeline/)
     end
   end
 

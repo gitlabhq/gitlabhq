@@ -224,7 +224,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Bridge, feature_category: :continuous_
       describe '#errors' do
         it 'is returns an error about unknown config key' do
           expect(subject.errors.first)
-            .to match /config contains unknown keys: unknown/
+            .to match(/config contains unknown keys: unknown/)
         end
       end
     end
@@ -239,7 +239,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Bridge, feature_category: :continuous_
       describe '#errors' do
         it 'returns an error message' do
           expect(subject.errors.first)
-            .to match /contains unknown keys: script/
+            .to match(/contains unknown keys: script/)
         end
       end
     end

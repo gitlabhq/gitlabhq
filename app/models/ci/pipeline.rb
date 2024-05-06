@@ -70,7 +70,7 @@ module Ci
         end
       end
 
-    has_many :stages, -> (pipeline) { in_partition(pipeline).order(position: :asc) },
+    has_many :stages, ->(pipeline) { in_partition(pipeline).order(position: :asc) },
       partition_foreign_key: :partition_id, inverse_of: :pipeline
 
     #
@@ -80,7 +80,7 @@ module Ci
     # DEPRECATED:
     has_many :statuses, ->(pipeline) { in_partition(pipeline) }, class_name: 'CommitStatus', foreign_key: :commit_id, inverse_of: :pipeline, partition_foreign_key: :partition_id
     has_many :processables, ->(pipeline) { in_partition(pipeline) }, class_name: 'Ci::Processable', foreign_key: :commit_id, inverse_of: :pipeline, partition_foreign_key: :partition_id
-    has_many :latest_statuses_ordered_by_stage, -> (pipeline) { latest.in_partition(pipeline).order(:stage_idx, :stage) }, class_name: 'CommitStatus', foreign_key: :commit_id, inverse_of: :pipeline, partition_foreign_key: :partition_id
+    has_many :latest_statuses_ordered_by_stage, ->(pipeline) { latest.in_partition(pipeline).order(:stage_idx, :stage) }, class_name: 'CommitStatus', foreign_key: :commit_id, inverse_of: :pipeline, partition_foreign_key: :partition_id
     has_many :latest_statuses, ->(pipeline) { latest.in_partition(pipeline) }, class_name: 'CommitStatus', foreign_key: :commit_id, inverse_of: :pipeline, partition_foreign_key: :partition_id
     has_many :statuses_order_id_desc, ->(pipeline) { in_partition(pipeline).order_id_desc }, class_name: 'CommitStatus', foreign_key: :commit_id,
       inverse_of: :pipeline, partition_foreign_key: :partition_id
@@ -418,32 +418,32 @@ module Ci
       where(source: Enums::Ci::Pipeline.ci_and_security_orchestration_sources.values)
     end
 
-    scope :for_user, -> (user) { where(user: user) }
-    scope :for_sha, -> (sha) { where(sha: sha) }
-    scope :where_not_sha, -> (sha) { where.not(sha: sha) }
-    scope :for_source_sha, -> (source_sha) { where(source_sha: source_sha) }
-    scope :for_sha_or_source_sha, -> (sha) { for_sha(sha).or(for_source_sha(sha)) }
-    scope :for_ref, -> (ref) { where(ref: ref) }
-    scope :for_branch, -> (branch) { for_ref(branch).where(tag: false) }
-    scope :for_iid, -> (iid) { where(iid: iid) }
-    scope :for_project, -> (project_id) { where(project_id: project_id) }
-    scope :for_name, -> (name) do
+    scope :for_user, ->(user) { where(user: user) }
+    scope :for_sha, ->(sha) { where(sha: sha) }
+    scope :where_not_sha, ->(sha) { where.not(sha: sha) }
+    scope :for_source_sha, ->(source_sha) { where(source_sha: source_sha) }
+    scope :for_sha_or_source_sha, ->(sha) { for_sha(sha).or(for_source_sha(sha)) }
+    scope :for_ref, ->(ref) { where(ref: ref) }
+    scope :for_branch, ->(branch) { for_ref(branch).where(tag: false) }
+    scope :for_iid, ->(iid) { where(iid: iid) }
+    scope :for_project, ->(project_id) { where(project_id: project_id) }
+    scope :for_name, ->(name) do
       name_column = Ci::PipelineMetadata.arel_table[:name]
 
       joins(:pipeline_metadata).where(name_column.eq(name))
     end
-    scope :for_status, -> (status) { where(status: status) }
-    scope :created_after, -> (time) { where(arel_table[:created_at].gt(time)) }
-    scope :created_before_id, -> (id) { where(arel_table[:id].lt(id)) }
-    scope :before_pipeline, -> (pipeline) { created_before_id(pipeline.id).outside_pipeline_family(pipeline) }
-    scope :with_pipeline_source, -> (source) { where(source: source) }
+    scope :for_status, ->(status) { where(status: status) }
+    scope :created_after, ->(time) { where(arel_table[:created_at].gt(time)) }
+    scope :created_before_id, ->(id) { where(arel_table[:id].lt(id)) }
+    scope :before_pipeline, ->(pipeline) { created_before_id(pipeline.id).outside_pipeline_family(pipeline) }
+    scope :with_pipeline_source, ->(source) { where(source: source) }
     scope :preload_pipeline_metadata, -> { preload(:pipeline_metadata) }
 
     scope :outside_pipeline_family, ->(pipeline) do
       where.not(id: pipeline.same_family_pipeline_ids)
     end
 
-    scope :with_reports, -> (reports_scope) do
+    scope :with_reports, ->(reports_scope) do
       where_exists(Ci::Build.latest.scoped_pipeline.with_artifacts(reports_scope))
     end
 
@@ -456,7 +456,7 @@ module Ci
     # Returns the pipelines that associated with the given merge request.
     # In general, please use `Ci::PipelinesForMergeRequestFinder` instead,
     # for checking permission of the actor.
-    scope :triggered_by_merge_request, -> (merge_request) do
+    scope :triggered_by_merge_request, ->(merge_request) do
       where(
         source: :merge_request_event,
         merge_request: merge_request,

@@ -446,7 +446,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Root do
       describe '#errors' do
         it 'reports errors about the invalid variable' do
           expect(root.errors)
-            .to include /var1 config uses invalid data keys: invalid/
+            .to include(/var1 config uses invalid data keys: invalid/)
         end
       end
     end
@@ -463,7 +463,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Root do
 
     describe '#errors' do
       it 'returns error about invalid type' do
-        expect(root.errors.first).to match /should be a hash/
+        expect(root.errors.first).to match(/should be a hash/)
       end
     end
   end

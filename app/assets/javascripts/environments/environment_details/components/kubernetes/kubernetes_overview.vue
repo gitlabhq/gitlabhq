@@ -2,6 +2,7 @@
 import { GlEmptyState, GlSprintf, GlLink, GlAlert } from '@gitlab/ui';
 import CLUSTER_EMPTY_SVG from '@gitlab/svgs/dist/illustrations/empty-state/empty-state-clusters.svg?url';
 import { s__ } from '~/locale';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { k8sResourceType } from '~/environments/graphql/resolvers/kubernetes/constants';
@@ -74,6 +75,11 @@ export default {
   },
   methods: {
     handleError(message) {
+      Sentry.captureException(message, {
+        tags: {
+          vue_component: 'KubernetesOverview',
+        },
+      });
       this.error = message;
     },
     handleFailedState(event) {

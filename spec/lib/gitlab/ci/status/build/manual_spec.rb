@@ -47,7 +47,7 @@ RSpec.describe Gitlab::Ci::Status::Build::Manual, feature_category: :continuous_
         allow(job).to receive(:has_outdated_deployment?).and_return(true)
       end
 
-      it { expect(subject.illustration[:content]).to match /This deployment job does not run automatically and must be started manually, but it's older than the latest deployment, and therefore can't run/ }
+      it { expect(subject.illustration[:content]).to match(/This deployment job does not run automatically and must be started manually, but it's older than the latest deployment, and therefore can't run/) }
     end
 
     context 'when the user can not trigger the job due to another reason' do

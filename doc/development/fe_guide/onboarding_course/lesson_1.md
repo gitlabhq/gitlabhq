@@ -106,6 +106,8 @@ Gitpod is useful for quickly getting a GDK environment up and running, for makin
 
 To use Gitpod:
 
+1. [Request access to the GitLab community forks](https://gitlab.com/groups/gitlab-community/community-members/-/group_members/request_access).
+   Alternatively, you can create your own public fork, but will miss out on [the benefits of the community forks](https://gitlab.com/gitlab-community/meta#why).
 1. Go to the [GitLab community fork website](https://gitlab.com/gitlab-community/gitlab), select **Edit**, then select **Gitpod**.
 1. Configure your settings, such as the editor (VS Code desktop or browser) and the context (usually the `main` or `master` branch).
 1. Select **Open** to create your Gitpod workspace. This process may take up to 20 minutes. The GitLab Development Kit (GDK) will be installed in the Gitpod workspace. This installation is faster than downloading and installing the full GDK locally.

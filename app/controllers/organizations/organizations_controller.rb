@@ -6,6 +6,7 @@ module Organizations
     include FiltersEvents
 
     DEFAULT_RESOURCE_LIMIT = 1000
+    DEFAULT_ACTIVITY_EVENT_LIMIT = 20
 
     feature_category :cell
 
@@ -32,9 +33,16 @@ module Organizations
         format.html
         format.json do
           load_events
+          # load_events queries for limit + 1.
+          # This will be removed as part of https://gitlab.com/gitlab-org/gitlab/-/issues/382473
+          has_next_page = @events.length > activity_query_limit
+          @events.pop if has_next_page
+
           @events = @events.select { |event| event.visible_to_user?(current_user) }
 
-          render json: ::Profile::EventSerializer.new(current_user: current_user).represent(@events)
+          render json: \
+            { events: ::Profile::EventSerializer.new(current_user: current_user).represent(@events), \
+              has_next_page: has_next_page }
         end
       end
     end
@@ -47,11 +55,20 @@ module Organizations
 
     private
 
+    def activity_query_limit
+      return params[:limit].to_i unless !params[:limit] || params[:limit].to_i > DEFAULT_ACTIVITY_EVENT_LIMIT
+
+      DEFAULT_ACTIVITY_EVENT_LIMIT
+    end
+
     def load_events
       @events = EventCollection.new(
         organization.projects.limit(DEFAULT_RESOURCE_LIMIT).sorted_by_activity,
         offset: params[:offset].to_i,
         filter: event_filter,
+        # limit + 1 allows us to determine if we have another page.
+        # This will be removed as part of https://gitlab.com/gitlab-org/gitlab/-/issues/382473
+        limit: activity_query_limit + 1,
         groups: organization.groups.limit(DEFAULT_RESOURCE_LIMIT)
       ).to_a.map(&:present)
 

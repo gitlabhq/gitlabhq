@@ -12,7 +12,7 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, feature_category: :gitlab_cli, stub_
   let(:cli) { described_class.new('/dev/null') }
   let(:timeout) { Gitlab::SidekiqCluster::DEFAULT_SOFT_TIMEOUT_SECONDS }
   let(:default_options) do
-    { env: 'test', directory: Dir.pwd, max_concurrency: 20, min_concurrency: 0, dryrun: false, timeout: timeout, concurrency: 0 }
+    { env: 'test', directory: Dir.pwd, dryrun: false, timeout: timeout, concurrency: 20 }
   end
 
   let(:sidekiq_exporter_enabled) { false }
@@ -120,28 +120,6 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, feature_category: :gitlab_cli, stub_
           end
         end
 
-        context 'with --max-concurrency flag' do
-          it 'starts Sidekiq workers for specified queues with a max concurrency' do
-            expected_queues = [%w[foo bar baz], %w[solo]]
-            expect(Gitlab::SidekiqCluster).to receive(:start)
-                                                .with(expected_queues, default_options.merge(max_concurrency: 2))
-                                                .and_return([])
-
-            cli.run(%w[foo,bar,baz solo -m 2])
-          end
-        end
-
-        context 'with --min-concurrency flag' do
-          it 'starts Sidekiq workers for specified queues with a min concurrency' do
-            expected_queues = [%w[foo bar baz], %w[solo]]
-            expect(Gitlab::SidekiqCluster).to receive(:start)
-                                                .with(expected_queues, default_options.merge(min_concurrency: 2))
-                                                .and_return([])
-
-            cli.run(%w[foo,bar,baz solo --min-concurrency 2])
-          end
-        end
-
         context 'with --concurrency flag' do
           it 'starts Sidekiq workers for specified queues with the fixed concurrency' do
             expected_queues = [%w[foo bar baz], %w[solo]]
@@ -203,8 +181,7 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, feature_category: :gitlab_cli, stub_
           expect { cli.run(%w[foo]) }.not_to raise_error
         end
 
-        it "starts Sidekiq workers with DEFAULT_QUEUES and min_concurrency = max_concurrency" do
-          default_options[:min_concurrency] = default_options[:max_concurrency]
+        it "starts Sidekiq workers with DEFAULT_QUEUES" do
           expect(Gitlab::SidekiqCluster).to receive(:start)
                                               .with([described_class::DEFAULT_QUEUES], default_options)
                                               .and_return([])
@@ -214,7 +191,6 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, feature_category: :gitlab_cli, stub_
 
         context 'with multi argument queues' do
           it 'starts with multiple DEFAULT_QUEUES' do
-            default_options[:min_concurrency] = default_options[:max_concurrency]
             expected_queues = [%w[default mailers], %w[default mailers]]
 
             expect(Gitlab::SidekiqCluster)
@@ -230,8 +206,7 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, feature_category: :gitlab_cli, stub_
           stub_config(sidekiq: { routing_rules: [] })
         end
 
-        it "starts Sidekiq workers with DEFAULT_QUEUES and min_concurrency = max_concurrency" do
-          default_options[:min_concurrency] = default_options[:max_concurrency]
+        it "starts Sidekiq workers with DEFAULT_QUEUES" do
           expect(Gitlab::SidekiqCluster).to receive(:start)
                                               .with([described_class::DEFAULT_QUEUES], default_options)
                                               .and_return([])
@@ -240,25 +215,12 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, feature_category: :gitlab_cli, stub_
         end
 
         context "with 4 wildcard * as argument" do
-          it "starts 4 Sidekiq workers all with DEFAULT_QUEUES and min_concurrency = max_concurrency" do
-            default_options[:min_concurrency] = default_options[:max_concurrency]
+          it "starts 4 Sidekiq workers all with DEFAULT_QUEUES" do
             expect(Gitlab::SidekiqCluster).to receive(:start)
                                                 .with([described_class::DEFAULT_QUEUES] * 4, default_options)
                                                 .and_return([])
 
             cli.run(%w[* * * *])
-          end
-        end
-
-        context "with min-concurrency flag" do
-          it "starts Sidekiq workers with DEFAULT_QUEUES and min_concurrency as specified" do
-            options = default_options.dup
-            options[:min_concurrency] = 10
-            expect(Gitlab::SidekiqCluster).to receive(:start)
-                                                .with([described_class::DEFAULT_QUEUES] * 4, options)
-                                                .and_return([])
-
-            cli.run(%w[* * * * --min-concurrency 10])
           end
         end
       end

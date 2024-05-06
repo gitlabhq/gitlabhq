@@ -64,7 +64,7 @@ module Ci
 
     scope :with_job, -> { joins(:job).includes(:job) }
 
-    scope :with_file_types, -> (file_types) do
+    scope :with_file_types, ->(file_types) do
       types = self.file_types.select { |file_type| file_types.include?(file_type) }.values
 
       where(file_type: types)

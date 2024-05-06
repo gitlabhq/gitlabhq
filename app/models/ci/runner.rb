@@ -128,17 +128,17 @@ module Ci
     scope :deprecated_shared, -> { instance_type }
     scope :deprecated_specific, -> { project_type.or(group_type) }
 
-    scope :belonging_to_project, -> (project_id) {
+    scope :belonging_to_project, ->(project_id) {
       joins(:runner_projects).where(ci_runner_projects: { project_id: project_id })
     }
 
-    scope :belonging_to_group, -> (group_id) {
+    scope :belonging_to_group, ->(group_id) {
       joins(:runner_namespaces).where(ci_runner_namespaces: { namespace_id: group_id })
     }
 
-    scope :with_creator_id, -> (value) { where(creator_id: value) }
+    scope :with_creator_id, ->(value) { where(creator_id: value) }
 
-    scope :belonging_to_group_or_project_descendants, -> (group_id) {
+    scope :belonging_to_group_or_project_descendants, ->(group_id) {
       group_ids = Ci::NamespaceMirror.by_group_and_descendants(group_id).select(:namespace_id)
       project_ids = Ci::ProjectMirror.by_namespace_id(group_ids).select(:project_id)
 
@@ -151,13 +151,13 @@ module Ci
       )
     }
 
-    scope :belonging_to_group_and_ancestors, -> (group_id) {
+    scope :belonging_to_group_and_ancestors, ->(group_id) {
       group_self_and_ancestors_ids = ::Group.find_by(id: group_id)&.self_and_ancestor_ids
 
       belonging_to_group(group_self_and_ancestors_ids)
     }
 
-    scope :belonging_to_parent_groups_of_project, -> (project_id) {
+    scope :belonging_to_parent_groups_of_project, ->(project_id) {
       raise ArgumentError, "only 1 project_id allowed for performance reasons" unless project_id.is_a?(Integer)
 
       project_groups = ::Group.joins(:projects).where(projects: { id: project_id })
@@ -165,7 +165,7 @@ module Ci
       belonging_to_group(project_groups.self_and_ancestors.pluck(:id))
     }
 
-    scope :owned_or_instance_wide, -> (project_id) do
+    scope :owned_or_instance_wide, ->(project_id) do
       project = project_id.respond_to?(:shared_runners) ? project_id : Project.find(project_id)
 
       from_union(
@@ -178,7 +178,7 @@ module Ci
       )
     end
 
-    scope :group_or_instance_wide, -> (group) do
+    scope :group_or_instance_wide, ->(group) do
       from_union(
         [
           belonging_to_group_and_ancestors(group.id),
@@ -188,7 +188,7 @@ module Ci
       )
     end
 
-    scope :usable_from_scope, -> (group) do
+    scope :usable_from_scope, ->(group) do
       from_union(
         [
           belonging_to_group(group.ancestor_ids),

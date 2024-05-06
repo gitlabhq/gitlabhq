@@ -16,7 +16,7 @@ RSpec.describe Gitlab::Auth::UserAccessDeniedReason do
         user.block!
       end
 
-      it { is_expected.to match /blocked/ }
+      it { is_expected.to match(/blocked/) }
     end
 
     context 'a user did not accept the enforced terms' do
@@ -24,7 +24,7 @@ RSpec.describe Gitlab::Auth::UserAccessDeniedReason do
         enforce_terms
       end
 
-      it { is_expected.to match /must accept the Terms of Service/ }
+      it { is_expected.to match(/must accept the Terms of Service/) }
       it { is_expected.to include(user.username) }
       it { is_expected.to include(Gitlab.config.gitlab.url) }
     end
@@ -32,7 +32,7 @@ RSpec.describe Gitlab::Auth::UserAccessDeniedReason do
     context 'when the user is internal' do
       let(:user) { Users::Internal.ghost }
 
-      it { is_expected.to match /This action cannot be performed by internal users/ }
+      it { is_expected.to match(/This action cannot be performed by internal users/) }
     end
 
     context 'when the user is deactivated' do
@@ -48,7 +48,7 @@ RSpec.describe Gitlab::Auth::UserAccessDeniedReason do
         user.update!(confirmed_at: nil)
       end
 
-      it { is_expected.to match /Your primary email address is not confirmed/ }
+      it { is_expected.to match(/Your primary email address is not confirmed/) }
     end
 
     context 'when the user is blocked pending approval' do

@@ -108,15 +108,18 @@ FLAG:
 The availability of this feature is controlled by a feature flag.
 For more information, see the history.
 
-`after_script` commands will run after a job is set to cancel if the job is `running` the `before_script` or `script` section of the job when it was set to cancel. This applies when the runner version is 16.9 and above and the `ci_canceling_status` flag is enabled.
+`after_script` commands will run after a job is set to cancel if the job is `running` the `before_script` or `script` section of the job when it was set to cancel. This applies when the GitLab Runner version is 16.9 and above and the `ci_canceling_status` flag is enabled.
 
 The jobs status will be `canceling` while the `after_script` commands are processed and will transition to `canceled` after the `after_script` commands are finished.
 
 **Additional details:**
 
-- In runner version 17.0 and above, you can opt-out of running `after_script` on cancel when the `$CI_JOB_STATUS` predefined variable is `canceled`.
-- Between runner version 16.10 and 17.0, `canceled` is not supported for `$CI_JOB_STATUS`. The `$CI_JOB_STATUS` variable will be set to `failed` during the `after_script` run.
-- For shared runners on GitLab.com, the `ci_canceling_status` flag will be turned on during the last breaking change window in GitLab version 17.0 while runner is still on version 16.11.
+- You can opt-out of running `after_script` on cancel when the `$CI_JOB_STATUS` predefined variable is `canceled`.
+- GitLab Runner 16.11.1 and above are recommended to support this feature:
+  - In the GitLab Runner 16.11.1 patch release, [`canceled` is supported for `$CI_JOB_STATUS`](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/37485). Before the patch release, the status will be `failed` while `canceling`.
+  - In the GitLab Runner 16.11.1 patch release, a bug fix caused the `after_script` work to close pre-maturely.
+- For shared runners on GitLab.com, the `ci_canceling_status` flag will be turned on during the last breaking change window on May 8th while runner is on patch version 16.11.1 or above.
+- For self-managed, the `ci_canceling_status` flag will be enabled by default in 17.0 and left on, in case administrators need to turn off the behavior. This flag could be removed in the next milestone and should not be relied on for long-term use.
 
 ## Split long commands
 

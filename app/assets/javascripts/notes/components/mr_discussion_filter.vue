@@ -9,10 +9,12 @@ import {
   MR_FILTER_OPTIONS,
   MR_FILTER_TRACKING_OPENED,
   MR_FILTER_TRACKING_USER_COMMENTS,
+  MR_FILTER_TRACKING_BOT_COMMENTS,
 } from '~/notes/constants';
 
 const filterOptionToTrackingEventMap = {
   comments: MR_FILTER_TRACKING_USER_COMMENTS,
+  bot_comments: MR_FILTER_TRACKING_BOT_COMMENTS,
 };
 const allFilters = MR_FILTER_OPTIONS.map((f) => f.value);
 

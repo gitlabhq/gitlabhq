@@ -29,12 +29,12 @@ module Ci
     belongs_to :project_mirror, primary_key: :project_id, foreign_key: :project_id, inverse_of: :builds
 
     RUNNER_FEATURES = {
-      upload_multiple_artifacts: -> (build) { build.publishes_artifacts_reports? },
-      refspecs: -> (build) { build.merge_request_ref? },
-      artifacts_exclude: -> (build) { build.supports_artifacts_exclude? },
-      multi_build_steps: -> (build) { build.multi_build_steps? },
-      return_exit_code: -> (build) { build.exit_codes_defined? },
-      fallback_cache_keys: -> (build) { build.fallback_cache_keys_defined? }
+      upload_multiple_artifacts: ->(build) { build.publishes_artifacts_reports? },
+      refspecs: ->(build) { build.merge_request_ref? },
+      artifacts_exclude: ->(build) { build.supports_artifacts_exclude? },
+      multi_build_steps: ->(build) { build.multi_build_steps? },
+      return_exit_code: ->(build) { build.exit_codes_defined? },
+      fallback_cache_keys: ->(build) { build.fallback_cache_keys_defined? }
     }.freeze
 
     DEGRADATION_THRESHOLD_VARIABLE_NAME = 'DEGRADATION_THRESHOLD'
@@ -163,17 +163,17 @@ module Ci
     scope :ref_protected, -> { where(protected: true) }
     scope :with_live_trace, -> { where_exists(Ci::BuildTraceChunk.scoped_build) }
     scope :with_stale_live_trace, -> { with_live_trace.finished_before(12.hours.ago) }
-    scope :finished_before, -> (date) { finished.where('finished_at < ?', date) }
+    scope :finished_before, ->(date) { finished.where('finished_at < ?', date) }
     scope :license_management_jobs, -> { where(name: %i[license_management license_scanning]) } # handle license rename https://gitlab.com/gitlab-org/gitlab/issues/8911
     # WARNING: This scope could lead to performance implications for large size of tables `ci_builds` and ci_runners`.
     # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123131
-    scope :with_runner_type, -> (runner_type) { joins(:runner).where(runner: { runner_type: runner_type }) }
+    scope :with_runner_type, ->(runner_type) { joins(:runner).where(runner: { runner_type: runner_type }) }
 
-    scope :belonging_to_runner_manager, -> (runner_machine_id) {
+    scope :belonging_to_runner_manager, ->(runner_machine_id) {
       joins(:runner_manager_build).where(p_ci_runner_machine_builds: { runner_machine_id: runner_machine_id })
     }
 
-    scope :with_secure_reports_from_config_options, -> (job_types) do
+    scope :with_secure_reports_from_config_options, ->(job_types) do
       joins(:metadata).where("#{Ci::BuildMetadata.quoted_table_name}.config_options -> 'artifacts' -> 'reports' ?| array[:job_types]", job_types: job_types)
     end
 

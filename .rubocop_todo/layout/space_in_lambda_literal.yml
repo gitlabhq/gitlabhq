@@ -2,20 +2,6 @@
 # Cop supports --autocorrect.
 Layout/SpaceInLambdaLiteral:
   Exclude:
-    - 'app/models/bulk_imports/tracker.rb'
-    - 'app/models/ci/build.rb'
-    - 'app/models/ci/daily_build_group_report_result.rb'
-    - 'app/models/ci/group_variable.rb'
-    - 'app/models/ci/instance_variable.rb'
-    - 'app/models/ci/job_artifact.rb'
-    - 'app/models/ci/namespace_mirror.rb'
-    - 'app/models/ci/pipeline.rb'
-    - 'app/models/ci/processable.rb'
-    - 'app/models/ci/project_mirror.rb'
-    - 'app/models/ci/resource.rb'
-    - 'app/models/ci/runner.rb'
-    - 'app/models/ci/unit_test.rb'
-    - 'app/models/ci/variable.rb'
     - 'app/models/clusters/agent.rb'
     - 'app/models/clusters/agent_token.rb'
     - 'app/models/clusters/agents/activity_event.rb'

@@ -2120,8 +2120,13 @@ Twitter OAuth 1.0a OmniAuth is deprecated and will be removed for self-managed G
 
 Unified approval rules are deprecated in favor of multiple approval rules, which provide more flexibility.
 You might not be able to migrate your Unified approval rules to multiple approval rules without breaking changes.
-To help you migrate manually, we introduced migration documentation. If you don't migrate manually before unified approval
+To help you migrate manually, we introduced migration documentation.
+
+If you don't migrate manually before unified approval
 rules are removed, GitLab will automatically migrate your settings.
+As multiple approval rules allow a more fine-grained setup for approval rules, if you leave the migration to GitLab,
+the automatic migrations might end up with more restrictive rules than you might prefer.
+Check your migration rules if you have an issue where you need more approvals than you expect.
 
 In GitLab 15.11, UI support for unified approval rules was removed.
 You can still access unified approval rules with the API.

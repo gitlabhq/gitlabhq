@@ -20,26 +20,22 @@ describe('ContributionEventClosed', () => {
   };
 
   describe.each`
-    event                                       | expectedMessage                                                   | iconName                 | iconClass
-    ${eventMilestoneClosed()}                   | ${'Closed milestone %{targetLink} in %{resourceParentLink}.'}     | ${'status_closed'}       | ${'gl-text-blue-500'}
-    ${eventIssueClosed()}                       | ${'Closed issue %{targetLink} in %{resourceParentLink}.'}         | ${'issue-closed'}        | ${'gl-text-blue-500'}
-    ${eventMergeRequestClosed()}                | ${'Closed merge request %{targetLink} in %{resourceParentLink}.'} | ${'merge-request-close'} | ${'gl-text-red-500'}
-    ${{ target: { type: 'unsupported type' } }} | ${'Closed resource.'}                                             | ${'status_closed'}       | ${'gl-text-blue-500'}
-  `(
-    'when event target type is $event.target.type',
-    ({ event, expectedMessage, iconName, iconClass }) => {
-      it('renders `ContributionEventBase` with correct props', () => {
-        createComponent({ propsData: { event } });
+    event                                       | expectedMessage                                                   | iconName
+    ${eventMilestoneClosed()}                   | ${'Closed milestone %{targetLink} in %{resourceParentLink}.'}     | ${'status_closed'}
+    ${eventIssueClosed()}                       | ${'Closed issue %{targetLink} in %{resourceParentLink}.'}         | ${'issue-closed'}
+    ${eventMergeRequestClosed()}                | ${'Closed merge request %{targetLink} in %{resourceParentLink}.'} | ${'merge-request-close'}
+    ${{ target: { type: 'unsupported type' } }} | ${'Closed resource.'}                                             | ${'status_closed'}
+  `('when event target type is $event.target.type', ({ event, expectedMessage, iconName }) => {
+    it('renders `ContributionEventBase` with correct props', () => {
+      createComponent({ propsData: { event } });
 
-        expect(wrapper.findComponent(ContributionEventBase).props()).toMatchObject({
-          event,
-          message: expectedMessage,
-          iconName,
-          iconClass,
-        });
+      expect(wrapper.findComponent(ContributionEventBase).props()).toMatchObject({
+        event,
+        message: expectedMessage,
+        iconName,
       });
-    },
-  );
+    });
+  });
 
   describe(`when event target type is ${TARGET_TYPE_WORK_ITEM}`, () => {
     describe.each`
@@ -55,7 +51,6 @@ describe('ContributionEventClosed', () => {
           event,
           message: expectedMessage,
           iconName: 'status_closed',
-          iconClass: 'gl-text-blue-500',
         });
       });
     });

@@ -109,16 +109,18 @@ RSpec.describe Organizations::OrganizationsController, feature_category: :cell d
           sign_in(user)
         end
 
-        it 'renders empty array' do
+        it 'returns empty array and no next page' do
           get activity_organization_path(organization, format: :json)
 
           expect(response.media_type).to eq('application/json')
-          expect(json_response).to be_an(Array)
-          expect(json_response.size).to eq(0)
+
+          expect(json_response['events']).to be_an(Array)
+          expect(json_response['events'].size).to eq(0)
+          expect(json_response['has_next_page']).to eq(false)
         end
       end
 
-      context 'with activities' do
+      context 'with less activities than limit' do
         let_it_be(:project) { create(:project, organization: organization) }
 
         before_all do
@@ -126,12 +128,59 @@ RSpec.describe Organizations::OrganizationsController, feature_category: :cell d
           sign_in(user)
         end
 
-        it 'loads events' do
+        it 'returns events and no next page' do
           get activity_organization_path(organization, format: :json)
 
           expect(response.media_type).to eq('application/json')
-          expect(json_response).to be_an(Array)
-          expect(json_response.size).to eq(1)
+
+          expect(json_response['events']).to be_an(Array)
+          expect(json_response['events'].size).to eq(1)
+          expect(json_response['has_next_page']).to eq(false)
+        end
+      end
+
+      context 'with more activities than passed in limit' do
+        let_it_be(:project) { create(:project, organization: organization) }
+        let_it_be(:events) { create_list(:event, 3, project: project) }
+
+        before_all do
+          project.add_developer(user)
+          sign_in(user)
+        end
+
+        it 'returns events and next page' do
+          get activity_organization_path(organization, limit: 2, format: :json)
+
+          expect(response.media_type).to eq('application/json')
+
+          expect(json_response['events']).to be_an(Array)
+          expect(json_response['events'].size).to eq(2)
+          expect(json_response['has_next_page']).to eq(true)
+        end
+      end
+
+      context 'with passed in limit greater than allowed' do
+        let_it_be(:mock_max_event_limit) { 3 }
+        let_it_be(:project) { create(:project, organization: organization) }
+        let_it_be(:events) { create_list(:event, mock_max_event_limit + 1, project: project) }
+
+        before_all do
+          project.add_developer(user)
+          sign_in(user)
+        end
+
+        before do
+          stub_const("#{described_class}::DEFAULT_ACTIVITY_EVENT_LIMIT", mock_max_event_limit)
+        end
+
+        it 'returns max events and next page boolean' do
+          get activity_organization_path(organization, limit: 19, format: :json)
+
+          expect(response.media_type).to eq('application/json')
+
+          expect(json_response['events']).to be_an(Array)
+          expect(json_response['events'].size).to eq(mock_max_event_limit)
+          expect(json_response['has_next_page']).to eq(true)
         end
       end
     end

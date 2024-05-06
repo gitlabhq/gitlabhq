@@ -129,3 +129,4 @@ export const MR_FILTER_OPTIONS = [
 ];
 export const MR_FILTER_TRACKING_OPENED = 'user_clicks_comment_filter_dropdown';
 export const MR_FILTER_TRACKING_USER_COMMENTS = 'click_comment_filter_toggle_user_comments_in_mr';
+export const MR_FILTER_TRACKING_BOT_COMMENTS = 'click_comment_filter_toggle_bot_comments_in_mr';

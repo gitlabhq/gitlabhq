@@ -97,14 +97,17 @@ extend type Query {
   k8sConnection(configuration: LocalConfiguration): K8sResources
   fluxKustomizationStatus(
     configuration: LocalConfiguration
-    namespace: String
-    environmentName: String
+    fluxResourcePath: String
   ): LocalFluxResourceStatus
   fluxHelmReleaseStatus(
     configuration: LocalConfiguration
-    namespace: String
-    environmentName: String
+    fluxResourcePath: String
   ): LocalFluxResourceStatus
+}
+
+input ResourceTypeParam {
+  resourceType: String
+  connectionParams: JSON
 }
 
 extend type Mutation {
@@ -115,7 +118,7 @@ extend type Mutation {
   reconnectToCluster(
     configuration: LocalConfiguration
     namespace: String
-    resourceType: String
+    resourceTypeParam: ResourceTypeParam
   ): LocalErrors
   setEnvironmentToDelete(environment: LocalEnvironmentInput): LocalErrors
   setEnvironmentToRollback(environment: LocalEnvironmentInput): LocalErrors

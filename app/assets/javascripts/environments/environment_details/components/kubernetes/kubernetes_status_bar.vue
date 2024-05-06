@@ -17,10 +17,16 @@ import {
 import fluxKustomizationStatusQuery from '~/environments/graphql/queries/flux_kustomization_status.query.graphql';
 import fluxHelmReleaseStatusQuery from '~/environments/graphql/queries/flux_helm_release_status.query.graphql';
 import KubernetesConnectionStatus from '~/environments/environment_details/components/kubernetes/kubernetes_connection_status.vue';
+import KubernetesConnectionStatusBadge from '~/environments/environment_details/components/kubernetes/kubernetes_connection_status_badge.vue';
+import {
+  k8sResourceType,
+  connectionStatus,
+} from '~/environments/graphql/resolvers/kubernetes/constants';
 
 export default {
   components: {
     KubernetesConnectionStatus,
+    KubernetesConnectionStatusBadge,
     GlLoadingIcon,
     GlBadge,
     GlPopover,
@@ -98,9 +104,56 @@ export default {
   data() {
     return {
       fluxApiError: '',
+      clusterResourceTypeParams: {
+        [k8sResourceType.k8sServices]: {
+          resourceType: k8sResourceType.k8sServices,
+          connectionParams: null,
+        },
+        [k8sResourceType.k8sPods]: {
+          resourceType: k8sResourceType.k8sPods,
+          connectionParams: null,
+        },
+        [k8sResourceType.fluxKustomizations]: {
+          resourceType: k8sResourceType.fluxKustomizations,
+          connectionParams: {
+            fluxResourcePath: this.fluxResourcePath,
+          },
+        },
+        [k8sResourceType.fluxHelmReleases]: {
+          resourceType: k8sResourceType.fluxHelmReleases,
+          connectionParams: {
+            fluxResourcePath: this.fluxResourcePath,
+          },
+        },
+      },
     };
   },
   computed: {
+    fluxConnectionParams() {
+      if (this.isUsingKustomizationConfiguration) {
+        return {
+          resourceType: k8sResourceType.fluxKustomizations,
+          connectionParams: {
+            fluxResourcePath: this.fluxResourcePath,
+          },
+        };
+      }
+      if (this.isUsingHelmConfiguration) {
+        return {
+          resourceType: k8sResourceType.fluxHelmReleases,
+          connectionParams: {
+            fluxResourcePath: this.fluxResourcePath,
+          },
+        };
+      }
+      return {};
+    },
+    isUsingKustomizationConfiguration() {
+      return Boolean(this.fluxResourcePath?.includes(KUSTOMIZATIONS_RESOURCE_TYPE));
+    },
+    isUsingHelmConfiguration() {
+      return Boolean(this.fluxResourcePath?.includes(HELM_RELEASES_RESOURCE_TYPE));
+    },
     healthBadge() {
       return HEALTH_BADGES[this.clusterHealthStatus];
     },
@@ -185,6 +238,9 @@ export default {
     isReconnectButtonShown() {
       return this.glFeatures.k8sWatchApi;
     },
+    isFluxConnectionStatus() {
+      return this.isReconnectButtonShown && Boolean(this.fluxConnectionParams.resourceType);
+    },
   },
   methods: {
     handleError(error) {
@@ -193,13 +249,16 @@ export default {
   },
   i18n: {
     healthLabel: s__('Environment|Environment status'),
-    syncStatusLabel: s__('Environment|Sync status'),
+    syncStatusLabel: s__('Environment|Flux Sync'),
+    dashboardStatusLabel: s__('Environment|Dashboard'),
   },
-  badgeContainerClasses: 'gl-display-flex gl-align-items-center gl-flex-shrink-0 gl-mr-3 gl-mb-2',
+  k8sResourceType,
+  connectionStatus,
+  badgeContainerClasses: 'gl-flex gl-items-center gl-shrink-0 gl-mr-3 gl-mb-2',
 };
 </script>
 <template>
-  <div class="gl-display-flex gl-flex-wrap">
+  <div class="gl-flex gl-flex-wrap">
     <div :class="$options.badgeContainerClasses">
       <span class="gl-mr-3">{{ $options.i18n.healthLabel }}</span>
       <gl-loading-icon v-if="!clusterHealthStatus" size="sm" inline />
@@ -211,10 +270,25 @@ export default {
         >{{ healthBadge.text }}
       </gl-badge>
     </div>
-
-    <div :class="$options.badgeContainerClasses">
+    <kubernetes-connection-status
+      #default="{ connectionProps }"
+      data-testid="flux-connection-status"
+      :class="$options.badgeContainerClasses"
+      :configuration="configuration"
+      :namespace="namespace"
+      :resource-type-param="fluxConnectionParams"
+    >
       <span class="gl-mr-3">{{ $options.i18n.syncStatusLabel }}</span>
-      <gl-loading-icon v-if="isLoading" size="sm" inline />
+      <kubernetes-connection-status-badge
+        v-if="
+          isFluxConnectionStatus &&
+          connectionProps.connectionStatus !== $options.connectionStatus.connected
+        "
+        data-testid="flux-status-badge"
+        :popover-id="$options.k8sResourceType.fluxKustomizations"
+        :connection-status="connectionProps.connectionStatus"
+        @reconnect="connectionProps.reconnect"
+      />
       <template v-else-if="syncStatusBadge">
         <gl-badge
           :id="fluxBadgeId"
@@ -234,13 +308,23 @@ export default {
           </gl-sprintf>
         </gl-popover>
       </template>
-    </div>
+    </kubernetes-connection-status>
     <kubernetes-connection-status
       v-if="isReconnectButtonShown"
+      #default="{ connectionProps }"
+      data-testid="dashboard-status-badge"
       :configuration="configuration"
       :namespace="namespace"
-      :resource-type="resourceType"
+      :resource-type-param="clusterResourceTypeParams[resourceType]"
+      :class="$options.badgeContainerClasses"
       @error="handleError"
-    />
+    >
+      <span class="gl-mr-3">{{ $options.i18n.dashboardStatusLabel }}</span>
+      <kubernetes-connection-status-badge
+        :popover-id="resourceType"
+        :connection-status="connectionProps.connectionStatus"
+        @reconnect="connectionProps.reconnect"
+      />
+    </kubernetes-connection-status>
   </div>
 </template>

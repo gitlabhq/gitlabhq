@@ -75,7 +75,8 @@ module Emails
       options = {
         from: email_sender,
         to: recipient.email,
-        subject: "Re: #{subject_base}"
+        subject: "Re: #{subject_base}",
+        **service_desk_template_content_options('new_participant')
       }
 
       mail_new_thread(@issue, options)

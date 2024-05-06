@@ -24,13 +24,13 @@ module Ci
     scope :preload_needs, -> { preload(:needs) }
     scope :manual_actions, -> { where(when: :manual, status: COMPLETED_STATUSES + %i[manual]) }
 
-    scope :with_needs, -> (names = nil) do
+    scope :with_needs, ->(names = nil) do
       needs = Ci::BuildNeed.scoped_build.select(1)
       needs = needs.where(name: names) if names
       where('EXISTS (?)', needs)
     end
 
-    scope :without_needs, -> (names = nil) do
+    scope :without_needs, ->(names = nil) do
       needs = Ci::BuildNeed.scoped_build.select(1)
       needs = needs.where(name: names) if names
       where('NOT EXISTS (?)', needs)

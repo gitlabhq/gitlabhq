@@ -517,7 +517,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job, feature_category: :pipeline_compo
 
       it 'returns error about mixing only: with rules:' do
         expect(entry).not_to be_valid
-        expect(entry.errors).to include /may not be used with `rules`: only/
+        expect(entry.errors).to include(/may not be used with `rules`: only/)
       end
 
       context 'and only: is blank' do
@@ -542,7 +542,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job, feature_category: :pipeline_compo
 
       it 'returns error about mixing except: with rules:' do
         expect(entry).not_to be_valid
-        expect(entry.errors).to include /may not be used with `rules`: except/
+        expect(entry.errors).to include(/may not be used with `rules`: except/)
       end
 
       context 'and except: is blank' do
@@ -574,7 +574,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job, feature_category: :pipeline_compo
 
       it 'returns errors about mixing both only: and except: with rules:' do
         expect(entry).not_to be_valid
-        expect(entry.errors).to include /may not be used with `rules`: only, except/
+        expect(entry.errors).to include(/may not be used with `rules`: only, except/)
       end
 
       context 'when only: and except: as both blank' do
@@ -606,7 +606,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job, feature_category: :pipeline_compo
 
         it 'is invalid' do
           expect(entry).not_to be_valid
-          expect(entry.errors).to include /job publish can only be used within a `pages` job/
+          expect(entry.errors).to include(/job publish can only be used within a `pages` job/)
         end
       end
 
@@ -615,7 +615,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job, feature_category: :pipeline_compo
 
         it 'is invalid' do
           expect(entry).not_to be_valid
-          expect(entry.errors).to include /job pages can only be used within a `pages` job/
+          expect(entry.errors).to include(/job pages can only be used within a `pages` job/)
         end
       end
     end

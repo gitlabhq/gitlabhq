@@ -23,18 +23,18 @@ describe('ContributionEventCreated', () => {
   };
 
   describe.each`
-    event                                                                        | expectedMessage                                                   | expectedIconName | expectedIconClass
-    ${eventProjectCreated()}                                                     | ${'Created project %{resourceParentLink}.'}                       | ${'status_open'} | ${'gl-text-green-500'}
-    ${eventMilestoneCreated()}                                                   | ${'Opened milestone %{targetLink} in %{resourceParentLink}.'}     | ${'status_open'} | ${'gl-text-green-500'}
-    ${eventIssueCreated()}                                                       | ${'Opened issue %{targetLink} in %{resourceParentLink}.'}         | ${'status_open'} | ${'gl-text-green-500'}
-    ${eventMergeRequestCreated()}                                                | ${'Opened merge request %{targetLink} in %{resourceParentLink}.'} | ${'status_open'} | ${'gl-text-green-500'}
-    ${eventWikiPageCreated()}                                                    | ${'Created wiki page %{targetLink} in %{resourceParentLink}.'}    | ${'status_open'} | ${'gl-text-green-500'}
-    ${eventDesignCreated()}                                                      | ${'Added design %{targetLink} in %{resourceParentLink}.'}         | ${'upload'}      | ${null}
-    ${{ resource_parent: { type: 'unsupported type' }, target: { type: null } }} | ${'Created resource.'}                                            | ${'status_open'} | ${'gl-text-green-500'}
-    ${{ target: { type: 'unsupported type' } }}                                  | ${'Created resource.'}                                            | ${'status_open'} | ${'gl-text-green-500'}
+    event                                                                        | expectedMessage                                                   | expectedIconName
+    ${eventProjectCreated()}                                                     | ${'Created project %{resourceParentLink}.'}                       | ${'status_open'}
+    ${eventMilestoneCreated()}                                                   | ${'Opened milestone %{targetLink} in %{resourceParentLink}.'}     | ${'status_open'}
+    ${eventIssueCreated()}                                                       | ${'Opened issue %{targetLink} in %{resourceParentLink}.'}         | ${'status_open'}
+    ${eventMergeRequestCreated()}                                                | ${'Opened merge request %{targetLink} in %{resourceParentLink}.'} | ${'status_open'}
+    ${eventWikiPageCreated()}                                                    | ${'Created wiki page %{targetLink} in %{resourceParentLink}.'}    | ${'status_open'}
+    ${eventDesignCreated()}                                                      | ${'Added design %{targetLink} in %{resourceParentLink}.'}         | ${'upload'}
+    ${{ resource_parent: { type: 'unsupported type' }, target: { type: null } }} | ${'Created resource.'}                                            | ${'status_open'}
+    ${{ target: { type: 'unsupported type' } }}                                  | ${'Created resource.'}                                            | ${'status_open'}
   `(
     'when event target type is $event.target.type',
-    ({ event, expectedMessage, expectedIconName, expectedIconClass }) => {
+    ({ event, expectedMessage, expectedIconName }) => {
       it('renders `ContributionEventBase` with correct props', () => {
         createComponent({ propsData: { event } });
 
@@ -42,7 +42,6 @@ describe('ContributionEventCreated', () => {
           event,
           message: expectedMessage,
           iconName: expectedIconName,
-          iconClass: expectedIconClass,
         });
       });
     },
@@ -62,7 +61,6 @@ describe('ContributionEventCreated', () => {
           event,
           message: expectedMessage,
           iconName: 'status_open',
-          iconClass: 'gl-text-green-500',
         });
       });
     });
