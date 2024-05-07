@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'rspec-parameterized'
 
-RSpec.describe Gitlab::Instrumentation::RedisBase, :request_store do
+RSpec.describe Gitlab::Instrumentation::RedisBase, :request_store, feature_category: :redis do
   using RSpec::Parameterized::TableSyntax
   let(:instrumentation_class_a) do
     stub_const('InstanceA', Class.new(described_class))
@@ -323,6 +323,42 @@ RSpec.describe Gitlab::Instrumentation::RedisBase, :request_store do
 
         instrumentation_class_c.instance_count_connection_exception(Redis::ConnectionError.new)
       end
+    end
+  end
+
+  describe '.instance_count_cluster_pipeline_redirection' do
+    let(:indices) { [1, 2, 3] }
+
+    before do
+      # initialise intance variable
+      instrumentation_class_c.instance_count_cluster_pipeline_redirection(
+        RedisClient::Cluster::Pipeline::RedirectionNeeded.new
+      )
+    end
+
+    it 'tracks the redirection exception' do
+      expect(instrumentation_class_c.instance_variable_get(:@pipeline_redirection_histogram))
+        .to receive(:observe)
+          .with(
+            { storage: instrumentation_class_c.storage_key, storage_shard: 'common' },
+            indices.size
+          )
+
+      err = RedisClient::Cluster::Pipeline::RedirectionNeeded.new
+      err.indices = indices
+      instrumentation_class_c.instance_count_cluster_pipeline_redirection(err)
+    end
+
+    it 'handles missing indices' do
+      expect(instrumentation_class_c.instance_variable_get(:@pipeline_redirection_histogram))
+        .to receive(:observe)
+          .with(
+            { storage: instrumentation_class_c.storage_key, storage_shard: 'common' },
+            0
+          )
+
+      err = RedisClient::Cluster::Pipeline::RedirectionNeeded.new
+      instrumentation_class_c.instance_count_cluster_pipeline_redirection(err)
     end
   end
 end

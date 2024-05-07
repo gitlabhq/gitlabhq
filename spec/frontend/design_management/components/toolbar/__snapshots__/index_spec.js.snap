@@ -48,13 +48,14 @@ exports[`Design management toolbar component renders design and updated data 1`]
     class="gl-display-flex gl-flex-shrink-0 gl-md-flex-direction-row gl-md-ml-auto gl-mr-5"
   >
     <design-todo-button-stub
-      class="gl-md-ml-3 gl-ml-0 gl-mr-3"
+      class="gl-md-ml-3 gl-ml-0"
       design="[object Object]"
     />
     <gl-button-stub
       aria-label="Download design"
       buttontextclasses=""
-      category="primary"
+      category="tertiary"
+      class="gl-ml-2"
       href="/-/designs/306/7f747adcd4693afadbe968d7ba7d983349b9012d"
       icon="download"
       size="medium"
@@ -62,20 +63,20 @@ exports[`Design management toolbar component renders design and updated data 1`]
       variant="default"
     />
     <delete-button-stub
-      buttoncategory="secondary"
+      buttoncategory="tertiary"
       buttonclass=""
       buttonicon="archive"
       buttonsize="medium"
       buttonvariant="default"
-      class="gl-ml-3"
+      class="gl-ml-2"
       hasselecteddesigns="true"
       title="Archive design"
     />
     <gl-button-stub
       aria-label="Show comments"
       buttontextclasses=""
-      category="primary"
-      class="gl-ml-3 gl-mr-6"
+      category="tertiary"
+      class="gl-ml-2 gl-mr-6"
       data-testid="toggle-design-sidebar"
       icon="comments"
       size="medium"

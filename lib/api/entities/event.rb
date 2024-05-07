@@ -19,7 +19,7 @@ module API
       expose :push_event_payload,
         as: :push_data,
         using: Entities::PushEventPayload,
-        if: -> (event, _) { event.push_action? }
+        if: ->(event, _) { event.push_action? }
 
       expose :author_username, documentation: { type: 'string', example: 'root' } do |event, options|
         event.author&.username

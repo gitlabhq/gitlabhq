@@ -9,7 +9,7 @@ module API
         !issue.tasks?
       end
 
-      expose :task_status, if: -> (issue, _) do
+      expose :task_status, if: ->(issue, _) do
         !issue.tasks?
       end
 
@@ -50,7 +50,7 @@ module API
       # Calculating the value of subscribed field triggers Markdown
       # processing. We can't do that for multiple issues / merge
       # requests in a single API request.
-      expose :subscribed, if: -> (_, options) { options.fetch(:include_subscribed, true) } do |issue, options|
+      expose :subscribed, if: ->(_, options) { options.fetch(:include_subscribed, true) } do |issue, options|
         issue.subscribed?(options[:current_user], options[:project] || issue.project)
       end
 

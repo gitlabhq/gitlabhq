@@ -27,13 +27,13 @@ RSpec.describe AsCte do
       context 'as true' do
         let(:materialized) { true }
 
-        it { expect(subject).to match /MATERIALIZE/ }
+        it { expect(subject).to match(/MATERIALIZE/) }
       end
 
       context 'as false' do
         let(:materialized) { false }
 
-        it { expect(subject).not_to match /MATERIALIZE/ }
+        it { expect(subject).not_to match(/MATERIALIZE/) }
       end
     end
   end

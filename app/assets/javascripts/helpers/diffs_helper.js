@@ -11,5 +11,5 @@ export function isSingleViewStyle(diffFile) {
 }
 
 export function hasDiff(diffFile) {
-  return hasInlineLines(diffFile) || hasParallelLines(diffFile) || !diffFile?.blob?.readable_text;
+  return hasInlineLines(diffFile) || hasParallelLines(diffFile);
 }

@@ -15,7 +15,7 @@ RSpec.describe 'GitlabSchema configurations', feature_category: :integrations do
 
           subject
 
-          expect_graphql_errors_to_include /Timeout/
+          expect_graphql_errors_to_include(/Timeout/)
         end
       end
     end
@@ -27,7 +27,7 @@ RSpec.describe 'GitlabSchema configurations', feature_category: :integrations do
 
           subject
 
-          expect_graphql_errors_to_include /which exceeds max complexity of 1/
+          expect_graphql_errors_to_include(/which exceeds max complexity of 1/)
         end
       end
     end
@@ -39,7 +39,7 @@ RSpec.describe 'GitlabSchema configurations', feature_category: :integrations do
 
           subject
 
-          expect_graphql_errors_to_include /exceeds max depth/
+          expect_graphql_errors_to_include(/exceeds max depth/)
         end
       end
 

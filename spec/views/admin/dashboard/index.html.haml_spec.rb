@@ -54,10 +54,10 @@ RSpec.describe 'admin/dashboard/index.html.haml' do
   it 'shows database versions for all database models' do
     render
 
-    expect(rendered).to have_content /PostgreSQL \(main\).+?#{::Gitlab::Database::Reflection.new(ApplicationRecord).version}/
+    expect(rendered).to have_content(/PostgreSQL \(main\).+?#{::Gitlab::Database::Reflection.new(ApplicationRecord).version}/)
 
     if Gitlab::Database.has_config?(:ci)
-      expect(rendered).to have_content /PostgreSQL \(ci\).+?#{::Gitlab::Database::Reflection.new(Ci::ApplicationRecord).version}/
+      expect(rendered).to have_content(/PostgreSQL \(ci\).+?#{::Gitlab::Database::Reflection.new(Ci::ApplicationRecord).version}/)
     end
   end
 

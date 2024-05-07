@@ -5,14 +5,14 @@ module API
     class Release < BasicReleaseDetails
       include ::API::Helpers::Presentable
 
-      expose :description_html, if: -> (_, options) { options[:include_html_description] } do |entity|
+      expose :description_html, if: ->(_, options) { options[:include_html_description] } do |entity|
         MarkupHelper.markdown_field(entity, :description, current_user: options[:current_user])
       end
-      expose :author, using: Entities::UserBasic, if: -> (release, _) { release.author.present? }
+      expose :author, using: Entities::UserBasic, if: ->(release, _) { release.author.present? }
       expose :commit, using: Entities::Commit, if: ->(_, _) { can_read_code? }
       expose :milestones,
              using: Entities::MilestoneWithStats,
-             if: -> (release, _) { release.milestones.present? && can_read_milestone? } do |release, _|
+             if: ->(release, _) { release.milestones.present? && can_read_milestone? } do |release, _|
                release.milestones.order_by_dates_and_title
              end
 

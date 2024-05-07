@@ -430,9 +430,7 @@ secret_detection:
 
 #### Override predefined analyzer rules
 
-WARNING:
-Overriding rules does not currently work when using a [remote configuration file](#specify-a-remote-configuration-file).
-[Issue 425251](https://gitlab.com/gitlab-org/gitlab/-/issues/425251) proposes to fix this limitation.
+> - Ability to override a rule with a remote ruleset was [fixed](https://gitlab.com/gitlab-org/gitlab/-/issues/425251) in GitLab 16.0 and later.
 
 If there are specific Pipeline Secret Detection rules you want to customize, you can override them. For
 example, you might increase the severity of specific secrets.
@@ -472,9 +470,7 @@ In the following example `secret-detection-ruleset.toml` file, rules are matched
 
 #### Disable predefined analyzer rules
 
-WARNING:
-Disabling rules does not currently work when using a [remote configuration file](#specify-a-remote-configuration-file).
-[Issue 425251](https://gitlab.com/gitlab-org/gitlab/-/issues/425251) proposes to fix this limitation.
+> - Ability to disable a rule with a remote ruleset was [fixed](https://gitlab.com/gitlab-org/gitlab/-/issues/425251) in GitLab 16.0 and later.
 
 If there are specific Pipeline Secret Detection rules that you don't want active, you can disable them.
 

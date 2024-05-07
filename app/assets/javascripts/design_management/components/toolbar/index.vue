@@ -167,11 +167,13 @@ export default {
       <design-todo-button
         v-if="isLoggedIn"
         :design="design"
-        class="gl-mr-3 gl-ml-0 gl-md-ml-3"
+        class="gl-ml-0 gl-md-ml-3"
         @error="$emit('todoError', $event)"
       />
       <gl-button
         v-gl-tooltip.bottom
+        category="tertiary"
+        class="gl-ml-2"
         :href="image"
         icon="download"
         :title="$options.i18n.downloadButtonLabel"
@@ -180,20 +182,21 @@ export default {
       <delete-button
         v-if="isLatestVersion && canDeleteDesign"
         v-gl-tooltip.bottom
-        class="gl-ml-3"
+        class="gl-ml-2"
         :is-deleting="isDeleting"
         button-variant="default"
         button-icon="archive"
-        button-category="secondary"
+        button-category="tertiary"
         :title="s__('DesignManagement|Archive design')"
         @delete-selected-designs="$emit('delete')"
       />
       <gl-button
         v-gl-tooltip.bottom
+        category="tertiary"
         icon="comments"
         :title="toggleCommentsButtonLabel"
         :aria-label="toggleCommentsButtonLabel"
-        class="gl-ml-3 gl-mr-6"
+        class="gl-ml-2 gl-mr-6"
         data-testid="toggle-design-sidebar"
         @click="$emit('toggle-sidebar')"
       />

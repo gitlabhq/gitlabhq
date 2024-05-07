@@ -51,7 +51,7 @@ RSpec.shared_examples 'SQL set operator' do |operator_keyword|
     it 'raises error' do
       expect do
         described_class.new([relation_1, relation_2])
-      end.to raise_error /Relations with uneven select values were passed/
+      end.to raise_error(/Relations with uneven select values were passed/)
     end
   end
 

@@ -323,7 +323,7 @@ export default {
         scrollToElement(contentElement, { duration: 0 });
       }
 
-      if (!this.hasDiff && !collapsingNow) {
+      if (!this.hasDiff && !collapsingNow && this.file?.viewer?.expandable) {
         this.requestDiff();
       }
     },

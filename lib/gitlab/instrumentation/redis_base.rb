@@ -156,6 +156,19 @@ module Gitlab
           @redirection_counter.increment(decompose_redirection_message(ex.message).merge(storage_labels))
         end
 
+        def instance_count_cluster_pipeline_redirection(ex)
+          @pipeline_redirection_histogram ||= Gitlab::Metrics.histogram(
+            :gitlab_redis_client_pipeline_redirections_count,
+            'Client side Redis Cluster pipeline redirection counts per pipeline',
+            {},
+            [10, 100, 250, 500]
+          )
+
+          # RedisClient::Cluster::Pipeline::RedirectionNeeded has `replies` and `indices`.
+          # The latter is a list of redirection indices which indicates the volume of redirections per pipeline.
+          @pipeline_redirection_histogram.observe(storage_labels, (ex.indices && ex.indices.size).to_i)
+        end
+
         def instance_observe_duration(duration)
           @request_latency_histogram ||= Gitlab::Metrics.histogram(
             :gitlab_redis_client_requests_duration_seconds,

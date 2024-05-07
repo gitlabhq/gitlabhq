@@ -29,7 +29,7 @@ RSpec.describe 'Database::MultipleDatabasesHelpers' do
     context 'when doing establish_connection' do
       context 'on ActiveRecord::Base' do
         it 'raises exception' do
-          expect { ActiveRecord::Base.establish_connection(:main) }.to raise_error /Cannot re-establish/ # rubocop: disable Database/EstablishConnection
+          expect { ActiveRecord::Base.establish_connection(:main) }.to raise_error(/Cannot re-establish/) # rubocop: disable Database/EstablishConnection
         end
 
         context 'when using with_reestablished_active_record_base' do
@@ -47,7 +47,7 @@ RSpec.describe 'Database::MultipleDatabasesHelpers' do
         end
 
         it 'raises exception' do
-          expect { Ci::ApplicationRecord.establish_connection(:ci) }.to raise_error /Cannot re-establish/ # rubocop: disable Database/EstablishConnection
+          expect { Ci::ApplicationRecord.establish_connection(:ci) }.to raise_error(/Cannot re-establish/) # rubocop: disable Database/EstablishConnection
         end
 
         context 'when using with_reestablished_active_record_base' do

@@ -254,8 +254,11 @@ Expectations:
 The Cells architecture has long lasting implications to data processing, location, scalability and the GitLab architecture.
 This section links all different technical proposals that are being evaluated.
 
-- [Routing Service](routing-service.md)
+- [HTTP Routing Service](routing-service.md)
+- [Topology Service](topology_service.md)
 - [Feature Flags](feature_flags.md)
+- Planned: SSH Routing Service
+- Planned: Indexing Service
 
 ## Impacted features
 

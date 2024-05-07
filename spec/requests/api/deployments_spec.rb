@@ -32,7 +32,7 @@ RSpec.describe API::Deployments, feature_category: :continuous_delivery do
         expect(json_response).to be_an Array
         expect(json_response.size).to eq(3)
         expect(json_response.first['iid']).to eq(deployment_1.iid)
-        expect(json_response.first['sha']).to match /\A\h{40}\z/
+        expect(json_response.first['sha']).to match(/\A\h{40}\z/)
         expect(json_response.second['iid']).to eq(deployment_2.iid)
         expect(json_response.last['iid']).to eq(deployment_3.iid)
       end
@@ -172,7 +172,7 @@ RSpec.describe API::Deployments, feature_category: :continuous_delivery do
           get api("/projects/#{project.id}/deployments/#{deployment.id}", user)
 
           expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response['sha']).to match /\A\h{40}\z/
+          expect(json_response['sha']).to match(/\A\h{40}\z/)
           expect(json_response['id']).to eq(deployment.id)
         end
       end

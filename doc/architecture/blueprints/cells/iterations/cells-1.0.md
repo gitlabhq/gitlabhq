@@ -553,7 +553,7 @@ The table below is a comparison between the existing GitLab.com features, and no
 
    - Primary Cell: To clearly state that the Primary Cell has a special purpose today, but we rename it later.
    - Cluster-wide Data Provider
-   - Global Service: Alternative name to Cluster-wide Data Provider, indicating that the Primary Cell would implement a Global Service today.
+   - Topology Service: Alternative name to Cluster-wide Data Provider, indicating that the Primary Cell would implement a Topology Service today.
 
 1. How are secrets are generated?
 

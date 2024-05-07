@@ -94,11 +94,10 @@ describe('diffs helper', () => {
   });
 
   describe.each`
-    context                                     | inline       | parallel     | blob                       | expected
-    ${'only has inline lines'}                  | ${['line']}  | ${undefined} | ${undefined}               | ${true}
-    ${'only has parallel lines'}                | ${undefined} | ${['line']}  | ${undefined}               | ${true}
-    ${"doesn't have inline, parallel, or blob"} | ${undefined} | ${undefined} | ${undefined}               | ${true}
-    ${'has blob readable text'}                 | ${undefined} | ${undefined} | ${{ readable_text: true }} | ${false}
+    context                              | inline       | parallel     | expected
+    ${'only has inline lines'}           | ${['line']}  | ${undefined} | ${true}
+    ${'only has parallel lines'}         | ${undefined} | ${['line']}  | ${true}
+    ${"doesn't have inline or parallel"} | ${undefined} | ${undefined} | ${false}
   `('when hasDiff', ({ context, inline, parallel, blob, expected }) => {
     it(`${context}`, () => {
       const diffFile = getDiffFile({

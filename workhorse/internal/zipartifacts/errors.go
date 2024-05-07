@@ -15,6 +15,7 @@ const (
 )
 
 var (
+	// ErrorCode maps integer error codes to corresponding error messages.
 	ErrorCode = map[int]error{
 		CodeNotZip:          errors.New("zip archive format invalid"),
 		CodeEntryNotFound:   errors.New("zip entry not found"),
@@ -23,6 +24,7 @@ var (
 		CodeUnknownError:    errors.New("zip processing unknown error"),
 	}
 
+	// ErrorLabel maps integer error codes to corresponding error labels.
 	ErrorLabel = map[int]string{
 		CodeNotZip:          "archive_invalid",
 		CodeEntryNotFound:   "entry_not_found",
@@ -31,6 +33,7 @@ var (
 		CodeUnknownError:    "unknown_error",
 	}
 
+	// ErrBadMetadata represents an error indicating that the zip artifacts metadata is invalid.
 	ErrBadMetadata = errors.New("zip artifacts metadata invalid")
 )
 

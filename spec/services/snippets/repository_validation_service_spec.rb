@@ -22,21 +22,21 @@ RSpec.describe Snippets::RepositoryValidationService, feature_category: :source_
       allow(repository).to receive(:branch_count).and_return(2)
 
       expect(subject).to be_error
-      expect(subject.message).to match /Repository has more than one branch/
+      expect(subject.message).to match(/Repository has more than one branch/)
     end
 
     it 'returns error when existing branch name is not the default one' do
       allow(repository).to receive(:branch_names).and_return(['foo'])
 
       expect(subject).to be_error
-      expect(subject.message).to match /Repository has an invalid default branch name/
+      expect(subject.message).to match(/Repository has an invalid default branch name/)
     end
 
     it 'returns error when the repository has tags' do
       allow(repository).to receive(:tag_count).and_return(1)
 
       expect(subject).to be_error
-      expect(subject.message).to match /Repository has tags/
+      expect(subject.message).to match(/Repository has tags/)
     end
 
     it 'returns error when the repository has more file than the limit' do
@@ -45,14 +45,14 @@ RSpec.describe Snippets::RepositoryValidationService, feature_category: :source_
       allow(repository).to receive(:ls_files).and_return(files)
 
       expect(subject).to be_error
-      expect(subject.message).to match /Repository files count over the limit/
+      expect(subject.message).to match(/Repository files count over the limit/)
     end
 
     it 'returns error when the repository has no files' do
       allow(repository).to receive(:ls_files).and_return([])
 
       expect(subject).to be_error
-      expect(subject.message).to match /Repository must contain at least 1 file/
+      expect(subject.message).to match(/Repository must contain at least 1 file/)
     end
 
     it 'returns error when the repository size is over the limit' do
@@ -61,7 +61,7 @@ RSpec.describe Snippets::RepositoryValidationService, feature_category: :source_
       end
 
       expect(subject).to be_error
-      expect(subject.message).to match /Repository size is above the limit/
+      expect(subject.message).to match(/Repository size is above the limit/)
     end
 
     it 'returns success when no validation errors are raised' do

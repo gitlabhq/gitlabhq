@@ -145,6 +145,7 @@ export default {
 <template>
   <todo-button
     v-gl-tooltip
+    category="tertiary"
     :title="tooltipLabel"
     issuable-type="design"
     :issuable-id="design.iid"

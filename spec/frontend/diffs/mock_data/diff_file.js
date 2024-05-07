@@ -38,6 +38,7 @@ export const getDiffFileMock = () => ({
     error: null,
     automaticallyCollapsed: false,
     manuallyCollapsed: null,
+    expandable: true,
   },
   added_lines: 2,
   removed_lines: 0,

@@ -7,6 +7,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/httprs"
@@ -75,11 +76,12 @@ func openHTTPArchive(ctx context.Context, archivePath string) (*archive, error) 
 	req = req.WithContext(ctx)
 
 	resp, err := httpClient.Do(req.WithContext(ctx))
-	if err != nil {
+	switch {
+	case err != nil:
 		return nil, fmt.Errorf("HTTP GET %q: %v", scrubbedArchivePath, err)
-	} else if resp.StatusCode == http.StatusNotFound {
+	case resp.StatusCode == http.StatusNotFound:
 		return nil, ErrorCode[CodeArchiveNotFound]
-	} else if resp.StatusCode != http.StatusOK {
+	case resp.StatusCode != http.StatusOK:
 		return nil, fmt.Errorf("HTTP GET %q: %d: %v", scrubbedArchivePath, resp.StatusCode, resp.Status)
 	}
 
@@ -87,15 +89,16 @@ func openHTTPArchive(ctx context.Context, archivePath string) (*archive, error) 
 
 	go func() {
 		<-ctx.Done()
-		resp.Body.Close()
-		rs.Close()
+		_ = resp.Body.Close()
+		_ = rs.Close()
 	}()
 
 	return &archive{reader: rs, size: resp.ContentLength}, nil
 }
 
 func openFileArchive(ctx context.Context, archivePath string) (*archive, error) {
-	file, err := os.Open(archivePath)
+	cleanArchivePath := filepath.Clean(archivePath)
+	file, err := os.Open(cleanArchivePath)
 	if err != nil {
 		if os.IsNotExist(err) {
 			return nil, ErrorCode[CodeArchiveNotFound]
@@ -105,7 +108,9 @@ func openFileArchive(ctx context.Context, archivePath string) (*archive, error) 
 	go func() {
 		<-ctx.Done()
 		// We close the archive from this goroutine so that we can safely return a *zip.Reader instead of a *zip.ReadCloser
-		file.Close()
+		if err = file.Close(); err != nil {
+			fmt.Printf("Error closing archive: %v\n", err)
+		}
 	}()
 
 	stat, err := file.Stat()

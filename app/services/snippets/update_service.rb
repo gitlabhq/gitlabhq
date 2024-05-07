@@ -2,6 +2,8 @@
 
 module Snippets
   class UpdateService < Snippets::BaseService
+    include Gitlab::InternalEventsTracking
+
     COMMITTABLE_ATTRIBUTES = %w[file_name content].freeze
 
     UpdateError = Class.new(StandardError)
@@ -27,7 +29,7 @@ module Snippets
       end
 
       if save_and_commit(snippet)
-        Gitlab::UsageDataCounters::SnippetCounter.count(:update)
+        track_internal_event('update_snippet', project: project, user: current_user)
 
         ServiceResponse.success(payload: { snippet: snippet })
       else

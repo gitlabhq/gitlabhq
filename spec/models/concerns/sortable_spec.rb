@@ -75,7 +75,7 @@ RSpec.describe Sortable do
 
         sql = relation.order_by('name_asc').to_sql
 
-        expect(sql).to match /.+ORDER BY LOWER\(#{table}.#{column}\) ASC\z/
+        expect(sql).to match(/.+ORDER BY LOWER\(#{table}.#{column}\) ASC\z/)
       end
 
       it 'descending' do
@@ -86,7 +86,7 @@ RSpec.describe Sortable do
 
         sql = relation.order_by('name_desc').to_sql
 
-        expect(sql).to match /.+ORDER BY LOWER\(#{table}.#{column}\) DESC\z/
+        expect(sql).to match(/.+ORDER BY LOWER\(#{table}.#{column}\) DESC\z/)
       end
     end
 

@@ -1,11 +1,11 @@
 ---
 stage: core platform
 group: Tenant Scale
-description: 'Cells: Routing Service'
+description: 'Cells: HTTP Routing Service'
 status: accepted
 ---
 
-# Cells: Routing Service
+# Cells: HTTP Routing Service
 
 This document describes design goals and architecture of Routing Service
 used by Cells. To better understand where the Routing Service fits

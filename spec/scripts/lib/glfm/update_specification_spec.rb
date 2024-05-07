@@ -224,7 +224,7 @@ RSpec.describe Glfm::UpdateSpecification, '#process', feature_category: :team_pl
           it 'raises an error' do
             expect do
               subject.process(skip_spec_html_generation: true)
-            end.to raise_error /version mismatch.*expected.*29.*got.*30/i
+            end.to raise_error(/version mismatch.*expected.*29.*got.*30/i)
           end
         end
 
@@ -232,7 +232,7 @@ RSpec.describe Glfm::UpdateSpecification, '#process', feature_category: :team_pl
           let(:ghfm_spec_txt_contents) { '' }
 
           it 'raises an error if lines cannot be read' do
-            expect { subject.process(skip_spec_html_generation: true) }.to raise_error /unable to read lines/i
+            expect { subject.process(skip_spec_html_generation: true) }.to raise_error(/unable to read lines/i)
           end
         end
 
@@ -242,7 +242,7 @@ RSpec.describe Glfm::UpdateSpecification, '#process', feature_category: :team_pl
           end
 
           it 'raises an error if file is blank' do
-            expect { subject.process(skip_spec_html_generation: true) }.to raise_error /unable to read string/i
+            expect { subject.process(skip_spec_html_generation: true) }.to raise_error(/unable to read string/i)
           end
         end
       end
@@ -303,7 +303,7 @@ RSpec.describe Glfm::UpdateSpecification, '#process', feature_category: :team_pl
       end
 
       it 'raises an error' do
-        expect { subject.process(skip_spec_html_generation: true) }.to raise_error /no content is allowed outside/i
+        expect { subject.process(skip_spec_html_generation: true) }.to raise_error(/no content is allowed outside/i)
       end
     end
   end

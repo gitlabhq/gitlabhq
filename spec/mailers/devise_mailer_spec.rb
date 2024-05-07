@@ -71,15 +71,15 @@ RSpec.describe DeviseMailer, feature_category: :user_management do
     end
 
     it 'has the correct subject' do
-      is_expected.to have_subject /^Password changed by administrator$/i
+      is_expected.to have_subject(/^Password changed by administrator$/i)
     end
 
     it 'includes the correct content' do
-      is_expected.to have_body_text /An administrator changed the password for your GitLab account/
+      is_expected.to have_body_text(/An administrator changed the password for your GitLab account/)
     end
 
     it 'includes a link to GitLab' do
-      is_expected.to have_body_text /#{Gitlab.config.gitlab.url}/
+      is_expected.to have_body_text(/#{Gitlab.config.gitlab.url}/)
     end
   end
 
@@ -102,11 +102,11 @@ RSpec.describe DeviseMailer, feature_category: :user_management do
     end
 
     it 'greets the user' do
-      is_expected.to have_body_text /Hi #{user.name}!/
+      is_expected.to have_body_text(/Hi #{user.name}!/)
     end
 
     it 'includes the correct content' do
-      is_expected.to have_body_text /Your GitLab account request has been approved!/
+      is_expected.to have_body_text(/Your GitLab account request has been approved!/)
     end
 
     it 'includes a link to GitLab' do
@@ -135,13 +135,13 @@ RSpec.describe DeviseMailer, feature_category: :user_management do
     end
 
     it 'greets the user' do
-      is_expected.to have_body_text /Hello, #{user.name}!/
+      is_expected.to have_body_text(/Hello, #{user.name}!/)
     end
 
     it 'includes the correct content' do
-      is_expected.to have_text /Someone, hopefully you, has requested to reset the password for your GitLab account on #{Gitlab.config.gitlab.url}/
-      is_expected.to have_body_text /If you did not perform this request, you can safely ignore this email./
-      is_expected.to have_body_text /Otherwise, click the link below to complete the process./
+      is_expected.to have_text(/Someone, hopefully you, has requested to reset the password for your GitLab account on #{Gitlab.config.gitlab.url}/)
+      is_expected.to have_body_text(/If you did not perform this request, you can safely ignore this email./)
+      is_expected.to have_body_text(/Otherwise, click the link below to complete the process./)
     end
 
     it 'includes a link to reset the password' do
@@ -181,7 +181,7 @@ RSpec.describe DeviseMailer, feature_category: :user_management do
     end
 
     it 'greets the user' do
-      is_expected.to have_body_text /Hello, #{user.name}!/
+      is_expected.to have_body_text(/Hello, #{user.name}!/)
     end
 
     context 'when self-managed' do
@@ -202,7 +202,7 @@ RSpec.describe DeviseMailer, feature_category: :user_management do
       end
 
       it 'includes changed email id' do
-        is_expected.to have_body_text /email is being changed to new_email@test.com./
+        is_expected.to have_body_text(/email is being changed to new_email@test.com./)
       end
     end
   end

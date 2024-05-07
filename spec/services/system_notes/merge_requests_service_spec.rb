@@ -235,7 +235,7 @@ RSpec.describe ::SystemNotes::MergeRequestsService, feature_category: :code_revi
         subject { service.change_branch('target', 'invalid', old_branch, new_branch) }
 
         it 'raises exception' do
-          expect { subject }.to raise_error /invalid value for event_type/
+          expect { subject }.to raise_error(/invalid value for event_type/)
         end
       end
     end

@@ -11,7 +11,6 @@ module Gitlab
       NoteCounter,
       SearchCounter,
       WebIdeCounter,
-      SnippetCounter,
       SourceCodeCounter,
       MergeRequestWidgetExtensionCounter
     ].freeze

@@ -67,7 +67,7 @@ RSpec.describe ObjectStorage::DirectUpload, feature_category: :shared do
         let(:maximum_size) { nil }
 
         it "raises an error" do
-          expect { direct_upload }.to raise_error /maximum_size has to be specified if length is unknown/
+          expect { direct_upload }.to raise_error(/maximum_size has to be specified if length is unknown/)
         end
       end
     end

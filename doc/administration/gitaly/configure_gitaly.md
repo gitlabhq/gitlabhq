@@ -1123,11 +1123,13 @@ Configure the `cat-file` cache in the [Gitaly configuration file](reference.md).
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/19185) in GitLab 15.4.
 > - Displaying **Verified** badge for signed GitLab UI commits [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124218) in GitLab 16.3 [with a flag](../feature_flags.md) named `gitaly_gpg_signing`. Disabled by default.
+> - Verifying the signatures using multiple keys specified in `rotated_signing_keys` option [introduced](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/6163) in GitLab 16.3.
+> - [Enabled by default](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/6876) on self-managed and GitLab Dedicated in GitLab 17.0.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available,
-an administrator can [enable the feature flag](../feature_flags.md) named `gitaly_gpg_signing`.
-On GitLab.com and GitLab Dedicated, this feature is not available.
+On self-managed GitLab, by default this feature is available. To hide the feature,
+an administrator can [disable the feature flag](../feature_flags.md) named `gitaly_gpg_signing`.
+On GitLab.com, this feature is not available. On GitLab Dedicated, this feature is available.
 
 By default, Gitaly doesn't sign commits made using GitLab UI. For example, commits made using:
 
@@ -1144,6 +1146,12 @@ because the signature belongs to neither the author nor the committer of the com
 You can configure Gitaly to reflect that a commit has been committed by your instance by
 setting `committer_email` and `committer_name`. For example, on GitLab.com these configuration options are
 set to `noreply@gitlab.com` and `GitLab`.
+
+`rotated_signing_keys` is a list of keys to use for verification only. Gitaly tries to verify a web commit using the configured `signing_key`, and then uses
+the rotated keys one by one until it succeeds. Set the `rotated_signing_keys` option when either:
+
+- The signing key is rotated.
+- You want to specify multiple keys to migrate projects from other instances and want to display their web commits as **Verified**.
 
 Configure Gitaly to sign commits made with the GitLab UI in one of two ways:
 
@@ -1177,6 +1185,7 @@ Configure Gitaly to sign commits made with the GitLab UI in one of two ways:
         committer_name: 'Your Instance',
         committer_email: 'noreply@yourinstance.com',
         signing_key: '/etc/gitlab/gitaly/signing_key.gpg',
+        rotated_signing_keys: ['/etc/gitlab/gitaly/previous_signing_key.gpg'],
         # ...
       },
    }
@@ -1209,6 +1218,7 @@ Configure Gitaly to sign commits made with the GitLab UI in one of two ways:
    committer_name = "Your Instance"
    committer_email = "noreply@yourinstance.com"
    signing_key = "/etc/gitlab/gitaly/signing_key.gpg"
+   rotated_signing_keys = ["/etc/gitlab/gitaly/previous_signing_key.gpg"]
    ```
 
 1. Save the file and [restart GitLab](../restart_gitlab.md#self-compiled-installations).

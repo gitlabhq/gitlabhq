@@ -19,14 +19,14 @@ RSpec.describe 'gitlab:gitaly namespace rake task', :silence_stdout do
       it 'aborts and display a help message' do
         # avoid writing task output to spec progress
         allow($stderr).to receive :write
-        expect { run_rake_task('gitlab:gitaly:clone') }.to raise_error /Please specify the directory where you want to install gitaly and the path for the default storage/
+        expect { run_rake_task('gitlab:gitaly:clone') }.to raise_error(/Please specify the directory where you want to install gitaly and the path for the default storage/)
       end
     end
 
     context 'no storage path given' do
       it 'aborts and display a help message' do
         allow($stderr).to receive :write
-        expect { run_rake_task('gitlab:gitaly:clone', clone_path) }.to raise_error /Please specify the directory where you want to install gitaly and the path for the default storage/
+        expect { run_rake_task('gitlab:gitaly:clone', clone_path) }.to raise_error(/Please specify the directory where you want to install gitaly and the path for the default storage/)
       end
     end
 
@@ -81,7 +81,7 @@ RSpec.describe 'gitlab:gitaly namespace rake task', :silence_stdout do
               .with(%w[gmake clean all])
               .and_return(['output', 1])
 
-            expect { subject }.to raise_error /Gitaly failed to compile: output/
+            expect { subject }.to raise_error(/Gitaly failed to compile: output/)
           end
         end
       end

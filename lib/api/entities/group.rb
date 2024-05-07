@@ -32,7 +32,7 @@ module API
       expose :custom_attributes, using: 'API::Entities::CustomAttribute', if: :with_custom_attributes
 
       expose :statistics, if: :statistics do
-        with_options format_with: -> (value) { value.to_i } do
+        with_options format_with: ->(value) { value.to_i } do
           expose :storage_size
           expose :repository_size
           expose :wiki_size

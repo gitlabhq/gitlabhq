@@ -173,6 +173,18 @@ RSpec.describe ProjectAuthorizations::Changes, feature_category: :groups_and_pro
         it_behaves_like 'publishes AuthorizationsAddedEvent'
         it_behaves_like 'does not publish AuthorizationsRemovedEvent'
       end
+
+      describe 'and authorizations should be removed as well' do
+        let(:project_authorization_changes) do
+          ProjectAuthorizations::Changes.new do |changes|
+            changes.add(authorizations_to_add)
+            changes.remove_projects_for_user(user, project_ids)
+          end
+        end
+
+        it_behaves_like 'publishes AuthorizationsAddedEvent'
+        it_behaves_like 'does not publish AuthorizationsRemovedEvent'
+      end
     end
 
     context 'when authorizations should be deleted for a project' do

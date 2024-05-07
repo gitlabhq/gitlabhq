@@ -19,10 +19,10 @@ module API
       expose :closed_at do |merge_request, _options|
         merge_request.metrics&.latest_closed_at
       end
-      expose :title_html, if: -> (_, options) { options[:render_html] } do |entity|
+      expose :title_html, if: ->(_, options) { options[:render_html] } do |entity|
         MarkupHelper.markdown_field(entity, :title)
       end
-      expose :description_html, if: -> (_, options) { options[:render_html] } do |entity|
+      expose :description_html, if: ->(_, options) { options[:render_html] } do |entity|
         MarkupHelper.markdown_field(entity, :description)
       end
       expose :target_branch, :source_branch
@@ -70,7 +70,7 @@ module API
       expose :force_remove_source_branch?, as: :force_remove_source_branch
       expose :prepared_at
 
-      with_options if: -> (merge_request, _) { merge_request.for_fork? } do
+      with_options if: ->(merge_request, _) { merge_request.for_fork? } do
         expose :allow_collaboration
         # Deprecated
         expose :allow_collaboration, as: :allow_maintainer_to_push
