@@ -2,6 +2,30 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 16.9.7 (2024-05-07)
+
+### Fixed (1 change)
+
+- [Changed the email validation for only encoded chars](gitlab-org/security/gitlab@01275ef428e3b183c638adaebe28ac53edb6ce0b) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151484/))
+
+### Changed (1 change)
+
+- [Return or display Gitlab version if GITLAB_KAS_VERSION is a SHA](gitlab-org/security/gitlab@d7792bcb9cdfaabc3b1345facee6b7536fb2b3cb)
+
+### Security (11 changes)
+
+- [Update GITHUB_MEDIA_CDN to avoid SSRF when importing from Github](gitlab-org/security/gitlab@3910b8db08f64662611322b84abfa282fe975396) ([merge request](gitlab-org/security/gitlab!4013))
+- [Prevent namespace banned users from reading project todos](gitlab-org/security/gitlab@a43f81187c393376f7bdf603277e72036a127013) ([merge request](gitlab-org/security/gitlab!3941))
+- [ReDoS in GitRefsFinder when using wildcards in branch search](gitlab-org/security/gitlab@844ad9c3f404a0a838b895d4ac9b7dc7493bd291) ([merge request](gitlab-org/security/gitlab!3997))
+- [ReDos in escape and commit reference filters](gitlab-org/security/gitlab@186bda71e1bbcf542effee18a14d1a7261b0b12d) ([merge request](gitlab-org/security/gitlab!3974))
+- [Validate request origin before MR approval](gitlab-org/security/gitlab@47be8dd9e352c19ca8fe2865c6cf995fbce987de) ([merge request](gitlab-org/security/gitlab!4009))
+- [Check request size before updating user pins](gitlab-org/security/gitlab@f882c7ffaca37e10933d3f7e82d665444e25fd64) ([merge request](gitlab-org/security/gitlab!4016))
+- [Enforce per_page validation for Branches/TagsFinders](gitlab-org/security/gitlab@29b2b5636a1ce1defa6dedaf656f84b54b322976) ([merge request](gitlab-org/security/gitlab!4000))
+- [Update Integrations::Discord::ATTACHMENT_REGEX regex](gitlab-org/security/gitlab@3e9f6cca867362cfbd70da79f47a6ce2481fef0e) ([merge request](gitlab-org/security/gitlab!3986))
+- [Update BaseMessage::RELATIVE_LINK_REGEX regex](gitlab-org/security/gitlab@e5be5ad17ba7d09b923098382b16f8637f8cac31) ([merge request](gitlab-org/security/gitlab!3994))
+- [Require confirmation before linking JWT identity](gitlab-org/security/gitlab@e889c09bd4bd3897badb73d79231f183881a20f4) ([merge request](gitlab-org/security/gitlab!3992))
+- [Fix confidentiality check optimization](gitlab-org/security/gitlab@fb3635e8674859226a71c1a43d26655c908ce15b) ([merge request](gitlab-org/security/gitlab!4004))
+
 ## 16.9.6 (2024-04-24)
 
 ### Security (5 changes)
