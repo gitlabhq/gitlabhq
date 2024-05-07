@@ -401,19 +401,20 @@ RSpec.describe Cli, feature_category: :service_ping do
   context 'when showing usage examples' do
     let(:expected_example_prompt) do
       <<~TEXT.chomp
-      Select one: Select a use-case to view examples for: (Press ↑/↓ arrow or 1-8 number to move and Enter to select)
+      Select one: Select a use-case to view examples for: (Press ↑/↓ arrow or 1-9 number to move and Enter to select)
       ‣ 1. ruby/rails
         2. rspec
         3. javascript (vue)
         4. javascript (plain)
         5. vue template
         6. haml
-        7. View examples for a different event
-        8. Exit
+        7. Manual testing in GDK
+        8. View examples for a different event
+        9. Exit
       TEXT
     end
 
-    context 'for an event with identifiers' do
+    context 'for an event with identifiers and metrics' do
       let(:expected_rails_example) do
         <<~TEXT.chomp
         --------------------------------------------------
@@ -448,8 +449,28 @@ RSpec.describe Cli, feature_category: :service_ping do
         TEXT
       end
 
+      let(:expected_gdk_example) do
+        <<~TEXT.chomp
+        --------------------------------------------------
+        # RAILS CONSOLE -- generate service ping payload, including most recent usage data
+
+        require_relative 'spec/support/helpers/service_ping_helpers.rb'
+
+        # Get current value of a metric
+        ServicePingHelpers.get_current_usage_metric_value('redis_hll_counters.count_distinct_user_id_from_internal_events_cli_used_weekly')
+
+        # View entire service ping payload
+        ServicePingHelpers.get_current_service_ping_payload
+        --------------------------------------------------
+        TEXT
+      end
+
       before do
         File.write(event1_filepath, File.read(event1_content))
+        File.write(
+          'config/metrics/counts_7d/count_distinct_user_id_from_internal_events_cli_used_weekly.yml',
+          File.read('spec/fixtures/scripts/internal_events/metrics/user_id_7d_single_event.yml')
+        )
       end
 
       it 'shows backend examples' do
@@ -460,14 +481,16 @@ RSpec.describe Cli, feature_category: :service_ping do
           "\n", # Select: ruby/rails
           "\e[B", # Arrow down to: rspec
           "\n", # Select: rspec
-          "8\n" # Exit
+          "7\n", # Select: Manual testing: check current values of metrics from rails console (any data source)
+          "9\n" # Exit
         ])
 
         with_cli_thread do
-          expect { plain_last_lines(100) }.to eventually_include_cli_text(
+          expect { plain_last_lines(200) }.to eventually_include_cli_text(
             expected_example_prompt,
             expected_rails_example,
-            expected_rspec_example
+            expected_rspec_example,
+            expected_gdk_example
           )
         end
       end
@@ -609,6 +632,36 @@ RSpec.describe Cli, feature_category: :service_ping do
         TEXT
       end
 
+      let(:expected_gdk_example) do
+        <<~TEXT.chomp
+        --------------------------------------------------
+        # TERMINAL -- monitor events sent to snowplow & changes to service ping metrics as they occur
+
+        1. Configure gdk with snowplow micro https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/snowplow_micro.md
+        2. From `gitlab/` directory, run the monitor script:
+
+        bin/rails runner scripts/internal_events/monitor.rb internal_events_cli_opened
+
+        3. View all snowplow events in the browser at http://localhost:9091/micro/all (or whichever hostname & port you configured)
+        --------------------------------------------------
+        # RAILS CONSOLE -- generate service ping payload, including most recent usage data
+
+        require_relative 'spec/support/helpers/service_ping_helpers.rb'
+
+        # Get current value of a metric
+        # Warning: There are no metrics for internal_events_cli_opened yet. When there are, replace <key_path> below.
+        ServicePingHelpers.get_current_usage_metric_value(<key_path>)
+
+        # View entire service ping payload
+        ServicePingHelpers.get_current_service_ping_payload
+        --------------------------------------------------
+        Need to test something else? Check these docs:
+        - https://docs.gitlab.com/ee/development/internal_analytics/internal_event_instrumentation/local_setup_and_debugging.html
+        - https://docs.gitlab.com/ee/development/internal_analytics/service_ping/troubleshooting.html
+        - https://docs.gitlab.com/ee/development/internal_analytics/review_guidelines.html
+        TEXT
+      end
+
       before do
         File.write(event2_filepath, File.read(event2_content))
       end
@@ -629,7 +682,9 @@ RSpec.describe Cli, feature_category: :service_ping do
           "\n", # Select: vue template
           "\e[B", # Arrow down to: haml
           "\n", # Select: haml
-          "8\n" # Exit
+          "\e[B", # Arrow down to: gdk
+          "\n", # Select: gdk
+          "9\n" # Exit
         ])
 
         with_cli_thread do
@@ -640,7 +695,8 @@ RSpec.describe Cli, feature_category: :service_ping do
             expected_vue_example,
             expected_js_example,
             expected_vue_template_example,
-            expected_haml_example
+            expected_haml_example,
+            expected_gdk_example
           )
         end
       end
@@ -689,11 +745,11 @@ RSpec.describe Cli, feature_category: :service_ping do
           'internal_events_cli_used', # Filters to this event
           "\n", # Select: config/events/internal_events_cli_used.yml
           "\n", # Select: ruby/rails
-          "7\n", # Select: View examples for a different event
+          "8\n", # Select: View examples for a different event
           'internal_events_cli_opened', # Filters to this event
           "\n", # Select: config/events/internal_events_cli_opened.yml
           "\n", # Select: ruby/rails
-          "8\n" # Exit
+          "9\n" # Exit
         ])
 
         with_cli_thread do

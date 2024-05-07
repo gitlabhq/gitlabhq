@@ -110,6 +110,19 @@ This also refreshes the cached Service Ping displayed in the Admin Area.
 Gitlab::Usage::ServicePingReport.for(output: :all_metrics_values)
 ```
 
+### Generate a new Service Ping including today's usage data
+
+Use the following methods in the [rails console](../../../administration/operations/rails_console.md#starting-a-rails-console-session).
+
+```ruby
+require_relative 'spec/support/helpers/service_ping_helpers.rb'
+
+ServicePingHelpers.get_current_service_ping_payload
+
+# To get a single metric's value, provide the metric's key_path like so:
+ServicePingHelpers.get_current_usage_metric_value('counts.count_total_render_duo_pro_lead_page')
+```
+
 ### Generate and print
 
 Generates Service Ping data in JSON format.

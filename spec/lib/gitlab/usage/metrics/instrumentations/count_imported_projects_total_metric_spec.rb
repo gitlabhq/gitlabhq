@@ -33,11 +33,11 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::CountImportedProjectsTo
   context 'with all time frame' do
     let(:expected_value) { 10 }
     let(:expected_query) do
-      "SELECT (SELECT COUNT(\"projects\".\"id\") FROM \"projects\" WHERE \"projects\".\"import_type\""\
-      " IN ('gitlab_project', 'gitlab', 'github', 'bitbucket', 'bitbucket_server', 'gitea', 'git', 'manifest',"\
-      " 'gitlab_migration'))"\
-      " + (SELECT COUNT(\"bulk_import_entities\".\"id\") FROM \"bulk_import_entities\""\
-      " WHERE \"bulk_import_entities\".\"source_type\" = 1)"
+      "SELECT (SELECT COUNT(\"projects\".\"id\") FROM \"projects\" WHERE \"projects\".\"import_type\" "\
+      "IN ('gitlab_project', 'gitlab', 'github', 'bitbucket', 'bitbucket_server', 'gitea', 'git', 'manifest', "\
+      "'gitlab_migration')) "\
+      "+ (SELECT COUNT(\"bulk_import_entities\".\"id\") FROM \"bulk_import_entities\" "\
+      "WHERE \"bulk_import_entities\".\"source_type\" = 1)"
     end
 
     it_behaves_like 'a correct instrumented metric value and query', time_frame: 'all'
@@ -48,13 +48,13 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::CountImportedProjectsTo
     let(:start) { 30.days.ago.to_fs(:db) }
     let(:finish) { 2.days.ago.to_fs(:db) }
     let(:expected_query) do
-      "SELECT (SELECT COUNT(\"projects\".\"id\") FROM \"projects\" WHERE \"projects\".\"import_type\""\
-      " IN ('gitlab_project', 'gitlab', 'github', 'bitbucket', 'bitbucket_server', 'gitea', 'git', 'manifest',"\
-      " 'gitlab_migration')"\
-      " AND \"projects\".\"created_at\" BETWEEN '#{start}' AND '#{finish}')"\
-      " + (SELECT COUNT(\"bulk_import_entities\".\"id\") FROM \"bulk_import_entities\""\
-      " WHERE \"bulk_import_entities\".\"source_type\" = 1 AND \"bulk_import_entities\".\"created_at\""\
-      " BETWEEN '#{start}' AND '#{finish}')"
+      "SELECT (SELECT COUNT(\"projects\".\"id\") FROM \"projects\" WHERE \"projects\".\"import_type\" "\
+      "IN ('gitlab_project', 'gitlab', 'github', 'bitbucket', 'bitbucket_server', 'gitea', 'git', 'manifest', "\
+      "'gitlab_migration') "\
+      "AND \"projects\".\"created_at\" BETWEEN '#{start}' AND '#{finish}') "\
+      "+ (SELECT COUNT(\"bulk_import_entities\".\"id\") FROM \"bulk_import_entities\" "\
+      "WHERE \"bulk_import_entities\".\"source_type\" = 1 AND \"bulk_import_entities\".\"created_at\" "\
+      "BETWEEN '#{start}' AND '#{finish}')"
     end
 
     it_behaves_like 'a correct instrumented metric value and query', time_frame: '28d'

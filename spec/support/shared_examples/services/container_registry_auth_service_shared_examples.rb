@@ -1130,6 +1130,26 @@ RSpec.shared_examples 'a container registry auth service' do
 
         it_behaves_like 'able to login'
       end
+
+      context 'for private project when the deploy key is restricted with external_authorization' do
+        let_it_be(:project) { create(:project, :private) }
+
+        before do
+          allow(Gitlab::ExternalAuthorization).to receive(:allow_deploy_tokens_and_deploy_keys?).and_return(false)
+        end
+
+        context 'when pulling' do
+          it_behaves_like 'a forbidden'
+        end
+
+        context 'when pushing' do
+          let(:current_params) do
+            { scopes: ["repository:#{project.full_path}:push"], deploy_token: deploy_token }
+          end
+
+          it_behaves_like 'a forbidden'
+        end
+      end
     end
 
     context 'when deploy token does not have read_registry scope' do
@@ -1260,6 +1280,26 @@ RSpec.shared_examples 'a container registry auth service' do
         let_it_be(:project) { create(:project, :internal) }
 
         it_behaves_like 'an inaccessible'
+      end
+    end
+  end
+
+  context 'when the deploy token is restricted with external_authorization' do
+    context 'when the authenticator is a regular user' do
+      let_it_be(:current_user) { create(:user) }
+      let(:current_params) do
+        { scopes: ["repository:#{project.full_path}:pull"] }
+      end
+
+      let_it_be(:project) { create(:project, :private, :container_registry_enabled) }
+
+      before do
+        allow(Gitlab::ExternalAuthorization).to receive(:allow_deploy_tokens_and_deploy_keys?).and_return(false)
+        project.add_developer(current_user)
+      end
+
+      it_behaves_like 'an accessible' do
+        let(:actions) { ['pull'] }
       end
     end
   end

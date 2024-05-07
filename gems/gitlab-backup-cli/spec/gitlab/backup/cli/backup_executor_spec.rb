@@ -18,13 +18,13 @@ RSpec.describe Gitlab::Backup::Cli::BackupExecutor do
     end
 
     it 'initializes metadata' do
-      expect(executor.metadata).to be_a(Gitlab::Backup::Cli::BackupMetadata)
+      expect(executor.metadata).to be_a(Gitlab::Backup::Cli::Metadata::BackupMetadata)
     end
   end
 
   describe '#write_metadata!' do
     it 'writes metadata to the workdir' do
-      metadata_file = executor.workdir.join(Gitlab::Backup::Cli::BackupMetadata::METADATA_FILENAME)
+      metadata_file = executor.workdir.join(Gitlab::Backup::Cli::Metadata::BackupMetadata::METADATA_FILENAME)
 
       expect { executor.send(:write_metadata!) }.to change { metadata_file.exist? }.from(false).to(true)
     end

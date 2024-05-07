@@ -43,6 +43,7 @@ type routeOptions struct {
 	tracing         bool
 	isGeoProxyRoute bool
 	matchers        []matcherFunc
+	allowOrigins    *regexp.Regexp
 }
 
 const (
@@ -92,6 +93,12 @@ func withGeoProxy() func(*routeOptions) {
 	}
 }
 
+func withAllowOrigins(pattern string) func(*routeOptions) {
+	return func(options *routeOptions) {
+		options.allowOrigins = compileRegexp(pattern)
+	}
+}
+
 func (u *upstream) observabilityMiddlewares(handler http.Handler, method string, regexpStr string, opts *routeOptions) http.Handler {
 	handler = log.AccessLogger(
 		handler,
@@ -127,6 +134,9 @@ func (u *upstream) route(method, regexpStr string, handler http.Handler, opts ..
 	if options.tracing {
 		// Add distributed tracing
 		handler = tracing.Handler(handler, tracing.WithRouteIdentifier(regexpStr))
+	}
+	if options.allowOrigins != nil {
+		handler = corsMiddleware(handler, options.allowOrigins)
 	}
 
 	return routeEntry{
@@ -360,6 +370,7 @@ func configureRoutes(u *upstream) {
 				assetsNotFoundHandler,
 			),
 			withoutTracing(), // Tracing on assets is very noisy
+			withAllowOrigins("^https://.*\\.web-ide\\.gitlab-static\\.net$"),
 		),
 
 		// Uploads
@@ -425,6 +436,7 @@ func configureRoutes(u *upstream) {
 				assetsNotFoundHandler,
 			),
 			withoutTracing(), // Tracing on assets is very noisy
+			withAllowOrigins("^https://.*\\.web-ide\\.gitlab-static\\.net$"),
 		),
 
 		// Don't define a catch-all route. If a route does not match, then we know
@@ -437,6 +449,23 @@ func denyWebsocket(next http.Handler) http.Handler {
 		if websocket.IsWebSocketUpgrade(r) {
 			httpError(w, r, "websocket upgrade not allowed", http.StatusBadRequest)
 			return
+		}
+
+		next.ServeHTTP(w, r)
+	})
+}
+
+func corsMiddleware(next http.Handler, allowOriginRegex *regexp.Regexp) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		requestOrigin := r.Header.Get("Origin")
+		hasOriginMatch := allowOriginRegex.MatchString(requestOrigin)
+		hasMethodMatch := r.Method == "GET" || r.Method == "HEAD" || r.Method == "OPTIONS"
+
+		if hasOriginMatch && hasMethodMatch {
+			w.Header().Set("Access-Control-Allow-Origin", requestOrigin)
+			// why: `Vary: Origin` is needed because allowable origin is variable
+			//      https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS#the_http_response_headers
+			w.Header().Set("Vary", "Origin")
 		}
 
 		next.ServeHTTP(w, r)

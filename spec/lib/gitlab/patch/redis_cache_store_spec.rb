@@ -64,25 +64,6 @@ RSpec.describe Gitlab::Patch::RedisCacheStore, :use_clean_rails_redis_caching, f
           end
         end
 
-        context 'when GITLAB_REDIS_CLUSTER_PIPELINE_BATCH_LIMIT is smaller than the default' do
-          before do
-            stub_env('GITLAB_REDIS_CLUSTER_PIPELINE_BATCH_LIMIT', 10)
-          end
-
-          it_behaves_like 'read large amount of keys'
-        end
-
-        context 'when GITLAB_REDIS_CLUSTER_PIPELINE_BATCH_LIMIT is larger than the default' do
-          let(:input_size) { 4000 }
-          let(:chunk_size) { 2000 }
-
-          before do
-            stub_env('GITLAB_REDIS_CLUSTER_PIPELINE_BATCH_LIMIT', chunk_size)
-          end
-
-          it_behaves_like 'read large amount of keys'
-        end
-
         it_behaves_like 'read large amount of keys'
       end
     end

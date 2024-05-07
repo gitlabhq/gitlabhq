@@ -268,7 +268,7 @@ RSpec.describe 'container repository details', feature_category: :container_regi
 
     it 'returns the size' do
       stub_container_registry_gitlab_api_support(supported: true) do |client|
-        stub_container_registry_gitlab_api_repository_details(client, path: container_repository.path, size_bytes: 12345)
+        stub_container_registry_gitlab_api_repository_details(client, path: container_repository.path, size_bytes: 12345, sizing: :self)
       end
 
       subject
@@ -293,6 +293,53 @@ RSpec.describe 'container repository details', feature_category: :container_regi
         subject
 
         expect(size_response).to eq(nil)
+      end
+    end
+  end
+
+  context 'lastPublishedAt field' do
+    let(:last_published_at_response) { container_repository_details_response.dig('lastPublishedAt') }
+    let(:variables) do
+      { id: container_repository_global_id }
+    end
+
+    let(:query) do
+      <<~GQL
+        query($id: ContainerRepositoryID!) {
+          containerRepository(id: $id) {
+            lastPublishedAt
+          }
+        }
+      GQL
+    end
+
+    it 'returns the last_published_at' do
+      stub_container_registry_gitlab_api_support(supported: true) do |client|
+        stub_container_registry_gitlab_api_repository_details(client, path: container_repository.path, last_published_at: '2024-04-30T06:07:36.225Z')
+      end
+
+      subject
+
+      expect(last_published_at_response).to eq('2024-04-30T06:07:36+00:00')
+    end
+
+    context 'with a network error' do
+      it 'returns an error' do
+        stub_container_registry_gitlab_api_network_error
+
+        subject
+
+        expect_graphql_errors_to_include("Can't connect to the Container Registry. If this error persists, please review the troubleshooting documentation.")
+      end
+    end
+
+    context 'with not supporting the gitlab api' do
+      it 'returns nil' do
+        stub_container_registry_gitlab_api_support(supported: false)
+
+        subject
+
+        expect(last_published_at_response).to eq(nil)
       end
     end
   end

@@ -48,6 +48,55 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
     end
   end
 
+  describe '#last_published_at' do
+    subject { repository.last_published_at }
+
+    context 'on GitLab.com', :saas do
+      context 'supports gitlab api' do
+        before do
+          allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(true)
+          expect(repository.gitlab_api_client).to receive(:repository_details).with(repository.path, sizing: :self).and_return(response)
+        end
+
+        context 'with a size_bytes field' do
+          let(:timestamp_string) { '2024-04-30T06:07:36.225Z' }
+          let(:response) { { 'last_published_at' => timestamp_string } }
+
+          it { is_expected.to eq(DateTime.iso8601(timestamp_string)) }
+        end
+
+        context 'without a last_published_at field' do
+          let(:response) { { 'foo' => 'bar' } }
+
+          it { is_expected.to eq(nil) }
+        end
+
+        context 'with an invalid value for the last_published_at field' do
+          let(:response) { { 'last_published_at' => 'foobar' } }
+
+          it { is_expected.to eq(nil) }
+        end
+      end
+
+      context 'does not support gitlab api' do
+        before do
+          allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(false)
+          expect(repository.gitlab_api_client).not_to receive(:repository_details)
+        end
+
+        it { is_expected.to eq(nil) }
+      end
+    end
+
+    context 'not on GitLab.com' do
+      before do
+        expect(repository.gitlab_api_client).not_to receive(:repository_details)
+      end
+
+      it { is_expected.to eq(nil) }
+    end
+  end
+
   describe '#tag' do
     shared_examples 'returning an instantiated tag' do
       it 'returns an instantiated tag' do

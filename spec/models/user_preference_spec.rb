@@ -340,4 +340,43 @@ RSpec.describe UserPreference, feature_category: :user_profile do
       it { expect(user_preference.early_access_event_tracking?).to be false }
     end
   end
+
+  describe '#extensions_marketplace_enabled' do
+    where(:opt_in_status, :expected_value) do
+      [
+        ["enabled", true],
+        ["disabled", false],
+        ["unset", false]
+      ]
+    end
+
+    with_them do
+      it 'returns boolean from extensions_marketplace_opt_in_status' do
+        user_preference.update!(extensions_marketplace_opt_in_status: opt_in_status)
+
+        expect(user_preference.extensions_marketplace_enabled).to be expected_value
+      end
+    end
+  end
+
+  describe '#extensions_marketplace_enabled=' do
+    where(:value, :expected_opt_in_status) do
+      [
+        [true, "enabled"],
+        [false, "disabled"],
+        [0, "disabled"],
+        [1, "enabled"]
+      ]
+    end
+
+    with_them do
+      it 'updates extensions_marketplace_opt_in_status' do
+        user_preference.update!(extensions_marketplace_opt_in_status: 'unset')
+
+        user_preference.extensions_marketplace_enabled = value
+
+        expect(user_preference.extensions_marketplace_opt_in_status).to be expected_opt_in_status
+      end
+    end
+  end
 end

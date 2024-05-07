@@ -335,6 +335,8 @@ module Auth
     end
 
     def deploy_token
+      return unless Gitlab::ExternalAuthorization.allow_deploy_tokens_and_deploy_keys?
+
       params[:deploy_token]
     end
 

@@ -342,7 +342,7 @@ To access your **Followers** and **Following** tabs:
 
 ## Integrate your GitLab instance with third-party services
 
-Give third-party services access to your GitLab account.
+Give third-party services access to enhance the GitLab experience.
 
 ### Integrate your GitLab instance with Gitpod
 
@@ -369,6 +369,28 @@ To integrate with Sourcegraph:
 1. Select **Save changes**.
 
 You must be the administrator of the GitLab instance to configure GitLab with Sourcegraph.
+
+### Integrate with the extension marketplace
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151352) in GitLab 17.0 [with flags](../../administration/feature_flags.md) named `web_ide_oauth` and `web_ide_extensions_marketplace`. Disabled by default.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/459028) in GitLab 17.0.
+
+FLAG:
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+You can use the [extension marketplace](../project/web_ide/index.md#extension-marketplace)
+to search and manage extensions for the Web IDE.
+For third-party extensions, you must enable the marketplace in your user preferences.
+
+To enable the extension marketplace for the Web IDE:
+
+1. On the left sidebar, select your avatar.
+1. Select **Preferences**.
+1. Go to the **Integrations** section.
+1. Select the **Enable extension marketplace** checkbox.
+1. In the third-party extension acknowledgement, select **I understand**.
+1. Select **Save changes**.
 
 <!-- ## Troubleshooting
 

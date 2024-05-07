@@ -10,4 +10,8 @@ module FixtureHelpers
   def expand_fixture_path(filename, dir: '')
     File.expand_path(rails_root_join(dir, 'spec', 'fixtures', filename))
   end
+
+  def ci_artifact_fixture_size(filename = 'ci_build_artifacts.zip')
+    File::Stat.new(expand_fixture_path(filename)).size
+  end
 end

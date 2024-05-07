@@ -21,13 +21,16 @@ RSpec.describe 'Issue board filters', :js, feature_category: :team_planning do
   let(:filter_first_suggestion) { find('.gl-filtered-search-suggestion-list').first('.gl-filtered-search-suggestion') }
   let(:filter_submit) { find('.gl-search-box-by-click-search-button') }
 
+  before_all do
+    create(:callout, feature_name: :board_add_new_column_trigger_popover, user: user)
+  end
+
   context 'for a project board' do
     let_it_be(:board) { create(:board, project: project) }
 
     before do
       project.add_maintainer(user)
       sign_in(user)
-      create(:callout, feature_name: :board_add_new_column_trigger_popover, user: user)
 
       visit project_board_path(project, board)
       wait_for_requests

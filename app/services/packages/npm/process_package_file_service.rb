@@ -23,6 +23,8 @@ module Packages
 
         package.default!
 
+        ::Packages::Npm::CreateMetadataCacheWorker.perform_async(package.project_id, package.name)
+
         ServiceResponse.success
       end
 

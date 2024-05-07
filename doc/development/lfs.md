@@ -61,6 +61,7 @@ These services create and delete `LfsFileLock`.
 ## Example authentication
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 sequenceDiagram
 autonumber
     alt Over HTTPS
@@ -85,6 +86,7 @@ autonumber
 ## Example clone
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 sequenceDiagram
     Note right of Git client: Typical Git clone things happen first
     Note right of Git client: Authentication for LFS comes next
@@ -111,6 +113,7 @@ sequenceDiagram
 ## Example push
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 sequenceDiagram
     Note right of Git client: Typical Git push things happen first.
     Note right of Git client: Suthentication for LFS comes next.
@@ -157,6 +160,7 @@ details may have changed, it should still serve as a good introduction.
 The following diagram illustrates how GitLab resolves LFS files for project archives:
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 sequenceDiagram
     autonumber
     Client->>+Workhorse: GET /group/project/-/archive/master.zip

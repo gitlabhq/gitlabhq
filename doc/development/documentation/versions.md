@@ -263,6 +263,41 @@ If the flag hasn't been removed, readers should know when it was introduced.
 Historical feature information is available in [release posts](https://about.gitlab.com/releases/)
 or by searching for the issue or merge request where the work was done.
 
+### Timing of removals
+
+When a new major version is about to be released, you can start creating merge
+requests to remove any mentions of the last unsupported version, but only merge
+them during the milestone of the new major release.
+
+For example, if GitLab 17.0 is the new major upcoming release:
+
+- The supported versions are 16, 15, and 14.
+- When GitLab 17.0 is released, GitLab 14 is no longer supported.
+
+You can then create merge requests to remove any mentions to GitLab 14, but only
+merge them during the 17.0 milestone, which is after 16.11 is released.
+
+### Exception for upgrade pages
+
+The [version-specific pages](../../update/index.md#version-specific-upgrading-instructions) are the only exception to the previous guideline.
+For example, `doc/update/versions/14_changes.md` should
+be removed during the `.3` milestone. In this example, the changes would be removed in 17.3.
+
+We don't remove those pages immediately so that users have time to upgrade
+from older versions.
+
+Instead of removing the unsupported page,
+[add a note](#remove-a-topic) with a date three months in the future.
+This note ensures the page is cleaned up as part of the
+[monthly maintenance tasks](https://handbook.gitlab.com/handbook/product/ux/technical-writing/#regularly-scheduled-tasks).
+
+Also, if the `X_changes.md` page contains relative links to other sections
+that are removed as part of the versions cleanup, the `docs-lint links`
+job will likely fail. You can replace those relative links with an archived
+version. Be sure to pick the latest minor version of the
+unsupported version to be removed as shown in
+<https://archives.docs.gitlab.com/>.
+
 ## Promising features in future versions
 
 Do not promise to deliver features in a future release. For example, avoid phrases like,

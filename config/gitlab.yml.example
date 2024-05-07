@@ -1105,9 +1105,6 @@ production: &base
       #     app_id: 'YOUR_APP_ID',
       #     app_secret: 'YOUR_APP_SECRET',
       #     args: { access_type: 'offline', approval_prompt: '' } }
-      # - { name: 'facebook',
-      #     app_id: 'YOUR_APP_ID',
-      #     app_secret: 'YOUR_APP_SECRET' }
       # - { name: 'jwt',
       #     args: {
       #       secret: 'YOUR_APP_SECRET',
@@ -1606,9 +1603,6 @@ test:
           app_id: 'YOUR_APP_ID',
           app_secret: 'YOUR_APP_SECRET',
           args: { access_type: 'offline', approval_prompt: '' } }
-      - { name: 'facebook',
-          app_id: 'YOUR_APP_ID',
-          app_secret: 'YOUR_APP_SECRET' }
       - { name: 'jwt',
           app_secret: 'YOUR_APP_SECRET',
           args: {

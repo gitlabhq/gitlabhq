@@ -36,6 +36,13 @@ const TEST_START_REMOTE_PARAMS = {
   remotePath: '/test/projects/f oo',
   connectionToken: '123abc',
 };
+const TEST_EXTENSIONS_GALLERY_SETTINGS = JSON.stringify({
+  enabled: true,
+  vscode_settings: {
+    item_url: 'https://gitlab.test/vscode/marketplace/item/url',
+    service_url: 'https://gitlab.test/vscode/marketplace/service/url',
+  },
+});
 const TEST_EDITOR_FONT_SRC_URL = 'http://gitlab.test/assets/gitlab-mono/GitLabMono.woff2';
 const TEST_EDITOR_FONT_FORMAT = 'woff2';
 const TEST_EDITOR_FONT_FAMILY = 'GitLab Mono';
@@ -258,6 +265,30 @@ describe('ide/init_gitlab_web_ide', () => {
             protectRefreshToken: true,
           },
           httpHeaders: undefined,
+        }),
+      );
+    });
+  });
+
+  describe('when extensionsGallerySettings is in dataset', () => {
+    beforeEach(() => {
+      findRootElement().dataset.extensionsGallerySettings = TEST_EXTENSIONS_GALLERY_SETTINGS;
+
+      createSubject();
+    });
+
+    it('calls start with element and extensionsGallerySettings', () => {
+      expect(start).toHaveBeenCalledTimes(1);
+      expect(start).toHaveBeenCalledWith(
+        findRootElement(),
+        expect.objectContaining({
+          extensionsGallerySettings: {
+            enabled: true,
+            vscodeSettings: {
+              itemUrl: 'https://gitlab.test/vscode/marketplace/item/url',
+              serviceUrl: 'https://gitlab.test/vscode/marketplace/service/url',
+            },
+          },
         }),
       );
     });

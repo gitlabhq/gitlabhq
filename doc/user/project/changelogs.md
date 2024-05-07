@@ -357,6 +357,7 @@ reverted in that range. In this example, commit C reverts commit B. Because
 commit C has no other trailer, only commit A is added to the changelog:
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 graph LR
     A[Commit A<br>Changelog: changed] --> B[Commit B<br>Changelog: changed]
     B --> C[Commit C<br>Reverts commit B]
@@ -366,6 +367,7 @@ However, if the revert commit (commit C) _also_ contains a changelog trailer,
 both commits A and C are included in the changelog:
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 graph LR
     A[Commit A<br><br>Changelog: changed] --> B[Commit B<br><br>Changelog: changed]
     B --> C[Commit C<br>Reverts commit B<br>Changelog: changed]

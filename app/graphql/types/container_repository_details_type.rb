@@ -29,8 +29,17 @@ module Types
       null: true,
       description: 'Deduplicated size of the image repository in bytes. This is only available on GitLab.com for repositories created after `2021-11-04`.'
 
+    field :last_published_at,
+      Types::TimeType,
+      null: true,
+      description: 'Timestamp when a repository tag was last created or updated. Only present for repositories that had tags created or updated after GitLab 16.11.'
+
     def size
       handling_errors { object.size }
+    end
+
+    def last_published_at
+      handling_errors { object.last_published_at }
     end
 
     def manifest(reference:)

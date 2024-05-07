@@ -83,27 +83,39 @@ RSpec.describe Resolvers::ContainerRepositoryTagsResolver, feature_category: :co
       context 'with parameters' do
         using RSpec::Parameterized::TableSyntax
 
-        where(:before, :after, :sort, :name, :first, :last, :sort_value, :referrers, :referrer_type) do
-          nil  | nil  | 'NAME_DESC' | ''  | 10  | nil | '-name' | nil   | nil
-          'bb' | nil  | 'NAME_ASC'  | 'a' | nil | 5   | 'name'  | false | nil
-          nil  | 'aa' | 'NAME_DESC' | 'a' | 10  | nil | '-name' | true  | 'application/example'
+        where(:referrers, :sort_string, :sort_value) do
+          nil   | nil                 | nil
+          true  | nil                 | nil
+          false | nil                 | nil
+          nil   | 'NAME_ASC'          | 'name'
+          nil   | 'NAME_DESC'         | '-name'
+          nil   | 'PUBLISHED_AT_ASC'  | 'published_at'
+          nil   | 'PUBLISHED_AT_DESC' | '-published_at'
+        end
+
+        let(:args) do
+          {
+            before: 'abc',
+            after: 'xyz',
+            sort: sort_string,
+            name: 'tag1',
+            first: 5,
+            last: 0,
+            referrers: referrers,
+            referrer_type: 'application/example'
+          }
         end
 
         with_them do
-          let(:args) do
-            { before: before, after: after, sort: sort, name: name, first: first,
-              last: last, referrers: referrers, referrer_type: referrer_type }.compact
-          end
-
-          it 'calls ContainerRepository#tags_page with correct parameters' do
+          it 'calls ContainerRepository#tags_page with the correct parameters' do
             expect(repository).to receive(:tags_page).with(
-              before: before,
-              last: after,
+              before: 'abc',
+              last: 'xyz',
               sort: sort_value,
-              name: name,
-              page_size: [first, last].map(&:to_i).max,
+              name: 'tag1',
+              page_size: 5,
               referrers: referrers,
-              referrer_type: referrer_type
+              referrer_type: 'application/example'
             )
 
             resolver(args)

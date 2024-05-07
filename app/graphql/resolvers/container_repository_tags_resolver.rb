@@ -72,13 +72,13 @@ module Resolvers
       query_params[key]&.first
     end
 
-    def map_sort_field(sort)
-      return unless sort
+    def map_sort_field(sort_value)
+      return if sort_value.blank?
 
-      sort_field, direction = sort.to_s.split('_')
-      return sort_field if direction == 'asc'
+      sort = sort_value.to_s.gsub(/_(desc|asc)$/, '')
+      sort = "-#{sort}" if sort_value.end_with?('_desc')
 
-      "-#{sort_field}"
+      sort
     end
 
     def sort_tags(to_be_sorted, sort)

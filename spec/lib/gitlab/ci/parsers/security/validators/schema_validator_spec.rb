@@ -482,9 +482,9 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator, featu
       end
 
       let(:message) do
-        "This report uses a supported MAJOR.MINOR schema version but the PATCH version doesn't match"\
-        " any vendored schema version. Validation will be attempted against version"\
-        " #{latest_patch_version}"
+        "This report uses a supported MAJOR.MINOR schema version but the PATCH version doesn't match "\
+        "any vendored schema version. Validation will be attempted against version "\
+        "#{latest_patch_version}"
       end
 
       context 'and the report is valid' do

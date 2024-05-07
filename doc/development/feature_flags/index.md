@@ -689,7 +689,9 @@ Feature groups can be enabled via the group name:
 Feature.enable(:feature_flag_name, :gitlab_team_members)
 ```
 
-### Enabling a feature flag locally (in development)
+### Controlling feature flags locally
+
+#### On rails console
 
 In the rails console (`rails c`), enter the following command to enable a feature flag:
 
@@ -709,17 +711,18 @@ You can also enable a feature flag for a given gate:
 Feature.enable(:feature_flag_name, Project.find_by_full_path("root/my-project"))
 ```
 
-### Disabling a feature flag locally (in development)
-
 When manually enabling or disabling a feature flag from the Rails console, its default value gets overwritten.
 This can cause confusion when changing the flag's `default_enabled` attribute.
 
-To reset the feature flag to the default status, you can disable it in the rails console (`rails c`)
-as follows:
+To reset the feature flag to the default status:
 
 ```ruby
 Feature.remove(:feature_flag_name)
 ```
+
+#### On your browser
+
+Access `http://gdk.test:3000/rails/features` to see the manage locally the feature flag.
 
 ### Logging
 

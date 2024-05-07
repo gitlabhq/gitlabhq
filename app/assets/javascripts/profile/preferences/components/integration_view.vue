@@ -2,6 +2,8 @@
 import { GlIcon, GlLink, GlFormGroup, GlFormCheckbox } from '@gitlab/ui';
 import IntegrationHelpText from '~/vue_shared/components/integrations_help_text.vue';
 
+const toCheckboxValue = (bool) => (bool ? '1' : false);
+
 export default {
   name: 'IntegrationView',
   components: {
@@ -11,7 +13,6 @@ export default {
     GlFormCheckbox,
     IntegrationHelpText,
   },
-  inject: ['userFields'],
   props: {
     helpLink: {
       type: String,
@@ -29,10 +30,14 @@ export default {
       type: Object,
       required: true,
     },
+    value: {
+      type: Boolean,
+      required: true,
+    },
   },
   data() {
     return {
-      isEnabled: this.userFields[this.config.formName] ? '1' : '0',
+      checkboxValue: toCheckboxValue(this.value),
     };
   },
   computed: {
@@ -41,6 +46,17 @@ export default {
     },
     formId() {
       return `user_${this.config.formName}`;
+    },
+  },
+  watch: {
+    value(val) {
+      this.checkboxValue = toCheckboxValue(val);
+    },
+    checkboxValue(val) {
+      // note: When checked we get '1' since we set `value` prop. Unchecked is `false` as expected.
+      //       This value="1" needs to be set to properly handle the Rails form.
+      //       https://bootstrap-vue.org/docs/components/form-checkbox#comp-ref-b-form-checkbox-props
+      this.$emit('input', Boolean(val));
     },
   },
 };
@@ -61,7 +77,7 @@ export default {
       value="0"
       data-testid="profile-preferences-integration-hidden-field"
     />
-    <gl-form-checkbox :id="formId" :checked="isEnabled" :name="formName" value="1"
+    <gl-form-checkbox :id="formId" v-model="checkboxValue" :name="formName" value="1"
       >{{ config.label }}
       <template #help>
         <integration-help-text :message="message" :message-url="messageUrl" />

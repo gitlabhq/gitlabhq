@@ -37,7 +37,7 @@ class Cli
                   "ex) a user applies a label to an issue", :new_event
       menu.choice "New Metric -- track the count of existing events over time\n     " \
                   "ex) count unique users who assign labels to issues per month", :new_metric
-      menu.choice 'View Usage -- look at code examples for an existing event', :view_usage
+      menu.choice 'View Usage -- look at code and testing examples for existing events & metrics', :view_usage
       menu.choice '...am I in the right place?', :help_decide
     end
 

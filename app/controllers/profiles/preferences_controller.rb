@@ -56,6 +56,7 @@ class Profiles::PreferencesController < Profiles::ApplicationController
       :tab_width,
       :sourcegraph_enabled,
       :gitpod_enabled,
+      :extensions_marketplace_enabled,
       :render_whitespace_in_code,
       :project_shortcut_buttons,
       :keyboard_shortcuts_enabled,

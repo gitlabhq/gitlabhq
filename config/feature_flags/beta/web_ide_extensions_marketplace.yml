@@ -1,0 +1,9 @@
+---
+name: web_ide_extensions_marketplace
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/epics/7685
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151352
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/459028
+milestone: '17.0'
+group: group::ide
+type: beta
+default_enabled: false

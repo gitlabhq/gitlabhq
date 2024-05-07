@@ -114,8 +114,8 @@ RSpec.shared_examples 'issue boards sidebar' do
         wait_for_requests
 
         expect(page).to have_content(
-          _('Only project members with at least the Reporter role, the author, and assignees' \
-            ' can view or be notified about this issue.')
+          _('Only project members with at least the Reporter role, the author, and assignees ' \
+            'can view or be notified about this issue.')
         )
       end
     end

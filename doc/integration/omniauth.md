@@ -27,7 +27,6 @@ GitLab supports the following OmniAuth providers.
 | [AWS Cognito](../administration/auth/cognito.md)                    | `cognito`                  |
 | [Azure v2](azure.md)                                                | `azure_activedirectory_v2` |
 | [Bitbucket Cloud](bitbucket.md)                                     | `bitbucket`                |
-| [Facebook](facebook.md)                                             | `facebook`                 |
 | [Generic OAuth 2.0](oauth2_generic.md)                              | `oauth2_generic`           |
 | [GitHub](github.md)                                                 | `github`                   |
 | [GitLab.com](gitlab.md)                                             | `gitlab`                   |

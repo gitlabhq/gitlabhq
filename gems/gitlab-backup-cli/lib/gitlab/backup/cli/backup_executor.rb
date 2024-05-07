@@ -36,7 +36,7 @@ module Gitlab
         private
 
         def build_metadata
-          @metadata = Gitlab::Backup::Cli::BackupMetadata.build(gitlab_version: context.gitlab_version)
+          @metadata = Gitlab::Backup::Cli::Metadata::BackupMetadata.build(gitlab_version: context.gitlab_version)
         end
 
         def execute_all_tasks

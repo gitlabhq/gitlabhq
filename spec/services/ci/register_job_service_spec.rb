@@ -622,7 +622,7 @@ module Ci
                 job.job_artifacts_archive.size
               end
 
-              expect(artifacts_size).to eq 107464 * 2
+              expect(artifacts_size).to eq ci_artifact_fixture_size * 2
               expect(Gitlab::ApplicationContext.current).to include({
                 'meta.artifacts_dependencies_size' => artifacts_size,
                 'meta.artifacts_dependencies_count' => 2

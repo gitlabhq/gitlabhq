@@ -18,6 +18,7 @@ The examples on this page assume a `main` branch with commits A, C, and E, and a
 `feature` branch with commits B and D:
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 gitGraph
    commit id: "A"
    branch feature
@@ -57,7 +58,7 @@ and selecting `Merge commit` as the **Merge method** in the GitLab UI:
 The merge strategy:
 
 ```mermaid
-%%{init: { 'gitGraph': {'logLevel': 'debug', 'showBranches': true, 'showCommitLabel':true,'mainBranchName': 'main'}} }%%
+%%{init: { 'gitGraph': {'logLevel': 'debug', 'showBranches': true, 'showCommitLabel':true,'mainBranchName': 'main', 'fontFamily': 'GitLab Sans'}} }%%
 gitGraph
    commit id: "A"
    branch feature
@@ -73,7 +74,7 @@ After a feature branch is merged with the **Merge commit** method, your `main` b
 looks like this:
 
 ```mermaid
-%%{init: { 'gitGraph': {'logLevel': 'debug', 'showBranches': true, 'showCommitLabel':true,'mainBranchName': 'main'}} }%%
+%%{init: { 'gitGraph': {'logLevel': 'debug', 'showBranches': true, 'showCommitLabel':true,'mainBranchName': 'main', 'fontFamily': 'GitLab Sans'}} }%%
 gitGraph
    commit id: "A"
    commit id: "C"
@@ -87,7 +88,7 @@ from the `feature` branch. The original commits (B and D) remain unchanged
 on the `feature` branch, and the squash commit is placed on the `main` branch:
 
 ```mermaid
-%%{init: { 'gitGraph': {'showBranches': true, 'showCommitLabel':true,'mainBranchName': 'main'}} }%%
+%%{init: { 'gitGraph': {'showBranches': true, 'showCommitLabel':true,'mainBranchName': 'main', 'fontFamily': 'GitLab Sans'}} }%%
 gitGraph
    commit id:"A"
    branch feature
@@ -126,6 +127,7 @@ succeeded, the target branch build also succeeds after the merge. An example
 commit graph generated using this merge method:
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 gitGraph
   commit id: "Init"
   branch mr-branch-1
@@ -165,6 +167,7 @@ to accept merge requests without creating merge commits. An example commit graph
 generated using this merge method:
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 gitGraph
   commit id: "Init"
   commit id: "Merge mr-branch-1"

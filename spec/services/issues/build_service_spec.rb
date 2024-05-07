@@ -62,12 +62,12 @@ RSpec.describe Issues::BuildService, feature_category: :team_planning do
                     "with a blockquote\n"\
                     "> That has a quote\n"\
                     ">>>\n"
-        note_result = "    > This is a string\n"\
-                      "    > \n"\
-                      "    > >>>\n"\
-                      "    > with a blockquote\n"\
-                      "    > > That has a quote\n"\
-                      "    > >>>\n"
+        note_result = "    > This is a string\n    "\
+                      "> \n    "\
+                      "> >>>\n    "\
+                      "> with a blockquote\n    "\
+                      "> > That has a quote\n    "\
+                      "> >>>\n"
         discussion = create(:diff_note_on_merge_request, note: note_text).to_discussion
         expect(service.item_for_discussion(discussion)).to include(note_result)
       end

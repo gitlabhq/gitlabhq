@@ -253,9 +253,19 @@ class ContainerRepository < ApplicationRecord
     strong_memoize(:size) do
       next unless gitlab_api_client.supports_gitlab_api?
 
-      gitlab_api_client.repository_details(self.path, sizing: :self)['size_bytes']
+      gitlab_api_client_repository_details['size_bytes']
     end
   end
+
+  def last_published_at
+    return unless can_access_the_gitlab_api?
+
+    timestamp_string = gitlab_api_client_repository_details['last_published_at']
+    DateTime.iso8601(timestamp_string)
+  rescue ArgumentError
+    nil
+  end
+  strong_memoize_attr :last_published_at
 
   def set_delete_ongoing_status
     now = Time.zone.now
@@ -324,6 +334,11 @@ class ContainerRepository < ApplicationRecord
   def set_status_updated_at_to_now
     self.status_updated_at = Time.zone.now
   end
+
+  def gitlab_api_client_repository_details
+    gitlab_api_client.repository_details(self.path, sizing: :self)
+  end
+  strong_memoize_attr :gitlab_api_client_repository_details
 end
 
 ContainerRepository.prepend_mod_with('ContainerRepository')

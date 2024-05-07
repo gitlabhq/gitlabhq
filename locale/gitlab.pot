@@ -38771,6 +38771,27 @@ msgstr ""
 msgid "Preferences saved."
 msgstr ""
 
+msgid "PreferencesIntegrations|By using the Extension Marketplace, you will send data, such as IP address and other device information, to %{url} in accordance with their independent terms and privacy policy."
+msgstr ""
+
+msgid "PreferencesIntegrations|GitLab does not assume any responsibility for the functionality of these third-party extensions. Each %{boldStart}third-party%{boldEnd} extension has %{boldStart}their own independent%{boldEnd} terms and conditions listed in the marketplace. By installing an extension, you are agreeing to the terms & conditions and Privacy Policy that govern each individual extension as listed in the marketplace."
+msgstr ""
+
+msgid "PreferencesIntegrations|I understand"
+msgstr ""
+
+msgid "PreferencesIntegrations|Learn more"
+msgstr ""
+
+msgid "PreferencesIntegrations|Third-Party Extensions Acknowledgement"
+msgstr ""
+
+msgid "PreferencesIntegrations|Third-party extensions are now available in the Web IDE. While each extension runs in a secure browser sandbox, %{boldStart}third-party extensions%{boldEnd} may have access to the contents of the files opened in the Web IDE, %{boldStart}including any personal data in those files%{boldEnd}, and may communicate with external servers."
+msgstr ""
+
+msgid "PreferencesIntegrations|Uses %{extensions_marketplace_home} as the extension marketplace for the Web IDE."
+msgstr ""
+
 msgid "Preferences|%{link_start}List of keyboard shortcuts%{link_end}"
 msgstr ""
 
@@ -38835,6 +38856,9 @@ msgid "Preferences|Enable Gitpod integration"
 msgstr ""
 
 msgid "Preferences|Enable Zoekt code search"
+msgstr ""
+
+msgid "Preferences|Enable extension marketplace"
 msgstr ""
 
 msgid "Preferences|Enable follow users"
@@ -38925,6 +38949,9 @@ msgid "Preferences|Turns on or off the preference to search with Zoekt instead o
 msgstr ""
 
 msgid "Preferences|Use relative times"
+msgstr ""
+
+msgid "Preferences|Web IDE"
 msgstr ""
 
 msgid "Preferences|When you type in a description or comment box, pressing %{kbdOpen}Enter%{kbdClose} in a list adds a new item below."

@@ -69,6 +69,14 @@ RSpec.describe Auth::DependencyProxyAuthenticationService, feature_category: :de
 
         it_behaves_like 'returning a token with an encoded field', 'deploy_token'
       end
+
+      context 'when the the deploy token is restricted with external_authorization' do
+        before do
+          allow(Gitlab::ExternalAuthorization).to receive(:allow_deploy_tokens_and_deploy_keys?).and_return(false)
+        end
+
+        it_behaves_like 'returning', status: 403, message: 'access forbidden'
+      end
     end
 
     context 'with a human user' do
@@ -77,6 +85,14 @@ RSpec.describe Auth::DependencyProxyAuthenticationService, feature_category: :de
       context 'with packages_dependency_proxy_pass_token_to_policy disabled' do
         before do
           stub_feature_flags(packages_dependency_proxy_pass_token_to_policy: false)
+        end
+
+        it_behaves_like 'returning a token with an encoded field', 'user_id'
+      end
+
+      context "when the deploy token is restricted with external_authorization" do
+        before do
+          allow(Gitlab::ExternalAuthorization).to receive(:allow_deploy_tokens_and_deploy_keys?).and_return(false)
         end
 
         it_behaves_like 'returning a token with an encoded field', 'user_id'

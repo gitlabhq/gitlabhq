@@ -3,10 +3,20 @@
 module GitlabBackupHelpers
   FakeContext = Struct.new(:gitlab_version, :backup_basedir, :env, keyword_init: true)
 
+  # Specs basepath
+  # @return [Pathname]
   def spec_path
     Pathname.new(__dir__).join('..').expand_path
   end
 
+  # Fixtures basepath
+  # @return [Pathname]
+  def fixtures_path
+    spec_path.join('fixtures')
+  end
+
+  # Temporary folder basepath inside project
+  # @return [Pathname]
   def temp_path
     spec_path.join('..', 'tmp').expand_path
   end

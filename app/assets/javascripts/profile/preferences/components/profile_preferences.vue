@@ -1,8 +1,9 @@
 <script>
 import { GlButton } from '@gitlab/ui';
 import { createAlert, VARIANT_DANGER } from '~/alert';
-import { INTEGRATION_VIEW_CONFIGS, i18n } from '../constants';
+import { INTEGRATION_VIEW_CONFIGS, i18n, INTEGRATION_EXTENSIONS_MARKETPLACE } from '../constants';
 import IntegrationView from './integration_view.vue';
+import ExtensionsMarketplaceWarning from './extensions_marketplace_warning.vue';
 
 function updateClasses(bodyClasses = '', applicationTheme, layout) {
   // Remove documentElement class for any previous theme, re-add current one
@@ -24,6 +25,7 @@ export default {
   components: {
     IntegrationView,
     GlButton,
+    ExtensionsMarketplaceWarning,
   },
   inject: {
     integrationViews: {
@@ -44,12 +46,27 @@ export default {
   },
   integrationViewConfigs: INTEGRATION_VIEW_CONFIGS,
   i18n,
+  INTEGRATION_EXTENSIONS_MARKETPLACE,
   data() {
+    const integrationValues = this.integrationViews.reduce((acc, { name }) => {
+      const { formName } = INTEGRATION_VIEW_CONFIGS[name];
+
+      acc[name] = Boolean(this.userFields[formName]);
+
+      return acc;
+    }, {});
+
     return {
       isSubmitEnabled: true,
       darkModeOnCreate: null,
       schemeOnCreate: null,
+      integrationValues,
     };
+  },
+  computed: {
+    extensionsMarketplaceView() {
+      return this.integrationViews.find(({ name }) => name === INTEGRATION_EXTENSIONS_MARKETPLACE);
+    },
   },
   created() {
     this.formEl.addEventListener('ajax:beforeSend', this.handleLoading);
@@ -117,7 +134,11 @@ export default {
     >
       <div class="settings-sticky-header">
         <div class="settings-sticky-header-inner">
-          <h4 class="gl-my-0" data-testid="profile-preferences-integrations-heading">
+          <h4
+            id="integrations"
+            class="gl-my-0"
+            data-testid="profile-preferences-integrations-heading"
+          >
             {{ $options.i18n.integrations }}
           </h4>
         </div>
@@ -129,6 +150,7 @@ export default {
         <integration-view
           v-for="view in integrationViews"
           :key="view.name"
+          v-model="integrationValues[view.name]"
           :help-link="view.help_link"
           :message="view.message"
           :message-url="view.message_url"
@@ -148,5 +170,10 @@ export default {
         {{ $options.i18n.saveChanges }}
       </gl-button>
     </div>
+    <extensions-marketplace-warning
+      v-if="extensionsMarketplaceView"
+      v-model="integrationValues[$options.INTEGRATION_EXTENSIONS_MARKETPLACE]"
+      :help-url="extensionsMarketplaceView.help_link"
+    />
   </div>
 </template>

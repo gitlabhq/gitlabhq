@@ -114,6 +114,7 @@ file.md @group-x @group-x/subgroup-y
 #### Group inheritance and eligibility
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 graph TD
     A[Parent group X] -->|owns| B[Project A]
     A -->|contains| C[Subgroup Y]
@@ -138,6 +139,7 @@ You can [invite](../members/share_project_with_groups.md) **Subgroup Y** to **Pr
 so that their members also become eligible Code Owners.
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 graph LR
     A[Parent group X] -->|owns| B[Project A]
     A -->|also contains| C[Subgroup Y]

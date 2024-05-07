@@ -7,7 +7,7 @@ RSpec.describe GitlabSchema.types['ContainerRepositoryTagSort'] do
 
   it 'exposes all the existing issue sort values' do
     expect(described_class.values.keys).to include(
-      *%w[NAME_ASC NAME_DESC]
+      *%w[NAME_ASC NAME_DESC PUBLISHED_AT_ASC PUBLISHED_AT_DESC]
     )
   end
 end

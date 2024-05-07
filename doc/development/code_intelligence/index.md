@@ -17,6 +17,7 @@ displaying this information for the files in the project.
 Here is a sequence diagram for uploading an LSIF artifact:
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 sequenceDiagram
     accTitle: Sequence diagram for LSIF artifact uploads
     accDescr: The process of how Runner, Workhorse, Rails, and object storage work together to upload an artifact.

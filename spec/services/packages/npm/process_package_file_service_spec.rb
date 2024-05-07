@@ -15,7 +15,11 @@ RSpec.describe ::Packages::Npm::ProcessPackageFileService, feature_category: :pa
   end
 
   describe '#execute' do
-    it 'processes the package file' do
+    it 'processes the package file and enqueues a worker to create metadata cache' do
+      expect(::Packages::Npm::CreateMetadataCacheWorker).to receive(:perform_async).with(
+        package.project_id,
+        package.name
+      )
       expect(package).to receive(:default!)
 
       service.execute

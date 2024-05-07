@@ -458,6 +458,7 @@ commits. In this example, branches `B` and `C` both start from the same commit (
 on branch `A`:
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 gitGraph
     commit id:"a"
     branch "branch A"

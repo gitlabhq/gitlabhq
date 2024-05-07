@@ -50,6 +50,7 @@ If you access a GitLab server over HTTP(S) you end up in [`gitlab-workhorse`](..
 ### `git pull` over SSH
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 graph LR
     A[Git pull] --> |via SSH| B[gitlab-shell]
     B -->|API call| C[gitlab-rails<br>authorization]
@@ -61,6 +62,7 @@ graph LR
 The `git push` command is not performed until after `gitlab-rails` accepts the push:
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 graph LR
 subgraph User initiates
     A[Git push] -->|via SSH| B[gitlab-shell]
@@ -159,6 +161,7 @@ or `gitlab-sshd` session by inspecting the logs. Some guidelines:
 A diagram of the flow of `gitlab-shell` on GitLab.com:
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 graph LR
     a2 --> b2
     a2  --> b3
@@ -195,6 +198,7 @@ graph LR
 ## GitLab Shell architecture
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 sequenceDiagram
     participant Git on client
     participant SSH server

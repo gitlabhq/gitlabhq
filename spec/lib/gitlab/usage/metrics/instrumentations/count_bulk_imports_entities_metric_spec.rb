@@ -33,8 +33,8 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::CountBulkImportsEntitie
       let(:start) { 30.days.ago.to_fs(:db) }
       let(:finish) { 2.days.ago.to_fs(:db) }
       let(:expected_query) do
-        "SELECT COUNT(\"bulk_import_entities\".\"id\") FROM \"bulk_import_entities\""\
-        " WHERE \"bulk_import_entities\".\"created_at\" BETWEEN '#{start}' AND '#{finish}'"
+        "SELECT COUNT(\"bulk_import_entities\".\"id\") FROM \"bulk_import_entities\" "\
+        "WHERE \"bulk_import_entities\".\"created_at\" BETWEEN '#{start}' AND '#{finish}'"
       end
 
       it_behaves_like 'a correct instrumented metric value and query', time_frame: '28d', options: {}
@@ -52,8 +52,8 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::CountBulkImportsEntitie
     context 'with all time frame' do
       let(:expected_value) { 4 }
       let(:expected_query) do
-        "SELECT COUNT(\"bulk_import_entities\".\"id\") FROM \"bulk_import_entities\""\
-        " WHERE \"bulk_import_entities\".\"source_type\" = 1"
+        "SELECT COUNT(\"bulk_import_entities\".\"id\") FROM \"bulk_import_entities\" "\
+        "WHERE \"bulk_import_entities\".\"source_type\" = 1"
       end
 
       it_behaves_like 'a correct instrumented metric value and query',
@@ -66,9 +66,9 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::CountBulkImportsEntitie
       let(:start) { 30.days.ago.to_fs(:db) }
       let(:finish) { 2.days.ago.to_fs(:db) }
       let(:expected_query) do
-        "SELECT COUNT(\"bulk_import_entities\".\"id\") FROM \"bulk_import_entities\""\
-        " WHERE \"bulk_import_entities\".\"created_at\" BETWEEN '#{start}' AND '#{finish}'"\
-        " AND \"bulk_import_entities\".\"source_type\" = 1"
+        "SELECT COUNT(\"bulk_import_entities\".\"id\") FROM \"bulk_import_entities\" "\
+        "WHERE \"bulk_import_entities\".\"created_at\" BETWEEN '#{start}' AND '#{finish}' "\
+        "AND \"bulk_import_entities\".\"source_type\" = 1"
       end
 
       it_behaves_like 'a correct instrumented metric value and query',
@@ -81,8 +81,8 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::CountBulkImportsEntitie
     context 'with all time frame' do
       let(:expected_value) { 3 }
       let(:expected_query) do
-        "SELECT COUNT(\"bulk_import_entities\".\"id\") FROM \"bulk_import_entities\""\
-        " WHERE \"bulk_import_entities\".\"source_type\" = 0"
+        "SELECT COUNT(\"bulk_import_entities\".\"id\") FROM \"bulk_import_entities\" "\
+        "WHERE \"bulk_import_entities\".\"source_type\" = 0"
       end
 
       it_behaves_like 'a correct instrumented metric value and query',
@@ -95,9 +95,9 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::CountBulkImportsEntitie
       let(:start) { 30.days.ago.to_fs(:db) }
       let(:finish) { 2.days.ago.to_fs(:db) }
       let(:expected_query) do
-        "SELECT COUNT(\"bulk_import_entities\".\"id\") FROM \"bulk_import_entities\""\
-        " WHERE \"bulk_import_entities\".\"created_at\" BETWEEN '#{start}' AND '#{finish}'"\
-        " AND \"bulk_import_entities\".\"source_type\" = 0"
+        "SELECT COUNT(\"bulk_import_entities\".\"id\") FROM \"bulk_import_entities\" "\
+        "WHERE \"bulk_import_entities\".\"created_at\" BETWEEN '#{start}' AND '#{finish}' "\
+        "AND \"bulk_import_entities\".\"source_type\" = 0"
       end
 
       it_behaves_like 'a correct instrumented metric value and query',
@@ -110,8 +110,8 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::CountBulkImportsEntitie
     context 'with all time frame' do
       let(:expected_value) { 5 }
       let(:expected_query) do
-        "SELECT COUNT(\"bulk_import_entities\".\"id\") FROM \"bulk_import_entities\""\
-        " WHERE \"bulk_import_entities\".\"status\" = 2"
+        "SELECT COUNT(\"bulk_import_entities\".\"id\") FROM \"bulk_import_entities\" "\
+        "WHERE \"bulk_import_entities\".\"status\" = 2"
       end
 
       it_behaves_like 'a correct instrumented metric value and query',
@@ -124,9 +124,9 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::CountBulkImportsEntitie
       let(:start) { 30.days.ago.to_fs(:db) }
       let(:finish) { 2.days.ago.to_fs(:db) }
       let(:expected_query) do
-        "SELECT COUNT(\"bulk_import_entities\".\"id\") FROM \"bulk_import_entities\""\
-        " WHERE \"bulk_import_entities\".\"created_at\" BETWEEN '#{start}' AND '#{finish}'"\
-        " AND \"bulk_import_entities\".\"status\" = 2"
+        "SELECT COUNT(\"bulk_import_entities\".\"id\") FROM \"bulk_import_entities\" "\
+        "WHERE \"bulk_import_entities\".\"created_at\" BETWEEN '#{start}' AND '#{finish}' "\
+        "AND \"bulk_import_entities\".\"status\" = 2"
       end
 
       it_behaves_like 'a correct instrumented metric value and query',
@@ -139,8 +139,8 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::CountBulkImportsEntitie
     context 'with all time frame' do
       let(:expected_value) { 3 }
       let(:expected_query) do
-        "SELECT COUNT(\"bulk_import_entities\".\"id\") FROM \"bulk_import_entities\""\
-        " WHERE \"bulk_import_entities\".\"source_type\" = 1 AND \"bulk_import_entities\".\"status\" = 2"
+        "SELECT COUNT(\"bulk_import_entities\".\"id\") FROM \"bulk_import_entities\" "\
+        "WHERE \"bulk_import_entities\".\"source_type\" = 1 AND \"bulk_import_entities\".\"status\" = 2"
       end
 
       it_behaves_like 'a correct instrumented metric value and query',
@@ -153,9 +153,9 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::CountBulkImportsEntitie
       let(:start) { 30.days.ago.to_fs(:db) }
       let(:finish) { 2.days.ago.to_fs(:db) }
       let(:expected_query) do
-        "SELECT COUNT(\"bulk_import_entities\".\"id\") FROM \"bulk_import_entities\""\
-        " WHERE \"bulk_import_entities\".\"created_at\" BETWEEN '#{start}' AND '#{finish}'"\
-        " AND \"bulk_import_entities\".\"source_type\" = 1 AND \"bulk_import_entities\".\"status\" = 2"
+        "SELECT COUNT(\"bulk_import_entities\".\"id\") FROM \"bulk_import_entities\" "\
+        "WHERE \"bulk_import_entities\".\"created_at\" BETWEEN '#{start}' AND '#{finish}' "\
+        "AND \"bulk_import_entities\".\"source_type\" = 1 AND \"bulk_import_entities\".\"status\" = 2"
       end
 
       it_behaves_like 'a correct instrumented metric value and query',

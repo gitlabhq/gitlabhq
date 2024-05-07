@@ -37,6 +37,7 @@ This chart contains several types of items:
 | `./` | A path relative to the closest parent directory pendant node. Non-relative paths nested under parent pendant nodes are not in that directory. |
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
   flowchart TB
     accTitle: Component rendering
     accDescr: Flowchart of how components are rendered in the GitLab front end
@@ -312,6 +313,7 @@ When the request finishes, the diffs app formats the data received into a format
 it easier for the diffs app to render the diffs lines.
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 graph TD
     accTitle: Formatting diffs
     accDescr: A flowchart of steps taken when rendering a diff, including retrieval and display preparations
@@ -352,6 +354,7 @@ rendered as expected.
 This chart gives a brief overview of the pipeline that happens:
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 graph TD
     accTitle: Render queue pipeline
     accDescr: Flowchart of the steps in the render queue pipeline

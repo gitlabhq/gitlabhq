@@ -184,7 +184,12 @@ RSpec.describe API::ContainerRepositories, feature_category: :container_registry
 
         it 'returns a repository and its size' do
           stub_container_registry_gitlab_api_support(supported: true) do |client|
-            stub_container_registry_gitlab_api_repository_details(client, path: repository.path, size_bytes: 12345)
+            stub_container_registry_gitlab_api_repository_details(
+              client,
+              path: repository.path,
+              size_bytes: 12345,
+              sizing: :self
+            )
           end
 
           subject

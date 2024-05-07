@@ -24,7 +24,7 @@ RSpec.describe Ci::JobArtifact, feature_category: :build_artifacts do
   it_behaves_like 'UpdateProjectStatistics', :with_counter_attribute do
     let_it_be(:job, reload: true) { create(:ci_build) }
 
-    subject { build(:ci_job_artifact, :archive, job: job, size: 107464) }
+    subject { build(:ci_job_artifact, :archive, job: job, size: ci_artifact_fixture_size) }
   end
 
   describe 'after_create_commit callback' do
@@ -445,7 +445,7 @@ RSpec.describe Ci::JobArtifact, feature_category: :build_artifacts do
     let(:artifact) { create(:ci_job_artifact, :archive, project: project) }
 
     it 'sets the size from the file size' do
-      expect(artifact.size).to eq(107464)
+      expect(artifact.size).to eq(ci_artifact_fixture_size)
     end
   end
 

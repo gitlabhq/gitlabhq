@@ -627,7 +627,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
               expect(json_response['dependencies'].count).to eq(1)
               expect(json_response['dependencies']).to include(
                 { 'id' => job.id, 'name' => job.name, 'token' => test_job.token,
-                  'artifacts_file' => { 'filename' => 'ci_build_artifacts.zip', 'size' => 107464 } })
+                  'artifacts_file' => { 'filename' => 'ci_build_artifacts.zip', 'size' => ci_artifact_fixture_size } })
             end
           end
 

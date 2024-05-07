@@ -17,7 +17,8 @@ module Ci
     end
 
     def size
-      entry.metadata[:size]
+      # Old versions of Workhorse omit the size if the file is 0 bytes
+      entry.metadata.fetch(:size, 0)
     end
     alias_method :external_size, :size
 

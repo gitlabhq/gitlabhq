@@ -19,7 +19,6 @@ RSpec.describe 'OAuth Registration', :js, :allow_forgery_protection, feature_cat
     :bitbucket      | {}
     :gitlab         | {}
     :google_oauth2  | {}
-    :facebook       | {}
     :auth0          | {}
     :salesforce     | { extra: { email_verified: true } }
     :alicloud       | {}

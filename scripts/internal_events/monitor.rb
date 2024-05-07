@@ -20,17 +20,9 @@
 
 require 'terminal-table'
 require 'net/http'
+require_relative '../../spec/support/helpers/service_ping_helpers'
 
-module ExtendedTimeFrame
-  def weekly_time_range
-    super.tap { |h| h[:end_date] = 1.week.from_now }
-  end
-
-  def monthly_time_range
-    super.tap { |h| h[:end_date] = 1.week.from_now }
-  end
-end
-Gitlab::Usage::TimeFrame.prepend(ExtendedTimeFrame)
+Gitlab::Usage::TimeFrame.prepend(ServicePingHelpers::CurrentTimeFrame)
 
 def metric_definitions_from_args
   args = ARGV

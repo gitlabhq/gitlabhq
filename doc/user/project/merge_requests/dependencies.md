@@ -32,6 +32,8 @@ new feature, you would break the default branch in your project. A merge request
 dependency prevents your work from merging too soon:
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
+
 graph TB
   accTitle: Merge request dependencies
   accDescr: Shows how a merge request dependency prevents work from merging too soon.
@@ -65,6 +67,8 @@ in turn, can block up to 10 merge requests. In this example, `myfriend/library!1
 depends on `herfriend/another-lib!1`, which in turn depends on `mycorp/example!100`:
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
+
 graph LR;
     accTitle: Merge request dependency chain
     accDescr: Flowchart that shows how merge request A depends on merge request B, while merge request B depends on merge request C

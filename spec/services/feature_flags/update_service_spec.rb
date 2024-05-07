@@ -106,8 +106,8 @@ RSpec.describe FeatureFlags::UpdateService, :with_license, feature_category: :fe
       it 'creates audit event with changed description' do
         expect { subject }.to change { AuditEvent.count }.by(1)
         expect(audit_event_message).to(
-          include("Updated description from \"\""\
-                  " to \"new description\".")
+          include("Updated description from \"\" "\
+                  "to \"new description\".")
         )
       end
     end

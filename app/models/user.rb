@@ -410,6 +410,7 @@ class User < MainClusterwide::ApplicationRecord
     :gitpod_enabled, :gitpod_enabled=,
     :use_web_ide_extension_marketplace, :use_web_ide_extension_marketplace=,
     :extensions_marketplace_opt_in_status, :extensions_marketplace_opt_in_status=,
+    :extensions_marketplace_enabled, :extensions_marketplace_enabled=,
     :setup_for_company, :setup_for_company=,
     :project_shortcut_buttons, :project_shortcut_buttons=,
     :keyboard_shortcuts_enabled, :keyboard_shortcuts_enabled=,

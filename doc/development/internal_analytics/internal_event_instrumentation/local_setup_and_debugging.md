@@ -127,6 +127,25 @@ Monitored events: i_code_review_user_create_mr
 +------------------------------+--------------------------+---------+--------------+------------+---------+
 ```
 
+## Manually check the relevant metric values in GDK
+
+As a quick test of whether an event is getting triggered & metric is updated, you can check the latest values in the rails console.
+Make sure to load the helpers below so that the most recent events & records are included in the output.
+
+To view the entire service ping payload:
+
+```ruby
+require_relative 'spec/support/helpers/service_ping_helpers.rb'
+ServicePingHelpers.get_current_service_ping_payload
+```
+
+To view the current value for a specific metric:
+
+```ruby
+require_relative 'spec/support/helpers/service_ping_helpers.rb'
+ServicePingHelpers.get_current_usage_metric_value(key_path)
+```
+
 ## Snowplow Analytics Debugger Chrome Extension
 
 [Snowplow Analytics Debugger](https://chromewebstore.google.com/detail/snowplow-analytics-debugg/jbnlcgeengmijcghameodeaenefieedm) is a browser extension for testing frontend events.

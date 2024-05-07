@@ -35,7 +35,7 @@ In most cases, an Analytics Instrumentation review is automatically added, but i
 - If a change to an event is a part of the MR:
   - Check that the events are firing locally using one of the [testing tools](internal_event_instrumentation/local_setup_and_debugging.md) available.
 - If a change to a metric is a part of the MR:
-  - Make sure that the new metric is available in Service Ping payload, by running: `Gitlab::Usage::ServicePingReport.for(output: :all_metrics_values).dig(*'key_path'.split('.'))` with `key_path` substituted by the new metric's `key_path`.
+  - Make sure that the new metric is available and reporting data in the Service Ping payload, by running: `require_relative 'spec/support/helpers/service_ping_helpers.rb'; ServicePingHelpers.get_current_usage_metric_value(key_path)` with `key_path` substituted by the new metric's `key_path`.
 - Use reviewer roulette to assign an [Analytics Instrumentation reviewer](https://gitlab-org.gitlab.io/gitlab-roulette/?hourFormat24=true&visible=reviewer%7Canalytics+instrumentation) who is not the author.
 - Assign any other reviews as appropriate.
 - `~analytics instrumentation` review does not require a maintainer review.

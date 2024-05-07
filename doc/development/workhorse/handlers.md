@@ -16,6 +16,7 @@ changing or handles them itself by performing additional logic.
 ## Injectors
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 sequenceDiagram
     participant Client
     participant Workhorse
@@ -30,6 +31,7 @@ sequenceDiagram
 ### Example: Send a Git blob
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 sequenceDiagram
     participant Client
     participant Workhorse
@@ -58,6 +60,7 @@ sequenceDiagram
 #### Example: Send a file
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 sequenceDiagram
     participant Client
     participant Workhorse
@@ -75,6 +78,7 @@ sequenceDiagram
 ## Pre-authorized requests
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 sequenceDiagram
     participant Client
     participant Workhorse
@@ -103,6 +107,7 @@ Workhorse accelerates Git over HTTP(S) by handling [Git HTTP protocol](https://w
 ### Git pull
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 sequenceDiagram
 participant Git on client
 participant Workhorse
@@ -129,6 +134,7 @@ Workhorse-->>-Git on client: send response
 ### Git push
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 sequenceDiagram
 participant Git on client
 participant Workhorse
