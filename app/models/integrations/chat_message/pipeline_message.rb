@@ -240,10 +240,10 @@ module Integrations
         failed_links = failed.map { |job| job_link(job) }
 
         unless truncated.blank?
-          failed_links << s_("ChatMessage|and [%{count} more](%{pipeline_failed_jobs_url})") % {
+          failed_links << (s_("ChatMessage|and [%{count} more](%{pipeline_failed_jobs_url})") % {
             count: truncated.size,
             pipeline_failed_jobs_url: pipeline_failed_jobs_url
-          }
+          })
         end
 
         failed_links.join(I18n.t(:'support.array.words_connector'))

@@ -140,7 +140,7 @@ export default {
   >
     <template #list-item>
       <div
-        class="gl-display-flex gl-align-items-center gl-justify-content-space-between gl-mt-n2 gl-mb-n2 gl-ml-n2"
+        class="gl-display-flex gl-align-items-center gl-justify-content-space-between -gl-mt-2 -gl-mb-2 -gl-ml-2"
       >
         <job-name-component
           v-gl-tooltip.viewport.left
@@ -155,7 +155,7 @@ export default {
           :tooltip-text="jobActionTooltipText"
           :link="status.action.path"
           :action-icon="status.action.icon"
-          class="gl-mt-n2 gl-mr-n2"
+          class="-gl-mt-2 -gl-mr-2"
         />
       </div>
     </template>

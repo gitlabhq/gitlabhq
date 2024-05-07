@@ -824,4 +824,14 @@ RSpec.describe SystemNoteService, feature_category: :shared do
       described_class.unrelate_work_item(noteable, work_item, double)
     end
   end
+
+  describe '.requested_changes' do
+    it 'calls MergeRequestsService' do
+      expect_next_instance_of(::SystemNotes::MergeRequestsService) do |service|
+        expect(service).to receive(:requested_changes)
+      end
+
+      described_class.requested_changes(noteable, author)
+    end
+  end
 end

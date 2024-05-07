@@ -383,6 +383,10 @@ module SystemNoteService
     merge_requests_service(noteable, noteable.project, user).unapprove_mr
   end
 
+  def requested_changes(noteable, user)
+    merge_requests_service(noteable, noteable.project, user).requested_changes
+  end
+
   def change_alert_status(alert, author, reason = nil)
     ::SystemNotes::AlertManagementService.new(noteable: alert, project: alert.project, author: author).change_alert_status(reason)
   end

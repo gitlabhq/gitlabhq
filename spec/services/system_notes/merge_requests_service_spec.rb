@@ -333,4 +333,18 @@ RSpec.describe ::SystemNotes::MergeRequestsService, feature_category: :code_revi
       end
     end
   end
+
+  describe '#requested_changes' do
+    subject { described_class.new(noteable: noteable, project: project, author: author).requested_changes }
+
+    it_behaves_like 'a system note' do
+      let(:action) { 'requested_changes' }
+    end
+
+    context 'when the user has requested changes' do
+      it 'sets the note text' do
+        expect(subject.note).to eq "requested changes"
+      end
+    end
+  end
 end

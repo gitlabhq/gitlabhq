@@ -9,27 +9,27 @@ RSpec.shared_examples 'a harbor artifacts controller' do |args|
   let(:mock_artifacts) do
     [
       {
-        "digest": "sha256:661e8e44e5d7290fbd42d0495ab4ff6fdf1ad251a9f358969b3264a22107c14d",
-        "icon": "sha256:0048162a053eef4d4ce3fe7518615bef084403614f8bca43b40ae2e762e11e06",
-        "id": 1,
-        "project_id": 1,
-        "pull_time": "0001-01-01T00:00:00.000Z",
-        "push_time": "2022-04-23T08:04:08.901Z",
-        "repository_id": 1,
-        "size": 126745886,
-        "tags": [
+        digest: "sha256:661e8e44e5d7290fbd42d0495ab4ff6fdf1ad251a9f358969b3264a22107c14d",
+        icon: "sha256:0048162a053eef4d4ce3fe7518615bef084403614f8bca43b40ae2e762e11e06",
+        id: 1,
+        project_id: 1,
+        pull_time: "0001-01-01T00:00:00.000Z",
+        push_time: "2022-04-23T08:04:08.901Z",
+        repository_id: 1,
+        size: 126745886,
+        tags: [
           {
-            "artifact_id": 1,
-            "id": 1,
-            "immutable": false,
-            "name": "2",
-            "pull_time": "0001-01-01T00:00:00.000Z",
-            "push_time": "2022-04-23T08:04:08.920Z",
-            "repository_id": 1,
-            "signed": false
+            artifact_id: 1,
+            id: 1,
+            immutable: false,
+            name: "2",
+            pull_time: "0001-01-01T00:00:00.000Z",
+            push_time: "2022-04-23T08:04:08.920Z",
+            repository_id: 1,
+            signed: false
           }
         ],
-        "type": "IMAGE"
+        type: "IMAGE"
       }
     ]
   end
@@ -75,7 +75,7 @@ RSpec.shared_examples 'a harbor artifacts controller' do |args|
       "?page=1&page_size=10&with_tag=true")
     .with(
       headers: {
-      'Authorization': 'Basic aGFyYm9ydXNlcm5hbWU6aGFyYm9ycGFzc3dvcmQ=',
+      Authorization: 'Basic aGFyYm9ydXNlcm5hbWU6aGFyYm9ycGFzc3dvcmQ=',
       'Content-Type': 'application/json'
     }).to_return(status: 200, body: mock_artifacts.to_json, headers: { "x-total-count": 2 })
     container.add_reporter(user)

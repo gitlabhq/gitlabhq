@@ -42,6 +42,13 @@ RSpec.describe MergeRequests::UpdateReviewerStateService, feature_category: :cod
         expect(reviewer.state).to eq 'requested_changes'
       end
 
+      it 'calls SystemNoteService.requested_changes' do
+        expect(SystemNoteService).to receive(:requested_changes)
+          .with(merge_request, current_user)
+
+        expect(result[:status]).to eq :success
+      end
+
       it 'does not call MergeRequests::RemoveApprovalService' do
         expect(MergeRequests::RemoveApprovalService).not_to receive(:new)
 

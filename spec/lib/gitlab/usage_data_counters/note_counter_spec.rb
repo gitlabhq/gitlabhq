@@ -25,23 +25,17 @@ RSpec.describe Gitlab::UsageDataCounters::NoteCounter, :clean_gitlab_redis_share
     end
   end
 
-  it_behaves_like 'a note usage counter', :create, 'Snippet'
   it_behaves_like 'a note usage counter', :create, 'MergeRequest'
-  it_behaves_like 'a note usage counter', :create, 'Commit'
 
   describe '.totals' do
     let(:combinations) do
       [
-        [:create, 'Snippet', 3],
-        [:create, 'MergeRequest', 4],
-        [:create, 'Commit', 5]
+        [:create, 'MergeRequest', 4]
       ]
     end
 
     let(:expected_totals) do
-      { snippet_comment: 3,
-        merge_request_comment: 4,
-        commit_comment: 5 }
+      { merge_request_comment: 4 }
     end
 
     before do
@@ -63,12 +57,8 @@ RSpec.describe Gitlab::UsageDataCounters::NoteCounter, :clean_gitlab_redis_share
     let(:unknown_event_error) { Gitlab::UsageDataCounters::BaseCounter::UnknownEvent }
 
     where(:event, :noteable_type, :expected_count, :should_raise) do
-      :create | 'Snippet'      | 1 | false
-      :wibble | 'Snippet'      | 0 | true
       :create | 'MergeRequest' | 1 | false
       :wibble | 'MergeRequest' | 0 | true
-      :create | 'Commit'       | 1 | false
-      :wibble | 'Commit'       | 0 | true
       :create | 'Issue'        | 0 | false
       :wibble | 'Issue'        | 0 | false
     end

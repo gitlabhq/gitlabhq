@@ -9,8 +9,8 @@ module Mutations
         authorize :admin_pipeline_schedule
 
         field :pipeline_schedule,
-              Types::Ci::PipelineScheduleType,
-              description: 'Updated pipeline schedule ownership.'
+          Types::Ci::PipelineScheduleType,
+          description: 'Updated pipeline schedule ownership.'
 
         def resolve(id:)
           schedule = authorized_find!(id: id)

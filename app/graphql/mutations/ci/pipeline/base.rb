@@ -7,8 +7,8 @@ module Mutations
         PipelineID = ::Types::GlobalIDType[::Ci::Pipeline]
 
         argument :id, PipelineID,
-                  required: true,
-                  description: 'ID of the pipeline to mutate.'
+          required: true,
+          description: 'ID of the pipeline to mutate.'
 
         private
 

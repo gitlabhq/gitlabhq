@@ -130,7 +130,7 @@ export default {
     <template #stages>
       <div
         data-testid="stage-column-title"
-        class="stage-column-title gl-display-flex gl-justify-content-space-between gl-relative gl-font-weight-bold gl-pipeline-job-width gl-text-truncate gl-line-height-36 gl-pl-4 gl-mb-n2"
+        class="stage-column-title gl-display-flex gl-justify-content-space-between gl-relative gl-font-weight-bold gl-pipeline-job-width gl-text-truncate gl-line-height-36 gl-pl-4 -gl-mb-2"
       >
         <span :title="name" class="gl-text-truncate gl-pr-3 gl-w-17/20">
           {{ name }}

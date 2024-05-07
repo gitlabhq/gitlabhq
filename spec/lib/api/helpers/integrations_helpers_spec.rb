@@ -30,7 +30,7 @@ RSpec.describe API::Helpers::IntegrationsHelpers, feature_category: :integration
   end
 
   describe '.integration_classes' do
-    it 'returns correct integrations' do
+    it 'returns correct integrations', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/444979' do
       expect(described_class.integration_classes)
         .to match_array(Integration.descendants.without(base_classes, development_classes, instance_level_classes))
     end

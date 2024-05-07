@@ -20,11 +20,19 @@ RSpec.describe Packages::TerraformModule::ProcessPackageFileService, feature_cat
         ) do |service|
           expect(service).to receive(:execute).and_call_original
         end
+        expect_next_instance_of(
+          ::Packages::TerraformModule::Metadata::CreateService,
+          package_file.package,
+          instance_of(Hash)
+        ) do |service|
+          expect(service).to receive(:execute).and_call_original
+        end
 
         result = service.execute
 
         expect(result).to be_success
         expect(result.payload).to be_a(Hash)
+        expect(Packages::TerraformModule::Metadatum.count).to eq(1)
       end
     end
 
@@ -42,7 +50,7 @@ RSpec.describe Packages::TerraformModule::ProcessPackageFileService, feature_cat
       end
 
       context 'with a zip archive' do
-        let(:package_file) { create(:package_file, :terraform_module, zip: true) }
+        let_it_be(:package_file) { create(:package_file, :terraform_module, zip: true) }
 
         it_behaves_like 'extracting metadata', Zip::File
 

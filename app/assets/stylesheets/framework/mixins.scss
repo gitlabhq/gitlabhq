@@ -258,6 +258,10 @@
   top: calc(#{$calc-application-header-height} - 1px);
   border-radius: $border-radius-default $border-radius-default 0 0;
   box-shadow: 0 -4px 0 0 var(--white);
+  
+  .gl-dark & {
+    box-shadow: 0 -4px 0 0 var(--gray-10);
+  }
 }
 
 /*

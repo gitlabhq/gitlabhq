@@ -24122,7 +24122,13 @@ msgstr[1] ""
 msgid "GoogleArtifactRegistry|%{linkStart}Install the Google Cloud CLI%{linkEnd}."
 msgstr ""
 
-msgid "GoogleArtifactRegistry|After the policies have been created, select %{strongStart}Save changes%{strongEnd} to continue."
+msgid "GoogleArtifactRegistry|1. Repository"
+msgstr ""
+
+msgid "GoogleArtifactRegistry|2. Set up permissions"
+msgstr ""
+
+msgid "GoogleArtifactRegistry|After the roles have been granted, select %{strongStart}Save changes%{strongEnd} to continue."
 msgstr ""
 
 msgid "GoogleArtifactRegistry|An error occurred while fetching the artifact details."
@@ -24131,16 +24137,7 @@ msgstr ""
 msgid "GoogleArtifactRegistry|An error occurred while fetching the artifacts."
 msgstr ""
 
-msgid "GoogleArtifactRegistry|Before you begin:"
-msgstr ""
-
 msgid "GoogleArtifactRegistry|Built"
-msgstr ""
-
-msgid "GoogleArtifactRegistry|Configuration instructions"
-msgstr ""
-
-msgid "GoogleArtifactRegistry|Configure Google Cloud IAM policies"
 msgstr ""
 
 msgid "GoogleArtifactRegistry|Configure in settings"
@@ -24161,7 +24158,7 @@ msgstr ""
 msgid "GoogleArtifactRegistry|Digest"
 msgstr ""
 
-msgid "GoogleArtifactRegistry|Ensure you have the %{linkStart}permissions needed%{linkEnd} in your Google Cloud project."
+msgid "GoogleArtifactRegistry|Ensure you have the %{linkStart}permissions%{linkEnd} to manage access to your Google Cloud project."
 msgstr ""
 
 msgid "GoogleArtifactRegistry|First, secure your usage with the %{strongStart}Google Cloud IAM%{strongEnd} integration. Simplify access without the need to manage accounts or keys."
@@ -24209,13 +24206,19 @@ msgstr ""
 msgid "GoogleArtifactRegistry|Repository: %{repository}"
 msgstr ""
 
-msgid "GoogleArtifactRegistry|Run the following command to set up IAM read and write policies in your Google Cloud project."
+msgid "GoogleArtifactRegistry|Run the following command to grant roles in your Google Cloud project. You might be prompted to sign into Google."
 msgstr ""
 
 msgid "GoogleArtifactRegistry|Set up Google Cloud IAM"
 msgstr ""
 
 msgid "GoogleArtifactRegistry|Tags"
+msgstr ""
+
+msgid "GoogleArtifactRegistry|To improve security, use a Google Cloud project for resources only, separate from CI/CD and identity management projects."
+msgstr ""
+
+msgid "GoogleArtifactRegistry|To use the integration, allow this GitLab project to read and write to Google Artifact Registry. You can use the following recommended setup or customize it with other %{claimsStart}OIDC custom claims%{claimsEnd} and %{rolesStart}Artifact Registry roles%{rolesEnd}."
 msgstr ""
 
 msgid "GoogleArtifactRegistry|Updated"
@@ -24233,12 +24236,6 @@ msgstr ""
 msgid "GoogleArtifactRegistry|Virtual size"
 msgstr ""
 
-msgid "GoogleArtifactRegistry|You might be prompted to sign into Google."
-msgstr ""
-
-msgid "GoogleArtifactRegistry|Your Google Cloud project must have specific Identity and Access Management (IAM) policies to use the Artifact Registry repository in this GitLab project."
-msgstr ""
-
 msgid "GoogleCloud|%{linkStart}Switch to the guided setup%{linkEnd} if you can manage workload identity federation in Google Cloud. %{link2Start}What are the required permissions?%{link2End}"
 msgstr ""
 
@@ -24248,6 +24245,9 @@ msgstr ""
 msgid "GoogleCloud|%{link_start}Explore Google Cloud integration with GitLab%{link_end}, for CI/CD and more."
 msgstr ""
 
+msgid "GoogleCloud|%{link_start}Where’s my project ID? %{icon}%{link_end} Can be 6 to 30 lowercase letters, numbers, or hyphens. Must start with a letter and end with a letter or number. Example: %{code_start}my-sample-project-191923%{code_end}."
+msgstr ""
+
 msgid "GoogleCloud|After Google Cloud workload identity federation has been set up, select %{strongStart}Continue%{strongEnd}."
 msgstr ""
 
@@ -24255,6 +24255,9 @@ msgid "GoogleCloud|After the Google Cloud workload identity federation has been 
 msgstr ""
 
 msgid "GoogleCloud|Before you begin, %{linkStart}install the Google Cloud CLI%{linkEnd}."
+msgstr ""
+
+msgid "GoogleCloud|Can be up to 63 lowercase letters, numbers, or hyphens. Must start with a letter and end with a letter or number. Repository must be Docker format and Standard mode."
 msgstr ""
 
 msgid "GoogleCloud|Cancel"
@@ -24377,9 +24380,6 @@ msgstr ""
 msgid "GoogleCloud|Repository location"
 msgstr ""
 
-msgid "GoogleCloud|Repository must be Docker format and Standard mode."
-msgstr ""
-
 msgid "GoogleCloud|Repository name"
 msgstr ""
 
@@ -24405,9 +24405,6 @@ msgid "GoogleCloud|The Google Cloud Identity and Access Management integration i
 msgstr ""
 
 msgid "GoogleCloud|The google_cloud_support feature is not available"
-msgstr ""
-
-msgid "GoogleCloud|To improve security, use a dedicated project for resources, separate from CI/CD and identity management projects. %{link_start}Where’s my project ID? %{icon}%{link_end}"
 msgstr ""
 
 msgid "GoogleCloud|Workload identity federation"
@@ -51314,12 +51311,6 @@ msgid "TemplateRepository|Create common files more quickly, and standardize thei
 msgstr ""
 
 msgid "Templates"
-msgstr ""
-
-msgid "TemporaryStorageIncrease|can only be set once"
-msgstr ""
-
-msgid "TemporaryStorageIncrease|can only be set with more than %{percentage}%% usage"
 msgstr ""
 
 msgid "Terminal"

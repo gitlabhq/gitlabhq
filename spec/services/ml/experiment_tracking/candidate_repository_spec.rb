@@ -187,7 +187,7 @@ RSpec.describe ::Ml::ExperimentTracking::CandidateRepository, feature_category: 
 
   describe "#add_params" do
     let(:params) do
-      [{ key: 'model_class', value: 'LogisticRegression' }, { 'key': 'pythonEnv', value: '3.10' }]
+      [{ key: 'model_class', value: 'LogisticRegression' }, { key: 'pythonEnv', value: '3.10' }]
     end
 
     subject { repository.add_params(candidate, params) }
@@ -219,9 +219,9 @@ RSpec.describe ::Ml::ExperimentTracking::CandidateRepository, feature_category: 
     context 'if parameter repeated do' do
       let(:params) do
         [
-          { 'key': 'pythonEnv0', value: '2.7' },
-          { 'key': 'pythonEnv1', value: '3.9' },
-          { 'key': 'pythonEnv1', value: '3.10' }
+          { key: 'pythonEnv0', value: '2.7' },
+          { key: 'pythonEnv1', value: '3.9' },
+          { key: 'pythonEnv1', value: '3.10' }
         ]
       end
 
@@ -266,7 +266,7 @@ RSpec.describe ::Ml::ExperimentTracking::CandidateRepository, feature_category: 
 
   describe "#add_tags" do
     let(:tags) do
-      [{ key: 'gitlab.tag1', value: 'hello' }, { 'key': 'gitlab.tag2', value: 'world' }]
+      [{ key: 'gitlab.tag1', value: 'hello' }, { key: 'gitlab.tag2', value: 'world' }]
     end
 
     subject { repository.add_tags(candidate, tags) }
@@ -294,9 +294,9 @@ RSpec.describe ::Ml::ExperimentTracking::CandidateRepository, feature_category: 
     context 'if tag repeated' do
       let(:params) do
         [
-          { 'key': 'gitlab.tag1', value: 'hello' },
-          { 'key': 'gitlab.tag2', value: 'world' },
-          { 'key': 'gitlab.tag1', value: 'gitlab' }
+          { key: 'gitlab.tag1', value: 'hello' },
+          { key: 'gitlab.tag2', value: 'world' },
+          { key: 'gitlab.tag1', value: 'gitlab' }
         ]
       end
 

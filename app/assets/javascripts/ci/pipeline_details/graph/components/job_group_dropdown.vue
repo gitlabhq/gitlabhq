@@ -126,7 +126,7 @@ export default {
             hide-tooltip
           />
 
-          <div class="gl-font-weight-100 gl-font-size-lg gl-ml-n4 gl-align-self-center">
+          <div class="gl-font-weight-100 gl-font-size-lg -gl-ml-4 gl-align-self-center">
             {{ group.size }}
           </div>
         </div>

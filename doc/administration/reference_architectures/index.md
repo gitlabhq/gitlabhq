@@ -12,16 +12,16 @@ DETAILS:
 **Offering:** Self-managed
 
 The GitLab Reference Architectures have been designed and tested by the
-GitLab Test Platform and Support teams to provide scalable recommended deployments for target loads.
+GitLab Test Platform and Support teams to provide recommended scalable and elastic deployments as starting points for target loads.
 
 ## Available reference architectures
 
 The following Reference Architectures are available as recommended starting points for your environment.
 
-The architectures are named in terms of peak load, based on user count or Requests per Second (RPS). Where the latter has been calculated based on average real data of the former with headroom added.
+The architectures are named in terms of peak load, based on user count or Requests per Second (RPS). Where the latter has been calculated based on average real data.
 
 NOTE:
-Each architecture has been designed to be [scalable and can be adjusted accordingly if required](#scaling-an-environment) by your specific workload. This may be likely in known heavy scenarios such as using [large monorepos](#large-monorepos) or notable [additional workloads](#additional-workloads).
+Each architecture has been designed to be [scalable and elastic](#scaling-an-environment). As such, they can be adjusted accordingly if required by your specific workload. This may be likely in known heavy scenarios such as using [large monorepos](#large-monorepos) or notable [additional workloads](#additional-workloads).
 
 For details about what each Reference Architecture has been tested against, see the "Testing Methodology" section of each page.
 
@@ -56,30 +56,32 @@ Running any application in production is complex, and the same applies for GitLa
 
 As such, it's recommended that you have a working knowledge of running and maintaining applications in production when deciding on going down this route. If you aren't in this position, our [Professional Services](https://about.gitlab.com/services/#implementation-services) team offers implementation services, but for those who want a more managed solution long term, it's recommended to instead explore our other offerings such as [GitLab SaaS](../../subscriptions/gitlab_com/index.md) or [GitLab Dedicated](../../subscriptions/gitlab_dedicated/index.md).
 
-If Self Managed is the approach you're considering, it's strongly encouraged to read through this page in full, in particular the [Deciding which architecture to use](#deciding-which-architecture-to-use), [Large monorepos](#large-monorepos) and [Additional workloads](#additional-workloads) sections.
+If Self Managed is the approach you're considering, it's strongly encouraged to read through this page in full, in particular the [Deciding which architecture to use](#deciding-which-architecture-to-start-with), [Large monorepos](#large-monorepos) and [Additional workloads](#additional-workloads) sections.
 
-## Deciding which architecture to use
+## Deciding which architecture to start with
 
-The Reference Architectures are designed to strike a balance between two important factors--performance and resilience.
+The Reference Architectures are designed to strike a balance between three important factors--performance, resilience and costs.
 
-While they are designed to make it easier to set up GitLab at scale, it can still be a challenge to know which one meets your requirements.
+While they are designed to make it easier to set up GitLab at scale, it can still be a challenge to know which one meets your requirements and where to start accordingly.
 
 As a general guide, **the more performant and/or resilient you want your environment to be, the more complex it is**.
 
-This section explains the designs you can choose from. It begins with the least complexity, goes to the most, and ends with a decision tree.
+This section explains the things to consider when picking a Reference Architecture to start with.
 
-### Expected Load (RPS or user count)
+### Expected Load
 
 The first thing to check is what the expected peak load is your environment would be expected to serve.
 
 Each architecture is described in terms of peak Requests per Second (RPS) or user count load. As detailed under the "Testing Methodology" section on each page, each architecture is tested
-against its listed RPS for each endpoint type (API, Web, Git), which is the typical peak load of the given user count, both manual and automated, with headroom.
+against its listed RPS for each endpoint type (API, Web, Git), which is the typical peak load of the given user count, both manual and automated.
 
-It's strongly recommended finding out what peak RPS your environment will be expected to handle across endpoint types, through existing metrics (such as [Prometheus](../monitoring/prometheus/gitlab_metrics.md))
+It's strongly recommended finding out what peak RPS your environment will be expected to handle across endpoint types, through existing metrics (such as [Prometheus](../monitoring/prometheus/index.md#sample-prometheus-queries))
 or estimates, and to select the corresponding architecture as this is the most objective.
 
+#### If in doubt, pick the closest user count and scale accordingly
+
 If it's not possible for you to find out the expected peak RPS then it's recommended to select based on user count to start and then monitor the environment
-closely to confirm the RPS, whether the architecture is performing and adjust accordingly is necessary.
+closely to confirm the RPS, whether the architecture is performing and [scale accordingly](#scaling-an-environment) as necessary.
 
 ### Standalone (non-HA)
 
@@ -267,7 +269,7 @@ the following guidance is followed to ensure the best chance of good performance
 ### Additional workloads
 
 These reference architectures have been [designed and tested](index.md#validation-and-test-results) for standard GitLab
-setups with good headroom in mind to cover most scenarios.
+setups based on real data.
 
 However, additional workloads can multiply the impact of operations by triggering follow-up actions.
 You may need to adjust the suggested specifications to compensate if you use, for example:
@@ -307,12 +309,12 @@ We don’t recommend the use of round-robin algorithms as they are known to not 
 
 The total network bandwidth available to a load balancer when deployed on a machine can vary notably across Cloud Providers. In particular some Cloud Providers, like [AWS](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-network-bandwidth.html), may operate on a burst system with credits to determine the bandwidth at any time.
 
-The network bandwidth your environment's load balancers will require is dependent on numerous factors such as data shape and workload. The recommended base sizes for each Reference Architecture class have been selected to give a good level of bandwidth with adequate headroom but in some scenarios, such as consistent clones of [large monorepos](#large-monorepos), the sizes may need to be adjusted accordingly.
+The network bandwidth your environment's load balancers will require is dependent on numerous factors such as data shape and workload. The recommended base sizes for each Reference Architecture class have been selected based on real data but in some scenarios, such as consistent clones of [large monorepos](#large-monorepos), the sizes may need to be adjusted accordingly.
 
 ### No swap
 
 Swap is not recommended in the reference architectures. It's a failsafe that impacts performance greatly. The
-reference architectures are designed to have memory headroom to avoid needing swap.
+reference architectures are designed to have enough memory in most cases to avoid needing swap.
 
 ### Praefect PostgreSQL
 
@@ -386,7 +388,7 @@ Additionally, the following cloud provider services are recommended for use as p
   </tr>
   <tr>
     <td>Database</td>
-    <td>🟢 &nbsp; <a href="https://cloud.google.com/sql" target="_blank" rel="noopener noreferrer">Cloud SQL</a></td>
+    <td>🟢 &nbsp; <a href="https://cloud.google.com/sql" target="_blank" rel="noopener noreferrer">Cloud SQL<sup>1</sup></a></td>
     <td>🟢 &nbsp; <a href="https://aws.amazon.com/rds/" target="_blank" rel="noopener noreferrer">RDS</a></td>
     <td>🟢 &nbsp; <a href="https://azure.microsoft.com/en-gb/products/postgresql/" target="_blank" rel="noopener noreferrer">Azure Database for PostgreSQL Flexible Server</a></td>
     <td></td>
@@ -401,6 +403,12 @@ Additionally, the following cloud provider services are recommended for use as p
 </tbody>
 </table>
 
+<!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
+<!-- markdownlint-disable MD029 -->
+1. The [Enterprise Plus edition](https://cloud.google.com/sql/docs/editions-intro) for GCP Cloud SQL is generally recommended for optimal performance. This recommendation is especially so for larger environments (500 RPS / 25k users or higher). Max connections may need to be adjusted higher than the service's defaults depending on workload.
+2. It's strongly recommended deploying the [Premium tier of Azure Cache for Redis](https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-overview#service-tiers) to ensure good performance.
+<!-- markdownlint-enable MD029 -->
+
 ### Recommendation notes for the database services
 
 [When selecting to use an external database service](../postgresql/external.md), it should run a standard, performant, and [supported version](../../install/requirements.md#postgresql-requirements).
@@ -409,9 +417,9 @@ If you choose to use a third party external service:
 
 1. Note that the HA Linux package PostgreSQL setup encompasses PostgreSQL, PgBouncer and Consul. All of these components would no longer be required when using a third party external service.
 1. The number of nodes required to achieve HA may differ depending on the service compared to the Linux package and doesn't need to match accordingly.
-1. However, if [Database Load Balancing](../postgresql/database_load_balancing.md) via Read Replicas is desired for further improved performance it's recommended to follow the node count for the Reference Architecture.
+1. It's recommended in general to enable Read Replicas for [Database Load Balancing](../postgresql/database_load_balancing.md) if possible, matching the node counts for the standard Linux package deployment. This recommendation is especially so for larger environments (over 200 RPS / 10k users).
 1. Ensure that if a pooler is offered as part of the service that it can handle the total load without bottlenecking.
-   For example, Azure Database for PostgreSQL Flexible Server can optionally deploy a PgBouncer pooler in front of the Database, but PgBouncer is single threaded, so this in turn may cause bottlenecking. However, if using Database Load Balancing, this could be enabled on each node in distributed fashion to compensate.
+For example, Azure Database for PostgreSQL Flexible Server can optionally deploy a PgBouncer pooler in front of the Database, but PgBouncer is single threaded, so this in turn may cause bottlenecking. However, if using Database Load Balancing, this could be enabled on each node in distributed fashion to compensate.
 1. If [GitLab Geo](../geo/index.md) is to be used the service will need to support Cross Region replication.
 
 ### Recommendation notes for the Redis services
@@ -468,11 +476,11 @@ This also applies to other third-party stateful components such as Postgres and 
 #### Autoscaling of stateful nodes
 
 As a general guidance, only _stateless_ components of GitLab can be run in Autoscaling groups, namely GitLab Rails
-and Sidekiq.
-
-Other components that have state, such as Gitaly, are not supported in this fashion (for more information, see [issue 2997](https://gitlab.com/gitlab-org/gitaly/-/issues/2997)).
+and Sidekiq. Other components that have state, such as Gitaly, are not supported in this fashion (for more information, see [issue 2997](https://gitlab.com/gitlab-org/gitaly/-/issues/2997)).
 
 This also applies to other third-party stateful components such as Postgres and Redis, but you can explore other third-party solutions for those components if desired such as supported Cloud Provider services unless called out specifically as unsupported.
+
+However, [Cloud Native Hybrid setups](#cloud-native-hybrid) are generally preferred over ASGs as certain components such as like database migrations and [Mailroom](../incoming_email.md) can only be run on one node, which is handled better in Kubernetes.
 
 #### Spreading one environment over multiple data centers
 
@@ -523,7 +531,7 @@ per 1,000 users:
 - Git (Pull): 2 RPS
 - Git (Push): 0.4 RPS (rounded to the nearest integer)
 
-The above RPS targets were selected based on real customer data of total environmental loads corresponding to the user count, including CI and other workloads along with additional substantial headroom added.
+The above RPS targets were selected based on real customer data of total environmental loads corresponding to the user count, including CI and other workloads.
 
 ### How to interpret the results
 
@@ -627,11 +635,16 @@ table.test-coverage th {
 
 ## Cost to run
 
-As a starting point, the following table details initial costs for the different reference architectures across GCP, AWS, and Azure through the Linux package.
+As a starting point, the following table details initial costs for the different reference architectures across GCP, AWS, and Azure through the Linux package via each cloud provider's official calculator.
 
-NOTE:
-Due to the nature of Cloud Native Hybrid, it's not possible to give a static cost calculation.
-Bare-metal costs are also not included here as it varies widely depending on each configuration.
+However, please be aware of the following caveats:
+
+- These are only rough estimates for the Linux package environments.
+- They do not take into account dynamic elements such as disk, network or object storage.
+- Due to the nature of Cloud Native Hybrid, it's not possible to give a static cost calculation for that deployment.
+- Bare-metal costs are also not included here as it varies widely depending on each configuration.
+
+Due to the above it's strongly recommended taking these calculators and adjusting them as close as possible to your specific setup and usage as much as possible to get a more accurate estimate.
 
 <table class="test-coverage">
   <col>
@@ -698,20 +711,9 @@ Maintaining a Reference Architecture environment is generally the same as any ot
 
 In this section you'll find links to documentation for relevant areas as well as any specific Reference Architecture notes.
 
-### Upgrades
-
-Upgrades for a Reference Architecture environment is the same as any other GitLab environment.
-The main [Upgrade GitLab](../../update/index.md) section has detailed steps on how to approach this.
-
-[Zero-downtime upgrades](#zero-downtime-upgrades) are also available.
-
-NOTE:
-You should upgrade a Reference Architecture in the same order as you created it.
-
 ### Scaling an environment
 
-The Reference Architectures have been designed to support scaling in various ways depending on your use case and circumstances.
-This can be done iteratively or wholesale to the next size of architecture depending on if metrics suggest a component is being exhausted.
+The Reference Architectures have been designed as a starting point and are elastic and scalable throughout. It's more likely than not that you may want to adjust the environment for your specific needs after deployment for reasons such as additional performance capacity or reduced costs. This is expected and, as such, scaling can be done iteratively or wholesale to the next size of architecture depending on if metrics suggest a component is being exhausted.
 
 NOTE:
 If you're seeing a component continuously exhausting it's given resources it's strongly recommended for you to reach out to our [Support team](https://about.gitlab.com/support/) before performing any scaling. This is especially so if you're planning to scale any component significantly.
@@ -730,7 +732,7 @@ You should take an iterative approach when scaling downwards, however, to ensure
 In some cases scaling a component significantly may result in knock on effects for downstream components, impacting performance. The Reference Architectures were designed with balance in mind to ensure components that depend on each other are congruent in terms of specs. As such you may find when notably scaling a component that it's increase may result in additional throughput being passed to the other components it depends on and that they, in turn, may need to be scaled as well.
 
 NOTE:
-As a general rule most components have good headroom to accommodate an upstream component being scaled, so this is typically on a case by case basis and specific to what has been changed. It's recommended for you to reach out to our [Support team](https://about.gitlab.com/support/) before you make any significant changes to the environment.
+The Reference Architectures have been designed to have elasticity to accommodate an upstream component being scaled. However, it's still generally recommended for you to reach out to our [Support team](https://about.gitlab.com/support/) before you make any significant changes to the environment to be safe.
 
 The following components can impact others when they have been significantly scaled:
 
@@ -749,6 +751,16 @@ documentation for each as follows
 - [Postgres to multi-node Postgres w/ Consul + PgBouncer](../postgresql/moving.md)
 - [Gitaly to Gitaly Cluster w/ Praefect](../gitaly/index.md#migrate-to-gitaly-cluster)
 
+### Upgrades
+
+Upgrades for a Reference Architecture environment is the same as any other GitLab environment.
+The main [Upgrade GitLab](../../update/index.md) section has detailed steps on how to approach this.
+
+[Zero-downtime upgrades](#zero-downtime-upgrades) are also available.
+
+NOTE:
+You should upgrade a Reference Architecture in the same order as you created it.
+
 ### Monitoring
 
 There are numerous options available to monitor your infrastructure, as well as [GitLab itself](../monitoring/index.md), and you should refer to your selected monitoring solution's documentation for more information.
@@ -763,6 +775,7 @@ You can find a full history of changes [on the GitLab project](https://gitlab.co
 
 **2024:**
 
+- [2024-04](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149878): Updated recommended sizings for Webservice nodes for Cloud Native Hybrids on GCP. Also adjusted NGINX pod recommendation to be run on Webservice node pool as a DaemonSet.
 - [2024-04](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149528): Updated 20 RPS / 1,000 User architecture specs to follow recommended memory target of 16 GB.
 - [2024-04](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148313): Updated Reference Architecture titles to include RPS for further clarity and to help right sizing.
 - [2024-02](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145436): Updated recommended sizings for Load Balancer nodes if deployed on VMs. Also added notes on network bandwidth considerations.

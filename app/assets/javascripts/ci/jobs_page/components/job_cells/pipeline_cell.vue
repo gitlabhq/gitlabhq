@@ -40,7 +40,7 @@ export default {
 
 <template>
   <div>
-    <div class="gl-p-3 gl-mt-n3 gl-mx-n3">
+    <div class="gl-p-3 -gl-mt-3 gl-mx-n3">
       <gl-link class="gl-text-truncate" :href="pipelinePath" data-testid="pipeline-id">
         {{ pipelineId }}
       </gl-link>

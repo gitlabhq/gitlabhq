@@ -9,20 +9,20 @@ module Mutations
         RunnerID = ::Types::GlobalIDType[::Ci::Runner]
 
         argument :ids, [RunnerID],
-                 required: false,
-                 description: 'IDs of the runners to delete.'
+          required: false,
+          description: 'IDs of the runners to delete.'
 
         field :deleted_count,
-              ::GraphQL::Types::Int,
-              null: true,
-              description: 'Number of records effectively deleted. ' \
-                'Only present if operation was performed synchronously.'
+          ::GraphQL::Types::Int,
+          null: true,
+          description: 'Number of records effectively deleted. ' \
+            'Only present if operation was performed synchronously.'
 
         field :deleted_ids,
-              [RunnerID],
-              null: true,
-              description: 'IDs of records effectively deleted. ' \
-                'Only present if operation was performed synchronously.'
+          [RunnerID],
+          null: true,
+          description: 'IDs of records effectively deleted. ' \
+            'Only present if operation was performed synchronously.'
 
         def resolve(**runner_attrs)
           if ids = runner_attrs[:ids]

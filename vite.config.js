@@ -18,10 +18,7 @@ import { viteCSSCompilerPlugin } from './scripts/frontend/lib/compile_css.mjs';
 import { viteTailwindCompilerPlugin } from './scripts/frontend/tailwindcss.mjs';
 import { CopyPlugin } from './config/helpers/vite_plugin_copy.mjs';
 import { AutoStopPlugin } from './config/helpers/vite_plugin_auto_stop.mjs';
-import {
-  PageEntrypointsPlugin,
-  virtualEntrypoints,
-} from './config/helpers/vite_plugin_page_entrypoints.mjs';
+import { PageEntrypointsPlugin } from './config/helpers/vite_plugin_page_entrypoints.mjs';
 import { FixedRubyPlugin } from './config/helpers/vite_plugin_ruby_fixed.mjs';
 /* eslint-enable import/extensions */
 
@@ -134,13 +131,5 @@ export default defineConfig({
   },
   worker: {
     format: 'es',
-  },
-  build: {
-    rollupOptions: {
-      input: Object.keys(virtualEntrypoints).reduce((acc, value) => {
-        acc[value] = value;
-        return acc;
-      }, {}),
-    },
   },
 });

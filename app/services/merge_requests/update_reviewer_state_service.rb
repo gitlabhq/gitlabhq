@@ -33,6 +33,8 @@ module MergeRequests
     def create_requested_changes(merge_request)
       merge_request.create_requested_changes(current_user)
 
+      SystemNoteService.requested_changes(merge_request, current_user)
+
       trigger_merge_request_merge_status_updated(merge_request)
     end
 

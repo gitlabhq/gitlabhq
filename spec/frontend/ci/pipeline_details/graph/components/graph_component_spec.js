@@ -209,7 +209,7 @@ describe('graph component', () => {
         'gl-text-truncate',
         'gl-line-height-36',
         'gl-pl-4',
-        'gl-mb-n2',
+        '-gl-mb-2',
       ];
 
       expect(findStageColumnTitle().classes()).toEqual(expect.arrayContaining(titleClasses));

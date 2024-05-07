@@ -9,9 +9,9 @@ module Mutations
         authorize :play_pipeline_schedule
 
         field :pipeline_schedule,
-              Types::Ci::PipelineScheduleType,
-              null: true,
-              description: 'Pipeline schedule after mutation.'
+          Types::Ci::PipelineScheduleType,
+          null: true,
+          description: 'Pipeline schedule after mutation.'
 
         def resolve(id:)
           schedule = authorized_find!(id: id)

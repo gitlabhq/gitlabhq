@@ -3,6 +3,7 @@
 module Integrations
   class Phorge < BaseIssueTracker
     include HasIssueTrackerFields
+    include HasAvatar
 
     PHORGE_FIELDS = %w[project_url issues_url].freeze
 

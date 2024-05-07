@@ -178,8 +178,8 @@ class Namespace < ApplicationRecord
   after_sync_traversal_ids :schedule_sync_event_worker # custom callback defined in Namespaces::Traversal::Linear
 
   after_commit :expire_child_caches, on: :update, if: -> {
-    Feature.enabled?(:cached_route_lookups, self, type: :ops) &&
-      saved_change_to_name? || saved_change_to_path? || saved_change_to_parent_id?
+    (Feature.enabled?(:cached_route_lookups, self, type: :ops) &&
+      saved_change_to_name?) || saved_change_to_path? || saved_change_to_parent_id?
   }
 
   scope :user_namespaces, -> { where(type: Namespaces::UserNamespace.sti_name) }

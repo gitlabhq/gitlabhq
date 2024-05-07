@@ -100,7 +100,7 @@ module DesignManagement
     end
 
     CREATION_TTL = 5.seconds
-    RETRY_DELAY = ->(num) { 0.2.seconds * num**2 }
+    RETRY_DELAY = ->(num) { 0.2.seconds * (num**2) }
 
     def self.with_lock(project_id, repository, &block)
       key = "with_lock:#{name}:{#{project_id}}"

@@ -10,7 +10,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed
 
-This page describes the GitLab reference architecture designed to target a peak load of 40 requests per second (RPS), the typical peak load of up to 2,000 users, both manual and automated, based on real data with headroom added.
+This page describes the GitLab reference architecture designed to target a peak load of 40 requests per second (RPS), the typical peak load of up to 2,000 users, both manual and automated, based on real data.
 
 For a full list of reference architectures, see
 [Available reference architectures](index.md#available-reference-architectures).
@@ -20,7 +20,7 @@ For a full list of reference architectures, see
 >   follow a modified [3K or 60 RPS reference architecture](3k_users.md#supported-modifications-for-lower-user-counts-ha).
 > - **Estimated Costs:** [See cost table](index.md#cost-to-run)
 > - **Cloud Native Hybrid:** [Yes](#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative)
-> - **Unsure which Reference Architecture to use?** [Go to this guide for more info](index.md#deciding-which-architecture-to-use).
+> - **Unsure which Reference Architecture to use?** [Go to this guide for more info](index.md#deciding-which-architecture-to-start-with).
 
 | Service                            | Nodes | Configuration          | GCP             | AWS          | Azure    |
 |------------------------------------|-------|------------------------|-----------------|--------------|----------|
@@ -46,7 +46,8 @@ For a full list of reference architectures, see
    However, if you have large monorepos (larger than several gigabytes) this can **significantly** impact Git and Gitaly performance and an increase of specifications will likely be required.
    Refer to [large monorepos](index.md#large-monorepos) for more information.
 6. Can be placed in Auto Scaling Groups (ASGs) as the component doesn't store any [stateful data](index.md#autoscaling-of-stateful-nodes).
-   However, for GitLab Rails certain processes like [migrations](#gitlab-rails-post-configuration) and [Mailroom](../incoming_email.md) should be run on only one node.
+   However, [Cloud Native Hybrid setups](#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative) are generally preferred as certain components
+   such as like [migrations](#gitlab-rails-post-configuration) and [Mailroom](../incoming_email.md) can only be run on one node, which is handled better in Kubernetes.
 <!-- markdownlint-enable MD029 -->
 
 NOTE:
@@ -108,7 +109,7 @@ against the following endpoint throughput targets:
 - Git (Push): 1 RPS
 
 The above targets were selected based on real customer data of total environmental loads corresponding to the user count,
-including CI and other workloads along with additional substantial headroom added.
+including CI and other workloads.
 
 If you have metrics to suggest that you have regularly higher throughput against the above endpoint targets, [large monorepos](index.md#large-monorepos)
 or notable [additional workloads](index.md#additional-workloads) these can notably impact the performance environment and [further adjustments may be required](index.md#scaling-an-environment).
@@ -1112,16 +1113,19 @@ as the typical environment above.
 First are the components that run in Kubernetes. These run across several node groups, although you can change
 the overall makeup as desired as long as the minimum CPU and Memory requirements are observed.
 
-| Service Node Group  | Nodes | Configuration          | GCP             | AWS          | Min Allocatable CPUs and Memory |
-|---------------------|-------|------------------------|-----------------|--------------|---------------------------------|
-| Webservice          | 3     | 8 vCPU, 7.2 GB memory  | `n1-highcpu-8`  | `c5.2xlarge` | 23.7 vCPU, 16.9 GB memory       |
-| Sidekiq             | 2     | 4 vCPU, 15 GB memory   | `n1-standard-4` | `m5.xlarge`  | 7.8 vCPU, 25.9 GB memory        |
-| Supporting services | 2     | 2 vCPU, 7.5 GB memory  | `n1-standard-2` | `m5.large`   | 1.9 vCPU, 5.5 GB memory         |
+| Component Node Group | Target Node Pool Totals | GCP Example     | AWS Example  |
+|----------------------|-------------------------|-----------------|--------------|
+| Webservice           | 12 vCPU<br/>15 GB memory (request)<br/>21 GB memory (limit) | 3 x `n1-standard-8` | 3 x `c5.2xlarge` |
+| Sidekiq              | 3.6 vCPU<br/>8 GB memory (request)<br/>16 GB memory (limit) | 2 x `n1-standard-4` | 2 x `m5.xlarge`  |
+| Supporting services  | 4 vCPU<br/>15 GB memory | 2 x `n1-standard-2` | 2 x `m5.large`   |
 
 - For this setup, we **recommend** and regularly [test](index.md#validation-and-test-results)
-  [Google Kubernetes Engine (GKE)](https://cloud.google.com/kubernetes-engine) and [Amazon Elastic Kubernetes Service (EKS)](https://aws.amazon.com/eks/). Other Kubernetes services may also work, but your mileage may vary.
-- Nodes configuration is shown as it is forced to ensure pod vCPU / memory ratios and avoid scaling during **performance testing**.
-  - In production deployments, there is no need to assign pods to specific nodes. A minimum of three nodes per node group in three different availability zones is strongly recommended to align with resilient cloud architecture practices.
+[Google Kubernetes Engine (GKE)](https://cloud.google.com/kubernetes-engine) and [Amazon Elastic Kubernetes Service (EKS)](https://aws.amazon.com/eks/). Other Kubernetes services may also work, but your mileage may vary.
+- GCP and AWS examples of how to reach the Target Node Pool Total are given for convenience. These sizes are used in performance testing but following the example is not required. Different node pool designs can be used as desired as long as the targets are met, and all pods can deploy.
+- The [Webservice](#webservice) and [Sidekiq](#sidekiq) target node pool totals are given for GitLab components only. Additional resources are required for the chosen Kubernetes provider's system processes. The given examples take this into account.
+- The [Supporting](#supporting) target node pool total is given generally to accommodate several resources for supporting the GitLab deployment as well as any additional deployments you may wish to make depending on your requirements. Similar to the other node pools, the chosen Kubernetes provider's system processes also require resources. The given examples take this into account.
+- In production deployments, it's not required to assign pods to specific nodes. However, it is recommended to have several nodes in each pool spread across different availability zones to align with resilient cloud architecture practices.
+- Enabling autoscaling, such as Cluster Autoscaler, for efficiency reasons is encouraged, but it's generally recommended targeting a floor of 75% for Webservice and Sidekiq pods to ensure ongoing performance.
 
 Next are the backend components that run on static compute VMs using the Linux package (or External PaaS
 services where applicable):
@@ -1143,7 +1147,7 @@ services where applicable):
 <!-- markdownlint-enable MD029 -->
 
 NOTE:
-For all PaaS solutions that involve configuring instances, it is strongly recommended to implement a minimum of three nodes in three different availability zones to align with resilient cloud architecture practices.
+For all PaaS solutions that involve configuring instances, it's recommended to implement a minimum of three nodes in three different availability zones to align with resilient cloud architecture practices.
 
 ```plantuml
 @startuml 2k
@@ -1153,11 +1157,11 @@ card "Kubernetes via Helm Charts" as kubernetes {
   card "**External Load Balancer**" as elb #6a9be7
 
   together {
-    collections "**Webservice** x3" as gitlab #32CD32
-    collections "**Sidekiq** x2" as sidekiq #ff8dd1
+    collections "**Webservice**" as gitlab #32CD32
+    collections "**Sidekiq**" as sidekiq #ff8dd1
   }
 
-  collections "**Supporting Services** x2" as support
+  collections "**Supporting Services**" as support
 }
 
 card "**Gitaly**" as gitaly #FF8C00
@@ -1180,36 +1184,43 @@ sidekiq -[#ff8dd1]--> redis
 @enduml
 ```
 
-### Resource usage settings
+### Kubernetes component targets
 
-The following formulas help when calculating how many pods may be deployed within resource constraints.
-The [2k reference architecture example values file](https://gitlab.com/gitlab-org/charts/gitlab/-/blob/master/examples/ref/2k.yaml)
-documents how to apply the calculated configuration to the Helm Chart.
+The following section details the targets used for the GitLab components deployed in Kubernetes.
 
 #### Webservice
 
-Webservice pods typically need about 1 CPU and 1.25 GB of memory _per worker_.
-Each Webservice pod consumes roughly 4 CPUs and 5 GB of memory using
-the [recommended topology](#cluster-topology) because two worker processes
-are created by default and each pod has other small processes running.
+Each Webservice pod (Puma and Workhorse) is recommended to be run with the following configuration:
 
-For 40 RPS or 2,000 users we recommend a total Puma worker count of around 12.
-With the [provided recommendations](#cluster-topology) this allows the deployment of up to 3
-Webservice pods with 4 workers per pod and 1 pod per node. Expand available resources using
-the ratio of 1 CPU to 1.25 GB of memory _per each worker process_ for each additional
-Webservice pod.
+- 4 Puma Workers
+- 4 vCPU
+- 5 GB memory (request)
+- 7 GB memory (limit)
 
-For further information on resource usage, see the [Webservice resources](https://docs.gitlab.com/charts/charts/gitlab/webservice/#resources).
+For 40 RPS or 2,000 users we recommend a total Puma worker count of around 12 so in turn it's recommended to run at
+least 3 Webservice pods.
+
+For further information on Webservice resource usage, see the Charts documentation on [Webservice resources](https://docs.gitlab.com/charts/charts/gitlab/webservice/#resources).
+
+##### NGINX
+
+It's also recommended deploying the NGINX controller pods across the Webservice nodes as a DaemonSet. This is to allow the controllers to scale dynamically with the Webservice pods they serve as well as take advantage of the higher network bandwidth larger machine types typically have.
+
+Note that this isn't a strict requirement. The NGINX controller pods can be deployed as desired as long as they have enough resources to handle the web traffic.
 
 #### Sidekiq
 
-Sidekiq pods should generally have 0.9 CPU and 2 GB of memory.
+Each Sidekiq pod is recommended to be run with the following configuration:
 
-[The provided starting point](#cluster-topology) allows the deployment of up to
-4 Sidekiq pods. Expand available resources using the 0.9 CPU to 2 GB memory
-ratio for each additional pod.
+- 1 Sidekiq worker
+- 900m vCPU
+- 2 GB memory (request)
+- 4 GB memory (limit)
 
-For further information on resource usage, see the [Sidekiq resources](https://docs.gitlab.com/charts/charts/gitlab/sidekiq/#resources).
+Similar to the standard deployment above, an initial target of 4 Sidekiq workers has been used here.
+Additional workers may be required depending on your specific workflow.
+
+For further information on Sidekiq resource usage, see the Charts documentation on [Sidekiq resources](https://docs.gitlab.com/charts/charts/gitlab/sidekiq/#resources).
 
 ### Supporting
 
@@ -1217,12 +1228,16 @@ The Supporting Node Pool is designed to house all supporting deployments that do
 on the Webservice and Sidekiq pools.
 
 This includes various deployments related to the Cloud Provider's implementation and supporting
-GitLab deployments such as NGINX or [GitLab Shell](https://docs.gitlab.com/charts/charts/gitlab/gitlab-shell/).
+GitLab deployments such as [GitLab Shell](https://docs.gitlab.com/charts/charts/gitlab/gitlab-shell/).
 
-If you wish to make any additional deployments, such as for Monitoring, it's recommended
+If you wish to make any additional deployments such as Container Registry, Pages or Monitoring, it's recommended
 to deploy these in this pool where possible and not in the Webservice or Sidekiq pools, as the Supporting pool has been designed
 specifically to accommodate several additional deployments. However, if your deployments don't fit into the
-pool as given, you can increase the node pool accordingly.
+pool as given, you can increase the node pool accordingly. Conversely, if the pool in your use case is over-provisioned you can reduce accordingly.
+
+### Example config file
+
+An example for the GitLab Helm Charts for the above 40 RPS or 2,000 reference architecture configuration [can be found in the Charts project](https://gitlab.com/gitlab-org/charts/gitlab/-/blob/master/examples/ref/2k.yaml).
 
 <div align="right">
   <a type="button" class="btn btn-default" href="#set-up-components">

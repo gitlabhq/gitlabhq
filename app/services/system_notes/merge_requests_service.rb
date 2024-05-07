@@ -203,6 +203,12 @@ module SystemNotes
 
       create_note(NoteSummary.new(noteable, project, author, body, action: 'unapproved'))
     end
+
+    def requested_changes
+      body = "requested changes"
+
+      create_note(NoteSummary.new(noteable, project, author, body, action: 'requested_changes'))
+    end
   end
 end
 

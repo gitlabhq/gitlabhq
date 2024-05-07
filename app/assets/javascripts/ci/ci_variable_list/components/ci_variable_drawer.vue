@@ -416,8 +416,8 @@ export default {
         label-for="ci-variable-type"
         class="gl-border-none"
         :class="{
-          'gl-mb-n5': !hideEnvironmentScope,
-          'gl-mb-n1': hideEnvironmentScope,
+          '-gl-mb-5': !hideEnvironmentScope,
+          '-gl-mb-1': hideEnvironmentScope,
         }"
       >
         <gl-form-select
@@ -428,7 +428,7 @@ export default {
       </gl-form-group>
       <gl-form-group
         v-if="!hideEnvironmentScope"
-        class="gl-border-none gl-mb-n5"
+        class="gl-border-none -gl-mb-5"
         label-for="ci-variable-env"
         data-testid="environment-scope"
       >
@@ -464,9 +464,9 @@ export default {
           readonly
         />
       </gl-form-group>
-      <gl-form-group class="gl-border-none gl-mb-n8">
+      <gl-form-group class="gl-border-none -gl-mb-8">
         <template #label>
-          <div class="gl-display-flex gl-align-items-center gl-mb-n3">
+          <div class="gl-display-flex gl-align-items-center -gl-mb-3">
             <span class="gl-mr-2">
               {{ $options.i18n.flags }}
             </span>
@@ -509,7 +509,7 @@ export default {
       <gl-form-group
         label-for="ci-variable-description"
         :label="$options.i18n.description"
-        class="gl-border-none gl-mb-n5"
+        class="gl-border-none -gl-mb-5"
         data-testid="ci-variable-description-label"
         :description="$options.i18n.descriptionHelpText"
         optional
@@ -525,7 +525,7 @@ export default {
         v-model="variable.key"
         :token-list="$options.awsTokenList"
         :label-text="$options.i18n.key"
-        class="gl-border-none gl-pb-0! gl-mb-n5"
+        class="gl-border-none gl-pb-0! -gl-mb-5"
         data-testid="ci-variable-key"
       />
       <p
@@ -548,7 +548,7 @@ export default {
       <gl-form-group
         :label="$options.i18n.value"
         label-for="ci-variable-value"
-        class="gl-border-none gl-mb-n2"
+        class="gl-border-none -gl-mb-2"
         data-testid="ci-variable-value-label"
         :invalid-feedback="maskedValidationIssuesText"
         :state="isValueValid"

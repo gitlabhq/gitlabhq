@@ -19,23 +19,24 @@ see [webhook events](webhook_events.md).
 
 You can use webhooks to:
 
-- Trigger continuous integration (CI) jobs, update external issue trackers,
-  update a backup mirror, or deploy to your production server.
-- [Integrate with Twilio to be notified via SMS](https://www.datadoghq.com/blog/send-alerts-sms-customizable-webhooks-twilio/)
+- Trigger CI/CD jobs, update external issue trackers and
+  backup mirrors, or deploy to your production server.
+- [Integrate with Twilio to receive SMS alerts](https://www.datadoghq.com/blog/send-alerts-sms-customizable-webhooks-twilio/)
   every time an issue is created for a specific project or group in GitLab.
-- [Automatically assign labels to merge requests](https://about.gitlab.com/blog/2016/08/19/applying-gitlab-labels-automatically/).
+- [Assign labels automatically to merge requests](https://about.gitlab.com/blog/2016/08/19/applying-gitlab-labels-automatically/).
 
-GitLab.com enforces [webhook limits](../../../user/gitlab_com/index.md#webhooks),
-including:
+GitLab.com enforces [webhook limits](../../../user/gitlab_com/index.md#webhooks), including:
 
-- The maximum number of webhooks and their size, both per project and per group.
-- The number of webhook calls per minute.
+- The maximum number of webhooks per project or group
+- The number of webhook calls per minute
+- The number of seconds a webhook is timed out
+
+For GitLab self-managed, an administrator can change these limits.
 
 ## Group webhooks
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 You can configure a group webhook, which is triggered by events
 that occur across all projects in the group and its subgroups. If you configure identical webhooks
@@ -58,15 +59,22 @@ To create a webhook for a project or group:
 1. Select **Add new webhook**.
 1. In **URL**, enter the URL of the webhook endpoint.
    The URL must be percent-encoded if it contains one or more special characters.
-1. Optional. In **Secret token**, enter the [secret token](#validate-requests-with-a-secret-token) to validate requests.
-1. In the **Trigger** section, select the [events](webhook_events.md) to trigger the webhook.
-1. Optional. Clear the **Enable SSL verification** checkbox to disable [SSL verification](index.md#ssl-verification).
+1. Optional. In **Name**, enter the name of the webhook.
+1. Optional. In **Description**, enter the description of the webhook.
+1. Optional. In **Secret token**, enter the secret token to validate requests.
+
+   The token is sent with the webhook request in the `X-Gitlab-Token` HTTP header.
+   Your webhook endpoint can check the token to verify the request is legitimate.
+
+1. In the **Trigger** section, select the checkbox for each GitLab
+   [event](webhook_events.md) you want to trigger the webhook.
+1. Optional. Clear the **Enable SSL verification** checkbox
+   to disable [SSL verification](index.md#ssl-verification).
 1. Select **Add webhook**.
 
 ### Mask sensitive portions of webhook URLs
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/99995) in GitLab 15.5 [with a flag](../../../administration/feature_flags.md) named `webhook_form_mask_url`. Disabled by default.
-> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/376106) in GitLab 15.6.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/376106) in GitLab 15.7. Feature flag `webhook_form_mask_url` removed.
 
 You can define and mask sensitive portions of webhook URLs and replace them
@@ -144,13 +152,6 @@ You'll have this request payload that combines the template with a `push` event:
 }
 ```
 
-### Validate requests with a secret token
-
-You can specify a secret token to validate webhook requests.
-The token is sent with the hook request in the
-`X-Gitlab-Token` HTTP header. Your webhook endpoint can check the token to verify
-that the request is legitimate.
-
 ### Filter push events by branch
 
 You can filter push events by branch. Use one of the following options to filter which push events are sent to your webhook endpoint:
@@ -223,29 +224,30 @@ If the webhook URL has changed, you cannot resend the request.
 ## Webhook receiver requirements
 
 Webhook receiver endpoints should be fast and stable.
-Slow and unstable receivers might be [disabled automatically](#auto-disabled-webhooks) to ensure system reliability. Webhooks that fail might lead to [duplicate events](#webhook-fails-or-multiple-webhook-requests-are-triggered).
+Slow and unstable receivers might be [disabled automatically](#auto-disabled-webhooks) to ensure system reliability.
+Webhooks that [time out](../../../user/gitlab_com/index.md#webhooks) might lead to duplicate events.
 
 Endpoints should follow these best practices:
 
-- **Respond quickly with a `200` or `201` status response.** Avoid any significant processing of webhooks in the same request.
-  Instead, implement a queue to handle webhooks after they are received. Webhook receivers that do not respond before the [timeout limit](#webhook-timeout-limits) might be [disabled automatically](#auto-disabled-webhooks) on GitLab.com.
-- **Be prepared to handle duplicate events.** In [some circumstances](#webhook-fails-or-multiple-webhook-requests-are-triggered), the same event may be sent twice. To mitigate this issue, ensure your endpoint is
-  reliably fast and stable.
+- **Respond quickly with a `200` or `201` status response.**
+  Avoid any significant processing of webhooks in the same request.
+  Instead, implement a queue to handle webhooks after they are received.
+  Webhook receivers that do not respond before the timeout limit
+  might be disabled automatically on GitLab.com.
+- **Be prepared to handle duplicate events.**
+  If a webhook has timed out, the same event might be sent twice.
+  To mitigate this issue, ensure your endpoint is reliably fast and stable.
 - **Keep the response headers and body minimal.**
-  GitLab does not examine the response headers or body. GitLab stores them so you can examine them later in the logs to help diagnose problems. You should limit the number and size of headers returned. You can also respond to the webhook request with an empty body.
-- Only return client error status responses (in the `4xx` range) to
-  indicate that the webhook has been misconfigured. Responses in this range might cause your webhooks to be [disabled automatically](#auto-disabled-webhooks). For example, if your receiver
-  only supports push events, you can return `400` if sent an issue
-  payload, as that is an indication that the hook has been set up
-  incorrectly. Alternatively, you can ignore unrecognized event
-  payloads.
-- Never return `500` server error status responses if the event has been handled. These responses might cause the webhook to be [disabled automatically](#auto-disabled-webhooks).
+  GitLab stores the response headers and body so you can examine them later in the logs to help diagnose problems.
+  You should limit the number and size of returned headers.
+  You can also respond to the webhook request with an empty body.
+- Only return client error status responses (in the `4xx` range) to indicate the webhook is misconfigured.
+  Responses in this range might cause your webhooks to be disabled automatically.
+  For example, if your receiver supports only push events, you can return `400` for issue payloads.
+  Alternatively, you can ignore unrecognized event payloads.
+- Never return `500` server error status responses if the event has been handled.
+  These responses might cause the webhook to be disabled automatically.
 - Invalid HTTP responses are treated as failed requests.
-
-## Webhook timeout limits
-
-For GitLab.com, the timeout limit for webhooks is [10 seconds](../../../user/gitlab_com/index.md#other-limits).
-For GitLab self-managed, an administrator can [change the webhook timeout limit](../../../administration/instance_limits.md#webhook-timeout).
 
 ## Auto-disabled webhooks
 
@@ -274,7 +276,7 @@ An auto-disabled webhook appears in the list of project or group webhooks as:
 ### Temporarily disabled webhooks
 
 Project or group webhooks that return response codes in the `5xx` range
-or experience a [timeout](#webhook-timeout-limits) or other HTTP errors
+or experience a [timeout](../../../user/gitlab_com/index.md#webhooks) or other HTTP errors
 are considered to be failing intermittently and are temporarily disabled.
 These webhooks are initially disabled for one minute, which is extended
 on each subsequent failure up to a maximum of 24 hours.
@@ -404,9 +406,8 @@ To create a private webhook receiver:
    ```
 
 1. In GitLab, [configure the webhook](#configure-webhooks-in-gitlab) and add your
-   receiver's URL, for example, `http://receiver.example.com:8000/`.
-
-1. Select **Test**. You should see something like this in the console:
+   receiver's URL (for example, `http://receiver.example.com:8000/`).
+1. Select **Test**. You should see a similar message in the console:
 
    ```plaintext
    {"before":"077a85dd266e6f3573ef7e9ef8ce3343ad659c4e","after":"95cd4a99e93bc4bbabacfa2cd10e6725b1403c60",<SNIP>}
@@ -414,9 +415,7 @@ To create a private webhook receiver:
    - -> /
    ```
 
-NOTE:
-You may need to [allow requests to the local network](../../../security/webhooks.md) for this
-receiver to be added.
+To add this receiver, you might have to [allow requests to the local network](../../../security/webhooks.md).
 
 ## How image URLs are displayed in the webhook body
 
@@ -462,7 +461,7 @@ certificate in PEM format. This certificate is set globally and
 presented to the server during a TLS handshake. The certificate can also
 be protected with a PEM passphrase.
 
-To configure the certificate, follow the instructions below.
+To configure the certificate:
 
 ::Tabs
 
@@ -536,20 +535,15 @@ To configure the certificate, follow the instructions below.
 
 ## Troubleshooting
 
-### Unable to get local issuer certificate
+### `unable to get local issuer certificate`
 
-When SSL verification is enabled, you might get an error that GitLab cannot
-verify the SSL certificate of the webhook endpoint.
-Typically, this error occurs because the root certificate isn't
-issued by a trusted certification authority as
-determined by [CAcert.org](http://www.cacert.org/).
+When SSL verification is enabled, you might get an error that GitLab
+cannot verify the SSL certificate of the webhook endpoint.
+Typically, this error occurs because the root certificate is not issued
+by a trusted certificate authority as determined by [CAcert.org](http://www.cacert.org/).
 
-If that is not the case, consider using [SSL Checker](https://www.sslshopper.com/ssl-checker.html) to identify faults.
-Missing intermediate certificates are common causes of verification failure.
-
-### Webhook fails or multiple webhook requests are triggered
-
-If you're receiving multiple webhook requests, the webhook might have [timed out](#webhook-timeout-limits).
+To resolve this issue, consider using [SSL Checker](https://www.sslshopper.com/ssl-checker.html) to identify errors.
+Missing intermediate certificates are a common cause of verification failure.
 
 ### Webhook is not triggered
 

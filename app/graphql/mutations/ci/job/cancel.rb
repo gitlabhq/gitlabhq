@@ -7,9 +7,9 @@ module Mutations
         graphql_name 'JobCancel'
 
         field :job,
-              Types::Ci::JobType,
-              null: true,
-              description: 'Job after the mutation.'
+          Types::Ci::JobType,
+          null: true,
+          description: 'Job after the mutation.'
 
         authorize :cancel_build
 

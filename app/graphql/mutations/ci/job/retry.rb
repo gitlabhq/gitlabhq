@@ -9,19 +9,19 @@ module Mutations
         JobID = ::Types::GlobalIDType[::Ci::Processable]
 
         argument :id, JobID,
-                 required: true,
-                 description: 'ID of the job to mutate.'
+          required: true,
+          description: 'ID of the job to mutate.'
 
         field :job,
-              Types::Ci::JobType,
-              null: true,
-              description: 'Job after the mutation.'
+          Types::Ci::JobType,
+          null: true,
+          description: 'Job after the mutation.'
 
         argument :variables, [::Types::Ci::VariableInputType],
-                 required: false,
-                 default_value: [],
-                 replace_null_with_default: true,
-                 description: 'Variables to use when retrying a manual job.'
+          required: false,
+          default_value: [],
+          replace_null_with_default: true,
+          description: 'Variables to use when retrying a manual job.'
 
         authorize :update_build
 

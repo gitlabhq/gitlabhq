@@ -7,8 +7,8 @@ module Mutations
         PipelineScheduleID = ::Types::GlobalIDType[::Ci::PipelineSchedule]
 
         argument :id, PipelineScheduleID,
-                 required: true,
-                 description: 'ID of the pipeline schedule to mutate.'
+          required: true,
+          description: 'ID of the pipeline schedule to mutate.'
 
         private
 

@@ -10,7 +10,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed
 
-This page describes the GitLab reference architecture designed to target a peak load of 20 requests per second (RPS), the typical peak load of up to 1,000 users, both manual and automated, based on real data with headroom added.
+This page describes the GitLab reference architecture designed to target a peak load of 20 requests per second (RPS), the typical peak load of up to 1,000 users, both manual and automated, based on real data.
 
 For a full list of reference architectures, see
 [Available reference architectures](index.md#available-reference-architectures).
@@ -21,7 +21,7 @@ For a full list of reference architectures, see
 > - **Estimated Costs:** [See cost table](index.md#cost-to-run)
 > - **Cloud Native Hybrid:** No. For a cloud native hybrid environment, you
 >  can follow a [modified hybrid reference architecture](#cloud-native-hybrid-reference-architecture-with-helm-charts).
-> - **Unsure which Reference Architecture to use?** [Go to this guide for more info](index.md#deciding-which-architecture-to-use).
+> - **Unsure which Reference Architecture to use?** [Go to this guide for more info](index.md#deciding-which-architecture-to-start-with).
 
 | Users        | Configuration        | GCP            | AWS          | Azure    |
 |--------------|----------------------|----------------|--------------|----------|
@@ -89,7 +89,7 @@ against the following endpoint throughput targets:
 - Git (Push): 1 RPS
 
 The above targets were selected based on real customer data of total environmental loads corresponding to the user count,
-including CI and other workloads along with additional substantial headroom added.
+including CI and other workloads.
 
 If you have metrics to suggest that you have regularly higher throughput against the above endpoint targets, [large monorepos](index.md#large-monorepos)
 or notable [additional workloads](index.md#additional-workloads) these can notably impact the performance environment and [further adjustments may be required](index.md#scaling-an-environment).

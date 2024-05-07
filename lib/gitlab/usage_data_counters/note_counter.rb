@@ -4,7 +4,7 @@ module Gitlab::UsageDataCounters
   class NoteCounter < BaseCounter
     KNOWN_EVENTS = %w[create].freeze
     PREFIX = 'note'
-    COUNTABLE_TYPES = %w[Snippet Commit MergeRequest].freeze
+    COUNTABLE_TYPES = %w[MergeRequest].freeze
 
     class << self
       def redis_key(event, noteable_type)

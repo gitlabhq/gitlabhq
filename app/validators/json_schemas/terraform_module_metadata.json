@@ -23,9 +23,7 @@
         },
         "additionalProperties": false,
         "required": [
-          "name",
-          "description",
-          "type"
+          "name"
         ]
       }
     },
@@ -43,32 +41,43 @@
         },
         "additionalProperties": false,
         "required": [
-          "name",
-          "description"
+          "name"
         ]
       }
     },
+    "dependency": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "name"
+      ]
+    },
     "dependencies": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "source": {
-            "type": "string"
-          },
-          "version": {
-            "type": "string"
+      "type": "object",
+      "properties": {
+        "providers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dependency"
           }
         },
-        "additionalProperties": false,
-        "required": [
-          "name",
-          "source",
-          "version"
-        ]
+        "modules": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dependency"
+          }
+        }
       }
     },
     "resources": {
@@ -82,7 +91,7 @@
     "root": {
       "type": "object",
       "properties": {
-        "description": {
+        "readme": {
           "type": "string"
         },
         "inputs": {
@@ -101,57 +110,49 @@
       "additionalProperties": false
     },
     "submodules": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string"
+      "type": "object",
+      "patternProperties": {
+        "^[a-zA-Z0-9_-]+$": {
+          "type": "object",
+          "properties": {
+            "readme": {
+              "type": "string"
+            },
+            "inputs": {
+              "$ref": "#/definitions/inputs"
+            },
+            "outputs": {
+              "$ref": "#/definitions/outputs"
+            },
+            "dependencies": {
+              "$ref": "#/definitions/dependencies"
+            },
+            "resources": {
+              "$ref": "#/definitions/resources"
+            }
           },
-          "description": {
-            "type": "string"
-          },
-          "inputs": {
-            "$ref": "#/definitions/inputs"
-          },
-          "outputs": {
-            "$ref": "#/definitions/outputs"
-          },
-          "dependencies": {
-            "$ref": "#/definitions/dependencies"
-          },
-          "resources": {
-            "$ref": "#/definitions/resources"
-          }
-        },
-        "additionalProperties": false,
-        "required": [
-          "name"
-        ]
+          "additionalProperties": false
+        }
       }
     },
     "examples": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string"
+      "type": "object",
+      "patternProperties": {
+        "^[a-zA-Z0-9_-]+$": {
+          "type": "object",
+          "properties": {
+            "readme": {
+              "type": "string"
+            },
+            "inputs": {
+              "$ref": "#/definitions/inputs"
+            },
+            "outputs": {
+              "$ref": "#/definitions/outputs"
+            }
           },
-          "description": {
-            "type": "string"
-          },
-          "inputs": {
-            "$ref": "#/definitions/inputs"
-          },
-          "outputs": {
-            "$ref": "#/definitions/outputs"
-          }
-        },
-        "additionalProperties": false,
-        "required": [
-          "name"
-        ]
+          "additionalProperties": false
+        }
       }
     }
   },

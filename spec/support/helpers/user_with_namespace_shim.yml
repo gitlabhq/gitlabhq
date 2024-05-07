@@ -122,7 +122,6 @@
 - ee/spec/finders/security/approval_groups_finder_spec.rb
 - ee/spec/frontend/fixtures/search.rb
 - ee/spec/graphql/ee/resolvers/board_lists_resolver_spec.rb
-- ee/spec/graphql/mutations/namespaces/increase_storage_temporarily_spec.rb
 - ee/spec/graphql/mutations/security_policy/assign_security_policy_project_spec.rb
 - ee/spec/graphql/mutations/security_policy/commit_scan_execution_policy_spec.rb
 - ee/spec/graphql/mutations/security_policy/create_security_policy_project_spec.rb

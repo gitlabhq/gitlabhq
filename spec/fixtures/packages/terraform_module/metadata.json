@@ -1,0 +1,152 @@
+{
+  "root": {
+    "inputs": [
+      {
+        "name": "name",
+        "type": "string",
+        "description": "Tenetur laudantium voluptatibus incidunt ipsum iste et."
+      },
+      {
+        "name": "task_definition",
+        "type": "string",
+        "description": "Repellendus sequi sed quo quasi."
+      },
+      {
+        "name": "target_definition",
+        "type": "bool",
+        "default": "false",
+        "description": "In voluptatibus libero accusamus aut."
+      },
+      {
+        "name": "multiple_definitions",
+        "type": "list",
+        "default": "[]",
+        "description": "Necessitatibus tempore id ipsam dolor."
+      }
+    ],
+    "readme": "# Gitlab Local File\n\nThis repository contains a [Terraform](https://www.terraform.io/) module to create a local file.\n\n## How do you use this module?\n\nThis folder defines a [Terraform module](https://www.terraform.io/docs/modules/usage.html), which you can use in your\ncode by adding a `module` configuration and setting its `source` parameter to the URL of this folder:\n\n```hcl\nmodule \"gitlab_local_file\" {\n  source = \"gitlab.com/mattkasa/terraform-modules/gitlab-local-file?ref=master\"\n\n  text = \"Hello World\"\n  filename = \"hello\"\n}\n```\n",
+    "outputs": [
+      {
+        "name": "name",
+        "description": "Tenetur laudantium voluptatibus incidunt ipsum iste et."
+      },
+      {
+        "name": "output",
+        "description": "Repellendus sequi sed quo quasi."
+      }
+    ],
+    "resources": [
+      "local_file.file",
+      "null_resource.null",
+      "null_resource.null2"
+    ],
+    "dependencies": {
+      "modules": [
+        {
+          "name": "gitlab_local_file",
+          "source": "gitlab/example/local"
+        },
+        {
+          "name": "gitlab_remote_file",
+          "source": "gitlab/example/remote"
+        }
+      ],
+      "providers": [
+        {
+          "name": "aws",
+          "version": ">= 2.7.0"
+        },
+        {
+          "name": "google",
+          "version": ">= 2.7.0"
+        }
+      ]
+    }
+  },
+  "submodules": {
+    "gitlab_local_file": {
+      "inputs": [
+        {
+          "name": "text",
+          "type": "string",
+          "description": "Tenetur laudantium voluptatibus incidunt ipsum iste et."
+        },
+        {
+          "name": "filename",
+          "type": "string",
+          "description": "Repellendus sequi sed quo quasi."
+        }
+      ],
+      "readme": "# Gitlab Local File\n\nThis repository contains a [Terraform](https://www.terraform.io/) module to create a local file.\n\n## How do you use this module?\n\nThis folder defines a [Terraform module](https://www.terraform.io/docs/modules/usage.html), which you can use in your\ncode by adding a `module` configuration and setting its `source` parameter to the URL of this folder:\n\n```hcl\nmodule \"gitlab_local_file\" {\n  source = \"gitlab.com/mattkasa/terraform-modules/gitlab-local-file?ref=master\"\n\n  text = \"Hello World\"\n  filename = \"hello\"\n}\n```\n",
+      "outputs": [
+        {
+          "name": "name",
+          "description": "Tenetur laudantium voluptatibus incidunt ipsum iste et."
+        },
+        {
+          "name": "output",
+          "description": "Repellendus sequi sed quo quasi."
+        }
+      ],
+      "resources": [
+        "local_file.file",
+        "null_resource.null",
+        "null_resource.null2"
+      ],
+      "dependencies": {
+        "modules": [
+          {
+            "name": "gitlab_local_file",
+            "source": "gitlab/example/local"
+          },
+          {
+            "name": "gitlab_remote_file",
+            "source": "gitlab/example/remote",
+            "version": ">= 2.7.0"
+          }
+        ],
+        "providers": [
+          {
+            "name": "aws",
+            "version": ">= 2.7.0"
+          },
+          {
+            "name": "null",
+            "source": "hashicorp/null",
+            "version": ">= 3.0"
+          },
+          {
+            "name": "template"
+          }
+        ]
+      }
+    }
+  },
+  "examples": {
+    "basic": {
+      "inputs": [
+        {
+          "name": "Hello World",
+          "type": "string",
+          "description": "Tenetur laudantium voluptatibus incidunt ipsum iste et."
+        },
+        {
+          "name": "hello",
+          "type": "string",
+          "description": "Repellendus sequi sed quo quasi."
+        }
+      ],
+      "outputs": [
+        {
+          "name": "name",
+          "description": "Tenetur laudantium voluptatibus incidunt ipsum iste et."
+        },
+        {
+          "name": "output",
+          "description": "Repellendus sequi sed quo quasi."
+        }
+      ],
+      "readme": "# Gitlab Local File\n\nThis repository contains a [Terraform](https://www.terraform.io/) module to create a local file.\n\n## How do you use this module?\n\nThis folder defines a [Terraform module](https://www.terraform.io/docs/modules/usage.html), which you can use in your\ncode by adding a `module` configuration and setting its `source` parameter to the URL of this folder:\n\n```hcl\nmodule \"gitlab_local_file\" {\n  source = \"gitlab.com/mattkasa/terraform-modules/gitlab-local-file?ref=master\"\n\n  text = \"Hello World\"\n  filename = \"hello\"\n}\n```\n"
+    }
+  }
+}

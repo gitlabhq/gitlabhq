@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Integrations::Phorge, feature_category: :integrations do
+  it_behaves_like Integrations::HasAvatar
+
   describe 'Validations' do
     subject { build(:phorge_integration, active: active) }
 

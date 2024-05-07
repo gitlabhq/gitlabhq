@@ -330,29 +330,29 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category
         context 'when builds are successful' do
           it 'properly processes the pipeline' do
             expect(process_pipeline).to be_truthy
-            expect(builds_names_and_statuses).to eq({ 'build': 'pending' })
+            expect(builds_names_and_statuses).to eq({ build: 'pending' })
 
             succeed_pending
 
-            expect(builds_names_and_statuses).to eq({ 'build': 'success', 'rollout10%': 'scheduled' })
+            expect(builds_names_and_statuses).to eq({ build: 'success', 'rollout10%': 'scheduled' })
 
             travel_to 2.minutes.from_now do
               enqueue_scheduled('rollout10%')
             end
             succeed_pending
 
-            expect(builds_names_and_statuses).to eq({ 'build': 'success', 'rollout10%': 'success', 'rollout100%': 'scheduled' })
+            expect(builds_names_and_statuses).to eq({ build: 'success', 'rollout10%': 'success', 'rollout100%': 'scheduled' })
 
             travel_to 2.minutes.from_now do
               enqueue_scheduled('rollout100%')
             end
             succeed_pending
 
-            expect(builds_names_and_statuses).to eq({ 'build': 'success', 'rollout10%': 'success', 'rollout100%': 'success', 'cleanup': 'pending' })
+            expect(builds_names_and_statuses).to eq({ build: 'success', 'rollout10%': 'success', 'rollout100%': 'success', cleanup: 'pending' })
 
             succeed_pending
 
-            expect(builds_names_and_statuses).to eq({ 'build': 'success', 'rollout10%': 'success', 'rollout100%': 'success', 'cleanup': 'success' })
+            expect(builds_names_and_statuses).to eq({ build: 'success', 'rollout10%': 'success', 'rollout100%': 'success', cleanup: 'success' })
             expect(pipeline.reload.status).to eq 'success'
           end
         end
@@ -360,11 +360,11 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category
         context 'when build job fails' do
           it 'properly processes the pipeline' do
             expect(process_pipeline).to be_truthy
-            expect(builds_names_and_statuses).to eq({ 'build': 'pending' })
+            expect(builds_names_and_statuses).to eq({ build: 'pending' })
 
             fail_running_or_pending
 
-            expect(builds_names_and_statuses).to eq({ 'build': 'failed' })
+            expect(builds_names_and_statuses).to eq({ build: 'failed' })
             expect(pipeline.reload.status).to eq 'failed'
           end
         end
@@ -372,15 +372,15 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category
         context 'when rollout 10% is unscheduled' do
           it 'properly processes the pipeline' do
             expect(process_pipeline).to be_truthy
-            expect(builds_names_and_statuses).to eq({ 'build': 'pending' })
+            expect(builds_names_and_statuses).to eq({ build: 'pending' })
 
             succeed_pending
 
-            expect(builds_names_and_statuses).to eq({ 'build': 'success', 'rollout10%': 'scheduled' })
+            expect(builds_names_and_statuses).to eq({ build: 'success', 'rollout10%': 'scheduled' })
 
             unschedule
 
-            expect(builds_names_and_statuses).to eq({ 'build': 'success', 'rollout10%': 'manual' })
+            expect(builds_names_and_statuses).to eq({ build: 'success', 'rollout10%': 'manual' })
             expect(pipeline.reload.status).to eq 'manual'
           end
 
@@ -392,7 +392,7 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category
               play_manual_action('rollout10%')
               succeed_pending
 
-              expect(builds_names_and_statuses).to eq({ 'build': 'success', 'rollout10%': 'success', 'rollout100%': 'scheduled' })
+              expect(builds_names_and_statuses).to eq({ build: 'success', 'rollout10%': 'success', 'rollout100%': 'scheduled' })
               expect(pipeline.reload.status).to eq 'scheduled'
             end
           end
@@ -401,18 +401,18 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category
         context 'when rollout 10% fails' do
           it 'properly processes the pipeline' do
             expect(process_pipeline).to be_truthy
-            expect(builds_names_and_statuses).to eq({ 'build': 'pending' })
+            expect(builds_names_and_statuses).to eq({ build: 'pending' })
 
             succeed_pending
 
-            expect(builds_names_and_statuses).to eq({ 'build': 'success', 'rollout10%': 'scheduled' })
+            expect(builds_names_and_statuses).to eq({ build: 'success', 'rollout10%': 'scheduled' })
 
             travel_to 2.minutes.from_now do
               enqueue_scheduled('rollout10%')
             end
             fail_running_or_pending
 
-            expect(builds_names_and_statuses).to eq({ 'build': 'success', 'rollout10%': 'failed' })
+            expect(builds_names_and_statuses).to eq({ build: 'success', 'rollout10%': 'failed' })
             expect(pipeline.reload.status).to eq 'failed'
           end
 
@@ -424,7 +424,7 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category
               fail_running_or_pending
               retry_build('rollout10%')
 
-              expect(builds_names_and_statuses).to eq({ 'build': 'success', 'rollout10%': 'pending' })
+              expect(builds_names_and_statuses).to eq({ build: 'success', 'rollout10%': 'pending' })
               expect(pipeline.reload.status).to eq 'running'
             end
           end
@@ -433,15 +433,15 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category
         context 'when rollout 10% is played immidiately' do
           it 'properly processes the pipeline' do
             expect(process_pipeline).to be_truthy
-            expect(builds_names_and_statuses).to eq({ 'build': 'pending' })
+            expect(builds_names_and_statuses).to eq({ build: 'pending' })
 
             succeed_pending
 
-            expect(builds_names_and_statuses).to eq({ 'build': 'success', 'rollout10%': 'scheduled' })
+            expect(builds_names_and_statuses).to eq({ build: 'success', 'rollout10%': 'scheduled' })
 
             play_manual_action('rollout10%')
 
-            expect(builds_names_and_statuses).to eq({ 'build': 'success', 'rollout10%': 'pending' })
+            expect(builds_names_and_statuses).to eq({ build: 'success', 'rollout10%': 'pending' })
             expect(pipeline.reload.status).to eq 'running'
           end
         end
@@ -456,7 +456,7 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category
 
         it 'properly processes the pipeline' do
           expect(process_pipeline).to be_truthy
-          expect(builds_names_and_statuses).to eq({ 'delayed': 'scheduled' })
+          expect(builds_names_and_statuses).to eq({ delayed: 'scheduled' })
 
           expect(pipeline.reload.status).to eq 'scheduled'
         end
@@ -473,13 +473,13 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category
 
         it 'blocks the stage until all scheduled jobs finished' do
           expect(process_pipeline).to be_truthy
-          expect(builds_names_and_statuses).to eq({ 'delayed1': 'scheduled', 'delayed2': 'scheduled' })
+          expect(builds_names_and_statuses).to eq({ delayed1: 'scheduled', delayed2: 'scheduled' })
 
           travel_to 2.minutes.from_now do
             enqueue_scheduled('delayed1')
           end
 
-          expect(builds_names_and_statuses).to eq({ 'delayed1': 'pending', 'delayed2': 'scheduled' })
+          expect(builds_names_and_statuses).to eq({ delayed1: 'pending', delayed2: 'scheduled' })
           expect(pipeline.reload.status).to eq 'running'
         end
       end
@@ -494,14 +494,14 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category
 
         it 'blocks the stage and continues after it failed' do
           expect(process_pipeline).to be_truthy
-          expect(builds_names_and_statuses).to eq({ 'delayed': 'scheduled' })
+          expect(builds_names_and_statuses).to eq({ delayed: 'scheduled' })
 
           travel_to 2.minutes.from_now do
             enqueue_scheduled('delayed')
           end
           fail_running_or_pending
 
-          expect(builds_names_and_statuses).to eq({ 'delayed': 'failed', 'job': 'pending' })
+          expect(builds_names_and_statuses).to eq({ delayed: 'failed', job: 'pending' })
           expect(pipeline.reload.status).to eq 'pending'
         end
       end
@@ -952,7 +952,7 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category
       end
 
       let(:statuses) do
-        { 'manual1': 'manual', 'test1': 'skipped', 'test2': 'pending' }
+        { manual1: 'manual', test1: 'skipped', test2: 'pending' }
       end
 
       before do
@@ -1026,19 +1026,19 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category
       let(:manual2) { all_builds.find_by(name: 'manual2') }
 
       let(:statuses_0) do
-        { 'manual1': 'created', 'manual2': 'created', 'test1': 'created', 'test2': 'created', 'deploy1': 'created', 'deploy2': 'created' }
+        { manual1: 'created', manual2: 'created', test1: 'created', test2: 'created', deploy1: 'created', deploy2: 'created' }
       end
 
       let(:statuses_1) do
-        { 'manual1': 'manual', 'manual2': 'manual', 'test1': 'skipped', 'test2': 'skipped', 'deploy1': 'skipped', 'deploy2': 'skipped' }
+        { manual1: 'manual', manual2: 'manual', test1: 'skipped', test2: 'skipped', deploy1: 'skipped', deploy2: 'skipped' }
       end
 
       let(:statuses_2) do
-        { 'manual1': 'pending', 'manual2': 'pending', 'test1': 'skipped', 'test2': 'skipped', 'deploy1': 'skipped', 'deploy2': 'skipped' }
+        { manual1: 'pending', manual2: 'pending', test1: 'skipped', test2: 'skipped', deploy1: 'skipped', deploy2: 'skipped' }
       end
 
       let(:statuses_3) do
-        { 'manual1': 'pending', 'manual2': 'pending', 'test1': 'created', 'test2': 'created', 'deploy1': 'created', 'deploy2': 'created' }
+        { manual1: 'pending', manual2: 'pending', test1: 'created', test2: 'created', deploy1: 'created', deploy2: 'created' }
       end
 
       let(:log_info) do

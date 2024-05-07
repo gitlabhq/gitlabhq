@@ -8,7 +8,9 @@
 # ...
 #
 '{event_counters}_analytics_dashboard_viewed': USAGE_PRODUCT_ANALYTICS_VIEW_DASHBOARD
+'{event_counters}_create_commit_note': USAGE_NOTE_CREATE_COMMIT
 '{event_counters}_create_snippet': USAGE_SNIPPET_CREATE
+'{event_counters}_create_snippet_note': USAGE_NOTE_CREATE_SNIPPET
 '{event_counters}_licenses_list_viewed': USAGE_LICENSES_LIST_VIEWS
 '{event_counters}_update_snippet': USAGE_SNIPPET_UPDATE
 '{event_counters}_usage_data_download_payload_clicked': USAGE_SERVICE_USAGE_DATA_DOWNLOAD_PAYLOAD_CLICK

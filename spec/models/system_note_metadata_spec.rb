@@ -19,7 +19,7 @@ RSpec.describe SystemNoteMetadata do
       it { is_expected.to be_invalid }
     end
 
-    %i[merge timeline_event].each do |action|
+    %i[merge timeline_event requested_changes].each do |action|
       context 'when action type is valid' do
         subject do
           build(:system_note_metadata, note: build(:note), action: action)

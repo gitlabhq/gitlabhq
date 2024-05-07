@@ -47,7 +47,8 @@ module SystemNoteHelper
     'relate_to_child' => 'link',
     'unrelate_from_child' => 'link',
     'relate_to_parent' => 'link',
-    'unrelate_from_parent' => 'link'
+    'unrelate_from_parent' => 'link',
+    'requested_changes' => 'error'
   }.freeze
 
   def system_note_icon_name(note)

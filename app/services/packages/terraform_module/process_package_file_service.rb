@@ -20,7 +20,11 @@ module Packages
           result = ::Packages::TerraformModule::Metadata::ExtractFilesService.new(archive_file).execute
         end
 
-        ServiceResponse.success(payload: result&.payload)
+        if result&.success?
+          ::Packages::TerraformModule::Metadata::CreateService.new(package_file.package, result.payload).execute
+        end
+
+        ServiceResponse.success
       end
 
       private

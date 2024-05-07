@@ -37,7 +37,7 @@ RSpec.describe Gitlab::GithubGistsImport::ImportGistWorker, feature_category: :i
   let(:log_attributes) do
     {
       'user_id' => user.id,
-      'external_identifiers' => { 'id': gist_object.id },
+      'external_identifiers' => { id: gist_object.id },
       'class' => 'Gitlab::GithubGistsImport::ImportGistWorker',
       'correlation_id' => 'new-correlation-id',
       'jid' => nil,

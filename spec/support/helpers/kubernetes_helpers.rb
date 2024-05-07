@@ -150,8 +150,8 @@ module KubernetesHelpers
 
   def stub_server_min_version(min_version)
     response = kube_response({
-                               "major": "1", # not used, just added here to be a bit more realistic purposes
-                               "minor": min_version.to_s
+                               major: "1", # not used, just added here to be a bit more realistic purposes
+                               minor: min_version.to_s
                              })
 
     WebMock.stub_request( :get, service.api_url + '/version')
@@ -290,13 +290,13 @@ module KubernetesHelpers
   def kube_v1_secret_body(options)
     {
       "kind" => "SecretList",
-      "apiVersion": "v1",
-      "metadata": {
-        "name": options.fetch(:metadata_name, "default-token-1"),
-        "namespace": "kube-system"
+      apiVersion: "v1",
+      metadata: {
+        name: options.fetch(:metadata_name, "default-token-1"),
+        namespace: "kube-system"
       },
-      "data": {
-        "token": options.fetch(:token, Base64.encode64('token-sample-123'))
+      data: {
+        token: options.fetch(:token, Base64.encode64('token-sample-123'))
       }
     }
   end

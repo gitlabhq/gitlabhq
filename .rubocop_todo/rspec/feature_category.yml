@@ -176,7 +176,6 @@ RSpec/FeatureCategory:
     - 'ee/spec/graphql/mutations/merge_requests/accept_spec.rb'
     - 'ee/spec/graphql/mutations/merge_requests/set_assignees_spec.rb'
     - 'ee/spec/graphql/mutations/merge_requests/set_reviewers_spec.rb'
-    - 'ee/spec/graphql/mutations/namespaces/increase_storage_temporarily_spec.rb'
     - 'ee/spec/graphql/mutations/projects/set_compliance_framework_spec.rb'
     - 'ee/spec/graphql/mutations/projects/set_locked_spec.rb'
     - 'ee/spec/graphql/mutations/releases/update_spec.rb'

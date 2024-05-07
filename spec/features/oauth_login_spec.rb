@@ -15,7 +15,7 @@ RSpec.describe 'OAuth Login', :allow_forgery_protection, feature_category: :syst
     stub_omniauth_provider(provider)
   end
 
-  providers = [:github, :twitter, :bitbucket, :gitlab, :google_oauth2,
+  providers = [:github, :bitbucket, :gitlab, :google_oauth2,
                :facebook, :auth0, :salesforce, :alicloud]
 
   around do |example|

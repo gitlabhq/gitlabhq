@@ -19,7 +19,7 @@ class MergeRequestDiff < ApplicationRecord
 
   # The files_count column is a 2-byte signed integer. Look up the true value
   # from the database if this sentinel is seen
-  FILES_COUNT_SENTINEL = 2**15 - 1
+  FILES_COUNT_SENTINEL = (2**15) - 1
 
   # External diff cache key used by diffs export
   EXTERNAL_DIFFS_CACHE_TMPDIR = 'project-%{project_id}-external-mr-%{mr_id}-diff-%{id}-cache'

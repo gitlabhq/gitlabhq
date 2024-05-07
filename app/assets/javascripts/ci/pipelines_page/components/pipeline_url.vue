@@ -153,7 +153,7 @@ export default {
       <span v-if="commitTitle" class="gl-display-flex">
         <tooltip-on-truncate
           :title="commitTitle"
-          class="gl-flex-grow-1 gl-text-truncate gl-p-3 gl-ml-n3 gl-mr-n3 gl-mt-n3 gl-mb-n3"
+          class="gl-flex-grow-1 gl-text-truncate gl-p-3 -gl-ml-3 -gl-mr-3 -gl-mt-3 -gl-mb-3"
         >
           <gl-link
             :href="commitUrl"

@@ -79,11 +79,11 @@ RSpec.shared_examples 'a valid diff positionable note' do |factory_on_commit|
           { new_path: SecureRandom.alphanumeric(1001) },
           { old_line: "foo" }, # this should be an integer
           { new_line: "foo" }, # this should be an integer
-          { line_range: { "foo": "bar" } },
-          { line_range: { "line_code": SecureRandom.alphanumeric(101) } },
-          { line_range: { "type": SecureRandom.alphanumeric(101) } },
-          { line_range: { "old_line": "foo" } },
-          { line_range: { "new_line": "foo" } }
+          { line_range: { foo: "bar" } },
+          { line_range: { line_code: SecureRandom.alphanumeric(101) } },
+          { line_range: { type: SecureRandom.alphanumeric(101) } },
+          { line_range: { old_line: "foo" } },
+          { line_range: { new_line: "foo" } }
         ]
       end
 

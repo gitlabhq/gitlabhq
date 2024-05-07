@@ -15,10 +15,11 @@ DETAILS:
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/392734) in GitLab 16.0. Feature flag `group_analytics_dashboards_page` removed.
 
 To help us improve the Value Streams Dashboard, share feedback about your experience in this [survey](https://gitlab.fra1.qualtrics.com/jfe/form/SV_50guMGNU2HhLeT4).
-For more information, see also the [Value Stream Management category direction page](https://about.gitlab.com/direction/plan/value_stream_management/).
+For more information, see the [Value Stream Management category direction page](https://about.gitlab.com/direction/plan/value_stream_management/).
 
 The Value Streams Dashboard is a customizable dashboard you can use to identify trends, patterns, and opportunities for digital transformation improvements.
-The centralized UI in Value Streams Dashboard acts as the single source of truth (SSOT), where all stakeholders can access and view the same set of metrics that are relevant to the organization. The Value Streams Dashboard includes [several panels](#value-streams-dashboard-panels) that visualize the following metrics:
+The centralized UI in the Value Streams Dashboard acts as the single source of truth (SSOT), where all stakeholders can access and view the same set of metrics that are relevant to the organization.
+The Value Streams Dashboard includes [panels](#value-streams-dashboard-panels) that visualize the following metrics:
 
 - [DORA metrics](dora_metrics.md)
 - [Value Stream Analytics (VSA) - flow metrics](../group/value_stream_analytics/index.md)
@@ -72,19 +73,18 @@ To view metrics on the Overview panel, the [background aggregation](#enable-or-d
 
 ### DevSecOps metrics comparison panel
 
-> - Contributor count metric [added](https://gitlab.com/gitlab-org/gitlab/-/issues/433353) in GitLab 16.9.
+> - Contributor count metric at the group level [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/433353) to GitLab.com in GitLab 16.9.
 
-The DevSecOps metrics comparison displays DORA4, vulnerability, and flow metrics for a group or project in the
-month-to-date, last month, the month before, and the past 180 days.
+The DevSecOps metrics comparison displays DORA4, vulnerability, and flow metrics for a group or project
+in the month-to-date, last month, the month before, and the past 180 days.
+This visualization helps you understand whether the key DevSecOps metrics improve month over month.
 
-This visualization helps you get a high-level custom view over multiple DevOps metrics and
-understand whether they're improving month over month. You can compare the performance between
-groups, projects, and teams at a glance. This visualization helps you identify the teams and projects
-that are the largest value contributors, overperforming, or underperforming.
+In the comparison panel, you can:
 
-![DevOps metrics comparison](img/devops_metrics_comparison_v15_8.png)
+- Compare the performance between groups, projects, and teams at a glance.
+- Identify the teams and projects that are the largest value contributors, overperforming, or underperforming.
+- Drill down the metrics for further analysis.
 
-You can also drill down the metrics for further analysis.
 When you hover over a metric, a tooltip displays an explanation of the metric and a link to the related documentation page.
 
 The monthly values also indicate a percentage increase or decrease compared to the previous month.
@@ -92,9 +92,6 @@ The monthly values also indicate a percentage increase or decrease compared to t
 The sparkline for the past six months represents value trends over this time period, not the percentage change rate.
 The sparkline color ranges from blue to green, where green indicates a positive trend, and blue indicates a negative trend.
 Sparklines help you identify patterns in metric trends (such as seasonal changes) over time.
-
-NOTE:
-The contributor count metric is available only on GitLab.com at the group-level. To view this metric in the comparison panel, you must [set up ClickHouse](../../integration/clickhouse.md).
 
 ### DORA Performers score panel
 
@@ -104,11 +101,11 @@ The contributor count metric is available only on GitLab.com at the group-level.
 
 The [DORA metrics](dora_metrics.md) Performers score panel is a bar chart that visualizes the status of the organization's DevOps performance levels across different projects.
 
-The chart is a breakdown of your project's DORA scores, categorized as high, medium, or low.
-It aggregates all the child projects in the group.
+The chart is a breakdown of your project's DORA scores, [categorized](https://cloud.google.com/blog/products/devops-sre/dora-2022-accelerate-state-of-devops-report-now-out) as high, medium, or low.
+The chart aggregates all the child projects in the group.
 
 Each bar on the chart displays the sum of total projects per score category, calculated monthly.
-To exclude data from the chart (for example, "Not Included"), in the legend select the series you want to exclude.
+To exclude data from the chart (for example, **Not Included**), in the legend select the series you want to exclude.
 Hovering over each bar reveals a dialog that explains the score's definition.
 
 For example, if a project has a high score for deployment frequency (velocity), it means that the project has one or more deploys to production per day.
@@ -119,8 +116,6 @@ For example, if a project has a high score for deployment frequency (velocity), 
 | Lead time for changes | The number of days to go from code committed to code successfully running in production| ≤7 | 8-29 | ≥30 |
 | Time to restore service | The number of days to restore service when a service incident or a defect that impacts users occurs | ≤1 | 2-6 | ≥7 |
 | Change failure rate  | The percentage of changes to production resulted in degraded service | ≤15% | 16%-44% | ≥45% |
-
-These scoring are based on Google's classifications in the [DORA 2022 Accelerate State of DevOps Report](https://cloud.google.com/blog/products/devops-sre/dora-2022-accelerate-state-of-devops-report-now-out).
 
 ### AI Impact analytics
 
@@ -140,7 +135,6 @@ The baseline for the AI Usage trend is the total number of code contributors, no
 
 NOTE:
 Usage rate for Code Suggestions is calculated with data starting on 2024-04-04.
-
 For more information, see [epic 12978](https://gitlab.com/groups/gitlab-org/-/epics/12978).
 
 #### Filter the DORA Performers score by project topics
@@ -156,7 +150,7 @@ panels:
         - Vue.js
 ```
 
-If multiple topics are provided, all topics will need to match for the project to be included in the results.
+If multiple topics are provided, all topics must match for the project to be included in the results.
 
 ## Enable or disable overview background aggregation
 
@@ -185,6 +179,7 @@ Prerequisites:
 - To view AI Impact analytics, you must:
   - Enable [Code Suggestions](../../user/project/repository/code_suggestions/index.md).
   - Configure [ClickHouse for contribution analytics](../../user/group/contribution_analytics/index.md#contribution-analytics-with-clickhouse).
+- To view the contributor count metric in the comparison panel, you must [set up ClickHouse](../../integration/clickhouse.md).
 
 To view the value streams dashboard:
 

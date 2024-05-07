@@ -9,22 +9,22 @@ RSpec.shared_examples 'a harbor repositories controller' do |args|
   let(:mock_repositories) do
     [
       {
-        "artifact_count": 6,
-        "creation_time": "2022-04-24T10:59:02.719Z",
-        "id": 33,
-        "name": "test/photon",
-        "project_id": 3,
-        "pull_count": 12,
-        "update_time": "2022-04-24T11:06:27.678Z"
+        artifact_count: 6,
+        creation_time: "2022-04-24T10:59:02.719Z",
+        id: 33,
+        name: "test/photon",
+        project_id: 3,
+        pull_count: 12,
+        update_time: "2022-04-24T11:06:27.678Z"
       },
       {
-        "artifact_count": 1,
-        "creation_time": "2022-04-23T08:04:08.880Z",
-        "id": 1,
-        "name": "test/gemnasium",
-        "project_id": 3,
-        "pull_count": 0,
-        "update_time": "2022-04-23T08:04:08.880Z"
+        artifact_count: 1,
+        creation_time: "2022-04-23T08:04:08.880Z",
+        id: 1,
+        name: "test/gemnasium",
+        project_id: 3,
+        pull_count: 0,
+        update_time: "2022-04-23T08:04:08.880Z"
       }
     ]
   end
@@ -75,7 +75,7 @@ RSpec.shared_examples 'a harbor repositories controller' do |args|
     stub_request(:get, "https://demo.goharbor.io/api/v2.0/projects/testproject/repositories?page=1&page_size=10")
       .with(
         headers: {
-      'Authorization': 'Basic aGFyYm9ydXNlcm5hbWU6aGFyYm9ycGFzc3dvcmQ=',
+      Authorization: 'Basic aGFyYm9ydXNlcm5hbWU6aGFyYm9ycGFzc3dvcmQ=',
       'Content-Type': 'application/json'
       }).to_return(status: 200, body: mock_repositories.to_json, headers: { "x-total-count": 2 })
     container.add_reporter(user)
