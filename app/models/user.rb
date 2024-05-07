@@ -2083,17 +2083,17 @@ class User < MainClusterwide::ApplicationRecord
   end
 
   def owns_organization?(organization)
-    return false unless organization
+    strong_memoize_with(:owns_organization, organization) do
+      break false unless organization
 
-    organization_id = organization.is_a?(Integer) ? organization : organization.id
+      organization_id = organization.is_a?(Integer) ? organization : organization.id
 
-    organization_users.where(organization_id: organization_id).owner.exists?
+      organization_users.where(organization_id: organization_id).owner.exists?
+    end
   end
 
   def can_admin_organization?(organization)
-    strong_memoize_with(:can_admin_organization, organization) do
-      owns_organization?(organization)
-    end
+    owns_organization?(organization)
   end
 
   def update_two_factor_requirement

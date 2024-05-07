@@ -5700,6 +5700,13 @@ RSpec.describe User, feature_category: :user_profile do
 
       it { is_expected.to be_falsey }
     end
+
+    it 'memoize results' do
+      ActiveRecord::QueryRecorder.new { user.owns_organization?(organization) }
+      second_query = ActiveRecord::QueryRecorder.new { user.owns_organization?(organization) }
+
+      expect(second_query.count).to eq(0)
+    end
   end
 
   describe '#update_two_factor_requirement' do

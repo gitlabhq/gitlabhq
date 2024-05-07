@@ -49,9 +49,8 @@ The Value Streams Dashboard panels have a default configuration, but you can als
 ### Overview panel
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/439699) in GitLab 16.7 [with a flag](../../administration/feature_flags.md) named `group_analytics_dashboard_dynamic_vsd`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available per group or for your entire instance, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `group_analytics_dashboard_dynamic_vsd`. On GitLab.com, this feature is available.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/432185) in GitLab 17.0.
+> - Feature flag `group_analytics_dashboard_dynamic_vsd` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/441206) in GitLab 17.0.
 
 The Overview panel provides a holistic view of the top-level namespace activity by visualizing key DevOps metrics.
 The panel displays metrics for:
@@ -207,19 +206,7 @@ You can also view the Value Streams Dashboard rendered as an analytics dashboard
 
 You can customize the Value Streams Dashboard and configure what subgroups and projects to include in the page.
 
-### Using query parameters
-
-To display multiple subgroups and projects, specify their path as a URL parameter.
-
-For example, the parameter `query=gitlab-org/gitlab-ui,gitlab-org/plan-stage` displays three separate panels, one each for the:
-
-- `gitlab-org` group
-- `gitlab-ui` project
-- `gitlab-org/plan-stage` subgroup
-
 ### Using YAML configuration
-
-> - Schema for group Analytics Dashboards [changed](#schema-for-group-analytics-dashboards) in GitLab 16.10.
 
 To customize the default content of the page, you need to create a YAML configuration file in a project of your choice. In this file you can define various settings and parameters, such as title, description, and number of panels and labels filters. The file is schema-driven and managed with version control systems like Git. This enables tracking and maintaining a history of configuration changes, reverting to previous versions if necessary, and collaborating effectively with team members.
 Query parameters can still be used to override the YAML configuration.
@@ -240,64 +227,6 @@ After you have set up the project, set up the configuration file:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. In the default branch, create the configuration file: `.gitlab/analytics/dashboards/value_streams/value_streams.yaml`.
 1. In the `value_streams.yaml` configuration file, fill in the configuration options:
-
-```yaml
-# title - Change the title of the Value Streams Dashboard.
-title: 'Custom Dashboard title'
-
-# description - Change the description of the Value Streams Dashboard. [optional]
-description: 'Custom description'
-
-# panels - List of panels that contain panel settings.
-#   title - Change the title of the panel. [optional]
-#   data.namespace - The Group or Project path to use for the chart panel.
-#   data.exclude_metrics - Hide rows by metric ID from the chart panel.
-#   data.filter_labels -
-#     Only show results for data that matches the queried label(s). If multiple labels are provided,
-#     only a single label needs to match for the data to be included in the results.
-#     Compatible metrics (other metrics will be automatically excluded):
-#       * lead_time
-#       * cycle_time
-#       * issues
-#       * issues_completed
-#       * merge_request_throughput
-panels:
-  - title: 'My Custom Project'
-    data:
-      namespace: group/my-custom-project
-  - data:
-      namespace: group/another-project
-      filter_labels:
-        - in_development
-        - in_review
-  - title: 'My Custom Group'
-    data:
-      namespace: group/my-custom-group
-      exclude_metrics:
-        - deployment_frequency
-        - change_failure_rate
-  - data:
-      namespace: group/another-group
-```
-
-  The following example has an option configuration for a panel for the `my-group` namespace:
-
-  ```yaml
-  panels:
-    - data:
-        namespace: my-group
-  ```
-
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an overview of editing label filters in the configuration file, see [GitLab Value Streams Dashboard - Label filters demo](https://www.youtube.com/watch?v=4qDAHCxCfik).
-
-#### Schema for group Analytics Dashboards
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available per group or for your entire instance, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `group_analytics_dashboard_dynamic_vsd`.
-On GitLab.com, this feature is not available.
-
-To render a [Value Streams Dashboard as a custom Analytics Dashboard](analytics_dashboards.md#view-group-dashboards), you must update new and existing [YAML schemas](analytics_dashboards.md). The updated fields provide more flexibility in the display and layout of the dashboard panels.
 
 |Field|Description|
 |---|---|
@@ -321,6 +250,8 @@ description: 'Custom description'
 
 # panels - List of panels that contain panel settings.
 #   title - Change the title of the panel.
+#   visualization - The type of visualization to be rendered
+#   gridAttributes - The size and positioning of the panel
 #   queryOverrides.namespace - The Group or Project path to use for the chart panel
 #   queryOverrides.filters.excludeMetrics - Hide rows by metric ID from the chart panel.
 #   queryOverrides.filters.labels -
@@ -378,10 +309,6 @@ panels:
 ```
 
 #### Supported visualization filters
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available per group or for your entire instance, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `group_analytics_dashboard_dynamic_vsd`.
-On GitLab.com and GitLab Dedicated, this feature is not available.
 
 The `filters` subfield on the `queryOverrides` field can be used to customize the data displayed in a panel.
 

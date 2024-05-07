@@ -68,6 +68,10 @@
   left: 0;
   right: 0;
   background-color: $brand-charcoal;
+
+  @media (forced-colors: active) {
+    border-bottom: 1px solid;
+  }
 }
 
 .header-logged-out-nav {

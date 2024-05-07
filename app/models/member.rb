@@ -398,9 +398,10 @@ class Member < ApplicationRecord
       pluck(:user_id)
     end
 
-    def with_group_group_sharing_access
+    def with_group_group_sharing_access(shared_groups)
       joins("LEFT OUTER JOIN group_group_links ON members.source_id = group_group_links.shared_with_group_id")
         .select(member_columns_with_group_sharing_access)
+        .where(group_group_links: { shared_group_id: shared_groups })
     end
 
     def member_columns_with_group_sharing_access

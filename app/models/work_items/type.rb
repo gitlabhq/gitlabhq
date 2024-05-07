@@ -6,6 +6,8 @@
 # 3. an emoji, with the format of `:smile:`
 module WorkItems
   class Type < ApplicationRecord
+    DEFAULT_TYPES_NOT_SEEDED = Class.new(StandardError)
+
     self.table_name = 'work_item_types'
 
     include CacheMarkdownField
@@ -81,6 +83,19 @@ module WorkItems
     def self.default_by_type(type)
       found_type = find_by(namespace_id: nil, base_type: type)
       return found_type if found_type
+
+      if Feature.enabled?(:rely_on_work_item_type_seeder, type: :beta) # rubocop:disable Gitlab/FeatureFlagWithoutActor -- Default types exist instance wide
+        error_message = <<~STRING
+          Default work item types have not been created yet. Make sure the DB has been seeded successfully.
+          See related documentation in
+          https://docs.gitlab.com/omnibus/settings/database.html#seed-the-database-fresh-installs-only
+
+          If you have additional questions, you can ask in
+          https://gitlab.com/gitlab-org/gitlab/-/issues/423483
+        STRING
+
+        raise DEFAULT_TYPES_NOT_SEEDED, error_message
+      end
 
       Gitlab::DatabaseImporters::WorkItems::BaseTypeImporter.upsert_types
       Gitlab::DatabaseImporters::WorkItems::HierarchyRestrictionsImporter.upsert_restrictions

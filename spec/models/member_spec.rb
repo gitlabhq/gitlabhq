@@ -867,14 +867,28 @@ RSpec.describe Member, feature_category: :groups_and_projects do
 
       let(:member) { create(:group_member, source: invited_group, access_level: member_access_in_invited_group) }
 
-      it 'returns the minimum of member access level and group sharing access level' do
-        access_level = invited_group
+      shared_examples 'returns the minimum of member access level and group sharing access level' do
+        specify do
+          members = invited_group
                          .members
-                         .with_group_group_sharing_access
-                         .find(member.id)
-                         .access_level
+                         .with_group_group_sharing_access(shared_group)
+                         .id_in(member.id)
+                         .to_a
 
-        expect(access_level).to eq(Gitlab::Access::REPORTER)
+          expect(members.size).to eq(1)
+          expect(members.first.access_level).to eq(Gitlab::Access::REPORTER)
+        end
+      end
+
+      it_behaves_like 'returns the minimum of member access level and group sharing access level'
+
+      context 'with multiple group group links' do
+        before_all do
+          create(:group_group_link, :owner, shared_with_group: invited_group)
+          create(:group_group_link, :owner, shared_group: shared_group)
+        end
+
+        it_behaves_like 'returns the minimum of member access level and group sharing access level'
       end
     end
   end

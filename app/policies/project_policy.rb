@@ -49,6 +49,13 @@ class ProjectPolicy < BasePolicy
     project.internal? && !user.external?
   end
 
+  desc "User owns the project's organization"
+  condition(:organization_owner) do
+    owns_project_organization?
+  end
+
+  rule { admin | organization_owner }.enable :read_all_organization_resources
+
   desc "User is a member of the group"
   condition(:group_member, scope: :subject) { project_group_member? }
 
@@ -290,7 +297,7 @@ class ProjectPolicy < BasePolicy
 
   # `:read_project` may be prevented in EE, but `:read_project_for_iids` should
   # not.
-  rule { guest | admin }.enable :read_project_for_iids
+  rule { guest | admin | organization_owner }.enable :read_project_for_iids
 
   rule { admin }.enable :update_max_artifacts_size
   rule { admin }.enable :read_storage_disk_path
@@ -300,7 +307,7 @@ class ProjectPolicy < BasePolicy
   rule { reporter }.enable :reporter_access
   rule { developer }.enable :developer_access
   rule { maintainer }.enable :maintainer_access
-  rule { owner | admin }.enable :owner_access
+  rule { owner | admin | organization_owner }.enable :owner_access
 
   rule { can?(:owner_access) }.policy do
     enable :guest_access
@@ -481,7 +488,7 @@ class ProjectPolicy < BasePolicy
     prevent(*create_read_update_admin_destroy(:package))
   end
 
-  rule { owner | admin | guest | group_member | group_requester }.prevent :request_access
+  rule { owner | admin | organization_owner | guest | group_member | group_requester }.prevent :request_access
   rule { ~request_access_enabled }.prevent :request_access
 
   rule { can?(:developer_access) & can?(:create_issue) }.enable :import_issues
@@ -945,7 +952,7 @@ class ProjectPolicy < BasePolicy
     enable :access_security_and_compliance
   end
 
-  rule { ~admin & ~project_runner_registration_allowed }.policy do
+  rule { ~admin & ~organization_owner & ~project_runner_registration_allowed }.policy do
     prevent :register_project_runners
     prevent :create_runner
   end
@@ -1000,7 +1007,7 @@ class ProjectPolicy < BasePolicy
     enable :write_model_experiments
   end
 
-  rule { ~admin & created_and_owned_by_banned_user }.policy do
+  rule { ~admin & ~organization_owner & created_and_owned_by_banned_user }.policy do
     prevent :read_project
   end
 
@@ -1059,6 +1066,21 @@ class ProjectPolicy < BasePolicy
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
+  # rubocop:disable Cop/UserAdmin -- specifically check the admin attribute
+  def owns_project_organization?
+    return false unless @user
+    return false unless user_is_user?
+    return false unless @subject.organization
+    # Ensure admins can't bypass admin mode.
+    return false if @user.admin? && !can?(:admin)
+
+    # Load the owners with a single query.
+    @subject.organization
+            .owner_user_ids
+            .include?(@user.id)
+  end
+  # rubocop:enable Cop/UserAdmin
+
   def team_access_level
     return -1 if @user.nil?
     return -1 unless user_is_user?
@@ -1081,7 +1103,9 @@ class ProjectPolicy < BasePolicy
     when ProjectFeature::DISABLED
       false
     when ProjectFeature::PRIVATE
-      can?(:read_all_resources) || team_access_level >= ProjectFeature.required_minimum_access_level(feature)
+      can?(:read_all_resources) ||
+      can?(:read_all_organization_resources) ||
+        team_access_level >= ProjectFeature.required_minimum_access_level(feature)
     else
       true
     end

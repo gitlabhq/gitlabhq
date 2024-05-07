@@ -101,7 +101,11 @@ class GroupMembersFinder < UnionFinder
     shared_from_groups = groups[:shared_from_groups]
     return members if shared_from_groups.nil?
 
-    shared_members = GroupMember.non_request.of_groups(shared_from_groups).with_group_group_sharing_access
+    # We limit the `access_level` of the shared members to the access levels of the `group_group_links` created
+    # with the group or its ancestors because the shared members cannot have access greater than the `group_group_links`
+    # with itself or its ancestors.
+    shared_members = GroupMember.non_request.of_groups(shared_from_groups)
+                                .with_group_group_sharing_access(group.self_and_ancestors)
     # `members` and `shared_members` should have even select values
     find_union([members.select(Member.column_names), shared_members], GroupMember)
   end

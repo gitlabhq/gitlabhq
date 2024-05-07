@@ -116,6 +116,21 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :cel
     end
   end
 
+  describe '#owner_user_ids' do
+    let_it_be(:organization_users) { create_list(:organization_user, 3, :owner, organization: organization) }
+
+    it 'returns the owner user ids' do
+      expect(organization.owner_user_ids).to contain_exactly(*organization_users.map(&:user_id))
+    end
+
+    it 'memoize results' do
+      ActiveRecord::QueryRecorder.new { organization.owner_user_ids }
+      second_query = ActiveRecord::QueryRecorder.new { organization.owner_user_ids }
+
+      expect(second_query.count).to eq(0)
+    end
+  end
+
   describe '#visibility_level_field' do
     it { expect(organization.visibility_level_field).to eq(:visibility_level) }
   end

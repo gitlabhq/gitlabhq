@@ -387,6 +387,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
   it_behaves_like 'project policies as developer'
   it_behaves_like 'project policies as maintainer'
   it_behaves_like 'project policies as owner'
+  it_behaves_like 'project policies as organization owner'
   it_behaves_like 'project policies as admin with admin mode'
   it_behaves_like 'project policies as admin without admin mode'
 

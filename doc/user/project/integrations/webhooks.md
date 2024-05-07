@@ -96,7 +96,7 @@ You must define the following variables:
 Variable names must contain only lowercase letters (`a-z`), numbers (`0-9`), or underscores (`_`).
 You can define URL variables directly with the REST API.
 The host portion of the URL (such as `webhook.example.com`) must remain valid without using a mask variable.
-Otherwise, a `URI is invalid` error occurs.
+Otherwise, a `URI is invalid` or `Url is blocked` error occurs.
 
 ### Custom headers
 

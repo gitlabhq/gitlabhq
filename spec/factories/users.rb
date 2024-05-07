@@ -38,6 +38,16 @@ FactoryBot.define do
       admin { true }
     end
 
+    # Set user as owner of all their organizations.
+    # The intention of this trait is to work with the User #create_default_organization_user calllback. The callback
+    # will be removed in https://gitlab.com/gitlab-org/gitlab/-/issues/443611 and this trait will probably be moved to
+    # the organization_user factory.
+    trait :organization_owner do
+      after(:create) do |user|
+        user.organization_users.update_all(access_level: Gitlab::Access::OWNER)
+      end
+    end
+
     trait :public_email do
       public_email { email }
     end

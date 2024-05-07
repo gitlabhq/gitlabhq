@@ -340,6 +340,10 @@ $command-palette-spacing: px-to-rem(14px);
   .user-bar {
     background-color: var(--super-sidebar-user-bar-bg);
 
+    @media (forced-colors: active) {
+      border-bottom: 1px solid;
+    }
+
     .organization-switcher-button {
       background-color: transparent;
       color: var(--super-sidebar-user-bar-button-color);

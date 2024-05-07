@@ -19,6 +19,10 @@ RSpec.describe GroupMembersFinder, '#execute', feature_category: :groups_and_pro
   let_it_be(:link) do
     create(:group_group_link, :maintainer, shared_group: group,     shared_with_group: public_invited_group)
     create(:group_group_link, :maintainer, shared_group: sub_group, shared_with_group: private_invited_group)
+    create(:group_group_link, :owner, shared_with_group: public_invited_group)
+    create(:group_group_link, :owner, shared_with_group: private_invited_group)
+    create(:group_group_link, :owner, shared_group: group)
+    create(:group_group_link, :owner, shared_group: sub_group)
   end
 
   let(:groups) do
@@ -37,7 +41,7 @@ RSpec.describe GroupMembersFinder, '#execute', feature_category: :groups_and_pro
         user1_sub_sub_group: create(:group_member, :maintainer, group: sub_sub_group, user: user1),
         user1_sub_group: create(:group_member, :developer, group: sub_group, user: user1),
         user1_group: create(:group_member, :reporter, group: group, user: user1),
-        user1_public_shared_group: create(:group_member, :maintainer, group: public_invited_group, user: user1),
+        user1_public_shared_group: create(:group_member, :owner, group: public_invited_group, user: user1),
         user1_private_shared_group: create(:group_member, :maintainer, group: private_invited_group, user: user1),
         user2_sub_sub_group: create(:group_member, :reporter, group: sub_sub_group, user: user2),
         user2_sub_group: create(:group_member, :developer, group: sub_group, user: user2),
