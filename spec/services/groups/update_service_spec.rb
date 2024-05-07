@@ -475,23 +475,23 @@ RSpec.describe Groups::UpdateService, feature_category: :groups_and_projects do
 
   context 'updating default_branch_protection' do
     let(:service) do
-      described_class.new(internal_group, user, default_branch_protection: Gitlab::Access::PROTECTION_NONE)
+      described_class.new(internal_group, user, default_branch_protection: Gitlab::Access::PROTECTION_DEV_CAN_PUSH)
     end
 
     let(:settings) { internal_group.namespace_settings }
-    let(:expected_settings) { Gitlab::Access::BranchProtection.protection_none.stringify_keys }
+    let(:expected_settings) { Gitlab::Access::BranchProtection.protection_partial.stringify_keys }
 
     context 'for users who have the ability to update default_branch_protection' do
       it 'updates default_branch_protection attribute' do
         internal_group.add_owner(user)
 
-        expect { service.execute }.to change { internal_group.default_branch_protection }.from(Gitlab::Access::PROTECTION_FULL).to(Gitlab::Access::PROTECTION_NONE)
+        expect { service.execute }.to change { internal_group.default_branch_protection }.from(Gitlab::Access::PROTECTION_FULL).to(Gitlab::Access::PROTECTION_DEV_CAN_PUSH)
       end
 
       it 'updates default_branch_protection_defaults to match default_branch_protection' do
         internal_group.add_owner(user)
 
-        expect { service.execute }.to change { settings.default_branch_protection_defaults  }.from({}).to(expected_settings)
+        expect { service.execute }.to change { settings.default_branch_protection_defaults  }.from(Gitlab::Access::BranchProtection.protection_none.stringify_keys).to(expected_settings)
       end
     end
 
@@ -517,7 +517,7 @@ RSpec.describe Groups::UpdateService, feature_category: :groups_and_projects do
       it 'updates default_branch_protection attribute' do
         internal_group.add_owner(user)
 
-        expect { service.execute }.to change { internal_group.default_branch_protection_defaults }.from({}).to(expected_settings)
+        expect { service.execute }.to change { internal_group.default_branch_protection_defaults }.from(Gitlab::Access::BranchProtection.protection_none.deep_stringify_keys).to(expected_settings)
       end
     end
 

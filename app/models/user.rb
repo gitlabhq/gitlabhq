@@ -1972,15 +1972,27 @@ class User < MainClusterwide::ApplicationRecord
     @global_notification_setting
   end
 
+  def merge_request_dashboard_enabled?
+    Feature.enabled?(:merge_request_dashboard, self, type: :wip)
+  end
+
   def assigned_open_merge_requests_count(force: false)
-    Rails.cache.fetch(['users', id, 'assigned_open_merge_requests_count'], force: force, expires_in: COUNT_CACHE_VALIDITY_PERIOD) do
-      MergeRequestsFinder.new(self, assignee_id: self.id, state: 'opened', non_archived: true).execute.count
+    Rails.cache.fetch(['users', id, 'assigned_open_merge_requests_count', merge_request_dashboard_enabled?], force: force, expires_in: COUNT_CACHE_VALIDITY_PERIOD) do
+      review_states = if merge_request_dashboard_enabled?
+                        %w[requested_changes reviewed]
+                      end
+
+      MergeRequestsFinder.new(self, assignee_id: self.id, review_states: review_states, state: 'opened', non_archived: true).execute.count
     end
   end
 
   def review_requested_open_merge_requests_count(force: false)
-    Rails.cache.fetch(['users', id, 'review_requested_open_merge_requests_count'], force: force, expires_in: COUNT_CACHE_VALIDITY_PERIOD) do
-      MergeRequestsFinder.new(self, reviewer_id: id, state: 'opened', non_archived: true).execute.count
+    Rails.cache.fetch(['users', id, 'review_requested_open_merge_requests_count', merge_request_dashboard_enabled?], force: force, expires_in: COUNT_CACHE_VALIDITY_PERIOD) do
+      review_state = if merge_request_dashboard_enabled?
+                       'unreviewed'
+                     end
+
+      MergeRequestsFinder.new(self, reviewer_id: id, review_state: review_state, state: 'opened', non_archived: true).execute.count
     end
   end
 
@@ -2026,8 +2038,8 @@ class User < MainClusterwide::ApplicationRecord
   end
 
   def invalidate_merge_request_cache_counts
-    Rails.cache.delete(['users', id, 'assigned_open_merge_requests_count'])
-    Rails.cache.delete(['users', id, 'review_requested_open_merge_requests_count'])
+    Rails.cache.delete(['users', id, 'assigned_open_merge_requests_count', merge_request_dashboard_enabled?])
+    Rails.cache.delete(['users', id, 'review_requested_open_merge_requests_count', merge_request_dashboard_enabled?])
   end
 
   def invalidate_todos_cache_counts

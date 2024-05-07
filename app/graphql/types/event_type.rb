@@ -10,24 +10,24 @@ module Types
     authorize :read_event
 
     field :id, GraphQL::Types::ID,
-          description: 'ID of the event.',
-          null: false
+      description: 'ID of the event.',
+      null: false
 
     field :author, Types::UserType,
-          description: 'Author of this event.',
-          null: false
+      description: 'Author of this event.',
+      null: false
 
     field :action, Types::EventActionEnum,
-          description: 'Action of the event.',
-          null: false
+      description: 'Action of the event.',
+      null: false
 
     field :created_at, Types::TimeType,
-          description: 'When this event was created.',
-          null: false
+      description: 'When this event was created.',
+      null: false
 
     field :updated_at, Types::TimeType,
-          description: 'When this event was updated.',
-          null: false
+      description: 'When this event was updated.',
+      null: false
 
     def author
       Gitlab::Graphql::Loaders::BatchModelLoader.new(User, object.author_id).find

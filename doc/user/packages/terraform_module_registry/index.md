@@ -159,6 +159,7 @@ For other ways to control jobs in your CI/CD pipeline, refer to the [CI/CD YAML 
 ### Allow duplicate Terraform modules
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368040) in GitLab 16.8.
+> - Required role [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/370471) from Maintainer to Owner in GitLab 17.0.
 
 By default, the Terraform Module Registry enforces uniqueness for module names in the same namespace.
 

@@ -1116,14 +1116,6 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
 
   # This block can be removed when packages_dependency_proxy_pass_token_to_policy is rolled out
   describe 'dependency proxy' do
-    RSpec.shared_examples 'disabling admin_package feature flag' do
-      before do
-        stub_feature_flags(raise_group_admin_package_permission_to_owner: false)
-      end
-
-      it { is_expected.to be_allowed(:admin_dependency_proxy) }
-    end
-
     shared_examples 'disallows all dependency proxy access' do
       it { is_expected.to be_disallowed(:read_dependency_proxy) }
       it { is_expected.to be_disallowed(:admin_dependency_proxy) }
@@ -1166,7 +1158,6 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
           let(:current_user) { maintainer }
 
           it_behaves_like 'allows dependency proxy read access but not admin'
-          it_behaves_like 'disabling admin_package feature flag'
         end
 
         context 'owner' do
@@ -1174,8 +1165,6 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
 
           it { is_expected.to be_allowed(:read_dependency_proxy) }
           it { is_expected.to be_allowed(:admin_dependency_proxy) }
-
-          it_behaves_like 'disabling admin_package feature flag'
         end
       end
 
@@ -1794,33 +1783,13 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
     context 'with maintainer' do
       let(:current_user) { maintainer }
 
-      context 'with feature flag enabled' do
-        specify { is_expected.to be_disallowed(:admin_package) }
-      end
-
-      context 'with feature flag disabled' do
-        before do
-          stub_feature_flags(raise_group_admin_package_permission_to_owner: false)
-        end
-
-        specify { is_expected.to be_allowed(:admin_package) }
-      end
+      specify { is_expected.to be_disallowed(:admin_package) }
     end
 
     context 'with owner' do
       let(:current_user) { owner }
 
-      context 'with feature flag enabled' do
-        specify { is_expected.to be_allowed(:admin_package) }
-      end
-
-      context 'with feature flag disabled' do
-        before do
-          stub_feature_flags(raise_group_admin_package_permission_to_owner: false)
-        end
-
-        specify { is_expected.to be_allowed(:admin_package) }
-      end
+      specify { is_expected.to be_allowed(:admin_package) }
     end
   end
 end

@@ -284,6 +284,16 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
       ])
     end
 
+    context 'when merge_request_dashboard feature flag is enabled' do
+      before do
+        stub_feature_flags(merge_request_dashboard: true)
+      end
+
+      it 'returns nil for merge_request_menu' do
+        expect(subject[:merge_request_menu]).to be_nil
+      end
+    end
+
     it 'returns "Create new" menu groups without headers', :use_clean_rails_memory_store_caching do
       extra_attrs = ->(id) {
         {

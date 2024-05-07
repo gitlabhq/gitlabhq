@@ -269,7 +269,7 @@ The runner authentication token displays in the UI for only a short period of ti
 
 ### Create a group runner with a registration token (deprecated)
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/19819) in GitLab 14.10, path changed from **Settings > CI/CD > Runners**.
+> - Path changed from **Settings > CI/CD > Runners**.
 
 WARNING:
 The ability to pass a runner registration token, and support for certain configuration arguments was

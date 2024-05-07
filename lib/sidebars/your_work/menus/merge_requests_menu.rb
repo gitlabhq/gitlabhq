@@ -9,7 +9,11 @@ module Sidebars
 
         override :link
         def link
-          merge_requests_dashboard_path(assignee_username: @context.current_user.username)
+          unless context.current_user.merge_request_dashboard_enabled?
+            assignee_username = @context.current_user.username
+          end
+
+          merge_requests_dashboard_path(assignee_username: assignee_username)
         end
 
         override :title
@@ -24,6 +28,8 @@ module Sidebars
 
         override :configure_menu_items
         def configure_menu_items
+          return false if context.current_user.merge_request_dashboard_enabled?
+
           add_item(assigned_mrs_menu_item)
           add_item(reviewer_mrs_menu_item)
 

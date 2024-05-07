@@ -30,7 +30,8 @@ module ApplicationSettings
       end
 
       update_terms(@params.delete(:terms))
-      update_default_branch_protection_defaults(@params[:default_branch_protection])
+      update_default_branch_protection_defaults(@params[:default_branch_protection_defaults])
+      update_legacy_default_branch_protection_defaults(@params[:default_branch_protection])
 
       add_to_outbound_local_requests_whitelist(@params.delete(:add_to_outbound_local_requests_whitelist))
 
@@ -82,7 +83,7 @@ module ApplicationSettings
       @application_setting.reset_memoized_terms
     end
 
-    def update_default_branch_protection_defaults(default_branch_protection)
+    def update_legacy_default_branch_protection_defaults(default_branch_protection)
       return unless default_branch_protection.present?
 
       # We are migrating default_branch_protection from an integer
@@ -93,6 +94,12 @@ module ApplicationSettings
       # path. Until then, we want to sync up both columns.
       protection = Gitlab::Access::BranchProtection.new(default_branch_protection.to_i)
       @application_setting.default_branch_protection_defaults = protection.to_hash
+    end
+
+    def update_default_branch_protection_defaults(default_branch_protection_defaults)
+      return unless default_branch_protection_defaults.present?
+
+      @application_setting.default_branch_protection_defaults.merge!(default_branch_protection_defaults)
     end
 
     def process_performance_bar_allowed_group_id

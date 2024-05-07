@@ -130,10 +130,10 @@ RSpec.describe Gitlab::Access::BranchProtection do
       subject { described_class.new(level).to_hash[:developer_can_initial_push] }
 
       where(:level, :result) do
-        Gitlab::Access::PROTECTION_NONE                 | nil
-        Gitlab::Access::PROTECTION_DEV_CAN_PUSH         | nil
-        Gitlab::Access::PROTECTION_DEV_CAN_MERGE        | nil
-        Gitlab::Access::PROTECTION_FULL                 | nil
+        Gitlab::Access::PROTECTION_NONE                 | false
+        Gitlab::Access::PROTECTION_DEV_CAN_PUSH         | false
+        Gitlab::Access::PROTECTION_DEV_CAN_MERGE        | false
+        Gitlab::Access::PROTECTION_FULL                 | false
         Gitlab::Access::PROTECTION_DEV_CAN_INITIAL_PUSH | true
       end
 

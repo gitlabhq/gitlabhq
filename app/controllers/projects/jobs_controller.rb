@@ -136,7 +136,7 @@ class Projects::JobsController < Projects::ApplicationController
   def raw
     if @build.trace.archived?
       workhorse_set_content_type!
-      send_upload(@build.job_artifacts_trace.file, send_params: raw_send_params, redirect_params: raw_redirect_params)
+      send_upload(@build.job_artifacts_trace.file, send_params: raw_send_params, redirect_params: raw_redirect_params, proxy: params[:proxy])
     else
       @build.trace.read do |stream|
         if stream.file?

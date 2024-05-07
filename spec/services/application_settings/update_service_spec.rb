@@ -327,6 +327,17 @@ RSpec.describe ApplicationSettings::UpdateService, feature_category: :shared do
     end
   end
 
+  context 'when default_branch_protection_defaults is updated' do
+    let(:expected) { ::Gitlab::Access::BranchProtection.protected_against_developer_pushes.stringify_keys }
+    let(:params) { { default_branch_protection_defaults: expected.deep_stringify_keys } }
+
+    it "updates default_branch_protection_defaults from the default_branch_protection_defaults param" do
+      default_value = ::Gitlab::Access::BranchProtection.protected_fully.deep_stringify_keys
+
+      expect { subject.execute }.to change { application_settings.default_branch_protection_defaults }.from(default_value).to(expected)
+    end
+  end
+
   context 'when protected path settings are passed' do
     let(:params) do
       {

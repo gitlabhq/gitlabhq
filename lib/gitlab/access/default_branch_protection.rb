@@ -5,8 +5,8 @@ module Gitlab
     class DefaultBranchProtection
       attr_reader :settings
 
-      def initialize(project)
-        @settings = project.namespace.default_branch_protection_settings.deep_symbolize_keys
+      def initialize(settings)
+        @settings = settings.deep_symbolize_keys
       end
 
       def any?

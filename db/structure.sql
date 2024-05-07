@@ -1078,7 +1078,7 @@ CREATE TABLE p_ci_builds (
     stage_idx integer,
     tag boolean,
     ref character varying,
-    user_id integer,
+    user_id_convert_to_bigint integer,
     type character varying,
     target_url character varying,
     description character varying,
@@ -1114,7 +1114,7 @@ CREATE TABLE p_ci_builds (
     runner_id bigint,
     trigger_request_id_convert_to_bigint bigint,
     upstream_pipeline_id bigint,
-    user_id_convert_to_bigint bigint,
+    user_id bigint,
     CONSTRAINT check_1e2fbd1b39 CHECK ((lock_version IS NOT NULL))
 )
 PARTITION BY LIST (partition_id);
@@ -6172,7 +6172,7 @@ CREATE TABLE ci_builds (
     stage_idx integer,
     tag boolean,
     ref character varying,
-    user_id integer,
+    user_id_convert_to_bigint integer,
     type character varying,
     target_url character varying,
     description character varying,
@@ -6208,7 +6208,7 @@ CREATE TABLE ci_builds (
     runner_id bigint,
     trigger_request_id_convert_to_bigint bigint,
     upstream_pipeline_id bigint,
-    user_id_convert_to_bigint bigint,
+    user_id bigint,
     CONSTRAINT check_1e2fbd1b39 CHECK ((lock_version IS NOT NULL))
 );
 

@@ -99,6 +99,7 @@ module SidebarsHelper
       can_sign_out: current_user_menu?(:sign_out),
       sign_out_link: destroy_user_session_path,
       issues_dashboard_path: issues_dashboard_path(assignee_username: user.username),
+      merge_request_dashboard_path: user.merge_request_dashboard_enabled? && merge_requests_dashboard_path,
       todos_dashboard_path: dashboard_todos_path,
       create_new_menu_groups: create_new_menu_groups(group: group, project: project),
       merge_request_menu: create_merge_request_menu(user),
@@ -226,6 +227,8 @@ module SidebarsHelper
   end
 
   def create_merge_request_menu(user)
+    return if user.merge_request_dashboard_enabled?
+
     [
       {
         name: _('Merge requests'),

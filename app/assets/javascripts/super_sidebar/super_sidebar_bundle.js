@@ -78,6 +78,28 @@ const getTrialStatusWidgetData = (sidebarData) => {
   return { showTrialStatusWidget: false };
 };
 
+const getDuoProdTrialStatusWidgetData = (sidebarData) => {
+  if (sidebarData.duo_pro_trial_status_widget_data_attrs) {
+    const {
+      containerId,
+      trialDaysUsed,
+      trialDuration,
+      percentageComplete,
+      widgetUrl,
+    } = convertObjectPropsToCamelCase(sidebarData.duo_pro_trial_status_widget_data_attrs);
+
+    return {
+      showDuoProTrialStatusWidget: true,
+      containerId,
+      trialDaysUsed: Number(trialDaysUsed),
+      trialDuration: Number(trialDuration),
+      percentageComplete: Number(percentageComplete),
+      widgetUrl,
+    };
+  }
+  return { showDuoProTrialStatusWidget: false };
+};
+
 export const initSuperSidebar = () => {
   const el = document.querySelector('.js-super-sidebar');
 
@@ -114,6 +136,7 @@ export const initSuperSidebar = () => {
       rootPath,
       isImpersonating,
       ...getTrialStatusWidgetData(sidebarData),
+      ...getDuoProdTrialStatusWidgetData(sidebarData),
       commandPaletteCommands,
       commandPaletteLinks,
       contextSwitcherLinks,

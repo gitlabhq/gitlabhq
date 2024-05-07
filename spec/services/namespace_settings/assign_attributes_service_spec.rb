@@ -63,7 +63,7 @@ RSpec.describe NamespaceSettings::AssignAttributesService, feature_category: :gr
           it "updates default_branch_protection_defaults from the default_branch_protection param" do
             expect { service.execute }
               .to change { namespace_settings.default_branch_protection_defaults }
-                    .from({}).to(expected)
+                    .from(::Gitlab::Access::BranchProtection.protection_none.stringify_keys).to(expected)
           end
         end
 
@@ -75,7 +75,7 @@ RSpec.describe NamespaceSettings::AssignAttributesService, feature_category: :gr
           it "updates default_branch_protection_defaults from the default_branch_protection param" do
             expect { service.execute }
               .to change { namespace_settings.default_branch_protection_defaults }
-                    .from({}).to(expected)
+                    .from(::Gitlab::Access::BranchProtection.protection_none.stringify_keys).to(expected)
           end
         end
       end
@@ -112,7 +112,7 @@ RSpec.describe NamespaceSettings::AssignAttributesService, feature_category: :gr
           it "updates default_branch_protection_defaults from the default_branch_protection param" do
             expect { service.execute }
               .to change { namespace_settings.default_branch_protection_defaults }
-                    .from({}).to(expected)
+                    .from(::Gitlab::Access::BranchProtection.protection_none.stringify_keys).to(expected)
           end
         end
 
@@ -124,7 +124,7 @@ RSpec.describe NamespaceSettings::AssignAttributesService, feature_category: :gr
           it "updates default_branch_protection_defaults from the default_branch_protection param" do
             expect { service.execute }
               .to change { namespace_settings.default_branch_protection_defaults }
-                    .from({}).to(expected)
+                    .from(::Gitlab::Access::BranchProtection.protection_none.stringify_keys).to(expected)
           end
         end
       end

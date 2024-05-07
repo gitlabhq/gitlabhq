@@ -10,8 +10,6 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/50144) in GitLab 11.3.
-
 Interactive web terminals give the user access to a terminal in GitLab for
 running one-off commands for their CI pipeline. You can think of it like a method for
 debugging with SSH, but done directly from the job page. Since this is giving the user

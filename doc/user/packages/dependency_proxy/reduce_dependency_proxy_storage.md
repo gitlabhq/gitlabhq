@@ -31,6 +31,7 @@ image or tag from Docker Hub.
 ## Cleanup policies
 
 > - Required role [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/350682) from Developer to Maintainer in GitLab 15.0.
+> - Required role [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/370471) from Maintainer to Owner in GitLab 17.0.
 
 ### Enable cleanup policies from within GitLab
 

@@ -121,6 +121,7 @@ API or the UI.
 #### Do not allow duplicate Generic packages
 
 > - Required role [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/350682) from Developer to Maintainer in GitLab 15.0.
+> - Required role [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/370471) from Maintainer to Owner in GitLab 17.0.
 
 To prevent users from publishing duplicate generic packages, you can use the [GraphQL API](../../../api/graphql/reference/index.md#packagesettings)
 or the UI.

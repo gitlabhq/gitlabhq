@@ -8,13 +8,13 @@ module Types
       description 'An object context for a Sentry error stack trace'
 
       field :code,
-            GraphQL::Types::String,
-            null: false,
-            description: 'Code number of the context.'
+        GraphQL::Types::String,
+        null: false,
+        description: 'Code number of the context.'
       field :line,
-            GraphQL::Types::Int,
-            null: false,
-            description: 'Line number of the context.'
+        GraphQL::Types::Int,
+        null: false,
+        description: 'Line number of the context.'
 
       def line
         object[0]

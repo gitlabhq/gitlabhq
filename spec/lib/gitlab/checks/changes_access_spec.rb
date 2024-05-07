@@ -49,7 +49,8 @@ RSpec.describe Gitlab::Checks::ChangesAccess, feature_category: :source_code_man
                                      project: project,
                                      user_access: user_access,
                                      protocol: protocol,
-                                     logger: logger)
+                                     logger: logger,
+                                     push_options: push_options)
 
         expect { access.validate! }.to raise_error(Gitlab::Checks::TimedLogger::TimeoutError)
       end

@@ -51,14 +51,6 @@ RSpec.describe Mutations::DependencyProxy::GroupSettings::Update, feature_catego
       end
 
       it_behaves_like params[:shared_examples_name]
-
-      context 'with disabled admin_package feature flag' do
-        before do
-          stub_feature_flags(raise_group_admin_package_permission_to_owner: false)
-        end
-
-        it_behaves_like 'updating the dependency proxy group settings' if params[:user_role] == :maintainer
-      end
     end
   end
 end

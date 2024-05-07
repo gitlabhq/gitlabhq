@@ -10,11 +10,11 @@ module Ci
     has_many :project_mirrors, primary_key: :namespace_id, foreign_key: :namespace_id, inverse_of: :namespace_mirror
 
     scope :by_group_and_descendants, ->(id) do
-      where('traversal_ids @> ARRAY[?]::int[]', id)
+      where("traversal_ids @> '{?}'", id)
     end
 
     scope :contains_any_of_namespaces, ->(ids) do
-      where('traversal_ids && ARRAY[?]::int[]', ids)
+      where("traversal_ids && '{?}'", ids)
     end
 
     scope :contains_traversal_ids, ->(traversal_ids) do

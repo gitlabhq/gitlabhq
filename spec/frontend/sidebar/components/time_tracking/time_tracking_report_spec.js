@@ -1,13 +1,13 @@
 import { GlButton, GlLoadingIcon } from '@gitlab/ui';
 import { getAllByRole, getByRole } from '@testing-library/dom';
-import { shallowMount, mount } from '@vue/test-utils';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
+import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
-import Report from '~/sidebar/components/time_tracking/report.vue';
+import TimeTrackingReport from '~/sidebar/components/time_tracking/time_tracking_report.vue';
 import getIssueTimelogsQuery from '~/sidebar/queries/get_issue_timelogs.query.graphql';
 import getMrTimelogsQuery from '~/sidebar/queries/get_mr_timelogs.query.graphql';
 import deleteTimelogMutation from '~/sidebar/queries/delete_timelog.mutation.graphql';
@@ -20,8 +20,10 @@ import {
 
 jest.mock('~/alert');
 
-describe('Issuable Time Tracking Report', () => {
+describe('TimeTrackingReport component', () => {
   Vue.use(VueApollo);
+
+  /** @type {import('helpers/vue_test_utils_helper').ExtendedWrapper} */
   let wrapper;
 
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
@@ -33,28 +35,29 @@ describe('Issuable Time Tracking Report', () => {
     queryHandler = successIssueQueryHandler,
     mutationHandler,
     issuableType = 'issue',
-    mountFunction = shallowMount,
+    mountFunction = shallowMountExtended,
     limitToHours = false,
     timelogs,
   } = {}) => {
-    wrapper = extendedWrapper(
-      mountFunction(Report, {
-        apolloProvider: createMockApollo([
-          [getIssueTimelogsQuery, queryHandler],
-          [getMrTimelogsQuery, queryHandler],
-          [deleteTimelogMutation, mutationHandler],
-        ]),
-        provide: {
-          issuableId: 1,
-          issuableType,
-        },
-        propsData: {
-          limitToHours,
-          issuableId: '1',
-          timelogs,
-        },
-      }),
-    );
+    wrapper = mountFunction(TimeTrackingReport, {
+      apolloProvider: createMockApollo([
+        [getIssueTimelogsQuery, queryHandler],
+        [getMrTimelogsQuery, queryHandler],
+        [deleteTimelogMutation, mutationHandler],
+      ]),
+      provide: {
+        issuableId: 1,
+        issuableType,
+      },
+      propsData: {
+        limitToHours,
+        issuableId: '1',
+        timelogs,
+      },
+      directives: {
+        GlTooltip: createMockDirective('gl-tooltip'),
+      },
+    });
   };
 
   it('should render loading spinner', () => {
@@ -71,17 +74,16 @@ describe('Issuable Time Tracking Report', () => {
   });
 
   describe('for issue', () => {
-    beforeEach(() => {
-      mountComponent({ mountFunction: mount });
+    beforeEach(async () => {
+      mountComponent({ mountFunction: mountExtended });
+      await waitForPromises();
     });
 
     it('calls correct query', () => {
-      expect(successIssueQueryHandler).toHaveBeenCalled();
+      expect(successIssueQueryHandler).toHaveBeenCalledWith({ id: 'gid://gitlab/Issue/1' });
     });
 
-    it('renders correct results', async () => {
-      await waitForPromises();
-
+    it('renders correct results', () => {
       expect(getAllByRole(wrapper.element, 'row', { name: /John Doe18/i })).toHaveLength(1);
       expect(getAllByRole(wrapper.element, 'row', { name: /Administrator/i })).toHaveLength(2);
       expect(getAllByRole(wrapper.element, 'row', { name: /A note/i })).toHaveLength(1);
@@ -90,6 +92,13 @@ describe('Issuable Time Tracking Report', () => {
         1,
       );
     });
+
+    it('shows tooltip on date with full date', () => {
+      const date = wrapper.findByText('May 1, 2020');
+      const tooltip = getBinding(date.element, 'gl-tooltip');
+
+      expect(tooltip.value).toBe('May 1, 2020, 00:00 (UTC: +0000)');
+    });
   });
 
   describe('for merge request', () => {
@@ -97,12 +106,12 @@ describe('Issuable Time Tracking Report', () => {
       mountComponent({
         queryHandler: successMrQueryHandler,
         issuableType: 'merge_request',
-        mountFunction: mount,
+        mountFunction: mountExtended,
       });
     });
 
     it('calls correct query', () => {
-      expect(successMrQueryHandler).toHaveBeenCalled();
+      expect(successMrQueryHandler).toHaveBeenCalledWith({ id: 'gid://gitlab/MergeRequest/1' });
     });
 
     it('renders correct results', async () => {
@@ -118,7 +127,7 @@ describe('Issuable Time Tracking Report', () => {
   describe('observes `limit display of time tracking units to hours` setting', () => {
     describe('when false', () => {
       beforeEach(() => {
-        mountComponent({ limitToHours: false, mountFunction: mount });
+        mountComponent({ limitToHours: false, mountFunction: mountExtended });
       });
 
       it('renders correct results', async () => {
@@ -130,7 +139,7 @@ describe('Issuable Time Tracking Report', () => {
 
     describe('when true', () => {
       beforeEach(() => {
-        mountComponent({ limitToHours: true, mountFunction: mount });
+        mountComponent({ limitToHours: true, mountFunction: mountExtended });
       });
 
       it('renders correct results', async () => {
@@ -144,7 +153,7 @@ describe('Issuable Time Tracking Report', () => {
   describe('when clicking on the delete timelog button', () => {
     it('calls `$apollo.mutate` with deleteTimelogMutation mutation and removes the row', async () => {
       const mutateSpy = jest.fn().mockResolvedValue(deleteTimelogMutationResponse);
-      mountComponent({ mutationHandler: mutateSpy, mountFunction: mount });
+      mountComponent({ mutationHandler: mutateSpy, mountFunction: mountExtended });
       await waitForPromises();
 
       await findDeleteButton().trigger('click');
@@ -156,7 +165,7 @@ describe('Issuable Time Tracking Report', () => {
 
     it('calls `createAlert` with errorMessage and does not remove the row on promise reject', async () => {
       const mutateSpy = jest.fn().mockRejectedValue({});
-      mountComponent({ mutationHandler: mutateSpy, mountFunction: mount });
+      mountComponent({ mutationHandler: mutateSpy, mountFunction: mountExtended });
       await waitForPromises();
 
       await findDeleteButton().trigger('click');

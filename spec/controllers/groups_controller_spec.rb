@@ -382,6 +382,15 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
     end
 
     context 'when creating a group with `default_branch_protection_defaults` attribute' do
+      let(:protection_defaults) do
+        {
+          "allowed_to_push" => [{ 'access_level' => Gitlab::Access::MAINTAINER.to_s }],
+          "allowed_to_merge" => [{ 'access_level' => Gitlab::Access::DEVELOPER.to_s }],
+          "allow_force_push" => "false",
+          "developer_can_initial_push" => "false"
+        }
+      end
+
       before do
         sign_in(user)
       end
@@ -392,16 +401,19 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
           allow(Ability).to receive(:allowed?).with(user, :update_default_branch_protection, an_instance_of(Group)).and_return(true)
         end
 
-        subject do
-          post :create, params: { group: { name: 'new_group', path: 'new_group', default_branch_protection_defaults: ::Gitlab::Access::BranchProtection.protected_against_developer_pushes.stringify_keys } }, as: :json
-        end
-
         context 'for users who have the ability to create a group with `default_branch_protection_defaults`' do
           it 'creates group with the specified default branch protection level' do
-            subject
+            post :create, params: { group: { name: 'new_group', path: 'new_group', default_branch_protected: "true", default_branch_protection_defaults: protection_defaults } }, as: :json
 
             expect(response).to have_gitlab_http_status(:found)
             expect(Group.last.default_branch_protection_defaults).to eq(::Gitlab::Access::BranchProtection.protected_against_developer_pushes.stringify_keys)
+          end
+
+          it 'ignores default_branch_protection_defaults if default_branch_protected is set to false' do
+            post :create, params: { group: { name: 'new_group', path: 'new_group', default_branch_protected: "false", default_branch_protection_defaults: protection_defaults } }, as: :json
+
+            expect(response).to have_gitlab_http_status(:found)
+            expect(Group.last.default_branch_protection_defaults).to eq(::Gitlab::Access::BranchProtection.protection_none.stringify_keys)
           end
         end
       end

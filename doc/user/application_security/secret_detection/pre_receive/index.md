@@ -61,7 +61,9 @@ If the blocked secret appears earlier in your Git history:
 
 ## Skip secret detection
 
-In some cases, it may be necessary to skip pre-receive secret detection. For example, a developer may need to commit a placeholder secret for testing, or a user may want to bypass secret detection due to a Git operation timeout. To skip secret detection for all commits in a push, add `[skip secret detection]` to one of the commit messages. For example:
+In some cases, it may be necessary to skip pre-receive secret detection. For example, a developer may need to commit a placeholder secret for testing, or a user may want to bypass secret detection due to a Git operation timeout. There are two ways to skip secret detection:
+
+1. To skip secret detection for all commits in a push, add `[skip secret detection]` to one of the commit messages. For example:
 
 ```shell
 # These commits are in the same push. Both will not be scanned.
@@ -69,5 +71,15 @@ Add real secret by accident
 Add placeholder token to test file [skip secret detection]
 ```
 
+1. Use a [push option](../../../project/push_options.md#push-options-for-secret-detection) to skip scanning on all commits in a push. For example:
+
+```shell
+# These commits are in the same push. Both will not be scanned.
+Add real secret by accident
+Add placeholder token to test file
+
+git push -o secret_detection.skip_all
+```
+
 NOTE:
-[Pipeline secret detection](../index.md) still scans the bypassed secrets when using `[skip secret detection]` in one of your commit messages.
+[Pipeline secret detection](../index.md) still scans the bypassed secrets when pre-receive secret detection is skipped.

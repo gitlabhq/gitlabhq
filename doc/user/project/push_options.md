@@ -67,6 +67,14 @@ Git push options can perform actions for merge requests while pushing changes:
 | `merge_request.assign="<user>"`              | Assign users to the merge request. Accepts username or user ID. For example, for two users: `git push -o merge_request.assign="user1" -o merge_request.assign="user2"`. Support for usernames added in [GitLab 15.5](https://gitlab.com/gitlab-org/gitlab/-/issues/344276). |
 | `merge_request.unassign="<user>"`            | Remove assigned users from the merge request. Accepts username or user ID. For example, for two users: `git push -o merge_request.unassign="user1" -o merge_request.unassign="user2"`. Support for usernames added in [GitLab 15.5](https://gitlab.com/gitlab-org/gitlab/-/issues/344276). |
 
+## Push options for secret detection
+
+You can use push options to skip [pre-receive secret detection](../application_security/secret_detection/pre_receive/index.md).
+
+| Push option                    | Description | Example |
+|--------------------------------|-------------|---------|
+| `secret_detection.skip_all` | Do not perform pre-receive secret detection for any commit in this push. | `git push -o secret_detection.skip_all` |
+
 ## Formats for push options
 
 If your push option requires text containing spaces, enclose the text in

@@ -4,7 +4,6 @@ require 'spec_helper'
 
 RSpec.describe 'Updating the dependency proxy image ttl policy', feature_category: :dependency_proxy do
   include GraphqlHelpers
-  using RSpec::Parameterized::TableSyntax
 
   let_it_be(:user) { create(:user) }
 
@@ -35,6 +34,15 @@ RSpec.describe 'Updating the dependency proxy image ttl policy', feature_categor
     stub_config(dependency_proxy: { enabled: true })
   end
 
+  shared_examples 'returning no response' do
+    it 'returns no response', :aggregate_failures do
+      subject
+
+      expect(response).to have_gitlab_http_status(:success)
+      expect(mutation_response).to be_nil
+    end
+  end
+
   describe 'post graphql mutation' do
     subject { post_graphql_mutation(mutation, current_user: user) }
 
@@ -42,33 +50,33 @@ RSpec.describe 'Updating the dependency proxy image ttl policy', feature_categor
     let_it_be(:group, reload: true) { ttl_policy.group }
 
     context 'without permission' do
-      it 'returns no response' do
-        subject
-
-        expect(response).to have_gitlab_http_status(:success)
-        expect(mutation_response).to be_nil
-      end
+      it_behaves_like 'returning no response'
     end
 
     context 'with permission' do
-      %i[owner maintainer].each do |role|
-        context "for #{role}" do
-          before do
-            group.send("add_#{role}", user)
-            stub_feature_flags(raise_group_admin_package_permission_to_owner: false)
-          end
-
-          it 'returns the updated dependency proxy image ttl policy', :aggregate_failures do
-            subject
-
-            expect(response).to have_gitlab_http_status(:success)
-            expect(mutation_response['errors']).to be_empty
-            expect(ttl_policy_response).to include(
-              'enabled' => params[:enabled],
-              'ttl' => params[:ttl]
-            )
-          end
+      context 'for owner' do
+        before do
+          group.add_owner(user)
         end
+
+        it 'returns the updated dependency proxy image ttl policy', :aggregate_failures do
+          subject
+
+          expect(response).to have_gitlab_http_status(:success)
+          expect(mutation_response['errors']).to be_empty
+          expect(ttl_policy_response).to include(
+            'enabled' => params[:enabled],
+            'ttl' => params[:ttl]
+          )
+        end
+      end
+
+      context 'for maintainer' do
+        before do
+          group.add_maintainer(user)
+        end
+
+        it_behaves_like 'returning no response'
       end
     end
   end

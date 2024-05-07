@@ -832,6 +832,10 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     self.default_branch_name = default_branch_name.presence
   end
 
+  def default_branch_protected?
+    Gitlab::Access::DefaultBranchProtection.new(default_branch_protection_defaults).any?
+  end
+
   def instance_review_permitted?
     users_count = Rails.cache.fetch('limited_users_count', expires_in: 1.day) do
       ::User.limit(INSTANCE_REVIEW_MIN_USERS + 1).count(:all)

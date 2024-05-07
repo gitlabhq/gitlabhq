@@ -946,7 +946,8 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
           {
             authentication_abilities: [:read_project, :download_code, :push_code],
             repository_path: "#{project.full_path}.git",
-            redirected_path: nil
+            redirected_path: nil,
+            push_options: nil
           }
         ) do |access_checker|
           expect(access_checker).to receive(:check).with(

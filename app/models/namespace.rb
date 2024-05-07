@@ -443,6 +443,10 @@ class Namespace < ApplicationRecord
     !emails_enabled?
   end
 
+  def default_branch_protected?
+    Gitlab::Access::DefaultBranchProtection.new(default_branch_protection_settings).any?
+  end
+
   def emails_enabled?
     # If no namespace_settings, we can assume it has not changed from enabled
     return true unless namespace_settings

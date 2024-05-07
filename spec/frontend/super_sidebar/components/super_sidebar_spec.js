@@ -41,6 +41,10 @@ const trialStatusPopoverStubTestId = 'trial-status-popover';
 const TrialStatusPopoverStub = {
   template: `<div data-testid="${trialStatusPopoverStubTestId}" />`,
 };
+const duoProTrialStatusWidgetStubTestId = 'duo-pro-trial-status-widget';
+const DuoProTrialStatusWidgetStub = {
+  template: `<div data-testid="${duoProTrialStatusWidgetStubTestId}" />`,
+};
 const UserBarStub = {
   template: `<div><a href="#">link</a></div>`,
 };
@@ -62,6 +66,7 @@ describe('SuperSidebar component', () => {
   const findHoverPeekBehavior = () => wrapper.findComponent(SidebarHoverPeekBehavior);
   const findTrialStatusWidget = () => wrapper.findByTestId(trialStatusWidgetStubTestId);
   const findTrialStatusPopover = () => wrapper.findByTestId(trialStatusPopoverStubTestId);
+  const findDuoProTrialStatusWidget = () => wrapper.findByTestId(duoProTrialStatusWidgetStubTestId);
   const findSidebarMenu = () => wrapper.findComponent(SidebarMenu);
   const findAdminLink = () => wrapper.findByTestId('sidebar-admin-link');
   const findContextHeader = () => wrapper.findComponent('#super-sidebar-context-header');
@@ -77,6 +82,7 @@ describe('SuperSidebar component', () => {
     wrapper = shallowMountExtended(SuperSidebar, {
       provide: {
         showTrialStatusWidget: false,
+        showDuoProTrialStatusWidget: false,
         ...provide,
       },
       propsData: {
@@ -85,6 +91,7 @@ describe('SuperSidebar component', () => {
       stubs: {
         TrialStatusWidget: TrialStatusWidgetStub,
         TrialStatusPopover: TrialStatusPopoverStub,
+        DuoProTrialStatusWidget: DuoProTrialStatusWidgetStub,
         UserBar: stubComponent(UserBar, UserBarStub),
       },
       attachTo: document.body,
@@ -208,6 +215,12 @@ describe('SuperSidebar component', () => {
 
       expect(findTrialStatusWidget().exists()).toBe(false);
       expect(findTrialStatusPopover().exists()).toBe(false);
+    });
+
+    it('does not render duo pro trial status widget', () => {
+      createWrapper();
+
+      expect(findDuoProTrialStatusWidget().exists()).toBe(false);
     });
 
     it('does not have peek behaviors', () => {
@@ -334,6 +347,30 @@ describe('SuperSidebar component', () => {
     it('renders trial status widget', () => {
       expect(findTrialStatusWidget().exists()).toBe(true);
       expect(findTrialStatusPopover().exists()).toBe(true);
+    });
+  });
+
+  describe('when a duo pro trial is active', () => {
+    beforeEach(() => {
+      createWrapper({ provide: { showDuoProTrialStatusWidget: true } });
+    });
+
+    it('renders duo pro trial status widget', () => {
+      expect(findDuoProTrialStatusWidget().exists()).toBe(true);
+    });
+  });
+
+  describe('when a trial and duo pro trial is active', () => {
+    beforeEach(() => {
+      createWrapper({
+        provide: { showTrialStatusWidget: true, showDuoProTrialStatusWidget: true },
+      });
+    });
+
+    it('renders trial status widget only', () => {
+      expect(findTrialStatusWidget().exists()).toBe(true);
+      expect(findTrialStatusPopover().exists()).toBe(true);
+      expect(findDuoProTrialStatusWidget().exists()).toBe(false);
     });
   });
 

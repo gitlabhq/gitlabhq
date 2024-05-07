@@ -16951,7 +16951,13 @@ msgstr ""
 msgid "DefaultBranchProtection|Not protected"
 msgstr ""
 
+msgid "DefaultBranchProtection|Once a repository is created this branch will be protected."
+msgstr ""
+
 msgid "DefaultBranchProtection|Partially protected"
+msgstr ""
+
+msgid "DefaultBranchProtection|Protected"
 msgstr ""
 
 msgid "DefaultBranchProtection|Protected against pushes"
@@ -19141,6 +19147,12 @@ msgid "DuoProTrial|Code explanation"
 msgstr ""
 
 msgid "DuoProTrial|Code refactorization"
+msgstr ""
+
+msgid "DuoProTrial|Day %{daysUsed}/%{duration}"
+msgstr ""
+
+msgid "DuoProTrial|GitLab Duo Pro Trial"
 msgstr ""
 
 msgid "DuoProTrial|GitLab Duo Pro is designed to make teams more efficient throughout the software development lifecycle with:"
@@ -35082,25 +35094,16 @@ msgstr ""
 msgid "ObservabilityLogs|Check again"
 msgstr ""
 
+msgid "ObservabilityLogs|Count"
+msgstr ""
+
 msgid "ObservabilityLogs|Date"
-msgstr ""
-
-msgid "ObservabilityLogs|Debug"
-msgstr ""
-
-msgid "ObservabilityLogs|Error"
 msgstr ""
 
 msgid "ObservabilityLogs|Failed to load logs."
 msgstr ""
 
-msgid "ObservabilityLogs|Fatal"
-msgstr ""
-
 msgid "ObservabilityLogs|Fingerprint"
-msgstr ""
-
-msgid "ObservabilityLogs|Info"
 msgstr ""
 
 msgid "ObservabilityLogs|Level"
@@ -35142,16 +35145,10 @@ msgstr ""
 msgid "ObservabilityLogs|Span ID"
 msgstr ""
 
-msgid "ObservabilityLogs|Trace"
-msgstr ""
-
 msgid "ObservabilityLogs|Trace Flags"
 msgstr ""
 
 msgid "ObservabilityLogs|Trace ID"
-msgstr ""
-
-msgid "ObservabilityLogs|Warning"
 msgstr ""
 
 msgid "ObservabilityLogs|name"
@@ -41617,6 +41614,9 @@ msgstr ""
 msgid "ProtectedBranch|Allow all users with push access to force push."
 msgstr ""
 
+msgid "ProtectedBranch|Allow developers to push to the initial commit"
+msgstr ""
+
 msgid "ProtectedBranch|Allowed to create"
 msgstr ""
 
@@ -41630,6 +41630,9 @@ msgid "ProtectedBranch|Allowed to merge"
 msgstr ""
 
 msgid "ProtectedBranch|Allowed to merge:"
+msgstr ""
+
+msgid "ProtectedBranch|Allowed to push"
 msgstr ""
 
 msgid "ProtectedBranch|Allowed to push and merge"
@@ -41660,6 +41663,9 @@ msgid "ProtectedBranch|Code owner approval"
 msgstr ""
 
 msgid "ProtectedBranch|Create wildcard"
+msgstr ""
+
+msgid "ProtectedBranch|Developers can push the initial commit to a repository, but none afterward."
 msgstr ""
 
 msgid "ProtectedBranch|Does not apply to users **Allowed to push** when pushing directly to the branch. Optional sections are not enforced."
@@ -41702,6 +41708,9 @@ msgid "ProtectedBranch|Protected branches"
 msgstr ""
 
 msgid "ProtectedBranch|Reject code pushes that change files listed in the CODEOWNERS file."
+msgstr ""
+
+msgid "ProtectedBranch|Require approval from code owners"
 msgstr ""
 
 msgid "ProtectedBranch|Require approval from code owners:"

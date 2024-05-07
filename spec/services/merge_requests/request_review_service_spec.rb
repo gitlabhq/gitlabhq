@@ -93,6 +93,18 @@ RSpec.describe MergeRequests::RequestReviewService, feature_category: :code_revi
 
         service.execute(merge_request, user)
       end
+
+      context 'when merge_request_dashboard feature flag is enabled' do
+        before do
+          stub_feature_flags(merge_request_dashboard: true)
+        end
+
+        it 'invalidates cache counts' do
+          expect(user).to receive(:invalidate_merge_request_cache_counts)
+
+          service.execute(merge_request, user)
+        end
+      end
     end
   end
 end

@@ -222,6 +222,13 @@ RSpec.describe Admin::ApplicationSettingsController, :do_not_mock_admin_mode_set
       expect(ApplicationSetting.current.default_branch_name).to eq("example_branch_name")
     end
 
+    it "updates default_branch_protection_defaults" do
+      put :update, params: { application_setting: { default_branch_protection_defaults: ::Gitlab::Access::BranchProtection.protected_against_developer_pushes.deep_stringify_keys } }
+
+      expect(response).to redirect_to(general_admin_application_settings_path)
+      expect(ApplicationSetting.current.default_branch_protection_defaults).to eq(::Gitlab::Access::BranchProtection.protected_against_developer_pushes.deep_stringify_keys)
+    end
+
     it 'updates valid_runner_registrars setting' do
       put :update, params: { application_setting: { valid_runner_registrars: ['project', ''] } }
 

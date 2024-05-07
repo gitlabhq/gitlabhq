@@ -1,5 +1,4 @@
-.search_box.gl-my-8.gl-text-center
-  .search_glyph
-  %h4
-    = sprite_icon('search', size: 24, css_class: 'gl-vertical-align-text-bottom')
+= render Pajamas::EmptyStateComponent.new(svg_path: 'illustrations/empty-state/empty-search-md.svg',
+  title: _('No results found')) do |c|
+  - c.with_description do
     = search_entries_empty_message(@scope, @search_term, @group, @project)

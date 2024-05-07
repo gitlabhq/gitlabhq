@@ -189,6 +189,12 @@ describe('UserBar component', () => {
     });
   });
 
+  it('does not render merge request menu when merge_request_menu is null', () => {
+    createWrapper({ sidebarData: { ...mockSidebarData, merge_request_menu: null } });
+
+    expect(findMergeRequestMenu().exists()).toBe(false);
+  });
+
   describe('Search', () => {
     beforeEach(async () => {
       createWrapper();

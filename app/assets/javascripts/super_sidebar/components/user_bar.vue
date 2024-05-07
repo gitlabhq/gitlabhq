@@ -81,6 +81,9 @@ export default {
     mergeRequestTotalCount() {
       return userCounts.assigned_merge_requests + userCounts.review_requested_merge_requests;
     },
+    mergeRequestMenuComponent() {
+      return this.sidebarData.merge_request_menu ? 'merge-request-menu' : 'div';
+    },
   },
   created() {
     Object.assign(userCounts, this.sidebarData.user_counts);
@@ -165,7 +168,8 @@ export default {
         data-track-label="issues_link"
         data-track-property="nav_core_menu"
       />
-      <merge-request-menu
+      <component
+        :is="mergeRequestMenuComponent"
         class="gl-flex-basis-third gl-display-block!"
         :items="sidebarData.merge_request_menu"
         @shown="mrMenuShown = true"
@@ -175,6 +179,7 @@ export default {
           v-gl-tooltip:super-sidebar.bottom="mrMenuShown ? '' : $options.i18n.mergeRequests"
           class="gl-w-full"
           icon="merge-request-open"
+          :href="sidebarData.merge_request_dashboard_path"
           :count="mergeRequestTotalCount"
           :label="$options.i18n.mergeRequests"
           data-testid="merge-requests-shortcut-button"
@@ -182,7 +187,7 @@ export default {
           data-track-label="merge_requests_menu"
           data-track-property="nav_core_menu"
         />
-      </merge-request-menu>
+      </component>
       <counter
         v-gl-tooltip:super-sidebar.bottom="$options.i18n.todoList"
         class="gl-flex-basis-third shortcuts-todos js-todos-count"

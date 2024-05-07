@@ -8,11 +8,7 @@ module Mutations
 
         include Mutations::ResolvesNamespace
 
-        description <<~DESC
-          These settings can be adjusted by the group Owner or Maintainer.
-          [Issue 370471](https://gitlab.com/gitlab-org/gitlab/-/issues/370471) proposes limiting
-          this to Owners only to match the permissions level in the user interface.
-        DESC
+        description 'These settings can be adjusted only by the group Owner.'
 
         authorize :admin_package
 

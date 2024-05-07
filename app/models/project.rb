@@ -2915,7 +2915,7 @@ class Project < ApplicationRecord
 
   def default_branch_protected?
     if Feature.enabled?(:default_branch_protection_defaults, self)
-      branch_protection = Gitlab::Access::DefaultBranchProtection.new(self)
+      branch_protection = Gitlab::Access::DefaultBranchProtection.new(self.namespace.default_branch_protection_settings)
 
       return !branch_protection.developer_can_push?
     end
@@ -2927,7 +2927,7 @@ class Project < ApplicationRecord
 
   def initial_push_to_default_branch_allowed_for_developer?
     if Feature.enabled?(:default_branch_protection_defaults, self)
-      branch_protection = Gitlab::Access::DefaultBranchProtection.new(self)
+      branch_protection = Gitlab::Access::DefaultBranchProtection.new(self.namespace.default_branch_protection_settings)
 
       return branch_protection.developer_can_push? || branch_protection.developer_can_initial_push?
     end

@@ -25,6 +25,9 @@ module Gitlab
       },
       integrations: {
         keys: [:skip_ci]
+      },
+      secret_detection: {
+        keys: [:skip_all]
       }
     }).freeze
 

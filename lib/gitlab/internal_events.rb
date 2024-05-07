@@ -96,7 +96,7 @@ module Gitlab
       def increase_weekly_total_counter(event_name)
         redis_counter_key = Gitlab::Usage::Metrics::Instrumentations::TotalCountMetric.redis_key(event_name, Date.today)
 
-        increment(redis_counter_key)
+        increment(redis_counter_key, expiry: 6.weeks)
       end
 
       def update_unique_counters(event_name, kwargs)

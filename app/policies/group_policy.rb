@@ -132,10 +132,6 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     @subject.allow_runner_registration_token?
   end
 
-  condition(:raise_admin_package_to_owner_enabled) do
-    Feature.enabled?(:raise_group_admin_package_permission_to_owner, @subject)
-  end
-
   rule { can?(:read_group) & design_management_enabled }.policy do
     enable :read_design_activity
   end
@@ -268,6 +264,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :admin_group
     enable :admin_namespace
     enable :admin_group_member
+    enable :admin_package
     enable :change_visibility_level
 
     enable :read_usage_quotas
@@ -358,11 +355,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   rule { dependency_proxy_access_allowed & dependency_proxy_available }
     .enable :read_dependency_proxy
 
-  rule { maintainer & dependency_proxy_available & ~raise_admin_package_to_owner_enabled }.policy do
-    enable :admin_dependency_proxy
-  end
-
-  rule { owner & dependency_proxy_available & raise_admin_package_to_owner_enabled }.policy do
+  rule { owner & dependency_proxy_available }.policy do
     enable :admin_dependency_proxy
   end
 
@@ -420,9 +413,6 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
 
   # Should be matched with ProjectPolicy#read_internal_note
   rule { admin | reporter }.enable :read_internal_note
-
-  rule { maintainer & ~raise_admin_package_to_owner_enabled }.enable :admin_package
-  rule { owner & raise_admin_package_to_owner_enabled }.enable :admin_package
 
   rule { can?(:remove_group) }.enable :view_edit_page
 

@@ -341,7 +341,7 @@ module MergeRequestsHelper
   end
 
   def merge_request_dashboard_enabled?(current_user)
-    Feature.enabled?(:merge_request_dashboard, current_user, type: :wip)
+    current_user.merge_request_dashboard_enabled?
   end
 
   def merge_request_dashboard_data

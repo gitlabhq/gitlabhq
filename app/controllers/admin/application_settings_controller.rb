@@ -3,6 +3,7 @@
 class Admin::ApplicationSettingsController < Admin::ApplicationController
   include InternalRedirect
   include IntegrationsHelper
+  include DefaultBranchProtection
 
   # NOTE: Use @application_setting in this controller when you need to access
   # application_settings after it has been modified. This is because the
@@ -153,6 +154,8 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
     params[:application_setting][:package_metadata_purl_types]&.delete("")
     params[:application_setting][:package_metadata_purl_types]&.map!(&:to_i)
 
+    normalize_default_branch_params!(:application_setting)
+
     remove_blank_params_for!(:elasticsearch_aws_secret_access_key, :eks_secret_access_key)
 
     # TODO Remove domain_denylist_raw in APIv5 (See https://gitlab.com/gitlab-org/gitlab-foss/issues/67204)
@@ -175,6 +178,14 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       *::ApplicationSettingsHelper.visible_attributes,
       *::ApplicationSettingsHelper.external_authorization_service_attributes,
       *ApplicationSetting.kroki_formats_attributes.keys.map { |key| "kroki_formats_#{key}".to_sym },
+      { default_branch_protection_defaults: [
+        :allow_force_push,
+        :developer_can_initial_push,
+        {
+          allowed_to_merge: [:access_level],
+          allowed_to_push: [:access_level]
+        }
+      ] },
       :can_create_organization,
       :lets_encrypt_notification_email,
       :lets_encrypt_terms_of_service_accepted,

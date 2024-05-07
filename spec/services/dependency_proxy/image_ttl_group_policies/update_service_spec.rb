@@ -62,15 +62,6 @@ RSpec.describe ::DependencyProxy::ImageTtlGroupPolicies::UpdateService, feature_
       end
     end
 
-    # To be removed when raise_group_admin_package_permission_to_owner FF is removed
-    shared_examples 'disabling admin_package feature flag' do |action:|
-      before do
-        stub_feature_flags(raise_group_admin_package_permission_to_owner: false)
-      end
-
-      it_behaves_like "#{action} the dependency proxy image ttl policy"
-    end
-
     before do
       stub_config(dependency_proxy: { enabled: true })
     end
@@ -94,7 +85,6 @@ RSpec.describe ::DependencyProxy::ImageTtlGroupPolicies::UpdateService, feature_
         end
 
         it_behaves_like params[:shared_examples_name]
-        it_behaves_like 'disabling admin_package feature flag', action: :updating if params[:user_role] == :maintainer
       end
     end
 
@@ -116,21 +106,18 @@ RSpec.describe ::DependencyProxy::ImageTtlGroupPolicies::UpdateService, feature_
         end
 
         it_behaves_like params[:shared_examples_name]
-        it_behaves_like 'disabling admin_package feature flag', action: :creating if params[:user_role] == :maintainer
       end
 
       context 'when the policy is not found' do
-        %i[owner maintainer].each do |role|
-          context "when user is #{role}" do
-            before do
-              group.send("add_#{role}", user)
-              stub_feature_flags(raise_group_admin_package_permission_to_owner: false)
-              expect(group).to receive(:dependency_proxy_image_ttl_policy).and_return nil
-            end
-
-            it_behaves_like 'returning an error', 'Dependency proxy image TTL Policy not found', 404
-          end
+        before_all do
+          group.add_owner(user)
         end
+
+        before do
+          expect(group).to receive(:dependency_proxy_image_ttl_policy).and_return nil
+        end
+
+        it_behaves_like 'returning an error', 'Dependency proxy image TTL Policy not found', 404
       end
     end
   end

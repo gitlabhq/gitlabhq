@@ -16,8 +16,8 @@ import {
   SET_TIME_ESTIMATE_MODAL_ID,
 } from '~/sidebar/components/time_tracking/constants';
 import CreateTimelogForm from '~/sidebar/components/time_tracking/create_timelog_form.vue';
-import TimeTrackingReport from '~/sidebar/components/time_tracking/report.vue';
 import SetTimeEstimateForm from '~/sidebar/components/time_tracking/set_time_estimate_form.vue';
+import TimeTrackingReport from '~/sidebar/components/time_tracking/time_tracking_report.vue';
 
 const options = { hoursPerDay: 8, daysPerMonth: 20, format: 'short' };
 

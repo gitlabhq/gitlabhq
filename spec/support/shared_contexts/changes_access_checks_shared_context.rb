@@ -10,6 +10,7 @@ RSpec.shared_context 'changes access checks context' do
   let(:oldrev) { 'be93687618e4b132087f430a4d8fc3a609c9b77c' }
   let(:newrev) { '54fcc214b94e78d7a41a9a8fe6d87a5e59500e51' }
   let(:ref) { 'refs/heads/master' }
+  let(:push_options) { nil }
   let(:changes) do
     [
       # Update of existing branch
@@ -28,7 +29,8 @@ RSpec.shared_context 'changes access checks context' do
       project: project,
       user_access: user_access,
       protocol: protocol,
-      logger: logger
+      logger: logger,
+      push_options: push_options
     )
   end
 

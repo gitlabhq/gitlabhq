@@ -425,8 +425,6 @@ osx job:
 
 ### Use CI/CD variables in tags
 
-> - Introduced in [GitLab 14.1](https://gitlab.com/gitlab-org/gitlab/-/issues/35742).
-
 In the `.gitlab-ci.yml` file, use [CI/CD variables](../variables/index.md) with `tags` for dynamic runner selection:
 
 ```yaml
