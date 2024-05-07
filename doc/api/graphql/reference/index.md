@@ -9445,6 +9445,7 @@ Input type: `WorkItemCreateInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="mutationworkitemcreateassigneeswidget"></a>`assigneesWidget` | [`WorkItemWidgetAssigneesInput`](#workitemwidgetassigneesinput) | Input for assignees widget. |
 | <a id="mutationworkitemcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationworkitemcreatecolorwidget"></a>`colorWidget` | [`WorkItemWidgetColorInput`](#workitemwidgetcolorinput) | Input for color widget. |
 | <a id="mutationworkitemcreateconfidential"></a>`confidential` | [`Boolean`](#boolean) | Sets the work item confidentiality. |
@@ -9453,6 +9454,7 @@ Input type: `WorkItemCreateInput`
 | <a id="mutationworkitemcreatehealthstatuswidget"></a>`healthStatusWidget` | [`WorkItemWidgetHealthStatusInput`](#workitemwidgethealthstatusinput) | Input for health status widget. |
 | <a id="mutationworkitemcreatehierarchywidget"></a>`hierarchyWidget` | [`WorkItemWidgetHierarchyCreateInput`](#workitemwidgethierarchycreateinput) | Input for hierarchy widget. |
 | <a id="mutationworkitemcreateiterationwidget"></a>`iterationWidget` | [`WorkItemWidgetIterationInput`](#workitemwidgetiterationinput) | Iteration widget of the work item. |
+| <a id="mutationworkitemcreatelabelswidget"></a>`labelsWidget` | [`WorkItemWidgetLabelsCreateInput`](#workitemwidgetlabelscreateinput) | Input for labels widget. |
 | <a id="mutationworkitemcreatemilestonewidget"></a>`milestoneWidget` | [`WorkItemWidgetMilestoneInput`](#workitemwidgetmilestoneinput) | Input for milestone widget. |
 | <a id="mutationworkitemcreatenamespacepath"></a>`namespacePath` | [`ID`](#id) | Full path of the namespace(project or group) the work item is created in. |
 | <a id="mutationworkitemcreateprojectpath"></a>`projectPath` **{warning-solid}** | [`ID`](#id) | **Deprecated:** Please use namespace_path instead. That will cover for both projects and groups. Deprecated in GitLab 15.10. |
@@ -37704,6 +37706,14 @@ Attributes for value stream stage.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="workitemwidgetiterationinputiterationid"></a>`iterationId` | [`IterationID`](#iterationid) | Iteration to assign to the work item. |
+
+### `WorkItemWidgetLabelsCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemwidgetlabelscreateinputlabelids"></a>`labelIds` | [`[LabelID!]!`](#labelid) | IDs of labels to be added to the work item. |
 
 ### `WorkItemWidgetLabelsUpdateInput`
 

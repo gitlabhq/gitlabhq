@@ -563,6 +563,37 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
           end
         end
       end
+
+      context 'for assignees widget' do
+        let_it_be(:assignee) { create(:user, developer_of: project) }
+
+        let(:widget_params) { { assignees_widget: { assignee_ids: [assignee.id] } } }
+
+        it 'updates assignees of the work item' do
+          expect do
+            update_work_item
+            work_item.reload
+          end.to change(work_item, :assignees).from([developer]).to([assignee]).and change(work_item, :updated_at)
+        end
+
+        it_behaves_like 'publish WorkItems::WorkItemUpdatedEvent event',
+          attributes: %w[
+            updated_at
+            updated_by_id
+          ],
+          widgets: %w[
+            assignees_widget
+          ]
+
+        context 'when work item validation fails' do
+          let(:opts) { { title: '' } }
+
+          it 'does not update assignees and returns validation errors' do
+            expect(update_work_item[:message]).to contain_exactly("Title can't be blank")
+            expect(work_item.reload.assignees).to contain_exactly(developer)
+          end
+        end
+      end
     end
 
     describe 'label updates' do

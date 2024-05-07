@@ -16,6 +16,7 @@ RSpec.describe 'OAuth Registration', :js, :allow_forgery_protection, feature_cat
 
   where(:provider, :additional_info) do
     :github         | {}
+    :twitter        | {}
     :bitbucket      | {}
     :gitlab         | {}
     :google_oauth2  | {}

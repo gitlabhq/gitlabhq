@@ -2104,7 +2104,6 @@
 - './ee/spec/requests/api/submodules_spec.rb'
 - './ee/spec/requests/api/templates_spec.rb'
 - './ee/spec/requests/api/todos_spec.rb'
-- './ee/spec/requests/api/usage_data_spec.rb'
 - './ee/spec/requests/api/users_spec.rb'
 - './ee/spec/requests/api/vulnerabilities_spec.rb'
 - './ee/spec/requests/api/vulnerability_exports_spec.rb'

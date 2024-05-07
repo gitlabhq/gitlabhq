@@ -1206,7 +1206,6 @@ Layout/LineLength:
     - 'ee/lib/gitlab/usage/metrics/instrumentations/approval_project_rules_with_user_metric.rb'
     - 'ee/lib/gitlab/usage/metrics/instrumentations/count_ci_builds_metric.rb'
     - 'ee/lib/gitlab/usage/metrics/instrumentations/license_metric.rb'
-    - 'ee/lib/gitlab/usage_data_counters/license_testing_counter.rb'
     - 'ee/lib/system_check/geo/authorized_keys_check.rb'
     - 'ee/lib/system_check/geo/current_node_check.rb'
     - 'ee/lib/system_check/geo/geo_database_configured_check.rb'

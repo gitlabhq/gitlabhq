@@ -24,3 +24,5 @@
 '{event_counters}_delete_wiki_page': USAGE_WIKI_PAGES_DELETE
 '{event_counters}_update_wiki_page': USAGE_WIKI_PAGES_UPDATE
 '{event_counters}_view_wiki_page': USAGE_WIKI_PAGES_VIEW
+'{event_counters}_click_full_report_license_compliance': USAGE_USERS_VISITING_TESTING_LICENSE_COMPLIANCE_FULL_REPORT
+'{event_counters}_click_external_link_license_compliance': USAGE_USERS_CLICKING_LICENSE_TESTING_VISITING_EXTERNAL_WEBSITE
