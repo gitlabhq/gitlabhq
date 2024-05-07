@@ -5,8 +5,6 @@ module Users
     feature_category :navigation
     respond_to :json
 
-    before_action :check_request_size, only: :update
-
     def update
       panel = pins_params[:panel]
       pinned_nav_items = current_user.pinned_nav_items.merge({ panel => pins_params[:menu_item_ids] })
@@ -21,12 +19,6 @@ module Users
 
     def pins_params
       params.permit(:panel, menu_item_ids: [])
-    end
-
-    def check_request_size
-      return if params.to_s.bytesize < 100.kilobytes
-
-      head :payload_too_large
     end
   end
 end

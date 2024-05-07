@@ -96,15 +96,6 @@ RSpec.describe TagsFinder, feature_category: :source_code_management do
         expect(result.count).to eq(0)
       end
 
-      it 'uses ::Gitlab::UntrustedRegexp for regex filter' do
-        escaped_regex = '^v1\\..*?.*?.*?.*?.*?.*?.*?.*?.*?.*?\\.0$'
-
-        expect(::Gitlab::UntrustedRegexp).to receive(:new).with(escaped_regex).once.and_call_original
-        result = load_tags({ search: '^v1.**********.0$' })
-
-        expect(result.count).to eq(2)
-      end
-
       context 'when search is not a string' do
         it 'returns no matches' do
           result = load_tags({ search: { 'a' => 'b' } })

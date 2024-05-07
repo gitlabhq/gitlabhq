@@ -35,7 +35,7 @@ RSpec.describe Todos::AllowedTargetFilterService, feature_category: :team_planni
   let(:unauthorized_mr_todo) { create(:todo, project: unauthorized_project, user: user, target: unauthorized_mr) }
 
   describe '#execute' do
-    let(:all_todos) { Todo.where(id: (authorized_todos + unauthorized_todos).map(&:id)) }
+    let(:all_todos) { authorized_todos + unauthorized_todos }
 
     subject(:execute_service) { described_class.new(all_todos, user).execute }
 

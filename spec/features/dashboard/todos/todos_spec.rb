@@ -492,49 +492,27 @@ RSpec.describe 'Dashboard Todos', :js, feature_category: :team_planning do
   context 'User requested access' do
     shared_examples 'has todo present with access request content' do
       specify do
+        create(
+          :todo,
+          :member_access_requested,
+          user: user,
+          target: target,
+          author: author
+        )
+        target.add_owner(user)
+
         sign_in(user)
         visit dashboard_todos_path
 
         expect(page).to have_selector('.todos-list .todo', count: 1)
-        expect(page).to have_content "#{author.name} has requested access to #{target_type} #{target_name}"
+        expect(page).to have_content "#{author.name} has requested access to #{target.class.name.downcase} #{target.name}"
       end
     end
 
     context 'when user requests access to project or group' do
-      using RSpec::Parameterized::TableSyntax
-
-      let(:project_todo) do
-        create(
-          :todo,
-          :member_access_requested,
-          user: user,
-          project: project,
-          target: project,
-          author: author
-        )
-      end
-
-      let(:group) { create(:group, :public).tap { |g| g.add_owner(user) } }
-      let(:group_todo) do
-        create(
-          :todo,
-          :member_access_requested,
-          user: user,
-          project: nil,
-          group: group,
-          target: group,
-          author: author
-        )
-      end
-
-      where(:target_type, :todo) do
-        'project' | ref(:project_todo)
-        'group'   | ref(:group_todo)
-      end
-
-      with_them do
+      %i[project group].each do |target_type|
         it_behaves_like 'has todo present with access request content' do
-          let!(:target_name) { todo.target.name }
+          let_it_be(:target) { create(target_type, :public) }
         end
       end
     end

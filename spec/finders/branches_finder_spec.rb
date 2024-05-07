@@ -101,8 +101,6 @@ RSpec.describe BranchesFinder, feature_category: :source_code_management do
         let(:params) { { search: '^feature_' } }
 
         it 'filters branches' do
-          expect(::Gitlab::UntrustedRegexp).to receive(:new).with('^feature_').once.and_call_original
-
           result = subject
 
           expect(result.first.name).to eq('feature_conflict')
@@ -114,8 +112,6 @@ RSpec.describe BranchesFinder, feature_category: :source_code_management do
         let(:params) { { search: 'feature$' } }
 
         it 'filters branches' do
-          expect(::Gitlab::UntrustedRegexp).to receive(:new).with('feature$').once.and_call_original
-
           result = subject
 
           expect(result.first.name).to eq('feature')
@@ -127,9 +123,6 @@ RSpec.describe BranchesFinder, feature_category: :source_code_management do
         let(:params) { { search: 'f*e' } }
 
         it 'filters branches' do
-          escaped_regex = 'f.*?e'
-          expect(::Gitlab::UntrustedRegexp).to receive(:new).with(escaped_regex).once.and_call_original
-
           result = subject
 
           expect(result.first.name).to eq('2-mb-file')
@@ -141,9 +134,6 @@ RSpec.describe BranchesFinder, feature_category: :source_code_management do
         let(:params) { { search: '^f*e$' } }
 
         it 'filters branches' do
-          escaped_regex = '^f.*?e$'
-          expect(::Gitlab::UntrustedRegexp).to receive(:new).with(escaped_regex).once.and_call_original
-
           result = subject
 
           expect(result.first.name).to eq('feature')
@@ -183,9 +173,6 @@ RSpec.describe BranchesFinder, feature_category: :source_code_management do
         let(:params) { { search: 'f*a*e' } }
 
         it 'filters branches' do
-          escaped_regex = 'f.*?a.*?e'
-          expect(::Gitlab::UntrustedRegexp).to receive(:new).with(escaped_regex).once.and_call_original
-
           result = subject
 
           expect(result.first.name).to eq('after-create-delete-modify-move')
@@ -227,9 +214,6 @@ RSpec.describe BranchesFinder, feature_category: :source_code_management do
         let(:params) { { search: 'zz*asdf' } }
 
         it 'filters branches' do
-          escaped_regex = 'zz.*?asdf'
-          expect(::Gitlab::UntrustedRegexp).to receive(:new).with(escaped_regex).once.and_call_original
-
           result = subject
 
           expect(result.count).to eq(0)

@@ -63,14 +63,5 @@ RSpec.describe 'Pinning navigation menu items', feature_category: :navigation do
         it_behaves_like 'unchanged data and error response'
       end
     end
-
-    context 'when request size exceeds 100 kilobyte' do
-      let(:too_large_string) { 'a' * 200.kilobytes }
-      let(:params) { { menu_item_ids: [too_large_string], panel: 'project' } }
-
-      it 'responds with :payload_too_large' do
-        expect(response).to have_gitlab_http_status(:payload_too_large)
-      end
-    end
   end
 end

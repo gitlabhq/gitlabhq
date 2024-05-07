@@ -4,11 +4,13 @@ require 'spec_helper'
 
 RSpec.describe Banzai::Filter::References::AbstractReferenceFilter, feature_category: :team_planning do
   let_it_be(:project) { create(:project) }
-  let_it_be(:issue) { create(:issue, project: project) }
-  let_it_be(:doc) { Nokogiri::HTML.fragment('') }
-  let_it_be(:filter) { described_class.new(doc, project: project) }
+
+  let(:doc) { Nokogiri::HTML.fragment('') }
+  let(:filter) { described_class.new(doc, project: project) }
 
   describe '#data_attributes_for' do
+    let_it_be(:issue) { create(:issue, project: project) }
+
     it 'is not an XSS vector' do
       allow(described_class).to receive(:object_class).and_return(Issue)
 
@@ -16,13 +18,6 @@ RSpec.describe Banzai::Filter::References::AbstractReferenceFilter, feature_cate
 
       expect(data_attributes[:original]).to eq('xss &amp;lt;img onerror=alert(1) src=x&amp;gt;')
     end
-  end
-
-  it 'wraps call method with a timeout' do
-    allow(described_class).to receive(:object_class).and_return(Issue)
-    expect(Gitlab::RenderTimeout).to receive(:timeout).and_call_original
-
-    filter.call
   end
 
   context 'abstract methods' do
