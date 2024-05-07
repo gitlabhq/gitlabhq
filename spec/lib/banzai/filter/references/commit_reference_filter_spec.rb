@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe Banzai::Filter::References::CommitReferenceFilter, feature_category: :source_code_management do
   include FilterSpecHelper
 
-  let(:project) { create(:project, :public, :repository) }
-  let(:commit)  { project.commit }
+  let_it_be(:project) { create(:project, :public, :repository) }
+  let_it_be(:commit)  { project.commit }
 
   it 'requires project context' do
     expect { described_class.call('') }.to raise_error(ArgumentError, /:project/)
@@ -267,6 +267,18 @@ RSpec.describe Banzai::Filter::References::CommitReferenceFilter, feature_catego
       act = "See #{project.full_path}@#{commit.id}"
 
       expect(reference_filter(act, context).css('a').first.text).to eql("#{project.full_path}@#{commit.short_id}")
+    end
+  end
+
+  context 'when Commit.reference_pattern causes a long scanning period' do
+    it 'timesout and rescues in filter' do
+      stub_const("Banzai::Filter::References::AbstractReferenceFilter::RENDER_TIMEOUT", 0.1)
+      markdown = 'a-' * 55000
+
+      expect(Gitlab::RenderTimeout).to receive(:timeout).and_call_original
+      expect(Gitlab::ErrorTracking).to receive(:track_exception)
+
+      reference_filter(markdown)
     end
   end
 

@@ -96,6 +96,15 @@ RSpec.describe TagsFinder, feature_category: :source_code_management do
         expect(result.count).to eq(0)
       end
 
+      it 'uses ::Gitlab::UntrustedRegexp for regex filter' do
+        escaped_regex = '^v1\\..*?.*?.*?.*?.*?.*?.*?.*?.*?.*?\\.0$'
+
+        expect(::Gitlab::UntrustedRegexp).to receive(:new).with(escaped_regex).once.and_call_original
+        result = load_tags({ search: '^v1.**********.0$' })
+
+        expect(result.count).to eq(2)
+      end
+
       context 'when search is not a string' do
         it 'returns no matches' do
           result = load_tags({ search: { 'a' => 'b' } })
@@ -158,6 +167,20 @@ RSpec.describe TagsFinder, feature_category: :source_code_management do
           result = subject
 
           expect(result.map(&:name)).to eq(%w[v1.0.0 v1.1.0])
+        end
+
+        context 'when per_page is over the limit' do
+          let(:params) { { per_page: 3 } }
+
+          before do
+            stub_const('Gitlab::PaginationDelegate::MAX_PER_PAGE', 2)
+          end
+
+          it 'limits the maximum number of elements' do
+            result = subject
+
+            expect(result.map(&:name)).to eq(%w[v1.0.0 v1.1.0])
+          end
         end
       end
 
