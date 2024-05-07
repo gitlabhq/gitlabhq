@@ -9,9 +9,7 @@ module Issuables
     end
 
     def includes_user?(user)
-      Array(params[:assignee_ids]).include?(user.id) ||
-        Array(params[:assignee_id]).include?(user.id) ||
-        Array(params[:assignee_username]).include?(user.username)
+      has_assignee_param?(params) && assignee_ids(params).include?(user.id)
     end
 
     private
