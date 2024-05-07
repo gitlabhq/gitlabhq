@@ -82,12 +82,8 @@ To use the review apps template:
    find the project you want to create a review app job for.
 1. Select **Operate > Environments**.
 1. Select **Enable review apps**.
-1. Copy the provided code snippet and paste it into your
-   `.gitlab-ci.yml` file:
-
-   ![enable review apps modal](img/enable_review_app_v16.png)
-
-You can edit this template as needed.
+1. Follow the instructions in the dialog.
+   You can edit the provided `.gitlab-ci.yml` template as needed.
 
 ## Review apps auto-stop
 

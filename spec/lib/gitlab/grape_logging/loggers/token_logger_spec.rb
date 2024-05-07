@@ -21,13 +21,13 @@ RSpec.describe Gitlab::GrapeLogging::Loggers::TokenLogger do
       let(:mock_request) do
         instance_double(ActionDispatch::Request, 'env',
           env: {
-            'gitlab.api.token' => { 'token_id': token_id, 'token_type': token_type }
+            'gitlab.api.token' => { token_id: token_id, token_type: token_type }
           }
         )
       end
 
       it 'adds the token information to log parameters' do
-        expect(subject.parameters(mock_request, nil)).to eq( { 'token_id': 1, 'token_type': "PersonalAccessToken" })
+        expect(subject.parameters(mock_request, nil)).to eq( { token_id: 1, token_type: "PersonalAccessToken" })
       end
     end
   end

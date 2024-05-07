@@ -14,9 +14,9 @@ RSpec.describe Gitlab::GrapeLogging::Formatters::LogrageWithTimestamp do
       method: 'PUT',
       path: '/api/v4/projects/1',
       params: {
-        'description': '[FILTERED]',
-        'name': 'gitlab test',
-        'int': 42
+        description: '[FILTERED]',
+        name: 'gitlab test',
+        int: 42
       },
       host: 'localhost',
       remote_ip: '127.0.0.1',

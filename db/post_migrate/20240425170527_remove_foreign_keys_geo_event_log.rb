@@ -19,7 +19,7 @@ class RemoveForeignKeysGeoEventLog < Gitlab::Database::Migration[2.2]
     {
       to_table: :geo_repository_updated_events,
       options: {
-        name: :fk_78a6492f68,
+        name: :fk_rails_78a6492f68,
         column: [:repository_updated_event_id],
         on_delete: :cascade
       }
@@ -64,7 +64,7 @@ class RemoveForeignKeysGeoEventLog < Gitlab::Database::Migration[2.2]
         remove_foreign_key(
           FROM_TABLE,
           fk[:to_table],
-          name: fk[:options][:name],
+          column: fk[:options][:column].first.to_s,
           if_exists: true
         )
       end

@@ -6,7 +6,7 @@ RSpec.describe GitlabSchema.types['ContainerRepository'], feature_category: :con
   include GraphqlHelpers
 
   fields = %i[id name path location created_at updated_at expiration_policy_started_at
-              status tags_count can_delete expiration_policy_cleanup_status project
+              status tags_count expiration_policy_cleanup_status project
               migration_state last_cleanup_deleted_tags_count user_permissions]
 
   it { expect(described_class.graphql_name).to eq('ContainerRepository') }

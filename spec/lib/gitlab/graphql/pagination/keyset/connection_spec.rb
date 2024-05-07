@@ -341,6 +341,12 @@ RSpec.describe Gitlab::Graphql::Pagination::Keyset::Connection do
             self.table_name  = 'no_primary_key'
             self.primary_key = nil
           end
+
+          # Gitlab::Pagination::Keyset::SimpleOrderBuilder checks for multiple primary keys
+          # directly, without this mock it fails because the table doesn't actually exist.
+          allow(NoPrimaryKey.connection).to receive(:primary_keys)
+                                   .with('no_primary_key')
+                                   .and_return([])
         end
 
         let(:nodes) { NoPrimaryKey.all }

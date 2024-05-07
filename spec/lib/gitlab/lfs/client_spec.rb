@@ -91,7 +91,7 @@ RSpec.describe Gitlab::Lfs::Client do
 
     def stub_batch(objects:, headers:, operation: 'upload', transfer: 'basic')
       objects = objects.as_json(only: [:oid, :size])
-      body = { operation: operation, 'transfers': [transfer], objects: objects }.to_json
+      body = { operation: operation, transfers: [transfer], objects: objects }.to_json
 
       headers = {
         'Accept' => git_lfs_content_type,

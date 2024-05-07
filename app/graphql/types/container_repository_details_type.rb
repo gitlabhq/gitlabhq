@@ -29,10 +29,6 @@ module Types
       null: true,
       description: 'Deduplicated size of the image repository in bytes. This is only available on GitLab.com for repositories created after `2021-11-04`.'
 
-    def can_delete
-      Ability.allowed?(current_user, :destroy_container_image, object)
-    end
-
     def size
       handling_errors { object.size }
     end

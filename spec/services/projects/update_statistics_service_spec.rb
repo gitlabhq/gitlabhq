@@ -72,15 +72,17 @@ RSpec.describe Projects::UpdateStatisticsService, feature_category: :groups_and_
     end
 
     context 'with an existing project with project repository' do
-      let_it_be(:project) { create(:project) }
-
       subject { service.execute }
 
       context 'when the repository is empty' do
+        let_it_be(:project) { create(:project) }
+
         it_behaves_like 'does not record an onboarding progress action'
       end
 
       context 'when the repository has more than one commit or more than one branch' do
+        let_it_be(:project) { create(:project, :readme) }
+
         where(:commit_count, :branch_count) do
           2 | 1
           1 | 2
@@ -95,6 +97,18 @@ RSpec.describe Projects::UpdateStatisticsService, feature_category: :groups_and_
           it_behaves_like 'records an onboarding progress action', :code_added do
             let(:namespace) { project.namespace }
           end
+        end
+
+        context 'when project is the initial project created from registration, which only has a readme file' do
+          it_behaves_like 'does not record an onboarding progress action'
+        end
+      end
+
+      context 'with project created from templates or imported where commit and branch count are no more than 1' do
+        let_it_be(:project) { create(:project, :custom_repo, files: { 'test.txt' => 'test', 'README.md' => 'test' }) }
+
+        it_behaves_like 'records an onboarding progress action', :code_added do
+          let(:namespace) { project.namespace }
         end
       end
     end

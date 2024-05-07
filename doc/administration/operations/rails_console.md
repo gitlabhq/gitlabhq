@@ -59,6 +59,13 @@ The console is in the toolbox pod. Refer to our [Kubernetes cheat sheet](https:/
 
 To exit the console, type: `quit`.
 
+### Disable autocompletion
+
+Ruby autocompletion can slow down the terminal. If you want to:
+
+- Disable autocompletion, run `Reline.autocompletion = IRB.conf[:USE_AUTOCOMPLETE] = false`.
+- Re-enable autocompletion, run `Reline.autocompletion = IRB.conf[:USE_AUTOCOMPLETE] = true`.
+
 ## Enable Active Record logging
 
 You can enable output of Active Record debug logging in the Rails console

@@ -18171,7 +18171,6 @@ A container repository.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="containerrepositorycandelete"></a>`canDelete` **{warning-solid}** | [`Boolean!`](#boolean) | **Deprecated** in GitLab 16.7. Use `userPermissions` field. See `ContainerRepositoryPermissions` type. |
 | <a id="containerrepositorycreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp when the container repository was created. |
 | <a id="containerrepositoryexpirationpolicycleanupstatus"></a>`expirationPolicyCleanupStatus` | [`ContainerRepositoryCleanupStatus`](#containerrepositorycleanupstatus) | Tags cleanup status for the container repository. |
 | <a id="containerrepositoryexpirationpolicystartedat"></a>`expirationPolicyStartedAt` | [`Time`](#time) | Timestamp when the cleanup done by the expiration policy was started on the container repository. |
@@ -18195,7 +18194,6 @@ Details of a container repository.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="containerrepositorydetailscandelete"></a>`canDelete` **{warning-solid}** | [`Boolean!`](#boolean) | **Deprecated** in GitLab 16.7. Use `userPermissions` field. See `ContainerRepositoryPermissions` type. |
 | <a id="containerrepositorydetailscreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp when the container repository was created. |
 | <a id="containerrepositorydetailsexpirationpolicycleanupstatus"></a>`expirationPolicyCleanupStatus` | [`ContainerRepositoryCleanupStatus`](#containerrepositorycleanupstatus) | Tags cleanup status for the container repository. |
 | <a id="containerrepositorydetailsexpirationpolicystartedat"></a>`expirationPolicyStartedAt` | [`Time`](#time) | Timestamp when the cleanup done by the expiration policy was started on the container repository. |
@@ -18297,7 +18295,6 @@ A tag from a container repository.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="containerrepositorytagcandelete"></a>`canDelete` **{warning-solid}** | [`Boolean!`](#boolean) | **Deprecated** in GitLab 16.7. Use `userPermissions` field. See `ContainerRepositoryTagPermissions` type. |
 | <a id="containerrepositorytagcreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp when the tag was created. |
 | <a id="containerrepositorytagdigest"></a>`digest` | [`String`](#string) | Digest of the tag. |
 | <a id="containerrepositorytaglocation"></a>`location` | [`String!`](#string) | URL of the tag. |
@@ -25687,7 +25684,6 @@ Represents a package with pipelines in the Package Registry.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="package_links"></a>`_links` | [`PackageLinks!`](#packagelinks) | Map of links to perform actions on the package. |
-| <a id="packagecandestroy"></a>`canDestroy` **{warning-solid}** | [`Boolean!`](#boolean) | **Deprecated** in GitLab 16.6. Superseded by `user_permissions` field. See `Types::PermissionTypes::Package` type. |
 | <a id="packagecreatedat"></a>`createdAt` | [`Time!`](#time) | Date of creation. |
 | <a id="packageid"></a>`id` | [`PackagesPackageID!`](#packagespackageid) | ID of the package. |
 | <a id="packagemetadata"></a>`metadata` | [`PackageMetadata`](#packagemetadata) | Package metadata. |
@@ -25712,7 +25708,6 @@ Represents a package in the Package Registry.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="packagebase_links"></a>`_links` | [`PackageLinks!`](#packagelinks) | Map of links to perform actions on the package. |
-| <a id="packagebasecandestroy"></a>`canDestroy` **{warning-solid}** | [`Boolean!`](#boolean) | **Deprecated** in GitLab 16.6. Superseded by `user_permissions` field. See `Types::PermissionTypes::Package` type. |
 | <a id="packagebasecreatedat"></a>`createdAt` | [`Time!`](#time) | Date of creation. |
 | <a id="packagebaseid"></a>`id` | [`PackagesPackageID!`](#packagespackageid) | ID of the package. |
 | <a id="packagebasemetadata"></a>`metadata` | [`PackageMetadata`](#packagemetadata) | Package metadata. |
@@ -25774,7 +25769,6 @@ Represents a package details in the Package Registry.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="packagedetailstype_links"></a>`_links` | [`PackageLinks!`](#packagelinks) | Map of links to perform actions on the package. |
-| <a id="packagedetailstypecandestroy"></a>`canDestroy` **{warning-solid}** | [`Boolean!`](#boolean) | **Deprecated** in GitLab 16.6. Superseded by `user_permissions` field. See `Types::PermissionTypes::Package` type. |
 | <a id="packagedetailstypecomposerconfigrepositoryurl"></a>`composerConfigRepositoryUrl` | [`String`](#string) | Url of the Composer setup endpoint. |
 | <a id="packagedetailstypecomposerurl"></a>`composerUrl` | [`String`](#string) | Url of the Composer endpoint. |
 | <a id="packagedetailstypeconanurl"></a>`conanUrl` | [`String`](#string) | Url of the Conan project endpoint. |

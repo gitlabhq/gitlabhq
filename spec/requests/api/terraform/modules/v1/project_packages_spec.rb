@@ -94,20 +94,6 @@ RSpec.describe API::Terraform::Modules::V1::ProjectPackages, feature_category: :
 
         api_request
       end
-
-      context 'when feature flag is disabled' do
-        before do
-          stub_feature_flags(skip_copy_operation_in_terraform_module_upload: false)
-        end
-
-        it 'sends use_final_store_path with false' do
-          expect(::Packages::PackageFileUploader).to receive(:workhorse_authorize).with(
-            hash_including(use_final_store_path: false)
-          ).and_call_original
-
-          api_request
-        end
-      end
     end
   end
 

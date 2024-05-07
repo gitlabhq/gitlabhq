@@ -11,7 +11,7 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Status:** Experiment
 
-> - Introduced [with a flag](../../../administration/feature_flags.md) named `go_proxy`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27376) in GitLab 13.1 [with a flag](../../../administration/feature_flags.md) named `go_proxy`. Disabled by default.
 
 FLAG:
 The availability of this feature is controlled by a feature flag.

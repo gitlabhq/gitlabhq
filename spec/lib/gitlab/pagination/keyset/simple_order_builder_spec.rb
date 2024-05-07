@@ -2,67 +2,191 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Pagination::Keyset::SimpleOrderBuilder do
-  let(:ordered_scope) { described_class.build(scope).first }
+RSpec.describe Gitlab::Pagination::Keyset::SimpleOrderBuilder,
+  :unlimited_max_formatted_output_length,
+  feature_category: :database do
+  let(:extraction_successful) { described_class.build(scope).last }
+  let(:ordered_scope) do
+    ordered_scope, success = described_class.build(scope)
+    raise "Failed to extract order" unless success
+
+    ordered_scope
+  end
+
   let(:order_object) { Gitlab::Pagination::Keyset::Order.extract_keyset_order_object(ordered_scope) }
-  let(:column_definition) { order_object.column_definitions.first }
+  let(:column_definitions) { order_object.column_definitions }
+  let(:column_definition) { column_definitions.first }
 
   subject(:sql_with_order) { ordered_scope.to_sql }
 
   context 'when no order present' do
-    let(:scope) { Project.where(id: [1, 2, 3]) }
-
-    it 'orders by primary key' do
-      expect(sql_with_order).to end_with('ORDER BY "projects"."id" DESC')
-    end
-
-    it 'sets the column definition to not nullable' do
-      expect(column_definition).to be_not_nullable
-    end
-
-    context "when the order scope's model uses default_scope" do
-      let(:scope) do
-        model = Class.new(ApplicationRecord) do
-          self.table_name = 'events'
-
-          default_scope { reorder(nil) } # rubocop:disable Cop/DefaultScope
-        end
-
-        model.reorder(nil)
-      end
+    context 'with a single-column primary key' do
+      let(:scope) { Project.where(id: [1, 2, 3]) }
 
       it 'orders by primary key' do
-        expect(sql_with_order).to end_with('ORDER BY "events"."id" DESC')
+        expect(sql_with_order).to end_with('ORDER BY "projects"."id" DESC')
+      end
+
+      it 'sets the column definition to not nullable' do
+        expect(column_definition).to be_not_nullable
+      end
+
+      context "when the order scope's model uses default_scope" do
+        let(:scope) do
+          model = Class.new(ApplicationRecord) do
+            self.table_name = 'events'
+
+            default_scope { reorder(nil) } # rubocop:disable Cop/DefaultScope -- this is testing default scope behavior
+          end
+
+          model.reorder(nil)
+        end
+
+        it 'orders by primary key' do
+          expect(sql_with_order).to end_with('ORDER BY "events"."id" DESC')
+        end
+      end
+    end
+
+    context 'with a multicolumn primary key' do
+      let(:scope) { MergeRequestDiffCommit.where(merge_request_diff_id: [1, 2, 3]) }
+
+      it 'orders by primary keys' do
+        expected = <<~SQL.strip.tr("\n", ' ')
+          ORDER BY "merge_request_diff_commits"."merge_request_diff_id" DESC,
+          "merge_request_diff_commits"."relative_order" DESC
+        SQL
+        expect(sql_with_order).to end_with(expected)
+      end
+
+      it 'sets the column definitions not nullable' do
+        expect(column_definitions).to all be_not_nullable
       end
     end
   end
 
   context 'when primary key order present' do
-    let(:scope) { Project.where(id: [1, 2, 3]).order(id: :asc) }
+    context 'with a single column primary key' do
+      let(:scope) { Project.where(id: [1, 2, 3]).order(id: :asc) }
 
-    it 'orders by primary key without altering the direction' do
-      expect(sql_with_order).to end_with('ORDER BY "projects"."id" ASC')
+      it 'orders by primary key without altering the direction' do
+        expect(sql_with_order).to end_with('ORDER BY "projects"."id" ASC')
+      end
+    end
+
+    context 'with a multicolumn primary key specifying all columns' do
+      let(:scope) do
+        MergeRequestDiffCommit.where(merge_request_diff_id: [1, 2, 3])
+                              .order(merge_request_diff_id: :asc, relative_order: :asc)
+      end
+
+      it 'orders by the full primary key' do
+        expected = <<~SQL.strip.tr("\n", ' ')
+          ORDER BY "merge_request_diff_commits"."merge_request_diff_id" ASC,
+          "merge_request_diff_commits"."relative_order" ASC
+        SQL
+        expect(sql_with_order).to end_with(expected)
+      end
+    end
+
+    context 'with a multicolumn primary key specifying all columns in a different order' do
+      let(:scope) do
+        MergeRequestDiffCommit.where(merge_request_diff_id: [1, 2, 3])
+                              .order(relative_order: :asc, merge_request_diff_id: :asc)
+      end
+
+      it 'orders by the full primary key' do
+        expected = <<~SQL.strip.tr("\n", ' ')
+          ORDER BY "merge_request_diff_commits"."relative_order" ASC,
+          "merge_request_diff_commits"."merge_request_diff_id" ASC
+        SQL
+        expect(sql_with_order).to end_with(expected)
+      end
+    end
+  end
+
+  context 'when ordered by a prefix of a composite primary key' do
+    context 'in ascending order' do
+      let(:scope) { MergeRequestDiffCommit.order(:merge_request_diff_id) }
+
+      it 'orders by the full primary key in ascending order' do
+        expected = <<~SQL.strip.tr("\n", ' ')
+          ORDER BY "merge_request_diff_commits"."merge_request_diff_id" ASC,
+          "merge_request_diff_commits"."relative_order" ASC
+        SQL
+        expect(sql_with_order).to end_with(expected)
+      end
+    end
+
+    context 'in descending order' do
+      let(:scope) { MergeRequestDiffCommit.order(merge_request_diff_id: :desc) }
+
+      it 'orders by the full primary key in descending order' do
+        expected = <<~SQL.strip.tr("\n", ' ')
+          ORDER BY "merge_request_diff_commits"."merge_request_diff_id" DESC,
+          "merge_request_diff_commits"."relative_order" DESC
+        SQL
+        expect(sql_with_order).to end_with(expected)
+      end
     end
   end
 
   context 'when ordered by other column' do
-    let(:scope) { Project.where(id: [1, 2, 3]).order(created_at: :asc) }
+    context 'with a single-column primary key' do
+      let(:scope) { Project.where(id: [1, 2, 3]).order(created_at: :asc) }
 
-    it 'adds extra primary key order as tie-breaker' do
-      expect(sql_with_order).to end_with('ORDER BY "projects"."created_at" ASC, "projects"."id" DESC')
+      it 'adds extra primary key order as tie-breaker' do
+        expect(sql_with_order).to end_with('ORDER BY "projects"."created_at" ASC, "projects"."id" DESC')
+      end
+
+      it 'sets the column definition for created_at' do
+        expect(column_definition.attribute_name).to eq('created_at')
+        expect(column_definition.nullable?).to eq(true) # be_nullable calls non_null? method for some reason
+      end
     end
 
-    it 'sets the column definition for created_at' do
-      expect(column_definition.attribute_name).to eq('created_at')
-      expect(column_definition.nullable?).to eq(true) # be_nullable calls non_null? method for some reason
+    context 'with a multi-column primary key' do
+      let(:scope) { MergeRequestDiffCommit.where(merge_request_diff_id: [1, 2, 3]).order(:authored_date) }
+
+      it 'adds extra primary keys as tie-breaker' do
+        expect(sql_with_order).to end_with(<<~SQL.strip.tr("\n", ' '))
+          ORDER BY "merge_request_diff_commits"."authored_date" ASC,
+          "merge_request_diff_commits"."merge_request_diff_id" DESC,
+          "merge_request_diff_commits"."relative_order" DESC
+        SQL
+      end
+
+      it 'sets the column definition for authored_date nullable' do
+        expect(column_definition.attribute_name).to eq('authored_date')
+        expect(column_definition.nullable?).to eq(true) # be_nullable calls non_null? method for some reason
+      end
     end
   end
 
   context 'when ordered by two columns where the last one is the tie breaker' do
-    let(:scope) { Project.where(id: [1, 2, 3]).order(created_at: :asc, id: :asc) }
+    context 'with a single column primary key' do
+      let(:scope) { Project.where(id: [1, 2, 3]).order(created_at: :asc, id: :asc) }
 
-    it 'preserves the order' do
-      expect(sql_with_order).to end_with('ORDER BY "projects"."created_at" ASC, "projects"."id" ASC')
+      it 'preserves the order' do
+        expect(sql_with_order).to end_with('ORDER BY "projects"."created_at" ASC, "projects"."id" ASC')
+      end
+    end
+
+    context 'with a multi-column primary key' do
+      context 'when the full multi-column primary key is given as a tie breaker' do
+        let(:scope) do
+          MergeRequestDiffCommit.where(merge_request_diff_id: [1, 2, 3])
+                                .order(authored_date: :asc, merge_request_diff_id: :asc, relative_order: :asc)
+        end
+
+        it 'preserves the order' do
+          expect(sql_with_order).to end_with(<<~SQL.strip.tr("\n", ' '))
+            ORDER BY "merge_request_diff_commits"."authored_date" ASC,
+            "merge_request_diff_commits"."merge_request_diff_id" ASC,
+            "merge_request_diff_commits"."relative_order" ASC
+          SQL
+        end
+      end
     end
   end
 

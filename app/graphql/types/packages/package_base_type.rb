@@ -16,13 +16,6 @@ module Types
 
       field :_links, Types::Packages::PackageLinksType, null: false, method: :itself,
         description: 'Map of links to perform actions on the package.'
-      field :can_destroy, GraphQL::Types::Boolean,
-        null: false,
-        deprecated: {
-          reason: 'Superseded by `user_permissions` field. See `Types::PermissionTypes::Package` type',
-          milestone: '16.6'
-        },
-        description: 'Whether the user can destroy the package.'
       field :created_at, Types::TimeType, null: false, description: 'Date of creation.'
       field :metadata, Types::Packages::MetadataType,
         null: true,
@@ -44,10 +37,6 @@ module Types
 
       def project
         Gitlab::Graphql::Loaders::BatchModelLoader.new(Project, object.project_id).find
-      end
-
-      def can_destroy
-        Ability.allowed?(current_user, :destroy_package, object)
       end
 
       def package_protection_rule_exists

@@ -2314,20 +2314,6 @@ From 17.0, npm and Yarn packages will be uploaded asynchronously. This is a brea
 As a workaround, you should use the [packages API](https://docs.gitlab.com/ee/api/packages.html) to check for packages.
 
 </div>
-
-<div class="deprecation breaking-change" data-milestone="17.0">
-
-### project.pipeline.securityReportFindings GraphQL query
-
-<div class="deprecation-notes">
-- Announced in GitLab <span class="milestone">15.1</span>
-- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/343475).
-</div>
-
-Previous work helped [align the vulnerabilities calls for pipeline security tabs](https://gitlab.com/gitlab-org/gitlab/-/issues/343469) to match the vulnerabilities calls for project-level and group-level vulnerability reports. This helped the frontend have a more consistent interface. The old `project.pipeline.securityReportFindings` query was formatted differently than other vulnerability data calls. Now that it has been replaced with the new `project.pipeline.vulnerabilities` field, the old `project.pipeline.securityReportFindings` is being deprecated and will be removed in GitLab 17.0.
-
-</div>
 </div>
 
 <div class="milestone-wrapper" data-milestone="16.9">

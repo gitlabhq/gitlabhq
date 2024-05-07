@@ -55,7 +55,9 @@ RSpec.describe 'container repository details', feature_category: :container_regi
         <<~GQL
           query($id: ContainerRepositoryID!, $n: ContainerRepositoryTagSort) {
             containerRepository(id: $id) {
-              canDelete
+              userPermissions {
+                destroyContainerRepository
+              }
               tags(sort: $n) {
                 edges {
                   node {
@@ -68,7 +70,7 @@ RSpec.describe 'container repository details', feature_category: :container_regi
         GQL
       end
 
-      where(:project_visibility, :role, :access_granted, :can_delete) do
+      where(:project_visibility, :role, :access_granted, :destroy_container_repository) do
         :private | :maintainer | true  | true
         :private | :developer  | true  | true
         :private | :reporter   | true  | false
@@ -92,7 +94,7 @@ RSpec.describe 'container repository details', feature_category: :container_regi
 
           if access_granted
             expect(tags_response.size).to eq(repository_tags.size)
-            expect(container_repository_details_response.dig('canDelete')).to eq(can_delete)
+            expect(container_repository_details_response.dig('userPermissions', 'destroyContainerRepository')).to eq(destroy_container_repository)
           else
             expect(container_repository_details_response).to eq(nil)
           end

@@ -19,14 +19,14 @@ RSpec.describe Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModificatio
     describe '.context_key' do
       it 'contains class name' do
         expect(described_class.context_key)
-          .to eq 'analyzer_prevent_cross_database_modification_context'.to_sym
+          .to eq :analyzer_prevent_cross_database_modification_context
       end
     end
 
     describe '.suppress_key' do
       it 'contains class name' do
         expect(described_class.suppress_key)
-          .to eq 'analyzer_prevent_cross_database_modification_suppressed'.to_sym
+          .to eq :analyzer_prevent_cross_database_modification_suppressed
       end
     end
   end

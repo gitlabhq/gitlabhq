@@ -13,7 +13,7 @@ RSpec.describe GitlabSchema.types['PackageBase'], feature_category: :package_reg
       created_at updated_at
       project
       tags metadata
-      status status_message can_destroy
+      status status_message
       user_permissions
     ]
 

@@ -6,6 +6,7 @@ module Projects
 
     ImportSourceDisabledError = Class.new(StandardError)
     INTERNAL_IMPORT_SOURCES = %w[gitlab_custom_project_template gitlab_project_migration].freeze
+    README_FILE = 'README.md'
 
     def initialize(user, params)
       @current_user = user
@@ -197,7 +198,7 @@ module Projects
       commit_attrs = {
         branch_name: default_branch,
         commit_message: 'Initial commit',
-        file_path: 'README.md',
+        file_path: README_FILE,
         file_content: readme_content
       }
 

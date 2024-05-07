@@ -69,7 +69,6 @@ query getProjectContainerRepositories(
         path
         status
         location
-        canDelete
         createdAt
         expirationPolicyStartedAt
         expirationPolicyCleanupStatus

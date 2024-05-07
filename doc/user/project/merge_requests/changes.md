@@ -47,6 +47,18 @@ The diff also includes navigation and comment aids to the left of the file, in t
     a line number, then select **Copy link address**.
   - To highlight a line, select the line number.
 
+## Show a list of changed files
+
+Use the **file browser** to view a list of files changed in a merge request:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Code > Merge requests** and find your merge request.
+1. Below the merge request title, select **Changes**.
+1. Select **Show file browser** (**{file-tree}**) or press <kbd>F</kbd> to show
+   the file tree.
+   - For a tree view that shows nesting, select **Tree view** (**{file-tree}**).
+   - For a file list without nesting, select **List view** (**{list-bulleted}**).
+
 ## Show all changes in a merge request
 
 To view the diff of changes included in a merge request:

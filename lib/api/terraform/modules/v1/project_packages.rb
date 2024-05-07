@@ -53,16 +53,11 @@ module API
             end
 
             def authorize_workhorse_params
-              params = {
+              {
                 subject: authorized_user_project,
-                maximum_size: authorized_user_project.actual_limits.terraform_module_max_file_size
+                maximum_size: authorized_user_project.actual_limits.terraform_module_max_file_size,
+                use_final_store_path: true
               }
-
-              if ::Feature.enabled?(:skip_copy_operation_in_terraform_module_upload, authorized_user_project)
-                params[:use_final_store_path] = true
-              end
-
-              params
             end
           end
 

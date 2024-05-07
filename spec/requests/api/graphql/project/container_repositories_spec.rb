@@ -65,7 +65,7 @@ RSpec.describe 'getting container repositories in a project', feature_category: 
   context 'with different permissions' do
     let_it_be(:user) { create(:user) }
 
-    where(:project_visibility, :role, :access_granted, :can_delete) do
+    where(:project_visibility, :role, :access_granted, :destroy_container_repository) do
       :private | :maintainer | true  | true
       :private | :developer  | true  | true
       :private | :reporter   | true  | false
@@ -90,7 +90,7 @@ RSpec.describe 'getting container repositories in a project', feature_category: 
         if access_granted
           expect(container_repositories_response.size).to eq(container_repositories.size)
           container_repositories_response.each do |repository_response|
-            expect(repository_response.dig('node', 'canDelete')).to eq(can_delete)
+            expect(repository_response.dig('node', 'userPermissions', 'destroyContainerRepository')).to eq(destroy_container_repository)
           end
         else
           expect(container_repositories_response).to eq(nil)

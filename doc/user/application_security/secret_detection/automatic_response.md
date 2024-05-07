@@ -46,6 +46,8 @@ Credentials are only post-processed when Secret Detection finds them:
 This diagram describes how a post-processing hook revokes a secret in the GitLab application:
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
+
 sequenceDiagram
     autonumber
     GitLab Rails-->+GitLab Rails: gl-secret-detection-report.json

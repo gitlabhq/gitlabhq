@@ -280,16 +280,16 @@ RSpec.describe Gitlab::ImportExport::Project::RelationFactory, :use_clean_rails_
     let(:relation_sym) { :labels }
     let(:relation_hash) do
       {
-        "id": 3,
-        "title": "test3",
-        "color": "#428bca",
-        "group_id": project.group.id,
-        "created_at": "2016-07-22T08:55:44.161Z",
-        "updated_at": "2016-07-22T08:55:44.161Z",
-        "template": false,
-        "description": "",
-        "project_id": project.id,
-        "type": "GroupLabel"
+        id: 3,
+        title: "test3",
+        color: "#428bca",
+        group_id: project.group.id,
+        created_at: "2016-07-22T08:55:44.161Z",
+        updated_at: "2016-07-22T08:55:44.161Z",
+        template: false,
+        description: "",
+        project_id: project.id,
+        type: "GroupLabel"
       }
     end
 

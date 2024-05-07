@@ -10,13 +10,6 @@ module Types
 
     expose_permissions Types::PermissionTypes::ContainerRepository
 
-    field :can_delete, GraphQL::Types::Boolean,
-      null: false,
-      deprecated: {
-        reason: 'Use `userPermissions` field. See `ContainerRepositoryPermissions` type',
-        milestone: '16.7'
-      },
-      description: 'Can the current user delete the container repository.'
     field :created_at, Types::TimeType, null: false, description: 'Timestamp when the container repository was created.'
     field :expiration_policy_cleanup_status, Types::ContainerRepositoryCleanupStatusEnum, null: true, description: 'Tags cleanup status for the container repository.'
     field :expiration_policy_started_at, Types::TimeType, null: true, description: 'Timestamp when the cleanup done by the expiration policy was started on the container repository.'
@@ -36,10 +29,6 @@ module Types
     field :status, Types::ContainerRepositoryStatusEnum, null: true, description: 'Status of the container repository.'
     field :tags_count, GraphQL::Types::Int, null: false, description: 'Number of tags associated with this image.'
     field :updated_at, Types::TimeType, null: false, description: 'Timestamp when the container repository was updated.'
-
-    def can_delete
-      Ability.allowed?(current_user, :update_container_image, object)
-    end
 
     def project
       Gitlab::Graphql::Loaders::BatchModelLoader.new(Project, object.project_id).find

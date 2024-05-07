@@ -5,7 +5,7 @@ require 'fast_spec_helper'
 RSpec.describe Gitlab::Slug::Path, feature_category: :shared do
   describe '#generate' do
     {
-      'name': 'name',
+      name: 'name',
       'james.atom@bond.com': 'james',
       '--foobar--': 'foobar--',
       '--foo_bar--': 'foo_bar--',
