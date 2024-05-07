@@ -1097,9 +1097,6 @@ production: &base
       # - { name: 'bitbucket',
       #     app_id: 'YOUR_APP_ID',
       #     app_secret: 'YOUR_APP_SECRET' }
-      # - { name: 'dingtalk',
-      #     app_id: 'YOUR_APP_ID',
-      #     app_secret: 'YOUR_APP_SECRET' }
       # - { name: 'gitlab',
       #     app_id: 'YOUR_APP_ID',
       #     app_secret: 'YOUR_APP_SECRET',
@@ -1602,9 +1599,6 @@ test:
           verify_ssl: false,
           args: { scope: 'user:email' } }
       - { name: 'bitbucket',
-          app_id: 'YOUR_APP_ID',
-          app_secret: 'YOUR_APP_SECRET' }
-      - { name: 'dingtalk',
           app_id: 'YOUR_APP_ID',
           app_secret: 'YOUR_APP_SECRET' }
       - { name: 'gitlab',

@@ -9,7 +9,6 @@ module AuthHelper
     azure_oauth2
     bitbucket
     facebook
-    dingtalk
     github
     gitlab
     google_oauth2

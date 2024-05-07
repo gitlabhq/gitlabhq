@@ -1185,8 +1185,6 @@ GEM
       omniauth-oauth2 (~> 1)
     omniauth-azure-activedirectory-v2 (2.0.0)
       omniauth-oauth2 (~> 1.8)
-    omniauth-dingtalk-oauth2 (1.0.1)
-      omniauth-oauth2 (~> 1.7)
     omniauth-facebook (4.0.0)
       omniauth-oauth2 (~> 1.2)
     omniauth-github (2.0.1)
@@ -2118,7 +2116,6 @@ DEPENDENCIES
   omniauth-atlassian-oauth2 (~> 0.2.0)
   omniauth-auth0 (~> 3.1)
   omniauth-azure-activedirectory-v2 (~> 2.0)
-  omniauth-dingtalk-oauth2 (~> 1.0)
   omniauth-facebook (~> 4.0.0)
   omniauth-github (= 2.0.1)
   omniauth-gitlab (~> 4.0.0)!
