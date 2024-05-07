@@ -23,15 +23,7 @@ class TagsFinder < GitRefsFinder
 
   private
 
-  def per_page
-    params[:per_page].presence
-  end
-
   def page_token
     "#{Gitlab::Git::TAG_REF_PREFIX}#{@params[:page_token]}" if params[:page_token]
-  end
-
-  def pagination_params
-    { limit: per_page, page_token: page_token }
   end
 end
