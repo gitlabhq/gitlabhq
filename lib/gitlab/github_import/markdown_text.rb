@@ -10,7 +10,7 @@ module Gitlab
 
       # On github.com we have base url for docs and CDN url for media.
       # On github EE as far as we can know there is no CDN urls and media is placed on base url.
-      GITHUB_MEDIA_CDN = 'https://user-images.githubusercontent.com'
+      GITHUB_MEDIA_CDN = 'https://user-images.githubusercontent.com/'
 
       ISSUE_REF_MATCHER = '%{github_url}/%{import_source}/issues'
       PULL_REF_MATCHER = '%{github_url}/%{import_source}/pull'
