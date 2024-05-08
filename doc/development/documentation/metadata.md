@@ -90,12 +90,16 @@ When a merge request contains documentation, the information in the `CODEOWNERS`
 - The list of users in the **Approvers** section.
 - The technical writer that the GitLab Bot pings for community contributions.
 
-You can use a Rake task to update the `CODEOWNERS` file.
+You can use a Rake task to [update the `CODEOWNERS` file](#update-the-codeowners-file).
 
 ### Update the `CODEOWNERS` file
 
 When groups or [TW assignments](https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments)
-change, you must update the `CODEOWNERS` file:
+change, you must update the `CODEOWNERS` file. To do this, you run the `codeowners.rake` Rake task.
+This task checks all files in the `doc` directory, reads the metadata, and uses the information in
+the `codeowners.rake` file to populate the `CODEOWNERS` file.
+
+To update the `CODEOWNERS` file:
 
 1. Update the [stage and group metadata](#stage-and-group-metadata) for any affected doc pages, if necessary. If there are many changes, you can do this step in a separate MR.
 1. Update the [`codeowners.rake`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/tasks/gitlab/tw/codeowners.rake) file with the changes.

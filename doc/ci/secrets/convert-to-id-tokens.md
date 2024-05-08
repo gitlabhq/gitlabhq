@@ -61,7 +61,7 @@ $ vault write auth/jwt/config \
 
 After you make this change, jobs that use `CI_JOB_JWT` start to fail.
 
-You can create multiple authentication paths in Vault, which enable you to transition to IT Tokens on a project by job basis without disruption.
+You can create multiple authentication paths in Vault, which enable you to transition to ID Tokens on a project by job basis without disruption.
 
 1. Configure a new authentication path with the name `jwt_v2`, run:
 

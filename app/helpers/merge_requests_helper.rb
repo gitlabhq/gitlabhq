@@ -386,7 +386,7 @@ module MergeRequestsHelper
           title: _('Merged as assignee (1 week ago)'),
           query: 'assignedMergeRequests',
           variables: {
-            status: 'merged',
+            state: 'merged',
             mergedAfter: 1.week.ago.to_time.iso8601
           }
         },
@@ -394,7 +394,7 @@ module MergeRequestsHelper
           title: _('Merged as reviewer (1 week ago)'),
           query: 'reviewRequestedMergeRequests',
           variables: {
-            status: 'merged',
+            state: 'merged',
             mergedAfter: 1.week.ago.to_time.iso8601
           }
         }

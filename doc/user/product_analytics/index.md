@@ -19,8 +19,10 @@ DETAILS:
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/414865) from GitLab self-managed to GitLab.com in 16.7.
 > - Enabled in GitLab 16.7 as a [Beta](../../policy/experiment-beta-support.md#beta) feature.
 > - `product_analytics_dashboards` [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/398653) by default in GitLab 16.11.
-> - `product_analytics_admin_settings` [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/385602) by default in GitLab 16.11.
-> - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/444345) to GitLab self-managed and GitLab Dedicated in 16.11.
+> - [Enabled on self-managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/444345) in GitLab 16.11.
+
+FLAG:
+The availability of this feature is controlled by feature flags. For more information, see the history.
 
 For more information about the vision and development of product analytics, see the [group direction page](https://about.gitlab.com/direction/monitor/product-analytics/).
 To leave feedback about product analytics bugs or functionality:
@@ -45,16 +47,16 @@ title: Product Analytics flow
 flowchart TB
     subgraph Event collection
         A([SDK]) --Send user data--> B[Snowplow Collector]
-        B --Pass data through--> C[Snowplow Enricher]
+        B --Pass data--> C[Snowplow Enricher]
     end
     subgraph Data warehouse
         C --Transform and enrich data--> D([ClickHouse])
     end
-    subgraph Data visualization with dashboards
-        E([Dashboards]) --Generated from the YAML definition--> F[Panels/Visualizations]
+    subgraph Data visualization
+        F([Dashboards with panels/visualizations])
         F --Request data--> G[Product Analytics API]
         G --Run Cube queries with pre-aggregations--> H[Cube]
-        H --Get data from database--> D
+        H --Get data--> D
         D --Return results--> H
         H --Transform data to be rendered--> G
         G --Return data--> F
@@ -65,8 +67,9 @@ flowchart TB
 
 > - Introduced in GitLab 15.6 [with a flag](../../administration/feature_flags.md) named `cube_api_proxy`. Disabled by default.
 > - Moved behind a [flag](../../administration/feature_flags.md) named `product_analytics_admin_settings` in GitLab 15.7. Disabled by default.
-> - `cube_api_proxy` removed and replaced with `product_analytics_internal_preview` in GitLab 15.10.
-> - `product_analytics_internal_preview` replaced with `product_analytics_dashboards` in GitLab 15.11.
+> - Feature flag `cube_api_proxy` removed and replaced with `product_analytics_internal_preview` in GitLab 15.10.
+> - Feature flag `product_analytics_internal_preview` replaced with `product_analytics_dashboards` in GitLab 15.11.
+> - Feature flag `product_analytics_admin_settings` [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/385602) by default in GitLab 16.11.
 
 To track events in your project's applications,
 you must enable and configure product analytics.
@@ -220,7 +223,6 @@ You can instrument code to collect data by using [tracking SDKs](instrumentation
 ## Product analytics dashboards
 
 > - Introduced in GitLab 15.5 [with a flag](../../administration/feature_flags.md) named `product_analytics_internal_preview`. Disabled by default.
-> - `product_analytics_internal_preview` replaced with `product_analytics_dashboards` in GitLab 15.11.
 
 Product analytics dashboards are a subset of dashboards under [Analytics dashboards](../analytics/analytics_dashboards.md).
 
