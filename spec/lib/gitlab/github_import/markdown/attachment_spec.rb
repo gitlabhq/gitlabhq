@@ -71,6 +71,12 @@ RSpec.describe Gitlab::GithubImport::Markdown::Attachment, feature_category: :im
         it { expect(described_class.from_markdown(markdown_node)).to eq nil }
       end
 
+      context 'with allowed domain as subdomain' do
+        let(:url) { "https://user-images.githubusercontent.com.attacker.controlled.domain/1/uuid-1.#{image_extension}" }
+
+        it { expect(described_class.from_markdown(markdown_node)).to eq nil }
+      end
+
       context 'when URL is blank' do
         let(:url) { nil }
 

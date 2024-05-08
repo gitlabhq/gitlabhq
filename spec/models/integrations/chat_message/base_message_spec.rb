@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Integrations::ChatMessage::BaseMessage do
+RSpec.describe Integrations::ChatMessage::BaseMessage, feature_category: :integrations do
   let(:base_message) { described_class.new(args) }
   let(:args) { { project_url: 'https://gitlab-domain.com' } }
 

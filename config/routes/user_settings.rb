@@ -7,6 +7,7 @@ namespace :user_settings do
   end
   resources :active_sessions, only: [:index, :destroy]
   resource :profile, only: [:show, :update]
+  resource :identities, only: [:new, :create]
   resource :password, only: [:new, :create, :edit, :update] do
     member do
       put :reset

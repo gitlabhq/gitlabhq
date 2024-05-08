@@ -24,10 +24,24 @@ module Gitlab
         error_message.present?
       end
 
+      # Require user authorization to link identity.
+      # False by default, enabled in specific subclasses.
+      def authorization_required?
+        false
+      end
+
       def error_message
         identity.validate
 
         identity.errors.full_messages.join(', ')
+      end
+
+      def provider
+        oauth['provider']
+      end
+
+      def uid
+        oauth['uid']
       end
 
       private
@@ -47,14 +61,6 @@ module Gitlab
                                   .first_or_initialize(extern_uid: uid)
       end
       # rubocop: enable CodeReuse/ActiveRecord
-
-      def provider
-        oauth['provider']
-      end
-
-      def uid
-        oauth['uid']
-      end
     end
   end
 end
