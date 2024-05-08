@@ -153,12 +153,12 @@ secrets:
       - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
           $SECURE_BINARIES_ANALYZERS =~ /\bsecrets\b/
   variables:
-    SECURE_BINARIES_ANALYZER_VERSION: "4"
+    SECURE_BINARIES_ANALYZER_VERSION: "6"
 
 semgrep:
   extends: .download_images
   variables:
-    SECURE_BINARIES_ANALYZER_VERSION: "3"
+    SECURE_BINARIES_ANALYZER_VERSION: "5"
   only:
     variables:
       - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&

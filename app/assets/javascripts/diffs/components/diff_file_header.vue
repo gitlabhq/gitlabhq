@@ -319,7 +319,7 @@ export default {
       />
       <a
         :v-once="!viewDiffsFileByFile"
-        class="gl-mr-2 gl-text-decoration-none! gl-word-break-all"
+        class="gl-mr-2 gl-text-decoration-none! gl-break-all"
         :href="titleLink"
         data-testid="file-title"
         @click="handleFileNameClick"

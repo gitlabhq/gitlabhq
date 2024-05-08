@@ -171,6 +171,7 @@ module Types
     mount_mutation Mutations::Ci::PipelineTrigger::Update, alpha: { milestone: '16.3' }
     mount_mutation Mutations::Ci::ProjectCiCdSettingsUpdate
     mount_mutation Mutations::Ci::Runner::BulkDelete, alpha: { milestone: '15.3' }
+    mount_mutation Mutations::Ci::Runner::Cache::Clear
     mount_mutation Mutations::Ci::Runner::Create, alpha: { milestone: '15.10' }
     mount_mutation Mutations::Ci::Runner::Delete
     mount_mutation Mutations::Ci::Runner::Update

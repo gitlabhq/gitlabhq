@@ -18,7 +18,7 @@ import removeProjectCIJobTokenScopeMutation from '../graphql/mutations/remove_pr
 import updateCIJobTokenScopeMutation from '../graphql/mutations/update_ci_job_token_scope.mutation.graphql';
 import getCIJobTokenScopeQuery from '../graphql/queries/get_ci_job_token_scope.query.graphql';
 import getProjectsWithCIJobTokenScopeQuery from '../graphql/queries/get_projects_with_ci_job_token_scope.query.graphql';
-import TokenProjectsTable from './token_projects_table.vue';
+import TokenAccessTable from './token_access_table.vue';
 
 // Note: This component will be removed in 17.0, as the outbound access token is getting deprecated
 export default {
@@ -48,15 +48,13 @@ export default {
   }),
   fields: [
     {
-      key: 'project',
+      key: 'fullPath',
       label: __('Project that can be accessed'),
-      thClass: 'gl-border-t-none!',
     },
     {
       key: 'actions',
       label: '',
       tdClass: 'gl-text-right',
-      thClass: 'gl-border-t-none!',
     },
   ],
   components: {
@@ -68,7 +66,7 @@ export default {
     GlLoadingIcon,
     GlSprintf,
     GlToggle,
-    TokenProjectsTable,
+    TokenAccessTable,
   },
   mixins: [glFeatureFlagMixin()],
   inject: {
@@ -174,7 +172,7 @@ export default {
         this.getProjects();
       }
     },
-    async removeProject(removeTargetPath) {
+    async removeProject(project) {
       try {
         const {
           data: {
@@ -185,7 +183,7 @@ export default {
           variables: {
             input: {
               projectPath: this.fullPath,
-              targetProjectPath: removeTargetPath,
+              targetProjectPath: project.fullPath,
             },
           },
         });
@@ -282,10 +280,10 @@ export default {
               <gl-button size="small" disabled>{{ $options.i18n.addProject }}</gl-button>
             </div>
           </template>
-          <token-projects-table
-            :projects="projects"
+          <token-access-table
+            :items="projects"
             :table-fields="$options.fields"
-            @removeProject="removeProject"
+            @removeItem="removeProject"
           />
         </gl-card>
       </div>

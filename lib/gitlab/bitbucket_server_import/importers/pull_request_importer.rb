@@ -56,7 +56,11 @@ module Gitlab
           description += author_line
           description += object[:description] if object[:description]
 
-          mentions_converter.convert(description)
+          if Feature.enabled?(:bitbucket_server_convert_mentions_to_users, project.creator)
+            description = mentions_converter.convert(description)
+          end
+
+          description
         end
 
         def author_line

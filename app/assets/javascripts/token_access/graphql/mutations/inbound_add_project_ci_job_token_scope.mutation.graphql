@@ -1,7 +1,0 @@
-mutation inboundAddProjectCIJobTokenScope($projectPath: ID!, $targetProjectPath: ID!) {
-  ciJobTokenScopeAddProject(
-    input: { projectPath: $projectPath, targetProjectPath: $targetProjectPath, direction: INBOUND }
-  ) {
-    errors
-  }
-}

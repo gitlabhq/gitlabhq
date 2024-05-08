@@ -2523,36 +2523,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
       it { is_expected.to be_instance_of(Gitlab::Ci::Variables::Collection) }
 
-      context 'when feature flag remove_shared_jwts enabled' do
-        it { expect(subject.to_runner_variables).to eq(predefined_variables) }
-      end
-
-      context 'when feature flag remove_shared_jwts disabled' do
-        before do
-          stub_feature_flags(remove_shared_jwts: false)
-          predefined_variables.insert(11,
-            *[{ key: 'CI_JOB_JWT', value: 'ci.job.jwt', public: false, masked: true },
-            { key: 'CI_JOB_JWT_V1', value: 'ci.job.jwt', public: false, masked: true },
-            { key: 'CI_JOB_JWT_V2', value: 'ci.job.jwtv2', public: false, masked: true }])
-        end
-
-        it { expect(subject.to_runner_variables).to eq(predefined_variables) }
-
-        context 'when CI_JOB_JWT generation fails' do
-          [
-            OpenSSL::PKey::RSAError,
-            Gitlab::Ci::Jwt::NoSigningKeyError
-          ].each do |reason_to_fail|
-            it 'CI_JOB_JWT is not included' do
-              expect(Gitlab::Ci::Jwt).to receive(:for_build).and_raise(reason_to_fail)
-              expect(Gitlab::ErrorTracking).to receive(:track_exception)
-
-              expect { subject }.not_to raise_error
-              expect(subject.pluck(:key)).not_to include('CI_JOB_JWT')
-            end
-          end
-        end
-      end
+      it { expect(subject.to_runner_variables).to eq(predefined_variables) }
 
       it 'excludes variables that require an environment or user' do
         environment_based_variables_collection = subject.filter do |variable|

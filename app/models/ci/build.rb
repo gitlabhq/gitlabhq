@@ -1160,23 +1160,7 @@ module Ci
     end
 
     def job_jwt_variables
-      if Feature.enabled?(:remove_shared_jwts) || id_tokens?
-        id_tokens_variables
-      else
-        predefined_jwt_variables
-      end
-    end
-
-    def predefined_jwt_variables
-      Gitlab::Ci::Variables::Collection.new.tap do |variables|
-        jwt = Gitlab::Ci::Jwt.for_build(self)
-        jwt_v2 = Gitlab::Ci::JwtV2.for_build(self)
-        variables.append(key: 'CI_JOB_JWT', value: jwt, public: false, masked: true)
-        variables.append(key: 'CI_JOB_JWT_V1', value: jwt, public: false, masked: true)
-        variables.append(key: 'CI_JOB_JWT_V2', value: jwt_v2, public: false, masked: true)
-      rescue OpenSSL::PKey::RSAError, Gitlab::Ci::Jwt::NoSigningKeyError => e
-        Gitlab::ErrorTracking.track_exception(e)
-      end
+      id_tokens_variables
     end
 
     def id_tokens_variables

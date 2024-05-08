@@ -9249,45 +9249,6 @@ CREATE SEQUENCE geo_events_id_seq
 
 ALTER SEQUENCE geo_events_id_seq OWNED BY geo_events.id;
 
-CREATE TABLE geo_hashed_storage_attachments_events (
-    id bigint NOT NULL,
-    project_id integer NOT NULL,
-    old_attachments_path text NOT NULL,
-    new_attachments_path text NOT NULL
-);
-
-CREATE SEQUENCE geo_hashed_storage_attachments_events_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE geo_hashed_storage_attachments_events_id_seq OWNED BY geo_hashed_storage_attachments_events.id;
-
-CREATE TABLE geo_hashed_storage_migrated_events (
-    id bigint NOT NULL,
-    project_id integer NOT NULL,
-    repository_storage_name text NOT NULL,
-    old_disk_path text NOT NULL,
-    new_disk_path text NOT NULL,
-    old_wiki_disk_path text NOT NULL,
-    new_wiki_disk_path text NOT NULL,
-    old_storage_version smallint,
-    new_storage_version smallint NOT NULL,
-    old_design_disk_path text,
-    new_design_disk_path text
-);
-
-CREATE SEQUENCE geo_hashed_storage_migrated_events_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE geo_hashed_storage_migrated_events_id_seq OWNED BY geo_hashed_storage_migrated_events.id;
-
 CREATE TABLE geo_node_namespace_links (
     id integer NOT NULL,
     geo_node_id integer NOT NULL,
@@ -9382,97 +9343,6 @@ CREATE SEQUENCE geo_repositories_changed_events_id_seq
     CACHE 1;
 
 ALTER SEQUENCE geo_repositories_changed_events_id_seq OWNED BY geo_repositories_changed_events.id;
-
-CREATE TABLE geo_repository_created_events (
-    id bigint NOT NULL,
-    project_id integer NOT NULL,
-    repository_storage_name text NOT NULL,
-    repo_path text NOT NULL,
-    wiki_path text,
-    project_name text NOT NULL
-);
-
-CREATE SEQUENCE geo_repository_created_events_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE geo_repository_created_events_id_seq OWNED BY geo_repository_created_events.id;
-
-CREATE TABLE geo_repository_deleted_events (
-    id bigint NOT NULL,
-    project_id integer NOT NULL,
-    repository_storage_name text NOT NULL,
-    deleted_path text NOT NULL,
-    deleted_wiki_path text,
-    deleted_project_name text NOT NULL
-);
-
-CREATE SEQUENCE geo_repository_deleted_events_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE geo_repository_deleted_events_id_seq OWNED BY geo_repository_deleted_events.id;
-
-CREATE TABLE geo_repository_renamed_events (
-    id bigint NOT NULL,
-    project_id integer NOT NULL,
-    repository_storage_name text NOT NULL,
-    old_path_with_namespace text NOT NULL,
-    new_path_with_namespace text NOT NULL,
-    old_wiki_path_with_namespace text NOT NULL,
-    new_wiki_path_with_namespace text NOT NULL,
-    old_path text NOT NULL,
-    new_path text NOT NULL
-);
-
-CREATE SEQUENCE geo_repository_renamed_events_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE geo_repository_renamed_events_id_seq OWNED BY geo_repository_renamed_events.id;
-
-CREATE TABLE geo_repository_updated_events (
-    id bigint NOT NULL,
-    branches_affected integer NOT NULL,
-    tags_affected integer NOT NULL,
-    project_id integer NOT NULL,
-    source smallint NOT NULL,
-    new_branch boolean DEFAULT false NOT NULL,
-    remove_branch boolean DEFAULT false NOT NULL,
-    ref text
-);
-
-CREATE SEQUENCE geo_repository_updated_events_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE geo_repository_updated_events_id_seq OWNED BY geo_repository_updated_events.id;
-
-CREATE TABLE geo_reset_checksum_events (
-    id bigint NOT NULL,
-    project_id integer NOT NULL
-);
-
-CREATE SEQUENCE geo_reset_checksum_events_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE geo_reset_checksum_events_id_seq OWNED BY geo_reset_checksum_events.id;
 
 CREATE TABLE ghost_user_migrations (
     id bigint NOT NULL,
@@ -19400,10 +19270,6 @@ ALTER TABLE ONLY geo_event_log ALTER COLUMN id SET DEFAULT nextval('geo_event_lo
 
 ALTER TABLE ONLY geo_events ALTER COLUMN id SET DEFAULT nextval('geo_events_id_seq'::regclass);
 
-ALTER TABLE ONLY geo_hashed_storage_attachments_events ALTER COLUMN id SET DEFAULT nextval('geo_hashed_storage_attachments_events_id_seq'::regclass);
-
-ALTER TABLE ONLY geo_hashed_storage_migrated_events ALTER COLUMN id SET DEFAULT nextval('geo_hashed_storage_migrated_events_id_seq'::regclass);
-
 ALTER TABLE ONLY geo_node_namespace_links ALTER COLUMN id SET DEFAULT nextval('geo_node_namespace_links_id_seq'::regclass);
 
 ALTER TABLE ONLY geo_node_statuses ALTER COLUMN id SET DEFAULT nextval('geo_node_statuses_id_seq'::regclass);
@@ -19411,16 +19277,6 @@ ALTER TABLE ONLY geo_node_statuses ALTER COLUMN id SET DEFAULT nextval('geo_node
 ALTER TABLE ONLY geo_nodes ALTER COLUMN id SET DEFAULT nextval('geo_nodes_id_seq'::regclass);
 
 ALTER TABLE ONLY geo_repositories_changed_events ALTER COLUMN id SET DEFAULT nextval('geo_repositories_changed_events_id_seq'::regclass);
-
-ALTER TABLE ONLY geo_repository_created_events ALTER COLUMN id SET DEFAULT nextval('geo_repository_created_events_id_seq'::regclass);
-
-ALTER TABLE ONLY geo_repository_deleted_events ALTER COLUMN id SET DEFAULT nextval('geo_repository_deleted_events_id_seq'::regclass);
-
-ALTER TABLE ONLY geo_repository_renamed_events ALTER COLUMN id SET DEFAULT nextval('geo_repository_renamed_events_id_seq'::regclass);
-
-ALTER TABLE ONLY geo_repository_updated_events ALTER COLUMN id SET DEFAULT nextval('geo_repository_updated_events_id_seq'::regclass);
-
-ALTER TABLE ONLY geo_reset_checksum_events ALTER COLUMN id SET DEFAULT nextval('geo_reset_checksum_events_id_seq'::regclass);
 
 ALTER TABLE ONLY ghost_user_migrations ALTER COLUMN id SET DEFAULT nextval('ghost_user_migrations_id_seq'::regclass);
 
@@ -21519,12 +21375,6 @@ ALTER TABLE ONLY geo_event_log
 ALTER TABLE ONLY geo_events
     ADD CONSTRAINT geo_events_pkey PRIMARY KEY (id);
 
-ALTER TABLE ONLY geo_hashed_storage_attachments_events
-    ADD CONSTRAINT geo_hashed_storage_attachments_events_pkey PRIMARY KEY (id);
-
-ALTER TABLE ONLY geo_hashed_storage_migrated_events
-    ADD CONSTRAINT geo_hashed_storage_migrated_events_pkey PRIMARY KEY (id);
-
 ALTER TABLE ONLY geo_node_namespace_links
     ADD CONSTRAINT geo_node_namespace_links_pkey PRIMARY KEY (id);
 
@@ -21536,21 +21386,6 @@ ALTER TABLE ONLY geo_nodes
 
 ALTER TABLE ONLY geo_repositories_changed_events
     ADD CONSTRAINT geo_repositories_changed_events_pkey PRIMARY KEY (id);
-
-ALTER TABLE ONLY geo_repository_created_events
-    ADD CONSTRAINT geo_repository_created_events_pkey PRIMARY KEY (id);
-
-ALTER TABLE ONLY geo_repository_deleted_events
-    ADD CONSTRAINT geo_repository_deleted_events_pkey PRIMARY KEY (id);
-
-ALTER TABLE ONLY geo_repository_renamed_events
-    ADD CONSTRAINT geo_repository_renamed_events_pkey PRIMARY KEY (id);
-
-ALTER TABLE ONLY geo_repository_updated_events
-    ADD CONSTRAINT geo_repository_updated_events_pkey PRIMARY KEY (id);
-
-ALTER TABLE ONLY geo_reset_checksum_events
-    ADD CONSTRAINT geo_reset_checksum_events_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY ghost_user_migrations
     ADD CONSTRAINT ghost_user_migrations_pkey PRIMARY KEY (id);
@@ -25681,10 +25516,6 @@ CREATE INDEX index_geo_event_log_on_geo_event_id ON geo_event_log USING btree (g
 
 CREATE INDEX index_geo_event_log_on_repositories_changed_event_id ON geo_event_log USING btree (repositories_changed_event_id) WHERE (repositories_changed_event_id IS NOT NULL);
 
-CREATE INDEX index_geo_hashed_storage_attachments_events_on_project_id ON geo_hashed_storage_attachments_events USING btree (project_id);
-
-CREATE INDEX index_geo_hashed_storage_migrated_events_on_project_id ON geo_hashed_storage_migrated_events USING btree (project_id);
-
 CREATE INDEX index_geo_node_namespace_links_on_geo_node_id ON geo_node_namespace_links USING btree (geo_node_id);
 
 CREATE UNIQUE INDEX index_geo_node_namespace_links_on_geo_node_id_and_namespace_id ON geo_node_namespace_links USING btree (geo_node_id, namespace_id);
@@ -25700,18 +25531,6 @@ CREATE UNIQUE INDEX index_geo_nodes_on_name ON geo_nodes USING btree (name);
 CREATE INDEX index_geo_nodes_on_primary ON geo_nodes USING btree ("primary");
 
 CREATE INDEX index_geo_repositories_changed_events_on_geo_node_id ON geo_repositories_changed_events USING btree (geo_node_id);
-
-CREATE INDEX index_geo_repository_created_events_on_project_id ON geo_repository_created_events USING btree (project_id);
-
-CREATE INDEX index_geo_repository_deleted_events_on_project_id ON geo_repository_deleted_events USING btree (project_id);
-
-CREATE INDEX index_geo_repository_renamed_events_on_project_id ON geo_repository_renamed_events USING btree (project_id);
-
-CREATE INDEX index_geo_repository_updated_events_on_project_id ON geo_repository_updated_events USING btree (project_id);
-
-CREATE INDEX index_geo_repository_updated_events_on_source ON geo_repository_updated_events USING btree (source);
-
-CREATE INDEX index_geo_reset_checksum_events_on_project_id ON geo_reset_checksum_events USING btree (project_id);
 
 CREATE INDEX index_ghost_user_migrations_on_consume_after_id ON ghost_user_migrations USING btree (consume_after, id);
 
@@ -26182,6 +26001,8 @@ CREATE INDEX index_members_on_expiring_at_access_level_id ON members USING btree
 CREATE INDEX index_members_on_invite_email ON members USING btree (invite_email);
 
 CREATE UNIQUE INDEX index_members_on_invite_token ON members USING btree (invite_token);
+
+CREATE INDEX index_members_on_lower_invite_email ON members USING btree (lower((invite_email)::text));
 
 CREATE INDEX index_members_on_member_namespace_id_compound ON members USING btree (member_namespace_id, type, requested_at, id);
 
@@ -31439,9 +31260,6 @@ ALTER TABLE ONLY packages_tags
 ALTER TABLE ONLY boards_epic_board_positions
     ADD CONSTRAINT fk_rails_1ecfd9f2de FOREIGN KEY (epic_id) REFERENCES epics(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY geo_repository_created_events
-    ADD CONSTRAINT fk_rails_1f49e46a61 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY external_status_checks
     ADD CONSTRAINT fk_rails_1f5a8aa809 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -31537,9 +31355,6 @@ ALTER TABLE ONLY dependency_proxy_image_ttl_group_policies
 
 ALTER TABLE ONLY group_group_links
     ADD CONSTRAINT fk_rails_2b2353ca49 FOREIGN KEY (shared_with_group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY geo_repository_updated_events
-    ADD CONSTRAINT fk_rails_2b70854c08 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY packages_debian_group_component_files
     ADD CONSTRAINT fk_rails_2b8992dd83 FOREIGN KEY (architecture_id) REFERENCES packages_debian_group_architectures(id) ON DELETE RESTRICT;
@@ -31772,9 +31587,6 @@ ALTER TABLE ONLY snippet_user_mentions
 ALTER TABLE ONLY protected_environment_approval_rules
     ADD CONSTRAINT fk_rails_4e554f96f5 FOREIGN KEY (protected_environment_id) REFERENCES protected_environments(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY geo_repository_renamed_events
-    ADD CONSTRAINT fk_rails_4e6524febb FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY aws_roles
     ADD CONSTRAINT fk_rails_4ed56f4720 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
@@ -31993,9 +31805,6 @@ ALTER TABLE ONLY vulnerability_findings_remediations
 
 ALTER TABLE ONLY resource_iteration_events
     ADD CONSTRAINT fk_rails_6830c13ac1 FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY geo_hashed_storage_migrated_events
-    ADD CONSTRAINT fk_rails_687ed7d7c5 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY plan_limits
     ADD CONSTRAINT fk_rails_69f8b6184f FOREIGN KEY (plan_id) REFERENCES plans(id) ON DELETE CASCADE;
@@ -32281,9 +32090,6 @@ ALTER TABLE ONLY approval_project_rules_groups
 
 ALTER TABLE ONLY vulnerability_occurrences
     ADD CONSTRAINT fk_rails_90fed4faba FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY geo_reset_checksum_events
-    ADD CONSTRAINT fk_rails_910a06f12b FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY project_error_tracking_settings
     ADD CONSTRAINT fk_rails_910a2b8bd9 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
@@ -32770,9 +32576,6 @@ ALTER TABLE ONLY alert_management_alert_assignees
 
 ALTER TABLE ONLY packages_terraform_module_metadata
     ADD CONSTRAINT fk_rails_d48f21a84b FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE SET NULL;
-
-ALTER TABLE ONLY geo_hashed_storage_attachments_events
-    ADD CONSTRAINT fk_rails_d496b088e9 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE p_ci_job_annotations
     ADD CONSTRAINT fk_rails_d4d0c0fa0f FOREIGN KEY (partition_id, job_id) REFERENCES p_ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;

@@ -77,10 +77,7 @@ RSpec.describe 'getting a work_item list for a group', feature_category: :team_p
     it 'does not return confidential issues' do
       post_graphql(query, current_user: current_user)
 
-      expect(work_item_ids).to contain_exactly(
-        project_work_item.to_global_id.to_s,
-        group_work_item.to_global_id.to_s
-      )
+      expect(work_item_ids).to contain_exactly(group_work_item.to_global_id.to_s)
     end
   end
 
@@ -91,10 +88,39 @@ RSpec.describe 'getting a work_item list for a group', feature_category: :team_p
       post_graphql(query, current_user: current_user)
 
       expect(work_item_ids).to contain_exactly(
-        project_work_item.to_global_id.to_s,
         confidential_work_item.to_global_id.to_s,
         group_work_item.to_global_id.to_s
       )
+    end
+
+    context 'when include_ancestors is true' do
+      let(:query_group) { sub_group }
+      let(:item_filter_params) { { include_ancestors: true } }
+
+      it 'includes ancestor group work items' do
+        post_graphql(query, current_user: current_user)
+
+        expect(work_item_ids).to contain_exactly(
+          confidential_work_item.to_global_id.to_s,
+          group_work_item.to_global_id.to_s,
+          sub_group_work_item.to_global_id.to_s
+        )
+      end
+    end
+
+    context 'when include_descendants is true' do
+      let(:item_filter_params) { { include_descendants: true } }
+
+      it 'includes subgroup and descendant project work items' do
+        post_graphql(query, current_user: current_user)
+
+        expect(work_item_ids).to contain_exactly(
+          confidential_work_item.to_global_id.to_s,
+          group_work_item.to_global_id.to_s,
+          sub_group_work_item.to_global_id.to_s,
+          project_work_item.to_global_id.to_s
+        )
+      end
     end
 
     context 'when the namespace_level_work_items feature flag is disabled' do

@@ -104,7 +104,7 @@ export default {
       >
         <gl-link
           v-if="containsWebPathLink"
-          class="gl-text-body gl-min-w-0 gl-word-break-all"
+          class="gl-text-body gl-min-w-0 gl-break-all"
           :class="errorPackageStyle"
           :href="packageLink"
         >

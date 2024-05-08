@@ -25,7 +25,7 @@ RSpec.describe MarkupHelper, feature_category: :team_planning do
   end
 
   describe "#markdown" do
-    describe "referencing multiple objects" do
+    context "referencing multiple objects" do
       let(:actual) { "#{merge_request.to_reference} -> #{commit.to_reference} -> #{issue.to_reference}" }
 
       it "links to the merge request" do
@@ -44,7 +44,7 @@ RSpec.describe MarkupHelper, feature_category: :team_planning do
       end
     end
 
-    describe "override default project" do
+    context "override default project" do
       let(:actual) { issue.to_reference }
 
       let_it_be(:second_project) { create(:project, :public) }
@@ -56,7 +56,7 @@ RSpec.describe MarkupHelper, feature_category: :team_planning do
       end
     end
 
-    describe 'uploads' do
+    context 'uploads' do
       let(:text) { "![ImageTest](/uploads/test.png)" }
 
       let_it_be(:group) { create(:group) }
@@ -69,7 +69,7 @@ RSpec.describe MarkupHelper, feature_category: :team_planning do
         end
       end
 
-      describe 'inside a group' do
+      context 'inside a group' do
         before do
           helper.instance_variable_set(:@group, group)
           helper.instance_variable_set(:@project, nil)
@@ -80,7 +80,7 @@ RSpec.describe MarkupHelper, feature_category: :team_planning do
         end
       end
 
-      describe "with a group in the context" do
+      context "with a group in the context" do
         let_it_be(:project_in_group) { create(:project, group: group) }
 
         before do
@@ -151,6 +151,17 @@ RSpec.describe MarkupHelper, feature_category: :team_planning do
           expect(subject.css('a')[0].attr('href')).to eq(expanded_path)
           expect(subject.css('img')[0].attr('data-src')).to eq(expanded_path)
         end
+      end
+    end
+
+    context 'when there is a postprocessing option provided' do
+      it 'passes the postprocess options to the Markup::RenderingService' do
+        expect(Markup::RenderingService)
+          .to receive(:new)
+          .with('test', context: anything,
+            postprocess_context: a_hash_including(requested_path: 'path')).and_call_original
+
+        helper.markdown('test', {}, { requested_path: 'path' })
       end
     end
   end

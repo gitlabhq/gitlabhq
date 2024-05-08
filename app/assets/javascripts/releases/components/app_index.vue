@@ -286,8 +286,8 @@ export default {
       </gl-link>
     </gl-alert>
     <releases-empty-state v-if="shouldRenderEmptyState" />
-    <div v-else class="gl-align-self-end gl-mb-3 gl-display-flex">
-      <releases-sort :value="sort" class="gl-mr-2" @input="onSortChanged" />
+    <div v-else class="gl-align-self-end gl-display-flex gl-gap-3">
+      <releases-sort :value="sort" @input="onSortChanged" />
 
       <div
         v-if="newReleasePath"
@@ -313,7 +313,7 @@ export default {
       :class="{ 'linked-card': releases.length > 1 && index !== releases.length - 1 }"
     />
 
-    <release-skeleton-loader v-if="shouldRenderLoadingIndicator" />
+    <release-skeleton-loader v-if="shouldRenderLoadingIndicator" class="gl-mt-5" />
 
     <releases-pagination
       v-if="shouldRenderPagination"
@@ -331,6 +331,6 @@ export default {
   height: 17px;
   top: 100%;
   position: absolute;
-  left: 32px;
+  left: 23px;
 }
 </style>

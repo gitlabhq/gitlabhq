@@ -274,6 +274,10 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
         end
 
         it 'returns the version that matches the name' do
+          expect(::MarkupHelper).to receive(:markdown).with(
+            version1.readme.data, anything, { requested_path: version1.readme.path }
+          ).and_call_original
+
           post_query
 
           expect(graphql_data_at(:ciCatalogResource, :versions, :nodes)).to contain_exactly(

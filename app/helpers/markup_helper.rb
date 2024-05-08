@@ -83,13 +83,14 @@ module MarkupHelper
     render_links(text)
   end
 
-  def markdown(text, context = {})
+  def markdown(text, context = {}, postprocess = {})
     return '' unless text.present?
 
     context[:project] ||= @project
     context[:group] ||= @group
 
-    html = Markup::RenderingService.new(text, context: context, postprocess_context: postprocess_context).execute
+    html = Markup::RenderingService.new(text, context: context,
+      postprocess_context: postprocess_context.merge!(postprocess)).execute
 
     Hamlit::RailsHelpers.preserve(html)
   end

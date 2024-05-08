@@ -42,8 +42,8 @@ class Projects::BranchesController < Projects::ApplicationController
         render status: :service_unavailable
       end
       format.json do
-        branches = BranchesFinder.new(@repository, params).execute
-        branches = Kaminari.paginate_array(branches).page(params[:page])
+        branches = BranchesFinder.new(@repository, branches_params).execute
+        branches = Kaminari.paginate_array(branches).page(branches_params[:page])
         render json: branches.map(&:name)
       end
     end
@@ -135,7 +135,7 @@ class Projects::BranchesController < Projects::ApplicationController
   private
 
   def sort_param
-    sort = params[:sort].presence
+    sort = branches_params[:sort].presence
 
     unless sort.in?(supported_sort_options)
       flash.now[:alert] = _("Unsupported sort value.")
@@ -191,7 +191,7 @@ class Projects::BranchesController < Projects::ApplicationController
 
   def redirect_for_legacy_index_sort_or_search
     # Normalize a legacy URL with redirect
-    if request.format != :json && !params[:state].presence && [:sort, :search, :page].any? { |key| params[key].presence }
+    if request.format != :json && !branches_params[:state].presence && [:sort, :search, :page].any? { |key| branches_params[key].presence }
       redirect_to project_branches_filtered_path(@project, state: 'all'), notice: _('Update your bookmarked URLs as filtered/sorted branches URL has been changed.')
     end
   end
@@ -200,7 +200,7 @@ class Projects::BranchesController < Projects::ApplicationController
     return fetch_branches_for_overview if @mode == 'overview'
 
     @branches, @prev_path, @next_path =
-      Projects::BranchesByModeService.new(@project, params.merge(sort: @sort, mode: @mode)).execute
+      Projects::BranchesByModeService.new(@project, branches_params.merge(sort: @sort, mode: @mode)).execute
   end
 
   def fetch_merge_requests_for_branches
@@ -227,7 +227,7 @@ class Projects::BranchesController < Projects::ApplicationController
   end
 
   def fetch_mode
-    state = params[:state].presence
+    state = branches_params[:state].presence
 
     return 'overview' unless state
 
@@ -242,5 +242,9 @@ class Projects::BranchesController < Projects::ApplicationController
     return unless can?(current_user, :update_issue, confidential_issue_project)
 
     confidential_issue_project
+  end
+
+  def branches_params
+    params.permit(:page, :state, :sort, :search, :page_token, :offset)
   end
 end

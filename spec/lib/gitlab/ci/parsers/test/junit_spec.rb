@@ -543,6 +543,20 @@ RSpec.describe Gitlab::Ci::Parsers::Test::Junit do
       end
     end
 
+    context 'when XML is empty string' do
+      let(:junit) { '' }
+
+      it 'returns 0 tests cases and has no errors' do
+        expect { subject }.not_to raise_error
+        expect(test_suite.suite_error).to be_nil
+
+        expect(test_cases).to be_empty
+        expect(test_suite.total_count).to eq(0)
+        expect(test_suite.success_count).to eq(0)
+        expect(test_suite.error_count).to eq(0)
+      end
+    end
+
     private
 
     def flattened_test_cases(test_suite)

@@ -132,10 +132,10 @@ export default {
 };
 </script>
 <template>
-  <div class="release-block-milestone-info gl-display-flex gl-flex-wrap">
+  <div class="release-block-milestone-info gl-display-flex gl-flex-wrap gl-gap-6">
     <div
       v-gl-tooltip
-      class="milestone-progress-bar-container js-milestone-progress-bar-container gl-display-flex gl-flex-direction-column gl-mr-6 gl-mb-5"
+      class="milestone-progress-bar-container js-milestone-progress-bar-container gl-display-flex gl-flex-direction-column"
       :title="__('Closed issues')"
     >
       <span class="gl-mb-3">{{ percentCompleteText }}</span>
@@ -143,9 +143,7 @@ export default {
         <gl-progress-bar :value="issueCounts.closed" :max="issueCounts.total" />
       </span>
     </div>
-    <div
-      class="gl-display-flex gl-flex-direction-column gl-mr-6 gl-mb-5 js-milestone-list-container"
-    >
+    <div class="gl-display-flex gl-flex-direction-column js-milestone-list-container">
       <span class="gl-mb-2">{{ milestoneLabelText }}</span>
       <div class="gl-display-flex gl-flex-wrap gl-align-items-flex-end">
         <template v-for="(milestone, index) in milestonesToDisplay">

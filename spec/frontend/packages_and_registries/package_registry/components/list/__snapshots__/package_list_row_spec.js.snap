@@ -30,7 +30,7 @@ exports[`packages_list_row renders 1`] = `
             data-testid="package-name"
           >
             <a
-              class="gl-min-w-0 gl-text-body gl-word-break-all"
+              class="gl-break-all gl-min-w-0 gl-text-body"
               data-testid="details-link"
             >
               @gitlab-org/package-15

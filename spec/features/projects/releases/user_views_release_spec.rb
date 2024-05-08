@@ -37,7 +37,7 @@ RSpec.describe 'User views Release', :js, feature_category: :continuous_delivery
   end
 
   it 'renders the release details' do
-    within('.release-block') do
+    within_testid('release-block') do
       expect(page).to have_content(release.name)
       expect(page).to have_content(release.tag)
       expect(page).to have_content(release.commit.short_id)

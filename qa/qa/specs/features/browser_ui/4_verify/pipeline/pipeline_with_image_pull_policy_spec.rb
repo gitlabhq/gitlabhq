@@ -60,7 +60,7 @@ module QA
         end
 
         with_them do
-          it 'applies pull policy in job correctly', :smoke, testcase: params[:testcase] do
+          it 'applies pull policy in job correctly', testcase: params[:testcase] do
             visit_job
 
             if pull_image

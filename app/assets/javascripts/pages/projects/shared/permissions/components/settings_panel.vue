@@ -789,7 +789,11 @@ export default {
         <project-setting-row
           ref="pipeline-settings"
           :label="$options.i18n.ciCdLabel"
-          :help-text="s__('ProjectSettings|Build, test, and deploy your changes.')"
+          :help-text="
+            s__(
+              'ProjectSettings|Build, test, and deploy your changes. Does not apply to project integrations.',
+            )
+          "
         >
           <project-feature-setting
             v-model="buildsAccessLevel"

@@ -2,7 +2,11 @@
 
 module QA
   RSpec.describe 'Create' do
-    describe 'Branch Rules Overview', product_group: :source_code do
+    describe 'Branch Rules Overview', product_group: :source_code, quarantine: {
+      type: :investigating,
+      issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/452392",
+      only: { pipeline: %i[staging staging-canary] }
+    } do
       let(:branch_name) { 'new-branch' }
       let(:allowed_to_push_role) { Resource::ProtectedBranch::Roles::NO_ONE }
       let(:allowed_to_merge_role) { Resource::ProtectedBranch::Roles::MAINTAINERS }

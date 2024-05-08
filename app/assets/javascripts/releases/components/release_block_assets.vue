@@ -98,11 +98,12 @@ export default {
 </script>
 
 <template>
-  <div class="card-text gl-mt-3">
+  <div>
     <gl-button
       data-testid="accordion-button"
       variant="link"
-      class="gl-font-weight-bold gl-text-black-normal!"
+      class="gl-text-black-normal!"
+      button-text-classes="gl-heading-5"
       @click="toggleAssetsExpansion"
     >
       <gl-icon

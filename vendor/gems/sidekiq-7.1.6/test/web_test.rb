@@ -127,9 +127,12 @@ describe Sidekiq::Web do
   end
 
   it "can display queues" do
-    assert Sidekiq::Client.push("queue" => :foo, "class" => WebJob, "args" => [1, 3])
+    Time.stub(:now, Time.now) do
+      assert Sidekiq::Client.push("queue" => :foo, "class" => WebJob, "args" => [1, 3])
 
-    get "/queues"
+      get "/queues"
+    end
+
     assert_equal 200, last_response.status
     assert_match(/foo/, last_response.body)
     refute_match(/HardJob/, last_response.body)

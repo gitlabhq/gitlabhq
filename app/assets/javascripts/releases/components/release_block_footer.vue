@@ -85,14 +85,14 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-display-flex gl-gap-5">
-    <div v-if="commit" class="gl-display-flex gl-align-items-center js-commit-info">
-      <gl-icon ref="commitIcon" name="commit" class="gl-mr-2 gl-text-gray-700" />
+  <div class="gl-display-flex gl-gap-5 gl-align-items-center gl-font-sm">
+    <div v-if="commit" class="gl-display-flex gl-align-items-center gl-gap-2 js-commit-info">
+      <gl-icon ref="commitIcon" name="commit" class="gl-text-secondary" />
       <div v-gl-tooltip.bottom :title="commit.title">
         <gl-link
           v-if="commitPath"
           :href="commitPath"
-          class="gl-font-sm gl-font-monospace gl-mr-0 gl-text-gray-700"
+          class="gl-font-monospace gl-text-secondary gl-mr-0"
         >
           {{ commit.shortId }}
         </gl-link>
@@ -100,23 +100,16 @@ export default {
       </div>
     </div>
 
-    <div v-if="tagName" class="gl-display-flex gl-align-items-center js-tag-info">
-      <gl-icon name="tag" class="gl-mr-2 gl-text-gray-700" />
+    <div v-if="tagName" class="gl-display-flex gl-align-items-center gl-gap-2 js-tag-info">
+      <gl-icon name="tag" class="gl-text-secondary" />
       <div v-gl-tooltip.bottom :title="__('Tag')">
-        <gl-link
-          v-if="tagPath"
-          :href="tagPath"
-          class="gl-font-sm gl-font-monospace gl-mr-0 gl-text-gray-700"
-        >
+        <gl-link v-if="tagPath" :href="tagPath" class="gl-font-monospace gl-mr-0 gl-text-secondary">
           {{ tagName }}
         </gl-link>
         <span v-else>{{ tagName }}</span>
       </div>
     </div>
-    <div
-      v-if="timeAt || author"
-      class="gl-display-flex gl-align-items-center js-author-date-info gl-font-sm"
-    >
+    <div v-if="timeAt || author" class="gl-display-flex gl-align-items-center js-author-date-info">
       <span class="gl-text-secondary">{{ createdTime }}&nbsp;</span>
       <template v-if="timeAt">
         <span
@@ -128,7 +121,7 @@ export default {
         </span>
       </template>
 
-      <div v-if="author" class="gl-display-flex">
+      <div v-if="author" class="gl-display-flex gl-align-items-center gl-gap-1">
         <span class="gl-text-secondary">{{ __('by') }}&nbsp;</span>
         <user-avatar-link
           :link-href="author.webUrl"

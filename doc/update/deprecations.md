@@ -110,6 +110,26 @@ We've deprecated the use of `ref` and `sha` in API calls to `GET /projects/:id/c
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
+### Breaking change to the Maven repository group permissions
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.6</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/393933).
+</div>
+
+The Maven repository exposes an API endpoint at the group level that allows Maven clients to download files from a specific package. The package finder first locates the package within the group, and then finds the file within the package.
+However, there is a limitation that affects duplicate package names hosted in different projects. The Maven package finder always returns the most recent package, but the "most recent" filter depends on user permissions. It is possible for a user with different permissions in different projects to download the wrong Maven package.
+
+In GitLab 18.0, the package finder logic will be fixed so that the "most recent" package is the last updated name and version of a package in a group. User permissions will be checked after the most recent package is found.
+After the change, download requests for users without correct permissions will be rejected. If your workflow depends on the current bugged behavior, this fix will introduce a breaking change.
+
+The change will be introduced in GitLab 16.6 behind a feature flag. If you are interested in enabling the feature flag for your group, leave a comment in [issue 393933](https://gitlab.com/gitlab-org/gitlab/-/issues/393933).
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
 ### Default CI/CD job token (`CI_JOB_TOKEN`) scope changed
 
 <div class="deprecation-notes">
@@ -129,6 +149,24 @@ In 18.0, we will remove the **Limit** setting completely, and set the **Allow ac
 To prepare for this change, users on GitLab.com or self-managed GitLab 15.9 or later can enable the **Allow access** setting now and add the other projects. It will not be possible to disable the setting in 18.0 or later.
 
 In 16.3, the names of these settings were changed to clarify their meanings: the deprecated **Limit CI_JOB_TOKEN access** setting is now called **Limit access _from_ this project**, and the newer **Allow access to this project with a CI_JOB_TOKEN** setting is now called **Limit access _to_ this project**.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
+### Dependency Proxy: Access tokens to have additional scope checks
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.7</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/431386).
+</div>
+
+When using the Dependency Proxy for containers with a group access token or personal access token, `docker login` and `docker pull` requests with insufficient scopes for Dependency Proxy are not rejected.
+
+GitLab 18.0 adds checks for group or personal access tokens authenticating with the dependency proxy for containers. This is a breaking change, because tokens without the required scopes will fail.
+
+To help avoid being impacted by this breaking change, create new access tokens with the [required scopes](https://docs.gitlab.com/ee/user/packages/dependency_proxy/#authenticate-with-the-dependency-proxy), and update your workflow variables and scripts with those new tokens.
 
 </div>
 
@@ -708,26 +746,6 @@ can change `## Step - 1` to `## Step 1` to ensure in-page links continue to work
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
-### Breaking change to the Maven repository group permissions
-
-<div class="deprecation-notes">
-- Announced in GitLab <span class="milestone">16.6</span>
-- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/393933).
-</div>
-
-The Maven repository exposes an API endpoint at the group level that allows Maven clients to download files from a specific package. The package finder first locates the package within the group, and then finds the file within the package.
-However, there is a limitation that affects duplicate package names hosted in different projects. The Maven package finder always returns the most recent package, but the "most recent" filter depends on user permissions. It is possible for a user with different permissions in different projects to download the wrong Maven package.
-
-In GitLab 17.0, the package finder logic will be fixed so that the "most recent" package is the last updated name and version of a package in a group. User permissions will be checked after the most recent package is found.
-After the change, download requests for users without correct permissions will be rejected. If your workflow depends on the current bugged behavior, this fix will introduce a breaking change.
-
-The change will be introduced in GitLab 16.6 behind a feature flag. If you are interested in enabling the feature flag for your group, leave a comment in [issue 393933](https://gitlab.com/gitlab-org/gitlab/-/issues/393933).
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="17.0">
-
 ### CiRunner.projects default sort is changing to `id_desc`
 
 <div class="deprecation-notes">
@@ -789,24 +807,6 @@ OSS has an [S3 compatibility mode](https://www.alibabacloud.com/help/en/oss/deve
 With the new browser-based DAST analyzer GA in GitLab 15.7, we are working towards making it the default DAST analyzer at some point in the future. In preparation for this, the following legacy DAST variables are being deprecated and scheduled for removal in GitLab 17.0: `DAST_ZAP_CLI_OPTIONS` and `DAST_ZAP_LOG_CONFIGURATION`. These variables allowed for advanced configuration of the legacy DAST analyzer, which was based on OWASP ZAP. The new browser-based analyzer will not include the same functionality, as these were specific to how ZAP worked.
 
 These three variables will be removed in GitLab 17.0.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="17.0">
-
-### Dependency Proxy: Access tokens to have additional scope checks
-
-<div class="deprecation-notes">
-- Announced in GitLab <span class="milestone">16.7</span>
-- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/431386).
-</div>
-
-When using the Dependency Proxy for containers with a group access token or personal access token, `docker login` and `docker pull` requests with insufficient scopes for Dependency Proxy are not rejected.
-
-GitLab 17.0 adds checks for group or personal access tokens authenticating with the dependency proxy for containers. This is a breaking change, because tokens without the required scopes will fail.
-
-To help avoid being impacted by this breaking change, create new access tokens with the [required scopes](https://docs.gitlab.com/ee/user/packages/dependency_proxy/#authenticate-with-the-dependency-proxy), and update your workflow variables and scripts with those new tokens.
 
 </div>
 

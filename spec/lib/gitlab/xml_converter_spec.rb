@@ -36,5 +36,13 @@ RSpec.describe ::Gitlab::XmlConverter, feature_category: :pipeline_composition d
         expect { to_h }.to raise_error(ArgumentError, "The XML file must be less than 30 MB.")
       end
     end
+
+    context "when the xml is empty" do
+      let(:xml_data) { '' }
+
+      it "returns nil" do
+        expect(to_h).to eq(nil)
+      end
+    end
   end
 end

@@ -265,10 +265,7 @@ export default {
       <span class="gl-sr-only">{{ issuable.title }}</span>
     </gl-form-checkbox>
     <div class="issuable-main-info">
-      <div
-        data-testid="issuable-title"
-        class="issue-title title gl-display-flex gl-align-items-center"
-      >
+      <div data-testid="issuable-title" class="issue-title title gl-font-size-0">
         <work-item-type-icon
           v-if="showWorkItemTypeIcon"
           class="gl-mr-2"
@@ -281,6 +278,7 @@ export default {
           name="eye-slash"
           :title="__('Confidential')"
           :aria-label="__('Confidential')"
+          class="gl-mr-2"
         />
         <gl-icon
           v-if="issuable.hidden"
@@ -290,7 +288,7 @@ export default {
           :aria-label="__('Hidden')"
         />
         <gl-link
-          class="issue-title-text"
+          class="issue-title-text gl-font-base"
           dir="auto"
           :href="issuableLinkHref"
           data-testid="issuable-title-link"

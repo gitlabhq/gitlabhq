@@ -7,7 +7,7 @@ class Projects::NotesController < Projects::ApplicationController
   include NotesHelper
   include ToggleAwardEmoji
 
-  before_action :disable_query_limiting, only: [:create, :update]
+  before_action :disable_query_limiting, only: [:create, :update, :index]
   before_action :authorize_read_note!
   before_action :authorize_create_note!, only: [:create]
   before_action :authorize_resolve_note!, only: [:resolve, :unresolve]
@@ -118,6 +118,8 @@ class Projects::NotesController < Projects::ApplicationController
   end
 
   def disable_query_limiting
+    # Using a single disable! Call to not repeat this code, but there are different issues created for each action
+    # index: https://gitlab.com/gitlab-org/gitlab/-/issues/460923
     Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/20800')
   end
 end

@@ -110,7 +110,7 @@ You can also ask to explain specific job errors by copy-pasting the error messag
 
 - `Please explain this CI/CD job error message in the context of a Go project: build.sh: line 14: go command not found`
 
-Alternatively, you can use [root cause analysis in CI/CD](ai_features.md#root-cause-analysis).
+Alternatively, you can use [root cause analysis in CI/CD](ai_experiments.md#root-cause-analysis).
 
 For more practical examples, see the [GitLab Duo examples](gitlab_duo_examples.md).
 

@@ -9,7 +9,7 @@
     .well-segment
       .gl-justify-content-left.gl-display-flex.gl-align-items-center
         = render Pajamas::AvatarComponent.new(current_user, size: 24, avatar_options: { data: { qa_selector: 'user_avatar_content' }, title: current_user.username })
-        .gl-pl-4.gl-word-break-all
+        .gl-pl-4.gl-break-all
           %span= _('Signed in as %{username}') % { username: '@' + current_user.username }
   = gitlab_ui_form_for @user, url: user_settings_password_path, method: :post do |f|
 

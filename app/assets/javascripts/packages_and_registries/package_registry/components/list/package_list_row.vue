@@ -151,7 +151,7 @@ export default {
         <router-link
           v-if="containsWebPathLink"
           :class="errorPackageStyle"
-          class="gl-text-body gl-min-w-0 gl-word-break-all"
+          class="gl-text-body gl-min-w-0 gl-break-all"
           data-testid="details-link"
           :to="{ name: 'details', params: { id: packageId } }"
         >

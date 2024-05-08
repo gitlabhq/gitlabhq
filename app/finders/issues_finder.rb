@@ -67,16 +67,6 @@ class IssuesFinder < IssuableFinder
     super.with_projects_matching_search_data
   end
 
-  def group_namespaces
-    return if params[:project_id] || params[:projects]
-
-    Group.id_in(params.group).select(:id)
-  end
-
-  def project_namespaces
-    params.projects.select(:project_namespace_id)
-  end
-
   def by_confidential(items)
     Issues::ConfidentialityFilter.new(
       current_user: current_user,

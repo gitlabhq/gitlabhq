@@ -48,8 +48,11 @@ export default {
 </script>
 
 <template>
-  <div class="card-header d-flex gl-align-items-center bg-white pr-0">
-    <h2 class="card-title gl-my-2 mr-auto gl-font-size-h2">
+  <div class="gl-display-flex gl-align-items-center gl-justify-content-space-between gl-w-full">
+    <h2
+      class="gl-new-card-title gl-heading-3 gl-m-0! gl-display-flex gl-gap-3"
+      data-testid="release-block-title"
+    >
       <gl-link v-if="selfLink" class="gl-text-black-normal" :href="selfLink">
         {{ release.name }}
       </gl-link>
@@ -63,17 +66,17 @@ export default {
               'Private - Guest users are not allowed to view detailed release information like title and source code.',
             )
           "
-          class="text-secondary gl-mb-2"
+          class="gl-text-secondary"
         />
       </template>
-      <gl-badge v-if="release.upcomingRelease" variant="warning" class="align-middle">{{
+      <gl-badge v-if="release.upcomingRelease" variant="warning" class="gl-align-self-center">{{
         __('Upcoming Release')
       }}</gl-badge>
       <gl-badge
         v-else-if="release.historicalRelease"
         v-gl-tooltip
         :title="$options.i18n.historicalTooltip"
-        class="gl-align-middle"
+        class="gl-align-self-center"
       >
         {{ $options.i18n.historical }}
       </gl-badge>
@@ -83,7 +86,7 @@ export default {
       category="primary"
       size="small"
       variant="default"
-      class="gl-mr-3 js-edit-button gl-ml-3 gl-pb-3"
+      class="js-edit-button"
       :href="editLink"
     >
       {{ $options.i18n.editButton }}

@@ -21,7 +21,7 @@ import CiResourceHeaderSkeletonLoader from './ci_resource_header_skeleton_loader
 export default {
   i18n: {
     moreActionsLabel: __('More actions'),
-    reportAbuse: __('Report abuse to administrator'),
+    reportAbuse: __('Report abuse'),
     lastRelease: s__('CiCatalog|Released %{date}'),
     lastReleaseMissing: s__('CiCatalog|No release available'),
   },

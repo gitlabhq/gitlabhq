@@ -3104,6 +3104,9 @@ msgstr ""
 msgid "Add existing issue"
 msgstr ""
 
+msgid "Add group or project"
+msgstr ""
+
 msgid "Add header and footer to emails. Please note that color settings will only be applied within the application interface"
 msgstr ""
 
@@ -9740,7 +9743,7 @@ msgstr ""
 msgid "CI/CD limits"
 msgstr ""
 
-msgid "CI/CD|No projects have been added to the scope"
+msgid "CI/CD|No %{itemType}s have been added to the scope"
 msgstr ""
 
 msgid "CICDAnalytics|%{percent}%{percentSymbol}"
@@ -9796,7 +9799,7 @@ msgstr ""
 msgid "CICD|Add an existing project to the scope"
 msgstr ""
 
-msgid "CICD|Allow CI job tokens from the following projects to access this project"
+msgid "CICD|Allow access to this project from authorized groups or projects by adding them to the allowlist. It is a security risk to disable this feature, because unauthorized projects might attempt to retrieve an active token and access the API. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
 msgid "CICD|Auto DevOps"
@@ -9829,7 +9832,7 @@ msgstr ""
 msgid "CICD|Enable feature to limit job token access to the following projects."
 msgstr ""
 
-msgid "CICD|Enable feature to limit job token access, so only the projects in this list can access this project with a CI/CD job token."
+msgid "CICD|Groups and projects with access"
 msgstr ""
 
 msgid "CICD|Jobs"
@@ -9847,13 +9850,13 @@ msgstr ""
 msgid "CICD|Maintainer"
 msgstr ""
 
+msgid "CICD|No access is currently allowed to this project. Enable feature to authorize access from groups or projects in the allowlist below."
+msgstr ""
+
 msgid "CICD|Pipelines and jobs cannot be cancelled"
 msgstr ""
 
 msgid "CICD|Prevent CI/CD job tokens from this project from being used to access other projects unless the other project is added to the allowlist. It is a security risk to disable this feature, because unauthorized projects might attempt to retrieve an active token and access the API. %{linkStart}Learn more%{linkEnd}."
-msgstr ""
-
-msgid "CICD|Prevent access to this project from other project CI/CD job tokens, unless the other project is added to the allowlist. It is a security risk to disable this feature, because unauthorized projects might attempt to retrieve an active token and access the API. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
 msgid "CICD|The %{boldStart}Limit access %{boldEnd}%{italicAndBoldStart}from%{italicAndBoldEnd}%{boldStart} this project%{boldEnd} setting is deprecated and will be removed in the 18.0 milestone. Use the %{boldStart}Limit access %{boldEnd}%{italicAndBoldStart}to%{italicAndBoldEnd}%{boldStart} this project%{boldEnd} setting and allowlist instead. %{linkStart}How do I do this?%{linkEnd}"
@@ -37145,6 +37148,9 @@ msgstr ""
 msgid "Paste epic link"
 msgstr ""
 
+msgid "Paste group path (i.e. gitlab-org) or project path (i.e. gitlab-org/gitlab)"
+msgstr ""
+
 msgid "Paste issue link"
 msgstr ""
 
@@ -40157,9 +40163,6 @@ msgstr ""
 msgid "Project was not found or you do not have permission to add this project to Security Dashboards."
 msgstr ""
 
-msgid "Project with access"
-msgstr ""
-
 msgid "Project: %{name}"
 msgstr ""
 
@@ -40526,7 +40529,7 @@ msgstr ""
 msgid "ProjectSettings|Branches created from issues follow this pattern."
 msgstr ""
 
-msgid "ProjectSettings|Build, test, and deploy your changes."
+msgid "ProjectSettings|Build, test, and deploy your changes. Does not apply to project integrations."
 msgstr ""
 
 msgid "ProjectSettings|Checkbox is visible and selected by default."
@@ -43218,7 +43221,7 @@ msgstr ""
 msgid "ReportAbuse|Link to spam"
 msgstr ""
 
-msgid "ReportAbuse|Report abuse to administrator"
+msgid "ReportAbuse|Report abuse"
 msgstr ""
 
 msgid "ReportAbuse|Screenshot"
@@ -62309,6 +62312,9 @@ msgid "projects"
 msgstr ""
 
 msgid "protected"
+msgstr ""
+
+msgid "push option"
 msgstr ""
 
 msgid "reCAPTCHA"

@@ -99,12 +99,7 @@ To create a custom thank you email template:
 
 ### New participant email
 
-> - `new_participant` email [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299261) in GitLab 17.0 [with a flag](../../../administration/feature_flags.md) named `issue_email_participants`. Disabled by default.
-> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/299261) in GitLab 17.0.
-
-FLAG:
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
+> - `new_participant` email [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299261) in GitLab 17.0.
 
 When an [external participant](external_participants.md) is added to the ticket, GitLab sends a **new participant email** to let them know they are part of the conversation.
 Without additional configuration, GitLab sends the default new participant email.

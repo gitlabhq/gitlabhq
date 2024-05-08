@@ -34,6 +34,14 @@ const getMRTargetProject = () => {
   return url.searchParams.get('target_project') || '';
 };
 
+const getCrossOriginExtensionHostFlagValue = (extensionsGallerySettings) => {
+  return (
+    extensionsGallerySettings?.enabled ||
+    extensionsGallerySettings?.reason === 'opt_in_unset' ||
+    extensionsGallerySettings?.reason === 'opt_in_disabled'
+  );
+};
+
 export const initGitlabWebIDE = async (el) => {
   // what: Pull what we need from the element. We will replace it soon.
   const {
@@ -87,6 +95,7 @@ export const initGitlabWebIDE = async (el) => {
     },
     featureFlags: {
       settingsSync: true,
+      crossOriginExtensionHost: getCrossOriginExtensionHostFlagValue(extensionsGallerySettings),
     },
     editorFont,
     extensionsGallerySettings,

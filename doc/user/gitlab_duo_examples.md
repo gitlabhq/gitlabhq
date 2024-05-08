@@ -48,7 +48,7 @@ CI/CD configuration is needed.
   Please show a .gitignore and .gitlab-ci.yml configuration for a C# project.
   ```
 
-- If your CI/CD job fails, [Root Cause Analysis](ai_features.md#root-cause-analysis)
+- If your CI/CD job fails, [Root Cause Analysis](ai_experiments.md#root-cause-analysis)
   can help understand the problem. Alternatively, you can copy the error message into
   GitLab Duo Chat, and ask for help:
 

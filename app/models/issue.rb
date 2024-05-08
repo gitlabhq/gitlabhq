@@ -124,6 +124,9 @@ class Issue < ApplicationRecord
 
   pg_full_text_searchable columns: [{ name: 'title', weight: 'A' }, { name: 'description', weight: 'B' }]
 
+  scope :project_level, -> { where.not(project_id: nil) }
+  scope :group_level, -> { where(project_id: nil) }
+
   scope :in_namespaces, ->(namespaces) { where(namespace: namespaces) }
   scope :in_projects, ->(project_ids) { where(project_id: project_ids) }
   scope :not_in_projects, ->(project_ids) { where.not(project_id: project_ids) }

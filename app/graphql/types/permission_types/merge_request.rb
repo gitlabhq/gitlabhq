@@ -21,7 +21,7 @@ module Types
       end
 
       permission_field :can_merge, calls_gitaly: true
-      permission_field :can_approve
+      permission_field :can_approve, calls_gitaly: true
 
       def can_merge
         object.can_be_merged_by?(context[:current_user])

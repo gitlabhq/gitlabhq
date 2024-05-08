@@ -55,7 +55,7 @@ export default {
     promoteSuccessMessage: __(
       'The issue was successfully promoted to an epic. Redirecting to epic...',
     ),
-    reportAbuse: __('Report abuse to administrator'),
+    reportAbuse: __('Report abuse'),
     referenceFetchError: __('An error occurred while fetching reference'),
     copyReferenceText: __('Copy reference'),
   },

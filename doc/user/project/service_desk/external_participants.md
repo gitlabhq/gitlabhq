@@ -10,13 +10,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3758) in GitLab 17.0 [with a flag](../../../administration/feature_flags.md) named `issue_email_participants`. Disabled by default.
-> - [Enabled on GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/3758) in GitLab 17.0.
-
-FLAG:
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3758) in GitLab 17.0.
 
 External participants are users without a GitLab account that can interact with an issue or Service Desk ticket only by email.
 They get notified of public comments on an issue or ticket by [Service Desk emails](configure.md#customize-emails-sent-to-external-participants).
