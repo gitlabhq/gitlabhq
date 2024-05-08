@@ -163,8 +163,7 @@ To approve or reject a deployment:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Operate > Environments**.
 1. Select the environment's name.
-1. In the deployment's row, select **Approval options** (**{thumb-up}**).
-   Before you approve or reject the deployment, you can view the deployment's approval details.
+1. Find the deployment and select its **Status badge**.
 1. Optional. Add a comment which describes your reason for approving or rejecting the deployment.
 1. Select **Approve** or **Reject**.
 
@@ -186,7 +185,7 @@ To view the approval details of a deployment:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Operate > Environments**.
 1. Select the environment's name.
-1. In the deployment's row, select **Approval options** (**{thumb-up}**).
+1. Find the deployment and select its **Status badge**.
 
 The approval status details are shown:
 

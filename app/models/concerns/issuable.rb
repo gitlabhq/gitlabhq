@@ -30,6 +30,7 @@ module Issuable
   include SortableTitle
   include Exportable
   include ReportableChanges
+  include Import::HasImportSource
 
   TITLE_LENGTH_MAX = 255
   TITLE_HTML_LENGTH_MAX = 800

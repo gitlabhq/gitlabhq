@@ -276,7 +276,10 @@ function mountSidebarMilestoneWidget() {
           attrWorkspacePath: projectPath,
           workspacePath: projectPath,
           iid: issueIid,
-          issuableType: isInIssuePage() || isInDesignPage() ? TYPE_ISSUE : TYPE_MERGE_REQUEST,
+          issuableType:
+            isInIssuePage() || isInIncidentPage() || isInDesignPage()
+              ? TYPE_ISSUE
+              : TYPE_MERGE_REQUEST,
           issuableAttribute: IssuableAttributeType.Milestone,
           icon: 'milestone',
         },

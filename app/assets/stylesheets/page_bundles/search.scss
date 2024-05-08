@@ -379,14 +379,14 @@ $language-filter-max-height: 20rem;
     }
 
     &:last-of-type {
-      border-radius: 0 0 $border-radius-default - 1px $border-radius-default - 1px;
+      border-radius: 0 0 $border-radius-default-inner $border-radius-default-inner;
 
       pre {
-        border-bottom-right-radius: $border-radius-default - 1px;
+        border-bottom-right-radius: $border-radius-default-inner;
       }
 
       .diff-line-num:first-of-type {
-        border-bottom-left-radius: $border-radius-default - 1px;
+        border-bottom-left-radius: $border-radius-default-inner;
       }
     }
   }

@@ -41,6 +41,8 @@ module API
         end
       end
       expose :draft?, as: :draft
+      expose :imported?, as: :imported
+      expose :imported_from, documentation: { type: 'string', example: 'bitbucket' }
 
       # [Deprecated]  see draft
       #

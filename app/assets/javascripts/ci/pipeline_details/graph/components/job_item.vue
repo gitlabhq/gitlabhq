@@ -161,6 +161,9 @@ export default {
     kind() {
       return this.job?.kind || '';
     },
+    isFailed() {
+      return this.job?.status?.group === 'failed';
+    },
     shouldRenderLink() {
       return this.isLink && this.hasDetails;
     },
@@ -241,7 +244,7 @@ export default {
         { 'gl-rounded-lg': this.isBridge },
         this.cssClassJobName,
         {
-          [`job-${this.status.group}`]: this.isSingleItem,
+          'ci-job-item-failed': this.isSingleItem && this.isFailed,
         },
       ];
     },

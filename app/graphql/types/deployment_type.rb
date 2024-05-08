@@ -75,9 +75,7 @@ module Types
 
     field :web_path,
       GraphQL::Types::String, null: true,
-      alpha: { milestone: '16.11' },
-      description: 'Web path to the deployment page, returns ' \
-                   '`null` if the `deployment_details_page` feature flag is disabled.'
+      description: 'Web path to the deployment page.'
   end
 end
 

@@ -15,6 +15,8 @@ module API
       expose :note, using: Entities::Note, if: ->(event, options) { event.note? }
       expose :author, using: Entities::UserBasic, if: ->(event, options) { event.author }
       expose :wiki_page, using: Entities::WikiPageBasic, if: ->(event, _options) { event.wiki_page? }
+      expose :imported?, as: :imported, documentation: { type: 'boolean', example: false }
+      expose :imported_from, documentation: { type: 'string', example: 'none' }
 
       expose :push_event_payload,
         as: :push_data,

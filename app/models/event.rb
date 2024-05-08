@@ -10,6 +10,7 @@ class Event < ApplicationRecord
   include UsageStatistics
   include ShaAttribute
   include EachBatch
+  include Import::HasImportSource
 
   ACTIONS = HashWithIndifferentAccess.new(
     created: 1,

@@ -21,6 +21,14 @@
           "null"
         ]
       },
+      "imported": {
+        "type": "boolean"
+      },
+      "imported_from": {
+        "type": [
+          "string"
+        ]
+      },
       "author": {
         "type": "object",
         "properties": {

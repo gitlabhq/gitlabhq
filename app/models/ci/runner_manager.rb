@@ -2,6 +2,7 @@
 
 module Ci
   class RunnerManager < Ci::ApplicationRecord
+    include EachBatch
     include FromUnion
     include RedisCacheable
     include Ci::HasRunnerExecutor

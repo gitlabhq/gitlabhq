@@ -9,12 +9,13 @@
 #                                 CLEANUP_ALL_QA_SANDBOX_GROUPS (default: false),
 #                                 PERMANENTLY_DELETE (default: false),
 #                                 DELETE_BEFORE (default: 1 day ago)
-# - Set TOP_LEVEL_GROUP_NAME to the name of the qa sandbox group that you would like to delete projects under.
-# - Set CLEANUP_ALL_QA_SANDBOX_GROUPS to true if you would like to delete all subgroups under all
-# 'gitlab-qa-sandbox-group-*' groups. Otherwise, this will fall back to TOP_LEVEL_GROUP_NAME.
+# - Set TOP_LEVEL_GROUP_NAME to override the default group name determination logic.
+#   If not set, the default group name will be:
+#   - All 'gitlab-qa-sandbox-group-*' groups when CLEANUP_ALL_QA_SANDBOX_GROUPS is true
+#   - 'gitlab-qa-sandbox-group-<current weekday #>' when CLEANUP_ALL_QA_SANDBOX_GROUPS is false
 # - Set PERMANENTLY_DELETE to true if you would like to permanently delete subgroups on an environment with
-# deletion protection enabled. Otherwise, subgroups will remain available during the retention period specified
-# in admin settings. On environments with deletion protection disabled, subgroups will always be permanently deleted.
+#   deletion protection enabled. Otherwise, subgroups will remain available during the retention period specified
+#   in admin settings. On environments with deletion protection disabled, subgroups will always be permanently deleted.
 # - Set DELETE_BEFORE to only delete snippets that were created before a given date, otherwise defaults to 1 day ago
 
 # Run `rake delete_subgroups`
@@ -48,7 +49,7 @@ module QA
       end
 
       def run
-        if ENV['CLEANUP_ALL_QA_SANDBOX_GROUPS']
+        if ENV['CLEANUP_ALL_QA_SANDBOX_GROUPS'] && !ENV['TOP_LEVEL_GROUP_NAME']
           results = SANDBOX_GROUPS.flat_map do |name|
             group_id = fetch_group_id(@api_client, name)
             delete_subgroups(group_id)

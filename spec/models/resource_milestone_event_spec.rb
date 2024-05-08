@@ -7,6 +7,7 @@ RSpec.describe ResourceMilestoneEvent, feature_category: :team_planning, type: :
   it_behaves_like 'a resource event for issues'
   it_behaves_like 'a resource event for merge requests'
   it_behaves_like 'a note for work item resource event'
+  it_behaves_like 'a resource event that responds to imported'
 
   it_behaves_like 'having unique enum values'
   it_behaves_like 'timebox resource event validations'

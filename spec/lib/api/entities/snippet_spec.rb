@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::API::Entities::Snippet do
+RSpec.describe ::API::Entities::Snippet, feature_category: :source_code_management do
   let_it_be(:user) { create(:user) }
   let_it_be(:personal_snippet) { create(:personal_snippet, :repository, author: user ) }
   let_it_be(:project_snippet) { create(:project_snippet, :repository, author: user) }
@@ -20,6 +20,8 @@ RSpec.describe ::API::Entities::Snippet do
     it { expect(subject[:project_id]).to eq snippet.project_id }
     it { expect(subject[:visibility]).to eq snippet.visibility }
     it { expect(subject).to include(:author) }
+    it { expect(subject[:imported]).to eq snippet.imported? }
+    it { expect(subject[:imported_from]).to eq snippet.imported_from }
 
     describe 'file_name' do
       it 'returns attribute from repository' do

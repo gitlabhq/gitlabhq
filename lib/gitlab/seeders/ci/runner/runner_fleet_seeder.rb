@@ -210,7 +210,9 @@ module Gitlab
 
             if runner && runner.errors.empty? &&
                 Random.rand(0..100) < 70 # % of runners having contacted GitLab instance
-              runner.heartbeat(args.merge(executor: executor))
+              system_id = ::API::Ci::Helpers::Runner::LEGACY_SYSTEM_XID
+              runner.heartbeat
+              runner.ensure_manager(system_id).heartbeat(args.merge(executor: executor))
               runner.save!
             end
 
@@ -236,9 +238,7 @@ module Gitlab
               tag_list: base_tags + TAG_LIST.sample(Random.rand(1..tag_limit)),
               description: "Runner fleet #{name}",
               run_untagged: false,
-              active: Random.rand(1..3) != 1,
-              version: ::Gitlab::Ci::RunnerReleases.instance.releases.sample.to_s,
-              ip_address: '127.0.0.1'
+              active: Random.rand(1..3) != 1
             }.compact
           end
 

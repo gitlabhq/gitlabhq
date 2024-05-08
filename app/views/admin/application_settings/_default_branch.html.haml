@@ -12,7 +12,7 @@
 
     -# rubocop: disable Gitlab/FeatureFlagWithoutActor -- This is instance-wide feature flag, no actor here
     - if Feature.enabled?(:default_branch_protection_defaults)
-      = render 'shared/default_branch_protection_defaults', f: f, field: :application_setting
+      = render 'shared/default_branch_protection_defaults', f: f, field: :application_setting, value: @application_setting.default_branch_protection_defaults
     - else
       = render 'shared/default_branch_protection', f: f
     -# rubocop: enable Gitlab/FeatureFlagWithoutActor

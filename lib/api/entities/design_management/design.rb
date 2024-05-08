@@ -7,6 +7,8 @@ module API
         expose :id
         expose :project_id
         expose :filename
+        expose :imported?, as: :imported, documentation: { type: 'boolean', example: false }
+        expose :imported_from, documentation: { type: 'string', example: 'none' }
         expose :image_url do |design|
           ::Gitlab::UrlBuilder.build(design)
         end

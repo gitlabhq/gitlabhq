@@ -132,7 +132,7 @@ module API
           present build, with: Entities::Ci::Job
         end
 
-        desc 'Retry a specific build of a project' do
+        desc 'Retry a specific job of a project' do
           success code: 201, model: Entities::Ci::Job
           failure [
             { code: 401, message: 'Unauthorized' },
@@ -141,15 +141,16 @@ module API
           ]
         end
         params do
-          requires :job_id, type: Integer, desc: 'The ID of a build', documentation: { example: 88 }
+          requires :job_id, type: Integer, desc: 'The ID of a job', documentation: { example: 88 }
         end
+        # This endpoint can be used for retrying both builds and bridges.
         post ':id/jobs/:job_id/retry', urgency: :low, feature_category: :continuous_integration do
           authorize_update_builds!
 
-          build = find_build!(params[:job_id])
-          authorize!(:update_build, build)
+          job = find_job!(params[:job_id])
+          authorize!(:update_build, job)
 
-          response = ::Ci::RetryJobService.new(@project, current_user).execute(build)
+          response = ::Ci::RetryJobService.new(@project, current_user).execute(job)
 
           if response.success?
             present response[:job], with: Entities::Ci::Job

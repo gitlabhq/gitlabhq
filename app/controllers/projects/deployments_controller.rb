@@ -17,9 +17,7 @@ class Projects::DeploymentsController < Projects::ApplicationController
   # rubocop: enable CodeReuse/ActiveRecord
 
   def show
-    return render_404 unless Feature.enabled?(:deployment_details_page, project, type: :wip)
-
-    @deployment = environment.deployments.find_by_iid!(params[:id])
+    @deployment = environment.all_deployments.find_by_iid!(params[:id])
   end
 
   def metrics

@@ -6,7 +6,7 @@
 
   .js-global-protection-levels-protected.gl-ml-7
     %legend.h6.gl-my-3.gl-border-none.gl-font-weight-normal= s_('ProtectedBranch|Allowed to push')
-    - allowed_to_push_access_level = f.object.default_branch_protection_defaults['allowed_to_push'][0]['access_level']
+    - allowed_to_push_access_level = value['allowed_to_push'][0]['access_level']
     - ProtectedBranch::PushAccessLevel.human_access_levels.each do |id, text|
       = render Pajamas::RadioTagComponent.new(name: "#{field}[default_branch_protection_defaults][allowed_to_push][][access_level]",
         label: text,
@@ -14,14 +14,14 @@
         checked: allowed_to_push_access_level == id)
 
     %legend.h6.gl-my-3.gl-border-none.gl-font-weight-normal= s_('ProtectedBranch|Allowed to merge')
-    - allowed_to_merge_access_level = f.object.default_branch_protection_defaults['allowed_to_merge'][0]['access_level']
+    - allowed_to_merge_access_level = value['allowed_to_merge'][0]['access_level']
     - ProtectedBranch::MergeAccessLevel.human_access_levels.each do |id, text|
       = render Pajamas::RadioTagComponent.new(name: "#{field}[default_branch_protection_defaults][allowed_to_merge][][access_level]",
         label: text,
         value: id,
         checked: allowed_to_merge_access_level == id)
 
-    - allow_force_push = f.object.default_branch_protection_defaults['allow_force_push']
+    - allow_force_push = value['allow_force_push']
     = render Pajamas::CheckboxTagComponent.new(name: "#{field}[default_branch_protection_defaults][allow_force_push]",
       label_options: { class: "gl-mt-5" },
       checked: allow_force_push) do |c|
@@ -34,7 +34,7 @@
 
     = render_if_exists 'shared/default_branch_protection_defaults_code_owner_approval', f: f, field: field
 
-    - developer_can_initial_push = f.object.default_branch_protection_defaults['developer_can_initial_push']
+    - developer_can_initial_push = value['developer_can_initial_push']
     = render Pajamas::CheckboxTagComponent.new(name: "#{field}[default_branch_protection_defaults][developer_can_initial_push]",
       label_options: { class: "gl-mt-5" },
       checked: developer_can_initial_push) do |c|

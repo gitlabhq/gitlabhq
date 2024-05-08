@@ -32,6 +32,8 @@ module API
 
       expose :confidential?, as: :confidential
       expose :confidential?, as: :internal
+      expose :imported?, as: :imported
+      expose :imported_from, documentation: { type: 'string', example: 'github' }
 
       # Avoid N+1 queries as much as possible
       expose(:noteable_iid) { |note| note.noteable.iid if NOTEABLE_TYPES_WITH_IID.include?(note.noteable_type) }

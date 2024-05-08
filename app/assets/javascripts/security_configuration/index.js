@@ -50,6 +50,7 @@ export const initSecurityConfiguration = (el) => {
       ...parseBooleanDataAttributes(el, [
         'preReceiveSecretDetectionAvailable',
         'preReceiveSecretDetectionEnabled',
+        'userIsProjectAdmin',
       ]),
     },
     render(createElement) {

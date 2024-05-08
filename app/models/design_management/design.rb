@@ -4,6 +4,7 @@ module DesignManagement
   class Design < ApplicationRecord
     include AtomicInternalId
     include Importable
+    include Import::HasImportSource
     include Noteable
     include Gitlab::FileTypeDetection
     include Gitlab::Utils::StrongMemoize

@@ -17,15 +17,11 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
       creator: user,
       contacted_at: 2.hours.ago,
       active: true,
-      version: 'adfe156',
-      revision: 'a',
       locked: true,
-      ip_address: '127.0.0.1',
       maximum_timeout: 600,
       access_level: 0,
       tag_list: %w[tag1 tag2],
       run_untagged: true,
-      executor_type: :custom,
       maintenance_note: '**Test maintenance note**')
   end
 
@@ -35,9 +31,6 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
       creator: another_admin,
       contacted_at: 1.day.ago,
       active: false,
-      version: 'adfe157',
-      revision: 'b',
-      ip_address: '10.10.10.10',
       access_level: 1,
       run_untagged: true)
   end
@@ -48,15 +41,11 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
       description: 'Group runner 1',
       contacted_at: 2.hours.ago,
       active: true,
-      version: 'adfe156',
-      revision: 'a',
       locked: true,
-      ip_address: '127.0.0.1',
       maximum_timeout: 600,
       access_level: 0,
       tag_list: %w[tag1 tag2],
-      run_untagged: true,
-      executor_type: :shell)
+      run_untagged: true)
   end
 
   let_it_be(:project1) { create(:project) }
@@ -339,9 +328,6 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
         contacted_at: 1.day.ago,
         active: false,
         locked: false,
-        version: 'adfe157',
-        revision: 'b',
-        ip_address: '10.10.10.10',
         access_level: 1,
         run_untagged: true
       )

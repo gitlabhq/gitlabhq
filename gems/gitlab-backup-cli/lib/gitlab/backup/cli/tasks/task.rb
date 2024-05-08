@@ -30,10 +30,10 @@ module Gitlab
             target.dump(backup_output, backup_id)
           end
 
-          def restore!(backup_path, backup_id)
-            # TODO: enable this when building the restore functionality
-            # https://gitlab.com/gitlab-org/gitlab/-/issues/428505
-            raise NotImplementedError
+          def restore!(archive_directory)
+            archived_data_location = Pathname(archive_directory).join(destination_path)
+
+            target.restore(archived_data_location, nil)
           end
 
           # Key string that identifies the task

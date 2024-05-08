@@ -19152,7 +19152,7 @@ The deployment of an environment.
 | <a id="deploymenttriggerer"></a>`triggerer` | [`UserCore`](#usercore) | User who executed the deployment. |
 | <a id="deploymentupdatedat"></a>`updatedAt` | [`Time`](#time) | When the deployment record was updated. |
 | <a id="deploymentuserpermissions"></a>`userPermissions` | [`DeploymentPermissions!`](#deploymentpermissions) | Permissions for the current user on the resource. |
-| <a id="deploymentwebpath"></a>`webPath` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 16.11. **Status**: Experiment. Web path to the deployment page, returns `null` if the `deployment_details_page` feature flag is disabled. |
+| <a id="deploymentwebpath"></a>`webPath` | [`String`](#string) | Web path to the deployment page. |
 
 ### `DeploymentApproval`
 
@@ -19249,6 +19249,8 @@ A single design.
 | <a id="designid"></a>`id` | [`ID!`](#id) | ID of this design. |
 | <a id="designimage"></a>`image` | [`String!`](#string) | URL of the full-sized image. |
 | <a id="designimagev432x230"></a>`imageV432x230` | [`String`](#string) | The URL of the design resized to fit within the bounds of 432x230. This will be `null` if the image has not been generated. |
+| <a id="designimported"></a>`imported` | [`Boolean!`](#boolean) | Indicates whether the design was imported. |
+| <a id="designimportedfrom"></a>`importedFrom` | [`ImportSource!`](#importsource) | Import source of the design. |
 | <a id="designissue"></a>`issue` | [`Issue!`](#issue) | Issue the design belongs to. |
 | <a id="designnotescount"></a>`notesCount` | [`Int!`](#int) | Total count of user-created notes for this design. |
 | <a id="designproject"></a>`project` | [`Project!`](#project) | Project the design belongs to. |
@@ -29685,6 +29687,8 @@ Represents a snippet entry.
 | <a id="snippethidden"></a>`hidden` | [`Boolean!`](#boolean) | Indicates the snippet is hidden because the author has been banned. |
 | <a id="snippethttpurltorepo"></a>`httpUrlToRepo` | [`String`](#string) | HTTP URL to the snippet repository. |
 | <a id="snippetid"></a>`id` | [`SnippetID!`](#snippetid) | ID of the snippet. |
+| <a id="snippetimported"></a>`imported` | [`Boolean!`](#boolean) | Indicates whether the snippet was imported. |
+| <a id="snippetimportedfrom"></a>`importedFrom` | [`ImportSource!`](#importsource) | Import source of the snippet. |
 | <a id="snippetproject"></a>`project` | [`Project`](#project) | Project the snippet is associated with. |
 | <a id="snippetrawurl"></a>`rawUrl` | [`String!`](#string) | Raw URL of the snippet. |
 | <a id="snippetsshurltorepo"></a>`sshUrlToRepo` | [`String`](#string) | SSH URL to the snippet repository. |
@@ -33285,6 +33289,24 @@ Health status of an issue or epic for filtering.
 | <a id="healthstatusfilteratrisk"></a>`atRisk` | At risk. |
 | <a id="healthstatusfilterneedsattention"></a>`needsAttention` | Needs attention. |
 | <a id="healthstatusfilterontrack"></a>`onTrack` | On track. |
+
+### `ImportSource`
+
+Import source.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="importsourcebitbucket"></a>`BITBUCKET` | Imported from Bitbucket. |
+| <a id="importsourcebitbucket_server"></a>`BITBUCKET_SERVER` | Imported from Bitbucket Server. |
+| <a id="importsourcecustom_template"></a>`CUSTOM_TEMPLATE` | Imported from Custom Template. |
+| <a id="importsourcefogbugz"></a>`FOGBUGZ` | Imported from Fogbugz. |
+| <a id="importsourcegit"></a>`GIT` | Imported from Git. |
+| <a id="importsourcegitea"></a>`GITEA` | Imported from Gitea. |
+| <a id="importsourcegithub"></a>`GITHUB` | Imported from Github. |
+| <a id="importsourcegitlab_migration"></a>`GITLAB_MIGRATION` | Imported from Gitlab Migration. |
+| <a id="importsourcegitlab_project"></a>`GITLAB_PROJECT` | Imported from Gitlab Project. |
+| <a id="importsourcemanifest"></a>`MANIFEST` | Imported from Manifest. |
+| <a id="importsourcenone"></a>`NONE` | Not imported. |
 
 ### `IssuableResourceLinkType`
 

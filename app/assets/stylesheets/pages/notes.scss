@@ -635,8 +635,8 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
   .diff-grid-comments:last-child {
     .notes-content {
       border-bottom-width: 0;
-      border-bottom-left-radius: #{$border-radius-default - 1px};
-      border-bottom-right-radius: #{$border-radius-default - 1px};
+      border-bottom-left-radius: $border-radius-default-inner;
+      border-bottom-right-radius: $border-radius-default-inner;
     }
   }
 }

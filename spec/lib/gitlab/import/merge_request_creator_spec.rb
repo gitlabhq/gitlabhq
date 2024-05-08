@@ -11,7 +11,8 @@ RSpec.describe Gitlab::Import::MergeRequestCreator, feature_category: :importers
   describe '#execute' do
     let(:attributes) do
       HashWithIndifferentAccess.new(
-        merge_request.attributes.except('merge_params', 'suggested_reviewers').merge(reviewer_ids: [reviewer_user.id])
+        merge_request.attributes.except('merge_params', 'suggested_reviewers')
+        .merge(reviewer_ids: [reviewer_user.id], imported_from: 0)
       )
     end
 

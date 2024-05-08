@@ -515,54 +515,6 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
               expect(response).to have_gitlab_http_status(:created)
               expect(job.runner_manager.reload.ip_address).to eq('123.222.123.222')
             end
-
-            context 'when hide_duplicate_runner_manager_fields_in_runner FF is disabled' do
-              before do
-                stub_feature_flags(hide_duplicate_runner_manager_fields_in_runner: false)
-              end
-
-              %w[version revision platform architecture].each do |param|
-                context "when info parameter '#{param}' is present" do
-                  let(:value) { "#{param}_value" }
-
-                  it "updates provided Runner's parameter" do
-                    request_job info: { param => value }
-
-                    expect(response).to have_gitlab_http_status(:created)
-                    expect(runner.reload.read_attribute(param.to_sym)).to eq(value)
-                    expect(job.runner_manager.reload.read_attribute(param.to_sym)).to eq(value)
-                  end
-                end
-              end
-
-              it "sets the runner's config" do
-                request_job info: { 'config' => { 'gpus' => 'all', 'ignored' => 'hello' } }
-
-                expect(response).to have_gitlab_http_status(:created)
-                expect(runner.reload.config).to eq({ 'gpus' => 'all' })
-                expect(job.runner_manager.reload.config).to eq({ 'gpus' => 'all' })
-              end
-
-              it "sets the runner's ip_address" do
-                post api('/jobs/request'),
-                  params: { token: runner.token },
-                  headers: { 'User-Agent' => user_agent, 'X-Forwarded-For' => '123.222.123.222' }
-
-                expect(response).to have_gitlab_http_status(:created)
-                expect(runner.reload.ip_address).to eq('123.222.123.222')
-                expect(job.runner_manager.reload.ip_address).to eq('123.222.123.222')
-              end
-
-              it "handles multiple X-Forwarded-For addresses" do
-                post api('/jobs/request'),
-                  params: { token: runner.token },
-                  headers: { 'User-Agent' => user_agent, 'X-Forwarded-For' => '123.222.123.222, 127.0.0.1' }
-
-                expect(response).to have_gitlab_http_status(:created)
-                expect(runner.reload.ip_address).to eq('123.222.123.222')
-                expect(job.runner_manager.reload.ip_address).to eq('123.222.123.222')
-              end
-            end
           end
 
           context 'when concurrently updating a job' do
@@ -749,26 +701,6 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
               expect(json_response['job_info']).to include(expected_job_info)
               expect(json_response['git_info']).to eq(expected_git_info)
               expect(json_response['artifacts']).to eq(expected_artifacts)
-            end
-
-            context 'when hide_duplicate_runner_manager_fields_in_runner FF is disabled' do
-              before do
-                stub_feature_flags(hide_duplicate_runner_manager_fields_in_runner: false)
-              end
-
-              it 'returns job with the correct artifact specification', :aggregate_failures do
-                request_job info: { platform: :darwin, features: { upload_multiple_artifacts: true } }
-
-                expect(response).to have_gitlab_http_status(:created)
-                expect(response.headers['Content-Type']).to eq('application/json')
-                expect(response.headers).not_to have_key('X-GitLab-Last-Update')
-                expect(runner.reload.platform).to eq('darwin')
-                expect(json_response['id']).to eq(job.id)
-                expect(json_response['token']).to eq(job.token)
-                expect(json_response['job_info']).to include(expected_job_info)
-                expect(json_response['git_info']).to eq(expected_git_info)
-                expect(json_response['artifacts']).to eq(expected_artifacts)
-              end
             end
           end
 

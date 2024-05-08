@@ -87,7 +87,9 @@ GET /projects/:id/issues/:issue_iid/notes?sort=asc&order_by=updated_at
     "noteable_iid": 377,
     "resolvable": false,
     "confidential": false,
-    "internal": false
+    "internal": false,
+    "imported": false,
+    "imported_from": "none"
   },
   {
     "id": 305,
@@ -110,7 +112,9 @@ GET /projects/:id/issues/:issue_iid/notes?sort=asc&order_by=updated_at
     "noteable_iid": 121,
     "resolvable": false,
     "confidential": true,
-    "internal": true
+    "internal": true,
+    "imported": false,
+    "imported_from": "none"
   }
 ]
 ```
@@ -266,7 +270,9 @@ Parameters:
   "noteable_iid": 377,
   "resolvable": false,
   "confidential": false,
-  "internal": false
+  "internal": false,
+  "imported": false,
+  "imported_from": "none"
 }
 ```
 
@@ -540,7 +546,9 @@ Parameters:
   "noteable_iid": 11,
   "resolvable": false,
   "confidential": false,
-  "internal": false
+  "internal": false,
+  "imported": false,
+  "imported_from": "none"
 }
 ```
 

@@ -13,10 +13,14 @@ module Ci
     include TaggableQueries
     include Presentable
     include EachBatch
+    include IgnorableColumns
     include Ci::HasRunnerExecutor
     include Ci::HasRunnerStatus
 
     extend ::Gitlab::Utils::Override
+
+    ignore_column %i[config version revision platform architecture ip_address executor_type],
+      remove_with: '17.2', remove_after: '2024-07-22'
 
     add_authentication_token_field :token,
       encrypted: :optional,
@@ -90,9 +94,6 @@ module Ci
     has_one :owner_runner_namespace, -> { order(:id) }, class_name: 'Ci::RunnerNamespace'
 
     has_one :last_build, -> { order('id DESC') }, class_name: 'Ci::Build'
-
-    # TODO: Remove in 17.1 after hide_duplicate_runner_manager_fields_in_runner is removed
-    has_one :runner_version, primary_key: :version, foreign_key: :version, class_name: 'Ci::RunnerVersion'
 
     belongs_to :creator, class_name: 'User', optional: true
 
@@ -243,24 +244,6 @@ module Ci
 
     after_destroy :cleanup_runner_queue
 
-    # NOTE: Remove in 17.1 only leaving :contacted_at once hide_duplicate_runner_manager_fields_in_runner is removed
-    def self.deprecated_cached_attr_reader(*attributes)
-      attributes.each do |attribute|
-        define_method(attribute) do
-          unless self.has_attribute?(attribute)
-            raise ArgumentError,
-              "`deprecated_cached_attr_reader` requires the #{self.class.name}\##{attribute} attribute to have a database column"
-          end
-
-          return if Feature.enabled?(:hide_duplicate_runner_manager_fields_in_runner)
-
-          cached_attribute(attribute) || read_attribute(attribute)
-        end
-      end
-    end
-
-    deprecated_cached_attr_reader :version, :revision, :platform, :architecture, :ip_address, :executor_type
-
     cached_attr_reader :contacted_at
 
     chronic_duration_attr :maximum_timeout_human_readable, :maximum_timeout,
@@ -272,9 +255,6 @@ module Ci
     validates :public_projects_minutes_cost_factor, :private_projects_minutes_cost_factor,
       allow_nil: false,
       numericality: { greater_than_or_equal_to: 0.0, message: 'needs to be non-negative' }
-
-    # TODO: Remove in 17.1. See https://gitlab.com/gitlab-org/gitlab/-/issues/415185
-    validates :config, json_schema: { filename: 'ci_runner_config' }
 
     validates :maintenance_note, length: { maximum: 1024 }
 
@@ -472,53 +452,24 @@ module Ci
       ensure_runner_queue_value == value if value.present?
     end
 
-    def heartbeat(values, update_contacted_at: true)
+    def heartbeat
       ##
       # We can safely ignore writes performed by a runner heartbeat. We do
       # not want to upgrade database connection proxy to use the primary
       # database after heartbeat write happens.
       #
       ::Gitlab::Database::LoadBalancing::Session.without_sticky_writes do
-        if Feature.enabled?(:hide_duplicate_runner_manager_fields_in_runner)
-          values = {}
-        else
-          values = values&.slice(:version, :revision, :platform, :architecture, :ip_address, :config, :executor) || {}
-
-          if values.include?(:executor)
-            values[:executor_type] = Ci::RunnerManager::EXECUTOR_NAME_TO_TYPES.fetch(values.delete(:executor), :unknown)
-          end
-
-          new_version = values[:version]
-          schedule_runner_version_update(new_version) if new_version && new_version != version
-        end
-
-        if update_contacted_at
-          values.merge!(contacted_at: Time.current, creation_state: :finished)
-        end
+        values = { contacted_at: Time.current, creation_state: :finished }
 
         merge_cache_attributes(values)
 
         # We save data without validation, it will always change due to `contacted_at`
-        update_columns(values) if values.any? && persist_cached_data?
+        update_columns(values) if persist_cached_data?
       end
     end
 
     def clear_heartbeat
-      cleared_attributes =
-        if Feature.enabled?(:hide_duplicate_runner_manager_fields_in_runner)
-          { contacted_at: nil }
-        else
-          {
-            version: nil,
-            revision: nil,
-            platform: nil,
-            architecture: nil,
-            ip_address: nil,
-            executor_type: nil,
-            config: {},
-            contacted_at: nil
-          }
-        end
+      cleared_attributes = { contacted_at: nil }
 
       merge_cache_attributes(cleared_attributes)
       update_columns(cleared_attributes)

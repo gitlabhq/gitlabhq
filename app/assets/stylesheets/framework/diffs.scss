@@ -5,7 +5,7 @@ $diff-file-header: 41px;
   margin-bottom: $gl-padding;
 
   table.code tr:last-of-type td:last-of-type {
-    border-bottom-right-radius: $border-radius-default - 1px;
+    border-bottom-right-radius: $border-radius-default-inner;
   }
 
   .file-title,
@@ -542,17 +542,17 @@ table.code {
     .diff-grid-left {
       .diff-td:first-child,
       td:first-child {
-        border-bottom-left-radius: $border-radius-default - 1px;
+        border-bottom-left-radius: $border-radius-default-inner;
 
         .diff-line-expand-button {
-          border-bottom-left-radius: $border-radius-default - 1px;
+          border-bottom-left-radius: $border-radius-default-inner;
         }
       }
     }
 
     .diff-td:last-child:not(.left-side.parallel),
     td:last-child:not(.left-side.parallel) {
-      border-bottom-right-radius: $border-radius-default - 1px;
+      border-bottom-right-radius: $border-radius-default-inner;
     }
   }
 

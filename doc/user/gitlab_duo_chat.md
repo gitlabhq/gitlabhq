@@ -314,20 +314,8 @@ In GitLab 16.8, 16.9, and 16.10, on GitLab Dedicated, GitLab Duo Chat is availab
 
 ## Disable GitLab Duo Chat
 
-If you have a Premium or Ultimate subscription, the **GitLab Duo Chat** button
-is always displayed in the upper-right corner of the UI, and on the left sidebar under **Help**.
-
-You do, however, have an option for changing the availability of GitLab Duo Chat.
-
-### Change the data used by GitLab Duo Chat
-
 To limit the data that Duo Chat has access to, follow the instructions for
-[disabling GitLab Duo features](ai_features_enable.md).
-
-When you make this change, the button is not removed. Instead,
-GitLab Duo Chat no longer uses your organization's data when responding to questions.
-For example, you can no longer ask about your issues or epics. You can, however,
-continue to ask generic questions about GitLab.
+[disabling GitLab Duo features](ai_features_enable.md#disable-gitlab-duo-features).
 
 ## Use GitLab Duo Chat in the GitLab UI
 

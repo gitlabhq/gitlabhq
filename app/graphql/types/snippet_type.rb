@@ -82,6 +82,15 @@ module Types
       calls_gitaly: true,
       null: true
 
+    field :imported, type: GraphQL::Types::Boolean,
+      description: 'Indicates whether the snippet was imported.',
+      null: false, method: :imported?
+
+    field :imported_from,
+      Types::Import::ImportSourceEnum,
+      null: false,
+      description: 'Import source of the snippet.'
+
     markdown_field :description_html, null: true, method: :description
 
     def author

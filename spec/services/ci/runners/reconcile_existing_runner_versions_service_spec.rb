@@ -7,10 +7,9 @@ RSpec.describe ::Ci::Runners::ReconcileExistingRunnerVersionsService, '#execute'
 
   subject(:execute) { described_class.new.execute }
 
-  let_it_be(:runner_14_0_1) { create(:ci_runner, version: '14.0.1') }
-  let_it_be(:runner_version_14_0_1) do
-    create(:ci_runner_version, version: '14.0.1', status: :unavailable)
-  end
+  let_it_be(:runner) { create(:ci_runner) }
+  let_it_be(:runner_manager_14_0_1) { create(:ci_runner_machine, runner: runner, version: '14.0.1') }
+  let_it_be(:runner_version_14_0_1) { create(:ci_runner_version, version: '14.0.1', status: :unavailable) }
 
   context 'with RunnerUpgradeCheck recommending 14.0.2' do
     let(:upgrade_check) { instance_double(::Gitlab::Ci::RunnerUpgradeCheck) }
@@ -22,11 +21,9 @@ RSpec.describe ::Ci::Runners::ReconcileExistingRunnerVersionsService, '#execute'
     end
 
     context 'with runner with new version' do
-      let!(:runner_14_0_2) { create(:ci_runner, version: '14.0.2') }
-      let!(:runner_14_0_0) { create(:ci_runner, version: '14.0.0') }
-      let!(:runner_version_14_0_0) do
-        create(:ci_runner_version, version: '14.0.0', status: :unavailable)
-      end
+      let!(:runner_manager_14_0_2) { create(:ci_runner_machine, runner: runner, version: '14.0.2') }
+      let!(:runner_manager_14_0_0) { create(:ci_runner_machine, runner: runner, version: '14.0.0') }
+      let!(:runner_version_14_0_0) { create(:ci_runner_version, version: '14.0.0', status: :unavailable) }
 
       before do
         allow(upgrade_check).to receive(:check_runner_upgrade_suggestion)

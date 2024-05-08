@@ -30,6 +30,17 @@ module Types
         resolver: Resolvers::DesignManagement::VersionsResolver,
         description: "All versions related to this design ordered newest first."
 
+      field :imported,
+        GraphQL::Types::Boolean,
+        null: false,
+        method: :imported?,
+        description: 'Indicates whether the design was imported.'
+
+      field :imported_from,
+        Types::Import::ImportSourceEnum,
+        null: false,
+        description: 'Import source of the design.'
+
       markdown_field :description_html, null: true
 
       # Returns a `DesignManagement::Version` for this query based on the

@@ -18,6 +18,7 @@ export default {
   inject: [
     'preReceiveSecretDetectionAvailable',
     'preReceiveSecretDetectionEnabled',
+    'userIsProjectAdmin',
     'projectFullPath',
   ],
   props: {
@@ -60,8 +61,20 @@ export default {
         'gl-mb-4': true,
       };
     },
+    isToggleDisabled() {
+      return !this.preReceiveSecretDetectionAvailable || !this.userIsProjectAdmin;
+    },
     showLock() {
-      return !this.preReceiveSecretDetectionAvailable;
+      return this.isToggleDisabled && this.available;
+    },
+    featureLockDescription() {
+      if (!this.preReceiveSecretDetectionAvailable) {
+        return this.$options.i18n.tooltipDescription;
+      }
+      if (!this.userIsProjectAdmin) {
+        return this.$options.i18n.accessLevelTooltipDescription;
+      }
+      return '';
     },
   },
   methods: {
@@ -107,9 +120,12 @@ export default {
     notEnabled: s__('SecurityConfiguration|Not enabled'),
     availableWith: s__('SecurityConfiguration|Available with Ultimate'),
     learnMore: __('Learn more'),
-    featureLockTitle: s__('SecretDetection||Feature not available'),
-    featureLockDescription: s__(
+    tooltipTitle: s__('SecretDetection|Feature not available'),
+    tooltipDescription: s__(
       'SecretDetection|This feature has been disabled at the instance level. Please reach out to your instance administrator to request activation.',
+    ),
+    accessLevelTooltipDescription: s__(
+      'SecretDetection|Only a project maintainer or owner can toggle this feature.',
     ),
     toastMessageEnabled: s__('SecretDetection|Pre-receive Secret Detection is enabled'),
     toastMessageDisabled: s__('SecretDetection|Pre-receive Secret Detection is disabled'),
@@ -125,9 +141,9 @@ export default {
         <gl-icon v-if="showLock" id="lockIcon" name="lock" class="gl-mb-1" />
       </h3>
       <gl-popover target="lockIcon" placement="right">
-        <template #title> {{ $options.i18n.featureLockTitle }} </template>
+        <template #title> {{ $options.i18n.tooltipTitle }} </template>
         <slot>
-          {{ $options.i18n.featureLockDescription }}
+          {{ featureLockDescription }}
         </slot>
       </gl-popover>
 
@@ -170,7 +186,7 @@ export default {
       >
       <gl-toggle
         class="gl-mt-5"
-        :disabled="!preReceiveSecretDetectionAvailable"
+        :disabled="isToggleDisabled"
         :value="toggleValue"
         :label="s__('SecurityConfiguration|Toggle Pre-receive secret detection')"
         label-position="hidden"

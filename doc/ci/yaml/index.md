@@ -4438,18 +4438,18 @@ build-prod:
 
 tests:
   stage: test
-  needs: ['build-dev']
   rules:
-    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+    - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
+      needs: ['build-dev']
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       needs: ['build-prod']
-    - when: on_success # Run the job in other cases
-  script: echo "Running tests for dev by default, or prod when default branch..."
+  script: echo "Running dev specs by default, or prod specs when default branch..."
 ```
 
 In this example:
 
-- If the pipeline runs on a branch that is not the default branch, the `tests` job needs the `build-dev` job (default behavior).
-- If the pipeline runs on the default branch, and therefore the rule matches the condition, the `tests` job needs the `build-prod` job instead.
+- If the pipeline runs on a branch that is not the default branch, and therefore the rule matches the first condition, the `specs` job needs the `build-dev` job.
+- If the pipeline runs on the default branch, and therefore the rule matches the second condition, the `specs` job needs the `build-prod` job.
 
 **Additional details**:
 

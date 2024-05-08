@@ -47,7 +47,7 @@ RSpec.describe Gitlab::Ci::Parsers::Sbom::CyclonedxProperties, feature_category:
       it { is_expected.to be_nil }
     end
 
-    context 'when no dependency_scanning or container_scanning properties are present' do
+    context 'when no dependency_scanning, container_scanning, container_scanning_for_registry properties are present' do
       let(:properties) do
         [
           { 'name' => 'gitlab:meta:schema_version', 'value' => '1' },
@@ -58,6 +58,7 @@ RSpec.describe Gitlab::Ci::Parsers::Sbom::CyclonedxProperties, feature_category:
       it 'does not call source parsers' do
         expect(Gitlab::Ci::Parsers::Sbom::Source::DependencyScanning).not_to receive(:source)
         expect(Gitlab::Ci::Parsers::Sbom::Source::ContainerScanning).not_to receive(:source)
+        expect(Gitlab::Ci::Parsers::Sbom::Source::ContainerScanningForRegistry).not_to receive(:source)
 
         parse_source_from_properties
       end
@@ -123,6 +124,37 @@ RSpec.describe Gitlab::Ci::Parsers::Sbom::CyclonedxProperties, feature_category:
         parse_source_from_properties
       end
     end
+
+    context 'when container_scanning_for_registry properties are present' do
+      let(:properties) do
+        [
+          { 'name' => 'gitlab:meta:schema_version', 'value' => '1' },
+          { 'name' => 'gitlab:container_scanning_for_registry:image:name', 'value' => 'photon' },
+          { 'name' => 'gitlab:container_scanning_for_registry:image:tag', 'value' => '5.0-20231007' },
+          { 'name' => 'gitlab:container_scanning_for_registry:operating_system:name', 'value' => 'Photon OS' },
+          { 'name' => 'gitlab:container_scanning_for_registry:operating_system:version', 'value' => '5.0' }
+        ]
+      end
+
+      let(:expected_input) do
+        {
+          'image' => {
+            'name' => 'photon',
+            'tag' => '5.0-20231007'
+          },
+          'operating_system' => {
+            'name' => 'Photon OS',
+            'version' => '5.0'
+          }
+        }
+      end
+
+      it 'passes only supported properties to the container scanning for registry parser' do
+        expect(Gitlab::Ci::Parsers::Sbom::Source::ContainerScanningForRegistry).to receive(:source).with(expected_input)
+
+        parse_source_from_properties
+      end
+    end
   end
 
   describe '#parse_trivy_source' do
@@ -165,7 +197,7 @@ RSpec.describe Gitlab::Ci::Parsers::Sbom::CyclonedxProperties, feature_category:
         }
       end
 
-      it 'passes only supported properties to the container scanning parser' do
+      it 'passes only supported properties to the trivy parser' do
         expect(Gitlab::Ci::Parsers::Sbom::Source::Trivy).to receive(:source).with(expected_input)
 
         parse_trivy_source_from_properties

@@ -72,6 +72,17 @@ To enable the integration for your project:
 
 GitLab is now ready to reject commits based on GitGuardian policies.
 
+## Skip secret detection
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152064) in GitLab 17.0.
+
+You can skip GitGuardian secret detection, if needed. The options to skip
+secret detection for all commits in a push are identical to the options for
+[Native Secret Detection](../../application_security/secret_detection/pre_receive/index.md#skip-secret-detection). Either:
+
+- Add `[skip secret detection]` to one of the commit messages.
+- Use the `secret_detection.skip_all` push option.
+
 ## Known issues
 
 - Pushes can be delayed or can time out. With the GitGuardian integration, pushes are sent to a third-party, and GitLab has no control over the connection with GitGuardian or the GitGuardian process.

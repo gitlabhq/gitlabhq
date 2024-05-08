@@ -25,11 +25,7 @@ module Deployments
     end
 
     def web_path
-      if Feature.enabled?(:deployment_details_page, project)
-        return project_environment_deployment_path(project, environment, deployment)
-      end
-
-      nil
+      project_environment_deployment_path(project, environment, deployment)
     end
   end
 end

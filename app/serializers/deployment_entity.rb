@@ -51,8 +51,8 @@ class DeploymentEntity < Grape::Entity
     DeploymentClusterEntity.represent(deployment, options) unless deployment.cluster.nil?
   end
 
-  expose :web_path, if: -> (*) { deployment_details_enabled? } do |deployment|
-    project_environment_deployment_path(project, deployment.environment, deployment) if deployment_details_enabled?
+  expose :web_path do |deployment|
+    project_environment_deployment_path(project, deployment.environment, deployment)
   end
 
   private
@@ -72,10 +72,6 @@ class DeploymentEntity < Grape::Entity
     # Gitaly calls that might not be cached.
     #
     can?(request.current_user, :read_build, project)
-  end
-
-  def deployment_details_enabled?
-    Feature.enabled?(:deployment_details_page, project)
   end
 
   def project

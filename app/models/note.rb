@@ -12,6 +12,7 @@ class Note < ApplicationRecord
   include Mentionable
   include Awardable
   include Importable
+  include Import::HasImportSource
   include FasterCacheKeys
   include Redactable
   include CacheMarkdownField

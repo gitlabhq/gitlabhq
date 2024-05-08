@@ -14,12 +14,6 @@ FactoryBot.define do
       issue { nil }
 
       importing { true }
-      imported { false }
-    end
-
-    trait :imported do
-      importing { false }
-      imported { true }
     end
 
     trait :with_relative_position do

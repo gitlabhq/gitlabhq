@@ -158,14 +158,15 @@ If the project does not have a security policy bot user, the bot will be automat
 
 GitLab supports the following types of CRON syntax for the `cadence` field:
 
-- A daily cadence of once per hour at a specified hour, for example: `0 18 * * *`
-- A weekly cadence of once per week on a specified day and at a specified hour, for example: `0 13 * * 0`
+- A daily cadence of once per hour around specified time, for example: `0 18 * * *`
+- A weekly cadence of once per week on a specified day and around specified time, for example: `0 13 * * 0`
 
 NOTE:
 Other elements of the [CRON syntax](https://docs.oracle.com/cd/E12058_01/doc/doc.1014/e12030/cron_expressions.htm) may work in the cadence field if supported by the [cron](https://github.com/robfig/cron) we are using in our implementation, however, GitLab does not officially test or support them.
 The comma (,), hyphens (-), or step operators (/) are not supported for minutes and hours.
 An error is displayed if the cadence is invalid when creating or editing a policy.
 The scheduled pipelines for a previously created policy using comma (,), hyphen(-), or step operator (/) in minutes or hours fields is skipped.
+The pipelines that have been scheduled will use the `cadence` value to create a new pipeline around the time mentioned in the policy. The pipeline will be executed after a specified time when the resources become available to create it.
 
 When using the `schedule` rule type in conjunction with the `agents` field, note the following:
 

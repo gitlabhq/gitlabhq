@@ -37928,6 +37928,9 @@ msgstr ""
 msgid "Pipelines|\"Hello world\" with GitLab CI"
 msgstr ""
 
+msgid "Pipelines|Active train"
+msgstr ""
+
 msgid "Pipelines|Are you sure you want to run this pipeline?"
 msgstr ""
 
@@ -38013,6 +38016,12 @@ msgid "Pipelines|Loading Pipelines"
 msgstr ""
 
 msgid "Pipelines|Loading pipelines"
+msgstr ""
+
+msgid "Pipelines|Merge train"
+msgstr ""
+
+msgid "Pipelines|Merged"
 msgstr ""
 
 msgid "Pipelines|Migrate to GitLab CI/CD from Jenkins"
@@ -45351,7 +45360,7 @@ msgstr ""
 msgid "ScanExecutionPolicy|%{overrideSelector}into the %{boldStart}.gitlab-ci.yml%{boldEnd} with the following %{boldStart}pipeline execution file%{boldEnd} from %{projectSelector} And run with reference (Optional) %{refSelector}"
 msgstr ""
 
-msgid "ScanExecutionPolicy|%{period} %{days} at %{time} %{timezoneLabel} %{timezone}"
+msgid "ScanExecutionPolicy|%{period} %{days} around %{time} %{timezoneLabel} %{timezone}"
 msgstr ""
 
 msgid "ScanExecutionPolicy|%{rules} actions for %{scopes} %{branches} %{agents} %{branchExceptions} %{namespaces} %{period}"
@@ -46042,6 +46051,12 @@ msgstr ""
 msgid "Secret token."
 msgstr ""
 
+msgid "SecretDetection|Feature not available"
+msgstr ""
+
+msgid "SecretDetection|Only a project maintainer or owner can toggle this feature."
+msgstr ""
+
 msgid "SecretDetection|Pre-receive Secret Detection is disabled"
 msgstr ""
 
@@ -46055,9 +46070,6 @@ msgid "SecretDetection|This description appears to have a token in it. Are you s
 msgstr ""
 
 msgid "SecretDetection|This feature has been disabled at the instance level. Please reach out to your instance administrator to request activation."
-msgstr ""
-
-msgid "SecretDetection||Feature not available"
 msgstr ""
 
 msgid "Secrets"
@@ -54209,6 +54221,9 @@ msgstr ""
 msgid "Todos|yourself"
 msgstr ""
 
+msgid "Toggle DuoChat"
+msgstr ""
+
 msgid "Toggle GitLab Next"
 msgstr ""
 
@@ -60545,6 +60560,9 @@ msgid "archived:"
 msgstr ""
 
 msgid "are limited to %{max_count} per destination"
+msgstr ""
+
+msgid "around"
 msgstr ""
 
 msgid "artifacts"

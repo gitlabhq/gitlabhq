@@ -557,7 +557,7 @@ paths:
         description: The expiration date of the token
         type: string
         format: date
-        default: '2025-03-13T16:12:31.421Z'
+        default: '2025-05-06T11:22:32.652Z'
         required: true
         example: "\"2021-01-31"
       - in: formData
@@ -51722,6 +51722,11 @@ definitions:
         type: string
       draft:
         type: string
+      imported:
+        type: string
+      imported_from:
+        type: string
+        example: bitbucket
       work_in_progress:
         type: string
       milestone:
@@ -54764,6 +54769,12 @@ definitions:
         items:
           type: string
           example: e0d123e5f316bef78bfdf5a008837577
+      imported:
+        type: boolean
+        example: false
+      imported_from:
+        type: string
+        example: none
       repository_storage:
         type: string
     description: API_Entities_ProjectSnippet model
@@ -55024,6 +55035,12 @@ definitions:
         "$ref": "#/definitions/API_Entities_UserBasic"
       wiki_page:
         "$ref": "#/definitions/API_Entities_WikiPageBasic"
+      imported:
+        type: boolean
+        example: false
+      imported_from:
+        type: string
+        example: none
       push_data:
         "$ref": "#/definitions/API_Entities_PushEventPayload"
       author_username:
@@ -55071,6 +55088,11 @@ definitions:
         type: string
       internal:
         type: string
+      imported:
+        type: string
+      imported_from:
+        type: string
+        example: github
       noteable_iid:
         type: string
       commands_changes:
@@ -55380,6 +55402,11 @@ definitions:
         type: string
       draft:
         type: string
+      imported:
+        type: string
+      imported_from:
+        type: string
+        example: bitbucket
       work_in_progress:
         type: string
       milestone:
@@ -55671,6 +55698,11 @@ definitions:
         type: string
       draft:
         type: string
+      imported:
+        type: string
+      imported_from:
+        type: string
+        example: bitbucket
       work_in_progress:
         type: string
       milestone:
@@ -56000,6 +56032,11 @@ definitions:
         type: string
       moved_to_id:
         type: string
+      imported:
+        type: string
+      imported_from:
+        type: string
+        example: github
       service_desk_reply_to:
         type: string
       epic_iid:
@@ -59544,6 +59581,12 @@ definitions:
         items:
           type: string
           example: e0d123e5f316bef78bfdf5a008837577
+      imported:
+        type: boolean
+        example: false
+      imported_from:
+        type: string
+        example: none
       repository_storage:
         type: string
     description: API_Entities_PersonalSnippet model
@@ -59597,6 +59640,12 @@ definitions:
         items:
           type: string
           example: e0d123e5f316bef78bfdf5a008837577
+      imported:
+        type: boolean
+        example: false
+      imported_from:
+        type: string
+        example: none
       repository_storage:
         type: string
     description: API_Entities_Snippet model

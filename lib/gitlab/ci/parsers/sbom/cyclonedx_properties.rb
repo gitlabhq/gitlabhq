@@ -18,6 +18,7 @@ module Gitlab
           SOURCE_PARSERS = {
             'dependency_scanning' => ::Gitlab::Ci::Parsers::Sbom::Source::DependencyScanning,
             'container_scanning' => ::Gitlab::Ci::Parsers::Sbom::Source::ContainerScanning,
+            'container_scanning_for_registry' => ::Gitlab::Ci::Parsers::Sbom::Source::ContainerScanningForRegistry,
             'trivy' => ::Gitlab::Ci::Parsers::Sbom::Source::Trivy
           }.freeze
 
@@ -32,6 +33,10 @@ module Gitlab
             container_scanning:image:tag
             container_scanning:operating_system:name
             container_scanning:operating_system:version
+            container_scanning_for_registry:image:name
+            container_scanning_for_registry:image:tag
+            container_scanning_for_registry:operating_system:name
+            container_scanning_for_registry:operating_system:version
             trivy:PkgID
             trivy:PkgType
             trivy:SrcName

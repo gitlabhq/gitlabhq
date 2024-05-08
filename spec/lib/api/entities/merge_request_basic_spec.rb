@@ -23,6 +23,7 @@ RSpec.describe ::API::Entities::MergeRequestBasic, feature_category: :code_revie
       milestone merge_when_pipeline_succeeds merge_status detailed_merge_status sha merge_commit_sha
       squash_commit_sha discussion_locked should_remove_source_branch force_remove_source_branch prepared_at
       reference references web_url time_stats squash task_completion_status has_conflicts blocking_discussions_resolved
+      imported imported_from
     ]
 
     is_expected.to include(*expected_fields)

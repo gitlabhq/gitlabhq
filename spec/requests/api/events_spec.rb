@@ -9,7 +9,7 @@ RSpec.describe API::Events, feature_category: :user_profile do
   let_it_be(:closed_issue) { create(:closed_issue, project: private_project, author: user) }
   let_it_be(:closed_issue_event) { create(:event, :closed, project: private_project, author: user, target: closed_issue, created_at: Date.new(2016, 12, 30)) }
   let_it_be(:closed_issue2) { create(:closed_issue, project: private_project, author: non_member) }
-  let_it_be(:closed_issue_event2) { create(:event, :closed, project: private_project, author: non_member, target: closed_issue2, created_at: Date.new(2016, 12, 30)) }
+  let_it_be(:closed_issue_event2) { create(:event, :closed, project: private_project, author: non_member, imported_from: :github, target: closed_issue2, created_at: Date.new(2016, 12, 30)) }
 
   describe 'GET /events' do
     context 'when unauthenticated' do
@@ -118,6 +118,15 @@ RSpec.describe API::Events, feature_category: :user_profile do
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.size).to eq(1)
+      end
+
+      it 'returns the correct import state' do
+        get api('/events?action=closed&target_type=issue&after=2016-12-1&before=2016-12-31&scope=all', user)
+
+        expect(json_response[0]['imported']).to eq(true)
+        expect(json_response[0]['imported_from']).to eq('github')
+        expect(json_response[1]['imported']).to eq(false)
+        expect(json_response[1]['imported_from']).to eq('none')
       end
 
       context 'when the list of events includes wiki page events' do

@@ -20,6 +20,7 @@ class Snippet < ApplicationRecord
   extend ::Gitlab::Utils::Override
   include CreatedAtFilterable
   include EachBatch
+  include Import::HasImportSource
 
   MAX_FILE_COUNT = 10
 

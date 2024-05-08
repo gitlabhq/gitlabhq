@@ -5,8 +5,6 @@ require 'spec_helper'
 RSpec.describe Gitlab::JiraImport::ImportIssueWorker, feature_category: :importers do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
-  let_it_be(:jira_issue_label_1) { create(:label, project: project) }
-  let_it_be(:jira_issue_label_2) { create(:label, project: project) }
 
   let(:some_key) { 'some-key' }
 
@@ -20,12 +18,46 @@ RSpec.describe Gitlab::JiraImport::ImportIssueWorker, feature_category: :importe
   subject { described_class.new }
 
   describe '#perform', :clean_gitlab_redis_shared_state do
-    let(:assignee_ids) { [user.id] }
+    let(:issue_type_id) { ::WorkItems::Type.default_issue_type.id }
+
+    let(:parent_field) do
+      { 'key' => 'FOO-2', 'id' => '1050', 'fields' => { 'summary' => 'parent issue FOO' } }
+    end
+
+    let(:fields) do
+      {
+        'labels' => %w[bug dev backend frontend]
+      }
+    end
+
+    # rubocop: disable RSpec/VerifiedDoubles -- instance doubles don't return expected values
+    let(:assignee_ids) { double(attrs: { 'displayName' => 'Solver', 'accountId' => '1234' }) }
+
+    let(:jira_issue) do
+      double(
+        id: '1234',
+        key: 'PROJECT-5',
+        summary: 'some title',
+        description: 'basic description',
+        created: '2020-01-01 20:00:00',
+        updated: '2020-01-10 20:00:00',
+        assignee: assignee_ids,
+        reporter: nil,
+        status: double(statusCategory: { 'key' => 'new' }),
+        fields: fields
+      )
+    end
+    # rubocop: enable RSpec/VerifiedDoubles
+
+    let(:params) { { iid: 5 } }
     let(:issue_attrs) do
-      build(:issue, project_id: project.id, namespace_id: project.project_namespace_id, title: 'jira issue').as_json
-        .merge('label_ids' => [jira_issue_label_1.id, jira_issue_label_2.id], 'assignee_ids' => assignee_ids)
-        .except('issue_type')
-        .compact
+      Gitlab::JiraImport::IssueSerializer.new(
+        project,
+        jira_issue,
+        user.id,
+        issue_type_id,
+        params
+      ).execute
     end
 
     context 'when any exception raised while inserting to DB' do
@@ -33,7 +65,7 @@ RSpec.describe Gitlab::JiraImport::ImportIssueWorker, feature_category: :importe
         allow(subject).to receive(:insert_and_return_id).and_raise(StandardError)
         expect(Gitlab::JobWaiter).to receive(:notify)
 
-        subject.perform(project.id, 123, issue_attrs, some_key)
+        subject.perform(project.id, 1050, issue_attrs, some_key)
       end
 
       it 'record a failed to import issue' do
@@ -46,7 +78,7 @@ RSpec.describe Gitlab::JiraImport::ImportIssueWorker, feature_category: :importe
 
       context 'when import label does not exist' do
         it 'does not record import failure' do
-          subject.class.perform_inline(project.id, 123, issue_attrs, some_key)
+          subject.class.perform_inline(project.id, 1050, issue_attrs, some_key)
 
           expect(label.issues.count).to eq(0)
           expect(Gitlab::Cache::Import::Caching.read(Gitlab::JiraImport.failed_issues_counter_cache_key(project.id)).to_i).to eq(0)
@@ -56,8 +88,9 @@ RSpec.describe Gitlab::JiraImport::ImportIssueWorker, feature_category: :importe
       context 'when import label exists' do
         before do
           Gitlab::JiraImport.cache_import_label_id(project.id, label.id)
+          Gitlab::JiraImport.cache_users_mapping(project.id, { '1234' => user.id })
 
-          subject.class.perform_inline(project.id, 123, issue_attrs, some_key)
+          subject.class.perform_inline(project.id, 1050, issue_attrs, some_key)
         end
 
         it 'does not record import failure' do
@@ -68,10 +101,10 @@ RSpec.describe Gitlab::JiraImport::ImportIssueWorker, feature_category: :importe
         it 'creates an issue with the correct attributes' do
           issue = Issue.last
 
-          expect(issue.title).to eq('jira issue')
+          expect(issue.title).to eq('[PROJECT-5] some title')
           expect(issue.project).to eq(project)
           expect(issue.namespace).to eq(project.project_namespace)
-          expect(issue.labels).to match_array([label, jira_issue_label_1, jira_issue_label_2])
+          expect(issue.labels).to eq(project.labels)
           expect(issue.assignees).to eq([user])
         end
 

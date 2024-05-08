@@ -1,38 +1,86 @@
 {
   "type": "object",
-  "properties" : {
-    "title": { "type": "string" },
-    "state": { "type": "string" },
-    "merge_status": { "type": "string" },
-    "source_branch_exists": { "type": "boolean" },
-    "merge_error": { "type": ["string", "null"] },
-    "rebase_in_progress": { "type": "boolean" },
-    "should_be_rebased": { "type": "boolean" },
-    "allow_collaboration": { "type": "boolean"},
-    "allow_maintainer_to_push": { "type": "boolean"},
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "state": {
+      "type": "string"
+    },
+    "imported": {
+      "type": "boolean"
+    },
+    "imported_from": {
+      "type": [
+        "string"
+      ]
+    },
+    "merge_status": {
+      "type": "string"
+    },
+    "source_branch_exists": {
+      "type": "boolean"
+    },
+    "merge_error": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "rebase_in_progress": {
+      "type": "boolean"
+    },
+    "should_be_rebased": {
+      "type": "boolean"
+    },
+    "allow_collaboration": {
+      "type": "boolean"
+    },
+    "allow_maintainer_to_push": {
+      "type": "boolean"
+    },
     "assignees": {
-      "type": ["array"],
+      "type": [
+        "array"
+      ],
       "items": {
         "type": "object",
         "$ref": "../public_api/v4/user/basic.json"
       }
     },
     "reviewers": {
-      "type": ["array"],
+      "type": [
+        "array"
+      ],
       "items": {
         "type": "object",
         "$ref": "../public_api/v4/user/basic.json"
       }
     },
     "milestone": {
-      "type": [ "object", "null" ]
+      "type": [
+        "object",
+        "null"
+      ]
     },
     "labels": {
-      "type": [ "array", "null" ]
+      "type": [
+        "array",
+        "null"
+      ]
     },
-    "task_status": { "type": "string" },
-    "task_status_short": { "type": "string" },
-    "lock_version": { "type": ["integer", "null"] }
+    "task_status": {
+      "type": "string"
+    },
+    "task_status_short": {
+      "type": "string"
+    },
+    "lock_version": {
+      "type": [
+        "integer",
+        "null"
+      ]
+    }
   },
   "additionalProperties": false
 }

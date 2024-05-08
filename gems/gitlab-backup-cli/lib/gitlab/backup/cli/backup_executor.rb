@@ -44,8 +44,7 @@ module Gitlab
           # https://gitlab.com/gitlab-org/gitlab/-/issues/454906
           options = ::Backup::Options.new
 
-          Gitlab::Backup::Cli::Tasks.all.each do |t|
-            task = t.new(context: context, options: options)
+          Gitlab::Backup::Cli::Tasks.build_each(context: context, options: options) do |task|
             Gitlab::Backup::Cli::Output.info("Executing Backup of #{task.human_name}...")
 
             duration = measure_duration do

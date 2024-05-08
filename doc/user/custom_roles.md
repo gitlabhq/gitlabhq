@@ -95,7 +95,11 @@ To create a custom role, you can also [use the API](../api/graphql/reference/ind
 
 ## Edit a custom role
 
-Custom roles can be edited after they are created. The base role can't be changed. If you need to change the base role, you will need to create a new custom role.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/437590) in GitLab 17.0.
+
+After a custom role has been created, you can edit that custom role's name, description,
+and permissions. You cannot change the base role. If you need to change the base role,
+you must create a new custom role.
 
 ### GitLab SaaS
 
@@ -105,11 +109,12 @@ Prerequisites:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > Roles and Permissions**.
-1. Select the three dots for the custom role, then select **Edit role**.
+1. Select the vertical ellipsis (**{ellipsis_v}**) for the custom role, then
+   select **Edit role**.
 1. Modify the role as needed.
 1. Select **Save role** to update the role.
 
-### GitLab self-managed
+### GitLab self-managed and GitLab Dedicated
 
 Prerequisites:
 
@@ -117,7 +122,8 @@ Prerequisites:
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > Roles and Permissions**.
-1. Select the three dots for the custom role, then select **Edit role**.
+1. Select the vertical ellipsis (**{ellipsis_v}**) for the custom role, then
+   select **Edit role**.
 1. Modify the role as needed.
 1. Select **Save role** to update the role.
 

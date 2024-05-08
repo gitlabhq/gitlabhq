@@ -25,13 +25,5 @@ RSpec.describe Deployments::DeploymentPresenter do
       expect(presenter.web_path).to eq("/#{deployment.project.full_path}/-/environments/" \
                                        "#{deployment.environment.id}/deployments/#{deployment.iid}")
     end
-
-    context 'without deployment details page' do
-      it do
-        stub_feature_flags(deployment_details_page: false)
-
-        expect(presenter.web_path).to be_nil
-      end
-    end
   end
 end

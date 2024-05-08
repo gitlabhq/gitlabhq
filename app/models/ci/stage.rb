@@ -3,8 +3,8 @@
 module Ci
   class Stage < Ci::ApplicationRecord
     include Ci::Partitionable
-    include Importable
     include Ci::HasStatus
+    include Importable
     include Gitlab::OptimisticLocking
     include Presentable
 

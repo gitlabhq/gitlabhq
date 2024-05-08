@@ -99,6 +99,8 @@ Example response:
     "title": "test1",
     "description": "fixed login page css paddings",
     "state": "merged",
+    "imported": false,
+    "imported_from": "none",
     "merged_by": { // Deprecated and will be removed in API v5, use `merge_user` instead
       "id": 87854,
       "name": "Douwe Maan",
@@ -291,6 +293,8 @@ Example response:
     "title": "test1",
     "description": "fixed login page css paddings",
     "state": "merged",
+    "imported": false,
+    "imported_from": "none",
     "merged_by": { // Deprecated and will be removed in API v5, use `merge_user` instead
       "id": 87854,
       "name": "Douwe Maan",
@@ -471,6 +475,8 @@ Example response:
     "title": "test1",
     "description": "fixed login page css paddings",
     "state": "merged",
+    "imported": false,
+    "imported_from": "none",
     "merged_by": { // Deprecated and will be removed in API v5, use `merge_user` instead
       "id": 87854,
       "name": "Douwe Maan",
@@ -675,6 +681,8 @@ Example response:
   "title": "Manual job rules",
   "description": "",
   "state": "opened",
+  "imported": false,
+  "imported_from": "none",
   "created_at": "2022-05-13T07:26:38.402Z",
   "updated_at": "2022-05-14T03:38:31.354Z",
   "merged_by": null, // Deprecated and will be removed in API v5. Use `merge_user` instead.
@@ -1324,6 +1332,8 @@ Example response:
   "title": "test1",
   "description": "fixed login page css paddings",
   "state": "merged",
+  "imported": false,
+  "imported_from": "none",
   "created_at": "2017-04-29T08:46:00Z",
   "updated_at": "2017-04-29T08:46:00Z",
   "target_branch": "main",

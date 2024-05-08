@@ -825,11 +825,20 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
       post api("/projects/#{project.id}/jobs/#{job.id}/retry", api_user)
     end
 
-    context 'authorized user' do
-      context 'user with :update_build permission' do
+    context 'authorized user with :update_build permission' do
+      context 'when the job is a build' do
         it 'retries non-running job' do
           expect(response).to have_gitlab_http_status(:created)
           expect(project.builds.first.status).to eq('canceled')
+          expect(json_response['status']).to eq('pending')
+        end
+      end
+
+      context 'when the job is a bridge' do
+        let_it_be(:job) { create(:ci_bridge, :canceled, pipeline: pipeline, downstream: project) }
+
+        it 'retries the bridge' do
+          expect(response).to have_gitlab_http_status(:created)
           expect(json_response['status']).to eq('pending')
         end
       end
@@ -842,13 +851,13 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
           expect(response).to have_gitlab_http_status(:forbidden)
         end
       end
+    end
 
-      context 'user without :update_build permission' do
-        let(:api_user) { reporter }
+    context 'user without :update_build permission' do
+      let(:api_user) { reporter }
 
-        it 'does not retry job' do
-          expect(response).to have_gitlab_http_status(:forbidden)
-        end
+      it 'does not retry job' do
+        expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
 

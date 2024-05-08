@@ -240,17 +240,11 @@
   background-color: var(--blue-500, $blue-500) !important;
 }
 
-.ci-job-component {
-  .job-failed {
-    background-color: var(--red-50, $red-50);
-  }
-}
+.ci-job-item-failed {
+  background-color: var(--red-50, $red-50);
 
-.gl-dark {
-  .ci-job-component {
-    .job-failed {
-      background-color: var(--gray-200, $gray-200);
-    }
+  .gl-dark & {
+    background-color: var(--gray-200, $gray-200);
   }
 }
 

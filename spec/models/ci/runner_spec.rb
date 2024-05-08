@@ -173,22 +173,6 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
         expect { create(:group, runners: [project_runner]) }
           .to raise_error(ActiveRecord::RecordInvalid)
       end
-
-      context 'when runner has config' do
-        it 'is valid' do
-          runner = build(:ci_runner, config: { gpus: "all" })
-
-          expect(runner).to be_valid
-        end
-      end
-
-      context 'when runner has an invalid config' do
-        it 'is invalid' do
-          runner = build(:ci_runner, config: { test: 1 })
-
-          expect(runner).not_to be_valid
-        end
-      end
     end
 
     context 'cost factors validations' do
@@ -1022,12 +1006,10 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
   end
 
   describe '#heartbeat', :freeze_time do
-    let(:runner) { create(:ci_runner, :project, version: '15.0.0') }
-    let(:executor) { 'shell' }
-    let(:values) { { architecture: '18-bit', config: { gpus: "all" }, executor: executor, version: version } }
+    let(:runner) { create(:ci_runner, :project) }
 
     subject(:heartbeat) do
-      runner.heartbeat(values)
+      runner.heartbeat
     end
 
     context 'when database was updated recently' do
@@ -1035,209 +1017,33 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
         runner.contacted_at = Time.current
       end
 
-      context 'when version is changed' do
-        let(:version) { '15.0.1' }
+      it 'updates cache' do
+        expect_redis_update
 
-        before do
-          allow(Ci::Runners::ProcessRunnerVersionUpdateWorker).to receive(:perform_async).with(version)
-        end
-
-        it 'updates cache' do
-          expect_redis_update
-
-          heartbeat
-
-          expect(runner.runner_version).to be_nil
-        end
-
-        it 'does not schedule version information update' do
-          heartbeat
-
-          expect(Ci::Runners::ProcessRunnerVersionUpdateWorker).not_to have_received(:perform_async)
-        end
-
-        context 'when hide_duplicate_runner_manager_fields_in_runner FF is disabled' do
-          before do
-            stub_feature_flags(hide_duplicate_runner_manager_fields_in_runner: false)
-          end
-
-          it 'updates cache' do
-            expect_redis_update
-
-            heartbeat
-
-            expect(runner.runner_version).to be_nil
-          end
-
-          it 'schedules version information update' do
-            heartbeat
-
-            expect(Ci::Runners::ProcessRunnerVersionUpdateWorker).to have_received(:perform_async)
-              .with(version)
-          end
-
-          context 'when fetching runner releases is disabled' do
-            before do
-              stub_application_setting(update_runner_versions_enabled: false)
-            end
-
-            it 'does not schedule version information update' do
-              heartbeat
-
-              expect(Ci::Runners::ProcessRunnerVersionUpdateWorker).not_to have_received(:perform_async)
-            end
-          end
-        end
-      end
-
-      context 'when hide_duplicate_runner_manager_fields_in_runner FF is disabled' do
-        before do
-          stub_feature_flags(hide_duplicate_runner_manager_fields_in_runner: false)
-        end
-
-        context 'with only ip_address specified', :freeze_time do
-          let(:values) do
-            { ip_address: '1.1.1.1' }
-          end
-
-          it 'updates only ip_address' do
-            expect_redis_update(values.merge(contacted_at: Time.current, creation_state: :finished))
-
-            heartbeat
-          end
-
-          context 'with new version having been cached' do
-            let(:version) { '15.0.1' }
-
-            before do
-              runner.cache_attributes(version: version)
-            end
-
-            it 'does not lose cached version value' do
-              expect { heartbeat }.not_to change { runner.version }.from(version)
-            end
-          end
-        end
+        heartbeat
       end
     end
 
     context 'when database was not updated recently' do
       before do
         runner.contacted_at = 2.hours.ago
-
-        allow(Ci::Runners::ProcessRunnerVersionUpdateWorker).to receive(:perform_async).with(version)
       end
 
-      context 'when version is changed' do
-        let(:version) { '15.0.1' }
+      context 'with invalid runner' do
+        before do
+          runner.runner_projects.delete_all
+        end
 
-        context 'with invalid runner' do
-          before do
-            runner.runner_projects.delete_all
-          end
+        it 'still updates contacted at in redis cache and database' do
+          expect(runner).to be_invalid
 
-          it 'still updates contacted at in redis cache and database' do
-            expect(runner).to be_invalid
-
-            expect_redis_update(contacted_at: Time.current, creation_state: :finished)
-            expect { heartbeat }.to change { runner.reload.read_attribute(:contacted_at) }
-              .and not_change { runner.reload.read_attribute(:config) }
-              .and not_change { runner.reload.runner_version }
-
-            expect(Ci::Runners::ProcessRunnerVersionUpdateWorker).not_to have_received(:perform_async)
-          end
-
-          context 'when hide_duplicate_runner_manager_fields_in_runner FF is disabled' do
-            before do
-              stub_feature_flags(hide_duplicate_runner_manager_fields_in_runner: false)
-            end
-
-            it 'still updates redis cache and database' do
-              expect(runner).to be_invalid
-
-              expect_redis_update
-              does_db_update
-
-              expect(Ci::Runners::ProcessRunnerVersionUpdateWorker).to have_received(:perform_async).with(version).once
-            end
-          end
+          expect_redis_update(contacted_at: Time.current, creation_state: :finished)
+          expect { heartbeat }.to change { runner.reload.read_attribute(:contacted_at) }
         end
 
         it 'only updates contacted at in redis cache and database' do
           expect_redis_update(contacted_at: Time.current, creation_state: :finished)
           expect { heartbeat }.to change { runner.reload.read_attribute(:contacted_at) }
-            .and not_change { runner.reload.read_attribute(:config) }
-            .and not_change { runner.reload.runner_version }
-            .and not_change { runner.reload.read_attribute(:architecture) }
-            .and not_change { runner.reload.read_attribute(:executor_type) }
-
-          expect(Ci::Runners::ProcessRunnerVersionUpdateWorker).not_to have_received(:perform_async)
-        end
-
-        context 'when hide_duplicate_runner_manager_fields_in_runner FF is disabled' do
-          before do
-            stub_feature_flags(hide_duplicate_runner_manager_fields_in_runner: false)
-          end
-
-          it 'updates redis cache and database' do
-            expect_redis_update
-            does_db_update
-            expect(Ci::Runners::ProcessRunnerVersionUpdateWorker).to have_received(:perform_async).with(version).once
-          end
-        end
-      end
-
-      context 'with unchanged runner version' do
-        let(:version) { runner.version }
-
-        it 'does not schedule ci_runner_versions update' do
-          heartbeat
-
-          expect(Ci::Runners::ProcessRunnerVersionUpdateWorker).not_to have_received(:perform_async)
-        end
-
-        it 'does not update with the specified executor type' do
-          expect_redis_update
-
-          heartbeat
-
-          expect(runner.reload.read_attribute(:executor_type)).to be_nil
-        end
-
-        context 'when hide_duplicate_runner_manager_fields_in_runner FF is disabled' do
-          before do
-            stub_feature_flags(hide_duplicate_runner_manager_fields_in_runner: false)
-          end
-
-          Ci::RunnerManager::EXECUTOR_NAME_TO_TYPES.each_key do |executor|
-            context "with #{executor} executor" do
-              let(:executor) { executor }
-
-              it 'updates with expected executor type' do
-                expect_redis_update
-
-                heartbeat
-
-                expect(runner.reload.read_attribute(:executor_type)).to eq(expected_executor_type)
-              end
-
-              def expected_executor_type
-                executor.gsub(/[+-]/, '_')
-              end
-            end
-          end
-
-          context 'with an unknown executor type' do
-            let(:executor) { 'some-unknown-type' }
-
-            it 'updates with unknown executor type' do
-              expect_redis_update
-
-              heartbeat
-
-              expect(runner.reload.read_attribute(:executor_type)).to eq('unknown')
-            end
-          end
         end
       end
     end
@@ -1253,29 +1059,15 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
 
     def does_db_update
       expect { heartbeat }.to change { runner.reload.read_attribute(:contacted_at) }
-        .and change { runner.reload.read_attribute(:architecture) }
-        .and change { runner.reload.read_attribute(:config) }
-        .and change { runner.reload.read_attribute(:executor_type) }
     end
   end
 
   describe '#clear_heartbeat', :freeze_time do
-    let!(:runner) { create(:ci_runner, :project, version: '15.0.0') }
-    let(:heartbeat_values) do
-      {
-        version: '15.0.1',
-        platform: 'darwin',
-        architecture: '18-bit',
-        ip_address: '1.1.1.1',
-        executor: 'shell',
-        revision: 'sha',
-        config: { 'gpus' => 'all' }
-      }
-    end
+    let!(:runner) { create(:ci_runner, :project) }
 
     it 'clears contacted at' do
       expect do
-        runner.heartbeat(heartbeat_values)
+        runner.heartbeat
       end.to change { runner.reload.contacted_at }.from(nil).to(Time.current)
         .and change { runner.reload.uncached_contacted_at }.from(nil).to(Time.current)
 
@@ -1283,37 +1075,6 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
         runner.clear_heartbeat
       end.to change { runner.reload.contacted_at }.from(Time.current).to(nil)
         .and change { runner.reload.uncached_contacted_at }.from(Time.current).to(nil)
-    end
-
-    context 'when hide_duplicate_runner_manager_fields_in_runner FF is disabled' do
-      before do
-        stub_feature_flags(hide_duplicate_runner_manager_fields_in_runner: false)
-      end
-
-      let(:expected_attributes) { heartbeat_values.except(:executor).merge(executor_type: 'shell') }
-      let(:expected_cleared_attributes) { expected_attributes.to_h { |key, _| [key, nil] }.merge(config: {}) }
-
-      it 'clears contacted at and other attributes' do
-        expect do
-          runner.heartbeat(heartbeat_values)
-        end.to change { runner.reload.contacted_at }.from(nil).to(Time.current)
-          .and change { runner.reload.uncached_contacted_at }.from(nil).to(Time.current)
-
-        expected_attributes.each do |key, value|
-          expect(runner.public_send(key)).to eq(value)
-          expect(runner.read_attribute(key)).to eq(value)
-        end
-
-        expect do
-          runner.clear_heartbeat
-        end.to change { runner.reload.contacted_at }.from(Time.current).to(nil)
-          .and change { runner.reload.uncached_contacted_at }.from(Time.current).to(nil)
-
-        expected_cleared_attributes.each do |key, value|
-          expect(runner.public_send(key)).to eq(value)
-          expect(runner.read_attribute(key)).to eq(value)
-        end
-      end
     end
   end
 
@@ -1542,15 +1303,16 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
   end
 
   describe 'project runner without projects is destroyable' do
-    subject { create(:ci_runner, :project, :without_projects) }
+    let!(:runner) { create(:ci_runner, :project, :without_projects) }
+
+    subject(:destroy!) { runner.destroy! }
 
     it 'does not have projects' do
-      expect(subject.runner_projects).to be_empty
+      expect(runner.runner_projects).to be_empty
     end
 
     it 'can be destroyed' do
-      subject
-      expect { subject.destroy! }.to change { described_class.count }.by(-1)
+      expect { destroy! }.to change { described_class.count }.by(-1)
     end
   end
 

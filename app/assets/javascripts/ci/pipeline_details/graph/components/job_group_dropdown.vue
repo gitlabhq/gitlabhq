@@ -60,9 +60,6 @@ export default {
     computedJobId() {
       return this.pipelineId > -1 ? `${this.group.name}-${this.pipelineId}` : '';
     },
-    jobGroupClasses() {
-      return [this.cssClassJobName, `job-${this.group.status.group}`];
-    },
     jobStatusText() {
       const textBuilder = [];
       const { tooltip: statusTooltip } = this.group.status;
@@ -117,7 +114,7 @@ export default {
     data-testid="job-dropdown-container"
   >
     <template #toggle>
-      <button type="button" :class="jobGroupClasses" class="gl-w-full gl-pr-4">
+      <button type="button" :class="cssClassJobName" class="gl-w-full gl-bg-transparent gl-pr-4">
         <div class="gl-display-flex gl-align-items-stretch gl-justify-content-space-between">
           <job-item
             :type="$options.jobItemTypes.jobDropdown"

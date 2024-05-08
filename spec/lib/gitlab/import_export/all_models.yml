@@ -838,6 +838,8 @@ project:
 - sbom_occurrences
 - analytics_dashboards_configuration_project
 - analytics_dashboards_pointer
+- targeting_dashboards_pointers
+- targeting_dashboards_pointer_projects
 - design_management_repository
 - design_management_repository_state
 - compliance_standards_adherence

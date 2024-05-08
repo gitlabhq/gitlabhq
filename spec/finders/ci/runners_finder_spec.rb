@@ -53,9 +53,11 @@ RSpec.describe Ci::RunnersFinder, feature_category: :fleet_visibility do
           context 'by upgrade status' do
             let(:upgrade_status) {}
 
-            let_it_be(:runner1) { create(:ci_runner, version: 'a') }
-            let_it_be(:runner2) { create(:ci_runner, version: 'b') }
-            let_it_be(:runner3) { create(:ci_runner, version: 'c') }
+            let_it_be(:runner1) { create(:ci_runner) }
+            let_it_be(:runner2) { create(:ci_runner) }
+            let_it_be(:runner_manager_1) { create(:ci_runner_machine, runner: runner1, version: 'a') }
+            let_it_be(:runner_manager_2) { create(:ci_runner_machine, runner: runner2, version: 'b') }
+            let_it_be(:runner_manager_3) { create(:ci_runner_machine, runner: runner2, version: 'c') }
             let_it_be(:runner_version_recommended) do
               create(:ci_runner_version, version: 'a', status: :recommended)
             end

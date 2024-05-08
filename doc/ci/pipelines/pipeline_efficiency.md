@@ -40,7 +40,7 @@ heavily influenced by the:
 Additional points to pay attention relate to [GitLab Runners](../runners/index.md):
 
 - Availability of the runners and the resources they are provisioned with.
-- Build dependencies and their installation time.
+- Build dependencies, their installation time, and storage space requirements.
 - [Container image size](#docker-images).
 - Network latency and slow connections.
 

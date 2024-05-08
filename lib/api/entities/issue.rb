@@ -55,6 +55,8 @@ module API
       end
 
       expose :moved_to_id
+      expose :imported?, as: :imported
+      expose :imported_from, documentation: { type: 'string', example: 'github' }
       expose :service_desk_reply_to do |issue|
         issue.present(
           current_user: options[:current_user],

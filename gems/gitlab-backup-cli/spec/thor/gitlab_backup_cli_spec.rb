@@ -7,10 +7,11 @@ RSpec.describe 'gitlab-backup-cli commands', type: :thor do
 
   let(:expected_help_output) do
     <<~COMMAND
-    GitLab Backup CLI commands:
-      gitlab-backup-cli backup          # Manage repositories, database and files backup creation
-      gitlab-backup-cli help [COMMAND]  # Describe available commands or one specific command
-      gitlab-backup-cli version         # Display the version information
+      GitLab Backup CLI commands:
+        gitlab-backup-cli backup          # Manage repositories, database and files backup creation
+        gitlab-backup-cli help [COMMAND]  # Describe available commands or one specific command
+        gitlab-backup-cli restore         # Restore previously captured backup data
+        gitlab-backup-cli version         # Display the version information
 
     COMMAND
   end

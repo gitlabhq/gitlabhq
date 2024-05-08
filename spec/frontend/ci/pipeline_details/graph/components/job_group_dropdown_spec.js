@@ -163,6 +163,7 @@ describe('job group dropdown component', () => {
       const groupWithExtendedTooltip = {
         ...group,
         status: {
+          ...group.status,
           tooltip: 'Failed - (stuck or timeout failure) (allowed to fail)',
           text: 'Failed text',
         },
@@ -184,6 +185,7 @@ describe('job group dropdown component', () => {
       const groupWithJustTextTooltip = {
         ...group,
         status: {
+          ...group.status,
           tooltip: '',
           text: 'Passed text',
         },

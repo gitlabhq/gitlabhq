@@ -2266,7 +2266,7 @@ class MergeRequest < ApplicationRecord
     Feature.enabled?(
       :auto_merge_when_incomplete_pipeline_succeeds,
       Project.actor_from_id(target_project_id),
-      type: :gitlab_com_derisk
+      type: :beta
     )
   end
 

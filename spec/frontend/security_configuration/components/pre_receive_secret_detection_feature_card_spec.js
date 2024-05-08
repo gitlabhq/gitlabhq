@@ -1,4 +1,4 @@
-import { GlToggle, GlLink, GlIcon } from '@gitlab/ui';
+import { GlToggle, GlLink, GlIcon, GlPopover } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import Vue from 'vue';
@@ -24,6 +24,7 @@ const feature = preReceiveSecretDetectionMock;
 const defaultProvide = {
   preReceiveSecretDetectionAvailable: true,
   preReceiveSecretDetectionEnabled: false,
+  userIsProjectAdmin: true,
   projectFullPath: 'flightjs/flight',
 };
 
@@ -70,6 +71,7 @@ describe('PreReceiveSecretDetectionFeatureCard component', () => {
   const findToggle = () => wrapper.findComponent(GlToggle);
   const findLink = () => wrapper.findComponent(GlLink);
   const findLockIcon = () => wrapper.findComponent(GlIcon);
+  const findPopover = () => wrapper.findComponent(GlPopover);
 
   it('renders correct name and description', () => {
     expect(wrapper.text()).toContain(feature.name);
@@ -84,11 +86,7 @@ describe('PreReceiveSecretDetectionFeatureCard component', () => {
 
   describe('when feature is available', () => {
     beforeEach(() => {
-      createComponent({
-        provide: {
-          preReceiveSecretDetectionAvailable: true,
-        },
-      });
+      createComponent();
     });
     it('renders toggle in correct default state', () => {
       expect(findToggle().props('disabled')).toBe(false);
@@ -117,43 +115,85 @@ describe('PreReceiveSecretDetectionFeatureCard component', () => {
     });
   });
 
-  describe('when feature is not available', () => {
-    beforeEach(() => {
-      createComponent({
-        provide: {
-          preReceiveSecretDetectionAvailable: false,
-        },
-      });
-    });
-    it('renders correct text', () => {
-      expect(wrapper.text()).toContain('Not enabled');
-    });
-    it('should disable toggle when feature is not configured', () => {
-      expect(findToggle().props('disabled')).toBe(true);
-    });
-    it('renders lock icon', () => {
-      expect(findLockIcon().exists()).toBe(true);
-      expect(findLockIcon(wrapper).props('name')).toBe('lock');
-    });
-  });
-
-  describe('when feature is not available with current license', () => {
-    beforeEach(() => {
-      createComponent({
-        props: {
-          feature: {
-            ...preReceiveSecretDetectionMock,
-            available: false,
+  describe('when feature is not availabe', () => {
+    describe('when instance setting is disabled', () => {
+      beforeEach(() => {
+        createComponent({
+          provide: {
+            preReceiveSecretDetectionAvailable: false,
           },
-        },
+        });
+      });
+
+      it('renders correct text', () => {
+        expect(wrapper.text()).toContain('Not enabled');
+      });
+
+      it('should show disabled toggle', () => {
+        expect(findToggle().props('disabled')).toBe(true);
+      });
+
+      it('renders lock icon', () => {
+        expect(findLockIcon().exists()).toBe(true);
+        expect(findLockIcon().props('name')).toBe('lock');
+      });
+
+      it('shows correct tootlip', () => {
+        expect(findPopover().exists()).toBe(true);
+        expect(findPopover().text()).toBe(
+          'This feature has been disabled at the instance level. Please reach out to your instance administrator to request activation.',
+        );
       });
     });
-    it('should display correct message', () => {
-      expect(wrapper.text()).toContain('Available with Ultimate');
+
+    describe('FF `pre_receive_secret_detection_push_check` is disabled', () => {
+      beforeEach(() => {
+        createComponent({
+          provide: {
+            userIsProjectAdmin: false,
+          },
+        });
+      });
+
+      it('should disable toggle when feature is not configured', () => {
+        expect(findToggle().props('disabled')).toBe(true);
+      });
+
+      it('renders lock icon', () => {
+        expect(findLockIcon().exists()).toBe(true);
+        expect(findLockIcon().props('name')).toBe('lock');
+      });
+
+      it('shows correct tootlip', () => {
+        expect(findPopover().exists()).toBe(true);
+        expect(findPopover().text()).toBe(
+          'Only a project maintainer or owner can toggle this feature.',
+        );
+      });
     });
 
-    it('should not render toggle', () => {
-      expect(findToggle().exists()).toBe(false);
+    describe('when feature is not available with current license', () => {
+      beforeEach(() => {
+        createComponent({
+          props: {
+            feature: {
+              ...preReceiveSecretDetectionMock,
+              available: false,
+            },
+          },
+        });
+      });
+      it('should display correct message', () => {
+        expect(wrapper.text()).toContain('Available with Ultimate');
+      });
+
+      it('should not render toggle', () => {
+        expect(findToggle().exists()).toBe(false);
+      });
+
+      it('should not render lock icon', () => {
+        expect(findLockIcon().exists()).toBe(false);
+      });
     });
   });
 });

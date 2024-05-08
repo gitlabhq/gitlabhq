@@ -20,6 +20,9 @@ module Gitlab
 
         desc 'backup', 'Manage repositories, database and files backup creation'
         subcommand 'backup', Commands::BackupSubcommand
+
+        desc 'restore', 'Restore previously captured backup data'
+        subcommand 'restore', Commands::RestoreSubcommand
       end
     end
   end

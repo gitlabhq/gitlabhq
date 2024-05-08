@@ -279,8 +279,7 @@
 }
 
 .filtered-search-history-dropdown-toggle-button.gl-button {
-  $inner-border: #{$border-radius-default - 1px};
-  border-radius: $inner-border 0 0 $inner-border;
+  border-radius: $border-radius-default-inner 0 0 $border-radius-default-inner;
   color: $gl-text-color-secondary;
   margin: -1px 0 -1px -1px;
   box-shadow: inset 0 0 0 1px $gray-400;

@@ -318,9 +318,23 @@ RSpec.describe Projects::Security::ConfigurationPresenter, feature_category: :so
         end
       end
 
-      context 'when the feature flag is enabled' do
+      context 'when the feature flags are enabled' do
         before do
           stub_feature_flags(pre_receive_secret_detection_beta_release: true)
+          stub_feature_flags(pre_receive_secret_detection_push_check: true)
+        end
+
+        it 'feature includes pre_receive_secret_detection' do
+          skip unless Gitlab.ee?
+
+          feature = features.find { |scan| scan["type"] == 'pre_receive_secret_detection' }
+          expect(feature).not_to be_nil
+        end
+      end
+
+      context 'when it is a dedicated instance' do
+        before do
+          stub_application_setting(gitlab_dedicated_instance: true)
         end
 
         it 'feature includes pre_receive_secret_detection' do

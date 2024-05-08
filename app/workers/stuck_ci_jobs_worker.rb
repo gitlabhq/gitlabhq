@@ -26,18 +26,12 @@ class StuckCiJobsWorker # rubocop:disable Scalability/IdempotentWorker
 
   private
 
-  def disabled_drop_canceling?
-    Feature.disabled?(:ci_stuck_builds_drop_canceling_worker, type: :gitlab_com_derisk)
-  end
-
   def perform_staggered_work
     delayed_workers = [
       Ci::StuckBuilds::DropRunningWorker,
       Ci::StuckBuilds::DropScheduledWorker,
       Ci::StuckBuilds::DropCancelingWorker
     ]
-
-    delayed_workers.pop if disabled_drop_canceling?
 
     # We run this worker every hour and want to stagger the load on the builds table
     # cron job interval / number of workers or services executed

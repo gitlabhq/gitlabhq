@@ -37,12 +37,6 @@ RSpec.describe DeploymentEntity do
       expect(subject).to include(:tier_in_yaml)
       expect(subject).to include(:web_path)
     end
-
-    it 'does not expose web_path without flag' do
-      stub_feature_flags(deployment_details_page: false)
-
-      expect(subject).not_to include(:web_path)
-    end
   end
 
   context 'when deployable is build job' do

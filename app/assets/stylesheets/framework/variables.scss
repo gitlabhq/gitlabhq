@@ -205,6 +205,7 @@ $fixed-layout-width: 1296px;
 $container-margin: $gl-padding;
 $container-margin-xl: $gl-padding-24;
 $border-radius-default: 4px;
+$border-radius-default-inner: $border-radius-default - 1px;
 $border-radius-small: 2px;
 $border-radius-large: 8px;
 $default-icon-size: 16px;

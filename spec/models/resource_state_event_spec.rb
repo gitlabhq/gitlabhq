@@ -9,6 +9,7 @@ RSpec.describe ResourceStateEvent, feature_category: :team_planning, type: :mode
   let(:merge_request) { create(:merge_request) }
 
   it_behaves_like 'a resource event'
+  it_behaves_like 'a resource event that responds to imported'
   it_behaves_like 'a resource event for issues'
   it_behaves_like 'a resource event for merge requests'
   it_behaves_like 'a note for work item resource event'

@@ -151,6 +151,8 @@ Example response:
       "merge_requests_count": 0,
       "user_notes_count": 1,
       "due_date": "2016-07-22",
+      "imported":false,
+      "imported_from": "none",
       "web_url": "http://gitlab.example.com/my-group/my-project/issues/6",
       "references": {
         "short": "#6",
@@ -381,6 +383,8 @@ Example response:
       "closed_by" : null,
       "user_notes_count": 1,
       "due_date": null,
+      "imported": false,
+      "imported_from": "none",
       "web_url": "http://gitlab.example.com/my-group/my-project/issues/1",
       "references": {
         "short": "#1",
@@ -594,6 +598,8 @@ Example response:
       },
       "user_notes_count": 1,
       "due_date": "2016-07-22",
+      "imported": false,
+      "imported_from": "none",
       "web_url": "http://gitlab.example.com/my-group/my-project/issues/1",
       "references": {
         "short": "#1",
@@ -762,6 +768,8 @@ Example response:
   "subscribed": false,
   "user_notes_count": 1,
   "due_date": null,
+  "imported": false,
+  "imported_from": "none",
   "web_url": "http://example.com/my-group/my-project/issues/1",
   "references": {
     "short": "#1",
@@ -931,6 +939,8 @@ Example response:
    "subscribed": false,
    "user_notes_count": 1,
    "due_date": null,
+   "imported": false,
+   "imported_from": "none",
    "web_url": "http://gitlab.example.com/my-group/my-project/issues/1",
    "references": {
      "short": "#1",
@@ -1212,7 +1222,7 @@ Supported attributes:
 | `state_event`  | string  | No       | The state event of an issue. To close the issue, use `close`, and to reopen it, use `reopen`.                      |
 | `title`        | string  | No       | The title of an issue.                                                                                      |
 | `updated_at`   | string  | No       | When the issue was updated. Date time string, ISO 8601 formatted, for example `2016-03-11T03:45:40Z` (requires administrator or project owner rights). Empty string or null values are not accepted.|
-| `weight`       | integer | No | The weight of the issue. Valid values are greater than or equal to 0. Premium and Ultimate only.           |
+| `weight`       | integer | No       | The weight of the issue. Valid values are greater than or equal to 0. Premium and Ultimate only.           |
 
 Example request:
 
@@ -1469,6 +1479,8 @@ Example response:
     "web_url": "https://gitlab.example.com/solon.cremin"
   },
   "due_date": null,
+  "imported": false,
+  "imported_from": "none",
   "web_url": "http://gitlab.example.com/my-group/my-project/issues/11",
   "references": {
     "short": "#11",
@@ -1627,6 +1639,8 @@ Example response:
   "upvotes":0,
   "downvotes":0,
   "due_date":null,
+  "imported":false,
+  "imported_from": "none",
   "confidential":false,
   "discussion_locked":null,
   "issue_type":"issue",

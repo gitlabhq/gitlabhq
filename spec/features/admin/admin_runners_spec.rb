@@ -555,15 +555,7 @@ RSpec.describe "Admin Runners", feature_category: :fleet_visibility do
   end
 
   describe "Runner show page", :js do
-    let_it_be(:runner) do
-      create(
-        :ci_runner,
-        description: 'runner-foo',
-        version: '14.0',
-        tag_list: ['tag1']
-      )
-    end
-
+    let_it_be(:runner) { create(:ci_runner, description: 'runner-foo', tag_list: ['tag1']) }
     let_it_be(:runner_job) { create(:ci_build, runner: runner) }
 
     before do

@@ -54,7 +54,6 @@ describe('~/environments/environment_details/index.vue', () => {
       provide: {
         projectPath: projectFullPath,
         graphqlEtagKey: GRAPHQL_ETAG_KEY,
-        glFeatures: { deploymentDetailsPage: true },
       },
       propsData: {
         projectFullPath,
