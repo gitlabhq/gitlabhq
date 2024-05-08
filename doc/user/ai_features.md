@@ -258,6 +258,15 @@ All of these AI providers are under data protection agreements with GitLab that 
 
 GitLab retains input and output for up to 30 days for the purpose of troubleshooting, debugging, and addressing latency issues.
 
+### Training data
+
+GitLab does not train generative AI models based on private (non-public) data. The vendors we work with also do not train models based on private data.
+
+For more information on our AI [sub-processors](https://about.gitlab.com/privacy/subprocessors/#third-party-sub-processors), see:
+
+- Google Vertex AI Models APIs [data governance](https://cloud.google.com/vertex-ai/generative-ai/docs/data-governance), [responsible AI](https://cloud.google.com/vertex-ai/generative-ai/docs/learn/responsible-ai), and [release notes](https://cloud.google.com/vertex-ai/docs/release-notes).
+- Anthropic Claude's [constitution](https://www.anthropic.com/news/claudes-constitution), training data [FAQ](https://support.anthropic.com/en/articles/7996885-how-do-you-use-personal-data-in-model-training), and [data recency article](https://support.anthropic.com/en/articles/8114494-how-up-to-date-is-claude-s-training-data).
+
 ### Telemetry
 
 GitLab Duo collects aggregated or de-identified first-party usage data through our [Snowplow collector](https://handbook.gitlab.com/handbook/business-technology/data-team/platform/snowplow/). This usage data includes the following metrics:
@@ -268,15 +277,6 @@ GitLab Duo collects aggregated or de-identified first-party usage data through o
 - Model used
 - Status code responses
 - API responses times
-
-### Training data
-
-GitLab does not train generative AI models based on private (non-public) data. The vendors we work with also do not train models based on private data.
-
-For more information on our AI [sub-processors](https://about.gitlab.com/privacy/subprocessors/#third-party-sub-processors), see:
-
-- Google Vertex AI Models APIs [data governance](https://cloud.google.com/vertex-ai/generative-ai/docs/data-governance) and [responsible AI](https://cloud.google.com/vertex-ai/generative-ai/docs/learn/responsible-ai).
-- Anthropic Claude's [constitution](https://www.anthropic.com/news/claudes-constitution).
 
 ### Model accuracy and quality
 

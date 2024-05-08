@@ -322,17 +322,20 @@ The limit varies depending on your plan and the number of seats in your subscrip
 
 ### Other limits
 
-| Setting              | Default for GitLab.com  |
-|----------------------|-------------------------|
-| Number of webhooks   | `100` per project, `50` per group (subgroup webhooks are not counted towards parent group limits ) |
-| Maximum payload size | 25 MB                   |
-| Timeout              | 10 seconds              |
+| Setting                                                                                | Default for GitLab.com                                                                             |
+| ------------------------------------------                                             | -------------------------------------------------------------------------------------------------- |
+| Number of webhooks                                                                     | `100` per project, `50` per group (subgroup webhooks are not counted towards parent group limits ) |
+| Maximum payload size                                                                   | 25 MB                                                                                              |
+| Timeout                                                                                | 10 seconds                                                                                         |
+| [Pages multiple deployments](../project/pages/index.md#limits) on Premium tier  | 100 extra deployments                                                                              |
+| [Pages multiple deployments](../project/pages/index.md#limits) on Ultimate tier | 100 extra deployments                                                                              |
 
 For self-managed instance limits, see:
 
 - [Webhook rate limit](../../administration/instance_limits.md#webhook-rate-limit).
 - [Number of webhooks](../../administration/instance_limits.md#number-of-webhooks).
 - [Webhook timeout](../../administration/instance_limits.md#webhook-timeout).
+- [Pages multiple deployments](../../administration/instance_limits.md#number-of-extra-pages-deployments-when-using-multiple-deployments).
 
 ## Runner SaaS
 

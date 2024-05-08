@@ -68,7 +68,7 @@ In case when a feature is enabled through multiple namespaces and its required t
 possible to pass an optional `feature_enabled_by_namespace_ids` parameter with an array of namespace ids.
 
 ```ruby
-Gitlab::InternalEvents.track_event(
+track_internal_event(
   ...
   feature_enabled_by_namespace_ids: [namespace_one.id, namespace_two.id]
 )
@@ -81,7 +81,7 @@ Additional properties can be passed when tracking events. They can be used to sa
 Additional properties are passed by including the `additional_properties` hash in the `#track_event` call:
 
 ```ruby
-Gitlab::InternalEvents.track_event(
+track_internal_event(
   "create_ci_build",
   user: user,
   additional_properties: {

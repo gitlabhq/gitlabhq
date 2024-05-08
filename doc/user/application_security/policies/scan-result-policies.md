@@ -248,10 +248,10 @@ The settings set in the policy overwrite settings in the project.
 ## `fallback_behavior`
 
 > - The `fallback_behavior` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/451784) in GitLab 16.11 [with a flag](../../../administration/feature_flags.md) named `security_scan_result_policies_unblock_fail_open_approval_rules`. Disabled by default.
+> - The `fallback_behavior` field was [enabled on GitLab.com, self-managed, and GitLab Dedicated](https://gitlab.com/groups/gitlab-org/-/epics/10816) in GitLab 17.0.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `security_scan_result_policies_unblock_fail_open_approval_rules`.
-On GitLab.com and GitLab Dedicated, this feature is not available.
+On self-managed GitLab, by default the `fallback_behavior` field is available. To hide the feature, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `security_scan_result_policies_unblock_fail_open_approval_rules`. On GitLab.com and GitLab Dedicated, this feature is available.
 
 | Field  | Type     | Required | Possible values    | Description                                                                                                          |
 |--------|----------|----------|--------------------|----------------------------------------------------------------------------------------------------------------------|
@@ -528,6 +528,8 @@ GitLab SaaS users may submit a [support ticket](https://about.gitlab.com/support
 - Current behavior
 - Expected behavior
 
+### GitLab SaaS
+
 Support teams will investigate [logs](https://log.gprd.gitlab.net/) (`pubsub-sidekiq-inf-gprd*`) to identify the failure `reason`. Below is an example response snippet from logs. You can use this query to find logs related to approvals: `json.event.keyword: "update_approvals"` and `json.project_path: "group-path/project-path"`. Optionally, you can further filter by the merge request identifier using `json.merge_request_iid`:
 
 ```json
@@ -541,6 +543,14 @@ Support teams will investigate [logs](https://log.gprd.gitlab.net/) (`pubsub-sid
   "event": "update_approvals",
 }
 ```
+
+### GitLab self-managed
+
+Search for keywords such as the `project-path`, `api_fuzzing`, and `merge_request`. Example: `grep group-path/project-path`, and `grep merge_request`. If you know the correlation ID you can search by correlation ID. For example, if the value of `correlation_id` is 01HWN2NFABCEDFG, search for `01HWN2NFABCEDFG`.
+Search in the following files:
+
+- `/gitlab/gitlab-rails/production_json.log`
+- `/gitlab/sidekiq/current`
 
 Common failure reasons:
 

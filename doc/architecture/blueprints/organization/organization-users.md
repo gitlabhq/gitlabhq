@@ -6,19 +6,19 @@ description: 'Organization Users'
 
 # Organization Users
 
-Users can become an Organization User in the following way:
+Users can become an Organization member in the following way:
 
 - Organization Owners create an account on behalf of a user, and then share it with the user.
 
-Organization Users can get access to Groups and Projects in an Organization as:
+Organization members can get access to Groups and Projects in an Organization as:
 
 - A Group Member: this grants access to the Group and all its Projects, regardless of their visibility.
 - A Project Member: this grants access to the Project, and limited access to parent Groups, regardless of their visibility.
-- A Non-Member: this grants access to public and internal Groups and Projects of that Organization. To access a private Group or Project in an Organization, a User must become a Member. Internal visibility will not be available for Organization in Cells 1.0.
+- A Non-Member: this grants access to public and internal Groups and Projects of that Organization. To access a private Group or Project in an Organization, a user must become a member. Internal visibility will not be available for Organization in Cells 1.0.
 
-Organization Users can be managed in the following ways:
+Organization members can be managed in the following ways:
 
-- As [Enterprise Users](../../../user/enterprise_user/index.md), managed by the Organization. This includes control over their User account and the ability to block the User. In the context of Cells 1.0, Organization Users will essentially function like Enterprise Users.
+- As [Enterprise Users](../../../user/enterprise_user/index.md), managed by the Organization. This includes control over their User account and the ability to block the User. In the context of Cells 1.0, Organization members will essentially function like Enterprise Users.
 - As Non-Enterprise Users, managed by the default Organization. Non-Enterprise Users can be removed from an Organization, but the User keeps ownership of their User account. This will only be considered post Cells 1.0.
 
 Enterprise Users are only available to Organizations with a Premium or Ultimate subscription. Organizations on the free tier will only be able to host Non-Enterprise Users.
@@ -45,7 +45,7 @@ TBD
 
 ## When can Users see an Organization?
 
-For Cells 1.0, an Organization can only be private. Private Organizations can only be seen by their Organization Users. They can only contain private Groups and Projects.
+For Cells 1.0, an Organization can only be private. Private Organizations can only be seen by their Organization members. They can only contain private Groups and Projects.
 
 For Cells 1.5, Organizations can also be public. Public Organizations can be seen by everyone. They can contain public and private Groups and Projects.
 
@@ -62,15 +62,15 @@ As an end goal, we plan to offer the following scenarios:
 | Organization visibility | Group/Project visibility | Who sees the Organization? | Who sees Groups/Projects? |
 | ------ | ------ | ------ | ------ |
 | public | public | Everyone | Everyone |
-| public | internal | Everyone | Organization Users |
+| public | internal | Everyone | Organization members |
 | public | private | Everyone | Group/Project members |
-| internal | internal | Organization Users | Organization Users |
-| internal | private | Organization Users | Group/Project members |
-| private | private | Organization Users | Group/Project members |
+| internal | internal | Organization members | Organization members |
+| internal | private | Organization members | Group/Project members |
+| private | private | Organization members | Group/Project members |
 
 ## What can Users see in an Organization?
 
-Users can see the things that they have access to in an Organization. For instance, an Organization User would be able to access only the private Groups and Projects that they are a Member of, but could see all public Groups and Projects. Actionable items such as issues, merge requests and the to-do list are seen in the context of the Organization. This means that a User might see 10 merge requests they created in `Organization A`, and 7 in `Organization B`, when in total they have created 17 merge requests across both Organizations.
+Users can see the things that they have access to in an Organization. For instance, an Organization member would be able to access only the private Groups and Projects that they are a member of, but could see all public Groups and Projects. Actionable items such as issues, merge requests and the to-do list are seen in the context of the Organization. This means that a User might see 10 merge requests they created in `Organization A`, and 7 in `Organization B`, when in total they have created 17 merge requests across both Organizations.
 
 ## What is a Billable Member?
 
@@ -124,7 +124,7 @@ We've identified three different scenarios where a User can be removed from an O
 1. Banning: The User is banned. This can happen in case of misconduct but the User cannot be added again to the Organization until they are unbanned. In this case, we keep the organization_users entry and change the permission to none.
 1. Deleting: The User is deleted. We assign everything the User has authored to the Ghost User and delete the entry from the organization_users table.
 
-As part of the Organization MVC, Organization Owners can remove Organization Users. This means that the User's membership entries are deleted from all Groups and Projects that are contained within the Organization. In addition, the User entry is removed from the `organization_users` table.
+As part of the Organization MVC, Organization Owners can remove Organization members. This means that the User's membership entries are deleted from all Groups and Projects that are contained within the Organization. In addition, the User entry is removed from the `organization_users` table.
 
 Actions such as banning and deleting a User will be added to the Organization at a later point.
 

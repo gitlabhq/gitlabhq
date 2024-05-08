@@ -667,6 +667,11 @@ The default limit for [GitLab self-managed](../subscriptions/self_managed/index.
 To set a limit on your self-managed instance, use the
 [Admin Area](pages/index.md#set-maximum-number-of-gitlab-pages-custom-domains-for-a-project).
 
+### Number of extra Pages deployments when using multiple deployments
+
+When using [multiple Pages deployments](../user/project/pages/index.md#create-multiple-deployments), the total number
+of extra Pages deployments permitted for a top-level namespace is 1000.
+
 ### Number of registered runners per scope
 
 The total number of registered runners is limited at the group and project levels. Each time a new runner is registered,

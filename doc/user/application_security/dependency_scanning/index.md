@@ -81,7 +81,7 @@ Dependency Scanning does not support runtime installation of compilers and inter
 
 ## Supported languages and package managers
 
-The following languages and dependency managers are supported:
+The following languages and dependency managers are supported when using the Dependency Scanning [CI Template](#enabling-the-analyzer-by-using-the-cicd-template):
 
 <!-- markdownlint-disable MD044 -->
 <table class="ds-table">
@@ -689,7 +689,7 @@ Support for additional languages, dependency managers, and dependency files are 
 Enable the dependency scanning analyzer to ensure it scans your application's dependencies for known
 vulnerabilities. You can then adjust its behavior by using CI/CD variables.
 
-### Enabling the analyzer
+### Enabling the analyzer by using the CI/CD template
 
 Prerequisites:
 
@@ -758,6 +758,17 @@ To enable dependency scanning:
 1. Review the merge request, then select **Merge**.
 
 Pipelines now include a dependency scanning job.
+
+### Enabling dependency scanning by using CI/CD components
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/454143) in GitLab 17.0. This feature is an [Experiment](../../../policy/experiment-beta-support.md).
+> - The dependency scanning CI/CD component only supports Android projects.
+
+Use [CI/CD components](../../../ci/components/index.md) to perform dependency scanning of your application. For instructions, see the respective component's README file.
+
+#### Available CI/CD components per language and package manager
+
+- [Android applications](https://gitlab.com/explore/catalog/components/android-dependency-scanning)
 
 ### Running jobs in merge request pipelines
 

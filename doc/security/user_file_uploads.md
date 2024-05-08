@@ -15,7 +15,12 @@ Users can upload files to:
 - Issues or merge requests in a project.
 - Epics in a group.
 
-GitLab generates direct URLs for these images with a random 32-character ID to prevent unauthorized users from guessing the URLs. This randomization offers some security for images containing sensitive information.
+GitLab generates direct URLs for these uploaded files with a random 32-character ID to prevent unauthorized users from guessing the URLs. This randomization offers some security for files containing sensitive information.
+
+Files uploaded by users to GitLab issues, merge requests, and epics contain `/uploads/<32-character-id>` in the URL path.
+
+WARNING:
+Exercise caution in downloading files uploaded by unknown or untrusted sources, especially if the file is an executable or script.
 
 ## Access control for uploaded files
 

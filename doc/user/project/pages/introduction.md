@@ -93,21 +93,6 @@ the group must be at the top level and not a subgroup.
 For [project websites](../../project/pages/getting_started_part_one.md#project-website-examples),
 you can create your project first and access it under `http(s)://namespace.example.io/project-path`.
 
-## Enable unique domains
-
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9347) in GitLab 15.9 [with a flag](../../../administration/feature_flags.md) named `pages_unique_domain`. Disabled by default.
-> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/388151) in GitLab 15.11.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122229) in GitLab 16.3.
-
-By default, every project in a group shares the same domain, for example, `group.gitlab.io`. This means that cookies are also shared for all projects in a group.
-
-To ensure your project uses a unique Pages domain, enable the unique domains feature for the project:
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Deploy > Pages**.
-1. Select the **Use unique domain** checkbox.
-1. Select **Save changes**.
-
 ## Specific configuration options for Pages
 
 Learn how to set up GitLab CI/CD for specific use cases.

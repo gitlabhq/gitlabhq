@@ -229,83 +229,80 @@ frame "Google Cloud Platform" <<gcp>> {
 @enduml
 ```
 
-- <details>
-  <summary> KAS: Select to Expand </summary>
+### KAS
 
-  ```plantuml
-  @startuml
+```plantuml
+@startuml
 
-  skinparam frame {
-    borderColor<<customer>> #F4B400
-  }
-  skinparam frame {
-    borderColor<<gcp>> #4285F4
-  }
-  skinparam cloud {
-    borderColor<<cloudflare>> #F48120
-  }
+skinparam frame {
+  borderColor<<customer>> #F4B400
+}
+skinparam frame {
+  borderColor<<gcp>> #4285F4
+}
+skinparam cloud {
+  borderColor<<cloudflare>> #F48120
+}
 
-  together {
-    frame "cluster 1" <<customer>> {
-        component "agentk" as cluster1AgentK
-    }
-
-    frame "cluster 2" <<customer>> {
-        component "agentk" as cluster2AgentK
-    }
-
-    frame "cluster 3" <<customer>> {
-        component "agentk" as cluster3AgentK
-    }
-
-    frame "workstation" <<customer>> {
-        component "kubectl"
-    }
+together {
+  frame "cluster 1" <<customer>> {
+      component "agentk" as cluster1AgentK
   }
 
-
-  cloud wss://kas.gitlab.com <<cloudflare>> as kas.gitlab.com {
-      component "routing service"
+  frame "cluster 2" <<customer>> {
+      component "agentk" as cluster2AgentK
   }
 
-  cluster1AgentK <..d..> kas.gitlab.com
-  cluster2AgentK <..d..> kas.gitlab.com
-  cluster3AgentK <--d--> kas.gitlab.com
-  kubectl <--d--> kas.gitlab.com
-
-  together {
-    frame "gprd-gitlab-cell-1" <<gcp>> {
-      component kas as kasCell1
-      component webservice as webserviceCell1
-      component redis as redisCell1
-      collections "gitaly(s)" as gitalyCell1
-
-      kasCell1 <-d-> webserviceCell1
-      kasCell1 <-d-> redisCell1
-      kasCell1 <-d-> gitalyCell1
-    }
-
-    frame "gprd-gitlab-cell-2" <<gcp>> {
-      component kas as kasCell2
-      component webservice as webserviceCell2
-      component redis as redisCell2
-      collections "gitaly(s)" as gitalyCell2
-
-      kasCell2 <-d-> webserviceCell2
-      kasCell2 <-d-> redisCell2
-      kasCell2 <-d-> gitalyCell2
-    }
+  frame "cluster 3" <<customer>> {
+      component "agentk" as cluster3AgentK
   }
 
-  "routing service" <--d--> kasCell1
-  "routing service" <--d--> kasCell1
-  "routing service" <..d..> kasCell2
-  "routing service" <..d..> kasCell2
+  frame "workstation" <<customer>> {
+      component "kubectl"
+  }
+}
 
-  @enduml
-  ```
 
-  </details>
+cloud wss://kas.gitlab.com <<cloudflare>> as kas.gitlab.com {
+    component "routing service"
+}
+
+cluster1AgentK <..d..> kas.gitlab.com
+cluster2AgentK <..d..> kas.gitlab.com
+cluster3AgentK <--d--> kas.gitlab.com
+kubectl <--d--> kas.gitlab.com
+
+together {
+  frame "gprd-gitlab-cell-1" <<gcp>> {
+    component kas as kasCell1
+    component webservice as webserviceCell1
+    component redis as redisCell1
+    collections "gitaly(s)" as gitalyCell1
+
+    kasCell1 <-d-> webserviceCell1
+    kasCell1 <-d-> redisCell1
+    kasCell1 <-d-> gitalyCell1
+  }
+
+  frame "gprd-gitlab-cell-2" <<gcp>> {
+    component kas as kasCell2
+    component webservice as webserviceCell2
+    component redis as redisCell2
+    collections "gitaly(s)" as gitalyCell2
+
+    kasCell2 <-d-> webserviceCell2
+    kasCell2 <-d-> redisCell2
+    kasCell2 <-d-> gitalyCell2
+  }
+}
+
+"routing service" <--d--> kasCell1
+"routing service" <--d--> kasCell1
+"routing service" <..d..> kasCell2
+"routing service" <..d..> kasCell2
+
+@enduml
+```
 
 ### Rings
 
