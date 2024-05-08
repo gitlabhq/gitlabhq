@@ -3,7 +3,7 @@
 module Integrations
   module ChatMessage
     class BaseMessage
-      RELATIVE_LINK_REGEX = %r{!\[[^\]]*\]\((/uploads/[^\)]*)\)}
+      RELATIVE_LINK_REGEX = Gitlab::UntrustedRegexp.new('!\[[^\]]*\]\((/uploads/[^\)]*)\)')
 
       attr_reader :markdown
       attr_reader :user_full_name
@@ -67,7 +67,11 @@ module Integrations
       end
 
       def format_relative_links(string)
-        string.gsub(RELATIVE_LINK_REGEX, "#{project_url}\\1")
+        return string unless RELATIVE_LINK_REGEX.match?(string)
+
+        RELATIVE_LINK_REGEX.replace_gsub(string) do |match|
+          "#{project_url}#{match[1]}"
+        end
       end
 
       # Remove unsafe markup from user input, which can be used to hijack links in our own markup,

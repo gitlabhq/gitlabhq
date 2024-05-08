@@ -33,10 +33,24 @@ class GitRefsFinder
     @params[:sort].to_s.presence || 'name'
   end
 
+  def pagination_params
+    { limit: per_page, page_token: page_token }
+  end
+
+  def per_page
+    return if params[:per_page].blank?
+
+    Gitlab::PaginationDelegate.new(
+      per_page: params[:per_page].presence, page: nil, count: nil
+    ).limit_value
+  end
+
   def filter_refs(refs, term)
-    regex_string = Regexp.quote(term.downcase)
+    regex_string = RE2::Regexp.escape(term.downcase)
     regex_string = unescape_regex_operators(regex_string) if regex_search?
-    refs.select { |ref| /#{regex_string}/ === ref.name.downcase }
+    regex_string = Gitlab::UntrustedRegexp.new(regex_string)
+
+    refs.select { |ref| regex_string.match?(ref.name.downcase) }
   end
 
   def set_exact_match_as_first_result(matches, term)

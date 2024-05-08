@@ -5065,6 +5065,9 @@ msgstr ""
 msgid "Allow %{strongOpen}%{group_name}%{strongClose} to sign you in?"
 msgstr ""
 
+msgid "Allow %{strongOpen}%{provider}%{strongClose} to sign you in?"
+msgstr ""
+
 msgid "Allow access to members of the following group"
 msgstr ""
 
@@ -7459,6 +7462,9 @@ msgstr ""
 msgid "Authorize %{link_to_client} to use your account?"
 msgstr ""
 
+msgid "Authorize identity provider link"
+msgstr ""
+
 msgid "Authorized %{new_chat_name}"
 msgstr ""
 
@@ -7487,6 +7493,9 @@ msgid "AuthorizedApplication|Revoke application"
 msgstr ""
 
 msgid "AuthorizedApplication|There was an error trying to renew the application secret. Please try again."
+msgstr ""
+
+msgid "Authorizing allows you to sign in with %{strongOpen}%{provider}%{strongClose}."
 msgstr ""
 
 msgid "Authors: %{authors}"
@@ -20367,6 +20376,9 @@ msgstr ""
 msgid "Error fetching the dependency list: %{errorDetails}"
 msgstr ""
 
+msgid "Error linking identity: %{errors}"
+msgstr ""
+
 msgid "Error loading branch data. Please try again."
 msgstr ""
 
@@ -25888,6 +25900,9 @@ msgid "Identifiers"
 msgstr ""
 
 msgid "Identities"
+msgstr ""
+
+msgid "Identity already exists"
 msgstr ""
 
 msgid "Identity verification exemption"
@@ -53312,6 +53327,9 @@ msgid "To add active contacts, use /add_contacts."
 msgstr ""
 
 msgid "To add the entry manually, provide the following details to the application on your phone."
+msgstr ""
+
+msgid "To allow %{strongOpen}%{provider}%{strongClose} to manage your GitLab account %{strongOpen}%{username}%{strongClose} (%{email}) after you sign in successfully using single sign-on, select %{strongOpen}Authorize%{strongClose}."
 msgstr ""
 
 msgid "To allow the user to confirm their identity by only confirming an email address and skip phone number and/or credit card verification, create an identity verification exemption using the button below."
