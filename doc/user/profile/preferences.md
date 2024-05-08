@@ -376,12 +376,12 @@ You must be the administrator of the GitLab instance to configure GitLab with So
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/459028) in GitLab 17.0.
 
 FLAG:
-The availability of this feature is controlled by a feature flag.
+The availability of this feature is controlled by feature flags.
 For more information, see the history.
 
 You can use the [extension marketplace](../project/web_ide/index.md#extension-marketplace)
 to search and manage extensions for the Web IDE.
-For third-party extensions, you must enable the marketplace in your user preferences.
+For third-party extensions, you must enable the marketplace in user preferences.
 
 To enable the extension marketplace for the Web IDE:
 

@@ -20,7 +20,7 @@ By default, GitLab uses a single application database, referred to as the `main`
 
 To scale GitLab, you can configure GitLab to use multiple application databases.
 
-Due to [known issues](#known-issues), configuring GitLab with multiple databases is an [Experiment](../../policy/experiment-beta-support.md#experiment).
+Due to [known issues](#known-issues), configuring GitLab with multiple databases is in limited [Beta](../../policy/experiment-beta-support.md#beta).
 
 After you have set up multiple databases, GitLab uses a second application database for
 [CI/CD features](../../ci/index.md), referred to as the `ci` database. We do not exclude hosting both databases on a single PostgreSQL instance.
@@ -40,16 +40,16 @@ databases. Some examples:
 ## Known issues
 
 - Once data is migrated to the `ci` database, you cannot migrate it back.
-- HA setups or PgBouncer setups are not yet supported by this procedure.
+- Significant downtime is expected for larger installations (database sizes of more 100 GB).
 
 ## Migrate existing installations using a script
 
 > - A script for migrating existing Linux package installations was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368729) in GitLab 16.8.
 
-NOTE:
-If something unexpected happens during the migration, it is safe to start over.
-
 ### Existing Linux package installations
+
+This migration requires downtime.
+If something unexpected happens during the migration, it is safe to start over.
 
 #### Preparation
 

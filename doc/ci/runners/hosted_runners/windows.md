@@ -15,8 +15,7 @@ Hosted runners on Windows autoscale by launching virtual machines on
 the Google Cloud Platform. This solution uses an
 [autoscaling driver](https://gitlab.com/gitlab-org/ci-cd/custom-executor-drivers/autoscaler/-/blob/main/docs/README.md)
 developed by GitLab for the [custom executor](https://docs.gitlab.com/runner/executors/custom.html).
-Hosted runners on Windows are in [Beta](../../../policy/experiment-beta-support.md#beta)
-and aren't recommended for production workloads.
+Hosted runners on Windows are in [Beta](../../../policy/experiment-beta-support.md#beta).
 
 We want to keep iterating to get Windows runners in a stable state and
 [generally available](../../../policy/experiment-beta-support.md#generally-available-ga).
@@ -40,14 +39,10 @@ You can execute your job in one of the following Windows versions:
 
 | Version      | Status        |
 |--------------|---------------|
-| Windows 2022 | `Beta`        |
-| Windows 2019 | `Deprecated` (Removal in 17.0) |
+| Windows 2022 | `GA`          |
 
 You can find a full list of available pre-installed software in
 the [pre-installed software documentation](https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/gcp/windows-containers/-/blob/main/cookbooks/preinstalled-software/attributes/default.rb).
-
-NOTE:
-We are only supporting a single version of Windows at this time.
 
 ## Supported shell
 

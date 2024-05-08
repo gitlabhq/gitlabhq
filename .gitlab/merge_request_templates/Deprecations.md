@@ -42,6 +42,7 @@ They are frequently updated, and everyone should make sure they are aware of the
 - [ ] Add reviewers by the 10th.
 - [ ] Add scoped `devops::` and `group::` labels as necessary.
 - [ ] Add the appropriate milestone to this MR.
+- [ ] If the changes modify log format(addition/deletion/modification) of product feature, tag `@gitlab-com/gl-security/engineering-and-research/security-logging` team over the GitLab issue/MR. 
 - [ ] When ready to be merged (and no later than the 15th) `@mention` the TW for final review and merge.
 
 ## Reviewers

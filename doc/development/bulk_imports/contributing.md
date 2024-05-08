@@ -4,7 +4,7 @@ group: Import and Integrate
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
-# Adding a new relation to the direct transfer importer
+# Add new relations to the direct transfer importer
 
 At a high level, to add a new relation to the direct transfer importer, you must:
 

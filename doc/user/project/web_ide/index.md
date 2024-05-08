@@ -16,7 +16,8 @@ DETAILS:
 > - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115741) in GitLab 15.11.
 
 FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `vscode_web_ide`. On GitLab.com and GitLab Dedicated, this feature is available.
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
 
 The Web IDE is an advanced editor with commit staging.
 You can use the Web IDE to make changes to multiple files directly from the GitLab UI.
@@ -208,9 +209,6 @@ To view any notification you might have missed:
 DETAILS:
 **Status**: Beta
 
-WARNING:
-This feature is in [Beta](../../../policy/experiment-beta-support.md#beta) and subject to change without notice.
-
 When you set up a remote development server in the Web IDE, you can use interactive web terminals to:
 
 - Access a remote shell on the server.
@@ -226,19 +224,16 @@ For more information, see [Remote development](../remote_development/index.md).
 DETAILS:
 **Status**: Beta
 
-WARNING:
-This feature is in [Beta](../../../policy/experiment-beta-support.md#beta) and subject to change without notice.
-
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151352) in GitLab 17.0 [with flags](../../../administration/feature_flags.md) named `web_ide_oauth` and `web_ide_extensions_marketplace`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/459028) in GitLab 17.0.
 
 FLAG:
-The availability of this feature is controlled by a feature flag.
+The availability of this feature is controlled by feature flags.
 For more information, see the history.
 
 Prerequisites:
 
-- You must enable the extension marketplace in your [user preferences](../../profile/preferences.md#integrate-with-the-extension-marketplace).
+- You must [enable the extension marketplace](../../profile/preferences.md#integrate-with-the-extension-marketplace) in user preferences.
 
 You can use the extension marketplace to download and run VS Code extensions in the Web IDE.
 

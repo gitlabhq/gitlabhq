@@ -3,7 +3,6 @@ stage: enablement
 group: Tenant Scale
 description: 'Cells: CI Runners'
 ---
-
 <!-- vale gitlab.FutureTense = NO -->
 
 This document is a work-in-progress and represents a very early state of the
@@ -48,7 +47,7 @@ Currently three types of authentication tokens are used:
 - Runner token representing a registered runner in a system with specific configuration (`tags`, `locked`, etc.)
 - Build token representing an ephemeral token giving limited access to updating a specific job, uploading artifacts, downloading dependent artifacts, downloading and uploading container registry images
 
-Each of those endpoints receive an authentication token via header (`JOB-TOKEN` for `/trace`) or body parameter (`token` all other endpoints).
+Each of those endpoints receive an authentication token via header (`JOB-TOKEN` for `/trace`, `token` all other endpoints).
 
 Since the CI pipeline would be created in the context of a specific Cell, it would be required that pick of a build would have to be processed by that particular Cell.
 This requires that build picking depending on a solution would have to be either:
@@ -65,7 +64,7 @@ Even though the paths for CI runners are not routable, they can be made routable
 - The `https://gitlab.com/api/v4/jobs/request` uses a long polling mechanism with
   a ticketing mechanism (based on `X-GitLab-Last-Update` header). When the runner first
   starts, it sends a request to GitLab to which GitLab responds with either a build to pick
-  by runner. This value is completely controlled by GitLab. This allows GitLab
+  by runner, or a `204 No job` with a `last_update` token. This value is completely controlled by GitLab. This allows GitLab
   to use JWT or any other means to encode a `cell` identifier that could be easily
   decodable by Router.
 - The majority of communication (in terms of volume) is using `build token`, making it
@@ -76,9 +75,14 @@ Even though the paths for CI runners are not routable, they can be made routable
 
 ### 3.2. Request body
 
-- The most used endpoints pass the authentication token in the request body. It might be desired
-  to use HTTP headers as an easier way to access this information by Router without
-  a need to proxy requests.
+This statement is no longer true:
+
+> _The most used endpoints pass the authentication token in the request body._
+> _It might be desired to use HTTP headers as an easier way to access this information_
+> _by Router without a need to proxy requests._
+
+The runner now sends the token in the HTTP headers in all requests with the
+[`Add runner token to header` MR merged](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/4643).
 
 ### 3.3. Instance-wide are Cell-local
 
@@ -119,8 +123,8 @@ There were prior discussions about [CI/CD Daemon](https://gitlab.com/gitlab-org/
 If the service is sharded:
 
 - Depending on the model, if runners are cluster-wide or Cell-local, this service would have to fetch data from all Cells.
-- If the sharded service is used we could adapt a model of sharing a database containing `ci_pending_builds/ci_running_builds` with the service.
-- If the sharded service is used we could consider a push model where each Cell pushes to CI/CD Daemon builds that should be picked by runner.
+- We could adapt a model of sharing a database containing `ci_pending_builds/ci_running_builds` with the service.
+- We could consider a push model where each Cell pushes to CI/CD Daemon builds that should be picked by runner.
 - The sharded service would be aware which Cell is responsible for processing the given build and could route processing requests to the designated Cell.
 
 If the service is Cell-ed:

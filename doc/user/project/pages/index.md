@@ -218,12 +218,11 @@ To enable multiple GitLab Pages deployments:
 
 ### Limits
 
-The number of extra deployments are limited by root level namespace.
+The number of extra deployments is limited by the root-level namespace. For specific limits for:
 
-- On GitLab.com:
-  - Premium tier is limited to 100 extra deployments.
-  - Ultimate tier is limited to 500 extra deployments.
-- Self-managed GitLab instances are limited to 1000 extra deployments.
+- GitLab.com, see [Other limits](../../gitlab_com/index.md#other-limits).
+- Self-managed GitLab instances, see
+  [Number of extra Pages deployments when using multiple deployments](../../../administration/instance_limits.md#number-of-extra-pages-deployments-when-using-multiple-deployments).
 
 ### Path clash
 

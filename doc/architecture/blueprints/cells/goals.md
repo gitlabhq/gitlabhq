@@ -128,7 +128,7 @@ Currently on-premise has numerous advantages compared to our SaaS offering.
 On-premise allows to control all aspects of a GitLab installation, including but not limited to: managing users, access controls, or instance-wide settings.
 
 The difference between SaaS and on-premise is problematic for our customers,
-and us as it results in a different user experience.
+as it results in a different user experience.
 
 ### Minimize breaking changes
 

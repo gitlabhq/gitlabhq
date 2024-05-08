@@ -11,22 +11,16 @@ DETAILS:
 **Offering:** GitLab.com
 **Status:** Beta
 
-Hosted runners on macOS are in [Beta](../../../policy/experiment-beta-support.md#beta) for open source programs and customers in Premium and Ultimate plans.
+Hosted runners on macOS provide an on-demand macOS environment, fully integrated with GitLab [CI/CD](../../../ci/index.md).
+You can use these runners to build, test, and deploy apps for the Apple ecosystem (macOS, iOS, watchOS, tvOS).
+Our [Mobile DevOps section](../../../ci/mobile_devops.md#ios-build-environments) provides features, documentation, and guidance on building and deploying mobile applications for iOS.
 
-Hosted runners on macOS provide an on-demand macOS build environment integrated with
-GitLab.com [CI/CD](../../../ci/index.md).
-Use these runners to build, test, and deploy apps for the Apple ecosystem (macOS, iOS, watchOS, tvOS). You can take advantage
-of all the capabilities of the GitLab single DevOps platform and not have to manage or operate a
-build environment. Our [Mobile DevOps solution](../../../ci/mobile_devops.md#ios-build-environments) provides features, documentation, and guidance on building and deploying mobile applications for iOS.
-
-We want to keep iterating to get hosted runners on macOS
-[generally available](../../../policy/experiment-beta-support.md#generally-available-ga).
-You can follow our work towards this goal in the
-[related epic](https://gitlab.com/groups/gitlab-org/-/epics/8267).
+Hosted runners on macOS are in [Beta](../../../policy/experiment-beta-support.md#beta) and available for open source programs and customers in Premium and Ultimate plans.
+[General availability](../../../policy/experiment-beta-support.md#generally-available-ga) of Hosted runners on macOS is proposed in [epic 8267](https://gitlab.com/groups/gitlab-org/-/epics/8267).
 
 ## Machine types available for macOS
 
-GitLab offers the following machine type for hosted runners on macOS. To build for an x86-64 target, you can use Rosetta 2 to emulate an Intel x86-64 build environment.
+GitLab offers the following machine type for hosted runners on macOS. To build for an x86-64 target, you can use Rosetta 2 to emulate an Intel x86-64 environment.
 
 | Runner Tag             | vCPUS | Memory | Storage |
 | ---------------------- | ----- | ------ | ------- |
