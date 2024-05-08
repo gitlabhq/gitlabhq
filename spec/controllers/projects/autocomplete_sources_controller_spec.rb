@@ -276,7 +276,7 @@ RSpec.describe Projects::AutocompleteSourcesController do
     end
 
     context 'when user cannot read project issues and merge requests' do
-      it 'renders 404' do
+      it 'renders 404', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/444818' do
         project.project_feature.update!(issues_access_level: ProjectFeature::PRIVATE)
         project.project_feature.update!(merge_requests_access_level: ProjectFeature::PRIVATE)
 

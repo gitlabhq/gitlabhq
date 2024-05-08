@@ -57,27 +57,27 @@ For more information about our plans for language support in SAST, see the [cate
 | .NET (all versions, C# only) | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/#sast-rules)       | 15.4                                                                                    |
 | Apex (Salesforce)            | [PMD](https://gitlab.com/gitlab-org/security-products/analyzers/pmd-apex)                                    | 12.1                                                                                    |
 | C                            | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/#sast-rules)       | 14.2                                                                                    |
-| C/C++                        | [Flawfinder](https://gitlab.com/gitlab-org/security-products/analyzers/flawfinder) <sup>2</sup>                           | 10.7                                                                                    |
+| C/C++                        | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/#sast-rules)                           | 16.11                                                                                    |
 | Elixir (Phoenix)             | [Sobelow](https://gitlab.com/gitlab-org/security-products/analyzers/sobelow)                                 | 11.1                                                                                    |
 | Go                           | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/#sast-rules)       | 14.4                                                                                    |
 | Groovy<sup>1</sup>           | [SpotBugs](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs) with the find-sec-bugs plugin | 11.3 (Gradle) & 11.9 (Maven, SBT)                                                       |
 | Helm Charts                  | [Kubesec](https://gitlab.com/gitlab-org/security-products/analyzers/kubesec)                                 | 13.1                                                                                    |
 | Java (any build system)      | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/#sast-rules)       | 14.10                                                                                   |
-| Java (Android)               | [MobSF](https://gitlab.com/gitlab-org/security-products/analyzers/mobsf) (**Status:** Beta)                              | 13.5                                                                                    |
+| Java (Android)               | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/#sast-rules)                              | 16.11                                                                                    |
 | JavaScript                   | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/#sast-rules)       | 13.10                                                                                   |
-| Kotlin (Android)             | [MobSF](https://gitlab.com/gitlab-org/security-products/analyzers/mobsf) (**Status:** Beta)                              | 13.5                                                                                    |
-| Kotlin (General)<sup>1</sup> | [SpotBugs](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs) with the find-sec-bugs plugin | 13.11                                                                                   |
+| Kotlin (Android)             | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/#sast-rules)                              | 16.11                                                                                    |
+| Kotlin (General)<sup>1</sup> | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/#sast-rules) | 16.11                                                                                   |
 | Kubernetes manifests         | [Kubesec](https://gitlab.com/gitlab-org/security-products/analyzers/kubesec)                                 | 12.6                                                                                    |
-| Node.js                      | [NodeJsScan](https://gitlab.com/gitlab-org/security-products/analyzers/nodejs-scan) <sup>2</sup>                          | 11.1                                                                                    |
-| Objective-C (iOS)            | [MobSF](https://gitlab.com/gitlab-org/security-products/analyzers/mobsf) (**Status:** Beta)                              | 13.5                                                                                    |
-| PHP                          | [phpcs-security-audit](https://gitlab.com/gitlab-org/security-products/analyzers/phpcs-security-audit) <sup>2</sup>       | 10.8                                                                                    |
+| Node.js                      | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/#sast-rules)                          | 16.11                                                                                    |
+| Objective-C (iOS)            | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/#sast-rules)                              | 16.11                                                                                    |
+| PHP                          | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/#sast-rules)       | 16.11                                                                                    |
 | Python                       | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/#sast-rules)       | 13.9                                                                                    |
 | React                        | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/#sast-rules)       | 13.10                                                                                   |
-| Ruby                         | [brakeman](https://gitlab.com/gitlab-org/security-products/analyzers/brakeman) <sup>2</sup>                               | 13.9                                                                                    |
-| Ruby on Rails                | [brakeman](https://gitlab.com/gitlab-org/security-products/analyzers/brakeman) <sup>2</sup>                               | 10.3                                                                                    |
+| Ruby                         | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/#sast-rules)                               | 16.11                                                                                    |
+| Ruby on Rails                | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/#sast-rules)                               | 16.11                                                                                    |
 | Scala (any build system)     | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/#sast-rules)       | 16.0                                                                                    |
 | Scala <sup>1</sup>           | [SpotBugs](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs) with the find-sec-bugs plugin | 11.0 (SBT) & 11.9 (Gradle, Maven)                                                       |
-| Swift (iOS)                  | [MobSF](https://gitlab.com/gitlab-org/security-products/analyzers/mobsf) (**Status:** Beta)                              | 13.5                                                                                    |
+| Swift (iOS)                  | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/#sast-rules)                              | 16.11                                                                                    |
 | TypeScript                   | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/#sast-rules)       | 13.10                                                                                   |
 
 <html>
@@ -101,7 +101,16 @@ GitLab has reached End of Support for the below analyzers. These analyzers have 
 | Python                       | [bandit](https://gitlab.com/gitlab-org/security-products/analyzers/bandit)                                   | 10.3                                     | [15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/352554)  |
 | React                        | [ESLint react plugin](https://gitlab.com/gitlab-org/security-products/analyzers/eslint)                      | 12.5                                     | [15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/352554)  |
 | JavaScript                   | [ESLint security plugin](https://gitlab.com/gitlab-org/security-products/analyzers/eslint)                   | 11.8                                     | [15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/352554)  |
-| TypeScript                   | [ESLint security plugin](https://gitlab.com/gitlab-org/security-products/analyzers/eslint)                   | 11.9, with ESLint in 13.2                | [15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/352554)  |
+| TypeScript                   | [ESLint security plugin](https://gitlab.com/gitlab-org/security-products/analyzers/eslint)                   | 11.9, with ESLint in 13.2                                     | [15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/352554)  |
+| Ruby                         | [brakeman](https://gitlab.com/gitlab-org/security-products/analyzers/brakeman)                               | 13.9                                     | [17.0](https://gitlab.com/groups/gitlab-org/-/epics/13050)  |
+| Ruby on Rails                | [brakeman](https://gitlab.com/gitlab-org/security-products/analyzers/brakeman)                               | 13.9                                     | [17.0](https://gitlab.com/groups/gitlab-org/-/epics/13050)  |
+| Node.js                      | [NodeJsScan](https://gitlab.com/gitlab-org/security-products/analyzers/nodejs-scan)                          | 11.1                                     | [17.0](https://gitlab.com/groups/gitlab-org/-/epics/13050)  |
+| Kotlin (General)             | [SpotBugs](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs)                               | 13.11                                    | [17.0](https://gitlab.com/groups/gitlab-org/-/epics/13050)  |
+| Kotlin (Android)             | [MobSF](https://gitlab.com/gitlab-org/security-products/analyzers/mobsf)                                     | 13.5                                     | [17.0](https://gitlab.com/groups/gitlab-org/-/epics/13050)  |
+| Java (Android)               | [MobSF](https://gitlab.com/gitlab-org/security-products/analyzers/mobsf)                                     | 13.5                                     | [17.0](https://gitlab.com/groups/gitlab-org/-/epics/13050)  |
+| Objective-C (iOS)            | [MobSF](https://gitlab.com/gitlab-org/security-products/analyzers/mobsf)                                     | 13.5                                     | [17.0](https://gitlab.com/groups/gitlab-org/-/epics/13050)  |
+| PHP                          | [phpcs-security-audit](https://gitlab.com/gitlab-org/security-products/analyzers/phpcs-security-audit)       | 10.8                                     | [17.0](https://gitlab.com/groups/gitlab-org/-/epics/13050)  |
+| C++                          | [Flawfinder](https://gitlab.com/gitlab-org/security-products/analyzers/flawfinder)                           | 10.7                                     | [17.0](https://gitlab.com/groups/gitlab-org/-/epics/13050)  |
 
 ## Multi-project support
 
@@ -159,15 +168,15 @@ GitLab SAST uses an advanced vulnerability tracking algorithm to more accurately
 
 Advanced vulnerability tracking is available in a subset of the [supported languages](#supported-languages-and-frameworks) and [analyzers](analyzers.md):
 
-- C, in the Semgrep-based and Flawfinder analyzers
-- C++, in the Flawfinder analyzer only
+- C, in the Semgrep-based only
+- C++, in the Semgrep-based only
 - C#, in the Semgrep-based analyzer only
 - Go, in the Semgrep-based analyzer only
-- Java, in the mobsf, Semgrep-based and SpotBugs analyzers
-- JavaScript, in the Semgrep-based and NodeJS-Scan analyzers
-- PHP, in the phpcs-security-audit analyzer
+- Java, in the Semgrep-based analyzer only
+- JavaScript, in the Semgrep-based analyzer only
+- PHP, in the Semgrep-based analyzer only
 - Python, in the Semgrep-based analyzer only
-- Ruby, in the Brakeman-based analyzer
+- Ruby, in the Semgrep-based analyzer only
 
 Support for more languages and analyzers is tracked in [this epic](https://gitlab.com/groups/gitlab-org/-/epics/5144).
 
@@ -700,16 +709,11 @@ import the following default SAST analyzer images from `registry.gitlab.com` int
 [local Docker container registry](../../packages/container_registry/index.md):
 
 ```plaintext
-registry.gitlab.com/security-products/brakeman:3
-registry.gitlab.com/security-products/flawfinder:3
-registry.gitlab.com/security-products/kubesec:3
-registry.gitlab.com/security-products/nodejs-scan:3
-registry.gitlab.com/security-products/phpcs-security-audit:3
-registry.gitlab.com/security-products/pmd-apex:3
-registry.gitlab.com/security-products/security-code-scan:3
-registry.gitlab.com/security-products/semgrep:3
-registry.gitlab.com/security-products/sobelow:3
-registry.gitlab.com/security-products/spotbugs:3
+registry.gitlab.com/security-products/kubesec:5
+registry.gitlab.com/security-products/pmd-apex:5
+registry.gitlab.com/security-products/semgrep:5
+registry.gitlab.com/security-products/sobelow:5
+registry.gitlab.com/security-products/spotbugs:5
 ```
 
 The process for importing Docker images into a local offline Docker registry depends on

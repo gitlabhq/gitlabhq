@@ -103,6 +103,14 @@ RSpec.describe Banzai::Pipeline::PlainMarkdownPipeline, feature_category: :team_
         it { correct_html_included(markdown, expected, context) }
       end
     end
+
+    it 'does not have a polynomial regex' do
+      markdown = "x \\#\n\n#{'mliteralcmliteral-' * 1550000}mliteral"
+
+      expect do
+        Timeout.timeout(2.seconds) { described_class.to_html(markdown, project: project) }
+      end.not_to raise_error
+    end
   end
 
   def correct_html_included(markdown, expected, context = {})

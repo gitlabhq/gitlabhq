@@ -139,6 +139,43 @@ RSpec.describe API::RemoteMirrors, feature_category: :source_code_management do
       end
     end
 
+    context 'when feature flag "use_remote_mirror_create_service" is disabled' do
+      before do
+        stub_feature_flags(use_remote_mirror_create_service: false)
+      end
+
+      context 'creates a remote mirror' do
+        context 'disabled by default' do
+          let(:params) { { url: 'https://foo:bar@test.com' } }
+
+          it_behaves_like 'creates a remote mirror'
+        end
+
+        context 'enabled' do
+          let(:params) { { url: 'https://foo:bar@test.com', enabled: true } }
+
+          it_behaves_like 'creates a remote mirror'
+        end
+
+        context 'auth method' do
+          let(:params) { { url: 'https://foo:bar@test.com', enabled: true, auth_method: 'ssh_public_key' } }
+
+          it_behaves_like 'creates a remote mirror'
+        end
+      end
+
+      it 'returns error if url is invalid' do
+        project.add_maintainer(user)
+
+        post api(route, user), params: { url: 'ftp://foo:bar@test.com' }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']['url']).to match_array(
+          ["is blocked: Only allowed schemes are http, https, ssh, git"]
+        )
+      end
+    end
+
     it 'returns error if url is invalid' do
       project.add_maintainer(user)
 

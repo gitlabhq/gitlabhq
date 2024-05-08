@@ -471,7 +471,7 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
         it 'pull it from Auto-DevOps' do
           pipeline = execute_service.payload
           expect(pipeline).to be_auto_devops_source
-          expect(pipeline.builds.map(&:name)).to match_array(%w[brakeman-sast build code_quality container_scanning secret_detection semgrep-sast test])
+          expect(pipeline.builds.map(&:name)).to match_array(%w[build code_quality container_scanning secret_detection semgrep-sast test])
         end
       end
 

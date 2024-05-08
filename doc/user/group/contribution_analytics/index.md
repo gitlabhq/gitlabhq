@@ -68,7 +68,7 @@ The selected time period applies to all charts and the table.
 ## Contribution analytics with ClickHouse
 
 On GitLab.com, contribution analytics run through the ClickHouse Cloud cluster.
-When you configure the ClickHouse integration, the ClickHouse events table is populated in the ClickHouse database, and new events are inserted automatically in ClickHouse.
+On GitLab self-managed, when you configure the ClickHouse integration, the ClickHouse `events` table is automatically populated from the PostgreSQL `events` table. This process might take some time for large installations. After the table is fully synchronized, new events become available in ClickHouse with a delay of about three minutes.
 
 For more information, see:
 

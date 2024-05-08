@@ -17,8 +17,10 @@ The supported Jira versions are `6.x`, `7.x`, `8.x`, and `9.x`.
 ## Configure the integration
 
 > - Authentication with Jira personal access tokens [introduced](https://gitlab.com/groups/gitlab-org/-/epics/8222) in GitLab 16.0.
-> - **Enable Jira issues** [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149055) to **View Jira issues** in GitLab 17.0.
-> - **Enable Jira issue creation from vulnerabilities** [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149055) to **Create Jira issues for vulnerabilities** in GitLab 17.0.
+> - **Jira issues** and **Jira issues for vulnerabilities** sections [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440430) in GitLab 16.10 [with a flag](../../administration/feature_flags.md) named `jira_multiple_project_keys`. Disabled by default.
+> - **Jira issues** and **Jira issues for vulnerabilities** sections [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151753) in GitLab 17.0. Feature flag `jira_multiple_project_keys` removed.
+> - **Enable Jira issues** checkbox [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149055) to **View Jira issues** in GitLab 17.0.
+> - **Enable Jira issue creation from vulnerabilities** checkbox [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149055) to **Create Jira issues for vulnerabilities** in GitLab 17.0.
 
 Prerequisites:
 
@@ -71,27 +73,26 @@ To configure your project settings in GitLab:
 1. In the **Jira issue matching** section:
    - For **Jira issue regex**, [enter a regex pattern](issues.md#define-a-regex-pattern).
    - For **Jira issue prefix**, [enter a prefix](issues.md#define-a-prefix).
-1. Optional. In the **Issues** section:
-   - To [view Jira issues](#view-jira-issues) in GitLab:
-     1. Select the **View Jira issues** checkbox.
+1. Optional. To [view Jira issues](#view-jira-issues) in GitLab,
+   in the **Jira issues** section:
+   1. Select the **View Jira issues** checkbox.
 
-        WARNING:
-        When you enable this setting, all users with access to your GitLab project
-        can view all issues from the Jira project you've specified.
+      WARNING:
+      When you enable this setting, all users with access to your GitLab project
+      can view all issues from the Jira projects you've specified.
 
-     1. Enter the Jira project key.
-   - To [create Jira issues for vulnerabilities](#create-a-jira-issue-for-a-vulnerability):
-     1. Select the **Create Jira issues for vulnerabilities** checkbox.
+   1. Enter one or more Jira project keys.
+      Leave blank to include all available keys.
+1. Optional. To [create Jira issues for vulnerabilities](#create-a-jira-issue-for-a-vulnerability),
+   in the **Jira issues for vulnerabilities** section:
+   1. Select the **Create Jira issues for vulnerabilities** checkbox.
 
-        NOTE:
-        You can enable this setting at the project and group levels only.
+      NOTE:
+      You can enable this setting at the project and group levels only.
 
-     1. Select the type of Jira issues to create.
-
-        WARNING:
-        Before you select the issue type, you must enter
-        the Jira project key and select **Save changes**.
-
+   1. Enter a Jira project key.
+   1. Select **Fetch issue types for this project key** (**{retry}**),
+      then select the type of Jira issues to create.
 1. Optional. Select **Test settings**.
 1. Select **Save changes**.
 
@@ -100,14 +101,16 @@ To configure your project settings in GitLab:
 DETAILS:
 **Tier:** Premium, Ultimate
 
-> - Ability to enable Jira issues at the group level [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325715) in GitLab 16.9.
+> - Enabling Jira issues at the group level [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325715) in GitLab 16.9.
+> - Viewing issues from multiple Jira projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440430) in GitLab 16.10 [with a flag](../../administration/feature_flags.md) named `jira_multiple_project_keys`. Disabled by default.
+> - Viewing issues from multiple Jira projects [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151753) in GitLab 17.0. Feature flag `jira_multiple_project_keys` removed.
 
 Prerequisites:
 
 - Ensure the Jira issue integration is [configured](#configure-the-integration)
   and the **View Jira issues** checkbox is selected.
 
-To view issues from a single Jira project in a GitLab project:
+To view issues from one or more Jira projects in a GitLab project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Plan > Jira issues**.
@@ -128,6 +131,9 @@ Issues are grouped into the following tabs based on their
 DETAILS:
 **Tier:** Premium, Ultimate
 
+> - Filtering Jira issues by project [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440430) in GitLab 16.10 [with a flag](../../administration/feature_flags.md) named `jira_multiple_project_keys`. Disabled by default.
+> - Filtering Jira issues by project [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151753) in GitLab 17.0. Feature flag `jira_multiple_project_keys` removed.
+
 Prerequisites:
 
 - Ensure the Jira issue integration is [configured](#configure-the-integration)
@@ -146,28 +152,8 @@ You can also filter the issues by:
   (for example, `/-/integrations/jira/issues?author_username=John Smith`).
 - **Assignee**: specify the Jira display name of the `assignee_username` parameter in the URL
   (for example, `/-/integrations/jira/issues?assignee_username=John Smith`).
-- **Project**: specify the [Jira project key](#multiple-jira-project-keys) in the `project` parameter in the URL
+- **Project**: specify the Jira project key in the `project` parameter in the URL
   (for example, `/-/integrations/jira/issues?project=GTL`).
-
-### Multiple Jira project keys
-
-DETAILS:
-**Tier:** Premium, Ultimate
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440430) in GitLab 16.10 [with a flag](../../administration/feature_flags.md) named `jira_multiple_project_keys`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available.
-To make it available, an administrator can enable the feature flag named `jira_multiple_project_keys`.
-On GitLab.com and GitLab Dedicated, this feature is not available.
-
-When `jira_multiple_project_keys` is enabled, you can:
-
-- [View issues](#view-jira-issues) from multiple Jira projects in a GitLab project.
-- [Filter Jira issues](#filter-jira-issues) by project.
-
-You can enter up to 100 Jira project keys separated by commas.
-Leave blank to include all available keys.
 
 ## Create a Jira issue for a vulnerability
 
@@ -176,8 +162,8 @@ DETAILS:
 
 Prerequisites:
 
-- Ensure the Jira issue integration is [configured](#configure-the-integration) and the
-  **View Jira issues** and **Create Jira issues for vulnerabilities** checkboxes are selected.
+- Ensure the Jira issue integration is [configured](#configure-the-integration)
+  and the **Create Jira issues for vulnerabilities** checkbox is selected.
 - You must have a Jira user account with permission to create issues in the target project.
 
 You can create a Jira issue from GitLab to track any action taken to resolve or mitigate a vulnerability.

@@ -7,12 +7,12 @@ module Banzai
     # The Ruby parser is now only for benchmarking purposes.
     # issue: https://gitlab.com/gitlab-org/gitlab/-/issues/454601
     #
-    # See comments in MarkdownPreEscapeLegacyFilter for details on strategy
+    # See comments in MarkdownPreEscapeFilter for details on strategy
     class MarkdownPostEscapeLegacyFilter < HTML::Pipeline::Filter
       LITERAL_KEYWORD   = MarkdownPreEscapeLegacyFilter::LITERAL_KEYWORD
-      LITERAL_REGEX     = %r{#{LITERAL_KEYWORD}-(.*?)-#{LITERAL_KEYWORD}}
-      NOT_LITERAL_REGEX = %r{#{LITERAL_KEYWORD}-((%5C|\\).+?)-#{LITERAL_KEYWORD}}
-      SPAN_REGEX        = %r{<span data-escaped-char>(.*?)</span>}
+      LITERAL_REGEX     = %r{#{LITERAL_KEYWORD}-(\+[a-k])-#{LITERAL_KEYWORD}}
+      NOT_LITERAL_REGEX = %r{#{LITERAL_KEYWORD}-((%5C|\\).{1,2})-#{LITERAL_KEYWORD}}
+      SPAN_REGEX        = %r{<span data-escaped-char>(.)</span>}
 
       XPATH_A            = Gitlab::Utils::Nokogiri.css_to_xpath('a').freeze
       XPATH_LANG_TAG     = Gitlab::Utils::Nokogiri.css_to_xpath('pre').freeze

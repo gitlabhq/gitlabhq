@@ -16,6 +16,8 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
     allow(Gitlab::Redis::SharedState).to receive(:with).and_yield(redis)
     allow(Gitlab::Tracking).to receive(:tracker).and_return(fake_snowplow)
     allow(Gitlab::InternalEvents::EventDefinitions).to receive(:unique_properties).and_return(unique_properties)
+    allow(Gitlab::Tracking::EventDefinition).to receive(:find).and_return(event_definition)
+    allow(event_definition).to receive(:event_selection_rules).and_return(event_selection_rules)
     allow(fake_snowplow).to receive(:event)
   end
 
@@ -41,10 +43,8 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
   end
 
   def expect_redis_tracking
-    call_index = 0
-    expect(redis).to have_received(:incr).twice do |redis_key|
-      expect(redis_key).to end_with(redis_arguments[call_index])
-      call_index += 1
+    redis_arguments.each do |redis_argument|
+      expect(redis).to have_received(:incr).with(a_string_ending_with(redis_argument))
     end
   end
 
@@ -98,13 +98,22 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
   let_it_be(:additional_properties) { {} }
 
   let(:redis) { instance_double('Redis') }
+  let(:event_definition) { instance_double(Gitlab::Tracking::EventDefinition) }
+  let(:event_selection_rules) do
+    [
+      { name: event_name, time_framed?: false, filter: {} },
+      { name: event_name, time_framed?: true, filter: {} }
+    ]
+  end
+
   let(:fake_snowplow) { instance_double(Gitlab::Tracking::Destinations::Snowplow) }
   let(:event_name) { 'g_edit_by_web_ide' }
   let(:category) { 'InternalEventTracking' }
   let(:unique_properties) { [:user] }
   let(:unique_value) { user.id }
   let(:property_name) { :user }
-  let(:redis_arguments) { [event_name, Date.today.strftime('%G-%V')] }
+  let(:week_suffix) { Date.today.strftime('%G-%V') }
+  let(:redis_arguments) { [event_name, week_suffix] }
 
   context 'when only user is passed' do
     let(:project) { nil }
@@ -173,6 +182,79 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
       )
 
       expect_snowplow_tracking(nil, additional_properties)
+    end
+
+    context 'when a filter is defined' do
+      let(:time_framed) { true }
+      let(:event_selection_rules) do
+        [
+          { name: event_name, time_framed?: time_framed, filter: {} },
+          { name: event_name, time_framed?: time_framed, filter: { label: 'label_name' } },
+          { name: event_name, time_framed?: time_framed, filter: { label: 'another_label_value' } },
+          { name: event_name, time_framed?: time_framed, filter: { label: 'label_name', value: 16.17 } }
+        ]
+      end
+
+      context 'when event selection rule is time framed' do
+        let(:redis_arguments) do
+          [
+            "filter:[label:label_name]-#{week_suffix}",
+            "filter:[label:label_name,value:16.17]-#{week_suffix}",
+            "#{event_name}-#{week_suffix}"
+          ]
+        end
+
+        it 'updates the correct redis keys' do
+          described_class.track_event(
+            event_name,
+            additional_properties: additional_properties,
+            user: user,
+            project: project
+          )
+
+          expect_redis_tracking
+        end
+      end
+
+      context 'when event selection rule is not time framed' do
+        let(:time_framed) { false }
+        let(:redis_arguments) do
+          [
+            "filter:[label:label_name]",
+            "filter:[label:label_name,value:16.17]",
+            event_name.to_s
+          ]
+        end
+
+        context 'when a matching event is tracked' do
+          it 'updates the matching redis keys' do
+            described_class.track_event(
+              event_name,
+              additional_properties: additional_properties,
+              user: user,
+              project: project
+            )
+
+            expect_redis_tracking
+          end
+        end
+
+        context 'when a non-matching event is tracked' do
+          let(:additional_properties) { { label: 'unrelated_string' } }
+          let(:redis_arguments) { [event_name.to_s] }
+
+          it 'updates only the matching redis keys' do
+            described_class.track_event(
+              event_name,
+              additional_properties: additional_properties,
+              user: user,
+              project: project
+            )
+
+            expect_redis_tracking
+          end
+        end
+      end
     end
   end
 
@@ -312,16 +394,7 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
   end
 
   context 'when unique key is defined' do
-    let(:event_name) { 'p_ci_templates_terraform_base_latest' }
-    let(:unique_value) { project.id }
-    let(:property_names) { [:project] }
-    let(:property_name) { :project }
-
-    before do
-      allow(Gitlab::InternalEvents::EventDefinitions).to receive(:unique_properties)
-        .with(event_name)
-        .and_return(property_names)
-    end
+    let(:event_name) { 'i_code_review_saved_replies_use_in_other' }
 
     it 'is used when logging to RedisHLL', :aggregate_failures do
       described_class.track_event(event_name, user: user, project: project)
@@ -332,9 +405,9 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
     end
 
     context 'when property is missing' do
-      let(:unique_value) { project.id }
-      let(:property_names) { [:project] }
-      let(:property_name) { :project }
+      let(:unique_value) { user.id }
+      let(:property_names) { [:user] }
+      let(:property_name) { :user }
 
       it 'logs error' do
         expect { described_class.track_event(event_name, merge_request_id: 1) }.not_to raise_error
@@ -345,7 +418,7 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
     end
 
     context 'when there are multiple unique keys' do
-      let(:property_names) { [:project, :user] }
+      let(:unique_properties) { [:project, :user] }
 
       it 'all of them are used when logging to RedisHLL', :aggregate_failures do
         described_class.track_event(event_name, user: user, project: project)
@@ -383,6 +456,34 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
       expect_redis_tracking
       expect_snowplow_tracking(project.namespace)
       expect(Gitlab::UsageDataCounters::HLLRedisCounter).not_to have_received(:track_event)
+    end
+  end
+
+  describe '#convert_event_selection_rule_to_path_part' do
+    context 'without a filter' do
+      let(:event_selection_rule) { { name: 'example_event' } }
+
+      it 'returns the event name' do
+        expect(described_class.convert_event_selection_rule_to_path_part(event_selection_rule)).to eq('example_event')
+      end
+    end
+
+    context 'with a single property filter' do
+      let(:event_selection_rule) { { name: 'example_event', filter: { label: 'npm' } } }
+
+      it 'returns the correct path with filter' do
+        expect(described_class.convert_event_selection_rule_to_path_part(event_selection_rule))
+          .to eq('example_event-filter:[label:npm]')
+      end
+    end
+
+    context 'with a multi property filter that are unordered' do
+      let(:event_selection_rule) { { name: 'example_event', filter: { property: 'deploy_token', label: 'npm' } } }
+
+      it 'returns the correct path with filter' do
+        expect(described_class.convert_event_selection_rule_to_path_part(event_selection_rule))
+          .to eq('example_event-filter:[label:npm,property:deploy_token]')
+      end
     end
   end
 

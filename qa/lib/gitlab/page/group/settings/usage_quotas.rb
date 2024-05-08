@@ -22,7 +22,7 @@ module Gitlab
           link :storage_tab
           link :purchase_more_storage
           div :namespace_usage_total
-          div :group_usage_message
+          span :group_usage_message
           span :dependency_proxy_size
           div :storage_purchased
           div :storage_purchase_successful_alert, text: /You have successfully purchased a storage/

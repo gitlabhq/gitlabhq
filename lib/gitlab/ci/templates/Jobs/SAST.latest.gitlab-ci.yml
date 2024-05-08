@@ -34,6 +34,15 @@ sast:
   script:
     - /analyzer run
 
+.deprecated-16.8:
+  extends: .sast-analyzer
+  script:
+    - echo "This job was deprecated in GitLab 16.8 and removed in GitLab 17.0"
+    - echo "For more information see https://docs.gitlab.com/ee/update/deprecations.html#sast-analyzer-coverage-changing-in-gitlab-170"
+    - exit 1
+  rules:
+    - when: never
+
 bandit-sast:
   extends: .sast-analyzer
   script:
@@ -44,27 +53,7 @@ bandit-sast:
     - when: never
 
 brakeman-sast:
-  extends: .sast-analyzer
-  image:
-    name: "$SAST_ANALYZER_IMAGE"
-  variables:
-    SAST_ANALYZER_IMAGE_TAG: 4
-    SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/brakeman:$SAST_ANALYZER_IMAGE_TAG"
-  rules:
-    - if: $SAST_DISABLED == 'true' || $SAST_DISABLED == '1'
-      when: never
-    - if: $SAST_EXCLUDED_ANALYZERS =~ /brakeman/
-      when: never
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"  # Add the job to merge request pipelines if there's an open merge request.
-      exists:
-        - '**/*.rb'
-        - '**/Gemfile'
-    - if: $CI_OPEN_MERGE_REQUESTS  # Don't add it to a *branch* pipeline if it's already in a merge request pipeline.
-      when: never
-    - if: $CI_COMMIT_BRANCH        # If there's no open merge request, add it to a *branch* pipeline instead.
-      exists:
-        - '**/*.rb'
-        - '**/Gemfile'
+  extends: .deprecated-16.8
 
 eslint-sast:
   extends: .sast-analyzer
@@ -76,13 +65,7 @@ eslint-sast:
     - when: never
 
 flawfinder-sast:
-  extends: .sast-analyzer
-  script:
-    - echo "This job was deprecated in GitLab 16.8 and removed in GitLab 17.0"
-    - echo "For more information see https://gitlab.com/gitlab-org/gitlab/-/issues/425085"
-    - exit 1
-  rules:
-    - when: never
+  extends: .deprecated-16.8
 
 gosec-sast:
   extends: .sast-analyzer
@@ -114,75 +97,17 @@ kubesec-sast:
     - if: $CI_COMMIT_BRANCH &&
           $SCAN_KUBERNETES_MANIFESTS == 'true'
 
-.mobsf-sast:
-  extends: .sast-analyzer
-  image:
-    name: "$SAST_ANALYZER_IMAGE"
-  variables:
-    SAST_ANALYZER_IMAGE_TAG: 4
-    SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/mobsf:$SAST_ANALYZER_IMAGE_TAG"
-
 mobsf-android-sast:
-  extends: .mobsf-sast
-  rules:
-    - if: $SAST_DISABLED == 'true' || $SAST_DISABLED == '1'
-      when: never
-    - if: $SAST_EXCLUDED_ANALYZERS =~ /mobsf/
-      when: never
-    # Add the job to merge request pipelines if there's an open merge request.
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event" &&
-          $SAST_EXPERIMENTAL_FEATURES == 'true'
-      exists:
-        - '**/*.apk'
-        - '**/AndroidManifest.xml'
-    - if: $CI_OPEN_MERGE_REQUESTS  # Don't add it to a *branch* pipeline if it's already in a merge request pipeline.
-      when: never
-      # If there's no open merge request, add it to a *branch* pipeline instead.
-    - if: $CI_COMMIT_BRANCH &&
-          $SAST_EXPERIMENTAL_FEATURES == 'true'
-      exists:
-        - '**/*.apk'
-        - '**/AndroidManifest.xml'
+  extends: .deprecated-16.8
 
 mobsf-ios-sast:
-  extends: .mobsf-sast
-  rules:
-    - if: $SAST_DISABLED == 'true' || $SAST_DISABLED == '1'
-      when: never
-    - if: $SAST_EXCLUDED_ANALYZERS =~ /mobsf/
-      when: never
-    # Add the job to merge request pipelines if there's an open merge request.
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event" &&
-          $SAST_EXPERIMENTAL_FEATURES == 'true'
-      exists:
-        - '**/*.ipa'
-        - '**/*.xcodeproj/*'
-    - if: $CI_OPEN_MERGE_REQUESTS  # Don't add it to a *branch* pipeline if it's already in a merge request pipeline.
-      when: never
-    # If there's no open merge request, add it to a *branch* pipeline instead.
-    - if: $CI_COMMIT_BRANCH &&
-          $SAST_EXPERIMENTAL_FEATURES == 'true'
-      exists:
-        - '**/*.ipa'
-        - '**/*.xcodeproj/*'
+  extends: .deprecated-16.8
 
 nodejs-scan-sast:
-  extends: .sast-analyzer
-  script:
-    - echo "This job was deprecated in GitLab 16.8 and removed in GitLab 17.0"
-    - echo "For more information see https://docs.gitlab.com/ee/update/deprecations.html#sast-analyzer-coverage-changing-in-gitlab-170"
-    - exit 1
-  rules:
-    - when: never
+  extends: .deprecated-16.8
 
 phpcs-security-audit-sast:
-  extends: .sast-analyzer
-  script:
-    - echo "This job was deprecated in GitLab 16.8 and removed in GitLab 17.0"
-    - echo "For more information see https://docs.gitlab.com/ee/update/deprecations.html#sast-analyzer-coverage-changing-in-gitlab-170"
-    - exit 1
-  rules:
-    - when: never
+  extends: .deprecated-16.8
 
 pmd-apex-sast:
   extends: .sast-analyzer
@@ -247,6 +172,10 @@ semgrep-sast:
         - '**/*.scala'
         - '**/*.sc'
         - '**/*.php'
+        - '**/*.swift'
+        - '**/*.m'
+        - '**/*.rb'
+        - '**/*.kt'
     - if: $CI_OPEN_MERGE_REQUESTS  # Don't add it to a *branch* pipeline if it's already in a merge request pipeline.
       when: never
     - if: $CI_COMMIT_BRANCH        # If there's no open merge request, add it to a *branch* pipeline instead.
@@ -269,6 +198,10 @@ semgrep-sast:
         - '**/*.scala'
         - '**/*.sc'
         - '**/*.php'
+        - '**/*.swift'
+        - '**/*.m'
+        - '**/*.rb'
+        - '**/*.kt'
 
 sobelow-sast:
   extends: .sast-analyzer

@@ -154,4 +154,12 @@ RSpec.describe Gitlab::PaginationDelegate do
                                  count: 1).current_page).to eq(1)
     end
   end
+
+  context 'with an invalid per_page value' do
+    it 'has a default per page' do
+      expect(described_class.new(page: nil,
+                                 per_page: { wrong: :value },
+                                 count: 0).limit_value).to eq(described_class::DEFAULT_PER_PAGE)
+    end
+  end
 end

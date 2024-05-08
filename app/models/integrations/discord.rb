@@ -4,7 +4,7 @@ require "discordrb/webhooks"
 
 module Integrations
   class Discord < BaseChatNotification
-    ATTACHMENT_REGEX = /: (?<entry>.*?)\n - (?<name>.*)\n*/
+    ATTACHMENT_REGEX = Gitlab::UntrustedRegexp.new(': (?<entry>[^\n]*)\n - (?<name>[^\n]*)\n*')
 
     field :webhook,
       section: SECTION_TYPE_CONNECTION,
@@ -77,7 +77,14 @@ module Integrations
       client.execute do |builder|
         builder.add_embed do |embed|
           embed.author = Discordrb::Webhooks::EmbedAuthor.new(name: message.user_name, icon_url: message.user_avatar)
-          embed.description = (message.pretext + "\n" + Array.wrap(message.attachments).join("\n")).gsub(ATTACHMENT_REGEX, " \\k<entry> - \\k<name>\n")
+          embed.description = (message.pretext + "\n" + Array.wrap(message.attachments).join("\n"))
+
+          if ATTACHMENT_REGEX.match?(embed.description)
+            embed.description = ATTACHMENT_REGEX.replace_gsub(embed.description) do |match|
+              " #{match[:entry]} - #{match[:name]}\n"
+            end
+          end
+
           embed.colour = embed_color(message)
           embed.timestamp = Time.now.utc
         end

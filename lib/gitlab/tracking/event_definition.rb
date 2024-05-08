@@ -20,6 +20,10 @@ module Gitlab
           paths.flat_map { |glob_path| load_all_from_path(glob_path) }
         end
 
+        def find(event_name)
+          definitions.find { |definition| definition.attributes[:action] == event_name }
+        end
+
         private
 
         def load_from_file(path)
@@ -61,6 +65,25 @@ module Gitlab
             Path: #{error['data_pointer']}
           ERROR_MSG
         end
+      end
+
+      def event_selection_rules
+        result = [
+          { name: attributes[:action], time_framed?: false, filter: {} },
+          { name: attributes[:action], time_framed?: true, filter: {} }
+        ]
+        Gitlab::Usage::MetricDefinition.definitions.each_value do |metric_definition|
+          metric_definition.attributes[:events]&.each do |event_selection_rule|
+            if event_selection_rule[:name] == attributes[:action]
+              result << {
+                name: attributes[:action],
+                time_framed?: %w[7d 28d].include?(metric_definition.attributes[:time_frame]),
+                filter: event_selection_rule[:filter] || {}
+              }
+            end
+          end
+        end
+        result.uniq
       end
     end
   end

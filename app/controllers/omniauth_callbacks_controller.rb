@@ -36,6 +36,13 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     handle_omniauth
   end
 
+  def jwt
+    omniauth_flow(
+      Gitlab::Auth::OAuth,
+      identity_linker: Gitlab::Auth::Jwt::IdentityLinker.new(current_user, oauth, session)
+    )
+  end
+
   # Extend the standard implementation to also increment
   # the number of failed sign in attempts
   def failure
@@ -141,6 +148,8 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       end
 
       identity_linker ||= auth_module::IdentityLinker.new(current_user, oauth, session)
+      return redirect_authorize_identity_link(identity_linker) if identity_linker.authorization_required?
+
       link_identity(identity_linker)
 
       current_auth_user = build_auth_user(auth_module::User)
@@ -174,6 +183,17 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   def redirect_identity_linked
     redirect_to profile_account_path, notice: _('Authentication method updated')
+  end
+
+  def redirect_authorize_identity_link(identity_linker)
+    state = SecureRandom.uuid
+    session[:identity_link_state] = state
+
+    redirect_to new_user_settings_identities_path(
+      provider: identity_linker.provider,
+      extern_uid: identity_linker.uid,
+      state: state
+    )
   end
 
   def build_auth_user(auth_user_class)

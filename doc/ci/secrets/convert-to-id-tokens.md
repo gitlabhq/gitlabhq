@@ -210,7 +210,7 @@ job:
     VAULT_AUTH_ROLE: myproject-staging
   id_tokens:
     VAULT_ID_TOKEN:
-      aud: https://gitlab.example.com
+      aud: https://vault.example.com
   secrets:
     PASSWORD:
       vault:
@@ -241,7 +241,7 @@ job:
     VAULT_AUTH_ROLE: myproject-staging
   id_tokens:
     VAULT_ID_TOKEN:
-      aud: https://gitlab.example.com
+      aud: https://vault.example.com
   secrets:
     PASSWORD:
       vault:
@@ -265,7 +265,7 @@ job:
     VAULT_AUTH_ROLE: myproject-staging
   id_tokens:
     VAULT_ID_TOKEN:
-      aud: https://gitlab.example.com
+      aud: https://vault.example.com
   secrets:
       PASSWORD:
         vault: myproject/staging/db/password@secret

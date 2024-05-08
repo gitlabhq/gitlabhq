@@ -568,6 +568,10 @@ export default {
     }, VALIDATION_DEBOUNCE_TIME),
 
     setDefaultImportTarget(group) {
+      if (!this.availableNamespaces) {
+        return;
+      }
+
       const lastTargetNamespace = this.availableNamespaces.find(
         (ns) => ns.id === this.defaultTargetNamespace,
       );

@@ -252,108 +252,104 @@ These commands remove data permanently from database and storage. Before running
 
 #### Delete old artifacts for a project
 
-   ```ruby
-   project = Project.find_by_full_path('path/to/project')
-   builds_with_artifacts =  project.builds.with_downloadable_artifacts
-   builds_with_artifacts.where("finished_at < ?", 1.year.ago).each_batch do |batch|
-      batch.each do |build|
-        Ci::JobArtifacts::DeleteService.new(build).execute
-      end
+```ruby
+project = Project.find_by_full_path('path/to/project')
+builds_with_artifacts =  project.builds.with_downloadable_artifacts
+builds_with_artifacts.where("finished_at < ?", 1.year.ago).each_batch do |batch|
+  batch.each do |build|
+    Ci::JobArtifacts::DeleteService.new(build).execute
+  end
 
-      batch.update_all(artifacts_expire_at: Time.current)
-    end
-
-   ```
+  batch.update_all(artifacts_expire_at: Time.current)
+end
+```
 
 In [GitLab 15.3 and earlier](https://gitlab.com/gitlab-org/gitlab/-/issues/372537), use the following instead:
 
-   ```ruby
-   project = Project.find_by_full_path('path/to/project')
-   builds_with_artifacts =  project.builds.with_downloadable_artifacts
-   builds_with_artifacts.where("finished_at < ?", 1.year.ago).each_batch do |batch|
-      batch.each do |build|
-        build.artifacts_expire_at = Time.current
-        build.erase_erasable_artifacts!
-      end
-   end
+```ruby
+project = Project.find_by_full_path('path/to/project')
+builds_with_artifacts =  project.builds.with_downloadable_artifacts
+builds_with_artifacts.where("finished_at < ?", 1.year.ago).each_batch do |batch|
+  batch.each do |build|
+    build.artifacts_expire_at = Time.current
+    build.erase_erasable_artifacts!
+  end
+end
 ```
 
 #### Delete old artifacts instance wide
 
-   ```ruby
-   builds_with_artifacts = Ci::Build.with_downloadable_artifacts
-   builds_with_artifacts.where("finished_at < ?", 1.year.ago).each_batch do |batch|
-      batch.each do |build|
-        Ci::JobArtifacts::DeleteService.new(build).execute
-      end
+```ruby
+builds_with_artifacts = Ci::Build.with_downloadable_artifacts
+builds_with_artifacts.where("finished_at < ?", 1.year.ago).each_batch do |batch|
+  batch.each do |build|
+    Ci::JobArtifacts::DeleteService.new(build).execute
+  end
 
-      batch.update_all(artifacts_expire_at: Time.current)
-    end
-
-   ```
+  batch.update_all(artifacts_expire_at: Time.current)
+end
+```
 
 In [GitLab 15.3 and earlier](https://gitlab.com/gitlab-org/gitlab/-/issues/372537), use the following instead:
 
-   ```ruby
-   builds_with_artifacts =  Ci::Build.with_downloadable_artifacts
-   builds_with_artifacts.where("finished_at < ?", 1.year.ago).each_batch do |batch|
-      batch.each do |build|
-        build.artifacts_expire_at = Time.current
-        build.erase_erasable_artifacts!
-      end
-   end
+```ruby
+builds_with_artifacts =  Ci::Build.with_downloadable_artifacts
+builds_with_artifacts.where("finished_at < ?", 1.year.ago).each_batch do |batch|
+  batch.each do |build|
+    build.artifacts_expire_at = Time.current
+    build.erase_erasable_artifacts!
+  end
+end
 ```
 
 #### Delete old job logs and artifacts for a project
 
-   ```ruby
-   project = Project.find_by_full_path('path/to/project')
-   builds =  project.builds
-   admin_user = User.find_by(username: 'username')
-   builds.where("finished_at < ?", 1.year.ago).each_batch do |batch|
-      batch.each do |build|
-        print "Ci::Build ID #{build.id}... "
+```ruby
+project = Project.find_by_full_path('path/to/project')
+builds =  project.builds
+admin_user = User.find_by(username: 'username')
+builds.where("finished_at < ?", 1.year.ago).each_batch do |batch|
+  batch.each do |build|
+    print "Ci::Build ID #{build.id}... "
 
-        if build.erasable?
-          Ci::BuildEraseService.new(build, admin_user).execute
-          puts "Erased"
-        else
-          puts "Skipped (Nothing to erase or not erasable)"
-        end
-      end
-   end
-
-   ```
+    if build.erasable?
+      Ci::BuildEraseService.new(build, admin_user).execute
+      puts "Erased"
+    else
+      puts "Skipped (Nothing to erase or not erasable)"
+    end
+  end
+end
+```
 
 #### Delete old job logs and artifacts instance wide
 
-   ```ruby
-   builds = Ci::Build.all
-   admin_user = User.find_by(username: 'username')
-   builds.where("finished_at < ?", 1.year.ago).each_batch do |batch|
-      batch.each do |build|
-        print "Ci::Build ID #{build.id}... "
+```ruby
+builds = Ci::Build.all
+admin_user = User.find_by(username: 'username')
+builds.where("finished_at < ?", 1.year.ago).each_batch do |batch|
+  batch.each do |build|
+    print "Ci::Build ID #{build.id}... "
 
-        if build.erasable?
-          Ci::BuildEraseService.new(build, admin_user).execute
-          puts "Erased"
-        else
-          puts "Skipped (Nothing to erase or not erasable)"
-        end
-      end
-   end
+    if build.erasable?
+      Ci::BuildEraseService.new(build, admin_user).execute
+      puts "Erased"
+    else
+      puts "Skipped (Nothing to erase or not erasable)"
+    end
+  end
+end
+```
 
-   ```
+In [GitLab 15.3 and earlier](https://gitlab.com/gitlab-org/gitlab/-/issues/369132), replace
+`Ci::BuildEraseService.new(build, admin_user).execute` with `build.erase(erased_by: admin_user)`.
 
-   In [GitLab 15.3 and earlier](https://gitlab.com/gitlab-org/gitlab/-/issues/369132), replace
-   `Ci::BuildEraseService.new(build, admin_user).execute` with `build.erase(erased_by: admin_user)`.
+`1.year.ago` is a Rails [`ActiveSupport::Duration`](https://api.rubyonrails.org/classes/ActiveSupport/Duration.html) method.
+Start with a long duration to reduce the risk of accidentally deleting artifacts that are still in use.
+Rerun the deletion with shorter durations as needed, for example `3.months.ago`, `2.weeks.ago`, or `7.days.ago`.
 
-   `1.year.ago` is a Rails [`ActiveSupport::Duration`](https://api.rubyonrails.org/classes/ActiveSupport/Duration.html) method.
-   Start with a long duration to reduce the risk of accidentally deleting artifacts that are still in use.
-   Rerun the deletion with shorter durations as needed, for example `3.months.ago`, `2.weeks.ago`, or `7.days.ago`.
-
-   The method `erase_erasable_artifacts!` is synchronous, and upon execution the artifacts are immediately removed;
-   they are not scheduled by a background queue.
+The method `erase_erasable_artifacts!` is synchronous, and upon execution the artifacts are immediately removed;
+they are not scheduled by a background queue.
 
 ## Job artifact upload fails with error 500
 
