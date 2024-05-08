@@ -53,9 +53,15 @@ module Gitlab
     private
 
     def sanitize_per_page(per_page)
-      return @options[:default_per_page] unless per_page && per_page > 0
+      limit = begin
+        Integer(per_page)
+      rescue ArgumentError, TypeError
+        nil
+      end
 
-      [@options[:max_per_page], per_page].min
+      return @options[:default_per_page] unless limit && limit > 0
+
+      [@options[:max_per_page], limit].min
     end
 
     def sanitize_page(page)

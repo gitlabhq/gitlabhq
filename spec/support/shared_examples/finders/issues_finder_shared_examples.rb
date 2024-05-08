@@ -1355,6 +1355,36 @@ RSpec.shared_examples 'issues or work items finder' do |factory, execute_context
           end
         end
       end
+
+      context 'when filtering items assigned to the current user' do
+        let_it_be(:assigned_user) { create(:user) }
+        let_it_be(:assigned_public_item) { create(factory, project: project, assignees: [assigned_user]) }
+        let_it_be(:assigned_confidential_item) do
+          create(factory, project: project, confidential: true, assignees: [assigned_user])
+        end
+
+        let(:params) { { assignee_id: assigned_user.id } }
+
+        subject { described_class.new(assigned_user, params).execute }
+
+        it 'returns items assigned to the user' do
+          expect(subject).to contain_exactly(assigned_public_item, assigned_confidential_item)
+        end
+
+        it 'does not filter by confidentiality' do
+          expect(items_model).not_to receive(:where).with(a_string_matching('confidential'), anything)
+
+          subject
+        end
+      end
+    end
+
+    context 'when both assignee_id and assignee_username are provided' do
+      let(:params) { { assignee_id: 'NONE', assignee_username: user.username } }
+
+      subject { described_class.new(user, params).execute }
+
+      it_behaves_like 'returns public, does not return hidden or confidential'
     end
   end
 

@@ -1126,4 +1126,65 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
       end
     end
   end
+
+  context 'when signing in with JWT' do
+    let_it_be(:user) { create(:user) }
+
+    before do
+      stub_omniauth_config(providers: [{ name: 'jwt', label: 'JWT', args: {} }])
+      stub_omniauth_provider('jwt')
+      mock_auth_hash('jwt', 'jwt_uid', user.email)
+    end
+
+    context 'when the user does not have a JWT identity' do
+      context 'when the user is already signed in' do
+        before do
+          expect(authentication_metrics).to increment(:user_authenticated_counter)
+
+          gitlab_sign_in(user)
+        end
+
+        it 'requires the user to authorize linking the JWT identity' do
+          visit user_jwt_omniauth_callback_path
+
+          expect(page).to have_current_path new_user_settings_identities_path, ignore_query: true
+          expect(page).to have_content(
+            format(
+              s_('Allow %{strongOpen}%{provider}%{strongClose} to sign you in?'),
+              strongOpen: '',
+              strongClose: '',
+              provider: 'JWT')
+          )
+
+          click_button 'Authorize'
+
+          expect(page).to have_current_path profile_account_path
+          expect(page).to have_content(_('Authentication method updated'))
+
+          expect(user.identities.last.provider).to eq('jwt')
+          expect(user.identities.last.extern_uid).to eq('jwt_uid')
+        end
+
+        it 'does not link the identity when the user clicks Cancel' do
+          visit user_jwt_omniauth_callback_path
+
+          expect(page).to have_current_path new_user_settings_identities_path, ignore_query: true
+          expect(page).to have_content(
+            format(
+              s_('Allow %{strongOpen}%{provider}%{strongClose} to sign you in?'),
+              strongOpen: '',
+              strongClose: '',
+              provider: 'JWT')
+          )
+
+          click_link 'Cancel'
+
+          expect(page).to have_current_path profile_account_path
+          expect(page).not_to have_content(_('Authentication method updated'))
+
+          expect(user.identities).to be_empty
+        end
+      end
+    end
+  end
 end

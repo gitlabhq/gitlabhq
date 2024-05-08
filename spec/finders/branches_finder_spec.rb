@@ -101,6 +101,8 @@ RSpec.describe BranchesFinder, feature_category: :source_code_management do
         let(:params) { { search: '^feature_' } }
 
         it 'filters branches' do
+          expect(::Gitlab::UntrustedRegexp).to receive(:new).with('^feature_').once.and_call_original
+
           result = subject
 
           expect(result.first.name).to eq('feature_conflict')
@@ -112,6 +114,8 @@ RSpec.describe BranchesFinder, feature_category: :source_code_management do
         let(:params) { { search: 'feature$' } }
 
         it 'filters branches' do
+          expect(::Gitlab::UntrustedRegexp).to receive(:new).with('feature$').once.and_call_original
+
           result = subject
 
           expect(result.first.name).to eq('feature')
@@ -123,6 +127,9 @@ RSpec.describe BranchesFinder, feature_category: :source_code_management do
         let(:params) { { search: 'f*e' } }
 
         it 'filters branches' do
+          escaped_regex = 'f.*?e'
+          expect(::Gitlab::UntrustedRegexp).to receive(:new).with(escaped_regex).once.and_call_original
+
           result = subject
 
           expect(result.first.name).to eq('2-mb-file')
@@ -134,6 +141,9 @@ RSpec.describe BranchesFinder, feature_category: :source_code_management do
         let(:params) { { search: '^f*e$' } }
 
         it 'filters branches' do
+          escaped_regex = '^f.*?e$'
+          expect(::Gitlab::UntrustedRegexp).to receive(:new).with(escaped_regex).once.and_call_original
+
           result = subject
 
           expect(result.first.name).to eq('feature')
@@ -173,6 +183,9 @@ RSpec.describe BranchesFinder, feature_category: :source_code_management do
         let(:params) { { search: 'f*a*e' } }
 
         it 'filters branches' do
+          escaped_regex = 'f.*?a.*?e'
+          expect(::Gitlab::UntrustedRegexp).to receive(:new).with(escaped_regex).once.and_call_original
+
           result = subject
 
           expect(result.first.name).to eq('after-create-delete-modify-move')
@@ -214,6 +227,9 @@ RSpec.describe BranchesFinder, feature_category: :source_code_management do
         let(:params) { { search: 'zz*asdf' } }
 
         it 'filters branches' do
+          escaped_regex = 'zz.*?asdf'
+          expect(::Gitlab::UntrustedRegexp).to receive(:new).with(escaped_regex).once.and_call_original
+
           result = subject
 
           expect(result.count).to eq(0)
@@ -287,6 +303,20 @@ RSpec.describe BranchesFinder, feature_category: :source_code_management do
           result = subject
 
           expect(result.map(&:name)).to eq(["'test'", '2-mb-file'])
+        end
+
+        context 'when per_page is over the limit' do
+          let(:params) { { per_page: 3 } }
+
+          before do
+            stub_const('Gitlab::PaginationDelegate::MAX_PER_PAGE', 2)
+          end
+
+          it 'limits the maximum number of elements' do
+            result = subject
+
+            expect(result.map(&:name)).to match_array(["'test'", '2-mb-file'])
+          end
         end
       end
 

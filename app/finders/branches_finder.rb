@@ -24,10 +24,6 @@ class BranchesFinder < GitRefsFinder
     @params[:names].presence
   end
 
-  def per_page
-    @params[:per_page].presence
-  end
-
   def regex
     @params[:regex].to_s.presence
   end
@@ -35,10 +31,6 @@ class BranchesFinder < GitRefsFinder
 
   def page_token
     "#{Gitlab::Git::BRANCH_REF_PREFIX}#{@params[:page_token]}" if @params[:page_token]
-  end
-
-  def pagination_params
-    { limit: per_page, page_token: page_token }
   end
 
   def by_names(branches)
