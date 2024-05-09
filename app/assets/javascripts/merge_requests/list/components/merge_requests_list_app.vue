@@ -1,5 +1,5 @@
 <script>
-import { GlFilteredSearchToken } from '@gitlab/ui';
+import { GlFilteredSearchToken, GlButton } from '@gitlab/ui';
 import { isEmpty } from 'lodash';
 import { createAlert } from '~/alert';
 import Api from '~/api';
@@ -46,6 +46,7 @@ import { i18n } from '../constants';
 import getMergeRequestsQuery from '../queries/get_merge_requests.query.graphql';
 import getMergeRequestsCountsQuery from '../queries/get_merge_requests_counts.query.graphql';
 import MergeRequestStatistics from './merge_request_statistics.vue';
+import MergeRequestMoreActionsDropdown from './more_actions_dropdown.vue';
 
 const UserToken = () => import('~/vue_shared/components/filtered_search_bar/tokens/user_token.vue');
 const BranchToken = () =>
@@ -55,9 +56,11 @@ export default {
   i18n,
   mergeRequestListTabs,
   components: {
+    GlButton,
     IssuableList,
     CiIcon,
     MergeRequestStatistics,
+    MergeRequestMoreActionsDropdown,
   },
   inject: [
     'fullPath',
@@ -65,6 +68,7 @@ export default {
     'initialSort',
     'isPublicVisibilityRestricted',
     'isSignedIn',
+    'newMergeRequestPath',
   ],
   data() {
     return {
@@ -385,6 +389,22 @@ export default {
     @sort="handleSort"
     @filter="handleFilter"
   >
+    <template #nav-actions>
+      <div class="gl-display-flex gl-gap-3">
+        <gl-button
+          v-if="newMergeRequestPath"
+          variant="confirm"
+          :href="newMergeRequestPath"
+          data-testid="new-merge-request-button"
+          data-event-tracking="click_new_merge_request_list"
+        >
+          {{ $options.i18n.newMergeRequest }}
+        </gl-button>
+
+        <merge-request-more-actions-dropdown />
+      </div>
+    </template>
+
     <template #status="{ issuable = {} }">
       {{ getStatus(issuable) }}
     </template>

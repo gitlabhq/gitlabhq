@@ -95,24 +95,12 @@ RSpec.describe 'Adding a Note', feature_category: :team_planning do
         it_behaves_like 'a Note mutation with confidential notes'
       end
 
-      context 'when using deprecated confidential param' do
-        let(:variables_extra) { { confidential: true } }
-
-        it_behaves_like 'a Note mutation with confidential notes'
-      end
-
       context 'as work item' do
         let_it_be_with_reload(:work_item) { create(:work_item, :task, project: project) }
         let(:noteable) { work_item }
 
         context 'when using internal param' do
           let(:variables_extra) { { internal: true } }
-
-          it_behaves_like 'a Note mutation with confidential notes'
-        end
-
-        context 'when using deprecated confidential param' do
-          let(:variables_extra) { { confidential: true } }
 
           it_behaves_like 'a Note mutation with confidential notes'
         end

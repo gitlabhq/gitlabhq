@@ -78,3 +78,9 @@ These requirements are documented in the `Required permission` column in the fol
 | [`admin_vulnerability`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121534) |  | Edit the vulnerability object, including the status and linking an issue. Includes the `read_vulnerability` permission actions. | GitLab [16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/412536) |  |  |
 | [`read_dependency`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/126247) |  | Allows read-only access to the dependencies and licenses. | GitLab [16.3](https://gitlab.com/gitlab-org/gitlab/-/issues/415255) |  |  |
 | [`read_vulnerability`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120704) |  | Read vulnerability reports and security dashboards. | GitLab [16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/399119) |  |  |
+
+## Webhooks
+
+| Name | Required permission | Description | Introduced in | Feature flag | Enabled in |
+|:-----|:------------|:------------------|:---------|:--------------|:---------|
+| [`admin_web_hook`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151551) |  | Manage webhooks | GitLab [17.0](https://gitlab.com/gitlab-org/quality/triage-ops/-/issues/1373) |  |  |

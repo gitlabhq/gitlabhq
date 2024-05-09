@@ -22,6 +22,13 @@ export async function mountMergeRequestListsApp() {
     initialSort,
     isPublicVisibilityRestricted,
     isSignedIn,
+    newMergeRequestPath,
+    showExportButton,
+    issuableType,
+    issuableCount,
+    email,
+    exportCsvPath,
+    rssUrl,
   } = el.dataset;
 
   return new Vue({
@@ -41,6 +48,13 @@ export async function mountMergeRequestListsApp() {
       initialSort,
       isPublicVisibilityRestricted: parseBoolean(isPublicVisibilityRestricted),
       isSignedIn: parseBoolean(isSignedIn),
+      newMergeRequestPath,
+      showExportButton: parseBoolean(showExportButton),
+      issuableType,
+      issuableCount: Number(issuableCount),
+      email,
+      exportCsvPath,
+      rssUrl,
     },
     render: (createComponent) => createComponent(MergeRequestsListApp),
   });

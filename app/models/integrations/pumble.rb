@@ -2,6 +2,8 @@
 
 module Integrations
   class Pumble < BaseChatNotification
+    include HasAvatar
+
     field :webhook,
       section: SECTION_TYPE_CONNECTION,
       help: 'https://api.pumble.com/workspaces/x/...',

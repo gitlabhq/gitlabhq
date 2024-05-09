@@ -9,7 +9,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 > - [Introduced](https://gitlab.com/groups/gitlab-org/quality/quality-engineering/-/epics/19) in GitLab 16.11.
 
 This job runs on the test stage of a merge request pipeline. It validates that migrations pass
-for multi-version upgrade from the latest [required upgrade stop](../../update/index.md#required-upgrade-stops)
+for multi-version upgrade from the latest [required upgrade stop](../../update/index.md#upgrade-paths)
 to the author's working branch. It achieves it by running `gitlab:db:configure` against PostgreSQL
 dump created from the latest known [GitLab version stop](../../update/index.md#upgrade-paths) with test data.
 

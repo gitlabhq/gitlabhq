@@ -1289,6 +1289,20 @@ Use `dependencyProxyTotalSizeBytes` instead, introduced in GitLab 16.1.
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
+### GraphQL field `confidential` changed to `internal` on notes
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">15.5</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/371485).
+</div>
+
+The `confidential` field for a `Note` will be deprecated and renamed to `internal`.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
 ### GraphQL field `registrySizeEstimated` has been deprecated
 
 <div class="deprecation-notes">
@@ -3164,20 +3178,6 @@ A runner's status will only relate to runner contact status, such as:
 
 When checking if a runner is `paused`, API users are advised to check the boolean attribute
 `paused` to be `true` instead. When checking if a runner is `active`, check if `paused` is `false`.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="16.0">
-
-### GraphQL field `confidential` changed to `internal` on notes
-
-<div class="deprecation-notes">
-- Announced in GitLab <span class="milestone">15.5</span>
-- Removal in GitLab <span class="milestone">16.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/371485).
-</div>
-
-The `confidential` field for a `Note` will be deprecated and renamed to `internal`.
 
 </div>
 

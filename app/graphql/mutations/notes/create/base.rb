@@ -18,12 +18,6 @@ module Mutations
           required: true,
           description: copy_field_description(Types::Notes::NoteType, :body)
 
-        argument :confidential,
-          GraphQL::Types::Boolean,
-          required: false,
-          description: 'Confidentiality flag of a note. Default is false.',
-          deprecated: { reason: :renamed, replacement: 'internal', milestone: '15.3' }
-
         argument :internal,
           GraphQL::Types::Boolean,
           required: false,
@@ -51,7 +45,7 @@ module Mutations
           {
             noteable: noteable,
             note: args[:body],
-            internal: args[:internal] || args[:confidential]
+            internal: args[:internal]
           }
         end
 

@@ -11,7 +11,6 @@ RSpec.describe GitlabSchema.types['Note'], feature_category: :team_planning do
       body
       body_html
       award_emoji
-      confidential
       internal
       created_at
       discussion

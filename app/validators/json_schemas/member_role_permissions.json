@@ -7,6 +7,9 @@
     "admin_cicd_variables": {
       "type": "boolean"
     },
+    "admin_compliance_framework": {
+      "type": "boolean"
+    },
     "admin_group_member": {
       "type": "boolean"
     },
@@ -16,16 +19,13 @@
     "admin_push_rules": {
       "type": "boolean"
     },
-    "manage_security_policy_link": {
-      "type": "boolean"
-    },
     "admin_terraform_state": {
       "type": "boolean"
     },
-    "admin_compliance_framework": {
+    "admin_vulnerability": {
       "type": "boolean"
     },
-    "admin_vulnerability": {
+    "admin_web_hook": {
       "type": "boolean"
     },
     "archive_project": {
@@ -35,6 +35,9 @@
       "type": "boolean"
     },
     "manage_project_access_tokens": {
+      "type": "boolean"
+    },
+    "manage_security_policy_link": {
       "type": "boolean"
     },
     "read_code": {

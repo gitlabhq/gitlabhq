@@ -114,7 +114,7 @@ RSpec.describe Gitlab::CurrentSettings, feature_category: :shared do
 
       context 'and the current organization is known' do
         before do
-          allow(Organizations::OrganizationSetting).to receive(:for_current_organization).and_return(organization_settings)
+          allow(Organizations::OrganizationSetting).to receive(:for).and_return(organization_settings)
         end
 
         it 'retrieves settings using OrganizationSetting' do
@@ -124,7 +124,7 @@ RSpec.describe Gitlab::CurrentSettings, feature_category: :shared do
 
       context 'and the current organization is unknown' do
         before do
-          allow(Organizations::OrganizationSetting).to receive(:for_current_organization).and_return(nil)
+          allow(Organizations::OrganizationSetting).to receive(:for).and_return(nil)
         end
 
         it 'raises NoMethodError' do

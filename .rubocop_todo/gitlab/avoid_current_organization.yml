@@ -2,5 +2,4 @@
 Gitlab/AvoidCurrentOrganization:
   Details: grace period
   Exclude:
-    - 'app/models/organizations/organization_setting.rb'
     - 'app/services/groups/create_service.rb'

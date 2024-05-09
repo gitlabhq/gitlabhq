@@ -12,9 +12,11 @@ class RemoveOldIssueIdOnEpics < Gitlab::Database::Migration[2.2]
   def up
     remove_foreign_key_if_exists(
       :epics,
+      :issues,
       column: :issue_id,
       on_delete: :nullify,
-      name: OLD_FK_NAME
+      name: OLD_FK_NAME,
+      reverse_lock_order: true
     )
   end
 
@@ -25,7 +27,8 @@ class RemoveOldIssueIdOnEpics < Gitlab::Database::Migration[2.2]
       :issues,
       column: :issue_id,
       on_delete: :nullify,
-      name: OLD_FK_NAME
+      name: OLD_FK_NAME,
+      reverse_lock_order: true
     )
   end
 end

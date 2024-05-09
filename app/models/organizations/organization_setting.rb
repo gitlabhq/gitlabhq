@@ -17,10 +17,10 @@ module Organizations
       end
     end
 
-    def self.for_current_organization
-      return unless Current.organization
+    def self.for(organization_id)
+      return unless organization_id
 
-      Current.organization.settings || Current.organization.build_settings
+      Organizations::OrganizationSetting.find_or_initialize_by(organization_id: organization_id)
     end
   end
 end

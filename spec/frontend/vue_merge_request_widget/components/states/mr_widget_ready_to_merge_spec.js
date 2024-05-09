@@ -1,5 +1,5 @@
 import Vue, { nextTick } from 'vue';
-import { GlSprintf } from '@gitlab/ui';
+import { GlFormTextarea, GlSprintf } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import produce from 'immer';
 import { createMockSubscription as createMockApolloSubscription } from 'mock-apollo-client';
@@ -124,6 +124,7 @@ const createComponent = (customConfig = {}, createState = true) => {
     },
     stubs: {
       CommitEdit,
+      GlFormTextarea,
       GlSprintf,
     },
     apolloProvider,
@@ -154,6 +155,7 @@ const triggerApprovalUpdated = () => eventHub.$emit('ApprovalUpdated');
 const triggerEditCommitInput = () =>
   wrapper.find('[data-testid="widget_edit_commit_message"]').vm.$emit('input', true);
 const findMergeHelperText = () => wrapper.find('[data-testid="auto-merge-helper-text"]');
+const findTextareas = () => wrapper.findAllComponents(GlFormTextarea);
 
 beforeEach(() => {
   gon.features = { autoMergeWhenIncompletePipelineSucceeds: true };
@@ -888,10 +890,10 @@ describe('ReadyToMerge', () => {
     });
 
     describe.each`
-      desc                       | finderFn                   | initialValue           | updatedValue                     | inputId
-      ${'merge commit message'}  | ${findMergeCommitMessage}  | ${commitMessage}       | ${UPDATED_MERGE_COMMIT_MESSAGE}  | ${'#merge-message-edit'}
-      ${'squash commit message'} | ${findSquashCommitMessage} | ${squashCommitMessage} | ${UPDATED_SQUASH_COMMIT_MESSAGE} | ${'#squash-message-edit'}
-    `('with $desc', ({ finderFn, initialValue, updatedValue, inputId }) => {
+      desc                       | finderFn                   | initialValue           | updatedValue                     | variant
+      ${'merge commit message'}  | ${findMergeCommitMessage}  | ${commitMessage}       | ${UPDATED_MERGE_COMMIT_MESSAGE}  | ${1}
+      ${'squash commit message'} | ${findSquashCommitMessage} | ${squashCommitMessage} | ${UPDATED_SQUASH_COMMIT_MESSAGE} | ${0}
+    `('with $desc', ({ finderFn, initialValue, updatedValue, variant }) => {
       it('should have initial value', async () => {
         createDefaultGqlComponent();
 
@@ -918,9 +920,7 @@ describe('ReadyToMerge', () => {
         await waitForPromises();
         await triggerEditCommitInput();
 
-        const input = wrapper.find(inputId);
-        input.element.value = USER_COMMIT_MESSAGE;
-        input.trigger('input');
+        findTextareas().at(variant).vm.$emit('input', USER_COMMIT_MESSAGE);
 
         triggerApprovalUpdated();
         await waitForPromises();

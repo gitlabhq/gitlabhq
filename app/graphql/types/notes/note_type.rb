@@ -49,16 +49,6 @@ module Types
         null: true,
         description: 'List of emoji reactions associated with the note.'
 
-      field :confidential, GraphQL::Types::Boolean,
-        null: true,
-        description: 'Indicates if the note is confidential.',
-        method: :confidential?,
-        deprecated: {
-          reason: :renamed,
-          replacement: 'internal',
-          milestone: '15.5'
-        }
-
       field :internal, GraphQL::Types::Boolean,
         null: true,
         description: 'Indicates if the note is internal.',

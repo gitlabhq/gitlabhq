@@ -9,5 +9,6 @@ export const i18n = {
   errorFetchingCounts: __('An error occurred while getting merge request counts'),
   errorFetchingMergeRequests: __('An error occurred while loading merge requests'),
   upvotes: __('Upvotes'),
-  downvotes: __('Downvotes'),
+  downvots: __('Downvotes'),
+  newMergeRequest: __('New merge request'),
 };

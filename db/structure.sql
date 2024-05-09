@@ -6723,7 +6723,7 @@ CREATE SEQUENCE ci_pipeline_variables_id_seq
 ALTER SEQUENCE ci_pipeline_variables_id_seq OWNED BY p_ci_pipeline_variables.id;
 
 CREATE TABLE ci_pipelines (
-    id integer NOT NULL,
+    id_convert_to_bigint integer DEFAULT 0 NOT NULL,
     ref character varying,
     sha character varying,
     before_sha character varying,
@@ -6752,7 +6752,7 @@ CREATE TABLE ci_pipelines (
     ci_ref_id bigint,
     locked smallint DEFAULT 1 NOT NULL,
     partition_id bigint NOT NULL,
-    id_convert_to_bigint bigint DEFAULT 0 NOT NULL,
+    id bigint NOT NULL,
     auto_canceled_by_id bigint,
     CONSTRAINT check_d7e99a025e CHECK ((lock_version IS NOT NULL))
 );
@@ -23988,14 +23988,6 @@ CREATE UNIQUE INDEX idx_ci_job_artifacts_on_job_id_file_type_and_partition_id_un
 
 CREATE INDEX idx_ci_pipelines_artifacts_locked ON ci_pipelines USING btree (ci_ref_id, id) WHERE (locked = 1);
 
-CREATE INDEX idx_ci_pipelines_artifacts_locked_bigint ON ci_pipelines USING btree (ci_ref_id, id_convert_to_bigint) WHERE (locked = 1);
-
-CREATE INDEX idx_ci_pipelines_on_project_id_and_ref_and_status_and_id_bigint ON ci_pipelines USING btree (project_id, ref, status, id_convert_to_bigint);
-
-CREATE INDEX idx_ci_pipelines_on_user_id_and_id_and_cancelable_status_bigint ON ci_pipelines USING btree (user_id, id_convert_to_bigint) WHERE ((status)::text = ANY (ARRAY[('running'::character varying)::text, ('waiting_for_resource'::character varying)::text, ('preparing'::character varying)::text, ('pending'::character varying)::text, ('created'::character varying)::text, ('scheduled'::character varying)::text]));
-
-CREATE INDEX idx_ci_pipelines_on_user_id_and_user_not_verified_bigint ON ci_pipelines USING btree (user_id, id_convert_to_bigint DESC) WHERE (failure_reason = 3);
-
 CREATE INDEX idx_ci_running_builds_on_runner_type_and_owner_xid_and_id ON ci_running_builds USING btree (runner_type, runner_owner_namespace_xid, runner_id);
 
 CREATE INDEX idx_compliance_security_policies_on_policy_configuration_id ON compliance_framework_security_policies USING btree (policy_configuration_id);
@@ -24832,31 +24824,19 @@ CREATE INDEX index_ci_pipelines_config_on_pipeline_id ON ci_pipelines_config USI
 
 CREATE INDEX index_ci_pipelines_for_ondemand_dast_scans ON ci_pipelines USING btree (id) WHERE (source = 13);
 
-CREATE INDEX index_ci_pipelines_for_ondemand_dast_scans_bigint ON ci_pipelines USING btree (id_convert_to_bigint) WHERE (source = 13);
-
 CREATE INDEX index_ci_pipelines_on_auto_canceled_by_id ON ci_pipelines USING btree (auto_canceled_by_id);
 
 CREATE INDEX index_ci_pipelines_on_ci_ref_id_and_more ON ci_pipelines USING btree (ci_ref_id, id DESC, source, status) WHERE (ci_ref_id IS NOT NULL);
 
-CREATE INDEX index_ci_pipelines_on_ci_ref_id_and_more_bigint ON ci_pipelines USING btree (ci_ref_id, id_convert_to_bigint DESC, source, status) WHERE (ci_ref_id IS NOT NULL);
-
 CREATE INDEX index_ci_pipelines_on_external_pull_request_id ON ci_pipelines USING btree (external_pull_request_id) WHERE (external_pull_request_id IS NOT NULL);
-
-CREATE UNIQUE INDEX index_ci_pipelines_on_id_convert_to_bigint ON ci_pipelines USING btree (id_convert_to_bigint);
 
 CREATE INDEX index_ci_pipelines_on_merge_request_id ON ci_pipelines USING btree (merge_request_id) WHERE (merge_request_id IS NOT NULL);
 
 CREATE INDEX index_ci_pipelines_on_pipeline_schedule_id_and_id ON ci_pipelines USING btree (pipeline_schedule_id, id);
 
-CREATE INDEX index_ci_pipelines_on_pipeline_schedule_id_and_id_bigint ON ci_pipelines USING btree (pipeline_schedule_id, id_convert_to_bigint);
-
 CREATE INDEX index_ci_pipelines_on_project_id_and_id_desc ON ci_pipelines USING btree (project_id, id DESC);
 
-CREATE INDEX index_ci_pipelines_on_project_id_and_id_desc_bigint ON ci_pipelines USING btree (project_id, id_convert_to_bigint DESC);
-
 CREATE UNIQUE INDEX index_ci_pipelines_on_project_id_and_iid ON ci_pipelines USING btree (project_id, iid) WHERE (iid IS NOT NULL);
-
-CREATE INDEX index_ci_pipelines_on_project_id_and_ref_and_id_desc_bigint ON ci_pipelines USING btree (project_id, ref, id_convert_to_bigint DESC);
 
 CREATE INDEX index_ci_pipelines_on_project_id_and_ref_and_status_and_id ON ci_pipelines USING btree (project_id, ref, status, id);
 
@@ -24875,8 +24855,6 @@ CREATE INDEX index_ci_pipelines_on_project_id_and_user_id_and_status_and_ref ON 
 CREATE INDEX index_ci_pipelines_on_project_idandrefandiddesc ON ci_pipelines USING btree (project_id, ref, id DESC);
 
 CREATE INDEX index_ci_pipelines_on_status_and_id ON ci_pipelines USING btree (status, id);
-
-CREATE INDEX index_ci_pipelines_on_status_and_id_bigint ON ci_pipelines USING btree (status, id_convert_to_bigint);
 
 CREATE INDEX index_ci_pipelines_on_user_id_and_created_at_and_config_source ON ci_pipelines USING btree (user_id, created_at, config_source);
 
@@ -29976,9 +29954,6 @@ ALTER TABLE ONLY zoekt_repositories
 ALTER TABLE ONLY ci_pipelines
     ADD CONSTRAINT fk_262d4c2d19 FOREIGN KEY (auto_canceled_by_id) REFERENCES ci_pipelines(id) ON DELETE SET NULL;
 
-ALTER TABLE ONLY ci_pipelines
-    ADD CONSTRAINT fk_262d4c2d19_tmp FOREIGN KEY (auto_canceled_by_id) REFERENCES ci_pipelines(id_convert_to_bigint) ON DELETE SET NULL;
-
 ALTER TABLE ONLY user_namespace_callouts
     ADD CONSTRAINT fk_27a69fd1bd FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
@@ -30246,9 +30221,6 @@ ALTER TABLE ONLY approval_group_rules
 ALTER TABLE ONLY ci_pipeline_chat_data
     ADD CONSTRAINT fk_64ebfab6b3 FOREIGN KEY (pipeline_id) REFERENCES ci_pipelines(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY ci_pipeline_chat_data
-    ADD CONSTRAINT fk_64ebfab6b3_tmp FOREIGN KEY (pipeline_id) REFERENCES ci_pipelines(id_convert_to_bigint) ON DELETE CASCADE;
-
 ALTER TABLE ONLY cluster_agent_tokens
     ADD CONSTRAINT fk_64f741f626 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -30393,9 +30365,6 @@ ALTER TABLE ONLY packages_package_files
 ALTER TABLE p_ci_builds
     ADD CONSTRAINT fk_87f4cefcda FOREIGN KEY (upstream_pipeline_id) REFERENCES ci_pipelines(id) ON DELETE CASCADE;
 
-ALTER TABLE p_ci_builds
-    ADD CONSTRAINT fk_87f4cefcda_tmp FOREIGN KEY (upstream_pipeline_id) REFERENCES ci_pipelines(id_convert_to_bigint) ON DELETE CASCADE;
-
 ALTER TABLE ONLY approval_group_rules_users
     ADD CONSTRAINT fk_888a0df3b7 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
@@ -30524,9 +30493,6 @@ ALTER TABLE ONLY subscription_add_on_purchases
 
 ALTER TABLE p_ci_builds
     ADD CONSTRAINT fk_a2141b1522 FOREIGN KEY (auto_canceled_by_id) REFERENCES ci_pipelines(id) ON DELETE SET NULL;
-
-ALTER TABLE p_ci_builds
-    ADD CONSTRAINT fk_a2141b1522_tmp FOREIGN KEY (auto_canceled_by_id) REFERENCES ci_pipelines(id_convert_to_bigint) ON DELETE SET NULL;
 
 ALTER TABLE ONLY bulk_import_entities
     ADD CONSTRAINT fk_a44ff95be5 FOREIGN KEY (parent_id) REFERENCES bulk_import_entities(id) ON DELETE CASCADE;
@@ -30777,14 +30743,8 @@ ALTER TABLE ONLY environments
 ALTER TABLE p_ci_builds
     ADD CONSTRAINT fk_d3130c9a7f FOREIGN KEY (commit_id) REFERENCES ci_pipelines(id) ON DELETE CASCADE;
 
-ALTER TABLE p_ci_builds
-    ADD CONSTRAINT fk_d3130c9a7f_tmp FOREIGN KEY (commit_id) REFERENCES ci_pipelines(id_convert_to_bigint) ON DELETE CASCADE;
-
 ALTER TABLE ONLY ci_sources_pipelines
     ADD CONSTRAINT fk_d4e29af7d7 FOREIGN KEY (source_pipeline_id) REFERENCES ci_pipelines(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY ci_sources_pipelines
-    ADD CONSTRAINT fk_d4e29af7d7_tmp FOREIGN KEY (source_pipeline_id) REFERENCES ci_pipelines(id_convert_to_bigint) ON DELETE CASCADE;
 
 ALTER TABLE ONLY incident_management_timeline_events
     ADD CONSTRAINT fk_d606a2a890 FOREIGN KEY (promoted_from_note_id) REFERENCES notes(id) ON DELETE SET NULL;
@@ -30857,9 +30817,6 @@ ALTER TABLE ONLY ci_resources
 
 ALTER TABLE ONLY ci_sources_pipelines
     ADD CONSTRAINT fk_e1bad85861 FOREIGN KEY (pipeline_id) REFERENCES ci_pipelines(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY ci_sources_pipelines
-    ADD CONSTRAINT fk_e1bad85861_tmp FOREIGN KEY (pipeline_id) REFERENCES ci_pipelines(id_convert_to_bigint) ON DELETE CASCADE;
 
 ALTER TABLE p_ci_builds_metadata
     ADD CONSTRAINT fk_e20479742e_p FOREIGN KEY (partition_id, build_id) REFERENCES p_ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
@@ -30954,9 +30911,6 @@ ALTER TABLE ONLY boards
 ALTER TABLE p_ci_pipeline_variables
     ADD CONSTRAINT fk_f29c5f4380 FOREIGN KEY (pipeline_id) REFERENCES ci_pipelines(id) ON DELETE CASCADE;
 
-ALTER TABLE p_ci_pipeline_variables
-    ADD CONSTRAINT fk_f29c5f4380_tmp FOREIGN KEY (pipeline_id) REFERENCES ci_pipelines(id_convert_to_bigint) ON DELETE CASCADE;
-
 ALTER TABLE ONLY zoekt_indices
     ADD CONSTRAINT fk_f34800a202 FOREIGN KEY (zoekt_node_id) REFERENCES zoekt_nodes(id) ON DELETE CASCADE;
 
@@ -30992,9 +30946,6 @@ ALTER TABLE ONLY application_settings
 
 ALTER TABLE p_ci_stages
     ADD CONSTRAINT fk_fb57e6cc56 FOREIGN KEY (pipeline_id) REFERENCES ci_pipelines(id) ON DELETE CASCADE;
-
-ALTER TABLE p_ci_stages
-    ADD CONSTRAINT fk_fb57e6cc56_tmp FOREIGN KEY (pipeline_id) REFERENCES ci_pipelines(id_convert_to_bigint) ON DELETE CASCADE;
 
 ALTER TABLE ONLY agent_group_authorizations
     ADD CONSTRAINT fk_fb70782616 FOREIGN KEY (agent_id) REFERENCES cluster_agents(id) ON DELETE CASCADE;
@@ -31157,9 +31108,6 @@ ALTER TABLE ONLY audit_events_streaming_headers
 
 ALTER TABLE ONLY ci_sources_projects
     ADD CONSTRAINT fk_rails_10a1eb379a FOREIGN KEY (pipeline_id) REFERENCES ci_pipelines(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY ci_sources_projects
-    ADD CONSTRAINT fk_rails_10a1eb379a_tmp FOREIGN KEY (pipeline_id) REFERENCES ci_pipelines(id_convert_to_bigint) ON DELETE CASCADE;
 
 ALTER TABLE ONLY zoom_meetings
     ADD CONSTRAINT fk_rails_1190f0e0fa FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
@@ -31614,9 +31562,6 @@ ALTER TABLE ONLY status_page_settings
 ALTER TABLE ONLY ci_pipeline_metadata
     ADD CONSTRAINT fk_rails_50c1e9ea10 FOREIGN KEY (pipeline_id) REFERENCES ci_pipelines(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY ci_pipeline_metadata
-    ADD CONSTRAINT fk_rails_50c1e9ea10_tmp FOREIGN KEY (pipeline_id) REFERENCES ci_pipelines(id_convert_to_bigint) ON DELETE CASCADE;
-
 ALTER TABLE ONLY project_repository_storage_moves
     ADD CONSTRAINT fk_rails_5106dbd44a FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -32061,9 +32006,6 @@ ALTER TABLE ONLY vulnerability_feedback
 ALTER TABLE ONLY ci_pipeline_messages
     ADD CONSTRAINT fk_rails_8d3b04e3e1 FOREIGN KEY (pipeline_id) REFERENCES ci_pipelines(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY ci_pipeline_messages
-    ADD CONSTRAINT fk_rails_8d3b04e3e1_tmp FOREIGN KEY (pipeline_id) REFERENCES ci_pipelines(id_convert_to_bigint) ON DELETE CASCADE;
-
 ALTER TABLE incident_management_pending_alert_escalations
     ADD CONSTRAINT fk_rails_8d8de95da9 FOREIGN KEY (alert_id) REFERENCES alert_management_alerts(id) ON DELETE CASCADE;
 
@@ -32090,9 +32032,6 @@ ALTER TABLE ONLY organization_details
 
 ALTER TABLE ONLY ci_pipelines_config
     ADD CONSTRAINT fk_rails_906c9a2533 FOREIGN KEY (pipeline_id) REFERENCES ci_pipelines(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY ci_pipelines_config
-    ADD CONSTRAINT fk_rails_906c9a2533_tmp FOREIGN KEY (pipeline_id) REFERENCES ci_pipelines(id_convert_to_bigint) ON DELETE CASCADE;
 
 ALTER TABLE ONLY approval_project_rules_groups
     ADD CONSTRAINT fk_rails_9071e863d1 FOREIGN KEY (approval_project_rule_id) REFERENCES approval_project_rules(id) ON DELETE CASCADE;
@@ -32276,9 +32215,6 @@ ALTER TABLE ONLY saved_replies
 
 ALTER TABLE ONLY ci_pipeline_artifacts
     ADD CONSTRAINT fk_rails_a9e811a466 FOREIGN KEY (pipeline_id) REFERENCES ci_pipelines(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY ci_pipeline_artifacts
-    ADD CONSTRAINT fk_rails_a9e811a466_tmp FOREIGN KEY (pipeline_id) REFERENCES ci_pipelines(id_convert_to_bigint) ON DELETE CASCADE;
 
 ALTER TABLE ONLY merge_request_user_mentions
     ADD CONSTRAINT fk_rails_aa1b2961b1 FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;
@@ -32780,9 +32716,6 @@ ALTER TABLE ONLY packages_debian_group_distributions
 
 ALTER TABLE ONLY ci_daily_build_group_report_results
     ADD CONSTRAINT fk_rails_ee072d13b3 FOREIGN KEY (last_pipeline_id) REFERENCES ci_pipelines(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY ci_daily_build_group_report_results
-    ADD CONSTRAINT fk_rails_ee072d13b3_tmp FOREIGN KEY (last_pipeline_id) REFERENCES ci_pipelines(id_convert_to_bigint) ON DELETE CASCADE;
 
 ALTER TABLE ONLY import_source_users
     ADD CONSTRAINT fk_rails_ee30e569be FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;

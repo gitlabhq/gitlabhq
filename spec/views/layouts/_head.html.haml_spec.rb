@@ -80,7 +80,7 @@ RSpec.describe 'layouts/_head' do
         allow(view).to receive(:current_appearance).and_return(appearance)
       end
 
-      it 'link to the pwa icons' do
+      it 'link to the pwa icons', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/457108' do
         render
 
         expect(rendered).to include(

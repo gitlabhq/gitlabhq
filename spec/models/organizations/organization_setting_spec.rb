@@ -7,7 +7,7 @@ RSpec.describe Organizations::OrganizationSetting, type: :model, feature_categor
   let_it_be(:organization_setting) { create(:organization_setting, organization: organization) }
 
   describe 'associations' do
-    it { is_expected.to belong_to :organization }
+    it { is_expected.to belong_to(:organization) }
   end
 
   describe 'validations' do
@@ -56,29 +56,31 @@ RSpec.describe Organizations::OrganizationSetting, type: :model, feature_categor
     end
   end
 
-  describe '.for_current_organization' do
-    subject(:settings) { described_class.for_current_organization }
+  describe '.for' do
+    let(:organization_id) { organization.id }
 
-    context 'when there is no current organization' do
+    subject(:settings) { described_class.for(organization_id) }
+
+    context 'without organization id' do
+      let(:organization_id) { nil }
+
       it { is_expected.to be_nil }
     end
 
-    context 'when there is a current organization', :with_current_organization do
-      context 'when current organization has settings' do
-        let_it_be(:organization_setting) { create(:organization_setting, organization: current_organization) }
-
-        it 'returns current organization' do
-          expect(settings).to eq(organization_setting)
-        end
+    context 'when organization has settings' do
+      it 'returns correct organization setting' do
+        expect(settings).to eq(organization_setting)
       end
+    end
 
-      context 'when current organization does not have settings' do
-        it 'returns new settings record' do
-          new_settings = settings
+    context 'when organization does not have settings' do
+      let(:organization) { create(:organization) }
 
-          expect(new_settings.organization).to eq(current_organization)
-          expect(new_settings.new_record?).to eq(true)
-        end
+      it 'returns new settings record' do
+        new_settings = settings
+
+        expect(new_settings.organization).to eq(organization)
+        expect(new_settings.new_record?).to eq(true)
       end
     end
   end

@@ -12,8 +12,7 @@ module Pages
 
     def perform
       PagesDeployment.deactivated.each_batch do |deployments|
-        deployments.each { |deployment| deployment.file.remove! }
-        deployments.delete_all
+        deployments.each(&:destroy!)
       end
     end
   end

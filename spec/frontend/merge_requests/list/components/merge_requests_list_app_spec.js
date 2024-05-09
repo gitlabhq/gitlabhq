@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { shallowMount } from '@vue/test-utils';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import setWindowLocation from 'helpers/set_window_location_helper';
@@ -24,19 +24,21 @@ Vue.use(VueApollo);
 let wrapper;
 
 const findIssuableList = () => wrapper.findComponent(IssuableList);
+const findNewMrButton = () => wrapper.findByTestId('new-merge-request-button');
 
 function createComponent({ provide = {} } = {}) {
   const apolloProvider = createMockApollo([
     [getMergeRequestsCountQuery, jest.fn().mockResolvedValue(getCountsQueryResponse)],
     [getMergeRequestsQuery, jest.fn().mockResolvedValue(getQueryResponse)],
   ]);
-  wrapper = shallowMount(MergeRequestsListApp, {
+  wrapper = shallowMountExtended(MergeRequestsListApp, {
     provide: {
       fullPath: 'gitlab-org/gitlab',
       hasAnyMergeRequests: true,
       initialSort: '',
       isPublicVisibilityRestricted: false,
       isSignedIn: true,
+      newMergeRequestPath: '',
       ...provide,
     },
     apolloProvider,
@@ -50,6 +52,12 @@ describe('Merge requests list app', () => {
     await waitForPromises();
 
     expect(findIssuableList().exists()).toBe(false);
+  });
+
+  it('shows "New merge request" button', () => {
+    createComponent({ provide: { newMergeRequestPath: '/new-mr-path' } });
+
+    expect(findNewMrButton().exists()).toBe(true);
   });
 
   it('renders issuable list', async () => {

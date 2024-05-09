@@ -1,5 +1,10 @@
 <script>
+import { GlFormTextarea } from '@gitlab/ui';
+
 export default {
+  components: {
+    GlFormTextarea,
+  },
   props: {
     value: {
       type: String,
@@ -14,27 +19,35 @@ export default {
       required: true,
     },
   },
+  data() {
+    return {
+      messageText: this.value,
+    };
+  },
 };
 </script>
 
 <template>
   <li>
     <div class="commit-message-editor">
-      <div class="d-flex gl-flex-wrap gl-align-items-center justify-content-between gl-mb-3">
+      <div
+        class="gl-display-flex gl-flex-wrap gl-align-items-center justify-content-between gl-mb-3"
+      >
         <label class="col-form-label" :for="inputId">
           <strong>{{ label }}</strong>
         </label>
         <slot name="header"></slot>
       </div>
-      <textarea
+      <gl-form-textarea
         :id="inputId"
-        :value="value"
+        v-model="messageText"
         class="form-control js-gfm-input gl-mb-3 commit-message-edit"
         dir="auto"
         required="required"
         rows="7"
-        @input="$emit('input', $event.target.value)"
-      ></textarea>
+        max-rows="32"
+        @input="$emit('input', messageText)"
+      />
     </div>
   </li>
 </template>

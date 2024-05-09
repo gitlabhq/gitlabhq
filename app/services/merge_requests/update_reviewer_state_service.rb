@@ -7,6 +7,9 @@ module MergeRequests
 
       reviewer = merge_request.find_reviewer(current_user)
 
+      create_requested_changes(merge_request) if state == 'requested_changes'
+      destroy_requested_changes(merge_request) if state == 'approved'
+
       if reviewer
         return error("Failed to update reviewer") unless reviewer.update(state: state)
 
@@ -17,11 +20,7 @@ module MergeRequests
           current_user.invalidate_merge_request_cache_counts
         end
 
-        destroy_requested_changes(merge_request) if state == 'approved'
-
         return success if state != 'requested_changes'
-
-        create_requested_changes(merge_request)
 
         if merge_request.approved_by?(current_user) && !remove_approval(merge_request, current_user)
           return error("Failed to remove approval")

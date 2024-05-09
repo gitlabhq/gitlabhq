@@ -47,7 +47,9 @@ The zero-downtime upgrade process has the following requirements:
 
 In addition to the above, please be aware of the following considerations:
 
-- Most of the time, you can safely upgrade from a patch release to the next minor release if the patch release is not the latest. For example, upgrading from `16.3.2` to `16.4.1` should be safe even if `16.3.3` has been released. We recommend you verify the [version specific upgrading instructions](index.md#version-specific-upgrading-instructions) relevant to your [upgrade path](index.md#upgrade-paths) as well as be aware of any [Required upgrade stops](index.md#required-upgrade-stops).
+- Most of the time, you can safely upgrade from a patch release to the next minor release if the patch release is not the latest.
+  For example, upgrading from `16.3.2` to `16.4.1` should be safe even if `16.3.3` has been released. You should verify the
+  [version specific upgrading instructions](index.md#version-specific-upgrading-instructions) relevant to your [upgrade path](index.md#upgrade-paths) and be aware of any required upgrade stops.
 - Some releases may include [background migrations](index.md#check-for-background-migrations-before-upgrading). These migrations are performed in the background by Sidekiq and are often used for migrating data. Background migrations are only added in the monthly releases.
   - Certain major or minor releases may require a set of background migrations to be finished. While this doesn't require downtime (if the above conditions are met), it's required that you [wait for background migrations to complete](index.md#check-for-background-migrations-before-upgrading) between each major or minor release upgrade.
   - The time necessary to complete these migrations can be reduced by increasing the number of Sidekiq workers that can process jobs in the
