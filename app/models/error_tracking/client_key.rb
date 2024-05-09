@@ -7,7 +7,7 @@ class ErrorTracking::ClientKey < ApplicationRecord
   validates :public_key, presence: true, length: { maximum: 255 }
 
   scope :active, -> { where(active: true) }
-  scope :enabled_key_for, -> (project_id, public_key) { active.where(project_id: project_id, public_key: public_key) }
+  scope :enabled_key_for, ->(project_id, public_key) { active.where(project_id: project_id, public_key: public_key) }
 
   after_initialize :generate_key
 

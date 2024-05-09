@@ -104,13 +104,13 @@ class Environment < ApplicationRecord
   scope :order_by_name, -> { order('environments.name ASC') }
 
   scope :in_review_folder, -> { where(environment_type: "review") }
-  scope :for_name, -> (name) { where(name: name) }
+  scope :for_name, ->(name) { where(name: name) }
   scope :preload_project, -> { preload(:project) }
-  scope :auto_stoppable, -> (limit) { available.where('auto_stop_at < ?', Time.zone.now).limit(limit) }
-  scope :auto_deletable, -> (limit) { stopped.where('auto_delete_at < ?', Time.zone.now).limit(limit) }
+  scope :auto_stoppable, ->(limit) { available.where('auto_stop_at < ?', Time.zone.now).limit(limit) }
+  scope :auto_deletable, ->(limit) { stopped.where('auto_delete_at < ?', Time.zone.now).limit(limit) }
   scope :long_stopping,  -> { with_state(:stopping).where('updated_at < ?', LONG_STOP.ago) }
 
-  scope :deployed_and_updated_before, -> (project_id, before) do
+  scope :deployed_and_updated_before, ->(project_id, before) do
     # this query joins deployments and filters out any environment that has recent deployments
     joins = %(
     LEFT JOIN "deployments" on "deployments".environment_id = "environments".id
@@ -122,46 +122,46 @@ class Environment < ApplicationRecord
                .group('id', 'deployments.id')
                .having('deployments.id IS NULL')
   end
-  scope :without_protected, -> (project) {} # no-op when not in EE mode
+  scope :without_protected, ->(project) {} # no-op when not in EE mode
 
-  scope :without_names, -> (names) do
+  scope :without_names, ->(names) do
     where.not(name: names)
   end
-  scope :without_tiers, -> (tiers) do
+  scope :without_tiers, ->(tiers) do
     where.not(tier: tiers)
   end
 
   ##
   # Search environments which have names like the given query.
   # Do not set a large limit unless you've confirmed that it works on gitlab.com scale.
-  scope :for_name_like, -> (query, limit: 5) do
+  scope :for_name_like, ->(query, limit: 5) do
     top_level = 'LOWER(environments.name) LIKE LOWER(?) || \'%\''
 
     where(top_level, sanitize_sql_like(query)).limit(limit)
   end
 
-  scope :for_name_like_within_folder, -> (query, limit: 5) do
+  scope :for_name_like_within_folder, ->(query, limit: 5) do
     within_folder_name = "LOWER(ltrim(ltrim(environments.name, environments.environment_type), '/'))"
 
     where("#{within_folder_name} LIKE (LOWER(?) || '%')", sanitize_sql_like(query)).limit(limit)
   end
 
-  scope :for_project, -> (project) { where(project_id: project) }
-  scope :for_tier, -> (tier) { where(tier: tier).where.not(tier: nil) }
-  scope :for_type, -> (type) { where(environment_type: type) }
+  scope :for_project, ->(project) { where(project_id: project) }
+  scope :for_tier, ->(tier) { where(tier: tier).where.not(tier: nil) }
+  scope :for_type, ->(type) { where(environment_type: type) }
   scope :unfoldered, -> { where(environment_type: nil) }
   scope :with_rank, -> do
     select('environments.*, rank() OVER (PARTITION BY project_id ORDER BY id DESC)')
   end
 
-  scope :with_deployment, -> (sha, status: nil) do
+  scope :with_deployment, ->(sha, status: nil) do
     deployments = Deployment.select(1).where('deployments.environment_id = environments.id').where(sha: sha)
     deployments = deployments.where(status: status) if status
 
     where('EXISTS (?)', deployments)
   end
 
-  scope :stopped_review_apps, -> (before, limit) do
+  scope :stopped_review_apps, ->(before, limit) do
     stopped
       .in_review_folder
       .where("created_at < ?", before)

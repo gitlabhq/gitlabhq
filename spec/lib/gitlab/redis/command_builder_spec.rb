@@ -10,8 +10,36 @@ RSpec.describe Gitlab::Redis::CommandBuilder, feature_category: :redis do
       described_class.generate(args, kwargs)
     end
 
-    it 'handles nil arguments' do
-      expect(call("a", nil)).to eq(["a", ""])
+    context 'when nil arguments are found' do
+      context 'when in production' do
+        before do
+          stub_rails_env('production')
+        end
+
+        it 'handles nil arguments' do
+          expect(call("a", nil)).to eq(["a", ""])
+        end
+      end
+
+      context 'when in test' do
+        before do
+          stub_rails_env('test')
+        end
+
+        it 'raises exception when nil argument is passed' do
+          expect { call("a", nil) }.to raise_error(described_class::RedisCommandNilArgumentError)
+        end
+      end
+
+      context 'when in development' do
+        before do
+          stub_rails_env('development')
+        end
+
+        it 'raises exception when nil argument is passed' do
+          expect { call("a", nil) }.to raise_error(described_class::RedisCommandNilArgumentError)
+        end
+      end
     end
 
     it 'handles positional arguments' do
@@ -40,10 +68,6 @@ RSpec.describe Gitlab::Redis::CommandBuilder, feature_category: :redis do
 
     it 'handles kwargs values' do
       expect(call(ttl: 42)).to eq(%w[ttl 42])
-    end
-
-    it 'handles nil kwargs' do
-      expect(call(%i[a b c])).to eq(%w[a b c])
     end
 
     it 'raises error on unsupported types' do

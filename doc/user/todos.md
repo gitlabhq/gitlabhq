@@ -50,10 +50,7 @@ Some of the actions that add a to-do item to your To-Do List:
   - You're the author.
   - You're the user that set the merge request to automatically merge after a
     pipeline succeeds.
-- [In GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/issues/12136) and later, a
-  merge request is removed from a
-  [merge train](../ci/pipelines/merge_trains.md),
-  and you're the user that added it.
+- A merge request is removed from a [merge train](../ci/pipelines/merge_trains.md), and you're the user that added it.
 - [In GitLab 15.8](https://gitlab.com/gitlab-org/gitlab/-/issues/374725) and later,
   a member access request is raised for a group or project you're an owner of.
 

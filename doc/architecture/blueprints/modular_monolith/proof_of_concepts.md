@@ -88,7 +88,7 @@ The main goals of the PoC were:
     a package share the same Ruby namespace. We eventually would want to leverage that.
 - RubyAtScale provides also tools to track metrics about modularization and adoption which we
   would need to monitor and drive as an engineering organization.
-- Packwerk has IDE extensions (e.g. for VSCode) to provide realtime feedback on violations
+- Packwerk has IDE extensions (e.g. for VS Code) to provide realtime feedback on violations
   (like RuboCop). It can also be run via CLI during the development workflow against a single
   package. It could be integrated into pre-push Git hooks or Danger during code reviews.
 

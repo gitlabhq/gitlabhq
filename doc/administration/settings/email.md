@@ -56,8 +56,6 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** Self-managed
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22560) in GitLab 11.5.
-
 This configuration option sets the email hostname for [private commit emails](../../user/profile/index.md#use-an-automatically-generated-private-commit-email).
  By default it is set to `users.noreply.YOUR_CONFIGURED_HOSTNAME`.
 

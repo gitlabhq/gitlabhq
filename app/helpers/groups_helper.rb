@@ -102,7 +102,7 @@ module GroupsHelper
   def remove_group_message(group)
     content_tag :div do
       content = ''.html_safe
-      content << content_tag(:span, _("You are about to remove the group %{group_name}.") % { group_name: group.name })
+      content << content_tag(:span, _("You are about to delete the group %{group_name}.") % { group_name: group.name })
 
       additional_content = additional_removed_items(group)
       content << additional_content if additional_content.present?
@@ -124,7 +124,7 @@ module GroupsHelper
     end.join.html_safe
 
     if counts.present?
-      content_tag(:span, _(" This action will also remove:")) +
+      content_tag(:span, _(" This action will also delete:")) +
         content_tag(:ul, counts)
     else
       ''.html_safe
@@ -132,7 +132,7 @@ module GroupsHelper
   end
 
   def remove_group_warning
-    message = _('After you remove a group, you %{strongOpen}cannot%{strongClose} restore it or its components.')
+    message = _('After you delete a group, you %{strongOpen}cannot%{strongClose} restore it or its components.')
     content_tag(:p, class: 'gl-mb-0') do
       ERB::Util.html_escape(message) % {
         strongOpen: '<strong>'.html_safe,

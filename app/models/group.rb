@@ -188,7 +188,7 @@ class Group < Namespace
 
   scope :by_id, ->(groups) { where(id: groups) }
 
-  scope :by_ids_or_paths, -> (ids, paths) do
+  scope :by_ids_or_paths, ->(ids, paths) do
     return by_id(ids) unless paths.present?
 
     ids_by_full_path = Route
@@ -206,26 +206,26 @@ class Group < Namespace
     where(visibility_level: Gitlab::VisibilityLevel.level_value(visibility)) if visibility.present?
   end
 
-  scope :for_authorized_group_members, -> (user_ids) do
+  scope :for_authorized_group_members, ->(user_ids) do
     joins(:group_members)
       .where(members: { user_id: user_ids })
       .where("access_level >= ?", Gitlab::Access::GUEST)
   end
 
-  scope :for_authorized_project_members, -> (user_ids) do
+  scope :for_authorized_project_members, ->(user_ids) do
     joins(projects: :project_authorizations)
       .where(project_authorizations: { user_id: user_ids })
   end
 
-  scope :with_project_creation_levels, -> (project_creation_levels) do
+  scope :with_project_creation_levels, ->(project_creation_levels) do
     where(project_creation_level: project_creation_levels)
   end
 
-  scope :excluding_restricted_visibility_levels_for_user, -> (user) do
+  scope :excluding_restricted_visibility_levels_for_user, ->(user) do
     user.can_admin_all_resources? ? all : where.not(visibility_level: Gitlab::CurrentSettings.restricted_visibility_levels)
   end
 
-  scope :project_creation_allowed, -> (user) do
+  scope :project_creation_allowed, ->(user) do
     project_creation_allowed_on_levels = [
       ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS,
       ::Gitlab::Access::MAINTAINER_PROJECT_ACCESS,
@@ -244,7 +244,7 @@ class Group < Namespace
     with_project_creation_levels(project_creation_allowed_on_levels).excluding_restricted_visibility_levels_for_user(user)
   end
 
-  scope :shared_into_ancestors, -> (group) do
+  scope :shared_into_ancestors, ->(group) do
     joins(:shared_group_links)
       .where(group_group_links: { shared_group_id: group.self_and_ancestors })
   end
@@ -252,7 +252,7 @@ class Group < Namespace
   # Returns all groups that are shared with the given group (see :shared_with_group)
   # and all descendents of the given group
   # returns none if the given group is nil
-  scope :descendants_with_shared_with_groups, -> (group) do
+  scope :descendants_with_shared_with_groups, ->(group) do
     return none if group.nil?
 
     descendants_query = group.descendants.select(:id)
@@ -276,7 +276,7 @@ class Group < Namespace
   #
   # It's a replacement for `public_or_visible_to_user` that correctly
   # supports subgroup permissions
-  scope :accessible_to_user, -> (user) do
+  scope :accessible_to_user, ->(user) do
     if user
       Preloaders::GroupPolicyPreloader.new(self, user).execute
 
@@ -288,7 +288,7 @@ class Group < Namespace
 
   scope :order_path_asc, -> { reorder(self.arel_table['path'].asc) }
   scope :order_path_desc, -> { reorder(self.arel_table['path'].desc) }
-  scope :in_organization, -> (organization) { where(organization: organization) }
+  scope :in_organization, ->(organization) { where(organization: organization) }
 
   class << self
     def sort_by_attribute(method)

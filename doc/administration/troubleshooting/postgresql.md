@@ -41,17 +41,9 @@ sudo gitlab-psql
 On a single-node instance, or a web or Sidekiq node you can also use the Rails database console, but
 it takes longer to initialize:
 
-- In [GitLab 14.2 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/341210):
-
-  ```shell
-  sudo gitlab-rails db-console --database main
-  ```
-
-- In GitLab 14.1 and earlier:
-
-  ```shell
-  sudo gitlab-rails db-console
-  ```
+```shell
+sudo gitlab-rails db-console --database main
+```
 
 :::TabTitle Docker
 
@@ -120,10 +112,7 @@ This section is for links to information elsewhere in the GitLab documentation.
 
 References:
 
-- [Issue #1 Deadlocks with GitLab 12.1, PostgreSQL 10.7](https://gitlab.com/gitlab-org/gitlab/-/issues/30528).
-- [Customer ticket (internal) GitLab 12.1.6](https://gitlab.zendesk.com/agent/tickets/134307)
-  and [Google doc (internal)](https://docs.google.com/document/d/19xw2d_D1ChLiU-MO1QzWab-4-QXgsIUcN5e_04WTKy4).
-- [Issue #2 deadlocks can occur if an instance is flooded with pushes](https://gitlab.com/gitlab-org/gitlab/-/issues/33650).
+- [Deadlocks can occur if an instance is flooded with pushes](https://gitlab.com/gitlab-org/gitlab/-/issues/33650).
   Provided for context about how GitLab code can have this sort of
   unanticipated effect in unusual situations.
 

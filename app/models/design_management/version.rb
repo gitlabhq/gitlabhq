@@ -51,13 +51,13 @@ module DesignManagement
 
     delegate :project, to: :issue
 
-    scope :for_designs, -> (designs) do
+    scope :for_designs, ->(designs) do
       where(id: DesignManagement::Action.where(design_id: designs).select(:version_id)).distinct
     end
-    scope :earlier_or_equal_to, -> (version) { where("(#{table_name}.id) <= ?", version) } # rubocop:disable GitlabSecurity/SqlInjection
+    scope :earlier_or_equal_to, ->(version) { where("(#{table_name}.id) <= ?", version) } # rubocop:disable GitlabSecurity/SqlInjection
     scope :ordered, -> { order(id: :desc) }
-    scope :for_issue, -> (issue) { where(issue: issue) }
-    scope :by_sha, -> (sha) { where(sha: sha) }
+    scope :for_issue, ->(issue) { where(issue: issue) }
+    scope :by_sha, ->(sha) { where(sha: sha) }
     scope :with_author, -> { includes(:author) }
 
     # This is the one true way to create a Version.

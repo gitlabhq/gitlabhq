@@ -52,9 +52,10 @@ module Organizations
 
     def organization_groups_new_app_data(organization)
       {
-        organization_id: organization.id,
         base_path: root_url,
-        groups_organization_path: groups_and_projects_organization_path(organization, { display: 'groups' }),
+        groups_and_projects_organization_path:
+          groups_and_projects_organization_path(organization, { display: 'groups' }),
+        groups_organization_path: groups_organization_path(organization),
         mattermost_enabled: Gitlab.config.mattermost.enabled,
         available_visibility_levels: available_visibility_levels(Group),
         restricted_visibility_levels: restricted_visibility_levels,

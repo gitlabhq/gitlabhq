@@ -10,8 +10,6 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/16609) in GitLab 12.4.
-
 To communicate synchronously for incidents management,
 you can associate a Zoom meeting with an issue.
 After you start a Zoom call for a fire-fight, you need a way to

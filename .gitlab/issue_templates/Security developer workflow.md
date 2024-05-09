@@ -48,7 +48,7 @@ After your merge request has been approved according to our [approval guidelines
 - [ ] To avoid release delays, please nominate a developer in a different timezone who will be able to respond to any pipeline or merge failures in your absence `@gitlab-username`
 - [ ] Ensure `~severity::x` label is on this issue, all associated issues, and merge requests
 - [ ] Ensure the [Links section](#links) is completed.
-- [ ] Add the GitLab [versions](https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/security/developer.md#versions-affected) and editions affected to the [details section](#details)
+- [ ] Add the GitLab [versions](https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/security/engineer.md#versions-affected) and editions affected to the [details section](#details)
   - The Git history of the files affected may help you associate the issue with a [release](https://about.gitlab.com/releases/)
 - [ ] Fill in any upgrade notes that users may need to take into account in the [details section](#details)
 - [ ] Add Yes/No and further details if needed to the migration and settings columns in the [details section](#details)

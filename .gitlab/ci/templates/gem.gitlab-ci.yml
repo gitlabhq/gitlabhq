@@ -41,3 +41,5 @@ gems $[[inputs.gem_name]]:
     strategy: depend
   inherit:
     variables: false
+  variables:
+    FF_NETWORK_PER_BUILD: "true"

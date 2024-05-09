@@ -23,9 +23,6 @@ assignee changes, GitLab posts a system note).
 
 ## Resource events
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38096) in GitLab 13.3 for state, milestone, and weight events.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40850) in GitLab 13.4 for iteration events.
-
 Some system notes are not part of this API, but are recorded as separate events:
 
 - [Resource label events](resource_label_events.md)

@@ -27,7 +27,7 @@ The challenge is to create a CLI tool for querying the GitLab REST API.
 - Ask GitLab Duo Chat how to start a new C# project and learn how to use the dotNET CLI:
 
   ```markdown
-  How can I get started creating an empty C# console application in VSCode?
+  How can I get started creating an empty C# console application in VS Code?
   ```
 
 - Use Code Suggestions to generate a REST API client with a new code comment:

@@ -10,9 +10,6 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/241744) in GitLab 13.7.
-> - Support for reStructuredText and Textile documents [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/324766) in GitLab 13.12.
-
 With the [Kroki](https://kroki.io) integration,
 you can create diagrams-as-code within AsciiDoc, Markdown, reStructuredText, and Textile.
 

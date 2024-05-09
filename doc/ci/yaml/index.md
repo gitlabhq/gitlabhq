@@ -140,6 +140,8 @@ In this example:
 **Additional details**:
 
 - Control inheritance of default keywords in jobs with [`inherit:default`](#inheritdefault).
+- Global defaults are not passed to [downstream pipelines](../pipelines/downstream_pipelines.md),
+  which run independently of the upstream pipeline that triggered the downstream pipeline.
 
 ### `include`
 

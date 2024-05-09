@@ -19,8 +19,6 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34247/) in GitLab 13.7.
-
 When you sort by **Blocking**, the issue list changes to sort descending by the
 number of issues each issue is [blocking](related_issues.md#blocking-issues).
 
@@ -52,8 +50,6 @@ When you sort by **Updated date**, the issue list changes to sort by the time of
 update. Issues changed the most recently are shown first.
 
 ## Manual sorting
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/62178) in GitLab 12.2.
 
 When you sort by **Manual** order, you can change
 the order by dragging and dropping the issues. The changed order persists, and
@@ -102,8 +98,6 @@ Ties are broken arbitrarily.
 To learn how to change label priority, see [Label priority](../labels.md#set-label-priority).
 
 ## Sorting by title
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67234) in GitLab 14.3.
 
 When you sort by **Title**, the issue order changes to sort alphabetically by the issue
 title in this order:

@@ -10,8 +10,6 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35210/) in GitLab 13.2.
-
 Resource state events keep track of what happens to GitLab [issues](../user/project/issues/index.md)
 [merge requests](../user/project/merge_requests/index.md) and [epics starting with GitLab 15.4](../user/group/epics/index.md)
 

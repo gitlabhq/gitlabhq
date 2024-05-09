@@ -10,8 +10,6 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - The abbreviation [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/24592) from `GFM` to `GLFM` in GitLab 14.10.
-
 When you enter text in the GitLab UI, GitLab assumes the text is in the Markdown language.
 The text is rendered with a set of styles. These styles are called *GitLab Flavored Markdown*.
 
@@ -749,7 +747,6 @@ For example:
 
 ### Show the issue, merge request, or epic title in the reference
 
-> - Support for issues, merge requests, and epics [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15694) in GitLab 14.6.
 > - Support for work items [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390854) in GitLab 16.0.
 
 To include the title in the rendered link of an issue, work item, merge request, or epic:
@@ -1267,8 +1264,6 @@ Here's an example audio clip:
 ![Sample Audio](img/markdown_audio.mp3)
 
 ## Inline HTML
-
-> - Allowing `rel="license"` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/20857) in GitLab 14.6.
 
 [View this topic in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#inline-html).
 

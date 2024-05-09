@@ -10,18 +10,17 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed
 
-> - Batched background migrations [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/51332) in GitLab 13.11 [with a flag](../user/feature_flags.md) named `execute_batched_migrations_on_schedule`. Disabled by default.
-> - Feature flag `execute_batched_migrations_on_schedule` [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/329511) in GitLab 13.12.
+> - Feature [flag](../user/feature_flags.md) `execute_batched_migrations_on_schedule` [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/329511) in GitLab 13.12.
 > - For GitLab self-managed instances, GitLab administrators can opt to [disable it](../development/database/batched_background_migrations.md#enable-or-disable-background-migrations).
 
 Certain releases may require different migrations to be finished before you
 update to the newer version. Two kinds of migrations exist. They differ, and you
 should check that both are complete before upgrading GitLab:
 
-- [Batched background migrations](#batched-background-migrations), most
-  commonly used in GitLab 14.0 and later.
+- [Batched background migrations](#batched-background-migrations) were introduced
+  in GitLab 14.0. All migrations in GitLab 15.1 and later use this format exclusively.
 - [Background migrations](#background-migrations) that are not batched.
-  Most commonly used in GitLab 13.11 and earlier.
+  Used in GitLab 15.0 and earlier.
 
 To decrease the time required to complete these migrations, increase the number of
 [Sidekiq workers](../administration/sidekiq/extra_sidekiq_processes.md)
@@ -33,9 +32,6 @@ To update database tables in batches, GitLab can use batched background migratio
 are created by GitLab developers and run automatically on upgrade. However, such migrations are
 limited in scope to help with migrating some `integer` database columns to `bigint`. This is needed to
 prevent integer overflow for some tables.
-
-Some installations [may need to run GitLab 14.0 for at least a day](versions/gitlab_14_changes.md#1400)
-to complete the database changes introduced by that upgrade.
 
 Batched background migrations are handled by Sidekiq and
 [run in isolation](../development/database/batched_background_migrations.md#isolation),
@@ -114,7 +110,7 @@ Batched background migrations provide feature flags that enable you to customize
 migrations or pause them entirely. These feature flags should only be disabled by
 advanced users who understand the risks of doing so.
 
-#### Pause batched background migrations in GitLab 14.x
+#### Pause batched background migrations
 
 WARNING:
 There can be [risks when disabling released features](../administration/feature_flags.md#risks-when-disabling-released-features).
@@ -212,8 +208,6 @@ If the migration continues to fail with an error, either:
 
 #### Fix and retry the migration
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67504) in GitLab 14.3.
-
 All failed batched background migrations must be resolved to upgrade to a newer
 version of GitLab. If you [check the status](#check-the-status-of-batched-background-migrations)
 of batched background migrations, some migrations might display in the **Failed** tab
@@ -254,8 +248,6 @@ To monitor the retried batched background migrations, you can
 on a regular interval.
 
 #### Finish a failed migration manually
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62634) in GitLab 14.1.
 
 To manually finish a batched background migration that failed with an error,
 use the information in the failure error logs or the database:
@@ -358,10 +350,15 @@ Gitlab::Database::SharedModel.using_connection(connection) do
 end
 ```
 
+<!--- start_remove The following content will be removed on remove_date: '2025-05-10' -->
+<!-- This page needs significant revision after 15.0 becomes unsupported -->
+<!--- end_remove -->
+
 ## Background migrations
 
-In GitLab 13, background migrations were not batched. In GitLab 14 and later, this
-type of migration was superseded by batched background migrations.
+Non-batched migrations are superseded by batched background migrations. Non-batched
+migrations were gradually phased out during GitLab 14, with the last one
+used in GitLab 15.0. 
 
 ### Check for pending background migrations
 

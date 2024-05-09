@@ -442,8 +442,6 @@ To update a migration timestamp:
 
 ## Migration helpers and versioning
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339115) in GitLab 14.3.
-
 Various helper methods are available for many common patterns in database migrations. Those
 helpers can be found in `Gitlab::Database::MigrationHelpers` and related modules.
 
@@ -468,11 +466,6 @@ end
 Do not include `Gitlab::Database::MigrationHelpers` directly into a
 migration. Instead, use the latest version of `Gitlab::Database::Migration`, which exposes the latest
 version of migration helpers automatically.
-
-Migration helpers and versioning were [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68986)
-in GitLab 14.3.
-For merge requests targeting previous stable branches, use the old format and still inherit from
-`ActiveRecord::Migration[6.1]` instead of `Gitlab::Database::Migration[2.1]`.
 
 ## Retry mechanism when acquiring database locks
 
@@ -848,13 +841,11 @@ You can read more about adding [foreign key constraints to an existing column](d
 
 ## `NOT NULL` constraints
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38358) in GitLab 13.0.
-
 See the style guide on [`NOT NULL` constraints](database/not_null_constraints.md) for more information.
 
 ## Adding Columns With Default Values
 
-With PostgreSQL 11 being the minimum version in GitLab 13.0 and later, adding columns with default values has become much easier and
+With PostgreSQL 11 being the minimum version in GitLab, adding columns with default values has become much easier and
 the standard `add_column` helper should be used in all cases.
 
 Before PostgreSQL 11, adding a column with a default was problematic as it would
@@ -1172,8 +1163,6 @@ add_column(:projects, :foo, :integer, default: 10, limit: 8)
 
 ## Strings and the Text data type
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30453) in GitLab 13.0.
-
 See the [text data type](database/strings_and_the_text_data_type.md) style guide for more information.
 
 ## Timestamp column type
@@ -1287,8 +1276,6 @@ You can now use `restricted_visibility_levels` as an ActiveRecord attribute:
 ```
 
 ## Encrypted attributes
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227779) in GitLab 14.0.
 
 Do not store `attr_encrypted` attributes as `:text` in the database; use
 `:binary` instead. This uses the `bytea` type in PostgreSQL and makes storage more

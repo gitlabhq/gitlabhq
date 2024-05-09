@@ -3478,6 +3478,24 @@ CREATE SEQUENCE agent_user_access_project_authorizations_id_seq
 
 ALTER SEQUENCE agent_user_access_project_authorizations_id_seq OWNED BY agent_user_access_project_authorizations.id;
 
+CREATE TABLE ai_agent_version_attachments (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    project_id bigint NOT NULL,
+    ai_agent_version_id bigint NOT NULL,
+    ai_vectorizable_file_id bigint NOT NULL
+);
+
+CREATE SEQUENCE ai_agent_version_attachments_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE ai_agent_version_attachments_id_seq OWNED BY ai_agent_version_attachments.id;
+
 CREATE TABLE ai_agent_versions (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -3516,6 +3534,26 @@ CREATE SEQUENCE ai_agents_id_seq
     CACHE 1;
 
 ALTER SEQUENCE ai_agents_id_seq OWNED BY ai_agents.id;
+
+CREATE TABLE ai_vectorizable_files (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    project_id bigint NOT NULL,
+    name text NOT NULL,
+    file text NOT NULL,
+    CONSTRAINT check_c2ad8df0bf CHECK ((char_length(file) <= 255)),
+    CONSTRAINT check_fc6abf5b01 CHECK ((char_length(name) <= 255))
+);
+
+CREATE SEQUENCE ai_vectorizable_files_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE ai_vectorizable_files_id_seq OWNED BY ai_vectorizable_files.id;
 
 CREATE TABLE alert_management_alert_assignees (
     id bigint NOT NULL,
@@ -18840,9 +18878,13 @@ ALTER TABLE ONLY agent_user_access_group_authorizations ALTER COLUMN id SET DEFA
 
 ALTER TABLE ONLY agent_user_access_project_authorizations ALTER COLUMN id SET DEFAULT nextval('agent_user_access_project_authorizations_id_seq'::regclass);
 
+ALTER TABLE ONLY ai_agent_version_attachments ALTER COLUMN id SET DEFAULT nextval('ai_agent_version_attachments_id_seq'::regclass);
+
 ALTER TABLE ONLY ai_agent_versions ALTER COLUMN id SET DEFAULT nextval('ai_agent_versions_id_seq'::regclass);
 
 ALTER TABLE ONLY ai_agents ALTER COLUMN id SET DEFAULT nextval('ai_agents_id_seq'::regclass);
+
+ALTER TABLE ONLY ai_vectorizable_files ALTER COLUMN id SET DEFAULT nextval('ai_vectorizable_files_id_seq'::regclass);
 
 ALTER TABLE ONLY alert_management_alert_assignees ALTER COLUMN id SET DEFAULT nextval('alert_management_alert_assignees_id_seq'::regclass);
 
@@ -20567,11 +20609,17 @@ ALTER TABLE ONLY agent_user_access_group_authorizations
 ALTER TABLE ONLY agent_user_access_project_authorizations
     ADD CONSTRAINT agent_user_access_project_authorizations_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY ai_agent_version_attachments
+    ADD CONSTRAINT ai_agent_version_attachments_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY ai_agent_versions
     ADD CONSTRAINT ai_agent_versions_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY ai_agents
     ADD CONSTRAINT ai_agents_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY ai_vectorizable_files
+    ADD CONSTRAINT ai_vectorizable_files_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY alert_management_alert_assignees
     ADD CONSTRAINT alert_management_alert_assignees_pkey PRIMARY KEY (id);
@@ -24282,11 +24330,19 @@ CREATE INDEX index_agent_user_access_on_group_id ON agent_user_access_group_auth
 
 CREATE INDEX index_agent_user_access_on_project_id ON agent_user_access_project_authorizations USING btree (project_id);
 
+CREATE INDEX index_ai_agent_version_attachments_on_ai_agent_version_id ON ai_agent_version_attachments USING btree (ai_agent_version_id);
+
+CREATE INDEX index_ai_agent_version_attachments_on_ai_vectorizable_file_id ON ai_agent_version_attachments USING btree (ai_vectorizable_file_id);
+
+CREATE INDEX index_ai_agent_version_attachments_on_project_id ON ai_agent_version_attachments USING btree (project_id);
+
 CREATE INDEX index_ai_agent_versions_on_agent_id ON ai_agent_versions USING btree (agent_id);
 
 CREATE INDEX index_ai_agent_versions_on_project_id ON ai_agent_versions USING btree (project_id);
 
 CREATE UNIQUE INDEX index_ai_agents_on_project_id_and_name ON ai_agents USING btree (project_id, name);
+
+CREATE INDEX index_ai_vectorizable_files_on_project_id ON ai_vectorizable_files USING btree (project_id);
 
 CREATE INDEX index_alert_assignees_on_alert_id ON alert_management_alert_assignees USING btree (alert_id);
 
@@ -29817,6 +29873,9 @@ ALTER TABLE ONLY merge_requests
 ALTER TABLE ONLY sbom_occurrences_vulnerabilities
     ADD CONSTRAINT fk_07b81e3a81 FOREIGN KEY (vulnerability_id) REFERENCES vulnerabilities(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY ai_agent_version_attachments
+    ADD CONSTRAINT fk_07db0a0e5b FOREIGN KEY (ai_agent_version_id) REFERENCES ai_agent_versions(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY abuse_report_user_mentions
     ADD CONSTRAINT fk_088018ecd8 FOREIGN KEY (abuse_report_id) REFERENCES abuse_reports(id) ON DELETE CASCADE;
 
@@ -29906,6 +29965,9 @@ ALTER TABLE ONLY project_statistics
 
 ALTER TABLE ONLY agent_project_authorizations
     ADD CONSTRAINT fk_1d30bb4987 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY ai_agent_version_attachments
+    ADD CONSTRAINT fk_1d4253673b FOREIGN KEY (ai_vectorizable_file_id) REFERENCES ai_vectorizable_files(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY boards
     ADD CONSTRAINT fk_1e9a074a35 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
@@ -32169,6 +32231,9 @@ ALTER TABLE ONLY fork_network_members
 ALTER TABLE ONLY customer_relations_organizations
     ADD CONSTRAINT fk_rails_a48597902f FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY ai_agent_version_attachments
+    ADD CONSTRAINT fk_rails_a4ed49efb5 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY operations_feature_flag_scopes
     ADD CONSTRAINT fk_rails_a50a04d0a4 FOREIGN KEY (feature_flag_id) REFERENCES operations_feature_flags(id) ON DELETE CASCADE;
 
@@ -32690,6 +32755,9 @@ ALTER TABLE ONLY merge_request_blocks
 
 ALTER TABLE ONLY protected_branch_unprotect_access_levels
     ADD CONSTRAINT fk_rails_e9eb8dc025 FOREIGN KEY (protected_branch_id) REFERENCES protected_branches(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY ai_vectorizable_files
+    ADD CONSTRAINT fk_rails_ea2e440084 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY alert_management_alert_user_mentions
     ADD CONSTRAINT fk_rails_eb2de0cdef FOREIGN KEY (note_id) REFERENCES notes(id) ON DELETE CASCADE;

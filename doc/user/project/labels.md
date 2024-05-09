@@ -347,8 +347,6 @@ the previous `key` label is replaced with the new label.
 
 ### Filter by scoped labels
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12285) in GitLab 14.4.
-
 To filter issue, merge request, or epic lists by a given scope, enter
 `<scope>::*` in the searched label name.
 
@@ -506,16 +504,3 @@ Practice working with labels in the following tutorials:
 
 - [Set up a single project for issue triage](../../tutorials/issue_triage/index.md)
 - [Set up issue boards for team hand-off](../../tutorials/boards_for_teams/index.md)
-
-## Troubleshooting
-
-### Some label titles end with `_duplicate<number>`
-
-In specific circumstances it was possible to create labels with duplicate titles in the same
-namespace.
-
-To resolve the duplication, [in GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21384)
-and later, some duplicate labels have `_duplicate<number>` appended to their titles.
-
-You can safely change these labels' titles if you prefer.
-For details of the original problem, see [issue 30390](https://gitlab.com/gitlab-org/gitlab/-/issues/30390).

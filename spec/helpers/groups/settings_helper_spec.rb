@@ -25,7 +25,7 @@ RSpec.describe Groups::SettingsHelper do
 
         expected = helper.group_settings_confirm_modal_data(group, form_value_id)
         expect(expected).to eq({
-          button_text: "Remove group",
+          button_text: "Delete group",
           confirm_danger_message: remove_group_message(group),
           remove_form_id: form_value_id,
           phrase: group.full_path,

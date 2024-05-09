@@ -178,9 +178,6 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4737) in GitLab 12.1
-> - Moved to GitLab Premium in 13.9.
-
 Get all burndown chart events for a single milestone.
 
 ```plaintext

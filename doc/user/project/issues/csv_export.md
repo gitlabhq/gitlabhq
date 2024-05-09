@@ -92,12 +92,6 @@ The following columns are included in the CSV file.
 
 When working with exported issues, you might encounter the following issues.
 
-### Column order
-
-In GitLab 14.7 and earlier, the first two columns in exported files were `Issue ID` and `URL`,
-which caused problems importing data back into GitLab. For more information, see
-[issue 34769](https://gitlab.com/gitlab-org/gitlab/-/issues/34769).
-
 ### Size of export
 
 Issues are sent as an email attachment, with a 15 MB export limit to ensure

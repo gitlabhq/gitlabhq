@@ -16085,7 +16085,7 @@ Represents the approval policy.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="approvalpolicyallgroupapprovers"></a>`allGroupApprovers` | [`[PolicyApprovalGroup!]`](#policyapprovalgroup) | All potential approvers of the group type, including groups inaccessible to the user. |
-| <a id="approvalpolicydeprecatedproperties"></a>`deprecatedProperties` **{warning-solid}** | [`[String!]`](#string) | **Introduced** in GitLab 16.10. **Status**: Experiment. All deprecated properties in the policy. Returns `null` if security_policies_breaking_changes feature flag is disabled. |
+| <a id="approvalpolicydeprecatedproperties"></a>`deprecatedProperties` **{warning-solid}** | [`[String!]`](#string) | **Introduced** in GitLab 16.10. **Status**: Experiment. All deprecated properties in the policy. |
 | <a id="approvalpolicydescription"></a>`description` | [`String!`](#string) | Description of the policy. |
 | <a id="approvalpolicyeditpath"></a>`editPath` | [`String!`](#string) | URL of policy edit page. |
 | <a id="approvalpolicyenabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates whether this policy is enabled. |
@@ -29445,7 +29445,7 @@ Represents the scan result policy.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="scanresultpolicyallgroupapprovers"></a>`allGroupApprovers` | [`[PolicyApprovalGroup!]`](#policyapprovalgroup) | All potential approvers of the group type, including groups inaccessible to the user. |
-| <a id="scanresultpolicydeprecatedproperties"></a>`deprecatedProperties` **{warning-solid}** | [`[String!]`](#string) | **Introduced** in GitLab 16.10. **Status**: Experiment. All deprecated properties in the policy. Returns `null` if security_policies_breaking_changes feature flag is disabled. |
+| <a id="scanresultpolicydeprecatedproperties"></a>`deprecatedProperties` **{warning-solid}** | [`[String!]`](#string) | **Introduced** in GitLab 16.10. **Status**: Experiment. All deprecated properties in the policy. |
 | <a id="scanresultpolicydescription"></a>`description` | [`String!`](#string) | Description of the policy. |
 | <a id="scanresultpolicyeditpath"></a>`editPath` | [`String!`](#string) | URL of policy edit page. |
 | <a id="scanresultpolicyenabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates whether this policy is enabled. |

@@ -10,7 +10,7 @@ This page is about developing dark mode for GitLab. For more information on how 
 
 ## How dark mode works
 
-1. The [color palette](https://design.gitlab.com/product-foundations/color) values are reversed using [dark mode design tokens](design_tokens.md#dark-mode-design-tokens) to provide darker colors for smaller scales.
+1. The [color palette](https://design.gitlab.com/product-foundations/color) values are reversed using [dark mode design tokens](design_tokens.md#modes) to provide darker colors for smaller scales.
 1. `app/assets/stylesheets/themes/_dark.scss` imports [dark mode design token](design_tokens.md#dark-mode) SCSS variables for colors.
 1. `app/assets/stylesheets/themes/dark_mode_overrides.scss` imports [dark mode design token](design_tokens.md#dark-mode) CSS custom properties for colors.
 1. Bootstrap variables overridden in `app/assets/stylesheets/framework/variables_overrides.scss` are given dark mode values in `_dark.scss`.

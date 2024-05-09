@@ -2,10 +2,10 @@
 import { GlSprintf, GlLink } from '@gitlab/ui';
 import { s__, __, sprintf } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
+import axios from '~/lib/utils/axios_utils';
 import NewGroupForm from '~/groups/components/new_group_form.vue';
 import { FORM_FIELD_NAME, FORM_FIELD_PATH, FORM_FIELD_VISIBILITY_LEVEL } from '~/groups/constants';
 import { VISIBILITY_LEVELS_INTEGER_TO_STRING } from '~/visibility_level/constants';
-import { createGroup } from '~/rest_api';
 import { createAlert } from '~/alert';
 import { visitUrlWithAlerts } from '~/lib/utils/url_utility';
 
@@ -32,8 +32,8 @@ export default {
     NewGroupForm,
   },
   inject: [
-    'organizationId',
     'basePath',
+    'groupsAndProjectsOrganizationPath',
     'groupsOrganizationPath',
     'mattermostEnabled',
     'availableVisibilityLevels',
@@ -64,11 +64,12 @@ export default {
     }) {
       try {
         this.loading = true;
-        const { data: group } = await createGroup({
-          organization_id: this.organizationId,
-          name,
-          path,
-          visibility: VISIBILITY_LEVELS_INTEGER_TO_STRING[visibilityLevelInteger],
+        const { data: group } = await axios.post(this.groupsOrganizationPath, {
+          group: {
+            name,
+            path,
+            visibility_level: VISIBILITY_LEVELS_INTEGER_TO_STRING[visibilityLevelInteger],
+          },
         });
 
         visitUrlWithAlerts(group.web_url, [
@@ -110,7 +111,7 @@ export default {
       :base-path="basePath"
       :path-maxlength="pathMaxlength"
       :path-pattern="pathPattern"
-      :cancel-path="groupsOrganizationPath"
+      :cancel-path="groupsAndProjectsOrganizationPath"
       :available-visibility-levels="availableVisibilityLevels"
       :restricted-visibility-levels="restrictedVisibilityLevels"
       :initial-form-values="initialFormValues"

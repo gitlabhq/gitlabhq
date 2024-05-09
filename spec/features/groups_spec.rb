@@ -408,13 +408,13 @@ RSpec.describe 'Group', feature_category: :groups_and_projects do
     end
 
     it 'focuses confirmation field on remove group' do
-      click_button('Remove group')
+      click_button('Delete group')
 
       expect(page).to have_selector '#confirm_name_input:focus'
     end
 
     it 'removes group', :sidekiq_might_not_need_inline do
-      expect { remove_with_confirm('Remove group', group.path) }.to change { Group.count }.by(-1)
+      expect { remove_with_confirm('Delete group', group.path) }.to change { Group.count }.by(-1)
       expect(group.members.all.count).to be_zero
       expect(page).to have_content "scheduled for deletion"
     end

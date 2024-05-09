@@ -76,7 +76,6 @@ In addition to the [Experiment details](#experiment) for users, Experiments shou
 
 - Offer a way to opt in with minimal friction. For example, needing to flip a feature flag is too much friction,
   but a group or project-level setting in the UI is not.
-- Respect the group-level setting for [Experiment and Beta features](../user/group/manage.md#enable-experiment-and-beta-features).
 - Link out to the [GitLab Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/) in the opt-in.
 - Have documentation that reflects that the feature is subject to the [GitLab Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
 - Have [UI that reflects the Experiment status](https://design.gitlab.com/usability/feature-management#highlighting-feature-versions).
@@ -96,7 +95,6 @@ In addition to the [Beta details](#beta) for users, Beta features should:
 - Not be required or necessary for most features.
 - Have documentation that reflects the Beta status.
 - Have [UI that reflects the Beta status](https://design.gitlab.com/usability/feature-management#highlighting-feature-versions).
-- Respect the group-level setting for [Experiment and Beta features](../user/group/manage.md#enable-experiment-and-beta-features).
 - Be behind a feature flag that is on by default.
 - Be behind a toggle that is off by default.
 - Be announced in a release post that reflects the Beta status, if desired.

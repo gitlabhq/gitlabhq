@@ -56,9 +56,6 @@ the issue board feature.
 
 ## Multiple issue boards
 
-> - Multiple issue boards per project [moved](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/53811) to GitLab Free in 12.1.
-> - Multiple issue boards per group are available in GitLab Premium.
-
 Multiple issue boards allow for more than one issue board for:
 
 - A project in all tiers
@@ -275,9 +272,6 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - Setting current iteration as scope [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/196804) in GitLab 13.8.
-> - Moved to GitLab Premium in 13.9.
-
 An issue board can be associated with a [milestone](milestones/index.md),
 [labels](labels.md), assignee, weight, and current [iteration](../group/iterations/index.md),
 which automatically filter the board issues accordingly.
@@ -302,8 +296,6 @@ the configurable issue board feature.
 DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
-
-> - Moved to GitLab Premium in 13.9.
 
 The top of each list indicates the sum of issue weights for the issues that
 belong to that list. This is useful when using boards for capacity allocation,
@@ -370,9 +362,6 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/250479) in GitLab 13.11 [with a flag](../../administration/feature_flags.md) named `iteration_board_lists`. Enabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75404) in GitLab 14.6. Feature flag `iteration_board_lists` removed.
-
 You can create lists of issues in an iteration.
 
 Prerequisites:
@@ -396,10 +385,6 @@ to and from a iteration list to manipulate the iteration of the dragged issues.
 DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
-
-> - Grouping by epic [introduced](https://gitlab.com/groups/gitlab-org/-/epics/3352) in GitLab 13.6.
-> - Editing issue titles in the issue sidebar [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/232745) in GitLab 13.8.
-> - Editing iteration in the issue sidebar [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/290232) in GitLab 13.9.
 
 With swimlanes you can visualize issues grouped by epic.
 Your issue board keeps all the other features, but with a different visual organization of issues.
@@ -447,8 +432,6 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - Moved to GitLab Premium in 13.9.
-
 You can set a work in progress (WIP) limit for each issue list on an issue board. When a limit is
 set, the list's header shows the number of issues in the list and the soft limit of issues. A line in the list separates items within the limit from those in excess of the limit.
 You cannot set a WIP limit on the default lists (**Open** and **Closed**).
@@ -478,8 +461,6 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/210452) in GitLab 13.10: View blocking issues when hovering over the "blocked" icon.
-
 If an issue is [blocked by another issue](issues/related_issues.md#blocking-issues), an icon appears next to its title to indicate its blocked
 status.
 
@@ -501,8 +482,6 @@ When you hover over the blocked icon (**{issue-block}**), a detailed information
 - Close an issue (by dragging it to the **Closed** list).
 
 ### Edit an issue
-
-> - Editing title, iteration, and confidentiality [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/248908) in GitLab 14.1.
 
 You can edit an issue without leaving the board view.
 To open the right sidebar, select an issue card (not its title).
@@ -583,9 +562,6 @@ The steps depend on the scope of the list:
    If it's a label list, remove the label. If it's an [assignee list](#assignee-lists), unassign the user.
 
 ### Filter issues
-
-> - Filtering by iteration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118742) in GitLab 13.6.
-> - Filtering by issue type [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/268152) in GitLab 14.6.
 
 You can use the filters on top of your issue board to show only
 the results you want. It's similar to the filtering used in the [issue tracker](issues/index.md).

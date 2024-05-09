@@ -127,9 +127,6 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52360) in GitLab 13.9.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/321247) in GitLab 14.0.
-
 With **group-level** description templates, you can select a project within the group to store
 your templates. Then, you can access these templates in other projects in the group.
 As a result, you can use the same templates in issues and merge requests in all the group's projects.
@@ -154,8 +151,6 @@ You might also be interested in templates for various
 
 ### Set a default template for merge requests and issues
 
-> - `Default.md` (case insensitive) template [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78302) in GitLab 14.8.
-
 In a project, you can choose a default description template for new issues and merge requests.
 As a result, every time a new merge request or issue is created, it's pre-filled with the text you
 entered in the template.
@@ -167,7 +162,7 @@ Prerequisites:
 
 To set a default description template for merge requests, either:
 
-- [In GitLab 14.8 and later](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78302), [create a merge request template](#create-a-merge-request-template) named `Default.md` (case insensitive)
+- [Create a merge request template](#create-a-merge-request-template) named `Default.md` (case insensitive)
   and save it in `.gitlab/merge_request_templates/`.
   This [doesn't overwrite](#priority-of-default-description-templates) the default template if one has been set in the project settings.
 - Users on GitLab Premium and Ultimate: set the default template in project settings:
@@ -179,7 +174,7 @@ To set a default description template for merge requests, either:
 
 To set a default description template for issues, either:
 
-- [In GitLab 14.8 and later](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78302), [create an issue template](#create-an-issue-template) named `Default.md` (case insensitive)
+- [Create an issue template](#create-an-issue-template) named `Default.md` (case insensitive)
   and save it in `.gitlab/issue_templates/`.
   This [doesn't overwrite](#priority-of-default-description-templates) the default template if one has been set in the project settings.
 - Users on GitLab Premium and Ultimate: set the default template in project settings:

@@ -1,0 +1,12 @@
+---
+table_name: ai_vectorizable_files
+classes:
+- Ai::VectorizableFile
+feature_categories:
+- mlops
+description: Files that can be associated with an AI Agent Version to provide additional context to the chatbot.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151454
+milestone: '17.0'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  project_id: projects

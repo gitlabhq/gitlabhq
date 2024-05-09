@@ -33,7 +33,7 @@ msgstr ""
 msgid " Please sign in."
 msgstr ""
 
-msgid " This action will also remove:"
+msgid " This action will also delete:"
 msgstr ""
 
 msgid " Try to %{action} this file again."
@@ -4598,10 +4598,10 @@ msgstr ""
 msgid "After you complete your purchase, you should ask %{requester_name} to make another request to add these users."
 msgstr ""
 
-msgid "After you enable the integration, the following protected variables are created for CI/CD use:"
+msgid "After you delete a group, you %{strongOpen}cannot%{strongClose} restore it or its components."
 msgstr ""
 
-msgid "After you remove a group, you %{strongOpen}cannot%{strongClose} restore it or its components."
+msgid "After you enable the integration, the following protected variables are created for CI/CD use:"
 msgstr ""
 
 msgid "After you've reviewed these contribution guidelines, you'll be all set to"
@@ -6725,7 +6725,7 @@ msgstr ""
 msgid "Archiving the project makes it entirely read-only. It is hidden from the dashboard and doesn't display in searches. %{strong_start}The repository cannot be committed to, and no issues, comments, or other entities can be created.%{strong_end} %{link_start}Learn more.%{link_end}"
 msgstr ""
 
-msgid "Are you ABSOLUTELY SURE you wish to remove this group?"
+msgid "Are you ABSOLUTELY SURE you wish to delete this group?"
 msgstr ""
 
 msgid "Are you absolutely sure?"
@@ -6756,6 +6756,9 @@ msgid "Are you sure you want to close this blocked issue?"
 msgstr ""
 
 msgid "Are you sure you want to continue?"
+msgstr ""
+
+msgid "Are you sure you want to delete %{group_name}?"
 msgstr ""
 
 msgid "Are you sure you want to delete %{name}?"
@@ -6824,9 +6827,6 @@ msgid "Are you sure you want to reindex?"
 msgstr ""
 
 msgid "Are you sure you want to remove %{email}?"
-msgstr ""
-
-msgid "Are you sure you want to remove %{group_name}?"
 msgstr ""
 
 msgid "Are you sure you want to remove %{topic_name}?"
@@ -13681,6 +13681,9 @@ msgstr ""
 msgid "Configure your environments to be deployed to specific geographical regions"
 msgstr ""
 
+msgid "Configuring path_prefix is only allowed when using multiple pages deployments per project, which is disabled for your project."
+msgstr ""
+
 msgid "Confirm"
 msgstr ""
 
@@ -17055,6 +17058,9 @@ msgstr ""
 msgid "Delete file"
 msgstr ""
 
+msgid "Delete group"
+msgstr ""
+
 msgid "Delete group immediately?"
 msgstr ""
 
@@ -17186,6 +17192,9 @@ msgstr ""
 msgid "Deleted commits:"
 msgstr ""
 
+msgid "Deleted group can not be restored!"
+msgstr ""
+
 msgid "Deleted projects cannot be restored!"
 msgstr ""
 
@@ -17205,6 +17214,9 @@ msgid "Deleting protected branches is blocked by security policies"
 msgstr ""
 
 msgid "Deleting the project will delete its repository and all related resources, including issues and merge requests."
+msgstr ""
+
+msgid "Deleting this group also deletes all child projects, including archived projects, and their resources."
 msgstr ""
 
 msgid "Deletion pending. This project will be deleted on %{date}. Repository and other project resources are read-only."
@@ -37205,7 +37217,7 @@ msgstr ""
 msgid "Percentage"
 msgstr ""
 
-msgid "Perform advanced options such as changing path, transferring, exporting, or removing the group."
+msgid "Perform advanced options such as changing path, transferring, exporting, or deleting the group."
 msgstr ""
 
 msgid "Perform code reviews and enhance collaboration with merge requests."
@@ -37322,7 +37334,7 @@ msgstr ""
 msgid "Permalink"
 msgstr ""
 
-msgid "Permanently remove group"
+msgid "Permanently delete group"
 msgstr ""
 
 msgid "Permissions"
@@ -42870,9 +42882,6 @@ msgstr ""
 msgid "Remove from epic"
 msgstr ""
 
-msgid "Remove group"
-msgstr ""
-
 msgid "Remove header logo"
 msgstr ""
 
@@ -42987,9 +42996,6 @@ msgstr ""
 msgid "Removed an issue from an epic."
 msgstr ""
 
-msgid "Removed group can not be restored!"
-msgstr ""
-
 msgid "Removed link with %{issue_ref}."
 msgstr ""
 
@@ -43057,9 +43063,6 @@ msgid "Removes time estimate."
 msgstr ""
 
 msgid "Removing the bypass will cause the merge request to be blocked if any reviews have requested changes."
-msgstr ""
-
-msgid "Removing this group also removes all child projects, including archived projects, and their resources."
 msgstr ""
 
 msgid "Rename file"
@@ -43813,7 +43816,7 @@ msgstr ""
 msgid "Restoring projects"
 msgstr ""
 
-msgid "Restoring the group will prevent the group, its subgroups and projects from being removed on this date."
+msgid "Restoring the group will prevent the group, its subgroups and projects from being deleted on this date."
 msgstr ""
 
 msgid "Restoring the project will prevent the project from being removed on this date and restore people's ability to make changes to it."
@@ -51836,7 +51839,7 @@ msgstr ""
 msgid "The content of this page is not encoded in UTF-8. Edits can only be made via the Git repository."
 msgstr ""
 
-msgid "The contents of this group, its subgroups and projects will be permanently removed after %{deletion_adjourned_period} days on %{date}. After this point, your data cannot be recovered."
+msgid "The contents of this group, its subgroups and projects will be permanently deleted after %{deletion_adjourned_period} days on %{date}. After this point, your data cannot be recovered."
 msgstr ""
 
 msgid "The current epic"
@@ -52974,7 +52977,7 @@ msgstr ""
 msgid "This group does not have any group runners yet."
 msgstr ""
 
-msgid "This group has been scheduled for permanent removal on %{date}"
+msgid "This group has been scheduled for permanent deletion on %{date}"
 msgstr ""
 
 msgid "This group has no active access tokens."
@@ -59232,6 +59235,9 @@ msgid_plural "You are about to clear %{count} images from the cache. Once you co
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "You are about to delete the group %{group_name}."
+msgstr ""
+
 msgid "You are about to delete this forked project containing:"
 msgstr ""
 
@@ -59239,9 +59245,6 @@ msgid "You are about to delete this project containing:"
 msgstr ""
 
 msgid "You are about to incur additional charges"
-msgstr ""
-
-msgid "You are about to remove the group %{group_name}."
 msgstr ""
 
 msgid "You are about to transfer %{codeStart}%{groupName}%{codeEnd} to another namespace. This action changes the %{projectLinkStart}project's path%{projectLinkEnd} and can lead to %{documentationLinkStart}data loss%{documentationLinkEnd}."

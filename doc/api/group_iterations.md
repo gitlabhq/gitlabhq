@@ -10,9 +10,6 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118742) in GitLab 13.5.
-> - Moved to GitLab Premium in 13.9.
-
 This page describes the group iterations API.
 There's a separate [project iterations API](iterations.md) page.
 

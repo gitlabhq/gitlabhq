@@ -10,8 +10,6 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/32542) in GitLab 13.2.
-
 Resource weight events keep track of what happens to GitLab [issues](../user/project/issues/index.md).
 
 Use them to track which weight was set, who did it, and when it happened.

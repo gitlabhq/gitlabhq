@@ -216,8 +216,7 @@ end
 
 ### Remove the foreign key
 
-If there is an existing foreign key, then it can be removed from the database. As of GitLab 14.5,
-the following foreign key describes the link between the `projects` and `ci_pipelines` tables:
+If there is an existing foreign key, then it can be removed from the database. This foreign key describes the link between the `projects` and `ci_pipelines` tables:
 
 ```sql
 ALTER TABLE ONLY ci_pipelines

@@ -243,7 +243,7 @@ To use Chat, use one of these editor extensions:
 
 | IDE              | Extension              |
 |------------------|------------------------|
-| VSCode           | [VS Code GitLab Workflow extension](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow) |
+| VS Code           | [VS Code GitLab Workflow extension](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow) |
 | [GitLab WebIDE (VS Code in the Cloud)](project/web_ide/index.md) | No configuration required. |
 | JetBrains IDEs  | [GitLab Duo Plugin for JetBrains](https://plugins.jetbrains.com/plugin/22325-gitlab-duo) |
 

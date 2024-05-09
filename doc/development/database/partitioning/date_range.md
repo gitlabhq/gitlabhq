@@ -6,8 +6,6 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # Date range partitioning
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/32240) in GitLab 13.1.
-
 ## Description
 
 The scheme best supported by the GitLab migration helpers is date-range partitioning,
@@ -17,8 +15,7 @@ partitioning to work well, most queries must access data in a
 certain date range.
 
 For a more concrete example, consider using the `audit_events` table.
-It was the first table to be partitioned in the application database
-(scheduled for deployment with the GitLab 13.5 release). This
+It was the first table to be partitioned in the application database. This
 table tracks audit entries of security events that happen in the
 application. In almost all cases, users want to see audit activity that
 occurs in a certain time frame. As a result, date-range partitioning

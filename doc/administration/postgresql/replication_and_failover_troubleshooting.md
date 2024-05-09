@@ -224,17 +224,6 @@ if the Linux server has been hardened for security.
 
 The code causes Python to write temporary executable files, and if it cannot find a file system in which to do this. For example, if `noexec` is set on the `/tmp` file system, it fails with `MemoryError` ([read more in the issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6184)).
 
-Workarounds:
-
-- Remove `noexec` from the mount options for filesystems like `/tmp` and `/var/tmp`.
-- If set to enforcing, SELinux may also prevent these operations. Verify the issue is fixed by setting
-  SELinux to permissive.
-
-Patroni first shipped in the Linux package for GitLab 13.1, along with a build of Python 3.7.
-The code which causes this was removed in Python 3.8: this fix shipped in
-[the Linux package for GitLab 14.3](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/5547)
-and later, removing the need for a workaround.
-
 ## Errors running `gitlab-ctl`
 
 Patroni nodes can get into a state where `gitlab-ctl` commands fail

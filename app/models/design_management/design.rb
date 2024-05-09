@@ -83,7 +83,7 @@ module DesignManagement
     #
     # As a query, we ascertain this by finding the last event prior to
     # (or equal to) the cut-off, and seeing whether that version was a deletion.
-    scope :visible_at_version, -> (version) do
+    scope :visible_at_version, ->(version) do
       deletion = DesignManagement::Action.events[:deletion]
       designs = arel_table
       actions = DesignManagement::Action
@@ -104,7 +104,7 @@ module DesignManagement
 
     scope :in_creation_order, -> { reorder(:id) }
 
-    scope :with_filename, -> (filenames) { where(filename: filenames) }
+    scope :with_filename, ->(filenames) { where(filename: filenames) }
     scope :on_issue, ->(issue) { where(issue_id: issue) }
 
     # Scope called by our REST API to avoid N+1 problems

@@ -10,13 +10,10 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118742) in GitLab 13.5.
-> - Moved to GitLab Premium in 13.9.
-
 This page describes the project iterations API.
 There's a separate [group iterations API](group_iterations.md) page.
 
-As of GitLab 13.5, we don't have project-level iterations, but you can use this endpoint to fetch the iterations of the project's ancestor groups.
+We no longer have project-level iterations, but you can use this endpoint to fetch the iterations of the project's ancestor groups.
 
 ## List project iterations
 

@@ -28,8 +28,6 @@ When requested across groups or projects, it's expected to be the same as the `f
 
 ## List issues
 
-> - The `due_date` filters `any`, `today`, and `tomorrow` were [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78460) in GitLab 14.8.
-
 Get all issues the authenticated user has access to. By default it
 returns only issues created by the current user. To get all issues,
 use parameter `scope=all`.
@@ -71,7 +69,7 @@ Supported attributes:
 | `iteration_id`                  | integer       | No         | Return issues assigned to the given iteration ID. `None` returns issues that do not belong to an iteration. `Any` returns issues that belong to an iteration. Mutually exclusive with `iteration_title`. Premium and Ultimate only. |
 | `iteration_title`               | string        | No       | Return issues assigned to the iteration with the given title. Similar to `iteration_id` and mutually exclusive with `iteration_id`. Premium and Ultimate only. |
 | `labels`                        | string        | No         | Comma-separated list of label names, issues must have all labels to be returned. `None` lists all issues with no labels. `Any` lists all issues with at least one label. `No+Label` (Deprecated) lists all issues with no labels. Predefined names are case-insensitive. |
-| `milestone_id`                  | string        | No         | Returns issues assigned to milestones with a given timebox value (`None`, `Any`, `Upcoming`, and `Started`). `None` lists all issues with no milestone. `Any` lists all issues that have an assigned milestone. `Upcoming` lists all issues assigned to milestones due in the future. `Started` lists all issues assigned to open, started milestones. `milestone` and `milestone_id` are mutually exclusive. _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335939) in GitLab 14.3)_ |
+| `milestone_id`                  | string        | No         | Returns issues assigned to milestones with a given timebox value (`None`, `Any`, `Upcoming`, and `Started`). `None` lists all issues with no milestone. `Any` lists all issues that have an assigned milestone. `Upcoming` lists all issues assigned to milestones due in the future. `Started` lists all issues assigned to open, started milestones. `milestone` and `milestone_id` are mutually exclusive. |
 | `milestone`                     | string        | No         | The milestone title. `None` lists all issues with no milestone. `Any` lists all issues that have an assigned milestone. Using `None` or `Any` will be [deprecated in the future](https://gitlab.com/gitlab-org/gitlab/-/issues/336044). Use `milestone_id` attribute instead. `milestone` and `milestone_id` are mutually exclusive. |
 | `my_reaction_emoji`             | string        | No         | Return issues reacted by the authenticated user by the given `emoji`. `None` returns issues not given a reaction. `Any` returns issues given at least one reaction. |
 | `non_archived`                  | boolean       | No         | Return issues only from non-archived projects. If `false`, the response returns issues from both archived and non-archived projects. Default is `true`. |
@@ -261,8 +259,6 @@ The `epic_iid` attribute is deprecated and [scheduled for removal](https://gitla
 Use `iid` of the `epic` attribute instead.
 
 ## List group issues
-
-> - The `due_date` filters `any`, `today`, and `tomorrow` were [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78460) in GitLab 14.8.
 
 Get a list of a group's issues.
 
@@ -470,8 +466,6 @@ The `epic_iid` attribute is deprecated and [scheduled for removal](https://gitla
 Use `iid` of the `epic` attribute instead.
 
 ## List project issues
-
-> - The `due_date` filters `any`, `today`, and `tomorrow` were [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78460) in GitLab 14.8.
 
 Get a list of a project's issues.
 

@@ -10,11 +10,6 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214713) in GitLab 13.1 [with a flag](../../../administration/feature_flags.md) named `group_iterations`. Disabled by default.
-> - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/221047) in GitLab 13.2.
-> - Moved to GitLab Premium in 13.9.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/221047) in GitLab 14.6. [Feature flag `group_iterations`](https://gitlab.com/gitlab-org/gitlab/-/issues/221047) removed.
-
 An iteration in GitLab refers to a time-boxed workflow that groups issues to be worked on during
 a specific period of time, usually lasting 1-3 weeks.
 
@@ -210,7 +205,6 @@ To edit an iteration:
 
 ## Delete an iteration
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/292268) in GitLab 14.3.
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/343889) the minimum user role from Developer to Reporter in GitLab 15.0.
 
 Prerequisites:
@@ -245,8 +239,6 @@ To view an iteration report:
 
 ### Iteration burndown and burnup charts
 
-> - Scoped burnup and burndown charts in subgroups and projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/326029) in GitLab 14.9.
-
 The iteration report includes [burndown and burnup charts](../../project/milestones/burndown_and_burnup_charts.md),
 similar to how they appear when viewing a [milestone](../../project/milestones/index.md):
 
@@ -254,8 +246,6 @@ similar to how they appear when viewing a [milestone](../../project/milestones/i
 - Burnup charts track the daily total count and weight of issues added to and completed in a given timebox.
 
 #### View iteration charts scoped to subgroups or projects
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/326029) in GitLab 14.9.
 
 View burndown and burnup charts for iterations created for a group in any of its
 subgroups or projects.

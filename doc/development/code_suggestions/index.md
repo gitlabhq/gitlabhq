@@ -18,7 +18,7 @@ This should enable everyone to see locally any change in an IDE being sent to th
 
 ### Setup instructions
 
-1. Install and run locally the [VSCode Extension](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/blob/main/CONTRIBUTING.md#configuring-development-environment):
+1. Install and run locally the [VS Code Extension](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/blob/main/CONTRIBUTING.md#configuring-development-environment):
    1. Add the `"gitlab.debug": true` info to the Code Suggestions development config:
       1. In VS Code, go to the Extensions page and find "GitLab Workflow" in the list.
       1. Open the extension settings by clicking a small cog icon and select "Extension Settings" option.

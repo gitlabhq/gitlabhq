@@ -10,8 +10,6 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/31720) in GitLab 13.1.
-
 Resource [milestone](../user/project/milestones/index.md) events keep track of what happens to
 GitLab [issues](../user/project/issues/index.md) and [merge requests](../user/project/merge_requests/index.md).
 

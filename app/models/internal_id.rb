@@ -25,7 +25,7 @@ class InternalId < ApplicationRecord
 
   validates :usage, presence: true
 
-  scope :filter_by, -> (scope, usage) do
+  scope :filter_by, ->(scope, usage) do
     where(**scope, usage: usage)
   end
 

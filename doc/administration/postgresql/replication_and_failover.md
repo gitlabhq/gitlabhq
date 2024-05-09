@@ -83,9 +83,8 @@ sure you have redundant connectivity between all Database and GitLab instances
 to avoid the network becoming a single point of failure.
 
 NOTE:
-As of GitLab 13.3, PostgreSQL 12 is shipped with Linux package installations. Clustering for PostgreSQL 12 is supported only with
-Patroni. See the [Patroni](#patroni) section for further details. Starting with GitLab 14.0, only PostgreSQL 12 is
-shipped with Linux package installations, and thus Patroni becomes mandatory for replication and failover.
+PostgreSQL 12 is shipped with Linux package installations. Clustering for PostgreSQL 12 is supported only with
+Patroni, and thus Patroni becomes mandatory for replication and failover. See the [Patroni](#patroni) section for further details.
 
 ### Database node
 
@@ -341,8 +340,6 @@ If you choose an arbitrary order, you do not have any predetermined leader.
 
 #### Enable Monitoring
 
-> - [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/3786) in GitLab 12.0.
-
 If you enable Monitoring, it must be enabled on **all** database servers.
 
 1. Create/edit `/etc/gitlab/gitlab.rb` and add the following configuration:
@@ -453,9 +450,6 @@ authentication mode (`patroni['tls_client_mode']`), must each have the same valu
    #
    # END user configuration
    ```
-
-   NOTE:
-   `pgbouncer_role` was introduced with GitLab 10.3.
 
 1. Run `gitlab-ctl reconfigure`
 

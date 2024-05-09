@@ -429,9 +429,6 @@ Example of response
 ]
 ```
 
-NOTE:
-This endpoint does not support trigger jobs.
-
 ## Get job token's job
 
 Retrieve the job that generated a job token.
@@ -803,7 +800,7 @@ Example of response
 ```
 
 NOTE:
-This endpoint does not support trigger jobs.
+Prior to GitLab 17.0, this endpoint does not support trigger jobs.
 
 ## Erase a job
 

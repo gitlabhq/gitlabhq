@@ -18,6 +18,7 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
   let_it_be(:projects_empty_state_svg_path) { 'illustrations/empty-state/empty-projects-md.svg' }
   let_it_be(:preview_markdown_organizations_path) { '/-/organizations/preview_markdown' }
   let_it_be(:groups_and_projects_organization_path) { '/-/organizations/default/groups_and_projects' }
+  let_it_be(:groups_organization_path) { '/-/organizations/default/groups' }
   let_it_be(:users_organization_path) { '/-/organizations/default/users' }
   let_it_be(:activity_organization_path) { '/-/organizations/default/activity.json' }
 
@@ -281,6 +282,9 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
       allow(helper).to receive(:groups_and_projects_organization_path)
         .with(organization, { display: 'groups' })
         .and_return(groups_and_projects_organization_path)
+      allow(helper).to receive(:groups_organization_path)
+        .with(organization)
+        .and_return(groups_organization_path)
       allow(helper).to receive(:restricted_visibility_levels).and_return([])
       stub_application_setting(default_group_visibility: Gitlab::VisibilityLevel::PUBLIC)
     end
@@ -288,9 +292,9 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
     it 'returns expected json' do
       expect(Gitlab::Json.parse(helper.organization_groups_new_app_data(organization))).to eq(
         {
-          'organization_id' => organization.id,
           'base_path' => root_url,
-          'groups_organization_path' => groups_and_projects_organization_path,
+          'groups_and_projects_organization_path' => groups_and_projects_organization_path,
+          'groups_organization_path' => groups_organization_path,
           'mattermost_enabled' => false,
           'available_visibility_levels' => [
             Gitlab::VisibilityLevel::PRIVATE,

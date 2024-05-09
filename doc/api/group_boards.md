@@ -289,8 +289,6 @@ Example response:
 
 ## Update a group issue board
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/5954) in GitLab 11.1.
-
 Updates a group issue board.
 
 ```plaintext

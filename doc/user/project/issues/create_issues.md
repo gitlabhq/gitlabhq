@@ -71,9 +71,6 @@ This can save you a lot of time, if you mostly create issues for the same projec
 
 ## From another issue or incident
 
-> - New issue becoming linked to the issue of origin [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68226) in GitLab 14.3.
-> - **Relate to** checkbox [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/198494) in GitLab 14.9.
-
 You can create a new issue from an existing one. The two issues can then be marked as related.
 
 Prerequisites:
@@ -157,9 +154,6 @@ To regenerate the email address:
 
 ## Using a URL with prefilled values
 
-> - Ability to use both `issuable_template` and `issue[description]` in the same URL [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80554) in GitLab 14.9.
-> - Ability to specify `add_related_issue` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/198494) in GitLab 14.9.
-
 To link directly to the new issue page with prefilled fields, use query
 string parameters in a URL. You can embed a URL in an external
 HTML page to create issues with certain fields prefilled.
@@ -203,7 +197,6 @@ the appropriate project and followed up from there.
 
 ## Fields in the new issue form
 
-> - Adding the new issue to an epic [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13847) in GitLab 13.1.
 > - Iteration field [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/233517) in GitLab 15.6.
 
 When you're creating a new issue, you can complete the following fields:

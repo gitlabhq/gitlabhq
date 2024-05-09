@@ -315,7 +315,7 @@ class Issue < ApplicationRecord
   end
 
   def next_object_by_relative_position(ignoring: nil, order: :asc)
-    array_mapping_scope = -> (id_expression) do
+    array_mapping_scope = ->(id_expression) do
       relation = Issue.where(Issue.arel_table[:project_id].eq(id_expression))
 
       if order == :asc
@@ -329,7 +329,7 @@ class Issue < ApplicationRecord
       scope: Issue.order(relative_position: order, id: order),
       array_scope: relative_positioning_parent_projects,
       array_mapping_scope: array_mapping_scope,
-      finder_query: -> (_, id_expression) { Issue.where(Issue.arel_table[:id].eq(id_expression)) }
+      finder_query: ->(_, id_expression) { Issue.where(Issue.arel_table[:id].eq(id_expression)) }
     ).execute
 
     relation = exclude_self(relation, excluded: ignoring) if ignoring.present?
@@ -485,7 +485,7 @@ class Issue < ApplicationRecord
 
     start_counting_from = 2
 
-    branch_name_generator = -> (counter) do
+    branch_name_generator = ->(counter) do
       suffix = counter > 5 ? SecureRandom.hex(8) : counter
       "#{to_branch_name}-#{suffix}"
     end
@@ -546,7 +546,7 @@ class Issue < ApplicationRecord
     related_issues = yield related_issues if block_given?
     return related_issues unless authorize
 
-    cross_project_filter = -> (issues) { issues.where(project: project) }
+    cross_project_filter = ->(issues) { issues.where(project: project) }
     Ability.issues_readable_by_user(related_issues,
       current_user,
       filters: { read_cross_project: cross_project_filter })

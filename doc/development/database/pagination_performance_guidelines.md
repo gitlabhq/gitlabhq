@@ -98,14 +98,6 @@ Since `project_id` is a foreign key, we might have the following index available
 "index_issues_on_project_id" btree (project_id)
 ```
 
-GitLab 13.11 has the following index definition on the `issues` table:
-
-```sql
-"index_issues_on_project_id_and_iid" UNIQUE, btree (project_id, iid)
-```
-
-This index fully covers the database query and the pagination.
-
 ### By group
 
 Unfortunately, there is no efficient way to sort and paginate on the group level. The database query execution time increases based on the number of records in the group.

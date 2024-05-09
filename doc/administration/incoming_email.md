@@ -50,7 +50,7 @@ and Microsoft Office 365 [does not support sub-addressing by default](#microsoft
 NOTE:
 If your provider or server supports email sub-addressing, we recommend using it.
 A dedicated email address only supports Reply by Email functionality.
-A catch-all mailbox supports the same features as sub-addressing as of GitLab 11.7,
+A catch-all mailbox supports the same features as sub-addressing,
 but sub-addressing is still preferred because only one email address is used,
 leaving a catch-all available for other purposes beyond GitLab.
 
@@ -60,7 +60,7 @@ A [catch-all mailbox](https://en.wikipedia.org/wiki/Catch-all) for a domain
 receives all email messages addressed to the domain that do not match any addresses that
 exist on the mail server.
 
-As of GitLab 11.7, catch-all mailboxes support the same features as
+Catch-all mailboxes support the same features as
 email sub-addressing, but email sub-addressing remains our recommendation so that you
 can reserve your catch-all mailbox for other purposes.
 
@@ -72,7 +72,6 @@ this method only supports replies, and not the other features of [incoming email
 
 ## Accepted headers
 
-> - Accepting `Received` headers [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81489) in GitLab 14.9.
 > - Accepting `Cc` headers [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348572) in GitLab 16.5.
 > - Accepting `X-Original-To` headers [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149874) in GitLab 17.0.
 
@@ -803,8 +802,6 @@ incoming_email:
 ```
 
 #### Microsoft Graph
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214900) in GitLab 13.11.
 
 GitLab can read incoming email using the Microsoft Graph API instead of
 IMAP. Because [Microsoft is deprecating IMAP usage with Basic Authentication](https://techcommunity.microsoft.com/t5/exchange-team-blog/announcing-oauth-2-0-support-for-imap-and-smtp-auth-protocols-in/ba-p/1330432), the Microsoft Graph API is be required for new Microsoft Exchange Online mailboxes.

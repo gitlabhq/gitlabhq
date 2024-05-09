@@ -135,7 +135,6 @@ so if you remove more time than already entered, GitLab ignores the subtraction.
 
 ### Delete time spent
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356796) in GitLab 14.10.
 > - Delete button [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356796) in GitLab 15.1.
 
 A timelog is a single entry of time spent, either positive or negative.

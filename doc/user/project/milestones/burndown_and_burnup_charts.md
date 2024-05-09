@@ -16,9 +16,6 @@ DETAILS:
 
 ## Burndown charts
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/6903) [fixed burndown charts](#fixed-burndown-charts) in GitLab 13.6.
-> - Moved to GitLab Premium in 13.9.
-
 Burndown charts show the number of issues over the course of a milestone.
 
 ![burndown chart](img/burndown_chart_v15_3.png)
@@ -103,10 +100,6 @@ change.
 Reopened issues are considered as having been opened on the day after they were last closed.
 
 ## Burnup charts
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/6903) in GitLab 13.6.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/268350) in GitLab 13.7.
-> - Moved to GitLab Premium in 13.9.
 
 Burnup charts show the assigned and completed work for a milestone.
 

@@ -46,10 +46,6 @@ Any nested task list items are moved up a nested level.
 
 ## Bulk edit issues from a project
 
-> - Assigning epic [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/210470) in GitLab 13.2.
-> - Editing health status [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218395) in GitLab 13.2.
-> - Editing iteration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/196806) in GitLab 13.9.
-
 You can edit multiple issues at a time when you're in a project.
 
 Prerequisites:
@@ -82,11 +78,6 @@ When bulk editing issues in a project, you can edit the following attributes:
 DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7249) in GitLab 12.1.
-> - Assigning epic [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/210470) in GitLab 13.2.
-> - Editing health status [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218395) in GitLab 13.2.
-> - Editing iteration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/196806) in GitLab 13.9.
 
 You can edit multiple issues across multiple projects when you're in a group.
 
@@ -318,7 +309,6 @@ The default issue closing pattern regex:
 
 #### Disable automatic issue closing
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/19754) in GitLab 12.7.
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/240922) in GitLab 15.4: The referenced issue's project setting is checked instead of the project of the commit or merge request.
 
 You can disable the automatic issue closing feature on a per-project basis
@@ -375,8 +365,6 @@ To change issue type:
 1. Select **Save changes**.
 
 ## Delete an issue
-
-> - Deleting from the vertical ellipsis menu [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299933) in GitLab 14.6.
 
 Prerequisites:
 
@@ -442,7 +430,6 @@ Alternatively, you can use the `/promote` [quick action](../quick_actions.md#iss
 
 ## Promote an issue to an incident
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/296787) in GitLab 14.5.
 > - Quick actions to set issue type as incident upon creation [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/376760) in GitLab 15.8.
 
 You can use the `/promote_to_incident` [quick action](../quick_actions.md) to promote the issue to an [incident](../../../operations/incident_management/incidents.md).
@@ -477,8 +464,6 @@ Or:
 
 ## Filter the list of issues
 
-> - Filtering by iterations was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118742) in GitLab 13.6.
-> - Filtering by iterations was moved from GitLab Ultimate to GitLab Premium in 13.9.
 > - Filtering by type was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/322755) in GitLab 13.10 [with a flag](../../../administration/feature_flags.md) named `vue_issues_list`. Disabled by default.
 > - Filtering by type was [enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/322755) in GitLab 14.10.
 > - Filtering by type is generally available in GitLab 15.1. [Feature flag `vue_issues_list`](https://gitlab.com/gitlab-org/gitlab/-/issues/359966) removed.
@@ -543,8 +528,6 @@ when you [filter the list of issues](#filter-the-list-of-issues) by:
 
 ### Filter issues by ID
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/39908) in GitLab 12.1.
-
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Plan > Issues**.
 1. In the **Search** box, type the issue ID. For example, enter filter `#10` to return only issue 10.
@@ -567,8 +550,6 @@ You can now paste the reference into another description or comment.
 Read more about issue references in [GitLab-Flavored Markdown](../../markdown.md#gitlab-specific-references).
 
 ## Copy issue email address
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18816) in GitLab 13.8.
 
 You can create a comment in an issue by sending an email.
 Sending an email to this address creates a comment that contains the email body.
@@ -622,10 +603,6 @@ DETAILS:
 **Tier:** Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36427) in GitLab 12.10.
-> - Health status of closed issues [can't be edited](https://gitlab.com/gitlab-org/gitlab/-/issues/220867) in GitLab 13.4 and later.
-> - Issue health status visible in issue lists [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45141) in GitLab 13.6.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/213567) in GitLab 13.7.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218618) in GitLab 15.4: health status is visible on issue cards in issue boards.
 
 To better track the risk in meeting your plans, you can assign a health status to each issue.
@@ -666,8 +643,6 @@ You can also set and clear health statuses using the `/health_status` and `/clea
 DETAILS:
 **Tier:** Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/30906) in GitLab 13.1.
 
 If a status page application is associated with the project, you can use the `/publish`
 [quick action](../quick_actions.md) to publish the issue.
