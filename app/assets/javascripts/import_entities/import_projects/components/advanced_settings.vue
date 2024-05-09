@@ -48,13 +48,13 @@ export default {
     >
       <gl-alert variant="warning" class="gl-mb-5" :dismissible="false"
         >{{
-          s__('ImportProjects|The more information you select, the longer it will take to import')
+          s__('ImportProjects|The more information you select, the longer it will take to import.')
         }}
         <p class="mb-0">
           <gl-sprintf
             :message="
               s__(
-                'ImportProjects|To import collaborators, you must use a classic personal access token with %{codeStart}read:org%{codeEnd} scope. %{linkStart}Learn more%{linkEnd}.',
+                'ImportProjects|To import collaborators, or if your project has Git LFS files, you must use a classic personal access token with %{codeStart}read:org%{codeEnd} scope. %{linkStart}Learn more%{linkEnd}.',
               )
             "
           >

@@ -23493,7 +23493,7 @@ msgstr ""
 msgid "Gitea import"
 msgstr ""
 
-msgid "GithubImporter|%{code_start}read:org%{code_end} (optional): Used to import collaborators from GitHub repositories."
+msgid "GithubImporter|%{code_start}read:org%{code_end} (optional): Used to import collaborators from GitHub repositories, or if your project has Git LFS files."
 msgstr ""
 
 msgid "GithubImporter|%{code_start}repo%{code_end}: Used to display a list of your public and private repositories that are available to connect to."
@@ -26637,7 +26637,7 @@ msgstr ""
 msgid "ImportProjects|Select the repositories you want to import"
 msgstr ""
 
-msgid "ImportProjects|The more information you select, the longer it will take to import"
+msgid "ImportProjects|The more information you select, the longer it will take to import."
 msgstr ""
 
 msgid "ImportProjects|The remote data could not be imported."
@@ -26646,7 +26646,7 @@ msgstr ""
 msgid "ImportProjects|The repository could not be created."
 msgstr ""
 
-msgid "ImportProjects|To import collaborators, you must use a classic personal access token with %{codeStart}read:org%{codeEnd} scope. %{linkStart}Learn more%{linkEnd}."
+msgid "ImportProjects|To import collaborators, or if your project has Git LFS files, you must use a classic personal access token with %{codeStart}read:org%{codeEnd} scope. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
 msgid "ImportProjects|Update of imported projects with realtime changes failed"

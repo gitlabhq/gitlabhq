@@ -92,6 +92,7 @@ Roles are bound to a specific authentication path so you need to add new roles f
      "policies": ["myproject-staging"],
      "token_explicit_max_ttl": 60,
      "user_claim": "user_email",
+     "bound_audiences": ["https://vault.example.com"],
      "bound_claims": {
        "project_id": "22",
        "ref": "master",

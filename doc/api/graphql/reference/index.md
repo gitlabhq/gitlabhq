@@ -8236,7 +8236,7 @@ Input type: `TimelogCreateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationtimelogcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationtimelogcreateissuableid"></a>`issuableId` | [`IssuableID!`](#issuableid) | Global ID of the issuable (Issue, WorkItem or MergeRequest). |
-| <a id="mutationtimelogcreatespentat"></a>`spentAt` | [`Time!`](#time) | When the time was spent. |
+| <a id="mutationtimelogcreatespentat"></a>`spentAt` | [`Time`](#time) | Timestamp of when the time was spent. If empty, defaults to current time. |
 | <a id="mutationtimelogcreatesummary"></a>`summary` | [`String!`](#string) | Summary of time spent. |
 | <a id="mutationtimelogcreatetimespent"></a>`timeSpent` | [`String!`](#string) | Amount of time spent. |
 

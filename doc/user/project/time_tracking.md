@@ -83,6 +83,7 @@ Prerequisites:
 #### Using the user interface
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101563) in GitLab 15.7.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150564) in GitLab 17.0. When you don't specify when time was spent, current time is used.
 
 To add a time entry using the user interface:
 
@@ -90,7 +91,7 @@ To add a time entry using the user interface:
 1. Enter:
 
    - The amount of time spent.
-   - Optional. When it was spent.
+   - Optional. When it was spent. If empty, uses current time.
    - Optional. A summary.
 
 1. Select **Save**.

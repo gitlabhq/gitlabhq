@@ -67,7 +67,7 @@ export default class ShortcutsIssuable {
   }
 
   static replyWithSelectedText() {
-    let $replyField = $('.js-main-target-form .js-vue-comment-form');
+    let $replyField = $('.js-main-target-form .js-gfm-input');
 
     // Ensure that markdown input is still present in the DOM
     // otherwise fall back to main comment input field.

@@ -122,7 +122,7 @@ To import your GitHub repository using a GitHub Personal Access Token:
    1. Go to <https://github.com/settings/tokens/new>.
    1. In the **Note** field, enter a token description.
    1. Select the `repo` scope.
-   1. Optional. To [import collaborators](#select-additional-items-to-import), select the `read:org` scope.
+   1. Optional. To [import collaborators](#select-additional-items-to-import), or if your project has [Git LFS files](../../../topics/git/lfs/index.md), select the `read:org` scope.
    1. Select **Generate token**.
 1. On the GitLab left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.
 1. Select **Import project** and then **GitHub**.
@@ -151,7 +151,7 @@ To import your GitHub repository using the GitLab REST API:
    1. Go to <https://github.com/settings/tokens/new>.
    1. In the **Note** field, enter a token description.
    1. Select the `repo` scope.
-   1. Optional. To [import collaborators](#select-additional-items-to-import), select the `read:org` scope.
+   1. Optional. To [import collaborators](#select-additional-items-to-import), or if your project has [Git LFS files](../../../topics/git/lfs/index.md), select the `read:org` scope.
    1. Select **Generate token**.
 1. Use the [GitLab REST API](../../../api/import.md#import-repository-from-github) to import your GitHub repository.
 

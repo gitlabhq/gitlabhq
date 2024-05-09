@@ -35,7 +35,7 @@ describe('Import Advanced Settings', () => {
 
   it('renders a warning message', () => {
     expect(findAlert().text()).toMatchInterpolatedText(
-      'The more information you select, the longer it will take to import To import collaborators, you must use a classic personal access token with read:org scope. Learn more.',
+      'The more information you select, the longer it will take to import. To import collaborators, or if your project has Git LFS files, you must use a classic personal access token with read:org scope. Learn more.',
     );
   });
 

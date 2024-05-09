@@ -24,8 +24,6 @@ module Keeps
   #   -k Keeps::OverdueFinalizeBackgroundMigration
   # ```
   class OverdueFinalizeBackgroundMigration < ::Gitlab::Housekeeper::Keep
-    CUTOFF_MILESTONE = '16.8' # Only finalize migrations added before this
-
     def each_change
       each_batched_background_migration do |migration_yaml_file, migration|
         next unless before_cuttoff_milestone?(migration['milestone'])
@@ -218,7 +216,7 @@ module Keeps
     end
 
     def before_cuttoff_milestone?(milestone)
-      Gem::Version.new(milestone) < Gem::Version.new(CUTOFF_MILESTONE)
+      Gem::Version.new(milestone) <= Gem::Version.new(::Gitlab::Database::MIN_SCHEMA_GITLAB_VERSION)
     end
 
     def each_batched_background_migration

@@ -3,6 +3,7 @@ import VueApollo from 'vue-apollo';
 import { WORKSPACE_GROUP } from '~/issues/constants';
 import { addShortcutsExtension } from '~/behaviors/shortcuts';
 import ShortcutsWorkItems from '~/behaviors/shortcuts/shortcuts_work_items';
+import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
 import App from './components/app.vue';
@@ -17,6 +18,7 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType } = {}) => {
     return undefined;
   }
 
+  addShortcutsExtension(ShortcutsNavigation);
   addShortcutsExtension(ShortcutsWorkItems);
 
   const {
@@ -31,6 +33,7 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType } = {}) => {
     hasIssuableHealthStatusFeature,
     newCommentTemplatePaths,
     reportAbusePath,
+    defaultBranch,
   } = el.dataset;
 
   const isGroup = workspaceType === WORKSPACE_GROUP;
@@ -38,7 +41,7 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType } = {}) => {
   return new Vue({
     el,
     name: 'WorkItemsRoot',
-    router: createRouter({ fullPath, workItemType, workspaceType }),
+    router: createRouter({ fullPath, workItemType, workspaceType, defaultBranch }),
     apolloProvider,
     provide: {
       fullPath,

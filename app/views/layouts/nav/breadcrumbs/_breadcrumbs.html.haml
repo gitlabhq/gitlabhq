@@ -11,7 +11,10 @@
     #{schema_breadcrumb_json}
 
 - if Feature.enabled?(:vue_page_breadcrumbs)
-  #js-vue-page-breadcrumbs{ data: { breadcrumbs_json: breadcrumbs_as_json } }
+  #js-vue-page-breadcrumbs-wrapper
+    #js-vue-page-breadcrumbs{ data: { breadcrumbs_json: breadcrumbs_as_json } }
+    #js-injected-page-breadcrumbs
+
 - else
   %nav.breadcrumbs.gl-breadcrumbs.tmp-breadcrumbs-fix{ 'aria-label': _('Breadcrumbs'), data: { testid: 'breadcrumb-links' } }
     %ul.breadcrumb.gl-breadcrumb-list.js-breadcrumbs-list.gl-flex-grow-1

@@ -456,7 +456,6 @@ RSpec/NamedSubject:
     - 'ee/spec/lib/gitlab/llm/chat_storage_spec.rb'
     - 'ee/spec/lib/gitlab/llm/completions/chat_spec.rb'
     - 'ee/spec/lib/gitlab/llm/concerns/exponential_backoff_spec.rb'
-    - 'ee/spec/lib/gitlab/llm/graphql_subscription_response_service_spec.rb'
     - 'ee/spec/lib/gitlab/llm/templates/categorize_question_spec.rb'
     - 'ee/spec/lib/gitlab/llm/templates/explain_vulnerability_spec.rb'
     - 'ee/spec/lib/gitlab/llm/templates/fill_in_merge_request_template_spec.rb'

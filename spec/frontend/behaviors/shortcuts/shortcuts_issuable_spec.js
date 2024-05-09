@@ -22,13 +22,13 @@ describe('ShortcutsIssuable', () => {
   });
 
   describe('replyWithSelectedText', () => {
-    const FORM_SELECTOR = '.js-main-target-form .js-vue-comment-form';
+    const FORM_SELECTOR = '.js-main-target-form .js-gfm-input';
 
     beforeEach(() => {
       setHTMLFixture(htmlSnippetsShow);
       $('body').append(
         `<div class="js-main-target-form">
-          <textarea class="js-vue-comment-form"></textarea>
+          <textarea class="js-gfm-input"></textarea>
         </div>`,
       );
       document.querySelector('.js-new-note-form').classList.add('js-main-target-form');

@@ -58,7 +58,7 @@ You can completely replace the predefined rules of some SAST analyzers:
   can replace the default [njsscan configuration file](https://github.com/ajinabraham/njsscan#configure-njsscan)
   with your own.
 - [semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) - you can replace
-  the [GitLab-maintained ruleset](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/-/tree/main/rules)
+  the [GitLab-maintained ruleset](https://gitlab.com/gitlab-org/security-products/sast-rules)
   with your own.
 
 You provide your customizations via passthroughs, which are composed into a

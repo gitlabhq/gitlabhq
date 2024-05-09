@@ -2,6 +2,8 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
 import IssuesListApp from 'ee_else_ce/issues/list/components/issues_list_app.vue';
+import { addShortcutsExtension } from '~/behaviors/shortcuts';
+import ShortcutsWorkItems from '~/behaviors/shortcuts/shortcuts_work_items';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import JiraIssuesImportStatusApp from './components/jira_issues_import_status_app.vue';
 import { gqlClient } from './graphql';
@@ -48,6 +50,8 @@ export async function mountIssuesListApp() {
   if (!el) {
     return null;
   }
+
+  addShortcutsExtension(ShortcutsWorkItems);
 
   Vue.use(VueApollo);
   Vue.use(VueRouter);

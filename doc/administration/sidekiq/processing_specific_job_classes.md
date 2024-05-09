@@ -64,8 +64,9 @@ because they only change the arguments to the launched Sidekiq process.
 
 ### Detailed example
 
-This is a comprehensive example intended to show different possibilities. It is
-not a recommendation.
+This is a comprehensive example intended to show different possibilities.
+A [Helm chart example is also available](https://docs.gitlab.com/charts/charts/gitlab/sidekiq/#queues).
+They are not recommendations.
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 

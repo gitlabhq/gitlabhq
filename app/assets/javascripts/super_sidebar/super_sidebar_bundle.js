@@ -3,6 +3,7 @@ import { GlBreadcrumb, GlToast } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_utils';
 import createDefaultClient from '~/lib/graphql';
+import { staticBreadcrumbs } from '~/lib/utils/breadcrumbs';
 import { JS_TOGGLE_EXPAND_CLASS, CONTEXT_NAMESPACE_GROUPS } from './constants';
 import createStore from './components/global_search/store';
 import {
@@ -196,17 +197,14 @@ export function initPageBreadcrumbs() {
   if (!el) return false;
   const { breadcrumbsJson } = el.dataset;
 
-  const props = {
-    items: JSON.parse(breadcrumbsJson),
-  };
+  staticBreadcrumbs.items = JSON.parse(breadcrumbsJson);
 
   return new Vue({
     el,
     render(h) {
       return h(GlBreadcrumb, {
-        props,
+        props: staticBreadcrumbs,
         attrs: { 'data-testid': 'breadcrumb-links' },
-        class: 'gl-flex-grow-1',
       });
     },
   });
