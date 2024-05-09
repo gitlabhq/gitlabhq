@@ -1,8 +1,5 @@
 ---
 # It maps table_name to {index1: array_of_duplicate_indexes, index2: array_of_duplicate_indexes, ... }
-abuse_reports:
-  idx_abuse_reports_user_id_status_and_category:
-    - index_abuse_reports_on_user_id
 alert_management_http_integrations:
   index_http_integrations_on_project_and_endpoint:
     - index_alert_management_http_integrations_on_project_id

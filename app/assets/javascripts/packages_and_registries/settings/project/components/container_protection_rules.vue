@@ -224,7 +224,7 @@ export default {
     {
       key: 'rowActions',
       label: __('Actions'),
-      thClass: 'gl-display-none',
+      thClass: 'gl-text-right',
       tdClass: '!gl-align-middle gl-text-right',
     },
   ],

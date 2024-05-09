@@ -147,7 +147,7 @@ describe('Package Search', () => {
       filters: [
         { type: 'type', value: { data: 'Generic', operator: '=' }, id: 'token-3' },
         { type: 'version', value: { data: '1.0.1', operator: '=' }, id: 'token-6' },
-        { type: 'status', value: { data: 'HIDDEN', operator: '=' }, id: 'token-7' },
+        { type: 'status', value: { data: 'hidden', operator: '=' }, id: 'token-7' },
         { id: 'token-4', type: 'filtered-search-term', value: { data: 'gl' } },
         { id: 'token-5', type: 'filtered-search-term', value: { data: '' } },
       ],

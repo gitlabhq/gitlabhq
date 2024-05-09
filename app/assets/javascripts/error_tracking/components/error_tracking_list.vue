@@ -7,6 +7,7 @@ import {
   GlLink,
   GlLoadingIcon,
   GlTable,
+  GlForm,
   GlFormInput,
   GlDropdown,
   GlDropdownItem,
@@ -100,6 +101,7 @@ export default {
     GlLink,
     GlLoadingIcon,
     GlTable,
+    GlForm,
     GlFormInput,
     GlSprintf,
     GlPagination,
@@ -343,14 +345,15 @@ export default {
               <div v-else class="gl-px-5">{{ __("You don't have any recent searches") }}</div>
             </gl-dropdown>
             <div class="filtered-search-input-container gl-flex-grow-1">
-              <gl-form-input
-                v-model="errorSearchQuery"
-                class="gl-pl-3! filtered-search"
-                :disabled="loading"
-                :placeholder="__('Search or filter results…')"
-                autofocus
-                @keyup.enter.native="searchByQuery(errorSearchQuery)"
-              />
+              <gl-form @submit.prevent="searchByQuery(errorSearchQuery)">
+                <gl-form-input
+                  v-model="errorSearchQuery"
+                  class="gl-pl-3! filtered-search"
+                  :disabled="loading"
+                  :placeholder="__('Search or filter results…')"
+                  autofocus
+                />
+              </gl-form>
             </div>
             <div class="gl-search-box-by-type-right-icons">
               <gl-button

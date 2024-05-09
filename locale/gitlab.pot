@@ -33055,6 +33055,9 @@ msgstr ""
 msgid "Model registry"
 msgstr ""
 
+msgid "Model version not found"
+msgstr ""
+
 msgid "Model was successfully deleted"
 msgstr ""
 
@@ -35079,6 +35082,9 @@ msgstr ""
 msgid "ObservabilityLogs|Failed to load logs."
 msgstr ""
 
+msgid "ObservabilityLogs|Failed to load metadata."
+msgstr ""
+
 msgid "ObservabilityLogs|Fingerprint"
 msgstr ""
 
@@ -36354,6 +36360,9 @@ msgstr ""
 msgid "Package type must be Terraform Module"
 msgstr ""
 
+msgid "PackageRegistry|%{count} packages were not published to the registry. Remove these packages and try again."
+msgstr ""
+
 msgid "PackageRegistry|%{name} version %{version} was first created %{datetime}"
 msgstr ""
 
@@ -36394,9 +36403,6 @@ msgid "PackageRegistry|App group: %{group}"
 msgstr ""
 
 msgid "PackageRegistry|App name: %{name}"
-msgstr ""
-
-msgid "PackageRegistry|Are you sure you want to delete the package protection rule?"
 msgstr ""
 
 msgid "PackageRegistry|Author email: %{authorEmail}"
@@ -36516,13 +36522,16 @@ msgstr ""
 msgid "PackageRegistry|Delete package asset"
 msgstr ""
 
+msgid "PackageRegistry|Delete package protection rule"
+msgstr ""
+
+msgid "PackageRegistry|Delete package protection rule?"
+msgstr ""
+
 msgid "PackageRegistry|Delete package version"
 msgstr ""
 
 msgid "PackageRegistry|Delete packages"
-msgstr ""
-
-msgid "PackageRegistry|Delete rule"
 msgstr ""
 
 msgid "PackageRegistry|Delete selected"
@@ -36797,6 +36806,9 @@ msgstr ""
 msgid "PackageRegistry|Show Yarn commands"
 msgstr ""
 
+msgid "PackageRegistry|Show packages with errors"
+msgstr ""
+
 msgid "PackageRegistry|Skip metadata URL validation for the NuGet package"
 msgstr ""
 
@@ -36860,6 +36872,9 @@ msgstr ""
 msgid "PackageRegistry|There was a timeout and the package was not published. Delete this package and try again."
 msgstr ""
 
+msgid "PackageRegistry|There was an error publishing %{count} packages"
+msgstr ""
+
 msgid "PackageRegistry|There was an error publishing a %{packageName} package"
 msgstr ""
 
@@ -36878,7 +36893,7 @@ msgstr ""
 msgid "PackageRegistry|Unable to load package"
 msgstr ""
 
-msgid "PackageRegistry|Users with at least the Developer role for this project will be able to publish, edit, and delete packages."
+msgid "PackageRegistry|Users with at least the Developer role for this project will be able to publish, edit, and delete packages with this package name."
 msgstr ""
 
 msgid "PackageRegistry|Validate these URLs manually to ensure malicious packages are not uploaded to the NuGet package registry. Selecting and clearing the checkbox might lead to invalid records in the package registry that you cannot update."
@@ -36906,6 +36921,9 @@ msgid "PackageRegistry|You are about to delete %{filename}. This is a destructiv
 msgstr ""
 
 msgid "PackageRegistry|You are about to delete %{name}, are you sure?"
+msgstr ""
+
+msgid "PackageRegistry|You are about to delete the package protection rule for %{packageNamePattern}."
 msgstr ""
 
 msgid "PackageRegistry|You are about to delete version %{version} of %{name}. Are you sure?"

@@ -10,6 +10,7 @@ import {
   GlModalDirective,
   GlTooltipDirective,
   GlFormSelect,
+  GlSprintf,
 } from '@gitlab/ui';
 import packagesProtectionRuleQuery from '~/packages_and_registries/settings/project/graphql/queries/get_packages_protection_rules.query.graphql';
 import { getPackageTypeLabel } from '~/packages_and_registries/package_registry/utils';
@@ -37,6 +38,7 @@ export default {
     GlKeysetPagination,
     GlModal,
     GlFormSelect,
+    GlSprintf,
   },
   directives: {
     GlModal: GlModalDirective,
@@ -49,9 +51,12 @@ export default {
       'PackageRegistry|When a package is protected then only certain user roles are able to update and delete the protected package. This helps to avoid tampering with the package.',
     ),
     protectionRuleDeletionConfirmModal: {
-      title: s__('PackageRegistry|Are you sure you want to delete the package protection rule?'),
-      description: s__(
-        'PackageRegistry|Users with at least the Developer role for this project will be able to publish, edit, and delete packages.',
+      title: s__('PackageRegistry|Delete package protection rule?'),
+      descriptionWarning: s__(
+        'PackageRegistry|You are about to delete the package protection rule for %{packageNamePattern}.',
+      ),
+      descriptionConsequence: s__(
+        'PackageRegistry|Users with at least the Developer role for this project will be able to publish, edit, and delete packages with this package name.',
       ),
     },
     pushProtectedUpToAccessLevel: I18N_PUSH_PROTECTED_UP_TO_ACCESS_LEVEL,
@@ -92,7 +97,7 @@ export default {
     },
     modalActionPrimary() {
       return {
-        text: __('Delete'),
+        text: s__('PackageRegistry|Delete package protection rule'),
         attributes: {
           variant: 'danger',
         },
@@ -246,8 +251,8 @@ export default {
     },
     {
       key: 'col_4_actions',
-      label: '',
-      thClass: 'gl-display-none',
+      label: __('Actions'),
+      thClass: 'gl-text-right',
       tdClass: '!gl-align-middle gl-text-right',
     },
   ],
@@ -328,10 +333,10 @@ export default {
               <gl-button
                 v-gl-tooltip
                 v-gl-modal="$options.modal.id"
-                category="secondary"
-                variant="danger"
+                category="tertiary"
                 icon="remove"
-                :title="s__('PackageRegistry|Delete rule')"
+                :title="__('Delete')"
+                :aria-label="__('Delete')"
                 :disabled="isProtectionRuleDeleteButtonDisabled(item)"
                 @click="showProtectionRuleDeletionConfirmModal(item)"
               />
@@ -350,6 +355,7 @@ export default {
       </gl-card>
 
       <gl-modal
+        v-if="protectionRuleMutationItem"
         :modal-id="$options.modal.id"
         size="sm"
         :title="$options.i18n.protectionRuleDeletionConfirmModal.title"
@@ -357,7 +363,16 @@ export default {
         :action-cancel="modalActionCancel"
         @primary="deleteProtectionRule(protectionRuleMutationItem)"
       >
-        <p>{{ $options.i18n.protectionRuleDeletionConfirmModal.description }}</p>
+        <p>
+          <gl-sprintf
+            :message="$options.i18n.protectionRuleDeletionConfirmModal.descriptionWarning"
+          >
+            <template #packageNamePattern>
+              <strong>{{ protectionRuleMutationItem.col_1_package_name_pattern }}</strong>
+            </template>
+          </gl-sprintf>
+        </p>
+        <p>{{ $options.i18n.protectionRuleDeletionConfirmModal.descriptionConsequence }}</p>
       </gl-modal>
     </template>
   </settings-block>

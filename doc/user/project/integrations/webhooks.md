@@ -53,6 +53,8 @@ specific to a group, including:
 
 ### Create a webhook
 
+> - **Name** and **Description** [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141977) in GitLab 16.9.
+
 To create a webhook for a project or group:
 
 1. In your project or group, on the left sidebar, select **Settings > Webhooks**.

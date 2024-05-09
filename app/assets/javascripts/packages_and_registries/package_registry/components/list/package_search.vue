@@ -104,7 +104,7 @@ export default {
           if (filter.type === TOKEN_TYPE_STATUS) {
             return {
               ...acc,
-              packageStatus: filter.value.data,
+              packageStatus: filter.value.data.toUpperCase(),
             };
           }
 

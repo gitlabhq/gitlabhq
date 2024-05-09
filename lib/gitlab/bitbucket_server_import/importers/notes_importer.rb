@@ -33,7 +33,7 @@ module Gitlab
 
             job_delay = calculate_job_delay(job_waiter.jobs_remaining)
 
-            sidekiq_worker_class.perform_in(job_delay, project.id, { iid: merge_request.iid }, job_waiter.key)
+            sidekiq_worker_class_batch.perform_in(job_delay, project.id, { iid: merge_request.iid }, job_waiter.key)
 
             mark_as_processed(merge_request)
           end
@@ -82,13 +82,17 @@ module Gitlab
             comment_id: comment.id,
             comment: comment.to_hash.deep_stringify_keys
           }
-          sidekiq_worker_class.perform_in(job_delay, project.id, object_hash, job_waiter.key)
+          sidekiq_worker_class_individual.perform_in(job_delay, project.id, object_hash, job_waiter.key)
 
           mark_as_processed(comment)
         end
 
-        def sidekiq_worker_class
+        def sidekiq_worker_class_batch
           ImportPullRequestNotesWorker
+        end
+
+        def sidekiq_worker_class_individual
+          ImportPullRequestNoteWorker
         end
 
         def id_for_already_processed_cache(object)

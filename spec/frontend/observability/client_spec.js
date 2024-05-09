@@ -22,6 +22,7 @@ describe('buildClient', () => {
   const metricsSearchUrl = 'https://example.com/metrics/search';
   const metricsSearchMetadataUrl = 'https://example.com/metrics/searchmetadata';
   const logsSearchUrl = 'https://example.com/metrics/logs/search';
+  const logsSearchMetadataUrl = 'https://example.com/metrics/logs/search';
   const FETCHING_TRACES_ERROR = 'traces are missing/invalid in the response';
 
   const apiConfig = {
@@ -34,6 +35,7 @@ describe('buildClient', () => {
     metricsSearchUrl,
     metricsSearchMetadataUrl,
     logsSearchUrl,
+    logsSearchMetadataUrl,
   };
 
   const getQueryParam = () => decodeURIComponent(axios.get.mock.calls[0][1].params.toString());

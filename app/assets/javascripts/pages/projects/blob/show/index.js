@@ -78,6 +78,7 @@ if (viewBlobEl) {
     userId,
     explainCodeAvailable,
     refType,
+    canDownloadCode,
     ...dataset
   } = viewBlobEl.dataset;
 
@@ -94,6 +95,7 @@ if (viewBlobEl) {
       resourceId,
       userId,
       explainCodeAvailable: parseBoolean(explainCodeAvailable),
+      canDownloadCode: parseBoolean(canDownloadCode),
       ...provideWebIdeLink(dataset),
     },
     render(createElement) {

@@ -93,7 +93,7 @@ describe('PackagesListApp', () => {
 
   const waitForFirstRequest = () => {
     // emit a search update so the query is executed
-    findSearch().vm.$emit('update', { sort: 'NAME_DESC', filters: [] });
+    findSearch().vm.$emit('update', { sort: 'NAME_DESC', filters: {} });
     return waitForPromises();
   };
 
@@ -205,15 +205,29 @@ describe('PackagesListApp', () => {
     });
 
     it('exists and has the right props', async () => {
-      await waitForFirstRequest();
+      findSearch().vm.$emit('update', searchPayload);
+      await waitForPromises();
+
       expect(findListComponent().props()).toMatchObject({
         list: expect.arrayContaining([expect.objectContaining({ id: packageData().id })]),
         isLoading: false,
+        hideErrorAlert: false,
         groupSettings: expect.objectContaining({
           mavenPackageRequestsForwarding: true,
           npmPackageRequestsForwarding: true,
           pypiPackageRequestsForwarding: true,
         }),
+      });
+    });
+
+    describe('when packageStatus filter is set to error', () => {
+      beforeEach(async () => {
+        findSearch().vm.$emit('update', { filters: { packageStatus: 'error' } });
+        await nextTick();
+      });
+
+      it('sets hideErrorAlert prop', () => {
+        expect(findListComponent().props('hideErrorAlert')).toBe(true);
       });
     });
 

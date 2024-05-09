@@ -1,6 +1,7 @@
 import {
   GlEmptyState,
   GlLoadingIcon,
+  GlForm,
   GlFormInput,
   GlPagination,
   GlDropdown,
@@ -206,6 +207,7 @@ describe('ErrorTrackingList', () => {
 
     describe('filtering', () => {
       const findSearchBox = () => wrapper.findComponent(GlFormInput);
+      const findGlForm = () => wrapper.findComponent(GlForm);
 
       it('shows search box & sort dropdown', () => {
         expect(findSearchBox().exists()).toBe(true);
@@ -214,7 +216,7 @@ describe('ErrorTrackingList', () => {
 
       it('searches by query', () => {
         findSearchBox().vm.$emit('input', 'search');
-        findSearchBox().trigger('keyup.enter');
+        findGlForm().vm.$emit('submit', { preventDefault: () => {} });
         expect(actions.searchByQuery.mock.calls[0][1]).toBe('search');
       });
 

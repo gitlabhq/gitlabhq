@@ -71,6 +71,10 @@
         }
       }
     }
+
+    &:last-of-type {
+     border-bottom-left-radius: $border-radius-default-inner;
+    }
   }
 
   pre .line,

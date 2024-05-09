@@ -77,7 +77,7 @@ module BitbucketServer
       end
 
       def to_hash
-        parent_comment_note = { note: parent_comment.note } if parent_comment
+        parent_comment_note = parent_comment.note if parent_comment
 
         {
           id: id,
@@ -87,7 +87,7 @@ module BitbucketServer
           created_at: created_at,
           updated_at: updated_at,
           comments: comments.map(&:to_hash),
-          parent_comment: parent_comment_note
+          parent_comment_note: parent_comment_note
         }
       end
 

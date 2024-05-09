@@ -224,7 +224,9 @@ curl --request POST \
 
 ## Import repository from Bitbucket Cloud
 
-Import your projects from Bitbucket Cloud to GitLab using the API.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/215036) in GitLab 17.0.
+
+Import your projects from Bitbucket Cloud to GitLab using by the API.
 
 Prerequisites:
 

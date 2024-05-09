@@ -8,7 +8,7 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotesImporte
   let_it_be_with_reload(:project) do
     create(:project, :repository, :import_started,
       import_data_attributes: {
-        data: { 'project_key' => 'key', 'repo_slug' => 'slug', 'bitbucket_server_notes_separate_worker' => false },
+        data: { 'project_key' => 'key', 'repo_slug' => 'slug' },
         credentials: { 'token' => 'token' }
       }
     )
@@ -16,7 +16,6 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotesImporte
 
   let_it_be(:pull_request_data) { Gitlab::Json.parse(fixture_file('importers/bitbucket_server/pull_request.json')) }
   let_it_be(:pull_request) { BitbucketServer::Representation::PullRequest.new(pull_request_data) }
-  let_it_be(:object) { pull_request }
   let_it_be(:note_author) { create(:user, username: 'note_author', email: 'note_author@example.org') }
   let(:mentions_converter) { Gitlab::Import::MentionsConverter.new('bitbucket_server', project) }
 
@@ -85,7 +84,7 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotesImporte
     allow(Gitlab::Import::MentionsConverter).to receive(:new).and_return(mentions_converter)
   end
 
-  subject(:importer) { described_class.new(project.reload, object.to_hash) }
+  subject(:importer) { described_class.new(project.reload, pull_request.to_hash) }
 
   describe '#execute' do
     context 'when a matching merge request is not found' do
@@ -113,7 +112,7 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotesImporte
         importer.execute
       end
 
-      shared_examples 'import standalone comment' do
+      context 'when PR has comments' do
         before do
           allow_next(BitbucketServer::Client).to receive(:activities).and_return([pr_comment])
         end
@@ -200,7 +199,7 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotesImporte
         end
       end
 
-      shared_examples 'import inline comment' do
+      context 'when PR has threaded discussion' do
         let_it_be(:reply_author) { create(:user, username: 'reply_author', email: 'reply_author@example.org') }
         let_it_be(:inline_note_author) do
           create(:user, username: 'inline_note_author', email: 'inline_note_author@example.org')
@@ -294,7 +293,7 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotesImporte
         end
       end
 
-      shared_examples 'import merge event' do
+      context 'when PR has a merge event' do
         before do
           allow_next(BitbucketServer::Client).to receive(:activities).and_return([merge_event])
         end
@@ -310,7 +309,7 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotesImporte
         end
       end
 
-      shared_examples 'import approved event' do
+      context 'when PR has an approved event' do
         before do
           allow_next(BitbucketServer::Client).to receive(:activities).and_return([approved_event])
         end
@@ -378,126 +377,6 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotesImporte
           it 'does not create the reviewer record' do
             expect { importer.execute }.not_to change { merge_request.reviewers.count }
           end
-        end
-      end
-
-      context 'when PR has comments' do
-        include_examples 'import standalone comment'
-      end
-
-      context 'when PR has threaded discussion' do
-        include_examples 'import inline comment'
-      end
-
-      context 'when PR has a merge event' do
-        include_examples 'import merge event'
-      end
-
-      context 'when PR has an approved event' do
-        include_examples 'import approved event'
-      end
-
-      context 'when bitbucket_server_notes_separate_worker is true', :clean_gitlab_redis_shared_state do
-        let_it_be_with_reload(:project) do
-          create(:project, :repository, :import_started,
-            import_data_attributes: {
-              data: { 'project_key' => 'key', 'repo_slug' => 'slug', 'bitbucket_server_notes_separate_worker' => true },
-              credentials: { 'token' => 'token' }
-            }
-          )
-        end
-
-        let_it_be(:merge_request) { create(:merge_request, iid: pull_request.iid, source_project: project) }
-
-        context 'when comment type is merge_event' do
-          let(:object) do
-            {
-              iid: pull_request.iid,
-              comment_type: 'merge_event',
-              comment_id: 123,
-              comment: {
-                committer_email: pull_request_author.email,
-                merge_timestamp: now,
-                merge_commit: '12345678'
-              }
-            }
-          end
-
-          include_examples 'import merge event'
-        end
-
-        context 'when comment type is approved_event' do
-          let(:object) do
-            {
-              iid: pull_request.iid,
-              comment_type: 'approved_event',
-              comment_id: 123,
-              comment: {
-                approver_username: pull_request_author.username,
-                approver_email: pull_request_author.email,
-                created_at: now
-              }
-            }
-          end
-
-          include_examples 'import approved event'
-        end
-
-        context 'when comment type is inline' do
-          let(:object) do
-            {
-              iid: pull_request.iid,
-              comment_type: 'inline',
-              comment_id: 123,
-              comment: {
-                file_type: 'ADDED',
-                from_sha: pull_request.target_branch_sha,
-                to_sha: pull_request.source_branch_sha,
-                file_path: '.gitmodules',
-                old_pos: nil,
-                new_pos: 4,
-                note: 'Hello world',
-                author_email: inline_note_author.email,
-                author_username: inline_note_author.username,
-                comments: [
-                  author_email: reply_author.email,
-                  author_username: reply_author.username,
-                  note: 'I agree',
-                  created_at: now,
-                  updated_at: now,
-                  parent_comment: nil
-                ],
-                created_at: now,
-                updated_at: now,
-                parent_comment: nil
-              }
-            }
-          end
-
-          include_examples 'import inline comment'
-        end
-
-        context 'when comment type is standalone_pr' do
-          let_it_be(:object) do
-            {
-              iid: pull_request.iid,
-              comment_type: 'standalone_notes',
-              comment_id: 123,
-              comment: {
-                note: 'Hello world',
-                author_email: note_author.email,
-                author_username: note_author.username,
-                comments: [],
-                created_at: now,
-                updated_at: now,
-                parent_comment: {
-                  note: 'Parent note'
-                }
-              }
-            }
-          end
-
-          include_examples 'import standalone comment'
         end
       end
     end

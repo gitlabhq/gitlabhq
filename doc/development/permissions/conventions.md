@@ -57,7 +57,7 @@ Examples:
 ```ruby
 rule { developer } # Static role check
 rule { can?(:developer_access) } # Another approach used in some classes
-rule { role_enables_read_dependency } # Custom role check
+rule { custom_role_enables_read_dependency } # Custom role check
 ```
 
 #### Checks Related to the Current User

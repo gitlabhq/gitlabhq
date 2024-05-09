@@ -4,11 +4,16 @@ group: Product Planning
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Epics API
+# Epics API (deprecated)
 
 DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
+
+WARNING:
+The Epics REST API was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/460668) in GitLab 17.0
+and is planned for removal in v5 of the API. Use the [Work Items API](../architecture/blueprints/work_items/index.md) instead.
+This change is a breaking change.
 
 Every API call to epic must be authenticated.
 

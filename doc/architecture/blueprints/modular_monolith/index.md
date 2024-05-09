@@ -94,8 +94,8 @@ monolith successful. We will work on the aspects listed below, refine them, and
 add more important details as we move forward towards the goal:
 
 1. [Deliver modularization proof-of-concepts that will deliver key insights](proof_of_concepts.md).
-1. Align modularization plans to the organizational structure by [defining bounded contexts](bounded_contexts.md).
-1. [Separate domains into modules](packages_extraction.md) that will reflect organizational structure.
+1. Align modularization plans to the product structure by [defining bounded contexts](bounded_contexts.md).
+1. [Separate domains into modules](packages_extraction.md) that will reflect product structure.
 1. Start a training program for team members on how to work with decoupled domains (TODO)
 1. Build tools that will make it easier to build decoupled domains through inversion of control (TODO)
 1. [Introduce hexagonal architecture within the monolith](hexagonal_monolith/index.md)
@@ -105,6 +105,17 @@ add more important details as we move forward towards the goal:
 ## Status
 
 In progress.
+
+- A working group [Bounded Contexts](https://handbook.gitlab.com/handbook/company/working-groups/bounded-contexts/)
+  was concluded in April 2024 which defined a list of bounded contexts to be enforced for GitLab Rails domain and
+  infrastructure layer.
+
+## Decisions
+
+1. [ADR-001: Modularize application domain](decisions/001_modular_application_domain.md)? Start with modularizing
+  the application domain and infrastructure code.
+1. [ADR-002: Define bounded context around feature categories](decisions/002_bounded_contexts_definition.md) as a SSoT in the code.
+1. [ADR-003: Assign stewards to all modules and libraries](decisions/003_stewardship.md).
 
 ## Glossary
 

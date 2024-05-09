@@ -408,8 +408,25 @@ RSpec.describe BlobHelper do
         resource_id: project.to_global_id,
         user_id: user.to_global_id,
         target_branch: ref,
-        original_branch: ref
+        original_branch: ref,
+        can_download_code: 'false'
       })
+    end
+
+    context 'when a user can download code' do
+      let_it_be(:user) { build_stubbed(:user) }
+
+      before do
+        allow(helper).to receive(:current_user).and_return(user)
+        allow(Ability).to receive(:allowed?).and_call_original
+        allow(Ability).to receive(:allowed?).with(user, :download_code, project).and_return(true)
+      end
+
+      it 'returns true for `can_download_code` value' do
+        expect(helper.vue_blob_app_data(project, blob, ref)).to include(
+          can_download_code: 'true'
+        )
+      end
     end
   end
 

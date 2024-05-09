@@ -35,8 +35,7 @@ describe('Packages protection rules project settings', () => {
     extendedWrapper(wrapper.findByRole('table', { name: /protected packages/i }));
   const findTableBody = () => extendedWrapper(findTable().findAllByRole('rowgroup').at(1));
   const findTableRow = (i) => extendedWrapper(findTableBody().findAllByRole('row').at(i));
-  const findTableRowButtonDelete = (i) =>
-    findTableRow(i).findByRole('button', { name: /delete rule/i });
+  const findTableRowButtonDelete = (i) => findTableRow(i).findByRole('button', { name: /delete/i });
   const findTableLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findProtectionRuleForm = () => wrapper.findComponent(PackagesProtectionRuleForm);
   const findAddProtectionRuleButton = () =>
@@ -426,19 +425,19 @@ describe('Packages protection rules project settings', () => {
         });
 
         describe('when button is clicked', () => {
-          it('binds modal "confirmation for delete action"', async () => {
+          it('renders the "delete container protection rule" confirmation modal', async () => {
             createComponent();
 
             await waitForPromises();
 
+            await findTableRowButtonDelete(0).trigger('click');
+
             const modalId = getBinding(findTableRowButtonDelete(0).element, 'gl-modal');
 
             expect(findModal().props('modal-id')).toBe(modalId);
-            expect(findModal().props('title')).toBe(
-              'Are you sure you want to delete the package protection rule?',
-            );
-            expect(findModal().text()).toBe(
-              'Users with at least the Developer role for this project will be able to publish, edit, and delete packages.',
+            expect(findModal().props('title')).toBe('Delete package protection rule?');
+            expect(findModal().text()).toContain(
+              'Users with at least the Developer role for this project will be able to publish, edit, and delete packages with this package name.',
             );
           });
         });

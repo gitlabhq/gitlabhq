@@ -90,22 +90,22 @@ RSpec.describe BitbucketServer::Representation::Comment, feature_category: :impo
             hash_including(
               note: 'Hello world',
               comments: [],
-              parent_comment: { note: 'is this a new line?' }
+              parent_comment_note: 'is this a new line?'
             ),
             hash_including(
               note: 'Ok',
               comments: [],
-              parent_comment: { note: 'Hello world' }
+              parent_comment_note: 'Hello world'
             ),
             hash_including(
               note: 'hi',
               comments: [],
-              parent_comment: { note: 'Hello world' }
+              parent_comment_note: 'Hello world'
             ),
             hash_including(
               note: 'hello',
               comments: [],
-              parent_comment: { note: 'is this a new line?' }
+              parent_comment_note: 'is this a new line?'
             )
           )
         )

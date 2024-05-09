@@ -29,19 +29,22 @@ GitLab has completed FIPS 140-2 Compliance for the build specified in this docum
 To be compliant, all components (GitLab itself, Gitaly, etc) must be compliant,
 along with the communication between those components, and any storage used by
 them. Where functionality cannot be brought into compliance, it must be disabled
-when FIPS mode is enabled.
+when FIPS mode is enabled. FIPS-compliant cryptography means that a cryptographic
+operation leverages a FIPS-validated module.
 
 ### Leveraged Cryptographic modules
 
+The following list is for reference purposes only and is not dynamically updated. The latest CMVP certificates for the modules below will apply.
+
 | Cryptographic module name                                | CMVP number                                                                                     | Instance type | Software component used |
 |----------------------------------------------------------|-------------------------------------------------------------------------------------------------|---------------|-------------------------|
-| Ubuntu 20.04 AWS Kernel Crypto API Cryptographic Module  | [4132](https://csrc.nist.gov/projects/cryptographic-module-validation-program/certificate/4132) | EC2           | Linux kernel |
-| Ubuntu 20.04 OpenSSL Cryptographic Module                | [3966](https://csrc.nist.gov/projects/cryptographic-module-validation-program/certificate/3966) | EC2           | Gitaly, Rails (Puma/Sidekiq) |
-| Ubuntu 20.04 Libgcrypt Cryptographic Module              | [3902](https://csrc.nist.gov/projects/cryptographic-module-validation-program/certificate/3902) | EC2 instances | `gpg`, `sshd` |
-| Amazon Linux 2 Kernel Crypto API Cryptographic Module    | [3709](https://csrc.nist.gov/projects/cryptographic-module-validation-program/certificate/3709) | EKS nodes     | Linux kernel |
-| Amazon Linux 2 OpenSSL Cryptographic Module              | [3553](https://csrc.nist.gov/projects/cryptographic-module-validation-program/certificate/3553) | EKS nodes     | NGINX |
-| RedHat Enterprise Linux 8 OpenSSL Cryptographic Module   | [4271](https://csrc.nist.gov/projects/cryptographic-module-validation-program/certificate/4271) | EKS nodes     | UBI containers: Workhorse, Pages, container registry, Rails (Puma/Sidekiq), Security Analyzers, `gitlab-sshd` |
-| RedHat Enterprise Linux 8 Libgcrypt Cryptographic Module | [3784](https://csrc.nist.gov/projects/cryptographic-module-validation-program/certificate/3784) | EKS nodes     | UBI containers: GitLab Shell, `gpg` |
+| Ubuntu 20.04 AWS Kernel Crypto API Cryptographic Module  | [4366](https://csrc.nist.gov/projects/cryptographic-module-validation-program/certificate/4366) | EC2 (Omnibus)          | Linux kernel |
+| Ubuntu 20.04 OpenSSL Cryptographic Module                | [4292](https://csrc.nist.gov/projects/cryptographic-module-validation-program/certificate/4292) | EC2 (Omnibus)          | Gitaly, Rails (Puma/Sidekiq) |
+| Ubuntu 20.04 Libgcrypt Cryptographic Module              | [3902](https://csrc.nist.gov/projects/cryptographic-module-validation-program/certificate/3902) | EC2 (Omnibus) | `gpg`, `sshd` |
+| Amazon Linux 2 Kernel Crypto API Cryptographic Module    | [4593](https://csrc.nist.gov/projects/cryptographic-module-validation-program/certificate/4593) | EKS nodes     | Linux kernel |
+| Amazon Linux 2 OpenSSL Cryptographic Module              | [4548](https://csrc.nist.gov/projects/cryptographic-module-validation-program/certificate/4548) | EKS nodes     | EKS |
+| Red Hat Enterprise Linux 8 OpenSSL Cryptographic Module   | [4642](https://csrc.nist.gov/projects/cryptographic-module-validation-program/certificate/4642) | GitLab Helm chart     | UBI containers: Workhorse, Pages, container registry, Rails (Puma/Sidekiq), Security Analyzers, `gitlab-sshd` |
+| Red Hat Enterprise Linux 8 Libgcrypt Cryptographic Module | [4438](https://csrc.nist.gov/projects/cryptographic-module-validation-program/certificate/4438) | GitLab Helm chart     | UBI containers: GitLab Shell, `gpg` |
 
 ### Supported Operating Systems
 
@@ -65,7 +68,6 @@ listed here that also do not work properly in FIPS mode:
 - [Static Application Security Testing (SAST)](../user/application_security/sast/index.md)
   supports a reduced set of [analyzers](../user/application_security/sast/index.md#fips-enabled-images)
   when operating in FIPS-compliant mode.
-- Advanced search is currently not included in FIPS mode. It must not be enabled to be FIPS-compliant.
 - [Operational Container Scanning](../user/clusters/agent/vulnerabilities.md).
 
 Additionally, these package repositories are disabled in FIPS mode:
@@ -73,15 +75,23 @@ Additionally, these package repositories are disabled in FIPS mode:
 - [Conan package repository](../user/packages/conan_repository/index.md).
 - [Debian package repository](../user/packages/debian_repository/index.md).
 
-## FIPS validation at GitLab
+## FIPS compliance vs FIPS validation at GitLab
 
-Unlike FIPS compliance, FIPS validation is a formal declaration of compliance by
-an accredited auditor. The requirements needed to pass the audit are the same as
-for FIPS compliance.
+GitLab does not fork or modify cryptographic binaries (for example OpenSSL) in its FIPS-compliant
+software releases but instead uses existing, FIPS-validated crytographic software (modules).
+GitLab therefore does not need to submit its software through the
+[NIST Cryptographic Module Valiation Program (CMVP)](https://csrc.nist.gov/projects/cryptographic-module-validation-program/)
+independent laboratory testing.
+Instead, GitLab must use FIPS-validated software (listed in
+[Cryptographic Module Validation Program](https://csrc.nist.gov/projects/cryptographic-module-validation-program/validated-modules))
+that has an active CMVP certificate and ensure it is enabled for all cryptographic operations.
 
-A list of FIPS-validated modules can be found at the
-NIST (National Institute of Standards and Technology)
-[cryptographic module validation program](https://csrc.nist.gov/projects/cryptographic-module-validation-program/validated-modules).
+FIPS-compliant cryptography means that a cryptographic operation uses a FIPS-validated module.
+FIPS mode must be enabled on one or both sides of every communication session (that is, client, server, or both).
+Enabling FIPS mode on the client ensures that the client uses strong cryptographic algorithms that
+are compliant with FIPS 140-3/FIPS 140-2 for encryption, hashing, and signing.
+If FIPS mode is not enabled on the client, it must be implemented on the server-side or application
+load balancer or proxy server to allow for FIPS-compliant connections to be made.
 
 ## Install GitLab with FIPS compliance
 
@@ -91,8 +101,9 @@ a hybrid deployment using elements from both Omnibus and our Cloud Native GitLab
 
 ### Prerequisites
 
-- Amazon Web Services account. Our first target environment is running on AWS, and uses other FIPS Compliant AWS resources.
+- Amazon Web Services account. Our first target environment is running on AWS, and uses other FIPS Compliant AWS resources. For many AWS resources, you must use a [FIPS specific endpoint](https://aws.amazon.com/compliance/fips/).
 - Ability to run Ubuntu 20.04 machines for GitLab. Our first target environment uses the hybrid architecture.
+- Advanced Search: GitLab does not provide a packaged Elastic or OpenSearch deployment. You must use a FIPS-compliant service or disable Advanced Search.
 
 ### Set up a FIPS-enabled cluster
 

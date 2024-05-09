@@ -146,7 +146,7 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::NotesImporter, feature_
       end
 
       it 'does not schedule job for processed merge requests', :aggregate_failures do
-        expect(Gitlab::BitbucketServerImport::ImportPullRequestNotesWorker).not_to receive(:perform_in)
+        expect(Gitlab::BitbucketServerImport::ImportPullRequestNoteWorker).not_to receive(:perform_in)
 
         waiter = importer.execute
 
@@ -164,7 +164,7 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::NotesImporter, feature_
       end
 
       it 'imports the stand alone comments' do
-        expect(Gitlab::BitbucketServerImport::ImportPullRequestNotesWorker).to receive(:perform_in).with(
+        expect(Gitlab::BitbucketServerImport::ImportPullRequestNoteWorker).to receive(:perform_in).with(
           anything,
           project.id,
           hash_including(
@@ -196,7 +196,7 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::NotesImporter, feature_
       end
 
       it 'imports the inline comment' do
-        expect(Gitlab::BitbucketServerImport::ImportPullRequestNotesWorker).to receive(:perform_in).with(
+        expect(Gitlab::BitbucketServerImport::ImportPullRequestNoteWorker).to receive(:perform_in).with(
           anything,
           project.id,
           hash_including(
@@ -228,7 +228,7 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::NotesImporter, feature_
       end
 
       it 'imports the merge event' do
-        expect(Gitlab::BitbucketServerImport::ImportPullRequestNotesWorker).to receive(:perform_in).with(
+        expect(Gitlab::BitbucketServerImport::ImportPullRequestNoteWorker).to receive(:perform_in).with(
           anything,
           project.id,
           hash_including(
@@ -260,7 +260,7 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::NotesImporter, feature_
       end
 
       it 'imports the approved event' do
-        expect(Gitlab::BitbucketServerImport::ImportPullRequestNotesWorker).to receive(:perform_in).with(
+        expect(Gitlab::BitbucketServerImport::ImportPullRequestNoteWorker).to receive(:perform_in).with(
           anything,
           project.id,
           hash_including(

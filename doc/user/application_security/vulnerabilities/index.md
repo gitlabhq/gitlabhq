@@ -235,8 +235,8 @@ Be aware of the following conditions between a vulnerability and a linked GitLab
 
 Prerequisites:
 
-- Ensure the Jira issue integration is [configured](../../../integration/jira/configure.md#configure-the-integration) and the
-  **View Jira issues** and **Create Jira issues for vulnerabilities** checkboxes are selected.
+- Ensure the Jira issue integration is [configured](../../../integration/jira/configure.md#configure-the-integration)
+  and the **Create Jira issues for vulnerabilities** checkbox is selected.
 
 To link a vulnerability to existing Jira issues, add the following line to the Jira issue's description:
 

@@ -24248,8 +24248,6 @@ CREATE INDEX index_abuse_reports_on_status_category_and_id ON abuse_reports USIN
 
 CREATE INDEX index_abuse_reports_on_status_reporter_id_and_id ON abuse_reports USING btree (status, reporter_id, id);
 
-CREATE INDEX index_abuse_reports_on_user_id ON abuse_reports USING btree (user_id);
-
 CREATE INDEX index_abuse_trust_scores_on_user_id_and_source_and_created_at ON abuse_trust_scores USING btree (user_id, source, created_at);
 
 CREATE UNIQUE INDEX "index_achievements_on_namespace_id_LOWER_name" ON achievements USING btree (namespace_id, lower(name));

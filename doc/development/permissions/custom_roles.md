@@ -198,36 +198,14 @@ before in a separate merge request, before completing the below.
 - For example: if the ability we would like to add is `read_dependency`, then an update to `ee/app/policies/ee/group_policy.rb` would look like as follows:
 
 ```ruby
-desc "Custom role on group that enables read dependency"
-condition(:role_enables_read_dependency) do
-  ::Auth::MemberRoleAbilityLoader.new(
-    user: @user,
-    resource: @subject,
-    ability: :read_dependency
-  ).has_ability?
-end
-
-rule { custom_roles_allowed & role_enables_read_dependency }.policy do
-  enable :read_dependency
-end
+rule { custom_role_enables_read_dependency }.enable(:read_dependency)
 ```
 
 - Similarly, If the ability is checked on a project level, add rule(s) to ProjectPolicy to enable the ability.
 - For example: if the ability we would like to add is `read_dependency`, then an update to `ee/app/policies/ee/project_policy.rb` would look like as follows:
 
 ```ruby
-desc "Custom role on project that enables read dependency"
-condition(:role_enables_read_dependency) do
-  ::Auth::MemberRoleAbilityLoader.new(
-    user: @user,
-    resource: @subject,
-    ability: :read_dependency
-  ).has_ability?
-end
-
-rule { custom_roles_allowed & role_enables_read_dependency }.policy do
-  enable :read_dependency
-end
+rule { custom_role_enables_read_dependency }.enable(:read_dependency)
 ```
 
 - Not all abilities need to be enabled on both levels, for instance `admin_terraform_state` allows users to manage a project's terraform state. It only needs to be enabled on the project level and not the group level, and thus only needs to be configured in `ee/app/policies/ee/project_policy.rb`.

@@ -2568,6 +2568,15 @@
   :weight: 1
   :idempotent: false
   :tags: []
+- :name: bitbucket_server_import_import_pull_request_note
+  :worker_name: Gitlab::BitbucketServerImport::ImportPullRequestNoteWorker
+  :feature_category: :importers
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: false
+  :tags: []
 - :name: bitbucket_server_import_import_pull_request_notes
   :worker_name: Gitlab::BitbucketServerImport::ImportPullRequestNotesWorker
   :feature_category: :importers

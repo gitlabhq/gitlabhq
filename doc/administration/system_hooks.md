@@ -54,6 +54,8 @@ For push and tag events, the same structure and deprecations are followed as [pr
 
 ## Create a system hook
 
+> - **Name** and **Description** [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141977) in GitLab 16.9.
+
 To create a system hook:
 
 1. On the left sidebar, at the bottom, select **Admin Area**.

@@ -222,13 +222,13 @@ export const PACKAGE_TYPES_OPTIONS = [
 
 export const PACKAGE_STATUS_OPTIONS = [
   {
-    value: PACKAGE_DEFAULT_STATUS,
+    value: PACKAGE_DEFAULT_STATUS.toLowerCase(),
     title: s__('PackageRegistry|Default'),
   },
-  { value: PACKAGE_ERROR_STATUS, title: s__('PackageRegistry|Error') },
-  { value: 'HIDDEN', title: s__('PackageRegistry|Hidden') },
-  { value: 'PENDING_DESTRUCTION', title: s__('PackageRegistry|Pending deletion') },
-  { value: 'PROCESSING', title: s__('PackageRegistry|Processing') },
+  { value: PACKAGE_ERROR_STATUS.toLowerCase(), title: s__('PackageRegistry|Error') },
+  { value: 'hidden', title: s__('PackageRegistry|Hidden') },
+  { value: 'pending_destruction', title: s__('PackageRegistry|Pending deletion') },
+  { value: 'processing', title: s__('PackageRegistry|Processing') },
 ];
 
 // links

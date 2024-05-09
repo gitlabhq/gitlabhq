@@ -20,6 +20,16 @@ RSpec.describe ExtractsRef::RefExtractor, feature_category: :source_code_managem
     allow(container.repository).to receive(:ref_names).and_return(ref_names)
   end
 
+  describe '#initialize' do
+    let(:params) { { id: 1, ref: 2, path: 3, ref_type: 4 } }
+
+    it 'does not mutate provided params' do
+      ref_extractor
+
+      expect(params).to eq(id: 1, ref: 2, path: 3, ref_type: 4)
+    end
+  end
+
   describe '#extract_vars!' do
     it_behaves_like 'extracts ref vars'
 

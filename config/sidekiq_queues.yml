@@ -121,6 +121,8 @@
   - 1
 - - bitbucket_server_import_import_pull_request
   - 1
+- - bitbucket_server_import_import_pull_request_note
+  - 1
 - - bitbucket_server_import_import_pull_request_notes
   - 1
 - - bitbucket_server_import_stage_finish_import
