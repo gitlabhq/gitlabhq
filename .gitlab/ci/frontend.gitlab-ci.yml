@@ -110,7 +110,7 @@ update-storybook-yarn-cache:
     - .shared:rules:update-cache
   stage: prepare
   script:
-    - yarn_install_script
+    - yarn_install_script_storybook
 
 retrieve-frontend-fixtures:
   variables:
@@ -420,7 +420,7 @@ bundle-size-review:
     - .frontend-test-base
     - .storybook-yarn-cache
   script:
-    - run_timed_command "retry yarn run storybook:install --frozen-lockfile"
+    - yarn_install_script_storybook
     - run_timed_command "yarn run storybook:build"
   needs: ["graphql-schema-dump"]
 

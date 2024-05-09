@@ -13,13 +13,7 @@ RSpec.describe Banzai::Filter::TableOfContentsLegacyFilter, feature_category: :t
     "<h#{level}>#{text}</h#{level}>\n"
   end
 
-  before do
-    stub_feature_flags(native_header_anchors: false)
-  end
-
-  # TODO: enable when feature flag is removed
-  # let_it_be(:context) { { markdown_engine: Banzai::Filter::MarkdownFilter::CMARK_ENGINE } }
-  let_it_be(:context) { {} }
+  let_it_be(:context) { { markdown_engine: Banzai::Filter::MarkdownFilter::CMARK_ENGINE } }
 
   it 'does nothing when :no_header_anchors is truthy' do
     exp = act = header(1, 'Header')

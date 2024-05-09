@@ -54,18 +54,18 @@ For more information, [read about pipelines](../../../ci/pipelines/index.md).
 Set a merge request that looks ready to merge to
 [merge automatically when CI pipeline succeeds](merge_when_pipeline_succeeds.md).
 
-## Live preview with Review Apps
+## Live preview with review apps
 
-If you configured [Review Apps](../../../ci/review_apps/index.md) for your project,
+If you configured [review apps](../../../ci/review_apps/index.md) for your project,
 you can preview the changes submitted to a feature branch through a merge request
 on a per-branch basis. You don't need to check out the branch, install, and preview locally.
-All your changes are available to preview by anyone with the Review Apps link.
+All your changes are available to preview by anyone with the review apps link.
 
 With GitLab [Route Maps](../../../ci/review_apps/index.md#route-maps) set, the
 merge request widget takes you directly to the pages changed, making it easier and
 faster to preview proposed modifications.
 
-[Read more about Review Apps](../../../ci/review_apps/index.md).
+[Read more about review apps](../../../ci/review_apps/index.md).
 
 ## License compliance
 

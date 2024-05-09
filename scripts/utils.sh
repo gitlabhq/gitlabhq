@@ -122,9 +122,15 @@ function yarn_install_script() {
 
   retry yarn install --frozen-lockfile
 
+  section_end "yarn-install"
+}
+
+function yarn_install_script_storybook() {
+  section_start "yarn-install-storybook" "Installing Yarn packages for Storybook"
+
   retry yarn storybook:install --frozen-lockfile
 
-  section_end "yarn-install"
+  section_end "yarn-install-storybook"
 }
 
 function assets_compile_script() {

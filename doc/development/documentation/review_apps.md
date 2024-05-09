@@ -60,7 +60,7 @@ The following GitLab features are used among others:
 
 - [Manual jobs](../../ci/jobs/job_control.md#create-a-job-that-must-be-run-manually)
 - [Multi project pipelines](../../ci/pipelines/downstream_pipelines.md#multi-project-pipelines)
-- [Review Apps](../../ci/review_apps/index.md)
+- [Review apps](../../ci/review_apps/index.md)
 - [Artifacts](../../ci/yaml/index.md#artifacts)
 - [Merge request pipelines](../../ci/pipelines/merge_request_pipelines.md)
 

@@ -10,7 +10,6 @@ module Gitlab
 
         def initialize(integration_check)
           @changes_access = integration_check.changes_access
-          @integration = ::Integrations::BeyondIdentity.for_instance.first
         end
 
         def validate!
@@ -39,8 +38,6 @@ module Gitlab
         end
 
         private
-
-        attr_reader :integration
 
         def skip_validation?
           return true unless integration&.activated?
@@ -71,6 +68,11 @@ module Gitlab
         rescue ::Gitlab::BeyondIdentity::Client::ApiError => _
           false
         end
+
+        def integration
+          project.beyond_identity_integration || ::Integrations::BeyondIdentity.for_instance.first
+        end
+        strong_memoize_attr :integration
       end
     end
   end

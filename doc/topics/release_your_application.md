@@ -17,7 +17,7 @@ release features incrementally.
 - [Environments and deployments](../ci/environments/index.md)
 - [Releases](../user/project/releases/index.md)
 - [Packages and registries](../user/packages/index.md)
-- [Review Apps](../ci/review_apps/index.md)
+- [Review apps](../ci/review_apps/index.md)
 - [Feature flags](../operations/feature_flags.md)
 - [GitLab Pages](../user/project/pages/index.md)
 

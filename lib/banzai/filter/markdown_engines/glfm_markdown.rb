@@ -46,7 +46,7 @@ module Banzai
         end
 
         def headers_disabled?
-          context[:no_header_anchors] || Feature.disabled?(:native_header_anchors)
+          context[:no_header_anchors]
         end
       end
     end

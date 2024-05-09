@@ -243,7 +243,7 @@ When this label is assigned, the following steps of the CI/CD pipeline are skipp
 
 - The `e2e:package-and-test` job.
 - The `rspec:undercoverage` job.
-- The entire [Review Apps process](../testing_guide/review_apps.md).
+- The entire [review apps process](../testing_guide/review_apps.md).
 
 Apply the label to the merge request, and run a new pipeline for the MR.
 
@@ -283,7 +283,7 @@ the specific list of rules.
 If you want to force a Review App to be deployed regardless of your changes, you can add the
 `pipeline:run-review-app` label to the merge request.
 
-Consult the [Review Apps](../testing_guide/review_apps.md) dedicated page for more information.
+Consult the [review apps](../testing_guide/review_apps.md) dedicated page for more information.
 
 ### As-if-FOSS jobs and cross project downstream pipeline
 

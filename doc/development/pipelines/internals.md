@@ -106,7 +106,7 @@ The current stages are:
 - `post-test`: This stage includes jobs that build reports or gather data from
   the `test` stage's jobs (for example, coverage, Knapsack metadata, and so on).
 - `review`: This stage includes jobs that build the CNG images, deploy them, and
-  run end-to-end tests against Review Apps (see [Review Apps](../testing_guide/review_apps.md) for details).
+  run end-to-end tests against review apps (see [review apps](../testing_guide/review_apps.md) for details).
   It also includes Docs Review App jobs.
 - `qa`: This stage includes jobs that perform QA tasks against the Review App
   that is deployed in stage `review`.

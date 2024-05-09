@@ -29,19 +29,4 @@ RSpec.describe Banzai::Filter::MarkdownEngines::GlfmMarkdown, feature_category: 
 
     expect(engine.render('# hi')).to eq expected
   end
-
-  context 'when feature flag is disabled' do
-    before do
-      stub_feature_flags(native_header_anchors: false)
-    end
-
-    it 'turns off header anchors' do
-      engine = described_class.new({ no_sourcepos: true })
-      expected = <<~TEXT
-        <h1>hi</h1>
-      TEXT
-
-      expect(engine.render('# hi')).to eq expected
-    end
-  end
 end

@@ -30,7 +30,7 @@ module Banzai
       XPATH = Gitlab::Utils::Nokogiri.css_to_xpath(CSS).freeze
 
       def call
-        return doc if MarkdownFilter.glfm_markdown?(context) && Feature.enabled?(:native_header_anchors)
+        return doc if MarkdownFilter.glfm_markdown?(context)
         return doc if context[:no_header_anchors]
 
         result[:toc] = +""

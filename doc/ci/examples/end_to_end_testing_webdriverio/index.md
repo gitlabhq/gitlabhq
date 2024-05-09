@@ -15,7 +15,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-[Review Apps](../../review_apps/index.md) are great: for every merge request
+[Review apps](../../review_apps/index.md) are great: for every merge request
 (or branch, for that matter), the new code can be copied and deployed to a fresh production-like live
 environment, reducing the effort to assess the impact of changes. Thus, when we use a dependency manager like
 [Dependencies.io](https://www.dependencies.io/), it can submit a merge request with an updated dependency,
@@ -35,7 +35,7 @@ to write such end-to-end tests, and how to set up GitLab CI/CD to automatically 
 against your new code, on a branch-by-branch basis. For the scope of this article, we will walk you
 through the process of setting up GitLab CI/CD for end-to-end testing JavaScript-based applications
 with WebdriverIO, but the general strategy should carry over to other languages.
-We assume you are familiar with GitLab, [GitLab CI/CD](../../index.md), [Review Apps](../../review_apps/index.md), and running your app locally, for example, on `localhost:8000`.
+We assume you are familiar with GitLab, [GitLab CI/CD](../../index.md), [review apps](../../review_apps/index.md), and running your app locally, for example, on `localhost:8000`.
 
 ## What to test
 

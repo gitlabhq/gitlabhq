@@ -2385,7 +2385,7 @@ for inclusion in URLs. If the `deploy as review app` job runs in a branch named
 `pow`, this environment would be accessible with a URL like `https://review-pow.example.com/`.
 
 The common use case is to create dynamic environments for branches and use them
-as Review Apps. You can see an example that uses Review Apps at
+as review apps. You can see an example that uses review apps at
 <https://gitlab.com/gitlab-examples/review-apps-nginx/>.
 
 ### `extends`

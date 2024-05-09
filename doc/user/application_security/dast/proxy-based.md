@@ -35,7 +35,7 @@ The analyzer uses the [Software Security Project Zed Attack Proxy](https://www.z
   actively attack your application.
 - Passive and active (or full) scan. DAST can be [configured](#full-scan) to also perform an active scan
   to attack your application and produce a more extensive security report. It can be very
-  useful when combined with [Review Apps](../../../ci/review_apps/index.md).
+  useful when combined with [review apps](../../../ci/review_apps/index.md).
 
 ## Templates
 

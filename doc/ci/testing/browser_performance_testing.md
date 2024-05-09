@@ -132,7 +132,7 @@ browser_performance:
 
 The `Total Score` metric is based on sitespeed.io's [coach performance score](https://www.sitespeed.io/documentation/sitespeed.io/metrics/#performance-score). There is more information in [the coach documentation](https://www.sitespeed.io/documentation/coach/how-to/#what-do-the-coach-do).
 
-### Performance testing on Review Apps
+### Performance testing on review apps
 
 The above CI YAML configuration is great for testing against static environments, and it can
 be extended for dynamic environments, but a few extra steps are required:

@@ -138,7 +138,7 @@ ee:my-new-job:
 ## `e2e:test-on-gdk`
 
 The `e2e:test-on-gdk` child pipeline supports development of the GitLab platform by providing feedback to engineers on
-end-to-end test execution faster than via `e2e:package-and-test` or [Review Apps](../review_apps.md).
+end-to-end test execution faster than via `e2e:package-and-test` or [review apps](../review_apps.md).
 
 This is achieved by running tests against the [GitLab Development Kit](https://gitlab.com/gitlab-org/gitlab-development-kit) (GDK),
 which can be built and installed in less time than when testing against [Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab).

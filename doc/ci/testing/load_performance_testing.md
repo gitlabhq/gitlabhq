@@ -147,7 +147,7 @@ summary values from the test.
 
 If [GitLab Pages](../../user/project/pages/index.md) is enabled, you can view the report directly in your browser.
 
-### Load Performance testing in Review Apps
+### Load Performance testing in review apps
 
 The CI/CD YAML configuration example above works for testing against static environments,
 but it can be extended to work with [review apps](../review_apps/index.md) or

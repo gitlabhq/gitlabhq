@@ -401,7 +401,7 @@ For example:
 #### Go from source files to public pages
 
 With GitLab [Route Maps](../review_apps/index.md#route-maps), you can go directly
-from source files to public pages in the environment set for Review Apps.
+from source files to public pages in the environment set for review apps.
 
 ### Stopping an environment
 
@@ -784,7 +784,9 @@ problematic deployment, they can roll back to a previous stable version.
 
 GitLab Auto Rollback eases this workflow by automatically triggering a rollback when a
 [critical alert](../../operations/incident_management/alerts.md)
-is detected. GitLab selects and redeploys the most recent successful deployment.
+is detected. 
+For GitLab to select the appropriate environment for the rollback, the alert should contain a `gitlab_environment_name` key with the name of the environment.
+GitLab selects and redeploys the most recent successful deployment.
 
 Limitations of GitLab Auto Rollback:
 
@@ -946,7 +948,7 @@ See [Deployment-only access to protected environments](protected_environments.md
 - [Dashboard for Kubernetes](kubernetes_dashboard.md)
 - [Downstream pipelines for deployments](../pipelines/downstream_pipelines.md#downstream-pipelines-for-deployments)
 - [Deploy to multiple environments with GitLab CI/CD (blog post)](https://about.gitlab.com/blog/2021/02/05/ci-deployment-and-environments/)
-- [Review Apps](../review_apps/index.md)
+- [Review apps](../review_apps/index.md)
 - [Protected environments](protected_environments.md)
 - [Environments Dashboard](../environments/environments_dashboard.md)
 - [Deployment safety](deployment_safety.md#restrict-write-access-to-a-critical-environment)
@@ -1048,7 +1050,7 @@ To fix this, use one of the following solutions:
 - Ensure the variable exists in the pipeline. Review the
   [limitation on supported variables](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
 
-#### If you get this error on Review Apps
+#### If you get this error on review apps
 
 For example, if you have the following in your `.gitlab-ci.yml`:
 

@@ -3,11 +3,12 @@
 - noteable_identifier = note.noteable.try(:iid) || note.noteable.try(:id)
 
 .search-result-row
-  %h5.note-search-caption.gl-max-w-full
-    %span.gl-display-inline-block.gl-text-truncate.search-max-w-inherit.gl-align-bottom
-      = sprite_icon('comment', css_class: 'gl-vertical-align-text-bottom')
-      = link_to_member(project, note.author, avatar: false)
-      = _("commented on %{link_to_project}").html_safe % { link_to_project: link_to(project.full_name, project) }
+  .note-search-caption.gl-max-w-full
+    .gl-font-sm.gl-text-secondary.gl-float-right= time_ago_with_tooltip(note.created_at, placement: 'bottom', html_class: 'note-created-ago')
+    .gl-display-inline-block.gl-text-truncate.search-max-w-inherit.gl-align-bottom
+      .gl-font-bold= link_to_member(project, note.author, avatar: true, extra_class: 'gl-text-black-normal')
+      .gl-text-secondary
+        = _("Commented on %{link_to_project}").html_safe % { link_to_project: link_to(project.full_name, project) }
     &middot;
 
     - if note.for_commit?
@@ -19,11 +20,6 @@
       %span #{note.noteable_type.titleize} ##{noteable_identifier}
       &middot;
       = link_to note.noteable.title, note_url, data: {track_action: 'click_text', track_label: 'noteable_title', track_property: 'search_result'}
-
-    %span.note-headline-light.note-headline-meta
-      %span.system-note-separator
-        &middot;
-      %span.system-note-separator= time_ago_with_tooltip(note.created_at, placement: 'bottom', html_class: 'note-created-ago')
 
   .note-search-result
     .term

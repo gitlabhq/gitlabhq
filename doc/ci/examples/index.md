@@ -17,7 +17,7 @@ Examples are available in several forms. As a collection of:
 
 - `.gitlab-ci.yml` [template files](#cicd-templates) maintained in GitLab, for many
   common frameworks and programming languages.
-- Repositories with [example projects](https://gitlab.com/gitlab-examples) for various languages. You can fork and adjust them to your own needs. Projects include an example of using [Review Apps with a static site served by NGINX](https://gitlab.com/gitlab-examples/review-apps-nginx/).
+- Repositories with [example projects](https://gitlab.com/gitlab-examples) for various languages. You can fork and adjust them to your own needs. Projects include an example of using [review apps with a static site served by NGINX](https://gitlab.com/gitlab-examples/review-apps-nginx/).
 - Examples and [other resources](#other-resources) listed below.
 
 ## CI/CD examples
@@ -160,7 +160,7 @@ For examples of others who have implemented GitLab CI/CD, see:
 - [GitBot - automating boring Git operations with CI](https://about.gitlab.com/blog/2017/11/02/automating-boring-git-operations-gitlab-ci/)
 - [How to use GitLab CI for Vue.js](https://about.gitlab.com/blog/2017/09/12/vuejs-app-gitlab/)
 - Video: [GitLab CI/CD Deep Dive](https://youtu.be/pBe4t1CD8Fc?t=195)
-- [Dockerizing GitLab Review Apps](https://about.gitlab.com/blog/2017/07/11/dockerizing-review-apps/)
+- [Dockerizing GitLab review apps](https://about.gitlab.com/blog/2017/07/11/dockerizing-review-apps/)
 - [Fast and natural continuous integration with GitLab CI](https://about.gitlab.com/blog/2017/05/22/fast-and-natural-continuous-integration-with-gitlab-ci/)
 - [Demo: CI/CD with GitLab in action](https://about.gitlab.com/blog/2017/03/13/ci-cd-demo/)
 

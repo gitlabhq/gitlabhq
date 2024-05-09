@@ -15,7 +15,7 @@ that work together to support your software delivery process.
 
 Auto DevOps detects your programming language and uses [CI/CD templates](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates)
 to create and run default pipelines to build and test your application. Then, you can [configure deployments](requirements.md) to deploy your apps to staging
-and production, and set up [Review Apps](stages.md#auto-review-apps)
+and production, and set up [review apps](stages.md#auto-review-apps)
 to preview your changes per branch.
 
 You can use default settings to quickly ship your apps, and iterate and [customize](customize.md) later.

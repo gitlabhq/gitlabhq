@@ -353,7 +353,7 @@ To use an external managed provider:
 
 1. Disable the built-in PostgreSQL installation for the required environments with
    environment-scoped [CI/CD variables](../../ci/environments/index.md#limit-the-environment-scope-of-a-cicd-variable).
-   Because the built-in PostgreSQL setup for Review Apps and staging is sufficient, you might only need to
+   Because the built-in PostgreSQL setup for review apps and staging is sufficient, you might only need to
    disable the installation for `production`.
 
    ![Auto Metrics](img/disable_postgres.png)

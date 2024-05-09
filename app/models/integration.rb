@@ -155,6 +155,7 @@ class Integration < ApplicationRecord
   scope :deployment, -> { where(category: 'deployment') }
   scope :group_mention_hooks, -> { where(group_mention_events: true, active: true) }
   scope :group_confidential_mention_hooks, -> { where(group_confidential_mention_events: true, active: true) }
+  scope :exclusions_for_project, ->(project) { where(project: project, active: false) }
 
   class << self
     private

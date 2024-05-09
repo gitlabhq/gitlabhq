@@ -44,7 +44,7 @@ module Banzai
 
       # Replace an entire `[TOC]` node
       def process_toc_tag(node)
-        build_toc if Feature.enabled?(:native_header_anchors)
+        build_toc
 
         # we still need to go one step up to also replace the surrounding <p></p>
         node.parent.replace(result[:toc].presence || '')

@@ -56,7 +56,7 @@ After you've gotten familiar with how scanning works, you can then choose to:
 1. Use [Compliance Pipelines](../group/compliance_pipelines.md)
    or [Scan Execution Policies](policies/scan-execution-policies.md) to enforce required scan types
    and ensure separation of duties between security and engineering.
-1. Consider enabling [Review Apps](../../development/testing_guide/review_apps.md) to allow for DAST
+1. Consider enabling [review apps](../../development/testing_guide/review_apps.md) to allow for DAST
    and [Web API fuzzing](api_fuzzing/index.md) on ephemeral test environments.
 1. Enable [operational container scanning](../../user/clusters/agent/vulnerabilities.md) to scan
    container images in your production cluster for security vulnerabilities.

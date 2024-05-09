@@ -50,13 +50,13 @@ API Fuzzing requires a deployed application to be available to scan.
 Depending on the complexity of the target application, there are a few options as to how to deploy and configure
 the API Fuzzing template.
 
-### Review Apps
+### Review apps
 
-Review Apps are the most involved method of deploying your API Fuzzing target application. To assist in the process,
+Review apps are the most involved method of deploying your API Fuzzing target application. To assist in the process,
 we created a Review App deployment using Google Kubernetes Engine (GKE). This example can be found in our
-[Review Apps - GKE](https://gitlab.com/gitlab-org/security-products/demos/dast/review-app-gke) project, along with detailed
+[Review apps - GKE](https://gitlab.com/gitlab-org/security-products/demos/dast/review-app-gke) project, along with detailed
 instructions in the [README.md](https://gitlab.com/gitlab-org/security-products/demos/dast/review-app-gke/-/blob/master/README.md)
-on how to configure Review Apps for DAST.
+on how to configure review apps for DAST.
 
 ### Docker Services
 

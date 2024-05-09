@@ -12771,6 +12771,9 @@ msgstr ""
 msgid "Comment/Reply (quoting selected text)"
 msgstr ""
 
+msgid "Commented on %{link_to_project}"
+msgstr ""
+
 msgid "Commenting on files that are only moved or renamed is not supported"
 msgstr ""
 
@@ -61012,9 +61015,6 @@ msgid "comment"
 msgstr ""
 
 msgid "commented"
-msgstr ""
-
-msgid "commented on %{link_to_project}"
 msgstr ""
 
 msgid "commit"

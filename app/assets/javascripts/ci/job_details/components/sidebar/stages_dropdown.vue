@@ -94,13 +94,10 @@ export default {
 </script>
 <template>
   <div class="dropdown">
-    <div
-      class="gl-display-flex gl-flex-wrap gl-align-items-center gl-gap-2 js-pipeline-info"
-      data-testid="pipeline-info"
-    >
+    <div class="gl-display-block js-pipeline-info" data-testid="pipeline-info">
       <gl-sprintf :message="pipelineInfo">
         <template #bold="{ content }">
-          <span class="gl-display-flex gl-font-weight-bold">{{ content }}</span>
+          <span class="gl-display-inline-flex gl-font-weight-bold">{{ content }}</span>
         </template>
         <template #id>
           <gl-link
@@ -128,7 +125,7 @@ export default {
         <template #ref>
           <gl-link
             :href="pipeline.ref.path"
-            class="link-commit ref-name"
+            class="link-commit ref-name gl-break-all"
             data-testid="source-ref-link"
             >{{ pipeline.ref.name }}</gl-link
           ><clipboard-button

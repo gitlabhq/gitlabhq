@@ -279,7 +279,7 @@ For a web developer writing a webpage for your company's website:
 
 1. You check out a new branch and submit a new page through a merge request.
 1. You gather feedback from your reviewers.
-1. You preview your changes with [Review Apps](../../../ci/review_apps/index.md).
+1. You preview your changes with [review apps](../../../ci/review_apps/index.md).
 1. You request your web designers for their implementation.
 1. You request the [approval](approvals/index.md) from your manager.
 1. Once approved, your merge request is [squashed and merged](squash_and_merge.md), and [deployed to staging with GitLab Pages](https://about.gitlab.com/blog/2021/02/05/ci-deployment-and-environments/).
