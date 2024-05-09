@@ -124,18 +124,3 @@ Breaking change. [Related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/4
 In GitLab 18.0, the [Runners API](../runners.md) will return `""` in place of `version`, `revision`, `platform`,
 and `architecture` for runners.
 In v5 of the REST API, the fields will be removed.
-
-## `default_branch_protection` API field 
-
-Breaking change. [Related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/408315).
-
-The `default_branch_protection` field is deprecated in GitLab 17.0 for the following APIs:
-
-- [New group API](../groups.md#new-group).
-- [Update group API](../groups.md#update-group).
-- [Application API](../settings.md#change-application-settings)
-
-You should use the `default_branch_protection_defaults` field instead, which provides more finer grained control
-over the default branch protections.
-
-The `default_branch_protection` field will be removed in v5 of the GitLab REST API.

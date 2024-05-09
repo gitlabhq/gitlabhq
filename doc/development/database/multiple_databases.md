@@ -188,7 +188,7 @@ desired_sharding_key:
 ```
 
 To understand best how this YAML data will be used you can map it onto
-the merge request we created manually in
+the merge request we created manually in GraphQL
 <https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136800>. The idea
 will be to automatically create this. The content of the YAML specifies
 the parent table and its `sharding_key` to backfill from in the batched

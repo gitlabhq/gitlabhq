@@ -46,19 +46,6 @@ Example response:
   "signup_enabled" : true,
   "id" : 1,
   "default_branch_protection" : 2,
-  "default_branch_protection_defaults": {
-        "allowed_to_push": [
-            {
-                "access_level": 40
-            }
-        ],
-        "allow_force_push": false,
-        "allowed_to_merge": [
-            {
-                "access_level": 40
-            }
-        ]
-    },
   "default_preferred_language" : "en",
   "failed_login_attempts_unlock_period_in_minutes": 30,
   "restricted_visibility_levels" : [],
@@ -192,7 +179,6 @@ these parameters:
 > - `always_perform_delayed_deletion` feature flag [enabled](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113332) in GitLab 15.11.
 > - `delayed_project_deletion` and `delayed_group_deletion` attributes removed in GitLab 16.0.
 > - `user_email_lookup_limit` attribute [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136886) in GitLab 16.7.
-> - `default_branch_protection` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/408314) in GitLab 17.0. Use `default_branch_protection_defaults` instead.
 
 Use an API call to modify GitLab instance
 [application settings](#list-of-settings-that-can-be-accessed-via-api-calls).
@@ -220,19 +206,6 @@ Example response:
   "updated_at": "2015-06-30T13:22:42.210Z",
   "home_page_url": "",
   "default_branch_protection": 2,
-  "default_branch_protection_defaults": {
-    "allowed_to_push": [
-        {
-            "access_level": 40
-        }
-    ],
-    "allow_force_push": false,
-    "allowed_to_merge": [
-        {
-            "access_level": 40
-        }
-    ]
-  },
   "restricted_visibility_levels": [],
   "max_attachment_size": 10,
   "max_decompressed_archive_size": 25600,
@@ -416,8 +389,7 @@ listed in the descriptions of the relevant settings.
 | `decompress_archive_file_timeout`        | integer          | no                                   | Default timeout for decompressing archived files, in seconds. Set to 0 to disable timeouts. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129161) in GitLab 16.4. |
 | `default_artifacts_expire_in`            | string           | no                                   | Set the default expiration time for each job's artifacts. |
 | `default_branch_name`                    | string           | no                                   | [Instance-level custom initial branch name](../user/project/repository/branches/default.md#instance-level-custom-initial-branch-name). |
-| `default_branch_protection`              | integer          | no                                   | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/408314) in GitLab 17.0. Use `default_branch_protection_defaults` instead. |
-| `default_branch_protection_defaults`     | hash             | no                                   | For available options, see [Options for `default_branch_protection_defaults`](#options-for-default_branch_protection_defaults). |
+| `default_branch_protection`              | integer          | no                                   | Determine if developers can push to the default branch. Can take: `0` _(not protected, both users with the Developer role or Maintainer role can push new commits and force push)_, `1` _(partially protected, users with the Developer role or Maintainer role can push new commits, but cannot force push)_ or `2` _(fully protected, users with the Developer or Maintainer role cannot push new commits, but users with the Developer or Maintainer role can; no one can force push)_ as a parameter. Default is `2`. |
 | `default_ci_config_path`                 | string           | no                                   | Default CI/CD configuration file and path for new projects (`.gitlab-ci.yml` if not set). |
 | `default_group_visibility`               | string           | no                                   | What visibility level new groups receive. Can take `private`, `internal` and `public` as a parameter. Default is `private`. [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131203) in GitLab 16.4: cannot be set to any levels in `restricted_visibility_levels`.|
 | `default_preferred_language`             | string           | no                                   | Default preferred language for users who are not logged in. |
@@ -732,17 +704,3 @@ to be set, or _all_ of these values to be set:
 
 The package file size limits are not part of the Application settings API.
 Instead, these settings can be accessed using the [Plan limits API](plan_limits.md).
-
-### Options for `default_branch_protection_defaults`
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/408314) in GitLab 17.0.
-
-The `default_branch_protection_defaults` attribute describes the default branch
-protection defaults. All parameters are optional.
-
-| Key                          | Type    | Description |
-|:-----------------------------|:--------|:------------|
-| `allowed_to_push`            | array   | An array of access levels allowed to push. Supports Developer (30) or Maintainer (40). |
-| `allow_force_push`           | boolean | Allow force push for all users with push access. |
-| `allowed_to_merge`           | array   | An array of access levels allowed to merge. Supports Developer (30) or Maintainer (40). |
-| `developer_can_initial_push` | boolean | Allow developers to initial push. |

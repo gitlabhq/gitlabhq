@@ -11,7 +11,7 @@ RSpec.describe Projects::AutocompleteSourcesController do
   let_it_be(:private_issue) { create(:labeled_issue, project: project, labels: [development]) }
   let_it_be(:private_work_item) { create(:work_item, project: project) }
   let_it_be(:issue) { create(:labeled_issue, project: public_project, labels: [development]) }
-  let_it_be(:work_item) { create(:work_item, project: public_project, id: 1, iid: 100) }
+  let_it_be(:work_item) { create(:work_item, project: public_project) }
   let_it_be(:user) { create(:user) }
 
   def members_by_username(username)
@@ -276,7 +276,7 @@ RSpec.describe Projects::AutocompleteSourcesController do
     end
 
     context 'when user cannot read project issues and merge requests' do
-      it 'renders 404', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/444818' do
+      it 'renders 404' do
         project.project_feature.update!(issues_access_level: ProjectFeature::PRIVATE)
         project.project_feature.update!(merge_requests_access_level: ProjectFeature::PRIVATE)
 

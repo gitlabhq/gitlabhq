@@ -55,7 +55,6 @@ export default {
   inject: ['isGroupPage'],
   data() {
     return {
-      filters: [],
       sorting: {
         orderBy: LIST_KEY_CREATED_AT,
         sort: 'desc',

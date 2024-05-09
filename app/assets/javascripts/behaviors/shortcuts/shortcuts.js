@@ -1,6 +1,7 @@
 import $ from 'jquery';
 import { flatten } from 'lodash';
 import Vue from 'vue';
+import { InternalEvents } from '~/tracking';
 import { Mousetrap, addStopCallback } from '~/lib/mousetrap';
 import { getCookie, setCookie, parseBoolean } from '~/lib/utils/common_utils';
 import { waitForElement } from '~/lib/utils/dom_utils';
@@ -259,6 +260,7 @@ export default class Shortcuts {
 
   static focusSearch(e) {
     document.querySelector('#super-sidebar-search')?.click();
+    InternalEvents.trackEvent('press_keyboard_shortcut_to_activate_command_palette');
 
     if (e.preventDefault) {
       e.preventDefault();

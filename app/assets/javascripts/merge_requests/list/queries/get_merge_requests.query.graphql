@@ -9,6 +9,7 @@ query getMergeRequests(
   $state: MergeRequestState
   $authorUsername: String
   $draft: Boolean
+  $targetBranches: [String!]
   $beforeCursor: String
   $afterCursor: String
   $firstPageSize: Int
@@ -21,6 +22,7 @@ query getMergeRequests(
       state: $state
       authorUsername: $authorUsername
       draft: $draft
+      targetBranches: $targetBranches
       before: $beforeCursor
       after: $afterCursor
       first: $firstPageSize

@@ -26,18 +26,23 @@ module Gitlab
           end
 
           def value
-            event_specific_part_of_paths = events.map do |event_selection_rule|
-              Gitlab::InternalEvents.convert_event_selection_rule_to_path_part(event_selection_rule)
+            return total_value if time_frame == 'all'
+
+            period_value
+          end
+
+          private
+
+          def total_value
+            event_names.sum do |event_name|
+              redis_usage_data do
+                total_count(self.class.redis_key(event_name))
+              end
             end
+          end
 
-            keys = if time_frame == 'all'
-                     event_specific_part_of_paths.map do |event_specific_part_of_path|
-                       self.class.redis_key(event_specific_part_of_path)
-                     end
-                   else
-                     self.class.keys_for_aggregation(events: event_specific_part_of_paths, **time_constraint)
-                   end
-
+          def period_value
+            keys = self.class.keys_for_aggregation(events: event_names, **time_constraint)
             keys.sum do |key|
               redis_usage_data do
                 total_count(key)

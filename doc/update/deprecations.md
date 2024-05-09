@@ -377,6 +377,20 @@ This change is a breaking change. You should [create a runner in the UI](https:/
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
+### Remove `previousStageJobsOrNeeds` from GraphQL
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">17.0</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/424417).
+</div>
+
+The `previousStageJobsOrNeeds` field in GraphQL will be removed as it has been replaced by the `previousStageJobs` and `needs` fields.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
 ### Runner `active` GraphQL fields replaced by `paused`
 
 <div class="deprecation-notes">

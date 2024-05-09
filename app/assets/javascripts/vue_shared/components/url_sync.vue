@@ -45,7 +45,16 @@ export default {
       },
     },
   },
+  mounted() {
+    window.addEventListener('popstate', this.handlePopState);
+  },
+  beforeDestroy() {
+    window.removeEventListener('popstate', this.handlePopState);
+  },
   methods: {
+    handlePopState(event) {
+      this.$emit('popstate', event);
+    },
     updateQuery(newQuery) {
       const url =
         this.urlParamsUpdateStrategy === URL_SET_PARAMS_STRATEGY

@@ -67,19 +67,6 @@ GET /groups
     "lfs_enabled": true,
     "default_branch": null,
     "default_branch_protection": 2,
-    "default_branch_protection_defaults": {
-      "allowed_to_push": [
-          {
-              "access_level": 40
-          }
-      ],
-      "allow_force_push": false,
-      "allowed_to_merge": [
-          {
-              "access_level": 40
-          }
-      ]
-    },
     "avatar_url": "http://localhost:3000/uploads/group/avatar/1/foo.jpg",
     "web_url": "http://localhost:3000/groups/foo-bar",
     "request_access_enabled": false,
@@ -120,19 +107,6 @@ GET /groups?statistics=true
     "lfs_enabled": true,
     "default_branch": null,
     "default_branch_protection": 2,
-    "default_branch_protection_defaults": {
-      "allowed_to_push": [
-          {
-              "access_level": 40
-          }
-      ],
-      "allow_force_push": false,
-      "allowed_to_merge": [
-          {
-              "access_level": 40
-          }
-      ]
-    },
     "avatar_url": "http://localhost:3000/uploads/group/avatar/1/foo.jpg",
     "web_url": "http://localhost:3000/groups/foo-bar",
     "request_access_enabled": false,
@@ -222,19 +196,6 @@ GET /groups/:id/subgroups
     "lfs_enabled": true,
     "default_branch": null,
     "default_branch_protection": 2,
-    "default_branch_protection_defaults": {
-      "allowed_to_push": [
-          {
-              "access_level": 40
-          }
-      ],
-      "allow_force_push": false,
-      "allowed_to_merge": [
-          {
-              "access_level": 40
-          }
-      ]
-    },
     "avatar_url": "http://gitlab.example.com/uploads/group/avatar/1/foo.jpg",
     "web_url": "http://gitlab.example.com/groups/foo-bar",
     "request_access_enabled": false,
@@ -297,19 +258,6 @@ GET /groups/:id/descendant_groups
     "lfs_enabled": true,
     "default_branch": null,
     "default_branch_protection": 2,
-    "default_branch_protection_defaults": {
-      "allowed_to_push": [
-          {
-              "access_level": 40
-          }
-      ],
-      "allow_force_push": false,
-      "allowed_to_merge": [
-          {
-              "access_level": 40
-          }
-      ]
-    },
     "avatar_url": "http://gitlab.example.com/uploads/group/avatar/1/bar.jpg",
     "web_url": "http://gitlab.example.com/groups/foo/bar",
     "request_access_enabled": false,
@@ -337,19 +285,6 @@ GET /groups/:id/descendant_groups
     "lfs_enabled": true,
     "default_branch": null,
     "default_branch_protection": 2,
-    "default_branch_protection_defaults": {
-      "allowed_to_push": [
-          {
-              "access_level": 40
-          }
-      ],
-      "allow_force_push": false,
-      "allowed_to_merge": [
-          {
-              "access_level": 40
-          }
-      ]
-    },
     "avatar_url": "http://gitlab.example.com/uploads/group/avatar/1/baz.jpg",
     "web_url": "http://gitlab.example.com/groups/foo/bar/baz",
     "request_access_enabled": false,
@@ -886,7 +821,7 @@ Parameters:
 | `auto_devops_enabled`                                   | boolean | no       | Default to Auto DevOps pipeline for all projects within this group.                                                                                                                             |
 | `avatar`                                                | mixed   | no       | Image file for avatar of the group.                                                                                                                                                             |
 | `default_branch`                                        | string  | no       | The [default branch](../user/project/repository/branches/default.md) name for group's projects. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/442298) in GitLab 16.11.             |
-| `default_branch_protection`                             | integer | no       | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/408314) in GitLab 17.0. Use `default_branch_protection_defaults` instead.             |
+| `default_branch_protection`                             | integer | no       | See [Options for `default_branch_protection`](#options-for-default_branch_protection). Default to the global level default branch protection setting.                                           |
 | `default_branch_protection_defaults`                    | hash    | no       | See [Options for `default_branch_protection_defaults`](#options-for-default_branch_protection_defaults).                                                                                        |
 | `description`                                           | string  | no       | The group's description.                                                                                                                                                                        |
 | `enabled_git_access_protocol`                           | string  | no       | Enabled protocols for Git access. Allowed values are: `ssh`, `http`, and `all` to allow both protocols. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/436618) in GitLab 16.9. |
@@ -1058,7 +993,7 @@ PUT /groups/:id
 | `auto_devops_enabled`                                   | boolean | no       | Default to Auto DevOps pipeline for all projects within this group. |
 | `avatar`                                                | mixed   | no       | Image file for avatar of the group. |
 | `default_branch`                                        | string  | no       | The [default branch](../user/project/repository/branches/default.md) name for group's projects. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/442298) in GitLab 16.11. |
-| `default_branch_protection`                             | integer | no       | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/408314) in GitLab 17.0. Use `default_branch_protection_defaults` instead. |
+| `default_branch_protection`                             | integer | no       | See [Options for `default_branch_protection`](#options-for-default_branch_protection). |
 | `default_branch_protection_defaults`                    | hash    | no       | See [Options for `default_branch_protection_defaults`](#options-for-default_branch_protection_defaults). |
 | `description`                                           | string  | no       | The description of the group. |
 | `enabled_git_access_protocol`                           | string  | no       | Enabled protocols for Git access. Allowed values are: `ssh`, `http`, and `all` to allow both protocols. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/436618) in GitLab 16.9. |

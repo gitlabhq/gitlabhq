@@ -139,6 +139,16 @@ the `kics` analyzer by matching the `type` and `value` of identifiers:
       value = "b03a748a-542d-44f4-bb86-9199ab4fd2d5"
 ```
 
+### Disable scanning using comments
+
+You can use [KICS annotations](https://docs.kics.io/latest/running-kics/#using_commands_on_scanned_files_as_comments) to control how the KICS-based GitLab IaC Scanning analyzer scans your codebase. For example:
+
+- To skip scanning an entire file, you can add `# kics-scan ignore` as a comment at the top of the file.
+- To disable a specific rule in an entire file, you can add `# kics-scan disable=<kics_id>` as a comment at the top of the file.
+
+NOTE:
+This feature is only available for some types of IaC files. See the [KICS documentation](https://docs.kics.io/latest/running-kics/#using_commands_on_scanned_files_as_comments) for a list of supported file types.
+
 ### Override rules
 
 You can override specific IaC scanning rules to customize them. For example, assign a rule a lower

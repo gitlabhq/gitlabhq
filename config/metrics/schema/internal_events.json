@@ -27,21 +27,6 @@
                 "project.id",
                 "namespace.id"
               ]
-            },
-            "filter": {
-              "type": "object",
-              "properties": {
-                "label": {
-                  "type": "string"
-                },
-                "property": {
-                  "type": "string"
-                },
-                "value": {
-                  "type": "number"
-                }
-              },
-              "additionalProperties": false
             }
           },
           "additionalProperties": false

@@ -494,6 +494,14 @@ module Gitlab
         end
       end
 
+      allow do
+        origins '*'
+        resource '/oauth/token/info',
+          headers: %w[Authorization],
+          credentials: false,
+          methods: %i[get head options]
+      end
+
       # These are routes from doorkeeper-openid_connect:
       # https://github.com/doorkeeper-gem/doorkeeper-openid_connect#routes
       allow do

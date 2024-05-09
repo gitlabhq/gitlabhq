@@ -1,6 +1,8 @@
 <script>
 import { GlFilteredSearchToken } from '@gitlab/ui';
 import { isEmpty } from 'lodash';
+import { createAlert } from '~/alert';
+import Api from '~/api';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { STATUS_ALL, STATUS_CLOSED, STATUS_OPEN, STATUS_MERGED } from '~/issues/constants';
 import { fetchPolicies } from '~/lib/graphql';
@@ -17,6 +19,8 @@ import {
   TOKEN_TYPE_AUTHOR,
   TOKEN_TITLE_DRAFT,
   TOKEN_TYPE_DRAFT,
+  TOKEN_TITLE_TARGET_BRANCH,
+  TOKEN_TYPE_TARGET_BRANCH,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import {
   convertToApiParams,
@@ -44,6 +48,8 @@ import getMergeRequestsCountsQuery from '../queries/get_merge_requests_counts.qu
 import MergeRequestStatistics from './merge_request_statistics.vue';
 
 const UserToken = () => import('~/vue_shared/components/filtered_search_bar/tokens/user_token.vue');
+const BranchToken = () =>
+  import('~/vue_shared/components/filtered_search_bar/tokens/branch_token.vue');
 
 export default {
   i18n,
@@ -188,6 +194,17 @@ export default {
           ],
           unique: true,
         },
+        {
+          type: TOKEN_TYPE_TARGET_BRANCH,
+          title: TOKEN_TITLE_TARGET_BRANCH,
+          icon: 'arrow-right',
+          token: BranchToken,
+          operators: OPERATORS_IS,
+          fullPath: this.fullPath,
+          isProject: true,
+          multiselect: true,
+          fetchBranches: this.fetchBranches,
+        },
       ];
     },
     showPaginationControls() {
@@ -238,6 +255,17 @@ export default {
     this.updateData(this.initialSort);
   },
   methods: {
+    fetchBranches(search) {
+      return Api.branches(this.fullPath, search)
+        .then((response) => {
+          return response;
+        })
+        .catch(() => {
+          createAlert({
+            message: this.$options.i18n.errorFetchingBranches,
+          });
+        });
+    },
     getStatus(mergeRequest) {
       if (mergeRequest.state === STATUS_CLOSED) {
         return this.$options.i18n.closed;
