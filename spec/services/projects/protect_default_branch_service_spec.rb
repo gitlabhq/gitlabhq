@@ -161,7 +161,9 @@ RSpec.describe Projects::ProtectDefaultBranchService, feature_category: :source_
         params = {
           name: 'master',
           push_access_levels_attributes: [{ access_level: access_level }],
-          merge_access_levels_attributes: [{ access_level: access_level }]
+          merge_access_levels_attributes: [{ access_level: access_level }],
+          code_owner_approval_required: false,
+          allow_force_push: false
         }
 
         allow(project)
@@ -180,6 +182,14 @@ RSpec.describe Projects::ProtectDefaultBranchService, feature_category: :source_
         allow(service)
           .to receive(:merge_access_level)
                 .and_return(access_level)
+
+        allow(service)
+          .to receive(:code_owner_approval_required?)
+                .and_return(false)
+
+        allow(service)
+          .to receive(:allow_force_push?)
+                .and_return(false)
 
         allow(service)
           .to receive(:default_branch)
@@ -323,6 +333,12 @@ RSpec.describe Projects::ProtectDefaultBranchService, feature_category: :source_
 
           expect(service.merge_access_level).to eq(Gitlab::Access::MAINTAINER)
         end
+      end
+    end
+
+    describe '#allow_force_push?' do
+      it 'is falsey' do
+        expect(service.allow_force_push?).to be_falsey
       end
     end
   end
@@ -482,7 +498,9 @@ RSpec.describe Projects::ProtectDefaultBranchService, feature_category: :source_
         params = {
           name: 'master',
           push_access_levels_attributes: [{ access_level: access_level }],
-          merge_access_levels_attributes: [{ access_level: access_level }]
+          merge_access_levels_attributes: [{ access_level: access_level }],
+          code_owner_approval_required: false,
+          allow_force_push: false
         }
 
         allow(project)
@@ -505,6 +523,14 @@ RSpec.describe Projects::ProtectDefaultBranchService, feature_category: :source_
         allow(service)
           .to receive(:default_branch)
                 .and_return('master')
+
+        allow(service)
+          .to receive(:code_owner_approval_required?)
+                .and_return(false)
+
+        allow(service)
+          .to receive(:allow_force_push?)
+                .and_return(false)
 
         allow(create_service)
           .to receive(:execute)
@@ -645,6 +671,29 @@ RSpec.describe Projects::ProtectDefaultBranchService, feature_category: :source_
           expect(service.merge_access_level).to eq(Gitlab::Access::MAINTAINER)
         end
       end
+    end
+
+    describe '#allow_force_push?' do
+      before do
+        allow(project.namespace)
+          .to receive(:default_branch_protection_settings)
+                .and_return(Gitlab::Access::BranchProtection.protected_against_developer_pushes)
+      end
+
+      it 'calls allow_force_push? method of Gitlab::Access::DefaultBranchProtection and returns correct value',
+        :aggregate_failures do
+        expect_next_instance_of(Gitlab::Access::DefaultBranchProtection) do |instance|
+          expect(instance).to receive(:allow_force_push?)
+        end
+
+        expect(service.allow_force_push?).to be_falsey
+      end
+    end
+  end
+
+  describe '#code_owner_approval_required?' do
+    it 'is falsey' do
+      expect(service.code_owner_approval_required?).to be_falsey
     end
   end
 end

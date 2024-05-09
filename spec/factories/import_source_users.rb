@@ -14,5 +14,9 @@ FactoryBot.define do
     trait :with_reassign_to_user do
       reassign_to_user factory: :user
     end
+
+    trait :with_reassigned_by_user do
+      reassigned_by_user factory: :user
+    end
   end
 end

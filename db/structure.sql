@@ -9861,6 +9861,7 @@ CREATE TABLE import_source_users (
     source_user_identifier text NOT NULL,
     source_hostname text NOT NULL,
     import_type text NOT NULL,
+    reassigned_by_user_id bigint,
     CONSTRAINT check_0d7295a307 CHECK ((char_length(import_type) <= 255)),
     CONSTRAINT check_199c28ec54 CHECK ((char_length(source_username) <= 255)),
     CONSTRAINT check_562655155f CHECK ((char_length(source_name) <= 255)),
@@ -25705,6 +25706,8 @@ CREATE INDEX index_import_source_users_on_placeholder_user_id ON import_source_u
 
 CREATE INDEX index_import_source_users_on_reassign_to_user_id ON import_source_users USING btree (reassign_to_user_id);
 
+CREATE INDEX index_import_source_users_on_reassigned_by_user_id ON import_source_users USING btree (reassigned_by_user_id);
+
 CREATE INDEX index_imported_projects_on_import_type_creator_id_created_at ON projects USING btree (import_type, creator_id, created_at) WHERE (import_type IS NOT NULL);
 
 CREATE INDEX index_imported_projects_on_import_type_id ON projects USING btree (import_type, id) WHERE (import_type IS NOT NULL);
@@ -30287,6 +30290,9 @@ ALTER TABLE ONLY deploy_tokens
 
 ALTER TABLE ONLY protected_branch_push_access_levels
     ADD CONSTRAINT fk_7111b68cdb FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY import_source_users
+    ADD CONSTRAINT fk_719b74231d FOREIGN KEY (reassigned_by_user_id) REFERENCES users(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY integrations
     ADD CONSTRAINT fk_71cce407f9 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

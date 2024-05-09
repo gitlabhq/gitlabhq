@@ -26,6 +26,11 @@ type fakeUploadHandler struct {
 	handler func(w http.ResponseWriter, r *http.Request)
 }
 
+const (
+	tokenJSON = `{"Token": "token", "Url": "`
+	urlJSON   = `/url"}`
+)
+
 func (f *fakeUploadHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	f.request = r
 
@@ -37,7 +42,7 @@ func (f *fakeUploadHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 type errWriter struct{ writes int }
 
 func (w *errWriter) Header() http.Header { return make(http.Header) }
-func (w *errWriter) WriteHeader(h int)   {}
+func (w *errWriter) WriteHeader(_ int)   {}
 
 // First call of Write function succeeds while all the subsequent ones fail
 func (w *errWriter) Write(p []byte) (int, error) {
@@ -105,7 +110,7 @@ func TestInject(t *testing.T) {
 		injector.SetUploadHandler(bodyUploader)
 
 		r := httptest.NewRequest("GET", "/target", nil)
-		sendData := base64.StdEncoding.EncodeToString([]byte(`{"Token": "token", "Url": "` + originResourceServer.URL + `/url"}`))
+		sendData := base64.StdEncoding.EncodeToString([]byte(tokenJSON + originResourceServer.URL + urlJSON))
 
 		injector.Inject(tc.responseWriter, r, sendData)
 
@@ -137,7 +142,7 @@ func TestSuccessfullRequest(t *testing.T) {
 	injector := NewInjector()
 	injector.SetUploadHandler(uploadHandler)
 
-	response := makeRequest(injector, `{"Token": "token", "Url": "`+originResourceServer.URL+`/url"}`)
+	response := makeRequest(injector, tokenJSON+originResourceServer.URL+urlJSON)
 
 	require.Equal(t, "/target/upload", uploadHandler.request.URL.Path)
 	require.Equal(t, int64(6), uploadHandler.request.ContentLength)
@@ -175,35 +180,35 @@ func TestValidUploadConfiguration(t *testing.T) {
 			desc: "with the default values",
 			expectedConfig: uploadConfig{
 				Method: http.MethodPost,
-				Url:    "/target/upload",
+				URL:    "/target/upload",
 			},
 		}, {
-			desc: "with overriden method",
+			desc: "with overridden method",
 			uploadConfig: &uploadConfig{
 				Method: http.MethodPut,
 			},
 			expectedConfig: uploadConfig{
 				Method: http.MethodPut,
-				Url:    "/target/upload",
+				URL:    "/target/upload",
 			},
 		}, {
-			desc: "with overriden url",
+			desc: "with overridden url",
 			uploadConfig: &uploadConfig{
-				Url: "http://test.org/overriden/upload",
+				URL: "http://test.org/overriden/upload",
 			},
 			expectedConfig: uploadConfig{
 				Method: http.MethodPost,
-				Url:    "http://test.org/overriden/upload",
+				URL:    "http://test.org/overriden/upload",
 			},
 		}, {
-			desc: "with overriden headers",
+			desc: "with overridden headers",
 			uploadConfig: &uploadConfig{
 				Headers: map[string][]string{"Private-Token": {"123456789"}},
 			},
 			expectedConfig: uploadConfig{
 				Headers: map[string][]string{"Private-Token": {"123456789"}},
 				Method:  http.MethodPost,
-				Url:     "/target/upload",
+				URL:     "/target/upload",
 			},
 		},
 	}
@@ -212,7 +217,7 @@ func TestValidUploadConfiguration(t *testing.T) {
 		t.Run(tc.desc, func(t *testing.T) {
 			uploadHandler := &fakeUploadHandler{
 				handler: func(w http.ResponseWriter, r *http.Request) {
-					require.Equal(t, tc.expectedConfig.Url, r.URL.String())
+					require.Equal(t, tc.expectedConfig.URL, r.URL.String())
 					require.Equal(t, tc.expectedConfig.Method, r.Method)
 
 					if tc.expectedConfig.Headers != nil {
@@ -237,12 +242,12 @@ func TestValidUploadConfiguration(t *testing.T) {
 				sendData["UploadConfig"] = tc.uploadConfig
 			}
 
-			sendDataJsonString, err := json.Marshal(sendData)
+			sendDataJSONString, err := json.Marshal(sendData)
 			require.NoError(t, err)
 
-			response := makeRequest(injector, string(sendDataJsonString))
+			response := makeRequest(injector, string(sendDataJSONString))
 
-			//checking the response
+			// checking the response
 			require.Equal(t, 200, response.Code)
 			require.Equal(t, string(content), response.Body.String())
 			// checking remote file request
@@ -261,7 +266,7 @@ func TestInvalidUploadConfiguration(t *testing.T) {
 		sendData map[string]interface{}
 	}{
 		{
-			desc: "with an invalid overriden method",
+			desc: "with an invalid overridden method",
 			sendData: mergeMap(baseSendData, map[string]interface{}{
 				"UploadConfig": map[string]string{
 					"Method": "TEAPOT",
@@ -288,10 +293,10 @@ func TestInvalidUploadConfiguration(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.desc, func(t *testing.T) {
-			sendDataJsonString, err := json.Marshal(tc.sendData)
+			sendDataJSONString, err := json.Marshal(tc.sendData)
 			require.NoError(t, err)
 
-			response := makeRequest(NewInjector(), string(sendDataJsonString))
+			response := makeRequest(NewInjector(), string(sendDataJSONString))
 
 			require.Equal(t, 500, response.Code)
 			require.Equal(t, "Internal Server Error\n", response.Body.String())
@@ -307,24 +312,26 @@ func TestTimeoutConfiguration(t *testing.T) {
 
 	injector := NewInjector()
 
-	var oldHttpClient = httpClient
+	var oldHTTPClient = httpClient
 	httpClient = &http.Client{
 		Transport: transport.NewRestrictedTransport(transport.WithResponseHeaderTimeout(10 * time.Millisecond)),
 	}
 
 	t.Cleanup(func() {
-		httpClient = oldHttpClient
+		httpClient = oldHTTPClient
 	})
 
 	sendData := map[string]string{
 		"Url": originResourceServer.URL + "/file",
 	}
 
-	sendDataJsonString, err := json.Marshal(sendData)
+	sendDataJSONString, err := json.Marshal(sendData)
 	require.NoError(t, err)
 
-	response := makeRequest(injector, string(sendDataJsonString))
-	require.Equal(t, http.StatusGatewayTimeout, response.Result().StatusCode)
+	response := makeRequest(injector, string(sendDataJSONString))
+	responseResult := response.Result()
+	defer responseResult.Body.Close()
+	require.Equal(t, http.StatusGatewayTimeout, responseResult.StatusCode)
 }
 
 func mergeMap(from map[string]interface{}, into map[string]interface{}) map[string]interface{} {
@@ -363,7 +370,7 @@ func TestFailedOriginServer(t *testing.T) {
 	injector := NewInjector()
 	injector.SetUploadHandler(uploadHandler)
 
-	response := makeRequest(injector, `{"Token": "token", "Url": "`+originResourceServer.URL+`/url"}`)
+	response := makeRequest(injector, tokenJSON+originResourceServer.URL+urlJSON)
 
 	require.Equal(t, 404, response.Code)
 	require.Equal(t, "Not found", response.Body.String())

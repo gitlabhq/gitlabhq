@@ -25,6 +25,7 @@ decrypt those columns, preventing access to the following items:
 - [Project mirroring](../../user/project/repository/mirror/index.md)
 - [Integrations](../../user/project/integrations/index.md)
 - [Web hooks](../../user/project/integrations/webhooks.md)
+- [Deploy tokens](../../user/project/deploy_tokens/index.md)
 
 In cases like CI/CD variables and runner authentication, you can experience
 unexpected behaviors, such as:

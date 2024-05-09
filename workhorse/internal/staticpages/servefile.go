@@ -1,6 +1,7 @@
 package staticpages
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"net/http"
@@ -26,7 +27,8 @@ const (
 	CacheExpireMax
 )
 
-// BUG/QUIRK: If a client requests 'foo%2Fbar' and 'foo/bar' exists,
+// ServeExisting serves static assets
+// QUIRK: If a client requests 'foo%2Fbar' and 'foo/bar' exists,
 // handleServeFile will serve foo/bar instead of passing the request
 // upstream.
 func (s *Static) ServeExisting(prefix urlprefix.Prefix, cache CacheMode, notFoundHandler http.Handler) http.Handler {
@@ -37,18 +39,15 @@ func (s *Static) ServeExisting(prefix urlprefix.Prefix, cache CacheMode, notFoun
 
 		// We intentionally use r.URL.Path instead of r.URL.EscaptedPath() below.
 		// This is to make it possible to serve static files with e.g. a space %20 in their name.
-		relativePath, err := s.validatePath(prefix.Strip(r.URL.Path))
+		file, err := s.getFile(prefix, r.URL.Path)
 		if err != nil {
+			if errors.Is(err, errPathTraversal) {
+				log.WithRequest(r).WithError(err).Error()
+			}
 			notFoundHandler.ServeHTTP(w, r)
 			return
 		}
 
-		file := filepath.Join(s.DocumentRoot, relativePath)
-		if !strings.HasPrefix(file, s.DocumentRoot) {
-			log.WithRequest(r).WithError(errPathTraversal).Error()
-			notFoundHandler.ServeHTTP(w, r)
-			return
-		}
 		var content *os.File
 		var fi os.FileInfo
 
@@ -76,25 +75,46 @@ func (s *Static) ServeExisting(prefix urlprefix.Prefix, cache CacheMode, notFoun
 			}
 		}()
 
-		if cache == CacheExpireMax {
-			// Cache statically served files for 1 year
-			cacheUntil := time.Now().AddDate(1, 0, 0).Format(http.TimeFormat)
-			w.Header().Set("Cache-Control", "public")
-			w.Header().Set("Expires", cacheUntil)
-		}
-
-		log.WithContextFields(r.Context(), log.Fields{
-			"file":     file,
-			"encoding": w.Header().Get("Content-Encoding"),
-			"method":   r.Method,
-			"uri":      mask.URL(r.RequestURI),
-		}).Info("Send static file")
+		s.setCacheHeaders(w, cache)
+		s.logFileServed(r.Context(), file, w.Header().Get("Content-Encoding"), r.Method, r.RequestURI)
 
 		http.ServeContent(w, r, filepath.Base(file), fi.ModTime(), content)
 	})
 }
 
 var errPathTraversal = errors.New("path traversal")
+
+func (s *Static) getFile(prefix urlprefix.Prefix, path string) (string, error) {
+	relativePath, err := s.validatePath(prefix.Strip(path))
+	if err != nil {
+		return "", err
+	}
+
+	file := filepath.Join(s.DocumentRoot, relativePath)
+	if !strings.HasPrefix(file, s.DocumentRoot) {
+		return "", errPathTraversal
+	}
+
+	return file, nil
+}
+
+func (s *Static) setCacheHeaders(w http.ResponseWriter, cache CacheMode) {
+	if cache == CacheExpireMax {
+		// Cache statically served files for 1 year
+		cacheUntil := time.Now().AddDate(1, 0, 0).Format(http.TimeFormat)
+		w.Header().Set("Cache-Control", "public")
+		w.Header().Set("Expires", cacheUntil)
+	}
+}
+
+func (s *Static) logFileServed(ctx context.Context, file, encoding, method, uri string) {
+	log.WithContextFields(ctx, log.Fields{
+		"file":     file,
+		"encoding": encoding,
+		"method":   method,
+		"uri":      mask.URL(uri),
+	}).Info("Send static file")
+}
 
 func (s *Static) validatePath(filename string) (string, error) {
 	filename = filepath.Clean(filename)

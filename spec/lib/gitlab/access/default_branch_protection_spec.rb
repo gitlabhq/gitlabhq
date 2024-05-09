@@ -19,6 +19,30 @@ RSpec.describe Gitlab::Access::DefaultBranchProtection, feature_category: :sourc
     end
   end
 
+  describe '#code_owner_approval_required?' do
+    where(:setting, :result) do
+      { code_owner_approval_required: true }   | true
+      { code_owner_approval_required: false }  | false
+      { code_owner_approval_required: nil }    | false
+    end
+
+    with_them do
+      it { expect(described_class.new(setting).code_owner_approval_required?).to eq(result) }
+    end
+  end
+
+  describe '#allow_force_push?' do
+    where(:setting, :result) do
+      { allow_force_push: true }   | true
+      { allow_force_push: false }  | false
+      { allow_force_push: nil }    | false
+    end
+
+    with_them do
+      it { expect(described_class.new(setting).allow_force_push?).to eq(result) }
+    end
+  end
+
   describe '#developer_can_push?' do
     it 'when developer can push' do
       expect(

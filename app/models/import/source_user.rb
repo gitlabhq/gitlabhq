@@ -6,6 +6,7 @@ module Import
 
     belongs_to :placeholder_user, class_name: 'User', optional: true
     belongs_to :reassign_to_user, class_name: 'User', optional: true
+    belongs_to :reassigned_by_user, class_name: 'User', optional: true
     belongs_to :namespace
 
     validates :namespace_id, :import_type, :source_hostname, :source_user_identifier, :status, presence: true

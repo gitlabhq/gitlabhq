@@ -9,6 +9,14 @@ module Gitlab
         @settings = settings.deep_symbolize_keys
       end
 
+      def code_owner_approval_required?
+        !!settings[:code_owner_approval_required]
+      end
+
+      def allow_force_push?
+        !!settings[:allow_force_push]
+      end
+
       def any?
         return true unless settings[:allow_force_push]
 

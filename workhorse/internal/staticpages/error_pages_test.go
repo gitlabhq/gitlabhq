@@ -169,7 +169,7 @@ func TestIfErrorPageIsPresentedText(t *testing.T) {
 func TestErrorPageResponseWriterFlushable(t *testing.T) {
 	rw := httptest.NewRecorder()
 	eprw := errorPageResponseWriter{rw: rw}
-	rc := http.NewResponseController(&eprw)
+	rc := http.NewResponseController(&eprw) //nolint:bodyclose // false-positive https://github.com/timakin/bodyclose/issues/52
 
 	err := rc.Flush()
 	require.NoError(t, err, "the underlying response writer is not flushable")

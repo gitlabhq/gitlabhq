@@ -984,6 +984,7 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
             project_creation_level: "noone",
             subgroup_creation_level: "maintainer",
             default_branch_protection: ::Gitlab::Access::MAINTAINER_PROJECT_ACCESS,
+            default_branch_protection_defaults: ::Gitlab::Access::BranchProtection.protected_after_initial_push.stringify_keys,
             prevent_sharing_groups_outside_hierarchy: true,
             avatar: fixture_file_upload(file_path),
             math_rendering_limits_enabled: false,
@@ -1012,6 +1013,7 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
         expect(json_response['shared_projects']).to be_an Array
         expect(json_response['shared_projects'].length).to eq(0)
         expect(json_response['default_branch_protection']).to eq(::Gitlab::Access::MAINTAINER_PROJECT_ACCESS)
+        expect(json_response['default_branch_protection_defaults']).to eq(::Gitlab::Access::BranchProtection.protected_after_initial_push.stringify_keys)
         expect(json_response['avatar_url']).to end_with('dk.png')
         expect(json_response['math_rendering_limits_enabled']).to eq(false)
         expect(json_response['lock_math_rendering_limits_enabled']).to eq(true)

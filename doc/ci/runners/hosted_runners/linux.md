@@ -24,7 +24,7 @@ GitLab offers the following machine types for hosted runners on Linux x86-64.
 
 | Runner Tag                                             | vCPUs | Memory | Storage |
 |--------------------------------------------------------|-------|--------|---------|
-| `saas-linux-small-amd64` (default)                     | 2     | 8 GB   | 25 GB   |
+| `saas-linux-small-amd64` (default)                     | 2     | 8 GB   | 30 GB   |
 | `saas-linux-medium-amd64`                              | 4     | 16 GB  | 50 GB   |
 | `saas-linux-large-amd64` (Premium and Ultimate only)   | 8     | 32 GB  | 100 GB  |
 | `saas-linux-xlarge-amd64` (Premium and Ultimate only)  | 16    | 64 GB  | 200 GB  |

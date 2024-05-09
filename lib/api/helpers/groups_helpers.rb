@@ -34,6 +34,7 @@ module API
           optional :allowed_to_merge, type: Array, desc: 'An array of access levels allowed to merge' do
             requires :access_level, type: Integer, values: [::Gitlab::Access::DEVELOPER, ::Gitlab::Access::MAINTAINER], desc: 'A valid access level'
           end
+          optional :code_owner_approval_required, type: Boolean, desc: "Require approval from code owners"
           optional :developer_can_initial_push, type: Boolean, desc: 'Allow developers to initial push'
         end
         optional :shared_runners_setting, type: String, values: ::Namespace::SHARED_RUNNERS_SETTINGS, desc: 'Enable/disable shared runners for the group and its subgroups and projects'
