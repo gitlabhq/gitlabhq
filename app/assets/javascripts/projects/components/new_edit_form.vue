@@ -136,7 +136,7 @@ export default {
       :form-id="$options.formId"
       :fields="fields"
       :server-validations="serverValidations"
-      class="gl-display-flex gl-column-gap-5 gl-flex-wrap"
+      class="gl-display-flex gl-gap-x-5 gl-flex-wrap"
       @submit="$emit('submit', formValues)"
       @input-field="$emit('input-field', $event)"
     >

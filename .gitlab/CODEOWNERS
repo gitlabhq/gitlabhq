@@ -864,9 +864,8 @@ lib/gitlab/checks/**
 /doc/development/navigation_sidebar.md @gitlab-org/manage/foundations/engineering
 /doc/development/omnibus.md @gitlab-org/distribution
 /doc/development/organization/ @abdwdd @alexpooley @manojmj
-/doc/development/permissions.md @gitlab-org/govern/authentication/approvers
-/doc/development/permissions/ @gitlab-org/govern/authentication/approvers
-/doc/development/permissions/custom_roles.md @gitlab-org/govern/authorization/approvers
+/doc/development/permissions.md @gitlab-org/govern/authorization/approvers
+/doc/development/permissions/ @gitlab-org/govern/authorization/approvers
 /doc/development/pipelines/ @gl-quality/eng-prod
 /doc/development/policies.md @gitlab-org/govern/authentication/approvers
 /doc/development/search/ @gitlab-org/search-team/migration-maintainers
@@ -936,6 +935,7 @@ lib/gitlab/checks/**
 /doc/tutorials/website_project_with_analytics/ @lciutacu
 /doc/update/ @axil
 /doc/user/ai_features.md @sselhorn
+/doc/user/ai_features_enable.md @sselhorn
 /doc/user/analytics/ @lciutacu
 /doc/user/analytics/ci_cd_analytics.md @phillipwells
 /doc/user/application_security/ @rdickenson
@@ -949,8 +949,10 @@ lib/gitlab/checks/**
 /doc/user/discussions/ @aqualls
 /doc/user/emoji_reactions.md @msedlakjakubowski
 /doc/user/enterprise_user/ @jglassman1
-/doc/user/get_started/ @msedlakjakubowski
+/doc/user/get_started/get_started_managing_code.md @msedlakjakubowski
 /doc/user/get_started/get_started_managing_infrastructure.md @phillipwells
+/doc/user/get_started/get_started_planning_work.md @msedlakjakubowski
+/doc/user/get_started/get_started_projects.md @lciutacu
 /doc/user/gitlab_duo_chat.md @sselhorn
 /doc/user/gitlab_duo_examples.md @sselhorn
 /doc/user/group/access_and_permissions.md @lciutacu

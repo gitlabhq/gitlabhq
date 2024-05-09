@@ -2,7 +2,16 @@ import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import toast from '~/vue_shared/plugins/global_toast';
 import { sprintf, __ } from '~/locale';
 import { ACTION_EDIT, ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
-import { QUERY_PARAM_END_CURSOR, QUERY_PARAM_START_CURSOR } from './constants';
+import {
+  TIMESTAMP_TYPE_CREATED_AT,
+  TIMESTAMP_TYPE_UPDATED_AT,
+} from '~/vue_shared/components/resource_lists/constants';
+import {
+  SORT_CREATED_AT,
+  SORT_UPDATED_AT,
+  QUERY_PARAM_END_CURSOR,
+  QUERY_PARAM_START_CURSOR,
+} from './constants';
 
 const availableProjectActions = (userPermissions) => {
   const baseActions = [];
@@ -106,6 +115,15 @@ export const renderDeleteSuccessToast = (item, type) => {
       name: item.name,
     }),
   );
+};
+
+export const timestampType = (sortName) => {
+  const SORT_MAP = {
+    [SORT_CREATED_AT]: TIMESTAMP_TYPE_CREATED_AT,
+    [SORT_UPDATED_AT]: TIMESTAMP_TYPE_UPDATED_AT,
+  };
+
+  return SORT_MAP[sortName] || TIMESTAMP_TYPE_CREATED_AT;
 };
 
 export const deleteParams = () => {

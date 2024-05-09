@@ -12,6 +12,8 @@ fragment BaseGroup on Group {
   projectsCount
   groupMembersCount
   visibility
+  createdAt
+  updatedAt
   userPermissions {
     removeGroup
   }

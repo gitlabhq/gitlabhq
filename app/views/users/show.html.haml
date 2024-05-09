@@ -25,7 +25,7 @@
             = s_("UserProfile|Edit profile")
         = render 'users/view_gpg_keys'
         = render 'users/view_user_in_admin_area'
-    .gl-display-flex.gl-flex-direction-row.gl-align-items-center.gl-column-gap-5.gl-mt-2.gl-sm-mt-0
+    .gl-display-flex.gl-flex-direction-row.gl-align-items-center.gl-gap-x-5.gl-mt-2.gl-sm-mt-0
       .user-image.gl-relative.gl-md-py-3
         = link_to avatar_icon_for_user(@user, 400, current_user: current_user), target: '_blank', rel: 'noopener noreferrer', title: s_('UserProfile|View large avatar') do
           = render Pajamas::AvatarComponent.new(@user, alt: s_('UserProfile|User profile picture'), size: 96, avatar_options: { itemprop: "image" })

@@ -10,7 +10,12 @@ import {
 } from '~/visibility_level/constants';
 import { ACCESS_LEVEL_LABELS, ACCESS_LEVEL_NO_ACCESS_INTEGER } from '~/access_level/constants';
 import ListActions from '~/vue_shared/components/list_actions/list_actions.vue';
+import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { ACTION_EDIT, ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
+import {
+  TIMESTAMP_TYPE_CREATED_AT,
+  TIMESTAMP_TYPE_UPDATED_AT,
+} from '~/vue_shared/components/resource_lists/constants';
 import { groups } from './mock_data';
 
 describe('GroupsListItem', () => {
@@ -35,6 +40,7 @@ describe('GroupsListItem', () => {
   const findListActions = () => wrapper.findComponent(ListActions);
   const findConfirmationModal = () => wrapper.findComponent(GroupListItemDeleteModal);
   const findAccessLevelBadge = () => wrapper.findByTestId('access-level-badge');
+  const findTimeAgoTooltip = () => wrapper.findComponent(TimeAgoTooltip);
 
   it('renders group avatar', () => {
     createComponent();
@@ -293,6 +299,44 @@ describe('GroupsListItem', () => {
 
     it('does not display confirmation modal', () => {
       expect(findConfirmationModal().exists()).toBe(false);
+    });
+  });
+
+  describe.each`
+    timestampType                | expectedText | expectedTimeProp
+    ${TIMESTAMP_TYPE_CREATED_AT} | ${'Created'} | ${group.createdAt}
+    ${TIMESTAMP_TYPE_UPDATED_AT} | ${'Updated'} | ${group.updatedAt}
+    ${undefined}                 | ${'Created'} | ${group.createdAt}
+  `(
+    'when `timestampType` prop is $timestampType',
+    ({ timestampType, expectedText, expectedTimeProp }) => {
+      beforeEach(() => {
+        createComponent({
+          propsData: {
+            timestampType,
+          },
+        });
+      });
+
+      it('displays correct text and passes correct `time` prop to `TimeAgoTooltip`', () => {
+        expect(wrapper.findByText(expectedText).exists()).toBe(true);
+        expect(findTimeAgoTooltip().props('time')).toBe(expectedTimeProp);
+      });
+    },
+  );
+
+  describe('when timestamp type is not available in group data', () => {
+    beforeEach(() => {
+      const { createdAt, ...groupWithoutCreatedAt } = group;
+      createComponent({
+        propsData: {
+          group: groupWithoutCreatedAt,
+        },
+      });
+    });
+
+    it('does not render timestamp', () => {
+      expect(findTimeAgoTooltip().exists()).toBe(false);
     });
   });
 });

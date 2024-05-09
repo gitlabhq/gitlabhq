@@ -17,6 +17,10 @@ import { ACCESS_LEVEL_LABELS, ACCESS_LEVEL_NO_ACCESS_INTEGER } from '~/access_le
 import { FEATURABLE_DISABLED, FEATURABLE_ENABLED } from '~/featurable/constants';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import DeleteModal from '~/projects/components/shared/delete_modal.vue';
+import {
+  TIMESTAMP_TYPE_CREATED_AT,
+  TIMESTAMP_TYPE_UPDATED_AT,
+} from '~/vue_shared/components/resource_lists/constants';
 
 jest.mock('lodash/uniqueId');
 
@@ -55,6 +59,7 @@ describe('ProjectsListItem', () => {
   const findListActions = () => wrapper.findComponent(ListActions);
   const findAccessLevelBadge = () => wrapper.findByTestId('access-level-badge');
   const findInactiveBadge = () => wrapper.findComponent(ProjectListItemInactiveBadge);
+  const findTimeAgoTooltip = () => wrapper.findComponent(TimeAgoTooltip);
 
   beforeEach(() => {
     uniqueId.mockImplementation(jest.requireActual('lodash/uniqueId'));
@@ -152,22 +157,41 @@ describe('ProjectsListItem', () => {
     expect(starsLink.findComponent(GlIcon).props('name')).toBe('star-o');
   });
 
-  it('renders updated at', () => {
-    createComponent();
-
-    expect(wrapper.findComponent(TimeAgoTooltip).props('time')).toBe(project.updatedAt);
-  });
-
-  describe('when updated at is not available', () => {
-    it('does not render updated at', () => {
-      const { updatedAt, ...projectWithoutUpdatedAt } = project;
-      createComponent({
-        propsData: {
-          project: projectWithoutUpdatedAt,
-        },
+  describe.each`
+    timestampType                | expectedText | expectedTimeProp
+    ${TIMESTAMP_TYPE_CREATED_AT} | ${'Created'} | ${project.createdAt}
+    ${TIMESTAMP_TYPE_UPDATED_AT} | ${'Updated'} | ${project.updatedAt}
+    ${undefined}                 | ${'Created'} | ${project.createdAt}
+  `(
+    'when `timestampType` prop is $timestampType',
+    ({ timestampType, expectedText, expectedTimeProp }) => {
+      beforeEach(() => {
+        createComponent({
+          propsData: {
+            timestampType,
+          },
+        });
       });
 
-      expect(wrapper.findComponent(TimeAgoTooltip).exists()).toBe(false);
+      it('displays correct text and passes correct `time` prop to `TimeAgoTooltip`', () => {
+        expect(wrapper.findByText(expectedText).exists()).toBe(true);
+        expect(findTimeAgoTooltip().props('time')).toBe(expectedTimeProp);
+      });
+    },
+  );
+
+  describe('when timestamp type is not available in project data', () => {
+    beforeEach(() => {
+      const { createdAt, ...projectWithoutCreatedAt } = project;
+      createComponent({
+        propsData: {
+          project: projectWithoutCreatedAt,
+        },
+      });
+    });
+
+    it('does not render timestamp', () => {
+      expect(findTimeAgoTooltip().exists()).toBe(false);
     });
   });
 

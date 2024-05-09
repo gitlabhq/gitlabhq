@@ -12,6 +12,7 @@ import {
 } from 'ee_else_ce/organizations/shared/utils';
 import ProjectsList from '~/vue_shared/components/projects_list/projects_list.vue';
 import { ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
+import { TIMESTAMP_TYPE_CREATED_AT } from '~/vue_shared/components/resource_lists/constants';
 import { createAlert } from '~/alert';
 import { deleteProject } from '~/api/projects_api';
 import { DEFAULT_PER_PAGE } from '~/api';
@@ -175,6 +176,7 @@ describe('ProjectsView', () => {
           projects: formatProjects(nodes),
           showProjectIcon: true,
           listItemClass: defaultPropsData.listItemClass,
+          timestampType: TIMESTAMP_TYPE_CREATED_AT,
         });
       });
     });

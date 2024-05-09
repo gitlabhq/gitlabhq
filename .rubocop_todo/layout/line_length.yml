@@ -2199,7 +2199,6 @@ Layout/LineLength:
     - 'ee/spec/views/admin/application_settings/_elasticsearch_form.html.haml_spec.rb'
     - 'ee/spec/views/admin/application_settings/general.html.haml_spec.rb'
     - 'ee/spec/views/admin/dashboard/index.html.haml_spec.rb'
-    - 'ee/spec/views/compliance_management/compliance_framework/_project_settings.html.haml_spec.rb'
     - 'ee/spec/views/groups/security/discover/show.html.haml_spec.rb'
     - 'ee/spec/views/operations/environments.html.haml_spec.rb'
     - 'ee/spec/views/projects/security/discover/show.html.haml_spec.rb'

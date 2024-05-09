@@ -270,6 +270,10 @@ ml_candidates:
   - table: p_ci_builds
     column: ci_build_id
     on_delete: async_nullify
+namespace_details:
+  - table: users
+    column: creator_id
+    on_delete: async_nullify
 namespaces:
   - table: organizations
     column: organization_id

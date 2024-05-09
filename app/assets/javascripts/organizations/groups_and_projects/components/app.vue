@@ -169,7 +169,7 @@ export default {
       class="page-title-holder gl-display-flex gl-sm-flex-direction-row gl-flex-direction-column gl-sm-align-items-center"
     >
       <h1 class="page-title gl-font-size-h-display">{{ $options.i18n.pageTitle }}</h1>
-      <div class="gl-display-flex gl-column-gap-3 gl-sm-ml-auto gl-mb-4 gl-sm-mb-0">
+      <div class="gl-display-flex gl-gap-x-3 gl-sm-ml-auto gl-mb-4 gl-sm-mb-0">
         <new-group-button category="secondary" />
         <new-project-button />
       </div>

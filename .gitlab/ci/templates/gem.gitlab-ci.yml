@@ -8,9 +8,13 @@ spec:
     gem_name:
     gem_path_prefix:
       default: "gems/"
+    enabled:
+      default: "true"
 ---
 .gems:rules:$[[inputs.gem_name]]:
   rules:
+    - if: "'$[[inputs.enabled]]' != 'true'"
+      when: never
     - if: '$CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "maintenance"'
     - if: '$CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached"'
       changes:

@@ -24,6 +24,8 @@ export const organizationGroups = [
     maxAccessLevel: {
       integerValue: 30,
     },
+    createdAt: '2023-09-19T14:42:38Z',
+    updatedAt: '2024-04-24T03:47:38Z',
     __typename: 'Group',
   },
   {
@@ -45,6 +47,8 @@ export const organizationGroups = [
     maxAccessLevel: {
       integerValue: 30,
     },
+    createdAt: '2023-09-19T14:42:38Z',
+    updatedAt: '2024-04-24T03:47:38Z',
     __typename: 'Group',
   },
   {
@@ -66,6 +70,8 @@ export const organizationGroups = [
     maxAccessLevel: {
       integerValue: 30,
     },
+    createdAt: '2023-09-19T14:42:38Z',
+    updatedAt: '2024-04-24T03:47:38Z',
     __typename: 'Group',
   },
   {
@@ -87,6 +93,8 @@ export const organizationGroups = [
     maxAccessLevel: {
       integerValue: 30,
     },
+    createdAt: '2023-09-19T14:42:38Z',
+    updatedAt: '2024-04-24T03:47:38Z',
     __typename: 'Group',
   },
   {
@@ -107,6 +115,8 @@ export const organizationGroups = [
     maxAccessLevel: {
       integerValue: 30,
     },
+    createdAt: '2023-09-19T14:42:38Z',
+    updatedAt: '2024-04-24T03:47:38Z',
     __typename: 'Group',
   },
   {
@@ -128,6 +138,8 @@ export const organizationGroups = [
     maxAccessLevel: {
       integerValue: 30,
     },
+    createdAt: '2023-09-19T14:42:38Z',
+    updatedAt: '2024-04-24T03:47:38Z',
     __typename: 'Group',
   },
   {
@@ -149,6 +161,8 @@ export const organizationGroups = [
     maxAccessLevel: {
       integerValue: 30,
     },
+    createdAt: '2023-09-19T14:42:38Z',
+    updatedAt: '2024-04-24T03:47:38Z',
     __typename: 'Group',
   },
   {
@@ -169,6 +183,8 @@ export const organizationGroups = [
     maxAccessLevel: {
       integerValue: 30,
     },
+    createdAt: '2023-09-19T14:42:38Z',
+    updatedAt: '2024-04-24T03:47:38Z',
     __typename: 'Group',
   },
   {
@@ -189,6 +205,8 @@ export const organizationGroups = [
     maxAccessLevel: {
       integerValue: 30,
     },
+    createdAt: '2023-09-19T14:42:38Z',
+    updatedAt: '2024-04-24T03:47:38Z',
     __typename: 'Group',
   },
 ];

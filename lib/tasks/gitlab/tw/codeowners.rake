@@ -74,6 +74,7 @@ namespace :tw do
       CodeOwnerRule.new('Runner', '@fneill'),
       CodeOwnerRule.new('Hosted Runners', '@fneill'),
       CodeOwnerRule.new('Security Policies', '@rdickenson'),
+      CodeOwnerRule.new('Secret Detection', '@rdickenson'),
       CodeOwnerRule.new('Solutions Architecture', '@jfullam @brianwald @Darwinjs'),
       CodeOwnerRule.new('Source Code', '@msedlakjakubowski'),
       CodeOwnerRule.new('Static Analysis', '@rdickenson'),

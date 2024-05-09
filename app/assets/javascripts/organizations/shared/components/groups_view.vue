@@ -10,6 +10,7 @@ import {
   renderDeleteSuccessToast,
   deleteParams,
   formatGroups,
+  timestampType,
 } from 'ee_else_ce/organizations/shared/utils';
 import groupsQuery from '../graphql/queries/groups.query.graphql';
 import { SORT_ITEM_NAME, SORT_DIRECTION_ASC } from '../constants';
@@ -149,6 +150,9 @@ export default {
 
       return baseProps;
     },
+    timestampType() {
+      return timestampType(this.sortName);
+    },
   },
   methods: {
     onNext(endCursor) {
@@ -191,6 +195,7 @@ export default {
       :groups="nodes"
       show-group-icon
       :list-item-class="listItemClass"
+      :timestamp-type="timestampType"
       @delete="deleteGroup"
     />
 

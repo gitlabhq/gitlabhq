@@ -13,6 +13,8 @@ fragment BaseProject on Project {
   openMergeRequestsCount
   openIssuesCount
   descriptionHtml
+  createdAt
+  updatedAt
   mergeRequestsAccessLevel {
     stringValue
   }

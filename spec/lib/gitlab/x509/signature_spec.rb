@@ -75,6 +75,20 @@ RSpec.describe Gitlab::X509::Signature, feature_category: :source_code_managemen
           expect(signature.verification_status).to eq(:verified)
         end
       end
+
+      context 'when subjectAltName is missing' do
+        before do
+          allow_any_instance_of(described_class).to receive(:get_certificate_extension)
+            .with('subjectAltName')
+            .and_return(nil)
+        end
+
+        it 'returns nil' do
+          expect(signature.x509_certificate).to be_nil
+          expect(signature.verified_signature).to be_truthy
+          expect(signature.verification_status).to eq(:unverified)
+        end
+      end
     end
 
     context "if the email matches but isn't confirmed" do

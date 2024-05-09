@@ -10829,9 +10829,6 @@ msgstr ""
 msgid "Choose which repositories you want to connect and run CI/CD pipelines."
 msgstr ""
 
-msgid "Choose your framework"
-msgstr ""
-
 msgid "Ci config already present"
 msgstr ""
 
@@ -13091,6 +13088,9 @@ msgstr ""
 msgid "Compliance framework"
 msgstr ""
 
+msgid "Compliance framework settings have moved."
+msgstr ""
+
 msgid "ComplianceChainOfCustody| Chain of custody export"
 msgstr ""
 
@@ -13126,9 +13126,6 @@ msgstr ""
 msgid "ComplianceFrameworks|A compliance frameworks CSV export for the group %{group_link} is attached to this email."
 msgstr ""
 
-msgid "ComplianceFrameworks|Active compliance frameworks"
-msgstr ""
-
 msgid "ComplianceFrameworks|Add framework"
 msgstr ""
 
@@ -13144,9 +13141,6 @@ msgstr ""
 msgid "ComplianceFrameworks|Compliance framework created"
 msgstr ""
 
-msgid "ComplianceFrameworks|Compliance framework deleted successfully"
-msgstr ""
-
 msgid "ComplianceFrameworks|Compliance frameworks that are linked to an active policy can't be deleted"
 msgstr ""
 
@@ -13157,9 +13151,6 @@ msgid "ComplianceFrameworks|Configuration not found"
 msgstr ""
 
 msgid "ComplianceFrameworks|Create a compliance framework"
-msgstr ""
-
-msgid "ComplianceFrameworks|Default compliance framework successfully updated"
 msgstr ""
 
 msgid "ComplianceFrameworks|Default framework will be applied automatically to any new project created in the group or sub group."
@@ -13183,22 +13174,7 @@ msgstr ""
 msgid "ComplianceFrameworks|Edit compliance framework"
 msgstr ""
 
-msgid "ComplianceFrameworks|Edit framework"
-msgstr ""
-
-msgid "ComplianceFrameworks|Error deleting the compliance framework. Please try again"
-msgstr ""
-
-msgid "ComplianceFrameworks|Error fetching compliance frameworks data. Please refresh the page"
-msgstr ""
-
 msgid "ComplianceFrameworks|Error fetching compliance frameworks data. Please refresh the page or try a different framework"
-msgstr ""
-
-msgid "ComplianceFrameworks|Error setting the default compliance frameworks"
-msgstr ""
-
-msgid "ComplianceFrameworks|Frameworks that have been added will appear here, start by creating a new one above."
 msgstr ""
 
 msgid "ComplianceFrameworks|Invalid format"
@@ -13225,9 +13201,6 @@ msgstr ""
 msgid "ComplianceFrameworks|New framework"
 msgstr ""
 
-msgid "ComplianceFrameworks|No compliance frameworks are set up yet"
-msgstr ""
-
 msgid "ComplianceFrameworks|No framework"
 msgstr ""
 
@@ -13235,9 +13208,6 @@ msgid "ComplianceFrameworks|Policy"
 msgstr ""
 
 msgid "ComplianceFrameworks|Policy name"
-msgstr ""
-
-msgid "ComplianceFrameworks|Remove default"
 msgstr ""
 
 msgid "ComplianceFrameworks|Required format: %{codeStart}path/file.y[a]ml@group-name/project-name%{codeEnd}. %{linkStart}See some examples%{linkEnd}."
@@ -13253,9 +13223,6 @@ msgid "ComplianceFrameworks|Set as default"
 msgstr ""
 
 msgid "ComplianceFrameworks|Set compliance pipeline configuration for projects that use this framework. %{linkStart}How do I create the configuration?%{linkEnd}"
-msgstr ""
-
-msgid "ComplianceFrameworks|Set default"
 msgstr ""
 
 msgid "ComplianceFrameworks|Summary"
@@ -13304,9 +13271,6 @@ msgid "ComplianceFramework|New compliance framework"
 msgstr ""
 
 msgid "ComplianceFramework|No compliance frameworks are set up yet"
-msgstr ""
-
-msgid "ComplianceFramework|No pipeline configuration found"
 msgstr ""
 
 msgid "ComplianceReport|Add framework"
@@ -22467,9 +22431,6 @@ msgstr ""
 msgid "Frameworks"
 msgstr ""
 
-msgid "Frameworks can not be added to projects in personal namespaces. %{linkStart}What are personal namespaces?%{linkEnd}"
-msgstr ""
-
 msgid "Free Trial of GitLab.com Ultimate"
 msgstr ""
 
@@ -25022,13 +24983,7 @@ msgstr ""
 msgid "GroupSettings|Choose the merge request checks for projects in this group. This setting overrides the same settings configured on each project in this group."
 msgstr ""
 
-msgid "GroupSettings|Compliance frameworks"
-msgstr ""
-
 msgid "GroupSettings|Configure analytics features for this group."
-msgstr ""
-
-msgid "GroupSettings|Configure compliance frameworks to make them available to projects in this group. %{linkStart}What are compliance frameworks?%{linkEnd}"
 msgstr ""
 
 msgid "GroupSettings|Configure limits on the number of repositories users can download, clone, or fork in a given time."
@@ -30116,6 +30071,9 @@ msgid "Last updated"
 msgstr ""
 
 msgid "Last updated %{time} ago"
+msgstr ""
+
+msgid "Last updated date"
 msgstr ""
 
 msgid "Last used"
@@ -35324,6 +35282,9 @@ msgid_plural "On %{end_date}, your trial will end and %{namespace_name} will be 
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "On the left sidebar, select %{compliance_center_link} to view them."
+msgstr ""
+
 msgid "On the left sidebar, select %{merge_requests_link} to view them."
 msgstr ""
 
@@ -36298,9 +36259,6 @@ msgid "Owner"
 msgstr ""
 
 msgid "Owners and administrators"
-msgstr ""
-
-msgid "Owners can modify this selection."
 msgstr ""
 
 msgid "PQL|An error occurred while sending hand raise lead."
@@ -47792,9 +47750,6 @@ msgid "Select a color"
 msgstr ""
 
 msgid "Select a color from the color picker or from the presets below."
-msgstr ""
-
-msgid "Select a compliance framework to apply to this project. %{linkStart}How are these added?%{linkEnd}"
 msgstr ""
 
 msgid "Select a file from the left sidebar to begin editing. Afterwards, you'll be able to commit your changes."
@@ -59890,9 +59845,6 @@ msgid "You need to verify your primary email first before enabling Two-Factor Au
 msgstr ""
 
 msgid "You see projects here when you're added to a group or project."
-msgstr ""
-
-msgid "You should add a .gitlab-ci.yml file to this project to avoid pipeline failures. %{compliancePipelineLinkStart}Why?%{compliancePipelineLinkEnd}"
 msgstr ""
 
 msgid "You successfully declined the invitation"

@@ -68,6 +68,7 @@ module Groups
           if @group.save
             @group.add_owner(current_user)
             Integration.create_from_active_default_integrations(@group, :group_id)
+            add_creator
           end
         end
       end
@@ -75,6 +76,17 @@ module Groups
 
     def after_build_hook
       inherit_group_shared_runners_settings
+    end
+
+    def add_creator
+      # The creator needs to be added this way because a database trigger automatically creates the
+      # namespace_details after the namespace is created. If we attempt to build the namespace details
+      # like we do with the namespace settings, the trigger will fire first and rails will subsequently try
+      # to create the namespace_details which will result in an error due to a primary key conflict.
+      #
+      # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82958
+      @group.namespace_details.creator = current_user
+      @group.namespace_details.save
     end
 
     def after_successful_creation_hook

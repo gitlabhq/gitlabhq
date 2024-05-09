@@ -88,7 +88,6 @@ Gitlab/FeatureAvailableUsage:
     - 'ee/app/services/projects/mark_for_deletion_service.rb'
     - 'ee/app/services/requirements_management/process_test_reports_service.rb'
     - 'ee/app/services/security/store_scans_service.rb'
-    - 'ee/app/views/compliance_management/compliance_framework/_project_settings.html.haml.rb'
     - 'ee/app/views/groups/epics/index.html.haml.rb'
     - 'ee/app/views/product_analytics/_project_settings.html.haml.rb'
     - 'ee/app/views/projects/_remove.html.haml.rb'

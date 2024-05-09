@@ -245,6 +245,11 @@ const entriesState = {
 const defaultEntries = ['./main'];
 
 module.exports = {
+  /*
+    If there is a compilation error in production, we want to exit immediately
+    https://v4.webpack.js.org/configuration/other-options/#bail
+   */
+  bail: !IS_DEV_SERVER,
   mode: IS_PRODUCTION ? 'production' : 'development',
 
   context: path.join(ROOT_PATH, 'app/assets/javascripts'),

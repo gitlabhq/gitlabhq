@@ -119,14 +119,28 @@ namespace :gitlab do
         log_path = ENV['WEBPACK_COMPILE_LOG_PATH']
 
         cmd = 'yarn webpack'
-        cmd += " > #{log_path}" if log_path
+        cmd += " > #{log_path} 2>&1" if log_path
 
-        puts "Written webpack stdout log to #{log_path}" if log_path
-        puts "You can inspect the webpack log here: #{ENV['CI_JOB_URL']}/artifacts/file/#{log_path}" if log_path && ENV['CI_JOB_URL']
+        log_path_message = ""
+        if log_path
+          puts "Compiling frontend assets with webpack, running: #{cmd}"
+          log_path_message += "\nWritten webpack log written to #{log_path}"
+          log_path_message += "\nYou can inspect the webpack full log here: #{ENV['CI_JOB_URL']}/artifacts/file/#{log_path}" if ENV['CI_JOB_URL']
+        end
 
         unless system(cmd)
-          abort Rainbow('Error: Unable to compile webpack production bundle.').red
+          puts Rainbow('Error: Unable to compile webpack production bundle.').red
+
+          if log_path
+            puts "Last 100 line of webpack log:"
+            system("tail -n 100 #{log_path}")
+          end
+
+          puts Rainbow(log_path_message).yellow unless log_path_message.empty?
+          abort
         end
+
+        puts log_path_message unless log_path_message.empty?
 
         Gitlab::TaskHelpers.invoke_and_time_task('gitlab:assets:fix_urls')
         Gitlab::TaskHelpers.invoke_and_time_task('gitlab:assets:check_page_bundle_mixins_css_for_sideeffects')

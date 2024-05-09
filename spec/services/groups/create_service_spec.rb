@@ -21,6 +21,7 @@ RSpec.describe Groups::CreateService, '#execute', feature_category: :groups_and_
     specify do
       expect { response }.to change { Group.count }
       expect(response).to be_success
+      expect(created_group.namespace_details.creator).to eq(current_user)
     end
   end
 

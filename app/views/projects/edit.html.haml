@@ -51,9 +51,6 @@
     .settings-content
       = render 'shared/badges/badge_settings'
 
-- if can?(current_user, :admin_compliance_framework, @project)
-  = render_if_exists 'compliance_management/compliance_framework/project_settings', expanded: expanded
-
 - if can?(current_user, :admin_project, @project)
   = render_if_exists 'projects/settings/default_issue_template'
 

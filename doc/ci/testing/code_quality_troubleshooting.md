@@ -96,7 +96,7 @@ Could not analyze code quality for the repository at /code
 If you enabled any of the Code Climate plugins, and the Code Quality CI/CD job fails with this
 error message, it's likely the job takes longer than the default timeout of 900 seconds:
 
-To work around this problem, set `TIMEOUT_SECONDS` to a higher value in your `.gitlab.-ci.yml` file.
+To work around this problem, set `TIMEOUT_SECONDS` to a higher value in your `.gitlab-ci.yml` file.
 
 For example:
 

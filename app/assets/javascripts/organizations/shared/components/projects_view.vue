@@ -10,6 +10,7 @@ import {
   renderDeleteSuccessToast,
   deleteParams,
   formatProjects,
+  timestampType,
 } from 'ee_else_ce/organizations/shared/utils';
 import { SORT_ITEM_NAME, SORT_DIRECTION_ASC } from '../constants';
 import projectsQuery from '../graphql/queries/projects.query.graphql';
@@ -155,6 +156,9 @@ export default {
 
       return baseProps;
     },
+    timestampType() {
+      return timestampType(this.sortName);
+    },
   },
   methods: {
     onNext(endCursor) {
@@ -197,6 +201,7 @@ export default {
       :projects="nodes"
       show-project-icon
       :list-item-class="listItemClass"
+      :timestamp-type="timestampType"
       @delete="deleteProject"
     />
     <div v-if="pageInfo.hasNextPage || pageInfo.hasPreviousPage" class="gl-text-center gl-mt-5">

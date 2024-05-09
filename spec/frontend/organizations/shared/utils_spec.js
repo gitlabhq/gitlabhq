@@ -4,11 +4,17 @@ import {
   onPageChange,
   deleteParams,
   renderDeleteSuccessToast,
+  timestampType,
 } from '~/organizations/shared/utils';
+import { SORT_CREATED_AT, SORT_UPDATED_AT, SORT_NAME } from '~/organizations/shared/constants';
 import { ACTION_EDIT, ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import toast from '~/vue_shared/plugins/global_toast';
 import { organizationProjects, organizationGroups } from '~/organizations/mock_data';
+import {
+  TIMESTAMP_TYPE_CREATED_AT,
+  TIMESTAMP_TYPE_UPDATED_AT,
+} from '~/vue_shared/components/resource_lists/constants';
 
 jest.mock('~/vue_shared/plugins/global_toast');
 
@@ -150,5 +156,18 @@ describe('renderDeleteSuccessToast', () => {
 describe('deleteParams', () => {
   it('returns {} always', () => {
     expect(deleteParams()).toStrictEqual({});
+  });
+});
+
+describe('timestampType', () => {
+  describe.each`
+    sortName           | expectedTimestampType
+    ${SORT_CREATED_AT} | ${TIMESTAMP_TYPE_CREATED_AT}
+    ${SORT_UPDATED_AT} | ${TIMESTAMP_TYPE_UPDATED_AT}
+    ${SORT_NAME}       | ${TIMESTAMP_TYPE_CREATED_AT}
+  `('when sort name is $sortName', ({ sortName, expectedTimestampType }) => {
+    it(`returns ${expectedTimestampType}`, () => {
+      expect(timestampType(sortName)).toBe(expectedTimestampType);
+    });
   });
 });

@@ -192,11 +192,10 @@ the defined policy.
 ## `send_bot_message` action type
 
 > - The `send_bot_message` action type was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/438269) in GitLab 16.11 [with a flag](../../../administration/feature_flags.md) named `approval_policy_disable_bot_comment`. Disabled by default.
+> - [Enabled on GitLab.com, self-managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/454852) in GitLab 17.0.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available.
-To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `approval_policy_disable_bot_comment`.
-On GitLab.com and GitLab Dedicated, this feature is not available.
+The availability of this feature is controlled by a feature flag. For more information, see the history.
 
 This action enables configuration of the bot message in merge requests when policy violations are detected.
 If the action is not specified, the bot message is enabled by default. If there are multiple policies defined,

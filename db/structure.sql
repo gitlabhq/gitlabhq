@@ -11842,7 +11842,8 @@ CREATE TABLE namespace_details (
     updated_at timestamp with time zone,
     cached_markdown_version integer,
     description text,
-    description_html text
+    description_html text,
+    creator_id bigint
 );
 
 CREATE TABLE namespace_ldap_settings (
@@ -26255,6 +26256,8 @@ CREATE INDEX index_namespace_commit_emails_on_email_id ON namespace_commit_email
 CREATE INDEX index_namespace_commit_emails_on_namespace_id ON namespace_commit_emails USING btree (namespace_id);
 
 CREATE UNIQUE INDEX index_namespace_commit_emails_on_user_id_and_namespace_id ON namespace_commit_emails USING btree (user_id, namespace_id);
+
+CREATE INDEX index_namespace_details_on_creator_id ON namespace_details USING btree (creator_id);
 
 CREATE UNIQUE INDEX index_namespace_root_storage_statistics_on_namespace_id ON namespace_root_storage_statistics USING btree (namespace_id);
 

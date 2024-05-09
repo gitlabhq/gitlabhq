@@ -242,7 +242,7 @@ export default {
       {{ cardTooltipText }}
     </gl-tooltip>
     <div class="gl-bg-white gl-border gl-p-3 gl-rounded-lg gl-w-full" :class="cardClasses">
-      <div class="gl-display-flex gl-column-gap-3">
+      <div class="gl-display-flex gl-gap-x-3">
         <ci-icon
           v-if="!pipelineIsLoading"
           :status="pipelineStatus"

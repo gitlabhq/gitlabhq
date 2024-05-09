@@ -132,7 +132,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'ee/spec/support/shared_examples/finders/geo/framework_registry_finder_shared_examples.rb'
     - 'ee/spec/support/shared_examples/graphql/geo/geo_registries_resolver_shared_examples.rb'
     - 'ee/spec/support/shared_examples/models/license_shared_examples.rb'
-    - 'ee/spec/views/compliance_management/compliance_framework/_project_settings.html.haml_spec.rb'
     - 'ee/spec/views/groups/billings/index.html.haml_spec.rb'
     - 'ee/spec/workers/ee/issuable_export_csv_worker_spec.rb'
     - 'lib/api/ci/runners.rb'

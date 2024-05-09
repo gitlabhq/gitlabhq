@@ -53,6 +53,7 @@ heading to toggle the list of the milestone bars.
 ## Sort and filter the Roadmap
 
 > - Filtering by group was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385191) in GitLab 15.9.
+> - Sorting by title, created date, and last updated date [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460492) in GitLab 17.0.
 
 NOTE:
 Filtering roadmaps by milestone might not be available to you. Be sure to review this section's history for details.
@@ -64,6 +65,9 @@ You can sort epics in the Roadmap view by:
 
 - Start date
 - Due date
+- Title
+- Created date
+- Last updated date
 
 Each option contains a button that toggles the sort order between **ascending**
 and **descending**. The sort option and order persist when browsing Epics, including

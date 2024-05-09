@@ -185,7 +185,7 @@ export default {
       v-model="formValues"
       :form-id="$options.formId"
       :fields="fields"
-      class="gl-display-flex gl-column-gap-5 gl-flex-wrap"
+      class="gl-display-flex gl-gap-x-5 gl-flex-wrap"
       @submit="$emit('submit', formValues)"
     >
       <template #input(path)="{ id, value, validation, input, blur }">

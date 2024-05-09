@@ -186,7 +186,10 @@ module Gitlab
       end
 
       def certificate_emails
-        get_certificate_extension('subjectAltName').split(',').each.with_object([]) do |item, emails|
+        subject_alt_name = get_certificate_extension('subjectAltName')
+        return if subject_alt_name.nil?
+
+        subject_alt_name.split(',').each.with_object([]) do |item, emails|
           emails << item.split('email:')[1] if item.strip.start_with?("email")
         end
       end
@@ -204,7 +207,10 @@ module Gitlab
       end
 
       def certificate_attributes
-        return if verified_signature.nil? || certificate_subject_key_identifier.nil? || x509_issuer.nil?
+        return if verified_signature.nil? ||
+          certificate_subject_key_identifier.nil? ||
+          x509_issuer.nil? ||
+          certificate_emails.nil?
 
         {
           subject_key_identifier: certificate_subject_key_identifier,

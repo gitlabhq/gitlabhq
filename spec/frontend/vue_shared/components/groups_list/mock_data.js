@@ -18,6 +18,8 @@ export const groups = [
     },
     editPath: 'http://127.0.0.1:3000/groups/gitlab-org/-/edit',
     availableActions: [ACTION_EDIT, ACTION_DELETE],
+    createdAt: '2023-09-19T14:42:38Z',
+    updatedAt: '2024-04-24T03:47:38Z',
   },
   {
     id: 2,
@@ -37,5 +39,7 @@ export const groups = [
     },
     editPath: 'http://127.0.0.1:3000/groups/gitlab-org/test-subgroup/-/edit',
     availableActions: [ACTION_EDIT, ACTION_DELETE],
+    createdAt: '2023-09-19T14:42:38Z',
+    updatedAt: '2024-04-24T03:47:38Z',
   },
 ];

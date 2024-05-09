@@ -113,7 +113,7 @@ DETAILS:
 **Tier:** Premium, Ultimate
 
 The `browser_performance` report collects [Browser Performance Testing metrics](../testing/browser_performance_testing.md)
-as artifacts.
+as an artifact. This artifact is a JSON file output by the [Sitespeed plugin](https://gitlab.com/gitlab-org/gl-performance).
 
 GitLab can display the results of one report in the merge request
 [browser performance testing widget](../testing/browser_performance_testing.md#how-browser-performance-testing-works).

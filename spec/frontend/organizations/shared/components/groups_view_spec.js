@@ -12,6 +12,7 @@ import {
 import { deleteGroup } from 'ee_else_ce/api/groups_api';
 import groupsQuery from '~/organizations/shared/graphql/queries/groups.query.graphql';
 import GroupsList from '~/vue_shared/components/groups_list/groups_list.vue';
+import { TIMESTAMP_TYPE_CREATED_AT } from '~/vue_shared/components/resource_lists/constants';
 import { ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
 import { createAlert } from '~/alert';
 import { DEFAULT_PER_PAGE } from '~/api';
@@ -168,10 +169,11 @@ describe('GroupsView', () => {
       it('renders `GroupsList` component and passes correct props', async () => {
         await waitForPromises();
 
-        expect(wrapper.findComponent(GroupsList).props()).toMatchObject({
+        expect(findGroupsList().props()).toMatchObject({
           groups: formatGroups(nodes),
           showGroupIcon: true,
           listItemClass: defaultPropsData.listItemClass,
+          timestampType: TIMESTAMP_TYPE_CREATED_AT,
         });
       });
     });

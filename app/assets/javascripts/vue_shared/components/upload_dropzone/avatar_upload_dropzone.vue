@@ -77,7 +77,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-display-flex gl-column-gap-5">
+  <div class="gl-display-flex gl-gap-x-5">
     <gl-avatar
       :entity-id="entity.id || null"
       :entity-name="entity.name || 'organization'"
@@ -89,7 +89,7 @@ export default {
       <p class="gl-font-weight-bold gl-line-height-1 gl-mb-3">
         {{ label }}
       </p>
-      <div v-if="value" class="gl-display-flex gl-align-items-center gl-column-gap-3">
+      <div v-if="value" class="gl-display-flex gl-align-items-center gl-gap-x-3">
         <gl-button @click="$emit('input', null)">{{ $options.i18n.removeAvatar }}</gl-button>
         <gl-truncate
           v-if="isValueAFile"

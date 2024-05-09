@@ -18,6 +18,14 @@ module Types
       null: true,
       description: 'Avatar URL of the group.'
 
+    field :created_at, Types::TimeType,
+      null: true,
+      description: 'Timestamp of the group creation.'
+
+    field :updated_at, Types::TimeType,
+      null: true,
+      description: 'Timestamp of when the group was last updated.'
+
     field :custom_emoji,
       type: Types::CustomEmojiType.connection_type,
       null: true,

@@ -23,6 +23,10 @@ import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import ListActions from '~/vue_shared/components/list_actions/list_actions.vue';
 import { ACTION_EDIT, ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
 import DeleteModal from '~/projects/components/shared/delete_modal.vue';
+import {
+  TIMESTAMP_TYPE_CREATED_AT,
+  TIMESTAMP_TYPE_UPDATED_AT,
+} from '~/vue_shared/components/resource_lists/constants';
 
 const MAX_TOPICS_TO_SHOW = 3;
 const MAX_TOPIC_TITLE_LENGTH = 15;
@@ -36,7 +40,8 @@ export default {
     topics: __('Topics'),
     topicsPopoverTargetText: __('+ %{count} more'),
     moreTopics: __('More topics'),
-    updated: __('Updated'),
+    [TIMESTAMP_TYPE_CREATED_AT]: __('Created'),
+    [TIMESTAMP_TYPE_UPDATED_AT]: __('Updated'),
     actions: __('Actions'),
     showMore: __('Show more'),
     showLess: __('Show less'),
@@ -97,6 +102,14 @@ export default {
       type: Boolean,
       required: false,
       default: false,
+    },
+    timestampType: {
+      type: String,
+      required: false,
+      default: TIMESTAMP_TYPE_CREATED_AT,
+      validator(value) {
+        return [TIMESTAMP_TYPE_CREATED_AT, TIMESTAMP_TYPE_UPDATED_AT].includes(value);
+      },
     },
   },
   data() {
@@ -206,6 +219,12 @@ export default {
     isActionDeleteLoading() {
       return this.project.actionLoadingStates[ACTION_DELETE];
     },
+    timestampText() {
+      return this.$options.i18n[this.timestampType];
+    },
+    timestamp() {
+      return this.project[this.timestampType];
+    },
   },
   methods: {
     topicPath(topic) {
@@ -232,7 +251,7 @@ export default {
 <template>
   <li class="projects-list-item gl-py-5 gl-border-b gl-display-flex">
     <div class="gl-md-display-flex gl-flex-grow-1">
-      <div class="gl-display-flex gl-flex-grow-1">
+      <div class="gl-flex gl-grow gl-items-start">
         <div
           v-if="showProjectIcon"
           class="gl-display-flex gl-align-items-center gl-flex-shrink-0 gl-h-9 gl-mr-3"
@@ -333,10 +352,10 @@ export default {
         </gl-avatar-labeled>
       </div>
       <div
-        class="gl-md-display-flex gl-flex-direction-column gl-align-items-flex-end gl-flex-shrink-0 gl-mt-3 gl-md-pl-0 gl-md-mt-0"
+        class="md:gl-flex gl-flex-col gl-items-end gl-shrink-0 gl-mt-3 md:gl-pl-0 md:gl-mt-0"
         :class="showProjectIcon ? 'gl-pl-12' : 'gl-pl-10'"
       >
-        <div class="gl-display-flex gl-align-items-center gl-column-gap-3 gl-md-h-9">
+        <div class="gl-flex gl-items-center gl-gap-x-3 md:gl-h-9">
           <project-list-item-inactive-badge :project="project" />
           <gl-link
             v-gl-tooltip="$options.i18n.stars"
@@ -379,11 +398,11 @@ export default {
           </gl-link>
         </div>
         <div
-          v-if="project.updatedAt"
-          class="gl-font-sm gl-whitespace-nowrap gl-text-secondary gl-mt-3 gl-md-mt-0"
+          v-if="timestamp"
+          class="gl-text-sm gl-whitespace-nowrap gl-text-secondary gl-mt-3 md:-gl-mt-2"
         >
-          <span>{{ $options.i18n.updated }}</span>
-          <time-ago-tooltip :time="project.updatedAt" />
+          <span>{{ timestampText }}</span>
+          <time-ago-tooltip :time="timestamp" />
         </div>
       </div>
     </div>

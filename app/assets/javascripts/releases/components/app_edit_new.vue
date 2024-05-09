@@ -262,7 +262,7 @@ export default {
 
       <asset-links-form />
 
-      <div class="d-flex gl-column-gap-3 pt-3">
+      <div class="d-flex gl-gap-x-3 pt-3">
         <gl-button
           class="js-no-auto-disable"
           category="primary"

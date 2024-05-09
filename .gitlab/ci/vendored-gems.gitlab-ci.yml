@@ -47,3 +47,4 @@ include:
     inputs:
       gem_name: "sidekiq-7.1.6"
       gem_path_prefix: "vendor/gems/"
+      enabled: "false" # https://gitlab.com/gitlab-org/gitlab/-/issues/460842

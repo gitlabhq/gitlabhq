@@ -89,9 +89,7 @@ export default {
         class="commit-content gl-w-full gl-display-inline-flex gl-flex-wrap gl-align-items-baseline"
         data-testid="commit-content"
       >
-        <div
-          class="gl-flex-basis-full gl-display-inline-flex gl-align-items-center gl-column-gap-3"
-        >
+        <div class="gl-flex-basis-full gl-display-inline-flex gl-align-items-center gl-gap-x-3">
           <gl-link
             v-safe-html:[$options.safeHtmlConfig]="commit.titleHtml"
             :href="commit.webPath"

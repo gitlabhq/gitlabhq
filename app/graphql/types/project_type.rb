@@ -99,6 +99,10 @@ module Types
       null: true,
       description: 'Timestamp of the project creation.'
 
+    field :updated_at, Types::TimeType,
+      null: true,
+      description: 'Timestamp of when the project was last updated.'
+
     field :last_activity_at, Types::TimeType,
       null: true,
       description: 'Timestamp of the project last activity.'
