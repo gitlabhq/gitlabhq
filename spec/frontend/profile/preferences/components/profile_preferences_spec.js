@@ -19,6 +19,7 @@ import {
   colorModes,
   lightColorModeId,
   darkColorModeId,
+  autoColorModeId,
   themes,
   themeId1,
 } from '../mock_data';
@@ -236,6 +237,20 @@ describe('ProfilePreferences component', () => {
 
     it('reloads the page when switching from dark to light mode', async () => {
       selectColorModeId(darkColorModeId);
+      setupWrapper();
+
+      selectColorModeId(lightColorModeId);
+      dispatchBeforeSendEvent();
+      await nextTick();
+
+      dispatchSuccessEvent();
+      await nextTick();
+
+      expect(window.location.reload).toHaveBeenCalledTimes(1);
+    });
+
+    it('reloads the page when switching from auto to light mode', async () => {
+      selectColorModeId(autoColorModeId);
       setupWrapper();
 
       selectColorModeId(lightColorModeId);

@@ -1939,7 +1939,6 @@ RSpec/ContextWording:
     - 'spec/lib/gitlab/usage_data_counters/ipynb_diff_activity_counter_spec.rb'
     - 'spec/lib/gitlab/usage_data_counters/kubernetes_agent_counter_spec.rb'
     - 'spec/lib/gitlab/usage_data_counters/quick_action_activity_unique_counter_spec.rb'
-    - 'spec/lib/gitlab/usage_data_counters/search_counter_spec.rb'
     - 'spec/lib/gitlab/usage_data_spec.rb'
     - 'spec/lib/gitlab/utils/lazy_attributes_spec.rb'
     - 'spec/lib/gitlab/utils/markdown_spec.rb'

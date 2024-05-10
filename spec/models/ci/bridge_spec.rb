@@ -343,16 +343,6 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
 
         expect(bridge.downstream_variables).to contain_exactly(*expected_vars)
       end
-
-      context 'and feature flag is disabled' do
-        before do
-          stub_feature_flags(ci_prevent_file_var_expansion_downstream_pipeline: false)
-        end
-
-        it 'expands the file variable' do
-          expect(bridge.downstream_variables).to contain_exactly({ key: 'EXPANDED_FILE', value: 'test-file-value' })
-        end
-      end
     end
 
     context 'when recursive interpolation has been used' do
@@ -455,21 +445,6 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
 
           expect(bridge.downstream_variables).to contain_exactly(*expected_vars)
         end
-
-        context 'and feature flag is disabled' do
-          before do
-            stub_feature_flags(ci_prevent_file_var_expansion_downstream_pipeline: false)
-          end
-
-          it 'expands the file variable' do
-            expected_vars = [
-              { key: 'FILE_VAR', value: 'project file' },
-              { key: 'YAML_VAR', value: 'project file' }
-            ]
-
-            expect(bridge.downstream_variables).to contain_exactly(*expected_vars)
-          end
-        end
       end
 
       context 'when the pipeline runs from a pipeline schedule' do
@@ -536,16 +511,6 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
         ]
 
         expect(bridge.downstream_variables).to contain_exactly(*expected_vars)
-      end
-
-      context 'and feature flag is disabled' do
-        before do
-          stub_feature_flags(ci_prevent_file_var_expansion_downstream_pipeline: false)
-        end
-
-        it 'expands the file variable' do
-          expect(bridge.downstream_variables).to contain_exactly({ key: 'schedule_var_key', value: 'project file' })
-        end
       end
     end
 

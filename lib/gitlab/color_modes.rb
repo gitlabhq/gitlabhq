@@ -7,6 +7,7 @@ module Gitlab
     # Color mode ID used when no `default_color_mode` configuration setting is provided.
     APPLICATION_DEFAULT = 1
     APPLICATION_DARK = 2
+    APPLICATION_SYSTEM = 3
 
     # Struct class representing a single Mode
     Mode = Struct.new(:id, :name, :css_class)
@@ -14,7 +15,8 @@ module Gitlab
     def self.available_modes
       [
         Mode.new(APPLICATION_DEFAULT, s_('ColorMode|Light'), 'gl-light'),
-        Mode.new(APPLICATION_DARK, s_('ColorMode|Dark (Experiment)'), 'gl-dark')
+        Mode.new(APPLICATION_DARK, s_('ColorMode|Dark (Experiment)'), 'gl-dark'),
+        Mode.new(APPLICATION_SYSTEM, s_('ColorMode|Auto (Experiment)'), 'gl-system')
       ]
     end
 

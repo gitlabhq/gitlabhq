@@ -41,7 +41,7 @@ export default {
       <gl-form-textarea
         :id="inputId"
         v-model="messageText"
-        class="form-control js-gfm-input gl-mb-3 commit-message-edit"
+        class="form-control js-gfm-input gl-mb-3 commit-message-edit !gl-font-monospace"
         dir="auto"
         required="required"
         rows="7"

@@ -2,6 +2,7 @@
 class Packages::PackageFileUploader < GitlabUploader
   extend Workhorse::UploadPath
   include ObjectStorage::Concern
+  include Packages::GcsSignedUrlMetadata
 
   storage_location :packages
 

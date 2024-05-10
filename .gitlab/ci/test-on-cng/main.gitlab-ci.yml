@@ -51,9 +51,9 @@ workflow:
     - source scripts/utils.sh
     - source scripts/rspec_helpers.sh
     - source scripts/qa/cng_deploy/cng-kind.sh
-    - run_timed_command "setup_cluster scripts/qa/cng_deploy/config/kind-config.yml"
-    - run_timed_command "deploy ${GITLAB_DOMAIN}"
     - cd qa && bundle install
+    - bundle exec cng create cluster --ci
+    - deploy ${GITLAB_DOMAIN}
   script:
     - export QA_COMMAND="bundle exec bin/qa ${QA_SCENARIO:=Test::Instance::All} $QA_GITLAB_URL -- --force-color --order random --format documentation"
     - echo "Running - '$QA_COMMAND'"

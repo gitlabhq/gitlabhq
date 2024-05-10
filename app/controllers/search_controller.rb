@@ -4,6 +4,7 @@ class SearchController < ApplicationController
   include ControllerWithCrossProjectAccessCheck
   include SearchHelper
   include ProductAnalyticsTracking
+  include Gitlab::InternalEventsTracking
   include SearchRateLimitable
 
   RESCUE_FROM_TIMEOUT_ACTIONS = [:count, :show, :autocomplete, :aggregations].freeze
@@ -187,11 +188,11 @@ class SearchController < ApplicationController
   end
 
   def increment_search_counters
-    Gitlab::UsageDataCounters::SearchCounter.count(:all_searches)
+    track_internal_event('perform_search', user: current_user)
 
     return if params[:nav_source] != 'navbar'
 
-    Gitlab::UsageDataCounters::SearchCounter.count(:navbar_searches)
+    track_internal_event('perform_navbar_search', user: current_user)
   end
 
   def append_info_to_payload(payload)

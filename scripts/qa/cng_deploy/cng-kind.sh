@@ -185,17 +185,6 @@ EOF
   log "success!"
 }
 
-function setup_cluster() {
-  local kind_config=$1
-
-  log_with_header "Create kind kubernetes cluster"
-  kind create cluster --config "$kind_config"
-  sed -i -E -e "s/localhost|0\.0\.0\.0/docker/g" "$KUBECONFIG"
-
-  log_with_header "Print cluster info"
-  kubectl cluster-info
-}
-
 function deploy() {
   local domain=$1
   local values=$(chart_values $domain)

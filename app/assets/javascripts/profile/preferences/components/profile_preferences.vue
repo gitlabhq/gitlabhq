@@ -58,7 +58,7 @@ export default {
 
     return {
       isSubmitEnabled: true,
-      darkModeOnCreate: null,
+      colorModeOnCreate: null,
       schemeOnCreate: null,
       integrationValues,
     };
@@ -72,7 +72,7 @@ export default {
     this.formEl.addEventListener('ajax:beforeSend', this.handleLoading);
     this.formEl.addEventListener('ajax:success', this.handleSuccess);
     this.formEl.addEventListener('ajax:error', this.handleError);
-    this.darkModeOnCreate = this.darkModeSelected();
+    this.colorModeOnCreate = this.getSelectedColorMode();
     this.schemeOnCreate = this.getSelectedScheme();
   },
   beforeDestroy() {
@@ -81,10 +81,6 @@ export default {
     this.formEl.removeEventListener('ajax:error', this.handleError);
   },
   methods: {
-    darkModeSelected() {
-      const mode = this.getSelectedColorMode();
-      return mode ? mode.css_class === 'gl-dark' : null;
-    },
     getSelectedColorMode() {
       const modeId = new FormData(this.formEl).get('user[color_mode_id]');
       const mode = this.colorModes.find((item) => item.id === Number(modeId));
@@ -105,7 +101,7 @@ export default {
       // Reload the page if the theme has changed from light to dark mode or vice versa
       // or if color scheme has changed to correctly load all required styles.
       if (
-        this.darkModeOnCreate !== this.darkModeSelected() ||
+        this.colorModeOnCreate !== this.getSelectedColorMode() ||
         this.schemeOnCreate !== this.getSelectedScheme()
       ) {
         window.location.reload();

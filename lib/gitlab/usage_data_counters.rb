@@ -9,7 +9,6 @@ module Gitlab
       DiffsCounter,
       KubernetesAgentCounter,
       NoteCounter,
-      SearchCounter,
       WebIdeCounter,
       SourceCodeCounter,
       MergeRequestWidgetExtensionCounter

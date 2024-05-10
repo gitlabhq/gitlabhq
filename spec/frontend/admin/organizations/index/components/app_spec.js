@@ -1,16 +1,17 @@
 import { GlButton } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import organizationsGraphQlResponse from 'test_fixtures/graphql/organizations/organizations.query.graphql.json';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
 import { DEFAULT_PER_PAGE } from '~/api';
-import { organizations as nodes, pageInfo, pageInfoEmpty } from '~/organizations/mock_data';
 import organizationsQuery from '~/admin/organizations/index/graphql/queries/organizations.query.graphql';
 import OrganizationsIndexApp from '~/admin/organizations/index/components/app.vue';
 import OrganizationsView from '~/organizations/shared/components/organizations_view.vue';
 import { MOCK_NEW_ORG_URL } from 'jest/organizations/shared/mock_data';
+import { pageInfoEmpty } from 'jest/organizations/mock_data';
 
 jest.mock('~/alert');
 
@@ -20,10 +21,11 @@ describe('AdminOrganizationsIndexApp', () => {
   let wrapper;
   let mockApollo;
 
-  const organizations = {
-    nodes,
-    pageInfo,
-  };
+  const {
+    data: {
+      currentUser: { organizations },
+    },
+  } = organizationsGraphQlResponse;
 
   const organizationEmpty = {
     nodes: [],

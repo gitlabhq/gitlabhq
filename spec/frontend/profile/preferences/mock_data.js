@@ -21,10 +21,12 @@ export const bodyClasses = 'ui-light-indigo ui-light gl-dark';
 
 export const lightColorModeId = 1;
 export const darkColorModeId = 2;
+export const autoColorModeId = 3;
 
 export const colorModes = [
   { id: lightColorModeId, css_class: 'gl-light' },
   { id: darkColorModeId, css_class: 'gl-dark' },
+  { id: autoColorModeId, css_class: 'gl-system' },
 ];
 
 export const themes = [

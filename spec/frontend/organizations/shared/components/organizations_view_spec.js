@@ -1,12 +1,20 @@
 import { GlLoadingIcon, GlEmptyState } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import { organizations } from '~/organizations/mock_data';
+import organizationsGraphQlResponse from 'test_fixtures/graphql/organizations/organizations.query.graphql.json';
 import OrganizationsView from '~/organizations/shared/components/organizations_view.vue';
 import OrganizationsList from '~/organizations/shared/components/list/organizations_list.vue';
 import { MOCK_NEW_ORG_URL, MOCK_ORG_EMPTY_STATE_SVG } from '../mock_data';
 
 describe('OrganizationsView', () => {
   let wrapper;
+
+  const {
+    data: {
+      currentUser: {
+        organizations: { nodes: organizations },
+      },
+    },
+  } = organizationsGraphQlResponse;
 
   const createComponent = (props = {}) => {
     wrapper = shallowMount(OrganizationsView, {

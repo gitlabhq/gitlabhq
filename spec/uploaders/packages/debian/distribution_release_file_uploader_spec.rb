@@ -1,15 +1,17 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Packages::Debian::DistributionReleaseFileUploader do
+RSpec.describe Packages::Debian::DistributionReleaseFileUploader, feature_category: :package_registry do
   [:project, :group].each do |container_type|
     context "Packages::Debian::#{container_type.capitalize}Distribution" do
-      let(:factory) { "debian_#{container_type}_distribution" }
-      let(:distribution) { create(factory, :with_file) }
+      let_it_be(:factory) { "debian_#{container_type}_distribution" }
+      let_it_be(:distribution) { create(factory, :with_file) }
       let(:uploader) { described_class.new(distribution, :file) }
       let(:path) { Gitlab.config.packages.storage_path }
 
       subject { uploader }
+
+      it { is_expected.to include_module(Packages::GcsSignedUrlMetadata) }
 
       it_behaves_like "builds correct paths",
         store_dir: %r[^\h{2}/\h{2}/\h{64}/debian_#{container_type}_distribution/\d+$],
@@ -38,10 +40,12 @@ RSpec.describe Packages::Debian::DistributionReleaseFileUploader do
           end
 
           it 'can store file remotely' do
-            distribution
-
             expect(distribution.file_store).to eq(described_class::Store::REMOTE)
             expect(distribution.file.path).not_to be_blank
+          end
+
+          it_behaves_like 'augmenting GCS signed URL with metadata' do
+            let(:has_project?) { container_type == :project }
           end
         end
       end

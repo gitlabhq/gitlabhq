@@ -5,7 +5,7 @@ require "tty-spinner"
 module Gitlab
   module Cng
     module Helpers
-      # Spinner helper class
+      # Spinner helper class for wrapping long running tasks in progress spinner
       #
       class Spinner
         include Output

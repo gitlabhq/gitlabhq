@@ -2,14 +2,11 @@ import { GlAvatar, GlDisclosureDropdown, GlLoadingIcon, GlLink } from '@gitlab/u
 import VueApollo from 'vue-apollo';
 import Vue from 'vue';
 
+import organizationsGraphQlResponse from 'test_fixtures/graphql/organizations/organizations.query.graphql.json';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import OrganizationSwitcher from '~/super_sidebar/components/organization_switcher.vue';
-import {
-  defaultOrganization as currentOrganization,
-  organizations as nodes,
-  pageInfo,
-  pageInfoEmpty,
-} from '~/organizations/mock_data';
+import { defaultOrganization as currentOrganization } from '~/organizations/mock_data';
+import { pageInfoEmpty } from 'jest/organizations/mock_data';
 import organizationsQuery from '~/organizations/shared/graphql/queries/organizations.query.graphql';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { helpPagePath } from '~/helpers/help_page_helper';
@@ -22,7 +19,15 @@ describe('OrganizationSwitcher', () => {
   let wrapper;
   let mockApollo;
 
-  const [, secondOrganization, thirdOrganization] = nodes;
+  const {
+    data: {
+      currentUser: {
+        organizations: { nodes, pageInfo },
+      },
+    },
+  } = organizationsGraphQlResponse;
+
+  const [firstOrganization, secondOrganization] = nodes;
 
   const organizations = {
     nodes,
@@ -97,24 +102,24 @@ describe('OrganizationSwitcher', () => {
 
         await waitForPromises();
 
-        expect(findDropdownItemByIndex(1).text()).toContain(secondOrganization.name);
+        expect(findDropdownItemByIndex(1).text()).toContain(firstOrganization.name);
         expect(findDropdownItemByIndex(1).element.firstChild.getAttribute('href')).toBe(
-          secondOrganization.webUrl,
+          firstOrganization.webUrl,
         );
         expect(findDropdownItemByIndex(1).findComponent(GlAvatar).props()).toMatchObject({
+          src: firstOrganization.avatarUrl,
+          entityId: getIdFromGraphQLId(firstOrganization.id),
+          entityName: firstOrganization.name,
+        });
+
+        expect(findDropdownItemByIndex(2).text()).toContain(secondOrganization.name);
+        expect(findDropdownItemByIndex(2).element.firstChild.getAttribute('href')).toBe(
+          secondOrganization.webUrl,
+        );
+        expect(findDropdownItemByIndex(2).findComponent(GlAvatar).props()).toMatchObject({
           src: secondOrganization.avatarUrl,
           entityId: getIdFromGraphQLId(secondOrganization.id),
           entityName: secondOrganization.name,
-        });
-
-        expect(findDropdownItemByIndex(2).text()).toContain(thirdOrganization.name);
-        expect(findDropdownItemByIndex(2).element.firstChild.getAttribute('href')).toBe(
-          thirdOrganization.webUrl,
-        );
-        expect(findDropdownItemByIndex(2).findComponent(GlAvatar).props()).toMatchObject({
-          src: thirdOrganization.avatarUrl,
-          entityId: getIdFromGraphQLId(thirdOrganization.id),
-          entityName: thirdOrganization.name,
         });
       });
 

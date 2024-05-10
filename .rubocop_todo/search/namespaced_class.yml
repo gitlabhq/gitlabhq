@@ -219,7 +219,6 @@ Search/NamespacedClass:
     - 'lib/gitlab/slash_commands/issue_search.rb'
     - 'lib/gitlab/slash_commands/presenters/issue_search.rb'
     - 'lib/gitlab/snippet_search_results.rb'
-    - 'lib/gitlab/usage_data_counters/search_counter.rb'
     - 'lib/peek/views/elasticsearch.rb'
     - 'lib/peek/views/zoekt.rb'
     - 'qa/qa/ee/page/admin/settings/component/elasticsearch.rb'

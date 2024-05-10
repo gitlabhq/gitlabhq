@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Packages::Composer::CacheFile, type: :model do
+RSpec.describe Packages::Composer::CacheFile, type: :model, feature_category: :package_registry do
   describe 'relationships' do
     it { is_expected.to belong_to(:group) }
     it { is_expected.to belong_to(:namespace) }

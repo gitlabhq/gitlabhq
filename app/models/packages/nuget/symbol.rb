@@ -12,7 +12,7 @@ module Packages
 
       belongs_to :package, -> { where(package_type: :nuget) }, inverse_of: :nuget_symbols
 
-      delegate :project_id, to: :package
+      delegate :project_id, :project, to: :package
 
       validates :package, :file, :file_path, :signature, :object_storage_key, :size, presence: true
       validates :signature, uniqueness: { scope: :file_path }

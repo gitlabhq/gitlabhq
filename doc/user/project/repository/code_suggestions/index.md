@@ -86,10 +86,31 @@ For use cases and best practices, follow the [GitLab Duo examples documentation]
 
 ## Response time
 
+Code Suggestions is powered by a generative AI model.
+
+Your personal access token enables a secure API connection to GitLab.com or to your GitLab instance.
+This API connection securely transmits a context window from your IDE/editor to the [GitLab AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist), a GitLab hosted service. The [gateway](../../../../development/ai_architecture.md) calls the large language model APIs, and then the generated suggestion is transmitted back to your IDE/editor.
+
 - Code completion suggestions are usually low latency.
 - For code generation:
   - Algorithms or large code blocks might take more than 10 seconds to generate.
   - Streaming of code generation responses is supported in VS Code, leading to faster average response times. Other supported IDEs offer slower response times and will return the generated code in a single block.
+
+## Inference window context
+
+Code Suggestions inferences against the currently opened file, the content before and after the cursor, the filename, and the extension type. For more information on possible future context expansion to improve the quality of suggestions, see [epic 11669](https://gitlab.com/groups/gitlab-org/-/epics/11669).
+
+## Truncation of file content
+
+Because of LLM limits and performance reasons, the content of the currently
+opened file is truncated:
+
+- For code completion: to 2048 tokens (roughly 8192 characters).
+- For code generation: to 50,000 characters.
+
+Content above the cursor is prioritized over content below the cursor. The content
+above the cursor is truncated from the left side, and content below the cursor
+is truncated from the right side.
 
 ## Accuracy of results
 
@@ -103,13 +124,6 @@ However, Code Suggestions might generate suggestions that are:
 - Offensive or insensitive.
 
 When using Code Suggestions, [code review best practice](../../../../development/code_review.md) still applies.
-
-## Progressive enhancement
-
-This feature is designed as a progressive enhancement to developer IDEs.
-Code Suggestions offer a completion if a suitable recommendation is provided to the user in a timely manner.
-In the event of a connection issue or model inference failure, the feature gracefully degrades.
-Code Suggestions do not prevent you from writing code in your IDE.
 
 ## Disable Code Suggestions
 

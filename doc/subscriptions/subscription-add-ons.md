@@ -67,7 +67,7 @@ Prerequisites:
 #### Configure network and proxy settings
 
 For self-managed instances, to enable GitLab Duo features,
-You must [enable network connectivity](../user/ai_features_enable.md#enable-gitlab-duo-on-self-managed-instances).
+You must [enable network connectivity](../user/ai_features_enable.md#configure-gitlab-duo-on-a-self-managed-instance).
 
 ## Assign and remove seats in bulk
 

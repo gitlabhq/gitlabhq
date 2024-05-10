@@ -1,11 +1,13 @@
 # frozen_string_literal: true
 
 RSpec.describe Gitlab::Cng::Commands::Version do
+  include_context "with command testing helper"
+
   let(:version) { Gitlab::Cng::VERSION }
 
   it "defines a version command" do
-    expect(described_class.commands["version"].to_h).to include({
-      description: "Prints cng orchestrator version",
+    expect_command_to_include_attributes("version", {
+      description: "Print cng orchestrator version",
       long_description: nil,
       name: "version",
       options: {},
@@ -14,6 +16,6 @@ RSpec.describe Gitlab::Cng::Commands::Version do
   end
 
   it "prints the version" do
-    expect { described_class.new.version }.to output(/#{version}/).to_stdout
+    expect { invoke_command("version") }.to output(/#{version}/).to_stdout
   end
 end

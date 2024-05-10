@@ -86,7 +86,7 @@ module API
           search_scope: search_scope
         )
 
-        Gitlab::UsageDataCounters::SearchCounter.count(:all_searches)
+        Gitlab::InternalEvents.track_event('perform_search', category: 'API::Search', user: current_user)
 
         paginate(@results)
 

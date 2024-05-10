@@ -269,7 +269,7 @@ Prerequisites:
 - You must have GitLab version 16.8 or later. You should use the latest GitLab version to benefit from the latest improvements to GitLab Duo Chat. The generally available version of GitLab Duo Chat in GitLab 16.11 has significant improvements in the quality of the answers.
 - You must have a Premium or Ultimate subscription that is [synchronized with GitLab](https://about.gitlab.com/pricing/licensing-faq/cloud-licensing/). To make sure GitLab Duo Chat works immediately, administrators can
   [manually synchronize your subscription](#manually-synchronize-your-subscription).
-- You must have [enabled network connectivity](ai_features_enable.md#enable-gitlab-duo-on-self-managed-instances).
+- You must have [enabled network connectivity](ai_features_enable.md#configure-gitlab-duo-on-a-self-managed-instance).
 - All of the users in your instance must have the latest version of their IDE extension.
 
 Then, depending on the version of GitLab you have, you can enable GitLab Duo Chat.
@@ -294,7 +294,7 @@ In GitLab 16.8, 16.9, and 16.10, GitLab Duo Chat is available in Beta. To enable
 
 NOTE:
 Usage of GitLab Duo Chat Beta is governed by the [GitLab Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
-Learn about [data usage when using GitLab Duo Chat](ai_features.md#data-usage).
+Learn about [data usage when using GitLab Duo Chat](ai_data_usage.md).
 
 #### Manually synchronize your subscription
 
@@ -315,7 +315,7 @@ In GitLab 16.8, 16.9, and 16.10, on GitLab Dedicated, GitLab Duo Chat is availab
 ## Disable GitLab Duo Chat
 
 To limit the data that Duo Chat has access to, follow the instructions for
-[disabling GitLab Duo features](ai_features_enable.md#disable-gitlab-duo-features).
+[disabling GitLab Duo features](ai_features_enable.md#turn-off-gitlab-duo-features).
 
 ## Use GitLab Duo Chat in the GitLab UI
 

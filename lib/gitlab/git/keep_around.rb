@@ -35,6 +35,7 @@ module Gitlab
           next unless sha.present? && commit_by(oid: sha)
 
           @keeparound_requested_counter.increment(labels)
+          Gitlab::AppLogger.info(message: 'Requesting keep-around reference', object_id: sha)
 
           next if kept_around?(sha)
 
@@ -42,8 +43,10 @@ module Gitlab
           raw_repository.write_ref(keep_around_ref_name(sha), sha)
 
           @keeparound_created_counter.increment(labels)
+          Gitlab::AppLogger.info(message: 'Created keep-around reference', object_id: sha)
+
         rescue Gitlab::Git::CommandError => ex
-          Gitlab::AppLogger.error "Unable to create keep-around reference for repository #{disk_path}: #{ex}"
+          Gitlab::ErrorTracking.track_exception(ex, object_id: sha)
         end
       end
 

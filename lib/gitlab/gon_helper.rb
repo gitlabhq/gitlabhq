@@ -13,6 +13,7 @@ module Gitlab
       gon.asset_host                    = ActionController::Base.asset_host
       gon.webpack_public_path           = webpack_public_path
       gon.relative_url_root             = Gitlab.config.gitlab.relative_url_root
+      gon.user_color_mode               = Gitlab::ColorModes.for_user(current_user).css_class
       gon.user_color_scheme             = Gitlab::ColorSchemes.for_user(current_user).css_class
       gon.markdown_surround_selection   = current_user&.markdown_surround_selection
       gon.markdown_automatic_lists      = current_user&.markdown_automatic_lists

@@ -26,3 +26,5 @@
 '{event_counters}_view_wiki_page': USAGE_WIKI_PAGES_VIEW
 '{event_counters}_click_full_report_license_compliance': USAGE_USERS_VISITING_TESTING_LICENSE_COMPLIANCE_FULL_REPORT
 '{event_counters}_click_external_link_license_compliance': USAGE_USERS_CLICKING_LICENSE_TESTING_VISITING_EXTERNAL_WEBSITE
+'{event_counters}_perform_search': ALL_SEARCHES_COUNT
+'{event_counters}_perform_navbar_search': NAVBAR_SEARCHES_COUNT

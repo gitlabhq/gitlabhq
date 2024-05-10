@@ -62,6 +62,29 @@ RSpec.describe SearchController, feature_category: :global_search do
         end
       end
 
+      it_behaves_like 'internal event tracking' do
+        let(:params) { { search: 'foobar' } }
+        let(:event) { 'perform_search' }
+        let(:category) { described_class.to_s }
+        let(:namespace) { nil }
+        let(:project) { nil }
+
+        subject(:tracked_event) { get :show, params: params }
+      end
+
+      context 'for navbar search' do
+        let(:params) { { search: 'foobar', nav_source: 'navbar' } }
+        let(:category) { described_class.to_s }
+        let(:namespace) { nil }
+        let(:project) { nil }
+
+        it_behaves_like 'internal event tracking' do
+          let(:event) { 'perform_navbar_search' }
+
+          subject(:tracked_event) { get :show, params: params }
+        end
+      end
+
       it_behaves_like 'with external authorization service enabled', :show, { search: 'hello' }
       it_behaves_like 'support for active record query timeouts', :show, { search: 'hello' }, :search_objects, :html
       it_behaves_like 'metadata is set', :show

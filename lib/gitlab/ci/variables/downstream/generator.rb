@@ -10,7 +10,7 @@ module Gitlab
           def initialize(bridge)
             @bridge = bridge
 
-            context = Context.new(all_bridge_variables: bridge.variables, expand_file_refs: bridge.expand_file_refs?)
+            context = Context.new(all_bridge_variables: bridge.variables, expand_file_refs: false)
 
             @raw_variable_generator = RawVariableGenerator.new(context)
             @expandable_variable_generator = ExpandableVariableGenerator.new(context)

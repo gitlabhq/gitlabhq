@@ -3,6 +3,7 @@ module Packages
   module Rpm
     class RepositoryFileUploader < GitlabUploader
       include ObjectStorage::Concern
+      include Packages::GcsSignedUrlMetadata
 
       storage_location :packages
 

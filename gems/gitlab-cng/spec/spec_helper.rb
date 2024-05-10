@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 require "rspec"
-
 require "gitlab/cng/cli"
+
+require_relative "command_helper"
 
 RSpec.configure do |config|
   # Disable RSpec exposing methods globally on `Module` and `main`

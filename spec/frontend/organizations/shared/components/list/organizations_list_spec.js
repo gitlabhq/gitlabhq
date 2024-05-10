@@ -1,20 +1,24 @@
 import { GlKeysetPagination } from '@gitlab/ui';
 import { omit } from 'lodash';
 import { shallowMount } from '@vue/test-utils';
+import organizationsGraphQlResponse from 'test_fixtures/graphql/organizations/organizations.query.graphql.json';
 import OrganizationsList from '~/organizations/shared/components/list/organizations_list.vue';
 import OrganizationsListItem from '~/organizations/shared/components/list/organizations_list_item.vue';
-import { organizations as nodes, pageInfo, pageInfoOnePage } from '~/organizations/mock_data';
+import { pageInfoMultiplePages, pageInfoOnePage } from 'jest/organizations/mock_data';
 
 describe('OrganizationsList', () => {
   let wrapper;
 
+  const {
+    data: {
+      currentUser: { organizations },
+    },
+  } = organizationsGraphQlResponse;
+
   const createComponent = ({ propsData = {} } = {}) => {
     wrapper = shallowMount(OrganizationsList, {
       propsData: {
-        organizations: {
-          nodes,
-          pageInfo,
-        },
+        organizations,
         ...propsData,
       },
     });
@@ -27,7 +31,7 @@ describe('OrganizationsList', () => {
     it('renders a list item for each organization', () => {
       createComponent();
 
-      expect(findAllOrganizationsListItem()).toHaveLength(nodes.length);
+      expect(findAllOrganizationsListItem()).toHaveLength(organizations.nodes.length);
     });
 
     describe('when there is one page of organizations', () => {
@@ -35,7 +39,7 @@ describe('OrganizationsList', () => {
         createComponent({
           propsData: {
             organizations: {
-              nodes,
+              ...organizations,
               pageInfo: pageInfoOnePage,
             },
           },
@@ -49,11 +53,18 @@ describe('OrganizationsList', () => {
 
     describe('when there are multiple pages of organizations', () => {
       beforeEach(() => {
-        createComponent();
+        createComponent({
+          propsData: {
+            organizations: {
+              ...organizations,
+              pageInfo: pageInfoMultiplePages,
+            },
+          },
+        });
       });
 
       it('renders pagination', () => {
-        expect(findPagination().props()).toMatchObject(omit(pageInfo, '__typename'));
+        expect(findPagination().props()).toMatchObject(omit(pageInfoMultiplePages, '__typename'));
       });
 
       describe('when `GlKeysetPagination` emits `next` event', () => {

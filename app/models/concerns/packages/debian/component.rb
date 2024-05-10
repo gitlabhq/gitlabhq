@@ -14,6 +14,8 @@ module Packages
           inverse_of: :component,
           dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
+        delegate container_type, to: :distribution
+
         validates :distribution,
           presence: true
 

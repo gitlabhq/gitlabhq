@@ -533,6 +533,8 @@ ldapsearch
 Lefthook
 Leiningen
 Lemmy
+LLM
+LLMs
 libFuzzer
 Libgcrypt
 Libravatar

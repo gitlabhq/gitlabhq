@@ -2,7 +2,6 @@
 
 module QA
   RSpec.describe 'Verify', :runner, product_group: :pipeline_security,
-    feature_flag: { name: 'ci_prevent_file_var_expansion_downstream_pipeline', scope: :project },
     only: { subdomain: 'staging-canary' } do
     # Runs this test only in staging-canary to debug flakiness https://gitlab.com/gitlab-org/gitlab/-/issues/424903
     # We need to collect failure data, please don't quarantine for the time being
@@ -102,12 +101,6 @@ module QA
             YAML
           }
         ]
-      end
-
-      around do |example|
-        Runtime::Feature.enable(:ci_prevent_file_var_expansion_downstream_pipeline, project: upstream_project)
-        example.run
-        Runtime::Feature.disable(:ci_prevent_file_var_expansion_downstream_pipeline, project: upstream_project)
       end
 
       before do

@@ -19,12 +19,12 @@ import { DEFAULT_PER_PAGE } from '~/api';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { organizationProjects as nodes } from '~/organizations/mock_data';
 import {
-  organizationProjects as nodes,
-  pageInfo,
+  pageInfoMultiplePages,
   pageInfoEmpty,
   pageInfoOnePage,
-} from '~/organizations/mock_data';
+} from 'jest/organizations/mock_data';
 
 jest.mock('~/alert');
 jest.mock('~/api/projects_api');
@@ -60,7 +60,7 @@ describe('ProjectsView', () => {
 
   const projects = {
     nodes,
-    pageInfo,
+    pageInfo: pageInfoMultiplePages,
   };
 
   const successHandler = jest.fn().mockResolvedValue({
@@ -206,24 +206,9 @@ describe('ProjectsView', () => {
 
     describe('when there is a next page of projects', () => {
       const mockEndCursor = 'mockEndCursor';
-      const handler = jest.fn().mockResolvedValue({
-        data: {
-          organization: {
-            id: defaultProvide.organizationGid,
-            projects: {
-              nodes,
-              pageInfo: {
-                ...pageInfo,
-                hasNextPage: true,
-                hasPreviousPage: false,
-              },
-            },
-          },
-        },
-      });
 
       beforeEach(async () => {
-        createComponent({ handler });
+        createComponent();
         await waitForPromises();
       });
 
@@ -253,7 +238,7 @@ describe('ProjectsView', () => {
         });
 
         it('calls query with correct variables', () => {
-          expect(handler).toHaveBeenCalledWith({
+          expect(successHandler).toHaveBeenCalledWith({
             after: mockEndCursor,
             before: null,
             first: DEFAULT_PER_PAGE,
@@ -268,24 +253,9 @@ describe('ProjectsView', () => {
 
     describe('when there is a previous page of projects', () => {
       const mockStartCursor = 'mockStartCursor';
-      const handler = jest.fn().mockResolvedValue({
-        data: {
-          organization: {
-            id: defaultProvide.organizationGid,
-            projects: {
-              nodes,
-              pageInfo: {
-                ...pageInfo,
-                hasNextPage: false,
-                hasPreviousPage: true,
-              },
-            },
-          },
-        },
-      });
 
       beforeEach(async () => {
-        createComponent({ handler });
+        createComponent();
         await waitForPromises();
       });
 
@@ -315,7 +285,7 @@ describe('ProjectsView', () => {
         });
 
         it('calls query with correct variables', () => {
-          expect(handler).toHaveBeenCalledWith({
+          expect(successHandler).toHaveBeenCalledWith({
             after: null,
             before: mockStartCursor,
             first: null,

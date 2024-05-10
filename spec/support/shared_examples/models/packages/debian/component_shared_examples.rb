@@ -14,6 +14,10 @@ RSpec.shared_examples 'Debian Distribution Component' do |factory, container, ca
     it { is_expected.to have_many(:files).class_name("Packages::Debian::#{container.capitalize}ComponentFile").inverse_of(:component) }
   end
 
+  describe 'delegations' do
+    it { is_expected.to delegate_method(container).to(:distribution) }
+  end
+
   describe 'validations' do
     describe "#distribution" do
       it { is_expected.to validate_presence_of(:distribution) }
