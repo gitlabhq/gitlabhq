@@ -319,7 +319,7 @@ services:
 
 ### Issues when authenticating to the Dependency Proxy from CI/CD jobs
 
-GitLab Runner authenticates automatically to the Dependency Proxy. However, the underlying Docker engine is still subject to its [authorization resolving process](https://gitlab.com/gitlab-org/gitlab-runner/-/blob/main/docs/configuration/advanced-configuration.md#precedence-of-docker-authorization-resolving).
+GitLab Runner authenticates automatically to the Dependency Proxy. However, the underlying Docker engine is still subject to its [authorization resolving process](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#precedence-of-docker-authorization-resolving).
 
 Misconfigurations in the authentication mechanism may cause `HTTP Basic: Access denied` and `403: Access forbidden` errors.
 

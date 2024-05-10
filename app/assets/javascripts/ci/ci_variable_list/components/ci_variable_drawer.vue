@@ -15,6 +15,8 @@ import {
   GlModal,
   GlModalDirective,
   GlSprintf,
+  GlFormRadio,
+  GlFormRadioGroup,
 } from '@gitlab/ui';
 import { __, s__, sprintf } from '~/locale';
 import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
@@ -55,16 +57,19 @@ export const i18n = {
   expandedField: s__('CiVariables|Expand variable reference'),
   expandedDescription: EXPANDED_VARIABLES_NOTE,
   flags: __('Flags'),
+  visibility: __('Visibility'),
   flagsLinkTitle: FLAG_LINK_TITLE,
   key: __('Key'),
   keyFeedback: s__("CiVariables|A variable key can only contain letters, numbers, and '_'."),
   keyHelpText: s__(
     'CiVariables|You can use CI/CD variables with the same name in different places, but the variables might overwrite each other. %{linkStart}What is the order of precedence for variables?%{linkEnd}',
   ),
-  maskedField: s__('CiVariables|Mask variable'),
+  maskedField: s__('CiVariables|Masked'),
+  visibleField: s__('CiVariables|Visible'),
   maskedDescription: s__(
-    'CiVariables|Variable will be masked in job logs. Requires values to meet regular expression requirements.',
+    'CiVariables|Masked in job logs but value can be revealed in CI/CD settings. Requires values to meet regular expressions requirements.',
   ),
+  visibleDescription: s__('CiVariables|Can be seen in job logs.'),
   maskedValueMinLengthValidationText: s__(
     'CiVariables|The value must have at least %{charsAmount} characters.',
   ),
@@ -112,6 +117,8 @@ export default {
     GlLink,
     GlModal,
     GlSprintf,
+    GlFormRadio,
+    GlFormRadioGroup,
   },
   directives: {
     GlModalDirective,
@@ -464,6 +471,23 @@ export default {
           readonly
         />
       </gl-form-group>
+      <gl-form-group class="gl-border-none -gl-mb-3">
+        <template #label>
+          <div class="gl-mb-n3">
+            {{ $options.i18n.visibility }}
+          </div>
+        </template>
+        <gl-form-radio-group v-model="variable.masked" data-testid="ci-variable-masked">
+          <gl-form-radio :value="false" data-testid="ci-variable-visible-radio">
+            {{ $options.i18n.visibleField }}
+            <template #help> {{ $options.i18n.visibleDescription }} </template>
+          </gl-form-radio>
+          <gl-form-radio :value="true" data-testid="ci-variable-masked-radio">
+            {{ $options.i18n.maskedField }}
+            <template #help> {{ $options.i18n.maskedDescription }} </template>
+          </gl-form-radio>
+        </gl-form-radio-group>
+      </gl-form-group>
       <gl-form-group class="gl-border-none -gl-mb-8">
         <template #label>
           <div class="gl-display-flex gl-align-items-center -gl-mb-3">
@@ -486,10 +510,6 @@ export default {
           <p class="gl-text-secondary">
             {{ $options.i18n.protectedDescription }}
           </p>
-        </gl-form-checkbox>
-        <gl-form-checkbox v-model="variable.masked" data-testid="ci-variable-masked-checkbox">
-          {{ $options.i18n.maskedField }}
-          <p class="gl-text-secondary">{{ $options.i18n.maskedDescription }}</p>
         </gl-form-checkbox>
         <gl-form-checkbox
           data-testid="ci-variable-expanded-checkbox"

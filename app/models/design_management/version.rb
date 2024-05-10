@@ -101,11 +101,12 @@ module DesignManagement
 
     CREATION_TTL = 5.seconds
     RETRY_DELAY = ->(num) { 0.2.seconds * (num**2) }
+    LOCK_RETRY_COUNT = 5
 
     def self.with_lock(project_id, repository, &block)
       key = "with_lock:#{name}:{#{project_id}}"
 
-      in_lock(key, ttl: CREATION_TTL, retries: 5, sleep_sec: RETRY_DELAY) do |_retried|
+      in_lock(key, ttl: CREATION_TTL, retries: LOCK_RETRY_COUNT, sleep_sec: RETRY_DELAY) do |_retried|
         repository.create_if_not_exists
         yield
       end

@@ -11098,6 +11098,9 @@ msgstr ""
 msgid "CiVariables|CI/CD Variables"
 msgstr ""
 
+msgid "CiVariables|Can be seen in job logs."
+msgstr ""
+
 msgid "CiVariables|Cancel"
 msgstr ""
 
@@ -11137,10 +11140,10 @@ msgstr ""
 msgid "CiVariables|Key"
 msgstr ""
 
-msgid "CiVariables|Mask variable"
+msgid "CiVariables|Masked"
 msgstr ""
 
-msgid "CiVariables|Masked"
+msgid "CiVariables|Masked in job logs but value can be revealed in CI/CD settings. Requires values to meet regular expressions requirements."
 msgstr ""
 
 msgid "CiVariables|Maximum number of Inherited Group CI variables loaded (2000)"
@@ -11218,9 +11221,6 @@ msgstr ""
 msgid "CiVariables|Variable value will be evaluated as raw string."
 msgstr ""
 
-msgid "CiVariables|Variable will be masked in job logs. Requires values to meet regular expression requirements."
-msgstr ""
-
 msgid "CiVariables|Variables"
 msgstr ""
 
@@ -11237,6 +11237,9 @@ msgid "CiVariables|Variables store information that you can use in job scripts. 
 msgstr ""
 
 msgid "CiVariables|Variables store information that you can use in job scripts. Each %{entity} can define a maximum of %{limit} variables."
+msgstr ""
+
+msgid "CiVariables|Visible"
 msgstr ""
 
 msgid "CiVariables|You can use CI/CD variables with the same name in different places, but the variables might overwrite each other. %{linkStart}What is the order of precedence for variables?%{linkEnd}"
@@ -57107,6 +57110,9 @@ msgid "Viewing commit"
 msgstr ""
 
 msgid "Violation"
+msgstr ""
+
+msgid "Visibility"
 msgstr ""
 
 msgid "Visibility and access controls"
