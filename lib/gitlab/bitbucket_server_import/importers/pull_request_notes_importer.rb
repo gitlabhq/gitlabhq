@@ -193,7 +193,11 @@ module Gitlab
             note = "*By #{comment.author_username} (#{comment.author_email})*\n\n"
           end
 
-          comment_note = mentions_converter.convert(comment.note)
+          comment_note = if Feature.enabled?(:bitbucket_server_convert_mentions_to_users, project.creator)
+                           mentions_converter.convert(comment.note)
+                         else
+                           comment.note
+                         end
 
           note +=
             # Provide some context for replying

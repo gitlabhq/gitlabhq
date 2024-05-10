@@ -1,0 +1,8 @@
+---
+name: bitbucket_server_convert_mentions_to_users
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139097
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/434453
+milestone: '16.7'
+type: development
+group: group::import and integrate
+default_enabled: false
