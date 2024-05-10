@@ -37,6 +37,18 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestImporter, fe
       )
     end
 
+    context 'when the `bitbucket_server_convert_mentions_to_users` flag is disabled' do
+      before do
+        stub_feature_flags(bitbucket_server_convert_mentions_to_users: false)
+      end
+
+      it 'does not convert mentions' do
+        expect_next(Gitlab::Import::MentionsConverter, 'bitbucket_server', project.id).not_to receive(:convert)
+
+        importer.execute
+      end
+    end
+
     context 'when the `bitbucket_server_user_mapping_by_username` flag is disabled' do
       before do
         stub_feature_flags(bitbucket_server_user_mapping_by_username: false)
