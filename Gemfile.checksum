@@ -49,7 +49,7 @@
 {"name":"backport","version":"1.2.0","platform":"ruby","checksum":"912c7dfdd9ee4625d013ddfccb6205c3f92da69a8990f65c440e40f5b2fc7f75"},
 {"name":"base32","version":"0.3.2","platform":"ruby","checksum":"532e9b19c5dd1fce281df67fc93a803ebd5d26426a93f6dda6612769bc46fe2c"},
 {"name":"base64","version":"0.2.0","platform":"ruby","checksum":"0f25e9b21a02a0cc0cea8ef92b2041035d39350946e8789c562b2d1a3da01507"},
-{"name":"batch-loader","version":"2.0.1","platform":"ruby","checksum":"93f711df78d316ee0440a7a45daba4f5418d0ee2b5f58f60c9ea038424e7a89d"},
+{"name":"batch-loader","version":"2.0.5","platform":"ruby","checksum":"964bf638b8f498bab40abaafc6f89c057b2e02aa25b64fc1ec12872ad6bff213"},
 {"name":"bcrypt","version":"3.1.18","platform":"java","checksum":"5464e06c00cb6bd3ff982feef4cb7f1efc9b302753cbaf12e73512d8f401f2d2"},
 {"name":"bcrypt","version":"3.1.18","platform":"ruby","checksum":"154de0b0b089e56d5980c5037ad85fc9554cfbf4996538673c1ddbc9b61b1f11"},
 {"name":"benchmark","version":"0.2.0","platform":"ruby","checksum":"5f7087b794613abdd3ac9c13f4351f65b164bcb15ced2ad29508e365f9b28c77"},

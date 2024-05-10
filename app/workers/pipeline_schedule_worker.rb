@@ -42,19 +42,11 @@ class PipelineScheduleWorker # rubocop:disable Scalability/IdempotentWorker
   end
 
   def enqueue_run_pipeline_schedule_worker(schedules, index)
-    if ::Feature.enabled?(:run_pipeline_schedule_worker_with_delay)
-      RunPipelineScheduleWorker.bulk_perform_in_with_contexts(
-        [1, index * DELAY].max,
-        schedules,
-        arguments_proc: ->(schedule) { [schedule.id, schedule.owner_id, { scheduling: true }] },
-        context_proc: ->(schedule) { { project: schedule.project, user: schedule.owner } }
-      )
-    else
-      RunPipelineScheduleWorker.bulk_perform_async_with_contexts(
-        schedules,
-        arguments_proc: ->(schedule) { [schedule.id, schedule.owner_id, { scheduling: true }] },
-        context_proc: ->(schedule) { { project: schedule.project, user: schedule.owner } }
-      )
-    end
+    RunPipelineScheduleWorker.bulk_perform_in_with_contexts(
+      [1, index * DELAY].max,
+      schedules,
+      arguments_proc: ->(schedule) { [schedule.id, schedule.owner_id, { scheduling: true }] },
+      context_proc: ->(schedule) { { project: schedule.project, user: schedule.owner } }
+    )
   end
 end

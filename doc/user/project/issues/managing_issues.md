@@ -492,7 +492,7 @@ To filter the list issues for text in a title or description:
 1. Select **Plan > Issues**.
 1. Above the list of issues, in the **Search or filter results** text box, enter the searched phrase.
 1. In the dropdown list that appears, select **Search for this text**.
-1. Select the text box again, and in the dropdown list that appers, select **Search Within**, and then either **Titles** or **Descriptions**.
+1. Select the text box again, and in the dropdown list that appears, select **Search Within**, and then either **Titles** or **Descriptions**.
 1. Press <kbd>Enter</kbd> or select the search icon (**{search}**).
 
 Filtering issues uses [PostgreSQL full text search](https://www.postgresql.org/docs/current/textsearch-intro.html)

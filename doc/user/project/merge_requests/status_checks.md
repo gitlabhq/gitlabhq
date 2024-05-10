@@ -49,9 +49,8 @@ By default, merge requests in projects can be merged even if external status che
 
 External status checks have an **asynchronous** workflow. Merge requests emit a merge request webhook payload to an external service whenever:
 
-- The merge request is changed. For example, title or description.
+- A merge request is updated, closed, reopened, approved, unapproved, or merged.
 - Code is pushed to the source branch of the merge request.
-- A comment is made in the merge request discussion.
 
 ```mermaid
 sequenceDiagram

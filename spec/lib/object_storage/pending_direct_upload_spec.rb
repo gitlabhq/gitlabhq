@@ -169,7 +169,8 @@ RSpec.describe ObjectStorage::PendingDirectUpload, :direct_uploads, :clean_gitla
       prepare_pending_direct_upload(object_storage_path, 4.hours.ago)
     end
 
-    it 'deletes the object from storage and also the redis entry' do
+    it 'deletes the object from storage and also the redis entry',
+      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/450627' do
       redis_key = described_class.redis_key(location_identifier, object_storage_path)
 
       expect_to_log(:deleted, redis_key)

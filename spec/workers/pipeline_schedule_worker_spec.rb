@@ -161,25 +161,5 @@ RSpec.describe PipelineScheduleWorker, :sidekiq_inline, feature_category: :conti
 
       subject
     end
-
-    context 'with run_pipeline_schedule_worker_with_delay disabled' do
-      before do
-        stub_feature_flags(run_pipeline_schedule_worker_with_delay: false)
-      end
-
-      it 'calls bulk_perform_async with the arguments and delay' do
-        expect(RunPipelineScheduleWorker)
-          .to receive(:bulk_perform_async)
-          .with([[pipeline_schedule.id, user.id, { scheduling: true }]])
-          .and_call_original
-
-        expect(RunPipelineScheduleWorker)
-          .to receive(:bulk_perform_async)
-          .with([[other_pipeline_schedule.id, user.id, { scheduling: true }]])
-          .and_call_original
-
-        subject
-      end
-    end
   end
 end

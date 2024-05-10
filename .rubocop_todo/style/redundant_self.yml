@@ -320,7 +320,6 @@ Style/RedundantSelf:
     - 'lib/gitlab/graphql/tracers/application_context_tracer.rb'
     - 'lib/gitlab/graphql/tracers/logger_tracer.rb'
     - 'lib/gitlab/graphql/tracers/metrics_tracer.rb'
-    - 'lib/gitlab/graphql/tracers/timer_tracer.rb'
     - 'lib/gitlab/highlight.rb'
     - 'lib/gitlab/http.rb'
     - 'lib/gitlab/import_export/error.rb'

@@ -2,7 +2,7 @@
 
 module QA
   module Resource
-    class GroupRunner < RunnerBase
+    class GroupRunner < UserRunners
       attribute :group do
         Resource::Group.fabricate_via_api! do |resource|
           resource.name = "group-with-ci-cd-#{SecureRandom.hex(8)}"
@@ -10,10 +10,8 @@ module QA
         end
       end
 
-      attribute :token do
-        group.runners_token
-      rescue NoValueError
-        group.reload!.runners_token
+      attribute :runner_type do
+        'group_type'
       end
 
       private

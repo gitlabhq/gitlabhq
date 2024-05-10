@@ -4,14 +4,8 @@ module QA
   RSpec.describe 'Verify', :runner, product_group: :runner do
     describe 'Runner fleet management' do
       let(:executor) { "qa-runner-#{Time.now.to_i}" }
-      let(:description) { "test-runner-#{Time.now.to_i}" }
 
-      let!(:runner) do
-        Resource::GroupRunner.fabricate! do |runner|
-          runner.name = executor
-          runner.description = description
-        end
-      end
+      let!(:runner) { create(:group_runner, name: executor) }
 
       after do
         runner.remove_via_api!

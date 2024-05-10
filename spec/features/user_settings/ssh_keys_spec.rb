@@ -131,7 +131,8 @@ RSpec.describe 'User Settings > SSH Keys', feature_category: :source_code_manage
         project.add_developer(user)
       end
 
-      it 'revoking the SSH key marks commits as unverified' do
+      it 'revoking the SSH key marks commits as unverified',
+        quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/455774' do
         visit project_commit_path(project, commit)
         wait_for_all_requests
 

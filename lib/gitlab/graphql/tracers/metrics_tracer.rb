@@ -3,33 +3,20 @@
 module Gitlab
   module Graphql
     module Tracers
-      class MetricsTracer
-        def self.use(schema)
-          schema.tracer(self.new)
-        end
+      module MetricsTracer
+        def execute_query(query:)
+          start_time = ::Gitlab::Metrics::System.monotonic_time
 
-        # See https://graphql-ruby.org/api-doc/1.12.16/GraphQL/Tracing for full list of events
-        def trace(key, data)
-          result = yield
+          super
 
-          case key
-          when "execute_query"
-            increment_query_sli(data)
-          end
+          duration_s = ::Gitlab::Metrics::System.monotonic_time - start_time
 
-          result
+          increment_query_sli(query: query, duration_s: duration_s)
         end
 
         private
 
-        def increment_query_sli(data)
-          duration_s = data.fetch(:duration_s, nil)
-          query = data.fetch(:query, nil)
-
-          # We're just being defensive here...
-          # duration_s comes from TimerTracer and we should be pretty much guaranteed it exists
-          return unless duration_s && query
-
+        def increment_query_sli(query:, duration_s:)
           operation = ::Gitlab::Graphql::KnownOperations.default.from_query(query)
           query_urgency = operation.query_urgency
 

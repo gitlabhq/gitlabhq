@@ -2,7 +2,7 @@
 
 module QA
   module Resource
-    class ProjectRunner < RunnerBase
+    class ProjectRunner < UserRunners
       attribute :project do
         Project.fabricate_via_api! do |resource|
           resource.name = 'project-with-ci-cd'
@@ -10,10 +10,8 @@ module QA
         end
       end
 
-      attribute :token do
-        project.runners_token
-      rescue NoValueError
-        project.reload!.runners_token
+      attribute :runner_type do
+        'project_type'
       end
 
       private

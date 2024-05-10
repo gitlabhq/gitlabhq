@@ -549,7 +549,6 @@ RSpec/VerifiedDoubles:
     - 'spec/lib/gitlab/graphql/present/field_extension_spec.rb'
     - 'spec/lib/gitlab/graphql/timeout_spec.rb'
     - 'spec/lib/gitlab/graphql/tracers/application_context_tracer_spec.rb'
-    - 'spec/lib/gitlab/graphql/tracers/timer_tracer_spec.rb'
     - 'spec/lib/gitlab/health_checks/gitaly_check_spec.rb'
     - 'spec/lib/gitlab/hook_data/base_builder_spec.rb'
     - 'spec/lib/gitlab/hotlinking_detector_spec.rb'

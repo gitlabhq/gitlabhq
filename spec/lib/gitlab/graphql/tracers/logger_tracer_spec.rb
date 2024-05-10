@@ -4,9 +4,7 @@ require "spec_helper"
 RSpec.describe Gitlab::Graphql::Tracers::LoggerTracer do
   let(:dummy_schema) do
     Class.new(GraphQL::Schema) do
-      # LoggerTracer depends on TimerTracer
-      use Gitlab::Graphql::Tracers::LoggerTracer
-      use Gitlab::Graphql::Tracers::TimerTracer
+      trace_with Gitlab::Graphql::Tracers::LoggerTracer
 
       query_analyzer Gitlab::Graphql::QueryAnalyzers::AST::LoggerAnalyzer
 

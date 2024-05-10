@@ -4,22 +4,17 @@ module Gitlab
   module Graphql
     module Tracers
       # This tracer writes logs for certain trace events.
-      # It reads duration metadata written by TimerTracer.
-      class LoggerTracer
-        def self.use(schema)
-          schema.tracer(self.new)
-        end
+      module LoggerTracer
+        def execute_query(query:)
+          start_time = ::Gitlab::Metrics::System.monotonic_time
 
-        def trace(key, data)
-          yield
+          super
         rescue StandardError => e
-          data[:exception] = e
           raise e
         ensure
-          case key
-          when "execute_query"
-            log_execute_query(**data)
-          end
+          duration_s = ::Gitlab::Metrics::System.monotonic_time - start_time
+
+          log_execute_query(query: query, duration_s: duration_s, exception: e)
         end
 
         private

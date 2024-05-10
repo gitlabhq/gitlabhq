@@ -378,7 +378,7 @@ gem 'gettext', '~> 3.4', '>= 3.4.9',
   group: [:development, :test],
   feature_category: :internationalization
 
-gem 'batch-loader', '~> 2.0.1' # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'batch-loader', '~> 2.0.5' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # Perf bar
 gem 'peek', '~> 1.1' # rubocop:todo Gemfile/MissingFeatureCategory

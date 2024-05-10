@@ -462,6 +462,25 @@ regex-job2:
     - if: '$teststring =~ $pattern'
 ```
 
+Variables in a regular expression are **not resolved**. For example:
+
+```yaml
+variables:
+  string1: 'regex-job1'
+  string2: 'regex-job2'
+  pattern: '/$string2/'
+
+regex-job1:
+  script: echo "This job will NOT run, because the 'string1' variable inside the regex pattern is not resolved."
+  rules:
+    - if: '$CI_JOB_NAME =~ /$string1/'
+
+regex-job2:
+  script: echo "This job will NOT run, because the 'string2' variable inside the 'pattern' variable is not resolved."
+  rules:
+    - if: '$CI_JOB_NAME =~ $pattern'
+```
+
 ### Join variable expressions together
 
 You can join multiple expressions using `&&` (and) or `||` (or), for example:

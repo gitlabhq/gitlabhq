@@ -45,7 +45,7 @@ Let's take a look at how you might create one project to host all of your packag
    - A [personal access token](../../profile/personal_access_tokens.md).
    - A [CI/CD job token](../../../ci/jobs/ci_job_token.md) (`CI_JOB_TOKEN`) in a CI/CD job.
      Any projects publishing packages to this project's registry should be listed
-     in this project's [job token allowlist](../../../ci/jobs/ci_job_token.md#add-a-project-to-the-job-token-allowlist).
+     in this project's [job token allowlist](../../../ci/jobs/ci_job_token.md#add-a-group-or-project-to-the-job-token-allowlist).
 
    If the project is private, downloading packages requires authentication as well.
 

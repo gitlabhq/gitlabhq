@@ -1796,6 +1796,52 @@ Input type: `AuditEventsGroupDestinationEventsDeleteInput`
 | <a id="mutationauditeventsgroupdestinationeventsdeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationauditeventsgroupdestinationeventsdeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
+### `Mutation.auditEventsGroupDestinationNamespaceFilterCreate`
+
+DETAILS:
+**Introduced** in GitLab 17.0.
+**Status**: Experiment.
+
+Input type: `AuditEventsGroupDestinationNamespaceFilterCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationauditeventsgroupdestinationnamespacefiltercreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationauditeventsgroupdestinationnamespacefiltercreatedestinationid"></a>`destinationId` | [`AuditEventsGroupExternalStreamingDestinationID!`](#auditeventsgroupexternalstreamingdestinationid) | Destination ID. |
+| <a id="mutationauditeventsgroupdestinationnamespacefiltercreatenamespacepath"></a>`namespacePath` | [`String`](#string) | Full path of the namespace(only project or group). |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationauditeventsgroupdestinationnamespacefiltercreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationauditeventsgroupdestinationnamespacefiltercreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationauditeventsgroupdestinationnamespacefiltercreatenamespacefilter"></a>`namespaceFilter` | [`GroupAuditEventNamespaceFilter`](#groupauditeventnamespacefilter) | Namespace filter created. |
+
+### `Mutation.auditEventsGroupDestinationNamespaceFilterDelete`
+
+DETAILS:
+**Introduced** in GitLab 17.0.
+**Status**: Experiment.
+
+Input type: `AuditEventsGroupDestinationNamespaceFilterDeleteInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationauditeventsgroupdestinationnamespacefilterdeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationauditeventsgroupdestinationnamespacefilterdeletenamespacefilterid"></a>`namespaceFilterId` | [`AuditEventsGroupNamespaceFilterID!`](#auditeventsgroupnamespacefilterid) | Namespace filter ID. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationauditeventsgroupdestinationnamespacefilterdeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationauditeventsgroupdestinationnamespacefilterdeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
 ### `Mutation.auditEventsInstanceAmazonS3ConfigurationCreate`
 
 Input type: `AuditEventsInstanceAmazonS3ConfigurationCreateInput`
@@ -22358,6 +22404,18 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="groupworkitemsstatuswidget"></a>`statusWidget` | [`StatusFilterInput`](#statusfilterinput) | Input for status widget filter. Ignored if `work_items_mvc_2` is disabled. |
 | <a id="groupworkitemstypes"></a>`types` | [`[IssueType!]`](#issuetype) | Filter work items by the given work item types. |
 
+### `GroupAuditEventNamespaceFilter`
+
+Represents a subgroup or project filter that belongs to a group level external audit event streaming destination.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupauditeventnamespacefilterexternalstreamingdestination"></a>`externalStreamingDestination` | [`GroupAuditEventStreamingDestination!`](#groupauditeventstreamingdestination) | Destination to which the filter belongs. |
+| <a id="groupauditeventnamespacefilterid"></a>`id` | [`ID!`](#id) | ID of the filter. |
+| <a id="groupauditeventnamespacefilternamespace"></a>`namespace` | [`Namespace!`](#namespace) | Group or project namespace the filter belongs to. |
+
 ### `GroupAuditEventStreamingDestination`
 
 Represents an external destination to stream group level audit events.
@@ -22372,6 +22430,7 @@ Represents an external destination to stream group level audit events.
 | <a id="groupauditeventstreamingdestinationgroup"></a>`group` | [`Group!`](#group) | Group to which the destination belongs. |
 | <a id="groupauditeventstreamingdestinationid"></a>`id` | [`ID!`](#id) | ID of the destination. |
 | <a id="groupauditeventstreamingdestinationname"></a>`name` | [`String!`](#string) | Name of the external destination to send audit events to. |
+| <a id="groupauditeventstreamingdestinationnamespacefilters"></a>`namespaceFilters` | [`[GroupAuditEventNamespaceFilter!]`](#groupauditeventnamespacefilter) | List of subgroup or project filters for the destination. |
 
 ### `GroupDataTransfer`
 
@@ -35121,6 +35180,12 @@ An example `AuditEventsGoogleCloudLoggingConfigurationID` is: `"gid://gitlab/Aud
 A `AuditEventsGroupExternalStreamingDestinationID` is a global ID. It is encoded as a string.
 
 An example `AuditEventsGroupExternalStreamingDestinationID` is: `"gid://gitlab/AuditEvents::Group::ExternalStreamingDestination/1"`.
+
+### `AuditEventsGroupNamespaceFilterID`
+
+A `AuditEventsGroupNamespaceFilterID` is a global ID. It is encoded as a string.
+
+An example `AuditEventsGroupNamespaceFilterID` is: `"gid://gitlab/AuditEvents::Group::NamespaceFilter/1"`.
 
 ### `AuditEventsInstanceAmazonS3ConfigurationID`
 

@@ -93,6 +93,23 @@ The sparkline for the past six months represents value trends over this time per
 The sparkline color ranges from blue to green, where green indicates a positive trend, and blue indicates a negative trend.
 Sparklines help you identify patterns in metric trends (such as seasonal changes) over time.
 
+#### Filter the DevSecOps metrics comparison panel by labels
+
+Label filters are appended as query parameters to the URL of the drill-down report of each eligible metric and automatically applied.
+If the comparison panel from the configuration file is enabled with `filters.labels`, the drill-down links inherit the labels from the panel filter.
+
+```yaml
+panels:
+  - title: 'Group dora and issue metrics'
+    visualization: dora_chart
+    queryOverrides:
+      namespace: my-dora-group
+      filters:
+        labels:
+          - in_development
+          - in_review
+```
+
 ### DORA Performers score panel
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386843) in GitLab 16.3 [with a flag](../../administration/feature_flags.md) named `dora_performers_score_panel`. Disabled by default.
@@ -117,6 +134,24 @@ For example, if a project has a high score for deployment frequency (velocity), 
 | Time to restore service | The number of days to restore service when a service incident or a defect that impacts users occurs | ≤1 | 2-6 | ≥7 |
 | Change failure rate  | The percentage of changes to production resulted in degraded service | ≤15% | 16%-44% | ≥45% |
 
+#### Filter the DORA Performers score by project topics
+
+When used in combination with a [YAML configuration](#using-yaml-configuration), you can filter the projects shown based on their assigned [topics](../project/project_topics.md).
+
+```yaml
+panels:
+  - title: 'My dora performers scores'
+    visualization: dora_performers_score
+    queryOverrides:
+      namespace: group/my-custom-group
+      filters:
+        projectTopics:
+          - JavaScript
+          - Vue.js
+```
+
+If multiple topics are provided, all topics must match for the project to be included in the results.
+
 ### AI Impact analytics
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/443696) in GitLab 16.11 [with a flag](../../administration/feature_flags.md) named `ai_impact_analytics_dashboard`. Disabled by default.
@@ -136,21 +171,6 @@ The baseline for the AI Usage trend is the total number of code contributors, no
 NOTE:
 Usage rate for Code Suggestions is calculated with data starting on 2024-04-04.
 For more information, see [epic 12978](https://gitlab.com/groups/gitlab-org/-/epics/12978).
-
-#### Filter the DORA Performers score by project topics
-
-When used in combination with a [YAML configuration](#using-yaml-configuration), you can filter the projects shown based on their assigned [topics](../project/project_topics.md).
-
-```yaml
-panels:
-  - data:
-      namespace: group/my-custom-group
-      filter_project_topics:
-        - JavaScript
-        - Vue.js
-```
-
-If multiple topics are provided, all topics must match for the project to be included in the results.
 
 ## Enable or disable overview background aggregation
 
@@ -331,19 +351,6 @@ Filters for the `usage_overview` visualization.
 |Filter|Description|Supported values|
 |---|---|---|
 |`include`|Limits the metrics returned, by default displays all available| `groups`, `projects`, `issues`, `merge_requests`, `pipelines`, `users`|
-
-### Filter the DevSecOps metrics comparison panel by labels
-
-Label filters are appended as query parameters to the URL of the drill-down report of each eligible metric and automatically applied.
-If the comparison panel from the configuration file is enabled with `filter_labels`, the drill-down links inherit the labels from the panel filter.
-
-```yaml
-  - data:
-      namespace: group/another-project
-      filter_labels:
-        - in_development
-        - in_review
-```
 
 ## Dashboard metrics and drill-down reports
 
