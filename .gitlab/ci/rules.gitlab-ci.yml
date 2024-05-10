@@ -1701,9 +1701,6 @@
     # Run tests automatically for MRs that touch QA files
     - <<: *if-merge-request
       changes: *qa-patterns
-    # Run tests automatically for MRS that touch GITALY_SERVER_VERSION
-    - <<: *if-merge-request
-      changes: *gitaly-patterns
     # Otherwise, only run tests after the MR is approved
     - <<: *if-merge-request-not-approved
       when: never
@@ -2366,6 +2363,9 @@
       changes: *code-backstage-qa-patterns
     - <<: *if-merge-request
       changes: *workhorse-patterns
+    - <<: *if-merge-request
+      changes: *rubocop-patterns
+
 
 .rails:rules:detect-previous-failed-tests:
   rules:

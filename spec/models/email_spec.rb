@@ -42,14 +42,67 @@ RSpec.describe Email do
   end
 
   describe 'scopes' do
-    let(:user) { create(:user, :unconfirmed) }
+    let_it_be(:unconfirmed_user) { create(:user, :unconfirmed) }
+    let_it_be(:confirmed_user) { create(:user) }
 
-    it 'scopes confirmed emails' do
-      create(:email, :confirmed, user: user)
-      create(:email, user: user)
+    let_it_be(:unconfirmed_primary_email) { unconfirmed_user.email }
+    let_it_be(:confirmed_primary_email) { described_class.find_by_email(confirmed_user.email) }
 
-      expect(user.emails.count).to eq 2
-      expect(user.emails.confirmed.count).to eq 1
+    let_it_be(:unconfirmed_secondary_email) { create(:email, user: confirmed_user) }
+    let_it_be(:confirmed_secondary_email) { create(:email, :confirmed, user: confirmed_user) }
+
+    describe '.confirmed' do
+      it 'returns confirmed emails' do
+        expect(described_class.confirmed).to contain_exactly(
+          # after user's primary email is confirmed it is stored to 'emails' table
+          confirmed_primary_email,
+          confirmed_secondary_email
+        )
+      end
+    end
+
+    describe '.unconfirmed' do
+      it 'returns unconfirmed secondary emails' do
+        expect(described_class.unconfirmed).to contain_exactly(
+          # excludes `unconfirmed_primary_email` because
+          # user's primary email is not stored to 'emails' table till it is confirmed
+          unconfirmed_secondary_email
+        )
+      end
+    end
+
+    describe '.unconfirmed_and_created_before' do
+      let(:created_cut_off) { 3.days.ago }
+
+      let!(:unconfirmed_secondary_email_created_before_cut_off) do
+        create(:email, created_at: created_cut_off - 1.second)
+      end
+
+      let!(:unconfirmed_secondary_email_created_at_cut_off) do
+        create(:email, created_at: created_cut_off)
+      end
+
+      let!(:unconfirmed_secondary_email_created_after_cut_off) do
+        create(:email, created_at: created_cut_off + 1.second)
+      end
+
+      let!(:confirmed_secondary_email_created_before_cut_off) do
+        create(:email, :confirmed, created_at: created_cut_off - 1.second)
+      end
+
+      let!(:confirmed_secondary_email_created_at_cut_off) do
+        create(:email, :confirmed, created_at: created_cut_off)
+      end
+
+      let!(:confirmed_secondary_email_created_after_cut_off) do
+        create(:email, :confirmed, created_at: created_cut_off + 1.second)
+      end
+
+      it 'returns unconfirmed secondary emails created before timestamp passed in' do
+        expect(described_class.unconfirmed_and_created_before(created_cut_off)).to contain_exactly(
+          unconfirmed_secondary_email_created_before_cut_off
+        )
+      end
     end
   end
 

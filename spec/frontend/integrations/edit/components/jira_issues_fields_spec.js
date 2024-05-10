@@ -1,5 +1,4 @@
 import { GlFormCheckbox, GlFormInput } from '@gitlab/ui';
-import { nextTick } from 'vue';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 
 import JiraIssuesFields from '~/integrations/edit/components/jira_issues_fields.vue';
@@ -32,18 +31,12 @@ describe('JiraIssuesFields', () => {
   };
 
   const findEnableCheckbox = () => wrapper.findComponent(GlFormCheckbox);
+  const findProjectKeys = () => wrapper.findComponent(GlFormInput);
   const findEnableCheckboxDisabled = () =>
     findEnableCheckbox().find('[type=checkbox]').attributes('disabled');
-  const findProjectKey = () => wrapper.findComponent(GlFormInput);
-  const findProjectKeys = () => wrapper.findByTestId('jira-project-keys');
-  const findProjectKeyFormGroup = () => wrapper.findByTestId('project-key-form-group');
+  const findProjectKeysGroup = () => wrapper.findByTestId('jira-project-keys');
   const findJiraForVulnerabilities = () => wrapper.findByTestId('jira-for-vulnerabilities');
   const setEnableCheckbox = (isEnabled = true) => findEnableCheckbox().vm.$emit('input', isEnabled);
-
-  const assertProjectKeyState = (expectedStateValue) => {
-    expect(findProjectKey().attributes('state')).toBe(expectedStateValue);
-    expect(findProjectKeyFormGroup().attributes('state')).toBe(expectedStateValue);
-  };
 
   describe('template', () => {
     describe.each`
@@ -80,8 +73,8 @@ describe('JiraIssuesFields', () => {
         createComponent({ props: { initialProjectKey: '' } });
       });
 
-      it('does not render project_key input', () => {
-        expect(findProjectKey().exists()).toBe(false);
+      it('does not render project keys input', () => {
+        expect(findProjectKeys().exists()).toBe(false);
       });
 
       // As per https://vuejs.org/v2/guide/forms.html#Checkbox-1,
@@ -99,133 +92,57 @@ describe('JiraIssuesFields', () => {
       });
 
       describe('on enable issues', () => {
-        it('renders project_key input as required', async () => {
+        it('renders project keys input', async () => {
           await setEnableCheckbox(true);
 
-          expect(findProjectKey().exists()).toBe(true);
-          expect(findProjectKey().attributes('required')).toBe('required');
+          expect(findProjectKeys().exists()).toBe(true);
         });
       });
     });
 
-    describe('when jira_multiple_project_keys is not enabled', () => {
+    describe('when initialProjectKeys is provided', () => {
+      const projectKeys = 'BE, FE';
+
       beforeEach(() => {
         createComponent({
           mountFn: shallowMountExtended,
           props: {
             initialEnableJiraIssues: true,
-          },
-        });
-      });
-
-      it('does not render "Jira project keys" input', () => {
-        expect(findProjectKeys().exists()).toBe(false);
-      });
-    });
-
-    describe('when jira_multiple_project_keys is enabled', () => {
-      beforeEach(() => {
-        createComponent({
-          mountFn: shallowMountExtended,
-          props: {
-            initialEnableJiraIssues: true,
-          },
-          provide: {
-            glFeatures: {
-              jiraMultipleProjectKeys: true,
-            },
+            initialProjectKeys: projectKeys,
           },
         });
       });
 
       it('renders "Jira project keys" input', () => {
-        expect(findProjectKeys().attributes('label')).toBe('Jira project keys');
+        expect(findProjectKeysGroup().attributes('label')).toBe('Jira project keys');
+        expect(findProjectKeys().attributes('value')).toBe(projectKeys);
       });
     });
 
-    describe('Vulnerabilities creation', () => {
+    describe('when section is issue creation (for vulnarabilities)', () => {
+      const jiraIssueType = 'some-jira-issue-type';
+
       beforeEach(() => {
-        createComponent();
+        createComponent({
+          mountFn: shallowMountExtended,
+          props: {
+            isIssueCreation: true,
+            initialVulnerabilitiesIssuetype: jiraIssueType,
+          },
+        });
       });
 
-      it.each([true, false])(
-        'shows the jira-vulnerabilities component correctly when jira issues enables is set to "%s"',
-        async (hasJiraIssuesEnabled) => {
-          await setEnableCheckbox(hasJiraIssuesEnabled);
-
-          expect(findJiraForVulnerabilities().exists()).toBe(hasJiraIssuesEnabled);
-        },
-      );
-
-      it('passes down the correct show-full-feature property', async () => {
-        await setEnableCheckbox(true);
-        expect(findJiraForVulnerabilities().attributes('show-full-feature')).toBe('true');
-        wrapper.setProps({ showJiraVulnerabilitiesIntegration: false });
-        await nextTick();
-        expect(findJiraForVulnerabilities().attributes('show-full-feature')).toBeUndefined();
-      });
-
-      it('passes down the correct initial-issue-type-id value when value is empty', async () => {
-        await setEnableCheckbox(true);
-        expect(findJiraForVulnerabilities().attributes('initial-issue-type-id')).toBeUndefined();
-      });
-
-      it('passes down the correct initial-issue-type-id value when value is not empty', async () => {
-        const jiraIssueType = 'some-jira-issue-type';
-        wrapper.setProps({ initialVulnerabilitiesIssuetype: jiraIssueType });
-        await setEnableCheckbox(true);
-        expect(findJiraForVulnerabilities().attributes('initial-issue-type-id')).toBe(
-          jiraIssueType,
-        );
+      it('renders "Jira for vulnerabilities" component', () => {
+        expect(findJiraForVulnerabilities().attributes()).toMatchObject({
+          'show-full-feature': 'true',
+          'initial-issue-type-id': jiraIssueType,
+        });
       });
 
       it('emits "request-jira-issue-types` when the jira-vulnerabilities component requests to fetch issue types', async () => {
-        await setEnableCheckbox(true);
         await findJiraForVulnerabilities().vm.$emit('request-jira-issue-types');
 
         expect(wrapper.emitted('request-jira-issue-types')).toHaveLength(1);
-      });
-    });
-
-    describe('Project key input field', () => {
-      it('sets Project Key `state` attribute to `true` by default', () => {
-        createComponent({
-          props: {
-            initialProjectKey: '',
-            initialEnableJiraIssues: true,
-          },
-          mountFn: shallowMountExtended,
-        });
-
-        assertProjectKeyState('true');
-      });
-
-      describe('when `isValidated` prop is true', () => {
-        beforeEach(() => {
-          createComponent({
-            props: {
-              initialProjectKey: '',
-              initialEnableJiraIssues: true,
-              isValidated: true,
-            },
-            mountFn: shallowMountExtended,
-          });
-        });
-
-        describe('with no project key', () => {
-          it('sets Project Key `state` attribute to `undefined`', () => {
-            assertProjectKeyState(undefined);
-          });
-        });
-
-        describe('when project key is set', () => {
-          it('sets Project Key `state` attribute to `true`', async () => {
-            // set the project key
-            await findProjectKey().vm.$emit('input', 'AB');
-
-            assertProjectKeyState('true');
-          });
-        });
       });
     });
   });

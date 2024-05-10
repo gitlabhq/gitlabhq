@@ -26,7 +26,8 @@ module BulkImports
             members_mapper: members_mapper,
             object_builder: object_builder,
             user: context.current_user,
-            excluded_keys: import_export_config.relation_excluded_keys(key)
+            excluded_keys: import_export_config.relation_excluded_keys(key),
+            import_source: Import::SOURCE_DIRECT_TRANSFER
           )
         end
 

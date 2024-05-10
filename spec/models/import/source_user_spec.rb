@@ -35,6 +35,27 @@ RSpec.describe Import::SourceUser, type: :model, feature_category: :importers do
     end
   end
 
+  describe 'after_transition callback' do
+    subject(:source_user) { create(:import_source_user, :awaiting_approval, :with_reassign_to_user) }
+
+    it 'does not unset reassign_to_user on other transitions' do
+      expect { source_user.accept! }
+        .not_to change { source_user.reload.reassign_to_user }
+    end
+
+    it 'unsets reassign_to_user when rejected' do
+      expect { source_user.reject! }
+        .to change { source_user.reload.reassign_to_user }
+        .from(an_instance_of(User)).to(nil)
+    end
+
+    it 'unsets reassign_to_user when assignment is cancelled' do
+      expect { source_user.cancel_assignment! }
+        .to change { source_user.reload.reassign_to_user }
+              .from(an_instance_of(User)).to(nil)
+    end
+  end
+
   describe '.find_source_user' do
     let_it_be(:namespace_1) { create(:namespace) }
     let_it_be(:namespace_2) { create(:namespace) }

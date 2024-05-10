@@ -192,6 +192,33 @@ If something unexpected happens during the migration, it is safe to start over.
 
 1. Configure GitLab to [use multiple databases](#set-up-multiple-databases).
 
+### Existing Linux package installations using streaming replication
+
+To reduce downtime, you can set up streaming replication to migrate existing data from the `main` database to the `ci` database.
+This procedure results in two database clusters.
+
+This procedure can be both time- and resource-consuming.
+Consider their trade-offs with availability before executing it.
+
+To set up streaming replication for creating two database clusters:
+
+1. Set up streaming replication from the GitLab database to new database instance.
+1. When the new replica has caught up, [disable background migrations](../../development/database/batched_background_migrations.md#enable-or-disable-background-migrations).
+1. [Ensure all background migrations are finished](../../update/background_migrations.md#check-the-status-of-batched-background-migrations).
+1. Stop GitLab, except for PostgreSQL:
+
+   ```shell
+   sudo gitlab-ctl stop
+   sudo gitlab-ctl start postgresql
+   ```
+
+1. After the replication is complete, stop the streaming replication, and promote the replica to a primary instance.
+   You now have two database clusters, one for `main`, and one for `ci`.
+1. Configure GitLab to [use multiple databases](#set-up-multiple-databases).
+
+For more information on how to set up Streaming Replication,
+see [PostgreSQL replication and failover for Linux package installations](replication_and_failover.md).
+
 ## Set up multiple databases
 
 To configure GitLab to use multiple application databases, follow the instructions below for your installation type.

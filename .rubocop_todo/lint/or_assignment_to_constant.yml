@@ -1,6 +1,0 @@
----
-# Cop supports --autocorrect.
-Lint/OrAssignmentToConstant:
-  Exclude:
-    - 'lib/gitlab/email/handler/base_handler.rb'
-    - 'tooling/danger/project_helper.rb'

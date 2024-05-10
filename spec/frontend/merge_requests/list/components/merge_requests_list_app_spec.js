@@ -10,6 +10,7 @@ import { convertToGraphQLId } from '~/graphql_shared/utils';
 import {
   TOKEN_TYPE_AUTHOR,
   TOKEN_TYPE_DRAFT,
+  TOKEN_TYPE_SOURCE_BRANCH,
   TOKEN_TYPE_TARGET_BRANCH,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import { mergeRequestListTabs } from '~/vue_shared/issuable/list/constants';
@@ -109,13 +110,14 @@ describe('Merge requests list app', () => {
           { type: TOKEN_TYPE_AUTHOR, preloadedUsers: [] },
           { type: TOKEN_TYPE_DRAFT },
           { type: TOKEN_TYPE_TARGET_BRANCH },
+          { type: TOKEN_TYPE_SOURCE_BRANCH },
         ]);
       });
     });
 
     describe('when all tokens are available', () => {
       beforeEach(async () => {
-        setWindowLocation('?draft=yes&target_branches[]="branch-a"');
+        setWindowLocation('?draft=yes&target_branches[]=branch-a&source_branches[]=branch-b');
         window.gon = {
           current_user_id: mockCurrentUser.id,
           current_user_fullname: mockCurrentUser.name,
@@ -142,6 +144,7 @@ describe('Merge requests list app', () => {
           { type: TOKEN_TYPE_AUTHOR, preloadedUsers },
           { type: TOKEN_TYPE_DRAFT },
           { type: TOKEN_TYPE_TARGET_BRANCH },
+          { type: TOKEN_TYPE_SOURCE_BRANCH },
         ]);
       });
 
@@ -149,6 +152,7 @@ describe('Merge requests list app', () => {
         expect(findIssuableList().props('initialFilterValue')).toMatchObject([
           { type: TOKEN_TYPE_DRAFT },
           { type: TOKEN_TYPE_TARGET_BRANCH },
+          { type: TOKEN_TYPE_SOURCE_BRANCH },
         ]);
       });
     });

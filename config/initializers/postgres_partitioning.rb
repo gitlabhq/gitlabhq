@@ -5,6 +5,7 @@ Gitlab::Database::Partitioning.register_models(
     AuditEvent,
     BatchedGitRefUpdates::Deletion,
     Ci::BuildMetadata,
+    Ci::BuildExecutionConfig,
     Ci::BuildName,
     Ci::Catalog::Resources::Components::Usage,
     Ci::Catalog::Resources::SyncEvent,

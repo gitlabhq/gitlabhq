@@ -135,9 +135,21 @@ Prerequisites:
 
 Use the groups API to [rotate the personal access token](../../api/groups.md#rotate-a-personal-access-token-for-service-account-user) for a service account user.
 
+### Delete a service account
+
+Prerequisites:
+
+- You must be an administrator for the instance the service account is associated with.
+
+To delete a service account, [use the API to delete the service account user](../../api/users.md#user-deletion).
+
 ### Disable a service account
 
-You cannot directly disable or delete a service account. Instead, you must:
+Prerequisites:
+
+- You must have the Owner role for the group the service account is associated with.
+
+If you are not an administrator for the instance or group a service account is associated with, you cannot directly delete that service account. Instead:
 
 1. Remove the service account as a member of all subgroups and projects:
 

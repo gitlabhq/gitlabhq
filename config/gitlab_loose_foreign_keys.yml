@@ -303,6 +303,10 @@ p_ci_builds:
   - table: ci_runners
     column: runner_id
     on_delete: async_nullify
+p_ci_builds_execution_configs:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
 p_ci_builds_metadata:
   - table: projects
     column: project_id

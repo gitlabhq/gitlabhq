@@ -975,6 +975,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: cronjob:users_unconfirmed_secondary_emails_deletion_cron
+  :worker_name: Users::UnconfirmedSecondaryEmailsDeletionCronWorker
+  :feature_category: :user_management
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: cronjob:x509_issuer_crl_check
   :worker_name: X509IssuerCrlCheckWorker
   :feature_category: :source_code_management

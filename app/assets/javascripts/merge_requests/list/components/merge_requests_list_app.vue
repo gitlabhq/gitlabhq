@@ -21,6 +21,8 @@ import {
   TOKEN_TYPE_DRAFT,
   TOKEN_TITLE_TARGET_BRANCH,
   TOKEN_TYPE_TARGET_BRANCH,
+  TOKEN_TITLE_SOURCE_BRANCH,
+  TOKEN_TYPE_SOURCE_BRANCH,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import {
   convertToApiParams,
@@ -206,7 +208,16 @@ export default {
           operators: OPERATORS_IS,
           fullPath: this.fullPath,
           isProject: true,
-          multiselect: true,
+          fetchBranches: this.fetchBranches,
+        },
+        {
+          type: TOKEN_TYPE_SOURCE_BRANCH,
+          title: TOKEN_TITLE_SOURCE_BRANCH,
+          icon: 'branch',
+          token: BranchToken,
+          operators: OPERATORS_IS,
+          fullPath: this.fullPath,
+          isProject: true,
           fetchBranches: this.fetchBranches,
         },
       ];

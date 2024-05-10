@@ -12,6 +12,13 @@ class DeviseMailerPreview < ActionMailer::Preview
     DeviseMailer.confirmation_instructions(user, 'faketoken', {})
   end
 
+  def confirmation_instructions_for_secondary_email
+    user = User.last
+    secondary_email = user.emails.build(email: 'unconfirmed@example.com')
+
+    DeviseMailer.confirmation_instructions(secondary_email, 'faketoken', {})
+  end
+
   def reset_password_instructions
     DeviseMailer.reset_password_instructions(unsaved_user, 'faketoken', {})
   end

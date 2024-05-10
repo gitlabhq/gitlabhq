@@ -172,6 +172,39 @@ You can use any version supported by the component, but using a version publishe
 to the CI/CD catalog is recommended. The version referenced with a commit SHA or branch name
 might not be published in the CI/CD catalog, but could be used for testing.
 
+#### Semantic version ranges
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/450835) in GitLab 16.11
+
+When [referencing a CI/CD catalog component](#component-versions), you can use a
+special format to specify the latest [semantic version](#semantic-versioning) in a range.
+
+To specify the latest release of:
+
+- A minor version, use both the major and minor version numbers in the reference,
+  but not the patch version number. For example, use `1.1` to use the latest version
+  that starts with `1.1`, including `1.1.0` or `1.1.9`, but not `1.2.0`.
+- A major version, use only the major version number in the reference. For example,
+  use `1` to use the latest version that starts with `1.`, like `1.0.0` or `1.9.9`,
+  but not `2.0.0`.
+- All versions, use `~latest` to use the latest released version.
+
+For example, a component is released in this exact order:
+
+1. `1.0.0`
+1. `1.1.0`
+1. `2.0.0`
+1. `1.1.1`
+1. `1.2.0`
+1. `2.1.0`
+1. `2.0.1`
+
+In this example, referencing the component with:
+
+- `1` would use the `1.2.0` version.
+- `1.1` would use the `1.1.1` version.
+- `~latest` would use the `2.1.0` version.
+
 ## CI/CD Catalog
 
 DETAILS:
@@ -279,39 +312,6 @@ you must use [semantic versioning](https://semver.org). Semantic versioning is t
 for communicating that a change is a major, minor, patch, or other kind of change.
 
 For example, `1.0.0`, `2.3.4`, and `1.0.0-alpha` are all valid semantic versions.
-
-##### Semantic version ranges
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/450835) in GitLab 16.11
-
-When [referencing a CI/CD catalog component](#component-versions), you can use a
-special format to specify the latest version in a range.
-
-To specify the latest release of:
-
-- A minor version, use both the major and minor version numbers in the reference,
-  but not the patch version number. For example, use `1.1` to use the latest version
-  that starts with `1.1`, including `1.1.0` or `1.1.9`, but not `1.2.0`.
-- A major version, use only the major version number in the reference. For example,
-  use `1` to use the latest version that starts with `1.`, like `1.0.0` or `1.9.9`,
-  but not `2.0.0`.
-- All versions, use `~latest` to use the latest released version.
-
-For example, a component is released in this exact order:
-
-1. `1.0.0`
-1. `1.1.0`
-1. `2.0.0`
-1. `1.1.1`
-1. `1.2.0`
-1. `2.1.0`
-1. `2.0.1`
-
-In this example, referencing the component with:
-
-- `1` would use the `1.2.0` version.
-- `1.1` would use the `1.1.1` version.
-- `~latest` would use the `2.1.0` version.
 
 ### Unpublish a component project
 

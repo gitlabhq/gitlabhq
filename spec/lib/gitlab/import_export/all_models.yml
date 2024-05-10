@@ -349,6 +349,7 @@ ci_pipelines:
 - package_file_build_infos
 - build_trace_chunks
 - pipeline_metadata
+- build_execution_configs
 pipeline_metadata:
 - project
 - pipeline
@@ -382,6 +383,7 @@ builds:
 - needs
 - resource
 - pipeline
+- execution_config
 - sourced_pipeline
 - resource_group
 - metadata
@@ -659,6 +661,7 @@ project:
 - import_data
 - commit_statuses
 - ci_pipelines
+- build_execution_configs
 - all_pipelines
 - stages
 - ci_refs

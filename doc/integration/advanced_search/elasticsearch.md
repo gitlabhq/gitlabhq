@@ -655,6 +655,14 @@ any pending migrations that have been removed in the new version cannot be execu
 In this case, you must
 [re-create your index from scratch](elasticsearch_troubleshooting.md#last-resort-to-recreate-an-index).
 
+### Skippable migrations
+
+Skippable migrations are only executed when a condition is met.
+For example, if a migration depends on a specific version of Elasticsearch, it could be skipped until that version is reached.
+
+If a skippable migration is not executed by the time the migration is marked as obsolete, to apply the change you must
+[re-create the index](elasticsearch_troubleshooting.md#last-resort-to-recreate-an-index).
+
 ## GitLab advanced search Rake tasks
 
 Rake tasks are available to:

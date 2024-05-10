@@ -1,0 +1,12 @@
+---
+table_name: p_ci_builds_execution_configs
+classes:
+- Ci::BuildExecutionConfig
+feature_categories:
+- pipeline_composition
+description: Represents execution config for a group of builds
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150451
+milestone: '17.0'
+gitlab_schema: gitlab_ci
+sharding_key:
+  project_id: projects

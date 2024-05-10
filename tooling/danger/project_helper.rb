@@ -3,7 +3,7 @@
 module Tooling
   module Danger
     module ProjectHelper
-      CI_ONLY_RULES ||= %w[
+      CI_ONLY_RULES = %w[
         ce_ee_vue_templates
         datateam
         feature_flag

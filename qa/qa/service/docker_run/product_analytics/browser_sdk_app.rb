@@ -17,7 +17,7 @@ module QA
             @image = 'registry.gitlab.com/gitlab-org/analytics-section/product-analytics/' \
                      'gl-application-sdk-browser/example-app:main'
             @name = 'browser_sdk'
-            @sdk_host = sdk_host
+            @sdk_host = URI(sdk_host)
             @sdk_app_id = sdk_app_id
             @port = '8081'
 

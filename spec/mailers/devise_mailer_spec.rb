@@ -54,6 +54,39 @@ RSpec.describe DeviseMailer, feature_category: :user_management do
         expect(subject.body.encoded).to have_text user.email
       end
     end
+
+    context 'for secondary email' do
+      let(:secondary_email) { create(:email) }
+
+      subject { described_class.confirmation_instructions(secondary_email, 'faketoken', opts) }
+
+      it_behaves_like 'it validates recipients'
+
+      it 'has the correct subject and body', :aggregate_failures do
+        is_expected.to have_subject I18n.t('devise.mailer.confirmation_instructions.subject')
+
+        is_expected.to have_text_part_content(
+          format(_("%{name}, confirm your email address now!"), name: secondary_email.user.name)
+        )
+        is_expected.to have_html_part_content(
+          format(_("%{name}, confirm your email address now!"), name: secondary_email.user.name)
+        )
+
+        is_expected.to have_text_part_content(
+          secondary_email.email
+        )
+        is_expected.to have_html_part_content(
+          secondary_email.email
+        )
+
+        is_expected.to have_text_part_content(
+          format(_('Confirm this email address within %{cut_off_days} days, otherwise the email address is removed.'), cut_off_days: ApplicationSetting::USERS_UNCONFIRMED_SECONDARY_EMAILS_DELETE_AFTER_DAYS)
+        )
+        is_expected.to have_html_part_content(
+          format(_('Confirm this email address within %{cut_off_days} days, otherwise the email address is removed.'), cut_off_days: ApplicationSetting::USERS_UNCONFIRMED_SECONDARY_EMAILS_DELETE_AFTER_DAYS)
+        )
+      end
+    end
   end
 
   describe '#password_change_by_admin' do

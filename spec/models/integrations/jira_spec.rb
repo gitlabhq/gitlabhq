@@ -257,21 +257,6 @@ RSpec.describe Integrations::Jira, feature_category: :integrations do
       it 'includes SECTION_TYPE_JIRA_ISSUE_CREATION' do
         expect(sections).to include(described_class::SECTION_TYPE_JIRA_ISSUE_CREATION)
       end
-
-      context 'when jira_multiple_project_keys feature is disabled' do
-        before do
-          stub_feature_flags(jira_multiple_project_keys: false)
-        end
-
-        it 'does not include SECTION_TYPE_JIRA_ISSUE_CREATION' do
-          expect(sections).not_to include(described_class::SECTION_TYPE_JIRA_ISSUE_CREATION)
-        end
-
-        it 'section SECTION_TYPE_JIRA_ISSUES title is "Issues"' do
-          jira_issues_section = integration.sections.find { |s| s[:type] == described_class::SECTION_TYPE_JIRA_ISSUES }
-          expect(jira_issues_section[:title]).to eq('Issues')
-        end
-      end
     end
 
     context 'when instance_level? is true' do
@@ -444,16 +429,6 @@ RSpec.describe Integrations::Jira, feature_category: :integrations do
       expect(integration.jira_tracker_data.deployment_cloud?).to be_truthy
       expect(integration.jira_tracker_data.project_key).to eq(project_key)
       expect(integration.jira_tracker_data.project_keys).to eq(project_keys)
-    end
-
-    context 'when the jira_multiple_project_keys feature is disabled' do
-      before do
-        stub_feature_flags(jira_multiple_project_keys: false)
-      end
-
-      it 'copies project_key into project_keys' do
-        expect(integration.jira_tracker_data.project_keys).to eq([project_key])
-      end
     end
 
     context 'when loading serverInfo' do
@@ -761,22 +736,6 @@ RSpec.describe Integrations::Jira, feature_category: :integrations do
           find_issue
 
           expect(WebMock).to have_requested(:get, issue_url)
-        end
-      end
-
-      context 'when jira_multiple_project_keys feature is disabled' do
-        before do
-          stub_feature_flags(jira_multiple_project_keys: false)
-        end
-
-        context 'when project_key matches issue_key' do
-          let(:project_key) { 'JIRA' }
-
-          it 'calls the Jira API to get the issue' do
-            find_issue
-
-            expect(WebMock).to have_requested(:get, issue_url)
-          end
         end
       end
     end

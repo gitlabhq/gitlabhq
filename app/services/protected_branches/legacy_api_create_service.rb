@@ -22,7 +22,7 @@ module ProtectedBranches
         end
 
       @params.merge!(push_access_levels_attributes: [{ access_level: push_access_level }],
-                     merge_access_levels_attributes: [{ access_level: merge_access_level }])
+        merge_access_levels_attributes: [{ access_level: merge_access_level }])
 
       service = ProtectedBranches::CreateService.new(project_or_group, @current_user, @params)
       service.execute

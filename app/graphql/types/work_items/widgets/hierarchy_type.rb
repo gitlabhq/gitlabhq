@@ -27,7 +27,7 @@ module Types
           resolver: Resolvers::WorkItems::AncestorsResolver
 
         field :has_children, GraphQL::Types::Boolean,
-              null: false, description: 'Indicates if the work item has children.'
+          null: false, description: 'Indicates if the work item has children.'
 
         # rubocop: disable CodeReuse/ActiveRecord
         def has_children?

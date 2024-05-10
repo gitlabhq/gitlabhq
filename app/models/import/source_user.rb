@@ -19,6 +19,22 @@ module Import
       state :rejected, value: 2
       state :failed, value: 3
       state :completed, value: 4
+
+      event :cancel_assignment do
+        transition [:awaiting_approval, :rejected] => :pending_assignment
+      end
+
+      event :accept do
+        transition awaiting_approval: :completed
+      end
+
+      event :reject do
+        transition awaiting_approval: :rejected
+      end
+
+      after_transition any => [:pending_assignment, :rejected] do |status|
+        status.update!(reassign_to_user: nil)
+      end
     end
 
     def self.find_source_user(source_user_identifier:, namespace:, source_hostname:, import_type:)

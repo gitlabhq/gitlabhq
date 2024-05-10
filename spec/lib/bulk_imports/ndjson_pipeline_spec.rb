@@ -143,7 +143,8 @@ RSpec.describe BulkImports::NdjsonPipeline, feature_category: :importers do
           members_mapper: instance_of(BulkImports::UsersMapper),
           object_builder: Gitlab::ImportExport::Group::ObjectBuilder,
           user: user,
-          excluded_keys: nil
+          excluded_keys: nil,
+          import_source: Import::SOURCE_DIRECT_TRANSFER
         )
         .and_return(relation_object)
       expect(relation_object).to receive(:assign_attributes).with(group: group)

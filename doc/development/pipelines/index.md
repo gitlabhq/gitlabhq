@@ -13,8 +13,12 @@ which itself includes files under
 for easier maintenance.
 
 We're striving to [dogfood](https://handbook.gitlab.com/handbook/engineering/development/principles/#dogfooding)
-GitLab [CI/CD features and best-practices](../../ci/index.md)
-as much as possible.
+GitLab [CI/CD features and best-practices](../../ci/index.md) as much as possible.
+
+Do not use [CI/CD components](../../ci/components/index.md) in `gitlab-org/gitlab` pipelines
+unless they are mirrored on the `dev.gitlab.com` instance. CI/CD components do not work across different instances,
+and [cause failing pipelines](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/17683#note_1795756077)
+on the `dev.gitlab.com` mirror if they do not exist on that instance.
 
 ## Predictive test jobs before a merge request is approved
 

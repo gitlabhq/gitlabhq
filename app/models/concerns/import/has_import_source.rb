@@ -1,12 +1,14 @@
 # frozen_string_literal: true
 
 module Import
+  SOURCE_DIRECT_TRANSFER = :gitlab_migration # aka BulkImports
+
   module HasImportSource
     extend ActiveSupport::Concern
 
     IMPORT_SOURCES = {
       none: 0, # not imported
-      gitlab_migration: 1, # aka direct transfer & bulk_import
+      SOURCE_DIRECT_TRANSFER => 1,
       gitlab_project: 2, # aka gitlab import/export
       github: 3,
       bitbucket: 4, # aka bitbucket cloud

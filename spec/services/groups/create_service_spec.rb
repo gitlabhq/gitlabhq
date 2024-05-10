@@ -128,6 +128,24 @@ RSpec.describe Groups::CreateService, '#execute', feature_category: :groups_and_
       context 'with before_commit callback' do
         it_behaves_like 'has sync-ed traversal_ids'
       end
+
+      describe 'handling of allow_runner_registration_token default' do
+        context 'when on self-managed' do
+          it 'does not disallow runner registration token' do
+            expect(created_group.allow_runner_registration_token?).to eq true
+          end
+        end
+
+        context 'when instance is dedicated' do
+          before do
+            Gitlab::CurrentSettings.update!(gitlab_dedicated_instance: true)
+          end
+
+          it 'does not disallow runner registration token' do
+            expect(created_group.allow_runner_registration_token?).to eq true
+          end
+        end
+      end
     end
 
     context 'when user can not create a group' do

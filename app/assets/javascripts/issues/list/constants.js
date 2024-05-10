@@ -24,6 +24,7 @@ import {
   TOKEN_TYPE_MY_REACTION,
   TOKEN_TYPE_ORGANIZATION,
   TOKEN_TYPE_RELEASE,
+  TOKEN_TYPE_SOURCE_BRANCH,
   TOKEN_TYPE_TARGET_BRANCH,
   TOKEN_TYPE_TYPE,
   TOKEN_TYPE_WEIGHT,
@@ -265,6 +266,16 @@ export const filtersMap = {
       },
       [OPERATOR_OR]: {
         [ALTERNATIVE_FILTER]: 'or[label_name][]',
+      },
+    },
+  },
+  [TOKEN_TYPE_SOURCE_BRANCH]: {
+    [API_PARAM]: {
+      [NORMAL_FILTER]: 'sourceBranches',
+    },
+    [URL_PARAM]: {
+      [OPERATOR_IS]: {
+        [NORMAL_FILTER]: 'source_branches[]',
       },
     },
   },

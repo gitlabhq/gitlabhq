@@ -155,4 +155,14 @@ RSpec.describe GitlabSchema.types['Query'], feature_category: :shared do
       is_expected.to have_graphql_resolver(Resolvers::Ml::ModelDetailResolver)
     end
   end
+
+  describe 'integration_exclusions field' do
+    subject { described_class.fields['integrationExclusions'] }
+
+    it 'returns metadata', :aggregate_failures do
+      is_expected.to have_graphql_arguments(:integrationName)
+      is_expected.to have_graphql_type(Types::Integrations::ExclusionType.connection_type)
+      is_expected.to have_graphql_resolver(Resolvers::Integrations::ExclusionsResolver)
+    end
+  end
 end

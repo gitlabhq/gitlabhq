@@ -61,10 +61,6 @@ module Integrations
     # We should use username/password for Jira Server and email/api_token for Jira Cloud,
     # for more information check: https://gitlab.com/gitlab-org/gitlab-foss/issues/49936.
 
-    before_save :copy_project_key_to_project_keys,
-      if: -> {
-        Feature.disabled?(:jira_multiple_project_keys, group || project&.group)
-      }
     before_save :format_project_keys, if: :project_keys_changed?
     after_commit :update_deployment_type, on: [:create, :update], if: :update_deployment_type?
 
@@ -260,28 +256,20 @@ module Integrations
 
       # Currently, Jira issues are only configurable at the project and group levels.
       unless instance_level?
-        issues_title = if Feature.enabled?(:jira_multiple_project_keys, group || project&.group)
-                         s_('JiraService|Jira issues (optional)')
-                       else
-                         _('Issues')
-                       end
-
         sections.push({
           type: SECTION_TYPE_JIRA_ISSUES,
-          title: issues_title,
+          title: s_('JiraService|Jira issues (optional)'),
           description: jira_issues_section_description,
           plan: 'premium'
         })
 
-        if Feature.enabled?(:jira_multiple_project_keys, group || project&.group)
-          sections.push({
-            type: SECTION_TYPE_JIRA_ISSUE_CREATION,
-            title: s_('JiraService|Jira issues for vulnerabilities (optional)'),
-            description: s_('JiraService|Create Jira issues from GitLab to track any action taken ' \
-                            'to resolve or mitigate vulnerabilities.'),
-            plan: 'ultimate'
-          })
-        end
+        sections.push({
+          type: SECTION_TYPE_JIRA_ISSUE_CREATION,
+          title: s_('JiraService|Jira issues for vulnerabilities (optional)'),
+          description: s_('JiraService|Create Jira issues from GitLab to track any action taken ' \
+                          'to resolve or mitigate vulnerabilities.'),
+          plan: 'ultimate'
+        })
       end
 
       sections
@@ -456,11 +444,7 @@ module Integrations
     end
 
     def issue_key_allowed?(issue_key)
-      if Feature.disabled?(:jira_multiple_project_keys)
-        parse_project_from_issue_key(issue_key) == project_key
-      else
-        project_keys.blank? || project_keys.include?(parse_project_from_issue_key(issue_key))
-      end
+      project_keys.blank? || project_keys.include?(parse_project_from_issue_key(issue_key))
     end
 
     def branch_name(commit)
@@ -731,10 +715,6 @@ module Integrations
       else
         data_fields.deployment_server!
       end
-    end
-
-    def copy_project_key_to_project_keys
-      data_fields.project_keys = [project_key]
     end
 
     def format_project_keys

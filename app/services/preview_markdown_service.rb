@@ -37,14 +37,14 @@ class PreviewMarkdownService < BaseContainerService
     return [] unless preview_sugestions?
 
     position = Gitlab::Diff::Position.new(new_path: params[:file_path],
-                                          new_line: params[:line].to_i,
-                                          base_sha: params[:base_sha],
-                                          head_sha: params[:head_sha],
-                                          start_sha: params[:start_sha])
+      new_line: params[:line].to_i,
+      base_sha: params[:base_sha],
+      head_sha: params[:head_sha],
+      start_sha: params[:start_sha])
 
     Gitlab::Diff::SuggestionsParser.parse(text, position: position,
-                                                project: project,
-                                                supports_suggestion: params[:preview_suggestions])
+      project: project,
+      supports_suggestion: params[:preview_suggestions])
   end
 
   def preview_sugestions?

@@ -17,7 +17,7 @@ RSpec.describe Gitlab::Database::Reflection, feature_category: :database do
     context 'when a username is not set' do
       it 'returns the value of the USER environment variable' do
         allow(database).to receive(:config).and_return(username: nil)
-        allow(ENV).to receive(:[]).with('USER').and_return('bob')
+        stub_env('USER', 'bob')
 
         expect(database.username).to eq('bob')
       end

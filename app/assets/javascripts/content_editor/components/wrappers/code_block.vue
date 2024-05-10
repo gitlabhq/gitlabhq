@@ -134,7 +134,7 @@ export default {
 
       if (!this.editor.isActive('diagram')) return;
 
-      this.diagramSource = this.$refs.nodeViewContent.$el.textContent;
+      this.diagramSource = this.$refs.nodeViewContent?.$el.textContent || '';
 
       if (this.node.attrs.language !== 'mermaid') {
         this.diagramUrl = await this.contentEditor.renderDiagram(

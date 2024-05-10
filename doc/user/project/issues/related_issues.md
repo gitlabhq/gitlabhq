@@ -10,6 +10,8 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
+> - [Changed](https://gitlab.com/groups/gitlab-org/-/epics/10267) minimum required role from Reporter (if true) to Guest in GitLab 17.0.
+
 Linked issues are a bi-directional relationship between any two issues and appear in a block below
 the issue description. You can link issues in different projects.
 

@@ -46,6 +46,8 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
 
   PACKAGE_REGISTRY_SETTINGS = [:nuget_skip_metadata_url_validation].freeze
 
+  USERS_UNCONFIRMED_SECONDARY_EMAILS_DELETE_AFTER_DAYS = 3
+
   enum whats_new_variant: { all_tiers: 0, current_tier: 1, disabled: 2 }, _prefix: true
   enum email_confirmation_setting: { off: 0, soft: 1, hard: 2 }, _prefix: true
 

@@ -67,6 +67,6 @@ class MarkdownContentRewriterService
   end
 
   attr_reader :current_user, :content, :source_parent,
-              :target_parent, :rewriters, :content_html,
-              :field, :html_field, :object, :result
+    :target_parent, :rewriters, :content_html,
+    :field, :html_field, :object, :result
 end

@@ -24,7 +24,7 @@ RSpec.describe 'Net::HTTP patch proxy user and password encoding', feature_categ
 
       before do
         allow(ENV).to receive(:[]).and_call_original
-        allow(ENV).to receive(:[]).with('http_proxy').and_return(http_proxy)
+        stub_env('http_proxy', http_proxy)
       end
 
       it { is_expected.to eq(nil) }
@@ -64,7 +64,7 @@ RSpec.describe 'Net::HTTP patch proxy user and password encoding', feature_categ
 
       before do
         allow(ENV).to receive(:[]).and_call_original
-        allow(ENV).to receive(:[]).with('http_proxy').and_return(http_proxy)
+        stub_env('http_proxy', http_proxy)
       end
 
       it { is_expected.to eq(nil) }

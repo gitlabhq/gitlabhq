@@ -500,46 +500,6 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
   end
 
-  describe 'before_save :ensure_runner_registration_token_disabled_on_com' do
-    let(:parent_namespace) { nil }
-    let!(:namespace) { create(:group, parent: parent_namespace) }
-
-    context 'when on self-managed' do
-      it 'does not create a settings record' do
-        expect(namespace.allow_runner_registration_token?).to eq true
-      end
-    end
-
-    context 'when instance is dedicated' do
-      before do
-        Gitlab::CurrentSettings.update!(gitlab_dedicated_instance: true)
-      end
-
-      it 'does not create a settings record' do
-        expect(namespace.allow_runner_registration_token?).to eq true
-      end
-    end
-
-    context 'when on SaaS', :saas do
-      it 'creates a settings record disallowing runner registration tokens' do
-        expect(namespace.allow_runner_registration_token?).to eq false
-      end
-
-      context 'when namespace is not top-most' do
-        let!(:parent_namespace) { create(:group) }
-
-        it 'does not create a settings record and uses the default value for column' do
-          expect(namespace.allow_runner_registration_token).to eq true
-        end
-
-        it 'uses the value from the parent namespace' do
-          # allow_runner_registration_token? uses the value of the parent namespace and instance, so should return false
-          expect(namespace.allow_runner_registration_token?).to eq false
-        end
-      end
-    end
-  end
-
   context 'when creating a new project' do
     let_it_be(:group) { create(:group) }
 

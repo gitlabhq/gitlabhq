@@ -76,11 +76,15 @@ NOTE:
 
 ## Delete emails from your user profile
 
+> - Automatic deletion of unverified secondary email addresses [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151562) in GitLab 17.0.
+
 You can delete a secondary email address from your account. You cannot delete your
 primary email address.
 
 If the deleted email address is used for any user emails, those user emails are
 sent to the primary email address instead.
+
+Unverified secondary email addresses are automatically deleted after three days.
 
 NOTE:
 Because of [issue 438600](https://gitlab.com/gitlab-org/gitlab/-/issues/438600), group notifications are still sent to

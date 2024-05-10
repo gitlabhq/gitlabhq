@@ -222,6 +222,11 @@ module Types
       description: 'Find machine learning models.',
       resolver: Resolvers::Ml::ModelDetailResolver
 
+    field :integration_exclusions, Types::Integrations::ExclusionType.connection_type,
+      null: true,
+      alpha: { milestone: '17.0' },
+      resolver: Resolvers::Integrations::ExclusionsResolver
+
     field :work_items_by_reference,
       null: true,
       alpha: { milestone: '16.7' },

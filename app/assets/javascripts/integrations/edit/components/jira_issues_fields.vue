@@ -2,7 +2,6 @@
 import { GlFormGroup, GlFormCheckbox, GlFormInput } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapGetters } from 'vuex';
-import { s__, __ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
@@ -65,38 +64,15 @@ export default {
   data() {
     return {
       enableJiraIssues: this.initialEnableJiraIssues,
-      projectKey: this.initialProjectKey,
       projectKeys: this.initialProjectKeys,
     };
   },
   computed: {
     ...mapGetters(['isInheriting']),
 
-    multipleProjectKeys() {
-      return this.glFeatures.jiraMultipleProjectKeys;
-    },
-
     checkboxDisabled() {
       return !this.showJiraIssuesIntegration || this.isInheriting;
     },
-
-    validProjectKey() {
-      // Allow saving the form without project_key when feature flag is enabled.
-      // This will be improved in https://gitlab.com/gitlab-org/gitlab/-/issues/452161.
-      if (this.multipleProjectKeys) {
-        return true;
-      }
-
-      return !this.enableJiraIssues || Boolean(this.projectKey) || !this.isValidated;
-    },
-  },
-  i18n: {
-    enableCheckboxHelp: s__(
-      'JiraService|Warning: All users with access to this GitLab project can view all issues from the Jira project you specify.',
-    ),
-    projectKeyLabel: s__('JiraService|Jira project key'),
-    projectKeyPlaceholder: s__('JiraService|AB'),
-    requiredFieldFeedback: __('This field is required.'),
   },
 };
 </script>
@@ -112,14 +88,18 @@ export default {
       >
         {{ s__('JiraService|View Jira issues') }}
         <template #help>
-          {{ $options.i18n.enableCheckboxHelp }}
+          {{
+            s__(
+              'JiraService|Warning: All users with access to this GitLab project can view all issues from the Jira project you specify.',
+            )
+          }}
         </template>
       </gl-form-checkbox>
     </template>
 
     <div v-if="enableJiraIssues" class="gl-pl-6 gl-mt-3">
       <gl-form-group
-        v-if="multipleProjectKeys && !isIssueCreation"
+        v-if="!isIssueCreation"
         :label="s__('JiraService|Jira project keys')"
         label-for="service_project_keys"
         :description="
@@ -134,47 +114,15 @@ export default {
           v-model="projectKeys"
           name="service[project_keys]"
           width="xl"
+          data-testid="jira-project-keys-field"
           :placeholder="s__('JiraService|AB,CD')"
           :readonly="isInheriting"
         />
       </gl-form-group>
-
-      <template v-if="!multipleProjectKeys">
-        <gl-form-group
-          :label="$options.i18n.projectKeyLabel"
-          label-for="service_project_key"
-          :invalid-feedback="$options.i18n.requiredFieldFeedback"
-          :state="validProjectKey"
-          data-testid="project-key-form-group"
-        >
-          <gl-form-input
-            id="service_project_key"
-            v-model="projectKey"
-            name="service[project_key]"
-            data-testid="jira-project-key-field"
-            width="md"
-            :placeholder="$options.i18n.projectKeyPlaceholder"
-            :required="enableJiraIssues"
-            :state="validProjectKey"
-            :readonly="isInheriting"
-          />
-        </gl-form-group>
-
-        <jira-issue-creation-vulnerabilities
-          :project-key="projectKey"
-          :initial-is-enabled="initialEnableJiraVulnerabilities"
-          :initial-issue-type-id="initialVulnerabilitiesIssuetype"
-          :show-full-feature="showJiraVulnerabilitiesIntegration"
-          class="gl-mt-6"
-          data-testid="jira-for-vulnerabilities"
-          @request-jira-issue-types="$emit('request-jira-issue-types')"
-        />
-      </template>
     </div>
 
     <template v-if="isIssueCreation">
       <jira-issue-creation-vulnerabilities
-        :project-key="projectKey"
         :initial-is-enabled="initialEnableJiraVulnerabilities"
         :initial-project-key="initialProjectKey"
         :initial-issue-type-id="initialVulnerabilitiesIssuetype"

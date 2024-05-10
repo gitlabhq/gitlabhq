@@ -477,6 +477,24 @@ Fields related to Instance Security Dashboard.
 
 Returns [`InstanceSecurityDashboard`](#instancesecuritydashboard).
 
+### `Query.integrationExclusions`
+
+DETAILS:
+**Introduced** in GitLab 17.0.
+**Status**: Experiment.
+
+Returns [`IntegrationExclusionConnection`](#integrationexclusionconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="queryintegrationexclusionsintegrationname"></a>`integrationName` | [`IntegrationType!`](#integrationtype) | Type of integration. |
+
 ### `Query.issue`
 
 Find an issue.
@@ -5427,6 +5445,54 @@ Input type: `InstanceGoogleCloudLoggingConfigurationUpdateInput`
 | <a id="mutationinstancegooglecloudloggingconfigurationupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationinstancegooglecloudloggingconfigurationupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationinstancegooglecloudloggingconfigurationupdateinstancegooglecloudloggingconfiguration"></a>`instanceGoogleCloudLoggingConfiguration` | [`InstanceGoogleCloudLoggingConfigurationType`](#instancegooglecloudloggingconfigurationtype) | configuration updated. |
+
+### `Mutation.integrationExclusionCreate`
+
+DETAILS:
+**Introduced** in GitLab 17.0.
+**Status**: Experiment.
+
+Input type: `IntegrationExclusionCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationintegrationexclusioncreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationintegrationexclusioncreateintegrationname"></a>`integrationName` | [`IntegrationType!`](#integrationtype) | Type of integration to exclude. |
+| <a id="mutationintegrationexclusioncreateprojectids"></a>`projectIds` | [`[ProjectID!]!`](#projectid) | Ids of projects to exclude. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationintegrationexclusioncreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationintegrationexclusioncreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationintegrationexclusioncreateexclusions"></a>`exclusions` | [`[IntegrationExclusion!]`](#integrationexclusion) | Integration exclusions created by the mutation. |
+
+### `Mutation.integrationExclusionDelete`
+
+DETAILS:
+**Introduced** in GitLab 17.0.
+**Status**: Experiment.
+
+Input type: `IntegrationExclusionDeleteInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationintegrationexclusiondeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationintegrationexclusiondeleteintegrationname"></a>`integrationName` | [`IntegrationType!`](#integrationtype) | Type of integration. |
+| <a id="mutationintegrationexclusiondeleteprojectids"></a>`projectIds` | [`[ProjectID!]!`](#projectid) | Id of excluded project. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationintegrationexclusiondeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationintegrationexclusiondeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationintegrationexclusiondeleteexclusions"></a>`exclusions` | [`[IntegrationExclusion!]`](#integrationexclusion) | Project no longer excluded due to the mutation. |
 
 ### `Mutation.issuableResourceLinkCreate`
 
@@ -12525,6 +12591,29 @@ The edge type for [`InstanceGoogleCloudLoggingConfigurationType`](#instancegoogl
 | ---- | ---- | ----------- |
 | <a id="instancegooglecloudloggingconfigurationtypeedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="instancegooglecloudloggingconfigurationtypeedgenode"></a>`node` | [`InstanceGoogleCloudLoggingConfigurationType`](#instancegooglecloudloggingconfigurationtype) | The item at the end of the edge. |
+
+#### `IntegrationExclusionConnection`
+
+The connection type for [`IntegrationExclusion`](#integrationexclusion).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="integrationexclusionconnectionedges"></a>`edges` | [`[IntegrationExclusionEdge]`](#integrationexclusionedge) | A list of edges. |
+| <a id="integrationexclusionconnectionnodes"></a>`nodes` | [`[IntegrationExclusion]`](#integrationexclusion) | A list of nodes. |
+| <a id="integrationexclusionconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `IntegrationExclusionEdge`
+
+The edge type for [`IntegrationExclusion`](#integrationexclusion).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="integrationexclusionedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="integrationexclusionedgenode"></a>`node` | [`IntegrationExclusion`](#integrationexclusion) | The item at the end of the edge. |
 
 #### `IssuableResourceLinkConnection`
 
@@ -22948,6 +23037,16 @@ Returns [`VulnerabilitySeveritiesCount`](#vulnerabilityseveritiescount).
 | <a id="instancesecuritydashboardvulnerabilityseveritiescountscannerid"></a>`scannerId` | [`[VulnerabilitiesScannerID!]`](#vulnerabilitiesscannerid) | Filter vulnerabilities by scanner ID. |
 | <a id="instancesecuritydashboardvulnerabilityseveritiescountseverity"></a>`severity` | [`[VulnerabilitySeverity!]`](#vulnerabilityseverity) | Filter vulnerabilities by severity. |
 | <a id="instancesecuritydashboardvulnerabilityseveritiescountstate"></a>`state` | [`[VulnerabilityState!]`](#vulnerabilitystate) | Filter vulnerabilities by state. |
+
+### `IntegrationExclusion`
+
+An integration to override the level settings of instance specific integrations.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="integrationexclusionproject"></a>`project` | [`Project`](#project) | Project that has been excluded from the instance specific integration. |
 
 ### `IssuableResourceLink`
 
@@ -33409,6 +33508,14 @@ Import source.
 | <a id="importsourcegitlab_project"></a>`GITLAB_PROJECT` | Imported from Gitlab Project. |
 | <a id="importsourcemanifest"></a>`MANIFEST` | Imported from Manifest. |
 | <a id="importsourcenone"></a>`NONE` | Not imported. |
+
+### `IntegrationType`
+
+Integration Names.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="integrationtypebeyond_identity"></a>`BEYOND_IDENTITY` | Beyond Identity. |
 
 ### `IssuableResourceLinkType`
 

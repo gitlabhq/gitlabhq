@@ -870,6 +870,9 @@ Gitlab.ee do
   Settings.cron_jobs['users_delete_unconfirmed_users_worker'] ||= {}
   Settings.cron_jobs['users_delete_unconfirmed_users_worker']['cron'] ||= '0 * * * *'
   Settings.cron_jobs['users_delete_unconfirmed_users_worker']['job_class'] = 'Users::UnconfirmedUsersDeletionCronWorker'
+  Settings.cron_jobs['users_unconfirmed_secondary_emails_deletion_cron_worker'] ||= {}
+  Settings.cron_jobs['users_unconfirmed_secondary_emails_deletion_cron_worker']['cron'] ||= '0 * * * *'
+  Settings.cron_jobs['users_unconfirmed_secondary_emails_deletion_cron_worker']['job_class'] = 'Users::UnconfirmedSecondaryEmailsDeletionCronWorker'
   Settings.cron_jobs['package_metadata_advisories_sync_worker'] ||= {}
   Settings.cron_jobs['package_metadata_advisories_sync_worker']['cron'] ||= "*/5 * * * *"
   Settings.cron_jobs['package_metadata_advisories_sync_worker']['job_class'] = 'PackageMetadata::AdvisoriesSyncWorker'

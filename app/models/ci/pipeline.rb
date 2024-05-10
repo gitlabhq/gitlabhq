@@ -86,6 +86,7 @@ module Ci
       inverse_of: :pipeline, partition_foreign_key: :partition_id
     has_many :bridges, ->(pipeline) { in_partition(pipeline) }, class_name: 'Ci::Bridge', foreign_key: :commit_id, inverse_of: :pipeline, partition_foreign_key: :partition_id
     has_many :builds, ->(pipeline) { in_partition(pipeline) }, foreign_key: :commit_id, inverse_of: :pipeline, partition_foreign_key: :partition_id
+    has_many :build_execution_configs, ->(pipeline) { in_partition(pipeline) }, class_name: 'Ci::BuildExecutionConfig', inverse_of: :pipeline, partition_foreign_key: :partition_id
     has_many :generic_commit_statuses, ->(pipeline) { in_partition(pipeline) }, foreign_key: :commit_id, inverse_of: :pipeline, class_name: 'GenericCommitStatus', partition_foreign_key: :partition_id
     #
     # NEW:

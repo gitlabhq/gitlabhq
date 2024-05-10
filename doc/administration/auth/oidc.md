@@ -271,6 +271,78 @@ gitlab_rails['omniauth_providers'] = [
 
 Microsoft has documented how its platform works with [the OIDC protocol](https://learn.microsoft.com/en-us/entra/identity-platform/v2-protocols-oidc).
 
+#### Migrate to Generic OpenID Connect configuration
+
+You can migrate to the Generic OpenID Connect configuration from both `azure_activedirectory_v2` and `azure_oauth2`.
+
+First, set the `uid_field`, which differs between providers:
+
+| Provider                                                                                                        | `uid` | Supporting information  |
+|-----------------------------------------------------------------------------------------------------------------|-------|-----------------------------------------------------------------------|
+| [`omniauth-azure-oauth2`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/vendor/gems/omniauth-azure-oauth2) | `sub` | Additional attributes `oid` and `tid` are offered within the `info` object. |
+| [`omniauth-azure-activedirectory-v2`](https://github.com/RIPAGlobal/omniauth-azure-activedirectory-v2/)         | `oid` | You must configure `oid` as `uid_field` when migrating. |
+| [`omniauth_openid_connect`](https://github.com/omniauth/omniauth_openid_connect/)                               | `sub` | Specify `uid_field` to use another field. |
+
+To migrate to the Generic OpenID Connect configuration, you must change the configuration to the following:
+
+::Tabs
+
+:::Azure OAuth 2.0
+
+```ruby
+gitlab_rails['omniauth_providers'] = [
+  {
+    name: "azure_oauth2",
+    label: "Azure OIDC", # optional label for login button, defaults to "Openid Connect"
+    args: {
+      name: "azure_activedirectory_v2",
+      strategy_class: "OmniAuth::Strategies::OpenIDConnect",
+      scope: ["openid", "profile", "email"],
+      response_type: "code",
+      issuer:  "https://login.microsoftonline.com/<YOUR-TENANT-ID>/v2.0",
+      client_auth_method: "query",
+      discovery: true,
+      uid_field: "sub",
+      send_scope_to_token_endpoint: "false",
+      client_options: {
+        identifier: "<YOUR APP CLIENT ID>",
+        secret: "<YOUR APP CLIENT SECRET>",
+        redirect_uri: "https://gitlab.example.com/users/auth/azure_oauth2/callback"
+      }
+    }
+  }
+]
+```
+
+:::Azure Active Directory v2
+
+```ruby
+gitlab_rails['omniauth_providers'] = [
+  {
+    name: "azure_oauth2",
+    label: "Azure OIDC", # optional label for login button, defaults to "Openid Connect"
+    args: {
+      name: "azure_activedirectory_v2",
+      strategy_class: "OmniAuth::Strategies::OpenIDConnect",
+      scope: ["openid", "profile", "email"],
+      response_type: "code",
+      issuer:  "https://login.microsoftonline.com/<YOUR-TENANT-ID>/v2.0",
+      client_auth_method: "query",
+      discovery: true,
+      uid_field: "oid",
+      send_scope_to_token_endpoint: "false",
+      client_options: {
+        identifier: "<YOUR APP CLIENT ID>",
+        secret: "<YOUR APP CLIENT SECRET>",
+        redirect_uri: "https://gitlab.example.com/users/auth/azure_activedirectory_v2/callback"
+      }
+    }
+  }
+]
+```
+
+::EndTabs
+
 ### Configure Microsoft Azure Active Directory B2C
 
 GitLab requires special
@@ -610,7 +682,7 @@ You can configure your application to use multiple OpenID Connect (OIDC) provide
 
 You should do this in either of the following scenarios:
 
-- [Migrating to the OpenID Connect protocol](../../integration/azure.md#migrate-to-the-openid-connect-protocol).
+- [Migrating to the OpenID Connect protocol](#migrate-to-generic-openid-connect-configuration).
 - Offering different levels of authentication.
 
 NOTE:

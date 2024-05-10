@@ -237,6 +237,15 @@ It also demonstrates how to manage a semantic version for the generic package: s
 
 ## Troubleshooting
 
+### HTTP 403 errors
+
+You might get a `HTTP 403 Forbidden` error. This error happens when either:
+
+- You don't have access to a resource.
+- The package registry is not enabled for the project.
+
+To resolve the issue, ensure the package registry is enabled, and you have permission to access it.
+
 ### Internal Server error on large file uploads to S3
 
 S3-compatible object storage [limits the size of a single PUT request to 5 GB](https://docs.aws.amazon.com/AmazonS3/latest/userguide/upload-objects.html). If the `aws_signature_version` is set to `2` in the [object storage connection settings](../../../administration/object_storage.md), attempting to publish a package file larger than the 5 GB limit can result in a `HTTP 500: Internal Server Error` response.

@@ -18,5 +18,9 @@ FactoryBot.define do
     trait :with_reassigned_by_user do
       reassigned_by_user factory: :user
     end
+
+    trait :awaiting_approval do
+      status { 1 }
+    end
   end
 end
