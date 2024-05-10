@@ -19,7 +19,10 @@ module Integrations
 
         instance_integration = integration_class.for_instance.first
 
-        return ServiceResponse.success(payload: exclusions.destroy_all) unless instance_integration # rubocop: disable Cop/DestroyAll -- We load exclusions so we can have the deleted exclusions in the response
+        unless instance_integration
+          integration_class.id_in(exclusions.map(&:id)).delete_all
+          return ServiceResponse.success(payload: exclusions)
+        end
 
         ::Integrations::Propagation::BulkUpdateService.new(instance_integration, exclusions).execute
         ServiceResponse.success(payload: exclusions)

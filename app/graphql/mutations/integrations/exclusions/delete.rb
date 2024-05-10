@@ -19,7 +19,7 @@ module Mutations
         argument :project_ids,
           [::Types::GlobalIDType[::Project]],
           required: true,
-          description: 'Id of excluded project.'
+          description: 'IDs of excluded projects.'
 
         authorize :admin_all_resources
 

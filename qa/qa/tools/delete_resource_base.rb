@@ -31,6 +31,7 @@ module QA
           personal_access_token: ENV['GITLAB_QA_ACCESS_TOKEN'])
         @delete_before = Date.parse(ENV['DELETE_BEFORE'] || (Date.today - 1).to_s)
         @dry_run = dry_run
+        @permanently_delete = !!(ENV['PERMANENTLY_DELETE'].to_s =~ /true|1|y/i)
         @type = nil
       end
 
@@ -47,7 +48,7 @@ module QA
         response = delete(resource_request(resource, permanently_remove: true, full_path: path))
         wait_for_resource_deletion(resource, true) if success?(response&.code)
 
-        if success?(response&.code) && permanently_deleted?(resource)
+        if permanently_deleted?(resource)
           log_permanent_deletion(resource)
         else
           log_failure(resource, response)
@@ -84,7 +85,9 @@ module QA
 
           return log_failure(resource, response) unless mark_for_deletion_possible?(resource)
 
-          ENV['PERMANENTLY_DELETE'] ? delete_permanently(resource) : log_marked_for_deletion(resource)
+          @permanently_delete ? delete_permanently(resource) : log_marked_for_deletion(resource)
+        elsif response&.code == 404
+          log_permanent_deletion(resource)
         else
           log_failure(resource, response)
         end
@@ -183,7 +186,7 @@ module QA
       # @return [Array<String, Hash>] results
       def log_failure(resource, response)
         path = resource_path(resource)
-        logger.error("\e[31mFAILED\e[0m to delete #{@type} #{path} with #{response.code}. Resource still exists.\n")
+        logger.error("\e[31mFAILED\e[0m to delete #{@type} #{path} with #{response.code}.\n")
         ["failed_deletions", { path: path, response: response }]
       end
 
@@ -228,6 +231,8 @@ module QA
         print_failed_deletion_attempts(failed_deletions)
 
         logger.info('Done')
+
+        exit 1 unless failed_deletions.blank?
       end
 
       # Check if a resource can be marked for deletion
@@ -301,7 +306,11 @@ module QA
         wait_until(max_duration: 60, sleep_interval: 1, raise_on_failure: false) do
           response = get(resource_request(resource))
 
-          permanent ? response.code == 404 : response.code == 404 || marked_for_deletion?(parse_body(response))
+          if permanent
+            response&.code == 404
+          else
+            response&.code == 404 || (success?(response&.code) && marked_for_deletion?(parse_body(response)))
+          end
         end
       end
     end

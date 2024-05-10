@@ -5460,7 +5460,7 @@ Input type: `IntegrationExclusionCreateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationintegrationexclusioncreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationintegrationexclusioncreateintegrationname"></a>`integrationName` | [`IntegrationType!`](#integrationtype) | Type of integration to exclude. |
-| <a id="mutationintegrationexclusioncreateprojectids"></a>`projectIds` | [`[ProjectID!]!`](#projectid) | Ids of projects to exclude. |
+| <a id="mutationintegrationexclusioncreateprojectids"></a>`projectIds` | [`[ProjectID!]!`](#projectid) | IDs of projects to exclude up to a maximum of 100. |
 
 #### Fields
 
@@ -5484,7 +5484,7 @@ Input type: `IntegrationExclusionDeleteInput`
 | ---- | ---- | ----------- |
 | <a id="mutationintegrationexclusiondeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationintegrationexclusiondeleteintegrationname"></a>`integrationName` | [`IntegrationType!`](#integrationtype) | Type of integration. |
-| <a id="mutationintegrationexclusiondeleteprojectids"></a>`projectIds` | [`[ProjectID!]!`](#projectid) | Id of excluded project. |
+| <a id="mutationintegrationexclusiondeleteprojectids"></a>`projectIds` | [`[ProjectID!]!`](#projectid) | IDs of excluded projects. |
 
 #### Fields
 
@@ -15690,6 +15690,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="addonuserassignedmergerequestsreviewstate"></a>`reviewState` **{warning-solid}** | [`MergeRequestReviewState`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer state of the merge request. |
 | <a id="addonuserassignedmergerequestsreviewstates"></a>`reviewStates` **{warning-solid}** | [`[MergeRequestReviewState!]`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer states of the merge request. |
 | <a id="addonuserassignedmergerequestsreviewerusername"></a>`reviewerUsername` | [`String`](#string) | Username of the reviewer. |
+| <a id="addonuserassignedmergerequestsreviewerwildcardid"></a>`reviewerWildcardId` | [`ReviewerWildcardId`](#reviewerwildcardid) | Filter by reviewer presence. Incompatible with reviewerUsername. |
 | <a id="addonuserassignedmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by this criteria. |
 | <a id="addonuserassignedmergerequestssourcebranches"></a>`sourceBranches` | [`[String!]`](#string) | Array of source branch names. All resolved merge requests will have one of these branches as their source. |
 | <a id="addonuserassignedmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have this state. |
@@ -15728,6 +15729,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="addonuserauthoredmergerequestsreviewstate"></a>`reviewState` **{warning-solid}** | [`MergeRequestReviewState`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer state of the merge request. |
 | <a id="addonuserauthoredmergerequestsreviewstates"></a>`reviewStates` **{warning-solid}** | [`[MergeRequestReviewState!]`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer states of the merge request. |
 | <a id="addonuserauthoredmergerequestsreviewerusername"></a>`reviewerUsername` | [`String`](#string) | Username of the reviewer. |
+| <a id="addonuserauthoredmergerequestsreviewerwildcardid"></a>`reviewerWildcardId` | [`ReviewerWildcardId`](#reviewerwildcardid) | Filter by reviewer presence. Incompatible with reviewerUsername. |
 | <a id="addonuserauthoredmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by this criteria. |
 | <a id="addonuserauthoredmergerequestssourcebranches"></a>`sourceBranches` | [`[String!]`](#string) | Array of source branch names. All resolved merge requests will have one of these branches as their source. |
 | <a id="addonuserauthoredmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have this state. |
@@ -16452,6 +16454,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="autocompleteduserassignedmergerequestsreviewstate"></a>`reviewState` **{warning-solid}** | [`MergeRequestReviewState`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer state of the merge request. |
 | <a id="autocompleteduserassignedmergerequestsreviewstates"></a>`reviewStates` **{warning-solid}** | [`[MergeRequestReviewState!]`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer states of the merge request. |
 | <a id="autocompleteduserassignedmergerequestsreviewerusername"></a>`reviewerUsername` | [`String`](#string) | Username of the reviewer. |
+| <a id="autocompleteduserassignedmergerequestsreviewerwildcardid"></a>`reviewerWildcardId` | [`ReviewerWildcardId`](#reviewerwildcardid) | Filter by reviewer presence. Incompatible with reviewerUsername. |
 | <a id="autocompleteduserassignedmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by this criteria. |
 | <a id="autocompleteduserassignedmergerequestssourcebranches"></a>`sourceBranches` | [`[String!]`](#string) | Array of source branch names. All resolved merge requests will have one of these branches as their source. |
 | <a id="autocompleteduserassignedmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have this state. |
@@ -16490,6 +16493,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="autocompleteduserauthoredmergerequestsreviewstate"></a>`reviewState` **{warning-solid}** | [`MergeRequestReviewState`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer state of the merge request. |
 | <a id="autocompleteduserauthoredmergerequestsreviewstates"></a>`reviewStates` **{warning-solid}** | [`[MergeRequestReviewState!]`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer states of the merge request. |
 | <a id="autocompleteduserauthoredmergerequestsreviewerusername"></a>`reviewerUsername` | [`String`](#string) | Username of the reviewer. |
+| <a id="autocompleteduserauthoredmergerequestsreviewerwildcardid"></a>`reviewerWildcardId` | [`ReviewerWildcardId`](#reviewerwildcardid) | Filter by reviewer presence. Incompatible with reviewerUsername. |
 | <a id="autocompleteduserauthoredmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by this criteria. |
 | <a id="autocompleteduserauthoredmergerequestssourcebranches"></a>`sourceBranches` | [`[String!]`](#string) | Array of source branch names. All resolved merge requests will have one of these branches as their source. |
 | <a id="autocompleteduserauthoredmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have this state. |
@@ -18624,6 +18628,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="currentuserassignedmergerequestsreviewstate"></a>`reviewState` **{warning-solid}** | [`MergeRequestReviewState`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer state of the merge request. |
 | <a id="currentuserassignedmergerequestsreviewstates"></a>`reviewStates` **{warning-solid}** | [`[MergeRequestReviewState!]`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer states of the merge request. |
 | <a id="currentuserassignedmergerequestsreviewerusername"></a>`reviewerUsername` | [`String`](#string) | Username of the reviewer. |
+| <a id="currentuserassignedmergerequestsreviewerwildcardid"></a>`reviewerWildcardId` | [`ReviewerWildcardId`](#reviewerwildcardid) | Filter by reviewer presence. Incompatible with reviewerUsername. |
 | <a id="currentuserassignedmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by this criteria. |
 | <a id="currentuserassignedmergerequestssourcebranches"></a>`sourceBranches` | [`[String!]`](#string) | Array of source branch names. All resolved merge requests will have one of these branches as their source. |
 | <a id="currentuserassignedmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have this state. |
@@ -18662,6 +18667,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="currentuserauthoredmergerequestsreviewstate"></a>`reviewState` **{warning-solid}** | [`MergeRequestReviewState`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer state of the merge request. |
 | <a id="currentuserauthoredmergerequestsreviewstates"></a>`reviewStates` **{warning-solid}** | [`[MergeRequestReviewState!]`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer states of the merge request. |
 | <a id="currentuserauthoredmergerequestsreviewerusername"></a>`reviewerUsername` | [`String`](#string) | Username of the reviewer. |
+| <a id="currentuserauthoredmergerequestsreviewerwildcardid"></a>`reviewerWildcardId` | [`ReviewerWildcardId`](#reviewerwildcardid) | Filter by reviewer presence. Incompatible with reviewerUsername. |
 | <a id="currentuserauthoredmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by this criteria. |
 | <a id="currentuserauthoredmergerequestssourcebranches"></a>`sourceBranches` | [`[String!]`](#string) | Array of source branch names. All resolved merge requests will have one of these branches as their source. |
 | <a id="currentuserauthoredmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have this state. |
@@ -23896,6 +23902,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="mergerequestassigneeassignedmergerequestsreviewstate"></a>`reviewState` **{warning-solid}** | [`MergeRequestReviewState`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer state of the merge request. |
 | <a id="mergerequestassigneeassignedmergerequestsreviewstates"></a>`reviewStates` **{warning-solid}** | [`[MergeRequestReviewState!]`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer states of the merge request. |
 | <a id="mergerequestassigneeassignedmergerequestsreviewerusername"></a>`reviewerUsername` | [`String`](#string) | Username of the reviewer. |
+| <a id="mergerequestassigneeassignedmergerequestsreviewerwildcardid"></a>`reviewerWildcardId` | [`ReviewerWildcardId`](#reviewerwildcardid) | Filter by reviewer presence. Incompatible with reviewerUsername. |
 | <a id="mergerequestassigneeassignedmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by this criteria. |
 | <a id="mergerequestassigneeassignedmergerequestssourcebranches"></a>`sourceBranches` | [`[String!]`](#string) | Array of source branch names. All resolved merge requests will have one of these branches as their source. |
 | <a id="mergerequestassigneeassignedmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have this state. |
@@ -23934,6 +23941,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="mergerequestassigneeauthoredmergerequestsreviewstate"></a>`reviewState` **{warning-solid}** | [`MergeRequestReviewState`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer state of the merge request. |
 | <a id="mergerequestassigneeauthoredmergerequestsreviewstates"></a>`reviewStates` **{warning-solid}** | [`[MergeRequestReviewState!]`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer states of the merge request. |
 | <a id="mergerequestassigneeauthoredmergerequestsreviewerusername"></a>`reviewerUsername` | [`String`](#string) | Username of the reviewer. |
+| <a id="mergerequestassigneeauthoredmergerequestsreviewerwildcardid"></a>`reviewerWildcardId` | [`ReviewerWildcardId`](#reviewerwildcardid) | Filter by reviewer presence. Incompatible with reviewerUsername. |
 | <a id="mergerequestassigneeauthoredmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by this criteria. |
 | <a id="mergerequestassigneeauthoredmergerequestssourcebranches"></a>`sourceBranches` | [`[String!]`](#string) | Array of source branch names. All resolved merge requests will have one of these branches as their source. |
 | <a id="mergerequestassigneeauthoredmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have this state. |
@@ -24206,6 +24214,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="mergerequestauthorassignedmergerequestsreviewstate"></a>`reviewState` **{warning-solid}** | [`MergeRequestReviewState`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer state of the merge request. |
 | <a id="mergerequestauthorassignedmergerequestsreviewstates"></a>`reviewStates` **{warning-solid}** | [`[MergeRequestReviewState!]`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer states of the merge request. |
 | <a id="mergerequestauthorassignedmergerequestsreviewerusername"></a>`reviewerUsername` | [`String`](#string) | Username of the reviewer. |
+| <a id="mergerequestauthorassignedmergerequestsreviewerwildcardid"></a>`reviewerWildcardId` | [`ReviewerWildcardId`](#reviewerwildcardid) | Filter by reviewer presence. Incompatible with reviewerUsername. |
 | <a id="mergerequestauthorassignedmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by this criteria. |
 | <a id="mergerequestauthorassignedmergerequestssourcebranches"></a>`sourceBranches` | [`[String!]`](#string) | Array of source branch names. All resolved merge requests will have one of these branches as their source. |
 | <a id="mergerequestauthorassignedmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have this state. |
@@ -24244,6 +24253,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="mergerequestauthorauthoredmergerequestsreviewstate"></a>`reviewState` **{warning-solid}** | [`MergeRequestReviewState`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer state of the merge request. |
 | <a id="mergerequestauthorauthoredmergerequestsreviewstates"></a>`reviewStates` **{warning-solid}** | [`[MergeRequestReviewState!]`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer states of the merge request. |
 | <a id="mergerequestauthorauthoredmergerequestsreviewerusername"></a>`reviewerUsername` | [`String`](#string) | Username of the reviewer. |
+| <a id="mergerequestauthorauthoredmergerequestsreviewerwildcardid"></a>`reviewerWildcardId` | [`ReviewerWildcardId`](#reviewerwildcardid) | Filter by reviewer presence. Incompatible with reviewerUsername. |
 | <a id="mergerequestauthorauthoredmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by this criteria. |
 | <a id="mergerequestauthorauthoredmergerequestssourcebranches"></a>`sourceBranches` | [`[String!]`](#string) | Array of source branch names. All resolved merge requests will have one of these branches as their source. |
 | <a id="mergerequestauthorauthoredmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have this state. |
@@ -24563,6 +24573,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="mergerequestparticipantassignedmergerequestsreviewstate"></a>`reviewState` **{warning-solid}** | [`MergeRequestReviewState`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer state of the merge request. |
 | <a id="mergerequestparticipantassignedmergerequestsreviewstates"></a>`reviewStates` **{warning-solid}** | [`[MergeRequestReviewState!]`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer states of the merge request. |
 | <a id="mergerequestparticipantassignedmergerequestsreviewerusername"></a>`reviewerUsername` | [`String`](#string) | Username of the reviewer. |
+| <a id="mergerequestparticipantassignedmergerequestsreviewerwildcardid"></a>`reviewerWildcardId` | [`ReviewerWildcardId`](#reviewerwildcardid) | Filter by reviewer presence. Incompatible with reviewerUsername. |
 | <a id="mergerequestparticipantassignedmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by this criteria. |
 | <a id="mergerequestparticipantassignedmergerequestssourcebranches"></a>`sourceBranches` | [`[String!]`](#string) | Array of source branch names. All resolved merge requests will have one of these branches as their source. |
 | <a id="mergerequestparticipantassignedmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have this state. |
@@ -24601,6 +24612,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="mergerequestparticipantauthoredmergerequestsreviewstate"></a>`reviewState` **{warning-solid}** | [`MergeRequestReviewState`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer state of the merge request. |
 | <a id="mergerequestparticipantauthoredmergerequestsreviewstates"></a>`reviewStates` **{warning-solid}** | [`[MergeRequestReviewState!]`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer states of the merge request. |
 | <a id="mergerequestparticipantauthoredmergerequestsreviewerusername"></a>`reviewerUsername` | [`String`](#string) | Username of the reviewer. |
+| <a id="mergerequestparticipantauthoredmergerequestsreviewerwildcardid"></a>`reviewerWildcardId` | [`ReviewerWildcardId`](#reviewerwildcardid) | Filter by reviewer presence. Incompatible with reviewerUsername. |
 | <a id="mergerequestparticipantauthoredmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by this criteria. |
 | <a id="mergerequestparticipantauthoredmergerequestssourcebranches"></a>`sourceBranches` | [`[String!]`](#string) | Array of source branch names. All resolved merge requests will have one of these branches as their source. |
 | <a id="mergerequestparticipantauthoredmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have this state. |
@@ -24909,6 +24921,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="mergerequestreviewerassignedmergerequestsreviewstate"></a>`reviewState` **{warning-solid}** | [`MergeRequestReviewState`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer state of the merge request. |
 | <a id="mergerequestreviewerassignedmergerequestsreviewstates"></a>`reviewStates` **{warning-solid}** | [`[MergeRequestReviewState!]`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer states of the merge request. |
 | <a id="mergerequestreviewerassignedmergerequestsreviewerusername"></a>`reviewerUsername` | [`String`](#string) | Username of the reviewer. |
+| <a id="mergerequestreviewerassignedmergerequestsreviewerwildcardid"></a>`reviewerWildcardId` | [`ReviewerWildcardId`](#reviewerwildcardid) | Filter by reviewer presence. Incompatible with reviewerUsername. |
 | <a id="mergerequestreviewerassignedmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by this criteria. |
 | <a id="mergerequestreviewerassignedmergerequestssourcebranches"></a>`sourceBranches` | [`[String!]`](#string) | Array of source branch names. All resolved merge requests will have one of these branches as their source. |
 | <a id="mergerequestreviewerassignedmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have this state. |
@@ -24947,6 +24960,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="mergerequestreviewerauthoredmergerequestsreviewstate"></a>`reviewState` **{warning-solid}** | [`MergeRequestReviewState`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer state of the merge request. |
 | <a id="mergerequestreviewerauthoredmergerequestsreviewstates"></a>`reviewStates` **{warning-solid}** | [`[MergeRequestReviewState!]`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer states of the merge request. |
 | <a id="mergerequestreviewerauthoredmergerequestsreviewerusername"></a>`reviewerUsername` | [`String`](#string) | Username of the reviewer. |
+| <a id="mergerequestreviewerauthoredmergerequestsreviewerwildcardid"></a>`reviewerWildcardId` | [`ReviewerWildcardId`](#reviewerwildcardid) | Filter by reviewer presence. Incompatible with reviewerUsername. |
 | <a id="mergerequestreviewerauthoredmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by this criteria. |
 | <a id="mergerequestreviewerauthoredmergerequestssourcebranches"></a>`sourceBranches` | [`[String!]`](#string) | Array of source branch names. All resolved merge requests will have one of these branches as their source. |
 | <a id="mergerequestreviewerauthoredmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have this state. |
@@ -27865,6 +27879,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="projectmergerequestsreviewstate"></a>`reviewState` **{warning-solid}** | [`MergeRequestReviewState`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer state of the merge request. |
 | <a id="projectmergerequestsreviewstates"></a>`reviewStates` **{warning-solid}** | [`[MergeRequestReviewState!]`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer states of the merge request. |
 | <a id="projectmergerequestsreviewerusername"></a>`reviewerUsername` | [`String`](#string) | Username of the reviewer. |
+| <a id="projectmergerequestsreviewerwildcardid"></a>`reviewerWildcardId` | [`ReviewerWildcardId`](#reviewerwildcardid) | Filter by reviewer presence. Incompatible with reviewerUsername. |
 | <a id="projectmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by this criteria. |
 | <a id="projectmergerequestssourcebranches"></a>`sourceBranches` | [`[String!]`](#string) | Array of source branch names. All resolved merge requests will have one of these branches as their source. |
 | <a id="projectmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have this state. |
@@ -30605,6 +30620,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="usercoreassignedmergerequestsreviewstate"></a>`reviewState` **{warning-solid}** | [`MergeRequestReviewState`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer state of the merge request. |
 | <a id="usercoreassignedmergerequestsreviewstates"></a>`reviewStates` **{warning-solid}** | [`[MergeRequestReviewState!]`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer states of the merge request. |
 | <a id="usercoreassignedmergerequestsreviewerusername"></a>`reviewerUsername` | [`String`](#string) | Username of the reviewer. |
+| <a id="usercoreassignedmergerequestsreviewerwildcardid"></a>`reviewerWildcardId` | [`ReviewerWildcardId`](#reviewerwildcardid) | Filter by reviewer presence. Incompatible with reviewerUsername. |
 | <a id="usercoreassignedmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by this criteria. |
 | <a id="usercoreassignedmergerequestssourcebranches"></a>`sourceBranches` | [`[String!]`](#string) | Array of source branch names. All resolved merge requests will have one of these branches as their source. |
 | <a id="usercoreassignedmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have this state. |
@@ -30643,6 +30659,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="usercoreauthoredmergerequestsreviewstate"></a>`reviewState` **{warning-solid}** | [`MergeRequestReviewState`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer state of the merge request. |
 | <a id="usercoreauthoredmergerequestsreviewstates"></a>`reviewStates` **{warning-solid}** | [`[MergeRequestReviewState!]`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer states of the merge request. |
 | <a id="usercoreauthoredmergerequestsreviewerusername"></a>`reviewerUsername` | [`String`](#string) | Username of the reviewer. |
+| <a id="usercoreauthoredmergerequestsreviewerwildcardid"></a>`reviewerWildcardId` | [`ReviewerWildcardId`](#reviewerwildcardid) | Filter by reviewer presence. Incompatible with reviewerUsername. |
 | <a id="usercoreauthoredmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by this criteria. |
 | <a id="usercoreauthoredmergerequestssourcebranches"></a>`sourceBranches` | [`[String!]`](#string) | Array of source branch names. All resolved merge requests will have one of these branches as their source. |
 | <a id="usercoreauthoredmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have this state. |
@@ -34448,6 +34465,15 @@ Status of a requirement based on last test report.
 | <a id="requirementstatusfiltermissing"></a>`MISSING` | Requirements without any test report. |
 | <a id="requirementstatusfilterpassed"></a>`PASSED` | Passed test report. |
 
+### `ReviewerWildcardId`
+
+Reviewer ID wildcard values.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="reviewerwildcardidany"></a>`ANY` | Any reviewer is assigned. |
+| <a id="reviewerwildcardidnone"></a>`NONE` | No reviewer is assigned. |
+
 ### `SastUiComponentSize`
 
 Size of UI component in SAST configuration page.
@@ -36805,6 +36831,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="userassignedmergerequestsreviewstate"></a>`reviewState` **{warning-solid}** | [`MergeRequestReviewState`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer state of the merge request. |
 | <a id="userassignedmergerequestsreviewstates"></a>`reviewStates` **{warning-solid}** | [`[MergeRequestReviewState!]`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer states of the merge request. |
 | <a id="userassignedmergerequestsreviewerusername"></a>`reviewerUsername` | [`String`](#string) | Username of the reviewer. |
+| <a id="userassignedmergerequestsreviewerwildcardid"></a>`reviewerWildcardId` | [`ReviewerWildcardId`](#reviewerwildcardid) | Filter by reviewer presence. Incompatible with reviewerUsername. |
 | <a id="userassignedmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by this criteria. |
 | <a id="userassignedmergerequestssourcebranches"></a>`sourceBranches` | [`[String!]`](#string) | Array of source branch names. All resolved merge requests will have one of these branches as their source. |
 | <a id="userassignedmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have this state. |
@@ -36843,6 +36870,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="userauthoredmergerequestsreviewstate"></a>`reviewState` **{warning-solid}** | [`MergeRequestReviewState`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer state of the merge request. |
 | <a id="userauthoredmergerequestsreviewstates"></a>`reviewStates` **{warning-solid}** | [`[MergeRequestReviewState!]`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer states of the merge request. |
 | <a id="userauthoredmergerequestsreviewerusername"></a>`reviewerUsername` | [`String`](#string) | Username of the reviewer. |
+| <a id="userauthoredmergerequestsreviewerwildcardid"></a>`reviewerWildcardId` | [`ReviewerWildcardId`](#reviewerwildcardid) | Filter by reviewer presence. Incompatible with reviewerUsername. |
 | <a id="userauthoredmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by this criteria. |
 | <a id="userauthoredmergerequestssourcebranches"></a>`sourceBranches` | [`[String!]`](#string) | Array of source branch names. All resolved merge requests will have one of these branches as their source. |
 | <a id="userauthoredmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have this state. |

@@ -695,21 +695,12 @@ module API
       elsif supports_direct_download && file.class.direct_download_enabled?
         return redirect(ObjectStorage::S3.signed_head_url(file)) if request.head? && file.fog_credentials[:provider] == 'AWS'
 
-        redirect(cdn_fronted_url(file))
+        file_url = ObjectStorage::CDN::FileUrl.new(file: file, ip_address: ip_address)
+        redirect(file_url.url)
       else
         header(*Gitlab::Workhorse.send_url(file.url))
         status :ok
         body '' # to avoid an error from API::APIGuard::ResponseCoercerMiddleware
-      end
-    end
-
-    def cdn_fronted_url(file)
-      if file.respond_to?(:cdn_enabled_url)
-        result = file.cdn_enabled_url(ip_address)
-        Gitlab::ApplicationContext.push(artifact_used_cdn: result.used_cdn)
-        result.url
-      else
-        file.url
       end
     end
 

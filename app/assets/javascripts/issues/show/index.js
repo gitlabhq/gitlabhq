@@ -46,6 +46,7 @@ export function initIssuableApp(store) {
     issuableId,
     issueType,
     hasIterationsFeature,
+    imported,
     // for issue
     registerPath,
     signInPath,
@@ -129,6 +130,7 @@ export function initIssuableApp(store) {
           descriptionComponent: issueType === TYPE_INCIDENT ? IncidentTabs : DescriptionComponent,
           isConfidential: this.getNoteableData?.confidential,
           isLocked: this.getNoteableData?.discussion_locked,
+          isImported: imported,
           issuableStatus: this.getNoteableData?.state,
           issuableType: issueType,
           issueId: this.getNoteableData?.id?.toString(),

@@ -41,20 +41,28 @@ RSpec.describe Mutations::Integrations::Exclusions::Delete, feature_category: :i
     end
 
     context 'and there are integrations' do
-      let!(:instance_integration) { create(:beyond_identity_integration) }
       let!(:existing_exclusion) do
         create(:beyond_identity_integration, project: project, active: false, inherit_from_id: nil,
           instance: false)
       end
 
-      it 'enables the integration for the specified project' do
-        resolve_mutation
+      context 'and the integration is active for the instance' do
+        let!(:instance_integration) { create(:beyond_identity_integration) }
 
-        existing_exclusion.reload
-        expect(existing_exclusion).to be_activated
-        expect(existing_exclusion.inherit_from_id).to eq(instance_integration.id)
-        exclusion_response = graphql_data['integrationExclusionDelete']['exclusions'][0]
-        expect(exclusion_response['project']['id']).to eq(project.to_global_id.to_s)
+        it 'enables the integration for the specified project' do
+          resolve_mutation
+
+          existing_exclusion.reload
+          expect(existing_exclusion).to be_activated
+          expect(existing_exclusion.inherit_from_id).to eq(instance_integration.id)
+          exclusion_response = graphql_data['integrationExclusionDelete']['exclusions'][0]
+          expect(exclusion_response['project']['id']).to eq(project.to_global_id.to_s)
+        end
+      end
+
+      it 'deletes the integration' do
+        expect { resolve_mutation }.to change { Integration.count }.from(1).to(0)
+        expect(graphql_errors).to be_nil
       end
     end
   end

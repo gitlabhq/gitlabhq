@@ -252,6 +252,7 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
           canUpdate: true,
           canDestroy: true,
           issuableRef: "##{issue.iid}",
+          imported: issue.imported?,
           markdownPreviewPath: "/#{@project.full_path}/preview_markdown?target_id=#{issue.iid}&target_type=Issue",
           markdownDocsPath: '/help/user/markdown',
           lockVersion: issue.lock_version,

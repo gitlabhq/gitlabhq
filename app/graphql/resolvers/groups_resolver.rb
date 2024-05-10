@@ -20,12 +20,8 @@ module Resolvers
 
     def resolve_groups(**args)
       GroupsFinder
-        .new(context[:current_user], finder_params(args))
+        .new(context[:current_user], args)
         .execute
-    end
-
-    def finder_params(args)
-      args
     end
   end
 end

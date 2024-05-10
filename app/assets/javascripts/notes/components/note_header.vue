@@ -247,7 +247,7 @@ export default {
       </template>
 
       <template v-if="isImported">
-        <span>·</span>
+        <span v-if="isSystemNote">&middot;</span>
         <imported-badge :text-only="isSystemNote" :importable-type="importableType" size="sm" />
       </template>
 

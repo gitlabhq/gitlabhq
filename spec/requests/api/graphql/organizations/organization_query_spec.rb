@@ -149,26 +149,6 @@ RSpec.describe 'getting organization information', feature_category: :cell do
         expect(groups.pluck('id')).to match_array(expected_groups)
       end
 
-      context 'when resolve_all_organization_groups feature flag is disabled' do
-        before do
-          stub_feature_flags(resolve_all_organization_groups: false)
-        end
-
-        it 'does not return ancestors of authorized groups' do
-          request_organization
-
-          expect(groups.pluck('id')).not_to include(parent_group_global_id)
-        end
-
-        it 'does not return all visible groups' do
-          request_organization
-
-          visible_groups = [parent_group, organization_group]
-            .map { |group| group.to_global_id.to_s }
-          expect(groups.pluck('id')).not_to include(*visible_groups)
-        end
-      end
-
       context 'with `search` argument' do
         let(:search) { 'oth' }
         let(:organization_fields) do

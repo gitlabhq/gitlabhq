@@ -1174,7 +1174,9 @@ RSpec.describe API::Helpers, feature_category: :shared do
 
       it 'redirects to a CDN-fronted URL' do
         expect(helper).to receive(:redirect)
-        expect(helper).to receive(:cdn_fronted_url).and_call_original
+        expect_next_instance_of(ObjectStorage::CDN::FileUrl) do |instance|
+          expect(instance).to receive(:url).and_call_original
+        end
         expect(Gitlab::ApplicationContext).to receive(:push).with(artifact: artifact.file.model).and_call_original
         expect(Gitlab::ApplicationContext).to receive(:push).with(artifact_used_cdn: false).and_call_original
 
@@ -1191,35 +1193,6 @@ RSpec.describe API::Helpers, feature_category: :shared do
 
           subject
         end
-      end
-    end
-  end
-
-  describe '#cdn_frontend_url' do
-    before do
-      allow(helper).to receive(:env).and_return({})
-
-      stub_artifacts_object_storage(enabled: true)
-    end
-
-    context 'with a CI artifact' do
-      let(:artifact) { create(:ci_job_artifact, :zip, :remote_store) }
-
-      it 'retrieves a CDN-fronted URL' do
-        expect(artifact.file).to receive(:cdn_enabled_url).and_call_original
-        expect(Gitlab::ApplicationContext).to receive(:push).with(artifact_used_cdn: false).and_call_original
-        expect(helper.cdn_fronted_url(artifact.file)).to be_a(String)
-      end
-    end
-
-    context 'with a file upload' do
-      let(:url) { 'https://example.com/path/to/upload' }
-
-      it 'retrieves the file URL' do
-        file = double(url: url)
-
-        expect(Gitlab::ApplicationContext).not_to receive(:push)
-        expect(helper.cdn_fronted_url(file)).to eq(url)
       end
     end
   end

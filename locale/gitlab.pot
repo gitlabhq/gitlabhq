@@ -23115,9 +23115,6 @@ msgstr ""
 msgid "Get started"
 msgstr ""
 
-msgid "Get started with GitLab"
-msgstr ""
-
 msgid "Get started with error tracking"
 msgstr ""
 
@@ -30355,9 +30352,6 @@ msgid "LearnGitlab|Contact your administrator to enable this action."
 msgstr ""
 
 msgid "LearnGitlab|Contact your administrator to start a free Ultimate trial."
-msgstr ""
-
-msgid "LearnGitlab|Ok, let's go"
 msgstr ""
 
 msgid "LearnGitlab|View administrator list"
@@ -42396,9 +42390,6 @@ msgid "Read the documentation before applying changes."
 msgstr ""
 
 msgid "Read their documentation."
-msgstr ""
-
-msgid "Ready to get started with GitLab? Follow these steps to set up your workspace, plan and commit changes, and deploy your project."
 msgstr ""
 
 msgid "Ready to merge by members who can write to the target branch."

@@ -10,6 +10,7 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
   include ProjectForksHelper
   include IconsHelper
   include IssuablesHelper
+  include MarkupHelper
 
   let_it_be(:current_user) { create(:user) }
 
@@ -214,6 +215,31 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
 
       it 'does not show the fork icon' do
         expect(subject).not_to match(/fork/)
+      end
+    end
+  end
+
+  describe '#sticky_header_data' do
+    let_it_be(:project) { create(:project) }
+    let(:merge_request) do
+      create(:merge_request, source_project: project, target_project: project, imported_from: imported_from)
+    end
+
+    subject { sticky_header_data(project, merge_request) }
+
+    context 'when the merge request is not imported' do
+      let(:imported_from) { :none }
+
+      it 'returns data with imported set as false' do
+        expect(subject[:imported]).to eq('false')
+      end
+    end
+
+    context 'when the merge request is imported' do
+      let(:imported_from) { :gitlab_migration }
+
+      it 'returns data with imported set as true' do
+        expect(subject[:imported]).to eq('true')
       end
     end
   end

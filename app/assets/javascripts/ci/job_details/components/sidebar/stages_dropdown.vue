@@ -140,7 +140,7 @@ export default {
         <template #source>
           <gl-link
             :href="pipeline.merge_request.source_branch_path"
-            class="link-commit ref-name gl-mt-1"
+            class="link-commit ref-name gl-break-all gl-mt-1"
             data-testid="source-branch-link"
             >{{ pipeline.merge_request.source_branch }}</gl-link
           ><clipboard-button

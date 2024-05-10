@@ -56,5 +56,21 @@ RSpec.describe Mutations::Integrations::Exclusions::Create, feature_category: :i
         expect(existing_exclusion.inherit_from_id).to be_nil
       end
     end
+
+    context 'and the number of project ids exceeds the maximum' do
+      let(:stubbed_limit) { 1 }
+      let(:project_ids) { [project, project2].map { |p| p.to_global_id.to_s } }
+
+      before do
+        stub_const("#{described_class.name}::MAX_PROJECT_IDS", stubbed_limit)
+      end
+
+      it 'responds with an error' do
+        resolve_mutation
+        expect(graphql_errors.first['message']).to eq(
+          "Count of projectIds should be less than #{stubbed_limit}"
+        )
+      end
+    end
   end
 end

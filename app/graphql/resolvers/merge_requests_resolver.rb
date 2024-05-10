@@ -25,6 +25,9 @@ module Resolvers
       argument :reviewer_username, GraphQL::Types::String,
         required: false,
         description: 'Username of the reviewer.'
+      argument :reviewer_wildcard_id, ::Types::ReviewerWildcardIdEnum,
+        required: false,
+        description: 'Filter by reviewer presence. Incompatible with reviewerUsername.'
     end
 
     argument :iids, [GraphQL::Types::String],

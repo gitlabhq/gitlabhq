@@ -5,8 +5,8 @@
     .event-item-timestamp.gl-font-sm
       #{time_ago_with_tooltip(event.created_at)}
       - if event.imported?
-        %span •
-        = render "import/shared/imported_text", importable: _('event')
+        %span &middot;
+        = render "import/shared/imported_badge", text_only: true, importable: _('event')
 
     - if event.wiki_page?
       = render "events/event/wiki", event: event

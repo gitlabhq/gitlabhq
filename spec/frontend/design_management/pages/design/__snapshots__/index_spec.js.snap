@@ -21,6 +21,7 @@ exports[`Design management design index page when loaded renders design index 1`
       iid="1"
       image="test.jpg"
       imagev432x230="test.jpg"
+      imported="true"
       islatestversion="true"
       issidebaropen="true"
       issue="[object Object]"

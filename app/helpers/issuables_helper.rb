@@ -164,6 +164,7 @@ module IssuablesHelper
       canUpdate: can?(current_user, :"update_#{issuable.to_ability_name}", issuable),
       canDestroy: can?(current_user, :"destroy_#{issuable.to_ability_name}", issuable),
       issuableRef: issuable.to_reference,
+      imported: issuable.imported?,
       markdownPreviewPath: preview_markdown_path(parent, target_type: issuable.model_name, target_id: issuable.iid),
       markdownDocsPath: help_page_path('user/markdown'),
       lockVersion: issuable.lock_version,

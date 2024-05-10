@@ -716,11 +716,14 @@ RSpec.describe API::Issues, feature_category: :team_planning do
     end
 
     it 'returns 404 if issue id not found' do
-      get api("/projects/#{project.id}/issues/54321", user)
+      get api("/projects/#{project.id}/issues/#{non_existing_record_id}", user)
       expect(response).to have_gitlab_http_status(:not_found)
     end
 
     it 'returns 404 if the issue ID is used' do
+      # Make sure other issues don't exist with a matching iid
+      Issue.where.not(id: issue.id).delete_all
+
       get api("/projects/#{project.id}/issues/#{issue.id}", user)
 
       expect(response).to have_gitlab_http_status(:not_found)

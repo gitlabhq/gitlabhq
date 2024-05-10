@@ -6,6 +6,7 @@ module Mutations
       class Create < BaseMutation
         graphql_name 'IntegrationExclusionCreate'
         include ResolvesIds
+        MAX_PROJECT_IDS = 100
 
         field :exclusions, [::Types::Integrations::ExclusionType],
           null: true,
@@ -19,14 +20,18 @@ module Mutations
         argument :project_ids,
           [::Types::GlobalIDType[::Project]],
           required: true,
-          description: 'Ids of projects to exclude.'
+          description: "IDs of projects to exclude up to a maximum of #{MAX_PROJECT_IDS}."
 
         authorize :admin_all_resources
 
         def resolve(integration_name:, project_ids:)
           authorize!(:global)
 
-          projects = Project.id_in(resolve_ids(project_ids))
+          if project_ids.length > MAX_PROJECT_IDS
+            raise Gitlab::Graphql::Errors::ArgumentError, "Count of projectIds should be less than #{MAX_PROJECT_IDS}"
+          end
+
+          projects = Project.id_in(resolve_ids(project_ids)).limit(MAX_PROJECT_IDS)
 
           result = ::Integrations::Exclusions::CreateService.new(
             current_user: current_user,

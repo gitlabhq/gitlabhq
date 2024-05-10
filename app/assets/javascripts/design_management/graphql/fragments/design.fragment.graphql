@@ -6,6 +6,7 @@
 fragment DesignItem on Design {
   ...DesignListItem
   fullPath
+  imported
   diffRefs {
     ...DesignDiffRefs
   }
