@@ -10,12 +10,7 @@ module Gitlab
 
           def parse!(xml_data, test_report, job:)
             test_suite = test_report.get_suite(job.test_suite_name)
-            root = if Feature.enabled?(:allow_nokogiri_parse_huge_xml, job.project)
-                     XmlConverter.new(xml_data).to_h
-                   else
-                     Hash.from_xml(xml_data)
-                   end
-
+            root = XmlConverter.new(xml_data).to_h
             total_parsed = 0
             max_test_cases = job.max_test_cases_per_report
 

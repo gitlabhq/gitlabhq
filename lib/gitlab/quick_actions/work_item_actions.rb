@@ -153,7 +153,7 @@ module Gitlab
           promote_to: _("Promoted successfully."),
           set_parent: _('Parent set successfully'),
           remove_parent: _('Parent removed successfully'),
-          add_child: _('Child item(s) added successfully'),
+          add_child: _('Child items added successfully'),
           remove_child: _('Child item removed successfully')
         }
       end

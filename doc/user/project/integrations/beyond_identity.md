@@ -60,7 +60,7 @@ To skip the push check for [service accounts](../../profile/service_accounts.md)
 
 ## Exclude projects from the Beyond Identity check
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/454372) in GitLab 17.0 [with a flag](../../../administration/feature_flags.md) named `beyond_identity_exclusions`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/454372) in GitLab 17.0 [with a flag](../../../administration/feature_flags.md) named `beyond_identity_exclusions`. Enabled by default.
 
 FLAG:
 The availability of this feature is controlled by a feature flag.

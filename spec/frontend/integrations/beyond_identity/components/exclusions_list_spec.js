@@ -216,7 +216,7 @@ describe('ExclusionsList component', () => {
 
       it('calls a GraphQL mutation to remove the exclusion', () => {
         expect(deleteMutationMock).toHaveBeenCalledWith({
-          input: { integrationName: 'BEYOND_IDENTITY', projectId: 'gid://gitlab/Project/2' },
+          input: { integrationName: 'BEYOND_IDENTITY', projectIds: ['gid://gitlab/Project/2'] },
         });
       });
 

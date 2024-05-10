@@ -1,7 +1,8 @@
 mutation integrationExclusionDelete($input: IntegrationExclusionDeleteInput!) {
   integrationExclusionDelete(input: $input) {
-    exclusion {
+    exclusions {
       project {
+        id
         name
       }
     }

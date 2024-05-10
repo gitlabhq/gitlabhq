@@ -18,7 +18,11 @@
   -# Those are used throughout the actual views. These `shared` views are then
   -# reused in EE.
   = render "projects/settings/repository/protected_branches", protected_branch_entity: @project
+
+- if current_user.can?(:manage_deploy_tokens, @project)
   = render "shared/deploy_tokens/index", group_or_project: @project, description: deploy_token_description
+
+- if can?(current_user, :admin_project, @project)
   = render 'shared/deploy_keys/index'
   = render "projects/maintenance/show"
 

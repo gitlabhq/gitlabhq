@@ -22,7 +22,9 @@ class Gitlab::Seeder::Packages
         .with_indifferent_access
 
       Gitlab::ExclusiveLease.skipping_transaction_check do
-        ::Packages::Npm::CreatePackageService.new(project, project.creator, params).execute
+        Sidekiq::Worker.skipping_transaction_check do
+          ::Packages::Npm::CreatePackageService.new(project, project.creator, params).execute
+        end
       end
 
       print '.'

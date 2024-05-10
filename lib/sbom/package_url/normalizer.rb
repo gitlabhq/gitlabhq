@@ -27,7 +27,7 @@ module Sbom
 
       def normalize
         case type
-        when 'bitbucket', 'github'
+        when 'bitbucket', 'github', 'golang'
           downcase
         when 'pypi'
           normalize_pypi

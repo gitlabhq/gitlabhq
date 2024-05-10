@@ -24557,8 +24557,6 @@ CREATE INDEX index_board_group_recent_visits_on_group_id ON board_group_recent_v
 
 CREATE UNIQUE INDEX index_board_group_recent_visits_on_user_group_and_board ON board_group_recent_visits USING btree (user_id, group_id, board_id);
 
-CREATE INDEX index_board_group_recent_visits_on_user_id ON board_group_recent_visits USING btree (user_id);
-
 CREATE UNIQUE INDEX index_board_labels_on_board_id_and_label_id ON board_labels USING btree (board_id, label_id);
 
 CREATE INDEX index_board_labels_on_label_id ON board_labels USING btree (label_id);

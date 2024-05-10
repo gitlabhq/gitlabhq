@@ -31,6 +31,9 @@
     "archive_project": {
       "type": "boolean"
     },
+    "manage_deploy_tokens": {
+      "type": "boolean"
+    },
     "manage_group_access_tokens": {
       "type": "boolean"
     },

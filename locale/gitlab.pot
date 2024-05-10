@@ -3077,10 +3077,10 @@ msgstr ""
 msgid "Add commit messages as comments to Pivotal Tracker stories. %{docs_link}"
 msgstr ""
 
-msgid "Add customer relation contact(s)."
+msgid "Add customer relation contacts"
 msgstr ""
 
-msgid "Add customer relation contacts"
+msgid "Add customer relation contacts."
 msgstr ""
 
 msgid "Add deploy freeze"
@@ -3089,7 +3089,7 @@ msgstr ""
 msgid "Add deploy keys to grant read/write access to this repository. %{link_start}What are deploy keys?%{link_end}"
 msgstr ""
 
-msgid "Add email participant(s) that don't have a GitLab account."
+msgid "Add email participants that don't have a GitLab account."
 msgstr ""
 
 msgid "Add environment"
@@ -3347,7 +3347,7 @@ msgstr ""
 msgid "Adds an issue to an epic."
 msgstr ""
 
-msgid "Adds email participant(s) that don't have a GitLab account."
+msgid "Adds email participants that don't have a GitLab account."
 msgstr ""
 
 msgid "Adds this %{issuable_type} as related to the %{issuable_type} it was created from"
@@ -10775,7 +10775,7 @@ msgstr ""
 msgid "Child item removed successfully"
 msgstr ""
 
-msgid "Child item(s) added successfully"
+msgid "Child items added successfully"
 msgstr ""
 
 msgid "Chinese language support using"
@@ -42855,10 +42855,10 @@ msgstr ""
 msgid "Remove child epic from an epic"
 msgstr ""
 
-msgid "Remove customer relation contact(s)."
+msgid "Remove customer relation contacts"
 msgstr ""
 
-msgid "Remove customer relation contacts"
+msgid "Remove customer relation contacts."
 msgstr ""
 
 msgid "Remove deploy key"
@@ -42870,7 +42870,7 @@ msgstr ""
 msgid "Remove due date"
 msgstr ""
 
-msgid "Remove email participant(s)"
+msgid "Remove email participants"
 msgstr ""
 
 msgid "Remove epic reference"
@@ -43056,7 +43056,7 @@ msgstr ""
 msgid "Removes an issue from an epic."
 msgstr ""
 
-msgid "Removes email participant(s)."
+msgid "Removes email participants."
 msgstr ""
 
 msgid "Removes link with %{issue_ref}."

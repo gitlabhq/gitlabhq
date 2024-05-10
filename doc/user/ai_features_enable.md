@@ -149,4 +149,4 @@ To turn on Beta and Experimental GitLab Duo features, use the [Experiment and Be
 
 ### On self-managed
 
-To turn on Beta and Experimental GitLab Duo features for GitLab versions where GitLab Duo Chat is not yet generally available, see the [GitLab Duo Chat documentation](gitlab_duo_chat.md#for-self-managed).
+To enable Beta and Experimental GitLab Duo features for GitLab versions where GitLab Duo Chat is not yet generally available, see the [GitLab Duo Chat documentation](gitlab_duo_chat_enable.md#for-self-managed).

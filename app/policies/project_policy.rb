@@ -605,6 +605,7 @@ class ProjectPolicy < BasePolicy
     enable :read_import_error
     enable :admin_cicd_variables
     enable :admin_push_rules
+    enable :manage_deploy_tokens
   end
 
   rule { can?(:admin_build) }.enable :manage_trigger

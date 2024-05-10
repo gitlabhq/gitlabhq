@@ -3343,7 +3343,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
         it '/add_contacts is available' do
           _, explanations = service.explain(add_contacts, issue)
 
-          expect(explanations).to contain_exactly("Add customer relation contact(s).")
+          expect(explanations).to contain_exactly("Add customer relation contacts.")
         end
 
         context 'when issue has no contacts' do
@@ -3360,7 +3360,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
           it '/remove_contacts is available' do
             _, explanations = service.explain(remove_contacts, issue)
 
-            expect(explanations).to contain_exactly("Remove customer relation contact(s).")
+            expect(explanations).to contain_exactly("Remove customer relation contacts.")
           end
         end
       end

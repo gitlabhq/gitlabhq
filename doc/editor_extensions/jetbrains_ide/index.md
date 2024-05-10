@@ -23,6 +23,43 @@ Download the extension from the [JetBrains Plugin Marketplace](https://plugins.j
 
 Instructions for getting started can be found in the project README under [setup](https://gitlab.com/gitlab-org/editor-extensions/gitlab-jetbrains-plugin#setup).
 
+### Integrate with 1Password CLI
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+
+> - [Introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-jetbrains-plugin/-/issues/291) in GitLab Duo 2.1 for GitLab 16.11 and later.
+
+You can configure the editor extension to use 1Password secret references for authentication, instead of hard-coding personal access tokens.
+
+Prerequisites:
+
+- You have the [1Password](https://1password.com) desktop app installed.
+- You have the [1Password CLI](https://developer.1password.com/docs/cli/get-started) tool installed.
+
+To integrate GitLab for JetBrains with the 1Password CLI:
+
+1. Authenticate with GitLab. Either:
+   - [Install the `glab`](../gitlab_cli/index.md#install-the-cli) CLI and
+     configure the [1Password shell plugin](https://developer.1password.com/docs/cli/shell-plugins/gitlab/).
+   - Follow the GitLab for JetBrains
+     [steps](https://gitlab.com/gitlab-org/editor-extensions/gitlab-jetbrains-plugin#setup).
+1. Open the 1Password item.
+1. [Copy the secret reference](https://developer.1password.com/docs/cli/secret-references/#step-1-copy-secret-references).
+
+   If you use the `gitlab` 1Password shell plugin, the token is stored as a password under `"op://Private/GitLab Personal Access Token/token"`.
+
+From the IDE:
+
+1. On the top bar, select **Settings**.
+1. On the left sidebar, select **Tools > GitLab Duo**.
+1. Under **Advanced**:
+   1. Select **Integrate with 1Password CLI**.
+   1. Optional. For **Secret reference**, paste the secret reference you copied from 1Password.
+1. Optional. To verify your credentials, select **Verify setup**.
+1. Select **OK**.
+
 ## Report issues with the extension
 
 Report any issues, bugs, or feature requests in the

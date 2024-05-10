@@ -397,8 +397,8 @@ You can check if a variable is defined but empty. For example:
 - `if: $VARIABLE == ""`
 - `if: $VARIABLE != ""`
 
-You can check for the existence of a variable by using just the variable name in
-the expression. The variable must not be empty. For example:
+You can check if a variable is both defined and not empty by using just the variable name in
+the expression. For example:
 
 - `if: $VARIABLE`
 

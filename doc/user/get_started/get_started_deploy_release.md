@@ -45,6 +45,7 @@ variables, and deployment settings.
 After you set up your environments, you can monitor them. While you
 primarily monitor your deployments in the location where you deployed them
 (for example, in AWS), GitLab also provides dashboards.
+You can monitor your live cluster state in the GitLab UI if you deploy to Kubernetes.
 
 You can also create temporary environments as part of merge requests.
 Team members can then review and test changes before committing changes to
@@ -54,6 +55,7 @@ For more information, see:
 
 - [Environments](../../ci/environments/index.md)
 - [Deploy to AWS](../../ci/cloud_deployment/index.md)
+- [Deploy to Kubernetes](../clusters/agent/index.md)
 - [Dashboard for Kubernetes](../../ci/environments/kubernetes_dashboard.md)
 - [Environments Dashboard](../../ci/environments/environments_dashboard.md)
 - [Operations Dashboard](../operations_dashboard/index.md)

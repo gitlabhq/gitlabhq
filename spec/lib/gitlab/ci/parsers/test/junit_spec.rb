@@ -523,24 +523,10 @@ RSpec.describe Gitlab::Ci::Parsers::Test::Junit do
       end
     end
 
-    it 'parses XML using XmlConverter instead of Hash.from_xml' do
+    it 'parses XML using XmlConverter' do
       expect(Gitlab::XmlConverter).to receive(:new).with(junit).once.and_call_original
-      expect(Hash).not_to receive(:from_xml)
 
       subject
-    end
-
-    context 'when feature flag `allow_nokogiri_parse_huge_xml` is disabled' do
-      before do
-        stub_feature_flags(allow_nokogiri_parse_huge_xml: false)
-      end
-
-      it 'parses XML using Hash.from_xml instead of XmlConverter' do
-        expect(Gitlab::XmlConverter).not_to receive(:new)
-        expect(Hash).to receive(:from_xml).with(junit).once.and_call_original
-
-        subject
-      end
     end
 
     context 'when XML is empty string' do

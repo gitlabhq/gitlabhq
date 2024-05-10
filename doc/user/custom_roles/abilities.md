@@ -29,6 +29,12 @@ These requirements are documented in the `Required permission` column in the fol
 |:-----|:------------|:------------------|:---------|:--------------|:---------|
 | [`admin_compliance_framework`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144183) |  | Create, read, update, and delete compliance frameworks. Users with this permission can also assign a compliance framework label to a project, and set the default framework of a group. | GitLab [17.0](https://gitlab.com/gitlab-org/gitlab/-/issues/411502) |  |  |
 
+## Continuous delivery
+
+| Name | Required permission | Description | Introduced in | Feature flag | Enabled in |
+|:-----|:------------|:------------------|:---------|:--------------|:---------|
+| [`manage_deploy_tokens`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151677) |  | Manage deploy tokens at the group or project level. | GitLab [17.0](https://gitlab.com/gitlab-org/gitlab/-/issues/448843) |  |  |
+
 ## Groups and projects
 
 | Name | Required permission | Description | Introduced in | Feature flag | Enabled in |

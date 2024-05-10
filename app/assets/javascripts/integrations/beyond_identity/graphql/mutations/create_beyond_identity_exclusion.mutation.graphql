@@ -1,11 +1,9 @@
 mutation integrationExclusionCreate($input: IntegrationExclusionCreateInput!) {
   integrationExclusionCreate(input: $input) {
     exclusions {
-      nodes {
-        project {
-          id
-          name
-        }
+      project {
+        id
+        name
       }
     }
     errors

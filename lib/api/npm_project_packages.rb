@@ -90,15 +90,10 @@ module API
 
           if service_response.error?
             render_structured_api_error!({ message: service_response.message, error: service_response.message }, error_reason_to_http_status(service_response.reason))
-          else
-            created_package = service_response[:package]
-            if ::Feature.disabled?(:upload_npm_packages_async, project)
-              enqueue_sync_metadata_cache_worker(project, created_package.name)
-            end
-
-            track_package_event('push_package', :npm, category: 'API::NpmPackages', project: project, namespace: project.namespace)
-            created_package
           end
+
+          track_package_event('push_package', :npm, category: 'API::NpmPackages', project: project, namespace: project.namespace)
+          service_response[:package]
         end
       end
 

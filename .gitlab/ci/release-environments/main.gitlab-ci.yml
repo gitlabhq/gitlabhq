@@ -37,7 +37,7 @@ release-environments-deploy-env:
   variables:
     DEPLOY_ENV: deploy.env
   script:
-    - ./scripts/release-environment/construct-release-environments-versions.rb
+    - ./scripts/release_environment/construct-release-environments-versions.rb
   artifacts:
     reports:
       dotenv: $DEPLOY_ENV

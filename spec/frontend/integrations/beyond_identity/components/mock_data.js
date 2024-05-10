@@ -35,16 +35,14 @@ export const fetchExclusionsResponse = {
 export const createExclusionMutationResponse = {
   data: {
     integrationExclusionCreate: {
-      exclusions: {
-        nodes: [
-          {
-            project: {
-              id: 'gid://gitlab/Project/97',
-              name: 'approval-rules-25096c16cef9687d',
-            },
+      exclusions: [
+        {
+          project: {
+            id: 'gid://gitlab/Project/97',
+            name: 'approval-rules-25096c16cef9687d',
           },
-        ],
-      },
+        },
+      ],
       errors: [],
     },
   },
@@ -53,8 +51,9 @@ export const createExclusionMutationResponse = {
 export const deleteExclusionMutationResponse = {
   data: {
     integrationExclusionDelete: {
-      exclusion: {
+      exclusions: {
         project: {
+          id: 'gid://gitlab/Project/97',
           name: 'approval-rules-25096c16cef9687d',
         },
       },

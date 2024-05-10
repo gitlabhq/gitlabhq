@@ -3,9 +3,6 @@
 alert_management_http_integrations:
   index_http_integrations_on_project_and_endpoint:
     - index_alert_management_http_integrations_on_project_id
-board_group_recent_visits:
-  index_board_group_recent_visits_on_user_group_and_board:
-    - index_board_group_recent_visits_on_user_id
 board_project_recent_visits:
   index_board_project_recent_visits_on_user_project_and_board:
     - index_board_project_recent_visits_on_user_id

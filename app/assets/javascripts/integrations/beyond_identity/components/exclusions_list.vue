@@ -139,7 +139,7 @@ export default {
         mutation: deleteExclusion,
         variables: {
           input: {
-            projectId: exclusionToRemove.id,
+            projectIds: [exclusionToRemove.id],
             integrationName: BEYOND_IDENTITY_INTEGRATION_NAME,
           },
         },

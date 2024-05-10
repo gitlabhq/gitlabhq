@@ -66,14 +66,6 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
         subject { super().payload.fetch(:package) }
 
         it { is_expected.to have_attributes status: 'processing' }
-
-        context 'when upload_npm_packages_async feature flag is disabled' do
-          before do
-            stub_feature_flags(upload_npm_packages_async: false)
-          end
-
-          it_behaves_like 'assigns status to package'
-        end
       end
 
       context 'when the npm metadatum creation results in a size error' do
@@ -443,18 +435,6 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
 
       it 'returns an unique key' do
         is_expected.to eq lease_key
-      end
-    end
-
-    context 'when upload_npm_packages_async feature flag is disabled' do
-      before do
-        stub_feature_flags(upload_npm_packages_async: false)
-      end
-
-      it 'does not enqueue a background job' do
-        expect(::Packages::Npm::ProcessPackageFileWorker).not_to receive(:perform_async)
-
-        execute_service
       end
     end
   end

@@ -221,8 +221,8 @@ module Gitlab
           @execution_message[:remove_zoom] = result.message
         end
 
-        desc { _("Add email participant(s) that don't have a GitLab account.") }
-        explanation { _("Adds email participant(s) that don't have a GitLab account.") }
+        desc { _("Add email participants that don't have a GitLab account.") }
+        explanation { _("Adds email participants that don't have a GitLab account.") }
         params 'email1@example.com email2@example.com (up to 6 emails)'
         types Issue
         condition do
@@ -240,8 +240,8 @@ module Gitlab
           @execution_message[:add_email] = response.message
         end
 
-        desc { _('Remove email participant(s)') }
-        explanation { _('Removes email participant(s).') }
+        desc { _('Remove email participants') }
+        explanation { _('Removes email participants.') }
         params 'email1@example.com email2@example.com (up to 6 emails)'
         types Issue
         condition do
@@ -293,7 +293,7 @@ module Gitlab
         end
 
         desc { _('Add customer relation contacts') }
-        explanation { _('Add customer relation contact(s).') }
+        explanation { _('Add customer relation contacts.') }
         params '[contact:contact@example.com] [contact:person@example.org]'
         types Issue
         condition do
@@ -308,7 +308,7 @@ module Gitlab
         end
 
         desc { _('Remove customer relation contacts') }
-        explanation { _('Remove customer relation contact(s).') }
+        explanation { _('Remove customer relation contacts.') }
         params '[contact:contact@example.com] [contact:person@example.org]'
         types Issue
         condition do
