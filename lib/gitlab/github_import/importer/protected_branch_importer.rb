@@ -161,11 +161,7 @@ module Gitlab
         end
 
         def default_branch_protection
-          if Feature.enabled?(:default_branch_protection_defaults, project)
-            Gitlab::Access::DefaultBranchProtection.new(project.namespace.default_branch_protection_settings)
-          else
-            Gitlab::Access::BranchProtection.new(project.namespace.default_branch_protection)
-          end
+          Gitlab::Access::DefaultBranchProtection.new(project.namespace.default_branch_protection_settings)
         end
 
         def protected_on_gitlab?

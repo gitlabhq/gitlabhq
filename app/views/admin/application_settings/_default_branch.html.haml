@@ -10,12 +10,8 @@
       %span.form-text.text-muted
         = (s_("AdminSettings|If not specified at the group or instance level, the default is %{default_initial_branch_name}. Does not affect existing repositories.") % { default_initial_branch_name: fallback_branch_name }).html_safe
 
-    -# rubocop: disable Gitlab/FeatureFlagWithoutActor -- This is instance-wide feature flag, no actor here
-    - if Feature.enabled?(:default_branch_protection_defaults)
       = render 'shared/default_branch_protection_defaults', f: f, field: :application_setting, value: @application_setting.default_branch_protection_defaults
-    - else
-      = render 'shared/default_branch_protection', f: f
-    -# rubocop: enable Gitlab/FeatureFlagWithoutActor
+
     = render_if_exists 'admin/application_settings/group_owners_can_manage_default_branch_protection_setting', form: f
 
   = f.submit _('Save changes'), pajamas_button: true

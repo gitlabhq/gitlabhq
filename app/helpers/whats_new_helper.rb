@@ -11,7 +11,7 @@ module WhatsNewHelper
 
   def display_whats_new?
     (Gitlab.org_or_com? || user_signed_in?) &&
-    !Gitlab::CurrentSettings.current_application_settings.whats_new_variant_disabled?
+      !Gitlab::CurrentSettings.current_application_settings.whats_new_variant_disabled?
   end
 
   def whats_new_variants

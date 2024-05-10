@@ -18,10 +18,7 @@
           %span.form-text.text-muted
             = (s_("GroupSettings|If not specified at the group or instance level, the default is %{default_initial_branch_name}. Does not affect existing repositories.") % { default_initial_branch_name: fallback_branch_name }).html_safe
 
-        - if Feature.enabled?(:default_branch_protection_defaults, @group)
           = render 'groups/settings/default_branch_protection_defaults', f: f, group: @group
-        - else
-          = render 'groups/settings/default_branch_protection', f: f, group: @group
 
         = f.hidden_field :redirect_target, value: "repository_settings"
         = f.submit _('Save changes'), pajamas_button: true

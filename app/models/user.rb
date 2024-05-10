@@ -1155,9 +1155,9 @@ class User < MainClusterwide::ApplicationRecord
 
   def two_factor_otp_enabled?
     otp_required_for_login? ||
-    forti_authenticator_enabled?(self) ||
-    forti_token_cloud_enabled?(self) ||
-    duo_auth_enabled?(self)
+      forti_authenticator_enabled?(self) ||
+      forti_token_cloud_enabled?(self) ||
+      duo_auth_enabled?(self)
   end
 
   def two_factor_webauthn_enabled?
@@ -1676,7 +1676,7 @@ class User < MainClusterwide::ApplicationRecord
 
     # handle the outdated private commit email case
     return true if persisted? &&
-        id == Gitlab::PrivateCommitEmail.user_id_for_email(downcased)
+      id == Gitlab::PrivateCommitEmail.user_id_for_email(downcased)
 
     all_emails.include?(check_email.downcase)
   end
@@ -1686,7 +1686,7 @@ class User < MainClusterwide::ApplicationRecord
 
     # handle the outdated private commit email case
     return true if persisted? &&
-        id == Gitlab::PrivateCommitEmail.user_id_for_email(downcased)
+      id == Gitlab::PrivateCommitEmail.user_id_for_email(downcased)
 
     verified_emails.include?(check_email.downcase)
   end

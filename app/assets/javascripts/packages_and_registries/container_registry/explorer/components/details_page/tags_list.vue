@@ -10,6 +10,7 @@ import PersistedPagination from '~/packages_and_registries/shared/components/per
 import PersistedSearch from '~/packages_and_registries/shared/components/persisted_search.vue';
 import TagsLoader from '~/packages_and_registries/shared/components/tags_loader.vue';
 import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   ALERT_SUCCESS_TAG,
   ALERT_DANGER_TAG,
@@ -42,7 +43,7 @@ export default {
     PersistedPagination,
     PersistedSearch,
   },
-  mixins: [Tracking.mixin()],
+  mixins: [Tracking.mixin(), glFeatureFlagsMixin()],
   inject: ['config'],
   props: {
     id: {
@@ -114,6 +115,7 @@ export default {
         first: GRAPHQL_PAGE_SIZE,
         name: this.filters?.name,
         sort: this.sort,
+        referrers: this.glFeatures.showContainerRegistryTagSignatures,
         ...this.pageParams,
       };
     },

@@ -120,58 +120,26 @@ RSpec.describe Gitlab::GithubImport::Importer::ProtectedBranchImporter, feature_
       context 'when "allow force pushes - everyone" rule is enabled' do
         let(:allow_force_pushes_on_github) { true }
 
-        context 'when feature flag `default_branch_protection_defaults` is disabled' do
+        context 'when default branch protection is applied' do
           before do
-            stub_feature_flags(default_branch_protection_defaults: false)
+            stub_application_setting(default_branch_protection_defaults:
+                                       Gitlab::Access::BranchProtection.protected_fully)
           end
 
-          context 'when default branch protection is applied' do
-            before do
-              stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_FULL)
-            end
+          let(:expected_allow_force_push) { false }
 
-            let(:expected_allow_force_push) { false }
-
-            it_behaves_like 'create branch protection by the strictest ruleset'
-          end
-
-          context 'when there is no default branch protection' do
-            before do
-              stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_NONE)
-            end
-
-            let(:expected_allow_force_push) { allow_force_pushes_on_github }
-
-            it_behaves_like 'create branch protection by the strictest ruleset'
-          end
+          it_behaves_like 'create branch protection by the strictest ruleset'
         end
 
-        context 'when feature flag `default_branch_protection_defaults` is enabled' do
+        context 'when there is no default branch protection' do
           before do
-            stub_feature_flags(default_branch_protection_defaults: true)
+            stub_application_setting(default_branch_protection_defaults:
+                                       Gitlab::Access::BranchProtection.protection_none)
           end
 
-          context 'when default branch protection is applied' do
-            before do
-              stub_application_setting(default_branch_protection_defaults:
-                                         Gitlab::Access::BranchProtection.protected_fully)
-            end
+          let(:expected_allow_force_push) { allow_force_pushes_on_github }
 
-            let(:expected_allow_force_push) { false }
-
-            it_behaves_like 'create branch protection by the strictest ruleset'
-          end
-
-          context 'when there is no default branch protection' do
-            before do
-              stub_application_setting(default_branch_protection_defaults:
-                                         Gitlab::Access::BranchProtection.protection_none)
-            end
-
-            let(:expected_allow_force_push) { allow_force_pushes_on_github }
-
-            it_behaves_like 'create branch protection by the strictest ruleset'
-          end
+          it_behaves_like 'create branch protection by the strictest ruleset'
         end
       end
 
@@ -359,62 +327,28 @@ RSpec.describe Gitlab::GithubImport::Importer::ProtectedBranchImporter, feature_
           allow(project).to receive(:default_branch).and_return(branch_name)
         end
 
-        context 'when feature flag `default_branch_protection_defaults` is disabled' do
+        context 'when default branch protection is partially protected' do
           before do
-            stub_feature_flags(default_branch_protection_defaults: false)
+            stub_application_setting(default_branch_protection_defaults:
+                                       Gitlab::Access::BranchProtection.protection_partial)
           end
 
-          context 'when default branch protection = Gitlab::Access::PROTECTION_DEV_CAN_PUSH' do
-            before do
-              stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_DEV_CAN_PUSH)
-            end
+          let(:expected_push_access_level) { Gitlab::Access::DEVELOPER }
+          let(:expected_merge_access_level) { Gitlab::Access::MAINTAINER }
 
-            let(:expected_push_access_level) { Gitlab::Access::DEVELOPER }
-            let(:expected_merge_access_level) { Gitlab::Access::MAINTAINER }
-
-            it_behaves_like 'create branch protection by the strictest ruleset'
-          end
-
-          context 'when default branch protection = Gitlab::Access::PROTECTION_DEV_CAN_MERGE' do
-            before do
-              stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_DEV_CAN_MERGE)
-            end
-
-            let(:expected_push_access_level) { Gitlab::Access::MAINTAINER }
-            let(:expected_merge_access_level) { Gitlab::Access::DEVELOPER }
-
-            it_behaves_like 'create branch protection by the strictest ruleset'
-          end
+          it_behaves_like 'create branch protection by the strictest ruleset'
         end
 
-        context 'when feature flag `default_branch_protection_defaults` is enabled' do
+        context 'when default branch protection is protected against developer pushes' do
           before do
-            stub_feature_flags(default_branch_protection_defaults: true)
+            stub_application_setting(default_branch_protection_defaults:
+                                       Gitlab::Access::BranchProtection.protected_against_developer_pushes)
           end
 
-          context 'when default branch protection is partially protected' do
-            before do
-              stub_application_setting(default_branch_protection_defaults:
-                                         Gitlab::Access::BranchProtection.protection_partial)
-            end
+          let(:expected_push_access_level) { Gitlab::Access::MAINTAINER }
+          let(:expected_merge_access_level) { Gitlab::Access::DEVELOPER }
 
-            let(:expected_push_access_level) { Gitlab::Access::DEVELOPER }
-            let(:expected_merge_access_level) { Gitlab::Access::MAINTAINER }
-
-            it_behaves_like 'create branch protection by the strictest ruleset'
-          end
-
-          context 'when default branch protection is protected against developer pushes' do
-            before do
-              stub_application_setting(default_branch_protection_defaults:
-                                         Gitlab::Access::BranchProtection.protected_against_developer_pushes)
-            end
-
-            let(:expected_push_access_level) { Gitlab::Access::MAINTAINER }
-            let(:expected_merge_access_level) { Gitlab::Access::DEVELOPER }
-
-            it_behaves_like 'create branch protection by the strictest ruleset'
-          end
+          it_behaves_like 'create branch protection by the strictest ruleset'
         end
       end
 

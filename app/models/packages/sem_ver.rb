@@ -21,11 +21,11 @@ class Packages::SemVer
 
   def ==(other)
     self.class == other.class &&
-    self.major == other.major &&
-    self.minor == other.minor &&
-    self.patch == other.patch &&
-    self.prerelease == other.prerelease &&
-    self.build == other.build
+      self.major == other.major &&
+      self.minor == other.minor &&
+      self.patch == other.patch &&
+      self.prerelease == other.prerelease &&
+      self.build == other.build
   end
 
   def to_s

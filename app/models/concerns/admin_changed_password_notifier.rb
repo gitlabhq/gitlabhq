@@ -53,6 +53,6 @@ module AdminChangedPasswordNotifier
 
   def send_admin_changed_your_password_notification?
     self.class.send_password_change_notification && saved_change_to_encrypted_password? &&
-    allow_admin_changed_your_password_notification
+      allow_admin_changed_your_password_notification
   end
 end

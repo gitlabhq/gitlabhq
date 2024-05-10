@@ -1587,7 +1587,7 @@ class Project < ApplicationRecord
     # present. Since the validation for that will fail, we can just return
     # early.
     return if !creator || creator.can_create_project? ||
-        namespace.kind == 'group'
+      namespace.kind == 'group'
 
     limit = creator.projects_limit
     error =
@@ -2914,27 +2914,15 @@ class Project < ApplicationRecord
   end
 
   def default_branch_protected?
-    if Feature.enabled?(:default_branch_protection_defaults, self)
-      branch_protection = Gitlab::Access::DefaultBranchProtection.new(self.namespace.default_branch_protection_settings)
+    branch_protection = Gitlab::Access::DefaultBranchProtection.new(self.namespace.default_branch_protection_settings)
 
-      return !branch_protection.developer_can_push?
-    end
-
-    branch_protection = Gitlab::Access::BranchProtection.new(self.namespace.default_branch_protection)
-
-    branch_protection.fully_protected? || branch_protection.developer_can_merge? || branch_protection.developer_can_initial_push?
+    !branch_protection.developer_can_push?
   end
 
   def initial_push_to_default_branch_allowed_for_developer?
-    if Feature.enabled?(:default_branch_protection_defaults, self)
-      branch_protection = Gitlab::Access::DefaultBranchProtection.new(self.namespace.default_branch_protection_settings)
+    branch_protection = Gitlab::Access::DefaultBranchProtection.new(self.namespace.default_branch_protection_settings)
 
-      return branch_protection.developer_can_push? || branch_protection.developer_can_initial_push?
-    end
-
-    branch_protection = Gitlab::Access::BranchProtection.new(self.namespace.default_branch_protection)
-
-    !branch_protection.any? || branch_protection.developer_can_push? || branch_protection.developer_can_initial_push?
+    branch_protection.developer_can_push? || branch_protection.developer_can_initial_push?
   end
 
   def environments_for_scope(scope)
@@ -3468,7 +3456,7 @@ class Project < ApplicationRecord
       Gitlab::GitalyClient.allow_n_plus_1_calls do
         merge_requests_allowing_collaboration(branch_name).any? do |merge_request|
           merge_request.author.can?(:push_code, self) &&
-          merge_request.can_be_merged_by?(user, skip_collaboration_check: true)
+            merge_request.can_be_merged_by?(user, skip_collaboration_check: true)
         end
       end
     end

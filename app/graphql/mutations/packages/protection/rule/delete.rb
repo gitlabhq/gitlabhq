@@ -22,11 +22,11 @@ module Mutations
             description: 'Packages protection rule that was deleted successfully.'
 
           def resolve(id:, **_kwargs)
-            if Feature.disabled?(:packages_protected_packages)
+            package_protection_rule = authorized_find!(id: id)
+
+            if Feature.disabled?(:packages_protected_packages, package_protection_rule.project)
               raise_resource_not_available_error!("'packages_protected_packages' feature flag is disabled")
             end
-
-            package_protection_rule = authorized_find!(id: id)
 
             response = ::Packages::Protection::DeleteRuleService.new(package_protection_rule,
               current_user: current_user).execute

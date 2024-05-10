@@ -10,13 +10,9 @@ module Projects
     def initialize(project)
       @project = project
 
-      @default_branch_protection = if Feature.enabled?(:default_branch_protection_defaults, project)
-                                     Gitlab::Access::DefaultBranchProtection.new(
-                                       project.namespace.default_branch_protection_settings
-                                     )
-                                   else
-                                     Gitlab::Access::BranchProtection.new(project.namespace.default_branch_protection)
-                                   end
+      @default_branch_protection = Gitlab::Access::DefaultBranchProtection.new(
+        project.namespace.default_branch_protection_settings
+      )
     end
 
     def execute
@@ -52,8 +48,6 @@ module Projects
     end
 
     def allow_force_push?
-      return false unless Feature.enabled?(:default_branch_protection_defaults, project)
-
       default_branch_protection.allow_force_push?
     end
 

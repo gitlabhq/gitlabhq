@@ -19,26 +19,9 @@ RSpec.describe 'groups/settings/repository/_default_branch', feature_category: :
       allow(group).to receive(:default_branch_protection).and_return({})
     end
 
-    context 'when feature flag default_branch_protection_defaults is enabled' do
-      before do
-        stub_feature_flags(default_branch_protection_defaults: true)
-      end
-
-      it 'renders default branch protection defaults correctly' do
-        render
-        expect(rendered).to render_template(partial: 'groups/settings/_default_branch_protection_defaults')
-      end
-    end
-
-    context 'when feature flag default_branch_protection_defaults is disabled' do
-      before do
-        stub_feature_flags(default_branch_protection_defaults: false)
-      end
-
-      it 'renders default branch protection settings correctly' do
-        render
-        expect(rendered).to render_template(partial: 'groups/settings/_default_branch_protection')
-      end
+    it 'renders default branch protection defaults correctly' do
+      render
+      expect(rendered).to render_template(partial: 'groups/settings/_default_branch_protection_defaults')
     end
   end
 end

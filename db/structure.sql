@@ -829,6 +829,22 @@ BEGIN
 END;
 $$;
 
+CREATE FUNCTION trigger_b4520c29ea74() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."project_id"
+  FROM "approval_project_rules"
+  WHERE "approval_project_rules"."id" = NEW."approval_project_rule_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_fb587b1ae7ad() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -4679,7 +4695,8 @@ ALTER SEQUENCE approval_group_rules_users_id_seq OWNED BY approval_group_rules_u
 CREATE TABLE approval_merge_request_rule_sources (
     id bigint NOT NULL,
     approval_merge_request_rule_id bigint NOT NULL,
-    approval_project_rule_id bigint NOT NULL
+    approval_project_rule_id bigint NOT NULL,
+    project_id bigint
 );
 
 CREATE SEQUENCE approval_merge_request_rule_sources_id_seq
@@ -24405,6 +24422,8 @@ CREATE UNIQUE INDEX index_approval_merge_request_rule_sources_1 ON approval_merg
 
 CREATE INDEX index_approval_merge_request_rule_sources_2 ON approval_merge_request_rule_sources USING btree (approval_project_rule_id);
 
+CREATE INDEX index_approval_merge_request_rule_sources_on_project_id ON approval_merge_request_rule_sources USING btree (project_id);
+
 CREATE UNIQUE INDEX index_approval_merge_request_rules_approved_approvers_1 ON approval_merge_request_rules_approved_approvers USING btree (approval_merge_request_rule_id, user_id);
 
 CREATE INDEX index_approval_merge_request_rules_approved_approvers_2 ON approval_merge_request_rules_approved_approvers USING btree (user_id);
@@ -24930,8 +24949,6 @@ CREATE INDEX index_ci_resources_on_build_id ON ci_resources USING btree (build_i
 CREATE INDEX index_ci_resources_on_partition_id_build_id ON ci_resources USING btree (partition_id, build_id);
 
 CREATE UNIQUE INDEX index_ci_resources_on_resource_group_id_and_build_id ON ci_resources USING btree (resource_group_id, build_id);
-
-CREATE INDEX index_ci_runner_machine_builds_on_runner_machine_id ON ONLY p_ci_runner_machine_builds USING btree (runner_machine_id);
 
 CREATE INDEX index_ci_runner_machines_on_contacted_at_desc_and_id_desc ON ci_runner_machines USING btree (contacted_at DESC, id DESC);
 
@@ -29781,6 +29798,8 @@ CREATE TRIGGER trigger_94514aeadc50 BEFORE INSERT OR UPDATE ON deployment_approv
 
 CREATE TRIGGER trigger_b2d852e1e2cb BEFORE INSERT OR UPDATE ON ci_pipelines FOR EACH ROW EXECUTE FUNCTION trigger_b2d852e1e2cb();
 
+CREATE TRIGGER trigger_b4520c29ea74 BEFORE INSERT OR UPDATE ON approval_merge_request_rule_sources FOR EACH ROW EXECUTE FUNCTION trigger_b4520c29ea74();
+
 CREATE TRIGGER trigger_catalog_resource_sync_event_on_project_update AFTER UPDATE ON projects FOR EACH ROW WHEN ((((old.name)::text IS DISTINCT FROM (new.name)::text) OR (old.description IS DISTINCT FROM new.description) OR (old.visibility_level IS DISTINCT FROM new.visibility_level))) EXECUTE FUNCTION insert_catalog_resource_sync_event();
 
 CREATE TRIGGER trigger_delete_project_namespace_on_project_delete AFTER DELETE ON projects FOR EACH ROW WHEN ((old.project_namespace_id IS NOT NULL)) EXECUTE FUNCTION delete_associated_project_namespace();
@@ -31018,6 +31037,9 @@ ALTER TABLE ONLY work_item_dates_sources
 
 ALTER TABLE ONLY abuse_report_events
     ADD CONSTRAINT fk_fdd4d610e0 FOREIGN KEY (abuse_report_id) REFERENCES abuse_reports(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY approval_merge_request_rule_sources
+    ADD CONSTRAINT fk_fea41830d0 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY project_import_data
     ADD CONSTRAINT fk_ffb9ee3a10 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

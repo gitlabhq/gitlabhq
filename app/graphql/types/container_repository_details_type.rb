@@ -43,7 +43,10 @@ module Types
     end
 
     def manifest(reference:)
-      handling_errors { object.image_manifest(reference) }
+      handling_errors do
+        manifest = object.image_manifest(reference)
+        manifest.as_json if manifest
+      end
     end
 
     private

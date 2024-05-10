@@ -77,9 +77,6 @@ ml_model_versions:
 ml_models:
   index_ml_models_on_project_id_and_name:
     - index_ml_models_on_project_id
-p_ci_runner_machine_builds:
-  index_p_ci_runner_machine_builds_on_runner_machine_id:
-    - index_ci_runner_machine_builds_on_runner_machine_id
 p_ci_stages:
   p_ci_stages_pipeline_id_name_partition_id_idx:
     - p_ci_stages_pipeline_id_idx

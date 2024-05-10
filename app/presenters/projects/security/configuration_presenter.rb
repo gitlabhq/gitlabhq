@@ -63,6 +63,14 @@ module Projects
         # These scans are "fake" (non job) entries. Add them manually.
         scans << scan(:corpus_management, configured: true)
         scans << scan(:dast_profiles, configured: true)
+
+        # Add pre-receive before secret detection
+        if dedicated_instance? || pre_receive_secret_detection_feature_flag_enabled?
+          secret_detection_index = scans.index { |scan| scan[:type] == :secret_detection } || -1
+          scans.insert(secret_detection_index, scan(:pre_receive_secret_detection, configured: true))
+        end
+
+        scans
       end
 
       def latest_pipeline_path
@@ -87,14 +95,7 @@ module Projects
       end
 
       def scan_types
-        job_types = ::Security::SecurityJobsFinder.allowed_job_types +
-          ::Security::LicenseComplianceJobsFinder.allowed_job_types
-
-        unless dedicated_instance? || pre_receive_secret_detection_feature_flag_enabled?
-          job_types.delete(:pre_receive_secret_detection)
-        end
-
-        job_types
+        ::Security::SecurityJobsFinder.allowed_job_types + ::Security::LicenseComplianceJobsFinder.allowed_job_types
       end
 
       def dedicated_instance?

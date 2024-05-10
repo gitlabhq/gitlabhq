@@ -12,6 +12,7 @@ RSpec.describe Projects::Security::ConfigurationPresenter, feature_category: :so
 
   before do
     stub_licensed_features(licensed_scan_types.index_with { true })
+    stub_licensed_features(pre_receive_secret_detection: true)
   end
 
   describe '#to_html_data_attribute' do

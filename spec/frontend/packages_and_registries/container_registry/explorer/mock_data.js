@@ -166,6 +166,7 @@ export const tagsMock = [
     createdAt: '2020-11-03T13:29:38+00:00',
     publishedAt: '2020-11-05T13:29:38+00:00',
     totalSize: '1099511627776',
+    referrers: null,
     userPermissions: {
       destroyContainerRepositoryTag: true,
     },
@@ -181,6 +182,7 @@ export const tagsMock = [
     createdAt: '2020-11-03T13:29:32+00:00',
     publishedAt: '2020-11-05T13:29:32+00:00',
     totalSize: '536870912000',
+    referrers: null,
     userPermissions: {
       destroyContainerRepositoryTag: true,
     },

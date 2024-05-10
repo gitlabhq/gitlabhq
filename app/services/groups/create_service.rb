@@ -79,12 +79,12 @@ module Groups
     end
 
     def add_creator
-      # The creator needs to be added this way because a database trigger automatically creates the
-      # namespace_details after the namespace is created. If we attempt to build the namespace details
+      # The creator needs to be added after the group is saved because a database trigger automatically creates the
+      # namespace_details after a namespace is created. If we attempt to build the namespace details
       # like we do with the namespace settings, the trigger will fire first and rails will subsequently try
       # to create the namespace_details which will result in an error due to a primary key conflict.
       #
-      # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82958
+      # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82958/diffs#diff-content-c02244956d423e6837379548e5f9b1fa093bb289
       @group.namespace_details.creator = current_user
       @group.namespace_details.save
     end

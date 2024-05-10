@@ -34,7 +34,7 @@ Get work done as a team.
 - [Tasks](../user/tasks.md)
 - [Requirements](../user/project/requirements/index.md)
 - [Time tracking](../user/project/time_tracking.md)
-- [Customer relations (CRM)](../user/crm/index.md)
+- [Customer relations management (CRM)](../user/crm/index.md)
   - [Contacts](../user/crm/index.md#contacts)
   - [Organizations](../user/crm/index.md#organizations)
 - [Wikis](../user/project/wiki/index.md)
