@@ -2,8 +2,6 @@
 
 module Users
   class ActivityService
-    LEASE_TIMEOUT = 1.minute.to_i
-
     def initialize(author:, namespace: nil, project: nil)
       @user = if author.respond_to?(:username)
                 author
@@ -31,13 +29,6 @@ module Users
 
       today = Date.today
       return if user.last_activity_on == today
-
-      if Feature.disabled?(:do_not_use_exclusive_lease_for_user_activity_service, user)
-        lease = Gitlab::ExclusiveLease.new("activity_service:#{user.id}", timeout: LEASE_TIMEOUT)
-        # Skip transaction checks for exclusive lease as it is breaking system specs.
-        # See issue: https://gitlab.com/gitlab-org/gitlab/-/issues/441536
-        return unless Gitlab::ExclusiveLease.skipping_transaction_check { lease.try_obtain }
-      end
 
       user.update_attribute(:last_activity_on, today)
 
