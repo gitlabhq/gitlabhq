@@ -1,6 +1,0 @@
----
-# Cop supports --autocorrect.
-Performance/StringInclude:
-  Details: grace period
-  Exclude:
-    - 'spec/support/helpers/query_recorder.rb'
