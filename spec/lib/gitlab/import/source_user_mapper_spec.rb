@@ -47,8 +47,8 @@ RSpec.describe Gitlab::Import::SourceUserMapper, feature_category: :importers do
         new_placeholder_user = User.where(user_type: :placeholder).last
 
         expect(new_placeholder_user.name).to eq("Placeholder #{source_name}")
-        expect(new_placeholder_user.username).to match(/^#{source_username}_placeholder_user_\d+$/)
-        expect(new_placeholder_user.email).to match(/^#{source_username}_placeholder_user_\d+@#{Settings.gitlab.host}$/)
+        expect(new_placeholder_user.username).to match(/^aprycontributor_placeholder_user_\d+$/)
+        expect(new_placeholder_user.email).to match(/^aprycontributor_placeholder_user_\d+@#{Settings.gitlab.host}$/)
       end
     end
 

@@ -29,8 +29,9 @@ module Gitlab
 
       def placeholder_name
         # Some APIs don't expose users' names, so set a default if it's nil
-        name = source_name || "#{import_type} Source User"
-        "Placeholder #{name}"
+        return "Placeholder #{import_type} Source User" unless source_name
+
+        "Placeholder #{source_name.slice(0, 127)}"
       end
 
       def placeholder_username
@@ -42,14 +43,21 @@ module Gitlab
 
       def placeholder_email
         email_pattern = "#{valid_source_username}_placeholder_user_%s@#{Settings.gitlab.host}"
-        lambda_for_unique_email = ->(email) { User.find_by_email(email) }
+        lambda_for_unique_email = ->(email) { User.find_by_email(email) || ::Email.find_by_email(email) }
         uniquify_string(email_pattern, lambda_for_unique_email)
       end
 
       def valid_source_username
-        return "#{import_type}_source_username" unless source_username
+        return fallback_username unless source_username
 
-        source_username.slice(0, User::MAX_USERNAME_LENGTH - 55)
+        sanitized_source_username = source_username.gsub(/[^A-Za-z0-9]/, '')
+        return fallback_username if sanitized_source_username.empty?
+
+        sanitized_source_username.slice(0, User::MAX_USERNAME_LENGTH - 55)
+      end
+
+      def fallback_username
+        "#{import_type}_source_username"
       end
 
       def uniquify_string(base_pattern, lambda_for_uniqueness)
