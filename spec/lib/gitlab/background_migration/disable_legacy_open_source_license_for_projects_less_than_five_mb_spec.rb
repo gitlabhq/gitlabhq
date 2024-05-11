@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::DisableLegacyOpenSourceLicenseForProjectsLessThanFiveMb,
   :migration,
-  schema: 20230616082958,
+  schema: 20230718020825,
   feature_category: :groups_and_projects do
   let(:namespaces_table) { table(:namespaces) }
   let(:projects_table) { table(:projects) }

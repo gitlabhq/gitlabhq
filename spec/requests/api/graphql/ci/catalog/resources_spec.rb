@@ -30,7 +30,8 @@ RSpec.describe 'Query.ciCatalogResources', feature_category: :pipeline_compositi
   end
 
   let_it_be(:resource1) do
-    create(:ci_catalog_resource, :published, project: project1, latest_released_at: '2023-01-01T00:00:00Z')
+    create(:ci_catalog_resource, :published, project: project1, latest_released_at: '2023-01-01T00:00:00Z',
+      last_30_day_usage_count: 15)
   end
 
   let_it_be(:public_resource) { create(:ci_catalog_resource, :published, project: public_project) }
@@ -50,6 +51,7 @@ RSpec.describe 'Query.ciCatalogResources', feature_category: :pipeline_compositi
             latestReleasedAt
             starCount
             starrersPath
+            last30DayUsageCount
           }
         }
       }
@@ -88,7 +90,8 @@ RSpec.describe 'Query.ciCatalogResources', feature_category: :pipeline_compositi
         starrersPath: Gitlab::Routing.url_helpers.project_starrers_path(project1),
         verificationLevel: 'UNVERIFIED',
         fullPath: project1.full_path,
-        webPath: "/#{project1.full_path}"
+        webPath: "/#{project1.full_path}",
+        last30DayUsageCount: resource1.last_30_day_usage_count
       ),
       a_graphql_entity_for(public_resource)
     )

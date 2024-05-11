@@ -11,13 +11,14 @@ Deployment is the step of the software delivery process when your
 application gets deployed to its final, target infrastructure.
 
 You can deploy your application internally or to the public.
-Preview a release in a Review App, and use feature flags to
+Preview a release in a review app, and use feature flags to
 release features incrementally.
 
+- [Getting started](../user/get_started/get_started_deploy_release.md)
+- [Packages and registries](../user/packages/index.md)
 - [Environments and deployments](../ci/environments/index.md)
 - [Releases](../user/project/releases/index.md)
-- [Packages and registries](../user/packages/index.md)
-- [Review apps](../ci/review_apps/index.md)
+- [Roll out an application incrementally](../ci/environments/incremental_rollouts.md)
 - [Feature flags](../operations/feature_flags.md)
 - [GitLab Pages](../user/project/pages/index.md)
 

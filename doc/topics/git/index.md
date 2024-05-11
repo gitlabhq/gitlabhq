@@ -112,7 +112,7 @@ your repository small:
 - [Administrator documentation](../../administration/lfs/index.md) for Git LFS at GitLab
 - Blog post: [Getting Started with Git LFS](https://about.gitlab.com/blog/2017/01/30/getting-started-with-git-lfs-tutorial/)
 - [Migrate an existing Git repository](lfs/index.md#migrate-an-existing-repository-to-git-lfs) to Git LFS
-- [Remove objects](lfs/index.md#removing-objects-from-lfs) from Git LFS
+- [Stop tracking a file](lfs/index.md#stop-tracking-a-file-with-git-lfs) with Git LFS
 - Blog post: [Towards a production-quality open source Git LFS server](https://about.gitlab.com/blog/2015/08/13/towards-a-production-quality-open-source-git-lfs-server/)
 
 ## Related topics

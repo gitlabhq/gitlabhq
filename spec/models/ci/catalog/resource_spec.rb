@@ -10,11 +10,13 @@ RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
   let_it_be(:project_c) { create(:project, name: 'C', description: 'B', star_count: 30) }
 
   let_it_be_with_reload(:resource_a) do
-    create(:ci_catalog_resource, project: project_a, latest_released_at: '2023-02-01T00:00:00Z')
+    create(:ci_catalog_resource, project: project_a, latest_released_at: '2023-02-01T00:00:00Z',
+      last_30_day_usage_count: 150)
   end
 
   let_it_be(:resource_b) do
-    create(:ci_catalog_resource, project: project_b, latest_released_at: '2023-01-01T00:00:00Z')
+    create(:ci_catalog_resource, project: project_b, latest_released_at: '2023-01-01T00:00:00Z',
+      last_30_day_usage_count: 100)
   end
 
   let_it_be(:resource_c) { create(:ci_catalog_resource, project: project_c) }
@@ -141,6 +143,22 @@ RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
       ordered_resources = described_class.order_by_star_count(:asc)
 
       expect(ordered_resources).to eq([resource_b, resource_a, resource_c])
+    end
+  end
+
+  describe 'order_by_last_30_day_usage_count_desc' do
+    it 'returns catalog resources sorted by last 30-day usage count in descending order' do
+      ordered_resources = described_class.order_by_last_30_day_usage_count_desc
+
+      expect(ordered_resources).to eq([resource_a, resource_b, resource_c])
+    end
+  end
+
+  describe 'order_by_last_30_day_usage_count_asc' do
+    it 'returns catalog resources sorted by last 30-day usage count in ascending order' do
+      ordered_resources = described_class.order_by_last_30_day_usage_count_asc
+
+      expect(ordered_resources).to eq([resource_c, resource_b, resource_a])
     end
   end
 

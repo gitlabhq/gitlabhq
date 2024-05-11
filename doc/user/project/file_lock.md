@@ -77,7 +77,7 @@ you can skip this step. If you're unsure, re-installing it does no harm:
 git lfs install
 ```
 
-For more information, see [Using Git LFS](../../topics/git/lfs/index.md#using-git-lfs).
+For more information, see [Git Large File Storage (LFS)](../../topics/git/lfs/index.md).
 
 ### Configure Exclusive File Locks
 

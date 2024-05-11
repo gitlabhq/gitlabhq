@@ -388,7 +388,7 @@ RSpec.describe API::PypiPackages, feature_category: :package_registry do
       include_context 'setup auth headers'
 
       before do
-        params[:sha256_digest] = 'a' * 63 + '%'
+        params[:sha256_digest] = ('a' * 63) + '%'
         project.add_developer(user)
       end
 

@@ -2,14 +2,8 @@
 Migration/EnsureFactoryForTable:
   Details: grace period
   Exclude:
-    - 'db/migrate/20230616164309_create_subscription_user_add_on_assignments.rb'
-    - 'db/migrate/20230616200440_create_system_access_microsoft_application.rb'
-    - 'db/migrate/20230616214220_create_system_access_microsoft_graph_access_tokens.rb'
-    - 'db/migrate/20230622044119_create_merge_request_review_llm_summary.rb'
     - 'db/migrate/20230626211305_create_catalog_resource_versions.rb'
     - 'db/migrate/20230704233431_create_table_batched_git_ref_updates_deletions.rb'
-    - 'db/migrate/20230705092150_create_ml_models.rb'
-    - 'db/migrate/20230707090835_create_ml_model_versions.rb'
     - 'db/migrate/20230717142737_create_group_ssh_certificate.rb'
     - 'db/migrate/20230727084849_create_catalog_resource_components.rb'
     - 'db/migrate/20230821133549_create_packages_nuget_symbols.rb'

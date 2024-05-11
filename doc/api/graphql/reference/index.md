@@ -17154,6 +17154,7 @@ Represents the total number of issues and their weights for a particular day.
 | <a id="cicatalogresourcefullpath"></a>`fullPath` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 16.11. **Status**: Experiment. Full project path of the catalog resource. |
 | <a id="cicatalogresourceicon"></a>`icon` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 15.11. **Status**: Experiment. Icon for the catalog resource. |
 | <a id="cicatalogresourceid"></a>`id` **{warning-solid}** | [`ID!`](#id) | **Introduced** in GitLab 15.11. **Status**: Experiment. ID of the catalog resource. |
+| <a id="cicatalogresourcelast30dayusagecount"></a>`last30DayUsageCount` **{warning-solid}** | [`Int!`](#int) | **Introduced** in GitLab 17.0. **Status**: Experiment. Number of projects that used a component from this catalog resource in a pipeline, by using `include:component`, in the last 30 days. |
 | <a id="cicatalogresourcelatestreleasedat"></a>`latestReleasedAt` **{warning-solid}** | [`Time`](#time) | **Introduced** in GitLab 16.5. **Status**: Experiment. Release date of the catalog resource's latest version. |
 | <a id="cicatalogresourcename"></a>`name` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 15.11. **Status**: Experiment. Name of the catalog resource. |
 | <a id="cicatalogresourceopenissuescount"></a>`openIssuesCount` **{warning-solid}** | [`Int!`](#int) | **Introduced** in GitLab 16.3. **Status**: Experiment. Count of open issues that belong to the the catalog resource. |
@@ -32494,6 +32495,8 @@ Values for sorting catalog resources.
 | <a id="cicatalogresourcesortname_desc"></a>`NAME_DESC` | Name by descending order. |
 | <a id="cicatalogresourcesortstar_count_asc"></a>`STAR_COUNT_ASC` | Star count by ascending order. |
 | <a id="cicatalogresourcesortstar_count_desc"></a>`STAR_COUNT_DESC` | Star count by descending order. |
+| <a id="cicatalogresourcesortusage_count_asc"></a>`USAGE_COUNT_ASC` | Last 30-day usage count by ascending order. |
+| <a id="cicatalogresourcesortusage_count_desc"></a>`USAGE_COUNT_DESC` | Last 30-day usage count by descending order. |
 
 ### `CiCatalogResourceVerificationLevel`
 

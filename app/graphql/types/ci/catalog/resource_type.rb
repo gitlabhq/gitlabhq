@@ -57,6 +57,11 @@ module Types
           description: 'Relative path to the starrers page for the catalog resource project.',
           alpha: { milestone: '16.10' }
 
+        field :last_30_day_usage_count, GraphQL::Types::Int, null: false,
+          description: 'Number of projects that used a component from this catalog resource in a pipeline, by using ' \
+                       '`include:component`, in the last 30 days.',
+          alpha: { milestone: '17.0' }
+
         def open_issues_count
           BatchLoader::GraphQL.wrap(object.project.open_issues_count)
         end

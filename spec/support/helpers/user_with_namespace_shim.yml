@@ -764,7 +764,6 @@
 - spec/migrations/add_namespaces_emails_enabled_column_data_spec.rb
 - spec/migrations/add_okr_hierarchy_restrictions_spec.rb
 - spec/migrations/add_projects_emails_enabled_column_data_spec.rb
-- spec/migrations/cleanup_bigint_conversion_for_merge_request_metrics_for_self_hosts_spec.rb
 - spec/migrations/cleanup_vulnerability_state_transitions_with_same_from_state_to_state_spec.rb
 - spec/migrations/delete_migrate_shared_vulnerability_scanners_spec.rb
 - spec/migrations/ensure_commit_user_mentions_note_id_bigint_backfill_is_finished_for_gitlab_dot_com_spec.rb

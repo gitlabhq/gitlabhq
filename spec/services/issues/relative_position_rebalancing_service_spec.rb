@@ -146,7 +146,7 @@ RSpec.describe Issues::RelativePositionRebalancingService, :clean_gitlab_redis_s
         service.send(:preload_issue_ids)
         expect(service.send(:caching).get_cached_issue_ids(0, 300)).not_to be_empty
         # simulate we already rebalanced half the issues
-        index = clump_size * 3 / 2 + 1
+        index = (clump_size * 3 / 2) + 1
         service.send(:caching).cache_current_index(index)
       end
 

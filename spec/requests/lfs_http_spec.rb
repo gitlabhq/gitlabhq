@@ -882,7 +882,7 @@ RSpec.describe 'Git LFS API and storage', feature_category: :source_code_managem
                 where(:size, :sha256, :status) do
                   nil | nil | :ok # Test setup sanity check
                   0 | nil | :bad_request
-                  nil | 'a' * 64 | :bad_request
+                  nil | ('a' * 64) | :bad_request
                 end
 
                 with_them do

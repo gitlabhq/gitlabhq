@@ -24657,6 +24657,8 @@ CREATE UNIQUE INDEX index_catalog_resource_versions_on_release_id ON catalog_res
 
 CREATE INDEX index_catalog_resource_versions_on_resource_id_and_released_at ON catalog_resource_versions USING btree (catalog_resource_id, released_at);
 
+CREATE INDEX index_catalog_resources_on_last_30_day_usage_count ON catalog_resources USING btree (last_30_day_usage_count) WHERE (state = 1);
+
 CREATE UNIQUE INDEX index_catalog_resources_on_project_id ON catalog_resources USING btree (project_id);
 
 CREATE INDEX index_catalog_resources_on_search_vector ON catalog_resources USING gin (search_vector);

@@ -5,9 +5,9 @@ require_relative '../../../../tooling/lib/tooling/kubernetes_client'
 
 RSpec.describe Tooling::KubernetesClient do
   let(:instance)       { described_class.new }
-  let(:one_day_ago)    { Time.now - 3600 * 24 * 1 }
-  let(:two_days_ago)   { Time.now - 3600 * 24 * 2 }
-  let(:three_days_ago) { Time.now - 3600 * 24 * 3 }
+  let(:one_day_ago)    { Time.now - (3600 * 24 * 1) }
+  let(:two_days_ago)   { Time.now - (3600 * 24 * 2) }
+  let(:three_days_ago) { Time.now - (3600 * 24 * 3) }
 
   before do
     # Global mock to ensure that no kubectl commands are run by accident in a test.

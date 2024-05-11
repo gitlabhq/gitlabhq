@@ -22,7 +22,9 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
     )
   end
 
-  let_it_be_with_reload(:resource) { create(:ci_catalog_resource, :published, project: project) }
+  let_it_be_with_reload(:resource) do
+    create(:ci_catalog_resource, :published, project: project, last_30_day_usage_count: 15)
+  end
 
   let(:query) do
     <<~GQL
@@ -47,7 +49,8 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
           fullPath: project.full_path,
           webPath: "/#{project.full_path}",
           verificationLevel: "UNVERIFIED",
-          starCount: project.star_count
+          starCount: project.star_count,
+          last30DayUsageCount: resource.last_30_day_usage_count
         )
       )
     end

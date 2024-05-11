@@ -609,7 +609,7 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state,
 
       context 'with oversize response body' do
         let(:oversize_body) { 'a' * (described_class::RESPONSE_BODY_SIZE_LIMIT + 1) }
-        let(:stripped_body) { 'a' * (described_class::RESPONSE_BODY_SIZE_LIMIT - ellipsis.bytesize) + ellipsis }
+        let(:stripped_body) { ('a' * (described_class::RESPONSE_BODY_SIZE_LIMIT - ellipsis.bytesize)) + ellipsis }
 
         before do
           stub_full_request(project_hook.url, method: :post).to_return(status: 200, body: oversize_body)
@@ -663,7 +663,7 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state,
 
       context 'with oversize header' do
         let(:oversize_header) { 'a' * (described_class::RESPONSE_HEADERS_SIZE_LIMIT + 1) }
-        let(:stripped_header) { 'a' * (described_class::RESPONSE_HEADERS_SIZE_LIMIT - ellipsis.bytesize) + ellipsis }
+        let(:stripped_header) { ('a' * (described_class::RESPONSE_HEADERS_SIZE_LIMIT - ellipsis.bytesize)) + ellipsis }
         let(:response_headers) { { 'oversized-header' => oversize_header } }
         let(:expected_response_headers) { { 'Oversized-Header' => stripped_header } }
 

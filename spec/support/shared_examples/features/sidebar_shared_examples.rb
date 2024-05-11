@@ -184,7 +184,7 @@ RSpec.shared_examples 'issue boards sidebar' do
     context 'when limitedToHours instance option is turned on' do
       before do
         # 3600+3600*24 = 1d 1h or 25h
-        issue.timelogs.create!(time_spent: 3600 + 3600 * 24, user: user)
+        issue.timelogs.create!(time_spent: 3600 + (3600 * 24), user: user)
         stub_application_setting(time_tracking_limit_to_hours: true)
 
         refresh_and_click_first_card

@@ -4,9 +4,11 @@ module Ci
   module Catalog
     module Resources
       module Components
-        # This model is used to track when a project includes a component in a pipeline.
-        # The column `used_by_project_id` does not have an FK constraint because we want
-        # to preserve historical usage data.
+        # This model is used to track when a project includes a catalog component in
+        # a pipeline with the keyword `include:component`. Usage data is recorded
+        # during pipeline creation in Gitlab::Ci::Pipeline::Chain::ComponentUsage.
+        # The column `used_by_project_id` does not have an FK constraint because
+        # we want to preserve historical usage data.
         class Usage < ::ApplicationRecord
           include PartitionedTable
 

@@ -40,7 +40,7 @@ module DependencyProxyHelpers
         jwt['user_id'] = user_or_token.id if user_or_token.is_a?(User)
         jwt['personal_access_token'] = user_or_token.token if user_or_token.is_a?(PersonalAccessToken)
         jwt['deploy_token'] = user_or_token.token if user_or_token.is_a?(DeployToken)
-        jwt.expire_time = expire_time || jwt.issued_at + 1.minute
+        jwt.expire_time = expire_time || (jwt.issued_at + 1.minute)
       end
     end
   end

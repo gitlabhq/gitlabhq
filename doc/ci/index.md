@@ -33,9 +33,9 @@ For more information, see:
 
 - [Tutorial: Create your first `.gitlab-ci.yml` file](quick_start/index.md)
 - [The CI/CD YAML syntax reference](../ci/yaml/index.md), which lists all possible keywords
-- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [GitLab CI/CD demo](https://www.youtube-nocookie.com/embed/ljth1Q5oJoo)
-- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [GitLab CI/CD and the Web IDE](https://youtu.be/l5705U8s_nQ?t=369)
-- [Mastering continuous software development webcast](https://about.gitlab.com/webcast/mastering-ci-cd/)
+- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Continuous Integration overview](https://www.youtube-nocookie.com/embed/eyr5YnkWq_I)
+- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Continuous Delivery overview](https://www.youtube-nocookie.com/embed/M7rBDZYsx8U)
+- [Basics of CI blog](https://about.gitlab.com/blog/2020/12/10/basics-of-gitlab-ci-updated/)
 
 ## Step 2: Find or create runners
 
