@@ -25904,10 +25904,11 @@ Represents a package with pipelines in the Package Registry.
 | <a id="packageid"></a>`id` | [`PackagesPackageID!`](#packagespackageid) | ID of the package. |
 | <a id="packagemetadata"></a>`metadata` | [`PackageMetadata`](#packagemetadata) | Package metadata. |
 | <a id="packagename"></a>`name` | [`String!`](#string) | Name of the package. |
-| <a id="packagepackageprotectionruleexists"></a>`packageProtectionRuleExists` **{warning-solid}** | [`Boolean!`](#boolean) | **Introduced** in GitLab 16.11. **Status**: Experiment. Whether any matching package protection rule exists for this package. Available only when feature flag `packages_protected_packages` is enabled. |
+| <a id="packagepackageprotectionruleexists"></a>`packageProtectionRuleExists` **{warning-solid}** | [`Boolean!`](#boolean) | **Deprecated** in GitLab 17.0. Use `protectionRuleExists`. |
 | <a id="packagepackagetype"></a>`packageType` | [`PackageTypeEnum!`](#packagetypeenum) | Package type. |
 | <a id="packagepipelines"></a>`pipelines` | [`PipelineConnection`](#pipelineconnection) | Pipelines that built the package. Max page size 20. (see [Connections](#connections)) |
 | <a id="packageproject"></a>`project` | [`Project!`](#project) | Project where the package is stored. |
+| <a id="packageprotectionruleexists"></a>`protectionRuleExists` **{warning-solid}** | [`Boolean!`](#boolean) | **Introduced** in GitLab 17.0. **Status**: Experiment. Whether any matching package protection rule exists for this package. Available only when feature flag `packages_protected_packages` is enabled. |
 | <a id="packagestatus"></a>`status` | [`PackageStatus!`](#packagestatus) | Package status. |
 | <a id="packagestatusmessage"></a>`statusMessage` | [`String`](#string) | Status message. |
 | <a id="packagetags"></a>`tags` | [`PackageTagConnection`](#packagetagconnection) | Package tags. (see [Connections](#connections)) |
@@ -25928,9 +25929,10 @@ Represents a package in the Package Registry.
 | <a id="packagebaseid"></a>`id` | [`PackagesPackageID!`](#packagespackageid) | ID of the package. |
 | <a id="packagebasemetadata"></a>`metadata` | [`PackageMetadata`](#packagemetadata) | Package metadata. |
 | <a id="packagebasename"></a>`name` | [`String!`](#string) | Name of the package. |
-| <a id="packagebasepackageprotectionruleexists"></a>`packageProtectionRuleExists` **{warning-solid}** | [`Boolean!`](#boolean) | **Introduced** in GitLab 16.11. **Status**: Experiment. Whether any matching package protection rule exists for this package. Available only when feature flag `packages_protected_packages` is enabled. |
+| <a id="packagebasepackageprotectionruleexists"></a>`packageProtectionRuleExists` **{warning-solid}** | [`Boolean!`](#boolean) | **Deprecated** in GitLab 17.0. Use `protectionRuleExists`. |
 | <a id="packagebasepackagetype"></a>`packageType` | [`PackageTypeEnum!`](#packagetypeenum) | Package type. |
 | <a id="packagebaseproject"></a>`project` | [`Project!`](#project) | Project where the package is stored. |
+| <a id="packagebaseprotectionruleexists"></a>`protectionRuleExists` **{warning-solid}** | [`Boolean!`](#boolean) | **Introduced** in GitLab 17.0. **Status**: Experiment. Whether any matching package protection rule exists for this package. Available only when feature flag `packages_protected_packages` is enabled. |
 | <a id="packagebasestatus"></a>`status` | [`PackageStatus!`](#packagestatus) | Package status. |
 | <a id="packagebasestatusmessage"></a>`statusMessage` | [`String`](#string) | Status message. |
 | <a id="packagebasetags"></a>`tags` | [`PackageTagConnection`](#packagetagconnection) | Package tags. (see [Connections](#connections)) |
@@ -25998,10 +26000,11 @@ Represents a package details in the Package Registry.
 | <a id="packagedetailstypenpmurl"></a>`npmUrl` | [`String`](#string) | Url of the NPM project endpoint. |
 | <a id="packagedetailstypenugeturl"></a>`nugetUrl` | [`String`](#string) | Url of the Nuget project endpoint. |
 | <a id="packagedetailstypepackagefiles"></a>`packageFiles` | [`PackageFileConnection`](#packagefileconnection) | Package files. (see [Connections](#connections)) |
-| <a id="packagedetailstypepackageprotectionruleexists"></a>`packageProtectionRuleExists` **{warning-solid}** | [`Boolean!`](#boolean) | **Introduced** in GitLab 16.11. **Status**: Experiment. Whether any matching package protection rule exists for this package. Available only when feature flag `packages_protected_packages` is enabled. |
+| <a id="packagedetailstypepackageprotectionruleexists"></a>`packageProtectionRuleExists` **{warning-solid}** | [`Boolean!`](#boolean) | **Deprecated** in GitLab 17.0. Use `protectionRuleExists`. |
 | <a id="packagedetailstypepackagetype"></a>`packageType` | [`PackageTypeEnum!`](#packagetypeenum) | Package type. |
 | <a id="packagedetailstypepipelines"></a>`pipelines` | [`PipelineConnection`](#pipelineconnection) | Pipelines that built the package. Max page size 20. (see [Connections](#connections)) |
 | <a id="packagedetailstypeproject"></a>`project` | [`Project!`](#project) | Project where the package is stored. |
+| <a id="packagedetailstypeprotectionruleexists"></a>`protectionRuleExists` **{warning-solid}** | [`Boolean!`](#boolean) | **Introduced** in GitLab 17.0. **Status**: Experiment. Whether any matching package protection rule exists for this package. Available only when feature flag `packages_protected_packages` is enabled. |
 | <a id="packagedetailstypepublicpackage"></a>`publicPackage` | [`Boolean`](#boolean) | Indicates if there is public access to the package. |
 | <a id="packagedetailstypepypisetupurl"></a>`pypiSetupUrl` | [`String`](#string) | Url of the PyPi project setup endpoint. |
 | <a id="packagedetailstypepypiurl"></a>`pypiUrl` | [`String`](#string) | Url of the PyPi project endpoint. |
@@ -30987,6 +30990,34 @@ Represents a recorded measurement (object count) for the requested group.
 | <a id="valuestreamstagestarteventidentifier"></a>`startEventIdentifier` | [`ValueStreamStageEvent!`](#valuestreamstageevent) | Start event identifier. |
 | <a id="valuestreamstagestarteventlabel"></a>`startEventLabel` | [`Label`](#label) | Label associated with start event. |
 
+#### Fields with arguments
+
+##### `ValueStreamStage.metrics`
+
+Aggregated metrics for the given stage.
+
+Returns [`ValueStreamStageMetrics!`](#valuestreamstagemetrics).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="valuestreamstagemetricsassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of users assigned to the issue or the merge request. |
+| <a id="valuestreamstagemetricsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author of the issue or the merge request. |
+| <a id="valuestreamstagemetricslabelnames"></a>`labelNames` | [`[String!]`](#string) | Labels applied to the issue or the merge request. |
+| <a id="valuestreamstagemetricsmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Milestone applied to the issue or the merge request. |
+| <a id="valuestreamstagemetricstimeframe"></a>`timeframe` | [`Timeframe!`](#timeframe) | Aggregation timeframe. Filters the issue or the merge request creation time for FOSS projects, and the end event timestamp for licensed projects or groups. |
+
+### `ValueStreamStageMetrics`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="valuestreamstagemetricsaverage"></a>`average` | [`ValueStreamAnalyticsMetric`](#valuestreamanalyticsmetric) | Average duration in seconds. |
+| <a id="valuestreamstagemetricscount"></a>`count` | [`ValueStreamAnalyticsMetric`](#valuestreamanalyticsmetric) | Limited item count. The backend counts maximum 1000 items, for free projects, and maximum 10,000 items for licensed projects or licensed groups. |
+| <a id="valuestreamstagemetricsmedian"></a>`median` | [`ValueStreamAnalyticsMetric`](#valuestreamanalyticsmetric) | Median duration in seconds. |
+
 ### `VulnerabilitiesCountByDay`
 
 Represents the count of vulnerabilities by severity on a particular day. This data is retained for 365 days.
@@ -33834,7 +33865,7 @@ Member role permission.
 | <a id="memberrolepermissionmanage_group_access_tokens"></a>`MANAGE_GROUP_ACCESS_TOKENS` | Create, read, update, and delete group access tokens. When creating a token, users with this custom permission must select a role for that token that has the same or fewer permissions as the default role used as the base for the custom role. |
 | <a id="memberrolepermissionmanage_project_access_tokens"></a>`MANAGE_PROJECT_ACCESS_TOKENS` | Create, read, update, and delete project access tokens. When creating a token, users with this custom permission must select a role for that token that has the same or fewer permissions as the default role used as the base for the custom role. |
 | <a id="memberrolepermissionmanage_security_policy_link"></a>`MANAGE_SECURITY_POLICY_LINK` | Allows linking security policy projects. |
-| <a id="memberrolepermissionread_code"></a>`READ_CODE` | Allows read-only access to the source code. |
+| <a id="memberrolepermissionread_code"></a>`READ_CODE` | Allows read-only access to the source code in the user interface. Does not allow users to edit or download files, clone or pull repositories, view source code in an IDE, or view merge requests for private projects. |
 | <a id="memberrolepermissionread_dependency"></a>`READ_DEPENDENCY` | Allows read-only access to the dependencies and licenses. |
 | <a id="memberrolepermissionread_vulnerability"></a>`READ_VULNERABILITY` | Read vulnerability reports and security dashboards. |
 | <a id="memberrolepermissionremove_group"></a>`REMOVE_GROUP` | Ability to delete or restore a group. This ability does not allow deleting top level groups. Review the Retention period settings to prevent accidental deletion. |

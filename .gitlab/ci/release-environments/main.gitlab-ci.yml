@@ -72,7 +72,7 @@ release-environments-qa:
   stage: qa
   extends:
     - .qa-base
-  timeout: 3h
+  timeout: 30m
   variables:
     QA_SCENARIO: "Test::Instance::Smoke"
     RELEASE: "${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab-ee-qa:${CI_COMMIT_SHA}"

@@ -187,7 +187,7 @@ class Projects::ArtifactsController < Projects::ApplicationController
   end
 
   def authorize_read_job_artifacts!
-    return access_denied! unless can?(current_user, :read_job_artifacts, job_artifact)
+    access_denied! unless can?(current_user, :read_job_artifacts, job_artifact)
   end
 end
 

@@ -15,6 +15,7 @@ built-in CI/CD to deploy your app.
 Projects can be available [publicly, internally, or privately](../public_access.md).
 GitLab does not limit the number of private projects you can create.
 
+- [Getting started](../../user/get_started/get_started_projects.md)
 - [Create a project](index.md)
 - [Manage projects](working_with_projects.md)
 - [Project visibility](../public_access.md)

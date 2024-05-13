@@ -970,7 +970,7 @@ This is the template for the example component which is tested in the
         :key="todo.id"
         :class="{ 'gl-strike': todo.isDone }"
         data-testid="todo-item"
-      >{{ toddo.text }}</div>
+      >{{ todo.text }}</div>
       <footer class="gl-border-t-1 gl-mt-3 gl-pt-3">
         <gl-form-input
           type="text"

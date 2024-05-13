@@ -6,18 +6,18 @@ module SnippetAuthorizations
   private
 
   def authorize_read_snippet!
-    return render_404 unless can?(current_user, :read_snippet, snippet)
+    render_404 unless can?(current_user, :read_snippet, snippet)
   end
 
   def authorize_update_snippet!
-    return render_404 unless can?(current_user, :update_snippet, snippet)
+    render_404 unless can?(current_user, :update_snippet, snippet)
   end
 
   def authorize_admin_snippet!
-    return render_404 unless can?(current_user, :admin_snippet, snippet)
+    render_404 unless can?(current_user, :admin_snippet, snippet)
   end
 
   def authorize_create_snippet!
-    return render_404 unless can?(current_user, :create_snippet)
+    render_404 unless can?(current_user, :create_snippet)
   end
 end

@@ -1,5 +1,6 @@
 <script>
 import { GlEmptyState, GlSearchBoxByType } from '@gitlab/ui';
+import EmptyStateSvg from '@gitlab/svgs/dist/illustrations/empty-state/empty-search-md.svg';
 import { escapeRegExp } from 'lodash';
 import {
   EXCLUDED_NODES,
@@ -195,6 +196,7 @@ export default {
     },
   },
   TYPING_DELAY,
+  EmptyStateSvg,
 };
 </script>
 <template>
@@ -210,6 +212,7 @@ export default {
       v-if="!hasMatches"
       :title="__('No results found')"
       :description="__('Edit your search and try again')"
+      :svg-path="$options.EmptyStateSvg"
     />
   </div>
 </template>

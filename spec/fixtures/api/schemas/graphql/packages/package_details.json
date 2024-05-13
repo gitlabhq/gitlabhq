@@ -259,6 +259,9 @@
     "packageProtectionRuleExists": {
       "type": "boolean"
     },
+    "protectionRuleExists": {
+      "type": "boolean"
+    },
     "_links": {
       "type": "object",
       "additionalProperties": false,

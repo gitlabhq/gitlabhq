@@ -137,3 +137,13 @@ file and selecting the Git tag that correlates with your target GitLab version
 (for example `15.0.5+ee.0`). If required by your load balancer, you can then define
 [custom SSL ciphers](https://docs.gitlab.com/omnibus/settings/ssl/index.html#use-custom-ssl-ciphers)
 for NGINX.
+
+### Some pages and links are downloaded instead of rendered in the browser
+
+Some GitLab features require the use of WebSockets. In some scenarios where WebSockets support is not enabled on your load balancer, you could experience some links or pages downloading instead of being rendered in the browser. The files downloaded may contain content that look like the following:
+
+```plaintext
+One or more reserved bits are on: reserved1 = 1, reserved2 = 0, reserved3 = 0
+```
+
+Your load balancer must be capable of supporting HTTP WebSocket requests. If links are downloading this way, check your load balancer configuration and ensure that HTTP WebSocket requests are enabled.

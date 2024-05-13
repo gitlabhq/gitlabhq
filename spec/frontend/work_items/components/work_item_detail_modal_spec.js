@@ -62,6 +62,7 @@ describe('WorkItemDetailModal component', () => {
       isModal: true,
       workItemIid: '1',
       modalWorkItemFullPath: '',
+      isDrawer: false,
     });
   });
 

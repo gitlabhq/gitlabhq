@@ -55,6 +55,8 @@ RSpec.describe ObjectStoreSettings, feature_category: :shared do
 
       shared_examples 'consolidated settings for objects accelerated by Workhorse' do
         it 'consolidates active object storage settings' do
+          expect(subject).to be_present
+
           described_class::WORKHORSE_ACCELERATED_TYPES.each do |object_type|
             # Use to_h to avoid https://gitlab.com/gitlab-org/gitlab/-/issues/286873
             section = subject.try(object_type).to_h
@@ -157,6 +159,29 @@ RSpec.describe ObjectStoreSettings, feature_category: :shared do
 
             expect(section['object_store']['consolidated_settings']).to_be falsey
           end
+        end
+      end
+
+      context 'CI secure files' do
+        let(:ci_secure_files_connection) { { 'provider' => 'Google', 'google_application_default' => true } }
+
+        before do
+          config['ci_secure_files'] = {
+            'enabled' => true,
+            'object_store' => {
+              'enabled' => true,
+              'connection' => ci_secure_files_connection
+            }
+          }
+        end
+
+        it_behaves_like 'consolidated settings for objects accelerated by Workhorse'
+
+        it 'allows CI secure files to define its own connection' do
+          expect { subject }.not_to raise_error
+
+          expect(settings.ci_secure_files['object_store']['connection'].to_hash).to eq(ci_secure_files_connection)
+          expect(settings.ci_secure_files['object_store']['consolidated_settings']).to be_falsey
         end
       end
 

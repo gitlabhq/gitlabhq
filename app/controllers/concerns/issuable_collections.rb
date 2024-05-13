@@ -19,7 +19,7 @@ module IssuableCollections
     @issuables = issuables_collection
     set_pagination
 
-    return if redirect_out_of_range(@issuables, @total_pages)
+    nil if redirect_out_of_range(@issuables, @total_pages)
   end
 
   def set_pagination

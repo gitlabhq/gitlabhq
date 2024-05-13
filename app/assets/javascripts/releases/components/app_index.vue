@@ -44,6 +44,9 @@ export default {
     newReleasePath: {
       default: '',
     },
+    atomFeedPath: {
+      default: '',
+    },
   },
   apollo: {
     /**
@@ -164,6 +167,9 @@ export default {
      */
     isFullRequestLoaded() {
       return Boolean(!this.isFullRequestLoading && this.fullGraphqlResponse?.data.project);
+    },
+    atomFeedBtnTitle() {
+      return this.$options.i18n.atomFeedBtnTitle;
     },
     releaseBtnTitle() {
       return this.isCatalogResource
@@ -289,6 +295,17 @@ export default {
     <div v-else class="gl-align-self-end gl-display-flex gl-gap-3">
       <releases-sort :value="sort" @input="onSortChanged" />
 
+      <gl-button
+        v-if="atomFeedPath"
+        v-gl-tooltip.hover
+        :title="atomFeedBtnTitle"
+        :href="atomFeedPath"
+        icon="rss"
+        class="gl-ml-2"
+        data-testid="atom-feed-btn"
+        :aria-label="atomFeedBtnTitle"
+      />
+
       <div
         v-if="newReleasePath"
         v-gl-tooltip.hover
@@ -298,6 +315,7 @@ export default {
         <gl-button
           :disabled="isCatalogResource"
           :href="newReleasePath"
+          class="gl-ml-2"
           category="primary"
           variant="confirm"
           >{{ $options.i18n.newRelease }}</gl-button

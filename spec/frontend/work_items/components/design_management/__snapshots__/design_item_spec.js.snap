@@ -9,14 +9,14 @@ exports[`Design item component when item appears in view after image is loaded r
 `;
 
 exports[`Design item component with notes renders item with multiple comments 1`] = `
-<div
+<a
   class="card design-list-item gl-cursor-pointer gl-mb-0 js-design-list-item text-plain"
 >
   <div
-    class="card-body gl-align-items-center gl-display-flex gl-justify-content-center gl-overflow-hidden gl-p-0 gl-relative gl-rounded-top-base"
+    class="card-body gl-flex gl-items-center gl-justify-content-center gl-overflow-hidden gl-p-0 gl-relative gl-rounded-top-base"
   >
     <gl-intersection-observer-stub
-      class="gl-flex-grow-1"
+      class="gl-grow"
       data-qa-filename="test"
       data-testid="design-image"
     >
@@ -29,11 +29,10 @@ exports[`Design item component with notes renders item with multiple comments 1`
     </gl-intersection-observer-stub>
   </div>
   <div
-    class="card-footer gl-bg-white gl-display-flex gl-px-4 gl-py-3 gl-w-full"
+    class="card-footer gl-bg-white gl-flex gl-px-4 gl-py-3 gl-w-full"
   >
     <div
-      class="gl-display-flex gl-flex-direction-column str-truncated-100"
-      data-testid="design-file-name"
+      class="gl-flex gl-flex-col str-truncated-100"
     >
       <span
         class="gl-font-sm str-truncated-100"
@@ -55,7 +54,7 @@ exports[`Design item component with notes renders item with multiple comments 1`
       </span>
     </div>
     <div
-      class="gl-align-items-center gl-display-flex gl-ml-auto gl-text-gray-500"
+      class="gl-flex gl-items-center gl-ml-auto gl-text-gray-500"
     >
       <gl-icon-stub
         class="gl-ml-2"
@@ -70,18 +69,18 @@ exports[`Design item component with notes renders item with multiple comments 1`
       </span>
     </div>
   </div>
-</div>
+</a>
 `;
 
 exports[`Design item component with notes renders item with single comment 1`] = `
-<div
+<a
   class="card design-list-item gl-cursor-pointer gl-mb-0 js-design-list-item text-plain"
 >
   <div
-    class="card-body gl-align-items-center gl-display-flex gl-justify-content-center gl-overflow-hidden gl-p-0 gl-relative gl-rounded-top-base"
+    class="card-body gl-flex gl-items-center gl-justify-content-center gl-overflow-hidden gl-p-0 gl-relative gl-rounded-top-base"
   >
     <gl-intersection-observer-stub
-      class="gl-flex-grow-1"
+      class="gl-grow"
       data-qa-filename="test"
       data-testid="design-image"
     >
@@ -94,11 +93,10 @@ exports[`Design item component with notes renders item with single comment 1`] =
     </gl-intersection-observer-stub>
   </div>
   <div
-    class="card-footer gl-bg-white gl-display-flex gl-px-4 gl-py-3 gl-w-full"
+    class="card-footer gl-bg-white gl-flex gl-px-4 gl-py-3 gl-w-full"
   >
     <div
-      class="gl-display-flex gl-flex-direction-column str-truncated-100"
-      data-testid="design-file-name"
+      class="gl-flex gl-flex-col str-truncated-100"
     >
       <span
         class="gl-font-sm str-truncated-100"
@@ -120,7 +118,7 @@ exports[`Design item component with notes renders item with single comment 1`] =
       </span>
     </div>
     <div
-      class="gl-align-items-center gl-display-flex gl-ml-auto gl-text-gray-500"
+      class="gl-flex gl-items-center gl-ml-auto gl-text-gray-500"
     >
       <gl-icon-stub
         class="gl-ml-2"
@@ -135,5 +133,5 @@ exports[`Design item component with notes renders item with single comment 1`] =
       </span>
     </div>
   </div>
-</div>
+</a>
 `;

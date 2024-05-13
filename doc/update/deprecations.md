@@ -50,6 +50,30 @@ For deprecation reviewers (Technical Writers only):
 {::options parse_block_html="true" /}
 
 <div class="js-deprecation-filters"></div>
+<div class="milestone-wrapper" data-milestone="19.0">
+
+## GitLab 19.0
+
+<div class="deprecation breaking-change" data-milestone="19.0">
+
+### Running a single database is deprecated
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.1</span>
+- Removal in GitLab <span class="milestone">19.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/411239).
+</div>
+
+From GitLab 19.0, we will require a [separate database for CI features](https://gitlab.com/groups/gitlab-org/-/epics/7509).
+We recommend running both databases on the same Postgres instance(s) due to ease of management for most deployments.
+
+This change provides additional scalability for the largest of GitLab instances, like GitLab.com.
+This change applies to all installation methods: Omnibus GitLab, GitLab Helm chart, GitLab Operator, GitLab Docker images, and installation from source.
+Before upgrading to GitLab 19.0, please ensure you have [migrated](https://docs.gitlab.com/ee/administration/postgresql/multiple_databases.html) to two databases.
+
+</div>
+</div>
+
 <div class="milestone-wrapper" data-milestone="18.0">
 
 ## GitLab 18.0
@@ -404,25 +428,6 @@ Occurrences of the `active` identifier in the GitLab GraphQL API endpoints will 
 - The `CiRunner` property.
 - The `RunnerUpdateInput` input type for the `runnerUpdate` mutation.
 - The `runners`, `Group.runners`, and `Project.runners` queries.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="18.0">
-
-### Running a single database is deprecated
-
-<div class="deprecation-notes">
-- Announced in GitLab <span class="milestone">16.1</span>
-- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/411239).
-</div>
-
-From GitLab 18.0, we will require a [separate database for CI features](https://gitlab.com/groups/gitlab-org/-/epics/7509).
-We recommend running both databases on the same Postgres instance(s) due to ease of management for most deployments.
-
-This change provides additional scalability for the largest of GitLab instances, like GitLab.com.
-This change applies to all installation methods: Omnibus GitLab, GitLab Helm chart, GitLab Operator, GitLab Docker images, and installation from source.
-Before upgrading to GitLab 18.0, please ensure you have [migrated](https://docs.gitlab.com/ee/administration/postgresql/multiple_databases.html) to two databases.
 
 </div>
 

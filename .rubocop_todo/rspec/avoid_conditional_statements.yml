@@ -18,7 +18,6 @@ RSpec/AvoidConditionalStatements:
     - 'ee/spec/features/labels_hierarchy_spec.rb'
     - 'ee/spec/features/profiles/usage_quotas_spec.rb'
     - 'ee/spec/features/projects/analytics/visualization_designer_spec.rb'
-    - 'ee/spec/features/projects/licenses/maintainer_views_policies_spec.rb'
     - 'ee/spec/features/projects/merge_requests/user_approves_merge_request_spec.rb'
     - 'ee/spec/features/projects/settings/issues_settings_spec.rb'
     - 'ee/spec/features/projects_spec.rb'

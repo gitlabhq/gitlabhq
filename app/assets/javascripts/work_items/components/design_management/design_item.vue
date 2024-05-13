@@ -2,6 +2,7 @@
 import { GlLoadingIcon, GlIcon, GlIntersectionObserver, GlTooltipDirective } from '@gitlab/ui';
 import { n__, __ } from '~/locale';
 import Timeago from '~/vue_shared/components/time_ago_tooltip.vue';
+import { DESIGN_ROUTE_NAME } from '../../constants';
 
 export default {
   components: {
@@ -116,13 +117,21 @@ export default {
       this.imageLoading = true;
     },
   },
+  DESIGN_ROUTE_NAME,
 };
 </script>
 
 <template>
-  <div class="card gl-cursor-pointer text-plain js-design-list-item design-list-item gl-mb-0">
+  <router-link
+    :to="{
+      name: $options.DESIGN_ROUTE_NAME,
+      params: { id: filename },
+      query: $route.query,
+    }"
+    class="card gl-cursor-pointer text-plain js-design-list-item design-list-item gl-mb-0"
+  >
     <div
-      class="card-body gl-p-0 gl-display-flex gl-align-items-center gl-justify-content-center gl-overflow-hidden gl-relative gl-rounded-top-base"
+      class="card-body gl-p-0 gl-flex gl-items-center gl-justify-content-center gl-overflow-hidden gl-relative gl-rounded-top-base"
     >
       <div
         v-if="icon.name"
@@ -140,7 +149,7 @@ export default {
         </span>
       </div>
       <gl-intersection-observer
-        class="gl-flex-grow-1"
+        class="gl-grow"
         data-testid="design-image"
         :data-qa-filename="filename"
         @appear="onAppear"
@@ -163,11 +172,8 @@ export default {
         />
       </gl-intersection-observer>
     </div>
-    <div class="card-footer gl-display-flex gl-w-full gl-bg-white gl-py-3 gl-px-4">
-      <div
-        class="gl-display-flex gl-flex-direction-column str-truncated-100"
-        data-testid="design-file-name"
-      >
+    <div class="card-footer gl-flex gl-w-full gl-bg-white gl-py-3 gl-px-4">
+      <div class="gl-flex gl-flex-col str-truncated-100">
         <span
           v-gl-tooltip
           class="gl-font-sm str-truncated-100"
@@ -179,15 +185,12 @@ export default {
           {{ __('Updated') }} <timeago :time="updatedAt" tooltip-placement="bottom" />
         </span>
       </div>
-      <div
-        v-if="notesCount"
-        class="gl-ml-auto gl-display-flex gl-align-items-center gl-text-gray-500"
-      >
+      <div v-if="notesCount" class="gl-ml-auto gl-flex gl-items-center gl-text-gray-500">
         <gl-icon name="comments" class="gl-ml-2" />
         <span :aria-label="notesLabel" class="gl-font-sm gl-ml-2">
           {{ notesCount }}
         </span>
       </div>
     </div>
-  </div>
+  </router-link>
 </template>

@@ -20,7 +20,7 @@ RSpec.describe ReleasesHelper do
     let(:release) { create(:release, project: project) }
     let(:user) { create(:user) }
     let(:can_user_create_release) { false }
-    let(:common_keys) { [:project_id, :project_path, :illustration_path, :documentation_path] }
+    let(:common_keys) { [:project_id, :project_path, :illustration_path, :documentation_path, :atom_feed_path] }
 
     # rubocop: disable CodeReuse/ActiveRecord
     before do

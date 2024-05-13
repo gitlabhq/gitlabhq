@@ -50,6 +50,9 @@ export const WORK_ITEM_TYPE_VALUE_OBJECTIVE = 'Objective';
 
 export const WORK_ITEM_TITLE_MAX_LENGTH = 255;
 
+export const WORK_ITEM_ROUTE_NAME = 'workItem';
+export const DESIGN_ROUTE_NAME = 'design';
+
 export const i18n = {
   fetchErrorTitle: s__('WorkItem|Work item not found'),
   fetchError: s__(

@@ -1629,8 +1629,8 @@ POST /groups/:id/hooks
 | -----------------------------| -------------- |----------| ----------- |
 | `id`                         | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
 | `url`                        | string         | yes      | The hook URL |
-| `name`                       | string         | no       | Name of the hook ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.0) |
-| `description`                | string         | no       | Description of the hook ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.0) |
+| `name`                       | string         | no       | Name of the hook ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.1) |
+| `description`                | string         | no       | Description of the hook ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.1) |
 | `push_events`                | boolean        | no       | Trigger hook on push events |
 | `push_events_branch_filter`  | string         | no       | Trigger hook on push events for matching branches only |
 | `issues_events`              | boolean        | no       | Trigger hook on issues events |
@@ -1664,8 +1664,8 @@ PUT /groups/:id/hooks/:hook_id
 | `id`                         | integer or string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding). |
 | `hook_id`                    | integer        | yes      | The ID of the group hook. |
 | `url`                        | string         | yes      | The hook URL. |
-| `name`                       | string         | no       | Name of the hook ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.0). |
-| `description`                | string         | no       | Description of the hook ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.0). |
+| `name`                       | string         | no       | Name of the hook ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.1). |
+| `description`                | string         | no       | Description of the hook ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.1). |
 | `push_events`                | boolean        | no       | Trigger hook on push events. |
 | `push_events_branch_filter`  | string         | no       | Trigger hook on push events for matching branches only. |
 | `issues_events`              | boolean        | no       | Trigger hook on issues events. |

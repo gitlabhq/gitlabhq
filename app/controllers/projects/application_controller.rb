@@ -91,7 +91,7 @@ class Projects::ApplicationController < ApplicationController
   end
 
   def check_issues_available!
-    return render_404 unless @project.feature_available?(:issues, current_user)
+    render_404 unless @project.feature_available?(:issues, current_user)
   end
 
   def set_is_ambiguous_ref

@@ -315,15 +315,15 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def authorize_update_pipeline!
-    return access_denied! unless can?(current_user, :update_pipeline, @pipeline)
+    access_denied! unless can?(current_user, :update_pipeline, @pipeline)
   end
 
   def authorize_cancel_pipeline!
-    return access_denied! unless can?(current_user, :cancel_pipeline, @pipeline)
+    access_denied! unless can?(current_user, :cancel_pipeline, @pipeline)
   end
 
   def authorize_read_build_on_pipeline!
-    return access_denied! unless can?(current_user, :read_build, @pipeline)
+    access_denied! unless can?(current_user, :read_build, @pipeline)
   end
 
   def limited_pipelines_count(project, scope = nil)

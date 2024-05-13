@@ -360,6 +360,10 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
             post :import_csv
             post 'import_csv/authorize', to: 'work_items#authorize'
           end
+
+          member do
+            get '/designs(/*vueroute)', to: 'work_items#show', as: :designs, format: false
+          end
         end
 
         post 'incidents/integrations/pagerduty', to: 'incident_management/pager_duty_incidents#create'

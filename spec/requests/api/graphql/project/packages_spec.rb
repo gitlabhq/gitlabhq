@@ -14,7 +14,7 @@ RSpec.describe 'getting a package list for a project', feature_category: :packag
 
   it_behaves_like 'group and project packages query'
 
-  describe 'packageProtectionRuleExists' do
+  describe 'protectionRuleExists' do
     let_it_be(:maven_package) { create(:maven_package, project: project1, name: 'maven-package') }
     let_it_be(:npm_package) { create(:npm_package, project: project1, name: 'npm-package') }
     let_it_be(:npm_package_no_match) { create(:npm_package, project: project1, name: 'other-npm-package') }
@@ -38,6 +38,7 @@ RSpec.describe 'getting a package list for a project', feature_category: :packag
           name
           packageType
           packageProtectionRuleExists
+          protectionRuleExists
         }
       QUERY
     end
@@ -45,7 +46,7 @@ RSpec.describe 'getting a package list for a project', feature_category: :packag
     context 'when package protection rule for package and user exists' do
       using RSpec::Parameterized::TableSyntax
 
-      where(:current_user_access_level, :expected_package_protection_rule_exists) do
+      where(:current_user_access_level, :expected_protection_rule_exists) do
         :reporter   | true
         :developer  | true
         :maintainer | true
@@ -66,13 +67,14 @@ RSpec.describe 'getting a package list for a project', feature_category: :packag
             hash_including(
               'name' => npm_package.name,
               'packageType' => npm_package.package_type.upcase,
-              'packageProtectionRuleExists' =>
-                expected_package_protection_rule_exists
+              'packageProtectionRuleExists' => expected_protection_rule_exists,
+              'protectionRuleExists' => expected_protection_rule_exists
             ),
             hash_including(
               'name' => maven_package.name,
               'packageType' => maven_package.package_type.upcase,
-              'packageProtectionRuleExists' => false
+              'packageProtectionRuleExists' => false,
+              'protectionRuleExists' => false
             )
           )
         end
@@ -90,9 +92,10 @@ RSpec.describe 'getting a package list for a project', feature_category: :packag
         post_graphql(query, current_user: current_user)
       end
 
-      it 'returns false for the field packageProtectionRuleExists for each package' do
+      it 'returns false for the field protectionRuleExists for each package' do
         graphql_data_at(resource_type, :packages, :nodes).each do |package|
           expect(package['packageProtectionRuleExists']).to eq false
+          expect(package['protectionRuleExists']).to eq false
         end
       end
     end

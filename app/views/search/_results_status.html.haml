@@ -10,12 +10,12 @@
             %span= _("in")
             .gl-display-inline-block
               #js-blob-ref-switcher{ data: { "project-id" => @project.id, "ref" => repository_ref(@project), "field-name": "repository_ref" } }
-            %span= s_('SearchCodeResults|of %{link_to_project}').html_safe % { link_to_project: link_to_project }
+            %span= safe_format(s_('SearchCodeResults|of %{link_to_project}'), link_to_project: link_to_project)
           - else
-            = _("in project %{link_to_project}").html_safe % { link_to_project: link_to_project }
+            = safe_format(_("in project %{link_to_project}"), link_to_project: link_to_project)
         - elsif @group
           - link_to_group = link_to(@group.name, @group, class: 'ml-md-1')
-          = _("in group %{link_to_group}").html_safe % { link_to_group: link_to_group }
+          = safe_format(_("in group %{link_to_group}"), link_to_group: link_to_group)
   .gl-flex.gl-gap-3.gl-mt-3.gl-sm-mt-0
     = render Pajamas::ButtonComponent.new(category: 'primary', icon: 'filter', button_options: {id: 'js-open-mobile-filters', class: 'gl-lg-display-none gl-flex-grow-1 gl-md-flex-grow-0'}) do
       = s_('GlobalSearch|Filters')

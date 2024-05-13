@@ -3,8 +3,11 @@ export const mockDesign = {
   event: 'NONE',
   filename: 'Screenshot_from_2024-03-28_10-24-43.png',
   notesCount: 0,
+  description: 'Description test',
+  descriptionHtml: '<p>Description test</p>',
   image: 'raw_image_1',
   imageV432x230: 'resized_image_v432x230_1',
+  fullPath: 'designs/issue-2/Screenshot_from_2024-03-28_10-24-43.png',
   currentUserTodos: {
     nodes: [],
     __typename: 'TodoConnection',
@@ -76,3 +79,28 @@ export const designCollectionResponse = (mockDesigns = [mockDesign]) => ({
     },
   },
 });
+
+export const getDesignResponse = {
+  data: {
+    project: {
+      id: 'gid://gitlab/Project/1',
+      workItems: {
+        nodes: [
+          {
+            id: 'gid://gitlab/WorkItem/1',
+            title: 'Work item 1',
+            widgets: [
+              {
+                __typename: 'WorkItemWidgetDesigns',
+                type: 'DESIGNS',
+                designCollection: {
+                  designs: { nodes: [mockDesign] },
+                },
+              },
+            ],
+          },
+        ],
+      },
+    },
+  },
+};

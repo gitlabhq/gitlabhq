@@ -97,6 +97,7 @@ describe('WorkItemDetail component', () => {
   const createComponent = ({
     isGroup = false,
     isModal = false,
+    isDrawer = false,
     updateInProgress = false,
     workItemIid = '1',
     handler = successHandler,
@@ -116,6 +117,7 @@ describe('WorkItemDetail component', () => {
       propsData: {
         isModal,
         workItemIid,
+        isDrawer,
       },
       data() {
         return {
@@ -652,13 +654,18 @@ describe('WorkItemDetail component', () => {
   });
 
   describe('design widget', () => {
-    beforeEach(async () => {
+    it('renders if work item has design widget', async () => {
       createComponent();
       await waitForPromises();
+
+      expect(findWorkItemDesigns().exists()).toBe(true);
     });
 
-    it('renders if work item has design widget', () => {
-      expect(findWorkItemDesigns().exists()).toBe(true);
+    it('does not render if within a drawer', async () => {
+      createComponent({ isDrawer: true });
+      await waitForPromises();
+
+      expect(findWorkItemDesigns().exists()).toBe(false);
     });
   });
 
@@ -684,7 +691,7 @@ describe('WorkItemDetail component', () => {
 
   describe('work item two column view', () => {
     beforeEach(async () => {
-      createComponent({ workItemsBeta: true });
+      createComponent();
       await waitForPromises();
     });
 
@@ -701,10 +708,24 @@ describe('WorkItemDetail component', () => {
     });
   });
 
+  describe('work item sticky header', () => {
+    beforeEach(async () => {
+      createComponent();
+      await waitForPromises();
+    });
+
+    it('enables the edit mode when event `toggleEditMode` is emitted', async () => {
+      findStickyHeader().vm.$emit('toggleEditMode');
+      await nextTick();
+
+      expect(findWorkItemDescription().props('editMode')).toBe(true);
+    });
+  });
+
   describe('edit button for work item title and description', () => {
     describe('with permissions to update', () => {
       beforeEach(async () => {
-        createComponent({ workItemsBeta: true });
+        createComponent();
         await waitForPromises();
       });
 

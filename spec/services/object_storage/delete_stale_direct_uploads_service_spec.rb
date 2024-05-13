@@ -89,7 +89,8 @@ RSpec.describe ObjectStorage::DeleteStaleDirectUploadsService, :direct_uploads, 
         prepare_pending_direct_upload(stale_path_2, 4.hours.ago)
       end
 
-      it 'completes the current iteration and reports information about total entries' do
+      it 'completes the current iteration and reports information about total entries',
+        quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/444748' do
         expect(execute_result).to eq(
           status: :success,
           total_pending_entries: 2,

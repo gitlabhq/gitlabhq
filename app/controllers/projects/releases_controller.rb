@@ -9,6 +9,7 @@ class Projects::ReleasesController < Projects::ApplicationController
   before_action :authorize_create_release!, only: :new
   before_action :validate_suffix_path, :fetch_latest_tag, only: :latest_permalink
 
+  prepend_before_action(only: [:index]) { authenticate_sessionless_user!(:rss) }
   prepend_before_action(only: [:downloads]) do
     authenticate_sessionless_user!(:download)
   end
@@ -23,6 +24,10 @@ class Projects::ReleasesController < Projects::ApplicationController
       end
       format.json do
         render json: ReleaseSerializer.new.represent(releases)
+      end
+      format.atom do
+        @releases = releases
+        render layout: 'xml'
       end
     end
   end

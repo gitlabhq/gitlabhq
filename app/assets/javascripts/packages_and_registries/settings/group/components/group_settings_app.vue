@@ -64,7 +64,10 @@ export default {
 </script>
 
 <template>
-  <div data-testid="packages-and-registries-group-settings">
+  <div
+    data-testid="packages-and-registries-group-settings"
+    class="js-hide-when-nothing-matches-search"
+  >
     <gl-alert v-if="alertMessage" variant="warning" class="gl-mt-4" @dismiss="dismissAlert">
       {{ alertMessage }}
     </gl-alert>

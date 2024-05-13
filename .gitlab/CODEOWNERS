@@ -176,10 +176,6 @@ Dangerfile
 /ee/spec/policies/vulnerabilities/
 /ee/spec/policies/vulnerability*.rb
 
-^[Threat Insights frontend] @gitlab-org/govern/threat-insights-frontend-team
-/ee/app/assets/javascripts/license_compliance/components/detected_licenses_table.vue
-/ee/spec/frontend/license_compliance/components/detected_licenses_table_spec.js
-
 ^[Composition Analysis backend] @gitlab-org/secure/composition-analysis-be
 /app/events/package_metadata/
 /app/models/concerns/enums/package_metadata.rb

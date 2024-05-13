@@ -69,7 +69,10 @@ export default {
 </script>
 
 <template>
-  <div data-testid="packages-and-registries-project-settings">
+  <div
+    data-testid="packages-and-registries-project-settings"
+    class="js-hide-when-nothing-matches-search"
+  >
     <metadata-database-alert v-if="!isContainerRegistryMetadataDatabaseEnabled" class="gl-mt-5" />
     <gl-alert
       v-if="showAlert"

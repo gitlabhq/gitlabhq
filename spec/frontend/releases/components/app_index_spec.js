@@ -39,6 +39,7 @@ jest.mock('~/lib/utils/url_utility', () => ({
 
 describe('app_index.vue', () => {
   const projectPath = 'project/path';
+  const atomFeedPath = 'project/path.atom';
   const newReleasePath = 'path/to/new/release/page';
   const before = 'beforeCursor';
   const after = 'afterCursor';
@@ -73,6 +74,7 @@ describe('app_index.vue', () => {
       provide: {
         newReleasePath,
         projectPath,
+        atomFeedPath,
       },
       mocks: {
         $toast: { show: toast },
@@ -100,6 +102,7 @@ describe('app_index.vue', () => {
   // Finders
   const findLoadingIndicator = () => wrapper.findComponent(ReleaseSkeletonLoader);
   const findEmptyState = () => wrapper.findComponent(ReleasesEmptyState);
+  const findAtomFeedButton = () => wrapper.findByTestId('atom-feed-btn');
   const findNewReleaseButton = () => wrapper.findByText(ReleasesIndexApp.i18n.newRelease);
   const findAllReleaseBlocks = () => wrapper.findAllComponents(ReleaseBlock);
   const findPagination = () => wrapper.findComponent(ReleasesPagination);
@@ -296,6 +299,21 @@ describe('app_index.vue', () => {
 
     it('renders the new release button with the correct href', () => {
       expect(findNewReleaseButton().attributes().href).toBe(newReleasePath);
+    });
+  });
+
+  describe('RSS feed button', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
+    it('renders the RSS feed button with the correct href', () => {
+      expect(findAtomFeedButton().attributes().href).toBe(atomFeedPath);
+    });
+
+    it('sets the correct tooltip text', () => {
+      expect(findAtomFeedButton().exists()).toBe(true);
+      expect(findAtomFeedButton().attributes('title')).toBe(i18n.atomFeedBtnTitle);
     });
   });
 

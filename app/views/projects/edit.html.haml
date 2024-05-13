@@ -7,7 +7,7 @@
 
 - if can?(current_user, :admin_project, @project)
   = render Pajamas::AlertComponent.new(title: _('GitLab Pages has moved'),
-    alert_options: { class: 'gl-my-5', data: { feature_id: Users::CalloutsHelper::PAGES_MOVED_CALLOUT, dismiss_endpoint: callouts_path, defer_links: 'true' } }) do |c|
+    alert_options: { class: 'gl-my-5 js-hide-when-nothing-matches-search', data: { feature_id: Users::CalloutsHelper::PAGES_MOVED_CALLOUT, dismiss_endpoint: callouts_path, defer_links: 'true' } }) do |c|
     - c.with_body do
       = _('To go to GitLab Pages, on the left sidebar, select %{pages_link}.').html_safe % {pages_link: link_to('Deploy > Pages', project_pages_path(@project)).html_safe}
 

@@ -35,9 +35,3 @@ func isBinary(buf []byte) bool {
 func Is(buf []byte) bool {
 	return !isBinary(buf) && svgRegex.Match(htmlCommentRegex.ReplaceAll(buf, []byte{}))
 }
-
-// IsSVG returns true if the given buffer is a valid SVG image.
-// Alias to: Is()
-func IsSVG(buf []byte) bool {
-	return Is(buf)
-}

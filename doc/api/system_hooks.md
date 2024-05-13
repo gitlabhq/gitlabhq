@@ -100,8 +100,8 @@ POST /hooks
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `url` | string | yes | The hook URL |
-| `name` | string | no | Name of the hook ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.0) |
-| `description` | string | no | Description of the hook ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.0) |
+| `name` | string | no | Name of the hook ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.1) |
+| `description` | string | no | Description of the hook ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.1) |
 | `token` | string | no | Secret token to validate received payloads; this isn't returned in the response |
 | `push_events` | boolean |  no | When true, the hook fires on push events |
 | `tag_push_events` | boolean | no | When true, the hook fires on new tags being pushed |

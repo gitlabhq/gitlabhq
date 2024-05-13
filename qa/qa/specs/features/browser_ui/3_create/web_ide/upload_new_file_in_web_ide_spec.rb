@@ -53,7 +53,7 @@ module QA
         it_behaves_like 'upload a file'
       end
 
-      context 'when the file is an image',
+      context 'when the file is an image', :blocking,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/390007' do
         let(:file_name) { 'dk.png' }
 

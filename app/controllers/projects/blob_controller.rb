@@ -161,7 +161,7 @@ class Projects::BlobController < Projects::ApplicationController
   def commit
     @commit ||= @repository.commit(@ref)
 
-    return render_404 unless @commit
+    render_404 unless @commit
   end
 
   def redirect_renamed_default_branch?

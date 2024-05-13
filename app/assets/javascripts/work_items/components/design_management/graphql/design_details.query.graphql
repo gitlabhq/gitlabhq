@@ -1,0 +1,30 @@
+#import "./fragments/design_file.fragment.graphql"
+
+query getDesignDetails(
+  $fullPath: ID!
+  $iid: String!
+  $atVersion: DesignManagementVersionID
+  $filenames: [String!]
+) {
+  project(fullPath: $fullPath) {
+    id
+    workItems(iid: $iid) {
+      nodes {
+        id
+        title
+        widgets {
+          ... on WorkItemWidgetDesigns {
+            type
+            designCollection {
+              designs(atVersion: $atVersion, filenames: $filenames) {
+                nodes {
+                  ...DesignFile
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

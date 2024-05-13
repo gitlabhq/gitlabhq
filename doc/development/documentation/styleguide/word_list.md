@@ -237,12 +237,16 @@ Try to avoid **below** when referring to an example or table in a documentation 
 
 - In the following example, the dog has fleas.
 
-## Beta
+## beta
 
-Use uppercase for **Beta**. For example: **The XYZ feature is in Beta.** or **This Beta release is ready to test.**
+Use lowercase for **beta**. For example:
+
+- The feature is in beta.
+- This is a beta feature.
+- This beta release is ready to test.
 
 You might also want to link to [this topic](../../../policy/experiment-beta-support.md#beta)
-when writing about Beta features.
+when writing about beta features.
 
 ## blacklist
 
@@ -699,12 +703,18 @@ Instead of:
 
 Use **expand** instead of **open** when you are talking about expanding or collapsing a section in the UI.
 
-## Experiment
+## experiment
 
-Use uppercase for **Experiment**. For example: **The XYZ feature is an Experiment.** or **This Experiment is ready to test.**
+Use lowercase for **experiment**. For example:
+
+- This feature is an experiment.
+- These features are experiments.
+- This experiment is ready to test.
+
+If you must, you can use **experimental**. 
 
 You might also want to link to [this topic](../../../policy/experiment-beta-support.md#experiment)
-when writing about Experiment features.
+when writing about experimental features.
 
 ## export
 
@@ -808,6 +818,20 @@ For **GB** and **MB**, follow the [Microsoft guidance](https://learn.microsoft.c
 ## Geo
 
 Use title case for **Geo**.
+
+## generally available, general availability
+
+Use lowercase for **generally available** and **general availability**.
+For example:
+
+- This feature is generally available.
+
+Use **generally available** more often. For example,
+do not say:
+
+- This feature has reached general availability.
+
+You can use **GA** to indicate general availability if you spell it out on first use.
 
 ## Git suggestions
 

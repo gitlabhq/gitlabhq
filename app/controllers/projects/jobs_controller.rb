@@ -188,27 +188,27 @@ class Projects::JobsController < Projects::ApplicationController
   attr_reader :build
 
   def authorize_read_build_report_results!
-    return access_denied! unless can?(current_user, :read_build_report_results, build)
+    access_denied! unless can?(current_user, :read_build_report_results, build)
   end
 
   def authorize_update_build!
-    return access_denied! unless can?(current_user, :update_build, @build)
+    access_denied! unless can?(current_user, :update_build, @build)
   end
 
   def authorize_cancel_build!
-    return access_denied! unless can?(current_user, :cancel_build, @build)
+    access_denied! unless can?(current_user, :cancel_build, @build)
   end
 
   def authorize_erase_build!
-    return access_denied! unless can?(current_user, :erase_build, @build)
+    access_denied! unless can?(current_user, :erase_build, @build)
   end
 
   def authorize_use_build_terminal!
-    return access_denied! unless can?(current_user, :create_build_terminal, @build)
+    access_denied! unless can?(current_user, :create_build_terminal, @build)
   end
 
   def authorize_create_proxy_build!
-    return access_denied! unless can?(current_user, :create_build_service_proxy, @build)
+    access_denied! unless can?(current_user, :create_build_service_proxy, @build)
   end
 
   def verify_api_request!

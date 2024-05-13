@@ -105,18 +105,18 @@ class Projects::PipelineSchedulesController < Projects::ApplicationController
   end
 
   def authorize_create_pipeline_schedule!
-    return access_denied! unless can?(current_user, :create_pipeline_schedule, new_schedule)
+    access_denied! unless can?(current_user, :create_pipeline_schedule, new_schedule)
   end
 
   def authorize_play_pipeline_schedule!
-    return access_denied! unless can?(current_user, :play_pipeline_schedule, schedule)
+    access_denied! unless can?(current_user, :play_pipeline_schedule, schedule)
   end
 
   def authorize_update_pipeline_schedule!
-    return access_denied! unless can?(current_user, :update_pipeline_schedule, schedule)
+    access_denied! unless can?(current_user, :update_pipeline_schedule, schedule)
   end
 
   def authorize_admin_pipeline_schedule!
-    return access_denied! unless can?(current_user, :admin_pipeline_schedule, schedule)
+    access_denied! unless can?(current_user, :admin_pipeline_schedule, schedule)
   end
 end

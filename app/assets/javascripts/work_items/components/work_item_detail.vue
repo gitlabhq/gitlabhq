@@ -95,6 +95,11 @@ export default {
       required: false,
       default: '',
     },
+    isDrawer: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -561,6 +566,7 @@ export default {
           @toggleWorkItemConfidentiality="toggleConfidentiality"
           @error="updateError = $event"
           @promotedToObjective="$emit('promotedToObjective', workItemIid)"
+          @toggleEditMode="enableEditMode"
         />
         <div data-testid="work-item-overview" class="work-item-overview">
           <section>
@@ -585,7 +591,10 @@ export default {
               @error="updateError = $event"
               @emoji-updated="$emit('work-item-emoji-updated', $event)"
             />
-            <design-widget v-if="!workItemLoading && hasDesignWidget" :work-item-id="workItem.id" />
+            <design-widget
+              v-if="!workItemLoading && !isDrawer && hasDesignWidget"
+              :work-item-id="workItem.id"
+            />
           </section>
           <aside
             data-testid="work-item-overview-right-sidebar"

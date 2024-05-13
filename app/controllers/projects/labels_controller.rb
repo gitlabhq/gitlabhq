@@ -185,10 +185,10 @@ class Projects::LabelsController < Projects::ApplicationController
   end
 
   def authorize_admin_labels!
-    return render_404 unless can?(current_user, :admin_label, @project)
+    render_404 unless can?(current_user, :admin_label, @project)
   end
 
   def authorize_admin_group_labels!
-    return render_404 unless can?(current_user, :admin_label, @project.group)
+    render_404 unless can?(current_user, :admin_label, @project.group)
   end
 end

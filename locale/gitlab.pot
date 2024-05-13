@@ -15879,6 +15879,9 @@ msgstr[1] ""
 msgid "CycleAnalytics|'%{name}' is collecting the data. This can take a few minutes."
 msgstr ""
 
+msgid "CycleAnalytics|Average duration"
+msgstr ""
+
 msgid "CycleAnalytics|Average time to completion"
 msgstr ""
 
@@ -15903,7 +15906,13 @@ msgstr ""
 msgid "CycleAnalytics|If you have recently upgraded your GitLab license from a tier without this feature, it can take up to 30 minutes for data to collect and display."
 msgstr ""
 
+msgid "CycleAnalytics|Item count"
+msgstr ""
+
 msgid "CycleAnalytics|Lead time for changes"
+msgstr ""
+
+msgid "CycleAnalytics|Median duration"
 msgstr ""
 
 msgid "CycleAnalytics|New value stream…"
@@ -15957,6 +15966,9 @@ msgid "CycleAnalytics|not allowed for the given start event"
 msgstr ""
 
 msgid "CycleAnalytics|project dropdown filter"
+msgstr ""
+
+msgid "CycleAnalytics|seconds"
 msgstr ""
 
 msgid "DAG visualization requires at least 3 dependent jobs."
@@ -29850,6 +29862,9 @@ msgstr ""
 msgid "KubernetesDashboard|Suspended"
 msgstr ""
 
+msgid "KubernetesDashboard|There was a problem fetching cluster information. Refresh the page and try again."
+msgstr ""
+
 msgid "KubernetesDashboard|View projects"
 msgstr ""
 
@@ -30411,9 +30426,6 @@ msgstr ""
 msgid "License Compliance| Used by %{dependencies}"
 msgstr ""
 
-msgid "License compliance"
-msgstr ""
-
 msgid "License key"
 msgstr ""
 
@@ -30546,19 +30558,7 @@ msgstr ""
 msgid "Licenses"
 msgstr ""
 
-msgid "Licenses|%{remainingComponentsCount} more"
-msgstr ""
-
 msgid "Licenses|Acceptable license to be used in the project"
-msgstr ""
-
-msgid "Licenses|Component"
-msgstr ""
-
-msgid "Licenses|Components"
-msgstr ""
-
-msgid "Licenses|Displays licenses detected in the project based on the %{linkStart}latest successful%{linkEnd} scan"
 msgstr ""
 
 msgid "Licenses|Drag your license file here or %{linkStart}click to upload%{linkEnd}."
@@ -30567,13 +30567,7 @@ msgstr ""
 msgid "Licenses|Drop your license file to start the upload."
 msgstr ""
 
-msgid "Licenses|Error fetching the license list. Please check your network connection and try again."
-msgstr ""
-
 msgid "Licenses|Error: You are trying to upload something other than a file"
-msgstr ""
-
-msgid "Licenses|License Compliance"
 msgstr ""
 
 msgid "Licenses|Name"
@@ -30582,19 +30576,10 @@ msgstr ""
 msgid "Licenses|Policy"
 msgstr ""
 
-msgid "Licenses|Policy violation: denied"
-msgstr ""
-
 msgid "Licenses|The file could not be uploaded."
 msgstr ""
 
-msgid "Licenses|The license list details information about the licenses used within your project."
-msgstr ""
-
 msgid "Licenses|Unacceptable license, if detected it will disallow a merge request until it's removed"
-msgstr ""
-
-msgid "Licenses|View license details for your project"
 msgstr ""
 
 msgid "Limit display of time tracking units to hours."
@@ -34095,9 +34080,6 @@ msgid "No email participants were added. Either none were provided, or they alre
 msgstr ""
 
 msgid "No email participants were removed. Either none were provided, or they don't exist."
-msgstr ""
-
-msgid "No endpoint provided"
 msgstr ""
 
 msgid "No errors to display."
@@ -42104,7 +42086,13 @@ msgstr ""
 msgid "PurchaseStep|An error occurred in the purchase step. If the problem persists please contact support at https://support.gitlab.com."
 msgstr ""
 
+msgid "Purchase|%{stripe3dsLinkStart}3D Secure authentication%{stripe3dsLinkEnd} failed. Please try the credit card again, or %{salesLinkStart}contact our sales team%{salesLinkEnd} to purchase."
+msgstr ""
+
 msgid "Purchase|%{stripe3dsLinkStart}3D Secure authentication%{stripe3dsLinkEnd} is not supported. Please %{salesLinkStart}contact our sales team%{salesLinkEnd} to purchase, or try a different credit card."
+msgstr ""
+
+msgid "Purchase|3D Secure authentication failed"
 msgstr ""
 
 msgid "Purchase|A full name in your profile is required to make a purchase. Check that the full name field in your %{userProfileLinkStart}user profile%{userProfileLinkEnd} has both a first and last name, then retry the purchase. If the problem persists, %{supportLinkStart}contact support%{supportLinkEnd}."
@@ -50418,6 +50406,9 @@ msgid "Subscribe to RSS feed"
 msgstr ""
 
 msgid "Subscribe to calendar"
+msgstr ""
+
+msgid "Subscribe to releases RSS feed"
 msgstr ""
 
 msgid "Subscribed"

@@ -133,7 +133,7 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
   def define_diff_vars
     @merge_request_diffs = @merge_request.merge_request_diffs.viewable.order_id_desc
     @compare = commit || find_merge_request_diff_compare
-    return render_404 unless @compare
+    render_404 unless @compare
   end
 
   # rubocop: disable CodeReuse/ActiveRecord

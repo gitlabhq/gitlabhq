@@ -56,6 +56,9 @@ describe('DesignWidget', () => {
       provide: {
         fullPath: 'gitlab-org/gitlab-shell',
       },
+      stubs: {
+        RouterView: true,
+      },
     });
   }
 

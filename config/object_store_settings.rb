@@ -11,7 +11,12 @@ class ObjectStoreSettings
   # endpoints. Technically dependency_proxy and terraform_state fall
   # into this category, but they will likely be handled by Workhorse in
   # the future.
-  WORKHORSE_ACCELERATED_TYPES = SUPPORTED_TYPES - %w[pages]
+  #
+  # ci_secure_files doesn't support Workhorse yet
+  # (https://gitlab.com/gitlab-org/gitlab/-/issues/461124), and it was
+  # introduced first as a storage-specific setting. To avoid breaking
+  # consolidated settings for other object types, exclude it here.
+  WORKHORSE_ACCELERATED_TYPES = SUPPORTED_TYPES - %w[pages ci_secure_files]
 
   # pages and ci_secure_files may be enabled but use legacy disk storage
   # we don't need to raise an error in that case

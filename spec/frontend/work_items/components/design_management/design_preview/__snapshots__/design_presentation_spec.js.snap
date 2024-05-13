@@ -1,0 +1,27 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DesignPresentation renders empty state when no image provided 1`] = `
+<div
+  class="gl-h-full gl-p-5 gl-relative gl-w-full overflow-auto"
+>
+  <div
+    class="gl-flex gl-h-full gl-items-center gl-relative gl-w-full"
+  />
+</div>
+`;
+
+exports[`DesignPresentation renders image and overlay when image provided 1`] = `
+<div
+  class="gl-h-full gl-p-5 gl-relative gl-w-full overflow-auto"
+>
+  <div
+    class="gl-flex gl-h-full gl-items-center gl-relative gl-w-full"
+  >
+    <design-image-stub
+      image="test.jpg"
+      name="test"
+      scale="1"
+    />
+  </div>
+</div>
+`;

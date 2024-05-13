@@ -48,6 +48,12 @@ module Types
             null: false,
             description: 'HTML description of the end event.'
 
+          field :metrics,
+            Types::Analytics::CycleAnalytics::ValueStreams::StageMetricsType,
+            null: false,
+            resolver: Resolvers::Analytics::CycleAnalytics::ValueStreams::StageMetricsResolver,
+            description: 'Aggregated metrics for the given stage'
+
           def start_event_identifier
             events_enum[object.start_event_identifier]
           end

@@ -1,5 +1,7 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { DESIGN_MARK_APP_START, DESIGN_MEASURE_BEFORE_APP } from '~/performance/constants';
+import { performanceMarkAndMeasure } from '~/performance/utils';
 import { WORKSPACE_GROUP } from '~/issues/constants';
 import { addShortcutsExtension } from '~/behaviors/shortcuts';
 import ShortcutsWorkItems from '~/behaviors/shortcuts/shortcuts_work_items';
@@ -55,6 +57,16 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType } = {}) => {
       hasIssuableHealthStatusFeature: parseBoolean(hasIssuableHealthStatusFeature),
       newCommentTemplatePaths: JSON.parse(newCommentTemplatePaths),
       reportAbusePath,
+    },
+    mounted() {
+      performanceMarkAndMeasure({
+        mark: DESIGN_MARK_APP_START,
+        measures: [
+          {
+            name: DESIGN_MEASURE_BEFORE_APP,
+          },
+        ],
+      });
     },
     render(createElement) {
       return createElement(App, {

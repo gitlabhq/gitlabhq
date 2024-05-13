@@ -51,13 +51,20 @@ For example, use `self.table_name=` when the model name diverges from the table 
 We can allow exceptions only when renaming is challenging. For example, when the naming is used
 for STI, exposed to the user, or if it would be a breaking change.
 
-## Use namespaces to define bounded contexts
+## Bounded contexts
 
-A healthy application is divided into macro and sub components that represent the contexts at play,
-whether they are related to business domain or infrastructure code.
+See the [Bounded Contexts working group](https://handbook.gitlab.com/handbook/company/working-groups/bounded-contexts/) and
+[GitLab Modular Monolith blueprint](../architecture/blueprints/modular_monolith/index.md) for more context on the
+goals, motivations, and direction related to Bounded Contexts.
 
-As GitLab code has so many features and components it's hard to see what contexts are involved.
+### Use namespaces to define bounded contexts
+
+A healthy application is divided into macro and sub components that represent the bounded contexts at play.
+As GitLab code has so many features and components, it's hard to see what contexts are involved.
+These components can be related to business domain or infrastructure code.
+
 We should expect any class to be defined inside a module/namespace that represents the contexts where it operates.
+We maintain a [list of allowed namespaces](#how-to-define-bounded-contexts) to define these contexts.
 
 When we namespace classes inside their domain:
 
@@ -66,32 +73,49 @@ When we namespace classes inside their domain:
 - Top-level namespaces could be associated to one or more groups identified as domain experts.
 - We can better identify the interactions and coupling between components.
   For example, several classes inside `MergeRequests::` domain interact more with `Ci::`
-  domain and less with `ImportExport::`.
+  domain and less with `Import::`.
+
+```ruby
+# bad
+class JobArtifact ... end
+
+# good
+module Ci
+  class JobArtifact ... end
+end
+```
+
+### How to define bounded contexts
+
+Allowed bounded contexts are defined in `config/bounded_contexts.yml` which contains namespaces for the
+domain layer and infrastructure layer.
+
+For **domain layer** we refer to:
+
+1. Code in `app`, excluding the **application adapters** (controllers, API endpoints and views).
+1. Code in `lib` that specifically relates to domain logic.
+
+This includes `ActiveRecord` models, service objects, workers, and domain-specific Plain Old Ruby Objects.
+
+For now we exclude application adapters from the modularization in order to keep the effort smaller and because
+a given endpoint don't always match to a single domain (e.g. settings, merge request view, project view, etc.).
+
+For **infrastructure layer** we refer to code in `lib` that is for generic purposes, not containing GitLab business concepts,
+and that could be extracted into Ruby gems.
 
 A good guideline for naming a top-level namespace (bounded context) is to use the related
 [feature category](https://gitlab.com/gitlab-com/www-gitlab-com/-/blob/master/data/categories.yml).
 For example, `Continuous Integration` feature category maps to `Ci::` namespace.
 
-```ruby
-# bad
-class JobArtifact
-end
-
-# good
-module Ci
-  class JobArtifact
-  end
-end
-```
-
 Projects and Groups are generally container concepts because they identify tenants.
-They allow features to exist at the project or group level, like repositories or runners,
-but do not nest such features under `Projects::` or `Groups::`.
+While features exist at the project or group level, like repositories or runners, we must not nest such features
+under `Projects::` or `Groups::` but under their relative bounded context.
 
 `Projects::` and `Groups::` namespaces should be used only for concepts that are strictly related to them:
 for example `Project::CreateService` or `Groups::TransferService`.
 
-For controllers we allow `app/controllers/projects` and `app/controllers/groups` to be exceptions.
+For controllers we allow `app/controllers/projects` and `app/controllers/groups` to be exceptions, also because
+bounded contexts are not applied to application layer.
 We use this convention to indicate the scope of a given web endpoint.
 
 Do not use the [stage or group name](https://handbook.gitlab.com/handbook/product/categories/#devops-stages)
@@ -100,14 +124,12 @@ because a feature category could be reassigned to a different group in the futur
 ```ruby
 # bad
 module Create
-  class Commit
-  end
+  class Commit ... end
 end
 
 # good
 module Repositories
-  class Commit
-  end
+  class Commit ... end
 end
 ```
 
@@ -125,15 +147,12 @@ For example, instead of having separate and granular bounded contexts like: `Con
 `ContainerHostSecurity::`, `ContainerNetworkSecurity::`, we could have:
 
 ```ruby
-module ContainerSecurity
-  module HostSecurity
-  end
+module Security::Container
+  module Scanning ... end
 
-  module NetworkSecurity
-  end
+  module NetworkSecurity ... end
 
-  module Scanning
-  end
+  module HostSecurity ... end
 end
 ```
 

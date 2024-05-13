@@ -38,7 +38,6 @@ RSpec/BeforeAllRoleAssignment:
     - 'ee/spec/controllers/projects/issue_links_controller_spec.rb'
     - 'ee/spec/controllers/projects/iterations_controller_spec.rb'
     - 'ee/spec/controllers/projects/learn_gitlab_controller_spec.rb'
-    - 'ee/spec/controllers/projects/licenses_controller_spec.rb'
     - 'ee/spec/controllers/projects/merge_requests_controller_spec.rb'
     - 'ee/spec/controllers/projects/pipelines_controller_spec.rb'
     - 'ee/spec/controllers/projects/repositories_controller_spec.rb'

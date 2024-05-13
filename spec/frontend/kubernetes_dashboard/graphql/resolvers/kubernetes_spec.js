@@ -117,6 +117,20 @@ describe('~/frontend/environments/graphql/resolvers', () => {
         mockResolvers.Query.k8sDashboardPods(null, { configuration }, { client }),
       ).rejects.toThrow('API error');
     });
+
+    it('should return a generic error message if the error response is not of JSON type', async () => {
+      jest.spyOn(CoreV1Api.prototype, 'listCoreV1PodForAllNamespaces').mockRejectedValue({
+        response: {
+          headers: new Headers({ 'Content-Type': 'application/pdf' }),
+        },
+      });
+
+      await expect(
+        mockResolvers.Query.k8sDashboardPods(null, { configuration }, { client }),
+      ).rejects.toThrow(
+        'There was a problem fetching cluster information. Refresh the page and try again.',
+      );
+    });
   });
 
   describe('k8sDeployments', () => {

@@ -95,7 +95,7 @@ RSpec.describe 'Project.value_streams', feature_category: :value_stream_manageme
     end
 
     before_all do
-      project.add_guest(user)
+      project.add_developer(user)
     end
 
     before do
@@ -154,6 +154,123 @@ RSpec.describe 'Project.value_streams', feature_category: :value_stream_manageme
 
           it 'returns no data error' do
             expect(graphql_data_at(:project, :value_streams, :nodes, 0, :stages, :nodes)).to be_empty
+          end
+        end
+
+        context 'when requesting metrics' do
+          let_it_be(:current_time) { Time.current }
+          let_it_be(:author) { create(:user) }
+
+          let_it_be(:merge_request1) do
+            create(:merge_request, :unique_branches, source_project: project, created_at: '2024-02-01').tap do |mr|
+              mr.metrics.update!(latest_build_started_at: current_time,
+                latest_build_finished_at: current_time + 2.hours)
+            end
+          end
+
+          let_it_be(:merge_request2) do
+            create(:merge_request, :unique_branches, author: author, source_project: project,
+              created_at: '2024-02-01').tap do |mr|
+              mr.metrics.update!(latest_build_started_at: current_time,
+                latest_build_finished_at: current_time + 4.hours)
+            end
+          end
+
+          let_it_be(:merge_request3) do
+            create(:merge_request, :unique_branches, source_project: project, created_at: '2024-02-01').tap do |mr|
+              mr.metrics.update!(latest_build_started_at: current_time,
+                latest_build_finished_at: current_time + 5.hours)
+            end
+          end
+
+          let(:variables) do
+            {
+              fullPath: project.full_path,
+              stageId: stage_id,
+              from: '2024-01-01',
+              to: '2024-03-01'
+            }
+          end
+
+          let(:query) do
+            <<~QUERY
+              query($fullPath: ID!, $stageId: ID, $from: Date!, $to: Date!, $authorUsername: String) {
+                project(fullPath: $fullPath) {
+                  valueStreams {
+                    nodes {
+                      name
+                      stages(id: $stageId) {
+                        name
+
+                        metrics(timeframe: { start: $from, end: $to }, authorUsername: $authorUsername) {
+                          count {
+                            value
+                          }
+                          average {
+                            value
+                          }
+                          median {
+                            value
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            QUERY
+          end
+
+          it 'returns aggregated metrics' do
+            metrics = graphql_data_at(:project, :value_streams, :nodes, 0, :stages, 0, :metrics)
+
+            expect(metrics).to eq({
+              'count' => {
+                'value' => 3
+              },
+              'average' => {
+                'value' => (2 + 4 + 5).hours.seconds.to_i / 3
+              },
+              'median' => {
+                'value' => 4.hours.seconds.to_i
+              }
+            })
+          end
+
+          context 'when user has no access' do
+            let(:user) { create(:user) }
+
+            it 'does not load metrics' do
+              expect(graphql_data_at(:project, :valueStreams)).to be_nil
+            end
+          end
+
+          context 'when filtering is applied' do
+            let(:variables) do
+              {
+                fullPath: project.full_path,
+                stageId: stage_id,
+                from: '2024-01-01',
+                to: '2024-03-01',
+                authorUsername: author.username
+              }
+            end
+
+            it 'returns the correct metrics' do
+              metrics = graphql_data_at(:project, :value_streams, :nodes, 0, :stages, 0, :metrics)
+
+              expect(metrics).to eq({
+                'count' => {
+                  'value' => 1
+                },
+                'average' => {
+                  'value' => 4.hours.seconds.to_i
+                },
+                'median' => {
+                  'value' => 4.hours.seconds.to_i
+                }
+              })
+            end
           end
         end
       end

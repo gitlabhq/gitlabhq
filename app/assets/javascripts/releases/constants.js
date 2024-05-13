@@ -56,6 +56,7 @@ export const i18n = {
   ),
   alertInfoPublishMessage: s__('CiCatalog|How do I publish a component?'),
   alertTitle: s__('CiCatalog|Publish the CI/CD components in this project to the CI/CD Catalog'),
+  atomFeedBtnTitle: __('Subscribe to releases RSS feed'),
   catalogResourceReleaseBtnTitle: s__(
     "CiCatalog|Use the 'release' keyword in a CI/CD job to publish to the CI/CD Catalog.",
   ),
