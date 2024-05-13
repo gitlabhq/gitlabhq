@@ -1,8 +1,9 @@
 .top-area
   = gl_tabs_nav({ class: 'gl-display-flex gl-flex-grow-1 gl-border-none'}) do
-    = gl_tab_link_to _('All'), explore_projects_path, { item_active: current_page?(explore_projects_path) || current_page?(explore_root_path) }
-    = gl_tab_link_to _('Most starred'), starred_explore_projects_path
+    = gl_tab_link_to _('Most starred'), starred_explore_projects_path, { item_active: current_page?(starred_explore_projects_path) || current_page?(explore_root_path) }
     = gl_tab_link_to _('Trending'), trending_explore_projects_path
+    = gl_tab_link_to _('Active'), explore_projects_path, { item_active: current_page?(explore_projects_path) && !params['archived'] }
+    = gl_tab_link_to _('Inactive'), explore_projects_path({ archived: 'only' }), { item_active: current_page?(explore_projects_path) && params['archived'] == 'only' }
+    = gl_tab_link_to _('All'), explore_projects_path({ archived: true }), { item_active: current_page?(explore_projects_path) && params['archived'] == 'true' }
 
-  .nav-controls
-    = render 'shared/projects/search_form'
+#js-projects-explore-filtered-search-and-sort{ data: { app_data: projects_explore_filtered_search_and_sort_app_data } }

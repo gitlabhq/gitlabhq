@@ -275,6 +275,35 @@ describe('filterToQueryObject', () => {
       'not[foo]': null,
     });
   });
+
+  describe('when `shouldExcludeEmpty` is set to `true`', () => {
+    it('excludes empty filters', () => {
+      expect(
+        filterToQueryObject(
+          {
+            language: [
+              {
+                value: '5',
+                operator: '=',
+              },
+            ],
+            FILTERED_SEARCH_TERM: [
+              {
+                value: '',
+              },
+            ],
+            fooBar: [
+              {
+                value: '',
+                operator: '=',
+              },
+            ],
+          },
+          { shouldExcludeEmpty: true },
+        ),
+      ).toEqual({ language: ['5'] });
+    });
+  });
 });
 
 describe('urlQueryToFilter', () => {

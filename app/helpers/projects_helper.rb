@@ -631,6 +631,15 @@ module ProjectsHelper
     'manual-ordering'
   end
 
+  def projects_explore_filtered_search_and_sort_app_data
+    {
+      initial_sort: project_list_sort_by,
+      programming_languages: programming_languages,
+      starred_explore_projects_path: starred_explore_projects_path,
+      explore_root_path: explore_root_path
+    }.to_json
+  end
+
   private
 
   def can_admin_project_clusters?(project)

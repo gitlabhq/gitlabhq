@@ -107,4 +107,14 @@ describe('FilteredSearchAndSort', () => {
       expect(wrapper.emitted('sort-by-change')).toEqual([[defaultPropsData.sortOptions[1].value]]);
     });
   });
+
+  describe('when `sortOptions` prop is not passed', () => {
+    beforeEach(() => {
+      createComponent({ propsData: { sortOptions: undefined } });
+    });
+
+    it('does not show sort dropdown', () => {
+      expect(findGlSorting().exists()).toBe(false);
+    });
+  });
 });

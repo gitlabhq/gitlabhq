@@ -6,7 +6,7 @@
   %h1.page-title.gl-font-size-h-display= _('Projects')
 
   .page-title-controls.gl-display-flex.gl-align-items-center.gl-gap-5
-    = link_to _("Explore projects"), explore_projects_path
+    = link_to _("Explore projects"), starred_explore_projects_path
     - if current_user.can_create_project?
       = render Pajamas::ButtonComponent.new(href: new_project_path, variant: :confirm, button_options: { data: { testid: 'new-project-button' } }) do
         = _("New project")

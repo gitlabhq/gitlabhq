@@ -23,7 +23,7 @@ RSpec.describe 'Dashboard Projects', :js, feature_category: :groups_and_projects
   it 'links to the "Explore projects" page' do
     visit dashboard_projects_path
 
-    expect(page).to have_link("Explore projects", href: explore_projects_path)
+    expect(page).to have_link("Explore projects", href: starred_explore_projects_path)
   end
 
   context 'when user has access to the project' do

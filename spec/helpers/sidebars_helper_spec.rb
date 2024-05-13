@@ -209,7 +209,7 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
             },
             {
               title: _('Projects'),
-              href: explore_projects_path,
+              href: starred_explore_projects_path,
               css_class: 'dashboard-shortcuts-projects'
             }
           ]

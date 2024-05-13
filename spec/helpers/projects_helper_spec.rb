@@ -1847,4 +1847,17 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
       end
     end
   end
+
+  describe '#projects_explore_filtered_search_and_sort_app_data' do
+    it 'returns expected json' do
+      expect(Gitlab::Json.parse(helper.projects_explore_filtered_search_and_sort_app_data)).to eq(
+        {
+          'initial_sort' => 'created_desc',
+          'programming_languages' => ProgrammingLanguage.most_popular,
+          'starred_explore_projects_path' => starred_explore_projects_path,
+          'explore_root_path' => explore_root_path
+        }
+      )
+    end
+  end
 end

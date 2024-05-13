@@ -113,6 +113,30 @@ job_using_gcp_sm:
       token: $GCP_ID_TOKEN
 ```
 
+### Use secrets from a different GCP project
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/37487) in GitLab 17.0.
+
+Secret names in GCP are per-project. By default the secret named in `gcp_secret_manager:name`
+is read from the project specified in `GCP_PROJECT_NUMBER`.
+
+To read a secret from a different project than the project containing the WIF pool, use the
+fully-qualified secret name formatted as `projects/<project-number>/secrets/<secret-name>`.
+
+For example, if `my-project-secret` is in the GCP project number `123456789`,
+then you can access the secret with:
+
+```yaml
+job_using_gcp_sm:
+  # ... configured as above ...
+  secrets:
+    DATABASE_PASSWORD:
+      gcp_secret_manager:
+        name: projects/123456789/secrets/my-project-secret  # fully-qualified name of the secret defined in GCP Secret Manager
+        version: 1                                          # optional: defaults to `latest`.
+      token: $GCP_ID_TOKEN
+```
+
 ## Troubleshooting
 
 ### `The size of mapped attribute google.subject exceeds the 127 bytes limit` error

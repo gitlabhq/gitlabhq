@@ -64,7 +64,10 @@ export default {
     },
     sortOptions: {
       type: Array,
-      required: true,
+      required: false,
+      default() {
+        return [];
+      },
     },
     activeSortOption: {
       type: Object,
@@ -80,11 +83,17 @@ export default {
       const tokens = prepareTokens(
         urlQueryToFilter(this.filteredSearchQuery, {
           filteredSearchTermKey: this.filteredSearchTermKey,
-          filterNamesAllowList: [FILTERED_SEARCH_TERM],
+          filterNamesAllowList: [
+            FILTERED_SEARCH_TERM,
+            ...this.filteredSearchTokens.map(({ type }) => type),
+          ],
         }),
       );
 
       return tokens.length ? tokens : [TOKEN_EMPTY_SEARCH_TERM];
+    },
+    shouldShowSort() {
+      return this.sortOptions.length;
     },
   },
   methods: {
@@ -93,6 +102,7 @@ export default {
         'filter',
         filterToQueryObject(processFilters(filters), {
           filteredSearchTermKey: this.filteredSearchTermKey,
+          shouldExcludeEmpty: true,
         }),
       );
     },
@@ -118,7 +128,7 @@ export default {
       <div v-if="$scopedSlots.default">
         <slot></slot>
       </div>
-      <div>
+      <div v-if="shouldShowSort" data-testid="groups-projects-sort">
         <gl-sorting
           class="gl-display-flex"
           dropdown-class="gl-w-full"

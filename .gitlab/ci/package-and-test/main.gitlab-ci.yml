@@ -115,6 +115,7 @@ praefect:
   variables:
     QA_SCENARIO: Test::Integration::Praefect
     QA_CAN_TEST_PRAEFECT: "true"
+    QA_GITALY_TRANSACTIONS_ENABLED: "false"
     KNAPSACK_TEST_FILE_PATTERN: "qa/specs/features/**/3_create/**/*_spec.rb"
   rules:
     - !reference [.rules:test:smoke-for-omnibus-mr, rules]
@@ -126,6 +127,7 @@ praefect-selective:
   variables:
     QA_SCENARIO: Test::Integration::Praefect
     QA_CAN_TEST_PRAEFECT: "true"
+    QA_GITALY_TRANSACTIONS_ENABLED: "false"
   rules:
     - !reference [.rules:test:qa-selective, rules]
     - if: $QA_SUITES =~ /Test::Instance::All/
@@ -138,6 +140,50 @@ praefect-selective-parallel:
   variables:
     QA_SCENARIO: Test::Integration::Praefect
     QA_CAN_TEST_PRAEFECT: "true"
+    QA_GITALY_TRANSACTIONS_ENABLED: "false"
+    KNAPSACK_TEST_FILE_PATTERN: "qa/specs/features/**/3_create/**/*_spec.rb"
+  rules:
+    - !reference [.rules:test:qa-selective-parallel, rules]
+    - if: $QA_SUITES =~ /Test::Instance::All/
+      variables:
+        QA_TESTS: ""
+
+# ========== gitaly transactions enabled ===========
+# https://docs.gitlab.com/ee/architecture/blueprints/gitaly_transaction_management/
+gitaly-transactions:
+  extends:
+    - .parallel
+    - .qa
+  parallel: 2
+  variables:
+    QA_SCENARIO: Test::Integration::Praefect
+    QA_CAN_TEST_PRAEFECT: "true"
+    KNAPSACK_TEST_FILE_PATTERN: "qa/specs/features/**/3_create/**/*_spec.rb"
+    QA_GITALY_TRANSACTIONS_ENABLED: "true"
+  rules:
+    - !reference [.rules:test:smoke-for-omnibus-mr, rules]
+    - !reference [.rules:test:qa-parallel, rules]
+    - if: $QA_SUITES =~ /Test::Instance::All/
+
+gitaly-transactions-selective:
+  extends: .qa
+  variables:
+    QA_SCENARIO: Test::Integration::Praefect
+    QA_CAN_TEST_PRAEFECT: "true"
+    QA_GITALY_TRANSACTIONS_ENABLED: "true"
+  rules:
+    - !reference [.rules:test:qa-selective, rules]
+    - if: $QA_SUITES =~ /Test::Instance::All/
+
+gitaly-transactions-selective-parallel:
+  extends:
+    - .qa
+    - .parallel
+  parallel: 2
+  variables:
+    QA_SCENARIO: Test::Integration::Praefect
+    QA_CAN_TEST_PRAEFECT: "true"
+    QA_GITALY_TRANSACTIONS_ENABLED: "true"
     KNAPSACK_TEST_FILE_PATTERN: "qa/specs/features/**/3_create/**/*_spec.rb"
   rules:
     - !reference [.rules:test:qa-selective-parallel, rules]
