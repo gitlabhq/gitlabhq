@@ -3,6 +3,8 @@
 module PlanLimitsHelper
   def plan_limit_setting_description(limit_name)
     case limit_name
+    when :ci_instance_level_variables
+      s_('AdminSettings|Maximum number of Instance-level CI/CD variables that can be defined')
     when :ci_pipeline_size
       s_('AdminSettings|Maximum number of jobs in a single pipeline')
     when :ci_active_jobs

@@ -606,6 +606,7 @@ class ProjectPolicy < BasePolicy
     enable :admin_cicd_variables
     enable :admin_push_rules
     enable :manage_deploy_tokens
+    enable :manage_merge_request_settings
   end
 
   rule { can?(:admin_build) }.enable :manage_trigger

@@ -17,6 +17,7 @@ DETAILS:
 **Tier:** Freely available for Premium and Ultimate for a limited time. In the future, will require Premium or Ultimate with [GitLab Duo Pro or Duo Enterprise](../subscriptions/subscription-add-ons.md).
 **Offering:** GitLab.com
 **Editors:** GitLab UI, Web IDE, VS Code, and JetBrains IDEs
+**LLMs:** Anthopic: [`claude-3-sonnet-20240229`](https://docs.anthropic.com/en/docs/models-overview#claude-3-a-new-generation-of-ai), Vertex AI Codey [`textembedding-gecko`](https://cloud.google.com/vertex-ai/generative-ai/docs/embeddings/get-text-embeddings)
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117695) for GitLab.com in GitLab 16.0.
 
@@ -35,6 +36,7 @@ DETAILS:
 **Tier:** Freely available for Premium and Ultimate for a limited time. In the future, will require Premium or Ultimate with [GitLab Duo Pro or Duo Enterprise](../subscriptions/subscription-add-ons.md).
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Editors:** GitLab UI, Web IDE, VS Code, JetBrains IDEs
+**LLMs:** Anthopic: [`claude-3-sonnet-20240229`](https://docs.anthropic.com/en/docs/models-overview#claude-3-a-new-generation-of-ai)
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122235) for GitLab.com in GitLab 16.1.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122235) for self-managed and GitLab Dedicated in GitLab 16.8.
@@ -60,6 +62,7 @@ DETAILS:
 **Tier:** Freely available for Premium and Ultimate for a limited time. In the future, will require Premium or Ultimate with [GitLab Duo Pro or Duo Enterprise](../subscriptions/subscription-add-ons.md).
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Editors:** GitLab UI, Web IDE, VS Code, JetBrains IDEs
+**LLMs:** Anthopic: [`claude-2.1`](https://docs.anthropic.com/en/docs/legacy-model-guide#anthropics-legacy-models)
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423524) for GitLab.com in GitLab 16.7.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423524) for self-managed and GitLab Dedicated in GitLab 16.8.
@@ -85,6 +88,7 @@ DETAILS:
 **Tier:** Freely available for Premium and Ultimate for a limited time. In the future, will require Premium or Ultimate with [GitLab Duo Pro or Duo Enterprise](../subscriptions/subscription-add-ons.md).
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Editors:** Web IDE, VS Code, JetBrains IDEs
+**LLMs:** Anthopic: [`claude-3-sonnet-20240229`](https://docs.anthropic.com/en/docs/models-overview#claude-3-a-new-generation-of-ai)
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) for GitLab.com in GitLab 16.7.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) for self-managed and GitLab Dedicated in GitLab 16.8.
@@ -107,6 +111,7 @@ DETAILS:
 **Tier:** Freely available for Premium and Ultimate for a limited time. In the future, will require Premium or Ultimate with [GitLab Duo Pro or Duo Enterprise](../subscriptions/subscription-add-ons.md).
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Editors:** Web IDE, VS Code, JetBrains IDEs
+**LLMs:** Anthopic: [`claude-3-sonnet-20240229`](https://docs.anthropic.com/en/docs/models-overview#claude-3-a-new-generation-of-ai)
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) for GitLab.com in GitLab 16.7.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) for self-managed and GitLab Dedicated in GitLab 16.8.
@@ -127,6 +132,7 @@ DETAILS:
 **Tier:** Freely available for Premium and Ultimate for a limited time. In the future, will require Premium or Ultimate with [GitLab Duo Pro or Duo Enterprise](../subscriptions/subscription-add-ons.md).
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Editors:** Web IDE, VS Code, JetBrains IDEs
+**LLMs:** Anthopic: [`claude-3-sonnet-20240229`](https://docs.anthropic.com/en/docs/models-overview#claude-3-a-new-generation-of-ai)
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) for GitLab.com in GitLab 16.7.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) for self-managed and GitLab Dedicated in GitLab 16.8.
@@ -170,6 +176,7 @@ DETAILS:
 **Tier:** Freely available for Premium and Ultimate for a limited time. In the future, will require Ultimate with [GitLab Duo Enterprise](../subscriptions/subscription-add-ons.md).
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Editors:** GitLab UI, Web IDE, VS Code, JetBrains IDEs
+**LLMs:** Anthopic: [`claude-3-haiku-20240307`](https://docs.anthropic.com/en/docs/models-overview#claude-3-a-new-generation-of-ai)
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122235) for GitLab.com in GitLab 16.0.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122235) for self-managed and GitLab Dedicated in GitLab 16.8.
@@ -193,6 +200,7 @@ DETAILS:
 **Tier:** Freely available for Premium and Ultimate for a limited time. In the future, will require Ultimate with [GitLab Duo Enterprise](../subscriptions/subscription-add-ons.md).
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Editors:** GitLab UI, Web IDE, VS Code, JetBrains IDEs
+**LLMs:** Anthopic: [`claude-3-haiku-20240307`](https://docs.anthropic.com/en/docs/models-overview#claude-3-a-new-generation-of-ai)
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128487) for GitLab.com in GitLab 16.3.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128487) for self-managed and GitLab Dedicated in GitLab 16.8.

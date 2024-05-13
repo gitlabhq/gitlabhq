@@ -9,6 +9,7 @@ RSpec.describe API::Entities::PlanLimit do
 
   it 'exposes correct attributes' do
     expect(subject).to include(
+      :ci_instance_level_variables,
       :ci_pipeline_size,
       :ci_active_jobs,
       :ci_project_subscriptions,

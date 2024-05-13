@@ -88,12 +88,12 @@
         width: calc(100% - 6px);
         margin: 2px 3px;
         padding-left: calc(#{$gl-spacing-scale-5} - 3px);
-        
+
         // cf. https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147476
         &.note-textarea-rounded-bottom {
           margin-bottom: 3px;
-          border-bottom-left-radius: $border-radius-default;
-          border-bottom-right-radius: $border-radius-default;
+          border-bottom-left-radius: $gl-border-radius-base;
+          border-bottom-right-radius: $gl-border-radius-base;
         }
       }
 
@@ -138,7 +138,7 @@
 .issuable-note-warning {
   color: $orange-600;
   background-color: $orange-50;
-  border-radius: $border-radius-default $border-radius-default 0 0;
+  border-radius: $gl-border-radius-base $gl-border-radius-base 0 0;
   padding: 3px 12px;
   margin: auto;
   align-items: center;
@@ -168,7 +168,7 @@
 }
 
 .sidebar-item-icon {
-  border-radius: $border-radius-default;
+  border-radius: $gl-border-radius-base;
   margin: 0 5px 0 0;
   vertical-align: text-bottom;
 

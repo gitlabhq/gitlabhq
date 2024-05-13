@@ -711,7 +711,7 @@ Use lowercase for **experiment**. For example:
 - These features are experiments.
 - This experiment is ready to test.
 
-If you must, you can use **experimental**. 
+If you must, you can use **experimental**.
 
 You might also want to link to [this topic](../../../policy/experiment-beta-support.md#experiment)
 when writing about experimental features.
@@ -1359,7 +1359,7 @@ The current product offerings are:
 - [GitLab self-managed](#gitlab-self-managed)
 - [GitLab Dedicated](#gitlab-dedicated)
 
-The [tier badges](index.md#available-product-tier-badges) reflect these offerings.
+The [tier details](index.md#available-product-tiers) reflect these offerings.
 
 ## older
 

@@ -3,6 +3,7 @@
 module API
   module Entities
     class PlanLimit < Grape::Entity
+      expose :ci_instance_level_variables, documentation: { type: 'integer', example: 25 }
       expose :ci_pipeline_size, documentation: { type: 'integer', example: 0 }
       expose :ci_active_jobs, documentation: { type: 'integer', example: 0 }
       expose :ci_project_subscriptions, documentation: { type: 'integer', example: 2 }

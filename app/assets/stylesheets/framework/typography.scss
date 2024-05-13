@@ -345,7 +345,7 @@
     margin-bottom: 16px;
     line-height: 1.6em;
     overflow-x: auto;
-    border-radius: $border-radius-default;
+    border-radius: $gl-border-radius-base;
 
     // Multi-line code blocks should scroll horizontally
     code {

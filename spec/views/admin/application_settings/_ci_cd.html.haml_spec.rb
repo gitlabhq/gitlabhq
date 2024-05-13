@@ -8,6 +8,7 @@ RSpec.describe 'admin/application_settings/_ci_cd' do
 
   let_it_be(:limits_attributes) do
     {
+      ci_instance_level_variables: 5,
       ci_pipeline_size: 10,
       ci_active_jobs: 20,
       ci_project_subscriptions: 30,
@@ -38,6 +39,10 @@ RSpec.describe 'admin/application_settings/_ci_cd' do
 
     it 'has fields for CI/CD limits', :aggregate_failures do
       subject
+
+      expect(rendered).to have_field('Maximum number of Instance-level CI/CD variables that can be defined',
+        type: 'number')
+      expect(page.find_field('Maximum number of Instance-level CI/CD variables that can be defined').value).to eq('5')
 
       expect(rendered).to have_field('Maximum number of jobs in a single pipeline', type: 'number')
       expect(page.find_field('Maximum number of jobs in a single pipeline').value).to eq('10')

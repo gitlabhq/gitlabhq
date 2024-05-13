@@ -1604,7 +1604,7 @@ For more information, see [Legal disclaimer for future features](../versions.md#
 
 ### Details
 
-`DETAILS:` alert boxes are used for [tier badges](#product-tier-badges).
+`DETAILS:` alert boxes are used for [product tier details](#product-tier-details).
 
 ## Blockquotes
 
@@ -1704,22 +1704,22 @@ in the GitLab product documentation.
 If a feature or product name contains spaces, don't split the name with a line break.
 When names change, it is more complicated to search or grep text that has line breaks.
 
-### Product tier badges
+### Product tier details
 
-Tier badges provide information about a feature and are displayed under the topic title.
+Product tier details provide information about a feature and are displayed under the topic title.
 
-#### When to add tier badges
+#### When to add tier details
 
-Assign tier badges under:
+Assign tier details under:
 
 - Most H1 topic titles, except the pages under `doc/development/*` and `doc/solutions/*`.
 - Topic titles that don't apply to the same tier as the H1.
 
 The H1 tier badge should be the badge that applies to the lowest tier for the features on the page.
 
-#### When not to add tier badges
+#### When not to add tier details
 
-Do not assign tier badges:
+Do not assign tier details:
 
 - When a feature does not have one obvious subscription tier or offering.
   For example, if a feature applies to one tier for SaaS and a different tier for self-managed.
@@ -1727,10 +1727,10 @@ Do not assign tier badges:
 In this case, do any or all of the following:
 
 - Use a `NOTE` in an alert box to describe the tiers.
-- Add tier badges under other topic titles where this information makes more sense.
-- Do not add tier badges under the H1.
+- Add tier details under other topic titles where this information makes more sense.
+- Do not add tier details under the H1.
 
-##### Pages that don't need a tier badge
+##### Pages that don't need tier details
 
 Some pages won't have a tier badge, because no obvious tier badge applies. For example:
 
@@ -1739,13 +1739,13 @@ Some pages won't have a tier badge, because no obvious tier badge applies. For e
 - Pages in the `/development` folder. These pages are automatically assigned a `Contribute` badge.
 - Pages in the `/solutions` folder. These pages are automatically assigned a `Solutions` badge.
 
-#### Available product tier badges
+#### Available product tiers
 
-Tier badges are how we refer to the information that's displayed under a topic title.
+Tier details are how we refer to the information that's displayed under a topic title.
 
-Tier badges include the tier, offering, status, and history.
+Tier details include the tier, offering, status, and history.
 
-The Markdown for tier badges should look like the following:
+The Markdown for tier details should look like the following:
 
 ```markdown
 # Topic title
@@ -1819,13 +1819,13 @@ DETAILS:
 **Tier:** Ultimate
 ```
 
-##### Inline tier badges
+##### Inline tier details
 
-Do not add tier badges inline with other text.
+Generally, you should not add tier details inline with other text.
 The single source of truth for a feature should be the topic where the
 functionality is described.
 
-If you need to mention a tier inline, write it in plain text. For example,
+If you do need to mention a tier inline, write it in plain text. For example,
 for an API topic:
 
 ```markdown
@@ -1834,7 +1834,7 @@ IDs of the users to assign the issue to. Ultimate only.
 
 For more examples, see the [REST API style guide](../restful_api_styleguide.md).
 
-##### Administrator documentation tier badges
+##### Administrator documentation tier details
 
 Topics that are only for instance administrators should have the `Self-managed` tier.
 Instance administrator documentation often includes sections that mention:

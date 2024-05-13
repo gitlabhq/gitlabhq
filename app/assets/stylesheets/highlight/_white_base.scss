@@ -1,0 +1,426 @@
+/* https://github.com/aahan/pygments-github-style */
+
+@import './common';
+
+/*
+* White Syntax Colors
+*/
+$white-code-color: $gl-text-color;
+$white-highlight: #fafe3d;
+$white-pre-hll-bg: #f8eec7;
+$white-hll-bg: #f8f8f8;
+$white-expanded-border: #e0e0e0;
+$white-expanded-bg: #f7f7f7;
+$white-c: #998;
+$white-err: #a61717;
+$white-err-bg: #e3d2d2;
+$white-cm: #998;
+$white-cp: #999;
+$white-c1: #998;
+$white-cs: #999;
+$white-cd: #998;
+$white-gd: $black;
+$white-gd-bg: #fdd;
+$white-gd-x: $black;
+$white-gd-x-bg: #faa;
+$white-gr: #a00;
+$white-gh: #800080;
+$white-gi: $black;
+$white-gi-bg: #dfd;
+$white-gi-x: $black;
+$white-gi-x-bg: #afa;
+$white-go: #888;
+$white-gp: #555;
+$white-gu: #800080;
+$white-gt: #a00;
+$white-kt: #458;
+$white-m: #099;
+$white-s: #d14;
+$white-n: #333;
+$white-na: #008080;
+$white-nb: #0086b3;
+$white-nc: #458;
+$white-no: #008080;
+$white-ni: #800080;
+$white-ne: #900;
+$white-nf: #900;
+$white-nn: #555;
+$white-nt: #000080;
+$white-nv: #008080;
+$white-w: #bbb;
+$white-mf: #099;
+$white-mh: #099;
+$white-mi: #099;
+$white-mo: #099;
+$white-sb: #d14;
+$white-sc: #d14;
+$white-sd: #d14;
+$white-s2: #d14;
+$white-se: #d14;
+$white-sh: #d14;
+$white-si: #d14;
+$white-sx: #d14;
+$white-sr: #009926;
+$white-s1: #d14;
+$white-ss: #990073;
+$white-bp: #999;
+$white-vc: #008080;
+$white-vg: #008080;
+$white-vi: #008080;
+$white-il: #099;
+$white-gc-color: #999;
+$white-gc-bg: #eaf2f5;
+
+
+@mixin match-line {
+  color: $t-gray-a-24;
+  background-color: $gray-light;
+}
+
+@mixin diff-match-line {
+  &.expansion {
+    &.match .diff-td {
+      color: $gray-400;
+    }
+
+    .diff-td {
+      background-color: $gray-50;
+
+      &:first-child {
+        border-color: $gray-100;
+      }
+    }
+  }
+}
+
+@mixin white-base {
+  // Line numbers
+  .file-line-blame {
+    @include line-link($black, 'git');
+  }
+
+  .line-links {
+    @include line-hover-bg;
+  }
+
+  .line-numbers,
+  .diff-line-num,
+  .code-search-line {
+    background-color: $gray-light;
+
+    &.conflict_marker,
+    &.conflict_our {
+      background-color: map-get($conflict-colors, 'white-header-head-neutral');
+      border-color: map-get($conflict-colors, 'white-header-head-neutral');
+    }
+
+    &.conflict_their {
+      background-color: map-get($conflict-colors, 'white-header-origin-neutral');
+      border-color: map-get($conflict-colors, 'white-header-origin-neutral');
+    }
+  }
+
+  .diff-line-num,
+  .diff-line-num a {
+    color: $gray-400;
+  }
+
+  // Code itself
+  pre.code,
+  .diff-line-num {
+    border-color: rgba(0, 0, 0, 0.1);
+  }
+
+  &,
+  pre.code,
+  .line_holder .line_content {
+    background-color: $white;
+    color: $white-code-color;
+  }
+
+  .diff-line-expand-button {
+    @include diff-expansion($gray-100, $gray-700, $gray-200, $gray-800);
+  }
+
+  // Diff line
+  .line_holder {
+    &.match .line_content,
+    .new-nonewline.line_content,
+    .old-nonewline.line_content {
+      @include match-line;
+    }
+
+    &.diff-grid-row {
+      --diff-expansion-background-color: #{$gray-100};
+
+      @include diff-match-line;
+    }
+
+    &:not(.match) .diff-grid-left:hover,
+    &:not(.match) .diff-grid-right:hover,
+    &.code-search-line:hover {
+      .diff-line-num:not(.empty-cell):not(.conflict_marker_their):not(.conflict_marker_our) {
+        @include line-number-hover;
+      }
+    }
+
+    .diff-line-num {
+      &.old,
+      &.old-nomappinginraw {
+        background-color: $line-number-old;
+
+        a {
+          color: scale-color($gray-300, $red: -30%, $green: -30%, $blue: -30%);
+        }
+      }
+
+      &.new,
+      &.new-nomappinginraw {
+        background-color: $line-number-new;
+
+        a {
+          color: scale-color($gray-200, $red: -30%, $green: -30%, $blue: -30%);
+        }
+      }
+
+      &.is-over,
+      &.hll:not(.empty-cell).is-over {
+        @include line-number-hover;
+      }
+
+      &.hll {
+        --highlight-border-color: #{$blue-300};
+        background-color: $blue-50;
+      }
+    }
+
+    &:not(.diff-expanded) + .diff-expanded,
+    &.diff-expanded + .line_holder:not(.diff-expanded) {
+      > .diff-line-num,
+      > .line-coverage,
+      > .line_content {
+        border-top: 1px solid $white-expanded-border;
+      }
+    }
+
+    &.diff-expanded {
+      > .diff-line-num,
+      > .line-coverage,
+      > .line_content {
+        background: $white-expanded-bg;
+        border-color: $white-expanded-bg;
+      }
+    }
+
+    .line_content {
+      &.old,
+      &.old-nomappinginraw {
+        background-color: $line-removed;
+
+        &::before {
+          color: scale-color($line-number-old, $red: -30%, $green: -30%, $blue: -30%);
+        }
+
+        span.idiff {
+          background-color: $line-removed-dark;
+        }
+      }
+
+      &.new,
+      &.new-nomappinginraw {
+        background-color: $line-added;
+
+        &::before {
+          color: scale-color($line-number-new, $red: -30%, $green: -30%, $blue: -30%);
+        }
+
+        span.idiff {
+          background-color: $line-added-dark;
+        }
+      }
+
+      &.match {
+        @include match-line;
+      }
+
+      &.hll {
+        --highlight-border-color: #{$blue-300};
+        background-color: $blue-50;
+      }
+    }
+
+    .line-coverage {
+      @include line-coverage-border-color($green-400, $red-400);
+    }
+
+    .line-coverage,
+    .line-inline-findings {
+      &.old,
+      &.old-nomappinginraw {
+        background-color: $line-removed;
+      }
+
+      &.new,
+      &.new-nomappinginraw {
+        background-color: $line-added;
+      }
+
+      &.hll {
+        --highlight-border-color: #{$blue-300};
+        background-color: $blue-50;
+      }
+    }
+  }
+
+  // highlight line via anchor
+  pre .hll {
+    background-color: $white-pre-hll-bg !important;
+  }
+
+  // Search result highlight
+  span.highlight_word {
+    background-color: $white-highlight !important;
+  }
+
+  // Links to URLs, emails, or dependencies
+  .line a {
+    color: $white-nb;
+  }
+
+  .hll { background-color: $white-hll-bg; }
+
+  .c,
+  .hljs-comment { color: $white-c;
+    font-style: italic; }
+
+  .err { color: $white-err;
+    background-color: $white-err-bg; }
+
+  .k,
+  .hljs-variable.language_,
+  .hljs-built_in { font-weight: $gl-font-weight-bold; }
+  .o { font-weight: $gl-font-weight-bold; }
+
+  .cm { color: $white-cm;
+    font-style: italic; }
+
+  .cp,
+  .hljs-meta { color: $white-cp;
+    font-weight: $gl-font-weight-bold; }
+
+  .c1 { color: $white-c1;
+    font-style: italic; }
+
+  .cs { color: $white-cs;
+    font-weight: $gl-font-weight-bold;
+    font-style: italic; }
+
+  .cd { color: $white-cd;
+    font-style: italic; }
+
+  .gd {
+    color: $white-gd;
+    background-color: $white-gd-bg;
+
+    .x {
+      color: $white-gd-x;
+      background-color: $white-gd-x-bg;
+    }
+  }
+
+  .ge { font-style: italic; }
+  .gr { color: $white-gr; }
+
+  .gh { color: $white-gh;
+    font-weight: $gl-font-weight-bold; }
+
+  .gi {
+    color: $white-gi;
+    background-color: $white-gi-bg;
+
+    .x {
+      color: $white-gi-x;
+      background-color: $white-gi-x-bg;
+    }
+  }
+
+  .go { color: $white-go; }
+  .gp { color: $white-gp; }
+  .gs { font-weight: $gl-font-weight-bold; }
+
+  .gu { color: $white-gu;
+    font-weight: $gl-font-weight-bold; }
+  .gt { color: $white-gt; }
+  .kc { font-weight: $gl-font-weight-bold; }
+
+  .kd,
+  .hljs-keyword { font-weight: $gl-font-weight-bold; }
+  .kn { font-weight: $gl-font-weight-bold; }
+  .kp { font-weight: $gl-font-weight-bold; }
+  .kr { font-weight: $gl-font-weight-bold; }
+
+  .kt,
+  .hljs-type { color: $white-kt;
+    font-weight: $gl-font-weight-bold; }
+  .m { color: $white-m; }
+  .s { color: $white-s; }
+
+  .n,
+  .hljs-built_in { color: $white-n; }
+
+  .na,
+  .hljs-attr,
+  .hljs-property,
+  .hljs-title.function_ { color: $white-na; }
+
+  .nb,
+  .hljs-title.class_,
+  .hljs-literal { color: $white-nb; }
+
+  .nc,
+  .hljs-title.class_,
+  .hljs-built_in { color: $white-nc;
+    font-weight: $gl-font-weight-bold; }
+  .no { color: $white-no; }
+  .ni { color: $white-ni; }
+
+  .ne { color: $white-ne;
+    font-weight: $gl-font-weight-bold; }
+
+  .nf,
+  .hljs-title,
+  .hljs-title.function_ { color: $white-nf;
+    font-weight: $gl-font-weight-bold; }
+  .nn { color: $white-nn; }
+  .nt { color: $white-nt; }
+  .nv { color: $white-nv; }
+  .ow { font-weight: $gl-font-weight-bold; }
+  .w { color: $white-w; }
+  .mf { color: $white-mf; }
+  .mh { color: $white-mh; }
+
+  .mi,
+  .hljs-number { color: $white-mi; }
+  .mo { color: $white-mo; }
+  .sb { color: $white-sb; }
+  .sc { color: $white-sc; }
+  .sd { color: $white-sd; }
+  .s2 { color: $white-s2; }
+  .se { color: $white-se; }
+  .sh { color: $white-sh; }
+  .si { color: $white-si; }
+  .sx { color: $white-sx; }
+  .sr { color: $white-sr; }
+
+  .s1,
+  .hljs-string { color: $white-s1; }
+  .ss { color: $white-ss; }
+  .bp { color: $white-bp; }
+  .vc { color: $white-vc; }
+  .vg { color: $white-vg; }
+  .vi { color: $white-vi; }
+  .il { color: $white-il; }
+
+  .gc { color: $white-gc-color;
+  background-color: $white-gc-bg; }
+}

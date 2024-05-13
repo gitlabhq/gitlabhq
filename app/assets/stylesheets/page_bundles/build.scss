@@ -44,7 +44,7 @@
   .environment-information {
     border: 1px solid var(--border-color, $border-color);
     padding: 8px $gl-padding 12px;
-    border-radius: $border-radius-default;
+    border-radius: $gl-border-radius-base;
   }
 
   .build-loader-animation {
@@ -171,7 +171,7 @@
   word-break: break-all;
   word-wrap: break-word;
   color: color-yiq($builds-log-bg);
-  border-radius: 0 0 $border-radius-default $border-radius-default;
+  border-radius: 0 0 $gl-border-radius-base $gl-border-radius-base;
   @include gl-min-h-8;
   background-color: $builds-log-bg;
 }

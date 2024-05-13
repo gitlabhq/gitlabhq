@@ -16,6 +16,7 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits', feature_category: :shared d
           get api(path, admin, admin_mode: true)
 
           expect(json_response).to be_an Hash
+          expect(json_response['ci_instance_level_variables']).to eq(Plan.default.actual_limits.ci_instance_level_variables)
           expect(json_response['ci_pipeline_size']).to eq(Plan.default.actual_limits.ci_pipeline_size)
           expect(json_response['ci_active_jobs']).to eq(Plan.default.actual_limits.ci_active_jobs)
           expect(json_response['ci_project_subscriptions']).to eq(Plan.default.actual_limits.ci_project_subscriptions)
@@ -47,6 +48,7 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits', feature_category: :shared d
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response).to be_an Hash
+          expect(json_response['ci_instance_level_variables']).to eq(Plan.default.actual_limits.ci_instance_level_variables)
           expect(json_response['ci_pipeline_size']).to eq(Plan.default.actual_limits.ci_pipeline_size)
           expect(json_response['ci_active_jobs']).to eq(Plan.default.actual_limits.ci_active_jobs)
           expect(json_response['ci_project_subscriptions']).to eq(Plan.default.actual_limits.ci_project_subscriptions)
@@ -94,6 +96,7 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits', feature_category: :shared d
         it 'updates multiple plan limits', :aggregate_failures do
           put api(path, admin, admin_mode: true), params: {
             'plan_name': 'default',
+            'ci_instance_level_variables': 103,
             'ci_pipeline_size': 101,
             'ci_active_jobs': 102,
             'ci_project_subscriptions': 104,
@@ -116,6 +119,7 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits', feature_category: :shared d
           }
 
           expect(json_response).to be_an Hash
+          expect(json_response['ci_instance_level_variables']).to eq(103)
           expect(json_response['ci_pipeline_size']).to eq(101)
           expect(json_response['ci_active_jobs']).to eq(102)
           expect(json_response['ci_project_subscriptions']).to eq(104)
@@ -167,6 +171,7 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits', feature_category: :shared d
         it 'fails to update plan limits', :aggregate_failures do
           put api(path, admin, admin_mode: true), params: {
             'plan_name': 'default',
+            'ci_instance_level_variables': 'a',
             'ci_pipeline_size': 'z',
             'ci_active_jobs': 'y',
             'ci_project_subscriptions': 'w',
@@ -190,6 +195,7 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits', feature_category: :shared d
 
           expect(response).to have_gitlab_http_status(:bad_request)
           expect(json_response['error']).to include(
+            'ci_instance_level_variables is invalid',
             'ci_pipeline_size is invalid',
             'ci_active_jobs is invalid',
             'ci_project_subscriptions is invalid',

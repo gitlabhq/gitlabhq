@@ -466,14 +466,14 @@ $tabs-holder-z-index: 250;
 
 .mr-section-container {
   border: 1px solid var(--border-color, $border-color);
-  border-radius: $border-radius-default;
+  border-radius: $gl-border-radius-base;
   background: var(--white, $white);
 
   > .mr-widget-section {
     > :last-child,
     .deploy-heading:last-child {
-      border-bottom-left-radius: $border-radius-default-inner;
-      border-bottom-right-radius: $border-radius-default-inner;
+      border-bottom-left-radius: $gl-border-radius-base-inner;
+      border-bottom-right-radius: $gl-border-radius-base-inner;
     }
   }
 
@@ -525,7 +525,7 @@ $tabs-holder-z-index: 250;
   color: var(--gl-text-color, $gl-text-color);
 
   .commit-message-edit {
-    border-radius: $border-radius-default;
+    border-radius: $gl-border-radius-base;
   }
 
   .mr-widget-section:not(:first-child) > div,
@@ -754,7 +754,7 @@ $tabs-holder-z-index: 250;
     }
 
     &.mr-pipeline-suggest {
-      border-radius: $border-radius-default;
+      border-radius: $gl-border-radius-base;
       line-height: 20px;
       border: 1px solid var(--border-color, $border-color);
 
@@ -779,7 +779,7 @@ $tabs-holder-z-index: 250;
 }
 
 .mr-widget-alert-container {
-  border-radius: $border-radius-default-inner $border-radius-default-inner 0 0;
+  border-radius: $gl-border-radius-base-inner $gl-border-radius-base-inner 0 0;
 
   .gl-alert:not(:last-child) {
     margin-bottom: 1px;
@@ -804,15 +804,15 @@ $tabs-holder-z-index: 250;
 
   &:last-child {
     .report-block-container {
-      border-bottom-left-radius: $border-radius-default-inner;
-      border-bottom-right-radius: $border-radius-default-inner;
+      border-bottom-left-radius: $gl-border-radius-base-inner;
+      border-bottom-right-radius: $gl-border-radius-base-inner;
     }
   }
 }
 
 .mr-widget-grouped-section .report-block-container {
-  border-bottom-left-radius: $border-radius-default;
-  border-bottom-right-radius: $border-radius-default;
+  border-bottom-left-radius: $gl-border-radius-base;
+  border-bottom-right-radius: $gl-border-radius-base;
 }
 
 .mr-widget-extension {
@@ -862,7 +862,7 @@ $tabs-holder-z-index: 250;
 .mr-widget-heading {
   position: relative;
   border: 1px solid var(--border-color, $border-color);
-  border-radius: $border-radius-default;
+  border-radius: $gl-border-radius-base;
   background: var(--white, $white);
 
   .gl-skeleton-loader {

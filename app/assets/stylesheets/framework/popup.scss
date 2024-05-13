@@ -9,7 +9,7 @@
   padding: $gl-padding;
   background-color: $gray-lighter;
   border: 1px solid $gray-darker;
-  border-radius: $border-radius-default;
+  border-radius: $gl-border-radius-base;
   box-shadow: 0 5px 8px $popup-box-shadow-color;
   position: relative;
 }

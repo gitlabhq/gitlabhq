@@ -21,7 +21,7 @@
 }
 
 @mixin btn-default {
-  border-radius: $border-radius-default;
+  border-radius: $gl-border-radius-base;
   font-size: $gl-font-size;
   font-weight: $gl-font-weight-normal;
   padding: $gl-vert-padding $gl-btn-padding;

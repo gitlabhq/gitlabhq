@@ -51,6 +51,8 @@ module API
       params do
         requires :plan_name, type: String, values: Plan.all_plans, desc: 'Name of the plan to update'
 
+        optional :ci_instance_level_variables, type: Integer,
+                  desc: 'Maximum number of Instance-level CI/CD variables that can be defined'
         optional :ci_pipeline_size, type: Integer, desc: 'Maximum number of jobs in a single pipeline'
         optional :ci_active_jobs, type: Integer, desc: 'Total number of jobs in currently active pipelines'
         optional :ci_project_subscriptions, type: Integer,

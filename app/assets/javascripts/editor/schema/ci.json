@@ -2306,7 +2306,7 @@
           "properties": {
             "path_prefix": {
               "type": "string",
-              "markdownDescription": "The GitLab Pages URL path prefix used in this version of pages."
+              "markdownDescription": "The GitLab Pages URL path prefix used in this version of pages. The given value is converted to lowercase, shortened to 63 bytes, and everything except alphanumeric characters is replaced with a hyphen. Leading and trailing hyphens are not permitted."
             }
           }
         }

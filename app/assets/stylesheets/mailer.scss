@@ -65,7 +65,7 @@ a {
 }
 
 .invite-btn-join {
-  border-radius: $border-radius-default;
+  border-radius: $gl-border-radius-base;
   padding: $gl-btn-vert-padding $gl-btn-horz-padding;
   cursor: pointer;
   background-color: $purple;
@@ -73,7 +73,7 @@ a {
 }
 
 .invite-btn-decline {
-  border-radius: $border-radius-default;
+  border-radius: $gl-border-radius-base;
   border: 1px solid $purple;
   padding: $gl-btn-vert-padding $gl-btn-horz-padding;
   cursor: pointer;

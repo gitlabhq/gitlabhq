@@ -23,6 +23,12 @@ Some permissions require having other permissions enabled first. For example, ad
 
 These requirements are documented in the `Required permission` column in the following table.
 
+## Code review workflow
+
+| Name | Required permission | Description | Introduced in | Feature flag | Enabled in |
+|:-----|:------------|:------------------|:---------|:--------------|:---------|
+| [`manage_merge_request_settings`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151586) |  | Configure merge request settings at the group or project level. Group actions include managing merge checks and approval settings. Project actions include managing MR configurations, approval rules and settings, and branch targets. In order to enable Suggested reviewers, the "Manage project access tokens" custom permission needs to be enabled. | GitLab [17.0](https://gitlab.com/gitlab-org/gitlab/-/issues/443235) |  |  |
+
 ## Compliance management
 
 | Name | Required permission | Description | Introduced in | Feature flag | Enabled in |

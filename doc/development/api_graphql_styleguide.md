@@ -1176,12 +1176,12 @@ is a `HashMap` where the keys are textual descriptions, and the values are URLs.
 ### Subscription tier badges
 
 If a field or argument is available to higher subscription tiers than the other fields,
-add the [tier badge](documentation/styleguide/index.md#product-tier-badges) inline.
+add the [tier details](documentation/styleguide/index.md#inline-tier-details) inline.
 
 For example:
 
 ```ruby
-description: '**(ULTIMATE ALL)** Full path of a custom template.'
+description: 'Full path of a custom template. Premium and Ultimate only.'
 ```
 
 ## Authorization

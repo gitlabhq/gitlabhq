@@ -147,7 +147,7 @@ DETAILS:
 
 Prerequisites:
 
-- You must have an active paid Premium or Ultimate subscription.
+- You must be an owner of a top-level group that has an active paid subscription or Ultimate trial.
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > Billing**.

@@ -168,7 +168,7 @@ $ide-commit-header-height: 48px;
   margin-left: $grid-size;
   background: none;
   border: 0;
-  border-radius: $border-radius-default;
+  border-radius: $gl-border-radius-base;
   color: var(--ide-text-color, $gray-900);
 
   svg {
@@ -425,7 +425,7 @@ $ide-commit-header-height: 48px;
   margin-left: -$grid-size;
   margin-right: -$grid-size;
   padding: $grid-size / 2 $grid-size;
-  border-radius: $border-radius-default;
+  border-radius: $gl-border-radius-base;
   text-align: left;
   cursor: pointer;
   height: $ide-commit-row-height;

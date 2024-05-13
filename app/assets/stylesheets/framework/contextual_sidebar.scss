@@ -82,7 +82,7 @@
       background-color: $gray-10;
       box-shadow: 0 $gl-spacing-scale-2 $gl-spacing-scale-5 $t-gray-a-24, 0 0 $gl-spacing-scale-1 $t-gray-a-24;
       border-style: none;
-      border-radius: $border-radius-default;
+      border-radius: $gl-border-radius-base;
 
       .divider {
         display: none;

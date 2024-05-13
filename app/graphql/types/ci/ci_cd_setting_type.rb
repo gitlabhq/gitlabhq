@@ -5,25 +5,28 @@ module Types
     class CiCdSettingType < BaseObject
       graphql_name 'ProjectCiCdSetting'
 
-      authorize :admin_project
+      authorize :manage_merge_request_settings
 
       field :inbound_job_token_scope_enabled,
         GraphQL::Types::Boolean,
         null: true,
         description: 'Indicates CI/CD job tokens generated in other projects ' \
           'have restricted access to this project.',
-        method: :inbound_job_token_scope_enabled?
+        method: :inbound_job_token_scope_enabled?,
+        authorize: :admin_project
       field :job_token_scope_enabled,
         GraphQL::Types::Boolean,
         null: true,
         description: 'Indicates CI/CD job tokens generated in this project ' \
           'have restricted access to other projects.',
-        method: :job_token_scope_enabled?
+        method: :job_token_scope_enabled?,
+        authorize: :admin_project
       field :keep_latest_artifact,
         GraphQL::Types::Boolean,
         null: true,
         description: 'Whether to keep the latest builds artifacts.',
-        method: :keep_latest_artifacts_available?
+        method: :keep_latest_artifacts_available?,
+        authorize: :admin_project
       field :merge_pipelines_enabled,
         GraphQL::Types::Boolean,
         null: true,
@@ -32,7 +35,8 @@ module Types
       field :project,
         Types::ProjectType,
         null: true,
-        description: 'Project the CI/CD settings belong to.'
+        description: 'Project the CI/CD settings belong to.',
+        authorize: :admin_project
     end
   end
 end

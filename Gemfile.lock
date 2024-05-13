@@ -2146,7 +2146,7 @@ DEPENDENCIES
   os (~> 1.1, >= 1.1.4)
   pact (~> 1.64)
   parallel (~> 1.19)
-  parser (~> 3.3, >= 3.3.0.5)
+  parser (= 3.3.0.5)
   parslet (~> 1.8)
   peek (~> 1.1)
   pg (~> 1.5.6)

@@ -89,6 +89,7 @@ RSpec.shared_context 'GroupPolicy context' do
       update_git_access_protocol
       remove_group
       view_edit_page
+      manage_merge_request_settings
     ]
   end
 

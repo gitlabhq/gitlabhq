@@ -195,6 +195,13 @@ A prefix allows you to differentiate between multiple GitLab Pages deployments:
 - Main Pages deployment: a Pages deployment created with a blank `path_prefix`.
 - Extra Pages deployment: a Pages deployment created with a non-blank `path_prefix`
 
+The value of `pages.path_prefix` is:
+
+- Converted to lowercase.
+- Shortened to 63 bytes.
+- Any character except numbers (`0-9`) and letter (`a-z`) is replaced with a hyphen (`-`).
+- Leading and trailing hyphens (`-`) are removed.
+
 ### Example configuration
 
 Consider a project such as `https://gitlab.example.com/namespace/project`. By default, its main Pages deployment can be accessed through:
@@ -202,11 +209,12 @@ Consider a project such as `https://gitlab.example.com/namespace/project`. By de
 - When using a [unique domain](#unique-domains): `https://project-namespace-uniqueid.gitlab.io/`.
 - When not using a unique domain: `https://namespace.gitlab.io/project`.
 
-If a `pages.path_prefix` is configured to the project branch names, and there's a
-branch named `staging`, this extra Pages deployment would be accessible through:
+If a `pages.path_prefix` is configured to the project branch names,
+like `path_prefix = $CI_COMMIT_BRANCH`, and there's a
+branch named `username/testing_feature`, this extra Pages deployment would be accessible through:
 
-- When using a [unique domain](#unique-domains): `https://project-namespace-uniqueid.gitlab.io/staging`.
-- When not using a unique domain: `https://namespace.gitlab.io/project/staging`.
+- When using a [unique domain](#unique-domains): `https://project-namespace-uniqueid.gitlab.io/username-testing-feature`.
+- When not using a unique domain: `https://namespace.gitlab.io/project/username-testing-feature`.
 
 ### Enable multiple deployments
 
@@ -259,16 +267,16 @@ pages:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH # Run on default branch (with default PAGES_PREFIX)
     - if: $CI_COMMIT_BRANCH == "staging" # Run on master (with default PAGES_PREFIX)
       variables:
-        PAGES_PREFIX: '_stg' # Prefix with _stg for the staging branch
+        PAGES_PREFIX: '-stg-' # Prefix with -stg- for the staging branch
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" # Conditionally change the prefix for Merge Requests
       when: manual # Run pages manually on Merge Requests
       variables:
-        PAGES_PREFIX: 'mr$CI_MERGE_REQUEST_IID' # Prefix with the mr<iid>, like `mr123`
+        PAGES_PREFIX: 'mr-$CI_MERGE_REQUEST_IID' # Prefix with the mr-<iid>, like `mr-123`
 ```
 
 Some other examples of mixing [variables](../../../ci/variables/index.md) with strings for dynamic prefixes:
 
-- `pages.path_prefix: '__$CI_COMMIT_REF_SLUG'`: Branch or tag name prefixed with `__`, like `__branch-name`.
+- `pages.path_prefix: 'mr-$CI_COMMIT_REF_SLUG'`: Branch or tag name prefixed with `mr-`, like `mr-branch-name`.
 - `pages.path_prefix: '-${CI_MERGE_REQUEST_IID}-'`: Merge request number prefixed and suffixed with `-`, like `-123-`.
 
 ### Use multiple deployments to create pages environments
@@ -294,11 +302,11 @@ pages:
   rules:
     - if: $CI_COMMIT_BRANCH == "staging" # ensure to run on master (with default PAGES_PREFIX)
       variables:
-        PAGES_PREFIX: '_stg' # prefix with _stg for the staging branch
+        PAGES_PREFIX: '-stg' # prefix with _stg for the staging branch
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" # conditionally change the prefix on Merge Requests
       when: manual # run pages manually on Merge Requests
       variables:
-        PAGES_PREFIX: 'mr$CI_MERGE_REQUEST_IID' # prefix with the mr<iid>, like `mr123`
+        PAGES_PREFIX: 'mr-$CI_MERGE_REQUEST_IID' # prefix with the mr-<iid>, like `mr-123`
 ```
 
 With this configuration, users will have the access to each GitLab Pages deployment through the UI.

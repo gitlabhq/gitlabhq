@@ -1,6 +1,7 @@
-.code.white {
-  @import '../white_base';
+@import '../white_base';
 
+.code.white {
+  @include white-base;
   @include conflict-colors('white');
 
   // Highlight.js theme overrides (https://gitlab.com/gitlab-org/gitlab/-/issues/365167)

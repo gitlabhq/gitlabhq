@@ -15,7 +15,7 @@
   - [Documentation process](https://docs.gitlab.com/ee/development/documentation/workflow.html).
   - [Documentation guidelines](https://docs.gitlab.com/ee/development/documentation/).
   - [Style Guide](https://docs.gitlab.com/ee/development/documentation/styleguide/).
-- [ ] If you're adding a new page, add the [product tier badge](https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#product-tier-badges) under the H1 topic title.
+- [ ] If you're adding a new page, add the [product tier details](https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#product-tier-details) under the H1 topic title.
 - [ ] If you are a GitLab team member, [request a review](https://docs.gitlab.com/ee/development/code_review.html#dogfooding-the-reviewers-feature) based on:
     - The documentation page's [metadata](https://docs.gitlab.com/ee/development/documentation/metadata.html).
     - The [associated Technical Writer](https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments).

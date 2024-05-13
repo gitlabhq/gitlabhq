@@ -33,7 +33,7 @@
   background: $white;
   border: 1px solid $gray-100;
   box-shadow: 0 1px 2px 0 rgba($black, 0.1);
-  border-radius: $border-radius-default;
+  border-radius: $gl-border-radius-base;
   z-index: 999;
 
   &.preview {

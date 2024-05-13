@@ -3812,6 +3812,9 @@ msgstr ""
 msgid "AdminSettings|Maximum number of DAG dependencies that a job can have"
 msgstr ""
 
+msgid "AdminSettings|Maximum number of Instance-level CI/CD variables that can be defined"
+msgstr ""
+
 msgid "AdminSettings|Maximum number of custom domains per project"
 msgstr ""
 

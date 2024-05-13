@@ -12,7 +12,7 @@
 .md a.gfm-project_member {
   padding: 0 2px;
   background-color: $blue-100;
-  border-radius: $border-radius-default;
+  border-radius: $gl-border-radius-base;
   color: $blue-700;
 
   &.current-user {

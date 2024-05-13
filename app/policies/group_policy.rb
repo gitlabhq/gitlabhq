@@ -291,6 +291,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :edit_billing
 
     enable :remove_group
+    enable :manage_merge_request_settings
   end
 
   rule { can?(:read_nested_project_resources) }.policy do

@@ -89,6 +89,9 @@
               %fieldset
                 = f.hidden_field(:plan_id, value: plan.id)
                 .form-group
+                  = f.label :ci_instance_level_variables, plan_limit_setting_description(:ci_instance_level_variables)
+                  = f.number_field :ci_instance_level_variables, class: 'form-control gl-form-input'
+                .form-group
                   = f.label :ci_pipeline_size, plan_limit_setting_description(:ci_pipeline_size)
                   = f.number_field :ci_pipeline_size, class: 'form-control gl-form-input'
                 .form-group

@@ -1015,7 +1015,7 @@ spec:
     available:
       type: boolean
     array_input:
-      type: array  
+      type: array
 ---
 
 # The pipeline configuration would follow...
@@ -3430,11 +3430,7 @@ Use `pages.path_prefix` to configure a path prefix for [multiple deployments](..
 
 **Keyword type**: Job keyword. You can use it only as part of a `pages` job.
 
-**Possible inputs**:
-
-- A string with valid [URL characters](https://www.ietf.org/rfc/rfc1738.txt).
-- [CI/CD variables](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
-- A combination of both.
+**Possible inputs**: A string, a [CI/CD variables](../variables/where_variables_can_be_used.md#gitlab-ciyml-file), or a combination of both. The given value is converted to lowercase, shortened to 63 bytes, and everything except alphanumeric characters is replaced with a hyphen. Leading and trailing hyphens are not permitted.
 
 **Example of `pages.path_prefix`**:
 

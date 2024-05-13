@@ -116,7 +116,7 @@ table {
 
       tr.responsive-table-border-start {
         border-width: 1px 1px 0;
-        border-radius: $border-radius-default $border-radius-default 0 0;
+        border-radius: $gl-border-radius-base $gl-border-radius-base 0 0;
         padding-top: 0;
         padding-bottom: 0;
 
@@ -131,7 +131,7 @@ table {
 
       tr.responsive-table-border-end {
         border-width: 0 1px 1px;
-        border-radius: 0 0 $border-radius-default $border-radius-default;
+        border-radius: 0 0 $gl-border-radius-base $gl-border-radius-base;
         margin-bottom: 2 * $gl-padding;
 
         > :last-child {

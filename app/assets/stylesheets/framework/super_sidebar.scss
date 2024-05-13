@@ -511,10 +511,10 @@ $command-palette-spacing: px-to-rem(14px);
 }
 
 .super-sidebar-peek {
-  border-radius: $border-radius-default;
+  border-radius: $gl-border-radius-base;
 
   .user-bar {
-    border-radius: $border-radius-default $border-radius-default 0 0;
+    border-radius: $gl-border-radius-base $gl-border-radius-base 0 0;
   }
 }
 

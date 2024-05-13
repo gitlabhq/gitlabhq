@@ -39,6 +39,7 @@ class Admin::PlanLimitsController < Admin::ApplicationController
                 pypi_max_file_size
                 terraform_module_max_file_size
                 generic_packages_max_file_size
+                ci_instance_level_variables
                 ci_pipeline_size
                 ci_active_jobs
                 ci_project_subscriptions

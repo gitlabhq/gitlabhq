@@ -37,6 +37,7 @@ Example response:
 
 ```json
 {
+  "ci_instance_level_variables": 25,
   "ci_pipeline_size": 0,
   "ci_active_jobs": 0,
   "ci_project_subscriptions": 2,
@@ -69,6 +70,7 @@ PUT /application/plan_limits
 | Attribute                         | Type    | Required | Description |
 | --------------------------------- | ------- | -------- | ----------- |
 | `plan_name`                       | string  | yes      | Name of the plan to update. |
+| `ci_instance_level_variables`     | integer | no       | Maximum number of Instance-level CI/CD variables that can be defined. |
 | `ci_pipeline_size`                | integer | no       | Maximum number of jobs in a single pipeline. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85895) in GitLab 15.0. |
 | `ci_active_jobs`                  | integer | no       | Total number of jobs in currently active pipelines. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85895) in GitLab 15.0. |
 | `ci_project_subscriptions`        | integer | no       | Maximum number of pipeline subscriptions to and from a project. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85895) in GitLab 15.0. |
@@ -96,6 +98,7 @@ Example response:
 
 ```json
 {
+  "ci_instance_level_variables": 25,
   "ci_pipeline_size": 0,
   "ci_active_jobs": 0,
   "ci_project_subscriptions": 2,

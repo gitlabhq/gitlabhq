@@ -12,7 +12,7 @@ Documentation at GitLab follows a workflow.
 
 Ensure your documentation includes:
 
-- [Product badges](styleguide/index.md#product-tier-badges).
+- [Product tier details](styleguide/index.md#product-tier-details).
 - The GitLab [version](versions.md) that introduced the feature.
 - Accurate [links](styleguide/index.md#links).
 - Accurate [user permissions](../../user/permissions.md).

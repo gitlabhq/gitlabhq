@@ -71,7 +71,7 @@
   padding: 1px $gl-padding-4;
   cursor: pointer;
   border: 1px solid $gray-100;
-  border-radius: $border-radius-default;
+  border-radius: $gl-border-radius-base;
   margin-left: 5px;
   font-size: 12px;
   line-height: $gl-font-size;
@@ -176,8 +176,8 @@
   }
 
   :first-child {
-    border-bottom-left-radius: $border-radius-default;
-    border-top-left-radius: $border-radius-default;
+    border-bottom-left-radius: $gl-border-radius-base;
+    border-top-left-radius: $gl-border-radius-base;
   }
 
   :not(:first-child) {
@@ -185,8 +185,8 @@
   }
 
   :last-child {
-    border-bottom-right-radius: $border-radius-default;
-    border-top-right-radius: $border-radius-default;
+    border-bottom-right-radius: $gl-border-radius-base;
+    border-top-right-radius: $gl-border-radius-base;
   }
 }
 

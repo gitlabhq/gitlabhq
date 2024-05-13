@@ -4,15 +4,15 @@
  */
 .file-holder {
   border: 1px solid $border-color;
-  border-radius: $border-radius-default;
+  border-radius: $gl-border-radius-base;
 
   &.file-holder-top-border {
     border-top: 1px solid $border-color;
 
     .file-title {
       // Prevents the top border getting clipped by the background
-      border-top-left-radius: $border-radius-default;
-      border-top-right-radius: $border-radius-default;
+      border-top-left-radius: $gl-border-radius-base;
+      border-top-right-radius: $gl-border-radius-base;
     }
   }
 
@@ -247,7 +247,7 @@ span.idiff {
     padding: $gl-padding-8 $gl-padding;
     margin: 0;
     min-height: px-to-rem($file-header-height);
-    border-radius: $border-radius-default-inner $border-radius-default-inner 0 0;
+    border-radius: $gl-border-radius-base-inner $gl-border-radius-base-inner 0 0;
 
     @include media-breakpoint-up(md) {
       flex-wrap: nowrap;
@@ -574,7 +574,7 @@ span.idiff {
 
 .code {
   padding: 0;
-  border-radius: 0 0 $border-radius-default $border-radius-default;
+  border-radius: 0 0 $gl-border-radius-base $gl-border-radius-base;
 }
 
 .blame-stream-container {

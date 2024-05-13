@@ -11,7 +11,14 @@ RSpec.describe Preloaders::GroupRootAncestorPreloader do
   let_it_be(:private_developer_group) { create(:group, :private, project_creation_level: nil, name: 'c public developer', path: 'c-public-developer') }
   let_it_be(:public_maintainer_group) { create(:group, :private, name: 'a public maintainer', path: 'a-public-maintainer', parent: root_parent2) }
 
-  let(:root_query_regex) { /\ASELECT.+FROM "namespaces" WHERE "namespaces"."id" = \d+/ }
+  let(:root_query_regex) do
+    if Feature.enabled?(:use_sql_functions_for_primary_key_lookups, Feature.current_request)
+      /\ASELECT.+ FROM find_namespaces_by_id\(\d+\)/
+    else
+      /\ASELECT.+FROM "namespaces" WHERE "namespaces"."id" = \d+/
+    end
+  end
+
   let(:additional_preloads) { [] }
   let(:groups) { [guest_group, private_maintainer_group, private_developer_group, public_maintainer_group] }
   let(:pristine_groups) { Group.where(id: groups) }
