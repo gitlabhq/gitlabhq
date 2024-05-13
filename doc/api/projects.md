@@ -2769,6 +2769,8 @@ GET /projects/:id/hooks/:hook_id
 {
   "id": 1,
   "url": "http://example.com/hook",
+  "name": "Hook name",
+  "description": "Hook description",
   "project_id": 3,
   "push_events": true,
   "push_events_branch_filter": "",
@@ -2806,6 +2808,8 @@ POST /projects/:id/hooks
 |------------------------------|-------------------|----------|-------------|
 | `id`                         | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 | `url`                        | string            | Yes      | The hook URL. |
+| `name`                       | string            | No       | Name of the hook ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.0). |
+| `description`                | string            | No       | Description of the hook ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.0). |
 | `confidential_issues_events` | boolean           | No       | Trigger hook on confidential issues events. |
 | `confidential_note_events`   | boolean           | No       | Trigger hook on confidential note events. |
 | `deployment_events`          | boolean           | No       | Trigger hook on deployment events. |
@@ -2837,6 +2841,8 @@ PUT /projects/:id/hooks/:hook_id
 | `hook_id`                    | integer           | Yes      | The ID of the project hook. |
 | `id`                         | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 | `url`                        | string            | Yes      | The hook URL. |
+| `name`                       | string            | No       | Name of the hook ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.0). |
+| `description`                | string            | No       | Description of the hook ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.0). |
 | `confidential_issues_events` | boolean           | No       | Trigger hook on confidential issues events. |
 | `confidential_note_events`   | boolean           | No       | Trigger hook on confidential note events. |
 | `deployment_events`          | boolean           | No       | Trigger hook on deployment events. |

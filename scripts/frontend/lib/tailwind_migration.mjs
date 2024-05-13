@@ -151,14 +151,14 @@ export function getColorTokens(tokens) {
  * from our gray scale
  */
 const { text, ...lightModeTokensRaw } = JSON.parse(
-  fs.readFileSync(path.join(GITLAB_UI_DIR, 'dist/tokens/json/tokens.json'), 'utf-8'),
+  fs.readFileSync(path.join(GITLAB_UI_DIR, 'src/tokens/build/json/tokens.json'), 'utf-8'),
 );
 const lightModeHexToToken = Object.fromEntries(getColorTokens(lightModeTokensRaw));
 
 export const darkModeTokenToHex = Object.fromEntries(
   getColorTokens(
     JSON.parse(
-      fs.readFileSync(path.join(GITLAB_UI_DIR, 'dist/tokens/json/tokens.dark.json'), 'utf-8'),
+      fs.readFileSync(path.join(GITLAB_UI_DIR, 'src/tokens/build/json/tokens.dark.json'), 'utf-8'),
     ),
   ).map(([color, key]) => [key.startsWith('text-') ? `gl-${key}` : key, color]),
 );

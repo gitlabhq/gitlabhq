@@ -50,6 +50,8 @@ RSpec.shared_examples 'web-hook API endpoints' do |prefix|
 
   let(:update_params) do
     {
+      name: 'Updated name',
+      description: 'Updated description',
       push_events: false,
       job_events: true,
       push_events_branch_filter: 'updated-branch-filter'

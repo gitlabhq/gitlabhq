@@ -1,5 +1,5 @@
 @import './themes/dark';
-@import '@gitlab/ui/dist/tokens/css/tokens.dark';
+@import '@gitlab/ui/src/tokens/build/css/tokens.dark';
 @import 'page_bundles/mixins_and_variables_and_functions';
 
 :root {
@@ -170,7 +170,7 @@ aside.right-sidebar:not(.right-sidebar-merge-requests) {
 }
 
 .gl-dark  {
-  .gl-filtered-search-token-type, 
+  .gl-filtered-search-token-type,
   .gl-filtered-search-token-operator,
   .gl-filtered-search-token-data,
   .gl-filtered-search-suggestion-active {
@@ -181,7 +181,7 @@ aside.right-sidebar:not(.right-sidebar-merge-requests) {
   .gl-filtered-search-suggestion-active {
     .dropdown-item:hover {
       background-color: $gray-200;
-    } 
+    }
   }
 
   .filtered-search-token {
@@ -198,7 +198,7 @@ aside.right-sidebar:not(.right-sidebar-merge-requests) {
 
   .filtered-search-wrapper li.droplab-item-active button {
     background-color: $gray-100;
-   
+
     &:hover {
      background-color: $gray-200;
     }

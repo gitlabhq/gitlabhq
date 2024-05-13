@@ -1,4 +1,4 @@
-import { GlDropdownItem, GlSorting, GlFilteredSearch, GlFormCheckbox } from '@gitlab/ui';
+import { GlDisclosureDropdownItem, GlSorting, GlFilteredSearch, GlFormCheckbox } from '@gitlab/ui';
 import { shallowMount, mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
@@ -60,7 +60,8 @@ describe('FilteredSearchBarRoot', () => {
   const findGlSorting = () => wrapper.findComponent(GlSorting);
   const findGlFilteredSearch = () => wrapper.findComponent(GlFilteredSearch);
   const findGlFormCheckbox = () => wrapper.findComponent(GlFormCheckbox);
-  const findGlDropdownItem = () => wrapper.findComponent(GlDropdownItem);
+  const findGlDisclosureDropdownItems = () => wrapper.findAllComponents(GlDisclosureDropdownItem);
+  const findGlDisclosureDropdownItem = () => wrapper.findComponent(GlDisclosureDropdownItem);
 
   afterEach(() => {
     localStorage.clear();
@@ -425,11 +426,7 @@ describe('FilteredSearchBarRoot', () => {
       wrapper.vm.recentSearchesStore.addRecentSearch(mockHistoryItems[0]);
       await nextTick();
 
-      const searchHistoryItemsEl = wrapper.findAll(
-        '.gl-search-box-by-click-menu .gl-search-box-by-click-history-item',
-      );
-
-      expect(searchHistoryItemsEl.at(0).text()).toBe(
+      expect(findGlDisclosureDropdownItems().at(0).text()).toBe(
         'Author := @rootLabel := ~bugMilestone := %v1.0"duo"',
       );
     });
@@ -446,7 +443,7 @@ describe('FilteredSearchBarRoot', () => {
 
         wrapper.vm.recentSearchesStore.addRecentSearch([tokenValueMembership]);
         await nextTick();
-        expect(findGlDropdownItem().text()).toBe('Membership := Direct');
+        expect(findGlDisclosureDropdownItem().text()).toBe('Membership := Direct');
       });
     });
 
@@ -461,7 +458,7 @@ describe('FilteredSearchBarRoot', () => {
         });
         wrapper.vm.recentSearchesStore.addRecentSearch([tokenValueMembership]);
         await nextTick();
-        expect(findGlDropdownItem().text()).toBe('Membership := exclude');
+        expect(findGlDisclosureDropdownItem().text()).toBe('Membership := exclude');
       });
     });
 

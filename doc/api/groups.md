@@ -1588,6 +1588,8 @@ GET /groups/:id/hooks/:hook_id
 {
   "id": 1,
   "url": "http://example.com/hook",
+  "name": "Hook name",
+  "description": "Hook description",
   "group_id": 3,
   "push_events": true,
   "push_events_branch_filter": "",
@@ -1627,8 +1629,10 @@ POST /groups/:id/hooks
 | -----------------------------| -------------- |----------| ----------- |
 | `id`                         | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
 | `url`                        | string         | yes      | The hook URL |
+| `name`                       | string         | no       | Name of the hook ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.0) |
+| `description`                | string         | no       | Description of the hook ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.0) |
 | `push_events`                | boolean        | no       | Trigger hook on push events |
-| `push_events_branch_filter`  | string         | No       | Trigger hook on push events for matching branches only. |
+| `push_events_branch_filter`  | string         | no       | Trigger hook on push events for matching branches only |
 | `issues_events`              | boolean        | no       | Trigger hook on issues events |
 | `confidential_issues_events` | boolean        | no       | Trigger hook on confidential issues events |
 | `merge_requests_events`      | boolean        | no       | Trigger hook on merge requests events |
@@ -1644,8 +1648,8 @@ POST /groups/:id/hooks
 | `member_events`              | boolean        | no       | Trigger hook on member events |
 | `enable_ssl_verification`    | boolean        | no       | Do SSL verification when triggering the hook |
 | `token`                      | string         | no       | Secret token to validate received payloads; not returned in the response |
-| `resource_access_token_events` | boolean         | no       | Trigger hook on project access token expiry events. |
-| `custom_webhook_template`    | string         | No       | Custom webhook template for the hook. |
+| `resource_access_token_events` | boolean         | no       | Trigger hook on project access token expiry events |
+| `custom_webhook_template`    | string         | no       | Custom webhook template for the hook |
 
 ### Edit group hook
 
@@ -1660,8 +1664,10 @@ PUT /groups/:id/hooks/:hook_id
 | `id`                         | integer or string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding). |
 | `hook_id`                    | integer        | yes      | The ID of the group hook. |
 | `url`                        | string         | yes      | The hook URL. |
+| `name`                       | string         | no       | Name of the hook ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.0). |
+| `description`                | string         | no       | Description of the hook ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.0). |
 | `push_events`                | boolean        | no       | Trigger hook on push events. |
-| `push_events_branch_filter`  | string         | No       | Trigger hook on push events for matching branches only. |
+| `push_events_branch_filter`  | string         | no       | Trigger hook on push events for matching branches only. |
 | `issues_events`              | boolean        | no       | Trigger hook on issues events. |
 | `confidential_issues_events` | boolean        | no       | Trigger hook on confidential issues events. |
 | `merge_requests_events`      | boolean        | no       | Trigger hook on merge requests events. |
@@ -1679,7 +1685,7 @@ PUT /groups/:id/hooks/:hook_id
 | `service_access_tokens_expiration_enforced` | boolean | no | Require service account access tokens to have an expiration date. |
 | `token`                      | string         | no       | Secret token to validate received payloads. Not returned in the response. When you change the webhook URL, the secret token is reset and not retained. |
 | `resource_access_token_events` | boolean      | no       | Trigger hook on project access token expiry events. |
-| `custom_webhook_template`    | string         | No       | Custom webhook template for the hook. |
+| `custom_webhook_template`    | string         | no       | Custom webhook template for the hook. |
 
 ### Delete group hook
 

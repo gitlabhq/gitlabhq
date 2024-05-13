@@ -22,6 +22,8 @@ module API
       end
 
       params :common_hook_parameters do
+        optional :name, type: String, desc: 'Name of the hook'
+        optional :description, type: String, desc: 'Description of the hook'
         optional :push_events, type: Boolean, desc: "Trigger hook on push events"
         optional :issues_events, type: Boolean, desc: "Trigger hook on issues events"
         optional :confidential_issues_events, type: Boolean, desc: "Trigger hook on confidential issues events"

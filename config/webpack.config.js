@@ -213,7 +213,10 @@ let shouldExcludeFromCompliling = (modulePath) =>
 // between Vue.js 2 and Vue.js 3 while using built gitlab-ui by default
 if (EXPLICIT_VUE_VERSION) {
   Object.assign(alias, {
-    '@gitlab/ui/dist/tokens/js': path.join(ROOT_PATH, 'node_modules/@gitlab/ui/dist/tokens/js'),
+    '@gitlab/ui/src/tokens/build/js': path.join(
+      ROOT_PATH,
+      'node_modules/@gitlab/ui/src/tokens/build/js',
+    ),
     '@gitlab/ui/dist': '@gitlab/ui/src',
     '@gitlab/ui': '@gitlab/ui/src',
   });

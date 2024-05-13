@@ -3,6 +3,8 @@
 FactoryBot.define do
   factory :project_hook do
     url { generate(:url) }
+    name { generate(:name) }
+    description { "Description of #{name}" }
     enable_ssl_verification { false }
     project
 

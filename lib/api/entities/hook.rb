@@ -5,6 +5,8 @@ module API
     class Hook < Grape::Entity
       expose :id, documentation: { type: 'string', example: 1 }
       expose :url, documentation: { type: 'string', example: 'https://webhook.site' }
+      expose :name, documentation: { type: 'string', example: 'Hook name' }
+      expose :description, documentation: { type: 'string', example: 'Hook description' }
       expose :created_at, documentation: { type: 'dateTime', example: '2012-05-28T04:42:42-07:00' }
       expose :push_events, documentation: { type: 'boolean' }
       expose :tag_push_events, documentation: { type: 'boolean' }
