@@ -37,6 +37,8 @@ namespace :admin do
 
   resource :impersonation, only: :destroy
 
+  resource :initial_setup, controller: :initial_setup, only: [:new, :update]
+
   resources :abuse_reports, only: [:index, :show, :update, :destroy] do
     member do
       put :moderate_user

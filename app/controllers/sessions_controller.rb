@@ -3,6 +3,7 @@
 class SessionsController < Devise::SessionsController
   include InternalRedirect
   include AuthenticatesWithTwoFactor
+  include CheckInitialSetup
   include Devise::Controllers::Rememberable
   include Recaptcha::Adapters::ViewMethods
   include Recaptcha::Adapters::ControllerMethods
@@ -181,18 +182,9 @@ class SessionsController < Devise::SessionsController
   # Handle an "initial setup" state, where there's only one user, it's an admin,
   # and they require a password change.
   def check_initial_setup
-    return unless User.limit(2).count == 1 # Count as much 2 to know if we have exactly one
+    return unless in_initial_setup_state?
 
-    user = User.admins.last
-
-    return unless user && user.require_password_creation_for_web?
-
-    Users::UpdateService.new(current_user, user: user).execute do |user|
-      @token = user.generate_reset_token
-    end
-
-    redirect_to edit_user_password_path(reset_password_token: @token),
-      notice: _("Please create a password for your new account.")
+    redirect_to new_admin_initial_setup_path
   end
 
   def ensure_password_authentication_enabled!

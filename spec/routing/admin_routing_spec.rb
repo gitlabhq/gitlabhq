@@ -134,6 +134,23 @@ RSpec.describe Admin::HealthCheckController, "routing" do
   end
 end
 
+# new_admin_initial_setup GET /admin/initial_setup/new(.:format) admin/initial_setup#new
+# admin_initial_setup PATCH /admin/initial_setup(.:format) admin/initial_setup#update
+#                     PUT /admin/initial_setup(.:format) admin/initial_setup#update
+RSpec.describe Admin::InitialSetupController, "routing" do
+  it "GET #new" do
+    expect(get("/admin/initial_setup/new")).to route_to('admin/initial_setup#new')
+  end
+
+  it "PUT #update" do
+    expect(put("/admin/initial_setup")).to route_to('admin/initial_setup#update')
+  end
+
+  it "PATCH #update" do
+    expect(patch("/admin/initial_setup")).to route_to('admin/initial_setup#update')
+  end
+end
+
 # admin_dev_ops_reports GET    /admin/dev_ops_reports(.:format) admin/dev_ops_report#show
 RSpec.describe Admin::DevOpsReportController, "routing" do
   it "to #show" do

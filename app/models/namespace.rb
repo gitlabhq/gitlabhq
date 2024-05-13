@@ -350,6 +350,8 @@ class Namespace < ApplicationRecord
   end
 
   def default_branch_protection_settings
+    return Gitlab::CurrentSettings.default_branch_protection_defaults if user_namespace?
+
     settings = default_branch_protection_defaults
 
     return settings unless settings.blank?

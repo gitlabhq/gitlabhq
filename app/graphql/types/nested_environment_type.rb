@@ -7,14 +7,14 @@ module Types
     description 'Describes where code is deployed for a project organized by folder.'
 
     field :name, GraphQL::Types::String,
-          null: false, description: 'Human-readable name of the environment.'
+      null: false, description: 'Human-readable name of the environment.'
 
     field :size, GraphQL::Types::Int,
-          null: false, description: 'Number of environments nested in the folder.'
+      null: false, description: 'Number of environments nested in the folder.'
 
     field :environment,
-          Types::EnvironmentType,
-          null: true, description: 'Latest environment in the folder.'
+      Types::EnvironmentType,
+      null: true, description: 'Latest environment in the folder.'
 
     def environment
       BatchLoader::GraphQL.for(object.last_id).batch do |environment_ids, loader|

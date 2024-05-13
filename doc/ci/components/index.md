@@ -235,8 +235,12 @@ To access the CI/CD Catalog and view the published components that are available
 Alternatively, if you are already in the [pipeline editor](../pipeline_editor/index.md)
 in your project, you can select **Browse CI/CD Catalog**.
 
-NOTE:
-Only public and internal projects are discoverable in the CI/CD Catalog.
+Visibility of components in the CI/CD catalog follows the component source project's
+[visibility setting](../../user/public_access.md). Components with source projects set to:
+
+- Private are visible only to users assigned at least the Guest role in the source component project.
+- Internal are visible only to users logged into the GitLab instance.
+- Public are visible to anyone with access to the GitLab instance.
 
 ### Publish a component project
 

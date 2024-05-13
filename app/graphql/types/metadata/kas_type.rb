@@ -8,11 +8,11 @@ module Types
       authorize :read_instance_metadata
 
       field :enabled, GraphQL::Types::Boolean, null: false,
-                                               description: 'Indicates whether the Kubernetes agent server is enabled.'
+        description: 'Indicates whether the Kubernetes agent server is enabled.'
       field :external_url, GraphQL::Types::String, null: true,
-                                                   description: 'URL used by the agents to communicate with the server.'
+        description: 'URL used by the agents to communicate with the server.'
       field :version, GraphQL::Types::String, null: true,
-                                              description: 'KAS version.'
+        description: 'KAS version.'
     end
   end
 end

@@ -9,7 +9,7 @@ RSpec.describe Gitlab::Graphql::Pagination::Keyset::Connection do
   # The spec will be merged with connection_spec.rb in the future.
   let(:nodes) { Project.all.order(id: :asc) }
   let(:arguments) { {} }
-  let(:context) { GraphQL::Query::Context.new(query: query_double, values: nil, object: nil) }
+  let(:context) { GraphQL::Query::Context.new(query: query_double, values: nil) }
 
   let_it_be(:column_order_id) { Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(attribute_name: 'id', order_expression: Project.arel_table[:id].asc) }
   let_it_be(:column_order_id_desc) { Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(attribute_name: 'id', order_expression: Project.arel_table[:id].desc) }

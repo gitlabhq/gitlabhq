@@ -4439,6 +4439,9 @@ msgstr ""
 msgid "AdminUsers|user cap"
 msgstr ""
 
+msgid "Administrator Account Setup"
+msgstr ""
+
 msgid "Administrator users are required to enable Two-Factor Authentication for their account."
 msgstr ""
 
@@ -27311,10 +27314,16 @@ msgstr ""
 msgid "Inheriting from 'parent' is not yet supported"
 msgstr ""
 
+msgid "Initial account configured! Please sign in."
+msgstr ""
+
 msgid "Initial default branch name"
 msgstr ""
 
 msgid "Initial default branch protection"
+msgstr ""
+
+msgid "Initial setup complete!"
 msgstr ""
 
 msgid "Inline"
@@ -33720,9 +33729,6 @@ msgstr ""
 msgid "Needs attention"
 msgstr ""
 
-msgid "Needs your review"
-msgstr ""
-
 msgid "Network"
 msgstr ""
 
@@ -37052,6 +37058,9 @@ msgstr ""
 msgid "Password (optional)"
 msgstr ""
 
+msgid "Password Confirmation"
+msgstr ""
+
 msgid "Password authentication is unavailable."
 msgstr ""
 
@@ -38462,6 +38471,9 @@ msgstr ""
 msgid "Please complete your profile with email address"
 msgstr ""
 
+msgid "Please confirm the password you entered above."
+msgstr ""
+
 msgid "Please confirm the request by accessing %{url} through a web browser."
 msgstr ""
 
@@ -38484,9 +38496,6 @@ msgid "Please convert %{linkStart}them to Git%{linkEnd}, and go through the %{li
 msgstr ""
 
 msgid "Please copy, download, or print your recovery codes before proceeding."
-msgstr ""
-
-msgid "Please create a password for your new account."
 msgstr ""
 
 msgid "Please create a username with only alphanumeric characters."
@@ -38606,6 +38615,9 @@ msgstr ""
 msgid "Please select..."
 msgstr ""
 
+msgid "Please set the admin account password."
+msgstr ""
+
 msgid "Please solve the captcha"
 msgstr ""
 
@@ -38616,6 +38628,9 @@ msgid "Please try again or reach out to %{support_link_start}GitLab Support%{sup
 msgstr ""
 
 msgid "Please try and refresh the page. If the problem persists please contact support."
+msgstr ""
+
+msgid "Please use an email address or domain you control."
 msgstr ""
 
 msgid "Please use this form to report to the administrator users who create spam issues, comments or behave inappropriately."
@@ -43900,6 +43915,9 @@ msgstr ""
 msgid "Review time is the amount of time since the first comment in a merge request."
 msgstr ""
 
+msgid "Reviewed"
+msgstr ""
+
 msgid "Reviewer"
 msgid_plural "%d Reviewers"
 msgstr[0] ""
@@ -43921,6 +43939,12 @@ msgid "Reviewing"
 msgstr ""
 
 msgid "Reviewing (merge request !%{mergeRequestId})"
+msgstr ""
+
+msgid "Reviews approved"
+msgstr ""
+
+msgid "Reviews requested"
 msgstr ""
 
 msgid "Revoke"
@@ -48497,6 +48521,9 @@ msgid "Set up assertions/attributes/claims (email, first_name, last_name) and Na
 msgstr ""
 
 msgid "Set up new device"
+msgstr ""
+
+msgid "Set up root account"
 msgstr ""
 
 msgid "Set up your project to automatically push and/or pull changes to/from another repository. Branches, tags, and commits will be synced automatically."
@@ -56501,6 +56528,9 @@ msgstr ""
 msgid "Username and Password"
 msgstr ""
 
+msgid "Username for administrator account."
+msgstr ""
+
 msgid "Username is already taken."
 msgstr ""
 
@@ -57650,9 +57680,6 @@ msgid "Wait for the file to load to copy its contents"
 msgstr ""
 
 msgid "Waiting for approvals"
-msgstr ""
-
-msgid "Waiting for assignees"
 msgstr ""
 
 msgid "Waiting for merge (open and assigned)"
@@ -60155,9 +60182,6 @@ msgstr ""
 msgid "Your applications"
 msgstr ""
 
-msgid "Your approvals"
-msgstr ""
-
 msgid "Your authorized applications"
 msgstr ""
 
@@ -60352,6 +60376,9 @@ msgid "Your work"
 msgstr ""
 
 msgid "Your work items are being imported. Once finished, you'll receive a confirmation email."
+msgstr ""
+
+msgid "Yours approved"
 msgstr ""
 
 msgid "You’re about to permanently delete the %{issuableType} ‘%{strongOpen}%{issuableTitle}%{strongClose}’. To avoid data loss, consider %{strongOpen}closing this %{issuableType}%{strongClose} instead. Once deleted, it cannot be undone or recovered."
@@ -61943,6 +61970,9 @@ msgstr ""
 msgid "mrWidget|This merge request failed to be merged automatically"
 msgstr ""
 
+msgid "mrWidget|This merge request is #%{mergeTrainPosition} of %{total} in queue."
+msgstr ""
+
 msgid "mrWidget|To approve this merge request, please enter your password. This project requires all approvals to be authenticated."
 msgstr ""
 
@@ -61953,6 +61983,9 @@ msgid "mrWidget|To change this default message, edit the template for merge comm
 msgstr ""
 
 msgid "mrWidget|To change this default message, edit the template for squash commit messages. %{linkStart}Learn more%{linkEnd}."
+msgstr ""
+
+msgid "mrWidget|View merge train details."
 msgstr ""
 
 msgid "mrWidget|Your merge request is almost ready!"

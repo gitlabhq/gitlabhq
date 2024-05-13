@@ -62,7 +62,8 @@ RSpec.describe Mutations::Boards::Issues::IssueMoveList do
       end
 
       it 'raises an error' do
-        expect { subject }.to raise_error(::GraphQL::CoercionError, "\"#{params[:board_id]}\" does not represent an instance of Board")
+        expect(subject).to be_a(::GraphQL::CoercionError)
+        expect(subject.message).to eq("\"#{params[:board_id]}\" does not represent an instance of Board")
       end
     end
 

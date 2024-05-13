@@ -88,7 +88,8 @@ module Gitlab
 
                 Gitlab::AppLogger.info(message: "Created partition",
                                        partition_name: partition.partition_name,
-                                       table_name: partition.table)
+                                       table_name: partition.table,
+                                       connection_name: @connection_name)
 
                 lock_partitions_for_writes(partition) if should_lock_for_writes?
               end

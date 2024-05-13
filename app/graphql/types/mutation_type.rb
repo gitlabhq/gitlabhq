@@ -184,7 +184,7 @@ module Types
     mount_mutation Mutations::UserPreferences::Update
     mount_mutation Mutations::Packages::Destroy
     mount_mutation Mutations::Packages::BulkDestroy,
-                   extensions: [::Gitlab::Graphql::Limit::FieldCallCount => { limit: 1 }]
+      extensions: [::Gitlab::Graphql::Limit::FieldCallCount => { limit: 1 }]
     mount_mutation Mutations::Packages::DestroyFile
     mount_mutation Mutations::Packages::Protection::Rule::Create, alpha: { milestone: '16.5' }
     mount_mutation Mutations::Packages::Protection::Rule::Delete, alpha: { milestone: '16.6' }

@@ -21,10 +21,16 @@ export function initMergeRequestDashboard(el) {
                 merge: true,
                 fields: {
                   reviewRequestedMergeRequests: {
-                    keyArgs: ['state', 'reviewState', 'reviewStates'],
+                    keyArgs: ['state', 'reviewState', 'reviewStates', 'mergedAfter'],
                   },
                   assignedMergeRequests: {
-                    keyArgs: ['state', 'reviewState', 'reviewStates'],
+                    keyArgs: [
+                      'state',
+                      'reviewState',
+                      'reviewStates',
+                      'reviewerWildcardId',
+                      'mergedAfter',
+                    ],
                   },
                 },
               },

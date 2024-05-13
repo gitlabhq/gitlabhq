@@ -25,7 +25,7 @@ func echoRequest(rw http.ResponseWriter, req *http.Request) {
 
 var echoRequestFunc = http.HandlerFunc(echoRequest)
 
-func expectHandlerWithWatcher(t *testing.T, watchHandler WatchKeyHandler, data string, contentType string, expectedHttpStatus int, msgAndArgs ...interface{}) {
+func expectHandlerWithWatcher(t *testing.T, watchHandler WatchKeyHandler, data string, contentType string, expectedHTTPStatus int, msgAndArgs ...interface{}) {
 	h := RegisterHandler(echoRequestFunc, watchHandler, time.Second)
 
 	rw := httptest.NewRecorder()
@@ -34,11 +34,11 @@ func expectHandlerWithWatcher(t *testing.T, watchHandler WatchKeyHandler, data s
 
 	h.ServeHTTP(rw, req)
 
-	require.Equal(t, expectedHttpStatus, rw.Code, msgAndArgs...)
+	require.Equal(t, expectedHTTPStatus, rw.Code, msgAndArgs...)
 }
 
-func expectHandler(t *testing.T, data string, contentType string, expectedHttpStatus int, msgAndArgs ...interface{}) {
-	expectHandlerWithWatcher(t, nil, data, contentType, expectedHttpStatus, msgAndArgs...)
+func expectHandler(t *testing.T, data string, contentType string, expectedHTTPStatus int, msgAndArgs ...interface{}) {
+	expectHandlerWithWatcher(t, nil, data, contentType, expectedHTTPStatus, msgAndArgs...)
 }
 
 func TestRegisterHandlerLargeBody(t *testing.T) {
@@ -131,13 +131,13 @@ func TestApplicationJson(t *testing.T) {
 	req, _ := http.NewRequest("POST", "/test", nil)
 	req.Header.Set("Content-Type", "application/json")
 
-	require.True(t, isApplicationJson(req), "expected to match 'application/json' as 'application/json'")
+	require.True(t, isApplicationJSON(req), "expected to match 'application/json' as 'application/json'")
 
 	req.Header.Set("Content-Type", "application/json; charset=utf-8")
-	require.True(t, isApplicationJson(req), "expected to match 'application/json; charset=utf-8' as 'application/json'")
+	require.True(t, isApplicationJSON(req), "expected to match 'application/json; charset=utf-8' as 'application/json'")
 
 	req.Header.Set("Content-Type", "text/plain")
-	require.False(t, isApplicationJson(req), "expected not to match 'text/plain' as 'application/json'")
+	require.False(t, isApplicationJSON(req), "expected not to match 'text/plain' as 'application/json'")
 }
 
 func TestCloneRequestWithBody(t *testing.T) {

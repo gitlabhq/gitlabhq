@@ -1,0 +1,30 @@
+= render 'devise/shared/tab_single', tab_title: _('Administrator Account Setup')
+
+= gitlab_ui_form_for(@user, url: admin_initial_setup_path, html: { method: :patch, class: 'gl-show-field-errors', aria: { live: 'assertive' }}) do |f|
+
+  - if @result && @result[:status] == :error
+    = render Pajamas::AlertComponent.new(variant: :danger, dismissible: false, alert_options: { class: 'gl-mb-5' }) do |c|
+      - c.with_body do
+        = @result[:message]
+
+  .form-group
+    = f.label :username, _('Username')
+    = f.text_field :username, name: '', class: "form-control gl-form-input", required: true, autocomplete: 'off', value: @user.username, disabled: true, title: _('Username for administrator account.')
+
+  .form-group
+    = f.label :email, _('Email')
+    = f.email_field :email, class: "form-control gl-form-input", required: true, autocomplete: 'off', value: @user.email, autofocus: true, title: _('Please provide a valid email address.')
+    .form-text.text-muted
+      = _('Please use an email address or domain you control.')
+
+  .form-group
+    = f.label :password, _('Password')
+    = f.password_field :password, class: "form-control gl-form-input js-password-complexity-validation", required: true, autocomplete: 'new-password', value: '', title: _('Please set the admin account password.')
+    = render_if_exists 'shared/password_requirements_list'
+
+  .form-group
+    = f.label :password_confirmation, _('Password Confirmation')
+    = f.password_field :password_confirmation, class: "form-control gl-form-input", required: true, autocomplete: 'new-password', value: '', title: _('Please confirm the password you entered above.')
+
+  = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, block: true) do
+    = _('Set up root account')

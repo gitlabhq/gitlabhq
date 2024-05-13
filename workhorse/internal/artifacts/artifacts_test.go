@@ -1,3 +1,4 @@
+// Package artifacts_test provides test cases for the artifacts package.
 package artifacts
 
 import (
@@ -15,5 +16,4 @@ func TestMain(m *testing.M) {
 	}
 
 	os.Exit(m.Run())
-
 }

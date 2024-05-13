@@ -109,10 +109,6 @@ class GraphqlController < ApplicationController
     render_error(exception.message, status: :unprocessable_entity)
   end
 
-  rescue_from ::GraphQL::CoercionError do |exception|
-    render_error(exception.message, status: :unprocessable_entity)
-  end
-
   rescue_from ActiveRecord::QueryAborted do |exception|
     log_exception(exception)
 
@@ -231,7 +227,7 @@ class GraphqlController < ApplicationController
   end
 
   def query
-    params.fetch(:query, '')
+    GraphQL::Language.escape_single_quoted_newlines(params.fetch(:query, ''))
   end
 
   def multiplex_param

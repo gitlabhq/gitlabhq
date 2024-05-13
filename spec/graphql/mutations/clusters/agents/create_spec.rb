@@ -12,8 +12,7 @@ RSpec.describe Mutations::Clusters::Agents::Create do
   let(:context) do
     GraphQL::Query::Context.new(
       query: query_double(schema: nil), # rubocop:disable RSpec/VerifiedDoubles
-      values: { current_user: user },
-      object: nil
+      values: { current_user: user }
     )
   end
 

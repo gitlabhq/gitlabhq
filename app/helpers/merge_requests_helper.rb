@@ -356,7 +356,14 @@ module MergeRequestsHelper
     {
       lists: [
         {
-          title: _('Needs your review'),
+          title: _('Open'),
+          query: 'assignedMergeRequests',
+          variables: {
+            reviewerWildcardId: 'NONE'
+          }
+        },
+        {
+          title: _('Reviews requested'),
           query: 'reviewRequestedMergeRequests',
           variables: {
             reviewState: 'UNREVIEWED'
@@ -370,13 +377,6 @@ module MergeRequestsHelper
           }
         },
         {
-          title: _('Your approvals'),
-          query: 'reviewRequestedMergeRequests',
-          variables: {
-            reviewStates: %w[APPROVED UNAPPROVED]
-          }
-        },
-        {
           title: _('Waiting for reviewers'),
           query: 'assignedMergeRequests',
           variables: {
@@ -384,10 +384,24 @@ module MergeRequestsHelper
           }
         },
         {
-          title: _('Waiting for assignees'),
+          title: _('Yours approved'),
+          query: 'assignedMergeRequests',
+          variables: {
+            reviewState: 'APPROVED'
+          }
+        },
+        {
+          title: _('Reviewed'),
           query: 'reviewRequestedMergeRequests',
           variables: {
             reviewStates: %w[REQUESTED_CHANGES REVIEWED]
+          }
+        },
+        {
+          title: _('Reviews approved'),
+          query: 'reviewRequestedMergeRequests',
+          variables: {
+            reviewState: 'APPROVED'
           }
         },
         {

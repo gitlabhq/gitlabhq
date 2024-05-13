@@ -328,7 +328,7 @@ D, [2020-03-05T17:03:24.696493 #910] DEBUG -- :   User Load (2.1ms)  SELECT "use
 
 Give the following a try:
 
-- `User.find_by(email: 'admin@example.com')`
+- `User.find_by(username: 'root')`
 - `User.where.not(admin: true)`
 - `User.where('created_at < ?', 7.days.ago)`
 

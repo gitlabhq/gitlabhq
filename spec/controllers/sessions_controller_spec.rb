@@ -70,6 +70,14 @@ RSpec.describe SessionsController, feature_category: :system_access do
       expect(controller.stored_location_for(:redirect)).to eq(search_path)
     end
 
+    it 'redirects when in_initial_setup_state? is detected' do
+      allow(controller).to receive(:in_initial_setup_state?).and_return(true)
+
+      get(:new)
+
+      expect(response).to redirect_to(new_admin_initial_setup_path)
+    end
+
     it_behaves_like "switches to user preferred language", 'Sign in'
   end
 

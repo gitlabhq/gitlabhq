@@ -1,5 +1,5 @@
 user_args = {
-  email:    ENV['GITLAB_ROOT_EMAIL'].presence || 'admin@example.com',
+  email:    ENV['GITLAB_ROOT_EMAIL'].presence || "gitlab_admin_#{SecureRandom.hex(3)}@example.com",
   name:     'Administrator',
   username: 'root',
   admin:    true,

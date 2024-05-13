@@ -36,6 +36,8 @@ module Types
         as: :issue_types,
         description: 'Filters out issues by the given issue types.',
         required: false
+
+      validates mutually_exclusive: [:milestone_title, :milestone_wildcard_id]
     end
   end
 end

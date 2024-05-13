@@ -618,6 +618,17 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
         end
       end
 
+      context 'for a user namespace' do
+        let_it_be(:user_namespace) { create(:user_namespace) }
+
+        it 'returns the instance level setting' do
+          expected_settings = Gitlab::Access::BranchProtection.protected_against_developer_pushes.deep_stringify_keys
+          settings = user_namespace.default_branch_protection_settings.to_hash
+
+          expect(settings).to eq(expected_settings)
+        end
+      end
+
       context 'for a group' do
         context 'that has not altered the default value' do
           it 'returns the instance level setting' do

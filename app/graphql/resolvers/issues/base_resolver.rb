@@ -81,6 +81,10 @@ module Resolvers
         required: false,
         description: 'Issues updated before this date.'
 
+      validates mutually_exclusive: [:assignee_usernames, :assignee_username, :assignee_wildcard_id]
+      validates mutually_exclusive: [:milestone_title, :milestone_wildcard_id]
+      validates mutually_exclusive: [:release_tag, :release_tag_wildcard_id]
+
       class << self
         def resolver_complexity(args, child_complexity:)
           complexity = super
@@ -107,11 +111,6 @@ module Resolvers
 
         args[:not] = args[:not].to_h if args[:not]
         args[:or] = args[:or].to_h if args[:or]
-
-        params_not_mutually_exclusive(args, mutually_exclusive_assignee_username_args)
-        params_not_mutually_exclusive(args, mutually_exclusive_milestone_args)
-        params_not_mutually_exclusive(args.fetch(:not, {}), mutually_exclusive_milestone_args)
-        params_not_mutually_exclusive(args, mutually_exclusive_release_tag_args)
 
         super
       end
@@ -156,26 +155,6 @@ module Resolvers
 
       def rewrite_param_name(params, old_name, new_name)
         params[new_name] = params.delete(old_name) if params && params[old_name].present?
-      end
-
-      def mutually_exclusive_release_tag_args
-        [:release_tag, :release_tag_wildcard_id]
-      end
-
-      def mutually_exclusive_milestone_args
-        [:milestone_title, :milestone_wildcard_id]
-      end
-
-      def mutually_exclusive_assignee_username_args
-        [:assignee_usernames, :assignee_username, :assignee_wildcard_id]
-      end
-
-      def params_not_mutually_exclusive(args, mutually_exclusive_args)
-        return unless args.slice(*mutually_exclusive_args).compact.size > 1
-
-        arg_str = mutually_exclusive_args.map { |x| x.to_s.camelize(:lower) }.join(', ')
-        raise ::Gitlab::Graphql::Errors::ArgumentError,
-          "only one of [#{arg_str}] arguments is allowed at the same time."
       end
     end
     # rubocop:enable Graphql/ResolverType

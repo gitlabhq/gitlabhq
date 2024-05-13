@@ -160,7 +160,7 @@ module GraphqlHelpers
                         args_internal(field, args: args, query_ctx: query_ctx, parent: parent, extras: extras, query: query)
                       end
 
-      if prepared_args.class <= Gitlab::Graphql::Errors::BaseError
+      if prepared_args.class <= GraphQL::ExecutionError
         prepared_args
       else
         field.resolve(parent, prepared_args, query_ctx)
@@ -223,7 +223,7 @@ module GraphqlHelpers
     if ctx.is_a?(Hash)
       q = double('Query', schema: schema, subscription_update?: subscription_update, warden: GraphQL::Schema::Warden::PassThruWarden)
       allow(q).to receive(:after_lazy) { |value, &block| schema.after_lazy(value, &block) }
-      ctx = GraphQL::Query::Context.new(query: q, object: obj, values: ctx)
+      ctx = GraphQL::Query::Context.new(query: q, values: ctx)
     end
 
     resolver_class.new(object: obj, context: ctx, field: field)
