@@ -160,8 +160,8 @@ module ApplicationSettingsHelper
   end
 
   def external_authorization_description
-    s_("ExternalAuthorization|Access to projects is validated on an external service"\
-        " using their classification label.")
+    s_("ExternalAuthorization|Access to projects is validated on an external service "\
+        "using their classification label.")
   end
 
   def external_authorization_allow_token_help_text
@@ -195,8 +195,8 @@ module ApplicationSettingsHelper
   end
 
   def external_authorization_client_url_help_text
-    s_("ExternalAuthorization|Classification label to use when requesting authorization if no specific "\
-      " label is defined on the project.")
+    s_("ExternalAuthorization|Classification label to use when requesting authorization if no specific  "\
+      "label is defined on the project.")
   end
 
   def sidekiq_job_limiter_mode_help_text

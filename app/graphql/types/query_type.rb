@@ -81,13 +81,13 @@ module Types
       null: true,
       alpha: { milestone: '15.6' },
       resolver: Resolvers::IssuesResolver,
-      description: 'Find issues visible to the current user.' \
-                   ' At least one filter must be provided.'
+      description: 'Find issues visible to the current user. ' \
+                   'At least one filter must be provided.'
     field :jobs,
       ::Types::Ci::JobType.connection_type,
       null: true,
-      description: 'All jobs on this GitLab instance.' \
-                   ' Returns an empty result for users without administrator access.',
+      description: 'All jobs on this GitLab instance. ' \
+                   'Returns an empty result for users without administrator access.',
       resolver: ::Resolvers::Ci::AllJobsResolver
     field :merge_request, Types::MergeRequestType,
       null: true,

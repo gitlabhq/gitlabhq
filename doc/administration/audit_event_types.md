@@ -334,6 +334,13 @@ Audit event types belong to the following product categories.
 | [`squash_commit_template_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107533) | Event triggered on updating the merge request squash commit template for a project| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [15.8](https://gitlab.com/gitlab-org/gitlab/-/issues/369314) | Project |
 | [`squash_option_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/84624) | Triggered when squash option setting has been changed.| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/301124) | Project |
 
+### Importers
+
+| Name | Description | Saved to database | Streamed | Introduced in | Scope |
+|:------------|:------------|:------------------|:---------|:--------------|:--------------|
+| [`group_export_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/TODO) | Triggered when a group file export is created| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [17.0](https://gitlab.com/gitlab-org/gitlab/-/issues/294168) | Group |
+| [`project_export_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/TODO) | Triggered when a project file export is created| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [17.0](https://gitlab.com/gitlab-org/gitlab/-/issues/294168) | Project |
+
 ### Incident management
 
 | Name | Description | Saved to database | Streamed | Introduced in | Scope |

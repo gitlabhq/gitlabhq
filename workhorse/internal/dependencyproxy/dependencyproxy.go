@@ -19,6 +19,7 @@ import (
 
 const dialTimeout = 10 * time.Second
 const responseHeaderTimeout = 10 * time.Second
+const uploadRequestGracePeriod = 60 * time.Second
 
 var httpTransport = transport.NewRestrictedTransport(transport.WithDialTimeout(dialTimeout), transport.WithResponseHeaderTimeout(responseHeaderTimeout))
 var httpClient = &http.Client{
@@ -103,7 +104,21 @@ func (p *Injector) Inject(w http.ResponseWriter, r *http.Request, sendData strin
 	w.Header().Set("Content-Length", dependencyResponse.Header.Get("Content-Length"))
 
 	teeReader := io.TeeReader(dependencyResponse.Body, w)
-	saveFileRequest, err := p.newUploadRequest(r.Context(), params, r, teeReader)
+	// upload request context should follow the r context + a grace period
+	ctx, cancel := context.WithCancel(context.WithoutCancel(r.Context()))
+	defer cancel()
+
+	stop := context.AfterFunc(r.Context(), func() {
+		t := time.AfterFunc(uploadRequestGracePeriod, cancel) // call cancel function after 60 seconds
+
+		context.AfterFunc(ctx, func() {
+			if !t.Stop() { // if ctx is cancelled and time still running, we stop the timer
+				<-t.C // drain the channel because it's recommended in the docs: https://pkg.go.dev/time#Timer.Stop
+			}
+		})
+	})
+	defer stop()
+	saveFileRequest, err := p.newUploadRequest(ctx, params, r, teeReader)
 	if err != nil {
 		fail.Request(w, r, fmt.Errorf("dependency proxy: failed to create request: %w", err))
 	}
@@ -128,7 +143,7 @@ func (p *Injector) Inject(w http.ResponseWriter, r *http.Request, sendData strin
 	if nrw.status != http.StatusOK {
 		fields := log.Fields{"code": nrw.status}
 
-		fail.Request(nrw, r, fmt.Errorf("dependency proxy: failed to upload file"), fail.WithFields(fields))
+		fail.Request(nrw, saveFileRequest, fmt.Errorf("dependency proxy: failed to upload file"), fail.WithFields(fields))
 	}
 }
 

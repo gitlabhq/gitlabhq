@@ -54,6 +54,9 @@ module Types
       value 'NEED_REBASE',
         value: :need_rebase,
         description: 'Merge request needs to be rebased.'
+      value 'APPROVALS_SYNCING',
+        value: :approvals_syncing,
+        description: 'Merge request approvals currently syncing.'
     end
   end
 end

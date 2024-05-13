@@ -66,6 +66,24 @@ The same setting
 [is available](../../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls) in the API as the
 `bulk_import_enabled` attribute.
 
+## Enable silent admin exports
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151278) in GitLab 17.0 [with a flag](../../administration/feature_flags.md) named `export_audit_events`. Disabled by default.
+
+FLAG:
+The availability of this feature is controlled by a feature flag. For more information, see the history.
+
+Enable silent admin exports to prevent [audit events](../audit_event_reports.md) when
+instance administrators trigger a [project or group file export](../../user/project/settings/import_export.md).
+Exports from non-administrators still generate audit events.
+
+To enable silent admin project and group file exports:
+
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Settings > General**, then expand **Import and export settings**.
+1. Scroll to **Silent exports by admins**.
+1. Select the **Enabled** checkbox.
+
 ## Max export size
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86124) in GitLab 15.0.

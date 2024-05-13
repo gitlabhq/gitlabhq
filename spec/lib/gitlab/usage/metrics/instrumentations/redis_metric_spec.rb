@@ -6,7 +6,7 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::RedisMetric, :clean_git
   feature_category: :service_ping do
   before do
     4.times do
-      Gitlab::UsageDataCounters::SourceCodeCounter.count(:pushes)
+      Gitlab::Redis::SharedState.with { |redis| redis.incr('USAGE_SOURCE_CODE_PUSHES') }
     end
   end
 

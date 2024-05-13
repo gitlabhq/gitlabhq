@@ -887,7 +887,7 @@ Parameters:
 | `avatar`                                                | mixed   | no       | Image file for avatar of the group.                                                                                                                                                             |
 | `default_branch`                                        | string  | no       | The [default branch](../user/project/repository/branches/default.md) name for group's projects. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/442298) in GitLab 16.11.             |
 | `default_branch_protection`                             | integer | no       | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/408314) in GitLab 17.0. Use `default_branch_protection_defaults` instead.             |
-| `default_branch_protection_defaults`                    | hash    | no       | See [Options for `default_branch_protection_defaults`](#options-for-default_branch_protection_defaults).                                                                                        |
+| `default_branch_protection_defaults`                    | hash    | no       | Introduced in GitLab 17.0. For available options, see [Options for `default_branch_protection_defaults`](#options-for-default_branch_protection_defaults).                                                                                        |
 | `description`                                           | string  | no       | The group's description.                                                                                                                                                                        |
 | `enabled_git_access_protocol`                           | string  | no       | Enabled protocols for Git access. Allowed values are: `ssh`, `http`, and `all` to allow both protocols. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/436618) in GitLab 16.9. |
 | `emails_disabled`                                       | boolean | no       | _([Deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127899) in GitLab 16.5.)_ Disable email notifications. Use `emails_enabled` instead.                                       |
@@ -922,15 +922,17 @@ The `default_branch_protection` attribute determines whether users with the Deve
 
 ### Options for `default_branch_protection_defaults`
 
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/408314) in GitLab 17.0.
+
 The `default_branch_protection_defaults` attribute describes the default branch
 protection defaults. All parameters are optional.
 
-| Key                          | Type    | Description                                                                             |
-|------------------------------|---------|-----------------------------------------------------------------------------------------|
-| `allowed_to_push`            | array   | An array of access levels allowed to push. Supports Developer (30) or Maintainer (40).  |
-| `allow_force_push`           | boolean | Allow force push for all users with push access.                                        |
+| Key                          | Type    | Description |
+|:-----------------------------|:--------|:------------|
+| `allowed_to_push`            | array   | An array of access levels allowed to push. Supports Developer (30) or Maintainer (40). |
+| `allow_force_push`           | boolean | Allow force push for all users with push access. |
 | `allowed_to_merge`           | array   | An array of access levels allowed to merge. Supports Developer (30) or Maintainer (40). |
-| `developer_can_initial_push` | boolean | Allow developers to initial push.                                                       |
+| `developer_can_initial_push` | boolean | Allow developers to initial push. |
 
 ## New Subgroup
 
@@ -1059,7 +1061,7 @@ PUT /groups/:id
 | `avatar`                                                | mixed   | no       | Image file for avatar of the group. |
 | `default_branch`                                        | string  | no       | The [default branch](../user/project/repository/branches/default.md) name for group's projects. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/442298) in GitLab 16.11. |
 | `default_branch_protection`                             | integer | no       | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/408314) in GitLab 17.0. Use `default_branch_protection_defaults` instead. |
-| `default_branch_protection_defaults`                    | hash    | no       | See [Options for `default_branch_protection_defaults`](#options-for-default_branch_protection_defaults). |
+| `default_branch_protection_defaults`                    | hash    | no       | [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/408314) in GitLab 17.0. For available options, see [Options for `default_branch_protection_defaults`](#options-for-default_branch_protection_defaults). |
 | `description`                                           | string  | no       | The description of the group. |
 | `enabled_git_access_protocol`                           | string  | no       | Enabled protocols for Git access. Allowed values are: `ssh`, `http`, and `all` to allow both protocols. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/436618) in GitLab 16.9. |
 | `emails_disabled`                                       | boolean | no       | _([Deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127899) in GitLab 16.5.)_ Disable email notifications. Use `emails_enabled` instead. |

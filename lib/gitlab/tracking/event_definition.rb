@@ -12,15 +12,15 @@ module Gitlab
       attr_reader :attributes
 
       class << self
-        def paths
-          @paths ||= [Rails.root.join('config', 'events', '*.yml'), Rails.root.join('ee', 'config', 'events', '*.yml')]
-        end
-
         def definitions
-          paths.flat_map { |glob_path| load_all_from_path(glob_path) }
+          @definitions ||= paths.flat_map { |glob_path| load_all_from_path(glob_path) }
         end
 
         private
+
+        def paths
+          @paths ||= [Rails.root.join('config', 'events', '*.yml'), Rails.root.join('ee', 'config', 'events', '*.yml')]
+        end
 
         def load_from_file(path)
           definition = File.read(path)

@@ -10,7 +10,6 @@ module Gitlab
       KubernetesAgentCounter,
       NoteCounter,
       WebIdeCounter,
-      SourceCodeCounter,
       MergeRequestWidgetExtensionCounter
     ].freeze
 

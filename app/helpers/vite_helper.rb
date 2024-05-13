@@ -28,4 +28,12 @@ module ViteHelper
     parts.map
          .with_index { |part, idx| "pages.#{(parts[0, idx] << part).join('.')}.js" }
   end
+
+  def universal_stylesheet_link_tag(path, **options)
+    stylesheet_link_tag(path, **options)
+  end
+
+  def universal_path_to_stylesheet(path)
+    ActionController::Base.helpers.stylesheet_path(path)
+  end
 end

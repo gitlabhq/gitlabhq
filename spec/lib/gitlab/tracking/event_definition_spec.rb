@@ -26,6 +26,12 @@ RSpec.describe Gitlab::Tracking::EventDefinition, feature_category: :service_pin
   let(:definition) { described_class.new(path, attributes) }
   let(:yaml_content) { attributes.deep_stringify_keys.to_yaml }
 
+  around do |example|
+    described_class.instance_variable_set(:@definitions, nil)
+    example.run
+    described_class.instance_variable_set(:@definitions, nil)
+  end
+
   def write_metric(metric, path, content)
     path = File.join(metric, path)
     dir = File.dirname(path)
@@ -129,6 +135,18 @@ RSpec.describe Gitlab::Tracking::EventDefinition, feature_category: :service_pin
       write_metric(metric1, path, yaml_content)
 
       is_expected.to be_one
+    end
+
+    context 'when definitions are already loaded' do
+      before do
+        allow(Dir).to receive(:glob).and_call_original
+        described_class.definitions
+      end
+
+      it 'does not read any files' do
+        expect(Dir).not_to receive(:glob)
+        described_class.definitions
+      end
     end
   end
 end

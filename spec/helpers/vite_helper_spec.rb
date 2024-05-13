@@ -23,4 +23,19 @@ RSpec.describe ViteHelper, feature_category: :tooling do
       it { expect(helper.vite_page_entrypoint_paths).to eq(result) }
     end
   end
+
+  describe '#universal_stylesheet_link_tag' do
+    it do
+      link_tag = Capybara.string(helper.universal_stylesheet_link_tag('application')).first('link', visible: :all)
+
+      expect(link_tag[:rel]).to eq('stylesheet')
+      expect(link_tag[:href]).to match_asset_path('application.css')
+    end
+  end
+
+  describe '#universal_path_to_stylesheet' do
+    it do
+      expect(helper.universal_path_to_stylesheet('application')).to match_asset_path('application.css')
+    end
+  end
 end

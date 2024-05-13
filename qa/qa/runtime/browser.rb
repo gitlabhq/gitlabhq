@@ -5,8 +5,6 @@ require 'rspec/expectations'
 require 'capybara/rspec'
 require 'capybara-screenshot/rspec'
 
-require 'gitlab_handbook'
-
 module QA
   module Runtime
     class Browser
@@ -225,7 +223,6 @@ module QA
 
         Chemlab.configure do |config|
           config.browser = Capybara.current_session.driver.browser # reuse Capybara session
-          config.libraries = [GitlabHandbook]
           config.base_url = Runtime::Scenario.attributes[:gitlab_address] # reuse GitLab address
           config.hide_banner = true
         end

@@ -67,6 +67,8 @@ describe('MembersTable', () => {
         currentUserId: 1,
         canManageMembers: true,
         namespace: MEMBER_TYPES.invite,
+        namespaceReachedLimit: false,
+        namespaceUserLimit: 1,
         ...provide,
       },
       stubs: [

@@ -3935,6 +3935,9 @@ msgstr ""
 msgid "AdminSettings|Show a redirect page that warns you about user-generated content in GitLab Pages."
 msgstr ""
 
+msgid "AdminSettings|Silent exports by admins %{silent_admin_exports_link_start}%{icon}%{silent_admin_exports_link_end}"
+msgstr ""
+
 msgid "AdminSettings|Size and domain settings for Pages static sites."
 msgstr ""
 
@@ -8415,6 +8418,9 @@ msgid "Billing|Groups in the Free tier are limited to %d seat"
 msgid_plural "Billing|Groups in the Free tier are limited to %d seats"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Billing|Invited group"
+msgstr ""
 
 msgid "Billing|Members who were invited via a group invitation cannot be removed. You can either remove the entire group, or ask an Owner of the invited group to remove the member."
 msgstr ""
@@ -31893,6 +31899,9 @@ msgstr ""
 msgid "Members|User created"
 msgstr ""
 
+msgid "Members|You can no longer accept access requests because you've reached the %{limit} user limit."
+msgstr ""
+
 msgid "Members|You cannot remove yourself from a personal project."
 msgstr ""
 
@@ -52135,6 +52144,9 @@ msgid "The merge conflicts for this merge request have already been resolved."
 msgstr ""
 
 msgid "The merge conflicts for this merge request have already been resolved. Please return to the merge request."
+msgstr ""
+
+msgid "The merge request approvals are currently syncing."
 msgstr ""
 
 msgid "The metric must be one of %{metrics}."

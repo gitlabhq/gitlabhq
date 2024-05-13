@@ -23,4 +23,5 @@ export const FAILURE_REASONS = {
   status_checks_must_pass: __('Status checks must pass.'),
   jira_association_missing: __('Either the title or description must reference a Jira issue.'),
   requested_changes: __('The change requests must be completed or resolved.'),
+  approvals_syncing: __('The merge request approvals are currently syncing.'),
 };

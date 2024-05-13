@@ -2,22 +2,6 @@
 # Cop supports --autocorrect.
 Layout/LineContinuationLeadingSpace:
   Exclude:
-    - 'app/graphql/resolvers/issues/base_resolver.rb'
-    - 'app/graphql/resolvers/work_items/types_resolver.rb'
-    - 'app/graphql/types/query_type.rb'
-    - 'app/helpers/application_settings_helper.rb'
-    - 'app/helpers/preferences_helper.rb'
-    - 'app/models/environment.rb'
-    - 'ee/app/graphql/ee/mutations/issues/create.rb'
-    - 'ee/app/graphql/ee/types/merge_request_type.rb'
-    - 'ee/app/graphql/mutations/requirements_management/export_requirements.rb'
-    - 'ee/app/models/ci/minutes/notification.rb'
-    - 'ee/app/models/ee/group_group_link.rb'
-    - 'ee/app/models/ee/project_group_link.rb'
-    - 'ee/app/models/protected_environment.rb'
-    - 'ee/app/services/system_notes/epics_service.rb'
-    - 'ee/lib/ee/gitlab/ci/pipeline/quota/size.rb'
-    - 'ee/lib/ee/gitlab/git_access.rb'
     - 'ee/lib/tasks/gitlab/geo.rake'
     - 'lib/gitlab/background_migration/populate_operation_visibility_permissions_from_operations.rb'
     - 'lib/gitlab/ci/parsers/security/validators/schema_validator.rb'

@@ -6509,6 +6509,14 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
   end
 
+  describe '#temporarily_unapproved?' do
+    subject(:temporarily_unapproved) { merge_request.temporarily_unapproved? }
+
+    let(:merge_request) { build_stubbed(:merge_request) }
+
+    it { is_expected.to eq(false) }
+  end
+
   describe '#allows_multiple_assignees?' do
     let(:merge_request) { build_stubbed(:merge_request) }
 

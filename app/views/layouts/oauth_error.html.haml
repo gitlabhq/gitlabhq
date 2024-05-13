@@ -3,7 +3,7 @@
   %head
     %meta{ :content => "width=device-width, initial-scale=1", :name => "viewport" }
     %title= yield(:title)
-    = stylesheet_link_tag 'application_utilities'
+    = universal_stylesheet_link_tag 'application_utilities'
     %style
       = error_css
     :css

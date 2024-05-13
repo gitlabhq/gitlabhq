@@ -20,6 +20,7 @@ import {
   USER_STATE_BLOCKED,
   BADGE_LABELS_AWAITING_SIGNUP,
   BADGE_LABELS_PENDING,
+  TAB_QUERY_PARAM_VALUES,
 } from '../../constants';
 import RemoveGroupLinkModal from '../modals/remove_group_link_modal.vue';
 import RemoveMemberModal from '../modals/remove_member_modal.vue';
@@ -52,6 +53,8 @@ export default {
       import('ee_component/members/components/modals/disable_two_factor_modal.vue'),
     LdapOverrideConfirmationModal: () =>
       import('ee_component/members/components/modals/ldap_override_confirmation_modal.vue'),
+    UserLimitReachedAlert: () =>
+      import('ee_component/members/components/table/user_limit_reached_alert.vue'),
   },
   inject: ['namespace', 'currentUserId', 'canManageMembers'],
   props: {
@@ -83,6 +86,9 @@ export default {
     },
     userIsLoggedIn() {
       return this.currentUserId !== null;
+    },
+    onAccessRequestTab() {
+      return this.tabQueryParamValue === TAB_QUERY_PARAM_VALUES.accessRequest;
     },
   },
   methods: {
@@ -214,6 +220,7 @@ export default {
 
 <template>
   <div>
+    <user-limit-reached-alert v-if="onAccessRequestTab" />
     <gl-table
       v-bind="tableAttrs.table"
       class="members-table"

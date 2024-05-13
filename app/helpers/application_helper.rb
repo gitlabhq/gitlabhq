@@ -3,6 +3,8 @@
 require 'uri'
 
 module ApplicationHelper
+  include ViteHelper
+
   # See https://docs.gitlab.com/ee/development/ee_features.html#code-in-appviews
   # rubocop: disable CodeReuse/ActiveRecord
   # We allow partial to be nil so that collection views can be passed in
@@ -287,7 +289,7 @@ module ApplicationHelper
   end
 
   def stylesheet_link_tag_defer(path)
-    stylesheet_link_tag(path, media: "all", crossorigin: ActionController::Base.asset_host ? 'anonymous' : nil)
+    universal_stylesheet_link_tag(path, media: "all", crossorigin: ActionController::Base.asset_host ? 'anonymous' : nil)
   end
 
   def sign_in_with_redirect?
@@ -422,7 +424,7 @@ module ApplicationHelper
       if defer
         stylesheet_link_tag_defer path
       else
-        stylesheet_link_tag path
+        universal_stylesheet_link_tag path
       end
     end
   end

@@ -63,6 +63,10 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
       end
 
       it 'change Visibility and Access Controls' do
+        expect(current_settings.project_export_enabled).to be(true)
+        expect(current_settings.bulk_import_enabled).to be(false)
+        expect(current_settings.silent_admin_exports_enabled).to be(false)
+
         within_testid('admin-import-export-settings') do
           within_testid('project-export') do
             uncheck 'Enabled'
@@ -72,12 +76,28 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
             check 'Enabled'
           end
 
+          within_testid('silent-admin-exports') do
+            check 'Enabled'
+          end
+
           click_button 'Save changes'
         end
 
-        expect(current_settings.project_export_enabled).to be_falsey
+        expect(current_settings.project_export_enabled).to be(false)
         expect(current_settings.bulk_import_enabled).to be(true)
+        expect(current_settings.silent_admin_exports_enabled).to be(true)
         expect(page).to have_content 'Application settings saved successfully'
+      end
+
+      context 'when `export_audit_events` flag is disabled' do
+        before do
+          stub_feature_flags(export_audit_events: false)
+          visit general_admin_application_settings_path
+        end
+
+        it 'does not display the silent admin exports setting' do
+          expect(page).not_to have_selector('[data-testid="silent-admin-exports"]')
+        end
       end
 
       it 'change Keys settings' do

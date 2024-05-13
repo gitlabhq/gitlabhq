@@ -193,7 +193,11 @@ class GroupsController < Groups::ApplicationController
   # rubocop: enable CodeReuse/ActiveRecord
 
   def export
-    export_service = Groups::ImportExport::ExportService.new(group: @group, user: current_user)
+    export_service = Groups::ImportExport::ExportService.new(
+      group: @group,
+      user: current_user,
+      exported_by_admin: current_user.can_admin_all_resources?
+    )
 
     if export_service.async_execute
       redirect_to edit_group_path(@group), notice: _('Group export started. A download link will be sent by email and made available on this page.')

@@ -2,16 +2,6 @@
 # Cop supports --autocorrect.
 Layout/SpaceInsideParens:
   Exclude:
-    - 'ee/spec/requests/customers_dot/proxy_controller_spec.rb'
-    - 'ee/spec/serializers/member_user_entity_spec.rb'
-    - 'ee/spec/services/app_sec/dast/site_profile_secret_variables/create_or_update_service_spec.rb'
-    - 'ee/spec/services/app_sec/dast/site_validations/runner_service_spec.rb'
-    - 'ee/spec/services/app_sec/fuzzing/coverage/corpuses/create_service_spec.rb'
-    - 'ee/spec/services/audit_events/streaming/headers/base_spec.rb'
-    - 'ee/spec/services/audit_events/streaming/headers/create_service_spec.rb'
-    - 'ee/spec/services/audit_events/streaming/headers/destroy_service_spec.rb'
-    - 'ee/spec/services/audit_events/streaming/headers/update_service_spec.rb'
-    - 'ee/spec/services/ci_cd/github_integration_setup_service_spec.rb'
     - 'ee/spec/services/ci_cd/github_setup_service_spec.rb'
     - 'ee/spec/services/ee/boards/issues/list_service_spec.rb'
     - 'ee/spec/services/ee/notification_service_spec.rb'

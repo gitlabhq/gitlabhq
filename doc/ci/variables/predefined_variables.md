@@ -53,7 +53,7 @@ as it can cause the pipeline to behave unexpectedly.
 | `CI_COMMIT_TITLE`                 | Pipeline    | 10.8   | all    | The title of the commit. The full first line of the message. |
 | `CI_CONCURRENT_ID`                | Jobs only   | all    | 11.10  | The unique ID of build execution in a single executor. |
 | `CI_CONCURRENT_PROJECT_ID`        | Jobs only   | all    | 11.10  | The unique ID of build execution in a single executor and project. |
-| `CI_CONFIG_PATH`                  | Pipeline    | 9.4    | 0.5    | The path to the CI/CD configuration file. Defaults to `.gitlab-ci.yml`. Read-only inside a running pipeline. |
+| `CI_CONFIG_PATH`                  | Pipeline    | 9.4    | 0.5    | The path to the CI/CD configuration file. Defaults to `.gitlab-ci.yml`. |
 | `CI_DEBUG_TRACE`                  | Pipeline    | all    | 1.7    | `true` if [debug logging (tracing)](index.md#enable-debug-logging) is enabled. |
 | `CI_DEBUG_SERVICES`               | Pipeline    | 15.7   | 15.7   | `true` if [service container logging](../services/index.md#capturing-service-container-logs) is enabled. |
 | `CI_DEFAULT_BRANCH`               | Pipeline    | 12.4   | all    | The name of the project's default branch. |

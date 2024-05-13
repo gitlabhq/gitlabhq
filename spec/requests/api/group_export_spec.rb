@@ -119,6 +119,34 @@ RSpec.describe API::GroupExport, feature_category: :importers do
 
         expect(response).to have_gitlab_http_status(:accepted)
       end
+
+      it 'calls the service correctly' do
+        expect_next_instance_of(Groups::ImportExport::ExportService,
+          group: group,
+          user: user,
+          exported_by_admin: false
+        ) do |service|
+          expect(service).to receive(:async_execute).and_return(true)
+        end
+
+        post api(path, user)
+      end
+
+      context 'when user is an admin', :enable_admin_mode do
+        let_it_be(:user) { create(:admin) }
+
+        it 'calls the service correctly' do
+          expect_next_instance_of(Groups::ImportExport::ExportService,
+            group: group,
+            user: user,
+            exported_by_admin: true
+          ) do |service|
+            expect(service).to receive(:async_execute).and_return(true)
+          end
+
+          post api(path, user)
+        end
+      end
     end
 
     context 'when the export cannot be started' do

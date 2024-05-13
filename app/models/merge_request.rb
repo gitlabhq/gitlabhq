@@ -2270,6 +2270,10 @@ class MergeRequest < ApplicationRecord
     )
   end
 
+  def temporarily_unapproved?
+    false
+  end
+
   private
 
   def check_mergeability_states(checks:, execute_all: false, **params)

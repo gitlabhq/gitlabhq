@@ -1,11 +1,11 @@
 %head
-  = stylesheet_link_tag "fonts"
+  = universal_stylesheet_link_tag "fonts"
   - if params[:lookbook][:display][:theme] == "light"
-    = stylesheet_link_tag "application"
-    = stylesheet_link_tag "application_utilities"
+    = universal_stylesheet_link_tag "application"
+    = universal_stylesheet_link_tag "application_utilities"
   - else
-    = stylesheet_link_tag "application_dark"
-    = stylesheet_link_tag "application_utilities_dark"
+    = universal_stylesheet_link_tag "application_dark"
+    = universal_stylesheet_link_tag "application_utilities_dark"
 
 %body
   .gl-mt-6{ class: (params[:lookbook][:display][:layout] == "fluid" ? "container-fluid" : "container") }

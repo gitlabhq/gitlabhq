@@ -75,6 +75,12 @@ This limit:
 
 No response headers are provided.
 
+To avoid being rate limited, you can:
+
+- Stagger the execution of your automated pipelines.
+- Configure [exponential back off and retry](https://docs.aws.amazon.com/prescriptive-guidance/latest/cloud-design-patterns/retry-backoff.html) for failed authentication attempts.
+- Use a documented process and [best practice](https://about.gitlab.com/blog/2023/10/25/access-token-lifetime-limits/#how-to-minimize-the-impact) to manage token expiry.
+
 For configuration information, see
 [Omnibus GitLab configuration options](https://docs.gitlab.com/omnibus/settings/configuration.html#configure-a-failed-authentication-ban).
 

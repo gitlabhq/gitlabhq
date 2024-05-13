@@ -22,42 +22,23 @@ with [Scaled Agile Framework (SAFe)](https://handbook.gitlab.com/handbook/market
 
 <!-- vale gitlab.Spelling = YES -->
 
-## Team planning
-
-Get work done as a team.
-
+- [Tutorial: Use GitLab to facilitate scrum](../tutorials/scrum_events/index.md)
 - [Labels](../user/project/labels.md)
 - [Iterations](../user/group/iterations/index.md)
 - [Milestones](../user/project/milestones/index.md)
 - [Issues](../user/project/issues/index.md)
+- [Issue boards](../user/project/issue_board.md)
 - [Comments and threads](../user/discussions/index.md)
 - [Tasks](../user/tasks.md)
 - [Requirements](../user/project/requirements/index.md)
 - [Time tracking](../user/project/time_tracking.md)
 - [Customer relations management (CRM)](../user/crm/index.md)
-  - [Contacts](../user/crm/index.md#contacts)
-  - [Organizations](../user/crm/index.md#organizations)
 - [Wikis](../user/project/wiki/index.md)
-
-## Portfolio management
-
-Align your work across teams.
-
 - [Epics](../user/group/epics/index.md)
-  - [Multi-level epics](../user/group/epics/manage_epics.md#multi-level-child-epics)
-  - [Epic boards](../user/group/epics/epic_boards.md)
-  - [View health status](../user/project/issues/managing_issues.md#health-status)
 - [Roadmaps](../user/group/roadmap/index.md)
 - [Planning hierarchies](../user/group/planning_hierarchy/index.md)
 - [Objectives and key results](../user/okrs.md)
-
-## Basic workflow features
-
-Use these day-to-day planning features.
-
-- [Your work sidebar](../tutorials/left_sidebar/index.md)
 - [Keyboard shortcuts](../user/shortcuts.md)
 - [Quick actions](../user/project/quick_actions.md)
 - [Markdown](../user/markdown.md)
 - [To-Do List](../user/todos.md)
-- [Using Git](../topics/git/index.md)

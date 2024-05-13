@@ -1199,12 +1199,6 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
   end
 
   describe 'POST #export' do
-    let(:admin) { create(:admin) }
-
-    before do
-      enable_admin_mode!(admin)
-    end
-
     context 'when the user does not have permission to export the group' do
       before do
         sign_in(guest)
@@ -1217,13 +1211,13 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
       end
     end
 
-    context 'when supplied valid params' do
+    context 'when the user has permission to export the group' do
       before do
-        sign_in(admin)
+        sign_in(user)
       end
 
       it 'triggers the export job' do
-        expect(GroupExportWorker).to receive(:perform_async).with(admin.id, group.id, {})
+        expect(GroupExportWorker).to receive(:perform_async).with(user.id, group.id, { exported_by_admin: false })
 
         post :export, params: { id: group.to_param }
       end
@@ -1235,9 +1229,21 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
       end
     end
 
+    context 'when user is admin' do
+      before do
+        sign_in(admin_with_admin_mode)
+      end
+
+      it 'triggers the export job, and passes `exported_by_admin` correctly in the `params` hash' do
+        expect(GroupExportWorker).to receive(:perform_async).with(admin_with_admin_mode.id, group.id, { exported_by_admin: true })
+
+        post :export, params: { id: group.to_param }
+      end
+    end
+
     context 'when the endpoint receives requests above the rate limit' do
       before do
-        sign_in(admin)
+        sign_in(user)
 
         allow_next_instance_of(Gitlab::ApplicationRateLimiter::BaseStrategy) do |strategy|
           allow(strategy)

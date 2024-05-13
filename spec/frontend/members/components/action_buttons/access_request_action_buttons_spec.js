@@ -7,12 +7,16 @@ import { accessRequest as member } from '../../mock_data';
 describe('AccessRequestActionButtons', () => {
   let wrapper;
 
-  const createComponent = (propsData = {}) => {
+  const createComponent = (propsData = {}, provide = {}) => {
     wrapper = shallowMount(AccessRequestActionButtons, {
       propsData: {
         member,
         isCurrentUser: true,
         ...propsData,
+      },
+      provide: {
+        canApproveAccessRequests: true,
+        ...provide,
       },
     });
   };

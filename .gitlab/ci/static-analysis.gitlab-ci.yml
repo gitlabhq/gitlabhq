@@ -179,7 +179,7 @@ semgrep-appsec-custom-rules:
       rm "${CI_BUILDS_DIR}/sast-custom-rules/.gitlab-ci.yml" # semgrep fails when there are yaml files that are not rules
       semgrep ci --metrics off --config "${CI_BUILDS_DIR}/sast-custom-rules" \
         --include app --include lib --include workhorse \
-        --exclude '*_test.go' --exclude spec --exclude qa --exclude tooling --json > gl-sast-report.json || true
+        --exclude '*_test.go' --exclude spec --exclude qa --exclude tooling --json --verbose > gl-sast-report.json || true
 
   variables:
     CUSTOM_RULES_REPOSITORY: https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules.git

@@ -720,6 +720,22 @@ BEGIN
 END;
 $$;
 
+CREATE FUNCTION trigger_174b23fa3dfb() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."project_id"
+  FROM "approval_project_rules"
+  WHERE "approval_project_rules"."id" = NEW."approval_project_rule_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_2428b5519042() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -4865,7 +4881,8 @@ CREATE TABLE approval_project_rules_protected_branches (
 CREATE TABLE approval_project_rules_users (
     id bigint NOT NULL,
     approval_project_rule_id bigint NOT NULL,
-    user_id integer NOT NULL
+    user_id integer NOT NULL,
+    project_id bigint
 );
 
 CREATE SEQUENCE approval_project_rules_users_id_seq
@@ -4951,7 +4968,7 @@ CREATE TABLE atlassian_identities (
     CONSTRAINT atlassian_identities_refresh_token_iv_length_constraint CHECK ((octet_length(encrypted_refresh_token_iv) <= 12)),
     CONSTRAINT atlassian_identities_refresh_token_length_constraint CHECK ((octet_length(encrypted_refresh_token) <= 5000)),
     CONSTRAINT atlassian_identities_token_iv_length_constraint CHECK ((octet_length(encrypted_token_iv) <= 12)),
-    CONSTRAINT atlassian_identities_token_length_constraint CHECK ((octet_length(encrypted_token) <= 2048)),
+    CONSTRAINT atlassian_identities_token_length_constraint CHECK ((octet_length(encrypted_token) <= 5120)),
     CONSTRAINT check_32f5779763 CHECK ((char_length(extern_uid) <= 255))
 );
 
@@ -7837,6 +7854,22 @@ CREATE SEQUENCE custom_emoji_id_seq
     CACHE 1;
 
 ALTER SEQUENCE custom_emoji_id_seq OWNED BY custom_emoji.id;
+
+CREATE TABLE custom_software_licenses (
+    id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    name text NOT NULL,
+    CONSTRAINT check_4e365784ce CHECK ((char_length(name) <= 255))
+);
+
+CREATE SEQUENCE custom_software_licenses_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE custom_software_licenses_id_seq OWNED BY custom_software_licenses.id;
 
 CREATE TABLE customer_relations_contacts (
     id bigint NOT NULL,
@@ -14361,7 +14394,9 @@ CREATE TABLE project_export_jobs (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     status smallint DEFAULT 0 NOT NULL,
-    jid character varying(100) NOT NULL
+    jid character varying(100) NOT NULL,
+    user_id bigint,
+    exported_by_admin boolean DEFAULT false
 );
 
 CREATE SEQUENCE project_export_jobs_id_seq
@@ -19226,6 +19261,8 @@ ALTER TABLE ONLY csv_issue_imports ALTER COLUMN id SET DEFAULT nextval('csv_issu
 
 ALTER TABLE ONLY custom_emoji ALTER COLUMN id SET DEFAULT nextval('custom_emoji_id_seq'::regclass);
 
+ALTER TABLE ONLY custom_software_licenses ALTER COLUMN id SET DEFAULT nextval('custom_software_licenses_id_seq'::regclass);
+
 ALTER TABLE ONLY customer_relations_contacts ALTER COLUMN id SET DEFAULT nextval('customer_relations_contacts_id_seq'::regclass);
 
 ALTER TABLE ONLY customer_relations_organizations ALTER COLUMN id SET DEFAULT nextval('customer_relations_organizations_id_seq'::regclass);
@@ -21228,6 +21265,9 @@ ALTER TABLE ONLY csv_issue_imports
 
 ALTER TABLE ONLY custom_emoji
     ADD CONSTRAINT custom_emoji_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY custom_software_licenses
+    ADD CONSTRAINT custom_software_licenses_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY customer_relations_contacts
     ADD CONSTRAINT customer_relations_contacts_pkey PRIMARY KEY (id);
@@ -24483,6 +24523,8 @@ CREATE UNIQUE INDEX index_approval_project_rules_users_1 ON approval_project_rul
 
 CREATE INDEX index_approval_project_rules_users_2 ON approval_project_rules_users USING btree (user_id);
 
+CREATE INDEX index_approval_project_rules_users_on_project_id ON approval_project_rules_users USING btree (project_id);
+
 CREATE UNIQUE INDEX index_approval_rule_name_for_code_owners_rule_type ON approval_merge_request_rules USING btree (merge_request_id, name) WHERE ((rule_type = 2) AND (section IS NULL));
 
 CREATE UNIQUE INDEX index_approval_rule_name_for_sectional_code_owners_rule_type ON approval_merge_request_rules USING btree (merge_request_id, name, section) WHERE (rule_type = 2);
@@ -25206,6 +25248,8 @@ CREATE INDEX index_csv_issue_imports_on_user_id ON csv_issue_imports USING btree
 CREATE INDEX index_custom_emoji_on_creator_id ON custom_emoji USING btree (creator_id);
 
 CREATE UNIQUE INDEX index_custom_emoji_on_namespace_id_and_name ON custom_emoji USING btree (namespace_id, name);
+
+CREATE UNIQUE INDEX index_custom_software_licenses_on_project_id_and_name ON custom_software_licenses USING btree (project_id, name);
 
 CREATE INDEX index_customer_relations_contacts_on_group_id ON customer_relations_contacts USING btree (group_id);
 
@@ -26808,6 +26852,8 @@ CREATE INDEX index_project_export_jobs_on_project_id_and_status ON project_expor
 CREATE INDEX index_project_export_jobs_on_status ON project_export_jobs USING btree (status);
 
 CREATE INDEX index_project_export_jobs_on_updated_at_and_id ON project_export_jobs USING btree (updated_at, id);
+
+CREATE INDEX index_project_export_jobs_on_user_id ON project_export_jobs USING btree (user_id);
 
 CREATE INDEX index_project_feature_usages_on_project_id ON project_feature_usages USING btree (project_id);
 
@@ -29811,6 +29857,8 @@ CREATE TRIGGER tags_loose_fk_trigger AFTER DELETE ON tags REFERENCING OLD TABLE 
 
 CREATE TRIGGER trigger_10ee1357e825 BEFORE INSERT OR UPDATE ON p_ci_builds FOR EACH ROW EXECUTE FUNCTION trigger_10ee1357e825();
 
+CREATE TRIGGER trigger_174b23fa3dfb BEFORE INSERT OR UPDATE ON approval_project_rules_users FOR EACH ROW EXECUTE FUNCTION trigger_174b23fa3dfb();
+
 CREATE TRIGGER trigger_2428b5519042 BEFORE INSERT OR UPDATE ON vulnerability_feedback FOR EACH ROW EXECUTE FUNCTION trigger_2428b5519042();
 
 CREATE TRIGGER trigger_25c44c30884f BEFORE INSERT OR UPDATE ON work_item_parent_links FOR EACH ROW EXECUTE FUNCTION trigger_25c44c30884f();
@@ -29955,6 +30003,9 @@ ALTER TABLE ONLY lists
 
 ALTER TABLE ONLY subscription_user_add_on_assignments
     ADD CONSTRAINT fk_0d89020c49 FOREIGN KEY (add_on_purchase_id) REFERENCES subscription_add_on_purchases(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY approval_project_rules_users
+    ADD CONSTRAINT fk_0dfcd9e339 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY deployment_approvals
     ADD CONSTRAINT fk_0f58311058 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
@@ -30270,6 +30321,9 @@ ALTER TABLE ONLY deploy_keys_projects
 
 ALTER TABLE ONLY packages_tags
     ADD CONSTRAINT fk_5a230894f6 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY project_export_jobs
+    ADD CONSTRAINT fk_5ab0242530 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY dependency_list_exports
     ADD CONSTRAINT fk_5b3d11e1ef FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL;
@@ -32538,6 +32592,9 @@ ALTER TABLE ONLY organization_settings
 
 ALTER TABLE ONLY system_access_microsoft_applications
     ADD CONSTRAINT fk_rails_c5b7765d04 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY custom_software_licenses
+    ADD CONSTRAINT fk_rails_c68163fae6 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY project_settings
     ADD CONSTRAINT fk_rails_c6df6e6328 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

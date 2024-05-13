@@ -40,8 +40,8 @@ module Gitlab
       gon.secure                 = Gitlab.config.gitlab.https
       gon.sprite_icons           = IconsHelper.sprite_icon_path
       gon.sprite_file_icons      = IconsHelper.sprite_file_icons_path
-      gon.emoji_sprites_css_path = ActionController::Base.helpers.stylesheet_path('emoji_sprites')
-      gon.gridstack_css_path     = ActionController::Base.helpers.stylesheet_path('lazy_bundles/gridstack.css')
+      gon.emoji_sprites_css_path = universal_path_to_stylesheet('emoji_sprites')
+      gon.gridstack_css_path     = universal_path_to_stylesheet('lazy_bundles/gridstack')
       gon.test_env               = Rails.env.test?
       gon.disable_animations     = Gitlab.config.gitlab['disable_animations']
       gon.suggested_label_colors = LabelsHelper.suggested_colors

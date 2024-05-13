@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe ProjectExportJob, feature_category: :importers, type: :model do
   describe 'associations' do
     it { is_expected.to belong_to(:project) }
+    it { is_expected.to belong_to(:user) }
     it { is_expected.to have_many(:relation_exports) }
   end
 
@@ -102,6 +103,75 @@ RSpec.describe ProjectExportJob, feature_category: :importers, type: :model do
 
       it 'does not transition further' do
         expect { project_export_job.fail_op }.not_to change { project_export_job.status }
+      end
+    end
+  end
+
+  describe '#finish' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:project) { create(:project) }
+
+    let(:export_job) { build(:project_export_job, :started, user: user, project: project) }
+
+    let(:expected_audit) do
+      {
+        name: 'project_export_created',
+        author: user,
+        scope: project,
+        target: project,
+        message: 'Profile file export was created'
+      }
+    end
+
+    subject(:finish) { export_job.finish }
+
+    it 'creates an audit event' do
+      expect(Gitlab::Audit::Auditor).to receive(:audit).with(expected_audit)
+
+      finish
+    end
+
+    context 'when the flag is disabled' do
+      before do
+        stub_feature_flags(export_audit_events: false)
+      end
+
+      it 'does not create an audit event' do
+        expect(Gitlab::Audit::Auditor).not_to receive(:audit)
+
+        finish
+      end
+    end
+
+    context 'when user is nil' do
+      let_it_be(:user) { nil }
+
+      it 'creates an audit event' do
+        expect(Gitlab::Audit::Auditor).to receive(:audit).with(expected_audit)
+
+        finish
+      end
+    end
+
+    context 'when user was admin', :enable_admin_mode do
+      let_it_be(:user) { create(:admin) }
+
+      it 'creates an audit event' do
+        expect(Gitlab::Audit::Auditor).to receive(:audit).with(expected_audit)
+
+        finish
+      end
+
+      context 'when silent exports enabled' do
+        before do
+          stub_application_setting(silent_admin_exports_enabled: true)
+        end
+
+        it 'does not create an audit event' do
+          expect(Gitlab::Audit::Auditor).not_to receive(:audit)
+
+          finish
+        end
       end
     end
   end

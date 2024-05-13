@@ -727,7 +727,7 @@ have higher precedence than variables defined globally in the `.gitlab-ci.yml` f
 
 ### Override a defined CI/CD variable
 
-You can override the value of a variable when you:
+You can override the value of a variable, including [predefined variables](predefined_variables.md), when you:
 
 - [Run a pipeline manually](../pipelines/index.md#run-a-pipeline-manually) in the UI.
 - Create a pipeline by using [the `pipelines` API endpoint](../../api/pipelines.md#create-a-new-pipeline).
@@ -737,8 +737,7 @@ You can override the value of a variable when you:
   or [by using `dotenv` variables](../pipelines/downstream_pipelines.md#pass-dotenv-variables-created-in-a-job).
 - Specify variables when [running a manual job](../pipelines/index.md#run-a-pipeline-manually).
 
-You should avoid overriding [predefined variables](predefined_variables.md), as it
-can cause the pipeline to behave unexpectedly.
+You should avoid overriding predefined variables in most cases, as it can cause the pipeline to behave unexpectedly.
 
 ### Restrict who can override variables
 

@@ -20,7 +20,7 @@
         = _('Edit')
     = render 'shared/wikis/main_links'
 
-    #js-export-actions{ data: { options: { is_template: @page.template?, history: page_history, print: { target: '.js-wiki-page-content', title: @page.human_title, stylesheet: [stylesheet_path('application')] } }.to_json } }
+    #js-export-actions{ data: { options: { is_template: @page.template?, history: page_history, print: { target: '.js-wiki-page-content', title: @page.human_title, stylesheet: [universal_path_to_stylesheet('application')] } }.to_json } }
 
 - if @page.historical?
   = render Pajamas::AlertComponent.new(variant: :warning,

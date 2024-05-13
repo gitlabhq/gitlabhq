@@ -28,3 +28,4 @@
 '{event_counters}_click_external_link_license_compliance': USAGE_USERS_CLICKING_LICENSE_TESTING_VISITING_EXTERNAL_WEBSITE
 '{event_counters}_perform_search': ALL_SEARCHES_COUNT
 '{event_counters}_perform_navbar_search': NAVBAR_SEARCHES_COUNT
+'{event_counters}_source_code_pushed': USAGE_SOURCE_CODE_PUSHES

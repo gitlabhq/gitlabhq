@@ -1,6 +1,6 @@
 - if @include_diff_discussion_stylesheet
   = content_for :head do
-    = stylesheet_link_tag 'mailers/highlighted_diff_email'
+    = universal_stylesheet_link_tag 'mailers/highlighted_diff_email'
 
 %div{ style: "color:#333333;border-bottom:8px solid #ededed;font-weight:bold;line-height:1.4;padding: 20px 0;" }
   - mr_link = link_to(@merge_request.to_reference(@project), project_merge_request_url(@project, @merge_request))

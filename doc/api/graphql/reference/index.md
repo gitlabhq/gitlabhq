@@ -33255,6 +33255,7 @@ Detailed representation of whether a GitLab merge request can be merged.
 
 | Value | Description |
 | ----- | ----------- |
+| <a id="detailedmergestatusapprovals_syncing"></a>`APPROVALS_SYNCING` | Merge request approvals currently syncing. |
 | <a id="detailedmergestatusblocked_status"></a>`BLOCKED_STATUS` | Merge request dependencies must be merged. |
 | <a id="detailedmergestatuschecking"></a>`CHECKING` | Currently checking for mergeability. |
 | <a id="detailedmergestatusci_must_pass"></a>`CI_MUST_PASS` | Pipeline must succeed before merging. |

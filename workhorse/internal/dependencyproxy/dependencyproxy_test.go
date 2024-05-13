@@ -1,6 +1,7 @@
 package dependencyproxy
 
 import (
+	"context"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
@@ -15,15 +16,17 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/badgateway"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/testhelper"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/transport"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload"
 )
 
 type fakeUploadHandler struct {
-	request *http.Request
-	body    []byte
-	handler func(w http.ResponseWriter, r *http.Request)
+	request  *http.Request
+	body     []byte
+	skipBody bool
+	handler  func(w http.ResponseWriter, r *http.Request)
 }
 
 const (
@@ -34,7 +37,9 @@ const (
 func (f *fakeUploadHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	f.request = r
 
-	f.body, _ = io.ReadAll(r.Body)
+	if !f.skipBody {
+		f.body, _ = io.ReadAll(r.Body)
+	}
 
 	f.handler(w, r)
 }
@@ -376,11 +381,66 @@ func TestFailedOriginServer(t *testing.T) {
 	require.Equal(t, "Not found", response.Body.String())
 }
 
+// This test simulates a situation where the client closes the connection
+// before the upload part of the dependency proxy has time to end
+func TestLongUploadRequest(t *testing.T) {
+	content := []byte("result")
+	contentLength := strconv.Itoa(len(content))
+
+	// the server holding the upstream resource
+	originResourceServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Length", contentLength)
+		w.Write(content)
+	}))
+	defer originResourceServer.Close()
+
+	// the server receiving the upload request
+	// it makes the upload request artifically long with a sleep
+	uploadServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		time.Sleep(40 * time.Millisecond)
+	}))
+	defer uploadServer.Close()
+
+	uploadHandler := &fakeUploadHandler{skipBody: true}
+	uploadHandler.handler = func(w http.ResponseWriter, r *http.Request) {
+		// we need to get the upstream resource through the badgateway roundtripper.
+		// It is responsible to handle the response of the client closes the connection
+		// abruptly
+		rt := badgateway.NewRoundTripper(false, http.DefaultTransport)
+		res, err := rt.RoundTrip(r)
+
+		require.NoError(t, err, "RoundTripper should not receive an error")
+		require.Equal(t, http.StatusOK, res.StatusCode, "RoundTripper should receive a 200 status code")
+		w.WriteHeader(res.StatusCode)
+	}
+
+	injector := NewInjector()
+	injector.SetUploadHandler(uploadHandler)
+
+	// the client request that simulates a connection closure with a timeout context
+	// note that the timeout duration here is shorter than the sleep in the upload server
+	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Millisecond)
+	defer cancel()
+	r := httptest.NewRequest("GET", uploadServer.URL+"/upload", nil).WithContext(ctx)
+	r.Header.Set("Overridden-Header", "request")
+
+	response := makeCustomRequest(injector, `{"Token": "token", "Url": "`+originResourceServer.URL+`/upstream"}`, r)
+
+	// wait for the slow upload to finish
+	require.Equal(t, http.StatusOK, response.Code)
+	require.Equal(t, string(content), response.Body.String())
+	require.Equal(t, contentLength, response.Header().Get("Content-Length"))
+}
+
 func makeRequest(injector *Injector, data string) *httptest.ResponseRecorder {
-	w := httptest.NewRecorder()
 	r := httptest.NewRequest("GET", "/target", nil)
 	r.Header.Set("Overridden-Header", "request")
 
+	return makeCustomRequest(injector, data, r)
+}
+
+func makeCustomRequest(injector *Injector, data string, r *http.Request) *httptest.ResponseRecorder {
+	w := httptest.NewRecorder()
 	sendData := base64.StdEncoding.EncodeToString([]byte(data))
 	injector.Inject(w, r, sendData)
 

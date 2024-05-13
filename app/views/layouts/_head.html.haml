@@ -42,14 +42,14 @@
     = yield :page_specific_styles
     = stylesheet_link_tag_defer 'application_utilities'
   = stylesheet_link_tag_defer 'tailwind'
-  = stylesheet_link_tag "disable_animations", media: "all" if Rails.env.test? || Gitlab.config.gitlab['disable_animations']
-  = stylesheet_link_tag "test_environment", media: "all" if Rails.env.test?
+  = universal_stylesheet_link_tag "disable_animations", media: "all" if Rails.env.test? || Gitlab.config.gitlab['disable_animations']
+  = universal_stylesheet_link_tag "test_environment", media: "all" if Rails.env.test?
 
   = stylesheet_link_tag_defer "fonts"
 
   = stylesheet_link_tag_defer "highlight/themes/#{user_color_scheme}"
 
-  = stylesheet_link_tag 'performance_bar' if performance_bar_enabled?
+  = universal_stylesheet_link_tag 'performance_bar' if performance_bar_enabled?
 
   = render 'layouts/snowplow'
   = render 'layouts/loading_hints'

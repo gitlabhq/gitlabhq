@@ -108,6 +108,28 @@ relative-url:
   variables:
     QA_SCENARIO: Test::Instance::RelativeUrl
 
+# ------------------------------------------
+# Decomposition jobs
+# ------------------------------------------
+decomposition-single-db:
+  extends:
+    - .qa
+    - .ee
+    - .parallel
+  variables:
+    QA_SCENARIO: Test::Instance::Image
+    GITLAB_QA_OPTS: --omnibus-config decomposition_single_db
+
+decomposition-multiple-db:
+  extends:
+    - .qa
+    - .ee
+    - .parallel
+  variables:
+    QA_SCENARIO: Test::Instance::Image
+    GITLAB_ALLOW_SEPARATE_CI_DATABASE: "true"
+    GITLAB_QA_OPTS: --omnibus-config decomposition_multiple_db
+
 # ==========================================
 # Post test stage
 # ==========================================

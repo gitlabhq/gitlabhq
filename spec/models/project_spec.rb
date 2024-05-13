@@ -7706,15 +7706,27 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
   describe '#add_export_job' do
     let_it_be(:user) { create(:user) }
-    let_it_be(:project) { create(:project) }
+    let_it_be_with_reload(:project) { create(:project) }
 
     context 'when parallel_project_export feature flag is enabled' do
       it 'enqueues CreateionProjectExportWorker' do
         expect(Projects::ImportExport::CreateRelationExportsWorker)
           .to receive(:perform_async)
-          .with(user.id, project.id, nil, {})
+          .with(user.id, project.id, nil, { exported_by_admin: false })
 
         project.add_export_job(current_user: user)
+      end
+
+      context 'when user is admin', :enable_admin_mode do
+        let_it_be(:user) { create(:admin) }
+
+        it 'passes `exported_by_admin` correctly in the `params` hash' do
+          expect(Projects::ImportExport::CreateRelationExportsWorker)
+          .to receive(:perform_async)
+          .with(user.id, project.id, nil, { exported_by_admin: true })
+
+          project.add_export_job(current_user: user)
+        end
       end
     end
 
@@ -7723,10 +7735,20 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         stub_feature_flags(parallel_project_export: false)
       end
 
-      it 'enquques ProjectExportWorker' do
-        expect(ProjectExportWorker).to receive(:perform_async).with(user.id, project.id, nil, {})
+      it 'enqueues ProjectExportWorker' do
+        expect(ProjectExportWorker).to receive(:perform_async).with(user.id, project.id, nil, { exported_by_admin: false })
 
         project.add_export_job(current_user: user)
+      end
+
+      context 'when user is admin', :enable_admin_mode do
+        let_it_be(:user) { create(:admin) }
+
+        it 'passes `exported_by_admin` correctly in the `params` hash' do
+          expect(ProjectExportWorker).to receive(:perform_async).with(user.id, project.id, nil, { exported_by_admin: true })
+
+          project.add_export_job(current_user: user)
+        end
       end
 
       context 'when project storage_size does not exceed the application setting max_export_size' do
@@ -7734,7 +7756,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
           stub_application_setting(max_export_size: 1)
           allow(project.statistics).to receive(:storage_size).and_return(0.megabytes)
 
-          expect(ProjectExportWorker).to receive(:perform_async).with(user.id, project.id, nil, {})
+          expect(ProjectExportWorker).to receive(:perform_async).with(user.id, project.id, nil, { exported_by_admin: false })
 
           project.add_export_job(current_user: user)
         end
@@ -7745,7 +7767,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
           stub_application_setting(max_export_size: 1)
           allow(project.statistics).to receive(:storage_size).and_return(2.megabytes)
 
-          expect(ProjectExportWorker).not_to receive(:perform_async).with(user.id, project.id, nil, {})
+          expect(ProjectExportWorker).not_to receive(:perform_async)
           expect { project.add_export_job(current_user: user) }.to raise_error(Project::ExportLimitExceeded)
         end
       end
@@ -7753,7 +7775,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       context 'when application setting max_export_size is not set' do
         it 'starts project export worker' do
           allow(project.statistics).to receive(:storage_size).and_return(2.megabytes)
-          expect(ProjectExportWorker).to receive(:perform_async).with(user.id, project.id, nil, {})
+          expect(ProjectExportWorker).to receive(:perform_async).with(user.id, project.id, nil, { exported_by_admin: false })
 
           project.add_export_job(current_user: user)
         end

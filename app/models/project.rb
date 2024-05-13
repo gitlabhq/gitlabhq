@@ -2342,6 +2342,8 @@ class Project < ApplicationRecord
   def add_export_job(current_user:, after_export_strategy: nil, params: {})
     check_project_export_limit!
 
+    params[:exported_by_admin] = current_user.can_admin_all_resources?
+
     job_id = if Feature.enabled?(:parallel_project_export, current_user)
                Projects::ImportExport::CreateRelationExportsWorker
                  .perform_async(current_user.id, self.id, after_export_strategy, params)
