@@ -59,7 +59,7 @@ module QA
           image: #{ci_test_image}
           stage: test
           script:
-            - 'id=$(curl --header "PRIVATE-TOKEN: #{masked_token}" "https://${CI_SERVER_HOST}/api/v4/projects/#{project.id}/registry/repositories" | jq ".[0].id")'
+            - 'id=$(curl --header "PRIVATE-TOKEN: #{masked_token}" "https://${CI_SERVER_HOST}/api/v4/projects/#{project.id}/registry/repositories" | tac | jq ".[0].id")'
             - echo $id
             - 'tag_count=$(curl --header "PRIVATE-TOKEN: #{masked_token}" "https://${CI_SERVER_HOST}/api/v4/projects/#{project.id}/registry/repositories/$id/tags" | jq ". | length")'
             - if [ $tag_count -ne 1 ]; then exit 1; fi;

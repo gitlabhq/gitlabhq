@@ -20,7 +20,11 @@ module Notes
 
         discussion = discussion.convert_to_discussion! if discussion.can_convert_to_discussion?
 
-        params.merge!(discussion.reply_attributes)
+        reply_attributes = discussion.reply_attributes
+        # NOTE: Avoid overriding noteable if it already exists so that we don't have to reload noteable.
+        reply_attributes = reply_attributes.except(:noteable_id, :noteable_type) if params[:noteable]
+
+        params.merge!(reply_attributes)
       end
 
       # The `confidential` param for notes is deprecated with 15.3

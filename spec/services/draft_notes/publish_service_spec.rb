@@ -224,19 +224,17 @@ RSpec.describe DraftNotes::PublishService, feature_category: :code_review_workfl
     end
   end
 
-  context 'with many draft notes', :use_sql_query_cache do
+  context 'with many draft notes', :use_sql_query_cache, :request_store do
     let(:merge_request) { create(:merge_request) }
 
     it 'reduce N+1 queries' do
-      create(:draft_note_on_text_diff, merge_request: merge_request, author: user, note: 'note 1')
-      create(:draft_note_on_text_diff, merge_request: merge_request, author: user, note: 'note 2')
-      create(:draft_note_on_text_diff, merge_request: merge_request, author: user, note: 'note 3')
-      create(:draft_note_on_text_diff, merge_request: merge_request, author: user, note: 'note 4')
-      create(:draft_note_on_text_diff, merge_request: merge_request, author: user, note: 'note 5')
+      5.times do
+        create(:draft_note_on_discussion, merge_request: merge_request, author: user, note: 'some note')
+      end
 
       recorder = ActiveRecord::QueryRecorder.new(skip_cached: false) { publish }
 
-      expect(recorder.count).not_to be > 186
+      expect(recorder.count).not_to be > 105
     end
   end
 
@@ -303,6 +301,7 @@ RSpec.describe DraftNotes::PublishService, feature_category: :code_review_workfl
         refresh = MergeRequests::RefreshService.new(project: project, current_user: user)
         refresh.execute(oldrev, newrev, merge_request.source_branch_ref)
 
+        merge_request.reload
         expect { publish(draft: draft) }.to change { Suggestion.count }.by(1)
           .and change { DiffNote.count }.from(0).to(1)
 
