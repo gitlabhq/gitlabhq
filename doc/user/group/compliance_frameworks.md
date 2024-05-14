@@ -37,13 +37,6 @@ You can create, edit, or delete a compliance framework from a compliance project
 - [Edit a compliance framework](../../user/compliance/compliance_center/compliance_projects_report.md#edit-a-compliance-framework).
 - [Delete a compliance framework](../../user/compliance/compliance_center/compliance_projects_report.md#delete-a-compliance-framework).
 
-### From group settings
-
-1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings** > **General**.
-1. Expand the **Compliance frameworks** section.
-1. Create, edit, or delete compliance frameworks.
-
 Subgroups and projects have access to all compliance frameworks created on their top-level group. However, compliance frameworks cannot be created, edited,
 or deleted at the subgroup or project level. Project owners can choose a framework to apply to their projects.
 
@@ -60,16 +53,6 @@ Frameworks cannot be added to projects in personal namespaces.
 
 To assign a compliance framework to a project, apply the compliance framework through the
 [Compliance projects report](../../user/compliance/compliance_center/compliance_projects_report.md#apply-a-compliance-framework-to-projects-in-a-group).
-
-### From group settings
-
-To assign a compliance framework to a project:
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings** > **General**.
-1. Expand **Compliance frameworks**.
-1. Select a compliance framework.
-1. Select **Save changes**.
 
 ### GraphQL API
 
@@ -114,18 +97,6 @@ To set as default (or remove the default) from [compliance framework report](../
 1. Hover over a compliance framework, select the **Edit Framework** tab.
 1. Select **Set as default**.
 1. Select **Save changes**.
-
-#### From group settings
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375038) in GitLab 15.7.
-
-To set as default (or remove the default) by using group settings:
-
-1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > General**.
-1. Expand the **Compliance frameworks** section and locate the compliance framework to set (or remove) as default.
-1. Select the vertical ellipsis (**{ellipsis_v}**) for the compliance frame and then select **Set default** (or
-   **Remove default**).
 
 #### Example GraphQL mutations for setting a default compliance framework
 
@@ -178,13 +149,3 @@ Prerequisites:
 
 To remove a compliance framework from one or multiple project in a group, remove the compliance framework through the
 [Compliance projects report](../../user/compliance/compliance_center/compliance_projects_report.md#remove-a-compliance-framework-from-projects-in-a-group).
-
-### From group settings
-
-To remove a compliance framework from one project in a group:
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings** > **General**.
-1. Expand **Compliance frameworks**.
-1. Select **None**.
-1. Select **Save changes**.

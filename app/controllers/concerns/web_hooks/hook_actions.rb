@@ -18,14 +18,13 @@ module WebHooks
     end
 
     def create
-      self.hook = relation.new(hook_params)
-      hook.save
+      result = WebHooks::CreateService.new(current_user).execute(hook_params, relation)
 
-      if hook.valid?
+      if result.success?
         flash[:notice] = _('Webhook was created')
       else
         self.hooks = relation.select(&:persisted?)
-        flash[:alert] = hook.errors.full_messages.to_sentence.html_safe
+        flash[:alert] = result.message
       end
 
       redirect_to action: :index

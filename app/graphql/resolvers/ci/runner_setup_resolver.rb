@@ -9,26 +9,26 @@ module Resolvers
       description 'Runner setup instructions.'
 
       argument :platform,
-               type: GraphQL::Types::String,
-               required: true,
-               description: 'Platform to generate the instructions for.'
+        type: GraphQL::Types::String,
+        required: true,
+        description: 'Platform to generate the instructions for.'
 
       argument :architecture,
-               type: GraphQL::Types::String,
-               required: true,
-               description: 'Architecture to generate the instructions for.'
+        type: GraphQL::Types::String,
+        required: true,
+        description: 'Architecture to generate the instructions for.'
 
       argument :project_id,
-               type: ::Types::GlobalIDType[::Project],
-               required: false,
-               deprecated: { reason: 'No longer used', milestone: '13.11' },
-               description: 'Project to register the runner for.'
+        type: ::Types::GlobalIDType[::Project],
+        required: false,
+        deprecated: { reason: 'No longer used', milestone: '13.11' },
+        description: 'Project to register the runner for.'
 
       argument :group_id,
-               type: ::Types::GlobalIDType[::Group],
-               required: false,
-               deprecated: { reason: 'No longer used', milestone: '13.11' },
-               description: 'Group to register the runner for.'
+        type: ::Types::GlobalIDType[::Group],
+        required: false,
+        deprecated: { reason: 'No longer used', milestone: '13.11' },
+        description: 'Group to register the runner for.'
 
       def resolve(platform:, architecture:, **args)
         instructions = Gitlab::Ci::RunnerInstructions.new(

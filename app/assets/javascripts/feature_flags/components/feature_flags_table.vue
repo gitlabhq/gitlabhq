@@ -160,7 +160,7 @@ export default {
             class="table-mobile-content gl-text-left gl-display-flex flex-column js-feature-flag-title gl-mr-5"
           >
             <div class="gl-display-flex gl-align-items-center">
-              <div class="feature-flag-name text-monospace text-wrap gl-word-break-word">
+              <div class="feature-flag-name text-monospace text-wrap gl-break-anywhere">
                 {{ featureFlag.name }}
               </div>
               <div class="feature-flag-description">

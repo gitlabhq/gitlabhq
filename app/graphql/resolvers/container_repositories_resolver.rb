@@ -7,13 +7,13 @@ module Resolvers
     type Types::ContainerRepositoryType, null: true
 
     argument :name, GraphQL::Types::String,
-              required: false,
-              description: 'Filter the container repositories by their name.'
+      required: false,
+      description: 'Filter the container repositories by their name.'
 
     argument :sort, Types::ContainerRepositorySortEnum,
-             description: 'Sort container repositories by this criteria.',
-             required: false,
-             default_value: :created_desc
+      description: 'Sort container repositories by this criteria.',
+      required: false,
+      default_value: :created_desc
 
     def resolve(name: nil, sort: nil)
       ContainerRepositoriesFinder.new(user: current_user, subject: object, params: { name: name, sort: sort })

@@ -162,7 +162,7 @@ export default {
         :user="user"
         :root-path="rootPath"
         :issuable-type="issuableType"
-        class="gl-word-break-word gl-mr-2"
+        class="gl-break-anywhere gl-mr-2"
         data-css-area="user"
       >
         <div class="gl-ml-3 gl-line-height-normal gl-display-grid gl-align-items-center">

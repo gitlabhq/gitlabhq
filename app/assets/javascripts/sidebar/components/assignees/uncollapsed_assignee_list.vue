@@ -86,7 +86,7 @@ export default {
         <assignee-avatar-link
           :user="user"
           :issuable-type="issuableType"
-          class="gl-word-break-word"
+          class="gl-break-anywhere"
           data-css-area="user"
         >
           <div

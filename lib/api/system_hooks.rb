@@ -82,9 +82,14 @@ module API
       end
       post do
         hook_params = create_hook_params
-        hook = SystemHook.new(hook_params)
 
-        save_hook(hook, Entities::Hook)
+        result = WebHooks::CreateService.new(current_user).execute(hook_params, hook_scope)
+
+        if result[:status] == :success
+          present result[:hook], with: Entities::Hook
+        else
+          error!(result.message, result.http_status || 422)
+        end
       end
 
       desc 'Edit system hook' do

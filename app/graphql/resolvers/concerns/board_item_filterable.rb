@@ -15,7 +15,7 @@ module BoardItemFilterable
     if filters[:or]
       if ::Feature.disabled?(:or_issuable_queries, resource_parent)
         raise ::Gitlab::Graphql::Errors::ArgumentError,
-              "'or' arguments are only allowed when the `or_issuable_queries` feature flag is enabled."
+          "'or' arguments are only allowed when the `or_issuable_queries` feature flag is enabled."
       end
 
       rewrite_param_name(filters[:or], :author_usernames, :author_username)

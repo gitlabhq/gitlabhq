@@ -6,8 +6,8 @@ module Resolvers
       type Types::Ci::InstanceVariableType.connection_type, null: true
 
       argument :sort, ::Types::Ci::VariableSortEnum,
-               required: false,
-               description: 'Sort order of results.'
+        required: false,
+        description: 'Sort order of results.'
 
       def resolve(**args)
         if parent.is_a?(Group) || parent.is_a?(Project)

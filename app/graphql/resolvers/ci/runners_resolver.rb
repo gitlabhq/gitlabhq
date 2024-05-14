@@ -9,53 +9,53 @@ module Resolvers
       type Types::Ci::RunnerType.connection_type, null: true
 
       argument :active, ::GraphQL::Types::Boolean,
-               required: false,
-               description: 'Filter runners by `active` (true) or `paused` (false) status.',
-               deprecated: { reason: :renamed, replacement: 'paused', milestone: '14.8' }
+        required: false,
+        description: 'Filter runners by `active` (true) or `paused` (false) status.',
+        deprecated: { reason: :renamed, replacement: 'paused', milestone: '14.8' }
 
       argument :paused, ::GraphQL::Types::Boolean,
-               required: false,
-               description: 'Filter runners by `paused` (true) or `active` (false) status.'
+        required: false,
+        description: 'Filter runners by `paused` (true) or `active` (false) status.'
 
       argument :status, ::Types::Ci::RunnerStatusEnum,
-               required: false,
-               description: 'Filter runners by status.'
+        required: false,
+        description: 'Filter runners by status.'
 
       argument :type, ::Types::Ci::RunnerTypeEnum,
-               required: false,
-               description: 'Filter runners by type.'
+        required: false,
+        description: 'Filter runners by type.'
 
       argument :tag_list, [GraphQL::Types::String],
-               required: false,
-               description: 'Filter by tags associated with the runner (comma-separated or array).'
+        required: false,
+        description: 'Filter by tags associated with the runner (comma-separated or array).'
 
       argument :search, GraphQL::Types::String,
-               required: false,
-               description: 'Filter by full token or partial text in description field.'
+        required: false,
+        description: 'Filter by full token or partial text in description field.'
 
       argument :sort, ::Types::Ci::RunnerSortEnum,
-               required: false,
-               description: 'Sort order of results.'
+        required: false,
+        description: 'Sort order of results.'
 
       argument :upgrade_status, ::Types::Ci::RunnerUpgradeStatusEnum,
-               required: false,
-               description: 'Filter by upgrade status.'
+        required: false,
+        description: 'Filter by upgrade status.'
 
       argument :creator_id, ::Types::GlobalIDType[::User].as('UserID'),
-               required: false,
-               description: 'Filter runners by creator ID.'
+        required: false,
+        description: 'Filter runners by creator ID.'
 
       argument :creator_username, GraphQL::Types::String,
-               required: false,
-               description: 'Filter runners by creator username.',
-               alpha: { milestone: '16.7' }
+        required: false,
+        description: 'Filter runners by creator username.',
+        alpha: { milestone: '16.7' }
 
       argument :version_prefix, GraphQL::Types::String,
-               required: false,
-               description: "Filter runners by version. Runners that contain runner managers with the version at " \
-                            "the start of the search term are returned. For example, the search term '14.' returns " \
-                            "runner managers with versions '14.11.1' and '14.2.3'.",
-               alpha: { milestone: '16.6' }
+        required: false,
+        description: "Filter runners by version. Runners that contain runner managers with the version at " \
+                     "the start of the search term are returned. For example, the search term '14.' returns " \
+                     "runner managers with versions '14.11.1' and '14.2.3'.",
+        alpha: { milestone: '16.6' }
 
       def resolve_with_lookahead(**args)
         apply_lookahead(

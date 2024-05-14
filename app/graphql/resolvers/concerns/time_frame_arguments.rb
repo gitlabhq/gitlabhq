@@ -5,8 +5,8 @@ module TimeFrameArguments
 
   included do
     argument :timeframe, Types::TimeframeInputType,
-             required: false,
-             description: 'List items overlapping the given timeframe.'
+      required: false,
+      description: 'List items overlapping the given timeframe.'
   end
 
   def transform_timeframe_parameters(args)

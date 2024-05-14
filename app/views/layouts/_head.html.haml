@@ -14,6 +14,8 @@
   = Gon::Base.render_data(nonce: content_security_policy_nonce)
   = yield :project_javascripts
 
+  = render 'layouts/application_color_mode_js'
+
   = render 'layouts/startup_js'
   = yield :startup_js
 

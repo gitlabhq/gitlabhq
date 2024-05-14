@@ -31,6 +31,10 @@ function gitLabUIUtilities({ addUtilities }) {
         'var(--default-mono-font, "GitLab Mono"), "JetBrains Mono", "Menlo", "DejaVu Sans Mono", "Liberation Mono", "Consolas", "Ubuntu Mono", "Courier New", "andale mono", "lucida console", monospace',
       'font-variant-ligatures': 'none',
     },
+    '.break-anywhere': {
+      'overflow-wrap': 'anywhere',
+      'word-break': 'normal',
+    },
   });
 }
 

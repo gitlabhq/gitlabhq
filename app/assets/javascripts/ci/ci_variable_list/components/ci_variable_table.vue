@@ -283,7 +283,7 @@ export default {
             >
               <span
                 :id="`ci-variable-key-${item.id}`"
-                class="gl-display-inline-block gl-max-w-full gl-word-break-word"
+                class="gl-display-inline-block gl-max-w-full gl-break-anywhere"
                 >{{ item.key }}</span
               >
               <gl-button
@@ -343,7 +343,7 @@ export default {
           >
             <span
               :id="`ci-variable-env-${item.id}`"
-              class="gl-display-inline-block gl-max-w-full gl-word-break-word"
+              class="gl-display-inline-block gl-max-w-full gl-break-anywhere"
               >{{ convertEnvironmentScopeValue(item.environmentScope) }}</span
             >
             <gl-button
@@ -365,7 +365,7 @@ export default {
             <gl-link
               :id="`ci-variable-group-${item.id}`"
               data-testid="ci-variable-table-row-cicd-path"
-              class="gl-display-inline-block gl-max-w-full gl-word-break-word"
+              class="gl-display-inline-block gl-max-w-full gl-break-anywhere"
               :href="item.groupCiCdSettingsPath"
             >
               {{ item.groupName }}

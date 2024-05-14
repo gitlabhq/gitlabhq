@@ -5,14 +5,14 @@ module SearchArguments
 
   included do
     argument :search, GraphQL::Types::String,
-             required: false,
-             description: 'Search query for title or description.'
+      required: false,
+      description: 'Search query for title or description.'
     argument :in, [Types::IssuableSearchableFieldEnum],
-             required: false,
-             description: <<~DESC
+      required: false,
+      description: <<~DESC
                Specify the fields to perform the search in.
                Defaults to `[TITLE, DESCRIPTION]`. Requires the `search` argument.'
-             DESC
+      DESC
   end
 
   def ready?(**args)
@@ -28,7 +28,7 @@ module SearchArguments
     return unless args[:in].present? && args[:search].blank?
 
     raise Gitlab::Graphql::Errors::ArgumentError,
-          '`search` should be present when including the `in` argument'
+      '`search` should be present when including the `in` argument'
   end
 
   def validate_search_rate_limit!(args)

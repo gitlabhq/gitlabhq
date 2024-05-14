@@ -6,10 +6,10 @@ module Resolvers
       type Types::Ci::TemplateType, null: true
 
       argument :name,
-               GraphQL::Types::String,
-               required: true,
-               description: 'Name of the CI/CD template to search for. ' \
-                            'Template must be formatted as `Name.gitlab-ci.yml`.'
+        GraphQL::Types::String,
+        required: true,
+        description: 'Name of the CI/CD template to search for. ' \
+                     'Template must be formatted as `Name.gitlab-ci.yml`.'
 
       alias_method :project, :object
 

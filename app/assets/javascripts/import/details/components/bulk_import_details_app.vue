@@ -18,7 +18,7 @@ export default {
     {
       key: 'source_title',
       label: __('Title'),
-      tdClass: 'gl-md-w-30 gl-word-break-word',
+      tdClass: 'gl-md-w-30 gl-break-anywhere',
     },
     {
       key: 'error',

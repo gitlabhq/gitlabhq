@@ -26,8 +26,8 @@ module Resolvers
           unique_project_ids = plucked_runner_and_project_ids.collect { |_runner_id, project_id| project_id }.uniq
           projects = ProjectsFinder
                        .new(current_user: current_user,
-                            params: project_finder_params(args),
-                            project_ids_relation: unique_project_ids)
+                         params: project_finder_params(args),
+                         project_ids_relation: unique_project_ids)
                        .execute
           projects = apply_lookahead(projects)
           Preloaders::ProjectPolicyPreloader.new(projects, current_user).execute

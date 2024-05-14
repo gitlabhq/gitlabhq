@@ -255,7 +255,7 @@ export default {
         </template>
       </gl-avatar-labeled>
     </div>
-    <div class="gl-mt-2 gl-w-full gl-word-break-word">
+    <div class="gl-mt-2 gl-w-full gl-break-anywhere">
       <template v-if="userIsLoading">
         <gl-skeleton-loader
           :lines="$options.maxSkeletonLines"

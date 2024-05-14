@@ -24,7 +24,7 @@
           - else
             = render Pajamas::AvatarComponent.new(project, size: 48, alt: '')
 
-    .gl-w-full.gl-pt-2.gl-word-break-word
+    .gl-w-full.gl-pt-2.gl-break-anywhere
       .gl-display-flex.gl-align-items-center.gl-flex-wrap
         %h2.gl-font-base.gl-line-height-20.gl-my-0
           = link_to project_path(project), class: 'text-plain gl-mr-3 js-prefetch-document', title: project.name do

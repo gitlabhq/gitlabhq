@@ -70,7 +70,7 @@ export default {
 <template>
   <ul class="gl-list-none">
     <workload-details-item :label="$options.i18n.name">
-      <span class="gl-word-break-word"> {{ item.name }}</span>
+      <span class="gl-break-anywhere"> {{ item.name }}</span>
     </workload-details-item>
     <workload-details-item :label="$options.i18n.kind">
       {{ item.kind }}

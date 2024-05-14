@@ -7,7 +7,7 @@
 = render 'devise/shared/tab_single', tab_title: _('Authorize identity provider link')
 %h4.gl-mt-0= safe_format(s_('Allow %{strongOpen}%{provider}%{strongClose} to sign you in?'), tag_pair(tag.strong, :strongOpen, :strongClose), provider: provider)
 %p= safe_format(s_('Authorizing allows you to sign in with %{strongOpen}%{provider}%{strongClose}.'), tag_pair(tag.strong, :strongOpen, :strongClose), provider: provider)
-= render Pajamas::AlertComponent.new(variant: :warning, dismissible: false, alert_options: { class: 'gl-mb-5 gl-word-break-word' }) do |c|
+= render Pajamas::AlertComponent.new(variant: :warning, dismissible: false, alert_options: { class: 'gl-mb-5 gl-break-anywhere' }) do |c|
   - c.with_body do
     = safe_format(_('To allow %{strongOpen}%{provider}%{strongClose} to manage your GitLab account %{strongOpen}%{username}%{strongClose} (%{email}) after you sign in successfully using single sign-on, select %{strongOpen}Authorize%{strongClose}.'), tag_pair(tag.strong, :strongOpen, :strongClose), provider: provider, username: current_user.username, email: current_user.email)
 
