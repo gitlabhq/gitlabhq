@@ -4,6 +4,7 @@ module DesignManagement
   class SaveDesignsService < DesignService
     include RunsDesignActions
     include OnSuccessCallbacks
+    include Gitlab::InternalEventsTracking
 
     MAX_FILES = 10
 
@@ -133,12 +134,12 @@ module DesignManagement
       if action == :update
         ::Gitlab::UsageDataCounters::IssueActivityUniqueCounter
           .track_issue_designs_modified_action(author: current_user, project: project)
+        track_internal_event('update_design_management_design', user: current_user, project: project)
       else
         ::Gitlab::UsageDataCounters::IssueActivityUniqueCounter
           .track_issue_designs_added_action(author: current_user, project: project)
+        track_internal_event('create_design_management_design', user: current_user, project: project)
       end
-
-      ::Gitlab::UsageDataCounters::DesignsCounter.count(action)
     end
   end
 end

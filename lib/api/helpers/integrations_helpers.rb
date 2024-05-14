@@ -577,6 +577,12 @@ module API
           ],
           'telegram' => [
             {
+              required: false,
+              name: :hostname,
+              type: String,
+              desc: 'Custom hostname of the Telegram API. The default value is `https://api.telegram.org`.'
+            },
+            {
               required: true,
               name: :token,
               type: String,

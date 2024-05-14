@@ -50,6 +50,12 @@ export const I18N = {
   update: s__('BranchRules|Update'),
   edit: s__('BranchRules|Edit'),
   updateBranchRuleError: s__('BranchRules|Something went wrong while updating branch rule.'),
+  allowedToPushDescription: s__(
+    'BranchRules|Changes require a merge request. The following users can push and merge directly.',
+  ),
+  allowedToPushEmptyState: s__('BranchRules|No one is allowed to push and merge changes.'),
+  allowedToMergeEmptyState: s__('BranchRules|No one is allowed to merge changes.'),
+  statusChecksEmptyState: s__('BranchRules|No status checks have been added.'),
 };
 
 export const EDIT_RULE_MODAL_ID = 'editRuleModal';

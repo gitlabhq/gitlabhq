@@ -385,7 +385,7 @@ RSpec.describe Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder 
 
         expect do
           iterator.each_batch(of: batch_size) { |records| records.to_a }
-        end.to raise_error /The "RecordLoaderStrategy" does not support/
+        end.to raise_error(/The "RecordLoaderStrategy" does not support/)
       end
     end
   end

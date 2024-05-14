@@ -9,7 +9,7 @@ class RunPipelineScheduleWorker # rubocop:disable Scalability/IdempotentWorker
   include PipelineQueue
 
   queue_namespace :pipeline_creation
-  feature_category :continuous_integration
+  feature_category :pipeline_composition
   deduplicate :until_executed, including_scheduled: true
   idempotent!
 

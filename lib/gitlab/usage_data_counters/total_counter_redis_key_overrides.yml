@@ -29,3 +29,6 @@
 '{event_counters}_perform_search': ALL_SEARCHES_COUNT
 '{event_counters}_perform_navbar_search': NAVBAR_SEARCHES_COUNT
 '{event_counters}_source_code_pushed': USAGE_SOURCE_CODE_PUSHES
+'{event_counters}_create_design_management_design': USAGE_DESIGN_MANAGEMENT_DESIGNS_CREATE
+'{event_counters}_update_design_management_design': USAGE_DESIGN_MANAGEMENT_DESIGNS_UPDATE
+'{event_counters}_delete_design_management_design': USAGE_DESIGN_MANAGEMENT_DESIGNS_DELETE

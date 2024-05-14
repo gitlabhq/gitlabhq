@@ -52,9 +52,6 @@ code_quality cache:
     SAST_EXCLUDED_PATHS: "qa, spec, doc, ee/spec, config/gitlab.yml.example, tmp"  # GitLab-specific
     SAST_EXCLUDED_ANALYZERS: bandit, flawfinder, phpcs-security-audit, pmd-apex, security-code-scan, spotbugs, eslint, nodejs-scan, sobelow
 
-brakeman-sast:
-  rules: !reference [".reports:rules:brakeman-sast", rules]
-
 semgrep-sast:
   rules: !reference [".reports:rules:semgrep-sast", rules]
 

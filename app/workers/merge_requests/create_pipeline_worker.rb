@@ -10,7 +10,7 @@ module MergeRequests
     include PipelineQueue
 
     queue_namespace :pipeline_creation
-    feature_category :continuous_integration
+    feature_category :pipeline_composition
     urgency :high
     worker_resource_boundary :cpu
     idempotent!

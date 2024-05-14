@@ -508,7 +508,6 @@ Style/ClassAndModuleChildren:
     - 'lib/gitlab/instrumentation/elasticsearch_transport.rb'
     - 'lib/gitlab/usage_data_counters/base_counter.rb'
     - 'lib/gitlab/usage_data_counters/ci_template_unique_counter.rb'
-    - 'lib/gitlab/usage_data_counters/designs_counter.rb'
     - 'lib/gitlab/usage_data_counters/note_counter.rb'
     - 'lib/release_highlights/validator/entry.rb'
     - 'qa/qa/page/component/project/templates.rb'

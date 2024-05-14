@@ -3795,6 +3795,47 @@ RSpec.describe User, feature_category: :user_profile do
       expect(project_member_invite_via_unconfirmed_secondary_email.reload).to be_invite
       expect(group_member_invite_via_unconfirmed_secondary_email.reload).to be_invite
     end
+
+    context 'with an uppercase version of the email matches another member' do
+      let!(:uppercase_existing_invite) do
+        create(:project_member, :invited, source: project_member_invite.project, invite_email: user.email.upcase)
+      end
+
+      it 'accepts only one of the invites' do
+        travel_to 10.minutes.ago do
+          project_member_invite.touch # in past, so shouldn't get accepted over the one created
+        end
+
+        uppercase_existing_invite.touch # ensure updated_at is being verified. This one should be first now.
+
+        travel_to 10.minutes.from_now do
+          project_member_invite.touch # now we'll make the original first so we are verifying updated_at
+
+          result = [
+            project_member_invite,
+            group_member_invite,
+            project_member_invite_via_confirmed_secondary_email,
+            group_member_invite_via_confirmed_secondary_email
+          ]
+
+          accepted_members = user.accept_pending_invitations!
+
+          expect(accepted_members).to match_array(result)
+          expect(uppercase_existing_invite.reset.user).to be_nil
+        end
+      end
+    end
+  end
+
+  describe '#pending_invitations' do
+    let_it_be(:user, reload: true) { create(:user, email: 'user@email.com') }
+    let_it_be(:invited_member) do
+      create(:project_member, :invited, invite_email: user.email)
+    end
+
+    it 'finds the invite' do
+      expect(user.pending_invitations).to match_array([invited_member])
+    end
   end
 
   describe '#can_create_project?' do

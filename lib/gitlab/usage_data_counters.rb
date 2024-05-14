@@ -5,7 +5,6 @@ module Gitlab
     COUNTERS = [
       PackageEventCounter,
       MergeRequestCounter,
-      DesignsCounter,
       DiffsCounter,
       KubernetesAgentCounter,
       NoteCounter,

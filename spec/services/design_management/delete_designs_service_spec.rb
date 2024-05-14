@@ -79,15 +79,14 @@ RSpec.describe DesignManagement::DeleteDesignsService, feature_category: :design
 
         it_behaves_like "a top-level error"
 
-        it 'does not log any events' do
-          counter = ::Gitlab::UsageDataCounters::DesignsCounter
+        it_behaves_like 'internal event not tracked' do
+          let(:event) { 'delete_design_management_design' }
 
-          expect do
+          subject(:service_action) do
             run_service
           rescue StandardError
             nil
           end
-            .not_to change { [counter.totals, Event.count] }
         end
 
         it 'does not log any UsageData metrics' do
@@ -120,9 +119,11 @@ RSpec.describe DesignManagement::DeleteDesignsService, feature_category: :design
           expect { run_service }.to change { issue.designs.current.count }.from(3).to(2)
         end
 
-        it 'logs a deletion event' do
-          counter = ::Gitlab::UsageDataCounters::DesignsCounter
-          expect { run_service }.to change { counter.read(:delete) }.by(1)
+        it_behaves_like 'internal event tracking' do
+          let(:event) { 'delete_design_management_design' }
+          let(:namespace) { project.namespace }
+          let(:category) { described_class }
+          subject(:service_action) { run_service }
         end
 
         it 'updates UsageData for removed designs' do
@@ -189,13 +190,17 @@ RSpec.describe DesignManagement::DeleteDesignsService, feature_category: :design
         let!(:designs) { create_designs(2) }
 
         it 'makes the correct changes' do
-          counter = ::Gitlab::UsageDataCounters::DesignsCounter
-
           expect { run_service }
             .to change { issue.designs.current.count }.from(3).to(1)
-            .and change { counter.read(:delete) }.by(2)
             .and change { Event.count }.by(2)
             .and change { Event.destroyed_action.for_design.count }.by(2)
+        end
+
+        it_behaves_like 'internal event tracking' do
+          let(:event) { 'delete_design_management_design' }
+          let(:namespace) { project.namespace }
+          let(:category) { described_class }
+          subject(:service_action) { run_service }
         end
 
         it 'schedules deleting todos for that design' do
@@ -238,6 +243,9 @@ RSpec.describe DesignManagement::DeleteDesignsService, feature_category: :design
       describe 'scalability' do
         before do
           run_service(create_designs(1)) # ensure project, issue, etc are created
+          # Exclude internal event tracking from the DB request count. The events are tracked independently of each
+          # other and each make a query for the project's namespace. There's no way to avoid these requests for now.
+          allow(Gitlab::InternalEvents).to receive(:track_event)
         end
 
         it 'makes the same number of DB requests for one design as for several' do

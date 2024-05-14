@@ -143,6 +143,9 @@ class Member < ApplicationRecord
 
   scope :invite, -> { where.not(invite_token: nil) }
   scope :non_invite, -> { where(invite_token: nil) }
+  scope :with_case_insensitive_invite_emails, ->(emails) do
+    where(arel_table[:invite_email].lower.in(emails.map(&:downcase)))
+  end
 
   scope :request, -> { where.not(requested_at: nil) }
   scope :non_request, -> { where(requested_at: nil) }
@@ -206,6 +209,11 @@ class Member < ApplicationRecord
                        .order(Arel.sql(order))
 
     unscoped.from(distinct_members, :members)
+  end
+
+  scope :distinct_on_source_and_case_insensitive_invite_email, -> do
+    select('DISTINCT ON (source_id, source_type, LOWER(invite_email)) members.*')
+      .order('source_id, source_type, LOWER(invite_email)')
   end
 
   scope :order_name_asc, -> do
@@ -287,6 +295,8 @@ class Member < ApplicationRecord
       nullable: :nulls_last
     )
   end
+
+  scope :order_updated_desc, -> { order(updated_at: :desc) }
 
   scope :on_project_and_ancestors, ->(project) { where(source: [project] + project.ancestors) }
 

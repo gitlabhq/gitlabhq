@@ -1644,7 +1644,7 @@ class User < MainClusterwide::ApplicationRecord
   end
 
   def pending_invitations
-    Member.where(invite_email: verified_emails).invite
+    Members::PendingInvitationsFinder.new(verified_emails).execute
   end
 
   def all_emails(include_private_email: true)

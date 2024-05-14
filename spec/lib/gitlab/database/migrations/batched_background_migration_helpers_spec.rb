@@ -303,7 +303,7 @@ RSpec.describe Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers, 
 
       it 'does raise an exception' do
         expect { migration.finalize_batched_background_migration(job_class_name: 'MyJobClass', table_name: :projects, column_name: :id, job_arguments: []) }
-          .to raise_error /`finalize_batched_background_migration` cannot be run inside a transaction./
+          .to raise_error(/`finalize_batched_background_migration` cannot be run inside a transaction./)
       end
     end
 
@@ -342,7 +342,7 @@ RSpec.describe Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers, 
             expect do
               migration.finalize_batched_background_migration(
                 job_class_name: 'Ci::MyClass', table_name: :ci_builds, column_name: :id, job_arguments: [])
-            end.to raise_error /Could not find batched background migration/
+            end.to raise_error(/Could not find batched background migration/)
           end
         end
 
@@ -351,7 +351,7 @@ RSpec.describe Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers, 
             expect do
               migration.finalize_batched_background_migration(
                 job_class_name: 'Ci::MyClass', table_name: :ci_builds, column_name: :id, job_arguments: [])
-            end.to raise_error /Could not find batched background migration/
+            end.to raise_error(/Could not find batched background migration/)
           end
         end
       end
@@ -364,7 +364,7 @@ RSpec.describe Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers, 
 
       it 'does raise an exception' do
         expect { migration.finalize_batched_background_migration(job_class_name: 'MyJobClass', table_name: :projects, column_name: :id, job_arguments: []) }
-          .to raise_error /`finalize_batched_background_migration` cannot be run inside a transaction./
+          .to raise_error(/`finalize_batched_background_migration` cannot be run inside a transaction./)
       end
     end
   end
@@ -559,7 +559,7 @@ RSpec.describe Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers, 
 
       it 'does raise an exception' do
         expect { ensure_batched_background_migration_is_finished }
-          .to raise_error /`ensure_batched_background_migration_is_finished` cannot be run inside a transaction./
+          .to raise_error(/`ensure_batched_background_migration_is_finished` cannot be run inside a transaction./)
       end
     end
 

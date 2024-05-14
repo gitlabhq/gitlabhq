@@ -9,7 +9,7 @@ class CreatePipelineWorker # rubocop:disable Scalability/IdempotentWorker
   include PipelineQueue
 
   queue_namespace :pipeline_creation
-  feature_category :continuous_integration
+  feature_category :pipeline_composition
   urgency :high
   worker_resource_boundary :cpu
   loggable_arguments 2, 3, 4

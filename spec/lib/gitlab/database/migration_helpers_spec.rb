@@ -2839,7 +2839,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
 
   describe '#add_primary_key_using_index' do
     it "executes the statement to add the primary key" do
-      expect(model).to receive(:execute).with /ALTER TABLE "_test_table" ADD CONSTRAINT "old_name" PRIMARY KEY USING INDEX "new_name"/
+      expect(model).to receive(:execute).with(/ALTER TABLE "_test_table" ADD CONSTRAINT "old_name" PRIMARY KEY USING INDEX "new_name"/)
 
       model.add_primary_key_using_index(:_test_table, :old_name, :new_name)
     end
@@ -2890,7 +2890,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
 
   describe '#drop_sequence' do
     it "executes the statement to drop the sequence" do
-      expect(model).to receive(:execute).with /ALTER TABLE "_test_table" ALTER COLUMN "test_column" DROP DEFAULT;\nDROP SEQUENCE IF EXISTS "_test_table_id_seq"/
+      expect(model).to receive(:execute).with(/ALTER TABLE "_test_table" ALTER COLUMN "test_column" DROP DEFAULT;\nDROP SEQUENCE IF EXISTS "_test_table_id_seq"/)
 
       model.drop_sequence(:_test_table, :test_column, :_test_table_id_seq)
     end

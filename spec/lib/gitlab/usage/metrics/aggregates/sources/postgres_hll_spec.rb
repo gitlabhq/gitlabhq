@@ -146,7 +146,7 @@ RSpec.describe Gitlab::Usage::Metrics::Aggregates::Sources::PostgresHll, :clean_
       end
 
       it 'raises error for development environment' do
-        expect { save_aggregated_metrics }.to raise_error /Unsupported data type/
+        expect { save_aggregated_metrics }.to raise_error(/Unsupported data type/)
       end
     end
   end

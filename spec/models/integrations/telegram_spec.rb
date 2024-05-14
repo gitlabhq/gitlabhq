@@ -15,7 +15,7 @@ RSpec.describe Integrations::Telegram, feature_category: :integrations do
   describe 'validations' do
     context 'when integration is active' do
       before do
-        subject.active = true
+        subject.activate!
       end
 
       it { is_expected.to validate_presence_of(:token) }
@@ -25,7 +25,7 @@ RSpec.describe Integrations::Telegram, feature_category: :integrations do
 
     context 'when integration is inactive' do
       before do
-        subject.active = false
+        subject.deactivate!
       end
 
       it { is_expected.not_to validate_presence_of(:token) }
@@ -45,11 +45,22 @@ RSpec.describe Integrations::Telegram, feature_category: :integrations do
     end
 
     context 'when token is present' do
-      let(:integration) { create(:telegram_integration) }
+      let(:integration) { build_stubbed(:telegram_integration) }
 
       it 'sets webhook value' do
         expect(integration).to be_valid
         expect(integration.webhook).to eq("https://api.telegram.org/bot123456:ABC-DEF1234/sendMessage")
+      end
+
+      context 'with custom hostname' do
+        before do
+          integration.hostname = 'https://gitlab.example.com'
+        end
+
+        it 'sets webhook value with custom hostname' do
+          expect(integration).to be_valid
+          expect(integration.webhook).to eq("https://gitlab.example.com/bot123456:ABC-DEF1234/sendMessage")
+        end
       end
     end
   end

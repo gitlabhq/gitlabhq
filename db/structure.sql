@@ -1122,7 +1122,7 @@ CREATE TABLE p_ci_builds (
     options text,
     allow_failure boolean DEFAULT false NOT NULL,
     stage character varying,
-    trigger_request_id integer,
+    trigger_request_id_convert_to_bigint integer,
     stage_idx integer,
     tag boolean,
     ref character varying,
@@ -1131,7 +1131,7 @@ CREATE TABLE p_ci_builds (
     target_url character varying,
     description character varying,
     project_id_convert_to_bigint integer,
-    erased_by_id integer,
+    erased_by_id_convert_to_bigint integer,
     erased_at timestamp without time zone,
     artifacts_expire_at timestamp without time zone,
     environment character varying,
@@ -1157,10 +1157,10 @@ CREATE TABLE p_ci_builds (
     auto_canceled_by_partition_id bigint DEFAULT 100 NOT NULL,
     auto_canceled_by_id bigint,
     commit_id bigint,
-    erased_by_id_convert_to_bigint bigint,
+    erased_by_id bigint,
     project_id bigint,
     runner_id bigint,
-    trigger_request_id_convert_to_bigint bigint,
+    trigger_request_id bigint,
     upstream_pipeline_id bigint,
     user_id bigint,
     execution_config_id bigint,
@@ -3592,6 +3592,28 @@ CREATE SEQUENCE ai_agents_id_seq
     CACHE 1;
 
 ALTER SEQUENCE ai_agents_id_seq OWNED BY ai_agents.id;
+
+CREATE TABLE ai_self_hosted_models (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    model smallint NOT NULL,
+    endpoint text NOT NULL,
+    name text NOT NULL,
+    encrypted_api_token bytea,
+    encrypted_api_token_iv bytea,
+    CONSTRAINT check_a28005edb2 CHECK ((char_length(endpoint) <= 2048)),
+    CONSTRAINT check_cccb37e0de CHECK ((char_length(name) <= 255))
+);
+
+CREATE SEQUENCE ai_self_hosted_models_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE ai_self_hosted_models_id_seq OWNED BY ai_self_hosted_models.id;
 
 CREATE TABLE ai_vectorizable_files (
     id bigint NOT NULL,
@@ -6267,7 +6289,7 @@ CREATE TABLE ci_builds (
     options text,
     allow_failure boolean DEFAULT false NOT NULL,
     stage character varying,
-    trigger_request_id integer,
+    trigger_request_id_convert_to_bigint integer,
     stage_idx integer,
     tag boolean,
     ref character varying,
@@ -6276,7 +6298,7 @@ CREATE TABLE ci_builds (
     target_url character varying,
     description character varying,
     project_id_convert_to_bigint integer,
-    erased_by_id integer,
+    erased_by_id_convert_to_bigint integer,
     erased_at timestamp without time zone,
     artifacts_expire_at timestamp without time zone,
     environment character varying,
@@ -6302,10 +6324,10 @@ CREATE TABLE ci_builds (
     auto_canceled_by_partition_id bigint DEFAULT 100 NOT NULL,
     auto_canceled_by_id bigint,
     commit_id bigint,
-    erased_by_id_convert_to_bigint bigint,
+    erased_by_id bigint,
     project_id bigint,
     runner_id bigint,
-    trigger_request_id_convert_to_bigint bigint,
+    trigger_request_id bigint,
     upstream_pipeline_id bigint,
     user_id bigint,
     execution_config_id bigint,
@@ -17823,8 +17845,8 @@ CREATE TABLE vulnerability_occurrence_pipelines (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     occurrence_id bigint NOT NULL,
-    pipeline_id integer NOT NULL,
-    pipeline_id_convert_to_bigint bigint DEFAULT 0 NOT NULL
+    pipeline_id_convert_to_bigint integer DEFAULT 0 NOT NULL,
+    pipeline_id bigint NOT NULL
 );
 
 CREATE SEQUENCE vulnerability_occurrence_pipelines_id_seq
@@ -18971,6 +18993,8 @@ ALTER TABLE ONLY ai_agent_version_attachments ALTER COLUMN id SET DEFAULT nextva
 ALTER TABLE ONLY ai_agent_versions ALTER COLUMN id SET DEFAULT nextval('ai_agent_versions_id_seq'::regclass);
 
 ALTER TABLE ONLY ai_agents ALTER COLUMN id SET DEFAULT nextval('ai_agents_id_seq'::regclass);
+
+ALTER TABLE ONLY ai_self_hosted_models ALTER COLUMN id SET DEFAULT nextval('ai_self_hosted_models_id_seq'::regclass);
 
 ALTER TABLE ONLY ai_vectorizable_files ALTER COLUMN id SET DEFAULT nextval('ai_vectorizable_files_id_seq'::regclass);
 
@@ -20709,6 +20733,9 @@ ALTER TABLE ONLY ai_agent_versions
 
 ALTER TABLE ONLY ai_agents
     ADD CONSTRAINT ai_agents_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY ai_self_hosted_models
+    ADD CONSTRAINT ai_self_hosted_models_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY ai_vectorizable_files
     ADD CONSTRAINT ai_vectorizable_files_pkey PRIMARY KEY (id);
@@ -24440,6 +24467,8 @@ CREATE INDEX index_ai_agent_versions_on_project_id ON ai_agent_versions USING bt
 
 CREATE UNIQUE INDEX index_ai_agents_on_project_id_and_name ON ai_agents USING btree (project_id, name);
 
+CREATE UNIQUE INDEX index_ai_self_hosted_models_on_name ON ai_self_hosted_models USING btree (name);
+
 CREATE INDEX index_ai_vectorizable_files_on_project_id ON ai_vectorizable_files USING btree (project_id);
 
 CREATE INDEX index_alert_assignees_on_alert_id ON alert_management_alert_assignees USING btree (alert_id);
@@ -26142,7 +26171,7 @@ CREATE INDEX index_members_on_invite_email ON members USING btree (invite_email)
 
 CREATE UNIQUE INDEX index_members_on_invite_token ON members USING btree (invite_token);
 
-CREATE INDEX index_members_on_lower_invite_email ON members USING btree (lower((invite_email)::text));
+CREATE INDEX index_members_on_lower_invite_email_with_token ON members USING btree (lower((invite_email)::text)) WHERE (invite_token IS NOT NULL);
 
 CREATE INDEX index_members_on_member_namespace_id_compound ON members USING btree (member_namespace_id, type, requested_at, id);
 

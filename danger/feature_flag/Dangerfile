@@ -1,132 +1,219 @@
 # frozen_string_literal: true
 
-FF_SEE_DOC = "See the [feature flag documentation](https://docs.gitlab.com/ee/development/feature_flags#feature-flag-definition-and-validation)."
-FEATURE_FLAG_LABEL = "feature flag"
-FEATURE_FLAG_EXISTS_LABEL = "#{FEATURE_FLAG_LABEL}::exists"
-FEATURE_FLAG_SKIPPED_LABEL = "#{FEATURE_FLAG_LABEL}::skipped"
-DEVOPS_LABELS_REQUIRING_FEATURE_FLAG_REVIEW = ["devops::verify"]
+module Tooling
+  class FeatureFlagDangerfile
+    SEE_DOC = "See the [feature flag documentation](https://docs.gitlab.com/ee/development/feature_flags#feature-flag-definition-and-validation)."
+    FEATURE_FLAG_LABEL = "feature flag"
+    FEATURE_FLAG_EXISTS_LABEL = "#{FEATURE_FLAG_LABEL}::exists".freeze
+    FEATURE_FLAG_SKIPPED_LABEL = "#{FEATURE_FLAG_LABEL}::skipped".freeze
+    DEVOPS_LABELS_REQUIRING_FEATURE_FLAG_REVIEW = ["devops::verify"].freeze
 
-FF_SUGGEST_MR_COMMENT = <<~SUGGEST_COMMENT
-```suggestion
-group: "%<group>s"
-```
+    SUGGEST_MR_COMMENT = <<~SUGGEST_COMMENT.freeze
+    ```suggestion
+    group: "%<group>s"
+    ```
 
-#{FF_SEE_DOC}
-SUGGEST_COMMENT
+    #{SEE_DOC}
+    SUGGEST_COMMENT
 
-FEATURE_FLAG_ENFORCEMENT_WARNING = <<~WARNING_MESSAGE
-There were no new or modified feature flag YAML files detected in this MR.
+    FEATURE_FLAG_ENFORCEMENT_WARNING = <<~WARNING_MESSAGE.freeze
+    There were no new or modified feature flag YAML files detected in this MR.
 
-If the changes here are already controlled under an existing feature flag, please add
-the ~"#{FEATURE_FLAG_EXISTS_LABEL}". Otherwise, if you think the changes here don't need
-to be under a feature flag, please add the label ~"#{FEATURE_FLAG_SKIPPED_LABEL}", and
-add a short comment about why we skipped the feature flag.
+    If the changes here are already controlled under an existing feature flag, please add
+    the ~"#{FEATURE_FLAG_EXISTS_LABEL}". Otherwise, if you think the changes here don't need
+    to be under a feature flag, please add the label ~"#{FEATURE_FLAG_SKIPPED_LABEL}", and
+    add a short comment about why we skipped the feature flag.
 
-For guidance on when to use a feature flag, please see the [documentation](https://about.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/#when-to-use-feature-flags).
-WARNING_MESSAGE
+    For guidance on when to use a feature flag, please see the [documentation](https://about.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/#when-to-use-feature-flags).
+    WARNING_MESSAGE
 
-def check_feature_flag_yaml(feature_flag)
-  mr_group_label = helper.group_label
+    def initialize(context:, added_files:, modified_files:, helper:)
+      @context = context
+      @added_files = added_files
+      @modified_files = modified_files
+      @helper = helper
+    end
 
-  if feature_flag.group.nil?
-    message_for_feature_flag_missing_group!(feature_flag: feature_flag, mr_group_label: mr_group_label)
-  else
-    message_for_feature_flag_with_group!(feature_flag: feature_flag, mr_group_label: mr_group_label)
-  end
-rescue Psych::Exception
-  # YAML could not be parsed, fail the build.
-  fail "#{helper.html_link(feature_flag.path)} isn't valid YAML! #{FF_SEE_DOC}"
-rescue StandardError => e
-  warn "There was a problem trying to check the Feature Flag file. Exception: #{e.class.name} - #{e.message}"
-end
+    def check_touched_feature_flag_files
+      touched_feature_flag_files.each do |feature_flag|
+        check_feature_flag_yaml(feature_flag)
+      end
+    end
 
-def message_for_feature_flag_missing_group!(feature_flag:, mr_group_label:)
-  if mr_group_label.nil?
-    warn "Consider setting `group` in #{helper.html_link(feature_flag.path)}. #{FF_SEE_DOC}"
-  else
-    mr_line = feature_flag.raw.lines.find_index("group:\n")
+    def feature_flag_file_touched?
+      touched_feature_flag_files.any?
+    end
 
-    if mr_line
-      markdown(format(FF_SUGGEST_MR_COMMENT, group: mr_group_label), file: feature_flag.path, line: mr_line.succ)
-    else
-      warn %(Consider setting `group: "#{mr_group_label}"` in #{helper.html_link(feature_flag.path)}. #{FF_SEE_DOC})
+    def mr_has_backend_or_frontend_changes?
+      changes = helper.changes_by_category
+      changes.has_key?(:backend) || changes.has_key?(:frontend)
+    end
+
+    def stage_requires_feature_flag_review?
+      DEVOPS_LABELS_REQUIRING_FEATURE_FLAG_REVIEW.include?(helper.stage_label)
+    end
+
+    def mr_missing_feature_flag_status_label?
+      ([FEATURE_FLAG_EXISTS_LABEL, FEATURE_FLAG_SKIPPED_LABEL] & helper.mr_labels).none?
+    end
+
+    private
+
+    attr_reader :context, :added_files, :modified_files, :helper
+
+    def check_feature_flag_yaml(feature_flag)
+      unless feature_flag.valid?
+        context.failure("#{helper.html_link(feature_flag.path)} isn't valid YAML! #{SEE_DOC}")
+        return
+      end
+
+      check_group(feature_flag)
+      check_feature_issue_url(feature_flag)
+      # Note: we don't check introduced_by_url as it's already done by danger/config_files/Dangerfile
+      check_rollout_issue_url(feature_flag)
+      check_milestone(feature_flag)
+      check_default_enabled(feature_flag)
+    end
+
+    def touched_feature_flag_files
+      added_files + modified_files
+    end
+
+    def check_group(feature_flag)
+      mr_group_label = helper.group_label
+
+      if feature_flag.missing_group?
+        message_for_feature_flag_missing_group!(feature_flag: feature_flag, mr_group_label: mr_group_label)
+      else
+        message_for_feature_flag_with_group!(feature_flag: feature_flag, mr_group_label: mr_group_label)
+      end
+    end
+
+    def message_for_feature_flag_missing_group!(feature_flag:, mr_group_label:)
+      if mr_group_label.nil?
+        context.failure("Please specify a valid `group` label in #{helper.html_link(feature_flag.path)}. #{SEE_DOC}")
+        return
+      end
+
+      add_message_on_line(
+        feature_flag: feature_flag,
+        needle: "group:",
+        note: format(SUGGEST_MR_COMMENT, group: mr_group_label),
+        fallback_note: %(Please add `group: "#{mr_group_label}"` in #{helper.html_link(feature_flag.path)}. #{SEE_DOC}),
+        message_method: :failure
+      )
+    end
+
+    def message_for_feature_flag_with_group!(feature_flag:, mr_group_label:)
+      return if feature_flag.group_match_mr_label?(mr_group_label)
+
+      if mr_group_label.nil?
+        helper.labels_to_add << feature_flag.group
+      else
+        note = <<~FAILURE_MESSAGE
+        `group` is set to ~"#{feature_flag.group}" in #{helper.html_link(feature_flag.path)},
+        which does not match ~"#{mr_group_label}" set on the MR!
+        FAILURE_MESSAGE
+
+        add_message_on_line(
+          feature_flag: feature_flag,
+          needle: "group:",
+          note: note,
+          message_method: :failure
+        )
+      end
+    end
+
+    def check_feature_issue_url(feature_flag)
+      return unless feature_flag.missing_feature_issue_url?
+
+      add_message_on_line(
+        feature_flag: feature_flag,
+        needle: "feature_issue_url:",
+        note: "Consider filling `feature_issue_url:`"
+      )
+    end
+
+    def add_message_on_line(feature_flag:, needle:, note:, fallback_note: note, message_method: :message)
+      mr_line = feature_flag.find_line_index(needle)
+
+      # rubocop:disable GitlabSecurity/PublicSend -- we allow calling context.message, context.warning & context.failure
+      if mr_line
+        context.public_send(message_method, note, file: feature_flag.path, line: mr_line.succ)
+      else
+        context.public_send(message_method, fallback_note)
+      end
+      # rubocop:enable GitlabSecurity/PublicSend
+    end
+
+    def check_rollout_issue_url(feature_flag)
+      return unless ::Feature::Shared::TYPES.dig(feature_flag.name.to_sym, :rollout_issue)
+      return unless feature_flag.missing_rollout_issue_url?
+
+      missing_field_error(feature_flag: feature_flag, field: :rollout_issue_url)
+    end
+
+    def check_milestone(feature_flag)
+      return unless feature_flag.missing_milestone?
+
+      missing_field_error(feature_flag: feature_flag, field: :milestone)
+    end
+
+    def check_default_enabled(feature_flag)
+      return unless feature_flag.default_enabled?
+
+      if ::Feature::Shared.can_be_default_enabled?(feature_flag.type)
+        note = <<~SUGGEST_COMMENT
+          You're about to [release the feature with the feature flag](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Feature%20Flag%20Roll%20Out.md#optional-release-the-feature-with-the-feature-flag).
+          This process can only be done **after** the [global rollout on production](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Feature%20Flag%20Roll%20Out.md#global-rollout-on-production).
+          Please make sure in [the rollout issue](#{feature_flag.rollout_issue_url}) that the preliminary steps have already been done. Otherwise, changing the YAML definition might not have the desired effect.
+        SUGGEST_COMMENT
+
+        mr_line = feature_flag.find_line_index("default_enabled: true")
+        context.markdown(note, file: feature_flag.path, line: mr_line.succ) if mr_line
+      else
+        context.failure(
+          "[Feature flag with the `#{feature_flag.type}` type must not be enabled by default](https://docs.gitlab.com/ee/development/feature_flags/##{feature_flag.type}-type). " \
+          "Consider changing the feature flag type if it's ready to be enabled by default."
+        )
+      end
+    end
+
+    def missing_field_error(feature_flag:, field:)
+      note = <<~MISSING_FIELD_ERROR
+        [Feature flag with the `#{feature_flag.type}` type must have `:#{field}` set](https://docs.gitlab.com/ee/development/feature_flags/##{feature_flag.type}-type).
+      MISSING_FIELD_ERROR
+      mr_line = feature_flag.find_line_index("#{field}:")
+
+      if mr_line
+        context.message(note, file: feature_flag.path, line: mr_line.succ)
+      else
+        context.message(note)
+      end
     end
   end
 end
 
-def message_for_global_rollout(feature_flag)
-  return unless feature_flag.default_enabled == true
+feature_flag_dangerfile = Tooling::FeatureFlagDangerfile.new(
+  context: self,
+  added_files: feature_flag.feature_flag_files(danger_helper: helper, change_type: :added),
+  modified_files: feature_flag.feature_flag_files(danger_helper: helper, change_type: :modified),
+  helper: helper
+)
 
-  message = <<~SUGGEST_COMMENT
-  You're about to [release the feature with the feature flag](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Feature%20Flag%20Roll%20Out.md#optional-release-the-feature-with-the-feature-flag).
-  This process can only be done **after** the [global rollout on production](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Feature%20Flag%20Roll%20Out.md#global-rollout-on-production).
-  Please make sure in [the rollout issue](#{feature_flag.rollout_issue_url}) that the preliminary steps have already been done. Otherwise, changing the YAML definition might not have the desired effect.
-  SUGGEST_COMMENT
+feature_flag_dangerfile.check_touched_feature_flag_files
 
-  mr_line = feature_flag.raw.lines.find_index { |l| l.include?('default_enabled:') }
-  markdown(message, file: feature_flag.path, line: mr_line.succ)
+if helper.security_mr? && feature_flag_dangerfile.feature_flag_file_touched?
+  failure("Feature flags are discouraged from security merge requests. Read the [security documentation](https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/security/utilities/feature_flags.md) for details.")
 end
 
-def message_for_feature_flag_with_group!(feature_flag:, mr_group_label:)
-  return if feature_flag.group_match_mr_label?(mr_group_label)
-
-  if mr_group_label.nil?
-    helper.labels_to_add << feature_flag.group
-  else
-    fail %(`group` is set to ~"#{feature_flag.group}" in #{helper.html_link(feature_flag.path)}, which does not match ~"#{mr_group_label}" set on the MR!)
-  end
-end
-
-def added_feature_flag_files
-  feature_flag.feature_flag_files(change_type: :added)
-end
-
-def modified_feature_flag_files
-  feature_flag.feature_flag_files(change_type: :modified)
-end
-
-def feature_flag_file_added?
-  added_feature_flag_files.any?
-end
-
-def feature_flag_file_modified?
-  modified_feature_flag_files.any?
-end
-
-def feature_flag_file_added_or_modified?
-  feature_flag_file_added? || feature_flag_file_modified?
-end
-
-def mr_has_backend_or_frontend_changes?
-  changes = helper.changes_by_category
-  changes.has_key?(:backend) || changes.has_key?(:frontend)
-end
-
-def mr_missing_feature_flag_status_label?
-  ([FEATURE_FLAG_EXISTS_LABEL, FEATURE_FLAG_SKIPPED_LABEL] & helper.mr_labels).none?
-end
-
-def stage_requires_feature_flag_review?
-  DEVOPS_LABELS_REQUIRING_FEATURE_FLAG_REVIEW.include?(helper.stage_label)
-end
-
-added_feature_flag_files.each do |feature_flag|
-  check_feature_flag_yaml(feature_flag)
-end
-
-modified_feature_flag_files.each do |feature_flag|
-  message_for_global_rollout(feature_flag)
-end
-
-if helper.security_mr? && feature_flag_file_added?
-  fail "Feature flags are discouraged from security merge requests. Read the [security documentation](https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/security/utilities/feature_flags.md) for details."
-end
-
-if !helper.security_mr? && mr_has_backend_or_frontend_changes? && stage_requires_feature_flag_review?
-  if feature_flag_file_added_or_modified? && !helper.mr_has_labels?(FEATURE_FLAG_EXISTS_LABEL)
+if !helper.security_mr? && feature_flag_dangerfile.mr_has_backend_or_frontend_changes? && feature_flag_dangerfile.stage_requires_feature_flag_review?
+  if feature_flag_dangerfile.feature_flag_file_touched? && !helper.mr_has_labels?(Tooling::FeatureFlagDangerfile::FEATURE_FLAG_EXISTS_LABEL)
     # Feature flag config file touched in this MR, so let's add the label to avoid the warning.
-    helper.labels_to_add << FEATURE_FLAG_EXISTS_LABEL
+    helper.labels_to_add << Tooling::FeatureFlagDangerfile::FEATURE_FLAG_EXISTS_LABEL
   end
 
-  warn FEATURE_FLAG_ENFORCEMENT_WARNING if mr_missing_feature_flag_status_label?
+  if feature_flag_dangerfile.mr_missing_feature_flag_status_label?
+    warn(Tooling::FeatureFlagDangerfile::FEATURE_FLAG_ENFORCEMENT_WARNING)
+  end
 end

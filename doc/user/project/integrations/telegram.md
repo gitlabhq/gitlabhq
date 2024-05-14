@@ -41,6 +41,7 @@ To configure the bot in Telegram:
 ## Set up the Telegram integration in GitLab
 
 > - **Message thread ID** [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/441097) in GitLab 16.11.
+> - **Hostname** [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/461313) in GitLab 17.1.
 
 After you invite the bot to a Telegram channel, you can configure GitLab to send notifications:
 
@@ -53,6 +54,7 @@ After you invite the bot to a Telegram channel, you can configure GitLab to send
      1. Select **Settings > Integrations**.
 1. Select **Telegram**.
 1. Under **Enable integration**, select the **Active** checkbox.
+1. Optional. In **Hostname**, enter the hostname of your [local bot API server](https://core.telegram.org/bots/api#using-a-local-bot-api-server).
 1. In **Token**, [paste the token value from the Telegram bot](#create-a-telegram-bot).
 1. In the **Trigger** section, select the checkboxes for the GitLab events you want to receive in Telegram.
 1. In the **Notification settings** section:

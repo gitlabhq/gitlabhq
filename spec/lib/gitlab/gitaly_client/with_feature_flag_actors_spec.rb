@@ -192,7 +192,7 @@ RSpec.describe Gitlab::GitalyClient::WithFeatureFlagActors do
       it 'calls error tracking track_and_raise_for_dev_exception' do
         expect do
           service.gitaly_client_call(call_arg_1, call_arg_2, karg: call_arg_3)
-        end.to raise_error /gitaly_client_call called without setting repository_actor/
+        end.to raise_error(/gitaly_client_call called without setting repository_actor/)
 
         expect(Gitlab::ErrorTracking).to have_received(:track_and_raise_for_dev_exception).with(
           be_a(Feature::InvalidFeatureFlagError)

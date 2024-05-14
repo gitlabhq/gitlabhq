@@ -89,7 +89,7 @@ RSpec.describe Gitlab::Composer::VersionIndex, feature_category: :package_regist
     subject(:sha) { described_class.new(packages).sha }
 
     it 'returns the json SHA' do
-      expect(sha).to match /^[A-Fa-f0-9]{64}$/
+      expect(sha).to match(/^[A-Fa-f0-9]{64}$/)
     end
   end
 end

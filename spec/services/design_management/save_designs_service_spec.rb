@@ -104,15 +104,12 @@ RSpec.describe DesignManagement::SaveDesignsService, feature_category: :design_m
       end
 
       it 'creates a commit, an event in the activity stream and updates the creation count', :aggregate_failures do
-        counter = Gitlab::UsageDataCounters::DesignsCounter
-
         expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).to receive(:track_issue_designs_added_action)
                                                                            .with(author: user, project: project)
 
         expect { run_service }
           .to change { Event.count }.by(1)
           .and change { Event.for_design.created_action.count }.by(1)
-          .and change { counter.read(:create) }.by(1)
 
         expect(design_repository.commit).to have_attributes(
           author: user,
@@ -123,6 +120,13 @@ RSpec.describe DesignManagement::SaveDesignsService, feature_category: :design_m
       it_behaves_like 'internal event tracking' do
         let(:event) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_DESIGNS_ADDED }
         let(:namespace) { project.namespace }
+        subject(:service_action) { run_service }
+      end
+
+      it_behaves_like 'internal event tracking' do
+        let(:event) { 'create_design_management_design' }
+        let(:namespace) { project.namespace }
+        let(:category) { described_class }
         subject(:service_action) { run_service }
       end
 
@@ -227,11 +231,16 @@ RSpec.describe DesignManagement::SaveDesignsService, feature_category: :design_m
         end
 
         it 'records the correct events' do
-          counter = Gitlab::UsageDataCounters::DesignsCounter
           expect { run_service }
-            .to change { counter.read(:update) }.by(1)
-            .and change { Event.count }.by(1)
+            .to change { Event.count }.by(1)
             .and change { Event.for_design.updated_action.count }.by(1)
+        end
+
+        it_behaves_like 'internal event tracking' do
+          let(:event) { 'update_design_management_design' }
+          let(:namespace) { project.namespace }
+          let(:category) { described_class }
+          subject(:service_action) { run_service }
         end
 
         context 'when uploading a new design' do
@@ -293,8 +302,6 @@ RSpec.describe DesignManagement::SaveDesignsService, feature_category: :design_m
         end
 
         it 'has the correct side-effects' do
-          counter = Gitlab::UsageDataCounters::DesignsCounter
-
           expect(DesignManagement::NewVersionWorker)
             .to receive(:perform_async).once.with(Integer, false).and_return(nil)
 
@@ -303,9 +310,21 @@ RSpec.describe DesignManagement::SaveDesignsService, feature_category: :design_m
             .and change { Event.for_design.count }.by(2)
             .and change { Event.created_action.count }.by(1)
             .and change { Event.updated_action.count }.by(1)
-            .and change { counter.read(:create) }.by(1)
-            .and change { counter.read(:update) }.by(1)
             .and change { commit_count }.by(1)
+        end
+
+        it_behaves_like 'internal event tracking' do
+          let(:event) { 'create_design_management_design' }
+          let(:namespace) { project.namespace }
+          let(:category) { described_class }
+          subject(:service_action) { run_service }
+        end
+
+        it_behaves_like 'internal event tracking' do
+          let(:event) { 'update_design_management_design' }
+          let(:namespace) { project.namespace }
+          let(:category) { described_class }
+          subject(:service_action) { run_service }
         end
       end
 
@@ -317,7 +336,6 @@ RSpec.describe DesignManagement::SaveDesignsService, feature_category: :design_m
         end
 
         it 'has the correct side-effects', :request_store do
-          counter = Gitlab::UsageDataCounters::DesignsCounter
           service = described_class.new(project, user, issue: issue, files: files)
 
           # Some unrelated calls that are usually cached or happen only once
@@ -335,9 +353,15 @@ RSpec.describe DesignManagement::SaveDesignsService, feature_category: :design_m
           expect { service.execute }
             .to change { issue.designs.count }.from(0).to(2)
             .and change { DesignManagement::Version.count }.by(1)
-            .and change { counter.read(:create) }.by(2)
             .and change { Gitlab::GitalyClient.get_request_count }.by(3)
             .and change { commit_count }.by(1)
+        end
+
+        it_behaves_like 'internal event tracking' do
+          let(:event) { 'create_design_management_design' }
+          let(:namespace) { project.namespace }
+          let(:category) { described_class }
+          subject(:service_action) { run_service }
         end
 
         context 'when uploading too many files' do

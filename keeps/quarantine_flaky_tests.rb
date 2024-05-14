@@ -4,6 +4,18 @@ require 'gitlab-http'
 
 require_relative 'helpers/groups'
 
+Gitlab::HTTP_V2.configure do |config|
+  config.allowed_internal_uris = []
+  config.log_exception_proc = ->(exception, extra_info) do
+    p exception
+    p extra_info
+  end
+  config.silent_mode_log_info_proc = ->(message, http_method) do
+    p message
+    p http_method
+  end
+end
+
 module Keeps
   # This is an implementation of a ::Gitlab::Housekeeper::Keep.
   # This keep will fetch any `test` + `failure::flaky-test` + `flakiness::1` issues,
@@ -91,7 +103,7 @@ module Keeps
     end
 
     def get(url)
-      http_response = Gitlab::HTTP.get(
+      http_response = Gitlab::HTTP_V2.get(
         url,
         headers: {
           'User-Agent' => "GitLab-Housekeeper/#{self.class.name}",
@@ -140,13 +152,22 @@ module Keeps
         change.identifiers = [self.class.name.demodulize, filename, line_number.to_s]
         change.changed_files = [filename]
         change.description = <<~MARKDOWN
-        The #{description} test has the `flakiness::1` label set, which means it has more than 1000 flakiness reports.
+        The #{description}
+        test has the ~"flakiness::1" label set, which means it has
+        more than 1000 flakiness reports.
 
-        This MR quarantines the test. This is a discussion starting point to let the responsible group know about the flakiness
-        so that they can take action:
+        This MR quarantines the test. This is a discussion starting point to let the
+        responsible group know about the flakiness so that they can take action:
 
-        - accept the merge request and schedule to improve the test
+        - accept the merge request and schedule the associated issue to improve the test
         - close the merge request in favor of another merge request to delete the test
+
+        Please follow the
+        [Flaky tests management process](https://handbook.gitlab.com/handbook/engineering/infrastructure/engineering-productivity/flaky-tests-management-and-processes/#flaky-tests-management-process)
+        to help us increase `master` stability.
+
+        Please let us know your feedback
+        [in the dedicated issue](https://gitlab.com/gitlab-org/quality/engineering-productivity/team/-/issues/447).
 
         Related to #{flaky_issue['web_url']}.
         MARKDOWN

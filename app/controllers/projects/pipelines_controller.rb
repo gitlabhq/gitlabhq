@@ -48,8 +48,9 @@ class Projects::PipelinesController < Projects::ApplicationController
   feature_category :continuous_integration, [
     :charts, :show, :stage, :cancel, :retry,
     :builds, :dag, :failures, :status,
-    :index, :create, :new, :destroy
+    :index, :new, :destroy
   ]
+  feature_category :pipeline_composition, [:create]
   feature_category :code_testing, [:test_report]
   feature_category :build_artifacts, [:downloadable_artifacts]
 

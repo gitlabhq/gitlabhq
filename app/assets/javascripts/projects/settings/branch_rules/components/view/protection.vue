@@ -58,13 +58,34 @@ export default {
       required: false,
       default: false,
     },
+    emptyStateCopy: {
+      type: String,
+      required: true,
+    },
+    helpText: {
+      type: String,
+      required: false,
+      default: () => '',
+    },
   },
   computed: {
-    showUsersDivider() {
+    hasRoles() {
       return Boolean(this.roles.length);
     },
+    hasUsers() {
+      return Boolean(this.users.length);
+    },
+    hasStatusChecks() {
+      return Boolean(this.statusChecks.length);
+    },
     showGroupsDivider() {
-      return Boolean(this.roles.length || this.users.length);
+      return this.hasRoles || this.hasUsers;
+    },
+    showEmptyState() {
+      return !this.hasRoles && !this.hasUsers && !this.hasStatusChecks;
+    },
+    showHelpText() {
+      return Boolean(this.helpText.length);
     },
   },
 };
@@ -73,8 +94,8 @@ export default {
 <template>
   <gl-card
     class="gl-new-card gl-mb-5"
-    header-class="gl-new-card-header"
-    body-class="gl-new-card-body gl-px-5"
+    header-class="gl-new-card-header gl-flex-wrap"
+    body-class="gl-new-card-body gl-px-5 gl-pt-4"
   >
     <template #header>
       <strong>{{ header }}</strong>
@@ -86,7 +107,14 @@ export default {
         >{{ __('Edit') }}</gl-button
       >
       <gl-link v-else :href="headerLinkHref">{{ headerLinkTitle }}</gl-link>
-    </template>
+      <p v-if="showHelpText" class="gl-flex-basis-full gl-mb-0 gl-text-secondary">
+        {{ helpText }}
+      </p></template
+    >
+
+    <p v-if="showEmptyState" class="gl-text-secondary" data-testid="protection-empty-state">
+      {{ emptyStateCopy }}
+    </p>
 
     <!-- Roles -->
     <protection-row v-if="roles.length" :title="$options.i18n.rolesTitle" :access-levels="roles" />
@@ -94,7 +122,7 @@ export default {
     <!-- Users -->
     <protection-row
       v-if="users.length"
-      :show-divider="showUsersDivider"
+      :show-divider="hasRoles"
       :users="users"
       :title="$options.i18n.usersTitle"
     />

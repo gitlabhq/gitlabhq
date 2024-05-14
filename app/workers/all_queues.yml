@@ -2012,7 +2012,7 @@
   :tags: []
 - :name: pipeline_creation:ci_external_pull_requests_create_pipeline
   :worker_name: Ci::ExternalPullRequests::CreatePipelineWorker
-  :feature_category: :continuous_integration
+  :feature_category: :pipeline_composition
   :has_external_dependencies: false
   :urgency: :high
   :resource_boundary: :cpu
@@ -2021,7 +2021,7 @@
   :tags: []
 - :name: pipeline_creation:create_pipeline
   :worker_name: CreatePipelineWorker
-  :feature_category: :continuous_integration
+  :feature_category: :pipeline_composition
   :has_external_dependencies: false
   :urgency: :high
   :resource_boundary: :cpu
@@ -2030,7 +2030,7 @@
   :tags: []
 - :name: pipeline_creation:merge_requests_create_pipeline
   :worker_name: MergeRequests::CreatePipelineWorker
-  :feature_category: :continuous_integration
+  :feature_category: :pipeline_composition
   :has_external_dependencies: false
   :urgency: :high
   :resource_boundary: :cpu
@@ -2039,7 +2039,7 @@
   :tags: []
 - :name: pipeline_creation:run_pipeline_schedule
   :worker_name: RunPipelineScheduleWorker
-  :feature_category: :continuous_integration
+  :feature_category: :pipeline_composition
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown

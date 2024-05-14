@@ -1802,6 +1802,7 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
+| `hostname`   | string | false | Custom hostname of the Telegram API ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/461313) in GitLab 17.1). The default value is `https://api.telegram.org`. |
 | `token`   | string | true | The Telegram bot token (for example, `123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11`). |
 | `room` | string | true | Unique identifier for the target chat or the username of the target channel (in the format `@channelusername`). |
 | `thread` | integer | false | Unique identifier for the target message thread (topic in a forum supergroup). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/441097) in GitLab 16.11. |

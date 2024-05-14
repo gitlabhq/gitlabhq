@@ -3,7 +3,14 @@
 module Integrations
   class Telegram < BaseChatNotification
     include HasAvatar
-    TELEGRAM_HOSTNAME = "https://api.telegram.org/bot%{token}/sendMessage"
+    TELEGRAM_HOSTNAME = "%{hostname}/bot%{token}/sendMessage"
+
+    field :hostname,
+      section: SECTION_TYPE_CONNECTION,
+      help: 'Custom hostname of the Telegram API. The default value is `https://api.telegram.org`.',
+      placeholder: 'https://api.telegram.org',
+      exposes_secrets: true,
+      required: false
 
     field :token,
       section: SECTION_TYPE_CONNECTION,
@@ -78,7 +85,8 @@ module Integrations
     private
 
     def set_webhook
-      self.webhook = format(TELEGRAM_HOSTNAME, token: token) if token.present?
+      hostname = self.hostname.presence || 'https://api.telegram.org'
+      self.webhook = format(TELEGRAM_HOSTNAME, hostname: hostname, token: token) if token.present?
     end
 
     def notify(message, _opts)

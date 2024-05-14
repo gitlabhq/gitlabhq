@@ -101,7 +101,7 @@ module API
             optional :variable_type, type: String, values: ::Ci::PipelineVariable.variable_types.keys, default: 'env_var', desc: 'The type of variable, must be one of env_var or file. Defaults to env_var'
           end
         end
-        post ':id/pipeline', urgency: :low, feature_category: :continuous_integration do
+        post ':id/pipeline', urgency: :low, feature_category: :pipeline_composition do
           Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/20711')
 
           authorize! :create_pipeline, user_project

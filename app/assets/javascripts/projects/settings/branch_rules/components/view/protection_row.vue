@@ -66,7 +66,7 @@ export default {
 
 <template>
   <div
-    class="gl-display-flex gl-align-items-center gl-border-gray-100 gl-mb-4 gl-pt-4 gl-border-t-1"
+    class="gl-display-flex gl-align-items-center gl-border-gray-100 gl-mb-4 gl-border-t-1"
     :class="{ 'gl-border-t-solid': showDivider }"
   >
     <div class="gl-display-flex gl-w-full gl-justify-content-space-between gl-align-items-center">

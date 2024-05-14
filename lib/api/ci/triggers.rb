@@ -7,7 +7,7 @@ module API
 
       HTTP_GITLAB_EVENT_HEADER = "HTTP_#{::Gitlab::WebHooks::GITLAB_EVENT_HEADER}".underscore.upcase
 
-      feature_category :continuous_integration
+      feature_category :pipeline_composition
       urgency :low
 
       params do

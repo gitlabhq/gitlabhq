@@ -72,6 +72,12 @@ export const protectionPropsMock = {
   statusChecks: statusChecksRulesMock,
 };
 
+export const protectionEmptyStatePropsMock = {
+  header: '',
+  headerLinkTitle: 'Status checks',
+  emptyStateCopy: 'No status checks',
+};
+
 export const protectionRowPropsMock = {
   title: 'Test title',
   users: usersMock,

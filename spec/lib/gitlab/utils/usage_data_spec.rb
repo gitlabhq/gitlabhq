@@ -502,18 +502,18 @@ RSpec.describe Gitlab::Utils::UsageData do
 
     context 'with counter given' do
       context 'when gets an error' do
-        subject { described_class.redis_usage_data(::Gitlab::UsageDataCounters::DesignsCounter) }
+        subject { described_class.redis_usage_data(::Gitlab::UsageDataCounters::MergeRequestCounter) }
 
-        let(:fallback) { ::Gitlab::UsageDataCounters::DesignsCounter.fallback_totals }
-        let(:failing_class) { ::Gitlab::UsageDataCounters::DesignsCounter }
+        let(:fallback) { ::Gitlab::UsageDataCounters::MergeRequestCounter.fallback_totals }
+        let(:failing_class) { ::Gitlab::UsageDataCounters::MergeRequestCounter }
         let(:failing_method) { :totals }
 
         it_behaves_like 'failing hardening method', ::Redis::CommandError
       end
 
       it 'returns the totals when couter is given' do
-        allow(::Gitlab::UsageDataCounters::DesignsCounter).to receive(:totals).and_return({ design_management_designs_create: 2 })
-        expect(described_class.redis_usage_data(::Gitlab::UsageDataCounters::DesignsCounter)).to eql({ design_management_designs_create: 2 })
+        allow(::Gitlab::UsageDataCounters::MergeRequestCounter).to receive(:totals).and_return({ merge_request_create: 2 })
+        expect(described_class.redis_usage_data(::Gitlab::UsageDataCounters::MergeRequestCounter)).to eql({ merge_request_create: 2 })
       end
     end
   end

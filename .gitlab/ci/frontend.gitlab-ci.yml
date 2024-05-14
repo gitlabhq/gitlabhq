@@ -259,11 +259,42 @@ graphql-schema-dump:
   script:
     - run_timed_command "yarn jest:ci"
 
+jest-build-cache:
+  extends:
+    - .frontend-test-base
+    - .frontend:rules:jest
+  needs: []
+  artifacts:
+    name: jest-cache
+    expire_in: 12h
+    when: always
+    paths:
+      - tmp/cache/jest/
+  script:
+    - run_timed_command "yarn jest:ci:build-cache"
+  variables:
+    # Propagate exit code correctly. See https://gitlab.com/groups/gitlab-org/-/epics/6074.
+    FF_USE_NEW_BASH_EVAL_STRATEGY: 'true'
+    FORCE_COLOR: '1'
+  allow_failure:
+    # In merge requests, failures exit with 2, so fail the pipeline. Otherwise,
+    # they exit with 1, so as not to break master and other pipelines.
+    exit_codes: 1
+
+jest-build-cache-vue3:
+  extends:
+    - jest-build-cache
+    - .frontend:rules:jest-vue3
+    - .vue3
+
 jest:
   extends:
     - .jest-base
     - .frontend:rules:jest
-  needs: ["rspec-all frontend_fixture"]
+  needs:
+    - "rspec-all frontend_fixture"
+    - job: jest-build-cache
+      optional: true
   artifacts:
     name: coverage-frontend
     expire_in: 31d
@@ -281,6 +312,10 @@ jest vue3:
     - jest
     - .frontend:rules:jest-vue3
     - .vue3
+  needs:
+    - "rspec-all frontend_fixture"
+    - job: jest-build-cache-vue3
+      optional: true
 
 jest predictive:
   extends:

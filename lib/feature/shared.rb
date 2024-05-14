@@ -99,5 +99,9 @@ module Feature
       group
       default_enabled
     ].freeze
+
+    def self.can_be_default_enabled?(feature_flag_type)
+      TYPES.dig(feature_flag_type.to_sym, :can_be_default_enabled)
+    end
   end
 end

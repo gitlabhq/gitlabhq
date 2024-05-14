@@ -2634,19 +2634,6 @@
     - <<: *if-default-refs
       changes: *docs-patterns
 
-.reports:rules:brakeman-sast:
-  rules:
-    - <<: *if-merge-request-labels-pipeline-expedite
-      when: never
-    - if: $SAST_DISABLED
-      when: never
-    - if: $SAST_EXCLUDED_ANALYZERS =~ /brakeman/
-      when: never
-    - <<: *if-default-refs
-      changes:
-        - '**/*.rb'
-        - '**/Gemfile'
-
 .reports:rules:semgrep-sast:
   rules:
     - <<: *if-merge-request-labels-pipeline-expedite

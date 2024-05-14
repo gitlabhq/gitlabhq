@@ -12,7 +12,7 @@
 
 def length_validator_supports_dynamic_length_checks?(validator)
   validator.options[:minimum].is_a?(Proc) &&
-  validator.options[:maximum].is_a?(Proc)
+    validator.options[:maximum].is_a?(Proc)
 end
 
 # Get the in-built Devise validator on password length.

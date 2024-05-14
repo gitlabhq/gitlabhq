@@ -9017,6 +9017,9 @@ msgstr ""
 msgid "BranchRules|Cancel"
 msgstr ""
 
+msgid "BranchRules|Changes require a merge request. The following users can push and merge directly."
+msgstr ""
+
 msgid "BranchRules|Check for a status response in merge requests. Failures do not block merges. %{linkStart}Learn more.%{linkEnd}"
 msgstr ""
 
@@ -9075,6 +9078,15 @@ msgid "BranchRules|No data to display"
 msgstr ""
 
 msgid "BranchRules|No matching results"
+msgstr ""
+
+msgid "BranchRules|No one is allowed to merge changes."
+msgstr ""
+
+msgid "BranchRules|No one is allowed to push and merge changes."
+msgstr ""
+
+msgid "BranchRules|No status checks have been added."
 msgstr ""
 
 msgid "BranchRules|Protect branch"
@@ -59050,10 +59062,16 @@ msgstr ""
 msgid "Workspaces|A workspace is a virtual sandbox environment for your code in GitLab."
 msgstr ""
 
+msgid "Workspaces|Agents connect workspaces to your Kubernetes cluster. To create a workspace with an allowed agent, group members must have at least the Developer role."
+msgstr ""
+
 msgid "Workspaces|Cancel"
 msgstr ""
 
 msgid "Workspaces|Cluster agent"
+msgstr ""
+
+msgid "Workspaces|Could not load available agents. Refresh the page to try again."
 msgstr ""
 
 msgid "Workspaces|Could not load workspaces"
@@ -59093,6 +59111,9 @@ msgid "Workspaces|Git reference"
 msgstr ""
 
 msgid "Workspaces|GitLab Workspaces is a powerful collaborative platform that provides a comprehensive set of tools for software development teams to manage their entire development lifecycle."
+msgstr ""
+
+msgid "Workspaces|Group agents"
 msgstr ""
 
 msgid "Workspaces|If your devfile is not in the root directory of your project, specify a relative path."
@@ -59144,6 +59165,9 @@ msgid "Workspaces|Terminating"
 msgstr ""
 
 msgid "Workspaces|The branch, tag, or commit hash GitLab uses to create your workspace."
+msgstr ""
+
+msgid "Workspaces|This group has no available agents. Select the All agents tab and allow at least one agent."
 msgstr ""
 
 msgid "Workspaces|To create a workspace, add a devfile to this project. A devfile is a configuration file for your workspace."

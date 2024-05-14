@@ -29,7 +29,7 @@ RSpec.describe Gitlab::Database::Partitioning, feature_category: :database do
     context 'ensure that the registered models have partitioning strategy' do
       it 'fails when partitioning_strategy is not specified for the model' do
         model = Class.new(ApplicationRecord)
-        expect { described_class.register_models([model]) }.to raise_error /should have partitioning strategy defined/
+        expect { described_class.register_models([model]) }.to raise_error(/should have partitioning strategy defined/)
       end
     end
   end

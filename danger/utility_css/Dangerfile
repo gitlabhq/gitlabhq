@@ -6,7 +6,7 @@ utilities = 'app/assets/stylesheets/utilities.scss'
 def get_css_files(files, common_filepath, utilities_filepath)
   files.select do |file|
     file.include?(common_filepath) ||
-    file.include?(utilities_filepath)
+      file.include?(utilities_filepath)
   end
 end
 

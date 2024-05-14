@@ -6601,7 +6601,6 @@
 - './spec/lib/gitlab/usage_data_counters/base_counter_spec.rb'
 - './spec/lib/gitlab/usage_data_counters/ci_template_unique_counter_spec.rb'
 - './spec/lib/gitlab/usage_data_counters/code_review_events_spec.rb'
-- './spec/lib/gitlab/usage_data_counters/designs_counter_spec.rb'
 - './spec/lib/gitlab/usage_data_counters/gitlab_cli_activity_unique_counter_spec.rb'
 - './spec/lib/gitlab/usage_data_counters/hll_redis_counter_spec.rb'
 - './spec/lib/gitlab/usage_data_counters/ipynb_diff_activity_counter_spec.rb'
