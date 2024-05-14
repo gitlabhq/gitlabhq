@@ -7,7 +7,7 @@ RSpec.describe 'Create a work item', feature_category: :team_planning do
 
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, group: group) }
-  let_it_be(:developer) { create(:user).tap { |user| group.add_developer(user) } }
+  let_it_be(:developer) { create(:user, developer_of: group) }
 
   let(:input) do
     {
@@ -238,6 +238,99 @@ RSpec.describe 'Create a work item', feature_category: :team_planning do
           it_behaves_like "work item's milestone is set" do
             let(:milestone) { group_milestone }
           end
+        end
+      end
+    end
+
+    context 'with assignee widget input' do
+      let(:widgets_response) { mutation_response['workItem']['widgets'] }
+      let(:fields) do
+        <<~FIELDS
+          workItem {
+            widgets {
+              type
+              ... on WorkItemWidgetAssignees {
+                assignees {
+                  nodes {
+                    id
+                    username
+                  }
+                }
+              }
+            }
+          }
+          errors
+        FIELDS
+      end
+
+      context 'when setting assignee on work item creation' do
+        let_it_be(:assignee) { create(:user, developer_of: project) }
+
+        let(:input) do
+          {
+            title: 'some WI',
+            workItemTypeId: WorkItems::Type.default_by_type(:task).to_gid.to_s,
+            assigneesWidget: { 'assigneeIds' => assignee.to_gid.to_s }
+          }
+        end
+
+        it "sets the work item's assignee" do
+          expect do
+            post_graphql_mutation(mutation, current_user: current_user)
+          end.to change(WorkItem, :count).by(1)
+
+          expect(response).to have_gitlab_http_status(:success)
+          expect(widgets_response).to include(
+            {
+              'assignees' => { 'nodes' => [{ 'id' => assignee.to_gid.to_s, 'username' => assignee.username }] },
+              'type' => 'ASSIGNEES'
+            }
+          )
+        end
+      end
+    end
+
+    context 'with labels widget input' do
+      let(:widgets_response) { mutation_response['workItem']['widgets'] }
+      let(:fields) do
+        <<~FIELDS
+          workItem {
+            widgets {
+              type
+              ... on WorkItemWidgetLabels {
+                labels {
+                  nodes { id }
+                }
+              }
+            }
+          }
+          errors
+        FIELDS
+      end
+
+      context 'when setting labels on work item creation' do
+        let_it_be(:label1) { create(:group_label, group: group) }
+        let_it_be(:label2) { create(:group_label, group: group) }
+        let(:label_ids) { [label1.to_gid.to_s, label2.to_gid.to_s] }
+
+        let(:input) do
+          {
+            title: 'some WI',
+            workItemTypeId: WorkItems::Type.default_by_type(:task).to_gid.to_s,
+            labelsWidget: { labelIds: label_ids }
+          }
+        end
+
+        it "sets the work item's labels" do
+          expect do
+            post_graphql_mutation(mutation, current_user: current_user)
+          end.to change(WorkItem, :count).by(1)
+
+          expect(response).to have_gitlab_http_status(:success)
+          expect(mutation_response['workItem']['widgets']).to include(
+            'labels' => { 'nodes' => label_ids.map { |l| { 'id' => l } } },
+            'type' => 'LABELS'
+          )
         end
       end
     end

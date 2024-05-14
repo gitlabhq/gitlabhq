@@ -7,7 +7,7 @@ module Gitlab
 
       attr_reader :start_time, :header, :log, :timeout
 
-      def initialize(start_time: Time.now, log: [], header: "", timeout:)
+      def initialize(timeout:, start_time: Time.now, log: [], header: "")
         @start_time = start_time
         @timeout = timeout
         @header = header

@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 GitLab Runner has the following types of runners, which are available based on who you want to have access:
 
@@ -81,6 +81,7 @@ should be used instead. For more information, see [Migrating to the new runner r
 
 Prerequisites:
 
+- Runner registration tokens must be [enabled](../../administration/settings/continuous_integration.md#enable-runner-registrations-tokens) in the Admin Area.
 - You must be an administrator.
 
 To create an instance runner:
@@ -268,14 +269,17 @@ The runner authentication token displays in the UI for only a short period of ti
 
 ### Create a group runner with a registration token (deprecated)
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/19819) in GitLab 14.10, path changed from **Settings > CI/CD > Runners**.
+> - Path changed from **Settings > CI/CD > Runners**.
 
 WARNING:
 The ability to pass a runner registration token, and support for certain configuration arguments was
 [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/380872) in GitLab 15.6 and will be removed in GitLab 18.0. Authentication tokens
 should be used instead. For more information, see [Migrating to the new runner registration workflow](new_creation_workflow.md).
 
-You must have the Owner role for the group.
+Prerequisites:
+
+- Runner registration tokens must be [enabled](#enable-use-of-runner-registration-tokens-in-projects-and-groups) in the top-level group.
+- You must have the Owner role for the group.
 
 To create a group runner:
 
@@ -363,7 +367,7 @@ To delete a single or multiple group runners:
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363012) in GitLab 15.1.
 
@@ -473,6 +477,7 @@ should be used instead. For more information, see [Migrating to the new runner r
 
 Prerequisites:
 
+- Runner registration tokens must be [enabled](#enable-use-of-runner-registration-tokens-in-projects-and-groups) in the top-level group.
 - You must have at least the Maintainer role for the project.
 
 To create a project runner:
@@ -581,7 +586,7 @@ A runner can have one of the following statuses.
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/377963) in GitLab 15.8.
 
@@ -605,7 +610,7 @@ To view runner statistics:
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/365078) in GitLab 15.3.
 
@@ -661,6 +666,27 @@ you must have the Owner role for the
 project.
 
 1. Go to the project's **Settings > CI/CD** and expand the **Runners** section.
-1. On the details page you should see a row for **IP Address**.
+1. Select the runner name and find the **IP Address** row.
 
 ![Project runner IP address](img/project_runner_ip_address.png)
+
+## Enable use of runner registration tokens in projects and groups
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148557) in GitLab 16.11
+
+WARNING:
+The ability to pass a runner registration token, and support for certain configuration arguments was deprecated in GitLab 15.6 and will be removed in GitLab 18.0. Runner authentication tokens should be used instead. For more information, see [Migrating to the new runner registration workflow](../../ci/runners/new_creation_workflow.md).
+
+In GitLab 17.0, the use of runner registration tokens to create runners will be disabled in all GitLab instances.
+Users must use runner authentication tokens instead.
+If you have not yet [migrated to the use of runner authentication tokens](../../ci/runners/new_creation_workflow.md),
+you can enable runner registration tokens for projects and groups. This setting and support for runner registration tokens will be removed in GitLab 18.0.
+
+Prerequisites:
+
+- Runner registration tokens must be [enabled](../../administration/settings/continuous_integration.md#enable-runner-registrations-tokens) in the Admin Area.
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Settings > CI/CD**.
+1. Expand **Runners**.
+1. Turn on the **Allow members of projects and groups to create runners with runner registration tokens** toggle.

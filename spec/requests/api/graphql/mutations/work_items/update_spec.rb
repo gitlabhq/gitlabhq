@@ -7,10 +7,10 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
 
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, group: group) }
-  let_it_be(:author) { create(:user).tap { |user| group.add_reporter(user) } }
-  let_it_be(:developer) { create(:user).tap { |user| group.add_developer(user) } }
-  let_it_be(:reporter) { create(:user).tap { |user| group.add_reporter(user) } }
-  let_it_be(:guest) { create(:user).tap { |user| group.add_guest(user) } }
+  let_it_be(:author) { create(:user, reporter_of: group) }
+  let_it_be(:developer) { create(:user, developer_of: group) }
+  let_it_be(:reporter) { create(:user, reporter_of: group) }
+  let_it_be(:guest) { create(:user, guest_of: group) }
   let_it_be(:work_item, refind: true) { create(:work_item, project: project, author: author) }
 
   let(:input) { { 'stateEvent' => 'CLOSE', 'title' => 'updated title' } }
@@ -220,6 +220,12 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
           let(:mutation_work_item) { group_work_item }
 
           it_behaves_like 'mutation updating work item labels'
+
+          context 'with quick action' do
+            let(:input) { { 'descriptionWidget' => { 'description' => "/remove_label ~\"#{existing_label.name}\"" } } }
+
+            it_behaves_like 'mutation updating work item labels'
+          end
         end
       end
 
@@ -241,6 +247,14 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
           let(:mutation_work_item) { group_work_item }
 
           it_behaves_like 'mutation updating work item labels'
+
+          context 'with quick action' do
+            let(:input) do
+              { 'descriptionWidget' => { 'description' => "/labels ~\"#{label1.name}\" ~\"#{label2.name}\"" } }
+            end
+
+            it_behaves_like 'mutation updating work item labels'
+          end
         end
       end
 
@@ -879,7 +893,7 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
               expect(mutation_response['workItem']['title']).to eq('Foo')
               expect(mutation_response['workItem']['widgets']).to include(
                 'type' => 'START_AND_DUE_DATE',
-                'dueDate' => Date.tomorrow.strftime('%Y-%m-%d'),
+                'dueDate' => Date.tomorrow.iso8601,
                 'startDate' => nil
               )
             end
@@ -1582,7 +1596,17 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
       end
     end
 
-    context 'with time tracking widget input' do
+    context 'with time tracking widget input', time_travel_to: "2024-02-20" do
+      shared_examples 'request with error' do |message|
+        it 'ignores update and returns an error' do
+          post_graphql_mutation(mutation, current_user: current_user)
+
+          expect(response).to have_gitlab_http_status(:success)
+          expect(mutation_response['workItem']).to be_nil
+          expect(mutation_response['errors'].first).to include(message)
+        end
+      end
+
       shared_examples 'mutation updating work item with time tracking data' do
         it 'updates time tracking' do
           expect do
@@ -1593,12 +1617,15 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
           )
 
           expect(mutation_response['workItem']['widgets']).to include(
-            'timeEstimate' => 12.hours.to_i,
-            'totalTimeSpent' => 2.hours.to_i,
+            'timeEstimate' => expected_result[:time_estimate],
+            'totalTimeSpent' => expected_result[:time_spent],
             'timelogs' => {
               'nodes' => [
                 {
-                  'timeSpent' => 2.hours.to_i
+                  'timeSpent' => expected_result[:time_spent],
+                  'spentAt' => expected_result[:spent_at],
+                  'summary' => expected_result[:summary],
+                  'user' => { "username" => current_user.username }
                 }
               ]
             },
@@ -1606,7 +1633,7 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
           )
 
           expect(mutation_response['workItem']['widgets']).to include(
-            'description' => 'some description',
+            'description' => expected_result[:description],
             'type' => 'DESCRIPTION'
           )
         end
@@ -1623,6 +1650,11 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
                 timelogs {
                   nodes {
                     timeSpent
+                    spentAt
+                    summary
+                    user {
+                      username
+                    }
                   }
                 }
               }
@@ -1636,46 +1668,118 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
         FIELDS
       end
 
-      let_it_be(:group_work_item) { create(:work_item, :task, :group_level, namespace: group) }
+      let_it_be_with_reload(:group_work_item) { create(:work_item, :task, :group_level, namespace: group) }
 
       context 'when adding time estimate and time spent' do
-        context 'with quick action' do
-          let(:input) { { 'descriptionWidget' => { 'description' => "some description\n\n/estimate 12h\n/spend 2h" } } }
+        context 'when mutating the work item' do
+          let(:spent_at) { 2.days.ago.to_date }
+          let(:summary) { "doing testing" }
+          let(:input) do
+            {
+              'timeTrackingWidget' => {
+                'timeEstimate' => "12h",
+                'timelog' => {
+                  'timeSpent' => "2h",
+                  'spentAt' => spent_at.strftime("%F"),
+                  'summary' => "doing testing"
+                }
+              }
+            }
+          end
 
-          it_behaves_like 'mutation updating work item with time tracking data'
+          let(:expected_result) do
+            {
+              time_estimate: 12.hours.to_i,
+              time_spent: 2.hours.to_i,
+              spent_at: spent_at.to_time.utc.strftime("%FT%TZ"),
+              summary: summary,
+              description: nil
+            }
+          end
+
+          context 'when work item belongs to a project' do
+            it_behaves_like 'mutation updating work item with time tracking data'
+          end
+
+          context 'when work item belongs to a group' do
+            let(:mutation_work_item) { group_work_item }
+
+            it_behaves_like 'mutation updating work item with time tracking data'
+          end
+
+          context 'when time estimate format is invalid' do
+            let(:input) { { 'timeTrackingWidget' => { 'timeEstimate' => "12abc" } } }
+
+            it_behaves_like 'request with error', 'Time estimate must be formatted correctly. For example: 1h 30m.'
+          end
+
+          context 'when time spent format is invalid' do
+            let(:input) { { 'timeTrackingWidget' => { 'timelog' => { 'timeSpent' => "2abc" } } } }
+
+            it_behaves_like 'request with error', 'Time spent must be formatted correctly. For example: 1h 30m.'
+          end
         end
 
-        context 'when work item belongs to the group' do
-          let(:mutation_work_item) { group_work_item }
+        context 'with quick action' do
           let(:input) { { 'descriptionWidget' => { 'description' => "some description\n\n/estimate 12h\n/spend 2h" } } }
+          let(:spent_at) { Date.current }
+          let(:expected_result) do
+            {
+              time_estimate: 12.hours.to_i,
+              time_spent: 2.hours.to_i,
+              spent_at: spent_at.strftime("%FT%TZ"),
+              summary: nil,
+              description: "some description"
+            }
+          end
 
-          it_behaves_like 'mutation updating work item with time tracking data'
+          context 'when work item belongs to a project' do
+            it_behaves_like 'mutation updating work item with time tracking data'
+          end
+
+          context 'when work item belongs to a group' do
+            let(:mutation_work_item) { group_work_item }
+
+            it_behaves_like 'mutation updating work item with time tracking data'
+          end
         end
       end
 
       context 'when the work item type does not support time tracking widget' do
-        let_it_be(:work_item) { create(:work_item, :task, project: project) }
+        context 'with quick action' do
+          let_it_be(:work_item) { create(:work_item, :task, project: project) }
 
-        let(:input) { { 'descriptionWidget' => { 'description' => "some description\n\n/estimate 12h\n/spend 2h" } } }
+          let(:spent_at) { Date.current }
+          let(:input) { { 'descriptionWidget' => { 'description' => "some description\n\n/estimate 12h\n/spend 2h" } } }
+          let(:expected_result) do
+            {
+              time_estimate: 12.hours.to_i,
+              time_spent: 2.hours.to_i,
+              spent_at: spent_at.strftime("%FT%TZ"),
+              summary: nil,
+              description: "some description"
+            }
+          end
 
-        before do
-          WorkItems::Type.default_by_type(:task).widget_definitions
-            .find_by_widget_type(:time_tracking).update!(disabled: true)
-        end
+          before do
+            WorkItems::Type.default_by_type(:task).widget_definitions
+              .find_by_widget_type(:time_tracking).update!(disabled: true)
+          end
 
-        it 'ignores the quick action' do
-          expect do
-            post_graphql_mutation(mutation, current_user: current_user)
-            work_item.reload
-          end.not_to change { work_item.time_estimate }
+          it 'ignores the quick action' do
+            expect do
+              post_graphql_mutation(mutation, current_user: current_user)
+              work_item.reload
+            end.not_to change { work_item.time_estimate }
 
-          expect(mutation_response['workItem']['widgets']).to include(
-            'description' => "some description",
-            'type' => 'DESCRIPTION'
-          )
-          expect(mutation_response['workItem']['widgets']).not_to include(
-            'type' => 'TIME_TRACKING'
-          )
+            expect(mutation_response['workItem']['widgets']).to include(
+              'description' => "some description",
+              'type' => 'DESCRIPTION'
+            )
+            expect(mutation_response['workItem']['widgets']).not_to include(
+              'type' => 'TIME_TRACKING'
+            )
+          end
         end
       end
     end

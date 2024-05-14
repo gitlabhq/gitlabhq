@@ -17,7 +17,7 @@ module Resolvers
     type Types::CustomEmojiType, null: true
 
     def resolve(**args)
-      Groups::CustomEmojiFinder.new(object, args).execute
+      ::Groups::CustomEmojiFinder.new(object, args).execute
     end
   end
 end

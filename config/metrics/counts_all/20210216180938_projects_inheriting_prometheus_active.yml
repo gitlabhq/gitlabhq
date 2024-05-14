@@ -4,7 +4,7 @@ key_path: counts.projects_inheriting_prometheus_active
 description: Count of active projects inheriting integrations for Prometheus
 product_section: ops
 product_stage: monitor
-product_group: monitor
+product_group: respond
 value_type: number
 status: active
 time_frame: all

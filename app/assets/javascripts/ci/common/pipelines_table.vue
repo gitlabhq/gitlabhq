@@ -75,7 +75,7 @@ export default {
         {
           key: 'status',
           label: s__('Pipeline|Status'),
-          columnClass: 'gl-w-15p',
+          columnClass: 'gl-w-3/20',
           tdClass: this.tdClasses,
           thAttr: { 'data-testid': 'status-th' },
         },
@@ -83,27 +83,27 @@ export default {
           key: 'pipeline',
           label: __('Pipeline'),
           tdClass: `${this.tdClasses}`,
-          columnClass: 'gl-w-30p',
+          columnClass: 'gl-w-6/20',
           thAttr: { 'data-testid': 'pipeline-th' },
         },
         {
           key: 'triggerer',
           label: s__('Pipeline|Created by'),
           tdClass: `${this.tdClasses} ${HIDE_TD_ON_MOBILE}`,
-          columnClass: 'gl-w-15p',
+          columnClass: 'gl-w-3/20',
           thAttr: { 'data-testid': 'triggerer-th' },
         },
         {
           key: 'stages',
           label: s__('Pipeline|Stages'),
           tdClass: this.tdClasses,
-          columnClass: 'gl-w-quarter',
+          columnClass: 'gl-w-5/20',
           thAttr: { 'data-testid': 'stages-th' },
         },
         {
           key: 'actions',
           tdClass: this.tdClasses,
-          columnClass: 'gl-w-20p',
+          columnClass: 'gl-w-4/20',
           thAttr: { 'data-testid': 'actions-th' },
         },
       ];
@@ -214,7 +214,7 @@ export default {
           :pipeline-iid="item.iid"
           :pipeline-path="item.path"
           :project-path="getProjectPath(item)"
-          class="gl-ml-n4 gl-mt-n3 gl-mb-n1"
+          class="-gl-ml-4 -gl-mt-3 -gl-mb-1"
         />
       </template>
     </gl-table-lite>

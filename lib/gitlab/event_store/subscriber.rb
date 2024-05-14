@@ -43,7 +43,7 @@ module Gitlab
       private
 
       def construct_event(event_type, event_data)
-        event_type.new(data: event_data.with_indifferent_access)
+        event_type.new(data: event_data)
       end
     end
   end

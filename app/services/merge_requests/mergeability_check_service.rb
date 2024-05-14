@@ -114,11 +114,11 @@ module MergeRequests
 
       merge_to_ref_success = merge_to_ref
 
-      reload_merge_head_diff
       update_diff_discussion_positions! if merge_to_ref_success
 
       if merge_to_ref_success && can_git_merge?
         merge_request.mark_as_mergeable
+        reload_merge_head_diff
       else
         merge_request.mark_as_unmergeable
       end

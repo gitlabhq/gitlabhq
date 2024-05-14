@@ -37,6 +37,7 @@ type sendDataResponseWriter struct {
 	injecters []Injecter
 }
 
+// SendData intercepts HTTP responses and allows injecting content before sending them
 func SendData(h http.Handler, injecters ...Injecter) http.Handler {
 	return contentprocessor.SetContentHeaders(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		s := sendDataResponseWriter{

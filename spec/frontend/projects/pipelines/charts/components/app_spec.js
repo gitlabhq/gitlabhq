@@ -152,7 +152,7 @@ describe('ProjectsPipelinesChartsApp', () => {
 
           wrapper.findByTestId(testId).vm.$emit('click');
 
-          expect(trackApiSpy).toHaveBeenCalledWith(event);
+          expect(trackApiSpy).toHaveBeenCalledWith(event, {});
         });
       });
 

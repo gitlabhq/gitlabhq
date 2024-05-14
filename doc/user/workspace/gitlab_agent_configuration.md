@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112397) in GitLab 15.11 [with a flag](../../administration/feature_flags.md) named `remote_development_feature_flag`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/391543) in GitLab 16.0.
@@ -24,16 +24,16 @@ provided that the agent is properly configured for remote development.
 
 ## Remote development settings
 
-| Setting                                                                                   | Description                                                                                                                         |
-|-------------------------------------------------------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------|
-| [`enabled`](#enabled)                                                                     | Indicates whether remote development is enabled for the GitLab agent.                                                               |
-| [`dns_zone`](#dns_zone)                                                                   | DNS zone where workspaces are available.                                                                                            |
-| [`gitlab_workspaces_proxy`](#gitlab_workspaces_proxy)                                     | Namespace where [`gitlab-workspaces-proxy`](https://gitlab.com/gitlab-org/remote-development/gitlab-workspaces-proxy) is installed. |
-| [`network_policy`](#network_policy)                                                       | Firewall rules for workspaces.                                                                                                      |
-| [`default_resources_per_workspace_container`](#default_resources_per_workspace_container) | Default requests and limits for CPU and memory per workspace container.                                                             |
-| [`max_resources_per_workspace`](#max_resources_per_workspace)                             | Maximum requests and limits for CPU and memory per workspace.                                                                       |
-| [`workspaces_quota`](#workspaces_quota)                                                   | Maximum number of workspaces for the GitLab agent.                                                                                  |
-| [`workspaces_per_user_quota`](#workspaces_per_user_quota)                                 | Maximum number of workspaces per user.                                                                                              |
+| Setting                                                                                   | Required | Default value                           | Description |
+|-------------------------------------------------------------------------------------------|----------|-----------------------------------------|-------------|
+| [`enabled`](#enabled)                                                                     | Yes      | `false`                                 | Indicates whether remote development is enabled for the GitLab agent. |
+| [`dns_zone`](#dns_zone)                                                                   | Yes      | None                                    | DNS zone where workspaces are available. |
+| [`gitlab_workspaces_proxy`](#gitlab_workspaces_proxy)                                     | No       | `gitlab-workspaces`                     | Namespace where [`gitlab-workspaces-proxy`](set_up_workspaces_proxy.md) is installed. |
+| [`network_policy`](#network_policy)                                                       | No       | See [`network_policy`](#network_policy) | Firewall rules for workspaces. |
+| [`default_resources_per_workspace_container`](#default_resources_per_workspace_container) | No       | `{}`                                    | Default requests and limits for CPU and memory per workspace container. |
+| [`max_resources_per_workspace`](#max_resources_per_workspace)                             | No       | `{}`                                    | Maximum requests and limits for CPU and memory per workspace. |
+| [`workspaces_quota`](#workspaces_quota)                                                   | No       | `-1`                                    | Maximum number of workspaces for the GitLab agent. |
+| [`workspaces_per_user_quota`](#workspaces_per_user_quota)                                 | No       | `-1`                                    | Maximum number of workspaces per user. |
 
 NOTE:
 If a setting has an invalid value, it's not possible to update any setting until you fix that value.
@@ -60,7 +60,6 @@ running workspaces to remove those workspaces from the Kubernetes cluster.
 ### `dns_zone`
 
 Use this setting to define the DNS zone of the URL where workspaces are available.
-When you set `dns_zone`, you can no longer update the setting.
 
 **Example configuration:**
 
@@ -72,7 +71,7 @@ remote_development:
 ### `gitlab_workspaces_proxy`
 
 Use this setting to define the namespace where
-[`gitlab-workspaces-proxy`](https://gitlab.com/gitlab-org/remote-development/gitlab-workspaces-proxy) is installed.
+[`gitlab-workspaces-proxy`](set_up_workspaces_proxy.md) is installed.
 The default value for `gitlab_workspaces_proxy.namespace` is `gitlab-workspaces`.
 
 **Example configuration:**

@@ -21,15 +21,15 @@ future, see [Geo: Accelerate container images by serving read request from secon
 
 Geo supports the following types of container registries:
 
-- [Docker](https://docs.docker.com/registry/)
+- [Docker](https://distribution.github.io/distribution/)
 - [OCI](https://github.com/opencontainers/distribution-spec/blob/main/spec.md)
 
 ## Supported image formats
 
 The following container image formats are support by Geo:
 
-- [Docker V2, schema 1](https://docs.docker.com/registry/spec/manifest-v2-1/)
-- [Docker V2, schema 2](https://docs.docker.com/registry/spec/manifest-v2-2/)
+- [Docker V2, schema 1](https://distribution.github.io/distribution/spec/deprecated-schema-v1/)
+- [Docker V2, schema 2](https://distribution.github.io/distribution/spec/manifest-v2-2/)
 - [OCI (Open Container Initiative)](https://github.com/opencontainers/image-spec)
 
 In addition, Geo also supports [BuildKit cache images](https://github.com/moby/buildkit).
@@ -39,9 +39,9 @@ In addition, Geo also supports [BuildKit cache images](https://github.com/moby/b
 ### Docker
 
 For more information on supported registry storage drivers see
-[Docker registry storage drivers](https://docs.docker.com/registry/storage-drivers/)
+[Docker registry storage drivers](https://distribution.github.io/distribution/storage-drivers/)
 
-Read the [Load balancing considerations](https://docs.docker.com/registry/deploying/#load-balancing-considerations)
+Read the [Load balancing considerations](https://distribution.github.io/distribution/about/deploying/#load-balancing-considerations)
 when deploying the Registry, and how to set up the storage driver for the GitLab integrated
 [container registry](../../packages/container_registry.md#use-object-storage).
 
@@ -80,7 +80,7 @@ To be able to replicate new container images, the container registry must send n
 **primary** site for every push. The token shared between the container registry and the web nodes on the
 **primary** is used to make communication more secure.
 
-1. SSH into your GitLab **primary** server and login as root (for GitLab HA, you only need a Registry node):
+1. SSH into your GitLab **primary** server and log in as root (for GitLab HA, you only need a Registry node):
 
    ```shell
    sudo -i
@@ -141,7 +141,7 @@ generate a short-lived JWT that is pull-only-capable to access the
 
 For each application and Sidekiq node on the **secondary** site:
 
-1. SSH into the node and login as the `root` user:
+1. SSH into the node and log in as the `root` user:
 
    ```shell
    sudo -i
@@ -217,11 +217,18 @@ On multinode deployments, make sure that the issuer configured on the Sidekiq no
 
 ### Manually trigger a container registry sync event
 
-To help with troubleshooting, you can manually trigger the container registry replication process by running the following commands on the secondary's Rails console:
+To help with troubleshooting, you can manually trigger the container registry replication process:
+
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Geo > Sites**.
+1. In **Replication Details** for a **Secondary Site**, select **Container Repositories**.
+1. Select **Resync** for one row, or **Resync all**.
+
+You can also manually trigger a resync by running the following commands on the secondary's Rails console:
 
 ```ruby
 registry = Geo::ContainerRepositoryRegistry.first # Choose a Geo registry entry
-registry.replicator.sync_repository # Resync the container repository
+registry.replicator.resync # Resync the container repository
 pp registry.reload # Look at replication state fields
 
 #<Geo::ContainerRepositoryRegistry:0x00007f54c2a36060

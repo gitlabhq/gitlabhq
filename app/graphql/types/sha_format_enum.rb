@@ -12,8 +12,8 @@ module Types
 
     FORMATS_DESCRIPTION.each do |format, description|
       value format.to_s.upcase,
-            description: description,
-            value: format.to_s
+        description: description,
+        value: format.to_s
     end
   end
 end

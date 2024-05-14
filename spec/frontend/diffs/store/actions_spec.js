@@ -1,4 +1,5 @@
 import MockAdapter from 'axios-mock-adapter';
+import api from '~/api';
 import Cookies from '~/lib/utils/cookies';
 import waitForPromises from 'helpers/wait_for_promises';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
@@ -816,6 +817,19 @@ describe('DiffsStoreActions', () => {
   });
 
   describe('removeDiscussionsFromDiff', () => {
+    it('does not call mutation if no diff file is on discussion', () => {
+      testAction(
+        diffActions.removeDiscussionsFromDiff,
+        {
+          id: '1',
+          line_code: 'ABC_1_1',
+        },
+        {},
+        [],
+        [],
+      );
+    });
+
     it('should remove discussions from diffs', () => {
       const state = {
         diffFiles: [
@@ -871,32 +885,21 @@ describe('DiffsStoreActions', () => {
     });
   });
 
-  describe('setInlineDiffViewType', () => {
-    it('should set diff view type to inline and also set the cookie properly', async () => {
-      await testAction(
-        diffActions.setInlineDiffViewType,
-        null,
-        {},
-        [{ type: types.SET_DIFF_VIEW_TYPE, payload: INLINE_DIFF_VIEW_TYPE }],
-        [],
-      );
-      expect(window.location.toString()).toContain('?view=inline');
-      expect(Cookies.get('diff_view')).toEqual(INLINE_DIFF_VIEW_TYPE);
-    });
-  });
-
-  describe('setParallelDiffViewType', () => {
-    it('should set diff view type to parallel and also set the cookie properly', async () => {
-      await testAction(
-        diffActions.setParallelDiffViewType,
-        null,
-        {},
-        [{ type: types.SET_DIFF_VIEW_TYPE, payload: PARALLEL_DIFF_VIEW_TYPE }],
-        [],
-      );
-      expect(window.location.toString()).toContain('?view=parallel');
-      expect(Cookies.get(DIFF_VIEW_COOKIE_NAME)).toEqual(PARALLEL_DIFF_VIEW_TYPE);
-    });
+  describe('setDiffViewType', () => {
+    it.each([['inline'], ['parallel']])(
+      'should set the diff view type to $p and set the cookie',
+      async (diffViewType) => {
+        await testAction(
+          diffActions.setDiffViewType,
+          diffViewType,
+          {},
+          [{ type: types.SET_DIFF_VIEW_TYPE, payload: diffViewType }],
+          [],
+        );
+        expect(window.location.toString()).toContain(`?view=${diffViewType}`);
+        expect(Cookies.get(DIFF_VIEW_COOKIE_NAME)).toEqual(diffViewType);
+      },
+    );
   });
 
   describe('showCommentForm', () => {
@@ -1056,62 +1059,6 @@ describe('DiffsStoreActions', () => {
           params: expect.objectContaining({ start_sha, diff_id }),
         });
       });
-    });
-  });
-
-  describe('toggleFileDiscussions', () => {
-    it('should dispatch collapseDiscussion when all discussions are expanded', () => {
-      const getters = {
-        getDiffFileDiscussions: jest.fn(() => [{ id: 1 }]),
-        diffHasAllExpandedDiscussions: jest.fn(() => true),
-        diffHasAllCollapsedDiscussions: jest.fn(() => false),
-      };
-
-      const dispatch = jest.fn();
-
-      diffActions.toggleFileDiscussions({ getters, dispatch });
-
-      expect(dispatch).toHaveBeenCalledWith(
-        'collapseDiscussion',
-        { discussionId: 1 },
-        { root: true },
-      );
-    });
-
-    it('should dispatch expandDiscussion when all discussions are collapsed', () => {
-      const getters = {
-        getDiffFileDiscussions: jest.fn(() => [{ id: 1 }]),
-        diffHasAllExpandedDiscussions: jest.fn(() => false),
-        diffHasAllCollapsedDiscussions: jest.fn(() => true),
-      };
-
-      const dispatch = jest.fn();
-
-      diffActions.toggleFileDiscussions({ getters, dispatch });
-
-      expect(dispatch).toHaveBeenCalledWith(
-        'expandDiscussion',
-        { discussionId: 1 },
-        { root: true },
-      );
-    });
-
-    it('should dispatch expandDiscussion when some discussions are collapsed and others are expanded for the collapsed discussion', () => {
-      const getters = {
-        getDiffFileDiscussions: jest.fn(() => [{ expanded: false, id: 1 }]),
-        diffHasAllExpandedDiscussions: jest.fn(() => false),
-        diffHasAllCollapsedDiscussions: jest.fn(() => false),
-      };
-
-      const dispatch = jest.fn();
-
-      diffActions.toggleFileDiscussions({ getters, dispatch });
-
-      expect(dispatch).toHaveBeenCalledWith(
-        'expandDiscussion',
-        { discussionId: 1 },
-        { root: true },
-      );
     });
   });
 
@@ -1500,6 +1447,7 @@ describe('DiffsStoreActions', () => {
     let putSpy;
 
     beforeEach(() => {
+      jest.spyOn(api, 'trackRedisHllUserEvent').mockImplementation(() => {});
       putSpy = jest.spyOn(axios, 'put');
 
       mock.onPut(endpointUpdateUser).reply(HTTP_STATUS_OK, {});

@@ -57,6 +57,12 @@ RSpec.describe Gitlab::Popen do
     end
   end
 
+  context 'unsafe array command' do
+    it 'raises an error when it gets called with an unsafe array' do
+      expect { @klass.new.popen(['ls -l'], path) }.to raise_error(RuntimeError)
+    end
+  end
+
   context 'with custom options' do
     let(:vars) { { 'foobar' => 123, 'PWD' => path } }
     let(:options) { { chdir: path } }

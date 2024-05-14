@@ -7,6 +7,7 @@ import { issuableStatusText, STATUS_OPEN, STATUS_REOPENED } from '~/issues/const
 import { isExternal } from '~/lib/utils/url_utility';
 import { __, n__, sprintf } from '~/locale';
 import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
+import ImportedBadge from '~/vue_shared/components/imported_badge.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 
@@ -20,6 +21,7 @@ export default {
     GlSprintf,
     HiddenBadge,
     LockedBadge,
+    ImportedBadge,
     TimeAgoTooltip,
     WorkItemTypeIcon,
   },
@@ -66,6 +68,11 @@ export default {
       default: false,
     },
     isHidden: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    isImported: {
       type: Boolean,
       required: false,
       default: false,
@@ -156,7 +163,7 @@ export default {
 
 <template>
   <div class="detail-page-header gl-flex-direction-column gl-md-flex-direction-row">
-    <div class="detail-page-header-body gl-flex-wrap gl-column-gap-2">
+    <div class="detail-page-header-body gl-flex-wrap gl-gap-x-2">
       <gl-badge :variant="badgeVariant" data-testid="issue-state-badge">
         <gl-icon v-if="statusIcon" :name="statusIcon" :class="statusIconClass" />
         <span class="gl-display-none gl-sm-display-block" :class="{ 'gl-ml-2': statusIcon }">
@@ -170,6 +177,8 @@ export default {
       />
       <locked-badge v-if="blocked" :issuable-type="issuableType" />
       <hidden-badge v-if="isHidden" :issuable-type="issuableType" />
+      <imported-badge v-if="isImported" :importable-type="issuableType" />
+
       <work-item-type-icon
         v-if="shouldShowWorkItemTypeIcon"
         show-text

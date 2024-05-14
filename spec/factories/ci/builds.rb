@@ -102,6 +102,11 @@ FactoryBot.define do
       status { 'failed' }
     end
 
+    trait :canceling do
+      started
+      status { 'canceling' }
+    end
+
     trait :canceled do
       finished
       status { 'canceled' }
@@ -165,6 +170,14 @@ FactoryBot.define do
 
     trait :playable do
       manual
+    end
+
+    trait :with_manual_confirmation do
+      options do
+        {
+          manual_confirmation: 'Please confirm. Do you want to proceed?'
+        }
+      end
     end
 
     trait :retryable do
@@ -231,14 +244,16 @@ FactoryBot.define do
       end
 
       after(:create) do |build, evaluator|
-        build.trace.set("Coverage #{evaluator.trace_coverage}%")
+        Gitlab::ExclusiveLease.skipping_transaction_check do
+          build.trace.set("Coverage #{evaluator.trace_coverage}%")
+        end
         build.trace.archive! if build.complete?
       end
     end
 
     trait :trace_live do
       after(:create) do |build, evaluator|
-        build.trace.set('BUILD TRACE')
+        Gitlab::ExclusiveLease.skipping_transaction_check { build.trace.set('BUILD TRACE') }
       end
     end
 
@@ -260,7 +275,7 @@ FactoryBot.define do
           File.expand_path(
             Rails.root.join('spec/fixtures/trace/trace_with_duplicate_sections')))
 
-        build.trace.set(trace)
+        Gitlab::ExclusiveLease.skipping_transaction_check { build.trace.set(trace) }
       end
     end
 
@@ -270,7 +285,7 @@ FactoryBot.define do
           File.expand_path(
             Rails.root.join('spec/fixtures/trace/trace_with_sections')))
 
-        build.trace.set(trace)
+        Gitlab::ExclusiveLease.skipping_transaction_check { build.trace.set(trace) }
       end
     end
 
@@ -303,7 +318,21 @@ FactoryBot.define do
       runner factory: :ci_runner
 
       after(:create) do |build|
-        ::Ci::RunningBuild.upsert_shared_runner_build!(build)
+        ::Ci::RunningBuild.upsert_build!(build)
+      end
+    end
+
+    trait :pages do
+      ref { "HEAD" }
+      name { 'pages' }
+
+      after(:create) do |build, _evaluator|
+        file = fixture_file_upload("spec/fixtures/pages.zip")
+        metadata = fixture_file_upload("spec/fixtures/pages.zip.meta")
+
+        create(:ci_job_artifact, :correct_checksum, file: file, job: build)
+        create(:ci_job_artifact, file_type: :metadata, file_format: :gzip, file: metadata, job: build)
+        build.reload
       end
     end
 
@@ -319,6 +348,14 @@ FactoryBot.define do
       after(:create) do |build, evaluator|
         create(:ci_job_artifact, :archive, :private, job: build, expire_at: build.artifacts_expire_at)
         create(:ci_job_artifact, :metadata, :private, job: build, expire_at: build.artifacts_expire_at)
+        build.reload
+      end
+    end
+
+    trait :no_access_artifacts do
+      after(:create) do |build, evaluator|
+        create(:ci_job_artifact, :archive, :none, job: build, expire_at: build.artifacts_expire_at)
+        create(:ci_job_artifact, :metadata, :none, job: build, expire_at: build.artifacts_expire_at)
         build.reload
       end
     end
@@ -590,10 +627,46 @@ FactoryBot.define do
       end
     end
 
+    trait :with_developer_access_artifacts do
+      options do
+        {
+          artifacts: { access: 'developer' }
+        }
+      end
+    end
+
+    # invalid case for access setting
+    trait :with_access_and_public_setting do
+      options do
+        {
+          artifacts: {
+            public: true,
+            access: 'all'
+          }
+        }
+      end
+    end
+
+    trait :with_none_access_artifacts do
+      options do
+        {
+          artifacts: { access: 'none' }
+        }
+      end
+    end
+
     trait :with_public_artifacts_config do
       options do
         {
           artifacts: { public: true }
+        }
+      end
+    end
+
+    trait :with_all_access_artifacts do
+      options do
+        {
+          artifacts: { access: 'all' }
         }
       end
     end

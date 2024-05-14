@@ -6,12 +6,12 @@ RSpec.describe API::Labels, feature_category: :team_planning do
   def put_labels_api(route_type, user, spec_params, request_params = {})
     if route_type == :deprecated
       put api("/projects/#{project.id}/labels", user),
-          params: request_params.merge(spec_params)
+        params: request_params.merge(spec_params)
     else
       label_id = spec_params[:name] || spec_params[:label_id]
 
       put api("/projects/#{project.id}/labels/#{ERB::Util.url_encode(label_id)}", user),
-          params: request_params.merge(spec_params.except(:name, :id))
+        params: request_params.merge(spec_params.except(:name, :id))
     end
   end
 
@@ -127,7 +127,7 @@ RSpec.describe API::Labels, feature_category: :team_planning do
       }.merge(spec_params)
 
       put api("/projects/#{project.id}/labels", user),
-          params: request_params
+        params: request_params
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['id']).to eq(expected_response_label_id)
@@ -147,7 +147,7 @@ RSpec.describe API::Labels, feature_category: :team_planning do
       }.merge(spec_params.except(:name, :id))
 
       put api("/projects/#{project.id}/labels/#{ERB::Util.url_encode(label_id)}", user),
-          params: request_params
+        params: request_params
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['id']).to eq(expected_response_label_id)
@@ -250,38 +250,44 @@ RSpec.describe API::Labels, feature_category: :team_planning do
         group_label_response = json_response.find { |l| l['name'] == group_label.title }
         priority_label_response = json_response.find { |l| l['name'] == priority_label.title }
 
-        expect(label1_response).to include('open_issues_count' => 0,
-                                           'closed_issues_count' => 1,
-                                           'open_merge_requests_count' => 0,
-                                           'name' => label1.name,
-                                           'description' => label1.description,
-                                           'color' => a_string_matching(/^#\h{6}$/),
-                                           'text_color' => a_string_matching(/^#\h{6}$/),
-                                           'priority' => nil,
-                                           'subscribed' => false,
-                                           'is_project_label' => true)
+        expect(label1_response).to include(
+          'open_issues_count' => 0,
+          'closed_issues_count' => 1,
+          'open_merge_requests_count' => 0,
+          'name' => label1.name,
+          'description' => label1.description,
+          'color' => a_string_matching(/^#\h{6}$/),
+          'text_color' => a_string_matching(/^#\h{6}$/),
+          'priority' => nil,
+          'subscribed' => false,
+          'is_project_label' => true
+        )
 
-        expect(group_label_response).to include('open_issues_count' => 1,
-                                                'closed_issues_count' => 0,
-                                                'open_merge_requests_count' => 0,
-                                                'name' => group_label.name,
-                                                'description' => nil,
-                                                'color' => a_valid_color,
-                                                'text_color' => a_valid_color,
-                                                'priority' => nil,
-                                                'subscribed' => false,
-                                                'is_project_label' => false)
+        expect(group_label_response).to include(
+          'open_issues_count' => 1,
+          'closed_issues_count' => 0,
+          'open_merge_requests_count' => 0,
+          'name' => group_label.name,
+          'description' => nil,
+          'color' => a_valid_color,
+          'text_color' => a_valid_color,
+          'priority' => nil,
+          'subscribed' => false,
+          'is_project_label' => false
+        )
 
-        expect(priority_label_response).to include('open_issues_count' => 0,
-                                                   'closed_issues_count' => 0,
-                                                   'open_merge_requests_count' => 1,
-                                                   'name' => priority_label.name,
-                                                   'description' => nil,
-                                                   'color' => a_valid_color,
-                                                   'text_color' => a_valid_color,
-                                                   'priority' => 3,
-                                                   'subscribed' => false,
-                                                   'is_project_label' => true)
+        expect(priority_label_response).to include(
+          'open_issues_count' => 0,
+          'closed_issues_count' => 0,
+          'open_merge_requests_count' => 1,
+          'name' => priority_label.name,
+          'description' => nil,
+          'color' => a_valid_color,
+          'text_color' => a_valid_color,
+          'priority' => 3,
+          'subscribed' => false,
+          'is_project_label' => true
+        )
       end
     end
 
@@ -327,12 +333,12 @@ RSpec.describe API::Labels, feature_category: :team_planning do
   describe 'POST /projects/:id/labels' do
     it 'returns created label when all params' do
       post api("/projects/#{project.id}/labels", user),
-           params: {
-             name: valid_label_title_2,
-             color: '#FFAABB',
-             description: 'test',
-             priority: 2
-           }
+        params: {
+          name: valid_label_title_2,
+          color: '#FFAABB',
+          description: 'test',
+          priority: 2
+        }
 
       expect(response).to have_gitlab_http_status(:created)
       expect(json_response['name']).to eq(valid_label_title_2)
@@ -343,10 +349,10 @@ RSpec.describe API::Labels, feature_category: :team_planning do
 
     it 'returns created label when only required params' do
       post api("/projects/#{project.id}/labels", user),
-           params: {
-             name: valid_label_title_2,
-             color: '#FFAABB'
-           }
+        params: {
+          name: valid_label_title_2,
+          color: '#FFAABB'
+        }
 
       expect(response).to have_gitlab_http_status(:created)
       expect(json_response['name']).to eq(valid_label_title_2)
@@ -357,11 +363,11 @@ RSpec.describe API::Labels, feature_category: :team_planning do
 
     it 'creates a prioritized label' do
       post api("/projects/#{project.id}/labels", user),
-           params: {
-             name: valid_label_title_2,
-             color: '#FFAABB',
-             priority: 3
-           }
+        params: {
+          name: valid_label_title_2,
+          color: '#FFAABB',
+          priority: 3
+        }
 
       expect(response).to have_gitlab_http_status(:created)
       expect(json_response['name']).to eq(valid_label_title_2)
@@ -382,30 +388,24 @@ RSpec.describe API::Labels, feature_category: :team_planning do
 
     it 'returns 400 for invalid color' do
       post api("/projects/#{project.id}/labels", user),
-           params: {
-             name: valid_label_title_2,
-             color: '#FFAA'
-           }
+        params: { name: valid_label_title_2, color: '#FFAA' }
+
       expect(response).to have_gitlab_http_status(:bad_request)
       expect(json_response['message']['color']).to eq(['must be a valid color code'])
     end
 
     it 'returns 400 for too long color code' do
       post api("/projects/#{project.id}/labels", user),
-           params: {
-             name: valid_label_title_2,
-             color: '#FFAAFFFF'
-           }
+        params: { name: valid_label_title_2, color: '#FFAAFFFF' }
+
       expect(response).to have_gitlab_http_status(:bad_request)
       expect(json_response['message']['color']).to eq(['must be a valid color code'])
     end
 
     it 'returns 400 for invalid name' do
       post api("/projects/#{project.id}/labels", user),
-           params: {
-             name: ',',
-             color: '#FFAABB'
-           }
+        params: { name: ',', color: '#FFAABB' }
+
       expect(response).to have_gitlab_http_status(:bad_request)
       expect(json_response['message']['title']).to eq(['is invalid'])
     end
@@ -416,10 +416,7 @@ RSpec.describe API::Labels, feature_category: :team_planning do
       project.update!(group: group)
 
       post api("/projects/#{project.id}/labels", user),
-           params: {
-             name: group_label.name,
-             color: '#FFAABB'
-           }
+        params: { name: group_label.name, color: '#FFAABB' }
 
       expect(response).to have_gitlab_http_status(:conflict)
       expect(json_response['message']).to eq('Label already exists')
@@ -427,21 +424,15 @@ RSpec.describe API::Labels, feature_category: :team_planning do
 
     it 'returns 400 for invalid priority' do
       post api("/projects/#{project.id}/labels", user),
-           params: {
-             name: valid_label_title_2,
-             color: '#FFAAFFFF',
-             priority: 'foo'
-           }
+        params: { name: valid_label_title_2, color: '#FFAAFFFF', priority: 'foo' }
 
       expect(response).to have_gitlab_http_status(:bad_request)
     end
 
     it 'returns 409 if label already exists in project' do
       post api("/projects/#{project.id}/labels", user),
-           params: {
-             name: valid_label_title_1,
-             color: '#FFAABB'
-           }
+        params: { name: valid_label_title_1, color: '#FFAABB' }
+
       expect(response).to have_gitlab_http_status(:conflict)
       expect(json_response['message']).to eq('Label already exists')
     end
@@ -471,10 +462,7 @@ RSpec.describe API::Labels, feature_category: :team_planning do
 
     it 'fails if label_id and name are given in params' do
       delete api("/projects/#{project.id}/labels", user),
-          params: {
-            label_id: label1.id,
-            name: priority_label.name
-          }
+        params: { label_id: label1.id, name: priority_label.name }
 
       expect(response).to have_gitlab_http_status(:bad_request)
     end
@@ -537,20 +525,14 @@ RSpec.describe API::Labels, feature_category: :team_planning do
 
     it 'returns 404 if label does not exist' do
       put api("/projects/#{project.id}/labels", user),
-          params: {
-            name: valid_label_title_2,
-            new_name: 'label3'
-          }
+        params: { name: valid_label_title_2, new_name: 'label3' }
 
       expect(response).to have_gitlab_http_status(:not_found)
     end
 
     it 'returns 404 if label by id does not exist' do
       put api("/projects/#{project.id}/labels", user),
-          params: {
-            label_id: 0,
-            new_name: 'label3'
-          }
+        params: { label_id: 0, new_name: 'label3' }
 
       expect(response).to have_gitlab_http_status(:not_found)
     end
@@ -564,11 +546,7 @@ RSpec.describe API::Labels, feature_category: :team_planning do
 
     it 'fails if label_id and name are given in params' do
       put api("/projects/#{project.id}/labels", user),
-          params: {
-            label_id: label1.id,
-            name: priority_label.name,
-            new_name: 'New Label'
-          }
+        params: { label_id: label1.id, name: priority_label.name, new_name: 'New Label' }
 
       expect(response).to have_gitlab_http_status(:bad_request)
     end

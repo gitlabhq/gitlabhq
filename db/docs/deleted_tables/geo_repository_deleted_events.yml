@@ -1,0 +1,20 @@
+---
+table_name: geo_repository_deleted_events
+classes:
+- Geo::RepositoryDeletedEvent
+feature_categories:
+- geo_replication
+description: Geo event for when a repository gets deleted, belongs to geo_event_log.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/04c3da24ac5975b140cf2e6a7e33414543f148f5
+milestone: '9.4'
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151938
+removed_in_milestone: '17.0'
+gitlab_schema: gitlab_main_cell
+allow_cross_joins:
+- gitlab_main_clusterwide
+allow_cross_transactions:
+- gitlab_main_clusterwide
+allow_cross_foreign_keys:
+- gitlab_main_clusterwide
+sharding_key:
+  project_id: projects

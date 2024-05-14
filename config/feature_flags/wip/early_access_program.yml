@@ -1,0 +1,9 @@
+---
+name: early_access_program
+feature_issue_url: https://gitlab.com/gitlab-org/developer-relations/contributor-success/team-task/-/issues/478
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148990
+rollout_issue_url:
+milestone: '17.0'
+group: Contributor Success
+type: wip
+default_enabled: false

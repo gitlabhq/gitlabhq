@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe API::ImportGithub, feature_category: :importers do
-  let(:token) { "asdasd12345" }
+  let(:token) { "ghp_asdasd12345" }
   let(:provider) { :github }
   let(:access_params) { { github_access_token: token } }
   let(:provider_username) { user.username }
@@ -35,6 +35,12 @@ RSpec.describe API::ImportGithub, feature_category: :importers do
   describe "POST /import/github" do
     let_it_be(:user) { create(:user) }
     let_it_be(:project) { create(:project) }
+    let(:scopes) { ["repo", "read:org"] }
+
+    before do
+      allow(client).to receive_message_chain(:octokit, :rate_limit)
+      allow(client).to receive_message_chain(:octokit, :repository).and_return({ status: 200 })
+    end
 
     it 'rejects requests when Github Importer is disabled' do
       stub_application_setting(import_sources: nil)
@@ -131,6 +137,108 @@ RSpec.describe API::ImportGithub, feature_category: :importers do
         }
 
         expect(response).to have_gitlab_http_status(:bad_request)
+      end
+    end
+
+    context 'with a valid token' do
+      before do
+        allow(client).to receive_message_chain(:octokit, :repository).and_return({ status: 200 })
+      end
+
+      it 'proceeds with the import' do
+        allow(Gitlab::LegacyGithubImport::ProjectCreator)
+          .to receive(:new).with(provider_repo, provider_repo[:name], user.namespace, user, type: provider, **access_params)
+          .and_return(double(execute: project))
+
+        post api("/import/github", user), params: {
+          target_namespace: user.namespace_path,
+          personal_access_token: token,
+          repo_id: non_existing_record_id
+        }
+
+        expect(response).to have_gitlab_http_status(:created)
+        expect(json_response).to be_a Hash
+        expect(json_response['name']).to eq(project.name)
+      end
+    end
+
+    context 'with an invalid token' do
+      let(:exception) { Octokit::Forbidden.new(status: 403, body: 'Forbidden') }
+      let(:docs_link) do
+        ActionController::Base.helpers.link_to(
+          _('documentation'),
+          Rails.application.routes.url_helpers.help_page_url(
+            'user/project/import/github', anchor: 'use-a-github-personal-access-token'
+          ),
+          target: '_blank',
+          rel: 'noopener noreferrer'
+        )
+      end
+
+      context 'when collaborators import is nil' do
+        before do
+          allow(client).to receive_message_chain(:octokit, :repository).and_raise(exception)
+        end
+
+        it 'raises an error' do
+          expect(Gitlab::LegacyGithubImport::ProjectCreator).not_to receive(:new)
+
+          post api("/import/github", user), params: {
+            target_namespace: user.namespace_path,
+            personal_access_token: token,
+            repo_id: non_existing_record_id
+          }
+
+          expect(response).to have_gitlab_http_status(:unprocessable_entity)
+          expect(json_response['errors']).to eq("Your GitHub personal access token does not have read access to the repository. " \
+                                                "Please use a classic GitHub personal access token with the `repo` scope. " \
+                                                "Fine-grained tokens are not supported.")
+        end
+      end
+
+      context 'when collaborators import is false' do
+        before do
+          allow(client).to receive_message_chain(:octokit, :repository).and_raise(exception)
+        end
+
+        it 'raises an error' do
+          expect(Gitlab::LegacyGithubImport::ProjectCreator).not_to receive(:new)
+
+          post api("/import/github", user), params: {
+            target_namespace: user.namespace_path,
+            personal_access_token: token,
+            repo_id: non_existing_record_id,
+            optional_stages: { collaborators_import: false }
+          }
+
+          expect(response).to have_gitlab_http_status(:unprocessable_entity)
+          expect(json_response['errors']).to eq("Your GitHub personal access token does not have read access to the repository. " \
+                                                "Please use a classic GitHub personal access token with the `repo` scope. " \
+                                                "Fine-grained tokens are not supported.")
+        end
+      end
+
+      context 'when collaborators import is true' do
+        before do
+          allow(client).to receive_message_chain(:octokit, :repository).and_return({ status: 200 })
+          allow(client).to receive_message_chain(:octokit, :collaborators).and_raise(exception)
+        end
+
+        it 'raises an error' do
+          expect(Gitlab::LegacyGithubImport::ProjectCreator).not_to receive(:new)
+
+          post api("/import/github", user), params: {
+            target_namespace: user.namespace_path,
+            personal_access_token: token,
+            repo_id: non_existing_record_id,
+            optional_stages: { collaborators_import: true }
+          }
+
+          expect(response).to have_gitlab_http_status(:unprocessable_entity)
+          expect(json_response['errors']).to eq("Your GitHub personal access token does not have read access to collaborators. " \
+                                                "Please use a classic GitHub personal access token with the `read:org` scope. " \
+                                                "Fine-grained tokens are not supported.")
+        end
       end
     end
   end

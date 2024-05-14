@@ -7,14 +7,14 @@ module Mutations
         graphql_name 'DestroyBoardList'
 
         field :list,
-            Types::BoardListType,
-            null: true,
-            description: 'List after mutation.'
+          Types::BoardListType,
+          null: true,
+          description: 'List after mutation.'
 
         argument :list_id, ::Types::GlobalIDType[::List],
-                  required: true,
-                  loads: Types::BoardListType,
-                  description: 'Global ID of the list to destroy. Only label lists are accepted.'
+          required: true,
+          loads: Types::BoardListType,
+          description: 'Global ID of the list to destroy. Only label lists are accepted.'
 
         def resolve(list:)
           raise_resource_not_available_error! unless can_admin_list?(list)

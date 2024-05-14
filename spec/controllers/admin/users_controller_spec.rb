@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Admin::UsersController do
+RSpec.describe Admin::UsersController, feature_category: :user_management do
   let(:user) { create(:user) }
 
   let_it_be(:admin) { create(:admin) }
@@ -609,6 +609,16 @@ RSpec.describe Admin::UsersController do
 
         new_user = User.last
         expect(new_user.note).to eq(note)
+      end
+    end
+
+    context 'when Current.organization is set', :with_current_organization do
+      let(:user_params) { attributes_for(:user) }
+
+      it 'creates user with namespace set to Current.organization' do
+        post :create, params: { user: user_params }
+
+        expect(User.find_by(email: user_params[:email]).namespace.organization).to eq(Current.organization)
       end
     end
   end

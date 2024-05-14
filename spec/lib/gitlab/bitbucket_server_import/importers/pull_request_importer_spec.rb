@@ -19,7 +19,7 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestImporter, fe
       expect_next(Gitlab::Import::MergeRequestCreator, project).to receive(:execute).and_call_original
       expect_next(Gitlab::BitbucketServerImport::UserFinder, project).to receive(:author_id).and_call_original
       expect_next(Gitlab::Import::MentionsConverter, 'bitbucket_server',
-        project.id).to receive(:convert).and_call_original
+        project).to receive(:convert).and_call_original
 
       expect { importer.execute }.to change { MergeRequest.count }.by(1)
 
@@ -37,13 +37,31 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestImporter, fe
       )
     end
 
+    describe 'refs/merge-requests/:iid/head creation' do
+      before do
+        project.repository.create_branch(pull_request.source_branch_name, 'master')
+      end
+
+      after do
+        project.repository.delete_branch(pull_request.source_branch_name)
+      end
+
+      it 'creates head refs for imported merge requests' do
+        importer.execute
+
+        expect(
+          project.repository.commit("refs/#{Repository::REF_MERGE_REQUEST}/#{pull_request.iid}/head")
+        ).to be_present
+      end
+    end
+
     context 'when the `bitbucket_server_convert_mentions_to_users` flag is disabled' do
       before do
         stub_feature_flags(bitbucket_server_convert_mentions_to_users: false)
       end
 
       it 'does not convert mentions' do
-        expect_next(Gitlab::Import::MentionsConverter, 'bitbucket_server', project.id).not_to receive(:convert)
+        expect_next(Gitlab::Import::MentionsConverter, 'bitbucket_server', project).not_to receive(:convert)
 
         importer.execute
       end

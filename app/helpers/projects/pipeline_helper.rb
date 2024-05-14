@@ -20,19 +20,17 @@ module Projects
         has_test_report: pipeline.has_test_reports?,
         empty_state_image_path: image_path('illustrations/empty-todos-md.svg'),
         empty_dag_svg_path: image_path('illustrations/empty-state/empty-dag-md.svg'),
-        artifacts_expired_image_path: image_path('illustrations/pipeline.svg'),
+        artifacts_expired_image_path: image_path('illustrations/empty-state/empty-pipeline-md.svg'),
         tests_count: pipeline.test_report_summary.total[:count]
       }
     end
 
-    def js_pipeline_details_header_data(project, pipeline)
+    def js_pipeline_header_data(project, pipeline)
       {
         full_path: project.full_path,
         graphql_resource_etag: graphql_etag_pipeline_path(pipeline),
         pipeline_iid: pipeline.iid,
-        pipelines_path: project_pipelines_path(project),
-        yaml_errors: pipeline.yaml_errors,
-        trigger: pipeline.trigger?.to_s
+        pipelines_path: project_pipelines_path(project)
       }
     end
   end

@@ -190,6 +190,7 @@ func (o *ObjectstoreStub) putObject(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(200)
 }
 
+// MultipartUploadInternalError creates a mock CompleteMultipartUploadError representing an internal error during multipart upload.
 func MultipartUploadInternalError() *s3api.CompleteMultipartUploadError {
 	return &s3api.CompleteMultipartUploadError{Code: "InternalError", Message: "malformed object path"}
 }
@@ -265,7 +266,11 @@ func encodeXMLAnswer(w http.ResponseWriter, answer interface{}) {
 
 func (o *ObjectstoreStub) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if r.Body != nil {
-		defer r.Body.Close()
+		defer func() {
+			if err := r.Body.Close(); err != nil {
+				fmt.Println("Error closing request body:", err)
+			}
+		}()
 	}
 
 	fmt.Println("ObjectStore Stub:", r.Method, r.URL.String())

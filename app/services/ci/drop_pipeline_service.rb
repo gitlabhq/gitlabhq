@@ -9,8 +9,8 @@ module Ci
       pipelines.cancelable.select(:id).find_in_batches do |pipelines_batch|
         Ci::DropPipelineWorker.bulk_perform_async_with_contexts(
           pipelines_batch,
-          arguments_proc: -> (pipeline) { [pipeline.id, failure_reason] },
-          context_proc: -> (_) { { user: context_user } }
+          arguments_proc: ->(pipeline) { [pipeline.id, failure_reason] },
+          context_proc: ->(_) { { user: context_user } }
         )
       end
     end

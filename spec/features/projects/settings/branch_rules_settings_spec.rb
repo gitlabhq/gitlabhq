@@ -31,7 +31,7 @@ RSpec.describe 'Projects > Settings > Repository > Branch rules settings', featu
       it 'renders breadcrumbs' do
         request
 
-        page.within '.breadcrumbs' do
+        within_testid 'breadcrumb-links' do
           expect(page).to have_link('Repository Settings', href: project_settings_repository_path(project))
           expect(page).to have_link('Branch rules',
             href: project_settings_repository_path(project, anchor: 'branch-rules'))

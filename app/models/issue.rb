@@ -24,6 +24,7 @@ class Issue < ApplicationRecord
   include FromUnion
   include EachBatch
   include PgFullTextSearchable
+  include IgnorableColumns
 
   extend ::Gitlab::Utils::Override
 
@@ -55,6 +56,9 @@ class Issue < ApplicationRecord
   # This default came from the enum `issue_type` column. Defined as default in the DB
   DEFAULT_ISSUE_TYPE = :issue
 
+  # prevent caching this column by rails, as we want to easily remove it after the backfilling
+  ignore_column :tmp_epic_id, remove_with: '16.11', remove_after: '2024-03-31'
+
   belongs_to :project
   belongs_to :namespace, inverse_of: :issues
 
@@ -71,6 +75,7 @@ class Issue < ApplicationRecord
 
   has_many :merge_requests_closing_issues,
     class_name: 'MergeRequestsClosingIssues',
+    inverse_of: :issue,
     dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
 
   has_many :issue_assignees
@@ -119,6 +124,9 @@ class Issue < ApplicationRecord
 
   pg_full_text_searchable columns: [{ name: 'title', weight: 'A' }, { name: 'description', weight: 'B' }]
 
+  scope :project_level, -> { where.not(project_id: nil) }
+  scope :group_level, -> { where(project_id: nil) }
+
   scope :in_namespaces, ->(namespaces) { where(namespace: namespaces) }
   scope :in_projects, ->(project_ids) { where(project_id: project_ids) }
   scope :not_in_projects, ->(project_ids) { where.not(project_id: project_ids) }
@@ -163,10 +171,13 @@ class Issue < ApplicationRecord
 
   scope :preload_associated_models, -> { preload(:assignees, :labels, project: :namespace) }
   scope :with_web_entity_associations, -> do
-    preload(:author, :namespace, :labels, project: [:project_feature, :route, namespace: :route])
+    preload(:author, :namespace, :labels, project: [:project_feature, :route, { namespace: :route }])
   end
 
   scope :preload_awardable, -> { preload(:award_emoji) }
+  scope :preload_namespace, -> { preload(:namespace) }
+  scope :preload_routables, -> { preload(project: [:route, { namespace: :route }]) }
+
   scope :with_alert_management_alerts, -> { joins(:alert_management_alert) }
   scope :with_prometheus_alert_events, -> { joins(:issues_prometheus_alert_events) }
   scope :with_api_entity_associations, -> {
@@ -304,7 +315,7 @@ class Issue < ApplicationRecord
   end
 
   def next_object_by_relative_position(ignoring: nil, order: :asc)
-    array_mapping_scope = -> (id_expression) do
+    array_mapping_scope = ->(id_expression) do
       relation = Issue.where(Issue.arel_table[:project_id].eq(id_expression))
 
       if order == :asc
@@ -318,7 +329,7 @@ class Issue < ApplicationRecord
       scope: Issue.order(relative_position: order, id: order),
       array_scope: relative_positioning_parent_projects,
       array_mapping_scope: array_mapping_scope,
-      finder_query: -> (_, id_expression) { Issue.where(Issue.arel_table[:id].eq(id_expression)) }
+      finder_query: ->(_, id_expression) { Issue.where(Issue.arel_table[:id].eq(id_expression)) }
     ).execute
 
     relation = exclude_self(relation, excluded: ignoring) if ignoring.present?
@@ -413,8 +424,7 @@ class Issue < ApplicationRecord
       attribute_name: 'relative_position',
       column_expression: arel_table[:relative_position],
       order_expression: Issue.arel_table[:relative_position].asc.nulls_last,
-      nullable: :nulls_last,
-      distinct: false
+      nullable: :nulls_last
     )
   end
 
@@ -475,7 +485,7 @@ class Issue < ApplicationRecord
 
     start_counting_from = 2
 
-    branch_name_generator = -> (counter) do
+    branch_name_generator = ->(counter) do
       suffix = counter > 5 ? SecureRandom.hex(8) : counter
       "#{to_branch_name}-#{suffix}"
     end
@@ -536,7 +546,7 @@ class Issue < ApplicationRecord
     related_issues = yield related_issues if block_given?
     return related_issues unless authorize
 
-    cross_project_filter = -> (issues) { issues.where(project: project) }
+    cross_project_filter = ->(issues) { issues.where(project: project) }
     Ability.issues_readable_by_user(related_issues,
       current_user,
       filters: { read_cross_project: cross_project_filter })
@@ -547,19 +557,17 @@ class Issue < ApplicationRecord
   end
 
   def can_be_worked_on?
-    !self.closed? && !self.project.forked?
+    !self.closed?
   end
 
   # Returns `true` if the current issue can be viewed by either a logged in User
   # or an anonymous user.
   def visible_to_user?(user = nil)
     return publicly_visible? unless user
+    return true if user.can_read_all_resources?
+    return readable_by?(user) unless project
 
-    return false unless readable_by?(user)
-
-    user.can_read_all_resources? ||
-      ::Gitlab::ExternalAuthorization.access_allowed?(
-        user, project.external_authorization_classification_label)
+    readable_by?(user) && access_allowed_for_project_with_external_authorization?(user, project)
   end
 
   # Always enforce spam check for support bot but allow for other users when issue is not publicly visible
@@ -605,7 +613,7 @@ class Issue < ApplicationRecord
   # rubocop: enable CodeReuse/ServiceClass
 
   def merge_requests_count(user = nil)
-    ::MergeRequestsClosingIssues.count_for_issue(self.id, user)
+    ::MergeRequestsClosingIssues.closing_count_for_issue(self.id, user)
   end
 
   def previous_updated_at
@@ -726,12 +734,6 @@ class Issue < ApplicationRecord
     work_item_type_with_default.base_type
   end
 
-  def unsubscribe_email_participant(email)
-    return if email.blank?
-
-    issue_email_participants.find_by_email(email)&.destroy
-  end
-
   def hook_attrs
     Gitlab::HookData::IssueBuilder.new(self).build
   end
@@ -776,6 +778,15 @@ class Issue < ApplicationRecord
     else
       namespace.member?(user)
     end
+  end
+
+  def access_allowed_for_project_with_external_authorization?(user, project)
+    return false if project.blank?
+
+    ::Gitlab::ExternalAuthorization.access_allowed?(
+      user,
+      project.external_authorization_classification_label
+    )
   end
 
   def due_date_after_start_date

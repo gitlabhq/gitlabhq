@@ -40,7 +40,11 @@ RSpec.describe 'Querying a Milestone', feature_category: :team_planning do
   context 'when we post the query' do
     context 'and the project is private' do
       let(:query) do
-        graphql_query_for('milestone', { id: milestone.to_global_id.to_s }, all_graphql_fields_for('Milestone'))
+        graphql_query_for(
+          'milestone',
+          { id: milestone.to_global_id.to_s },
+          all_graphql_fields_for('Milestone', excluded: %w[project group])
+        )
       end
 
       subject { graphql_data['milestone'] }
@@ -54,6 +58,15 @@ RSpec.describe 'Querying a Milestone', feature_category: :team_planning do
           let(:current_user) { guest }
 
           it_behaves_like 'returns the milestone successfully'
+
+          context 'when milestone has no dates' do
+            it 'returns upcoming and expired as false' do
+              expect(graphql_data_at(:milestone, :due_date)).to be_nil
+              expect(graphql_data_at(:milestone, :start_date)).to be_nil
+              expect(graphql_data_at(:milestone, :upcoming)).to be false
+              expect(graphql_data_at(:milestone, :expired)).to be false
+            end
+          end
 
           context 'when there are two milestones' do
             let_it_be(:milestone_b) { create(:milestone, project: project) }
@@ -88,12 +101,14 @@ RSpec.describe 'Querying a Milestone', feature_category: :team_planning do
             end
 
             it 'returns the correct releases associated with each milestone' do
-              r = run_with_clean_state(multi_query,
-                                       context: { current_user: current_user },
-                                       variables: {
-                                         id_a: global_id_of(milestone).to_s,
-                                         id_b: milestone_b.to_global_id.to_s
-                                       })
+              r = run_with_clean_state(
+                multi_query,
+                context: { current_user: current_user },
+                variables: {
+                  id_a: global_id_of(milestone).to_s,
+                  id_b: milestone_b.to_global_id.to_s
+                }
+              )
 
               expect(r.to_h['errors']).to be_blank
               expect(graphql_dig_at(r.to_h, :data, :a, :releases, :nodes)).to match expected_release_nodes
@@ -102,18 +117,22 @@ RSpec.describe 'Querying a Milestone', feature_category: :team_planning do
 
             it 'does not suffer from N+1 performance issues' do
               baseline = ActiveRecord::QueryRecorder.new do
-                run_with_clean_state(single_query,
-                                     context: { current_user: current_user },
-                                     variables: { id_a: milestone.to_global_id.to_s })
+                run_with_clean_state(
+                  single_query,
+                  context: { current_user: current_user },
+                  variables: { id_a: milestone.to_global_id.to_s }
+                )
               end
 
               multi = ActiveRecord::QueryRecorder.new do
-                run_with_clean_state(multi_query,
-                                     context: { current_user: current_user },
-                                     variables: {
-                                       id_a: milestone.to_global_id.to_s,
-                                       id_b: milestone_b.to_global_id.to_s
-                                     })
+                run_with_clean_state(
+                  multi_query,
+                  context: { current_user: current_user },
+                  variables: {
+                    id_a: milestone.to_global_id.to_s,
+                    id_b: milestone_b.to_global_id.to_s
+                  }
+                )
               end
 
               expect(multi).not_to exceed_query_limit(baseline)

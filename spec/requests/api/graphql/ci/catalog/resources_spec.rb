@@ -6,7 +6,7 @@ RSpec.describe 'Query.ciCatalogResources', feature_category: :pipeline_compositi
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:namespace) { create(:group) }
+  let_it_be(:namespace) { create(:group, developers: user) }
   let_it_be(:project2) { create(:project, namespace: namespace) }
 
   let_it_be(:project1) do
@@ -30,7 +30,8 @@ RSpec.describe 'Query.ciCatalogResources', feature_category: :pipeline_compositi
   end
 
   let_it_be(:resource1) do
-    create(:ci_catalog_resource, :published, project: project1, latest_released_at: '2023-01-01T00:00:00Z')
+    create(:ci_catalog_resource, :published, project: project1, latest_released_at: '2023-01-01T00:00:00Z',
+      last_30_day_usage_count: 15)
   end
 
   let_it_be(:public_resource) { create(:ci_catalog_resource, :published, project: public_project) }
@@ -44,10 +45,13 @@ RSpec.describe 'Query.ciCatalogResources', feature_category: :pipeline_compositi
             name
             description
             icon
+            fullPath
             webPath
             verificationLevel
             latestReleasedAt
             starCount
+            starrersPath
+            last30DayUsageCount
           }
         }
       }
@@ -75,26 +79,61 @@ RSpec.describe 'Query.ciCatalogResources', feature_category: :pipeline_compositi
   it_behaves_like 'avoids N+1 queries'
 
   it 'returns the resources with the expected data' do
-    namespace.add_developer(user)
-
     post_query
 
     expect(graphql_data_at(:ciCatalogResources, :nodes)).to contain_exactly(
       a_graphql_entity_for(
         resource1, :name, :description,
         icon: project1.avatar_path,
-        webPath: "/#{project1.full_path}",
-        verificationLevel: "UNVERIFIED",
+        latestReleasedAt: resource1.latest_released_at,
         starCount: project1.star_count,
-        latestReleasedAt: resource1.latest_released_at
+        starrersPath: Gitlab::Routing.url_helpers.project_starrers_path(project1),
+        verificationLevel: 'UNVERIFIED',
+        fullPath: project1.full_path,
+        webPath: "/#{project1.full_path}",
+        last30DayUsageCount: resource1.last_30_day_usage_count
       ),
       a_graphql_entity_for(public_resource)
     )
   end
 
+  describe 'with an unauthorized user on a private project' do
+    let_it_be(:query) do
+      <<~GQL
+        query {
+          ciCatalogResources {
+            nodes {
+              id
+              versions {
+                nodes {
+                  id
+                  name
+                }
+              }
+            }
+          }
+        }
+      GQL
+    end
+
+    it 'returns only the public data' do
+      post_graphql(query, current_user: create(:user))
+
+      expect(graphql_data_at(:ciCatalogResources, :nodes)).to contain_exactly(
+        a_graphql_entity_for(public_resource)
+      )
+    end
+  end
+
   describe 'versions' do
-    before_all do
-      namespace.add_developer(user)
+    let!(:resource1_v1) { create(:ci_catalog_resource_version, semver: '1.0.0', catalog_resource: resource1) }
+    let!(:resource1_v2) { create(:ci_catalog_resource_version, semver: '2.0.0', catalog_resource: resource1) }
+    let!(:public_resource_v1) do
+      create(:ci_catalog_resource_version, semver: '1.0.0', catalog_resource: public_resource)
+    end
+
+    let!(:public_resource_v2) do
+      create(:ci_catalog_resource_version, semver: '2.0.0', catalog_resource: public_resource)
     end
 
     let(:query) do
@@ -121,83 +160,27 @@ RSpec.describe 'Query.ciCatalogResources', feature_category: :pipeline_compositi
       GQL
     end
 
-    it 'limits the request to 1 resource at a time' do
-      create(:ci_catalog_resource, :published, project: project2)
-
-      post_query
-
-      expect_graphql_errors_to_include \
-        [/"versions" field can be requested only for 1 CiCatalogResource\(s\) at a time./]
-    end
-  end
-
-  describe 'latestVersion' do
-    let_it_be(:author1) { create(:user, name: 'author1') }
-    let_it_be(:author2) { create(:user, name: 'author2') }
-
-    let_it_be(:latest_version1) do
-      create(:release, :with_catalog_resource_version, project: project1, released_at: '2023-02-01T00:00:00Z',
-        author: author1).catalog_resource_version
-    end
-
-    let_it_be(:latest_version2) do
-      create(:release, :with_catalog_resource_version, project: public_project, released_at: '2023-02-01T00:00:00Z',
-        author: author2).catalog_resource_version
-    end
-
-    let(:query) do
-      <<~GQL
-        query {
-          ciCatalogResources {
-            nodes {
-              id
-              latestVersion {
-                id
-                name
-                releasedAt
-                author {
-                  id
-                  name
-                  webUrl
-                }
-              }
-            }
-          }
-        }
-      GQL
-    end
-
-    before_all do
-      namespace.add_developer(user)
-
-      # Previous versions of the catalog resources
-      create(:release, :with_catalog_resource_version, project: project1, released_at: '2023-01-01T00:00:00Z',
-        author: author1)
-      create(:release, :with_catalog_resource_version, project: public_project, released_at: '2023-01-01T00:00:00Z',
-        author: author2)
-    end
-
-    it 'returns all resources with the latest version data' do
+    it 'returns versions for the catalog resources ordered by semver' do
       post_query
 
       expect(graphql_data_at(:ciCatalogResources, :nodes)).to contain_exactly(
         a_graphql_entity_for(
           resource1,
-          latestVersion: a_graphql_entity_for(
-            latest_version1,
-            name: latest_version1.name,
-            releasedAt: latest_version1.released_at,
-            author: a_graphql_entity_for(author1, :name)
-          )
+          versions: {
+            'nodes' => [
+              a_graphql_entity_for(resource1_v2),
+              a_graphql_entity_for(resource1_v1)
+            ]
+          }
         ),
         a_graphql_entity_for(
           public_resource,
-          latestVersion: a_graphql_entity_for(
-            latest_version2,
-            name: latest_version2.name,
-            releasedAt: latest_version2.released_at,
-            author: a_graphql_entity_for(author2, :name)
-          )
+          versions: {
+            'nodes' => [
+              a_graphql_entity_for(public_resource_v2),
+              a_graphql_entity_for(public_resource_v1)
+            ]
+          }
         )
       )
     end
@@ -206,10 +189,6 @@ RSpec.describe 'Query.ciCatalogResources', feature_category: :pipeline_compositi
   end
 
   describe 'openIssuesCount' do
-    before_all do
-      namespace.add_developer(user)
-    end
-
     before_all do
       create(:issue, :opened, project: project1)
       create(:issue, :opened, project: project1)

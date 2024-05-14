@@ -12,11 +12,11 @@ query getPackageVersions(
       nodes {
         id
         name
-        canDestroy
         createdAt
         packageType
         version
         status
+        statusMessage
         _links {
           webPath
         }
@@ -25,6 +25,9 @@ query getPackageVersions(
             id
             name
           }
+        }
+        userPermissions {
+          destroyPackage
         }
       }
       pageInfo {

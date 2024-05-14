@@ -133,7 +133,7 @@ RSpec.describe 'Project issue boards sidebar labels', :js, feature_category: :te
 
         click_on 'Create project label'
         fill_in 'Name new label', with: 'test label'
-        first('.suggest-colors-dropdown a').click
+        first('.suggested-colors a').click
         click_button 'Create'
         wait_for_requests
 

@@ -57,7 +57,7 @@ export const collapseSystemNotes = (notes) => {
         } else {
           // set the first version to fetch grouped system note versions
 
-          lastStartVersionId = lastDescriptionSystemNote.systemNoteMetadata.descriptionVersion.id;
+          lastStartVersionId = lastDescriptionSystemNote.systemNoteMetadata.descriptionVersion?.id;
 
           // delete the previous one
           acc.splice(lastDescriptionSystemNoteIndex, 1);

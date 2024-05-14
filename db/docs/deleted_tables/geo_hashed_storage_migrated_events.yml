@@ -1,0 +1,21 @@
+---
+table_name: geo_hashed_storage_migrated_events
+classes:
+- Geo::HashedStorageMigratedEvent
+feature_categories:
+- geo_replication
+description: Used to replicate repository migration paths on Geo secondaries from
+  regular to hashed storage.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/3066
+milestone: '10.2'
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151938
+removed_in_milestone: '17.0'
+gitlab_schema: gitlab_main_cell
+allow_cross_joins:
+- gitlab_main_clusterwide
+allow_cross_transactions:
+- gitlab_main_clusterwide
+allow_cross_foreign_keys:
+- gitlab_main_clusterwide
+sharding_key:
+  project_id: projects

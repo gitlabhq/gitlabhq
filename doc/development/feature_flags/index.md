@@ -12,7 +12,7 @@ If you want to use feature flags to show and hide functionality in your own appl
 view [this feature flags information](../../operations/feature_flags.md) instead.
 
 WARNING:
-All newly-introduced feature flags should be [disabled by default](https://about.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/#feature-flags-in-gitlab-development).
+All newly-introduced feature flags should be [disabled by default](https://handbook.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/).
 
 WARNING:
 All newly-introduced feature flags should be [used with an actor](controls.md#percentage-based-actor-selection).
@@ -60,7 +60,7 @@ When the feature implementation is delivered over multiple merge requests:
    with the implementation. Do not enable the feature flag for a public project
    like `gitlab-org/gitlab` if there is no documentation. Team members and contributors might search for
    documentation on how to use the feature if they see it enabled in a public project.
-1. When the feature is ready for production use, open a merge request to:
+1. When the feature is ready for production use, including self-managed instances, open one merge request to:
    - Update the documentation to describe the latest flag status.
    - Add a [changelog entry](#changelog).
    - Remove the feature flag to enable the new behavior, or flip the feature flag to be **enabled by default** (only for `ops` and `beta` feature flags).
@@ -97,7 +97,7 @@ GitLab are of the `gitlab_com_derisk` type.
 
 - `default_enabled`: **Must not** be set to true. This kind of feature flag is meant to lower the risk on GitLab.com, thus there's no need to keep the flag in the codebase after it's been enabled on GitLab.com. `default_enabled: true` will not have any effect for this type of feature flag.
 - Maximum Lifespan: 2 months after it's merged into the default branch
-- Documentation: This type of feature flag don't need to be documented in the
+- Documentation: This type of feature flag doesn't need to be documented in the
   [All feature flags in GitLab](../../user/feature_flags.md) page given they're short-lived and deployment-related
 - Rollout issue: **Must** have a rollout issue created from the
   [Feature flag Roll Out template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Feature%20Flag%20Roll%20Out.md)
@@ -145,7 +145,7 @@ Once the feature is complete, the feature flag type can be changed to the `gitla
 
 - `default_enabled`: **Must not** be set to true. If needed, this type can be changed to beta once the feature is complete.
 - Maximum Lifespan: 4 months after it's merged into the default branch
-- Documentation: This type of feature flag don't need to be documented in the
+- Documentation: This type of feature flag doesn't need to be documented in the
   [All feature flags in GitLab](../../user/feature_flags.md) page given they're mostly hiding unfinished code
 - Rollout issue: Likely no need for a rollout issues, as `wip` feature flags should be transitioned to
   another type before being enabled
@@ -255,8 +255,6 @@ The `development` type is deprecated in favor of the `gitlab_com_derisk`, `wip`,
 
 ## Feature flag definition and validation
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/229161) in GitLab 13.3.
-
 During development (`RAILS_ENV=development`) or testing (`RAILS_ENV=test`) all feature flag usage is being strictly validated.
 
 This process is meant to ensure consistent feature flag usage in the codebase. All feature flags **must**:
@@ -342,7 +340,7 @@ type: beta
 default_enabled: false
 ```
 
-All newly-introduced feature flags must be [**disabled by default**](https://about.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/#feature-flags-in-gitlab-development).
+All newly-introduced feature flags must be [**disabled by default**](https://handbook.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/).
 
 Features that are developed and merged behind a feature flag
 should not include a changelog entry. The entry should be added either in the merge
@@ -373,6 +371,22 @@ WARNING:
 Feature flags **must** be used in the MR that introduces them. Not doing so causes a
 [broken master](https://handbook.gitlab.com/handbook/engineering/workflow/#broken-master) scenario due
 to the `rspec:feature-flags` job that only runs on the `master` branch.
+
+### Optionally add a `.patch` file for automated removal of feature flags
+
+The [`gitlab-housekeeper`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/gems/gitlab-housekeeper) is able to automatically remove your feature flag code for you using the [`DeleteOldFeatureFlags` keep](https://gitlab.com/gitlab-org/gitlab/-/blob/master/keeps/delete_old_feature_flags.rb). The tool will run periodically and automatically clean up old feature flags from the code.
+
+For this tool to automatically remove the usages of the feature flag in your code you can add a `.patch` file alongside your feature flag YAML file. The file should be exactly the same name except using the `.patch` extension instead of the `.yml` extension.
+
+For example you can create a patch file for `config/feature_flags/beta/my_feature_flag.yml` using the following steps:
+
+1. Edit the code locally to remove the feature flag `my_feature_flag` usage assuming that the feature flag is already enabled and we are rolling forward
+1. Run `git diff > config/feature_flags/beta/my_feature_flag.patch`
+1. Undo the changes to the files where you removed the feature flag usage
+1. Commit this file `config/feature_flags/beta/my_feature_flag.patch` file to the branch where you are adding the feature flag
+
+Then in future the `gitlab-housekeeper` will automatically clean up your
+feature flag for you by applying this patch.
 
 ## List all the feature flags
 
@@ -555,6 +569,24 @@ Feature.enabled?(:feature_flag_group, group)
 Feature.enabled?(:feature_flag_user, user)
 ```
 
+Models which `include FeatureGate` have an `.actor_from_id` class method.
+If you have the model's ID and do not need the model for anything other than checking the feature
+flag state, you can use `.actor_from_id` in order check the feature flag state without making a
+database query to retrieve the model.
+
+```ruby
+# Bad -- Unnecessary query is executed
+Feature.enabled?(:feature_flag, Project.find(project_id))
+
+# Good -- No query for projects
+Feature.enabled?(:feature_flag, Project.actor_from_id(project_id))
+
+# Good -- Project model is used after feature flag check
+project = Project.find(project_id)
+return unless Feature.enabled?(:feature_flag, project)
+project.update!(column: value)
+```
+
 See [Feature flags in the development of GitLab](controls.md#process) for details on how to use ChatOps
 to selectively enable or disable feature flags in GitLab-provided environments, like staging and production.
 
@@ -657,7 +689,9 @@ Feature groups can be enabled via the group name:
 Feature.enable(:feature_flag_name, :gitlab_team_members)
 ```
 
-### Enabling a feature flag locally (in development)
+### Controlling feature flags locally
+
+#### On rails console
 
 In the rails console (`rails c`), enter the following command to enable a feature flag:
 
@@ -677,17 +711,18 @@ You can also enable a feature flag for a given gate:
 Feature.enable(:feature_flag_name, Project.find_by_full_path("root/my-project"))
 ```
 
-### Disabling a feature flag locally (in development)
-
 When manually enabling or disabling a feature flag from the Rails console, its default value gets overwritten.
 This can cause confusion when changing the flag's `default_enabled` attribute.
 
-To reset the feature flag to the default status, you can disable it in the rails console (`rails c`)
-as follows:
+To reset the feature flag to the default status:
 
 ```ruby
 Feature.remove(:feature_flag_name)
 ```
+
+#### On your browser
+
+Access `http://gdk.test:3000/rails/features` to see the manage locally the feature flag.
 
 ### Logging
 
@@ -713,12 +748,25 @@ We want to avoid introducing a changelog when features are not accessible by an 
   Use the flowchart to determine the changelog entry type.
 
   ```mermaid
-  graph LR
-      A[flag: default off] -->|'added' / 'changed' / 'fixed' / '...'| B(flag: default on)
-      B -->|'other'| C(remove flag, keep new code)
-      B -->|'removed' / 'changed'| D(remove flag, keep old code)
-      A -->|'added' / 'changed' / 'fixed' / '...'| C
-      A -->|no changelog| D
+  flowchart LR
+    FDOFF(Flag is currently\n`default: off`)
+    FDON(Flag is currently\n`default: on`)
+    CDO{Change to\n`default: on`}
+    ACF(added / changed / fixed / '...')
+    RF{Remove flag}
+    RF2{Remove flag}
+    NC(No changelog)
+    RC(removed / changed)
+    OTHER(other)
+
+    FDOFF -->CDO-->ACF
+    FDOFF -->RF
+    RF-->|Keep new code?| ACF
+    RF-->|Keep old code?| NC
+
+    FDON -->RF2
+    RF2-->|Keep old code?| RC
+    RF2-->|Keep new code?| OTHER
   ```
 
 - The changelog for a feature flag should describe the feature and not the

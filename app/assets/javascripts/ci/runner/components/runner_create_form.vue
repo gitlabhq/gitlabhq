@@ -94,7 +94,7 @@ export default {
 
         if (!runner?.ephemeralRegisterUrl) {
           // runner is missing information, report issue and
-          // fail naviation to register page.
+          // fail navigation to register page.
           this.onError(new Error(I18N_CREATE_ERROR));
           return;
         }

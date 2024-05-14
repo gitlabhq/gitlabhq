@@ -9,7 +9,6 @@ import { updateHistory } from '~/lib/utils/url_utility';
 import { PARAM_KEY_PLATFORM, DEFAULT_PLATFORM, WINDOWS_PLATFORM } from '~/ci/runner/constants';
 import AdminRegisterRunnerApp from '~/ci/runner/admin_register_runner/admin_register_runner_app.vue';
 import RegistrationInstructions from '~/ci/runner/components/registration/registration_instructions.vue';
-import PlatformsDrawer from '~/ci/runner/components/registration/platforms_drawer.vue';
 import { runnerForRegistration } from '../mock_data';
 
 const mockRunnerId = runnerForRegistration.data.runner.id;
@@ -24,7 +23,6 @@ describe('AdminRegisterRunnerApp', () => {
   let wrapper;
 
   const findRegistrationInstructions = () => wrapper.findComponent(RegistrationInstructions);
-  const findPlatformsDrawer = () => wrapper.findComponent(PlatformsDrawer);
   const findBtn = () => wrapper.findComponent(GlButton);
 
   const createComponent = () => {
@@ -46,13 +44,8 @@ describe('AdminRegisterRunnerApp', () => {
         expect(findRegistrationInstructions().props()).toEqual({
           platform: DEFAULT_PLATFORM,
           runnerId: mockRunnerId,
-        });
-      });
-
-      it('configures platform drawer', () => {
-        expect(findPlatformsDrawer().props()).toEqual({
-          open: false,
-          platform: DEFAULT_PLATFORM,
+          groupPath: null,
+          projectPath: null,
         });
       });
 
@@ -63,7 +56,7 @@ describe('AdminRegisterRunnerApp', () => {
     });
   });
 
-  describe('When another platform has been selected', () => {
+  describe('When a platform is selected in the creation', () => {
     beforeEach(() => {
       setWindowLocation(`?${PARAM_KEY_PLATFORM}=${WINDOWS_PLATFORM}`);
 
@@ -75,48 +68,23 @@ describe('AdminRegisterRunnerApp', () => {
     });
   });
 
-  describe('When opening install instructions', () => {
+  describe('When a platform is selected in the instructions', () => {
     beforeEach(async () => {
       createComponent();
 
-      findRegistrationInstructions().vm.$emit('toggleDrawer');
+      findRegistrationInstructions().vm.$emit('selectPlatform', WINDOWS_PLATFORM);
       await nextTick();
     });
 
-    it('opens platform drawer', () => {
-      expect(findPlatformsDrawer().props('open')).toBe(true);
+    it('updates the url', () => {
+      expect(updateHistory).toHaveBeenCalledTimes(1);
+      expect(updateHistory).toHaveBeenCalledWith({
+        url: `${TEST_HOST}/?${PARAM_KEY_PLATFORM}=${WINDOWS_PLATFORM}`,
+      });
     });
 
-    it('closes platform drawer', async () => {
-      findRegistrationInstructions().vm.$emit('toggleDrawer');
-      await nextTick();
-
-      expect(findPlatformsDrawer().props('open')).toBe(false);
-    });
-
-    it('closes platform drawer from drawer', async () => {
-      findPlatformsDrawer().vm.$emit('close');
-      await nextTick();
-
-      expect(findPlatformsDrawer().props('open')).toBe(false);
-    });
-
-    describe('when selecting a platform', () => {
-      beforeEach(async () => {
-        findPlatformsDrawer().vm.$emit('selectPlatform', WINDOWS_PLATFORM);
-        await nextTick();
-      });
-
-      it('updates the url', () => {
-        expect(updateHistory).toHaveBeenCalledTimes(1);
-        expect(updateHistory).toHaveBeenCalledWith({
-          url: `${TEST_HOST}/?${PARAM_KEY_PLATFORM}=${WINDOWS_PLATFORM}`,
-        });
-      });
-
-      it('updates the registration instructions', () => {
-        expect(findRegistrationInstructions().props('platform')).toBe(WINDOWS_PLATFORM);
-      });
+    it('updates the registration instructions', () => {
+      expect(findRegistrationInstructions().props('platform')).toBe(WINDOWS_PLATFORM);
     });
   });
 });

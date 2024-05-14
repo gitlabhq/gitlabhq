@@ -40,7 +40,12 @@ module API
         end
       end
 
-      def authorize_workhorse!(subject: user_project, has_length: true, maximum_size: MAX_PACKAGE_FILE_SIZE)
+      def authorize_workhorse!(
+        subject: user_project,
+        has_length: true,
+        maximum_size: MAX_PACKAGE_FILE_SIZE,
+        use_final_store_path: false)
+
         authorize_upload!(subject)
 
         Gitlab::Workhorse.verify_api_request!(headers)
@@ -48,8 +53,9 @@ module API
         status 200
         content_type Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE
 
-        params = { has_length: has_length }
+        params = { has_length: has_length, use_final_store_path: use_final_store_path }
         params[:maximum_size] = maximum_size unless has_length
+        params[:final_store_path_root_id] = subject.id if use_final_store_path
         ::Packages::PackageFileUploader.workhorse_authorize(**params)
       end
 

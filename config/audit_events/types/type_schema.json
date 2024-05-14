@@ -44,6 +44,19 @@
     "streamed": {
       "type": "boolean",
       "description": "Indicate that events should be streamed to external services (if configured)"
+    },
+    "scope": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "Instance",
+          "Group",
+          "Project",
+          "User"
+        ]
+      },
+      "description": "Scope that the audit event belongs to"
     }
   },
   "required": [
@@ -54,7 +67,8 @@
     "milestone",
     "name",
     "saved_to_database",
-    "streamed"
+    "streamed",
+    "scope"
   ],
   "not": {
     "properties": {

@@ -25,6 +25,10 @@ module IssueLinks
     def link_class
       IssueLink
     end
+
+    def issuables_no_permission_error_message
+      _("Couldn't link issues. You must have at least the Guest role in both projects.")
+    end
   end
 end
 

@@ -6,7 +6,7 @@ RSpec.describe 'Setting the status of an alert', feature_category: :incident_man
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project) { create(:project, developers: user) }
 
   let(:alert) { create(:alert_management_alert, project: project) }
   let(:input) { { status: 'ACKNOWLEDGED' } }
@@ -29,10 +29,6 @@ RSpec.describe 'Setting the status of an alert', feature_category: :incident_man
   end
 
   let(:mutation_response) { graphql_mutation_response(:update_alert_status) }
-
-  before do
-    project.add_developer(user)
-  end
 
   it 'updates the status of the alert' do
     post_graphql_mutation(mutation, current_user: user)

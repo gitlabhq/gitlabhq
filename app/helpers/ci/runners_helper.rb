@@ -21,7 +21,13 @@ module Ci
         title = s_("Runners|Runner has never contacted this instance")
         icon = 'warning-solid'
       when :offline
-        title = s_("Runners|Runner is offline; last contact was %{runner_contact} ago") % { runner_contact: time_ago_in_words(contacted_at) }
+        title =
+          if contacted_at
+            s_("Runners|Runner is offline; last contact was %{runner_contact} ago") % { runner_contact: time_ago_in_words(contacted_at) }
+          else
+            s_("Runners|Runner is offline; it has never contacted this instance")
+          end
+
         icon = 'status-waiting'
         span_class = 'gl-text-gray-500'
       when :stale
@@ -59,6 +65,7 @@ module Ci
         # https://gitlab.com/gitlab-org/gitlab-runner
         runner_install_help_page: 'https://docs.gitlab.com/runner/install/',
         new_runner_path: new_admin_runner_path,
+        allow_registration_token: Gitlab::CurrentSettings.allow_runner_registration_token.to_s,
         registration_token: Gitlab::CurrentSettings.runners_registration_token,
         online_contact_timeout_secs: ::Ci::Runner::ONLINE_CONTACT_TIMEOUT.to_i,
         stale_timeout_secs: ::Ci::Runner::STALE_TIMEOUT.to_i,

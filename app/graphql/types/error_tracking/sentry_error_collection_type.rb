@@ -9,19 +9,19 @@ module Types
       authorize :read_sentry_issue
 
       field :detailed_error,
-            description: 'Detailed version of a Sentry error on the project.',
-            resolver: Resolvers::ErrorTracking::SentryDetailedErrorResolver
+        description: 'Detailed version of a Sentry error on the project.',
+        resolver: Resolvers::ErrorTracking::SentryDetailedErrorResolver
       field :error_stack_trace,
-            description: 'Stack Trace of Sentry Error.',
-            resolver: Resolvers::ErrorTracking::SentryErrorStackTraceResolver
+        description: 'Stack Trace of Sentry Error.',
+        resolver: Resolvers::ErrorTracking::SentryErrorStackTraceResolver
       field :errors,
-            description: "Collection of Sentry Errors.",
-            resolver: Resolvers::ErrorTracking::SentryErrorsResolver,
-            connection_extension: Gitlab::Graphql::Extensions::ExternallyPaginatedArrayExtension
+        description: "Collection of Sentry Errors.",
+        resolver: Resolvers::ErrorTracking::SentryErrorsResolver,
+        connection_extension: Gitlab::Graphql::Extensions::ExternallyPaginatedArrayExtension
       field :external_url,
-            GraphQL::Types::String,
-            null: true,
-            description: "External URL for Sentry."
+        GraphQL::Types::String,
+        null: true,
+        description: "External URL for Sentry."
     end
   end
 end

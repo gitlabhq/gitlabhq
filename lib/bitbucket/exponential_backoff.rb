@@ -22,7 +22,7 @@ module Bitbucket
 
       loop do
         return yield
-      rescue OAuth2::Error => e
+      rescue OAuth2::Error, HTTParty::ResponseError => e
         retries, delay = handle_error(retries, delay, e.message)
 
         next

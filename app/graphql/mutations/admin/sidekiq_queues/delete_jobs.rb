@@ -10,30 +10,28 @@ module Mutations
 
         ::Gitlab::ApplicationContext.known_keys.each do |key|
           argument key,
-                   GraphQL::Types::String,
-                   required: false,
-                   description: "Delete jobs matching #{key} in the context metadata."
+            GraphQL::Types::String,
+            required: false,
+            description: "Delete jobs matching #{key} in the context metadata."
         end
 
         argument ::Gitlab::SidekiqQueue::WORKER_KEY,
-                 GraphQL::Types::String,
-                 required: false,
-                 description: 'Delete jobs with the given worker class.'
+          GraphQL::Types::String,
+          required: false,
+          description: 'Delete jobs with the given worker class.'
 
         argument :queue_name,
-                 GraphQL::Types::String,
-                 required: true,
-                 description: 'Name of the queue to delete jobs from.'
+          GraphQL::Types::String,
+          required: true,
+          description: 'Name of the queue to delete jobs from.'
 
         field :result,
-              Types::Admin::SidekiqQueues::DeleteJobsResponseType,
-              null: true,
-              description: 'Information about the status of the deletion request.'
+          Types::Admin::SidekiqQueues::DeleteJobsResponseType,
+          null: true,
+          description: 'Information about the status of the deletion request.'
 
         def ready?(**args)
-          unless current_user&.admin?
-            raise Gitlab::Graphql::Errors::ResourceNotAvailable, ADMIN_MESSAGE
-          end
+          raise Gitlab::Graphql::Errors::ResourceNotAvailable, ADMIN_MESSAGE unless current_user&.admin?
 
           super
         end

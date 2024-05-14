@@ -66,10 +66,7 @@ RSpec.describe 'Query.project(fullPath).pipelines', feature_category: :continuou
         created_at: 1.minute.ago,
         started_at: 55.seconds.ago
       )
-      create(:ci_build, :success,
-             pipeline: pipeline,
-             started_at: 55.seconds.ago,
-             finished_at: 10.seconds.ago)
+      create(:ci_build, :success, pipeline: pipeline, started_at: 55.seconds.ago, finished_at: 10.seconds.ago)
       pipeline.update_duration
       pipeline.save!
 

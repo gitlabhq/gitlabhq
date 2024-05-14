@@ -14,8 +14,6 @@ GitLab provides Rake tasks for cleaning up GitLab instances.
 
 ## Remove unreferenced LFS files
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36628) in GitLab 12.10.
-
 WARNING:
 Do not run this within 12 hours of a GitLab upgrade. This is to ensure that all background migrations
 have finished, which otherwise may lead to data loss.
@@ -55,8 +53,6 @@ later (once a day). If you need to garbage collect them immediately, run
 
 ### Remove unreferenced LFS files immediately
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36628) in GitLab 12.10.
-
 Unreferenced LFS files are removed on a daily basis but you can remove them immediately if
 you need to. For example:
 
@@ -80,8 +76,6 @@ I, [2020-01-08T20:51:17.148765 #43765]  INFO -- : Removed unreferenced LFS files
 Clean up project upload files if they don't exist in GitLab database.
 
 ### Clean up project upload files from file system
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/20863) in GitLab 11.2.
 
 Clean up local project upload files if they don't exist in GitLab database. The
 task attempts to fix the file if it can find its project, otherwise it moves the
@@ -119,8 +113,6 @@ If using object storage, run the [All-in-one Rake task](../administration/raketa
 
 ### Clean up project upload files from object storage
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/20918) in GitLab 11.2.
-
 Move object store upload files to a lost and found directory if they don't exist in GitLab database.
 
 ```shell
@@ -152,18 +144,9 @@ I, [2018-08-02T10:26:47.764356 #45087]  INFO -- : Moved to lost and found: @hash
 
 ## Remove orphan artifact files
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/29681) in GitLab 12.1.
-> - [`ionice` support fixed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28023) in GitLab 12.10.
-
 NOTE:
 These commands don't work for artifacts stored on
 [object storage](../administration/object_storage.md).
-
-WARNING:
-Prior to GitLab 14.9, this task incorrectly deletes [test coverage-related artifacts](../ci/testing/test_coverage_visualization.md).
-[The bug fix](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81022) was
-also back-ported to 14.6.6, 14.7.5, and 14.8.3. Upgrade to a release with the bug
-fix to avoid data loss.
 
 When you notice there are more job artifacts files and/or directories on disk than there
 should be, you can run:
@@ -209,8 +192,6 @@ level with `NICENESS`. Below are the valid levels, but consult
 - `3` or `Idle`
 
 ## Remove expired ActiveSession lookup keys
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/30668) in GitLab 12.2.
 
 ```shell
 # omnibus-gitlab

@@ -158,42 +158,40 @@ module Gitlab
       end
 
       def import_issue_comments(issue, comments)
-        Note.transaction do
-          while comment = comments.shift
-            verb = comment['sVerb']
+        while comment = comments.shift
+          verb = comment['sVerb']
 
-            next if verb == 'Opened'
+          next if verb == 'Opened'
 
-            content = format_content(comment['s'])
-            attachments = format_attachments(comment['rgAttachments'])
-            updates = format_updates(comment)
+          content = format_content(comment['s'])
+          attachments = format_attachments(comment['rgAttachments'])
+          updates = format_updates(comment)
 
-            next if content.blank? && attachments.empty? && updates.empty?
+          next if content.blank? && attachments.empty? && updates.empty?
 
-            author = user_info(comment['ixPerson'])[:name]
-            author_id = user_info(comment['ixPerson'])[:gitlab_id] || project.creator_id
-            date = DateTime.parse(comment['dt'])
+          author = user_info(comment['ixPerson'])[:name]
+          author_id = user_info(comment['ixPerson'])[:gitlab_id] || project.creator_id
+          date = DateTime.parse(comment['dt'])
 
-            body = format_issue_comment_body(
-              comment['ixBugEvent'],
-              author,
-              date,
-              content,
-              attachments,
-              updates
-            )
+          body = format_issue_comment_body(
+            comment['ixBugEvent'],
+            author,
+            date,
+            content,
+            attachments,
+            updates
+          )
 
-            note = Note.create!(
-              project_id: project.id,
-              noteable_type: "Issue",
-              noteable_id: issue.id,
-              author_id: author_id,
-              note: body
-            )
-
-            note.update_attribute(:created_at, date)
-            note.update_attribute(:updated_at, date)
-          end
+          Note.create!(
+            importing: true,
+            project_id: project.id,
+            noteable_type: "Issue",
+            noteable_id: issue.id,
+            author_id: author_id,
+            note: body,
+            created_at: date,
+            updated_at: date
+          )
         end
       end
 

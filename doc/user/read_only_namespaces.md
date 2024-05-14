@@ -8,9 +8,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS
+**Offering:** GitLab.com
 
-In GitLab SaaS, a top-level namespace is placed in a read-only state when it either:
+On GitLab.com, a top-level namespace is placed in a read-only state when it either:
 
 - Exceeds the [free user limit](free_user_limit.md) when the namespace visibility is private.
 - Exceeds the [storage usage quota](usage_quotas.md), regardless of namespace visibility.

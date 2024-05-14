@@ -162,6 +162,8 @@ legacy issue, merge request, or epic updates.
 - `after_initialize` is called after the work item is initialized by the `BuildService` and before
   the work item is saved by the `CreateService` and `UpdateService`. This callback runs outside the
   creation or update database transaction.
+- `before_create` is called before the work item is saved by the `CreateService`. This callback runs
+  within the create database transaction.
 - `before_update` is called before the work item is saved by the `UpdateService`. This callback runs
   within the update database transaction.
 - `after_update_commit` is called after the DB update transaction is committed by the `UpdateService`.

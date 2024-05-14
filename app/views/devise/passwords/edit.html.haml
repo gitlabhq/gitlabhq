@@ -1,22 +1,20 @@
 = render 'devise/shared/tab_single', tab_title: _('Change your password')
-.login-box
-  = gitlab_ui_form_for(resource, as: resource_name, url: password_path(:user), html: { method: :put, class: 'gl-show-field-errors gl-pt-5' }) do |f|
-    .devise-errors.gl-px-5
-      = render "devise/shared/error_messages", resource: resource
-    = f.hidden_field :reset_password_token
-    .form-group.gl-px-5
-      = f.label _('New password'), for: "user_password"
-      = f.password_field :password, autocomplete: 'new-password', class: "form-control gl-form-input top js-password-complexity-validation", required: true, title: _('This field is required.'), data: { testid: 'password-field'}
-      = render_if_exists 'shared/password_requirements_list'
-    .form-group.gl-px-5
-      = f.label _('Confirm new password'), for: "user_password_confirmation"
-      = f.password_field :password_confirmation, autocomplete: 'new-password', class: "form-control gl-form-input bottom", title: _('This field is required.'), data: { testid: 'password-confirmation-field' }, required: true
-    .clearfix.gl-px-5.gl-pb-5
-      = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, block: true, button_options: { data: { testid: 'change-password-button' } }) do
-        = _('Change your password')
+= gitlab_ui_form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put, class: 'gl-show-field-errors', aria: { live: 'assertive' } }) do |f|
+  .devise-errors
+    = render "devise/shared/error_messages", resource: resource
+  = f.hidden_field :reset_password_token
+  .form-group
+    = f.label _('New password'), for: "user_password"
+    = f.password_field :password, autocomplete: 'new-password', class: "form-control gl-form-input top js-password-complexity-validation", required: true, title: _('This field is required.'), data: { testid: 'password-field'}
+    = render_if_exists 'shared/password_requirements_list'
+  .form-group
+    = f.label _('Confirm new password'), for: "user_password_confirmation"
+    = f.password_field :password_confirmation, autocomplete: 'new-password', class: "form-control gl-form-input bottom", title: _('This field is required.'), data: { testid: 'password-confirmation-field' }, required: true
 
-.clearfix.prepend-top-20
-  %p
-    %span.light= _("Didn't receive a confirmation email?")
-    = link_to _("Request a new one"), new_confirmation_path(:user)
-= render 'devise/shared/sign_in_link'
+  = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, block: true, button_options: { data: { testid: 'change-password-button' } }) do
+    = _('Change your password')
+
+.gl-mt-3.gl-text-center
+  = _("Didn't receive a confirmation email?")
+  = link_to _("Request a new one"), new_confirmation_path(resource_name)
+  = render 'devise/shared/sign_in_link'

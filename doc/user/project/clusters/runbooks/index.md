@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Runbooks are a collection of documented procedures that explain how to
 carry out a particular process, be it starting, stopping, debugging,
@@ -26,8 +26,6 @@ runbooks", where, along with a well-defined process, operators can execute
 pre-written code blocks or database queries against a given environment.
 
 ## Executable Runbooks
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/45912) in GitLab 11.4.
 
 The JupyterHub app offered via the GitLab Kubernetes integration now ships
 with Nurtch's Rubix library, providing a simple way to create DevOps
@@ -73,64 +71,53 @@ the components outlined above and the pre-loaded demo runbook.
 
    ```yaml
    #-----------------------------------------------------------------------------
-   # The gitlab and ingress sections must be customized!
-   #-----------------------------------------------------------------------------
-
-   gitlab:
-      clientId: <Your OAuth Application ID>
-      clientSecret: <Your OAuth Application Secret>
-      callbackUrl: http://<Jupyter Hostname>/hub/oauth_callback,
-      # Limit access to members of specific projects or groups:
-      # allowedGitlabGroups: [ "my-group-1", "my-group-2" ]
-      # allowedProjectIds: [ 12345, 6789 ]
-
-   # ingress is required for OAuth to work
-   ingress:
-      enabled: true
-      host: <JupyterHostname>
-      # tls:
-      #    - hosts:
-      #       - <JupyterHostanme>
-      #         secretName: jupyter-cert
-      # annotations:
-      #    kubernetes.io/ingress.class: "nginx"
-      #    kubernetes.io/tls-acme: "true"
-
-   #-----------------------------------------------------------------------------
-   # NO MODIFICATIONS REQUIRED BEYOND THIS POINT
+   # The hub.config.GitLabOAuthenticator section must be customized!
    #-----------------------------------------------------------------------------
 
    hub:
-      extraEnv:
-         JUPYTER_ENABLE_LAB: 1
-      extraConfig: |
-         c.KubeSpawner.cmd = ['jupyter-labhub']
-         c.GitLabOAuthenticator.scope = ['api read_repository write_repository']
+     config:
+       GitLabOAuthenticator:
+         # Limit access to members of specific projects or groups or to specific users:
+         # allowedGitlabGroups: [ "my-group-1", "my-group-2" ]
+         # allowedProjectIds: [ 12345, 6789 ]
+         # allowed_users: ["user-1", "user-2"]
+         client_id: <Your OAuth Application ID>
+         client_secret: <Your OAuth Application ID>
+         enable_auth_state: true
+         gitlab_url: https://gitlab.example.com
+         oauth_callback_url: http://<Jupyter Hostname>/hub/oauth_callback
+         scope:
+           - read_user
+           - read_api
+           - openid
+           - profile
+           - email
+       JupyterHub:
+         authenticator_class: gitlab
+      extraConfig: 
+        gitlab-config: |   
+           c.KubeSpawner.cmd = ['jupyter-labhub']
+           c.GitLabOAuthenticator.scope = ['api read_repository write_repository']
 
-         async def add_auth_env(spawner):
-            '''
-            We set user's id, login and access token on single user image to
-            enable repository integration for JupyterHub.
-            See: https://gitlab.com/gitlab-org/gitlab-foss/-/issues/47138#note_154294790
-            '''
-            auth_state = await spawner.user.get_auth_state()
+           async def add_auth_env(spawner):
+              '''
+              We set user's id, login and access token on single user image to
+              enable repository integration for JupyterHub.
+              See: https://gitlab.com/gitlab-org/gitlab-foss/-/issues/47138#note_154294790
+              '''
+              auth_state = await spawner.user.get_auth_state()
 
-            if not auth_state:
-               spawner.log.warning("No auth state for %s", spawner.user)
-               return
+              if not auth_state:
+                 spawner.log.warning("No auth state for %s", spawner.user)
+                 return
 
-            spawner.environment['GITLAB_ACCESS_TOKEN'] = auth_state['access_token']
-            spawner.environment['GITLAB_USER_LOGIN'] = auth_state['gitlab_user']['username']
-            spawner.environment['GITLAB_USER_ID'] = str(auth_state['gitlab_user']['id'])
-            spawner.environment['GITLAB_USER_EMAIL'] = auth_state['gitlab_user']['email']
-            spawner.environment['GITLAB_USER_NAME'] = auth_state['gitlab_user']['name']
+              spawner.environment['GITLAB_ACCESS_TOKEN'] = auth_state['access_token']
+              spawner.environment['GITLAB_USER_LOGIN'] = auth_state['gitlab_user']['username']
+              spawner.environment['GITLAB_USER_ID'] = str(auth_state['gitlab_user']['id'])
+              spawner.environment['GITLAB_USER_EMAIL'] = auth_state['gitlab_user']['email']
+              spawner.environment['GITLAB_USER_NAME'] = auth_state['gitlab_user']['name']
 
-         c.KubeSpawner.pre_spawn_hook = add_auth_env
-
-   auth:
-      type: gitlab
-      state:
-         enabled: true
+           c.KubeSpawner.pre_spawn_hook = add_auth_env
 
    singleuser:
       defaultUrl: "/lab"
@@ -207,7 +194,7 @@ the components outlined above and the pre-loaded demo runbook.
    %env DB_NAME={project.variables.get('DB_NAME').value}
    ```
 
-   1. Navigate to **Settings > CI/CD > Variables** to create
+   1. Go to **Settings > CI/CD > Variables** to create
       the variables in your project.
 
       ![GitLab variables](img/gitlab-variables.png)

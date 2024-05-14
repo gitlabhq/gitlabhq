@@ -1,7 +1,6 @@
-- title = local_assigns.fetch(:title, _('Assign labels'))
+- title = local_assigns.fetch(:title, _('Select labels'))
 - content_title = local_assigns.fetch(:content_title, _('Create lists from labels. Issues with that label appear in that list.'))
 - show_title = local_assigns.fetch(:show_title, true)
-- show_create = local_assigns.fetch(:show_create, true)
 - show_footer = local_assigns.fetch(:show_footer, true)
 - filter_placeholder = local_assigns.fetch(:filter_placeholder, _('Search'))
 - show_boards_content = local_assigns.fetch(:show_boards_content, false)
@@ -24,8 +23,5 @@
               = create_label_title(subject)
         %li
           = link_to labels_path, :"data-is-link" => true do
-            - if show_create && can?(current_user, :admin_label, current_board_parent)
-              = manage_labels_title(subject)
-            - else
-              = view_labels_title(subject)
+            = view_labels_title(subject)
   = dropdown_loading

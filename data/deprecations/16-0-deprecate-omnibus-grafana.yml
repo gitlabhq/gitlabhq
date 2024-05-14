@@ -6,7 +6,7 @@
   stage: Enablement
   issue_url: https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7772
   body: |  # (required) Do not modify this line, instead modify the lines below.
-    The version of [Grafana bundled with Omnibus GitLab](https://docs.gitlab.com/omnibus/settings/grafana.html) is
+    The version of Grafana bundled with Omnibus GitLab is
     [deprecated and disabled](https://docs.gitlab.com/ee/administration/monitoring/performance/grafana_configuration.html#deprecation-of-bundled-grafana)
     in 16.0 and will be removed in 16.3. If you are using the bundled Grafana, you must migrate to either:
 

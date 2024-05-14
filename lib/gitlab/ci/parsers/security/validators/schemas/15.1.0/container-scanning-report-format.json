@@ -1,0 +1,997 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/raw/master/dist/container-scanning-report-format.json",
+  "title": "Report format for GitLab Container Scanning",
+  "description": "This schema provides the the report format for Container Scanning (https://docs.gitlab.com/ee/user/application_security/container_scanning).",
+  "definitions": {
+    "detail_type": {
+      "oneOf": [
+        {
+          "$ref": "#/definitions/named_list"
+        },
+        {
+          "$ref": "#/definitions/list"
+        },
+        {
+          "$ref": "#/definitions/table"
+        },
+        {
+          "$ref": "#/definitions/text"
+        },
+        {
+          "$ref": "#/definitions/url"
+        },
+        {
+          "$ref": "#/definitions/code"
+        },
+        {
+          "$ref": "#/definitions/value"
+        },
+        {
+          "$ref": "#/definitions/diff"
+        },
+        {
+          "$ref": "#/definitions/markdown"
+        },
+        {
+          "$ref": "#/definitions/commit"
+        },
+        {
+          "$ref": "#/definitions/file_location"
+        },
+        {
+          "$ref": "#/definitions/module_location"
+        }
+      ]
+    },
+    "text_value": {
+      "type": "string"
+    },
+    "named_field": {
+      "type": "object",
+      "required": [
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "$ref": "#/definitions/text_value",
+          "type": "string",
+          "minLength": 1
+        },
+        "description": {
+          "$ref": "#/definitions/text_value"
+        }
+      }
+    },
+    "named_list": {
+      "type": "object",
+      "description": "An object with named and typed fields",
+      "required": [
+        "type",
+        "items"
+      ],
+      "properties": {
+        "type": {
+          "const": "named-list"
+        },
+        "items": {
+          "type": "object",
+          "patternProperties": {
+            "^.*$": {
+              "allOf": [
+                {
+                  "$ref": "#/definitions/named_field"
+                },
+                {
+                  "$ref": "#/definitions/detail_type"
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "list": {
+      "type": "object",
+      "description": "A list of typed fields",
+      "required": [
+        "type",
+        "items"
+      ],
+      "properties": {
+        "type": {
+          "const": "list"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/detail_type"
+          }
+        }
+      }
+    },
+    "table": {
+      "type": "object",
+      "description": "A table of typed fields",
+      "required": [
+        "type",
+        "rows"
+      ],
+      "properties": {
+        "type": {
+          "const": "table"
+        },
+        "header": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/detail_type"
+          }
+        },
+        "rows": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/detail_type"
+            }
+          }
+        }
+      }
+    },
+    "text": {
+      "type": "object",
+      "description": "Raw text",
+      "required": [
+        "type",
+        "value"
+      ],
+      "properties": {
+        "type": {
+          "const": "text"
+        },
+        "value": {
+          "$ref": "#/definitions/text_value"
+        }
+      }
+    },
+    "url": {
+      "type": "object",
+      "description": "A single URL",
+      "required": [
+        "type",
+        "href"
+      ],
+      "properties": {
+        "type": {
+          "const": "url"
+        },
+        "text": {
+          "$ref": "#/definitions/text_value"
+        },
+        "href": {
+          "type": "string",
+          "minLength": 1,
+          "examples": [
+            "http://mysite.com"
+          ]
+        }
+      }
+    },
+    "code": {
+      "type": "object",
+      "description": "A codeblock",
+      "required": [
+        "type",
+        "value"
+      ],
+      "properties": {
+        "type": {
+          "const": "code"
+        },
+        "value": {
+          "type": "string"
+        },
+        "lang": {
+          "type": "string",
+          "description": "A programming language"
+        }
+      }
+    },
+    "value": {
+      "type": "object",
+      "description": "A field that can store a range of types of value",
+      "required": [
+        "type",
+        "value"
+      ],
+      "properties": {
+        "type": {
+          "const": "value"
+        },
+        "value": {
+          "type": [
+            "number",
+            "string",
+            "boolean"
+          ]
+        }
+      }
+    },
+    "diff": {
+      "type": "object",
+      "description": "A diff",
+      "required": [
+        "type",
+        "before",
+        "after"
+      ],
+      "properties": {
+        "type": {
+          "const": "diff"
+        },
+        "before": {
+          "type": "string"
+        },
+        "after": {
+          "type": "string"
+        }
+      }
+    },
+    "markdown": {
+      "type": "object",
+      "description": "GitLab flavoured markdown, see https://docs.gitlab.com/ee/user/markdown.html",
+      "required": [
+        "type",
+        "value"
+      ],
+      "properties": {
+        "type": {
+          "const": "markdown"
+        },
+        "value": {
+          "$ref": "#/definitions/text_value",
+          "examples": [
+            "Here is markdown `inline code` #1 [test](gitlab.com)\n\n![GitLab Logo](https://about.gitlab.com/images/press/logo/preview/gitlab-logo-white-preview.png)"
+          ]
+        }
+      }
+    },
+    "commit": {
+      "type": "object",
+      "description": "A commit/tag/branch within the GitLab project",
+      "required": [
+        "type",
+        "value"
+      ],
+      "properties": {
+        "type": {
+          "const": "commit"
+        },
+        "value": {
+          "type": "string",
+          "description": "The commit SHA",
+          "minLength": 1
+        }
+      }
+    },
+    "file_location": {
+      "type": "object",
+      "description": "A location within a file in the project",
+      "required": [
+        "type",
+        "file_name",
+        "line_start"
+      ],
+      "properties": {
+        "type": {
+          "const": "file-location"
+        },
+        "file_name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "line_start": {
+          "type": "integer"
+        },
+        "line_end": {
+          "type": "integer"
+        }
+      }
+    },
+    "module_location": {
+      "type": "object",
+      "description": "A location within a binary module of the form module+relative_offset",
+      "required": [
+        "type",
+        "module_name",
+        "offset"
+      ],
+      "properties": {
+        "type": {
+          "const": "module-location"
+        },
+        "module_name": {
+          "type": "string",
+          "minLength": 1,
+          "examples": [
+            "compiled_binary"
+          ]
+        },
+        "offset": {
+          "type": "integer",
+          "examples": [
+            100
+          ]
+        }
+      }
+    }
+  },
+  "self": {
+    "version": "15.1.0"
+  },
+  "type": "object",
+  "required": [
+    "scan",
+    "version",
+    "vulnerabilities"
+  ],
+  "additionalProperties": true,
+  "properties": {
+    "scan": {
+      "type": "object",
+      "required": [
+        "analyzer",
+        "end_time",
+        "scanner",
+        "start_time",
+        "status",
+        "type"
+      ],
+      "properties": {
+        "end_time": {
+          "type": "string",
+          "description": "ISO8601 UTC value with format yyyy-mm-ddThh:mm:ss, representing when the scan finished.",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}$",
+          "examples": [
+            "2020-01-28T03:26:02"
+          ]
+        },
+        "messages": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "description": "Communication intended for the initiator of a scan.",
+            "required": [
+              "level",
+              "value"
+            ],
+            "properties": {
+              "level": {
+                "type": "string",
+                "description": "Describes the severity of the communication. Use info to communicate normal scan behaviour; warn to communicate a potentially recoverable problem, or a partial error; fatal to communicate an issue that causes the scan to halt.",
+                "enum": [
+                  "info",
+                  "warn",
+                  "fatal"
+                ],
+                "examples": [
+                  "info"
+                ]
+              },
+              "value": {
+                "type": "string",
+                "description": "The message to communicate.",
+                "minLength": 1,
+                "examples": [
+                  "Permission denied, scanning aborted"
+                ]
+              }
+            }
+          }
+        },
+        "options": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "description": "A configuration option used for this scan.",
+            "required": [
+              "name",
+              "value"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "The configuration option name.",
+                "maxLength": 255,
+                "minLength": 1,
+                "examples": [
+                  "DAST_FF_ENABLE_BAS",
+                  "DOCKER_TLS_CERTDIR",
+                  "DS_MAX_DEPTH",
+                  "SECURE_LOG_LEVEL"
+                ]
+              },
+              "source": {
+                "type": "string",
+                "description": "The source of this option.",
+                "enum": [
+                  "argument",
+                  "file",
+                  "env_variable",
+                  "other"
+                ]
+              },
+              "value": {
+                "type": [
+                  "boolean",
+                  "integer",
+                  "null",
+                  "string"
+                ],
+                "description": "The value used for this scan.",
+                "examples": [
+                  true,
+                  2,
+                  null,
+                  "fatal",
+                  ""
+                ]
+              }
+            }
+          }
+        },
+        "analyzer": {
+          "type": "object",
+          "description": "Object defining the analyzer used to perform the scan. Analyzers typically delegate to an underlying scanner to run the scan.",
+          "required": [
+            "id",
+            "name",
+            "version",
+            "vendor"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "Unique id that identifies the analyzer.",
+              "minLength": 1,
+              "examples": [
+                "gitlab-dast"
+              ]
+            },
+            "name": {
+              "type": "string",
+              "description": "A human readable value that identifies the analyzer, not required to be unique.",
+              "minLength": 1,
+              "examples": [
+                "GitLab DAST"
+              ]
+            },
+            "url": {
+              "type": "string",
+              "pattern": "^https?://.+",
+              "description": "A link to more information about the analyzer.",
+              "examples": [
+                "https://docs.gitlab.com/ee/user/application_security/dast"
+              ]
+            },
+            "vendor": {
+              "description": "The vendor/maintainer of the analyzer.",
+              "type": "object",
+              "required": [
+                "name"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "The name of the vendor.",
+                  "minLength": 1,
+                  "examples": [
+                    "GitLab"
+                  ]
+                }
+              }
+            },
+            "version": {
+              "type": "string",
+              "description": "The version of the analyzer.",
+              "minLength": 1,
+              "examples": [
+                "1.0.2"
+              ]
+            }
+          }
+        },
+        "scanner": {
+          "type": "object",
+          "description": "Object defining the scanner used to perform the scan.",
+          "required": [
+            "id",
+            "name",
+            "version",
+            "vendor"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "Unique id that identifies the scanner.",
+              "minLength": 1,
+              "examples": [
+                "my-sast-scanner"
+              ]
+            },
+            "name": {
+              "type": "string",
+              "description": "A human readable value that identifies the scanner, not required to be unique.",
+              "minLength": 1,
+              "examples": [
+                "My SAST Scanner"
+              ]
+            },
+            "url": {
+              "type": "string",
+              "description": "A link to more information about the scanner.",
+              "examples": [
+                "https://scanner.url"
+              ]
+            },
+            "version": {
+              "type": "string",
+              "description": "The version of the scanner.",
+              "minLength": 1,
+              "examples": [
+                "1.0.2"
+              ]
+            },
+            "vendor": {
+              "description": "The vendor/maintainer of the scanner.",
+              "type": "object",
+              "required": [
+                "name"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "The name of the vendor.",
+                  "minLength": 1,
+                  "examples": [
+                    "GitLab"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "start_time": {
+          "type": "string",
+          "description": "ISO8601 UTC value with format yyyy-mm-ddThh:mm:ss, representing when the scan started.",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}$",
+          "examples": [
+            "2020-02-14T16:01:59"
+          ]
+        },
+        "status": {
+          "type": "string",
+          "description": "Result of the scan.",
+          "enum": [
+            "success",
+            "failure"
+          ]
+        },
+        "type": {
+          "type": "string",
+          "description": "Type of the scan.",
+          "enum": [
+            "container_scanning"
+          ]
+        },
+        "primary_identifiers": {
+          "type": "array",
+          "description": "An unordered array containing an exhaustive list of primary identifiers for which the analyzer may return results",
+          "items": {
+            "type": "object",
+            "required": [
+              "type",
+              "name",
+              "value"
+            ],
+            "properties": {
+              "type": {
+                "type": "string",
+                "description": "for example, cve, cwe, osvdb, usn, or an analyzer-dependent type such as gemnasium).",
+                "minLength": 1
+              },
+              "name": {
+                "type": "string",
+                "description": "Human-readable name of the identifier.",
+                "minLength": 1
+              },
+              "url": {
+                "type": "string",
+                "description": "URL of the identifier's documentation.",
+                "pattern": "^(https?|ftp)://.+"
+              },
+              "value": {
+                "type": "string",
+                "description": "Value of the identifier, for matching purpose.",
+                "minLength": 1
+              }
+            }
+          }
+        }
+      }
+    },
+    "schema": {
+      "type": "string",
+      "description": "URI pointing to the validating security report schema.",
+      "pattern": "^https?://.+"
+    },
+    "version": {
+      "type": "string",
+      "description": "The version of the schema to which the JSON report conforms.",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "vulnerabilities": {
+      "type": "array",
+      "description": "Array of vulnerability objects.",
+      "items": {
+        "type": "object",
+        "description": "Describes the vulnerability using GitLab Flavored Markdown",
+        "required": [
+          "id",
+          "identifiers",
+          "location"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Unique identifier of the vulnerability. This is recommended to be a UUID.",
+            "examples": [
+              "642735a5-1425-428d-8d4e-3c854885a3c9"
+            ]
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 255,
+            "description": "The name of the vulnerability. This must not include the finding's specific information."
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 1048576,
+            "description": "A long text section describing the vulnerability more fully."
+          },
+          "severity": {
+            "type": "string",
+            "description": "How much the vulnerability impacts the software. Possible values are Info, Unknown, Low, Medium, High, or Critical. Note that some analyzers may not report all these possible values.",
+            "enum": [
+              "Info",
+              "Unknown",
+              "Low",
+              "Medium",
+              "High",
+              "Critical"
+            ]
+          },
+          "solution": {
+            "type": "string",
+            "maxLength": 7000,
+            "description": "Explanation of how to fix the vulnerability."
+          },
+          "identifiers": {
+            "type": "array",
+            "minItems": 1,
+            "description": "An ordered array of references that identify a vulnerability on internal or external databases. The first identifier is the Primary Identifier, which has special meaning.",
+            "items": {
+              "type": "object",
+              "required": [
+                "type",
+                "name",
+                "value"
+              ],
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "description": "for example, cve, cwe, osvdb, usn, or an analyzer-dependent type such as gemnasium).",
+                  "minLength": 1
+                },
+                "name": {
+                  "type": "string",
+                  "description": "Human-readable name of the identifier.",
+                  "minLength": 1
+                },
+                "url": {
+                  "type": "string",
+                  "description": "URL of the identifier's documentation.",
+                  "pattern": "^(https?|ftp)://.+"
+                },
+                "value": {
+                  "type": "string",
+                  "description": "Value of the identifier, for matching purpose.",
+                  "minLength": 1
+                }
+              }
+            }
+          },
+          "cvss_vectors": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 10,
+            "description": "An ordered array of CVSS vectors, each issued by a vendor to rate the vulnerability. The first item in the array is used as the primary CVSS vector, and is used to filter and sort the vulnerability.",
+            "items": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "vendor": {
+                      "type": "string",
+                      "minLength": 1,
+                      "default": "unknown"
+                    },
+                    "vector": {
+                      "type": "string",
+                      "minLength": 16,
+                      "maxLength": 128,
+                      "pattern": "^((AV:[NAL]|AC:[LMH]|Au:[MSN]|[CIA]:[NPC]|E:(U|POC|F|H|ND)|RL:(OF|TF|W|U|ND)|RC:(UC|UR|C|ND)|CDP:(N|L|LM|MH|H|ND)|TD:(N|L|M|H|ND)|[CIA]R:(L|M|H|ND))/)*(AV:[NAL]|AC:[LMH]|Au:[MSN]|[CIA]:[NPC]|E:(U|POC|F|H|ND)|RL:(OF|TF|W|U|ND)|RC:(UC|UR|C|ND)|CDP:(N|L|LM|MH|H|ND)|TD:(N|L|M|H|ND)|[CIA]R:(L|M|H|ND))$"
+                    }
+                  },
+                  "required": [
+                    "vendor",
+                    "vector"
+                  ]
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "vendor": {
+                      "type": "string",
+                      "minLength": 1,
+                      "default": "unknown"
+                    },
+                    "vector": {
+                      "type": "string",
+                      "minLength": 32,
+                      "maxLength": 128,
+                      "pattern": "^CVSS:3[.][01]/((AV:[NALP]|AC:[LH]|PR:[NLH]|UI:[NR]|S:[UC]|[CIA]:[NLH]|E:[XUPFH]|RL:[XOTWU]|RC:[XURC]|[CIA]R:[XLMH]|MAV:[XNALP]|MAC:[XLH]|MPR:[XNLH]|MUI:[XNR]|MS:[XUC]|M[CIA]:[XNLH])/)*(AV:[NALP]|AC:[LH]|PR:[NLH]|UI:[NR]|S:[UC]|[CIA]:[NLH]|E:[XUPFH]|RL:[XOTWU]|RC:[XURC]|[CIA]R:[XLMH]|MAV:[XNALP]|MAC:[XLH]|MPR:[XNLH]|MUI:[XNR]|MS:[XUC]|M[CIA]:[XNLH])$"
+                    }
+                  },
+                  "required": [
+                    "vendor",
+                    "vector"
+                  ]
+                }
+              ]
+            }
+          },
+          "links": {
+            "type": "array",
+            "description": "An array of references to external documentation or articles that describe the vulnerability.",
+            "items": {
+              "type": "object",
+              "required": [
+                "url"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Name of the vulnerability details link."
+                },
+                "url": {
+                  "type": "string",
+                  "description": "URL of the vulnerability details document.",
+                  "pattern": "^(https?|ftp)://.+"
+                }
+              }
+            }
+          },
+          "details": {
+            "$ref": "#/definitions/named_list/properties/items"
+          },
+          "tracking": {
+            "type": "object",
+            "description": "Describes how this vulnerability should be tracked as the project changes.",
+            "oneOf": [
+              {
+                "description": "Declares that a series of items should be tracked using source-specific tracking methods.",
+                "required": [
+                  "items"
+                ],
+                "properties": {
+                  "type": {
+                    "const": "source"
+                  },
+                  "items": {
+                    "type": "array",
+                    "items": {
+                      "description": "An item that should be tracked using source-specific tracking methods.",
+                      "type": "object",
+                      "required": [
+                        "signatures"
+                      ],
+                      "properties": {
+                        "file": {
+                          "type": "string",
+                          "description": "Path to the file where the vulnerability is located."
+                        },
+                        "start_line": {
+                          "type": "number",
+                          "description": "The first line of the file that includes the vulnerability."
+                        },
+                        "end_line": {
+                          "type": "number",
+                          "description": "The last line of the file that includes the vulnerability."
+                        },
+                        "signatures": {
+                          "type": "array",
+                          "description": "An array of calculated tracking signatures for this tracking item.",
+                          "minItems": 1,
+                          "items": {
+                            "description": "A calculated tracking signature value and metadata.",
+                            "type": "object",
+                            "required": [
+                              "algorithm",
+                              "value"
+                            ],
+                            "properties": {
+                              "algorithm": {
+                                "type": "string",
+                                "description": "The algorithm used to generate the signature."
+                              },
+                              "value": {
+                                "type": "string",
+                                "description": "The result of this signature algorithm."
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            ],
+            "properties": {
+              "type": {
+                "type": "string",
+                "description": "Each tracking type must declare its own type."
+              }
+            }
+          },
+          "flags": {
+            "description": "Flags that can be attached to vulnerabilities.",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "description": "Informational flags identified and assigned to a vulnerability.",
+              "required": [
+                "type",
+                "origin",
+                "description"
+              ],
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "Result of the scan.",
+                  "enum": [
+                    "flagged-as-likely-false-positive"
+                  ]
+                },
+                "origin": {
+                  "minLength": 1,
+                  "description": "Tool that issued the flag.",
+                  "type": "string"
+                },
+                "description": {
+                  "minLength": 1,
+                  "description": "What the flag is about.",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "location": {
+            "type": "object",
+            "description": "Identifies the vulnerability's location.",
+            "required": [
+              "dependency",
+              "operating_system",
+              "image"
+            ],
+            "properties": {
+              "dependency": {
+                "type": "object",
+                "description": "Describes the dependency of a project where the vulnerability is located.",
+                "required": [
+                  "package",
+                  "version"
+                ],
+                "properties": {
+                  "package": {
+                    "type": "object",
+                    "description": "Provides information on the package where the vulnerability is located.",
+                    "required": [
+                      "name"
+                    ],
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "description": "Name of the package where the vulnerability is located."
+                      }
+                    }
+                  },
+                  "version": {
+                    "type": "string",
+                    "description": "Version of the vulnerable package."
+                  },
+                  "direct": {
+                    "type": "boolean",
+                    "description": "Tells whether this is a direct, top-level dependency of the scanned project."
+                  }
+                }
+              },
+              "operating_system": {
+                "type": "string",
+                "minLength": 1,
+                "description": "The operating system that contains the vulnerable package."
+              },
+              "image": {
+                "type": "string",
+                "minLength": 1,
+                "description": "The analyzed Docker image."
+              },
+              "default_branch_image": {
+                "type": "string",
+                "maxLength": 255,
+                "description": "The name of the image on the default branch."
+              }
+            }
+          }
+        }
+      }
+    },
+    "remediations": {
+      "type": "array",
+      "description": "An array of objects containing information on available remediations, along with patch diffs to apply.",
+      "items": {
+        "type": "object",
+        "required": [
+          "fixes",
+          "summary",
+          "diff"
+        ],
+        "properties": {
+          "fixes": {
+            "type": "array",
+            "description": "An array of strings that represent references to vulnerabilities fixed by this remediation.",
+            "items": {
+              "type": "object",
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "Unique identifier of the vulnerability. This is recommended to be a UUID.",
+                  "examples": [
+                    "642735a5-1425-428d-8d4e-3c854885a3c9"
+                  ]
+                }
+              }
+            }
+          },
+          "summary": {
+            "type": "string",
+            "minLength": 1,
+            "description": "An overview of how the vulnerabilities were fixed."
+          },
+          "diff": {
+            "type": "string",
+            "minLength": 1,
+            "description": "A base64-encoded remediation code diff, compatible with git apply."
+          }
+        }
+      }
+    }
+  }
+}

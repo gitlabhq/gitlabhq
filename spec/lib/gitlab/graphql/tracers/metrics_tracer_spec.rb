@@ -10,9 +10,8 @@ RSpec.describe Gitlab::Graphql::Tracers::MetricsTracer do
 
   let(:fake_schema) do
     Class.new(GraphQL::Schema) do
-      use Gitlab::Graphql::Tracers::ApplicationContextTracer
-      use Gitlab::Graphql::Tracers::MetricsTracer
-      use Gitlab::Graphql::Tracers::TimerTracer
+      trace_with Gitlab::Graphql::Tracers::MetricsTracer
+      trace_with Gitlab::Graphql::Tracers::ApplicationContextTracer
 
       query Graphql::FakeQueryType
     end

@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** Dedicated
+**Offering:** GitLab Dedicated
 
 The instructions on this page guide you through configuring your GitLab Dedicated instance, including enabling and updating the settings for [available functionality](../../subscriptions/gitlab_dedicated/index.md#available-features).
 
@@ -51,7 +51,36 @@ You can request configuration changes for some of the options originally specifi
 
 Configuration changes made with Switchboard can be applied immediately or deferred until your next scheduled weekly [maintenance window](../../administration/dedicated/create_instance.md#maintenance-window).
 
-When applied immediately, changes may take up to 90 minutes to be deployed to your environment. Individual changes are applied in the order they are saved, or you may choose to save several changes at once before applying them in one batch.
+When applied immediately, changes may take up to 90 minutes to be deployed to your environment. Individual changes are applied in the order they are saved, or you may choose to save several changes at once before applying them in one batch. After your change is deployed, you will receive an email notification. You might have to check your spam folder if it does not show up in your main email folder.
+
+All users with access to view or edit your tenant in Switchboard will receive a notification for each change made. See how to [manage Switchboard notification preferences](#manage-notification-preferences).
+
+NOTE:
+You will only receive email notifications for changes made by a Switchboard tenant admin. Changes made by a GitLab Operator (e.g. a GitLab version update completed during a maintenance window) will not result in an email notification.
+
+#### View the configuration change log
+
+You can use the configuration change log to track the changes made to your GitLab Dedicated instance, including:
+
+- **Configuration change:** Name of the configuration setting that changed.
+- **User:** Email address of the user that made the configuration change. For changes made by a GitLab Operator, this value will appear as `GitLab Operator`.
+- **IP:** IP address of the user that made the configuration change. For changes made by a GitLab Operator, this value will appear as `Unavailable`.
+- **Status:** Whether the configuration change is initiated, in progress, completed, or deferred.
+- **Start time:** Start date and time when the configuration change is initiated, in UTC.
+- **End time:** End date and time when the configuration change is deployed, in UTC.
+
+Each configuration change has a status:
+
+- **Initiated:** Configuration change is made in Switchboard, but not yet deployed to the instance.
+- **In progress:** Configuration change is currently being deployed to the instance.
+- **Complete:** Configuration change has been deployed to the instance.
+- **Delayed** Initial job to deploy a change has failed and the change has not yet been assigned to a new job.
+
+To view the configuration change log:
+
+1. Sign in to [Switchboard](https://console.gitlab-dedicated.com/).
+1. Select your tenant.
+1. At the top of the page, select **Configuration change log**.
 
 ### Inbound Private Link
 
@@ -121,7 +150,7 @@ In some cases, the GitLab Dedicated instance can't reach an internal service you
 
 #### Add a custom certificate with Switchboard
 
-1. Log in to [Switchboard](https://console.gitlab-dedicated.com/).
+1. Sign in to [Switchboard](https://console.gitlab-dedicated.com/).
 1. At the top of the page, select **Configuration**.
 1. Expand **Custom Certificate Authorities**.
 1. Select **+ Add Certificate**.
@@ -145,7 +174,7 @@ IP addresses that have been added to your IP allowlist can be viewed on the Conf
 
 #### Add an IP to the allowlist with Switchboard
 
-1. Log in to [Switchboard](https://console.gitlab-dedicated.com/).
+1. Sign in to [Switchboard](https://console.gitlab-dedicated.com/).
 1. At the top of the page, select **Configuration**.
 1. Expand **Allowed Source List Config / IP allowlist**.
 1. Turn on the **Enable** toggle.
@@ -171,7 +200,7 @@ Prerequisites:
 
 To activate SAML for your GitLab Dedicated instance:
 
-1. Log in to [Switchboard](https://console.gitlab-dedicated.com/).
+1. Sign in to [Switchboard](https://console.gitlab-dedicated.com/).
 1. At the top of the page, select **Configuration**.
 1. Expand **SAML Config**.
 1. Turn on the **Enable** toggle.
@@ -264,6 +293,26 @@ To add a new user to your GitLab Dedicated instance:
 
 An invitation to use Switchboard is sent to the user.
 
+#### Manage notification preferences
+
+You can specify whether or not you want to receive email notifications from Switchboard.
+
+To manage your own email notification preferences:
+
+1. From any page, open the dropdown next to your user name.
+1. To stop receiving email notifications, select **Toggle email notifications off**.
+1. To resume receiving email notifications, select **Toggle email notifications on**.
+
+You will see an alert confirming that your notification preferences have been updated.
+
+Switchboard Tenant Admins can also manage email notifications for other users with access to their organization's tenant:
+
+1. From the **Users** page, open the dropdown in the **Email notifications** column next to the user's email.
+1. To turn off email notifications for that user, select **No**.
+1. To turn on email notifications for that user, select **Yes**.
+
+You will see an alert confirming that your notification preferences have been updated.
+
 ### Access to application logs
 
 GitLab [application logs](../../administration/logs/index.md) are delivered to an S3 bucket in the GitLab tenant account, which can be shared with you. Logs stored in the S3 bucket are retained indefinitely, until the 1 year retention policy is fully enforced. GitLab team members can view more information in this confidential issue:
@@ -280,4 +329,4 @@ You can use the [AWS CLI](https://aws.amazon.com/cli/) to verify that access to 
 
 The S3 bucket contains a combination of **infrastructure logs** and **application logs** from the GitLab [log system](../../administration/logs/index.md). The logs in the bucket are encrypted using an AWS KMS key that is managed by GitLab. If you choose to enable [BYOK](../../administration/dedicated/create_instance.md#encrypted-data-at-rest-byok), the application logs are not encrypted with the key you provide.
 
-The logs in the S3 bucket are organized by date in `YYYY/MM/DD/HH` format. For example, there would be a directory like `2023/10/12/13`. That directory would contain the logs from October 12, 2023 at 1300 UTC. The logs are streamed into the bucket with [Amazon Kinesis Data Firehose](https://aws.amazon.com/kinesis/data-firehose/).
+The logs in the S3 bucket are organized by date in `YYYY/MM/DD/HH` format. For example, there would be a directory like `2023/10/12/13`. That directory would contain the logs from October 12, 2023 at 1300 UTC. The logs are streamed into the bucket with [Amazon Kinesis Data Firehose](https://aws.amazon.com/firehose/).

@@ -10,6 +10,9 @@ import { n__, sprintf } from '~/locale';
 import { memberName, triggerExternalAlert } from 'ee_else_ce/invite_members/utils/member_utils';
 import { captureException } from '~/ci/runner/sentry_utils';
 import {
+  BLOCKED_SEAT_OVERAGES_ERROR_REASON,
+  BLOCKED_SEAT_OVERAGES_BODY,
+  BLOCKED_SEAT_OVERAGES_CTA,
   USERS_FILTER_ALL,
   MEMBER_MODAL_LABELS,
   INVITE_MEMBER_MODAL_TRACKING_CATEGORY,
@@ -43,6 +46,11 @@ export default {
     SafeHtml,
   },
   mixins: [Tracking.mixin({ category: INVITE_MEMBER_MODAL_TRACKING_CATEGORY })],
+  inject: {
+    addSeatsHref: {
+      default: '',
+    },
+  },
   props: {
     id: {
       type: String,
@@ -109,6 +117,7 @@ export default {
   },
   data() {
     return {
+      errorReason: '',
       invalidFeedbackMessage: '',
       isLoading: false,
       modalId: uniqueId('invite-members-modal-'),
@@ -181,6 +190,9 @@ export default {
     },
     formGroupDescription() {
       return this.invalidFeedbackMessage ? null : this.$options.labels.placeHolder;
+    },
+    shouldShowSeatOverageNotification() {
+      return this.errorReason === BLOCKED_SEAT_OVERAGES_ERROR_REASON && this.addSeatsHref;
     },
   },
   watch: {
@@ -270,6 +282,7 @@ export default {
         const { error, message } = responseFromSuccess(response);
 
         if (error) {
+          this.errorReason = response.data.reason;
           this.showErrors(message);
         } else {
           this.onInviteSuccess();
@@ -322,6 +335,7 @@ export default {
       this.closeModal();
     },
     clearValidation() {
+      this.errorReason = '';
       this.invalidFeedbackMessage = '';
       this.invalidMembers = {};
     },
@@ -338,6 +352,10 @@ export default {
     },
   },
   labels: MEMBER_MODAL_LABELS,
+  i18n: {
+    BLOCKED_SEAT_OVERAGES_BODY,
+    BLOCKED_SEAT_OVERAGES_CTA,
+  },
 };
 </script>
 <template>
@@ -456,11 +474,25 @@ export default {
         :exception-state="exceptionState"
         :users-filter="usersFilter"
         :filter-id="filterId"
-        :group-id="id"
         :invalid-members="invalidMembers"
         @clear="clearValidation"
         @token-remove="removeToken"
       />
+    </template>
+
+    <template #after-members-input>
+      <gl-alert
+        v-if="shouldShowSeatOverageNotification"
+        id="seat-overages-alert"
+        class="gl-mb-4"
+        dismissable
+        data-testid="seat-overages-alert"
+        :primary-button-link="addSeatsHref"
+        :primary-button-text="$options.i18n.BLOCKED_SEAT_OVERAGES_CTA"
+        @dismiss="errorReason = false"
+      >
+        {{ $options.i18n.BLOCKED_SEAT_OVERAGES_BODY }}
+      </gl-alert>
     </template>
   </invite-modal-base>
 </template>

@@ -8,10 +8,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32810) in GitLab 12.5.
-> - [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
 > - [Disabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/353410) in GitLab 15.0.
 
 WARNING:
@@ -60,7 +58,7 @@ To use a cluster management project to manage your cluster:
 
 To associate a cluster management project with your cluster:
 
-1. Navigate to the appropriate configuration page. For a:
+1. Go to the appropriate configuration page. For a:
    - [Project-level cluster](../project/clusters/index.md), go to your project's
      **Operate > Kubernetes clusters** page.
    - [Group-level cluster](../group/clusters/index.md), go to your group's **Kubernetes**
@@ -75,7 +73,7 @@ To associate a cluster management project with your cluster:
 ### Configuring your pipeline
 
 After designating a project as the management project for the cluster,
-add a [`.gitlab-ci.yml` file](../../ci/index.md#the-gitlab-ciyml-file) in that project. For example:
+add a `.gitlab-ci.yml` file in that project. For example:
 
 ```yaml
 configure cluster:
@@ -102,8 +100,8 @@ to a management project:
 | Staging     | `staging`         |
 | Production  | `production`      |
 
-The environments set in the
-[`.gitlab-ci.yml` file](../../ci/index.md#the-gitlab-ciyml-file) deploy to the Development, Staging, and Production cluster.
+The environments set in the `.gitlab-ci.yml` file deploy to the
+Development, Staging, and Production cluster.
 
 ```yaml
 stages:

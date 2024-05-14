@@ -100,7 +100,7 @@ export default {
           category="tertiary"
           variant="confirm"
           data-testid="diff-stats-dropdown"
-          class="gl-vertical-align-baseline"
+          class="gl-align-baseline"
           toggle-class="gl-px-0! gl-font-weight-bold!"
           fluid-width
           @shown="focusInput"
@@ -124,10 +124,10 @@ export default {
                 <div class="gl-display-flex">
                   <span
                     class="gl-font-weight-bold gl-mr-3 gl-flex-grow-1"
-                    :class="item.name ? 'gl-text-truncate' : 'gl-font-style-italic gl-gray-400'"
+                    :class="item.name ? 'gl-text-truncate' : 'gl-italic gl-gray-400'"
                     >{{ item.text }}</span
                   >
-                  <span class="gl-ml-auto gl-white-space-nowrap" aria-hidden="true">
+                  <span class="gl-ml-auto gl-whitespace-nowrap" aria-hidden="true">
                     <span class="gl-text-green-600">+{{ item.added }}</span>
                     <span class="gl-text-red-500">-{{ item.removed }}</span>
                   </span>

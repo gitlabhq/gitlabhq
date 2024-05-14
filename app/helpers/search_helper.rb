@@ -161,7 +161,7 @@ module SearchHelper
   end
 
   def search_service
-    @search_service ||= ::SearchService.new(current_user, sanitized_search_params)
+    @search_service ||= ::SearchService.new(current_user, params)
   end
 
   def search_sort_options
@@ -204,11 +204,11 @@ module SearchHelper
   end
 
   def search_has_group?
-    search_group&.present? && search_group&.persisted?
+    search_group.present? && search_group&.persisted?
   end
 
   def search_has_project?
-    @project&.present? && @project&.persisted?
+    @project.present? && @project&.persisted?
   end
 
   def header_search_context
@@ -228,7 +228,7 @@ module SearchHelper
       end
 
       hash[:scope] = search_scope if search_has_project? || search_has_group?
-      hash[:for_snippets] = @snippet&.present? || @snippets&.any?
+      hash[:for_snippets] = @snippet.present? || @snippets&.any?
     end
   end
 
@@ -254,7 +254,7 @@ module SearchHelper
   def default_autocomplete
     [
       { category: "Settings", label: _("User settings"),    url: user_settings_profile_path },
-      { category: "Settings", label: _("SSH Keys"),         url: profile_keys_path },
+      { category: "Settings", label: _("SSH Keys"),         url: user_settings_ssh_keys_path },
       { category: "Settings", label: _("Dashboard"),        url: root_path }
     ]
   end
@@ -355,7 +355,6 @@ module SearchHelper
   end
 
   # Autocomplete results for the current user's projects
-  # rubocop: disable CodeReuse/ActiveRecord
   def projects_autocomplete(term, limit = 5)
     current_user.authorized_projects.order_id_desc.search(term, include_namespace: true, use_minimum_char_limit: false)
       .sorted_by_stars_desc.non_archived.limit(limit).map do |p|
@@ -391,13 +390,13 @@ module SearchHelper
   def recent_merge_requests_autocomplete(term)
     return [] unless current_user
 
-    ::Gitlab::Search::RecentMergeRequests.new(user: current_user).search(term).map do |mr|
+    ::Gitlab::Search::RecentMergeRequests.new(user: current_user).search(term).preload_routables.map do |mr|
       {
         category: "Recent merge requests",
         id: mr.id,
         label: search_result_sanitize(mr.title),
         url: merge_request_path(mr),
-        avatar_url: mr.project.avatar_url || '',
+        avatar_url: mr.target_project.avatar_url || '',
         project_id: mr.target_project_id,
         project_name: mr.target_project.name
       }
@@ -407,7 +406,7 @@ module SearchHelper
   def recent_issues_autocomplete(term)
     return [] unless current_user
 
-    ::Gitlab::Search::RecentIssues.new(user: current_user).search(term).map do |i|
+    ::Gitlab::Search::RecentIssues.new(user: current_user).search(term).preload_namespace.preload_routables.map do |i|
       {
         category: "Recent issues",
         id: i.id,
@@ -419,7 +418,6 @@ module SearchHelper
       }
     end
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   def search_result_sanitize(str)
     Sanitize.clean(str)
@@ -551,7 +549,7 @@ module SearchHelper
   def highlight_and_truncate_issuable(issuable, search_term, _search_highlight)
     return unless issuable.description.present?
 
-    simple_search_highlight_and_truncate(issuable.description, search_term, highlighter: '<span class="gl-text-gray-900 gl-font-weight-bold">\1</span>')
+    simple_search_highlight_and_truncate(issuable.description, search_term)
   end
 
   def issuable_state_to_badge_class(issuable)
@@ -582,18 +580,10 @@ module SearchHelper
     end
   end
 
-  def sanitized_search_params
-    sanitized_params = params.dup
+  def issuable_visible_target_branch(issuable)
+    return unless issuable.is_a?(::MergeRequest)
 
-    if sanitized_params.key?(:confidential)
-      sanitized_params[:confidential] = Gitlab::Utils.to_boolean(sanitized_params[:confidential])
-    end
-
-    if sanitized_params.key?(:include_archived)
-      sanitized_params[:include_archived] = Gitlab::Utils.to_boolean(sanitized_params[:include_archived])
-    end
-
-    sanitized_params
+    issuable.target_branch unless issuable.target_branch == issuable.project.default_branch
   end
 
   def wiki_blob_link(wiki_blob)

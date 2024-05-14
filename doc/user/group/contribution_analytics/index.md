@@ -7,9 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3090) in GitLab 12.2 for subgroups.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Contribution analytics provide an overview of the
 [contribution events](../../profile/contributions_calendar.md#user-contribution-events) made by your group's members.
@@ -66,6 +64,16 @@ To change the time period of the contribution analytics, select one of the three
 under **Contribution Analytics**.
 
 The selected time period applies to all charts and the table.
+
+## Contribution analytics with ClickHouse
+
+On GitLab.com, contribution analytics run through the ClickHouse Cloud cluster.
+On GitLab self-managed, when you configure the ClickHouse integration, the ClickHouse `events` table is automatically populated from the PostgreSQL `events` table. This process might take some time for large installations. After the table is fully synchronized, new events become available in ClickHouse with a delay of about three minutes.
+
+For more information, see:
+
+- [ClickHouse integration guidelines](../../../integration/clickhouse.md)
+- [ClickHouse usage at GitLab](../../../architecture/blueprints/clickhouse_usage/index.md)
 
 ## Contribution analytics GraphQL API
 

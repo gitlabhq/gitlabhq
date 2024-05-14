@@ -190,6 +190,10 @@ module SortingTitlesValuesHelper
     s_('SortOptions|Expired date')
   end
 
+  def sort_title_relevance
+    s_('SortOptions|Relevance')
+  end
+
   # Values.
   def sort_value_created_date
     'created_date'
@@ -373,6 +377,10 @@ module SortingTitlesValuesHelper
 
   def sort_value_expire_date
     'expired_asc'
+  end
+
+  def sort_value_relevance
+    'relevance'
   end
 end
 

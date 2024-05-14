@@ -1,3 +1,9 @@
+/*
+Package upload provides functionality for handling file uploads in GitLab Workhorse.
+
+It includes features for processing multipart requests, handling file destinations,
+and extracting EXIF data from uploaded images.
+*/
 package upload
 
 import (
@@ -20,12 +26,16 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/zipartifacts"
 )
 
+// RewrittenFieldsHeader is the HTTP header used to indicate multipart form fields
+// that have been rewritten by GitLab Workhorse.
 const RewrittenFieldsHeader = "Gitlab-Workhorse-Multipart-Fields"
 
+// PreAuthorizer provides methods for pre-authorizing multipart requests.
 type PreAuthorizer interface {
 	PreAuthorizeHandler(next api.HandleFunc, suffix string) http.Handler
 }
 
+// MultipartClaims represents the claims included in a JWT token used for multipart requests.
 type MultipartClaims struct {
 	RewrittenFields map[string]string `json:"rewritten_fields"`
 	jwt.RegisteredClaims
@@ -47,7 +57,11 @@ type MultipartFormProcessor interface {
 func interceptMultipartFiles(w http.ResponseWriter, r *http.Request, h http.Handler, filter MultipartFormProcessor, fa fileAuthorizer, p Preparer, cfg *config.Config) {
 	var body bytes.Buffer
 	writer := multipart.NewWriter(&body)
-	defer writer.Close()
+	defer func() {
+		if writerErr := writer.Close(); writerErr != nil {
+			fmt.Fprintln(w, writerErr.Error())
+		}
+	}()
 
 	// Rewrite multipart form data
 	err := rewriteFormFilesFromMultipart(r, writer, filter, fa, p, cfg)
@@ -55,7 +69,7 @@ func interceptMultipartFiles(w http.ResponseWriter, r *http.Request, h http.Hand
 		switch err {
 		case http.ErrNotMultipart:
 			h.ServeHTTP(w, r)
-		case ErrInjectedClientParam, http.ErrMissingBoundary:
+		case ErrInjectedClientParam, ErrUnexpectedMultipartEOF, http.ErrMissingBoundary:
 			fail.Request(w, r, err, fail.WithStatus(http.StatusBadRequest))
 		case ErrTooManyFilesUploaded:
 			fail.Request(w, r, err, fail.WithStatus(http.StatusBadRequest), fail.WithBody(err.Error()))
@@ -83,7 +97,9 @@ func interceptMultipartFiles(w http.ResponseWriter, r *http.Request, h http.Hand
 	}
 
 	// Close writer
-	writer.Close()
+	if writerErr := writer.Close(); writerErr != nil {
+		fmt.Fprintln(w, writerErr.Error())
+	}
 
 	// Hijack the request
 	r.Body = io.NopCloser(&body)

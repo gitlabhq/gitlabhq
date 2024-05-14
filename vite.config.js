@@ -4,8 +4,6 @@ import path from 'node:path';
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue2';
 import graphql from '@rollup/plugin-graphql';
-import RubyPlugin from 'vite-plugin-ruby';
-import chokidar from 'chokidar';
 import { viteCommonjs } from '@originjs/vite-plugin-commonjs';
 import webpackConfig from './config/webpack.config';
 import {
@@ -13,9 +11,15 @@ import {
   IS_JH,
   SOURCEGRAPH_PUBLIC_PATH,
   GITLAB_WEB_IDE_PUBLIC_PATH,
+  copyFilesPatterns,
 } from './config/webpack.constants';
 /* eslint-disable import/extensions */
 import { viteCSSCompilerPlugin } from './scripts/frontend/lib/compile_css.mjs';
+import { viteTailwindCompilerPlugin } from './scripts/frontend/tailwindcss.mjs';
+import { CopyPlugin } from './config/helpers/vite_plugin_copy.mjs';
+import { AutoStopPlugin } from './config/helpers/vite_plugin_auto_stop.mjs';
+import { PageEntrypointsPlugin } from './config/helpers/vite_plugin_page_entrypoints.mjs';
+import { FixedRubyPlugin } from './config/helpers/vite_plugin_ruby_fixed.mjs';
 /* eslint-enable import/extensions */
 
 let viteGDKConfig;
@@ -37,27 +41,6 @@ const javascriptsPath = path.resolve(assetsPath, 'javascripts');
 
 const emptyComponent = path.resolve(javascriptsPath, 'vue_shared/components/empty_component.js');
 
-const [rubyPlugin, ...rest] = RubyPlugin();
-
-// We can't use regular 'resolve' which points to sourceCodeDir in vite.json
-// Because we need for '~' alias to resolve to app/assets/javascripts
-// We can't use javascripts folder in sourceCodeDir because we also need to resolve other assets
-// With undefined 'resolve' an '~' alias from Webpack config is used instead
-// See the issue for details: https://github.com/ElMassimo/vite_ruby/issues/237
-const fixedRubyPlugin = [
-  {
-    ...rubyPlugin,
-    config: (...args) => {
-      const originalConfig = rubyPlugin.config(...args);
-      return {
-        ...originalConfig,
-        resolve: undefined,
-      };
-    },
-  },
-  ...rest,
-];
-
 const EE_ALIAS_FALLBACK = [
   {
     find: /^ee_component\/(.*)\.vue/,
@@ -71,23 +54,6 @@ const JH_ALIAS_FALLBACK = [
     replacement: emptyComponent,
   },
 ];
-
-const autoRestartPlugin = {
-  configureServer(server) {
-    const watcher = chokidar.watch(['node_modules/.yarn-integrity'], {
-      ignoreInitial: true,
-    });
-
-    // GDK will restart Vite server for us
-    const stop = () => server.stop();
-
-    watcher.on('add', stop);
-    watcher.on('change', stop);
-    watcher.on('unlink', stop);
-
-    server.httpServer?.addListener?.('close', () => watcher.close());
-  },
-};
 
 export default defineConfig({
   cacheDir: path.resolve(__dirname, 'tmp/cache/vite'),
@@ -107,9 +73,14 @@ export default defineConfig({
     ],
   },
   plugins: [
-    viteCSSCompilerPlugin({ shouldWatch: viteGDKConfig.hmr === null }),
-    viteGDKConfig.enabled ? autoRestartPlugin : null,
-    fixedRubyPlugin,
+    PageEntrypointsPlugin(),
+    viteCSSCompilerPlugin({ shouldWatch: viteGDKConfig.hmr !== null }),
+    viteTailwindCompilerPlugin({ shouldWatch: viteGDKConfig.hmr !== null }),
+    CopyPlugin({
+      patterns: copyFilesPatterns,
+    }),
+    viteGDKConfig.enabled ? AutoStopPlugin() : null,
+    FixedRubyPlugin(),
     vue({
       template: {
         compilerOptions: {
@@ -135,17 +106,7 @@ export default defineConfig({
     'process.env.GITLAB_WEB_IDE_PUBLIC_PATH': JSON.stringify(GITLAB_WEB_IDE_PUBLIC_PATH),
   },
   server: {
-    hmr:
-      viteGDKConfig.hmr === undefined
-        ? /*
-        This is a legacy behavior for older GDKs. They will fallback to:
-          ws://localhost:3038/vite-dev/
-        TODO: Remove this after 2024-01-18 */
-          {
-            host: 'localhost',
-            protocol: 'ws',
-          }
-        : viteGDKConfig.hmr,
+    hmr: viteGDKConfig.hmr,
     https: false,
     watch:
       viteGDKConfig.hmr === null
@@ -153,6 +114,7 @@ export default defineConfig({
         : {
             ignored: [
               '**/*.stories.js',
+              '**/css_in_js.js',
               function ignoreRootFolder(x) {
                 /*
              `vite` watches the root folder of gitlab and all of its sub folders
@@ -166,5 +128,8 @@ export default defineConfig({
               },
             ],
           },
+  },
+  worker: {
+    format: 'es',
   },
 });

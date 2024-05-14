@@ -29,6 +29,7 @@ func TestRequestBody(t *testing.T) {
 	body := strings.NewReader(fileContent)
 
 	resp := testUpload(&rails{}, &alwaysLocalPreparer{}, echoProxy(t, fileLen), body)
+	defer resp.Body.Close()
 	require.Equal(t, http.StatusOK, resp.StatusCode)
 
 	uploadEcho, err := io.ReadAll(resp.Body)
@@ -41,6 +42,7 @@ func TestRequestBodyCustomPreparer(t *testing.T) {
 	body := strings.NewReader(fileContent)
 
 	resp := testUpload(&rails{}, &alwaysLocalPreparer{}, echoProxy(t, fileLen), body)
+	defer resp.Body.Close()
 	require.Equal(t, http.StatusOK, resp.StatusCode)
 
 	uploadEcho, err := io.ReadAll(resp.Body)
@@ -73,6 +75,7 @@ func testNoProxyInvocation(t *testing.T, expectedStatus int, auth PreAuthorizer,
 	})
 
 	resp := testUpload(auth, preparer, proxy, nil)
+	defer resp.Body.Close()
 	require.Equal(t, expectedStatus, resp.StatusCode)
 }
 
@@ -128,7 +131,7 @@ func echoProxy(t *testing.T, expectedBodyLength int) http.Handler {
 		uploaded, err := os.Open(path)
 		require.NoError(t, err, "File not uploaded")
 
-		//sending back the file for testing purpose
+		// sending back the file for testing purpose
 		io.Copy(w, uploaded)
 	})
 }

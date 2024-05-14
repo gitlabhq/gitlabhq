@@ -45,7 +45,7 @@ RSpec.describe 'PipelineSchedulecreate', feature_category: :continuous_integrati
       description: 'created_desc',
       cron: '0 1 * * *',
       cronTimezone: 'UTC',
-      ref: 'patch-x',
+      ref: 'master',
       active: true,
       variables: [
         { key: 'AAA', value: "AAA123", variableType: 'ENV_VAR' }
@@ -94,11 +94,13 @@ RSpec.describe 'PipelineSchedulecreate', feature_category: :continuous_integrati
             description: 'some description',
             cron: 'abc',
             cronTimezone: 'cCc',
-            ref: 'asd',
+            ref: ref,
             active: true,
             variables: []
           }
         end
+
+        let(:ref) { "#{Gitlab::Git::TAG_REF_PREFIX}asd" }
 
         it do
           post_graphql_mutation(mutation, current_user: current_user)
@@ -107,8 +109,28 @@ RSpec.describe 'PipelineSchedulecreate', feature_category: :continuous_integrati
 
           expect(mutation_response['errors'])
             .to match_array(
-              ["Cron  is invalid syntax", "Cron timezone  is invalid syntax"]
+              [
+                "Cron syntax is invalid",
+                "Cron timezone syntax is invalid"
+              ]
             )
+        end
+
+        context 'when ref is short' do
+          let(:ref) { "asd" }
+
+          it 'returns ref is ambiguous' do
+            post_graphql_mutation(mutation, current_user: current_user)
+
+            expect(response).to have_gitlab_http_status(:success)
+
+            expect(mutation_response['errors'])
+              .to match_array(
+                [
+                  "Ref is ambiguous"
+                ]
+              )
+          end
         end
       end
 

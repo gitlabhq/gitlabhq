@@ -20,6 +20,8 @@ module API
         use :statistics_params
         optional :skip_groups, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: 'Array of group ids to exclude from list'
         optional :all_available, type: Boolean, desc: 'Show all group that you have access to'
+        optional :visibility, type: String, values: Gitlab::VisibilityLevel.string_values,
+                              desc: 'Limit by visibility'
         optional :search, type: String, desc: 'Search for a specific group'
         optional :owned, type: Boolean, default: false, desc: 'Limit by owned by authenticated user'
         optional :order_by, type: String, values: %w[name path id similarity], default: 'name', desc: 'Order by name, path, id or similarity if searching'
@@ -38,7 +40,7 @@ module API
           :owned, :min_access_level,
           :include_parent_descendants,
           :repository_storage,
-          :search
+          :search, :visibility
         )
 
         find_params[:parent] = if params[:top_level_only]
@@ -53,24 +55,34 @@ module API
         groups = GroupsFinder.new(current_user, find_params).execute
         groups = groups.where.not(id: params[:skip_groups]) if params[:skip_groups].present?
 
-        order_groups(groups)
+        order_groups(groups).with_api_scopes
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
+      # This is a separate method so that EE can extend its behaviour, without
+      # having to modify this code directly.
+      #
       def create_group
-        # This is a separate method so that EE can extend its behaviour, without
-        # having to modify this code directly.
         ::Groups::CreateService
-          .new(current_user, declared_params(include_missing: false))
+          .new(current_user, translate_params_for_compatibility)
           .execute
       end
 
+      # This is a separate method so that EE can extend its behaviour, without
+      # having to modify this code directly.
+      #
       def update_group(group)
-        # This is a separate method so that EE can extend its behaviour, without
-        # having to modify this code directly.
         ::Groups::UpdateService
-          .new(group, current_user, declared_params(include_missing: false))
+          .new(group, current_user, translate_params_for_compatibility)
           .execute
+      end
+
+      def translate_params_for_compatibility
+        temp_params = declared_params(include_missing: false)
+
+        temp_params[:emails_enabled] = !temp_params.delete(:emails_disabled) if temp_params.key?(:emails_disabled)
+
+        temp_params
       end
 
       def find_group_projects(params, finder_options)
@@ -82,7 +94,10 @@ module API
           params: project_finder_params,
           options: finder_options
         ).execute
-        projects = reorder_projects_with_similarity_order_support(group, projects)
+
+        order_by = params[:order_by]
+        projects = reorder_projects_with_order_support(projects, group, order_by)
+
         paginate(projects)
       end
 
@@ -148,10 +163,15 @@ module API
         accepted!
       end
 
-      def reorder_projects_with_similarity_order_support(group, projects)
-        return handle_similarity_order(group, projects) if params[:order_by] == 'similarity'
-
-        reorder_projects(projects)
+      def reorder_projects_with_order_support(projects, group, order_by)
+        case order_by
+        when 'similarity'
+          handle_similarity_order(group, projects)
+        when 'star_count'
+          handle_star_count_order(group, projects)
+        else
+          reorder_projects(projects)
+        end
       end
 
       def order_groups(groups)
@@ -176,6 +196,12 @@ module API
           order_options['id'] ||= params[:sort] || 'asc'
           projects.reorder(order_options)
         end
+      end
+
+      def handle_star_count_order(group, projects)
+        order_options = { star_count: params[:sort] == 'asc' ? :asc : :desc }
+        order_options['id'] ||= params[:sort]
+        projects.reorder(order_options)
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
@@ -213,7 +239,8 @@ module API
         requires :name, type: String, desc: 'The name of the group'
         requires :path, type: String, desc: 'The path of the group'
         optional :parent_id, type: Integer, desc: 'The parent group id for creating nested group'
-        optional :organization_id, type: Integer, desc: 'The organization id for the group'
+        optional :organization_id, type: Integer, default: -> { Current.organization_id },
+          desc: 'The organization id for the group'
 
         use :optional_params
       end
@@ -228,10 +255,11 @@ module API
           authorize_group_creation!
         end
 
-        group = create_group
+        response = create_group
+        group = response[:group]
         group.preload_shared_group_links
 
-        if group.persisted?
+        if response.success?
           present group, with: Entities::GroupDetail, current_user: current_user
         else
           render_api_error!("Failed to save group #{group.errors.messages}", 400)
@@ -291,7 +319,7 @@ module API
       end
       delete ":id", feature_category: :groups_and_projects, urgency: :low do
         group = find_group!(params[:id])
-        authorize! :admin_group, group
+        authorize! :remove_group, group
         check_subscription! group
 
         delete_group(group)
@@ -307,7 +335,7 @@ module API
         optional :visibility, type: String, values: Gitlab::VisibilityLevel.string_values,
                               desc: 'Limit by visibility'
         optional :search, type: String, desc: 'Return list of authorized projects matching the search criteria'
-        optional :order_by, type: String, values: %w[id name path created_at updated_at last_activity_at similarity],
+        optional :order_by, type: String, values: %w[id name path created_at updated_at last_activity_at similarity star_count],
                             default: 'created_at', desc: 'Return projects ordered by field'
         optional :sort, type: String, values: %w[asc desc], default: 'desc',
                         desc: 'Return projects sorted in ascending and descending order'
@@ -349,7 +377,7 @@ module API
         optional :visibility, type: String, values: Gitlab::VisibilityLevel.string_values,
                               desc: 'Limit by visibility'
         optional :search, type: String, desc: 'Return list of authorized projects matching the search criteria'
-        optional :order_by, type: String, values: %w[id name path created_at updated_at last_activity_at],
+        optional :order_by, type: String, values: %w[id name path created_at updated_at last_activity_at star_count],
                             default: 'created_at', desc: 'Return projects ordered by field'
         optional :sort, type: String, values: %w[asc desc], default: 'desc',
                         desc: 'Return projects sorted in ascending and descending order'

@@ -6,7 +6,7 @@ RSpec.describe 'Creating the container registry protection rule', :aggregate_fai
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project) }
-  let_it_be(:user) { create(:user, maintainer_projects: [project]) }
+  let_it_be(:user) { create(:user, maintainer_of: project) }
 
   let(:container_registry_protection_rule_attributes) do
     build_stubbed(:container_registry_protection_rule, project: project)
@@ -16,8 +16,8 @@ RSpec.describe 'Creating the container registry protection rule', :aggregate_fai
     {
       project_path: project.full_path,
       repository_path_pattern: container_registry_protection_rule_attributes.repository_path_pattern,
-      push_protected_up_to_access_level: 'MAINTAINER',
-      delete_protected_up_to_access_level: 'MAINTAINER'
+      minimum_access_level_for_push: 'MAINTAINER',
+      minimum_access_level_for_delete: 'MAINTAINER'
     }
   end
 
@@ -67,11 +67,11 @@ RSpec.describe 'Creating the container registry protection rule', :aggregate_fai
 
   it_behaves_like 'a successful response'
 
-  context 'with invalid input fields `pushProtectedUpToAccessLevel` and `deleteProtectedUpToAccessLevel`' do
+  context 'with invalid input fields `minimumAccessLevelForPush` and `minimumAccessLevelForDelete`' do
     let(:kwargs) do
       super().merge(
-        push_protected_up_to_access_level: 'UNKNOWN_ACCESS_LEVEL',
-        delete_protected_up_to_access_level: 'UNKNOWN_ACCESS_LEVEL'
+        minimum_access_level_for_push: 'UNKNOWN_ACCESS_LEVEL',
+        minimum_access_level_for_delete: 'UNKNOWN_ACCESS_LEVEL'
       )
     end
 
@@ -80,7 +80,7 @@ RSpec.describe 'Creating the container registry protection rule', :aggregate_fai
     it {
       subject
 
-      expect_graphql_errors_to_include([/pushProtectedUpToAccessLevel/, /deleteProtectedUpToAccessLevel/])
+      expect_graphql_errors_to_include([/minimumAccessLevelForPush/, /minimumAccessLevelForDelete/])
     }
   end
 
@@ -107,7 +107,7 @@ RSpec.describe 'Creating the container registry protection rule', :aggregate_fai
   context 'with existing containers protection rule' do
     let_it_be(:existing_container_registry_protection_rule) do
       create(:container_registry_protection_rule, project: project,
-        push_protected_up_to_access_level: Gitlab::Access::DEVELOPER)
+        minimum_access_level_for_push: Gitlab::Access::MAINTAINER)
     end
 
     context 'when container name pattern is slightly different' do
@@ -128,7 +128,7 @@ RSpec.describe 'Creating the container registry protection rule', :aggregate_fai
     context 'when field `repository_path_pattern` is taken' do
       let(:kwargs) do
         super().merge(repository_path_pattern: existing_container_registry_protection_rule.repository_path_pattern,
-          push_protected_up_to_access_level: 'MAINTAINER')
+          minimum_access_level_for_push: 'OWNER')
       end
 
       it_behaves_like 'an erroneous response'
@@ -144,15 +144,15 @@ RSpec.describe 'Creating the container registry protection rule', :aggregate_fai
       it 'does not create new container protection rules' do
         expect(::ContainerRegistry::Protection::Rule.where(project: project,
           repository_path_pattern: kwargs[:repository_path_pattern],
-          push_protected_up_to_access_level: Gitlab::Access::MAINTAINER)).not_to exist
+          minimum_access_level_for_push: Gitlab::Access::OWNER)).not_to exist
       end
     end
   end
 
   context 'when user does not have permission' do
-    let_it_be(:developer) { create(:user).tap { |u| project.add_developer(u) } }
-    let_it_be(:reporter) { create(:user).tap { |u| project.add_reporter(u) } }
-    let_it_be(:guest) { create(:user).tap { |u| project.add_guest(u) } }
+    let_it_be(:developer) { create(:user, developer_of: project) }
+    let_it_be(:reporter) { create(:user, reporter_of: project) }
+    let_it_be(:guest) { create(:user, guest_of: project) }
     let_it_be(:anonymous) { create(:user) }
 
     where(:user) do

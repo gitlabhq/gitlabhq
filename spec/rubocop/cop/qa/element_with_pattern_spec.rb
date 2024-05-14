@@ -16,9 +16,9 @@ RSpec.describe RuboCop::Cop::QA::ElementWithPattern do
       expect_offense(<<-RUBY)
       view 'app/views/shared/groups/_search_form.html.haml' do
         element :groups_filter, 'search_field_tag :filter'
-                                ^^^^^^^^^^^^^^^^^^^^^^^^^^ Don't use a pattern for element, create a corresponding `data-qa-selector=groups_filter` instead.
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^ Don't use a pattern for element, create a corresponding `data-testid=groups_filter` instead.
         element :groups_filter_placeholder, /Search by name/
-                                             ^^^^^^^^^^^^^^ Don't use a pattern for element, create a corresponding `data-qa-selector=groups_filter_placeholder` instead.
+                                             ^^^^^^^^^^^^^^ Don't use a pattern for element, create a corresponding `data-testid=groups_filter_placeholder` instead.
       end
       RUBY
     end

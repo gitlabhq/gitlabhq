@@ -9,7 +9,9 @@ RSpec.describe Ci::BuildFinishedWorker, feature_category: :continuous_integratio
 
   describe '#perform' do
     context 'when build exists' do
-      let_it_be(:build) { create(:ci_build, :success, pipeline: create(:ci_pipeline)) }
+      let_it_be(:build) do
+        create(:ci_build, :success, user: create(:user), pipeline: create(:ci_pipeline))
+      end
 
       before do
         expect(Ci::Build).to receive(:find_by).with({ id: build.id }).and_return(build)

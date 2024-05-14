@@ -12,6 +12,14 @@ module Types
 
       alias_method :organization_user, :object
 
+      expose_permissions Types::PermissionTypes::OrganizationUser
+
+      field :access_level,
+        ::Types::Organizations::OrganizationUserAccessLevelType,
+        null: false,
+        description: 'Access level of the user in the organization.',
+        alpha: { milestone: '16.11' },
+        method: :access_level_before_type_cast
       field :badges,
         [::Types::Organizations::OrganizationUserBadgeType],
         null: true,
@@ -22,6 +30,12 @@ module Types
         null: false,
         description: 'ID of the organization user.',
         alpha: { milestone: '16.4' }
+      field :is_last_owner,
+        GraphQL::Types::Boolean,
+        null: false,
+        description: 'Whether the user is the last owner of the organization.',
+        alpha: { milestone: '16.11' },
+        method: :last_owner?
       field :user,
         ::Types::UserType,
         null: false,

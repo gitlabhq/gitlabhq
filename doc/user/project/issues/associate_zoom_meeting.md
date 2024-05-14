@@ -8,9 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/16609) in GitLab 12.4.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 To communicate synchronously for incidents management,
 you can associate a Zoom meeting with an issue.

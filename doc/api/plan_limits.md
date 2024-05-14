@@ -10,8 +10,6 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/54232) in GitLab 13.10.
-
 The plan limits API allows you to maintain the application limits for the existing subscription plans.
 
 The existing plans depend on the GitLab edition. In the Community Edition, only the plan `default`

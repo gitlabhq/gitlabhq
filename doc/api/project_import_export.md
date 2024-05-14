@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Use the project import and export API to import and export projects using file transfers.
 
@@ -213,18 +213,16 @@ requests.post(url, headers=headers, data=data, files=files)
 
 NOTE:
 The maximum import file size can be set by the Administrator. It defaults to `0` (unlimited).
-As an administrator, you can modify the maximum import file size. To do so, use the `max_import_size` option in the [Application settings API](settings.md#change-application-settings) or the [Admin Area](../administration/settings/account_and_limit_settings.md). Default [modified](https://gitlab.com/gitlab-org/gitlab/-/issues/251106) from 50 MB to 0 in GitLab 13.8.
+As an administrator, you can modify the maximum import file size. To do so, use the `max_import_size` option in the [Application settings API](settings.md#change-application-settings) or the [Admin Area](../administration/settings/account_and_limit_settings.md).
 
 ## Import a file from a remote object storage
 
 DETAILS:
 **Status:** Beta
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/282503) in GitLab 13.12 in [Beta](../policy/experiment-beta-support.md#beta) [with a flag](../administration/feature_flags.md) named `import_project_from_remote_file`. Enabled by default.
-
 FLAG:
 On self-managed GitLab, by default this feature is available. To hide the feature, an administrator can [disable the feature flag](../administration/feature_flags.md) named `import_project_from_remote_file`.
-On GitLab.com, this feature is available.
+On GitLab.com and GitLab Dedicated, this feature is available.
 
 ```plaintext
 POST /projects/remote-import
@@ -268,11 +266,96 @@ curl --request POST \
 The `Content-Length` header must return a valid number. The maximum file size is 10 GB.
 The `Content-Type` header must be `application/gzip`.
 
+## Import a single relation
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/425798) in GitLab 16.11 in [Beta](../policy/experiment-beta-support.md#beta)), [with a flag](../administration/feature_flags.md) named `single_relation_import`. Disabled by default.
+
+This endpoint accepts a project export archive and a named relation (issues,
+merge requests, pipelines, or milestones) and re-imports that relation, skipping
+items that have already been imported.
+
+The required project export file adheres to the same structure and size requirements described in
+[Import a file](#import-a-file).
+
+- The extracted files must adhere to the structure of a GitLab project export.
+- The archive must not exceed the maximum import file size configured by the Administrator.
+
+```plaintext
+POST /projects/import-relation
+```
+
+| Attribute  | Type   | Required | Description                                                                                                    |
+|------------|--------|----------|----------------------------------------------------------------------------------------------------------------|
+| `file`     | string | yes      | The file to be uploaded.                                                                                       |
+| `path`     | string | yes      | Name and path for new project.                                                                                 |
+| `relation` | string | yes      | The name of the relation to import. Must be one of `issues`, `milestones`, `ci_pipelines` or `merge_requests`. |
+
+To upload a file from your file system, use the `--form` option, which causes
+cURL to post data using the header `Content-Type: multipart/form-data`.
+The `file=` parameter must point to a file on your file system and be preceded
+by `@`. For example:
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
+     --form "path=api-project" \
+     --form "file=@/path/to/file" \
+     --form "relation=issues" \
+     "https://gitlab.example.com/api/v4/projects/import-relation"
+```
+
+```json
+{
+  "id": 9,
+  "project_path": "namespace1/project1",
+  "relation": "issues",
+  "status": "finished"
+}
+```
+
+## Check relation import statuses
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/425798) in GitLab 16.11.
+
+This endpoint fetches the status of any relation imports associated with a project. Because
+only one relation import can be scheduled at a time, you can use this endpoint to check whether
+the previous import completed successfully.
+
+```plaintext
+GET /projects/:id/relation-imports
+```
+
+| Attribute | Type               | Required | Description                                                                          |
+| --------- |--------------------| -------- |--------------------------------------------------------------------------------------|
+| `id`      | integer or string  | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+     "https://gitlab.example.com/api/v4/projects/18/relation-imports"
+```
+
+```json
+[
+  {
+    "id": 1,
+    "project_path": "namespace1/project1",
+    "relation": "issues",
+    "status": "created",
+    "created_at": "2024-03-25T11:03:48.074Z",
+    "updated_at": "2024-03-25T11:03:48.074Z"
+  }
+]
+```
+
+Status can be one of:
+
+- `created`: The import has been scheduled, but has not started.
+- `started`: The import is being processed.
+- `finished`: The import has completed.
+- `failed`: The import was not able to be completed.
+
 ## Import a file from AWS S3
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348874) in GitLab 14.9 in [Beta](https://handbook.gitlab.com/handbook/product/gitlab-the-product/#experiment-beta-ga), [with a flag](../administration/feature_flags.md) named `import_project_from_remote_file_s3`. Disabled by default.
-> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/348874) in GitLab 14.10.
-> - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/350571) in GitLab 15.11. Feature flag `import_project_from_remote_file_s3` removed.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/350571) in GitLab 15.11. Feature flag `import_project_from_remote_file_s3` removed.
 
 ```plaintext
 POST /projects/remote-import-s3

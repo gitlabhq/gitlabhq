@@ -8,9 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/262725) in GitLab 13.5.
+**Offering:** GitLab.com
 
 This API is for listing A/B experiments [defined in GitLab](../development/experiment_guide/index.md).
 

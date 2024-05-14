@@ -15,7 +15,6 @@
     "versions",
     "status",
     "statusMessage",
-    "canDestroy",
     "lastDownloadedAt",
     "_links",
     "userPermissions"
@@ -37,11 +36,6 @@
       "type": [
         "string",
         "null"
-      ]
-    },
-    "canDestroy": {
-      "type": [
-        "boolean"
       ]
     },
     "packageType": {
@@ -261,6 +255,12 @@
         "string",
         "null"
       ]
+    },
+    "packageProtectionRuleExists": {
+      "type": "boolean"
+    },
+    "protectionRuleExists": {
+      "type": "boolean"
     },
     "_links": {
       "type": "object",

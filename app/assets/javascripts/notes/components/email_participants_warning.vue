@@ -59,7 +59,7 @@ export default {
   <div class="issuable-note-warning">
     <gl-sprintf :message="message">
       <template #andMore>
-        <gl-button variant="link" class="gl-vertical-align-baseline" @click="showMoreParticipants">
+        <gl-button variant="link" class="gl-align-baseline" @click="showMoreParticipants">
           {{ moreLabel }}
         </gl-button>
       </template>

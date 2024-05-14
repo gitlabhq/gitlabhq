@@ -19,8 +19,10 @@ function parseDatasetToProps(data) {
   const {
     id,
     type,
+    projectId,
     commentDetail,
     projectKey,
+    projectKeys,
     learnMorePath,
     aboutPricingUrl,
     triggerEvents,
@@ -35,6 +37,10 @@ function parseDatasetToProps(data) {
     vulnerabilitiesIssuetype,
     jiraIssueTransitionAutomatic,
     jiraIssueTransitionId,
+    artifactRegistryPath,
+    personalAccessTokensPath,
+    workloadIdentityFederationPath,
+    wlifIssuer,
     redirectTo,
     upgradeSlackUrl,
     ...booleanAttributes
@@ -42,6 +48,7 @@ function parseDatasetToProps(data) {
   const {
     showActive,
     activated,
+    operating,
     activateDisabled,
     editable,
     canTest,
@@ -57,6 +64,7 @@ function parseDatasetToProps(data) {
 
   return {
     initialActivated: activated,
+    operating,
     showActive,
     activateDisabled,
     type,
@@ -66,6 +74,7 @@ function parseDatasetToProps(data) {
     testPath,
     resetPath,
     formPath,
+    personalAccessTokensPath,
     triggerFieldsProps: {
       initialTriggerCommit: commitEvents,
       initialTriggerMergeRequest: mergeRequestEvents,
@@ -81,6 +90,11 @@ function parseDatasetToProps(data) {
       initialEnableJiraVulnerabilities: enableJiraVulnerabilities,
       initialVulnerabilitiesIssuetype: vulnerabilitiesIssuetype,
       initialProjectKey: projectKey,
+      initialProjectKeys: projectKeys,
+    },
+    googleArtifactManagementProps: {
+      artifactRegistryPath,
+      workloadIdentityFederationPath,
     },
     learnMorePath,
     aboutPricingUrl,
@@ -90,6 +104,8 @@ function parseDatasetToProps(data) {
     inheritFromId: parseInt(inheritFromId, 10),
     integrationLevel,
     id: parseInt(id, 10),
+    projectId: parseInt(projectId, 10),
+    wlifIssuer,
     redirectTo,
     shouldUpgradeSlack,
     upgradeSlackUrl,

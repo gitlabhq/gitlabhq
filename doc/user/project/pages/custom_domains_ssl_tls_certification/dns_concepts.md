@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 A Domain Name System (DNS) web service routes visitors to websites
 by translating domain names (such as `www.example.com`) into the
@@ -43,7 +43,6 @@ for the most popular hosting services:
 - [Go Daddy](https://www.godaddy.com/help/add-an-a-record-19238)
 - [Hostgator](https://www.hostgator.com/help/article/changing-dns-records)
 - [Inmotion hosting](https://www.inmotionhosting.com/support/edu/cpanel/how-do-i-make-custom-dns-records/)
-- [Media Temple](https://mediatemple.zendesk.com/hc/en-us/articles/204403794-how-can-i-change-the-dns-records-for-my-domain)
 - [Microsoft](https://learn.microsoft.com/en-us/windows-server/networking/dns/manage-resource-records?tabs=powershell)
 - [Namecheap](https://www.namecheap.com/support/knowledgebase/subcategory/2237/host-records-setup/)
 

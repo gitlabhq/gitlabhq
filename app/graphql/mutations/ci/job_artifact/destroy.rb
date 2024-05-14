@@ -11,14 +11,14 @@ module Mutations
         ArtifactID = ::Types::GlobalIDType[::Ci::JobArtifact]
 
         argument :id,
-                 ArtifactID,
-                 required: true,
-                 description: 'ID of the artifact to delete.'
+          ArtifactID,
+          required: true,
+          description: 'ID of the artifact to delete.'
 
         field :artifact,
-              Types::Ci::JobArtifactType,
-              null: true,
-              description: 'Deleted artifact.'
+          Types::Ci::JobArtifactType,
+          null: true,
+          description: 'Deleted artifact.'
 
         def find_object(id:)
           GlobalID::Locator.locate(id)

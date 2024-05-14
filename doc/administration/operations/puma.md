@@ -103,7 +103,7 @@ To change the worker timeout to 600 seconds:
 ## Disable Puma clustered mode in memory-constrained environments
 
 WARNING:
-This feature is an [Experiment](../../policy/experiment-beta-support.md#experiment) and subject to change without notice. The feature
+This feature is an [Experiment](../../policy/experiment-beta-support.md#experiment) and subject to change without notice. This feature
 is not ready for production use. If you want to use this feature, you should test
 outside of production first. See the [known issues](#puma-single-mode-known-issues)
 for additional details.
@@ -255,9 +255,7 @@ NOTE:
 For Helm-based deployments, see the
 [`webservice` chart documentation](https://docs.gitlab.com/charts/charts/gitlab/webservice/index.html).
 
-Starting with GitLab 13.0, Puma is the default web server and Unicorn has been disabled.
-In GitLab 14.0, [Unicorn was removed](https://docs.gitlab.com/omnibus/update/gitlab_14_changes.html)
-from the Linux package and is no longer supported.
+Puma is the default web server and Unicorn is no longer supported.
 
 Puma has a multi-thread architecture that uses less memory than a multi-process
 application server like Unicorn. On GitLab.com, we saw a 40% reduction in memory

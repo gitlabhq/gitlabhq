@@ -7,6 +7,8 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   include StubRequests
   include Ci::SourcePipelineHelpers
 
+  using RSpec::Parameterized::TableSyntax
+
   let_it_be(:user) { create(:user, :public_email) }
   let_it_be(:namespace) { create_default(:namespace).freeze }
   let_it_be_with_refind(:project) { create_default(:project, :repository).freeze }
@@ -28,6 +30,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   it { is_expected.to have_many(:trigger_requests).with_foreign_key(:commit_id).inverse_of(:pipeline) }
   it { is_expected.to have_many(:variables) }
   it { is_expected.to have_many(:builds) }
+  it { is_expected.to have_many(:build_execution_configs).class_name('Ci::BuildExecutionConfig').inverse_of(:pipeline) }
 
   it do
     is_expected.to have_many(:statuses_order_id_desc)
@@ -283,6 +286,12 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   describe '#set_status' do
     let(:pipeline) { build(:ci_empty_pipeline, :created) }
 
+    let(:not_transitionable) do
+      [
+        { from_status: :canceled, to_status: :canceling }
+      ]
+    end
+
     where(:from_status, :to_status) do
       from_status_names = described_class.state_machines[:status].states.map(&:name)
       to_status_names = from_status_names - [:created] # we never want to transition into created
@@ -294,12 +303,12 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       it do
         pipeline.status = from_status.to_s
 
-        if from_status != to_status || success_to_success?
+        if (from_status != to_status || success_to_success?) && transitionable?(from_status, to_status)
           expect(pipeline.set_status(to_status.to_s))
             .to eq(true)
         else
           expect(pipeline.set_status(to_status.to_s))
-            .to eq(false), "loopback transitions are not allowed"
+            .to eq(false), 'loopback transitions are not allowed'
         end
       end
 
@@ -307,6 +316,14 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
       def success_to_success?
         from_status == :success && to_status == :success
+      end
+
+      def transitionable?(from, to)
+        not_transitionable.each do |exclusion|
+          return false if from.to_sym == exclusion[:from_status].to_sym && to.to_sym == exclusion[:to_status].to_sym
+        end
+
+        true
       end
     end
   end
@@ -337,6 +354,15 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         end
       end
     end
+  end
+
+  describe '.no_tag' do
+    let_it_be(:pipeline) { create(:ci_pipeline) }
+    let_it_be(:tag_pipeline) { create(:ci_pipeline, tag: true) }
+
+    subject { described_class.no_tag }
+
+    it { is_expected.to contain_exactly(pipeline) }
   end
 
   describe '.processables' do
@@ -1469,6 +1495,12 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     let(:build) { create_build('build1', queued_at: 0) }
     let(:build_b) { create_build('build2', queued_at: 0) }
     let(:build_c) { create_build('build3', queued_at: 0) }
+
+    describe '#start_cancel' do
+      it 'transitions to canceling' do
+        expect { pipeline.start_cancel }.to change { pipeline.status }.from('created').to('canceling')
+      end
+    end
 
     %w[succeed! drop! cancel! skip! block! delay!].each do |action|
       context "when the pipeline received #{action} event" do
@@ -2940,7 +2972,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     subject { described_class.bridgeable_statuses }
 
     it { is_expected.to be_an(Array) }
-    it { is_expected.to contain_exactly('running', 'success', 'failed', 'canceled', 'skipped', 'manual', 'scheduled') }
+    it { is_expected.to contain_exactly('running', 'success', 'failed', 'canceling', 'canceled', 'skipped', 'manual', 'scheduled') }
   end
 
   describe '#status', :sidekiq_inline do
@@ -4380,6 +4412,97 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
   end
 
+  describe '#complete_or_manual_and_has_reports?' do
+    subject(:complete_or_manual_and_has_reports?) do
+      pipeline.complete_or_manual_and_has_reports?(
+        Ci::JobArtifact.of_report_type(:test))
+    end
+
+    context 'when pipeline has builds' do
+      let(:pipeline) { create(:ci_pipeline) }
+
+      before do
+        create(:ci_build, :test_reports, pipeline: pipeline)
+      end
+
+      context 'with mr_show_reports_immediately flag enabled' do
+        before do
+          stub_feature_flags(mr_show_reports_immediately: project)
+        end
+
+        it { expect(subject).to be_truthy }
+      end
+
+      context 'with mr_show_reports_immediately flag disabled' do
+        before do
+          stub_feature_flags(mr_show_reports_immediately: false)
+        end
+
+        it { expect(subject).to be_falsey }
+
+        context 'when pipeline status is running' do
+          let(:pipeline) { create(:ci_pipeline, :running) }
+
+          it { is_expected.to be_falsey }
+        end
+
+        context 'when pipeline status is success' do
+          let(:pipeline) { create(:ci_pipeline, :success) }
+
+          it { is_expected.to be_truthy }
+        end
+
+        context 'when pipeline status is manual' do
+          let(:pipeline) { create(:ci_pipeline, :manual) }
+
+          it { is_expected.to be_truthy }
+        end
+      end
+    end
+
+    context 'when pipeline does not have builds' do
+      before do
+        create(:ci_build, :artifacts, pipeline: pipeline)
+      end
+
+      context 'when pipeline status is success' do
+        let(:pipeline) { create(:ci_pipeline, :success) }
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'when pipeline status is manual' do
+        let(:pipeline) { create(:ci_pipeline, :manual) }
+
+        it { is_expected.to be_falsey }
+      end
+    end
+
+    context 'when pipeline has retried build' do
+      before do
+        create(:ci_build, :retried, :test_reports, pipeline: pipeline)
+      end
+
+      context 'when pipeline status is running' do
+        let(:pipeline) { create(:ci_pipeline, :running) }
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'when pipeline status is success' do
+        let(:pipeline) { create(:ci_pipeline, :success) }
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'when pipeline status is manual' do
+        let(:pipeline) { create(:ci_pipeline, :manual) }
+
+        it { is_expected.to be_falsey }
+      end
+    end
+  end
+
   describe '#has_coverage_reports?' do
     subject { pipeline.has_coverage_reports? }
 
@@ -5681,16 +5804,29 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   describe '.current_partition_value' do
     subject { described_class.current_partition_value }
 
-    it { is_expected.to eq(101) }
+    it { is_expected.to eq(102) }
 
     it 'accepts an optional argument' do
-      expect(described_class.current_partition_value(build_stubbed(:project))).to eq(101)
+      expect(described_class.current_partition_value(build_stubbed(:project))).to eq(102)
     end
 
-    it 'returns 100 when the flag is disabled' do
+    it 'returns 100 when the flags are disabled' do
       stub_feature_flags(ci_current_partition_value_101: false)
+      stub_feature_flags(ci_current_partition_value_102: false)
 
       is_expected.to eq(100)
+    end
+
+    it 'returns 101 when the 102 flag is disabled' do
+      stub_feature_flags(ci_current_partition_value_102: false)
+
+      is_expected.to eq(101)
+    end
+
+    it 'returns 102 when the 101 flag is disabled' do
+      stub_feature_flags(ci_current_partition_value_101: false)
+
+      is_expected.to eq(102)
     end
   end
 
@@ -5751,7 +5887,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
           before do
             create(
               :ci_job_artifact,
-              file_format: ::Ci::JobArtifact::TYPE_AND_FORMAT_PAIRS[type.to_sym],
+              file_format: ::Enums::Ci::JobArtifact.type_and_format_pairs[type.to_sym],
               file_type: type,
               job: pipeline.builds.first
             )
@@ -5791,6 +5927,78 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         end
 
         it { is_expected.to eq('interruptible') }
+      end
+    end
+  end
+
+  describe '#auto_cancel_on_job_failure' do
+    let_it_be_with_reload(:pipeline) { create(:ci_pipeline, project: project) }
+
+    subject(:auto_cancel_on_job_failure) { pipeline.auto_cancel_on_job_failure }
+
+    context 'when pipeline_metadata is not present' do
+      it { is_expected.to eq('none') }
+    end
+
+    context 'when pipeline_metadata is present' do
+      before_all do
+        create(:ci_pipeline_metadata, project: pipeline.project, pipeline: pipeline)
+      end
+
+      context 'when auto_cancel_on_job_failure is nil' do
+        before do
+          pipeline.pipeline_metadata.auto_cancel_on_job_failure = nil
+        end
+
+        it { is_expected.to eq('none') }
+      end
+
+      context 'when auto_cancel_on_job_failure is a valid value' do
+        before do
+          pipeline.pipeline_metadata.auto_cancel_on_job_failure = 'all'
+        end
+
+        it { is_expected.to eq('all') }
+      end
+    end
+  end
+
+  describe '#cancel_async_on_job_failure' do
+    let_it_be_with_reload(:pipeline) { create(:ci_pipeline, project: project, user: create(:user)) }
+
+    subject(:cancel_async_on_job_failure) { pipeline.cancel_async_on_job_failure }
+
+    before do
+      allow(pipeline).to receive(:auto_cancel_on_job_failure).and_return(auto_cancel_on_job_failure)
+    end
+
+    context 'with different configurations' do
+      where(:auto_cancel_on_job_failure, :cancels, :errors) do
+        'none'          | false | false
+        'all'           | true  | false
+        'invalid value' | false | true
+      end
+
+      with_them do
+        it 'cancels the pipeline when expected' do
+          unless errors
+            if cancels
+              expect(::Ci::UserCancelPipelineWorker).to receive(:perform_async)
+            else
+              expect(::Ci::UserCancelPipelineWorker).not_to receive(:perform_async)
+            end
+
+            subject
+          end
+        end
+
+        it 'raises errors when expected' do
+          if errors
+            expect { subject }.to raise_error(ArgumentError, 'Unknown auto_cancel_on_job_failure value: invalid value')
+          else
+            expect { subject }.not_to raise_error
+          end
+        end
       end
     end
   end

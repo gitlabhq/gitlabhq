@@ -35,8 +35,8 @@ RSpec.describe MergeWorker, feature_category: :source_code_management do
         [
           merge_request.id,
           merge_request.author_id,
-          commit_message: 'wow such merge',
-          sha: merge_request.diff_head_sha
+          { commit_message: 'wow such merge',
+            sha: merge_request.diff_head_sha }
         ]
       end
 

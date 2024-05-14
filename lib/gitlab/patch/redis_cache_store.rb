@@ -17,15 +17,9 @@ module Gitlab
       def delete_multi_entries(entries, **options)
         return super unless enable_rails_cache_pipeline_patch?
 
-        delete_count = 0
         redis.with do |conn|
-          entries.each_slice(pipeline_batch_size) do |subset|
-            delete_count += Gitlab::Redis::CrossSlot::Pipeline.new(conn).pipelined do |pipeline|
-              subset.each { |entry| pipeline.del(entry) }
-            end.sum
-          end
+          ::Gitlab::Redis::ClusterUtil.batch_del(entries, conn)
         end
-        delete_count
       end
 
       # Copied from https://github.com/rails/rails/blob/v6.1.6.1/activesupport/lib/active_support/cache/redis_cache_store.rb
@@ -42,7 +36,7 @@ module Gitlab
 
         values = failsafe(:patched_read_multi_mget, returning: {}) do
           redis.with do |c|
-            pipeline_mget(c, keys)
+            ::Gitlab::Redis::ClusterUtil.batch_get(keys, c)
           end
         end
 
@@ -56,19 +50,7 @@ module Gitlab
         end
       end
 
-      def pipeline_mget(conn, keys)
-        keys.each_slice(pipeline_batch_size).flat_map do |subset|
-          Gitlab::Redis::CrossSlot::Pipeline.new(conn).pipelined do |p|
-            subset.each { |key| p.get(key) }
-          end
-        end
-      end
-
       private
-
-      def pipeline_batch_size
-        @pipeline_batch_size ||= [ENV['GITLAB_REDIS_CLUSTER_PIPELINE_BATCH_LIMIT'].to_i, 1000].max
-      end
 
       def enable_rails_cache_pipeline_patch?
         redis.with { |c| ::Gitlab::Redis::ClusterUtil.cluster?(c) }

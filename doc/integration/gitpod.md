@@ -8,10 +8,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/228893) in GitLab 13.4.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/258206) in GitLab 13.8
+**Offering:** GitLab.com, Self-managed
 
 With [Gitpod](https://www.gitpod.io/), you can describe your development environment as code to get fully
 set up, compiled, and tested development environments for any GitLab project. The development
@@ -30,7 +27,7 @@ To use the GitLab Gitpod integration, it must be enabled for your GitLab instanc
   1. It's [enabled in their user settings](#enable-gitpod-in-your-user-settings).
 
 For more information about Gitpod, see the Gitpod [features](https://www.gitpod.io/) and
-[documentation](https://www.gitpod.io/docs/).
+[documentation](https://www.gitpod.io/docs).
 
 ## Enable Gitpod in your user settings
 
@@ -45,7 +42,7 @@ With the Gitpod integration enabled for your GitLab instance, to enable it for y
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 For self-managed GitLab instances, a GitLab administrator must:
 

@@ -46,6 +46,55 @@ RSpec.describe API::RemoteMirrors, feature_category: :source_code_management do
     end
   end
 
+  describe 'POST /projects/:id/remote_mirrors/:mirror_id/sync' do
+    let(:route) { "/projects/#{project.id}/remote_mirrors/#{mirror_id}/sync" }
+    let(:mirror) { project.remote_mirrors.first }
+    let(:mirror_id) { mirror.id }
+
+    context 'without enough permissions' do
+      it 'requires `admin_remote_mirror` permission' do
+        post api(route, developer)
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+
+    context 'with sufficient permissions' do
+      before do
+        project.add_maintainer(user)
+      end
+
+      it 'returns a successful response' do
+        post api(route, user)
+
+        expect(response).to have_gitlab_http_status(:no_content)
+      end
+
+      context 'when some error occurs' do
+        before do
+          mirror.update!(enabled: false)
+        end
+
+        it 'returns an error' do
+          post api(route, user)
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['message']).to match(/Cannot proceed with the push mirroring/)
+        end
+      end
+
+      context 'when mirror ID is missing' do
+        let(:mirror_id) { non_existing_record_id }
+
+        it 'returns a not found error' do
+          post api(route, user)
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+    end
+  end
+
   describe 'POST /projects/:id/remote_mirrors' do
     let(:route) { "/projects/#{project.id}/remote_mirrors" }
 
@@ -56,9 +105,11 @@ RSpec.describe API::RemoteMirrors, feature_category: :source_code_management do
         post api(route, user), params: params
 
         enabled = params.fetch(:enabled, false)
+        auth_method = params.fetch(:auth_method, 'password')
         expect(response).to have_gitlab_http_status(:success)
         expect(response).to match_response_schema('remote_mirror')
         expect(json_response['enabled']).to eq(enabled)
+        expect(json_response['auth_method']).to eq(auth_method)
       end
     end
 
@@ -80,6 +131,49 @@ RSpec.describe API::RemoteMirrors, feature_category: :source_code_management do
 
         it_behaves_like 'creates a remote mirror'
       end
+
+      context 'auth method' do
+        let(:params) { { url: 'https://foo:bar@test.com', enabled: true, auth_method: 'ssh_public_key' } }
+
+        it_behaves_like 'creates a remote mirror'
+      end
+    end
+
+    context 'when feature flag "use_remote_mirror_create_service" is disabled' do
+      before do
+        stub_feature_flags(use_remote_mirror_create_service: false)
+      end
+
+      context 'creates a remote mirror' do
+        context 'disabled by default' do
+          let(:params) { { url: 'https://foo:bar@test.com' } }
+
+          it_behaves_like 'creates a remote mirror'
+        end
+
+        context 'enabled' do
+          let(:params) { { url: 'https://foo:bar@test.com', enabled: true } }
+
+          it_behaves_like 'creates a remote mirror'
+        end
+
+        context 'auth method' do
+          let(:params) { { url: 'https://foo:bar@test.com', enabled: true, auth_method: 'ssh_public_key' } }
+
+          it_behaves_like 'creates a remote mirror'
+        end
+      end
+
+      it 'returns error if url is invalid' do
+        project.add_maintainer(user)
+
+        post api(route, user), params: { url: 'ftp://foo:bar@test.com' }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']['url']).to match_array(
+          ["is blocked: Only allowed schemes are http, https, ssh, git"]
+        )
+      end
     end
 
     it 'returns error if url is invalid' do
@@ -93,6 +187,19 @@ RSpec.describe API::RemoteMirrors, feature_category: :source_code_management do
       expect(json_response['message']['url']).to match_array(
         ["is blocked: Only allowed schemes are http, https, ssh, git"]
       )
+    end
+
+    context 'when auth method is invalid' do
+      let(:params) { { url: 'https://foo:bar@test.com', enabled: true, auth_method: 'invalid' } }
+
+      it 'returns an error' do
+        project.add_maintainer(user)
+
+        post api(route, user), params: params
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['error']).to eq('auth_method does not have a valid value')
+      end
     end
   end
 

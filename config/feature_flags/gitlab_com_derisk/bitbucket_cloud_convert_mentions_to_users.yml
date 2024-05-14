@@ -1,0 +1,9 @@
+---
+name: bitbucket_cloud_convert_mentions_to_users
+feature_issue_url:
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144923
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/442484
+milestone: '16.10'
+group: group::import and integrate
+type: gitlab_com_derisk
+default_enabled: false

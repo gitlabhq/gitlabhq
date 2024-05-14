@@ -17,7 +17,7 @@ module Tooling
       WARNING_COMMENT = <<~COMMENT.freeze
         Finalizing data migration might be time consuming and require a [required stop](#{DOC_URL}).
         Check the timings of the underlying data migration.
-        If possible schedule finalization for the first minor version after the next required stop.
+        Make sure the background migration was added before the last required stop.
       COMMENT
 
       def add_comment_for_finalized_migrations

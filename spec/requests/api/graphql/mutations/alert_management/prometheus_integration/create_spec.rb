@@ -6,7 +6,7 @@ RSpec.describe 'Creating a new Prometheus Integration', feature_category: :incid
   include GraphqlHelpers
 
   let_it_be(:current_user) { create(:user) }
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project) { create(:project, maintainers: current_user) }
 
   let(:api_url) { 'https://prometheus-url.com' }
 
@@ -37,10 +37,6 @@ RSpec.describe 'Creating a new Prometheus Integration', feature_category: :incid
   end
 
   let(:mutation_response) { graphql_mutation_response(:prometheus_integration_create) }
-
-  before do
-    project.add_maintainer(current_user)
-  end
 
   it 'creates a new integration' do
     post_graphql_mutation(mutation, current_user: current_user)

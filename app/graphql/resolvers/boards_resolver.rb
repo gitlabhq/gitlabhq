@@ -5,8 +5,8 @@ module Resolvers
     type Types::BoardType, null: true
 
     argument :id, ::Types::GlobalIDType[::Board],
-             required: false,
-             description: 'Find a board by its ID.'
+      required: false,
+      description: 'Find a board by its ID.'
 
     def resolve(id: nil)
       # The project or group could have been loaded in batch by `BatchLoader`.

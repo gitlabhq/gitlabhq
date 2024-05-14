@@ -22,7 +22,6 @@ const BABEL_VERSION = require('@babel/core/package.json').version;
 const BABEL_LOADER_VERSION = require('babel-loader/package.json').version;
 const CompressionPlugin = require('compression-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const glob = require('glob');
 // eslint-disable-next-line import/no-dynamic-require
 const { VueLoaderPlugin } = require(VUE_LOADER_MODULE);
 // eslint-disable-next-line import/no-dynamic-require
@@ -42,10 +41,10 @@ const {
   WEBPACK_OUTPUT_PATH,
   WEBPACK_PUBLIC_PATH,
   SOURCEGRAPH_PUBLIC_PATH,
-  SOURCEGRAPH_OUTPUT_PATH,
-  GITLAB_WEB_IDE_OUTPUT_PATH,
   GITLAB_WEB_IDE_PUBLIC_PATH,
+  copyFilesPatterns,
 } = require('./webpack.constants');
+const { generateEntries } = require('./webpack.helpers');
 
 const createIncrementalWebpackCompiler = require('./helpers/incremental_webpack_compiler');
 const vendorDllHash = require('./helpers/vendor_dll_hash');
@@ -89,14 +88,7 @@ if (WEBPACK_REPORT) {
   NO_HASHED_CHUNKS = true;
 }
 
-const SOURCEGRAPH_PACKAGE = '@sourcegraph/code-host-integration';
-const GITLAB_WEB_IDE_PACKAGE = '@gitlab/web-ide';
-
 const devtool = IS_PRODUCTION ? 'source-map' : 'cheap-module-eval-source-map';
-
-let autoEntriesCount = 0;
-let watchAutoEntries = [];
-const defaultEntries = ['./main'];
 
 const incrementalCompiler = createIncrementalWebpackCompiler(
   INCREMENTAL_COMPILER_RECORD_HISTORY,
@@ -104,82 +96,6 @@ const incrementalCompiler = createIncrementalWebpackCompiler(
   path.join(CACHE_PATH, 'incremental-webpack-compiler-history.json'),
   INCREMENTAL_COMPILER_TTL,
 );
-
-function generateEntries() {
-  // generate automatic entry points
-  const autoEntries = {};
-  const autoEntriesMap = {};
-  const pageEntries = glob.sync('pages/**/index.js', {
-    cwd: path.join(ROOT_PATH, 'app/assets/javascripts'),
-  });
-  watchAutoEntries = [path.join(ROOT_PATH, 'app/assets/javascripts/pages/')];
-
-  function generateAutoEntries(entryPath, prefix = '.') {
-    const chunkPath = entryPath.replace(/\/index\.js$/, '');
-    const chunkName = chunkPath.replace(/\//g, '.');
-    autoEntriesMap[chunkName] = `${prefix}/${entryPath}`;
-  }
-
-  pageEntries.forEach((entryPath) => generateAutoEntries(entryPath));
-
-  if (IS_EE) {
-    const eePageEntries = glob.sync('pages/**/index.js', {
-      cwd: path.join(ROOT_PATH, 'ee/app/assets/javascripts'),
-    });
-    eePageEntries.forEach((entryPath) => generateAutoEntries(entryPath, 'ee'));
-    watchAutoEntries.push(path.join(ROOT_PATH, 'ee/app/assets/javascripts/pages/'));
-  }
-
-  if (IS_JH) {
-    const eePageEntries = glob.sync('pages/**/index.js', {
-      cwd: path.join(ROOT_PATH, 'jh/app/assets/javascripts'),
-    });
-    eePageEntries.forEach((entryPath) => generateAutoEntries(entryPath, 'jh'));
-    watchAutoEntries.push(path.join(ROOT_PATH, 'jh/app/assets/javascripts/pages/'));
-  }
-
-  const autoEntryKeys = Object.keys(autoEntriesMap);
-  autoEntriesCount = autoEntryKeys.length;
-
-  // import ancestor entrypoints within their children
-  autoEntryKeys.forEach((entry) => {
-    const entryPaths = [autoEntriesMap[entry]];
-    const segments = entry.split('.');
-    while (segments.pop()) {
-      const ancestor = segments.join('.');
-      if (autoEntryKeys.includes(ancestor)) {
-        entryPaths.unshift(autoEntriesMap[ancestor]);
-      }
-    }
-    autoEntries[entry] = defaultEntries.concat(entryPaths);
-  });
-
-  /*
-  If you create manual entries, ensure that these import `app/assets/javascripts/webpack.js` right at
-  the top of the entry in order to ensure that the public path is correctly determined for loading
-  assets async. See: https://webpack.js.org/configuration/output/#outputpublicpath
-
-  Note: WebPack 5 has an 'auto' option for the public path which could allow us to remove this option
-  Note 2: If you are using web-workers, you might need to reset the public path, see:
-  https://gitlab.com/gitlab-org/gitlab/-/issues/321656
-   */
-
-  const manualEntries = {
-    default: defaultEntries,
-    legacy_sentry: './sentry/legacy_index.js',
-    sentry: './sentry/index.js',
-    performance_bar: './performance_bar/index.js',
-    jira_connect_app: './jira_connect/subscriptions/index.js',
-    sandboxed_mermaid: './lib/mermaid.js',
-    redirect_listbox: './entrypoints/behaviors/redirect_listbox.js',
-    sandboxed_swagger: './lib/swagger.js',
-    super_sidebar: './entrypoints/super_sidebar.js',
-    tracker: './entrypoints/tracker.js',
-    analytics: './entrypoints/analytics.js',
-  };
-
-  return Object.assign(manualEntries, incrementalCompiler.filterEntryPoints(autoEntries));
-}
 
 const alias = {
   // Map Apollo client to apollo/client/core to prevent react related imports from being loaded
@@ -297,7 +213,10 @@ let shouldExcludeFromCompliling = (modulePath) =>
 // between Vue.js 2 and Vue.js 3 while using built gitlab-ui by default
 if (EXPLICIT_VUE_VERSION) {
   Object.assign(alias, {
-    '@gitlab/ui/dist/tokens/js': path.join(ROOT_PATH, 'node_modules/@gitlab/ui/dist/tokens/js'),
+    '@gitlab/ui/src/tokens/build/js': path.join(
+      ROOT_PATH,
+      'node_modules/@gitlab/ui/src/tokens/build/js',
+    ),
     '@gitlab/ui/dist': '@gitlab/ui/src',
     '@gitlab/ui': '@gitlab/ui/src',
   });
@@ -322,12 +241,46 @@ if (USE_VUE3) {
   vueLoaderOptions.compiler = require.resolve('./vue3migration/compiler');
 }
 
+const entriesState = {
+  autoEntriesCount: 0,
+  watchAutoEntries: [],
+};
+const defaultEntries = ['./main'];
+
 module.exports = {
+  /*
+    If there is a compilation error in production, we want to exit immediately
+    https://v4.webpack.js.org/configuration/other-options/#bail
+   */
+  bail: !IS_DEV_SERVER,
   mode: IS_PRODUCTION ? 'production' : 'development',
 
   context: path.join(ROOT_PATH, 'app/assets/javascripts'),
 
-  entry: generateEntries,
+  entry: () => {
+    /*
+    If you create manual entries, ensure that these import `app/assets/javascripts/webpack.js` right at
+    the top of the entry in order to ensure that the public path is correctly determined for loading
+    assets async. See: https://webpack.js.org/configuration/output/#outputpublicpath
+
+    Note: WebPack 5 has an 'auto' option for the public path which could allow us to remove this option
+    Note 2: If you are using web-workers, you might need to reset the public path, see:
+    https://gitlab.com/gitlab-org/gitlab/-/issues/321656
+     */
+    return {
+      default: defaultEntries,
+      sentry: './sentry/index.js',
+      performance_bar: './performance_bar/index.js',
+      jira_connect_app: './jira_connect/subscriptions/index.js',
+      sandboxed_mermaid: './lib/mermaid.js',
+      redirect_listbox: './entrypoints/behaviors/redirect_listbox.js',
+      sandboxed_swagger: './lib/swagger.js',
+      super_sidebar: './entrypoints/super_sidebar.js',
+      tracker: './entrypoints/tracker.js',
+      analytics: './entrypoints/analytics.js',
+      ...incrementalCompiler.filterEntryPoints(generateEntries({ defaultEntries, entriesState })),
+    };
+  },
 
   output: {
     path: WEBPACK_OUTPUT_PATH,
@@ -353,12 +306,22 @@ module.exports = {
         use: [],
       },
       {
+        test: /(@gitlab\/web-ide).*\.js?$/,
+        include: /node_modules/,
+        loader: 'babel-loader',
+      },
+      {
         test: /(@cubejs-client\/(vue|core)).*\.(js)?$/,
         include: /node_modules/,
         loader: 'babel-loader',
       },
       {
         test: /gridstack\/.*\.js$/,
+        include: /node_modules/,
+        loader: 'babel-loader',
+      },
+      {
+        test: /jsonc-parser\/.*\.js$/,
         include: /node_modules/,
         loader: 'babel-loader',
       },
@@ -382,11 +345,28 @@ module.exports = {
         loader: 'babel-loader',
       },
       {
+        test: /marked\/.*\.js?$/,
+        include: /node_modules/,
+        loader: 'babel-loader',
+      },
+      {
         test: /swagger-ui-dist\/.*\.js?$/,
         include: /node_modules/,
         loader: 'babel-loader',
         options: {
           plugins: ['@babel/plugin-transform-logical-assignment-operators'],
+          ...defaultJsOptions,
+        },
+      },
+      {
+        test: /@swagger-api\/apidom-.*\.[mc]?js$/,
+        include: /node_modules/,
+        loader: 'babel-loader',
+        options: {
+          plugins: [
+            '@babel/plugin-transform-class-properties',
+            '@babel/plugin-transform-logical-assignment-operators',
+          ],
           ...defaultJsOptions,
         },
       },
@@ -521,7 +501,7 @@ module.exports = {
           priority: 20,
           name: 'main',
           chunks: 'initial',
-          minChunks: autoEntriesCount * 0.9,
+          minChunks: entriesState.autoEntriesCount * 0.9,
         }),
         prosemirror: {
           priority: 17,
@@ -696,6 +676,42 @@ module.exports = {
       resource.request = path.join(ROOT_PATH, 'app/assets/javascripts/lib/markdown_it.js');
     }),
 
+    /*
+     The following `NormalModuleReplacementPlugin` adds support for exports field in `package.json`.
+     It might not necessarily be needed for all packages which expose it, but some packages
+     need it because they use the exports internally.
+
+     Webpack 4 doesn't have support for it, while vite does.
+     See also: https://github.com/webpack/webpack/issues/9509
+     */
+    ...['@swagger-api/apidom-reference'].map((packageName) => {
+      const packageJSON = fs.readFileSync(
+        path.join(ROOT_PATH, 'node_modules', packageName, 'package.json'),
+        'utf-8',
+      );
+      const { exports } = JSON.parse(packageJSON);
+      const regex = new RegExp(`^${packageName}`);
+      return new webpack.NormalModuleReplacementPlugin(regex, (resource) => {
+        const { request } = resource;
+        if (!request.endsWith('.js') && !request.endsWith('.mjs') && !request.endsWith('.cjs')) {
+          const relative = `./${path.relative(packageName, request)}`;
+          if (exports[relative]?.browser?.import || exports[relative]?.import) {
+            const newRequest = path.join(
+              packageName,
+              exports[relative]?.browser?.import || exports[relative]?.import,
+            );
+            console.log(`[exports-replacer]: ${request} => ${newRequest}`);
+            // eslint-disable-next-line no-param-reassign
+            resource.request = newRequest;
+          } else {
+            console.warn(
+              `[exports-replacer]: Could not find import field for ${relative} in exports of [${packageName}]`,
+            );
+          }
+        }
+      });
+    }),
+
     !IS_JH &&
       new webpack.NormalModuleReplacementPlugin(/^jh_component\/(.*)\.vue/, (resource) => {
         // eslint-disable-next-line no-param-reassign
@@ -706,34 +722,7 @@ module.exports = {
       }),
 
     new CopyWebpackPlugin({
-      patterns: [
-        {
-          from: path.join(ROOT_PATH, 'node_modules/pdfjs-dist/cmaps/'),
-          to: path.join(WEBPACK_OUTPUT_PATH, 'pdfjs/cmaps/'),
-        },
-        {
-          from: path.join(ROOT_PATH, 'node_modules/pdfjs-dist/legacy/build/pdf.worker.min.js'),
-          to: path.join(WEBPACK_OUTPUT_PATH, 'pdfjs/'),
-        },
-        {
-          from: path.join(ROOT_PATH, 'node_modules', SOURCEGRAPH_PACKAGE, '/'),
-          to: SOURCEGRAPH_OUTPUT_PATH,
-          globOptions: {
-            ignore: ['package.json'],
-          },
-        },
-        {
-          from: path.join(ROOT_PATH, 'node_modules', GITLAB_WEB_IDE_PACKAGE, 'dist', 'public'),
-          to: GITLAB_WEB_IDE_OUTPUT_PATH,
-        },
-        {
-          from: path.join(
-            ROOT_PATH,
-            'node_modules/@gitlab/visual-review-tools/dist/visual_review_toolbar.js',
-          ),
-          to: WEBPACK_OUTPUT_PATH,
-        },
-      ],
+      patterns: copyFilesPatterns,
     }),
 
     // compression can require a lot of compute time and is disabled in CI
@@ -754,14 +743,16 @@ module.exports = {
           if (hasMissingNodeModules) compilation.contextDependencies.add(nodeModulesPath);
 
           // watch for changes to automatic entrypoints
-          watchAutoEntries.forEach((watchPath) => compilation.contextDependencies.add(watchPath));
+          entriesState.watchAutoEntries.forEach((watchPath) =>
+            compilation.contextDependencies.add(watchPath),
+          );
 
           // report our auto-generated bundle count
           if (incrementalCompiler.enabled) {
-            incrementalCompiler.logStatus(autoEntriesCount);
+            incrementalCompiler.logStatus(entriesState.autoEntriesCount);
           } else {
             console.log(
-              `${autoEntriesCount} entries from '/pages' automatically added to webpack output.`,
+              `${entriesState.autoEntriesCount} entries from '/pages' automatically added to webpack output.`,
             );
           }
 

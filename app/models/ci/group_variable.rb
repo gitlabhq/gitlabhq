@@ -5,6 +5,7 @@ module Ci
     include Ci::HasVariable
     include Ci::Maskable
     include Ci::RawVariable
+    include Ci::HidableVariable
     include Limitable
     include Presentable
 
@@ -21,10 +22,10 @@ module Ci
     }
 
     scope :unprotected, -> { where(protected: false) }
-    scope :by_environment_scope, -> (environment_scope) { where(environment_scope: environment_scope) }
+    scope :by_environment_scope, ->(environment_scope) { where(environment_scope: environment_scope) }
     scope :for_groups, ->(group_ids) { where(group_id: group_ids) }
 
-    scope :for_environment_scope_like, -> (query) do
+    scope :for_environment_scope_like, ->(query) do
       top_level = 'LOWER(ci_group_variables.environment_scope) LIKE LOWER(?) || \'%\''
       search_like = "%#{sanitize_sql_like(query)}%"
 

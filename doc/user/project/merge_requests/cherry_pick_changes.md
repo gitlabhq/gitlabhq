@@ -2,20 +2,23 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: "Cherry-pick a Git commit when you want to add a single commit from one branch to another."
 ---
 
 # Cherry-pick changes
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
-
-> Feature flag `pick_into_project` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/324154) in GitLab 14.0.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 In Git, *cherry-picking* is taking a single commit from one branch and adding it
 as the latest commit on another branch. The rest of the commits in the source branch
 are not added to the target. Cherry-pick a commit when you need the
-contents in a single commit, but not the contents of the entire branch.
+contents in a single commit, but not the contents of the entire branch. For example,
+when you:
+
+- Backport bug fixes from the default branch to previous release branches.
+- Copy changes from a fork to the upstream repository.
 
 Use the GitLab UI to cherry-pick a single commit or the contents of an entire merge request
 from a project or a project fork.
@@ -40,10 +43,6 @@ gitGraph
  checkout develop
  commit id:"H"
 ```
-
-Commits cherry-picked from the command line
-do not appear in the GitLab UI. For more information,
-see [issue 202215](https://gitlab.com/gitlab-org/gitlab/-/issues/202215).
 
 ## Cherry-pick all changes from a merge request
 
@@ -106,6 +105,60 @@ when you view that file in your project's Git repository:
 1. Optional. Select **Start a new merge request with these changes**.
 1. Select **Cherry-pick**.
 
+### From the command line
+
+You can cherry-pick commits from one branch to another using the `git` command-line interface.
+
+In this example, you cherry-pick a commit from a feature branch (`feature`) into a different branch (`develop`).
+
+1. Check out the default branch, then check out a new `develop` branch based on it:
+
+   ```shell
+   git checkout main
+   git checkout -b develop
+   ```
+
+1. Change back to the feature branch:
+
+   ```shell
+   git checkout feature
+   ```
+
+1. Make your changes, then commit them:
+
+   ```shell
+   git add changed_file.rb
+   git commit -m 'Fix bugs in changed_file.rb'
+   ```
+
+1. Display the commit log:
+
+   ```shell
+   $ git log
+
+   commit 0000011111222223333344444555556666677777
+   Merge: 88888999999 aaaaabbbbbb
+   Author: user@example.com
+   Date:   Tue Aug 31 21:19:41 2021 +0000
+   ```
+
+1. Identify the `commit` line, and copy the string of letters and numbers on that line.
+   This information is the SHA (Secure Hash Algorithm) of the commit. The SHA is
+   a unique identifier for this commit, and you need it in a future step.
+
+1. Now that you know the SHA, check out the `develop` branch again:
+
+   ```shell
+   git checkout develop
+   ```
+
+1. Cherry-pick the commit into the `develop` branch, and change `SHA` to your commit
+   SHA:
+
+   ```shell
+   git cherry-pick SHA
+   ```
+
 ## View system notes for cherry-picked commits
 
 When you cherry-pick a merge commit in the GitLab UI or API, GitLab adds a [system note](../system_notes.md)
@@ -122,6 +175,7 @@ Commits cherry-picked outside the GitLab UI or API do not add a system note.
 ## Related topics
 
 - [Commits API](../../../api/commits.md)
+- Git documentation [for cherry-picks](https://git-scm.com/docs/git-cherry-pick)
 
 ## Troubleshooting
 

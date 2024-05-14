@@ -48,7 +48,7 @@ RSpec.describe Gitlab::UsageDataMetrics, :with_license, feature_category: :servi
       end
 
       it 'includes settings keys' do
-        expect(subject[:settings]).to include(:collected_data_categories)
+        expect(subject[:settings]).to include(:allow_runner_registration_token, :collected_data_categories)
       end
 
       describe 'Redis_HLL_counters' do

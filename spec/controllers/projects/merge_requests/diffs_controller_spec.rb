@@ -142,11 +142,7 @@ RSpec.describe Projects::MergeRequests::DiffsController, feature_category: :code
   let(:merge_request) { create(:merge_request_with_diffs, target_project: project, source_project: project) }
 
   let_it_be_with_reload(:user) { create(:user) }
-  let_it_be(:other_project) { create(:project) }
-
-  before_all do
-    other_project.add_maintainer(user)
-  end
+  let_it_be(:other_project) { create(:project, maintainers: user) }
 
   before do
     project.add_maintainer(user) if maintainer
@@ -739,22 +735,9 @@ RSpec.describe Projects::MergeRequests::DiffsController, feature_category: :code
       end
     end
 
-    context 'when collapse_generated_diff_files FF is enabled' do
-      it 'sets generated' do
-        go
-        expect(json_response["diff_files"][0]["viewer"]["generated"]).to eq(false)
-      end
-    end
-
-    context 'when collapse_generated_diff_files FF is disabled' do
-      before do
-        stub_feature_flags(collapse_generated_diff_files: false)
-      end
-
-      it 'sets generated as nil' do
-        go
-        expect(json_response["diff_files"][0]["viewer"]["generated"]).to be_nil
-      end
+    it 'sets generated' do
+      go
+      expect(json_response["diff_files"][0]["viewer"]["generated"]).to eq(false)
     end
   end
 end

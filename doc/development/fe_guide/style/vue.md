@@ -548,13 +548,13 @@ describe('MyComponent', () => {
 
    ```javascript
    // bad
-   function createComponent(data, props, methods, isLoading, mountFn) { }
+   function createComponent(props, stubs, mountFn, foo) { }
 
    // good
-   function createComponent({ data, props, methods, stubs, isLoading } = {}) { }
+   function createComponent({ props, stubs, mountFn, foo } = {}) { }
 
    // good
-   function createComponent(props = {}, { data, methods, stubs, isLoading } = {}) { }
+   function createComponent(props = {}, { stubs, mountFn, foo } = {}) { }
    ```
 
 1. If you require both `mount` _and_ `shallowMount` within the same set of tests, it
@@ -579,6 +579,30 @@ describe('MyComponent', () => {
    const someButton = () => wrapper.findByTestId('someButtonTestId');
    ```
 
+1. Avoid using `data`, `methods`, or any other mounting option that extends component internals.
+
+  ```javascript
+  import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+  import { SomeComponent } from 'components/some_component.vue';
+
+  let wrapper;
+
+  // bad :( - This circumvents the actual user interaction and couples the test to component internals.
+  const createWrapper = ({ data }) => {
+    wrapper = shallowMountExtended(SomeComponent, {
+      data
+    });
+  };
+
+  // good :) - Helpers like `clickShowButton` interact with the actual I/O of the component.
+  const createWrapper = () => {
+    wrapper = shallowMountExtended(SomeComponent);
+  };
+  const clickShowButton = () => {
+    wrapper.findByTestId('show').trigger('click');
+  }
+  ```
+
 ### Setting component state
 
 1. Avoid using [`setProps`](https://v1.test-utils.vuejs.org/api/wrapper/#setprops) to set
@@ -599,6 +623,10 @@ describe('MyComponent', () => {
    The exception here is when you wish to test component reactivity in some way.
    For example, you may want to test the output of a component when after a particular watcher has
    executed. Using `setProps` to test such behavior is okay.
+
+1. Avoid using [`setData`](https://v1.test-utils.vuejs.org/api/wrapper/#setdata) which sets the
+   component's internal state and circumvents testing the actual I/O of the component.
+   Instead, trigger events on the component's children or other side-effects to force state changes.
 
 ### Accessing component state
 

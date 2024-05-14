@@ -59,7 +59,7 @@ module Gitlab
         # non-opening tags (e.g. `{foo}`) as text, but not opening tags
         # themselves (e.g. `{{`).
         (
-          char.repeat(1) | curly_open >> (curly_open | percent).absent?
+          char.repeat(1) | (curly_open >> (curly_open | percent).absent?)
         ).repeat(1)
       end
 

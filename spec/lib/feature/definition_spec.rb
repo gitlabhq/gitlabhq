@@ -55,11 +55,22 @@ RSpec.describe Feature::Definition do
   end
 
   describe '#valid_usage!' do
+    let(:attributes) do
+      { name: 'feature_flag',
+        type: 'beta',
+        default_enabled: true }
+    end
+
+    let(:path) { File.join('beta', 'feature_flag.yml') }
+
     it 'raises exception for invalid type' do
+      expected_error_message = "The given `type: :invalid` for `feature_flag` is not equal to the " \
+                               ":beta set in its definition file. Ensure to use a valid type " \
+                               "in beta/feature_flag.yml or ensure that you use a valid syntax:\n\n" \
+                               "Feature.enabled?(:my_feature_flag, project, type: :beta)\n" \
+                               "push_frontend_feature_flag(:my_feature_flag, project)\n"
       expect { definition.valid_usage!(type_in_code: :invalid) }
-        .to raise_error(
-          /The given `type: :invalid` for `feature_flag` is not equal to the :development set in its definition file./
-        )
+        .to raise_error(Feature::InvalidFeatureFlagError, expected_error_message)
     end
   end
 

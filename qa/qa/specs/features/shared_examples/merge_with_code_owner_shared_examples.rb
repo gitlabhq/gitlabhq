@@ -24,12 +24,12 @@ module QA
       ])
 
       # Require approval from code owners on the default branch
-      protected_branch = Resource::ProtectedBranch.fabricate_via_api! do |branch|
-        branch.project = project
-        branch.branch_name = project.default_branch
-        branch.new_branch = false
-        branch.require_code_owner_approval = true
-      end
+      protected_branch = create(:protected_branch,
+        project: project,
+        branch_name: project.default_branch,
+        new_branch: false,
+        require_code_owner_approval: true)
+
       protected_branch.set_require_code_owner_approval
 
       # Push a change to the file with a CODEOWNERS rule

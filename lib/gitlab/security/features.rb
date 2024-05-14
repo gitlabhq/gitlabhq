@@ -31,7 +31,7 @@ module Gitlab
               text: _('Available on demand'),
               tooltip_text: _(
                 'On-demand scans run outside of the DevOps cycle and find vulnerabilities in your projects'),
-              variant: 'info'
+              variant: 'neutral'
             },
             secondary: {
               type: 'dast_profiles',
@@ -69,13 +69,22 @@ module Gitlab
               'user/application_security/container_scanning/index', anchor: 'configuration'),
             type: 'container_scanning'
           },
-          secret_detection: {
-            name: _('Secret Detection'),
-            description: _('Analyze your source code and git history for secrets.'),
+          pre_receive_secret_detection: {
+            name: _('Pre-receive Secret Detection'),
+            description: _('Block secrets such as keys and API tokens from being pushed to your repositories. ' \
+                           'Pre-receive secret detection is triggered when commits are pushed to a repository. ' \
+                           'If any secrets are detected, the push is blocked.'),
             help_path: Gitlab::Routing.url_helpers.help_page_path(
-              'user/application_security/secret_detection/index'),
+              'user/application_security/secret_detection/pre_receive/index'),
+            type: 'pre_receive_secret_detection'
+          },
+          secret_detection: {
+            name: _('Pipeline Secret Detection'),
+            description: _('Analyze your source code and Git history for secrets by using CI/CD pipelines.'),
+            help_path: Gitlab::Routing.url_helpers.help_page_path(
+              'user/application_security/secret_detection/pipeline/index'),
             configuration_help_path: Gitlab::Routing.url_helpers.help_page_path(
-              'user/application_security/secret_detection/index', anchor: 'configuration'),
+              'user/application_security/secret_detection/pipeline/index', anchor: 'configuration'),
             type: 'secret_detection'
           },
           api_fuzzing: {
@@ -108,7 +117,7 @@ module Gitlab
               text: s_('SecurityConfiguration|Incubating feature'),
               tooltip_text: s_('SecurityConfiguration|Breach and Attack Simulation is an incubating ' \
                                'feature extending existing security testing by simulating adversary activity.'),
-              variant: 'info'
+              variant: 'neutral'
             },
             description: s_('SecurityConfiguration|Simulate breach and attack scenarios against your ' \
                             'running application by attempting to detect and exploit known vulnerabilities.'),

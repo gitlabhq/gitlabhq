@@ -68,6 +68,10 @@
     }
   }
 
+  details[open] summary {
+    margin-bottom: $gl-padding;
+  }
+
   summary > * {
     display: inline-block;
     margin-bottom: 0;
@@ -76,6 +80,7 @@
   // Single code lines should wrap
   code {
     font-family: $monospace-font;
+    vertical-align: bottom;
     white-space: pre-wrap;
     // Safari
     word-wrap: break-word;
@@ -136,7 +141,7 @@
     margin-bottom: $gl-spacing-scale-3;
     margin-left: 0;
     margin-right: 0;
-    @include gl-inset-border-l-4-gray-100;
+    @apply gl-shadow-inner-l-4-gray-100;
 
     &:dir(rtl) {
       border-left: 0;
@@ -149,6 +154,19 @@
 
       &:last-child {
         margin: 0;
+      }
+    }
+
+    // ensure quoted lists are styled the same as normal lists
+    > ul {
+      list-style-type: disc;
+
+      ul {
+        list-style-type: circle;
+
+        ul {
+          list-style-type: square;
+        }
       }
     }
   }
@@ -457,6 +475,24 @@
     .drag-icon {
       color: $gl-text-color;
     }
+
+    // If an inapplicable task list item contains labels or <kbd>s, strike them
+    // out as well.
+    .gl-label, kbd {
+      text-decoration: line-through;
+      text-decoration-color: $gl-text-color-disabled;
+      vertical-align: text-bottom;
+    }
+  }
+
+  a.gfm-gollum-wiki-page {
+    &::before {
+      margin-right: 4px;
+      vertical-align: -2px;
+
+      @include gl-dark-invert-keep-hue;
+      content: url('sprite_icons/document.svg');
+    }
   }
 
   a.with-attachment-icon,
@@ -464,15 +500,14 @@
   a[href*='storage.googleapis.com/google-code-attachments/'] {
     &::before {
       margin-right: 4px;
+      vertical-align: -2px;
 
-      font-style: normal;
-      font-size: inherit;
-      text-rendering: auto;
-      -webkit-font-smoothing: antialiased;
-      content: '📎';
+      @include gl-dark-invert-keep-hue;
+      content: url('sprite_icons/paperclip.svg');
     }
   }
 
+  a[href*='/wikis/'],
   a[href*='/uploads/'],
   a[href*='storage.googleapis.com/google-code-attachments/'] {
     &.no-attachment-icon {
@@ -565,6 +600,30 @@
 
   .admonitionblock td.icon .icon-caution::before {
     content: '🔥';
+  }
+
+  .admonitionblock, .sidebarblock, .openblock, .exampleblock {
+    margin: $gl-padding 0 $gl-padding;
+  }
+
+  .sidebarblock {
+    background: $gray-darker;
+    padding: $gl-padding-12 $gl-padding-24;
+    border-radius: $gl-border-radius-large;
+
+    p {
+      margin: 0;
+    }
+  }
+
+  .exampleblock > div:nth-of-type(1) {
+    border: $gl-border-size-3 solid $border-color;
+    border-radius: $gl-border-radius-base;
+    padding: $gl-padding-12 $gl-padding-24;
+
+    p {
+      margin: 0;
+    }
   }
 
   .fa-square-o::before {

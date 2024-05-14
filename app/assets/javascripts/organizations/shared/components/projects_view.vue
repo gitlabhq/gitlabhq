@@ -2,11 +2,18 @@
 import { GlLoadingIcon, GlEmptyState, GlKeysetPagination } from '@gitlab/ui';
 import { s__, __ } from '~/locale';
 import ProjectsList from '~/vue_shared/components/projects_list/projects_list.vue';
+import { ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
 import { DEFAULT_PER_PAGE } from '~/api';
+import { deleteProject } from '~/rest_api';
 import { createAlert } from '~/alert';
+import {
+  renderDeleteSuccessToast,
+  deleteParams,
+  formatProjects,
+  timestampType,
+} from 'ee_else_ce/organizations/shared/utils';
 import { SORT_ITEM_NAME, SORT_DIRECTION_ASC } from '../constants';
 import projectsQuery from '../graphql/queries/projects.query.graphql';
-import { formatProjects } from '../utils';
 import NewProjectButton from './new_project_button.vue';
 
 export default {
@@ -14,14 +21,16 @@ export default {
     errorMessage: s__(
       'Organization|An error occurred loading the projects. Please refresh the page to try again.',
     ),
+    deleteErrorMessage: s__(
+      'Organization|An error occurred deleting the project. Please refresh the page to try again.',
+    ),
     emptyState: {
       title: s__("Organization|You don't have any projects yet."),
       description: s__(
         'GroupsEmptyState|Projects are where you can store your code, access issues, wiki, and other features of GitLab.',
       ),
     },
-    prev: __('Prev'),
-    next: __('Next'),
+    project: __('Project'),
   },
   components: {
     ProjectsList,
@@ -87,6 +96,8 @@ export default {
       variables() {
         return {
           id: this.organizationGid,
+          search: this.search,
+          sort: this.sort,
           ...this.pagination,
         };
       },
@@ -99,13 +110,6 @@ export default {
           nodes: formatProjects(nodes),
           pageInfo,
         };
-      },
-      result() {
-        this.$emit('page-change', {
-          endCursor: this.pagination.after,
-          startCursor: this.pagination.before,
-          hasPreviousPage: this.pageInfo.hasPreviousPage,
-        });
       },
       error(error) {
         createAlert({ message: this.$options.i18n.errorMessage, error, captureError: true });
@@ -136,6 +140,9 @@ export default {
         before: this.startCursor,
       };
     },
+    sort() {
+      return `${this.sortName}_${this.sortDirection}`;
+    },
     isLoading() {
       return this.$apollo.queries.projects.loading;
     },
@@ -148,6 +155,9 @@ export default {
       };
 
       return baseProps;
+    },
+    timestampType() {
+      return timestampType(this.sortName);
     },
   },
   methods: {
@@ -163,6 +173,23 @@ export default {
         startCursor,
       });
     },
+    setProjectIsDeleting(nodeIndex, value) {
+      this.projects.nodes[nodeIndex].actionLoadingStates[ACTION_DELETE] = value;
+    },
+    async deleteProject(project) {
+      const nodeIndex = this.projects.nodes.findIndex((node) => node.id === project.id);
+
+      try {
+        this.setProjectIsDeleting(nodeIndex, true);
+        await deleteProject(project.id, deleteParams(project));
+        this.$apollo.queries.projects.refetch();
+        renderDeleteSuccessToast(project, this.$options.i18n.project);
+      } catch (error) {
+        createAlert({ message: this.$options.i18n.deleteErrorMessage, error, captureError: true });
+      } finally {
+        this.setProjectIsDeleting(nodeIndex, false);
+      }
+    },
   },
 };
 </script>
@@ -170,15 +197,15 @@ export default {
 <template>
   <gl-loading-icon v-if="isLoading" class="gl-mt-5" size="md" />
   <div v-else-if="nodes.length">
-    <projects-list :projects="nodes" show-project-icon :list-item-class="listItemClass" />
+    <projects-list
+      :projects="nodes"
+      show-project-icon
+      :list-item-class="listItemClass"
+      :timestamp-type="timestampType"
+      @delete="deleteProject"
+    />
     <div v-if="pageInfo.hasNextPage || pageInfo.hasPreviousPage" class="gl-text-center gl-mt-5">
-      <gl-keyset-pagination
-        v-bind="pageInfo"
-        :prev-text="$options.i18n.prev"
-        :next-text="$options.i18n.next"
-        @prev="onPrev"
-        @next="onNext"
-      />
+      <gl-keyset-pagination v-bind="pageInfo" @prev="onPrev" @next="onNext" />
     </div>
   </div>
   <gl-empty-state v-else v-bind="emptyStateProps">

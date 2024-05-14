@@ -31,7 +31,7 @@ module Analytics
         {
           identifiers[:projects] => -> { Project },
           identifiers[:users] => -> { User },
-          identifiers[:issues] => -> { Issue },
+          identifiers[:issues] => -> { Issue.where.not(project_id: nil) }, # Excludes group-level issues
           identifiers[:merge_requests] => -> { MergeRequest },
           identifiers[:groups] => -> { Group },
           identifiers[:pipelines] => -> { Ci::Pipeline },
@@ -44,7 +44,13 @@ module Analytics
 
       # Customized min and max calculation, in some cases using the original scope is too slow.
       def self.identifier_min_max_queries
-        {}
+        {
+          # Increase query performance by not using filters when fetching min/max ids
+          identifiers[:issues] => {
+            minimum_query: -> { ::Issue.minimum(:id) },
+            maximum_query: -> { ::Issue.maximum(:id) }
+          }
+        }
       end
 
       def self.measurement_identifier_values

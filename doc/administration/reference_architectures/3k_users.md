@@ -4,14 +4,13 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Reference architecture: up to 3,000 users
+# Reference architecture: Up to 60 RPS or 3,000 users
 
 DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** Self-managed
 
-This page describes the GitLab reference architecture designed for the load of up to 3,000 users
-with notable headroom.
+This page describes the GitLab reference architecture designed to target a peak load of 60 requests per second (RPS), the typical peak load of up to 3,000 users, both manual and automated, based on real data.
 
 This architecture is the smallest one available with HA built in. If you require HA but
 have a lower user count or total load the [Supported Modifications for lower user counts](#supported-modifications-for-lower-user-counts-ha)
@@ -24,16 +23,16 @@ For a full list of reference architectures, see
 > - **High Availability:** Yes, although [Praefect](#configure-praefect-postgresql) needs a third-party PostgreSQL solution
 > - **Estimated Costs:** [See cost table](index.md#cost-to-run)
 > - **Cloud Native Hybrid Alternative:** [Yes](#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative)
-> - **Unsure which Reference Architecture to use?** [Go to this guide for more info](index.md#deciding-which-architecture-to-use).
+> - **Unsure which Reference Architecture to use?** [Go to this guide for more info](index.md#deciding-which-architecture-to-start-with).
 
 | Service                                   | Nodes | Configuration         | GCP             | AWS          | Azure    |
 |-------------------------------------------|-------|-----------------------|-----------------|--------------|----------|
-| External load balancing node<sup>3</sup>  | 1     | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
+| External load balancer<sup>3</sup>        | 1     | 4 vCPU, 3.6 GB memory | `n1-highcpu-4`  | `c5n.xlarge` | `F4s v2` |
 | Redis<sup>2</sup>                         | 3     | 2 vCPU, 7.5 GB memory | `n1-standard-2` | `m5.large`   | `D2s v3` |
 | Consul<sup>1</sup> + Sentinel<sup>2</sup> | 3     | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
 | PostgreSQL<sup>1</sup>                    | 3     | 2 vCPU, 7.5 GB memory | `n1-standard-2` | `m5.large`   | `D2s v3` |
 | PgBouncer<sup>1</sup>                     | 3     | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
-| Internal load balancing node<sup>3</sup>  | 1     | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
+| Internal load balancer<sup>3</sup>        | 1     | 4 vCPU, 3.6 GB memory | `n1-highcpu-4`  | `c5n.xlarge` | `F4s v2` |
 | Gitaly<sup>5</sup>                        | 3     | 4 vCPU, 15 GB memory<sup>6</sup> | `n1-standard-4` | `m5.xlarge`  | `D4s v3` |
 | Praefect<sup>5</sup>                      | 3     | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
 | Praefect PostgreSQL<sup>1</sup>           | 1+    | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
@@ -42,22 +41,26 @@ For a full list of reference architectures, see
 | Monitoring node                           | 1     | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
 | Object storage<sup>4</sup>                | -     | -                     | -               | -            | -        |
 
+**Footnotes:**
+
 <!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
 <!-- markdownlint-disable MD029 -->
 1. Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. See [Provide your own PostgreSQL instance](#provide-your-own-postgresql-instance) for more information.
 2. Can be optionally run on reputable third-party external PaaS Redis solutions. See [Provide your own Redis instance](#provide-your-own-redis-instance) for more information.
-3. Can be optionally run on reputable third-party load balancing services (LB PaaS). See [Recommended cloud providers and services](index.md#recommended-cloud-providers-and-services) for more information.
+3. Recommended to be run with a reputable third-party load balancer or service (LB PaaS) which can provide HA capabilities.
+   Also note that sizing depends on selected Load Balancer as well as additional factors such as Network Bandwidth. Refer to [Load Balancers](index.md#load-balancers) for more information.
 4. Should be run on reputable Cloud Provider or Self Managed solutions. See [Configure the object storage](#configure-the-object-storage) for more information.
 5. Gitaly Cluster provides the benefits of fault tolerance, but comes with additional complexity of setup and management.
    Review the existing [technical limitations and considerations before deploying Gitaly Cluster](../gitaly/index.md#before-deploying-gitaly-cluster). If you want sharded Gitaly, use the same specs listed above for `Gitaly`.
-6. Gitaly specifications are based on high percentiles of both usage patterns and repository sizes in good health.
+1. Gitaly specifications are based on high percentiles of both usage patterns and repository sizes in good health.
    However, if you have [large monorepos](index.md#large-monorepos) (larger than several gigabytes) or [additional workloads](index.md#additional-workloads) these can *significantly* impact Git and Gitaly performance and further adjustments will likely be required.
-7. Can be placed in Auto Scaling Groups (ASGs) as the component doesn't store any [stateful data](index.md#autoscaling-of-stateful-nodes).
-   However, for GitLab Rails certain processes like [migrations](#gitlab-rails-post-configuration) and [Mailroom](../incoming_email.md) should be run on only one node.
+6. Can be placed in Auto Scaling Groups (ASGs) as the component doesn't store any [stateful data](index.md#autoscaling-of-stateful-nodes).
+   However, [Cloud Native Hybrid setups](#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative) are generally preferred as certain components
+   such as like [migrations](#gitlab-rails-post-configuration) and [Mailroom](../incoming_email.md) can only be run on one node, which is handled better in Kubernetes.
 <!-- markdownlint-enable MD029 -->
 
 NOTE:
-For all PaaS solutions that involve configuring instances, it is strongly recommended to implement a minimum of three nodes in three different availability zones to align with resilient cloud architecture practices.
+For all PaaS solutions that involve configuring instances, it's recommended to implement a minimum of three nodes in three different availability zones to align with resilient cloud architecture practices.
 
 ```plantuml
 @startuml 3k
@@ -149,7 +152,7 @@ Before starting, see the [requirements](index.md#requirements) for reference arc
 ## Testing methodology
 
 The 3k architecture is designed to cover a large majority of workflows and is regularly
-[smoke and performance tested](index.md#validation-and-test-results) by the Quality Engineering team
+[smoke and performance tested](index.md#validation-and-test-results) by the Test Platform team
 against the following endpoint throughput targets:
 
 - API: 60 RPS
@@ -158,7 +161,7 @@ against the following endpoint throughput targets:
 - Git (Push): 1 RPS
 
 The above targets were selected based on real customer data of total environmental loads corresponding to the user count,
-including CI and other workloads along with additional substantial headroom added.
+including CI and other workloads.
 
 If you have metrics to suggest that you have regularly higher throughput against the above endpoint targets, [large monorepos](index.md#large-monorepos)
 or notable [additional workloads](index.md#additional-workloads) these can notably impact the performance environment and [further adjustments may be required](index.md#scaling-an-environment).
@@ -169,13 +172,13 @@ The results of this testing are [available publicly on the GPT wiki](https://git
 
 The load balancers used for testing were HAProxy for Linux package environments or equivalent Cloud Provider services via NGINX Ingress for Cloud Native Hybrids. Note that these selections do not represent a specific requirement or recommendation as most [reputable load balancers are expected to work](#configure-the-external-load-balancer).
 
-## Setup components
+## Set up components
 
-To set up GitLab and its components to accommodate up to 3,000 users:
+To set up GitLab and its components to accommodate up to 60 RPS or 3,000 users:
 
 1. [Configure the external load balancer](#configure-the-external-load-balancer)
    to handle the load balancing of the GitLab application services nodes.
-1. [Configure the internal load balancer](#configure-the-internal-load-balancer).
+1. [Configure the internal load balancer](#configure-the-internal-load-balancer)
    to handle the load balancing of GitLab application internal connections.
 1. [Configure Redis](#configure-redis).
 1. [Configure Consul and Sentinel](#configure-consul-and-sentinel).
@@ -229,21 +232,13 @@ The following list includes descriptions of each server and its assigned IP:
 
 ## Configure the external load balancer
 
-In a multi-node GitLab configuration, you'll need a load balancer to route
+In a multi-node GitLab configuration, you'll need an external load balancer to route
 traffic to the application servers.
 
 The specifics on which load balancer to use, or its exact configuration
-is beyond the scope of GitLab documentation. It is expected however that any
-reputable load balancer should work and as such this section will focus on the specifics of
+is beyond the scope of GitLab documentation but refer to [Load Balancers](index.md) for more information around
+general requirements. This section will focus on the specifics of
 what to configure for your load balancer of choice.
-
-### Balancing algorithm
-
-We recommend that a least-connection load balancing algorithm or equivalent
-is used wherever possible to ensure equal spread of calls to the nodes and good performance.
-
-We don't recommend the use of round-robin algorithms as they are known to not
-spread connections equally in practice.
 
 ### Readiness checks
 
@@ -349,17 +344,21 @@ the [HTTPS documentation](https://docs.gitlab.com/omnibus/settings/ssl/index.htm
 for details on managing SSL certificates and configuring NGINX.
 
 <div align="right">
-  <a type="button" class="btn btn-default" href="#setup-components">
-    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  <a type="button" class="btn btn-default" href="#set-up-components">
+    Back to set up components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
   </a>
 </div>
 
 ## Configure the internal load balancer
 
-The Internal Load Balancer is used to balance any internal connections the GitLab environment requires
+In a multi-node GitLab configuration, you'll need an internal load balancer to route
+traffic for select internal components if configured
 such as connections to [PgBouncer](#configure-pgbouncer) and [Praefect](#configure-praefect) (Gitaly Cluster).
 
-It's a separate node from the External Load Balancer and shouldn't have any access externally.
+The specifics on which load balancer to use, or its exact configuration
+is beyond the scope of GitLab documentation but refer to [Load Balancers](index.md) for more information around
+general requirements. This section will focus on the specifics of
+what to configure for your load balancer of choice.
 
 The following IP will be used as an example:
 
@@ -413,24 +412,16 @@ backend praefect
 
 Refer to your preferred Load Balancer's documentation for further guidance.
 
-### Balancing algorithm
-
-We recommend that a least-connection load balancing algorithm or equivalent
-is used wherever possible to ensure equal spread of calls to the nodes and good performance.
-
-We don't recommend the use of round-robin algorithms as they are known to not
-spread connections equally in practice.
-
 <div align="right">
-  <a type="button" class="btn btn-default" href="#setup-components">
-    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  <a type="button" class="btn btn-default" href="#set-up-components">
+    Back to set up components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
   </a>
 </div>
 
 ## Configure Redis
 
 Using [Redis](https://redis.io/) in scalable environment is possible using a **Primary** x **Replica**
-topology with a [Redis Sentinel](https://redis.io/docs/manual/sentinel/) service to watch and automatically
+topology with a [Redis Sentinel](https://redis.io/docs/latest/operate/oss_and_stack/management/sentinel/) service to watch and automatically
 start the failover procedure.
 
 NOTE:
@@ -442,10 +433,10 @@ Redis is primarily single threaded and doesn't significantly benefit from an inc
 Refer to the [scaling documentation](index.md#scaling-an-environment) for more information.
 
 Redis requires authentication if used with Sentinel. See
-[Redis Security](https://redis.io/docs/manual/security/) documentation for more
+[Redis Security](https://redis.io/docs/latest/operate/rc/security/) documentation for more
 information. We recommend using a combination of a Redis password and tight
 firewall rules to secure your Redis service.
-You are highly encouraged to read the [Redis Sentinel](https://redis.io/docs/manual/sentinel/) documentation
+You are highly encouraged to read the [Redis Sentinel](https://redis.io/docs/latest/operate/oss_and_stack/management/sentinel/) documentation
 before configuring Redis with GitLab to fully understand the topology and
 architecture.
 
@@ -460,7 +451,7 @@ to be used with GitLab. The following IPs will be used as an example:
 
 You can optionally use a [third party external service for the Redis instance](../redis/replication_and_failover_external.md#redis-as-a-managed-service-in-a-cloud-provider) with the following guidance:
 
-- A reputable provider or solution should be used for this. [Google Memorystore](https://cloud.google.com/memorystore/docs/redis/redis-overview) and [AWS ElastiCache](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/WhatIs.html) are known to work.
+- A reputable provider or solution should be used for this. [Google Memorystore](https://cloud.google.com/memorystore/docs/redis/memorystore-for-redis-overview) and [AWS ElastiCache](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/WhatIs.html) are known to work.
 - Redis Cluster mode is specifically not supported, but Redis Standalone with HA (Redis Sentinel) **is** supported.
 - You must set the [Redis eviction mode](../redis/replication_and_failover_external.md#setting-the-eviction-policy) according to your setup.
 
@@ -637,8 +628,8 @@ Advanced [configuration options](https://docs.gitlab.com/omnibus/settings/redis.
 are supported and can be added if needed.
 
 <div align="right">
-  <a type="button" class="btn btn-default" href="#setup-components">
-    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  <a type="button" class="btn btn-default" href="#set-up-components">
+    Back to set up components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
   </a>
 </div>
 
@@ -787,8 +778,8 @@ run: sentinel: (pid 30098) 76832s; run: log: (pid 29704) 76850s
 ```
 
 <div align="right">
-  <a type="button" class="btn btn-default" href="#setup-components">
-    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  <a type="button" class="btn btn-default" href="#set-up-components">
+    Back to set up components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
   </a>
 </div>
 
@@ -957,8 +948,8 @@ Advanced [configuration options](https://docs.gitlab.com/omnibus/settings/databa
 are supported and can be added if needed.
 
 <div align="right">
-  <a type="button" class="btn btn-default" href="#setup-components">
-    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  <a type="button" class="btn btn-default" href="#set-up-components">
+    Back to set up components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
   </a>
 </div>
 
@@ -987,8 +978,8 @@ If the 'State' column for any node doesn't say "running", check the
 before proceeding.
 
 <div align="right">
-  <a type="button" class="btn btn-default" href="#setup-components">
-    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  <a type="button" class="btn btn-default" href="#set-up-components">
+    Back to set up components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
   </a>
 </div>
 
@@ -1102,8 +1093,8 @@ The following IPs will be used as an example:
    ```
 
 <div align="right">
-  <a type="button" class="btn btn-default" href="#setup-components">
-    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  <a type="button" class="btn btn-default" href="#set-up-components">
+    Back to set up components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
   </a>
 </div>
 
@@ -1215,8 +1206,8 @@ in the second step, do not supply the `EXTERNAL_URL` value.
 1. Follow the [post configuration](#praefect-postgresql-post-configuration).
 
 <div align="right">
-  <a type="button" class="btn btn-default" href="#setup-components">
-    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  <a type="button" class="btn btn-default" href="#set-up-components">
+    Back to set up components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
   </a>
 </div>
 
@@ -1278,8 +1269,8 @@ This is how this would work with a Linux package PostgreSQL setup:
    ```
 
 <div align="right">
-  <a type="button" class="btn btn-default" href="#setup-components">
-    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  <a type="button" class="btn btn-default" href="#set-up-components">
+    Back to set up components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
   </a>
 </div>
 
@@ -1687,8 +1678,8 @@ To configure Praefect with TLS:
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
 <div align="right">
-  <a type="button" class="btn btn-default" href="#setup-components">
-    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  <a type="button" class="btn btn-default" href="#set-up-components">
+    Back to set up components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
   </a>
 </div>
 
@@ -1852,8 +1843,8 @@ To configure the Sidekiq nodes, on each one:
    ```
 
 <div align="right">
-  <a type="button" class="btn btn-default" href="#setup-components">
-    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  <a type="button" class="btn btn-default" href="#set-up-components">
+    Back to set up components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
   </a>
 </div>
 
@@ -2074,8 +2065,8 @@ the [HTTPS documentation](https://docs.gitlab.com/omnibus/settings/ssl/index.htm
 1. [Configure fast lookup of authorized SSH keys in the database](../operations/fast_ssh_key_lookup.md).
 
 <div align="right">
-  <a type="button" class="btn btn-default" href="#setup-components">
-    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  <a type="button" class="btn btn-default" href="#set-up-components">
+    Back to set up components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
   </a>
 </div>
 
@@ -2149,8 +2140,8 @@ running [Prometheus](../monitoring/prometheus/index.md):
    ```
 
 <div align="right">
-  <a type="button" class="btn btn-default" href="#setup-components">
-    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  <a type="button" class="btn btn-default" href="#set-up-components">
+    Back to set up components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
   </a>
 </div>
 
@@ -2170,20 +2161,14 @@ There are two ways of specifying object storage configuration in GitLab:
 
 The consolidated form is used in the following examples when available.
 
-NOTE:
-When using the [storage-specific form](../object_storage.md#configure-each-object-type-to-define-its-own-storage-connection-storage-specific-form)
-in GitLab 14.x and earlier, you should enable [direct upload mode](../../development/uploads/index.md#direct-upload).
-The previous [background upload](../../development/uploads/index.md#direct-upload) mode,
-which was deprecated in 14.9, requires shared storage such as NFS.
-
 Using separate buckets for each data type is the recommended approach for GitLab.
 This ensures there are no collisions across the various types of data GitLab stores.
 There are plans to [enable the use of a single bucket](https://gitlab.com/gitlab-org/gitlab/-/issues/292958)
 in the future.
 
 <div align="right">
-  <a type="button" class="btn btn-default" href="#setup-components">
-    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  <a type="button" class="btn btn-default" href="#set-up-components">
+    Back to set up components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
   </a>
 </div>
 
@@ -2204,25 +2189,25 @@ cluster alongside your instance, read how to
 [choose the optimal cluster configuration](../../integration/advanced_search/elasticsearch.md#guidance-on-choosing-optimal-cluster-configuration).
 
 <div align="right">
-  <a type="button" class="btn btn-default" href="#setup-components">
-    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  <a type="button" class="btn btn-default" href="#set-up-components">
+    Back to set up components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
   </a>
 </div>
 
 ## Supported modifications for lower user counts (HA)
 
-The 3,000 user GitLab reference architecture is the smallest we recommend that achieves High Availability (HA).
-However, for environments that need to serve fewer users but maintain HA, there are several
+The 60 RPS or 3,000 users GitLab reference architecture is the smallest we recommend that achieves High Availability (HA).
+However, for environments that need to serve fewer users or a lower RPS but maintain HA, there are several
 supported modifications you can make to this architecture to reduce complexity and cost.
 
-It should be noted that to achieve HA with GitLab, the 3,000 user architecture's makeup is ultimately what is
-required. Each component has various considerations and rules to follow, and the 3,000 user architecture
+It should be noted that to achieve HA with GitLab, the 60 RPS or 3,000 users architecture's makeup is ultimately what is
+required. Each component has various considerations and rules to follow, and the architecture
 meets all of these. Smaller versions of this architecture will be fundamentally the same,
 but with smaller performance requirements, several modifications can be considered as follows:
 
 - Lowering node specs: Depending on your user count, you can lower all suggested node specs as desired. However, it's recommended that you don't go lower than the [general requirements](../../install/requirements.md).
 - Combining select nodes: Some nodes can be combined to reduce complexity at the cost of some performance:
-  - GitLab Rails and Sidekiq: Sidekiq nodes can be removed and the component instead enabled on the GitLab Rails nodes.
+  - GitLab Rails and Sidekiq: Sidekiq nodes can be removed, and the component instead enabled on the GitLab Rails nodes.
   - PostgreSQL and PgBouncer: PgBouncer nodes could be removed and instead be enabled on PostgreSQL nodes with the Internal Load Balancer pointing to them. However, to enable [Database Load Balancing](../postgresql/database_load_balancing.md), a separate PgBouncer array is still required.
 - Reducing the node counts: Some node types do not need consensus and can run with fewer nodes (but more than one for redundancy). This will also lead to reduced performance.
   - GitLab Rails and Sidekiq: Stateless services don't have a minimum node count. Two are enough for redundancy.
@@ -2266,16 +2251,19 @@ as the typical environment above.
 First are the components that run in Kubernetes. These run across several node groups, although you can change
 the overall makeup as desired as long as the minimum CPU and Memory requirements are observed.
 
-| Service Node Group  | Nodes | Configuration           | GCP             | AWS          | Min Allocatable CPUs and Memory |
-|---------------------|-------|-------------------------|-----------------|--------------|---------------------------------|
-| Webservice          | 2     | 16 vCPU, 14.4 GB memory | `n1-highcpu-16` | `c5.4xlarge` | 31.8 vCPU, 24.8 GB memory       |
-| Sidekiq             | 3     | 4 vCPU, 15 GB memory    | `n1-standard-4` | `m5.xlarge`  | 11.8 vCPU, 38.9 GB memory       |
-| Supporting services | 2     | 2 vCPU, 7.5 GB memory   | `n1-standard-2` | `m5.large`   | 3.9 vCPU, 11.8 GB memory        |
+| Component Node Group | Target Node Pool Totals | GCP Example     | AWS Example  |
+|----------------------|-------------------------|-----------------|--------------|
+| Webservice           | 16 vCPU<br/>20 GB memory (request)<br/>28 GB memory (limit) | 2 x `n1-standard-16` | 2 x `c5.4xlarge` |
+| Sidekiq              | 7.2 vCPU<br/>16 GB memory (request)<br/>32 GB memory (limit) | 3 x `n1-standard-4` | 3 x `m5.xlarge`  |
+| Supporting services  | 4 vCPU<br/>15 GB memory | 2 x `n1-standard-2` | 2 x `m5.large`   |
 
 - For this setup, we **recommend** and regularly [test](index.md#validation-and-test-results)
-  [Google Kubernetes Engine (GKE)](https://cloud.google.com/kubernetes-engine) and [Amazon Elastic Kubernetes Service (EKS)](https://aws.amazon.com/eks/). Other Kubernetes services may also work, but your mileage may vary.
-- Nodes configuration is shown as it is forced to ensure pod vCPU / memory ratios and avoid scaling during **performance testing**.
-  - In production deployments, there is no need to assign pods to specific nodes. A minimum of three nodes per node group in three different availability zones is strongly recommended to align with resilient cloud architecture practices.
+[Google Kubernetes Engine (GKE)](https://cloud.google.com/kubernetes-engine) and [Amazon Elastic Kubernetes Service (EKS)](https://aws.amazon.com/eks/). Other Kubernetes services may also work, but your mileage may vary.
+- GCP and AWS examples of how to reach the Target Node Pool Total are given for convenience. These sizes are used in performance testing but following the example is not required. Different node pool designs can be used as desired as long as the targets are met, and all pods can deploy.
+- The [Webservice](#webservice) and [Sidekiq](#sidekiq) target node pool totals are given for GitLab components only. Additional resources are required for the chosen Kubernetes provider's system processes. The given examples take this into account.
+- The [Supporting](#supporting) target node pool total is given generally to accommodate several resources for supporting the GitLab deployment as well as any additional deployments you may wish to make depending on your requirements. Similar to the other node pools, the chosen Kubernetes provider's system processes also require resources. The given examples take this into account.
+- In production deployments, it's not required to assign pods to specific nodes. However, it is recommended to have several nodes in each pool spread across different availability zones to align with resilient cloud architecture practices.
+- Enabling autoscaling, such as Cluster Autoscaler, for efficiency reasons is encouraged, but it's generally recommended targeting a floor of 75% for Webservice and Sidekiq pods to ensure ongoing performance.
 
 Next are the backend components that run on static compute VMs using the Linux package (or External PaaS
 services where applicable):
@@ -2286,17 +2274,20 @@ services where applicable):
 | Consul<sup>1</sup> + Sentinel<sup>2</sup> | 3     | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`  |
 | PostgreSQL<sup>1</sup>                    | 3     | 2 vCPU, 7.5 GB memory | `n1-standard-2` | `m5.large`  |
 | PgBouncer<sup>1</sup>                     | 3     | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`  |
-| Internal load balancing node<sup>3</sup>  | 1     | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`  |
+| Internal load balancer<sup>3</sup>        | 1     | 4 vCPU, 3.6 GB memory | `n1-highcpu-4`  | `c5n.xlarge` |
 | Gitaly<sup>5</sup>                        | 3     | 4 vCPU, 15 GB memory<sup>6</sup> | `n1-standard-4` | `m5.xlarge` |
 | Praefect<sup>5</sup>                      | 3     | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`  |
 | Praefect PostgreSQL<sup>1</sup>           | 1+    | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`  |
 | Object storage<sup>4</sup>                | -     | -                     | -               | -           |
 
+**Footnotes:**
+
 <!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
 <!-- markdownlint-disable MD029 -->
 1. Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. See [Provide your own PostgreSQL instance](#provide-your-own-postgresql-instance) for more information.
 2. Can be optionally run on reputable third-party external PaaS Redis solutions. See [Provide your own Redis instance](#provide-your-own-redis-instance) for more information.
-3. Can be optionally run on reputable third-party load balancing services (LB PaaS). See [Recommended cloud providers and services](index.md#recommended-cloud-providers-and-services) for more information.
+3. Recommended to be run with a reputable third-party load balancer or service (LB PaaS) which can provide HA capabilities.
+   Also note that sizing depends on selected Load Balancer as well as additional factors such as Network Bandwidth. Refer to [Load Balancers](index.md#load-balancers) for more information.
 4. Should be run on reputable Cloud Provider or Self Managed solutions. See [Configure the object storage](#configure-the-object-storage) for more information.
 5. Gitaly Cluster provides the benefits of fault tolerance, but comes with additional complexity of setup and management.
    Review the existing [technical limitations and considerations before deploying Gitaly Cluster](../gitaly/index.md#before-deploying-gitaly-cluster). If you want sharded Gitaly, use the same specs listed above for `Gitaly`.
@@ -2305,7 +2296,7 @@ services where applicable):
 <!-- markdownlint-enable MD029 -->
 
 NOTE:
-For all PaaS solutions that involve configuring instances, it is strongly recommended to implement a minimum of three nodes in three different availability zones to align with resilient cloud architecture practices.
+For all PaaS solutions that involve configuring instances, it's recommended to implement a minimum of three nodes in three different availability zones to align with resilient cloud architecture practices.
 
 ```plantuml
 @startuml 3k
@@ -2315,11 +2306,11 @@ card "Kubernetes via Helm Charts" as kubernetes {
   card "**External Load Balancer**" as elb #6a9be7
 
   together {
-    collections "**Webservice** x2" as gitlab #32CD32
-    collections "**Sidekiq** x3" as sidekiq #ff8dd1
+    collections "**Webservice**" as gitlab #32CD32
+    collections "**Sidekiq**" as sidekiq #ff8dd1
   }
 
-  card "**Supporting Services** x2" as support
+  card "**Supporting Services**" as support
 }
 
 card "**Internal Load Balancer**" as ilb #9370DB
@@ -2374,36 +2365,43 @@ consul .[#e76a9b]--> redis
 @enduml
 ```
 
-### Resource usage settings
+### Kubernetes component targets
 
-The following formulas help when calculating how many pods may be deployed within resource constraints.
-The [3k reference architecture example values file](https://gitlab.com/gitlab-org/charts/gitlab/-/blob/master/examples/ref/3k.yaml)
-documents how to apply the calculated configuration to the Helm Chart.
+The following section details the targets used for the GitLab components deployed in Kubernetes.
 
 #### Webservice
 
-Webservice pods typically need about 1 CPU and 1.25 GB of memory _per worker_.
-Each Webservice pod consumes roughly 4 CPUs and 5 GB of memory using
-the [recommended topology](#cluster-topology) because four worker processes
-are created by default and each pod has other small processes running.
+Each Webservice pod (Puma and Workhorse) is recommended to be run with the following configuration:
 
-For 3,000 users we recommend a total Puma worker count of around 16.
-With the [provided recommendations](#cluster-topology) this allows the deployment of up to 4
-Webservice pods with 4 workers per pod and 2 pods per node. Expand available resources using
-the ratio of 1 CPU to 1.25 GB of memory _per each worker process_ for each additional
-Webservice pod.
+- 4 Puma Workers
+- 4 vCPU
+- 5 GB memory (request)
+- 7 GB memory (limit)
 
-For further information on resource usage, see the [Webservice resources](https://docs.gitlab.com/charts/charts/gitlab/webservice/#resources).
+For 60 RPS or 3,000 users we recommend a total Puma worker count of around 16 so in turn it's recommended to run at
+least 4 Webservice pods.
+
+For further information on Webservice resource usage, see the Charts documentation on [Webservice resources](https://docs.gitlab.com/charts/charts/gitlab/webservice/#resources).
+
+##### NGINX
+
+It's also recommended deploying the NGINX controller pods across the Webservice nodes as a DaemonSet. This is to allow the controllers to scale dynamically with the Webservice pods they serve as well as take advantage of the higher network bandwidth larger machine types typically have.
+
+Note that this isn't a strict requirement. The NGINX controller pods can be deployed as desired as long as they have enough resources to handle the web traffic.
 
 #### Sidekiq
 
-Sidekiq pods should generally have 0.9 CPU and 2 GB of memory.
+Each Sidekiq pod is recommended to be run with the following configuration:
 
-[The provided starting point](#cluster-topology) allows the deployment of up to
-8 Sidekiq pods. Expand available resources using the 0.9 CPU to 2 GB memory
-ratio for each additional pod.
+- 1 Sidekiq worker
+- 900m vCPU
+- 2 GB memory (request)
+- 4 GB memory (limit)
 
-For further information on resource usage, see the [Sidekiq resources](https://docs.gitlab.com/charts/charts/gitlab/sidekiq/#resources).
+Similar to the standard deployment above, an initial target of 8 Sidekiq workers has been used here.
+Additional workers may be required depending on your specific workflow.
+
+For further information on Sidekiq resource usage, see the Charts documentation on [Sidekiq resources](https://docs.gitlab.com/charts/charts/gitlab/sidekiq/#resources).
 
 ### Supporting
 
@@ -2411,15 +2409,19 @@ The Supporting Node Pool is designed to house all supporting deployments that do
 on the Webservice and Sidekiq pools.
 
 This includes various deployments related to the Cloud Provider's implementation and supporting
-GitLab deployments such as NGINX or [GitLab Shell](https://docs.gitlab.com/charts/charts/gitlab/gitlab-shell/).
+GitLab deployments such as [GitLab Shell](https://docs.gitlab.com/charts/charts/gitlab/gitlab-shell/).
 
-If you wish to make any additional deployments, such as for Monitoring, it's recommended
+If you wish to make any additional deployments such as Container Registry, Pages or Monitoring, it's recommended
 to deploy these in this pool where possible and not in the Webservice or Sidekiq pools, as the Supporting pool has been designed
 specifically to accommodate several additional deployments. However, if your deployments don't fit into the
-pool as given, you can increase the node pool accordingly.
+pool as given, you can increase the node pool accordingly. Conversely, if the pool in your use case is over-provisioned you can reduce accordingly.
+
+### Example config file
+
+An example for the GitLab Helm Charts for the above 60 RPS or 3,000 reference architecture configuration [can be found in the Charts project](https://gitlab.com/gitlab-org/charts/gitlab/-/blob/master/examples/ref/3k.yaml).
 
 <div align="right">
-  <a type="button" class="btn btn-default" href="#setup-components">
-    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  <a type="button" class="btn btn-default" href="#set-up-components">
+    Back to set up components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
   </a>
 </div>

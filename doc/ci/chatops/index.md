@@ -8,11 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/4466) in GitLab Ultimate 10.6.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/24780) to GitLab Free in 11.9.
-> - `CHAT_USER_ID` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/341798) in GitLab 14.4.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Use GitLab ChatOps to interact with CI/CD jobs through chat services
 like Slack.

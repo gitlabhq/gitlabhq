@@ -9,9 +9,9 @@ module Resolvers
       authorize :admin_project
 
       argument :name,
-               GraphQL::Types::String,
-               required: false,
-               description: 'Project name or key.'
+        GraphQL::Types::String,
+        required: false,
+        description: 'Project name or key.'
 
       def resolve(name: nil, **args)
         authorize!(project)

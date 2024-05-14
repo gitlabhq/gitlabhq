@@ -6,7 +6,7 @@ RSpec.describe 'Incident timeline events', :js, feature_category: :incident_mana
   include ListboxHelpers
 
   let_it_be(:project) { create(:project) }
-  let_it_be(:user) { create(:user, developer_projects: [project]) }
+  let_it_be(:user) { create(:user, developer_of: project) }
   let_it_be(:incident) { create(:incident, project: project) }
 
   shared_examples 'add, edit, and delete timeline events' do

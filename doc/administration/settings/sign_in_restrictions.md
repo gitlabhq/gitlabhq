@@ -34,8 +34,6 @@ In the event of an external authentication provider outage, use the [GitLab Rail
 
 ## Admin Mode
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2158) in GitLab 13.10.
-
 If you're an administrator, you might want to work in GitLab without administrator access.
 You could either create a separate user account that does not have
 administrator access or use Admin Mode.
@@ -103,6 +101,20 @@ authentication are supported by Admin Mode. Admin Mode status is stored in the c
 - It is explicitly disabled.
 - It is disabled automatically after six hours.
 
+### Check if your session has Admin Mode enabled
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/438674) in GitLab 16.10 [with a flag](../../administration/feature_flags.md) named `show_admin_mode_within_active_sessions`. Disabled by default.
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/444188) in GitLab 16.10.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/438674) in GitLab 17.0. Feature flag `show_admin_mode_within_active_sessions` removed.
+
+Go to your list of active sessions:
+
+1. On the left sidebar, select your avatar.
+1. Select **Edit profile**.
+1. On the left sidebar, select **Active Sessions**.
+
+Sessions which have Admin Mode turned on display the text **Signed in on `date of session` with Admin Mode**.
+
 ### Turn off Admin Mode for your session
 
 To turn off Admin Mode for your current session:
@@ -159,8 +171,6 @@ period in hours.
 
 ## Email notification for unknown sign-ins
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218457) in GitLab 13.2.
-
 When enabled, GitLab notifies users of sign-ins from unknown IP addresses or devices. For more information,
 see [Email notification for unknown sign-ins](../../user/profile/notifications.md#notifications-for-unknown-sign-ins).
 
@@ -168,29 +178,15 @@ see [Email notification for unknown sign-ins](../../user/profile/notifications.m
 
 ## Sign-in information
 
+> - **Sign-in text** setting [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/410885) in GitLab 17.0.
+
 All users that are not logged in are redirected to the page represented by the configured
 **Home page URL** if value is not empty.
 
 All users are redirected to the page represented by the configured **Sign-out page URL**
 after sign out if value is not empty.
 
-In the **Sign-in restrictions** section, scroll to the **Sign-in text** field. You can add a
-custom message for your users in Markdown format.
-
-For example, if you include the following information in the noted text box:
-
-```markdown
-# Custom sign-in text
-
-To access this text box:
-
-1. On the left sidebar, at the bottom, select **Admin Area**.
-1. Select **Settings > General**.
-1. Expand the **Sign-in restrictions** section.
-```
-
-Your users see the **Custom sign-in text** when they navigate to the sign-in screen for your
-GitLab instance.
+To add a help message to the sign-in page, [customize your sign-in and register pages](../appearance.md#customize-your-sign-in-and-register-pages).
 
 ## Troubleshooting
 

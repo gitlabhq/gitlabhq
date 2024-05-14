@@ -7,7 +7,7 @@ module Integrations
 
       def initialize(integration, batch, association)
         @integration = integration
-        @batch = batch
+        @batch = batch.to_a
         @association = association
       end
 
@@ -16,6 +16,12 @@ module Integrations
           inserted_ids = bulk_insert_integrations
 
           bulk_insert_data_fields(inserted_ids) if integration.data_fields_present?
+
+          if integration.is_a?(GitlabSlackApplication) && integration.active? &&
+              Feature.enabled?(:gitlab_for_slack_app_instance_and_group_level, type: :beta)
+            inserted_slack_ids = bulk_insert_slack_integrations(inserted_ids)
+            bulk_insert_slack_integration_scopes(inserted_slack_ids)
+          end
         end
       end
 
@@ -33,7 +39,7 @@ module Integrations
       def bulk_insert_integrations
         attributes = integration_hash(:create)
 
-        items_to_insert = batch.select(:id).map do |record|
+        items_to_insert = batch.map do |record|
           attributes.merge("#{association}_id" => record.id)
         end
 
@@ -50,6 +56,34 @@ module Integrations
         end
 
         bulk_insert_new(model, items_to_insert)
+      end
+
+      def bulk_insert_slack_integrations(integration_ids)
+        hash = integration.slack_integration.to_database_hash
+
+        items_to_insert = integration_ids.zip(batch).map do |integration_id, record|
+          hash.merge(
+            'integration_id' => integration_id,
+            'alias' => record.full_path
+          )
+        end
+
+        bulk_insert_new(SlackIntegration, items_to_insert)
+      end
+
+      def bulk_insert_slack_integration_scopes(inserted_slack_ids)
+        scopes = integration.slack_integration.slack_api_scopes
+
+        items_to_insert = scopes.flat_map do |scope|
+          inserted_slack_ids.map do |record_id|
+            {
+              'slack_integration_id' => record_id,
+              'slack_api_scope_id' => scope.id
+            }
+          end
+        end
+
+        bulk_insert_new(SlackWorkspace::IntegrationApiScope, items_to_insert)
       end
     end
   end

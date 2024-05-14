@@ -457,13 +457,13 @@ RSpec.describe Import::BitbucketController, feature_category: :importers do
     end
 
     context 'when user can not import projects' do
-      let!(:other_namespace) { create(:group, name: 'other_namespace').tap { |other_namespace| other_namespace.add_developer(user) } }
+      let!(:other_namespace) { create(:group, name: 'other_namespace', developers: user) }
 
       it 'returns 422 response' do
         post :create, params: { target_namespace: other_namespace.name }, format: :json
 
         expect(response).to have_gitlab_http_status(:unprocessable_entity)
-        expect(response.parsed_body['errors']).to eq('You are not allowed to import projects in this namespace.')
+        expect(response.parsed_body['errors']).to eq(s_('BitbucketImport|You are not allowed to import projects in this namespace.'))
       end
     end
   end

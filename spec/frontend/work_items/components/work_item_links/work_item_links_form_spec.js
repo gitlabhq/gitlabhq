@@ -1,6 +1,8 @@
 import Vue from 'vue';
 import { GlForm, GlFormInput, GlFormCheckbox, GlTooltip } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
+import projectWorkItemTypesQueryResponse from 'test_fixtures/graphql/work_items/project_work_item_types.query.graphql.json';
+import groupWorkItemTypesQueryResponse from 'test_fixtures/graphql/work_items/group_work_item_types.query.graphql.json';
 import { sprintf, s__ } from '~/locale';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -21,14 +23,16 @@ import createWorkItemMutation from '~/work_items/graphql/create_work_item.mutati
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import {
   availableWorkItemsResponse,
-  projectWorkItemTypesQueryResponse,
-  groupWorkItemTypesQueryResponse,
   createWorkItemMutationResponse,
   updateWorkItemMutationResponse,
   mockIterationWidgetResponse,
 } from '../../mock_data';
 
 Vue.use(VueApollo);
+
+const workItemTypeIdForTask = projectWorkItemTypesQueryResponse.data.workspace.workItemTypes.nodes.find(
+  (node) => node.name === 'Task',
+).id;
 
 describe('WorkItemLinksForm', () => {
   let wrapper;
@@ -123,7 +127,7 @@ describe('WorkItemLinksForm', () => {
         input: {
           title: 'Create task test',
           projectPath: 'project/path',
-          workItemTypeId: 'gid://gitlab/WorkItems::Type/3',
+          workItemTypeId: workItemTypeIdForTask,
           hierarchyWidget: {
             parentId: 'gid://gitlab/WorkItem/1',
           },
@@ -142,12 +146,12 @@ describe('WorkItemLinksForm', () => {
         preventDefault: jest.fn(),
       });
       await waitForPromises();
-      expect(wrapper.vm.childWorkItemType).toEqual('gid://gitlab/WorkItems::Type/3');
+      expect(wrapper.vm.childWorkItemType).toEqual(workItemTypeIdForTask);
       expect(createMutationResolver).toHaveBeenCalledWith({
         input: {
           title: 'Create confidential task',
           projectPath: 'project/path',
-          workItemTypeId: 'gid://gitlab/WorkItems::Type/3',
+          workItemTypeId: workItemTypeIdForTask,
           hierarchyWidget: {
             parentId: 'gid://gitlab/WorkItem/1',
           },
@@ -275,7 +279,7 @@ describe('WorkItemLinksForm', () => {
         input: {
           title: 'Create task test',
           projectPath: 'project/path',
-          workItemTypeId: 'gid://gitlab/WorkItems::Type/3',
+          workItemTypeId: workItemTypeIdForTask,
           hierarchyWidget: {
             parentId: 'gid://gitlab/WorkItem/1',
           },

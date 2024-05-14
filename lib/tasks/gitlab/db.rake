@@ -120,8 +120,6 @@ namespace :gitlab do
     end
 
     def configure_clickhouse_databases
-      return unless Feature.enabled?(:run_clickhouse_migrations_automatically, type: :ops)
-
       Rake::Task['gitlab:clickhouse:migrate'].invoke(true)
     end
 

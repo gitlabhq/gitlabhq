@@ -1,15 +1,17 @@
 <script>
-import { GlIcon, GlButton, GlLink } from '@gitlab/ui';
+import { GlButton, GlAvatar, GlAvatarLink, GlAvatarsInline, GlTooltipDirective } from '@gitlab/ui';
 import { __, n__ } from '~/locale';
-import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
 export default {
   name: 'ToggleNotesWidget',
   components: {
-    GlIcon,
     GlButton,
-    GlLink,
-    TimeAgoTooltip,
+    GlAvatar,
+    GlAvatarLink,
+    GlAvatarsInline,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   props: {
     collapsed: {
@@ -22,16 +24,25 @@ export default {
     },
   },
   computed: {
-    lastReply() {
-      return this.replies[this.replies.length - 1];
-    },
     iconName() {
       return this.collapsed ? 'chevron-right' : 'chevron-down';
     },
     toggleText() {
       return this.collapsed
-        ? `${this.replies.length} ${n__('reply', 'replies', this.replies.length)}`
+        ? n__('%d reply', '%d replies', this.replies.length)
         : __('Collapse replies');
+    },
+    toggleTextColor() {
+      return this.collapsed ? 'gl-text-blue-500' : 'gl-text-gray-900';
+    },
+    authors() {
+      return [...new Set(this.replies.map((item) => item.author))];
+    },
+    authorCollapsedTooltip() {
+      if (this.authors.length > 2) {
+        return n__('%d reply', '%d replies', this.authors.length);
+      }
+      return '';
     },
   },
 };
@@ -39,32 +50,42 @@ export default {
 
 <template>
   <li
-    class="toggle-comments gl-bg-gray-50 gl-display-flex gl-align-items-center gl-py-3 gl-min-h-8"
+    class="toggle-comments gl-bg-gray-10 gl-display-flex gl-align-items-center gl-p-3 gl-min-h-8 gl-rounded-bottom-left-base gl-rounded-bottom-right-base"
     :class="{ expanded: !collapsed }"
     data-testid="toggle-comments-wrapper"
   >
-    <gl-icon :name="iconName" class="gl-ml-3" @click.stop="$emit('toggle')" />
+    <gl-button
+      category="tertiary"
+      data-testid="toggle-replies-button"
+      class="gl-my-2 gl-mr-3 gl-p-0!"
+      :icon="iconName"
+      @click="$emit('toggle')"
+    />
+    <template v-if="collapsed">
+      <gl-avatars-inline
+        v-if="authors.length"
+        :avatars="authors"
+        collapsed
+        :max-visible="2"
+        :avatar-size="24"
+        badge-tooltip-prop="name"
+        :badge-sr-only-text="authorCollapsedTooltip"
+        class="gl-whitespace-nowrap gl-mr-3"
+      >
+        <template #avatar="{ avatar }">
+          <gl-avatar-link v-gl-tooltip :href="avatar.webUrl" :title="avatar.name">
+            <gl-avatar :alt="avatar.name" :src="avatar.avatarUrl" :size="24" />
+          </gl-avatar-link>
+        </template>
+      </gl-avatars-inline>
+    </template>
     <gl-button
       variant="link"
-      class="toggle-comments-button gl-ml-2 gl-mr-2 gl-font-sm!"
-      @click.stop="$emit('toggle')"
+      data-testid="replies-button"
+      class="toggle-comments-button"
+      @click="$emit('toggle')"
     >
-      {{ toggleText }}
+      <span :class="toggleTextColor">{{ toggleText }}</span>
     </gl-button>
-    <template v-if="collapsed">
-      <span class="gl-text-gray-500 gl-font-sm">{{ __('Last reply by') }}</span>
-      <gl-link
-        :href="lastReply.author.webUrl"
-        target="_blank"
-        class="link-inherit-color gl-text-body gl-text-decoration-none gl-font-weight-bold gl-font-sm gl-ml-2 gl-mr-2"
-      >
-        {{ lastReply.author.name }}
-      </gl-link>
-      <time-ago-tooltip
-        :time="lastReply.createdAt"
-        tooltip-placement="bottom"
-        class="gl-text-gray-500 gl-font-sm"
-      />
-    </template>
   </li>
 </template>

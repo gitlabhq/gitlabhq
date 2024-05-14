@@ -12,7 +12,7 @@ export function initNewProjectCreation() {
 
   const {
     pushToCreateProjectCommand,
-    workingWithProjectsHelpPath,
+    projectHelpPath,
     newProjectGuidelines,
     hasErrors,
     isCiCdAvailable,
@@ -35,7 +35,7 @@ export function initNewProjectCreation() {
   };
 
   const provide = {
-    workingWithProjectsHelpPath,
+    projectHelpPath,
     pushToCreateProjectCommand,
   };
 

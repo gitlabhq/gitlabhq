@@ -61,10 +61,10 @@ class Projects::MergeRequests::ApplicationController < Projects::ApplicationCont
       :title,
       :discussion_locked,
       :issue_iid,
-      label_ids: [],
-      assignee_ids: [],
-      reviewer_ids: [],
-      update_task: [:index, :checked, :line_number, :line_source]
+      { label_ids: [],
+        assignee_ids: [],
+        reviewer_ids: [],
+        update_task: [:index, :checked, :line_number, :line_source] }
     ]
   end
 

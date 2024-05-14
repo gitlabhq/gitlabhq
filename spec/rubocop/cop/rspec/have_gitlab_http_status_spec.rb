@@ -5,7 +5,7 @@ require 'rubocop_spec_helper'
 require 'rspec-parameterized'
 require_relative '../../../../rubocop/cop/rspec/have_gitlab_http_status'
 
-RSpec.describe RuboCop::Cop::RSpec::HaveGitlabHttpStatus do
+RSpec.describe RuboCop::Cop::RSpec::HaveGitlabHttpStatus, feature_category: :tooling do
   using RSpec::Parameterized::TableSyntax
 
   let(:source_file) { 'spec/foo_spec.rb' }

@@ -44,7 +44,7 @@ RSpec.shared_examples 'inviting members' do |snowplow_invite_label|
 
     invite_member('test@example.com', role: 'Reporter')
 
-    click_link 'Invited'
+    click_link 'Pending invitations'
 
     page.within find_invited_member_row('test@example.com') do
       expect(page).to have_button('Reporter')
@@ -68,7 +68,7 @@ RSpec.shared_examples 'inviting members' do |snowplow_invite_label|
       expect(page).to have_button('Reporter')
     end
 
-    click_link 'Invited'
+    click_link 'Pending invitations'
 
     page.within find_invited_member_row('test@example.com') do
       expect(page).to have_button('Reporter')
@@ -107,7 +107,7 @@ RSpec.shared_examples 'inviting members' do |snowplow_invite_label|
 
       page.refresh
 
-      click_link 'Invited'
+      click_link 'Pending invitations'
 
       page.within find_invited_member_row(email) do
         expect(page).to have_button('Reporter')

@@ -19,7 +19,7 @@ class MergeRequestDiff < ApplicationRecord
 
   # The files_count column is a 2-byte signed integer. Look up the true value
   # from the database if this sentinel is seen
-  FILES_COUNT_SENTINEL = 2**15 - 1
+  FILES_COUNT_SENTINEL = (2**15) - 1
 
   # External diff cache key used by diffs export
   EXTERNAL_DIFFS_CACHE_TMPDIR = 'project-%{project_id}-external-mr-%{mr_id}-diff-%{id}-cache'
@@ -33,7 +33,16 @@ class MergeRequestDiff < ApplicationRecord
     -> { order(:merge_request_diff_id, :relative_order) },
     inverse_of: :merge_request_diff
 
-  has_many :merge_request_diff_commits, -> { order(:merge_request_diff_id, :relative_order) }, inverse_of: :merge_request_diff
+  has_many :merge_request_diff_commits, -> { order(:merge_request_diff_id, :relative_order) }, inverse_of: :merge_request_diff do
+    def with_users
+      ActiveRecord::Associations::Preloader.new(
+        records: self,
+        associations: [:commit_author, :committer]
+      ).call
+
+      self
+    end
+  end
 
   sha_attribute :patch_id_sha
 
@@ -64,6 +73,7 @@ class MergeRequestDiff < ApplicationRecord
 
   scope :with_files, -> { without_states(:without_files, :empty) }
   scope :viewable, -> { without_state(:empty) }
+  scope :by_head_commit_sha, ->(sha) { where(head_commit_sha: sha) }
   scope :by_commit_sha, ->(sha) do
     joins(:merge_request_diff_commits).where(merge_request_diff_commits: { sha: sha }).reorder(nil)
   end
@@ -260,8 +270,6 @@ class MergeRequestDiff < ApplicationRecord
   end
 
   def trigger_diff_generated_subscription
-    return unless Feature.enabled?(:merge_request_diff_generated_subscription, merge_request.project)
-
     GraphqlTriggers.merge_request_diff_generated(merge_request)
   end
 
@@ -446,7 +454,7 @@ class MergeRequestDiff < ApplicationRecord
           )
         end
 
-        diff_options[:generated_files] = comparison.generated_files if diff_options[:collapse_generated]
+        diff_options[:generated_files] = comparison.generated_files
 
         Gitlab::Metrics.measure(:diffs_comparison) do
           comparison.diffs(diff_options)
@@ -461,25 +469,19 @@ class MergeRequestDiff < ApplicationRecord
     fetching_repository_diffs({}) do |comparison|
       reorder_diff_files!
 
-      collapse_generated = Feature.enabled?(:collapse_generated_diff_files, project)
-      diff_options = { collapse_generated: collapse_generated }
-
       collection = Gitlab::Diff::FileCollection::PaginatedMergeRequestDiff.new(
         self,
         page,
-        per_page,
-        diff_options
+        per_page
       )
 
       if comparison
-        diff_options[:generated_files] = comparison.generated_files if collapse_generated
-
         comparison.diffs(
-          diff_options.merge(
-            paths: collection.diff_paths,
-            page: collection.current_page,
-            per_page: collection.limit_value,
-            count: collection.total_count)
+          generated_files: comparison.generated_files,
+          paths: collection.diff_paths,
+          page: collection.current_page,
+          per_page: collection.limit_value,
+          count: collection.total_count
         )
       else
         collection
@@ -801,7 +803,9 @@ class MergeRequestDiff < ApplicationRecord
   end
 
   def load_commits(limit: nil, load_from_gitaly: false, page: nil)
-    diff_commits = page.present? ? merge_request_diff_commits.page(page).per(limit) : merge_request_diff_commits.limit(limit)
+    diff_commits = merge_request_diff_commits
+    diff_commits = diff_commits.page(page).per(limit) if page.present?
+    diff_commits = diff_commits.limit(limit) if limit.present?
 
     if load_from_gitaly
       commits = Gitlab::Git::Commit.batch_by_oid(repository, diff_commits.map(&:sha))
@@ -822,7 +826,7 @@ class MergeRequestDiff < ApplicationRecord
       new_attributes[:state] = :empty
     else
       options = Commit.max_diff_options
-      options[:generated_files] = compare.generated_files if Feature.enabled?(:collapse_generated_diff_files, project)
+      options[:generated_files] = compare.generated_files
 
       diff_collection = compare.diffs(options)
       new_attributes[:real_size] = diff_collection.real_size
@@ -875,7 +879,7 @@ class MergeRequestDiff < ApplicationRecord
 
   def keep_around_commits
     [repository, merge_request.source_project.repository].uniq.each do |repo|
-      repo.keep_around(start_commit_sha, head_commit_sha, base_commit_sha)
+      repo.keep_around(start_commit_sha, head_commit_sha, base_commit_sha, source: self.class.name)
     end
   end
 

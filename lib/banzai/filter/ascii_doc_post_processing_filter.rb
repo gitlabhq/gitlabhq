@@ -10,7 +10,7 @@ module Banzai
 
       def call
         doc.xpath(XPATH_MATH).each do |node|
-          node.set_attribute('class', 'code math js-render-math')
+          node.set_attribute('class', 'js-render-math')
         end
 
         doc.xpath(XPATH_MERM).each do |node|

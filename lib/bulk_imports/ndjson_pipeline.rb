@@ -18,7 +18,7 @@ module BulkImports
         return unless relation_hash
 
         relation_object = deep_transform_relation!(relation_hash, relation, relation_definition) do |key, hash|
-          relation_factory.create(
+          persist_relation(
             relation_index: relation_index,
             relation_sym: key.to_sym,
             relation_hash: hash,
@@ -26,7 +26,8 @@ module BulkImports
             members_mapper: members_mapper,
             object_builder: object_builder,
             user: context.current_user,
-            excluded_keys: import_export_config.relation_excluded_keys(key)
+            excluded_keys: import_export_config.relation_excluded_keys(key),
+            import_source: Import::SOURCE_DIRECT_TRANSFER
           )
         end
 
@@ -141,6 +142,10 @@ module BulkImports
           )
         end
       end
+    end
+
+    def persist_relation(attributes)
+      relation_factory.create(**attributes)
     end
   end
 end

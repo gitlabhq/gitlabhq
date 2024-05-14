@@ -10,6 +10,7 @@ RSpec.describe Gitlab::BitbucketImport::Importers::IssueImporter, :clean_gitlab_
   let_it_be(:identity) { create(:identity, user: bitbucket_user, extern_uid: 'bitbucket_user', provider: :bitbucket) }
   let_it_be(:default_work_item_type) { create(:work_item_type) }
   let_it_be(:label) { create(:label, project: project) }
+  let(:mentions_converter) { Gitlab::Import::MentionsConverter.new('bitbucket', project) }
 
   let(:hash) do
     {
@@ -30,6 +31,7 @@ RSpec.describe Gitlab::BitbucketImport::Importers::IssueImporter, :clean_gitlab_
 
   before do
     allow(Gitlab::Git).to receive(:ref_name).and_return('refname')
+    allow(Gitlab::Import::MentionsConverter).to receive(:new).and_return(mentions_converter)
   end
 
   describe '#execute' do
@@ -46,6 +48,12 @@ RSpec.describe Gitlab::BitbucketImport::Importers::IssueImporter, :clean_gitlab_
       expect(issue.labels).to eq([label])
       expect(issue.created_at).to eq(Date.today)
       expect(issue.updated_at).to eq(Date.today)
+    end
+
+    it 'converts mentions in the description' do
+      expect(mentions_converter).to receive(:convert).once.and_call_original
+
+      importer.execute
     end
 
     context 'when the author does not have a bitbucket identity' do

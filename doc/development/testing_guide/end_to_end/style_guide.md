@@ -20,7 +20,7 @@ For example:
 
 ```ruby
 def click_add_badge_button
-  click_element :add_badge_button
+  click_element 'add-badge-button'
 end
 ```
 
@@ -43,7 +43,7 @@ end
 
 `go_to_` fits the definition of interacting with multiple elements very well given it's more of a meta-navigation action that includes multiple interactions.
 
-Notice that in the above example, before selecting the `:operations_environments_link`, another element is hovered over.
+Notice that in the above example, before selecting the `'nav-item-link'`, another element is hovered over.
 
 > We can create these methods as helpers to abstract multi-step navigation.
 
@@ -57,18 +57,18 @@ We follow a simple formula roughly based on Hungarian notation.
 
 - `descriptor`: The natural-language description of what the element is. On the login page, this could be `username`, or `password`.
 - `type`: A generic control on the page that can be seen by a user.
-  - `_button`
-  - `_checkbox`
-  - `_container`: an element that includes other elements, but doesn't present visible content itself. For example, an element that has a third-party editor inside it, but which isn't the editor itself and so doesn't include the editor's content.
-  - `_content`: any element that contains text, images, or any other content displayed to the user.
-  - `_dropdown`
-  - `_field`: a text input element.
-  - `_link`
-  - `_modal`: a popup modal dialog, for example, a confirmation prompt.
-  - `_placeholder`: a temporary element that appears while content is loading. For example, the elements that are displayed instead of discussions while the discussions are being fetched.
-  - `_radio`
-  - `_tab`
-  - `_menu_item`
+  - `-button`
+  - `-checkbox`
+  - `-container`: an element that includes other elements, but doesn't present visible content itself. For example, an element that has a third-party editor inside it, but which isn't the editor itself and so doesn't include the editor's content.
+  - `-content`: any element that contains text, images, or any other content displayed to the user.
+  - `-dropdown`
+  - `-field`: a text input element.
+  - `-link`
+  - `-modal`: a popup modal dialog, for example, a confirmation prompt.
+  - `-placeholder`: a temporary element that appears while content is loading. For example, the elements that are displayed instead of discussions while the discussions are being fetched.
+  - `-radio`
+  - `-tab`
+  - `-menu_item`
 
 NOTE:
 If none of the listed types are suitable, open a merge request to add an appropriate type to the list.
@@ -79,11 +79,11 @@ If none of the listed types are suitable, open a merge request to add an appropr
 
 ```ruby
 view '...' do
-  element :edit_button
-  element :notes_tab
-  element :squash_checkbox
-  element :username_field
-  element :issue_title_content
+  element 'edit-button'
+  element 'notes-tab'
+  element 'squash-checkbox'
+  element 'username-field'
+  element 'issue-title-content'
 end
 ```
 
@@ -91,17 +91,17 @@ end
 
 ```ruby
 view '...' do
-  # `_confirmation` should be `_field`. what sort of confirmation? a checkbox confirmation? no real way to disambiguate.
-  # an appropriate replacement would be `element :password_confirmation_field`
-  element :password_confirmation
+  # `'-confirmation'` should be `'-field'`. what sort of confirmation? a checkbox confirmation? no real way to disambiguate.
+  # an appropriate replacement would be `element 'password-confirmation-field'`
+  element 'password-confirmation'
 
-  # `clone_options` is too vague. If it's a dropdown menu, it should be `clone_dropdown`.
-  # If it's a checkbox, it should be `clone_checkbox`
-  element :clone_options
+  # `'clone-options'` is too vague. If it's a dropdown menu, it should be `'clone-dropdown'`.
+  # If it's a checkbox, it should be `'clone-checkbox'`
+  element 'clone-options'
 
   # how is this url being displayed? is it a textbox? a simple span?
-  # If it is content on the page, it should be `ssh_clone_url_content`
-  element :ssh_clone_url
+  # If it is content on the page, it should be `'ssh-clone-url-content'`
+  element 'ssh-clone-url'
 end
 ```
 

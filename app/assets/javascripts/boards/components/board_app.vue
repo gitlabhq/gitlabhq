@@ -139,8 +139,8 @@ export default {
   <div class="boards-app gl-relative" :class="{ 'is-compact': isAnySidebarOpen }">
     <board-top-bar
       :board-id="boardId"
-      :add-column-form-visible="addColumnFormVisible"
       :is-swimlanes-on="isSwimlanesOn"
+      :filters="filterParams"
       @switchBoard="switchBoard"
       @setFilters="setFilters"
       @setAddColumnFormVisibility="addColumnFormVisible = $event"
@@ -157,6 +157,7 @@ export default {
       :list-query-variables="listQueryVariables"
       @setActiveList="setActiveId"
       @setAddColumnFormVisibility="addColumnFormVisible = $event"
+      @setFilters="setFilters"
     />
     <board-settings-sidebar
       v-if="activeList"

@@ -183,12 +183,9 @@ export default {
     ref="issuableFormWrapper"
     :class="{ focus: isInputFocused }"
     class="add-issuable-form-input-wrapper form-control gl-field-error-outline gl-h-auto gl-px-3 gl-pt-2 gl-pb-0"
-    role="button"
     @click="onIssuableFormWrapperClick"
   >
-    <ul
-      class="gl-display-flex gl-flex-wrap gl-align-items-baseline gl-list-style-none gl-m-0 gl-p-0"
-    >
+    <ul class="gl-display-flex gl-flex-wrap gl-align-items-baseline gl-list-none gl-m-0 gl-p-0">
       <li
         v-for="(reference, index) in references"
         :key="reference"

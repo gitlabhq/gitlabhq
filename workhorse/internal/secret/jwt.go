@@ -1,3 +1,4 @@
+// Package secret provides functionality for handling JWT tokens
 package secret
 
 import (
@@ -7,9 +8,11 @@ import (
 )
 
 var (
+	// DefaultClaims specifies the default JWT claims
 	DefaultClaims = jwt.RegisteredClaims{Issuer: "gitlab-workhorse"}
 )
 
+// JWTTokenString generates a JWT token string with the provided claims
 func JWTTokenString(claims jwt.Claims) (string, error) {
 	secretBytes, err := Bytes()
 	if err != nil {

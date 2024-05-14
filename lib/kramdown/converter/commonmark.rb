@@ -34,7 +34,7 @@ module Kramdown
       def convert_codeblock(el, _opts)
         # Although tildes are supported in CommonMark, backticks are more common
         "```#{el.options[:lang]}\n" +
-          el.value.split("\n").map { |l| l.empty? ? "" : "#{l}" }.join("\n") +
+          el.value.split("\n").map { |l| l.empty? ? "" : l.to_s }.join("\n") +
           "\n```\n\n"
       end
 

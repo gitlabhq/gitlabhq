@@ -5,35 +5,35 @@ module Resolvers
     type Types::Packages::PackageType.connection_type, null: true
 
     argument :sort, Types::Packages::PackageSortEnum,
-        description: 'Sort packages by this criteria.',
-        required: false,
-        default_value: :created_desc
+      description: 'Sort packages by this criteria.',
+      required: false,
+      default_value: :created_desc
 
     argument :package_name, GraphQL::Types::String,
-        description: 'Search a package by name.',
-        required: false,
-        default_value: nil
+      description: 'Search a package by name.',
+      required: false,
+      default_value: nil
 
     argument :package_type, Types::Packages::PackageTypeEnum,
-        description: 'Filter a package by type.',
-        required: false,
-        default_value: nil
+      description: 'Filter a package by type.',
+      required: false,
+      default_value: nil
 
     argument :package_version, GraphQL::Types::String,
-        description: 'Filter a package by version. If used in combination with `include_versionless`,
+      description: 'Filter a package by version. If used in combination with `include_versionless`,
           then no versionless packages are returned.',
-        required: false,
-        default_value: nil
+      required: false,
+      default_value: nil
 
     argument :status, Types::Packages::PackageStatusEnum,
-        description: 'Filter a package by status.',
-        required: false,
-        default_value: nil
+      description: 'Filter a package by status.',
+      required: false,
+      default_value: nil
 
     argument :include_versionless, GraphQL::Types::Boolean,
-        description: 'Include versionless packages.',
-        required: false,
-        default_value: false
+      description: 'Include versionless packages.',
+      required: false,
+      default_value: false
 
     SORT_TO_PARAMS_MAP = {
       created_desc: { order_by: 'created', sort: 'desc' },

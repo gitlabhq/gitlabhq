@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 To trigger a pipeline for a specific branch or tag, you can use an API call
 to the [pipeline triggers API endpoint](../../api/pipeline_triggers.md).
@@ -19,9 +19,11 @@ For example, as part of a migration from [Jenkins](../migration/jenkins.md) or [
 
 When authenticating with the API, you can use:
 
-- A [pipeline trigger token](#create-a-pipeline-trigger-token) to trigger a branch or tag pipeline.
+- A [pipeline trigger token](#create-a-pipeline-trigger-token) to trigger a branch or tag pipeline
+  with the [pipeline triggers API endpoint](../../api/pipeline_triggers.md).
 - A [CI/CD job token](../jobs/ci_job_token.md) to [trigger a multi-project pipeline](../pipelines/downstream_pipelines.md#trigger-a-multi-project-pipeline-by-using-the-api).
-- A [personal access token](../../user/profile/personal_access_tokens.md).
+- Another [token with API access](../../security/token_overview.md) to create a new pipeline
+  with the [project pipeline API endpoint](../../api/pipelines.md#create-a-new-pipeline).
 
 ## Create a pipeline trigger token
 
@@ -57,7 +59,7 @@ pipelines with a tool that can access the API, or a webhook.
 
 ### Use cURL
 
-You can use cURL to trigger pipelines with the [pipeline trigger token API endpoint](../../api/pipeline_triggers.md).
+You can use cURL to trigger pipelines with the [pipeline triggers API endpoint](../../api/pipeline_triggers.md).
 For example:
 
 - Use a multiline cURL command:
@@ -130,9 +132,6 @@ Replace:
 - `<token>` with your pipeline trigger token.
 
 #### Access webhook payload
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31197) in GitLab 13.9.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/321027) in GitLab 13.11.
 
 If you trigger a pipeline by using a webhook, you can access the webhook payload with
 the `TRIGGER_PAYLOAD` [predefined CI/CD variable](../variables/predefined_variables.md).

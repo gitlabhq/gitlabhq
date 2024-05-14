@@ -1,0 +1,7 @@
+{
+  "type": "string",
+  "enum": [
+    "a_better_group_name",
+    "another_group_name"
+  ]
+}

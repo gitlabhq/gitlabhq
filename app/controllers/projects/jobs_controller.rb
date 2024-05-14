@@ -6,15 +6,15 @@ class Projects::JobsController < Projects::ApplicationController
   include ContinueParams
   include ProjectStatsRefreshConflictsGuard
 
-  urgency :low, [:index, :show, :trace, :retry, :play, :cancel, :unschedule, :erase, :raw, :test_report_summary]
+  urgency :low, [:index, :show, :trace, :retry, :play, :cancel, :unschedule, :erase, :viewer, :raw, :test_report_summary]
 
   before_action :find_job_as_build, except: [:index, :play, :retry, :show]
   before_action :find_job_as_processable, only: [:play, :retry, :show]
-  before_action :authorize_read_build_trace!, only: [:trace, :raw]
+  before_action :authorize_read_build_trace!, only: [:trace, :viewer, :raw]
   before_action :authorize_read_build!, except: [:test_report_summary]
   before_action :authorize_read_build_report_results!, only: [:test_report_summary]
   before_action :authorize_update_build!,
-    except: [:index, :show, :raw, :trace, :erase, :cancel, :unschedule, :test_report_summary]
+    except: [:index, :show, :viewer, :raw, :trace, :erase, :cancel, :unschedule, :test_report_summary]
   before_action :authorize_cancel_build!, only: [:cancel]
   before_action :authorize_erase_build!, only: [:erase]
   before_action :authorize_use_build_terminal!, only: [:terminal, :terminal_websocket_authorize]
@@ -136,7 +136,7 @@ class Projects::JobsController < Projects::ApplicationController
   def raw
     if @build.trace.archived?
       workhorse_set_content_type!
-      send_upload(@build.job_artifacts_trace.file, send_params: raw_send_params, redirect_params: raw_redirect_params)
+      send_upload(@build.job_artifacts_trace.file, send_params: raw_send_params, redirect_params: raw_redirect_params, proxy: params[:proxy])
     else
       @build.trace.read do |stream|
         if stream.file?
@@ -153,6 +153,8 @@ class Projects::JobsController < Projects::ApplicationController
       end
     end
   end
+
+  def viewer; end
 
   def test_report_summary
     return not_found unless @build.report_results.present?
@@ -186,27 +188,27 @@ class Projects::JobsController < Projects::ApplicationController
   attr_reader :build
 
   def authorize_read_build_report_results!
-    return access_denied! unless can?(current_user, :read_build_report_results, build)
+    access_denied! unless can?(current_user, :read_build_report_results, build)
   end
 
   def authorize_update_build!
-    return access_denied! unless can?(current_user, :update_build, @build)
+    access_denied! unless can?(current_user, :update_build, @build)
   end
 
   def authorize_cancel_build!
-    return access_denied! unless can?(current_user, :cancel_build, @build)
+    access_denied! unless can?(current_user, :cancel_build, @build)
   end
 
   def authorize_erase_build!
-    return access_denied! unless can?(current_user, :erase_build, @build)
+    access_denied! unless can?(current_user, :erase_build, @build)
   end
 
   def authorize_use_build_terminal!
-    return access_denied! unless can?(current_user, :create_build_terminal, @build)
+    access_denied! unless can?(current_user, :create_build_terminal, @build)
   end
 
   def authorize_create_proxy_build!
-    return access_denied! unless can?(current_user, :create_build_service_proxy, @build)
+    access_denied! unless can?(current_user, :create_build_service_proxy, @build)
   end
 
   def verify_api_request!

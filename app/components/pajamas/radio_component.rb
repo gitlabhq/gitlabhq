@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
 # Renders a Pajamas compliant radio button element
-# Must be used in an instance of `ActionView::Helpers::FormBuilder`
+# An instance of `ActionView::Helpers::FormBuilder` must be passed as the `form` argument.
+# The easiest way to use this component is by using the `gitlab_ui_radio_component` helper.
+# See https://docs.gitlab.com/ee/development/fe_guide/haml.html#gitlab_ui_radio_component
+# To use a radio button without an instance of `ActionView::Helpers::FormBuilder` use `RadioTagComponent`.
 module Pajamas
   class RadioComponent < Pajamas::Component
     include Pajamas::Concerns::CheckboxRadioLabelWithHelpText

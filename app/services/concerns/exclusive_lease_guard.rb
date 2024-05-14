@@ -20,14 +20,18 @@ module ExclusiveLeaseGuard
   def try_obtain_lease
     lease = exclusive_lease.try_obtain
 
+    Gitlab::Instrumentation::ExclusiveLock.increment_requested_count
+
     unless lease
       log_lease_taken
       return
     end
 
     begin
+      lease_start_time = Time.current
       yield lease
     ensure
+      Gitlab::Instrumentation::ExclusiveLock.add_hold_duration(Time.current - lease_start_time)
       release_lease(lease) if lease_release?
     end
   end

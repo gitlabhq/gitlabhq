@@ -38,9 +38,12 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['toggleDiscussion']),
+    ...mapActions('diffs', ['toggleFileDiscussion']),
     isExpanded(discussion) {
-      return this.shouldCollapseDiscussions ? discussion.expanded : true;
+      return this.shouldCollapseDiscussions ? discussion.expandedOnDiff : true;
+    },
+    toggleVisibility(discussion) {
+      this.toggleFileDiscussion(discussion);
     },
   },
 };
@@ -59,11 +62,11 @@ export default {
       <ul :data-discussion-id="discussion.id" class="notes">
         <template v-if="shouldCollapseDiscussions">
           <button
-            v-if="discussion.expanded"
+            v-if="discussion.expandedOnDiff"
             class="diff-notes-collapse js-diff-notes-toggle"
             type="button"
             :aria-label="__('Show comments')"
-            @click="toggleDiscussion({ discussionId: discussion.id })"
+            @click="toggleVisibility(discussion)"
           >
             <gl-icon name="collapse" class="collapse-icon" />
           </button>
@@ -72,8 +75,8 @@ export default {
             :label="index + 1"
             :is-resolved="discussion.resolved"
             size="sm"
-            class="js-diff-notes-toggle gl-translate-x-n50"
-            @click="toggleDiscussion({ discussionId: discussion.id })"
+            class="js-diff-notes-toggle -gl-translate-x-1/2"
+            @click="toggleVisibility(discussion)"
           />
         </template>
         <noteable-discussion

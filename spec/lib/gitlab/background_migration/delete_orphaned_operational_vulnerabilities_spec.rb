@@ -35,18 +35,29 @@ RSpec.describe Gitlab::BackgroundMigration::DeleteOrphanedOperationalVulnerabili
     )
   end
 
+  let!(:vulnerabilities_findings) { table(:vulnerability_occurrences) }
+  let!(:finding) do
+    create_finding!(
+      project_id: project.id,
+      scanner_id: scanner.id,
+      primary_identifier_id: primary_identifier.id
+    )
+  end
+
   let!(:vulnerabilities) { table(:vulnerabilities) }
   let!(:vulnerability_with_finding) do
     create_vulnerability!(
       project_id: project.id,
-      author_id: user.id
+      author_id: user.id,
+      finding_id: finding.id
     )
   end
 
   let!(:vulnerability_without_finding) do
     create_vulnerability!(
       project_id: project.id,
-      author_id: user.id
+      author_id: user.id,
+      finding_id: finding.id
     )
   end
 
@@ -54,7 +65,8 @@ RSpec.describe Gitlab::BackgroundMigration::DeleteOrphanedOperationalVulnerabili
     create_vulnerability!(
       project_id: project.id,
       author_id: user.id,
-      report_type: 7
+      report_type: 7,
+      finding_id: finding.id
     )
   end
 
@@ -62,7 +74,8 @@ RSpec.describe Gitlab::BackgroundMigration::DeleteOrphanedOperationalVulnerabili
     create_vulnerability!(
       project_id: project.id,
       author_id: user.id,
-      report_type: 99
+      report_type: 99,
+      finding_id: finding.id
     )
   end
 
@@ -74,16 +87,6 @@ RSpec.describe Gitlab::BackgroundMigration::DeleteOrphanedOperationalVulnerabili
       external_id: 'uuid-v5',
       fingerprint: '7e394d1b1eb461a7406d7b1e08f057a1cf11287a',
       name: 'Identifier for UUIDv5')
-  end
-
-  let!(:vulnerabilities_findings) { table(:vulnerability_occurrences) }
-  let!(:finding) do
-    create_finding!(
-      vulnerability_id: vulnerability_with_finding.id,
-      project_id: project.id,
-      scanner_id: scanner.id,
-      primary_identifier_id: primary_identifier.id
-    )
   end
 
   subject(:background_migration) do

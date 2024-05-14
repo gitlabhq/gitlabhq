@@ -24,13 +24,25 @@ RSpec.describe Oauth::AuthorizedApplicationsController do
     let!(:grant) { create(:oauth_access_grant, resource_owner_id: user.id, application: application) }
     let!(:access_token) { create(:oauth_access_token, resource_owner: user, application: application) }
 
-    it 'revokes both access grants and tokens' do
+    it 'revokes both access grants and tokens when id is passed' do
       expect(grant).not_to be_revoked
       expect(access_token).not_to be_revoked
 
       delete :destroy, params: { id: application.id }
 
       expect(grant.reload).to be_revoked
+      expect(access_token.reload).to be_revoked
+    end
+
+    it 'revokes a specific token when token_id is passed' do
+      expect(grant).not_to be_revoked
+      expect(access_token).not_to be_revoked
+
+      # id is required for this path, but is not used by the
+      # controller
+      delete :destroy, params: { id: 9999999, token_id: access_token.id }
+
+      expect(grant.reload).not_to be_revoked
       expect(access_token.reload).to be_revoked
     end
   end

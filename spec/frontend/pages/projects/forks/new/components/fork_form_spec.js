@@ -578,7 +578,21 @@ describe('ForkForm component', () => {
         expect(urlUtility.redirectTo).toHaveBeenCalledWith(webUrl); // eslint-disable-line import/no-deprecated
       });
 
-      it('displays an alert when POST is unsuccessful', async () => {
+      it('displays an alert with message coming from server when POST is unsuccessful', async () => {
+        const error = { response: { data: { message: ['Update error'] } } };
+
+        jest.spyOn(axios, 'post').mockRejectedValue(error);
+
+        setupComponent();
+        await submitForm();
+
+        expect(urlUtility.redirectTo).not.toHaveBeenCalled(); // eslint-disable-line import/no-deprecated
+        expect(createAlert).toHaveBeenCalledWith({
+          message: 'Update error',
+        });
+      });
+
+      it('displays an alert with general error when POST is unsuccessful', async () => {
         const dummyError = 'Fork project failed';
 
         jest.spyOn(axios, 'post').mockRejectedValue(dummyError);

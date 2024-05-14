@@ -12,7 +12,7 @@
           = s_('SnippetsEmptyState|Store, share, and embed small pieces of code and text.')
         .gl-mt-3<
           - if button_path
-            = link_button_to s_('SnippetsEmptyState|New snippet'), button_path, title: s_('SnippetsEmptyState|New snippet'), id: 'new_snippet_link', data: { testid: 'create-first-snippet-link' }, variant: :confirm
+            = link_button_to s_('SnippetsEmptyState|New snippet'), button_path, title: s_('SnippetsEmptyState|New snippet'), data: { testid: 'create-first-snippet-link' }, variant: :confirm
           = link_button_to s_('SnippetsEmptyState|Documentation'), help_page_path('user/snippets'), title: s_('SnippetsEmptyState|Documentation')
       - else
         %h4.gl-text-center= s_('SnippetsEmptyState|There are no snippets to show.')

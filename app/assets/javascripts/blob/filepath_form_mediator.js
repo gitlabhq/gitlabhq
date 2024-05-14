@@ -1,7 +1,6 @@
 import $ from 'jquery';
 
 import Api from '~/api';
-import initPopover from '~/blob/suggest_gitlab_ci_yml';
 import { createAlert } from '~/alert';
 import { __, sprintf } from '~/locale';
 import toast from '~/vue_shared/plugins/global_toast';
@@ -33,7 +32,6 @@ export default class FilepathFormMediator {
 
   selectTemplateFile(template, type, clearSelectedTemplate, stopLoading) {
     const self = this;
-    const suggestCommitChanges = document.querySelector('.js-suggest-gitlab-ci-yml-commit-changes');
 
     this.fetchFileTemplate(type.type, template.key, template)
       .then((file) => {
@@ -50,10 +48,6 @@ export default class FilepathFormMediator {
             },
           },
         });
-
-        if (suggestCommitChanges) {
-          initPopover(suggestCommitChanges);
-        }
       })
       .catch((err) =>
         createAlert({

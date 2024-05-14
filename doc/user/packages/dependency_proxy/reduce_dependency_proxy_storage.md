@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 There's no automatic removal process for blobs. Unless you delete them manually, they're stored
 indefinitely. Since this impacts your
@@ -31,18 +31,15 @@ image or tag from Docker Hub.
 ## Cleanup policies
 
 > - Required role [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/350682) from Developer to Maintainer in GitLab 15.0.
+> - Required role [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/370471) from Maintainer to Owner in GitLab 17.0.
 
 ### Enable cleanup policies from within GitLab
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340777) in GitLab 14.6
-
 You can enable an automatic time-to-live (TTL) policy for the Dependency Proxy from the user
-interface. To do this, navigate to your group's **Settings > Packages and registries > Dependency Proxy**
+interface. To do this, go to your group's **Settings > Packages and registries > Dependency Proxy**
 and enable the setting to automatically clear items from the cache after 90 days.
 
 ### Enable cleanup policies with GraphQL
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/294187) in GitLab 14.4.
 
 The cleanup policy is a scheduled job you can use to clear cached images that are no longer used,
 freeing up additional storage space. The policies use time-to-live (TTL) logic:

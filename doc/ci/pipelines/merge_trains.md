@@ -8,22 +8,15 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> Support for [fast-forward](../../user/project/merge_requests/methods/index.md#fast-forward-merge) and [semi-linear](../../user/project/merge_requests/methods/index.md#merge-commit-with-semi-linear-history) merge methods [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/282442) in GitLab 16.5 [with a flag](../../administration/feature_flags.md) named `fast_forward_merge_trains_support`. Enabled by default.
-
-NOTE:
-[In GitLab 16.0 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/359057), the **Start merge train**
-and **Start merge train when pipeline succeeds** buttons became **Set to auto-merge**.
-**Remove from merge train** became **Cancel auto-merge**.
-
-Use merge trains to queue merge requests and verify their changes work together before
-they are merged to the target branch.
+> - [In GitLab 16.0 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/359057), the **Start merge train** and **Start merge train when pipeline succeeds** buttons became **Set to auto-merge**. **Remove from merge train** became **Cancel auto-merge**.
+> - Support for [fast-forward](../../user/project/merge_requests/methods/index.md#fast-forward-merge) and [semi-linear](../../user/project/merge_requests/methods/index.md#merge-commit-with-semi-linear-history) merge methods [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/282442) in GitLab 16.5 [with a flag](../../administration/feature_flags.md) named `fast_forward_merge_trains_support`. Enabled by default.
+> - [Feature flag `fast_forward_merge_trains_support` removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148964#note_1855981445) in GitLab 16.11.
 
 In projects with frequent merges to the default branch, changes in different merge requests
-might conflict with each other. [Merged results pipelines](merged_results_pipelines.md)
-ensure the changes work with the content in the default branch, but not content
-that others are merging at the same time.
+might conflict with each other. Use merge trains to put merge requests in a queue.
+Each merge request is compared to the other, earlier merge requests, to ensure they all work together.
 
 For more information about:
 
@@ -109,7 +102,8 @@ To enable merge trains:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Merge requests**.
-1. In the **Merge method** section, verify that **Merge commit** is selected.
+1. In GitLab 16.4 and earlier, in the **Merge method** section, verify that **Merge commit** is selected.
+   In GitLab 16.5 and later, you can use any merge method.
 1. In the **Merge options** section, ensure **Enable merged results pipelines** is enabled
    and select **Enable merge trains**.
 1. Select **Save changes**.
@@ -180,6 +174,58 @@ WARNING:
 Merging immediately can use a lot of CI/CD resources. Use this option
 only in critical situations.
 
+NOTE:
+The **merge immediately** option may not be available if your project uses the [fast-forward](../../user/project/merge_requests/methods/index.md#fast-forward-merge)
+merge method and the source branch is behind the target branch. See [issue 434070](https://gitlab.com/gitlab-org/gitlab/-/issues/434070) for more details.
+
+### Allow merge trains to be skipped to merge immediately without restarting merge train pipelines
+
+DETAILS:
+**Status:** Experiment
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/414505) in GitLab 16.5 [with a flag](../../administration/feature_flags.md) named `merge_trains_skip_train`. Disabled by default.
+> - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/422111) as an [experiment feature](../../policy/experiment-beta-support.md) in GitLab 16.10.
+
+FLAG:
+On self-managed GitLab, by default this feature is available. To hide the feature,
+an administrator can [disable the feature flag](../../administration/feature_flags.md)
+named `merge_trains_skip_train`. On GitLab.com and GitLab Dedicated, this feature is available.
+
+You can allow merge requests to be merged without completely restarting a running merge train.
+Use this feature to quickly merge changes that can safely skip the pipeline, for example
+minor documentation updates.
+
+You cannot skip merge trains for fast-forward or semi-linear merge methods. For more information, see [issue 429009](https://gitlab.com/gitlab-org/gitlab/-/issues/429009).
+
+Skipping merge trains is an experimental feature. It may change or be removed completely in future releases.
+
+WARNING:
+You can use this feature to quickly merge security or bug fixes, but the changes
+in the merge request that skipped the train are not verified against
+any of the other merge requests in the train. If these other merge train pipelines
+complete successfully and merge, there is a risk that the combined changes are incompatible.
+The target branch could then require additional work to resolve the new failures.
+
+Prerequisites:
+
+- You must have the Maintainer role.
+- You must have [Merge trains enabled](#enable-merge-trains).
+
+To enable skipping the train without pipeline restarts:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > Merge requests**.
+1. In the **Merge options** section, ensure the **Enable merged results pipelines**
+   and **Enable merge trains** options are enabled.
+1. Select **Allow skipping the merge train**.
+1. Select **Save changes**.
+
+To merge a merge request by skipping the merge train, use the [merge requests merge API endpoint](../../api/merge_requests.md#merge-a-merge-request)
+to merge with the attribute `skip_merge_train` set to `true`.
+
+The merge request merges, and the existing merge train pipelines are not cancelled
+or restarted.
+
 ## Troubleshooting
 
 ### Merge request dropped from the merge train
@@ -198,7 +244,7 @@ notes. Check the **Activity** section in the **Overview** tab for a message simi
 
 ### Cannot use auto-merge
 
-You cannot use [auto-merge](../../user/project/merge_requests/merge_when_pipeline_succeeds.md)
+You cannot use [auto-merge](../../user/project/merge_requests/auto_merge.md)
 (formerly **Merge when pipeline succeeds**) to skip the merge train, when merge trains are enabled.
 See [issue 12267](https://gitlab.com/gitlab-org/gitlab/-/issues/12267) for more information.
 
@@ -218,7 +264,7 @@ You can:
 
 ### Unable to add to the merge train
 
-When [**Pipelines must succeed**](../../user/project/merge_requests/merge_when_pipeline_succeeds.md#require-a-successful-pipeline-for-merge)
+When [**Pipelines must succeed**](../../user/project/merge_requests/auto_merge.md#require-a-successful-pipeline-for-merge)
 is enabled, but the latest pipeline failed:
 
 - The **Set to auto-merge** or **Merge** options are not available.

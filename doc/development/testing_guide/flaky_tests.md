@@ -153,6 +153,18 @@ usually a good idea.
 - [Example 1](https://gitlab.com/gitlab-org/gitlab/-/issues/363214): The runner is under heavy load at this time.
 - [Example 2](https://gitlab.com/gitlab-org/gitlab/-/issues/360559): The runner is having networking issues, making a job failing early
 
+## How to reproduce a flaky test locally?
+
+1. Reproduce the failure locally
+   - Find RSpec `seed` from the CI job log
+   - OR Run `while :; do bin/rspec <spec> || break; done` in a loop to find a `seed`
+1. Reduce the examples by bisecting the spec failure with `bin/rspec --seed <previously found> --bisect <spec>`
+1. Look at the remaining examples and watch for state leakage
+    - e.g. Updating records created with `let_it_be` is a common source of problems
+1. Once fixed, rerun the specs with `seed`
+1. Run `scripts/rspec_check_order_dependence` to ensure the spec can be run in [random order](best_practices.md#test-order)
+1. Run `while :; do bin/rspec <spec> || break; done` in a loop again (and grab lunch) to verify it's no longer flaky
+
 ## Quarantined tests
 
 When we have a flaky test in `master`:
@@ -193,6 +205,14 @@ bin/rspec --tag ~quarantine
 ```
 
 After the long-term quarantining MR has reached production, you should revert the fast-quarantine MR you created earlier.
+
+#### Find quarantined tests by feature category
+
+To find all quarantined tests for a feature category, use `ripgrep`:
+
+```shell
+rg -l --multiline -w "(?s)feature_category:\s+:global_search.+quarantine:"
+```
 
 ### Jest
 
@@ -350,7 +370,7 @@ Reproducing a job failure in CI always helps with troubleshooting why and how a 
 - [How to Deal With and Eliminate Flaky Tests](https://semaphoreci.com/community/tutorials/how-to-deal-with-and-eliminate-flaky-tests)
 - [Tips on Treating Flakiness in your Rails Test Suite](https://semaphoreci.com/blog/2017/08/03/tips-on-treating-flakiness-in-your-test-suite.html)
 - ['Flaky' tests: a short story](https://www.ombulabs.com/blog/rspec/continuous-integration/how-to-track-down-a-flaky-test.html)
-- [Using Insights to Discover Flaky, Slow, and Failed Tests](https://circleci.com/blog/using-insights-to-discover-flaky-slow-and-failed-tests/)
+- [Test Insights](https://circleci.com/docs/insights-tests/)
 
 ---
 

@@ -22,14 +22,27 @@ Monorepos can be large for [many reasons](https://about.gitlab.com/blog/2022/09/
 
 Large repositories pose a performance risk when used in GitLab, especially if a large monorepo receives many clones or pushes a day, which is common for them.
 
-Git itself has performance limitations when it comes to handling
-monorepos.
+### Git performance issues with large repositories
 
-Monorepos can also impact notably on hardware, in some cases hitting limitations such as vertical scaling and network or disk bandwidth limits.
+Git uses [packfiles](https://git-scm.com/book/en/v2/Git-Internals-Packfiles)
+to store its objects so that they take up as little space as
+possible. Packfiles are also used to transfer objects when cloning,
+fetching, or pushing between a Git client and a Git server. Using packfiles is
+usually good because it reduces the amount of disk space and network
+bandwith required.
+
+However, creating packfiles requires a lot of CPU and memory to compress object
+content. So when repositories are large, every Git operation
+that requires creating packfiles becomes expensive and slow as more
+and bigger objects need to be processed and transfered.
+
+### Consequences for GitLab
 
 [Gitaly](https://gitlab.com/gitlab-org/gitaly) is our Git storage service built
 on top of [Git](https://git-scm.com/). This means that any limitations of
 Git are experienced in Gitaly, and in turn by end users of GitLab.
+
+Monorepos can also impact notably on hardware, in some cases hitting limitations such as vertical scaling and network or disk bandwidth limits.
 
 ## Optimize GitLab settings
 
@@ -39,9 +52,9 @@ fetches on the Gitaly server.
 ### Rationale
 
 The most resource intensive operation in Git is the
-[`git-pack-objects`](https://git-scm.com/docs/git-pack-objects) process. It is
-responsible for figuring out all of the commit history and files to send back to
-the client.
+[`git-pack-objects`](https://git-scm.com/docs/git-pack-objects)
+process, which is responsible for creating packfiles after figuring out
+all of the commit history and files to send back to the client.
 
 The larger the repository, the more commits, files, branches, and tags that a
 repository has and the more expensive this operation is. Both memory and CPU
@@ -153,9 +166,9 @@ job. By default, GitLab ensures that:
 - Your repository is clean.
 
 [`GIT_CLEAN_FLAGS`](../../../../ci/runners/configure_runners.md#git-clean-flags) is disabled when set
-to `none`. On very big repositories, this might be desired because `git
-clean` is disk I/O intensive. Controlling that with `GIT_CLEAN_FLAGS: -ffdx
--e .build/` (for example) allows you to control and disable removal of some
+to `none`. On very big repositories, this might be desired because `git clean`
+is disk I/O intensive. Controlling that with `GIT_CLEAN_FLAGS: -ffdx -e .build/`
+(for example) allows you to control and disable removal of some
 directories in the worktree between subsequent runs, which can speed-up
 the incremental builds. This has the biggest effect if you re-use existing
 machines and have an existing worktree that you can re-use for builds.
@@ -332,10 +345,26 @@ when doing an object graph walk.
 
 ### Large blobs
 
-The presence of large files (called blobs in Git), can be problematic for Git
-because it does not handle large binary files efficiently. If there are blobs over
-10 MB or instance in the `git-sizer` output, this probably means there is binary
-data in your repository.
+Blobs are the [Git objects](https://git-scm.com/book/en/v2/Git-Internals-Git-Objects)
+that are used to store and manage the content of the files that users
+have commited into Git repositories.
+
+#### Issues with large blobs
+
+Large blobs can be problematic for Git because Git does not handle
+large binary data efficiently. Blobs over 10 MB in the `git-sizer` output
+probably means that there is large binary data in your repository.
+
+While source code can usually be efficiently compressed, binary data
+is often already compressed. This means that Git is unlikely to be
+successful when it tries to compress large blobs when creating packfiles.
+This results in larger packfiles and higher CPU, memory, and bandwidth
+usage on both Git clients and servers.
+
+On the client side, because Git stores blob content in both packfiles
+(usually under `.git/objects/pack/`) and regular files (in
+[worktrees](https://git-scm.com/docs/git-worktree)), much more disk
+space is usually required than for source code.
 
 #### Use LFS for large blobs
 
@@ -349,7 +378,7 @@ For more information, refer to the [Git LFS documentation](../../../../topics/gi
 ### Reference architectures
 
 Large repositories tend to be found in larger organisations with many users. The
-GitLab Quality Engineering and Support teams provide several [reference architectures](../../../../administration/reference_architectures/index.md) that
+GitLab Test Platform and Support teams provide several [reference architectures](../../../../administration/reference_architectures/index.md) that
 are the recommended way to deploy GitLab at scale.
 
 In these types of setups, the GitLab environment used should match a reference

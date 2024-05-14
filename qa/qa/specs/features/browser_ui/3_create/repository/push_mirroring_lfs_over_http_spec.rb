@@ -3,7 +3,7 @@
 module QA
   RSpec.describe 'Create', product_group: :source_code do
     describe 'Push mirror a repository over HTTP' do
-      it 'configures and syncs LFS objects for a (push) mirrored repository', :aggregate_failures,
+      it 'configures and syncs LFS objects for a (push) mirrored repository', :blocking, :aggregate_failures,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347847',
         quarantine: {
           only: { condition: -> { ENV['QA_RUN_TYPE'] == 'e2e-package-and-test-ce' } },

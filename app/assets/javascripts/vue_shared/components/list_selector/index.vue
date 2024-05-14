@@ -1,10 +1,11 @@
 <script>
 import { GlCard, GlIcon, GlCollapsibleListbox, GlSearchBoxByType } from '@gitlab/ui';
-import { parseBoolean } from '~/lib/utils/common_utils';
+import { parseBoolean, convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { createAlert } from '~/alert';
-import { __ } from '~/locale';
+import { __, sprintf } from '~/locale';
 import groupsAutocompleteQuery from '~/graphql_shared/queries/groups_autocomplete.query.graphql';
 import Api from '~/api';
+import { getProjects } from '~/rest_api';
 import { CONFIG } from './constants';
 
 const I18N = {
@@ -42,6 +43,11 @@ export default {
       required: false,
       default: null,
     },
+    autofocus: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -49,6 +55,7 @@ export default {
       isProjectNamespace: 'true',
       selected: [],
       items: [],
+      isLoading: false,
     };
   },
   computed: {
@@ -60,23 +67,44 @@ export default {
         ? this.$options.i18n.projectGroups
         : this.$options.i18n.allGroups;
     },
+    searchPlaceholder() {
+      return sprintf(__('Search to add %{title}'), {
+        title: this.config.title.toLowerCase(),
+      });
+    },
+    emptyPlaceholder() {
+      return sprintf(__('No %{title} have been added.'), {
+        title: this.config.title.toLowerCase(),
+      });
+    },
+    filteredItems() {
+      // Filter out selected items
+      return this.items.filter(
+        (item) => !this.selectedItems.some((selectedItem) => selectedItem.id === item.id),
+      );
+    },
   },
   methods: {
-    async handleSearchInput(search) {
+    async handleSearchInput(search = this.searchValue) {
       this.$refs.results.open();
+      this.$refs.search.focusInput();
 
       const searchMethod = {
         users: this.fetchUsersBySearchTerm,
         groups: this.fetchGroupsBySearchTerm,
         deployKeys: this.fetchDeployKeysBySearchTerm,
+        projects: this.fetchProjectsBySearchTerm,
       };
 
       try {
+        this.isLoading = true;
         this.items = await searchMethod[this.type](search);
       } catch (e) {
         createAlert({
           message: this.$options.i18n.apiErrorMessage,
         });
+      } finally {
+        this.isLoading = false;
       }
     },
     async fetchUsersBySearchTerm(search) {
@@ -100,6 +128,7 @@ export default {
           data?.groups.nodes.map((group) => ({
             text: group.fullName,
             value: group.name,
+            type: 'group',
             ...group,
           })),
         );
@@ -108,11 +137,23 @@ export default {
       // TODO - implement API request (follow-up)
       // https://gitlab.com/gitlab-org/gitlab/-/issues/432494
     },
+    async fetchProjectsBySearchTerm(search) {
+      const response = await getProjects(search, { membership: false });
+      const projects = response?.data || [];
+
+      return projects.map((project) => ({
+        ...this.convertToCamelCase(project),
+        text: project.name,
+        value: project.id,
+        type: 'project',
+      }));
+    },
     getItemByKey(key) {
       return this.items.find((item) => item[this.config.filterKey] === key);
     },
     handleSelectItem(key) {
       this.$emit('select', this.getItemByKey(key));
+      this.$refs.results.close();
     },
     handleDeleteItem(key) {
       this.$emit('delete', key);
@@ -120,6 +161,9 @@ export default {
     handleSelectNamespace() {
       this.items = [];
       this.searchValue = '';
+    },
+    convertToCamelCase(data) {
+      return convertObjectPropsToCamelCase(data);
     },
   },
   namespaceOptions: [
@@ -143,24 +187,25 @@ export default {
     <div class="gl-display-flex gl-gap-3" :class="{ 'gl-mb-4': selectedItems.length }">
       <gl-collapsible-listbox
         ref="results"
-        v-model="selected"
         class="list-selector gl-display-block gl-flex-grow-1"
-        :items="items"
-        multiple
-        @shown="$refs.search.focusInput()"
+        :items="filteredItems"
+        @select="handleSelectItem"
+        @shown="handleSearchInput"
       >
         <template #toggle>
           <gl-search-box-by-type
             ref="search"
             v-model="searchValue"
-            autofocus
+            :placeholder="searchPlaceholder"
+            :autofocus="autofocus"
             debounce="500"
+            :is-loading="isLoading"
             @input="handleSearchInput"
           />
         </template>
 
         <template #list-item="{ item }">
-          <component :is="config.component" :data="item" @select="handleSelectItem" />
+          <component :is="config.component" :data="item" />
         </template>
       </gl-collapsible-listbox>
 
@@ -173,15 +218,19 @@ export default {
       />
     </div>
 
-    <component
-      :is="config.component"
-      v-for="(item, index) of selectedItems"
-      :key="index"
-      :class="{ 'gl-border-t': index > 0 }"
-      class="gl-p-3"
-      :data="item"
-      can-delete
-      @delete="handleDeleteItem"
-    />
+    <div v-if="selectedItems.length">
+      <component
+        :is="config.component"
+        v-for="(item, index) of selectedItems"
+        :key="index"
+        :class="{ 'gl-border-t': index > 0 }"
+        class="gl-p-3"
+        :data="convertToCamelCase(item)"
+        can-delete
+        @delete="handleDeleteItem"
+      />
+    </div>
+
+    <div v-else class="gl-mt-5 gl-text-secondary">{{ emptyPlaceholder }}</div>
   </gl-card>
 </template>

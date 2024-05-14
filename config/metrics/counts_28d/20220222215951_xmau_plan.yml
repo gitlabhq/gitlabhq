@@ -1,29 +1,33 @@
 ---
 key_path: counts_monthly.aggregated_metrics.xmau_plan
-description: Unique users interacting with Plan features
+description: Removed as duplicate of counts_monthly.aggregated_metrics.users_work_items
 product_section: dev
 product_stage: plan
 product_group: project_management
 value_type: number
-status: active
+status: removed
 milestone: '14.9'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81336
 time_frame: 28d
-instrumentation_class: AggregatedMetric
+instrumentation_class: RedisHLLMetric
 data_source: redis_hll
-options:
-  aggregate:
-    operator: OR
-    attribute: user_id
-  events:
-    - users_creating_work_items
-    - users_updating_work_item_title
-    - users_updating_work_item_dates
-    - users_updating_work_item_labels
-    - users_updating_work_item_iteration
-    - users_updating_weight_estimate
-    - users_updating_work_item_milestone
-    - users_updating_work_item_todo
+events:
+- name: users_creating_work_items
+  unique: user.id
+- name: users_updating_work_item_title
+  unique: user.id
+- name: users_updating_work_item_dates
+  unique: user.id
+- name: users_updating_work_item_labels
+  unique: user.id
+- name: users_updating_work_item_iteration
+  unique: user.id
+- name: users_updating_weight_estimate
+  unique: user.id
+- name: users_updating_work_item_milestone
+  unique: user.id
+- name: users_updating_work_item_todo
+  unique: user.id
 data_category: optional
 distribution:
 - ce
@@ -32,3 +36,5 @@ tier:
 - free
 - premium
 - ultimate
+milestone_removed: '17.0'
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150643

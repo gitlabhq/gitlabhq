@@ -1,3 +1,9 @@
+/*
+Package upload provides middleware for handling file uploads in GitLab Workhorse.
+
+It includes functionality for processing multipart requests, authorizing uploads,
+and preparing file uploads before they are saved.
+*/
 package upload
 
 import (

@@ -22,7 +22,10 @@
 # Tracking Details
 
 - [json schema](https://gitlab.com/gitlab-org/iglu/-/blob/master/public/schemas/com.gitlab/gitlab_experiment/jsonschema/1-0-3) used in `gitlab-experiment` tracking.
+- Due to data tooling limitations, we should only utilize category, action and label. 
+  i.e. try to keep from using property and value. Be aware if adding the experiment context to existing events that
+  use property or value that some concessions will need to be made in order for it to show up in the experiment dashboard.
 
-| sequence | activity | category | action | label | property | value |
-| -------- | -------- | ------ | ----- | ------- | -------- | ----- |
-|  |  |  |  |  |  |  |
+| sequence | activity | category | action | label |
+| -------- | -------- | ------ | ----- | ------- |
+|  |  |  |  |  |

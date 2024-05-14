@@ -15,7 +15,6 @@ module Gitlab
 
           if project.empty_repo?
             project.repository.import_repository(project.import_url)
-            project.repository.fetch_as_mirror(project.import_url, refmap: refmap)
 
             validate_repository_size!
 
@@ -41,11 +40,6 @@ module Gitlab
         private
 
         attr_reader :project
-
-        def refmap
-          # We omit :heads and :tags since these are fetched in the import_repository
-          ['+refs/pull-requests/*/to:refs/merge-requests/*/head']
-        end
 
         def update_clone_time
           project.touch(:last_repository_updated_at)

@@ -20,7 +20,7 @@ import {
   NO_TAGS_MESSAGE,
   NO_TAGS_MATCHING_FILTERS_TITLE,
   NO_TAGS_MATCHING_FILTERS_DESCRIPTION,
-} from '~/packages_and_registries/container_registry/explorer/constants/index';
+} from '~/packages_and_registries/container_registry/explorer/constants';
 import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
 import {
   graphQLDeleteImageRepositoryTagsMock,
@@ -40,6 +40,14 @@ describe('Tags List', () => {
     noContainersImage: 'noContainersImage',
   };
 
+  const queryData = {
+    first: GRAPHQL_PAGE_SIZE,
+    name: '',
+    sort: 'NAME_ASC',
+    id: '1',
+    referrers: true,
+  };
+
   const findDeleteModal = () => wrapper.findComponent(DeleteModal);
   const findPersistedPagination = () => wrapper.findComponent(PersistedPagination);
   const findPersistedSearch = () => wrapper.findComponent(PersistedSearch);
@@ -48,16 +56,12 @@ describe('Tags List', () => {
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findTagsLoader = () => wrapper.findComponent(TagsLoader);
 
-  const fireFirstSortUpdate = () => {
-    findPersistedSearch().vm.$emit('update', { sort: 'NAME_ASC', filters: [], pageInfo: {} });
-  };
-
-  const waitForApolloRequestRender = async () => {
-    fireFirstSortUpdate();
-    await waitForPromises();
-  };
-
-  const mountComponent = ({ propsData = { isMobile: false, id: 1 }, mutationResolver } = {}) => {
+  const mountComponent = ({
+    disabled = false,
+    showContainerRegistryTagSignatures = true,
+    isImageLoading = false,
+    mutationResolver,
+  } = {}) => {
     Vue.use(VueApollo);
 
     const requestHandlers = [
@@ -68,14 +72,22 @@ describe('Tags List', () => {
     apolloProvider = createMockApollo(requestHandlers);
     wrapper = shallowMount(component, {
       apolloProvider,
-      propsData,
+      propsData: {
+        id: 1,
+        disabled,
+        isImageLoading,
+      },
       stubs: { RegistryList, DeleteModal },
       provide() {
         return {
           config: defaultConfig,
+          glFeatures: { showContainerRegistryTagSignatures },
         };
       },
     });
+
+    findPersistedSearch().vm.$emit('update', { sort: 'NAME_ASC', filters: [], pageInfo: {} });
+    return waitForPromises();
   };
 
   beforeEach(() => {
@@ -84,9 +96,8 @@ describe('Tags List', () => {
   });
 
   describe('registry list', () => {
-    beforeEach(async () => {
-      mountComponent();
-      await waitForApolloRequestRender();
+    beforeEach(() => {
+      return mountComponent();
     });
 
     it('has a persisted search', () => {
@@ -124,12 +135,10 @@ describe('Tags List', () => {
         // so we expect the resolver to have been called twice
         expect(resolver).toHaveBeenCalledTimes(2);
         expect(resolver).toHaveBeenCalledWith({
+          ...queryData,
           first: null,
-          name: '',
-          sort: 'NAME_ASC',
           before: tagsPageInfo.startCursor,
           last: GRAPHQL_PAGE_SIZE,
-          id: '1',
         });
       });
 
@@ -140,13 +149,7 @@ describe('Tags List', () => {
         // we are fetching next page after load,
         // so we expect the resolver to have been called twice
         expect(resolver).toHaveBeenCalledTimes(2);
-        expect(resolver).toHaveBeenCalledWith({
-          after: tagsPageInfo.endCursor,
-          first: GRAPHQL_PAGE_SIZE,
-          name: '',
-          sort: 'NAME_ASC',
-          id: '1',
-        });
+        expect(resolver).toHaveBeenCalledWith({ ...queryData, after: tagsPageInfo.endCursor });
       });
 
       describe('delete event', () => {
@@ -199,6 +202,7 @@ describe('Tags List', () => {
     });
 
     it('with before calls resolver with pagination params', async () => {
+      mountComponent();
       findPersistedSearch().vm.$emit('update', {
         sort: 'NAME_ASC',
         filters: [],
@@ -206,14 +210,12 @@ describe('Tags List', () => {
       });
       await waitForPromises();
 
-      expect(resolver).toHaveBeenCalledTimes(1);
+      expect(resolver).toHaveBeenCalledTimes(2);
       expect(resolver).toHaveBeenCalledWith({
+        ...queryData,
         first: null,
-        name: '',
-        sort: 'NAME_ASC',
         before: tagsPageInfo.startCursor,
         last: GRAPHQL_PAGE_SIZE,
-        id: '1',
       });
     });
 
@@ -225,30 +227,23 @@ describe('Tags List', () => {
       });
       await waitForPromises();
 
-      expect(resolver).toHaveBeenCalledTimes(1);
+      expect(resolver).toHaveBeenCalledTimes(2);
       expect(resolver).toHaveBeenCalledWith({
+        ...queryData,
         after: tagsPageInfo.endCursor,
-        first: GRAPHQL_PAGE_SIZE,
-        name: '',
-        sort: 'NAME_ASC',
-        id: '1',
       });
     });
   });
 
   describe('list rows', () => {
     it('one row exist for each tag', async () => {
-      mountComponent();
-
-      await waitForApolloRequestRender();
+      await mountComponent();
 
       expect(findTagsListRow()).toHaveLength(tags.length);
     });
 
     it('the correct props are bound to it', async () => {
-      mountComponent({ propsData: { disabled: true, id: 1 } });
-
-      await waitForApolloRequestRender();
+      await mountComponent({ disabled: true });
 
       const rows = findTagsListRow();
 
@@ -260,8 +255,7 @@ describe('Tags List', () => {
 
     describe('events', () => {
       it('select event update the selected items', async () => {
-        mountComponent();
-        await waitForApolloRequestRender();
+        await mountComponent();
 
         findTagsListRow().at(0).vm.$emit('select');
 
@@ -276,9 +270,8 @@ describe('Tags List', () => {
         beforeEach(async () => {
           mutationResolver = jest.fn().mockResolvedValue(graphQLDeleteImageRepositoryTagsMock);
           resolver = jest.fn().mockResolvedValue(imageTagsMock());
-          mountComponent({ mutationResolver });
+          await mountComponent({ mutationResolver });
 
-          await waitForApolloRequestRender();
           findTagsListRow().at(0).vm.$emit('delete');
         });
 
@@ -301,12 +294,7 @@ describe('Tags List', () => {
 
           await waitForPromises();
 
-          expect(resolver).toHaveBeenLastCalledWith({
-            first: GRAPHQL_PAGE_SIZE,
-            name: '',
-            sort: 'NAME_ASC',
-            id: '1',
-          });
+          expect(resolver).toHaveBeenLastCalledWith(queryData);
         });
       });
     });
@@ -314,9 +302,12 @@ describe('Tags List', () => {
 
   describe('when user does not have permission to delete list rows', () => {
     it('sets registry list hiddenDelete prop to true', async () => {
-      resolver = jest.fn().mockResolvedValue(imageTagsMock({ canDelete: false }));
-      mountComponent();
-      await waitForApolloRequestRender();
+      resolver = jest
+        .fn()
+        .mockResolvedValue(
+          imageTagsMock({ userPermissions: { destroyContainerRepository: false } }),
+        );
+      await mountComponent();
 
       expect(findRegistryList().props('hiddenDelete')).toBe(true);
     });
@@ -325,8 +316,7 @@ describe('Tags List', () => {
   describe('when the list of tags is empty', () => {
     beforeEach(async () => {
       resolver = jest.fn().mockResolvedValue(imageTagsMock({ nodes: [] }));
-      mountComponent();
-      await waitForApolloRequestRender();
+      await mountComponent();
     });
 
     it('does not show the loader', () => {
@@ -363,18 +353,16 @@ describe('Tags List', () => {
     });
   });
 
-  describe('modal', () => {
+  describe('delete modal', () => {
     it('exists', async () => {
-      mountComponent();
-      await waitForApolloRequestRender();
+      await mountComponent();
 
       expect(findDeleteModal().exists()).toBe(true);
     });
 
     describe('cancel event', () => {
       it('tracks cancel_delete', async () => {
-        mountComponent();
-        await waitForApolloRequestRender();
+        await mountComponent();
 
         findDeleteModal().vm.$emit('cancel');
 
@@ -390,9 +378,8 @@ describe('Tags List', () => {
       describe('when mutation', () => {
         beforeEach(async () => {
           mutationResolver = jest.fn().mockResolvedValue(graphQLDeleteImageRepositoryTagsMock);
-          mountComponent({ mutationResolver });
+          await mountComponent({ mutationResolver });
 
-          await waitForApolloRequestRender();
           findRegistryList().vm.$emit('delete', [tags[0]]);
 
           findDeleteModal().vm.$emit('confirmDelete');
@@ -447,9 +434,7 @@ describe('Tags List', () => {
       ])('when mutation fails with $description', ({ mutationMock }) => {
         beforeEach(() => {
           mutationResolver = mutationMock;
-          mountComponent({ mutationResolver });
-
-          return waitForApolloRequestRender();
+          return mountComponent({ mutationResolver });
         });
 
         it('when one item is selected to be deleted calls apollo mutation with the right parameters and emits delete event with right arguments', async () => {
@@ -493,9 +478,7 @@ describe('Tags List', () => {
       describe('when mutation is successful', () => {
         beforeEach(() => {
           mutationResolver = jest.fn().mockResolvedValue(graphQLDeleteImageRepositoryTagsMock);
-          mountComponent({ mutationResolver });
-
-          return waitForApolloRequestRender();
+          return mountComponent({ mutationResolver });
         });
 
         it('and one item is selected to be deleted calls apollo mutation with the right parameters and refetches the tags list query', async () => {
@@ -507,12 +490,7 @@ describe('Tags List', () => {
             expect.objectContaining({ tagNames: [tags[0].name] }),
           );
 
-          expect(resolver).toHaveBeenLastCalledWith({
-            first: GRAPHQL_PAGE_SIZE,
-            name: '',
-            sort: 'NAME_ASC',
-            id: '1',
-          });
+          expect(resolver).toHaveBeenLastCalledWith(queryData);
 
           await waitForPromises();
 
@@ -529,12 +507,7 @@ describe('Tags List', () => {
             expect.objectContaining({ tagNames: tagsMock.map((t) => t.name) }),
           );
 
-          expect(resolver).toHaveBeenLastCalledWith({
-            first: GRAPHQL_PAGE_SIZE,
-            name: '',
-            sort: 'NAME_ASC',
-            id: '1',
-          });
+          expect(resolver).toHaveBeenLastCalledWith(queryData);
 
           await waitForPromises();
 
@@ -555,9 +528,10 @@ describe('Tags List', () => {
     `(
       'when the isImageLoading is $isImageLoading, and is $queryExecuting that the query is still executing is $loadingVisible that the loader is shown',
       async ({ isImageLoading, queryExecuting, loadingVisible }) => {
-        mountComponent({ propsData: { isImageLoading, isMobile: false, id: 1 } });
-        if (!queryExecuting) {
-          await waitForApolloRequestRender();
+        if (queryExecuting) {
+          mountComponent({ isImageLoading });
+        } else {
+          await mountComponent({ isImageLoading });
         }
 
         expect(findTagsLoader().exists()).toBe(loadingVisible);
@@ -569,5 +543,11 @@ describe('Tags List', () => {
         }
       },
     );
+  });
+
+  it('sends referrers as false for the tags query when showContainerRegistryTagSignatures feature flag is off', async () => {
+    await mountComponent({ showContainerRegistryTagSignatures: false });
+
+    expect(resolver).toHaveBeenCalledWith({ ...queryData, referrers: false });
   });
 });

@@ -8,7 +8,7 @@ extra_properties:
 identifiers:
 product_section: dev
 product_stage: manage
-product_group: group::foundations
+product_group: foundations
 milestone: "13.4"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41668
 distributions:

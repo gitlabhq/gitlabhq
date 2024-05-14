@@ -28,7 +28,7 @@ module Groups
       case params[:shared_runners_setting]
       when Namespace::SR_DISABLED_AND_UNOVERRIDABLE
         set_shared_runners_enabled!(false)
-      when Namespace::SR_DISABLED_WITH_OVERRIDE, Namespace::SR_DISABLED_AND_OVERRIDABLE
+      when Namespace::SR_DISABLED_AND_OVERRIDABLE
         disable_shared_runners_and_allow_override!
       when Namespace::SR_ENABLED
         set_shared_runners_enabled!(true)

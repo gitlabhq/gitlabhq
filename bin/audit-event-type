@@ -187,7 +187,7 @@ class AuditEventTypeOptionParser
 
     def read_introduced_by_mr
       $stdout.puts
-      $stdout.puts ">> URL to GitLab merge request that added this type of audit event:"
+      $stdout.puts ">> URL of GitLab merge request that adds this audit event type:"
 
       loop do
         introduced_by_mr = Readline.readline('?> ', false)&.strip
@@ -199,7 +199,7 @@ class AuditEventTypeOptionParser
     end
 
     def read_introduced_by_issue
-      $stdout.puts ">> URL to GitLab issue that added this type of audit event:"
+      $stdout.puts ">> URL of GitLab issue or epic that outlines the requirements of this audit event type:"
 
       loop do
         created_url = Readline.readline('?> ', false)&.strip

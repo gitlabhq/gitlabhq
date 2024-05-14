@@ -95,7 +95,7 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-display-inline-flex gl-vertical-align-middle">
+  <div class="gl-display-inline-flex gl-align-middle">
     <gl-disclosure-dropdown
       :items="items"
       :toggle-id="toggleId"

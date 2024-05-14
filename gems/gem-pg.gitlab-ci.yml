@@ -4,11 +4,15 @@
 # Inputs
 # - `gem_name`: The name of the gem, i.e. if the gem is located at `gems/gitlab-rspec`, `gem_name` should be set to `gitlab-rspec`.
 # - `gem_path_prefix`: The prefix of the gem path, i.e. if the gem is located at `vendor/gems/gitlab-rspec`, `gem_path_prefix` should be set to `vendor/gems/`. Defaults to `gems/`.
+# - `skip_gem_validation`: Whether a validation should be performed.. Defaults to `false`.
 spec:
   inputs:
     gem_name:
     gem_path_prefix:
       default: "gems/"
+    skip_gem_validation:
+      type: boolean
+      default: false
 ---
 workflow:
   name: '[$[[inputs.gem_name]] gem] Ruby $RUBY_VERSION pipeline'
@@ -24,9 +28,11 @@ variables:
   GIT_SUBMODULE_STRATEGY: "none"
   GET_SOURCES_ATTEMPTS: "3"
   # Default Ruby version for jobs that don't use .ruby_matrix
-  RUBY_VERSION: "3.0"
+  RUBY_VERSION: "3.1"
 
 default:
+  tags:
+    - gitlab-org
   image: "ruby:${RUBY_VERSION}"
   cache:
     key: "$[[inputs.gem_name]]-${RUBY_VERSION}"
@@ -47,7 +53,7 @@ default:
 .ruby_matrix:
   parallel:
     matrix:
-      - RUBY_VERSION: ["3.0", "3.1", "3.2"]
+      - RUBY_VERSION: ["3.1", "3.2"]
 
 .ruby_and_postgres_matrix:
   services:
@@ -55,15 +61,23 @@ default:
       command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
   parallel:
     matrix:
-      - RUBY_VERSION: ["3.0", "3.1", "3.2"]
+      - RUBY_VERSION: ["3.1", "3.2"]
         POSTGRES_VERSION: ["12", "13", "14"]
+
+validate-gem:
+  rules:
+    - if: "'$[[inputs.skip_gem_validation]]' == 'true'"
+      when: never
+    # Validate all gems stored in `gems/`.
+    - if: "'$[[inputs.gem_path_prefix]]' == 'gems/'"
+  script:
+    - $CI_PROJECT_DIR/scripts/validate-monorepo-gem "$[[inputs.gem_name]]"
 
 rubocop:
   extends: .ruby_matrix
   rules:
     - exists: ["$[[inputs.gem_path_prefix]]$[[inputs.gem_name]]/.rubocop.yml"]
   script:
-    - $CI_PROJECT_DIR/scripts/validate-monorepo-gem "$[[inputs.gem_name]]"
     - bundle exec rubocop
 
 rspec:

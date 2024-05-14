@@ -2,9 +2,8 @@
 import { GlTokenSelector, GlAvatar, GlAvatarLabeled, GlIcon, GlSprintf } from '@gitlab/ui';
 import { debounce, isEmpty } from 'lodash';
 import { __ } from '~/locale';
-import { getUsers, getGroupUsers } from '~/rest_api';
+import { getUsers } from '~/rest_api';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { memberName } from '../utils/member_utils';
 import {
   SEARCH_DELAY,
@@ -22,7 +21,6 @@ export default {
     GlIcon,
     GlSprintf,
   },
-  mixins: [glFeatureFlagsMixin()],
   props: {
     placeholder: {
       type: String,
@@ -57,10 +55,6 @@ export default {
       required: false,
       default: '',
     },
-    groupId: {
-      type: String,
-      required: true,
-    },
   },
   data() {
     return {
@@ -85,16 +79,9 @@ export default {
     },
     queryOptions() {
       if (this.usersFilter === USERS_FILTER_SAML_PROVIDER_ID) {
-        if (!this.glFeatures.groupUserSaml) {
-          return {
-            saml_provider_id: this.filterId,
-            ...this.$options.defaultQueryOptions,
-          };
-        }
         return {
-          active: true,
-          include_saml_users: true,
-          include_service_accounts: true,
+          saml_provider_id: this.filterId,
+          ...this.$options.defaultQueryOptions,
         };
       }
       return this.$options.defaultQueryOptions;
@@ -139,10 +126,6 @@ export default {
       }));
     },
     retrieveUsersRequest() {
-      if (this.usersFilter === USERS_FILTER_SAML_PROVIDER_ID && this.glFeatures.groupUserSaml) {
-        return getGroupUsers(this.query, this.groupId, this.queryOptions);
-      }
-
       return getUsers(this.query, this.queryOptions);
     },
     retrieveUsers: debounce(async function debouncedRetrieveUsers() {

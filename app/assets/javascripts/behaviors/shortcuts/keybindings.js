@@ -54,6 +54,12 @@ export const GO_TO_YOUR_GROUPS = {
   defaultKeys: ['shift+g'],
 };
 
+export const TOGGLE_DUO_CHAT = {
+  id: 'globalShortcuts.toggleDuoChat',
+  description: __('Toggle DuoChat'),
+  defaultKeys: ['option+d'],
+};
+
 export const GO_TO_ACTIVITY_FEED = {
   id: 'globalShortcuts.goToActivityFeed',
   description: __('Go to the activity feed'),
@@ -195,6 +201,12 @@ const EDIT_RECENT_COMMENT = {
   defaultKeys: ['up'],
 };
 
+export const SAVE_CHANGES = {
+  id: 'globalShortcuts.saveChanges',
+  description: __('Submit/save changes'),
+  defaultKeys: ['mod+enter'],
+};
+
 export const EDIT_WIKI_PAGE = {
   id: 'wiki.editWikiPage',
   description: __('Edit wiki page'),
@@ -261,8 +273,8 @@ export const GO_TO_PROJECT_FILES = {
   defaultKeys: ['g f'], // eslint-disable-line @gitlab/require-i18n-strings
 };
 
-export const GO_TO_PROJECT_FIND_FILE = {
-  id: 'project.goToFindFile',
+export const START_SEARCH_PROJECT_FILE = {
+  id: 'project.startSearchFile',
   description: __('Go to find file'),
   defaultKeys: ['t'],
 };
@@ -449,6 +461,20 @@ export const MR_TOGGLE_FILE_BROWSER = {
   customizable: false,
 };
 
+export const MR_ADD_TO_REVIEW = {
+  id: 'mergeRequests.addToReview',
+  description: __('Add your comment to a review'),
+  defaultKeys: ['mod+enter'],
+  customizable: false,
+};
+
+export const MR_ADD_COMMENT_NOW = {
+  id: 'mergeRequests.addCommentNow',
+  description: __('Publish your comment immediately'),
+  defaultKeys: ['shift+mod+enter'],
+  customizable: false,
+};
+
 export const MR_NEXT_UNRESOLVED_DISCUSSION = {
   id: 'mergeRequests.nextUnresolvedDiscussion',
   description: __('Next unresolved thread'),
@@ -497,6 +523,12 @@ export const ISSUE_CLOSE_DESIGN = {
   defaultKeys: ['esc'],
 };
 
+export const SIDEBAR_CLOSE_WIDGET = {
+  id: 'sidebar.closeWidget',
+  description: __('Close sidebar widget'),
+  defaultKeys: ['esc'],
+};
+
 /**
  * Legacy Web IDE uses the same shortcuts as MR_GO_TO_FILE, from this shared component:
  * https://gitlab.com/gitlab-org/gitlab/-/blob/f3e807cdff5cf25765894163b4e92f8b2bcf8a68/app/assets/javascripts/vue_shared/components/file_finder/index.vue#L6
@@ -524,6 +556,7 @@ const GLOBAL_SHORTCUTS_GROUP = {
   id: 'globalShortcuts',
   name: __('Global Shortcuts'),
   keybindings: [
+    TOGGLE_DUO_CHAT,
     TOGGLE_KEYBOARD_SHORTCUTS_DIALOG,
     GO_TO_YOUR_PROJECTS,
     GO_TO_YOUR_GROUPS,
@@ -552,6 +585,7 @@ export const EDITING_SHORTCUTS_GROUP = {
     LINK_TEXT,
     TOGGLE_MARKDOWN_PREVIEW,
     EDIT_RECENT_COMMENT,
+    SAVE_CHANGES,
   ],
 };
 
@@ -582,7 +616,7 @@ const PROJECT_SHORTCUTS_GROUP = {
     GO_TO_PROJECT_ACTIVITY_FEED,
     GO_TO_PROJECT_RELEASES,
     GO_TO_PROJECT_FILES,
-    GO_TO_PROJECT_FIND_FILE,
+    START_SEARCH_PROJECT_FILE,
     GO_TO_PROJECT_COMMITS,
     GO_TO_PROJECT_REPO_GRAPH,
     GO_TO_PROJECT_REPO_CHARTS,
@@ -641,6 +675,8 @@ const MR_SHORTCUTS_GROUP = {
     MR_PREVIOUS_UNRESOLVED_DISCUSSION,
     MR_COPY_SOURCE_BRANCH_NAME,
     MR_TOGGLE_FILE_BROWSER,
+    MR_ADD_TO_REVIEW,
+    MR_ADD_COMMENT_NOW,
   ],
 };
 

@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Enabling the analyzer
 
-Requirements:
+Prerequisites:
 
 - One of the following web API types:
   - REST API
@@ -23,10 +23,7 @@ Requirements:
   the API can, it may also trigger bugs in the API. This includes actions like modifying and deleting
   data. Only run fuzzing against a test server.
 
-To enable Web API fuzzing:
-
-- Include the API fuzzing template in your `.gitlab-ci.yml` file.
-- From GitLab 13.10 and later, use the Web API fuzzing configuration form.
+To enable Web API fuzzing use the Web API fuzzing configuration form.
 
 - For manual configuration instructions, see the respective section, depending on the API type:
   - [OpenAPI Specification](#openapi-specification)
@@ -35,12 +32,9 @@ To enable Web API fuzzing:
   - [Postman Collection](#postman-collection)
 - Otherwise, see [Web API fuzzing configuration form](#web-api-fuzzing-configuration-form).
 
-In GitLab 14.0 and later, API fuzzing configuration files must be in your repository's
-`.gitlab` directory instead of your repository's root.
+API fuzzing configuration files must be in your repository's `.gitlab` directory.
 
 ## Web API fuzzing configuration form
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299234) in GitLab 13.10.
 
 The API fuzzing configuration form helps you create or modify your project's API fuzzing
 configuration. The form lets you choose values for the most common API fuzzing options and builds
@@ -68,12 +62,6 @@ When the snippet is committed to the `.gitlab-ci.yml` file, pipelines include an
 
 ## OpenAPI Specification
 
-> - Support for OpenAPI Specification v3.0 was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/228652) in GitLab 13.9.
-> - Support for OpenAPI Specification using YAML format was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330583) in GitLab 14.0.
-> - Support for OpenAPI Specification v3.1 was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327268) in GitLab 14.2.
-> - Support to generate media type `application/xml` was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327268) in GitLab 14.8.
-> - Support to select media types was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/333304) in GitLab 14.10.
-
 The [OpenAPI Specification](https://www.openapis.org/) (formerly the Swagger Specification) is an API description format for REST APIs.
 This section shows you how to configure API fuzzing using an OpenAPI Specification to provide information about the target API to test.
 OpenAPI Specifications are provided as a file system resource or URL. Both JSON and YAML OpenAPI formats are supported.
@@ -91,8 +79,7 @@ the body generation is limited to these body types:
 A media type (formerly known as MIME type) is an identifier for file formats and format contents transmitted. A OpenAPI document lets you specify that a given operation can accept different media types, hence a given request can send data using different file content. As for example, a `PUT /user` operation to update user data could accept data in either XML (media type `application/xml`) or JSON (media type `application/json`) format.
 OpenAPI 2.x lets you specify the accepted media types globally or per operation, and OpenAPI 3.x lets you specify the accepted media types per operation. API Fuzzing checks the listed media types and tries to produce sample data for each supported media type.
 
-- In [GitLab 14.10 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/333304), the default behavior is to select one of the supported media types to use. The first supported media type is chosen from the list. This behavior is configurable.
-- In GitLab 14.9 and earlier, the default behavior is to perform testing using all supported media types. This means if two media types are listed (for example, `application/json` and `application/xml`), tests are performed using JSON, and then the same tests using XML.
+- The default behavior is to select one of the supported media types to use. The first supported media type is chosen from the list. This behavior is configurable.
 
 Testing the same operation (for example, `POST /user`) using different media types (for example, `application/json` and `application/xml`) is not always desirable.
 For example, if the target application executes the same code regardless of the request content type, it takes longer to finish the test session, and it may report duplicate vulnerabilities related to the request body depending on the target app.
@@ -101,7 +88,7 @@ The environment variable `FUZZAPI_OPENAPI_ALL_MEDIA_TYPES` lets you specify whet
 
 Alternatively, the variable `FUZZAPI_OPENAPI_MEDIA_TYPES` is used to provide a list of media types that each is tested. Providing more than one media type causes testing to take longer, as testing is performed for each media type selected. When the environment variable `FUZZAPI_OPENAPI_MEDIA_TYPES` is set to a list of media types, only the listed media types are included when creating requests.
 
-Multiple media types in `FUZZAPI_OPENAPI_MEDIA_TYPES` must separated by a colon (`:`). For example, to limit request generation to the media types `application/x-www-form-urlencoded` and  `multipart/form-data`, set the environment variable `FUZZAPI_OPENAPI_MEDIA_TYPES` to `application/x-www-form-urlencoded:multipart/form-data`. Only supported media types in this list are included when creating requests, though unsupported media types are always skipped. A media type text may contain different sections. For example, `application/vnd.api+json; charset=UTF-8` is a compound of `type "/" [tree "."] subtype ["+" suffix]* [";" parameter]`. Parameters are not taken into account when filtering media types on request generation.
+Multiple media types in `FUZZAPI_OPENAPI_MEDIA_TYPES` must separated by a colon (`:`). For example, to limit request generation to the media types `application/x-www-form-urlencoded` and `multipart/form-data`, set the environment variable `FUZZAPI_OPENAPI_MEDIA_TYPES` to `application/x-www-form-urlencoded:multipart/form-data`. Only supported media types in this list are included when creating requests, though unsupported media types are always skipped. A media type text may contain different sections. For example, `application/vnd.api+json; charset=UTF-8` is a compound of `type "/" [tree "."] subtype ["+" suffix]* [";" parameter]`. Parameters are not taken into account when filtering media types on request generation.
 
 The environment variables `FUZZAPI_OPENAPI_ALL_MEDIA_TYPES` and `FUZZAPI_OPENAPI_MEDIA_TYPES` allow you to decide how to handle media types. These settings are mutually exclusive. If both are enabled, API Fuzzing reports an error.
 
@@ -190,8 +177,7 @@ To configure API fuzzing to use a HAR file:
    ```
 
 1. Provide the location of the HAR specification. You can provide the specification as a file
-   or URL. URL support was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/285020)
-   in GitLab 13.10 and later. Specify the location by adding the `FUZZAPI_HAR` variable.
+   or URL. Specify the location by adding the `FUZZAPI_HAR` variable.
 
 1. The target API instance's base URL is also required. Provide it by using the `FUZZAPI_TARGET_URL`
    variable or an `environment_url.txt` file.
@@ -343,7 +329,7 @@ This example is a minimal configuration for API Fuzzing. From here you can:
 
 The [Postman API Client](https://www.postman.com/product/api-client/) is a popular tool that
 developers and testers use to call various types of APIs. The API definitions
-[can be exported as a Postman Collection file](https://learning.postman.com/docs/getting-started/importing-and-exporting-data/#exporting-postman-data)
+[can be exported as a Postman Collection file](https://learning.postman.com/docs/getting-started/importing-and-exporting/exporting-data/#export-collections)
 for use with API Fuzzing. When exporting, make sure to select a supported version of Postman
 Collection: v2.0 or v2.1.
 
@@ -375,8 +361,7 @@ To configure API fuzzing to use a Postman Collection file:
    ```
 
 1. Provide the location of the Postman Collection specification. You can provide the specification
-   as a file or URL. URL support was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/285020)
-   in GitLab 13.10 and later. Specify the location by adding the `FUZZAPI_POSTMAN_COLLECTION`
+   as a file or URL. Specify the location by adding the `FUZZAPI_POSTMAN_COLLECTION`
    variable.
 
 1. Provide the target API instance's base URL. Use either the `FUZZAPI_TARGET_URL` variable or an
@@ -420,7 +405,7 @@ For details of API fuzzing configuration options, see [Available CI/CD variables
 #### Variables in Postman Client
 
 Postman allows the developer to define placeholders that can be used in different parts of the
-requests. These placeholders are called variables, as explained in [using variables](https://learning.postman.com/docs/sending-requests/variables/).
+requests. These placeholders are called variables, as explained in [using variables](https://learning.postman.com/docs/sending-requests/variables/variables/).
 You can use variables to store and reuse values in your requests and scripts. For example, you can
 edit the collection to add variables to the document:
 
@@ -455,7 +440,7 @@ The following is a summary of the variable scopes supported by the Postman Clien
   - Override values defined in the environment or collection
   - Defining variables from scripts
   - Define a single row of data from the unsupported _data scope_
-- **Data scope** is a group of variables in which their name and values come from JSON or CSV files. A Postman collection runner like [Newman](https://learning.postman.com/docs/running-collections/using-newman-cli/command-line-integration-with-newman/) or [Postman Collection Runner](https://learning.postman.com/docs/running-collections/intro-to-collection-runs/) executes the requests in a collection as many times as entries have the JSON or CSV file. A good use case for these variables is to automate tests using scripts in Postman.
+- **Data scope** is a group of variables in which their name and values come from JSON or CSV files. A Postman collection runner like [Newman](https://learning.postman.com/docs/collections/using-newman-cli/command-line-integration-with-newman/) or [Postman Collection Runner](https://learning.postman.com/docs/collections/running-collections/intro-to-collection-runs/) executes the requests in a collection as many times as entries have the JSON or CSV file. A good use case for these variables is to automate tests using scripts in Postman.
   API Fuzzing does **not** support reading data from a CSV or JSON file.
 - **Local scope** are variables that are defined in Postman scripts. API Fuzzing does **not** support Postman scripts and by extension, variables defined in scripts. You can still provide values for the script-defined variables by defining them in one of the supported scopes, or our custom JSON format.
 
@@ -485,8 +470,8 @@ To get the declaration for _environment_ scoped variables, you have to export a 
 
 For more details on exporting variables in different supported scopes, see:
 
-- [Exporting collections](https://learning.postman.com/docs/getting-started/importing-and-exporting-data/#exporting-collections)
-- [Exporting environments](https://learning.postman.com/docs/getting-started/importing-and-exporting-data/#exporting-environments)
+- [Exporting collections](https://learning.postman.com/docs/getting-started/importing-and-exporting/exporting-data/#export-collections)
+- [Exporting environments](https://learning.postman.com/docs/getting-started/importing-and-exporting/exporting-data/#export-environments)
 - [Downloading global environments](https://learning.postman.com/docs/sending-requests/variables/#downloading-global-environments)
 
 #### API Fuzzing Scope, custom JSON file format
@@ -517,14 +502,14 @@ The following table provides a quick reference for mapping scope files/URLs to A
 | Data               | Not supported   |
 | Local              | Not supported   |
 
-The Postman Collection document automatically includes any _collection_ scoped variables. The Postman Collection is provided with the configuration variable `FUZZAPI_POSTMAN_COLLECTION`. This variable can be set to a single [exported Postman collection](https://learning.postman.com/docs/getting-started/importing-and-exporting-data/#exporting-collections).
+The Postman Collection document automatically includes any _collection_ scoped variables. The Postman Collection is provided with the configuration variable `FUZZAPI_POSTMAN_COLLECTION`. This variable can be set to a single [exported Postman collection](https://learning.postman.com/docs/getting-started/importing-and-exporting/exporting-data/#export-collections).
 
 Variables from other scopes are provided through the `FUZZAPI_POSTMAN_COLLECTION_VARIABLES` configuration variable. The configuration variable supports a comma (`,`) delimited file list in [GitLab 15.1 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/356312). GitLab 15.0 and earlier, supports only one single file. The order of the files provided is not important as the files provide the needed scope information.
 
 The configuration variable `FUZZAPI_POSTMAN_COLLECTION_VARIABLES` can be set to:
 
 - [Exported Global environment](https://learning.postman.com/docs/sending-requests/variables/#downloading-global-environments)
-- [Exported environments](https://learning.postman.com/docs/getting-started/importing-and-exporting-data/#exporting-environments)
+- [Exported environments](https://learning.postman.com/docs/getting-started/importing-and-exporting/exporting-data/#export-environments)
 - [API Fuzzing Custom JSON format](#api-fuzzing-scope-custom-json-file-format)
 
 #### Undefined Postman variables
@@ -690,7 +675,7 @@ variables:
 
 #### Example: Environment Scope
 
-In this example, [the _environment_ scope is exported](https://learning.postman.com/docs/getting-started/importing-and-exporting-data/#exporting-environments) from the Postman Client as `environment-scope.json` and provided to API Fuzzing through the `FUZZAPI_POSTMAN_COLLECTION_VARIABLES` configuration variable.
+In this example, [the _environment_ scope is exported](https://learning.postman.com/docs/getting-started/importing-and-exporting/exporting-data/#export-environments) from the Postman Client as `environment-scope.json` and provided to API Fuzzing through the `FUZZAPI_POSTMAN_COLLECTION_VARIABLES` configuration variable.
 
 Here is an example of using `FUZZAPI_POSTMAN_COLLECTION_VARIABLES`:
 
@@ -763,7 +748,7 @@ values. For example:
 In this example, a _global_ scope, _environment_ scope, and _collection_ scope are configured. The first step is to export our various scopes.
 
 - [Export the _global_ scope](https://learning.postman.com/docs/sending-requests/variables/#downloading-global-environments) as `global-scope.json`
-- [Export the _environment_ scope](https://learning.postman.com/docs/getting-started/importing-and-exporting-data/#exporting-environments) as `environment-scope.json`
+- [Export the _environment_ scope](https://learning.postman.com/docs/getting-started/importing-and-exporting/exporting-data/#export-environments) as `environment-scope.json`
 - Export the Postman Collection which includes the _collection_ scope as `postman-collection.json`
 
 The Postman Collection is provided using the `FUZZAPI_POSTMAN_COLLECTION` variable, while the other scopes are provided using the `FUZZAPI_POSTMAN_COLLECTION_VARIABLES`. API Fuzzing can identify which scope the provided files match using data provided in each file.
@@ -821,7 +806,7 @@ When using exported scopes, it's often the case that the value of a variable mus
 In this example, a _global_ scope, _environment_ scope, _collection_ scope, and _API Fuzzing_ scope are configured. The first step is to export and create our various scopes.
 
 - [Export the _global_ scope](https://learning.postman.com/docs/sending-requests/variables/#downloading-global-environments) as `global-scope.json`
-- [Export the _environment_ scope](https://learning.postman.com/docs/getting-started/importing-and-exporting-data/#exporting-environments) as `environment-scope.json`
+- [Export the _environment_ scope](https://learning.postman.com/docs/getting-started/importing-and-exporting/exporting-data/#export-environments) as `environment-scope.json`
 - Export the Postman Collection which includes the _collection_ scope as `postman-collection.json`
 
 The API Fuzzing scope is used by creating a file `api-fuzzing-scope.json` using our [custom JSON file format](#api-fuzzing-scope-custom-json-file-format). This JSON is an object with key-value pairs for properties. The keys are the variables' names, and the values are the variables'
@@ -875,8 +860,6 @@ for information about configuration changes you can make to limit the number of 
 reported.
 
 ### View details of an API Fuzzing vulnerability
-
-> - Introduced in GitLab 13.7.
 
 Faults detected by API Fuzzing occur in the live web application, and require manual investigation
 to determine if they are vulnerabilities. Fuzzing faults are included as vulnerabilities with a

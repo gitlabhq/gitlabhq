@@ -6,7 +6,7 @@ RSpec.describe Git::BranchPushService, :use_clean_rails_redis_caching, services:
   include RepoHelpers
 
   let_it_be(:user) { create(:user) }
-  let_it_be_with_refind(:project) { create(:project, :repository) }
+  let_it_be_with_refind(:project) { create(:project, :repository, maintainers: user) }
 
   let(:blankrev) { Gitlab::Git::SHA1_BLANK_SHA }
   let(:oldrev)   { sample_commit.parent_id }
@@ -17,10 +17,6 @@ RSpec.describe Git::BranchPushService, :use_clean_rails_redis_caching, services:
   let(:service) do
     described_class
       .new(project, user, change: { oldrev: oldrev, newrev: newrev, ref: ref }, push_options: push_options)
-  end
-
-  before do
-    project.add_maintainer(user)
   end
 
   subject(:execute_service) do
@@ -162,39 +158,6 @@ RSpec.describe Git::BranchPushService, :use_clean_rails_redis_caching, services:
     end
   end
 
-  describe "Updates git attributes" do
-    context "for default branch" do
-      context "when first push" do
-        let(:oldrev) { blankrev }
-
-        it "calls the copy attributes method for the first push to the default branch" do
-          expect(project.repository).to receive(:copy_gitattributes).with('master')
-
-          subject
-        end
-      end
-
-      it "calls the copy attributes method for changes to the default branch" do
-        expect(project.repository).to receive(:copy_gitattributes).with(ref)
-
-        subject
-      end
-    end
-
-    context "for non-default branch" do
-      before do
-        # Make sure the "default" branch is different
-        allow(project).to receive(:default_branch).and_return('not-master')
-      end
-
-      it "does not call copy attributes method" do
-        expect(project.repository).not_to receive(:copy_gitattributes)
-
-        subject
-      end
-    end
-  end
-
   describe "Webhooks" do
     before do
       create(:project_hook, push_events: true, project: project)
@@ -215,7 +178,7 @@ RSpec.describe Git::BranchPushService, :use_clean_rails_redis_caching, services:
       end
 
       it "with default branch protection disabled" do
-        expect(project.namespace).to receive(:default_branch_protection).and_return(Gitlab::Access::PROTECTION_NONE)
+        expect(project.namespace).to receive(:default_branch_protection_settings).and_return(Gitlab::Access::BranchProtection.protection_none)
 
         expect(project).to receive(:execute_hooks)
         expect(project.default_branch).to eq("master")
@@ -224,7 +187,7 @@ RSpec.describe Git::BranchPushService, :use_clean_rails_redis_caching, services:
       end
 
       it "with default branch protection set to 'developers can push'" do
-        expect(project.namespace).to receive(:default_branch_protection).and_return(Gitlab::Access::PROTECTION_DEV_CAN_PUSH)
+        expect(project.namespace).to receive(:default_branch_protection_settings).and_return(Gitlab::Access::BranchProtection.protection_partial)
 
         expect(project).to receive(:execute_hooks)
         expect(project.default_branch).to eq("master")
@@ -237,7 +200,7 @@ RSpec.describe Git::BranchPushService, :use_clean_rails_redis_caching, services:
       end
 
       it "with an existing branch permission configured" do
-        expect(project.namespace).to receive(:default_branch_protection).and_return(Gitlab::Access::PROTECTION_DEV_CAN_PUSH)
+        expect(project.namespace).to receive(:default_branch_protection_settings).and_return(Gitlab::Access::BranchProtection.protection_partial)
 
         create(:protected_branch, :no_one_can_push, :developers_can_merge, project: project, name: 'master')
         expect(project).to receive(:execute_hooks)
@@ -252,7 +215,7 @@ RSpec.describe Git::BranchPushService, :use_clean_rails_redis_caching, services:
       end
 
       it "with default branch protection set to 'developers can merge'" do
-        expect(project.namespace).to receive(:default_branch_protection).and_return(Gitlab::Access::PROTECTION_DEV_CAN_MERGE)
+        expect(project.namespace).to receive(:default_branch_protection_settings).and_return(Gitlab::Access::BranchProtection.protected_against_developer_pushes)
 
         expect(project).to receive(:execute_hooks)
         expect(project.default_branch).to eq("master")

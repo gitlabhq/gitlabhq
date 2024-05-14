@@ -43,6 +43,7 @@ import WorkflowAutoCancelOnNewCommitYaml from './yaml_tests/positive_tests/workf
 import WorkflowRulesAutoCancelOnJobFailureYaml from './yaml_tests/positive_tests/workflow/rules/auto_cancel/on_job_failure.yml';
 import WorkflowRulesAutoCancelOnNewCommitYaml from './yaml_tests/positive_tests/workflow/rules/auto_cancel/on_new_commit.yml';
 import StagesYaml from './yaml_tests/positive_tests/stages.yml';
+import RetryYaml from './yaml_tests/positive_tests/retry.yml';
 
 // YAML NEGATIVE TEST
 import ArtifactsNegativeYaml from './yaml_tests/negative_tests/artifacts.yml';
@@ -74,6 +75,7 @@ import WorkflowAutoCancelOnNewCommitNegativeYaml from './yaml_tests/negative_tes
 import WorkflowRulesAutoCancelOnJobFailureNegativeYaml from './yaml_tests/negative_tests/workflow/rules/auto_cancel/on_job_failure.yml';
 import WorkflowRulesAutoCancelOnNewCommitNegativeYaml from './yaml_tests/negative_tests/workflow/rules/auto_cancel/on_new_commit.yml';
 import StagesNegativeYaml from './yaml_tests/negative_tests/stages.yml';
+import RetryNegativeYaml from './yaml_tests/negative_tests/retry.yml';
 
 const ajv = new Ajv({
   strictTypes: false,
@@ -117,19 +119,41 @@ describe('positive tests', () => {
       SecretsYaml,
       NeedsParallelMatrixYaml,
       ScriptYaml,
-      WorkflowAutoCancelOnJobFailureYaml,
-      WorkflowAutoCancelOnNewCommitYaml,
       WorkflowRulesAutoCancelOnJobFailureYaml,
       WorkflowRulesAutoCancelOnNewCommitYaml,
       StagesYaml,
+      RetryYaml,
     }),
   )('schema validates %s', (_, input) => {
     // We construct a new "JSON" from each main key that is inside a
-    // file which allow us to make sure each blob is valid.
+    // file which allows us to make sure each blob is valid.
+    // Note that this treats each main key as a job or global definition,
+    // which means that more than one global definition (e.g. `workflow`)
+    // is not allowed. To use multiple global keys on a single test file
+    // use the `global positive tests` below.
     Object.keys(input).forEach((key) => {
       expect({ [key]: input[key] }).toValidateJsonSchema(ajvSchema);
     });
   });
+});
+
+describe('global positive tests', () => {
+  const tests = {
+    WorkflowAutoCancelOnJobFailureYaml,
+    WorkflowAutoCancelOnNewCommitYaml,
+  };
+  for (const testName in tests) {
+    if (Object.hasOwn(tests, testName)) {
+      const test = tests[testName];
+      describe(testName, () => {
+        // We construct a new "JSON" from each main key that is inside a
+        // file which allows us to make sure each blob is valid.
+        it.each(Object.entries(test))('schema validates %s', (_, input) => {
+          expect(input).toValidateJsonSchema(ajvSchema);
+        });
+      });
+    }
+  }
 });
 
 describe('negative tests', () => {
@@ -167,17 +191,40 @@ describe('negative tests', () => {
       NeedsParallelMatrixWrongParallelValueYaml,
       NeedsParallelMatrixWrongMatrixValueYaml,
       ScriptNegativeYaml,
-      WorkflowAutoCancelOnJobFailureNegativeYaml,
-      WorkflowAutoCancelOnNewCommitNegativeYaml,
       WorkflowRulesAutoCancelOnJobFailureNegativeYaml,
       WorkflowRulesAutoCancelOnNewCommitNegativeYaml,
       StagesNegativeYaml,
+      RetryNegativeYaml,
     }),
   )('schema validates %s', (_, input) => {
     // We construct a new "JSON" from each main key that is inside a
-    // file which allow us to make sure each blob is invalid.
+    // file which allows us to make sure each blob is invalid.
+    // Note that this treats each main key as a job or global definition,
+    // which means that using more than one global definition (e.g. `workflow`)
+    // on a single test file could lead to incorrect test results.
+    // To use multiple global keys on a single test file use the
+    // `global negative tests` below.
     Object.keys(input).forEach((key) => {
       expect({ [key]: input[key] }).not.toValidateJsonSchema(ajvSchema);
     });
   });
+});
+
+describe('global negative tests', () => {
+  const tests = {
+    WorkflowAutoCancelOnJobFailureNegativeYaml,
+    WorkflowAutoCancelOnNewCommitNegativeYaml,
+  };
+  for (const testName in tests) {
+    if (Object.hasOwn(tests, testName)) {
+      const test = tests[testName];
+      describe(testName, () => {
+        // We construct a new "JSON" from each main key that is inside a
+        // file which allows us to make sure each blob is invalid.
+        it.each(Object.entries(test))('schema validates %s', (_, input) => {
+          expect(input).not.toValidateJsonSchema(ajvSchema);
+        });
+      });
+    }
+  }
 });

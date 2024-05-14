@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 This step-by-step guide helps you deploy a project hosted on GitLab.com to
 the Amazon [Elastic Container Service (ECS)](https://aws.amazon.com/ecs/).
@@ -244,9 +244,9 @@ NOTE:
 ECS deploy jobs wait for the rollout to complete before exiting. To disable this behavior,
 set `CI_AWS_ECS_WAIT_FOR_ROLLOUT_COMPLETE_DISABLED` to a non-empty value.
 
-## Set up Review Apps
+## Set up review apps
 
-To use [Review Apps](../../../development/testing_guide/review_apps.md) with ECS:
+To use [review apps](../../../development/testing_guide/review_apps.md) with ECS:
 
 1. Set up a new [service](#create-an-ecs-service).
 1. Use the `CI_AWS_ECS_SERVICE` variable to set the name.
@@ -262,7 +262,7 @@ To use [SAST](../../../user/application_security/sast/index.md) with ECS, add th
 
 ```yaml
 include:
-   - template: Security/SAST.gitlab-ci.yml
+   - template: Jobs/SAST.gitlab-ci.yml
 ```
 
 For more details and configuration options, see the [SAST documentation](../../../user/application_security/sast/index.md#configuration).

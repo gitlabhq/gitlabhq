@@ -16,7 +16,17 @@ module Deployments
     def perform(deployment_id)
       if (deploy = Deployment.find_by_id(deployment_id))
         LinkMergeRequestsService.new(deploy).execute
+
+        after_perform(deploy)
       end
+    end
+
+    private
+
+    def after_perform(_deployment)
+      # Overridden in EE
     end
   end
 end
+
+Deployments::LinkMergeRequestWorker.prepend_mod

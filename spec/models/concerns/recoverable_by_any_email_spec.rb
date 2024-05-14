@@ -68,8 +68,11 @@ RSpec.describe RecoverableByAnyEmail, feature_category: :system_access do
     end
 
     shared_examples "does not send 'Reset password instructions' email when password auth is not allowed" do
-      it 'find the user with error' do
-        expect(send_reset_password_instructions).to be_instance_of User
+      it 'finds the user' do
+        expect(send_reset_password_instructions).to eq(expected_user)
+      end
+
+      it 'returns the user with error' do
         expect(send_reset_password_instructions.errors[:password])
           .to include(_('Password authentication is unavailable.'))
       end
@@ -91,14 +94,6 @@ RSpec.describe RecoverableByAnyEmail, feature_category: :system_access do
       let(:email) { user_confirmed_primary_email }
 
       it_behaves_like "sends 'Reset password instructions' email"
-
-      context 'when password authentication is not allowed' do
-        before do
-          allow(Gitlab::CurrentSettings).to receive_messages(password_authentication_enabled_for_web?: false)
-        end
-
-        it_behaves_like "does not send 'Reset password instructions' email when password auth is not allowed"
-      end
     end
 
     context "when email param matches user's unconfirmed primary email" do
@@ -167,21 +162,51 @@ RSpec.describe RecoverableByAnyEmail, feature_category: :system_access do
       it_behaves_like "does not send 'Reset password instructions' email"
     end
 
-    context 'with an LDAP user' do
-      let_it_be(:ldap_user) { create(:omniauth_user, :ldap) }
+    context 'for password authentication availability' do
+      let(:expected_user) { create(:user) }
+      let(:email) { expected_user.email }
 
-      context 'with a confirmed primary email' do
-        let(:email) { ldap_user.email }
+      it_behaves_like "sends 'Reset password instructions' email"
+
+      context 'when password authentication is disabled for web' do
+        before do
+          stub_application_setting(password_authentication_enabled_for_web: false)
+        end
+
+        it_behaves_like "sends 'Reset password instructions' email"
+      end
+
+      context 'when password authentication is disabled for git' do
+        before do
+          stub_application_setting(password_authentication_enabled_for_git: false)
+        end
+
+        it_behaves_like "sends 'Reset password instructions' email"
+      end
+
+      context 'when password authentication is disabled' do
+        before do
+          stub_application_setting(password_authentication_enabled_for_web: false)
+          stub_application_setting(password_authentication_enabled_for_git: false)
+        end
 
         it_behaves_like "does not send 'Reset password instructions' email when password auth is not allowed"
       end
 
-      context 'with a confirmed secondary email' do
-        let(:email) do
-          create(:email, :confirmed, user: ldap_user, email: 'confirmed-secondary-ldap-email@example.com').email
+      context 'for an LDAP user' do
+        let(:expected_user) { create(:omniauth_user, :ldap) }
+
+        context "when email param is user's primary email" do
+          it_behaves_like "does not send 'Reset password instructions' email when password auth is not allowed"
         end
 
-        it_behaves_like "does not send 'Reset password instructions' email when password auth is not allowed"
+        context "when email param is user's confirmed secondary email" do
+          let(:email) do
+            create(:email, :confirmed, user: expected_user, email: 'confirmed-secondary-ldap-email@example.com').email
+          end
+
+          it_behaves_like "does not send 'Reset password instructions' email when password auth is not allowed"
+        end
       end
     end
   end

@@ -23,6 +23,7 @@ import {
   BLOB_DATA_MOCK,
   CHUNK_1,
   CHUNK_2,
+  CHUNK_3,
   LANGUAGE_MOCK,
   BLAME_DATA_QUERY_RESPONSE_MOCK,
   SOURCE_CODE_CONTENT_MOCK,
@@ -80,6 +81,12 @@ describe('Source Viewer component', () => {
 
   it('instantiates the lineHighlighter class', () => {
     expect(LineHighlighter).toHaveBeenCalled();
+  });
+
+  describe('when mounted', () => {
+    it('should highlight the hash', () => {
+      expect(lineHighlighter.highlightHash).toHaveBeenCalledWith(hash);
+    });
   });
 
   describe('event tracking', () => {
@@ -167,7 +174,10 @@ describe('Source Viewer component', () => {
   });
 
   describe('hash highlighting', () => {
-    it('calls highlightHash with expected parameter', () => {
+    it('calls highlightHash with expected parameter once the watcher for chunks is triggered', async () => {
+      // manually setting the value here to trigger the watch
+      await wrapper.setProps({ chunks: [CHUNK_1, CHUNK_2, CHUNK_3] });
+      await nextTick();
       expect(lineHighlighter.highlightHash).toHaveBeenCalledWith(hash);
     });
   });

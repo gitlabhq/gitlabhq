@@ -524,7 +524,7 @@ RSpec.describe 'Project issue boards', :js, feature_category: :team_planning do
     end
 
     it 'does not show create new list' do
-      expect(page).not_to have_button('Create list')
+      expect(page).not_to have_button('New list')
     end
 
     it 'does not allow dragging' do
@@ -543,7 +543,7 @@ RSpec.describe 'Project issue boards', :js, feature_category: :team_planning do
     end
 
     it 'does not show create new list' do
-      expect(page).not_to have_button('Create list')
+      expect(page).not_to have_button('New list')
     end
   end
 

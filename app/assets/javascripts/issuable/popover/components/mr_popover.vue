@@ -74,7 +74,7 @@ export default {
   apollo: {
     mergeRequest: {
       query,
-      update: (data) => data.project.mergeRequest,
+      update: (data) => data.project?.mergeRequest || {},
       variables() {
         const { namespacePath, iid } = this;
 

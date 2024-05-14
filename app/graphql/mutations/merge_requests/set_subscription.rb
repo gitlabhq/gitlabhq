@@ -9,17 +9,17 @@ module Mutations
       include Mutations::ResolvesIssuable
 
       argument :project_path, GraphQL::Types::ID,
-               required: true,
-               description: "Project the merge request to mutate is in."
+        required: true,
+        description: "Project the merge request to mutate is in."
 
       argument :iid, GraphQL::Types::String,
-               required: true,
-               description: "IID of the merge request to mutate."
+        required: true,
+        description: "IID of the merge request to mutate."
 
       field :merge_request,
-            Types::MergeRequestType,
-            null: true,
-            description: "Merge request after mutation."
+        Types::MergeRequestType,
+        null: true,
+        description: "Merge request after mutation."
 
       authorize :update_subscription
 

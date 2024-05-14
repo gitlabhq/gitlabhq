@@ -1,5 +1,5 @@
 <script>
-import { GlSprintf, GlBadge, GlResizeObserverDirective } from '@gitlab/ui';
+import { GlSprintf, GlBadge, GlResizeObserverDirective, GlTooltipDirective } from '@gitlab/ui';
 import { GlBreakpointInstance } from '@gitlab/ui/dist/utils';
 import { __, s__, sprintf } from '~/locale';
 import { formatDate } from '~/lib/utils/datetime_utility';
@@ -9,6 +9,7 @@ import { getPackageTypeLabel } from '~/packages_and_registries/package_registry/
 import MetadataItem from '~/vue_shared/components/registry/metadata_item.vue';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   name: 'PackageTitle',
@@ -22,11 +23,14 @@ export default {
   },
   directives: {
     GlResizeObserver: GlResizeObserverDirective,
+    GlTooltip: GlTooltipDirective,
   },
+  mixins: [glFeatureFlagsMixin()],
   inject: ['isGroupPage'],
   i18n: {
     lastDownloadedAt: s__('PackageRegistry|Last downloaded %{dateTime}'),
     packageInfo: __('v%{version} published %{timeAgo}'),
+    badgeProtectedTooltipText: s__('PackageRegistry|A protection rule exists for this package.'),
   },
   props: {
     packageEntity: {
@@ -60,6 +64,12 @@ export default {
     hasTagsToDisplay() {
       return Boolean(this.packageEntity.tags?.nodes && this.packageEntity.tags?.nodes.length);
     },
+    showBadgeProtected() {
+      return (
+        Boolean(this.glFeatures.packagesProtectedPackages) &&
+        Boolean(this.packageEntity?.packageProtectionRuleExists)
+      );
+    },
   },
   mounted() {
     this.checkBreakpoints();
@@ -79,11 +89,12 @@ export default {
     :avatar="packageIcon"
   >
     <template #sub-header>
-      <div data-testid="sub-header" class="gl-display-flex gl-flex-wrap gl-gap-3">
+      <div
+        data-testid="sub-header"
+        class="gl-display-flex gl-flex-wrap gl-gap-2 gl-align-items-baseline"
+      >
         <gl-sprintf :message="$options.i18n.packageInfo">
-          <template #version>
-            {{ packageEntity.version }}
-          </template>
+          <template #version>{{ packageEntity.version }}</template>
 
           <template #timeAgo>
             <time-ago-tooltip v-if="packageEntity.createdAt" :time="packageEntity.createdAt" />
@@ -110,6 +121,16 @@ export default {
             {{ tag.name }}
           </gl-badge>
         </template>
+
+        <gl-badge
+          v-if="showBadgeProtected"
+          v-gl-tooltip="{ title: $options.i18n.badgeProtectedTooltipText }"
+          icon-size="sm"
+          size="sm"
+          variant="neutral"
+        >
+          {{ __('protected') }}
+        </gl-badge>
       </div>
     </template>
 

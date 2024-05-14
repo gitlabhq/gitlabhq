@@ -63,7 +63,7 @@ class InvitesController < ApplicationController
 
   def member
     strong_memoize(:member) do
-      @token = params[:id]
+      @token = params[:id].to_s
       Member.find_by_invite_token(@token)
     end
   end

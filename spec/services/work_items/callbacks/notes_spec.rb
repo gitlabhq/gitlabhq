@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe WorkItems::Callbacks::Notes, feature_category: :team_planning do
   let_it_be(:guest) { create(:user) }
   let_it_be(:reporter) { create(:user) }
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project) { create(:project, guests: guest, reporters: reporter) }
   let_it_be_with_reload(:work_item) do
     create(:work_item, project: project, author: guest, discussion_locked: nil)
   end
@@ -15,11 +15,6 @@ RSpec.describe WorkItems::Callbacks::Notes, feature_category: :team_planning do
   let(:discussion_locked) { true }
   let(:params) { { discussion_locked: discussion_locked } }
   let(:service) { described_class.new(issuable: work_item, current_user: current_user, params: params) }
-
-  before_all do
-    project.add_guest(guest)
-    project.add_reporter(reporter)
-  end
 
   subject(:update_discussion_locked) { service.before_update }
 

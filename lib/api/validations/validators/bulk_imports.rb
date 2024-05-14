@@ -11,7 +11,6 @@ module API
             raise Grape::Exceptions::Validation.new(
               params: [@scope.full_name(attr_name)],
               message: "#{Gitlab::Regex.oci_repository_path_regex_message} " \
-                       "It can only contain alphanumeric characters, periods, underscores, and dashes. " \
                        "For example, 'destination_namespace' not 'destination/namespace'"
             )
           end

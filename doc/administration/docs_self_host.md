@@ -96,8 +96,8 @@ To host the product documentation site with GitLab Pages:
    image: registry.gitlab.com/gitlab-org/gitlab-docs/archives:16.0
    pages:
      script:
-     - mkdir public
-     - cp -a /usr/share/nginx/html/* public/
+       - mkdir public
+       - cp -a /usr/share/nginx/html/* public/
      artifacts:
        paths:
        - public
@@ -136,7 +136,7 @@ In this example:
 
 - `16.0/` is the directory where the documentation is hosted.
 - `index.html` is a simple HTML file that redirects to the directory containing the documentation. In this
-   case, `16.0/`.
+  case, `16.0/`.
 
 To extract the HTML files of the documentation site:
 

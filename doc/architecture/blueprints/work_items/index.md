@@ -76,7 +76,7 @@ All Work Item types share the same pool of predefined widgets and are customized
 | [WorkItemWidgetHierarchy](../../../api/graphql/reference/index.md#workitemwidgethierarchy) | Hierarchy of work items, including support for boolean representing presence of children. **Note:** Hierarchy is currently available only for OKRs. | `okrs_mvc` |`Guest`|No|
 | [WorkItemWidgetIteration](../../../api/graphql/reference/index.md#workitemwidgetiteration) | Iteration assignment support for work item | |`Reporter`|No|
 | [WorkItemWidgetLabels](../../../api/graphql/reference/index.md#workitemwidgetlabels) | List of labels added to work items, including support for checking whether scoped labels are supported | |`Reporter`|Yes|
-| [WorkItemWidgetLinkedItems](../../../api/graphql/reference/index.md#workitemwidgetlinkeditems) | List of work items added as related to a given work item, with possible relationship types being `relates_to`, `blocks`, and `blocked_by`. Includes support for individual counts of blocked status, blocked by, blocking, and related to. | `linked_work_items`|`Guest`|No|
+| [WorkItemWidgetLinkedItems](../../../api/graphql/reference/index.md#workitemwidgetlinkeditems) | List of work items added as related to a given work item, with possible relationship types being `relates_to`, `blocks`, and `blocked_by`. Includes support for individual counts of blocked status, blocked by, blocking, and related to. | |`Guest`|No|
 | [WorkItemWidgetMilestone](../../../api/graphql/reference/index.md#workitemwidgetmilestone) | Milestone assignment support for work item | |`Reporter`|No|
 | [WorkItemWidgetNotes](../../../api/graphql/reference/index.md#workitemwidgetnotes) | List of discussions within a work item | |`Guest`|Yes|
 | [WorkItemWidgetNotifications](../../../api/graphql/reference/index.md#workitemwidgetnotifications) | Notifications subscription status of a work item for current user | |Anyone who can view|No|
@@ -85,6 +85,8 @@ All Work Item types share the same pool of predefined widgets and are customized
 | [WorkItemWidgetStatus](../../../api/graphql/reference/index.md#workitemwidgetstatus) | Status of a work item when type is Requirement, with possible status types being `unverified`, `satisfied`, or `failed` | | |No|
 | [WorkItemWidgetTestReports](../../../api/graphql/reference/index.md#workitemwidgettestreports) | Test reports associated with a work item | | | |
 | [WorkItemWidgetWeight](../../../api/graphql/reference/index.md#workitemwidgetweight) | Set weight of a work item | |`Reporter`|No|
+| WorkItemWidgetLock | Lock/Unlock a work item | |`Reporter`|No|
+| [WorkItemWidgetColor](../../../api/graphql/reference/index.md#workitemwidgetcolor) | Set color of a work item. **Note:** Color is currently available only for epics. | |`Reporter`|No|
 
 #### Widget availability (updating)
 
@@ -107,6 +109,7 @@ All Work Item types share the same pool of predefined widgets and are customized
 | [WorkItemWidgetStatus](../../../api/graphql/reference/index.md#workitemwidgetstatus) | ❓ | ❓ | ❓ | ❓ | ❓ |
 | [WorkItemWidgetTestReports](../../../api/graphql/reference/index.md#workitemwidgettestreports) | ❌ | ❌ | ❌ | ❌ | ❌ |
 | [WorkItemWidgetWeight](../../../api/graphql/reference/index.md#workitemwidgetweight) | 🔍 | ✅ | ✅ | ❌ | ❌ |
+| [WorkItemWidgetColor](../../../api/graphql/reference/index.md#workitemwidgettestreports) | ✅ | ❌ | ❌ | ❌ | ❌ |
 
 ##### Legend
 
@@ -132,8 +135,6 @@ Parent-child relationships form the basis of **hierarchy** in work items. Each w
 
 As types expand, and parent items have their own parent items, the hierarchy capability can grow exponentially.
 
-[Pajamas](https://design.gitlab.com/objects/work-item#hierarchy) documents how to display hierarchies depending on context.
-
 ### Work Item view
 
 The new frontend view that renders Work Items of any type using global Work Item `id` as an identifier.
@@ -144,12 +145,12 @@ Task is a special Work Item type. Tasks can be added to issues as child items an
 
 ### Feature flags
 
-Since this is a large project with numerous moving parts, feature flags are being used to track promotions of available widgets. The table below shows the different feature flags that are being used, and the audience that they are available to.  
+Since this is a large project with numerous moving parts, feature flags are being used to track promotions of available widgets. The table below shows the different feature flags that are being used, and the audience that they are available to.
 
 | feature flag name | audience |
 |---|---|
 | `work_items` | defaulted to on |
-| `work_items_mvc` | `gitlab-org`, `gitlab-com` |
+| `work_items_beta` | `gitlab-org`, `gitlab-com` |
 | `work_items_mvc_2` | `gitlab-org/plan-stage` |
 
 ## Motivation
@@ -183,7 +184,6 @@ Work Item architecture is designed with making all the features for all the type
 
 ### Links
 
-- [Work items in Pajamas Design System](https://design.gitlab.com/objects/work-item)
 - [Work items initiative epic](https://gitlab.com/groups/gitlab-org/-/epics/6033)
 - [Tasks roadmap](https://gitlab.com/groups/gitlab-org/-/epics/7103?_gl=1*zqatx*_ga*NzUyOTc3NTc1LjE2NjEzNDcwMDQ.*_ga_ENFH3X7M5Y*MTY2MjU0MDQ0MC43LjEuMTY2MjU0MDc2MC4wLjAuMA..)
 - [Work Item "Vision" Prototype](https://gitlab.com/gitlab-org/gitlab/-/issues/368607)

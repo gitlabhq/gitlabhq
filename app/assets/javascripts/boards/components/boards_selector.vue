@@ -5,13 +5,13 @@ import { differenceBy, debounce } from 'lodash';
 
 import BoardForm from 'ee_else_ce/boards/components/board_form.vue';
 
+import { formType } from '~/boards/constants';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { isMetaKey } from '~/lib/utils/common_utils';
 import { updateHistory } from '~/lib/utils/url_utility';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { s__, __ } from '~/locale';
 
-import eventHub from '../eventhub';
 import groupBoardsQuery from '../graphql/group_boards.query.graphql';
 import projectBoardsQuery from '../graphql/project_boards.query.graphql';
 import groupRecentBoardsQuery from '../graphql/group_recent_boards.query.graphql';
@@ -61,6 +61,11 @@ export default {
       required: false,
       default: false,
     },
+    boardModalForm: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
@@ -71,7 +76,6 @@ export default {
       contentClientHeight: 0,
       maxPosition: 0,
       filterTerm: '',
-      currentPage: '',
     };
   },
 
@@ -142,24 +146,17 @@ export default {
     },
   },
   created() {
-    eventHub.$on('showBoardModal', this.showPage);
     this.handleSearch = debounce(this.setFilterTerm, DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
   },
   destroyed() {
     this.handleSearch.cancel();
   },
-  beforeDestroy() {
-    eventHub.$off('showBoardModal', this.showPage);
-  },
   methods: {
     fullBoardId(boardId) {
       return fullBoardId(boardId);
     },
-    showPage(page) {
-      this.currentPage = page;
-    },
     cancel() {
-      this.showPage('');
+      this.$emit('showBoardModal', '');
     },
     boardUpdate(data, boardType) {
       if (!data?.[this.parentType]) {
@@ -255,6 +252,7 @@ export default {
       updateHistory({ url: `${this.boardBaseUrl}/${value}` });
     },
   },
+  formType,
 };
 </script>
 
@@ -301,7 +299,7 @@ export default {
               data-track-action="click_button"
               data-track-label="create_new_board"
               data-track-property="dropdown"
-              @click="showPage('new')"
+              @click="$emit('showBoardModal', $options.formType.new)"
             >
               {{ s__('IssueBoards|Create new board') }}
             </gl-button>
@@ -313,7 +311,7 @@ export default {
               category="tertiary"
               variant="danger"
               class="gl-mt-0! gl-justify-content-start!"
-              @click="showPage('delete')"
+              @click="$emit('showBoardModal', $options.formType.delete)"
             >
               {{ s__('IssueBoards|Delete board') }}
             </gl-button>
@@ -322,12 +320,12 @@ export default {
       </gl-collapsible-listbox>
 
       <board-form
-        v-if="currentPage"
+        v-if="boardModalForm"
         :can-admin-board="canAdminBoard"
         :scoped-issue-board-feature-enabled="scopedIssueBoardFeatureEnabled"
         :weights="weights"
         :current-board="board"
-        :current-page="currentPage"
+        :current-page="boardModalForm"
         @addBoard="addBoard"
         @updateBoard="$emit('updateBoard', $event)"
         @cancel="cancel"

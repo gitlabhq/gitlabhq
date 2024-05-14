@@ -28,13 +28,13 @@ RSpec.describe Gitlab::Harbor::Client do
       let(:mock_response) do
         [
           {
-            "artifact_count": 1,
-            "creation_time": "2022-03-13T09:36:43.240Z",
-            "id": 1,
-            "name": "jihuprivate/busybox",
-            "project_id": 4,
-            "pull_count": 0,
-            "update_time": "2022-03-13T09:36:43.240Z"
+            artifact_count: 1,
+            creation_time: "2022-03-13T09:36:43.240Z",
+            id: 1,
+            name: "jihuprivate/busybox",
+            project_id: 4,
+            pull_count: 0,
+            update_time: "2022-03-13T09:36:43.240Z"
           }
         ]
       end
@@ -50,7 +50,7 @@ RSpec.describe Gitlab::Harbor::Client do
         stub_request(:get, "https://demo.goharbor.io/api/v2.0/projects/testproject/repositories")
           .with(
             headers: {
-              'Authorization': 'Basic aGFyYm9ydXNlcm5hbWU6aGFyYm9ycGFzc3dvcmQ=',
+              Authorization: 'Basic aGFyYm9ydXNlcm5hbWU6aGFyYm9ycGFzc3dvcmQ=',
               'Content-Type': 'application/json'
             })
           .to_return(status: 200, body: mock_response.to_json, headers: { "x-total-count": 2 })
@@ -66,7 +66,7 @@ RSpec.describe Gitlab::Harbor::Client do
         stub_request(:get, "https://demo.goharbor.io/api/v2.0/projects/testproject/repositories")
           .with(
             headers: {
-              'Authorization': 'Basic aGFyYm9ydXNlcm5hbWU6aGFyYm9ycGFzc3dvcmQ=',
+              Authorization: 'Basic aGFyYm9ydXNlcm5hbWU6aGFyYm9ycGFzc3dvcmQ=',
               'Content-Type': 'application/json'
             })
             .to_return(status: 404, body: {}.to_json)
@@ -84,7 +84,7 @@ RSpec.describe Gitlab::Harbor::Client do
         stub_request(:get, "https://demo.goharbor.io/api/v2.0/projects/testproject/repositories")
           .with(
             headers: {
-              'Authorization': 'Basic aGFyYm9ydXNlcm5hbWU6aGFyYm9ycGFzc3dvcmQ=',
+              Authorization: 'Basic aGFyYm9ydXNlcm5hbWU6aGFyYm9ycGFzc3dvcmQ=',
               'Content-Type': 'application/json'
             })
           .to_return(status: 200, body: '[not json}')
@@ -103,27 +103,27 @@ RSpec.describe Gitlab::Harbor::Client do
       let(:mock_response) do
         [
           {
-            "digest": "sha256:661e8e44e5d7290fbd42d0495ab4ff6fdf1ad251a9f358969b3264a22107c14d",
-            "icon": "sha256:0048162a053eef4d4ce3fe7518615bef084403614f8bca43b40ae2e762e11e06",
-            "id": 1,
-            "project_id": 1,
-            "pull_time": "0001-01-01T00:00:00.000Z",
-            "push_time": "2022-04-23T08:04:08.901Z",
-            "repository_id": 1,
-            "size": 126745886,
-            "tags": [
+            digest: "sha256:661e8e44e5d7290fbd42d0495ab4ff6fdf1ad251a9f358969b3264a22107c14d",
+            icon: "sha256:0048162a053eef4d4ce3fe7518615bef084403614f8bca43b40ae2e762e11e06",
+            id: 1,
+            project_id: 1,
+            pull_time: "0001-01-01T00:00:00.000Z",
+            push_time: "2022-04-23T08:04:08.901Z",
+            repository_id: 1,
+            size: 126745886,
+            tags: [
               {
-                "artifact_id": 1,
-                "id": 1,
-                "immutable": false,
-                "name": "2",
-                "pull_time": "0001-01-01T00:00:00.000Z",
-                "push_time": "2022-04-23T08:04:08.920Z",
-                "repository_id": 1,
-                "signed": false
+                artifact_id: 1,
+                id: 1,
+                immutable: false,
+                name: "2",
+                pull_time: "0001-01-01T00:00:00.000Z",
+                push_time: "2022-04-23T08:04:08.920Z",
+                repository_id: 1,
+                signed: false
               }
             ],
-            "type": "IMAGE"
+            type: "IMAGE"
           }
         ]
       end
@@ -139,7 +139,7 @@ RSpec.describe Gitlab::Harbor::Client do
         stub_request(:get, "https://demo.goharbor.io/api/v2.0/projects/testproject/repositories/test/artifacts")
           .with(
             headers: {
-              'Authorization': 'Basic aGFyYm9ydXNlcm5hbWU6aGFyYm9ycGFzc3dvcmQ=',
+              Authorization: 'Basic aGFyYm9ydXNlcm5hbWU6aGFyYm9ycGFzc3dvcmQ=',
               'Content-Type': 'application/json'
             })
           .to_return(status: 200, body: mock_response.to_json, headers: { "x-total-count": 1 })
@@ -156,7 +156,7 @@ RSpec.describe Gitlab::Harbor::Client do
         stub_request(:get, "https://demo.goharbor.io/api/v2.0/projects/testproject/repositories/test/artifacts")
           .with(
             headers: {
-              'Authorization': 'Basic aGFyYm9ydXNlcm5hbWU6aGFyYm9ycGFzc3dvcmQ=',
+              Authorization: 'Basic aGFyYm9ydXNlcm5hbWU6aGFyYm9ycGFzc3dvcmQ=',
               'Content-Type': 'application/json'
             })
             .to_return(status: 404, body: {}.to_json)
@@ -174,7 +174,7 @@ RSpec.describe Gitlab::Harbor::Client do
         stub_request(:get, "https://demo.goharbor.io/api/v2.0/projects/testproject/repositories/test/artifacts")
           .with(
             headers: {
-              'Authorization': 'Basic aGFyYm9ydXNlcm5hbWU6aGFyYm9ycGFzc3dvcmQ=',
+              Authorization: 'Basic aGFyYm9ydXNlcm5hbWU6aGFyYm9ycGFzc3dvcmQ=',
               'Content-Type': 'application/json'
             })
           .to_return(status: 200, body: '[not json}')
@@ -193,14 +193,14 @@ RSpec.describe Gitlab::Harbor::Client do
       let(:mock_response) do
         [
           {
-            "artifact_id": 1,
-            "id": 1,
-            "immutable": false,
-            "name": "2",
-            "pull_time": "0001-01-01T00:00:00.000Z",
-            "push_time": "2022-04-23T08:04:08.920Z",
-            "repository_id": 1,
-            "signed": false
+            artifact_id: 1,
+            id: 1,
+            immutable: false,
+            name: "2",
+            pull_time: "0001-01-01T00:00:00.000Z",
+            push_time: "2022-04-23T08:04:08.920Z",
+            repository_id: 1,
+            signed: false
           }
         ]
       end
@@ -216,7 +216,7 @@ RSpec.describe Gitlab::Harbor::Client do
         stub_request(:get, "https://demo.goharbor.io/api/v2.0/projects/testproject/repositories/test/artifacts/1/tags")
           .with(
             headers: {
-              'Authorization': 'Basic aGFyYm9ydXNlcm5hbWU6aGFyYm9ycGFzc3dvcmQ=',
+              Authorization: 'Basic aGFyYm9ydXNlcm5hbWU6aGFyYm9ycGFzc3dvcmQ=',
               'Content-Type': 'application/json'
             })
           .to_return(status: 200, body: mock_response.to_json, headers: { "x-total-count": 1 })
@@ -233,7 +233,7 @@ RSpec.describe Gitlab::Harbor::Client do
         stub_request(:get, "https://demo.goharbor.io/api/v2.0/projects/testproject/repositories/test/artifacts/1/tags")
           .with(
             headers: {
-              'Authorization': 'Basic aGFyYm9ydXNlcm5hbWU6aGFyYm9ycGFzc3dvcmQ=',
+              Authorization: 'Basic aGFyYm9ydXNlcm5hbWU6aGFyYm9ycGFzc3dvcmQ=',
               'Content-Type': 'application/json'
             })
             .to_return(status: 404, body: {}.to_json)
@@ -251,7 +251,7 @@ RSpec.describe Gitlab::Harbor::Client do
         stub_request(:get, "https://demo.goharbor.io/api/v2.0/projects/testproject/repositories/test/artifacts/1/tags")
           .with(
             headers: {
-              'Authorization': 'Basic aGFyYm9ydXNlcm5hbWU6aGFyYm9ycGFzc3dvcmQ=',
+              Authorization: 'Basic aGFyYm9ydXNlcm5hbWU6aGFyYm9ycGFzc3dvcmQ=',
               'Content-Type': 'application/json'
             })
           .to_return(status: 200, body: '[not json}')
@@ -270,8 +270,8 @@ RSpec.describe Gitlab::Harbor::Client do
       stub_request(:head, "https://demo.goharbor.io/api/v2.0/projects?project_name=testproject")
         .with(
           headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Basic aGFyYm9ydXNlcm5hbWU6aGFyYm9ycGFzc3dvcmQ=',
+            Accept: 'application/json',
+            Authorization: 'Basic aGFyYm9ydXNlcm5hbWU6aGFyYm9ycGFzc3dvcmQ=',
             'Content-Type': 'application/json'
           })
         .to_return(status: 200, body: '', headers: {})

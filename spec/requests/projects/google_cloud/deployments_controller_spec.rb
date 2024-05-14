@@ -6,20 +6,14 @@ RSpec.describe Projects::GoogleCloud::DeploymentsController, feature_category: :
   let_it_be(:project) { create(:project, :public, :repository) }
   let_it_be(:repository) { project.repository }
 
-  let_it_be(:user_guest) { create(:user) }
-  let_it_be(:user_developer) { create(:user) }
-  let_it_be(:user_maintainer) { create(:user) }
+  let_it_be(:user_guest) { create(:user, guest_of: project) }
+  let_it_be(:user_developer) { create(:user, developer_of: project) }
+  let_it_be(:user_maintainer) { create(:user, maintainer_of: project) }
 
   let_it_be(:unauthorized_members) { [user_guest, user_developer] }
   let_it_be(:authorized_members) { [user_maintainer] }
 
   let_it_be(:urls_list) { %W[#{project_google_cloud_deployments_cloud_run_path(project)} #{project_google_cloud_deployments_cloud_storage_path(project)}] }
-
-  before do
-    project.add_guest(user_guest)
-    project.add_developer(user_developer)
-    project.add_maintainer(user_maintainer)
-  end
 
   describe "Routes must be restricted behind Google OAuth2", :snowplow do
     context 'when a public request is made' do

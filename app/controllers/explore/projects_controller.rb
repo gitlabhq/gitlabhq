@@ -164,7 +164,9 @@ class Explore::ProjectsController < Explore::ApplicationController
   end
 
   def show_alert_if_search_is_disabled
-    return if current_user || params[:name].blank? && params[:search].blank? || !html_request? || Feature.disabled?(:disable_anonymous_project_search, type: :ops)
+    if current_user || params[:name].blank? && params[:search].blank? || !html_request? || Feature.disabled?(:disable_anonymous_project_search, type: :ops)
+      return
+    end
 
     flash.now[:notice] = _('You must sign in to search for specific projects.')
   end

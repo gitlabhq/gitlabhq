@@ -2,13 +2,14 @@
 stage: Create
 group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: "Understand how to read the display of commits in a merge request."
 ---
 
 # Merge request commits
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Each merge request has a history of the commits made to the source branch
 after the merge request was created.
@@ -36,9 +37,6 @@ If your merge request builds upon a previous merge request, you might
 need to [include more commits for context](#show-commits-from-previous-merge-requests).
 
 ### Show commits from previous merge requests
-
-> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/320757) in GitLab 14.8.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/320757) in GitLab 14.9. [Feature flag `context_commits`](https://gitlab.com/gitlab-org/gitlab/-/issues/320757) removed.
 
 When you review a merge request, you might need information from previous commits
 to help understand the commits you're reviewing. You might need more context

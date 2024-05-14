@@ -29,7 +29,7 @@ describe('~/environments/components/flux_resource_selector.vue', () => {
   let wrapper;
 
   const kustomizationItem = {
-    apiVersion: 'kustomize.toolkit.fluxcd.io/v1beta1',
+    apiVersion: 'kustomize.toolkit.fluxcd.io/v1',
     metadata: { name: 'kustomization', namespace },
   };
   const helmReleaseItem = {

@@ -8,10 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
-
-> - The ability to authenticate with a CI/CD job token [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49750) in GitLab 13.12 [with a flag](../administration/feature_flags.md) named `ci_job_token_scope`. Disabled by default.
-> - CI/CD job token authentication [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/300821) in GitLab 16.8. Feature flag `ci_job_token_scope` removed.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Use these API endpoints to work with the [GitLab container registry](../user/packages/container_registry/index.md).
 
@@ -20,8 +17,6 @@ variable as the `JOB-TOKEN` header. The job token only has access to the contain
 of the project that created the pipeline.
 
 ## Change the visibility of the container registry
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18792) in GitLab 14.2.
 
 This controls who can view the container registry.
 
@@ -87,7 +82,7 @@ GET /projects/:id/registry/repositories
 | --------- | ---- | -------- | ----------- |
 | `id`      | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) accessible by the authenticated user. |
 | `tags`      | boolean | no | If the parameter is included as true, each repository includes an array of `"tags"` in the response. |
-| `tags_count` | boolean | no | If the parameter is included as true, each repository includes `"tags_count"` in the response ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/32141) in GitLab 13.1). |
+| `tags_count` | boolean | no | If the parameter is included as true, each repository includes `"tags_count"` in the response . |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/registry/repositories"
@@ -166,8 +161,6 @@ Example response:
 
 ## Get details of a single repository
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/209916) in GitLab 13.6.
-
 Get details of a registry repository.
 
 ```plaintext
@@ -233,6 +226,8 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
 ## List registry repository tags
 
 ### Within a project
+
+> - Keyset pagination [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/432470) in GitLab 16.10 for GitLab.com only.
 
 Get a list of tags for given registry repository.
 

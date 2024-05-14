@@ -1,12 +1,12 @@
 export default ({
   members,
-  pagination,
-  tableFields,
-  tableAttrs,
-  tableSortableFields,
   memberPath,
-  requestFormatter,
-  filteredSearchBar,
+  pagination,
+  tableFields = [],
+  tableAttrs = {},
+  tableSortableFields = [],
+  requestFormatter = () => {},
+  filteredSearchBar = { show: false },
 }) => ({
   members,
   pagination,

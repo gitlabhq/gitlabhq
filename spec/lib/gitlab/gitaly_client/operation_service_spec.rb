@@ -294,30 +294,39 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
       ) {}
     end
 
-    it 'sends a user_merge_branch message', :freeze_time do
-      first_request =
-        Gitaly::UserMergeBranchRequest.new(
-          repository: repository.gitaly_repository,
-          user: gitaly_user,
-          commit_id: source_sha,
-          branch: target_branch,
-          expected_old_oid: target_sha,
-          message: message,
-          timestamp: Google::Protobuf::Timestamp.new(seconds: Time.now.utc.to_i)
-        )
-
-      second_request = Gitaly::UserMergeBranchRequest.new(apply: true)
-
-      expect_next_instance_of(Gitlab::GitalyClient::QueueEnumerator) do |instance|
-        expect(instance).to receive(:push).with(first_request).and_call_original
-        expect(instance).to receive(:push).with(second_request).and_call_original
-        expect(instance).to receive(:close)
-      end
-
+    it 'succeeds' do
       expect(subject).to be_a(Gitlab::Git::OperationService::BranchUpdate)
       expect(subject.newrev).to be_present
       expect(subject.repo_created).to be(false)
       expect(subject.branch_created).to be(false)
+    end
+
+    it 'receives a bad status' do
+      expect(client).to receive(:gitaly_client_call)
+        .and_wrap_original { |original, *args, **kwargs|
+          response_enum = original.call(*args, **kwargs)
+          Enumerator.new do |y|
+            y << response_enum.next
+            y << response_enum.next
+            raise 'bad status'
+          end
+        }
+
+      expect { subject }.to raise_error(RuntimeError, 'bad status')
+    end
+
+    it 'receives an unexpected response' do
+      expect(client).to receive(:gitaly_client_call)
+        .and_wrap_original { |original, *args, **kwargs|
+          response_enum = original.call(*args, **kwargs)
+          Enumerator.new do |y|
+            y << response_enum.next
+            y << response_enum.next
+            y << 'unexpected response'
+          end
+        }
+
+      expect { subject }.to raise_error(RuntimeError, 'expected response stream to finish')
     end
 
     context 'with an exception with the UserMergeBranchError' do
@@ -573,6 +582,9 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
     let(:branch_name) { 'master' }
     let(:cherry_pick_message) { 'Cherry-pick message' }
     let(:time) { Time.now.utc }
+    let(:author_name) { user.name }
+    let(:author_email) { user.email }
+    let(:dry_run) { false }
 
     let(:branch_update) do
       Gitaly::OperationBranchUpdate.new(
@@ -591,7 +603,10 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
         start_branch_name: branch_name,
         start_repository: repository.gitaly_repository,
         message: cherry_pick_message,
-        timestamp: Google::Protobuf::Timestamp.new(seconds: time.to_i)
+        commit_author_name: author_name,
+        commit_author_email: author_email,
+        timestamp: Google::Protobuf::Timestamp.new(seconds: time.to_i),
+        dry_run: dry_run
       )
     end
 
@@ -604,7 +619,10 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
         branch_name: branch_name,
         message: cherry_pick_message,
         start_branch_name: branch_name,
-        start_repository: repository
+        start_repository: repository,
+        author_name: author_name,
+        author_email: author_email,
+        dry_run: dry_run
       )
     end
 
@@ -679,6 +697,15 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
     end
   end
 
+  shared_examples '#user_revert with a gRPC error' do
+    it 'raises an exception' do
+      expect_any_instance_of(Gitaly::OperationService::Stub).to receive(:user_revert)
+        .and_raise(raised_error)
+
+      expect { subject }.to raise_error(expected_error)
+    end
+  end
+
   describe '#user_revert', :freeze_time do
     let(:sha) { '54cec5282aa9f21856362fe321c800c236a61615' }
     let(:branch_name) { 'master' }
@@ -741,20 +768,126 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
 
       it_behaves_like 'cherry pick and revert errors'
     end
+
+    context 'when MergeConflictError is raised' do
+      let(:raised_error) do
+        new_detailed_error(
+          GRPC::Core::StatusCodes::FAILED_PRECONDITION,
+          'revert: there are conflicting files',
+          Gitaly::UserRevertError.new(
+            merge_conflict: Gitaly::MergeConflictError.new
+          )
+        )
+      end
+
+      let(:expected_error) { Gitlab::Git::Repository::CreateTreeError }
+
+      it_behaves_like '#user_revert with a gRPC error'
+    end
+
+    context 'when ChangesAlreadyAppliedError is raised' do
+      let(:raised_error) do
+        new_detailed_error(
+          GRPC::Core::StatusCodes::FAILED_PRECONDITION,
+          'revert: could not apply because the result was empty',
+          Gitaly::UserRevertError.new(
+            changes_already_applied: Gitaly::ChangesAlreadyAppliedError.new
+          )
+        )
+      end
+
+      let(:expected_error) { Gitlab::Git::Repository::CreateTreeError }
+
+      it_behaves_like '#user_revert with a gRPC error'
+    end
+
+    context 'when NotAncestorError is raised' do
+      let(:raised_error) do
+        new_detailed_error(
+          GRPC::Core::StatusCodes::FAILED_PRECONDITION,
+          'revert: branch diverged',
+          Gitaly::UserRevertError.new(
+            not_ancestor: Gitaly::NotAncestorError.new
+          )
+        )
+      end
+
+      let(:expected_error) { Gitlab::Git::CommitError }
+
+      it_behaves_like '#user_revert with a gRPC error'
+    end
+
+    context 'when CustomHookError is raised' do
+      let(:raised_error) do
+        new_detailed_error(
+          GRPC::Core::StatusCodes::PERMISSION_DENIED,
+          'revert: custom hook error',
+          Gitaly::UserRevertError.new(
+            custom_hook: Gitaly::CustomHookError.new
+          )
+        )
+      end
+
+      let(:expected_error) { Gitlab::Git::PreReceiveError }
+
+      it_behaves_like '#user_revert with a gRPC error'
+    end
+
+    context 'when a non-detailed gRPC error is raised' do
+      let(:raised_error) { GRPC::Internal.new('non-detailed error') }
+      let(:expected_error) { GRPC::Internal }
+      let(:expected_error_message) {}
+
+      it_behaves_like '#user_revert with a gRPC error'
+    end
   end
 
   describe '#rebase' do
-    let(:response) { Gitaly::UserRebaseConfirmableResponse.new }
-
     subject do
       client.rebase(
         user,
         '',
-        branch: 'master',
-        branch_sha: 'b83d6e391c22777fca1ed3012fce84f633d7fed0',
+        branch: 'feature',
+        branch_sha: '0b4bc9a49b562e85de7cc9e834518ea6828729b9',
         remote_repository: repository,
         remote_branch: 'master'
-      )
+      ) {}
+    end
+
+    context 'with clean repository' do
+      let(:project) { create(:project, :repository) }
+
+      it 'succeeds' do
+        expect(subject).to be_present
+      end
+
+      it 'receives a bad status' do
+        expect(client).to receive(:gitaly_client_call)
+          .and_wrap_original { |original, *args, **kwargs|
+            response_enum = original.call(*args, **kwargs)
+            Enumerator.new do |y|
+              y << response_enum.next
+              y << response_enum.next
+              raise 'bad status'
+            end
+          }
+
+        expect { subject }.to raise_error(RuntimeError, 'bad status')
+      end
+
+      it 'receives an unexpected response' do
+        expect(client).to receive(:gitaly_client_call)
+          .and_wrap_original { |original, *args, **kwargs|
+            response_enum = original.call(*args, **kwargs)
+            Enumerator.new do |y|
+              y << response_enum.next
+              y << response_enum.next
+              y << 'unexpected response'
+            end
+          }
+
+        expect { subject }.to raise_error(RuntimeError, 'expected response stream to finish')
+      end
     end
 
     shared_examples '#rebase with an error' do
@@ -933,10 +1066,32 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
   end
 
   describe '#user_commit_files' do
+    let(:force) { false }
+    let(:start_sha) { nil }
+    let(:sign) { true }
+
     subject do
       client.user_commit_files(
-        gitaly_user, 'my-branch', 'Commit files message', [], 'janedoe@example.com', 'Jane Doe',
-        'master', repository)
+        user, 'my-branch', 'Commit files message', [], 'janedoe@example.com', 'Jane Doe',
+        'master', repository, force, start_sha, sign)
+    end
+
+    context 'when UserCommitFiles RPC is called' do
+      let(:force) { true }
+      let(:start_sha) { project.commit.id }
+      let(:sign) { false }
+
+      it 'successfully builds the header' do
+        expect_any_instance_of(Gitaly::OperationService::Stub).to receive(:user_commit_files) do |_, req_enum|
+          header = req_enum.first.header
+
+          expect(header.force).to eq(force)
+          expect(header.start_sha).to eq(start_sha)
+          expect(header.sign).to eq(sign)
+        end.and_return(Gitaly::UserCommitFilesResponse.new)
+
+        subject
+      end
     end
 
     context 'with unstructured errors' do

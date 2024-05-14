@@ -54,6 +54,47 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Config, feature_category: :pip
       })
     end
 
+    context 'when the block return value is an array' do
+      context 'when the node is not an array item' do
+        let(:config) do
+          <<~CFG
+            rules: REPLACE
+          CFG
+        end
+
+        it 'replaces the node with the array' do
+          result = subject.replace! do |node|
+            next node unless node == 'REPLACE'
+
+            ['test']
+          end
+
+          expect(result).to eq({ 'rules' => ['test'] })
+        end
+      end
+
+      context 'when the node is an array item' do
+        let(:config) do
+          <<~CFG
+            rules:
+              - rule 1
+              - REPLACE
+              - rule 3
+          CFG
+        end
+
+        it 'inserts the input value into the array' do
+          result = subject.replace! do |node|
+            next node unless node == 'REPLACE'
+
+            ['rule 2']
+          end
+
+          expect(result).to eq({ 'rules' => ['rule 1', 'rule 2', 'rule 3'] })
+        end
+      end
+    end
+
     context 'when config size is exceeded' do
       before do
         stub_const("#{described_class}::MAX_NODES", 7)

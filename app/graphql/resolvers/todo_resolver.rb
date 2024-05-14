@@ -7,8 +7,8 @@ module Resolvers
     type Types::TodoType, null: true
 
     argument :id, Types::GlobalIDType[Todo],
-             required: true,
-             description: 'ID of the to-do item.'
+      required: true,
+      description: 'ID of the to-do item.'
 
     def resolve(id:)
       GitlabSchema.find_by_gid(id)

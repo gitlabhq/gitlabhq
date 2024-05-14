@@ -25,6 +25,28 @@ RSpec.describe 'User creates branch', :js, feature_category: :source_code_manage
     end
   end
 
+  context 'when project has default settings' do
+    let_it_be(:project) { create(:project, :repository) }
+
+    before do
+      project.add_developer(user)
+      sign_in(user)
+
+      visit new_project_branch_path(project)
+    end
+
+    it 'renders the breadcrumbs' do
+      within('.breadcrumbs') do
+        expect(page).to have_content("#{project.creator.name} #{project.name} Branches New Branch")
+
+        expect(page).to have_link(project.creator.name, href: user_path(project.creator))
+        expect(page).to have_link(project.name, href: project_path(project))
+        expect(page).to have_link('Branches', href: project_branches_path(project))
+        expect(page).to have_link('New Branch', href: new_project_branch_path(project))
+      end
+    end
+  end
+
   context 'when project is public with private repository' do
     let_it_be(:project) { create(:project, :public, :repository, :repository_private, group: group) }
 
@@ -87,6 +109,7 @@ RSpec.describe 'User creates branch', :js, feature_category: :source_code_manage
 
             expect(page).to have_content('Branch name is invalid')
             expect(page).to have_content("can't contain spaces")
+            expect(page).to have_selector('.js-branch-name.gl-border-red-500')
           end
         end
 

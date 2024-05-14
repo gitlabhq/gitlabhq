@@ -67,7 +67,7 @@ export const BUILDING_YOUR_MR = __(
 );
 export const SOMETHING_WENT_WRONG = __('Something went wrong on our end. Please try again!');
 export const SAVING_THE_COMMENT_FAILED = s__(
-  'MergeRequests|Your comment could not be submitted because %{reason}.',
+  'MergeRequests|Comment could not be submitted: %{reason}.',
 );
 export const ERROR_LOADING_FULL_DIFF = s__(
   'MergeRequest|Error loading full diff. Please try again.',

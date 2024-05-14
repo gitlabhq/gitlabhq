@@ -55,7 +55,6 @@ module Sortable
             order_expression: column.send(direction).send(nullable),
             reversed_order_expression: column.send(reversed_direction).send(nullable),
             order_direction: direction,
-            distinct: false,
             add_to_projections: true,
             nullable: nullable
           ),

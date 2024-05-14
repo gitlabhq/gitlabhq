@@ -68,7 +68,7 @@ class Projects::WebIdeTerminalsController < Projects::ApplicationController
   private
 
   def authorize_create_web_ide_terminal!
-    return access_denied! unless can?(current_user, :create_web_ide_terminal, project)
+    access_denied! unless can?(current_user, :create_web_ide_terminal, project)
   end
 
   def authorize_read_web_ide_terminal!
@@ -80,7 +80,7 @@ class Projects::WebIdeTerminalsController < Projects::ApplicationController
   end
 
   def authorize_build_ability!(ability)
-    return access_denied! unless can?(current_user, ability, build)
+    access_denied! unless can?(current_user, ability, build)
   end
 
   def build

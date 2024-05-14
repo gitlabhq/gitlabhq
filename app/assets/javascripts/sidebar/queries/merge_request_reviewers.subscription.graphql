@@ -1,7 +1,7 @@
 #import "~/graphql_shared/fragments/user.fragment.graphql"
 #import "~/graphql_shared/fragments/user_availability.fragment.graphql"
 
-subscription mergeRequestReviewersUpdated($issuableId: IssuableID!, $mrRequestChanges: Boolean!) {
+subscription mergeRequestReviewersUpdated($issuableId: IssuableID!) {
   mergeRequestReviewersUpdated(issuableId: $issuableId) {
     ... on MergeRequest {
       id
@@ -13,8 +13,7 @@ subscription mergeRequestReviewersUpdated($issuableId: IssuableID!, $mrRequestCh
             canMerge
             canUpdate
             approved
-            reviewed @skip(if: $mrRequestChanges)
-            reviewState @include(if: $mrRequestChanges)
+            reviewState
           }
         }
       }

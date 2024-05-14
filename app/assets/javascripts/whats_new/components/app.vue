@@ -55,6 +55,9 @@ export default {
         this.fetchFreshItems(page);
       }
     },
+    focusDrawer() {
+      this.$refs.drawer.$el.focus();
+    },
     handleResize() {
       const height = getDrawerBodyHeight(this.$refs.drawer.$el);
       this.setDrawerBodyHeight(height);
@@ -73,14 +76,17 @@ export default {
     <gl-drawer
       ref="drawer"
       v-gl-resize-observer="handleResize"
-      class="whats-new-drawer gl-reset-line-height"
+      aria-labelledby="whats-new-drawer-heading"
+      tabindex="0"
+      class="whats-new-drawer gl-reset-line-height gl-focus--focus"
       :header-height="getDrawerHeaderHeight"
       :z-index="700"
       :open="open"
+      @opened="focusDrawer"
       @close="closeDrawer"
     >
       <template #title>
-        <h4 class="page-title gl-my-2">{{ __("What's new") }}</h4>
+        <h4 id="whats-new-drawer-heading" class="page-title gl-my-2">{{ __("What's new") }}</h4>
       </template>
       <template v-if="features.length || !fetching">
         <gl-infinite-scroll

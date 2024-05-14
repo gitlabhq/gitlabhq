@@ -8,13 +8,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 You can read more about [project access tokens](../user/project/settings/project_access_tokens.md).
 
 ## List project access tokens
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238991) in GitLab 13.9.
 
 Get a list of [project access tokens](../user/project/settings/project_access_tokens.md).
 
@@ -50,8 +48,6 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 
 ## Get a project access token
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82714) in GitLab 14.10.
-
 Get a [project access token](../user/project/settings/project_access_tokens.md) by ID.
 
 ```plaintext
@@ -61,7 +57,7 @@ GET projects/:id/access_tokens/:token_id
 | Attribute | Type    | required | Description         |
 |-----------|---------|----------|---------------------|
 | `id` | integer or string | yes | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
-| `token_id` | integer or string | yes | ID of the project access token |
+| `token_id` | integer | yes | ID of the project access token |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/<project_id>/access_tokens/<token_id>"
@@ -86,8 +82,6 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 
 ## Create a project access token
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55408) in GitLab 13.10.
-> - The `token` attribute was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55408) in GitLab 13.10.
 > - The `expires_at` attribute default was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120213) in GitLab 16.0.
 
 Create a [project access token](../user/project/settings/project_access_tokens.md).
@@ -98,8 +92,6 @@ role that can be set is:
 - Owner (`50`), if you have the Owner role for the project.
 - Maintainer (`40`), if you have the Maintainer role on the project.
 
-In GitLab 14.8 and earlier, project access tokens have a maximum role of Maintainer.
-
 ```plaintext
 POST projects/:id/access_tokens
 ```
@@ -107,15 +99,15 @@ POST projects/:id/access_tokens
 | Attribute | Type    | required | Description                                                                                                                           |
 |-----------|---------|----------|---------------------------------------------------------------------------------------------------------------------------------------|
 | `id` | integer or string | yes | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding)                                                            |
-| `name` | String | yes | Name of the project access token                                                                                                               |
+| `name` | string | yes | Name of the project access token                                                                                                               |
 | `scopes` | `Array[String]` | yes | [List of scopes](../user/project/settings/project_access_tokens.md#scopes-for-a-project-access-token)                               |
-| `access_level` | Integer | no | Access level. Valid values are `10` (Guest), `20` (Reporter), `30` (Developer), `40` (Maintainer), and `50` (Owner). Defaults to `40`. |
-| `expires_at` | Date    | yes | Expiration date of the access token in ISO format (`YYYY-MM-DD`). The date cannot be set later than the [maximum allowable lifetime of an access token](../user/profile/personal_access_tokens.md#when-personal-access-tokens-expire). |
+| `access_level` | integer | no | Access level. Valid values are `10` (Guest), `20` (Reporter), `30` (Developer), `40` (Maintainer), and `50` (Owner). Defaults to `40`. |
+| `expires_at` | date    | yes | Expiration date of the access token in ISO format (`YYYY-MM-DD`). The date cannot be set later than the [maximum allowable lifetime of an access token](../user/profile/personal_access_tokens.md#when-personal-access-tokens-expire). |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 --header "Content-Type:application/json" \
---data '{ "name":"test_token", "scopes":["api", "read_repository"], "expires_at":"2021-01-31", "access_level": 30 }' \
+--data '{ "name":"test_token", "scopes":["api", "read_repository"], "expires_at":"2021-01-31", "access_level":30 }' \
 "https://gitlab.example.com/api/v4/projects/<project_id>/access_tokens"
 ```
 
@@ -155,12 +147,9 @@ POST /projects/:id/access_tokens/:token_id/rotate
 
 | Attribute | Type       | required | Description         |
 |-----------|------------|----------|---------------------|
-| `id` | integer/string  | yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
-| `token_id` | integer/string | yes | ID of the project access token |
+| `id` | integer or string  | yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
+| `token_id` | integer | yes | ID of the project access token |
 | `expires_at` | date    | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416795) in GitLab 16.6. |
-
-NOTE:
-Non-administrators can rotate their own tokens. Administrators can rotate tokens of any user in the project.
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/<project_id>/access_tokens/<token_id>/rotate"
@@ -200,8 +189,6 @@ for more information.
 
 ## Revoke a project access token
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238991) in GitLab 13.9.
-
 Revoke a [project access token](../user/project/settings/project_access_tokens.md).
 
 ```plaintext
@@ -211,7 +198,7 @@ DELETE projects/:id/access_tokens/:token_id
 | Attribute | Type    | required | Description         |
 |-----------|---------|----------|---------------------|
 | `id` | integer or string | yes | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
-| `token_id` | integer or string | yes | ID of the project access token |
+| `token_id` | integer | yes | ID of the project access token |
 
 ```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/<project_id>/access_tokens/<token_id>"

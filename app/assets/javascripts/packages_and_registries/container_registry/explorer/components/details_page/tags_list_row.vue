@@ -139,7 +139,7 @@ export default {
   <list-item v-bind="$attrs" :selected="selected" :disabled="disabled">
     <template #left-action>
       <gl-form-checkbox
-        v-if="tag.canDelete"
+        v-if="tag.userPermissions.destroyContainerRepositoryTag"
         :disabled="disabled"
         class="gl-m-0"
         :checked="selected"
@@ -151,7 +151,7 @@ export default {
         <div
           v-gl-tooltip="{ title: tag.name }"
           data-testid="name"
-          class="gl-text-overflow-ellipsis gl-overflow-hidden gl-white-space-nowrap"
+          class="gl-text-overflow-ellipsis gl-overflow-hidden gl-whitespace-nowrap"
           :class="mobileClasses"
         >
           {{ tag.name }}
@@ -197,7 +197,7 @@ export default {
         </gl-sprintf>
       </span>
     </template>
-    <template v-if="tag.canDelete" #right-action>
+    <template v-if="tag.userPermissions.destroyContainerRepositoryTag" #right-action>
       <gl-disclosure-dropdown
         :disabled="disabled"
         icon="ellipsis_v"

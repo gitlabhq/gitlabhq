@@ -71,6 +71,14 @@ RSpec.describe Gitlab::Database::Dictionary, feature_category: :database do
     end
   end
 
+  describe '#find_all_having_desired_sharding_key_migration_job' do
+    it 'returns an array of entries having desired sharding key migration job' do
+      entries = dictionary.find_all_having_desired_sharding_key_migration_job
+      expect(entries).to all(be_instance_of(Gitlab::Database::Dictionary::Entry))
+      expect(entries).to all(have_attributes(desired_sharding_key_migration_job_name: String))
+    end
+  end
+
   describe '.any_entry' do
     it 'loads an entry from any scope' do
       expect(described_class.any_entry('ci_pipelines')).to be_present # Regular table
@@ -120,6 +128,31 @@ RSpec.describe Gitlab::Database::Dictionary, feature_category: :database do
         end
       end
 
+      describe '#milestone_greater_than_or_equal_to?' do
+        using RSpec::Parameterized::TableSyntax
+
+        where(:milestone, :other_milestone, :result) do
+          '16.9'          | '16.10'        | false
+          '16.10'         | '16.11'        | false
+          '16.12'         | '16.10'        | true
+          '16.11'         | '16.10'        | true
+          '16.10'         | '16.10'        | true
+          '16.9'          | '16.6'         | true
+          '<6.0'          | '16.6'         | false
+          'TODO'          | '16.6'         | false
+        end
+
+        with_them do
+          before do
+            allow(database_dictionary).to receive(:milestone).and_return(milestone)
+          end
+
+          it 'returns the right result' do
+            expect(database_dictionary.milestone_greater_than_or_equal_to?(other_milestone)).to eq(result)
+          end
+        end
+      end
+
       describe '#gitlab_schema' do
         it 'returns the gitlab_schema of the table' do
           expect(database_dictionary.table_name).to eq('application_settings')
@@ -136,6 +169,15 @@ RSpec.describe Gitlab::Database::Dictionary, feature_category: :database do
       describe '#key_name' do
         it 'returns the value of the name of the table' do
           expect(database_dictionary.key_name).to eq('application_settings')
+        end
+      end
+
+      describe '#desired_sharding_key_migration_job_name' do
+        let(:file_path) { 'db/docs/merge_request_diffs.yml' }
+
+        it 'returns the name of the migration that backfills the desired sharding key' do
+          expect(database_dictionary.desired_sharding_key_migration_job_name)
+            .to eq('BackfillMergeRequestDiffsProjectId')
         end
       end
 

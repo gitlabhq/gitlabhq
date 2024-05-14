@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Integrations::DroneCi, :use_clean_rails_memory_store_caching do
+RSpec.describe Integrations::DroneCi, :use_clean_rails_memory_store_caching, feature_category: :integrations do
   include ReactiveCachingHelpers
 
   subject(:integration) { described_class.new }
@@ -14,6 +14,8 @@ RSpec.describe Integrations::DroneCi, :use_clean_rails_memory_store_caching do
   it_behaves_like Integrations::ResetSecretFields do
     let(:integration) { subject }
   end
+
+  it_behaves_like Integrations::HasAvatar
 
   describe 'validations' do
     context 'active' do
@@ -112,6 +114,13 @@ RSpec.describe Integrations::DroneCi, :use_clean_rails_memory_store_caching do
 
         expect(integration.enable_ssl_verification).to be(false)
       end
+    end
+  end
+
+  describe '#attribution_notice' do
+    it do
+      expect(subject.attribution_notice)
+      .to eq('Drone CI icon and logo by Harness Inc. are licensed under CC NC-ND 4.0.')
     end
   end
 

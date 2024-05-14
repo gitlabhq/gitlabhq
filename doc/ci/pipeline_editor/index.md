@@ -8,10 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
-
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4540) in GitLab 13.8.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/270059) in GitLab 13.10.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 The pipeline editor is the primary place to edit the GitLab CI/CD configuration in
 the `.gitlab-ci.yml` file in the root of your repository. To access the editor, go to **Build > Pipeline editor**.
@@ -26,9 +23,6 @@ From the pipeline editor page you can:
 - See a [visualization](#visualize-ci-configuration) of the current configuration.
 - View the [full configuration](#view-full-configuration), which displays the configuration with any configuration from `include` added.
 - [Commit](#commit-changes-to-ci-configuration) the changes to a specific branch.
-
-In GitLab 13.9 and earlier, you must already have [a `.gitlab-ci.yml` file](../quick_start/index.md#create-a-gitlab-ciyml-file)
-on the default branch of your project to use the editor.
 
 ## Validate CI configuration
 
@@ -83,10 +77,6 @@ for review.
 
 ## Visualize CI configuration
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/241722) in GitLab 13.5.
-> - [Moved to **Build > Pipeline editor**](https://gitlab.com/gitlab-org/gitlab/-/issues/263141) in GitLab 13.7.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/290117) in GitLab 13.12.
-
 To view a visualization of your `.gitlab-ci.yml` configuration, in your project,
 go to **Build > Pipeline editor**, and then select the **Visualize** tab. The
 visualization shows all stages and jobs. Any [`needs`](../yaml/index.md#needs)
@@ -104,8 +94,6 @@ each job depends only on the previous stage being completed successfully.
 
 ## View full configuration
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/246801) in GitLab 13.9.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/301103) in GitLab 13.12.
 > - **View merged YAML** tab [renamed to **Full configuration**](https://gitlab.com/gitlab-org/gitlab/-/issues/377404) in GitLab 16.0.
 
 To view the fully expanded CI/CD configuration as one combined file, go to the

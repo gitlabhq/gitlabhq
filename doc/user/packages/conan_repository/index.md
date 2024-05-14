@@ -8,11 +8,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Status:** Experiment
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/8248) in GitLab 12.6.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) from GitLab Premium to GitLab Free in 13.3.
 
 WARNING:
 The Conan package registry for GitLab is under development and isn't ready for production use due to
@@ -43,8 +40,6 @@ your project or instance. Then you can publish packages to
 and install packages from the package registry.
 
 ### Add a remote for your project
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11679) in GitLab 13.4.
 
 Set a remote so you can work with packages in a project without
 having to specify the remote name in every command.
@@ -174,7 +169,7 @@ If you don't set a default user or remote, you can still include the user and
 remote in your commands:
 
 ```shell
-`CONAN_LOGIN_USERNAME=<gitlab_username or deploy_token_username> CONAN_PASSWORD=<personal_access_token or deploy_token> <conan command> --remote=gitlab
+CONAN_LOGIN_USERNAME=<gitlab_username or deploy_token_username> CONAN_PASSWORD=<personal_access_token or deploy_token> <conan command> --remote=gitlab
 ```
 
 ## Publish a Conan package
@@ -199,9 +194,6 @@ conan upload Hello/0.1@mycompany/beta --all
 ```
 
 ## Publish a Conan package by using CI/CD
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11678) in GitLab 12.7.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) from GitLab Premium to GitLab Free in 13.3.
 
 To work with Conan commands in [GitLab CI/CD](../../../ci/index.md), you can
 use `CI_JOB_TOKEN` in place of the personal access token in your commands.

@@ -295,6 +295,7 @@ export const epicParticipantsResponse = () => ({
               name: 'Jacki Kub',
               username: 'francina.skiles',
               webUrl: '/franc',
+              webPath: '/franc',
             },
           ],
         },
@@ -360,6 +361,7 @@ export const issuableQueryResponse = {
           name: 'root',
           username: 'root',
           webUrl: 'root',
+          webPath: '/root',
           status: null,
         },
         assignees: {
@@ -372,6 +374,7 @@ export const issuableQueryResponse = {
               name: 'Jacki Kub',
               username: 'francina.skiles',
               webUrl: '/franc',
+              webPath: '/franc',
               status: null,
             },
           ],
@@ -395,6 +398,7 @@ export const searchQueryResponse = {
               name: 'root',
               username: 'root',
               webUrl: 'root',
+              webPath: '/root',
               status: null,
             },
           },
@@ -405,6 +409,7 @@ export const searchQueryResponse = {
               name: 'rookie',
               username: 'rookie',
               webUrl: 'rookie',
+              webPath: '/rookie',
               status: null,
             },
           },
@@ -426,6 +431,7 @@ export const searchAutocompleteQueryResponse = {
           name: 'root',
           username: 'root',
           webUrl: 'root',
+          webPath: '/root',
           status: null,
         },
         {
@@ -434,6 +440,7 @@ export const searchAutocompleteQueryResponse = {
           name: 'rookie',
           username: 'rookie',
           webUrl: 'rookie',
+          webPath: '/rookie',
           status: null,
         },
       ],
@@ -457,6 +464,7 @@ export const updateIssueAssigneesMutationResponse = {
               name: 'Administrator',
               username: 'root',
               webUrl: '/root',
+              webPath: '/root',
               status: null,
             },
           ],
@@ -488,6 +496,7 @@ export const subscriptionResponse = {
             name: 'Administrator',
             username: 'root',
             webUrl: '/root',
+            webPath: '/root',
             status: null,
           },
         ],
@@ -504,6 +513,7 @@ export const mockUser1 = {
   name: 'Administrator',
   username: 'root',
   webUrl: '/root',
+  webPath: '/root',
   status: null,
   canMerge: false,
 };
@@ -515,6 +525,7 @@ export const mockUser2 = {
   name: 'rookie',
   username: 'rookie',
   webUrl: 'rookie',
+  webPath: '/rookie',
   status: null,
   canMerge: false,
 };
@@ -597,40 +608,26 @@ export const searchAutocompleteResponseOnMR = {
 
 export const projectMembersResponse = {
   data: {
-    workspace: {
+    project: {
       id: '1',
       __typename: 'Project',
-      users: {
-        nodes: [
-          // Remove nulls https://gitlab.com/gitlab-org/gitlab/-/issues/329750
-          null,
-          null,
-          // Remove duplicated entry https://gitlab.com/gitlab-org/gitlab/-/issues/327822
-          { id: 'user-1', user: mockUser1 },
-          { id: 'user-2', user: mockUser1 },
-          { id: 'user-3', user: mockUser2 },
-          {
-            id: 'user-4',
-            user: {
-              __typename: 'UserCore',
-              id: 'gid://gitlab/User/2',
-              avatarUrl:
-                'https://www.gravatar.com/avatar/a95e5b71488f4b9d69ce5ff58bfd28d6?s=80\u0026d=identicon',
-              name: 'Jacki Kub',
-              username: 'francina.skiles',
-              webUrl: '/franc',
-              status: {
-                availability: 'BUSY',
-              },
-            },
+      autocompleteUsers: [
+        mockUser1,
+        mockUser2,
+        {
+          __typename: 'UserCore',
+          id: 'gid://gitlab/User/2',
+          avatarUrl:
+            'https://www.gravatar.com/avatar/a95e5b71488f4b9d69ce5ff58bfd28d6?s=80\u0026d=identicon',
+          name: 'Jacki Kub',
+          username: 'francina.skiles',
+          webUrl: '/franc',
+          webPath: '/franc',
+          status: {
+            availability: 'BUSY',
           },
-        ],
-        pageInfo: {
-          hasNextPage: false,
-          startCursor: null,
-          endCursor: null,
         },
-      },
+      ],
     },
   },
 };
@@ -656,6 +653,7 @@ export const projectAutocompleteMembersResponse = {
           name: 'Jacki Kub',
           username: 'francina.skiles',
           webUrl: '/franc',
+          webPath: '/franc',
           status: {
             availability: 'BUSY',
           },
@@ -667,34 +665,25 @@ export const projectAutocompleteMembersResponse = {
 
 export const groupMembersResponse = {
   data: {
-    workspace: {
+    group: {
       id: '1',
       __typename: 'Group',
-      users: {
-        nodes: [
-          // Remove nulls https://gitlab.com/gitlab-org/gitlab/-/issues/329750
-          null,
-          null,
-          // Remove duplicated entry https://gitlab.com/gitlab-org/gitlab/-/issues/327822
-          { id: 'user-1', user: mockUser1 },
-          { id: 'user-2', user: mockUser1 },
-          {
-            id: 'user-3',
-            user: {
-              __typename: 'UserCore',
-              id: 'gid://gitlab/User/2',
-              avatarUrl:
-                'https://www.gravatar.com/avatar/a95e5b71488f4b9d69ce5ff58bfd28d6?s=80\u0026d=identicon',
-              name: 'Jacki Kub',
-              username: 'francina.skiles',
-              webUrl: '/franc',
-              status: {
-                availability: 'BUSY',
-              },
-            },
+      autocompleteUsers: [
+        mockUser1,
+        {
+          __typename: 'UserCore',
+          id: 'gid://gitlab/User/2',
+          avatarUrl:
+            'https://www.gravatar.com/avatar/a95e5b71488f4b9d69ce5ff58bfd28d6?s=80\u0026d=identicon',
+          name: 'Jacki Kub',
+          username: 'francina.skiles',
+          webUrl: '/franc',
+          webPath: '/franc',
+          status: {
+            availability: 'BUSY',
           },
-        ],
-      },
+        },
+      ],
     },
   },
 };
@@ -721,6 +710,7 @@ export const participantsQueryResponse = {
               name: 'Jacki Kub',
               username: 'francina.skiles',
               webUrl: '/franc',
+              webPath: '/franc',
               status: {
                 availability: 'BUSY',
               },
@@ -732,6 +722,7 @@ export const participantsQueryResponse = {
               name: 'John Doe',
               username: 'rollie',
               webUrl: '/john',
+              webPath: '/john',
               status: null,
             },
           ],

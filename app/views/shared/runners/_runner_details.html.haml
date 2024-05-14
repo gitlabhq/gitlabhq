@@ -2,6 +2,9 @@
   = s_('Runners|Runner #%{runner_id}') % { runner_id: runner.id }
   = render 'shared/runners/runner_type_badge', runner: runner
 
+-# Only shows details for one manager
+- runner_manager = runner.runner_managers.order_contacted_at_desc.first
+
 .table-holder
   %table.table
     %thead
@@ -9,8 +12,11 @@
         %th= s_('Runners|Property Name')
         %th= s_('Runners|Value')
     %tr
-      %td= s_('Runners|Active')
-      %td= runner.active? ? _('Yes') : _('No')
+      %td= s_('Runners|Description')
+      %td= runner.description
+    %tr
+      %td= s_('Runners|Paused')
+      %td= runner.active? ? _('No') : _('Yes')
     %tr
       %td= s_('Runners|Protected')
       %td= runner.ref_protected? ? _('Yes') : _('No')
@@ -27,27 +33,6 @@
         - runner.tag_list.sort.each do |tag|
           = gl_badge_tag tag, variant: :info
     %tr
-      %td= s_('Runners|Name')
-      %td= runner.name
-    %tr
-      %td= s_('Runners|Version')
-      %td= runner.version
-    %tr
-      %td= s_('Runners|IP Address')
-      %td= runner.ip_address
-    %tr
-      %td= s_('Runners|Revision')
-      %td= runner.revision
-    %tr
-      %td= s_('Runners|Platform')
-      %td= runner.platform
-    %tr
-      %td= s_('Runners|Architecture')
-      %td= runner.architecture
-    %tr
-      %td= s_('Runners|Description')
-      %td= runner.description
-    %tr
       %td= s_('Runners|Maximum job timeout')
       %td= runner.maximum_timeout_human_readable
     %tr
@@ -57,3 +42,18 @@
           = time_ago_with_tooltip runner.contacted_at
         - else
           = _('Never')
+    %tr
+      %td= s_('Runners|Version')
+      %td= runner_manager&.version
+    %tr
+      %td= s_('Runners|IP Address')
+      %td= runner_manager&.ip_address
+    %tr
+      %td= s_('Runners|Revision')
+      %td= runner_manager&.revision
+    %tr
+      %td= s_('Runners|Platform')
+      %td= runner_manager&.platform
+    %tr
+      %td= s_('Runners|Architecture')
+      %td= runner_manager&.architecture

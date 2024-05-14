@@ -16,6 +16,10 @@ path = "/gitleaks.toml"
     "glsoat-cgyKc1k_AsnEpmP-5fRL",
     "glcbt-FFFF_cgyKc1k_AsnEpmP-5fRL",
     "glcbt-1_cgyKc1k_AsnEpmP-5fRL",
+    "glffct-cgyKc1k_AsnEpmP-5fRL",
+    "glagent-3ed828e723deff468979daf3bf007f9f528c959911bdeea90f",
+    "glimt-abde52f19d2e53e987d14c8ea",
+    "glptt-dfc184477c9d3987c7b837e541063577f2ad6426",
     # spec/frontend/lib/utils/secret_detection_spec.js
     "GlPat-abcdefghijklmnopqrstuvwxyz",
     # doc/development/sec/token_revocation_api.md

@@ -5,6 +5,7 @@ import { n__, s__, __ } from '~/locale';
 import { slugify } from '~/lib/utils/text_utility';
 import AvatarUploadDropzone from '~/vue_shared/components/upload_dropzone/avatar_upload_dropzone.vue';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
+import { RESTRICTED_TOOLBAR_ITEMS_BASIC_EDITING_ONLY } from '~/vue_shared/components/markdown/constants';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import {
   FORM_FIELD_NAME,
@@ -37,17 +38,7 @@ export default {
   markdownDocsPath: helpPagePath('user/organization/index', {
     anchor: 'organization-description-supported-markdown',
   }),
-  restrictedToolBarItems: [
-    'code',
-    'quote',
-    'bullet-list',
-    'numbered-list',
-    'task-list',
-    'collapsible-section',
-    'table',
-    'attach-file',
-    'full-screen',
-  ],
+  restrictedToolBarItems: RESTRICTED_TOOLBAR_ITEMS_BASIC_EDITING_ONLY,
   inject: ['organizationsPath', 'previewMarkdownPath'],
   props: {
     loading: {
@@ -154,7 +145,7 @@ export default {
     },
     textareaCharacterCounter() {
       const remainingCharacters =
-        MAX_DESCRIPTION_COUNT - this.formValues[FORM_FIELD_DESCRIPTION].length;
+        MAX_DESCRIPTION_COUNT - (this.formValues[FORM_FIELD_DESCRIPTION] || '').length;
 
       if (remainingCharacters >= 0) {
         return {
@@ -194,7 +185,7 @@ export default {
       v-model="formValues"
       :form-id="$options.formId"
       :fields="fields"
-      class="gl-display-flex gl-column-gap-5 gl-flex-wrap"
+      class="gl-display-flex gl-gap-x-5 gl-flex-wrap"
       @submit="$emit('submit', formValues)"
     >
       <template #input(path)="{ id, value, validation, input, blur }">
@@ -209,11 +200,11 @@ export default {
       <template #input(description)="{ id, value, input, blur }">
         <div class="gl-md-form-input-xl">
           <markdown-field
-            class="organization-description gl-mb-2"
+            class="gl-mb-2"
             :can-attach-file="false"
             :markdown-preview-path="previewMarkdownPath"
             :markdown-docs-path="$options.markdownDocsPath"
-            :textarea-value="value"
+            :textarea-value="value || ''"
             :restricted-tool-bar-items="$options.restrictedToolBarItems"
           >
             <template #textarea>

@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 In this tutorial, you'll create a GitLab project that builds and deploys an application
 to a Kubernetes cluster using Flux. You'll set up a sample manifest project, configure it to
@@ -100,7 +100,7 @@ You've successfully created a repository with a protected deployment branch!
 
 Next, you'll configure CI/CD to merge changes from the default branch to your deployment branch.
 
-In the root of `web-app-manifests`, create and push a [`.gitlab-ci.yml`](../../../../ci/index.md#the-gitlab-ciyml-file) file with the following contents:
+In the root of `web-app-manifests`, create and push a `.gitlab-ci.yml` file with the following contents:
 
    ```yaml
    deploy:
@@ -168,7 +168,7 @@ To configure, create a [`GitRepository`](https://fluxcd.io/flux/components/sourc
      targetNamespace: default
    ```
 
-   This file adds a [Kustomization](https://fluxcd.io/flux/components/kustomize/kustomization/) resource that tells Flux to sync the manifests in the artifact fetched from the registry.
+   This file adds a [Kustomization](https://fluxcd.io/flux/components/kustomize/kustomizations/) resource that tells Flux to sync the manifests in the artifact fetched from the registry.
 
 1. Commit the new files and push.
 

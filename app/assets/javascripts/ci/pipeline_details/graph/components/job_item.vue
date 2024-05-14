@@ -80,15 +80,10 @@ export default {
       required: false,
       default: '',
     },
-    dropdownLength: {
-      type: Number,
+    hideTooltip: {
+      type: Boolean,
       required: false,
-      default: Infinity,
-    },
-    groupTooltip: {
-      type: String,
-      required: false,
-      default: '',
+      default: false,
     },
     jobHovered: {
       type: String,
@@ -125,6 +120,11 @@ export default {
       required: false,
       default: SINGLE_JOB,
     },
+    isLink: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   data() {
     return {
@@ -134,14 +134,14 @@ export default {
     };
   },
   computed: {
-    boundary() {
-      return this.dropdownLength === 1 ? 'viewport' : 'scrollParent';
-    },
     computedJobId() {
       return this.pipelineId > -1 ? `${this.job.name}-${this.pipelineId}` : '';
     },
     detailsPath() {
-      return this.status.detailsPath;
+      if (this.isLink) {
+        return this.status.detailsPath;
+      }
+      return null;
     },
     hasDetails() {
       return this.status.hasDetails;
@@ -161,8 +161,14 @@ export default {
     kind() {
       return this.job?.kind || '';
     },
+    isFailed() {
+      return this.job?.status?.group === 'failed';
+    },
+    shouldRenderLink() {
+      return this.isLink && this.hasDetails;
+    },
     nameComponent() {
-      return this.hasDetails ? 'gl-link' : 'div';
+      return this.shouldRenderLink ? 'gl-link' : 'div';
     },
     retryTriggerJobWarningText() {
       return sprintf(this.$options.i18n.confirmationModal.title, {
@@ -179,31 +185,26 @@ export default {
       return this.hasDetails ? 'job-with-link' : 'job-without-link';
     },
     tooltipText() {
-      if (this.groupTooltip) {
-        return this.groupTooltip;
-      }
+      if (!this.hideTooltip) {
+        const textBuilder = [];
+        const { tooltip: statusTooltip } = this.status;
 
-      const textBuilder = [];
-      const { name: jobName } = this.job;
+        if (statusTooltip) {
+          const statusText = statusTooltip.charAt(0).toUpperCase() + statusTooltip.slice(1);
 
-      if (jobName) {
-        textBuilder.push(jobName);
-      }
-
-      const { tooltip: statusTooltip } = this.status;
-      if (jobName && statusTooltip) {
-        textBuilder.push('-');
-      }
-
-      if (statusTooltip) {
-        if (this.isDelayedJob) {
-          textBuilder.push(sprintf(statusTooltip, { remainingTime: this.remainingTime }));
+          if (this.isDelayedJob) {
+            textBuilder.push(sprintf(statusText, { remainingTime: this.remainingTime }));
+          } else {
+            textBuilder.push(statusText);
+          }
         } else {
-          textBuilder.push(statusTooltip);
+          textBuilder.push(this.status?.text);
         }
+
+        return textBuilder.join(' ');
       }
 
-      return textBuilder.join(' ');
+      return null;
     },
     /**
      * Verifies if the provided job has an action path
@@ -243,7 +244,7 @@ export default {
         { 'gl-rounded-lg': this.isBridge },
         this.cssClassJobName,
         {
-          [`job-${this.status.group}`]: this.isSingleItem,
+          'ci-job-item-failed': this.isSingleItem && this.isFailed,
         },
       ];
     },
@@ -315,27 +316,28 @@ export default {
   >
     <component
       :is="nameComponent"
-      v-gl-tooltip="{
-        boundary: 'viewport',
-        placement: 'bottom',
-        customClass: 'gl-pointer-events-none',
-      }"
+      v-gl-tooltip.viewport.left
       :title="tooltipText"
       :class="jobClasses"
       :href="detailsPath"
-      class="js-pipeline-graph-job-link menu-item gl-text-gray-900 gl-active-text-decoration-none gl-focus-text-decoration-none gl-hover-text-decoration-none gl-w-full"
+      class="js-pipeline-graph-job-link menu-item gl-text-gray-900 gl-active-text-decoration-none gl-focus-text-decoration-none gl-hover-text-decoration-none gl-hover-bg-gray-50 gl-focus-bg-gray-50 gl-w-full"
       :data-testid="testId"
       @click="jobItemClick"
       @mouseout="hideTooltips"
     >
       <div class="gl-display-flex gl-align-items-center gl-flex-grow-1">
-        <ci-icon :status="job.status" :use-link="false" />
+        <ci-icon :status="job.status" :use-link="false" :show-tooltip="false" />
         <div class="gl-pl-3 gl-pr-3 gl-display-flex gl-flex-direction-column gl-pipeline-job-width">
-          <div class="gl-text-truncate gl-pr-9 gl-line-height-normal">{{ job.name }}</div>
+          <div
+            class="gl-text-truncate gl-pr-9 gl-line-height-normal gl-text-left gl-text-gray-700"
+            :title="job.name"
+          >
+            {{ job.name }}
+          </div>
           <div
             v-if="showStageName"
             data-testid="stage-name-in-job"
-            class="gl-text-truncate gl-pr-9 gl-font-sm gl-text-gray-500 gl-line-height-normal"
+            class="gl-text-truncate gl-pr-9 gl-font-sm gl-text-gray-500 gl-line-height-normal gl-text-left"
           >
             {{ stageName }}
           </div>

@@ -11,13 +11,13 @@ module Resolvers
       authorizes_object!
 
       argument :active,
-               GraphQL::Types::Boolean,
-               required: false,
-               description: 'Indicates if the integration is active.'
+        GraphQL::Types::Boolean,
+        required: false,
+        description: 'Indicates if the integration is active.'
       argument :type,
-               Types::Projects::ServiceTypeEnum,
-               required: false,
-               description: 'Type of integration.'
+        Types::Projects::ServiceTypeEnum,
+        required: false,
+        description: 'Type of integration.'
 
       alias_method :project, :object
 

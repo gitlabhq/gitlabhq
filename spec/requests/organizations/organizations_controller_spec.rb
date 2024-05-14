@@ -83,7 +83,7 @@ RSpec.describe Organizations::OrganizationsController, feature_category: :cell d
 
   shared_examples 'controller action that does not require authentication' do
     context 'when the user is not logged in' do
-      it_behaves_like 'organization - successful response'
+      it_behaves_like 'organization - not found response'
       it_behaves_like 'organization - action disabled by `ui_for_organizations` feature flag'
     end
 
@@ -94,6 +94,96 @@ RSpec.describe Organizations::OrganizationsController, feature_category: :cell d
     subject(:gitlab_request) { get organization_path(organization) }
 
     it_behaves_like 'controller action that does not require authentication'
+  end
+
+  describe 'GET #activity' do
+    subject(:gitlab_request) { get activity_organization_path(organization) }
+
+    it_behaves_like 'controller action that does not require authentication'
+
+    context 'when requested in json format' do
+      let_it_be(:user) { create(:organization_user, organization: organization).user }
+
+      context 'without activities' do
+        before do
+          sign_in(user)
+        end
+
+        it 'returns empty array and no next page' do
+          get activity_organization_path(organization, format: :json)
+
+          expect(response.media_type).to eq('application/json')
+
+          expect(json_response['events']).to be_an(Array)
+          expect(json_response['events'].size).to eq(0)
+          expect(json_response['has_next_page']).to eq(false)
+        end
+      end
+
+      context 'with less activities than limit' do
+        let_it_be(:project) { create(:project, organization: organization) }
+
+        before_all do
+          project.add_developer(user)
+          sign_in(user)
+        end
+
+        it 'returns events and no next page' do
+          get activity_organization_path(organization, format: :json)
+
+          expect(response.media_type).to eq('application/json')
+
+          expect(json_response['events']).to be_an(Array)
+          expect(json_response['events'].size).to eq(1)
+          expect(json_response['has_next_page']).to eq(false)
+        end
+      end
+
+      context 'with more activities than passed in limit' do
+        let_it_be(:project) { create(:project, organization: organization) }
+        let_it_be(:events) { create_list(:event, 3, project: project) }
+
+        before_all do
+          project.add_developer(user)
+          sign_in(user)
+        end
+
+        it 'returns events and next page' do
+          get activity_organization_path(organization, limit: 2, format: :json)
+
+          expect(response.media_type).to eq('application/json')
+
+          expect(json_response['events']).to be_an(Array)
+          expect(json_response['events'].size).to eq(2)
+          expect(json_response['has_next_page']).to eq(true)
+        end
+      end
+
+      context 'with passed in limit greater than allowed' do
+        let_it_be(:mock_max_event_limit) { 3 }
+        let_it_be(:project) { create(:project, organization: organization) }
+        let_it_be(:events) { create_list(:event, mock_max_event_limit + 1, project: project) }
+
+        before_all do
+          project.add_developer(user)
+          sign_in(user)
+        end
+
+        before do
+          stub_const("#{described_class}::DEFAULT_ACTIVITY_EVENT_LIMIT", mock_max_event_limit)
+        end
+
+        it 'returns max events and next page boolean' do
+          get activity_organization_path(organization, limit: 19, format: :json)
+
+          expect(response.media_type).to eq('application/json')
+
+          expect(json_response['events']).to be_an(Array)
+          expect(json_response['events'].size).to eq(mock_max_event_limit)
+          expect(json_response['has_next_page']).to eq(true)
+        end
+      end
+    end
   end
 
   describe 'GET #groups_and_projects' do
@@ -112,6 +202,17 @@ RSpec.describe Organizations::OrganizationsController, feature_category: :cell d
     subject(:gitlab_request) { get new_organization_path }
 
     it_behaves_like 'controller action that requires authentication by any user'
+
+    context 'when user is signed in and `allow_organization_creation` feature flag is disabled' do
+      let_it_be(:user) { create(:user) }
+
+      before do
+        stub_feature_flags(allow_organization_creation: false)
+        sign_in(user)
+      end
+
+      it_behaves_like 'organization - not found response'
+    end
   end
 
   describe 'GET #index' do

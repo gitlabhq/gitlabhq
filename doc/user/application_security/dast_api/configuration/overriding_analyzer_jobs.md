@@ -1,21 +1,11 @@
 ---
-stage: Secure
-group: Dynamic Analysis
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: reference, howto
+redirect_to: '../../api_security_testing/configuration/overriding_analyzer_jobs.md'
+remove_date: '2024-07-30'
 ---
 
-# Overriding DAST API jobs
+This document was moved to [another location](../../api_security_testing/configuration/overriding_analyzer_jobs.md).
 
-To override a job definition, (for example, change properties like `variables`, `dependencies`, or [`rules`](../../../../ci/yaml/index.md#rules)),
-declare a job with the same name as the DAST job to override. Place this new job after the template
-inclusion and specify any additional keys under it. For example, this sets the target APIs base URL:
-
-```yaml
-include:
-  - template: Security/DAST-API.gitlab-ci.yml
-
-dast_api:
-  variables:
-    DAST_API_TARGET_URL: https://target/api
-```
+<!-- This redirect file can be deleted after <2024-07-30>. -->
+<!-- Redirects that point to other docs in the same project expire in three months. -->
+<!-- Redirects that point to docs in a different project or site (for example, link is not relative and starts with `https:`) expire in one year. -->
+<!-- Before deletion, see: https://docs.gitlab.com/ee/development/documentation/redirects.html -->

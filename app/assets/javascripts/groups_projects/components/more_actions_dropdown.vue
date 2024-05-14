@@ -23,19 +23,29 @@ export default {
   },
   inject: [
     'isGroup',
-    'id',
+    'groupOrProjectId',
     'leavePath',
     'leaveConfirmMessage',
     'withdrawPath',
     'withdrawConfirmMessage',
     'requestAccessPath',
+    'canEdit',
+    'editPath',
   ],
+  data() {
+    return {
+      isDropdownVisible: false,
+    };
+  },
   computed: {
     namespaceType() {
       return this.isGroup ? WORKSPACE_GROUP : WORKSPACE_PROJECT;
     },
     hasPath() {
       return this.leavePath || this.withdrawPath || this.requestAccessPath;
+    },
+    settingsTitle() {
+      return this.isGroup ? this.$options.i18n.groupSettings : this.$options.i18n.projectSettings;
     },
     leaveTitle() {
       return this.isGroup
@@ -90,7 +100,7 @@ export default {
     },
     copyIdItem() {
       return {
-        text: sprintf(this.copyTitle, { id: this.id }),
+        text: sprintf(this.copyTitle, { id: this.groupOrProjectId }),
         action: () => {
           this.$toast.show(this.copiedToClipboard);
         },
@@ -99,9 +109,29 @@ export default {
         },
       };
     },
+    settingsItem() {
+      return {
+        text: this.settingsTitle,
+        href: this.editPath,
+        extraAttrs: {
+          'data-testid': `settings-${this.namespaceType}-link`,
+        },
+      };
+    },
+    showDropdownTooltip() {
+      return !this.isDropdownVisible ? this.$options.i18n.actionsLabel : '';
+    },
+  },
+  methods: {
+    showDropdown() {
+      this.isDropdownVisible = true;
+    },
+    hideDropdown() {
+      this.isDropdownVisible = false;
+    },
   },
   i18n: {
-    actionsLabel: __('Actions'),
+    actionsLabel: __('More actions'),
     groupCopiedToClipboard: s__('GroupPage|Group ID copied to clipboard.'),
     projectCopiedToClipboard: s__('ProjectPage|Project ID copied to clipboard.'),
     groupLeaveTitle: __('Leave group'),
@@ -110,13 +140,15 @@ export default {
     requestAccessTitle: __('Request Access'),
     groupCopyTitle: s__('GroupPage|Copy group ID: %{id}'),
     projectCopyTitle: s__('ProjectPage|Copy project ID: %{id}'),
+    projectSettings: s__('ProjectPage|Project settings'),
+    groupSettings: s__('GroupPage|Group settings'),
   },
 };
 </script>
 
 <template>
   <gl-disclosure-dropdown
-    v-gl-tooltip.hover="$options.i18n.actionsLabel"
+    v-gl-tooltip="showDropdownTooltip"
     category="tertiary"
     icon="ellipsis_v"
     no-caret
@@ -124,6 +156,8 @@ export default {
     text-sr-only
     data-testid="groups-projects-more-actions-dropdown"
     class="gl-relative gl-w-full gl-sm-w-auto"
+    @shown="showDropdown"
+    @hidden="hideDropdown"
   >
     <template #toggle>
       <div class="gl-min-h-7">
@@ -148,7 +182,12 @@ export default {
       </div>
     </template>
 
-    <gl-disclosure-dropdown-item v-if="id" :item="copyIdItem" :data-clipboard-text="id" />
+    <gl-disclosure-dropdown-item
+      v-if="groupOrProjectId"
+      :item="copyIdItem"
+      :data-clipboard-text="groupOrProjectId"
+    />
+    <gl-disclosure-dropdown-item v-if="canEdit" :item="settingsItem" />
 
     <gl-disclosure-dropdown-group v-if="hasPath" bordered>
       <gl-disclosure-dropdown-item v-if="leavePath" ref="leaveItem" :item="leaveItem" />

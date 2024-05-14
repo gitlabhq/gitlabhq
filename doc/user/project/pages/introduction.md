@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 This document is a user guide to explore the options and settings
 GitLab Pages offers.
@@ -92,21 +92,6 @@ the group must be at the top level and not a subgroup.
 
 For [project websites](../../project/pages/getting_started_part_one.md#project-website-examples),
 you can create your project first and access it under `http(s)://namespace.example.io/project-path`.
-
-## Enable unique domains
-
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9347) in GitLab 15.9 [with a flag](../../../administration/feature_flags.md) named `pages_unique_domain`. Disabled by default.
-> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/388151) in GitLab 15.11.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122229) in GitLab 16.3.
-
-By default, every project in a group shares the same domain, for example, `group.gitlab.io`. This means that cookies are also shared for all projects in a group.
-
-To ensure your project uses a unique Pages domain, enable the unique domains feature for the project:
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Deploy > Pages**.
-1. Select the **Use unique domain** checkbox.
-1. Select **Save changes**.
 
 ## Specific configuration options for Pages
 
@@ -319,8 +304,19 @@ The contents of the public directory can be confirmed by [browsing the artifacts
 Files listed under the public directory can be accessed through the Pages URL for the project.
 
 A 404 can also be related to incorrect permissions. If [Pages Access Control](pages_access_control.md) is enabled, and a user
-navigates to the Pages URL and receives a 404 response, it is possible that the user does not have permission to view the site.
+goes to the Pages URL and receives a 404 response, it is possible that the user does not have permission to view the site.
 To fix this, verify that the user is a member of the project.
+
+### Broken relative links
+
+GitLab Pages supports extensionless URLs. However, due to the problem
+described in [issue #354](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/354),
+if an extensionless URL ends in a forward slash (`/`), it breaks any relative links on the page.
+
+To work around this issue:
+
+- Ensure any URLs pointing to your Pages site have extensions, or do not include a trailing slash.
+- If possible, use only absolute URLs on your site.
 
 ### Cannot play media content on Safari
 

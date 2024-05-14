@@ -11,14 +11,16 @@ RSpec.describe Types::Ci::Catalog::ResourceType, feature_category: :pipeline_com
       name
       description
       icon
+      full_path
       web_path
       versions
-      latest_version
       latest_released_at
       verification_level
       star_count
+      starrers_path
       open_issues_count
       open_merge_requests_count
+      last_30_day_usage_count
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields)

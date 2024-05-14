@@ -1,0 +1,9 @@
+---
+name: ci_partitioning_automation
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/454978
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152047
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/457517
+milestone: '17.0'
+group: group::ci platform
+type: gitlab_com_derisk
+default_enabled: false

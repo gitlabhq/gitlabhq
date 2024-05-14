@@ -6,7 +6,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # End-to-end test pipelines
 
-## e2e:package-and-test
+## e2e:package-and-test child pipeline
 
 The `e2e:package-and-test` child pipeline is the main executor of E2E testing for the GitLab platform. The pipeline definition has several dynamic
 components to reduce the number of tests being executed in merge request pipelines.
@@ -31,7 +31,7 @@ This job consists of two components that implement selective test execution:
 - [`generate-e2e-pipeline`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/scripts/generate-e2e-pipeline) is executed, which generates a child
   pipeline YAML definition file with appropriate environment variables.
 
-#### e2e:package-and-test
+#### e2e:package-and-test execution pipeline
 
 E2E test execution pipeline consists of several stages which all support execution of E2E tests.
 
@@ -138,7 +138,7 @@ ee:my-new-job:
 ## `e2e:test-on-gdk`
 
 The `e2e:test-on-gdk` child pipeline supports development of the GitLab platform by providing feedback to engineers on
-end-to-end test execution faster than via `e2e:package-and-test` or [Review Apps](../review_apps.md).
+end-to-end test execution faster than via `e2e:package-and-test` or [review apps](../review_apps.md).
 
 This is achieved by running tests against the [GitLab Development Kit](https://gitlab.com/gitlab-org/gitlab-development-kit) (GDK),
 which can be built and installed in less time than when testing against [Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab).
@@ -153,7 +153,7 @@ GDK day-to-day can benefit from automated tests catching bugs that only appear o
 The pipeline setup consists of several jobs in the main GitLab pipeline:
 
 - The [`e2e-test-pipeline-generate` job](https://gitlab.com/gitlab-org/gitlab/-/blob/9456299b995084bfceb8bc6d082229c0198a0f72/.gitlab/ci/setup.gitlab-ci.yml#L158)
-  in the `prepare` stage. This is the same job as in the [`e2e:package-and-test`](#e2epackage-and-test) pipeline.
+  in the `prepare` stage. This is the same job as in the `e2e:package-and-test` pipeline.
 - The [`build-gdk-image` job](https://gitlab.com/gitlab-org/gitlab/-/blob/07504c34b28ac656537cd60810992aa15e9e91b8/.gitlab/ci/build-images.gitlab-ci.yml#L32)
   in the `build-images` stage.
 - The `e2e:test-on-gdk` trigger job in the `qa` stage, which triggers the child pipeline that runs E2E tests.
@@ -170,8 +170,8 @@ the job will rebuild the base image before building the image that will be used 
 
 #### `e2e:test-on-gdk` child pipeline
 
-Like the [`e2e:package-and-test`](#e2epackage-and-test) pipeline, the `e2e:test-on-gdk` pipeline consists of several stages
-that support execution of E2E tests.
+Like the `e2e:package-and-test` pipeline, the `e2e:test-on-gdk` pipeline consists of several stages that support
+execution of E2E tests.
 
 ##### .pre
 
@@ -188,3 +188,39 @@ tests against the GDK instance running in the container.
 ##### report
 
 This stage is responsible for [allure test report](index.md#allure-report) generation.
+
+## `e2e:test-on-cng`
+
+The `e2e:test-on-cng` child pipeline runs tests against [Cloud Native GitLab](https://gitlab.com/gitlab-org/build/CNG) installation.
+Unlike `review-apps`, this pipeline uses local [kind](https://github.com/kubernetes-sigs/kind) Kubernetes cluster.
+
+Currently this pipeline is executed on nightly scheduled pipelines and is mainly responsible for testing compatibility with minimal supported version of `redis`.
+
+### Setup
+
+The pipeline setup consists of several jobs in the main GitLab pipeline:
+
+- `compile-production-assets` and `build-assets-image` jobs are responsible for compiling frontend assets which are required
+by [CNG](https://gitlab.com/gitlab-org/build/CNG-mirror) build pipeline.
+- `e2e-test-pipeline-generate` job is responsible for generating `e2e:test-on-cng` child pipeline
+
+### `e2e:test-on-cng` child pipeline
+
+Child pipeline consists of several stages that support E2E test execution.
+
+#### .pre
+
+- `build-cng-env` job is responsible for setting up all environment variables for [CNG](https://gitlab.com/gitlab-org/build/CNG-mirror) downstream pipeline
+- `build-cng` job triggers `CNG` downstream pipeline which is responsible for building all necessary images
+
+#### test
+
+Jobs in `test` stage perform following actions:
+
+- local k8s cluster setup using [`kind`](https://github.com/kubernetes-sigs/kind)
+- GitLab installation using official [`helm` chart](https://gitlab.com/gitlab-org/charts/gitlab)
+- E2E test execution against performed deployment
+
+#### report
+
+This stage is responsible for [allure test report](index.md#allure-report) generation as well as test metrics upload.

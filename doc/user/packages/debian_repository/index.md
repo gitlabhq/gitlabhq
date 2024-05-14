@@ -11,8 +11,6 @@ DETAILS:
 **Offering:** Self-managed
 **Status:** Experiment
 
-> - Debian API [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/42670) in GitLab 13.5.
-> - Debian group API [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66188) in GitLab 14.2.
 > - [Deployed behind a feature flag](../../feature_flags.md), disabled by default.
 
 WARNING:
@@ -32,8 +30,8 @@ Prerequisites:
 - The `dpkg-deb` binary must be installed on the GitLab instance.
   This binary is usually provided by the [`dpkg` package](https://wiki.debian.org/Teams/Dpkg/Downstream),
   installed by default on Debian and derivatives.
-- Support for compression algorithm ZStandard requires version `dpkg >=
-  1.21.18` from Debian 12 Bookworm or `dpkg >= 1.19.0.5ubuntu2` from Ubuntu
+- Support for compression algorithm ZStandard requires version `dpkg >= 1.21.18`
+  from Debian 12 Bookworm or `dpkg >= 1.19.0.5ubuntu2` from Ubuntu
   18.04 Bionic Beaver.
 
 ## Enable the Debian API
@@ -189,8 +187,7 @@ For example, to upload to component `main` of distribution `sid` using a persona
 
 ```shell
 curl --request PUT --user "<username>:<personal_access_token>" \
-  --get --data "distribution=sid" --data "component=main" \
-  "https://gitlab.example.com/api/v4/projects/<project_id>/packages/debian/" \
+  "https://gitlab.example.com/api/v4/projects/<project_id>/packages/debian/your.deb?distribution=sid&component=main" \
   --upload-file  /path/to/your.deb
 ```
 

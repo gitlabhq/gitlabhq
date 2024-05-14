@@ -2,7 +2,6 @@
 // eslint-disable-next-line no-restricted-imports
 import { mapActions, mapGetters } from 'vuex';
 import { s__ } from '~/locale';
-import eventHub from '~/super_sidebar/event_hub';
 import NavItem from '~/super_sidebar/components/nav_item.vue';
 import { NAV_LINK_DEFAULT_CLASSES, NAV_LINK_COUNT_DEFAULT_CLASSES } from '../constants';
 
@@ -18,7 +17,6 @@ export default {
     ...mapGetters(['navigationItems']),
   },
   created() {
-    eventHub.$emit('toggle-menu-header', false);
     this.fetchSidebarCount();
   },
   methods: {
@@ -31,7 +29,7 @@ export default {
 
 <template>
   <nav data-testid="search-filter" class="gl-py-2 gl-relative">
-    <ul class="gl-px-2 gl-list-style-none">
+    <ul class="gl-px-2 gl-list-none">
       <nav-item v-for="item in navigationItems" :key="`menu-${item.title}`" :item="item" />
     </ul>
   </nav>

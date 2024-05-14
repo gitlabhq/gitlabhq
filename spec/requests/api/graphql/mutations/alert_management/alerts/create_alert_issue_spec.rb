@@ -6,7 +6,7 @@ RSpec.describe 'Create an alert issue from an alert', feature_category: :inciden
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project) { create(:project, developers: user) }
   let_it_be(:alert) { create(:alert_management_alert, project: project) }
 
   let(:mutation) do
@@ -35,10 +35,6 @@ RSpec.describe 'Create an alert issue from an alert', feature_category: :inciden
   end
 
   let(:mutation_response) { graphql_mutation_response(:create_alert_issue) }
-
-  before do
-    project.add_developer(user)
-  end
 
   context 'when there is no issue associated with the alert' do
     it 'creates an alert issue' do

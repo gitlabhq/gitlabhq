@@ -280,7 +280,7 @@ describe('DropdownContentsLabelsView', () => {
       const titleEl = findDropdownTitle();
 
       expect(titleEl.exists()).toBe(true);
-      expect(titleEl.text()).toBe('Assign labels');
+      expect(titleEl.text()).toBe('Select labels');
     });
 
     it('does not render dropdown title element when `state.variant` is "standalone"', () => {

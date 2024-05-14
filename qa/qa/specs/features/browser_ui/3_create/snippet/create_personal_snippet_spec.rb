@@ -32,7 +32,7 @@ module QA
         Page::Dashboard::Snippet::Show.perform do |snippet|
           expect(snippet).to have_snippet_title('Snippet title')
           expect(snippet).to have_snippet_description('Snippet description')
-          expect(snippet).to have_visibility_type(/private/i)
+          expect(snippet).to have_visibility_description('The snippet is visible only to me.')
           expect(snippet).to have_file_name('ruby_file.rb')
           expect(snippet).to have_file_content('File.read("test.txt").split(/\n/)')
           expect(snippet).to have_syntax_highlighting('ruby')

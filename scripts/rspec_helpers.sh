@@ -267,18 +267,15 @@ function rspec_parallelized_job() {
   export KNAPSACK_TEST_FILE_PATTERN=$(ruby -r./tooling/quality/test_level.rb -e "puts Quality::TestLevel.new(${spec_folder_prefixes}).pattern(:${test_level})")
   export FLAKY_RSPEC_REPORT_PATH="${rspec_flaky_folder_path}all_${report_name}_report.json"
   export NEW_FLAKY_RSPEC_REPORT_PATH="${rspec_flaky_folder_path}new_${report_name}_report.json"
+  export KNAPSACK_GENERATE_REPORT="true"
+  export FLAKY_RSPEC_GENERATE_REPORT="true"
 
-  if [[ -d "ee/" ]]; then
-    export KNAPSACK_GENERATE_REPORT="true"
-    export FLAKY_RSPEC_GENERATE_REPORT="true"
+  if [[ ! -f $FLAKY_RSPEC_REPORT_PATH ]]; then
+    echo "{}" > "${FLAKY_RSPEC_REPORT_PATH}"
+  fi
 
-    if [[ ! -f $FLAKY_RSPEC_REPORT_PATH ]]; then
-      echo "{}" > "${FLAKY_RSPEC_REPORT_PATH}"
-    fi
-
-    if [[ ! -f $NEW_FLAKY_RSPEC_REPORT_PATH ]]; then
-      echo "{}" > "${NEW_FLAKY_RSPEC_REPORT_PATH}"
-    fi
+  if [[ ! -f $NEW_FLAKY_RSPEC_REPORT_PATH ]]; then
+    echo "{}" > "${NEW_FLAKY_RSPEC_REPORT_PATH}"
   fi
 
   debug_rspec_variables
@@ -293,6 +290,43 @@ function rspec_parallelized_job() {
   echoinfo "RSpec exited with ${rspec_run_status}."
 
   handle_retry_rspec_in_new_process $rspec_run_status
+}
+
+function retry_failed_e2e_rspec_examples() {
+  local rspec_run_status=0
+
+  if [[ "${QA_COMMAND}" == "" ]]; then
+    echoerr "Missing variable 'QA_COMMAND' needed to trigger tests"
+    exit 1
+  fi
+
+  if is_rspec_last_run_results_file_missing; then
+    exit 1
+  fi
+
+  if last_run_has_no_failures; then
+    exit 1
+  fi
+
+  local junit_retry_file="tmp/retried-rspec-${CI_JOB_ID}.xml"
+
+  export QA_RSPEC_RETRIED="true"
+  export NO_KNAPSACK="true"
+
+  echoinfo "Initial test run failed, retrying tests in new process" "yes"
+
+  if eval "$QA_COMMAND --format RspecJunitFormatter --out ${junit_retry_file} --only-failures"; then
+    echosuccess "Retry run finished successfully" "yes"
+  else
+    rspec_run_status=$?
+    echoerr "Retry run did not finish successfully, job will be failed!" "yes"
+  fi
+
+  echoinfo "Merging junit reports" "yes"
+  bundle exec junit_merge ${junit_retry_file} tmp/rspec-${CI_JOB_ID}.xml --update-only
+  echosuccess " junit results merged successfully!"
+
+  exit $rspec_run_status
 }
 
 function retry_failed_rspec_examples() {
@@ -342,15 +376,6 @@ function retry_failed_rspec_examples() {
 
   # The tests are flaky because they succeeded after being retried.
   if [[ $rspec_run_status -eq 0 ]]; then
-    # "53557338" is the project ID of https://gitlab.com/gitlab-org/quality/engineering-productivity/flaky-tests
-    if [ "$CREATE_RAILS_FLAKY_TEST_ISSUES" == "true" ]; then
-      bundle exec flaky-test-issues \
-        --token "${RAILS_FLAKY_TEST_PROJECT_TOKEN}" \
-        --project "53557338" \
-        --merge_request_iid "$CI_MERGE_REQUEST_IID" \
-        --input-files "rspec/rspec-retry-*.json" || true # We don't want this command to fail the job.
-    fi
-
     # Make the pipeline "pass with warnings" if the flaky tests are part of this MR.
     warn_on_successfully_retried_test
   fi
@@ -492,6 +517,18 @@ function is_rspec_last_run_results_file_missing() {
   # Sometimes the file isn't created or is empty.
   if [[ ! -f "${RSPEC_LAST_RUN_RESULTS_FILE}" ]] || [[ ! -s "${RSPEC_LAST_RUN_RESULTS_FILE}" ]]; then
     echoerr "The file set inside RSPEC_LAST_RUN_RESULTS_FILE ENV variable does not exist or is empty. As a result, we won't retry failed specs."
+    return 0
+  else
+    return 1
+  fi
+}
+
+# when rspec process fails outside of examples, it can create last run results that has no failures to retry
+# this will lead in passed retry run due to not running any examples
+function last_run_has_no_failures() {
+  failed_examples=$(grep -o "failed" ${RSPEC_LAST_RUN_RESULTS_FILE} | wc -l)
+  if [ $failed_examples -lt 1 ]; then
+    echoerr "The file set inside RSPEC_LAST_RUN_RESULTS_FILE ENV variable does not have any specs with status 'failed'. As a result, we won't retry failed specs."
     return 0
   else
     return 1

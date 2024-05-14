@@ -75,7 +75,7 @@ module Gitlab
           argv = []
           job_wal_locations.each do |connection_name, location|
             diff = pg_wal_lsn_diff(connection_name)
-            argv += [connection_name, diff || '', location]
+            argv += [connection_name, diff ? diff.to_f : '', location]
           end
 
           with_redis { |r| r.eval(UPDATE_WAL_COOKIE_SCRIPT, keys: [cookie_key], argv: argv) }
@@ -177,6 +177,10 @@ module Gitlab
           options[:ttl] || DEFAULT_DUPLICATE_KEY_TTL
         end
 
+        def deferred?
+          job['deferred']
+        end
+
         private
 
         attr_writer :existing_wal_locations
@@ -246,7 +250,13 @@ module Gitlab
         end
 
         def idempotency_string
-          "#{worker_class_name}:#{Sidekiq.dump_json(arguments)}"
+          "#{worker_class_name}:#{idempotency_arguments}"
+        end
+
+        def idempotency_arguments
+          args = worker_klass.try(:idempotency_arguments, arguments) || arguments
+
+          Sidekiq.dump_json(args)
         end
 
         def existing_wal_locations

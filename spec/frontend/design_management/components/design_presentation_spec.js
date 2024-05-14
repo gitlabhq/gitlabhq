@@ -24,6 +24,7 @@ describe('Design management design presentation component', () => {
         resolvedDiscussionsExpanded: false,
         discussions: [],
         isLoading: false,
+        disableCommenting: false,
         ...props,
       },
       ...options,

@@ -8,6 +8,8 @@ import VueRouter from 'vue-router';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import getIssuesQuery from 'ee_else_ce/issues/list/queries/get_issues.query.graphql';
 import getIssuesCountsQuery from 'ee_else_ce/issues/list/queries/get_issues_counts.query.graphql';
+import IssueCardStatistics from 'ee_else_ce/issues/list/components/issue_card_statistics.vue';
+import IssueCardTimeInfo from 'ee_else_ce/issues/list/components/issue_card_time_info.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { TEST_HOST } from 'helpers/test_constants';
@@ -85,6 +87,9 @@ import {
   mockMilestone,
 } from 'jest/work_items/mock_data';
 
+import { stubExperiments } from 'helpers/experimentation_helper';
+import GitlabExperiment from '~/experimentation/components/gitlab_experiment.vue';
+
 import('~/issuable');
 import('~/users_select');
 
@@ -103,6 +108,7 @@ describe('CE IssuesListApp component', () => {
     autocompleteAwardEmojisPath: 'autocomplete/award/emojis/path',
     calendarPath: 'calendar/path',
     canBulkUpdate: false,
+    canCreateIssue: false,
     canCreateProjects: false,
     canReadCrmContact: false,
     canReadCrmOrganization: false,
@@ -140,6 +146,9 @@ describe('CE IssuesListApp component', () => {
     defaultQueryResponse.data.project.issues.nodes[0].blockingCount = 1;
     defaultQueryResponse.data.project.issues.nodes[0].healthStatus = null;
     defaultQueryResponse.data.project.issues.nodes[0].weight = 5;
+    defaultQueryResponse.data.project.issues.nodes[0].epic = {
+      id: 'gid://gitlab/Epic/1',
+    };
   }
 
   const mockIssuesQueryResponse = jest.fn().mockResolvedValue(defaultQueryResponse);
@@ -163,6 +172,8 @@ describe('CE IssuesListApp component', () => {
   const findRssButton = () => wrapper.findByTestId('subscribe-rss');
   const findIssuableDrawer = () => wrapper.findComponent(GlDrawer);
   const findDrawerWorkItem = () => wrapper.findComponent(WorkItemDetail);
+  const findIssueCardTimeInfo = () => wrapper.findComponent(IssueCardTimeInfo);
+  const findIssueCardStatistics = () => wrapper.findComponent(IssueCardStatistics);
 
   const findLabelsToken = () =>
     findIssuableList()
@@ -490,7 +501,7 @@ describe('CE IssuesListApp component', () => {
 
         it('shows an alert to tell the user that manual reordering is disabled', () => {
           expect(createAlert).toHaveBeenCalledWith({
-            message: IssuesListApp.i18n.issueRepositioningMessage,
+            message: 'Issues are being rebalanced at the moment, so manual reordering is disabled.',
             variant: VARIANT_INFO,
           });
         });
@@ -543,59 +554,95 @@ describe('CE IssuesListApp component', () => {
 
   describe('IssuableByEmail component', () => {
     describe.each`
-      initialEmail | hasAnyIssues | isSignedIn | exists
-      ${false}     | ${false}     | ${false}   | ${false}
-      ${false}     | ${true}      | ${false}   | ${false}
-      ${false}     | ${false}     | ${true}    | ${false}
-      ${false}     | ${true}      | ${true}    | ${false}
-      ${true}      | ${false}     | ${false}   | ${false}
-      ${true}      | ${true}      | ${false}   | ${false}
-      ${true}      | ${false}     | ${true}    | ${true}
-      ${true}      | ${true}      | ${true}    | ${true}
+      initialEmail | canCreateIssue | exists
+      ${false}     | ${false}       | ${false}
+      ${false}     | ${true}        | ${false}
+      ${true}      | ${false}       | ${false}
+      ${true}      | ${true}        | ${true}
     `(
       `when issue creation by email is enabled=$initialEmail`,
-      ({ initialEmail, hasAnyIssues, isSignedIn, exists }) => {
+      ({ initialEmail, canCreateIssue, exists }) => {
         it(`${initialEmail ? 'renders' : 'does not render'}`, () => {
-          wrapper = mountComponent({ provide: { initialEmail, hasAnyIssues, isSignedIn } });
+          wrapper = mountComponent({ provide: { initialEmail, canCreateIssue } });
 
           expect(findIssuableByEmail().exists()).toBe(exists);
         });
       },
     );
-  });
 
-  describe('empty states', () => {
-    describe('when there are issues', () => {
+    it('tracks IssuableByEmail', () => {
+      wrapper = mountComponent({ provide: { initialEmail: true, canCreateIssue: true } });
+
+      expect(findIssuableByEmail().attributes()).toMatchObject({
+        'data-track-action': 'click_email_issue_project_issues_empty_list_page',
+        'data-track-label': 'email_issue_project_issues_empty_list',
+        'data-track-experiment': 'issues_mrs_empty_state',
+      });
+    });
+
+    describe('when issues_mrs_empty_state candidate experiment', () => {
       beforeEach(() => {
-        wrapper = mountComponent({
-          provide: { hasAnyIssues: true },
-          mountFn: mount,
-          issuesQueryResponse: getIssuesQueryEmptyResponse,
-        });
-        return waitForPromises();
+        stubExperiments({ issues_mrs_empty_state: 'candidate' });
       });
 
-      it('shows EmptyStateWithAnyIssues empty state', () => {
-        expect(wrapper.findComponent(EmptyStateWithAnyIssues).props()).toEqual({
-          hasSearch: false,
-          isOpenTab: true,
+      it('does not render IssuableByEmail', () => {
+        wrapper = mountComponent({
+          provide: { initialEmail: true, canCreateIssue: true },
+          stubs: { GitlabExperiment },
+        });
+
+        expect(findIssuableByEmail().exists()).toBe(false);
+      });
+    });
+  });
+
+  describe('slots', () => {
+    describe('empty states', () => {
+      describe('when there are issues', () => {
+        beforeEach(() => {
+          wrapper = mountComponent({
+            provide: { hasAnyIssues: true },
+            mountFn: mount,
+            issuesQueryResponse: getIssuesQueryEmptyResponse,
+          });
+          return waitForPromises();
+        });
+
+        it('shows EmptyStateWithAnyIssues empty state', () => {
+          expect(wrapper.findComponent(EmptyStateWithAnyIssues).props()).toEqual({
+            hasSearch: false,
+            isOpenTab: true,
+          });
+        });
+      });
+
+      describe('when there are no issues', () => {
+        beforeEach(() => {
+          wrapper = mountComponent({ provide: { hasAnyIssues: false } });
+        });
+
+        it('shows EmptyStateWithoutAnyIssues empty state', () => {
+          expect(wrapper.findComponent(EmptyStateWithoutAnyIssues).props()).toEqual({
+            currentTabCount: 0,
+            exportCsvPathWithQuery: defaultProvide.exportCsvPath,
+            showCsvButtons: true,
+            showIssuableByEmail: false,
+            showNewIssueDropdown: false,
+          });
         });
       });
     });
 
-    describe('when there are no issues', () => {
-      beforeEach(() => {
-        wrapper = mountComponent({ provide: { hasAnyIssues: false } });
-      });
+    it('includes IssueCardStatistics component', async () => {
+      wrapper = mountComponent();
+      await nextTick();
+      expect(findIssueCardStatistics().exists()).toBe(true);
+    });
 
-      it('shows EmptyStateWithoutAnyIssues empty state', () => {
-        expect(wrapper.findComponent(EmptyStateWithoutAnyIssues).props()).toEqual({
-          currentTabCount: 0,
-          exportCsvPathWithQuery: defaultProvide.exportCsvPath,
-          showCsvButtons: true,
-          showNewIssueDropdown: false,
-        });
-      });
+    it('includes IssuseCardTimeInfo component', async () => {
+      wrapper = mountComponent();
+      await nextTick();
+      expect(findIssueCardTimeInfo().exists()).toBe(true);
     });
   });
 
@@ -682,8 +729,8 @@ describe('CE IssuesListApp component', () => {
   describe('errors', () => {
     describe.each`
       error                      | mountOption                    | message
-      ${'fetching issues'}       | ${'issuesQueryResponse'}       | ${IssuesListApp.i18n.errorFetchingIssues}
-      ${'fetching issue counts'} | ${'issuesCountsQueryResponse'} | ${IssuesListApp.i18n.errorFetchingCounts}
+      ${'fetching issues'}       | ${'issuesQueryResponse'}       | ${'An error occurred while loading issues'}
+      ${'fetching issue counts'} | ${'issuesCountsQueryResponse'} | ${'An error occurred while getting issue counts'}
     `('when there is an error $error', ({ mountOption, message }) => {
       beforeEach(() => {
         wrapper = mountComponent({
@@ -852,7 +899,9 @@ describe('CE IssuesListApp component', () => {
           findIssuableList().vm.$emit('reorder', { oldIndex: 0, newIndex: 1 });
           await waitForPromises();
 
-          expect(findIssuableList().props('error')).toBe(IssuesListApp.i18n.reorderError);
+          expect(findIssuableList().props('error')).toBe(
+            'An error occurred while reordering issues.',
+          );
           expect(Sentry.captureException).toHaveBeenCalledWith(
             new Error('Request failed with status code 500'),
           );
@@ -897,7 +946,7 @@ describe('CE IssuesListApp component', () => {
 
         it('shows an alert to tell the user that manual reordering is disabled', () => {
           expect(createAlert).toHaveBeenCalledWith({
-            message: IssuesListApp.i18n.issueRepositioningMessage,
+            message: 'Issues are being rebalanced at the moment, so manual reordering is disabled.',
             variant: VARIANT_INFO,
           });
         });
@@ -1153,13 +1202,13 @@ describe('CE IssuesListApp component', () => {
         });
 
         it('updates the upvotes count of active issuable', async () => {
-          const workItem = workItemByIidResponseFactory({
+          const { workItem } = workItemByIidResponseFactory({
             iid: '789',
             awardEmoji: {
               ...mockAwardsWidget,
               nodes: [mockAwardEmojiThumbsUp],
             },
-          }).data.workspace.workItems.nodes[0];
+          }).data.workspace;
 
           findDrawerWorkItem().vm.$emit('work-item-emoji-updated', workItem);
 

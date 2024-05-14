@@ -6,7 +6,7 @@ label_description: agent_token_creation_modal
 property_description: One of "create-token", "close"
 product_section: ops
 product_stage: deploy
-product_group: group::environments
+product_group: environments
 milestone: "14.9"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82690
 distributions:

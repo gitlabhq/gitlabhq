@@ -3,7 +3,7 @@ key_path: redis_hll_counters.kubernetes_agent.agent_users_using_ci_tunnel_weekly
 description: WAU of the Agent for Kubernetes CI/CD Tunnel
 product_section: ops
 product_stage: configure
-product_group: configure
+product_group: environments
 value_type: number
 status: active
 milestone: "15.3"
@@ -12,9 +12,6 @@ time_frame: 7d
 data_source: internal_events
 data_category: optional
 performance_indicator_type: []
-options:
-  events:
-    - agent_users_using_ci_tunnel
 events:
   - name: agent_users_using_ci_tunnel
     unique: user.id

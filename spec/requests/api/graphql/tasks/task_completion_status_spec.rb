@@ -24,8 +24,8 @@ RSpec.describe 'getting task completion status information', feature_category: :
   def create_task_completion_status_query_for(type, iid)
     graphql_query_for(
       'project',
-        { 'fullPath' => project.full_path },
-        query_graphql_field(type, { iid: iid.to_s }, fields)
+      { 'fullPath' => project.full_path },
+      query_graphql_field(type, { iid: iid.to_s }, fields)
     )
   end
 

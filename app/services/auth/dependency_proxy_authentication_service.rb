@@ -54,7 +54,7 @@ module Auth
     end
 
     def group_access_token
-      PersonalAccessTokensFinder.new(state: 'active').find_by_token(raw_token)
+      PersonalAccessTokensFinder.new(state: 'active').find_by_token(raw_token.to_s)
     end
 
     def valid_deploy_token?
@@ -65,16 +65,28 @@ module Auth
       JSONWebToken::HMACToken.new(self.class.secret).tap do |token|
         token['user_id'] = current_user.id if current_user
         token['deploy_token'] = deploy_token.token if deploy_token
+        token['personal_access_token'] = raw_token if personal_access_token_user?
+        token['group_access_token'] = raw_token if group_access_token_user?
         token.expire_time = self.class.token_expire_at
       end
     end
 
     def deploy_token
+      return unless Gitlab::ExternalAuthorization.allow_deploy_tokens_and_deploy_keys?
+
       params[:deploy_token]
     end
 
     def raw_token
       params[:raw_token]
+    end
+
+    def group_access_token_user?
+      raw_token && current_user&.project_bot? && current_user.resource_bot_resource.is_a?(Group)
+    end
+
+    def personal_access_token_user?
+      raw_token && current_user && (current_user.human? || current_user.service_account?)
     end
   end
 end

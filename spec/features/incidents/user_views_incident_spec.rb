@@ -4,17 +4,12 @@ require "spec_helper"
 
 RSpec.describe "User views incident", feature_category: :incident_management do
   let_it_be(:project) { create(:project_empty_repo, :public) }
-  let_it_be(:guest) { create(:user) }
-  let_it_be(:developer) { create(:user) }
+  let_it_be(:guest) { create(:user, guest_of: project) }
+  let_it_be(:developer) { create(:user, developer_of: project) }
   let_it_be(:user) { developer }
   let(:author) { developer }
   let(:description) { "# Description header\n\n**Lorem** _ipsum_ dolor sit [amet](https://example.com)" }
   let(:incident) { create(:incident, project: project, description: description, author: author) }
-
-  before_all do
-    project.add_developer(developer)
-    project.add_guest(guest)
-  end
 
   before do
     sign_in(user)
@@ -51,7 +46,7 @@ RSpec.describe "User views incident", feature_category: :incident_management do
         it 'shows incident actions', :js do
           click_button 'Incident actions'
 
-          expect(page).to have_button 'Report abuse to administrator'
+          expect(page).to have_button 'Report abuse'
         end
       end
     end

@@ -8,9 +8,9 @@ module Types
       description 'Configuration details for an Agent'
 
       field :agent_name,
-            GraphQL::Types::String,
-            null: true,
-            description: 'Name of the agent.'
+        GraphQL::Types::String,
+        null: true,
+        description: 'Name of the agent.'
     end
     # rubocop: enable Graphql/AuthorizeTypes
   end

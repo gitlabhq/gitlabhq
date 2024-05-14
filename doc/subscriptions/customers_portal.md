@@ -1,6 +1,6 @@
 ---
 stage: Fulfillment
-group: Purchase
+group: Subscription Management
 description: Payment and company details.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -23,12 +23,12 @@ If you registered for Customers Portal with your GitLab.com account, sign in wit
 
 To sign in to Customers Portal using your GitLab.com account:
 
-1. Navigate to [Customers Portal](https://customers.gitlab.com/customers/sign_in).
+1. Go to [Customers Portal](https://customers.gitlab.com/customers/sign_in).
 1. Select **Continue with your GitLab.com account**.
 
 To sign in to Customers Portal with your email and to receive a one-time sign-in link:
 
-1. Navigate to [Customers Portal](https://customers.gitlab.com/customers/sign_in).
+1. Go to [Customers Portal](https://customers.gitlab.com/customers/sign_in).
 1. Select **Sign in with your email**.
 1. Provide the **Email** for your Customers Portal profile. You will receive
    an email with a one-time, sign-in link for your Customers Portal profile.
@@ -162,7 +162,7 @@ Follow this guideline if you have a legacy Customers Portal profile to log in.
 To link a GitLab.com account to your Customers Portal profile:
 
 1. Trigger a one-time sign-in link to your email from the [Customers Portal](https://customers.gitlab.com/customers/sign_in?legacy=true).
-1. Locate the email and click on the one-time sign-in link to log into your Customers Portal account.
+1. Locate the email and click on the one-time sign-in link to sign in to your Customers Portal account.
 1. Select **My profile > Profile settings**.
 1. Under **Your GitLab.com account**, select **Link account**.
 1. Sign in to the [GitLab.com](https://gitlab.com/users/sign_in) account you want to link to the Customers Portal profile.

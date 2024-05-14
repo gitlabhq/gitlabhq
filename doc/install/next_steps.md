@@ -20,8 +20,8 @@ installation.
 
 ## CI/CD
 
-- [Set up runners](https://docs.gitlab.com/runner/): Set up one or more GitLab
-  Runners, the agents that are responsible for all of the GitLab CI/CD features.
+- [Set up runners](https://docs.gitlab.com/runner/): Set up one or more
+  runners, the agents that are responsible for running CI/CD jobs.
 - [GitLab Pages](../administration/pages/index.md): Configure GitLab Pages to
   allow hosting of static sites.
 - [GitLab Registry](../administration/packages/container_registry.md): Set up the
@@ -49,8 +49,7 @@ installation.
 - [Upgrade GitLab](../update/index.md): Every month, a new feature-rich GitLab version
   is released. Learn how to upgrade to it, or to an interim release that contains a security fix.
 - [Release and maintenance policy](../policy/maintenance.md): Learn about GitLab
-  policies governing version naming, as well as release pace for major, minor, patch,
-  and security releases.
+  policies governing version naming, as well as release pace for major, minor and patch releases.
 
 ## License
 

@@ -47,7 +47,7 @@ RSpec.describe 'Projects > Snippets > Create Snippet', :js, feature_category: :s
 
     expect(page).to have_content(title)
     expect(page).to have_content(file_content)
-    page.within('.snippet-header .snippet-description') do
+    within_testid('snippet-description') do
       expect(page).to have_content(description)
       expect(page).to have_selector('strong')
     end

@@ -114,6 +114,12 @@ RSpec.describe Issues::ReferencedMergeRequestsService, feature_category: :team_p
       expect(service.closed_by_merge_requests(issue)).to match_array([closing_mr, closing_mr_other_project])
     end
 
+    it 'excludes merge requests that do not close the issue as flagged in the merge requests closing issues table' do
+      MergeRequestsClosingIssues.where(merge_request: closing_mr).update_all(closes_work_item: false)
+
+      expect(service.closed_by_merge_requests(issue)).to contain_exactly(closing_mr_other_project)
+    end
+
     it 'returns an empty array when the current issue is closed already' do
       expect(service.closed_by_merge_requests(closed_issue)).to eq([])
     end

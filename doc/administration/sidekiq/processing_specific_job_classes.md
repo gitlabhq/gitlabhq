@@ -27,7 +27,6 @@ choose one or the other; there is no particular benefit in combining them.
 
 ## Routing rules
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/59604) in GitLab 13.12.
 > - [Default routing rule value](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/97908) added in GitLab 15.4.
 
 NOTE:
@@ -65,8 +64,9 @@ because they only change the arguments to the launched Sidekiq process.
 
 ### Detailed example
 
-This is a comprehensive example intended to show different possibilities. It is
-not a recommendation.
+This is a comprehensive example intended to show different possibilities.
+A [Helm chart example is also available](https://docs.gitlab.com/charts/charts/gitlab/sidekiq/#queues).
+They are not recommendations.
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -111,11 +111,6 @@ not a recommendation.
 <!--- start_remove The following content will be removed on remove_date: '2024-08-22' -->
 
 ## Queue selectors (deprecated)
-
-> - [Introduced](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/45) in GitLab 12.8.
-> - [Sidekiq cluster, including queue selector, moved](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/181) to GitLab Free in 12.10.
-> - [Renamed from `experimental_queue_selector` to `queue_selector`](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/147) in GitLab 13.6.
-> - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/390787) in GitLab 15.9.
 
 WARNING:
 This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/390787) in GitLab 15.9
@@ -312,14 +307,12 @@ query syntax is employed by both [routing rules](#routing-rules) and
 
 ### Available attributes
 
-> - [Introduced](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/261) in GitLab 13.1 (`tags`).
-
 Queue matching query works upon the worker attributes, described in
 [Sidekiq style guide](../../development/sidekiq/index.md). We support querying
 based on a subset of worker attributes:
 
 - `feature_category` - the
-  [GitLab feature category](https://about.gitlab.com/direction/maturity/#category-maturity) the
+  [GitLab feature category](https://handbook.gitlab.com/handbook/product/categories/#categories-a-z) the
   queue belongs to. For example, the `merge` queue belongs to the
   `source_code_management` category.
 - `has_external_dependencies` - whether or not the queue connects to external

@@ -23,6 +23,19 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION assign_p_ci_job_artifacts_id_value() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."id" IS NOT NULL THEN
+  RAISE WARNING 'Manually assigning ids is not allowed, the value will be ignored';
+END IF;
+NEW."id" := nextval('ci_job_artifacts_id_seq'::regclass);
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION assign_p_ci_pipeline_variables_id_value() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -31,6 +44,32 @@ IF NEW."id" IS NOT NULL THEN
   RAISE WARNING 'Manually assigning ids is not allowed, the value will be ignored';
 END IF;
 NEW."id" := nextval('ci_pipeline_variables_id_seq'::regclass);
+RETURN NEW;
+
+END
+$$;
+
+CREATE FUNCTION assign_p_ci_stages_id_value() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."id" IS NOT NULL THEN
+  RAISE WARNING 'Manually assigning ids is not allowed, the value will be ignored';
+END IF;
+NEW."id" := nextval('ci_stages_id_seq'::regclass);
+RETURN NEW;
+
+END
+$$;
+
+CREATE FUNCTION assign_zoekt_tasks_id_value() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."id" IS NOT NULL THEN
+  RAISE WARNING 'Manually assigning ids is not allowed, the value will be ignored';
+END IF;
+NEW."id" := nextval('zoekt_tasks_id_seq'::regclass);
 RETURN NEW;
 
 END
@@ -278,6 +317,7 @@ CREATE TABLE users (
     static_object_token_encrypted text,
     otp_secret_expires_at timestamp with time zone,
     onboarding_in_progress boolean DEFAULT false NOT NULL,
+    color_mode_id smallint DEFAULT 1 NOT NULL,
     CONSTRAINT check_061f6f1c91 CHECK ((project_view IS NOT NULL)),
     CONSTRAINT check_0dd5948e38 CHECK ((user_type IS NOT NULL)),
     CONSTRAINT check_3a60c18afc CHECK ((hide_no_password IS NOT NULL)),
@@ -560,6 +600,110 @@ RETURN NULL;
 END
 $$;
 
+CREATE FUNCTION table_sync_function_0992e728d3() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF (TG_OP = 'DELETE') THEN
+  DELETE FROM merge_request_diff_commits_b5377a7a34 where merge_request_diff_id = OLD.merge_request_diff_id AND relative_order = OLD.relative_order;
+ELSIF (TG_OP = 'UPDATE') THEN
+  UPDATE merge_request_diff_commits_b5377a7a34
+  SET authored_date = NEW.authored_date,
+    committed_date = NEW.committed_date,
+    sha = NEW.sha,
+    message = NEW.message,
+    trailers = NEW.trailers,
+    commit_author_id = NEW.commit_author_id,
+    committer_id = NEW.committer_id
+  WHERE merge_request_diff_commits_b5377a7a34.merge_request_diff_id = NEW.merge_request_diff_id AND merge_request_diff_commits_b5377a7a34.relative_order = NEW.relative_order;
+ELSIF (TG_OP = 'INSERT') THEN
+  INSERT INTO merge_request_diff_commits_b5377a7a34 (authored_date,
+    committed_date,
+    sha,
+    message,
+    trailers,
+    commit_author_id,
+    committer_id,
+    merge_request_diff_id,
+    relative_order)
+  VALUES (NEW.authored_date,
+    NEW.committed_date,
+    NEW.sha,
+    NEW.message,
+    NEW.trailers,
+    NEW.commit_author_id,
+    NEW.committer_id,
+    NEW.merge_request_diff_id,
+    NEW.relative_order);
+END IF;
+RETURN NULL;
+
+END
+$$;
+
+COMMENT ON FUNCTION table_sync_function_0992e728d3() IS 'Partitioning migration: table sync for merge_request_diff_commits table';
+
+CREATE FUNCTION table_sync_function_3f39f64fc3() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF (TG_OP = 'DELETE') THEN
+  DELETE FROM merge_request_diff_files_99208b8fac where "merge_request_diff_id" = OLD."merge_request_diff_id" AND "relative_order" = OLD."relative_order";
+ELSIF (TG_OP = 'UPDATE') THEN
+  UPDATE merge_request_diff_files_99208b8fac
+  SET "new_file" = NEW."new_file",
+    "renamed_file" = NEW."renamed_file",
+    "deleted_file" = NEW."deleted_file",
+    "too_large" = NEW."too_large",
+    "a_mode" = NEW."a_mode",
+    "b_mode" = NEW."b_mode",
+    "new_path" = NEW."new_path",
+    "old_path" = NEW."old_path",
+    "diff" = NEW."diff",
+    "binary" = NEW."binary",
+    "external_diff_offset" = NEW."external_diff_offset",
+    "external_diff_size" = NEW."external_diff_size",
+    "generated" = NEW."generated"
+  WHERE merge_request_diff_files_99208b8fac."merge_request_diff_id" = NEW."merge_request_diff_id" AND merge_request_diff_files_99208b8fac."relative_order" = NEW."relative_order";
+ELSIF (TG_OP = 'INSERT') THEN
+  INSERT INTO merge_request_diff_files_99208b8fac ("new_file",
+    "renamed_file",
+    "deleted_file",
+    "too_large",
+    "a_mode",
+    "b_mode",
+    "new_path",
+    "old_path",
+    "diff",
+    "binary",
+    "external_diff_offset",
+    "external_diff_size",
+    "generated",
+    "merge_request_diff_id",
+    "relative_order")
+  VALUES (NEW."new_file",
+    NEW."renamed_file",
+    NEW."deleted_file",
+    NEW."too_large",
+    NEW."a_mode",
+    NEW."b_mode",
+    NEW."new_path",
+    NEW."old_path",
+    NEW."diff",
+    NEW."binary",
+    NEW."external_diff_offset",
+    NEW."external_diff_size",
+    NEW."generated",
+    NEW."merge_request_diff_id",
+    NEW."relative_order");
+END IF;
+RETURN NULL;
+
+END
+$$;
+
+COMMENT ON FUNCTION table_sync_function_3f39f64fc3() IS 'Partitioning migration: table sync for merge_request_diff_files table';
+
 CREATE FUNCTION trigger_10ee1357e825() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -576,6 +720,106 @@ BEGIN
 END;
 $$;
 
+CREATE FUNCTION trigger_2428b5519042() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  NEW."pipeline_id_convert_to_bigint" := NEW."pipeline_id";
+  RETURN NEW;
+END;
+$$;
+
+CREATE FUNCTION trigger_25c44c30884f() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."namespace_id" IS NULL THEN
+  SELECT "namespace_id"
+  INTO NEW."namespace_id"
+  FROM "issues"
+  WHERE "issues"."id" = NEW."work_item_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
+CREATE FUNCTION trigger_2ac3d66ed1d3() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  NEW."pipeline_id_convert_to_bigint" := NEW."pipeline_id";
+  RETURN NEW;
+END;
+$$;
+
+CREATE FUNCTION trigger_3857ca5ea4af() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  NEW."pipeline_id_convert_to_bigint" := NEW."pipeline_id";
+  RETURN NEW;
+END;
+$$;
+
+CREATE FUNCTION trigger_388e93f88fdd() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  NEW."pipeline_id_convert_to_bigint" := NEW."pipeline_id";
+  RETURN NEW;
+END;
+$$;
+
+CREATE FUNCTION trigger_43484cb41aca() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."project_id"
+  FROM "project_wiki_repositories"
+  WHERE "project_wiki_repositories"."id" = NEW."project_wiki_repository_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
+CREATE FUNCTION trigger_56d49f4ed623() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."project_id"
+  FROM "workspaces"
+  WHERE "workspaces"."id" = NEW."workspace_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
+CREATE FUNCTION trigger_94514aeadc50() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."project_id"
+  FROM "deployments"
+  WHERE "deployments"."id" = NEW."deployment_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_b2d852e1e2cb() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -585,11 +829,36 @@ BEGIN
 END;
 $$;
 
-CREATE FUNCTION trigger_eaec934fe6b2() RETURNS trigger
+CREATE FUNCTION trigger_b4520c29ea74() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
 BEGIN
-  NEW."id_convert_to_bigint" := NEW."id";
+IF NEW."project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."project_id"
+  FROM "approval_project_rules"
+  WHERE "approval_project_rules"."id" = NEW."approval_project_rule_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
+CREATE FUNCTION trigger_fb587b1ae7ad() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  NEW."head_pipeline_id_convert_to_bigint" := NEW."head_pipeline_id";
+  RETURN NEW;
+END;
+$$;
+
+CREATE FUNCTION trigger_fd041fe2d1a7() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  NEW."pipeline_id_convert_to_bigint" := NEW."pipeline_id";
   RETURN NEW;
 END;
 $$;
@@ -798,15 +1067,25 @@ CREATE TABLE batched_background_migration_job_transition_logs (
 )
 PARTITION BY RANGE (created_at);
 
+CREATE TABLE p_ci_build_names (
+    build_id bigint NOT NULL,
+    partition_id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    name text NOT NULL,
+    search_vector tsvector GENERATED ALWAYS AS (to_tsvector('english'::regconfig, COALESCE(name, ''::text))) STORED,
+    CONSTRAINT check_1722c96346 CHECK ((char_length(name) <= 255))
+)
+PARTITION BY LIST (partition_id);
+
 CREATE TABLE p_ci_builds (
     status character varying,
     finished_at timestamp without time zone,
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
     started_at timestamp without time zone,
-    runner_id integer,
+    runner_id_convert_to_bigint integer,
     coverage double precision,
-    commit_id integer,
+    commit_id_convert_to_bigint integer,
     name character varying,
     options text,
     allow_failure boolean DEFAULT false NOT NULL,
@@ -815,11 +1094,11 @@ CREATE TABLE p_ci_builds (
     stage_idx integer,
     tag boolean,
     ref character varying,
-    user_id integer,
+    user_id_convert_to_bigint integer,
     type character varying,
     target_url character varying,
     description character varying,
-    project_id integer,
+    project_id_convert_to_bigint integer,
     erased_by_id integer,
     erased_at timestamp without time zone,
     artifacts_expire_at timestamp without time zone,
@@ -829,13 +1108,13 @@ CREATE TABLE p_ci_builds (
     queued_at timestamp without time zone,
     lock_version integer DEFAULT 0,
     coverage_regex character varying,
-    auto_canceled_by_id integer,
+    auto_canceled_by_id_convert_to_bigint integer,
     retried boolean,
     protected boolean,
     failure_reason integer,
     scheduled_at timestamp with time zone,
     token_encrypted character varying,
-    upstream_pipeline_id integer,
+    upstream_pipeline_id_convert_to_bigint integer,
     resource_group_id bigint,
     waiting_for_resource_at timestamp with time zone,
     processed boolean,
@@ -844,15 +1123,25 @@ CREATE TABLE p_ci_builds (
     stage_id bigint,
     partition_id bigint NOT NULL,
     auto_canceled_by_partition_id bigint DEFAULT 100 NOT NULL,
-    auto_canceled_by_id_convert_to_bigint bigint,
-    commit_id_convert_to_bigint bigint,
+    auto_canceled_by_id bigint,
+    commit_id bigint,
     erased_by_id_convert_to_bigint bigint,
-    project_id_convert_to_bigint bigint,
-    runner_id_convert_to_bigint bigint,
+    project_id bigint,
+    runner_id bigint,
     trigger_request_id_convert_to_bigint bigint,
-    upstream_pipeline_id_convert_to_bigint bigint,
-    user_id_convert_to_bigint bigint,
+    upstream_pipeline_id bigint,
+    user_id bigint,
+    execution_config_id bigint,
     CONSTRAINT check_1e2fbd1b39 CHECK ((lock_version IS NOT NULL))
+)
+PARTITION BY LIST (partition_id);
+
+CREATE TABLE p_ci_builds_execution_configs (
+    id bigint NOT NULL,
+    partition_id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    pipeline_id bigint NOT NULL,
+    run_steps jsonb DEFAULT '{}'::jsonb NOT NULL
 )
 PARTITION BY LIST (partition_id);
 
@@ -872,7 +1161,8 @@ CREATE TABLE p_ci_builds_metadata (
     runtime_runner_features jsonb DEFAULT '{}'::jsonb NOT NULL,
     id_tokens jsonb DEFAULT '{}'::jsonb NOT NULL,
     partition_id bigint NOT NULL,
-    debug_trace_enabled boolean DEFAULT false NOT NULL
+    debug_trace_enabled boolean DEFAULT false NOT NULL,
+    exit_code smallint
 )
 PARTITION BY LIST (partition_id);
 
@@ -887,10 +1177,62 @@ CREATE TABLE p_ci_job_annotations (
 )
 PARTITION BY LIST (partition_id);
 
+CREATE TABLE p_ci_job_artifacts (
+    project_id integer NOT NULL,
+    file_type integer NOT NULL,
+    size bigint,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    expire_at timestamp with time zone,
+    file character varying,
+    file_store integer DEFAULT 1,
+    file_sha256 bytea,
+    file_format smallint,
+    file_location smallint,
+    id bigint NOT NULL,
+    job_id bigint NOT NULL,
+    locked smallint DEFAULT 2,
+    partition_id bigint NOT NULL,
+    accessibility smallint DEFAULT 0 NOT NULL,
+    file_final_path text,
+    CONSTRAINT check_27f0f6dbab CHECK ((file_store IS NOT NULL)),
+    CONSTRAINT check_9f04410cf4 CHECK ((char_length(file_final_path) <= 1024))
+)
+PARTITION BY LIST (partition_id);
+
+CREATE TABLE p_ci_pipeline_variables (
+    key character varying NOT NULL,
+    value text,
+    encrypted_value text,
+    encrypted_value_salt character varying,
+    encrypted_value_iv character varying,
+    variable_type smallint DEFAULT 1 NOT NULL,
+    partition_id bigint NOT NULL,
+    raw boolean DEFAULT false NOT NULL,
+    id bigint NOT NULL,
+    pipeline_id bigint NOT NULL
+)
+PARTITION BY LIST (partition_id);
+
 CREATE TABLE p_ci_runner_machine_builds (
     partition_id bigint NOT NULL,
     build_id bigint NOT NULL,
     runner_machine_id bigint NOT NULL
+)
+PARTITION BY LIST (partition_id);
+
+CREATE TABLE p_ci_stages (
+    project_id integer,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
+    name character varying,
+    status integer,
+    lock_version integer DEFAULT 0,
+    "position" integer,
+    id bigint NOT NULL,
+    partition_id bigint NOT NULL,
+    pipeline_id bigint,
+    CONSTRAINT check_81b431e49b CHECK ((lock_version IS NOT NULL))
 )
 PARTITION BY LIST (partition_id);
 
@@ -935,6 +1277,38 @@ CREATE TABLE loose_foreign_keys_deleted_records (
 )
 PARTITION BY LIST (partition);
 
+CREATE TABLE merge_request_diff_commits_b5377a7a34 (
+    authored_date timestamp without time zone,
+    committed_date timestamp without time zone,
+    sha bytea NOT NULL,
+    message text,
+    trailers jsonb DEFAULT '{}'::jsonb NOT NULL,
+    commit_author_id bigint,
+    committer_id bigint,
+    merge_request_diff_id bigint NOT NULL,
+    relative_order integer NOT NULL
+)
+PARTITION BY RANGE (merge_request_diff_id);
+
+CREATE TABLE merge_request_diff_files_99208b8fac (
+    new_file boolean NOT NULL,
+    renamed_file boolean NOT NULL,
+    deleted_file boolean NOT NULL,
+    too_large boolean NOT NULL,
+    a_mode character varying NOT NULL,
+    b_mode character varying NOT NULL,
+    new_path text NOT NULL,
+    old_path text NOT NULL,
+    diff text,
+    "binary" boolean,
+    external_diff_offset integer,
+    external_diff_size integer,
+    generated boolean,
+    merge_request_diff_id bigint NOT NULL,
+    relative_order integer NOT NULL
+)
+PARTITION BY RANGE (merge_request_diff_id);
+
 CREATE TABLE p_batched_git_ref_updates_deletions (
     id bigint NOT NULL,
     project_id bigint NOT NULL,
@@ -946,6 +1320,16 @@ CREATE TABLE p_batched_git_ref_updates_deletions (
     CONSTRAINT check_f322d53b92 CHECK ((char_length(ref) <= 1024))
 )
 PARTITION BY LIST (partition_id);
+
+CREATE TABLE p_catalog_resource_component_usages (
+    id bigint NOT NULL,
+    component_id bigint NOT NULL,
+    catalog_resource_id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    used_by_project_id bigint NOT NULL,
+    used_date date NOT NULL
+)
+PARTITION BY RANGE (used_date);
 
 CREATE TABLE p_catalog_resource_sync_events (
     id bigint NOT NULL,
@@ -1030,6 +1414,22 @@ CREATE TABLE web_hook_logs (
     url_hash text
 )
 PARTITION BY RANGE (created_at);
+
+CREATE TABLE zoekt_tasks (
+    id bigint NOT NULL,
+    partition_id bigint DEFAULT 1 NOT NULL,
+    zoekt_node_id bigint NOT NULL,
+    zoekt_repository_id bigint NOT NULL,
+    project_identifier bigint NOT NULL,
+    perform_at timestamp with time zone DEFAULT now() NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    state smallint DEFAULT 0 NOT NULL,
+    task_type smallint NOT NULL,
+    retries_left smallint DEFAULT 5 NOT NULL,
+    CONSTRAINT c_zoekt_tasks_on_retries_left CHECK (((retries_left > 0) OR ((retries_left = 0) AND (state = 255))))
+)
+PARTITION BY LIST (partition_id);
 
 CREATE TABLE analytics_cycle_analytics_issue_stage_events (
     stage_event_hash_id bigint NOT NULL,
@@ -2841,8596 +3241,6 @@ CREATE TABLE gitlab_partitions_static.namespace_descendants_31 (
     calculated_at timestamp with time zone
 );
 
-CREATE TABLE product_analytics_events_experimental (
-    id bigint NOT NULL,
-    project_id integer NOT NULL,
-    platform character varying(255),
-    etl_tstamp timestamp with time zone,
-    collector_tstamp timestamp with time zone NOT NULL,
-    dvce_created_tstamp timestamp with time zone,
-    event character varying(128),
-    event_id character(36) NOT NULL,
-    txn_id integer,
-    name_tracker character varying(128),
-    v_tracker character varying(100),
-    v_collector character varying(100) NOT NULL,
-    v_etl character varying(100) NOT NULL,
-    user_id character varying(255),
-    user_ipaddress character varying(45),
-    user_fingerprint character varying(50),
-    domain_userid character varying(36),
-    domain_sessionidx smallint,
-    network_userid character varying(38),
-    geo_country character(2),
-    geo_region character(3),
-    geo_city character varying(75),
-    geo_zipcode character varying(15),
-    geo_latitude double precision,
-    geo_longitude double precision,
-    geo_region_name character varying(100),
-    ip_isp character varying(100),
-    ip_organization character varying(100),
-    ip_domain character varying(100),
-    ip_netspeed character varying(100),
-    page_url text,
-    page_title character varying(2000),
-    page_referrer text,
-    page_urlscheme character varying(16),
-    page_urlhost character varying(255),
-    page_urlport integer,
-    page_urlpath character varying(3000),
-    page_urlquery character varying(6000),
-    page_urlfragment character varying(3000),
-    refr_urlscheme character varying(16),
-    refr_urlhost character varying(255),
-    refr_urlport integer,
-    refr_urlpath character varying(6000),
-    refr_urlquery character varying(6000),
-    refr_urlfragment character varying(3000),
-    refr_medium character varying(25),
-    refr_source character varying(50),
-    refr_term character varying(255),
-    mkt_medium character varying(255),
-    mkt_source character varying(255),
-    mkt_term character varying(255),
-    mkt_content character varying(500),
-    mkt_campaign character varying(255),
-    se_category character varying(1000),
-    se_action character varying(1000),
-    se_label character varying(1000),
-    se_property character varying(1000),
-    se_value double precision,
-    tr_orderid character varying(255),
-    tr_affiliation character varying(255),
-    tr_total numeric(18,2),
-    tr_tax numeric(18,2),
-    tr_shipping numeric(18,2),
-    tr_city character varying(255),
-    tr_state character varying(255),
-    tr_country character varying(255),
-    ti_orderid character varying(255),
-    ti_sku character varying(255),
-    ti_name character varying(255),
-    ti_category character varying(255),
-    ti_price numeric(18,2),
-    ti_quantity integer,
-    pp_xoffset_min integer,
-    pp_xoffset_max integer,
-    pp_yoffset_min integer,
-    pp_yoffset_max integer,
-    useragent character varying(1000),
-    br_name character varying(50),
-    br_family character varying(50),
-    br_version character varying(50),
-    br_type character varying(50),
-    br_renderengine character varying(50),
-    br_lang character varying(255),
-    br_features_pdf boolean,
-    br_features_flash boolean,
-    br_features_java boolean,
-    br_features_director boolean,
-    br_features_quicktime boolean,
-    br_features_realplayer boolean,
-    br_features_windowsmedia boolean,
-    br_features_gears boolean,
-    br_features_silverlight boolean,
-    br_cookies boolean,
-    br_colordepth character varying(12),
-    br_viewwidth integer,
-    br_viewheight integer,
-    os_name character varying(50),
-    os_family character varying(50),
-    os_manufacturer character varying(50),
-    os_timezone character varying(50),
-    dvce_type character varying(50),
-    dvce_ismobile boolean,
-    dvce_screenwidth integer,
-    dvce_screenheight integer,
-    doc_charset character varying(128),
-    doc_width integer,
-    doc_height integer,
-    tr_currency character(3),
-    tr_total_base numeric(18,2),
-    tr_tax_base numeric(18,2),
-    tr_shipping_base numeric(18,2),
-    ti_currency character(3),
-    ti_price_base numeric(18,2),
-    base_currency character(3),
-    geo_timezone character varying(64),
-    mkt_clickid character varying(128),
-    mkt_network character varying(64),
-    etl_tags character varying(500),
-    dvce_sent_tstamp timestamp with time zone,
-    refr_domain_userid character varying(36),
-    refr_dvce_tstamp timestamp with time zone,
-    domain_sessionid character(36),
-    derived_tstamp timestamp with time zone,
-    event_vendor character varying(1000),
-    event_name character varying(1000),
-    event_format character varying(128),
-    event_version character varying(128),
-    event_fingerprint character varying(128),
-    true_tstamp timestamp with time zone
-)
-PARTITION BY HASH (project_id);
-
-CREATE SEQUENCE product_analytics_events_experimental_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE product_analytics_events_experimental_id_seq OWNED BY product_analytics_events_experimental.id;
-
-CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_00 (
-    id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
-    project_id integer NOT NULL,
-    platform character varying(255),
-    etl_tstamp timestamp with time zone,
-    collector_tstamp timestamp with time zone NOT NULL,
-    dvce_created_tstamp timestamp with time zone,
-    event character varying(128),
-    event_id character(36) NOT NULL,
-    txn_id integer,
-    name_tracker character varying(128),
-    v_tracker character varying(100),
-    v_collector character varying(100) NOT NULL,
-    v_etl character varying(100) NOT NULL,
-    user_id character varying(255),
-    user_ipaddress character varying(45),
-    user_fingerprint character varying(50),
-    domain_userid character varying(36),
-    domain_sessionidx smallint,
-    network_userid character varying(38),
-    geo_country character(2),
-    geo_region character(3),
-    geo_city character varying(75),
-    geo_zipcode character varying(15),
-    geo_latitude double precision,
-    geo_longitude double precision,
-    geo_region_name character varying(100),
-    ip_isp character varying(100),
-    ip_organization character varying(100),
-    ip_domain character varying(100),
-    ip_netspeed character varying(100),
-    page_url text,
-    page_title character varying(2000),
-    page_referrer text,
-    page_urlscheme character varying(16),
-    page_urlhost character varying(255),
-    page_urlport integer,
-    page_urlpath character varying(3000),
-    page_urlquery character varying(6000),
-    page_urlfragment character varying(3000),
-    refr_urlscheme character varying(16),
-    refr_urlhost character varying(255),
-    refr_urlport integer,
-    refr_urlpath character varying(6000),
-    refr_urlquery character varying(6000),
-    refr_urlfragment character varying(3000),
-    refr_medium character varying(25),
-    refr_source character varying(50),
-    refr_term character varying(255),
-    mkt_medium character varying(255),
-    mkt_source character varying(255),
-    mkt_term character varying(255),
-    mkt_content character varying(500),
-    mkt_campaign character varying(255),
-    se_category character varying(1000),
-    se_action character varying(1000),
-    se_label character varying(1000),
-    se_property character varying(1000),
-    se_value double precision,
-    tr_orderid character varying(255),
-    tr_affiliation character varying(255),
-    tr_total numeric(18,2),
-    tr_tax numeric(18,2),
-    tr_shipping numeric(18,2),
-    tr_city character varying(255),
-    tr_state character varying(255),
-    tr_country character varying(255),
-    ti_orderid character varying(255),
-    ti_sku character varying(255),
-    ti_name character varying(255),
-    ti_category character varying(255),
-    ti_price numeric(18,2),
-    ti_quantity integer,
-    pp_xoffset_min integer,
-    pp_xoffset_max integer,
-    pp_yoffset_min integer,
-    pp_yoffset_max integer,
-    useragent character varying(1000),
-    br_name character varying(50),
-    br_family character varying(50),
-    br_version character varying(50),
-    br_type character varying(50),
-    br_renderengine character varying(50),
-    br_lang character varying(255),
-    br_features_pdf boolean,
-    br_features_flash boolean,
-    br_features_java boolean,
-    br_features_director boolean,
-    br_features_quicktime boolean,
-    br_features_realplayer boolean,
-    br_features_windowsmedia boolean,
-    br_features_gears boolean,
-    br_features_silverlight boolean,
-    br_cookies boolean,
-    br_colordepth character varying(12),
-    br_viewwidth integer,
-    br_viewheight integer,
-    os_name character varying(50),
-    os_family character varying(50),
-    os_manufacturer character varying(50),
-    os_timezone character varying(50),
-    dvce_type character varying(50),
-    dvce_ismobile boolean,
-    dvce_screenwidth integer,
-    dvce_screenheight integer,
-    doc_charset character varying(128),
-    doc_width integer,
-    doc_height integer,
-    tr_currency character(3),
-    tr_total_base numeric(18,2),
-    tr_tax_base numeric(18,2),
-    tr_shipping_base numeric(18,2),
-    ti_currency character(3),
-    ti_price_base numeric(18,2),
-    base_currency character(3),
-    geo_timezone character varying(64),
-    mkt_clickid character varying(128),
-    mkt_network character varying(64),
-    etl_tags character varying(500),
-    dvce_sent_tstamp timestamp with time zone,
-    refr_domain_userid character varying(36),
-    refr_dvce_tstamp timestamp with time zone,
-    domain_sessionid character(36),
-    derived_tstamp timestamp with time zone,
-    event_vendor character varying(1000),
-    event_name character varying(1000),
-    event_format character varying(128),
-    event_version character varying(128),
-    event_fingerprint character varying(128),
-    true_tstamp timestamp with time zone
-);
-
-CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_01 (
-    id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
-    project_id integer NOT NULL,
-    platform character varying(255),
-    etl_tstamp timestamp with time zone,
-    collector_tstamp timestamp with time zone NOT NULL,
-    dvce_created_tstamp timestamp with time zone,
-    event character varying(128),
-    event_id character(36) NOT NULL,
-    txn_id integer,
-    name_tracker character varying(128),
-    v_tracker character varying(100),
-    v_collector character varying(100) NOT NULL,
-    v_etl character varying(100) NOT NULL,
-    user_id character varying(255),
-    user_ipaddress character varying(45),
-    user_fingerprint character varying(50),
-    domain_userid character varying(36),
-    domain_sessionidx smallint,
-    network_userid character varying(38),
-    geo_country character(2),
-    geo_region character(3),
-    geo_city character varying(75),
-    geo_zipcode character varying(15),
-    geo_latitude double precision,
-    geo_longitude double precision,
-    geo_region_name character varying(100),
-    ip_isp character varying(100),
-    ip_organization character varying(100),
-    ip_domain character varying(100),
-    ip_netspeed character varying(100),
-    page_url text,
-    page_title character varying(2000),
-    page_referrer text,
-    page_urlscheme character varying(16),
-    page_urlhost character varying(255),
-    page_urlport integer,
-    page_urlpath character varying(3000),
-    page_urlquery character varying(6000),
-    page_urlfragment character varying(3000),
-    refr_urlscheme character varying(16),
-    refr_urlhost character varying(255),
-    refr_urlport integer,
-    refr_urlpath character varying(6000),
-    refr_urlquery character varying(6000),
-    refr_urlfragment character varying(3000),
-    refr_medium character varying(25),
-    refr_source character varying(50),
-    refr_term character varying(255),
-    mkt_medium character varying(255),
-    mkt_source character varying(255),
-    mkt_term character varying(255),
-    mkt_content character varying(500),
-    mkt_campaign character varying(255),
-    se_category character varying(1000),
-    se_action character varying(1000),
-    se_label character varying(1000),
-    se_property character varying(1000),
-    se_value double precision,
-    tr_orderid character varying(255),
-    tr_affiliation character varying(255),
-    tr_total numeric(18,2),
-    tr_tax numeric(18,2),
-    tr_shipping numeric(18,2),
-    tr_city character varying(255),
-    tr_state character varying(255),
-    tr_country character varying(255),
-    ti_orderid character varying(255),
-    ti_sku character varying(255),
-    ti_name character varying(255),
-    ti_category character varying(255),
-    ti_price numeric(18,2),
-    ti_quantity integer,
-    pp_xoffset_min integer,
-    pp_xoffset_max integer,
-    pp_yoffset_min integer,
-    pp_yoffset_max integer,
-    useragent character varying(1000),
-    br_name character varying(50),
-    br_family character varying(50),
-    br_version character varying(50),
-    br_type character varying(50),
-    br_renderengine character varying(50),
-    br_lang character varying(255),
-    br_features_pdf boolean,
-    br_features_flash boolean,
-    br_features_java boolean,
-    br_features_director boolean,
-    br_features_quicktime boolean,
-    br_features_realplayer boolean,
-    br_features_windowsmedia boolean,
-    br_features_gears boolean,
-    br_features_silverlight boolean,
-    br_cookies boolean,
-    br_colordepth character varying(12),
-    br_viewwidth integer,
-    br_viewheight integer,
-    os_name character varying(50),
-    os_family character varying(50),
-    os_manufacturer character varying(50),
-    os_timezone character varying(50),
-    dvce_type character varying(50),
-    dvce_ismobile boolean,
-    dvce_screenwidth integer,
-    dvce_screenheight integer,
-    doc_charset character varying(128),
-    doc_width integer,
-    doc_height integer,
-    tr_currency character(3),
-    tr_total_base numeric(18,2),
-    tr_tax_base numeric(18,2),
-    tr_shipping_base numeric(18,2),
-    ti_currency character(3),
-    ti_price_base numeric(18,2),
-    base_currency character(3),
-    geo_timezone character varying(64),
-    mkt_clickid character varying(128),
-    mkt_network character varying(64),
-    etl_tags character varying(500),
-    dvce_sent_tstamp timestamp with time zone,
-    refr_domain_userid character varying(36),
-    refr_dvce_tstamp timestamp with time zone,
-    domain_sessionid character(36),
-    derived_tstamp timestamp with time zone,
-    event_vendor character varying(1000),
-    event_name character varying(1000),
-    event_format character varying(128),
-    event_version character varying(128),
-    event_fingerprint character varying(128),
-    true_tstamp timestamp with time zone
-);
-
-CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_02 (
-    id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
-    project_id integer NOT NULL,
-    platform character varying(255),
-    etl_tstamp timestamp with time zone,
-    collector_tstamp timestamp with time zone NOT NULL,
-    dvce_created_tstamp timestamp with time zone,
-    event character varying(128),
-    event_id character(36) NOT NULL,
-    txn_id integer,
-    name_tracker character varying(128),
-    v_tracker character varying(100),
-    v_collector character varying(100) NOT NULL,
-    v_etl character varying(100) NOT NULL,
-    user_id character varying(255),
-    user_ipaddress character varying(45),
-    user_fingerprint character varying(50),
-    domain_userid character varying(36),
-    domain_sessionidx smallint,
-    network_userid character varying(38),
-    geo_country character(2),
-    geo_region character(3),
-    geo_city character varying(75),
-    geo_zipcode character varying(15),
-    geo_latitude double precision,
-    geo_longitude double precision,
-    geo_region_name character varying(100),
-    ip_isp character varying(100),
-    ip_organization character varying(100),
-    ip_domain character varying(100),
-    ip_netspeed character varying(100),
-    page_url text,
-    page_title character varying(2000),
-    page_referrer text,
-    page_urlscheme character varying(16),
-    page_urlhost character varying(255),
-    page_urlport integer,
-    page_urlpath character varying(3000),
-    page_urlquery character varying(6000),
-    page_urlfragment character varying(3000),
-    refr_urlscheme character varying(16),
-    refr_urlhost character varying(255),
-    refr_urlport integer,
-    refr_urlpath character varying(6000),
-    refr_urlquery character varying(6000),
-    refr_urlfragment character varying(3000),
-    refr_medium character varying(25),
-    refr_source character varying(50),
-    refr_term character varying(255),
-    mkt_medium character varying(255),
-    mkt_source character varying(255),
-    mkt_term character varying(255),
-    mkt_content character varying(500),
-    mkt_campaign character varying(255),
-    se_category character varying(1000),
-    se_action character varying(1000),
-    se_label character varying(1000),
-    se_property character varying(1000),
-    se_value double precision,
-    tr_orderid character varying(255),
-    tr_affiliation character varying(255),
-    tr_total numeric(18,2),
-    tr_tax numeric(18,2),
-    tr_shipping numeric(18,2),
-    tr_city character varying(255),
-    tr_state character varying(255),
-    tr_country character varying(255),
-    ti_orderid character varying(255),
-    ti_sku character varying(255),
-    ti_name character varying(255),
-    ti_category character varying(255),
-    ti_price numeric(18,2),
-    ti_quantity integer,
-    pp_xoffset_min integer,
-    pp_xoffset_max integer,
-    pp_yoffset_min integer,
-    pp_yoffset_max integer,
-    useragent character varying(1000),
-    br_name character varying(50),
-    br_family character varying(50),
-    br_version character varying(50),
-    br_type character varying(50),
-    br_renderengine character varying(50),
-    br_lang character varying(255),
-    br_features_pdf boolean,
-    br_features_flash boolean,
-    br_features_java boolean,
-    br_features_director boolean,
-    br_features_quicktime boolean,
-    br_features_realplayer boolean,
-    br_features_windowsmedia boolean,
-    br_features_gears boolean,
-    br_features_silverlight boolean,
-    br_cookies boolean,
-    br_colordepth character varying(12),
-    br_viewwidth integer,
-    br_viewheight integer,
-    os_name character varying(50),
-    os_family character varying(50),
-    os_manufacturer character varying(50),
-    os_timezone character varying(50),
-    dvce_type character varying(50),
-    dvce_ismobile boolean,
-    dvce_screenwidth integer,
-    dvce_screenheight integer,
-    doc_charset character varying(128),
-    doc_width integer,
-    doc_height integer,
-    tr_currency character(3),
-    tr_total_base numeric(18,2),
-    tr_tax_base numeric(18,2),
-    tr_shipping_base numeric(18,2),
-    ti_currency character(3),
-    ti_price_base numeric(18,2),
-    base_currency character(3),
-    geo_timezone character varying(64),
-    mkt_clickid character varying(128),
-    mkt_network character varying(64),
-    etl_tags character varying(500),
-    dvce_sent_tstamp timestamp with time zone,
-    refr_domain_userid character varying(36),
-    refr_dvce_tstamp timestamp with time zone,
-    domain_sessionid character(36),
-    derived_tstamp timestamp with time zone,
-    event_vendor character varying(1000),
-    event_name character varying(1000),
-    event_format character varying(128),
-    event_version character varying(128),
-    event_fingerprint character varying(128),
-    true_tstamp timestamp with time zone
-);
-
-CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_03 (
-    id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
-    project_id integer NOT NULL,
-    platform character varying(255),
-    etl_tstamp timestamp with time zone,
-    collector_tstamp timestamp with time zone NOT NULL,
-    dvce_created_tstamp timestamp with time zone,
-    event character varying(128),
-    event_id character(36) NOT NULL,
-    txn_id integer,
-    name_tracker character varying(128),
-    v_tracker character varying(100),
-    v_collector character varying(100) NOT NULL,
-    v_etl character varying(100) NOT NULL,
-    user_id character varying(255),
-    user_ipaddress character varying(45),
-    user_fingerprint character varying(50),
-    domain_userid character varying(36),
-    domain_sessionidx smallint,
-    network_userid character varying(38),
-    geo_country character(2),
-    geo_region character(3),
-    geo_city character varying(75),
-    geo_zipcode character varying(15),
-    geo_latitude double precision,
-    geo_longitude double precision,
-    geo_region_name character varying(100),
-    ip_isp character varying(100),
-    ip_organization character varying(100),
-    ip_domain character varying(100),
-    ip_netspeed character varying(100),
-    page_url text,
-    page_title character varying(2000),
-    page_referrer text,
-    page_urlscheme character varying(16),
-    page_urlhost character varying(255),
-    page_urlport integer,
-    page_urlpath character varying(3000),
-    page_urlquery character varying(6000),
-    page_urlfragment character varying(3000),
-    refr_urlscheme character varying(16),
-    refr_urlhost character varying(255),
-    refr_urlport integer,
-    refr_urlpath character varying(6000),
-    refr_urlquery character varying(6000),
-    refr_urlfragment character varying(3000),
-    refr_medium character varying(25),
-    refr_source character varying(50),
-    refr_term character varying(255),
-    mkt_medium character varying(255),
-    mkt_source character varying(255),
-    mkt_term character varying(255),
-    mkt_content character varying(500),
-    mkt_campaign character varying(255),
-    se_category character varying(1000),
-    se_action character varying(1000),
-    se_label character varying(1000),
-    se_property character varying(1000),
-    se_value double precision,
-    tr_orderid character varying(255),
-    tr_affiliation character varying(255),
-    tr_total numeric(18,2),
-    tr_tax numeric(18,2),
-    tr_shipping numeric(18,2),
-    tr_city character varying(255),
-    tr_state character varying(255),
-    tr_country character varying(255),
-    ti_orderid character varying(255),
-    ti_sku character varying(255),
-    ti_name character varying(255),
-    ti_category character varying(255),
-    ti_price numeric(18,2),
-    ti_quantity integer,
-    pp_xoffset_min integer,
-    pp_xoffset_max integer,
-    pp_yoffset_min integer,
-    pp_yoffset_max integer,
-    useragent character varying(1000),
-    br_name character varying(50),
-    br_family character varying(50),
-    br_version character varying(50),
-    br_type character varying(50),
-    br_renderengine character varying(50),
-    br_lang character varying(255),
-    br_features_pdf boolean,
-    br_features_flash boolean,
-    br_features_java boolean,
-    br_features_director boolean,
-    br_features_quicktime boolean,
-    br_features_realplayer boolean,
-    br_features_windowsmedia boolean,
-    br_features_gears boolean,
-    br_features_silverlight boolean,
-    br_cookies boolean,
-    br_colordepth character varying(12),
-    br_viewwidth integer,
-    br_viewheight integer,
-    os_name character varying(50),
-    os_family character varying(50),
-    os_manufacturer character varying(50),
-    os_timezone character varying(50),
-    dvce_type character varying(50),
-    dvce_ismobile boolean,
-    dvce_screenwidth integer,
-    dvce_screenheight integer,
-    doc_charset character varying(128),
-    doc_width integer,
-    doc_height integer,
-    tr_currency character(3),
-    tr_total_base numeric(18,2),
-    tr_tax_base numeric(18,2),
-    tr_shipping_base numeric(18,2),
-    ti_currency character(3),
-    ti_price_base numeric(18,2),
-    base_currency character(3),
-    geo_timezone character varying(64),
-    mkt_clickid character varying(128),
-    mkt_network character varying(64),
-    etl_tags character varying(500),
-    dvce_sent_tstamp timestamp with time zone,
-    refr_domain_userid character varying(36),
-    refr_dvce_tstamp timestamp with time zone,
-    domain_sessionid character(36),
-    derived_tstamp timestamp with time zone,
-    event_vendor character varying(1000),
-    event_name character varying(1000),
-    event_format character varying(128),
-    event_version character varying(128),
-    event_fingerprint character varying(128),
-    true_tstamp timestamp with time zone
-);
-
-CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_04 (
-    id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
-    project_id integer NOT NULL,
-    platform character varying(255),
-    etl_tstamp timestamp with time zone,
-    collector_tstamp timestamp with time zone NOT NULL,
-    dvce_created_tstamp timestamp with time zone,
-    event character varying(128),
-    event_id character(36) NOT NULL,
-    txn_id integer,
-    name_tracker character varying(128),
-    v_tracker character varying(100),
-    v_collector character varying(100) NOT NULL,
-    v_etl character varying(100) NOT NULL,
-    user_id character varying(255),
-    user_ipaddress character varying(45),
-    user_fingerprint character varying(50),
-    domain_userid character varying(36),
-    domain_sessionidx smallint,
-    network_userid character varying(38),
-    geo_country character(2),
-    geo_region character(3),
-    geo_city character varying(75),
-    geo_zipcode character varying(15),
-    geo_latitude double precision,
-    geo_longitude double precision,
-    geo_region_name character varying(100),
-    ip_isp character varying(100),
-    ip_organization character varying(100),
-    ip_domain character varying(100),
-    ip_netspeed character varying(100),
-    page_url text,
-    page_title character varying(2000),
-    page_referrer text,
-    page_urlscheme character varying(16),
-    page_urlhost character varying(255),
-    page_urlport integer,
-    page_urlpath character varying(3000),
-    page_urlquery character varying(6000),
-    page_urlfragment character varying(3000),
-    refr_urlscheme character varying(16),
-    refr_urlhost character varying(255),
-    refr_urlport integer,
-    refr_urlpath character varying(6000),
-    refr_urlquery character varying(6000),
-    refr_urlfragment character varying(3000),
-    refr_medium character varying(25),
-    refr_source character varying(50),
-    refr_term character varying(255),
-    mkt_medium character varying(255),
-    mkt_source character varying(255),
-    mkt_term character varying(255),
-    mkt_content character varying(500),
-    mkt_campaign character varying(255),
-    se_category character varying(1000),
-    se_action character varying(1000),
-    se_label character varying(1000),
-    se_property character varying(1000),
-    se_value double precision,
-    tr_orderid character varying(255),
-    tr_affiliation character varying(255),
-    tr_total numeric(18,2),
-    tr_tax numeric(18,2),
-    tr_shipping numeric(18,2),
-    tr_city character varying(255),
-    tr_state character varying(255),
-    tr_country character varying(255),
-    ti_orderid character varying(255),
-    ti_sku character varying(255),
-    ti_name character varying(255),
-    ti_category character varying(255),
-    ti_price numeric(18,2),
-    ti_quantity integer,
-    pp_xoffset_min integer,
-    pp_xoffset_max integer,
-    pp_yoffset_min integer,
-    pp_yoffset_max integer,
-    useragent character varying(1000),
-    br_name character varying(50),
-    br_family character varying(50),
-    br_version character varying(50),
-    br_type character varying(50),
-    br_renderengine character varying(50),
-    br_lang character varying(255),
-    br_features_pdf boolean,
-    br_features_flash boolean,
-    br_features_java boolean,
-    br_features_director boolean,
-    br_features_quicktime boolean,
-    br_features_realplayer boolean,
-    br_features_windowsmedia boolean,
-    br_features_gears boolean,
-    br_features_silverlight boolean,
-    br_cookies boolean,
-    br_colordepth character varying(12),
-    br_viewwidth integer,
-    br_viewheight integer,
-    os_name character varying(50),
-    os_family character varying(50),
-    os_manufacturer character varying(50),
-    os_timezone character varying(50),
-    dvce_type character varying(50),
-    dvce_ismobile boolean,
-    dvce_screenwidth integer,
-    dvce_screenheight integer,
-    doc_charset character varying(128),
-    doc_width integer,
-    doc_height integer,
-    tr_currency character(3),
-    tr_total_base numeric(18,2),
-    tr_tax_base numeric(18,2),
-    tr_shipping_base numeric(18,2),
-    ti_currency character(3),
-    ti_price_base numeric(18,2),
-    base_currency character(3),
-    geo_timezone character varying(64),
-    mkt_clickid character varying(128),
-    mkt_network character varying(64),
-    etl_tags character varying(500),
-    dvce_sent_tstamp timestamp with time zone,
-    refr_domain_userid character varying(36),
-    refr_dvce_tstamp timestamp with time zone,
-    domain_sessionid character(36),
-    derived_tstamp timestamp with time zone,
-    event_vendor character varying(1000),
-    event_name character varying(1000),
-    event_format character varying(128),
-    event_version character varying(128),
-    event_fingerprint character varying(128),
-    true_tstamp timestamp with time zone
-);
-
-CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_05 (
-    id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
-    project_id integer NOT NULL,
-    platform character varying(255),
-    etl_tstamp timestamp with time zone,
-    collector_tstamp timestamp with time zone NOT NULL,
-    dvce_created_tstamp timestamp with time zone,
-    event character varying(128),
-    event_id character(36) NOT NULL,
-    txn_id integer,
-    name_tracker character varying(128),
-    v_tracker character varying(100),
-    v_collector character varying(100) NOT NULL,
-    v_etl character varying(100) NOT NULL,
-    user_id character varying(255),
-    user_ipaddress character varying(45),
-    user_fingerprint character varying(50),
-    domain_userid character varying(36),
-    domain_sessionidx smallint,
-    network_userid character varying(38),
-    geo_country character(2),
-    geo_region character(3),
-    geo_city character varying(75),
-    geo_zipcode character varying(15),
-    geo_latitude double precision,
-    geo_longitude double precision,
-    geo_region_name character varying(100),
-    ip_isp character varying(100),
-    ip_organization character varying(100),
-    ip_domain character varying(100),
-    ip_netspeed character varying(100),
-    page_url text,
-    page_title character varying(2000),
-    page_referrer text,
-    page_urlscheme character varying(16),
-    page_urlhost character varying(255),
-    page_urlport integer,
-    page_urlpath character varying(3000),
-    page_urlquery character varying(6000),
-    page_urlfragment character varying(3000),
-    refr_urlscheme character varying(16),
-    refr_urlhost character varying(255),
-    refr_urlport integer,
-    refr_urlpath character varying(6000),
-    refr_urlquery character varying(6000),
-    refr_urlfragment character varying(3000),
-    refr_medium character varying(25),
-    refr_source character varying(50),
-    refr_term character varying(255),
-    mkt_medium character varying(255),
-    mkt_source character varying(255),
-    mkt_term character varying(255),
-    mkt_content character varying(500),
-    mkt_campaign character varying(255),
-    se_category character varying(1000),
-    se_action character varying(1000),
-    se_label character varying(1000),
-    se_property character varying(1000),
-    se_value double precision,
-    tr_orderid character varying(255),
-    tr_affiliation character varying(255),
-    tr_total numeric(18,2),
-    tr_tax numeric(18,2),
-    tr_shipping numeric(18,2),
-    tr_city character varying(255),
-    tr_state character varying(255),
-    tr_country character varying(255),
-    ti_orderid character varying(255),
-    ti_sku character varying(255),
-    ti_name character varying(255),
-    ti_category character varying(255),
-    ti_price numeric(18,2),
-    ti_quantity integer,
-    pp_xoffset_min integer,
-    pp_xoffset_max integer,
-    pp_yoffset_min integer,
-    pp_yoffset_max integer,
-    useragent character varying(1000),
-    br_name character varying(50),
-    br_family character varying(50),
-    br_version character varying(50),
-    br_type character varying(50),
-    br_renderengine character varying(50),
-    br_lang character varying(255),
-    br_features_pdf boolean,
-    br_features_flash boolean,
-    br_features_java boolean,
-    br_features_director boolean,
-    br_features_quicktime boolean,
-    br_features_realplayer boolean,
-    br_features_windowsmedia boolean,
-    br_features_gears boolean,
-    br_features_silverlight boolean,
-    br_cookies boolean,
-    br_colordepth character varying(12),
-    br_viewwidth integer,
-    br_viewheight integer,
-    os_name character varying(50),
-    os_family character varying(50),
-    os_manufacturer character varying(50),
-    os_timezone character varying(50),
-    dvce_type character varying(50),
-    dvce_ismobile boolean,
-    dvce_screenwidth integer,
-    dvce_screenheight integer,
-    doc_charset character varying(128),
-    doc_width integer,
-    doc_height integer,
-    tr_currency character(3),
-    tr_total_base numeric(18,2),
-    tr_tax_base numeric(18,2),
-    tr_shipping_base numeric(18,2),
-    ti_currency character(3),
-    ti_price_base numeric(18,2),
-    base_currency character(3),
-    geo_timezone character varying(64),
-    mkt_clickid character varying(128),
-    mkt_network character varying(64),
-    etl_tags character varying(500),
-    dvce_sent_tstamp timestamp with time zone,
-    refr_domain_userid character varying(36),
-    refr_dvce_tstamp timestamp with time zone,
-    domain_sessionid character(36),
-    derived_tstamp timestamp with time zone,
-    event_vendor character varying(1000),
-    event_name character varying(1000),
-    event_format character varying(128),
-    event_version character varying(128),
-    event_fingerprint character varying(128),
-    true_tstamp timestamp with time zone
-);
-
-CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_06 (
-    id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
-    project_id integer NOT NULL,
-    platform character varying(255),
-    etl_tstamp timestamp with time zone,
-    collector_tstamp timestamp with time zone NOT NULL,
-    dvce_created_tstamp timestamp with time zone,
-    event character varying(128),
-    event_id character(36) NOT NULL,
-    txn_id integer,
-    name_tracker character varying(128),
-    v_tracker character varying(100),
-    v_collector character varying(100) NOT NULL,
-    v_etl character varying(100) NOT NULL,
-    user_id character varying(255),
-    user_ipaddress character varying(45),
-    user_fingerprint character varying(50),
-    domain_userid character varying(36),
-    domain_sessionidx smallint,
-    network_userid character varying(38),
-    geo_country character(2),
-    geo_region character(3),
-    geo_city character varying(75),
-    geo_zipcode character varying(15),
-    geo_latitude double precision,
-    geo_longitude double precision,
-    geo_region_name character varying(100),
-    ip_isp character varying(100),
-    ip_organization character varying(100),
-    ip_domain character varying(100),
-    ip_netspeed character varying(100),
-    page_url text,
-    page_title character varying(2000),
-    page_referrer text,
-    page_urlscheme character varying(16),
-    page_urlhost character varying(255),
-    page_urlport integer,
-    page_urlpath character varying(3000),
-    page_urlquery character varying(6000),
-    page_urlfragment character varying(3000),
-    refr_urlscheme character varying(16),
-    refr_urlhost character varying(255),
-    refr_urlport integer,
-    refr_urlpath character varying(6000),
-    refr_urlquery character varying(6000),
-    refr_urlfragment character varying(3000),
-    refr_medium character varying(25),
-    refr_source character varying(50),
-    refr_term character varying(255),
-    mkt_medium character varying(255),
-    mkt_source character varying(255),
-    mkt_term character varying(255),
-    mkt_content character varying(500),
-    mkt_campaign character varying(255),
-    se_category character varying(1000),
-    se_action character varying(1000),
-    se_label character varying(1000),
-    se_property character varying(1000),
-    se_value double precision,
-    tr_orderid character varying(255),
-    tr_affiliation character varying(255),
-    tr_total numeric(18,2),
-    tr_tax numeric(18,2),
-    tr_shipping numeric(18,2),
-    tr_city character varying(255),
-    tr_state character varying(255),
-    tr_country character varying(255),
-    ti_orderid character varying(255),
-    ti_sku character varying(255),
-    ti_name character varying(255),
-    ti_category character varying(255),
-    ti_price numeric(18,2),
-    ti_quantity integer,
-    pp_xoffset_min integer,
-    pp_xoffset_max integer,
-    pp_yoffset_min integer,
-    pp_yoffset_max integer,
-    useragent character varying(1000),
-    br_name character varying(50),
-    br_family character varying(50),
-    br_version character varying(50),
-    br_type character varying(50),
-    br_renderengine character varying(50),
-    br_lang character varying(255),
-    br_features_pdf boolean,
-    br_features_flash boolean,
-    br_features_java boolean,
-    br_features_director boolean,
-    br_features_quicktime boolean,
-    br_features_realplayer boolean,
-    br_features_windowsmedia boolean,
-    br_features_gears boolean,
-    br_features_silverlight boolean,
-    br_cookies boolean,
-    br_colordepth character varying(12),
-    br_viewwidth integer,
-    br_viewheight integer,
-    os_name character varying(50),
-    os_family character varying(50),
-    os_manufacturer character varying(50),
-    os_timezone character varying(50),
-    dvce_type character varying(50),
-    dvce_ismobile boolean,
-    dvce_screenwidth integer,
-    dvce_screenheight integer,
-    doc_charset character varying(128),
-    doc_width integer,
-    doc_height integer,
-    tr_currency character(3),
-    tr_total_base numeric(18,2),
-    tr_tax_base numeric(18,2),
-    tr_shipping_base numeric(18,2),
-    ti_currency character(3),
-    ti_price_base numeric(18,2),
-    base_currency character(3),
-    geo_timezone character varying(64),
-    mkt_clickid character varying(128),
-    mkt_network character varying(64),
-    etl_tags character varying(500),
-    dvce_sent_tstamp timestamp with time zone,
-    refr_domain_userid character varying(36),
-    refr_dvce_tstamp timestamp with time zone,
-    domain_sessionid character(36),
-    derived_tstamp timestamp with time zone,
-    event_vendor character varying(1000),
-    event_name character varying(1000),
-    event_format character varying(128),
-    event_version character varying(128),
-    event_fingerprint character varying(128),
-    true_tstamp timestamp with time zone
-);
-
-CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_07 (
-    id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
-    project_id integer NOT NULL,
-    platform character varying(255),
-    etl_tstamp timestamp with time zone,
-    collector_tstamp timestamp with time zone NOT NULL,
-    dvce_created_tstamp timestamp with time zone,
-    event character varying(128),
-    event_id character(36) NOT NULL,
-    txn_id integer,
-    name_tracker character varying(128),
-    v_tracker character varying(100),
-    v_collector character varying(100) NOT NULL,
-    v_etl character varying(100) NOT NULL,
-    user_id character varying(255),
-    user_ipaddress character varying(45),
-    user_fingerprint character varying(50),
-    domain_userid character varying(36),
-    domain_sessionidx smallint,
-    network_userid character varying(38),
-    geo_country character(2),
-    geo_region character(3),
-    geo_city character varying(75),
-    geo_zipcode character varying(15),
-    geo_latitude double precision,
-    geo_longitude double precision,
-    geo_region_name character varying(100),
-    ip_isp character varying(100),
-    ip_organization character varying(100),
-    ip_domain character varying(100),
-    ip_netspeed character varying(100),
-    page_url text,
-    page_title character varying(2000),
-    page_referrer text,
-    page_urlscheme character varying(16),
-    page_urlhost character varying(255),
-    page_urlport integer,
-    page_urlpath character varying(3000),
-    page_urlquery character varying(6000),
-    page_urlfragment character varying(3000),
-    refr_urlscheme character varying(16),
-    refr_urlhost character varying(255),
-    refr_urlport integer,
-    refr_urlpath character varying(6000),
-    refr_urlquery character varying(6000),
-    refr_urlfragment character varying(3000),
-    refr_medium character varying(25),
-    refr_source character varying(50),
-    refr_term character varying(255),
-    mkt_medium character varying(255),
-    mkt_source character varying(255),
-    mkt_term character varying(255),
-    mkt_content character varying(500),
-    mkt_campaign character varying(255),
-    se_category character varying(1000),
-    se_action character varying(1000),
-    se_label character varying(1000),
-    se_property character varying(1000),
-    se_value double precision,
-    tr_orderid character varying(255),
-    tr_affiliation character varying(255),
-    tr_total numeric(18,2),
-    tr_tax numeric(18,2),
-    tr_shipping numeric(18,2),
-    tr_city character varying(255),
-    tr_state character varying(255),
-    tr_country character varying(255),
-    ti_orderid character varying(255),
-    ti_sku character varying(255),
-    ti_name character varying(255),
-    ti_category character varying(255),
-    ti_price numeric(18,2),
-    ti_quantity integer,
-    pp_xoffset_min integer,
-    pp_xoffset_max integer,
-    pp_yoffset_min integer,
-    pp_yoffset_max integer,
-    useragent character varying(1000),
-    br_name character varying(50),
-    br_family character varying(50),
-    br_version character varying(50),
-    br_type character varying(50),
-    br_renderengine character varying(50),
-    br_lang character varying(255),
-    br_features_pdf boolean,
-    br_features_flash boolean,
-    br_features_java boolean,
-    br_features_director boolean,
-    br_features_quicktime boolean,
-    br_features_realplayer boolean,
-    br_features_windowsmedia boolean,
-    br_features_gears boolean,
-    br_features_silverlight boolean,
-    br_cookies boolean,
-    br_colordepth character varying(12),
-    br_viewwidth integer,
-    br_viewheight integer,
-    os_name character varying(50),
-    os_family character varying(50),
-    os_manufacturer character varying(50),
-    os_timezone character varying(50),
-    dvce_type character varying(50),
-    dvce_ismobile boolean,
-    dvce_screenwidth integer,
-    dvce_screenheight integer,
-    doc_charset character varying(128),
-    doc_width integer,
-    doc_height integer,
-    tr_currency character(3),
-    tr_total_base numeric(18,2),
-    tr_tax_base numeric(18,2),
-    tr_shipping_base numeric(18,2),
-    ti_currency character(3),
-    ti_price_base numeric(18,2),
-    base_currency character(3),
-    geo_timezone character varying(64),
-    mkt_clickid character varying(128),
-    mkt_network character varying(64),
-    etl_tags character varying(500),
-    dvce_sent_tstamp timestamp with time zone,
-    refr_domain_userid character varying(36),
-    refr_dvce_tstamp timestamp with time zone,
-    domain_sessionid character(36),
-    derived_tstamp timestamp with time zone,
-    event_vendor character varying(1000),
-    event_name character varying(1000),
-    event_format character varying(128),
-    event_version character varying(128),
-    event_fingerprint character varying(128),
-    true_tstamp timestamp with time zone
-);
-
-CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_08 (
-    id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
-    project_id integer NOT NULL,
-    platform character varying(255),
-    etl_tstamp timestamp with time zone,
-    collector_tstamp timestamp with time zone NOT NULL,
-    dvce_created_tstamp timestamp with time zone,
-    event character varying(128),
-    event_id character(36) NOT NULL,
-    txn_id integer,
-    name_tracker character varying(128),
-    v_tracker character varying(100),
-    v_collector character varying(100) NOT NULL,
-    v_etl character varying(100) NOT NULL,
-    user_id character varying(255),
-    user_ipaddress character varying(45),
-    user_fingerprint character varying(50),
-    domain_userid character varying(36),
-    domain_sessionidx smallint,
-    network_userid character varying(38),
-    geo_country character(2),
-    geo_region character(3),
-    geo_city character varying(75),
-    geo_zipcode character varying(15),
-    geo_latitude double precision,
-    geo_longitude double precision,
-    geo_region_name character varying(100),
-    ip_isp character varying(100),
-    ip_organization character varying(100),
-    ip_domain character varying(100),
-    ip_netspeed character varying(100),
-    page_url text,
-    page_title character varying(2000),
-    page_referrer text,
-    page_urlscheme character varying(16),
-    page_urlhost character varying(255),
-    page_urlport integer,
-    page_urlpath character varying(3000),
-    page_urlquery character varying(6000),
-    page_urlfragment character varying(3000),
-    refr_urlscheme character varying(16),
-    refr_urlhost character varying(255),
-    refr_urlport integer,
-    refr_urlpath character varying(6000),
-    refr_urlquery character varying(6000),
-    refr_urlfragment character varying(3000),
-    refr_medium character varying(25),
-    refr_source character varying(50),
-    refr_term character varying(255),
-    mkt_medium character varying(255),
-    mkt_source character varying(255),
-    mkt_term character varying(255),
-    mkt_content character varying(500),
-    mkt_campaign character varying(255),
-    se_category character varying(1000),
-    se_action character varying(1000),
-    se_label character varying(1000),
-    se_property character varying(1000),
-    se_value double precision,
-    tr_orderid character varying(255),
-    tr_affiliation character varying(255),
-    tr_total numeric(18,2),
-    tr_tax numeric(18,2),
-    tr_shipping numeric(18,2),
-    tr_city character varying(255),
-    tr_state character varying(255),
-    tr_country character varying(255),
-    ti_orderid character varying(255),
-    ti_sku character varying(255),
-    ti_name character varying(255),
-    ti_category character varying(255),
-    ti_price numeric(18,2),
-    ti_quantity integer,
-    pp_xoffset_min integer,
-    pp_xoffset_max integer,
-    pp_yoffset_min integer,
-    pp_yoffset_max integer,
-    useragent character varying(1000),
-    br_name character varying(50),
-    br_family character varying(50),
-    br_version character varying(50),
-    br_type character varying(50),
-    br_renderengine character varying(50),
-    br_lang character varying(255),
-    br_features_pdf boolean,
-    br_features_flash boolean,
-    br_features_java boolean,
-    br_features_director boolean,
-    br_features_quicktime boolean,
-    br_features_realplayer boolean,
-    br_features_windowsmedia boolean,
-    br_features_gears boolean,
-    br_features_silverlight boolean,
-    br_cookies boolean,
-    br_colordepth character varying(12),
-    br_viewwidth integer,
-    br_viewheight integer,
-    os_name character varying(50),
-    os_family character varying(50),
-    os_manufacturer character varying(50),
-    os_timezone character varying(50),
-    dvce_type character varying(50),
-    dvce_ismobile boolean,
-    dvce_screenwidth integer,
-    dvce_screenheight integer,
-    doc_charset character varying(128),
-    doc_width integer,
-    doc_height integer,
-    tr_currency character(3),
-    tr_total_base numeric(18,2),
-    tr_tax_base numeric(18,2),
-    tr_shipping_base numeric(18,2),
-    ti_currency character(3),
-    ti_price_base numeric(18,2),
-    base_currency character(3),
-    geo_timezone character varying(64),
-    mkt_clickid character varying(128),
-    mkt_network character varying(64),
-    etl_tags character varying(500),
-    dvce_sent_tstamp timestamp with time zone,
-    refr_domain_userid character varying(36),
-    refr_dvce_tstamp timestamp with time zone,
-    domain_sessionid character(36),
-    derived_tstamp timestamp with time zone,
-    event_vendor character varying(1000),
-    event_name character varying(1000),
-    event_format character varying(128),
-    event_version character varying(128),
-    event_fingerprint character varying(128),
-    true_tstamp timestamp with time zone
-);
-
-CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_09 (
-    id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
-    project_id integer NOT NULL,
-    platform character varying(255),
-    etl_tstamp timestamp with time zone,
-    collector_tstamp timestamp with time zone NOT NULL,
-    dvce_created_tstamp timestamp with time zone,
-    event character varying(128),
-    event_id character(36) NOT NULL,
-    txn_id integer,
-    name_tracker character varying(128),
-    v_tracker character varying(100),
-    v_collector character varying(100) NOT NULL,
-    v_etl character varying(100) NOT NULL,
-    user_id character varying(255),
-    user_ipaddress character varying(45),
-    user_fingerprint character varying(50),
-    domain_userid character varying(36),
-    domain_sessionidx smallint,
-    network_userid character varying(38),
-    geo_country character(2),
-    geo_region character(3),
-    geo_city character varying(75),
-    geo_zipcode character varying(15),
-    geo_latitude double precision,
-    geo_longitude double precision,
-    geo_region_name character varying(100),
-    ip_isp character varying(100),
-    ip_organization character varying(100),
-    ip_domain character varying(100),
-    ip_netspeed character varying(100),
-    page_url text,
-    page_title character varying(2000),
-    page_referrer text,
-    page_urlscheme character varying(16),
-    page_urlhost character varying(255),
-    page_urlport integer,
-    page_urlpath character varying(3000),
-    page_urlquery character varying(6000),
-    page_urlfragment character varying(3000),
-    refr_urlscheme character varying(16),
-    refr_urlhost character varying(255),
-    refr_urlport integer,
-    refr_urlpath character varying(6000),
-    refr_urlquery character varying(6000),
-    refr_urlfragment character varying(3000),
-    refr_medium character varying(25),
-    refr_source character varying(50),
-    refr_term character varying(255),
-    mkt_medium character varying(255),
-    mkt_source character varying(255),
-    mkt_term character varying(255),
-    mkt_content character varying(500),
-    mkt_campaign character varying(255),
-    se_category character varying(1000),
-    se_action character varying(1000),
-    se_label character varying(1000),
-    se_property character varying(1000),
-    se_value double precision,
-    tr_orderid character varying(255),
-    tr_affiliation character varying(255),
-    tr_total numeric(18,2),
-    tr_tax numeric(18,2),
-    tr_shipping numeric(18,2),
-    tr_city character varying(255),
-    tr_state character varying(255),
-    tr_country character varying(255),
-    ti_orderid character varying(255),
-    ti_sku character varying(255),
-    ti_name character varying(255),
-    ti_category character varying(255),
-    ti_price numeric(18,2),
-    ti_quantity integer,
-    pp_xoffset_min integer,
-    pp_xoffset_max integer,
-    pp_yoffset_min integer,
-    pp_yoffset_max integer,
-    useragent character varying(1000),
-    br_name character varying(50),
-    br_family character varying(50),
-    br_version character varying(50),
-    br_type character varying(50),
-    br_renderengine character varying(50),
-    br_lang character varying(255),
-    br_features_pdf boolean,
-    br_features_flash boolean,
-    br_features_java boolean,
-    br_features_director boolean,
-    br_features_quicktime boolean,
-    br_features_realplayer boolean,
-    br_features_windowsmedia boolean,
-    br_features_gears boolean,
-    br_features_silverlight boolean,
-    br_cookies boolean,
-    br_colordepth character varying(12),
-    br_viewwidth integer,
-    br_viewheight integer,
-    os_name character varying(50),
-    os_family character varying(50),
-    os_manufacturer character varying(50),
-    os_timezone character varying(50),
-    dvce_type character varying(50),
-    dvce_ismobile boolean,
-    dvce_screenwidth integer,
-    dvce_screenheight integer,
-    doc_charset character varying(128),
-    doc_width integer,
-    doc_height integer,
-    tr_currency character(3),
-    tr_total_base numeric(18,2),
-    tr_tax_base numeric(18,2),
-    tr_shipping_base numeric(18,2),
-    ti_currency character(3),
-    ti_price_base numeric(18,2),
-    base_currency character(3),
-    geo_timezone character varying(64),
-    mkt_clickid character varying(128),
-    mkt_network character varying(64),
-    etl_tags character varying(500),
-    dvce_sent_tstamp timestamp with time zone,
-    refr_domain_userid character varying(36),
-    refr_dvce_tstamp timestamp with time zone,
-    domain_sessionid character(36),
-    derived_tstamp timestamp with time zone,
-    event_vendor character varying(1000),
-    event_name character varying(1000),
-    event_format character varying(128),
-    event_version character varying(128),
-    event_fingerprint character varying(128),
-    true_tstamp timestamp with time zone
-);
-
-CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_10 (
-    id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
-    project_id integer NOT NULL,
-    platform character varying(255),
-    etl_tstamp timestamp with time zone,
-    collector_tstamp timestamp with time zone NOT NULL,
-    dvce_created_tstamp timestamp with time zone,
-    event character varying(128),
-    event_id character(36) NOT NULL,
-    txn_id integer,
-    name_tracker character varying(128),
-    v_tracker character varying(100),
-    v_collector character varying(100) NOT NULL,
-    v_etl character varying(100) NOT NULL,
-    user_id character varying(255),
-    user_ipaddress character varying(45),
-    user_fingerprint character varying(50),
-    domain_userid character varying(36),
-    domain_sessionidx smallint,
-    network_userid character varying(38),
-    geo_country character(2),
-    geo_region character(3),
-    geo_city character varying(75),
-    geo_zipcode character varying(15),
-    geo_latitude double precision,
-    geo_longitude double precision,
-    geo_region_name character varying(100),
-    ip_isp character varying(100),
-    ip_organization character varying(100),
-    ip_domain character varying(100),
-    ip_netspeed character varying(100),
-    page_url text,
-    page_title character varying(2000),
-    page_referrer text,
-    page_urlscheme character varying(16),
-    page_urlhost character varying(255),
-    page_urlport integer,
-    page_urlpath character varying(3000),
-    page_urlquery character varying(6000),
-    page_urlfragment character varying(3000),
-    refr_urlscheme character varying(16),
-    refr_urlhost character varying(255),
-    refr_urlport integer,
-    refr_urlpath character varying(6000),
-    refr_urlquery character varying(6000),
-    refr_urlfragment character varying(3000),
-    refr_medium character varying(25),
-    refr_source character varying(50),
-    refr_term character varying(255),
-    mkt_medium character varying(255),
-    mkt_source character varying(255),
-    mkt_term character varying(255),
-    mkt_content character varying(500),
-    mkt_campaign character varying(255),
-    se_category character varying(1000),
-    se_action character varying(1000),
-    se_label character varying(1000),
-    se_property character varying(1000),
-    se_value double precision,
-    tr_orderid character varying(255),
-    tr_affiliation character varying(255),
-    tr_total numeric(18,2),
-    tr_tax numeric(18,2),
-    tr_shipping numeric(18,2),
-    tr_city character varying(255),
-    tr_state character varying(255),
-    tr_country character varying(255),
-    ti_orderid character varying(255),
-    ti_sku character varying(255),
-    ti_name character varying(255),
-    ti_category character varying(255),
-    ti_price numeric(18,2),
-    ti_quantity integer,
-    pp_xoffset_min integer,
-    pp_xoffset_max integer,
-    pp_yoffset_min integer,
-    pp_yoffset_max integer,
-    useragent character varying(1000),
-    br_name character varying(50),
-    br_family character varying(50),
-    br_version character varying(50),
-    br_type character varying(50),
-    br_renderengine character varying(50),
-    br_lang character varying(255),
-    br_features_pdf boolean,
-    br_features_flash boolean,
-    br_features_java boolean,
-    br_features_director boolean,
-    br_features_quicktime boolean,
-    br_features_realplayer boolean,
-    br_features_windowsmedia boolean,
-    br_features_gears boolean,
-    br_features_silverlight boolean,
-    br_cookies boolean,
-    br_colordepth character varying(12),
-    br_viewwidth integer,
-    br_viewheight integer,
-    os_name character varying(50),
-    os_family character varying(50),
-    os_manufacturer character varying(50),
-    os_timezone character varying(50),
-    dvce_type character varying(50),
-    dvce_ismobile boolean,
-    dvce_screenwidth integer,
-    dvce_screenheight integer,
-    doc_charset character varying(128),
-    doc_width integer,
-    doc_height integer,
-    tr_currency character(3),
-    tr_total_base numeric(18,2),
-    tr_tax_base numeric(18,2),
-    tr_shipping_base numeric(18,2),
-    ti_currency character(3),
-    ti_price_base numeric(18,2),
-    base_currency character(3),
-    geo_timezone character varying(64),
-    mkt_clickid character varying(128),
-    mkt_network character varying(64),
-    etl_tags character varying(500),
-    dvce_sent_tstamp timestamp with time zone,
-    refr_domain_userid character varying(36),
-    refr_dvce_tstamp timestamp with time zone,
-    domain_sessionid character(36),
-    derived_tstamp timestamp with time zone,
-    event_vendor character varying(1000),
-    event_name character varying(1000),
-    event_format character varying(128),
-    event_version character varying(128),
-    event_fingerprint character varying(128),
-    true_tstamp timestamp with time zone
-);
-
-CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_11 (
-    id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
-    project_id integer NOT NULL,
-    platform character varying(255),
-    etl_tstamp timestamp with time zone,
-    collector_tstamp timestamp with time zone NOT NULL,
-    dvce_created_tstamp timestamp with time zone,
-    event character varying(128),
-    event_id character(36) NOT NULL,
-    txn_id integer,
-    name_tracker character varying(128),
-    v_tracker character varying(100),
-    v_collector character varying(100) NOT NULL,
-    v_etl character varying(100) NOT NULL,
-    user_id character varying(255),
-    user_ipaddress character varying(45),
-    user_fingerprint character varying(50),
-    domain_userid character varying(36),
-    domain_sessionidx smallint,
-    network_userid character varying(38),
-    geo_country character(2),
-    geo_region character(3),
-    geo_city character varying(75),
-    geo_zipcode character varying(15),
-    geo_latitude double precision,
-    geo_longitude double precision,
-    geo_region_name character varying(100),
-    ip_isp character varying(100),
-    ip_organization character varying(100),
-    ip_domain character varying(100),
-    ip_netspeed character varying(100),
-    page_url text,
-    page_title character varying(2000),
-    page_referrer text,
-    page_urlscheme character varying(16),
-    page_urlhost character varying(255),
-    page_urlport integer,
-    page_urlpath character varying(3000),
-    page_urlquery character varying(6000),
-    page_urlfragment character varying(3000),
-    refr_urlscheme character varying(16),
-    refr_urlhost character varying(255),
-    refr_urlport integer,
-    refr_urlpath character varying(6000),
-    refr_urlquery character varying(6000),
-    refr_urlfragment character varying(3000),
-    refr_medium character varying(25),
-    refr_source character varying(50),
-    refr_term character varying(255),
-    mkt_medium character varying(255),
-    mkt_source character varying(255),
-    mkt_term character varying(255),
-    mkt_content character varying(500),
-    mkt_campaign character varying(255),
-    se_category character varying(1000),
-    se_action character varying(1000),
-    se_label character varying(1000),
-    se_property character varying(1000),
-    se_value double precision,
-    tr_orderid character varying(255),
-    tr_affiliation character varying(255),
-    tr_total numeric(18,2),
-    tr_tax numeric(18,2),
-    tr_shipping numeric(18,2),
-    tr_city character varying(255),
-    tr_state character varying(255),
-    tr_country character varying(255),
-    ti_orderid character varying(255),
-    ti_sku character varying(255),
-    ti_name character varying(255),
-    ti_category character varying(255),
-    ti_price numeric(18,2),
-    ti_quantity integer,
-    pp_xoffset_min integer,
-    pp_xoffset_max integer,
-    pp_yoffset_min integer,
-    pp_yoffset_max integer,
-    useragent character varying(1000),
-    br_name character varying(50),
-    br_family character varying(50),
-    br_version character varying(50),
-    br_type character varying(50),
-    br_renderengine character varying(50),
-    br_lang character varying(255),
-    br_features_pdf boolean,
-    br_features_flash boolean,
-    br_features_java boolean,
-    br_features_director boolean,
-    br_features_quicktime boolean,
-    br_features_realplayer boolean,
-    br_features_windowsmedia boolean,
-    br_features_gears boolean,
-    br_features_silverlight boolean,
-    br_cookies boolean,
-    br_colordepth character varying(12),
-    br_viewwidth integer,
-    br_viewheight integer,
-    os_name character varying(50),
-    os_family character varying(50),
-    os_manufacturer character varying(50),
-    os_timezone character varying(50),
-    dvce_type character varying(50),
-    dvce_ismobile boolean,
-    dvce_screenwidth integer,
-    dvce_screenheight integer,
-    doc_charset character varying(128),
-    doc_width integer,
-    doc_height integer,
-    tr_currency character(3),
-    tr_total_base numeric(18,2),
-    tr_tax_base numeric(18,2),
-    tr_shipping_base numeric(18,2),
-    ti_currency character(3),
-    ti_price_base numeric(18,2),
-    base_currency character(3),
-    geo_timezone character varying(64),
-    mkt_clickid character varying(128),
-    mkt_network character varying(64),
-    etl_tags character varying(500),
-    dvce_sent_tstamp timestamp with time zone,
-    refr_domain_userid character varying(36),
-    refr_dvce_tstamp timestamp with time zone,
-    domain_sessionid character(36),
-    derived_tstamp timestamp with time zone,
-    event_vendor character varying(1000),
-    event_name character varying(1000),
-    event_format character varying(128),
-    event_version character varying(128),
-    event_fingerprint character varying(128),
-    true_tstamp timestamp with time zone
-);
-
-CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_12 (
-    id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
-    project_id integer NOT NULL,
-    platform character varying(255),
-    etl_tstamp timestamp with time zone,
-    collector_tstamp timestamp with time zone NOT NULL,
-    dvce_created_tstamp timestamp with time zone,
-    event character varying(128),
-    event_id character(36) NOT NULL,
-    txn_id integer,
-    name_tracker character varying(128),
-    v_tracker character varying(100),
-    v_collector character varying(100) NOT NULL,
-    v_etl character varying(100) NOT NULL,
-    user_id character varying(255),
-    user_ipaddress character varying(45),
-    user_fingerprint character varying(50),
-    domain_userid character varying(36),
-    domain_sessionidx smallint,
-    network_userid character varying(38),
-    geo_country character(2),
-    geo_region character(3),
-    geo_city character varying(75),
-    geo_zipcode character varying(15),
-    geo_latitude double precision,
-    geo_longitude double precision,
-    geo_region_name character varying(100),
-    ip_isp character varying(100),
-    ip_organization character varying(100),
-    ip_domain character varying(100),
-    ip_netspeed character varying(100),
-    page_url text,
-    page_title character varying(2000),
-    page_referrer text,
-    page_urlscheme character varying(16),
-    page_urlhost character varying(255),
-    page_urlport integer,
-    page_urlpath character varying(3000),
-    page_urlquery character varying(6000),
-    page_urlfragment character varying(3000),
-    refr_urlscheme character varying(16),
-    refr_urlhost character varying(255),
-    refr_urlport integer,
-    refr_urlpath character varying(6000),
-    refr_urlquery character varying(6000),
-    refr_urlfragment character varying(3000),
-    refr_medium character varying(25),
-    refr_source character varying(50),
-    refr_term character varying(255),
-    mkt_medium character varying(255),
-    mkt_source character varying(255),
-    mkt_term character varying(255),
-    mkt_content character varying(500),
-    mkt_campaign character varying(255),
-    se_category character varying(1000),
-    se_action character varying(1000),
-    se_label character varying(1000),
-    se_property character varying(1000),
-    se_value double precision,
-    tr_orderid character varying(255),
-    tr_affiliation character varying(255),
-    tr_total numeric(18,2),
-    tr_tax numeric(18,2),
-    tr_shipping numeric(18,2),
-    tr_city character varying(255),
-    tr_state character varying(255),
-    tr_country character varying(255),
-    ti_orderid character varying(255),
-    ti_sku character varying(255),
-    ti_name character varying(255),
-    ti_category character varying(255),
-    ti_price numeric(18,2),
-    ti_quantity integer,
-    pp_xoffset_min integer,
-    pp_xoffset_max integer,
-    pp_yoffset_min integer,
-    pp_yoffset_max integer,
-    useragent character varying(1000),
-    br_name character varying(50),
-    br_family character varying(50),
-    br_version character varying(50),
-    br_type character varying(50),
-    br_renderengine character varying(50),
-    br_lang character varying(255),
-    br_features_pdf boolean,
-    br_features_flash boolean,
-    br_features_java boolean,
-    br_features_director boolean,
-    br_features_quicktime boolean,
-    br_features_realplayer boolean,
-    br_features_windowsmedia boolean,
-    br_features_gears boolean,
-    br_features_silverlight boolean,
-    br_cookies boolean,
-    br_colordepth character varying(12),
-    br_viewwidth integer,
-    br_viewheight integer,
-    os_name character varying(50),
-    os_family character varying(50),
-    os_manufacturer character varying(50),
-    os_timezone character varying(50),
-    dvce_type character varying(50),
-    dvce_ismobile boolean,
-    dvce_screenwidth integer,
-    dvce_screenheight integer,
-    doc_charset character varying(128),
-    doc_width integer,
-    doc_height integer,
-    tr_currency character(3),
-    tr_total_base numeric(18,2),
-    tr_tax_base numeric(18,2),
-    tr_shipping_base numeric(18,2),
-    ti_currency character(3),
-    ti_price_base numeric(18,2),
-    base_currency character(3),
-    geo_timezone character varying(64),
-    mkt_clickid character varying(128),
-    mkt_network character varying(64),
-    etl_tags character varying(500),
-    dvce_sent_tstamp timestamp with time zone,
-    refr_domain_userid character varying(36),
-    refr_dvce_tstamp timestamp with time zone,
-    domain_sessionid character(36),
-    derived_tstamp timestamp with time zone,
-    event_vendor character varying(1000),
-    event_name character varying(1000),
-    event_format character varying(128),
-    event_version character varying(128),
-    event_fingerprint character varying(128),
-    true_tstamp timestamp with time zone
-);
-
-CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_13 (
-    id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
-    project_id integer NOT NULL,
-    platform character varying(255),
-    etl_tstamp timestamp with time zone,
-    collector_tstamp timestamp with time zone NOT NULL,
-    dvce_created_tstamp timestamp with time zone,
-    event character varying(128),
-    event_id character(36) NOT NULL,
-    txn_id integer,
-    name_tracker character varying(128),
-    v_tracker character varying(100),
-    v_collector character varying(100) NOT NULL,
-    v_etl character varying(100) NOT NULL,
-    user_id character varying(255),
-    user_ipaddress character varying(45),
-    user_fingerprint character varying(50),
-    domain_userid character varying(36),
-    domain_sessionidx smallint,
-    network_userid character varying(38),
-    geo_country character(2),
-    geo_region character(3),
-    geo_city character varying(75),
-    geo_zipcode character varying(15),
-    geo_latitude double precision,
-    geo_longitude double precision,
-    geo_region_name character varying(100),
-    ip_isp character varying(100),
-    ip_organization character varying(100),
-    ip_domain character varying(100),
-    ip_netspeed character varying(100),
-    page_url text,
-    page_title character varying(2000),
-    page_referrer text,
-    page_urlscheme character varying(16),
-    page_urlhost character varying(255),
-    page_urlport integer,
-    page_urlpath character varying(3000),
-    page_urlquery character varying(6000),
-    page_urlfragment character varying(3000),
-    refr_urlscheme character varying(16),
-    refr_urlhost character varying(255),
-    refr_urlport integer,
-    refr_urlpath character varying(6000),
-    refr_urlquery character varying(6000),
-    refr_urlfragment character varying(3000),
-    refr_medium character varying(25),
-    refr_source character varying(50),
-    refr_term character varying(255),
-    mkt_medium character varying(255),
-    mkt_source character varying(255),
-    mkt_term character varying(255),
-    mkt_content character varying(500),
-    mkt_campaign character varying(255),
-    se_category character varying(1000),
-    se_action character varying(1000),
-    se_label character varying(1000),
-    se_property character varying(1000),
-    se_value double precision,
-    tr_orderid character varying(255),
-    tr_affiliation character varying(255),
-    tr_total numeric(18,2),
-    tr_tax numeric(18,2),
-    tr_shipping numeric(18,2),
-    tr_city character varying(255),
-    tr_state character varying(255),
-    tr_country character varying(255),
-    ti_orderid character varying(255),
-    ti_sku character varying(255),
-    ti_name character varying(255),
-    ti_category character varying(255),
-    ti_price numeric(18,2),
-    ti_quantity integer,
-    pp_xoffset_min integer,
-    pp_xoffset_max integer,
-    pp_yoffset_min integer,
-    pp_yoffset_max integer,
-    useragent character varying(1000),
-    br_name character varying(50),
-    br_family character varying(50),
-    br_version character varying(50),
-    br_type character varying(50),
-    br_renderengine character varying(50),
-    br_lang character varying(255),
-    br_features_pdf boolean,
-    br_features_flash boolean,
-    br_features_java boolean,
-    br_features_director boolean,
-    br_features_quicktime boolean,
-    br_features_realplayer boolean,
-    br_features_windowsmedia boolean,
-    br_features_gears boolean,
-    br_features_silverlight boolean,
-    br_cookies boolean,
-    br_colordepth character varying(12),
-    br_viewwidth integer,
-    br_viewheight integer,
-    os_name character varying(50),
-    os_family character varying(50),
-    os_manufacturer character varying(50),
-    os_timezone character varying(50),
-    dvce_type character varying(50),
-    dvce_ismobile boolean,
-    dvce_screenwidth integer,
-    dvce_screenheight integer,
-    doc_charset character varying(128),
-    doc_width integer,
-    doc_height integer,
-    tr_currency character(3),
-    tr_total_base numeric(18,2),
-    tr_tax_base numeric(18,2),
-    tr_shipping_base numeric(18,2),
-    ti_currency character(3),
-    ti_price_base numeric(18,2),
-    base_currency character(3),
-    geo_timezone character varying(64),
-    mkt_clickid character varying(128),
-    mkt_network character varying(64),
-    etl_tags character varying(500),
-    dvce_sent_tstamp timestamp with time zone,
-    refr_domain_userid character varying(36),
-    refr_dvce_tstamp timestamp with time zone,
-    domain_sessionid character(36),
-    derived_tstamp timestamp with time zone,
-    event_vendor character varying(1000),
-    event_name character varying(1000),
-    event_format character varying(128),
-    event_version character varying(128),
-    event_fingerprint character varying(128),
-    true_tstamp timestamp with time zone
-);
-
-CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_14 (
-    id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
-    project_id integer NOT NULL,
-    platform character varying(255),
-    etl_tstamp timestamp with time zone,
-    collector_tstamp timestamp with time zone NOT NULL,
-    dvce_created_tstamp timestamp with time zone,
-    event character varying(128),
-    event_id character(36) NOT NULL,
-    txn_id integer,
-    name_tracker character varying(128),
-    v_tracker character varying(100),
-    v_collector character varying(100) NOT NULL,
-    v_etl character varying(100) NOT NULL,
-    user_id character varying(255),
-    user_ipaddress character varying(45),
-    user_fingerprint character varying(50),
-    domain_userid character varying(36),
-    domain_sessionidx smallint,
-    network_userid character varying(38),
-    geo_country character(2),
-    geo_region character(3),
-    geo_city character varying(75),
-    geo_zipcode character varying(15),
-    geo_latitude double precision,
-    geo_longitude double precision,
-    geo_region_name character varying(100),
-    ip_isp character varying(100),
-    ip_organization character varying(100),
-    ip_domain character varying(100),
-    ip_netspeed character varying(100),
-    page_url text,
-    page_title character varying(2000),
-    page_referrer text,
-    page_urlscheme character varying(16),
-    page_urlhost character varying(255),
-    page_urlport integer,
-    page_urlpath character varying(3000),
-    page_urlquery character varying(6000),
-    page_urlfragment character varying(3000),
-    refr_urlscheme character varying(16),
-    refr_urlhost character varying(255),
-    refr_urlport integer,
-    refr_urlpath character varying(6000),
-    refr_urlquery character varying(6000),
-    refr_urlfragment character varying(3000),
-    refr_medium character varying(25),
-    refr_source character varying(50),
-    refr_term character varying(255),
-    mkt_medium character varying(255),
-    mkt_source character varying(255),
-    mkt_term character varying(255),
-    mkt_content character varying(500),
-    mkt_campaign character varying(255),
-    se_category character varying(1000),
-    se_action character varying(1000),
-    se_label character varying(1000),
-    se_property character varying(1000),
-    se_value double precision,
-    tr_orderid character varying(255),
-    tr_affiliation character varying(255),
-    tr_total numeric(18,2),
-    tr_tax numeric(18,2),
-    tr_shipping numeric(18,2),
-    tr_city character varying(255),
-    tr_state character varying(255),
-    tr_country character varying(255),
-    ti_orderid character varying(255),
-    ti_sku character varying(255),
-    ti_name character varying(255),
-    ti_category character varying(255),
-    ti_price numeric(18,2),
-    ti_quantity integer,
-    pp_xoffset_min integer,
-    pp_xoffset_max integer,
-    pp_yoffset_min integer,
-    pp_yoffset_max integer,
-    useragent character varying(1000),
-    br_name character varying(50),
-    br_family character varying(50),
-    br_version character varying(50),
-    br_type character varying(50),
-    br_renderengine character varying(50),
-    br_lang character varying(255),
-    br_features_pdf boolean,
-    br_features_flash boolean,
-    br_features_java boolean,
-    br_features_director boolean,
-    br_features_quicktime boolean,
-    br_features_realplayer boolean,
-    br_features_windowsmedia boolean,
-    br_features_gears boolean,
-    br_features_silverlight boolean,
-    br_cookies boolean,
-    br_colordepth character varying(12),
-    br_viewwidth integer,
-    br_viewheight integer,
-    os_name character varying(50),
-    os_family character varying(50),
-    os_manufacturer character varying(50),
-    os_timezone character varying(50),
-    dvce_type character varying(50),
-    dvce_ismobile boolean,
-    dvce_screenwidth integer,
-    dvce_screenheight integer,
-    doc_charset character varying(128),
-    doc_width integer,
-    doc_height integer,
-    tr_currency character(3),
-    tr_total_base numeric(18,2),
-    tr_tax_base numeric(18,2),
-    tr_shipping_base numeric(18,2),
-    ti_currency character(3),
-    ti_price_base numeric(18,2),
-    base_currency character(3),
-    geo_timezone character varying(64),
-    mkt_clickid character varying(128),
-    mkt_network character varying(64),
-    etl_tags character varying(500),
-    dvce_sent_tstamp timestamp with time zone,
-    refr_domain_userid character varying(36),
-    refr_dvce_tstamp timestamp with time zone,
-    domain_sessionid character(36),
-    derived_tstamp timestamp with time zone,
-    event_vendor character varying(1000),
-    event_name character varying(1000),
-    event_format character varying(128),
-    event_version character varying(128),
-    event_fingerprint character varying(128),
-    true_tstamp timestamp with time zone
-);
-
-CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_15 (
-    id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
-    project_id integer NOT NULL,
-    platform character varying(255),
-    etl_tstamp timestamp with time zone,
-    collector_tstamp timestamp with time zone NOT NULL,
-    dvce_created_tstamp timestamp with time zone,
-    event character varying(128),
-    event_id character(36) NOT NULL,
-    txn_id integer,
-    name_tracker character varying(128),
-    v_tracker character varying(100),
-    v_collector character varying(100) NOT NULL,
-    v_etl character varying(100) NOT NULL,
-    user_id character varying(255),
-    user_ipaddress character varying(45),
-    user_fingerprint character varying(50),
-    domain_userid character varying(36),
-    domain_sessionidx smallint,
-    network_userid character varying(38),
-    geo_country character(2),
-    geo_region character(3),
-    geo_city character varying(75),
-    geo_zipcode character varying(15),
-    geo_latitude double precision,
-    geo_longitude double precision,
-    geo_region_name character varying(100),
-    ip_isp character varying(100),
-    ip_organization character varying(100),
-    ip_domain character varying(100),
-    ip_netspeed character varying(100),
-    page_url text,
-    page_title character varying(2000),
-    page_referrer text,
-    page_urlscheme character varying(16),
-    page_urlhost character varying(255),
-    page_urlport integer,
-    page_urlpath character varying(3000),
-    page_urlquery character varying(6000),
-    page_urlfragment character varying(3000),
-    refr_urlscheme character varying(16),
-    refr_urlhost character varying(255),
-    refr_urlport integer,
-    refr_urlpath character varying(6000),
-    refr_urlquery character varying(6000),
-    refr_urlfragment character varying(3000),
-    refr_medium character varying(25),
-    refr_source character varying(50),
-    refr_term character varying(255),
-    mkt_medium character varying(255),
-    mkt_source character varying(255),
-    mkt_term character varying(255),
-    mkt_content character varying(500),
-    mkt_campaign character varying(255),
-    se_category character varying(1000),
-    se_action character varying(1000),
-    se_label character varying(1000),
-    se_property character varying(1000),
-    se_value double precision,
-    tr_orderid character varying(255),
-    tr_affiliation character varying(255),
-    tr_total numeric(18,2),
-    tr_tax numeric(18,2),
-    tr_shipping numeric(18,2),
-    tr_city character varying(255),
-    tr_state character varying(255),
-    tr_country character varying(255),
-    ti_orderid character varying(255),
-    ti_sku character varying(255),
-    ti_name character varying(255),
-    ti_category character varying(255),
-    ti_price numeric(18,2),
-    ti_quantity integer,
-    pp_xoffset_min integer,
-    pp_xoffset_max integer,
-    pp_yoffset_min integer,
-    pp_yoffset_max integer,
-    useragent character varying(1000),
-    br_name character varying(50),
-    br_family character varying(50),
-    br_version character varying(50),
-    br_type character varying(50),
-    br_renderengine character varying(50),
-    br_lang character varying(255),
-    br_features_pdf boolean,
-    br_features_flash boolean,
-    br_features_java boolean,
-    br_features_director boolean,
-    br_features_quicktime boolean,
-    br_features_realplayer boolean,
-    br_features_windowsmedia boolean,
-    br_features_gears boolean,
-    br_features_silverlight boolean,
-    br_cookies boolean,
-    br_colordepth character varying(12),
-    br_viewwidth integer,
-    br_viewheight integer,
-    os_name character varying(50),
-    os_family character varying(50),
-    os_manufacturer character varying(50),
-    os_timezone character varying(50),
-    dvce_type character varying(50),
-    dvce_ismobile boolean,
-    dvce_screenwidth integer,
-    dvce_screenheight integer,
-    doc_charset character varying(128),
-    doc_width integer,
-    doc_height integer,
-    tr_currency character(3),
-    tr_total_base numeric(18,2),
-    tr_tax_base numeric(18,2),
-    tr_shipping_base numeric(18,2),
-    ti_currency character(3),
-    ti_price_base numeric(18,2),
-    base_currency character(3),
-    geo_timezone character varying(64),
-    mkt_clickid character varying(128),
-    mkt_network character varying(64),
-    etl_tags character varying(500),
-    dvce_sent_tstamp timestamp with time zone,
-    refr_domain_userid character varying(36),
-    refr_dvce_tstamp timestamp with time zone,
-    domain_sessionid character(36),
-    derived_tstamp timestamp with time zone,
-    event_vendor character varying(1000),
-    event_name character varying(1000),
-    event_format character varying(128),
-    event_version character varying(128),
-    event_fingerprint character varying(128),
-    true_tstamp timestamp with time zone
-);
-
-CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_16 (
-    id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
-    project_id integer NOT NULL,
-    platform character varying(255),
-    etl_tstamp timestamp with time zone,
-    collector_tstamp timestamp with time zone NOT NULL,
-    dvce_created_tstamp timestamp with time zone,
-    event character varying(128),
-    event_id character(36) NOT NULL,
-    txn_id integer,
-    name_tracker character varying(128),
-    v_tracker character varying(100),
-    v_collector character varying(100) NOT NULL,
-    v_etl character varying(100) NOT NULL,
-    user_id character varying(255),
-    user_ipaddress character varying(45),
-    user_fingerprint character varying(50),
-    domain_userid character varying(36),
-    domain_sessionidx smallint,
-    network_userid character varying(38),
-    geo_country character(2),
-    geo_region character(3),
-    geo_city character varying(75),
-    geo_zipcode character varying(15),
-    geo_latitude double precision,
-    geo_longitude double precision,
-    geo_region_name character varying(100),
-    ip_isp character varying(100),
-    ip_organization character varying(100),
-    ip_domain character varying(100),
-    ip_netspeed character varying(100),
-    page_url text,
-    page_title character varying(2000),
-    page_referrer text,
-    page_urlscheme character varying(16),
-    page_urlhost character varying(255),
-    page_urlport integer,
-    page_urlpath character varying(3000),
-    page_urlquery character varying(6000),
-    page_urlfragment character varying(3000),
-    refr_urlscheme character varying(16),
-    refr_urlhost character varying(255),
-    refr_urlport integer,
-    refr_urlpath character varying(6000),
-    refr_urlquery character varying(6000),
-    refr_urlfragment character varying(3000),
-    refr_medium character varying(25),
-    refr_source character varying(50),
-    refr_term character varying(255),
-    mkt_medium character varying(255),
-    mkt_source character varying(255),
-    mkt_term character varying(255),
-    mkt_content character varying(500),
-    mkt_campaign character varying(255),
-    se_category character varying(1000),
-    se_action character varying(1000),
-    se_label character varying(1000),
-    se_property character varying(1000),
-    se_value double precision,
-    tr_orderid character varying(255),
-    tr_affiliation character varying(255),
-    tr_total numeric(18,2),
-    tr_tax numeric(18,2),
-    tr_shipping numeric(18,2),
-    tr_city character varying(255),
-    tr_state character varying(255),
-    tr_country character varying(255),
-    ti_orderid character varying(255),
-    ti_sku character varying(255),
-    ti_name character varying(255),
-    ti_category character varying(255),
-    ti_price numeric(18,2),
-    ti_quantity integer,
-    pp_xoffset_min integer,
-    pp_xoffset_max integer,
-    pp_yoffset_min integer,
-    pp_yoffset_max integer,
-    useragent character varying(1000),
-    br_name character varying(50),
-    br_family character varying(50),
-    br_version character varying(50),
-    br_type character varying(50),
-    br_renderengine character varying(50),
-    br_lang character varying(255),
-    br_features_pdf boolean,
-    br_features_flash boolean,
-    br_features_java boolean,
-    br_features_director boolean,
-    br_features_quicktime boolean,
-    br_features_realplayer boolean,
-    br_features_windowsmedia boolean,
-    br_features_gears boolean,
-    br_features_silverlight boolean,
-    br_cookies boolean,
-    br_colordepth character varying(12),
-    br_viewwidth integer,
-    br_viewheight integer,
-    os_name character varying(50),
-    os_family character varying(50),
-    os_manufacturer character varying(50),
-    os_timezone character varying(50),
-    dvce_type character varying(50),
-    dvce_ismobile boolean,
-    dvce_screenwidth integer,
-    dvce_screenheight integer,
-    doc_charset character varying(128),
-    doc_width integer,
-    doc_height integer,
-    tr_currency character(3),
-    tr_total_base numeric(18,2),
-    tr_tax_base numeric(18,2),
-    tr_shipping_base numeric(18,2),
-    ti_currency character(3),
-    ti_price_base numeric(18,2),
-    base_currency character(3),
-    geo_timezone character varying(64),
-    mkt_clickid character varying(128),
-    mkt_network character varying(64),
-    etl_tags character varying(500),
-    dvce_sent_tstamp timestamp with time zone,
-    refr_domain_userid character varying(36),
-    refr_dvce_tstamp timestamp with time zone,
-    domain_sessionid character(36),
-    derived_tstamp timestamp with time zone,
-    event_vendor character varying(1000),
-    event_name character varying(1000),
-    event_format character varying(128),
-    event_version character varying(128),
-    event_fingerprint character varying(128),
-    true_tstamp timestamp with time zone
-);
-
-CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_17 (
-    id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
-    project_id integer NOT NULL,
-    platform character varying(255),
-    etl_tstamp timestamp with time zone,
-    collector_tstamp timestamp with time zone NOT NULL,
-    dvce_created_tstamp timestamp with time zone,
-    event character varying(128),
-    event_id character(36) NOT NULL,
-    txn_id integer,
-    name_tracker character varying(128),
-    v_tracker character varying(100),
-    v_collector character varying(100) NOT NULL,
-    v_etl character varying(100) NOT NULL,
-    user_id character varying(255),
-    user_ipaddress character varying(45),
-    user_fingerprint character varying(50),
-    domain_userid character varying(36),
-    domain_sessionidx smallint,
-    network_userid character varying(38),
-    geo_country character(2),
-    geo_region character(3),
-    geo_city character varying(75),
-    geo_zipcode character varying(15),
-    geo_latitude double precision,
-    geo_longitude double precision,
-    geo_region_name character varying(100),
-    ip_isp character varying(100),
-    ip_organization character varying(100),
-    ip_domain character varying(100),
-    ip_netspeed character varying(100),
-    page_url text,
-    page_title character varying(2000),
-    page_referrer text,
-    page_urlscheme character varying(16),
-    page_urlhost character varying(255),
-    page_urlport integer,
-    page_urlpath character varying(3000),
-    page_urlquery character varying(6000),
-    page_urlfragment character varying(3000),
-    refr_urlscheme character varying(16),
-    refr_urlhost character varying(255),
-    refr_urlport integer,
-    refr_urlpath character varying(6000),
-    refr_urlquery character varying(6000),
-    refr_urlfragment character varying(3000),
-    refr_medium character varying(25),
-    refr_source character varying(50),
-    refr_term character varying(255),
-    mkt_medium character varying(255),
-    mkt_source character varying(255),
-    mkt_term character varying(255),
-    mkt_content character varying(500),
-    mkt_campaign character varying(255),
-    se_category character varying(1000),
-    se_action character varying(1000),
-    se_label character varying(1000),
-    se_property character varying(1000),
-    se_value double precision,
-    tr_orderid character varying(255),
-    tr_affiliation character varying(255),
-    tr_total numeric(18,2),
-    tr_tax numeric(18,2),
-    tr_shipping numeric(18,2),
-    tr_city character varying(255),
-    tr_state character varying(255),
-    tr_country character varying(255),
-    ti_orderid character varying(255),
-    ti_sku character varying(255),
-    ti_name character varying(255),
-    ti_category character varying(255),
-    ti_price numeric(18,2),
-    ti_quantity integer,
-    pp_xoffset_min integer,
-    pp_xoffset_max integer,
-    pp_yoffset_min integer,
-    pp_yoffset_max integer,
-    useragent character varying(1000),
-    br_name character varying(50),
-    br_family character varying(50),
-    br_version character varying(50),
-    br_type character varying(50),
-    br_renderengine character varying(50),
-    br_lang character varying(255),
-    br_features_pdf boolean,
-    br_features_flash boolean,
-    br_features_java boolean,
-    br_features_director boolean,
-    br_features_quicktime boolean,
-    br_features_realplayer boolean,
-    br_features_windowsmedia boolean,
-    br_features_gears boolean,
-    br_features_silverlight boolean,
-    br_cookies boolean,
-    br_colordepth character varying(12),
-    br_viewwidth integer,
-    br_viewheight integer,
-    os_name character varying(50),
-    os_family character varying(50),
-    os_manufacturer character varying(50),
-    os_timezone character varying(50),
-    dvce_type character varying(50),
-    dvce_ismobile boolean,
-    dvce_screenwidth integer,
-    dvce_screenheight integer,
-    doc_charset character varying(128),
-    doc_width integer,
-    doc_height integer,
-    tr_currency character(3),
-    tr_total_base numeric(18,2),
-    tr_tax_base numeric(18,2),
-    tr_shipping_base numeric(18,2),
-    ti_currency character(3),
-    ti_price_base numeric(18,2),
-    base_currency character(3),
-    geo_timezone character varying(64),
-    mkt_clickid character varying(128),
-    mkt_network character varying(64),
-    etl_tags character varying(500),
-    dvce_sent_tstamp timestamp with time zone,
-    refr_domain_userid character varying(36),
-    refr_dvce_tstamp timestamp with time zone,
-    domain_sessionid character(36),
-    derived_tstamp timestamp with time zone,
-    event_vendor character varying(1000),
-    event_name character varying(1000),
-    event_format character varying(128),
-    event_version character varying(128),
-    event_fingerprint character varying(128),
-    true_tstamp timestamp with time zone
-);
-
-CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_18 (
-    id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
-    project_id integer NOT NULL,
-    platform character varying(255),
-    etl_tstamp timestamp with time zone,
-    collector_tstamp timestamp with time zone NOT NULL,
-    dvce_created_tstamp timestamp with time zone,
-    event character varying(128),
-    event_id character(36) NOT NULL,
-    txn_id integer,
-    name_tracker character varying(128),
-    v_tracker character varying(100),
-    v_collector character varying(100) NOT NULL,
-    v_etl character varying(100) NOT NULL,
-    user_id character varying(255),
-    user_ipaddress character varying(45),
-    user_fingerprint character varying(50),
-    domain_userid character varying(36),
-    domain_sessionidx smallint,
-    network_userid character varying(38),
-    geo_country character(2),
-    geo_region character(3),
-    geo_city character varying(75),
-    geo_zipcode character varying(15),
-    geo_latitude double precision,
-    geo_longitude double precision,
-    geo_region_name character varying(100),
-    ip_isp character varying(100),
-    ip_organization character varying(100),
-    ip_domain character varying(100),
-    ip_netspeed character varying(100),
-    page_url text,
-    page_title character varying(2000),
-    page_referrer text,
-    page_urlscheme character varying(16),
-    page_urlhost character varying(255),
-    page_urlport integer,
-    page_urlpath character varying(3000),
-    page_urlquery character varying(6000),
-    page_urlfragment character varying(3000),
-    refr_urlscheme character varying(16),
-    refr_urlhost character varying(255),
-    refr_urlport integer,
-    refr_urlpath character varying(6000),
-    refr_urlquery character varying(6000),
-    refr_urlfragment character varying(3000),
-    refr_medium character varying(25),
-    refr_source character varying(50),
-    refr_term character varying(255),
-    mkt_medium character varying(255),
-    mkt_source character varying(255),
-    mkt_term character varying(255),
-    mkt_content character varying(500),
-    mkt_campaign character varying(255),
-    se_category character varying(1000),
-    se_action character varying(1000),
-    se_label character varying(1000),
-    se_property character varying(1000),
-    se_value double precision,
-    tr_orderid character varying(255),
-    tr_affiliation character varying(255),
-    tr_total numeric(18,2),
-    tr_tax numeric(18,2),
-    tr_shipping numeric(18,2),
-    tr_city character varying(255),
-    tr_state character varying(255),
-    tr_country character varying(255),
-    ti_orderid character varying(255),
-    ti_sku character varying(255),
-    ti_name character varying(255),
-    ti_category character varying(255),
-    ti_price numeric(18,2),
-    ti_quantity integer,
-    pp_xoffset_min integer,
-    pp_xoffset_max integer,
-    pp_yoffset_min integer,
-    pp_yoffset_max integer,
-    useragent character varying(1000),
-    br_name character varying(50),
-    br_family character varying(50),
-    br_version character varying(50),
-    br_type character varying(50),
-    br_renderengine character varying(50),
-    br_lang character varying(255),
-    br_features_pdf boolean,
-    br_features_flash boolean,
-    br_features_java boolean,
-    br_features_director boolean,
-    br_features_quicktime boolean,
-    br_features_realplayer boolean,
-    br_features_windowsmedia boolean,
-    br_features_gears boolean,
-    br_features_silverlight boolean,
-    br_cookies boolean,
-    br_colordepth character varying(12),
-    br_viewwidth integer,
-    br_viewheight integer,
-    os_name character varying(50),
-    os_family character varying(50),
-    os_manufacturer character varying(50),
-    os_timezone character varying(50),
-    dvce_type character varying(50),
-    dvce_ismobile boolean,
-    dvce_screenwidth integer,
-    dvce_screenheight integer,
-    doc_charset character varying(128),
-    doc_width integer,
-    doc_height integer,
-    tr_currency character(3),
-    tr_total_base numeric(18,2),
-    tr_tax_base numeric(18,2),
-    tr_shipping_base numeric(18,2),
-    ti_currency character(3),
-    ti_price_base numeric(18,2),
-    base_currency character(3),
-    geo_timezone character varying(64),
-    mkt_clickid character varying(128),
-    mkt_network character varying(64),
-    etl_tags character varying(500),
-    dvce_sent_tstamp timestamp with time zone,
-    refr_domain_userid character varying(36),
-    refr_dvce_tstamp timestamp with time zone,
-    domain_sessionid character(36),
-    derived_tstamp timestamp with time zone,
-    event_vendor character varying(1000),
-    event_name character varying(1000),
-    event_format character varying(128),
-    event_version character varying(128),
-    event_fingerprint character varying(128),
-    true_tstamp timestamp with time zone
-);
-
-CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_19 (
-    id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
-    project_id integer NOT NULL,
-    platform character varying(255),
-    etl_tstamp timestamp with time zone,
-    collector_tstamp timestamp with time zone NOT NULL,
-    dvce_created_tstamp timestamp with time zone,
-    event character varying(128),
-    event_id character(36) NOT NULL,
-    txn_id integer,
-    name_tracker character varying(128),
-    v_tracker character varying(100),
-    v_collector character varying(100) NOT NULL,
-    v_etl character varying(100) NOT NULL,
-    user_id character varying(255),
-    user_ipaddress character varying(45),
-    user_fingerprint character varying(50),
-    domain_userid character varying(36),
-    domain_sessionidx smallint,
-    network_userid character varying(38),
-    geo_country character(2),
-    geo_region character(3),
-    geo_city character varying(75),
-    geo_zipcode character varying(15),
-    geo_latitude double precision,
-    geo_longitude double precision,
-    geo_region_name character varying(100),
-    ip_isp character varying(100),
-    ip_organization character varying(100),
-    ip_domain character varying(100),
-    ip_netspeed character varying(100),
-    page_url text,
-    page_title character varying(2000),
-    page_referrer text,
-    page_urlscheme character varying(16),
-    page_urlhost character varying(255),
-    page_urlport integer,
-    page_urlpath character varying(3000),
-    page_urlquery character varying(6000),
-    page_urlfragment character varying(3000),
-    refr_urlscheme character varying(16),
-    refr_urlhost character varying(255),
-    refr_urlport integer,
-    refr_urlpath character varying(6000),
-    refr_urlquery character varying(6000),
-    refr_urlfragment character varying(3000),
-    refr_medium character varying(25),
-    refr_source character varying(50),
-    refr_term character varying(255),
-    mkt_medium character varying(255),
-    mkt_source character varying(255),
-    mkt_term character varying(255),
-    mkt_content character varying(500),
-    mkt_campaign character varying(255),
-    se_category character varying(1000),
-    se_action character varying(1000),
-    se_label character varying(1000),
-    se_property character varying(1000),
-    se_value double precision,
-    tr_orderid character varying(255),
-    tr_affiliation character varying(255),
-    tr_total numeric(18,2),
-    tr_tax numeric(18,2),
-    tr_shipping numeric(18,2),
-    tr_city character varying(255),
-    tr_state character varying(255),
-    tr_country character varying(255),
-    ti_orderid character varying(255),
-    ti_sku character varying(255),
-    ti_name character varying(255),
-    ti_category character varying(255),
-    ti_price numeric(18,2),
-    ti_quantity integer,
-    pp_xoffset_min integer,
-    pp_xoffset_max integer,
-    pp_yoffset_min integer,
-    pp_yoffset_max integer,
-    useragent character varying(1000),
-    br_name character varying(50),
-    br_family character varying(50),
-    br_version character varying(50),
-    br_type character varying(50),
-    br_renderengine character varying(50),
-    br_lang character varying(255),
-    br_features_pdf boolean,
-    br_features_flash boolean,
-    br_features_java boolean,
-    br_features_director boolean,
-    br_features_quicktime boolean,
-    br_features_realplayer boolean,
-    br_features_windowsmedia boolean,
-    br_features_gears boolean,
-    br_features_silverlight boolean,
-    br_cookies boolean,
-    br_colordepth character varying(12),
-    br_viewwidth integer,
-    br_viewheight integer,
-    os_name character varying(50),
-    os_family character varying(50),
-    os_manufacturer character varying(50),
-    os_timezone character varying(50),
-    dvce_type character varying(50),
-    dvce_ismobile boolean,
-    dvce_screenwidth integer,
-    dvce_screenheight integer,
-    doc_charset character varying(128),
-    doc_width integer,
-    doc_height integer,
-    tr_currency character(3),
-    tr_total_base numeric(18,2),
-    tr_tax_base numeric(18,2),
-    tr_shipping_base numeric(18,2),
-    ti_currency character(3),
-    ti_price_base numeric(18,2),
-    base_currency character(3),
-    geo_timezone character varying(64),
-    mkt_clickid character varying(128),
-    mkt_network character varying(64),
-    etl_tags character varying(500),
-    dvce_sent_tstamp timestamp with time zone,
-    refr_domain_userid character varying(36),
-    refr_dvce_tstamp timestamp with time zone,
-    domain_sessionid character(36),
-    derived_tstamp timestamp with time zone,
-    event_vendor character varying(1000),
-    event_name character varying(1000),
-    event_format character varying(128),
-    event_version character varying(128),
-    event_fingerprint character varying(128),
-    true_tstamp timestamp with time zone
-);
-
-CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_20 (
-    id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
-    project_id integer NOT NULL,
-    platform character varying(255),
-    etl_tstamp timestamp with time zone,
-    collector_tstamp timestamp with time zone NOT NULL,
-    dvce_created_tstamp timestamp with time zone,
-    event character varying(128),
-    event_id character(36) NOT NULL,
-    txn_id integer,
-    name_tracker character varying(128),
-    v_tracker character varying(100),
-    v_collector character varying(100) NOT NULL,
-    v_etl character varying(100) NOT NULL,
-    user_id character varying(255),
-    user_ipaddress character varying(45),
-    user_fingerprint character varying(50),
-    domain_userid character varying(36),
-    domain_sessionidx smallint,
-    network_userid character varying(38),
-    geo_country character(2),
-    geo_region character(3),
-    geo_city character varying(75),
-    geo_zipcode character varying(15),
-    geo_latitude double precision,
-    geo_longitude double precision,
-    geo_region_name character varying(100),
-    ip_isp character varying(100),
-    ip_organization character varying(100),
-    ip_domain character varying(100),
-    ip_netspeed character varying(100),
-    page_url text,
-    page_title character varying(2000),
-    page_referrer text,
-    page_urlscheme character varying(16),
-    page_urlhost character varying(255),
-    page_urlport integer,
-    page_urlpath character varying(3000),
-    page_urlquery character varying(6000),
-    page_urlfragment character varying(3000),
-    refr_urlscheme character varying(16),
-    refr_urlhost character varying(255),
-    refr_urlport integer,
-    refr_urlpath character varying(6000),
-    refr_urlquery character varying(6000),
-    refr_urlfragment character varying(3000),
-    refr_medium character varying(25),
-    refr_source character varying(50),
-    refr_term character varying(255),
-    mkt_medium character varying(255),
-    mkt_source character varying(255),
-    mkt_term character varying(255),
-    mkt_content character varying(500),
-    mkt_campaign character varying(255),
-    se_category character varying(1000),
-    se_action character varying(1000),
-    se_label character varying(1000),
-    se_property character varying(1000),
-    se_value double precision,
-    tr_orderid character varying(255),
-    tr_affiliation character varying(255),
-    tr_total numeric(18,2),
-    tr_tax numeric(18,2),
-    tr_shipping numeric(18,2),
-    tr_city character varying(255),
-    tr_state character varying(255),
-    tr_country character varying(255),
-    ti_orderid character varying(255),
-    ti_sku character varying(255),
-    ti_name character varying(255),
-    ti_category character varying(255),
-    ti_price numeric(18,2),
-    ti_quantity integer,
-    pp_xoffset_min integer,
-    pp_xoffset_max integer,
-    pp_yoffset_min integer,
-    pp_yoffset_max integer,
-    useragent character varying(1000),
-    br_name character varying(50),
-    br_family character varying(50),
-    br_version character varying(50),
-    br_type character varying(50),
-    br_renderengine character varying(50),
-    br_lang character varying(255),
-    br_features_pdf boolean,
-    br_features_flash boolean,
-    br_features_java boolean,
-    br_features_director boolean,
-    br_features_quicktime boolean,
-    br_features_realplayer boolean,
-    br_features_windowsmedia boolean,
-    br_features_gears boolean,
-    br_features_silverlight boolean,
-    br_cookies boolean,
-    br_colordepth character varying(12),
-    br_viewwidth integer,
-    br_viewheight integer,
-    os_name character varying(50),
-    os_family character varying(50),
-    os_manufacturer character varying(50),
-    os_timezone character varying(50),
-    dvce_type character varying(50),
-    dvce_ismobile boolean,
-    dvce_screenwidth integer,
-    dvce_screenheight integer,
-    doc_charset character varying(128),
-    doc_width integer,
-    doc_height integer,
-    tr_currency character(3),
-    tr_total_base numeric(18,2),
-    tr_tax_base numeric(18,2),
-    tr_shipping_base numeric(18,2),
-    ti_currency character(3),
-    ti_price_base numeric(18,2),
-    base_currency character(3),
-    geo_timezone character varying(64),
-    mkt_clickid character varying(128),
-    mkt_network character varying(64),
-    etl_tags character varying(500),
-    dvce_sent_tstamp timestamp with time zone,
-    refr_domain_userid character varying(36),
-    refr_dvce_tstamp timestamp with time zone,
-    domain_sessionid character(36),
-    derived_tstamp timestamp with time zone,
-    event_vendor character varying(1000),
-    event_name character varying(1000),
-    event_format character varying(128),
-    event_version character varying(128),
-    event_fingerprint character varying(128),
-    true_tstamp timestamp with time zone
-);
-
-CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_21 (
-    id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
-    project_id integer NOT NULL,
-    platform character varying(255),
-    etl_tstamp timestamp with time zone,
-    collector_tstamp timestamp with time zone NOT NULL,
-    dvce_created_tstamp timestamp with time zone,
-    event character varying(128),
-    event_id character(36) NOT NULL,
-    txn_id integer,
-    name_tracker character varying(128),
-    v_tracker character varying(100),
-    v_collector character varying(100) NOT NULL,
-    v_etl character varying(100) NOT NULL,
-    user_id character varying(255),
-    user_ipaddress character varying(45),
-    user_fingerprint character varying(50),
-    domain_userid character varying(36),
-    domain_sessionidx smallint,
-    network_userid character varying(38),
-    geo_country character(2),
-    geo_region character(3),
-    geo_city character varying(75),
-    geo_zipcode character varying(15),
-    geo_latitude double precision,
-    geo_longitude double precision,
-    geo_region_name character varying(100),
-    ip_isp character varying(100),
-    ip_organization character varying(100),
-    ip_domain character varying(100),
-    ip_netspeed character varying(100),
-    page_url text,
-    page_title character varying(2000),
-    page_referrer text,
-    page_urlscheme character varying(16),
-    page_urlhost character varying(255),
-    page_urlport integer,
-    page_urlpath character varying(3000),
-    page_urlquery character varying(6000),
-    page_urlfragment character varying(3000),
-    refr_urlscheme character varying(16),
-    refr_urlhost character varying(255),
-    refr_urlport integer,
-    refr_urlpath character varying(6000),
-    refr_urlquery character varying(6000),
-    refr_urlfragment character varying(3000),
-    refr_medium character varying(25),
-    refr_source character varying(50),
-    refr_term character varying(255),
-    mkt_medium character varying(255),
-    mkt_source character varying(255),
-    mkt_term character varying(255),
-    mkt_content character varying(500),
-    mkt_campaign character varying(255),
-    se_category character varying(1000),
-    se_action character varying(1000),
-    se_label character varying(1000),
-    se_property character varying(1000),
-    se_value double precision,
-    tr_orderid character varying(255),
-    tr_affiliation character varying(255),
-    tr_total numeric(18,2),
-    tr_tax numeric(18,2),
-    tr_shipping numeric(18,2),
-    tr_city character varying(255),
-    tr_state character varying(255),
-    tr_country character varying(255),
-    ti_orderid character varying(255),
-    ti_sku character varying(255),
-    ti_name character varying(255),
-    ti_category character varying(255),
-    ti_price numeric(18,2),
-    ti_quantity integer,
-    pp_xoffset_min integer,
-    pp_xoffset_max integer,
-    pp_yoffset_min integer,
-    pp_yoffset_max integer,
-    useragent character varying(1000),
-    br_name character varying(50),
-    br_family character varying(50),
-    br_version character varying(50),
-    br_type character varying(50),
-    br_renderengine character varying(50),
-    br_lang character varying(255),
-    br_features_pdf boolean,
-    br_features_flash boolean,
-    br_features_java boolean,
-    br_features_director boolean,
-    br_features_quicktime boolean,
-    br_features_realplayer boolean,
-    br_features_windowsmedia boolean,
-    br_features_gears boolean,
-    br_features_silverlight boolean,
-    br_cookies boolean,
-    br_colordepth character varying(12),
-    br_viewwidth integer,
-    br_viewheight integer,
-    os_name character varying(50),
-    os_family character varying(50),
-    os_manufacturer character varying(50),
-    os_timezone character varying(50),
-    dvce_type character varying(50),
-    dvce_ismobile boolean,
-    dvce_screenwidth integer,
-    dvce_screenheight integer,
-    doc_charset character varying(128),
-    doc_width integer,
-    doc_height integer,
-    tr_currency character(3),
-    tr_total_base numeric(18,2),
-    tr_tax_base numeric(18,2),
-    tr_shipping_base numeric(18,2),
-    ti_currency character(3),
-    ti_price_base numeric(18,2),
-    base_currency character(3),
-    geo_timezone character varying(64),
-    mkt_clickid character varying(128),
-    mkt_network character varying(64),
-    etl_tags character varying(500),
-    dvce_sent_tstamp timestamp with time zone,
-    refr_domain_userid character varying(36),
-    refr_dvce_tstamp timestamp with time zone,
-    domain_sessionid character(36),
-    derived_tstamp timestamp with time zone,
-    event_vendor character varying(1000),
-    event_name character varying(1000),
-    event_format character varying(128),
-    event_version character varying(128),
-    event_fingerprint character varying(128),
-    true_tstamp timestamp with time zone
-);
-
-CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_22 (
-    id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
-    project_id integer NOT NULL,
-    platform character varying(255),
-    etl_tstamp timestamp with time zone,
-    collector_tstamp timestamp with time zone NOT NULL,
-    dvce_created_tstamp timestamp with time zone,
-    event character varying(128),
-    event_id character(36) NOT NULL,
-    txn_id integer,
-    name_tracker character varying(128),
-    v_tracker character varying(100),
-    v_collector character varying(100) NOT NULL,
-    v_etl character varying(100) NOT NULL,
-    user_id character varying(255),
-    user_ipaddress character varying(45),
-    user_fingerprint character varying(50),
-    domain_userid character varying(36),
-    domain_sessionidx smallint,
-    network_userid character varying(38),
-    geo_country character(2),
-    geo_region character(3),
-    geo_city character varying(75),
-    geo_zipcode character varying(15),
-    geo_latitude double precision,
-    geo_longitude double precision,
-    geo_region_name character varying(100),
-    ip_isp character varying(100),
-    ip_organization character varying(100),
-    ip_domain character varying(100),
-    ip_netspeed character varying(100),
-    page_url text,
-    page_title character varying(2000),
-    page_referrer text,
-    page_urlscheme character varying(16),
-    page_urlhost character varying(255),
-    page_urlport integer,
-    page_urlpath character varying(3000),
-    page_urlquery character varying(6000),
-    page_urlfragment character varying(3000),
-    refr_urlscheme character varying(16),
-    refr_urlhost character varying(255),
-    refr_urlport integer,
-    refr_urlpath character varying(6000),
-    refr_urlquery character varying(6000),
-    refr_urlfragment character varying(3000),
-    refr_medium character varying(25),
-    refr_source character varying(50),
-    refr_term character varying(255),
-    mkt_medium character varying(255),
-    mkt_source character varying(255),
-    mkt_term character varying(255),
-    mkt_content character varying(500),
-    mkt_campaign character varying(255),
-    se_category character varying(1000),
-    se_action character varying(1000),
-    se_label character varying(1000),
-    se_property character varying(1000),
-    se_value double precision,
-    tr_orderid character varying(255),
-    tr_affiliation character varying(255),
-    tr_total numeric(18,2),
-    tr_tax numeric(18,2),
-    tr_shipping numeric(18,2),
-    tr_city character varying(255),
-    tr_state character varying(255),
-    tr_country character varying(255),
-    ti_orderid character varying(255),
-    ti_sku character varying(255),
-    ti_name character varying(255),
-    ti_category character varying(255),
-    ti_price numeric(18,2),
-    ti_quantity integer,
-    pp_xoffset_min integer,
-    pp_xoffset_max integer,
-    pp_yoffset_min integer,
-    pp_yoffset_max integer,
-    useragent character varying(1000),
-    br_name character varying(50),
-    br_family character varying(50),
-    br_version character varying(50),
-    br_type character varying(50),
-    br_renderengine character varying(50),
-    br_lang character varying(255),
-    br_features_pdf boolean,
-    br_features_flash boolean,
-    br_features_java boolean,
-    br_features_director boolean,
-    br_features_quicktime boolean,
-    br_features_realplayer boolean,
-    br_features_windowsmedia boolean,
-    br_features_gears boolean,
-    br_features_silverlight boolean,
-    br_cookies boolean,
-    br_colordepth character varying(12),
-    br_viewwidth integer,
-    br_viewheight integer,
-    os_name character varying(50),
-    os_family character varying(50),
-    os_manufacturer character varying(50),
-    os_timezone character varying(50),
-    dvce_type character varying(50),
-    dvce_ismobile boolean,
-    dvce_screenwidth integer,
-    dvce_screenheight integer,
-    doc_charset character varying(128),
-    doc_width integer,
-    doc_height integer,
-    tr_currency character(3),
-    tr_total_base numeric(18,2),
-    tr_tax_base numeric(18,2),
-    tr_shipping_base numeric(18,2),
-    ti_currency character(3),
-    ti_price_base numeric(18,2),
-    base_currency character(3),
-    geo_timezone character varying(64),
-    mkt_clickid character varying(128),
-    mkt_network character varying(64),
-    etl_tags character varying(500),
-    dvce_sent_tstamp timestamp with time zone,
-    refr_domain_userid character varying(36),
-    refr_dvce_tstamp timestamp with time zone,
-    domain_sessionid character(36),
-    derived_tstamp timestamp with time zone,
-    event_vendor character varying(1000),
-    event_name character varying(1000),
-    event_format character varying(128),
-    event_version character varying(128),
-    event_fingerprint character varying(128),
-    true_tstamp timestamp with time zone
-);
-
-CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_23 (
-    id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
-    project_id integer NOT NULL,
-    platform character varying(255),
-    etl_tstamp timestamp with time zone,
-    collector_tstamp timestamp with time zone NOT NULL,
-    dvce_created_tstamp timestamp with time zone,
-    event character varying(128),
-    event_id character(36) NOT NULL,
-    txn_id integer,
-    name_tracker character varying(128),
-    v_tracker character varying(100),
-    v_collector character varying(100) NOT NULL,
-    v_etl character varying(100) NOT NULL,
-    user_id character varying(255),
-    user_ipaddress character varying(45),
-    user_fingerprint character varying(50),
-    domain_userid character varying(36),
-    domain_sessionidx smallint,
-    network_userid character varying(38),
-    geo_country character(2),
-    geo_region character(3),
-    geo_city character varying(75),
-    geo_zipcode character varying(15),
-    geo_latitude double precision,
-    geo_longitude double precision,
-    geo_region_name character varying(100),
-    ip_isp character varying(100),
-    ip_organization character varying(100),
-    ip_domain character varying(100),
-    ip_netspeed character varying(100),
-    page_url text,
-    page_title character varying(2000),
-    page_referrer text,
-    page_urlscheme character varying(16),
-    page_urlhost character varying(255),
-    page_urlport integer,
-    page_urlpath character varying(3000),
-    page_urlquery character varying(6000),
-    page_urlfragment character varying(3000),
-    refr_urlscheme character varying(16),
-    refr_urlhost character varying(255),
-    refr_urlport integer,
-    refr_urlpath character varying(6000),
-    refr_urlquery character varying(6000),
-    refr_urlfragment character varying(3000),
-    refr_medium character varying(25),
-    refr_source character varying(50),
-    refr_term character varying(255),
-    mkt_medium character varying(255),
-    mkt_source character varying(255),
-    mkt_term character varying(255),
-    mkt_content character varying(500),
-    mkt_campaign character varying(255),
-    se_category character varying(1000),
-    se_action character varying(1000),
-    se_label character varying(1000),
-    se_property character varying(1000),
-    se_value double precision,
-    tr_orderid character varying(255),
-    tr_affiliation character varying(255),
-    tr_total numeric(18,2),
-    tr_tax numeric(18,2),
-    tr_shipping numeric(18,2),
-    tr_city character varying(255),
-    tr_state character varying(255),
-    tr_country character varying(255),
-    ti_orderid character varying(255),
-    ti_sku character varying(255),
-    ti_name character varying(255),
-    ti_category character varying(255),
-    ti_price numeric(18,2),
-    ti_quantity integer,
-    pp_xoffset_min integer,
-    pp_xoffset_max integer,
-    pp_yoffset_min integer,
-    pp_yoffset_max integer,
-    useragent character varying(1000),
-    br_name character varying(50),
-    br_family character varying(50),
-    br_version character varying(50),
-    br_type character varying(50),
-    br_renderengine character varying(50),
-    br_lang character varying(255),
-    br_features_pdf boolean,
-    br_features_flash boolean,
-    br_features_java boolean,
-    br_features_director boolean,
-    br_features_quicktime boolean,
-    br_features_realplayer boolean,
-    br_features_windowsmedia boolean,
-    br_features_gears boolean,
-    br_features_silverlight boolean,
-    br_cookies boolean,
-    br_colordepth character varying(12),
-    br_viewwidth integer,
-    br_viewheight integer,
-    os_name character varying(50),
-    os_family character varying(50),
-    os_manufacturer character varying(50),
-    os_timezone character varying(50),
-    dvce_type character varying(50),
-    dvce_ismobile boolean,
-    dvce_screenwidth integer,
-    dvce_screenheight integer,
-    doc_charset character varying(128),
-    doc_width integer,
-    doc_height integer,
-    tr_currency character(3),
-    tr_total_base numeric(18,2),
-    tr_tax_base numeric(18,2),
-    tr_shipping_base numeric(18,2),
-    ti_currency character(3),
-    ti_price_base numeric(18,2),
-    base_currency character(3),
-    geo_timezone character varying(64),
-    mkt_clickid character varying(128),
-    mkt_network character varying(64),
-    etl_tags character varying(500),
-    dvce_sent_tstamp timestamp with time zone,
-    refr_domain_userid character varying(36),
-    refr_dvce_tstamp timestamp with time zone,
-    domain_sessionid character(36),
-    derived_tstamp timestamp with time zone,
-    event_vendor character varying(1000),
-    event_name character varying(1000),
-    event_format character varying(128),
-    event_version character varying(128),
-    event_fingerprint character varying(128),
-    true_tstamp timestamp with time zone
-);
-
-CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_24 (
-    id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
-    project_id integer NOT NULL,
-    platform character varying(255),
-    etl_tstamp timestamp with time zone,
-    collector_tstamp timestamp with time zone NOT NULL,
-    dvce_created_tstamp timestamp with time zone,
-    event character varying(128),
-    event_id character(36) NOT NULL,
-    txn_id integer,
-    name_tracker character varying(128),
-    v_tracker character varying(100),
-    v_collector character varying(100) NOT NULL,
-    v_etl character varying(100) NOT NULL,
-    user_id character varying(255),
-    user_ipaddress character varying(45),
-    user_fingerprint character varying(50),
-    domain_userid character varying(36),
-    domain_sessionidx smallint,
-    network_userid character varying(38),
-    geo_country character(2),
-    geo_region character(3),
-    geo_city character varying(75),
-    geo_zipcode character varying(15),
-    geo_latitude double precision,
-    geo_longitude double precision,
-    geo_region_name character varying(100),
-    ip_isp character varying(100),
-    ip_organization character varying(100),
-    ip_domain character varying(100),
-    ip_netspeed character varying(100),
-    page_url text,
-    page_title character varying(2000),
-    page_referrer text,
-    page_urlscheme character varying(16),
-    page_urlhost character varying(255),
-    page_urlport integer,
-    page_urlpath character varying(3000),
-    page_urlquery character varying(6000),
-    page_urlfragment character varying(3000),
-    refr_urlscheme character varying(16),
-    refr_urlhost character varying(255),
-    refr_urlport integer,
-    refr_urlpath character varying(6000),
-    refr_urlquery character varying(6000),
-    refr_urlfragment character varying(3000),
-    refr_medium character varying(25),
-    refr_source character varying(50),
-    refr_term character varying(255),
-    mkt_medium character varying(255),
-    mkt_source character varying(255),
-    mkt_term character varying(255),
-    mkt_content character varying(500),
-    mkt_campaign character varying(255),
-    se_category character varying(1000),
-    se_action character varying(1000),
-    se_label character varying(1000),
-    se_property character varying(1000),
-    se_value double precision,
-    tr_orderid character varying(255),
-    tr_affiliation character varying(255),
-    tr_total numeric(18,2),
-    tr_tax numeric(18,2),
-    tr_shipping numeric(18,2),
-    tr_city character varying(255),
-    tr_state character varying(255),
-    tr_country character varying(255),
-    ti_orderid character varying(255),
-    ti_sku character varying(255),
-    ti_name character varying(255),
-    ti_category character varying(255),
-    ti_price numeric(18,2),
-    ti_quantity integer,
-    pp_xoffset_min integer,
-    pp_xoffset_max integer,
-    pp_yoffset_min integer,
-    pp_yoffset_max integer,
-    useragent character varying(1000),
-    br_name character varying(50),
-    br_family character varying(50),
-    br_version character varying(50),
-    br_type character varying(50),
-    br_renderengine character varying(50),
-    br_lang character varying(255),
-    br_features_pdf boolean,
-    br_features_flash boolean,
-    br_features_java boolean,
-    br_features_director boolean,
-    br_features_quicktime boolean,
-    br_features_realplayer boolean,
-    br_features_windowsmedia boolean,
-    br_features_gears boolean,
-    br_features_silverlight boolean,
-    br_cookies boolean,
-    br_colordepth character varying(12),
-    br_viewwidth integer,
-    br_viewheight integer,
-    os_name character varying(50),
-    os_family character varying(50),
-    os_manufacturer character varying(50),
-    os_timezone character varying(50),
-    dvce_type character varying(50),
-    dvce_ismobile boolean,
-    dvce_screenwidth integer,
-    dvce_screenheight integer,
-    doc_charset character varying(128),
-    doc_width integer,
-    doc_height integer,
-    tr_currency character(3),
-    tr_total_base numeric(18,2),
-    tr_tax_base numeric(18,2),
-    tr_shipping_base numeric(18,2),
-    ti_currency character(3),
-    ti_price_base numeric(18,2),
-    base_currency character(3),
-    geo_timezone character varying(64),
-    mkt_clickid character varying(128),
-    mkt_network character varying(64),
-    etl_tags character varying(500),
-    dvce_sent_tstamp timestamp with time zone,
-    refr_domain_userid character varying(36),
-    refr_dvce_tstamp timestamp with time zone,
-    domain_sessionid character(36),
-    derived_tstamp timestamp with time zone,
-    event_vendor character varying(1000),
-    event_name character varying(1000),
-    event_format character varying(128),
-    event_version character varying(128),
-    event_fingerprint character varying(128),
-    true_tstamp timestamp with time zone
-);
-
-CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_25 (
-    id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
-    project_id integer NOT NULL,
-    platform character varying(255),
-    etl_tstamp timestamp with time zone,
-    collector_tstamp timestamp with time zone NOT NULL,
-    dvce_created_tstamp timestamp with time zone,
-    event character varying(128),
-    event_id character(36) NOT NULL,
-    txn_id integer,
-    name_tracker character varying(128),
-    v_tracker character varying(100),
-    v_collector character varying(100) NOT NULL,
-    v_etl character varying(100) NOT NULL,
-    user_id character varying(255),
-    user_ipaddress character varying(45),
-    user_fingerprint character varying(50),
-    domain_userid character varying(36),
-    domain_sessionidx smallint,
-    network_userid character varying(38),
-    geo_country character(2),
-    geo_region character(3),
-    geo_city character varying(75),
-    geo_zipcode character varying(15),
-    geo_latitude double precision,
-    geo_longitude double precision,
-    geo_region_name character varying(100),
-    ip_isp character varying(100),
-    ip_organization character varying(100),
-    ip_domain character varying(100),
-    ip_netspeed character varying(100),
-    page_url text,
-    page_title character varying(2000),
-    page_referrer text,
-    page_urlscheme character varying(16),
-    page_urlhost character varying(255),
-    page_urlport integer,
-    page_urlpath character varying(3000),
-    page_urlquery character varying(6000),
-    page_urlfragment character varying(3000),
-    refr_urlscheme character varying(16),
-    refr_urlhost character varying(255),
-    refr_urlport integer,
-    refr_urlpath character varying(6000),
-    refr_urlquery character varying(6000),
-    refr_urlfragment character varying(3000),
-    refr_medium character varying(25),
-    refr_source character varying(50),
-    refr_term character varying(255),
-    mkt_medium character varying(255),
-    mkt_source character varying(255),
-    mkt_term character varying(255),
-    mkt_content character varying(500),
-    mkt_campaign character varying(255),
-    se_category character varying(1000),
-    se_action character varying(1000),
-    se_label character varying(1000),
-    se_property character varying(1000),
-    se_value double precision,
-    tr_orderid character varying(255),
-    tr_affiliation character varying(255),
-    tr_total numeric(18,2),
-    tr_tax numeric(18,2),
-    tr_shipping numeric(18,2),
-    tr_city character varying(255),
-    tr_state character varying(255),
-    tr_country character varying(255),
-    ti_orderid character varying(255),
-    ti_sku character varying(255),
-    ti_name character varying(255),
-    ti_category character varying(255),
-    ti_price numeric(18,2),
-    ti_quantity integer,
-    pp_xoffset_min integer,
-    pp_xoffset_max integer,
-    pp_yoffset_min integer,
-    pp_yoffset_max integer,
-    useragent character varying(1000),
-    br_name character varying(50),
-    br_family character varying(50),
-    br_version character varying(50),
-    br_type character varying(50),
-    br_renderengine character varying(50),
-    br_lang character varying(255),
-    br_features_pdf boolean,
-    br_features_flash boolean,
-    br_features_java boolean,
-    br_features_director boolean,
-    br_features_quicktime boolean,
-    br_features_realplayer boolean,
-    br_features_windowsmedia boolean,
-    br_features_gears boolean,
-    br_features_silverlight boolean,
-    br_cookies boolean,
-    br_colordepth character varying(12),
-    br_viewwidth integer,
-    br_viewheight integer,
-    os_name character varying(50),
-    os_family character varying(50),
-    os_manufacturer character varying(50),
-    os_timezone character varying(50),
-    dvce_type character varying(50),
-    dvce_ismobile boolean,
-    dvce_screenwidth integer,
-    dvce_screenheight integer,
-    doc_charset character varying(128),
-    doc_width integer,
-    doc_height integer,
-    tr_currency character(3),
-    tr_total_base numeric(18,2),
-    tr_tax_base numeric(18,2),
-    tr_shipping_base numeric(18,2),
-    ti_currency character(3),
-    ti_price_base numeric(18,2),
-    base_currency character(3),
-    geo_timezone character varying(64),
-    mkt_clickid character varying(128),
-    mkt_network character varying(64),
-    etl_tags character varying(500),
-    dvce_sent_tstamp timestamp with time zone,
-    refr_domain_userid character varying(36),
-    refr_dvce_tstamp timestamp with time zone,
-    domain_sessionid character(36),
-    derived_tstamp timestamp with time zone,
-    event_vendor character varying(1000),
-    event_name character varying(1000),
-    event_format character varying(128),
-    event_version character varying(128),
-    event_fingerprint character varying(128),
-    true_tstamp timestamp with time zone
-);
-
-CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_26 (
-    id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
-    project_id integer NOT NULL,
-    platform character varying(255),
-    etl_tstamp timestamp with time zone,
-    collector_tstamp timestamp with time zone NOT NULL,
-    dvce_created_tstamp timestamp with time zone,
-    event character varying(128),
-    event_id character(36) NOT NULL,
-    txn_id integer,
-    name_tracker character varying(128),
-    v_tracker character varying(100),
-    v_collector character varying(100) NOT NULL,
-    v_etl character varying(100) NOT NULL,
-    user_id character varying(255),
-    user_ipaddress character varying(45),
-    user_fingerprint character varying(50),
-    domain_userid character varying(36),
-    domain_sessionidx smallint,
-    network_userid character varying(38),
-    geo_country character(2),
-    geo_region character(3),
-    geo_city character varying(75),
-    geo_zipcode character varying(15),
-    geo_latitude double precision,
-    geo_longitude double precision,
-    geo_region_name character varying(100),
-    ip_isp character varying(100),
-    ip_organization character varying(100),
-    ip_domain character varying(100),
-    ip_netspeed character varying(100),
-    page_url text,
-    page_title character varying(2000),
-    page_referrer text,
-    page_urlscheme character varying(16),
-    page_urlhost character varying(255),
-    page_urlport integer,
-    page_urlpath character varying(3000),
-    page_urlquery character varying(6000),
-    page_urlfragment character varying(3000),
-    refr_urlscheme character varying(16),
-    refr_urlhost character varying(255),
-    refr_urlport integer,
-    refr_urlpath character varying(6000),
-    refr_urlquery character varying(6000),
-    refr_urlfragment character varying(3000),
-    refr_medium character varying(25),
-    refr_source character varying(50),
-    refr_term character varying(255),
-    mkt_medium character varying(255),
-    mkt_source character varying(255),
-    mkt_term character varying(255),
-    mkt_content character varying(500),
-    mkt_campaign character varying(255),
-    se_category character varying(1000),
-    se_action character varying(1000),
-    se_label character varying(1000),
-    se_property character varying(1000),
-    se_value double precision,
-    tr_orderid character varying(255),
-    tr_affiliation character varying(255),
-    tr_total numeric(18,2),
-    tr_tax numeric(18,2),
-    tr_shipping numeric(18,2),
-    tr_city character varying(255),
-    tr_state character varying(255),
-    tr_country character varying(255),
-    ti_orderid character varying(255),
-    ti_sku character varying(255),
-    ti_name character varying(255),
-    ti_category character varying(255),
-    ti_price numeric(18,2),
-    ti_quantity integer,
-    pp_xoffset_min integer,
-    pp_xoffset_max integer,
-    pp_yoffset_min integer,
-    pp_yoffset_max integer,
-    useragent character varying(1000),
-    br_name character varying(50),
-    br_family character varying(50),
-    br_version character varying(50),
-    br_type character varying(50),
-    br_renderengine character varying(50),
-    br_lang character varying(255),
-    br_features_pdf boolean,
-    br_features_flash boolean,
-    br_features_java boolean,
-    br_features_director boolean,
-    br_features_quicktime boolean,
-    br_features_realplayer boolean,
-    br_features_windowsmedia boolean,
-    br_features_gears boolean,
-    br_features_silverlight boolean,
-    br_cookies boolean,
-    br_colordepth character varying(12),
-    br_viewwidth integer,
-    br_viewheight integer,
-    os_name character varying(50),
-    os_family character varying(50),
-    os_manufacturer character varying(50),
-    os_timezone character varying(50),
-    dvce_type character varying(50),
-    dvce_ismobile boolean,
-    dvce_screenwidth integer,
-    dvce_screenheight integer,
-    doc_charset character varying(128),
-    doc_width integer,
-    doc_height integer,
-    tr_currency character(3),
-    tr_total_base numeric(18,2),
-    tr_tax_base numeric(18,2),
-    tr_shipping_base numeric(18,2),
-    ti_currency character(3),
-    ti_price_base numeric(18,2),
-    base_currency character(3),
-    geo_timezone character varying(64),
-    mkt_clickid character varying(128),
-    mkt_network character varying(64),
-    etl_tags character varying(500),
-    dvce_sent_tstamp timestamp with time zone,
-    refr_domain_userid character varying(36),
-    refr_dvce_tstamp timestamp with time zone,
-    domain_sessionid character(36),
-    derived_tstamp timestamp with time zone,
-    event_vendor character varying(1000),
-    event_name character varying(1000),
-    event_format character varying(128),
-    event_version character varying(128),
-    event_fingerprint character varying(128),
-    true_tstamp timestamp with time zone
-);
-
-CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_27 (
-    id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
-    project_id integer NOT NULL,
-    platform character varying(255),
-    etl_tstamp timestamp with time zone,
-    collector_tstamp timestamp with time zone NOT NULL,
-    dvce_created_tstamp timestamp with time zone,
-    event character varying(128),
-    event_id character(36) NOT NULL,
-    txn_id integer,
-    name_tracker character varying(128),
-    v_tracker character varying(100),
-    v_collector character varying(100) NOT NULL,
-    v_etl character varying(100) NOT NULL,
-    user_id character varying(255),
-    user_ipaddress character varying(45),
-    user_fingerprint character varying(50),
-    domain_userid character varying(36),
-    domain_sessionidx smallint,
-    network_userid character varying(38),
-    geo_country character(2),
-    geo_region character(3),
-    geo_city character varying(75),
-    geo_zipcode character varying(15),
-    geo_latitude double precision,
-    geo_longitude double precision,
-    geo_region_name character varying(100),
-    ip_isp character varying(100),
-    ip_organization character varying(100),
-    ip_domain character varying(100),
-    ip_netspeed character varying(100),
-    page_url text,
-    page_title character varying(2000),
-    page_referrer text,
-    page_urlscheme character varying(16),
-    page_urlhost character varying(255),
-    page_urlport integer,
-    page_urlpath character varying(3000),
-    page_urlquery character varying(6000),
-    page_urlfragment character varying(3000),
-    refr_urlscheme character varying(16),
-    refr_urlhost character varying(255),
-    refr_urlport integer,
-    refr_urlpath character varying(6000),
-    refr_urlquery character varying(6000),
-    refr_urlfragment character varying(3000),
-    refr_medium character varying(25),
-    refr_source character varying(50),
-    refr_term character varying(255),
-    mkt_medium character varying(255),
-    mkt_source character varying(255),
-    mkt_term character varying(255),
-    mkt_content character varying(500),
-    mkt_campaign character varying(255),
-    se_category character varying(1000),
-    se_action character varying(1000),
-    se_label character varying(1000),
-    se_property character varying(1000),
-    se_value double precision,
-    tr_orderid character varying(255),
-    tr_affiliation character varying(255),
-    tr_total numeric(18,2),
-    tr_tax numeric(18,2),
-    tr_shipping numeric(18,2),
-    tr_city character varying(255),
-    tr_state character varying(255),
-    tr_country character varying(255),
-    ti_orderid character varying(255),
-    ti_sku character varying(255),
-    ti_name character varying(255),
-    ti_category character varying(255),
-    ti_price numeric(18,2),
-    ti_quantity integer,
-    pp_xoffset_min integer,
-    pp_xoffset_max integer,
-    pp_yoffset_min integer,
-    pp_yoffset_max integer,
-    useragent character varying(1000),
-    br_name character varying(50),
-    br_family character varying(50),
-    br_version character varying(50),
-    br_type character varying(50),
-    br_renderengine character varying(50),
-    br_lang character varying(255),
-    br_features_pdf boolean,
-    br_features_flash boolean,
-    br_features_java boolean,
-    br_features_director boolean,
-    br_features_quicktime boolean,
-    br_features_realplayer boolean,
-    br_features_windowsmedia boolean,
-    br_features_gears boolean,
-    br_features_silverlight boolean,
-    br_cookies boolean,
-    br_colordepth character varying(12),
-    br_viewwidth integer,
-    br_viewheight integer,
-    os_name character varying(50),
-    os_family character varying(50),
-    os_manufacturer character varying(50),
-    os_timezone character varying(50),
-    dvce_type character varying(50),
-    dvce_ismobile boolean,
-    dvce_screenwidth integer,
-    dvce_screenheight integer,
-    doc_charset character varying(128),
-    doc_width integer,
-    doc_height integer,
-    tr_currency character(3),
-    tr_total_base numeric(18,2),
-    tr_tax_base numeric(18,2),
-    tr_shipping_base numeric(18,2),
-    ti_currency character(3),
-    ti_price_base numeric(18,2),
-    base_currency character(3),
-    geo_timezone character varying(64),
-    mkt_clickid character varying(128),
-    mkt_network character varying(64),
-    etl_tags character varying(500),
-    dvce_sent_tstamp timestamp with time zone,
-    refr_domain_userid character varying(36),
-    refr_dvce_tstamp timestamp with time zone,
-    domain_sessionid character(36),
-    derived_tstamp timestamp with time zone,
-    event_vendor character varying(1000),
-    event_name character varying(1000),
-    event_format character varying(128),
-    event_version character varying(128),
-    event_fingerprint character varying(128),
-    true_tstamp timestamp with time zone
-);
-
-CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_28 (
-    id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
-    project_id integer NOT NULL,
-    platform character varying(255),
-    etl_tstamp timestamp with time zone,
-    collector_tstamp timestamp with time zone NOT NULL,
-    dvce_created_tstamp timestamp with time zone,
-    event character varying(128),
-    event_id character(36) NOT NULL,
-    txn_id integer,
-    name_tracker character varying(128),
-    v_tracker character varying(100),
-    v_collector character varying(100) NOT NULL,
-    v_etl character varying(100) NOT NULL,
-    user_id character varying(255),
-    user_ipaddress character varying(45),
-    user_fingerprint character varying(50),
-    domain_userid character varying(36),
-    domain_sessionidx smallint,
-    network_userid character varying(38),
-    geo_country character(2),
-    geo_region character(3),
-    geo_city character varying(75),
-    geo_zipcode character varying(15),
-    geo_latitude double precision,
-    geo_longitude double precision,
-    geo_region_name character varying(100),
-    ip_isp character varying(100),
-    ip_organization character varying(100),
-    ip_domain character varying(100),
-    ip_netspeed character varying(100),
-    page_url text,
-    page_title character varying(2000),
-    page_referrer text,
-    page_urlscheme character varying(16),
-    page_urlhost character varying(255),
-    page_urlport integer,
-    page_urlpath character varying(3000),
-    page_urlquery character varying(6000),
-    page_urlfragment character varying(3000),
-    refr_urlscheme character varying(16),
-    refr_urlhost character varying(255),
-    refr_urlport integer,
-    refr_urlpath character varying(6000),
-    refr_urlquery character varying(6000),
-    refr_urlfragment character varying(3000),
-    refr_medium character varying(25),
-    refr_source character varying(50),
-    refr_term character varying(255),
-    mkt_medium character varying(255),
-    mkt_source character varying(255),
-    mkt_term character varying(255),
-    mkt_content character varying(500),
-    mkt_campaign character varying(255),
-    se_category character varying(1000),
-    se_action character varying(1000),
-    se_label character varying(1000),
-    se_property character varying(1000),
-    se_value double precision,
-    tr_orderid character varying(255),
-    tr_affiliation character varying(255),
-    tr_total numeric(18,2),
-    tr_tax numeric(18,2),
-    tr_shipping numeric(18,2),
-    tr_city character varying(255),
-    tr_state character varying(255),
-    tr_country character varying(255),
-    ti_orderid character varying(255),
-    ti_sku character varying(255),
-    ti_name character varying(255),
-    ti_category character varying(255),
-    ti_price numeric(18,2),
-    ti_quantity integer,
-    pp_xoffset_min integer,
-    pp_xoffset_max integer,
-    pp_yoffset_min integer,
-    pp_yoffset_max integer,
-    useragent character varying(1000),
-    br_name character varying(50),
-    br_family character varying(50),
-    br_version character varying(50),
-    br_type character varying(50),
-    br_renderengine character varying(50),
-    br_lang character varying(255),
-    br_features_pdf boolean,
-    br_features_flash boolean,
-    br_features_java boolean,
-    br_features_director boolean,
-    br_features_quicktime boolean,
-    br_features_realplayer boolean,
-    br_features_windowsmedia boolean,
-    br_features_gears boolean,
-    br_features_silverlight boolean,
-    br_cookies boolean,
-    br_colordepth character varying(12),
-    br_viewwidth integer,
-    br_viewheight integer,
-    os_name character varying(50),
-    os_family character varying(50),
-    os_manufacturer character varying(50),
-    os_timezone character varying(50),
-    dvce_type character varying(50),
-    dvce_ismobile boolean,
-    dvce_screenwidth integer,
-    dvce_screenheight integer,
-    doc_charset character varying(128),
-    doc_width integer,
-    doc_height integer,
-    tr_currency character(3),
-    tr_total_base numeric(18,2),
-    tr_tax_base numeric(18,2),
-    tr_shipping_base numeric(18,2),
-    ti_currency character(3),
-    ti_price_base numeric(18,2),
-    base_currency character(3),
-    geo_timezone character varying(64),
-    mkt_clickid character varying(128),
-    mkt_network character varying(64),
-    etl_tags character varying(500),
-    dvce_sent_tstamp timestamp with time zone,
-    refr_domain_userid character varying(36),
-    refr_dvce_tstamp timestamp with time zone,
-    domain_sessionid character(36),
-    derived_tstamp timestamp with time zone,
-    event_vendor character varying(1000),
-    event_name character varying(1000),
-    event_format character varying(128),
-    event_version character varying(128),
-    event_fingerprint character varying(128),
-    true_tstamp timestamp with time zone
-);
-
-CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_29 (
-    id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
-    project_id integer NOT NULL,
-    platform character varying(255),
-    etl_tstamp timestamp with time zone,
-    collector_tstamp timestamp with time zone NOT NULL,
-    dvce_created_tstamp timestamp with time zone,
-    event character varying(128),
-    event_id character(36) NOT NULL,
-    txn_id integer,
-    name_tracker character varying(128),
-    v_tracker character varying(100),
-    v_collector character varying(100) NOT NULL,
-    v_etl character varying(100) NOT NULL,
-    user_id character varying(255),
-    user_ipaddress character varying(45),
-    user_fingerprint character varying(50),
-    domain_userid character varying(36),
-    domain_sessionidx smallint,
-    network_userid character varying(38),
-    geo_country character(2),
-    geo_region character(3),
-    geo_city character varying(75),
-    geo_zipcode character varying(15),
-    geo_latitude double precision,
-    geo_longitude double precision,
-    geo_region_name character varying(100),
-    ip_isp character varying(100),
-    ip_organization character varying(100),
-    ip_domain character varying(100),
-    ip_netspeed character varying(100),
-    page_url text,
-    page_title character varying(2000),
-    page_referrer text,
-    page_urlscheme character varying(16),
-    page_urlhost character varying(255),
-    page_urlport integer,
-    page_urlpath character varying(3000),
-    page_urlquery character varying(6000),
-    page_urlfragment character varying(3000),
-    refr_urlscheme character varying(16),
-    refr_urlhost character varying(255),
-    refr_urlport integer,
-    refr_urlpath character varying(6000),
-    refr_urlquery character varying(6000),
-    refr_urlfragment character varying(3000),
-    refr_medium character varying(25),
-    refr_source character varying(50),
-    refr_term character varying(255),
-    mkt_medium character varying(255),
-    mkt_source character varying(255),
-    mkt_term character varying(255),
-    mkt_content character varying(500),
-    mkt_campaign character varying(255),
-    se_category character varying(1000),
-    se_action character varying(1000),
-    se_label character varying(1000),
-    se_property character varying(1000),
-    se_value double precision,
-    tr_orderid character varying(255),
-    tr_affiliation character varying(255),
-    tr_total numeric(18,2),
-    tr_tax numeric(18,2),
-    tr_shipping numeric(18,2),
-    tr_city character varying(255),
-    tr_state character varying(255),
-    tr_country character varying(255),
-    ti_orderid character varying(255),
-    ti_sku character varying(255),
-    ti_name character varying(255),
-    ti_category character varying(255),
-    ti_price numeric(18,2),
-    ti_quantity integer,
-    pp_xoffset_min integer,
-    pp_xoffset_max integer,
-    pp_yoffset_min integer,
-    pp_yoffset_max integer,
-    useragent character varying(1000),
-    br_name character varying(50),
-    br_family character varying(50),
-    br_version character varying(50),
-    br_type character varying(50),
-    br_renderengine character varying(50),
-    br_lang character varying(255),
-    br_features_pdf boolean,
-    br_features_flash boolean,
-    br_features_java boolean,
-    br_features_director boolean,
-    br_features_quicktime boolean,
-    br_features_realplayer boolean,
-    br_features_windowsmedia boolean,
-    br_features_gears boolean,
-    br_features_silverlight boolean,
-    br_cookies boolean,
-    br_colordepth character varying(12),
-    br_viewwidth integer,
-    br_viewheight integer,
-    os_name character varying(50),
-    os_family character varying(50),
-    os_manufacturer character varying(50),
-    os_timezone character varying(50),
-    dvce_type character varying(50),
-    dvce_ismobile boolean,
-    dvce_screenwidth integer,
-    dvce_screenheight integer,
-    doc_charset character varying(128),
-    doc_width integer,
-    doc_height integer,
-    tr_currency character(3),
-    tr_total_base numeric(18,2),
-    tr_tax_base numeric(18,2),
-    tr_shipping_base numeric(18,2),
-    ti_currency character(3),
-    ti_price_base numeric(18,2),
-    base_currency character(3),
-    geo_timezone character varying(64),
-    mkt_clickid character varying(128),
-    mkt_network character varying(64),
-    etl_tags character varying(500),
-    dvce_sent_tstamp timestamp with time zone,
-    refr_domain_userid character varying(36),
-    refr_dvce_tstamp timestamp with time zone,
-    domain_sessionid character(36),
-    derived_tstamp timestamp with time zone,
-    event_vendor character varying(1000),
-    event_name character varying(1000),
-    event_format character varying(128),
-    event_version character varying(128),
-    event_fingerprint character varying(128),
-    true_tstamp timestamp with time zone
-);
-
-CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_30 (
-    id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
-    project_id integer NOT NULL,
-    platform character varying(255),
-    etl_tstamp timestamp with time zone,
-    collector_tstamp timestamp with time zone NOT NULL,
-    dvce_created_tstamp timestamp with time zone,
-    event character varying(128),
-    event_id character(36) NOT NULL,
-    txn_id integer,
-    name_tracker character varying(128),
-    v_tracker character varying(100),
-    v_collector character varying(100) NOT NULL,
-    v_etl character varying(100) NOT NULL,
-    user_id character varying(255),
-    user_ipaddress character varying(45),
-    user_fingerprint character varying(50),
-    domain_userid character varying(36),
-    domain_sessionidx smallint,
-    network_userid character varying(38),
-    geo_country character(2),
-    geo_region character(3),
-    geo_city character varying(75),
-    geo_zipcode character varying(15),
-    geo_latitude double precision,
-    geo_longitude double precision,
-    geo_region_name character varying(100),
-    ip_isp character varying(100),
-    ip_organization character varying(100),
-    ip_domain character varying(100),
-    ip_netspeed character varying(100),
-    page_url text,
-    page_title character varying(2000),
-    page_referrer text,
-    page_urlscheme character varying(16),
-    page_urlhost character varying(255),
-    page_urlport integer,
-    page_urlpath character varying(3000),
-    page_urlquery character varying(6000),
-    page_urlfragment character varying(3000),
-    refr_urlscheme character varying(16),
-    refr_urlhost character varying(255),
-    refr_urlport integer,
-    refr_urlpath character varying(6000),
-    refr_urlquery character varying(6000),
-    refr_urlfragment character varying(3000),
-    refr_medium character varying(25),
-    refr_source character varying(50),
-    refr_term character varying(255),
-    mkt_medium character varying(255),
-    mkt_source character varying(255),
-    mkt_term character varying(255),
-    mkt_content character varying(500),
-    mkt_campaign character varying(255),
-    se_category character varying(1000),
-    se_action character varying(1000),
-    se_label character varying(1000),
-    se_property character varying(1000),
-    se_value double precision,
-    tr_orderid character varying(255),
-    tr_affiliation character varying(255),
-    tr_total numeric(18,2),
-    tr_tax numeric(18,2),
-    tr_shipping numeric(18,2),
-    tr_city character varying(255),
-    tr_state character varying(255),
-    tr_country character varying(255),
-    ti_orderid character varying(255),
-    ti_sku character varying(255),
-    ti_name character varying(255),
-    ti_category character varying(255),
-    ti_price numeric(18,2),
-    ti_quantity integer,
-    pp_xoffset_min integer,
-    pp_xoffset_max integer,
-    pp_yoffset_min integer,
-    pp_yoffset_max integer,
-    useragent character varying(1000),
-    br_name character varying(50),
-    br_family character varying(50),
-    br_version character varying(50),
-    br_type character varying(50),
-    br_renderengine character varying(50),
-    br_lang character varying(255),
-    br_features_pdf boolean,
-    br_features_flash boolean,
-    br_features_java boolean,
-    br_features_director boolean,
-    br_features_quicktime boolean,
-    br_features_realplayer boolean,
-    br_features_windowsmedia boolean,
-    br_features_gears boolean,
-    br_features_silverlight boolean,
-    br_cookies boolean,
-    br_colordepth character varying(12),
-    br_viewwidth integer,
-    br_viewheight integer,
-    os_name character varying(50),
-    os_family character varying(50),
-    os_manufacturer character varying(50),
-    os_timezone character varying(50),
-    dvce_type character varying(50),
-    dvce_ismobile boolean,
-    dvce_screenwidth integer,
-    dvce_screenheight integer,
-    doc_charset character varying(128),
-    doc_width integer,
-    doc_height integer,
-    tr_currency character(3),
-    tr_total_base numeric(18,2),
-    tr_tax_base numeric(18,2),
-    tr_shipping_base numeric(18,2),
-    ti_currency character(3),
-    ti_price_base numeric(18,2),
-    base_currency character(3),
-    geo_timezone character varying(64),
-    mkt_clickid character varying(128),
-    mkt_network character varying(64),
-    etl_tags character varying(500),
-    dvce_sent_tstamp timestamp with time zone,
-    refr_domain_userid character varying(36),
-    refr_dvce_tstamp timestamp with time zone,
-    domain_sessionid character(36),
-    derived_tstamp timestamp with time zone,
-    event_vendor character varying(1000),
-    event_name character varying(1000),
-    event_format character varying(128),
-    event_version character varying(128),
-    event_fingerprint character varying(128),
-    true_tstamp timestamp with time zone
-);
-
-CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_31 (
-    id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
-    project_id integer NOT NULL,
-    platform character varying(255),
-    etl_tstamp timestamp with time zone,
-    collector_tstamp timestamp with time zone NOT NULL,
-    dvce_created_tstamp timestamp with time zone,
-    event character varying(128),
-    event_id character(36) NOT NULL,
-    txn_id integer,
-    name_tracker character varying(128),
-    v_tracker character varying(100),
-    v_collector character varying(100) NOT NULL,
-    v_etl character varying(100) NOT NULL,
-    user_id character varying(255),
-    user_ipaddress character varying(45),
-    user_fingerprint character varying(50),
-    domain_userid character varying(36),
-    domain_sessionidx smallint,
-    network_userid character varying(38),
-    geo_country character(2),
-    geo_region character(3),
-    geo_city character varying(75),
-    geo_zipcode character varying(15),
-    geo_latitude double precision,
-    geo_longitude double precision,
-    geo_region_name character varying(100),
-    ip_isp character varying(100),
-    ip_organization character varying(100),
-    ip_domain character varying(100),
-    ip_netspeed character varying(100),
-    page_url text,
-    page_title character varying(2000),
-    page_referrer text,
-    page_urlscheme character varying(16),
-    page_urlhost character varying(255),
-    page_urlport integer,
-    page_urlpath character varying(3000),
-    page_urlquery character varying(6000),
-    page_urlfragment character varying(3000),
-    refr_urlscheme character varying(16),
-    refr_urlhost character varying(255),
-    refr_urlport integer,
-    refr_urlpath character varying(6000),
-    refr_urlquery character varying(6000),
-    refr_urlfragment character varying(3000),
-    refr_medium character varying(25),
-    refr_source character varying(50),
-    refr_term character varying(255),
-    mkt_medium character varying(255),
-    mkt_source character varying(255),
-    mkt_term character varying(255),
-    mkt_content character varying(500),
-    mkt_campaign character varying(255),
-    se_category character varying(1000),
-    se_action character varying(1000),
-    se_label character varying(1000),
-    se_property character varying(1000),
-    se_value double precision,
-    tr_orderid character varying(255),
-    tr_affiliation character varying(255),
-    tr_total numeric(18,2),
-    tr_tax numeric(18,2),
-    tr_shipping numeric(18,2),
-    tr_city character varying(255),
-    tr_state character varying(255),
-    tr_country character varying(255),
-    ti_orderid character varying(255),
-    ti_sku character varying(255),
-    ti_name character varying(255),
-    ti_category character varying(255),
-    ti_price numeric(18,2),
-    ti_quantity integer,
-    pp_xoffset_min integer,
-    pp_xoffset_max integer,
-    pp_yoffset_min integer,
-    pp_yoffset_max integer,
-    useragent character varying(1000),
-    br_name character varying(50),
-    br_family character varying(50),
-    br_version character varying(50),
-    br_type character varying(50),
-    br_renderengine character varying(50),
-    br_lang character varying(255),
-    br_features_pdf boolean,
-    br_features_flash boolean,
-    br_features_java boolean,
-    br_features_director boolean,
-    br_features_quicktime boolean,
-    br_features_realplayer boolean,
-    br_features_windowsmedia boolean,
-    br_features_gears boolean,
-    br_features_silverlight boolean,
-    br_cookies boolean,
-    br_colordepth character varying(12),
-    br_viewwidth integer,
-    br_viewheight integer,
-    os_name character varying(50),
-    os_family character varying(50),
-    os_manufacturer character varying(50),
-    os_timezone character varying(50),
-    dvce_type character varying(50),
-    dvce_ismobile boolean,
-    dvce_screenwidth integer,
-    dvce_screenheight integer,
-    doc_charset character varying(128),
-    doc_width integer,
-    doc_height integer,
-    tr_currency character(3),
-    tr_total_base numeric(18,2),
-    tr_tax_base numeric(18,2),
-    tr_shipping_base numeric(18,2),
-    ti_currency character(3),
-    ti_price_base numeric(18,2),
-    base_currency character(3),
-    geo_timezone character varying(64),
-    mkt_clickid character varying(128),
-    mkt_network character varying(64),
-    etl_tags character varying(500),
-    dvce_sent_tstamp timestamp with time zone,
-    refr_domain_userid character varying(36),
-    refr_dvce_tstamp timestamp with time zone,
-    domain_sessionid character(36),
-    derived_tstamp timestamp with time zone,
-    event_vendor character varying(1000),
-    event_name character varying(1000),
-    event_format character varying(128),
-    event_version character varying(128),
-    event_fingerprint character varying(128),
-    true_tstamp timestamp with time zone
-);
-
-CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_32 (
-    id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
-    project_id integer NOT NULL,
-    platform character varying(255),
-    etl_tstamp timestamp with time zone,
-    collector_tstamp timestamp with time zone NOT NULL,
-    dvce_created_tstamp timestamp with time zone,
-    event character varying(128),
-    event_id character(36) NOT NULL,
-    txn_id integer,
-    name_tracker character varying(128),
-    v_tracker character varying(100),
-    v_collector character varying(100) NOT NULL,
-    v_etl character varying(100) NOT NULL,
-    user_id character varying(255),
-    user_ipaddress character varying(45),
-    user_fingerprint character varying(50),
-    domain_userid character varying(36),
-    domain_sessionidx smallint,
-    network_userid character varying(38),
-    geo_country character(2),
-    geo_region character(3),
-    geo_city character varying(75),
-    geo_zipcode character varying(15),
-    geo_latitude double precision,
-    geo_longitude double precision,
-    geo_region_name character varying(100),
-    ip_isp character varying(100),
-    ip_organization character varying(100),
-    ip_domain character varying(100),
-    ip_netspeed character varying(100),
-    page_url text,
-    page_title character varying(2000),
-    page_referrer text,
-    page_urlscheme character varying(16),
-    page_urlhost character varying(255),
-    page_urlport integer,
-    page_urlpath character varying(3000),
-    page_urlquery character varying(6000),
-    page_urlfragment character varying(3000),
-    refr_urlscheme character varying(16),
-    refr_urlhost character varying(255),
-    refr_urlport integer,
-    refr_urlpath character varying(6000),
-    refr_urlquery character varying(6000),
-    refr_urlfragment character varying(3000),
-    refr_medium character varying(25),
-    refr_source character varying(50),
-    refr_term character varying(255),
-    mkt_medium character varying(255),
-    mkt_source character varying(255),
-    mkt_term character varying(255),
-    mkt_content character varying(500),
-    mkt_campaign character varying(255),
-    se_category character varying(1000),
-    se_action character varying(1000),
-    se_label character varying(1000),
-    se_property character varying(1000),
-    se_value double precision,
-    tr_orderid character varying(255),
-    tr_affiliation character varying(255),
-    tr_total numeric(18,2),
-    tr_tax numeric(18,2),
-    tr_shipping numeric(18,2),
-    tr_city character varying(255),
-    tr_state character varying(255),
-    tr_country character varying(255),
-    ti_orderid character varying(255),
-    ti_sku character varying(255),
-    ti_name character varying(255),
-    ti_category character varying(255),
-    ti_price numeric(18,2),
-    ti_quantity integer,
-    pp_xoffset_min integer,
-    pp_xoffset_max integer,
-    pp_yoffset_min integer,
-    pp_yoffset_max integer,
-    useragent character varying(1000),
-    br_name character varying(50),
-    br_family character varying(50),
-    br_version character varying(50),
-    br_type character varying(50),
-    br_renderengine character varying(50),
-    br_lang character varying(255),
-    br_features_pdf boolean,
-    br_features_flash boolean,
-    br_features_java boolean,
-    br_features_director boolean,
-    br_features_quicktime boolean,
-    br_features_realplayer boolean,
-    br_features_windowsmedia boolean,
-    br_features_gears boolean,
-    br_features_silverlight boolean,
-    br_cookies boolean,
-    br_colordepth character varying(12),
-    br_viewwidth integer,
-    br_viewheight integer,
-    os_name character varying(50),
-    os_family character varying(50),
-    os_manufacturer character varying(50),
-    os_timezone character varying(50),
-    dvce_type character varying(50),
-    dvce_ismobile boolean,
-    dvce_screenwidth integer,
-    dvce_screenheight integer,
-    doc_charset character varying(128),
-    doc_width integer,
-    doc_height integer,
-    tr_currency character(3),
-    tr_total_base numeric(18,2),
-    tr_tax_base numeric(18,2),
-    tr_shipping_base numeric(18,2),
-    ti_currency character(3),
-    ti_price_base numeric(18,2),
-    base_currency character(3),
-    geo_timezone character varying(64),
-    mkt_clickid character varying(128),
-    mkt_network character varying(64),
-    etl_tags character varying(500),
-    dvce_sent_tstamp timestamp with time zone,
-    refr_domain_userid character varying(36),
-    refr_dvce_tstamp timestamp with time zone,
-    domain_sessionid character(36),
-    derived_tstamp timestamp with time zone,
-    event_vendor character varying(1000),
-    event_name character varying(1000),
-    event_format character varying(128),
-    event_version character varying(128),
-    event_fingerprint character varying(128),
-    true_tstamp timestamp with time zone
-);
-
-CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_33 (
-    id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
-    project_id integer NOT NULL,
-    platform character varying(255),
-    etl_tstamp timestamp with time zone,
-    collector_tstamp timestamp with time zone NOT NULL,
-    dvce_created_tstamp timestamp with time zone,
-    event character varying(128),
-    event_id character(36) NOT NULL,
-    txn_id integer,
-    name_tracker character varying(128),
-    v_tracker character varying(100),
-    v_collector character varying(100) NOT NULL,
-    v_etl character varying(100) NOT NULL,
-    user_id character varying(255),
-    user_ipaddress character varying(45),
-    user_fingerprint character varying(50),
-    domain_userid character varying(36),
-    domain_sessionidx smallint,
-    network_userid character varying(38),
-    geo_country character(2),
-    geo_region character(3),
-    geo_city character varying(75),
-    geo_zipcode character varying(15),
-    geo_latitude double precision,
-    geo_longitude double precision,
-    geo_region_name character varying(100),
-    ip_isp character varying(100),
-    ip_organization character varying(100),
-    ip_domain character varying(100),
-    ip_netspeed character varying(100),
-    page_url text,
-    page_title character varying(2000),
-    page_referrer text,
-    page_urlscheme character varying(16),
-    page_urlhost character varying(255),
-    page_urlport integer,
-    page_urlpath character varying(3000),
-    page_urlquery character varying(6000),
-    page_urlfragment character varying(3000),
-    refr_urlscheme character varying(16),
-    refr_urlhost character varying(255),
-    refr_urlport integer,
-    refr_urlpath character varying(6000),
-    refr_urlquery character varying(6000),
-    refr_urlfragment character varying(3000),
-    refr_medium character varying(25),
-    refr_source character varying(50),
-    refr_term character varying(255),
-    mkt_medium character varying(255),
-    mkt_source character varying(255),
-    mkt_term character varying(255),
-    mkt_content character varying(500),
-    mkt_campaign character varying(255),
-    se_category character varying(1000),
-    se_action character varying(1000),
-    se_label character varying(1000),
-    se_property character varying(1000),
-    se_value double precision,
-    tr_orderid character varying(255),
-    tr_affiliation character varying(255),
-    tr_total numeric(18,2),
-    tr_tax numeric(18,2),
-    tr_shipping numeric(18,2),
-    tr_city character varying(255),
-    tr_state character varying(255),
-    tr_country character varying(255),
-    ti_orderid character varying(255),
-    ti_sku character varying(255),
-    ti_name character varying(255),
-    ti_category character varying(255),
-    ti_price numeric(18,2),
-    ti_quantity integer,
-    pp_xoffset_min integer,
-    pp_xoffset_max integer,
-    pp_yoffset_min integer,
-    pp_yoffset_max integer,
-    useragent character varying(1000),
-    br_name character varying(50),
-    br_family character varying(50),
-    br_version character varying(50),
-    br_type character varying(50),
-    br_renderengine character varying(50),
-    br_lang character varying(255),
-    br_features_pdf boolean,
-    br_features_flash boolean,
-    br_features_java boolean,
-    br_features_director boolean,
-    br_features_quicktime boolean,
-    br_features_realplayer boolean,
-    br_features_windowsmedia boolean,
-    br_features_gears boolean,
-    br_features_silverlight boolean,
-    br_cookies boolean,
-    br_colordepth character varying(12),
-    br_viewwidth integer,
-    br_viewheight integer,
-    os_name character varying(50),
-    os_family character varying(50),
-    os_manufacturer character varying(50),
-    os_timezone character varying(50),
-    dvce_type character varying(50),
-    dvce_ismobile boolean,
-    dvce_screenwidth integer,
-    dvce_screenheight integer,
-    doc_charset character varying(128),
-    doc_width integer,
-    doc_height integer,
-    tr_currency character(3),
-    tr_total_base numeric(18,2),
-    tr_tax_base numeric(18,2),
-    tr_shipping_base numeric(18,2),
-    ti_currency character(3),
-    ti_price_base numeric(18,2),
-    base_currency character(3),
-    geo_timezone character varying(64),
-    mkt_clickid character varying(128),
-    mkt_network character varying(64),
-    etl_tags character varying(500),
-    dvce_sent_tstamp timestamp with time zone,
-    refr_domain_userid character varying(36),
-    refr_dvce_tstamp timestamp with time zone,
-    domain_sessionid character(36),
-    derived_tstamp timestamp with time zone,
-    event_vendor character varying(1000),
-    event_name character varying(1000),
-    event_format character varying(128),
-    event_version character varying(128),
-    event_fingerprint character varying(128),
-    true_tstamp timestamp with time zone
-);
-
-CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_34 (
-    id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
-    project_id integer NOT NULL,
-    platform character varying(255),
-    etl_tstamp timestamp with time zone,
-    collector_tstamp timestamp with time zone NOT NULL,
-    dvce_created_tstamp timestamp with time zone,
-    event character varying(128),
-    event_id character(36) NOT NULL,
-    txn_id integer,
-    name_tracker character varying(128),
-    v_tracker character varying(100),
-    v_collector character varying(100) NOT NULL,
-    v_etl character varying(100) NOT NULL,
-    user_id character varying(255),
-    user_ipaddress character varying(45),
-    user_fingerprint character varying(50),
-    domain_userid character varying(36),
-    domain_sessionidx smallint,
-    network_userid character varying(38),
-    geo_country character(2),
-    geo_region character(3),
-    geo_city character varying(75),
-    geo_zipcode character varying(15),
-    geo_latitude double precision,
-    geo_longitude double precision,
-    geo_region_name character varying(100),
-    ip_isp character varying(100),
-    ip_organization character varying(100),
-    ip_domain character varying(100),
-    ip_netspeed character varying(100),
-    page_url text,
-    page_title character varying(2000),
-    page_referrer text,
-    page_urlscheme character varying(16),
-    page_urlhost character varying(255),
-    page_urlport integer,
-    page_urlpath character varying(3000),
-    page_urlquery character varying(6000),
-    page_urlfragment character varying(3000),
-    refr_urlscheme character varying(16),
-    refr_urlhost character varying(255),
-    refr_urlport integer,
-    refr_urlpath character varying(6000),
-    refr_urlquery character varying(6000),
-    refr_urlfragment character varying(3000),
-    refr_medium character varying(25),
-    refr_source character varying(50),
-    refr_term character varying(255),
-    mkt_medium character varying(255),
-    mkt_source character varying(255),
-    mkt_term character varying(255),
-    mkt_content character varying(500),
-    mkt_campaign character varying(255),
-    se_category character varying(1000),
-    se_action character varying(1000),
-    se_label character varying(1000),
-    se_property character varying(1000),
-    se_value double precision,
-    tr_orderid character varying(255),
-    tr_affiliation character varying(255),
-    tr_total numeric(18,2),
-    tr_tax numeric(18,2),
-    tr_shipping numeric(18,2),
-    tr_city character varying(255),
-    tr_state character varying(255),
-    tr_country character varying(255),
-    ti_orderid character varying(255),
-    ti_sku character varying(255),
-    ti_name character varying(255),
-    ti_category character varying(255),
-    ti_price numeric(18,2),
-    ti_quantity integer,
-    pp_xoffset_min integer,
-    pp_xoffset_max integer,
-    pp_yoffset_min integer,
-    pp_yoffset_max integer,
-    useragent character varying(1000),
-    br_name character varying(50),
-    br_family character varying(50),
-    br_version character varying(50),
-    br_type character varying(50),
-    br_renderengine character varying(50),
-    br_lang character varying(255),
-    br_features_pdf boolean,
-    br_features_flash boolean,
-    br_features_java boolean,
-    br_features_director boolean,
-    br_features_quicktime boolean,
-    br_features_realplayer boolean,
-    br_features_windowsmedia boolean,
-    br_features_gears boolean,
-    br_features_silverlight boolean,
-    br_cookies boolean,
-    br_colordepth character varying(12),
-    br_viewwidth integer,
-    br_viewheight integer,
-    os_name character varying(50),
-    os_family character varying(50),
-    os_manufacturer character varying(50),
-    os_timezone character varying(50),
-    dvce_type character varying(50),
-    dvce_ismobile boolean,
-    dvce_screenwidth integer,
-    dvce_screenheight integer,
-    doc_charset character varying(128),
-    doc_width integer,
-    doc_height integer,
-    tr_currency character(3),
-    tr_total_base numeric(18,2),
-    tr_tax_base numeric(18,2),
-    tr_shipping_base numeric(18,2),
-    ti_currency character(3),
-    ti_price_base numeric(18,2),
-    base_currency character(3),
-    geo_timezone character varying(64),
-    mkt_clickid character varying(128),
-    mkt_network character varying(64),
-    etl_tags character varying(500),
-    dvce_sent_tstamp timestamp with time zone,
-    refr_domain_userid character varying(36),
-    refr_dvce_tstamp timestamp with time zone,
-    domain_sessionid character(36),
-    derived_tstamp timestamp with time zone,
-    event_vendor character varying(1000),
-    event_name character varying(1000),
-    event_format character varying(128),
-    event_version character varying(128),
-    event_fingerprint character varying(128),
-    true_tstamp timestamp with time zone
-);
-
-CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_35 (
-    id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
-    project_id integer NOT NULL,
-    platform character varying(255),
-    etl_tstamp timestamp with time zone,
-    collector_tstamp timestamp with time zone NOT NULL,
-    dvce_created_tstamp timestamp with time zone,
-    event character varying(128),
-    event_id character(36) NOT NULL,
-    txn_id integer,
-    name_tracker character varying(128),
-    v_tracker character varying(100),
-    v_collector character varying(100) NOT NULL,
-    v_etl character varying(100) NOT NULL,
-    user_id character varying(255),
-    user_ipaddress character varying(45),
-    user_fingerprint character varying(50),
-    domain_userid character varying(36),
-    domain_sessionidx smallint,
-    network_userid character varying(38),
-    geo_country character(2),
-    geo_region character(3),
-    geo_city character varying(75),
-    geo_zipcode character varying(15),
-    geo_latitude double precision,
-    geo_longitude double precision,
-    geo_region_name character varying(100),
-    ip_isp character varying(100),
-    ip_organization character varying(100),
-    ip_domain character varying(100),
-    ip_netspeed character varying(100),
-    page_url text,
-    page_title character varying(2000),
-    page_referrer text,
-    page_urlscheme character varying(16),
-    page_urlhost character varying(255),
-    page_urlport integer,
-    page_urlpath character varying(3000),
-    page_urlquery character varying(6000),
-    page_urlfragment character varying(3000),
-    refr_urlscheme character varying(16),
-    refr_urlhost character varying(255),
-    refr_urlport integer,
-    refr_urlpath character varying(6000),
-    refr_urlquery character varying(6000),
-    refr_urlfragment character varying(3000),
-    refr_medium character varying(25),
-    refr_source character varying(50),
-    refr_term character varying(255),
-    mkt_medium character varying(255),
-    mkt_source character varying(255),
-    mkt_term character varying(255),
-    mkt_content character varying(500),
-    mkt_campaign character varying(255),
-    se_category character varying(1000),
-    se_action character varying(1000),
-    se_label character varying(1000),
-    se_property character varying(1000),
-    se_value double precision,
-    tr_orderid character varying(255),
-    tr_affiliation character varying(255),
-    tr_total numeric(18,2),
-    tr_tax numeric(18,2),
-    tr_shipping numeric(18,2),
-    tr_city character varying(255),
-    tr_state character varying(255),
-    tr_country character varying(255),
-    ti_orderid character varying(255),
-    ti_sku character varying(255),
-    ti_name character varying(255),
-    ti_category character varying(255),
-    ti_price numeric(18,2),
-    ti_quantity integer,
-    pp_xoffset_min integer,
-    pp_xoffset_max integer,
-    pp_yoffset_min integer,
-    pp_yoffset_max integer,
-    useragent character varying(1000),
-    br_name character varying(50),
-    br_family character varying(50),
-    br_version character varying(50),
-    br_type character varying(50),
-    br_renderengine character varying(50),
-    br_lang character varying(255),
-    br_features_pdf boolean,
-    br_features_flash boolean,
-    br_features_java boolean,
-    br_features_director boolean,
-    br_features_quicktime boolean,
-    br_features_realplayer boolean,
-    br_features_windowsmedia boolean,
-    br_features_gears boolean,
-    br_features_silverlight boolean,
-    br_cookies boolean,
-    br_colordepth character varying(12),
-    br_viewwidth integer,
-    br_viewheight integer,
-    os_name character varying(50),
-    os_family character varying(50),
-    os_manufacturer character varying(50),
-    os_timezone character varying(50),
-    dvce_type character varying(50),
-    dvce_ismobile boolean,
-    dvce_screenwidth integer,
-    dvce_screenheight integer,
-    doc_charset character varying(128),
-    doc_width integer,
-    doc_height integer,
-    tr_currency character(3),
-    tr_total_base numeric(18,2),
-    tr_tax_base numeric(18,2),
-    tr_shipping_base numeric(18,2),
-    ti_currency character(3),
-    ti_price_base numeric(18,2),
-    base_currency character(3),
-    geo_timezone character varying(64),
-    mkt_clickid character varying(128),
-    mkt_network character varying(64),
-    etl_tags character varying(500),
-    dvce_sent_tstamp timestamp with time zone,
-    refr_domain_userid character varying(36),
-    refr_dvce_tstamp timestamp with time zone,
-    domain_sessionid character(36),
-    derived_tstamp timestamp with time zone,
-    event_vendor character varying(1000),
-    event_name character varying(1000),
-    event_format character varying(128),
-    event_version character varying(128),
-    event_fingerprint character varying(128),
-    true_tstamp timestamp with time zone
-);
-
-CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_36 (
-    id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
-    project_id integer NOT NULL,
-    platform character varying(255),
-    etl_tstamp timestamp with time zone,
-    collector_tstamp timestamp with time zone NOT NULL,
-    dvce_created_tstamp timestamp with time zone,
-    event character varying(128),
-    event_id character(36) NOT NULL,
-    txn_id integer,
-    name_tracker character varying(128),
-    v_tracker character varying(100),
-    v_collector character varying(100) NOT NULL,
-    v_etl character varying(100) NOT NULL,
-    user_id character varying(255),
-    user_ipaddress character varying(45),
-    user_fingerprint character varying(50),
-    domain_userid character varying(36),
-    domain_sessionidx smallint,
-    network_userid character varying(38),
-    geo_country character(2),
-    geo_region character(3),
-    geo_city character varying(75),
-    geo_zipcode character varying(15),
-    geo_latitude double precision,
-    geo_longitude double precision,
-    geo_region_name character varying(100),
-    ip_isp character varying(100),
-    ip_organization character varying(100),
-    ip_domain character varying(100),
-    ip_netspeed character varying(100),
-    page_url text,
-    page_title character varying(2000),
-    page_referrer text,
-    page_urlscheme character varying(16),
-    page_urlhost character varying(255),
-    page_urlport integer,
-    page_urlpath character varying(3000),
-    page_urlquery character varying(6000),
-    page_urlfragment character varying(3000),
-    refr_urlscheme character varying(16),
-    refr_urlhost character varying(255),
-    refr_urlport integer,
-    refr_urlpath character varying(6000),
-    refr_urlquery character varying(6000),
-    refr_urlfragment character varying(3000),
-    refr_medium character varying(25),
-    refr_source character varying(50),
-    refr_term character varying(255),
-    mkt_medium character varying(255),
-    mkt_source character varying(255),
-    mkt_term character varying(255),
-    mkt_content character varying(500),
-    mkt_campaign character varying(255),
-    se_category character varying(1000),
-    se_action character varying(1000),
-    se_label character varying(1000),
-    se_property character varying(1000),
-    se_value double precision,
-    tr_orderid character varying(255),
-    tr_affiliation character varying(255),
-    tr_total numeric(18,2),
-    tr_tax numeric(18,2),
-    tr_shipping numeric(18,2),
-    tr_city character varying(255),
-    tr_state character varying(255),
-    tr_country character varying(255),
-    ti_orderid character varying(255),
-    ti_sku character varying(255),
-    ti_name character varying(255),
-    ti_category character varying(255),
-    ti_price numeric(18,2),
-    ti_quantity integer,
-    pp_xoffset_min integer,
-    pp_xoffset_max integer,
-    pp_yoffset_min integer,
-    pp_yoffset_max integer,
-    useragent character varying(1000),
-    br_name character varying(50),
-    br_family character varying(50),
-    br_version character varying(50),
-    br_type character varying(50),
-    br_renderengine character varying(50),
-    br_lang character varying(255),
-    br_features_pdf boolean,
-    br_features_flash boolean,
-    br_features_java boolean,
-    br_features_director boolean,
-    br_features_quicktime boolean,
-    br_features_realplayer boolean,
-    br_features_windowsmedia boolean,
-    br_features_gears boolean,
-    br_features_silverlight boolean,
-    br_cookies boolean,
-    br_colordepth character varying(12),
-    br_viewwidth integer,
-    br_viewheight integer,
-    os_name character varying(50),
-    os_family character varying(50),
-    os_manufacturer character varying(50),
-    os_timezone character varying(50),
-    dvce_type character varying(50),
-    dvce_ismobile boolean,
-    dvce_screenwidth integer,
-    dvce_screenheight integer,
-    doc_charset character varying(128),
-    doc_width integer,
-    doc_height integer,
-    tr_currency character(3),
-    tr_total_base numeric(18,2),
-    tr_tax_base numeric(18,2),
-    tr_shipping_base numeric(18,2),
-    ti_currency character(3),
-    ti_price_base numeric(18,2),
-    base_currency character(3),
-    geo_timezone character varying(64),
-    mkt_clickid character varying(128),
-    mkt_network character varying(64),
-    etl_tags character varying(500),
-    dvce_sent_tstamp timestamp with time zone,
-    refr_domain_userid character varying(36),
-    refr_dvce_tstamp timestamp with time zone,
-    domain_sessionid character(36),
-    derived_tstamp timestamp with time zone,
-    event_vendor character varying(1000),
-    event_name character varying(1000),
-    event_format character varying(128),
-    event_version character varying(128),
-    event_fingerprint character varying(128),
-    true_tstamp timestamp with time zone
-);
-
-CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_37 (
-    id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
-    project_id integer NOT NULL,
-    platform character varying(255),
-    etl_tstamp timestamp with time zone,
-    collector_tstamp timestamp with time zone NOT NULL,
-    dvce_created_tstamp timestamp with time zone,
-    event character varying(128),
-    event_id character(36) NOT NULL,
-    txn_id integer,
-    name_tracker character varying(128),
-    v_tracker character varying(100),
-    v_collector character varying(100) NOT NULL,
-    v_etl character varying(100) NOT NULL,
-    user_id character varying(255),
-    user_ipaddress character varying(45),
-    user_fingerprint character varying(50),
-    domain_userid character varying(36),
-    domain_sessionidx smallint,
-    network_userid character varying(38),
-    geo_country character(2),
-    geo_region character(3),
-    geo_city character varying(75),
-    geo_zipcode character varying(15),
-    geo_latitude double precision,
-    geo_longitude double precision,
-    geo_region_name character varying(100),
-    ip_isp character varying(100),
-    ip_organization character varying(100),
-    ip_domain character varying(100),
-    ip_netspeed character varying(100),
-    page_url text,
-    page_title character varying(2000),
-    page_referrer text,
-    page_urlscheme character varying(16),
-    page_urlhost character varying(255),
-    page_urlport integer,
-    page_urlpath character varying(3000),
-    page_urlquery character varying(6000),
-    page_urlfragment character varying(3000),
-    refr_urlscheme character varying(16),
-    refr_urlhost character varying(255),
-    refr_urlport integer,
-    refr_urlpath character varying(6000),
-    refr_urlquery character varying(6000),
-    refr_urlfragment character varying(3000),
-    refr_medium character varying(25),
-    refr_source character varying(50),
-    refr_term character varying(255),
-    mkt_medium character varying(255),
-    mkt_source character varying(255),
-    mkt_term character varying(255),
-    mkt_content character varying(500),
-    mkt_campaign character varying(255),
-    se_category character varying(1000),
-    se_action character varying(1000),
-    se_label character varying(1000),
-    se_property character varying(1000),
-    se_value double precision,
-    tr_orderid character varying(255),
-    tr_affiliation character varying(255),
-    tr_total numeric(18,2),
-    tr_tax numeric(18,2),
-    tr_shipping numeric(18,2),
-    tr_city character varying(255),
-    tr_state character varying(255),
-    tr_country character varying(255),
-    ti_orderid character varying(255),
-    ti_sku character varying(255),
-    ti_name character varying(255),
-    ti_category character varying(255),
-    ti_price numeric(18,2),
-    ti_quantity integer,
-    pp_xoffset_min integer,
-    pp_xoffset_max integer,
-    pp_yoffset_min integer,
-    pp_yoffset_max integer,
-    useragent character varying(1000),
-    br_name character varying(50),
-    br_family character varying(50),
-    br_version character varying(50),
-    br_type character varying(50),
-    br_renderengine character varying(50),
-    br_lang character varying(255),
-    br_features_pdf boolean,
-    br_features_flash boolean,
-    br_features_java boolean,
-    br_features_director boolean,
-    br_features_quicktime boolean,
-    br_features_realplayer boolean,
-    br_features_windowsmedia boolean,
-    br_features_gears boolean,
-    br_features_silverlight boolean,
-    br_cookies boolean,
-    br_colordepth character varying(12),
-    br_viewwidth integer,
-    br_viewheight integer,
-    os_name character varying(50),
-    os_family character varying(50),
-    os_manufacturer character varying(50),
-    os_timezone character varying(50),
-    dvce_type character varying(50),
-    dvce_ismobile boolean,
-    dvce_screenwidth integer,
-    dvce_screenheight integer,
-    doc_charset character varying(128),
-    doc_width integer,
-    doc_height integer,
-    tr_currency character(3),
-    tr_total_base numeric(18,2),
-    tr_tax_base numeric(18,2),
-    tr_shipping_base numeric(18,2),
-    ti_currency character(3),
-    ti_price_base numeric(18,2),
-    base_currency character(3),
-    geo_timezone character varying(64),
-    mkt_clickid character varying(128),
-    mkt_network character varying(64),
-    etl_tags character varying(500),
-    dvce_sent_tstamp timestamp with time zone,
-    refr_domain_userid character varying(36),
-    refr_dvce_tstamp timestamp with time zone,
-    domain_sessionid character(36),
-    derived_tstamp timestamp with time zone,
-    event_vendor character varying(1000),
-    event_name character varying(1000),
-    event_format character varying(128),
-    event_version character varying(128),
-    event_fingerprint character varying(128),
-    true_tstamp timestamp with time zone
-);
-
-CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_38 (
-    id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
-    project_id integer NOT NULL,
-    platform character varying(255),
-    etl_tstamp timestamp with time zone,
-    collector_tstamp timestamp with time zone NOT NULL,
-    dvce_created_tstamp timestamp with time zone,
-    event character varying(128),
-    event_id character(36) NOT NULL,
-    txn_id integer,
-    name_tracker character varying(128),
-    v_tracker character varying(100),
-    v_collector character varying(100) NOT NULL,
-    v_etl character varying(100) NOT NULL,
-    user_id character varying(255),
-    user_ipaddress character varying(45),
-    user_fingerprint character varying(50),
-    domain_userid character varying(36),
-    domain_sessionidx smallint,
-    network_userid character varying(38),
-    geo_country character(2),
-    geo_region character(3),
-    geo_city character varying(75),
-    geo_zipcode character varying(15),
-    geo_latitude double precision,
-    geo_longitude double precision,
-    geo_region_name character varying(100),
-    ip_isp character varying(100),
-    ip_organization character varying(100),
-    ip_domain character varying(100),
-    ip_netspeed character varying(100),
-    page_url text,
-    page_title character varying(2000),
-    page_referrer text,
-    page_urlscheme character varying(16),
-    page_urlhost character varying(255),
-    page_urlport integer,
-    page_urlpath character varying(3000),
-    page_urlquery character varying(6000),
-    page_urlfragment character varying(3000),
-    refr_urlscheme character varying(16),
-    refr_urlhost character varying(255),
-    refr_urlport integer,
-    refr_urlpath character varying(6000),
-    refr_urlquery character varying(6000),
-    refr_urlfragment character varying(3000),
-    refr_medium character varying(25),
-    refr_source character varying(50),
-    refr_term character varying(255),
-    mkt_medium character varying(255),
-    mkt_source character varying(255),
-    mkt_term character varying(255),
-    mkt_content character varying(500),
-    mkt_campaign character varying(255),
-    se_category character varying(1000),
-    se_action character varying(1000),
-    se_label character varying(1000),
-    se_property character varying(1000),
-    se_value double precision,
-    tr_orderid character varying(255),
-    tr_affiliation character varying(255),
-    tr_total numeric(18,2),
-    tr_tax numeric(18,2),
-    tr_shipping numeric(18,2),
-    tr_city character varying(255),
-    tr_state character varying(255),
-    tr_country character varying(255),
-    ti_orderid character varying(255),
-    ti_sku character varying(255),
-    ti_name character varying(255),
-    ti_category character varying(255),
-    ti_price numeric(18,2),
-    ti_quantity integer,
-    pp_xoffset_min integer,
-    pp_xoffset_max integer,
-    pp_yoffset_min integer,
-    pp_yoffset_max integer,
-    useragent character varying(1000),
-    br_name character varying(50),
-    br_family character varying(50),
-    br_version character varying(50),
-    br_type character varying(50),
-    br_renderengine character varying(50),
-    br_lang character varying(255),
-    br_features_pdf boolean,
-    br_features_flash boolean,
-    br_features_java boolean,
-    br_features_director boolean,
-    br_features_quicktime boolean,
-    br_features_realplayer boolean,
-    br_features_windowsmedia boolean,
-    br_features_gears boolean,
-    br_features_silverlight boolean,
-    br_cookies boolean,
-    br_colordepth character varying(12),
-    br_viewwidth integer,
-    br_viewheight integer,
-    os_name character varying(50),
-    os_family character varying(50),
-    os_manufacturer character varying(50),
-    os_timezone character varying(50),
-    dvce_type character varying(50),
-    dvce_ismobile boolean,
-    dvce_screenwidth integer,
-    dvce_screenheight integer,
-    doc_charset character varying(128),
-    doc_width integer,
-    doc_height integer,
-    tr_currency character(3),
-    tr_total_base numeric(18,2),
-    tr_tax_base numeric(18,2),
-    tr_shipping_base numeric(18,2),
-    ti_currency character(3),
-    ti_price_base numeric(18,2),
-    base_currency character(3),
-    geo_timezone character varying(64),
-    mkt_clickid character varying(128),
-    mkt_network character varying(64),
-    etl_tags character varying(500),
-    dvce_sent_tstamp timestamp with time zone,
-    refr_domain_userid character varying(36),
-    refr_dvce_tstamp timestamp with time zone,
-    domain_sessionid character(36),
-    derived_tstamp timestamp with time zone,
-    event_vendor character varying(1000),
-    event_name character varying(1000),
-    event_format character varying(128),
-    event_version character varying(128),
-    event_fingerprint character varying(128),
-    true_tstamp timestamp with time zone
-);
-
-CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_39 (
-    id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
-    project_id integer NOT NULL,
-    platform character varying(255),
-    etl_tstamp timestamp with time zone,
-    collector_tstamp timestamp with time zone NOT NULL,
-    dvce_created_tstamp timestamp with time zone,
-    event character varying(128),
-    event_id character(36) NOT NULL,
-    txn_id integer,
-    name_tracker character varying(128),
-    v_tracker character varying(100),
-    v_collector character varying(100) NOT NULL,
-    v_etl character varying(100) NOT NULL,
-    user_id character varying(255),
-    user_ipaddress character varying(45),
-    user_fingerprint character varying(50),
-    domain_userid character varying(36),
-    domain_sessionidx smallint,
-    network_userid character varying(38),
-    geo_country character(2),
-    geo_region character(3),
-    geo_city character varying(75),
-    geo_zipcode character varying(15),
-    geo_latitude double precision,
-    geo_longitude double precision,
-    geo_region_name character varying(100),
-    ip_isp character varying(100),
-    ip_organization character varying(100),
-    ip_domain character varying(100),
-    ip_netspeed character varying(100),
-    page_url text,
-    page_title character varying(2000),
-    page_referrer text,
-    page_urlscheme character varying(16),
-    page_urlhost character varying(255),
-    page_urlport integer,
-    page_urlpath character varying(3000),
-    page_urlquery character varying(6000),
-    page_urlfragment character varying(3000),
-    refr_urlscheme character varying(16),
-    refr_urlhost character varying(255),
-    refr_urlport integer,
-    refr_urlpath character varying(6000),
-    refr_urlquery character varying(6000),
-    refr_urlfragment character varying(3000),
-    refr_medium character varying(25),
-    refr_source character varying(50),
-    refr_term character varying(255),
-    mkt_medium character varying(255),
-    mkt_source character varying(255),
-    mkt_term character varying(255),
-    mkt_content character varying(500),
-    mkt_campaign character varying(255),
-    se_category character varying(1000),
-    se_action character varying(1000),
-    se_label character varying(1000),
-    se_property character varying(1000),
-    se_value double precision,
-    tr_orderid character varying(255),
-    tr_affiliation character varying(255),
-    tr_total numeric(18,2),
-    tr_tax numeric(18,2),
-    tr_shipping numeric(18,2),
-    tr_city character varying(255),
-    tr_state character varying(255),
-    tr_country character varying(255),
-    ti_orderid character varying(255),
-    ti_sku character varying(255),
-    ti_name character varying(255),
-    ti_category character varying(255),
-    ti_price numeric(18,2),
-    ti_quantity integer,
-    pp_xoffset_min integer,
-    pp_xoffset_max integer,
-    pp_yoffset_min integer,
-    pp_yoffset_max integer,
-    useragent character varying(1000),
-    br_name character varying(50),
-    br_family character varying(50),
-    br_version character varying(50),
-    br_type character varying(50),
-    br_renderengine character varying(50),
-    br_lang character varying(255),
-    br_features_pdf boolean,
-    br_features_flash boolean,
-    br_features_java boolean,
-    br_features_director boolean,
-    br_features_quicktime boolean,
-    br_features_realplayer boolean,
-    br_features_windowsmedia boolean,
-    br_features_gears boolean,
-    br_features_silverlight boolean,
-    br_cookies boolean,
-    br_colordepth character varying(12),
-    br_viewwidth integer,
-    br_viewheight integer,
-    os_name character varying(50),
-    os_family character varying(50),
-    os_manufacturer character varying(50),
-    os_timezone character varying(50),
-    dvce_type character varying(50),
-    dvce_ismobile boolean,
-    dvce_screenwidth integer,
-    dvce_screenheight integer,
-    doc_charset character varying(128),
-    doc_width integer,
-    doc_height integer,
-    tr_currency character(3),
-    tr_total_base numeric(18,2),
-    tr_tax_base numeric(18,2),
-    tr_shipping_base numeric(18,2),
-    ti_currency character(3),
-    ti_price_base numeric(18,2),
-    base_currency character(3),
-    geo_timezone character varying(64),
-    mkt_clickid character varying(128),
-    mkt_network character varying(64),
-    etl_tags character varying(500),
-    dvce_sent_tstamp timestamp with time zone,
-    refr_domain_userid character varying(36),
-    refr_dvce_tstamp timestamp with time zone,
-    domain_sessionid character(36),
-    derived_tstamp timestamp with time zone,
-    event_vendor character varying(1000),
-    event_name character varying(1000),
-    event_format character varying(128),
-    event_version character varying(128),
-    event_fingerprint character varying(128),
-    true_tstamp timestamp with time zone
-);
-
-CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_40 (
-    id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
-    project_id integer NOT NULL,
-    platform character varying(255),
-    etl_tstamp timestamp with time zone,
-    collector_tstamp timestamp with time zone NOT NULL,
-    dvce_created_tstamp timestamp with time zone,
-    event character varying(128),
-    event_id character(36) NOT NULL,
-    txn_id integer,
-    name_tracker character varying(128),
-    v_tracker character varying(100),
-    v_collector character varying(100) NOT NULL,
-    v_etl character varying(100) NOT NULL,
-    user_id character varying(255),
-    user_ipaddress character varying(45),
-    user_fingerprint character varying(50),
-    domain_userid character varying(36),
-    domain_sessionidx smallint,
-    network_userid character varying(38),
-    geo_country character(2),
-    geo_region character(3),
-    geo_city character varying(75),
-    geo_zipcode character varying(15),
-    geo_latitude double precision,
-    geo_longitude double precision,
-    geo_region_name character varying(100),
-    ip_isp character varying(100),
-    ip_organization character varying(100),
-    ip_domain character varying(100),
-    ip_netspeed character varying(100),
-    page_url text,
-    page_title character varying(2000),
-    page_referrer text,
-    page_urlscheme character varying(16),
-    page_urlhost character varying(255),
-    page_urlport integer,
-    page_urlpath character varying(3000),
-    page_urlquery character varying(6000),
-    page_urlfragment character varying(3000),
-    refr_urlscheme character varying(16),
-    refr_urlhost character varying(255),
-    refr_urlport integer,
-    refr_urlpath character varying(6000),
-    refr_urlquery character varying(6000),
-    refr_urlfragment character varying(3000),
-    refr_medium character varying(25),
-    refr_source character varying(50),
-    refr_term character varying(255),
-    mkt_medium character varying(255),
-    mkt_source character varying(255),
-    mkt_term character varying(255),
-    mkt_content character varying(500),
-    mkt_campaign character varying(255),
-    se_category character varying(1000),
-    se_action character varying(1000),
-    se_label character varying(1000),
-    se_property character varying(1000),
-    se_value double precision,
-    tr_orderid character varying(255),
-    tr_affiliation character varying(255),
-    tr_total numeric(18,2),
-    tr_tax numeric(18,2),
-    tr_shipping numeric(18,2),
-    tr_city character varying(255),
-    tr_state character varying(255),
-    tr_country character varying(255),
-    ti_orderid character varying(255),
-    ti_sku character varying(255),
-    ti_name character varying(255),
-    ti_category character varying(255),
-    ti_price numeric(18,2),
-    ti_quantity integer,
-    pp_xoffset_min integer,
-    pp_xoffset_max integer,
-    pp_yoffset_min integer,
-    pp_yoffset_max integer,
-    useragent character varying(1000),
-    br_name character varying(50),
-    br_family character varying(50),
-    br_version character varying(50),
-    br_type character varying(50),
-    br_renderengine character varying(50),
-    br_lang character varying(255),
-    br_features_pdf boolean,
-    br_features_flash boolean,
-    br_features_java boolean,
-    br_features_director boolean,
-    br_features_quicktime boolean,
-    br_features_realplayer boolean,
-    br_features_windowsmedia boolean,
-    br_features_gears boolean,
-    br_features_silverlight boolean,
-    br_cookies boolean,
-    br_colordepth character varying(12),
-    br_viewwidth integer,
-    br_viewheight integer,
-    os_name character varying(50),
-    os_family character varying(50),
-    os_manufacturer character varying(50),
-    os_timezone character varying(50),
-    dvce_type character varying(50),
-    dvce_ismobile boolean,
-    dvce_screenwidth integer,
-    dvce_screenheight integer,
-    doc_charset character varying(128),
-    doc_width integer,
-    doc_height integer,
-    tr_currency character(3),
-    tr_total_base numeric(18,2),
-    tr_tax_base numeric(18,2),
-    tr_shipping_base numeric(18,2),
-    ti_currency character(3),
-    ti_price_base numeric(18,2),
-    base_currency character(3),
-    geo_timezone character varying(64),
-    mkt_clickid character varying(128),
-    mkt_network character varying(64),
-    etl_tags character varying(500),
-    dvce_sent_tstamp timestamp with time zone,
-    refr_domain_userid character varying(36),
-    refr_dvce_tstamp timestamp with time zone,
-    domain_sessionid character(36),
-    derived_tstamp timestamp with time zone,
-    event_vendor character varying(1000),
-    event_name character varying(1000),
-    event_format character varying(128),
-    event_version character varying(128),
-    event_fingerprint character varying(128),
-    true_tstamp timestamp with time zone
-);
-
-CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_41 (
-    id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
-    project_id integer NOT NULL,
-    platform character varying(255),
-    etl_tstamp timestamp with time zone,
-    collector_tstamp timestamp with time zone NOT NULL,
-    dvce_created_tstamp timestamp with time zone,
-    event character varying(128),
-    event_id character(36) NOT NULL,
-    txn_id integer,
-    name_tracker character varying(128),
-    v_tracker character varying(100),
-    v_collector character varying(100) NOT NULL,
-    v_etl character varying(100) NOT NULL,
-    user_id character varying(255),
-    user_ipaddress character varying(45),
-    user_fingerprint character varying(50),
-    domain_userid character varying(36),
-    domain_sessionidx smallint,
-    network_userid character varying(38),
-    geo_country character(2),
-    geo_region character(3),
-    geo_city character varying(75),
-    geo_zipcode character varying(15),
-    geo_latitude double precision,
-    geo_longitude double precision,
-    geo_region_name character varying(100),
-    ip_isp character varying(100),
-    ip_organization character varying(100),
-    ip_domain character varying(100),
-    ip_netspeed character varying(100),
-    page_url text,
-    page_title character varying(2000),
-    page_referrer text,
-    page_urlscheme character varying(16),
-    page_urlhost character varying(255),
-    page_urlport integer,
-    page_urlpath character varying(3000),
-    page_urlquery character varying(6000),
-    page_urlfragment character varying(3000),
-    refr_urlscheme character varying(16),
-    refr_urlhost character varying(255),
-    refr_urlport integer,
-    refr_urlpath character varying(6000),
-    refr_urlquery character varying(6000),
-    refr_urlfragment character varying(3000),
-    refr_medium character varying(25),
-    refr_source character varying(50),
-    refr_term character varying(255),
-    mkt_medium character varying(255),
-    mkt_source character varying(255),
-    mkt_term character varying(255),
-    mkt_content character varying(500),
-    mkt_campaign character varying(255),
-    se_category character varying(1000),
-    se_action character varying(1000),
-    se_label character varying(1000),
-    se_property character varying(1000),
-    se_value double precision,
-    tr_orderid character varying(255),
-    tr_affiliation character varying(255),
-    tr_total numeric(18,2),
-    tr_tax numeric(18,2),
-    tr_shipping numeric(18,2),
-    tr_city character varying(255),
-    tr_state character varying(255),
-    tr_country character varying(255),
-    ti_orderid character varying(255),
-    ti_sku character varying(255),
-    ti_name character varying(255),
-    ti_category character varying(255),
-    ti_price numeric(18,2),
-    ti_quantity integer,
-    pp_xoffset_min integer,
-    pp_xoffset_max integer,
-    pp_yoffset_min integer,
-    pp_yoffset_max integer,
-    useragent character varying(1000),
-    br_name character varying(50),
-    br_family character varying(50),
-    br_version character varying(50),
-    br_type character varying(50),
-    br_renderengine character varying(50),
-    br_lang character varying(255),
-    br_features_pdf boolean,
-    br_features_flash boolean,
-    br_features_java boolean,
-    br_features_director boolean,
-    br_features_quicktime boolean,
-    br_features_realplayer boolean,
-    br_features_windowsmedia boolean,
-    br_features_gears boolean,
-    br_features_silverlight boolean,
-    br_cookies boolean,
-    br_colordepth character varying(12),
-    br_viewwidth integer,
-    br_viewheight integer,
-    os_name character varying(50),
-    os_family character varying(50),
-    os_manufacturer character varying(50),
-    os_timezone character varying(50),
-    dvce_type character varying(50),
-    dvce_ismobile boolean,
-    dvce_screenwidth integer,
-    dvce_screenheight integer,
-    doc_charset character varying(128),
-    doc_width integer,
-    doc_height integer,
-    tr_currency character(3),
-    tr_total_base numeric(18,2),
-    tr_tax_base numeric(18,2),
-    tr_shipping_base numeric(18,2),
-    ti_currency character(3),
-    ti_price_base numeric(18,2),
-    base_currency character(3),
-    geo_timezone character varying(64),
-    mkt_clickid character varying(128),
-    mkt_network character varying(64),
-    etl_tags character varying(500),
-    dvce_sent_tstamp timestamp with time zone,
-    refr_domain_userid character varying(36),
-    refr_dvce_tstamp timestamp with time zone,
-    domain_sessionid character(36),
-    derived_tstamp timestamp with time zone,
-    event_vendor character varying(1000),
-    event_name character varying(1000),
-    event_format character varying(128),
-    event_version character varying(128),
-    event_fingerprint character varying(128),
-    true_tstamp timestamp with time zone
-);
-
-CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_42 (
-    id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
-    project_id integer NOT NULL,
-    platform character varying(255),
-    etl_tstamp timestamp with time zone,
-    collector_tstamp timestamp with time zone NOT NULL,
-    dvce_created_tstamp timestamp with time zone,
-    event character varying(128),
-    event_id character(36) NOT NULL,
-    txn_id integer,
-    name_tracker character varying(128),
-    v_tracker character varying(100),
-    v_collector character varying(100) NOT NULL,
-    v_etl character varying(100) NOT NULL,
-    user_id character varying(255),
-    user_ipaddress character varying(45),
-    user_fingerprint character varying(50),
-    domain_userid character varying(36),
-    domain_sessionidx smallint,
-    network_userid character varying(38),
-    geo_country character(2),
-    geo_region character(3),
-    geo_city character varying(75),
-    geo_zipcode character varying(15),
-    geo_latitude double precision,
-    geo_longitude double precision,
-    geo_region_name character varying(100),
-    ip_isp character varying(100),
-    ip_organization character varying(100),
-    ip_domain character varying(100),
-    ip_netspeed character varying(100),
-    page_url text,
-    page_title character varying(2000),
-    page_referrer text,
-    page_urlscheme character varying(16),
-    page_urlhost character varying(255),
-    page_urlport integer,
-    page_urlpath character varying(3000),
-    page_urlquery character varying(6000),
-    page_urlfragment character varying(3000),
-    refr_urlscheme character varying(16),
-    refr_urlhost character varying(255),
-    refr_urlport integer,
-    refr_urlpath character varying(6000),
-    refr_urlquery character varying(6000),
-    refr_urlfragment character varying(3000),
-    refr_medium character varying(25),
-    refr_source character varying(50),
-    refr_term character varying(255),
-    mkt_medium character varying(255),
-    mkt_source character varying(255),
-    mkt_term character varying(255),
-    mkt_content character varying(500),
-    mkt_campaign character varying(255),
-    se_category character varying(1000),
-    se_action character varying(1000),
-    se_label character varying(1000),
-    se_property character varying(1000),
-    se_value double precision,
-    tr_orderid character varying(255),
-    tr_affiliation character varying(255),
-    tr_total numeric(18,2),
-    tr_tax numeric(18,2),
-    tr_shipping numeric(18,2),
-    tr_city character varying(255),
-    tr_state character varying(255),
-    tr_country character varying(255),
-    ti_orderid character varying(255),
-    ti_sku character varying(255),
-    ti_name character varying(255),
-    ti_category character varying(255),
-    ti_price numeric(18,2),
-    ti_quantity integer,
-    pp_xoffset_min integer,
-    pp_xoffset_max integer,
-    pp_yoffset_min integer,
-    pp_yoffset_max integer,
-    useragent character varying(1000),
-    br_name character varying(50),
-    br_family character varying(50),
-    br_version character varying(50),
-    br_type character varying(50),
-    br_renderengine character varying(50),
-    br_lang character varying(255),
-    br_features_pdf boolean,
-    br_features_flash boolean,
-    br_features_java boolean,
-    br_features_director boolean,
-    br_features_quicktime boolean,
-    br_features_realplayer boolean,
-    br_features_windowsmedia boolean,
-    br_features_gears boolean,
-    br_features_silverlight boolean,
-    br_cookies boolean,
-    br_colordepth character varying(12),
-    br_viewwidth integer,
-    br_viewheight integer,
-    os_name character varying(50),
-    os_family character varying(50),
-    os_manufacturer character varying(50),
-    os_timezone character varying(50),
-    dvce_type character varying(50),
-    dvce_ismobile boolean,
-    dvce_screenwidth integer,
-    dvce_screenheight integer,
-    doc_charset character varying(128),
-    doc_width integer,
-    doc_height integer,
-    tr_currency character(3),
-    tr_total_base numeric(18,2),
-    tr_tax_base numeric(18,2),
-    tr_shipping_base numeric(18,2),
-    ti_currency character(3),
-    ti_price_base numeric(18,2),
-    base_currency character(3),
-    geo_timezone character varying(64),
-    mkt_clickid character varying(128),
-    mkt_network character varying(64),
-    etl_tags character varying(500),
-    dvce_sent_tstamp timestamp with time zone,
-    refr_domain_userid character varying(36),
-    refr_dvce_tstamp timestamp with time zone,
-    domain_sessionid character(36),
-    derived_tstamp timestamp with time zone,
-    event_vendor character varying(1000),
-    event_name character varying(1000),
-    event_format character varying(128),
-    event_version character varying(128),
-    event_fingerprint character varying(128),
-    true_tstamp timestamp with time zone
-);
-
-CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_43 (
-    id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
-    project_id integer NOT NULL,
-    platform character varying(255),
-    etl_tstamp timestamp with time zone,
-    collector_tstamp timestamp with time zone NOT NULL,
-    dvce_created_tstamp timestamp with time zone,
-    event character varying(128),
-    event_id character(36) NOT NULL,
-    txn_id integer,
-    name_tracker character varying(128),
-    v_tracker character varying(100),
-    v_collector character varying(100) NOT NULL,
-    v_etl character varying(100) NOT NULL,
-    user_id character varying(255),
-    user_ipaddress character varying(45),
-    user_fingerprint character varying(50),
-    domain_userid character varying(36),
-    domain_sessionidx smallint,
-    network_userid character varying(38),
-    geo_country character(2),
-    geo_region character(3),
-    geo_city character varying(75),
-    geo_zipcode character varying(15),
-    geo_latitude double precision,
-    geo_longitude double precision,
-    geo_region_name character varying(100),
-    ip_isp character varying(100),
-    ip_organization character varying(100),
-    ip_domain character varying(100),
-    ip_netspeed character varying(100),
-    page_url text,
-    page_title character varying(2000),
-    page_referrer text,
-    page_urlscheme character varying(16),
-    page_urlhost character varying(255),
-    page_urlport integer,
-    page_urlpath character varying(3000),
-    page_urlquery character varying(6000),
-    page_urlfragment character varying(3000),
-    refr_urlscheme character varying(16),
-    refr_urlhost character varying(255),
-    refr_urlport integer,
-    refr_urlpath character varying(6000),
-    refr_urlquery character varying(6000),
-    refr_urlfragment character varying(3000),
-    refr_medium character varying(25),
-    refr_source character varying(50),
-    refr_term character varying(255),
-    mkt_medium character varying(255),
-    mkt_source character varying(255),
-    mkt_term character varying(255),
-    mkt_content character varying(500),
-    mkt_campaign character varying(255),
-    se_category character varying(1000),
-    se_action character varying(1000),
-    se_label character varying(1000),
-    se_property character varying(1000),
-    se_value double precision,
-    tr_orderid character varying(255),
-    tr_affiliation character varying(255),
-    tr_total numeric(18,2),
-    tr_tax numeric(18,2),
-    tr_shipping numeric(18,2),
-    tr_city character varying(255),
-    tr_state character varying(255),
-    tr_country character varying(255),
-    ti_orderid character varying(255),
-    ti_sku character varying(255),
-    ti_name character varying(255),
-    ti_category character varying(255),
-    ti_price numeric(18,2),
-    ti_quantity integer,
-    pp_xoffset_min integer,
-    pp_xoffset_max integer,
-    pp_yoffset_min integer,
-    pp_yoffset_max integer,
-    useragent character varying(1000),
-    br_name character varying(50),
-    br_family character varying(50),
-    br_version character varying(50),
-    br_type character varying(50),
-    br_renderengine character varying(50),
-    br_lang character varying(255),
-    br_features_pdf boolean,
-    br_features_flash boolean,
-    br_features_java boolean,
-    br_features_director boolean,
-    br_features_quicktime boolean,
-    br_features_realplayer boolean,
-    br_features_windowsmedia boolean,
-    br_features_gears boolean,
-    br_features_silverlight boolean,
-    br_cookies boolean,
-    br_colordepth character varying(12),
-    br_viewwidth integer,
-    br_viewheight integer,
-    os_name character varying(50),
-    os_family character varying(50),
-    os_manufacturer character varying(50),
-    os_timezone character varying(50),
-    dvce_type character varying(50),
-    dvce_ismobile boolean,
-    dvce_screenwidth integer,
-    dvce_screenheight integer,
-    doc_charset character varying(128),
-    doc_width integer,
-    doc_height integer,
-    tr_currency character(3),
-    tr_total_base numeric(18,2),
-    tr_tax_base numeric(18,2),
-    tr_shipping_base numeric(18,2),
-    ti_currency character(3),
-    ti_price_base numeric(18,2),
-    base_currency character(3),
-    geo_timezone character varying(64),
-    mkt_clickid character varying(128),
-    mkt_network character varying(64),
-    etl_tags character varying(500),
-    dvce_sent_tstamp timestamp with time zone,
-    refr_domain_userid character varying(36),
-    refr_dvce_tstamp timestamp with time zone,
-    domain_sessionid character(36),
-    derived_tstamp timestamp with time zone,
-    event_vendor character varying(1000),
-    event_name character varying(1000),
-    event_format character varying(128),
-    event_version character varying(128),
-    event_fingerprint character varying(128),
-    true_tstamp timestamp with time zone
-);
-
-CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_44 (
-    id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
-    project_id integer NOT NULL,
-    platform character varying(255),
-    etl_tstamp timestamp with time zone,
-    collector_tstamp timestamp with time zone NOT NULL,
-    dvce_created_tstamp timestamp with time zone,
-    event character varying(128),
-    event_id character(36) NOT NULL,
-    txn_id integer,
-    name_tracker character varying(128),
-    v_tracker character varying(100),
-    v_collector character varying(100) NOT NULL,
-    v_etl character varying(100) NOT NULL,
-    user_id character varying(255),
-    user_ipaddress character varying(45),
-    user_fingerprint character varying(50),
-    domain_userid character varying(36),
-    domain_sessionidx smallint,
-    network_userid character varying(38),
-    geo_country character(2),
-    geo_region character(3),
-    geo_city character varying(75),
-    geo_zipcode character varying(15),
-    geo_latitude double precision,
-    geo_longitude double precision,
-    geo_region_name character varying(100),
-    ip_isp character varying(100),
-    ip_organization character varying(100),
-    ip_domain character varying(100),
-    ip_netspeed character varying(100),
-    page_url text,
-    page_title character varying(2000),
-    page_referrer text,
-    page_urlscheme character varying(16),
-    page_urlhost character varying(255),
-    page_urlport integer,
-    page_urlpath character varying(3000),
-    page_urlquery character varying(6000),
-    page_urlfragment character varying(3000),
-    refr_urlscheme character varying(16),
-    refr_urlhost character varying(255),
-    refr_urlport integer,
-    refr_urlpath character varying(6000),
-    refr_urlquery character varying(6000),
-    refr_urlfragment character varying(3000),
-    refr_medium character varying(25),
-    refr_source character varying(50),
-    refr_term character varying(255),
-    mkt_medium character varying(255),
-    mkt_source character varying(255),
-    mkt_term character varying(255),
-    mkt_content character varying(500),
-    mkt_campaign character varying(255),
-    se_category character varying(1000),
-    se_action character varying(1000),
-    se_label character varying(1000),
-    se_property character varying(1000),
-    se_value double precision,
-    tr_orderid character varying(255),
-    tr_affiliation character varying(255),
-    tr_total numeric(18,2),
-    tr_tax numeric(18,2),
-    tr_shipping numeric(18,2),
-    tr_city character varying(255),
-    tr_state character varying(255),
-    tr_country character varying(255),
-    ti_orderid character varying(255),
-    ti_sku character varying(255),
-    ti_name character varying(255),
-    ti_category character varying(255),
-    ti_price numeric(18,2),
-    ti_quantity integer,
-    pp_xoffset_min integer,
-    pp_xoffset_max integer,
-    pp_yoffset_min integer,
-    pp_yoffset_max integer,
-    useragent character varying(1000),
-    br_name character varying(50),
-    br_family character varying(50),
-    br_version character varying(50),
-    br_type character varying(50),
-    br_renderengine character varying(50),
-    br_lang character varying(255),
-    br_features_pdf boolean,
-    br_features_flash boolean,
-    br_features_java boolean,
-    br_features_director boolean,
-    br_features_quicktime boolean,
-    br_features_realplayer boolean,
-    br_features_windowsmedia boolean,
-    br_features_gears boolean,
-    br_features_silverlight boolean,
-    br_cookies boolean,
-    br_colordepth character varying(12),
-    br_viewwidth integer,
-    br_viewheight integer,
-    os_name character varying(50),
-    os_family character varying(50),
-    os_manufacturer character varying(50),
-    os_timezone character varying(50),
-    dvce_type character varying(50),
-    dvce_ismobile boolean,
-    dvce_screenwidth integer,
-    dvce_screenheight integer,
-    doc_charset character varying(128),
-    doc_width integer,
-    doc_height integer,
-    tr_currency character(3),
-    tr_total_base numeric(18,2),
-    tr_tax_base numeric(18,2),
-    tr_shipping_base numeric(18,2),
-    ti_currency character(3),
-    ti_price_base numeric(18,2),
-    base_currency character(3),
-    geo_timezone character varying(64),
-    mkt_clickid character varying(128),
-    mkt_network character varying(64),
-    etl_tags character varying(500),
-    dvce_sent_tstamp timestamp with time zone,
-    refr_domain_userid character varying(36),
-    refr_dvce_tstamp timestamp with time zone,
-    domain_sessionid character(36),
-    derived_tstamp timestamp with time zone,
-    event_vendor character varying(1000),
-    event_name character varying(1000),
-    event_format character varying(128),
-    event_version character varying(128),
-    event_fingerprint character varying(128),
-    true_tstamp timestamp with time zone
-);
-
-CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_45 (
-    id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
-    project_id integer NOT NULL,
-    platform character varying(255),
-    etl_tstamp timestamp with time zone,
-    collector_tstamp timestamp with time zone NOT NULL,
-    dvce_created_tstamp timestamp with time zone,
-    event character varying(128),
-    event_id character(36) NOT NULL,
-    txn_id integer,
-    name_tracker character varying(128),
-    v_tracker character varying(100),
-    v_collector character varying(100) NOT NULL,
-    v_etl character varying(100) NOT NULL,
-    user_id character varying(255),
-    user_ipaddress character varying(45),
-    user_fingerprint character varying(50),
-    domain_userid character varying(36),
-    domain_sessionidx smallint,
-    network_userid character varying(38),
-    geo_country character(2),
-    geo_region character(3),
-    geo_city character varying(75),
-    geo_zipcode character varying(15),
-    geo_latitude double precision,
-    geo_longitude double precision,
-    geo_region_name character varying(100),
-    ip_isp character varying(100),
-    ip_organization character varying(100),
-    ip_domain character varying(100),
-    ip_netspeed character varying(100),
-    page_url text,
-    page_title character varying(2000),
-    page_referrer text,
-    page_urlscheme character varying(16),
-    page_urlhost character varying(255),
-    page_urlport integer,
-    page_urlpath character varying(3000),
-    page_urlquery character varying(6000),
-    page_urlfragment character varying(3000),
-    refr_urlscheme character varying(16),
-    refr_urlhost character varying(255),
-    refr_urlport integer,
-    refr_urlpath character varying(6000),
-    refr_urlquery character varying(6000),
-    refr_urlfragment character varying(3000),
-    refr_medium character varying(25),
-    refr_source character varying(50),
-    refr_term character varying(255),
-    mkt_medium character varying(255),
-    mkt_source character varying(255),
-    mkt_term character varying(255),
-    mkt_content character varying(500),
-    mkt_campaign character varying(255),
-    se_category character varying(1000),
-    se_action character varying(1000),
-    se_label character varying(1000),
-    se_property character varying(1000),
-    se_value double precision,
-    tr_orderid character varying(255),
-    tr_affiliation character varying(255),
-    tr_total numeric(18,2),
-    tr_tax numeric(18,2),
-    tr_shipping numeric(18,2),
-    tr_city character varying(255),
-    tr_state character varying(255),
-    tr_country character varying(255),
-    ti_orderid character varying(255),
-    ti_sku character varying(255),
-    ti_name character varying(255),
-    ti_category character varying(255),
-    ti_price numeric(18,2),
-    ti_quantity integer,
-    pp_xoffset_min integer,
-    pp_xoffset_max integer,
-    pp_yoffset_min integer,
-    pp_yoffset_max integer,
-    useragent character varying(1000),
-    br_name character varying(50),
-    br_family character varying(50),
-    br_version character varying(50),
-    br_type character varying(50),
-    br_renderengine character varying(50),
-    br_lang character varying(255),
-    br_features_pdf boolean,
-    br_features_flash boolean,
-    br_features_java boolean,
-    br_features_director boolean,
-    br_features_quicktime boolean,
-    br_features_realplayer boolean,
-    br_features_windowsmedia boolean,
-    br_features_gears boolean,
-    br_features_silverlight boolean,
-    br_cookies boolean,
-    br_colordepth character varying(12),
-    br_viewwidth integer,
-    br_viewheight integer,
-    os_name character varying(50),
-    os_family character varying(50),
-    os_manufacturer character varying(50),
-    os_timezone character varying(50),
-    dvce_type character varying(50),
-    dvce_ismobile boolean,
-    dvce_screenwidth integer,
-    dvce_screenheight integer,
-    doc_charset character varying(128),
-    doc_width integer,
-    doc_height integer,
-    tr_currency character(3),
-    tr_total_base numeric(18,2),
-    tr_tax_base numeric(18,2),
-    tr_shipping_base numeric(18,2),
-    ti_currency character(3),
-    ti_price_base numeric(18,2),
-    base_currency character(3),
-    geo_timezone character varying(64),
-    mkt_clickid character varying(128),
-    mkt_network character varying(64),
-    etl_tags character varying(500),
-    dvce_sent_tstamp timestamp with time zone,
-    refr_domain_userid character varying(36),
-    refr_dvce_tstamp timestamp with time zone,
-    domain_sessionid character(36),
-    derived_tstamp timestamp with time zone,
-    event_vendor character varying(1000),
-    event_name character varying(1000),
-    event_format character varying(128),
-    event_version character varying(128),
-    event_fingerprint character varying(128),
-    true_tstamp timestamp with time zone
-);
-
-CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_46 (
-    id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
-    project_id integer NOT NULL,
-    platform character varying(255),
-    etl_tstamp timestamp with time zone,
-    collector_tstamp timestamp with time zone NOT NULL,
-    dvce_created_tstamp timestamp with time zone,
-    event character varying(128),
-    event_id character(36) NOT NULL,
-    txn_id integer,
-    name_tracker character varying(128),
-    v_tracker character varying(100),
-    v_collector character varying(100) NOT NULL,
-    v_etl character varying(100) NOT NULL,
-    user_id character varying(255),
-    user_ipaddress character varying(45),
-    user_fingerprint character varying(50),
-    domain_userid character varying(36),
-    domain_sessionidx smallint,
-    network_userid character varying(38),
-    geo_country character(2),
-    geo_region character(3),
-    geo_city character varying(75),
-    geo_zipcode character varying(15),
-    geo_latitude double precision,
-    geo_longitude double precision,
-    geo_region_name character varying(100),
-    ip_isp character varying(100),
-    ip_organization character varying(100),
-    ip_domain character varying(100),
-    ip_netspeed character varying(100),
-    page_url text,
-    page_title character varying(2000),
-    page_referrer text,
-    page_urlscheme character varying(16),
-    page_urlhost character varying(255),
-    page_urlport integer,
-    page_urlpath character varying(3000),
-    page_urlquery character varying(6000),
-    page_urlfragment character varying(3000),
-    refr_urlscheme character varying(16),
-    refr_urlhost character varying(255),
-    refr_urlport integer,
-    refr_urlpath character varying(6000),
-    refr_urlquery character varying(6000),
-    refr_urlfragment character varying(3000),
-    refr_medium character varying(25),
-    refr_source character varying(50),
-    refr_term character varying(255),
-    mkt_medium character varying(255),
-    mkt_source character varying(255),
-    mkt_term character varying(255),
-    mkt_content character varying(500),
-    mkt_campaign character varying(255),
-    se_category character varying(1000),
-    se_action character varying(1000),
-    se_label character varying(1000),
-    se_property character varying(1000),
-    se_value double precision,
-    tr_orderid character varying(255),
-    tr_affiliation character varying(255),
-    tr_total numeric(18,2),
-    tr_tax numeric(18,2),
-    tr_shipping numeric(18,2),
-    tr_city character varying(255),
-    tr_state character varying(255),
-    tr_country character varying(255),
-    ti_orderid character varying(255),
-    ti_sku character varying(255),
-    ti_name character varying(255),
-    ti_category character varying(255),
-    ti_price numeric(18,2),
-    ti_quantity integer,
-    pp_xoffset_min integer,
-    pp_xoffset_max integer,
-    pp_yoffset_min integer,
-    pp_yoffset_max integer,
-    useragent character varying(1000),
-    br_name character varying(50),
-    br_family character varying(50),
-    br_version character varying(50),
-    br_type character varying(50),
-    br_renderengine character varying(50),
-    br_lang character varying(255),
-    br_features_pdf boolean,
-    br_features_flash boolean,
-    br_features_java boolean,
-    br_features_director boolean,
-    br_features_quicktime boolean,
-    br_features_realplayer boolean,
-    br_features_windowsmedia boolean,
-    br_features_gears boolean,
-    br_features_silverlight boolean,
-    br_cookies boolean,
-    br_colordepth character varying(12),
-    br_viewwidth integer,
-    br_viewheight integer,
-    os_name character varying(50),
-    os_family character varying(50),
-    os_manufacturer character varying(50),
-    os_timezone character varying(50),
-    dvce_type character varying(50),
-    dvce_ismobile boolean,
-    dvce_screenwidth integer,
-    dvce_screenheight integer,
-    doc_charset character varying(128),
-    doc_width integer,
-    doc_height integer,
-    tr_currency character(3),
-    tr_total_base numeric(18,2),
-    tr_tax_base numeric(18,2),
-    tr_shipping_base numeric(18,2),
-    ti_currency character(3),
-    ti_price_base numeric(18,2),
-    base_currency character(3),
-    geo_timezone character varying(64),
-    mkt_clickid character varying(128),
-    mkt_network character varying(64),
-    etl_tags character varying(500),
-    dvce_sent_tstamp timestamp with time zone,
-    refr_domain_userid character varying(36),
-    refr_dvce_tstamp timestamp with time zone,
-    domain_sessionid character(36),
-    derived_tstamp timestamp with time zone,
-    event_vendor character varying(1000),
-    event_name character varying(1000),
-    event_format character varying(128),
-    event_version character varying(128),
-    event_fingerprint character varying(128),
-    true_tstamp timestamp with time zone
-);
-
-CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_47 (
-    id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
-    project_id integer NOT NULL,
-    platform character varying(255),
-    etl_tstamp timestamp with time zone,
-    collector_tstamp timestamp with time zone NOT NULL,
-    dvce_created_tstamp timestamp with time zone,
-    event character varying(128),
-    event_id character(36) NOT NULL,
-    txn_id integer,
-    name_tracker character varying(128),
-    v_tracker character varying(100),
-    v_collector character varying(100) NOT NULL,
-    v_etl character varying(100) NOT NULL,
-    user_id character varying(255),
-    user_ipaddress character varying(45),
-    user_fingerprint character varying(50),
-    domain_userid character varying(36),
-    domain_sessionidx smallint,
-    network_userid character varying(38),
-    geo_country character(2),
-    geo_region character(3),
-    geo_city character varying(75),
-    geo_zipcode character varying(15),
-    geo_latitude double precision,
-    geo_longitude double precision,
-    geo_region_name character varying(100),
-    ip_isp character varying(100),
-    ip_organization character varying(100),
-    ip_domain character varying(100),
-    ip_netspeed character varying(100),
-    page_url text,
-    page_title character varying(2000),
-    page_referrer text,
-    page_urlscheme character varying(16),
-    page_urlhost character varying(255),
-    page_urlport integer,
-    page_urlpath character varying(3000),
-    page_urlquery character varying(6000),
-    page_urlfragment character varying(3000),
-    refr_urlscheme character varying(16),
-    refr_urlhost character varying(255),
-    refr_urlport integer,
-    refr_urlpath character varying(6000),
-    refr_urlquery character varying(6000),
-    refr_urlfragment character varying(3000),
-    refr_medium character varying(25),
-    refr_source character varying(50),
-    refr_term character varying(255),
-    mkt_medium character varying(255),
-    mkt_source character varying(255),
-    mkt_term character varying(255),
-    mkt_content character varying(500),
-    mkt_campaign character varying(255),
-    se_category character varying(1000),
-    se_action character varying(1000),
-    se_label character varying(1000),
-    se_property character varying(1000),
-    se_value double precision,
-    tr_orderid character varying(255),
-    tr_affiliation character varying(255),
-    tr_total numeric(18,2),
-    tr_tax numeric(18,2),
-    tr_shipping numeric(18,2),
-    tr_city character varying(255),
-    tr_state character varying(255),
-    tr_country character varying(255),
-    ti_orderid character varying(255),
-    ti_sku character varying(255),
-    ti_name character varying(255),
-    ti_category character varying(255),
-    ti_price numeric(18,2),
-    ti_quantity integer,
-    pp_xoffset_min integer,
-    pp_xoffset_max integer,
-    pp_yoffset_min integer,
-    pp_yoffset_max integer,
-    useragent character varying(1000),
-    br_name character varying(50),
-    br_family character varying(50),
-    br_version character varying(50),
-    br_type character varying(50),
-    br_renderengine character varying(50),
-    br_lang character varying(255),
-    br_features_pdf boolean,
-    br_features_flash boolean,
-    br_features_java boolean,
-    br_features_director boolean,
-    br_features_quicktime boolean,
-    br_features_realplayer boolean,
-    br_features_windowsmedia boolean,
-    br_features_gears boolean,
-    br_features_silverlight boolean,
-    br_cookies boolean,
-    br_colordepth character varying(12),
-    br_viewwidth integer,
-    br_viewheight integer,
-    os_name character varying(50),
-    os_family character varying(50),
-    os_manufacturer character varying(50),
-    os_timezone character varying(50),
-    dvce_type character varying(50),
-    dvce_ismobile boolean,
-    dvce_screenwidth integer,
-    dvce_screenheight integer,
-    doc_charset character varying(128),
-    doc_width integer,
-    doc_height integer,
-    tr_currency character(3),
-    tr_total_base numeric(18,2),
-    tr_tax_base numeric(18,2),
-    tr_shipping_base numeric(18,2),
-    ti_currency character(3),
-    ti_price_base numeric(18,2),
-    base_currency character(3),
-    geo_timezone character varying(64),
-    mkt_clickid character varying(128),
-    mkt_network character varying(64),
-    etl_tags character varying(500),
-    dvce_sent_tstamp timestamp with time zone,
-    refr_domain_userid character varying(36),
-    refr_dvce_tstamp timestamp with time zone,
-    domain_sessionid character(36),
-    derived_tstamp timestamp with time zone,
-    event_vendor character varying(1000),
-    event_name character varying(1000),
-    event_format character varying(128),
-    event_version character varying(128),
-    event_fingerprint character varying(128),
-    true_tstamp timestamp with time zone
-);
-
-CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_48 (
-    id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
-    project_id integer NOT NULL,
-    platform character varying(255),
-    etl_tstamp timestamp with time zone,
-    collector_tstamp timestamp with time zone NOT NULL,
-    dvce_created_tstamp timestamp with time zone,
-    event character varying(128),
-    event_id character(36) NOT NULL,
-    txn_id integer,
-    name_tracker character varying(128),
-    v_tracker character varying(100),
-    v_collector character varying(100) NOT NULL,
-    v_etl character varying(100) NOT NULL,
-    user_id character varying(255),
-    user_ipaddress character varying(45),
-    user_fingerprint character varying(50),
-    domain_userid character varying(36),
-    domain_sessionidx smallint,
-    network_userid character varying(38),
-    geo_country character(2),
-    geo_region character(3),
-    geo_city character varying(75),
-    geo_zipcode character varying(15),
-    geo_latitude double precision,
-    geo_longitude double precision,
-    geo_region_name character varying(100),
-    ip_isp character varying(100),
-    ip_organization character varying(100),
-    ip_domain character varying(100),
-    ip_netspeed character varying(100),
-    page_url text,
-    page_title character varying(2000),
-    page_referrer text,
-    page_urlscheme character varying(16),
-    page_urlhost character varying(255),
-    page_urlport integer,
-    page_urlpath character varying(3000),
-    page_urlquery character varying(6000),
-    page_urlfragment character varying(3000),
-    refr_urlscheme character varying(16),
-    refr_urlhost character varying(255),
-    refr_urlport integer,
-    refr_urlpath character varying(6000),
-    refr_urlquery character varying(6000),
-    refr_urlfragment character varying(3000),
-    refr_medium character varying(25),
-    refr_source character varying(50),
-    refr_term character varying(255),
-    mkt_medium character varying(255),
-    mkt_source character varying(255),
-    mkt_term character varying(255),
-    mkt_content character varying(500),
-    mkt_campaign character varying(255),
-    se_category character varying(1000),
-    se_action character varying(1000),
-    se_label character varying(1000),
-    se_property character varying(1000),
-    se_value double precision,
-    tr_orderid character varying(255),
-    tr_affiliation character varying(255),
-    tr_total numeric(18,2),
-    tr_tax numeric(18,2),
-    tr_shipping numeric(18,2),
-    tr_city character varying(255),
-    tr_state character varying(255),
-    tr_country character varying(255),
-    ti_orderid character varying(255),
-    ti_sku character varying(255),
-    ti_name character varying(255),
-    ti_category character varying(255),
-    ti_price numeric(18,2),
-    ti_quantity integer,
-    pp_xoffset_min integer,
-    pp_xoffset_max integer,
-    pp_yoffset_min integer,
-    pp_yoffset_max integer,
-    useragent character varying(1000),
-    br_name character varying(50),
-    br_family character varying(50),
-    br_version character varying(50),
-    br_type character varying(50),
-    br_renderengine character varying(50),
-    br_lang character varying(255),
-    br_features_pdf boolean,
-    br_features_flash boolean,
-    br_features_java boolean,
-    br_features_director boolean,
-    br_features_quicktime boolean,
-    br_features_realplayer boolean,
-    br_features_windowsmedia boolean,
-    br_features_gears boolean,
-    br_features_silverlight boolean,
-    br_cookies boolean,
-    br_colordepth character varying(12),
-    br_viewwidth integer,
-    br_viewheight integer,
-    os_name character varying(50),
-    os_family character varying(50),
-    os_manufacturer character varying(50),
-    os_timezone character varying(50),
-    dvce_type character varying(50),
-    dvce_ismobile boolean,
-    dvce_screenwidth integer,
-    dvce_screenheight integer,
-    doc_charset character varying(128),
-    doc_width integer,
-    doc_height integer,
-    tr_currency character(3),
-    tr_total_base numeric(18,2),
-    tr_tax_base numeric(18,2),
-    tr_shipping_base numeric(18,2),
-    ti_currency character(3),
-    ti_price_base numeric(18,2),
-    base_currency character(3),
-    geo_timezone character varying(64),
-    mkt_clickid character varying(128),
-    mkt_network character varying(64),
-    etl_tags character varying(500),
-    dvce_sent_tstamp timestamp with time zone,
-    refr_domain_userid character varying(36),
-    refr_dvce_tstamp timestamp with time zone,
-    domain_sessionid character(36),
-    derived_tstamp timestamp with time zone,
-    event_vendor character varying(1000),
-    event_name character varying(1000),
-    event_format character varying(128),
-    event_version character varying(128),
-    event_fingerprint character varying(128),
-    true_tstamp timestamp with time zone
-);
-
-CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_49 (
-    id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
-    project_id integer NOT NULL,
-    platform character varying(255),
-    etl_tstamp timestamp with time zone,
-    collector_tstamp timestamp with time zone NOT NULL,
-    dvce_created_tstamp timestamp with time zone,
-    event character varying(128),
-    event_id character(36) NOT NULL,
-    txn_id integer,
-    name_tracker character varying(128),
-    v_tracker character varying(100),
-    v_collector character varying(100) NOT NULL,
-    v_etl character varying(100) NOT NULL,
-    user_id character varying(255),
-    user_ipaddress character varying(45),
-    user_fingerprint character varying(50),
-    domain_userid character varying(36),
-    domain_sessionidx smallint,
-    network_userid character varying(38),
-    geo_country character(2),
-    geo_region character(3),
-    geo_city character varying(75),
-    geo_zipcode character varying(15),
-    geo_latitude double precision,
-    geo_longitude double precision,
-    geo_region_name character varying(100),
-    ip_isp character varying(100),
-    ip_organization character varying(100),
-    ip_domain character varying(100),
-    ip_netspeed character varying(100),
-    page_url text,
-    page_title character varying(2000),
-    page_referrer text,
-    page_urlscheme character varying(16),
-    page_urlhost character varying(255),
-    page_urlport integer,
-    page_urlpath character varying(3000),
-    page_urlquery character varying(6000),
-    page_urlfragment character varying(3000),
-    refr_urlscheme character varying(16),
-    refr_urlhost character varying(255),
-    refr_urlport integer,
-    refr_urlpath character varying(6000),
-    refr_urlquery character varying(6000),
-    refr_urlfragment character varying(3000),
-    refr_medium character varying(25),
-    refr_source character varying(50),
-    refr_term character varying(255),
-    mkt_medium character varying(255),
-    mkt_source character varying(255),
-    mkt_term character varying(255),
-    mkt_content character varying(500),
-    mkt_campaign character varying(255),
-    se_category character varying(1000),
-    se_action character varying(1000),
-    se_label character varying(1000),
-    se_property character varying(1000),
-    se_value double precision,
-    tr_orderid character varying(255),
-    tr_affiliation character varying(255),
-    tr_total numeric(18,2),
-    tr_tax numeric(18,2),
-    tr_shipping numeric(18,2),
-    tr_city character varying(255),
-    tr_state character varying(255),
-    tr_country character varying(255),
-    ti_orderid character varying(255),
-    ti_sku character varying(255),
-    ti_name character varying(255),
-    ti_category character varying(255),
-    ti_price numeric(18,2),
-    ti_quantity integer,
-    pp_xoffset_min integer,
-    pp_xoffset_max integer,
-    pp_yoffset_min integer,
-    pp_yoffset_max integer,
-    useragent character varying(1000),
-    br_name character varying(50),
-    br_family character varying(50),
-    br_version character varying(50),
-    br_type character varying(50),
-    br_renderengine character varying(50),
-    br_lang character varying(255),
-    br_features_pdf boolean,
-    br_features_flash boolean,
-    br_features_java boolean,
-    br_features_director boolean,
-    br_features_quicktime boolean,
-    br_features_realplayer boolean,
-    br_features_windowsmedia boolean,
-    br_features_gears boolean,
-    br_features_silverlight boolean,
-    br_cookies boolean,
-    br_colordepth character varying(12),
-    br_viewwidth integer,
-    br_viewheight integer,
-    os_name character varying(50),
-    os_family character varying(50),
-    os_manufacturer character varying(50),
-    os_timezone character varying(50),
-    dvce_type character varying(50),
-    dvce_ismobile boolean,
-    dvce_screenwidth integer,
-    dvce_screenheight integer,
-    doc_charset character varying(128),
-    doc_width integer,
-    doc_height integer,
-    tr_currency character(3),
-    tr_total_base numeric(18,2),
-    tr_tax_base numeric(18,2),
-    tr_shipping_base numeric(18,2),
-    ti_currency character(3),
-    ti_price_base numeric(18,2),
-    base_currency character(3),
-    geo_timezone character varying(64),
-    mkt_clickid character varying(128),
-    mkt_network character varying(64),
-    etl_tags character varying(500),
-    dvce_sent_tstamp timestamp with time zone,
-    refr_domain_userid character varying(36),
-    refr_dvce_tstamp timestamp with time zone,
-    domain_sessionid character(36),
-    derived_tstamp timestamp with time zone,
-    event_vendor character varying(1000),
-    event_name character varying(1000),
-    event_format character varying(128),
-    event_version character varying(128),
-    event_fingerprint character varying(128),
-    true_tstamp timestamp with time zone
-);
-
-CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_50 (
-    id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
-    project_id integer NOT NULL,
-    platform character varying(255),
-    etl_tstamp timestamp with time zone,
-    collector_tstamp timestamp with time zone NOT NULL,
-    dvce_created_tstamp timestamp with time zone,
-    event character varying(128),
-    event_id character(36) NOT NULL,
-    txn_id integer,
-    name_tracker character varying(128),
-    v_tracker character varying(100),
-    v_collector character varying(100) NOT NULL,
-    v_etl character varying(100) NOT NULL,
-    user_id character varying(255),
-    user_ipaddress character varying(45),
-    user_fingerprint character varying(50),
-    domain_userid character varying(36),
-    domain_sessionidx smallint,
-    network_userid character varying(38),
-    geo_country character(2),
-    geo_region character(3),
-    geo_city character varying(75),
-    geo_zipcode character varying(15),
-    geo_latitude double precision,
-    geo_longitude double precision,
-    geo_region_name character varying(100),
-    ip_isp character varying(100),
-    ip_organization character varying(100),
-    ip_domain character varying(100),
-    ip_netspeed character varying(100),
-    page_url text,
-    page_title character varying(2000),
-    page_referrer text,
-    page_urlscheme character varying(16),
-    page_urlhost character varying(255),
-    page_urlport integer,
-    page_urlpath character varying(3000),
-    page_urlquery character varying(6000),
-    page_urlfragment character varying(3000),
-    refr_urlscheme character varying(16),
-    refr_urlhost character varying(255),
-    refr_urlport integer,
-    refr_urlpath character varying(6000),
-    refr_urlquery character varying(6000),
-    refr_urlfragment character varying(3000),
-    refr_medium character varying(25),
-    refr_source character varying(50),
-    refr_term character varying(255),
-    mkt_medium character varying(255),
-    mkt_source character varying(255),
-    mkt_term character varying(255),
-    mkt_content character varying(500),
-    mkt_campaign character varying(255),
-    se_category character varying(1000),
-    se_action character varying(1000),
-    se_label character varying(1000),
-    se_property character varying(1000),
-    se_value double precision,
-    tr_orderid character varying(255),
-    tr_affiliation character varying(255),
-    tr_total numeric(18,2),
-    tr_tax numeric(18,2),
-    tr_shipping numeric(18,2),
-    tr_city character varying(255),
-    tr_state character varying(255),
-    tr_country character varying(255),
-    ti_orderid character varying(255),
-    ti_sku character varying(255),
-    ti_name character varying(255),
-    ti_category character varying(255),
-    ti_price numeric(18,2),
-    ti_quantity integer,
-    pp_xoffset_min integer,
-    pp_xoffset_max integer,
-    pp_yoffset_min integer,
-    pp_yoffset_max integer,
-    useragent character varying(1000),
-    br_name character varying(50),
-    br_family character varying(50),
-    br_version character varying(50),
-    br_type character varying(50),
-    br_renderengine character varying(50),
-    br_lang character varying(255),
-    br_features_pdf boolean,
-    br_features_flash boolean,
-    br_features_java boolean,
-    br_features_director boolean,
-    br_features_quicktime boolean,
-    br_features_realplayer boolean,
-    br_features_windowsmedia boolean,
-    br_features_gears boolean,
-    br_features_silverlight boolean,
-    br_cookies boolean,
-    br_colordepth character varying(12),
-    br_viewwidth integer,
-    br_viewheight integer,
-    os_name character varying(50),
-    os_family character varying(50),
-    os_manufacturer character varying(50),
-    os_timezone character varying(50),
-    dvce_type character varying(50),
-    dvce_ismobile boolean,
-    dvce_screenwidth integer,
-    dvce_screenheight integer,
-    doc_charset character varying(128),
-    doc_width integer,
-    doc_height integer,
-    tr_currency character(3),
-    tr_total_base numeric(18,2),
-    tr_tax_base numeric(18,2),
-    tr_shipping_base numeric(18,2),
-    ti_currency character(3),
-    ti_price_base numeric(18,2),
-    base_currency character(3),
-    geo_timezone character varying(64),
-    mkt_clickid character varying(128),
-    mkt_network character varying(64),
-    etl_tags character varying(500),
-    dvce_sent_tstamp timestamp with time zone,
-    refr_domain_userid character varying(36),
-    refr_dvce_tstamp timestamp with time zone,
-    domain_sessionid character(36),
-    derived_tstamp timestamp with time zone,
-    event_vendor character varying(1000),
-    event_name character varying(1000),
-    event_format character varying(128),
-    event_version character varying(128),
-    event_fingerprint character varying(128),
-    true_tstamp timestamp with time zone
-);
-
-CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_51 (
-    id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
-    project_id integer NOT NULL,
-    platform character varying(255),
-    etl_tstamp timestamp with time zone,
-    collector_tstamp timestamp with time zone NOT NULL,
-    dvce_created_tstamp timestamp with time zone,
-    event character varying(128),
-    event_id character(36) NOT NULL,
-    txn_id integer,
-    name_tracker character varying(128),
-    v_tracker character varying(100),
-    v_collector character varying(100) NOT NULL,
-    v_etl character varying(100) NOT NULL,
-    user_id character varying(255),
-    user_ipaddress character varying(45),
-    user_fingerprint character varying(50),
-    domain_userid character varying(36),
-    domain_sessionidx smallint,
-    network_userid character varying(38),
-    geo_country character(2),
-    geo_region character(3),
-    geo_city character varying(75),
-    geo_zipcode character varying(15),
-    geo_latitude double precision,
-    geo_longitude double precision,
-    geo_region_name character varying(100),
-    ip_isp character varying(100),
-    ip_organization character varying(100),
-    ip_domain character varying(100),
-    ip_netspeed character varying(100),
-    page_url text,
-    page_title character varying(2000),
-    page_referrer text,
-    page_urlscheme character varying(16),
-    page_urlhost character varying(255),
-    page_urlport integer,
-    page_urlpath character varying(3000),
-    page_urlquery character varying(6000),
-    page_urlfragment character varying(3000),
-    refr_urlscheme character varying(16),
-    refr_urlhost character varying(255),
-    refr_urlport integer,
-    refr_urlpath character varying(6000),
-    refr_urlquery character varying(6000),
-    refr_urlfragment character varying(3000),
-    refr_medium character varying(25),
-    refr_source character varying(50),
-    refr_term character varying(255),
-    mkt_medium character varying(255),
-    mkt_source character varying(255),
-    mkt_term character varying(255),
-    mkt_content character varying(500),
-    mkt_campaign character varying(255),
-    se_category character varying(1000),
-    se_action character varying(1000),
-    se_label character varying(1000),
-    se_property character varying(1000),
-    se_value double precision,
-    tr_orderid character varying(255),
-    tr_affiliation character varying(255),
-    tr_total numeric(18,2),
-    tr_tax numeric(18,2),
-    tr_shipping numeric(18,2),
-    tr_city character varying(255),
-    tr_state character varying(255),
-    tr_country character varying(255),
-    ti_orderid character varying(255),
-    ti_sku character varying(255),
-    ti_name character varying(255),
-    ti_category character varying(255),
-    ti_price numeric(18,2),
-    ti_quantity integer,
-    pp_xoffset_min integer,
-    pp_xoffset_max integer,
-    pp_yoffset_min integer,
-    pp_yoffset_max integer,
-    useragent character varying(1000),
-    br_name character varying(50),
-    br_family character varying(50),
-    br_version character varying(50),
-    br_type character varying(50),
-    br_renderengine character varying(50),
-    br_lang character varying(255),
-    br_features_pdf boolean,
-    br_features_flash boolean,
-    br_features_java boolean,
-    br_features_director boolean,
-    br_features_quicktime boolean,
-    br_features_realplayer boolean,
-    br_features_windowsmedia boolean,
-    br_features_gears boolean,
-    br_features_silverlight boolean,
-    br_cookies boolean,
-    br_colordepth character varying(12),
-    br_viewwidth integer,
-    br_viewheight integer,
-    os_name character varying(50),
-    os_family character varying(50),
-    os_manufacturer character varying(50),
-    os_timezone character varying(50),
-    dvce_type character varying(50),
-    dvce_ismobile boolean,
-    dvce_screenwidth integer,
-    dvce_screenheight integer,
-    doc_charset character varying(128),
-    doc_width integer,
-    doc_height integer,
-    tr_currency character(3),
-    tr_total_base numeric(18,2),
-    tr_tax_base numeric(18,2),
-    tr_shipping_base numeric(18,2),
-    ti_currency character(3),
-    ti_price_base numeric(18,2),
-    base_currency character(3),
-    geo_timezone character varying(64),
-    mkt_clickid character varying(128),
-    mkt_network character varying(64),
-    etl_tags character varying(500),
-    dvce_sent_tstamp timestamp with time zone,
-    refr_domain_userid character varying(36),
-    refr_dvce_tstamp timestamp with time zone,
-    domain_sessionid character(36),
-    derived_tstamp timestamp with time zone,
-    event_vendor character varying(1000),
-    event_name character varying(1000),
-    event_format character varying(128),
-    event_version character varying(128),
-    event_fingerprint character varying(128),
-    true_tstamp timestamp with time zone
-);
-
-CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_52 (
-    id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
-    project_id integer NOT NULL,
-    platform character varying(255),
-    etl_tstamp timestamp with time zone,
-    collector_tstamp timestamp with time zone NOT NULL,
-    dvce_created_tstamp timestamp with time zone,
-    event character varying(128),
-    event_id character(36) NOT NULL,
-    txn_id integer,
-    name_tracker character varying(128),
-    v_tracker character varying(100),
-    v_collector character varying(100) NOT NULL,
-    v_etl character varying(100) NOT NULL,
-    user_id character varying(255),
-    user_ipaddress character varying(45),
-    user_fingerprint character varying(50),
-    domain_userid character varying(36),
-    domain_sessionidx smallint,
-    network_userid character varying(38),
-    geo_country character(2),
-    geo_region character(3),
-    geo_city character varying(75),
-    geo_zipcode character varying(15),
-    geo_latitude double precision,
-    geo_longitude double precision,
-    geo_region_name character varying(100),
-    ip_isp character varying(100),
-    ip_organization character varying(100),
-    ip_domain character varying(100),
-    ip_netspeed character varying(100),
-    page_url text,
-    page_title character varying(2000),
-    page_referrer text,
-    page_urlscheme character varying(16),
-    page_urlhost character varying(255),
-    page_urlport integer,
-    page_urlpath character varying(3000),
-    page_urlquery character varying(6000),
-    page_urlfragment character varying(3000),
-    refr_urlscheme character varying(16),
-    refr_urlhost character varying(255),
-    refr_urlport integer,
-    refr_urlpath character varying(6000),
-    refr_urlquery character varying(6000),
-    refr_urlfragment character varying(3000),
-    refr_medium character varying(25),
-    refr_source character varying(50),
-    refr_term character varying(255),
-    mkt_medium character varying(255),
-    mkt_source character varying(255),
-    mkt_term character varying(255),
-    mkt_content character varying(500),
-    mkt_campaign character varying(255),
-    se_category character varying(1000),
-    se_action character varying(1000),
-    se_label character varying(1000),
-    se_property character varying(1000),
-    se_value double precision,
-    tr_orderid character varying(255),
-    tr_affiliation character varying(255),
-    tr_total numeric(18,2),
-    tr_tax numeric(18,2),
-    tr_shipping numeric(18,2),
-    tr_city character varying(255),
-    tr_state character varying(255),
-    tr_country character varying(255),
-    ti_orderid character varying(255),
-    ti_sku character varying(255),
-    ti_name character varying(255),
-    ti_category character varying(255),
-    ti_price numeric(18,2),
-    ti_quantity integer,
-    pp_xoffset_min integer,
-    pp_xoffset_max integer,
-    pp_yoffset_min integer,
-    pp_yoffset_max integer,
-    useragent character varying(1000),
-    br_name character varying(50),
-    br_family character varying(50),
-    br_version character varying(50),
-    br_type character varying(50),
-    br_renderengine character varying(50),
-    br_lang character varying(255),
-    br_features_pdf boolean,
-    br_features_flash boolean,
-    br_features_java boolean,
-    br_features_director boolean,
-    br_features_quicktime boolean,
-    br_features_realplayer boolean,
-    br_features_windowsmedia boolean,
-    br_features_gears boolean,
-    br_features_silverlight boolean,
-    br_cookies boolean,
-    br_colordepth character varying(12),
-    br_viewwidth integer,
-    br_viewheight integer,
-    os_name character varying(50),
-    os_family character varying(50),
-    os_manufacturer character varying(50),
-    os_timezone character varying(50),
-    dvce_type character varying(50),
-    dvce_ismobile boolean,
-    dvce_screenwidth integer,
-    dvce_screenheight integer,
-    doc_charset character varying(128),
-    doc_width integer,
-    doc_height integer,
-    tr_currency character(3),
-    tr_total_base numeric(18,2),
-    tr_tax_base numeric(18,2),
-    tr_shipping_base numeric(18,2),
-    ti_currency character(3),
-    ti_price_base numeric(18,2),
-    base_currency character(3),
-    geo_timezone character varying(64),
-    mkt_clickid character varying(128),
-    mkt_network character varying(64),
-    etl_tags character varying(500),
-    dvce_sent_tstamp timestamp with time zone,
-    refr_domain_userid character varying(36),
-    refr_dvce_tstamp timestamp with time zone,
-    domain_sessionid character(36),
-    derived_tstamp timestamp with time zone,
-    event_vendor character varying(1000),
-    event_name character varying(1000),
-    event_format character varying(128),
-    event_version character varying(128),
-    event_fingerprint character varying(128),
-    true_tstamp timestamp with time zone
-);
-
-CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_53 (
-    id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
-    project_id integer NOT NULL,
-    platform character varying(255),
-    etl_tstamp timestamp with time zone,
-    collector_tstamp timestamp with time zone NOT NULL,
-    dvce_created_tstamp timestamp with time zone,
-    event character varying(128),
-    event_id character(36) NOT NULL,
-    txn_id integer,
-    name_tracker character varying(128),
-    v_tracker character varying(100),
-    v_collector character varying(100) NOT NULL,
-    v_etl character varying(100) NOT NULL,
-    user_id character varying(255),
-    user_ipaddress character varying(45),
-    user_fingerprint character varying(50),
-    domain_userid character varying(36),
-    domain_sessionidx smallint,
-    network_userid character varying(38),
-    geo_country character(2),
-    geo_region character(3),
-    geo_city character varying(75),
-    geo_zipcode character varying(15),
-    geo_latitude double precision,
-    geo_longitude double precision,
-    geo_region_name character varying(100),
-    ip_isp character varying(100),
-    ip_organization character varying(100),
-    ip_domain character varying(100),
-    ip_netspeed character varying(100),
-    page_url text,
-    page_title character varying(2000),
-    page_referrer text,
-    page_urlscheme character varying(16),
-    page_urlhost character varying(255),
-    page_urlport integer,
-    page_urlpath character varying(3000),
-    page_urlquery character varying(6000),
-    page_urlfragment character varying(3000),
-    refr_urlscheme character varying(16),
-    refr_urlhost character varying(255),
-    refr_urlport integer,
-    refr_urlpath character varying(6000),
-    refr_urlquery character varying(6000),
-    refr_urlfragment character varying(3000),
-    refr_medium character varying(25),
-    refr_source character varying(50),
-    refr_term character varying(255),
-    mkt_medium character varying(255),
-    mkt_source character varying(255),
-    mkt_term character varying(255),
-    mkt_content character varying(500),
-    mkt_campaign character varying(255),
-    se_category character varying(1000),
-    se_action character varying(1000),
-    se_label character varying(1000),
-    se_property character varying(1000),
-    se_value double precision,
-    tr_orderid character varying(255),
-    tr_affiliation character varying(255),
-    tr_total numeric(18,2),
-    tr_tax numeric(18,2),
-    tr_shipping numeric(18,2),
-    tr_city character varying(255),
-    tr_state character varying(255),
-    tr_country character varying(255),
-    ti_orderid character varying(255),
-    ti_sku character varying(255),
-    ti_name character varying(255),
-    ti_category character varying(255),
-    ti_price numeric(18,2),
-    ti_quantity integer,
-    pp_xoffset_min integer,
-    pp_xoffset_max integer,
-    pp_yoffset_min integer,
-    pp_yoffset_max integer,
-    useragent character varying(1000),
-    br_name character varying(50),
-    br_family character varying(50),
-    br_version character varying(50),
-    br_type character varying(50),
-    br_renderengine character varying(50),
-    br_lang character varying(255),
-    br_features_pdf boolean,
-    br_features_flash boolean,
-    br_features_java boolean,
-    br_features_director boolean,
-    br_features_quicktime boolean,
-    br_features_realplayer boolean,
-    br_features_windowsmedia boolean,
-    br_features_gears boolean,
-    br_features_silverlight boolean,
-    br_cookies boolean,
-    br_colordepth character varying(12),
-    br_viewwidth integer,
-    br_viewheight integer,
-    os_name character varying(50),
-    os_family character varying(50),
-    os_manufacturer character varying(50),
-    os_timezone character varying(50),
-    dvce_type character varying(50),
-    dvce_ismobile boolean,
-    dvce_screenwidth integer,
-    dvce_screenheight integer,
-    doc_charset character varying(128),
-    doc_width integer,
-    doc_height integer,
-    tr_currency character(3),
-    tr_total_base numeric(18,2),
-    tr_tax_base numeric(18,2),
-    tr_shipping_base numeric(18,2),
-    ti_currency character(3),
-    ti_price_base numeric(18,2),
-    base_currency character(3),
-    geo_timezone character varying(64),
-    mkt_clickid character varying(128),
-    mkt_network character varying(64),
-    etl_tags character varying(500),
-    dvce_sent_tstamp timestamp with time zone,
-    refr_domain_userid character varying(36),
-    refr_dvce_tstamp timestamp with time zone,
-    domain_sessionid character(36),
-    derived_tstamp timestamp with time zone,
-    event_vendor character varying(1000),
-    event_name character varying(1000),
-    event_format character varying(128),
-    event_version character varying(128),
-    event_fingerprint character varying(128),
-    true_tstamp timestamp with time zone
-);
-
-CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_54 (
-    id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
-    project_id integer NOT NULL,
-    platform character varying(255),
-    etl_tstamp timestamp with time zone,
-    collector_tstamp timestamp with time zone NOT NULL,
-    dvce_created_tstamp timestamp with time zone,
-    event character varying(128),
-    event_id character(36) NOT NULL,
-    txn_id integer,
-    name_tracker character varying(128),
-    v_tracker character varying(100),
-    v_collector character varying(100) NOT NULL,
-    v_etl character varying(100) NOT NULL,
-    user_id character varying(255),
-    user_ipaddress character varying(45),
-    user_fingerprint character varying(50),
-    domain_userid character varying(36),
-    domain_sessionidx smallint,
-    network_userid character varying(38),
-    geo_country character(2),
-    geo_region character(3),
-    geo_city character varying(75),
-    geo_zipcode character varying(15),
-    geo_latitude double precision,
-    geo_longitude double precision,
-    geo_region_name character varying(100),
-    ip_isp character varying(100),
-    ip_organization character varying(100),
-    ip_domain character varying(100),
-    ip_netspeed character varying(100),
-    page_url text,
-    page_title character varying(2000),
-    page_referrer text,
-    page_urlscheme character varying(16),
-    page_urlhost character varying(255),
-    page_urlport integer,
-    page_urlpath character varying(3000),
-    page_urlquery character varying(6000),
-    page_urlfragment character varying(3000),
-    refr_urlscheme character varying(16),
-    refr_urlhost character varying(255),
-    refr_urlport integer,
-    refr_urlpath character varying(6000),
-    refr_urlquery character varying(6000),
-    refr_urlfragment character varying(3000),
-    refr_medium character varying(25),
-    refr_source character varying(50),
-    refr_term character varying(255),
-    mkt_medium character varying(255),
-    mkt_source character varying(255),
-    mkt_term character varying(255),
-    mkt_content character varying(500),
-    mkt_campaign character varying(255),
-    se_category character varying(1000),
-    se_action character varying(1000),
-    se_label character varying(1000),
-    se_property character varying(1000),
-    se_value double precision,
-    tr_orderid character varying(255),
-    tr_affiliation character varying(255),
-    tr_total numeric(18,2),
-    tr_tax numeric(18,2),
-    tr_shipping numeric(18,2),
-    tr_city character varying(255),
-    tr_state character varying(255),
-    tr_country character varying(255),
-    ti_orderid character varying(255),
-    ti_sku character varying(255),
-    ti_name character varying(255),
-    ti_category character varying(255),
-    ti_price numeric(18,2),
-    ti_quantity integer,
-    pp_xoffset_min integer,
-    pp_xoffset_max integer,
-    pp_yoffset_min integer,
-    pp_yoffset_max integer,
-    useragent character varying(1000),
-    br_name character varying(50),
-    br_family character varying(50),
-    br_version character varying(50),
-    br_type character varying(50),
-    br_renderengine character varying(50),
-    br_lang character varying(255),
-    br_features_pdf boolean,
-    br_features_flash boolean,
-    br_features_java boolean,
-    br_features_director boolean,
-    br_features_quicktime boolean,
-    br_features_realplayer boolean,
-    br_features_windowsmedia boolean,
-    br_features_gears boolean,
-    br_features_silverlight boolean,
-    br_cookies boolean,
-    br_colordepth character varying(12),
-    br_viewwidth integer,
-    br_viewheight integer,
-    os_name character varying(50),
-    os_family character varying(50),
-    os_manufacturer character varying(50),
-    os_timezone character varying(50),
-    dvce_type character varying(50),
-    dvce_ismobile boolean,
-    dvce_screenwidth integer,
-    dvce_screenheight integer,
-    doc_charset character varying(128),
-    doc_width integer,
-    doc_height integer,
-    tr_currency character(3),
-    tr_total_base numeric(18,2),
-    tr_tax_base numeric(18,2),
-    tr_shipping_base numeric(18,2),
-    ti_currency character(3),
-    ti_price_base numeric(18,2),
-    base_currency character(3),
-    geo_timezone character varying(64),
-    mkt_clickid character varying(128),
-    mkt_network character varying(64),
-    etl_tags character varying(500),
-    dvce_sent_tstamp timestamp with time zone,
-    refr_domain_userid character varying(36),
-    refr_dvce_tstamp timestamp with time zone,
-    domain_sessionid character(36),
-    derived_tstamp timestamp with time zone,
-    event_vendor character varying(1000),
-    event_name character varying(1000),
-    event_format character varying(128),
-    event_version character varying(128),
-    event_fingerprint character varying(128),
-    true_tstamp timestamp with time zone
-);
-
-CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_55 (
-    id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
-    project_id integer NOT NULL,
-    platform character varying(255),
-    etl_tstamp timestamp with time zone,
-    collector_tstamp timestamp with time zone NOT NULL,
-    dvce_created_tstamp timestamp with time zone,
-    event character varying(128),
-    event_id character(36) NOT NULL,
-    txn_id integer,
-    name_tracker character varying(128),
-    v_tracker character varying(100),
-    v_collector character varying(100) NOT NULL,
-    v_etl character varying(100) NOT NULL,
-    user_id character varying(255),
-    user_ipaddress character varying(45),
-    user_fingerprint character varying(50),
-    domain_userid character varying(36),
-    domain_sessionidx smallint,
-    network_userid character varying(38),
-    geo_country character(2),
-    geo_region character(3),
-    geo_city character varying(75),
-    geo_zipcode character varying(15),
-    geo_latitude double precision,
-    geo_longitude double precision,
-    geo_region_name character varying(100),
-    ip_isp character varying(100),
-    ip_organization character varying(100),
-    ip_domain character varying(100),
-    ip_netspeed character varying(100),
-    page_url text,
-    page_title character varying(2000),
-    page_referrer text,
-    page_urlscheme character varying(16),
-    page_urlhost character varying(255),
-    page_urlport integer,
-    page_urlpath character varying(3000),
-    page_urlquery character varying(6000),
-    page_urlfragment character varying(3000),
-    refr_urlscheme character varying(16),
-    refr_urlhost character varying(255),
-    refr_urlport integer,
-    refr_urlpath character varying(6000),
-    refr_urlquery character varying(6000),
-    refr_urlfragment character varying(3000),
-    refr_medium character varying(25),
-    refr_source character varying(50),
-    refr_term character varying(255),
-    mkt_medium character varying(255),
-    mkt_source character varying(255),
-    mkt_term character varying(255),
-    mkt_content character varying(500),
-    mkt_campaign character varying(255),
-    se_category character varying(1000),
-    se_action character varying(1000),
-    se_label character varying(1000),
-    se_property character varying(1000),
-    se_value double precision,
-    tr_orderid character varying(255),
-    tr_affiliation character varying(255),
-    tr_total numeric(18,2),
-    tr_tax numeric(18,2),
-    tr_shipping numeric(18,2),
-    tr_city character varying(255),
-    tr_state character varying(255),
-    tr_country character varying(255),
-    ti_orderid character varying(255),
-    ti_sku character varying(255),
-    ti_name character varying(255),
-    ti_category character varying(255),
-    ti_price numeric(18,2),
-    ti_quantity integer,
-    pp_xoffset_min integer,
-    pp_xoffset_max integer,
-    pp_yoffset_min integer,
-    pp_yoffset_max integer,
-    useragent character varying(1000),
-    br_name character varying(50),
-    br_family character varying(50),
-    br_version character varying(50),
-    br_type character varying(50),
-    br_renderengine character varying(50),
-    br_lang character varying(255),
-    br_features_pdf boolean,
-    br_features_flash boolean,
-    br_features_java boolean,
-    br_features_director boolean,
-    br_features_quicktime boolean,
-    br_features_realplayer boolean,
-    br_features_windowsmedia boolean,
-    br_features_gears boolean,
-    br_features_silverlight boolean,
-    br_cookies boolean,
-    br_colordepth character varying(12),
-    br_viewwidth integer,
-    br_viewheight integer,
-    os_name character varying(50),
-    os_family character varying(50),
-    os_manufacturer character varying(50),
-    os_timezone character varying(50),
-    dvce_type character varying(50),
-    dvce_ismobile boolean,
-    dvce_screenwidth integer,
-    dvce_screenheight integer,
-    doc_charset character varying(128),
-    doc_width integer,
-    doc_height integer,
-    tr_currency character(3),
-    tr_total_base numeric(18,2),
-    tr_tax_base numeric(18,2),
-    tr_shipping_base numeric(18,2),
-    ti_currency character(3),
-    ti_price_base numeric(18,2),
-    base_currency character(3),
-    geo_timezone character varying(64),
-    mkt_clickid character varying(128),
-    mkt_network character varying(64),
-    etl_tags character varying(500),
-    dvce_sent_tstamp timestamp with time zone,
-    refr_domain_userid character varying(36),
-    refr_dvce_tstamp timestamp with time zone,
-    domain_sessionid character(36),
-    derived_tstamp timestamp with time zone,
-    event_vendor character varying(1000),
-    event_name character varying(1000),
-    event_format character varying(128),
-    event_version character varying(128),
-    event_fingerprint character varying(128),
-    true_tstamp timestamp with time zone
-);
-
-CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_56 (
-    id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
-    project_id integer NOT NULL,
-    platform character varying(255),
-    etl_tstamp timestamp with time zone,
-    collector_tstamp timestamp with time zone NOT NULL,
-    dvce_created_tstamp timestamp with time zone,
-    event character varying(128),
-    event_id character(36) NOT NULL,
-    txn_id integer,
-    name_tracker character varying(128),
-    v_tracker character varying(100),
-    v_collector character varying(100) NOT NULL,
-    v_etl character varying(100) NOT NULL,
-    user_id character varying(255),
-    user_ipaddress character varying(45),
-    user_fingerprint character varying(50),
-    domain_userid character varying(36),
-    domain_sessionidx smallint,
-    network_userid character varying(38),
-    geo_country character(2),
-    geo_region character(3),
-    geo_city character varying(75),
-    geo_zipcode character varying(15),
-    geo_latitude double precision,
-    geo_longitude double precision,
-    geo_region_name character varying(100),
-    ip_isp character varying(100),
-    ip_organization character varying(100),
-    ip_domain character varying(100),
-    ip_netspeed character varying(100),
-    page_url text,
-    page_title character varying(2000),
-    page_referrer text,
-    page_urlscheme character varying(16),
-    page_urlhost character varying(255),
-    page_urlport integer,
-    page_urlpath character varying(3000),
-    page_urlquery character varying(6000),
-    page_urlfragment character varying(3000),
-    refr_urlscheme character varying(16),
-    refr_urlhost character varying(255),
-    refr_urlport integer,
-    refr_urlpath character varying(6000),
-    refr_urlquery character varying(6000),
-    refr_urlfragment character varying(3000),
-    refr_medium character varying(25),
-    refr_source character varying(50),
-    refr_term character varying(255),
-    mkt_medium character varying(255),
-    mkt_source character varying(255),
-    mkt_term character varying(255),
-    mkt_content character varying(500),
-    mkt_campaign character varying(255),
-    se_category character varying(1000),
-    se_action character varying(1000),
-    se_label character varying(1000),
-    se_property character varying(1000),
-    se_value double precision,
-    tr_orderid character varying(255),
-    tr_affiliation character varying(255),
-    tr_total numeric(18,2),
-    tr_tax numeric(18,2),
-    tr_shipping numeric(18,2),
-    tr_city character varying(255),
-    tr_state character varying(255),
-    tr_country character varying(255),
-    ti_orderid character varying(255),
-    ti_sku character varying(255),
-    ti_name character varying(255),
-    ti_category character varying(255),
-    ti_price numeric(18,2),
-    ti_quantity integer,
-    pp_xoffset_min integer,
-    pp_xoffset_max integer,
-    pp_yoffset_min integer,
-    pp_yoffset_max integer,
-    useragent character varying(1000),
-    br_name character varying(50),
-    br_family character varying(50),
-    br_version character varying(50),
-    br_type character varying(50),
-    br_renderengine character varying(50),
-    br_lang character varying(255),
-    br_features_pdf boolean,
-    br_features_flash boolean,
-    br_features_java boolean,
-    br_features_director boolean,
-    br_features_quicktime boolean,
-    br_features_realplayer boolean,
-    br_features_windowsmedia boolean,
-    br_features_gears boolean,
-    br_features_silverlight boolean,
-    br_cookies boolean,
-    br_colordepth character varying(12),
-    br_viewwidth integer,
-    br_viewheight integer,
-    os_name character varying(50),
-    os_family character varying(50),
-    os_manufacturer character varying(50),
-    os_timezone character varying(50),
-    dvce_type character varying(50),
-    dvce_ismobile boolean,
-    dvce_screenwidth integer,
-    dvce_screenheight integer,
-    doc_charset character varying(128),
-    doc_width integer,
-    doc_height integer,
-    tr_currency character(3),
-    tr_total_base numeric(18,2),
-    tr_tax_base numeric(18,2),
-    tr_shipping_base numeric(18,2),
-    ti_currency character(3),
-    ti_price_base numeric(18,2),
-    base_currency character(3),
-    geo_timezone character varying(64),
-    mkt_clickid character varying(128),
-    mkt_network character varying(64),
-    etl_tags character varying(500),
-    dvce_sent_tstamp timestamp with time zone,
-    refr_domain_userid character varying(36),
-    refr_dvce_tstamp timestamp with time zone,
-    domain_sessionid character(36),
-    derived_tstamp timestamp with time zone,
-    event_vendor character varying(1000),
-    event_name character varying(1000),
-    event_format character varying(128),
-    event_version character varying(128),
-    event_fingerprint character varying(128),
-    true_tstamp timestamp with time zone
-);
-
-CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_57 (
-    id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
-    project_id integer NOT NULL,
-    platform character varying(255),
-    etl_tstamp timestamp with time zone,
-    collector_tstamp timestamp with time zone NOT NULL,
-    dvce_created_tstamp timestamp with time zone,
-    event character varying(128),
-    event_id character(36) NOT NULL,
-    txn_id integer,
-    name_tracker character varying(128),
-    v_tracker character varying(100),
-    v_collector character varying(100) NOT NULL,
-    v_etl character varying(100) NOT NULL,
-    user_id character varying(255),
-    user_ipaddress character varying(45),
-    user_fingerprint character varying(50),
-    domain_userid character varying(36),
-    domain_sessionidx smallint,
-    network_userid character varying(38),
-    geo_country character(2),
-    geo_region character(3),
-    geo_city character varying(75),
-    geo_zipcode character varying(15),
-    geo_latitude double precision,
-    geo_longitude double precision,
-    geo_region_name character varying(100),
-    ip_isp character varying(100),
-    ip_organization character varying(100),
-    ip_domain character varying(100),
-    ip_netspeed character varying(100),
-    page_url text,
-    page_title character varying(2000),
-    page_referrer text,
-    page_urlscheme character varying(16),
-    page_urlhost character varying(255),
-    page_urlport integer,
-    page_urlpath character varying(3000),
-    page_urlquery character varying(6000),
-    page_urlfragment character varying(3000),
-    refr_urlscheme character varying(16),
-    refr_urlhost character varying(255),
-    refr_urlport integer,
-    refr_urlpath character varying(6000),
-    refr_urlquery character varying(6000),
-    refr_urlfragment character varying(3000),
-    refr_medium character varying(25),
-    refr_source character varying(50),
-    refr_term character varying(255),
-    mkt_medium character varying(255),
-    mkt_source character varying(255),
-    mkt_term character varying(255),
-    mkt_content character varying(500),
-    mkt_campaign character varying(255),
-    se_category character varying(1000),
-    se_action character varying(1000),
-    se_label character varying(1000),
-    se_property character varying(1000),
-    se_value double precision,
-    tr_orderid character varying(255),
-    tr_affiliation character varying(255),
-    tr_total numeric(18,2),
-    tr_tax numeric(18,2),
-    tr_shipping numeric(18,2),
-    tr_city character varying(255),
-    tr_state character varying(255),
-    tr_country character varying(255),
-    ti_orderid character varying(255),
-    ti_sku character varying(255),
-    ti_name character varying(255),
-    ti_category character varying(255),
-    ti_price numeric(18,2),
-    ti_quantity integer,
-    pp_xoffset_min integer,
-    pp_xoffset_max integer,
-    pp_yoffset_min integer,
-    pp_yoffset_max integer,
-    useragent character varying(1000),
-    br_name character varying(50),
-    br_family character varying(50),
-    br_version character varying(50),
-    br_type character varying(50),
-    br_renderengine character varying(50),
-    br_lang character varying(255),
-    br_features_pdf boolean,
-    br_features_flash boolean,
-    br_features_java boolean,
-    br_features_director boolean,
-    br_features_quicktime boolean,
-    br_features_realplayer boolean,
-    br_features_windowsmedia boolean,
-    br_features_gears boolean,
-    br_features_silverlight boolean,
-    br_cookies boolean,
-    br_colordepth character varying(12),
-    br_viewwidth integer,
-    br_viewheight integer,
-    os_name character varying(50),
-    os_family character varying(50),
-    os_manufacturer character varying(50),
-    os_timezone character varying(50),
-    dvce_type character varying(50),
-    dvce_ismobile boolean,
-    dvce_screenwidth integer,
-    dvce_screenheight integer,
-    doc_charset character varying(128),
-    doc_width integer,
-    doc_height integer,
-    tr_currency character(3),
-    tr_total_base numeric(18,2),
-    tr_tax_base numeric(18,2),
-    tr_shipping_base numeric(18,2),
-    ti_currency character(3),
-    ti_price_base numeric(18,2),
-    base_currency character(3),
-    geo_timezone character varying(64),
-    mkt_clickid character varying(128),
-    mkt_network character varying(64),
-    etl_tags character varying(500),
-    dvce_sent_tstamp timestamp with time zone,
-    refr_domain_userid character varying(36),
-    refr_dvce_tstamp timestamp with time zone,
-    domain_sessionid character(36),
-    derived_tstamp timestamp with time zone,
-    event_vendor character varying(1000),
-    event_name character varying(1000),
-    event_format character varying(128),
-    event_version character varying(128),
-    event_fingerprint character varying(128),
-    true_tstamp timestamp with time zone
-);
-
-CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_58 (
-    id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
-    project_id integer NOT NULL,
-    platform character varying(255),
-    etl_tstamp timestamp with time zone,
-    collector_tstamp timestamp with time zone NOT NULL,
-    dvce_created_tstamp timestamp with time zone,
-    event character varying(128),
-    event_id character(36) NOT NULL,
-    txn_id integer,
-    name_tracker character varying(128),
-    v_tracker character varying(100),
-    v_collector character varying(100) NOT NULL,
-    v_etl character varying(100) NOT NULL,
-    user_id character varying(255),
-    user_ipaddress character varying(45),
-    user_fingerprint character varying(50),
-    domain_userid character varying(36),
-    domain_sessionidx smallint,
-    network_userid character varying(38),
-    geo_country character(2),
-    geo_region character(3),
-    geo_city character varying(75),
-    geo_zipcode character varying(15),
-    geo_latitude double precision,
-    geo_longitude double precision,
-    geo_region_name character varying(100),
-    ip_isp character varying(100),
-    ip_organization character varying(100),
-    ip_domain character varying(100),
-    ip_netspeed character varying(100),
-    page_url text,
-    page_title character varying(2000),
-    page_referrer text,
-    page_urlscheme character varying(16),
-    page_urlhost character varying(255),
-    page_urlport integer,
-    page_urlpath character varying(3000),
-    page_urlquery character varying(6000),
-    page_urlfragment character varying(3000),
-    refr_urlscheme character varying(16),
-    refr_urlhost character varying(255),
-    refr_urlport integer,
-    refr_urlpath character varying(6000),
-    refr_urlquery character varying(6000),
-    refr_urlfragment character varying(3000),
-    refr_medium character varying(25),
-    refr_source character varying(50),
-    refr_term character varying(255),
-    mkt_medium character varying(255),
-    mkt_source character varying(255),
-    mkt_term character varying(255),
-    mkt_content character varying(500),
-    mkt_campaign character varying(255),
-    se_category character varying(1000),
-    se_action character varying(1000),
-    se_label character varying(1000),
-    se_property character varying(1000),
-    se_value double precision,
-    tr_orderid character varying(255),
-    tr_affiliation character varying(255),
-    tr_total numeric(18,2),
-    tr_tax numeric(18,2),
-    tr_shipping numeric(18,2),
-    tr_city character varying(255),
-    tr_state character varying(255),
-    tr_country character varying(255),
-    ti_orderid character varying(255),
-    ti_sku character varying(255),
-    ti_name character varying(255),
-    ti_category character varying(255),
-    ti_price numeric(18,2),
-    ti_quantity integer,
-    pp_xoffset_min integer,
-    pp_xoffset_max integer,
-    pp_yoffset_min integer,
-    pp_yoffset_max integer,
-    useragent character varying(1000),
-    br_name character varying(50),
-    br_family character varying(50),
-    br_version character varying(50),
-    br_type character varying(50),
-    br_renderengine character varying(50),
-    br_lang character varying(255),
-    br_features_pdf boolean,
-    br_features_flash boolean,
-    br_features_java boolean,
-    br_features_director boolean,
-    br_features_quicktime boolean,
-    br_features_realplayer boolean,
-    br_features_windowsmedia boolean,
-    br_features_gears boolean,
-    br_features_silverlight boolean,
-    br_cookies boolean,
-    br_colordepth character varying(12),
-    br_viewwidth integer,
-    br_viewheight integer,
-    os_name character varying(50),
-    os_family character varying(50),
-    os_manufacturer character varying(50),
-    os_timezone character varying(50),
-    dvce_type character varying(50),
-    dvce_ismobile boolean,
-    dvce_screenwidth integer,
-    dvce_screenheight integer,
-    doc_charset character varying(128),
-    doc_width integer,
-    doc_height integer,
-    tr_currency character(3),
-    tr_total_base numeric(18,2),
-    tr_tax_base numeric(18,2),
-    tr_shipping_base numeric(18,2),
-    ti_currency character(3),
-    ti_price_base numeric(18,2),
-    base_currency character(3),
-    geo_timezone character varying(64),
-    mkt_clickid character varying(128),
-    mkt_network character varying(64),
-    etl_tags character varying(500),
-    dvce_sent_tstamp timestamp with time zone,
-    refr_domain_userid character varying(36),
-    refr_dvce_tstamp timestamp with time zone,
-    domain_sessionid character(36),
-    derived_tstamp timestamp with time zone,
-    event_vendor character varying(1000),
-    event_name character varying(1000),
-    event_format character varying(128),
-    event_version character varying(128),
-    event_fingerprint character varying(128),
-    true_tstamp timestamp with time zone
-);
-
-CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_59 (
-    id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
-    project_id integer NOT NULL,
-    platform character varying(255),
-    etl_tstamp timestamp with time zone,
-    collector_tstamp timestamp with time zone NOT NULL,
-    dvce_created_tstamp timestamp with time zone,
-    event character varying(128),
-    event_id character(36) NOT NULL,
-    txn_id integer,
-    name_tracker character varying(128),
-    v_tracker character varying(100),
-    v_collector character varying(100) NOT NULL,
-    v_etl character varying(100) NOT NULL,
-    user_id character varying(255),
-    user_ipaddress character varying(45),
-    user_fingerprint character varying(50),
-    domain_userid character varying(36),
-    domain_sessionidx smallint,
-    network_userid character varying(38),
-    geo_country character(2),
-    geo_region character(3),
-    geo_city character varying(75),
-    geo_zipcode character varying(15),
-    geo_latitude double precision,
-    geo_longitude double precision,
-    geo_region_name character varying(100),
-    ip_isp character varying(100),
-    ip_organization character varying(100),
-    ip_domain character varying(100),
-    ip_netspeed character varying(100),
-    page_url text,
-    page_title character varying(2000),
-    page_referrer text,
-    page_urlscheme character varying(16),
-    page_urlhost character varying(255),
-    page_urlport integer,
-    page_urlpath character varying(3000),
-    page_urlquery character varying(6000),
-    page_urlfragment character varying(3000),
-    refr_urlscheme character varying(16),
-    refr_urlhost character varying(255),
-    refr_urlport integer,
-    refr_urlpath character varying(6000),
-    refr_urlquery character varying(6000),
-    refr_urlfragment character varying(3000),
-    refr_medium character varying(25),
-    refr_source character varying(50),
-    refr_term character varying(255),
-    mkt_medium character varying(255),
-    mkt_source character varying(255),
-    mkt_term character varying(255),
-    mkt_content character varying(500),
-    mkt_campaign character varying(255),
-    se_category character varying(1000),
-    se_action character varying(1000),
-    se_label character varying(1000),
-    se_property character varying(1000),
-    se_value double precision,
-    tr_orderid character varying(255),
-    tr_affiliation character varying(255),
-    tr_total numeric(18,2),
-    tr_tax numeric(18,2),
-    tr_shipping numeric(18,2),
-    tr_city character varying(255),
-    tr_state character varying(255),
-    tr_country character varying(255),
-    ti_orderid character varying(255),
-    ti_sku character varying(255),
-    ti_name character varying(255),
-    ti_category character varying(255),
-    ti_price numeric(18,2),
-    ti_quantity integer,
-    pp_xoffset_min integer,
-    pp_xoffset_max integer,
-    pp_yoffset_min integer,
-    pp_yoffset_max integer,
-    useragent character varying(1000),
-    br_name character varying(50),
-    br_family character varying(50),
-    br_version character varying(50),
-    br_type character varying(50),
-    br_renderengine character varying(50),
-    br_lang character varying(255),
-    br_features_pdf boolean,
-    br_features_flash boolean,
-    br_features_java boolean,
-    br_features_director boolean,
-    br_features_quicktime boolean,
-    br_features_realplayer boolean,
-    br_features_windowsmedia boolean,
-    br_features_gears boolean,
-    br_features_silverlight boolean,
-    br_cookies boolean,
-    br_colordepth character varying(12),
-    br_viewwidth integer,
-    br_viewheight integer,
-    os_name character varying(50),
-    os_family character varying(50),
-    os_manufacturer character varying(50),
-    os_timezone character varying(50),
-    dvce_type character varying(50),
-    dvce_ismobile boolean,
-    dvce_screenwidth integer,
-    dvce_screenheight integer,
-    doc_charset character varying(128),
-    doc_width integer,
-    doc_height integer,
-    tr_currency character(3),
-    tr_total_base numeric(18,2),
-    tr_tax_base numeric(18,2),
-    tr_shipping_base numeric(18,2),
-    ti_currency character(3),
-    ti_price_base numeric(18,2),
-    base_currency character(3),
-    geo_timezone character varying(64),
-    mkt_clickid character varying(128),
-    mkt_network character varying(64),
-    etl_tags character varying(500),
-    dvce_sent_tstamp timestamp with time zone,
-    refr_domain_userid character varying(36),
-    refr_dvce_tstamp timestamp with time zone,
-    domain_sessionid character(36),
-    derived_tstamp timestamp with time zone,
-    event_vendor character varying(1000),
-    event_name character varying(1000),
-    event_format character varying(128),
-    event_version character varying(128),
-    event_fingerprint character varying(128),
-    true_tstamp timestamp with time zone
-);
-
-CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_60 (
-    id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
-    project_id integer NOT NULL,
-    platform character varying(255),
-    etl_tstamp timestamp with time zone,
-    collector_tstamp timestamp with time zone NOT NULL,
-    dvce_created_tstamp timestamp with time zone,
-    event character varying(128),
-    event_id character(36) NOT NULL,
-    txn_id integer,
-    name_tracker character varying(128),
-    v_tracker character varying(100),
-    v_collector character varying(100) NOT NULL,
-    v_etl character varying(100) NOT NULL,
-    user_id character varying(255),
-    user_ipaddress character varying(45),
-    user_fingerprint character varying(50),
-    domain_userid character varying(36),
-    domain_sessionidx smallint,
-    network_userid character varying(38),
-    geo_country character(2),
-    geo_region character(3),
-    geo_city character varying(75),
-    geo_zipcode character varying(15),
-    geo_latitude double precision,
-    geo_longitude double precision,
-    geo_region_name character varying(100),
-    ip_isp character varying(100),
-    ip_organization character varying(100),
-    ip_domain character varying(100),
-    ip_netspeed character varying(100),
-    page_url text,
-    page_title character varying(2000),
-    page_referrer text,
-    page_urlscheme character varying(16),
-    page_urlhost character varying(255),
-    page_urlport integer,
-    page_urlpath character varying(3000),
-    page_urlquery character varying(6000),
-    page_urlfragment character varying(3000),
-    refr_urlscheme character varying(16),
-    refr_urlhost character varying(255),
-    refr_urlport integer,
-    refr_urlpath character varying(6000),
-    refr_urlquery character varying(6000),
-    refr_urlfragment character varying(3000),
-    refr_medium character varying(25),
-    refr_source character varying(50),
-    refr_term character varying(255),
-    mkt_medium character varying(255),
-    mkt_source character varying(255),
-    mkt_term character varying(255),
-    mkt_content character varying(500),
-    mkt_campaign character varying(255),
-    se_category character varying(1000),
-    se_action character varying(1000),
-    se_label character varying(1000),
-    se_property character varying(1000),
-    se_value double precision,
-    tr_orderid character varying(255),
-    tr_affiliation character varying(255),
-    tr_total numeric(18,2),
-    tr_tax numeric(18,2),
-    tr_shipping numeric(18,2),
-    tr_city character varying(255),
-    tr_state character varying(255),
-    tr_country character varying(255),
-    ti_orderid character varying(255),
-    ti_sku character varying(255),
-    ti_name character varying(255),
-    ti_category character varying(255),
-    ti_price numeric(18,2),
-    ti_quantity integer,
-    pp_xoffset_min integer,
-    pp_xoffset_max integer,
-    pp_yoffset_min integer,
-    pp_yoffset_max integer,
-    useragent character varying(1000),
-    br_name character varying(50),
-    br_family character varying(50),
-    br_version character varying(50),
-    br_type character varying(50),
-    br_renderengine character varying(50),
-    br_lang character varying(255),
-    br_features_pdf boolean,
-    br_features_flash boolean,
-    br_features_java boolean,
-    br_features_director boolean,
-    br_features_quicktime boolean,
-    br_features_realplayer boolean,
-    br_features_windowsmedia boolean,
-    br_features_gears boolean,
-    br_features_silverlight boolean,
-    br_cookies boolean,
-    br_colordepth character varying(12),
-    br_viewwidth integer,
-    br_viewheight integer,
-    os_name character varying(50),
-    os_family character varying(50),
-    os_manufacturer character varying(50),
-    os_timezone character varying(50),
-    dvce_type character varying(50),
-    dvce_ismobile boolean,
-    dvce_screenwidth integer,
-    dvce_screenheight integer,
-    doc_charset character varying(128),
-    doc_width integer,
-    doc_height integer,
-    tr_currency character(3),
-    tr_total_base numeric(18,2),
-    tr_tax_base numeric(18,2),
-    tr_shipping_base numeric(18,2),
-    ti_currency character(3),
-    ti_price_base numeric(18,2),
-    base_currency character(3),
-    geo_timezone character varying(64),
-    mkt_clickid character varying(128),
-    mkt_network character varying(64),
-    etl_tags character varying(500),
-    dvce_sent_tstamp timestamp with time zone,
-    refr_domain_userid character varying(36),
-    refr_dvce_tstamp timestamp with time zone,
-    domain_sessionid character(36),
-    derived_tstamp timestamp with time zone,
-    event_vendor character varying(1000),
-    event_name character varying(1000),
-    event_format character varying(128),
-    event_version character varying(128),
-    event_fingerprint character varying(128),
-    true_tstamp timestamp with time zone
-);
-
-CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_61 (
-    id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
-    project_id integer NOT NULL,
-    platform character varying(255),
-    etl_tstamp timestamp with time zone,
-    collector_tstamp timestamp with time zone NOT NULL,
-    dvce_created_tstamp timestamp with time zone,
-    event character varying(128),
-    event_id character(36) NOT NULL,
-    txn_id integer,
-    name_tracker character varying(128),
-    v_tracker character varying(100),
-    v_collector character varying(100) NOT NULL,
-    v_etl character varying(100) NOT NULL,
-    user_id character varying(255),
-    user_ipaddress character varying(45),
-    user_fingerprint character varying(50),
-    domain_userid character varying(36),
-    domain_sessionidx smallint,
-    network_userid character varying(38),
-    geo_country character(2),
-    geo_region character(3),
-    geo_city character varying(75),
-    geo_zipcode character varying(15),
-    geo_latitude double precision,
-    geo_longitude double precision,
-    geo_region_name character varying(100),
-    ip_isp character varying(100),
-    ip_organization character varying(100),
-    ip_domain character varying(100),
-    ip_netspeed character varying(100),
-    page_url text,
-    page_title character varying(2000),
-    page_referrer text,
-    page_urlscheme character varying(16),
-    page_urlhost character varying(255),
-    page_urlport integer,
-    page_urlpath character varying(3000),
-    page_urlquery character varying(6000),
-    page_urlfragment character varying(3000),
-    refr_urlscheme character varying(16),
-    refr_urlhost character varying(255),
-    refr_urlport integer,
-    refr_urlpath character varying(6000),
-    refr_urlquery character varying(6000),
-    refr_urlfragment character varying(3000),
-    refr_medium character varying(25),
-    refr_source character varying(50),
-    refr_term character varying(255),
-    mkt_medium character varying(255),
-    mkt_source character varying(255),
-    mkt_term character varying(255),
-    mkt_content character varying(500),
-    mkt_campaign character varying(255),
-    se_category character varying(1000),
-    se_action character varying(1000),
-    se_label character varying(1000),
-    se_property character varying(1000),
-    se_value double precision,
-    tr_orderid character varying(255),
-    tr_affiliation character varying(255),
-    tr_total numeric(18,2),
-    tr_tax numeric(18,2),
-    tr_shipping numeric(18,2),
-    tr_city character varying(255),
-    tr_state character varying(255),
-    tr_country character varying(255),
-    ti_orderid character varying(255),
-    ti_sku character varying(255),
-    ti_name character varying(255),
-    ti_category character varying(255),
-    ti_price numeric(18,2),
-    ti_quantity integer,
-    pp_xoffset_min integer,
-    pp_xoffset_max integer,
-    pp_yoffset_min integer,
-    pp_yoffset_max integer,
-    useragent character varying(1000),
-    br_name character varying(50),
-    br_family character varying(50),
-    br_version character varying(50),
-    br_type character varying(50),
-    br_renderengine character varying(50),
-    br_lang character varying(255),
-    br_features_pdf boolean,
-    br_features_flash boolean,
-    br_features_java boolean,
-    br_features_director boolean,
-    br_features_quicktime boolean,
-    br_features_realplayer boolean,
-    br_features_windowsmedia boolean,
-    br_features_gears boolean,
-    br_features_silverlight boolean,
-    br_cookies boolean,
-    br_colordepth character varying(12),
-    br_viewwidth integer,
-    br_viewheight integer,
-    os_name character varying(50),
-    os_family character varying(50),
-    os_manufacturer character varying(50),
-    os_timezone character varying(50),
-    dvce_type character varying(50),
-    dvce_ismobile boolean,
-    dvce_screenwidth integer,
-    dvce_screenheight integer,
-    doc_charset character varying(128),
-    doc_width integer,
-    doc_height integer,
-    tr_currency character(3),
-    tr_total_base numeric(18,2),
-    tr_tax_base numeric(18,2),
-    tr_shipping_base numeric(18,2),
-    ti_currency character(3),
-    ti_price_base numeric(18,2),
-    base_currency character(3),
-    geo_timezone character varying(64),
-    mkt_clickid character varying(128),
-    mkt_network character varying(64),
-    etl_tags character varying(500),
-    dvce_sent_tstamp timestamp with time zone,
-    refr_domain_userid character varying(36),
-    refr_dvce_tstamp timestamp with time zone,
-    domain_sessionid character(36),
-    derived_tstamp timestamp with time zone,
-    event_vendor character varying(1000),
-    event_name character varying(1000),
-    event_format character varying(128),
-    event_version character varying(128),
-    event_fingerprint character varying(128),
-    true_tstamp timestamp with time zone
-);
-
-CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_62 (
-    id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
-    project_id integer NOT NULL,
-    platform character varying(255),
-    etl_tstamp timestamp with time zone,
-    collector_tstamp timestamp with time zone NOT NULL,
-    dvce_created_tstamp timestamp with time zone,
-    event character varying(128),
-    event_id character(36) NOT NULL,
-    txn_id integer,
-    name_tracker character varying(128),
-    v_tracker character varying(100),
-    v_collector character varying(100) NOT NULL,
-    v_etl character varying(100) NOT NULL,
-    user_id character varying(255),
-    user_ipaddress character varying(45),
-    user_fingerprint character varying(50),
-    domain_userid character varying(36),
-    domain_sessionidx smallint,
-    network_userid character varying(38),
-    geo_country character(2),
-    geo_region character(3),
-    geo_city character varying(75),
-    geo_zipcode character varying(15),
-    geo_latitude double precision,
-    geo_longitude double precision,
-    geo_region_name character varying(100),
-    ip_isp character varying(100),
-    ip_organization character varying(100),
-    ip_domain character varying(100),
-    ip_netspeed character varying(100),
-    page_url text,
-    page_title character varying(2000),
-    page_referrer text,
-    page_urlscheme character varying(16),
-    page_urlhost character varying(255),
-    page_urlport integer,
-    page_urlpath character varying(3000),
-    page_urlquery character varying(6000),
-    page_urlfragment character varying(3000),
-    refr_urlscheme character varying(16),
-    refr_urlhost character varying(255),
-    refr_urlport integer,
-    refr_urlpath character varying(6000),
-    refr_urlquery character varying(6000),
-    refr_urlfragment character varying(3000),
-    refr_medium character varying(25),
-    refr_source character varying(50),
-    refr_term character varying(255),
-    mkt_medium character varying(255),
-    mkt_source character varying(255),
-    mkt_term character varying(255),
-    mkt_content character varying(500),
-    mkt_campaign character varying(255),
-    se_category character varying(1000),
-    se_action character varying(1000),
-    se_label character varying(1000),
-    se_property character varying(1000),
-    se_value double precision,
-    tr_orderid character varying(255),
-    tr_affiliation character varying(255),
-    tr_total numeric(18,2),
-    tr_tax numeric(18,2),
-    tr_shipping numeric(18,2),
-    tr_city character varying(255),
-    tr_state character varying(255),
-    tr_country character varying(255),
-    ti_orderid character varying(255),
-    ti_sku character varying(255),
-    ti_name character varying(255),
-    ti_category character varying(255),
-    ti_price numeric(18,2),
-    ti_quantity integer,
-    pp_xoffset_min integer,
-    pp_xoffset_max integer,
-    pp_yoffset_min integer,
-    pp_yoffset_max integer,
-    useragent character varying(1000),
-    br_name character varying(50),
-    br_family character varying(50),
-    br_version character varying(50),
-    br_type character varying(50),
-    br_renderengine character varying(50),
-    br_lang character varying(255),
-    br_features_pdf boolean,
-    br_features_flash boolean,
-    br_features_java boolean,
-    br_features_director boolean,
-    br_features_quicktime boolean,
-    br_features_realplayer boolean,
-    br_features_windowsmedia boolean,
-    br_features_gears boolean,
-    br_features_silverlight boolean,
-    br_cookies boolean,
-    br_colordepth character varying(12),
-    br_viewwidth integer,
-    br_viewheight integer,
-    os_name character varying(50),
-    os_family character varying(50),
-    os_manufacturer character varying(50),
-    os_timezone character varying(50),
-    dvce_type character varying(50),
-    dvce_ismobile boolean,
-    dvce_screenwidth integer,
-    dvce_screenheight integer,
-    doc_charset character varying(128),
-    doc_width integer,
-    doc_height integer,
-    tr_currency character(3),
-    tr_total_base numeric(18,2),
-    tr_tax_base numeric(18,2),
-    tr_shipping_base numeric(18,2),
-    ti_currency character(3),
-    ti_price_base numeric(18,2),
-    base_currency character(3),
-    geo_timezone character varying(64),
-    mkt_clickid character varying(128),
-    mkt_network character varying(64),
-    etl_tags character varying(500),
-    dvce_sent_tstamp timestamp with time zone,
-    refr_domain_userid character varying(36),
-    refr_dvce_tstamp timestamp with time zone,
-    domain_sessionid character(36),
-    derived_tstamp timestamp with time zone,
-    event_vendor character varying(1000),
-    event_name character varying(1000),
-    event_format character varying(128),
-    event_version character varying(128),
-    event_fingerprint character varying(128),
-    true_tstamp timestamp with time zone
-);
-
-CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_63 (
-    id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
-    project_id integer NOT NULL,
-    platform character varying(255),
-    etl_tstamp timestamp with time zone,
-    collector_tstamp timestamp with time zone NOT NULL,
-    dvce_created_tstamp timestamp with time zone,
-    event character varying(128),
-    event_id character(36) NOT NULL,
-    txn_id integer,
-    name_tracker character varying(128),
-    v_tracker character varying(100),
-    v_collector character varying(100) NOT NULL,
-    v_etl character varying(100) NOT NULL,
-    user_id character varying(255),
-    user_ipaddress character varying(45),
-    user_fingerprint character varying(50),
-    domain_userid character varying(36),
-    domain_sessionidx smallint,
-    network_userid character varying(38),
-    geo_country character(2),
-    geo_region character(3),
-    geo_city character varying(75),
-    geo_zipcode character varying(15),
-    geo_latitude double precision,
-    geo_longitude double precision,
-    geo_region_name character varying(100),
-    ip_isp character varying(100),
-    ip_organization character varying(100),
-    ip_domain character varying(100),
-    ip_netspeed character varying(100),
-    page_url text,
-    page_title character varying(2000),
-    page_referrer text,
-    page_urlscheme character varying(16),
-    page_urlhost character varying(255),
-    page_urlport integer,
-    page_urlpath character varying(3000),
-    page_urlquery character varying(6000),
-    page_urlfragment character varying(3000),
-    refr_urlscheme character varying(16),
-    refr_urlhost character varying(255),
-    refr_urlport integer,
-    refr_urlpath character varying(6000),
-    refr_urlquery character varying(6000),
-    refr_urlfragment character varying(3000),
-    refr_medium character varying(25),
-    refr_source character varying(50),
-    refr_term character varying(255),
-    mkt_medium character varying(255),
-    mkt_source character varying(255),
-    mkt_term character varying(255),
-    mkt_content character varying(500),
-    mkt_campaign character varying(255),
-    se_category character varying(1000),
-    se_action character varying(1000),
-    se_label character varying(1000),
-    se_property character varying(1000),
-    se_value double precision,
-    tr_orderid character varying(255),
-    tr_affiliation character varying(255),
-    tr_total numeric(18,2),
-    tr_tax numeric(18,2),
-    tr_shipping numeric(18,2),
-    tr_city character varying(255),
-    tr_state character varying(255),
-    tr_country character varying(255),
-    ti_orderid character varying(255),
-    ti_sku character varying(255),
-    ti_name character varying(255),
-    ti_category character varying(255),
-    ti_price numeric(18,2),
-    ti_quantity integer,
-    pp_xoffset_min integer,
-    pp_xoffset_max integer,
-    pp_yoffset_min integer,
-    pp_yoffset_max integer,
-    useragent character varying(1000),
-    br_name character varying(50),
-    br_family character varying(50),
-    br_version character varying(50),
-    br_type character varying(50),
-    br_renderengine character varying(50),
-    br_lang character varying(255),
-    br_features_pdf boolean,
-    br_features_flash boolean,
-    br_features_java boolean,
-    br_features_director boolean,
-    br_features_quicktime boolean,
-    br_features_realplayer boolean,
-    br_features_windowsmedia boolean,
-    br_features_gears boolean,
-    br_features_silverlight boolean,
-    br_cookies boolean,
-    br_colordepth character varying(12),
-    br_viewwidth integer,
-    br_viewheight integer,
-    os_name character varying(50),
-    os_family character varying(50),
-    os_manufacturer character varying(50),
-    os_timezone character varying(50),
-    dvce_type character varying(50),
-    dvce_ismobile boolean,
-    dvce_screenwidth integer,
-    dvce_screenheight integer,
-    doc_charset character varying(128),
-    doc_width integer,
-    doc_height integer,
-    tr_currency character(3),
-    tr_total_base numeric(18,2),
-    tr_tax_base numeric(18,2),
-    tr_shipping_base numeric(18,2),
-    ti_currency character(3),
-    ti_price_base numeric(18,2),
-    base_currency character(3),
-    geo_timezone character varying(64),
-    mkt_clickid character varying(128),
-    mkt_network character varying(64),
-    etl_tags character varying(500),
-    dvce_sent_tstamp timestamp with time zone,
-    refr_domain_userid character varying(36),
-    refr_dvce_tstamp timestamp with time zone,
-    domain_sessionid character(36),
-    derived_tstamp timestamp with time zone,
-    event_vendor character varying(1000),
-    event_name character varying(1000),
-    event_format character varying(128),
-    event_version character varying(128),
-    event_fingerprint character varying(128),
-    true_tstamp timestamp with time zone
-);
-
 CREATE TABLE abuse_events (
     id bigint NOT NULL,
     user_id bigint,
@@ -11694,6 +3504,24 @@ CREATE SEQUENCE agent_user_access_project_authorizations_id_seq
 
 ALTER SEQUENCE agent_user_access_project_authorizations_id_seq OWNED BY agent_user_access_project_authorizations.id;
 
+CREATE TABLE ai_agent_version_attachments (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    project_id bigint NOT NULL,
+    ai_agent_version_id bigint NOT NULL,
+    ai_vectorizable_file_id bigint NOT NULL
+);
+
+CREATE SEQUENCE ai_agent_version_attachments_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE ai_agent_version_attachments_id_seq OWNED BY ai_agent_version_attachments.id;
+
 CREATE TABLE ai_agent_versions (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -11732,6 +3560,26 @@ CREATE SEQUENCE ai_agents_id_seq
     CACHE 1;
 
 ALTER SEQUENCE ai_agents_id_seq OWNED BY ai_agents.id;
+
+CREATE TABLE ai_vectorizable_files (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    project_id bigint NOT NULL,
+    name text NOT NULL,
+    file text NOT NULL,
+    CONSTRAINT check_c2ad8df0bf CHECK ((char_length(file) <= 255)),
+    CONSTRAINT check_fc6abf5b01 CHECK ((char_length(name) <= 255))
+);
+
+CREATE SEQUENCE ai_vectorizable_files_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE ai_vectorizable_files_id_seq OWNED BY ai_vectorizable_files.id;
 
 CREATE TABLE alert_management_alert_assignees (
     id bigint NOT NULL,
@@ -12404,8 +4252,6 @@ CREATE TABLE application_settings (
     kroki_formats jsonb DEFAULT '{}'::jsonb NOT NULL,
     asset_proxy_whitelist text,
     admin_mode boolean DEFAULT false NOT NULL,
-    delayed_project_removal boolean DEFAULT false NOT NULL,
-    lock_delayed_project_removal boolean DEFAULT false NOT NULL,
     external_pipeline_validation_service_timeout integer,
     encrypted_external_pipeline_validation_service_token text,
     encrypted_external_pipeline_validation_service_token_iv text,
@@ -12507,7 +4353,6 @@ CREATE TABLE application_settings (
     inactive_projects_delete_after_months integer DEFAULT 2 NOT NULL,
     inactive_projects_min_size_mb integer DEFAULT 0 NOT NULL,
     inactive_projects_send_warning_email_after_months integer DEFAULT 1 NOT NULL,
-    delayed_group_deletion boolean DEFAULT true NOT NULL,
     maven_package_requests_forwarding boolean DEFAULT true NOT NULL,
     arkose_labs_namespace text DEFAULT 'client'::text NOT NULL,
     max_export_size integer DEFAULT 0,
@@ -12608,7 +4453,6 @@ CREATE TABLE application_settings (
     encrypted_vertex_ai_credentials bytea,
     encrypted_vertex_ai_credentials_iv bytea,
     vertex_ai_project text,
-    instance_level_code_suggestions_enabled boolean DEFAULT false NOT NULL,
     delete_unconfirmed_users boolean DEFAULT false NOT NULL,
     unconfirmed_users_delete_after_days integer DEFAULT 7 NOT NULL,
     default_branch_protection_defaults jsonb DEFAULT '{}'::jsonb NOT NULL,
@@ -12655,6 +4499,21 @@ CREATE TABLE application_settings (
     elasticsearch_max_code_indexing_concurrency integer DEFAULT 30 NOT NULL,
     enable_member_promotion_management boolean DEFAULT false NOT NULL,
     lock_math_rendering_limits_enabled boolean DEFAULT false NOT NULL,
+    security_approval_policies_limit integer DEFAULT 5 NOT NULL,
+    encrypted_arkose_labs_client_xid bytea,
+    encrypted_arkose_labs_client_xid_iv bytea,
+    encrypted_arkose_labs_client_secret bytea,
+    encrypted_arkose_labs_client_secret_iv bytea,
+    duo_features_enabled boolean DEFAULT true NOT NULL,
+    lock_duo_features_enabled boolean DEFAULT false NOT NULL,
+    asciidoc_max_includes smallint DEFAULT 32 NOT NULL,
+    clickhouse jsonb DEFAULT '{}'::jsonb NOT NULL,
+    include_optional_metrics_in_service_ping boolean DEFAULT true NOT NULL,
+    zoekt_settings jsonb DEFAULT '{}'::jsonb NOT NULL,
+    service_ping_settings jsonb DEFAULT '{}'::jsonb NOT NULL,
+    package_registry jsonb DEFAULT '{}'::jsonb NOT NULL,
+    rate_limits_unauthenticated_git_http jsonb DEFAULT '{}'::jsonb NOT NULL,
+    importers jsonb DEFAULT '{}'::jsonb NOT NULL,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
     CONSTRAINT app_settings_container_registry_pre_import_tags_rate_positive CHECK ((container_registry_pre_import_tags_rate >= (0)::numeric)),
     CONSTRAINT app_settings_dep_proxy_ttl_policies_worker_capacity_positive CHECK ((dependency_proxy_ttl_group_policy_worker_capacity >= 0)),
@@ -12705,7 +4564,12 @@ CREATE TABLE application_settings (
     CONSTRAINT check_ae53cf7f82 CHECK ((char_length(vertex_ai_host) <= 255)),
     CONSTRAINT check_app_settings_namespace_storage_forks_cost_factor_range CHECK (((namespace_storage_forks_cost_factor >= (0)::double precision) AND (namespace_storage_forks_cost_factor <= (1)::double precision))),
     CONSTRAINT check_app_settings_sentry_clientside_traces_sample_rate_range CHECK (((sentry_clientside_traces_sample_rate >= (0)::double precision) AND (sentry_clientside_traces_sample_rate <= (1)::double precision))),
+    CONSTRAINT check_application_settings_clickhouse_is_hash CHECK ((jsonb_typeof(clickhouse) = 'object'::text)),
+    CONSTRAINT check_application_settings_importers_is_hash CHECK ((jsonb_typeof(importers) = 'object'::text)),
+    CONSTRAINT check_application_settings_package_registry_is_hash CHECK ((jsonb_typeof(package_registry) = 'object'::text)),
     CONSTRAINT check_application_settings_rate_limits_is_hash CHECK ((jsonb_typeof(rate_limits) = 'object'::text)),
+    CONSTRAINT check_application_settings_rate_limits_unauth_git_http_is_hash CHECK ((jsonb_typeof(rate_limits_unauthenticated_git_http) = 'object'::text)),
+    CONSTRAINT check_application_settings_service_ping_settings_is_hash CHECK ((jsonb_typeof(service_ping_settings) = 'object'::text)),
     CONSTRAINT check_b8c74ea5b3 CHECK ((char_length(deactivation_email_additional_text) <= 1000)),
     CONSTRAINT check_cdfbd99405 CHECK ((char_length(security_txt_content) <= 2048)),
     CONSTRAINT check_d03919528d CHECK ((char_length(container_registry_vendor) <= 255)),
@@ -12841,7 +4705,8 @@ ALTER SEQUENCE approval_group_rules_users_id_seq OWNED BY approval_group_rules_u
 CREATE TABLE approval_merge_request_rule_sources (
     id bigint NOT NULL,
     approval_merge_request_rule_id bigint NOT NULL,
-    approval_project_rule_id bigint NOT NULL
+    approval_project_rule_id bigint NOT NULL,
+    project_id bigint
 );
 
 CREATE SEQUENCE approval_merge_request_rule_sources_id_seq
@@ -12868,7 +4733,7 @@ CREATE TABLE approval_merge_request_rules (
     vulnerabilities_allowed smallint DEFAULT 0 NOT NULL,
     scanners text[] DEFAULT '{}'::text[] NOT NULL,
     severity_levels text[] DEFAULT '{}'::text[] NOT NULL,
-    vulnerability_states text[] DEFAULT '{newly_detected}'::text[] NOT NULL,
+    vulnerability_states text[] DEFAULT '{new_needs_triage,new_dismissed}'::text[] NOT NULL,
     security_orchestration_policy_configuration_id bigint,
     scan_result_policy_id bigint,
     applicable_post_merge boolean,
@@ -12929,6 +4794,26 @@ CREATE SEQUENCE approval_merge_request_rules_users_id_seq
 
 ALTER SEQUENCE approval_merge_request_rules_users_id_seq OWNED BY approval_merge_request_rules_users.id;
 
+CREATE TABLE approval_policy_rules (
+    id bigint NOT NULL,
+    security_policy_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    rule_index smallint NOT NULL,
+    type smallint NOT NULL,
+    content jsonb DEFAULT '{}'::jsonb NOT NULL,
+    security_policy_management_project_id bigint NOT NULL
+);
+
+CREATE SEQUENCE approval_policy_rules_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE approval_policy_rules_id_seq OWNED BY approval_policy_rules.id;
+
 CREATE TABLE approval_project_rules (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -12941,7 +4826,7 @@ CREATE TABLE approval_project_rules (
     vulnerabilities_allowed smallint DEFAULT 0 NOT NULL,
     severity_levels text[] DEFAULT '{}'::text[] NOT NULL,
     report_type smallint,
-    vulnerability_states text[] DEFAULT '{newly_detected}'::text[] NOT NULL,
+    vulnerability_states text[] DEFAULT '{new_needs_triage,new_dismissed}'::text[] NOT NULL,
     orchestration_policy_idx smallint,
     applies_to_all_protected_branches boolean DEFAULT false NOT NULL,
     security_orchestration_policy_configuration_id bigint,
@@ -13158,7 +5043,7 @@ CREATE TABLE audit_events_group_external_streaming_destinations (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     group_id bigint NOT NULL,
-    type smallint NOT NULL,
+    category smallint NOT NULL,
     name text NOT NULL,
     config jsonb NOT NULL,
     encrypted_secret_token bytea NOT NULL,
@@ -13174,6 +5059,25 @@ CREATE SEQUENCE audit_events_group_external_streaming_destinations_id_seq
     CACHE 1;
 
 ALTER SEQUENCE audit_events_group_external_streaming_destinations_id_seq OWNED BY audit_events_group_external_streaming_destinations.id;
+
+CREATE TABLE audit_events_group_streaming_event_type_filters (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    external_streaming_destination_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    audit_event_type text NOT NULL,
+    CONSTRAINT check_389708af23 CHECK ((char_length(audit_event_type) <= 255))
+);
+
+CREATE SEQUENCE audit_events_group_streaming_event_type_filters_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE audit_events_group_streaming_event_type_filters_id_seq OWNED BY audit_events_group_streaming_event_type_filters.id;
 
 CREATE SEQUENCE audit_events_id_seq
     START WITH 1
@@ -13234,7 +5138,7 @@ CREATE TABLE audit_events_instance_external_streaming_destinations (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    type smallint NOT NULL,
+    category smallint NOT NULL,
     name text NOT NULL,
     config jsonb NOT NULL,
     encrypted_secret_token bytea NOT NULL,
@@ -13276,6 +5180,24 @@ CREATE SEQUENCE audit_events_instance_google_cloud_logging_configuration_id_seq
 
 ALTER SEQUENCE audit_events_instance_google_cloud_logging_configuration_id_seq OWNED BY audit_events_instance_google_cloud_logging_configurations.id;
 
+CREATE TABLE audit_events_instance_streaming_event_type_filters (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    external_streaming_destination_id bigint NOT NULL,
+    audit_event_type text NOT NULL,
+    CONSTRAINT check_4a5e8e01b5 CHECK ((char_length(audit_event_type) <= 255))
+);
+
+CREATE SEQUENCE audit_events_instance_streaming_event_type_filters_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE audit_events_instance_streaming_event_type_filters_id_seq OWNED BY audit_events_instance_streaming_event_type_filters.id;
+
 CREATE TABLE audit_events_streaming_event_type_filters (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -13293,6 +5215,23 @@ CREATE SEQUENCE audit_events_streaming_event_type_filters_id_seq
     CACHE 1;
 
 ALTER SEQUENCE audit_events_streaming_event_type_filters_id_seq OWNED BY audit_events_streaming_event_type_filters.id;
+
+CREATE TABLE audit_events_streaming_group_namespace_filters (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    external_streaming_destination_id bigint NOT NULL,
+    namespace_id bigint NOT NULL
+);
+
+CREATE SEQUENCE audit_events_streaming_group_namespace_filters_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE audit_events_streaming_group_namespace_filters_id_seq OWNED BY audit_events_streaming_group_namespace_filters.id;
 
 CREATE TABLE audit_events_streaming_headers (
     id bigint NOT NULL,
@@ -13366,6 +5305,23 @@ CREATE SEQUENCE audit_events_streaming_instance_event_type_filters_id_seq
     CACHE 1;
 
 ALTER SEQUENCE audit_events_streaming_instance_event_type_filters_id_seq OWNED BY audit_events_streaming_instance_event_type_filters.id;
+
+CREATE TABLE audit_events_streaming_instance_namespace_filters (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    external_streaming_destination_id bigint NOT NULL,
+    namespace_id bigint NOT NULL
+);
+
+CREATE SEQUENCE audit_events_streaming_instance_namespace_filters_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE audit_events_streaming_instance_namespace_filters_id_seq OWNED BY audit_events_streaming_instance_namespace_filters.id;
 
 CREATE TABLE authentication_events (
     id bigint NOT NULL,
@@ -14066,10 +6022,10 @@ CREATE TABLE catalog_resource_components (
     project_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
     resource_type smallint DEFAULT 1 NOT NULL,
-    inputs jsonb DEFAULT '{}'::jsonb NOT NULL,
     name text NOT NULL,
-    path text,
-    CONSTRAINT check_a76bfd47fe CHECK ((char_length(path) <= 255)),
+    spec jsonb DEFAULT '{}'::jsonb NOT NULL,
+    last_30_day_usage_count integer DEFAULT 0 NOT NULL,
+    last_30_day_usage_count_updated_at timestamp with time zone DEFAULT '1970-01-01 00:00:00+00'::timestamp with time zone NOT NULL,
     CONSTRAINT check_ddca729980 CHECK ((char_length(name) <= 255))
 );
 
@@ -14088,7 +6044,13 @@ CREATE TABLE catalog_resource_versions (
     catalog_resource_id bigint NOT NULL,
     project_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
-    released_at timestamp with time zone DEFAULT '1970-01-01 00:00:00+00'::timestamp with time zone NOT NULL
+    released_at timestamp with time zone DEFAULT '1970-01-01 00:00:00+00'::timestamp with time zone NOT NULL,
+    semver_major integer,
+    semver_minor integer,
+    semver_patch integer,
+    semver_prerelease text,
+    semver_prefixed boolean DEFAULT false,
+    CONSTRAINT check_701bdce47b CHECK ((char_length(semver_prerelease) <= 255))
 );
 
 CREATE SEQUENCE catalog_resource_versions_id_seq
@@ -14110,7 +6072,9 @@ CREATE TABLE catalog_resources (
     description text,
     visibility_level integer DEFAULT 0 NOT NULL,
     search_vector tsvector GENERATED ALWAYS AS ((setweight(to_tsvector('english'::regconfig, (COALESCE(name, ''::character varying))::text), 'A'::"char") || setweight(to_tsvector('english'::regconfig, COALESCE(description, ''::text)), 'B'::"char"))) STORED,
-    verification_level smallint DEFAULT 0
+    verification_level smallint DEFAULT 0,
+    last_30_day_usage_count integer DEFAULT 0 NOT NULL,
+    last_30_day_usage_count_updated_at timestamp with time zone DEFAULT '1970-01-01 00:00:00+00'::timestamp with time zone NOT NULL
 );
 
 CREATE SEQUENCE catalog_resources_id_seq
@@ -14262,9 +6226,9 @@ CREATE TABLE ci_builds (
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
     started_at timestamp without time zone,
-    runner_id integer,
+    runner_id_convert_to_bigint integer,
     coverage double precision,
-    commit_id integer,
+    commit_id_convert_to_bigint integer,
     name character varying,
     options text,
     allow_failure boolean DEFAULT false NOT NULL,
@@ -14273,11 +6237,11 @@ CREATE TABLE ci_builds (
     stage_idx integer,
     tag boolean,
     ref character varying,
-    user_id integer,
+    user_id_convert_to_bigint integer,
     type character varying,
     target_url character varying,
     description character varying,
-    project_id integer,
+    project_id_convert_to_bigint integer,
     erased_by_id integer,
     erased_at timestamp without time zone,
     artifacts_expire_at timestamp without time zone,
@@ -14287,13 +6251,13 @@ CREATE TABLE ci_builds (
     queued_at timestamp without time zone,
     lock_version integer DEFAULT 0,
     coverage_regex character varying,
-    auto_canceled_by_id integer,
+    auto_canceled_by_id_convert_to_bigint integer,
     retried boolean,
     protected boolean,
     failure_reason integer,
     scheduled_at timestamp with time zone,
     token_encrypted character varying,
-    upstream_pipeline_id integer,
+    upstream_pipeline_id_convert_to_bigint integer,
     resource_group_id bigint,
     waiting_for_resource_at timestamp with time zone,
     processed boolean,
@@ -14302,14 +6266,15 @@ CREATE TABLE ci_builds (
     stage_id bigint,
     partition_id bigint NOT NULL,
     auto_canceled_by_partition_id bigint DEFAULT 100 NOT NULL,
-    auto_canceled_by_id_convert_to_bigint bigint,
-    commit_id_convert_to_bigint bigint,
+    auto_canceled_by_id bigint,
+    commit_id bigint,
     erased_by_id_convert_to_bigint bigint,
-    project_id_convert_to_bigint bigint,
-    runner_id_convert_to_bigint bigint,
+    project_id bigint,
+    runner_id bigint,
     trigger_request_id_convert_to_bigint bigint,
-    upstream_pipeline_id_convert_to_bigint bigint,
-    user_id_convert_to_bigint bigint,
+    upstream_pipeline_id bigint,
+    user_id bigint,
+    execution_config_id bigint,
     CONSTRAINT check_1e2fbd1b39 CHECK ((lock_version IS NOT NULL))
 );
 
@@ -14347,7 +6312,8 @@ CREATE TABLE ci_builds_metadata (
     runtime_runner_features jsonb DEFAULT '{}'::jsonb NOT NULL,
     id_tokens jsonb DEFAULT '{}'::jsonb NOT NULL,
     partition_id bigint NOT NULL,
-    debug_trace_enabled boolean DEFAULT false NOT NULL
+    debug_trace_enabled boolean DEFAULT false NOT NULL,
+    exit_code smallint
 );
 
 CREATE TABLE ci_builds_runner_session (
@@ -14451,6 +6417,7 @@ CREATE TABLE ci_group_variables (
     environment_scope text DEFAULT '*'::text NOT NULL,
     raw boolean DEFAULT false NOT NULL,
     description text,
+    hidden boolean DEFAULT false NOT NULL,
     CONSTRAINT check_dfe009485a CHECK ((char_length(environment_scope) <= 255)),
     CONSTRAINT check_e2e50ff879 CHECK ((char_length(description) <= 255))
 );
@@ -14502,7 +6469,7 @@ CREATE TABLE ci_job_artifact_states (
     CONSTRAINT check_df832b66ea CHECK ((char_length(verification_failure) <= 255))
 );
 
-CREATE TABLE p_ci_job_artifacts (
+CREATE TABLE ci_job_artifacts (
     project_id integer NOT NULL,
     file_type integer NOT NULL,
     size bigint,
@@ -14522,8 +6489,7 @@ CREATE TABLE p_ci_job_artifacts (
     file_final_path text,
     CONSTRAINT check_27f0f6dbab CHECK ((file_store IS NOT NULL)),
     CONSTRAINT check_9f04410cf4 CHECK ((char_length(file_final_path) <= 1024))
-)
-PARTITION BY LIST (partition_id);
+);
 
 CREATE SEQUENCE ci_job_artifacts_id_seq
     START WITH 1
@@ -14533,28 +6499,6 @@ CREATE SEQUENCE ci_job_artifacts_id_seq
     CACHE 1;
 
 ALTER SEQUENCE ci_job_artifacts_id_seq OWNED BY p_ci_job_artifacts.id;
-
-CREATE TABLE ci_job_artifacts (
-    project_id integer NOT NULL,
-    file_type integer NOT NULL,
-    size bigint,
-    created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL,
-    expire_at timestamp with time zone,
-    file character varying,
-    file_store integer DEFAULT 1,
-    file_sha256 bytea,
-    file_format smallint,
-    file_location smallint,
-    id bigint DEFAULT nextval('ci_job_artifacts_id_seq'::regclass) NOT NULL,
-    job_id bigint NOT NULL,
-    locked smallint DEFAULT 2,
-    partition_id bigint NOT NULL,
-    accessibility smallint DEFAULT 0 NOT NULL,
-    file_final_path text,
-    CONSTRAINT check_27f0f6dbab CHECK ((file_store IS NOT NULL)),
-    CONSTRAINT check_9f04410cf4 CHECK ((char_length(file_final_path) <= 1024))
-);
 
 CREATE TABLE ci_job_token_group_scope_links (
     id bigint NOT NULL,
@@ -14670,17 +6614,9 @@ ALTER SEQUENCE ci_namespace_monthly_usages_id_seq OWNED BY ci_namespace_monthly_
 CREATE TABLE ci_partitions (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL
+    updated_at timestamp with time zone NOT NULL,
+    status smallint DEFAULT 0 NOT NULL
 );
-
-CREATE SEQUENCE ci_partitions_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE ci_partitions_id_seq OWNED BY ci_partitions.id;
 
 CREATE TABLE ci_pending_builds (
     id bigint NOT NULL,
@@ -14830,20 +6766,6 @@ CREATE SEQUENCE ci_pipeline_schedules_id_seq
 
 ALTER SEQUENCE ci_pipeline_schedules_id_seq OWNED BY ci_pipeline_schedules.id;
 
-CREATE TABLE p_ci_pipeline_variables (
-    key character varying NOT NULL,
-    value text,
-    encrypted_value text,
-    encrypted_value_salt character varying,
-    encrypted_value_iv character varying,
-    variable_type smallint DEFAULT 1 NOT NULL,
-    partition_id bigint NOT NULL,
-    raw boolean DEFAULT false NOT NULL,
-    id bigint NOT NULL,
-    pipeline_id bigint NOT NULL
-)
-PARTITION BY LIST (partition_id);
-
 CREATE TABLE ci_pipeline_variables (
     key character varying NOT NULL,
     value text,
@@ -14867,7 +6789,7 @@ CREATE SEQUENCE ci_pipeline_variables_id_seq
 ALTER SEQUENCE ci_pipeline_variables_id_seq OWNED BY p_ci_pipeline_variables.id;
 
 CREATE TABLE ci_pipelines (
-    id integer NOT NULL,
+    id_convert_to_bigint integer DEFAULT 0 NOT NULL,
     ref character varying,
     sha character varying,
     before_sha character varying,
@@ -14896,7 +6818,7 @@ CREATE TABLE ci_pipelines (
     ci_ref_id bigint,
     locked smallint DEFAULT 1 NOT NULL,
     partition_id bigint NOT NULL,
-    id_convert_to_bigint bigint DEFAULT 0 NOT NULL,
+    id bigint NOT NULL,
     auto_canceled_by_id bigint,
     CONSTRAINT check_d7e99a025e CHECK ((lock_version IS NOT NULL))
 );
@@ -15035,6 +6957,7 @@ CREATE TABLE ci_runner_machines (
     ip_address text,
     config jsonb DEFAULT '{}'::jsonb NOT NULL,
     system_xid text,
+    creation_state smallint DEFAULT 0 NOT NULL,
     CONSTRAINT check_1537c1f66f CHECK ((char_length(platform) <= 255)),
     CONSTRAINT check_5253913ae9 CHECK ((char_length(system_xid) <= 64)),
     CONSTRAINT check_6f45a91da7 CHECK ((char_length(version) <= 2048)),
@@ -15120,6 +7043,7 @@ CREATE TABLE ci_runners (
     allowed_plans text[] DEFAULT '{}'::text[] NOT NULL,
     registration_type smallint DEFAULT 0 NOT NULL,
     creator_id bigint,
+    creation_state smallint DEFAULT 0 NOT NULL,
     CONSTRAINT check_ce275cee06 CHECK ((char_length(maintainer_note) <= 1024))
 );
 
@@ -15139,7 +7063,8 @@ CREATE TABLE ci_running_builds (
     runner_id bigint NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
     runner_type smallint NOT NULL,
-    partition_id bigint NOT NULL
+    partition_id bigint NOT NULL,
+    runner_owner_namespace_xid bigint
 );
 
 CREATE SEQUENCE ci_running_builds_id_seq
@@ -15254,7 +7179,7 @@ CREATE SEQUENCE ci_stages_id_seq
     NO MAXVALUE
     CACHE 1;
 
-ALTER SEQUENCE ci_stages_id_seq OWNED BY ci_stages.id;
+ALTER SEQUENCE ci_stages_id_seq OWNED BY p_ci_stages.id;
 
 CREATE TABLE ci_subscriptions_projects (
     id bigint NOT NULL,
@@ -15362,6 +7287,7 @@ CREATE TABLE ci_variables (
     variable_type smallint DEFAULT 1 NOT NULL,
     raw boolean DEFAULT false NOT NULL,
     description text,
+    hidden boolean DEFAULT false NOT NULL,
     CONSTRAINT check_7e46c006aa CHECK ((char_length(description) <= 255))
 );
 
@@ -15401,6 +7327,7 @@ CREATE TABLE cluster_agent_tokens (
     name text,
     last_used_at timestamp with time zone,
     status smallint DEFAULT 0 NOT NULL,
+    project_id bigint,
     CONSTRAINT check_0fb634d04d CHECK ((name IS NOT NULL)),
     CONSTRAINT check_2b79dbb315 CHECK ((char_length(name) <= 255)),
     CONSTRAINT check_4e4ec5070a CHECK ((char_length(description) <= 1024)),
@@ -15717,11 +7644,13 @@ CREATE TABLE container_registry_protection_rules (
     project_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    delete_protected_up_to_access_level smallint NOT NULL,
-    push_protected_up_to_access_level smallint NOT NULL,
     repository_path_pattern text,
+    minimum_access_level_for_push smallint,
+    minimum_access_level_for_delete smallint,
     CONSTRAINT check_3658b31291 CHECK ((repository_path_pattern IS NOT NULL)),
-    CONSTRAINT check_d53a270af5 CHECK ((char_length(repository_path_pattern) <= 255))
+    CONSTRAINT check_d53a270af5 CHECK ((char_length(repository_path_pattern) <= 255)),
+    CONSTRAINT check_d82c1eb825 CHECK ((minimum_access_level_for_delete IS NOT NULL)),
+    CONSTRAINT check_f684912b48 CHECK ((minimum_access_level_for_push IS NOT NULL))
 );
 
 CREATE SEQUENCE container_registry_protection_rules_id_seq
@@ -16271,6 +8200,7 @@ CREATE TABLE dependency_list_exports (
     group_id bigint,
     pipeline_id bigint,
     export_type smallint DEFAULT 0 NOT NULL,
+    organization_id bigint,
     CONSTRAINT check_fff6fc9b2f CHECK ((char_length(file) <= 255))
 );
 
@@ -16466,6 +8396,7 @@ CREATE TABLE deployment_approvals (
     status smallint NOT NULL,
     comment text,
     approval_rule_id bigint,
+    project_id bigint,
     CONSTRAINT check_e2eb6a17d8 CHECK ((char_length(comment) <= 255))
 );
 
@@ -16548,6 +8479,8 @@ CREATE TABLE design_management_designs (
     cached_markdown_version integer,
     description text,
     description_html text,
+    imported smallint DEFAULT 0 NOT NULL,
+    imported_from smallint DEFAULT 0 NOT NULL,
     CONSTRAINT check_07155e2715 CHECK ((char_length((filename)::text) <= 255)),
     CONSTRAINT check_aaf9fa6ae5 CHECK ((char_length(description) <= 1000000)),
     CONSTRAINT check_cfb92df01a CHECK ((iid IS NOT NULL))
@@ -16775,6 +8708,7 @@ CREATE TABLE draft_notes (
     change_position text,
     commit_id bytea,
     line_code text,
+    internal boolean DEFAULT false NOT NULL,
     CONSTRAINT check_c497a94a0e CHECK ((char_length(line_code) <= 255))
 );
 
@@ -16786,6 +8720,28 @@ CREATE SEQUENCE draft_notes_id_seq
     CACHE 1;
 
 ALTER SEQUENCE draft_notes_id_seq OWNED BY draft_notes.id;
+
+CREATE TABLE early_access_program_tracking_events (
+    id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    event_name text NOT NULL,
+    event_label text,
+    category text,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    CONSTRAINT check_4faf711d09 CHECK ((char_length(event_label) <= 255)),
+    CONSTRAINT check_573cf46c14 CHECK ((char_length(event_name) <= 255)),
+    CONSTRAINT check_e631e07806 CHECK ((char_length(category) <= 255))
+);
+
+CREATE SEQUENCE early_access_program_tracking_events_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE early_access_program_tracking_events_id_seq OWNED BY early_access_program_tracking_events.id;
 
 CREATE TABLE elastic_group_index_statuses (
     namespace_id bigint NOT NULL,
@@ -17037,6 +8993,8 @@ CREATE TABLE epics (
     total_opened_issue_count integer DEFAULT 0 NOT NULL,
     total_closed_issue_count integer DEFAULT 0 NOT NULL,
     issue_id integer,
+    imported smallint DEFAULT 0 NOT NULL,
+    imported_from smallint DEFAULT 0 NOT NULL,
     CONSTRAINT check_ca608c40b3 CHECK ((char_length(color) <= 7)),
     CONSTRAINT check_fcfb4a93ff CHECK ((lock_version IS NOT NULL))
 );
@@ -17132,6 +9090,8 @@ CREATE TABLE events (
     fingerprint bytea,
     id bigint NOT NULL,
     target_id bigint,
+    imported smallint DEFAULT 0 NOT NULL,
+    imported_from smallint DEFAULT 0 NOT NULL,
     CONSTRAINT check_97e06e05ad CHECK ((octet_length(fingerprint) <= 128))
 );
 
@@ -17181,21 +9141,6 @@ CREATE SEQUENCE external_approval_rules_id_seq
     CACHE 1;
 
 ALTER SEQUENCE external_approval_rules_id_seq OWNED BY external_approval_rules.id;
-
-CREATE TABLE external_approval_rules_protected_branches (
-    id bigint NOT NULL,
-    external_approval_rule_id bigint NOT NULL,
-    protected_branch_id bigint NOT NULL
-);
-
-CREATE SEQUENCE external_approval_rules_protected_branches_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE external_approval_rules_protected_branches_id_seq OWNED BY external_approval_rules_protected_branches.id;
 
 CREATE TABLE external_pull_requests (
     id bigint NOT NULL,
@@ -17338,14 +9283,7 @@ ALTER SEQUENCE geo_cache_invalidation_events_id_seq OWNED BY geo_cache_invalidat
 CREATE TABLE geo_event_log (
     id bigint NOT NULL,
     created_at timestamp without time zone NOT NULL,
-    repository_updated_event_id bigint,
-    repository_deleted_event_id bigint,
-    repository_renamed_event_id bigint,
     repositories_changed_event_id bigint,
-    repository_created_event_id bigint,
-    hashed_storage_migrated_event_id bigint,
-    hashed_storage_attachments_event_id bigint,
-    reset_checksum_event_id bigint,
     cache_invalidation_event_id bigint,
     geo_event_id_convert_to_bigint integer,
     geo_event_id bigint
@@ -17376,45 +9314,6 @@ CREATE SEQUENCE geo_events_id_seq
     CACHE 1;
 
 ALTER SEQUENCE geo_events_id_seq OWNED BY geo_events.id;
-
-CREATE TABLE geo_hashed_storage_attachments_events (
-    id bigint NOT NULL,
-    project_id integer NOT NULL,
-    old_attachments_path text NOT NULL,
-    new_attachments_path text NOT NULL
-);
-
-CREATE SEQUENCE geo_hashed_storage_attachments_events_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE geo_hashed_storage_attachments_events_id_seq OWNED BY geo_hashed_storage_attachments_events.id;
-
-CREATE TABLE geo_hashed_storage_migrated_events (
-    id bigint NOT NULL,
-    project_id integer NOT NULL,
-    repository_storage_name text NOT NULL,
-    old_disk_path text NOT NULL,
-    new_disk_path text NOT NULL,
-    old_wiki_disk_path text NOT NULL,
-    new_wiki_disk_path text NOT NULL,
-    old_storage_version smallint,
-    new_storage_version smallint NOT NULL,
-    old_design_disk_path text,
-    new_design_disk_path text
-);
-
-CREATE SEQUENCE geo_hashed_storage_migrated_events_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE geo_hashed_storage_migrated_events_id_seq OWNED BY geo_hashed_storage_migrated_events.id;
 
 CREATE TABLE geo_node_namespace_links (
     id integer NOT NULL,
@@ -17510,97 +9409,6 @@ CREATE SEQUENCE geo_repositories_changed_events_id_seq
     CACHE 1;
 
 ALTER SEQUENCE geo_repositories_changed_events_id_seq OWNED BY geo_repositories_changed_events.id;
-
-CREATE TABLE geo_repository_created_events (
-    id bigint NOT NULL,
-    project_id integer NOT NULL,
-    repository_storage_name text NOT NULL,
-    repo_path text NOT NULL,
-    wiki_path text,
-    project_name text NOT NULL
-);
-
-CREATE SEQUENCE geo_repository_created_events_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE geo_repository_created_events_id_seq OWNED BY geo_repository_created_events.id;
-
-CREATE TABLE geo_repository_deleted_events (
-    id bigint NOT NULL,
-    project_id integer NOT NULL,
-    repository_storage_name text NOT NULL,
-    deleted_path text NOT NULL,
-    deleted_wiki_path text,
-    deleted_project_name text NOT NULL
-);
-
-CREATE SEQUENCE geo_repository_deleted_events_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE geo_repository_deleted_events_id_seq OWNED BY geo_repository_deleted_events.id;
-
-CREATE TABLE geo_repository_renamed_events (
-    id bigint NOT NULL,
-    project_id integer NOT NULL,
-    repository_storage_name text NOT NULL,
-    old_path_with_namespace text NOT NULL,
-    new_path_with_namespace text NOT NULL,
-    old_wiki_path_with_namespace text NOT NULL,
-    new_wiki_path_with_namespace text NOT NULL,
-    old_path text NOT NULL,
-    new_path text NOT NULL
-);
-
-CREATE SEQUENCE geo_repository_renamed_events_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE geo_repository_renamed_events_id_seq OWNED BY geo_repository_renamed_events.id;
-
-CREATE TABLE geo_repository_updated_events (
-    id bigint NOT NULL,
-    branches_affected integer NOT NULL,
-    tags_affected integer NOT NULL,
-    project_id integer NOT NULL,
-    source smallint NOT NULL,
-    new_branch boolean DEFAULT false NOT NULL,
-    remove_branch boolean DEFAULT false NOT NULL,
-    ref text
-);
-
-CREATE SEQUENCE geo_repository_updated_events_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE geo_repository_updated_events_id_seq OWNED BY geo_repository_updated_events.id;
-
-CREATE TABLE geo_reset_checksum_events (
-    id bigint NOT NULL,
-    project_id integer NOT NULL
-);
-
-CREATE SEQUENCE geo_reset_checksum_events_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE geo_reset_checksum_events_id_seq OWNED BY geo_reset_checksum_events.id;
 
 CREATE TABLE ghost_user_migrations (
     id bigint NOT NULL,
@@ -17704,7 +9512,8 @@ CREATE TABLE gpg_keys (
     user_id integer,
     primary_keyid bytea,
     fingerprint bytea,
-    key text
+    key text,
+    externally_verified boolean DEFAULT false NOT NULL
 );
 
 CREATE SEQUENCE gpg_keys_id_seq
@@ -17915,7 +9724,8 @@ CREATE TABLE group_merge_request_approval_settings (
     allow_overrides_to_approver_list_per_merge_request boolean DEFAULT false NOT NULL,
     retain_approvals_on_push boolean DEFAULT false NOT NULL,
     require_password_to_approve boolean DEFAULT false NOT NULL,
-    require_saml_auth_to_approve boolean DEFAULT false NOT NULL
+    require_saml_auth_to_approve boolean DEFAULT false NOT NULL,
+    require_reauthentication_to_approve boolean DEFAULT false NOT NULL
 );
 
 CREATE TABLE group_repository_storage_moves (
@@ -18103,6 +9913,36 @@ CREATE SEQUENCE import_failures_id_seq
     CACHE 1;
 
 ALTER SEQUENCE import_failures_id_seq OWNED BY import_failures.id;
+
+CREATE TABLE import_source_users (
+    id bigint NOT NULL,
+    placeholder_user_id bigint,
+    reassign_to_user_id bigint,
+    namespace_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    status smallint DEFAULT 0 NOT NULL,
+    source_username text,
+    source_name text,
+    source_user_identifier text NOT NULL,
+    source_hostname text NOT NULL,
+    import_type text NOT NULL,
+    reassigned_by_user_id bigint,
+    CONSTRAINT check_0d7295a307 CHECK ((char_length(import_type) <= 255)),
+    CONSTRAINT check_199c28ec54 CHECK ((char_length(source_username) <= 255)),
+    CONSTRAINT check_562655155f CHECK ((char_length(source_name) <= 255)),
+    CONSTRAINT check_cc9d4093b5 CHECK ((char_length(source_user_identifier) <= 255)),
+    CONSTRAINT check_e2039840c5 CHECK ((char_length(source_hostname) <= 255))
+);
+
+CREATE SEQUENCE import_source_users_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE import_source_users_id_seq OWNED BY import_source_users.id;
 
 CREATE TABLE incident_management_escalation_policies (
     id bigint NOT NULL,
@@ -18725,6 +10565,9 @@ CREATE TABLE issues (
     work_item_type_id bigint,
     namespace_id bigint,
     start_date date,
+    tmp_epic_id bigint,
+    imported smallint DEFAULT 0 NOT NULL,
+    imported_from smallint DEFAULT 0 NOT NULL,
     CONSTRAINT check_2addf801cd CHECK ((work_item_type_id IS NOT NULL)),
     CONSTRAINT check_c33362cd43 CHECK ((namespace_id IS NOT NULL)),
     CONSTRAINT check_fba63f706d CHECK ((lock_version IS NOT NULL))
@@ -18869,6 +10712,7 @@ CREATE TABLE jira_tracker_data (
     jira_issue_prefix text,
     jira_issue_regex text,
     jira_auth_type smallint DEFAULT 0 NOT NULL,
+    project_keys text[] DEFAULT '{}'::text[] NOT NULL,
     CONSTRAINT check_0bf84b76e9 CHECK ((char_length(vulnerabilities_issuetype) <= 255)),
     CONSTRAINT check_0fbd71d9f2 CHECK ((integration_id IS NOT NULL)),
     CONSTRAINT check_214cf6a48b CHECK ((char_length(project_key) <= 255)),
@@ -19144,13 +10988,15 @@ CREATE TABLE member_approvals (
     reviewed_at timestamp with time zone,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    member_id bigint NOT NULL,
+    member_id bigint,
     member_namespace_id bigint NOT NULL,
     requested_by_id bigint,
     reviewed_by_id bigint,
     new_access_level integer NOT NULL,
-    old_access_level integer NOT NULL,
-    status smallint DEFAULT 0 NOT NULL
+    old_access_level integer,
+    status smallint DEFAULT 0 NOT NULL,
+    user_id bigint NOT NULL,
+    member_role_id bigint
 );
 
 CREATE SEQUENCE member_approvals_id_seq
@@ -19181,6 +11027,10 @@ CREATE TABLE member_roles (
     manage_group_access_tokens boolean DEFAULT false NOT NULL,
     remove_project boolean DEFAULT false NOT NULL,
     admin_terraform_state boolean DEFAULT false NOT NULL,
+    admin_cicd_variables boolean DEFAULT false NOT NULL,
+    remove_group boolean DEFAULT false NOT NULL,
+    occupies_seat boolean DEFAULT false NOT NULL,
+    permissions jsonb DEFAULT '{}'::jsonb NOT NULL,
     CONSTRAINT check_4364846f58 CHECK ((char_length(description) <= 255)),
     CONSTRAINT check_9907916995 CHECK ((char_length(name) <= 255))
 );
@@ -19408,26 +11258,6 @@ CREATE TABLE merge_request_diff_files (
     generated boolean
 );
 
-CREATE TABLE merge_request_diff_llm_summaries (
-    id bigint NOT NULL,
-    user_id bigint,
-    merge_request_diff_id bigint NOT NULL,
-    created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL,
-    provider smallint NOT NULL,
-    content text NOT NULL,
-    CONSTRAINT check_93955f22ad CHECK ((char_length(content) <= 2056))
-);
-
-CREATE SEQUENCE merge_request_diff_llm_summaries_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE merge_request_diff_llm_summaries_id_seq OWNED BY merge_request_diff_llm_summaries.id;
-
 CREATE TABLE merge_request_diffs (
     id integer NOT NULL,
     state character varying,
@@ -19468,7 +11298,7 @@ CREATE TABLE merge_request_metrics (
     merged_at timestamp without time zone,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
-    pipeline_id integer,
+    pipeline_id_convert_to_bigint integer,
     merged_by_id integer,
     latest_closed_by_id integer,
     latest_closed_at timestamp with time zone,
@@ -19485,6 +11315,7 @@ CREATE TABLE merge_request_metrics (
     target_project_id integer,
     id bigint NOT NULL,
     first_contribution boolean DEFAULT false NOT NULL,
+    pipeline_id bigint,
     CONSTRAINT check_e03d0900bf CHECK ((target_project_id IS NOT NULL))
 );
 
@@ -19513,6 +11344,24 @@ CREATE SEQUENCE merge_request_predictions_merge_request_id_seq
     CACHE 1;
 
 ALTER SEQUENCE merge_request_predictions_merge_request_id_seq OWNED BY merge_request_predictions.merge_request_id;
+
+CREATE TABLE merge_request_requested_changes (
+    id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    merge_request_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL
+);
+
+CREATE SEQUENCE merge_request_requested_changes_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE merge_request_requested_changes_id_seq OWNED BY merge_request_requested_changes.id;
 
 CREATE TABLE merge_request_review_llm_summaries (
     id bigint NOT NULL,
@@ -19617,6 +11466,10 @@ CREATE TABLE merge_requests (
     draft boolean DEFAULT false NOT NULL,
     prepared_at timestamp with time zone,
     merged_commit_sha bytea,
+    override_requested_changes boolean DEFAULT false NOT NULL,
+    head_pipeline_id_convert_to_bigint bigint,
+    imported smallint DEFAULT 0 NOT NULL,
+    imported_from smallint DEFAULT 0 NOT NULL,
     CONSTRAINT check_970d272570 CHECK ((lock_version IS NOT NULL))
 );
 
@@ -19625,7 +11478,8 @@ CREATE TABLE merge_requests_closing_issues (
     merge_request_id integer NOT NULL,
     issue_id integer NOT NULL,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    closes_work_item boolean DEFAULT true NOT NULL
 );
 
 CREATE SEQUENCE merge_requests_closing_issues_id_seq
@@ -19671,14 +11525,15 @@ CREATE TABLE merge_trains (
     id bigint NOT NULL,
     merge_request_id integer NOT NULL,
     user_id integer NOT NULL,
-    pipeline_id integer,
+    pipeline_id_convert_to_bigint integer,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     target_project_id integer NOT NULL,
     target_branch text NOT NULL,
     status smallint DEFAULT 0 NOT NULL,
     merged_at timestamp with time zone,
-    duration integer
+    duration integer,
+    pipeline_id bigint
 );
 
 CREATE SEQUENCE merge_trains_id_seq
@@ -19791,7 +11646,8 @@ CREATE TABLE ml_candidate_metrics (
     is_nan bytea,
     name text NOT NULL,
     tracked_at bigint,
-    CONSTRAINT check_3bb4a3fbd9 CHECK ((char_length(name) <= 250))
+    CONSTRAINT check_3bb4a3fbd9 CHECK ((char_length(name) <= 250)),
+    CONSTRAINT check_d7dfd3de26 CHECK ((candidate_id IS NOT NULL))
 );
 
 CREATE SEQUENCE ml_candidate_metrics_id_seq
@@ -19811,7 +11667,8 @@ CREATE TABLE ml_candidate_params (
     name text NOT NULL,
     value text NOT NULL,
     CONSTRAINT check_093034d049 CHECK ((char_length(name) <= 250)),
-    CONSTRAINT check_28a3c29e43 CHECK ((char_length(value) <= 250))
+    CONSTRAINT check_28a3c29e43 CHECK ((char_length(value) <= 250)),
+    CONSTRAINT check_7a0505ca91 CHECK ((candidate_id IS NOT NULL))
 );
 
 CREATE SEQUENCE ml_candidate_params_id_seq
@@ -19839,6 +11696,7 @@ CREATE TABLE ml_candidates (
     internal_id bigint,
     ci_build_id bigint,
     model_version_id bigint,
+    CONSTRAINT check_01584ca6db CHECK ((project_id IS NOT NULL)),
     CONSTRAINT check_25e6c65051 CHECK ((char_length(name) <= 255)),
     CONSTRAINT check_cd160587d4 CHECK ((eid IS NOT NULL))
 );
@@ -20051,7 +11909,8 @@ CREATE TABLE namespace_details (
     updated_at timestamp with time zone,
     cached_markdown_version integer,
     description text,
-    description_html text
+    description_html text,
+    creator_id bigint
 );
 
 CREATE TABLE namespace_ldap_settings (
@@ -20128,9 +11987,7 @@ CREATE TABLE namespace_settings (
     allow_mfa_for_subgroups boolean DEFAULT true NOT NULL,
     default_branch_name text,
     repository_read_only boolean DEFAULT false NOT NULL,
-    delayed_project_removal boolean,
     resource_access_token_creation_allowed boolean DEFAULT true NOT NULL,
-    lock_delayed_project_removal boolean DEFAULT false NOT NULL,
     prevent_sharing_groups_outside_hierarchy boolean DEFAULT false NOT NULL,
     new_user_signups_cap integer,
     setup_for_company boolean,
@@ -20154,7 +12011,6 @@ CREATE TABLE namespace_settings (
     emails_enabled boolean DEFAULT true NOT NULL,
     code_suggestions boolean DEFAULT false NOT NULL,
     experiment_features_enabled boolean DEFAULT false NOT NULL,
-    third_party_ai_features_enabled boolean DEFAULT true NOT NULL,
     default_branch_protection_defaults jsonb DEFAULT '{}'::jsonb NOT NULL,
     service_access_tokens_expiration_enforced boolean DEFAULT true NOT NULL,
     product_analytics_enabled boolean DEFAULT false NOT NULL,
@@ -20166,6 +12022,10 @@ CREATE TABLE namespace_settings (
     lock_toggle_security_policies_policy_scope boolean DEFAULT false NOT NULL,
     math_rendering_limits_enabled boolean,
     lock_math_rendering_limits_enabled boolean DEFAULT false NOT NULL,
+    duo_features_enabled boolean,
+    lock_duo_features_enabled boolean DEFAULT false NOT NULL,
+    disable_personal_access_tokens boolean DEFAULT false NOT NULL,
+    enable_auto_assign_gitlab_duo_pro_seats boolean DEFAULT false NOT NULL,
     CONSTRAINT check_0ba93c78c7 CHECK ((char_length(default_branch_name) <= 255)),
     CONSTRAINT namespace_settings_unique_project_download_limit_alertlist_size CHECK ((cardinality(unique_project_download_limit_alertlist) <= 100)),
     CONSTRAINT namespace_settings_unique_project_download_limit_allowlist_size CHECK ((cardinality(unique_project_download_limit_allowlist) <= 100))
@@ -20299,7 +12159,9 @@ CREATE TABLE notes (
     last_edited_at timestamp with time zone,
     internal boolean DEFAULT false NOT NULL,
     id bigint NOT NULL,
-    namespace_id bigint
+    namespace_id bigint,
+    imported smallint DEFAULT 0 NOT NULL,
+    imported_from smallint DEFAULT 0 NOT NULL
 );
 
 CREATE SEQUENCE notes_id_seq
@@ -20467,7 +12329,6 @@ CREATE TABLE onboarding_progresses (
     secure_cluster_image_scanning_run_at timestamp with time zone,
     secure_api_fuzzing_run_at timestamp with time zone,
     license_scanning_run_at timestamp with time zone,
-    promote_ultimate_features_at timestamp with time zone,
     code_added_at timestamp with time zone
 );
 
@@ -20659,6 +12520,7 @@ CREATE TABLE organizations (
     updated_at timestamp with time zone NOT NULL,
     name text DEFAULT ''::text NOT NULL,
     path text NOT NULL,
+    visibility_level smallint DEFAULT 0 NOT NULL,
     CONSTRAINT check_0b4296b5ea CHECK ((char_length(path) <= 255)),
     CONSTRAINT check_d130d769e0 CHECK ((char_length(name) <= 255))
 );
@@ -20681,6 +12543,15 @@ CREATE SEQUENCE p_batched_git_ref_updates_deletions_id_seq
 
 ALTER SEQUENCE p_batched_git_ref_updates_deletions_id_seq OWNED BY p_batched_git_ref_updates_deletions.id;
 
+CREATE SEQUENCE p_catalog_resource_component_usages_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE p_catalog_resource_component_usages_id_seq OWNED BY p_catalog_resource_component_usages.id;
+
 CREATE SEQUENCE p_catalog_resource_sync_events_id_seq
     START WITH 1
     INCREMENT BY 1
@@ -20689,6 +12560,15 @@ CREATE SEQUENCE p_catalog_resource_sync_events_id_seq
     CACHE 1;
 
 ALTER SEQUENCE p_catalog_resource_sync_events_id_seq OWNED BY p_catalog_resource_sync_events.id;
+
+CREATE SEQUENCE p_ci_builds_execution_configs_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE p_ci_builds_execution_configs_id_seq OWNED BY p_ci_builds_execution_configs.id;
 
 CREATE SEQUENCE p_ci_job_annotations_id_seq
     START WITH 1
@@ -20702,7 +12582,8 @@ ALTER SEQUENCE p_ci_job_annotations_id_seq OWNED BY p_ci_job_annotations.id;
 CREATE TABLE packages_build_infos (
     id bigint NOT NULL,
     package_id integer NOT NULL,
-    pipeline_id integer
+    pipeline_id_convert_to_bigint integer,
+    pipeline_id bigint
 );
 
 CREATE SEQUENCE packages_build_infos_id_seq
@@ -21240,6 +13121,8 @@ CREATE TABLE packages_package_files (
     verification_state smallint DEFAULT 0 NOT NULL,
     verification_started_at timestamp with time zone,
     status smallint DEFAULT 0 NOT NULL,
+    file_final_path text,
+    CONSTRAINT check_0f29938b18 CHECK ((char_length(file_final_path) <= 1024)),
     CONSTRAINT check_4c5e6bb0b3 CHECK ((file_store IS NOT NULL))
 );
 
@@ -21283,9 +13166,7 @@ CREATE TABLE packages_protection_rules (
     push_protected_up_to_access_level smallint NOT NULL,
     package_type smallint NOT NULL,
     package_name_pattern text NOT NULL,
-    package_name_pattern_ilike_query text,
-    CONSTRAINT check_d2d75d206d CHECK ((char_length(package_name_pattern) <= 255)),
-    CONSTRAINT check_ff47b09794 CHECK ((char_length(package_name_pattern_ilike_query) <= 255))
+    CONSTRAINT check_d2d75d206d CHECK ((char_length(package_name_pattern) <= 255))
 );
 
 CREATE SEQUENCE packages_protection_rules_id_seq
@@ -21306,8 +13187,8 @@ CREATE TABLE packages_pypi_metadata (
     author_email text,
     description text,
     description_content_type text,
-    CONSTRAINT check_02be2c39af CHECK ((char_length(keywords) <= 255)),
     CONSTRAINT check_0d9aed55b2 CHECK ((required_python IS NOT NULL)),
+    CONSTRAINT check_222e4f5b58 CHECK ((char_length(keywords) <= 1024)),
     CONSTRAINT check_2d3ed32225 CHECK ((char_length(metadata_version) <= 16)),
     CONSTRAINT check_379019d5da CHECK ((char_length(required_python) <= 255)),
     CONSTRAINT check_65d8dbbd9f CHECK ((char_length(author_email) <= 2048)),
@@ -21682,7 +13563,8 @@ CREATE TABLE plan_limits (
     ci_job_annotations_num integer DEFAULT 20 NOT NULL,
     file_size_limit_mb double precision DEFAULT 100.0 NOT NULL,
     audit_events_amazon_s3_configurations integer DEFAULT 5 NOT NULL,
-    ci_max_artifact_size_repository_xray bigint DEFAULT 1073741824 NOT NULL
+    ci_max_artifact_size_repository_xray bigint DEFAULT 1073741824 NOT NULL,
+    active_versioned_pages_deployments_limit_by_namespace integer DEFAULT 0 NOT NULL
 );
 
 CREATE SEQUENCE plan_limits_id_seq
@@ -22692,32 +14574,6 @@ CREATE SEQUENCE project_repositories_id_seq
 
 ALTER SEQUENCE project_repositories_id_seq OWNED BY project_repositories.id;
 
-CREATE TABLE project_repository_states (
-    id integer NOT NULL,
-    project_id integer NOT NULL,
-    repository_verification_checksum bytea,
-    wiki_verification_checksum bytea,
-    last_repository_verification_failure character varying,
-    last_wiki_verification_failure character varying,
-    repository_retry_at timestamp with time zone,
-    wiki_retry_at timestamp with time zone,
-    repository_retry_count integer,
-    wiki_retry_count integer,
-    last_repository_verification_ran_at timestamp with time zone,
-    last_wiki_verification_ran_at timestamp with time zone,
-    last_repository_updated_at timestamp with time zone,
-    last_wiki_updated_at timestamp with time zone
-);
-
-CREATE SEQUENCE project_repository_states_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE project_repository_states_id_seq OWNED BY project_repository_states.id;
-
 CREATE TABLE project_repository_storage_moves (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -22741,6 +14597,26 @@ CREATE SEQUENCE project_repository_storage_moves_id_seq
 
 ALTER SEQUENCE project_repository_storage_moves_id_seq OWNED BY project_repository_storage_moves.id;
 
+CREATE TABLE project_saved_replies (
+    id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    name text NOT NULL,
+    content text NOT NULL,
+    CONSTRAINT check_5569cfc14e CHECK ((char_length(content) <= 10000)),
+    CONSTRAINT check_a3993908da CHECK ((char_length(name) <= 255))
+);
+
+CREATE SEQUENCE project_saved_replies_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE project_saved_replies_id_seq OWNED BY project_saved_replies.id;
+
 CREATE TABLE project_security_settings (
     project_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -22749,7 +14625,9 @@ CREATE TABLE project_security_settings (
     auto_fix_dast boolean DEFAULT true NOT NULL,
     auto_fix_dependency_scanning boolean DEFAULT true NOT NULL,
     auto_fix_sast boolean DEFAULT true NOT NULL,
-    continuous_vulnerability_scans_enabled boolean DEFAULT false NOT NULL
+    continuous_vulnerability_scans_enabled boolean DEFAULT false NOT NULL,
+    container_scanning_for_registry_enabled boolean DEFAULT false NOT NULL,
+    pre_receive_secret_detection_enabled boolean DEFAULT false NOT NULL
 );
 
 CREATE SEQUENCE project_security_settings_project_id_seq
@@ -22802,8 +14680,8 @@ CREATE TABLE project_settings (
     encrypted_product_analytics_configurator_connection_string_iv bytea,
     pages_multiple_versions_enabled boolean DEFAULT false NOT NULL,
     allow_merge_without_pipeline boolean DEFAULT false NOT NULL,
-    code_suggestions boolean DEFAULT true NOT NULL,
     duo_features_enabled boolean DEFAULT true NOT NULL,
+    require_reauthentication_to_approve boolean,
     CONSTRAINT check_1a30456322 CHECK ((char_length(pages_unique_domain) <= 63)),
     CONSTRAINT check_3a03e7557a CHECK ((char_length(previous_default_branch) <= 4096)),
     CONSTRAINT check_3ca5cbffe6 CHECK ((char_length(issue_branch_template) <= 255)),
@@ -23240,7 +15118,8 @@ CREATE TABLE raw_usage_data (
     recorded_at timestamp with time zone NOT NULL,
     sent_at timestamp with time zone,
     payload jsonb NOT NULL,
-    version_usage_data_id_value bigint
+    version_usage_data_id_value bigint,
+    organization_id bigint DEFAULT 1 NOT NULL
 );
 
 CREATE SEQUENCE raw_usage_data_id_seq
@@ -23287,6 +15166,24 @@ CREATE SEQUENCE related_epic_links_id_seq
     CACHE 1;
 
 ALTER SEQUENCE related_epic_links_id_seq OWNED BY related_epic_links.id;
+
+CREATE TABLE relation_import_trackers (
+    id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    relation smallint NOT NULL,
+    status smallint DEFAULT 0 NOT NULL
+);
+
+CREATE SEQUENCE relation_import_trackers_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE relation_import_trackers_id_seq OWNED BY relation_import_trackers.id;
 
 CREATE TABLE release_links (
     id bigint NOT NULL,
@@ -23359,6 +15256,24 @@ CREATE SEQUENCE remote_development_agent_configs_id_seq
     CACHE 1;
 
 ALTER SEQUENCE remote_development_agent_configs_id_seq OWNED BY remote_development_agent_configs.id;
+
+CREATE TABLE remote_development_namespace_cluster_agent_mappings (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    namespace_id bigint NOT NULL,
+    cluster_agent_id bigint NOT NULL,
+    creator_id bigint
+);
+
+CREATE SEQUENCE remote_development_namespace_cluster_agent_mappings_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE remote_development_namespace_cluster_agent_mappings_id_seq OWNED BY remote_development_namespace_cluster_agent_mappings.id;
 
 CREATE TABLE remote_mirrors (
     id integer NOT NULL,
@@ -23480,7 +15395,9 @@ CREATE TABLE resource_label_events (
     created_at timestamp with time zone NOT NULL,
     cached_markdown_version integer,
     reference text,
-    reference_html text
+    reference_html text,
+    imported smallint DEFAULT 0 NOT NULL,
+    imported_from smallint DEFAULT 0 NOT NULL
 );
 
 CREATE SEQUENCE resource_label_events_id_seq
@@ -23519,7 +15436,9 @@ CREATE TABLE resource_milestone_events (
     milestone_id bigint,
     action smallint NOT NULL,
     state smallint NOT NULL,
-    created_at timestamp with time zone NOT NULL
+    created_at timestamp with time zone NOT NULL,
+    imported smallint DEFAULT 0 NOT NULL,
+    imported_from smallint DEFAULT 0 NOT NULL
 );
 
 CREATE SEQUENCE resource_milestone_events_id_seq
@@ -23543,6 +15462,8 @@ CREATE TABLE resource_state_events (
     close_after_error_tracking_resolve boolean DEFAULT false NOT NULL,
     close_auto_resolve_prometheus_alert boolean DEFAULT false NOT NULL,
     source_merge_request_id bigint,
+    imported smallint DEFAULT 0 NOT NULL,
+    imported_from smallint DEFAULT 0 NOT NULL,
     CONSTRAINT check_f0bcfaa3a2 CHECK ((char_length(source_commit) <= 40)),
     CONSTRAINT state_events_must_belong_to_issue_or_merge_request_or_epic CHECK ((((issue_id <> NULL::bigint) AND (merge_request_id IS NULL) AND (epic_id IS NULL)) OR ((issue_id IS NULL) AND (merge_request_id <> NULL::bigint) AND (epic_id IS NULL)) OR ((issue_id IS NULL) AND (merge_request_id IS NULL) AND (epic_id <> NULL::integer))))
 );
@@ -23736,6 +15657,7 @@ CREATE TABLE sbom_occurrences (
     source_package_id bigint,
     archived boolean DEFAULT false NOT NULL,
     traversal_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL,
+    ancestors jsonb DEFAULT '[]'::jsonb NOT NULL,
     CONSTRAINT check_3f2d2c7ffc CHECK ((char_length(package_manager) <= 255)),
     CONSTRAINT check_9b29021fa8 CHECK ((char_length(component_name) <= 255)),
     CONSTRAINT check_e6b8437cfe CHECK ((char_length(input_file_path) <= 1024))
@@ -23819,6 +15741,8 @@ CREATE TABLE scan_result_policies (
     rule_idx smallint,
     project_approval_settings jsonb DEFAULT '{}'::jsonb NOT NULL,
     commits smallint,
+    send_bot_message jsonb DEFAULT '{}'::jsonb NOT NULL,
+    fallback_behavior jsonb DEFAULT '{}'::jsonb NOT NULL,
     CONSTRAINT age_value_null_or_positive CHECK (((age_value IS NULL) OR (age_value >= 0))),
     CONSTRAINT check_scan_result_policies_rule_idx_positive CHECK (((rule_idx IS NULL) OR (rule_idx >= 0)))
 );
@@ -23838,7 +15762,8 @@ CREATE TABLE scan_result_policy_violations (
     merge_request_id bigint NOT NULL,
     project_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL
+    updated_at timestamp with time zone NOT NULL,
+    violation_data jsonb
 );
 
 CREATE SEQUENCE scan_result_policy_violations_id_seq
@@ -23988,6 +15913,35 @@ CREATE SEQUENCE security_orchestration_policy_rule_schedules_id_seq
     CACHE 1;
 
 ALTER SEQUENCE security_orchestration_policy_rule_schedules_id_seq OWNED BY security_orchestration_policy_rule_schedules.id;
+
+CREATE TABLE security_policies (
+    id bigint NOT NULL,
+    security_orchestration_policy_configuration_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    policy_index smallint NOT NULL,
+    type smallint NOT NULL,
+    enabled boolean DEFAULT true NOT NULL,
+    name text NOT NULL,
+    description text,
+    checksum text NOT NULL,
+    scope jsonb DEFAULT '{}'::jsonb NOT NULL,
+    actions jsonb DEFAULT '[]'::jsonb NOT NULL,
+    approval_settings jsonb DEFAULT '{}'::jsonb NOT NULL,
+    security_policy_management_project_id bigint NOT NULL,
+    CONSTRAINT check_3fa0f29e4b CHECK ((char_length(name) <= 255)),
+    CONSTRAINT check_966e08b242 CHECK ((char_length(checksum) <= 255)),
+    CONSTRAINT check_99c8e08928 CHECK ((char_length(description) <= 255))
+);
+
+CREATE SEQUENCE security_policies_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE security_policies_id_seq OWNED BY security_policies.id;
 
 CREATE TABLE security_scans (
     id bigint NOT NULL,
@@ -24165,6 +16119,7 @@ CREATE TABLE service_desk_settings (
     service_desk_enabled boolean DEFAULT true NOT NULL,
     add_external_participants_from_cc boolean DEFAULT false NOT NULL,
     reopen_issue_on_external_participant_note boolean DEFAULT false NOT NULL,
+    tickets_confidential_by_default boolean DEFAULT true NOT NULL,
     CONSTRAINT check_57a79552e1 CHECK ((char_length(custom_email) <= 255))
 );
 
@@ -24334,7 +16289,9 @@ CREATE TABLE snippets (
     encrypted_secret_token character varying(255),
     encrypted_secret_token_iv character varying(255),
     secret boolean DEFAULT false NOT NULL,
-    repository_read_only boolean DEFAULT false NOT NULL
+    repository_read_only boolean DEFAULT false NOT NULL,
+    imported smallint DEFAULT 0 NOT NULL,
+    imported_from smallint DEFAULT 0 NOT NULL
 );
 
 CREATE SEQUENCE snippets_id_seq
@@ -24522,6 +16479,7 @@ CREATE TABLE subscription_add_on_purchases (
     expires_on date NOT NULL,
     purchase_xid text NOT NULL,
     last_assigned_users_refreshed_at timestamp with time zone,
+    trial boolean DEFAULT false NOT NULL,
     CONSTRAINT check_3313c4d200 CHECK ((char_length(purchase_xid) <= 255))
 );
 
@@ -24658,7 +16616,6 @@ CREATE SEQUENCE system_access_microsoft_graph_access_tokens_id_seq
 ALTER SEQUENCE system_access_microsoft_graph_access_tokens_id_seq OWNED BY system_access_microsoft_graph_access_tokens.id;
 
 CREATE TABLE system_note_metadata (
-    id_convert_to_bigint integer DEFAULT 0 NOT NULL,
     commit_count integer,
     action character varying,
     created_at timestamp without time zone NOT NULL,
@@ -24730,6 +16687,40 @@ CREATE SEQUENCE target_branch_rules_id_seq
     CACHE 1;
 
 ALTER SEQUENCE target_branch_rules_id_seq OWNED BY target_branch_rules.id;
+
+CREATE TABLE temp_notes_backup (
+    note text,
+    noteable_type character varying,
+    author_id integer,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
+    project_id integer,
+    attachment character varying,
+    line_code character varying,
+    commit_id character varying,
+    noteable_id integer,
+    system boolean NOT NULL,
+    st_diff text,
+    updated_by_id integer,
+    type character varying,
+    "position" text,
+    original_position text,
+    resolved_at timestamp without time zone,
+    resolved_by_id integer,
+    discussion_id character varying,
+    note_html text,
+    cached_markdown_version integer,
+    change_position text,
+    resolved_by_push boolean,
+    review_id bigint,
+    confidential boolean,
+    last_edited_at timestamp with time zone,
+    internal boolean NOT NULL,
+    id bigint NOT NULL,
+    namespace_id bigint,
+    imported smallint DEFAULT 0 NOT NULL,
+    imported_from smallint DEFAULT 0 NOT NULL
+);
 
 CREATE TABLE term_agreements (
     id integer NOT NULL,
@@ -25125,7 +17116,6 @@ CREATE TABLE user_details (
     location text DEFAULT ''::text NOT NULL,
     organization text DEFAULT ''::text NOT NULL,
     password_last_changed_at timestamp with time zone DEFAULT now() NOT NULL,
-    onboarding_step_url text,
     discord text DEFAULT ''::text NOT NULL,
     enterprise_group_id bigint,
     enterprise_group_associated_at timestamp with time zone,
@@ -25137,7 +17127,6 @@ CREATE TABLE user_details (
     CONSTRAINT check_444573ee52 CHECK ((char_length(skype) <= 500)),
     CONSTRAINT check_466a25be35 CHECK ((char_length(twitter) <= 500)),
     CONSTRAINT check_4ef1de1a15 CHECK ((char_length(discord) <= 500)),
-    CONSTRAINT check_4f51129940 CHECK ((char_length(onboarding_step_url) <= 2000)),
     CONSTRAINT check_7b246dad73 CHECK ((char_length(organization) <= 500)),
     CONSTRAINT check_7d6489f8f3 CHECK ((char_length(linkedin) <= 500)),
     CONSTRAINT check_7fe2044093 CHECK ((char_length(website_url) <= 500)),
@@ -25187,11 +17176,6 @@ CREATE TABLE user_highest_roles (
     user_id bigint NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     highest_access_level integer
-);
-
-CREATE TABLE user_interacted_projects (
-    user_id integer NOT NULL,
-    project_id integer NOT NULL
 );
 
 CREATE TABLE user_namespace_callouts (
@@ -25289,6 +17273,9 @@ CREATE TABLE user_preferences (
     time_display_format smallint DEFAULT 0 NOT NULL,
     home_organization_id bigint,
     use_web_ide_extension_marketplace boolean DEFAULT false NOT NULL,
+    early_access_program_participant boolean DEFAULT false NOT NULL,
+    early_access_program_tracking boolean DEFAULT false NOT NULL,
+    extensions_marketplace_opt_in_status smallint DEFAULT 0 NOT NULL,
     CONSTRAINT check_1d670edc68 CHECK ((time_display_relative IS NOT NULL)),
     CONSTRAINT check_89bf269f41 CHECK ((char_length(diffs_deletion_color) <= 7)),
     CONSTRAINT check_b22446f91a CHECK ((render_whitespace_in_code IS NOT NULL)),
@@ -25456,6 +17443,8 @@ CREATE TABLE vs_code_settings (
     content text NOT NULL,
     uuid uuid,
     version integer DEFAULT 0,
+    CONSTRAINT check_2082c35541 CHECK ((version IS NOT NULL)),
+    CONSTRAINT check_4680ca265d CHECK ((uuid IS NOT NULL)),
     CONSTRAINT check_5da3b2910b CHECK ((char_length(content) <= 524288)),
     CONSTRAINT check_994c503fc4 CHECK ((char_length(setting_type) <= 256))
 );
@@ -25496,7 +17485,8 @@ CREATE TABLE vulnerabilities (
     present_on_default_branch boolean DEFAULT true NOT NULL,
     detected_at timestamp with time zone DEFAULT now(),
     finding_id bigint,
-    cvss jsonb DEFAULT '[]'::jsonb
+    cvss jsonb DEFAULT '[]'::jsonb,
+    CONSTRAINT check_4d8a873f1f CHECK ((finding_id IS NOT NULL))
 );
 
 CREATE SEQUENCE vulnerabilities_id_seq
@@ -25563,7 +17553,7 @@ CREATE TABLE vulnerability_feedback (
     category smallint NOT NULL,
     project_id integer NOT NULL,
     author_id integer NOT NULL,
-    pipeline_id integer,
+    pipeline_id_convert_to_bigint integer,
     issue_id integer,
     project_fingerprint character varying(40) NOT NULL,
     merge_request_id integer,
@@ -25572,7 +17562,8 @@ CREATE TABLE vulnerability_feedback (
     comment_timestamp timestamp with time zone,
     finding_uuid uuid,
     dismissal_reason smallint,
-    migrated_to_state_transition boolean DEFAULT false
+    migrated_to_state_transition boolean DEFAULT false,
+    pipeline_id bigint
 );
 
 CREATE SEQUENCE vulnerability_feedback_id_seq
@@ -25780,7 +17771,8 @@ CREATE TABLE vulnerability_occurrence_pipelines (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     occurrence_id bigint NOT NULL,
-    pipeline_id integer NOT NULL
+    pipeline_id integer NOT NULL,
+    pipeline_id_convert_to_bigint bigint DEFAULT 0 NOT NULL
 );
 
 CREATE SEQUENCE vulnerability_occurrence_pipelines_id_seq
@@ -25815,6 +17807,8 @@ CREATE TABLE vulnerability_occurrences (
     location jsonb,
     detection_method smallint DEFAULT 0 NOT NULL,
     uuid uuid DEFAULT '00000000-0000-0000-0000-000000000000'::uuid NOT NULL,
+    initial_pipeline_id bigint,
+    latest_pipeline_id bigint,
     CONSTRAINT check_4a3a60f2ba CHECK ((char_length(solution) <= 7000)),
     CONSTRAINT check_ade261da6b CHECK ((char_length(description) <= 15000)),
     CONSTRAINT check_f602da68dd CHECK ((char_length(cve) <= 48400))
@@ -25851,7 +17845,9 @@ CREATE TABLE vulnerability_reads (
     traversal_ids bigint[] DEFAULT '{}'::bigint[],
     archived boolean DEFAULT false NOT NULL,
     CONSTRAINT check_380451bdbe CHECK ((char_length(location_image) <= 2048)),
-    CONSTRAINT check_a105eb825a CHECK ((char_length(cluster_agent_id) <= 10))
+    CONSTRAINT check_4b1a1bf5ea CHECK ((has_merge_request IS NOT NULL)),
+    CONSTRAINT check_a105eb825a CHECK ((char_length(cluster_agent_id) <= 10)),
+    CONSTRAINT check_f5ba7c2496 CHECK ((traversal_ids IS NOT NULL))
 );
 
 CREATE SEQUENCE vulnerability_reads_id_seq
@@ -26020,8 +18016,13 @@ CREATE TABLE web_hooks (
     emoji_events boolean DEFAULT false NOT NULL,
     name text,
     description text,
+    custom_webhook_template text,
+    resource_access_token_events boolean DEFAULT false NOT NULL,
+    encrypted_custom_headers bytea,
+    encrypted_custom_headers_iv bytea,
     CONSTRAINT check_1e4d5cbdc5 CHECK ((char_length(name) <= 255)),
-    CONSTRAINT check_23a96ad211 CHECK ((char_length(description) <= 2048))
+    CONSTRAINT check_23a96ad211 CHECK ((char_length(description) <= 2048)),
+    CONSTRAINT check_69ef76ee0c CHECK ((char_length(custom_webhook_template) <= 4096))
 );
 
 CREATE SEQUENCE web_hooks_id_seq
@@ -26100,6 +18101,7 @@ CREATE TABLE wiki_repository_states (
     verification_retry_count smallint,
     verification_checksum bytea,
     verification_failure text,
+    project_id bigint,
     CONSTRAINT check_2933ff60dc CHECK ((char_length(verification_failure) <= 255))
 );
 
@@ -26161,7 +18163,8 @@ CREATE TABLE work_item_parent_links (
     work_item_parent_id bigint NOT NULL,
     relative_position integer,
     created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL
+    updated_at timestamp with time zone NOT NULL,
+    namespace_id bigint
 );
 
 CREATE SEQUENCE work_item_parent_links_id_seq
@@ -26254,6 +18257,7 @@ CREATE TABLE workspace_variables (
     key text NOT NULL,
     encrypted_value bytea NOT NULL,
     encrypted_value_iv bytea NOT NULL,
+    project_id bigint,
     CONSTRAINT check_5545042100 CHECK ((char_length(key) <= 255))
 );
 
@@ -26525,6 +18529,15 @@ CREATE SEQUENCE zoekt_shards_id_seq
     CACHE 1;
 
 ALTER SEQUENCE zoekt_shards_id_seq OWNED BY zoekt_shards.id;
+
+CREATE SEQUENCE zoekt_tasks_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE zoekt_tasks_id_seq OWNED BY zoekt_tasks.id;
 
 CREATE TABLE zoom_meetings (
     id bigint NOT NULL,
@@ -26865,134 +18878,6 @@ ALTER TABLE ONLY namespace_descendants ATTACH PARTITION gitlab_partitions_static
 
 ALTER TABLE ONLY namespace_descendants ATTACH PARTITION gitlab_partitions_static.namespace_descendants_31 FOR VALUES WITH (modulus 32, remainder 31);
 
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_00 FOR VALUES WITH (modulus 64, remainder 0);
-
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_01 FOR VALUES WITH (modulus 64, remainder 1);
-
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_02 FOR VALUES WITH (modulus 64, remainder 2);
-
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_03 FOR VALUES WITH (modulus 64, remainder 3);
-
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_04 FOR VALUES WITH (modulus 64, remainder 4);
-
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_05 FOR VALUES WITH (modulus 64, remainder 5);
-
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_06 FOR VALUES WITH (modulus 64, remainder 6);
-
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_07 FOR VALUES WITH (modulus 64, remainder 7);
-
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_08 FOR VALUES WITH (modulus 64, remainder 8);
-
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_09 FOR VALUES WITH (modulus 64, remainder 9);
-
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_10 FOR VALUES WITH (modulus 64, remainder 10);
-
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_11 FOR VALUES WITH (modulus 64, remainder 11);
-
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_12 FOR VALUES WITH (modulus 64, remainder 12);
-
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_13 FOR VALUES WITH (modulus 64, remainder 13);
-
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_14 FOR VALUES WITH (modulus 64, remainder 14);
-
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_15 FOR VALUES WITH (modulus 64, remainder 15);
-
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_16 FOR VALUES WITH (modulus 64, remainder 16);
-
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_17 FOR VALUES WITH (modulus 64, remainder 17);
-
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_18 FOR VALUES WITH (modulus 64, remainder 18);
-
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_19 FOR VALUES WITH (modulus 64, remainder 19);
-
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_20 FOR VALUES WITH (modulus 64, remainder 20);
-
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_21 FOR VALUES WITH (modulus 64, remainder 21);
-
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_22 FOR VALUES WITH (modulus 64, remainder 22);
-
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_23 FOR VALUES WITH (modulus 64, remainder 23);
-
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_24 FOR VALUES WITH (modulus 64, remainder 24);
-
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_25 FOR VALUES WITH (modulus 64, remainder 25);
-
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_26 FOR VALUES WITH (modulus 64, remainder 26);
-
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_27 FOR VALUES WITH (modulus 64, remainder 27);
-
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_28 FOR VALUES WITH (modulus 64, remainder 28);
-
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_29 FOR VALUES WITH (modulus 64, remainder 29);
-
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_30 FOR VALUES WITH (modulus 64, remainder 30);
-
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_31 FOR VALUES WITH (modulus 64, remainder 31);
-
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_32 FOR VALUES WITH (modulus 64, remainder 32);
-
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_33 FOR VALUES WITH (modulus 64, remainder 33);
-
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_34 FOR VALUES WITH (modulus 64, remainder 34);
-
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_35 FOR VALUES WITH (modulus 64, remainder 35);
-
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_36 FOR VALUES WITH (modulus 64, remainder 36);
-
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_37 FOR VALUES WITH (modulus 64, remainder 37);
-
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_38 FOR VALUES WITH (modulus 64, remainder 38);
-
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_39 FOR VALUES WITH (modulus 64, remainder 39);
-
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_40 FOR VALUES WITH (modulus 64, remainder 40);
-
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_41 FOR VALUES WITH (modulus 64, remainder 41);
-
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_42 FOR VALUES WITH (modulus 64, remainder 42);
-
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_43 FOR VALUES WITH (modulus 64, remainder 43);
-
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_44 FOR VALUES WITH (modulus 64, remainder 44);
-
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_45 FOR VALUES WITH (modulus 64, remainder 45);
-
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_46 FOR VALUES WITH (modulus 64, remainder 46);
-
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_47 FOR VALUES WITH (modulus 64, remainder 47);
-
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_48 FOR VALUES WITH (modulus 64, remainder 48);
-
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_49 FOR VALUES WITH (modulus 64, remainder 49);
-
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_50 FOR VALUES WITH (modulus 64, remainder 50);
-
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_51 FOR VALUES WITH (modulus 64, remainder 51);
-
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_52 FOR VALUES WITH (modulus 64, remainder 52);
-
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_53 FOR VALUES WITH (modulus 64, remainder 53);
-
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_54 FOR VALUES WITH (modulus 64, remainder 54);
-
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_55 FOR VALUES WITH (modulus 64, remainder 55);
-
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_56 FOR VALUES WITH (modulus 64, remainder 56);
-
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_57 FOR VALUES WITH (modulus 64, remainder 57);
-
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_58 FOR VALUES WITH (modulus 64, remainder 58);
-
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_59 FOR VALUES WITH (modulus 64, remainder 59);
-
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_60 FOR VALUES WITH (modulus 64, remainder 60);
-
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_61 FOR VALUES WITH (modulus 64, remainder 61);
-
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_62 FOR VALUES WITH (modulus 64, remainder 62);
-
-ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_63 FOR VALUES WITH (modulus 64, remainder 63);
-
 ALTER TABLE ONLY p_ci_builds ATTACH PARTITION ci_builds FOR VALUES IN ('100');
 
 ALTER TABLE ONLY p_ci_builds_metadata ATTACH PARTITION ci_builds_metadata FOR VALUES IN ('100');
@@ -27000,6 +18885,8 @@ ALTER TABLE ONLY p_ci_builds_metadata ATTACH PARTITION ci_builds_metadata FOR VA
 ALTER TABLE ONLY p_ci_job_artifacts ATTACH PARTITION ci_job_artifacts FOR VALUES IN ('100', '101');
 
 ALTER TABLE ONLY p_ci_pipeline_variables ATTACH PARTITION ci_pipeline_variables FOR VALUES IN ('100', '101');
+
+ALTER TABLE ONLY p_ci_stages ATTACH PARTITION ci_stages FOR VALUES IN ('100', '101');
 
 ALTER TABLE ONLY abuse_events ALTER COLUMN id SET DEFAULT nextval('abuse_events_id_seq'::regclass);
 
@@ -27027,9 +18914,13 @@ ALTER TABLE ONLY agent_user_access_group_authorizations ALTER COLUMN id SET DEFA
 
 ALTER TABLE ONLY agent_user_access_project_authorizations ALTER COLUMN id SET DEFAULT nextval('agent_user_access_project_authorizations_id_seq'::regclass);
 
+ALTER TABLE ONLY ai_agent_version_attachments ALTER COLUMN id SET DEFAULT nextval('ai_agent_version_attachments_id_seq'::regclass);
+
 ALTER TABLE ONLY ai_agent_versions ALTER COLUMN id SET DEFAULT nextval('ai_agent_versions_id_seq'::regclass);
 
 ALTER TABLE ONLY ai_agents ALTER COLUMN id SET DEFAULT nextval('ai_agents_id_seq'::regclass);
+
+ALTER TABLE ONLY ai_vectorizable_files ALTER COLUMN id SET DEFAULT nextval('ai_vectorizable_files_id_seq'::regclass);
 
 ALTER TABLE ONLY alert_management_alert_assignees ALTER COLUMN id SET DEFAULT nextval('alert_management_alert_assignees_id_seq'::regclass);
 
@@ -27081,6 +18972,8 @@ ALTER TABLE ONLY approval_merge_request_rules_groups ALTER COLUMN id SET DEFAULT
 
 ALTER TABLE ONLY approval_merge_request_rules_users ALTER COLUMN id SET DEFAULT nextval('approval_merge_request_rules_users_id_seq'::regclass);
 
+ALTER TABLE ONLY approval_policy_rules ALTER COLUMN id SET DEFAULT nextval('approval_policy_rules_id_seq'::regclass);
+
 ALTER TABLE ONLY approval_project_rules ALTER COLUMN id SET DEFAULT nextval('approval_project_rules_id_seq'::regclass);
 
 ALTER TABLE ONLY approval_project_rules_groups ALTER COLUMN id SET DEFAULT nextval('approval_project_rules_groups_id_seq'::regclass);
@@ -27105,6 +18998,8 @@ ALTER TABLE ONLY audit_events_google_cloud_logging_configurations ALTER COLUMN i
 
 ALTER TABLE ONLY audit_events_group_external_streaming_destinations ALTER COLUMN id SET DEFAULT nextval('audit_events_group_external_streaming_destinations_id_seq'::regclass);
 
+ALTER TABLE ONLY audit_events_group_streaming_event_type_filters ALTER COLUMN id SET DEFAULT nextval('audit_events_group_streaming_event_type_filters_id_seq'::regclass);
+
 ALTER TABLE ONLY audit_events_instance_amazon_s3_configurations ALTER COLUMN id SET DEFAULT nextval('audit_events_instance_amazon_s3_configurations_id_seq'::regclass);
 
 ALTER TABLE ONLY audit_events_instance_external_audit_event_destinations ALTER COLUMN id SET DEFAULT nextval('audit_events_instance_external_audit_event_destinations_id_seq'::regclass);
@@ -27113,7 +19008,11 @@ ALTER TABLE ONLY audit_events_instance_external_streaming_destinations ALTER COL
 
 ALTER TABLE ONLY audit_events_instance_google_cloud_logging_configurations ALTER COLUMN id SET DEFAULT nextval('audit_events_instance_google_cloud_logging_configuration_id_seq'::regclass);
 
+ALTER TABLE ONLY audit_events_instance_streaming_event_type_filters ALTER COLUMN id SET DEFAULT nextval('audit_events_instance_streaming_event_type_filters_id_seq'::regclass);
+
 ALTER TABLE ONLY audit_events_streaming_event_type_filters ALTER COLUMN id SET DEFAULT nextval('audit_events_streaming_event_type_filters_id_seq'::regclass);
+
+ALTER TABLE ONLY audit_events_streaming_group_namespace_filters ALTER COLUMN id SET DEFAULT nextval('audit_events_streaming_group_namespace_filters_id_seq'::regclass);
 
 ALTER TABLE ONLY audit_events_streaming_headers ALTER COLUMN id SET DEFAULT nextval('audit_events_streaming_headers_id_seq'::regclass);
 
@@ -27122,6 +19021,8 @@ ALTER TABLE ONLY audit_events_streaming_http_group_namespace_filters ALTER COLUM
 ALTER TABLE ONLY audit_events_streaming_http_instance_namespace_filters ALTER COLUMN id SET DEFAULT nextval('audit_events_streaming_http_instance_namespace_filters_id_seq'::regclass);
 
 ALTER TABLE ONLY audit_events_streaming_instance_event_type_filters ALTER COLUMN id SET DEFAULT nextval('audit_events_streaming_instance_event_type_filters_id_seq'::regclass);
+
+ALTER TABLE ONLY audit_events_streaming_instance_namespace_filters ALTER COLUMN id SET DEFAULT nextval('audit_events_streaming_instance_namespace_filters_id_seq'::regclass);
 
 ALTER TABLE ONLY authentication_events ALTER COLUMN id SET DEFAULT nextval('authentication_events_id_seq'::regclass);
 
@@ -27227,8 +19128,6 @@ ALTER TABLE ONLY ci_namespace_mirrors ALTER COLUMN id SET DEFAULT nextval('ci_na
 
 ALTER TABLE ONLY ci_namespace_monthly_usages ALTER COLUMN id SET DEFAULT nextval('ci_namespace_monthly_usages_id_seq'::regclass);
 
-ALTER TABLE ONLY ci_partitions ALTER COLUMN id SET DEFAULT nextval('ci_partitions_id_seq'::regclass);
-
 ALTER TABLE ONLY ci_pending_builds ALTER COLUMN id SET DEFAULT nextval('ci_pending_builds_id_seq'::regclass);
 
 ALTER TABLE ONLY ci_pipeline_artifacts ALTER COLUMN id SET DEFAULT nextval('ci_pipeline_artifacts_id_seq'::regclass);
@@ -27272,8 +19171,6 @@ ALTER TABLE ONLY ci_secure_files ALTER COLUMN id SET DEFAULT nextval('ci_secure_
 ALTER TABLE ONLY ci_sources_pipelines ALTER COLUMN id SET DEFAULT nextval('ci_sources_pipelines_id_seq'::regclass);
 
 ALTER TABLE ONLY ci_sources_projects ALTER COLUMN id SET DEFAULT nextval('ci_sources_projects_id_seq'::regclass);
-
-ALTER TABLE ONLY ci_stages ALTER COLUMN id SET DEFAULT nextval('ci_stages_id_seq'::regclass);
 
 ALTER TABLE ONLY ci_subscriptions_projects ALTER COLUMN id SET DEFAULT nextval('ci_subscriptions_projects_id_seq'::regclass);
 
@@ -27399,6 +19296,8 @@ ALTER TABLE ONLY dora_performance_scores ALTER COLUMN id SET DEFAULT nextval('do
 
 ALTER TABLE ONLY draft_notes ALTER COLUMN id SET DEFAULT nextval('draft_notes_id_seq'::regclass);
 
+ALTER TABLE ONLY early_access_program_tracking_events ALTER COLUMN id SET DEFAULT nextval('early_access_program_tracking_events_id_seq'::regclass);
+
 ALTER TABLE ONLY elastic_index_settings ALTER COLUMN id SET DEFAULT nextval('elastic_index_settings_id_seq'::regclass);
 
 ALTER TABLE ONLY elastic_reindexing_slices ALTER COLUMN id SET DEFAULT nextval('elastic_reindexing_slices_id_seq'::regclass);
@@ -27431,8 +19330,6 @@ ALTER TABLE ONLY evidences ALTER COLUMN id SET DEFAULT nextval('evidences_id_seq
 
 ALTER TABLE ONLY external_approval_rules ALTER COLUMN id SET DEFAULT nextval('external_approval_rules_id_seq'::regclass);
 
-ALTER TABLE ONLY external_approval_rules_protected_branches ALTER COLUMN id SET DEFAULT nextval('external_approval_rules_protected_branches_id_seq'::regclass);
-
 ALTER TABLE ONLY external_pull_requests ALTER COLUMN id SET DEFAULT nextval('external_pull_requests_id_seq'::regclass);
 
 ALTER TABLE ONLY external_status_checks ALTER COLUMN id SET DEFAULT nextval('external_status_checks_id_seq'::regclass);
@@ -27453,10 +19350,6 @@ ALTER TABLE ONLY geo_event_log ALTER COLUMN id SET DEFAULT nextval('geo_event_lo
 
 ALTER TABLE ONLY geo_events ALTER COLUMN id SET DEFAULT nextval('geo_events_id_seq'::regclass);
 
-ALTER TABLE ONLY geo_hashed_storage_attachments_events ALTER COLUMN id SET DEFAULT nextval('geo_hashed_storage_attachments_events_id_seq'::regclass);
-
-ALTER TABLE ONLY geo_hashed_storage_migrated_events ALTER COLUMN id SET DEFAULT nextval('geo_hashed_storage_migrated_events_id_seq'::regclass);
-
 ALTER TABLE ONLY geo_node_namespace_links ALTER COLUMN id SET DEFAULT nextval('geo_node_namespace_links_id_seq'::regclass);
 
 ALTER TABLE ONLY geo_node_statuses ALTER COLUMN id SET DEFAULT nextval('geo_node_statuses_id_seq'::regclass);
@@ -27464,16 +19357,6 @@ ALTER TABLE ONLY geo_node_statuses ALTER COLUMN id SET DEFAULT nextval('geo_node
 ALTER TABLE ONLY geo_nodes ALTER COLUMN id SET DEFAULT nextval('geo_nodes_id_seq'::regclass);
 
 ALTER TABLE ONLY geo_repositories_changed_events ALTER COLUMN id SET DEFAULT nextval('geo_repositories_changed_events_id_seq'::regclass);
-
-ALTER TABLE ONLY geo_repository_created_events ALTER COLUMN id SET DEFAULT nextval('geo_repository_created_events_id_seq'::regclass);
-
-ALTER TABLE ONLY geo_repository_deleted_events ALTER COLUMN id SET DEFAULT nextval('geo_repository_deleted_events_id_seq'::regclass);
-
-ALTER TABLE ONLY geo_repository_renamed_events ALTER COLUMN id SET DEFAULT nextval('geo_repository_renamed_events_id_seq'::regclass);
-
-ALTER TABLE ONLY geo_repository_updated_events ALTER COLUMN id SET DEFAULT nextval('geo_repository_updated_events_id_seq'::regclass);
-
-ALTER TABLE ONLY geo_reset_checksum_events ALTER COLUMN id SET DEFAULT nextval('geo_reset_checksum_events_id_seq'::regclass);
 
 ALTER TABLE ONLY ghost_user_migrations ALTER COLUMN id SET DEFAULT nextval('ghost_user_migrations_id_seq'::regclass);
 
@@ -27520,6 +19403,8 @@ ALTER TABLE ONLY identities ALTER COLUMN id SET DEFAULT nextval('identities_id_s
 ALTER TABLE ONLY import_export_uploads ALTER COLUMN id SET DEFAULT nextval('import_export_uploads_id_seq'::regclass);
 
 ALTER TABLE ONLY import_failures ALTER COLUMN id SET DEFAULT nextval('import_failures_id_seq'::regclass);
+
+ALTER TABLE ONLY import_source_users ALTER COLUMN id SET DEFAULT nextval('import_source_users_id_seq'::regclass);
 
 ALTER TABLE ONLY incident_management_escalation_policies ALTER COLUMN id SET DEFAULT nextval('incident_management_escalation_policies_id_seq'::regclass);
 
@@ -27639,13 +19524,13 @@ ALTER TABLE ONLY merge_request_diff_commit_users ALTER COLUMN id SET DEFAULT nex
 
 ALTER TABLE ONLY merge_request_diff_details ALTER COLUMN merge_request_diff_id SET DEFAULT nextval('merge_request_diff_details_merge_request_diff_id_seq'::regclass);
 
-ALTER TABLE ONLY merge_request_diff_llm_summaries ALTER COLUMN id SET DEFAULT nextval('merge_request_diff_llm_summaries_id_seq'::regclass);
-
 ALTER TABLE ONLY merge_request_diffs ALTER COLUMN id SET DEFAULT nextval('merge_request_diffs_id_seq'::regclass);
 
 ALTER TABLE ONLY merge_request_metrics ALTER COLUMN id SET DEFAULT nextval('merge_request_metrics_id_seq'::regclass);
 
 ALTER TABLE ONLY merge_request_predictions ALTER COLUMN merge_request_id SET DEFAULT nextval('merge_request_predictions_merge_request_id_seq'::regclass);
+
+ALTER TABLE ONLY merge_request_requested_changes ALTER COLUMN id SET DEFAULT nextval('merge_request_requested_changes_id_seq'::regclass);
 
 ALTER TABLE ONLY merge_request_review_llm_summaries ALTER COLUMN id SET DEFAULT nextval('merge_request_review_llm_summaries_id_seq'::regclass);
 
@@ -27741,13 +19626,15 @@ ALTER TABLE ONLY organizations ALTER COLUMN id SET DEFAULT nextval('organization
 
 ALTER TABLE ONLY p_batched_git_ref_updates_deletions ALTER COLUMN id SET DEFAULT nextval('p_batched_git_ref_updates_deletions_id_seq'::regclass);
 
+ALTER TABLE ONLY p_catalog_resource_component_usages ALTER COLUMN id SET DEFAULT nextval('p_catalog_resource_component_usages_id_seq'::regclass);
+
 ALTER TABLE ONLY p_catalog_resource_sync_events ALTER COLUMN id SET DEFAULT nextval('p_catalog_resource_sync_events_id_seq'::regclass);
+
+ALTER TABLE ONLY p_ci_builds_execution_configs ALTER COLUMN id SET DEFAULT nextval('p_ci_builds_execution_configs_id_seq'::regclass);
 
 ALTER TABLE ONLY p_ci_builds_metadata ALTER COLUMN id SET DEFAULT nextval('ci_builds_metadata_id_seq'::regclass);
 
 ALTER TABLE ONLY p_ci_job_annotations ALTER COLUMN id SET DEFAULT nextval('p_ci_job_annotations_id_seq'::regclass);
-
-ALTER TABLE ONLY p_ci_job_artifacts ALTER COLUMN id SET DEFAULT nextval('ci_job_artifacts_id_seq'::regclass);
 
 ALTER TABLE ONLY packages_build_infos ALTER COLUMN id SET DEFAULT nextval('packages_build_infos_id_seq'::regclass);
 
@@ -27841,8 +19728,6 @@ ALTER TABLE ONLY postgres_reindex_actions ALTER COLUMN id SET DEFAULT nextval('p
 
 ALTER TABLE ONLY postgres_reindex_queued_actions ALTER COLUMN id SET DEFAULT nextval('postgres_reindex_queued_actions_id_seq'::regclass);
 
-ALTER TABLE ONLY product_analytics_events_experimental ALTER COLUMN id SET DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass);
-
 ALTER TABLE ONLY programming_languages ALTER COLUMN id SET DEFAULT nextval('programming_languages_id_seq'::regclass);
 
 ALTER TABLE ONLY project_aliases ALTER COLUMN id SET DEFAULT nextval('project_aliases_id_seq'::regclass);
@@ -27885,9 +19770,9 @@ ALTER TABLE ONLY project_relation_exports ALTER COLUMN id SET DEFAULT nextval('p
 
 ALTER TABLE ONLY project_repositories ALTER COLUMN id SET DEFAULT nextval('project_repositories_id_seq'::regclass);
 
-ALTER TABLE ONLY project_repository_states ALTER COLUMN id SET DEFAULT nextval('project_repository_states_id_seq'::regclass);
-
 ALTER TABLE ONLY project_repository_storage_moves ALTER COLUMN id SET DEFAULT nextval('project_repository_storage_moves_id_seq'::regclass);
+
+ALTER TABLE ONLY project_saved_replies ALTER COLUMN id SET DEFAULT nextval('project_saved_replies_id_seq'::regclass);
 
 ALTER TABLE ONLY project_security_settings ALTER COLUMN project_id SET DEFAULT nextval('project_security_settings_project_id_seq'::regclass);
 
@@ -27937,11 +19822,15 @@ ALTER TABLE ONLY redirect_routes ALTER COLUMN id SET DEFAULT nextval('redirect_r
 
 ALTER TABLE ONLY related_epic_links ALTER COLUMN id SET DEFAULT nextval('related_epic_links_id_seq'::regclass);
 
+ALTER TABLE ONLY relation_import_trackers ALTER COLUMN id SET DEFAULT nextval('relation_import_trackers_id_seq'::regclass);
+
 ALTER TABLE ONLY release_links ALTER COLUMN id SET DEFAULT nextval('release_links_id_seq'::regclass);
 
 ALTER TABLE ONLY releases ALTER COLUMN id SET DEFAULT nextval('releases_id_seq'::regclass);
 
 ALTER TABLE ONLY remote_development_agent_configs ALTER COLUMN id SET DEFAULT nextval('remote_development_agent_configs_id_seq'::regclass);
+
+ALTER TABLE ONLY remote_development_namespace_cluster_agent_mappings ALTER COLUMN id SET DEFAULT nextval('remote_development_namespace_cluster_agent_mappings_id_seq'::regclass);
 
 ALTER TABLE ONLY remote_mirrors ALTER COLUMN id SET DEFAULT nextval('remote_mirrors_id_seq'::regclass);
 
@@ -28002,6 +19891,8 @@ ALTER TABLE ONLY security_findings ALTER COLUMN id SET DEFAULT nextval('security
 ALTER TABLE ONLY security_orchestration_policy_configurations ALTER COLUMN id SET DEFAULT nextval('security_orchestration_policy_configurations_id_seq'::regclass);
 
 ALTER TABLE ONLY security_orchestration_policy_rule_schedules ALTER COLUMN id SET DEFAULT nextval('security_orchestration_policy_rule_schedules_id_seq'::regclass);
+
+ALTER TABLE ONLY security_policies ALTER COLUMN id SET DEFAULT nextval('security_policies_id_seq'::regclass);
 
 ALTER TABLE ONLY security_scans ALTER COLUMN id SET DEFAULT nextval('security_scans_id_seq'::regclass);
 
@@ -28717,201 +20608,6 @@ ALTER TABLE ONLY gitlab_partitions_static.namespace_descendants_30
 ALTER TABLE ONLY gitlab_partitions_static.namespace_descendants_31
     ADD CONSTRAINT namespace_descendants_31_pkey PRIMARY KEY (namespace_id);
 
-ALTER TABLE ONLY product_analytics_events_experimental
-    ADD CONSTRAINT product_analytics_events_experimental_pkey PRIMARY KEY (id, project_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_00
-    ADD CONSTRAINT product_analytics_events_experimental_00_pkey PRIMARY KEY (id, project_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_01
-    ADD CONSTRAINT product_analytics_events_experimental_01_pkey PRIMARY KEY (id, project_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_02
-    ADD CONSTRAINT product_analytics_events_experimental_02_pkey PRIMARY KEY (id, project_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_03
-    ADD CONSTRAINT product_analytics_events_experimental_03_pkey PRIMARY KEY (id, project_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_04
-    ADD CONSTRAINT product_analytics_events_experimental_04_pkey PRIMARY KEY (id, project_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_05
-    ADD CONSTRAINT product_analytics_events_experimental_05_pkey PRIMARY KEY (id, project_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_06
-    ADD CONSTRAINT product_analytics_events_experimental_06_pkey PRIMARY KEY (id, project_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_07
-    ADD CONSTRAINT product_analytics_events_experimental_07_pkey PRIMARY KEY (id, project_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_08
-    ADD CONSTRAINT product_analytics_events_experimental_08_pkey PRIMARY KEY (id, project_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_09
-    ADD CONSTRAINT product_analytics_events_experimental_09_pkey PRIMARY KEY (id, project_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_10
-    ADD CONSTRAINT product_analytics_events_experimental_10_pkey PRIMARY KEY (id, project_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_11
-    ADD CONSTRAINT product_analytics_events_experimental_11_pkey PRIMARY KEY (id, project_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_12
-    ADD CONSTRAINT product_analytics_events_experimental_12_pkey PRIMARY KEY (id, project_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_13
-    ADD CONSTRAINT product_analytics_events_experimental_13_pkey PRIMARY KEY (id, project_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_14
-    ADD CONSTRAINT product_analytics_events_experimental_14_pkey PRIMARY KEY (id, project_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_15
-    ADD CONSTRAINT product_analytics_events_experimental_15_pkey PRIMARY KEY (id, project_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_16
-    ADD CONSTRAINT product_analytics_events_experimental_16_pkey PRIMARY KEY (id, project_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_17
-    ADD CONSTRAINT product_analytics_events_experimental_17_pkey PRIMARY KEY (id, project_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_18
-    ADD CONSTRAINT product_analytics_events_experimental_18_pkey PRIMARY KEY (id, project_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_19
-    ADD CONSTRAINT product_analytics_events_experimental_19_pkey PRIMARY KEY (id, project_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_20
-    ADD CONSTRAINT product_analytics_events_experimental_20_pkey PRIMARY KEY (id, project_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_21
-    ADD CONSTRAINT product_analytics_events_experimental_21_pkey PRIMARY KEY (id, project_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_22
-    ADD CONSTRAINT product_analytics_events_experimental_22_pkey PRIMARY KEY (id, project_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_23
-    ADD CONSTRAINT product_analytics_events_experimental_23_pkey PRIMARY KEY (id, project_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_24
-    ADD CONSTRAINT product_analytics_events_experimental_24_pkey PRIMARY KEY (id, project_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_25
-    ADD CONSTRAINT product_analytics_events_experimental_25_pkey PRIMARY KEY (id, project_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_26
-    ADD CONSTRAINT product_analytics_events_experimental_26_pkey PRIMARY KEY (id, project_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_27
-    ADD CONSTRAINT product_analytics_events_experimental_27_pkey PRIMARY KEY (id, project_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_28
-    ADD CONSTRAINT product_analytics_events_experimental_28_pkey PRIMARY KEY (id, project_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_29
-    ADD CONSTRAINT product_analytics_events_experimental_29_pkey PRIMARY KEY (id, project_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_30
-    ADD CONSTRAINT product_analytics_events_experimental_30_pkey PRIMARY KEY (id, project_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_31
-    ADD CONSTRAINT product_analytics_events_experimental_31_pkey PRIMARY KEY (id, project_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_32
-    ADD CONSTRAINT product_analytics_events_experimental_32_pkey PRIMARY KEY (id, project_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_33
-    ADD CONSTRAINT product_analytics_events_experimental_33_pkey PRIMARY KEY (id, project_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_34
-    ADD CONSTRAINT product_analytics_events_experimental_34_pkey PRIMARY KEY (id, project_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_35
-    ADD CONSTRAINT product_analytics_events_experimental_35_pkey PRIMARY KEY (id, project_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_36
-    ADD CONSTRAINT product_analytics_events_experimental_36_pkey PRIMARY KEY (id, project_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_37
-    ADD CONSTRAINT product_analytics_events_experimental_37_pkey PRIMARY KEY (id, project_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_38
-    ADD CONSTRAINT product_analytics_events_experimental_38_pkey PRIMARY KEY (id, project_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_39
-    ADD CONSTRAINT product_analytics_events_experimental_39_pkey PRIMARY KEY (id, project_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_40
-    ADD CONSTRAINT product_analytics_events_experimental_40_pkey PRIMARY KEY (id, project_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_41
-    ADD CONSTRAINT product_analytics_events_experimental_41_pkey PRIMARY KEY (id, project_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_42
-    ADD CONSTRAINT product_analytics_events_experimental_42_pkey PRIMARY KEY (id, project_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_43
-    ADD CONSTRAINT product_analytics_events_experimental_43_pkey PRIMARY KEY (id, project_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_44
-    ADD CONSTRAINT product_analytics_events_experimental_44_pkey PRIMARY KEY (id, project_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_45
-    ADD CONSTRAINT product_analytics_events_experimental_45_pkey PRIMARY KEY (id, project_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_46
-    ADD CONSTRAINT product_analytics_events_experimental_46_pkey PRIMARY KEY (id, project_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_47
-    ADD CONSTRAINT product_analytics_events_experimental_47_pkey PRIMARY KEY (id, project_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_48
-    ADD CONSTRAINT product_analytics_events_experimental_48_pkey PRIMARY KEY (id, project_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_49
-    ADD CONSTRAINT product_analytics_events_experimental_49_pkey PRIMARY KEY (id, project_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_50
-    ADD CONSTRAINT product_analytics_events_experimental_50_pkey PRIMARY KEY (id, project_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_51
-    ADD CONSTRAINT product_analytics_events_experimental_51_pkey PRIMARY KEY (id, project_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_52
-    ADD CONSTRAINT product_analytics_events_experimental_52_pkey PRIMARY KEY (id, project_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_53
-    ADD CONSTRAINT product_analytics_events_experimental_53_pkey PRIMARY KEY (id, project_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_54
-    ADD CONSTRAINT product_analytics_events_experimental_54_pkey PRIMARY KEY (id, project_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_55
-    ADD CONSTRAINT product_analytics_events_experimental_55_pkey PRIMARY KEY (id, project_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_56
-    ADD CONSTRAINT product_analytics_events_experimental_56_pkey PRIMARY KEY (id, project_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_57
-    ADD CONSTRAINT product_analytics_events_experimental_57_pkey PRIMARY KEY (id, project_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_58
-    ADD CONSTRAINT product_analytics_events_experimental_58_pkey PRIMARY KEY (id, project_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_59
-    ADD CONSTRAINT product_analytics_events_experimental_59_pkey PRIMARY KEY (id, project_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_60
-    ADD CONSTRAINT product_analytics_events_experimental_60_pkey PRIMARY KEY (id, project_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_61
-    ADD CONSTRAINT product_analytics_events_experimental_61_pkey PRIMARY KEY (id, project_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_62
-    ADD CONSTRAINT product_analytics_events_experimental_62_pkey PRIMARY KEY (id, project_id);
-
-ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_63
-    ADD CONSTRAINT product_analytics_events_experimental_63_pkey PRIMARY KEY (id, project_id);
-
 ALTER TABLE ONLY abuse_events
     ADD CONSTRAINT abuse_events_pkey PRIMARY KEY (id);
 
@@ -28951,11 +20647,17 @@ ALTER TABLE ONLY agent_user_access_group_authorizations
 ALTER TABLE ONLY agent_user_access_project_authorizations
     ADD CONSTRAINT agent_user_access_project_authorizations_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY ai_agent_version_attachments
+    ADD CONSTRAINT ai_agent_version_attachments_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY ai_agent_versions
     ADD CONSTRAINT ai_agent_versions_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY ai_agents
     ADD CONSTRAINT ai_agents_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY ai_vectorizable_files
+    ADD CONSTRAINT ai_vectorizable_files_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY alert_management_alert_assignees
     ADD CONSTRAINT alert_management_alert_assignees_pkey PRIMARY KEY (id);
@@ -29041,6 +20743,9 @@ ALTER TABLE ONLY approval_merge_request_rules
 ALTER TABLE ONLY approval_merge_request_rules_users
     ADD CONSTRAINT approval_merge_request_rules_users_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY approval_policy_rules
+    ADD CONSTRAINT approval_policy_rules_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY approval_project_rules_groups
     ADD CONSTRAINT approval_project_rules_groups_pkey PRIMARY KEY (id);
 
@@ -29080,6 +20785,9 @@ ALTER TABLE ONLY audit_events_google_cloud_logging_configurations
 ALTER TABLE ONLY audit_events_group_external_streaming_destinations
     ADD CONSTRAINT audit_events_group_external_streaming_destinations_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY audit_events_group_streaming_event_type_filters
+    ADD CONSTRAINT audit_events_group_streaming_event_type_filters_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY audit_events_instance_amazon_s3_configurations
     ADD CONSTRAINT audit_events_instance_amazon_s3_configurations_pkey PRIMARY KEY (id);
 
@@ -29092,11 +20800,17 @@ ALTER TABLE ONLY audit_events_instance_external_streaming_destinations
 ALTER TABLE ONLY audit_events_instance_google_cloud_logging_configurations
     ADD CONSTRAINT audit_events_instance_google_cloud_logging_configurations_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY audit_events_instance_streaming_event_type_filters
+    ADD CONSTRAINT audit_events_instance_streaming_event_type_filters_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY audit_events
     ADD CONSTRAINT audit_events_pkey PRIMARY KEY (id, created_at);
 
 ALTER TABLE ONLY audit_events_streaming_event_type_filters
     ADD CONSTRAINT audit_events_streaming_event_type_filters_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY audit_events_streaming_group_namespace_filters
+    ADD CONSTRAINT audit_events_streaming_group_namespace_filters_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY audit_events_streaming_headers
     ADD CONSTRAINT audit_events_streaming_headers_pkey PRIMARY KEY (id);
@@ -29109,6 +20823,9 @@ ALTER TABLE ONLY audit_events_streaming_http_instance_namespace_filters
 
 ALTER TABLE ONLY audit_events_streaming_instance_event_type_filters
     ADD CONSTRAINT audit_events_streaming_instance_event_type_filters_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY audit_events_streaming_instance_namespace_filters
+    ADD CONSTRAINT audit_events_streaming_instance_namespace_filters_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY authentication_events
     ADD CONSTRAINT authentication_events_pkey PRIMARY KEY (id);
@@ -29413,6 +21130,9 @@ ALTER TABLE ONLY ci_sources_pipelines
 ALTER TABLE ONLY ci_sources_projects
     ADD CONSTRAINT ci_sources_projects_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY p_ci_stages
+    ADD CONSTRAINT p_ci_stages_pkey PRIMARY KEY (id, partition_id);
+
 ALTER TABLE ONLY ci_stages
     ADD CONSTRAINT ci_stages_pkey PRIMARY KEY (id, partition_id);
 
@@ -29653,6 +21373,9 @@ ALTER TABLE ONLY dora_performance_scores
 ALTER TABLE ONLY draft_notes
     ADD CONSTRAINT draft_notes_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY early_access_program_tracking_events
+    ADD CONSTRAINT early_access_program_tracking_events_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY elastic_group_index_statuses
     ADD CONSTRAINT elastic_group_index_statuses_pkey PRIMARY KEY (namespace_id);
 
@@ -29710,9 +21433,6 @@ ALTER TABLE ONLY evidences
 ALTER TABLE ONLY external_approval_rules
     ADD CONSTRAINT external_approval_rules_pkey PRIMARY KEY (id);
 
-ALTER TABLE ONLY external_approval_rules_protected_branches
-    ADD CONSTRAINT external_approval_rules_protected_branches_pkey PRIMARY KEY (id);
-
 ALTER TABLE ONLY external_pull_requests
     ADD CONSTRAINT external_pull_requests_pkey PRIMARY KEY (id);
 
@@ -29743,12 +21463,6 @@ ALTER TABLE ONLY geo_event_log
 ALTER TABLE ONLY geo_events
     ADD CONSTRAINT geo_events_pkey PRIMARY KEY (id);
 
-ALTER TABLE ONLY geo_hashed_storage_attachments_events
-    ADD CONSTRAINT geo_hashed_storage_attachments_events_pkey PRIMARY KEY (id);
-
-ALTER TABLE ONLY geo_hashed_storage_migrated_events
-    ADD CONSTRAINT geo_hashed_storage_migrated_events_pkey PRIMARY KEY (id);
-
 ALTER TABLE ONLY geo_node_namespace_links
     ADD CONSTRAINT geo_node_namespace_links_pkey PRIMARY KEY (id);
 
@@ -29760,21 +21474,6 @@ ALTER TABLE ONLY geo_nodes
 
 ALTER TABLE ONLY geo_repositories_changed_events
     ADD CONSTRAINT geo_repositories_changed_events_pkey PRIMARY KEY (id);
-
-ALTER TABLE ONLY geo_repository_created_events
-    ADD CONSTRAINT geo_repository_created_events_pkey PRIMARY KEY (id);
-
-ALTER TABLE ONLY geo_repository_deleted_events
-    ADD CONSTRAINT geo_repository_deleted_events_pkey PRIMARY KEY (id);
-
-ALTER TABLE ONLY geo_repository_renamed_events
-    ADD CONSTRAINT geo_repository_renamed_events_pkey PRIMARY KEY (id);
-
-ALTER TABLE ONLY geo_repository_updated_events
-    ADD CONSTRAINT geo_repository_updated_events_pkey PRIMARY KEY (id);
-
-ALTER TABLE ONLY geo_reset_checksum_events
-    ADD CONSTRAINT geo_reset_checksum_events_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY ghost_user_migrations
     ADD CONSTRAINT ghost_user_migrations_pkey PRIMARY KEY (id);
@@ -29856,6 +21555,9 @@ ALTER TABLE ONLY import_export_uploads
 
 ALTER TABLE ONLY import_failures
     ADD CONSTRAINT import_failures_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY import_source_users
+    ADD CONSTRAINT import_source_users_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY incident_management_oncall_shifts
     ADD CONSTRAINT inc_mgmnt_no_overlapping_oncall_shifts EXCLUDE USING gist (rotation_id WITH =, tstzrange(starts_at, ends_at, '[)'::text) WITH &&);
@@ -30049,17 +21751,20 @@ ALTER TABLE ONLY merge_request_context_commits
 ALTER TABLE ONLY merge_request_diff_commit_users
     ADD CONSTRAINT merge_request_diff_commit_users_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY merge_request_diff_commits_b5377a7a34
+    ADD CONSTRAINT merge_request_diff_commits_b5377a7a34_pkey PRIMARY KEY (merge_request_diff_id, relative_order);
+
 ALTER TABLE ONLY merge_request_diff_commits
     ADD CONSTRAINT merge_request_diff_commits_pkey PRIMARY KEY (merge_request_diff_id, relative_order);
 
 ALTER TABLE ONLY merge_request_diff_details
     ADD CONSTRAINT merge_request_diff_details_pkey PRIMARY KEY (merge_request_diff_id);
 
+ALTER TABLE ONLY merge_request_diff_files_99208b8fac
+    ADD CONSTRAINT merge_request_diff_files_99208b8fac_pkey PRIMARY KEY (merge_request_diff_id, relative_order);
+
 ALTER TABLE ONLY merge_request_diff_files
     ADD CONSTRAINT merge_request_diff_files_pkey PRIMARY KEY (merge_request_diff_id, relative_order);
-
-ALTER TABLE ONLY merge_request_diff_llm_summaries
-    ADD CONSTRAINT merge_request_diff_llm_summaries_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY merge_request_diffs
     ADD CONSTRAINT merge_request_diffs_pkey PRIMARY KEY (id);
@@ -30069,6 +21774,9 @@ ALTER TABLE ONLY merge_request_metrics
 
 ALTER TABLE ONLY merge_request_predictions
     ADD CONSTRAINT merge_request_predictions_pkey PRIMARY KEY (merge_request_id);
+
+ALTER TABLE ONLY merge_request_requested_changes
+    ADD CONSTRAINT merge_request_requested_changes_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY merge_request_review_llm_summaries
     ADD CONSTRAINT merge_request_review_llm_summaries_pkey PRIMARY KEY (id);
@@ -30244,8 +21952,17 @@ ALTER TABLE ONLY organizations
 ALTER TABLE ONLY p_batched_git_ref_updates_deletions
     ADD CONSTRAINT p_batched_git_ref_updates_deletions_pkey PRIMARY KEY (id, partition_id);
 
+ALTER TABLE ONLY p_catalog_resource_component_usages
+    ADD CONSTRAINT p_catalog_resource_component_usages_pkey PRIMARY KEY (id, used_date);
+
 ALTER TABLE ONLY p_catalog_resource_sync_events
     ADD CONSTRAINT p_catalog_resource_sync_events_pkey PRIMARY KEY (id, partition_id);
+
+ALTER TABLE ONLY p_ci_build_names
+    ADD CONSTRAINT p_ci_build_names_pkey PRIMARY KEY (build_id, partition_id);
+
+ALTER TABLE ONLY p_ci_builds_execution_configs
+    ADD CONSTRAINT p_ci_builds_execution_configs_pkey PRIMARY KEY (id, partition_id);
 
 ALTER TABLE ONLY p_ci_finished_build_ch_sync_events
     ADD CONSTRAINT p_ci_finished_build_ch_sync_events_pkey PRIMARY KEY (build_id, partition);
@@ -30379,9 +22096,6 @@ ALTER TABLE ONLY pages_domain_acme_orders
 ALTER TABLE ONLY pages_domains
     ADD CONSTRAINT pages_domains_pkey PRIMARY KEY (id);
 
-ALTER TABLE ci_stages
-    ADD CONSTRAINT partitioning_constraint CHECK ((partition_id = ANY (ARRAY[(100)::bigint, (101)::bigint]))) NOT VALID;
-
 ALTER TABLE ONLY path_locks
     ADD CONSTRAINT path_locks_pkey PRIMARY KEY (id);
 
@@ -30514,11 +22228,11 @@ ALTER TABLE ONLY project_relation_exports
 ALTER TABLE ONLY project_repositories
     ADD CONSTRAINT project_repositories_pkey PRIMARY KEY (id);
 
-ALTER TABLE ONLY project_repository_states
-    ADD CONSTRAINT project_repository_states_pkey PRIMARY KEY (id);
-
 ALTER TABLE ONLY project_repository_storage_moves
     ADD CONSTRAINT project_repository_storage_moves_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY project_saved_replies
+    ADD CONSTRAINT project_saved_replies_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY project_security_settings
     ADD CONSTRAINT project_security_settings_pkey PRIMARY KEY (project_id);
@@ -30601,6 +22315,9 @@ ALTER TABLE ONLY redirect_routes
 ALTER TABLE ONLY related_epic_links
     ADD CONSTRAINT related_epic_links_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY relation_import_trackers
+    ADD CONSTRAINT relation_import_trackers_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY release_links
     ADD CONSTRAINT release_links_pkey PRIMARY KEY (id);
 
@@ -30612,6 +22329,9 @@ ALTER TABLE ONLY releases
 
 ALTER TABLE ONLY remote_development_agent_configs
     ADD CONSTRAINT remote_development_agent_configs_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY remote_development_namespace_cluster_agent_mappings
+    ADD CONSTRAINT remote_development_namespace_cluster_agent_mappings_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY remote_mirrors
     ADD CONSTRAINT remote_mirrors_pkey PRIMARY KEY (id);
@@ -30708,6 +22428,9 @@ ALTER TABLE ONLY security_orchestration_policy_configurations
 
 ALTER TABLE ONLY security_orchestration_policy_rule_schedules
     ADD CONSTRAINT security_orchestration_policy_rule_schedules_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY security_policies
+    ADD CONSTRAINT security_policies_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY security_scans
     ADD CONSTRAINT security_scans_pkey PRIMARY KEY (id);
@@ -30829,6 +22552,9 @@ ALTER TABLE ONLY tags
 ALTER TABLE ONLY target_branch_rules
     ADD CONSTRAINT target_branch_rules_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY temp_notes_backup
+    ADD CONSTRAINT temp_notes_backup_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY term_agreements
     ADD CONSTRAINT term_agreements_pkey PRIMARY KEY (id);
 
@@ -30894,9 +22620,6 @@ ALTER TABLE ONLY user_group_callouts
 
 ALTER TABLE ONLY user_highest_roles
     ADD CONSTRAINT user_highest_roles_pkey PRIMARY KEY (user_id);
-
-ALTER TABLE ONLY user_interacted_projects
-    ADD CONSTRAINT user_interacted_projects_pkey PRIMARY KEY (project_id, user_id);
 
 ALTER TABLE ONLY user_namespace_callouts
     ADD CONSTRAINT user_namespace_callouts_pkey PRIMARY KEY (id);
@@ -31089,6 +22812,9 @@ ALTER TABLE ONLY zoekt_repositories
 
 ALTER TABLE ONLY zoekt_shards
     ADD CONSTRAINT zoekt_shards_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY zoekt_tasks
+    ADD CONSTRAINT zoekt_tasks_pkey PRIMARY KEY (id, partition_id);
 
 ALTER TABLE ONLY zoom_meetings
     ADD CONSTRAINT zoom_meetings_pkey PRIMARY KEY (id);
@@ -32209,136 +23935,6 @@ CREATE INDEX namespace_descendants_30_namespace_id_idx ON gitlab_partitions_stat
 
 CREATE INDEX namespace_descendants_31_namespace_id_idx ON gitlab_partitions_static.namespace_descendants_31 USING btree (namespace_id) WHERE (outdated_at IS NOT NULL);
 
-CREATE INDEX index_product_analytics_events_experimental_project_and_time ON ONLY product_analytics_events_experimental USING btree (project_id, collector_tstamp);
-
-CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx10 ON gitlab_partitions_static.product_analytics_events_experimental_10 USING btree (project_id, collector_tstamp);
-
-CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx11 ON gitlab_partitions_static.product_analytics_events_experimental_11 USING btree (project_id, collector_tstamp);
-
-CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx12 ON gitlab_partitions_static.product_analytics_events_experimental_12 USING btree (project_id, collector_tstamp);
-
-CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx13 ON gitlab_partitions_static.product_analytics_events_experimental_13 USING btree (project_id, collector_tstamp);
-
-CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx14 ON gitlab_partitions_static.product_analytics_events_experimental_14 USING btree (project_id, collector_tstamp);
-
-CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx15 ON gitlab_partitions_static.product_analytics_events_experimental_15 USING btree (project_id, collector_tstamp);
-
-CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx16 ON gitlab_partitions_static.product_analytics_events_experimental_16 USING btree (project_id, collector_tstamp);
-
-CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx17 ON gitlab_partitions_static.product_analytics_events_experimental_17 USING btree (project_id, collector_tstamp);
-
-CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx18 ON gitlab_partitions_static.product_analytics_events_experimental_18 USING btree (project_id, collector_tstamp);
-
-CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx19 ON gitlab_partitions_static.product_analytics_events_experimental_19 USING btree (project_id, collector_tstamp);
-
-CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx20 ON gitlab_partitions_static.product_analytics_events_experimental_20 USING btree (project_id, collector_tstamp);
-
-CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx21 ON gitlab_partitions_static.product_analytics_events_experimental_21 USING btree (project_id, collector_tstamp);
-
-CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx22 ON gitlab_partitions_static.product_analytics_events_experimental_22 USING btree (project_id, collector_tstamp);
-
-CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx23 ON gitlab_partitions_static.product_analytics_events_experimental_23 USING btree (project_id, collector_tstamp);
-
-CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx24 ON gitlab_partitions_static.product_analytics_events_experimental_24 USING btree (project_id, collector_tstamp);
-
-CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx25 ON gitlab_partitions_static.product_analytics_events_experimental_25 USING btree (project_id, collector_tstamp);
-
-CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx26 ON gitlab_partitions_static.product_analytics_events_experimental_26 USING btree (project_id, collector_tstamp);
-
-CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx27 ON gitlab_partitions_static.product_analytics_events_experimental_27 USING btree (project_id, collector_tstamp);
-
-CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx28 ON gitlab_partitions_static.product_analytics_events_experimental_28 USING btree (project_id, collector_tstamp);
-
-CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx29 ON gitlab_partitions_static.product_analytics_events_experimental_29 USING btree (project_id, collector_tstamp);
-
-CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx30 ON gitlab_partitions_static.product_analytics_events_experimental_30 USING btree (project_id, collector_tstamp);
-
-CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx31 ON gitlab_partitions_static.product_analytics_events_experimental_31 USING btree (project_id, collector_tstamp);
-
-CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx32 ON gitlab_partitions_static.product_analytics_events_experimental_32 USING btree (project_id, collector_tstamp);
-
-CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx33 ON gitlab_partitions_static.product_analytics_events_experimental_33 USING btree (project_id, collector_tstamp);
-
-CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx34 ON gitlab_partitions_static.product_analytics_events_experimental_34 USING btree (project_id, collector_tstamp);
-
-CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx35 ON gitlab_partitions_static.product_analytics_events_experimental_35 USING btree (project_id, collector_tstamp);
-
-CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx36 ON gitlab_partitions_static.product_analytics_events_experimental_36 USING btree (project_id, collector_tstamp);
-
-CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx37 ON gitlab_partitions_static.product_analytics_events_experimental_37 USING btree (project_id, collector_tstamp);
-
-CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx38 ON gitlab_partitions_static.product_analytics_events_experimental_38 USING btree (project_id, collector_tstamp);
-
-CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx39 ON gitlab_partitions_static.product_analytics_events_experimental_39 USING btree (project_id, collector_tstamp);
-
-CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx40 ON gitlab_partitions_static.product_analytics_events_experimental_40 USING btree (project_id, collector_tstamp);
-
-CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx41 ON gitlab_partitions_static.product_analytics_events_experimental_41 USING btree (project_id, collector_tstamp);
-
-CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx42 ON gitlab_partitions_static.product_analytics_events_experimental_42 USING btree (project_id, collector_tstamp);
-
-CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx43 ON gitlab_partitions_static.product_analytics_events_experimental_43 USING btree (project_id, collector_tstamp);
-
-CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx44 ON gitlab_partitions_static.product_analytics_events_experimental_44 USING btree (project_id, collector_tstamp);
-
-CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx45 ON gitlab_partitions_static.product_analytics_events_experimental_45 USING btree (project_id, collector_tstamp);
-
-CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx46 ON gitlab_partitions_static.product_analytics_events_experimental_46 USING btree (project_id, collector_tstamp);
-
-CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx47 ON gitlab_partitions_static.product_analytics_events_experimental_47 USING btree (project_id, collector_tstamp);
-
-CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx48 ON gitlab_partitions_static.product_analytics_events_experimental_48 USING btree (project_id, collector_tstamp);
-
-CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx49 ON gitlab_partitions_static.product_analytics_events_experimental_49 USING btree (project_id, collector_tstamp);
-
-CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx50 ON gitlab_partitions_static.product_analytics_events_experimental_50 USING btree (project_id, collector_tstamp);
-
-CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx51 ON gitlab_partitions_static.product_analytics_events_experimental_51 USING btree (project_id, collector_tstamp);
-
-CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx52 ON gitlab_partitions_static.product_analytics_events_experimental_52 USING btree (project_id, collector_tstamp);
-
-CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx53 ON gitlab_partitions_static.product_analytics_events_experimental_53 USING btree (project_id, collector_tstamp);
-
-CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx54 ON gitlab_partitions_static.product_analytics_events_experimental_54 USING btree (project_id, collector_tstamp);
-
-CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx55 ON gitlab_partitions_static.product_analytics_events_experimental_55 USING btree (project_id, collector_tstamp);
-
-CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx56 ON gitlab_partitions_static.product_analytics_events_experimental_56 USING btree (project_id, collector_tstamp);
-
-CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx57 ON gitlab_partitions_static.product_analytics_events_experimental_57 USING btree (project_id, collector_tstamp);
-
-CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx58 ON gitlab_partitions_static.product_analytics_events_experimental_58 USING btree (project_id, collector_tstamp);
-
-CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx59 ON gitlab_partitions_static.product_analytics_events_experimental_59 USING btree (project_id, collector_tstamp);
-
-CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx60 ON gitlab_partitions_static.product_analytics_events_experimental_60 USING btree (project_id, collector_tstamp);
-
-CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx61 ON gitlab_partitions_static.product_analytics_events_experimental_61 USING btree (project_id, collector_tstamp);
-
-CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx62 ON gitlab_partitions_static.product_analytics_events_experimental_62 USING btree (project_id, collector_tstamp);
-
-CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx63 ON gitlab_partitions_static.product_analytics_events_experimental_63 USING btree (project_id, collector_tstamp);
-
-CREATE INDEX product_analytics_events_exper_project_id_collector_tstamp_idx1 ON gitlab_partitions_static.product_analytics_events_experimental_01 USING btree (project_id, collector_tstamp);
-
-CREATE INDEX product_analytics_events_exper_project_id_collector_tstamp_idx2 ON gitlab_partitions_static.product_analytics_events_experimental_02 USING btree (project_id, collector_tstamp);
-
-CREATE INDEX product_analytics_events_exper_project_id_collector_tstamp_idx3 ON gitlab_partitions_static.product_analytics_events_experimental_03 USING btree (project_id, collector_tstamp);
-
-CREATE INDEX product_analytics_events_exper_project_id_collector_tstamp_idx4 ON gitlab_partitions_static.product_analytics_events_experimental_04 USING btree (project_id, collector_tstamp);
-
-CREATE INDEX product_analytics_events_exper_project_id_collector_tstamp_idx5 ON gitlab_partitions_static.product_analytics_events_experimental_05 USING btree (project_id, collector_tstamp);
-
-CREATE INDEX product_analytics_events_exper_project_id_collector_tstamp_idx6 ON gitlab_partitions_static.product_analytics_events_experimental_06 USING btree (project_id, collector_tstamp);
-
-CREATE INDEX product_analytics_events_exper_project_id_collector_tstamp_idx7 ON gitlab_partitions_static.product_analytics_events_experimental_07 USING btree (project_id, collector_tstamp);
-
-CREATE INDEX product_analytics_events_exper_project_id_collector_tstamp_idx8 ON gitlab_partitions_static.product_analytics_events_experimental_08 USING btree (project_id, collector_tstamp);
-
-CREATE INDEX product_analytics_events_exper_project_id_collector_tstamp_idx9 ON gitlab_partitions_static.product_analytics_events_experimental_09 USING btree (project_id, collector_tstamp);
-
-CREATE INDEX product_analytics_events_experi_project_id_collector_tstamp_idx ON gitlab_partitions_static.product_analytics_events_experimental_00 USING btree (project_id, collector_tstamp);
-
 CREATE INDEX analytics_index_audit_events_part_on_created_at_and_author_id ON ONLY audit_events USING btree (created_at, author_id);
 
 CREATE INDEX analytics_index_events_on_created_at_and_author_id ON events USING btree (created_at, author_id);
@@ -32429,6 +24025,10 @@ CREATE INDEX i_dast_profiles_tags_on_scanner_profiles_id ON dast_profiles_tags U
 
 CREATE INDEX i_dast_scanner_profiles_tags_on_scanner_profiles_id ON dast_scanner_profiles_tags USING btree (dast_scanner_profile_id);
 
+CREATE INDEX i_namespace_cluster_agent_mappings_on_cluster_agent_id ON remote_development_namespace_cluster_agent_mappings USING btree (cluster_agent_id);
+
+CREATE INDEX i_namespace_cluster_agent_mappings_on_creator_id ON remote_development_namespace_cluster_agent_mappings USING btree (creator_id);
+
 CREATE UNIQUE INDEX i_packages_unique_project_id_package_type_package_name_pattern ON packages_protection_rules USING btree (project_id, package_type, package_name_pattern);
 
 CREATE INDEX i_pkgs_deb_file_meta_on_updated_at_package_file_id_when_unknown ON packages_debian_file_metadata USING btree (updated_at, package_file_id) WHERE (file_type = 1);
@@ -32455,13 +24055,15 @@ CREATE INDEX idx_analytics_devops_adoption_snapshots_finalized ON analytics_devo
 
 CREATE INDEX idx_approval_merge_request_rules_on_scan_result_policy_id ON approval_merge_request_rules USING btree (scan_result_policy_id);
 
-CREATE INDEX idx_approval_merge_request_rules_on_sec_orchestration_config_id ON approval_merge_request_rules USING btree (security_orchestration_policy_configuration_id);
+CREATE INDEX idx_approval_mr_rules_on_config_id_and_id_and_updated_at ON approval_merge_request_rules USING btree (security_orchestration_policy_configuration_id, id, updated_at);
+
+CREATE INDEX idx_approval_project_rules_on_configuration_id_and_id ON approval_project_rules USING btree (security_orchestration_policy_configuration_id, id);
 
 CREATE INDEX idx_approval_project_rules_on_scan_result_policy_id ON approval_project_rules USING btree (scan_result_policy_id);
 
-CREATE INDEX idx_approval_project_rules_on_sec_orchestration_config_id ON approval_project_rules USING btree (security_orchestration_policy_configuration_id);
-
 CREATE INDEX idx_audit_events_group_external_destinations_on_group_id ON audit_events_group_external_streaming_destinations USING btree (group_id);
+
+CREATE INDEX idx_audit_events_namespace_event_type_filters_on_group_id ON audit_events_group_streaming_event_type_filters USING btree (namespace_id);
 
 CREATE INDEX idx_audit_events_part_on_entity_id_desc_author_id_created_at ON ONLY audit_events USING btree (entity_id, entity_type, id DESC, author_id, created_at);
 
@@ -32475,7 +24077,11 @@ CREATE UNIQUE INDEX idx_ci_job_artifacts_on_job_id_file_type_and_partition_id_un
 
 CREATE INDEX idx_ci_pipelines_artifacts_locked ON ci_pipelines USING btree (ci_ref_id, id) WHERE (locked = 1);
 
+CREATE INDEX idx_ci_running_builds_on_runner_type_and_owner_xid_and_id ON ci_running_builds USING btree (runner_type, runner_owner_namespace_xid, runner_id);
+
 CREATE INDEX idx_compliance_security_policies_on_policy_configuration_id ON compliance_framework_security_policies USING btree (policy_configuration_id);
+
+CREATE UNIQUE INDEX idx_component_usages_on_component_used_by_project_and_used_date ON ONLY p_catalog_resource_component_usages USING btree (component_id, used_by_project_id, used_date);
 
 CREATE INDEX idx_container_exp_policies_on_project_id_next_run_at ON container_expiration_policies USING btree (project_id, next_run_at) WHERE (enabled = true);
 
@@ -32494,8 +24100,6 @@ CREATE INDEX idx_devops_adoption_segments_namespace_end_time ON analytics_devops
 CREATE INDEX idx_devops_adoption_segments_namespace_recorded_at ON analytics_devops_adoption_snapshots USING btree (namespace_id, recorded_at);
 
 CREATE UNIQUE INDEX idx_devops_adoption_segments_namespaces_pair ON analytics_devops_adoption_segments USING btree (display_namespace_id, namespace_id);
-
-CREATE INDEX idx_eaprpb_external_approval_rule_id ON external_approval_rules_protected_branches USING btree (external_approval_rule_id);
 
 CREATE INDEX idx_elastic_reindexing_slices_on_elastic_reindexing_subtask_id ON elastic_reindexing_slices USING btree (elastic_reindexing_subtask_id);
 
@@ -32547,9 +24151,7 @@ CREATE INDEX idx_merge_requests_on_merged_state ON merge_requests USING btree (i
 
 CREATE INDEX idx_merge_requests_on_source_project_and_branch_state_opened ON merge_requests USING btree (source_project_id, source_branch) WHERE (state_id = 1);
 
-CREATE INDEX idx_merge_requests_on_target_project_id_and_iid_opened ON merge_requests USING btree (target_project_id, iid) WHERE (state_id = 1);
-
-CREATE INDEX idx_merge_requests_on_target_project_id_and_locked_state ON merge_requests USING btree (target_project_id) WHERE (state_id = 4);
+CREATE INDEX idx_merge_requests_on_unmerged_state_id ON merge_requests USING btree (id) WHERE (state_id <> 3);
 
 CREATE UNIQUE INDEX idx_metrics_users_starred_dashboard_on_user_project_dashboard ON metrics_users_starred_dashboards USING btree (user_id, project_id, dashboard_path);
 
@@ -32584,6 +24186,8 @@ CREATE UNIQUE INDEX idx_on_external_status_checks_project_id_name ON external_st
 CREATE INDEX idx_on_protected_branch ON approval_group_rules_protected_branches USING btree (protected_branch_id);
 
 CREATE INDEX idx_open_issues_on_project_and_confidential_and_author_and_id ON issues USING btree (project_id, confidential, author_id, id) WHERE (state_id = 1);
+
+CREATE INDEX idx_p_catalog_resource_component_usages_on_catalog_resource_id ON ONLY p_catalog_resource_component_usages USING btree (catalog_resource_id);
 
 CREATE INDEX idx_packages_debian_group_component_files_on_architecture_id ON packages_debian_group_component_files USING btree (architecture_id);
 
@@ -32641,25 +24245,17 @@ CREATE INDEX idx_projects_id_created_at_disable_overriding_approvers_true ON pro
 
 CREATE INDEX idx_projects_on_repository_storage_last_repository_updated_at ON projects USING btree (id, repository_storage, last_repository_updated_at);
 
-CREATE UNIQUE INDEX idx_protected_branch_id_external_approval_rule_id ON external_approval_rules_protected_branches USING btree (protected_branch_id, external_approval_rule_id);
-
 CREATE INDEX idx_reminder_frequency_on_work_item_progresses ON work_item_progresses USING btree (reminder_frequency);
-
-CREATE INDEX idx_repository_states_on_last_repository_verification_ran_at ON project_repository_states USING btree (project_id, last_repository_verification_ran_at) WHERE ((repository_verification_checksum IS NOT NULL) AND (last_repository_verification_failure IS NULL));
-
-CREATE INDEX idx_repository_states_on_last_wiki_verification_ran_at ON project_repository_states USING btree (project_id, last_wiki_verification_ran_at) WHERE ((wiki_verification_checksum IS NOT NULL) AND (last_wiki_verification_failure IS NULL));
-
-CREATE INDEX idx_repository_states_on_repository_failure_partial ON project_repository_states USING btree (last_repository_verification_failure) WHERE (last_repository_verification_failure IS NOT NULL);
-
-CREATE INDEX idx_repository_states_on_wiki_failure_partial ON project_repository_states USING btree (last_wiki_verification_failure) WHERE (last_wiki_verification_failure IS NOT NULL);
-
-CREATE INDEX idx_repository_states_outdated_checksums ON project_repository_states USING btree (project_id) WHERE (((repository_verification_checksum IS NULL) AND (last_repository_verification_failure IS NULL)) OR ((wiki_verification_checksum IS NULL) AND (last_wiki_verification_failure IS NULL)));
 
 CREATE INDEX idx_sbom_occurr_on_project_component_version_input_file_path ON sbom_occurrences USING btree (project_id, component_version_id, input_file_path);
 
 CREATE INDEX idx_sbom_occurrences_on_project_id_and_source_id ON sbom_occurrences USING btree (project_id, source_id);
 
 CREATE UNIQUE INDEX idx_sbom_source_packages_on_name_and_purl_type ON sbom_source_packages USING btree (name, purl_type);
+
+CREATE INDEX idx_scan_result_policies_on_configuration_id_id_updated_at ON scan_result_policies USING btree (security_orchestration_policy_configuration_id, id, updated_at);
+
+CREATE INDEX idx_scan_result_policy_violations_on_policy_id_and_id ON scan_result_policy_violations USING btree (scan_result_policy_id, id);
 
 CREATE UNIQUE INDEX idx_security_scans_on_build_and_scan_type ON security_scans USING btree (build_id, scan_type);
 
@@ -32669,11 +24265,17 @@ CREATE UNIQUE INDEX idx_software_license_policies_unique_on_project_and_scan_pol
 
 CREATE INDEX idx_status_check_responses_on_id_and_status ON status_check_responses USING btree (id, status);
 
+CREATE INDEX idx_streaming_group_namespace_filters_on_namespace_id ON audit_events_streaming_group_namespace_filters USING btree (namespace_id);
+
 CREATE INDEX idx_streaming_headers_on_external_audit_event_destination_id ON audit_events_streaming_headers USING btree (external_audit_event_destination_id);
+
+CREATE INDEX idx_streaming_instance_namespace_filters_on_namespace_id ON audit_events_streaming_instance_namespace_filters USING btree (namespace_id);
 
 CREATE INDEX idx_test_reports_on_issue_id_created_at_and_id ON requirements_management_test_reports USING btree (issue_id, created_at, id);
 
 CREATE UNIQUE INDEX idx_uniq_analytics_dashboards_pointers_on_project_id ON analytics_dashboards_pointers USING btree (project_id);
+
+CREATE INDEX idx_user_add_on_assignments_on_add_on_purchase_id_and_id ON subscription_user_add_on_assignments USING btree (add_on_purchase_id, id);
 
 CREATE INDEX idx_user_credit_card_validations_on_holder_name_hash ON user_credit_card_validations USING btree (holder_name_hash);
 
@@ -32697,21 +24299,11 @@ CREATE UNIQUE INDEX idx_vulnerability_issue_links_on_vulnerability_id_and_issue_
 
 CREATE UNIQUE INDEX idx_vulnerability_issue_links_on_vulnerability_id_and_link_type ON vulnerability_issue_links USING btree (vulnerability_id, link_type) WHERE (link_type = 2);
 
+CREATE INDEX idx_vulnerability_reads_for_traversal_ids_queries_srt_severity ON vulnerability_reads USING btree (state, report_type, severity, traversal_ids, vulnerability_id) WHERE (archived = false);
+
 CREATE INDEX idx_vulnerability_reads_project_id_scanner_id_vulnerability_id ON vulnerability_reads USING btree (project_id, scanner_id, vulnerability_id);
 
 CREATE UNIQUE INDEX idx_work_item_types_on_namespace_id_and_name_null_namespace ON work_item_types USING btree (btrim(lower(name)), ((namespace_id IS NULL))) WHERE (namespace_id IS NULL);
-
-CREATE INDEX p_ci_builds_commit_id_bigint_artifacts_expire_at_id_idx ON ONLY p_ci_builds USING btree (commit_id_convert_to_bigint, artifacts_expire_at, id) WHERE (((type)::text = 'Ci::Build'::text) AND ((retried = false) OR (retried IS NULL)) AND ((name)::text = ANY (ARRAY[('sast'::character varying)::text, ('secret_detection'::character varying)::text, ('dependency_scanning'::character varying)::text, ('container_scanning'::character varying)::text, ('dast'::character varying)::text])));
-
-CREATE INDEX index_357cc39ca4 ON ci_builds USING btree (commit_id_convert_to_bigint, artifacts_expire_at, id) WHERE (((type)::text = 'Ci::Build'::text) AND ((retried = false) OR (retried IS NULL)) AND ((name)::text = ANY (ARRAY[('sast'::character varying)::text, ('secret_detection'::character varying)::text, ('dependency_scanning'::character varying)::text, ('container_scanning'::character varying)::text, ('dast'::character varying)::text])));
-
-CREATE INDEX p_ci_builds_upstream_pipeline_id_bigint_idx ON ONLY p_ci_builds USING btree (upstream_pipeline_id_convert_to_bigint) WHERE (upstream_pipeline_id_convert_to_bigint IS NOT NULL);
-
-CREATE INDEX index_89477d6012 ON ci_builds USING btree (upstream_pipeline_id_convert_to_bigint) WHERE (upstream_pipeline_id_convert_to_bigint IS NOT NULL);
-
-CREATE INDEX p_ci_builds_commit_id_bigint_status_type_idx ON ONLY p_ci_builds USING btree (commit_id_convert_to_bigint, status, type);
-
-CREATE INDEX index_8c07a79c70 ON ci_builds USING btree (commit_id_convert_to_bigint, status, type);
 
 CREATE INDEX index_abuse_events_on_abuse_report_id ON abuse_events USING btree (abuse_report_id);
 
@@ -32744,8 +24336,6 @@ CREATE INDEX index_abuse_reports_on_status_and_updated_at ON abuse_reports USING
 CREATE INDEX index_abuse_reports_on_status_category_and_id ON abuse_reports USING btree (status, category, id);
 
 CREATE INDEX index_abuse_reports_on_status_reporter_id_and_id ON abuse_reports USING btree (status, reporter_id, id);
-
-CREATE INDEX index_abuse_reports_on_user_id ON abuse_reports USING btree (user_id);
 
 CREATE INDEX index_abuse_trust_scores_on_user_id_and_source_and_created_at ON abuse_trust_scores USING btree (user_id, source, created_at);
 
@@ -32781,11 +24371,19 @@ CREATE INDEX index_agent_user_access_on_group_id ON agent_user_access_group_auth
 
 CREATE INDEX index_agent_user_access_on_project_id ON agent_user_access_project_authorizations USING btree (project_id);
 
+CREATE INDEX index_ai_agent_version_attachments_on_ai_agent_version_id ON ai_agent_version_attachments USING btree (ai_agent_version_id);
+
+CREATE INDEX index_ai_agent_version_attachments_on_ai_vectorizable_file_id ON ai_agent_version_attachments USING btree (ai_vectorizable_file_id);
+
+CREATE INDEX index_ai_agent_version_attachments_on_project_id ON ai_agent_version_attachments USING btree (project_id);
+
 CREATE INDEX index_ai_agent_versions_on_agent_id ON ai_agent_versions USING btree (agent_id);
 
 CREATE INDEX index_ai_agent_versions_on_project_id ON ai_agent_versions USING btree (project_id);
 
 CREATE UNIQUE INDEX index_ai_agents_on_project_id_and_name ON ai_agents USING btree (project_id, name);
+
+CREATE INDEX index_ai_vectorizable_files_on_project_id ON ai_vectorizable_files USING btree (project_id);
 
 CREATE INDEX index_alert_assignees_on_alert_id ON alert_management_alert_assignees USING btree (alert_id);
 
@@ -32849,6 +24447,8 @@ CREATE UNIQUE INDEX index_approval_merge_request_rule_sources_1 ON approval_merg
 
 CREATE INDEX index_approval_merge_request_rule_sources_2 ON approval_merge_request_rule_sources USING btree (approval_project_rule_id);
 
+CREATE INDEX index_approval_merge_request_rule_sources_on_project_id ON approval_merge_request_rule_sources USING btree (project_id);
+
 CREATE UNIQUE INDEX index_approval_merge_request_rules_approved_approvers_1 ON approval_merge_request_rules_approved_approvers USING btree (approval_merge_request_rule_id, user_id);
 
 CREATE INDEX index_approval_merge_request_rules_approved_approvers_2 ON approval_merge_request_rules_approved_approvers USING btree (user_id);
@@ -32860,6 +24460,10 @@ CREATE INDEX index_approval_merge_request_rules_groups_2 ON approval_merge_reque
 CREATE UNIQUE INDEX index_approval_merge_request_rules_users_1 ON approval_merge_request_rules_users USING btree (approval_merge_request_rule_id, user_id);
 
 CREATE INDEX index_approval_merge_request_rules_users_2 ON approval_merge_request_rules_users USING btree (user_id);
+
+CREATE INDEX index_approval_policy_rules_on_policy_management_project_id ON approval_policy_rules USING btree (security_policy_management_project_id);
+
+CREATE UNIQUE INDEX index_approval_policy_rules_on_unique_policy_rule_index ON approval_policy_rules USING btree (security_policy_id, rule_index);
 
 CREATE UNIQUE INDEX index_approval_project_rules_groups_1 ON approval_project_rules_groups USING btree (approval_project_rule_id, group_id);
 
@@ -32879,8 +24483,6 @@ CREATE UNIQUE INDEX index_approval_project_rules_users_1 ON approval_project_rul
 
 CREATE INDEX index_approval_project_rules_users_2 ON approval_project_rules_users USING btree (user_id);
 
-CREATE INDEX index_approval_project_rules_users_on_approval_project_rule_id ON approval_project_rules_users USING btree (approval_project_rule_id);
-
 CREATE UNIQUE INDEX index_approval_rule_name_for_code_owners_rule_type ON approval_merge_request_rules USING btree (merge_request_id, name) WHERE ((rule_type = 2) AND (section IS NULL));
 
 CREATE UNIQUE INDEX index_approval_rule_name_for_sectional_code_owners_rule_type ON approval_merge_request_rules USING btree (merge_request_id, name, section) WHERE (rule_type = 2);
@@ -32888,8 +24490,6 @@ CREATE UNIQUE INDEX index_approval_rule_name_for_sectional_code_owners_rule_type
 CREATE INDEX index_approval_rule_on_protected_environment_id ON protected_environment_approval_rules USING btree (protected_environment_id);
 
 CREATE INDEX index_approval_rules_code_owners_rule_type ON approval_merge_request_rules USING btree (merge_request_id) WHERE (rule_type = 2);
-
-CREATE INDEX index_approvals_on_merge_request_id ON approvals USING btree (merge_request_id);
 
 CREATE INDEX index_approvals_on_merge_request_id_and_created_at ON approvals USING btree (merge_request_id, created_at);
 
@@ -32956,8 +24556,6 @@ CREATE INDEX index_board_group_recent_visits_on_board_id ON board_group_recent_v
 CREATE INDEX index_board_group_recent_visits_on_group_id ON board_group_recent_visits USING btree (group_id);
 
 CREATE UNIQUE INDEX index_board_group_recent_visits_on_user_group_and_board ON board_group_recent_visits USING btree (user_id, group_id, board_id);
-
-CREATE INDEX index_board_group_recent_visits_on_user_id ON board_group_recent_visits USING btree (user_id);
 
 CREATE UNIQUE INDEX index_board_labels_on_board_id_and_label_id ON board_labels USING btree (board_id, label_id);
 
@@ -33059,6 +24657,8 @@ CREATE UNIQUE INDEX index_catalog_resource_versions_on_release_id ON catalog_res
 
 CREATE INDEX index_catalog_resource_versions_on_resource_id_and_released_at ON catalog_resource_versions USING btree (catalog_resource_id, released_at);
 
+CREATE INDEX index_catalog_resources_on_last_30_day_usage_count ON catalog_resources USING btree (last_30_day_usage_count) WHERE (state = 1);
+
 CREATE UNIQUE INDEX index_catalog_resources_on_project_id ON catalog_resources USING btree (project_id);
 
 CREATE INDEX index_catalog_resources_on_search_vector ON catalog_resources USING gin (search_vector);
@@ -33107,9 +24707,9 @@ CREATE INDEX p_ci_builds_metadata_project_id_idx ON ONLY p_ci_builds_metadata US
 
 CREATE INDEX index_ci_builds_metadata_on_project_id ON ci_builds_metadata USING btree (project_id);
 
-CREATE INDEX p_ci_builds_auto_canceled_by_id_idx ON ONLY p_ci_builds USING btree (auto_canceled_by_id);
+CREATE INDEX p_ci_builds_auto_canceled_by_id_idx ON ONLY p_ci_builds USING btree (auto_canceled_by_id) WHERE (auto_canceled_by_id IS NOT NULL);
 
-CREATE INDEX index_ci_builds_on_auto_canceled_by_id ON ci_builds USING btree (auto_canceled_by_id);
+CREATE INDEX index_ci_builds_on_auto_canceled_by_id ON ci_builds USING btree (auto_canceled_by_id) WHERE (auto_canceled_by_id IS NOT NULL);
 
 CREATE INDEX p_ci_builds_commit_id_stage_idx_created_at_idx ON ONLY p_ci_builds USING btree (commit_id, stage_idx, created_at);
 
@@ -33241,10 +24841,6 @@ CREATE INDEX p_ci_job_artifacts_partition_id_job_id_idx ON ONLY p_ci_job_artifac
 
 CREATE INDEX index_ci_job_artifacts_on_partition_id_job_id ON ci_job_artifacts USING btree (partition_id, job_id);
 
-CREATE INDEX p_ci_job_artifacts_project_id_idx ON ONLY p_ci_job_artifacts USING btree (project_id);
-
-CREATE INDEX index_ci_job_artifacts_on_project_id ON ci_job_artifacts USING btree (project_id);
-
 CREATE INDEX p_ci_job_artifacts_project_id_id_idx1 ON ONLY p_ci_job_artifacts USING btree (project_id, id);
 
 CREATE INDEX index_ci_job_artifacts_on_project_id_and_id ON ci_job_artifacts USING btree (project_id, id);
@@ -33293,8 +24889,6 @@ CREATE INDEX index_ci_pipeline_artifacts_needs_verification ON ci_pipeline_artif
 
 CREATE INDEX index_ci_pipeline_artifacts_on_expire_at ON ci_pipeline_artifacts USING btree (expire_at);
 
-CREATE INDEX index_ci_pipeline_artifacts_on_pipeline_id ON ci_pipeline_artifacts USING btree (pipeline_id);
-
 CREATE UNIQUE INDEX index_ci_pipeline_artifacts_on_pipeline_id_and_file_type ON ci_pipeline_artifacts USING btree (pipeline_id, file_type);
 
 CREATE INDEX index_ci_pipeline_artifacts_on_project_id ON ci_pipeline_artifacts USING btree (project_id);
@@ -33322,8 +24916,6 @@ CREATE INDEX index_ci_pipeline_schedules_on_owner_id ON ci_pipeline_schedules US
 CREATE INDEX index_ci_pipeline_schedules_on_owner_id_and_id_and_active ON ci_pipeline_schedules USING btree (owner_id, id) WHERE (active = true);
 
 CREATE INDEX index_ci_pipeline_schedules_on_project_id ON ci_pipeline_schedules USING btree (project_id);
-
-CREATE INDEX index_ci_pipelines_config_on_pipeline_id ON ci_pipelines_config USING btree (pipeline_id);
 
 CREATE INDEX index_ci_pipelines_for_ondemand_dast_scans ON ci_pipelines USING btree (id) WHERE (source = 13);
 
@@ -33382,8 +24974,6 @@ CREATE INDEX index_ci_resources_on_build_id ON ci_resources USING btree (build_i
 CREATE INDEX index_ci_resources_on_partition_id_build_id ON ci_resources USING btree (partition_id, build_id);
 
 CREATE UNIQUE INDEX index_ci_resources_on_resource_group_id_and_build_id ON ci_resources USING btree (resource_group_id, build_id);
-
-CREATE INDEX index_ci_runner_machine_builds_on_runner_machine_id ON ONLY p_ci_runner_machine_builds USING btree (runner_machine_id);
 
 CREATE INDEX index_ci_runner_machines_on_contacted_at_desc_and_id_desc ON ci_runner_machines USING btree (contacted_at DESC, id DESC);
 
@@ -33471,13 +25061,23 @@ CREATE INDEX index_ci_sources_projects_on_pipeline_id ON ci_sources_projects USI
 
 CREATE UNIQUE INDEX index_ci_sources_projects_on_source_project_id_and_pipeline_id ON ci_sources_projects USING btree (source_project_id, pipeline_id);
 
+CREATE INDEX p_ci_stages_pipeline_id_idx ON ONLY p_ci_stages USING btree (pipeline_id);
+
 CREATE INDEX index_ci_stages_on_pipeline_id ON ci_stages USING btree (pipeline_id);
+
+CREATE INDEX p_ci_stages_pipeline_id_id_idx ON ONLY p_ci_stages USING btree (pipeline_id, id) WHERE (status = ANY (ARRAY[0, 1, 2, 8, 9, 10]));
 
 CREATE INDEX index_ci_stages_on_pipeline_id_and_id ON ci_stages USING btree (pipeline_id, id) WHERE (status = ANY (ARRAY[0, 1, 2, 8, 9, 10]));
 
+CREATE INDEX p_ci_stages_pipeline_id_position_idx ON ONLY p_ci_stages USING btree (pipeline_id, "position");
+
 CREATE INDEX index_ci_stages_on_pipeline_id_and_position ON ci_stages USING btree (pipeline_id, "position");
 
+CREATE UNIQUE INDEX p_ci_stages_pipeline_id_name_partition_id_idx ON ONLY p_ci_stages USING btree (pipeline_id, name, partition_id);
+
 CREATE UNIQUE INDEX index_ci_stages_on_pipeline_id_name_partition_id_unique ON ci_stages USING btree (pipeline_id, name, partition_id);
+
+CREATE INDEX p_ci_stages_project_id_idx ON ONLY p_ci_stages USING btree (project_id);
 
 CREATE INDEX index_ci_stages_on_project_id ON ci_stages USING btree (project_id);
 
@@ -33514,6 +25114,8 @@ CREATE INDEX index_cis_vulnerability_reads_on_cluster_agent_id ON vulnerability_
 CREATE INDEX index_cluster_agent_tokens_on_agent_id_status_last_used_at ON cluster_agent_tokens USING btree (agent_id, status, last_used_at DESC NULLS LAST);
 
 CREATE INDEX index_cluster_agent_tokens_on_created_by_user_id ON cluster_agent_tokens USING btree (created_by_user_id);
+
+CREATE INDEX index_cluster_agent_tokens_on_project_id ON cluster_agent_tokens USING btree (project_id);
 
 CREATE UNIQUE INDEX index_cluster_agent_tokens_on_token_encrypted ON cluster_agent_tokens USING btree (token_encrypted);
 
@@ -33665,6 +25267,8 @@ CREATE UNIQUE INDEX index_dep_prox_manifests_on_group_id_file_name_and_status ON
 
 CREATE INDEX index_dependency_list_exports_on_group_id ON dependency_list_exports USING btree (group_id);
 
+CREATE INDEX index_dependency_list_exports_on_organization_id ON dependency_list_exports USING btree (organization_id);
+
 CREATE INDEX index_dependency_list_exports_on_pipeline_id ON dependency_list_exports USING btree (pipeline_id);
 
 CREATE INDEX index_dependency_list_exports_on_project_id ON dependency_list_exports USING btree (project_id);
@@ -33707,7 +25311,9 @@ CREATE INDEX index_deployment_approvals_on_approval_rule_id ON deployment_approv
 
 CREATE INDEX index_deployment_approvals_on_created_at_and_id ON deployment_approvals USING btree (created_at, id);
 
-CREATE UNIQUE INDEX index_deployment_approvals_on_deployment_id_and_user_id ON deployment_approvals USING btree (deployment_id, user_id);
+CREATE UNIQUE INDEX index_deployment_approvals_on_deployment_user_approval_rule ON deployment_approvals USING btree (deployment_id, user_id, approval_rule_id);
+
+CREATE INDEX index_deployment_approvals_on_project_id ON deployment_approvals USING btree (project_id);
 
 CREATE INDEX index_deployment_approvals_on_user_id ON deployment_approvals USING btree (user_id);
 
@@ -33803,6 +25409,14 @@ CREATE INDEX index_draft_notes_on_discussion_id ON draft_notes USING btree (disc
 
 CREATE INDEX index_draft_notes_on_merge_request_id ON draft_notes USING btree (merge_request_id);
 
+CREATE INDEX index_early_access_program_tracking_events_on_category ON early_access_program_tracking_events USING btree (category);
+
+CREATE INDEX index_early_access_program_tracking_events_on_event_label ON early_access_program_tracking_events USING btree (event_label);
+
+CREATE INDEX index_early_access_program_tracking_events_on_event_name ON early_access_program_tracking_events USING btree (event_name);
+
+CREATE INDEX index_early_access_program_tracking_events_on_user_id ON early_access_program_tracking_events USING btree (user_id);
+
 CREATE UNIQUE INDEX index_elastic_index_settings_on_alias_name ON elastic_index_settings USING btree (alias_name);
 
 CREATE INDEX index_elastic_reindexing_subtasks_on_elastic_reindexing_task_id ON elastic_reindexing_subtasks USING btree (elastic_reindexing_task_id);
@@ -33815,6 +25429,8 @@ CREATE INDEX index_elasticsearch_indexed_namespaces_on_created_at ON elasticsear
 
 CREATE UNIQUE INDEX index_emails_on_confirmation_token ON emails USING btree (confirmation_token);
 
+CREATE INDEX index_emails_on_created_at_where_confirmed_at_is_null ON emails USING btree (created_at) WHERE (confirmed_at IS NULL);
+
 CREATE UNIQUE INDEX index_emails_on_email ON emails USING btree (email);
 
 CREATE INDEX index_emails_on_user_id ON emails USING btree (user_id);
@@ -33823,7 +25439,7 @@ CREATE INDEX index_enabled_clusters_on_id ON clusters USING btree (id) WHERE (en
 
 CREATE INDEX index_environments_cluster_agent_id ON environments USING btree (cluster_agent_id) WHERE (cluster_agent_id IS NOT NULL);
 
-CREATE INDEX index_environments_for_name_search_within_folder ON environments USING btree (project_id, lower(ltrim((name)::text, ((environment_type)::text || '/'::text))) varchar_pattern_ops, state);
+CREATE INDEX index_environments_name_without_type ON environments USING btree (project_id, lower(ltrim(ltrim((name)::text, (environment_type)::text), '/'::text)) varchar_pattern_ops, state);
 
 CREATE INDEX index_environments_on_merge_request_id ON environments USING btree (merge_request_id);
 
@@ -33949,14 +25565,6 @@ CREATE UNIQUE INDEX index_external_audit_event_destinations_on_namespace_id ON a
 
 CREATE UNIQUE INDEX index_external_pull_requests_on_project_and_branches ON external_pull_requests USING btree (project_id, source_branch, target_branch);
 
-CREATE INDEX p_ci_builds_commit_id_bigint_type_ref_idx ON ONLY p_ci_builds USING btree (commit_id_convert_to_bigint, type, ref);
-
-CREATE INDEX index_fc42f73fa6 ON ci_builds USING btree (commit_id_convert_to_bigint, type, ref);
-
-CREATE INDEX p_ci_builds_commit_id_bigint_type_name_ref_idx ON ONLY p_ci_builds USING btree (commit_id_convert_to_bigint, type, name, ref);
-
-CREATE INDEX index_feafb4d370 ON ci_builds USING btree (commit_id_convert_to_bigint, type, name, ref);
-
 CREATE UNIQUE INDEX index_feature_flag_scopes_on_flag_id_and_environment_scope ON operations_feature_flag_scopes USING btree (feature_flag_id, environment_scope);
 
 CREATE UNIQUE INDEX index_feature_flags_clients_on_project_id_and_token_encrypted ON operations_feature_flags_clients USING btree (project_id, token_encrypted);
@@ -33964,10 +25572,6 @@ CREATE UNIQUE INDEX index_feature_flags_clients_on_project_id_and_token_encrypte
 CREATE UNIQUE INDEX index_feature_gates_on_feature_key_and_key_and_value ON feature_gates USING btree (feature_key, key, value);
 
 CREATE UNIQUE INDEX index_features_on_key ON features USING btree (key);
-
-CREATE INDEX p_ci_builds_auto_canceled_by_id_bigint_idx ON ONLY p_ci_builds USING btree (auto_canceled_by_id_convert_to_bigint) WHERE (auto_canceled_by_id_convert_to_bigint IS NOT NULL);
-
-CREATE INDEX index_ffe1233676 ON ci_builds USING btree (auto_canceled_by_id_convert_to_bigint) WHERE (auto_canceled_by_id_convert_to_bigint IS NOT NULL);
 
 CREATE INDEX index_for_security_scans_scan_type ON security_scans USING btree (scan_type, project_id, pipeline_id) WHERE (status = 1);
 
@@ -33985,25 +25589,7 @@ CREATE INDEX index_geo_event_log_on_cache_invalidation_event_id ON geo_event_log
 
 CREATE INDEX index_geo_event_log_on_geo_event_id ON geo_event_log USING btree (geo_event_id) WHERE (geo_event_id IS NOT NULL);
 
-CREATE INDEX index_geo_event_log_on_hashed_storage_attachments_event_id ON geo_event_log USING btree (hashed_storage_attachments_event_id) WHERE (hashed_storage_attachments_event_id IS NOT NULL);
-
-CREATE INDEX index_geo_event_log_on_hashed_storage_migrated_event_id ON geo_event_log USING btree (hashed_storage_migrated_event_id) WHERE (hashed_storage_migrated_event_id IS NOT NULL);
-
 CREATE INDEX index_geo_event_log_on_repositories_changed_event_id ON geo_event_log USING btree (repositories_changed_event_id) WHERE (repositories_changed_event_id IS NOT NULL);
-
-CREATE INDEX index_geo_event_log_on_repository_created_event_id ON geo_event_log USING btree (repository_created_event_id) WHERE (repository_created_event_id IS NOT NULL);
-
-CREATE INDEX index_geo_event_log_on_repository_deleted_event_id ON geo_event_log USING btree (repository_deleted_event_id) WHERE (repository_deleted_event_id IS NOT NULL);
-
-CREATE INDEX index_geo_event_log_on_repository_renamed_event_id ON geo_event_log USING btree (repository_renamed_event_id) WHERE (repository_renamed_event_id IS NOT NULL);
-
-CREATE INDEX index_geo_event_log_on_repository_updated_event_id ON geo_event_log USING btree (repository_updated_event_id) WHERE (repository_updated_event_id IS NOT NULL);
-
-CREATE INDEX index_geo_event_log_on_reset_checksum_event_id ON geo_event_log USING btree (reset_checksum_event_id) WHERE (reset_checksum_event_id IS NOT NULL);
-
-CREATE INDEX index_geo_hashed_storage_attachments_events_on_project_id ON geo_hashed_storage_attachments_events USING btree (project_id);
-
-CREATE INDEX index_geo_hashed_storage_migrated_events_on_project_id ON geo_hashed_storage_migrated_events USING btree (project_id);
 
 CREATE INDEX index_geo_node_namespace_links_on_geo_node_id ON geo_node_namespace_links USING btree (geo_node_id);
 
@@ -34020,18 +25606,6 @@ CREATE UNIQUE INDEX index_geo_nodes_on_name ON geo_nodes USING btree (name);
 CREATE INDEX index_geo_nodes_on_primary ON geo_nodes USING btree ("primary");
 
 CREATE INDEX index_geo_repositories_changed_events_on_geo_node_id ON geo_repositories_changed_events USING btree (geo_node_id);
-
-CREATE INDEX index_geo_repository_created_events_on_project_id ON geo_repository_created_events USING btree (project_id);
-
-CREATE INDEX index_geo_repository_deleted_events_on_project_id ON geo_repository_deleted_events USING btree (project_id);
-
-CREATE INDEX index_geo_repository_renamed_events_on_project_id ON geo_repository_renamed_events USING btree (project_id);
-
-CREATE INDEX index_geo_repository_updated_events_on_project_id ON geo_repository_updated_events USING btree (project_id);
-
-CREATE INDEX index_geo_repository_updated_events_on_source ON geo_repository_updated_events USING btree (source);
-
-CREATE INDEX index_geo_reset_checksum_events_on_project_id ON geo_reset_checksum_events USING btree (project_id);
 
 CREATE INDEX index_ghost_user_migrations_on_consume_after_id ON ghost_user_migrations USING btree (consume_after, id);
 
@@ -34198,6 +25772,14 @@ CREATE INDEX index_import_failures_on_project_id_and_correlation_id_value ON imp
 CREATE INDEX index_import_failures_on_project_id_not_null ON import_failures USING btree (project_id) WHERE (project_id IS NOT NULL);
 
 CREATE INDEX index_import_failures_on_user_id_not_null ON import_failures USING btree (user_id) WHERE (user_id IS NOT NULL);
+
+CREATE INDEX index_import_source_users_on_namespace_id ON import_source_users USING btree (namespace_id);
+
+CREATE INDEX index_import_source_users_on_placeholder_user_id ON import_source_users USING btree (placeholder_user_id);
+
+CREATE INDEX index_import_source_users_on_reassign_to_user_id ON import_source_users USING btree (reassign_to_user_id);
+
+CREATE INDEX index_import_source_users_on_reassigned_by_user_id ON import_source_users USING btree (reassigned_by_user_id);
 
 CREATE INDEX index_imported_projects_on_import_type_creator_id_created_at ON projects USING btree (import_type, creator_id, created_at) WHERE (import_type IS NOT NULL);
 
@@ -34473,7 +26055,19 @@ CREATE INDEX index_member_approval_on_requested_by_id ON member_approvals USING 
 
 CREATE INDEX index_member_approval_on_reviewed_by_id ON member_approvals USING btree (reviewed_by_id);
 
+CREATE INDEX index_member_approvals_on_member_namespace_id_status ON member_approvals USING btree (member_namespace_id, status) WHERE (status = 0);
+
+CREATE INDEX index_member_approvals_on_member_role_id ON member_approvals USING btree (member_role_id);
+
+CREATE INDEX index_member_approvals_on_user_id ON member_approvals USING btree (user_id);
+
+CREATE UNIQUE INDEX index_member_roles_on_name_unique ON member_roles USING btree (name) WHERE (namespace_id IS NULL);
+
 CREATE INDEX index_member_roles_on_namespace_id ON member_roles USING btree (namespace_id);
+
+CREATE UNIQUE INDEX index_member_roles_on_namespace_id_name_unique ON member_roles USING btree (namespace_id, name) WHERE (namespace_id IS NOT NULL);
+
+CREATE INDEX index_member_roles_on_occupies_seat ON member_roles USING btree (occupies_seat);
 
 CREATE INDEX index_members_on_access_level ON members USING btree (access_level);
 
@@ -34484,6 +26078,8 @@ CREATE INDEX index_members_on_expiring_at_access_level_id ON members USING btree
 CREATE INDEX index_members_on_invite_email ON members USING btree (invite_email);
 
 CREATE UNIQUE INDEX index_members_on_invite_token ON members USING btree (invite_token);
+
+CREATE INDEX index_members_on_lower_invite_email ON members USING btree (lower((invite_email)::text));
 
 CREATE INDEX index_members_on_member_namespace_id_compound ON members USING btree (member_namespace_id, type, requested_at, id);
 
@@ -34527,8 +26123,6 @@ CREATE INDEX index_merge_request_diff_details_on_verification_state ON merge_req
 
 CREATE INDEX index_merge_request_diff_details_pending_verification ON merge_request_diff_details USING btree (verified_at NULLS FIRST) WHERE (verification_state = 0);
 
-CREATE INDEX index_merge_request_diff_llm_summaries_on_user_id ON merge_request_diff_llm_summaries USING btree (user_id);
-
 CREATE INDEX index_merge_request_diffs_by_id_partial ON merge_request_diffs USING btree (id) WHERE ((files_count > 0) AND ((NOT stored_externally) OR (stored_externally IS NULL)));
 
 CREATE INDEX index_merge_request_diffs_on_external_diff ON merge_request_diffs USING btree (external_diff);
@@ -34553,6 +26147,12 @@ CREATE INDEX index_merge_request_metrics_on_merged_at ON merge_request_metrics U
 
 CREATE INDEX index_merge_request_metrics_on_pipeline_id ON merge_request_metrics USING btree (pipeline_id);
 
+CREATE INDEX index_merge_request_requested_changes_on_merge_request_id ON merge_request_requested_changes USING btree (merge_request_id);
+
+CREATE INDEX index_merge_request_requested_changes_on_project_id ON merge_request_requested_changes USING btree (project_id);
+
+CREATE INDEX index_merge_request_requested_changes_on_user_id ON merge_request_requested_changes USING btree (user_id);
+
 CREATE INDEX index_merge_request_review_llm_summaries_on_mr_diff_id ON merge_request_review_llm_summaries USING btree (merge_request_diff_id);
 
 CREATE INDEX index_merge_request_review_llm_summaries_on_review_id ON merge_request_review_llm_summaries USING btree (review_id);
@@ -34572,6 +26172,8 @@ CREATE INDEX index_merge_requests_closing_issues_on_merge_request_id ON merge_re
 CREATE INDEX index_merge_requests_compliance_violations_on_violating_user_id ON merge_requests_compliance_violations USING btree (violating_user_id);
 
 CREATE UNIQUE INDEX index_merge_requests_compliance_violations_unique_columns ON merge_requests_compliance_violations USING btree (merge_request_id, violating_user_id, reason);
+
+CREATE INDEX index_merge_requests_for_latest_diffs_with_state_merged ON merge_requests USING btree (latest_merge_request_diff_id, target_project_id) WHERE (state_id = 3);
 
 CREATE INDEX index_merge_requests_id_created_at_prepared_at ON merge_requests USING btree (created_at, id) WHERE (prepared_at IS NULL);
 
@@ -34606,8 +26208,6 @@ CREATE INDEX index_merge_requests_on_target_branch ON merge_requests USING btree
 CREATE INDEX index_merge_requests_on_target_project_id_and_created_at_and_id ON merge_requests USING btree (target_project_id, created_at, id);
 
 CREATE UNIQUE INDEX index_merge_requests_on_target_project_id_and_iid ON merge_requests USING btree (target_project_id, iid);
-
-CREATE INDEX index_merge_requests_on_target_project_id_and_iid_and_state_id ON merge_requests USING btree (target_project_id, iid, state_id);
 
 CREATE INDEX index_merge_requests_on_target_project_id_and_merged_commit_sha ON merge_requests USING btree (target_project_id, merged_commit_sha);
 
@@ -34733,6 +26333,8 @@ CREATE INDEX index_namespace_commit_emails_on_namespace_id ON namespace_commit_e
 
 CREATE UNIQUE INDEX index_namespace_commit_emails_on_user_id_and_namespace_id ON namespace_commit_emails USING btree (user_id, namespace_id);
 
+CREATE INDEX index_namespace_details_on_creator_id ON namespace_details USING btree (creator_id);
+
 CREATE UNIQUE INDEX index_namespace_root_storage_statistics_on_namespace_id ON namespace_root_storage_statistics USING btree (namespace_id);
 
 CREATE UNIQUE INDEX index_namespace_statistics_on_namespace_id ON namespace_statistics USING btree (namespace_id);
@@ -34750,6 +26352,8 @@ CREATE INDEX index_namespaces_on_ldap_sync_last_successful_update_at ON namespac
 CREATE INDEX index_namespaces_on_name_trigram ON namespaces USING gin (name gin_trgm_ops);
 
 CREATE INDEX index_namespaces_on_organization_id ON namespaces USING btree (organization_id);
+
+CREATE INDEX index_namespaces_on_organization_id_for_groups ON namespaces USING btree (organization_id) WHERE ((type)::text = 'Group'::text);
 
 CREATE INDEX index_namespaces_on_owner_id ON namespaces USING btree (owner_id);
 
@@ -34855,6 +26459,8 @@ CREATE INDEX index_on_issue_assignment_events_issue_id_action_created_at_id ON i
 
 CREATE INDEX index_on_label_links_all_columns ON label_links USING btree (target_id, label_id, target_type);
 
+CREATE INDEX index_on_merge_request_diffs_head_commit_sha ON merge_request_diffs USING btree (head_commit_sha);
+
 CREATE INDEX index_on_merge_request_reviewers_user_id_and_state ON merge_request_reviewers USING btree (user_id, state) WHERE (state = 2);
 
 CREATE INDEX index_on_merge_requests_for_latest_diffs ON merge_requests USING btree (target_project_id) INCLUDE (id, latest_merge_request_diff_id);
@@ -34921,15 +26527,31 @@ CREATE UNIQUE INDEX index_ops_feature_flags_issues_on_feature_flag_id_and_issue_
 
 CREATE UNIQUE INDEX index_ops_strategies_user_lists_on_strategy_id_and_user_list_id ON operations_strategies_user_lists USING btree (strategy_id, user_list_id);
 
+CREATE INDEX index_organization_users_on_org_id_access_level_user_id ON organization_users USING btree (organization_id, access_level, user_id);
+
 CREATE INDEX index_organization_users_on_organization_id_and_id ON organization_users USING btree (organization_id, id);
 
 CREATE UNIQUE INDEX index_organization_users_on_organization_id_and_user_id ON organization_users USING btree (organization_id, user_id);
 
 CREATE INDEX index_organization_users_on_user_id ON organization_users USING btree (user_id);
 
+CREATE INDEX index_organizations_on_name_trigram ON organizations USING gin (name gin_trgm_ops);
+
+CREATE INDEX index_organizations_on_path_trigram ON organizations USING gin (path gin_trgm_ops);
+
 CREATE UNIQUE INDEX index_organizations_on_unique_name_per_group ON customer_relations_organizations USING btree (group_id, lower(name), id);
 
+CREATE INDEX index_p_catalog_resource_component_usages_on_project_id ON ONLY p_catalog_resource_component_usages USING btree (project_id);
+
 CREATE INDEX index_p_catalog_resource_sync_events_on_id_where_pending ON ONLY p_catalog_resource_sync_events USING btree (id) WHERE (status = 1);
+
+CREATE INDEX index_p_ci_build_names_on_project_id_and_build_id ON ONLY p_ci_build_names USING btree (project_id, build_id);
+
+CREATE INDEX index_p_ci_build_names_on_search_vector ON ONLY p_ci_build_names USING gin (search_vector);
+
+CREATE INDEX index_p_ci_builds_execution_configs_on_pipeline_id ON ONLY p_ci_builds_execution_configs USING btree (pipeline_id);
+
+CREATE INDEX index_p_ci_builds_execution_configs_on_project_id ON ONLY p_ci_builds_execution_configs USING btree (project_id);
 
 CREATE INDEX index_p_ci_finished_build_ch_sync_events_finished_at ON ONLY p_ci_finished_build_ch_sync_events USING btree (partition, build_finished_at);
 
@@ -35109,8 +26731,6 @@ CREATE INDEX index_personal_access_tokens_on_user_id ON personal_access_tokens U
 
 CREATE INDEX index_pipeline_metadata_on_name_text_pattern_pipeline_id ON ci_pipeline_metadata USING btree (name text_pattern_ops, pipeline_id);
 
-CREATE INDEX index_pipeline_metadata_on_pipeline_id_name_text_pattern ON ci_pipeline_metadata USING btree (pipeline_id, name text_pattern_ops);
-
 CREATE UNIQUE INDEX p_ci_pipeline_variables_pipeline_id_key_partition_id_idx ON ONLY p_ci_pipeline_variables USING btree (pipeline_id, key, partition_id);
 
 CREATE UNIQUE INDEX index_pipeline_variables_on_pipeline_id_key_partition_id_unique ON ci_pipeline_variables USING btree (pipeline_id, key, partition_id);
@@ -35187,6 +26807,8 @@ CREATE INDEX index_project_export_jobs_on_project_id_and_status ON project_expor
 
 CREATE INDEX index_project_export_jobs_on_status ON project_export_jobs USING btree (status);
 
+CREATE INDEX index_project_export_jobs_on_updated_at_and_id ON project_export_jobs USING btree (updated_at, id);
+
 CREATE INDEX index_project_feature_usages_on_project_id ON project_feature_usages USING btree (project_id);
 
 CREATE UNIQUE INDEX index_project_features_on_project_id ON project_features USING btree (project_id);
@@ -35227,13 +26849,11 @@ CREATE UNIQUE INDEX index_project_repositories_on_disk_path ON project_repositor
 
 CREATE UNIQUE INDEX index_project_repositories_on_project_id ON project_repositories USING btree (project_id);
 
-CREATE INDEX index_project_repositories_on_shard_id ON project_repositories USING btree (shard_id);
-
 CREATE INDEX index_project_repositories_on_shard_id_and_project_id ON project_repositories USING btree (shard_id, project_id);
 
-CREATE UNIQUE INDEX index_project_repository_states_on_project_id ON project_repository_states USING btree (project_id);
-
 CREATE INDEX index_project_repository_storage_moves_on_project_id ON project_repository_storage_moves USING btree (project_id);
+
+CREATE INDEX index_project_saved_replies_on_project_id ON project_saved_replies USING btree (project_id);
 
 CREATE INDEX index_project_settings_on_legacy_os_license_project_id ON project_settings USING btree (project_id) WHERE (legacy_open_source_license_available = true);
 
@@ -35429,8 +27049,6 @@ CREATE INDEX index_protected_tag_create_access_levels_on_group_id ON protected_t
 
 CREATE INDEX index_protected_tag_create_access_levels_on_user_id ON protected_tag_create_access_levels USING btree (user_id);
 
-CREATE INDEX index_protected_tags_on_project_id ON protected_tags USING btree (project_id);
-
 CREATE UNIQUE INDEX index_protected_tags_on_project_id_and_name ON protected_tags USING btree (project_id, name);
 
 CREATE INDEX index_push_rules_on_is_sample ON push_rules USING btree (is_sample) WHERE is_sample;
@@ -35438,6 +27056,8 @@ CREATE INDEX index_push_rules_on_is_sample ON push_rules USING btree (is_sample)
 CREATE INDEX index_push_rules_on_organization_id ON push_rules USING btree (organization_id);
 
 CREATE INDEX index_push_rules_on_project_id ON push_rules USING btree (project_id);
+
+CREATE INDEX index_raw_usage_data_on_organization_id ON raw_usage_data USING btree (organization_id);
 
 CREATE UNIQUE INDEX index_raw_usage_data_on_recorded_at ON raw_usage_data USING btree (recorded_at);
 
@@ -35452,6 +27072,8 @@ CREATE INDEX index_related_epic_links_on_source_id ON related_epic_links USING b
 CREATE UNIQUE INDEX index_related_epic_links_on_source_id_and_target_id ON related_epic_links USING btree (source_id, target_id);
 
 CREATE INDEX index_related_epic_links_on_target_id ON related_epic_links USING btree (target_id);
+
+CREATE INDEX index_relation_import_trackers_on_project_id ON relation_import_trackers USING btree (project_id);
 
 CREATE UNIQUE INDEX index_release_links_on_release_id_and_name ON release_links USING btree (release_id, name);
 
@@ -35649,6 +27271,10 @@ CREATE INDEX p_ci_builds_name_id_idx ON ONLY p_ci_builds USING btree (name, id) 
 
 CREATE INDEX index_security_ci_builds_on_name_and_id_parser_features ON ci_builds USING btree (name, id) WHERE (((name)::text = ANY (ARRAY[('container_scanning'::character varying)::text, ('dast'::character varying)::text, ('dependency_scanning'::character varying)::text, ('license_management'::character varying)::text, ('sast'::character varying)::text, ('secret_detection'::character varying)::text, ('coverage_fuzzing'::character varying)::text, ('license_scanning'::character varying)::text, ('apifuzzer_fuzz'::character varying)::text, ('apifuzzer_fuzz_dnd'::character varying)::text])) AND ((type)::text = 'Ci::Build'::text));
 
+CREATE INDEX index_security_policies_on_policy_management_project_id ON security_policies USING btree (security_policy_management_project_id);
+
+CREATE UNIQUE INDEX index_security_policies_on_unique_config_type_policy_index ON security_policies USING btree (security_orchestration_policy_configuration_id, type, policy_index);
+
 CREATE INDEX index_security_scans_for_non_purged_records ON security_scans USING btree (created_at, id) WHERE (status <> 6);
 
 CREATE INDEX index_security_scans_on_created_at ON security_scans USING btree (created_at);
@@ -35764,8 +27390,6 @@ CREATE INDEX index_sop_configurations_project_id_policy_project_id ON security_o
 CREATE INDEX index_sop_schedules_on_sop_configuration_id ON security_orchestration_policy_rule_schedules USING btree (security_orchestration_policy_configuration_id);
 
 CREATE INDEX index_sop_schedules_on_user_id ON security_orchestration_policy_rule_schedules USING btree (user_id);
-
-CREATE INDEX index_source_package_names_on_component_and_purl ON sbom_components USING btree (component_type, source_package_name, purl_type);
 
 CREATE INDEX index_spam_logs_on_user_id ON spam_logs USING btree (user_id);
 
@@ -35993,8 +27617,6 @@ CREATE INDEX index_user_group_callouts_on_group_id ON user_group_callouts USING 
 
 CREATE INDEX index_user_highest_roles_on_user_id_and_highest_access_level ON user_highest_roles USING btree (user_id, highest_access_level);
 
-CREATE INDEX index_user_interacted_projects_on_user_id ON user_interacted_projects USING btree (user_id);
-
 CREATE INDEX index_user_namespace_callouts_on_namespace_id ON user_namespace_callouts USING btree (namespace_id);
 
 CREATE INDEX index_user_permission_export_uploads_on_user_id_and_status ON user_permission_export_uploads USING btree (user_id, status);
@@ -36181,6 +27803,10 @@ CREATE INDEX index_vulnerability_occurrences_for_issue_links_migration ON vulner
 
 CREATE INDEX index_vulnerability_occurrences_for_override_uuids_logic ON vulnerability_occurrences USING btree (project_id, report_type, location_fingerprint);
 
+CREATE INDEX index_vulnerability_occurrences_on_initial_pipeline_id ON vulnerability_occurrences USING btree (initial_pipeline_id);
+
+CREATE INDEX index_vulnerability_occurrences_on_latest_pipeline_id ON vulnerability_occurrences USING btree (latest_pipeline_id);
+
 CREATE INDEX index_vulnerability_occurrences_on_location_image ON vulnerability_occurrences USING gin (((location -> 'image'::text))) WHERE (report_type = ANY (ARRAY[2, 7]));
 
 CREATE INDEX index_vulnerability_occurrences_on_location_k8s_agent_id ON vulnerability_occurrences USING gin ((((location -> 'kubernetes_resource'::text) -> 'agent_id'::text))) WHERE (report_type = 7);
@@ -36197,9 +27823,13 @@ CREATE UNIQUE INDEX index_vulnerability_occurrences_on_uuid_1 ON vulnerability_o
 
 CREATE INDEX index_vulnerability_occurrences_on_vulnerability_id ON vulnerability_occurrences USING btree (vulnerability_id);
 
+CREATE INDEX index_vulnerability_reads_common_attrs_and_detection_for_groups ON vulnerability_reads USING btree (resolved_on_default_branch, state, report_type, severity, traversal_ids, vulnerability_id) WHERE (archived = false);
+
 CREATE INDEX index_vulnerability_reads_common_finder_query_2 ON vulnerability_reads USING btree (project_id, state, report_type, severity, vulnerability_id DESC, dismissal_reason);
 
 CREATE INDEX index_vulnerability_reads_common_finder_query_w_namespace_id ON vulnerability_reads USING btree (namespace_id, state, report_type, severity, vulnerability_id DESC, dismissal_reason);
+
+CREATE INDEX index_vulnerability_reads_for_vulnerability_export ON vulnerability_reads USING btree (traversal_ids, vulnerability_id) WHERE (archived = false);
 
 CREATE INDEX index_vulnerability_reads_on_cluster_agent_id ON vulnerability_reads USING btree (cluster_agent_id) WHERE (report_type = 7);
 
@@ -36271,6 +27901,8 @@ CREATE INDEX index_wiki_repository_states_failed_verification ON wiki_repository
 
 CREATE INDEX index_wiki_repository_states_needs_verification ON wiki_repository_states USING btree (verification_state) WHERE ((verification_state = 0) OR (verification_state = 3));
 
+CREATE INDEX index_wiki_repository_states_on_project_id ON wiki_repository_states USING btree (project_id);
+
 CREATE UNIQUE INDEX index_wiki_repository_states_on_project_wiki_repository_id ON wiki_repository_states USING btree (project_wiki_repository_id);
 
 CREATE INDEX index_wiki_repository_states_on_verification_state ON wiki_repository_states USING btree (verification_state);
@@ -36285,6 +27917,8 @@ CREATE INDEX index_work_item_hierarchy_restrictions_on_parent_type_id ON work_it
 
 CREATE UNIQUE INDEX index_work_item_link_restrictions_on_source_link_type_target ON work_item_related_link_restrictions USING btree (source_type_id, link_type, target_type_id);
 
+CREATE INDEX index_work_item_parent_links_on_namespace_id ON work_item_parent_links USING btree (namespace_id);
+
 CREATE UNIQUE INDEX index_work_item_parent_links_on_work_item_id ON work_item_parent_links USING btree (work_item_id);
 
 CREATE INDEX index_work_item_parent_links_on_work_item_parent_id ON work_item_parent_links USING btree (work_item_parent_id);
@@ -36298,6 +27932,8 @@ CREATE UNIQUE INDEX index_work_item_widget_definitions_on_default_witype_and_nam
 CREATE UNIQUE INDEX index_work_item_widget_definitions_on_namespace_type_and_name ON work_item_widget_definitions USING btree (namespace_id, work_item_type_id, name);
 
 CREATE INDEX index_work_item_widget_definitions_on_work_item_type_id ON work_item_widget_definitions USING btree (work_item_type_id);
+
+CREATE INDEX index_workspace_variables_on_project_id ON workspace_variables USING btree (project_id);
 
 CREATE INDEX index_workspace_variables_on_workspace_id ON workspace_variables USING btree (workspace_id);
 
@@ -36327,9 +27963,11 @@ CREATE UNIQUE INDEX index_xray_reports_on_project_id_and_lang ON xray_reports US
 
 CREATE INDEX index_zentao_tracker_data_on_integration_id ON zentao_tracker_data USING btree (integration_id);
 
-CREATE INDEX index_zoekt_indices_on_state ON zoekt_indices USING btree (state);
+CREATE INDEX index_zoekt_indices_on_namespace_id ON zoekt_indices USING btree (namespace_id, zoekt_enabled_namespace_id);
 
-CREATE INDEX index_zoekt_indices_on_zoekt_node_id ON zoekt_indices USING btree (zoekt_node_id);
+CREATE UNIQUE INDEX index_zoekt_indices_on_state_and_id ON zoekt_indices USING btree (state, id);
+
+CREATE UNIQUE INDEX index_zoekt_indices_on_zoekt_node_id_and_id ON zoekt_indices USING btree (zoekt_node_id, id);
 
 CREATE INDEX index_zoekt_nodes_on_last_seen_at ON zoekt_nodes USING btree (last_seen_at);
 
@@ -36344,6 +27982,12 @@ CREATE UNIQUE INDEX index_zoekt_shards_on_index_base_url ON zoekt_shards USING b
 CREATE INDEX index_zoekt_shards_on_last_seen_at ON zoekt_shards USING btree (last_seen_at);
 
 CREATE UNIQUE INDEX index_zoekt_shards_on_search_base_url ON zoekt_shards USING btree (search_base_url);
+
+CREATE INDEX index_zoekt_tasks_on_state ON ONLY zoekt_tasks USING btree (state);
+
+CREATE INDEX index_zoekt_tasks_on_zoekt_node_id_and_state_and_perform_at ON ONLY zoekt_tasks USING btree (zoekt_node_id, state, perform_at);
+
+CREATE INDEX index_zoekt_tasks_on_zoekt_repository_id ON ONLY zoekt_tasks USING btree (zoekt_repository_id);
 
 CREATE INDEX index_zoom_meetings_on_issue_id ON zoom_meetings USING btree (issue_id);
 
@@ -36433,6 +28077,10 @@ CREATE UNIQUE INDEX snippet_user_mentions_on_snippet_id_index ON snippet_user_me
 
 CREATE UNIQUE INDEX taggings_idx ON taggings USING btree (tag_id, taggable_id, taggable_type, context, tagger_id, tagger_type);
 
+CREATE INDEX temp_index_on_notes_with_null_noteable_type ON notes USING btree (id) WHERE (noteable_type IS NULL);
+
+CREATE INDEX temp_index_on_users_where_dark_theme ON users USING btree (id) WHERE (theme_id = 11);
+
 CREATE UNIQUE INDEX term_agreements_unique_index ON term_agreements USING btree (user_id, term_id);
 
 CREATE INDEX tmp_idx_for_feedback_comment_processing ON vulnerability_feedback USING btree (id) WHERE (char_length(comment) > 50000);
@@ -36451,15 +28099,21 @@ CREATE INDEX tmp_index_for_null_member_namespace_id ON members USING btree (memb
 
 CREATE INDEX tmp_index_for_project_namespace_id_migration_on_routes ON routes USING btree (id) WHERE ((namespace_id IS NULL) AND ((source_type)::text = 'Project'::text));
 
+CREATE INDEX tmp_index_for_succeeded_security_scans ON security_scans USING btree (id) WHERE (status = 1);
+
+CREATE UNIQUE INDEX tmp_index_issues_on_tmp_epic_id ON issues USING btree (tmp_epic_id);
+
 CREATE INDEX tmp_index_on_vulnerabilities_non_dismissed ON vulnerabilities USING btree (id) WHERE (state <> 2);
 
 CREATE INDEX tmp_index_project_statistics_cont_registry_size ON project_statistics USING btree (project_id) WHERE (container_registry_size = 0);
 
 CREATE INDEX tmp_index_project_statistics_updated_at ON project_statistics USING btree (project_id, updated_at) WHERE (repository_size > 0);
 
-CREATE INDEX tmp_index_vulnerabilities_on_id_finding_id_empty ON vulnerabilities USING btree (id) WHERE (finding_id IS NULL);
-
 CREATE INDEX tmp_index_vulnerability_dismissal_info ON vulnerabilities USING btree (id) WHERE ((state = 2) AND ((dismissed_at IS NULL) OR (dismissed_by_id IS NULL)));
+
+CREATE INDEX tmp_index_vulnerability_occurrences_id_and_initial_pipline_id ON vulnerability_occurrences USING btree (id, initial_pipeline_id) WHERE (initial_pipeline_id IS NULL);
+
+CREATE INDEX tmp_index_vulnerability_occurrences_id_and_latest_pipeline_id ON vulnerability_occurrences USING btree (id, latest_pipeline_id) WHERE (latest_pipeline_id IS NULL);
 
 CREATE INDEX tmp_index_vulnerability_overlong_title_html ON vulnerabilities USING btree (id) WHERE (length(title_html) > 800);
 
@@ -36469,9 +28123,17 @@ CREATE UNIQUE INDEX u_zoekt_indices_zoekt_enabled_namespace_id_and_zoekt_node_id
 
 CREATE UNIQUE INDEX u_zoekt_repositories_zoekt_index_id_and_project_id ON zoekt_repositories USING btree (zoekt_index_id, project_id);
 
+CREATE UNIQUE INDEX uniq_audit_group_event_filters_destination_id_and_event_type ON audit_events_group_streaming_event_type_filters USING btree (external_streaming_destination_id, audit_event_type);
+
+CREATE UNIQUE INDEX uniq_audit_instance_event_filters_destination_id_and_event_type ON audit_events_instance_streaming_event_type_filters USING btree (external_streaming_destination_id, audit_event_type);
+
 CREATE UNIQUE INDEX uniq_google_cloud_logging_configuration_namespace_id_and_name ON audit_events_google_cloud_logging_configurations USING btree (namespace_id, name);
 
-CREATE UNIQUE INDEX uniq_idx_packages_packages_on_project_id_name_version_ml_model ON packages_packages USING btree (project_id, name, version) WHERE (package_type = 14);
+CREATE UNIQUE INDEX uniq_idx_packages_packages_on_project_id_name_version_ml_model ON packages_packages USING btree (project_id, name, version) WHERE ((package_type = 14) AND (status <> 4));
+
+CREATE UNIQUE INDEX uniq_idx_streaming_destination_id_and_namespace_id ON audit_events_streaming_instance_namespace_filters USING btree (external_streaming_destination_id, namespace_id);
+
+CREATE UNIQUE INDEX uniq_idx_streaming_group_destination_id_and_namespace_id ON audit_events_streaming_group_namespace_filters USING btree (external_streaming_destination_id, namespace_id);
 
 CREATE UNIQUE INDEX uniq_idx_user_add_on_assignments_on_add_on_purchase_and_user ON subscription_user_add_on_assignments USING btree (add_on_purchase_id, user_id);
 
@@ -36515,11 +28177,15 @@ CREATE UNIQUE INDEX unique_google_cloud_logging_configurations_on_namespace_id O
 
 CREATE UNIQUE INDEX unique_idx_namespaces_storage_limit_exclusions_on_namespace_id ON namespaces_storage_limit_exclusions USING btree (namespace_id);
 
+CREATE UNIQUE INDEX unique_import_source_users_source_identifier_and_import_source ON import_source_users USING btree (source_user_identifier, namespace_id, source_hostname, import_type);
+
 CREATE UNIQUE INDEX unique_index_ci_build_pending_states_on_partition_id_build_id ON ci_build_pending_states USING btree (partition_id, build_id);
 
 CREATE UNIQUE INDEX unique_index_for_credit_card_validation_payment_method_xid ON user_credit_card_validations USING btree (zuora_payment_method_xid) WHERE (zuora_payment_method_xid IS NOT NULL);
 
 CREATE UNIQUE INDEX unique_index_for_project_pages_unique_domain ON project_settings USING btree (pages_unique_domain) WHERE (pages_unique_domain IS NOT NULL);
+
+CREATE UNIQUE INDEX unique_index_member_approvals_on_pending_status ON member_approvals USING btree (user_id, member_namespace_id, new_access_level, member_role_id) WHERE (status = 0);
 
 CREATE UNIQUE INDEX unique_index_ml_model_metadata_name ON ml_model_metadata USING btree (model_id, name);
 
@@ -36539,11 +28205,11 @@ CREATE UNIQUE INDEX unique_instance_google_cloud_logging_configurations ON audit
 
 CREATE UNIQUE INDEX unique_instance_google_cloud_logging_configurations_name ON audit_events_instance_google_cloud_logging_configurations USING btree (name);
 
-CREATE UNIQUE INDEX unique_merge_request_diff_llm_summaries_on_mr_diff_id ON merge_request_diff_llm_summaries USING btree (merge_request_diff_id);
-
 CREATE UNIQUE INDEX unique_merge_request_metrics_by_merge_request_id ON merge_request_metrics USING btree (merge_request_id);
 
 CREATE INDEX unique_ml_model_versions_on_model_id_and_id ON ml_model_versions USING btree (model_id, id DESC);
+
+CREATE UNIQUE INDEX unique_namespace_cluster_agent_mappings_for_agent_association ON remote_development_namespace_cluster_agent_mappings USING btree (namespace_id, cluster_agent_id);
 
 CREATE UNIQUE INDEX unique_organizations_on_path_case_insensitive ON organizations USING btree (lower(path));
 
@@ -37993,262 +29659,6 @@ ALTER INDEX index_on_namespace_descendants_outdated ATTACH PARTITION gitlab_part
 
 ALTER INDEX namespace_descendants_pkey ATTACH PARTITION gitlab_partitions_static.namespace_descendants_31_pkey;
 
-ALTER INDEX index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx10;
-
-ALTER INDEX index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx11;
-
-ALTER INDEX index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx12;
-
-ALTER INDEX index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx13;
-
-ALTER INDEX index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx14;
-
-ALTER INDEX index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx15;
-
-ALTER INDEX index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx16;
-
-ALTER INDEX index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx17;
-
-ALTER INDEX index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx18;
-
-ALTER INDEX index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx19;
-
-ALTER INDEX index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx20;
-
-ALTER INDEX index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx21;
-
-ALTER INDEX index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx22;
-
-ALTER INDEX index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx23;
-
-ALTER INDEX index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx24;
-
-ALTER INDEX index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx25;
-
-ALTER INDEX index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx26;
-
-ALTER INDEX index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx27;
-
-ALTER INDEX index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx28;
-
-ALTER INDEX index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx29;
-
-ALTER INDEX index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx30;
-
-ALTER INDEX index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx31;
-
-ALTER INDEX index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx32;
-
-ALTER INDEX index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx33;
-
-ALTER INDEX index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx34;
-
-ALTER INDEX index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx35;
-
-ALTER INDEX index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx36;
-
-ALTER INDEX index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx37;
-
-ALTER INDEX index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx38;
-
-ALTER INDEX index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx39;
-
-ALTER INDEX index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx40;
-
-ALTER INDEX index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx41;
-
-ALTER INDEX index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx42;
-
-ALTER INDEX index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx43;
-
-ALTER INDEX index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx44;
-
-ALTER INDEX index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx45;
-
-ALTER INDEX index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx46;
-
-ALTER INDEX index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx47;
-
-ALTER INDEX index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx48;
-
-ALTER INDEX index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx49;
-
-ALTER INDEX index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx50;
-
-ALTER INDEX index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx51;
-
-ALTER INDEX index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx52;
-
-ALTER INDEX index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx53;
-
-ALTER INDEX index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx54;
-
-ALTER INDEX index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx55;
-
-ALTER INDEX index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx56;
-
-ALTER INDEX index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx57;
-
-ALTER INDEX index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx58;
-
-ALTER INDEX index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx59;
-
-ALTER INDEX index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx60;
-
-ALTER INDEX index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx61;
-
-ALTER INDEX index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx62;
-
-ALTER INDEX index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx63;
-
-ALTER INDEX index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_exper_project_id_collector_tstamp_idx1;
-
-ALTER INDEX index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_exper_project_id_collector_tstamp_idx2;
-
-ALTER INDEX index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_exper_project_id_collector_tstamp_idx3;
-
-ALTER INDEX index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_exper_project_id_collector_tstamp_idx4;
-
-ALTER INDEX index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_exper_project_id_collector_tstamp_idx5;
-
-ALTER INDEX index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_exper_project_id_collector_tstamp_idx6;
-
-ALTER INDEX index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_exper_project_id_collector_tstamp_idx7;
-
-ALTER INDEX index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_exper_project_id_collector_tstamp_idx8;
-
-ALTER INDEX index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_exper_project_id_collector_tstamp_idx9;
-
-ALTER INDEX index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experi_project_id_collector_tstamp_idx;
-
-ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_00_pkey;
-
-ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_01_pkey;
-
-ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_02_pkey;
-
-ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_03_pkey;
-
-ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_04_pkey;
-
-ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_05_pkey;
-
-ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_06_pkey;
-
-ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_07_pkey;
-
-ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_08_pkey;
-
-ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_09_pkey;
-
-ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_10_pkey;
-
-ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_11_pkey;
-
-ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_12_pkey;
-
-ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_13_pkey;
-
-ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_14_pkey;
-
-ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_15_pkey;
-
-ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_16_pkey;
-
-ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_17_pkey;
-
-ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_18_pkey;
-
-ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_19_pkey;
-
-ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_20_pkey;
-
-ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_21_pkey;
-
-ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_22_pkey;
-
-ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_23_pkey;
-
-ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_24_pkey;
-
-ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_25_pkey;
-
-ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_26_pkey;
-
-ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_27_pkey;
-
-ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_28_pkey;
-
-ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_29_pkey;
-
-ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_30_pkey;
-
-ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_31_pkey;
-
-ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_32_pkey;
-
-ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_33_pkey;
-
-ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_34_pkey;
-
-ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_35_pkey;
-
-ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_36_pkey;
-
-ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_37_pkey;
-
-ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_38_pkey;
-
-ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_39_pkey;
-
-ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_40_pkey;
-
-ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_41_pkey;
-
-ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_42_pkey;
-
-ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_43_pkey;
-
-ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_44_pkey;
-
-ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_45_pkey;
-
-ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_46_pkey;
-
-ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_47_pkey;
-
-ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_48_pkey;
-
-ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_49_pkey;
-
-ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_50_pkey;
-
-ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_51_pkey;
-
-ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_52_pkey;
-
-ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_53_pkey;
-
-ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_54_pkey;
-
-ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_55_pkey;
-
-ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_56_pkey;
-
-ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_57_pkey;
-
-ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_58_pkey;
-
-ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_59_pkey;
-
-ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_60_pkey;
-
-ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_61_pkey;
-
-ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_62_pkey;
-
-ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_63_pkey;
-
 ALTER INDEX p_ci_builds_status_created_at_project_id_idx ATTACH PARTITION ci_builds_gitlab_monitor_metrics;
 
 ALTER INDEX p_ci_builds_metadata_pkey ATTACH PARTITION ci_builds_metadata_pkey;
@@ -38259,13 +29669,9 @@ ALTER INDEX p_ci_job_artifacts_pkey ATTACH PARTITION ci_job_artifacts_pkey;
 
 ALTER INDEX p_ci_pipeline_variables_pkey ATTACH PARTITION ci_pipeline_variables_pkey;
 
+ALTER INDEX p_ci_stages_pkey ATTACH PARTITION ci_stages_pkey;
+
 ALTER INDEX p_ci_job_artifacts_job_id_file_type_partition_id_idx ATTACH PARTITION idx_ci_job_artifacts_on_job_id_file_type_and_partition_id_uniq;
-
-ALTER INDEX p_ci_builds_commit_id_bigint_artifacts_expire_at_id_idx ATTACH PARTITION index_357cc39ca4;
-
-ALTER INDEX p_ci_builds_upstream_pipeline_id_bigint_idx ATTACH PARTITION index_89477d6012;
-
-ALTER INDEX p_ci_builds_commit_id_bigint_status_type_idx ATTACH PARTITION index_8c07a79c70;
 
 ALTER INDEX p_ci_builds_metadata_build_id_idx ATTACH PARTITION index_ci_builds_metadata_on_build_id_and_has_exposed_artifacts;
 
@@ -38331,17 +29737,19 @@ ALTER INDEX p_ci_job_artifacts_project_id_file_type_id_idx ATTACH PARTITION inde
 
 ALTER INDEX p_ci_job_artifacts_partition_id_job_id_idx ATTACH PARTITION index_ci_job_artifacts_on_partition_id_job_id;
 
-ALTER INDEX p_ci_job_artifacts_project_id_idx ATTACH PARTITION index_ci_job_artifacts_on_project_id;
-
 ALTER INDEX p_ci_job_artifacts_project_id_id_idx1 ATTACH PARTITION index_ci_job_artifacts_on_project_id_and_id;
 
 ALTER INDEX p_ci_job_artifacts_project_id_idx1 ATTACH PARTITION index_ci_job_artifacts_on_project_id_for_security_reports;
 
-ALTER INDEX p_ci_builds_commit_id_bigint_type_ref_idx ATTACH PARTITION index_fc42f73fa6;
+ALTER INDEX p_ci_stages_pipeline_id_idx ATTACH PARTITION index_ci_stages_on_pipeline_id;
 
-ALTER INDEX p_ci_builds_commit_id_bigint_type_name_ref_idx ATTACH PARTITION index_feafb4d370;
+ALTER INDEX p_ci_stages_pipeline_id_id_idx ATTACH PARTITION index_ci_stages_on_pipeline_id_and_id;
 
-ALTER INDEX p_ci_builds_auto_canceled_by_id_bigint_idx ATTACH PARTITION index_ffe1233676;
+ALTER INDEX p_ci_stages_pipeline_id_position_idx ATTACH PARTITION index_ci_stages_on_pipeline_id_and_position;
+
+ALTER INDEX p_ci_stages_pipeline_id_name_partition_id_idx ATTACH PARTITION index_ci_stages_on_pipeline_id_name_partition_id_unique;
+
+ALTER INDEX p_ci_stages_project_id_idx ATTACH PARTITION index_ci_stages_on_project_id;
 
 ALTER INDEX p_ci_builds_user_id_name_idx ATTACH PARTITION index_partial_ci_builds_on_user_id_name_parser_features;
 
@@ -38359,7 +29767,13 @@ ALTER INDEX p_ci_builds_token_encrypted_partition_id_idx ATTACH PARTITION unique
 
 CREATE TRIGGER assign_p_ci_builds_id_trigger BEFORE INSERT ON p_ci_builds FOR EACH ROW EXECUTE FUNCTION assign_p_ci_builds_id_value();
 
+CREATE TRIGGER assign_p_ci_job_artifacts_id_trigger BEFORE INSERT ON p_ci_job_artifacts FOR EACH ROW EXECUTE FUNCTION assign_p_ci_job_artifacts_id_value();
+
 CREATE TRIGGER assign_p_ci_pipeline_variables_id_trigger BEFORE INSERT ON p_ci_pipeline_variables FOR EACH ROW EXECUTE FUNCTION assign_p_ci_pipeline_variables_id_value();
+
+CREATE TRIGGER assign_p_ci_stages_id_trigger BEFORE INSERT ON p_ci_stages FOR EACH ROW EXECUTE FUNCTION assign_p_ci_stages_id_value();
+
+CREATE TRIGGER assign_zoekt_tasks_id_trigger BEFORE INSERT ON zoekt_tasks FOR EACH ROW EXECUTE FUNCTION assign_zoekt_tasks_id_value();
 
 CREATE TRIGGER chat_names_loose_fk_trigger AFTER DELETE ON chat_names REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
@@ -38389,17 +29803,41 @@ CREATE TRIGGER projects_loose_fk_trigger AFTER DELETE ON projects REFERENCING OL
 
 CREATE TRIGGER push_rules_loose_fk_trigger AFTER DELETE ON push_rules REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
+CREATE TRIGGER table_sync_trigger_57c8465cd7 AFTER INSERT OR DELETE OR UPDATE ON merge_request_diff_commits FOR EACH ROW EXECUTE FUNCTION table_sync_function_0992e728d3();
+
+CREATE TRIGGER table_sync_trigger_cd362c20e2 AFTER INSERT OR DELETE OR UPDATE ON merge_request_diff_files FOR EACH ROW EXECUTE FUNCTION table_sync_function_3f39f64fc3();
+
 CREATE TRIGGER tags_loose_fk_trigger AFTER DELETE ON tags REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
 CREATE TRIGGER trigger_10ee1357e825 BEFORE INSERT OR UPDATE ON p_ci_builds FOR EACH ROW EXECUTE FUNCTION trigger_10ee1357e825();
 
+CREATE TRIGGER trigger_2428b5519042 BEFORE INSERT OR UPDATE ON vulnerability_feedback FOR EACH ROW EXECUTE FUNCTION trigger_2428b5519042();
+
+CREATE TRIGGER trigger_25c44c30884f BEFORE INSERT OR UPDATE ON work_item_parent_links FOR EACH ROW EXECUTE FUNCTION trigger_25c44c30884f();
+
+CREATE TRIGGER trigger_2ac3d66ed1d3 BEFORE INSERT OR UPDATE ON vulnerability_occurrence_pipelines FOR EACH ROW EXECUTE FUNCTION trigger_2ac3d66ed1d3();
+
+CREATE TRIGGER trigger_3857ca5ea4af BEFORE INSERT OR UPDATE ON merge_trains FOR EACH ROW EXECUTE FUNCTION trigger_3857ca5ea4af();
+
+CREATE TRIGGER trigger_388e93f88fdd BEFORE INSERT OR UPDATE ON packages_build_infos FOR EACH ROW EXECUTE FUNCTION trigger_388e93f88fdd();
+
+CREATE TRIGGER trigger_43484cb41aca BEFORE INSERT OR UPDATE ON wiki_repository_states FOR EACH ROW EXECUTE FUNCTION trigger_43484cb41aca();
+
+CREATE TRIGGER trigger_56d49f4ed623 BEFORE INSERT OR UPDATE ON workspace_variables FOR EACH ROW EXECUTE FUNCTION trigger_56d49f4ed623();
+
+CREATE TRIGGER trigger_94514aeadc50 BEFORE INSERT OR UPDATE ON deployment_approvals FOR EACH ROW EXECUTE FUNCTION trigger_94514aeadc50();
+
 CREATE TRIGGER trigger_b2d852e1e2cb BEFORE INSERT OR UPDATE ON ci_pipelines FOR EACH ROW EXECUTE FUNCTION trigger_b2d852e1e2cb();
+
+CREATE TRIGGER trigger_b4520c29ea74 BEFORE INSERT OR UPDATE ON approval_merge_request_rule_sources FOR EACH ROW EXECUTE FUNCTION trigger_b4520c29ea74();
 
 CREATE TRIGGER trigger_catalog_resource_sync_event_on_project_update AFTER UPDATE ON projects FOR EACH ROW WHEN ((((old.name)::text IS DISTINCT FROM (new.name)::text) OR (old.description IS DISTINCT FROM new.description) OR (old.visibility_level IS DISTINCT FROM new.visibility_level))) EXECUTE FUNCTION insert_catalog_resource_sync_event();
 
 CREATE TRIGGER trigger_delete_project_namespace_on_project_delete AFTER DELETE ON projects FOR EACH ROW WHEN ((old.project_namespace_id IS NOT NULL)) EXECUTE FUNCTION delete_associated_project_namespace();
 
-CREATE TRIGGER trigger_eaec934fe6b2 BEFORE INSERT OR UPDATE ON system_note_metadata FOR EACH ROW EXECUTE FUNCTION trigger_eaec934fe6b2();
+CREATE TRIGGER trigger_fb587b1ae7ad BEFORE INSERT OR UPDATE ON merge_requests FOR EACH ROW EXECUTE FUNCTION trigger_fb587b1ae7ad();
+
+CREATE TRIGGER trigger_fd041fe2d1a7 BEFORE INSERT OR UPDATE ON merge_request_metrics FOR EACH ROW EXECUTE FUNCTION trigger_fd041fe2d1a7();
 
 CREATE TRIGGER trigger_ff16c1fd43ea BEFORE INSERT OR UPDATE ON geo_event_log FOR EACH ROW EXECUTE FUNCTION trigger_ff16c1fd43ea();
 
@@ -38482,11 +29920,11 @@ ALTER TABLE ONLY merge_requests
 ALTER TABLE ONLY sbom_occurrences_vulnerabilities
     ADD CONSTRAINT fk_07b81e3a81 FOREIGN KEY (vulnerability_id) REFERENCES vulnerabilities(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY ai_agent_version_attachments
+    ADD CONSTRAINT fk_07db0a0e5b FOREIGN KEY (ai_agent_version_id) REFERENCES ai_agent_versions(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY abuse_report_user_mentions
     ADD CONSTRAINT fk_088018ecd8 FOREIGN KEY (abuse_report_id) REFERENCES abuse_reports(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY user_interacted_projects
-    ADD CONSTRAINT fk_0894651f08 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY merge_request_assignment_events
     ADD CONSTRAINT fk_08f7602bfd FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;
@@ -38502,6 +29940,9 @@ ALTER TABLE ONLY approval_group_rules_protected_branches
 
 ALTER TABLE ONLY issue_customer_relations_contacts
     ADD CONSTRAINT fk_0c0037f723 FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY remote_development_namespace_cluster_agent_mappings
+    ADD CONSTRAINT fk_0c483ecb9d FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY ssh_signatures
     ADD CONSTRAINT fk_0c83baaa5f FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL;
@@ -38523,6 +29964,9 @@ ALTER TABLE ONLY project_pages_metadata
 
 ALTER TABLE ONLY group_deletion_schedules
     ADD CONSTRAINT fk_11e3ebfcdd FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY remote_development_namespace_cluster_agent_mappings
+    ADD CONSTRAINT fk_124d8167c5 FOREIGN KEY (creator_id) REFERENCES users(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY member_approvals
     ADD CONSTRAINT fk_1383c72212 FOREIGN KEY (member_namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
@@ -38569,6 +30013,9 @@ ALTER TABLE ONLY project_statistics
 ALTER TABLE ONLY agent_project_authorizations
     ADD CONSTRAINT fk_1d30bb4987 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY ai_agent_version_attachments
+    ADD CONSTRAINT fk_1d4253673b FOREIGN KEY (ai_vectorizable_file_id) REFERENCES ai_vectorizable_files(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY boards
     ADD CONSTRAINT fk_1e9a074a35 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
@@ -38588,7 +30035,7 @@ ALTER TABLE ONLY namespace_settings
     ADD CONSTRAINT fk_20cf0eb2f9 FOREIGN KEY (default_compliance_framework_id) REFERENCES compliance_management_frameworks(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY ci_build_trace_metadata
-    ADD CONSTRAINT fk_21d25cac1a_p FOREIGN KEY (partition_id, trace_artifact_id) REFERENCES ci_job_artifacts(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
+    ADD CONSTRAINT fk_21d25cac1a_p FOREIGN KEY (partition_id, trace_artifact_id) REFERENCES p_ci_job_artifacts(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY users_star_projects
     ADD CONSTRAINT fk_22cd27ddfc FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
@@ -38611,14 +30058,8 @@ ALTER TABLE ONLY agent_activity_events
 ALTER TABLE ONLY zoekt_repositories
     ADD CONSTRAINT fk_25a92aeccd FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE SET NULL;
 
-ALTER TABLE ONLY epics
-    ADD CONSTRAINT fk_25b99c1be3 FOREIGN KEY (parent_id) REFERENCES epics(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY ci_pipelines
     ADD CONSTRAINT fk_262d4c2d19 FOREIGN KEY (auto_canceled_by_id) REFERENCES ci_pipelines(id) ON DELETE SET NULL;
-
-ALTER TABLE ONLY geo_event_log
-    ADD CONSTRAINT fk_27548c6db3 FOREIGN KEY (hashed_storage_migrated_event_id) REFERENCES geo_hashed_storage_migrated_events(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY user_namespace_callouts
     ADD CONSTRAINT fk_27a69fd1bd FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
@@ -38708,7 +30149,7 @@ ALTER TABLE ONLY ml_model_versions
     ADD CONSTRAINT fk_39f8aa0b8a FOREIGN KEY (package_id) REFERENCES packages_packages(id) ON DELETE SET NULL;
 
 ALTER TABLE p_ci_builds
-    ADD CONSTRAINT fk_3a9eaa254d_p FOREIGN KEY (partition_id, stage_id) REFERENCES ci_stages(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
+    ADD CONSTRAINT fk_3a9eaa254d_p FOREIGN KEY (partition_id, stage_id) REFERENCES p_ci_stages(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY agent_activity_events
     ADD CONSTRAINT fk_3af186389b FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE SET NULL;
@@ -38737,9 +30178,6 @@ ALTER TABLE ONLY subscription_add_on_purchases
 ALTER TABLE ONLY ci_pipeline_schedule_variables
     ADD CONSTRAINT fk_41c35fda51 FOREIGN KEY (pipeline_schedule_id) REFERENCES ci_pipeline_schedules(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY merge_request_diff_llm_summaries
-    ADD CONSTRAINT fk_42551b9fea FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY namespace_bans
     ADD CONSTRAINT fk_4275fbb1d7 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
@@ -38757,6 +30195,9 @@ ALTER TABLE ONLY todos
 
 ALTER TABLE ONLY releases
     ADD CONSTRAINT fk_47fe2a0596 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY workspace_variables
+    ADD CONSTRAINT fk_494e093520 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY geo_event_log
     ADD CONSTRAINT fk_4a99ebfd60 FOREIGN KEY (repositories_changed_event_id) REFERENCES geo_repositories_changed_events(id) ON DELETE CASCADE;
@@ -38854,6 +30295,9 @@ ALTER TABLE ONLY merge_requests
 ALTER TABLE ONLY merge_request_review_llm_summaries
     ADD CONSTRAINT fk_6154a9cb89 FOREIGN KEY (review_id) REFERENCES reviews(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY member_approvals
+    ADD CONSTRAINT fk_619f381144 FOREIGN KEY (member_role_id) REFERENCES member_roles(id) ON DELETE SET NULL;
+
 ALTER TABLE ONLY work_item_widget_definitions
     ADD CONSTRAINT fk_61bfa96db5 FOREIGN KEY (work_item_type_id) REFERENCES work_item_types(id) ON DELETE CASCADE;
 
@@ -38872,6 +30316,9 @@ ALTER TABLE ONLY vulnerability_reads
 ALTER TABLE ONLY saml_group_links
     ADD CONSTRAINT fk_6336b1d1d0 FOREIGN KEY (member_role_id) REFERENCES member_roles(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY deployment_approvals
+    ADD CONSTRAINT fk_63920ba071 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY merge_requests
     ADD CONSTRAINT fk_641731faff FOREIGN KEY (updated_by_id) REFERENCES users(id) ON DELETE SET NULL;
 
@@ -38881,14 +30328,14 @@ ALTER TABLE ONLY approval_group_rules
 ALTER TABLE ONLY ci_pipeline_chat_data
     ADD CONSTRAINT fk_64ebfab6b3 FOREIGN KEY (pipeline_id) REFERENCES ci_pipelines(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY cluster_agent_tokens
+    ADD CONSTRAINT fk_64f741f626 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
 ALTER TABLE p_ci_builds
     ADD CONSTRAINT fk_6661f4f0e8 FOREIGN KEY (resource_group_id) REFERENCES ci_resource_groups(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY merge_requests
     ADD CONSTRAINT fk_6a5165a692 FOREIGN KEY (milestone_id) REFERENCES milestones(id) ON DELETE SET NULL;
-
-ALTER TABLE ONLY ci_builds
-    ADD CONSTRAINT fk_6b6c3f3e70 FOREIGN KEY (upstream_pipeline_id_convert_to_bigint) REFERENCES ci_pipelines(id) ON DELETE CASCADE NOT VALID;
 
 ALTER TABLE ONLY ai_agent_versions
     ADD CONSTRAINT fk_6c2f682587 FOREIGN KEY (agent_id) REFERENCES ai_agents(id) ON DELETE CASCADE;
@@ -38905,6 +30352,9 @@ ALTER TABLE ONLY dast_profile_schedules
 ALTER TABLE ONLY vulnerability_merge_request_links
     ADD CONSTRAINT fk_6d7aa8796e FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY audit_events_streaming_instance_namespace_filters
+    ADD CONSTRAINT fk_6e0be28087 FOREIGN KEY (external_streaming_destination_id) REFERENCES audit_events_instance_external_streaming_destinations(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY projects
     ADD CONSTRAINT fk_6e5c14658a FOREIGN KEY (pool_repository_id) REFERENCES pool_repositories(id) ON DELETE SET NULL;
 
@@ -38920,11 +30370,11 @@ ALTER TABLE ONLY deploy_tokens
 ALTER TABLE ONLY protected_branch_push_access_levels
     ADD CONSTRAINT fk_7111b68cdb FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY import_source_users
+    ADD CONSTRAINT fk_719b74231d FOREIGN KEY (reassigned_by_user_id) REFERENCES users(id) ON DELETE SET NULL;
+
 ALTER TABLE ONLY integrations
     ADD CONSTRAINT fk_71cce407f9 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY user_interacted_projects
-    ADD CONSTRAINT fk_722ceba4f7 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY subscription_user_add_on_assignments
     ADD CONSTRAINT fk_724c2df9a8 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
@@ -38958,9 +30408,6 @@ ALTER TABLE ONLY agent_user_access_project_authorizations
 
 ALTER TABLE ONLY users
     ADD CONSTRAINT fk_789cd90b35 FOREIGN KEY (accepted_term_id) REFERENCES application_setting_terms(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY geo_event_log
-    ADD CONSTRAINT fk_78a6492f68 FOREIGN KEY (repository_updated_event_id) REFERENCES geo_repository_updated_events(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY analytics_devops_adoption_snapshots
     ADD CONSTRAINT fk_78c9eac821 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
@@ -39019,9 +30466,6 @@ ALTER TABLE ONLY catalog_resource_components
 ALTER TABLE ONLY ci_build_pending_states
     ADD CONSTRAINT fk_861cd17da3_p FOREIGN KEY (partition_id, build_id) REFERENCES p_ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
 
-ALTER TABLE ONLY geo_event_log
-    ADD CONSTRAINT fk_86c84214ec FOREIGN KEY (repository_renamed_event_id) REFERENCES geo_repository_renamed_events(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY packages_package_files
     ADD CONSTRAINT fk_86f0f182f8 FOREIGN KEY (package_id) REFERENCES packages_packages(id) ON DELETE CASCADE;
 
@@ -39055,6 +30499,9 @@ ALTER TABLE ONLY work_item_dates_sources
 ALTER TABLE ONLY bulk_import_exports
     ADD CONSTRAINT fk_8c6f33cebe FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY raw_usage_data
+    ADD CONSTRAINT fk_8e21125854 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY releases
     ADD CONSTRAINT fk_8e4456f90f FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE SET NULL;
 
@@ -39063,6 +30510,9 @@ ALTER TABLE ONLY protected_tags
 
 ALTER TABLE ONLY merge_request_review_llm_summaries
     ADD CONSTRAINT fk_8ec009c6ab FOREIGN KEY (merge_request_diff_id) REFERENCES merge_request_diffs(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY audit_events_streaming_group_namespace_filters
+    ADD CONSTRAINT fk_8ed182d7da FOREIGN KEY (external_streaming_destination_id) REFERENCES audit_events_group_external_streaming_destinations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY todos
     ADD CONSTRAINT fk_91d1f47b13 FOREIGN KEY (note_id) REFERENCES notes(id) ON DELETE CASCADE;
@@ -39106,11 +30556,11 @@ ALTER TABLE ONLY approval_group_rules_users
 ALTER TABLE ONLY import_failures
     ADD CONSTRAINT fk_9a9b9ba21c FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY geo_event_log
-    ADD CONSTRAINT fk_9b9afb1916 FOREIGN KEY (repository_created_event_id) REFERENCES geo_repository_created_events(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY milestones
     ADD CONSTRAINT fk_9bd0a0c791 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY work_item_parent_links
+    ADD CONSTRAINT fk_9be5ef5f80 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY issues
     ADD CONSTRAINT fk_9c4516d665 FOREIGN KEY (duplicated_to_id) REFERENCES issues(id) ON DELETE SET NULL;
@@ -39138,6 +30588,9 @@ ALTER TABLE ONLY deployment_merge_requests
 
 ALTER TABLE ONLY issues
     ADD CONSTRAINT fk_a194299be1 FOREIGN KEY (moved_to_id) REFERENCES issues(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY audit_events_streaming_group_namespace_filters
+    ADD CONSTRAINT fk_a1a4486a96 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY ml_candidates
     ADD CONSTRAINT fk_a1d5f1bc45 FOREIGN KEY (package_id) REFERENCES packages_packages(id) ON DELETE SET NULL;
@@ -39184,6 +30637,9 @@ ALTER TABLE ONLY boards
 ALTER TABLE ONLY audit_events_streaming_http_instance_namespace_filters
     ADD CONSTRAINT fk_abe44125bc FOREIGN KEY (audit_events_instance_external_audit_event_destination_id) REFERENCES audit_events_instance_external_audit_event_destinations(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY audit_events_streaming_instance_namespace_filters
+    ADD CONSTRAINT fk_ac20a85a68 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY merge_requests
     ADD CONSTRAINT fk_ad525e1f87 FOREIGN KEY (merge_user_id) REFERENCES users(id) ON DELETE SET NULL;
 
@@ -39210,9 +30666,6 @@ ALTER TABLE ONLY approval_merge_request_rules
 
 ALTER TABLE ONLY fork_network_members
     ADD CONSTRAINT fk_b01280dae4 FOREIGN KEY (forked_from_project_id) REFERENCES projects(id) ON DELETE SET NULL;
-
-ALTER TABLE ONLY work_item_colors
-    ADD CONSTRAINT fk_b15b0912d0 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY sbom_occurrences
     ADD CONSTRAINT fk_b1b65d8d17 FOREIGN KEY (source_package_id) REFERENCES sbom_source_packages(id) ON DELETE CASCADE;
@@ -39301,6 +30754,9 @@ ALTER TABLE ONLY ci_sources_pipelines
 ALTER TABLE ONLY packages_maven_metadata
     ADD CONSTRAINT fk_be88aed360 FOREIGN KEY (package_id) REFERENCES packages_packages(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY remote_development_namespace_cluster_agent_mappings
+    ADD CONSTRAINT fk_be8e9c740f FOREIGN KEY (cluster_agent_id) REFERENCES cluster_agents(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY zoekt_indices
     ADD CONSTRAINT fk_bf205d4773 FOREIGN KEY (zoekt_enabled_namespace_id) REFERENCES zoekt_enabled_namespaces(id) ON DELETE SET NULL;
 
@@ -39313,6 +30769,12 @@ ALTER TABLE ONLY packages_packages
 ALTER TABLE ONLY sbom_occurrences
     ADD CONSTRAINT fk_c2a5562923 FOREIGN KEY (source_id) REFERENCES sbom_sources(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY dependency_list_exports
+    ADD CONSTRAINT fk_c348f16f10 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY issues
+    ADD CONSTRAINT fk_c34dd2b036 FOREIGN KEY (tmp_epic_id) REFERENCES epics(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY user_group_callouts
     ADD CONSTRAINT fk_c366e12ec3 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
@@ -39322,8 +30784,8 @@ ALTER TABLE ONLY vulnerability_exports
 ALTER TABLE ONLY timelogs
     ADD CONSTRAINT fk_c49c83dd77 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY geo_event_log
-    ADD CONSTRAINT fk_c4b1c1f66e FOREIGN KEY (repository_deleted_event_id) REFERENCES geo_repository_deleted_events(id) ON DELETE CASCADE;
+ALTER TABLE ONLY wiki_repository_states
+    ADD CONSTRAINT fk_c558ca51b8 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY issues
     ADD CONSTRAINT fk_c63cbf6c25 FOREIGN KEY (closed_by_id) REFERENCES users(id) ON DELETE SET NULL;
@@ -39349,12 +30811,6 @@ ALTER TABLE ONLY personal_access_tokens
 ALTER TABLE ONLY jira_tracker_data
     ADD CONSTRAINT fk_c98abcd54c FOREIGN KEY (integration_id) REFERENCES integrations(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY external_approval_rules_protected_branches
-    ADD CONSTRAINT fk_c9a037a926 FOREIGN KEY (external_approval_rule_id) REFERENCES external_approval_rules(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY external_approval_rules_protected_branches
-    ADD CONSTRAINT fk_ca2ffb55e6 FOREIGN KEY (protected_branch_id) REFERENCES protected_branches(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY slack_integrations
     ADD CONSTRAINT fk_cbe270434e FOREIGN KEY (integration_id) REFERENCES integrations(id) ON DELETE CASCADE;
 
@@ -39376,9 +30832,6 @@ ALTER TABLE ONLY compliance_framework_security_policies
 ALTER TABLE ONLY issue_assignment_events
     ADD CONSTRAINT fk_cfd2073177 FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY geo_event_log
-    ADD CONSTRAINT fk_cff7185ad2 FOREIGN KEY (reset_checksum_event_id) REFERENCES geo_reset_checksum_events(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY custom_emoji
     ADD CONSTRAINT fk_custom_emoji_creator_id FOREIGN KEY (creator_id) REFERENCES users(id) ON DELETE CASCADE;
 
@@ -39399,9 +30852,6 @@ ALTER TABLE p_ci_builds
 
 ALTER TABLE ONLY ci_sources_pipelines
     ADD CONSTRAINT fk_d4e29af7d7 FOREIGN KEY (source_pipeline_id) REFERENCES ci_pipelines(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY work_item_dates_sources
-    ADD CONSTRAINT fk_d602f0955d FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY incident_management_timeline_events
     ADD CONSTRAINT fk_d606a2a890 FOREIGN KEY (promoted_from_note_id) REFERENCES notes(id) ON DELETE SET NULL;
@@ -39457,9 +30907,6 @@ ALTER TABLE ONLY workspaces
 ALTER TABLE ONLY epics
     ADD CONSTRAINT fk_dccd3f98fc FOREIGN KEY (assignee_id) REFERENCES users(id) ON DELETE SET NULL;
 
-ALTER TABLE p_ci_builds
-    ADD CONSTRAINT fk_dd3c83bdee FOREIGN KEY (auto_canceled_by_id_convert_to_bigint) REFERENCES ci_pipelines(id) ON DELETE SET NULL;
-
 ALTER TABLE ONLY protected_branches
     ADD CONSTRAINT fk_de9216e774 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
@@ -39514,9 +30961,6 @@ ALTER TABLE ONLY ml_candidates
 ALTER TABLE ONLY integrations
     ADD CONSTRAINT fk_e8fe908a34 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY merge_request_diff_llm_summaries
-    ADD CONSTRAINT fk_e98931c3cb FOREIGN KEY (merge_request_diff_id) REFERENCES merge_request_diffs(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY pages_domains
     ADD CONSTRAINT fk_ea2f6dfc6f FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -39548,7 +30992,10 @@ ALTER TABLE ONLY emails
     ADD CONSTRAINT fk_emails_user_id FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY epics
-    ADD CONSTRAINT fk_epics_issue_id_with_on_delete_nullify FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE SET NULL;
+    ADD CONSTRAINT fk_epics_issue_id_with_on_delete_cascade FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY epics
+    ADD CONSTRAINT fk_epics_on_parent_id_with_on_delete_nullify FOREIGN KEY (parent_id) REFERENCES epics(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY clusters
     ADD CONSTRAINT fk_f05c5e5a42 FOREIGN KEY (management_project_id) REFERENCES projects(id) ON DELETE SET NULL;
@@ -39604,7 +31051,7 @@ ALTER TABLE ONLY protected_tag_create_access_levels
 ALTER TABLE ONLY application_settings
     ADD CONSTRAINT fk_f9867b3540 FOREIGN KEY (web_ide_oauth_application_id) REFERENCES oauth_applications(id) ON DELETE SET NULL;
 
-ALTER TABLE ONLY ci_stages
+ALTER TABLE p_ci_stages
     ADD CONSTRAINT fk_fb57e6cc56 FOREIGN KEY (pipeline_id) REFERENCES ci_pipelines(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY agent_group_authorizations
@@ -39621,6 +31068,9 @@ ALTER TABLE ONLY work_item_dates_sources
 
 ALTER TABLE ONLY abuse_report_events
     ADD CONSTRAINT fk_fdd4d610e0 FOREIGN KEY (abuse_report_id) REFERENCES abuse_reports(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY approval_merge_request_rule_sources
+    ADD CONSTRAINT fk_fea41830d0 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY project_import_data
     ADD CONSTRAINT fk_ffb9ee3a10 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
@@ -39697,6 +31147,9 @@ ALTER TABLE ONLY search_namespace_index_assignments
 ALTER TABLE ONLY issue_assignment_events
     ADD CONSTRAINT fk_rails_07683f8e80 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY security_policies
+    ADD CONSTRAINT fk_rails_08722e8ac7 FOREIGN KEY (security_policy_management_project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY work_item_hierarchy_restrictions
     ADD CONSTRAINT fk_rails_08cd7fef58 FOREIGN KEY (child_type_id) REFERENCES work_item_types(id) ON DELETE CASCADE;
 
@@ -39708,6 +31161,9 @@ ALTER TABLE ONLY security_orchestration_policy_configurations
 
 ALTER TABLE ONLY project_deploy_tokens
     ADD CONSTRAINT fk_rails_0aca134388 FOREIGN KEY (deploy_token_id) REFERENCES deploy_tokens(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY project_saved_replies
+    ADD CONSTRAINT fk_rails_0ace76afbb FOREIGN KEY (project_id) REFERENCES projects(id);
 
 ALTER TABLE ONLY packages_debian_group_distributions
     ADD CONSTRAINT fk_rails_0adf75c347 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE RESTRICT;
@@ -39727,14 +31183,14 @@ ALTER TABLE ONLY operations_user_lists
 ALTER TABLE ONLY resource_link_events
     ADD CONSTRAINT fk_rails_0cea73eba5 FOREIGN KEY (child_work_item_id) REFERENCES issues(id) ON DELETE CASCADE;
 
+ALTER TABLE p_catalog_resource_component_usages
+    ADD CONSTRAINT fk_rails_0e15a4677f FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY audit_events_google_cloud_logging_configurations
     ADD CONSTRAINT fk_rails_0eb52fc617 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY geo_node_statuses
     ADD CONSTRAINT fk_rails_0ecc699c2a FOREIGN KEY (geo_node_id) REFERENCES geo_nodes(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY project_repository_states
-    ADD CONSTRAINT fk_rails_0f2298ca8a FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY user_synced_attributes_metadata
     ADD CONSTRAINT fk_rails_0f4aa0981f FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
@@ -39799,6 +31255,9 @@ ALTER TABLE ONLY namespaces_storage_limit_exclusions
 ALTER TABLE ONLY users_security_dashboard_projects
     ADD CONSTRAINT fk_rails_150cd5682c FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY import_source_users
+    ADD CONSTRAINT fk_rails_167f82fd95 FOREIGN KEY (reassign_to_user_id) REFERENCES users(id) ON DELETE SET NULL;
+
 ALTER TABLE ONLY ci_build_report_results
     ADD CONSTRAINT fk_rails_16cb1ff064_p FOREIGN KEY (partition_id, build_id) REFERENCES p_ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
 
@@ -39810,6 +31269,9 @@ ALTER TABLE ONLY project_deploy_tokens
 
 ALTER TABLE ONLY security_orchestration_policy_rule_schedules
     ADD CONSTRAINT fk_rails_17ade83f17 FOREIGN KEY (security_orchestration_policy_configuration_id) REFERENCES security_orchestration_policy_configurations(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY approval_policy_rules
+    ADD CONSTRAINT fk_rails_17c6dfe138 FOREIGN KEY (security_policy_id) REFERENCES security_policies(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY incident_management_escalation_rules
     ADD CONSTRAINT fk_rails_17dbea07a6 FOREIGN KEY (policy_id) REFERENCES incident_management_escalation_policies(id) ON DELETE CASCADE;
@@ -39864,9 +31326,6 @@ ALTER TABLE ONLY packages_tags
 
 ALTER TABLE ONLY boards_epic_board_positions
     ADD CONSTRAINT fk_rails_1ecfd9f2de FOREIGN KEY (epic_id) REFERENCES epics(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY geo_repository_created_events
-    ADD CONSTRAINT fk_rails_1f49e46a61 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY external_status_checks
     ADD CONSTRAINT fk_rails_1f5a8aa809 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
@@ -39963,9 +31422,6 @@ ALTER TABLE ONLY dependency_proxy_image_ttl_group_policies
 
 ALTER TABLE ONLY group_group_links
     ADD CONSTRAINT fk_rails_2b2353ca49 FOREIGN KEY (shared_with_group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY geo_repository_updated_events
-    ADD CONSTRAINT fk_rails_2b70854c08 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY packages_debian_group_component_files
     ADD CONSTRAINT fk_rails_2b8992dd83 FOREIGN KEY (architecture_id) REFERENCES packages_debian_group_architectures(id) ON DELETE RESTRICT;
@@ -40081,6 +31537,9 @@ ALTER TABLE ONLY note_diff_files
 ALTER TABLE ONLY snippet_user_mentions
     ADD CONSTRAINT fk_rails_3e00189191 FOREIGN KEY (snippet_id) REFERENCES snippets(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY early_access_program_tracking_events
+    ADD CONSTRAINT fk_rails_3e8c32b3dd FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY epic_user_mentions
     ADD CONSTRAINT fk_rails_3eaf4d88cc FOREIGN KEY (epic_id) REFERENCES epics(id) ON DELETE CASCADE;
 
@@ -40195,9 +31654,6 @@ ALTER TABLE ONLY snippet_user_mentions
 ALTER TABLE ONLY protected_environment_approval_rules
     ADD CONSTRAINT fk_rails_4e554f96f5 FOREIGN KEY (protected_environment_id) REFERENCES protected_environments(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY geo_repository_renamed_events
-    ADD CONSTRAINT fk_rails_4e6524febb FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY aws_roles
     ADD CONSTRAINT fk_rails_4ed56f4720 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
@@ -40221,6 +31677,9 @@ ALTER TABLE ONLY project_repository_storage_moves
 
 ALTER TABLE ONLY ml_candidate_metadata
     ADD CONSTRAINT fk_rails_5117dddf22 FOREIGN KEY (candidate_id) REFERENCES ml_candidates(id) ON DELETE CASCADE;
+
+ALTER TABLE zoekt_tasks
+    ADD CONSTRAINT fk_rails_51af186590 FOREIGN KEY (zoekt_node_id) REFERENCES zoekt_nodes(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY ml_models
     ADD CONSTRAINT fk_rails_51e87f7c50 FOREIGN KEY (project_id) REFERENCES projects(id);
@@ -40411,9 +31870,6 @@ ALTER TABLE ONLY vulnerability_findings_remediations
 ALTER TABLE ONLY resource_iteration_events
     ADD CONSTRAINT fk_rails_6830c13ac1 FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY geo_hashed_storage_migrated_events
-    ADD CONSTRAINT fk_rails_687ed7d7c5 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY plan_limits
     ADD CONSTRAINT fk_rails_69f8b6184f FOREIGN KEY (plan_id) REFERENCES plans(id) ON DELETE CASCADE;
 
@@ -40422,6 +31878,9 @@ ALTER TABLE ONLY ci_cost_settings
 
 ALTER TABLE ONLY operations_feature_flags_issues
     ADD CONSTRAINT fk_rails_6a8856ca4f FOREIGN KEY (feature_flag_id) REFERENCES operations_feature_flags(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY import_source_users
+    ADD CONSTRAINT fk_rails_6aee6cd676 FOREIGN KEY (placeholder_user_id) REFERENCES users(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY ml_experiment_metadata
     ADD CONSTRAINT fk_rails_6b39844d44 FOREIGN KEY (experiment_id) REFERENCES ml_experiments(id) ON DELETE CASCADE;
@@ -40549,14 +32008,20 @@ ALTER TABLE ONLY audit_events_group_external_streaming_destinations
 ALTER TABLE ONLY clusters_kubernetes_namespaces
     ADD CONSTRAINT fk_rails_7e7688ecaf FOREIGN KEY (cluster_id) REFERENCES clusters(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY security_policies
+    ADD CONSTRAINT fk_rails_802ceea0c8 FOREIGN KEY (security_orchestration_policy_configuration_id) REFERENCES security_orchestration_policy_configurations(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY dependency_proxy_manifest_states
     ADD CONSTRAINT fk_rails_806cf07a3c FOREIGN KEY (dependency_proxy_manifest_id) REFERENCES dependency_proxy_manifests(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY ci_job_artifact_states
-    ADD CONSTRAINT fk_rails_80a9cba3b2_p FOREIGN KEY (partition_id, job_artifact_id) REFERENCES ci_job_artifacts(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
+    ADD CONSTRAINT fk_rails_80a9cba3b2_p FOREIGN KEY (partition_id, job_artifact_id) REFERENCES p_ci_job_artifacts(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY approval_merge_request_rules_users
     ADD CONSTRAINT fk_rails_80e6801803 FOREIGN KEY (approval_merge_request_rule_id) REFERENCES approval_merge_request_rules(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY audit_events_instance_streaming_event_type_filters
+    ADD CONSTRAINT fk_rails_80e948655b FOREIGN KEY (external_streaming_destination_id) REFERENCES audit_events_instance_external_streaming_destinations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY required_code_owners_sections
     ADD CONSTRAINT fk_rails_817708cf2d FOREIGN KEY (protected_branch_id) REFERENCES protected_branches(id) ON DELETE CASCADE;
@@ -40684,9 +32149,6 @@ ALTER TABLE ONLY approval_project_rules_groups
 ALTER TABLE ONLY vulnerability_occurrences
     ADD CONSTRAINT fk_rails_90fed4faba FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY geo_reset_checksum_events
-    ADD CONSTRAINT fk_rails_910a06f12b FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY project_error_tracking_settings
     ADD CONSTRAINT fk_rails_910a2b8bd9 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -40707,6 +32169,9 @@ ALTER TABLE ONLY alert_management_alert_assignees
 
 ALTER TABLE ONLY scim_identities
     ADD CONSTRAINT fk_rails_9421a0bffb FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
+ALTER TABLE p_catalog_resource_component_usages
+    ADD CONSTRAINT fk_rails_9430673479 FOREIGN KEY (catalog_resource_id) REFERENCES catalog_resources(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY packages_debian_project_distributions
     ADD CONSTRAINT fk_rails_94b95e1f84 FOREIGN KEY (creator_id) REFERENCES users(id) ON DELETE SET NULL;
@@ -40815,6 +32280,9 @@ ALTER TABLE ONLY fork_network_members
 
 ALTER TABLE ONLY customer_relations_organizations
     ADD CONSTRAINT fk_rails_a48597902f FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY ai_agent_version_attachments
+    ADD CONSTRAINT fk_rails_a4ed49efb5 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY operations_feature_flag_scopes
     ADD CONSTRAINT fk_rails_a50a04d0a4 FOREIGN KEY (feature_flag_id) REFERENCES operations_feature_flags(id) ON DELETE CASCADE;
@@ -40984,6 +32452,9 @@ ALTER TABLE ONLY packages_debian_project_component_files
 ALTER TABLE ONLY projects_sync_events
     ADD CONSTRAINT fk_rails_bbf0eef59f FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE p_ci_build_names
+    ADD CONSTRAINT fk_rails_bc221a297a FOREIGN KEY (partition_id, build_id) REFERENCES p_ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
+
 ALTER TABLE ONLY approval_merge_request_rules_users
     ADD CONSTRAINT fk_rails_bc8972fa55 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
@@ -41028,6 +32499,9 @@ ALTER TABLE ONLY labels
 
 ALTER TABLE ONLY project_feature_usages
     ADD CONSTRAINT fk_rails_c22a50024b FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE p_ci_builds_execution_configs
+    ADD CONSTRAINT fk_rails_c26408d02c FOREIGN KEY (pipeline_id) REFERENCES ci_pipelines(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY user_canonical_emails
     ADD CONSTRAINT fk_rails_c2bd828b51 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
@@ -41095,6 +32569,9 @@ ALTER TABLE ONLY gpg_signatures
 ALTER TABLE ONLY board_group_recent_visits
     ADD CONSTRAINT fk_rails_ca04c38720 FOREIGN KEY (board_id) REFERENCES boards(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY relation_import_trackers
+    ADD CONSTRAINT fk_rails_ca9bd1ef8a FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY boards_epic_board_positions
     ADD CONSTRAINT fk_rails_cb4563dd6e FOREIGN KEY (epic_board_id) REFERENCES boards_epic_boards(id) ON DELETE CASCADE;
 
@@ -41160,9 +32637,6 @@ ALTER TABLE ONLY alert_management_alert_assignees
 
 ALTER TABLE ONLY packages_terraform_module_metadata
     ADD CONSTRAINT fk_rails_d48f21a84b FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE SET NULL;
-
-ALTER TABLE ONLY geo_hashed_storage_attachments_events
-    ADD CONSTRAINT fk_rails_d496b088e9 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE p_ci_job_annotations
     ADD CONSTRAINT fk_rails_d4d0c0fa0f FOREIGN KEY (partition_id, job_id) REFERENCES p_ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
@@ -41248,11 +32722,17 @@ ALTER TABLE ONLY bulk_import_export_uploads
 ALTER TABLE ONLY vs_code_settings
     ADD CONSTRAINT fk_rails_e02b1ed535 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY audit_events_group_streaming_event_type_filters
+    ADD CONSTRAINT fk_rails_e07e457a27 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY label_priorities
     ADD CONSTRAINT fk_rails_e161058b0f FOREIGN KEY (label_id) REFERENCES labels(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY packages_packages
     ADD CONSTRAINT fk_rails_e1ac527425 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE p_catalog_resource_component_usages
+    ADD CONSTRAINT fk_rails_e1ba64b7ee FOREIGN KEY (component_id) REFERENCES catalog_resource_components(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY cluster_platforms_kubernetes
     ADD CONSTRAINT fk_rails_e1e2cf841a FOREIGN KEY (cluster_id) REFERENCES clusters(id) ON DELETE CASCADE;
@@ -41262,6 +32742,9 @@ ALTER TABLE ONLY issue_emails
 
 ALTER TABLE ONLY vulnerability_finding_evidences
     ADD CONSTRAINT fk_rails_e3205a0c65 FOREIGN KEY (vulnerability_occurrence_id) REFERENCES vulnerability_occurrences(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY approval_policy_rules
+    ADD CONSTRAINT fk_rails_e344cb2d35 FOREIGN KEY (security_policy_management_project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY clusters_integration_prometheus
     ADD CONSTRAINT fk_rails_e44472034c FOREIGN KEY (cluster_id) REFERENCES clusters(id) ON DELETE CASCADE;
@@ -41326,6 +32809,9 @@ ALTER TABLE ONLY merge_request_blocks
 ALTER TABLE ONLY protected_branch_unprotect_access_levels
     ADD CONSTRAINT fk_rails_e9eb8dc025 FOREIGN KEY (protected_branch_id) REFERENCES protected_branches(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY ai_vectorizable_files
+    ADD CONSTRAINT fk_rails_ea2e440084 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY alert_management_alert_user_mentions
     ADD CONSTRAINT fk_rails_eb2de0cdef FOREIGN KEY (note_id) REFERENCES notes(id) ON DELETE CASCADE;
 
@@ -41349,6 +32835,12 @@ ALTER TABLE ONLY packages_debian_group_distributions
 
 ALTER TABLE ONLY ci_daily_build_group_report_results
     ADD CONSTRAINT fk_rails_ee072d13b3 FOREIGN KEY (last_pipeline_id) REFERENCES ci_pipelines(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY import_source_users
+    ADD CONSTRAINT fk_rails_ee30e569be FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY audit_events_group_streaming_event_type_filters
+    ADD CONSTRAINT fk_rails_ee6950967f FOREIGN KEY (external_streaming_destination_id) REFERENCES audit_events_group_external_streaming_destinations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY packages_debian_group_architectures
     ADD CONSTRAINT fk_rails_ef667d1b03 FOREIGN KEY (distribution_id) REFERENCES packages_debian_group_distributions(id) ON DELETE CASCADE;
@@ -41482,14 +32974,17 @@ ALTER TABLE ONLY timelogs
 ALTER TABLE ONLY timelogs
     ADD CONSTRAINT fk_timelogs_note_id FOREIGN KEY (note_id) REFERENCES notes(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY work_item_colors
+    ADD CONSTRAINT fk_work_item_colors_on_namespace_id FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY work_item_dates_sources
+    ADD CONSTRAINT fk_work_item_dates_sources_on_namespace_id FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE issue_search_data
     ADD CONSTRAINT issue_search_data_issue_id_fkey FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
 
 ALTER TABLE issue_search_data
     ADD CONSTRAINT issue_search_data_project_id_fkey FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
-ALTER TABLE product_analytics_events_experimental
-    ADD CONSTRAINT product_analytics_events_experimental_project_id_fkey FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY user_follow_users
     ADD CONSTRAINT user_follow_users_followee_id_fkey FOREIGN KEY (followee_id) REFERENCES users(id) ON DELETE CASCADE;

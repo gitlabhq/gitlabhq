@@ -10,12 +10,12 @@ participating-stages: [Environments]
 
 <!-- vale gitlab.FutureTense = NO -->
 
-# View and manage resources deployed by GitLab Agent For Kuberenetes
+# View and manage resources deployed by GitLab agent For Kubernetes
 
 ## Summary
 
 As part of the [GitLab Kubernetes Dashboard](https://gitlab.com/groups/gitlab-org/-/epics/2493) epic,
-users want to view and manage their resources deployed by GitLab Agent For Kuberenetes.
+users want to view and manage their resources deployed by GitLab agent For Kubernetes.
 Users should be able to interact with the resources through GitLab UI, such as Environment Index/Details page.
 
 This blueprint describes how the association is established and how these domain models interact with each other.
@@ -28,7 +28,7 @@ This blueprint describes how the association is established and how these domain
 - The proposed architecture can be used in [Organization-level Environment dashboard](https://gitlab.com/gitlab-org/gitlab/-/issues/241506).
 - The cluster resources and events can be visualized per [GitLab Environment](../../../ci/environments/index.md).
   An environment-specific view scoped to the resources managed either directly or indirectly by a deployment commit.
-- Support both [GitOps mode](../../../user/clusters/agent/gitops/agent.md#gitops-configuration-reference) and [CI Access mode](../../../user/clusters/agent/ci_cd_workflow.md#authorize-the-agent).
+- Support both GitOps mode and [CI Access mode](../../../user/clusters/agent/ci_cd_workflow.md#authorize-the-agent).
 
 ### Non-Goals
 
@@ -39,7 +39,7 @@ This blueprint describes how the association is established and how these domain
 
 ### Overview
 
-- GitLab Environment and GitLab Agent For Kubernetes have 1-to-1 relationship.
+- GitLab Environment and GitLab agent For Kubernetes have 1-to-1 relationship.
 - GitLab Environment tracks all resources produced by the connected [agent](../../../user/clusters/agent/index.md). This includes not only resources written in manifest files but also subsequently generated resources (for example, `Pod`s created by `Deployment` manifest file).
 - GitLab Environment renders dependency graph, such as `Deployment` => `ReplicaSet` => `Pod`. This is for providing ArgoCD-style resource view.
 - GitLab Environment has the Resource Health status that represents a summary of resource statuses, such as `Healthy`, `Progressing` or `Degraded`.
@@ -86,14 +86,14 @@ flowchart LR
 
 - [GitLab Project](../../../user/project/working_with_projects.md) and GitLab Environment have 1-to-many relationship.
 - GitLab Project and Agent have 1-to-many _direct_ relationship. Only one project can own a specific agent.
-- [GitOps mode](../../../user/clusters/agent/gitops/agent.md#gitops-configuration-reference)
+- GitOps mode
   - GitLab Project and Agent do _NOT_ have many-to-many _indirect_ relationship yet. This will be supported in [Manifest projects outside of the Agent configuration project](https://gitlab.com/groups/gitlab-org/-/epics/7704).
 - [CI Access mode](../../../user/clusters/agent/ci_cd_workflow.md#authorize-the-agent)
   - GitLab Project and Agent have many-to-many _indirect_ relationship. The project owning the agent can [share the access with the other proejcts](../../../user/clusters/agent/ci_cd_workflow.md#authorize-the-agent-to-access-projects-in-your-groups). (NOTE: Technically, only running jobs inside the project are allowed to access the cluster due to job-token authentication.)
 
 ### Issues
 
-- GitLab Environment should have ID of GitLab Agent For Kubernetes as the foreign key.
+- GitLab Environment should have ID of GitLab agent For Kubernetes as the foreign key.
 - GitLab Environment should have parameters how to group resources in the associated cluster, for example, `namespace`, `lable` and `inventory-id` (GitOps mode only) can passed as parameters.
 - GitLab Environment should be able to fetch all relevant resources, including both default resource kinds and other [Custom Resources](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/).
 - GitLab Environment should be aware of dependency graph.
@@ -186,8 +186,8 @@ The microservice project setup can be improved by [Multi-Project Deployment Pipe
 - Deployment Project can behave as the shared deployment engine for any upstream application projects and environments.
 - Environments can be created within the application projects. It gives more visibility of environments for developers.
 - Deployment Project can be managed under Operator group. More segregation of duties.
-- Users don't need to setup [RBAC to restrict CI/CD jobs](../../../user/clusters/agent/ci_cd_workflow.md#restrict-project-and-group-access-by-using-impersonation).
-- This is especitially helpful for [dynamic environments](../../../ci/environments/index.md#create-a-dynamic-environment), such as Review Apps.
+- Users don't need to set up [RBAC to restrict CI/CD jobs](../../../user/clusters/agent/ci_cd_workflow.md#restrict-project-and-group-access-by-using-impersonation).
+- This is especially helpful for [dynamic environments](../../../ci/environments/index.md#create-a-dynamic-environment) like review apps.
 
 ```mermaid
 flowchart LR
@@ -260,7 +260,7 @@ flowchart LR
 
 ### Associate Environment with Agent
 
-Users can explicitly set a GitLab Agent For Kubernetes to a GitLab Environment in setting UI.
+Users can explicitly set a GitLab agent For Kubernetes to a GitLab Environment in setting UI.
 Frontend will use this associated agent for authenticating/authorizing the user access, which is described in a latter section.
 
 We need to adjust the `read_cluster_agent` permission in DeclarivePolicy for supporting agents shared by an external project (also known as the Agent management project).

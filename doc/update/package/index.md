@@ -34,7 +34,7 @@ GitLab package.
 - For single node installations, GitLab is not available to users while an
   upgrade is in progress. The user's web browser shows a `Deploy in progress` message or a `502` error.
 - For multi-node installations, see how to perform
-  [zero downtime upgrades](../zero_downtime.md).
+  [zero-downtime upgrades](../zero_downtime.md).
 - Upgrades to multi-node installations can also be performed
   [with downtime](../with_downtime.md).
 
@@ -43,9 +43,9 @@ GitLab package.
 Upgrading versions might need some manual intervention. For more information,
 check the version your are upgrading to:
 
+- [GitLab 17](../versions/gitlab_17_changes.md)
 - [GitLab 16](../versions/gitlab_16_changes.md)
 - [GitLab 15](../versions/gitlab_15_changes.md)
-- [GitLab 14](../versions/gitlab_14_changes.md)
 
 ### Earlier GitLab versions
 
@@ -71,13 +71,14 @@ Nevertheless, it is highly recommended to maintain a full up-to-date
 ## Upgrade using the official repositories
 
 All GitLab packages are posted to the GitLab [package server](https://packages.gitlab.com/gitlab/).
-Five repositories are maintained:
+Six repositories are maintained:
 
 - [`gitlab/gitlab-ee`](https://packages.gitlab.com/gitlab/gitlab-ee): The full
   GitLab package that contains all the Community Edition features plus the
   [Enterprise Edition](https://about.gitlab.com/pricing/) ones.
 - [`gitlab/gitlab-ce`](https://packages.gitlab.com/gitlab/gitlab-ce): A stripped
   down package that contains only the Community Edition features.
+- [`gitlab/gitlab-fips`](https://packages.gitlab.com/gitlab/gitlab-fips): [FIPS-compliant](../../development/fips_compliance.md) builds.
 - [`gitlab/unstable`](https://packages.gitlab.com/gitlab/unstable): Release candidates and other unstable versions.
 - [`gitlab/nightly-builds`](https://packages.gitlab.com/gitlab/nightly-builds): Nightly builds.
 - [`gitlab/raspberry-pi2`](https://packages.gitlab.com/gitlab/raspberry-pi2): Official Community Edition releases built for [Raspberry Pi](https://www.raspberrypi.org) packages.

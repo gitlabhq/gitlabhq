@@ -6,4 +6,4 @@
 - page_title s_('BulkImport|Direct transfer history')
 - add_page_specific_style 'page_bundles/import'
 
-#import-history-mount-element{ data: { id: params[:id], details_path: details_import_bulk_imports_path, realtime_changes_path: realtime_changes_import_bulk_imports_path(format: :json) } }
+#import-history-mount-element{ data: { id: params[:id], details_path: failures_import_bulk_import_path(':id', ':entity_id'), realtime_changes_path: realtime_changes_import_bulk_imports_path(format: :json) } }

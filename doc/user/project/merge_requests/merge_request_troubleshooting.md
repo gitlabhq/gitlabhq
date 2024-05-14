@@ -2,13 +2,14 @@
 stage: Create
 group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: "Troubleshooting help for merge requests."
 ---
 
 # Merge request troubleshooting
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 When working with merge requests, you might encounter the following issues.
 
@@ -36,8 +37,7 @@ merge request again.
 ## Rebase a merge request from the Rails console
 
 DETAILS:
-**tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Tier:** Free, Premium, Ultimate
 
 In addition to the `/rebase` [quick action](../quick_actions.md#issues-merge-requests-and-epics),
 users with access to the [Rails console](../../../administration/operations/rails_console.md)
@@ -60,7 +60,7 @@ MergeRequests::RebaseService.new(project: m.target_project, current_user: u).exe
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 If a merge request remains **Open** after its changes are merged,
 users with access to the [Rails console](../../../administration/operations/rails_console.md)
@@ -86,7 +86,7 @@ merge request to display an incorrect message: `merged into <branch-name>`.
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 If closing a merge request doesn't work through the UI or API, you might want to attempt to close it in a [Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session):
 
@@ -104,7 +104,7 @@ MergeRequests::CloseService.new(project: p, current_user: u).execute(m)
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 If deleting a merge request doesn't work through the UI or API, you might want to attempt to delete it in a [Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session):
 

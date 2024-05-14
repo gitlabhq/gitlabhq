@@ -66,7 +66,7 @@ module Gitlab
       end
 
       def assignees
-        found_user_id = map_user_id(jira_issue.assignee&.attrs)
+        found_user_id = map_user_id(jira_issue.assignee.try(:attrs))
 
         return unless found_user_id
 

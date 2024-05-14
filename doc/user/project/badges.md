@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Badges are a unified way to present condensed pieces of information about your projects.
 A badge consists of a small image and a URL that the image points to.
@@ -91,7 +91,7 @@ The default colors and limits for the badge are as follows:
 NOTE:
 *Up to* means up to, but not including, the upper bound.
 
-You can overwrite the limits by using the following additional parameters ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/28317) in GitLab 14.4):
+You can overwrite the limits by using the following additional parameters:
 
 - `min_good` (default 95, can use any value between 3 and 100)
 - `min_acceptable` (default 90, can use any value between 2 and min_good-1)
@@ -102,8 +102,6 @@ if `min_good` is set `80`, and `min_acceptable` is set to `85` (too high), GitLa
 sets `min_acceptable` to `79` (`min_good` - `1`).
 
 ## Latest release badges
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33368) in GitLab 14.8.
 
 The latest release badge indicates the latest release tag name for your project.
 If there is no release, it shows `none`.
@@ -215,7 +213,7 @@ Pipeline badges can be rendered in different styles by adding the `style=style_n
 
   ![Badge flat style](https://gitlab.com/gitlab-org/gitlab/badges/main/coverage.svg?job=coverage&style=flat)
 
-- Flat square ([Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/30120) in GitLab 11.8):
+- Flat square:
 
   ```plaintext
   https://gitlab.example.com/<namespace>/<project>/badges/<branch>/coverage.svg?style=flat-square
@@ -224,8 +222,6 @@ Pipeline badges can be rendered in different styles by adding the `style=style_n
   ![Badge flat square style](https://gitlab.com/gitlab-org/gitlab/badges/main/coverage.svg?job=coverage&style=flat-square)
 
 ### Customize badge text
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17555) in GitLab 13.1.
 
 The text for a badge can be customized to differentiate between multiple coverage jobs that run in the same pipeline.
 Customize the badge text and width by adding the `key_text=custom_text` and `key_width=custom_key_width` parameters to the URL:

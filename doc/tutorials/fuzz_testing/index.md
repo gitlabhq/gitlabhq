@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 [Coverage-guided fuzz testing](../../user/application_security/coverage_fuzzing/index.md#coverage-guided-fuzz-testing-process) sends unexpected, malformed, or random data to your application, and then monitors
 your application for unstable behaviors and crashes.

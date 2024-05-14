@@ -1,5 +1,7 @@
 ---
 table_name: catalog_resources
+classes:
+- Ci::Catalog::Resource
 feature_categories:
 - pipeline_composition
 description: Projects containing a catalog resource.

@@ -5,45 +5,31 @@ module Mutations
     class Update < BaseMutation
       graphql_name 'BranchRuleUpdate'
 
-      include FindsProject
+      authorize :update_branch_rule
 
-      authorize :admin_project
-
-      argument :id, ::Types::GlobalIDType[::ProtectedBranch],
+      argument :id, ::Types::GlobalIDType[::Projects::BranchRule],
         required: true,
-        description: 'Global ID of the protected branch.'
+        description: 'Global ID of the branch rule to update.'
 
       argument :name, GraphQL::Types::String,
         required: true,
         description: 'Branch name, with wildcards, for the branch rules.'
 
-      argument :project_path, GraphQL::Types::ID,
-        required: true,
-        description: 'Full path to the project that the branch is associated with.'
+      argument :branch_protection, Types::BranchRules::BranchProtectionInputType,
+        required: false,
+        description: 'Branch protections configured for the branch rule.'
 
       field :branch_rule,
         Types::Projects::BranchRuleType,
         null: true,
         description: 'Branch rule after mutation.'
 
-      def resolve(id:, project_path:, name:)
-        protected_branch = ::Gitlab::Graphql::Lazy.force(GitlabSchema.object_from_id(id,
-          expected_type: ::ProtectedBranch))
-        raise_resource_not_available_error! unless protected_branch
+      def resolve(id:, **params)
+        branch_rule = authorized_find!(id: id)
 
-        project = authorized_find!(project_path)
+        response = ::BranchRules::UpdateService.new(branch_rule, current_user, params).execute
 
-        protected_branch = ::ProtectedBranches::UpdateService.new(project, current_user,
-          { name: name }).execute(protected_branch)
-
-        if protected_branch.errors.empty?
-          {
-            branch_rule: ::Projects::BranchRule.new(project, protected_branch),
-            errors: []
-          }
-        else
-          { errors: errors_on_object(protected_branch) }
-        end
+        { branch_rule: (branch_rule if response.success?), errors: response.errors }
       end
     end
   end

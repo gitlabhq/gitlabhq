@@ -10,7 +10,7 @@ module Gitlab
           @project = project
           @formatter = Gitlab::ImportFormatter.new
           @user_finder = UserFinder.new(project)
-          @mentions_converter = Gitlab::Import::MentionsConverter.new('bitbucket_server', project.id)
+          @mentions_converter = Gitlab::Import::MentionsConverter.new('bitbucket_server', project)
 
           # Object should behave as a object so we can remove object.is_a?(Hash) check
           # This will be fixed in https://gitlab.com/gitlab-org/gitlab/-/issues/412328
@@ -39,7 +39,10 @@ module Gitlab
 
           creator = Gitlab::Import::MergeRequestCreator.new(project)
 
-          creator.execute(attributes)
+          merge_request = creator.execute(attributes)
+
+          # Create refs/merge-requests/iid/head reference for the merge request
+          merge_request.fetch_ref!
 
           log_info(import_stage: 'import_pull_request', message: 'finished', iid: object[:iid])
         end

@@ -14,7 +14,7 @@ default:
 test:
   stage: test
   script:
-    - pip install hyde
+    - pip install hyde==0.8.9
     - hyde gen
   except:
     variables:
@@ -24,7 +24,7 @@ pages:
   stage: deploy
   environment: production
   script:
-    - pip install hyde
+    - pip install hyde==0.8.9
     - hyde gen -d public
   artifacts:
     paths:

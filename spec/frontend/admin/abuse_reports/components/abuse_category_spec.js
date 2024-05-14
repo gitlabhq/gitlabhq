@@ -38,6 +38,6 @@ describe('AbuseCategory', () => {
   });
 
   it('renders the label with the right text color for the category', () => {
-    expect(findLabel().attributes('class')).toBe(`gl-text-${category.color}`);
+    expect(findLabel().attributes('class')).toBe('gl-text-orange-700');
   });
 });

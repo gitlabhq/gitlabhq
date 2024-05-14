@@ -15,13 +15,15 @@ module API
 
       # rubocop: disable CodeReuse/ActiveRecord
       expose :release, using: Entities::TagRelease, if: ->(*) { can_read_release? } do |repo_tag, options|
-        options[:project].releases.find_by(tag: repo_tag.name)
+        options[:releases]&.find { |r| r.tag == repo_tag.name }
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
       expose :protected, documentation: { type: 'boolean', example: true } do |repo_tag, options|
         ::ProtectedTag.protected?(options[:project], repo_tag.name)
       end
+
+      expose :date, as: :created_at, documentation: { type: 'dateTime', example: '2023-10-12T02:16:52.000Z' }
 
       def can_read_release?
         can?(options[:current_user], :read_release, options[:project])

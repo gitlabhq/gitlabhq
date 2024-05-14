@@ -2,6 +2,7 @@ import axios from 'axios';
 import Autosize from 'autosize';
 import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
+import { GlAlert } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import {
   EDITING_MODE_MARKDOWN_FIELD,
@@ -565,6 +566,61 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
       it('updates localStorage value', () => {
         expect(findLocalStorageSync().props().value).toBe(EDITING_MODE_MARKDOWN_FIELD);
       });
+    });
+  });
+
+  describe('setTemplate', () => {
+    beforeEach(() => {});
+
+    it('sets the value of markdown when markdown is empty', async () => {
+      buildWrapper({
+        propsData: { value: '' },
+        stubs: { ContentEditor: ContentEditorStub },
+      });
+
+      wrapper.vm.setTemplate('Test template');
+      await nextTick();
+
+      expect(findTextarea().element.value).toBe('Test template');
+    });
+
+    it('does not set the value of markdown when markdown is not empty and force is false', async () => {
+      buildWrapper({
+        propsData: { value: 'some value' },
+        stubs: { ContentEditor: ContentEditorStub },
+      });
+
+      wrapper.vm.setTemplate('Test template');
+      await nextTick();
+
+      expect(findTextarea().element.value).toBe('some value');
+    });
+
+    it('sets the value of markdown when markdown is not empty and force is true', async () => {
+      buildWrapper({
+        propsData: { value: 'some value' },
+        stubs: { ContentEditor: ContentEditorStub },
+      });
+
+      wrapper.vm.setTemplate('Test template', true);
+      await nextTick();
+
+      expect(findTextarea().element.value).toBe('Test template');
+    });
+
+    it('shows a warning alert when markdown is not empty', async () => {
+      buildWrapper({
+        propsData: { value: 'some value' },
+        stubs: { ContentEditor: ContentEditorStub },
+      });
+
+      wrapper.vm.setTemplate('Test template');
+      await nextTick();
+
+      expect(wrapper.findComponent(GlAlert).exists()).toBe(true);
+      expect(wrapper.findComponent(GlAlert).text()).toContain(
+        'Applying a template will replace the existing content. Any changes you have made will be lost.',
+      );
     });
   });
 });

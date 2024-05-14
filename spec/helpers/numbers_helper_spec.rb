@@ -9,6 +9,11 @@ RSpec.describe NumbersHelper do
     subject { limited_counter_with_delimiter(resource, **options) }
 
     where(:count, :options, :expected_result) do
+      # Zero handling
+      0    | {}                      | '0'
+      0    | { include_zero: true }  | '0'
+      0    | { include_zero: false } | nil
+
       # Using explicit limit
       9    | { limit: 10 } | '9'
       10   | { limit: 10 } | '10'

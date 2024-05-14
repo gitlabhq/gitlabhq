@@ -1,0 +1,33 @@
+# frozen_string_literal: true
+
+def get_artifact_changed_files(files)
+  files.select do |file|
+    file.match?(%r{\.gitlab-ci\.yml|\.gitlab/ci/}) &&
+      helper.changed_lines(file).any? { |line| line.include?('artifacts:') }
+  end
+end
+
+artifact_changed_files = get_artifact_changed_files(helper.all_changed_files)
+
+return if artifact_changed_files.empty?
+
+warn 'This merge request added or updated artifact settings in CI YAML files.
+  Please set restricted access if artifacts contain sensitive data.'
+
+if helper.ci?
+  markdown(<<~MARKDOWN)
+    ## Artifact settings updated in CI YAML files
+
+    The following files have updated artifact settings:
+
+    * #{artifact_changed_files.map { |path| "`#{path}`" }.join("\n* ")}
+
+    Please verify if these artifacts contain sensitive data. If so, use the `artifacts:access` keyword to restrict download access.
+
+    Example of setting restricted access:
+    ```yaml
+    artifacts:
+      access: developer
+    ```
+  MARKDOWN
+end

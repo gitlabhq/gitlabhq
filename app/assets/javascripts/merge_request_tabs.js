@@ -171,11 +171,11 @@ function toggleLoader(state) {
   $('.mr-loading-status .loading').toggleClass('hide', !state);
 }
 
-function getActionFromHref(href) {
-  let action = new URL(href).pathname.match(/\/(commits|diffs|pipelines).*$/);
+export function getActionFromHref(pathName) {
+  let action = pathName.match(/\/(\d+)\/(commits|diffs|pipelines).*$/);
 
   if (action) {
-    action = action[0].replace(/(^\/|\.html)/g, '');
+    action = action.at(-1).replace(/(^\/|\.html)/g, '');
   } else {
     action = 'show';
   }
@@ -239,7 +239,7 @@ export default class MergeRequestTabs {
     $('.merge-request-tabs a[data-toggle="tabvue"]').on('click', this.clickTab);
     window.addEventListener('popstate', (event) => {
       if (event?.state?.skipScrolling) return;
-      const action = getActionFromHref(location.href);
+      const action = getActionFromHref(window.location.pathname);
 
       this.tabShown(action, location.href);
       this.eventHub.$emit('MergeRequestTabChange', action);

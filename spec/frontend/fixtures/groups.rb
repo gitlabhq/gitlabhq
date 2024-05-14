@@ -36,5 +36,11 @@ RSpec.describe 'Groups (JavaScript fixtures)', feature_category: :groups_and_pro
 
       expect(response).to be_successful
     end
+
+    it 'api/groups/post.json' do
+      post api("/groups", user), params: { name: 'frontend-fixtures-group-2', path: 'frontend-fixtures-group-2' }
+
+      expect(response).to be_successful
+    end
   end
 end

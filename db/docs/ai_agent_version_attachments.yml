@@ -1,0 +1,12 @@
+---
+table_name: ai_agent_version_attachments
+classes:
+- Ai::AgentVersionAttachment
+feature_categories:
+- mlops
+description: Joins AI Vectorizable Files with AI Agent Versions.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151454
+milestone: '17.0'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  project_id: projects

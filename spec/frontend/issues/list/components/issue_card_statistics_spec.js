@@ -1,7 +1,6 @@
 import { GlIcon } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import IssueCardStatistics from '~/issues/list/components/issue_card_statistics.vue';
-import { i18n } from '~/issues/list/constants';
 
 describe('IssueCardStatistics CE component', () => {
   let wrapper;
@@ -41,7 +40,7 @@ describe('IssueCardStatistics CE component', () => {
       const mergeRequests = findMergeRequests();
 
       expect(mergeRequests.text()).toBe('1');
-      expect(mergeRequests.attributes('title')).toBe(i18n.relatedMergeRequests);
+      expect(mergeRequests.attributes('title')).toBe('Related merge requests');
       expect(mergeRequests.findComponent(GlIcon).props('name')).toBe('merge-request');
     });
 
@@ -49,7 +48,7 @@ describe('IssueCardStatistics CE component', () => {
       const upvotes = findUpvotes();
 
       expect(upvotes.text()).toBe('5');
-      expect(upvotes.attributes('title')).toBe(i18n.upvotes);
+      expect(upvotes.attributes('title')).toBe('Upvotes');
       expect(upvotes.findComponent(GlIcon).props('name')).toBe('thumb-up');
     });
 
@@ -57,7 +56,7 @@ describe('IssueCardStatistics CE component', () => {
       const downvotes = findDownvotes();
 
       expect(downvotes.text()).toBe('9');
-      expect(downvotes.attributes('title')).toBe(i18n.downvotes);
+      expect(downvotes.attributes('title')).toBe('Downvotes');
       expect(downvotes.findComponent(GlIcon).props('name')).toBe('thumb-down');
     });
   });

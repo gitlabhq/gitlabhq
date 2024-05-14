@@ -7,7 +7,9 @@ RSpec.describe Backup::Targets::Database, :reestablished_active_record_base, fea
   let(:progress_output) { progress.string }
   let(:backup_id) { 'some_id' }
   let(:one_database_configured?) { base_models_for_backup.one? }
-  let(:backup_options) { Backup::Options.new }
+  let(:force) { true }
+  let(:backup_options) { Backup::Options.new(force: force) }
+  let(:logger) { subject.logger }
   let(:timeout_service) do
     instance_double(Gitlab::Database::TransactionTimeoutSettings, restore_timeouts: nil, disable_timeouts: nil)
   end
@@ -27,9 +29,7 @@ RSpec.describe Backup::Targets::Database, :reestablished_active_record_base, fea
   end
 
   describe '#dump', :delete do
-    let(:force) { true }
-
-    subject(:databases) { described_class.new(progress, force: force, options: backup_options) }
+    subject(:databases) { described_class.new(progress, options: backup_options) }
 
     it 'creates gzipped database dumps' do
       Dir.mktmpdir do |dir|
@@ -171,10 +171,9 @@ RSpec.describe Backup::Targets::Database, :reestablished_active_record_base, fea
   describe '#restore' do
     let(:cmd) { %W[#{Gem.ruby} -e $stdout.puts(1)] }
     let(:backup_dir) { Rails.root.join("spec/fixtures/") }
-    let(:force) { true }
     let(:rake_task) { instance_double(Rake::Task, invoke: true) }
 
-    subject(:databases) { described_class.new(progress, force: force, options: backup_options) }
+    subject(:databases) { described_class.new(progress, options: backup_options) }
 
     before do
       allow(Rake::Task).to receive(:[]).with(any_args).and_return(rake_task)
@@ -197,10 +196,6 @@ RSpec.describe Backup::Targets::Database, :reestablished_active_record_base, fea
         databases.restore(backup_dir, backup_id)
 
         expect(progress_output).to include('Removing all tables. Press `Ctrl-C` within 5 seconds to abort')
-      end
-
-      it 'has a pre restore warning' do
-        expect(databases.pre_restore_warning).not_to be_nil
       end
     end
 
@@ -253,7 +248,7 @@ RSpec.describe Backup::Targets::Database, :reestablished_active_record_base, fea
       let(:noise) { "must be owner of extension pg_trgm\nWARNING:  no privileges could be revoked for public\n" }
       let(:cmd) { %W[#{Gem.ruby} -e $stderr.write("#{noise}#{visible_error}")] }
 
-      it 'filters out noise from errors and has a post restore warning' do
+      it 'filters out noise from errors and store in errors attribute' do
         if one_database_configured?
           expect(Rake::Task['gitlab:db:drop_tables']).to receive(:invoke)
         else
@@ -265,7 +260,7 @@ RSpec.describe Backup::Targets::Database, :reestablished_active_record_base, fea
         expect(progress_output).to include("ERRORS")
         expect(progress_output).not_to include(noise)
         expect(progress_output).to include(visible_error)
-        expect(databases.post_restore_warning).not_to be_nil
+        expect(databases.errors).not_to be_empty
       end
     end
 

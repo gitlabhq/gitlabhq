@@ -47,7 +47,10 @@ RSpec.describe TestHooks::ProjectService, feature_category: :code_testing do
       let(:trigger_key) { :tag_push_hooks }
 
       it 'executes hook' do
-        allow(Gitlab::DataBuilder::Push).to receive(:build_sample).and_return(sample_data)
+        allow(Gitlab::DataBuilder::Push)
+          .to receive(:build_sample)
+          .with(project, current_user, is_tag: true)
+          .and_return(sample_data)
 
         expect(hook).to receive(:execute).with(sample_data, trigger_key, force: true).and_return(success_result)
         expect(service.execute).to include(success_result)
@@ -223,6 +226,18 @@ RSpec.describe TestHooks::ProjectService, feature_category: :code_testing do
         allow(project).to receive_message_chain(:notes, :last).and_return(note)
         allow(Gitlab::DataBuilder::Emoji).to receive(:build).with(anything, current_user, 'award')
           .and_return(sample_data)
+
+        expect(hook).to receive(:execute).with(sample_data, trigger_key, force: true).and_return(success_result)
+        expect(service.execute).to include(success_result)
+      end
+    end
+
+    context 'when resource access token events hook' do
+      let(:trigger) { 'resource_access_token_events' }
+      let(:trigger_key) { :resource_access_token_hooks }
+
+      it 'executes hook' do
+        allow(Gitlab::DataBuilder::ResourceAccessToken).to receive(:build).and_return(sample_data)
 
         expect(hook).to receive(:execute).with(sample_data, trigger_key, force: true).and_return(success_result)
         expect(service.execute).to include(success_result)

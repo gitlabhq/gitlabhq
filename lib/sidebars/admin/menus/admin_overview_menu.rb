@@ -7,6 +7,7 @@ module Sidebars
         override :configure_menu_items
         def configure_menu_items
           add_item(dashboard_menu_item)
+          add_item(organizations_menu_item)
           add_item(projects_menu_item)
           add_item(users_menu_item)
           add_item(groups_menu_item)
@@ -68,6 +69,18 @@ module Sidebars
             active_routes: { controller: 'groups' },
             item_id: :groups,
             container_html_options: { 'data-testid': 'admin-overview-groups-link' }
+          )
+        end
+
+        def organizations_menu_item
+          return unless Feature.enabled?(:ui_for_organizations, current_user)
+
+          ::Sidebars::MenuItem.new(
+            title: _('Organizations'),
+            link: admin_organizations_path,
+            active_routes: { controller: 'organizations' },
+            item_id: :organizations,
+            container_html_options: { 'data-testid': 'admin-overview-organizations-link' }
           )
         end
 

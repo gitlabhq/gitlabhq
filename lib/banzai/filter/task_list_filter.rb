@@ -37,7 +37,7 @@ module Banzai
       # Pattern used to identify all task list items.
       # Useful when you need iterate over all items.
       NEWITEMPATTERN = /
-        ^
+        \A
         (?:\s*[-+*]|(?:\d+\.))? # optional list prefix
         \s*                     # optional whitespace prefix
         (                       # checkbox

@@ -157,7 +157,6 @@
   }
 }
 
-// FF :project_overview_reorg enabled
 .project-page-indicator:not(.hidden) + .project-page-layout {
   @include media-breakpoint-up(lg) {
     display: grid;
@@ -183,6 +182,7 @@
         #{$calc-application-viewport-height} - #{$gl-spacing-scale-4}
       );
       padding-inline: $gl-padding-4;
+      padding-block-end: $gl-spacing-scale-11;
       overflow-y: scroll;
       overflow-x: hidden;
       -webkit-overflow-scrolling: touch;

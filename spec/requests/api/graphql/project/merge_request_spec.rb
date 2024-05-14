@@ -24,7 +24,11 @@ RSpec.describe 'getting merge request information nested in a project', feature_
     # we exclude Project.pipeline because it needs arguments,
     # codequalityReportsComparer because it is behind a feature flag
     # and runners because the user is not an admin and therefore has no access
-    let(:excluded) { %w[jobs pipeline runners codequalityReportsComparer mlModels] }
+    # and inboundAllowlistCount, groupsAllowlistCount the user has no access
+    let(:excluded) do
+      %w[jobs pipeline runners codequalityReportsComparer mlModels inboundAllowlistCount groupsAllowlistCount]
+    end
+
     let(:mr_fields) { all_graphql_fields_for('MergeRequest', excluded: excluded) }
 
     before do
@@ -159,6 +163,32 @@ RSpec.describe 'getting merge request information nested in a project', feature_
             )
           )
         )
+      end
+    end
+
+    context 'when a path includes a non UTF-8 character' do
+      let_it_be(:diff_stats) do
+        diff_stat = Gitaly::DiffStats.new(
+          additions: 10,
+          deletions: 15,
+          path: (+'romualdatchadé.yml').force_encoding(Encoding::ASCII_8BIT)
+        )
+
+        Gitlab::Git::DiffStatsCollection.new([diff_stat])
+      end
+
+      before do
+        allow_any_instance_of(MergeRequest).to receive(:diff_stats).and_return(diff_stats) # rubocop:disable RSpec/AnyInstanceOf -- Targeting simply next_instance isn't sufficient
+
+        post_graphql(query, current_user: current_user)
+      end
+
+      it 'does not raise an error' do
+        expect(graphql_errors).to be_nil
+      end
+
+      it 'returns the expected UTF-8 path' do
+        expect(merge_request_graphql_data['diffStats']).to include(a_hash_including('path' => 'romualdatchadé.yml'))
       end
     end
   end
@@ -383,19 +413,19 @@ RSpec.describe 'getting merge request information nested in a project', feature_
         project.add_maintainer(user)
         assign_user(user)
         r = merge_request.merge_request_reviewers.find_or_create_by!(reviewer: user)
-        r.update!(state: 'reviewed')
+        r.update!(state: :approved)
         merge_request.approved_by_users << user
       end
 
       it 'returns appropriate data' do
         post_graphql(query)
-        enum = ::Types::MergeRequestReviewStateEnum.values['REVIEWED']
+        enum = ::Types::MergeRequestReviewStateEnum.values['APPROVED']
 
         expect(interaction_data).to contain_exactly a_hash_including(
           'canMerge' => true,
           'canUpdate' => true,
           'reviewState' => enum.graphql_name,
-          'reviewed' => true,
+          'reviewed' => false,
           'approved' => true
         )
       end

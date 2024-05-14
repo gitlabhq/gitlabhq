@@ -1,6 +1,5 @@
 <script>
 import { memoize } from 'lodash';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { reportToSentry } from '~/ci/utils';
 import { parseData } from '~/ci/pipeline_details/utils/parsing_utils';
 import LinksInner from '~/ci/pipeline_details/graph/components/links_inner.vue';
@@ -17,7 +16,6 @@ export default {
   components: {
     LinksInner,
   },
-  mixins: [glFeatureFlagMixin()],
   props: {
     containerMeasurements: {
       type: Object,
@@ -52,9 +50,6 @@ export default {
     showLinkedLayers() {
       return this.showLinks && !this.containerZero;
     },
-    isNewPipelineGraph() {
-      return this.glFeatures.newPipelineGraph;
-    },
   },
   errorCaptured(err, _vm, info) {
     reportToSentry(this.$options.name, `error: ${err}, info: ${info}`);
@@ -73,10 +68,7 @@ export default {
     <slot></slot>
   </links-inner>
   <div v-else>
-    <div
-      class="gl-display-flex gl-relative"
-      :class="{ 'gl-flex-wrap gl-sm-flex-nowrap': isNewPipelineGraph }"
-    >
+    <div class="gl-display-flex gl-flex-wrap gl-sm-flex-nowrap gl-relative">
       <slot></slot>
     </div>
   </div>

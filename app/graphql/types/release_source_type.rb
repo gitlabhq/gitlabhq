@@ -8,8 +8,8 @@ module Types
     authorize :read_code
 
     field :format, GraphQL::Types::String, null: true,
-                                           description: 'Format of the source.'
+      description: 'Format of the source.'
     field :url, GraphQL::Types::String, null: true,
-                                        description: 'Download URL of the source.'
+      description: 'Download URL of the source.'
   end
 end

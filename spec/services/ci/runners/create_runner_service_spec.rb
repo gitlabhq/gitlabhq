@@ -2,12 +2,12 @@
 
 require 'spec_helper'
 
-RSpec.describe ::Ci::Runners::CreateRunnerService, "#execute", feature_category: :fleet_visibility do
+RSpec.describe ::Ci::Runners::CreateRunnerService, "#execute", feature_category: :runner do
   subject(:execute) { described_class.new(user: current_user, params: params).execute }
 
   let(:runner) { execute.payload[:runner] }
 
-  let_it_be(:admin) { create(:admin) }
+  let_it_be(:admin) { create(:admin, :without_default_org) }
   let_it_be(:non_admin_user) { create(:user) }
   let_it_be(:anonymous) { nil }
   let_it_be(:group_owner) { create(:user) }

@@ -1,7 +1,7 @@
 <script>
 import { GlIcon } from '@gitlab/ui';
 import { STATUS_CLOSED, STATUS_MERGED, STATUS_EMPTY } from '~/issues/constants';
-import StatusIcon from './extensions/status_icon.vue';
+import StatusIcon from './widget/status_icon.vue';
 
 export default {
   components: {

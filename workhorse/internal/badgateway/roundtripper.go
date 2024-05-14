@@ -1,3 +1,4 @@
+// Package badgateway provides a custom HTTP RoundTripper implementation for handling Bad Gateway errors.
 package badgateway
 
 import (
@@ -93,6 +94,7 @@ func developmentModeResponse(err error) (body string, contentType string) {
 	return buf.String(), "text/html"
 }
 
+// TemplateData holds data for rendering templates.
 type TemplateData struct {
 	Time                    string
 	Error                   string
@@ -106,6 +108,15 @@ var developmentErrorTemplate = template.Must(template.New("error502").Parse(`
 
 <head>
 	<title>Waiting for GitLab to boot</title>
+
+	<style>
+		@media (prefers-color-scheme: dark) {
+			body {
+				background-color: #222;
+				color: #eee;
+			}
+		}
+	</style>
 </head>
 
 <body>

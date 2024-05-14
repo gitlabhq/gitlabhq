@@ -10,6 +10,7 @@ import {
   OPERATORS_TO_GROUP,
   TOKEN_TYPE_ASSIGNEE,
   TOKEN_TYPE_AUTHOR,
+  TOKEN_TYPE_DRAFT,
   TOKEN_TYPE_CONFIDENTIAL,
   TOKEN_TYPE_ITERATION,
   TOKEN_TYPE_MILESTONE,
@@ -28,6 +29,7 @@ import {
   WIDGET_TYPE_ASSIGNEES,
   WIDGET_TYPE_LABELS,
 } from '~/work_items/constants';
+import { STATUS_CLOSED, STATUS_OPEN } from '../constants';
 import {
   ALTERNATIVE_FILTER,
   API_PARAM,
@@ -78,16 +80,25 @@ export const getInitialPageParams = (
   beforeCursor,
 });
 
-export const getSortKey = (sort) =>
-  Object.keys(urlSortParams).find((key) => urlSortParams[key] === sort);
+export const getSortKey = (sort, sortMap = urlSortParams) =>
+  Object.keys(sortMap).find((key) => sortMap[key] === sort);
 
-export const isSortKey = (sort) => Object.keys(urlSortParams).includes(sort);
+export const isSortKey = (sort, sortMap = urlSortParams) => Object.keys(sortMap).includes(sort);
+
+export const deriveSortKey = ({ sort, sortMap, state = STATUS_OPEN }) => {
+  const defaultSortKey = state === STATUS_CLOSED ? UPDATED_DESC : CREATED_DESC;
+  const legacySortKey = getSortKey(sort, sortMap);
+  const graphQLSortKey = isSortKey(sort?.toUpperCase(), sortMap) && sort.toUpperCase();
+
+  return legacySortKey || graphQLSortKey || defaultSortKey;
+};
 
 export const getSortOptions = ({
   hasBlockedIssuesFeature,
   hasIssuableHealthStatusFeature,
   hasIssueWeightsFeature,
-}) => {
+  hasManualSort = true,
+} = {}) => {
   const sortOptions = [
     {
       id: 1,
@@ -153,7 +164,7 @@ export const getSortOptions = ({
         descending: LABEL_PRIORITY_DESC,
       },
     },
-    {
+    hasManualSort && {
       id: 9,
       title: __('Manual'),
       sortDirection: {
@@ -204,7 +215,7 @@ export const getSortOptions = ({
     });
   }
 
-  return sortOptions;
+  return sortOptions.filter((x) => x);
 };
 
 const tokenTypes = Object.keys(filtersMap);
@@ -311,9 +322,10 @@ const formatData = (token) => {
   if (requiresUpperCaseValue(token.type, token.value.data)) {
     return token.value.data.toUpperCase();
   }
-  if (token.type === TOKEN_TYPE_CONFIDENTIAL) {
+  if ([TOKEN_TYPE_CONFIDENTIAL, TOKEN_TYPE_DRAFT].includes(token.type)) {
     return token.value.data === 'yes';
   }
+
   return token.value.data;
 };
 

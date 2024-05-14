@@ -154,6 +154,14 @@ It can also be helpful to
 [debug a user sync](#sync-all-users) to
 investigate further.
 
+#### Users see an error "Invalid login or password."
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/438144) in GitLab 16.10.
+
+If users see this error, it might be because they are trying to sign in using the **Standard** sign-in form instead of the **LDAP** sign-in form.
+
+To resolve, ask the user to enter their LDAP username and password into the **LDAP** sign-in form.
+
 #### Invalid credentials on sign-in
 
 If that the sign-in credentials used are accurate on LDAP, ensure the following
@@ -908,7 +916,7 @@ For more information, see the [official `ldapsearch` documentation](https://linu
 
 ### Using **AdFind** (Windows)
 
-You can use the [`AdFind`](https://social.technet.microsoft.com/wiki/contents/articles/7535.adfind-command-examples.aspx) utility (on Windows based systems) to test that your LDAP server is accessible and authentication is working correctly. AdFind is a freeware utility built by [Joe Richards](https://www.joeware.net/freetools/tools/adfind/index.htm).
+You can use the [`AdFind`](https://learn.microsoft.com/en-us/archive/technet-wiki/7535.adfind-command-examples) utility (on Windows based systems) to test that your LDAP server is accessible and authentication is working correctly. AdFind is a freeware utility built by [Joe Richards](https://www.joeware.net/freetools/tools/adfind/index.htm).
 
 **Return all objects**
 

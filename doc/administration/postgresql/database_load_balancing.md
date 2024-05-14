@@ -10,10 +10,6 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1283) in [GitLab Premium](https://about.gitlab.com/pricing/) 9.0.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60894) from GitLab Premium to GitLab Free in 14.0.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/334494) for Sidekiq in GitLab 14.1.
-
 With Database Load Balancing, read-only queries can be distributed across
 multiple PostgreSQL nodes to increase performance.
 
@@ -108,8 +104,6 @@ The primary will be used for write queries whether or not it is present in this 
 
 ### Service Discovery
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/5883) in GitLab 11.0.
-
 Service discovery allows GitLab to automatically retrieve a list of PostgreSQL
 hosts to use. It periodically
 checks a DNS `A` record, using the IPs returned by this record as the addresses
@@ -140,7 +134,7 @@ record. For example:
 |----------------------|---------------------------------------------------------------------------------------------------|-----------|
 | `nameserver`         | The nameserver to use for looking up the DNS record.                                              | localhost |
 | `record`             | The record to look up. This option is required for service discovery to work.                     |           |
-| `record_type`        | Optional record type to look up, this can be either `A` or `SRV` (GitLab 12.3 and later)          | `A`       |
+| `record_type`        | Optional record type to look up. Can be either `A` or `SRV`.           | `A`       |
 | `port`               | The port of the nameserver.                                                                       | 8600      |
 | `interval`           | The minimum time in seconds between checking the DNS record.                                      | 60        |
 | `disconnect_timeout` | The time in seconds after which an old connection is closed, after the list of hosts was updated. | 120       |

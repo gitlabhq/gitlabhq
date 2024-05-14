@@ -177,8 +177,7 @@ WARNING:
 In a multi-server setup you must use one of the options to
 [eliminate local disk usage for job logs](job_logs.md#prevent-local-disk-usage), or job logs could be lost.
 
-In GitLab 13.2 and later, you should use the
-[consolidated object storage settings](object_storage.md#configure-a-single-storage-connection-for-all-object-types-consolidated-form).
+You should use the [consolidated object storage settings](object_storage.md#configure-a-single-storage-connection-for-all-object-types-consolidated-form).
 
 ### Migrating to object storage
 
@@ -279,8 +278,11 @@ to clean up orphaned artifacts.
 
 ### Migrating from object storage to local storage
 
-To migrate back to local storage, you must
-[selectively disable the artifacts storage](object_storage.md#disable-object-storage-for-specific-features).
+To migrate artifacts back to local storage:
+
+1. Run `gitlab-rake gitlab:artifacts:migrate_to_local`.
+1. [Selectively disable the artifacts' storage](object_storage.md#disable-object-storage-for-specific-features) in `gitlab.rb`.
+1. [Reconfigure GitLab](restart_gitlab.md#reconfigure-a-linux-package-installation).
 
 ## Expiring artifacts
 
@@ -384,9 +386,10 @@ artifacts through the [Admin Area settings](../administration/settings/continuou
 
 ## Storage statistics
 
-You can see the total storage used for job artifacts on groups and projects
-in the administration area, as well as through the [groups](../api/groups.md)
-and [projects APIs](../api/projects.md).
+You can see the total storage used for job artifacts for groups and projects in:
+
+- The Admin Area
+- The [groups](../api/groups.md) and [projects](../api/projects.md) APIs
 
 ## Implementation details
 

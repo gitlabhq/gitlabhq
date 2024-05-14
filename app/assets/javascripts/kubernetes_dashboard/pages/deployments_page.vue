@@ -22,13 +22,15 @@ export default {
         return (
           data?.k8sDeployments?.map((deployment) => {
             return {
-              name: deployment.metadata?.name,
-              namespace: deployment.metadata?.namespace,
+              name: deployment.metadata.name,
+              namespace: deployment.metadata.namespace,
               status: calculateDeploymentStatus(deployment),
-              age: getAge(deployment.metadata?.creationTimestamp),
-              labels: deployment.metadata?.labels,
-              annotations: deployment.metadata?.annotations,
+              age: getAge(deployment.metadata.creationTimestamp),
+              labels: deployment.metadata.labels,
+              annotations: deployment.metadata.annotations,
               kind: s__('KubernetesDashboard|Deployment'),
+              spec: deployment.spec,
+              fullStatus: deployment.status,
             };
           }) || []
         );

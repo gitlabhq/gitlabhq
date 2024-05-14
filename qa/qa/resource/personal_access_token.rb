@@ -48,13 +48,15 @@ module QA
         "/personal_access_tokens/#{id}"
       rescue NoValueError
         user.reload! unless user.id
+        # Filtering on create_after significantly reduces query time. Set to 3 days ago as expiry date is 2 days.
+        created_after = Time.now.utc.to_date - 3
 
         api_client = Runtime::API::Client.new(:gitlab,
           is_new_session: false,
           user: user,
           personal_access_token: token)
         request_url = Runtime::API::Request.new(api_client,
-          "/personal_access_tokens?user_id=#{user.id}",
+          "/personal_access_tokens?user_id=#{user.id}&created_after=#{created_after}&revoked=false&state=active",
           per_page: '100').url
 
         token = auto_paginated_response(request_url).find { |t| t[:name] == name }

@@ -86,8 +86,8 @@ RSpec.describe 'User views releases', :js, feature_category: :continuous_deliver
 
     context 'sorting' do
       def sort_page(by:, direction:)
-        within '[data-testid="releases-sort"]' do
-          find('[data-testid="base-dropdown-toggle"]').click
+        within_testid 'releases-sort' do
+          find_by_testid('base-dropdown-toggle').click
 
           find('li.gl-new-dropdown-item', text: by).click
 
@@ -97,7 +97,7 @@ RSpec.describe 'User views releases', :js, feature_category: :continuous_deliver
 
       shared_examples 'releases sort order' do
         it "sorts the releases #{description}" do
-          card_titles = page.all('.release-block .card-title', minimum: expected_releases.count)
+          card_titles = page.all('[data-testid="release-block"] .gl-new-card-title', minimum: expected_releases.count)
 
           card_titles.each_with_index do |title, index|
             expect(title).to have_content(expected_releases[index].name)
@@ -133,7 +133,7 @@ RSpec.describe 'User views releases', :js, feature_category: :continuous_deliver
     it 'renders release info except for Git-related data' do
       visit project_releases_path(project)
 
-      within('.release-block', match: :first) do
+      within_testid('release-block', match: :first) do
         expect(page).to have_content(release_v3.description)
         expect(page).to have_content(release_v3.tag)
         expect(page).to have_content(release_v3.name)

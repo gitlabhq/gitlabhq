@@ -8,11 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
-
-> - Release Evidences were [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/26019) in GitLab 12.5.
-> - `description_html` became an opt-in field [with GitLab 13.12 for performance reasons](https://gitlab.com/gitlab-org/gitlab/-/issues/299447). You might also pass the `include_html_description` query string as a parameter.
-> - [The permission model for create, update and delete actions was fixed](https://gitlab.com/gitlab-org/gitlab/-/issues/327505) in GitLab 14.1. For more information, see [Release permissions](../../user/project/releases/index.md#release-permissions).
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Use this API to manipulate [release entries](../../user/project/releases/index.md).
 
@@ -28,8 +24,6 @@ For authentication, the Releases API accepts either:
   the `JOB-TOKEN` header.
 
 ## List Releases
-
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72448) to allow for `JOB-TOKEN` in GitLab 14.5.
 
 Returns a paginated list of releases, sorted by `released_at`.
 
@@ -257,8 +251,6 @@ Example response:
 
 ## Get a Release by a tag name
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72448) to allow for `JOB-TOKEN` in GitLab 14.5.
-
 Gets a release for the given tag.
 
 ```plaintext
@@ -424,7 +416,6 @@ GET /projects/:id/releases/:tag_name/downloads/:direct_asset_path
 |----------------------------| -------------- | -------- | ----------------------------------------------------------------------------------- |
 | `id`                       | integer/string | yes      | The ID or [URL-encoded path of the project](../rest/index.md#namespaced-path-encoding).  |
 | `tag_name`                 | string         | yes      | The Git tag the release is associated with.                                         |
-| `filepath`                 | string         | yes      | Deprecated: Use `direct_asset_path` instead.                                        |
 | `direct_asset_path`        | string         | yes      | Path to the release asset file as specified when [creating](links.md#create-a-release-link) or [updating](links.md#update-a-release-link) its link. |
 
 Example request:
@@ -484,7 +475,6 @@ POST /projects/:id/releases
 | `assets:links`     | array of hash   | no                          | An array of assets links.                                                                                                        |
 | `assets:links:name`| string          | required by: `assets:links` | The name of the link. Link names must be unique within the release.                                                              |
 | `assets:links:url` | string          | required by: `assets:links` | The URL of the link. Link URLs must be unique within the release.                                                                |
-| `assets:links:filepath` | string     | no | Deprecated: Use `direct_asset_path` instead. |
 | `assets:links:direct_asset_path` | string     | no | Optional path for a [direct asset link](../../user/project/releases/release_fields.md#permanent-links-to-release-assets). |
 | `assets:links:link_type` | string     | no | The type of the link: `other`, `runbook`, `image`, `package`. Defaults to `other`. |
 | `released_at`      | datetime        | no                          | Date and time for the release. Defaults to the current time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). Only provide this field if creating an [upcoming](../../user/project/releases/index.md#upcoming-releases) or [historical](../../user/project/releases/index.md#historical-releases) release.  |
@@ -606,9 +596,7 @@ Example response:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/235391) in GitLab 13.5.
+**Offering:** Self-managed, GitLab Dedicated
 
 Group milestones associated with the project may be specified in the `milestones`
 array for [Create a release](#create-a-release) and [Update a release](#update-a-release)
@@ -619,10 +607,7 @@ adding milestones for ancestor groups raises an error.
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/199065) in GitLab 12.10.
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72448) to allow for `JOB-TOKEN` in GitLab 14.5.
+**Offering:** Self-managed, GitLab Dedicated
 
 Creates an evidence for an existing release.
 
@@ -758,8 +743,6 @@ Example response:
 
 ## Delete a Release
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72448) to allow for `JOB-TOKEN` in GitLab 14.5.
-
 Deletes a release. Deleting a release doesn't delete the associated tag. Maintainer level access to the project is required to delete a release.
 
 ```plaintext
@@ -842,8 +825,6 @@ Example response:
 ```
 
 ## Upcoming Releases
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/38105) in GitLab 12.1.
 
 A release with a `released_at` attribute set to a future date is labeled
 as an **Upcoming Release** [in the UI](../../user/project/releases/index.md#upcoming-releases).

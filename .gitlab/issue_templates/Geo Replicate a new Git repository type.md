@@ -145,8 +145,6 @@ The Geo primary site needs to checksum every replicable so secondaries can verif
     FAILED_VERIFICATION_INDEX_NAME = "index_cool_widget_states_failed_verification"
     NEEDS_VERIFICATION_INDEX_NAME = "index_cool_widget_states_needs_verification"
 
-    enable_lock_retries!
-
     def up
       create_table :cool_widget_states do |t|
         t.datetime_with_timezone :verification_started_at

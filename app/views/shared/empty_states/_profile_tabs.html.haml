@@ -1,21 +1,23 @@
 - current_user_empty_message_description = local_assigns.fetch(:current_user_empty_message_description, nil)
 - secondary_button_link = local_assigns.fetch(:secondary_button_link, nil)
+- secondary_button_label = local_assigns.fetch(:secondary_button_label, nil)
 - primary_button_link = local_assigns.fetch(:primary_button_link, nil)
+- primary_button_label = local_assigns.fetch(:primary_button_label, nil)
+
+- is_current_user = user_profile? && current_user.present? && current_user.username == params[:username]
 
 .nothing-here-block
-  .svg-content
-    = image_tag illustration_path, size: '75'
-    .text-content
-      - if user_profile? && current_user.present? && current_user.username == params[:username]
-        %h5= current_user_empty_message_header
+  - if is_current_user
+    = render Pajamas::EmptyStateComponent.new(svg_path: illustration_path,
+      title: current_user_empty_message_header,
+      primary_button_text: primary_button_label,
+      primary_button_link: primary_button_link,
+      secondary_button_text: secondary_button_label,
+      secondary_button_link: secondary_button_link) do |c|
 
+      - c.with_description do
         - if current_user_empty_message_description.present?
-          %p= current_user_empty_message_description
-
-        - if primary_button_link.present?
-          = link_button_to primary_button_label, primary_button_link, variant: :confirm
-
-        - if secondary_button_link.present?
-          = link_button_to secondary_button_label, secondary_button_link, variant: :confirm, category: :secondary
-      - else
-        %h5= visitor_empty_message
+          = current_user_empty_message_description
+  - else
+    = render Pajamas::EmptyStateComponent.new(svg_path: illustration_path,
+      title: visitor_empty_message)

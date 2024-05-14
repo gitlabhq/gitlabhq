@@ -4,9 +4,9 @@ module Resolvers
   module Environments
     class LastDeploymentResolver < BaseResolver
       argument :status,
-               Types::DeploymentStatusEnum,
-               required: true,
-               description: 'Status of the Deployment.'
+        Types::DeploymentStatusEnum,
+        required: true,
+        description: 'Status of the Deployment.'
 
       type Types::DeploymentType, null: true
 

@@ -25,16 +25,17 @@ namespace :tw do
       CodeOwnerRule.new('AI Model Validation', '@sselhorn'),
       # CodeOwnerRule.new('Analytics Instrumentation', ''),
       CodeOwnerRule.new('Anti-Abuse', '@phillipwells'),
-      CodeOwnerRule.new('Cloud Connector', '@jglassman1'),
       CodeOwnerRule.new('Authentication', '@jglassman1'),
       CodeOwnerRule.new('Authorization', '@jglassman1'),
       # CodeOwnerRule.new('Billing and Subscription Management', ''),
+      CodeOwnerRule.new('Cloud Connector', '@jglassman1'),
       CodeOwnerRule.new('Code Creation', '@jglassman1'),
       CodeOwnerRule.new('Code Review', '@aqualls'),
       CodeOwnerRule.new('Compliance', '@eread'),
       CodeOwnerRule.new('Composition Analysis', '@rdickenson'),
       CodeOwnerRule.new('Container Registry', '@marcel.amirault'),
       CodeOwnerRule.new('Contributor Experience', '@eread'),
+      CodeOwnerRule.new('Custom Models', '@sselhorn'),
       # CodeOwnerRule.new('Database', ''),
       CodeOwnerRule.new('DataOps', '@sselhorn'),
       # CodeOwnerRule.new('Delivery', ''),
@@ -68,15 +69,16 @@ namespace :tw do
       CodeOwnerRule.new('Product Planning', '@msedlakjakubowski'),
       CodeOwnerRule.new('Project Management', '@msedlakjakubowski'),
       CodeOwnerRule.new('Provision', '@fneill'),
-      CodeOwnerRule.new('Purchase', '@fneill'),
       CodeOwnerRule.new('Redirect', 'Redirect'),
       # CodeOwnerRule.new('Respond', ''),
       CodeOwnerRule.new('Runner', '@fneill'),
-      CodeOwnerRule.new('Runner SaaS', '@fneill'),
+      CodeOwnerRule.new('Hosted Runners', '@fneill'),
       CodeOwnerRule.new('Security Policies', '@rdickenson'),
+      CodeOwnerRule.new('Secret Detection', '@rdickenson'),
       CodeOwnerRule.new('Solutions Architecture', '@jfullam @brianwald @Darwinjs'),
       CodeOwnerRule.new('Source Code', '@msedlakjakubowski'),
       CodeOwnerRule.new('Static Analysis', '@rdickenson'),
+      # CodeOwnerRule.new('Subscription Management', ''),
       CodeOwnerRule.new('Tenant Scale', '@lciutacu'),
       CodeOwnerRule.new('Testing', '@eread'),
       CodeOwnerRule.new('Threat Insights', '@rdickenson'),
@@ -188,14 +190,14 @@ namespace :tw do
     File.write(codeowners_path, new_codeowners_content)
 
     if current_codeowners_content == new_codeowners_content
-      puts "~ CODEOWNERS already up to date".color(:yellow)
+      puts Rainbow("~ CODEOWNERS already up to date").yellow
     else
-      puts "✓ CODEOWNERS updated".color(:green)
+      puts Rainbow("✓ CODEOWNERS updated").green
     end
 
     if errors.present?
       puts ""
-      puts "✘ Files with missing metadata found:".color(:red)
+      puts Rainbow("✘ Files with missing metadata found:").red
       errors.map { |file| puts file }
     end
   end

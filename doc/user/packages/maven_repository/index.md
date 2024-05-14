@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Publish [Maven](https://maven.apache.org) artifacts in your project's package registry.
 Then, install the packages whenever you need to use them as a dependency.
@@ -608,6 +608,7 @@ To delete older package versions, consider using the Packages API or the UI.
 ### Do not allow duplicate Maven packages
 
 > - Required role [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/350682) from Developer to Maintainer in GitLab 15.0.
+> - Required role [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/370471) from Maintainer to Owner in GitLab 17.0.
 
 To prevent users from publishing duplicate Maven packages, you can use the [GraphQl API](../../../api/graphql/reference/index.md#packagesettings) or the UI.
 
@@ -622,9 +623,11 @@ Your changes are automatically saved.
 
 ### Request forwarding to Maven Central
 
+> - Required role [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/370471) from Maintainer to Owner in GitLab 17.0.
+
 FLAG:
 By default this feature is not available for self-managed. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `maven_central_request_forwarding`.
-This feature is not available for SaaS users.
+This feature is not available for GitLab.com or GitLab Dedicated users.
 
 When a Maven package is not found in the package registry, the request is forwarded
 to [Maven Central](https://search.maven.org/).

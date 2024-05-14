@@ -50,7 +50,7 @@ and Microsoft Office 365 [does not support sub-addressing by default](#microsoft
 NOTE:
 If your provider or server supports email sub-addressing, we recommend using it.
 A dedicated email address only supports Reply by Email functionality.
-A catch-all mailbox supports the same features as sub-addressing as of GitLab 11.7,
+A catch-all mailbox supports the same features as sub-addressing,
 but sub-addressing is still preferred because only one email address is used,
 leaving a catch-all available for other purposes beyond GitLab.
 
@@ -60,7 +60,7 @@ A [catch-all mailbox](https://en.wikipedia.org/wiki/Catch-all) for a domain
 receives all email messages addressed to the domain that do not match any addresses that
 exist on the mail server.
 
-As of GitLab 11.7, catch-all mailboxes support the same features as
+Catch-all mailboxes support the same features as
 email sub-addressing, but email sub-addressing remains our recommendation so that you
 can reserve your catch-all mailbox for other purposes.
 
@@ -72,8 +72,8 @@ this method only supports replies, and not the other features of [incoming email
 
 ## Accepted headers
 
-> - Accepting `Received` headers [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81489) in GitLab 14.9.
 > - Accepting `Cc` headers [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348572) in GitLab 16.5.
+> - Accepting `X-Original-To` headers [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149874) in GitLab 17.0.
 
 Email is processed correctly when a configured email address is present in one of the following headers
 (sorted in the order they are checked):
@@ -82,6 +82,7 @@ Email is processed correctly when a configured email address is present in one o
 - `Delivered-To`
 - `Envelope-To` or `X-Envelope-To`
 - `Received`
+- `X-Original-To`
 - `Cc`
 
 The `References` header is also accepted, however it is used specifically to relate email responses to existing discussion threads. It is not used for creating issues by email.
@@ -92,7 +93,7 @@ also checks accepted headers.
 Usually, the "To" field contains the email address of the primary receiver.
 However, it might not include the configured GitLab email address if:
 
-- The address is in the "BCC" field.
+- The address is in the `BCC` field.
 - The email was forwarded.
 
 The `Received` header can contain multiple email addresses. These are checked in the order that they appear.
@@ -161,6 +162,9 @@ If the sender's address is spoofed, the reject notice is delivered to the spoofe
 `FROM` address, which can cause the mail server's IP or domain to appear on a block
 list.
 
+WARNING:
+Users can use the incoming email features without having to use two-factor authentication (2FA) to authenticate themselves first. This applies even if you have [enforced two-factor authentication](../security/two_factor_authentication.md) for your instance.
+
 ### Linux package installations
 
 1. Find the `incoming_email` section in `/etc/gitlab/gitlab.rb`, enable the feature
@@ -202,7 +206,7 @@ Reply by email should now be working.
    [this explanation](../development/emails.md#mailroom-gem-updates) for more details.
 
 1. Find the `incoming_email` section in `config/gitlab.yml`, enable the feature
-  and fill in the details for your specific IMAP server and email account (see [examples](#configuration-examples) below).
+   and fill in the details for your specific IMAP server and email account (see [examples](#configuration-examples) below).
 
 If you use systemd units to manage GitLab:
 
@@ -799,15 +803,13 @@ incoming_email:
 
 #### Microsoft Graph
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214900) in GitLab 13.11.
-
 GitLab can read incoming email using the Microsoft Graph API instead of
 IMAP. Because [Microsoft is deprecating IMAP usage with Basic Authentication](https://techcommunity.microsoft.com/t5/exchange-team-blog/announcing-oauth-2-0-support-for-imap-and-smtp-auth-protocols-in/ba-p/1330432), the Microsoft Graph API is be required for new Microsoft Exchange Online mailboxes.
 
 To configure GitLab for Microsoft Graph, you need to register an
 OAuth 2.0 application in your Azure Active Directory that has the
 `Mail.ReadWrite` permission for all mailboxes. See the [MailRoom step-by-step guide](https://github.com/tpitale/mail_room/#microsoft-graph-configuration)
-and [Microsoft instructions](https://learn.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app)
+and [Microsoft instructions](https://learn.microsoft.com/en-us/entra/identity-platform/quickstart-register-app)
 for more details.
 
 Record the following when you configure your OAuth 2.0 application:

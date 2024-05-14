@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352493) in GitLab 14.9 [with a flag](../administration/feature_flags.md) named `related_epics_widget`. Enabled by default.
 > - [Feature flag `related_epics_widget`](https://gitlab.com/gitlab-org/gitlab/-/issues/357089) removed in GitLab 15.0.
@@ -215,7 +215,6 @@ Example response:
 
 ## Create a related epic link
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352840) in GitLab 14.10.
 > - Minimum required role for the group [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/381308) from Reporter to Guest in GitLab 15.8.
 
 Create a two-way relation between two epics. The user must have at least the Guest role for both groups.
@@ -337,7 +336,6 @@ Example response:
 
 ## Delete a related epic link
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352840) in GitLab 14.10.
 > - Minimum required role for the group [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/381308) from Reporter to Guest in GitLab 15.8.
 
 Delete a two-way relation between two epics. The user must have at least the Guest role for both groups.

@@ -46,7 +46,6 @@ class Projects::BlobController < Projects::ApplicationController
 
   before_action do
     push_frontend_feature_flag(:explain_code_chat, current_user)
-    push_frontend_feature_flag(:encoding_logs_tree)
     push_licensed_feature(:file_locks) if @project.licensed_feature_available?(:file_locks)
   end
 
@@ -148,9 +147,7 @@ class Projects::BlobController < Projects::ApplicationController
       @blob
     else
       if tree = @repository.tree(@commit.id, @path)
-        if tree.entries.any?
-          return redirect_to project_tree_path(@project, File.join(@ref, @path))
-        end
+        return redirect_to project_tree_path(@project, File.join(@ref, @path)) if tree.entries.any?
       end
 
       redirect_to_tree_root_for_missing_path(@project, @ref, @path)
@@ -159,18 +156,12 @@ class Projects::BlobController < Projects::ApplicationController
 
   def check_for_ambiguous_ref
     @ref_type = ref_type
-    return if Feature.enabled?(:ambiguous_ref_modal, @project)
-
-    if @ref_type == ExtractsRef::RefExtractor::BRANCH_REF_TYPE && ambiguous_ref?(@project, @ref)
-      branch = @project.repository.find_branch(@ref)
-      redirect_to project_blob_path(@project, File.join(branch.target, @path))
-    end
   end
 
   def commit
     @commit ||= @repository.commit(@ref)
 
-    return render_404 unless @commit
+    render_404 unless @commit
   end
 
   def redirect_renamed_default_branch?
@@ -214,22 +205,9 @@ class Projects::BlobController < Projects::ApplicationController
   def editor_variables
     @branch_name = params[:branch_name]
 
-    @file_path =
-      if action_name.to_s == 'create'
-        if params[:file].present?
-          params[:file_name] = params[:file].original_filename
-        end
+    @file_path = fetch_file_path
 
-        File.join(@path, params[:file_name])
-      elsif params[:file_path].present?
-        params[:file_path]
-      else
-        @path
-      end
-
-    if params[:file].present?
-      params[:content] = params[:file]
-    end
+    params[:content] = params[:file] if params[:file].present?
 
     @commit_params = {
       file_path: @file_path,
@@ -241,12 +219,26 @@ class Projects::BlobController < Projects::ApplicationController
     }
   end
 
+  def fetch_file_path
+    file_params = params.permit(:file, :file_name)
+
+    if action_name.to_s == 'create'
+      file_name = file_params[:file].present? ? file_params[:file].original_filename : file_params[:file_name]
+
+      return if file_name.nil?
+
+      return File.join(@path, file_name)
+    end
+
+    return file_params[:file_path] if file_params[:file_path].present?
+
+    @path
+  end
+
   def validate_diff_params
     return if params[:full]
 
-    if [:since, :to, :offset].any? { |key| params[key].blank? }
-      head :ok
-    end
+    head :ok if [:since, :to, :offset].any? { |key| params[key].blank? }
   end
 
   def set_last_commit_sha

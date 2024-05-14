@@ -74,11 +74,7 @@ class JiraConnect::AppDescriptorController < JiraConnect::ApplicationController
   def development_tool_module
     {
       jiraDevelopmentTool: {
-        actions: {
-          createBranch: {
-            templateUrl: "#{new_jira_connect_branch_url}?issue_key={issue.key}&issue_summary={issue.summary}"
-          }
-        },
+        actions: actions,
         key: 'gitlab-development-tool',
         application: { value: 'GitLab' },
         name: { value: 'GitLab' },
@@ -132,5 +128,22 @@ class JiraConnect::AppDescriptorController < JiraConnect::ApplicationController
 
   def relative_to_base_path(full_path)
     full_path.sub(/^#{jira_connect_base_path}/, '')
+  end
+
+  def actions
+    {
+      createBranch: {
+        templateUrl: "#{new_jira_connect_branch_url}?issue_key={issue.key}&issue_summary={issue.summary}"
+      },
+      searchConnectedWorkspaces: {
+        templateUrl: search_jira_connect_workspaces_url
+      },
+      searchRepositories: {
+        templateUrl: search_jira_connect_repositories_url
+      },
+      associateRepository: {
+        templateUrl: associate_jira_connect_repositories_url
+      }
+    }
   end
 end

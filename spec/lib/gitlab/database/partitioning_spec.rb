@@ -105,7 +105,7 @@ RSpec.describe Gitlab::Database::Partitioning, feature_category: :database do
     end
 
     context 'for analyze' do
-      let(:analyze_regex) { /ANALYZE VERBOSE / }
+      let(:analyze_regex) { /ANALYZE / }
       let(:analyze) { true }
 
       shared_examples_for 'not running analyze' do

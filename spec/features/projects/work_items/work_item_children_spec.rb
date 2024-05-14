@@ -22,15 +22,15 @@ RSpec.describe 'Work item children', :js, feature_category: :team_planning do
     end
 
     it 'are not displayed when issue does not have work item children', :aggregate_failures do
-      page.within('[data-testid="work-item-links"]') do
-        expect(find('[data-testid="links-empty"]')).to have_content(_('No child items are currently assigned.'))
+      within_testid('work-item-links') do
+        expect(find_by_testid('links-empty')).to have_content(_('No child items are currently assigned.'))
         expect(page).not_to have_selector('[data-testid="add-links-form"]')
         expect(page).not_to have_selector('[data-testid="links-child"]')
       end
     end
 
     it 'toggles widget body', :aggregate_failures do
-      page.within('[data-testid="work-item-links"]') do
+      within_testid('work-item-links') do
         expect(page).to have_selector('[data-testid="widget-body"]')
 
         click_button 'Collapse'
@@ -44,7 +44,7 @@ RSpec.describe 'Work item children', :js, feature_category: :team_planning do
     end
 
     it 'toggles form', :aggregate_failures do
-      page.within('[data-testid="work-item-links"]') do
+      within_testid('work-item-links') do
         expect(page).not_to have_selector('[data-testid="add-links-form"]')
 
         click_button 'Add'
@@ -59,7 +59,7 @@ RSpec.describe 'Work item children', :js, feature_category: :team_planning do
     end
 
     it 'adds a new child task', :aggregate_failures do
-      page.within('[data-testid="work-item-links"]') do
+      within_testid('work-item-links') do
         click_button 'Add'
         click_button 'New task'
 
@@ -72,20 +72,20 @@ RSpec.describe 'Work item children', :js, feature_category: :team_planning do
 
         wait_for_all_requests
 
-        expect(find('[data-testid="links-child"]')).to have_content('Task 1')
+        expect(find_by_testid('links-child')).to have_content('Task 1')
       end
     end
 
     it 'removes a child task and undoing', :aggregate_failures do
-      page.within('[data-testid="work-item-links"]') do
+      within_testid('work-item-links') do
         click_button 'Add'
         click_button 'New task'
         fill_in 'Add a title', with: 'Task 1'
         click_button 'Create task'
         wait_for_all_requests
 
-        expect(find('[data-testid="links-child"]')).to have_content('Task 1')
-        expect(find('[data-testid="children-count"]')).to have_content('1')
+        expect(find_by_testid('links-child')).to have_content('Task 1')
+        expect(find_by_testid('children-count')).to have_content('1')
 
         find_by_testid('links-child').hover
         find_by_testid('remove-work-item-link').click
@@ -93,7 +93,7 @@ RSpec.describe 'Work item children', :js, feature_category: :team_planning do
         wait_for_all_requests
 
         expect(page).not_to have_content('Task 1')
-        expect(find('[data-testid="children-count"]')).to have_content('0')
+        expect(find_by_testid('children-count')).to have_content('0')
       end
 
       page.within('.gl-toast') do
@@ -103,9 +103,9 @@ RSpec.describe 'Work item children', :js, feature_category: :team_planning do
 
       wait_for_all_requests
 
-      page.within('[data-testid="work-item-links"]') do
-        expect(find('[data-testid="links-child"]')).to have_content('Task 1')
-        expect(find('[data-testid="children-count"]')).to have_content('1')
+      within_testid('work-item-links') do
+        expect(find_by_testid('links-child')).to have_content('Task 1')
+        expect(find_by_testid('children-count')).to have_content('1')
       end
     end
 
@@ -113,12 +113,12 @@ RSpec.describe 'Work item children', :js, feature_category: :team_planning do
       let_it_be(:task) { create(:work_item, :task, project: project) }
 
       it 'adds an existing child task', :aggregate_failures do
-        page.within('[data-testid="work-item-links"]') do
+        within_testid('work-item-links') do
           click_button 'Add'
           click_button 'Existing task'
 
           expect(page).to have_button('Add task', disabled: true)
-          find('[data-testid="work-item-token-select-input"]').set(task.title)
+          find_by_testid('work-item-token-select-input').set(task.title)
           wait_for_all_requests
           click_button task.title
 
@@ -130,7 +130,7 @@ RSpec.describe 'Work item children', :js, feature_category: :team_planning do
 
           wait_for_all_requests
 
-          expect(find('[data-testid="links-child"]')).to have_content(task.title)
+          expect(find_by_testid('links-child')).to have_content(task.title)
         end
       end
 
@@ -139,12 +139,12 @@ RSpec.describe 'Work item children', :js, feature_category: :team_planning do
         let_it_be(:task) { create(:work_item, :confidential, :task, project: project) }
 
         it 'adds an existing child task', :aggregate_failures do
-          page.within('[data-testid="work-item-links"]') do
+          within_testid('work-item-links') do
             click_button 'Add'
             click_button 'Existing task'
 
             expect(page).to have_button('Add task', disabled: true)
-            find('[data-testid="work-item-token-select-input"]').set(task.title)
+            find_by_testid('work-item-token-select-input').set(task.title)
             wait_for_all_requests
             click_button task.title
 
@@ -156,7 +156,7 @@ RSpec.describe 'Work item children', :js, feature_category: :team_planning do
 
             wait_for_all_requests
 
-            expect(find('[data-testid="links-child"]')).to have_content(task.title)
+            expect(find_by_testid('links-child')).to have_content(task.title)
           end
         end
       end
@@ -183,11 +183,11 @@ RSpec.describe 'Work item children', :js, feature_category: :team_planning do
       end
 
       it 'displays labels, milestone and assignee for work item children', :aggregate_failures do
-        page.within('[data-testid="work-item-links"]') do
+        within_testid('work-item-links') do
           click_button 'Add'
           click_button 'Existing task'
 
-          find('[data-testid="work-item-token-select-input"]').set(task.title)
+          find_by_testid('work-item-token-select-input').set(task.title)
           wait_for_all_requests
           click_button task.title
 
@@ -198,7 +198,7 @@ RSpec.describe 'Work item children', :js, feature_category: :team_planning do
           wait_for_all_requests
         end
 
-        page.within('[data-testid="links-child"]') do
+        within_testid('links-child') do
           expect(page).to have_content(task.title)
           expect(page).to have_content(label.title)
           expect(page).to have_link(user.name)

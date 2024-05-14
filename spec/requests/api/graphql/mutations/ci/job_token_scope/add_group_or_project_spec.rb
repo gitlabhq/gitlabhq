@@ -30,6 +30,8 @@ RSpec.describe 'CiJobTokenScopeAddGroupOrProject', feature_category: :continuous
               path
             }
           }
+          inboundAllowlistCount
+          groupsAllowlistCount
         }
       QL
     end
@@ -82,6 +84,8 @@ RSpec.describe 'CiJobTokenScopeAddGroupOrProject', feature_category: :continuous
           post_graphql_mutation(mutation, current_user: current_user)
           expect(response).to have_gitlab_http_status(:success)
           expect(mutation_response.dig('ciJobTokenScope', 'groupsAllowlist', 'nodes')).not_to be_empty
+          expect(mutation_response.dig('ciJobTokenScope', 'groupsAllowlistCount')).to eq(1)
+          expect(mutation_response.dig('ciJobTokenScope', 'inboundAllowlistCount')).to eq(1)
         end.to change { Ci::JobToken::GroupScopeLink.count }.by(1)
       end
 
@@ -107,6 +111,8 @@ RSpec.describe 'CiJobTokenScopeAddGroupOrProject', feature_category: :continuous
           post_graphql_mutation(mutation, current_user: current_user)
           expect(response).to have_gitlab_http_status(:success)
           expect(mutation_response.dig('ciJobTokenScope', 'inboundAllowlist', 'nodes')).not_to be_empty
+          expect(mutation_response.dig('ciJobTokenScope', 'groupsAllowlistCount')).to eq(0)
+          expect(mutation_response.dig('ciJobTokenScope', 'inboundAllowlistCount')).to eq(2)
         end.to change { Ci::JobToken::ProjectScopeLink.count }.by(1)
       end
 

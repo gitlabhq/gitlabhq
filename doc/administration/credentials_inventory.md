@@ -10,9 +10,6 @@ DETAILS:
 **Tier:** Ultimate
 **Offering:** Self-managed
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20912) in GitLab 12.6.
-> - [Bot-created access tokens not displayed in personal access token list](https://gitlab.com/gitlab-org/gitlab/-/issues/351759) in GitLab 14.9.
-
 As a GitLab administrator, you are responsible for the overall security of your instance.
 To assist, GitLab provides an inventory of all the credentials that can be used to access
 your self-managed instance.
@@ -20,7 +17,7 @@ your self-managed instance.
 In the credentials inventory, you can view all:
 
 - Personal access tokens (PATs).
-- Project access tokens (introduced in GitLab 14.8).
+- Project access tokens
 - Group access tokens ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102959) in GitLab 15.6).
 - SSH keys.
 - GPG keys.
@@ -30,13 +27,11 @@ You can also [revoke](#revoke-a-users-personal-access-token), [delete](#delete-a
 - Who they belong to.
 - Their access scope.
 - Their usage pattern.
-- [In GitLab 13.2 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/214809), when they:
+- When they:
   - Expire.
   - Were revoked.
 
 ## Revoke a user's personal access token
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214811) in GitLab 13.4.
 
 You can revoke a user's personal access token.
 
@@ -58,8 +53,6 @@ When a PAT is revoked from the credentials inventory, the instance notifies the 
 
 ## Revoke a user's project access token
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/243833) in GitLab 14.8.
-
 1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Credentials**.
 1. Select the **Project Access Tokens** tab.
@@ -71,8 +64,6 @@ The project access token is revoked and a background worker is queued to delete 
 
 ## Delete a user's SSH key
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/225248) in GitLab 13.5.
-
 1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Credentials**.
 1. Select the **SSH Keys** tab.
@@ -83,9 +74,6 @@ The instance notifies the user.
 ![Credentials inventory page - SSH keys](img/credentials_inventory_ssh_keys_v14_9.png)
 
 ## Review existing GPG keys
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/282429) in GitLab 13.10.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/292961) in GitLab 13.12.
 
 You can view all existing GPG in your GitLab instance by going to the
 credentials inventory GPG Keys tab, as well as the following properties:

@@ -15,8 +15,19 @@ def load_cron_jobs!
   end
 end
 
+# initialise migrated_shards on start-up to catch any malformed SIDEKIQ_MIGRATED_SHARD lists.
+Gitlab::SidekiqSharding::Router.migrated_shards
+
 # Custom Queues configuration
-queues_config_hash = Gitlab::Redis::Queues.redis_client_params
+#
+# We omit :command_builder since Sidekiq::RedisConnection performs a deep clone using
+# Marshal.load(Marshal.dump(options.slice(*keys))) on the Redis config and Gitlab::Redis::CommandBuilder
+# can't be referred to.
+#
+# We do not need the custom command builder since Sidekiq will handle the typing of Redis arguments.
+queues_config_hash = Gitlab::Redis::Queues.params.except(:command_builder)
+queue_instance = ENV.fetch('SIDEKIQ_SHARD_NAME', Gitlab::Redis::Queues::SIDEKIQ_MAIN_SHARD_INSTANCE_NAME)
+queues_config_hash = Gitlab::Redis::Queues.instances[queue_instance].params.except(:command_builder)
 
 enable_json_logs = Gitlab.config.sidekiq.log_format != 'text'
 
@@ -24,8 +35,15 @@ enable_json_logs = Gitlab.config.sidekiq.log_format != 'text'
 # https://github.com/sidekiq/sidekiq/blob/31bceff64e10d501323bc06ac0552652a47c082e/docs/7.0-Upgrade.md?plain=1#L59
 Sidekiq.strict_args!(false)
 
+# Perform version check before configuring server with the custome scheduled job enqueue class
+unless Gem::Version.new(Sidekiq::VERSION) == Gem::Version.new('7.1.6')
+  raise 'New version of Sidekiq detected, please either update the version for this check ' \
+        'and update Gitlab::SidekiqSharding::ScheduledEnq is compatible.'
+end
+
 Sidekiq.configure_server do |config|
   config[:strict] = false
+  config[:scheduled_enq] = Gitlab::SidekiqSharding::ScheduledEnq
   config[:queues] = Gitlab::SidekiqConfig.expand_queues(config[:queues])
 
   if enable_json_logs
@@ -36,6 +54,8 @@ Sidekiq.configure_server do |config|
     # Gitlab::SidekiqLogging::StructuredLogger
     config.error_handlers.delete(Sidekiq::Config::ERROR_HANDLER)
   end
+
+  config.logger.level = ENV.fetch("GITLAB_LOG_LEVEL", ::Logger::INFO)
 
   Sidekiq.logger.info "Listening on queues #{config[:queues].uniq.sort}"
 
@@ -94,6 +114,7 @@ Sidekiq.configure_server do |config|
   Gitlab::SidekiqVersioning.install!
 
   config[:cron_poll_interval] = Gitlab.config.cron_jobs.poll_interval
+  config[:cron_poll_interval] = 0 if queue_instance != Gitlab::Redis::Queues::SIDEKIQ_MAIN_SHARD_INSTANCE_NAME
   load_cron_jobs!
 
   # Avoid autoload issue such as 'Mail::Parsers::AddressStruct'
@@ -115,6 +136,14 @@ Sidekiq.configure_client do |config|
   config.client_middleware(&Gitlab::SidekiqMiddleware.client_configurator)
 end
 
+Gitlab::Application.configure do |config|
+  config.middleware.use(Gitlab::Middleware::SidekiqShardAwarenessValidation)
+end
+
 Sidekiq::Scheduled::Poller.prepend Gitlab::Patch::SidekiqPoller
 Sidekiq::Cron::Poller.prepend Gitlab::Patch::SidekiqPoller
 Sidekiq::Cron::Poller.prepend Gitlab::Patch::SidekiqCronPoller
+
+Sidekiq::Client.prepend Gitlab::SidekiqSharding::Validator::Client
+Sidekiq::RedisClientAdapter::CompatMethods.prepend Gitlab::SidekiqSharding::Validator
+Sidekiq::Job::Setter.prepend Gitlab::Patch::SidekiqJobSetter

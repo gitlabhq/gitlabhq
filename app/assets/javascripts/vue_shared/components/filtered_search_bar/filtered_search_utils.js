@@ -116,12 +116,17 @@ function filteredSearchQueryParam(filter) {
  * @return {Object} query object with both filter name and not-name with values
  */
 export function filterToQueryObject(filters = {}, options = {}) {
-  const { filteredSearchTermKey, customOperators } = options;
+  const { filteredSearchTermKey, customOperators, shouldExcludeEmpty = false } = options;
 
   return Object.keys(filters).reduce((memo, key) => {
     const filter = filters[key];
 
     if (typeof filteredSearchTermKey === 'string' && key === FILTERED_SEARCH_TERM && filter) {
+      const combinedFilteredSearchTerm = filteredSearchQueryParam(filter);
+      if (combinedFilteredSearchTerm === '' && shouldExcludeEmpty) {
+        return memo;
+      }
+
       return { ...memo, [filteredSearchTermKey]: filteredSearchQueryParam(filter) };
     }
 
@@ -143,9 +148,16 @@ export function filterToQueryObject(filters = {}, options = {}) {
         } else {
           value = filter?.operator === operator ? filter.value : null;
         }
+
         if (isEmpty(value)) {
           value = null;
         }
+
+        if (shouldExcludeEmpty && (value?.[0] === '' || value === '' || value === null)) {
+          // eslint-disable-next-line no-continue
+          continue;
+        }
+
         if (prefix) {
           result[`${prefix}[${key}]`] = value;
         } else {

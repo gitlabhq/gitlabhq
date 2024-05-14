@@ -16,6 +16,8 @@ module GpgKeys
     private
 
     def validate(key)
+      return false unless key.valid?
+
       GpgKeys::ValidateIntegrationsService.new(key).execute
     end
 

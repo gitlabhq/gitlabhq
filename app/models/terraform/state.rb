@@ -76,7 +76,7 @@ module Terraform
     # recreated: https://gitlab.com/gitlab-org/gitlab/-/issues/258960
     def migrate_legacy_version!(data:, version:, build:)
       current_file = latest_version.file.read
-      current_version = parse_serial(current_file) || version - 1
+      current_version = parse_serial(current_file) || (version - 1)
 
       update!(versioning_enabled: true)
 

@@ -4,9 +4,9 @@ module Mutations
   module Snippets
     class Base < BaseMutation
       field :snippet,
-            Types::SnippetType,
-            null: true,
-            description: 'Snippet after mutation.'
+        Types::SnippetType,
+        null: true,
+        description: 'Snippet after mutation.'
 
       private
 

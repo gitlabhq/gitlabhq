@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Plan', :reliable, product_group: :project_management do
+  RSpec.describe 'Plan', :smoke, product_group: :project_management do
     describe 'Project milestone' do
       include Support::Dates
 
@@ -30,8 +30,8 @@ module QA
         end
 
         Page::Milestone::Show.perform do |milestone|
-          expect(milestone).to have_element('milestone-title-content', text: title)
-          expect(milestone).to have_element('milestone-description-content', text: description)
+          expect(milestone).to have_element('data-testid': 'milestone-title-content', text: title)
+          expect(milestone).to have_element('data-testid': 'milestone-description-content', text: description)
           expect(milestone).to have_start_date(start_date)
           expect(milestone).to have_due_date(due_date)
         end

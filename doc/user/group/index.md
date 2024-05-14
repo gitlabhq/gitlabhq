@@ -8,27 +8,37 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 In GitLab, you use groups to manage one or more related projects at the same time.
 
-You can use groups to manage permissions for your projects. If someone has access to
-the group, they get access to all the projects in the group.
+You can use groups to communicate with all group members and manage permissions for your projects.
+If someone has access to the group, they get access to all the projects in the group.
 
 You can also view all of the issues and merge requests for the projects in the group,
-and view analytics that show the group's activity.
-
-You can use groups to communicate with all of the members of the group at once.
+and analytics about the group's activity.
 
 For larger organizations, you can also create [subgroups](subgroups/index.md).
 
 For more information about creating and managing your groups, see [Manage groups](manage.md).
 
+## Group structure
+
+The way to set up a group depends on your use cases, team size, and access requirements.
+The following table describes the most common models of structuring groups.
+
+| Model | Structure | Use cases |
+| ----- | --------- | --------- |
+| Simple | One group for all your projects. | Work in a small team or on specific solutions (for example, a marketing website) that require seamless collaboration and access to resources. |
+| Team | Different groups or subgroups for different types of teams (for example, product and engineering). | Work in a large organization where some teams work autonomously or require centralized resources and limited access from external team members. |
+| Client | One group for each client. | Provide custom solutions for multiple clients that require different resources and access levels. |
+| Functionality | One group or subgroup for one type of functionality (for example, AI/ML). | Develop complex products where one functionality requires specific resources and collaboration of subject-matter experts. |
+
 NOTE:
-For self-managed customers it could be beneficial to create one single top-level group, so you can see an overview of
-your entire organization. For more information about efforts to create an
-organization view of all groups, [see epic 9266](https://gitlab.com/groups/gitlab-org/-/epics/9266).
-A single top-level group provides insights in your entire organization via a complete
+On self-managed GitLab, if you want to see an overview of your entire organization, you should create one top-level group.
+For more information about efforts to create an organization view of all groups,
+[see epic 9266](https://gitlab.com/groups/gitlab-org/-/epics/9266).
+A single top-level group provides insights in your entire organization through a complete
 [Security Dashboard and Center](../application_security/security_dashboard/index.md),
 [Vulnerability](../application_security/vulnerability_report/index.md#vulnerability-report) and
 [Compliance center](../compliance/compliance_center/index.md), and
@@ -67,6 +77,25 @@ This page shows groups that you are a member of through:
 - Membership of a subgroup's parent group.
 - Direct or inherited membership of a project in the group or subgroup.
 
+## View a group
+
+The group overview page displays information about the group and its members, subgroups, and projects, such as:
+
+- Group description
+- Recent activity
+- Number of merge requests and issues created
+- Number of members added
+- Subgroups and projects
+- Shared projects
+- Archived projects
+
+To view a group:
+
+- On the left sidebar, select **Search or go to** and find your group.
+
+You can search for the subgroups and projects of the group
+and sort them in ascending or descending order.
+
 ## View group activity
 
 To view the activity of a group:
@@ -104,7 +133,7 @@ To create a group:
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For details about groups, watch [GitLab Namespaces (users, groups and subgroups)](https://youtu.be/r0sJgjR2f5A).
 
-## Edit group name and description
+## Edit group name, description, and avatar
 
 You can edit your group details from the group general settings.
 
@@ -119,6 +148,7 @@ To edit group details:
 1. In the **Group name** text box, enter your group name. See the [limitations on group names](../../user/reserved_names.md).
 1. Optional. In the **Group description (optional)** text box, enter your group description.
    The description is limited to 500 characters.
+1. Optional. Under **Group avatar**, select **Choose file**, then select an image. The ideal image size is 192 x 192 pixels, and the maximum file size allowed is 200 KB.
 1. Select **Save changes**.
 
 ## Leave a group
@@ -157,17 +187,16 @@ You can also remove a group from the groups dashboard:
 1. In the **Remove group** section, select **Remove group**.
 1. On the confirmation dialog, type the group name and select **Confirm**.
 
-In [GitLab 12.8 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/33257), on GitLab [Premium](https://about.gitlab.com/pricing/premium/) and [Ultimate](https://about.gitlab.com/pricing/ultimate/), this action adds a background job to mark a group for deletion. By default, the job schedules the deletion seven days in the future. You can modify this retention period through the [instance settings](../../administration/settings/visibility_and_access_controls.md#deletion-protection).
+On GitLab [Premium](https://about.gitlab.com/pricing/premium/) and [Ultimate](https://about.gitlab.com/pricing/ultimate/), this action adds a background job to mark a group for deletion. By default, the job schedules the deletion seven days in the future. You can modify this retention period through the [instance settings](../../administration/settings/visibility_and_access_controls.md#deletion-protection).
 
-In [GitLab 13.6 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/39504), if the user who sets up the deletion is removed from the group before the deletion happens, the job is cancelled, and the group is no longer scheduled for deletion.
+If the user who sets up the deletion is removed from the group before the deletion happens, the job is cancelled, and the group is no longer scheduled for deletion.
 
 ## Remove a group immediately
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/336985) in GitLab 14.2.
 > - Enabled delayed deletion by default and removed the option to delete immediately [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [on self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
 
 If you don't want to wait, you can remove a group immediately.
@@ -191,9 +220,7 @@ This action deletes the group, its subgroups, projects, and all related resource
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33257) in GitLab 12.8.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 To restore a group that is marked for deletion:
 
@@ -221,7 +248,7 @@ If you change your mind before your request is approved, select
 
 ## View group members
 
-To view a group's members:
+To view the direct and inherited members of a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Manage > Members**.
@@ -230,11 +257,11 @@ A table displays the member's:
 
 - **Account** name and username.
 - **Source** of their [membership](../project/members/index.md#membership-types).
-   For transparency, GitLab displays all membership sources of group members.
-   Members who have multiple membership sources are displayed and counted as separate members.
-   For example, if a member has been added to the group both directly and through inheritance,
-   the member is displayed twice in the **Members** table, with different sources,
-   and is counted as two individual members of the group.
+  For transparency, GitLab displays all membership sources of group members.
+  Members who have multiple membership sources are displayed and counted as separate members.
+  For example, if a member has been added to the group both directly and through inheritance,
+  the member is displayed twice in the **Members** table, with different sources,
+  and is counted as two individual members of the group.
 - [**Max role**](../project/members/index.md#which-roles-you-can-assign) in the group.
 - **Expiration** date of their group membership.
 - **Activity** related to their account.
@@ -243,11 +270,9 @@ NOTE:
 The display of group members' **Source** might be inconsistent.
 For more information, see [issue 23020](https://gitlab.com/gitlab-org/gitlab/-/issues/23020).
 
-## Filter and sort members in a group
+To view all namespace members (and their respective occupied seats), in the top-level namespace, [view the **Usage Quotas** page](../../subscriptions/gitlab_com/index.md#view-seat-usage).
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21727) in GitLab 12.6.
-> - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/228675) in GitLab 13.7.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/289911) in GitLab 13.8.
+## Filter and sort members in a group
 
 To find members in a group, you can sort, filter, or search.
 
@@ -323,8 +348,8 @@ Prerequisites:
 
    - GitLab username, the user is added to the member list.
    - Email address, the user receives an email invitation and is prompted to create an account.
-   If the invitation is not accepted, GitLab sends reminder emails two, five, and ten days later.
-   Unaccepted invites are automatically deleted after 90 days.
+     If the invitation is not accepted, GitLab sends reminder emails two, five, and ten days later.
+     Unaccepted invites are automatically deleted after 90 days.
 
 Members that are not automatically added are displayed on the **Invited** tab.
 This tab includes users who:

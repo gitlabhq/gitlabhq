@@ -193,6 +193,10 @@ RSpec.shared_examples 'application settings examples' do
         it 'returns false for usage_ping_enabled' do
           expect(setting.usage_ping_enabled).to be_falsey
         end
+
+        it 'returns false for usage_ping_features_enabled' do
+          expect(setting.usage_ping_features_enabled).to be_falsey
+        end
       end
 
       context 'when the usage ping is enabled in the DB' do
@@ -202,6 +206,10 @@ RSpec.shared_examples 'application settings examples' do
 
         it 'returns false for usage_ping_enabled' do
           expect(setting.usage_ping_enabled).to be_falsey
+        end
+
+        it 'returns false for usage_ping_features_enabled' do
+          expect(setting.usage_ping_features_enabled).to be_falsey
         end
       end
     end
@@ -223,6 +231,10 @@ RSpec.shared_examples 'application settings examples' do
         it 'returns false for usage_ping_enabled' do
           expect(setting.usage_ping_enabled).to be_falsey
         end
+
+        it 'returns false for usage_ping_features_enabled' do
+          expect(setting.usage_ping_features_enabled).to be_falsey
+        end
       end
 
       context 'when the usage ping is enabled in the DB' do
@@ -232,6 +244,48 @@ RSpec.shared_examples 'application settings examples' do
 
         it 'returns true for usage_ping_enabled' do
           expect(setting.usage_ping_enabled).to be_truthy
+        end
+
+        context 'when usage_ping_features_enabled is enabled in db' do
+          before do
+            setting.usage_ping_features_enabled = true
+          end
+
+          it 'returns true for usage_ping_features_enabled' do
+            expect(setting.usage_ping_features_enabled).to be_truthy
+          end
+
+          context 'when Gitlab.ee? is true', if: Gitlab.ee? do
+            context 'when include_optional_metrics_in_service_ping is true' do
+              before do
+                setting.include_optional_metrics_in_service_ping = true
+              end
+
+              it 'returns true for usage_ping_features_enabled' do
+                expect(setting.usage_ping_features_enabled).to be_truthy
+              end
+            end
+
+            context 'when include_optional_metrics_in_service_ping is false' do
+              before do
+                setting.include_optional_metrics_in_service_ping = false
+              end
+
+              it 'returns false for usage_ping_features_enabled' do
+                expect(setting.usage_ping_features_enabled).to be_falsey
+              end
+            end
+          end
+        end
+
+        context 'when usage_ping_features_enabled is disabled in db' do
+          before do
+            setting.usage_ping_features_enabled = false
+          end
+
+          it 'returns false for usage_ping_features_enabled' do
+            expect(setting.usage_ping_features_enabled).to be_falsey
+          end
         end
       end
     end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequestBasicEntity do
+RSpec.describe MergeRequestBasicEntity, feature_category: :code_review_workflow do
   let(:resource) { build(:merge_request, params) }
   let(:params) { {} }
 

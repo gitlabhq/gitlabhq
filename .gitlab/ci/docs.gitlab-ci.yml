@@ -42,7 +42,7 @@ review-docs-cleanup:
 docs-lint links:
   extends:
     - .docs:rules:docs-lint
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-docs/lint-html:alpine-3.18-ruby-3.2.2-08fa6df8
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-docs/lint-html:alpine-3.19-ruby-3.2.3-a5032206
   stage: lint
   needs: []
   script:
@@ -58,7 +58,7 @@ docs-lint links:
 
 .docs-markdown-lint-image:
   # When updating the image version here, update it in /scripts/lint-doc.sh too.
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-docs/lint-markdown:alpine-3.18-vale-2.29.6-markdownlint-0.37.0-markdownlint2-0.10.0
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-docs/lint-markdown:alpine-3.19-vale-3.0.7-markdownlint-0.39.0-markdownlint2-0.12.1
 
 docs-lint markdown:
   extends:
@@ -73,6 +73,7 @@ docs-lint markdown:
     - yarn_install_script
     - install_gitlab_gem
     - scripts/lint-doc.sh
+    - scripts/lint/check_mermaid.mjs
 
 docs-lint blueprint:
   extends:
@@ -86,7 +87,7 @@ docs-lint blueprint:
 
 docs code_quality:
   extends:
-    - .reports:rules:code_quality
+    - .reports:rules:docs_code_quality
     - .docs-markdown-lint-image
   stage: lint
   needs: []

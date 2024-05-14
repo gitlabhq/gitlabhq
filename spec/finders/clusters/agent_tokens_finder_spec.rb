@@ -6,20 +6,14 @@ RSpec.describe Clusters::AgentTokensFinder do
   describe '#execute' do
     let_it_be(:project) { create(:project) }
     let_it_be(:agent) { create(:cluster_agent, project: project) }
-    let(:user) { create(:user, maintainer_projects: [project]) }
+    let(:user) { create(:user, maintainer_of: project) }
 
     let_it_be(:active_agent_tokens) do
-      [
-        create(:cluster_agent_token, agent: agent),
-        create(:cluster_agent_token, agent: agent)
-      ]
+      Array.new(2) { create(:cluster_agent_token, agent: agent) }
     end
 
     let_it_be(:revoked_agent_tokens) do
-      [
-        create(:cluster_agent_token, :revoked, agent: agent),
-        create(:cluster_agent_token, :revoked, agent: agent)
-      ]
+      create_list(:cluster_agent_token, 2, :revoked, agent: agent)
     end
 
     before_all do

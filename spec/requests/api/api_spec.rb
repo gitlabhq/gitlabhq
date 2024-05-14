@@ -106,7 +106,7 @@ RSpec.describe API::API, feature_category: :system_access do
         expect(Gitlab::Auth::CurrentUserMode).not_to receive(:bypass_session!)
 
         get(api("/packages/maven/#{maven_metadatum.path}/#{package_file.file_name}"),
-            headers: headers_with_deploy_token)
+          headers: headers_with_deploy_token)
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response.media_type).to eq('application/octet-stream')
@@ -122,16 +122,17 @@ RSpec.describe API::API, feature_category: :system_access do
       context 'when the endpoint supports all possible fields' do
         it 'logs all application context fields and the route' do
           expect(described_class::LOG_FORMATTER).to receive(:call) do |_severity, _datetime, _, data|
-            expect(data.stringify_keys)
-              .to include('correlation_id' => an_instance_of(String),
-                          'meta.caller_id' => 'GET /api/:version/projects/:id/issues',
-                          'meta.remote_ip' => an_instance_of(String),
-                          'meta.project' => project.full_path,
-                          'meta.root_namespace' => project.namespace.full_path,
-                          'meta.user' => user.username,
-                          'meta.client_id' => a_string_matching(%r{\Auser/.+}),
-                          'meta.feature_category' => 'team_planning',
-                          'route' => '/api/:version/projects/:id/issues')
+            expect(data.stringify_keys).to include(
+              'correlation_id' => an_instance_of(String),
+              'meta.caller_id' => 'GET /api/:version/projects/:id/issues',
+              'meta.remote_ip' => an_instance_of(String),
+              'meta.project' => project.full_path,
+              'meta.root_namespace' => project.namespace.full_path,
+              'meta.user' => user.username,
+              'meta.client_id' => a_string_matching(%r{\Auser/.+}),
+              'meta.feature_category' => 'team_planning',
+              'route' => '/api/:version/projects/:id/issues'
+            )
           end
 
           get(api("/projects/#{project.id}/issues", user))
@@ -142,13 +143,14 @@ RSpec.describe API::API, feature_category: :system_access do
 
       it 'skips context fields that do not apply' do
         expect(described_class::LOG_FORMATTER).to receive(:call) do |_severity, _datetime, _, data|
-          expect(data.stringify_keys)
-            .to include('correlation_id' => an_instance_of(String),
-                        'meta.caller_id' => 'GET /api/:version/broadcast_messages',
-                        'meta.remote_ip' => an_instance_of(String),
-                        'meta.client_id' => a_string_matching(%r{\Aip/.+}),
-                        'meta.feature_category' => 'onboarding',
-                        'route' => '/api/:version/broadcast_messages')
+          expect(data.stringify_keys).to include(
+            'correlation_id' => an_instance_of(String),
+            'meta.caller_id' => 'GET /api/:version/broadcast_messages',
+            'meta.remote_ip' => an_instance_of(String),
+            'meta.client_id' => a_string_matching(%r{\Aip/.+}),
+            'meta.feature_category' => 'onboarding',
+            'route' => '/api/:version/broadcast_messages'
+          )
 
           expect(data.stringify_keys).not_to include('meta.project', 'meta.root_namespace', 'meta.user')
         end
@@ -162,11 +164,12 @@ RSpec.describe API::API, feature_category: :system_access do
     context 'when there is an unsupported media type' do
       it 'logs the route and context metadata for the client' do
         expect(described_class::LOG_FORMATTER).to receive(:call) do |_severity, _datetime, _, data|
-          expect(data.stringify_keys)
-            .to include('correlation_id' => an_instance_of(String),
-                        'meta.remote_ip' => an_instance_of(String),
-                        'meta.client_id' => a_string_matching(%r{\Aip/.+}),
-                        'route' => '/api/:version/users/:id')
+          expect(data.stringify_keys).to include(
+            'correlation_id' => an_instance_of(String),
+            'meta.remote_ip' => an_instance_of(String),
+            'meta.client_id' => a_string_matching(%r{\Aip/.+}),
+            'route' => '/api/:version/users/:id'
+          )
 
           expect(data.stringify_keys).not_to include('meta.caller_id', 'meta.feature_category', 'meta.user')
         end
@@ -180,13 +183,14 @@ RSpec.describe API::API, feature_category: :system_access do
     context 'when there is an OPTIONS request' do
       it 'logs the route and context metadata for the client' do
         expect(described_class::LOG_FORMATTER).to receive(:call) do |_severity, _datetime, _, data|
-          expect(data.stringify_keys)
-            .to include('correlation_id' => an_instance_of(String),
-                        'meta.remote_ip' => an_instance_of(String),
-                        'meta.client_id' => a_string_matching(%r{\Auser/.+}),
-                        'meta.user' => user.username,
-                        'meta.feature_category' => 'user_profile',
-                        'route' => '/api/:version/users')
+          expect(data.stringify_keys).to include(
+            'correlation_id' => an_instance_of(String),
+            'meta.remote_ip' => an_instance_of(String),
+            'meta.client_id' => a_string_matching(%r{\Auser/.+}),
+            'meta.user' => user.username,
+            'meta.feature_category' => 'user_profile',
+            'route' => '/api/:version/users'
+          )
 
           expect(data.stringify_keys).not_to include('meta.caller_id')
         end
@@ -200,11 +204,12 @@ RSpec.describe API::API, feature_category: :system_access do
     context 'when the API version is not matched' do
       it 'logs the route and context metadata for the client' do
         expect(described_class::LOG_FORMATTER).to receive(:call) do |_severity, _datetime, _, data|
-          expect(data.stringify_keys)
-            .to include('correlation_id' => an_instance_of(String),
-                        'meta.remote_ip' => an_instance_of(String),
-                        'meta.client_id' => a_string_matching(%r{\Aip/.+}),
-                        'route' => '/api/:version/*path')
+          expect(data.stringify_keys).to include(
+            'correlation_id' => an_instance_of(String),
+            'meta.remote_ip' => an_instance_of(String),
+            'meta.client_id' => a_string_matching(%r{\Aip/.+}),
+            'route' => '/api/:version/*path'
+          )
 
           expect(data.stringify_keys).not_to include('meta.caller_id', 'meta.user')
         end
@@ -218,13 +223,14 @@ RSpec.describe API::API, feature_category: :system_access do
     context 'when there is an unhandled exception for an anonymous request' do
       it 'logs all application context fields and the route' do
         expect(described_class::LOG_FORMATTER).to receive(:call) do |_severity, _datetime, _, data|
-          expect(data.stringify_keys)
-            .to include('correlation_id' => an_instance_of(String),
-                        'meta.caller_id' => 'GET /api/:version/broadcast_messages',
-                        'meta.remote_ip' => an_instance_of(String),
-                        'meta.client_id' => a_string_matching(%r{\Aip/.+}),
-                        'meta.feature_category' => 'onboarding',
-                        'route' => '/api/:version/broadcast_messages')
+          expect(data.stringify_keys).to include(
+            'correlation_id' => an_instance_of(String),
+            'meta.caller_id' => 'GET /api/:version/broadcast_messages',
+            'meta.remote_ip' => an_instance_of(String),
+            'meta.client_id' => a_string_matching(%r{\Aip/.+}),
+            'meta.feature_category' => 'onboarding',
+            'route' => '/api/:version/broadcast_messages'
+          )
 
           expect(data.stringify_keys).not_to include('meta.project', 'meta.root_namespace', 'meta.user')
         end

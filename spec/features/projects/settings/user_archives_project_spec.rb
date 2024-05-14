@@ -21,7 +21,7 @@ RSpec.describe 'Projects > Settings > User archives a project', feature_category
 
       click_link('Unarchive')
 
-      expect(page).not_to have_content('Archived project')
+      expect(page).not_to have_content('This is an archived project.')
     end
   end
 
@@ -33,7 +33,7 @@ RSpec.describe 'Projects > Settings > User archives a project', feature_category
 
       click_link('Archive')
 
-      expect(page).to have_content('Archived')
+      expect(page).to have_content('This is an archived project.')
     end
   end
 end

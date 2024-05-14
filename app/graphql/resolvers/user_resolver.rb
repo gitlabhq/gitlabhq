@@ -9,12 +9,12 @@ module Resolvers
     type Types::UserType, null: true
 
     argument :id, Types::GlobalIDType[User],
-             required: false,
-             description: 'ID of the User.'
+      required: false,
+      description: 'ID of the User.'
 
     argument :username, GraphQL::Types::String,
-             required: false,
-             description: 'Username of the User.'
+      required: false,
+      description: 'Username of the User.'
 
     def ready?(id: nil, username: nil)
       unless id.present? ^ username.present?

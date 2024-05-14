@@ -42,6 +42,8 @@ module Timelogs
       if !timelog.save
         error_in_save(timelog)
       else
+        issuable.reset
+
         SystemNoteService.created_timelog(issuable, issuable.project, current_user, timelog)
 
         issuable_base_service.execute_hooks(issuable, 'update', old_associations: old_associations)

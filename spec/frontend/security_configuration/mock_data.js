@@ -3,6 +3,7 @@ import {
   SAST_SHORT_NAME,
   SAST_IAC_NAME,
   SAST_IAC_SHORT_NAME,
+  PRE_RECEIVE_SECRET_DETECTION,
 } from '~/security_configuration/constants';
 import { __, s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
@@ -193,6 +194,19 @@ export const securityFeaturesMock = [
     available: true,
   },
 ];
+
+export const preReceiveSecretDetectionMock = {
+  name: 'Pre-receive Secret Detection',
+  description: `Block secrets such as keys and API tokens from being pushed to your repositories.
+  'Pre-receive secret detection is triggered when commits are pushed to a repository. ' \
+  'If any secrets are detected, the push is blocked.`,
+  helpPath: SAST_HELP_PATH,
+  configurationHelpPath: helpPagePath(
+    'user/application_security/secret_detection/pre_receive/index',
+  ),
+  type: PRE_RECEIVE_SECRET_DETECTION,
+  available: true,
+};
 
 export const provideMock = {
   upgradePath: '/upgrade',

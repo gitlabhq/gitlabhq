@@ -26,7 +26,7 @@ export default {
 
 <template>
   <a
-    v-gl-tooltip:super-sidebar.bottom="$options.i18n.homepage"
+    v-gl-tooltip:super-sidebar.right="$options.i18n.homepage"
     class="brand-logo"
     :href="rootPath"
     data-track-action="click_link"

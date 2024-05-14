@@ -46,7 +46,7 @@ export default {
   },
   data() {
     return {
-      pipelineStatus: {},
+      pipelineStatus: null,
     };
   },
   computed: {
@@ -61,8 +61,8 @@ export default {
 </script>
 
 <template>
-  <div class="gl-display-inline-block gl-vertical-align-middle gl-mr-2">
+  <div class="gl-display-inline-block gl-align-middle gl-mr-2">
     <gl-loading-icon v-if="loading" />
-    <ci-icon v-else :status="pipelineStatus" />
+    <ci-icon v-else-if="pipelineStatus" :status="pipelineStatus" />
   </div>
 </template>

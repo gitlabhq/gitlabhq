@@ -68,8 +68,9 @@ RSpec.describe BatchedBackgroundMigration::BatchedBackgroundMigrationGenerator, 
         expect(migration_job_file).to eq(expected_ee_migration_job_file)
       end
 
-      assert_file('ee/spec/lib/ee/gitlab/background_migration/my_batched_migration_spec.rb') do |migration_job_spec_file| # rubocop:disable Layout/LineLength
-        expect(migration_job_spec_file).to match(/#{expected_migration_job_spec_file}/)
+      migration_job_spec_file = 'ee/spec/lib/ee/gitlab/background_migration/my_batched_migration_spec.rb'
+      assert_file(migration_job_spec_file) do |spec_file|
+        expect(spec_file).to match(/#{expected_migration_job_spec_file}/)
       end
     end
   end

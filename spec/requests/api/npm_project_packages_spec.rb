@@ -375,9 +375,7 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
           it_behaves_like 'handling upload with different authentications'
         end
 
-        it_behaves_like 'enqueue a worker to sync a metadata cache' do
-          let(:package_name) { "@#{group.path}/my_package_name" }
-        end
+        it_behaves_like 'does not enqueue a worker to sync a metadata cache'
 
         context 'with an existing package' do
           let_it_be(:second_project) { create(:project, namespace: namespace) }

@@ -33,9 +33,6 @@ module QA
         view 'app/views/projects/_sidebar.html.haml' do
           element 'project-badges-content'
           element 'badge-image-link'
-        end
-
-        view 'app/views/projects/_files.html.haml' do
           element 'project-buttons'
         end
 
@@ -58,10 +55,6 @@ module QA
 
         view 'app/views/projects/blob/viewers/_loading.html.haml' do
           element 'spinner-placeholder'
-        end
-
-        view 'app/views/projects/buttons/_download.html.haml' do
-          element 'download-source-code-button'
         end
 
         view 'app/views/projects/tree/_tree_header.html.haml' do
@@ -136,7 +129,7 @@ module QA
         end
 
         def new_merge_request
-          wait_until(reload: true) do
+          wait_until(reload: true, message: 'Wait for `Create merge request` push notification') do
             has_create_merge_request_button?
           end
 

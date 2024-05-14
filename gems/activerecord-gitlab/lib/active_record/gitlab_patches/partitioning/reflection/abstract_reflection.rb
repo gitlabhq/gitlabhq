@@ -12,9 +12,7 @@ module ActiveRecord
             return klass_scope unless respond_to?(:options)
 
             partition_foreign_key = options[:partition_foreign_key]
-            if partition_foreign_key && klass.use_partition_id_filter?
-              klass_scope.where!(table[:partition_id].eq(foreign_table[partition_foreign_key]))
-            end
+            klass_scope.where!(table[:partition_id].eq(foreign_table[partition_foreign_key])) if partition_foreign_key
 
             klass_scope
           end

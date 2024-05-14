@@ -67,10 +67,7 @@ class StageEntity < Grape::Entity
   end
 
   def preload_metadata(statuses)
-    relations = [:metadata, :pipeline]
-    if Feature.enabled?(:preload_ci_bridge_downstream_pipelines, stage.pipeline.project, type: :gitlab_com_derisk)
-      relations << { downstream_pipeline: [:user, { project: [:route, { namespace: :route }] }] }
-    end
+    relations = [:metadata, :pipeline, { downstream_pipeline: [:user, { project: [:route, { namespace: :route }] }] }]
 
     Preloaders::CommitStatusPreloader.new(statuses).execute(relations)
 

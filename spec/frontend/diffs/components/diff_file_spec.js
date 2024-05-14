@@ -71,7 +71,7 @@ function changeViewer(store, index, { automaticallyCollapsed, manuallyCollapsed,
   });
 }
 
-function forceHasDiff({ store, index = 0, inlineLines, parallelLines, readableText }) {
+function forceHasDiff({ store, index = 0, inlineLines, parallelLines, expandable }) {
   const file = store.state.diffs.diffFiles[index];
 
   Object.assign(file, {
@@ -79,7 +79,10 @@ function forceHasDiff({ store, index = 0, inlineLines, parallelLines, readableTe
     parallel_diff_lines: parallelLines,
     blob: {
       ...file.blob,
-      readable_text: readableText,
+    },
+    viewer: {
+      ...file.viewer,
+      expandable,
     },
   });
 }
@@ -206,8 +209,8 @@ describe('DiffFile', () => {
     describe('during mount', () => {
       it.each`
         first    | last     | events                                                                 | file
-        ${false} | ${false} | ${[]}                                                                  | ${{ inlineLines: [], parallelLines: [], readableText: true }}
-        ${true}  | ${true}  | ${[]}                                                                  | ${{ inlineLines: [], parallelLines: [], readableText: true }}
+        ${false} | ${false} | ${[]}                                                                  | ${{ inlineLines: [], parallelLines: [], expandable: true }}
+        ${true}  | ${true}  | ${[]}                                                                  | ${{ inlineLines: [], parallelLines: [], expandable: true }}
         ${true}  | ${false} | ${[EVT_PERF_MARK_FIRST_DIFF_FILE_SHOWN]}                               | ${false}
         ${false} | ${true}  | ${[EVT_PERF_MARK_DIFF_FILES_END]}                                      | ${false}
         ${true}  | ${true}  | ${[EVT_PERF_MARK_FIRST_DIFF_FILE_SHOWN, EVT_PERF_MARK_DIFF_FILES_END]} | ${false}
@@ -252,7 +255,7 @@ describe('DiffFile', () => {
 
     describe('after loading the diff', () => {
       it('indicates that it loaded the file', async () => {
-        forceHasDiff({ store, inlineLines: [], parallelLines: [], readableText: true });
+        forceHasDiff({ store, inlineLines: [], parallelLines: [], expandable: true });
         createComponent({
           file: store.state.diffs.diffFiles[0],
           first: true,
@@ -494,12 +497,12 @@ describe('DiffFile', () => {
       });
 
       describe('fetch collapsed diff', () => {
-        const prepFile = async (inlineLines, parallelLines, readableText) => {
+        const prepFile = async (inlineLines, parallelLines, expandable) => {
           forceHasDiff({
             store,
             inlineLines,
             parallelLines,
-            readableText,
+            expandable,
           });
 
           await nextTick();
@@ -514,28 +517,28 @@ describe('DiffFile', () => {
         });
 
         it.each`
-          inlineLines | parallelLines | readableText
+          inlineLines | parallelLines | expandable
           ${[1]}      | ${[1]}        | ${true}
           ${[]}       | ${[1]}        | ${true}
           ${[1]}      | ${[]}         | ${true}
           ${[1]}      | ${[1]}        | ${false}
           ${[]}       | ${[]}         | ${false}
         `(
-          'does not make a request to fetch the diff for a diff file like { inline: $inlineLines, parallel: $parallelLines, readableText: $readableText }',
-          async ({ inlineLines, parallelLines, readableText }) => {
-            await prepFile(inlineLines, parallelLines, readableText);
+          'does not make a request to fetch the diff for a diff file like { inline: $inlineLines, parallel: $parallelLines, expandable: $expandable }',
+          async ({ inlineLines, parallelLines, expandable }) => {
+            await prepFile(inlineLines, parallelLines, expandable);
 
             expect(wrapper.vm.requestDiff).not.toHaveBeenCalled();
           },
         );
 
         it.each`
-          inlineLines | parallelLines | readableText
+          inlineLines | parallelLines | expandable
           ${[]}       | ${[]}         | ${true}
         `(
-          'makes a request to fetch the diff for a diff file like { inline: $inlineLines, parallel: $parallelLines, readableText: $readableText }',
-          async ({ inlineLines, parallelLines, readableText }) => {
-            await prepFile(inlineLines, parallelLines, readableText);
+          'makes a request to fetch the diff for a diff file like { inline: $inlineLines, parallel: $parallelLines, expandable: $expandable }',
+          async ({ inlineLines, parallelLines, expandable }) => {
+            await prepFile(inlineLines, parallelLines, expandable);
 
             expect(wrapper.vm.requestDiff).toHaveBeenCalled();
           },

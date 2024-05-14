@@ -17,23 +17,17 @@ module Gitlab::Ci
             key_width: opts[:key_width].to_i,
             key_text: opts[:key_text]
           }
-
-          @sha = @project.commit(@ref).try(:sha)
         end
 
         def entity
           'pipeline'
         end
 
-        # rubocop: disable CodeReuse/ActiveRecord
         def status
-          pipelines = @project.ci_pipelines
-            .where(sha: @sha)
-
-          relation = @ignore_skipped ? pipelines.without_statuses([:skipped]) : pipelines
-          relation.latest_status(@ref) || 'unknown'
+          pipelines = @project.ci_pipelines.for_ref(@ref).order_id_desc
+          pipelines = pipelines.without_statuses([:skipped]) if @ignore_skipped
+          pipelines.pick(:status) || 'unknown'
         end
-        # rubocop: enable CodeReuse/ActiveRecord
 
         def metadata
           @metadata ||= Pipeline::Metadata.new(self)

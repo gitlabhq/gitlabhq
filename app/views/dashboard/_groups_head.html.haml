@@ -7,7 +7,7 @@
       = render Pajamas::ButtonComponent.new(href: new_group_path, variant: :confirm, button_options: { data: { testid: "new-group-button" } }) do
         = _("New group")
 
-.top-area.gl-py-3.gl-justify-content-end.gl-border-bottom-0
-  .nav-controls
+.gl-display-flex.gl-py-3.gl-gap-3
+  .gl-w-full
     = render 'shared/groups/search_form'
-    = render 'shared/groups/dropdown'
+  = render 'shared/groups/dropdown'

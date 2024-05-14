@@ -22,7 +22,7 @@ To set up the GitLab for Jira Cloud app on your self-managed instance, do one of
 - [Connect the GitLab for Jira Cloud app](#connect-the-gitlab-for-jira-cloud-app) (GitLab 15.7 and later).
 - [Install the GitLab for Jira Cloud app manually](#install-the-gitlab-for-jira-cloud-app-manually).
 
-After you set up the app, you can use the [project toolchain](https://support.atlassian.com/jira-software-cloud/docs/what-is-the-project-toolchain-in-jira)
+After you set up the app, you can use the [project toolchain](https://support.atlassian.com/jira-software-cloud/docs/what-is-the-connections-feature/)
 developed and maintained by Atlassian to [link GitLab repositories to Jira projects](https://support.atlassian.com/jira-software-cloud/docs/link-repositories-to-a-project/#Link-repositories-using-the-toolchain-feature).
 The project toolchain does not affect how development information is synced between GitLab and Jira Cloud.
 
@@ -104,11 +104,10 @@ With this method:
 - If your instance uses HTTPS, your GitLab certificate must be publicly trusted or contain the full chain certificate.
 - Your network must allow inbound and outbound connections between GitLab and Jira. For self-managed instances that are behind a
   firewall and cannot be directly accessed from the internet:
-  - Open your firewall and only allow inbound traffic from [Atlassian IP addresses](https://support.atlassian.com/organization-administration/docs/ip-addresses-and-domains-for-atlassian-cloud-products/#Outgoing-Connections).
-  - Set up an internet-facing reverse proxy in front of your self-managed instance. To secure this proxy further, only allow inbound
-    traffic from [Atlassian IP addresses](https://support.atlassian.com/organization-administration/docs/ip-addresses-and-domains-for-atlassian-cloud-products/#Outgoing-Connections).
+  - Open your firewall and allow inbound traffic from [Atlassian IP addresses](https://support.atlassian.com/organization-administration/docs/ip-addresses-and-domains-for-atlassian-cloud-products/#Outgoing-Connections) only.
+  - Set up an internet-facing [reverse proxy](#using-a-reverse-proxy) in front of your self-managed instance.
   - Add [GitLab IP addresses](../../user/gitlab_com/index.md#ip-range) to the allowlist of your firewall.
-- The Jira user that installs and configures the GitLab for Jira Cloud app must meet certain [requirements](#jira-user-requirements).
+- The Jira user that installs and configures the app must meet certain [requirements](#jira-user-requirements).
 
 ### Set up your instance
 
@@ -129,9 +128,7 @@ To set up your self-managed instance for the GitLab for Jira Cloud app in GitLab
 To link your self-managed instance to the GitLab for Jira Cloud app:
 
 1. Install the [GitLab for Jira Cloud app](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud?tab=overview&hosting=cloud).
-1. Select **GitLab (self-managed)**.
-1. Enter your GitLab instance URL.
-1. Select **Save**.
+1. [Configure the GitLab for Jira Cloud app](../../integration/jira/connect-app.md#configure-the-gitlab-for-jira-cloud-app).
 1. Optional. [Check if Jira Cloud is now linked](#check-if-jira-cloud-is-linked).
 
 #### Check if Jira Cloud is linked
@@ -176,7 +173,12 @@ To support your self-managed instance with Jira Cloud, do one of the following:
 
 - The instance must be publicly available.
 - You must set up [OAuth authentication](#set-up-oauth-authentication).
-- The Jira user that installs and configures the GitLab for Jira Cloud app must meet certain [requirements](#jira-user-requirements).
+- Your network must allow inbound and outbound connections between GitLab and Jira. For self-managed instances that are behind a
+  firewall and cannot be directly accessed from the internet:
+  - Open your firewall and allow inbound traffic from [Atlassian IP addresses](https://support.atlassian.com/organization-administration/docs/ip-addresses-and-domains-for-atlassian-cloud-products/#Outgoing-Connections) only.
+  - Set up an internet-facing [reverse proxy](#using-a-reverse-proxy) in front of your self-managed instance.
+  - Add [GitLab IP addresses](../../user/gitlab_com/index.md#ip-range) to the allowlist of your firewall.
+- The Jira user that installs and configures the app must meet certain [requirements](#jira-user-requirements).
 
 ### Install the app in development mode
 
@@ -202,8 +204,8 @@ To configure your Jira instance so you can install apps from outside the marketp
 1. [Disable development mode](https://developer.atlassian.com/cloud/jira/platform/getting-started-with-connect/#step-3--enable-development-mode-in-your-site)
    on your Jira instance.
 
-In **Apps > Manage Apps**, **GitLab for Jira Cloud** now appears.
-You can also select **Get started** to open the configuration page from your GitLab instance.
+In **Apps > Manage Apps**, **GitLab for Jira Cloud** is now visible.
+You can also select **Get started** to [configure the GitLab for Jira Cloud app](../../integration/jira/connect-app.md#configure-the-gitlab-for-jira-cloud-app).
 
 If a GitLab upgrade makes changes to the app descriptor, you must reinstall the app.
 
@@ -227,7 +229,7 @@ Like the GitLab.com marketplace listing, this method uses
 [automatic updates](../../integration/jira/connect-app.md#update-the-gitlab-for-jira-cloud-app).
 
 For more information about creating a marketplace listing, see the
-[Atlassian documentation](https://developer.atlassian.com/platform/marketplace/installing-cloud-apps/#creating-the-marketplace-listing).
+[Atlassian documentation](https://developer.atlassian.com/platform/marketplace/listing-connect-apps/#create-your-marketplace-listing).
 
 ## Configure your GitLab instance to serve as a proxy
 
@@ -278,3 +280,79 @@ However, the GitLab for Jira Cloud app only uses this access to:
 - Link groups.
 
 Access through OAuth is only needed for the time a user configures the GitLab for Jira Cloud app. For more information, see [Access token expiration](../../integration/oauth_provider.md#access-token-expiration).
+
+## Using a reverse proxy
+
+To use the GitLab for Jira Cloud app on a self-managed instance that cannot be accessed
+from the internet, the self-managed instance must be accessible from Jira Cloud.
+You can use a reverse proxy, but keep the following in mind:
+
+- When you [connect the GitLab for Jira Cloud app](#connect-the-gitlab-for-jira-cloud-app),
+  use a client with access to both the internal GitLab FQDN and the reverse proxy FQDN.
+- When you [install the GitLab for Jira Cloud app manually](#install-the-gitlab-for-jira-cloud-app-manually),
+  use the reverse proxy FQDN for **Redirect URI** to [set up OAuth authentication](#set-up-oauth-authentication).
+- The reverse proxy must meet the prerequisites for your installation method:
+  - [Prerequisites for connecting the GitLab for Jira Cloud app](#prerequisites).
+  - [Prerequisites for installing the GitLab for Jira Cloud app manually](#prerequisites-1).
+- The [Jira development panel](../../integration/jira/development_panel.md) might link
+  to the internal GitLab FQDN or GitLab.com instead of the reverse proxy FQDN.
+  For more information, see [issue 434085](https://gitlab.com/gitlab-org/gitlab/-/issues/434085).
+- To secure the reverse proxy on the public internet, allow inbound traffic from
+  [Atlassian IP addresses](https://support.atlassian.com/organization-administration/docs/ip-addresses-and-domains-for-atlassian-cloud-products/#Outgoing-Connections) only.
+- If you use a rewrite or subfilter with your proxy, ensure the proxy
+  does not rewrite or replace the `gitlab-jira-connect-${host}` app key.
+  Otherwise, you might get a [`Failed to link group`](jira_cloud_app_troubleshooting.md#failed-to-link-group) error.
+
+### External NGINX
+
+This server block is an example of how to configure a reverse proxy for GitLab that works with Jira Cloud:
+
+```json
+server {
+  listen *:80;
+  server_name gitlab.mycompany.com;
+  server_tokens off;
+  location /.well-known/acme-challenge/ {
+    root /var/www/;
+  }
+  location / {
+    return 301 https://gitlab.mycompany.com:443$request_uri;
+  }
+}
+server {
+  listen *:443 ssl;
+  server_tokens off;
+  server_name gitlab.mycompany.com;
+  ssl_certificate /etc/letsencrypt/live/gitlab.mycompany.com/fullchain.pem;
+  ssl_certificate_key /etc/letsencrypt/live/gitlab.mycompany.com/privkey.pem;
+  ssl_ciphers 'ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384';
+  ssl_protocols  TLSv1.2 TLSv1.3;
+  ssl_prefer_server_ciphers off;
+  ssl_session_cache  shared:SSL:10m;
+  ssl_session_tickets off;
+  ssl_session_timeout  1d;
+  access_log "/var/log/nginx/proxy_access.log";
+  error_log "/var/log/nginx/proxy_error.log";
+  location / {
+    proxy_pass https://gitlab.internal;
+    proxy_hide_header upgrade;
+    proxy_set_header Host             gitlab.mycompany.com:443;
+    proxy_set_header X-Real-IP        $remote_addr;
+    proxy_set_header X-Forwarded-For  $proxy_add_x_forwarded_for;
+  }
+}
+```
+
+In this example:
+
+- Replace `gitlab.mycompany.com` with the reverse proxy FQDN
+  and `gitlab.internal` with the internal GitLab FQDN.
+- Set `ssl_certificate` and `ssl_certificate_key` to a valid certificate
+  (the example uses [Certbot](https://certbot.eff.org/)).
+- Set the `Host` proxy header to the reverse proxy FQDN
+  to ensure GitLab and Jira Cloud can connect successfully.
+
+You must use the reverse proxy FQDN only to connect Jira Cloud to GitLab.
+You must continue to access GitLab from the internal GitLab FQDN.
+If you access GitLab from the reverse proxy FQDN, GitLab might not work as expected.
+For more information, see [issue 21319](https://gitlab.com/gitlab-org/gitlab/-/issues/21319).

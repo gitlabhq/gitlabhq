@@ -6,7 +6,7 @@ RSpec.describe 'getting a list of work item types for a project', feature_catego
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project) }
-  let_it_be(:developer) { create(:user).tap { |u| project.add_developer(u) } }
+  let_it_be(:developer) { create(:user, developer_of: project) }
 
   it_behaves_like 'graphql work item type list request spec' do
     let(:current_user) { developer }

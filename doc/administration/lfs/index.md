@@ -159,7 +159,7 @@ To change the default local storage path location:
 You can store LFS objects in remote object storage. This allows you
 to reduce reads and writes to the local disk, and free up disk space significantly.
 
-In GitLab 13.2 and later, you should use the
+You should use the
 [consolidated object storage settings](../object_storage.md#configure-a-single-storage-connection-for-all-object-types-consolidated-form).
 
 ### Migrating to object storage
@@ -345,10 +345,10 @@ To migrate back to local storage:
 
 ## Storage statistics
 
-You can see the total storage used for LFS objects on groups and projects:
+You can see the total storage used for LFS objects for groups and projects in:
 
-- In the administration area.
-- In the [groups](../../api/groups.md) and [projects APIs](../../api/projects.md).
+- The Admin Area
+- The [groups](../../api/groups.md) and [projects](../../api/projects.md) APIs
 
 ## Related topics
 

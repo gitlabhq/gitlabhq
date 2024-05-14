@@ -210,7 +210,8 @@ class Admin::UsersController < Admin::ApplicationController
   def create
     opts = {
       reset_password: true,
-      skip_confirmation: true
+      skip_confirmation: true,
+      organization_id: Current.organization&.id
     }
 
     @user = Users::CreateService.new(current_user, user_params.merge(opts)).execute
@@ -366,6 +367,7 @@ class Admin::UsersController < Admin::ApplicationController
       :bio,
       :can_create_group,
       :color_scheme_id,
+      :color_mode_id,
       :discord,
       :email,
       :extern_uid,
@@ -388,7 +390,7 @@ class Admin::UsersController < Admin::ApplicationController
       :website_url,
       :note,
       :private_profile,
-      credit_card_validation_attributes: [:credit_card_validated_at]
+      { credit_card_validation_attributes: [:credit_card_validated_at] }
     ]
   end
 

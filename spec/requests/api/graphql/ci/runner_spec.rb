@@ -17,15 +17,11 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
       creator: user,
       contacted_at: 2.hours.ago,
       active: true,
-      version: 'adfe156',
-      revision: 'a',
       locked: true,
-      ip_address: '127.0.0.1',
       maximum_timeout: 600,
       access_level: 0,
       tag_list: %w[tag1 tag2],
       run_untagged: true,
-      executor_type: :custom,
       maintenance_note: '**Test maintenance note**')
   end
 
@@ -35,9 +31,6 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
       creator: another_admin,
       contacted_at: 1.day.ago,
       active: false,
-      version: 'adfe157',
-      revision: 'b',
-      ip_address: '10.10.10.10',
       access_level: 1,
       run_untagged: true)
   end
@@ -48,15 +41,11 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
       description: 'Group runner 1',
       contacted_at: 2.hours.ago,
       active: true,
-      version: 'adfe156',
-      revision: 'a',
       locked: true,
-      ip_address: '127.0.0.1',
       maximum_timeout: 600,
       access_level: 0,
       tag_list: %w[tag1 tag2],
-      run_untagged: true,
-      executor_type: :shell)
+      run_untagged: true)
   end
 
   let_it_be(:project1) { create(:project) }
@@ -89,9 +78,7 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
         created_by: runner.creator ? a_graphql_entity_for(runner.creator) : nil,
         created_at: runner.created_at&.iso8601,
         contacted_at: runner.contacted_at&.iso8601,
-        version: runner.version,
         short_sha: runner.short_sha,
-        revision: runner.revision,
         locked: false,
         active: runner.active,
         paused: !runner.active,
@@ -100,12 +87,8 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
         maximum_timeout: runner.maximum_timeout,
         access_level: runner.access_level.to_s.upcase,
         run_untagged: runner.run_untagged,
-        ip_address: runner.ip_address,
         runner_type: runner.instance_type? ? 'INSTANCE_TYPE' : 'PROJECT_TYPE',
         ephemeral_authentication_token: nil,
-        executor_name: runner.executor_type&.dasherize,
-        architecture_name: runner.architecture,
-        platform_name: runner.platform,
         maintenance_note: runner.maintenance_note,
         maintenance_note_html:
           runner.maintainer_note.present? ? a_string_including('<strong>Test maintenance note</strong>') : '',
@@ -338,16 +321,16 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
 
   describe 'for project runner' do
     let_it_be_with_refind(:project_runner) do
-      create(:ci_runner, :project,
-             description: 'Runner 3',
-             contacted_at: 1.day.ago,
-             active: false,
-             locked: false,
-             version: 'adfe157',
-             revision: 'b',
-             ip_address: '10.10.10.10',
-             access_level: 1,
-             run_untagged: true)
+      create(
+        :ci_runner,
+        :project,
+        description: 'Runner 3',
+        contacted_at: 1.day.ago,
+        active: false,
+        locked: false,
+        access_level: 1,
+        run_untagged: true
+      )
     end
 
     describe 'locked' do
@@ -696,12 +679,16 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
 
   describe 'for runner with status' do
     let_it_be(:stale_runner) do
-      create(:ci_runner, description: 'Stale runner 1',
-             created_at: (3.months + 1.second).ago, contacted_at: (3.months + 1.second).ago)
+      create(
+        :ci_runner,
+        description: 'Stale runner 1',
+        created_at: (3.months + 1.second).ago,
+        contacted_at: (3.months + 1.second).ago
+      )
     end
 
     let_it_be(:never_contacted_instance_runner) do
-      create(:ci_runner, description: 'Missing runner 1', created_at: 1.month.ago, contacted_at: nil)
+      create(:ci_runner, :unregistered, description: 'Missing runner 1', created_at: 1.month.ago)
     end
 
     let(:query) do
@@ -811,8 +798,8 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
           'projectCount' => 2,
           'projects' => {
             'nodes' => [
-              a_graphql_entity_for(project1),
-              a_graphql_entity_for(project2)
+              a_graphql_entity_for(project2),
+              a_graphql_entity_for(project1)
             ]
           })
         expect(runner2_data).to match a_hash_including(
@@ -895,9 +882,15 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
     end
 
     let(:runner) do
-      create(:ci_runner, :group,
-             groups: [group], creator: creator, created_at: created_at,
-             registration_type: registration_type, token: "#{token_prefix}abc123")
+      create(
+        :ci_runner,
+        :group,
+        groups: [group],
+        creator: creator,
+        created_at: created_at,
+        registration_type: registration_type,
+        token: "#{token_prefix}abc123"
+      )
     end
 
     before_all do
@@ -1085,8 +1078,14 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
     let(:project_runner2) { create(:ci_runner, :project, projects: [project1, project2]) }
     let!(:build1) { create(:ci_build, :success, name: 'Build One', runner: project_runner2, pipeline: pipeline1) }
     let_it_be(:pipeline1) do
-      create(:ci_pipeline, project: project1, source: :merge_request_event, merge_request: merge_request1, ref: 'main',
-             target_sha: 'xxx')
+      create(
+        :ci_pipeline,
+        project: project1,
+        source: :merge_request_event,
+        merge_request: merge_request1,
+        ref: 'main',
+        target_sha: 'xxx'
+      )
     end
 
     let(:query) do
@@ -1139,8 +1138,14 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
 
           # Add a new build to project_runner2
           project_runner2.runner_projects << build(:ci_runner_project, runner: project_runner2, project: project3)
-          pipeline2 = create(:ci_pipeline, project: project3, source: :merge_request_event, merge_request: merge_request2,
-                                           ref: 'main', target_sha: 'xxx')
+          pipeline2 = create(
+            :ci_pipeline,
+            project: project3,
+            source: :merge_request_event,
+            merge_request: merge_request2,
+            ref: 'main',
+            target_sha: 'xxx'
+          )
           build2 = create(:ci_build, :success, name: 'Build Two', runner: project_runner2, pipeline: pipeline2)
 
           expect { post_graphql(query, **args2) }.not_to exceed_all_query_limit(control)

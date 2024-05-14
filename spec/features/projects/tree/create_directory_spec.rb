@@ -54,7 +54,7 @@ RSpec.describe 'Multi-file editor new directory', :js, feature_category: :web_id
     # (as it is with WEBDRIVER_HEADLESS=0), this initial commit button will exist. Otherwise, if it is
     # taller (as it is by default with chrome headless) then the button will not exist.
     if page.has_css?('[data-testid="begin-commit-button"]')
-      find('[data-testid="begin-commit-button"]').click
+      find_by_testid('begin-commit-button').click
     end
 
     fill_in('commit-message', with: 'commit message ide')

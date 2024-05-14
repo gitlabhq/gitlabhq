@@ -12,7 +12,6 @@ const defaultConfigHelpUrl =
   '/help/user/clusters/agent/install/index#create-an-agent-configuration-file';
 
 const provideData = {
-  gitlabVersion: '14.8',
   kasCheckVersion: '14.8.0',
 };
 const defaultProps = {
@@ -166,7 +165,7 @@ describe('AgentTable', () => {
 
         beforeEach(() => {
           createWrapper({
-            provide: { gitlabVersion: '14.8', kasCheckVersion },
+            provide: { kasCheckVersion },
             propsData: { agents: [currentAgent] },
           });
         });

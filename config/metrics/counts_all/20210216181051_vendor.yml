@@ -5,7 +5,7 @@ description: Identifies if a user is using an external container registry and wh
   type
 product_section: ops
 product_stage: package
-product_group: package
+product_group: container_registry
 value_type: number
 status: active
 time_frame: all

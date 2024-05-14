@@ -60,3 +60,4 @@ Read how to [set up PostgreSQL replication and failover](replication_and_failove
 - [Multiple databases](multiple_databases.md)
 - [Database guides for GitLab development](../../development/database/index.md)
 - [Upgrade external database](external_upgrade.md)
+- [Upgrading operating systems for PostgreSQL](upgrading_os.md)

@@ -29,7 +29,7 @@ Many users who encounter issues with a DAST scan have a good high-level idea of 
 it's not scanning particular pages, or it's not selecting a button on the page.
 
 As much as possible, try to isolate the problem to help narrow the search for a solution. For example, take the situation where DAST isn't scanning a particular page.
-From where should DAST have found the page? What path did it take to navigate there? Were there elements on the referring page that DAST should have selected, but did not?
+From where should DAST have found the page? What path did it take to get there? Were there elements on the referring page that DAST should have selected, but did not?
 
 ### Is the outcome achievable by a human?
 
@@ -42,10 +42,10 @@ Knowing the outcome you expect, try to replicate it manually using a browser on 
   - In Chrome: `View -> Developer -> Developer Tools`.
   - In Firefox: `Tools -> Browser Tools -> Web Developer Tools`.
 - If authenticating:
-  - Navigate to the `DAST_AUTH_URL`.
-  - Type in the `DAST_USERNAME` in the `DAST_USERNAME_FIELD`.
-  - Type in the `DAST_PASSWORD` in the `DAST_PASSWORD_FIELD`.
-  - Select the `DAST_SUBMIT_FIELD`.
+  - Go to the `DAST_AUTH_URL`.
+  - Type in the `DAST_AUTH_USERNAME` in the `DAST_AUTH_USERNAME_FIELD`.
+  - Type in the `DAST_AUTH_PASSWORD` in the `DAST_AUTH_PASSWORD_FIELD`.
+  - Select the `DAST_AUTH_SUBMIT_FIELD`.
 - Select links and fill in forms. Navigate to the pages that aren't scanning correctly.
 - Observe how your application behaves. Notice if there is anything that might cause problems for an automated scanner.
 
@@ -98,7 +98,7 @@ For example, the following log entry has level `INFO`, is part of the `CRAWL` lo
 ### Log destination
 
 Logs are sent either to file or to console (the CI/CD job log). You can configure each destination to accept different logs using
-the environment variables `DAST_BROWSER_LOG` for console logs and `DAST_BROWSER_FILE_LOG` for file logs.
+the environment variables `DAST_LOG_CONFIG` for console logs and `DAST_LOG_FILE_CONFIG` for file logs.
 
 For example:
 
@@ -109,13 +109,8 @@ include:
 dast:
   variables:
     DAST_BROWSER_SCAN: "true"
-    DAST_BROWSER_LOG: "auth:debug"                               # console log defaults to INFO level, logs AUTH module at DEBUG
-    DAST_BROWSER_FILE_LOG: "loglevel:debug,cache:warn"           # file log defaults to DEBUG level, logs CACHE module at WARN
-    DAST_BROWSER_FILE_LOG_PATH: "$CI_PROJECT_DIR/dast-scan.log"  # Save the file log in the project directory so it can be recognized as an artifact
-  artifacts:
-    paths:
-      - dast-scan.log
-    when: always
+    DAST_LOG_CONFIG: "auth:debug"                               # console log defaults to INFO level, logs AUTH module at DEBUG
+    DAST_LOG_FILE_CONFIG: "loglevel:debug,cache:warn"           # file log defaults to DEBUG level, logs CACHE module at WARN
 ```
 
 ### Log levels
@@ -170,7 +165,7 @@ include:
 
 dast:
   variables:
-    DAST_BROWSER_LOG: "crawl:debug"
+    DAST_LOG_CONFIG: "crawl:debug"
 ```
 
 For example, the following output shows that four anchor links we discovered during the crawl of the page at `https://example.com`.
@@ -206,7 +201,7 @@ To log all DevTools messages, turn the `CHROM` log module to `trace` and configu
 ### Customizing DevTools log levels
 
 Chrome DevTools requests, responses and events are namespaced by domain. DAST allows each domain and each domain with message to have different logging configuration.
-The environment variable `DAST_BROWSER_DEVTOOLS_LOG` accepts a semi-colon separated list of logging configurations.
+The environment variable `DAST_LOG_DEVTOOLS_CONFIG` accepts a semi-colon separated list of logging configurations.
 Logging configurations are declared using the structure `[domain/message]:[what-to-log][,truncate:[max-message-size]]`.
 
 - `domain/message` references what is being logged.
@@ -230,13 +225,8 @@ include:
 
 dast:
   variables:
-    DAST_BROWSER_FILE_LOG: "chrom:trace"
-    DAST_BROWSER_FILE_LOG_PATH: "/zap/wrk/dast-scan.log"
-    DAST_BROWSER_DEVTOOLS_LOG: "Default:messageAndBody,truncate:2000"
-  artifacts:
-    paths:
-      - dast-scan.log
-    when: always
+    DAST_LOG_FILE_CONFIG: "chrom:trace"
+    DAST_LOG_DEVTOOLS_CONFIG: "Default:messageAndBody,truncate:2000"
 ```
 
 ### Example - log HTTP messages
@@ -250,19 +240,14 @@ include:
 
 dast:
   variables:
-    DAST_BROWSER_FILE_LOG: "chrom:trace"
-    DAST_BROWSER_FILE_LOG_PATH: "/zap/wrk/dast-scan.log"
-    DAST_BROWSER_DEVTOOLS_LOG: "Default:suppress;Fetch:messageAndBody,truncate:2000;Network:messageAndBody,truncate:2000;Log:messageAndBody,truncate:2000;Console:messageAndBody,truncate:2000"
-  artifacts:
-    paths:
-      - dast-scan.log
-    when: always
+    DAST_LOG_FILE_CONFIG: "chrom:trace"
+    DAST_LOG_DEVTOOLS_CONFIG: "Default:suppress;Fetch:messageAndBody,truncate:2000;Network:messageAndBody,truncate:2000;Log:messageAndBody,truncate:2000;Console:messageAndBody,truncate:2000"
 ```
 
 ## Chromium logs
 
 In the rare event that Chromium crashes, it can be helpful to write the Chromium process `STDOUT` and `STDERR` to log.
-Setting the environment variable `DAST_BROWSER_LOG_CHROMIUM_OUTPUT` to `true` achieves this purpose.
+Setting the environment variable `DAST_LOG_BROWSER_OUTPUT` to `true` achieves this purpose.
 
 DAST starts and stops many Chromium processes. DAST sends each process output to all log destinations with the log module `LEASE` and log level `INFO`.
 
@@ -274,7 +259,7 @@ include:
 
 dast:
   variables:
-    DAST_BROWSER_LOG_CHROMIUM_OUTPUT: "true"
+    DAST_LOG_BROWSER_OUTPUT: "true"
 ```
 
 ## Known problems
@@ -291,7 +276,7 @@ An example log is as follows, where DAST blocked the JavaScript file found at `h
 2022-12-05T06:28:58.104 WRN CONTA request failed, attempting to continue scan error=net::ERR_BLOCKED_BY_RESPONSE index=0 requestID=38.2 url=https://example.com/large.js
 ```
 
-This can be changed using the configuration `DAST_MAX_RESPONSE_SIZE_MB`. For example,
+This can be changed using the configuration `DAST_PAGE_MAX_RESPONSE_SIZE_MB`. For example,
 
 ```yaml
 include:
@@ -299,5 +284,5 @@ include:
 
 dast:
   variables:
-    DAST_MAX_RESPONSE_SIZE_MB: "25"
+    DAST_PAGE_MAX_RESPONSE_SIZE_MB: "25"
 ```

@@ -24,7 +24,10 @@ RSpec.describe 'Group labels', feature_category: :team_planning do
   end
 
   it 'shows an edit label button', :js do
-    click_button 'Label actions dropdown'
-    expect(page).to have_link('Edit')
+    page.within "#group_label_#{label.id}" do
+      find_by_testid('label-actions-dropdown-toggle').click
+
+      expect(page).to have_link('Edit')
+    end
   end
 end

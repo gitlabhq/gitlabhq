@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Each GitLab account has a user profile, which contains information about you and your GitLab activity.
 
@@ -40,10 +40,15 @@ Prerequisites:
 - Your namespace must not:
   - Contain a project with [Container Registry](../packages/container_registry/index.md) tags.
   - Have a project that hosts [GitLab Pages](../project/pages/index.md). For more information,
-  see [changing your username in the GitLab Team Handbook](https://handbook.gitlab.com/handbook/tools-and-tips/#change-your-username-at-gitlabcom).
-- Your username must be between 2 and 255 characters in length, and must not:
-  - Contain special characters or emoji.
-  - End with `.<reserved file extension>`, for example `jon.png`. However, `jonpng` is valid.
+    see [changing your username in the GitLab Team Handbook](https://handbook.gitlab.com/handbook/tools-and-tips/#change-your-username-at-gitlabcom).
+- Your username:
+  - Must be between 2 and 255 characters in length.
+  - Must only include non-accented letters, digits, `_`, `-`, and `.`.
+  - Must not:
+    - Start with `-`.
+    - Contain emoji.
+    - End with `.` or `.<reserved file extension>`, for example `jon.png`, `jon.git` or `jon.atom`. However,
+      `jonpng` is valid.
 
 To change your username:
 
@@ -71,11 +76,15 @@ NOTE:
 
 ## Delete emails from your user profile
 
+> - Automatic deletion of unverified secondary email addresses [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151562) in GitLab 17.0.
+
 You can delete a secondary email address from your account. You cannot delete your
 primary email address.
 
 If the deleted email address is used for any user emails, those user emails are
 sent to the primary email address instead.
+
+Unverified secondary email addresses are automatically deleted after three days.
 
 NOTE:
 Because of [issue 438600](https://gitlab.com/gitlab-org/gitlab/-/issues/438600), group notifications are still sent to
@@ -123,8 +132,6 @@ If the [public level is restricted](../../administration/settings/visibility_and
 user profiles are only visible to authenticated users.
 
 ## Add details to your profile with a README
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/232157) in GitLab 14.5.
 
 You can add more information to your profile page with a README file. When you populate
 the README file with information, it's included on your profile page.
@@ -189,8 +196,6 @@ To show private contributions:
 
 ## Add your gender pronouns
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/332405) in GitLab 14.0.
-
 You can add your gender pronouns to your GitLab account to be displayed next to
 your name in your profile.
 
@@ -203,8 +208,6 @@ To specify your pronouns:
 
 ## Add your name pronunciation
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25742) in GitLab 14.2.
-
 You can add your name pronunciation to your GitLab account. This is displayed in your profile, below
 your name.
 
@@ -216,8 +219,6 @@ To add your name pronunciation:
 1. Select **Update profile settings**.
 
 ## Set your current status
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56649) in GitLab 13.10, users can schedule the clearing of their status.
 
 You can provide a custom status message for your user profile along with an emoji that describes it.
 This may be helpful when you are out of office or otherwise not available.
@@ -238,11 +239,6 @@ You can also set your current status from [your user settings](#access-your-user
 If you select the **Busy** checkbox, remember to clear it when you become available again.
 
 ## Set a busy status indicator
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/259649) in GitLab 13.6.
-> - It was [deployed behind a feature flag](../feature_flags.md), disabled by default.
-> - [Became enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/281073) in GitLab 13.8.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/329163) in GitLab 13.12.
 
 To indicate to others that you are busy, you can set an indicator.
 
@@ -266,7 +262,6 @@ You can set your local time zone to:
 
 - Display your local time on your profile, and in places where hovering over your name shows information about you.
 - Align your contribution calendar with your local time to better reflect when your contributions were made
-  ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335343) in GitLab 14.5).
 
 To set your time zone:
 
@@ -341,6 +336,9 @@ You can follow or unfollow users from either:
 In [GitLab 15.5 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/360755),
 the maximum number of users you can follow is 300.
 
+In [GitLab 16.10 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/441774),
+blocked users don't appear in the followers list on user profiles.
+
 ### Disable following and being followed by other users
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325558) in GitLab 16.0 [with a flag](../feature_flags.md) named `disable_follow_users`.
@@ -399,6 +397,33 @@ To view your activity:
    - **Designs**: Designs you added, updated, and removed in your projects.
    - **Team**: Projects you joined and left.
 
+## Sign-in services
+
+Instead of using a regular username and password to sign in to GitLab, you can use a sign-in service instead.
+
+### Connect a sign-in service
+
+To connect a sign-in service to use for signing in to GitLab:
+
+1. On the left sidebar, select your avatar.
+1. Select **Edit profile**.
+1. Select **Account**.
+1. Locate the **Service sign-in** section.
+1. Under the **Connected Accounts** section, select the button that corresponds with the service you want to sign in
+   with.
+1. Follow the instructions for the selected service to start signing in with it.
+
+### Disconnect a sign-in service
+
+To disconnect a sign-in service used for signing in to GitLab:
+
+1. On the left sidebar, select your avatar.
+1. Select **Edit profile**.
+1. Select **Account**.
+1. Locate the **Service sign-in** section.
+1. Under the **Connected Accounts** section, select **Disconnect** next to the button that corresponds with the service
+   you no longer want to sign in with.
+
 ## Session duration
 
 ### Stay signed in for two weeks
@@ -422,8 +447,6 @@ GitLab administrators can [turn off the **Remember me** setting](../../administr
 that require sessions to expire periodically for security or compliance purposes.
 
 ### Cookies used for sign-in
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/20340) in GitLab 13.1.
 
 When you sign in, three cookies are set:
 

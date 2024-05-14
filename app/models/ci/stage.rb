@@ -3,19 +3,23 @@
 module Ci
   class Stage < Ci::ApplicationRecord
     include Ci::Partitionable
-    include Importable
     include Ci::HasStatus
+    include Importable
     include Gitlab::OptimisticLocking
     include Presentable
 
+    self.table_name = :p_ci_stages
     self.primary_key = :id
+    self.sequence_name = :ci_job_stages_id_seq
 
-    partitionable scope: :pipeline
+    query_constraints :id, :partition_id
+    partitionable scope: :pipeline, partitioned: true
 
     enum status: Ci::HasStatus::STATUSES_ENUM
 
     belongs_to :project
-    belongs_to :pipeline
+    belongs_to :pipeline, ->(stage) { in_partition(stage) },
+      foreign_key: :pipeline_id, partition_foreign_key: :partition_id, inverse_of: :stages
 
     has_many :statuses,
       ->(stage) { in_partition(stage) },
@@ -116,6 +120,10 @@ module Ci
         transition any - [:success] => :success
       end
 
+      event :start_cancel do
+        transition any - [:canceling, :canceled] => :canceling
+      end
+
       event :cancel do
         transition any - [:canceled] => :canceled
       end
@@ -129,10 +137,7 @@ module Ci
       end
     end
 
-    def self.use_partition_id_filter?
-      Ci::Pipeline.use_partition_id_filter?
-    end
-
+    # rubocop: disable Metrics/CyclomaticComplexity -- breaking apart hurts readability, consider refactoring issue #439268
     def set_status(new_status)
       retry_optimistic_lock(self, name: 'ci_stage_set_status') do
         case new_status
@@ -144,6 +149,7 @@ module Ci
         when 'running' then run
         when 'success' then succeed
         when 'failed' then drop
+        when 'canceling' then start_cancel
         when 'canceled' then cancel
         when 'manual' then block
         when 'scheduled' then delay
@@ -153,6 +159,7 @@ module Ci
         end
       end
     end
+    # rubocop: enable Metrics/CyclomaticComplexity
 
     # This will be removed with ci_remove_ensure_stage_service
     def update_legacy_status
@@ -186,6 +193,13 @@ module Ci
 
     def manual_playable?
       blocked? || skipped?
+    end
+
+    # We only check jobs that are played by `Ci::PlayManualStageService`.
+    def confirm_manual_job?
+      processables.manual.any? do |job|
+        job.playable? && job.manual_confirmation_message
+      end
     end
 
     # This will be removed with ci_remove_ensure_stage_service

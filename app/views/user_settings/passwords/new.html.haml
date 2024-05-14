@@ -1,32 +1,32 @@
-- page_title _('New Password')
-- breadcrumb_title _('New Password')
+- page_title _('Update password')
 
-%h1.page-title.gl-font-size-h-display= _('Set up new password')
-%hr
-= gitlab_ui_form_for @user, url: user_settings_password_path, method: :post do |f|
-  %p.slead
-    = _('Please set a new password before proceeding.')
-    %br
-    = _('After a successful password update you will be redirected to login screen.')
+.gl-sm-w-half.gl-ml-auto.gl-mr-auto
 
-  = form_errors(@user)
+  %h1.gl-heading-1= _('Update password for %{current_name}') % { current_name: current_user.name }
+  %p.gl-text-secondary
+    = _("To continue, please update your password. After you update, you'll be directed to sign in again.")
+  .info-well
+    .well-segment
+      .gl-justify-content-left.gl-display-flex.gl-align-items-center
+        = render Pajamas::AvatarComponent.new(current_user, size: 24, avatar_options: { data: { qa_selector: 'user_avatar_content' }, title: current_user.username })
+        .gl-pl-4.gl-break-all
+          %span= _('Signed in as %{username}') % { username: '@' + current_user.username }
+  = gitlab_ui_form_for @user, url: user_settings_password_path, method: :post do |f|
 
-  - unless @user.password_automatically_set?
-    .form-group.row
-      .col-sm-2.col-form-label
+    = form_errors(@user)
+
+    - unless @user.password_automatically_set?
+      .form-group
         = f.label :password, _('Current password')
-      .col-sm-10
         = f.password_field :password, required: true, autocomplete: 'current-password', class: 'form-control gl-form-input', data: { testid: 'current-password-field' }
-  .form-group.row
-    .col-sm-2.col-form-label
+    .form-group
       = f.label :new_password, _('New password')
-    .col-sm-10
       = f.password_field :new_password, required: true, autocomplete: 'new-password', class: 'form-control gl-form-input js-password-complexity-validation', data: { testid: 'new-password-field' }
       = render_if_exists 'shared/password_requirements_list'
-  .form-group.row
-    .col-sm-2.col-form-label
-      = f.label :password_confirmation, _('Password confirmation')
-    .col-sm-10
+    .form-group
+      = f.label :password_confirmation, _('Confirm password')
       = f.password_field :password_confirmation, required: true, autocomplete: 'new-password', class: 'form-control gl-form-input', data: { testid: 'confirm-password-field' }
-  .form-actions
-    = f.submit _('Set new password'), data: { testid: 'set-new-password-button' }, pajamas_button: true
+    .gl-mt-3.gl-mb-3
+      = f.submit _('Update password'), class: "gl-mr-3", data: { testid: 'set-new-password-button' }, pajamas_button: true
+      = render Pajamas::ButtonComponent.new(href: '/users/sign_out', method: :post) do
+        = _('Sign out')

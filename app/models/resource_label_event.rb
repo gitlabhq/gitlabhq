@@ -3,6 +3,7 @@
 class ResourceLabelEvent < ResourceEvent
   include CacheMarkdownField
   include MergeRequestResourceEvent
+  include Import::HasImportSource
 
   cache_markdown_field :reference
 

@@ -311,6 +311,16 @@ RSpec.describe Gitlab::Database::LoadBalancing::Host, feature_category: :databas
   end
 
   describe '#replication_lag_below_threshold' do
+    let(:load_balancer_double_replication_lag_time) { false }
+    let(:load_balancer_ignore_replication_lag_time) { false }
+
+    before do
+      # Enable feature flags in the load balancer. They are enabled in production and relate to behavior in these specs
+      stub_env(Feature::BypassLoadBalancer::FLAG, 'true')
+      stub_feature_flags(load_balancer_double_replication_lag_time: load_balancer_double_replication_lag_time)
+      stub_feature_flags(load_balancer_ignore_replication_lag_time: load_balancer_ignore_replication_lag_time)
+    end
+
     it 'returns true when the lag time is below the threshold' do
       expect(host)
         .to receive(:replication_lag_time)
@@ -333,6 +343,38 @@ RSpec.describe Gitlab::Database::LoadBalancing::Host, feature_category: :databas
         .and_return(nil)
 
       expect(host.replication_lag_below_threshold?).to eq(false)
+    end
+
+    context 'with the load_balancer_double_replication_lag_time feature flag enabled' do
+      let(:load_balancer_double_replication_lag_time) { true }
+
+      it 'returns false when lag time is above the higher threshold' do
+        expect(host)
+          .to receive(:replication_lag_time)
+          .and_return(121)
+
+        expect(host.replication_lag_below_threshold?).to eq(false)
+      end
+
+      it 'returns true when lag time is below the higher threshold' do
+        expect(host)
+          .to receive(:replication_lag_time)
+          .and_return(119)
+
+        expect(host.replication_lag_below_threshold?).to eq(true)
+      end
+    end
+
+    context 'with the load_balancer_ignore_replication_lag_time feature flag enabled' do
+      let(:load_balancer_ignore_replication_lag_time) { true }
+
+      it 'returns true no matter how high the lag time is' do
+        expect(host)
+         .to receive(:replication_lag_time)
+         .and_return(3600)
+
+        expect(host.replication_lag_below_threshold?).to eq(true)
+      end
     end
   end
 

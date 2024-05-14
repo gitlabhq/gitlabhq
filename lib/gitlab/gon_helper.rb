@@ -13,6 +13,7 @@ module Gitlab
       gon.asset_host                    = ActionController::Base.asset_host
       gon.webpack_public_path           = webpack_public_path
       gon.relative_url_root             = Gitlab.config.gitlab.relative_url_root
+      gon.user_color_mode               = Gitlab::ColorModes.for_user(current_user).css_class
       gon.user_color_scheme             = Gitlab::ColorSchemes.for_user(current_user).css_class
       gon.markdown_surround_selection   = current_user&.markdown_surround_selection
       gon.markdown_automatic_lists      = current_user&.markdown_automatic_lists
@@ -20,15 +21,10 @@ module Gitlab
 
       add_browsersdk_tracking
 
-      if Gitlab.config.sentry.enabled
-        gon.sentry_dsn         = Gitlab.config.sentry.clientside_dsn
-        gon.sentry_environment = Gitlab.config.sentry.environment
-      end
-
-      # Support for Sentry setup via configuration files will be removed in 16.0
-      # in favor of Gitlab::CurrentSettings.
-      if Feature.enabled?(:enable_new_sentry_clientside_integration,
-                          current_user) && Gitlab::CurrentSettings.sentry_enabled
+      # Sentry configurations for the browser client are done
+      # via `Gitlab::CurrentSettings` from the Admin panel:
+      # `/admin/application_settings/metrics_and_profiling`
+      if Gitlab::CurrentSettings.sentry_enabled
         gon.sentry_dsn           = Gitlab::CurrentSettings.sentry_clientside_dsn
         gon.sentry_environment   = Gitlab::CurrentSettings.sentry_environment
         gon.sentry_clientside_traces_sample_rate = Gitlab::CurrentSettings.sentry_clientside_traces_sample_rate
@@ -37,14 +33,15 @@ module Gitlab
       gon.recaptcha_api_server_url = ::Recaptcha.configuration.api_server_url
       gon.recaptcha_sitekey      = Gitlab::CurrentSettings.recaptcha_site_key
       gon.gitlab_url             = Gitlab.config.gitlab.url
+      gon.organization_http_header_name = ::Organizations::ORGANIZATION_HTTP_HEADER
       gon.revision               = Gitlab.revision
       gon.feature_category       = Gitlab::ApplicationContext.current_context_attribute(:feature_category).presence
       gon.gitlab_logo            = ActionController::Base.helpers.asset_path('gitlab_logo.png')
       gon.secure                 = Gitlab.config.gitlab.https
       gon.sprite_icons           = IconsHelper.sprite_icon_path
       gon.sprite_file_icons      = IconsHelper.sprite_file_icons_path
-      gon.emoji_sprites_css_path = ActionController::Base.helpers.stylesheet_path('emoji_sprites')
-      gon.gridstack_css_path     = ActionController::Base.helpers.stylesheet_path('lazy_bundles/gridstack.css')
+      gon.emoji_sprites_css_path = universal_path_to_stylesheet('emoji_sprites')
+      gon.gridstack_css_path     = universal_path_to_stylesheet('lazy_bundles/gridstack')
       gon.test_env               = Rails.env.test?
       gon.disable_animations     = Gitlab.config.gitlab['disable_animations']
       gon.suggested_label_colors = LabelsHelper.suggested_colors
@@ -72,15 +69,13 @@ module Gitlab
 
       # Initialize gon.features with any flags that should be
       # made globally available to the frontend
-      push_frontend_feature_flag(:usage_data_api, type: :ops)
-      push_frontend_feature_flag(:security_auto_fix)
       push_frontend_feature_flag(:source_editor_toolbar)
       push_frontend_feature_flag(:vscode_web_ide, current_user)
       push_frontend_feature_flag(:ui_for_organizations, current_user)
+      push_frontend_feature_flag(:organization_switching, current_user)
       # To be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/399248
       push_frontend_feature_flag(:remove_monitor_metrics)
-      push_frontend_feature_flag(:encoding_logs_tree)
-      push_frontend_feature_flag(:group_user_saml)
+      push_frontend_feature_flag(:vue_page_breadcrumbs)
     end
 
     # Exposes the state of a feature flag to the frontend code.

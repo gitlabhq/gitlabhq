@@ -52,7 +52,7 @@ class MergeRequestWidgetEntity < Grape::Entity
   end
 
   expose :reviewing_and_managing_merge_requests_docs_path do |merge_request|
-    help_page_path('user/project/merge_requests/reviews/index', anchor: "checkout-merge-requests-locally-through-the-head-ref")
+    help_page_path('user/project/merge_requests/merge_request_troubleshooting', anchor: "check-out-merge-requests-locally-through-the-head-ref")
   end
 
   expose :merge_request_pipelines_docs_path do |merge_request|
@@ -169,10 +169,6 @@ class MergeRequestWidgetEntity < Grape::Entity
       merge_request.commits_count > 0 &&
       can?(current_user, :read_build, merge_request.source_project) &&
       can?(current_user, :create_pipeline, merge_request.source_project)
-  end
-
-  def use_merge_base_with_merged_results?
-    object.actual_head_pipeline&.merged_result_pipeline?
   end
 
   def head_pipeline_downloadable_path_for_report_type(file_type)

@@ -126,12 +126,12 @@ export default {
 <template>
   <div
     :id="`${targetId}-flyout`"
-    class="gl-fixed gl-p-4 gl-mx-n1 gl-z-index-9999 gl-max-h-full gl-overflow-y-auto"
+    class="gl-fixed gl-p-4 gl-mx-n1 gl-z-9999 gl-max-h-full gl-overflow-y-auto"
     @mouseover="$emit('mouseover')"
     @mouseleave="$emit('mouseleave')"
   >
     <ul
-      class="gl-min-w-20 gl-max-w-34 gl-border-1 gl-rounded-base gl-border-solid gl-border-gray-100 gl-shadow-md gl-bg-white gl-p-2 gl-pb-1 gl-list-style-none"
+      class="gl-min-w-20 gl-max-w-34 gl-border-1 gl-rounded-base gl-border-solid gl-border-gray-100 gl-shadow-md gl-bg-white gl-p-2 gl-pb-1 gl-list-none"
       @mouseenter="showSVG = false"
     >
       <nav-item

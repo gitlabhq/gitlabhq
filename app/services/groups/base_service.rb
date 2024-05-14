@@ -21,7 +21,7 @@ module Groups
         params.delete(nsp)
       end
 
-      ::NamespaceSettings::UpdateService.new(current_user, group, settings_params).execute
+      ::NamespaceSettings::AssignAttributesService.new(current_user, group, settings_params).execute
     end
 
     def remove_unallowed_params

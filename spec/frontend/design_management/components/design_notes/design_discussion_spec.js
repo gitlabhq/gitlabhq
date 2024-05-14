@@ -9,7 +9,7 @@ import DesignNoteSignedOut from '~/design_management/components/design_notes/des
 import DesignReplyForm from '~/design_management/components/design_notes/design_reply_form.vue';
 import ToggleRepliesWidget from '~/design_management/components/design_notes/toggle_replies_widget.vue';
 import toggleResolveDiscussionMutation from '~/design_management/graphql/mutations/toggle_resolve_discussion.mutation.graphql';
-import ReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
+import DiscussionReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
 import destroyNoteMutation from '~/design_management/graphql/mutations/destroy_note.mutation.graphql';
 import { DELETE_NOTE_ERROR_MSG } from '~/design_management/constants';
 import mockDiscussion from '../../mock_data/discussion';
@@ -24,14 +24,12 @@ const defaultMockDiscussion = {
   notes,
 };
 
-const DEFAULT_TODO_COUNT = 2;
-
 describe('Design discussions component', () => {
   let wrapper;
 
   const findDesignNotesList = () => wrapper.find('[data-testid="design-discussion-content"]');
   const findDesignNotes = () => wrapper.findAllComponents(DesignNote);
-  const findReplyPlaceholder = () => wrapper.findComponent(ReplyPlaceholder);
+  const findReplyPlaceholder = () => wrapper.findComponent(DiscussionReplyPlaceholder);
   const findReplyForm = () => wrapper.findComponent(DesignReplyForm);
   const findRepliesWidget = () => wrapper.findComponent(ToggleRepliesWidget);
   const findResolveButton = () => wrapper.find('[data-testid="resolve-button"]');
@@ -141,8 +139,8 @@ describe('Design discussions component', () => {
       expect(findReplyPlaceholder().isVisible()).toBe(true);
     });
 
-    it('does not render toggle replies widget', () => {
-      expect(findRepliesWidget().exists()).toBe(false);
+    it('renders toggle replies widget', () => {
+      expect(findRepliesWidget().exists()).toBe(true);
     });
 
     it('renders a correct icon to resolve a thread', () => {
@@ -160,6 +158,14 @@ describe('Design discussions component', () => {
     it('does not render resolved message', () => {
       expect(findResolvedMessage().exists()).toBe(false);
     });
+
+    it('renders toggle replies widget with correct props', () => {
+      expect(findRepliesWidget().exists()).toBe(true);
+      expect(findRepliesWidget().props()).toEqual({
+        collapsed: false,
+        replies: notes.slice(1),
+      });
+    });
   });
 
   describe('when discussion is resolved', () => {
@@ -167,9 +173,7 @@ describe('Design discussions component', () => {
 
     beforeEach(() => {
       dispatchEventSpy = jest.spyOn(document, 'dispatchEvent');
-      jest.spyOn(document, 'querySelector').mockReturnValue({
-        innerText: DEFAULT_TODO_COUNT,
-      });
+
       createComponent({
         props: {
           discussion: {
@@ -221,7 +225,7 @@ describe('Design discussions component', () => {
       const dispatchedEvent = dispatchEventSpy.mock.calls[0][0];
 
       expect(dispatchEventSpy).toHaveBeenCalledTimes(1);
-      expect(dispatchedEvent.detail).toEqual({ count: DEFAULT_TODO_COUNT });
+      expect(dispatchedEvent.detail).toEqual({ delta: 0 });
       expect(dispatchedEvent.type).toBe('todo:toggle');
     });
 
@@ -439,5 +443,17 @@ describe('Design discussions component', () => {
         'delete-note-error': [[DELETE_NOTE_ERROR_MSG]],
       });
     });
+  });
+
+  it('does not render toggle replies widget if there are no threads', () => {
+    createComponent({
+      props: {
+        discussion: {
+          id: 'gid://gitlab/Discussion/fac4739884a66ebe979480dab8a7cc151f9ab63a',
+          notes: [{ ...notes[0], notes: [] }],
+        },
+      },
+    });
+    expect(findRepliesWidget().exists()).toBe(false);
   });
 });

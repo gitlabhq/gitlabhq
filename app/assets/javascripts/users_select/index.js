@@ -296,7 +296,13 @@ function UsersSelect(currentUser, els, options = {}) {
               })
               .map((input) => {
                 const userId = parseInt(input.value, 10);
-                const { avatarUrl, avatar_url, name, username, canMerge } = input.dataset;
+                const {
+                  avatarUrl,
+                  avatar_url,
+                  name,
+                  username,
+                  can_merge: canMerge,
+                } = input.dataset;
                 return {
                   avatar_url: avatarUrl || avatar_url || gon.default_avatar_url,
                   id: userId,
@@ -434,6 +440,8 @@ function UsersSelect(currentUser, els, options = {}) {
             this.processData(inputValue, users, callback);
           }
 
+          deprecatedJQueryDropdown.filter.clear();
+
           if (this.multiSelect) {
             return getMultiSelectDropdownTitle(selected, $(el).hasClass('is-active'));
           }
@@ -446,6 +454,7 @@ function UsersSelect(currentUser, els, options = {}) {
             return selected.name;
           }
           $dropdown.find('.dropdown-toggle-text').addClass('is-default');
+
           return defaultLabel;
         },
         defaultLabel,

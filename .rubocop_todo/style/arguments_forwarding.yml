@@ -165,6 +165,5 @@ Style/ArgumentsForwarding:
     - 'spec/support/helpers/harbor_helper.rb'
     - 'spec/support/helpers/login_helpers.rb'
     - 'spec/support/helpers/merge_request_diff_helpers.rb'
-    - 'spec/support/helpers/next_instance_of.rb'
     - 'spec/support/helpers/reactive_caching_helpers.rb'
     - 'spec/support/shared_examples/features/2fa_shared_examples.rb'

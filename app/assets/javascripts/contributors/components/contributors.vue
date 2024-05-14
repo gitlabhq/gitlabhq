@@ -50,6 +50,11 @@ export default {
       type: String,
       required: true,
     },
+    getSvgIconPathContent: {
+      type: Function,
+      required: false,
+      default: getSvgIconPathContent,
+    },
   },
   refTypes: [REF_TYPE_BRANCHES, REF_TYPE_TAGS],
   data() {
@@ -176,7 +181,7 @@ export default {
       };
     },
     setSvg(name) {
-      return getSvgIconPathContent(name)
+      return this.getSvgIconPathContent(name)
         .then((path) => {
           if (path) {
             this.$set(this.svgs, name, `path://${path}`);

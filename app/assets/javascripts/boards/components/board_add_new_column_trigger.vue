@@ -1,14 +1,13 @@
 <script>
-import { GlButton, GlTooltipDirective } from '@gitlab/ui';
-import { __ } from '~/locale';
+import { GlButton, GlIcon } from '@gitlab/ui';
 import Tracking from '~/tracking';
+import BoardAddNewColumnTriggerPopover from '~/boards/components/board_add_new_column_trigger_popover.vue';
 
 export default {
   components: {
     GlButton,
-  },
-  directives: {
-    GlTooltip: GlTooltipDirective,
+    GlIcon,
+    BoardAddNewColumnTriggerPopover,
   },
   mixins: [Tracking.mixin()],
   props: {
@@ -17,12 +16,12 @@ export default {
       required: true,
     },
   },
-  computed: {
-    tooltip() {
-      return this.isNewListShowing ? __('The list creation wizard is already open') : '';
-    },
-  },
   methods: {
+    scrollToButton(popover) {
+      if (popover) {
+        this.$el.scrollIntoView({ behavior: 'smooth', inline: 'center' });
+      }
+    },
     handleClick() {
       this.$emit('setAddColumnFormVisibility', true);
       this.track('click_button', { label: 'create_list' });
@@ -32,14 +31,20 @@ export default {
 </script>
 
 <template>
-  <div
-    v-gl-tooltip="tooltip"
-    :tabindex="isNewListShowing ? '0' : undefined"
-    class="gl-ml-3 gl-display-flex gl-align-items-center"
-    data-testid="boards-create-list"
-  >
-    <gl-button :disabled="isNewListShowing" variant="confirm" @click="handleClick"
-      >{{ __('Create list') }}
+  <span>
+    <gl-button
+      v-show="!isNewListShowing"
+      id="boards-create-list"
+      data-testid="boards-create-list"
+      variant="default"
+      @click="handleClick"
+    >
+      <gl-icon name="plus" :size="16" />
+      {{ __('New list') }}
     </gl-button>
-  </div>
+    <!-- TEMPORARY callout for new "New list" button location -->
+    <board-add-new-column-trigger-popover
+      @boardAddNewColumnTriggerPopoverRendered="scrollToButton"
+    />
+  </span>
 </template>

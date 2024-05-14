@@ -13,7 +13,7 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
   let_it_be(:primary_pool) { ConnectionPool.new { primary_store } }
   let_it_be(:secondary_pool) { ConnectionPool.new { secondary_store } }
   let_it_be(:instance_name) { 'TestStore' }
-  let_it_be(:multi_store) { described_class.new(primary_pool, secondary_pool, instance_name) }
+  let_it_be(:multi_store) { described_class.create_using_pool(primary_pool, secondary_pool, instance_name) }
 
   subject do
     multi_store.with_borrowed_connection do
@@ -30,63 +30,118 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
     secondary_store.with(&:flushdb)
   end
 
-  context 'when primary_store is nil' do
-    let(:multi_store) { described_class.new(nil, secondary_pool, instance_name) }
+  describe '.create_using_client' do
+    it 'initialises a MultiStore instance' do
+      expect(described_class.create_using_client(primary_store, secondary_store, instance_name))
+        .to be_instance_of(described_class)
+    end
 
-    it 'fails with exception' do
-      expect { multi_store }.to raise_error(ArgumentError, /primary_store is required/)
+    context 'when primary_store is nil' do
+      let(:multi_store) { described_class.create_using_client(nil, secondary_store, instance_name) }
+
+      it 'fails with exception' do
+        expect { multi_store }.to raise_error(ArgumentError, /either primary_store or primary_pool is required/)
+      end
+    end
+
+    context 'when secondary_store is nil' do
+      let(:multi_store) { described_class.create_using_client(primary_store, nil, instance_name) }
+
+      it 'fails with exception' do
+        expect { multi_store }.to raise_error(ArgumentError, /either secondary_store or secondary_pool is required/)
+      end
+    end
+
+    context 'when instance_name is nil' do
+      let(:instance_name) { nil }
+      let(:multi_store) { described_class.create_using_client(primary_store, secondary_store, instance_name) }
+
+      it 'fails with exception' do
+        expect { multi_store }.to raise_error(ArgumentError, /instance_name is required/)
+      end
+    end
+
+    context 'when primary_store is not a ::Redis instance' do
+      it 'fails with exception' do
+        expect { described_class.create_using_client('primary', secondary_store, instance_name) }
+          .to raise_error(ArgumentError, /invalid primary_store/)
+      end
+    end
+
+    context 'when secondary_store is not a ::Redis instance' do
+      it 'fails with exception' do
+        expect { described_class.create_using_client(primary_store, 'secondary', instance_name) }
+          .to raise_error(ArgumentError, /invalid secondary_store/)
+      end
     end
   end
 
-  context 'when secondary_store is nil' do
-    let(:multi_store) { described_class.new(primary_pool, nil, instance_name) }
-
-    it 'fails with exception' do
-      expect { multi_store }.to raise_error(ArgumentError, /secondary_store is required/)
-    end
-  end
-
-  context 'when instance_name is nil' do
-    let(:instance_name) { nil }
-    let(:multi_store) { described_class.new(primary_pool, secondary_pool, instance_name) }
-
-    it 'fails with exception' do
-      expect { multi_store }.to raise_error(ArgumentError, /instance_name is required/)
-    end
-  end
-
-  context 'when primary_store is not a ::Redis instance' do
-    before do
-      allow(primary_store).to receive(:is_a?).with(::Redis).and_return(false)
+  describe '.create_using_pool' do
+    it 'initialises a MultiStore instance' do
+      expect(described_class.create_using_pool(primary_pool, secondary_pool, instance_name))
+        .to be_instance_of(described_class)
     end
 
-    it 'fails with exception' do
-      expect { described_class.new(primary_pool, secondary_pool, instance_name) }
-        .to raise_error(ArgumentError, /invalid primary_store/)
-    end
-  end
+    context 'when primary_pool is nil' do
+      let(:multi_store) { described_class.create_using_pool(nil, secondary_pool, instance_name) }
 
-  context 'when secondary_store is not a ::Redis instance' do
-    before do
-      allow(secondary_store).to receive(:is_a?).with(::Redis).and_return(false)
+      it 'fails with exception' do
+        expect { multi_store }.to raise_error(ArgumentError, /either primary_store or primary_pool is required/)
+      end
     end
 
-    it 'fails with exception' do
-      expect { described_class.new(primary_pool, secondary_pool, instance_name) }
-        .to raise_error(ArgumentError, /invalid secondary_store/)
+    context 'when secondary_pool is nil' do
+      let(:multi_store) { described_class.create_using_pool(primary_pool, nil, instance_name) }
+
+      it 'fails with exception' do
+        expect { multi_store }.to raise_error(ArgumentError, /either secondary_store or secondary_pool is required/)
+      end
+    end
+
+    context 'when instance_name is nil' do
+      let(:instance_name) { nil }
+      let(:multi_store) { described_class.create_using_pool(primary_pool, secondary_pool, instance_name) }
+
+      it 'fails with exception' do
+        expect { multi_store }.to raise_error(ArgumentError, /instance_name is required/)
+      end
+    end
+
+    context 'when primary_store is not a ::Redis instance' do
+      before do
+        allow(primary_store).to receive(:is_a?).with(::Redis).and_return(false)
+        allow(primary_store).to receive(:is_a?).with(::Redis::Cluster).and_return(false)
+      end
+
+      it 'fails with exception' do
+        expect { described_class.create_using_pool(primary_pool, secondary_pool, instance_name) }
+          .to raise_error(ArgumentError, /invalid primary_pool/)
+      end
+    end
+
+    context 'when secondary_store is not a ::Redis instance' do
+      before do
+        allow(secondary_store).to receive(:is_a?).with(::Redis).and_return(false)
+        allow(secondary_store).to receive(:is_a?).with(::Redis::Cluster).and_return(false)
+      end
+
+      it 'fails with exception' do
+        expect { described_class.create_using_pool(primary_pool, secondary_pool, instance_name) }
+          .to raise_error(ArgumentError, /invalid secondary_pool/)
+      end
     end
   end
 
   # rubocop:disable RSpec/MultipleMemoizedHelpers
   context 'with READ redis commands' do
+    let(:args) { 'args' }
+    let(:kwargs) { { match: '*:set:key2*' } }
+
     subject do
       multi_store.with_borrowed_connection do
         multi_store.send(name, *args, **kwargs)
       end
     end
-
-    let(:args) { 'args' }
-    let(:kwargs) { { match: '*:set:key2*' } }
 
     RSpec.shared_examples_for 'secondary store' do
       it 'execute on the secondary instance' do
@@ -180,7 +235,7 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
           let(:secondary_store) { create_redis_store(redis_store_class.params, db: primary_db, serializer: nil) }
           let(:primary_pool) { ConnectionPool.new { primary_store } }
           let(:secondary_pool) { ConnectionPool.new { secondary_store } }
-          let(:multi_store) { described_class.new(primary_pool, secondary_pool, instance_name) }
+          let(:multi_store) { described_class.create_using_pool(primary_pool, secondary_pool, instance_name) }
 
           it_behaves_like 'secondary store'
         end
@@ -615,35 +670,6 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
 
             subject
           end
-        end
-      end
-
-      context 'when either store is a an instance of ::Redis::Cluster' do
-        let(:pipeline) { double }
-        let(:client) { double }
-
-        before do
-          allow(client).to receive(:instance_of?).with(::Redis::Cluster).and_return(true)
-          allow(pipeline).to receive(:pipelined)
-          multi_store.with_borrowed_connection do
-            allow(multi_store.default_store).to receive(:_client).and_return(client)
-          end
-        end
-
-        it 'calls cross-slot pipeline within multistore' do
-          if name == :pipelined
-            # we intentionally exclude `.and_call_original` since primary_store/secondary_store
-            # may not be running on a proper Redis Cluster.
-            multi_store.with_borrowed_connection do
-              expect(Gitlab::Redis::CrossSlot::Pipeline).to receive(:new)
-                                                              .with(multi_store.default_store)
-                                                              .exactly(:once)
-                                                              .and_return(pipeline)
-              expect(Gitlab::Redis::CrossSlot::Pipeline).not_to receive(:new).with(multi_store.non_default_store)
-            end
-          end
-
-          subject
         end
       end
 
@@ -1180,28 +1206,45 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
   end
 
   describe '.with_borrowed_connection' do
-    it 'permits nested borrows' do
-      multi_store.with_borrowed_connection do
-        expect(Thread.current[multi_store.borrow_counter]).to eq(1)
-
-        multi_store.with_borrowed_connection do
-          multi_store.ping
-
-          expect(Thread.current[multi_store.borrow_counter]).to eq(2)
-          expect(multi_store.primary_store).not_to eq(nil)
-          expect(multi_store.secondary_store).not_to eq(nil)
-        end
-
-        multi_store.ping
-
-        expect(Thread.current[multi_store.borrow_counter]).to eq(1)
-        expect(multi_store.primary_store).not_to eq(nil)
-        expect(multi_store.secondary_store).not_to eq(nil)
+    context 'when initialised with pools' do
+      before do
+        multi_store.instance_variable_set(:@primary_store, 'primary')
+        multi_store.instance_variable_set(:@secondary_store, 'secondary')
       end
 
-      expect(Thread.current[multi_store.borrow_counter]).to eq(0)
-      expect(multi_store.primary_store).to eq(nil)
-      expect(multi_store.secondary_store).to eq(nil)
+      it 'permits nested borrows' do
+        multi_store.with_borrowed_connection do
+          multi_store.with_borrowed_connection do
+            multi_store.ping
+
+            expect(multi_store.primary_store).not_to eq(nil)
+            expect(multi_store.secondary_store).not_to eq(nil)
+            expect(multi_store.primary_store).to be_instance_of(Redis::Store)
+            expect(multi_store.secondary_store).to be_instance_of(Redis::Store)
+          end
+
+          multi_store.ping
+
+          expect(multi_store.primary_store).to be_instance_of(Redis::Store)
+          expect(multi_store.secondary_store).to be_instance_of(Redis::Store)
+        end
+
+        expect(multi_store.primary_store).to eq('primary')
+        expect(multi_store.secondary_store).to eq('secondary')
+      end
+    end
+
+    context 'when initialised without pools' do
+      let(:multi_store) { described_class.create_using_client(primary_store, secondary_store, instance_name) }
+
+      it 'skips borrowing' do
+        multi_store.with_borrowed_connection do
+          expect(multi_store.primary_store.inspect).to eq(primary_store.inspect)
+          expect(multi_store.secondary_store.inspect).to eq(secondary_store.inspect)
+
+          multi_store.ping
+        end
+      end
     end
   end
 end

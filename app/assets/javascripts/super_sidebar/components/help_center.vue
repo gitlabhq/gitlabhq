@@ -8,7 +8,7 @@ import {
 } from '@gitlab/ui';
 import GitlabVersionCheckBadge from '~/gitlab_version_check/components/gitlab_version_check_badge.vue';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import { FORUM_URL, DOCS_URL, PROMO_URL } from 'jh_else_ce/lib/utils/url_utility';
+import { FORUM_URL, PROMO_URL } from 'jh_else_ce/lib/utils/url_utility';
 import { __, s__ } from '~/locale';
 import { STORAGE_KEY } from '~/whats_new/utils/notification';
 import Tracking from '~/tracking';
@@ -35,7 +35,7 @@ export default {
     shortcuts: __('Keyboard shortcuts'),
     version: __('Your GitLab version'),
     whatsnew: __("What's new"),
-    chat: s__('TanukiBot|GitLab Duo Chat'),
+    chat: s__('DuoChat|GitLab Duo Chat'),
   },
   props: {
     sidebarData: {
@@ -73,6 +73,7 @@ export default {
               action: this.showTanukiBotChat,
               extraAttrs: {
                 ...this.trackingAttrs('tanuki_bot_help_dropdown'),
+                'data-testid': 'duo-chat-menu-item',
               },
             },
             {
@@ -91,7 +92,7 @@ export default {
             },
             {
               text: this.$options.i18n.docs,
-              href: DOCS_URL,
+              href: this.sidebarData.docs_path,
               extraAttrs: {
                 ...this.trackingAttrs('gitlab_documentation'),
               },
@@ -112,7 +113,7 @@ export default {
             },
             {
               text: this.$options.i18n.contribute,
-              href: helpPagePath('', { anchor: 'contributing-to-gitlab' }),
+              href: helpPagePath('', { anchor: 'contribute-to-gitlab' }),
               extraAttrs: {
                 ...this.trackingAttrs('contribute_to_gitlab'),
               },
@@ -216,6 +217,7 @@ export default {
         category="tertiary"
         icon="question-o"
         class="super-sidebar-help-center-toggle btn-with-notification"
+        data-testid="sidebar-help-button"
       >
         <span
           v-if="showWhatsNewNotification"

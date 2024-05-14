@@ -5,7 +5,7 @@ class DraftNote < ApplicationRecord
   include Sortable
   include ShaAttribute
 
-  PUBLISH_ATTRS = %i[noteable_id noteable_type type note].freeze
+  PUBLISH_ATTRS = %i[noteable type note internal].freeze
   DIFF_ATTRS = %i[position original_position change_position commit_id].freeze
 
   sha_attribute :commit_id
@@ -103,6 +103,7 @@ class DraftNote < ApplicationRecord
     params = slice(*attrs)
     params[:in_reply_to_discussion_id] = discussion_id if discussion_id.present?
     params[:review_id] = review.id if review.present?
+    params.except("internal") if on_diff?
 
     params
   end

@@ -45,9 +45,7 @@ module Projects
                      authorizable_group_members
                    end
 
-        if include_membership_from_project_group_shares?
-          avenues << members_from_project_group_shares
-        end
+        avenues << members_from_project_group_shares if include_membership_from_project_group_shares?
 
         avenues
       end

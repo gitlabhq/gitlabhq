@@ -121,7 +121,7 @@ export default {
     <template v-if="showResetButton">
       <gl-button
         v-gl-modal.confirmResetIntegration
-        category="tertiary"
+        category="secondary"
         variant="danger"
         :loading="isResetting"
         :disabled="disableButtons"

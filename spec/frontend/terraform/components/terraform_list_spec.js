@@ -1,4 +1,4 @@
-import { GlAlert, GlBadge, GlKeysetPagination, GlLoadingIcon, GlTab } from '@gitlab/ui';
+import { GlAlert, GlCard, GlKeysetPagination, GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
@@ -52,16 +52,16 @@ describe('TerraformList', () => {
       propsData,
       provide,
       stubs: {
-        GlTab,
+        GlCard,
       },
     });
   };
 
-  const findBadge = () => wrapper.findComponent(GlBadge);
   const findEmptyState = () => wrapper.findComponent(EmptyState);
   const findPaginationButtons = () => wrapper.findComponent(GlKeysetPagination);
   const findStatesTable = () => wrapper.findComponent(StatesTable);
-  const findTab = () => wrapper.findComponent(GlTab);
+  const findCard = () => wrapper.findComponent(GlCard);
+  const findCardTitle = () => findCard().find('.gl-new-card-title-wrapper');
 
   describe('when the terraform query has succeeded', () => {
     describe('when there is a list of terraform states', () => {
@@ -110,9 +110,9 @@ describe('TerraformList', () => {
         return waitForPromises();
       });
 
-      it('displays a terraform states tab and count', () => {
-        expect(findTab().text()).toContain('Terraform states');
-        expect(findBadge().text()).toBe('2');
+      it('displays a terraform states card and count', () => {
+        expect(findCardTitle().text()).toContain('Terraform states');
+        expect(findCardTitle().text()).toContain('2');
       });
 
       it('renders the states table and pagination buttons', () => {
@@ -158,9 +158,9 @@ describe('TerraformList', () => {
         return waitForPromises();
       });
 
-      it('displays a terraform states tab with no count', () => {
-        expect(findTab().text()).toContain('Terraform states');
-        expect(findBadge().exists()).toBe(false);
+      it('displays a terraform states card with no count', () => {
+        expect(findCardTitle().text()).toContain('Terraform states');
+        expect(findCardTitle().text()).toContain('0');
       });
 
       it('renders the empty state', () => {

@@ -44,6 +44,7 @@
 - LicenseTemplateFinder
 - MergeRequests::OldestPerCommitFinder
 - NotesFinder
+- Organizations::OrganizationAssociationCounter
 - Packages::BuildInfosFinder
 - Packages::Conan::PackageFileFinder
 - Packages::Go::ModuleFinder
@@ -62,6 +63,7 @@
 - Security::PipelineVulnerabilitiesFinder
 - Security::ScanExecutionPoliciesFinder
 - Security::ScanResultPoliciesFinder
+- Security::PipelineExecutionPoliciesFinder
 - Security::SecurityPoliciesFinder
 - SentryIssueFinder
 - ServerlessDomainFinder

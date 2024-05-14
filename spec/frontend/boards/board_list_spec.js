@@ -8,11 +8,10 @@ import createComponent from 'jest/boards/board_list_helper';
 import { ESC_KEY_CODE } from '~/lib/utils/keycodes';
 import BoardCard from '~/boards/components/board_card.vue';
 import BoardCutLine from '~/boards/components/board_cut_line.vue';
-import eventHub from '~/boards/eventhub';
 import BoardCardMoveToPosition from '~/boards/components/board_card_move_to_position.vue';
 import listIssuesQuery from '~/boards/graphql/lists_issues.query.graphql';
 
-import { mockIssues, mockList, mockIssuesMore, mockGroupIssuesResponse } from './mock_data';
+import { mockIssues, mockIssuesMore, mockGroupIssuesResponse } from './mock_data';
 
 describe('Board list component', () => {
   let wrapper;
@@ -75,8 +74,10 @@ describe('Board list component', () => {
       expect(wrapper.find('.board-card').attributes('data-item-id')).toBe('gid://gitlab/Issue/436');
     });
 
-    it('shows new issue form after eventhub event', async () => {
-      eventHub.$emit(`toggle-issue-form-${mockList.id}`);
+    it('shows new issue form when showNewForm prop is true', async () => {
+      wrapper = createComponent({
+        componentProps: { showNewForm: true },
+      });
 
       await nextTick();
       expect(wrapper.find('.board-new-issue-form').exists()).toBe(true);
@@ -87,12 +88,10 @@ describe('Board list component', () => {
         listProps: {
           listType: ListType.closed,
         },
+        componentProps: { showNewForm: true },
       });
       await waitForPromises();
 
-      eventHub.$emit(`toggle-issue-form-${mockList.id}`);
-
-      await nextTick();
       expect(wrapper.find('.board-new-issue-form').exists()).toBe(false);
     });
 

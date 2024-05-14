@@ -6,7 +6,7 @@ RSpec.describe Gitlab::FakeApplicationSettings do
   let(:defaults) do
     described_class.defaults.merge(
       foobar: 'asdf',
-      'test?'.to_sym => 123,
+      test?: 123,
       # these two settings have no default in ApplicationSettingImplementation,
       # so we need to set one here
       domain_denylist: [],

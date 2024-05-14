@@ -1,20 +1,20 @@
 import { s__ } from '~/locale';
 
 export const I18N = {
+  pageTitle: s__('BranchRules|Branch rule details'),
+  deleteRule: s__('BranchRules|Delete rule'),
   manageProtectionsLinkTitle: s__('BranchRules|Manage in protected branches'),
   targetBranch: s__('BranchRules|Target branch'),
+  ruleTarget: s__('BranchRules|Rule target'),
   branchNameOrPattern: s__('BranchRules|Branch name or pattern'),
-  branch: s__('BranchRules|Target branch'),
   allBranches: s__('BranchRules|All branches'),
+  allProtectedBranches: s__('BranchRules|All protected branches'),
   matchingBranchesLinkTitle: s__('BranchRules|%{total} matching %{subject}'),
   protectBranchTitle: s__('BranchRules|Protect branch'),
   protectBranchDescription: s__(
     'BranchRules|Keep stable branches secure and force developers to use merge requests. %{linkStart}What are protected branches?%{linkEnd}',
   ),
-  wildcardsHelpText: s__(
-    'BranchRules|%{linkStart}Wildcards%{linkEnd} such as *-stable or production/ are supported',
-  ),
-  approvalsTitle: s__('BranchRules|Approvals'),
+  approvalsTitle: s__('BranchRules|Merge request approvals'),
   manageApprovalsLinkTitle: s__('BranchRules|Manage in merge request approvals'),
   approvalsDescription: s__(
     'BranchRules|Approvals to ensure separation of duties for new merge requests. %{linkStart}Learn more.%{linkEnd}',
@@ -27,7 +27,6 @@ export const I18N = {
   statusChecksHeader: s__('BranchRules|Status checks (%{total})'),
   allowedToPushHeader: s__('BranchRules|Allowed to push and merge (%{total})'),
   allowedToMergeHeader: s__('BranchRules|Allowed to merge (%{total})'),
-  approvalsHeader: s__('BranchRules|Required approvals (%{total})'),
   allowForcePushTitle: s__('BranchRules|Allows force push'),
   doesNotAllowForcePushTitle: s__('BranchRules|Does not allow force push'),
   forcePushDescription: s__('BranchRules|From users with push access.'),
@@ -42,14 +41,22 @@ export const I18N = {
     'BranchRules|Also accepts code pushes that change files listed in CODEOWNERS file.',
   ),
   noData: s__('BranchRules|No data to display'),
+  deleteRuleModalTitle: s__('BranchRules|Delete branch rule?'),
+  deleteRuleModalText: s__(
+    'BranchRules|Are you sure you want to delete this branch rule? This action cannot be undone.',
+  ),
+  deleteRuleModalDeleteText: s__('BranchRules|Delete branch rule'),
+  updateTargetRule: s__('BranchRules|Update target branch'),
+  update: s__('BranchRules|Update'),
+  edit: s__('BranchRules|Edit'),
+  updateBranchRuleError: s__('BranchRules|Something went wrong while updating branch rule.'),
 };
+
+export const EDIT_RULE_MODAL_ID = 'editRuleModal';
 
 export const BRANCH_PARAM_NAME = 'branch';
 
 export const ALL_BRANCHES_WILDCARD = '*';
-
-export const WILDCARDS_HELP_PATH =
-  'user/project/protected_branches#protect-multiple-branches-with-wildcard-rules';
 
 export const PROTECTED_BRANCHES_HELP_PATH = 'user/project/protected_branches';
 
@@ -62,3 +69,5 @@ export const NOT_REQUIRED_ICON = 'status-failed';
 
 export const REQUIRED_ICON_CLASS = 'gl-fill-green-500';
 export const NOT_REQUIRED_ICON_CLASS = 'gl-text-red-500';
+
+export const DELETE_RULE_MODAL_ID = 'delete-branch-rule-modal';

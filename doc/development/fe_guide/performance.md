@@ -17,15 +17,15 @@ Any frontend engineer can contribute to this dashboard. They can contribute by a
 
 There are 3 recommended high impact metrics (core web vitals) to review on each page:
 
-- [Largest Contentful Paint](https://web.dev/lcp/)
-- [First Input Delay](https://web.dev/fid/)
-- [Cumulative Layout Shift](https://web.dev/cls/)
+- [Largest Contentful Paint](https://web.dev/articles/lcp)
+- [First Input Delay](https://web.dev/articles/fid/)
+- [Cumulative Layout Shift](https://web.dev/articles/cls)
 
 For these metrics, lower numbers are better as it means that the website is more performant.
 
 ## User Timing API
 
-[User Timing API](https://developer.mozilla.org/en-US/docs/Web/API/User_Timing_API) is a web API
+[User Timing API](https://developer.mozilla.org/en-US/docs/Web/API/Performance_API/User_timing) is a web API
 [available in all modern browsers](https://caniuse.com/?search=User%20timing). It allows measuring
 custom times and durations in your applications by placing special marks in your
 code. You can use the User Timing API in GitLab to measure any timing, regardless of the framework,
@@ -259,8 +259,8 @@ In general, it should be handled automatically through a `MutationObserver` in t
 ### Animations
 
 Only animate `opacity` & `transform` properties. Other properties (such as `top`, `left`, `margin`, and `padding`) all cause
-Layout to be recalculated, which is much more expensive. For details on this, see "Styles that Affect Layout" in
-[High Performance Animations](https://www.html5rocks.com/en/tutorials/speed/high-performance-animations/).
+Layout to be recalculated, which is much more expensive. For details on this, see
+[High Performance Animations](https://web.dev/articles/animations-guide).
 
 If you _do_ need to change layout (for example, a sidebar that pushes main content over), prefer [FLIP](https://aerotwist.com/blog/flip-your-animations/). FLIP allows you to change expensive
 properties once, and handle the actual animation with transforms.
@@ -272,9 +272,9 @@ we allow prefetching the named JavaScript "chunks" as
 [defined in the Webpack configuration](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/webpack.config.js#L298-359).
 We support two types of prefetching for the chunks:
 
-- The [`prefetch` link type](https://developer.mozilla.org/en-US/docs/Web/HTML/Link_types/prefetch)
+- The [`prefetch` link type](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/rel/prefetch)
   is used to prefetch a chunk for the future navigation
-- The [`preload` link type](https://developer.mozilla.org/en-US/docs/Web/HTML/Link_types/preload)
+- The [`preload` link type](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/rel/preload)
   is used to prefetch a chunk that is crucial for the current navigation but is not
   discovered until later in the rendering process
 
@@ -421,7 +421,7 @@ General tips:
 - If some functionality can reasonably be achieved without adding extra libraries, avoid them.
 - Use page-specific JavaScript as described above to load libraries that are only needed on certain pages.
 - Use code-splitting dynamic imports wherever possible to lazy-load code that is not needed initially.
-- [High Performance Animations](https://www.html5rocks.com/en/tutorials/speed/high-performance-animations/)
+- [High Performance Animations](https://web.dev/articles/animations-guide)
 
 ---
 

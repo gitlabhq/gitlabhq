@@ -17,12 +17,7 @@ module QA
 
   RSpec.describe 'Govern', :skip_signup_disabled, :requires_admin, product_group: :authentication do
     describe 'while LDAP is enabled', :orchestrated, :ldap_no_tls,
-      testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347934',
-      quarantine: {
-        only: { job: 'airgapped' },
-        issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/414247',
-        type: :investigating
-      } do
+      testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347934' do
       let!(:personal_access_token) { Runtime::Env.personal_access_token }
 
       before do
@@ -48,13 +43,9 @@ module QA
       it_behaves_like 'registration and login'
     end
 
-    describe 'standard', :reliable, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347867' do
-      context 'when admin approval is not required',
-        quarantine: {
-          only: { job: 'airgapped' },
-          issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/414247',
-          type: :investigating
-        } do
+    describe 'standard', :smoke, :external_api_calls,
+      testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347867' do
+      context 'when admin approval is not required' do
         before(:all) do
           set_require_admin_approval_after_user_signup(false)
         end
@@ -96,7 +87,7 @@ module QA
             end
           end
 
-          it 'allows recreating with same credentials', :reliable,
+          it 'allows recreating with same credentials', :blocking, :external_api_calls,
             testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347868' do
             expect(Page::Main::Menu.perform(&:signed_in?)).to be_falsy
 
@@ -111,13 +102,8 @@ module QA
         end
       end
 
-      context 'when admin approval is required',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347871',
-        quarantine: {
-          only: { job: 'airgapped' },
-          issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/414247',
-          type: :investigating
-        } do
+      context 'when admin approval is required', :external_api_calls,
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347871' do
         let(:signed_up_waiting_approval_text) do
           'You have signed up successfully. However, we could not sign you in because your account ' \
             'is awaiting approval from your GitLab administrator.'
@@ -171,8 +157,9 @@ module QA
         Page::Main::Menu.perform(&:go_to_admin_area)
         Page::Admin::Menu.perform(&:go_to_users_overview)
         Page::Admin::Overview::Users::Index.perform do |index|
-          index.click_pending_approval_tab
-          index.search_user(user.username)
+          index.choose_pending_approval_filter
+          index.choose_search_user(user.username)
+          index.click_search
           index.click_user(user.name)
         end
 

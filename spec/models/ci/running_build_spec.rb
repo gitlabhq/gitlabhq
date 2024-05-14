@@ -3,18 +3,19 @@
 require 'spec_helper'
 
 RSpec.describe Ci::RunningBuild, feature_category: :continuous_integration do
-  let_it_be(:project) { create(:project) }
+  let_it_be(:group) { create(:group) }
+  let_it_be(:project) { create(:project, group: group) }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
 
   let(:runner) { create(:ci_runner, :instance_type) }
   let(:build) { create(:ci_build, :running, runner: runner, pipeline: pipeline) }
 
-  describe '.upsert_shared_runner_build!' do
+  describe '.upsert_build!' do
+    subject(:upsert_build) { described_class.upsert_build!(build) }
+
     context 'another pending entry does not exist' do
       it 'creates a new pending entry' do
-        result = described_class.upsert_shared_runner_build!(build)
-
-        expect(result.rows.dig(0, 0)).to eq build.id
+        expect(upsert_build.rows.dig(0, 0)).to eq build.id
         expect(build.reload.runtime_metadata).to be_present
       end
     end
@@ -25,18 +26,29 @@ RSpec.describe Ci::RunningBuild, feature_category: :continuous_integration do
       end
 
       it 'returns a build id as a result' do
-        result = described_class.upsert_shared_runner_build!(build)
+        expect(upsert_build.rows.dig(0, 0)).to eq build.id
+      end
+    end
 
-        expect(result.rows.dig(0, 0)).to eq build.id
+    context 'when build has been picked by a group runner' do
+      let_it_be(:runner) { create(:ci_runner, :group, groups: [group]) }
+
+      it 'returns a build id as a result' do
+        expect(upsert_build.rows.dig(0, 0)).to eq build.id
+      end
+
+      it 'upserts a running build with a runner_owner_namespace_xid' do
+        upsert_build
+
+        expect(described_class.find_by_build_id(build.id).runner_owner_namespace_xid).to eq group.id
       end
     end
 
     context 'when build has been picked by a project runner' do
-      let(:runner) { create(:ci_runner, :project) }
+      let_it_be(:runner) { create(:ci_runner, :project, projects: [project]) }
 
-      it 'raises an error' do
-        expect { described_class.upsert_shared_runner_build!(build) }
-          .to raise_error(ArgumentError, 'build has not been picked by a shared runner')
+      it 'returns a build id as a result' do
+        expect(upsert_build.rows.dig(0, 0)).to eq build.id
       end
     end
 
@@ -44,8 +56,7 @@ RSpec.describe Ci::RunningBuild, feature_category: :continuous_integration do
       let(:build) { create(:ci_build, pipeline: pipeline) }
 
       it 'raises an error' do
-        expect { described_class.upsert_shared_runner_build!(build) }
-          .to raise_error(ArgumentError, 'build has not been picked by a shared runner')
+        expect { upsert_build }.to raise_error(ArgumentError, 'build has not been picked by a runner')
       end
     end
   end
@@ -63,8 +74,8 @@ RSpec.describe Ci::RunningBuild, feature_category: :continuous_integration do
     it 'assigns the same partition id as the one that build has', :aggregate_failures do
       expect(new_build.partition_id).to eq ci_testing_partition_id_for_check_constraints
 
-      described_class.upsert_shared_runner_build!(build)
-      described_class.upsert_shared_runner_build!(new_build)
+      described_class.upsert_build!(build)
+      described_class.upsert_build!(new_build)
 
       expect(build.reload.runtime_metadata.partition_id).to eq pipeline.partition_id
       expect(new_build.reload.runtime_metadata.partition_id).to eq ci_testing_partition_id_for_check_constraints

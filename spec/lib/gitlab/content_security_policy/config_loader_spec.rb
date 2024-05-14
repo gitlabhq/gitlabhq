@@ -108,6 +108,12 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader, feature_category: :s
       end
     end
 
+    describe 'the worker-src directive' do
+      it 'can be loaded from local origins' do
+        expect(worker_src).to eq("'self' http://localhost/assets/ blob: data:")
+      end
+    end
+
     describe 'Webpack dev server websocket connections' do
       let(:webpack_dev_server_host) { 'webpack-dev-server.com' }
       let(:webpack_dev_server_port) { '9999' }
@@ -319,7 +325,7 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader, feature_category: :s
           expect(script_src).to eq(::Gitlab::ContentSecurityPolicy::Directives.script_src)
           expect(style_src).to eq(::Gitlab::ContentSecurityPolicy::Directives.style_src)
           expect(font_src).to eq("'self'")
-          expect(worker_src).to eq("http://localhost/assets/ blob: data:")
+          expect(worker_src).to eq(::Gitlab::ContentSecurityPolicy::Directives.worker_src)
           expect(frame_src).to eq(::Gitlab::ContentSecurityPolicy::Directives.frame_src)
         end
       end
@@ -340,28 +346,14 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader, feature_category: :s
     end
 
     context 'when sentry is configured' do
-      let(:legacy_dsn) { 'dummy://abc@legacy-sentry.example.com/1' }
       let(:dsn) { 'dummy://def@sentry.example.com/2' }
 
       before do
         stub_config_setting(host: 'gitlab.example.com')
       end
 
-      context 'when legacy sentry is configured' do
-        before do
-          allow(Gitlab.config.sentry).to receive(:enabled).and_return(true)
-          allow(Gitlab.config.sentry).to receive(:clientside_dsn).and_return(legacy_dsn)
-          allow(Gitlab::CurrentSettings).to receive(:sentry_enabled).and_return(false)
-        end
-
-        it 'adds legacy sentry path to CSP' do
-          expect(connect_src).to eq("'self' ws://gitlab.example.com dummy://legacy-sentry.example.com")
-        end
-      end
-
       context 'when sentry is configured' do
         before do
-          allow(Gitlab.config.sentry).to receive(:enabled).and_return(false)
           allow(Gitlab::CurrentSettings).to receive(:sentry_enabled).and_return(true)
           allow(Gitlab::CurrentSettings).to receive(:sentry_clientside_dsn).and_return(dsn)
         end
@@ -373,8 +365,6 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader, feature_category: :s
 
       context 'when sentry settings are from older schemas and sentry setting are missing' do
         before do
-          allow(Gitlab.config.sentry).to receive(:enabled).and_return(false)
-
           allow(Gitlab::CurrentSettings).to receive(:respond_to?).with(:sentry_enabled).and_return(false)
           allow(Gitlab::CurrentSettings).to receive(:sentry_enabled).and_raise(NoMethodError)
 
@@ -384,31 +374,6 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader, feature_category: :s
 
         it 'config is backwards compatible, does not add sentry path to CSP' do
           expect(connect_src).to eq("'self' ws://gitlab.example.com")
-        end
-      end
-
-      context 'when legacy sentry and sentry are both configured' do
-        let(:connect_src_expectation) do
-          # rubocop:disable Lint/PercentStringArray
-          %w[
-            'self'
-            ws://gitlab.example.com
-            dummy://legacy-sentry.example.com
-            dummy://sentry.example.com
-          ].join(' ')
-          # rubocop:enable Lint/PercentStringArray
-        end
-
-        before do
-          allow(Gitlab.config.sentry).to receive(:enabled).and_return(true)
-          allow(Gitlab.config.sentry).to receive(:clientside_dsn).and_return(legacy_dsn)
-
-          allow(Gitlab::CurrentSettings).to receive(:sentry_enabled).and_return(true)
-          allow(Gitlab::CurrentSettings).to receive(:sentry_clientside_dsn).and_return(dsn)
-        end
-
-        it 'adds both sentry paths to CSP' do
-          expect(connect_src).to eq(connect_src_expectation)
         end
       end
     end
@@ -522,26 +487,6 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader, feature_category: :s
 
           it 'does not add Snowplow Micro URL to connect-src' do
             expect(connect_src).not_to include(snowplow_micro_url)
-          end
-        end
-
-        context 'when REVIEW_APPS_ENABLED is set' do
-          before do
-            stub_env('REVIEW_APPS_ENABLED', 'true')
-          end
-
-          it "includes review app's merge requests API endpoint in the CSP" do
-            expect(connect_src).to include('https://gitlab.com/api/v4/projects/278964/merge_requests/')
-          end
-        end
-
-        context 'when REVIEW_APPS_ENABLED is blank' do
-          before do
-            stub_env('REVIEW_APPS_ENABLED', '')
-          end
-
-          it "does not include review app's merge requests API endpoint in the CSP" do
-            expect(connect_src).not_to include('https://gitlab.com/api/v4/projects/278964/merge_requests/')
           end
         end
       end

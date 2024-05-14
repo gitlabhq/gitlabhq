@@ -66,9 +66,7 @@ module Repositories
         if lfs_object = existing_oids[object[:oid]]
           object[:actions] = download_actions(object, lfs_object)
 
-          if guest_can_download
-            object[:authenticated] = true
-          end
+          object[:authenticated] = true if guest_can_download
         else
           object[:error] = {
             code: 404,
@@ -87,9 +85,7 @@ module Repositories
         if existing_oids.include?(object[:oid])
           object[:actions] = proxy_download_actions(object)
 
-          if ::Users::Anonymous.can?(:download_code, project)
-            object[:authenticated] = true
-          end
+          object[:authenticated] = true if ::Users::Anonymous.can?(:download_code, project)
         else
           object[:error] = {
             code: 404,

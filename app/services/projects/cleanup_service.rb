@@ -20,7 +20,7 @@ module Projects
           RepositoryCleanupWorker.perform_async(project.id, current_user.id)
         end
       rescue Project::RepositoryReadOnlyError => err
-        { status: :error, message: (_('Failed to make repository read-only. %{reason}') % { reason: err.message }) }
+        { status: :error, message: (_('Failed to make repository read-only: %{reason}') % { reason: err.message }) }
       end
 
       def cleanup_after(project)

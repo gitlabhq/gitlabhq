@@ -1,0 +1,5 @@
+mutation deploy($input: JobPlayInput!) {
+  jobPlay(input: $input) {
+    errors
+  }
+}

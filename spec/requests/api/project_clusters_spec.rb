@@ -8,13 +8,7 @@ RSpec.describe API::ProjectClusters, feature_category: :deployment_management do
   let_it_be(:maintainer_user) { create(:user) }
   let_it_be(:developer_user) { create(:user) }
   let_it_be(:reporter_user) { create(:user) }
-  let_it_be(:project) { create(:project) }
-
-  before do
-    project.add_maintainer(maintainer_user)
-    project.add_developer(developer_user)
-    project.add_reporter(reporter_user)
-  end
+  let_it_be(:project) { create(:project, maintainers: maintainer_user, developers: developer_user, reporters: reporter_user) }
 
   describe 'GET /projects/:id/clusters' do
     let_it_be(:extra_cluster) { create(:cluster, :provided_by_gcp, :project) }

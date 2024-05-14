@@ -10,6 +10,12 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed
 
+NOTE:
+The [next-generation container registry](container_registry_metadata_database.md)
+is now available for upgrade and testing on self-managed instances as a beta feature.
+This upgraded registry supports online garbage collection, and has significant performance
+and reliability improvements.
+
 With the GitLab container registry, every project can have its
 own space to store Docker images.
 
@@ -382,7 +388,7 @@ The different supported drivers are:
 | `filesystem` | Uses a path on the local file system |
 | `azure`      | Microsoft Azure Blob Storage         |
 | `gcs`        | Google Cloud Storage                 |
-| `s3`         | Amazon Simple Storage Service. Be sure to configure your storage bucket with the correct [S3 Permission Scopes](https://docs.docker.com/registry/storage-drivers/s3/#s3-permission-scopes). |
+| `s3`         | Amazon Simple Storage Service. Be sure to configure your storage bucket with the correct [S3 Permission Scopes](https://distribution.github.io/distribution/storage-drivers/s3/#s3-permission-scopes). |
 
 Although most S3 compatible services (like [MinIO](https://min.io/)) should work with the container registry,
 we only guarantee support for AWS S3. Because we cannot assert the correctness of third-party S3 implementations,
@@ -481,7 +487,7 @@ To configure the `s3` storage driver for a Linux package installation:
    To avoid using static credentials, use an
    [IAM role](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/iam-roles-for-amazon-ec2.html)
    and omit `accesskey` and `secretkey`. Make sure that your IAM profile follows
-   [the permissions documented by Docker](https://docs.docker.com/registry/storage-drivers/s3/#s3-permission-scopes).
+   [the permissions documented by Docker](https://distribution.github.io/distribution/storage-drivers/s3/#s3-permission-scopes).
 
    ```ruby
    registry['storage'] = {
@@ -819,7 +825,7 @@ In the examples below we set the Registry's port to `5010`.
 :::TabTitle Self-compiled (source)
 
 1. Open the configuration file of your Registry server and edit the
-   [`http:addr`](https://docs.docker.com/registry/configuration/#http) value:
+   [`http:addr`](https://distribution.github.io/distribution/about/configuration/#http) value:
 
    ```yaml
    http:
@@ -833,7 +839,7 @@ In the examples below we set the Registry's port to `5010`.
 ## Disable container registry per project
 
 If Registry is enabled in your GitLab instance, but you don't need it for your
-project, you can [disable it from your project's settings](../../user/project/settings/project_features_permissions.md#configure-project-features-and-permissions).
+project, you can [disable it from your project's settings](../../user/project/settings/index.md#configure-project-features-and-permissions).
 
 ## Use an external container registry with GitLab as an auth endpoint
 
@@ -848,7 +854,7 @@ container registry may be unavailable or have [inherent risks](../../user/packag
 
 For the integration to work, the external registry must be configured to
 use a JSON Web Token to authenticate with GitLab. The
-[external registry's runtime configuration](https://docs.docker.com/registry/configuration/#token)
+[external registry's runtime configuration](https://distribution.github.io/distribution/about/configuration/#token)
 **must** have the following entries:
 
 ```yaml
@@ -949,7 +955,11 @@ You can configure the container registry to send webhook notifications in
 response to events happening in the registry.
 
 Read more about the container registry notifications configuration options in the
-[Docker Registry notifications documentation](https://docs.docker.com/registry/notifications/).
+[Docker Registry notifications documentation](https://distribution.github.io/distribution/about/notifications/).
+
+WARNING:
+Support for the `threshold` parameter was [deprecated](https://gitlab.com/gitlab-org/container-registry/-/issues/1243)
+in GitLab 17.0, and is planned for removal in 18.0. Use `maxretries` instead.
 
 You can configure multiple endpoints for the container registry.
 
@@ -967,7 +977,8 @@ To configure a notification endpoint for a Linux package installation:
        'name' => 'test_endpoint',
        'url' => 'https://gitlab.example.com/notify',
        'timeout' => '500ms',
-       'threshold' => 5,
+       'threshold' => 5, # DEPRECATED: use `maxretries` instead.
+       'maxretries' => 5,
        'backoff' => '1s',
        'headers' => {
          "Authorization" => ["AUTHORIZATION_EXAMPLE_TOKEN"]
@@ -993,7 +1004,8 @@ notifications:
       url: https://my.listener.com/event
       headers: <http.Header>
       timeout: 500
-      threshold: 5
+      threshold: 5 # DEPRECATED: use `maxretries` instead.
+      maxretries: 5
       backoff: 1000
 ```
 
@@ -1013,7 +1025,7 @@ For more information, see the [Sidekiq configuration](../sidekiq/index.md)
 page.
 
 To reduce the amount of [Container Registry disk space used by a given project](#registry-disk-space-usage-by-project),
-administrators can setup cleanup policies
+administrators can set up cleanup policies
 and [run garbage collection](#container-registry-garbage-collection).
 
 ### Registry Disk Space Usage by Project
@@ -1072,6 +1084,22 @@ end
 ```
 
 You can also [run cleanup on a schedule](../../user/packages/container_registry/reduce_container_registry_storage.md#cleanup-policy).
+
+To enable cleanup policies for all projects instance-wide, you need to find all projects
+with a container registry, but with the cleanup policy disabled:
+
+```ruby
+# Find all projects where Container registry is enabled, and cleanup policies disabled
+
+projects = Project.find_by_sql ("SELECT * FROM projects WHERE id IN (SELECT project_id FROM container_expiration_policies WHERE enabled=false AND id IN (SELECT project_id FROM container_repositories))")
+
+# Loop through each project
+projects.each do |p|
+
+# Print project IDs and project full names
+    puts "#{p.id},#{p.full_name}"
+end
+```
 
 ## Container registry metadata database
 
@@ -1272,16 +1300,16 @@ itself on the system so that the `gitlab-ctl` command can bring the registry ser
 Also, there's no way to save progress or results during the mark phase of the process. Only once
 blobs start being deleted is anything permanent done.
 
-### Continuous Zero Downtime Garbage Collection
+### Continuous Zero-Downtime Garbage Collection
 
 DETAILS:
 **Status:** Beta
 
 You can run garbage collection in the background without the need to schedule it or require read-only mode,
-if you migrate to the [metadata database (beta)](container_registry_metadata_database.md).
+if you migrate to the [metadata database](container_registry_metadata_database.md).
 
 NOTE:
-If you would like to try this [beta feature](../../policy/experiment-beta-support.md#beta),
+If you would like to try this [Beta feature](../../policy/experiment-beta-support.md#beta),
 you should review the [known limitations](container_registry_metadata_database.md#known-limitations). If you have any feedback,
 you can let us know in the [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/423459).
 
@@ -1341,7 +1369,7 @@ The flow described by the diagram above:
 1. The API signs the token with the registry key and hands it to the Docker client
 1. The Docker client now logs in again with the token received from the API. It can now push and pull Docker images.
 
-Reference: <https://docs.docker.com/registry/spec/auth/token/>
+Reference: <https://distribution.github.io/distribution/spec/auth/token/>
 
 ### Communication between GitLab and Registry
 
@@ -1379,7 +1407,7 @@ Make sure everything continues to work as expected before replicating it in prod
 ### Docker Distribution Registry
 
 The [Docker Distribution Registry](https://docs.docker.com/registry/) was donated to the CNCF
-and is now known as the [Distribution Registry](https://github.com/distribution/distribution).
+and is now known as the [Distribution Registry](https://distribution.github.io/distribution/).
 This registry is the open source implementation that the GitLab container registry is based on.
 The GitLab container registry is compatible with the basic functionality provided by the Distribution Registry,
 including all the supported storage backends. To migrate to the GitLab container registry
@@ -1395,7 +1423,7 @@ Before diving in to the following sections, here's some basic troubleshooting:
 
 1. If you are using an S3-backed Registry, double check that the IAM
    permissions and the S3 credentials (including region) are correct. See
-   [the sample IAM policy](https://docs.docker.com/registry/storage-drivers/s3/)
+   [the sample IAM policy](https://distribution.github.io/distribution/storage-drivers/s3/)
    for more details.
 
 1. Check the Registry logs (for example `/var/log/gitlab/registry/current`) and the GitLab production logs
@@ -1416,7 +1444,7 @@ thus the error above.
 
 While GitLab doesn't support using self-signed certificates with Container
 Registry out of the box, it is possible to make it work by
-[instructing the Docker daemon to trust the self-signed certificates](https://docs.docker.com/registry/insecure/#use-self-signed-certificates),
+[instructing the Docker daemon to trust the self-signed certificates](https://distribution.github.io/distribution/about/insecure/#use-self-signed-certificates),
 mounting the Docker daemon and setting `privileged = false` in the GitLab Runner
 `config.toml` file. Setting `privileged = true` takes precedence over the Docker daemon:
 
@@ -1654,91 +1682,6 @@ curl "localhost:5001/debug/health"
 curl "localhost:5001/debug/vars"
 ```
 
-### Access old schema v1 Docker images
-
-Support for the Docker registry API V1,
-including [schema V1 image manifests](https://docs.docker.com/registry/spec/manifest-v2-1/),
-was:
-
-- [Deprecated in GitLab 13.7](https://about.gitlab.com/releases/2020/12/22/gitlab-13-7-released/#deprecate-pulls-that-use-v1-of-the-docker-registry-api)
-- [Removed in GitLab 13.9](https://about.gitlab.com/releases/2021/02/22/gitlab-13-9-released/#deprecate-pulls-that-use-v1-of-the-docker-registry-api)
-
-It's no longer possible to push or pull v1 images from the GitLab container registry.
-
-If you had v1 images in the GitLab container registry, but you did not upgrade them (following the
-[steps Docker recommends](https://docs.docker.com/registry/spec/deprecated-schema-v1/))
-ahead of the GitLab 13.9 upgrade, these images are no longer accessible. If you try to pull them,
-this error appears:
-
-- `Error response from daemon: manifest invalid: Schema 1 manifest not supported`
-
-For self-managed GitLab instances, you can regain access to these images by temporarily downgrading
-the GitLab container registry to a version lower than `v3.0.0-gitlab`. Follow these steps to regain
-access to these images:
-
-1. Downgrade the container registry to [`v2.13.1-gitlab`](https://gitlab.com/gitlab-org/container-registry/-/releases/v2.13.1-gitlab).
-1. Upgrade any v1 images.
-1. Revert the container registry downgrade.
-
-There's no need to put the registry in read-only mode during the image upgrade process. Ensure that
-you are not relying on any new feature introduced since `v3.0.0-gitlab`. Such features are
-unavailable during the upgrade process. See the [complete registry changelog](https://gitlab.com/gitlab-org/container-registry/-/blob/master/CHANGELOG.md)
-for more information.
-
-The following sections provide additional details about each installation method.
-
-::Tabs
-
-:::TabTitle Helm chart (Kubernetes)
-
-For Helm chart installations:
-
-1. Override the [`image.tag`](https://docs.gitlab.com/charts/charts/registry/#configuration)
-   configuration parameter with `v2.13.1-gitlab`.
-1. Restart.
-1. Performing the [images upgrade](#images-upgrade)) steps.
-1. Revert the `image.tag` parameter to the previous value.
-
-No other registry configuration changes are required.
-
-:::TabTitle Linux package (Omnibus)
-
-For Linux package installations:
-
-1. Temporarily replace the registry binary that ships with GitLab 13.9+ for one prior to
-   `v3.0.0-gitlab`. To do so, pull a previous version of the Docker image for the GitLab Container
-   Registry, such as `v2.13.1-gitlab`. You can then grab the `registry` binary from within this
-   image, located at `/bin/registry`:
-
-   ```shell
-   id=$(docker create registry.gitlab.com/gitlab-org/build/cng/gitlab-container-registry:v2.13.1-gitlab)
-   docker cp $id:/bin/registry registry-2.13.1-gitlab
-   docker rm $id
-   ```
-
-1. Replace the binary embedded in the Linux package installation located at
-   `/opt/gitlab/embedded/bin/registry`, with `registry-2.13.1-gitlab`. Make sure to start by backing
-   up the original binary embedded in the Linux package, and restore it after performing the
-   [image upgrade](#images-upgrade) steps. You should [stop](https://docs.gitlab.com/omnibus/maintenance/#starting-and-stopping)
-   the registry service before replacing its binary and start it right after. No registry
-   configuration changes are required.
-
-:::TabTitle Self-compiled (source)
-
-Locate your `registry` binary and temporarily replace it with the one
-obtained from `v3.0.0-gitlab`, as explained for Linux package installations.
-Make sure to start by backing up the original registry binary, and restore it after performing the
-[images upgrade](#images-upgrade) steps.
-
-::EndTabs
-
-#### Images upgrade
-
-Follow the [steps that Docker recommends to upgrade v1 images](https://docs.docker.com/registry/spec/deprecated-schema-v1/).
-The most straightforward option is to pull those images and push them once again to the registry,
-using a Docker client version above v1.12. Docker converts images automatically before pushing them
-to the registry. Once done, all your v1 images should now be available as v2 images.
-
 ### Tags with an empty name
 
 If using [AWS DataSync](https://aws.amazon.com/datasync/)
@@ -1832,14 +1775,14 @@ case, since we know that since the login succeeded, we probably need to look
 at the communication between the client and the Registry.
 
 The REST API between the Docker client and Registry is described
-[in the Docker documentation](https://docs.docker.com/registry/spec/api/). Usually, one would just
+[in the Docker documentation](https://distribution.github.io/distribution/spec/api/). Usually, one would just
 use Wireshark or tcpdump to capture the traffic and see where things went
 wrong. However, since all communications between Docker clients and servers
 are done over HTTPS, it's a bit difficult to decrypt the traffic quickly even
 if you know the private key. What can we do instead?
 
 One way would be to disable HTTPS by setting up an
-[insecure Registry](https://docs.docker.com/registry/insecure/). This could introduce a
+[insecure Registry](https://distribution.github.io/distribution/about/insecure/). This could introduce a
 security hole and is only recommended for local testing. If you have a
 production system and can't or don't want to do this, there is another way:
 use mitmproxy, which stands for Man-in-the-Middle Proxy.
@@ -1892,7 +1835,7 @@ and then run Docker by hand. As root, run:
 
 ```shell
 export HTTP_PROXY="http://localhost:9000"
-export HTTPS_PROXY="https://localhost:9000"
+export HTTPS_PROXY="http://localhost:9000"
 docker daemon --debug
 ```
 
@@ -1920,7 +1863,7 @@ The above image shows:
 
 What does this mean? This strongly suggests that the S3 user does not have the right
 [permissions to perform a HEAD request](https://docs.aws.amazon.com/AmazonS3/latest/API/API_HeadObject.html).
-The solution: check the [IAM permissions again](https://docs.docker.com/registry/storage-drivers/s3/).
+The solution: check the [IAM permissions again](https://distribution.github.io/distribution/storage-drivers/s3/).
 Once the right permissions were set, the error goes away.
 
 ### Missing `gitlab-registry.key` prevents container repository deletion

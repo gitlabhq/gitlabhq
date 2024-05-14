@@ -7,13 +7,13 @@ module Types
       graphql_name 'RepositoryLanguage'
 
       field :name, GraphQL::Types::String, null: false,
-                                           description: 'Name of the repository language.'
+        description: 'Name of the repository language.'
 
       field :share, GraphQL::Types::Float, null: true,
-                                           description: "Percentage of the repository's languages."
+        description: "Percentage of the repository's languages."
 
       field :color, Types::ColorType, null: true,
-                                      description: 'Color to visualize the repository language.'
+        description: 'Color to visualize the repository language.'
     end
     # rubocop: enable Graphql/AuthorizeTypes
   end

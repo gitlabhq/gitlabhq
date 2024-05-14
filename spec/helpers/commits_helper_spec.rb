@@ -219,7 +219,7 @@ RSpec.describe CommitsHelper do
 
   describe '#cherry_pick_projects_data' do
     let(:project) { create(:project, :repository) }
-    let(:user) { create(:user, maintainer_projects: [project]) }
+    let(:user) { create(:user, maintainer_of: project) }
     let!(:forked_project) { fork_project(project, user, { namespace: user.namespace, repository: true }) }
 
     before do

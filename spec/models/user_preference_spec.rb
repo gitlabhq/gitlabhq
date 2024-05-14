@@ -72,6 +72,45 @@ RSpec.describe UserPreference, feature_category: :user_profile do
 
       it { is_expected.to define_enum_for(:visibility_pipeline_id_type).with_values(id: 0, iid: 1) }
     end
+
+    describe 'extensions_marketplace_opt_in_status' do
+      it 'is set to 0 by default' do
+        pref = described_class.new
+
+        expect(pref.extensions_marketplace_opt_in_status).to eq('unset')
+      end
+
+      it do
+        is_expected
+          .to define_enum_for(:extensions_marketplace_opt_in_status).with_values(unset: 0, enabled: 1, disabled: 2)
+      end
+    end
+
+    describe 'user belongs to the home organization' do
+      let_it_be(:organization) { create(:organization) }
+
+      context 'when user is an organization user' do
+        before do
+          create(:organization_user, organization: organization, user: user)
+        end
+
+        it 'does not add any validation errors' do
+          user_preference.home_organization = organization
+
+          expect(user_preference).to be_valid
+          expect(user_preference.errors).to be_empty
+        end
+      end
+
+      context 'when user is not an organization user' do
+        it 'adds a validation error' do
+          user_preference.home_organization = organization
+
+          expect(user_preference).to be_invalid
+          expect(user_preference.errors.messages[:user].first).to eq(_("is not part of the given organization"))
+        end
+      end
+    end
   end
 
   describe 'associations' do
@@ -278,28 +317,65 @@ RSpec.describe UserPreference, feature_category: :user_profile do
     end
   end
 
-  describe '#user_belongs_to_home_organization' do
-    let_it_be(:organization) { create(:organization) }
-
-    context 'when user is an organization user' do
-      before do
-        create(:organization_user, organization: organization, user: user)
-      end
-
-      it 'does not add any validation errors' do
-        user_preference.home_organization = organization
-
-        expect(user_preference).to be_valid
-        expect(user_preference.errors).to be_empty
-      end
+  describe '#early_access_event_tracking?' do
+    let(:participant) { true }
+    let(:tracking) { true }
+    let(:user_preference) do
+      build(:user_preference, early_access_program_participant: participant, early_access_program_tracking: tracking)
     end
 
-    context 'when user is not an organization user' do
-      it 'adds a validation error' do
-        user_preference.home_organization = organization
+    context 'when user participate in beta and agreed on tracking' do
+      it { expect(user_preference.early_access_event_tracking?).to be true }
+    end
 
-        expect(user_preference).to be_invalid
-        expect(user_preference.errors.messages[:user].first).to eq(_("is not part of the given organization"))
+    context 'when user does not participate' do
+      let(:participant) { false }
+
+      it { expect(user_preference.early_access_event_tracking?).to be false }
+    end
+
+    context 'when user did not agree on tracking' do
+      let(:tracking) { false }
+
+      it { expect(user_preference.early_access_event_tracking?).to be false }
+    end
+  end
+
+  describe '#extensions_marketplace_enabled' do
+    where(:opt_in_status, :expected_value) do
+      [
+        ["enabled", true],
+        ["disabled", false],
+        ["unset", false]
+      ]
+    end
+
+    with_them do
+      it 'returns boolean from extensions_marketplace_opt_in_status' do
+        user_preference.update!(extensions_marketplace_opt_in_status: opt_in_status)
+
+        expect(user_preference.extensions_marketplace_enabled).to be expected_value
+      end
+    end
+  end
+
+  describe '#extensions_marketplace_enabled=' do
+    where(:value, :expected_opt_in_status) do
+      [
+        [true, "enabled"],
+        [false, "disabled"],
+        [0, "disabled"],
+        [1, "enabled"]
+      ]
+    end
+
+    with_them do
+      it 'updates extensions_marketplace_opt_in_status' do
+        user_preference.update!(extensions_marketplace_opt_in_status: 'unset')
+
+        user_preference.extensions_marketplace_enabled = value
+
+        expect(user_preference.extensions_marketplace_opt_in_status).to be expected_opt_in_status
       end
     end
   end

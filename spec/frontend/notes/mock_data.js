@@ -138,6 +138,7 @@ export const note = {
   created_at: '2017-08-10T15:24:03.087Z',
   updated_at: '2017-08-10T15:24:03.087Z',
   system: false,
+  imported: true,
   noteable_id: 67,
   noteable_type: 'Issue',
   noteable_iid: 7,

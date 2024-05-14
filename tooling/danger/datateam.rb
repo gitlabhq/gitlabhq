@@ -17,6 +17,7 @@ module Tooling
       PERFORMANCE_INDICATOR_REGEX = %r{gmau|smau|paid_gmau|umau}
       METRIC_REMOVED = %r{\+status: removed}
       DATABASE_REGEX = %r{\Adb/structure\.sql}
+      DATABASE_METRIC_ADDED = %r{\+data_source: database}
       DATABASE_LINE_REMOVAL_REGEX = %r{\A-}
 
       def build_message
@@ -32,11 +33,19 @@ module Tooling
       private
 
       def data_warehouse_impact_files
-        @impacted_files ||= (metrics_changed_files + database_changed_files)
+        @impacted_files ||= (metrics_added_files + metrics_changed_files + database_changed_files)
       end
 
       def labelled_as_datawarehouse?
         helper.mr_labels.any? { |label| label.start_with?(DATA_WAREHOUSE_SCOPE) }
+      end
+
+      def metrics_added_files
+        metrics_definitions_files = helper.added_files.grep(FILE_PATH_REGEX)
+
+        metrics_definitions_files.select do |file|
+          helper.changed_lines(file).any? { |change| database_metric_added?(change) }
+        end.compact
       end
 
       def metrics_changed_files
@@ -64,6 +73,10 @@ module Tooling
 
       def status_removed?(change)
         change =~ METRIC_REMOVED
+      end
+
+      def database_metric_added?(change)
+        change =~ DATABASE_METRIC_ADDED
       end
     end
   end

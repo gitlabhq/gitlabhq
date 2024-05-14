@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'socket'
 
 module QA
@@ -13,23 +14,24 @@ module QA
       def fetch_current_ip_address
         # When running on CI against a live environment such as staging.gitlab.com,
         # we use the public facing IP address
-        non_test_host = !URI.parse(Scenario.gitlab_address).host.include?('.test') # rubocop:disable Rails/NegateInclude
-        has_no_public_ip = Env.running_in_ci? || Env.use_public_ip_api?
-
-        ip_address = if has_no_public_ip && non_test_host
+        ip_address = if Env.use_public_ip_api?
+                       Logger.debug 'Using public IP address'
                        response = get_public_ip_address
 
-                       raise HostUnreachableError, "#{PUBLIC_IP_ADDRESS_API} is unreachable" unless response.code == Support::API::HTTP_STATUS_OK
+                       unless response.code == Support::API::HTTP_STATUS_OK
+                         raise HostUnreachableError, "#{PUBLIC_IP_ADDRESS_API} is unreachable"
+                       end
 
                        response.body
                      elsif page.current_host.include?('localhost')
+                       Logger.debug 'Using loopback IP address'
                        LOOPBACK_ADDRESS
                      else
-                       Socket.ip_address_list.detect { |intf| intf.ipv4_private? }.ip_address
+                       Logger.debug 'Using private IP address'
+                       Socket.ip_address_list.detect(&:ipv4_private?).ip_address
                      end
 
-        QA::Runtime::Logger.info "Current IP address: #{ip_address}"
-
+        Logger.info "Current IP address: #{ip_address}"
         ip_address
       end
 

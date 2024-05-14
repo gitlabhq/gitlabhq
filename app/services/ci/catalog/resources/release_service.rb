@@ -11,8 +11,10 @@ module Ci
         end
 
         def execute
-          validate_catalog_resource
-          create_version
+          track_release_duration do
+            validate_catalog_resource
+            create_version
+          end
 
           if errors.empty?
             ServiceResponse.success
@@ -24,6 +26,20 @@ module Ci
         private
 
         attr_reader :project, :errors, :release
+
+        def track_release_duration
+          name = :gitlab_ci_catalog_release_duration_seconds
+          comment = 'CI Catalog Release duration'
+          buckets = [0.01, 0.05, 0.1, 0.5, 1.0, 2.0, 5.0, 10.0, 20.0, 50.0, 240.0]
+
+          histogram = ::Gitlab::Metrics.histogram(name, comment, {}, buckets)
+          start_time = ::Gitlab::Metrics::System.monotonic_time
+
+          yield
+
+          duration = ::Gitlab::Metrics::System.monotonic_time - start_time
+          histogram.observe({}, duration.seconds)
+        end
 
         def validate_catalog_resource
           response = Ci::Catalog::Resources::ValidateService.new(project, release.sha).execute

@@ -204,8 +204,6 @@ trigger needs to be configured only once. If the model already has at least one
 class TrackProjectRecordChanges < Gitlab::Database::Migration[2.1]
   include Gitlab::Database::MigrationHelpers::LooseForeignKeyHelpers
 
-  enable_lock_retries!
-
   def up
     track_record_deletions(:projects)
   end
@@ -218,8 +216,7 @@ end
 
 ### Remove the foreign key
 
-If there is an existing foreign key, then it can be removed from the database. As of GitLab 14.5,
-the following foreign key describes the link between the `projects` and `ci_pipelines` tables:
+If there is an existing foreign key, then it can be removed from the database. This foreign key describes the link between the `projects` and `ci_pipelines` tables:
 
 ```sql
 ALTER TABLE ONLY ci_pipelines
@@ -273,8 +270,6 @@ Migration for removing the trigger:
 ```ruby
 class UnTrackProjectRecordChanges < Gitlab::Database::Migration[2.1]
   include Gitlab::Database::MigrationHelpers::LooseForeignKeyHelpers
-
-  enable_lock_retries!
 
   def up
     untrack_record_deletions(:projects)
@@ -564,7 +559,7 @@ nullifies the `merge_requests.head_pipeline_id` column.
 
 Due to the large volume of inserts the database table receives daily, a special partitioning
 strategy was implemented to address data bloat concerns. Originally, the
-[time-decay](https://about.gitlab.com/company/team/structure/working-groups/database-scalability/time-decay.html)
+[time-decay](https://handbook.gitlab.com/handbook/company/working-groups/database-scalability/time-decay/)
 strategy was considered for the feature but due to the large data volume we decided to implement a
 new strategy.
 

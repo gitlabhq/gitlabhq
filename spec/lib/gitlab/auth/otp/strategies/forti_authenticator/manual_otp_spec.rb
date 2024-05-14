@@ -32,9 +32,11 @@ RSpec.describe Gitlab::Auth::Otp::Strategies::FortiAuthenticator::ManualOtp do
                      token_code: otp_code }
 
     stub_request(:post, forti_authenticator_auth_url)
-      .with(body: JSON(request_body),
-            headers: { 'Content-Type': 'application/json' },
-            basic_auth: [api_username, api_token])
+      .with(
+        body: JSON(request_body),
+        headers: { 'Content-Type': 'application/json' },
+        basic_auth: [api_username, api_token]
+      )
       .to_return(status: response_status, body: '')
   end
 

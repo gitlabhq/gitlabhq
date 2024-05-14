@@ -85,7 +85,7 @@ describe('Metric images tab', () => {
   });
 
   describe('add metric dialog', () => {
-    const testUrl = 'test url';
+    const testUrl = 'https://valid-url.com';
 
     it('should open the add metric dialog when clicked', async () => {
       mountComponent();
@@ -144,6 +144,11 @@ describe('Metric images tab', () => {
         expect(wrapper.find('#upload-url-input').attributes('value')).toBe(testUrl);
       });
 
+      it('should display a description of the url field', () => {
+        const urlGroup = wrapper.find('#upload-url-group');
+        expect(urlGroup.attributes('description')).toBe('Must start with http:// or https://');
+      });
+
       it('should display the url text field', () => {
         expect(wrapper.find('#upload-text-input').attributes('value')).toBe('');
       });
@@ -162,6 +167,34 @@ describe('Metric images tab', () => {
         await waitForPromises();
 
         expect(wrapper.findComponent(GlFormInput).attributes('value')).toBe('');
+      });
+
+      describe('is invalid', () => {
+        beforeEach(() => {
+          mountComponent({
+            data() {
+              return { modalVisible: true };
+            },
+          });
+
+          const urlInput = wrapper.find('#upload-url-input');
+          urlInput.vm.$emit('input', 'invalid-url');
+          urlInput.vm.$emit('blur');
+        });
+
+        it('should disable the upload button', () => {
+          const uploadButton = findModal().props('actionPrimary');
+          expect(uploadButton.attributes.disabled).toBe(true);
+        });
+
+        it('should have an error state', () => {
+          const urlGroup = wrapper.find('#upload-url-group');
+          const urlInput = wrapper.find('#upload-url-input');
+
+          expect(urlGroup.attributes('state')).toBe(undefined);
+          expect(urlGroup.attributes('invalid-feedback')).toBe('Invalid URL');
+          expect(urlInput.attributes('state')).toBe(undefined);
+        });
       });
     });
   });

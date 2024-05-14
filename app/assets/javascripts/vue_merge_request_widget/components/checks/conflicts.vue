@@ -18,7 +18,7 @@ export default {
       variables() {
         return this.mergeRequestQueryVariables;
       },
-      update: (data) => data?.project?.mergeRequest,
+      update: (data) => data?.project?.mergeRequest || null,
     },
   },
   props: {
@@ -34,12 +34,12 @@ export default {
   },
   data() {
     return {
-      state: {},
+      state: null,
     };
   },
   computed: {
     isLoading() {
-      return this.$apollo.queries.state.loading;
+      return this.$apollo.queries.state.loading || !this.state;
     },
     userPermissions() {
       return this.state.userPermissions;

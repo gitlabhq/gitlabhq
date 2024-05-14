@@ -20,7 +20,6 @@ If you are already tracking events in Snowplow, you can also start collecting me
 
 The event triggered by Internal Events has some special properties compared to previously tracking with Snowplow directly:
 
-1. The `label`, `property` and `value` attributes are not used within Internal Events and are always empty.
 1. The `category` is automatically set to the location where the event happened. For Frontend events it is the page name and for Backend events it is a class name. If the page name or class name is not used, the default value of `"InternalEventTracking"` will be used.
 
 Make sure that you are okay with this change before you migrate and dashboards are changed accordingly.
@@ -37,8 +36,12 @@ Gitlab::Tracking.event(name, 'ci_templates_unique', namespace: namespace,
 The code above can be replaced by this:
 
 ```ruby
-Gitlab::InternalEvents.track_event('ci_templates_unique', namespace: namespace, project: project, user: user)
+include Gitlab::InternalEventsTracking
+
+track_internal_event('ci_templates_unique', namespace: namespace, project: project, user: user, additional_properties: { label: label })
 ```
+
+The `label`, `property` and `value` attributes need to be sent inside the `additional_properties` hash. In case they were not included in the original call, the `additional_properties` argument can be skipped.
 
 In addition, you have to create definitions for the metrics that you would like to track.
 
@@ -73,14 +76,36 @@ import { InternalEvents } from '~/tracking';
 mixins: [InternalEvents.mixin()]
 ...
 ...
-this.trackEvent('action', 'category')
+this.trackEvent('action', {}, 'category')
 ```
 
-If you are currently passing `category` and need to keep it, it can be passed as the second argument in the `trackEvent` method, as illustrated in the previous example. Nonetheless, it is strongly advised against using the `category` parameter for new events. This is because, by default, the category field is populated with information about where the event was triggered.
+If you are currently passing `category` and need to keep it, it can be passed as the third argument in the `trackEvent` method, as illustrated in the previous example. Nonetheless, it is strongly advised against using the `category` parameter for new events. This is because, by default, the category field is populated with information about where the event was triggered.
 
 You can use [this MR](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123901/diffs) as an example. It migrates the `devops_adoption_app` component to use Internal Events Tracking.
 
-If you are using `data-track-action` in the component, you have to change it to `data-event-tracking` to migrate to Internal Events Tracking.
+If you are using `label`, `value`, and `property` in Snowplow tracking, you can pass them as an object as the third argument to the `trackEvent` function. It is an optional parameter.
+
+For Vue Mixin:
+
+```javascript
+   this.trackEvent('i_code_review_user_apply_suggestion', {
+    label: 'push_event',
+    property: 'golang',
+    value: 20
+   });
+```
+
+For raw JavaScript:
+
+```javascript
+   InternalEvents.trackEvent('i_code_review_user_apply_suggestion', {
+    label: 'admin',
+    property: 'system',
+    value: 20
+   });
+```
+
+If you are using `data-track-action` in the component, you have to change it to `data-event-tracking` to migrate to Internal Events Tracking. If there are additional tracking attributes like `data-track-label`, `data-track-property` and `data-track-value` then you can replace them with `data-event-label`, `data-event-property` and `data-event-value` respectively.
 
 For example, if a button is defined like this:
 
@@ -106,6 +131,8 @@ This can be converted to Internal Events Tracking like this:
   :aria-label="externalUrlLabel"
   target="_blank"
   data-event-tracking="click_toggle_external_button"
+  data-event-label="diff_toggle_external_button"
+  data-event-property="diff_toggle_external"
   icon="external-link"
 />
 ```
@@ -137,18 +164,21 @@ To start using Internal Events Tracking, follow these steps:
     ```
 
    Use `project.id` or `namespace.id` instead of `user.id` if your metric is counting something other than unique users.
-1. Call `InternalEvents.tract_event` instead of `HLLRedisCounter.track_event`:
+1. Remove the `options` section from both metric definition files.
+1. Include the `Gitlab::InternalEventsTracking` module and call `track_internal_event` instead of `HLLRedisCounter.track_event`:
 
     ```diff
     - Gitlab::UsageDataCounters::HLLRedisCounter.track_event(:git_write_action, values: current_user.id)
-    + Gitlab::InternalEvents.track_event('project_created', user: current_user)
+    + include Gitlab::InternalEventsTracking
+    + track_internal_event('project_created', user: current_user)
     ```
 
 1. Optional. Add additional values to the event. You typically want to add `project` and `namespace` as it is useful information to have in the data warehouse.
 
     ```diff
     - Gitlab::UsageDataCounters::HLLRedisCounter.track_event(:git_write_action, values: current_user.id)
-    + Gitlab::InternalEvents.track_event('project_created', user: current_user, project: project, namespace: namespace)
+    + include Gitlab::InternalEventsTracking
+    + track_internal_event('project_created', user: current_user, project: project, namespace: namespace)
     ```
 
 1. Update your test to use the `internal event tracking` shared example.

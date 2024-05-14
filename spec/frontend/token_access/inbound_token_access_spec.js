@@ -6,21 +6,24 @@ import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_help
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
 import InboundTokenAccess from '~/token_access/components/inbound_token_access.vue';
-import inboundAddProjectCIJobTokenScopeMutation from '~/token_access/graphql/mutations/inbound_add_project_ci_job_token_scope.mutation.graphql';
+import inboundAddGroupOrProjectCIJobTokenScopeMutation from '~/token_access/graphql/mutations/inbound_add_group_or_project_ci_job_token_scope.mutation.graphql';
+import inboundRemoveGroupCIJobTokenScopeMutation from '~/token_access/graphql/mutations/inbound_remove_group_ci_job_token_scope.mutation.graphql';
 import inboundRemoveProjectCIJobTokenScopeMutation from '~/token_access/graphql/mutations/inbound_remove_project_ci_job_token_scope.mutation.graphql';
 import inboundUpdateCIJobTokenScopeMutation from '~/token_access/graphql/mutations/inbound_update_ci_job_token_scope.mutation.graphql';
 import inboundGetCIJobTokenScopeQuery from '~/token_access/graphql/queries/inbound_get_ci_job_token_scope.query.graphql';
-import inboundGetProjectsWithCIJobTokenScopeQuery from '~/token_access/graphql/queries/inbound_get_projects_with_ci_job_token_scope.query.graphql';
+import inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery from '~/token_access/graphql/queries/inbound_get_groups_and_projects_with_ci_job_token_scope.query.graphql';
 import {
   inboundJobTokenScopeEnabledResponse,
   inboundJobTokenScopeDisabledResponse,
-  inboundProjectsWithScopeResponse,
-  inboundAddProjectSuccessResponse,
+  inboundGroupsAndProjectsWithScopeResponse,
+  inboundAddGroupOrProjectSuccessResponse,
+  inboundRemoveGroupSuccess,
   inboundRemoveProjectSuccess,
   inboundUpdateScopeSuccessResponse,
 } from './mock_data';
 
 const projectPath = 'root/my-repo';
+const testGroupPath = 'gitlab-org';
 const testProjectPath = 'root/test';
 const message = 'An error occurred';
 const error = new Error(message);
@@ -38,12 +41,13 @@ describe('TokenAccess component', () => {
   const inboundJobTokenScopeDisabledResponseHandler = jest
     .fn()
     .mockResolvedValue(inboundJobTokenScopeDisabledResponse);
-  const inboundProjectsWithScopeResponseHandler = jest
+  const inboundGroupsAndProjectsWithScopeResponseHandler = jest
     .fn()
-    .mockResolvedValue(inboundProjectsWithScopeResponse);
-  const inboundAddProjectSuccessResponseHandler = jest
+    .mockResolvedValue(inboundGroupsAndProjectsWithScopeResponse);
+  const inboundAddGroupOrProjectSuccessResponseHandler = jest
     .fn()
-    .mockResolvedValue(inboundAddProjectSuccessResponse);
+    .mockResolvedValue(inboundAddGroupOrProjectSuccessResponse);
+  const inboundRemoveGroupSuccessHandler = jest.fn().mockResolvedValue(inboundRemoveGroupSuccess);
   const inboundRemoveProjectSuccessHandler = jest
     .fn()
     .mockResolvedValue(inboundRemoveProjectSuccess);
@@ -57,7 +61,8 @@ describe('TokenAccess component', () => {
   const findAddProjectBtn = () => wrapper.findByTestId('add-project-btn');
   const findCancelBtn = () => wrapper.findByRole('button', { name: 'Cancel' });
   const findProjectInput = () => wrapper.findComponent(GlFormInput);
-  const findRemoveProjectBtn = () => wrapper.findByRole('button', { name: 'Remove access' });
+  const findRemoveProjectBtnAt = (i) =>
+    wrapper.findAllByRole('button', { name: 'Remove access' }).at(i);
   const findToggleFormBtn = () => wrapper.findByTestId('toggle-form-btn');
   const findTokenDisabledAlert = () => wrapper.findComponent(GlAlert);
 
@@ -78,7 +83,10 @@ describe('TokenAccess component', () => {
     it('shows loading state while waiting on query to resolve', async () => {
       createComponent([
         [inboundGetCIJobTokenScopeQuery, inboundJobTokenScopeEnabledResponseHandler],
-        [inboundGetProjectsWithCIJobTokenScopeQuery, inboundProjectsWithScopeResponseHandler],
+        [
+          inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery,
+          inboundGroupsAndProjectsWithScopeResponseHandler,
+        ],
       ]);
 
       expect(findLoadingIcon().exists()).toBe(true);
@@ -89,25 +97,30 @@ describe('TokenAccess component', () => {
     });
   });
 
-  describe('fetching projects and scope', () => {
-    it('fetches projects and scope correctly', () => {
+  describe('fetching groups and projects and scope', () => {
+    it('fetches groups and projects and scope correctly', () => {
       const expectedVariables = {
         fullPath: 'root/my-repo',
       };
 
       createComponent([
         [inboundGetCIJobTokenScopeQuery, inboundJobTokenScopeEnabledResponseHandler],
-        [inboundGetProjectsWithCIJobTokenScopeQuery, inboundProjectsWithScopeResponseHandler],
+        [
+          inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery,
+          inboundGroupsAndProjectsWithScopeResponseHandler,
+        ],
       ]);
 
       expect(inboundJobTokenScopeEnabledResponseHandler).toHaveBeenCalledWith(expectedVariables);
-      expect(inboundProjectsWithScopeResponseHandler).toHaveBeenCalledWith(expectedVariables);
+      expect(inboundGroupsAndProjectsWithScopeResponseHandler).toHaveBeenCalledWith(
+        expectedVariables,
+      );
     });
 
-    it('handles fetch projects error correctly', async () => {
+    it('handles fetch groups and projects error correctly', async () => {
       createComponent([
         [inboundGetCIJobTokenScopeQuery, inboundJobTokenScopeEnabledResponseHandler],
-        [inboundGetProjectsWithCIJobTokenScopeQuery, failureHandler],
+        [inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery, failureHandler],
       ]);
 
       await waitForPromises();
@@ -120,7 +133,10 @@ describe('TokenAccess component', () => {
     it('handles fetch scope error correctly', async () => {
       createComponent([
         [inboundGetCIJobTokenScopeQuery, failureHandler],
-        [inboundGetProjectsWithCIJobTokenScopeQuery, inboundProjectsWithScopeResponseHandler],
+        [
+          inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery,
+          inboundGroupsAndProjectsWithScopeResponseHandler,
+        ],
       ]);
 
       await waitForPromises();
@@ -135,7 +151,10 @@ describe('TokenAccess component', () => {
     it('the toggle is on and the alert is hidden', async () => {
       createComponent([
         [inboundGetCIJobTokenScopeQuery, inboundJobTokenScopeEnabledResponseHandler],
-        [inboundGetProjectsWithCIJobTokenScopeQuery, inboundProjectsWithScopeResponseHandler],
+        [
+          inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery,
+          inboundGroupsAndProjectsWithScopeResponseHandler,
+        ],
       ]);
 
       await waitForPromises();
@@ -147,7 +166,10 @@ describe('TokenAccess component', () => {
     it('the toggle is off and the alert is visible', async () => {
       createComponent([
         [inboundGetCIJobTokenScopeQuery, inboundJobTokenScopeDisabledResponseHandler],
-        [inboundGetProjectsWithCIJobTokenScopeQuery, inboundProjectsWithScopeResponseHandler],
+        [
+          inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery,
+          inboundGroupsAndProjectsWithScopeResponseHandler,
+        ],
       ]);
 
       await waitForPromises();
@@ -206,13 +228,23 @@ describe('TokenAccess component', () => {
     });
   });
 
-  describe('add project', () => {
-    it('calls add project mutation', async () => {
+  describe.each`
+    type         | testPath
+    ${'group'}   | ${testGroupPath}
+    ${'project'} | ${testProjectPath}
+  `('add $type', ({ testPath }) => {
+    it(`calls add group or project mutation`, async () => {
       createComponent(
         [
           [inboundGetCIJobTokenScopeQuery, inboundJobTokenScopeEnabledResponseHandler],
-          [inboundGetProjectsWithCIJobTokenScopeQuery, inboundProjectsWithScopeResponseHandler],
-          [inboundAddProjectCIJobTokenScopeMutation, inboundAddProjectSuccessResponseHandler],
+          [
+            inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery,
+            inboundGroupsAndProjectsWithScopeResponseHandler,
+          ],
+          [
+            inboundAddGroupOrProjectCIJobTokenScopeMutation,
+            inboundAddGroupOrProjectSuccessResponseHandler,
+          ],
         ],
         mountExtended,
       );
@@ -220,21 +252,24 @@ describe('TokenAccess component', () => {
       await waitForPromises();
 
       await findToggleFormBtn().trigger('click');
-      await findProjectInput().vm.$emit('input', testProjectPath);
+      await findProjectInput().vm.$emit('input', testPath);
       findAddProjectBtn().trigger('click');
 
-      expect(inboundAddProjectSuccessResponseHandler).toHaveBeenCalledWith({
+      expect(inboundAddGroupOrProjectSuccessResponseHandler).toHaveBeenCalledWith({
         projectPath,
-        targetProjectPath: testProjectPath,
+        targetPath: testPath,
       });
     });
 
-    it('add project handles error correctly', async () => {
+    it('add group or project handles error correctly', async () => {
       createComponent(
         [
           [inboundGetCIJobTokenScopeQuery, inboundJobTokenScopeEnabledResponseHandler],
-          [inboundGetProjectsWithCIJobTokenScopeQuery, inboundProjectsWithScopeResponseHandler],
-          [inboundAddProjectCIJobTokenScopeMutation, failureHandler],
+          [
+            inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery,
+            inboundGroupsAndProjectsWithScopeResponseHandler,
+          ],
+          [inboundAddGroupOrProjectCIJobTokenScopeMutation, failureHandler],
         ],
         mountExtended,
       );
@@ -242,7 +277,7 @@ describe('TokenAccess component', () => {
       await waitForPromises();
 
       await findToggleFormBtn().trigger('click');
-      await findProjectInput().vm.$emit('input', testProjectPath);
+      await findProjectInput().vm.$emit('input', testPath);
       findAddProjectBtn().trigger('click');
 
       await waitForPromises();
@@ -254,7 +289,10 @@ describe('TokenAccess component', () => {
       createComponent(
         [
           [inboundGetCIJobTokenScopeQuery, inboundJobTokenScopeEnabledResponseHandler],
-          [inboundGetProjectsWithCIJobTokenScopeQuery, inboundProjectsWithScopeResponseHandler],
+          [
+            inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery,
+            inboundGroupsAndProjectsWithScopeResponseHandler,
+          ],
         ],
         mountExtended,
       );
@@ -265,7 +303,7 @@ describe('TokenAccess component', () => {
 
       expect(findProjectInput().exists()).toBe(true);
 
-      await findProjectInput().vm.$emit('input', testProjectPath);
+      await findProjectInput().vm.$emit('input', testPath);
 
       await findCancelBtn().trigger('click');
 
@@ -277,40 +315,50 @@ describe('TokenAccess component', () => {
     });
   });
 
-  describe('remove project', () => {
-    it('calls remove project mutation', async () => {
+  describe.each`
+    type         | index | mutation                                       | handler                               | target
+    ${'group'}   | ${0}  | ${inboundRemoveGroupCIJobTokenScopeMutation}   | ${inboundRemoveGroupSuccessHandler}   | ${'targetGroupPath'}
+    ${'project'} | ${1}  | ${inboundRemoveProjectCIJobTokenScopeMutation} | ${inboundRemoveProjectSuccessHandler} | ${'targetProjectPath'}
+  `('remove $type', ({ type, index, mutation, handler, target }) => {
+    it(`calls remove ${type} mutation`, async () => {
       createComponent(
         [
           [inboundGetCIJobTokenScopeQuery, inboundJobTokenScopeEnabledResponseHandler],
-          [inboundGetProjectsWithCIJobTokenScopeQuery, inboundProjectsWithScopeResponseHandler],
-          [inboundRemoveProjectCIJobTokenScopeMutation, inboundRemoveProjectSuccessHandler],
+          [
+            inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery,
+            inboundGroupsAndProjectsWithScopeResponseHandler,
+          ],
+          [mutation, handler],
         ],
         mountExtended,
       );
 
       await waitForPromises();
 
-      findRemoveProjectBtn().trigger('click');
+      findRemoveProjectBtnAt(index).trigger('click');
 
-      expect(inboundRemoveProjectSuccessHandler).toHaveBeenCalledWith({
+      expect(handler).toHaveBeenCalledWith({
         projectPath,
-        targetProjectPath: 'root/ci-project',
+        [target]: expect.any(String),
       });
     });
 
-    it('remove project handles error correctly', async () => {
+    it(`remove ${type} handles error correctly`, async () => {
       createComponent(
         [
           [inboundGetCIJobTokenScopeQuery, inboundJobTokenScopeEnabledResponseHandler],
-          [inboundGetProjectsWithCIJobTokenScopeQuery, inboundProjectsWithScopeResponseHandler],
-          [inboundRemoveProjectCIJobTokenScopeMutation, failureHandler],
+          [
+            inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery,
+            inboundGroupsAndProjectsWithScopeResponseHandler,
+          ],
+          [mutation, failureHandler],
         ],
         mountExtended,
       );
 
       await waitForPromises();
 
-      findRemoveProjectBtn().trigger('click');
+      findRemoveProjectBtnAt(index).trigger('click');
 
       await waitForPromises();
 

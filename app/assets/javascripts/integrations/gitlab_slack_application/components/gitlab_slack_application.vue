@@ -133,3 +133,8 @@ export default {
     </div>
   </div>
 </template>
+<style>
+.gitlab-slack-slack-logo {
+  transform: scale(200%); /* Slack logo SVG is scaled down 50% and has empty space around it */
+}
+</style>

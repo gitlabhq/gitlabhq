@@ -28,7 +28,7 @@ RSpec.describe 'Dashboard shortcuts', :js, feature_category: :shared do
 
       find('body').send_keys([:shift, 'T'])
 
-      check_page_title('To-Do List')
+      expect(page).to have_selector('.js-todos-all')
 
       find('body').send_keys([:shift, 'G'])
 
@@ -56,7 +56,7 @@ RSpec.describe 'Dashboard shortcuts', :js, feature_category: :shared do
     it 'navigate to tabs' do
       find('body').send_keys([:shift, 'G'])
 
-      expect(page).to have_content('No public groups')
+      expect(page).to have_content('No public or internal groups')
 
       find('body').send_keys([:shift, 'S'])
 
@@ -66,7 +66,7 @@ RSpec.describe 'Dashboard shortcuts', :js, feature_category: :shared do
       find('body').send_keys([:shift, 'P'])
 
       find('.nothing-here-block')
-      expect(page).to have_content('Explore public groups to find projects to contribute to.')
+      expect(page).to have_content('Explore public groups to find projects to contribute to')
     end
   end
 

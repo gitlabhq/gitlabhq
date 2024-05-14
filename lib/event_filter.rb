@@ -136,8 +136,7 @@ class EventFilter
           Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
             attribute_name: order_hint_column,
             order_expression: Event.arel_table[order_hint_column].desc,
-            nullable: :nulls_last,
-            distinct: false
+            nullable: :nulls_last
           ),
           Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
             attribute_name: :id,

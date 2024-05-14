@@ -79,7 +79,7 @@ export default {
             v-if="
               $slots['left-primary'] /* eslint-disable-line @gitlab/vue-prefer-dollar-scopedslots */
             "
-            class="gl-display-flex gl-align-items-center gl-text-body gl-font-weight-bold gl-min-h-6 gl-min-w-0"
+            class="gl-display-flex gl-align-items-center gl-text-body gl-font-weight-semibold gl-min-h-6 gl-min-w-0"
           >
             <slot name="left-primary"></slot>
             <gl-button
@@ -101,13 +101,13 @@ export default {
                 'left-secondary'
               ]
             "
-            class="gl-display-flex gl-align-items-center gl-text-gray-500 gl-min-h-6 gl-min-w-0 gl-flex-grow-1"
+            class="gl-display-flex gl-align-items-center gl-text-secondary gl-font-sm gl-min-h-6 gl-min-w-0 gl-flex-grow-1"
           >
             <slot name="left-secondary"></slot>
           </div>
         </div>
         <div
-          class="gl-display-flex gl-flex-direction-column gl-sm-align-items-flex-end gl-justify-content-space-between gl-text-gray-500 gl-flex-shrink-0"
+          class="gl-display-flex gl-flex-direction-column gl-sm-align-items-flex-end gl-justify-content-space-between gl-text-secondary gl-flex-shrink-0"
         >
           <div
             v-if="
@@ -115,7 +115,7 @@ export default {
                 'right-primary'
               ]
             "
-            class="gl-display-flex gl-align-items-center gl-sm-text-body gl-sm-font-weight-bold gl-min-h-6"
+            class="gl-display-flex gl-align-items-center gl-sm-text-body gl-sm-font-weight-semibold gl-min-h-6"
           >
             <slot name="right-primary"></slot>
           </div>
@@ -125,7 +125,7 @@ export default {
                 'right-secondary'
               ]
             "
-            class="gl-display-flex gl-align-items-center gl-min-h-6"
+            class="gl-display-flex gl-align-items-center gl-font-sm gl-min-h-6"
           >
             <slot name="right-secondary"></slot>
           </div>
@@ -143,7 +143,7 @@ export default {
     <div v-if="isDetailsShown" class="gl-display-flex">
       <div class="gl-w-7"></div>
       <div
-        class="gl-display-flex gl-flex-direction-column gl-flex-grow-1 gl-bg-gray-10 gl-rounded-base gl-inset-border-1-gray-100 gl-mb-3"
+        class="gl-display-flex gl-flex-direction-column gl-flex-grow-1 gl-bg-gray-10 gl-rounded-base gl-shadow-inner-1-gray-100 gl-mb-3"
       >
         <div
           v-for="(row, detailIndex) in detailsSlots"

@@ -1,0 +1,9 @@
+---
+name: ci_canceling_status
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/399215
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140522
+rollout_issue_url: https://gitlab.com/gitlab-com/gl-infra/production/-/issues/17520
+milestone: '17.0'
+group: group::pipeline execution
+type: beta
+default_enabled: true

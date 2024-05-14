@@ -9,9 +9,9 @@ module Mutations
         authorize :admin_note
 
         argument :id,
-                 ::Types::GlobalIDType[::Note],
-                 required: true,
-                 description: 'Global ID of the note to update.'
+          ::Types::GlobalIDType[::Note],
+          required: true,
+          description: 'Global ID of the note to update.'
 
         def resolve(args)
           note = authorized_find!(id: args[:id])

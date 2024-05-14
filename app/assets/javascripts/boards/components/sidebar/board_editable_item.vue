@@ -89,7 +89,7 @@ export default {
       v-show="showHeader"
       class="gl-display-flex gl-justify-content-space-between gl-align-items-center gl-mb-2"
     >
-      <span class="gl-vertical-align-middle">
+      <span class="gl-align-middle">
         <slot name="title">
           <span data-testid="title">{{ title }}</span>
         </slot>

@@ -1,0 +1,35 @@
+= content_for :meta_tags do
+  %meta{ 'http-equiv': 'refresh', content: "30; url=https://gitlab.cn/saasmigration/" }
+
+.gl-text-center.gl-max-w-100.gl-mx-auto
+  .svg-content.svg-150
+    = image_tag 'illustrations/empty-state/empty-access-md.svg'
+  .container.gl-display-flex.gl-text-left.gl-flex-wrap.gl-md-flex-nowrap
+    .container
+      %h1.gl-mb-4
+        It looks like you are visiting GitLab from Mainland China, Macau, or Hong Kong
+      .gl-gap-2
+        %p
+          We advise you to sign up with JiHu. JiHu is an independent company with a localized GitLab offering that is tailored to assist individuals based in these geographies. JiHu has an exclusive right to provide GitLab to individuals located in this region.
+        %p
+          If you belong to an existing paid namespace with GitLab.com, please contact your administrator to send you an invite.
+    .container
+      %h1.gl-mb-4
+        尊敬的用户，我们注意到您正在从中国大陆、中国香港地区或中国澳门地区访问并使用 GitLab。
+      .gl-gap-2
+        %p
+          我们建议您注册极狐。极狐是一家独立经营运作的公司，具有上述地区内GitLab产品的永久唯一独家授权，并向用户提供本地化的GitLab产品，极狐GitLab产品专为帮助本地用户体验而量身定制。
+        %p
+          如果您属于GitLab.com现有的付费客户或用户组，请联系您的管理员以向您发送注册邀请
+
+  .gl-display-flex.gl-justify-content-center.gl-sm-flex-direction-row.gl-flex-direction-column.gl-gap-3
+    = render Pajamas::ButtonComponent.new(variant: :confirm, href: 'https://gitlab.cn/saasmigration/') do
+      Take me to JiHu (去极狐)
+
+    = render Pajamas::ButtonComponent.new(href: 'https://about.gitlab.com/pricing/faq-jihu/') do
+      Learn more about JiHu (了解更多有关极狐)
+
+  .gl-display-flex.gl-justify-content-center.gl-align-items-center.gl-my-6
+    = render Pajamas::SpinnerComponent.new(size: :sm)
+    .gl-text-gray-500.gl-ml-4
+      You will be automatically redirected to JiHu after 30 seconds (此页面将在30秒后自动跳转)

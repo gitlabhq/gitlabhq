@@ -1,6 +1,6 @@
 ---
 key_path: redis_hll_counters.ci_templates.p_ci_templates_security_coverage_fuzzing_latest_weekly
-description: Weekly counts for Coverage Fuzzing latest CI template
+description: Weekly counts for Coverage Fuzzing latest CI template. Originally monthly count, fixed in 17.0.
 product_section: sec
 product_stage: secure
 product_group: dynamic_analysis
@@ -8,7 +8,7 @@ value_type: number
 status: active
 milestone: "15.5"
 introduced_by_url: 'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/97886'
-time_frame: 28d
+time_frame: 7d
 data_source: redis_hll
 data_category: optional
 instrumentation_class: RedisHLLMetric

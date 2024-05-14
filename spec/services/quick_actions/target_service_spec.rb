@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe QuickActions::TargetService, feature_category: :team_planning do
   let_it_be(:group) { create(:group) }
   let_it_be_with_reload(:project) { create(:project, group: group) }
-  let_it_be(:user) { create(:user).tap { |u| project.add_maintainer(u) } }
+  let_it_be(:user) { create(:user, maintainer_of: project) }
   let(:container) { project }
   let(:service) { described_class.new(container: container, current_user: user) }
 
@@ -43,15 +43,6 @@ RSpec.describe QuickActions::TargetService, feature_category: :team_planning do
       it_behaves_like 'find target'
       it_behaves_like 'build target', type_iid: nil
       it_behaves_like 'build target', type_iid: -1
-
-      context 'when issue belongs to a group' do
-        let(:container) { group }
-        let(:target) { create(:issue, :group_level, namespace: group) }
-
-        it_behaves_like 'find target'
-        it_behaves_like 'build target', type_iid: nil
-        it_behaves_like 'build target', type_iid: -1
-      end
     end
 
     context 'for work item' do

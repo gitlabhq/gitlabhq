@@ -193,7 +193,7 @@ export default {
 
 <template>
   <div
-    class="alert-assignees gl-py-5 gl-w-70p"
+    class="alert-assignees gl-py-5 gl-w-7/10"
     :class="{ 'gl-border-b-1 gl-border-b-solid gl-border-b-gray-100': !sidebarCollapsed }"
   >
     <template v-if="sidebarCollapsed">
@@ -243,7 +243,7 @@ export default {
         @hide="hideDropdown"
       >
         <p class="gl-dropdown-header-top">
-          {{ __('Assign To') }}
+          {{ __('Select assignees') }}
         </p>
         <gl-search-box-by-type v-model.trim="search" :placeholder="__('Search users')" />
         <div class="dropdown-content dropdown-body">

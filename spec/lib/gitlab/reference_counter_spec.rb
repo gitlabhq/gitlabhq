@@ -21,8 +21,8 @@ RSpec.describe Gitlab::ReferenceCounter, :clean_gitlab_redis_shared_state do
     end
 
     it 'warns if attempting to decrease a counter with a value of zero or less, and resets the counter' do
-      expect(Gitlab::AppLogger).to receive(:warn).with("Reference counter for project-1" \
-        " decreased when its value was less than 1. Resetting the counter.")
+      expect(Gitlab::AppLogger).to receive(:warn).with("Reference counter for project-1 " \
+        "decreased when its value was less than 1. Resetting the counter.")
       expect { reference_counter.decrease }.not_to change { reference_counter.value }
     end
   end

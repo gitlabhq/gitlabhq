@@ -11,31 +11,37 @@ import (
 
 const maxScanTokenSize = 1024 * 1024
 
+// Line represents a line in an LSIF document
 type Line struct {
 	Type string `json:"label"`
 }
 
+// Docs represents LSIF documents and related metadata
 type Docs struct {
 	Root      string
-	Entries   map[Id]string
-	DocRanges map[Id][]Id
+	Entries   map[ID]string
+	DocRanges map[ID][]ID
 	Ranges    *Ranges
 }
 
+// Document represents a single document in an LSIF dump
 type Document struct {
-	Id  Id     `json:"id"`
-	Uri string `json:"uri"`
+	ID  ID     `json:"id"`
+	URI string `json:"uri"`
 }
 
+// DocumentRange represents a range within a document
 type DocumentRange struct {
-	OutV     Id   `json:"outV"`
-	RangeIds []Id `json:"inVs"`
+	OutV     ID   `json:"outV"`
+	RangeIds []ID `json:"inVs"`
 }
 
+// Metadata represents metadata in an LSIF dump
 type Metadata struct {
 	Root string `json:"projectRoot"`
 }
 
+// NewDocs creates a new instance of Docs
 func NewDocs() (*Docs, error) {
 	ranges, err := NewRanges()
 	if err != nil {
@@ -44,12 +50,13 @@ func NewDocs() (*Docs, error) {
 
 	return &Docs{
 		Root:      "file:///",
-		Entries:   make(map[Id]string),
-		DocRanges: make(map[Id][]Id),
+		Entries:   make(map[ID]string),
+		DocRanges: make(map[ID][]ID),
 		Ranges:    ranges,
 	}, nil
 }
 
+// Parse reads and processes LSIF data from the provided reader
 func (d *Docs) Parse(r io.Reader) error {
 	scanner := bufio.NewScanner(r)
 	buf := make([]byte, 0, bufio.MaxScanTokenSize)
@@ -90,10 +97,12 @@ func (d *Docs) process(line []byte) error {
 	return nil
 }
 
+// Close closes the document parser
 func (d *Docs) Close() error {
 	return d.Ranges.Close()
 }
 
+// SerializeEntries serializes document entries to a zip writer
 func (d *Docs) SerializeEntries(w *zip.Writer) error {
 	for id, path := range d.Entries {
 		filePath := Lsif + "/" + path + ".json"
@@ -128,12 +137,12 @@ func (d *Docs) addDocument(line []byte) error {
 		return err
 	}
 
-	relativePath, err := filepath.Rel(d.Root, doc.Uri)
+	relativePath, err := filepath.Rel(d.Root, doc.URI)
 	if err != nil {
-		relativePath = doc.Uri
+		relativePath = doc.URI
 	}
 
-	d.Entries[doc.Id] = relativePath
+	d.Entries[doc.ID] = relativePath
 
 	return nil
 }

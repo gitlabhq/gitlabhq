@@ -4,7 +4,7 @@ module HotlinkInterceptor
   extend ActiveSupport::Concern
 
   def intercept_hotlinking!
-    return render_406 if Gitlab::HotlinkingDetector.intercept_hotlinking?(request)
+    render_406 if Gitlab::HotlinkingDetector.intercept_hotlinking?(request)
   end
 
   private

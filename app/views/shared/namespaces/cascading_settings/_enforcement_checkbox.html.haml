@@ -13,4 +13,5 @@
 = form.gitlab_ui_checkbox_component lock_attribute,
   label,
   help_text: help_text,
-  checkbox_options: { checked: group.namespace_settings.public_send(lock_attribute), data: { testid: 'enforce-for-all-subgroups-checkbox' } }
+  checkbox_options: { checked: group.namespace_settings.public_send(lock_attribute), data: { testid: 'enforce-for-all-subgroups-checkbox' } },
+  content_wrapper_options: { class: 'gl-pl-7!' }

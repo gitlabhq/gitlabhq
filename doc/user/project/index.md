@@ -8,7 +8,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 You can create a project in many ways in GitLab.
 
@@ -70,9 +70,7 @@ For this reason, the creation date of imported objects can be older than the cre
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/6860) in GitLab 11.2.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Custom project templates are available at:
 
@@ -99,9 +97,7 @@ Custom project templates are available at:
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, Self-managed
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13756) in GitLab 12.10
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 The HIPAA Audit Protocol template contains issues for audit inquiries in the
 HIPAA Audit Protocol published by the U.S Department of Health and Human Services.
@@ -125,8 +121,6 @@ To create a project from the HIPAA Audit Protocol template:
 1. Select **Create project**.
 
 ## Create a new project with Git push
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/26388) in GitLab 10.5.
 
 Use `git push` to push a local project repository to GitLab. After you push a repository,
 GitLab creates your project in your chosen namespace.
@@ -200,8 +194,6 @@ DETAILS:
 FLAG:
 On self-managed GitLab, by default this feature is not available.
 To make it available, an administrator can enable the [feature flag](../../administration/feature_flags.md) named `support_sha256_repositories`.
-On GitLab.com, this feature is not available because it's an [Experiment](../../policy/experiment-beta-support.md#experiment).
-If you would like access on GitLab.com, please fill out this [form](https://forms.gle/pUUPB8GBgaPCvdNc6).
 
 You can select SHA-256 hashing for a project only when you create the project.
 
@@ -232,5 +224,5 @@ Federal regulations, such as NIST and CISA [guidelines](https://csrc.nist.gov/pr
 ## Related topics
 
 - [Reserved project and group names](../../user/reserved_names.md)
-- [Limitations on project and group names](../../user/reserved_names.md#limitations-on-project-and-group-names)
+- [Limitations on project and group names](../../user/reserved_names.md#limitations-on-usernames-project-and-group-names)
 - [Manage projects](working_with_projects.md)

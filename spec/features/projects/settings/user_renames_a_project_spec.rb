@@ -54,7 +54,7 @@ RSpec.describe 'Projects > Settings > User renames a project', feature_category:
   context 'when changing project name' do
     it 'renames the repository' do
       change_name(project, 'bar')
-      expect(find('.breadcrumbs')).to have_content(project.name)
+      expect(find_by_testid('breadcrumb-links')).to have_content(project.name)
     end
 
     context 'with emojis' do
@@ -83,7 +83,7 @@ RSpec.describe 'Projects > Settings > User renames a project', feature_category:
       visit new_path
 
       expect(page).to have_current_path(new_path, ignore_query: true)
-      expect(find('.breadcrumbs')).to have_content(project.name)
+      expect(find_by_testid('breadcrumb-links')).to have_content(project.name)
     end
 
     it 'the project is accessible via a redirect from the old path' do
@@ -93,7 +93,7 @@ RSpec.describe 'Projects > Settings > User renames a project', feature_category:
       visit old_path
 
       expect(page).to have_current_path(new_path, ignore_query: true)
-      expect(find('.breadcrumbs')).to have_content(project.name)
+      expect(find_by_testid('breadcrumb-links')).to have_content(project.name)
     end
 
     context 'and a new project is added with the same path' do
@@ -104,7 +104,7 @@ RSpec.describe 'Projects > Settings > User renames a project', feature_category:
         visit old_path
 
         expect(page).to have_current_path(old_path, ignore_query: true)
-        expect(find('.breadcrumbs')).to have_content(new_project.name)
+        expect(find_by_testid('breadcrumb-links')).to have_content(new_project.name)
       end
     end
   end

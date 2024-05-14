@@ -1,30 +1,21 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script>
-import { GlLoadingIcon } from '@gitlab/ui';
-import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import { logError } from '~/lib/logger';
-import { toggleQueryPollingByVisibility, etagQueryHeaders } from '~/graphql_shared/utils';
-import ConfirmRollbackModal from '~/environments/components/confirm_rollback_modal.vue';
-import environmentDetailsQuery from '../graphql/queries/environment_details.query.graphql';
-import environmentToRollbackQuery from '../graphql/queries/environment_to_rollback.query.graphql';
-import { convertToDeploymentTableRow } from '../helpers/deployment_data_transformation_helper';
-import EmptyState from './empty_state.vue';
-import DeploymentsTable from './deployments_table.vue';
-import Pagination from './pagination.vue';
-import {
-  ENVIRONMENT_DETAILS_QUERY_POLLING_INTERVAL,
-  ENVIRONMENT_DETAILS_PAGE_SIZE,
-} from './constants';
+import { GlLoadingIcon, GlTabs, GlTab, GlBadge } from '@gitlab/ui';
+import { s__ } from '~/locale';
+import { getParameterValues, setUrlParams, updateHistory } from '~/lib/utils/url_utility';
+import environmentClusterAgentQuery from '~/environments/graphql/queries/environment_cluster_agent.query.graphql';
+import DeploymentHistory from './components/deployment_history.vue';
+import KubernetesOverview from './components/kubernetes/kubernetes_overview.vue';
 
 export default {
   components: {
-    ConfirmRollbackModal,
-    Pagination,
-    DeploymentsTable,
-    EmptyState,
     GlLoadingIcon,
+    GlTabs,
+    GlTab,
+    GlBadge,
+    DeploymentHistory,
+    KubernetesOverview,
   },
-  inject: { graphqlEtagKey: { default: '' } },
   props: {
     projectFullPath: {
       type: String,
@@ -46,143 +37,96 @@ export default {
     },
   },
   apollo: {
-    project: {
-      query: environmentDetailsQuery,
+    environment: {
+      query: environmentClusterAgentQuery,
       variables() {
         return {
           projectFullPath: this.projectFullPath,
           environmentName: this.environmentName,
-          first: this.before ? null : ENVIRONMENT_DETAILS_PAGE_SIZE,
-          last: this.before ? ENVIRONMENT_DETAILS_PAGE_SIZE : null,
-          after: this.after,
-          before: this.before,
         };
       },
-      pollInterval() {
-        return this.graphqlEtagKey ? ENVIRONMENT_DETAILS_QUERY_POLLING_INTERVAL : null;
+      update(data) {
+        return data?.project?.environment;
       },
-      context() {
-        return etagQueryHeaders('environment_details', this.graphqlEtagKey);
+      result() {
+        this.updateCurrentTab();
       },
-    },
-    environmentToRollback: {
-      query: environmentToRollbackQuery,
     },
   },
   data() {
     return {
-      project: {},
-      environmentToRollback: {},
-      isInitialPageDataReceived: false,
-      isPrefetchingPages: false,
+      currentTabIndex: 0,
     };
   },
   computed: {
-    deployments() {
-      return (
-        this.project.environment?.deployments.nodes.map((deployment) =>
-          convertToDeploymentTableRow(deployment, this.project.environment),
-        ) || []
-      );
-    },
     isLoading() {
-      return this.$apollo.queries.project.loading;
+      return this.$apollo.queries.environment.loading;
     },
-    isDeploymentTableShown() {
-      return this.isInitialPageDataReceived === true && this.deployments.length > 0;
+    kubernetesNamespace() {
+      return this.environment?.kubernetesNamespace || '';
     },
-    pageInfo() {
-      return this.project.environment?.deployments.pageInfo || {};
-    },
-    isPaginationDisabled() {
-      return this.isLoading || this.isPrefetchingPages;
+    fluxResourcePath() {
+      return this.environment?.fluxResourcePath || '';
     },
   },
-  watch: {
-    async project(newProject) {
-      this.isInitialPageDataReceived = true;
-      this.isPrefetchingPages = true;
-
-      try {
-        // TLDR: when we load a page, if there's next and/or previous pages existing, we'll load their data as well to improve percepted performance.
-        const {
-          endCursor,
-          hasPreviousPage,
-          hasNextPage,
-          startCursor,
-        } = newProject.environment.deployments.pageInfo;
-
-        // At the moment we have a limit of deployments being requested only from a signle environment entity per query,
-        // and apparently two batched queries count as one on server-side
-        // to load both next and previous page data, we have to query them sequentially
-        if (hasNextPage) {
-          await this.$apollo.query({
-            query: environmentDetailsQuery,
-            variables: {
-              projectFullPath: this.projectFullPath,
-              environmentName: this.environmentName,
-              first: ENVIRONMENT_DETAILS_PAGE_SIZE,
-              after: endCursor,
-              before: null,
-              last: null,
-            },
-          });
-        }
-
-        if (hasPreviousPage) {
-          await this.$apollo.query({
-            query: environmentDetailsQuery,
-            variables: {
-              projectFullPath: this.projectFullPath,
-              environmentName: this.environmentName,
-              first: null,
-              after: null,
-              before: startCursor,
-              last: ENVIRONMENT_DETAILS_PAGE_SIZE,
-            },
-          });
-        }
-      } catch (error) {
-        logError(error);
-      }
-
-      this.isPrefetchingPages = false;
-    },
+  i18n: {
+    deploymentHistory: s__('Environments|Deployment history'),
+    kubernetesOverview: s__('Environments|Kubernetes overview'),
   },
-  errorCaptured(error) {
-    Sentry.captureException(error, {
-      tags: {
-        vue_component: 'EnvironmentDetailsIndex',
-      },
-    });
-  },
-  mounted() {
-    if (this.graphqlEtagKey) {
-      toggleQueryPollingByVisibility(
-        this.$apollo.queries.project,
-        ENVIRONMENT_DETAILS_QUERY_POLLING_INTERVAL,
-      );
-    }
+  params: {
+    deployments: 'deployment-history',
+    kubernetes: 'kubernetes-overview',
   },
   methods: {
-    resetPage() {
-      this.$router.push({ query: {} });
+    linkClass(index) {
+      return index === this.currentTabIndex ? 'gl-shadow-inner-b-2-theme-accent' : '';
+    },
+    updateCurrentTab() {
+      const hasKubernetesIntegration = this.environment?.clusterAgent;
+      const selectedTabFromUrl = getParameterValues('tab');
+
+      // Note: We want to open the deployments history tab when
+      // the Kubernetes integration is not set for the environment and
+      // neither tab is preselected via URL param.
+      if (!hasKubernetesIntegration && !selectedTabFromUrl.length) {
+        updateHistory({
+          url: setUrlParams({ tab: this.$options.params.deployments }),
+          replace: true,
+        });
+      }
     },
   },
 };
 </script>
 <template>
-  <div class="gl-relative gl-min-h-6">
-    <div
-      v-if="isLoading"
-      class="gl-absolute gl-top-0 gl-left-0 gl-w-full gl-h-full gl-z-index-200 gl-bg-gray-10 gl-opacity-3"
-    ></div>
-    <gl-loading-icon v-if="isLoading" size="lg" class="gl-absolute gl-top-half gl-left-50p" />
-    <div v-if="isDeploymentTableShown">
-      <deployments-table :deployments="deployments" />
-      <pagination :page-info="pageInfo" :disabled="isPaginationDisabled" />
-    </div>
-    <empty-state v-if="!isDeploymentTableShown && !isLoading" />
-    <confirm-rollback-modal :environment="environmentToRollback" graphql @rollback="resetPage" />
-  </div>
+  <gl-loading-icon v-if="isLoading" />
+  <gl-tabs v-else v-model="currentTabIndex" sync-active-tab-with-query-params>
+    <gl-tab
+      :title="$options.i18n.kubernetesOverview"
+      :query-param-value="$options.params.kubernetes"
+      :title-link-class="linkClass(0)"
+    >
+      <kubernetes-overview
+        :environment-name="environmentName"
+        :cluster-agent="environment.clusterAgent"
+        :kubernetes-namespace="kubernetesNamespace"
+        :flux-resource-path="fluxResourcePath"
+      />
+    </gl-tab>
+
+    <gl-tab :query-param-value="$options.params.deployments" :title-link-class="linkClass(1)">
+      <template #title>
+        {{ $options.i18n.deploymentHistory }}
+        <gl-badge size="sm" class="gl-tab-counter-badge">{{
+          environment.deploymentsDisplayCount
+        }}</gl-badge>
+      </template>
+
+      <deployment-history
+        :project-full-path="projectFullPath"
+        :environment-name="environmentName"
+        :after="after"
+        :before="before"
+    /></gl-tab>
+  </gl-tabs>
 </template>

@@ -8,11 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25318) in GitLab 12.10 with Helmfile support via Helm v2.
-> - Helm v2 support was [dropped](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63577) in GitLab 14.0. Use Helm v3 instead.
-> - [Migrated](https://gitlab.com/gitlab-org/project-templates/cluster-management/-/merge_requests/24) to the GitLab agent in GitLab 14.5.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 GitLab provides a cluster management project template, which you use
 to create a project. The project includes cluster applications that integrate with GitLab

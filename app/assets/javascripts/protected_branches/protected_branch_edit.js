@@ -182,6 +182,14 @@ export default class ProtectedBranchEdit {
           persisted: true,
         };
       }
+      if (currentItem.deploy_key_id) {
+        return {
+          id: currentItem.id,
+          deploy_key_id: currentItem.deploy_key_id,
+          type: LEVEL_TYPES.DEPLOY_KEY,
+          persisted: true,
+        };
+      }
 
       return {
         id: currentItem.id,

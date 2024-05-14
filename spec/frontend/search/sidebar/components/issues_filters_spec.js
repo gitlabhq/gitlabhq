@@ -17,6 +17,7 @@ describe('GlobalSearch IssuesFilters', () => {
 
   const defaultGetters = {
     currentScope: () => 'issues',
+    showArchived: () => true,
   };
 
   const createComponent = ({ initialState = {} } = {}) => {
@@ -77,29 +78,18 @@ describe('GlobalSearch IssuesFilters', () => {
       expect(findLabelFilter().exists()).toBe(false);
     });
 
-    it("doesn't render ArchivedFilter", () => {
+    it('does render ArchivedFilter', () => {
       expect(findArchivedFilter().exists()).toBe(true);
     });
   });
 
-  describe('Renders correctly with wrong scope', () => {
+  describe('ShowArchived getter', () => {
     beforeEach(() => {
-      defaultGetters.currentScope = () => 'test';
+      defaultGetters.showArchived = () => false;
       createComponent();
     });
-    it("doesn't render StatusFilter", () => {
-      expect(findStatusFilter().exists()).toBe(false);
-    });
 
-    it("doesn't render ConfidentialityFilter", () => {
-      expect(findConfidentialityFilter().exists()).toBe(false);
-    });
-
-    it("doesn't render LabelFilter", () => {
-      expect(findLabelFilter().exists()).toBe(false);
-    });
-
-    it("doesn't render ArchivedFilter", () => {
+    it('hides archived filter', () => {
       expect(findArchivedFilter().exists()).toBe(false);
     });
   });

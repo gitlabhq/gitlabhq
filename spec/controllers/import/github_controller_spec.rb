@@ -100,20 +100,7 @@ RSpec.describe Import::GithubController, feature_category: :importers do
   end
 
   describe "POST personal_access_token" do
-    let(:experiment) { instance_double(ApplicationExperiment) }
-
     it_behaves_like 'a GitHub-ish import controller: POST personal_access_token'
-
-    it 'tracks default_to_import_tab experiment' do
-      allow(controller)
-        .to receive(:experiment)
-        .with(:default_to_import_tab, actor: user)
-        .and_return(experiment)
-
-      expect(experiment).to receive(:track).with(:authentication, property: :github)
-
-      post :personal_access_token
-    end
   end
 
   describe "GET status" do
@@ -151,6 +138,8 @@ RSpec.describe Import::GithubController, feature_category: :importers do
           allow_next_instance_of(Gitlab::GithubImport::ProjectRelationType) do |instance|
             allow(instance).to receive(:for).with('example/repo').and_return('owned')
           end
+        elsif client_scope_error
+          allow(proxy).to receive(:repos).and_raise(Octokit::Forbidden)
         else
           allow(proxy).to receive(:repos).and_raise(Octokit::Unauthorized)
         end
@@ -182,15 +171,40 @@ RSpec.describe Import::GithubController, feature_category: :importers do
       end
     end
 
-    context 'with invalid access token' do
+    context 'with invalid auth token' do
       let(:client_auth_success) { false }
+      let(:client_scope_error) { false }
 
-      it "handles an invalid token" do
+      it "handles the error" do
         get :status, format: :json
 
         expect(session[:"#{provider}_access_token"]).to be_nil
         expect(controller).to redirect_to(new_import_url)
         expect(flash[:alert]).to eq("Access denied to your #{Gitlab::ImportSources.title(provider.to_s)} account.")
+      end
+    end
+
+    context 'with invalid access token' do
+      let(:client_auth_success) { false }
+      let(:client_scope_error) { true }
+      let(:docs_link) do
+        ActionController::Base.helpers.link_to(
+          'Learn More',
+          help_page_url(
+            'user/project/import/github', anchor: 'use-a-github-personal-access-token'
+          ),
+          target: '_blank',
+          rel: 'noopener noreferrer'
+        )
+      end
+
+      it "handles the error" do
+        get :status, format: :json
+
+        expect(session[:"#{provider}_access_token"]).to be_nil
+        expect(controller).to redirect_to(new_import_url)
+        expect(flash[:alert]).to eq("Your GitHub personal access token does not have the required scope to import. " \
+                                    "#{docs_link}.")
       end
     end
 

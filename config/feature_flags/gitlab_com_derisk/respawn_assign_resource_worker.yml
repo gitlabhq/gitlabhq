@@ -1,0 +1,9 @@
+---
+name: respawn_assign_resource_worker
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/436988
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147313
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/450793
+milestone: '16.11'
+group: group::environments
+type: gitlab_com_derisk
+default_enabled: false

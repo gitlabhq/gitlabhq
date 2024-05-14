@@ -19,7 +19,6 @@ class DashboardController < Dashboard::ApplicationController
 
   before_action only: :merge_requests do
     push_frontend_feature_flag(:mr_approved_filter, type: :ops)
-    push_frontend_feature_flag(:mr_merge_user_filter, type: :development)
   end
 
   respond_to :html

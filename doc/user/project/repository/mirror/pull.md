@@ -2,13 +2,14 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: "Create a pull mirror to pull changes from a remote repository into GitLab, and keep your copy of it up-to-date."
 ---
 
 # Pull from a remote repository
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - Moved to GitLab Premium in 13.9.
 
@@ -63,7 +64,7 @@ Prerequisites:
 
 - If your remote repository is on GitHub and you have
   [two-factor authentication (2FA) configured](https://docs.github.com/en/authentication/securing-your-account-with-two-factor-authentication-2fa),
-  create a [personal access token for GitHub](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)
+  create a [personal access token for GitHub](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens)
   with the `repo` scope. If 2FA is enabled, this personal access
   token serves as your GitHub password.
 - [GitLab Silent Mode](../../../../administration/silent_mode/index.md) is not enabled.

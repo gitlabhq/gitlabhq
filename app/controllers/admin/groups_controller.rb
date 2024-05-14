@@ -38,9 +38,10 @@ class Admin::GroupsController < Admin::ApplicationController
   end
 
   def create
-    @group = ::Groups::CreateService.new(current_user, group_params).execute
+    response = ::Groups::CreateService.new(current_user, group_params.with_defaults(organization_id: Current.organization_id)).execute
+    @group = response[:group]
 
-    if @group.persisted?
+    if response.success?
       redirect_to [:admin, @group], notice: format(_('Group %{group_name} was successfully created.'), group_name: @group.name)
     else
       render "new"
@@ -102,9 +103,10 @@ class Admin::GroupsController < Admin::ApplicationController
       :enabled_git_access_protocol,
       :project_creation_level,
       :subgroup_creation_level,
-      admin_note_attributes: [
+      :organization_id,
+      { admin_note_attributes: [
         :note
-      ]
+      ] }
     ]
   end
 end

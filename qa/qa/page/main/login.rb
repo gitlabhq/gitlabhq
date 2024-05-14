@@ -104,7 +104,7 @@ module QA
 
           Page::Main::Menu.perform(&:signed_in?)
 
-          dismiss_duo_chat_popup
+          dismiss_duo_chat_popup if respond_to?(:dismiss_duo_chat_popup)
         end
 
         # Handle request for password change
@@ -112,7 +112,7 @@ module QA
         #
         def set_up_new_password_if_required(user:, skip_page_validation:)
           Support::WaitForRequests.wait_for_requests
-          return unless has_content?('Set up new password', wait: 1)
+          return unless has_content?('Update password for', wait: 1)
 
           Profile::Password.perform do |new_password_page|
             password = user&.password || Runtime::User.password
@@ -237,6 +237,10 @@ module QA
           # For debugging invalid login attempts
           has_notice?('Invalid login or password')
 
+          # Return if new password page is shown
+          # Happens on clean GDK installations when seeded root admin password is expired
+          return if has_content?('Update password for', wait: 1)
+
           Page::Main::Terms.perform do |terms|
             terms.accept_terms if terms.visible?
           end
@@ -245,21 +249,13 @@ module QA
 
           wait_for_gitlab_to_respond
 
-          dismiss_duo_chat_popup
+          dismiss_duo_chat_popup if respond_to?(:dismiss_duo_chat_popup)
 
           return if skip_page_validation
 
           Page::Main::Menu.validate_elements_present!
 
           validate_canary!
-        end
-
-        def dismiss_duo_chat_popup
-          return unless has_element?('duo-chat-promo-callout-popover')
-
-          within_element('duo-chat-promo-callout-popover') do
-            click_element('close-button')
-          end
         end
 
         def fill_in_credential(user)
@@ -280,3 +276,4 @@ module QA
 end
 
 QA::Page::Main::Login.prepend_mod_with('Page::Main::Login', namespace: QA)
+QA::Page::Main::Login.prepend_mod_with('Page::Component::DuoChatCallout', namespace: QA)

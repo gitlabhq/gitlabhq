@@ -31,7 +31,7 @@ describe('GroupItem spec', () => {
 
   it('renders a fullName and name', () => {
     expect(wrapper.text()).toContain('Group 1');
-    expect(wrapper.text()).toContain('@group1');
+    expect(wrapper.text()).toContain('group1');
   });
 
   it('does not render a delete button by default', () => {

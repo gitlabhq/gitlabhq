@@ -1,0 +1,6 @@
+---
+RuboCop/FakeRuleNotAutocorrectable:
+  Exclude:
+    - not_autocorrectable_rule1_violation1.rb
+    - not_autocorrectable_rule1_violation2.rb
+    - not_autocorrectable_rule1_violation3.rb

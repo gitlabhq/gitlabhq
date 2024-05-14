@@ -10,7 +10,7 @@ export const searchArrayToFilterTokens = (search) =>
   search.map((s) => keyValueToFilterToken(FILTERED_SEARCH_TERM, s));
 
 export const extractFilterAndSorting = (queryObject) => {
-  const { type, search, version, sort, orderBy } = queryObject;
+  const { type, search, version, status, sort, orderBy } = queryObject;
   const filters = [];
   const sorting = {};
 
@@ -19,6 +19,9 @@ export const extractFilterAndSorting = (queryObject) => {
   }
   if (version) {
     filters.push(keyValueToFilterToken('version', version));
+  }
+  if (status) {
+    filters.push(keyValueToFilterToken('status', status));
   }
   if (search) {
     filters.push(...searchArrayToFilterTokens(search));

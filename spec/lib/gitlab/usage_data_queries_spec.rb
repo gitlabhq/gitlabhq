@@ -41,8 +41,8 @@ RSpec.describe Gitlab::UsageDataQueries do
     subject(:redis_usage_data) { described_class.redis_usage_data { 42 } }
 
     it 'returns a stringified class for redis_usage_data with a counter call' do
-      expect(described_class.redis_usage_data(Gitlab::UsageDataCounters::WikiPageCounter))
-        .to eq(redis_usage_data_counter: "Gitlab::UsageDataCounters::WikiPageCounter")
+      expect(described_class.redis_usage_data(Gitlab::UsageDataCounters::MergeRequestCounter))
+        .to eq(redis_usage_data_counter: "Gitlab::UsageDataCounters::MergeRequestCounter")
     end
 
     it 'returns a placeholder string for redis_usage_data with a block' do

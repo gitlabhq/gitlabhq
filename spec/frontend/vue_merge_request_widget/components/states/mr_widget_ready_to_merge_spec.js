@@ -1,5 +1,5 @@
 import Vue, { nextTick } from 'vue';
-import { GlSprintf } from '@gitlab/ui';
+import { GlFormTextarea, GlSprintf } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import produce from 'immer';
 import { createMockSubscription as createMockApolloSubscription } from 'mock-apollo-client';
@@ -124,6 +124,7 @@ const createComponent = (customConfig = {}, createState = true) => {
     },
     stubs: {
       CommitEdit,
+      GlFormTextarea,
       GlSprintf,
     },
     apolloProvider,
@@ -154,6 +155,11 @@ const triggerApprovalUpdated = () => eventHub.$emit('ApprovalUpdated');
 const triggerEditCommitInput = () =>
   wrapper.find('[data-testid="widget_edit_commit_message"]').vm.$emit('input', true);
 const findMergeHelperText = () => wrapper.find('[data-testid="auto-merge-helper-text"]');
+const findTextareas = () => wrapper.findAllComponents(GlFormTextarea);
+
+beforeEach(() => {
+  gon.features = { autoMergeWhenIncompletePipelineSucceeds: true };
+});
 
 describe('ReadyToMerge', () => {
   beforeEach(() => {
@@ -228,18 +234,85 @@ describe('ReadyToMerge', () => {
   });
 
   describe('merge immediately dropdown', () => {
-    it('dropdown should be hidden if no pipeline is active', () => {
+    it('dropdown should be visible if auto merge is available', () => {
       createComponent({
-        mr: { isPipelineActive: false, onlyAllowMergeIfPipelineSucceeds: false },
+        mr: {
+          availableAutoMergeStrategies: [MWPS_MERGE_STRATEGY],
+          mergeable: true,
+          headPipeline: { active: false },
+          onlyAllowMergeIfPipelineSucceeds: false,
+        },
+      });
+
+      expect(findMergeImmediatelyDropdown().exists()).toBe(true);
+    });
+
+    it('dropdown should be hidden if auto merge is unavailable', () => {
+      createComponent({
+        mr: {
+          availableAutoMergeStrategies: [],
+          mergeable: true,
+          headPipeline: { active: true },
+          onlyAllowMergeIfPipelineSucceeds: false,
+        },
       });
 
       expect(findMergeImmediatelyDropdown().exists()).toBe(false);
     });
 
-    it('dropdown should be hidden if "Pipelines must succeed" is enabled', () => {
-      createComponent({ mr: { isPipelineActive: true, onlyAllowMergeIfPipelineSucceeds: true } });
+    it('dropdown should be hidden if the MR is not mergeable', () => {
+      createComponent({
+        mr: {
+          availableAutoMergeStrategies: [MWPS_MERGE_STRATEGY],
+          mergeable: false,
+          headPipeline: { active: true },
+          onlyAllowMergeIfPipelineSucceeds: false,
+        },
+      });
 
       expect(findMergeImmediatelyDropdown().exists()).toBe(false);
+    });
+
+    describe('when ff auto_merge_when_incomplete_pipeline_succeeds is disabled', () => {
+      beforeEach(() => {
+        gon.features = {};
+      });
+
+      it('dropdown should be visible if pipeline is active', () => {
+        createComponent({
+          mr: {
+            availableAutoMergeStrategies: [],
+            headPipeline: { active: true },
+            onlyAllowMergeIfPipelineSucceeds: false,
+          },
+        });
+
+        expect(findMergeImmediatelyDropdown().exists()).toBe(true);
+      });
+
+      it('dropdown should be hidden if no pipeline is active', () => {
+        createComponent({
+          mr: {
+            availableAutoMergeStrategies: [MWPS_MERGE_STRATEGY],
+            headPipeline: { active: false },
+            onlyAllowMergeIfPipelineSucceeds: false,
+          },
+        });
+
+        expect(findMergeImmediatelyDropdown().exists()).toBe(false);
+      });
+
+      it('dropdown should be hidden if "Pipelines must succeed" is enabled', () => {
+        createComponent({
+          mr: {
+            availableAutoMergeStrategies: [MWPS_MERGE_STRATEGY],
+            headPipeline: { active: true },
+            onlyAllowMergeIfPipelineSucceeds: true,
+          },
+        });
+
+        expect(findMergeImmediatelyDropdown().exists()).toBe(false);
+      });
     });
   });
 
@@ -817,10 +890,10 @@ describe('ReadyToMerge', () => {
     });
 
     describe.each`
-      desc                       | finderFn                   | initialValue           | updatedValue                     | inputId
-      ${'merge commit message'}  | ${findMergeCommitMessage}  | ${commitMessage}       | ${UPDATED_MERGE_COMMIT_MESSAGE}  | ${'#merge-message-edit'}
-      ${'squash commit message'} | ${findSquashCommitMessage} | ${squashCommitMessage} | ${UPDATED_SQUASH_COMMIT_MESSAGE} | ${'#squash-message-edit'}
-    `('with $desc', ({ finderFn, initialValue, updatedValue, inputId }) => {
+      desc                       | finderFn                   | initialValue           | updatedValue                     | variant
+      ${'merge commit message'}  | ${findMergeCommitMessage}  | ${commitMessage}       | ${UPDATED_MERGE_COMMIT_MESSAGE}  | ${1}
+      ${'squash commit message'} | ${findSquashCommitMessage} | ${squashCommitMessage} | ${UPDATED_SQUASH_COMMIT_MESSAGE} | ${0}
+    `('with $desc', ({ finderFn, initialValue, updatedValue, variant }) => {
       it('should have initial value', async () => {
         createDefaultGqlComponent();
 
@@ -847,9 +920,7 @@ describe('ReadyToMerge', () => {
         await waitForPromises();
         await triggerEditCommitInput();
 
-        const input = wrapper.find(inputId);
-        input.element.value = USER_COMMIT_MESSAGE;
-        input.trigger('input');
+        findTextareas().at(variant).vm.$emit('input', USER_COMMIT_MESSAGE);
 
         triggerApprovalUpdated();
         await waitForPromises();

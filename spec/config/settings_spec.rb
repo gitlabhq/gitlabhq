@@ -46,15 +46,15 @@ RSpec.describe Settings, feature_category: :system_access do
     end
   end
 
-  describe '.build_ci_component_fqdn' do
-    subject(:fqdn) { described_class.build_ci_component_fqdn }
+  describe '.build_ci_server_fqdn' do
+    subject(:fqdn) { described_class.build_ci_server_fqdn }
 
     where(:host, :port, :relative_url, :result) do
-      'acme.com' | 9090 | '/gitlab' | 'acme.com:9090/gitlab/'
-      'acme.com' | 443  | '/gitlab' | 'acme.com/gitlab/'
-      'acme.com' | 443  | ''        | 'acme.com/'
-      'acme.com' | 9090 | ''        | 'acme.com:9090/'
-      'test'     | 9090 | ''        | 'test:9090/'
+      'acme.com' | 9090 | '/gitlab' | 'acme.com:9090/gitlab'
+      'acme.com' | 443  | '/gitlab' | 'acme.com/gitlab'
+      'acme.com' | 443  | ''        | 'acme.com'
+      'acme.com' | 9090 | ''        | 'acme.com:9090'
+      'test'     | 9090 | ''        | 'test:9090'
     end
 
     with_them do

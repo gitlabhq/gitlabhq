@@ -14,6 +14,7 @@ export default (fn) => {
     // this is calculated in runtime so beforeAll hook works in tests
     const timeout = global.JEST_DEBOUNCE_THROTTLE_TIMEOUT;
     if (timeout) {
+      if (id) clearTimeout(id);
       id = setTimeout(() => {
         fn.apply(this, args);
       }, timeout);

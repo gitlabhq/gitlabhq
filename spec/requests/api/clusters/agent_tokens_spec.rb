@@ -8,11 +8,10 @@ RSpec.describe API::Clusters::AgentTokens, feature_category: :deployment_managem
   let_it_be(:revoked_agent_token) { create(:cluster_agent_token, :revoked, agent: agent) }
   let_it_be(:project) { agent.project }
   let_it_be(:user) { agent.created_by_user }
-  let_it_be(:unauthorized_user) { create(:user) }
+  let_it_be(:unauthorized_user) { create(:user, guest_of: project) }
 
   before_all do
     project.add_maintainer(user)
-    project.add_guest(unauthorized_user)
   end
 
   describe 'GET /projects/:id/cluster_agents/:agent_id/tokens' do
@@ -110,8 +109,10 @@ RSpec.describe API::Clusters::AgentTokens, feature_category: :deployment_managem
         another_project = create(:project, namespace: unauthorized_user.namespace)
         another_agent = create(:cluster_agent, project: another_project, created_by_user: unauthorized_user)
 
-        get api("/projects/#{another_project.id}/cluster_agents/#{another_agent.id}/tokens/#{agent_token_one.id}",
-                unauthorized_user)
+        get api(
+          "/projects/#{another_project.id}/cluster_agents/#{another_agent.id}/tokens/#{agent_token_one.id}",
+          unauthorized_user
+        )
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
@@ -149,7 +150,7 @@ RSpec.describe API::Clusters::AgentTokens, feature_category: :deployment_managem
 
     it 'returns 404 error if agent does not exist' do
       post api("/projects/#{project.id}/cluster_agents/#{non_existing_record_id}/tokens", user),
-           params: { name: "some" }
+        params: { name: "some" }
 
       expect(response).to have_gitlab_http_status(:not_found)
     end
@@ -157,7 +158,7 @@ RSpec.describe API::Clusters::AgentTokens, feature_category: :deployment_managem
     context 'with unauthorized user' do
       it 'prevents to create agent token' do
         post api("/projects/#{project.id}/cluster_agents/#{agent.id}/tokens", unauthorized_user),
-             params: { name: "some" }
+          params: { name: "some" }
 
         expect(response).to have_gitlab_http_status(:forbidden)
       end
@@ -225,8 +226,10 @@ RSpec.describe API::Clusters::AgentTokens, feature_category: :deployment_managem
       another_project = create(:project, namespace: unauthorized_user.namespace)
       another_agent = create(:cluster_agent, project: another_project, created_by_user: unauthorized_user)
 
-      delete api("/projects/#{another_project.id}/cluster_agents/#{another_agent.id}/tokens/#{agent_token_one.id}",
-                 unauthorized_user)
+      delete api(
+        "/projects/#{another_project.id}/cluster_agents/#{another_agent.id}/tokens/#{agent_token_one.id}",
+        unauthorized_user
+      )
 
       expect(response).to have_gitlab_http_status(:not_found)
     end

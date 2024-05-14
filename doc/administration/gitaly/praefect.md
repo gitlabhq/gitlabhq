@@ -14,11 +14,11 @@ Configure Gitaly Cluster using either:
 
 - Gitaly Cluster configuration instructions available as part of
   [reference architectures](../reference_architectures/index.md) for installations of up to:
-  - [3000 users](../reference_architectures/3k_users.md#configure-gitaly-cluster).
-  - [5000 users](../reference_architectures/5k_users.md#configure-gitaly-cluster).
-  - [10,000 users](../reference_architectures/10k_users.md#configure-gitaly-cluster).
-  - [25,000 users](../reference_architectures/25k_users.md#configure-gitaly-cluster).
-  - [50,000 users](../reference_architectures/50k_users.md#configure-gitaly-cluster).
+  - [60 RPS or 3,000 users](../reference_architectures/3k_users.md#configure-gitaly-cluster).
+  - [100 RPS or 5,000 users](../reference_architectures/5k_users.md#configure-gitaly-cluster).
+  - [200 RPS or 10,000 users](../reference_architectures/10k_users.md#configure-gitaly-cluster).
+  - [500 RPS or 25,000 users](../reference_architectures/25k_users.md#configure-gitaly-cluster).
+  - [1000 RPS or 50,000 users](../reference_architectures/50k_users.md#configure-gitaly-cluster).
 - The custom configuration instructions that follow on this page.
 
 Smaller GitLab installations may need only [Gitaly itself](index.md).
@@ -198,7 +198,7 @@ The following options are available:
 - For Geo instances, either:
   - Set up a separate [PostgreSQL instance](https://www.postgresql.org/docs/11/high-availability.html).
   - Use a cloud-managed PostgreSQL service. AWS
-     [Relational Database Service](https://aws.amazon.com/rds/) is recommended.
+    [Relational Database Service](https://aws.amazon.com/rds/) is recommended.
 
 Setting up PostgreSQL creates empty Praefect tables. For more information, see the
 [relevant troubleshooting section](troubleshooting_gitaly_cluster.md#relation-does-not-exist-errors).
@@ -494,8 +494,6 @@ praefect['configuration'] = {
 ```
 
 ### Praefect
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/2634) in GitLab 13.4, Praefect nodes can no longer be designated as `primary`.
 
 If there are multiple Praefect nodes:
 
@@ -986,7 +984,7 @@ a Consul agent on each Praefect node and register the `praefect` service to it.
 This registers each node's IP address to `praefect.service.consul` so it can be found
 by service discovery.
 
-Requirements:
+Prerequisites:
 
 - One or more [Consul](../consul.md) servers to keep track of the Consul agents.
 
@@ -1153,30 +1151,13 @@ For more information on Gitaly server configuration, see our
    `/etc/gitlab/gitlab.rb`. Each Gitaly node should have a unique storage name
    (such as `gitaly-1`).
 
-   Instead of configuring `gitaly['configuration'][:storage]` uniquely for each Gitaly node, it is
-   often easier to have include the configuration for all Gitaly nodes on every
-   Gitaly node. You can do this because the Praefect `virtual_storage`
-   configuration maps each storage name (such as `gitaly-1`) to a specific node, and
-   requests are routed accordingly. This means every Gitaly node in your fleet
-   can share the same configuration.
-
    ```ruby
-   # You can include the data dirs for all nodes in the same config, because
-   # Praefect will only route requests according to the addresses provided in the
-   # prior step.
    gitaly['configuration'] = {
       # ...
       storage: [
+        # Replace with appropriate name for each Gitaly nodes.
         {
           name: 'gitaly-1',
-          path: '/var/opt/gitlab/git-data/repositories',
-        },
-        {
-          name: 'gitaly-2',
-          path: '/var/opt/gitlab/git-data/repositories',
-        },
-        {
-          name: 'gitaly-3',
           path: '/var/opt/gitlab/git-data/repositories',
         },
       ],
@@ -1408,7 +1389,7 @@ running multiple Gitaly storages.
 ### Grafana
 
 Grafana is included with GitLab, and can be used to monitor your Praefect
-cluster. See [Grafana Dashboard Service](https://docs.gitlab.com/omnibus/settings/grafana.html)
+cluster. See [Grafana Dashboard Service](../../administration/monitoring/performance/grafana_configuration.md)
 for detailed documentation.
 
 To get started quickly:
@@ -1608,7 +1589,7 @@ praefect['configuration'] = {
 WARNING:
 Deletions were disabled by default prior to GitLab 15.9 due to a race condition with repository renames
 that can cause incorrect deletions, which is especially prominent in Geo instances as Geo performs more renames
-than instances without Geo. In GitLab 15.0 to 15.5, you should enable deletions only if the [`gitaly_praefect_generated_replica_paths` feature flag](index.md#praefect-generated-replica-paths-gitlab-150-and-later) is enabled. The feature flag was removed in GitLab 15.6 making deletions always safe to enable.
+than instances without Geo. In GitLab 15.0 to 15.5, you should enable deletions only if the [`gitaly_praefect_generated_replica_paths` feature flag](index.md#praefect-generated-replica-paths) is enabled. The feature flag was removed in GitLab 15.6 making deletions always safe to enable.
 
 By default, the worker deletes invalid metadata records. It also logs the deleted records and outputs Prometheus
 metrics.
@@ -1660,13 +1641,9 @@ The output includes the number of replicas that were marked unverified.
 Praefect regularly checks the health of each Gitaly node, which is used to automatically fail over
 to a newly-elected primary Gitaly node if the current primary node is found to be unhealthy.
 
-You should use [repository-specific primary nodes](#repository-specific-primary-nodes). This is
-[the only available election strategy](https://gitlab.com/gitlab-org/gitaly/-/issues/3574) from GitLab 14.0.
+[Repository-specific primary nodes](#repository-specific-primary-nodes) is the only available election strategy.
 
 ### Repository-specific primary nodes
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/3492) in GitLab 13.12, with primary elections run when Praefect starts or the cluster's consensus of a Gitaly node's health changes.
-> - [Changed](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/3543) in GitLab 14.1, primary elections are run lazily.
 
 Gitaly Cluster elects a primary Gitaly node separately for each repository. Combined with
 [configurable replication factors](#configure-replication-factor), you can horizontally scale storage capacity and distribute write load across Gitaly nodes.
@@ -1692,65 +1669,3 @@ If there are no valid primary candidates for a repository:
 
 - The unhealthy primary node is demoted and the repository is left without a primary node.
 - Operations that require a primary node fail until a primary is successfully elected.
-
-#### Migrate to repository-specific primary Gitaly nodes
-
-New Gitaly Clusters can start using the `per_repository` election strategy immediately.
-
-To migrate existing clusters:
-
-1. Praefect nodes didn't historically keep database records of every repository stored on the cluster. When
-   the `per_repository` election strategy is configured, Praefect expects to have database records of
-   each repository. A [background database migration](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/2749)
-   creates any missing database records for repositories. Before migrating, check Praefect's logs to verify
-   that the database migration ran.
-
-   Check Praefect's logs for `repository importer finished` message. The `virtual_storages` field contains
-   the names of virtual storages and whether they've had any missing database records created.
-
-   For example, the `default` virtual storage has been successfully migrated:
-
-   ```json
-   {"level":"info","msg":"repository importer finished","pid":19752,"time":"2021-04-28T11:41:36.743Z","virtual_storages":{"default":true}}
-   ```
-
-   If a virtual storage has not been successfully migrated, it would have `false` next to it:
-
-   ```json
-   {"level":"info","msg":"repository importer finished","pid":19752,"time":"2021-04-28T11:41:36.743Z","virtual_storages":{"default":false}}
-   ```
-
-   The database migration runs when Praefect starts. If the database migration is unsuccessful, you can restart
-   a Praefect node to reattempt it.
-
-1. Running two different election strategies side by side can cause a split brain, where different
-   Praefect nodes consider repositories to have different primaries. This can be avoided either:
-
-   - If a short downtime is acceptable:
-
-      1. Shut down all Praefect nodes before changing the election strategy. Do this by running `gitlab-ctl stop praefect` on the Praefect nodes.
-
-      1. On the Praefect nodes, configure the election strategy in `/etc/gitlab/gitlab.rb` with `praefect['failover_election_strategy'] = 'per_repository'`.
-
-      1. Run `gitlab-ctl reconfigure && gitlab-ctl start` to reconfigure and start the Praefect nodes.
-
-   - If downtime is unacceptable:
-
-      1. Determine which Gitaly node is [the current primary](troubleshooting_gitaly_cluster.md#determine-primary-gitaly-node).
-
-      1. Comment out the secondary Gitaly nodes from the virtual storage's configuration in `/etc/gitlab/gitlab.rb`
-      on all Praefect nodes. This ensures there's only one Gitaly node configured, causing both of the election
-      strategies to elect the same Gitaly node as the primary.
-
-      1. Run `gitlab-ctl reconfigure` on all Praefect nodes. Wait until all Praefect processes have restarted and
-      the old processes have exited. This can take up to one minute.
-
-      1. On all Praefect nodes, configure the election strategy in `/etc/gitlab/gitlab.rb` with
-      `praefect['failover_election_strategy'] = 'per_repository'`.
-
-      1. Run `gitlab-ctl reconfigure` on all Praefect nodes. Wait until all of the Praefect processes have restarted and
-      the old processes have exited. This can take up to one minute.
-
-      1. Uncomment the secondary Gitaly node configuration commented out in the earlier step on all Praefect nodes.
-
-      1. Run `gitlab-ctl reconfigure` on all Praefect nodes to reconfigure and restart the Praefect processes.

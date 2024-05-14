@@ -502,18 +502,18 @@ RSpec.describe Gitlab::Utils::UsageData do
 
     context 'with counter given' do
       context 'when gets an error' do
-        subject { described_class.redis_usage_data(::Gitlab::UsageDataCounters::WikiPageCounter) }
+        subject { described_class.redis_usage_data(::Gitlab::UsageDataCounters::DesignsCounter) }
 
-        let(:fallback) { ::Gitlab::UsageDataCounters::WikiPageCounter.fallback_totals }
-        let(:failing_class) { ::Gitlab::UsageDataCounters::WikiPageCounter }
+        let(:fallback) { ::Gitlab::UsageDataCounters::DesignsCounter.fallback_totals }
+        let(:failing_class) { ::Gitlab::UsageDataCounters::DesignsCounter }
         let(:failing_method) { :totals }
 
         it_behaves_like 'failing hardening method', ::Redis::CommandError
       end
 
       it 'returns the totals when couter is given' do
-        allow(::Gitlab::UsageDataCounters::WikiPageCounter).to receive(:totals).and_return({ wiki_pages_create: 2 })
-        expect(described_class.redis_usage_data(::Gitlab::UsageDataCounters::WikiPageCounter)).to eql({ wiki_pages_create: 2 })
+        allow(::Gitlab::UsageDataCounters::DesignsCounter).to receive(:totals).and_return({ design_management_designs_create: 2 })
+        expect(described_class.redis_usage_data(::Gitlab::UsageDataCounters::DesignsCounter)).to eql({ design_management_designs_create: 2 })
       end
     end
   end

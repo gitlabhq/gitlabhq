@@ -1,9 +1,11 @@
-import { GlCollapsibleListbox } from '@gitlab/ui';
+import { GlCollapsibleListbox, GlButton } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import waitForPromises from 'helpers/wait_for_promises';
 import { TEST_HOST } from 'spec/test_constants';
+import { formType } from '~/boards/constants';
 import BoardsSelector from '~/boards/components/boards_selector.vue';
+import BoardForm from '~/boards/components/board_form.vue';
 import groupBoardsQuery from '~/boards/graphql/group_boards.query.graphql';
 import projectBoardsQuery from '~/boards/graphql/project_boards.query.graphql';
 import groupRecentBoardsQuery from '~/boards/graphql/group_recent_boards.query.graphql';
@@ -33,6 +35,7 @@ describe('BoardsSelector', () => {
   let fakeApollo;
 
   const findDropdown = () => wrapper.findComponent(GlCollapsibleListbox);
+  const findBoardForm = () => wrapper.findComponent(BoardForm);
 
   const fillSearchBox = async (filterTerm) => {
     await findDropdown().vm.$emit('search', filterTerm);
@@ -94,8 +97,10 @@ describe('BoardsSelector', () => {
         boardType: isGroupBoard ? 'group' : 'project',
         isGroupBoard,
         isProjectBoard,
+        isIssueBoard: true,
         ...provide,
       },
+      stubs: { BoardForm },
     });
   };
 
@@ -116,6 +121,14 @@ describe('BoardsSelector', () => {
       // we are testing loading state, so don't resolve responses until after the tests
       afterEach(async () => {
         await waitForPromises();
+      });
+
+      it('displays loading state of dropdown while current board is being fetched', () => {
+        createComponent({
+          props: { isCurrentBoardLoading: true },
+        });
+        expect(findDropdown().props('loading')).toBe(true);
+        expect(findDropdown().props('toggleText')).toBe('Select board');
       });
 
       it('shows loading spinner', async () => {
@@ -291,13 +304,52 @@ describe('BoardsSelector', () => {
     });
   });
 
-  describe('Apollo boards', () => {
-    it('displays loading state of dropdown while current board is being fetched', () => {
+  describe('board form', () => {
+    it('does not show board form by default', () => {
+      createComponent();
+      expect(findBoardForm().exists()).toBe(false);
+    });
+
+    it('shows board form when boardModalForm prop is set', () => {
       createComponent({
-        props: { isCurrentBoardLoading: true },
+        props: {
+          boardModalForm: formType.new,
+        },
       });
-      expect(findDropdown().props('loading')).toBe(true);
-      expect(findDropdown().props('toggleText')).toBe('Select board');
+      expect(findBoardForm().exists()).toBe(true);
+    });
+
+    it('emits showBoardModal when BoardForm emits cancel', async () => {
+      createComponent({
+        props: {
+          boardModalForm: formType.new,
+        },
+      });
+
+      findBoardForm().vm.$emit('cancel');
+      await nextTick();
+
+      expect(wrapper.emitted('showBoardModal')).toEqual([['']]);
+    });
+
+    it('emits showBoardModal with new when clicking on create board button', async () => {
+      createComponent({ isProjectBoard: true });
+
+      findDropdown().vm.$emit('shown');
+      await waitForPromises();
+
+      wrapper.findComponent(GlButton).vm.$emit('click');
+      expect(wrapper.emitted('showBoardModal')).toEqual([[formType.new]]);
+    });
+
+    it('emits showBoardModal with delete when clicking on delete board button', async () => {
+      createComponent({ isProjectBoard: true });
+
+      findDropdown().vm.$emit('shown');
+      await waitForPromises();
+
+      wrapper.findAllComponents(GlButton).at(1).vm.$emit('click');
+      expect(wrapper.emitted('showBoardModal')).toEqual([[formType.delete]]);
     });
   });
 });

@@ -12,9 +12,6 @@ module RegistrationsHelper
   end
 
   # overridden in EE
-  def registration_tracking_label; end
-
-  # overridden in EE
   def register_omniauth_params(_local_assigns)
     {}
   end

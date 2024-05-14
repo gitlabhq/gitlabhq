@@ -105,15 +105,20 @@ You may have connectivity issues due to the following reasons:
 
 - **Firewall settings**:
   - Confirm that GitLab instance can establish an encrypted connection to `https://customers.gitlab.com` on port 443.
-    Note: IP addresses for `https://customers.gitlab.com` are 172.64.146.11 and 104.18.41.245)
 
-   ```shell
-   curl --verbose "https://customers.gitlab.com/"
+  ```shell
+  curl --verbose "https://customers.gitlab.com/"
   ```
 
   - If the curl command returns an error, either:
-    - [Configure a proxy](https://docs.gitlab.com/omnibus/settings/environment-variables.html) in `gitlab.rb` to point to your server.
-    - Contact your network administrator to make changes to an existing proxy or firewall.
+    - Check your firewall or proxy. The domain `https://customers.gitlab.com` is
+      fronted by Cloudflare. Ensure your firewall or proxy allows traffic to the Cloudflare
+      [IPv4](https://www.cloudflare.com/ips-v4/) and
+      [IPv6](https://www.cloudflare.com/ips-v6/) ranges for activation to work.
+    - [Configure a proxy](https://docs.gitlab.com/omnibus/settings/environment-variables.html)
+      in `gitlab.rb` to point to your server.
+
+    Contact your network administrator to make changes to an existing proxy or firewall.
   - If an SSL inspection appliance is used, you must add the appliance's root CA certificate to `/etc/gitlab/trusted-certs` on your instance, then run `gitlab-ctl reconfigure`.
 
 - **Customers Portal is not operational**:

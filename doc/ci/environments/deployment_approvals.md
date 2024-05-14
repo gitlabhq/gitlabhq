@@ -9,10 +9,7 @@ description: Require approvals prior to deploying to a Protected Environment
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/343864) in GitLab 14.7 with a flag named `deployment_approvals`. Disabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/347342) in GitLab 14.8. Feature flag `deployment_approvals` removed.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 You can require additional approvals for deployments to protected
 environments. Deployments are blocked until all required approvals are
@@ -56,7 +53,6 @@ The environments in your project require approval before deployment.
 
 ### Add multiple approval rules
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345678) in GitLab 14.10 with a flag named `deployment_approval_rules`. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/345678) in GitLab 15.0. [Feature flag `deployment_approval_rules`](https://gitlab.com/gitlab-org/gitlab/-/issues/345678) removed.
 > - UI configuration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/378445) in GitLab 15.11.
 
@@ -153,8 +149,6 @@ To allow self-approval of a deployment job:
 
 ## Approve or reject a deployment
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342180/) in GitLab 14.9
-
 In an environment with multiple approval rules, you can:
 
 - Approve a deployment to allow it to proceed.
@@ -169,12 +163,13 @@ To approve or reject a deployment:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Operate > Environments**.
 1. Select the environment's name.
-1. In the deployment's row, select **Approval options** (**{thumb-up}**).
-   Before you approve or reject the deployment, you can view the deployment's approval details.
+1. Find the deployment and select its **Status badge**.
 1. Optional. Add a comment which describes your reason for approving or rejecting the deployment.
 1. Select **Approve** or **Reject**.
 
 You can also [use the API](../../api/deployments.md#approve-or-reject-a-blocked-deployment).
+
+The corresponding deployment job does not run automatically after a deployment is approved.
 
 ### View the approval details of a deployment
 
@@ -190,7 +185,7 @@ To view the approval details of a deployment:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Operate > Environments**.
 1. Select the environment's name.
-1. In the deployment's row, select **Approval options** (**{thumb-up}**).
+1. Find the deployment and select its **Status badge**.
 
 The approval status details are shown:
 

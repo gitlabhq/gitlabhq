@@ -244,21 +244,25 @@ RSpec.describe API::Issues, feature_category: :team_planning do
 
         context "when returns issue merge_requests_count for different access levels" do
           let!(:merge_request1) do
-            create(:merge_request,
-                   :simple,
-                   author: user,
-                   source_project: private_mrs_project,
-                   target_project: private_mrs_project,
-                   description: "closes #{group_issue.to_reference(private_mrs_project)}")
+            create(
+              :merge_request,
+              :simple,
+              author: user,
+              source_project: private_mrs_project,
+              target_project: private_mrs_project,
+              description: "closes #{group_issue.to_reference(private_mrs_project)}"
+            )
           end
 
           let!(:merge_request2) do
-            create(:merge_request,
-                   :simple,
-                   author: user,
-                   source_project: group_project,
-                   target_project: group_project,
-                   description: "closes #{group_issue.to_reference}")
+            create(
+              :merge_request,
+              :simple,
+              author: user,
+              source_project: group_project,
+              target_project: group_project,
+              description: "closes #{group_issue.to_reference}"
+            )
           end
 
           it_behaves_like 'accessible merge requests count' do

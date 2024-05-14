@@ -10,6 +10,15 @@ const USERS = {
   marie: createUser(3, 'Marie'),
   jane: createUser(4, 'Jane'),
   leonardo: createUser(5, 'Leonardo'),
+  donatello: createUser(6, 'Donatello'),
+  michelangelo: createUser(7, 'Michelangelo'),
+  raphael: createUser(8, 'Raphael'),
+  homer: createUser(9, 'Homer'),
+  marge: createUser(10, 'Marge'),
+  bart: createUser(11, 'Bart'),
+  lisa: createUser(12, 'Lisa'),
+  maggie: createUser(13, 'Maggie'),
+  bort: createUser(14, 'Bort'),
 };
 
 const EMOJI_SMILE = 'smile';
@@ -20,6 +29,7 @@ const EMOJI_A = 'a';
 const EMOJI_B = 'b';
 const EMOJI_CACTUS = 'cactus';
 const EMOJI_100 = '100';
+const EMOJI_RACEHORSE = 'racehorse';
 
 const TEST_AWARDS = [
   createAward(EMOJI_SMILE, USERS.ada),
@@ -33,12 +43,31 @@ const TEST_AWARDS = [
   createAward(EMOJI_THUMBSUP, USERS.marie),
   createAward(EMOJI_THUMBSDOWN, USERS.marie),
   createAward(EMOJI_THUMBSDOWN, USERS.root),
+  createAward(EMOJI_THUMBSDOWN, USERS.donatello),
+
   createAward(EMOJI_OK, USERS.root),
   // Test that emoji list preserves order of occurrence, not alphabetical order
   createAward(EMOJI_CACTUS, USERS.root),
   createAward(EMOJI_A, USERS.marie),
   createAward(EMOJI_B, USERS.root),
   createAward(EMOJI_100, USERS.ada),
+
+  // test when number of awards is > 10
+  createAward(EMOJI_RACEHORSE, USERS.donatello),
+  createAward(EMOJI_RACEHORSE, USERS.michelangelo),
+  createAward(EMOJI_RACEHORSE, USERS.raphael),
+  createAward(EMOJI_RACEHORSE, USERS.homer),
+  createAward(EMOJI_RACEHORSE, USERS.marge),
+  createAward(EMOJI_RACEHORSE, USERS.bart),
+  createAward(EMOJI_RACEHORSE, USERS.lisa),
+  createAward(EMOJI_RACEHORSE, USERS.maggie),
+  createAward(EMOJI_RACEHORSE, USERS.bort),
+  createAward(EMOJI_RACEHORSE, USERS.ada),
+  createAward(EMOJI_RACEHORSE, USERS.jane),
+  createAward(EMOJI_RACEHORSE, USERS.leonardo),
+  createAward(EMOJI_RACEHORSE, USERS.marie),
+  // it's important for test purposes that this is the last racehorse emoji awarded
+  createAward(EMOJI_RACEHORSE, USERS.root),
 ];
 const TEST_AWARDS_LENGTH = [
   EMOJI_SMILE,
@@ -49,6 +78,7 @@ const TEST_AWARDS_LENGTH = [
   EMOJI_B,
   EMOJI_CACTUS,
   EMOJI_100,
+  EMOJI_RACEHORSE,
 ].length;
 const TEST_ADD_BUTTON_CLASS = 'js-test-add-button-class';
 
@@ -101,9 +131,9 @@ describe('vue_shared/components/awards_list', () => {
         },
         {
           classes: [...REACTION_CONTROL_CLASSES, 'selected'],
-          count: 3,
+          count: 4,
           html: matchingEmojiTag(EMOJI_THUMBSDOWN),
-          title: `You, Ada, and Marie reacted with :${EMOJI_THUMBSDOWN}:`,
+          title: `Ada, Marie, you, and Donatello reacted with :${EMOJI_THUMBSDOWN}:`,
           emojiName: EMOJI_THUMBSDOWN,
         },
         {
@@ -124,7 +154,7 @@ describe('vue_shared/components/awards_list', () => {
           classes: [...REACTION_CONTROL_CLASSES, 'selected'],
           count: 4,
           html: matchingEmojiTag(EMOJI_OK),
-          title: `You, Ada, Jane, and Leonardo reacted with :${EMOJI_OK}:`,
+          title: `Ada, Jane, Leonardo, and you reacted with :${EMOJI_OK}:`,
           emojiName: EMOJI_OK,
         },
         {
@@ -147,6 +177,13 @@ describe('vue_shared/components/awards_list', () => {
           html: matchingEmojiTag(EMOJI_B),
           title: `You reacted with :${EMOJI_B}:`,
           emojiName: EMOJI_B,
+        },
+        {
+          classes: [...REACTION_CONTROL_CLASSES, 'selected'],
+          count: 14,
+          html: matchingEmojiTag(EMOJI_RACEHORSE),
+          title: `Donatello, Michelangelo, Raphael, Homer, Marge, Bart, Lisa, Maggie, Bort, you, and 4 more reacted with :${EMOJI_RACEHORSE}:`,
+          emojiName: EMOJI_RACEHORSE,
         },
       ]);
     });

@@ -12,15 +12,15 @@ module Gitlab
       attr_reader :attributes
 
       class << self
-        def paths
-          @paths ||= [Rails.root.join('config', 'events', '*.yml'), Rails.root.join('ee', 'config', 'events', '*.yml')]
-        end
-
         def definitions
-          paths.flat_map { |glob_path| load_all_from_path(glob_path) }
+          @definitions ||= paths.flat_map { |glob_path| load_all_from_path(glob_path) }
         end
 
         private
+
+        def paths
+          @paths ||= [Rails.root.join('config', 'events', '*.yml'), Rails.root.join('ee', 'config', 'events', '*.yml')]
+        end
 
         def load_from_file(path)
           definition = File.read(path)
@@ -52,7 +52,7 @@ module Gitlab
       end
 
       def validation_errors
-        SCHEMA.validate(attributes.stringify_keys).map do |error|
+        SCHEMA.validate(attributes.deep_stringify_keys).map do |error|
           <<~ERROR_MSG
             --------------- VALIDATION ERROR ---------------
             Definition file: #{path}
@@ -61,12 +61,6 @@ module Gitlab
             Path: #{error['data_pointer']}
           ERROR_MSG
         end
-      end
-
-      private
-
-      def method_missing(method, *args)
-        attributes[method] || super
       end
     end
   end

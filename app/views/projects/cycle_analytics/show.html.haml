@@ -1,5 +1,5 @@
 - page_title _("Value Stream Analytics")
-- data_attributes = @request_params.valid? ? @request_params.to_data_attributes : {}
+- data_attributes = @request_params.valid? ? @request_params.to_data_attributes : @request_params.resource_paths
 - add_page_specific_style 'page_bundles/cycle_analytics'
 
 #js-cycle-analytics{ data: data_attributes }

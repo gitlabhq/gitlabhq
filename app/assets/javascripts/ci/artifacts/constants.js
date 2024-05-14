@@ -4,29 +4,6 @@ export const PAGE_TITLE = s__('Artifacts|Artifacts');
 export const TOTAL_ARTIFACTS_SIZE = s__('Artifacts|Total artifacts size');
 export const SIZE_UNKNOWN = __('Unknown');
 
-export const JOB_STATUS_GROUP_SUCCESS = 'success';
-
-export const STATUS_BADGE_VARIANTS = {
-  success: 'success',
-  passed: 'success',
-  error: 'danger',
-  failed: 'danger',
-  pending: 'warning',
-  'waiting-for-resource': 'warning',
-  'failed-with-warnings': 'warning',
-  'success-with-warnings': 'warning',
-  running: 'info',
-  canceled: 'neutral',
-  disabled: 'neutral',
-  scheduled: 'neutral',
-  manual: 'neutral',
-  notification: 'muted',
-  preparing: 'muted',
-  created: 'muted',
-  skipped: 'muted',
-  notfound: 'muted',
-};
-
 export const I18N_DOWNLOAD = __('Download');
 export const I18N_BROWSE = s__('Artifacts|Browse');
 export const I18N_DELETE = __('Delete');

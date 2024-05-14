@@ -19,7 +19,6 @@ module Ci
     self.allow_legacy_sti_class = true
 
     belongs_to :project
-    belongs_to :trigger_request
 
     has_one :downstream_pipeline, through: :sourced_pipeline, source: :pipeline
 
@@ -52,6 +51,14 @@ module Ci
       event :actionize do
         transition created: :manual
       end
+
+      event :start_cancel do
+        transition CANCELABLE_STATUSES.map(&:to_sym) + [:manual] => :canceling
+      end
+
+      event :finish_cancel do
+        transition CANCELABLE_STATUSES.map(&:to_sym) + [:manual, :canceling] => :canceled
+      end
     end
 
     def retryable?
@@ -80,7 +87,7 @@ module Ci
       when 'success'
         success!
       when 'canceled'
-        cancel!
+        finish_cancel!
       when 'failed', 'skipped'
         drop!
       else
@@ -156,6 +163,10 @@ module Ci
 
     def action?
       %w[manual].include?(self.when)
+    end
+
+    def can_auto_cancel_pipeline_on_job_failure?
+      true
     end
 
     # rubocop: disable CodeReuse/ServiceClass
@@ -272,12 +283,6 @@ module Ci
         result = options&.dig(:trigger, :forward, :pipeline_variables)
 
         result.nil? ? FORWARD_DEFAULTS[:pipeline_variables] : result
-      end
-    end
-
-    def expand_file_refs?
-      strong_memoize(:expand_file_refs) do
-        !Feature.enabled?(:ci_prevent_file_var_expansion_downstream_pipeline, project)
       end
     end
 

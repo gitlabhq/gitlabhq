@@ -8,7 +8,7 @@ module WikiActions
   include ProductAnalyticsTracking
   extend ActiveSupport::Concern
 
-  RESCUE_GIT_TIMEOUTS_IN = %w[show edit history diff pages].freeze
+  RESCUE_GIT_TIMEOUTS_IN = %w[show raw edit history diff pages templates].freeze
 
   included do
     content_security_policy do |p|
@@ -48,6 +48,7 @@ module WikiActions
     end
 
     track_event :show, name: 'wiki_action'
+    track_internal_event :show, name: 'view_wiki_page'
 
     helper_method :view_file_button, :diff_file_html_data
 
@@ -70,9 +71,37 @@ module WikiActions
 
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def pages
-    @wiki_entries = WikiDirectory.group_pages(wiki_pages)
+    @wiki_entries = WikiDirectory.group_pages(pages_list)
 
     render 'shared/wikis/pages'
+  end
+
+  def pages_list
+    strong_memoize(:pages_list) do
+      Kaminari.paginate_array(
+        # only include pages not starting with 'templates/'
+        wiki
+          .list_pages(direction: params[:direction])
+          .reject { |page| page.slug.start_with?('templates/') }
+      ).page(params[:page])
+    end
+  end
+
+  def templates_list
+    strong_memoize(:templates_list) do
+      Kaminari.paginate_array(
+        # only include pages starting with 'templates/'
+        wiki
+          .list_pages(direction: params[:direction])
+          .select { |page| page.slug.start_with?('templates/') }
+      ).page(params[:page])
+    end
+  end
+
+  def templates
+    @wiki_entries = WikiDirectory.group_pages(templates_list, templates: true)
+
+    render 'shared/wikis/templates'
   end
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
@@ -93,30 +122,33 @@ module WikiActions
       @ref = params[:version_id]
       @path = page.path
 
-      Gitlab::UsageDataCounters::WikiPageCounter.count(:view)
-
       render 'shared/wikis/show'
     elsif file_blob
       # This is needed by [GitLab JH](https://gitlab.com/gitlab-jh/gitlab/-/issues/247)
       send_wiki_file_blob(wiki, file_blob)
     elsif show_create_form?
-      # Assign a title to the WikiPage unless `id` is a randomly generated slug from #new
-      title = params[:id] unless params[:random_title].present?
+      title = params[:id]
 
       @page = build_page(title: title)
+      @templates = templates_list
 
       render 'shared/wikis/edit'
     else
       render 'shared/wikis/empty'
     end
   end
-  # rubocop:enable Gitlab/ModuleWithInstanceVariables
+
+  def raw
+    response.headers['Content-Type'] = 'text/plain'
+    render plain: page.raw_content
+  end
 
   def edit
+    @templates = templates_list
+
     render 'shared/wikis/edit'
   end
 
-  # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def update
     return render('shared/wikis/empty') unless can?(current_user, :create_wiki, container)
 
@@ -135,6 +167,8 @@ module WikiActions
       )
     else
       @error = response.message
+      @templates = templates_list
+
       render 'shared/wikis/edit'
     end
   end
@@ -152,6 +186,8 @@ module WikiActions
         wiki_page_path(wiki, page)
       )
     else
+      @templates = templates_list
+
       render 'shared/wikis/edit'
     end
   end
@@ -198,6 +234,8 @@ module WikiActions
       redirect_to wiki_path(wiki), status: :found
     else
       @error = response.message
+      @templates = templates_list
+
       render 'shared/wikis/edit'
     end
   end
@@ -252,14 +290,6 @@ module WikiActions
     @sidebar_error = e
   end
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
-
-  def wiki_pages
-    strong_memoize(:wiki_pages) do
-      Kaminari.paginate_array(
-        wiki.list_pages(direction: params[:direction])
-      ).page(params[:page])
-    end
-  end
 
   def wiki_params
     params.require(:wiki).permit(:title, :content, :format, :message, :last_commit_sha)
@@ -331,6 +361,19 @@ module WikiActions
     return false if skip_actions.include?(params[:action])
 
     true
+  end
+
+  def tracking_project_source
+    container if container.is_a?(Project)
+  end
+
+  def tracking_namespace_source
+    case container
+    when Project
+      container.namespace
+    when Group
+      container
+    end
   end
 end
 

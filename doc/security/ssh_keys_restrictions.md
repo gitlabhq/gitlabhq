@@ -44,18 +44,18 @@ Hovering over this icon tells you why the key is restricted.
 By default, the GitLab.com and self-managed settings for the
 [supported key types](../user/ssh.md#supported-ssh-key-types) are:
 
+- DSA SSH keys are forbidden.
 - RSA SSH keys are allowed.
-- DSA SSH keys are forbidden ([since GitLab 11.0](https://about.gitlab.com/releases/2018/06/22/gitlab-11-0-released/#support-for-dsa-ssh-keys)).
 - ECDSA SSH keys are allowed.
 - ED25519 SSH keys are allowed.
-- ECDSA_SK SSH keys are allowed (GitLab 14.8 and later).
-- ED25519_SK SSH keys are allowed (GitLab 14.8 and later).
+- ECDSA_SK SSH keys are allowed.
+- ED25519_SK SSH keys are allowed.
 
 ## Block banned or compromised keys
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24614) in GitLab 15.1 [with a flag](../administration/feature_flags.md) named `ssh_banned_key`. Enabled by default.
 > - Generally available in GitLab 15.2. [Feature flag `ssh_banned_key`](https://gitlab.com/gitlab-org/gitlab/-/issues/363410) removed.

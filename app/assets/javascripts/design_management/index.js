@@ -14,7 +14,7 @@ export default () => {
     issuePath,
     registerPath,
     signInPath,
-    newCommentTemplatePath,
+    newCommentTemplatePaths,
   } = el.dataset;
   const router = createRouter(issuePath);
 
@@ -39,7 +39,7 @@ export default () => {
       issueIid,
       registerPath,
       signInPath,
-      newCommentTemplatePath,
+      newCommentTemplatePaths: JSON.parse(newCommentTemplatePaths),
     },
     mounted() {
       performanceMarkAndMeasure({

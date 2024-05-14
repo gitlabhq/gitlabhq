@@ -23,6 +23,15 @@ export const CHUNK_2 = {
   blamePath,
 };
 
+export const CHUNK_3 = {
+  isHighlighted: false,
+  rawContent: 'chunk 3 raw',
+  highlightedContent: 'chunk 3 highlighted',
+  totalLines: 40,
+  startingFrom: 110,
+  blamePath,
+};
+
 export const SOURCE_CODE_CONTENT_MOCK = `    
 <div class="file-holder">
   <div class="blob-viewer">

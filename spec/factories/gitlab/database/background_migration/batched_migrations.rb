@@ -33,5 +33,9 @@ FactoryBot.define do
     trait(:finalizing) do
       status { 5 }
     end
+
+    trait(:finalized) do
+      status { 6 }
+    end
   end
 end

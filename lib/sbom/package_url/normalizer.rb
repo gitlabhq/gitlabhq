@@ -3,6 +3,9 @@
 module Sbom
   class PackageUrl
     class Normalizer
+      # Based on https://peps.python.org/pep-0503/#normalized-names
+      PYPI_REGEX = /[-_\.]+/
+
       def initialize(type:, text:)
         @type = type
         @text = text
@@ -24,7 +27,7 @@ module Sbom
 
       def normalize
         case type
-        when 'bitbucket', 'github'
+        when 'bitbucket', 'github', 'golang'
           downcase
         when 'pypi'
           normalize_pypi
@@ -40,7 +43,7 @@ module Sbom
       end
 
       def normalize_pypi
-        downcase.tr('_', '-')
+        downcase.gsub(PYPI_REGEX, '-')
       end
     end
   end

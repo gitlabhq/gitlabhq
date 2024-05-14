@@ -6,8 +6,8 @@ module Resolvers
       type Types::ErrorTracking::SentryErrorStackTraceType, null: true
 
       argument :id, ::Types::GlobalIDType[::Gitlab::ErrorTracking::DetailedError],
-                required: true,
-                description: 'ID of the Sentry issue.'
+        required: true,
+        description: 'ID of the Sentry issue.'
 
       def resolve(id:)
         # Get data from Sentry

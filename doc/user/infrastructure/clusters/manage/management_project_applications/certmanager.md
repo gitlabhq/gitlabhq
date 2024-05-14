@@ -8,11 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
-
-> - [Introduced](https://gitlab.com/gitlab-org/project-templates/cluster-management/-/merge_requests/5) in GitLab 14.0.
-> - Support for cert-manager v1.4 was [introduced](https://gitlab.com/gitlab-org/project-templates/cluster-management/-/merge_requests/69405) in GitLab 14.3.
-> - [Upgraded](https://gitlab.com/gitlab-org/project-templates/cluster-management/-/merge_requests/23) to cert-manager 1.7 in GitLab 14.8.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Assuming you already have a project created from a
 [management project template](../../../../../user/clusters/management_project_template.md), to install cert-manager you should

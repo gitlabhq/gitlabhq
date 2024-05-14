@@ -2,7 +2,7 @@
   = render Pajamas::AlertComponent.new(title: _('Slack notifications integration is deprecated'),
     variant: :warning,
     dismissible: false,
-    alert_options: { class: 'gl-mt-5', data: { testid: "slack-notifications-deprecation" } }) do |c|
+    alert_options: { class: 'gl-mt-5 js-hide-when-nothing-matches-search', data: { testid: "slack-notifications-deprecation" } }) do |c|
     - c.with_body do
       - help_page_link = help_page_url('user/project/integrations/gitlab_slack_application')
       - learn_more_link = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_link }
@@ -12,7 +12,7 @@
   = render Pajamas::AlertComponent.new(title: _('Slack notifications will be deprecated'),
     variant: :warning,
     dismissible: false,
-    alert_options: { class: 'gl-mt-5', data: { testid: "slack-notifications-deprecation" } }) do |c|
+    alert_options: { class: 'gl-mt-5 js-hide-when-nothing-matches-search', data: { testid: "slack-notifications-deprecation" } }) do |c|
     - c.with_body do
       - help_page_link = help_page_url('user/project/integrations/gitlab_slack_application')
       - learn_more_link = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_link }

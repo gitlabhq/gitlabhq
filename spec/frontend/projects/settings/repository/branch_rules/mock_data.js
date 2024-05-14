@@ -20,13 +20,14 @@ export const accessLevelsMockResponse = [
 export const branchRulesMockResponse = {
   data: {
     project: {
-      id: '123',
+      id: 'gid://gitlab/Project/1',
       __typename: 'Project',
       branchRules: {
         __typename: 'BranchRuleConnection',
         nodes: [
           {
             name: 'main',
+            id: 'gid://gitlab/Projects/BranchRule/1',
             isDefault: true,
             matchingBranchesCount: 1,
             branchProtection: {
@@ -44,6 +45,7 @@ export const branchRulesMockResponse = {
           },
           {
             name: 'test-*',
+            id: 'gid://gitlab/Projects/BranchRule/2',
             isDefault: false,
             matchingBranchesCount: 2,
             branchProtection: {
@@ -57,6 +59,36 @@ export const branchRulesMockResponse = {
                 __typename: 'PushAccessLevelConnection',
               },
             },
+            __typename: 'BranchRule',
+          },
+        ],
+      },
+    },
+  },
+};
+
+export const predefinedBranchRulesMockResponse = {
+  data: {
+    project: {
+      id: 'gid://gitlab/Project/1',
+      __typename: 'Project',
+      branchRules: {
+        __typename: 'BranchRuleConnection',
+        nodes: [
+          {
+            name: 'All branches',
+            id: 'gid://gitlab/Projects::AllBranchesRule/7',
+            isDefault: false,
+            matchingBranchesCount: 12,
+            branchProtection: null,
+            __typename: 'BranchRule',
+          },
+          {
+            name: 'All protected branches',
+            id: 'gid://gitlab/Projects::AllBranchesRule/6',
+            isDefault: false,
+            matchingBranchesCount: 14,
+            branchProtection: null,
             __typename: 'BranchRule',
           },
         ],
@@ -109,4 +141,16 @@ export const branchRuleWithoutDetailsPropsMock = {
   branchProtection: null,
   approvalRulesTotal: 0,
   statusChecksTotal: 0,
+};
+
+export const protectableBranches = ['make-release-umd-bundle', 'main', 'v2.x'];
+
+export const protectableBranchesMockResponse = {
+  data: {
+    project: {
+      id: 'gid://gitlab/Project/1',
+      protectableBranches,
+      __typename: 'Project',
+    },
+  },
 };

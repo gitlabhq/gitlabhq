@@ -30,6 +30,10 @@ module Integrations
       'mattermost_slash_commands'
     end
 
+    def avatar_url
+      ActionController::Base.helpers.image_path('illustrations/third-party-logos/integrations-logos/mattermost.svg')
+    end
+
     def configure(user, params)
       token = ::Mattermost::Command.new(user)
         .create(command(params))

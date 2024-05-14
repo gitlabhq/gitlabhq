@@ -14,10 +14,13 @@ RSpec.describe UserDetail, feature_category: :system_access do
     context 'for onboarding_status json schema' do
       let(:step_url) { '_some_string_' }
       let(:email_opt_in) { true }
+      let(:registration_type) { 'free' }
       let(:onboarding_status) do
         {
           step_url: step_url,
-          email_opt_in: email_opt_in
+          email_opt_in: email_opt_in,
+          initial_registration_type: registration_type,
+          registration_type: registration_type
         }
       end
 
@@ -50,6 +53,38 @@ RSpec.describe UserDetail, feature_category: :system_access do
 
         context "when 'email_opt_in' is invalid" do
           let(:email_opt_in) { 'true' }
+
+          it { is_expected.not_to allow_value(onboarding_status).for(:onboarding_status) }
+        end
+      end
+
+      context 'for initial_registration_type' do
+        let(:onboarding_status) do
+          {
+            initial_registration_type: registration_type
+          }
+        end
+
+        it { is_expected.to allow_value(onboarding_status).for(:onboarding_status) }
+
+        context "when 'initial_registration_type' is invalid" do
+          let(:registration_type) { [] }
+
+          it { is_expected.not_to allow_value(onboarding_status).for(:onboarding_status) }
+        end
+      end
+
+      context 'for registration_type' do
+        let(:onboarding_status) do
+          {
+            registration_type: registration_type
+          }
+        end
+
+        it { is_expected.to allow_value(onboarding_status).for(:onboarding_status) }
+
+        context "when 'registration_type' is invalid" do
+          let(:registration_type) { [] }
 
           it { is_expected.not_to allow_value(onboarding_status).for(:onboarding_status) }
         end

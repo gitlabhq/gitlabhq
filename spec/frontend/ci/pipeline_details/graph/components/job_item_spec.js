@@ -41,27 +41,16 @@ describe('pipeline graph job item', () => {
   const myCustomClass1 = 'my-class-1';
   const myCustomClass2 = 'my-class-2';
 
-  const defaultProps = {
-    job: mockJob,
-  };
-
-  const createWrapper = ({ props, data, mountFn = mountExtended, mocks = {} } = {}) => {
+  const createWrapper = ({ mountFn = mountExtended, props, ...options } = {}) => {
     wrapper = mountFn(JobItem, {
-      data() {
-        return {
-          ...data,
-        };
-      },
       propsData: {
-        ...defaultProps,
+        job: mockJob,
         ...props,
-      },
-      mocks: {
-        ...mocks,
       },
       stubs: {
         CiIcon,
       },
+      ...options,
     });
   };
 
@@ -84,7 +73,7 @@ describe('pipeline graph job item', () => {
 
       expect(link.attributes('href')).toBe(mockJob.status.detailsPath);
 
-      expect(link.attributes('title')).toBe(`${mockJob.name} - ${mockJob.status.label}`);
+      expect(link.attributes('title')).toBe('Passed');
 
       expect(findJobCiIcon().exists()).toBe(true);
       expect(findJobCiIcon().find('[data-testid="status_success_borderless-icon"]').exists()).toBe(
@@ -118,6 +107,25 @@ describe('pipeline graph job item', () => {
 
     it('should apply hover class and provided class name', () => {
       expect(findJobWithoutLink().classes()).toContain('css-class-job-name');
+    });
+  });
+
+  describe('name when is-link is false', () => {
+    beforeEach(() => {
+      createWrapper({
+        props: {
+          isLink: false,
+        },
+      });
+    });
+
+    it('should render status and name', () => {
+      expect(findJobCiIcon().exists()).toBe(true);
+      expect(findJobCiIcon().find('[data-testid="status_success_borderless-icon"]').exists()).toBe(
+        true,
+      );
+
+      expect(wrapper.text()).toBe(mockJob.name);
     });
   });
 
@@ -205,10 +213,10 @@ describe('pipeline graph job item', () => {
         },
       });
 
-      expect(findJobWithoutLink().attributes('title')).toBe('test');
+      expect(findJobWithoutLink().attributes('title')).toBe('');
     });
 
-    it('should not render status label when it is  provided', () => {
+    it('should render status label when it is provided', () => {
       createWrapper({
         props: {
           job: {
@@ -223,7 +231,7 @@ describe('pipeline graph job item', () => {
         },
       });
 
-      expect(findJobWithoutLink().attributes('title')).toBe('test - success');
+      expect(findJobWithoutLink().attributes('title')).toBe('Success');
     });
   });
 
@@ -235,9 +243,7 @@ describe('pipeline graph job item', () => {
         },
       });
 
-      expect(findJobWithLink().attributes('title')).toBe(
-        `delayed job - delayed manual action (00:00:00)`,
-      );
+      expect(findJobWithLink().attributes('title')).toBe(`Delayed manual action (00:00:00)`);
     });
   });
 
@@ -492,8 +498,10 @@ describe('pipeline graph job item', () => {
           // or emit an event directly. We therefore set the data property
           // as it would be if the box was checked.
           createWrapper({
-            data: {
-              currentSkipModalValue: true,
+            data() {
+              return {
+                currentSkipModalValue: true,
+              };
             },
             props: {
               skipRetryModal: false,

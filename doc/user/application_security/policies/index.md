@@ -8,25 +8,27 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, Self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/321258) in GitLab 14.4. Feature flag `security_orchestration_policies_configuration` removed.
+Policies provide security and compliance teams with a way to enforce controls globally in
+their organization.
 
-Policies in GitLab provide security and compliance teams with a way to enforce controls globally in
-their organization. Security teams can ensure:
+Security teams can ensure:
 
 - Security scanners are enforced in development team pipelines with proper configuration.
 - That all scan jobs execute without any changes or alterations.
 - That proper approvals are provided on merge requests based on results from those findings.
 
-Compliance teams can centrally enforce multiple approvers on all merge requests and ensure various
-settings are enabled on projects in scope of organizational requirements, such as enabling or
-locking merge request and repository settings.
+Compliance teams can:
 
-GitLab supports the following security policies:
+- Centrally enforce multiple approvers on all merge requests
+- Enforce various settings on projects in scope of organizational requirements, such as enabling or
+  locking merge request and repository settings.
 
-- [Scan Execution Policy](scan-execution-policies.md)
-- [Scan Result Policy](scan-result-policies.md)
+The following policy types are available:
+
+- [Scan execution policy](scan-execution-policies.md). Enforce security scans, either as part of the pipeline or on a specified schedule.
+- [Merge request approval policy](scan-result-policies.md). Enforce project-level settings and approval rules based on scan results.
 
 ## Security policy project
 
@@ -93,7 +95,7 @@ Assuming no policies have already been enforced, consider the following examples
   Engineering, and all their projects and subgroups. If the "Secret Detection" policy is enforced
   also at subgroup "Accounts receiving", both policies apply to projects B and C. However, only the
   "SAST" policy applies to project A.
-- If the "SAST policy is enforced at subgroup "Accounts receiving", it applies only to projects B
+- If the "SAST" policy is enforced at subgroup "Accounts receiving", it applies only to projects B
   and C. No policy applies to project A.
 - If the "Secret Detection" is enforced at project K, it applies only to project K. No other
   subgroups or projects have a policy apply to them.
@@ -124,7 +126,7 @@ of duties requires more granular permission configuration.
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS
+**Offering:** GitLab.com
 
 To enforce policies against subgroups and projects, create a subgroup to contain the SPPs, separate
 to the subgroups containing the projects. Using separate subgroups allows for separation of duties,
@@ -167,7 +169,7 @@ The high-level workflow for enforcing policies across multiple subgroups:
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 To enforce policies against multiple groups, create a group to contain the SPPs, separate to the
 groups containing the projects. Using separate groups allows for separation of duties, with the SPP
@@ -261,8 +263,6 @@ policies:
 
 ## Policy editor
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3403) in GitLab 13.4.
-
 You can use the policy editor to create, edit, and delete policies:
 
 1. On the left sidebar, select **Search or go to** and find your project.
@@ -342,15 +342,12 @@ The workaround is to amend your group or instance push rules to allow branches f
 - When enforcing scan execution policies, security policies use a bot in the target project to
   trigger scheduled pipelines to ensure enforcement. When the bot is missing, it is automatically
   created, and the following scheduled scan uses it.
-- You should not link a security policy project to a development project and to the group or
-  subgroup the development project belongs to at the same time. Linking this way results in approval
-  rules from the Scan Result Policy not being applied to merge requests in the development project.
-- When creating a Scan Result Policy, neither the array `severity_levels` nor the array
+- You should not link a security policy project to both a development project and the group or
+  subgroup the development project belongs to. Linking this way results in approval
+  rules from the merge request approval policies not being applied to merge requests in the development project.
+- When creating a merge request approval policy, neither the array `severity_levels` nor the array
   `vulnerability_states` in the [`scan_finding` rule](../policies/scan-result-policies.md#scan_finding-rule-type)
   can be left empty. For a working rule, at least one entry must exist.
-- When configuring pipeline and merge request approval policies, it's important to remember that security scans
-  performed in manual jobs are not verified to determine whether MR approval is required. When you
-  run a manual job with security scans, it does not ensure approval even if vulnerabilities are
-  introduced.
+- When merge request approval policies are enforced on projects containing manual jobs in their pipeline, policies evaluate the completed pipeline jobs and ignore the manual jobs. When the manual jobs are run, the policy re-evaluates the MR.
 
 If you are still experiencing issues, you can [view recent reported bugs](https://gitlab.com/gitlab-org/gitlab/-/issues/?sort=popularity&state=opened&label_name%5B%5D=group%3A%3Asecurity%20policies&label_name%5B%5D=type%3A%3Abug&first_page_size=20) and raise new unreported issues.

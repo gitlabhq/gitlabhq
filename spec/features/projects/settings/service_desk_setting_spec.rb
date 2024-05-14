@@ -39,7 +39,7 @@ RSpec.describe 'Service Desk Setting', :js, :clean_gitlab_redis_cache, feature_c
       project.reload
       expect(project.service_desk_enabled).to be_truthy
       expect(project.service_desk_address).to be_present
-      expect(find('[data-testid="incoming-email"]').value).to eq(project.service_desk_incoming_address)
+      expect(find_by_testid('incoming-email').value).to eq(project.service_desk_incoming_address)
     end
   end
 
@@ -56,7 +56,7 @@ RSpec.describe 'Service Desk Setting', :js, :clean_gitlab_redis_cache, feature_c
       wait_for_requests
 
       project.reload
-      expect(find('[data-testid="incoming-email"]').value).to eq(project.service_desk_alias_address)
+      expect(find_by_testid('incoming-email').value).to eq(project.service_desk_alias_address)
 
       page.within '#js-service-desk' do
         fill_in('service-desk-project-suffix', with: 'foo')
@@ -65,7 +65,7 @@ RSpec.describe 'Service Desk Setting', :js, :clean_gitlab_redis_cache, feature_c
 
       wait_for_requests
 
-      expect(find('[data-testid="incoming-email"]').value).to eq('address-suffix@example.com')
+      expect(find_by_testid('incoming-email').value).to eq('address-suffix@example.com')
     end
 
     describe 'issue description templates' do
@@ -102,9 +102,10 @@ RSpec.describe 'Service Desk Setting', :js, :clean_gitlab_redis_cache, feature_c
     end
   end
 
-  it 'pushes issue_email_participants feature flag to frontend' do
+  it 'pushes feature flags to frontend' do
     visit edit_project_path(project)
 
     expect(page).to have_pushed_frontend_feature_flags(issueEmailParticipants: true)
+    expect(page).to have_pushed_frontend_feature_flags(serviceDeskTicketsConfidentiality: true)
   end
 end

@@ -6,21 +6,27 @@ require 'gitlab' unless Object.const_defined?(:Gitlab)
 require 'set' # rubocop:disable Lint/RedundantRequireStatement -- Ruby 3.1 and earlier needs this. Drop this line after Ruby 3.2+ is only supported.
 
 class GenerateAsIfFossEnv
+  # rubocop:disable Style/WordArray -- Probably a bug? It already is
   FOSS_JOBS = Set.new(%w[
     build-assets-image
     build-qa-image
     compile-production-assets
     compile-storybook
     compile-test-assets
+    detect-tests
     eslint
     generate-apollo-graphql-schema
     graphql-schema-dump
-    jest
-    jest-integration
+    rspec-predictive:pipeline-generate
+    rspec:predictive:trigger
+    rspec:predictive:trigger\ single-db
+    rspec:predictive:trigger\ single-db-ci-connection
+    rubocop
     qa:internal
     qa:selectors
     static-analysis
   ]).freeze
+  # rubocop:enable Style/WordArray
 
   def initialize
     @client = Gitlab.client(
@@ -49,7 +55,9 @@ class GenerateAsIfFossEnv
 
     {
       START_AS_IF_FOSS: 'true',
-      RUBY_VERSION: ENV['RUBY_VERSION']
+      RUBY_VERSION: ENV['RUBY_VERSION'],
+      FIND_CHANGES_MERGE_REQUEST_PROJECT_PATH: ENV['CI_MERGE_REQUEST_PROJECT_PATH'],
+      FIND_CHANGES_MERGE_REQUEST_IID: ENV['CI_MERGE_REQUEST_IID']
     }.merge(rspec_variables).merge(other_jobs_variables)
   end
 
@@ -60,8 +68,10 @@ class GenerateAsIfFossEnv
   end
 
   def each_job
-    client.pipeline_jobs(ENV['CI_PROJECT_ID'], ENV['CI_PIPELINE_ID']).auto_paginate do |job|
-      yield(job)
+    %i[pipeline_jobs pipeline_bridges].each do |kind|
+      client.public_send(kind, ENV['CI_PROJECT_ID'], ENV['CI_PIPELINE_ID']).auto_paginate do |job| # rubocop:disable GitlabSecurity/PublicSend -- We're sending with static values, no concerns
+        yield(job)
+      end
     end
   end
 
@@ -76,7 +86,15 @@ class GenerateAsIfFossEnv
   end
 
   def detect_other_jobs(job)
-    other_jobs << job.name if FOSS_JOBS.member?(job.name)
+    # rubocop:disable Lint/AssignmentInCondition -- More clear without this cop
+    if FOSS_JOBS.member?(job.name)
+      other_jobs << job.name
+    elsif jest_type = job.name[%r{^(jest(?:-\w+)?)(?: \d+/\d+)?$}, 1]
+      other_jobs << jest_type
+    elsif cache_assets_type = job.name[%r{^(cache-assets)\b}, 1]
+      other_jobs << cache_assets_type
+    end
+    # rubocop:enable Lint/AssignmentInCondition
   end
 
   def rspec_variables

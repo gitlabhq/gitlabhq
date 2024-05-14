@@ -65,13 +65,6 @@ module Gitlab
         response.size
       end
 
-      def apply_gitattributes(revision)
-        request = Gitaly::ApplyGitattributesRequest.new(repository: @gitaly_repo, revision: encode_binary(revision))
-        gitaly_client_call(@storage, :repository_service, :apply_gitattributes, request, timeout: GitalyClient.fast_timeout)
-      rescue GRPC::InvalidArgument => ex
-        raise Gitlab::Git::Repository::InvalidRef, ex
-      end
-
       def info_attributes
         request = Gitaly::GetInfoAttributesRequest.new(repository: @gitaly_repo)
 
@@ -249,33 +242,6 @@ module Gitlab
         request.old_revision = old_ref.b unless old_ref.nil?
 
         gitaly_client_call(@storage, :repository_service, :write_ref, request, timeout: GitalyClient.fast_timeout)
-      end
-
-      def set_full_path(path)
-        gitaly_client_call(
-          @storage,
-          :repository_service,
-          :set_full_path,
-          Gitaly::SetFullPathRequest.new(
-            repository: @gitaly_repo,
-            path: path
-          ),
-          timeout: GitalyClient.fast_timeout
-        )
-
-        nil
-      end
-
-      def full_path
-        response = gitaly_client_call(
-          @storage,
-          :repository_service,
-          :full_path,
-          Gitaly::FullPathRequest.new(repository: @gitaly_repo),
-          timeout: GitalyClient.fast_timeout
-        )
-
-        response.path.presence
       end
 
       def find_license

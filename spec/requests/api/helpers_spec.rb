@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require 'raven/transports/dummy'
 require_relative '../../../config/initializers/sentry'
 
 RSpec.describe API::Helpers, :enable_admin_mode, feature_category: :system_access do
@@ -174,21 +173,21 @@ RSpec.describe API::Helpers, :enable_admin_mode, feature_category: :system_acces
       it "returns a 401 response for an invalid token" do
         env[Gitlab::Auth::AuthFinders::PRIVATE_TOKEN_HEADER] = 'invalid token'
 
-        expect { current_user }.to raise_error /401/
+        expect { current_user }.to raise_error(/401/)
       end
 
       it "returns a 403 response for a user without access" do
         env[Gitlab::Auth::AuthFinders::PRIVATE_TOKEN_HEADER] = personal_access_token.token
         allow_any_instance_of(Gitlab::UserAccess).to receive(:allowed?).and_return(false)
 
-        expect { current_user }.to raise_error /403/
+        expect { current_user }.to raise_error(/403/)
       end
 
       it 'returns a 403 response for a user who is blocked' do
         user.block!
         env[Gitlab::Auth::AuthFinders::PRIVATE_TOKEN_HEADER] = personal_access_token.token
 
-        expect { current_user }.to raise_error /403/
+        expect { current_user }.to raise_error(/403/)
       end
 
       context 'when terms are enforced' do
@@ -198,7 +197,7 @@ RSpec.describe API::Helpers, :enable_admin_mode, feature_category: :system_acces
         end
 
         it 'returns a 403 when a user has not accepted the terms' do
-          expect { current_user }.to raise_error /must accept the Terms of Service/
+          expect { current_user }.to raise_error(/must accept the Terms of Service/)
         end
 
         it 'sets the current user when the user accepted the terms' do
@@ -266,28 +265,28 @@ RSpec.describe API::Helpers, :enable_admin_mode, feature_category: :system_acces
         it "returns a 401 response for an invalid token" do
           env[Gitlab::Auth::AuthFinders::JOB_TOKEN_HEADER] = 'invalid token'
 
-          expect { current_user }.to raise_error /401/
+          expect { current_user }.to raise_error(/401/)
         end
 
         it "returns a 401 response for a job that's not running" do
           job.update!(status: :success)
           env[Gitlab::Auth::AuthFinders::JOB_TOKEN_HEADER] = job.token
 
-          expect { current_user }.to raise_error /401/
+          expect { current_user }.to raise_error(/401/)
         end
 
         it "returns a 403 response for a user without access" do
           env[Gitlab::Auth::AuthFinders::JOB_TOKEN_HEADER] = job.token
           allow_any_instance_of(Gitlab::UserAccess).to receive(:allowed?).and_return(false)
 
-          expect { current_user }.to raise_error /403/
+          expect { current_user }.to raise_error(/403/)
         end
 
         it 'returns a 403 response for a user who is blocked' do
           user.block!
           env[Gitlab::Auth::AuthFinders::JOB_TOKEN_HEADER] = job.token
 
-          expect { current_user }.to raise_error /403/
+          expect { current_user }.to raise_error(/403/)
         end
 
         it "sets current_user" do
@@ -398,7 +397,7 @@ RSpec.describe API::Helpers, :enable_admin_mode, feature_category: :system_acces
       end
 
       it 'returns a 401 response' do
-        expect { authenticate! }.to raise_error /401/
+        expect { authenticate! }.to raise_error(/401/)
 
         expect(env[described_class::API_RESPONSE_STATUS_CODE]).to eq(401)
       end
@@ -505,7 +504,7 @@ RSpec.describe API::Helpers, :enable_admin_mode, feature_category: :system_acces
             end
 
             it 'raises an error' do
-              expect { current_user }.to raise_error /User with ID or username 'nonexistent' Not Found/
+              expect { current_user }.to raise_error(/User with ID or username 'nonexistent' Not Found/)
             end
           end
         end
@@ -533,7 +532,7 @@ RSpec.describe API::Helpers, :enable_admin_mode, feature_category: :system_acces
         end
 
         it 'raises an error' do
-          expect { current_user }.to raise_error /Must be admin to use sudo/
+          expect { current_user }.to raise_error(/Must be admin to use sudo/)
         end
       end
     end
@@ -578,7 +577,7 @@ RSpec.describe API::Helpers, :enable_admin_mode, feature_category: :system_acces
       end
 
       it 'raises an error' do
-        expect { current_user }.to raise_error /Must be authenticated using an OAuth or Personal Access Token to use sudo/
+        expect { current_user }.to raise_error(/Must be authenticated using an OAuth or Personal Access Token to use sudo/)
       end
     end
   end

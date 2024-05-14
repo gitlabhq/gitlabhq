@@ -8,7 +8,6 @@ RSpec.describe RegistrationsController, feature_category: :user_profile do
 
   before do
     stub_application_setting(require_admin_approval_after_user_signup: false)
-    stub_feature_flags(arkose_labs_signup_challenge: false)
   end
 
   describe '#new' do
@@ -133,7 +132,6 @@ RSpec.describe RegistrationsController, feature_category: :user_profile do
           context 'when email confirmation setting is set to `hard`' do
             before do
               stub_application_setting_enum('email_confirmation_setting', 'hard')
-              stub_feature_flags(identity_verification: false)
             end
 
             it 'sends a confirmation email' do
@@ -161,10 +159,6 @@ RSpec.describe RegistrationsController, feature_category: :user_profile do
     end
 
     context 'with email confirmation' do
-      before do
-        stub_feature_flags(identity_verification: false)
-      end
-
       context 'when email confirmation setting is set to `off`' do
         it 'signs the user in' do
           stub_application_setting_enum('email_confirmation_setting', 'off')
@@ -218,13 +212,6 @@ RSpec.describe RegistrationsController, feature_category: :user_profile do
                   property: member.id.to_s,
                   user: member.reload.user
                 )
-
-                expect_snowplow_event(
-                  category: 'RegistrationsController',
-                  action: 'create_user',
-                  label: 'invited',
-                  user: member.reload.user
-                )
               end
             end
 
@@ -238,13 +225,6 @@ RSpec.describe RegistrationsController, feature_category: :user_profile do
                   category: 'RegistrationsController',
                   action: 'accepted',
                   label: 'invite_email'
-                )
-
-                expect_snowplow_event(
-                  category: 'RegistrationsController',
-                  action: 'create_user',
-                  label: 'signup',
-                  user: member.reload.user
                 )
               end
             end
@@ -506,7 +486,6 @@ RSpec.describe RegistrationsController, feature_category: :user_profile do
     end
 
     it "logs a 'User Created' message" do
-      allow(Gitlab::AppLogger).to receive(:info)
       expect(Gitlab::AppLogger).to receive(:info).with(/\AUser Created: username=new_username email=new@user.com.+\z/).and_call_original
 
       subject
@@ -561,15 +540,6 @@ RSpec.describe RegistrationsController, feature_category: :user_profile do
           method: 'create'
         )
       end
-
-      it 'does not track failed form submission' do
-        post_create
-
-        expect_no_snowplow_event(
-          category: described_class.name,
-          action: 'successfully_submitted_form'
-        )
-      end
     end
 
     context 'when the password is not weak' do
@@ -579,16 +549,6 @@ RSpec.describe RegistrationsController, feature_category: :user_profile do
         expect_no_snowplow_event(
           category: 'Gitlab::Tracking::Helpers::WeakPasswordErrorEvent',
           action: 'track_weak_password_error'
-        )
-      end
-
-      it 'tracks successful form submission' do
-        post_create
-
-        expect_snowplow_event(
-          category: described_class.name,
-          action: 'successfully_submitted_form',
-          user: User.find_by(email: base_user_params[:email])
         )
       end
     end

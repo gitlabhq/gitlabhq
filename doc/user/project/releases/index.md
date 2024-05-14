@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 In GitLab, a release enables you to create a snapshot of your project for your users, including
 installation packages and release notes. You can create a GitLab release on any branch. Creating a
@@ -58,6 +58,26 @@ To sort releases by **Released date** or **Created date**, select from the sort 
 switch between ascending or descending order, select **Sort order**.
 
 ![Sort releases dropdown list options](img/releases_sort_v13_6.png)
+
+### Permanent link to latest release
+
+Latest release page is accessible through a permanent URL.
+GitLab redirects to the latest release page URL when it is visited.
+
+The format of the URL is:
+
+```plaintext
+https://host/namespace/project/-/releases/permalink/latest
+```
+
+We also support, suffix path carry forward on the redirect to the latest release.
+Example if release `v14.8.0-ee` is the latest release and has a readable link `https://host/namespace/project/-/releases/v14.8.0-ee#release` then it can be addressed as `https://host/namespace/project/-/releases/permalink/latest#release`.
+
+Refer [permanent links to latest release assets](release_fields.md#permanent-links-to-latest-release-assets) section to understand more about the suffix path carry forward usage.
+
+#### Sorting preferences
+
+By default, GitLab fetches the release using `released_at` time. The use of the query parameter `?order_by=released_at` is optional, and support for `?order_by=semver` is tracked [in this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/352945).
 
 ## Create a release
 
@@ -169,8 +189,6 @@ project.
 
 ## Upcoming releases
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/38105) in GitLab 12.1.
-
 You can create a release ahead of time by using the [Releases API](../../../api/releases/index.md#upcoming-releases).
 When you set a future `released_at` date, an **Upcoming Release** badge is displayed next to the
 release tag. When the `released_at` date and time has passed, the badge is automatically removed.
@@ -228,9 +246,6 @@ In the UI:
 
 ## Associate milestones with a release
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/29020) in GitLab 12.5.
-> - [Updated](https://gitlab.com/gitlab-org/gitlab/-/issues/39467) to edit milestones in the UI in GitLab 13.0.
-
 You can associate a release with one or more [project milestones](../milestones/index.md#project-milestones-and-group-milestones).
 
 [GitLab Premium](https://about.gitlab.com/pricing/) customers can specify [group milestones](../milestones/index.md#project-milestones-and-group-milestones) to associate with a release.
@@ -264,8 +279,6 @@ more, read issue #328054,
 
 ## Get notified when a release is created
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/26001) in GitLab 12.4.
-
 You can be notified by email when a new release is created for your project.
 
 To subscribe to notifications for releases:
@@ -277,9 +290,6 @@ To subscribe to notifications for releases:
 1. Close the dialog box to save.
 
 ## Prevent unintentional releases by setting a deploy freeze
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/29382) in GitLab 13.0.
-> - The ability to delete freeze periods through the UI was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/212451) in GitLab 14.3.
 
 Prevent unintended production releases during a period of time you specify by
 setting a [*deploy freeze* period](../../../ci/environments/deployment_safety.md).
@@ -341,11 +351,7 @@ For more information, see [Deployment safety](../../../ci/environments/deploymen
 
 ## Release permissions
 
-> - Fixes to the permission model for create, update and delete actions [were introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327505) in GitLab 14.1.
-
 ### View a release and download assets
-
-> - Changes to the Guest role [were introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335209) in GitLab 14.5.
 
 - Users with at least the Reporter role
   have read and download access to the project releases.
@@ -364,7 +370,7 @@ Releases can be made accessible to non-project members while keeping repository-
 projects that use releases as a way to give access to new versions of software but do not want the source code to
 be public.
 
-To make releases available publicly, set the following [project settings](../settings/project_features_permissions.md#configure-project-features-and-permissions):
+To make releases available publicly, set the following [project settings](../settings/index.md#configure-project-features-and-permissions):
 
 - Repository is enabled and set to **Only Project Members**
 - Releases is enabled and set to **Everyone With Access**
@@ -385,7 +391,7 @@ and set **Maintainer** in the **Allowed to create** column.
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, Self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/259703) in GitLab Premium 13.9.
 
@@ -409,10 +415,14 @@ You can copy the example project to your own group or instance for testing. More
 
 ## Troubleshooting
 
-### Getting `403 Forbidden` or `Something went wrong while creating a new release` errors when creating, updating or deleting releases and their assets
+### Errors when creating, updating or deleting releases and their assets
 
 If the release is associated with a [protected tag](../protected_tags.md),
-the UI/API request might result in an authorization failure.
+the UI/API request might result in an authorization failures, such as:
+
+- `403 Forbidden`
+- `Something went wrong while creating a new release`
+
 Make sure that the user or a service/bot account is allowed to
 [create the protected tag](../protected_tags.md#configuring-protected-tags) too.
 

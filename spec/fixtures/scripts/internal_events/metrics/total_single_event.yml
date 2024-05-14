@@ -19,8 +19,5 @@ tier:
 - free
 - premium
 - ultimate
-options:
-  events:
-  - internal_events_cli_used
 events:
 - name: internal_events_cli_used

@@ -36,6 +36,22 @@ module InternalEventsCli
         end
       end
 
+      def get_existing_metrics_for_events(events)
+        actions = events.map(&:action).sort
+
+        load_metric_paths.filter_map do |path|
+          details = YAML.safe_load(File.read(path))
+          fields = InternalEventsCli::NEW_METRIC_FIELDS.map(&:to_s)
+
+          metric = Metric.new(**details.slice(*fields))
+
+          metric_actions = metric.events&.map { |event| event['name'] }
+          next unless metric_actions
+
+          metric if (metric_actions & actions).any?
+        end
+      end
+
       private
 
       def get_all_metric_options
@@ -61,20 +77,6 @@ module InternalEventsCli
           Dir["ee/config/metrics/counts_7d/*.yml"],
           Dir["ee/config/metrics/counts_28d/*.yml"]
         ].flatten
-      end
-
-      def get_existing_metrics_for_events(events)
-        actions = events.map(&:action).sort
-
-        load_metric_paths.filter_map do |path|
-          details = YAML.safe_load(File.read(path))
-          fields = InternalEventsCli::NEW_METRIC_FIELDS.map(&:to_s)
-
-          metric = Metric.new(**details.slice(*fields))
-          next unless metric.actions
-
-          metric if (metric.actions & actions).any?
-        end
       end
 
       def format_metric_name_for_events(events)

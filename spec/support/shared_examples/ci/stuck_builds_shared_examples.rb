@@ -28,6 +28,15 @@ RSpec.shared_examples 'job is dropped with failure reason' do |failure_reason|
   end
 end
 
+RSpec.shared_examples 'job is canceled' do
+  it 'changes status' do
+    service.execute
+    job.reload
+
+    expect(job).to be_canceled
+  end
+end
+
 RSpec.shared_examples 'job is unchanged' do
   it 'does not change status' do
     expect { service.execute }.not_to change { job.status }

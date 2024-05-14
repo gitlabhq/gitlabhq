@@ -7,9 +7,10 @@ RSpec.describe 'User views issue designs', :js, feature_category: :design_manage
 
   let_it_be(:user) { create(:user) }
   let_it_be(:guest_user) { create(:user) }
-  let_it_be(:project) { create(:project_empty_repo, :public) }
+  let_it_be(:project) { create(:project_empty_repo, :public, maintainers: user, guests: guest_user) }
   let_it_be(:issue) { create(:issue, project: project) }
   let_it_be(:design) { create(:design, :with_file, issue: issue) }
+  let_it_be(:design_without_notes) { create(:design, :with_file, issue: issue) }
   let_it_be(:note) { create(:diff_note_on_design, noteable: design, author: user) }
 
   def add_diff_note_emoji(diff_note, emoji_name)
@@ -27,11 +28,6 @@ RSpec.describe 'User views issue designs', :js, feature_category: :design_manage
     page.within(first(".image-notes li#note_#{diff_note.id}.design-note")) do
       page.find(".awards button[data-emoji-name='#{emoji_name}']").click
     end
-  end
-
-  before_all do
-    project.add_maintainer(user)
-    project.add_guest(guest_user)
   end
 
   before do
@@ -76,10 +72,39 @@ RSpec.describe 'User views issue designs', :js, feature_category: :design_manage
     expect(page).to have_selector('.js-design-image')
   end
 
+  it 'shows a design without notes' do
+    empty_discussion_message = "Click on the image where you'd like to add a new comment."
+    click_link design_without_notes.filename
+
+    expect(page).not_to have_selector('.image-notes .design-note .note-text')
+    expect(find_by_testid('new-discussion-disclaimer')).to have_content(empty_discussion_message)
+  end
+
   it 'shows a comment within design' do
     click_link design.filename
 
     expect(page.find('.image-notes .design-note .note-text')).to have_content(note.note)
+  end
+
+  it 'allows toggling the replies on unresolved comment' do
+    click_link design.filename
+
+    page.within(find('.image-notes')) do
+      find_by_testid('discussion-reply-tab').click
+      find('.note-textarea').send_keys('Reply to comment')
+
+      find_by_testid('save-comment-button').click
+      wait_for_requests
+
+      expect(page).to have_content('Reply to comment')
+
+      expect(find_by_testid('toggle-comments-wrapper')).to have_content('Collapse replies')
+
+      find_by_testid('toggle-replies-button').click
+
+      expect(page).to have_selector('.gl-avatars-inline .gl-avatar-link')
+      expect(page).to have_content('1 reply')
+    end
   end
 
   it_behaves_like 'design discussion emoji awards'

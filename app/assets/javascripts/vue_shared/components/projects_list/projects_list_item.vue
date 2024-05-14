@@ -11,8 +11,9 @@ import {
 } from '@gitlab/ui';
 import uniqueId from 'lodash/uniqueId';
 
+import ProjectListItemInactiveBadge from 'ee_else_ce/vue_shared/components/projects_list/project_list_item_inactive_badge.vue';
 import { VISIBILITY_TYPE_ICON, PROJECT_VISIBILITY_TYPE } from '~/visibility_level/constants';
-import { ACCESS_LEVEL_LABELS } from '~/access_level/constants';
+import { ACCESS_LEVEL_LABELS, ACCESS_LEVEL_NO_ACCESS_INTEGER } from '~/access_level/constants';
 import { FEATURABLE_ENABLED } from '~/featurable/constants';
 import { __ } from '~/locale';
 import { numberToMetricPrefix } from '~/lib/utils/number_utils';
@@ -22,6 +23,10 @@ import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import ListActions from '~/vue_shared/components/list_actions/list_actions.vue';
 import { ACTION_EDIT, ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
 import DeleteModal from '~/projects/components/shared/delete_modal.vue';
+import {
+  TIMESTAMP_TYPE_CREATED_AT,
+  TIMESTAMP_TYPE_UPDATED_AT,
+} from '~/vue_shared/components/resource_lists/constants';
 
 const MAX_TOPICS_TO_SHOW = 3;
 const MAX_TOPIC_TITLE_LENGTH = 15;
@@ -32,11 +37,11 @@ export default {
     forks: __('Forks'),
     issues: __('Issues'),
     mergeRequests: __('Merge requests'),
-    archived: __('Archived'),
     topics: __('Topics'),
     topicsPopoverTargetText: __('+ %{count} more'),
     moreTopics: __('More topics'),
-    updated: __('Updated'),
+    [TIMESTAMP_TYPE_CREATED_AT]: __('Created'),
+    [TIMESTAMP_TYPE_UPDATED_AT]: __('Updated'),
     actions: __('Actions'),
     showMore: __('Show more'),
     showLess: __('Show less'),
@@ -53,6 +58,11 @@ export default {
     TimeAgoTooltip,
     DeleteModal,
     ListActions,
+    ProjectListItemInactiveBadge,
+    ProjectListItemDelayedDeletionModalFooter: () =>
+      import(
+        'ee_component/vue_shared/components/projects_list/project_list_item_delayed_deletion_modal_footer.vue'
+      ),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -74,8 +84,8 @@ export default {
      *   issuesAccessLevel: string;
      *   forkingAccessLevel: string;
      *   openIssuesCount: number;
-     *   permissions: {
-     *     projectAccess: { accessLevel: 50 };
+     *   maxAccessLevel: {
+     *     integerValue: number;
      *   };
      *   descriptionHtml: string;
      *   updatedAt: string;
@@ -92,6 +102,14 @@ export default {
       type: Boolean,
       required: false,
       default: false,
+    },
+    timestampType: {
+      type: String,
+      required: false,
+      default: TIMESTAMP_TYPE_CREATED_AT,
+      validator(value) {
+        return [TIMESTAMP_TYPE_CREATED_AT, TIMESTAMP_TYPE_UPDATED_AT].includes(value);
+      },
     },
   },
   data() {
@@ -111,13 +129,13 @@ export default {
       return PROJECT_VISIBILITY_TYPE[this.visibility];
     },
     accessLevel() {
-      return this.project.permissions?.projectAccess?.accessLevel;
+      return this.project.accessLevel?.integerValue;
     },
     accessLevelLabel() {
       return ACCESS_LEVEL_LABELS[this.accessLevel];
     },
     shouldShowAccessLevel() {
-      return this.accessLevel !== undefined;
+      return this.accessLevel !== undefined && this.accessLevel !== ACCESS_LEVEL_NO_ACCESS_INTEGER;
     },
     starsHref() {
       return `${this.project.webUrl}/-/starrers`;
@@ -198,6 +216,15 @@ export default {
     hasActionDelete() {
       return this.project.availableActions?.includes(ACTION_DELETE);
     },
+    isActionDeleteLoading() {
+      return this.project.actionLoadingStates[ACTION_DELETE];
+    },
+    timestampText() {
+      return this.$options.i18n[this.timestampType];
+    },
+    timestamp() {
+      return this.project[this.timestampType];
+    },
   },
   methods: {
     topicPath(topic) {
@@ -224,7 +251,7 @@ export default {
 <template>
   <li class="projects-list-item gl-py-5 gl-border-b gl-display-flex">
     <div class="gl-md-display-flex gl-flex-grow-1">
-      <div class="gl-display-flex gl-flex-grow-1">
+      <div class="gl-flex gl-grow gl-items-start">
         <div
           v-if="showProjectIcon"
           class="gl-display-flex gl-align-items-center gl-flex-shrink-0 gl-h-9 gl-mr-3"
@@ -251,9 +278,13 @@ export default {
                   />
                 </div>
                 <div class="gl-px-2">
-                  <gl-badge v-if="shouldShowAccessLevel" size="sm" class="gl-display-block">{{
-                    accessLevelLabel
-                  }}</gl-badge>
+                  <gl-badge
+                    v-if="shouldShowAccessLevel"
+                    size="sm"
+                    class="gl-display-block"
+                    data-testid="access-level-badge"
+                    >{{ accessLevelLabel }}</gl-badge
+                  >
                 </div>
               </div>
             </div>
@@ -321,13 +352,11 @@ export default {
         </gl-avatar-labeled>
       </div>
       <div
-        class="gl-md-display-flex gl-flex-direction-column gl-align-items-flex-end gl-flex-shrink-0 gl-mt-3 gl-md-pl-0 gl-md-mt-0"
+        class="md:gl-flex gl-flex-col gl-items-end gl-shrink-0 gl-mt-3 md:gl-pl-0 md:gl-mt-0"
         :class="showProjectIcon ? 'gl-pl-12' : 'gl-pl-10'"
       >
-        <div class="gl-display-flex gl-align-items-center gl-gap-x-3 gl-md-h-9">
-          <gl-badge v-if="project.archived" variant="warning">{{
-            $options.i18n.archived
-          }}</gl-badge>
+        <div class="gl-flex gl-items-center gl-gap-x-3 md:gl-h-9">
+          <project-list-item-inactive-badge :project="project" />
           <gl-link
             v-gl-tooltip="$options.i18n.stars"
             :href="starsHref"
@@ -369,11 +398,11 @@ export default {
           </gl-link>
         </div>
         <div
-          v-if="project.updatedAt"
-          class="gl-font-sm gl-white-space-nowrap gl-text-secondary gl-mt-3 gl-md-mt-0"
+          v-if="timestamp"
+          class="gl-text-sm gl-whitespace-nowrap gl-text-secondary gl-mt-3 md:-gl-mt-2"
         >
-          <span>{{ $options.i18n.updated }}</span>
-          <time-ago-tooltip :time="project.updatedAt" />
+          <span>{{ timestampText }}</span>
+          <time-ago-tooltip :time="timestamp" />
         </div>
       </div>
     </div>
@@ -390,11 +419,16 @@ export default {
       v-model="isDeleteModalVisible"
       :confirm-phrase="project.name"
       :is-fork="project.isForked"
+      :confirm-loading="isActionDeleteLoading"
       :merge-requests-count="openMergeRequestsCount"
       :issues-count="openIssuesCount"
       :forks-count="forksCount"
       :stars-count="starCount"
       @primary="$emit('delete', project)"
-    />
+    >
+      <template #modal-footer
+        ><project-list-item-delayed-deletion-modal-footer :project="project"
+      /></template>
+    </delete-modal>
   </li>
 </template>

@@ -7,20 +7,20 @@ module Mutations
         graphql_name 'TimelineEventUpdate'
 
         argument :id, ::Types::GlobalIDType[::IncidentManagement::TimelineEvent],
-                 required: true,
-                 description: 'ID of the timeline event to update.'
+          required: true,
+          description: 'ID of the timeline event to update.'
 
         argument :note, GraphQL::Types::String,
-                 required: false,
-                 description: 'Text note of the timeline event.'
+          required: false,
+          description: 'Text note of the timeline event.'
 
         argument :occurred_at, Types::TimeType,
-                 required: false,
-                 description: 'Timestamp when the event occurred.'
+          required: false,
+          description: 'Timestamp when the event occurred.'
 
         argument :timeline_event_tag_names, [GraphQL::Types::String],
-                 required: false,
-                 description: copy_field_description(Types::IncidentManagement::TimelineEventType, :timeline_event_tags)
+          required: false,
+          description: copy_field_description(Types::IncidentManagement::TimelineEventType, :timeline_event_tags)
 
         def resolve(id:, **args)
           timeline_event = authorized_find!(id: id)

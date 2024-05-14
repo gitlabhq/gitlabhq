@@ -72,6 +72,7 @@ models for different features.
 ### Schedule a repository storage move via the API
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 graph TD
   A[<code>POST /api/:version/project_repository_storage_moves</code>] --> C
   B[<code>POST /api/:version/projects/:id/repository_storage_moves</code>] --> D
@@ -85,6 +86,7 @@ graph TD
 ### Moving the storage after being scheduled
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 graph TD
   A[Repository update worker scheduled] --> B{State is scheduled?}
   B -->|Yes| C[Set state to started]

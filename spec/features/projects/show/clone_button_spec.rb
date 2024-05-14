@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Show > Clone button', feature_category: :groups_and_projects do
+RSpec.describe 'Projects > Show > Code button', feature_category: :groups_and_projects do
   let_it_be(:admin) { create(:admin) }
   let_it_be(:guest) { create(:user) }
   let_it_be(:project) { create(:project, :private, :in_group, :repository) }
@@ -19,10 +19,10 @@ RSpec.describe 'Projects > Show > Clone button', feature_category: :groups_and_p
         expect(page).to have_content project.name
       end
 
-      it 'sees clone button', :js do
-        find_by_testid('clone-dropdown').click
-        expect(page).to have_content _('Clone')
-        expect(page).to be_axe_clean.within('.clone-options-dropdown')
+      it 'sees code button', :js do
+        find_by_testid('code-dropdown').click
+        expect(page).to have_content _('Code')
+        expect(page).to be_axe_clean.within('[data-testid="code-dropdown"]') # rubocop: disable Capybara/TestidFinders -- within_testid does not work here
       end
     end
 
@@ -37,8 +37,8 @@ RSpec.describe 'Projects > Show > Clone button', feature_category: :groups_and_p
         expect(page).to have_content project.name
       end
 
-      it 'does not see clone button' do
-        expect(page).not_to have_content _('Clone')
+      it 'does not see code button' do
+        expect(page).not_to have_content _('Code')
       end
     end
   end

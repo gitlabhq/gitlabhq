@@ -9,7 +9,7 @@ description: 'Cells: 1.0'
 This document describes a technical proposal for a Cells 1.0.
 
 Cells 1.0 is a first iteration of the cellular architecture. The Cells 1.0 target is to deliver a solution
-for new enterprise customers using the SaaS GitLab.com offering.
+for internal customers only, and be a foundational step for next iterations, to be able to deliver something with a smaller scope.
 
 Cells 1.0 is a complete working feature that is meant to be deployed to GitLab.com SaaS.
 
@@ -21,10 +21,10 @@ contribution model in a cellular architecture.
 
 ## Preamble
 
-A Cells 1.0 is meant to target enterprise customers that have the following expectations:
+A Cells 1.0 is meant to target internal customers that have the following expectations:
 
 1. They want to use our multi-tenant SaaS solution (GitLab.com) to serve their Organization.
-1. They accept that they may receive updates later than the rest of GitLab.com.
+1. They accept that they may receive updates later than the rest of GitLab.com. Note that when GitLab does a patch release, the Delivery team makes sure that production (every cell) runs the patch release version before making the release public. This does not mean that outside of a patch release, all the cells run the same version of GitLab. See [this private discussion](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/threat-models/-/issues/45#note_1794904358) for more information.
 1. They want to use an environment with higher degree of isolation to rest of the system.
 1. They want to control all users that contribute to their Organization.
 1. Their groups and projects are meant to be private.
@@ -47,7 +47,7 @@ This proposal is designed to cut as much scope as possible but it must not make 
 
 1. Users can interact with many Organizations.
 1. Cells can be re-balanced by moving Organizations between Cells.
-1. The routing solution can dynamically route customers.
+1. The routing solution can dynamically route requests.
 
 ## Proposal
 
@@ -55,13 +55,13 @@ The following statements describe a high-level proposal to achieve a Cells 1.0:
 
 1. Terms used:
 
-    1. Primary Cell: The current GitLab.com deployment. A special purpose Cell that serves
-       as a cluster-wide service in this architecture.
-    1. Secondary Cells: A Cell that connects to the Primary Cell to ensure cluster-wide uniqueness.
+   1. Primary Cell: The current GitLab.com deployment. A special purpose Cell that serves
+      as a cluster-wide service in this architecture.
+   1. Secondary Cells: A Cell that connects to the Primary Cell to ensure cluster-wide uniqueness.
 
 1. Organization properties:
 
-   1. We allow customers to create a new Organization on a Secondary Cell.
+   1. We allow users to create a new Organization on a Secondary Cell.
       The chosen Cell would be controlled by GitLab Administrators.
    1. The Organization is private, and cannot be made public.
    1. Groups and projects can be made private, but not public.
@@ -237,11 +237,11 @@ The GitLab configuration in `gitlab.yml` is extended with the following paramete
 
 ```yaml
 production:
-    gitlab:
-        primary_cell:
-            url: https://cell1.gitlab.com
-            token: abcdef
-        secrets_prefix: kPptz
+  gitlab:
+    primary_cell:
+      url: https://cell1.gitlab.com
+      token: abcdef
+    secrets_prefix: kPptz
 ```
 
 1. `primary_cell:` configured on Secondary Cells, and indicates the URL endpoint to access the Primary Cell API.
@@ -445,7 +445,23 @@ $$;
 - We are severely limited by how many tables can be made `main_clusterwide`. Exposing many tables is a significant amount of additional code to allow cross-Cell interaction.
   - We require all tables to be classified. We want to ensure data consistency across the cluster if records are replicated.
 
-## Requirements
+## Features on GitLab.com that are not supported on Cells
+
+For the initial deployment of Cells 1.0, we are cutting scope on some features to get something deployed.
+This doesn't mean that Cells 1.0 is not going to support these in the future, but our application/infrastructure doesn't support them yet.
+
+The table below is a comparison between the existing GitLab.com features, and not self-managed/Dedicated.
+
+| No Initial Support                                           | Reasoning                                                                                                                                                                                                                                                                                    |
+| ------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| GitLab Pages                                                 | [Complexity](#questions).                                                                                                                                                                                                                                                                    |
+| CI Catalog                                                   | CI Catalog depends on public projects, organizations in Cells 1.0 can't see public projects.                                                                                                                                                                                                 |
+| Organization Switching                                       | A user belongs to a single organization.                                                                                                                                                                                                                                                     |
+| Shared user accounts across Cells                            | Users will need to have new user accounts on each Cell for now                                                                                                                                                                                                                               |
+| GitLab Duo Pro license works across all projects on instance | GitLab Duo Pro licenses, once granted, [should allow users to use GitLab Duo Pro on all projects on the instance](https://gitlab.com/gitlab-org/gitlab/-/issues/441244). With Cells 1.0, this will only work within their own cell.                                                          |
+| User removal                                                 | Users can only be part of one Organization. A removal would equal a deletion in this case, so only user deletions will be offered in Organizations on Cells 1.0. Upon removal, there would be no way for a User to discover another Organization to join, as they are private for Cells 1.0. |
+| Windows and Mac OS Runners    |  Mac and Windows runners are still in beta and there are some more complex technical considerations related to cost. See the discussion: [#434982 (comment 1789275416)](https://gitlab.com/gitlab-org/gitlab/-/issues/434982#note_1789275416) on sharing resources. |
+| Multiple Sizes for Linux Runners | We will only support [small linux runners on Cells 1.0](https://gitlab.com/gitlab-org/gitlab/-/issues/434982#note_1806447839). |
 
 ## Questions
 
@@ -471,12 +487,12 @@ $$;
 1. Is Container Registry cluster-wide or cell-local?
 
    The Container Registry can be run Cell-local, and if we follow the secret-based routing, it can follow the same model for filtering.
-We would have to ensure that the JWT token signed by GitLab is in a form that can be statically routed by the routing layer.
+   We would have to ensure that the JWT token signed by GitLab is in a form that can be statically routed by the routing layer.
 
 1. Are GitLab Pages cluster-wide or Cell-local?
 
-   If GitLab Pages are not essential we would not support them in for Cells 1.0.
-   This is to be defined.
+   GitLab Pages was determined to be non-essential for Cells 1.0, so we would not support them for Cells 1.0.
+   The discussion about this can be found [here](https://gitlab.com/gitlab-org/gitlab/-/issues/434972#note_1763737452).
 
    If GitLab Pages are meant to support the `.gitlab.io` domain:
 
@@ -536,8 +552,8 @@ We would have to ensure that the JWT token signed by GitLab is in a form that ca
    The Primary Cell in fact serves as a cluster-wide service. Depending on our intent it could be named the following:
 
    - Primary Cell: To clearly state that the Primary Cell has a special purpose today, but we rename it later.
-   - Cluster-wide Data Provider: This is the current name used in the [Deployment Architecture](../deployment-architecture.md).
-   - Global Service: Alternative name to Cluster-wide Data Provider, indicating that the Primary Cell would implement a Global Service today.
+   - Cluster-wide Data Provider
+   - Topology Service: Alternative name to Cluster-wide Data Provider, indicating that the Primary Cell would implement a Topology Service today.
 
 1. How are secrets are generated?
 
@@ -573,9 +589,10 @@ We would have to ensure that the JWT token signed by GitLab is in a form that ca
 
 1. What about data migration between Cells?
 
-   Cells 1.0 is targeted towards **new** customers. Migrating existing customers is a big undertaking on its own:
+   Cells 1.0 is targeted towards **internal** customers. Migrating existing customers, and onboarding new customers is a big undertaking on its own:
 
    - Customers to be migrated need to opt into the Organization model first.
+   - New Customers are not willing to have [missing features](#features-on-gitlabcom-that-are-not-supported-on-cells)
    - We expect most of the isolation features to work.
    - We have to transparently move data from the source Cell to the target Cell. Initially we would
      follow a model of Cell split. We would clone the Cell and mark where the given record is located.
@@ -590,7 +607,7 @@ We would have to ensure that the JWT token signed by GitLab is in a form that ca
 
 1. How would we synchronize `users` across Cells?
 
-   We build out-of-bounds replication of tables marked as `main_clusterwide`. We have yet to define
+   We build out-of-band replication of tables marked as `main_clusterwide`. We have yet to define
    if this would be better to do with an `API` that is part of Rails, or using the Dedicated service.
    However, using Rails would likely be the simplest and most reliable solution, because the
    application knows the expected data structure.
@@ -647,12 +664,12 @@ We would have to ensure that the JWT token signed by GitLab is in a form that ca
    - Private organizations on Secondary Cells do not require any data sharing
      or isolation as this is achieved by the current system.
 
-       - We don't have to do extensive work to isolate organizations yet.
+     - We don't have to do extensive work to isolate organizations yet.
 
    - Routing is simpler since we anticipate all requests to be authenticated,
      making them easier to route.
 
-      - We don't have to "fix" routes to make them sharded yet.
+     - We don't have to "fix" routes to make them sharded yet.
 
 1. Why not to prefix all endpoints with the `relative_path` for all organizations?
 
@@ -660,7 +677,7 @@ We would have to ensure that the JWT token signed by GitLab is in a form that ca
 
    - Migration to use organizations is seamless.
    - We do not want to break existing user workflows if user migrates their groups to organization,
-    or when we migrate the organization to another Cell.
+     or when we migrate the organization to another Cell.
    - For the following reason this is why we don't want to force particular paths, or use of subdomains.
    - If we choose the path to force to use `relative_path` it would break all cell-wide endpoints
      This seems to be longer and more complex that approaching this by making existing to be shareded.
@@ -687,3 +704,27 @@ We would have to ensure that the JWT token signed by GitLab is in a form that ca
    - Geo is per-Cell.
    - Routing Service can direct to Geo replica of the Cell (if it knows it).
    - We might have many routing services in many regions.
+
+1. Are cluster-wide tables available to all cells?
+
+   No, cluster-wide tables are stored in a Cell-local database. However, we will
+   determine synchronization of cluster-wide tables on a case by case basis.
+
+1. How can I adapt a feature to be compatible with Cells?
+
+   Many groups have questions about how to adapt a feature for Cell.
+   This especially applies if a feature is available at the instance level, or
+   can be used across groups.
+
+   Here are some strategies for evolving a thing for Cells 1.0:
+
+   - Leave the feature unchanged.
+     For example, admins / users will have to create an account per cell.
+   - Disable the feature for Cells 1.0.
+   - For critical cases, move the feature to cluster-wide level.
+     For example, users can sign in at a single location, `https://gitlab.com/users/sign_in`.
+
+   In many cases, it is not yet necessary to re-implement an instance-wide feature
+   to work on a cluster-wide level. This is because for Cells 1.0, the net
+   effect of only allowing private visibility and new users mean that we can
+   defer this until Cells 1.5.

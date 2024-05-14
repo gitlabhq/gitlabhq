@@ -48,9 +48,7 @@ class Projects::ApplicationController < ApplicationController
   end
 
   def authorize_action!(action)
-    unless can?(current_user, action, project)
-      access_denied!
-    end
+    access_denied! unless can?(current_user, action, project)
   end
 
   def check_project_feature_available!(feature)
@@ -93,20 +91,27 @@ class Projects::ApplicationController < ApplicationController
   end
 
   def check_issues_available!
-    return render_404 unless @project.feature_available?(:issues, current_user)
+    render_404 unless @project.feature_available?(:issues, current_user)
   end
 
   def set_is_ambiguous_ref
     return @is_ambiguous_ref if defined? @is_ambiguous_ref
 
-    @is_ambiguous_ref = if Feature.enabled?(:ambiguous_ref_modal, @project)
-                          ExtractsRef::RequestedRef
+    @is_ambiguous_ref = ExtractsRef::RequestedRef
                                                 .new(@project.repository, ref_type: ref_type, ref: @ref)
                                                 .find
                                                 .fetch(:ambiguous, false)
-                        else
-                          false
-                        end
+  end
+
+  def handle_update_result(result)
+    if result[:status] == :success
+      flash[:notice] = format(_("Project '%{project_name}' was successfully updated."), project_name: @project.name)
+      redirect_to(edit_project_path(@project, anchor: 'js-general-project-settings'))
+    else
+      flash[:alert] = result[:message]
+      @project.reset
+      render 'edit'
+    end
   end
 end
 

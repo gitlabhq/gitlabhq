@@ -8,7 +8,6 @@ class Deployment < ApplicationRecord
   include Importable
   include Gitlab::Utils::StrongMemoize
   include FastDestroyAll
-  include IgnorableColumns
   include EachBatch
 
   StatusUpdateError = Class.new(StandardError)
@@ -16,16 +15,13 @@ class Deployment < ApplicationRecord
 
   ARCHIVABLE_OFFSET = 50_000
 
-  ignore_column :cluster_id, remove_with: '16.8', remove_after: '2023-12-21'
-
   belongs_to :project, optional: false
   belongs_to :environment, optional: false
   belongs_to :user
-  belongs_to :deployable, polymorphic: true, optional: true, inverse_of: :deployment # rubocop:disable Cop/PolymorphicAssociations
-  has_many :deployment_merge_requests
+  belongs_to :deployable, polymorphic: true, optional: true, inverse_of: :deployment # rubocop:disable Cop/PolymorphicAssociations -- It's necessary
 
-  has_many :merge_requests,
-    through: :deployment_merge_requests
+  has_many :deployment_merge_requests
+  has_many :merge_requests, through: :deployment_merge_requests
 
   has_one :deployment_cluster
 
@@ -40,25 +36,29 @@ class Deployment < ApplicationRecord
   delegate :kubernetes_namespace, to: :deployment_cluster, allow_nil: true
   delegate :cluster, to: :deployment_cluster, allow_nil: true
 
-  scope :for_iid, -> (project, iid) { where(project: project, iid: iid) }
-  scope :for_environment, -> (environment) { where(environment_id: environment) }
-  scope :for_environment_name, -> (project, name) do
+  scope :for_iid, ->(project, iid) { where(project: project, iid: iid) }
+  scope :for_environment, ->(environment) { where(environment_id: environment) }
+  scope :for_environment_name, ->(project, name) do
     where('deployments.environment_id = (?)',
       Environment.select(:id).where(project: project, name: name).limit(1))
   end
 
-  scope :for_status, -> (status) { where(status: status) }
-  scope :for_project, -> (project_id) { where(project_id: project_id) }
-  scope :for_projects, -> (projects) { where(project: projects) }
+  scope :for_status, ->(status) { where(status: status) }
+  scope :for_project, ->(project_id) { where(project_id: project_id) }
+  scope :for_projects, ->(projects) { where(project: projects) }
 
   scope :visible, -> { where(status: VISIBLE_STATUSES) }
   scope :finished, -> { where(status: FINISHED_STATUSES) }
   scope :stoppable, -> { where.not(on_stop: nil).where.not(deployable_id: nil).success }
   scope :active, -> { where(status: %i[created running]) }
   scope :upcoming, -> { where(status: %i[blocked running]) }
-  scope :older_than, -> (deployment) { where('deployments.id < ?', deployment.id) }
-  scope :with_api_entity_associations, -> { preload({ deployable: { runner: [], tags: [], user: [], job_artifacts_archive: [] } }) }
-  scope :with_environment_page_associations, -> { preload(project: [], environment: [], deployable: [:user, :metadata, :project, pipeline: [:manual_actions]]) }
+  scope :older_than, ->(deployment) { where('deployments.id < ?', deployment.id) }
+  scope :with_api_entity_associations, -> do
+    preload({ deployable: { runner: [], tags: [], user: [], job_artifacts_archive: [] } })
+  end
+  scope :with_environment_page_associations, -> do
+    preload(project: [], environment: [], deployable: [:user, :metadata, :project, { pipeline: [:manual_actions] }])
+  end
 
   scope :finished_after, ->(date) { where('finished_at >= ?', date) }
   scope :finished_before, ->(date) { where('finished_at < ?', date) }
@@ -170,22 +170,8 @@ class Deployment < ApplicationRecord
   end
 
   def self.last_for_environment(environment)
-    ids = self
-      .for_environment(environment)
-      .select('MAX(id) AS id')
-      .group(:environment_id)
-      .map(&:id)
+    ids = for_environment(environment).select('MAX(id) AS id').group(:environment_id).map(&:id)
     find(ids)
-  end
-
-  # This method returns the deployment records of the last deployment pipeline, that successfully executed for the given environment.
-  # e.g.
-  # A pipeline contains
-  #   - deploy job A => production environment
-  #   - deploy job B => production environment
-  # In this case, `last_deployment_group_for_environment` returns both deployments.
-  def self.last_deployment_group_for_environment(env)
-    batch_load_deployments_for_environment(env, associated_jobs: :latest_successful_jobs)
   end
 
   # This method returns the *finished deployments* of the *last finished pipeline* for a given environment
@@ -195,7 +181,28 @@ class Deployment < ApplicationRecord
   #   - deploy job C (environment: production, status: canceled)
   # In the above case, `last_finished_deployment_group_for_environment` returns all deployments
   def self.last_finished_deployment_group_for_environment(env)
-    batch_load_deployments_for_environment(env, associated_jobs: :latest_finished_jobs)
+    return none unless env.latest_finished_jobs.present?
+
+    # this batch loads a collection of deployments associated to `latest_finished_jobs` per `environment`
+    BatchLoader.for(env).batch(key: :latest_finished_jobs, default_value: none) do |environments, loader|
+      job_ids = []
+      environments_hash = {}
+
+      # Preloading the environment's `latest_finished_jobs` avoids N+1 queries.
+      environments.each do |environment|
+        environments_hash[environment.id] = environment
+
+        job_ids << environment.latest_finished_jobs.map(&:id)
+      end
+
+      Deployment
+        .where(deployable_type: 'CommitStatus', deployable_id: job_ids.flatten)
+        .preload(last_deployment_group_associations)
+        .group_by(&:environment_id)
+        .each do |env_id, deployment_group|
+          loader.call(environments_hash[env_id], deployment_group)
+        end
+    end
   end
 
   def self.find_successful_deployment!(iid)
@@ -232,6 +239,8 @@ class Deployment < ApplicationRecord
 
       by_project.each do |project, ref_paths|
         project.repository.delete_refs(*ref_paths.flatten)
+      rescue Gitlab::Git::Repository::NoRepository
+        next
       end
     end
 
@@ -279,10 +288,9 @@ class Deployment < ApplicationRecord
   end
 
   def playable_job
-    strong_memoize(:playable_job) do
-      deployable.try(:playable?) ? deployable : nil
-    end
+    deployable.try(:playable?) ? deployable : nil
   end
+  strong_memoize_attr :playable_job
 
   def includes_commit?(ancestor_sha)
     return false unless sha
@@ -294,10 +302,10 @@ class Deployment < ApplicationRecord
     last_deployment_id = environment&.last_deployment&.id
 
     return false unless last_deployment_id.present?
-    return false if self.id == last_deployment_id
-    return false if self.sha == environment.last_deployment&.sha
+    return false if id == last_deployment_id
+    return false if sha == environment.last_deployment&.sha
 
-    self.id < last_deployment_id
+    id < last_deployment_id
   end
 
   def update_merge_request_metrics!
@@ -305,7 +313,7 @@ class Deployment < ApplicationRecord
 
     merge_requests = project.merge_requests
                      .joins(:metrics)
-                     .where(target_branch: self.ref, merge_request_metrics: { first_deployed_to_production_at: nil })
+                     .where(target_branch: ref, merge_request_metrics: { first_deployed_to_production_at: nil })
                      .where("merge_request_metrics.merged_at <= ?", finished_at)
 
     if previous_deployment
@@ -330,7 +338,7 @@ class Deployment < ApplicationRecord
     return unless on_stop.present?
     return unless manual_actions
 
-    @stop_action ||= manual_actions.find { |action| action.name == self.on_stop }
+    @stop_action ||= manual_actions.find { |action| action.name == on_stop }
   end
 
   def deployed_at
@@ -387,7 +395,7 @@ class Deployment < ApplicationRecord
   rescue StandardError => e
     error = StatusUpdateError.new(e.message)
     error.set_backtrace(caller)
-    Gitlab::ErrorTracking.track_exception(error, deployment_id: self.id)
+    Gitlab::ErrorTracking.track_exception(error, deployment_id: id)
     false
   end
 
@@ -396,13 +404,13 @@ class Deployment < ApplicationRecord
     job_status = 'blocked' if job_status == 'manual'
 
     return false unless ::Deployment.statuses.include?(job_status)
-    return false if job_status == self.status
+    return false if job_status == status
 
     update_status!(job_status)
   rescue StandardError => e
     error = StatusSyncError.new(e.message)
     error.set_backtrace(caller)
-    Gitlab::ErrorTracking.track_exception(error, deployment_id: self.id, job_id: job.id)
+    Gitlab::ErrorTracking.track_exception(error, deployment_id: id, job_id: job.id)
     false
   end
 
@@ -453,6 +461,8 @@ class Deployment < ApplicationRecord
       succeed!
     when 'failed'
       drop!
+    when 'canceling'
+      # no-op
     when 'canceled'
       cancel!
     when 'skipped'
@@ -470,48 +480,6 @@ class Deployment < ApplicationRecord
     perform_params[:status_changed_at] = perform_params[:status_changed_at].to_s
     perform_params.stringify_keys!
   end
-
-  # this method batch loads a collection of deployments given:
-  #   - an `environment`
-  #   - the environment's `associated_jobs`: jobs within a specific scope, e.g.: `latest_successful_jobs`
-  #     the `associated_jobs` must be a defined method in the environment model
-  #
-  # this is used by `last_deployment_group_for_environment` and `last_finished_deployment_group_for_environment`,
-  #   both methods implement similar batch loading logic, extracted into the below method
-  #   preloading the environment's `associated_jobs` avoids N+1 queries.
-  # the `associated_jobs` is a symbol which corresponds to a collection of jobs associated to an Environment record,
-  #   i.e.: `Environment#latest_successful_jobs` and `Environment#latest_finished_jobs`
-  #   the method will be called on an environment object using `public_send`
-  #
-  # TODO: inline this method to the last_finished_deployment_group_for_environment
-  #       when environment_stop_actions_include_all_finished_deployments FF is removed
-  #       - https://gitlab.com/gitlab-org/gitlab/-/issues/435132
-  def self.batch_load_deployments_for_environment(env, associated_jobs:)
-    # TODO: replace public_send when inlining method https://gitlab.com/gitlab-org/gitlab/-/issues/435132
-    return self.none unless env.public_send(associated_jobs).present? # rubocop: disable GitlabSecurity/PublicSend -- see comment above for justification
-
-    BatchLoader.for(env).batch(key: associated_jobs, default_value: self.none) do |environments, loader|
-      job_ids = []
-      environments_hash = {}
-
-      environments.each do |environment|
-        environments_hash[environment.id] = environment
-
-        # refer comment note above, if not preloaded this can lead to N+1.
-        # TODO: replace public_send when inlining method https://gitlab.com/gitlab-org/gitlab/-/issues/435132
-        job_ids << environment.public_send(associated_jobs).map(&:id) # rubocop: disable GitlabSecurity/PublicSend -- see comment above for justification
-      end
-
-      Deployment
-        .where(deployable_type: 'CommitStatus', deployable_id: job_ids.flatten)
-        .preload(last_deployment_group_associations)
-        .group_by { |deployment| deployment.environment_id }
-        .each do |env_id, deployment_group|
-          loader.call(environments_hash[env_id], deployment_group)
-        end
-    end
-  end
-  private_class_method :batch_load_deployments_for_environment
 
   def self.last_deployment_group_associations
     {

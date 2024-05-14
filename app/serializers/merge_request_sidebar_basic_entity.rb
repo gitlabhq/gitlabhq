@@ -11,3 +11,5 @@ class MergeRequestSidebarBasicEntity < IssuableSidebarBasicEntity
     end
   end
 end
+
+MergeRequestSidebarBasicEntity.prepend_mod_with('MergeRequestSidebarBasicEntity')

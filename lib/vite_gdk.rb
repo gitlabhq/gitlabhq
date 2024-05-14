@@ -14,9 +14,24 @@ module ViteGdk
 
     return unless enabled
 
+    # From https://vitejs.dev/config/server-options
+    host = config['host'] || 'localhost'
+    port = Integer(config['port'] || 3808)
+    hmr_config = config['hmr'] || {}
+    hmr_host = hmr_config['host'] || host
+    hmr_port = hmr_config['clientPort'] || hmr_config['port'] || port
+    hmr_ws_protocol = hmr_config['protocol'] || 'ws'
+    hmr_http_protocol = hmr_ws_protocol == 'wss' ? 'https' : 'http'
+    ViteRuby.env['VITE_HMR_HOST'] = hmr_host
+    # If the Websocket connection to the HMR host is not up, Vite will attempt to
+    # ping the HMR host via HTTP or HTTPS:
+    # https://github.com/vitejs/vite/blob/899d9b1d272b7057aafc6fa01570d40f288a473b/packages/vite/src/client/client.ts#L320-L327
+    ViteRuby.env['VITE_HMR_HTTP_URL'] = "#{hmr_http_protocol}://#{hmr_host}:#{hmr_port}"
+    ViteRuby.env['VITE_HMR_WS_URL'] = "#{hmr_ws_protocol}://#{hmr_host}:#{hmr_port}"
+
     ViteRuby.configure(
-      host: config.fetch('host', 'localhost'),
-      port: Integer(config.fetch('port', 3038))
+      host: host,
+      port: port
     )
   end
 

@@ -8,12 +8,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/351192) from `pipelines for merged results` to `merged results pipelines` in GitLab 14.8.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91849) in GitLab 15.1, merged results pipelines also run on [Draft merge requests](../../user/project/merge_requests/drafts.md).
 
-A *merged results pipeline* is a type of [merge request pipeline](merge_request_pipelines.md). It is a pipeline that runs against the results of the source and target branches merged together.
+A merged results pipeline runs on the result of the source and target branches merged together.
+It is a type of [merge request pipeline](merge_request_pipelines.md).
 
 GitLab creates an internal commit with the merged results, so the pipeline can run
 against it. This commit does not exist in either branch,
@@ -26,13 +27,13 @@ Any time you want to be sure the merged results are accurate, you should re-run 
 
 Merged results pipelines can't run when the target branch has changes that conflict with the changes in the source branch.
 In these cases, the pipeline runs as a [merge request pipeline](merge_request_pipelines.md)
-and [is labeled as `merge request`](merge_request_pipelines.md#types-of-merge-request-pipelines).
+and is labeled as `merge request`.
 
 ## Prerequisites
 
 To use merged results pipelines:
 
-- Your project's [`.gitlab-ci.yml` file](../index.md#the-gitlab-ciyml-file) must be configured to
+- Your project's `.gitlab-ci.yml` file must be configured to
   [run jobs in merge request pipelines](merge_request_pipelines.md#prerequisites).
 - Your repository must be a GitLab repository, not an
   [external repository](../ci_cd_for_external_repos/index.md).
@@ -66,6 +67,6 @@ on your GitLab instance.
 ### Successful merged results pipeline overrides a failed branch pipeline
 
 A failed branch pipeline is sometimes ignored when the
-[**Pipelines must succeed** setting](../../user/project/merge_requests/merge_when_pipeline_succeeds.md#require-a-successful-pipeline-for-merge)
+[**Pipelines must succeed** setting](../../user/project/merge_requests/auto_merge.md#require-a-successful-pipeline-for-merge)
 is activated.
 [Issue 385841](https://gitlab.com/gitlab-org/gitlab/-/issues/385841) is open to track this.

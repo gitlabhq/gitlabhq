@@ -33,13 +33,17 @@ exports[`NpmInstallation renders all the messages 1`] = `
     trackingaction="copy_npm_setup_command"
     trackinglabel="code_instruction"
   />
-  You may also need to setup authentication using an auth token.
-  <gl-link-stub
-    href="/help/user/packages/npm_registry/index"
-    target="_blank"
+  <span
+    class="gl-text-secondary"
   >
-    See the documentation
-  </gl-link-stub>
-  to find out more.
+    You may also need to setup authentication using an auth token.
+    <gl-link-stub
+      href="/help/user/packages/npm_registry/index"
+      target="_blank"
+    >
+      See the documentation
+    </gl-link-stub>
+    to find out more.
+  </span>
 </div>
 `;

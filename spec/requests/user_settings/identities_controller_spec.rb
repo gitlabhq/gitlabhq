@@ -19,7 +19,7 @@ RSpec.describe UserSettings::IdentitiesController, feature_category: :system_acc
 
     context 'when the state matches' do
       before do
-        stub_session(identity_link_state: state)
+        stub_session(session_data: { identity_link_state: state })
       end
 
       it 'returns 200 OK' do

@@ -179,7 +179,8 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
         pinned_items: %w[foo bar],
         update_pins_url: pins_path,
         shortcut_links: global_shortcut_links,
-        track_visits_path: track_namespace_visits_path
+        track_visits_path: track_namespace_visits_path,
+        work_items: { full_path: group.full_path }
       })
     end
 
@@ -208,7 +209,7 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
             },
             {
               title: _('Projects'),
-              href: explore_projects_path,
+              href: starred_explore_projects_path,
               css_class: 'dashboard-shortcuts-projects'
             }
           ]
@@ -281,6 +282,16 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
           ]
         }
       ])
+    end
+
+    context 'when merge_request_dashboard feature flag is enabled' do
+      before do
+        stub_feature_flags(merge_request_dashboard: true)
+      end
+
+      it 'returns nil for merge_request_menu' do
+        expect(subject[:merge_request_menu]).to be_nil
+      end
     end
 
     it 'returns "Create new" menu groups without headers', :use_clean_rails_memory_store_caching do
@@ -628,6 +639,15 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
           project, project.default_branch, format: :json),
         project_blob_url: project_blob_path(
           project, project.default_branch)
+      )
+
+      current_ref = 'test'
+
+      expect(helper.command_palette_data(project: project, current_ref: current_ref)).to eq(
+        project_files_url: project_files_path(
+          project, current_ref, format: :json),
+        project_blob_url: project_blob_path(
+          project, current_ref)
       )
     end
 

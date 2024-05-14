@@ -1,10 +1,11 @@
-query projectWorkItemTypes($fullPath: ID!) {
+#import "ee_else_ce/work_items/graphql/work_item_type.fragment.graphql"
+
+query projectWorkItemTypes($fullPath: ID!, $name: IssueType) {
   workspace: project(fullPath: $fullPath) {
     id
-    workItemTypes {
+    workItemTypes(name: $name) {
       nodes {
-        id
-        name
+        ...WorkItemTypeFragment
       }
     }
   }

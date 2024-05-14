@@ -1,10 +1,25 @@
 ---
 table_name: audit_events_streaming_event_type_filters
 classes:
-  - AuditEvents::Streaming::EventTypeFilter
+- AuditEvents::Streaming::EventTypeFilter
 feature_categories:
-  - audit_events
+- audit_events
 description: Represents a event type filter for audit event streaming
 introduced_by_url:
 milestone: '15.6'
-gitlab_schema: gitlab_main
+gitlab_schema: gitlab_main_cell
+allow_cross_joins:
+- gitlab_main_clusterwide
+allow_cross_transactions:
+- gitlab_main_clusterwide
+allow_cross_foreign_keys:
+- gitlab_main_clusterwide
+desired_sharding_key:
+  group_id:
+    references: namespaces
+    backfill_via:
+      parent:
+        foreign_key: external_audit_event_destination_id
+        table: audit_events_external_audit_event_destinations
+        sharding_key: namespace_id
+        belongs_to: external_audit_event_destination

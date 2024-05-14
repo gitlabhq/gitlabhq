@@ -1,0 +1,18 @@
+---
+table_name: import_source_users
+classes:
+- Import::SourceUser
+feature_categories:
+- importers
+description: Used to map imported user contributions to internal placeholder users or real users
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147488
+milestone: '17.0'
+gitlab_schema: gitlab_main_cell
+allow_cross_joins:
+- gitlab_main_clusterwide
+allow_cross_transactions:
+- gitlab_main_clusterwide
+allow_cross_foreign_keys:
+- gitlab_main_clusterwide
+sharding_key:
+  namespace_id: namespaces

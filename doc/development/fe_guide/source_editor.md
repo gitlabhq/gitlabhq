@@ -150,6 +150,7 @@ the size of Source Editor's core at bay by importing dependencies only when need
 Structurally, the complete implementation of Source Editor can be presented as this diagram:
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 graph TD;
     B[Extension 1]---A[Source Editor]
     C[Extension 2]---A[Source Editor]

@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 WARNING:
 Authenticating with `CI_JOB_JWT` was [deprecated in GitLab 15.9](../../../update/deprecations.md#old-versions-of-json-web-tokens-are-deprecated)
@@ -52,14 +52,15 @@ The following fields are included in the JWT:
 | `user_login`            | Always                       | Username of the user executing the job                                                                                                                                                               |
 | `user_email`            | Always                       | Email of the user executing the job                                                                                                                                                                  |
 | `pipeline_id`           | Always                       | ID of this pipeline                                                                                                                                                                                  |
-| `pipeline_source`       | Always                       | [Pipeline source](../../jobs/job_control.md#common-if-clauses-for-rules)                                                                                                                             |
+| `pipeline_source`       | Always                       | [Pipeline source](../../jobs/job_rules.md#common-if-clauses-with-predefined-variables)                                                                                                                             |
 | `job_id`                | Always                       | ID of this job                                                                                                                                                                                       |
 | `ref`                   | Always                       | Git ref for this job                                                                                                                                                                                 |
 | `ref_type`              | Always                       | Git ref type, either `branch` or `tag`                                                                                                                                                               |
 | `ref_path`              | Always                       | Fully qualified ref for the job. For example, `refs/heads/main`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119075) in GitLab 16.0.                                          |
 | `ref_protected`         | Always                       | `true` if this Git ref is protected, `false` otherwise                                                                                                                                               |
-| `environment`           | Job specifies an environment | Environment this job specifies ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/294440) in GitLab 13.9)                                                                                   |
-| `environment_protected` | Job specifies an environment | `true` if specified environment is protected, `false` otherwise ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/294440) in GitLab 13.9)                                                  |
+| `environment`           | Job specifies an environment | Environment this job specifies                                                                                   |
+| `groups_direct`         | User is a direct member of 0 to 200 groups | The paths of the user's direct membership groups. Omitted if the user is a direct member of more than 200 groups. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/435848) in GitLab 16.11). |
+| `environment_protected` | Job specifies an environment | `true` if specified environment is protected, `false` otherwise                                                  |
 | `deployment_tier`       | Job specifies an environment | [Deployment tier](../../environments/index.md#deployment-tier-of-environments) of environment this job specifies ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363590) in GitLab 15.2) |
 | `environment_action`    | Job specifies an environment | [Environment action (`environment:action`)](../../environments/index.md) specified in the job. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/) in GitLab 16.5)                                   |
 
@@ -87,6 +88,7 @@ Example JWT payload:
   "ref_type": "branch",
   "ref_path": "refs/heads/auto-deploy-2020-04-01",
   "ref_protected": "true",
+  "groups_direct": ["mygroup/mysubgroup", "myothergroup/myothersubgroup"],
   "environment": "production",
   "environment_protected": "true",
   "environment_action": "start"

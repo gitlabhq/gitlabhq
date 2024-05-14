@@ -5,11 +5,11 @@ module Gitlab
     class Config
       module Interpolation
         class Template
-          include Gitlab::Utils::StrongMemoize
-
           attr_reader :blocks, :ctx
 
           MAX_BLOCKS = 10_000
+          BLOCK_PATTERN = /(?<block>\$\[\[\s*(?<data>\S{1}.*?\S{1})\s*\]\])/
+          BLOCK_PREFIX = '$[['
 
           def initialize(config, ctx)
             @config = Interpolation::Config.fabricate(config)
@@ -39,20 +39,52 @@ module Gitlab
           private
 
           def interpolate!
-            @result = @config.replace! do |data|
+            @result = @config.replace! do |node|
               break if @errors.any?
+              next node unless node_might_contain_interpolation_block?(node)
 
-              Interpolation::Block.match(data) do |block, data|
-                block = (@blocks[block] ||= Interpolation::Block.new(block, data, ctx))
+              matches = node.scan(BLOCK_PATTERN)
+              next node if matches.empty?
 
-                break @errors.push('too many interpolation blocks') if @blocks.size > MAX_BLOCKS
-                break unless block.valid?
+              blocks = interpolate_blocks(matches)
+              break unless @errors.none? && blocks.present?
 
-                block.value
-              end
+              get_interpolated_node_content!(node, blocks)
             end
           end
-          strong_memoize_attr :interpolate!
+
+          def node_might_contain_interpolation_block?(node)
+            node.is_a?(String) && node.include?(BLOCK_PREFIX)
+          end
+
+          def interpolate_blocks(matches)
+            matches.map do |match, data|
+              block = (@blocks[match] ||= Interpolation::Block.new(match, data, ctx))
+
+              break @errors.push('too many interpolation blocks') if @blocks.size > MAX_BLOCKS
+              break unless block.valid?
+
+              block
+            end
+          end
+
+          def get_interpolated_node_content!(node, blocks)
+            if used_inside_a_string?(node, blocks)
+              interpolate_string_node!(node, blocks)
+            else
+              blocks.first.value
+            end
+          end
+
+          def interpolate_string_node!(node, blocks)
+            blocks.reduce(node) do |interpolated_node, block|
+              interpolated_node.gsub(block.to_s, block.value.to_s)
+            end
+          end
+
+          def used_inside_a_string?(node, blocks)
+            blocks.count > 1 || node.length != blocks.first.length
+          end
         end
       end
     end

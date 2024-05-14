@@ -12,6 +12,8 @@ module Gitlab
   # ExclusiveLease.
   #
   class ExclusiveLease
+    LeaseWithinTransactionError = Class.new(StandardError)
+
     PREFIX = 'gitlab:exclusive_lease'
     NoKey = Class.new(ArgumentError)
 
@@ -60,6 +62,7 @@ module Gitlab
 
     def self.cancel(key, uuid)
       return unless key.present?
+      return unless uuid.present?
 
       Gitlab::Redis::SharedState.with do |redis|
         redis.eval(LUA_CANCEL_SCRIPT, keys: [ensure_prefixed_key(key)], argv: [uuid])
@@ -86,7 +89,24 @@ module Gitlab
       end
     end
 
-    def initialize(key, uuid: nil, timeout:)
+    def self.set_skip_transaction_check_flag(flag = nil)
+      Thread.current[:skip_transaction_check_for_exclusive_lease] = flag
+    end
+
+    def self.skip_transaction_check?
+      Thread.current[:skip_transaction_check_for_exclusive_lease]
+    end
+
+    def self.skipping_transaction_check
+      previous_skip_transaction_check = skip_transaction_check?
+      set_skip_transaction_check_flag(true)
+
+      yield
+    ensure
+      set_skip_transaction_check_flag(previous_skip_transaction_check)
+    end
+
+    def initialize(key, timeout:, uuid: nil)
       @redis_shared_state_key = self.class.redis_shared_state_key(key)
       @timeout = timeout
       @uuid = uuid || SecureRandom.uuid
@@ -95,10 +115,23 @@ module Gitlab
     # Try to obtain the lease. Return lease UUID on success,
     # false if the lease is already taken.
     def try_obtain
+      report_lock_attempt_inside_transaction unless self.class.skip_transaction_check?
+
       # Performing a single SET is atomic
       Gitlab::Redis::SharedState.with do |redis|
         redis.set(@redis_shared_state_key, @uuid, nx: true, ex: @timeout) && @uuid
       end
+    end
+
+    def report_lock_attempt_inside_transaction
+      return unless ::ApplicationRecord.inside_transaction? || ::Ci::ApplicationRecord.inside_transaction?
+
+      raise LeaseWithinTransactionError,
+        "Exclusive lease cannot be obtained within a transaction as it could lead to idle transactions."
+    rescue LeaseWithinTransactionError => e
+      Gitlab::ErrorTracking.track_and_raise_for_dev_exception(
+        e, issue_url: "https://gitlab.com/gitlab-org/gitlab/-/issues/440368"
+      )
     end
 
     # This lease is waiting to obtain
@@ -110,7 +143,7 @@ module Gitlab
     # false if the lease is taken by a different UUID or inexistent.
     def renew
       Gitlab::Redis::SharedState.with do |redis|
-        result = redis.eval(LUA_RENEW_SCRIPT, keys: [@redis_shared_state_key], argv: [@uuid, @timeout])
+        result = redis.eval(LUA_RENEW_SCRIPT, keys: [@redis_shared_state_key], argv: [@uuid, @timeout.to_i])
         result == @uuid
       end
     end

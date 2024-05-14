@@ -4,6 +4,7 @@ import { sortBy } from 'lodash';
 import produce from 'immer';
 import Draggable from 'vuedraggable';
 import BoardAddNewColumn from 'ee_else_ce/boards/components/board_add_new_column.vue';
+import BoardAddNewColumnTrigger from '~/boards/components/board_add_new_column_trigger.vue';
 import { s__ } from '~/locale';
 import { defaultSortableOptions, DRAG_DELAY } from '~/sortable/constants';
 import {
@@ -20,6 +21,7 @@ export default {
   draggableItemTypes: DraggableItemTypes,
   components: {
     BoardAddNewColumn,
+    BoardAddNewColumnTrigger,
     BoardColumn,
     BoardContentSidebar: () => import('~/boards/components/board_content_sidebar.vue'),
     EpicBoardContentSidebar: () =>
@@ -200,7 +202,7 @@ export default {
       v-if="!isSwimlanesOn"
       ref="list"
       v-bind="draggableOptions"
-      class="boards-list gl-w-full gl-py-5 gl-pr-3 gl-white-space-nowrap gl-overflow-x-auto"
+      class="boards-list gl-w-full gl-py-5 gl-pl-0 gl-pr-5 xl:gl-pl-3 xl:gl-pr-6 gl-whitespace-nowrap gl-overflow-x-auto"
       @end="updateListPosition"
     >
       <board-column
@@ -214,9 +216,17 @@ export default {
         :data-draggable-item-type="$options.draggableItemTypes.list"
         :class="{ 'gl-display-none! gl-sm-display-inline-block!': addColumnFormVisible }"
         @setActiveList="$emit('setActiveList', $event)"
+        @setFilters="$emit('setFilters', $event)"
       />
 
-      <transition name="slide" @after-enter="afterFormEnters">
+      <transition mode="out-in" name="slide" @after-enter="afterFormEnters">
+        <div v-if="!addColumnFormVisible" class="gl-display-inline-block gl-pl-2">
+          <board-add-new-column-trigger
+            v-if="canAdminList"
+            :is-new-list-showing="addColumnFormVisible"
+            @setAddColumnFormVisibility="$emit('setAddColumnFormVisibility', $event)"
+          />
+        </div>
         <board-add-new-column
           v-if="addColumnFormVisible"
           :board-id="boardId"
@@ -238,17 +248,31 @@ export default {
       :highlighted-lists="highlightedLists"
       @setActiveList="$emit('setActiveList', $event)"
       @move-list="updateListPosition"
+      @setFilters="$emit('setFilters', $event)"
     >
-      <board-add-new-column
-        v-if="addColumnFormVisible"
-        class="gl-sticky gl-top-5"
-        :filter-params="filterParams"
-        :list-query-variables="listQueryVariables"
-        :board-id="boardId"
-        :lists="boardListsById"
-        @setAddColumnFormVisibility="$emit('setAddColumnFormVisibility', $event)"
-        @highlight-list="highlightList"
-      />
+      <template #create-list-button>
+        <div
+          v-if="!addColumnFormVisible"
+          class="gl-mt-5 gl-display-inline-block gl-pl-3 gl-sticky gl-top-5"
+        >
+          <board-add-new-column-trigger
+            v-if="canAdminList"
+            :is-new-list-showing="addColumnFormVisible"
+            @setAddColumnFormVisibility="$emit('setAddColumnFormVisibility', $event)"
+          />
+        </div>
+      </template>
+      <div v-if="addColumnFormVisible" class="gl-pl-2">
+        <board-add-new-column
+          class="gl-sticky gl-top-5"
+          :filter-params="filterParams"
+          :list-query-variables="listQueryVariables"
+          :board-id="boardId"
+          :lists="boardListsById"
+          @setAddColumnFormVisibility="$emit('setAddColumnFormVisibility', $event)"
+          @highlight-list="highlightList"
+        />
+      </div>
     </epics-swimlanes>
 
     <board-content-sidebar v-if="isIssueBoard" data-testid="issue-boards-sidebar" />

@@ -5,7 +5,7 @@ module Integrations
     include RequestAwareEntity
     include Gitlab::Utils::StrongMemoize
 
-    expose :section, :name, :placeholder, :required, :choices, :checkbox_label
+    expose :section, :name, :placeholder, :required, :choices, :checkbox_label, :label_description
 
     expose :title do |field|
       non_empty_password?(field) ? field[:non_empty_password_title] : field[:title]

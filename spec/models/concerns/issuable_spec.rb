@@ -162,7 +162,7 @@ RSpec.describe Issuable, feature_category: :team_planning do
 
   describe '.any_label' do
     let_it_be(:issue_with_label) { create(:labeled_issue, labels: [create(:label)]) }
-    let_it_be(:issue_with_multiple_labels) { create(:labeled_issue, labels: [create(:label), create(:label)]) }
+    let_it_be(:issue_with_multiple_labels) { create(:labeled_issue, labels: create_list(:label, 2)) }
     let_it_be(:issue_without_label) { create(:issue) }
 
     it 'returns an issuable with at least one label' do
@@ -475,7 +475,7 @@ RSpec.describe Issuable, feature_category: :team_planning do
       it 'delegates to Gitlab::DataBuilder::Issuable#build and does not set labels, assignees, nor total_time_spent' do
         expect(builder).to receive(:build).with(
           user: user,
-          changes: {})
+          changes: hash_not_including(:total_time_spent, :labels, :assignees))
 
         # In some cases, old_associations is empty, e.g. on a close event
         issue.to_hook_data(user)
@@ -622,6 +622,28 @@ RSpec.describe Issuable, feature_category: :team_planning do
           ))
 
         issue.to_hook_data(user, old_associations: { escalation_status: :triggered })
+      end
+    end
+
+    context 'merge_request saved twice' do
+      let(:merge_request) { create(:merge_request, :unchanged, target_branch: "initial-branch", title: "initial title") }
+
+      before do
+        merge_request.update!(target_branch: "some-other-branch")
+        merge_request.update!(title: "temporary title")
+        merge_request.update!(target_branch: "final-branch", title: "final title")
+
+        expect(Gitlab::DataBuilder::Issuable).to receive(:new).with(merge_request).and_return(builder)
+      end
+
+      it 'includes the cumulative changes of both saves' do
+        expect(builder).to receive(:build).with(
+          user: user,
+          changes: hash_including(
+            'title' => ["initial title", "final title"],
+            'target_branch' => %w[initial-branch final-branch]
+          ))
+        merge_request.to_hook_data(user)
       end
     end
   end

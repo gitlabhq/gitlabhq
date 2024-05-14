@@ -7,6 +7,7 @@ import LockedBadge from '~/issuable/components/locked_badge.vue';
 import { STATUS_CLOSED, STATUS_OPEN, STATUS_REOPENED, TYPE_ISSUE } from '~/issues/constants';
 import { __ } from '~/locale';
 import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
+import ImportedBadge from '~/vue_shared/components/imported_badge.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import IssuableHeader from '~/vue_shared/issuable/show/components/issuable_header.vue';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
@@ -27,6 +28,7 @@ describe('IssuableHeader component', () => {
     findGlIconWithName(name).exists() ? findGlIconWithName(name).at(0) : undefined;
   const findBlockedBadge = () => wrapper.findComponent(LockedBadge);
   const findHiddenBadge = () => wrapper.findComponent(HiddenBadge);
+  const findImportedBadge = () => wrapper.findComponent(ImportedBadge);
   const findExternalLinkIcon = () => findIcon('external-link');
   const findFirstContributionIcon = () => findIcon('first-contribution');
   const findComponentTooltip = (component) => getBinding(component.element, 'gl-tooltip');
@@ -138,6 +140,20 @@ describe('IssuableHeader component', () => {
       createComponent({ isHidden: false });
 
       expect(findHiddenBadge().exists()).toBe(false);
+    });
+  });
+
+  describe('imported badge', () => {
+    it('renders when issuable is imported', () => {
+      createComponent({ isImported: true });
+
+      expect(findImportedBadge().props('importableType')).toBe('issue');
+    });
+
+    it('does not render when issuable is not imported', () => {
+      createComponent({ isImported: false });
+
+      expect(findImportedBadge().exists()).toBe(false);
     });
   });
 

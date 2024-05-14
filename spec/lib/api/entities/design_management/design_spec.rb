@@ -14,7 +14,9 @@ RSpec.describe API::Entities::DesignManagement::Design do
       id: design.id,
       project_id: design.project_id,
       filename: design.filename,
-      image_url: ::Gitlab::UrlBuilder.build(design)
+      image_url: ::Gitlab::UrlBuilder.build(design),
+      imported: design.imported?,
+      imported_from: design.imported_from
     })
   end
 end

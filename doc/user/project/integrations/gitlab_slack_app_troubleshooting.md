@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 When working with the GitLab for Slack app, you might encounter the following issues.
 
@@ -33,7 +33,7 @@ To resolve this issue, ensure:
 
 - The project full path is correct.
 - If using a [project alias](gitlab_slack_application.md#create-a-project-alias), the alias is correct.
-- The GitLab for Slack app is [enabled for the project](gitlab_slack_application.md#from-project-integration-settings).
+- The GitLab for Slack app is [enabled for the project](gitlab_slack_application.md#from-the-project-or-group-settings).
 
 ## Slash commands return `dispatch_failed` in Slack
 

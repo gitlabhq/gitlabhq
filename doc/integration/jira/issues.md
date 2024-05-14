@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 You can [manage Jira issues directly in GitLab](configure.md).
 You can then refer to Jira issues by ID in GitLab commits and merge requests.
@@ -55,7 +55,7 @@ You can [disable comments](#disable-comments-on-jira-issues) on issues.
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 With this integration, you can prevent merge requests from being merged if they do not refer to a Jira issue.
 To enable this feature:
@@ -129,7 +129,7 @@ For example, use any of these trigger words to close the Jira issue `PROJECT-1`:
 - `Fixes PROJECT-1`
 
 The commit or merge request must target your project's [default branch](../../user/project/repository/branches/default.md).
-You can change your project's default branch in [project settings](../../user/project/settings/index.md).
+You can change your project's default branch in [project settings](../../user/project/repository/branches/default.md#change-the-default-branch-name-for-a-project).
 
 When your branch name matches the Jira issue ID, `Closes <JIRA-ID>` is automatically appended to your existing merge request template.
 If you do not want to close the issue, [disable automatic issue closing](../../user/project/issues/managing_issues.md#disable-automatic-issue-closing).
@@ -145,29 +145,6 @@ Consider this example:
    - GitLab closes the Jira issue for you.
    - GitLab adds a formatted comment to Jira, linking back to the commit that
      resolved the issue. You can [disable comments](#disable-comments-on-jira-issues).
-
-## Search and filter the issue list
-
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
-
-To refine the list of issues, use the search bar to search for any text
-contained in an issue summary (title) or description. Use any combination
-of these filters:
-
-- To filter issues by `labels`, specify one or more labels as part of the `labels[]`
-  parameter in the URL. When using multiple labels, only issues that contain all specified
-  labels are listed: `/-/integrations/jira/issues?labels[]=backend&labels[]=feature&labels[]=QA`
-- To filter issues by `status`, specify the `status` parameter in the URL:
-  `/-/integrations/jira/issues?status=In Progress`
-- To filter issues by `reporter`, specify a reporter's Jira display name for the
-  `author_username` parameter in the URL: `/-/integrations/jira/issues?author_username=John Smith`
-- To filter issues by `assignee`, specify their Jira display name for the
-  `assignee_username` parameter in the URL: `/-/integrations/jira/issues?assignee_username=John Smith`
-
-Enhancements to use these filters through the user interface
-[are planned](https://gitlab.com/groups/gitlab-org/-/epics/3622).
 
 ## Automatic issue transitions
 

@@ -22,10 +22,24 @@ module Tooling
       raise ArgumentError, ':from can only be :api or :changed_files' unless
         %i[api changed_files].include?(from)
 
-      @gitlab_token                       = ENV['PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE'] || ''
-      @gitlab_endpoint                    = ENV['CI_API_V4_URL']
-      @mr_project_path                    = ENV['CI_MERGE_REQUEST_PROJECT_PATH']
-      @mr_iid                             = ENV['CI_MERGE_REQUEST_IID']
+      @gitlab_endpoint = ENV['CI_API_V4_URL']
+
+      @gitlab_token =
+        if ENV['FIND_CHANGES_MERGE_REQUEST_PROJECT_PATH']
+          # We set FIND_CHANGES_API_TOKEN in the security FOSS project so it
+          # can request the security EE project to retrieve the changed files.
+          ENV['FIND_CHANGES_API_TOKEN']
+        else
+          ENV['PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE']
+        end || ''
+
+      @mr_project_path =
+        ENV['FIND_CHANGES_MERGE_REQUEST_PROJECT_PATH'] ||
+        ENV['CI_MERGE_REQUEST_PROJECT_PATH']
+      @mr_iid =
+        ENV['FIND_CHANGES_MERGE_REQUEST_IID'] ||
+        ENV['CI_MERGE_REQUEST_IID']
+
       @changed_files_pathname             = changed_files_pathname
       @predictive_tests_pathname          = predictive_tests_pathname
       @frontend_fixtures_mapping_pathname = frontend_fixtures_mapping_pathname

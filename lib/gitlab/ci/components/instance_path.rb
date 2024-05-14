@@ -7,17 +7,21 @@ module Gitlab
         include Gitlab::Utils::StrongMemoize
         include ::Gitlab::LoopHelpers
 
-        LATEST_VERSION_KEYWORD = '~latest'
+        attr_reader :component_name
+
+        SHORTHAND_SEMVER_PATTERN = /^\d+(\.\d+)?$/
+        LATEST = '~latest'
 
         def self.match?(address)
-          address.include?('@') && address.start_with?(Settings.gitlab_ci['component_fqdn'])
+          address.include?('@') && address.start_with?(fqdn_prefix)
         end
 
-        attr_reader :host
+        def self.fqdn_prefix
+          "#{Gitlab.config.gitlab_ci.server_fqdn}/"
+        end
 
         def initialize(address:)
           @full_path, @version = address.to_s.split('@', 2)
-          @host = Settings.gitlab_ci['component_fqdn']
         end
 
         def fetch_content!(current_user:)
@@ -37,52 +41,55 @@ module Gitlab
 
         def sha
           return unless project
-          return latest_version_sha if version == LATEST_VERSION_KEYWORD
 
-          project.commit(version)&.id
+          find_version_sha(version)
         end
         strong_memoize_attr :sha
 
-        private
-
-        attr_reader :version, :component_name
-
-        def find_project_by_component_path(path)
-          if Feature.enabled?(:ci_redirect_component_project, Feature.current_request)
-            project_full_path = extract_project_path(path)
-
-            Project.find_by_full_path(project_full_path, follow_redirects: true).tap do |project|
-              next unless project
-
-              @component_name = extract_component_name(project_full_path)
-            end
-          else
-            legacy_finder(path).tap do |project|
-              next unless project
-
-              @component_name = extract_component_name(project.full_path)
-            end
-          end
+        def invalid_usage_for_latest?
+          @version == LATEST && project && project.catalog_resource.nil?
         end
 
-        def legacy_finder(path)
-          return if path.start_with?('/') # exit early if path starts with `/` or it will loop forever.
+        private
 
-          possible_paths = [path]
+        attr_reader :version
 
-          index = nil
+        def find_version_sha(version)
+          return find_latest_sha if version == LATEST
 
-          loop_until(limit: 20) do
-            index = path.rindex('/') # find index of last `/` in a path
-            break unless index
+          sha_by_shorthand_semver(version) || sha_by_released_tag(version) || sha_by_ref(version)
+        end
 
-            possible_paths << (path = path[0..index - 1])
+        def find_latest_sha
+          return unless project.catalog_resource
+
+          project.catalog_resource.versions.latest&.sha
+        end
+
+        def sha_by_shorthand_semver(version)
+          return unless version.match?(SHORTHAND_SEMVER_PATTERN)
+          return unless project.catalog_resource
+
+          major, minor = version.split(".")
+          project.catalog_resource.versions.latest(major, minor)&.sha
+        end
+
+        def sha_by_released_tag(version)
+          project.releases.find_by_tag(version)&.sha
+        end
+
+        def sha_by_ref(version)
+          project.commit(version)&.id
+        end
+
+        def find_project_by_component_path(path)
+          project_full_path = extract_project_path(path)
+
+          Project.find_by_full_path(project_full_path, follow_redirects: true).tap do |project|
+            next unless project
+
+            @component_name = extract_component_name(project_full_path)
           end
-
-          # remove shortest path as it is group
-          possible_paths.pop
-
-          ::Project.where_full_path_in(possible_paths).take # rubocop: disable CodeReuse/ActiveRecord
         end
 
         # Given a path like "my-org/sub-group/the-project/the-component"
@@ -98,19 +105,11 @@ module Gitlab
         end
 
         def instance_path
-          @full_path.delete_prefix(host)
+          @full_path.delete_prefix(self.class.fqdn_prefix)
         end
 
         def extract_component_name(project_path)
           instance_path.delete_prefix(project_path).delete_prefix('/')
-        end
-
-        def latest_version_sha
-          if project.catalog_resource
-            project.catalog_resource.versions.latest&.sha
-          else
-            project.releases.latest&.sha
-          end
         end
       end
     end

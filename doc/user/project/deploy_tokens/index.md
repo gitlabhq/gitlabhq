@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 You can use a deploy token to enable authentication of deployment tasks, independent of a user
 account. In most cases you use a deploy token from an external host, like a build server or CI/CD
@@ -71,7 +71,7 @@ use in a CI/CD pipeline:
 For example, to use a GitLab token to log in to your GitLab container registry:
 
 ```shell
-docker login $CI_REGISTRY -u $CI_DEPLOY_USER --password-stdin <<<$CI_DEPLOY_PASSWORD
+echo "$CI_DEPLOY_PASSWORD" | docker login $CI_REGISTRY -u $CI_DEPLOY_USER --password-stdin
 ```
 
 NOTE:
@@ -181,8 +181,6 @@ docker push $CONTAINER_TEST_IMAGE
 
 ## Pull packages from a package registry
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213566) in GitLab 13.0.
-
 You can use a deploy token to pull packages from a package registry.
 
 Prerequisites:
@@ -201,8 +199,6 @@ nuget install mypkg.nupkg
 
 ## Push packages to a package registry
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213566) in GitLab 13.0.
-
 You can use a deploy token to push packages to a GitLab package registry.
 
 Prerequisites:
@@ -220,8 +216,6 @@ nuget push mypkg.nupkg -Source GitLab
 ```
 
 ## Pull images from the dependency proxy
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/280586) in GitLab 14.2.
 
 You can use a deploy token to pull images from the dependency proxy.
 

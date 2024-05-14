@@ -7,6 +7,9 @@ Vue.use(VueApollo);
 
 export default () => {
   const el = document.getElementById('js-deploy-keys');
+
+  if (!el) return false;
+
   return new Vue({
     el,
     apolloProvider: createApolloProvider({

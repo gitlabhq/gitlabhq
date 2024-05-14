@@ -8,7 +8,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   include AfterNextHelpers
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:group, reload: true) { create_default(:group) }
+  let_it_be(:group, reload: true) { create_default(:group, :allow_runner_registration_token) }
   let_it_be(:project, reload: true) { create_default(:project, :repository, group: group) }
 
   let_it_be(:pipeline, reload: true) do
@@ -23,10 +23,17 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
   let_it_be(:build, refind: true) { create(:ci_build, pipeline: pipeline) }
 
+  let(:allow_runner_registration_token) { false }
+
+  before do
+    stub_application_setting(allow_runner_registration_token: allow_runner_registration_token)
+  end
+
   it { is_expected.to belong_to(:runner) }
   it { is_expected.to belong_to(:trigger_request) }
   it { is_expected.to belong_to(:erased_by) }
   it { is_expected.to belong_to(:pipeline).inverse_of(:builds) }
+  it { is_expected.to belong_to(:execution_config).class_name('Ci::BuildExecutionConfig').inverse_of(:builds) }
 
   it { is_expected.to have_many(:needs).with_foreign_key(:build_id) }
 
@@ -102,18 +109,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
         build.save!
       end
-
-      context 'with FF track_ci_build_created_internal_event disabled' do
-        before do
-          stub_feature_flags(track_ci_build_created_internal_event: false)
-        end
-
-        it 'does not track creation event' do
-          expect(Gitlab::InternalEvents).not_to receive(:track_event)
-
-          create(:ci_build)
-        end
-      end
     end
   end
 
@@ -138,6 +133,8 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   it_behaves_like 'a deployable job' do
     let(:job) { build }
   end
+
+  it_behaves_like 'a triggerable processable', :ci_build
 
   describe '.ref_protected' do
     subject { described_class.ref_protected }
@@ -176,13 +173,13 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       end
     end
 
-    ::Ci::JobArtifact::DOWNLOADABLE_TYPES.each do |type|
+    ::Enums::Ci::JobArtifact.downloadable_types.each do |type|
       context "when job has a #{type} artifact" do
         it 'returns the job' do
           job = create(:ci_build, pipeline: pipeline)
           create(
             :ci_job_artifact,
-            file_format: ::Ci::JobArtifact::TYPE_AND_FORMAT_PAIRS[type.to_sym],
+            file_format: ::Enums::Ci::JobArtifact.type_and_format_pairs[type.to_sym],
             file_type: type,
             job: job
           )
@@ -218,7 +215,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
           job = create(:ci_build, pipeline: pipeline)
           create(
             :ci_job_artifact,
-            file_format: ::Ci::JobArtifact::TYPE_AND_FORMAT_PAIRS[type.to_sym],
+            file_format: ::Enums::Ci::JobArtifact.type_and_format_pairs[type.to_sym],
             file_type: type,
             job: job
           )
@@ -254,7 +251,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
           job = create(:ci_build, project: project)
           create(
             :ci_job_artifact,
-            file_format: ::Ci::JobArtifact::TYPE_AND_FORMAT_PAIRS[type.to_sym],
+            file_format: ::Enums::Ci::JobArtifact.type_and_format_pairs[type.to_sym],
             file_type: type,
             job: job
           )
@@ -1067,31 +1064,57 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     end
   end
 
-  describe '#artifact_is_public_in_config?' do
-    subject { build.artifact_is_public_in_config? }
+  describe '#artifact_access_setting_in_config' do
+    subject { build.artifact_access_setting_in_config }
 
     context 'artifacts with defaults' do
       let(:build) { create(:ci_build, :artifacts, pipeline: pipeline) }
 
-      it { is_expected.to be_truthy }
+      it { is_expected.to eq(:public) }
     end
 
     context 'non public artifacts' do
       let(:build) { create(:ci_build, :with_private_artifacts_config, pipeline: pipeline) }
 
-      it { is_expected.to be_falsey }
+      it { is_expected.to eq(:private) }
+    end
+
+    context 'non public artifacts via access' do
+      let(:build) { create(:ci_build, :with_developer_access_artifacts, pipeline: pipeline) }
+
+      it { is_expected.to eq(:private) }
+    end
+
+    context 'non public artifacts via access as none' do
+      let(:build) { create(:ci_build, :with_none_access_artifacts, pipeline: pipeline) }
+
+      it { is_expected.to eq(:none) }
     end
 
     context 'public artifacts' do
       let(:build) { create(:ci_build, :with_public_artifacts_config, pipeline: pipeline) }
 
-      it { is_expected.to be_truthy }
+      it { is_expected.to eq(:public) }
+    end
+
+    context 'public artifacts via access' do
+      let(:build) { create(:ci_build, :with_all_access_artifacts, pipeline: pipeline) }
+
+      it { is_expected.to eq(:public) }
     end
 
     context 'no artifacts' do
       let(:build) { create(:ci_build, pipeline: pipeline) }
 
-      it { is_expected.to be_truthy }
+      it { is_expected.to eq(:public) }
+    end
+
+    context 'when public and access are used together' do
+      let(:build) { create(:ci_build, :with_access_and_public_setting, pipeline: pipeline) }
+
+      it 'raises ArgumentError' do
+        expect { subject }.to raise_error(ArgumentError, 'artifacts:public and artifacts:access are mutually exclusive')
+      end
     end
   end
 
@@ -1541,6 +1564,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
     context 'hide runners token' do
       let(:data) { "new #{project.runners_token} data" }
+      let(:allow_runner_registration_token) { true }
 
       it { is_expected.to match(/^new x+ data$/) }
 
@@ -1757,6 +1781,26 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         let(:value) { 'something else' }
 
         it { is_expected.to be_falsey }
+      end
+    end
+
+    describe '#can_auto_cancel_pipeline_on_job_failure?' do
+      subject { build.can_auto_cancel_pipeline_on_job_failure? }
+
+      before do
+        allow(build).to receive(:auto_retry_expected?) { auto_retry_expected }
+      end
+
+      context 'when the job can be auto-retried' do
+        let(:auto_retry_expected) { true }
+
+        it { is_expected.to be false }
+      end
+
+      context 'when the job cannot be auto-retried' do
+        let(:auto_retry_expected) { false }
+
+        it { is_expected.to be true }
       end
     end
   end
@@ -2403,15 +2447,13 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
           { key: 'CI_REPOSITORY_URL', value: build.repo_url, public: false, masked: false },
           { key: 'CI_DEPENDENCY_PROXY_USER', value: 'gitlab-ci-token', public: true, masked: false },
           { key: 'CI_DEPENDENCY_PROXY_PASSWORD', value: 'my-token', public: false, masked: true },
-          { key: 'CI_JOB_JWT', value: 'ci.job.jwt', public: false, masked: true },
-          { key: 'CI_JOB_JWT_V1', value: 'ci.job.jwt', public: false, masked: true },
-          { key: 'CI_JOB_JWT_V2', value: 'ci.job.jwtv2', public: false, masked: true },
           { key: 'CI_JOB_NAME', value: 'test', public: true, masked: false },
           { key: 'CI_JOB_NAME_SLUG', value: 'test', public: true, masked: false },
           { key: 'CI_JOB_STAGE', value: 'test', public: true, masked: false },
           { key: 'CI_NODE_TOTAL', value: '1', public: true, masked: false },
           { key: 'CI', value: 'true', public: true, masked: false },
           { key: 'GITLAB_CI', value: 'true', public: true, masked: false },
+          { key: 'CI_SERVER_FQDN', value: Gitlab.config.gitlab_ci.server_fqdn, public: true, masked: false },
           { key: 'CI_SERVER_URL', value: Gitlab.config.gitlab.url, public: true, masked: false },
           { key: 'CI_SERVER_HOST', value: Gitlab.config.gitlab.host, public: true, masked: false },
           { key: 'CI_SERVER_PORT', value: Gitlab.config.gitlab.port.to_s, public: true, masked: false },
@@ -2481,6 +2523,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       end
 
       it { is_expected.to be_instance_of(Gitlab::Ci::Variables::Collection) }
+
       it { expect(subject.to_runner_variables).to eq(predefined_variables) }
 
       it 'excludes variables that require an environment or user' do
@@ -2492,21 +2535,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         end
 
         expect(environment_based_variables_collection).to be_empty
-      end
-
-      context 'when CI_JOB_JWT generation fails' do
-        [
-          OpenSSL::PKey::RSAError,
-          Gitlab::Ci::Jwt::NoSigningKeyError
-        ].each do |reason_to_fail|
-          it 'CI_JOB_JWT is not included' do
-            expect(Gitlab::Ci::Jwt).to receive(:for_build).and_raise(reason_to_fail)
-            expect(Gitlab::ErrorTracking).to receive(:track_exception)
-
-            expect { subject }.not_to raise_error
-            expect(subject.pluck(:key)).not_to include('CI_JOB_JWT')
-          end
-        end
       end
 
       describe 'variables ordering' do
@@ -2963,21 +2991,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       end
     end
 
-    context 'when build is for triggers' do
-      let(:trigger) { create(:ci_trigger, project: project) }
-      let(:trigger_request) { create(:ci_trigger_request, pipeline: pipeline, trigger: trigger) }
-
-      let(:predefined_trigger_variable) do
-        { key: 'CI_PIPELINE_TRIGGERED', value: 'true', public: true, masked: false }
-      end
-
-      before do
-        build.trigger_request = trigger_request
-      end
-
-      it { is_expected.to include(predefined_trigger_variable) }
-    end
-
     context 'when pipeline has a variable' do
       let!(:pipeline_variable) { create(:ci_pipeline_variable, pipeline: pipeline) }
 
@@ -3163,11 +3176,41 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
       let(:pipeline) { create(:ci_pipeline, project: project, ref: 'feature') }
 
-      it 'returns static predefined variables' do
-        expect(build.variables.size).to be >= 28
-        expect(build.variables)
-          .to include(key: 'CI_COMMIT_REF_NAME', value: 'feature', public: true, masked: false)
-        expect(build).not_to be_persisted
+      context 'when feature flag remove_shared_jwts is enabled' do
+        context 'and id_tokens are not present in the build' do
+          it 'does not return id_token variables' do
+            expect(build.variables)
+              .not_to include(key: 'ID_TOKEN_1', value: 'feature', public: true, masked: false)
+          end
+        end
+
+        context 'and id_tokens are present in the build' do
+          before do
+            build.id_tokens = {
+              'ID_TOKEN_1' => { aud: 'developers' },
+              'ID_TOKEN_2' => { aud: 'maintainers' }
+            }
+          end
+
+          it 'returns static predefined variables' do
+            expect(build.variables)
+              .to include(key: 'CI_COMMIT_REF_NAME', value: 'feature', public: true, masked: false)
+            expect(build).not_to be_persisted
+          end
+        end
+      end
+
+      context 'when feature flag remove_shared_jwts is disabled' do
+        before do
+          stub_feature_flags(remove_shared_jwts: false)
+        end
+
+        it 'returns static predefined variables' do
+          expect(build.variables.size).to be >= 28
+          expect(build.variables)
+            .to include(key: 'CI_COMMIT_REF_NAME', value: 'feature', public: true, masked: false)
+          expect(build).not_to be_persisted
+        end
       end
     end
 
@@ -5087,6 +5130,11 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       build.drop_with_exit_code!(:unknown_failure, exit_code)
     end
 
+    it 'correctly sets the exit code' do
+      expect { drop_with_exit_code }
+        .to change { build.reload.metadata&.exit_code }.from(nil).to(1)
+    end
+
     shared_examples 'drops the build without changing allow_failure' do
       it 'does not change allow_failure' do
         expect { drop_with_exit_code }
@@ -5174,6 +5222,15 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         end
       end
     end
+
+    context 'when exit code is greater than 32767' do
+      let(:exit_code) { 32770 }
+
+      it 'wraps around to max size of a signed smallint' do
+        expect { drop_with_exit_code }
+        .to change { build.reload.metadata&.exit_code }.from(nil).to(2)
+      end
+    end
   end
 
   describe '#exit_codes_defined?' do
@@ -5187,38 +5244,93 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       build.exit_codes_defined?
     end
 
-    context 'without allow_failure_criteria' do
+    context 'without allow_failure_criteria nor retry' do
       it { is_expected.to be_falsey }
     end
 
-    context 'when exit_codes is nil' do
-      let(:options) do
-        {
-          allow_failure_criteria: {
-            exit_codes: nil
+    context 'with allow_failure_critera' do
+      context 'when exit_codes is nil' do
+        let(:options) do
+          {
+            allow_failure_criteria: {
+              exit_codes: nil
+            }
           }
-        }
+        end
+
+        it { is_expected.to be_falsey }
       end
 
-      it { is_expected.to be_falsey }
-    end
-
-    context 'when exit_codes is an empty array' do
-      let(:options) do
-        {
-          allow_failure_criteria: {
-            exit_codes: []
+      context 'when exit_codes is an empty array' do
+        let(:options) do
+          {
+            allow_failure_criteria: {
+              exit_codes: []
+            }
           }
-        }
+        end
+
+        it { is_expected.to be_falsey }
       end
 
-      it { is_expected.to be_falsey }
+      context 'when exit_codes are defined' do
+        let(:options) do
+          {
+            allow_failure_criteria: {
+              exit_codes: [5, 6]
+            }
+          }
+        end
+
+        it { is_expected.to be_truthy }
+      end
     end
 
-    context 'when exit_codes are defined' do
+    context 'with retry' do
+      context 'when exit_codes is nil' do
+        let(:options) do
+          {
+            retry: {
+              exit_codes: nil
+            }
+          }
+        end
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'when exit_codes is an empty array' do
+        let(:options) do
+          {
+            retry: {
+              exit_codes: []
+            }
+          }
+        end
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'when exit_codes are defined' do
+        let(:options) do
+          {
+            retry: {
+              exit_codes: [5, 6]
+            }
+          }
+        end
+
+        it { is_expected.to be_truthy }
+      end
+    end
+
+    context "with exit_codes defined for retry and allow_failure_criteria" do
       let(:options) do
         {
           allow_failure_criteria: {
+            exit_codes: [1]
+          },
+          retry: {
             exit_codes: [5, 6]
           }
         }
@@ -5444,10 +5556,46 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     end
   end
 
+  describe '#supports_canceling?' do
+    let(:job) { create(:ci_build, :running, project: project) }
+
+    context 'when the builds runner does not support canceling' do
+      specify { expect(job.supports_canceling?).to be false }
+
+      context 'when the ci_canceling_status flag is disabled' do
+        before do
+          stub_feature_flags(ci_canceling_status: false)
+        end
+
+        it 'returns false' do
+          expect(job.supports_canceling?).to be false
+        end
+      end
+    end
+
+    context 'when the builds runner supports canceling' do
+      include_context 'when canceling support'
+
+      it 'returns true' do
+        expect(job.supports_canceling?).to be true
+      end
+
+      context 'when the ci_canceling_status flag is disabled' do
+        before do
+          stub_feature_flags(ci_canceling_status: false)
+        end
+
+        it 'returns false' do
+          expect(job.supports_canceling?).to be false
+        end
+      end
+    end
+  end
+
   describe '#runtime_runner_features' do
     subject do
       build.save!
-      build.cancel_gracefully?
+      build.reload.cancel_gracefully?
     end
 
     let(:build) { create(:ci_build, pipeline: pipeline) }
@@ -5728,7 +5876,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
               :ci_job_artifact,
               job: build,
               file_type: type,
-              file_format: Ci::JobArtifact::TYPE_AND_FORMAT_PAIRS[type.to_sym]
+              file_format: Enums::Ci::JobArtifact.type_and_format_pairs[type.to_sym]
             )
           end
 

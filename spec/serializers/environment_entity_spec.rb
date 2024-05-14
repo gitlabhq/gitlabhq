@@ -12,12 +12,8 @@ RSpec.describe EnvironmentEntity do
   end
 
   let_it_be(:user)    { create(:user) }
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :repository, developers: user) }
   let_it_be(:environment, refind: true) { create(:environment, project: project) }
-
-  before_all do
-    project.add_developer(user)
-  end
 
   before do
     allow(request).to receive(:current_user).and_return(user)

@@ -10,8 +10,6 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60933) in GitLab 13.12.
-
 Federated Learning of Cohorts (FLoC) is a new feature of the Chrome browser.
 It works by categorizing users into different cohorts, so that
 advertisers can use this data to uniquely target and track users. For more

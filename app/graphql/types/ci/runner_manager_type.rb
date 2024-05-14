@@ -47,7 +47,7 @@ module Types
       field :version, GraphQL::Types::String, null: true, description: 'Version of the runner.'
 
       def executor_name
-        ::Ci::Runner::EXECUTOR_TYPE_TO_NAMES[runner_manager.executor_type&.to_sym]
+        ::Ci::RunnerManager::EXECUTOR_TYPE_TO_NAMES[runner_manager.executor_type&.to_sym]
       end
 
       def job_execution_status

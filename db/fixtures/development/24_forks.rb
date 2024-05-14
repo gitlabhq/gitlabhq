@@ -29,8 +29,11 @@ Sidekiq::Testing.inline! do
         # hook won't run until after the fixture is loaded. That is too late
         # since the Sidekiq::Testing block has already exited. Force clearing
         # the `after_commit` queue to ensure the job is run now.
-        fork_project.send(:_run_after_commit_queue)
-        fork_project.import_state.send(:_run_after_commit_queue)
+
+        Gitlab::ExclusiveLease.skipping_transaction_check do
+          fork_project.send(:_run_after_commit_queue)
+          fork_project.import_state.send(:_run_after_commit_queue)
+        end
         # We should also force-run the project authorizations refresh job for the created project.
         AuthorizedProjectUpdate::ProjectRecalculateService.new(fork_project).execute
 

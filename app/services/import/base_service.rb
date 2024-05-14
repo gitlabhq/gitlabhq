@@ -32,8 +32,8 @@ module Import
       project.errors.full_messages.join(', ')
     end
 
-    def success(project)
-      super().merge(project: project, status: :success)
+    def success(project, warning: nil)
+      super().merge(project: project, status: :success, warning: warning)
     end
 
     def track_access_level(import_type)

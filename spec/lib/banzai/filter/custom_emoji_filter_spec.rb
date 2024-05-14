@@ -63,4 +63,20 @@ RSpec.describe Banzai::Filter::CustomEmojiFilter, feature_category: :team_planni
 
     expect(doc.css('gl-emoji').size).to eq 1
   end
+
+  context 'when asset proxy is configured' do
+    before do
+      stub_asset_proxy_setting(
+        enabled: true,
+        secret_key: 'shared-secret',
+        url: 'https://assets.example.com'
+      )
+    end
+
+    it 'uses the proxied url' do
+      doc = filter('<p>:tanuki:</p>')
+
+      expect(doc.css('gl-emoji').first.attributes['data-fallback-src'].value).to start_with('https://assets.example.com')
+    end
+  end
 end

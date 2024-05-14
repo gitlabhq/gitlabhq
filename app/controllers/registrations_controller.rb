@@ -28,8 +28,7 @@ class RegistrationsController < Devise::RegistrationsController
 
   feature_category :instance_resiliency
 
-  helper_method :arkose_labs_enabled?
-  helper_method :registration_path_params
+  helper_method :arkose_labs_enabled?, :registration_path_params, :registration_tracking_label
 
   def new
     @resource = build_resource
@@ -40,18 +39,11 @@ class RegistrationsController < Devise::RegistrationsController
     set_resource_fields
 
     super do |new_user|
-      record_arkose_data
-      accept_pending_invitations if new_user.persisted?
-
-      persist_accepted_terms_if_required(new_user)
-      send_custom_confirmation_instructions
-      track_weak_password_error(new_user, self.class.name, 'create')
-
-      if pending_approval?
-        NotificationService.new.new_instance_access_request(new_user)
+      if new_user.persisted?
+        after_successful_create_hook(new_user)
+      else
+        track_weak_password_error(new_user, self.class.name, 'create')
       end
-
-      after_request_hook(new_user)
     end
 
     # Devise sets a flash message on both successful & failed signups,
@@ -79,7 +71,6 @@ class RegistrationsController < Devise::RegistrationsController
   protected
 
   def persist_accepted_terms_if_required(new_user)
-    return unless new_user.persisted?
     return unless Gitlab::CurrentSettings.current_application_settings.enforce_terms?
 
     terms = ApplicationSetting::Term.latest
@@ -107,11 +98,17 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   # overridden by EE module
-  def after_request_hook(user)
-    return unless user.persisted?
+  def after_successful_create_hook(user)
+    accept_pending_invitations
+    persist_accepted_terms_if_required(user)
+    notify_new_instance_access_request(user)
+    track_successful_user_creation(user)
+  end
 
-    track_creation user: user
-    Gitlab::Tracking.event(self.class.name, 'successfully_submitted_form', user: user)
+  def notify_new_instance_access_request(user)
+    return unless pending_approval?
+
+    NotificationService.new.new_instance_access_request(user)
   end
 
   def after_sign_up_path_for(user)
@@ -146,9 +143,15 @@ class RegistrationsController < Devise::RegistrationsController
   private
 
   def onboarding_status
-    Onboarding::Status.new(params.to_unsafe_h.deep_symbolize_keys, session, resource)
+    Onboarding::Status.new(onboarding_status_params, session, resource)
   end
   strong_memoize_attr :onboarding_status
+
+  def onboarding_status_params
+    # We'll override this in the trial registrations controller so we can add on trial param
+    # and make it so we can figure out the registration_type with the same code.
+    params.to_unsafe_h.deep_symbolize_keys
+  end
 
   def allow_flash_content?(user)
     user.blocked_pending_approval? || onboarding_status.single_invite?
@@ -159,7 +162,7 @@ class RegistrationsController < Devise::RegistrationsController
     {}
   end
 
-  def track_creation(user:)
+  def track_successful_user_creation(user)
     label = user_invited? ? 'invited' : 'signup'
     Gitlab::Tracking.event(self.class.name, 'create_user', label: label, user: user)
   end
@@ -199,9 +202,6 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   def ensure_first_name_and_last_name_not_empty
-    # The key here will be affected by feature flag 'arkose_labs_signup_challenge'
-    # When flag is disabled, the key will be 'user' because #check_captcha will remove 'new_' prefix
-    # When flag is enabled, #check_captcha will be skipped, so the key will have 'new_' prefix
     first_name = params.dig(resource_name, :first_name) || params.dig("new_#{resource_name}", :first_name)
     last_name = params.dig(resource_name, :last_name) || params.dig("new_#{resource_name}", :last_name)
 
@@ -216,7 +216,7 @@ class RegistrationsController < Devise::RegistrationsController
   def pending_approval?
     return false unless Gitlab::CurrentSettings.require_admin_approval_after_user_signup
 
-    resource.persisted? && resource.blocked_pending_approval?
+    resource.blocked_pending_approval?
   end
 
   def sign_up_params_attributes
@@ -270,9 +270,7 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   def set_invite_params
-    if resource.email.blank? && params[:invite_email].present?
-      resource.email = invite_email
-    end
+    resource.email = invite_email if resource.email.blank? && params[:invite_email].present?
   end
 
   def invite_email
@@ -304,10 +302,6 @@ class RegistrationsController < Devise::RegistrationsController
     current_user
   end
 
-  def record_arkose_data
-    # overridden by EE module
-  end
-
   def identity_verification_enabled?
     # overridden by EE module
     false
@@ -317,12 +311,12 @@ class RegistrationsController < Devise::RegistrationsController
     # overridden by EE module
   end
 
-  def send_custom_confirmation_instructions
-    # overridden by EE module
+  def arkose_labs_enabled?(user: nil) # rubocop:disable Lint/UnusedMethodArgument -- Param is unused here but used in EE override
+    false
   end
 
-  def arkose_labs_enabled?
-    false
+  def registration_tracking_label
+    # overridden by EE module
   end
 end
 

@@ -138,4 +138,12 @@ describe('url sync component', () => {
       expect(findButton().exists()).toBe(true);
     });
   });
+
+  it('emits the popstate event when window dispatches popstate', () => {
+    createComponent();
+
+    window.dispatchEvent(new Event('popstate'));
+
+    expect(wrapper.emitted('popstate')[0]).toHaveLength(1);
+  });
 });

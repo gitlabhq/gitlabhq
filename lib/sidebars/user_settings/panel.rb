@@ -37,6 +37,7 @@ module Sidebars
         add_menu(Sidebars::UserSettings::Menus::CommentTemplatesMenu.new(context))
         add_menu(Sidebars::UserSettings::Menus::ActiveSessionsMenu.new(context))
         add_menu(Sidebars::UserSettings::Menus::AuthenticationLogMenu.new(context))
+        add_menu(Sidebars::UserSettings::Menus::UsageQuotasMenu.new(context))
       end
     end
   end

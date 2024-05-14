@@ -48,7 +48,7 @@ RSpec.describe 'User visits their profile', feature_category: :user_profile do
       it 'shows expected content', :js do
         visit(user_path(user))
 
-        page.within ".user-profile-header" do
+        within_testid('user-profile-header') do
           expect(page).to have_content user.name
           expect(page).to have_content user.username
         end

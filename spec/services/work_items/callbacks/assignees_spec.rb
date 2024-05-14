@@ -4,8 +4,8 @@ require 'spec_helper'
 
 RSpec.describe WorkItems::Callbacks::Assignees, :freeze_time, feature_category: :portfolio_management do
   let_it_be(:reporter) { create(:user) }
-  let_it_be(:project) { create(:project, :private) }
-  let_it_be(:new_assignee) { create(:user) }
+  let_it_be(:project) { create(:project, :private, reporters: reporter) }
+  let_it_be(:new_assignee) { create(:user, guest_of: project) }
 
   let(:work_item) do
     create(:work_item, project: project, updated_at: 1.day.ago)
@@ -13,22 +13,13 @@ RSpec.describe WorkItems::Callbacks::Assignees, :freeze_time, feature_category: 
 
   let(:current_user) { reporter }
   let(:params) { { assignee_ids: [new_assignee.id] } }
+  let(:service) { described_class.new(issuable: work_item, current_user: current_user, params: params) }
 
-  before_all do
-    project.add_reporter(reporter)
-    project.add_guest(new_assignee)
-  end
-
-  describe '#before_update' do
-    let(:service) { described_class.new(issuable: work_item, current_user: current_user, params: params) }
-
-    subject(:before_update_callback) { service.before_update }
-
-    it 'updates the assignees and sets updated_at to the current time' do
-      before_update_callback
+  shared_examples 'assignee callback' do
+    it 'updates the assignees' do
+      assignees_callback
 
       expect(work_item.assignee_ids).to contain_exactly(new_assignee.id)
-      expect(work_item.updated_at).to be_like_time(Time.current)
     end
 
     context 'when passing an empty array' do
@@ -39,10 +30,9 @@ RSpec.describe WorkItems::Callbacks::Assignees, :freeze_time, feature_category: 
       end
 
       it 'removes existing assignees' do
-        before_update_callback
+        assignees_callback
 
         expect(work_item.assignee_ids).to be_empty
-        expect(work_item.updated_at).to be_like_time(Time.current)
       end
     end
 
@@ -50,10 +40,9 @@ RSpec.describe WorkItems::Callbacks::Assignees, :freeze_time, feature_category: 
       let(:current_user) { create(:user) }
 
       it 'does not update the assignees' do
-        before_update_callback
+        assignees_callback
 
         expect(work_item.assignee_ids).to be_empty
-        expect(work_item.updated_at).to be_like_time(1.day.ago)
       end
     end
 
@@ -66,10 +55,9 @@ RSpec.describe WorkItems::Callbacks::Assignees, :freeze_time, feature_category: 
         end
 
         it 'sets all the given assignees' do
-          before_update_callback
+          assignees_callback
 
           expect(work_item.assignee_ids).to contain_exactly(new_assignee.id, reporter.id)
-          expect(work_item.updated_at).to be_like_time(Time.current)
         end
       end
 
@@ -79,10 +67,9 @@ RSpec.describe WorkItems::Callbacks::Assignees, :freeze_time, feature_category: 
         end
 
         it 'only sets the first assignee' do
-          before_update_callback
+          assignees_callback
 
           expect(work_item.assignee_ids).to contain_exactly(new_assignee.id)
-          expect(work_item.updated_at).to be_like_time(Time.current)
         end
       end
     end
@@ -91,10 +78,9 @@ RSpec.describe WorkItems::Callbacks::Assignees, :freeze_time, feature_category: 
       let(:params) { { assignee_ids: [create(:user).id] } }
 
       it 'does not set the assignee' do
-        before_update_callback
+        assignees_callback
 
         expect(work_item.assignee_ids).to be_empty
-        expect(work_item.updated_at).to be_like_time(1.day.ago)
       end
     end
 
@@ -104,10 +90,9 @@ RSpec.describe WorkItems::Callbacks::Assignees, :freeze_time, feature_category: 
       end
 
       it 'does not touch updated_at' do
-        before_update_callback
+        assignees_callback
 
         expect(work_item.assignee_ids).to contain_exactly(new_assignee.id)
-        expect(work_item.updated_at).to be_like_time(1.day.ago)
       end
     end
 
@@ -120,10 +105,22 @@ RSpec.describe WorkItems::Callbacks::Assignees, :freeze_time, feature_category: 
       end
 
       it "resets the work item's assignees" do
-        before_update_callback
+        assignees_callback
 
         expect(work_item.assignee_ids).to be_empty
       end
     end
+  end
+
+  describe '#before_create' do
+    subject(:assignees_callback) { service.before_create }
+
+    it_behaves_like 'assignee callback'
+  end
+
+  describe '#before_update' do
+    subject(:assignees_callback) { service.before_update }
+
+    it_behaves_like 'assignee callback'
   end
 end

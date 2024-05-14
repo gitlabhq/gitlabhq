@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Available resources for the [GitLab REST API](index.md) can be grouped in the following contexts:
 
@@ -108,7 +108,6 @@ The following API resources are available in the project context:
 | [Tags](tags.md)                                                         | `/projects/:id/repository/tags`                                                                                                                                                                       |
 | [Terraform modules](packages/terraform-modules.md)                      | `/projects/:id/packages/terraform/modules` (also available standalone)                                                                                                                                |
 | [User-starred metrics dashboards](metrics_user_starred_dashboards.md )  | `/projects/:id/metrics/user_starred_dashboards`                                                                                                                                                       |
-| [Visual Review discussions](visual_review_discussions.md)               | `/projects/:id/merge_requests/:merge_request_id/visual_review_discussions`                                                                                                                            |
 | [Vulnerabilities](vulnerabilities.md)                                   | `/vulnerabilities/:id`                                                                                                                                                                                |
 | [Vulnerability exports](vulnerability_exports.md)                       | `/projects/:id/vulnerability_exports`                                                                                                                                                                 |
 | [Vulnerability findings](vulnerability_findings.md)                     | `/projects/:id/vulnerability_findings`                                                                                                                                                                |

@@ -14,6 +14,7 @@ module Ci
       partition_foreign_key: :partition_id,
       inverse_of: :job_annotations
 
+    query_constraints :id, :partition_id
     partitionable scope: :job, partitioned: true
 
     validates :data, json_schema: { filename: 'ci_job_annotation_data' }

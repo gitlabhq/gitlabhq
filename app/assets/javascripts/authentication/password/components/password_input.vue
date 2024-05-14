@@ -81,7 +81,7 @@ export default {
     />
     <gl-button
       v-gl-tooltip="toggleVisibilityLabel"
-      class="input-icon-right gl-right-0!"
+      class="input-icon-right !gl-right-0"
       category="tertiary"
       :aria-label="toggleVisibilityLabel"
       :icon="toggleVisibilityIcon"

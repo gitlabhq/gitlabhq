@@ -7,6 +7,18 @@ RSpec.describe WikiPage, feature_category: :wiki do
   let(:container) { create(:project) }
   let(:wiki) { container.wiki }
 
+  def create_file_in_repository(path:)
+    wiki.create_wiki_repository
+    wiki.repository.create_file(
+      user, path, 'test content',
+      branch_name: wiki.default_branch,
+      message: 'test commit'
+    )
+
+    title = Pathname(path).sub_ext('').to_s
+    wiki.find_page(title)
+  end
+
   def create_wiki_page(container, attrs = {})
     page = build_wiki_page(container, attrs)
 
@@ -411,6 +423,26 @@ RSpec.describe WikiPage, feature_category: :wiki do
         expect(wiki.find_page(title).front_matter).to eq({ xxx: "abc" })
       end
     end
+
+    context "with existing page" do
+      let(:title) { 'Existing Page' }
+
+      it 'do not create the page with the same title' do
+        page = create_wiki_page(container, title: title, content: 'content')
+
+        subject.create(attributes.merge(title: title))
+        expect(subject.create(attributes.merge(title: title))).to be_falsy
+        expect(wiki.find_page(title).content).to eq(page.content)
+      end
+
+      it 'do not create the page with the same title, even if the orginal path contains spaces' do
+        page = create_file_in_repository(path: "#{title}.md")
+
+        subject.create(attributes.merge(title: title))
+        expect(subject.create(attributes.merge(title: title))).to be_falsy
+        expect(wiki.find_page(title).content).to eq(page.content)
+      end
+    end
   end
 
   describe "dot in the title" do
@@ -593,6 +625,14 @@ RSpec.describe WikiPage, feature_category: :wiki do
         expect(subject.content).to eq 'new_content'
       end
 
+      it 'raises an error if the page already exists even if it contains spaces in the orginal path' do
+        create_file_in_repository(path: 'foo/Existing Page.md')
+
+        expect { subject.update(title: 'foo/Existing Page', content: 'new_content') }.to raise_error(WikiPage::PageRenameError)
+        expect(subject.title).to eq original_title
+        expect(subject.content).to eq 'new_content'
+      end
+
       it 'updates the content and moves the file' do
         new_title = 'foo/Other Page'
         new_content = 'new_content'
@@ -635,6 +675,16 @@ RSpec.describe WikiPage, feature_category: :wiki do
 
           expect(page.update(title: 'Another Existing Page', content: 'new_content')).to be_truthy
           expect(page.slug).to eq original_path
+        end
+
+        it 'moves the page to the another folder if the original path has spaces' do
+          page = create_file_in_repository(path: 'Existing Folder/Existing Page.md')
+
+          original_path = page.slug
+
+          expect(page.update(title: 'Existing Page', content: 'new_content')).to be_truthy
+          expect(page.slug).not_to eq original_path
+          expect(page.slug).to eq "Existing-Folder/Existing-Page"
         end
       end
 
@@ -1015,10 +1065,10 @@ RSpec.describe WikiPage, feature_category: :wiki do
   describe '#hook_attrs' do
     subject { build_wiki_page(container) }
 
-    it 'adds absolute urls for images in the content' do
-      subject.attributes[:content] = 'test![WikiPage_Image](/uploads/abc/WikiPage_Image.png)'
-
-      expect(subject.hook_attrs['content']).to eq("test![WikiPage_Image](#{Settings.gitlab.url}/uploads/abc/WikiPage_Image.png)")
+    it 'includes specific attributes' do
+      keys = subject.hook_attrs.keys
+      expect(keys).not_to include(:content)
+      expect(keys).to include(:version_id)
     end
   end
 

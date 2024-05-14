@@ -17,7 +17,9 @@ class Groups::GroupMembersController < Groups::ApplicationController
   before_action :authorize_read_group_member!, only: :index
 
   before_action only: [:index] do
+    push_frontend_feature_flag(:bulk_import_user_mapping, @group)
     push_frontend_feature_flag(:service_accounts_crud, @group)
+    push_frontend_feature_flag(:webui_members_inherited_users, current_user)
   end
 
   skip_before_action :check_two_factor_requirement, only: :leave
@@ -33,7 +35,11 @@ class Groups::GroupMembersController < Groups::ApplicationController
 
     if can?(current_user, :admin_group_member, @group)
       @invited_members = invited_members
-      @invited_members = @invited_members.search_invite_email(params[:search_invited]) if params[:search_invited].present?
+
+      if params[:search_invited].present?
+        @invited_members = @invited_members.search_invite_email(params[:search_invited])
+      end
+
       @invited_members = present_invited_members(@invited_members)
     end
 

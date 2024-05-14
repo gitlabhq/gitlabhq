@@ -27,6 +27,19 @@ RSpec.describe RuboCop::Cop::SidekiqApiUsage do
       PATTERN
     end
 
+    it 'registers no offences for calling .via' do
+      expect_no_offenses(<<~PATTERN)
+        Sidekiq::Client.via { "testing" }
+      PATTERN
+    end
+
+    it 'registers offence for calling other Sidekiq::Client methods' do
+      expect_offense(<<~PATTERN)
+        Sidekiq::Client.push('test')
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{msg}
+      PATTERN
+    end
+
     it 'registers offence for calling other Sidekiq::Worker methods' do
       expect_offense(<<~PATTERN)
         Sidekiq::Worker.drain_all

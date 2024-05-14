@@ -74,30 +74,23 @@ module ExtractsRef
   # that will be handled as well.
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def assign_ref_vars
-    @id, @ref, @path = extract_ref_path
-    @repo = repository_container.repository
-    raise InvalidPathError if @ref.match?(/\s/)
+    ref_extractor = ExtractsRef::RefExtractor.new(repository_container, params.permit(:id, :ref, :path, :ref_type))
+    ref_extractor.extract!
+
+    @id = ref_extractor.id
+    @ref = ref_extractor.ref
+    @path = ref_extractor.path
+    @repo = ref_extractor.repo
 
     return unless @ref.present?
 
-    @commit = if ref_type
-                @fully_qualified_ref = ExtractsRef::RefExtractor.qualify_ref(@ref, ref_type)
-                @repo.commit(@fully_qualified_ref)
-              else
-                @repo.commit(@ref)
-              end
+    @commit = ref_extractor.commit
+    @fully_qualified_ref = ref_extractor.fully_qualified_ref
   end
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
   def tree
     @tree ||= @repo.tree(@commit.id, @path) # rubocop:disable Gitlab/ModuleWithInstanceVariables
-  end
-
-  def extract_ref_path
-    id = get_id
-    ref, path = extract_ref(id)
-
-    [id, ref, path]
   end
 
   def ref_type
@@ -110,7 +103,7 @@ module ExtractsRef
     return ['', ''] unless repository_container
 
     # If the ref appears to be a SHA, we're done, just split the string
-    return $~.captures if id =~ /^(\h{40})(.+)/
+    return $~.captures if id =~ /^(\h{40}\h{24}?)(.*)/
 
     # No slash means we must have a ref and no path
     return [id, ''] unless id.include?('/')

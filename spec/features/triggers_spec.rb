@@ -40,7 +40,7 @@ RSpec.describe 'Triggers', :js, feature_category: :continuous_integration do
         click_button 'Create pipeline trigger token'
 
         aggregate_failures 'display creation notice and trigger is created' do
-          expect(page.find('[data-testid="alert-info"]')).to have_content 'Trigger token was created successfully.'
+          expect(find_by_testid('alert-info')).to have_content 'Trigger token was created successfully.'
           expect(page.find('.triggers-list')).to have_content 'trigger desc'
           expect(page.find('.triggers-list .trigger-owner')).to have_content user.name
         end
@@ -93,7 +93,7 @@ RSpec.describe 'Triggers', :js, feature_category: :continuous_integration do
         click_button 'Save trigger'
 
         aggregate_failures 'display update notice and trigger is updated' do
-          expect(page.find('[data-testid="alert-info"]')).to have_content 'Trigger token was successfully updated.'
+          expect(find_by_testid('alert-info')).to have_content 'Trigger token was successfully updated.'
           expect(page.find('.triggers-list')).to have_content new_trigger_title
           expect(page.find('.triggers-list .trigger-owner')).to have_content user.name
         end
@@ -108,18 +108,41 @@ RSpec.describe 'Triggers', :js, feature_category: :continuous_integration do
 
       it 'button "Revoke" has correct alert' do
         expected_alert = 'By revoking a trigger you will break any processes making use of it. Are you sure?'
-        expect(page.find('[data-testid="trigger_revoke_button"]')['data-confirm']).to eq expected_alert
+        expect(find_by_testid('trigger_revoke_button')['data-confirm']).to eq expected_alert
       end
 
       it 'revoke trigger' do
         # See if "Revoke" on trigger works post trigger creation
         accept_gl_confirm(button_text: 'Revoke') do
-          find('[data-testid="trigger_revoke_button"]').send_keys(:return)
+          find_by_testid('trigger_revoke_button').send_keys(:return)
         end
 
         aggregate_failures 'trigger is removed' do
-          expect(page.find('[data-testid="alert-info"]')).to have_content 'Trigger removed'
+          expect(find_by_testid('alert-info')).to have_content 'Trigger token removed'
           expect(page).to have_css('[data-testid="no_triggers_content"]')
+        end
+      end
+
+      context 'when an error occurs' do
+        before do
+          allow_next_instance_of(Ci::PipelineTriggers::DestroyService) do |instance|
+            allow(instance).to receive(:execute).and_return(
+              ServiceResponse.error(
+                message: 'An error occurred',
+                reason: :validation_error
+              )
+            )
+          end
+
+          accept_gl_confirm(button_text: 'Revoke') do
+            find_by_testid('trigger_revoke_button').send_keys(:return)
+          end
+        end
+
+        it 'flashes an error' do
+          expect(page.find('.flash-container')).to(
+            have_content("An error occurred")
+          )
         end
       end
     end
@@ -146,7 +169,7 @@ RSpec.describe 'Triggers', :js, feature_category: :continuous_integration do
 
         expect(page.find('.triggers-list')).to have_content('*' * 47)
 
-        page.find('[data-testid="reveal-hide-values-button"]').click
+        find_by_testid('reveal-hide-values-button').click
 
         expect(page.find('.triggers-list')).to have_content(@project.triggers.first.token)
       end
@@ -156,7 +179,7 @@ RSpec.describe 'Triggers', :js, feature_category: :continuous_integration do
         create(:ci_trigger, owner: user2, project: @project, description: trigger_title)
         visit project_settings_ci_cd_path(@project)
 
-        page.find('[data-testid="reveal-hide-values-button"]').click
+        find_by_testid('reveal-hide-values-button').click
 
         aggregate_failures 'shows truncated token, no clipboard button and no edit link' do
           expect(page.find('.triggers-list')).to have_content(@project.triggers.first.token[0..3])
@@ -170,7 +193,7 @@ RSpec.describe 'Triggers', :js, feature_category: :continuous_integration do
         create(:ci_trigger, owner: user, project: @project, description: trigger_title)
         visit project_settings_ci_cd_path(@project)
 
-        page.find('[data-testid="reveal-hide-values-button"]').click
+        find_by_testid('reveal-hide-values-button').click
 
         aggregate_failures 'shows full token, clipboard button and edit link' do
           expect(page.find('.triggers-list')).to have_content @project.triggers.first.token

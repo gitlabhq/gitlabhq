@@ -12,7 +12,7 @@ class Projects::Snippets::ApplicationController < Projects::ApplicationControlle
   # because ProjectSnippets are checked against the project rather
   # than the user
   def authorize_create_snippet!
-    return render_404 unless can?(current_user, :create_snippet, project)
+    render_404 unless can?(current_user, :create_snippet, project)
   end
 
   def snippet_klass

@@ -1,0 +1,24 @@
+#import "~/graphql_shared/fragments/page_info.fragment.graphql"
+
+query getProjectContainerProtectionRules(
+  $projectPath: ID!
+  $first: Int
+  $last: Int
+  $after: String
+  $before: String
+) {
+  project(fullPath: $projectPath) {
+    id
+    containerRegistryProtectionRules(first: $first, last: $last, after: $after, before: $before) {
+      nodes {
+        id
+        repositoryPathPattern
+        minimumAccessLevelForPush
+        minimumAccessLevelForDelete
+      }
+      pageInfo {
+        ...PageInfo
+      }
+    }
+  }
+}

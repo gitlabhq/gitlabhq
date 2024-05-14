@@ -130,7 +130,10 @@ module Gitlab
         end
 
         def handle_section_end(scanner, section, timestamp)
-          return unless @state.section_open?(section)
+          unless @state.section_open?(section)
+            @state.offset += scanner.matched_size
+            return
+          end
 
           # We flush the content to make the end
           # of section to be a new line

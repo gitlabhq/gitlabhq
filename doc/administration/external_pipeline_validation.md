@@ -38,6 +38,8 @@ required number of seconds.
 
 ## Payload schema
 
+> - `tag_list` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335904) in GitLab 16.11.
+
 ```json
 {
   "type": "object",
@@ -118,6 +120,7 @@ required number of seconds.
           "name",
           "stage",
           "image",
+          "tag_list",
           "services",
           "script"
         ],
@@ -125,6 +128,7 @@ required number of seconds.
           "name": { "type": "string" },
           "stage": { "type": "string" },
           "image": { "type": ["string", "null"] },
+          "tag_list": { "type": ["array", "null"] },
           "services": {
             "type": ["array", "null"],
             "items": { "type": "string" }

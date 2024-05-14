@@ -11,7 +11,7 @@ RSpec.describe Resolvers::Clusters::AgentActivityEventsResolver do
   describe '#resolve' do
     let_it_be(:agent) { create(:cluster_agent) }
 
-    let(:user) { create(:user, maintainer_projects: [agent.project]) }
+    let(:user) { create(:user, maintainer_of: agent.project) }
     let(:ctx) { { current_user: user } }
     let(:events) { double }
 
@@ -26,7 +26,7 @@ RSpec.describe Resolvers::Clusters::AgentActivityEventsResolver do
     end
 
     context 'user does not have permission' do
-      let(:user) { create(:user, developer_projects: [agent.project]) }
+      let(:user) { create(:user, developer_of: agent.project) }
 
       it { is_expected.to be_empty }
     end

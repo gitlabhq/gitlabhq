@@ -22,6 +22,7 @@ describe('buildClient', () => {
   const metricsSearchUrl = 'https://example.com/metrics/search';
   const metricsSearchMetadataUrl = 'https://example.com/metrics/searchmetadata';
   const logsSearchUrl = 'https://example.com/metrics/logs/search';
+  const logsSearchMetadataUrl = 'https://example.com/metrics/logs/search';
   const FETCHING_TRACES_ERROR = 'traces are missing/invalid in the response';
 
   const apiConfig = {
@@ -34,6 +35,7 @@ describe('buildClient', () => {
     metricsSearchUrl,
     metricsSearchMetadataUrl,
     logsSearchUrl,
+    logsSearchMetadataUrl,
   };
 
   const getQueryParam = () => decodeURIComponent(axios.get.mock.calls[0][1].params.toString());
@@ -201,6 +203,19 @@ describe('buildClient', () => {
 
       await expect(client.fetchTraces()).rejects.toThrow(FETCHING_TRACES_ERROR);
       expectErrorToBeReported(new Error(FETCHING_TRACES_ERROR));
+    });
+
+    it('passes the abort controller to axios', async () => {
+      axiosMock.onGet(tracingUrl).reply(200, { traces: [] });
+
+      const abortController = new AbortController();
+      await client.fetchTraces({ abortController });
+
+      expect(axios.get).toHaveBeenCalledWith(tracingUrl, {
+        withCredentials: true,
+        params: expect.any(URLSearchParams),
+        signal: abortController.signal,
+      });
     });
 
     describe('sort order', () => {
@@ -429,6 +444,19 @@ describe('buildClient', () => {
       axiosMock.onGet(tracingAnalyticsUrl).reply(200, {});
 
       expect(await client.fetchTracesAnalytics()).toEqual([]);
+    });
+
+    it('passes the abort controller to axios', async () => {
+      axiosMock.onGet(tracingAnalyticsUrl).reply(200, {});
+
+      const abortController = new AbortController();
+      await client.fetchTracesAnalytics({ abortController });
+
+      expect(axios.get).toHaveBeenCalledWith(tracingAnalyticsUrl, {
+        withCredentials: true,
+        params: expect.any(URLSearchParams),
+        signal: abortController.signal,
+      });
     });
 
     describe('query filter', () => {
@@ -662,8 +690,18 @@ describe('buildClient', () => {
     it('fetches metrics from the metrics URL', async () => {
       const mockResponse = {
         metrics: [
-          { name: 'metric A', description: 'a counter metric called A', type: 'COUNTER' },
-          { name: 'metric B', description: 'a gauge metric called B', type: 'GAUGE' },
+          {
+            name: 'metric A',
+            description: 'a counter metric called A',
+            type: 'COUNTER',
+            attributes: [],
+          },
+          {
+            name: 'metric B',
+            description: 'a gauge metric called B',
+            type: 'GAUGE',
+            attributes: [],
+          },
         ],
       };
 
@@ -692,11 +730,11 @@ describe('buildClient', () => {
         expect(getQueryParam()).toBe('');
       });
 
-      it('sets the start_with query param based on the search filter', async () => {
+      it('sets the search query param based on the search filter', async () => {
         await client.fetchMetrics({
           filters: { search: [{ value: 'foo' }, { value: 'bar' }, { value: ' ' }] },
         });
-        expect(getQueryParam()).toBe('starts_with=foo+bar');
+        expect(getQueryParam()).toBe('search=foo+bar');
       });
 
       it('ignores empty search', async () => {
@@ -733,7 +771,7 @@ describe('buildClient', () => {
           filters: { search: [{ value: 'foo' }] },
           limit: 50,
         });
-        expect(getQueryParam()).toBe('starts_with=foo&limit=50');
+        expect(getQueryParam()).toBe('search=foo&limit=50');
       });
 
       it('does not add the search limit param if the search filter is missing', async () => {
@@ -749,6 +787,20 @@ describe('buildClient', () => {
           search: [{ value: ' ' }, { value: '' }, { value: null }, { value: undefined }],
         });
         expect(getQueryParam()).toBe('');
+      });
+
+      it('handles attribute filter', async () => {
+        await client.fetchMetrics({
+          filters: {
+            attribute: [
+              { value: 'foo.bar', operator: '=' },
+              { value: 'foo.baz', operator: '=' },
+              { value: 'not-supported', operator: '!=' },
+            ],
+            unsupported: [{ value: 'foo.bar', operator: '=' }],
+          },
+        });
+        expect(getQueryParam()).toBe('attributes=foo.bar&attributes=foo.baz');
       });
     });
 
@@ -782,6 +834,31 @@ describe('buildClient', () => {
       expect(result).toEqual(data.results);
     });
 
+    it('passes the abort controller to axios', async () => {
+      axiosMock.onGet(metricsSearchUrl).reply(200, { results: [] });
+
+      const abortController = new AbortController();
+      await client.fetchMetric('name', 'type', { abortController });
+
+      expect(axios.get).toHaveBeenCalledWith(metricsSearchUrl, {
+        withCredentials: true,
+        params: new URLSearchParams({ mname: 'name', mtype: 'type' }),
+        signal: abortController.signal,
+      });
+    });
+
+    it('sets the visual param when specified', async () => {
+      axiosMock.onGet(metricsSearchUrl).reply(200, { results: [] });
+
+      await client.fetchMetric('name', 'type', { visual: 'heatmap' });
+
+      expect(axios.get).toHaveBeenCalledTimes(1);
+      expect(axios.get).toHaveBeenCalledWith(metricsSearchUrl, {
+        withCredentials: true,
+        params: new URLSearchParams({ mname: 'name', mtype: 'type', mvisual: 'heatmap' }),
+      });
+    });
+
     describe('query filter params', () => {
       beforeEach(() => {
         axiosMock.onGet(metricsSearchUrl).reply(200, { results: [] });
@@ -805,23 +882,11 @@ describe('buildClient', () => {
           });
           expect(getQueryParam()).toBe(
             'mname=name&mtype=type' +
-              '&attr_1=foo&not[attr_1]=bar' +
-              '&like[attr_2]=foo&not_like[attr_2]=bar',
+              '&attrs=attr_1,eq,foo' +
+              '&attrs=attr_1,neq,bar' +
+              '&attrs=attr_2,re,foo' +
+              '&attrs=attr_2,nre,bar',
           );
-        });
-
-        it('handles repeated params', async () => {
-          await client.fetchMetric('name', 'type', {
-            filters: {
-              attributes: {
-                attr_1: [
-                  { operator: '=', value: 'v1' },
-                  { operator: '=', value: 'v2' },
-                ],
-              },
-            },
-          });
-          expect(getQueryParam()).toContain('attr_1=v1&attr_1=v2');
         });
 
         it('ignores empty filters', async () => {
@@ -1016,40 +1081,59 @@ describe('buildClient', () => {
   });
 
   describe('fetchLogs', () => {
-    const FETCHING_LOGS_ERROR = 'logs are missing/invalid in the response';
-    it('fetches logs from the tracing URL', async () => {
-      const mockResponse = {
-        results: [
-          {
-            timestamp: '2024-01-28T10:36:08.2960655Z',
-            trace_id: 'trace-id',
-            span_id: 'span-id',
-            trace_flags: 1,
-            severity_text: 'Information',
-            severity_number: 1,
-            service_name: 'a/service/name',
-            body: 'GetCartAsync called with userId={userId} ',
-            resource_attributes: {
-              'container.id': '8aae63236c224245383acd38611a4e32d09b7630573421fcc801918eda378bf5',
-              'k8s.deployment.name': 'otel-demo-cartservice',
-              'k8s.namespace.name': 'otel-demo-app',
-            },
-            log_attributes: {
-              userId: '',
-            },
+    const mockResponse = {
+      results: [
+        {
+          timestamp: '2024-01-28T10:36:08.2960655Z',
+          trace_id: 'trace-id',
+          span_id: 'span-id',
+          trace_flags: 1,
+          severity_text: 'Information',
+          severity_number: 1,
+          service_name: 'a/service/name',
+          body: 'GetCartAsync called with userId={userId} ',
+          resource_attributes: {
+            'container.id': '8aae63236c224245383acd38611a4e32d09b7630573421fcc801918eda378bf5',
+            'k8s.deployment.name': 'otel-demo-cartservice',
+            'k8s.namespace.name': 'otel-demo-app',
           },
-        ],
-      };
+          log_attributes: {
+            userId: '',
+          },
+        },
+      ],
+      next_page_token: 'test-token',
+    };
+    const FETCHING_LOGS_ERROR = 'logs are missing/invalid in the response';
 
+    beforeEach(() => {
       axiosMock.onGet(logsSearchUrl).reply(200, mockResponse);
+    });
 
+    it('fetches logs from the logs URL', async () => {
       const result = await client.fetchLogs();
 
       expect(axios.get).toHaveBeenCalledTimes(1);
       expect(axios.get).toHaveBeenCalledWith(logsSearchUrl, {
         withCredentials: true,
+        params: expect.any(URLSearchParams),
       });
-      expect(result).toEqual(mockResponse.results);
+      expect(result).toEqual({
+        logs: mockResponse.results,
+        nextPageToken: mockResponse.next_page_token,
+      });
+    });
+
+    it('appends page_token if specified', async () => {
+      await client.fetchLogs({ pageToken: 'page-token' });
+
+      expect(getQueryParam()).toContain('page_token=page-token');
+    });
+
+    it('appends page_size if specified', async () => {
+      await client.fetchLogs({ pageSize: 10 });
+
+      expect(getQueryParam()).toContain('page_size=10');
     });
 
     it('rejects if logs are missing', async () => {
@@ -1060,10 +1144,127 @@ describe('buildClient', () => {
     });
 
     it('rejects if logs are invalid', async () => {
-      axiosMock.onGet(logsSearchUrl).reply(200, { logs: 'invalid' });
+      axiosMock.onGet(logsSearchUrl).reply(200, { results: 'invalid' });
 
       await expect(client.fetchLogs()).rejects.toThrow(FETCHING_LOGS_ERROR);
       expectErrorToBeReported(new Error(FETCHING_LOGS_ERROR));
+    });
+
+    describe('filters', () => {
+      describe('date range filter', () => {
+        it('handle predefined date range value', async () => {
+          await client.fetchLogs({
+            filters: { dateRange: { value: '5m' } },
+          });
+          expect(getQueryParam()).toContain(`period=5m`);
+        });
+
+        it('handle custom date range value', async () => {
+          await client.fetchLogs({
+            filters: {
+              dateRange: {
+                endDate: new Date('2020-07-06'),
+                startDate: new Date('2020-07-05'),
+                value: 'custom',
+              },
+            },
+          });
+          expect(getQueryParam()).toContain(
+            'start_time=2020-07-05T00:00:00.000Z&end_time=2020-07-06T00:00:00.000Z',
+          );
+        });
+
+        it('handles exact timestamps', async () => {
+          await client.fetchLogs({
+            filters: {
+              dateRange: {
+                timestamp: '2024-02-19T16:10:15.4433398Z',
+                endDate: new Date('2024-02-19'),
+                startDate: new Date('2024-02-19'),
+                value: 'custom',
+              },
+            },
+          });
+          expect(getQueryParam()).toContain(
+            'start_time=2024-02-19T16:10:15.4433398Z&end_time=2024-02-19T16:10:15.4433398Z',
+          );
+        });
+      });
+
+      describe('attributes filters', () => {
+        it('converts filter to proper query params', async () => {
+          await client.fetchLogs({
+            filters: {
+              attributes: {
+                service: [
+                  { operator: '=', value: 'serviceName' },
+                  { operator: '!=', value: 'serviceName2' },
+                ],
+                severityName: [
+                  { operator: '=', value: 'info' },
+                  { operator: '!=', value: 'warning' },
+                ],
+                severityNumber: [
+                  { operator: '=', value: '9' },
+                  { operator: '!=', value: '10' },
+                ],
+                traceId: [{ operator: '=', value: 'traceId' }],
+                spanId: [{ operator: '=', value: 'spanId' }],
+                fingerprint: [{ operator: '=', value: 'fingerprint' }],
+                traceFlags: [
+                  { operator: '=', value: '1' },
+                  { operator: '!=', value: '2' },
+                ],
+                attribute: [{ operator: '=', value: 'attr=bar' }],
+                resourceAttribute: [{ operator: '=', value: 'res=foo' }],
+                search: [{ value: 'some-search' }],
+              },
+            },
+          });
+          expect(getQueryParam()).toEqual(
+            `service_name=serviceName&not[service_name]=serviceName2` +
+              `&severity_name=info&not[severity_name]=warning` +
+              `&severity_number=9&not[severity_number]=10` +
+              `&trace_id=traceId` +
+              `&span_id=spanId` +
+              `&fingerprint=fingerprint` +
+              `&trace_flags=1&not[trace_flags]=2` +
+              `&log_attr_name=attr&log_attr_value=bar` +
+              `&res_attr_name=res&res_attr_value=foo` +
+              `&body=some-search`,
+          );
+        });
+
+        it('ignores unsupported operators', async () => {
+          await client.fetchLogs({
+            filters: {
+              attributes: {
+                traceId: [{ operator: '!=', value: 'traceId2' }],
+                spanId: [{ operator: '!=', value: 'spanId2' }],
+                fingerprint: [{ operator: '!=', value: 'fingerprint2' }],
+                attribute: [{ operator: '!=', value: 'bar' }],
+                resourceAttribute: [{ operator: '!=', value: 'resourceAttribute2' }],
+                unsupported: [{ value: 'something', operator: '=' }],
+              },
+            },
+          });
+          expect(getQueryParam()).toEqual('');
+        });
+      });
+
+      it('ignores empty filter', async () => {
+        await client.fetchLogs({
+          filters: { attributes: {}, dateRange: {} },
+        });
+        expect(getQueryParam()).toBe('');
+      });
+
+      it('ignores undefined filter', async () => {
+        await client.fetchLogs({
+          filters: { dateRange: undefined, attributes: undefined },
+        });
+        expect(getQueryParam()).toBe('');
+      });
     });
   });
 });

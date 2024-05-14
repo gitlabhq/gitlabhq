@@ -9,12 +9,13 @@ class UserCustomAttribute < ApplicationRecord
   scope :by_key, ->(key) { where(key: key) }
   scope :by_user_id, ->(user_id) { where(user_id: user_id) }
   scope :by_updated_at, ->(updated_at) { where(updated_at: updated_at) }
-  scope :arkose_sessions, -> { by_key('arkose_session') }
+  scope :arkose_sessions, -> { by_key(ARKOSE_SESSION) }
   scope :trusted_with_spam, -> { by_key(TRUSTED_BY) }
 
   BLOCKED_BY = 'blocked_by'
   UNBLOCKED_BY = 'unblocked_by'
   ARKOSE_RISK_BAND = 'arkose_risk_band'
+  ARKOSE_SESSION = 'arkose_session'
   AUTO_BANNED_BY_ABUSE_REPORT_ID = 'auto_banned_by_abuse_report_id'
   AUTO_BANNED_BY_SPAM_LOG_ID = 'auto_banned_by_spam_log_id'
   TRUSTED_BY = 'trusted_by'

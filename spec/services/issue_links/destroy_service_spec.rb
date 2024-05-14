@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe IssueLinks::DestroyService, feature_category: :team_planning do
   describe '#execute' do
     let_it_be(:project) { create(:project_empty_repo, :private) }
-    let_it_be(:reporter) { create(:user).tap { |user| project.add_reporter(user) } }
+    let_it_be(:reporter) { create(:user, reporter_of: project) }
     let_it_be(:issue_a) { create(:issue, project: project) }
     let_it_be(:issue_b) { create(:issue, project: project) }
 

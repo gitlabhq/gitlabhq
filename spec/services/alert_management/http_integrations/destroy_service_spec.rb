@@ -5,16 +5,12 @@ require 'spec_helper'
 RSpec.describe AlertManagement::HttpIntegrations::DestroyService, feature_category: :incident_management do
   let_it_be(:user_with_permissions) { create(:user) }
   let_it_be(:user_without_permissions) { create(:user) }
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project) { create(:project, maintainers: user_with_permissions) }
 
   let!(:integration) { create(:alert_management_http_integration, project: project) }
   let(:current_user) { user_with_permissions }
   let(:params) { {} }
   let(:service) { described_class.new(integration, current_user) }
-
-  before_all do
-    project.add_maintainer(user_with_permissions)
-  end
 
   describe '#execute' do
     shared_examples 'error response' do |message|

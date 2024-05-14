@@ -369,6 +369,103 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state,
       end
     end
 
+    context 'when custom_webhook_template is set' do
+      before do
+        stub_full_request(project_hook.url, method: :post)
+      end
+
+      context 'when template is valid' do
+        before do
+          project_hook.custom_webhook_template = '{"before":"{{before}}"}'
+        end
+
+        it 'renders custom_webhook_template for body' do
+          service_instance.execute
+
+          expect(WebMock).to have_requested(:post, stubbed_hostname(project_hook.url))
+            .with(headers: headers, body: '{"before":"oldrev"}')
+            .once
+        end
+
+        context 'when using nested values' do
+          let(:data) do
+            { before: 'before', nested: { key: 'value' } }
+          end
+
+          before do
+            project_hook.custom_webhook_template = '{"before":"{{before}}","nested_key":"{{nested.key}}"}'
+          end
+
+          it 'renders custom_webhook_template for body' do
+            service_instance.execute
+
+            expect(WebMock).to have_requested(:post, stubbed_hostname(project_hook.url))
+              .with(headers: headers, body: '{"before":"before","nested_key":"value"}')
+              .once
+          end
+        end
+      end
+
+      context 'when template is invalid' do
+        before do
+          project_hook.custom_webhook_template = '{"test":"{{event}"}'
+        end
+
+        it 'renders without problems', :aggregate_failures do
+          service_instance.execute
+
+          expect(WebMock).to have_requested(:post, stubbed_hostname(project_hook.url))
+            .with(headers: headers, body: '{"test":"{{event}"}')
+            .once
+          expect { service_instance.execute }.not_to raise_error
+        end
+      end
+
+      context 'when template renders invalid json' do
+        before do
+          project_hook.custom_webhook_template = '{"test":"{{before}}}'
+        end
+
+        it 'handles the error', :aggregate_failures do
+          expect(service_instance.execute).to have_attributes(
+            status: :error,
+            message: 'Error while parsing rendered custom webhook template: quoted string not terminated ' \
+                     '(after test) at line 1, column 16 [parse.c:379] in \'{"test":"oldrev}'
+          )
+          expect { service_instance.execute }.not_to raise_error
+        end
+      end
+    end
+
+    context 'when custom_headers are set' do
+      let(:custom_headers) { { testing: 'blub', 'more-testing': 'whoops' } }
+
+      before do
+        stub_full_request(project_hook.url, method: :post)
+        project_hook.custom_headers = custom_headers
+      end
+
+      it 'sends request with custom headers' do
+        service_instance.execute
+
+        expect(WebMock).to have_requested(:post, stubbed_hostname(project_hook.url))
+          .with(headers: custom_headers.merge(headers))
+      end
+
+      context 'when overriding predefined headers' do
+        let(:custom_headers) do
+          { Gitlab::WebHooks::RecursionDetection::UUID::HEADER => 'some overriden value' }
+        end
+
+        it 'does not take user-provided value' do
+          service_instance.execute
+
+          expect(WebMock).to have_requested(:post, stubbed_hostname(project_hook.url))
+            .with(headers: Gitlab::WebHooks::RecursionDetection.header(project_hook))
+        end
+      end
+    end
+
     it 'handles 200 status code' do
       stub_full_request(project_hook.url, method: :post).to_return(status: 200, body: 'Success')
 
@@ -512,7 +609,7 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state,
 
       context 'with oversize response body' do
         let(:oversize_body) { 'a' * (described_class::RESPONSE_BODY_SIZE_LIMIT + 1) }
-        let(:stripped_body) { 'a' * (described_class::RESPONSE_BODY_SIZE_LIMIT - ellipsis.bytesize) + ellipsis }
+        let(:stripped_body) { ('a' * (described_class::RESPONSE_BODY_SIZE_LIMIT - ellipsis.bytesize)) + ellipsis }
 
         before do
           stub_full_request(project_hook.url, method: :post).to_return(status: 200, body: oversize_body)
@@ -566,7 +663,7 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state,
 
       context 'with oversize header' do
         let(:oversize_header) { 'a' * (described_class::RESPONSE_HEADERS_SIZE_LIMIT + 1) }
-        let(:stripped_header) { 'a' * (described_class::RESPONSE_HEADERS_SIZE_LIMIT - ellipsis.bytesize) + ellipsis }
+        let(:stripped_header) { ('a' * (described_class::RESPONSE_HEADERS_SIZE_LIMIT - ellipsis.bytesize)) + ellipsis }
         let(:response_headers) { { 'oversized-header' => oversize_header } }
         let(:expected_response_headers) { { 'Oversized-Header' => stripped_header } }
 

@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, Self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 HTTP Archive (HAR) format files are an industry standard for exchanging information about HTTP
 requests and HTTP responses. A HAR file's content is JSON formatted, containing browser interactions
@@ -129,7 +129,7 @@ Prerequisites:
 
 - Enable the `Develop` menu item.
   1. Open Safari's preferences. Press <kbd>Command</kbd>+<kbd>,</kbd> or from the menu, select
-     **Safari > Preferences...**.
+     **Safari > Preferences**.
   1. Select **Advanced** tab, then select `Show Develop menu item in menu bar`.
   1. Close the **Preferences** window.
 

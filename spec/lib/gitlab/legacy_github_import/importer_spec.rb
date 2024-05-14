@@ -179,6 +179,34 @@ RSpec.describe Gitlab::LegacyGithubImport::Importer, feature_category: :importer
 
       expect(project.import_state.last_error).to eq error.to_json
     end
+
+    context 'when comment has invalid created date' do
+      let(:comment_with_invalid_date) do
+        {
+          html_url: "#{api_root}/repos/octocat/Hello-World/issues/1347",
+          body: "I'm having a problem with this.",
+          user: octocat,
+          commit_id: nil,
+          diff_hunk: nil,
+          created_at: DateTime.strptime('1900-01-26T19:01:12Z'),
+          updated_at: updated_at
+        }
+      end
+
+      before do
+        allow_any_instance_of(Octokit::Client).to receive(:issues_comments).and_return([comment_with_invalid_date])
+      end
+
+      it 'stores error messages' do
+        importer.execute
+
+        expect(Gitlab::Json.parse(project.import_state.last_error)).to include({
+          'errors' => include(
+            { "errors" => "Validation failed: Created at The created date provided is too far in the past.", "type" => "comment", "url" => "#{api_root}/repos/octocat/Hello-World/issues/1347" }
+          )
+        })
+      end
+    end
   end
 
   shared_examples 'Gitlab::LegacyGithubImport unit-testing' do

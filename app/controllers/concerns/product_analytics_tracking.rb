@@ -13,7 +13,7 @@ module ProductAnalyticsTracking
       end
     end
 
-    def track_internal_event(*controller_actions, name:, conditions: nil)
+    def track_internal_event(*controller_actions, name:, conditions: nil, **event_args)
       custom_conditions = [:trackable_html_request?, *conditions]
 
       after_action only: controller_actions, if: custom_conditions do
@@ -21,7 +21,8 @@ module ProductAnalyticsTracking
           name,
           user: current_user,
           project: tracking_project_source,
-          namespace: tracking_namespace_source
+          namespace: tracking_namespace_source,
+          **event_args.compact
         )
       end
     end

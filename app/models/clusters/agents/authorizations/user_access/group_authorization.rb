@@ -23,7 +23,7 @@ module Clusters
           }
 
           scope :for_project, ->(project) {
-            where('all_groups_with_membership.traversal_ids @> ARRAY[?]', project.namespace_id)
+            where("all_groups_with_membership.traversal_ids @> '{?}'", project.namespace_id)
           }
 
           validates :config, json_schema: { filename: 'clusters_agents_authorizations_user_access_config' }

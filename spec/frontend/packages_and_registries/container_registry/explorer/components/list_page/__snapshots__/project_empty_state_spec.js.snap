@@ -38,7 +38,7 @@ exports[`Registry Project Empty state to match the default snapshot 1`] = `
     value=""
   >
     <gl-form-input-stub
-      class="gl-font-monospace!"
+      class="!gl-font-monospace"
       readonly=""
       type="text"
       value="bazbaz"
@@ -56,7 +56,7 @@ exports[`Registry Project Empty state to match the default snapshot 1`] = `
     value=""
   >
     <gl-form-input-stub
-      class="gl-font-monospace!"
+      class="!gl-font-monospace"
       readonly=""
       type="text"
       value="foofoo"
@@ -68,7 +68,7 @@ exports[`Registry Project Empty state to match the default snapshot 1`] = `
     value=""
   >
     <gl-form-input-stub
-      class="gl-font-monospace!"
+      class="!gl-font-monospace"
       readonly=""
       type="text"
       value="barbar"

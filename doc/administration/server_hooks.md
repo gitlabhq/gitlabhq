@@ -10,7 +10,6 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/196051) in GitLab 12.8 replacing Custom Hooks.
 > - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/372991) from server hooks to Git server hooks in GitLab 15.6.
 
 Git server hooks (not to be confused with [system hooks](system_hooks.md) or [file hooks](file_hooks.md)) run custom logic
@@ -67,10 +66,10 @@ To set server hooks for a repository:
       in a `custom_hooks` directory that is at the root of the tarball.
    1. Create the custom hooks archive with the tar command. For example, `tar -cf custom_hooks.tar custom_hooks`.
 1. Run the `hooks set` subcommand with required options to set the Git hooks for the repository. For example,
-   `cat hooks.tar | gitaly hooks set --storage <storage> --repository <relative path> --config <config path>`.
+   `cat custom_hooks.tar | sudo /opt/gitlab/embedded/bin/gitaly hooks set --storage <storage> --repository <relative path> --config <config path>`.
 
    - A path to a valid Gitaly configuration for the node is required to connect to the node and provided to the `--config` flag.
-   - Custom hooks tarball must be passed via `stdin`. For example, `cat hooks.tar | gitaly hooks set --storage <storage> --repository <relative path> --config <config path>`.
+   - Custom hooks tarball must be passed via `stdin`. For example, `cat custom_hooks.tar | sudo /opt/gitlab/embedded/bin/gitaly hooks set --storage <storage> --repository <relative path> --config <config path>`.
 1. If you are using Gitaly Cluster, you must run `hooks set` subcommand on all Gitaly nodes. For more information, see
    [Server hooks on a Gitaly Cluster](#server-hooks-on-a-gitaly-cluster).
 
@@ -120,7 +119,7 @@ The location to copy the scripts to depends on where repositories are stored:
 - In GitLab 15.2 and earlier, Gitaly Cluster uses the [hashed storage path](repository_storage_paths.md#hashed-storage)
   reported by the GitLab application.
 - In GitLab 15.3 and later, new repositories are created using
-  [Praefect-generated replica paths](gitaly/index.md#praefect-generated-replica-paths-gitlab-150-and-later),
+  [Praefect-generated replica paths](gitaly/index.md#praefect-generated-replica-paths),
   which are not the hashed storage path. The replica path can be identified by
   [querying the Praefect repository metadata](../administration/gitaly/troubleshooting_gitaly_cluster.md#view-repository-metadata)
   using `-relative-path` to specify the expected GitLab hashed storage path.
@@ -145,11 +144,9 @@ For Linux package installations, the directory is set in `gitlab.rb` under `gita
 
 For self-compiled installations:
 
-- The directory is set in a configuration file. The location of the configuration file depends on the GitLab version:
-  - For GitLab 13.1 and later, the directory is set in `gitaly/config.toml` under the `[hooks]` section. However,
+- The directory is set in `gitaly/config.toml` under the `[hooks]` section. However,
     GitLab honors the `custom_hooks_dir` value in `gitlab-shell/config.yml` if the value in `gitaly/config.toml` is blank
     or non-existent.
-  - For GitLab 13.0 and earlier, the directory set in `gitlab-shell/config.yml`.
 - The default directory is `/home/git/gitlab-shell/hooks`.
 
 ### Create the global server hook
@@ -182,7 +179,7 @@ Prerequisites:
 To remove server hooks, pass an empty tarball to `hook set` to indicate that the repository should contain no hooks. For example:
 
 ```shell
-cat empty_hooks.tar | gitaly hooks set --storage <storage> --repository <relative path> --config <config path>`.
+cat empty_hooks.tar | sudo /opt/gitlab/embedded/bin/gitaly hooks set --storage <storage> --repository <relative path> --config <config path>
 ```
 
 :::TabTitle GitLab 15.10 and earlier
@@ -217,8 +214,8 @@ The following GitLab environment variables are supported for all server hooks:
 | Environment variable | Description                                                                                                                                                |
 |:---------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `GL_ID`              | GitLab identifier of user or SSH key that initiated the push. For example, `user-2234` or `key-4`.                                                         |
-| `GL_PROJECT_PATH`    | (GitLab 13.2 and later) GitLab project path.                                                                                                               |
-| `GL_PROTOCOL`        | (GitLab 13.2 and later) Protocol used for this change. One of: `http` (Git `push` using HTTP), `ssh` (Git `push` using SSH), or `web` (all other actions). |
+| `GL_PROJECT_PATH`    | GitLab project path.                                                                                                               |
+| `GL_PROTOCOL`        | Protocol used for this change. One of: `http` (Git `push` using HTTP), `ssh` (Git `push` using SSH), or `web` (all other actions). |
 | `GL_REPOSITORY`      | `project-<id>` where `id` is the ID of the project.                                                                                                        |
 | `GL_USERNAME`        | GitLab username of the user that initiated the push.                                                                                                       |
 

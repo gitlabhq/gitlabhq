@@ -70,6 +70,7 @@ issues:
 - issue_customer_relations_contacts
 - email
 - issuable_resource_links
+- synced_epic
 work_item_type:
 - issues
 - namespace
@@ -213,6 +214,7 @@ merge_requests:
 - merge_request_context_commit_diff_files
 - events
 - merge_requests_closing_issues
+- merge_requests_closing_issues_closes_work_item
 - cached_closes_issues
 - metrics
 - timelogs
@@ -254,6 +256,7 @@ merge_requests:
 - user_agent_detail
 - scan_result_policy_violations
 - applicable_post_merge_approval_rules
+- requested_changes
 external_pull_requests:
 - project
 merge_request_diff:
@@ -346,6 +349,7 @@ ci_pipelines:
 - package_file_build_infos
 - build_trace_chunks
 - pipeline_metadata
+- build_execution_configs
 pipeline_metadata:
 - project
 - pipeline
@@ -379,6 +383,7 @@ builds:
 - needs
 - resource
 - pipeline
+- execution_config
 - sourced_pipeline
 - resource_group
 - metadata
@@ -532,6 +537,7 @@ project:
 - catalog_resource_sync_events
 - catalog_resource_versions
 - ci_components
+- ci_component_usages
 - external_status_checks
 - base_tags
 - project_topics
@@ -571,6 +577,7 @@ project:
 - vulnerability_hooks_integrations
 - apple_app_store_integration
 - google_cloud_platform_artifact_registry_integration
+- google_cloud_platform_workload_identity_federation_integration
 - campfire_integration
 - confluence_integration
 - datadog_integration
@@ -584,6 +591,7 @@ project:
 - harbor_integration
 - irker_integration
 - packagist_integration
+- phorge_integration
 - pivotaltracker_integration
 - prometheus_integration
 - assembla_integration
@@ -653,6 +661,7 @@ project:
 - import_data
 - commit_statuses
 - ci_pipelines
+- build_execution_configs
 - all_pipelines
 - stages
 - ci_refs
@@ -832,6 +841,8 @@ project:
 - sbom_occurrences
 - analytics_dashboards_configuration_project
 - analytics_dashboards_pointer
+- targeting_dashboards_pointers
+- targeting_dashboards_pointer_projects
 - design_management_repository
 - design_management_repository_state
 - compliance_standards_adherence
@@ -848,6 +859,8 @@ project:
 - security_policy_management_project_linked_configurations
 - security_policy_project_linked_projects
 - security_policy_project_linked_namespaces
+- relation_import_trackers
+- saved_replies
 award_emoji:
 - awardable
 - user
@@ -921,6 +934,7 @@ self_managed_prometheus_alert_events:
 epic_issues:
 - issue
 - epic
+- work_item
 feature_flag_issues:
 - issue
 - feature_flag
@@ -968,6 +982,7 @@ design: &design
 - notes
 - user_mentions
 - events
+- subscriptions
 designs: *design
 actions:
 - design
@@ -1022,6 +1037,7 @@ epic:
 epic_issue:
 - epic
 - issue
+- work_item
 system_note_metadata:
 - note
 - description_version
@@ -1102,3 +1118,5 @@ timelog_category:
   - description
   - billable
   - billing_rate
+note_diff_file:
+  - diff_note

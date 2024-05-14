@@ -9,14 +9,14 @@ module Mutations
         authorize :destroy_artifacts
 
         field :job,
-              Types::Ci::JobType,
-              null: true,
-              description: 'Job with artifacts to be deleted.'
+          Types::Ci::JobType,
+          null: true,
+          description: 'Job with artifacts to be deleted.'
 
         field :destroyed_artifacts_count,
-              GraphQL::Types::Int,
-              null: false,
-              description: 'Number of artifacts deleted.'
+          GraphQL::Types::Int,
+          null: false,
+          description: 'Number of artifacts deleted.'
 
         def find_object(id:)
           GlobalID::Locator.locate(id)

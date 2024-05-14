@@ -1,0 +1,12 @@
+---
+table_name: merge_request_requested_changes
+classes:
+- MergeRequests::RequestedChange
+feature_categories:
+- code_review_workflow
+description: Blocker for changes requested on a merge request
+introduced_by_url: 
+milestone: '17.0'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  project_id: projects

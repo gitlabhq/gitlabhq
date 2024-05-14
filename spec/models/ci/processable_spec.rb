@@ -6,12 +6,17 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
   let_it_be(:project) { create(:project) }
   let_it_be_with_refind(:pipeline) { create(:ci_pipeline, project: project) }
 
+  describe 'associations' do
+    it { is_expected.to belong_to(:trigger_request) }
+  end
+
   describe 'delegations' do
     subject { described_class.new }
 
     it { is_expected.to delegate_method(:merge_request?).to(:pipeline) }
     it { is_expected.to delegate_method(:merge_request_ref?).to(:pipeline) }
     it { is_expected.to delegate_method(:legacy_detached_merge_request_pipeline?).to(:pipeline) }
+    it { is_expected.to delegate_method(:trigger_short_token).to(:trigger_request) }
   end
 
   describe '#clone' do
@@ -93,12 +98,12 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
            pipeline_id report_results pending_state pages_deployments
            queuing_entry runtime_metadata trace_metadata
            dast_site_profile dast_scanner_profile stage_id dast_site_profiles_build
-           dast_scanner_profiles_build auto_canceled_by_partition_id].freeze
+           dast_scanner_profiles_build auto_canceled_by_partition_id execution_config_id execution_config].freeze
       end
 
       before_all do
         # Create artifacts to check that the associations are rejected when cloning
-        Ci::JobArtifact::TYPE_AND_FORMAT_PAIRS.each do |file_type, file_format|
+        Enums::Ci::JobArtifact.type_and_format_pairs.each do |file_type, file_format|
           create(:ci_job_artifact, file_format, file_type: file_type, job: processable, expire_at: processable.artifacts_expire_at)
         end
 
@@ -207,7 +212,7 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
       end
 
       context 'when it has a dynamic environment' do
-        let_it_be(:other_developer) { create(:user).tap { |u| project.add_developer(u) } }
+        let_it_be(:other_developer) { create(:user, developer_of: project) }
 
         let(:environment_name) { 'review/$CI_COMMIT_REF_SLUG-$GITLAB_USER_ID' }
 
@@ -560,6 +565,66 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
 
     it_behaves_like 'other manual actions for a job' do
       let(:factory_type) { :ci_bridge }
+    end
+  end
+
+  describe 'manual_job?' do
+    context 'when job is manual' do
+      subject { build(:ci_build, :manual) }
+
+      it { expect(subject.manual_job?).to be_truthy }
+    end
+
+    context 'when job is not manual' do
+      subject { build(:ci_build) }
+
+      it { expect(subject.manual_job?).to be_falsey }
+    end
+  end
+
+  describe 'manual_confirmation_message' do
+    context 'when job is manual' do
+      subject { build(:ci_build, :manual, :with_manual_confirmation) }
+
+      it 'return manual_confirmation from option' do
+        expect(subject.manual_confirmation_message).to eq('Please confirm. Do you want to proceed?')
+      end
+    end
+
+    context 'when job is not manual' do
+      subject { build(:ci_build) }
+
+      it { expect(subject.manual_confirmation_message).to be_nil }
+    end
+  end
+
+  describe 'state transition: any => [:failed]' do
+    using RSpec::Parameterized::TableSyntax
+
+    let!(:processable) { create(:ci_build, :running, pipeline: pipeline, user: create(:user)) }
+
+    before do
+      allow(processable).to receive(:can_auto_cancel_pipeline_on_job_failure?).and_return(can_auto_cancel_pipeline_on_job_failure)
+      allow(processable).to receive(:allow_failure?).and_return(allow_failure)
+    end
+
+    where(:can_auto_cancel_pipeline_on_job_failure, :allow_failure, :result) do
+      true  | true  | false
+      true  | false | true
+      false | true  | false
+      false | false | false
+    end
+
+    with_them do
+      it 'behaves as expected' do
+        if result
+          expect(processable.pipeline).to receive(:cancel_async_on_job_failure)
+        else
+          expect(processable.pipeline).not_to receive(:cancel_async_on_job_failure)
+        end
+
+        processable.drop!
+      end
     end
   end
 end

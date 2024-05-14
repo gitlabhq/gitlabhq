@@ -105,19 +105,6 @@ RSpec.describe Gitlab::GitalyClient::RepositoryService, feature_category: :gital
     end
   end
 
-  describe '#apply_gitattributes' do
-    let(:revision) { 'master' }
-
-    it 'sends an apply_gitattributes message' do
-      expect_any_instance_of(Gitaly::RepositoryService::Stub)
-        .to receive(:apply_gitattributes)
-        .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
-        .and_return(double(:apply_gitattributes_response))
-
-      client.apply_gitattributes(revision)
-    end
-  end
-
   describe '#info_attributes' do
     it 'reads the info attributes' do
       expect_any_instance_of(Gitaly::RepositoryService::Stub)
@@ -461,31 +448,6 @@ RSpec.describe Gitlab::GitalyClient::RepositoryService, feature_category: :gital
         .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
 
       client.replicate(source_repository)
-    end
-  end
-
-  describe '#set_full_path' do
-    let(:path) { 'repo/path' }
-
-    it 'sends a set_full_path message' do
-      expect_any_instance_of(Gitaly::RepositoryService::Stub)
-        .to receive(:set_full_path)
-        .with(gitaly_request_with_params(path: path), kind_of(Hash))
-        .and_return(double)
-
-      client.set_full_path(path)
-    end
-  end
-
-  describe '#full_path' do
-    let(:path) { 'repo/path' }
-
-    it 'sends a full_path message' do
-      expect_any_instance_of(Gitaly::RepositoryService::Stub)
-        .to receive(:full_path)
-        .and_return(double(path: path))
-
-      expect(client.full_path).to eq(path)
     end
   end
 

@@ -33,6 +33,20 @@ RSpec.describe Banzai::Filter::References::CommitReferenceFilter, feature_catego
       end
     end
 
+    # This solves https://gitlab.com/gitlab-org/gitlab/-/issues/450246
+    it "does not render link when reference is ending a word" do
+      doc = reference_filter("Hello Wo#{reference[0...7]}")
+
+      expect(doc.css('a')).to be_empty
+    end
+
+    # This solves https://gitlab.com/gitlab-org/gitlab/-/issues/450246
+    it "does not render link when reference is starting a word" do
+      doc = reference_filter("Hello #{reference[0...7]}ld")
+
+      expect(doc.css('a')).to be_empty
+    end
+
     it 'always uses the short ID as the link text' do
       doc = reference_filter("See #{commit.id}")
       expect(doc.text).to eq "See #{commit.short_id}"

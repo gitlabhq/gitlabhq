@@ -1,4 +1,6 @@
 import { isUndefined, uniqueId } from 'lodash';
+import { s__ } from '~/locale';
+import showGlobalToast from '~/vue_shared/plugins/global_toast';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { getParameterByName, setUrlParams } from '~/lib/utils/url_utility';
 import {
@@ -178,3 +180,17 @@ export const groupLinkRequestFormatter = baseRequestFormatter(
   GROUP_LINK_BASE_PROPERTY_NAME,
   GROUP_LINK_ACCESS_LEVEL_PROPERTY_NAME,
 );
+
+/**
+ * Handles role change response. Has an EE override
+ *
+ * @param {object} update
+ *  @param {string} update.currentRole
+ *  @param {string} update.requestedRole
+ *  @param {object} update.response server response
+ * @returns {string} actual new member role
+ */
+export const handleMemberRoleUpdate = ({ requestedRole }) => {
+  showGlobalToast(s__('Members|Role updated successfully.'));
+  return requestedRole;
+};

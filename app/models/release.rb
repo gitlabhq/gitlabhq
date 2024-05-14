@@ -38,6 +38,9 @@ class Release < ApplicationRecord
   validates_associated :milestone_releases, message: -> (_, obj) { obj[:value].map(&:errors).map(&:full_messages).join(",") }
   validates :links, nested_attributes_duplicates: { scope: :release, child_attributes: %i[name url filepath] }
 
+  # Custom validation methods
+  validate :sha_unchanged, on: :update
+
   # All releases should have tags, but because of existing invalid data, we need a work around so that presenters don't
   # fail to generate URLs on release related pages
   scope :tagged, -> { where.not(tag: [nil, '']) }
@@ -103,6 +106,10 @@ class Release < ApplicationRecord
     def waiting_for_publish_event
       unpublished.released_within_2hrs.joins(:project).merge(Project.with_feature_enabled(:releases)).limit(MAX_NUMBER_TO_PUBLISH)
     end
+  end
+
+  def sha_unchanged
+    errors.add(:sha, "cannot be changed") if sha_changed?
   end
 
   def to_param

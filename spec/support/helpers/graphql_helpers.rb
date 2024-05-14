@@ -160,7 +160,7 @@ module GraphqlHelpers
                         args_internal(field, args: args, query_ctx: query_ctx, parent: parent, extras: extras, query: query)
                       end
 
-      if prepared_args.class <= Gitlab::Graphql::Errors::BaseError
+      if prepared_args.class <= GraphQL::ExecutionError
         prepared_args
       else
         field.resolve(parent, prepared_args, query_ctx)
@@ -223,7 +223,7 @@ module GraphqlHelpers
     if ctx.is_a?(Hash)
       q = double('Query', schema: schema, subscription_update?: subscription_update, warden: GraphQL::Schema::Warden::PassThruWarden)
       allow(q).to receive(:after_lazy) { |value, &block| schema.after_lazy(value, &block) }
-      ctx = GraphQL::Query::Context.new(query: q, object: obj, values: ctx)
+      ctx = GraphQL::Query::Context.new(query: q, values: ctx)
     end
 
     resolver_class.new(object: obj, context: ctx, field: field)
@@ -461,6 +461,7 @@ module GraphqlHelpers
 
     allow_unlimited_graphql_complexity
     allow_unlimited_graphql_depth if max_depth > 1
+    allow_unlimited_validation_timeout
     allow_high_graphql_recursion
     allow_high_graphql_transaction_threshold
     allow_high_graphql_query_size
@@ -725,6 +726,11 @@ module GraphqlHelpers
   def allow_unlimited_graphql_depth
     allow_any_instance_of(GitlabSchema).to receive(:max_depth).and_return nil
     allow(GitlabSchema).to receive(:max_query_depth).with(any_args).and_return nil
+  end
+
+  def allow_unlimited_validation_timeout
+    allow_any_instance_of(GitlabSchema).to receive(:validate_timeout).and_return nil
+    allow(GitlabSchema).to receive(:validate_timeout).with(any_args).and_return nil
   end
 
   def allow_high_graphql_recursion

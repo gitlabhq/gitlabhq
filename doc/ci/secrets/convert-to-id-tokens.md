@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 This tutorial demonstrates how to convert your existing CI/CD secrets configuration to use [ID Tokens](../secrets/id_token_authentication.md).
 
@@ -61,7 +61,7 @@ $ vault write auth/jwt/config \
 
 After you make this change, jobs that use `CI_JOB_JWT` start to fail.
 
-You can create multiple authentication paths in Vault, which enable you to transition to IT Tokens on a project by job basis without disruption.
+You can create multiple authentication paths in Vault, which enable you to transition to ID Tokens on a project by job basis without disruption.
 
 1. Configure a new authentication path with the name `jwt_v2`, run:
 
@@ -92,6 +92,7 @@ Roles are bound to a specific authentication path so you need to add new roles f
      "policies": ["myproject-staging"],
      "token_explicit_max_ttl": 60,
      "user_claim": "user_email",
+     "bound_audiences": ["https://vault.example.com"],
      "bound_claims": {
        "project_id": "22",
        "ref": "master",
@@ -184,7 +185,7 @@ However, as we have moved this validation to the role level, this configuration 
 
 Vault has two different [KV Secrets Engines](https://developer.hashicorp.com/vault/docs/secrets/kv) and the version you are using impacts how you define secrets in CI/CD.
 
-Check the [Which Version is my Vault KV Mount?](https://support.hashicorp.com/hc/en-us/articles/4404288741139-Which-Version-is-my-Vault-KV-Mount-) article on HashiCorp's support portal to check your Vault server.
+Check the [Which Version is my Vault KV Mount?](https://support.hashicorp.com/hc/en-us/articles/4404288741139-Which-Version-is-my-Vault-KV-Mount) article on HashiCorp's support portal to check your Vault server.
 
 Also, if needed you can review the CI/CD documentation for:
 
@@ -210,7 +211,7 @@ job:
     VAULT_AUTH_ROLE: myproject-staging
   id_tokens:
     VAULT_ID_TOKEN:
-      aud: https://gitlab.example.com
+      aud: https://vault.example.com
   secrets:
     PASSWORD:
       vault:
@@ -241,7 +242,7 @@ job:
     VAULT_AUTH_ROLE: myproject-staging
   id_tokens:
     VAULT_ID_TOKEN:
-      aud: https://gitlab.example.com
+      aud: https://vault.example.com
   secrets:
     PASSWORD:
       vault:
@@ -265,7 +266,7 @@ job:
     VAULT_AUTH_ROLE: myproject-staging
   id_tokens:
     VAULT_ID_TOKEN:
-      aud: https://gitlab.example.com
+      aud: https://vault.example.com
   secrets:
       PASSWORD:
         vault: myproject/staging/db/password@secret

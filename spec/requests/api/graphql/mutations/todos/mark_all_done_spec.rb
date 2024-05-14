@@ -7,7 +7,7 @@ RSpec.describe 'Marking all todos done', feature_category: :team_planning do
 
   let_it_be(:project) { create(:project) }
   let_it_be(:issue) { create(:issue, project: project) }
-  let_it_be(:current_user) { create(:user) }
+  let_it_be(:current_user) { create(:user, developer_of: project) }
   let_it_be(:author) { create(:user) }
   let_it_be(:other_user) { create(:user) }
   let_it_be(:other_user2) { create(:user) }
@@ -30,10 +30,6 @@ RSpec.describe 'Marking all todos done', feature_category: :team_planning do
         errors
       QL
     )
-  end
-
-  before_all do
-    project.add_developer(current_user)
   end
 
   def mutation_response

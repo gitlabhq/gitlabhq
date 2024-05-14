@@ -55,14 +55,6 @@ export default {
     hasDeploymentMetrics() {
       return this.isPostMerge;
     },
-    visualReviewAppMeta() {
-      return {
-        appUrl: this.mr.appUrl,
-        mergeRequestId: this.mr.iid,
-        sourceProjectId: this.mr.sourceProjectId,
-        sourceProjectPath: this.mr.sourceProjectFullPath,
-      };
-    },
     pipeline() {
       return this.isPostMerge ? this.mr.mergePipeline : this.mr.pipeline;
     },
@@ -117,6 +109,8 @@ export default {
         v-if="showMergeTrainPositionIndicator"
         class="mr-widget-extension"
         :merge-train-index="mr.mergeTrainIndex"
+        :merge-trains-count="mr.mergeTrainsCount"
+        :merge-trains-path="mr.mergeTrainsPath"
       />
     </template>
   </mr-widget-container>

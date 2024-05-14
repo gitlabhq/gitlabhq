@@ -12,7 +12,7 @@ DETAILS:
 
 At the heart of GitLab is a web application
 [built using the Ruby on Rails framework](https://about.gitlab.com/blog/2018/10/29/why-we-use-rails-to-build-gitlab/).
-The [Rails console](https://guides.rubyonrails.org/command_line.html#rails-console).
+The [Rails console](https://guides.rubyonrails.org/command_line.html#rails-console)
 provides a way to interact with your GitLab instance from the command line, and also grants access to the amazing tools built right into Rails.
 
 WARNING:
@@ -58,6 +58,13 @@ The console is in the toolbox pod. Refer to our [Kubernetes cheat sheet](https:/
 ::EndTabs
 
 To exit the console, type: `quit`.
+
+### Disable autocompletion
+
+Ruby autocompletion can slow down the terminal. If you want to:
+
+- Disable autocompletion, run `Reline.autocompletion = IRB.conf[:USE_AUTOCOMPLETE] = false`.
+- Re-enable autocompletion, run `Reline.autocompletion = IRB.conf[:USE_AUTOCOMPLETE] = true`.
 
 ## Enable Active Record logging
 
@@ -321,7 +328,7 @@ D, [2020-03-05T17:03:24.696493 #910] DEBUG -- :   User Load (2.1ms)  SELECT "use
 
 Give the following a try:
 
-- `User.find_by(email: 'admin@example.com')`
+- `User.find_by(username: 'root')`
 - `User.where.not(admin: true)`
 - `User.where('created_at < ?', 7.days.ago)`
 

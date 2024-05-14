@@ -4,7 +4,7 @@ import { EditorContent as TiptapEditorContent } from '@tiptap/vue-2';
 import { __ } from '~/locale';
 import { VARIANT_DANGER } from '~/alert';
 import EditorModeSwitcher from '~/vue_shared/components/markdown/editor_mode_switcher.vue';
-import { CONTENT_EDITOR_READY_EVENT } from '~/vue_shared/constants';
+import { CONTENT_EDITOR_READY_EVENT, CONTENT_EDITOR_PASTE } from '~/vue_shared/constants';
 import markdownEditorEventHub from '~/vue_shared/components/markdown/eventhub';
 import SidebarMediator from '~/sidebar/sidebar_mediator';
 import { createContentEditor } from '../services/create_content_editor';
@@ -169,11 +169,16 @@ export default {
     this.$emit('initialized');
     await this.setSerializedContent(this.markdown);
     markdownEditorEventHub.$emit(CONTENT_EDITOR_READY_EVENT);
+    markdownEditorEventHub.$on(CONTENT_EDITOR_PASTE, this.pasteContent);
   },
   beforeDestroy() {
+    markdownEditorEventHub.$off(CONTENT_EDITOR_PASTE, this.pasteContent);
     this.contentEditor.dispose();
   },
   methods: {
+    pasteContent(content) {
+      this.contentEditor.tiptapEditor.chain().focus().pasteContent(content).run();
+    },
     async setSerializedContent(markdown) {
       this.notifyLoading();
 

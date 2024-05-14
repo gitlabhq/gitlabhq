@@ -42,8 +42,6 @@ export default {
     <gl-empty-state
       :title="$options.i18n.infoBannerTitle"
       :svg-path="emptyStateSvgPath"
-      :svg-height="null"
-      content-class="gl-max-w-80!"
       data-testid="issues-service-desk-empty-state"
     >
       <template #description>
@@ -62,10 +60,8 @@ export default {
     v-else
     :title="$options.i18n.infoBannerTitle"
     :svg-path="emptyStateSvgPath"
-    :svg-height="null"
     :primary-button-text="$options.i18n.noIssuesSignedOutButtonText"
     :primary-button-link="signInPath"
-    content-class="gl-max-w-80!"
     data-testid="issues-service-desk-empty-state"
   >
     <template #description>

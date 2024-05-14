@@ -1,0 +1,18 @@
+---
+description: Tracks click on licence-compliance details to visit external information website
+internal_events: true
+action: click_external_link_license_compliance
+identifiers:
+  - project
+  - user
+  - namespace
+product_section: sec
+product_stage: secure
+product_group: static_analysis
+milestone: '17.0'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150952
+distributions:
+  - ee
+tiers:
+  - premium
+  - ultimate

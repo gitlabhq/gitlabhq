@@ -1,4 +1,8 @@
 <script>
+import {
+  TIMESTAMP_TYPE_CREATED_AT,
+  TIMESTAMP_TYPE_UPDATED_AT,
+} from '~/vue_shared/components/resource_lists/constants';
 import GroupsListItem from './groups_list_item.vue';
 
 export default {
@@ -18,18 +22,27 @@ export default {
       required: false,
       default: '',
     },
+    timestampType: {
+      type: String,
+      required: false,
+      default: TIMESTAMP_TYPE_CREATED_AT,
+      validator(value) {
+        return [TIMESTAMP_TYPE_CREATED_AT, TIMESTAMP_TYPE_UPDATED_AT].includes(value);
+      },
+    },
   },
 };
 </script>
 
 <template>
-  <ul class="gl-p-0 gl-list-style-none">
+  <ul class="gl-p-0 gl-list-none">
     <groups-list-item
       v-for="group in groups"
       :key="group.id"
       :group="group"
       :show-group-icon="showGroupIcon"
       :class="listItemClass"
+      :timestamp-type="timestampType"
       @delete="$emit('delete', $event)"
     />
   </ul>

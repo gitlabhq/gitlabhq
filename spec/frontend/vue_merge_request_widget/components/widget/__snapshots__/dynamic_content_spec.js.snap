@@ -28,6 +28,7 @@ exports[`~/vue_merge_request_widget/components/widget/dynamic_content.vue render
         class="gl-align-items-baseline gl-display-flex gl-ml-auto"
       >
         <help-popover-stub
+          arialabel="Help"
           icon="information-o"
           options="[object Object]"
           triggerclass=""
@@ -84,7 +85,7 @@ exports[`~/vue_merge_request_widget/components/widget/dynamic_content.vue render
           </p>
         </div>
         <ul
-          class="gl-list-style-none gl-m-0 gl-p-0"
+          class="gl-list-none gl-m-0 gl-p-0"
         >
           <li>
             <div

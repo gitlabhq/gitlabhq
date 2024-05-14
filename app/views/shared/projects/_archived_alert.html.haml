@@ -1,0 +1,5 @@
+- if show_archived_project_banner?(@project)
+  = render Pajamas::AlertComponent.new(variant: :info,
+    dismissible: false) do |c|
+    = c.with_body do
+      = _('This is an archived project. Repository and other project resources are read-only.')

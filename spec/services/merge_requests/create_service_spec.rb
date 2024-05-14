@@ -219,7 +219,7 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state, f
 
             merge_request.reload
             expect(merge_request.pipelines_for_merge_request.count).to eq(1)
-            expect(merge_request.actual_head_pipeline).to be_detached_merge_request_pipeline
+            expect(merge_request.diff_head_pipeline).to be_detached_merge_request_pipeline
           end
 
           context 'when merge request is submitted from forked project' do
@@ -242,7 +242,7 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state, f
             it 'create detached merge request pipeline for fork merge request' do
               merge_request.reload
 
-              head_pipeline = merge_request.actual_head_pipeline
+              head_pipeline = merge_request.diff_head_pipeline
               expect(head_pipeline).to be_detached_merge_request_pipeline
               expect(head_pipeline.project).to eq(target_project)
             end
@@ -282,7 +282,7 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state, f
             it 'sets the latest detached merge request pipeline as the head pipeline' do
               merge_request.reload
 
-              expect(merge_request.actual_head_pipeline).to be_merge_request_event
+              expect(merge_request.diff_head_pipeline).to be_merge_request_event
             end
           end
         end

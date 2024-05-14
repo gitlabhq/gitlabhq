@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, Self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 The [logs](#read-the-logs) provide insight into what DAST is doing and expecting during the authentication process. For more detailed
 information, configure the [authentication report](#configure-the-authentication-report).
@@ -143,6 +143,8 @@ Suggested actions:
   in a full page reload, such as a request made when submitting a HTML form. This occurs when using websockets or AJAX to submit the login form.
 - If the page displayed following user authentication genuinely has elements matching the login form selectors, configure `DAST_AUTH_VERIFICATION_URL`
   or `DAST_AUTH_VERIFICATION_SELECTOR` to use an alternate method of verifying the login attempt.
+- Some applications display a "Loading..." element on a page before hiding the login form. This can confuse the analyzer. Use `DAST_BROWSER_PAGE_LOADING_SELECTOR` or
+  `DAST_BROWSER_PAGE_READY_SELECTOR` [variable](browser/configuration/variables.md) to instruct the analyzer that the page has finished loading.
 
 ### Requirement unsatisfied, selector returned no results
 

@@ -4,7 +4,7 @@ key_path: counts.alert_bot_incident_issues
 description: Count of issues created by the alert bot automatically
 product_section: ops
 product_stage: monitor
-product_group: monitor
+product_group: respond
 value_type: number
 status: active
 time_frame: all

@@ -13,7 +13,7 @@ DETAILS:
 We recommend using log aggregation and search tools like Kibana and Splunk whenever possible,
 but if they are not available you can still quickly parse
 [GitLab logs](../logs/index.md) in JSON format
-(the default in GitLab 12.0 and later) using [`jq`](https://stedolan.github.io/jq/).
+using [`jq`](https://stedolan.github.io/jq/).
 
 NOTE:
 Specifically for summarizing error events and basic usage statistics,
@@ -30,6 +30,18 @@ include use cases targeted for parsing GitLab log files.
 The examples listed below address their respective log files by
 their relative Linux package installation paths and default filenames.
 Find the respective full paths in the [GitLab logs sections](../logs/index.md#production_jsonlog).
+
+### Compressed logs
+
+When [log files are rotated](https://smarden.org/runit/svlogd.8), they are renamed in
+Unix timestamp format and compressed with `gzip`. The resulting file name looks like
+`@40000000624492fa18da6f34.s`. These files must be handled differently before parsing,
+than the more recent log files:
+
+- To uncompress the file, use `gunzip -S .s @40000000624492fa18da6f34.s`, replacing
+  the filename with your compressed log file's name.
+- To read or pipe the file directly, use `zcat` or `zless`.
+- To search file contents, use `zgrep`.
 
 ### General Commands
 
@@ -217,7 +229,7 @@ for example.
 
 #### Find most common Geo sync errors
 
-If [the `geo:status` Rake task](../geo/replication/troubleshooting.md#sync-status-rake-task)
+If [the `geo:status` Rake task](../geo/replication/troubleshooting/common.md#sync-status-rake-task)
 repeatedly reports that some items never reach 100%,
 the following command helps to focus on the most common errors.
 
@@ -225,7 +237,7 @@ the following command helps to focus on the most common errors.
 jq --raw-output 'select(.severity == "ERROR") | [.project_path, .class, .message, .error] | @tsv' geo.log | sort | uniq -c | sort | tail
 ```
 
-Refer to our [Geo troubleshooting page](../geo/replication/troubleshooting.md)
+Refer to our [Geo troubleshooting page](../geo/replication/troubleshooting/index.md)
 for advice about specific error messages.
 
 ### Parsing `gitaly/current`
@@ -303,7 +315,7 @@ grep "fatal: " current |
 
 ### Parsing `gitlab-shell/gitlab-shell.log`
 
-For investigating Git calls via SSH, from [GitLab 12.10](https://gitlab.com/gitlab-org/gitlab-shell/-/merge_requests/367).
+For investigating Git calls via SSH.
 
 Find the top 20 calls by project and user:
 

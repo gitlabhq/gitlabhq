@@ -54,12 +54,12 @@ export default {
     tableCell({
       key: 'source',
       label: s__('BulkImport|Source'),
-      thClass: 'gl-w-30p',
+      thClass: 'gl-w-3/10',
     }),
     tableCell({
       key: 'destination',
       label: s__('BulkImport|Destination'),
-      thClass: 'gl-w-40p',
+      thClass: 'gl-w-4/10',
     }),
     tableCell({
       key: 'created_at',
@@ -150,7 +150,7 @@ export default {
               target="_blank"
             >
               {{ item.import_url }}
-              <gl-icon name="external-link" class="gl-vertical-align-middle" />
+              <gl-icon name="external-link" class="gl-align-middle" />
             </gl-link>
             <span v-else>{{ item.import_url }}</span>
           </template>

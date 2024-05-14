@@ -102,7 +102,7 @@ Fetch:
 
 ```json
 {
-  "id": 1,
+  "id": "1",
   "author_id": -3,
   "entity_id": 29,
   "entity_type": "Project",

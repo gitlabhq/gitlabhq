@@ -77,11 +77,9 @@ func testArtifactsUploadServer(t *testing.T, authResponse *api.Response, bodyPro
 				t.Fatal("Expected file to be readable")
 				return
 			}
-		} else {
-			if r.FormValue("file.remote_url") == "" {
-				t.Fatal("Expected file to be remote accessible")
-				return
-			}
+		} else if r.FormValue("file.remote_url") == "" {
+			t.Fatal("Expected file to be remote accessible")
+			return
 		}
 
 		if r.FormValue("metadata.path") != "" {
@@ -107,7 +105,6 @@ func testArtifactsUploadServer(t *testing.T, authResponse *api.Response, bodyPro
 			}
 
 			w.Header().Set(MetadataHeaderKey, MetadataHeaderPresent)
-
 		} else {
 			w.Header().Set(MetadataHeaderKey, MetadataHeaderMissing)
 		}
@@ -204,7 +201,7 @@ func TestUploadHandlerAddingMetadata(t *testing.T) {
 					require.NoError(t, err)
 
 					rewrittenFields := token.Claims.(*MultipartClaims).RewrittenFields
-					require.Equal(t, 2, len(rewrittenFields))
+					require.Len(t, rewrittenFields, 2)
 
 					require.Contains(t, rewrittenFields, "file")
 					require.Contains(t, rewrittenFields, "metadata")
@@ -235,7 +232,7 @@ func TestUploadHandlerTarArtifact(t *testing.T) {
 			require.NoError(t, err)
 
 			rewrittenFields := token.Claims.(*MultipartClaims).RewrittenFields
-			require.Equal(t, 1, len(rewrittenFields))
+			require.Len(t, rewrittenFields, 1)
 
 			require.Contains(t, rewrittenFields, "file")
 			require.Contains(t, r.PostForm, "file.gitlab-workhorse-upload")

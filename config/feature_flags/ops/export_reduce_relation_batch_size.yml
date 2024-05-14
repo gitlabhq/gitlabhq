@@ -1,0 +1,7 @@
+name: export_reduce_relation_batch_size
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145189
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/442465
+milestone: '16.10'
+type: ops
+group:  group::import and integrate
+default_enabled: false

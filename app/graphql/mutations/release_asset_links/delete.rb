@@ -10,13 +10,13 @@ module Mutations
       ReleaseAssetLinkID = ::Types::GlobalIDType[::Releases::Link]
 
       argument :id, ReleaseAssetLinkID,
-               required: true,
-               description: 'ID of the release asset link to delete.'
+        required: true,
+        description: 'ID of the release asset link to delete.'
 
       field :link,
-            Types::ReleaseAssetLinkType,
-            null: true,
-            description: 'Deleted release asset link.'
+        Types::ReleaseAssetLinkType,
+        null: true,
+        description: 'Deleted release asset link.'
 
       def resolve(id:)
         link = authorized_find!(id: id)

@@ -51,13 +51,13 @@ module DesignManagement
 
     delegate :project, to: :issue
 
-    scope :for_designs, -> (designs) do
+    scope :for_designs, ->(designs) do
       where(id: DesignManagement::Action.where(design_id: designs).select(:version_id)).distinct
     end
-    scope :earlier_or_equal_to, -> (version) { where("(#{table_name}.id) <= ?", version) } # rubocop:disable GitlabSecurity/SqlInjection
+    scope :earlier_or_equal_to, ->(version) { where("(#{table_name}.id) <= ?", version) } # rubocop:disable GitlabSecurity/SqlInjection
     scope :ordered, -> { order(id: :desc) }
-    scope :for_issue, -> (issue) { where(issue: issue) }
-    scope :by_sha, -> (sha) { where(sha: sha) }
+    scope :for_issue, ->(issue) { where(issue: issue) }
+    scope :by_sha, ->(sha) { where(sha: sha) }
     scope :with_author, -> { includes(:author) }
 
     # This is the one true way to create a Version.
@@ -100,12 +100,13 @@ module DesignManagement
     end
 
     CREATION_TTL = 5.seconds
-    RETRY_DELAY = ->(num) { 0.2.seconds * num**2 }
+    RETRY_DELAY = ->(num) { 0.2.seconds * (num**2) }
+    LOCK_RETRY_COUNT = 5
 
     def self.with_lock(project_id, repository, &block)
       key = "with_lock:#{name}:{#{project_id}}"
 
-      in_lock(key, ttl: CREATION_TTL, retries: 5, sleep_sec: RETRY_DELAY) do |_retried|
+      in_lock(key, ttl: CREATION_TTL, retries: LOCK_RETRY_COUNT, sleep_sec: RETRY_DELAY) do |_retried|
         repository.create_if_not_exists
         yield
       end

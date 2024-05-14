@@ -11,6 +11,7 @@ module Users
     def initialize(current_user, params = {})
       @current_user = current_user
       @params = params.dup
+      @organization_id = params.delete(:organization_id)
       @identity_params = params.slice(*identity_attributes)
     end
 
@@ -24,7 +25,7 @@ module Users
 
     private
 
-    attr_reader :identity_params, :user_params, :user
+    attr_reader :identity_params, :user_params, :user, :organization_id
 
     def identity_attributes
       [:extern_uid, :provider]
@@ -37,7 +38,9 @@ module Users
         standard_build_user
       end
 
-      user.assign_personal_namespace
+      organization = Organizations::Organization.find_by_id(organization_id) if organization_id
+
+      user.assign_personal_namespace(organization)
     end
 
     def admin?
@@ -150,6 +153,7 @@ module Users
         :avatar,
         :bio,
         :can_create_group,
+        :color_mode_id,
         :color_scheme_id,
         :email,
         :external,

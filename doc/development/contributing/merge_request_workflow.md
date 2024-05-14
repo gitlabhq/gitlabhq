@@ -301,7 +301,7 @@ requirements.
 1. Your merge request has at least 1 approval, but depending on your changes
    you might need additional approvals. Refer to the [Approval guidelines](../code_review.md#approval-guidelines).
    - You don't have to select any specific approvers, but you can if you really want
-      specific people to approve your merge request.
+     specific people to approve your merge request.
 1. Merged by a project maintainer.
 
 ### Production use
@@ -319,7 +319,7 @@ The following items are checked after the merge request has been merged:
    if relevant.
 1. Added to [the website](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/features.yml), if relevant.
 
-Contributions do not require approval from the [Product team](https://about.gitlab.com/handbook/product/product-processes/#gitlab-pms-arent-the-arbiters-of-community-contributions).
+Contributions do not require approval from the [Product team](https://handbook.gitlab.com/handbook/product/product-processes/#community-considerations).
 
 ## Dependencies
 

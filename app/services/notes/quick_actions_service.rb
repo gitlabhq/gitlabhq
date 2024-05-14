@@ -34,7 +34,11 @@ module Notes
     def execute(note, options = {})
       return [note.note, {}] unless supported?(note)
 
-      @interpret_service = QuickActions::InterpretService.new(project, current_user, options)
+      @interpret_service = QuickActions::InterpretService.new(
+        container: note.resource_parent,
+        current_user: current_user,
+        params: options
+      )
 
       interpret_service.execute(note.note, note.noteable)
     end
@@ -90,4 +94,4 @@ module Notes
   end
 end
 
-Notes::QuickActionsService.prepend_mod_with('Notes::QuickActionsService')
+Notes::QuickActionsService.prepend_mod

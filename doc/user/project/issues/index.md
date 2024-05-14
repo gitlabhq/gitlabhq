@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Use issues to collaborate on ideas, solve problems, and plan work.
 Share and discuss proposals with your team and with outside collaborators.
@@ -62,3 +62,4 @@ To learn how the GitLab Strategic Marketing department uses GitLab issues with [
 - [Issues API](../../../api/issues.md)
 - [Configure an external issue tracker](../../../integration/external-issue-tracker.md)
 - [Tasks](../../tasks.md)
+- [External participants](../service_desk/external_participants.md)

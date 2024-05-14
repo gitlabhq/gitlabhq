@@ -8,12 +8,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 ## API Fuzzing job times out after N hours
 
-The top two reasons for the API Fuzzing job timing out are slow operations (> 1 second) and using a single-CPU runner for API Fuzzing (GitLab shared runners are single-CPU). Before you can diagnose the problem further, the job must complete so the output can be analyzed. We recommend to start with a multi-CPU runner first, then exclude portions of your API operations until the job completes and the output can be further reviewed.
+For larger repositories, the API Fuzzing job could time out on the [small hosted runner on Linux](../../../ci/runners/hosted_runners/linux.md#machine-types-available-for-linux---x86-64), which is set per default. If this happens in your jobs, you should scale up to a [larger runner](performance.md#using-a-larger-runner).
 
 See the following documentation sections for assistance:
 
 - [Performance tuning and testing speed](performance.md)
-- [Using a multi-CPU Runner](performance.md#using-a-multi-cpu-runner)
+- [Using a larger Runner](performance.md#using-a-larger-runner)
 - [Excluding operations by path](configuration/customizing_analyzer_settings.md#exclude-paths)
 - [Excluding slow operations](performance.md#excluding-slow-operations)
 
@@ -84,7 +84,7 @@ For OpenAPI Specifications that are generated automatically validation errors ar
 
 **Error message**
 
-- In [GitLab 13.11 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/323939), `Error, the OpenAPI document is not valid. Errors were found during validation of the document using the published OpenAPI schema`
+- `Error, the OpenAPI document is not valid. Errors were found during validation of the document using the published OpenAPI schema`
   - `OpenAPI 2.0 schema validation error ...`
   - `OpenAPI 3.0.x schema validation error ...`
 
@@ -111,8 +111,7 @@ The API Fuzzing engine outputs an error message when it cannot establish a conne
 
 **Error message**
 
-- In [GitLab 13.11 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/323939), `Failed to start scanner session (version header not found).`
-- In GitLab 13.10 and earlier, `API Security version header not found.  Are you sure that you are connecting to the API Security server?`.
+- `Failed to start scanner session (version header not found).`
 
 **Solution**
 
@@ -186,7 +185,7 @@ To detect and correct elements that don't comply with the OpenAPI specifications
 | Editor | OpenAPI 2.0 | OpenAPI 3.0.x | OpenAPI 3.1.x |
 | -- | -- | -- | -- |
 | [Swagger Editor](https://editor.swagger.io/) | **{check-circle}** YAML, JSON | **{check-circle}** YAML, JSON | **{dotted-circle}** YAML, JSON |
-| [Stoplight Studio](https://stoplight.io/studio) | **{check-circle}** YAML, JSON | **{check-circle}** YAML, JSON | **{check-circle}** YAML, JSON |
+| [Stoplight Studio](https://stoplight.io/solutions) | **{check-circle}** YAML, JSON | **{check-circle}** YAML, JSON | **{check-circle}** YAML, JSON |
 
 If your OpenAPI document is generated manually, load your document in the editor and fix anything that is non-compliant. If your document is generated automatically, load it in your editor to identify the issues in the schema, then go to the application and perform the corrections based on the framework you are using.
 
@@ -216,7 +215,7 @@ API Fuzzing uses the specified media types in the OpenAPI document to generate r
 
 **Error message**
 
-- In [GitLab 14.10 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/333304), `Error, no operation in the OpenApi document is consuming any supported media type. Check 'OpenAPI Specification' to check the supported media types.`
+- `Error, no operation in the OpenApi document is consuming any supported media type. Check 'OpenAPI Specification' to check the supported media types.`
 
 **Solution**
 

@@ -40,8 +40,8 @@ module Gitlab
             @config.first || {}
           end
 
-          def inputs
-            (has_header? && header[:spec][:inputs]) || {}
+          def spec
+            (has_header? && header[:spec]) || {}
           end
         end
       end

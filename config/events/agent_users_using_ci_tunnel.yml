@@ -1,6 +1,6 @@
 ---
 description: Kubernetes API proxy request using the CI/CD Tunnel
-category: InternalEventTracking
+internal_events: true
 action: agent_users_using_ci_tunnel
 identifiers:
 - project

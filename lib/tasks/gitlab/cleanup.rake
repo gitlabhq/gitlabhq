@@ -15,17 +15,17 @@ namespace :gitlab do
         print "#{user.name} (#{user.ldap_identity.extern_uid}) ..."
 
         if Gitlab::Auth::Ldap::Access.allowed?(user)
-          puts " [OK]".color(:green)
+          puts Rainbow(" [OK]").green
         elsif block_flag
           user.block! unless user.blocked?
-          puts " [BLOCKED]".color(:red)
+          puts Rainbow(" [BLOCKED]").red
         else
-          puts " [NOT IN LDAP]".color(:yellow)
+          puts Rainbow(" [NOT IN LDAP]").yellow
         end
       end
 
       unless block_flag
-        puts "To block these users run this command with BLOCK=true".color(:yellow)
+        puts Rainbow("To block these users run this command with BLOCK=true").yellow
       end
     end
 
@@ -37,7 +37,7 @@ namespace :gitlab do
       cleaner.run!(dry_run: dry_run?)
 
       if dry_run?
-        logger.info "To clean up these files run this command with DRY_RUN=false".color(:yellow)
+        logger.info Rainbow("To clean up these files run this command with DRY_RUN=false").yellow
       end
     end
 
@@ -47,7 +47,7 @@ namespace :gitlab do
       cleaner.run!(dry_run: dry_run?)
 
       if dry_run?
-        logger.info "To cleanup these files run this command with DRY_RUN=false".color(:yellow)
+        logger.info Rainbow("To cleanup these files run this command with DRY_RUN=false").yellow
       end
     end
 
@@ -59,7 +59,7 @@ namespace :gitlab do
       cleaner.run!
 
       if dry_run?
-        logger.info "To clean up these files run this command with DRY_RUN=false".color(:yellow)
+        logger.info Rainbow("To clean up these files run this command with DRY_RUN=false").yellow
       end
     end
 
@@ -80,12 +80,45 @@ namespace :gitlab do
 
         generator.run!
 
-        # TODO: Add back the log message here to instruct which rake task to run to process the
-        # generated CSV file and actually delete the orphan objects.
+        logger.info(
+          Rainbow("To delete these objects run gitlab:cleanup:delete_orphan_job_artifact_final_objects").yellow
+        )
       rescue Gitlab::Cleanup::OrphanJobArtifactFinalObjects::GenerateList::UnsupportedProviderError => e
         abort %(#{e.message}
 Usage: rake "gitlab:cleanup:list_orphan_job_artifact_final_objects[provider]")
       end
+    end
+
+    desc 'GitLab | Cleanup | Delete orphan job artifact objects stored in the @final directory based on the CSV file'
+    task delete_orphan_job_artifact_final_objects: :gitlab_environment do
+      warn_user_is_not_gitlab
+
+      force_restart = ENV['FORCE_RESTART'].present?
+      filename = ENV['FILENAME']
+
+      processor = Gitlab::Cleanup::OrphanJobArtifactFinalObjects::ProcessList.new(
+        force_restart: force_restart,
+        filename: filename,
+        logger: logger
+      )
+
+      processor.run!
+    end
+
+    desc 'GitLab | Cleanup | Rollback deleted final orphan job artifact objects (GCP only)'
+    task rollback_deleted_orphan_job_artifact_final_objects: :gitlab_environment do
+      warn_user_is_not_gitlab
+
+      force_restart = ENV['FORCE_RESTART'].present?
+      filename = ENV['FILENAME']
+
+      processor = Gitlab::Cleanup::OrphanJobArtifactFinalObjects::RollbackDeletedObjects.new(
+        force_restart: force_restart,
+        filename: filename,
+        logger: logger
+      )
+
+      processor.run!
     end
 
     desc 'GitLab | Cleanup | Clean orphan LFS file references'
@@ -95,7 +128,7 @@ Usage: rake "gitlab:cleanup:list_orphan_job_artifact_final_objects[provider]")
       project = find_project
 
       unless project
-        logger.info "Specify the project with PROJECT_ID={number} or PROJECT_PATH={namespace/project-name}".color(:red)
+        logger.info Rainbow("Specify the project with PROJECT_ID={number} or PROJECT_PATH={namespace/project-name}").red
         exit
       end
 
@@ -108,7 +141,7 @@ Usage: rake "gitlab:cleanup:list_orphan_job_artifact_final_objects[provider]")
       cleaner.run!
 
       if dry_run?
-        logger.info "To clean up these files run this command with DRY_RUN=false".color(:yellow)
+        logger.info Rainbow("To clean up these files run this command with DRY_RUN=false").yellow
       end
     end
 
@@ -186,7 +219,7 @@ new_sha: Gitlab::Git::SHA1_BLANK_SHA }
 
       number_of_removed_files = RemoveUnreferencedLfsObjectsWorker.new.perform
 
-      logger.info "Removed unreferenced LFS files: #{number_of_removed_files}".color(:green)
+      logger.info Rainbow("Removed unreferenced LFS files: #{number_of_removed_files}").green
     end
 
     namespace :sessions do

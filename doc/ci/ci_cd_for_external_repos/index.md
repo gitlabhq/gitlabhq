@@ -8,9 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
-
->[Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/4642) in GitLab 10.6.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 GitLab CI/CD can be used with [GitHub](github_integration.md), [Bitbucket Cloud](bitbucket_integration.md),
 or any other Git server, though there are some [limitations](#limitations).
@@ -21,7 +19,7 @@ external repository to get the benefits of GitLab CI/CD.
 Connecting an external repository sets up [repository mirroring](../../user/project/repository/mirror/index.md)
 and creates a lightweight project with issues, merge requests, wiki, and
 snippets disabled. These features
-[can be re-enabled later](../../user/project/settings/project_features_permissions.md#configure-project-features-and-permissions).
+[can be re-enabled later](../../user/project/settings/index.md#configure-project-features-and-permissions).
 
 ## Connect to an external repository
 
@@ -37,8 +35,6 @@ might not have any import sources configured. Ask an administrator for your inst
 the [import sources configuration](../../administration/settings/import_and_export_settings.md#configure-allowed-import-sources).
 
 ## Pipelines for external pull requests
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/65139) in GitLab 12.3.
 
 When using GitLab CI/CD with an [external repository on GitHub](github_integration.md),
 it's possible to run a pipeline in the context of a Pull Request.

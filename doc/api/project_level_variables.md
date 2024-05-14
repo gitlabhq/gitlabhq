@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 ## List project variables
 
@@ -183,9 +183,6 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 ```
 
 ## The `filter` parameter
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/34490) in GitLab 13.2.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/227052) in GitLab 13.4.
 
 When multiple variables have the same `key`, [GET](#get-a-single-variable), [PUT](#update-a-variable),
 or [DELETE](#delete-a-variable) requests might return:

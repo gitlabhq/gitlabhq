@@ -14,6 +14,7 @@ import BoardContent from '~/boards/components/board_content.vue';
 import BoardContentSidebar from '~/boards/components/board_content_sidebar.vue';
 import updateBoardListMutation from '~/boards/graphql/board_list_update.mutation.graphql';
 import BoardAddNewColumn from 'ee_else_ce/boards/components/board_add_new_column.vue';
+import BoardAddNewColumnTrigger from '~/boards/components/board_add_new_column_trigger.vue';
 import { DraggableItemTypes } from 'ee_else_ce/boards/constants';
 import boardListsQuery from 'ee_else_ce/boards/graphql/board_lists.query.graphql';
 import {
@@ -182,6 +183,10 @@ describe('BoardContent', () => {
     it('renders draggable component', () => {
       expect(findDraggable().exists()).toBe(true);
     });
+
+    it('renders BoardAddNewColumnTrigger component', () => {
+      expect(wrapper.findComponent(BoardAddNewColumnTrigger).exists()).toBe(true);
+    });
   });
 
   describe('can not admin list', () => {
@@ -191,6 +196,9 @@ describe('BoardContent', () => {
 
     it('does not render draggable component', () => {
       expect(findDraggable().exists()).toBe(false);
+    });
+    it('does not BoardAddNewColumnTrigger component', () => {
+      expect(wrapper.findComponent(BoardAddNewColumnTrigger).exists()).toBe(false);
     });
   });
 

@@ -6,7 +6,7 @@ RSpec.describe 'Creating a todo for the alert', feature_category: :incident_mana
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project) { create(:project, developers: user) }
 
   let(:alert) { create(:alert_management_alert, project: project) }
 
@@ -29,10 +29,6 @@ RSpec.describe 'Creating a todo for the alert', feature_category: :incident_mana
   end
 
   let(:mutation_response) { graphql_mutation_response(:alert_todo_create) }
-
-  before do
-    project.add_developer(user)
-  end
 
   it 'creates a todo for the current user' do
     post_graphql_mutation(mutation, current_user: user)

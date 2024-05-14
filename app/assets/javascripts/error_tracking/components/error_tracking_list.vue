@@ -7,6 +7,7 @@ import {
   GlLink,
   GlLoadingIcon,
   GlTable,
+  GlForm,
   GlFormInput,
   GlDropdown,
   GlDropdownItem,
@@ -46,37 +47,37 @@ export default {
     {
       key: 'error',
       label: __('Error'),
-      thClass: 'gl-w-40p',
+      thClass: 'gl-w-8/20',
       tdClass: `${tableDataClass}`,
     },
     {
       key: 'timeline',
       label: __('Timeline'),
-      thClass: 'gl-text-center gl-w-20p',
+      thClass: 'gl-text-center gl-w-4/20',
       tdClass: `${tableDataClass} gl-text-center`,
     },
     {
       key: 'events',
       label: __('Events'),
-      thClass: 'gl-text-center gl-w-10p',
+      thClass: 'gl-text-center gl-w-2/20',
       tdClass: `${tableDataClass} gl-text-center`,
     },
     {
       key: 'users',
       label: __('Users'),
-      thClass: 'gl-text-center gl-w-10p',
+      thClass: 'gl-text-center gl-w-2/20',
       tdClass: `${tableDataClass} gl-text-center`,
     },
     {
       key: 'lastSeen',
       label: __('Last seen'),
-      thClass: 'gl-text-center gl-w-10p',
+      thClass: 'gl-text-center gl-w-2/20',
       tdClass: `${tableDataClass} gl-text-center`,
     },
     {
       key: 'status',
       label: '',
-      tdClass: `${tableDataClass} gl-text-center`,
+      tdClass: `${tableDataClass}`,
     },
   ],
   statusFilters: {
@@ -100,6 +101,7 @@ export default {
     GlLink,
     GlLoadingIcon,
     GlTable,
+    GlForm,
     GlFormInput,
     GlSprintf,
     GlPagination,
@@ -181,13 +183,6 @@ export default {
     },
     showIntegratedDisabledAlert() {
       return !this.isAlertDismissed && this.showIntegratedTrackingDisabledAlert;
-    },
-    fields() {
-      if (this.integratedErrorTrackingEnabled) {
-        // user count is currently not supported for integrated error tracking https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/2345
-        return this.$options.fields.filter((field) => field.key !== 'users');
-      }
-      return this.$options.fields;
     },
   },
   watch: {
@@ -350,14 +345,15 @@ export default {
               <div v-else class="gl-px-5">{{ __("You don't have any recent searches") }}</div>
             </gl-dropdown>
             <div class="filtered-search-input-container gl-flex-grow-1">
-              <gl-form-input
-                v-model="errorSearchQuery"
-                class="gl-pl-3! filtered-search"
-                :disabled="loading"
-                :placeholder="__('Search or filter results…')"
-                autofocus
-                @keyup.enter.native="searchByQuery(errorSearchQuery)"
-              />
+              <gl-form @submit.prevent="searchByQuery(errorSearchQuery)">
+                <gl-form-input
+                  v-model="errorSearchQuery"
+                  class="gl-pl-3! filtered-search"
+                  :disabled="loading"
+                  :placeholder="__('Search or filter results…')"
+                  autofocus
+                />
+              </gl-form>
             </div>
             <div class="gl-search-box-by-type-right-icons">
               <gl-button
@@ -424,7 +420,7 @@ export default {
         <gl-table
           class="error-list-table gl-mt-5"
           :items="errors"
-          :fields="fields"
+          :fields="$options.fields"
           :show-empty="true"
           fixed
           stacked="md"
@@ -500,11 +496,7 @@ export default {
     </div>
     <!-- Get Started with ET -->
     <div v-else>
-      <gl-empty-state
-        :title="__('Get started with error tracking')"
-        :svg-path="illustrationPath"
-        :svg-height="null"
-      >
+      <gl-empty-state :title="__('Get started with error tracking')" :svg-path="illustrationPath">
         <template #description>
           <div>
             <span>{{ __('Monitor your errors directly in GitLab.') }}</span>

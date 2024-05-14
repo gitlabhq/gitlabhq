@@ -3,11 +3,14 @@
 require 'spec_helper'
 
 RSpec.describe PreferencesHelper do
-  describe '#dashboard_choices' do
-    let(:user) { build(:user) }
+  let_it_be(:user) { build(:user) }
 
+  before do
+    allow(helper).to receive(:current_user).and_return(user)
+  end
+
+  describe '#dashboard_choices' do
     before do
-      allow(helper).to receive(:current_user).and_return(user)
       allow(helper).to receive(:can?).and_return(false)
     end
 
@@ -86,7 +89,7 @@ RSpec.describe PreferencesHelper do
       it "returns user's theme's css_class" do
         stub_user(theme_id: 3)
 
-        expect(helper.user_application_theme).to eq 'ui-light-gray'
+        expect(helper.user_application_theme).to eq 'ui-neutral'
       end
 
       it 'returns the default when id is invalid' do
@@ -109,14 +112,14 @@ RSpec.describe PreferencesHelper do
 
   describe '#user_application_dark_mode?' do
     context 'with a user' do
-      it "returns true if user's selected dark theme" do
-        stub_user(theme_id: 11)
+      it "returns true if user's selected dark mode" do
+        stub_user(color_mode_id: 2)
 
         expect(helper.user_application_dark_mode?).to eq true
       end
 
-      it "returns false if user's selected any light theme" do
-        stub_user(theme_id: 1)
+      it "returns false if user's selected light mode" do
+        stub_user(color_mode_id: 1)
 
         expect(helper.user_application_dark_mode?).to eq false
       end
@@ -242,16 +245,15 @@ RSpec.describe PreferencesHelper do
 
   describe '#integration_views' do
     let(:gitpod_url) { 'http://gitpod.test' }
+    let(:gitpod_enabled) { false }
 
     before do
       allow(Gitlab::CurrentSettings).to receive(:gitpod_enabled).and_return(gitpod_enabled)
       allow(Gitlab::CurrentSettings).to receive(:gitpod_url).and_return(gitpod_url)
     end
 
-    context 'when Gitpod is not enabled' do
-      let(:gitpod_enabled) { false }
-
-      it 'does not include Gitpod integration' do
+    context 'on default' do
+      it 'does not include integration views' do
         expect(helper.integration_views).to be_empty
       end
     end
@@ -260,19 +262,35 @@ RSpec.describe PreferencesHelper do
       let(:gitpod_enabled) { true }
 
       it 'includes Gitpod integration' do
-        expect(helper.integration_views[0][:name]).to eq 'gitpod'
-      end
-
-      it 'returns the Gitpod url configured in settings' do
-        expect(helper.integration_views[0][:message_url]).to eq gitpod_url
+        expect(helper.integration_views).to include(
+          a_hash_including({ name: 'gitpod', message_url: gitpod_url })
+        )
       end
 
       context 'when Gitpod url is not set' do
         let(:gitpod_url) { '' }
 
-        it 'returns the Gitpod default url' do
-          expect(helper.integration_views[0][:message_url]).to eq 'https://gitpod.io/'
+        it 'includes Gitpod integration with default url' do
+          expect(helper.integration_views).to include(
+            a_hash_including({ name: 'gitpod', message_url: 'https://gitpod.io/' })
+          )
         end
+      end
+    end
+
+    context 'when WebIdeExtensionsMarketplace is enabled' do
+      before do
+        allow(Gitlab::WebIde::ExtensionsMarketplace).to receive(:feature_enabled?).with(user: user).and_return(true)
+      end
+
+      it 'includes extension marketplace integration' do
+        expect(helper.integration_views).to include(
+          a_hash_including({
+            name: 'extensions_marketplace',
+            message: 'Uses %{linkStart}https://open-vsx.org%{linkEnd} as the extension marketplace for the Web IDE.',
+            message_url: 'https://open-vsx.org'
+          })
+        )
       end
     end
   end

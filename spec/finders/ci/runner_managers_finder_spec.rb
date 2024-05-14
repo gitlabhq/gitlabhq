@@ -18,7 +18,7 @@ RSpec.describe Ci::RunnerManagersFinder, '#execute', feature_category: :fleet_vi
 
     let_it_be(:offline_runner_manager) { create(:ci_runner_machine, runner: runner, contacted_at: 2.hours.ago) }
     let_it_be(:online_runner_manager) { create(:ci_runner_machine, runner: runner, contacted_at: 1.second.ago) }
-    let_it_be(:never_contacted_runner_manager) { create(:ci_runner_machine, runner: runner, contacted_at: nil) }
+    let_it_be(:never_contacted_runner_manager) { create(:ci_runner_machine, :unregistered, runner: runner) }
     let_it_be(:stale_runner_manager) do
       create(
         :ci_runner_machine,

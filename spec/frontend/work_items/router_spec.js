@@ -25,7 +25,7 @@ describe('Work items router', () => {
     .mockResolvedValue({ data: { workItemUpdated: null } });
 
   const createComponent = async (routeArg) => {
-    const router = createRouter('/work_item');
+    const router = createRouter({ fullPath: '/work_item' });
     if (routeArg !== undefined) {
       await router.push(routeArg);
     }
@@ -55,6 +55,7 @@ describe('Work items router', () => {
         WorkItemHealthStatus: true,
         WorkItemNotes: true,
         WorkItemAwardEmoji: true,
+        WorkItemTimeTracking: true,
       },
     });
   };
@@ -88,5 +89,24 @@ describe('Work items router', () => {
     await createComponent('/new');
 
     expect(wrapper.findComponent(CreateWorkItem).exists()).toBe(true);
+  });
+
+  it('includes relative_url_root', () => {
+    gon.relative_url_root = '/my-org';
+    const router = createRouter({ fullPath: '/work_item' });
+
+    expect(router.options.base).toBe('/my-org/work_item/-/work_items');
+  });
+
+  it('includes groups in path for groups', () => {
+    const router = createRouter({ fullPath: '/work_item', workspaceType: 'group' });
+
+    expect(router.options.base).toBe('/groups/work_item/-/work_items');
+  });
+
+  it('includes workItemType if provided', () => {
+    const router = createRouter({ fullPath: '/work_item', workItemType: 'epics' });
+
+    expect(router.options.base).toBe('/work_item/-/epics');
   });
 });

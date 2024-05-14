@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9566) in GitLab Premium 12.5.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212318) to GitLab Free in 13.5.
@@ -181,8 +181,8 @@ POST /projects/:id/feature_flags
 | `name`              | string           | yes        | The name of the feature flag.                                                                                                                                                                                                                                                            |
 | `version`           | string           | yes        | **Deprecated** The version of the feature flag. Must be `new_version_flag`. Omit to create a Legacy feature flag.                                                                                                                                                                        |
 | `description`       | string           | no         | The description of the feature flag.                                                                                                                                                                                                                                                     |
-| `active`            | boolean          | no         | The active state of the flag. Defaults to true. [Supported](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38350) in GitLab 13.3 and later.                                                                                                                                       |
-| `strategies`        | array of strategy JSON objects | no         | The feature flag [strategies](../operations/feature_flags.md#feature-flag-strategies).                                                                                                                                                                                                   |
+| `active`            | boolean          | no         | The active state of the flag. Defaults to true.                                                                                                                                                                                                                                          |
+| `strategies`        | array of strategy JSON objects | no         | The feature flag [strategies](../operations/feature_flags.md#feature-flag-strategies).                                                                                                                                                                                     |
 | `strategies:name`   | JSON             | no         | The strategy name. Can be `default`, `gradualRolloutUserId`, `userWithId`, or `gitlabUserList`. In [GitLab 13.5](https://gitlab.com/gitlab-org/gitlab/-/issues/36380) and later, can be [`flexibleRollout`](https://docs.getunleash.io/user_guide/activation_strategy/#gradual-rollout). |
 | `strategies:parameters` | JSON         | no         | The strategy parameters.                                                                                                                                                                                                                                                                 |
 | `strategies:scopes` | JSON             | no         | The scopes for the strategy.                                                                                                                                                                                                                                                             |
@@ -239,20 +239,20 @@ PUT /projects/:id/feature_flags/:feature_flag_name
 
 | Attribute           | Type             | Required   | Description                                                                            |
 | ------------------- | ---------------- | ---------- | ---------------------------------------------------------------------------------------|
-| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding).       |
+| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding).   |
 | `feature_flag_name` | string           | yes        | The current name of the feature flag.                                                  |
 | `description`       | string           | no         | The description of the feature flag.                                                   |
-| `active`            | boolean          | no         | The active state of the flag. [Supported](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38350) in GitLab 13.3 and later. |
-| `name`              | string           | no         | The new name of the feature flag. [Supported](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38350) in GitLab 13.3 and later. |
+| `active`            | boolean          | no         | The active state of the flag.                                                          |
+| `name`              | string           | no         | The new name of the feature flag.                                                      |
 | `strategies`        | array of strategy JSON objects | no         | The feature flag [strategies](../operations/feature_flags.md#feature-flag-strategies). |
 | `strategies:id`     | JSON             | no         | The feature flag strategy ID.                                                          |
 | `strategies:name`   | JSON             | no         | The strategy name.                                                                     |
-| `strategies:_destroy` | boolean         | no         | Delete the strategy when true.                                                               |
+| `strategies:_destroy` | boolean         | no         | Delete the strategy when true.                                                        |
 | `strategies:parameters` | JSON         | no         | The strategy parameters.                                                               |
 | `strategies:scopes` | JSON             | no         | The scopes for the strategy.                                                           |
-| `strategies:scopes:id` | JSON          | no         | The environment scope ID.                                                                         |
+| `strategies:scopes:id` | JSON          | no         | The environment scope ID.                                                              |
 | `strategies:scopes:environment_scope` | string | no | The environment scope of the scope.                                                    |
-| `strategies:scopes:_destroy` | boolean | no | Delete the scope when true.                                                    |
+| `strategies:scopes:_destroy` | boolean | no | Delete the scope when true.                                                                    |
 | `strategies:user_list_id` | integer/string | no     | The ID of the feature flag user list. If strategy is `gitlabUserList`.                 |
 
 ```shell

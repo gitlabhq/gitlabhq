@@ -48,7 +48,7 @@ export default {
     },
     baselineQueryStringFilters() {
       return this.tokens.reduce((acc, curr) => {
-        acc[curr.type] = '';
+        acc[curr.type] = null;
         return acc;
       }, {});
     },
@@ -65,18 +65,26 @@ export default {
       const result = {
         ...this.baselineQueryStringFilters,
         ...sorting,
-        search: [],
+        search: null,
         after: null,
         before: null,
       };
 
       filter.forEach((f) => {
         if (f.type === FILTERED_SEARCH_TERM) {
-          result.search.push(f.value.data);
+          const value = f.value.data?.trim();
+          if (!value) return;
+
+          if (Array.isArray(result.search)) {
+            result.search.push(value);
+          } else {
+            result.search = [value];
+          }
         } else {
           result[f.type] = f.value.data;
         }
       });
+
       return result;
     },
     onDirectionChange() {
@@ -118,9 +126,7 @@ export default {
 </script>
 
 <template>
-  <div
-    class="gl-md-display-flex gl-p-5 gl-bg-gray-10 gl-border-solid gl-border-1 gl-border-gray-100"
-  >
+  <div class="gl-md-display-flex row-content-block">
     <!-- `gl-w-full gl-md-w-15` forces fixed width needed to prevent
     filtered component to grow beyond available width -->
     <gl-filtered-search
@@ -135,8 +141,8 @@ export default {
       data-testid="registry-sort-dropdown"
       class="gl-mt-3 gl-md-mt-0 gl-w-full gl-md-w-auto"
       dropdown-class="gl-w-full"
-      dropdown-toggle-class="gl-inset-border-1-gray-400!"
-      sort-direction-toggle-class="gl-inset-border-1-gray-400!"
+      dropdown-toggle-class="!gl-shadow-inner-1-gray-400"
+      sort-direction-toggle-class="!gl-shadow-inner-1-gray-400"
       :text="sortText"
       :is-ascending="isSortAscending"
       :sort-direction-tool-tip="sortDirectionData.tooltip"

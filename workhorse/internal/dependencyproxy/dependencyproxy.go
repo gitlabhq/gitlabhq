@@ -1,3 +1,4 @@
+// Package dependencyproxy provides functionality for handling dependency proxy operations
 package dependencyproxy
 
 import (
@@ -18,19 +19,21 @@ import (
 
 const dialTimeout = 10 * time.Second
 const responseHeaderTimeout = 10 * time.Second
+const uploadRequestGracePeriod = 60 * time.Second
 
 var httpTransport = transport.NewRestrictedTransport(transport.WithDialTimeout(dialTimeout), transport.WithResponseHeaderTimeout(responseHeaderTimeout))
 var httpClient = &http.Client{
 	Transport: httpTransport,
 }
 
+// Injector provides functionality for injecting dependencies
 type Injector struct {
 	senddata.Prefix
 	uploadHandler http.Handler
 }
 
 type entryParams struct {
-	Url          string
+	URL          string
 	Headers      http.Header
 	UploadConfig uploadConfig
 }
@@ -38,7 +41,7 @@ type entryParams struct {
 type uploadConfig struct {
 	Headers http.Header
 	Method  string
-	Url     string
+	URL     string
 }
 
 type nullResponseWriter struct {
@@ -60,14 +63,17 @@ func (w *nullResponseWriter) WriteHeader(status int) {
 	}
 }
 
+// NewInjector creates a new instance of Injector
 func NewInjector() *Injector {
 	return &Injector{Prefix: "send-dependency:"}
 }
 
+// SetUploadHandler sets the upload handler for the Injector
 func (p *Injector) SetUploadHandler(uploadHandler http.Handler) {
 	p.uploadHandler = uploadHandler
 }
 
+// Inject performs the injection of dependencies
 func (p *Injector) Inject(w http.ResponseWriter, r *http.Request, sendData string) {
 	params, err := p.unpackParams(sendData)
 	if err != nil {
@@ -75,7 +81,7 @@ func (p *Injector) Inject(w http.ResponseWriter, r *http.Request, sendData strin
 		return
 	}
 
-	dependencyResponse, err := p.fetchUrl(r.Context(), params)
+	dependencyResponse, err := p.fetchURL(r.Context(), params)
 	if err != nil {
 		status := http.StatusBadGateway
 
@@ -86,17 +92,33 @@ func (p *Injector) Inject(w http.ResponseWriter, r *http.Request, sendData strin
 		fail.Request(w, r, err, fail.WithStatus(status))
 		return
 	}
-	defer dependencyResponse.Body.Close()
+	defer func() { _ = dependencyResponse.Body.Close() }()
 	if dependencyResponse.StatusCode >= 400 {
 		w.WriteHeader(dependencyResponse.StatusCode)
-		io.Copy(w, dependencyResponse.Body)
+		// We swallow errors for now as we need to investigate further, see
+		// https://gitlab.com/gitlab-org/gitlab/-/issues/459952.
+		_, _ = io.Copy(w, dependencyResponse.Body)
 		return
 	}
 
 	w.Header().Set("Content-Length", dependencyResponse.Header.Get("Content-Length"))
 
 	teeReader := io.TeeReader(dependencyResponse.Body, w)
-	saveFileRequest, err := p.newUploadRequest(r.Context(), params, r, teeReader)
+	// upload request context should follow the r context + a grace period
+	ctx, cancel := context.WithCancel(context.WithoutCancel(r.Context()))
+	defer cancel()
+
+	stop := context.AfterFunc(r.Context(), func() {
+		t := time.AfterFunc(uploadRequestGracePeriod, cancel) // call cancel function after 60 seconds
+
+		context.AfterFunc(ctx, func() {
+			if !t.Stop() { // if ctx is cancelled and time still running, we stop the timer
+				<-t.C // drain the channel because it's recommended in the docs: https://pkg.go.dev/time#Timer.Stop
+			}
+		})
+	})
+	defer stop()
+	saveFileRequest, err := p.newUploadRequest(ctx, params, r, teeReader)
 	if err != nil {
 		fail.Request(w, r, fmt.Errorf("dependency proxy: failed to create request: %w", err))
 	}
@@ -121,12 +143,12 @@ func (p *Injector) Inject(w http.ResponseWriter, r *http.Request, sendData strin
 	if nrw.status != http.StatusOK {
 		fields := log.Fields{"code": nrw.status}
 
-		fail.Request(nrw, r, fmt.Errorf("dependency proxy: failed to upload file"), fail.WithFields(fields))
+		fail.Request(nrw, saveFileRequest, fmt.Errorf("dependency proxy: failed to upload file"), fail.WithFields(fields))
 	}
 }
 
-func (p *Injector) fetchUrl(ctx context.Context, params *entryParams) (*http.Response, error) {
-	r, err := http.NewRequestWithContext(ctx, "GET", params.Url, nil)
+func (p *Injector) fetchURL(ctx context.Context, params *entryParams) (*http.Response, error) {
+	r, err := http.NewRequestWithContext(ctx, "GET", params.URL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("dependency proxy: failed to fetch dependency: %w", err)
 	}
@@ -137,8 +159,8 @@ func (p *Injector) fetchUrl(ctx context.Context, params *entryParams) (*http.Res
 
 func (p *Injector) newUploadRequest(ctx context.Context, params *entryParams, originalRequest *http.Request, body io.Reader) (*http.Request, error) {
 	method := p.uploadMethodFrom(params)
-	uploadUrl := p.uploadUrlFrom(params, originalRequest)
-	request, err := http.NewRequestWithContext(ctx, method, uploadUrl, body)
+	uploadURL := p.uploadURLFrom(params, originalRequest)
+	request, err := http.NewRequestWithContext(ctx, method, uploadURL, body)
 	if err != nil {
 		return nil, err
 	}
@@ -174,9 +196,9 @@ func (p *Injector) validateParams(params entryParams) error {
 		return fmt.Errorf("invalid upload method %s", uploadMethod)
 	}
 
-	var uploadUrl = params.UploadConfig.Url
-	if uploadUrl != "" {
-		if _, err := url.ParseRequestURI(uploadUrl); err != nil {
+	var uploadURL = params.UploadConfig.URL
+	if uploadURL != "" {
+		if _, err := url.ParseRequestURI(uploadURL); err != nil {
 			return fmt.Errorf("invalid upload url %w", err)
 		}
 	}
@@ -191,9 +213,9 @@ func (p *Injector) uploadMethodFrom(params *entryParams) string {
 	return http.MethodPost
 }
 
-func (p *Injector) uploadUrlFrom(params *entryParams, originalRequest *http.Request) string {
-	if params.UploadConfig.Url != "" {
-		return params.UploadConfig.Url
+func (p *Injector) uploadURLFrom(params *entryParams, originalRequest *http.Request) string {
+	if params.UploadConfig.URL != "" {
+		return params.UploadConfig.URL
 	}
 
 	return originalRequest.URL.String() + "/upload"

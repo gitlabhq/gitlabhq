@@ -47,10 +47,9 @@ module Gitlab
         end
 
         def path_with_line_numbers(path, start_line, end_line)
-          path.tap do |complete_path|
-            complete_path << "#L#{start_line}"
-            complete_path << "-#{end_line}" if end_line && end_line != start_line
-          end
+          complete_path = path + "#L#{start_line}"
+          complete_path += "-#{end_line}" if end_line && end_line != start_line
+          complete_path
         end
 
         class_methods do

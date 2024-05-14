@@ -97,12 +97,28 @@ RSpec.describe Repositories::GitHttpController, feature_category: :source_code_m
           post :git_upload_pack, params: params
         end
 
-        it 'updates project statistics sync for projects' do
+        it 'updates project statistics async for projects' do
           stub_feature_flags(disable_git_http_fetch_writes: false)
-
-          expect { send_request }.to change {
+          daily_statistics = Projects::DailyStatisticsFinder.new(container)
+          expect do
+            send_request
+          end.to change {
+            daily_statistics.fetches.each do |date_stat|
+              date_stat.counter(:fetch_count).commit_increment!
+            end
             Projects::DailyStatisticsFinder.new(container).total_fetch_count
           }.from(0).to(1)
+        end
+
+        context "when project_daily_statistic_counter_attribute_fetch features flag is disabled" do
+          it 'updates project statistics sync for projects' do
+            stub_feature_flags(disable_git_http_fetch_writes: false)
+            stub_feature_flags(project_daily_statistic_counter_attribute_fetch: false)
+
+            expect { send_request }.to change {
+              Projects::DailyStatisticsFinder.new(container).total_fetch_count
+            }.from(0).to(1)
+          end
         end
 
         describe 'recording the onboarding progress', :sidekiq_inline do

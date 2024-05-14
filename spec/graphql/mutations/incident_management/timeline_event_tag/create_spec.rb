@@ -4,13 +4,9 @@ require 'spec_helper'
 
 RSpec.describe Mutations::IncidentManagement::TimelineEventTag::Create do
   let_it_be(:current_user) { create(:user) }
-  let_it_be_with_reload(:project) { create(:project) }
+  let_it_be_with_reload(:project) { create(:project, maintainers: current_user) }
 
   let(:args) { { name: 'Test tag 1' } }
-
-  before do
-    project.add_maintainer(current_user)
-  end
 
   specify { expect(described_class).to require_graphql_authorizations(:admin_incident_management_timeline_event_tag) }
 

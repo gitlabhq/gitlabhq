@@ -266,7 +266,7 @@ Settings['gitlab_ci'] ||= {}
 Settings.gitlab_ci['shared_runners_enabled'] = true if Settings.gitlab_ci['shared_runners_enabled'].nil?
 Settings.gitlab_ci['builds_path']           = Settings.absolute(Settings.gitlab_ci['builds_path'] || "builds/")
 Settings.gitlab_ci['url']                 ||= Settings.__send__(:build_gitlab_ci_url)
-Settings.gitlab_ci['component_fqdn']      ||= Settings.__send__(:build_ci_component_fqdn)
+Settings.gitlab_ci['server_fqdn']         ||= Settings.__send__(:build_ci_server_fqdn)
 
 #
 # CI Secure Files
@@ -557,7 +557,7 @@ Settings.cron_jobs['gitlab_service_ping_worker'] ||= {}
 Settings.cron_jobs['gitlab_service_ping_worker']['cron'] ||= nil # This is dynamically loaded in the sidekiq initializer
 Settings.cron_jobs['gitlab_service_ping_worker']['job_class'] = 'GitlabServicePingWorker'
 Settings.cron_jobs['stuck_merge_jobs_worker'] ||= {}
-Settings.cron_jobs['stuck_merge_jobs_worker']['cron'] ||= '0 */2 * * *'
+Settings.cron_jobs['stuck_merge_jobs_worker']['cron'] ||= '*/15 * * * *'
 Settings.cron_jobs['stuck_merge_jobs_worker']['job_class'] = 'StuckMergeJobsWorker'
 Settings.cron_jobs['pages_domain_verification_cron_worker'] ||= {}
 Settings.cron_jobs['pages_domain_verification_cron_worker']['cron'] ||= '*/15 * * * *'
@@ -580,15 +580,6 @@ Settings.cron_jobs['namespaces_prune_aggregation_schedules_worker']['job_class']
 Settings.cron_jobs['container_expiration_policy_worker'] ||= {}
 Settings.cron_jobs['container_expiration_policy_worker']['cron'] ||= '50 * * * *'
 Settings.cron_jobs['container_expiration_policy_worker']['job_class'] = 'ContainerExpirationPolicyWorker'
-Settings.cron_jobs['container_registry_migration_guard_worker'] ||= {}
-Settings.cron_jobs['container_registry_migration_guard_worker']['cron'] ||= '*/10 * * * *'
-Settings.cron_jobs['container_registry_migration_guard_worker']['job_class'] = 'ContainerRegistry::Migration::GuardWorker'
-Settings.cron_jobs['container_registry_migration_observer_worker'] ||= {}
-Settings.cron_jobs['container_registry_migration_observer_worker']['cron'] ||= '*/30 * * * *'
-Settings.cron_jobs['container_registry_migration_observer_worker']['job_class'] = 'ContainerRegistry::Migration::ObserverWorker'
-Settings.cron_jobs['container_registry_migration_enqueuer_worker'] ||= {}
-Settings.cron_jobs['container_registry_migration_enqueuer_worker']['cron'] ||= '15,45 */1 * * *'
-Settings.cron_jobs['container_registry_migration_enqueuer_worker']['job_class'] = 'ContainerRegistry::Migration::EnqueuerWorker'
 Settings.cron_jobs['cleanup_container_registry_worker'] ||= {}
 Settings.cron_jobs['cleanup_container_registry_worker']['cron'] ||= '*/5 * * * *'
 Settings.cron_jobs['cleanup_container_registry_worker']['job_class'] = 'ContainerRegistry::CleanupWorker'
@@ -709,6 +700,9 @@ Settings.cron_jobs['ci_catalog_resources_process_sync_events_worker']['job_class
 Settings.cron_jobs['namespaces_process_outdated_namespace_descendants_cron_worker'] ||= {}
 Settings.cron_jobs['namespaces_process_outdated_namespace_descendants_cron_worker']['cron'] ||= '*/1 * * * *'
 Settings.cron_jobs['namespaces_process_outdated_namespace_descendants_cron_worker']['job_class'] = 'Namespaces::ProcessOutdatedNamespaceDescendantsCronWorker'
+Settings.cron_jobs['performance_bar_stats'] ||= {}
+Settings.cron_jobs['performance_bar_stats']['cron'] ||= '*/2 * * * *'
+Settings.cron_jobs['performance_bar_stats']['job_class'] = 'GitlabPerformanceBarStatsWorker'
 
 Gitlab.ee do
   Settings.cron_jobs['analytics_devops_adoption_create_all_snapshots_worker'] ||= {}
@@ -721,7 +715,7 @@ Gitlab.ee do
   Settings.cron_jobs['analytics_cycle_analytics_consistency_worker']['cron'] ||= '*/30 * * * *'
   Settings.cron_jobs['analytics_cycle_analytics_consistency_worker']['job_class'] = 'Analytics::CycleAnalytics::ConsistencyWorker'
   Settings.cron_jobs['analytics_cycle_analytics_reaggregation_worker'] ||= {}
-  Settings.cron_jobs['analytics_cycle_analytics_reaggregation_worker']['cron'] ||= '44 * * * *'
+  Settings.cron_jobs['analytics_cycle_analytics_reaggregation_worker']['cron'] ||= '*/25 * * * *'
   Settings.cron_jobs['analytics_cycle_analytics_reaggregation_worker']['job_class'] = 'Analytics::CycleAnalytics::ReaggregationWorker'
   Settings.cron_jobs['analytics_value_stream_dashboard_count_worker'] ||= {}
   Settings.cron_jobs['analytics_value_stream_dashboard_count_worker']['cron'] ||= '*/7 * * * *'
@@ -815,10 +809,10 @@ Gitlab.ee do
   Settings.cron_jobs['sync_seat_link_worker']['job_class'] = 'SyncSeatLinkWorker'
   Settings.cron_jobs['sync_service_token_worker'] ||= {}
   Settings.cron_jobs['sync_service_token_worker']['cron'] ||= "#{rand(60)} #{rand(5..6)} * * * UTC"
-  Settings.cron_jobs['sync_service_token_worker']['job_class'] = '::Ai::SyncServiceTokenWorker'
-  Settings.cron_jobs['llm_embedding_gitlab_documentation_create_empty_embeddings_records_worker'] ||= {}
-  Settings.cron_jobs['llm_embedding_gitlab_documentation_create_empty_embeddings_records_worker']['cron'] ||= '0 5 * * 1,2,3,4,5'
-  Settings.cron_jobs['llm_embedding_gitlab_documentation_create_empty_embeddings_records_worker']['job_class'] ||= 'Llm::Embedding::GitlabDocumentation::CreateEmptyEmbeddingsRecordsWorker'
+  Settings.cron_jobs['sync_service_token_worker']['job_class'] = '::CloudConnector::SyncServiceTokenWorker'
+  Settings.cron_jobs['llm_embedding_gitlab_documentation_create_embeddings_records_worker'] ||= {}
+  Settings.cron_jobs['llm_embedding_gitlab_documentation_create_embeddings_records_worker']['cron'] ||= '0 5 * * 1,2,3,4,5'
+  Settings.cron_jobs['llm_embedding_gitlab_documentation_create_embeddings_records_worker']['job_class'] ||= 'Llm::Embedding::GitlabDocumentation::CreateEmbeddingsRecordsWorker'
   Settings.cron_jobs['llm_embedding_gitlab_documentation_cleanup_previous_versions_records_worker'] ||= {}
   Settings.cron_jobs['llm_embedding_gitlab_documentation_cleanup_previous_versions_records_worker']['cron'] ||= '0 0 * * *'
   Settings.cron_jobs['llm_embedding_gitlab_documentation_cleanup_previous_versions_records_worker']['job_class'] ||= 'Llm::Embedding::GitlabDocumentation::CleanupPreviousVersionsRecordsWorker'
@@ -867,9 +861,6 @@ Gitlab.ee do
   Settings.cron_jobs['licenses_reset_submit_license_usage_data_banner'] ||= {}
   Settings.cron_jobs['licenses_reset_submit_license_usage_data_banner']['cron'] ||= "0 0 * * *"
   Settings.cron_jobs['licenses_reset_submit_license_usage_data_banner']['job_class'] = 'Licenses::ResetSubmitLicenseUsageDataBannerWorker'
-  Settings.cron_jobs['abandoned_trial_emails'] ||= {}
-  Settings.cron_jobs['abandoned_trial_emails']['cron'] ||= "0 1 * * *"
-  Settings.cron_jobs['abandoned_trial_emails']['job_class'] = 'Emails::AbandonedTrialEmailsCronWorker'
   Settings.cron_jobs['package_metadata_licenses_sync_worker'] ||= {}
   Settings.cron_jobs['package_metadata_licenses_sync_worker']['cron'] ||= "*/5 * * * *"
   Settings.cron_jobs['package_metadata_licenses_sync_worker']['job_class'] = 'PackageMetadata::LicensesSyncWorker'
@@ -879,6 +870,9 @@ Gitlab.ee do
   Settings.cron_jobs['users_delete_unconfirmed_users_worker'] ||= {}
   Settings.cron_jobs['users_delete_unconfirmed_users_worker']['cron'] ||= '0 * * * *'
   Settings.cron_jobs['users_delete_unconfirmed_users_worker']['job_class'] = 'Users::UnconfirmedUsersDeletionCronWorker'
+  Settings.cron_jobs['users_unconfirmed_secondary_emails_deletion_cron_worker'] ||= {}
+  Settings.cron_jobs['users_unconfirmed_secondary_emails_deletion_cron_worker']['cron'] ||= '0 * * * *'
+  Settings.cron_jobs['users_unconfirmed_secondary_emails_deletion_cron_worker']['job_class'] = 'Users::UnconfirmedSecondaryEmailsDeletionCronWorker'
   Settings.cron_jobs['package_metadata_advisories_sync_worker'] ||= {}
   Settings.cron_jobs['package_metadata_advisories_sync_worker']['cron'] ||= "*/5 * * * *"
   Settings.cron_jobs['package_metadata_advisories_sync_worker']['job_class'] = 'PackageMetadata::AdvisoriesSyncWorker'
@@ -892,6 +886,21 @@ Gitlab.ee do
   Settings.cron_jobs['click_house_ci_finished_builds_sync_worker']['cron'] ||= '*/3 * * * *'
   Settings.cron_jobs['click_house_ci_finished_builds_sync_worker']['args'] ||= [1]
   Settings.cron_jobs['click_house_ci_finished_builds_sync_worker']['job_class'] = 'ClickHouse::CiFinishedBuildsSyncCronWorker'
+  Settings.cron_jobs['click_house_events_sync_worker'] ||= {}
+  Settings.cron_jobs['click_house_events_sync_worker']['cron'] ||= "*/3 * * * *"
+  Settings.cron_jobs['click_house_events_sync_worker']['job_class'] = 'ClickHouse::EventsSyncWorker'
+  Settings.cron_jobs['click_house_event_authors_consistency_cron_worker'] ||= {}
+  Settings.cron_jobs['click_house_event_authors_consistency_cron_worker']['cron'] ||= "*/30 * * * *"
+  Settings.cron_jobs['click_house_event_authors_consistency_cron_worker']['job_class'] = 'ClickHouse::EventAuthorsConsistencyCronWorker'
+  Settings.cron_jobs['click_house_event_namespace_paths_consistency_cron_worker'] ||= {}
+  Settings.cron_jobs['click_house_event_namespace_paths_consistency_cron_worker']['cron'] ||= "*/45 * * * *"
+  Settings.cron_jobs['click_house_event_namespace_paths_consistency_cron_worker']['job_class'] = 'ClickHouse::EventPathsConsistencyCronWorker'
+  Settings.cron_jobs['click_house_rebuild_materialized_view_cron_worker'] ||= {}
+  Settings.cron_jobs['click_house_rebuild_materialized_view_cron_worker']['cron'] ||= "*/10 * * * *"
+  Settings.cron_jobs['click_house_rebuild_materialized_view_cron_worker']['job_class'] = 'ClickHouse::RebuildMaterializedViewCronWorker'
+  Settings.cron_jobs['click_house_code_suggestion_events_cron_worker'] ||= {}
+  Settings.cron_jobs['click_house_code_suggestion_events_cron_worker']['cron'] ||= "*/5 * * * *"
+  Settings.cron_jobs['click_house_code_suggestion_events_cron_worker']['job_class'] = 'ClickHouse::CodeSuggestionEventsCronWorker'
   Settings.cron_jobs['gitlab_subscriptions_add_on_purchases_schedule_bulk_refresh_user_assignments_worker'] ||= {}
   Settings.cron_jobs['gitlab_subscriptions_add_on_purchases_schedule_bulk_refresh_user_assignments_worker']['cron'] ||= "0 */4 * * *"
   Settings.cron_jobs['gitlab_subscriptions_add_on_purchases_schedule_bulk_refresh_user_assignments_worker']['job_class'] = 'GitlabSubscriptions::AddOnPurchases::ScheduleBulkRefreshUserAssignmentsWorker'
@@ -906,21 +915,12 @@ Gitlab.ee do
     Settings.cron_jobs['gitlab_subscriptions_schedule_refresh_seats_worker'] ||= {}
     Settings.cron_jobs['gitlab_subscriptions_schedule_refresh_seats_worker']['cron'] ||= "0 */6 * * *"
     Settings.cron_jobs['gitlab_subscriptions_schedule_refresh_seats_worker']['job_class'] = 'GitlabSubscriptions::ScheduleRefreshSeatsWorker'
-    Settings.cron_jobs['click_house_events_sync_worker'] ||= {}
-    Settings.cron_jobs['click_house_events_sync_worker']['cron'] ||= "*/3 * * * *"
-    Settings.cron_jobs['click_house_events_sync_worker']['job_class'] = 'ClickHouse::EventsSyncWorker'
-    Settings.cron_jobs['click_house_event_authors_consistency_cron_worker'] ||= {}
-    Settings.cron_jobs['click_house_event_authors_consistency_cron_worker']['cron'] ||= "*/30 * * * *"
-    Settings.cron_jobs['click_house_event_authors_consistency_cron_worker']['job_class'] = 'ClickHouse::EventAuthorsConsistencyCronWorker'
-    Settings.cron_jobs['click_house_event_namespace_paths_consistency_cron_worker'] ||= {}
-    Settings.cron_jobs['click_house_event_namespace_paths_consistency_cron_worker']['cron'] ||= "*/45 * * * *"
-    Settings.cron_jobs['click_house_event_namespace_paths_consistency_cron_worker']['job_class'] = 'ClickHouse::EventPathsConsistencyCronWorker'
-    Settings.cron_jobs['click_house_audit_events_sync_worker'] ||= {}
-    Settings.cron_jobs['click_house_audit_events_sync_worker']['cron'] ||= "*/3 * * * *"
-    Settings.cron_jobs['click_house_audit_events_sync_worker']['job_class'] = 'ClickHouse::AuditEventsSyncWorker'
     Settings.cron_jobs['vertex_ai_refresh_access_token_worker'] ||= {}
     Settings.cron_jobs['vertex_ai_refresh_access_token_worker']['cron'] ||= '*/50 * * * *'
     Settings.cron_jobs['vertex_ai_refresh_access_token_worker']['job_class'] = 'Llm::VertexAiAccessTokenRefreshWorker'
+    Settings.cron_jobs['click_house_audit_events_sync_worker'] ||= {}
+    Settings.cron_jobs['click_house_audit_events_sync_worker']['cron'] ||= "*/3 * * * *"
+    Settings.cron_jobs['click_house_audit_events_sync_worker']['job_class'] = 'ClickHouse::AuditEventsSyncWorker'
   end
 end
 
@@ -1062,7 +1062,7 @@ Gitlab.ee do
   Settings.kerberos['https'] = Settings.gitlab.https if Settings.kerberos['https'].nil?
   Settings.kerberos['port'] ||= Settings.kerberos.https ? 8443 : 8088
 
-  if Settings.kerberos['enabled'] && !Settings.omniauth.providers.map(&:name).include?('kerberos')
+  if Settings.kerberos['enabled'] && Settings.omniauth.providers.map(&:name).exclude?('kerberos')
     Settings.omniauth.providers << GitlabSettings::Options.build({ 'name' => 'kerberos' })
   end
 end

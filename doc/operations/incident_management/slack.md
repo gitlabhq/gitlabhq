@@ -1,5 +1,5 @@
 ---
-stage: Service Management
+stage: Monitor
 group: Respond
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS
+**Offering:** GitLab.com
 **Status:** Beta
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344856) in GitLab 15.7 [with a flag](../../administration/feature_flags.md) named `incident_declare_slash_command`. Disabled by default.
@@ -16,8 +16,8 @@ DETAILS:
 
 FLAG:
 On self-managed GitLab, this feature is not available.
-On GitLab.com, this feature is available.
-The feature is not ready for production use.
+On GitLab.com, this feature is available. On GitLab Dedicated, this feature is not available.
+This feature is not ready for production use.
 
 Many teams receive alerts and collaborate in real time during incidents in Slack.
 Use the GitLab for Slack app to:
@@ -44,7 +44,7 @@ Prerequisites:
 
    To start the authorization flow, try executing a non-incident [Slack slash command](../../user/project/integrations/gitlab_slack_application.md#slash-commands),
    like `/gitlab <project-alias> issue show <id>`.
-   The `<project-alias>` you select must be a project that has the GitLab for Slack app set up.
+   The `<project-alias>` you select must be a project that has the GitLab for Slack app set up. The select dialog has a hard limit of 100 projects.
    For more information, see [issue 377548](https://gitlab.com/gitlab-org/gitlab/-/issues/377548).
 
 After the GitLab for Slack app is configured, you can also use any of the existing [Slack slash commands](../../user/project/integrations/slack_slash_commands.md).

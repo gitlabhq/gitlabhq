@@ -27,37 +27,23 @@ module Gitlab
     ].freeze
 
     class << self
-      def configure(&block)
-        configure_raven(&block)
-        configure_sentry(&block)
-      end
-
-      def configure_raven
-        Raven.configure do |config|
+      def configure
+        Sentry.init do |config|
           config.dsn = sentry_dsn
           config.release = Gitlab.revision
-          config.current_environment = Gitlab.config.sentry.environment
-
-          # Sanitize fields based on those sanitized from Rails.
-          config.sanitize_fields = Rails.application.config.filter_parameters.map(&:to_s)
-
-          # Sanitize authentication headers
-          config.sanitize_http_headers = %w[Authorization Private-Token]
-          config.before_send = method(:before_send_raven)
-
-          yield config if block_given?
-        end
-      end
-
-      def configure_sentry
-        Sentry.init do |config|
-          config.dsn = new_sentry_dsn
-          config.release = Gitlab.revision
-          config.environment = new_sentry_environment
-          config.before_send = method(:before_send_sentry)
+          config.environment = sentry_environment
+          config.before_send = method(:before_send)
           config.background_worker_threads = 0
           config.send_default_pii = true
+          config.send_modules = false
           config.traces_sample_rate = 0.2 if Gitlab::Utils.to_boolean(ENV['ENABLE_SENTRY_PERFORMANCE_MONITORING'])
+          # Reason for disabling the below configs https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150771#note_1881953691
+          config.metrics.enabled = false
+          config.metrics.enable_code_locations = false
+          config.propagate_traces = false
+          config.trace_propagation_targets = []
+          config.enabled_patches = []
+          config.enable_tracing = false
 
           yield config if block_given?
         end
@@ -133,18 +119,6 @@ module Gitlab
 
       private
 
-      def before_send_raven(event, hint)
-        return unless Feature.enabled?(:enable_old_sentry_integration)
-
-        before_send(event, hint)
-      end
-
-      def before_send_sentry(event, hint)
-        return unless Feature.enabled?(:enable_new_sentry_integration)
-
-        before_send(event, hint)
-      end
-
       def before_send(event, hint)
         # Don't report Sidekiq retry errors to Sentry
         return if hint[:exception].is_a?(Gitlab::SidekiqMiddleware::RetryError)
@@ -169,7 +143,6 @@ module Gitlab
 
       def default_trackers
         [].tap do |destinations|
-          destinations << Raven if Raven.configuration.server
           # There is a possibility that this method is called before Sentry is
           # configured. Since Sentry 4.0, some methods of Sentry are forwarded to
           # to `nil`, hence we have to check the client as well.
@@ -178,25 +151,56 @@ module Gitlab
         end
       end
 
+      # Some configuration attributes like `dsn`, and `environment`
+      # can be configured both via `ENV` and `Application Settings`.
+      # The reason being is while GitLab.com uses application_settings
+      # in Geo installations, we can't override values in the primary database.
+      # Setting this value in application_settings would propagate the value
+      # to all Geo nodes, which doesn't solve that particular problem.
       def sentry_dsn
-        return unless sentry_configurable?
-        return unless Gitlab.config.sentry.enabled
-
-        Gitlab.config.sentry.dsn
+        env_sentry_dsn || database_sentry_dsn
       end
 
-      def new_sentry_dsn
+      def sentry_environment
+        env_sentry_environment || database_sentry_environment
+      end
+
+      def database_sentry_dsn
         return unless sentry_configurable?
-        return unless Gitlab::CurrentSettings.respond_to?(:sentry_enabled?)
-        return unless Gitlab::CurrentSettings.sentry_enabled?
+        return unless database_sentry_enabled?
 
         Gitlab::CurrentSettings.sentry_dsn
       end
 
-      def new_sentry_environment
+      def env_sentry_dsn
+        return unless sentry_configurable?
+        return unless env_sentry_enabled?
+
+        Gitlab.config.sentry.dsn
+      end
+
+      def env_sentry_environment
+        return unless sentry_configurable?
+        return unless env_sentry_enabled?
+
+        Gitlab.config.sentry.environment
+      end
+
+      def database_sentry_environment
+        return unless sentry_configurable?
+        return unless database_sentry_enabled?
         return unless Gitlab::CurrentSettings.respond_to?(:sentry_environment)
 
         Gitlab::CurrentSettings.sentry_environment
+      end
+
+      def database_sentry_enabled?
+        Gitlab::CurrentSettings.respond_to?(:sentry_enabled?) &&
+          Gitlab::CurrentSettings.sentry_enabled?
+      end
+
+      def env_sentry_enabled?
+        Gitlab.config.sentry.enabled
       end
 
       def sentry_configurable?

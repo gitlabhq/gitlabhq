@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356986) in GitLab 15.7.
 
@@ -66,14 +66,15 @@ The token also includes custom claims provided by GitLab:
 | `user_access_level`     | Always                       | Access level of the user executing the job. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/432052) in GitLab 16.9.                                                                                                                                                                                                                                                                            |
 | `user_identities`       | User Preference setting      | List of the user's external identities ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387537) in GitLab 16.0).                                                                                                                                                                                      |
 | `pipeline_id`           | Always                       | ID of the pipeline.                                                                                                                                                                                                                                                                                              |
-| `pipeline_source`       | Always                       | [Pipeline source](../jobs/job_control.md#common-if-clauses-for-rules).                                                                                                                                                                                                                                           |
+| `pipeline_source`       | Always                       | [Pipeline source](../jobs/job_rules.md#common-if-clauses-with-predefined-variables).                                                                                                                                                                                                                                           |
 | `job_id`                | Always                       | ID of the job.                                                                                                                                                                                                                                                                                                   |
 | `ref`                   | Always                       | Git ref for the job.                                                                                                                                                                                                                                                                                             |
 | `ref_type`              | Always                       | Git ref type, either `branch` or `tag`.                                                                                                                                                                                                                                                                          |
 | `ref_path`              | Always                       | Fully qualified ref for the job. For example, `refs/heads/main`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119075) in GitLab 16.0.                                                                                                                                                      |
 | `ref_protected`         | Always                       | `true` if the Git ref is protected, `false` otherwise.                                                                                                                                                                                                                                                           |
-| `environment`           | Job specifies an environment | Environment this job deploys to ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/294440) in GitLab 13.9).                                                                                                                                                                                             |
-| `environment_protected` | Job specifies an environment | `true` if deployed environment is protected, `false` otherwise ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/294440) in GitLab 13.9).                                                                                                                                                              |
+| `groups_direct`         | User is a direct member of 0 to 200 groups | The paths of the user's direct membership groups. Omitted if the user is a direct member of more than 200 groups. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/435848) in GitLab 16.11). |
+| `environment`           | Job specifies an environment | Environment this job deploys to.                                                                                                                                                                                             |
+| `environment_protected` | Job specifies an environment | `true` if deployed environment is protected, `false` otherwise.                                                                                                                                                              |
 | `deployment_tier`       | Job specifies an environment | [Deployment tier](../environments/index.md#deployment-tier-of-environments) of the environment the job specifies. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363590) in GitLab 15.2.                                                                                                             |
 | `environment_action`    | Job specifies an environment | [Environment action (`environment:action`)](../environments/index.md) specified in the job. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/) in GitLab 16.5)                                                                                                                                               |
 | `runner_id`             | Always                       | ID of the runner executing the job. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404722) in GitLab 16.0.                                                                                                                                                                                           |
@@ -103,6 +104,7 @@ The token also includes custom claims provided by GitLab:
   "ref_type": "branch",
   "ref_path": "refs/heads/feature-branch-1",
   "ref_protected": "false",
+  "groups_direct": ["mygroup/mysubgroup", "myothergroup/myothersubgroup"],
   "environment": "test-environment2",
   "environment_protected": "false",
   "deployment_tier": "testing",
@@ -137,7 +139,7 @@ manual_authentication:
   image: vault:latest
   id_tokens:
     VAULT_ID_TOKEN:
-      aud: http://vault.example.com:8200
+      aud: http://vault.example.com
   script:
     - export VAULT_TOKEN="$(vault write -field=token auth/jwt/login role=myproject-example jwt=$VAULT_ID_TOKEN)"
     - export PASSWORD="$(vault kv get -field=password secret/myproject/example/db)"
@@ -148,7 +150,7 @@ manual_authentication:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 You can use ID tokens to automatically fetch secrets from HashiCorp Vault with the
 [`secrets`](../yaml/index.md#secrets) keyword.
@@ -164,7 +166,7 @@ If one ID token is defined, the `secrets` keyword automatically uses it to authe
 job_with_secrets:
   id_tokens:
     VAULT_ID_TOKEN:
-      aud: https://example.vault.com
+      aud: https://vault.example.com
   secrets:
     PROD_DB_PASSWORD:
       vault: example/db/password # authenticates using $VAULT_ID_TOKEN

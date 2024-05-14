@@ -53,7 +53,7 @@ export default {
 </script>
 
 <template>
-  <contribution-event-base :event="event" icon-name="comment" icon-class="gl-text-blue-600">
+  <contribution-event-base :event="event" icon-name="comment">
     <gl-sprintf :message="message">
       <template #noteableLink>
         <gl-link :class="noteableLinkClass" :href="noteable.web_url">{{

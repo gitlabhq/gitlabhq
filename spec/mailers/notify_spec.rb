@@ -137,6 +137,7 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
           aggregate_failures do
             is_expected.to have_referable_subject(issue)
             is_expected.to have_body_text(project_issue_path(project, issue))
+            is_expected.not_to have_body_text 'This project does not include diff previews in email notifications'
           end
         end
 
@@ -1102,7 +1103,7 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
     end
 
     describe 'project invitation' do
-      let(:maintainer) { create(:user).tap { |u| project.add_maintainer(u) } }
+      let(:maintainer) { create(:user, maintainer_of: project) }
       let(:project_member) { invite_to_project(project, inviter: inviter) }
       let(:inviter) { maintainer }
 
@@ -1179,7 +1180,7 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
 
     describe 'project invitation accepted' do
       let(:invited_user) { create(:user, name: 'invited user') }
-      let(:recipient) { create(:user).tap { |u| project.add_maintainer(u) } }
+      let(:recipient) { create(:user, maintainer_of: project) }
       let(:project_member) do
         invitee = invite_to_project(project, inviter: recipient)
         invitee.accept_invite!(invited_user)
@@ -1205,7 +1206,7 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
     end
 
     describe 'project invitation declined' do
-      let(:recipient) { create(:user).tap { |u| project.add_maintainer(u) } }
+      let(:recipient) { create(:user, maintainer_of: project) }
       let(:project_member) do
         invitee = invite_to_project(project, inviter: recipient)
         invitee.decline_invite!
@@ -1464,14 +1465,23 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
       end
 
       shared_examples 'an email for a note on a diff discussion' do |model|
-        let(:note) { create(model, author: note_author) }
-
         context 'when note is not on text' do
           before do
             allow(note.discussion).to receive(:on_text?).and_return(false)
           end
 
           it 'does not include diffs with character-level highlighting' do
+            is_expected.not_to have_body_text '<span class="p">}</span></span>'
+          end
+        end
+
+        context 'when the project does not show diffs in emails' do
+          before do
+            allow(project).to receive(:show_diff_preview_in_email?).and_return(false)
+          end
+
+          it "does not show diff and displays a separate message" do
+            is_expected.to have_body_text 'This project does not include diff previews in email notifications'
             is_expected.not_to have_body_text '<span class="p">}</span></span>'
           end
         end
@@ -1513,7 +1523,7 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
 
       describe 'on a commit' do
         let(:commit) { project.commit }
-        let(:note) { create(:diff_note_on_commit) }
+        let(:note) { create(:diff_note_on_commit, author: note_author, project: project) }
 
         subject { described_class.note_commit_email(recipient.id, note.id) }
 
@@ -1525,7 +1535,7 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
       end
 
       describe 'on a merge request' do
-        let(:note) { create(:diff_note_on_merge_request) }
+        let(:note) { create(:diff_note_on_merge_request, author: note_author, noteable: merge_request, project: project) }
 
         subject { described_class.note_merge_request_email(recipient.id, note.id) }
 
@@ -1768,7 +1778,7 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
     end
 
     describe 'invitations' do
-      let(:owner) { create(:user).tap { |u| group.add_member(u, Gitlab::Access::OWNER) } }
+      let(:owner) { create(:user, owner_of: group) }
       let(:group_member) { invite_to_group(group, inviter: inviter) }
       let(:inviter) { owner }
 
@@ -1804,7 +1814,7 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
     end
 
     describe 'group invitation reminders' do
-      let_it_be(:inviter) { create(:user).tap { |u| group.add_member(u, Gitlab::Access::OWNER) } }
+      let_it_be(:inviter) { create(:user, owner_of: group) }
 
       let(:group_member) { invite_to_group(group, inviter: inviter) }
 
@@ -1887,7 +1897,7 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
 
     describe 'group invitation accepted' do
       let(:invited_user) { create(:user, name: 'invited user') }
-      let(:owner) { create(:user).tap { |u| group.add_member(u, Gitlab::Access::OWNER) } }
+      let(:owner) { create(:user, owner_of: group) }
       let(:group_member) do
         invitee = invite_to_group(group, inviter: owner)
         invitee.accept_invite!(invited_user)
@@ -1913,7 +1923,7 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
     end
 
     describe 'group invitation declined' do
-      let(:owner) { create(:user).tap { |u| group.add_member(u, Gitlab::Access::OWNER) } }
+      let(:owner) { create(:user, owner_of: group) }
       let(:group_member) do
         invitee = invite_to_group(group, inviter: owner)
         invitee.decline_invite!

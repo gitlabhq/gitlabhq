@@ -6,12 +6,13 @@ RSpec.describe "Converts a work item to a new type", feature_category: :team_pla
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project) }
-  let_it_be(:developer) { create(:user).tap { |user| project.add_developer(user) } }
+  let_it_be(:developer) { create(:user, developer_of: project) }
   let_it_be(:new_type) { create(:work_item_type, :incident, :default) }
   let_it_be(:work_item, refind: true) do
     create(:work_item, :task, project: project, milestone: create(:milestone, project: project))
   end
 
+  let(:current_user) { create(:user) }
   let(:work_item_type_id) { new_type.to_global_id.to_s }
   let(:mutation) { graphql_mutation(:workItemConvert, input) }
   let(:mutation_response) { graphql_mutation_response(:work_item_convert) }

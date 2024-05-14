@@ -12,6 +12,10 @@
   width: calc(100% - var(--application-bar-left));
   z-index: $top-bar-z-index;
 
+  @media (forced-colors: active) {
+    border-bottom: 1px solid;
+  }
+
   @media (prefers-reduced-motion: no-preference) {
     transition: left $gl-transition-duration-medium,
                 right $gl-transition-duration-medium,

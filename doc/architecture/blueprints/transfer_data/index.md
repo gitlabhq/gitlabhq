@@ -75,7 +75,7 @@ ClickHouse -->|query transfer logs| Rails
 
 Every application produces logs in structured format. Logs related
 to transfer data requests have metadata fields that include the
-number of bytes transferred, namespace, project, and timestamp
+number of bytes transferred, root namespace ID, project ID, and timestamp
 of the egress event.
 
 ### Google Pub/Sub
@@ -115,19 +115,19 @@ CREATE TABLE transfer_data
 (
     created_at DateTime,
     bytes UInt64,
-    project String,
-    namespace String,
+    project_id UInt64,
+    root_namespace_id UInt64,
     type String
 )
 ENGINE = MergeTree
-PRIMARY KEY (project, namespace)
+PRIMARY KEY (project_id, root_namespace_id)
 ```
 
-`created_at` - a timestamp of the event
-`bytes` - a number of transferred bytes
-`project` - a full project path
-`namespace` - a root namespace of the project
-`type` - a type of egress (`git`, `container_registry`, ...)
+- `created_at` - a timestamp of the event
+- `bytes` - a number of transferred bytes
+- `project_id` - a project ID
+- `root_namespace_id` - a root namespace ID
+- `type` - a type of egress (`git`, `container_registry`, ...)
 
 ### Rails
 

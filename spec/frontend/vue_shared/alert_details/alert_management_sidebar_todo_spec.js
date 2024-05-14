@@ -5,17 +5,23 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import todoMarkDoneMutation from '~/graphql_shared/mutations/todo_mark_done.mutation.graphql';
 import SidebarTodo from '~/vue_shared/alert_details/components/sidebar/sidebar_todo.vue';
 import createAlertTodoMutation from '~/vue_shared/alert_details/graphql/mutations/alert_todo_create.mutation.graphql';
+import alertQuery from '~/vue_shared/alert_details/graphql/queries/alert_sidebar_details.query.graphql';
+import waitForPromises from 'jest/__helpers__/wait_for_promises';
 import mockAlerts from './mocks/alerts.json';
 
-const mockAlert = mockAlerts[0];
+const mockAlert = mockAlerts[1];
 
 describe('Alert Details Sidebar To Do', () => {
   let wrapper;
   let requestHandler;
 
   const defaultHandler = {
-    createAlertTodo: jest.fn().mockResolvedValue({}),
-    markAsDone: jest.fn().mockResolvedValue({}),
+    createAlertTodo: jest
+      .fn()
+      .mockResolvedValue({ data: { alertTodoCreate: { errors: [], alert: mockAlert } } }),
+    markAsDone: jest
+      .fn()
+      .mockResolvedValue({ data: { todoMarkDone: { errors: [], todo: { id: 1234 } } } }),
   };
 
   const createMockApolloProvider = (handler) => {
@@ -30,14 +36,33 @@ describe('Alert Details Sidebar To Do', () => {
   };
 
   function mountComponent({ data, sidebarCollapsed = true, handler = defaultHandler } = {}) {
-    wrapper = mount(SidebarTodo, {
-      apolloProvider: createMockApolloProvider(handler),
-      propsData: {
-        alert: { ...mockAlert },
-        ...data,
-        sidebarCollapsed,
-        projectPath: 'projectPath',
+    const propsData = {
+      alert: { ...mockAlert },
+      ...data,
+      sidebarCollapsed,
+      projectPath: 'projectPath',
+    };
+    const fakeApollo = createMockApolloProvider(handler);
+
+    fakeApollo.clients.defaultClient.cache.writeQuery({
+      query: alertQuery,
+      variables: {
+        fullPath: propsData.projectPath,
+        alertId: propsData.alert.iid,
       },
+      data: {
+        project: {
+          id: '1',
+          alertManagementAlerts: {
+            nodes: [propsData.alert],
+          },
+        },
+      },
+    });
+
+    wrapper = mount(SidebarTodo, {
+      apolloProvider: fakeApollo,
+      propsData,
     });
   }
 
@@ -47,9 +72,7 @@ describe('Alert Details Sidebar To Do', () => {
     describe('adding a todo', () => {
       beforeEach(() => {
         mountComponent({
-          data: { alert: mockAlert },
           sidebarCollapsed: false,
-          loading: false,
         });
       });
 
@@ -65,10 +88,22 @@ describe('Alert Details Sidebar To Do', () => {
 
         expect(requestHandler.createAlertTodo).toHaveBeenCalledWith(
           expect.objectContaining({
-            iid: '1527542',
+            iid: '1527543',
             projectPath: 'projectPath',
           }),
         );
+      });
+
+      it('triggers an update of the todo count', async () => {
+        const dispatchEventSpy = jest.spyOn(document, 'dispatchEvent');
+
+        findToDoButton().trigger('click');
+        await waitForPromises();
+
+        expect(dispatchEventSpy).toHaveBeenCalledTimes(1);
+        const dispatchedEvent = dispatchEventSpy.mock.calls[0][0];
+        expect(dispatchedEvent.detail).toEqual({ delta: 1 });
+        expect(dispatchedEvent.type).toBe('todo:toggle');
       });
     });
 
@@ -94,6 +129,18 @@ describe('Alert Details Sidebar To Do', () => {
         expect(requestHandler.markAsDone).toHaveBeenCalledWith({
           id: '1234',
         });
+      });
+
+      it('triggers an update of the todo count', async () => {
+        const dispatchEventSpy = jest.spyOn(document, 'dispatchEvent');
+
+        findToDoButton().trigger('click');
+        await waitForPromises();
+
+        expect(dispatchEventSpy).toHaveBeenCalledTimes(1);
+        const dispatchedEvent = dispatchEventSpy.mock.calls[0][0];
+        expect(dispatchedEvent.detail).toEqual({ delta: -1 });
+        expect(dispatchedEvent.type).toBe('todo:toggle');
       });
     });
   });

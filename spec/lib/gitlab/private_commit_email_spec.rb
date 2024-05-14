@@ -2,13 +2,13 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::PrivateCommitEmail do
+RSpec.describe Gitlab::PrivateCommitEmail, feature_category: :shared do
   let(:hostname) { Gitlab::CurrentSettings.current_application_settings.commit_email_hostname }
   let(:id) { 1 }
   let(:valid_email) { "#{id}-foo@#{hostname}" }
   let(:invalid_email) { "#{id}-foo@users.noreply.bar.com" }
 
-  describe '.regex' do
+  describe '.regex', :request_store do
     subject { described_class.regex }
 
     it { is_expected.to match("1-foo@#{hostname}") }
@@ -16,6 +16,12 @@ RSpec.describe Gitlab::PrivateCommitEmail do
     it { is_expected.not_to match('1-foo@users.noreply.gitlab.com') }
     it { is_expected.not_to match('foo-1@users.noreply.gitlab.com') }
     it { is_expected.not_to match('foobar@gitlab.com') }
+
+    it 'is only generated once per request' do
+      expect(Regexp).to receive(:escape).once
+
+      2.times { described_class.regex }
+    end
   end
 
   describe '.user_id_for_email' do

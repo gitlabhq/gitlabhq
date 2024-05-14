@@ -152,12 +152,19 @@ RSpec.describe 'Query.project.pipeline', feature_category: :continuous_integrati
     let(:first_n) { var('Int') }
 
     let(:query) do
-      with_signature([first_n], wrap_fields(query_graphql_path(
-                                              [
-                                                [:project, { full_path: project.full_path }],
-                                                [:pipeline, { iid: pipeline.iid.to_s }],
-                                                [:stages,   { first: first_n }]
-                                              ], stage_fields)))
+      with_signature(
+        [first_n],
+        wrap_fields(
+          query_graphql_path(
+            [
+              [:project, { full_path: project.full_path }],
+              [:pipeline, { iid: pipeline.iid.to_s }],
+              [:stages,   { first: first_n }]
+            ],
+            stage_fields
+          )
+        )
+      )
     end
 
     let(:stage_fields) do
@@ -225,7 +232,7 @@ RSpec.describe 'Query.project.pipeline', feature_category: :continuous_integrati
         create(:ci_build_need, build: test_job, name: 'my test job')
       end
 
-      it 'reports the build needs and execution requirements' do
+      it 'reports the build needs and execution requirements', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/448867' do
         post_graphql(query, current_user: user)
 
         expect(jobs_graphql_data).to contain_exactly(

@@ -1,18 +1,3 @@
-.snippet-row {
-  .title {
-    margin-bottom: 2px;
-    font-weight: $gl-font-weight-bold;
-  }
-
-  .snippet-info {
-    color: $gl-text-color-secondary;
-  }
-
-  a {
-    color: $gl-text-color;
-  }
-}
-
 .snippet-file-content {
   border-radius: 3px;
 
@@ -23,10 +8,4 @@
   &:last-of-type {
     margin-bottom: 0;
   }
-}
-
-.snippet-title {
-  color: $gl-text-color;
-  font-size: 2em;
-  font-weight: $gl-font-weight-bold;
 }

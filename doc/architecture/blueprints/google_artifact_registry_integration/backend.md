@@ -38,7 +38,7 @@ The client will then need to expose three functions: `#repository`, `#docker_ima
 
 Before calling the official client, this class will need to check the user permissions. The given `User` should have `read_gcp_artifact_registry_repository` on the `Project` related with the `Integrations::GoogleCloudPlatform::ArtifactRegistry`.
 
-Lastly, to setup the official client, we will need to properly set:
+Lastly, to set up the official client, we will need to properly set:
 
 - the [timeout](https://github.com/googleapis/google-cloud-ruby/blob/a64ed1de61a6f1b5752e7c8e01d6a79365e6de67/google-cloud-artifact_registry-v1/lib/google/cloud/artifact_registry/v1/artifact_registry/operations.rb#L646).
 - the [retry_policy](https://github.com/googleapis/google-cloud-ruby/blob/a64ed1de61a6f1b5752e7c8e01d6a79365e6de67/google-cloud-artifact_registry-v1/lib/google/cloud/artifact_registry/v1/artifact_registry/operations.rb#L652).

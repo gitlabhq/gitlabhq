@@ -1,16 +1,24 @@
+- note = local_assigns.fetch(:note, @note)
+-# Diff preview text should only appear when a note is available. Default value to be false
+- show_no_diff_preview_message = false
+- unless note.nil?
+  - discussion = local_assigns.fetch(:discussion) { note.discussion } if note.part_of_discussion?
+  - project = local_assigns.fetch(:project, @project)
+  - show_no_diff_preview_message = discussion&.diff_discussion? && discussion.on_text? && !project.show_diff_preview_in_email?
+
 %html{ lang: I18n.locale }
   %head
     %meta{ content: "text/html; charset=utf-8", "http-equiv" => "Content-Type" }
     %title
       GitLab
     - if Feature.enabled?(:enhanced_notify_css)
-      = stylesheet_link_tag 'notify_enhanced'
+      = universal_stylesheet_link_tag 'notify_enhanced'
       %style{ type: 'text/css', 'data-premailer': 'ignore' }
         -# The MUA automatically turns some text into links.
         -# Match the color of explicit links ($blue-600 from typography.scss).
         a { color: #1068bf; }
     - else
-      = stylesheet_link_tag 'notify'
+      = universal_stylesheet_link_tag 'notify'
     = yield :head
   %body
     .content
@@ -20,6 +28,9 @@
       %p
         &mdash;
         %br
+        - if show_no_diff_preview_message
+          = _('This project does not include diff previews in email notifications.')
+          %br
         - if @target_url
           - if @reply_by_email
             = _('Reply to this email directly or %{view_it_on_gitlab}.').html_safe % { view_it_on_gitlab: link_to(_("view it on GitLab"), @target_url) }

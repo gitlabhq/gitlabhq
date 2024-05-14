@@ -8,10 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
-
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4209) in GitLab 13.5 [with a flag](../../../administration/feature_flags.md) named `generic_packages`. Enabled by default.
-> - [Feature flag `generic_packages`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80886) removed in GitLab 14.8.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Publish generic files, like release binaries, in your project's package registry. Then, install the packages whenever you need to use them as a dependency.
 
@@ -123,8 +120,8 @@ API or the UI.
 
 #### Do not allow duplicate Generic packages
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/293755) in GitLab 13.12.
 > - Required role [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/350682) from Developer to Maintainer in GitLab 15.0.
+> - Required role [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/370471) from Maintainer to Owner in GitLab 17.0.
 
 To prevent users from publishing duplicate generic packages, you can use the [GraphQL API](../../../api/graphql/reference/index.md#packagesettings)
 or the UI.
@@ -163,19 +160,37 @@ GET /projects/:id/packages/generic/:package_name/:package_version/:file_name
 
 The file context is served in the response body. The response content type is `application/octet-stream`.
 
+::Tabs
+
+:::TabTitle Personal access token
+
 Example request that uses a personal access token:
 
 ```shell
+# Header authentication
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
      "https://gitlab.example.com/api/v4/projects/24/packages/generic/my_package/0.0.1/file.txt"
-```
 
-Example request that uses HTTP Basic authentication:
-
-```shell
+# Basic authentication
 curl --user "user:<your_access_token>" \
      "https://gitlab.example.com/api/v4/projects/24/packages/generic/my_package/0.0.1/file.txt"
 ```
+
+:::TabTitle CI_JOB_TOKEN
+
+Example request that uses a `CI_JOB_TOKEN`:
+
+```shell
+# Header authentication
+curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" \
+     "https://gitlab.example.com/api/v4/projects/24/packages/generic/my_package/0.0.1/file.txt"
+
+# Basic authentication
+curl --user "gitlab-ci-token:${CI_JOB_TOKEN}" \
+     "https://gitlab.example.com/api/v4/projects/24/packages/generic/my_package/0.0.1/file.txt"
+```
+
+::EndTabs
 
 ## Publish a generic package by using CI/CD
 
@@ -221,6 +236,15 @@ The [Write CI-CD Variables in Pipeline](https://gitlab.com/guided-explorations/c
 It also demonstrates how to manage a semantic version for the generic package: storing it in a CI/CD variable, retrieving it, incrementing it, and writing it back to the CI/CD variable when tests for the download work correctly.
 
 ## Troubleshooting
+
+### HTTP 403 errors
+
+You might get a `HTTP 403 Forbidden` error. This error happens when either:
+
+- You don't have access to a resource.
+- The package registry is not enabled for the project.
+
+To resolve the issue, ensure the package registry is enabled, and you have permission to access it.
 
 ### Internal Server error on large file uploads to S3
 

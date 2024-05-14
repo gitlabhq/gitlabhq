@@ -1,5 +1,5 @@
 ---
-stage: Service Management
+stage: Monitor
 group: Respond
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
@@ -189,7 +189,7 @@ $ docker run \
 
 #### Using the Jaeger process
 
-Without Docker, the all-in-one process is still easy to setup.
+Without Docker, the all-in-one process is still easy to set up.
 
 1. Download the [latest Jaeger release](https://github.com/jaegertracing/jaeger/releases) for your
    platform.

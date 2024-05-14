@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 The Service Data API is associated with [Service Ping](../development/internal_analytics/service_ping/index.md).
 
@@ -45,8 +45,6 @@ Example response:
 ```
 
 ## Export metric definitions as a single YAML file
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57270) in GitLab 13.11.
 
 Export all metric definitions as a single YAML file, similar to the [Metrics Dictionary](https://metrics.gitlab.com/), for easier importing.
 

@@ -28,8 +28,9 @@ RSpec.describe CommitCollection, feature_category: :source_code_management do
     end
 
     context 'when is with_merge_commits false' do
+      let(:commit) { project.commit("60ecb67744cb56576c30214ff52294f8ce2def98") }
+
       it 'excludes authors of merge commits' do
-        commit = project.commit("60ecb67744cb56576c30214ff52294f8ce2def98")
         create(:user, email: commit.committer_email.upcase)
 
         expect(collection.committers).to be_empty
@@ -53,6 +54,49 @@ RSpec.describe CommitCollection, feature_category: :source_code_management do
 
       it 'returns empty array when committers cannot be found' do
         expect(collection.committers).to be_empty
+      end
+    end
+
+    context 'when a commit is signed by GitLab' do
+      let(:author_email) { 'author@gitlab.com' }
+      let(:committer_email) { 'committer@gitlab.com' }
+      let(:author) { create(:user, email: author_email.upcase) }
+      let(:committer) { create(:user, email: committer_email.upcase) }
+
+      before do
+        allow(commit).to receive_message_chain(:signature, :verified_system?).and_return(true)
+        allow(commit).to receive(:author_email).and_return(author_email)
+        allow(commit).to receive(:committer_email).and_return(committer_email)
+      end
+
+      it 'users committer email to identify committers' do
+        expect(collection.committers).to eq([committer])
+      end
+
+      context 'when web_ui_commit_author_change feature flag is disabled' do
+        before do
+          stub_feature_flags(web_ui_commit_author_change: false)
+        end
+
+        it 'users committer email to identify committers' do
+          expect(collection.committers).to eq([committer])
+        end
+      end
+
+      context 'when include_author_when_signed is true' do
+        it 'uses author email to identify committers' do
+          expect(collection.committers(include_author_when_signed: true)).to eq([author])
+        end
+
+        context 'when web_ui_commit_author_change feature flag is disabled' do
+          before do
+            stub_feature_flags(web_ui_commit_author_change: false)
+          end
+
+          it 'users committer email to identify committers' do
+            expect(collection.committers(include_author_when_signed: true)).to eq([committer])
+          end
+        end
       end
     end
   end

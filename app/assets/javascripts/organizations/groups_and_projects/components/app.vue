@@ -1,58 +1,59 @@
 <script>
-import { GlCollapsibleListbox, GlSorting } from '@gitlab/ui';
+import { GlCollapsibleListbox } from '@gitlab/ui';
 import { isEqual } from 'lodash';
-import { s__, __ } from '~/locale';
-import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
-import {
-  filterToQueryObject,
-  processFilters,
-  urlQueryToFilter,
-  prepareTokens,
-} from '~/vue_shared/components/filtered_search_bar/filtered_search_utils';
-import {
-  FILTERED_SEARCH_TERM,
-  TOKEN_EMPTY_SEARCH_TERM,
-} from '~/vue_shared/components/filtered_search_bar/constants';
-import { RESOURCE_TYPE_GROUPS, RESOURCE_TYPE_PROJECTS } from '~/organizations/constants';
+import { __ } from '~/locale';
 import GroupsView from '~/organizations/shared/components/groups_view.vue';
 import ProjectsView from '~/organizations/shared/components/projects_view.vue';
 import NewGroupButton from '~/organizations/shared/components/new_group_button.vue';
 import NewProjectButton from '~/organizations/shared/components/new_project_button.vue';
 import { onPageChange } from '~/organizations/shared/utils';
 import {
+  RESOURCE_TYPE_GROUPS,
+  RESOURCE_TYPE_PROJECTS,
   QUERY_PARAM_END_CURSOR,
   QUERY_PARAM_START_CURSOR,
   SORT_DIRECTION_ASC,
   SORT_DIRECTION_DESC,
   SORT_ITEM_NAME,
 } from '~/organizations/shared/constants';
-import { DISPLAY_LISTBOX_ITEMS, SORT_ITEMS, FILTERED_SEARCH_TERM_KEY } from '../constants';
+import FilteredSearchAndSort from '~/groups_projects/components/filtered_search_and_sort.vue';
+import {
+  RECENT_SEARCHES_STORAGE_KEY_GROUPS,
+  RECENT_SEARCHES_STORAGE_KEY_PROJECTS,
+} from '~/filtered_search/recent_searches_storage_keys';
+import {
+  DISPLAY_LISTBOX_ITEMS,
+  SORT_ITEMS,
+  FILTERED_SEARCH_TERM_KEY,
+  FILTERED_SEARCH_NAMESPACE,
+} from '../constants';
 
 export default {
   i18n: {
     pageTitle: __('Groups and projects'),
-    searchInputPlaceholder: s__('Organization|Search or filter list'),
     displayListboxHeaderText: __('Display'),
   },
   components: {
-    FilteredSearchBar,
+    FilteredSearchAndSort,
     GlCollapsibleListbox,
-    GlSorting,
     NewGroupButton,
     NewProjectButton,
   },
   filteredSearch: {
     tokens: [],
-    namespace: 'organization_groups_and_projects',
-    recentSearchesStorageKey: 'organization_groups_and_projects',
+    namespace: FILTERED_SEARCH_NAMESPACE,
+    searchTermKey: FILTERED_SEARCH_TERM_KEY,
   },
   displayListboxItems: DISPLAY_LISTBOX_ITEMS,
   sortItems: SORT_ITEMS,
   computed: {
-    routerView() {
+    displayQuery() {
       const { display } = this.$route.query;
 
-      switch (display) {
+      return display;
+    },
+    routerView() {
+      switch (this.displayQuery) {
         case RESOURCE_TYPE_GROUPS:
           return GroupsView;
 
@@ -63,8 +64,23 @@ export default {
           return GroupsView;
       }
     },
+    filteredSearchRecentSearchesStorageKey() {
+      switch (this.displayQuery) {
+        case RESOURCE_TYPE_GROUPS:
+          return RECENT_SEARCHES_STORAGE_KEY_GROUPS;
+
+        case RESOURCE_TYPE_PROJECTS:
+          return RECENT_SEARCHES_STORAGE_KEY_PROJECTS;
+
+        default:
+          return RECENT_SEARCHES_STORAGE_KEY_GROUPS;
+      }
+    },
     activeSortItem() {
-      return this.$options.sortItems.find((sortItem) => sortItem.value === this.sortName);
+      return (
+        this.$options.sortItems.find((sortItem) => sortItem.value === this.sortName) ||
+        SORT_ITEM_NAME
+      );
     },
     sortName() {
       return this.$route.query.sort_name || SORT_ITEM_NAME.value;
@@ -84,16 +100,6 @@ export default {
     endCursor() {
       return this.$route.query[QUERY_PARAM_END_CURSOR] || null;
     },
-    filteredSearchValue() {
-      const tokens = prepareTokens(
-        urlQueryToFilter(this.$route.query, {
-          filteredSearchTermKey: FILTERED_SEARCH_TERM_KEY,
-          filterNamesAllowList: [FILTERED_SEARCH_TERM],
-        }),
-      );
-
-      return tokens.length ? tokens : [TOKEN_EMPTY_SEARCH_TERM];
-    },
     displayListboxSelected() {
       const { display } = this.$route.query;
 
@@ -102,10 +108,7 @@ export default {
         : RESOURCE_TYPE_GROUPS;
     },
     search() {
-      return (
-        this.filteredSearchValue.find((token) => token.type === FILTERED_SEARCH_TERM)?.value
-          ?.data || ''
-      );
+      return this.$route.query[FILTERED_SEARCH_TERM_KEY] || '';
     },
     routeQueryWithoutPagination() {
       const {
@@ -130,7 +133,7 @@ export default {
     onDisplayListboxSelect(display) {
       this.pushQuery({ display });
     },
-    onSortItemClick(sortValue) {
+    onSortByChange(sortValue) {
       if (this.$route.query.sort_name === sortValue) {
         return;
       }
@@ -150,9 +153,7 @@ export default {
         display,
         sort_name,
         sort_direction,
-        ...filterToQueryObject(processFilters(filters), {
-          filteredSearchTermKey: FILTERED_SEARCH_TERM_KEY,
-        }),
+        ...filters,
       });
     },
     onPageChange(pagination) {
@@ -168,49 +169,33 @@ export default {
       class="page-title-holder gl-display-flex gl-sm-flex-direction-row gl-flex-direction-column gl-sm-align-items-center"
     >
       <h1 class="page-title gl-font-size-h-display">{{ $options.i18n.pageTitle }}</h1>
-      <div class="gl-display-flex gl-column-gap-3 gl-sm-ml-auto gl-mb-4 gl-sm-mb-0">
+      <div class="gl-display-flex gl-gap-x-3 gl-sm-ml-auto gl-mb-4 gl-sm-mb-0">
         <new-group-button category="secondary" />
         <new-project-button />
       </div>
     </div>
-    <div class="gl-p-5 gl-bg-gray-10 gl-border-t gl-border-b">
-      <div class="gl-mx-n2 gl-my-n2 gl-md-display-flex">
-        <div class="gl-p-2 gl-flex-grow-1">
-          <filtered-search-bar
-            :namespace="$options.filteredSearch.namespace"
-            :tokens="$options.filteredSearch.tokens"
-            :initial-filter-value="filteredSearchValue"
-            sync-filter-and-sort
-            :recent-searches-storage-key="$options.filteredSearch.recentSearchesStorageKey"
-            :search-input-placeholder="$options.i18n.searchInputPlaceholder"
-            @onFilter="onFilter"
-          />
-        </div>
-        <div class="gl-p-2">
-          <gl-collapsible-listbox
-            :selected="displayListboxSelected"
-            :items="$options.displayListboxItems"
-            :header-text="$options.i18n.displayListboxHeaderText"
-            block
-            toggle-class="gl-md-w-30"
-            @select="onDisplayListboxSelect"
-          />
-        </div>
-        <div class="gl-p-2">
-          <gl-sorting
-            class="gl-display-flex"
-            dropdown-class="gl-w-full"
-            block
-            :text="sortText"
-            :is-ascending="isAscending"
-            :sort-options="$options.sortItems"
-            :sort-by="activeSortItem.value"
-            @sortDirectionChange="onSortDirectionChange"
-            @sortByChange="onSortItemClick"
-          />
-        </div>
-      </div>
-    </div>
+    <filtered-search-and-sort
+      :filtered-search-namespace="$options.filteredSearch.namespace"
+      :filtered-search-tokens="$options.filteredSearch.tokens"
+      :filtered-search-term-key="$options.filteredSearch.searchTermKey"
+      :filtered-search-query="$route.query"
+      :filtered-search-recent-searches-storage-key="filteredSearchRecentSearchesStorageKey"
+      :is-ascending="isAscending"
+      :sort-options="$options.sortItems"
+      :active-sort-option="activeSortItem"
+      @filter="onFilter"
+      @sort-direction-change="onSortDirectionChange"
+      @sort-by-change="onSortByChange"
+    >
+      <gl-collapsible-listbox
+        :selected="displayListboxSelected"
+        :items="$options.displayListboxItems"
+        :header-text="$options.i18n.displayListboxHeaderText"
+        block
+        toggle-class="gl-md-w-30"
+        @select="onDisplayListboxSelect"
+      />
+    </filtered-search-and-sort>
     <component
       :is="routerView"
       list-item-class="gl-px-5"

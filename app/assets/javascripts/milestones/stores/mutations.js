@@ -1,4 +1,3 @@
-import Vue from 'vue';
 import * as types from './mutation_types';
 
 export default {
@@ -12,19 +11,18 @@ export default {
     state.groupMilestonesAvailable = groupMilestonesAvailable;
   },
   [types.SET_SELECTED_MILESTONES](state, selectedMilestones) {
-    Vue.set(state, 'selectedMilestones', selectedMilestones);
+    state.selectedMilestones = selectedMilestones;
   },
   [types.CLEAR_SELECTED_MILESTONES](state) {
-    Vue.set(state, 'selectedMilestones', []);
+    state.selectedMilestones = [];
   },
   [types.ADD_SELECTED_MILESTONE](state, selectedMilestone) {
     state.selectedMilestones.push(selectedMilestone);
   },
   [types.REMOVE_SELECTED_MILESTONE](state, selectedMilestone) {
-    const filteredMilestones = state.selectedMilestones.filter(
+    state.selectedMilestones = state.selectedMilestones.filter(
       (milestone) => milestone !== selectedMilestone,
     );
-    Vue.set(state, 'selectedMilestones', filteredMilestones);
   },
   [types.SET_SEARCH_QUERY](state, searchQuery) {
     state.searchQuery = searchQuery;

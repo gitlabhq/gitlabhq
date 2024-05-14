@@ -18,7 +18,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
       user_permissions id full_path path name_with_namespace
       name description description_html tag_list topics ssh_url_to_repo
       http_url_to_repo web_url star_count forks_count
-      created_at last_activity_at archived visibility
+      created_at updated_at last_activity_at archived visibility
       container_registry_enabled shared_runners_enabled
       lfs_enabled merge_requests_ff_only_enabled avatar_url
       issues_enabled merge_requests_enabled wiki_enabled
@@ -43,7 +43,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
       incident_management_timeline_event_tags visible_forks inherited_ci_variables autocomplete_users
       ci_cd_settings detailed_import_status value_streams ml_models
       allows_multiple_merge_request_assignees allows_multiple_merge_request_reviewers is_forked
-      protectable_branches
+      protectable_branches available_deploy_keys
     ]
 
     expect(described_class).to include_graphql_fields(*expected_fields)
@@ -354,6 +354,9 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
         :author_username,
         :assignee_username,
         :reviewer_username,
+        :reviewer_wildcard_id,
+        :review_state,
+        :review_states,
         :milestone_title,
         :not,
         :sort
@@ -1216,6 +1219,97 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
         it 'returns all the branch names' do
           expect(protectable_branches).to match_array(branch_names)
         end
+      end
+    end
+  end
+
+  describe 'available_deploy_keys' do
+    let(:query) do
+      %(
+        query {
+          project(fullPath: "#{project.full_path}") {
+            availableDeployKeys{
+              nodes{
+                id
+                title
+                user {
+                  username
+                }
+              }
+            }
+          }
+        }
+      )
+    end
+
+    subject { GitlabSchema.execute(query, context: { current_user: current_user }).as_json }
+
+    let_it_be(:project) { create :project }
+    let_it_be(:deploy_key) { create(:deploy_keys_project, :write_access, project: project).deploy_key }
+    let_it_be(:maintainer) { create(:user) }
+    let(:available_deploy_keys) { subject.dig('data', 'project', 'availableDeployKeys', 'nodes') }
+
+    context 'when there are deploy keys' do
+      before_all do
+        project.add_maintainer(maintainer)
+      end
+
+      context 'and the current user has access' do
+        let(:current_user) { maintainer }
+
+        it 'returns the deploy keys' do
+          expect(available_deploy_keys[0]).to include({
+            'id' => deploy_key.to_global_id.to_s,
+            'title' => deploy_key.title,
+            'user' => {
+              'username' => deploy_key.user.username
+            }
+          })
+        end
+      end
+
+      context 'and the current user does not have access' do
+        let(:current_user) { create(:user) }
+
+        it 'does not return any deploy keys' do
+          expect(available_deploy_keys).to be_nil
+        end
+      end
+    end
+  end
+
+  describe 'organization_edit_path' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:organization) { create(:organization) }
+    let(:query) do
+      %(
+        query {
+          project(fullPath: "#{project.full_path}") {
+            organizationEditPath
+          }
+        }
+      )
+    end
+
+    let(:response) { GitlabSchema.execute(query, context: { current_user: user }).as_json }
+
+    subject(:organization_edit_path) { response.dig('data', 'project', 'organizationEditPath') }
+
+    context 'when project has an organization associated with it' do
+      let_it_be(:project) { create(:project, :public, organization: organization) }
+
+      it 'returns edit path scoped to organization' do
+        expect(organization_edit_path).to eq(
+          "/-/organizations/#{organization.path}/projects/#{project.path_with_namespace}/edit"
+        )
+      end
+    end
+
+    context 'when project does not have an organization associated with it' do
+      let_it_be(:project) { create(:project, :public, organization: nil) }
+
+      it 'returns nil' do
+        expect(organization_edit_path).to be_nil
       end
     end
   end

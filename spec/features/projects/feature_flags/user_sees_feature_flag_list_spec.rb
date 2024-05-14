@@ -6,11 +6,7 @@ RSpec.describe 'User sees feature flag list', :js, feature_category: :feature_fl
   include FeatureFlagHelpers
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project, namespace: user.namespace) }
-
-  before_all do
-    project.add_developer(user)
-  end
+  let_it_be(:project) { create(:project, namespace: user.namespace, developers: user) }
 
   before do
     sign_in(user)
@@ -42,7 +38,7 @@ RSpec.describe 'User sees feature flag list', :js, feature_category: :feature_fl
         expect_status_toggle_button_not_to_be_checked
 
         within_feature_flag_scopes do
-          expect(page.find('[data-testid="strategy-label"]')).to have_content('All Users: All Environments, review/*')
+          expect(find_by_testid('strategy-label')).to have_content('All Users: All Environments, review/*')
         end
       end
     end
@@ -66,7 +62,7 @@ RSpec.describe 'User sees feature flag list', :js, feature_category: :feature_fl
         expect_status_toggle_button_to_be_checked
 
         within_feature_flag_scopes do
-          expect(page.find('[data-testid="strategy-label"]')).to have_content('All Users: production')
+          expect(find_by_testid('strategy-label')).to have_content('All Users: production')
         end
       end
     end

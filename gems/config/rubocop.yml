@@ -22,12 +22,16 @@ inherit_mode:
 
 AllCops:
   # The oldest supported Ruby version.
-  TargetRubyVersion: 3.0
+  TargetRubyVersion: 3.1
   SuggestExtensions: false
   NewCops: disable
 
 # This cop doesn't make sense in the context of gems
 CodeReuse/ActiveRecord:
+  Enabled: false
+
+# This cop doesn't make sense in the context of gems
+RSpec/FactoriesInMigrationSpecs:
   Enabled: false
 
 # This cop doesn't make sense in the context of gems
@@ -76,6 +80,10 @@ Naming/FileName:
   Exclude:
     - spec/**/*.rb
 
+# Include behavior not honored. See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145865/diffs#note_1791901400
+Rails/MigrationTimestamp:
+  Enabled: false
+
 # This cop doesn't make sense in the context of gems
 RSpec/AvoidConditionalStatements:
   Enabled: false
@@ -115,3 +123,7 @@ Style/RegexpLiteralMixedPreserve:
 # See https://gitlab.com/gitlab-org/gitlab/-/issues/435940#note_1703307479
 Style/HashSyntax:
   EnforcedShorthandSyntax: never
+
+# This cop doesn't make sense in the context of gems
+Migration/EnsureFactoryForTable:
+  Enabled: false

@@ -247,18 +247,34 @@ RSpec.describe Groups::MilestonesController, feature_category: :team_planning do
   describe "#update" do
     let(:milestone) { create(:milestone, group: group) }
 
+    subject do
+      put :update, params: {
+        id: milestone.iid,
+        milestone: milestone_params,
+        group_id: group.to_param
+      }
+    end
+
     it "updates group milestone" do
       milestone_params[:title] = "title changed"
 
-      put :update, params: {
-        id: milestone.iid,
-        group_id: group.to_param,
-        milestone: milestone_params
-      }
-
+      subject
       milestone.reload
+
       expect(response).to redirect_to(group_milestone_path(group, milestone.iid))
       expect(milestone.title).to eq("title changed")
+    end
+
+    it "handles validation error" do
+      subgroup = create(:group, parent: group)
+      subgroup_milestone = create(:milestone, group: subgroup)
+
+      milestone_params[:title] = subgroup_milestone.title
+
+      subject
+
+      expect(response).not_to redirect_to(group_milestone_path(group, milestone.iid))
+      expect(response).to render_template(:edit)
     end
 
     it "handles ActiveRecord::StaleObjectError" do
@@ -266,11 +282,7 @@ RSpec.describe Groups::MilestonesController, feature_category: :team_planning do
       # Purposely reduce the lock_version to trigger an ActiveRecord::StaleObjectError
       milestone_params[:lock_version] = milestone.lock_version - 1
 
-      put :update, params: {
-        id: milestone.iid,
-        group_id: group.to_param,
-        milestone: milestone_params
-      }
+      subject
 
       expect(response).not_to redirect_to(group_milestone_path(group, milestone.iid))
       expect(response).to render_template(:edit)

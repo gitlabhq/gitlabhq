@@ -4,7 +4,7 @@ key_path: redis_hll_counters.incident_management.incident_management_incident_ch
 description: Count of unique users changing incidents to confidential per week
 product_section: ops
 product_stage: monitor
-product_group: monitor
+product_group: respond
 value_type: number
 status: active
 time_frame: 7d

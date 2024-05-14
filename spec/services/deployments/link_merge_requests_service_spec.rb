@@ -182,6 +182,68 @@ RSpec.describe Deployments::LinkMergeRequestsService, feature_category: :continu
 
       expect(deploy.merge_requests).to be_empty
     end
+
+    context 'when the deploy commits are the merge_commit_sha and head_commit_sha of one merge_request' do
+      let(:mr_head_commit_sha) { mr1_merge_commit_sha }
+      let(:mr_merge_commit_sha) { mr2_merge_commit_sha }
+
+      let!(:merge_request) do
+        create(
+          :merge_request,
+          :merged,
+          source_project: project,
+          target_project: project,
+          merge_commit_sha: mr_merge_commit_sha
+        ).tap do |merge_request|
+          create(:merge_request_diff, merge_request: merge_request, head_commit_sha: mr_head_commit_sha)
+        end
+      end
+
+      let!(:environment) { create(:environment, project: project) }
+      let!(:deploy) { create(:deployment, :success, project: project, environment: environment) }
+
+      it 'only links the merge request once' do
+        described_class.new(deploy).link_merge_requests_for_range(
+          first_deployment_sha,
+          mr2_merge_commit_sha
+        )
+
+        expect(deploy.merge_requests).to eq([merge_request])
+      end
+    end
+
+    context "when merge request is fast-forward merged" do
+      def create_fast_forward_merge_request(reference_commit_sha)
+        create(
+          :merge_request,
+          :merged,
+          source_project: project,
+          target_project: project,
+          merge_commit_sha: nil
+        ).tap do |merge_request|
+          create(:merge_request_diff, merge_request: merge_request, head_commit_sha: reference_commit_sha)
+        end
+      end
+
+      let!(:merge_request_1) { create_fast_forward_merge_request(mr1_merge_commit_sha) }
+      let!(:merge_request_2) { create_fast_forward_merge_request(mr2_merge_commit_sha) }
+
+      let!(:environment) { create(:environment, project: project) }
+      let!(:deploy) { create(:deployment, :success, project: project, environment: environment) }
+
+      subject(:link_merge_requests_for_range) do
+        described_class.new(deploy).link_merge_requests_for_range(
+          first_deployment_sha,
+          mr2_merge_commit_sha
+        )
+      end
+
+      it "links merge requests by the HEAD commit sha of the MR's diff" do
+        link_merge_requests_for_range
+
+        expect(deploy.merge_requests).to match_array([merge_request_1, merge_request_2])
+      end
+    end
   end
 
   describe '#link_all_merged_merge_requests' do

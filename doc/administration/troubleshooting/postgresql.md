@@ -41,17 +41,9 @@ sudo gitlab-psql
 On a single-node instance, or a web or Sidekiq node you can also use the Rails database console, but
 it takes longer to initialize:
 
-- In [GitLab 14.2 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/341210):
-
-  ```shell
-  sudo gitlab-rails db-console --database main
-  ```
-
-- In GitLab 14.1 and earlier:
-
-  ```shell
-  sudo gitlab-rails db-console
-  ```
+```shell
+sudo gitlab-rails db-console --database main
+```
 
 :::TabTitle Docker
 
@@ -120,10 +112,7 @@ This section is for links to information elsewhere in the GitLab documentation.
 
 References:
 
-- [Issue #1 Deadlocks with GitLab 12.1, PostgreSQL 10.7](https://gitlab.com/gitlab-org/gitlab/-/issues/30528).
-- [Customer ticket (internal) GitLab 12.1.6](https://gitlab.zendesk.com/agent/tickets/134307)
-  and [Google doc (internal)](https://docs.google.com/document/d/19xw2d_D1ChLiU-MO1QzWab-4-QXgsIUcN5e_04WTKy4).
-- [Issue #2 deadlocks can occur if an instance is flooded with pushes](https://gitlab.com/gitlab-org/gitlab/-/issues/33650).
+- [Deadlocks can occur if an instance is flooded with pushes](https://gitlab.com/gitlab-org/gitlab/-/issues/33650).
   Provided for context about how GitLab code can have this sort of
   unanticipated effect in unusual situations.
 
@@ -297,7 +286,7 @@ HINT:  Free one or increase max_replication_slots.
 ### Geo replication errors
 
 If you receive errors like this example, read about how to resolve
-[Geo replication errors](../geo/replication/troubleshooting.md#fixing-postgresql-database-replication-errors):
+[Geo replication errors](../geo/replication/troubleshooting/replication.md#fixing-postgresql-database-replication-errors):
 
 ```plaintext
 ERROR: replication slots can only be used if max_replication_slots > 0
@@ -313,8 +302,8 @@ PANIC: could not write to file 'pg_xlog/xlogtemp.123': No space left on device
 
 When troubleshooting problems with Geo, you should:
 
-- Review [common Geo errors](../geo/replication/troubleshooting.md#fixing-common-errors).
-- [Review your Geo configuration](../geo/replication/troubleshooting.md), including:
+- Review [common Geo errors](../geo/replication/troubleshooting/common.md#fixing-common-errors).
+- [Review your Geo configuration](../geo/replication/troubleshooting/index.md), including:
   - Reconfiguring hosts and ports.
   - Reviewing and fixing the user and password mappings.
 

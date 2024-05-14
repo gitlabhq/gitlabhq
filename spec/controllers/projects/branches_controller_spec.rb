@@ -658,6 +658,18 @@ RSpec.describe Projects::BranchesController, feature_category: :source_code_mana
       end
     end
 
+    context 'when page param is invalid' do
+      before do
+        get :index, format: :html, params: {
+          namespace_id: project.namespace, project_id: project, state: 'all', page: [2]
+        }
+      end
+
+      it 'ignores the invalid param, rendering the first page' do
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
+
     context 'sorting', :aggregate_failures do
       let(:sort) { 'name_asc' }
 

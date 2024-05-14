@@ -4,19 +4,22 @@ group: Composition analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Operational Container Scanning
+# Operational container scanning
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6346) in GitLab 14.8.
 > - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/368828) the starboard directive in GitLab 15.4. The starboard directive is scheduled for removal in GitLab 16.0.
+
+## Supported architectures
+
+In GitLab agent for Kubernetes 16.10.0 and later and GitLab agent Helm Chart 1.25.0 and later, operational container scanning (OCS) is supported for `linux/arm64` and `linux/amd64`. For earlier versions, only `linux/amd64` is supported.
 
 ## Enable operational container scanning
 
-You can use operational container scanning (OCS) to scan container images in your cluster for security vulnerabilities.
-Starting from GitLab Agent release 16.9, OCS uses a [wrapper image](https://gitlab.com/gitlab-org/security-products/analyzers/trivy-k8s-wrapper) around [Trivy](https://github.com/aquasecurity/trivy) to scan images for vulnerabilities.
+You can use OCS to scan container images in your cluster for security vulnerabilities.
+In GitLab agent 16.9 and later, OCS uses a [wrapper image](https://gitlab.com/gitlab-org/security-products/analyzers/trivy-k8s-wrapper) around [Trivy](https://github.com/aquasecurity/trivy) to scan images for vulnerabilities.
 Before GitLab 16.9, OCS directly used the [Trivy](https://github.com/aquasecurity/trivy) image.
 
 OCS can be configured to run on a cadence by using `agent config` or a project's scan execution policy.
@@ -164,10 +167,10 @@ To scan private images, the scanner relies on the image pull secrets (direct ref
 
 ## Limitations
 
-From GitLab Agent 16.9, Operational Container Scanning:
+In GitLab agent 16.9 and later, operational container scanning:
 
 - handles Trivy reports of up to 100MB. For previous releases this limit is 10MB.
-- is [disabled](../../../development/fips_compliance.md#unsupported-features-in-fips-mode) when the GitLab Agent runs in `fips` mode.
+- is [disabled](../../../development/fips_compliance.md#unsupported-features-in-fips-mode) when the GitLab agent runs in `fips` mode.
 
 ## Troubleshooting
 

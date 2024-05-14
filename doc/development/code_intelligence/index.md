@@ -2,11 +2,10 @@
 stage: Create
 group: Code Review
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+description: "Developer documentation for the Code Intelligence feature."
 ---
 
 # Code intelligence development guidelines
-
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/1576) in GitLab 13.1.
 
 This document describes the design behind [Code Intelligence](../../user/project/code_intelligence.md).
 
@@ -18,7 +17,11 @@ displaying this information for the files in the project.
 Here is a sequence diagram for uploading an LSIF artifact:
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 sequenceDiagram
+    accTitle: Sequence diagram for LSIF artifact uploads
+    accDescr: The process of how Runner, Workhorse, Rails, and object storage work together to upload an artifact.
+
     participant Runner
     participant Workhorse
     participant Rails

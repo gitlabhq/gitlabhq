@@ -6,8 +6,8 @@ RSpec.describe Mutations::Releases::Create do
   let_it_be(:project) { create(:project, :public, :repository) }
   let_it_be(:milestone_12_3) { create(:milestone, project: project, title: '12.3') }
   let_it_be(:milestone_12_4) { create(:milestone, project: project, title: '12.4') }
-  let_it_be(:reporter) { create(:user) }
-  let_it_be(:developer) { create(:user) }
+  let_it_be(:reporter) { create(:user, reporter_of: project) }
+  let_it_be(:developer) { create(:user, developer_of: project) }
 
   let(:mutation) { described_class.new(object: nil, context: { current_user: current_user }, field: nil) }
 
@@ -45,11 +45,6 @@ RSpec.describe Mutations::Releases::Create do
 
   around do |example|
     freeze_time { example.run }
-  end
-
-  before do
-    project.add_reporter(reporter)
-    project.add_developer(developer)
   end
 
   describe '#resolve' do

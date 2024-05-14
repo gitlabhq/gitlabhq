@@ -6,7 +6,7 @@ module Gitlab
     include ::MarkupHelper
 
     CACHE_EXPIRE_IN = 1.hour
-    MAX_OFFSET = 2**31 - 1
+    MAX_OFFSET = (2**31) - 1
 
     attr_reader :commit, :project, :path, :offset, :limit, :user, :resolved_commits
 

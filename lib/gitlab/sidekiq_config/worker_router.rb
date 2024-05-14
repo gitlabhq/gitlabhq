@@ -4,7 +4,7 @@ module Gitlab
   module SidekiqConfig
     class WorkerRouter
       InvalidRoutingRuleError = Class.new(StandardError)
-      RuleEvaluator = Struct.new(:matcher, :queue_name)
+      RuleEvaluator = Struct.new(:matcher, :queue_name, :store_name)
 
       def self.queue_name_from_worker_name(worker_klass)
         base_queue_name =
@@ -72,6 +72,23 @@ module Gitlab
         queue_name_from_worker_name(worker_klass)
       end
 
+      def store(worker_klass)
+        worker_metadata = generate_worker_metadata(worker_klass)
+        @rule_evaluators.each do |evaluator|
+          if evaluator.matcher.match?(worker_metadata)
+            return evaluator.store_name.presence
+          end
+        end
+
+        nil
+      end
+
+      def stores_with_queue(queue_name)
+        @rule_evaluators.filter_map do |evaluator|
+          evaluator.store_name if evaluator.queue_name == queue_name
+        end
+      end
+
       private
 
       def parse_routing_rules(routing_rules)
@@ -85,16 +102,17 @@ module Gitlab
         routing_rules.map do |rule_tuple|
           raise InvalidRoutingRuleError, "Routing rule `#{rule_tuple.inspect}` is invalid" unless valid_routing_rule?(rule_tuple)
 
-          selector, destination_queue = rule_tuple
+          selector, destination_queue, destination_store = rule_tuple
           RuleEvaluator.new(
             ::Gitlab::SidekiqConfig::WorkerMatcher.new(selector),
-            destination_queue
+            destination_queue,
+            destination_store
           )
         end
       end
 
       def valid_routing_rule?(rule_tuple)
-        rule_tuple.is_a?(Array) && rule_tuple.length == 2
+        rule_tuple.is_a?(Array) && (rule_tuple.length == 2 || rule_tuple.length == 3)
       end
 
       def generate_worker_metadata(worker_klass)

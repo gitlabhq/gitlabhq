@@ -1,14 +1,10 @@
 # frozen_string_literal: true
 
 class JwksController < Doorkeeper::OpenidConnect::DiscoveryController
-  def index
+  def keys
     expires_in 24.hours, public: true, must_revalidate: true, 'no-transform': true
 
     render json: { keys: payload }
-  end
-
-  def keys
-    index
   end
 
   private

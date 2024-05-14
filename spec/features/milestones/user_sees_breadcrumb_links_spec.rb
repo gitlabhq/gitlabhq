@@ -13,7 +13,7 @@ RSpec.describe 'New project milestone breadcrumb', feature_category: :team_plann
   end
 
   it 'displays link to project milestones and new project   milestone' do
-    page.within '.breadcrumbs' do
+    within_testid 'breadcrumb-links' do
       expect(find_link('Milestones')[:href]).to end_with(project_milestones_path(project))
       expect(find_link('New')[:href]).to end_with(new_project_milestone_path(project))
     end

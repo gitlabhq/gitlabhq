@@ -121,7 +121,7 @@ the following preparations into account.
   - Ensure the `db:check-schema` job has run successfully and no unexpected schema changes are introduced in a rollback. This job may only trigger a warning if the schema was changed.
   - Verify that the previously mentioned jobs continue to succeed whenever you modify the migrations during the review process.
 - Add tests for the migration in `spec/migrations` if necessary. See [Testing Rails migrations at GitLab](testing_guide/testing_migrations_guide.md) for more details.
-- When [high-traffic](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/rubocop-migrations.yml#L3) tables are involved in the migration, use the [`enable_lock_retries`](migration_style_guide.md#retry-mechanism-when-acquiring-database-locks) method to enable lock-retries. Review the relevant [examples in our documentation](migration_style_guide.md#usage-with-transactional-migrations) for use cases and solutions.
+- [Lock retries](migration_style_guide.md#retry-mechanism-when-acquiring-database-locks) are enabled by default for all transactional migrations. For non-transactional migrations review the relevant [documentation](migration_style_guide.md#usage-with-non-transactional-migrations) for use cases and solutions.
 - Ensure RuboCop checks are not disabled unless there's a valid reason to.
 - When adding an index to a [large table](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/rubocop-migrations.yml#L3),
   test its execution using `CREATE INDEX CONCURRENTLY` in [Database Lab](database/database_lab.md) and add the execution time to the MR description:
@@ -174,7 +174,7 @@ Include in the MR description:
 
 - The query plan for each raw SQL query included in the merge request along with the link to the query plan following each raw SQL snippet.
 - Provide a link to the plan generated using the `explain` command in the [postgres.ai](database/database_lab.md) chatbot. The `explain` command runs
-    `EXPLAIN ANALYZE`.
+  `EXPLAIN ANALYZE`.
   - If it's not possible to get an accurate picture in Database Lab, you may need to
     seed a development environment, and instead provide output
     from `EXPLAIN ANALYZE`. Create links to the plan using [explain.depesz.com](https://explain.depesz.com) or [explain.dalibo.com](https://explain.dalibo.com). Be sure to paste both the plan and the query used in the form.
@@ -212,6 +212,9 @@ Include in the MR description:
 - Order columns based on the [Ordering Table Columns](database/ordering_table_columns.md) guidelines.
 - Add foreign keys to any columns pointing to data in other tables, including [an index](migration_style_guide.md#adding-foreign-key-constraints).
 - Add indexes for fields that are used in statements such as `WHERE`, `ORDER BY`, `GROUP BY`, and `JOIN`s.
+- New tables must be seeded by a file in `db/fixtures/development/`. These fixtures are also used
+  to ensure that [upgrades complete successfully](database/dbmigrate:multi-version-upgrade-job.md),
+  so it's important that new tables are always populated.
 - New tables and columns are not necessarily risky, but over time some access patterns are inherently
   difficult to scale. To identify these risky patterns in advance, we must document expectations for
   access and size. Include in the MR description answers to these questions:
@@ -229,7 +232,7 @@ Include in the MR description:
 
 #### Preparation when using bulk update operations
 
-Using  `update`, `upsert`, `delete`, `update_all`, `upsert_all`, `delete_all` or `destroy_all`
+Using `update`, `upsert`, `delete`, `update_all`, `upsert_all`, `delete_all` or `destroy_all`
 ActiveRecord methods requires extra care because they modify data and can perform poorly, or they
 can destroy data if improperly scoped. These methods are also
 [incompatible with Common Table Expression (CTE) statements](sql.md#when-to-use-common-table-expressions).
@@ -263,7 +266,7 @@ to add the raw SQL query and query plan to the Merge Request description, and re
     This can be the number of expected batches times the delay interval.
   - Manually trigger the [database testing](database/database_migration_pipeline.md) job (`db:gitlabcom-database-testing`) in the `test` stage.
   - If a single `update` is below than `1s` the query can be placed
-      directly in a regular migration (inside `db/migrate`).
+    directly in a regular migration (inside `db/migrate`).
   - Background migrations are usually used, but not limited to:
     - Migrating data in larger tables.
     - Making numerous SQL queries per record in a dataset.
@@ -278,6 +281,7 @@ to add the raw SQL query and query plan to the Merge Request description, and re
   - Are the stated access patterns and volume reasonable? Do the assumptions they're based on seem sound? Do these patterns pose risks to stability?
   - Are the columns [ordered to conserve space](database/ordering_table_columns.md)?
   - Are there foreign keys for references to other tables?
+  - Does the table have a fixture in `db/fixtures/development/`?
 - Check data migrations:
   - Establish a time estimate for execution on GitLab.com.
   - Depending on timing, data migrations can be placed on regular, post-deploy, or background migrations.

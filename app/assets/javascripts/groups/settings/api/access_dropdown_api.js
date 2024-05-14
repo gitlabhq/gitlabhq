@@ -7,15 +7,21 @@ const buildUrl = (urlRoot, url) => {
   return joinPaths(urlRoot, url);
 };
 
-const defaultOptions = { includeParentDescendants: false };
+const defaultOptions = {
+  includeParentDescendants: false,
+  includeParentSharedGroups: false,
+  search: '',
+};
 
 export const getSubGroups = (options = defaultOptions) => {
-  const { includeParentDescendants } = options;
+  const { includeParentDescendants, includeParentSharedGroups, search } = options;
 
   return axios.get(buildUrl(gon.relative_url_root || '', GROUP_SUBGROUPS_PATH), {
     params: {
       group_id: gon.current_group_id,
       include_parent_descendants: includeParentDescendants,
+      include_parent_shared_groups: includeParentSharedGroups,
+      search,
     },
   });
 };

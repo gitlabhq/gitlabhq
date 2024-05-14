@@ -7,7 +7,7 @@ RSpec.describe 'gitlab:doctor:reset_encrypted_tokens', :silence_stdout, feature_
   let(:token_names) { 'runners_token' }
 
   let(:project_with_cipher_error) do
-    create(:project).tap do |project|
+    create(:project, :allow_runner_registration_token).tap do |project|
       project.update_columns(runners_token_encrypted:
         '|rXs75DSHXPE9MGAIgyxcut8pZc72gaa/2ojU0GS1+R+cXNqkbUB13Vb5BaMwf47d98980fc1')
     end
@@ -26,7 +26,7 @@ RSpec.describe 'gitlab:doctor:reset_encrypted_tokens', :silence_stdout, feature_
     run_rake_task('gitlab:doctor:reset_encrypted_tokens')
   end
 
-  it 'properly parces parameters from the environment variables' do
+  it 'properly parses parameters from the environment variables' do
     expect_next_instance_of(::Gitlab::Doctor::ResetTokens, anything,
       model_names: %w[Project Group],
       token_names: %w[runners_token],

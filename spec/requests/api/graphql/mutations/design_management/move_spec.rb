@@ -7,7 +7,7 @@ RSpec.describe "moving designs", feature_category: :design_management do
 
   let_it_be(:issue) { create(:issue) }
   let_it_be(:designs) { create_list(:design, 3, :with_versions, :with_relative_position, issue: issue) }
-  let_it_be(:developer) { create(:user, developer_projects: [issue.project]) }
+  let_it_be(:developer) { create(:user, developer_of: issue.project) }
 
   let(:user) { developer }
 

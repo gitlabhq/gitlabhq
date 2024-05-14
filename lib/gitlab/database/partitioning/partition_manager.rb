@@ -88,7 +88,8 @@ module Gitlab
 
                 Gitlab::AppLogger.info(message: "Created partition",
                                        partition_name: partition.partition_name,
-                                       table_name: partition.table)
+                                       table_name: partition.table,
+                                       connection_name: @connection_name)
 
                 lock_partitions_for_writes(partition) if should_lock_for_writes?
               end
@@ -159,7 +160,7 @@ module Gitlab
 
           primary_transaction(statement_timeout: STATEMENT_TIMEOUT) do
             # Running ANALYZE on partitioned table will go through itself and its partitions
-            connection.execute("ANALYZE VERBOSE #{model.quoted_table_name}")
+            connection.execute("ANALYZE #{model.quoted_table_name}")
           end
         end
 

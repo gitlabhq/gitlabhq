@@ -47,7 +47,7 @@ The usage of schema enforces the base class to be used:
 - `Gitlab::Database::SharedModel` for `gitlab_shared`
 - `PackageMetadata::ApplicationRecord` for `gitlab_pm`
 
-### Guidelines on choosing between `gitlab_main_cell` and `gitlab_main_clusterwide` schema
+### Choose either the `gitlab_main_cell` or `gitlab_main_clusterwide` schema
 
 Depending on the use case, your feature may be [cell-local or clusterwide](../../architecture/blueprints/cells/index.md#how-do-i-decide-whether-to-move-my-feature-to-the-cluster-cell-or-organization-level) and hence the tables used for the feature should also use the appropriate schema.
 
@@ -83,7 +83,14 @@ will also be used in the future to provide a uniform way to migrate data
 between Cells.
 
 The actual name of the foreign key can be anything but it must reference a row
-in `projects` or `groups`. The following are examples of valid sharding keys:
+in `projects` or `groups`. The chosen `sharding_key` column must be non-nullable.
+
+Setting multiple `sharding_key`, with nullable columns are also allowed, provided that
+the table has a check constraint that correctly ensures at least one of the keys must be non-nullable for a row in the table.
+See [`NOT NULL` constraints for multiple columns](not_null_constraints.md#not-null-constraints-for-multiple-columns)
+for instructions on creating these constraints.
+
+The following are examples of valid sharding keys:
 
 - The table entries belong to a project only:
 
@@ -144,7 +151,7 @@ following the
 In that case the `namespace_id` would need to be the ID of the
 `ProjectNamespace` and not the group that the namespace belongs to.
 
-#### Defining a `desired_sharding_key` for automatically backfilling a `sharding_key`
+#### Define a `desired_sharding_key` to automatically backfill a `sharding_key`
 
 We need to backfill a `sharding_key` to hundreds of tables that do not have one.
 This process will involve creating a merge request like
@@ -181,7 +188,7 @@ desired_sharding_key:
 ```
 
 To understand best how this YAML data will be used you can map it onto
-the merge request we created manually in
+the merge request we created manually in GraphQL
 <https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136800>. The idea
 will be to automatically create this. The content of the YAML specifies
 the parent table and its `sharding_key` to backfill from in the batched
@@ -189,10 +196,46 @@ background migration. It also specifies a `belongs_to` relation which
 will be added to the model to automatically populate the `sharding_key` in
 the `before_save`.
 
+##### Define a `desired_sharding_key` when the parent table also has one
+
+By default, a `desired_sharding_key` configuration will validate that the chosen `sharding_key`
+exists on the parent table. However, if the parent table also has a `desired_sharding_key` configuration
+and is itself waiting to be backfilled, you need to include the `awaiting_backfill_on_parent` field.
+For example:
+
+```yaml
+desired_sharding_key:
+  project_id:
+    references: projects
+    backfill_via:
+      parent:
+        foreign_key: package_file_id
+        table: packages_package_files
+        sharding_key: project_id
+        belongs_to: package_file
+    awaiting_backfill_on_parent: true
+```
+
 There are likely edge cases where this `desired_sharding_key` structure is not
 suitable for backfilling a `sharding_key`. In such cases the team owning the
 table will need to create the necessary merge requests to add the
 `sharding_key` manually.
+
+##### Exempting certain tables from having sharding keys
+
+Certain tables can be exempted from having sharding keys by adding
+
+```yaml
+exempt_from_sharding: true
+```
+
+to the table's database dictionary file. This can be used for:
+
+- JiHu specific tables, since they do not have any data on the .com database. [!145905](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145905)
+- tables that are marked to be dropped soon, like `operations_feature_flag_scopes`. [!147541](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147541)
+- tables that mandatorily need to be present per cell to support a cell's operations, have unique data per cell, but cannot have a sharding key defined. For example, `zoekt_nodes`.
+
+When tables are exempted from sharding key requirements, they also do not show up in our [progress dashboard](https://cells-progress-tracker-gitlab-org-tenant-scale-g-f4ad96bf01d25f.gitlab.io/sharding_keys).
 
 ### The impact of `gitlab_schema`
 
@@ -229,7 +272,7 @@ might be missing some of those application-defined `gitlab_shared` tables (like 
 
 ### The special purpose of `gitlab_pm`
 
-`gitlab_pm` stores package metadata describing public repositories. This data is used for the License Compliance and Dependency Scanning product categories and is maintained by the [Composition Analysis Group](https://handbook.gitlab.com/handbook/engineering/development/sec/secure/composition-analysis). It is an alias for `gitlab_main` intended to make it easier to route to a different database in the future.
+`gitlab_pm` stores package metadata describing public repositories. This data is used for the License Compliance and Dependency Scanning product categories and is maintained by the [Composition Analysis Group](https://handbook.gitlab.com/handbook/engineering/development/sec/secure/composition-analysis/). It is an alias for `gitlab_main` intended to make it easier to route to a different database in the future.
 
 ## Migrations
 
@@ -506,8 +549,8 @@ it does less joins and needs less filtering.
 
 ##### Use `disable_joins` for `has_one` or `has_many` `through:` relations
 
-Sometimes a join query is caused by using `has_one ... through:` or `has_many
-... through:` across tables that span the different databases. These joins
+Sometimes a join query is caused by using `has_one ... through:` or `has_many ... through:`
+across tables that span the different databases. These joins
 sometimes can be solved by adding
 [`disable_joins:true`](https://edgeguides.rubyonrails.org/active_record_multiple_databases.html#handling-associations-with-joins-across-databases).
 This is a Rails feature which we
@@ -655,7 +698,7 @@ end
 
 ```ruby
 # Mark a relation as allowed to cross-join databases
-def find_actual_head_pipeline
+def find_diff_head_pipeline
   all_pipelines
     .allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/336891')
     .for_sha_or_source_sha(diff_head_sha)
@@ -903,6 +946,58 @@ If this task was run against a GitLab setup that uses only a single database
 for both `gitlab_main` and `gitlab_ci` tables, then no tables will be locked.
 
 To undo the operation, run the opposite Rake task: `gitlab:db:unlock_writes`.
+
+### Monitoring
+
+The status of the table locks is checked using the
+[`Database::MonitorLockedTablesWorker`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/workers/database/monitor_locked_tables_worker.rb).
+It will lock tables if needed.
+
+The result of this script is available in [Kibana](https://log.gprd.gitlab.net/app/r/s/4qrz2).
+If the counts are not 0, there are some tables that should have been locked but are not.
+The fields `json.extra.database_monitor_locked_tables_worker.results.ci.tables_need_locks` and
+`json.extra.database_monitor_locked_tables_worker.results.main.tables_need_locks` should contain
+a list of tables that have the wrong state.
+
+The logging is monitored using a [Elasticsearch Watcher](https://log.gprd.gitlab.net/app/management/insightsAndAlerting/watcher/watches).
+The watcher is called `table_locks_needed` and the source code is in the
+[GitLab Runbook repository](https://gitlab.com/gitlab-com/runbooks/-/tree/master/elastic/managed-objects/log_gprd/watches).
+The alerts are sent to [#g_tenant-scale](https://gitlab.enterprise.slack.com/archives/C01TQ838Y3T) Slack channel.
+
+### Automation
+
+There are two processes that automatically lock tables:
+
+- Database migrations. See [`Gitlab::Database::MigrationHelpers::AutomaticLockWritesOnTables`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/database/migration_helpers/automatic_lock_writes_on_tables.rb)
+- The `Database::MonitorLockedTablesWorker` locks tables if needed.
+  This can be disabled by the `lock_tables_in_monitoring` feature flag.
+
+### Manually lock tables
+
+If you need to manually lock a table, use a database migration.
+Create a regular migration and add the code for locking the table.
+For example, set a write lock on `shards` table in CI database:
+
+```ruby
+class EnableWriteLocksOnShards < Gitlab::Database::Migration[2.2]
+  def up
+    # On main database, the migration should be skipped
+    # We can't use restrict_gitlab_migration in DDL migrations
+    return if Gitlab::Database.db_config_name(connection) != 'ci'
+
+    Gitlab::Database::LockWritesManager.new(
+      table_name: 'shards',
+      connection: connection,
+      database_name: :ci,
+      with_retries: false
+    ).lock_writes
+  end
+
+  def down
+    # no-op
+  end
+end
+```
 
 ## Truncating tables
 

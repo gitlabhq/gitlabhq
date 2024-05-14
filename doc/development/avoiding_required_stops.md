@@ -66,7 +66,7 @@ migrations, or code changes that assume that schema changes introduced in
 prior migrations have completed by the time the code loads.
 
 Designing changes and migrations for [backwards compatibility between versions](multi_version_compatibility.md) can mitigate stop concerns with continuous or
-"zero-downtime" upgrades. However, the **contract** phase will likely introduce
+zero-downtime upgrades. However, the **contract** phase will likely introduce
 a required stop when a migration/code change is introduced that requires
 that background migrations have completed before running or loading.
 

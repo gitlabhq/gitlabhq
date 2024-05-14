@@ -42,6 +42,14 @@ RSpec.describe Ci::ArtifactBlob, feature_category: :continuous_integration do
     it 'returns the entry size' do
       expect(blob.size).to eq(entry.metadata[:size])
     end
+
+    context 'with an empty file' do
+      let(:entry) { build.artifacts_metadata_entry('empty_image.png') }
+
+      it 'returns 0' do
+        expect(blob.size).to eq(0)
+      end
+    end
   end
 
   describe '#mode' do

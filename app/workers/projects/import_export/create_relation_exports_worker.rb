@@ -33,14 +33,14 @@ module Projects
           RelationExportWorker.with_status.perform_async(relation_export.id, user_id, params)
         end
 
+        project_export_job.start!
+
         WaitRelationExportsWorker.perform_in(
           INITIAL_DELAY,
           project_export_job.id,
           user_id,
           after_export_strategy
         )
-
-        project_export_job.start!
       end
       # rubocop: enable CodeReuse/ActiveRecord
     end

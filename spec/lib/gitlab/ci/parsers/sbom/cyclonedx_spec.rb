@@ -233,7 +233,7 @@ RSpec.describe Gitlab::Ci::Parsers::Sbom::Cyclonedx, feature_category: :dependen
       expect(report).to receive(:add_component)
         .with(
           an_object_having_attributes(
-            name: "alpine/alpine",
+            name: "alpine",
             version: "3.4.3-r1",
             component_type: "library",
             purl: an_object_having_attributes(type: "apk"),
@@ -244,7 +244,7 @@ RSpec.describe Gitlab::Ci::Parsers::Sbom::Cyclonedx, feature_category: :dependen
       expect(report).to receive(:add_component)
         .with(
           an_object_having_attributes(
-            name: "alpine/alpine-baselayout-data",
+            name: "alpine-baselayout-data",
             version: "3.4.3-r1",
             component_type: "library",
             purl: an_object_having_attributes(type: "apk"),
@@ -325,6 +325,24 @@ RSpec.describe Gitlab::Ci::Parsers::Sbom::Cyclonedx, feature_category: :dependen
           properties: []
         )
       end
+    end
+  end
+
+  context 'when cyclonedx report has no dependencies' do
+    it 'skips component processing' do
+      expect(report).not_to receive(:add_dependency)
+
+      parse!
+    end
+  end
+
+  context 'when report has dependencies' do
+    let(:report_data) { base_report_data.merge({ 'dependencies' => [{ ref: 'ref', dependsOn: ['dependency_ref'] }] }) }
+
+    it 'passes dependencies to report' do
+      expect(report).to receive(:add_dependency).with('ref', 'dependency_ref')
+
+      parse!
     end
   end
 end

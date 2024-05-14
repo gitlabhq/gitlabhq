@@ -7,7 +7,7 @@ RSpec.describe 'Query current user todos', feature_category: :source_code_manage
   include DesignManagementTestHelpers
 
   let_it_be(:current_user) { create(:user) }
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :repository, developers: current_user) }
   let_it_be(:unauthorize_project) { create(:project) }
   let_it_be(:commit_todo) { create(:on_commit_todo, user: current_user, project: project) }
   let_it_be(:issue) { create(:issue, project: project) }
@@ -26,10 +26,6 @@ RSpec.describe 'Query current user todos', feature_category: :source_code_manage
 
   let(:query) do
     graphql_query_for('currentUser', {}, query_graphql_field('todos', {}, fields))
-  end
-
-  before_all do
-    project.add_developer(current_user)
   end
 
   subject { graphql_data.dig('currentUser', 'todos', 'nodes') }

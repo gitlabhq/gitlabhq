@@ -7,7 +7,7 @@ RSpec.describe Mutations::DesignManagement::Move do
 
   let_it_be(:issue) { create(:issue) }
   let_it_be(:designs) { create_list(:design, 3, issue: issue) }
-  let_it_be(:developer) { create(:user, developer_projects: [issue.project]) }
+  let_it_be(:developer) { create(:user, developer_of: issue.project) }
 
   let(:user) { developer }
 

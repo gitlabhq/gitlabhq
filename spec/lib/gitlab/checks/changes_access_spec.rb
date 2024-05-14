@@ -32,6 +32,14 @@ RSpec.describe Gitlab::Checks::ChangesAccess, feature_category: :source_code_man
 
         subject.validate!
       end
+
+      it 'calls integrations check' do
+        expect_next_instance_of(Gitlab::Checks::IntegrationsCheck) do |instance|
+          expect(instance).to receive(:validate!)
+        end
+
+        subject.validate!
+      end
     end
 
     context 'when time limit was reached' do
@@ -41,7 +49,8 @@ RSpec.describe Gitlab::Checks::ChangesAccess, feature_category: :source_code_man
                                      project: project,
                                      user_access: user_access,
                                      protocol: protocol,
-                                     logger: logger)
+                                     logger: logger,
+                                     push_options: push_options)
 
         expect { access.validate! }.to raise_error(Gitlab::Checks::TimedLogger::TimeoutError)
       end

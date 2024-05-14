@@ -39,6 +39,8 @@ module Types
             description: 'Components belonging to the catalog resource.',
             alpha: { milestone: '16.7' }
 
+          # TODO: Turn this into a proper markup_field, which will require some refactoring.
+          # https://gitlab.com/gitlab-org/gitlab/-/issues/460462
           field :readme_html, GraphQL::Types::String, null: true, calls_gitaly: true,
             description: 'GitLab Flavored Markdown rendering of README.md. This field ' \
                          'can only be resolved for one version in any single request.',
@@ -51,10 +53,8 @@ module Types
           end
 
           def readme_html
-            return unless Ability.allowed?(current_user, :read_code, object.project)
-
-            markdown_context = context.to_h.dup.merge(project: object.project)
-            ::MarkupHelper.markdown(object.readme&.data, markdown_context)
+            ctx = context.to_h.dup.merge(project: object.project)
+            ::MarkupHelper.markdown(object.readme.data, ctx, { requested_path: object.readme.path })
           end
         end
         # rubocop: enable Graphql/AuthorizeTypes

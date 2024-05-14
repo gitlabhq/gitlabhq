@@ -12,6 +12,7 @@
 - add_page_specific_style 'page_bundles/pipelines'
 - add_page_specific_style 'page_bundles/reports'
 - add_page_specific_style 'page_bundles/ci_status'
+- identity_verification_required = false
 
 - add_page_startup_api_call @endpoint_metadata_url
 - add_page_startup_api_call @pinned_file_url if @pinned_file_url
@@ -20,7 +21,7 @@
 
 .merge-request{ data: { mr_action: mr_action, url: merge_request_path(@merge_request, format: :json), project_path: project_path(@merge_request.project), lock_version: @merge_request.lock_version, diffs_batch_cache_key: @diffs_batch_cache_key } }
   = render "projects/merge_requests/mr_title"
-  #js-merge-sticky-header{ data: { data: sticky_header_data.to_json } }
+  #js-merge-sticky-header{ data: { data: sticky_header_data(@project, @merge_request).to_json } }
   .merge-request-details.issuable-details{ data: { id: @merge_request.project.id } }
     = render "projects/merge_requests/mr_box"
     .gl-static.merge-request-tabs-holder{ class: "#{'js-tabs-affix' unless ENV['RAILS_ENV'] == 'test'}" }
@@ -62,12 +63,13 @@
       = render "projects/merge_requests/tabs/pane", id: "notes", class: "notes voting_notes" do
         .merge-request-overview
           %section
-            = render_if_exists "projects/merge_requests/diff_summary"
             .issuable-discussion.js-vue-notes-event
               - if @merge_request.description.present?
                 .detail-page-description.gl-pb-0
                   = render "projects/merge_requests/description"
               = render "projects/merge_requests/awards_block"
+              - if identity_verification_required
+                .js-verification-alert{ data: { identity_verification_path: '#' } }
               = render "projects/merge_requests/widget"
               - if mr_action === "show"
                 - add_page_startup_api_call discussions_path(@merge_request, per_page: 20)
@@ -84,7 +86,7 @@
                 current_user_data: @current_user_data,
                 is_locked: @merge_request.discussion_locked.to_s,
                 report_abuse_path: add_category_abuse_reports_path,
-                new_comment_template_path: profile_comment_templates_path,
+                new_comment_template_paths: new_comment_template_paths(@project.group, @project).to_json,
                 new_custom_emoji_path: new_custom_emoji_path(@project.group) } }
           = render 'shared/issuable/sidebar', issuable_sidebar: @issuable_sidebar, assignees: @merge_request.assignees, reviewers: @merge_request.reviewers, source_branch: @merge_request.source_branch
 
@@ -106,6 +108,9 @@
   = render "projects/commit/change", type: 'cherry-pick', commit: @merge_request.commit_to_cherry_pick
 
 #js-review-bar{ data: review_bar_data(@merge_request, current_user) }
+
+- if Feature.enabled?(:reviewer_assign_drawer, current_user, type: :wip)
+  #js-reviewer-drawer-portal
 
 - if current_user && Feature.enabled?(:mr_experience_survey, current_user)
   #js-mr-experience-survey{ data: { account_age: current_user.account_age_in_days } }

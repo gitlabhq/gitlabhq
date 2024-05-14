@@ -157,54 +157,26 @@ RSpec.describe Notes::CreateService, feature_category: :team_planning do
         it_behaves_like 'an incident management tracked event', :incident_management_incident_comment do
           let(:current_user) { user }
         end
-
-        it_behaves_like 'Snowplow event tracking with RedisHLL context' do
-          let(:namespace) { issue.namespace }
-          let(:category) { described_class.to_s }
-          let(:action) { 'incident_management_incident_comment' }
-          let(:label) { 'redis_hll_counters.incident_management.incident_management_total_unique_counts_monthly' }
-        end
       end
 
-      context 'in a commit', :snowplow do
+      context 'in a commit' do
         let_it_be(:commit) { create(:commit, project: project) }
         let(:opts) { { note: 'Awesome comment', noteable_type: 'Commit', commit_id: commit.id } }
 
-        let(:counter) { Gitlab::UsageDataCounters::NoteCounter }
+        subject(:execute_create_service) { described_class.new(project, user, opts).execute }
 
-        let(:execute_create_service) { described_class.new(project, user, opts).execute }
-
-        it 'tracks commit comment usage data', :clean_gitlab_redis_shared_state do
-          expect(counter).to receive(:count).with(:create, 'Commit').and_call_original
-
-          expect do
-            execute_create_service
-          end.to change { counter.read(:create, 'Commit') }.by(1)
-        end
-
-        it_behaves_like 'Snowplow event tracking with Redis context' do
-          let(:category) { described_class.name }
-          let(:action) { 'create_commit_comment' }
-          let(:label) { 'counts.commit_comment' }
-          let(:namespace) { project.namespace }
+        it_behaves_like 'internal event tracking' do
+          let(:event) { 'create_commit_note' }
+          let(:category) { described_class.to_s }
         end
       end
 
-      describe 'event tracking', :snowplow do
-        let(:event) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_COMMENT_ADDED }
-        let(:execute_create_service) { described_class.new(project, user, opts).execute }
+      describe 'event tracking' do
+        subject(:execute_create_service) { described_class.new(project, user, opts).execute }
 
-        it 'tracks issue comment usage data', :clean_gitlab_redis_shared_state do
-          counter = Gitlab::UsageDataCounters::HLLRedisCounter
-
-          expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).to receive(:track_issue_comment_added_action)
-                                                                             .with(author: user, project: project)
-                                                                             .and_call_original
-          expect do
-            execute_create_service
-          end.to change {
-                   counter.unique_events(event_names: event, start_date: Date.today.beginning_of_week, end_date: 1.week.from_now)
-                 }.by(1)
+        it_behaves_like 'internal event not tracked' do
+          let(:event) { 'create_commit_note' }
+          let(:category) { described_class.to_s }
         end
 
         it 'does not track merge request usage data' do
@@ -227,37 +199,6 @@ RSpec.describe Notes::CreateService, feature_category: :team_planning do
         end
 
         let(:new_opts) { opts.merge(noteable_type: 'MergeRequest', noteable_id: merge_request.id) }
-
-        context 'when mr_request_changes feature flag is disabled' do
-          before do
-            stub_feature_flags(mr_request_changes: false)
-          end
-
-          it 'calls MergeRequests::UpdateReviewerStateService service' do
-            expect_next_instance_of(
-              MergeRequests::UpdateReviewerStateService,
-              project: project_with_repo, current_user: user
-            ) do |service|
-              expect(service).to receive(:execute).with(merge_request, "reviewed")
-            end
-
-            described_class.new(project_with_repo, user, new_opts).execute
-          end
-
-          it 'does not call MergeRequests::UpdateReviewerStateService service when skip_set_reviewed is true' do
-            expect(MergeRequests::UpdateReviewerStateService).not_to receive(:new)
-
-            described_class.new(project_with_repo, user, new_opts).execute(skip_set_reviewed: true)
-          end
-        end
-
-        context 'when mr_request_changes feature flag is enabled' do
-          it 'does not call MergeRequests::UpdateReviewerStateService service when skip_set_reviewed is true' do
-            expect(MergeRequests::UpdateReviewerStateService).not_to receive(:new)
-
-            described_class.new(project_with_repo, user, new_opts).execute(skip_set_reviewed: true)
-          end
-        end
 
         context 'noteable highlight cache clearing' do
           let(:position) do
@@ -342,6 +283,7 @@ RSpec.describe Notes::CreateService, feature_category: :team_planning do
           before do
             project_with_repo.add_maintainer(user)
           end
+
           context 'when eligible to have a note diff file' do
             let(:new_opts) do
               opts.merge(
@@ -768,27 +710,22 @@ RSpec.describe Notes::CreateService, feature_category: :team_planning do
       end
     end
 
-    describe "usage counter" do
-      let(:counter) { Gitlab::UsageDataCounters::NoteCounter }
+    describe "event tracking" do
+      let(:event) { 'create_snippet_note' }
+      let(:category) { described_class.to_s }
 
       context 'snippet note' do
         let(:snippet) { create(:project_snippet, project: project) }
         let(:opts) { { note: 'reply', noteable_type: 'Snippet', noteable_id: snippet.id, project: project } }
 
-        it 'increments usage counter' do
-          expect do
-            note = described_class.new(project, user, opts).execute
+        subject(:execute_create_service) { described_class.new(project, user, opts).execute }
 
-            expect(note).to be_valid
-          end.to change { counter.read(:create, opts[:noteable_type]) }.by 1
-        end
+        it_behaves_like 'internal event tracking'
 
-        it 'does not increment usage counter when creation fails' do
-          expect do
-            note = described_class.new(project, user, { note: '' }).execute
+        context 'when creation fails' do
+          let(:opts) { { note: '' } }
 
-            expect(note).to be_invalid
-          end.not_to change { counter.read(:create, opts[:noteable_type]) }
+          it_behaves_like 'internal event not tracked'
         end
       end
 
@@ -796,13 +733,7 @@ RSpec.describe Notes::CreateService, feature_category: :team_planning do
         let(:issue) { create(:issue, project: project) }
         let(:opts) { { note: 'reply', noteable_type: 'Issue', noteable_id: issue.id, project: project } }
 
-        it 'does not increment usage counter' do
-          expect do
-            note = described_class.new(project, user, opts).execute
-
-            expect(note).to be_valid
-          end.not_to change { counter.read(:create, opts[:noteable_type]) }
-        end
+        it_behaves_like 'internal event not tracked'
       end
     end
   end

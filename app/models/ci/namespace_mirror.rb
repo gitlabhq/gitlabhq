@@ -9,15 +9,15 @@ module Ci
     belongs_to :namespace
     has_many :project_mirrors, primary_key: :namespace_id, foreign_key: :namespace_id, inverse_of: :namespace_mirror
 
-    scope :by_group_and_descendants, -> (id) do
-      where('traversal_ids @> ARRAY[?]::int[]', id)
+    scope :by_group_and_descendants, ->(id) do
+      where("traversal_ids @> '{?}'", id)
     end
 
-    scope :contains_any_of_namespaces, -> (ids) do
-      where('traversal_ids && ARRAY[?]::int[]', ids)
+    scope :contains_any_of_namespaces, ->(ids) do
+      where("traversal_ids && '{?}'", ids)
     end
 
-    scope :contains_traversal_ids, -> (traversal_ids) do
+    scope :contains_traversal_ids, ->(traversal_ids) do
       mirrors = []
 
       traversal_ids.group_by(&:count).each do |columns_count, traversal_ids_group|
@@ -35,7 +35,7 @@ module Ci
       self.from_union(mirrors)
     end
 
-    scope :by_namespace_id, -> (namespace_id) { where(namespace_id: namespace_id) }
+    scope :by_namespace_id, ->(namespace_id) { where(namespace_id: namespace_id) }
 
     class << self
       def sync!(event)

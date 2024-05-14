@@ -5,11 +5,7 @@ require 'spec_helper'
 RSpec.describe GroupDestroyWorker, feature_category: :groups_and_projects do
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, namespace: group) }
-  let_it_be(:user) { create(:user) }
-
-  before do
-    group.add_owner(user)
-  end
+  let_it_be(:user) { create(:user, owner_of: group) }
 
   subject(:worker) { described_class.new }
 

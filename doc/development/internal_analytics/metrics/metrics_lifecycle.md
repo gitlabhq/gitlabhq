@@ -32,74 +32,49 @@ Currently, the [Metrics Dictionary](https://metrics.gitlab.com/) is built automa
 
 ## Remove a metric
 
-WARNING:
-If a metric is not used in Tableau or any other system after 6 months, the
-Analytics Instrumentation team marks it as inactive and assigns it to the group owner for review.
+1. Create an issue for removing the metric if none exists yet. The issue needs to outline why the metric should be removed. You can use this issue to document the removal process.
 
-We are working on automating this process. See [this epic](https://gitlab.com/groups/gitlab-org/-/epics/8988) for details.
+   - **If the metric has at least one `performance_indicator_type` of the `[x]mau` kind**:
+     Notify the Customer Success Ops team (`@csops-team`), Analytics Engineers (`@gitlab-data/analytics-engineers`), and Product Analysts (`@gitlab-data/product-analysts`) by `@` mentioning the groups in a comment in the issue. Unexpected changes to these metric could break reporting.
+   - **If the metric is owned by a different group than the one doing the removal**:
+    Tag the PM and EM of the owning group according to the [stages file](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/stages.yml).
 
-Analytics Instrumentation removes metrics from Service Ping if they are not used in any Tableau dashboard.
+1. Remove the metric instrumentation code, depending on `data_source`:
 
-For an example of the metric removal process, see this [example issue](https://gitlab.com/gitlab-org/gitlab/-/issues/388236).
+   - **`database/system`**: If the metric has an `instrumentation_class` and the assigned class is no longer used by any other metric you can remove the class and specs.
+   If the metric is instrumented within [`lib/gitlab/usage_data.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data.rb)
+   or [`ee/lib/ee/gitlab/usage_data.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/ee/gitlab/usage_data.rb) then remove the associated code and specs
+   ([example](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60149/diffs#6335dc533bd21df26db9de90a02dd66278c2390d_167_167)).
+   - **`redis_hll/redis/internal_events`**: Remove the tracking code e.g. `track_internal_event` and associated specs.
 
-To remove a metric:
-
-1. Create an issue for removing the metric if none exists yet. The issue needs to outline why the metric should be deleted. You can use this issue to document the removal process.
-
-1. Verify the metric is not used to calculate the conversational index. The
-   conversational index is a measure that reports back to self-managed instances
-   to inform administrators of the progress of DevOps adoption for the instance.
-
-   You can check
-   [`CalculateConvIndexService`](https://gitlab.com/gitlab-org/gitlab-services/version.gitlab.com/-/blob/main/app/services/calculate_conv_index_service.rb)
-   to view the metrics that are used. The metrics are represented
-   as the keys that are passed as a field argument into the `get_value` method.
-
-1. Verify that removing the metric from the Service Ping payload does not cause
-   errors in [Version App](https://gitlab.com/gitlab-org/gitlab-services/version.gitlab.com)
-   when the updated payload is collected and processed. Version App collects
-   and persists all Service Ping reports. To verify Service Ping processing in your local development environment, follow this [guide](https://www.youtube.com/watch?v=FS5emplabRU).
-   Alternatively, you can modify [fixtures](https://gitlab.com/gitlab-org/gitlab-services/version.gitlab.com/-/blob/main/spec/support/usage_data_helpers.rb)
-   used to test the [`UsageDataController#create`](https://gitlab.com/gitlab-org/gitlab-services/version.gitlab.com/-/blob/main/spec/controllers/usage_data_controller_spec.rb)
-   endpoint, and assure that test suite does not fail when metric that you wish to remove is not included into test payload.
-
-1. Remove data from Redis
-
-   For deprecated Redis counters remove data stored in Redis.
-
-   - Add a migration to remove the data from Redis for the related Redis keys. For more details, see [this MR example](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82604/diffs).
-
-1. Create an issue in the
-   [GitLab Data Team project](https://gitlab.com/gitlab-data/analytics/-/issues).
-   Ask for confirmation that the metric is not referred to in any SiSense dashboards and
-   can be safely removed from Service Ping. Use this
-   [example issue](https://gitlab.com/gitlab-data/analytics/-/issues/15266) for guidance.
-
-1. Notify the Customer Success Ops team (`@csops-team`), Analytics Engineers (`@gitlab-data/analytics-engineers`), and Product Analysts (`@gitlab-data/product-analysts`) by `@` mentioning those groups in a comment in the issue from step 1 regarding the deletion of the metric.
-   Many Service Ping metrics are relied upon for health score and XMAU reporting and unexpected changes to those metrics could break reporting.
-
-1. After you verify the metric can be safely removed,
-   update the attributes of the metric's YAML definition:
+1. Update the attributes of the metric's YAML definition:
 
    - Set the `status:` to `removed`.
    - Set `removed_by_url:` to the URL of the MR removing the metric
    - Set `milestone_removed:` to the number of the
      milestone in which the metric was removed.
 
-   Do not remove the metric's YAML definition altogether. Some self-managed
-   instances might not immediately update to the latest version of GitLab, and
-   therefore continue to report the removed metric. The Analytics Instrumentation team
-   requires a record of all removed metrics to identify and filter them.
+   Do not remove the metric's YAML definition altogether. Some self-managed instances might not immediately update to the latest version of GitLab, and
+   therefore continue to report the removed metric. The Analytics Instrumentation team requires a record of all removed metrics to identify and filter them.
 
-   For example, take a look at this [merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60149/diffs#b01f429a54843feb22265100c0e4fec1b7da1240_10_10).
+## Group name changes
 
-1. After you verify the metric can be safely removed,
-   remove the metric's instrumentation from
-   [`lib/gitlab/usage_data.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data.rb)
-   or
-   [`ee/lib/ee/gitlab/usage_data.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/ee/gitlab/usage_data.rb).
+When the name of a group that owns events or metrics is changed, the `product_group` property should be updated in all metric and event definitions belonging to that group.
 
-   For example, take a look at this [merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60149/diffs#6335dc533bd21df26db9de90a02dd66278c2390d_167_167).
+The `product_group_renamer` script can update all the definitions so you do not have to do it manually.
 
-1. Remove any other records related to the metric:
-   - The feature flag YAML file at [`config/feature_flags/*/*.yaml`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/config/feature_flags).
+For example, if the group 5-min-app was renamed to 2-min-app, you can update the relevant files like this:
+
+```shell
+$ ruby scripts/internal_events/product_group_renamer.rb 5-min-app 2-min-app
+Updated '5-min-app' to '2-min-app' in 3 files
+
+Updated files:
+  config/metrics/schema/product_groups.json
+  config/metrics/counts_28d/20210216184517_p_ci_templates_5_min_production_app_monthly.yml
+  config/metrics/counts_7d/20210216184515_p_ci_templates_5_min_production_app_weekly.yml
+```
+
+After running the script, you must commit all the modified files to Git and create a merge request.
+
+If a group is split into multiple groups, you need to manually update the product_group.

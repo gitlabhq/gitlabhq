@@ -67,7 +67,7 @@ RSpec.describe Todos::Destroy::GroupPrivateService, feature_category: :team_plan
 
       context 'with member via group share' do
         let(:invited_group) { create(:group) }
-        let(:invited_group_member) { create(:user).tap { |u| invited_group.add_guest(u) } }
+        let(:invited_group_member) { create(:user, guest_of: invited_group) }
 
         let!(:todo_invited_group_member) { create(:todo, user: invited_group_member, group: group) }
 

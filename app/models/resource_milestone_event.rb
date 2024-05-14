@@ -2,6 +2,7 @@
 
 class ResourceMilestoneEvent < ResourceTimeboxEvent
   include EachBatch
+  include Import::HasImportSource
 
   belongs_to :milestone
 

@@ -61,20 +61,6 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
       merge_request.create_merge_request_diff
     end
 
-    context 'when merge_request_diff_generated_subscription flag is disabled' do
-      before do
-        stub_feature_flags(merge_request_diff_generated_subscription: false)
-      end
-
-      it 'does not call GraphqlTriggers.merge_request_diff_generated' do
-        merge_request = create(:merge_request, :skip_diff_creation)
-
-        expect(GraphqlTriggers).not_to receive(:merge_request_diff_generated)
-
-        merge_request.create_merge_request_diff
-      end
-    end
-
     context 'when diff_type is merge_head' do
       let_it_be(:merge_request) { create(:merge_request) }
 
@@ -93,6 +79,26 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
       it { expect(merge_head.head_commit_sha).to eq(merge_request.merge_ref_head.diff_refs.head_sha) }
       it { expect(merge_head.base_commit_sha).to eq(merge_request.merge_ref_head.diff_refs.base_sha) }
       it { expect(merge_head.start_commit_sha).to eq(merge_request.target_branch_sha) }
+    end
+  end
+
+  describe '.by_head_commit_sha' do
+    subject(:by_head_commit_sha) { described_class.by_commit_sha(sha) }
+
+    context "with given sha equal to the diff's head_commit_sha" do
+      let(:sha) { diff_with_commits.head_commit_sha }
+
+      it 'returns the merge request diff' do
+        expect(by_head_commit_sha).to eq([diff_with_commits])
+      end
+    end
+
+    context "with given sha not equal to any diff's head_commit_sha" do
+      let(:sha) { diff_with_commits.base_commit_sha }
+
+      it 'returns an empty result' do
+        expect(by_head_commit_sha).to be_empty
+      end
     end
   end
 
@@ -511,24 +517,10 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
       end
 
       shared_examples_for 'perform generated files check' do
-        context 'when collapse_generated option is given' do
-          let(:diff_options) do
-            super().merge(collapse_generated: true)
-          end
+        it 'checks generated files' do
+          diffs = diff_with_commits.diffs_in_batch(1, 10, diff_options: diff_options)
 
-          it 'checks generated files' do
-            diffs = diff_with_commits.diffs_in_batch(1, 10, diff_options: diff_options)
-
-            expect(diffs.diff_files.first.generated?).to be false
-          end
-        end
-
-        context 'when collapse_generated option is not given' do
-          it 'does not check generated files' do
-            diffs = diff_with_commits.diffs_in_batch(1, 10, diff_options: diff_options)
-
-            expect(diffs.diff_files.first.generated?).to be nil
-          end
+          expect(diffs.diff_files.first.generated?).to be false
         end
       end
 
@@ -609,24 +601,10 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
 
     describe '#paginated_diffs' do
       shared_examples 'diffs with generated files check' do
-        context 'when collapse_generated_diff_files FF is enabled' do
-          it 'checks generated files' do
-            diffs = diff_with_commits.paginated_diffs(1, 10)
+        it 'checks generated files' do
+          diffs = diff_with_commits.paginated_diffs(1, 10)
 
-            expect(diffs.diff_files.first.generated?).not_to be_nil
-          end
-        end
-
-        context 'when collapse_generated_diff_files FF is disabled' do
-          before do
-            stub_feature_flags(collapse_generated_diff_files: false)
-          end
-
-          it 'does not check generated files' do
-            diffs = diff_with_commits.paginated_diffs(1, 10)
-
-            expect(diffs.diff_files.first.generated?).to be_nil
-          end
+          expect(diffs.diff_files.first.generated?).not_to be_nil
         end
       end
 
@@ -1036,24 +1014,10 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
             branch_name: source_branch)
         end
 
-        context 'with collapse_generated_diff_files feature flag' do
-          it 'sets generated field correctly' do
-            expect(diff_files.find_by(new_path: generated_file_name_manual)).to be_generated
-            expect(diff_files.find_by(new_path: generated_file_name_auto)).to be_generated
-            expect(diff_files.find_by(new_path: regular_file_name)).not_to be_generated
-          end
-        end
-
-        context 'without collapse_generated_diff_files feature flag' do
-          before do
-            stub_feature_flags(collapse_generated_diff_files: false)
-          end
-
-          it 'sets generated field correctly' do
-            expect(diff_files.find_by(new_path: generated_file_name_auto)).not_to be_generated
-            expect(diff_files.find_by(new_path: generated_file_name_manual)).not_to be_generated
-            expect(diff_files.find_by(new_path: regular_file_name)).not_to be_generated
-          end
+        it 'sets generated field correctly' do
+          expect(diff_files.find_by(new_path: generated_file_name_manual)).to be_generated
+          expect(diff_files.find_by(new_path: generated_file_name_auto)).to be_generated
+          expect(diff_files.find_by(new_path: regular_file_name)).not_to be_generated
         end
       end
     end

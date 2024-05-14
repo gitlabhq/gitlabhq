@@ -16,7 +16,7 @@ namespace :gitlab do
             error_message += " Did you mean '#{potential_projects.first.full_path}'?"
           end
 
-          puts error_message.color(:red)
+          puts Rainbow(error_message).red
           exit 1
         end
 
@@ -57,7 +57,7 @@ namespace :gitlab do
               error_message += " Did you mean '#{potential_groups.first.full_path}'?"
             end
 
-            puts error_message.color(:red)
+            puts Rainbow(error_message).red
             exit 1
           end
 
@@ -87,6 +87,14 @@ namespace :gitlab do
         seeder.seed!
         puts "\nDone."
       end
+    end
+
+    desc "GitLab | Seed | Seed a new group with dependencies"
+    task :dependencies, [] => :environment do |t, args|
+      puts "\nSeeding a new group with dependencies"
+      seeder = Quality::Seeders::Dependencies.new
+      seeder.seed!
+      puts "\nDone."
     end
   end
 end

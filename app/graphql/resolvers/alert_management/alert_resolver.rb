@@ -6,30 +6,30 @@ module Resolvers
       include LooksAhead
 
       argument :iid, GraphQL::Types::String,
-                required: false,
-                description: 'IID of the alert. For example, "1".'
+        required: false,
+        description: 'IID of the alert. For example, "1".'
 
       argument :statuses, [Types::AlertManagement::StatusEnum],
-                as: :status,
-                required: false,
-                description: 'Alerts with the specified statues. For example, `[TRIGGERED]`.'
+        as: :status,
+        required: false,
+        description: 'Alerts with the specified statues. For example, `[TRIGGERED]`.'
 
       argument :sort, Types::AlertManagement::AlertSortEnum,
-                description: 'Sort alerts by this criteria.',
-                required: false
+        description: 'Sort alerts by this criteria.',
+        required: false
 
       argument :domain, Types::AlertManagement::DomainFilterEnum,
-                description: 'Filter query for given domain.',
-                required: true,
-                default_value: 'operations'
+        description: 'Filter query for given domain.',
+        required: true,
+        default_value: 'operations'
 
       argument :search, GraphQL::Types::String,
-                description: 'Search query for title, description, service, or monitoring_tool.',
-                required: false
+        description: 'Search query for title, description, service, or monitoring_tool.',
+        required: false
 
       argument :assignee_username, GraphQL::Types::String,
-                required: false,
-                description: 'Username of a user assigned to the issue.'
+        required: false,
+        description: 'Username of a user assigned to the issue.'
 
       type Types::AlertManagement::AlertType, null: true
 

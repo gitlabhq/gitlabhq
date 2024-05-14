@@ -18,7 +18,7 @@ module Gitlab
       alias_method :term, :query_string
 
       def initialize(params, detect_abuse: true)
-        @raw_params      = params.is_a?(Hash) ? params.with_indifferent_access : params.dup
+        @raw_params      = convert_all_boolean_params(params)
         @query_string    = strip_surrounding_whitespace(@raw_params[:search] || @raw_params[:term])
         @detect_abuse    = detect_abuse
         @abuse_detection = AbuseDetection.new(self) if @detect_abuse
@@ -92,6 +92,24 @@ module Gitlab
 
       def strip_surrounding_whitespace(obj)
         obj.to_s.strip
+      end
+
+      def convert_all_boolean_params(params)
+        converted_params = params.is_a?(Hash) ? params.with_indifferent_access : params.dup
+
+        if converted_params.key?(:confidential)
+          converted_params[:confidential] = Gitlab::Utils.to_boolean(converted_params[:confidential])
+        end
+
+        if converted_params.key?(:include_archived)
+          converted_params[:include_archived] = Gitlab::Utils.to_boolean(converted_params[:include_archived])
+        end
+
+        if converted_params.key?(:include_forked)
+          converted_params[:include_forked] = Gitlab::Utils.to_boolean(converted_params[:include_forked])
+        end
+
+        converted_params
       end
     end
   end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Groups::GroupMembersController do
+RSpec.describe Groups::GroupMembersController, feature_category: :groups_and_projects do
   include ExternalAuthorizationServiceHelpers
 
   let_it_be(:user) { create(:user) }
@@ -101,17 +101,21 @@ RSpec.describe Groups::GroupMembersController do
     context 'when user has owner access to subgroup' do
       let_it_be(:nested_group) { create(:group, parent: group) }
       let_it_be(:nested_group_user) { create(:user) }
+      let_it_be(:shared_group) { create(:group, parent: group) }
+      let_it_be(:shared_group_user) { create(:user) }
 
       before do
         group.add_owner(user)
         nested_group.add_owner(nested_group_user)
+        shared_group.add_owner(shared_group_user)
+        create(:group_group_link, shared_group: nested_group, shared_with_group: shared_group)
         sign_in(user)
       end
 
-      it 'lists inherited group members by default' do
+      it 'lists all group members including members from shared group by default' do
         get :index, params: { group_id: nested_group }
 
-        expect(assigns(:members).map(&:user_id)).to contain_exactly(user.id, nested_group_user.id)
+        expect(assigns(:members).map(&:user_id)).to contain_exactly(user.id, nested_group_user.id, shared_group_user.id)
       end
 
       it 'lists direct group members only' do
@@ -120,10 +124,10 @@ RSpec.describe Groups::GroupMembersController do
         expect(assigns(:members).map(&:user_id)).to contain_exactly(nested_group_user.id)
       end
 
-      it 'lists inherited group members only' do
+      it 'lists inherited and shared group members only' do
         get :index, params: { group_id: nested_group, with_inherited_permissions: 'only' }
 
-        expect(assigns(:members).map(&:user_id)).to contain_exactly(user.id)
+        expect(assigns(:members).map(&:user_id)).to contain_exactly(user.id, shared_group_user.id)
       end
     end
 

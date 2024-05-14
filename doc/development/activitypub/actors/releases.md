@@ -15,8 +15,8 @@ FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available,
 an administrator can [enable the feature flags](../../../administration/feature_flags.md)
 named `activity_pub` and `activity_pub_project`.
-On GitLab.com, this feature is not available.
-The feature is not ready for production use.
+On GitLab.com and GitLab Dedicated, this feature is not available.
+This feature is not ready for production use.
 
 This feature requires two feature flags:
 

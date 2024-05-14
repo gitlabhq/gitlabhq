@@ -15,7 +15,7 @@ code_quality:
     DOCKER_SOCKET_PATH: /var/run/docker.sock
   needs: []
   script:
-    - export SOURCE_CODE=$PWD
+    - export SOURCE_CODE=${SOURCE_CODE:-$PWD}
     - |
       if ! docker info &>/dev/null; then
         if [ -z "$DOCKER_HOST" ] && [ -n "$KUBERNETES_PORT" ]; then

@@ -56,7 +56,7 @@ Prerequisites:
 - You must install Conan version 1.x. Support for Conan version 2 is proposed in [epic 8258](https://gitlab.com/groups/gitlab-org/-/epics/8258).
 
 Download the Conan package manager to your local development environment by
-following the instructions at [conan.io](https://conan.io/downloads.html).
+following the instructions at [conan.io](https://conan.io/download).
 
 When installation is complete, verify you can use Conan in your terminal by
 running:
@@ -79,7 +79,7 @@ compilers. This example uses the CMake build system generator.
 To install CMake:
 
 - For Mac, use [Homebrew](https://brew.sh/) and run `brew install cmake`.
-- For other operating systems, follow the instructions at [cmake.org](https://cmake.org/install/).
+- For other operating systems, follow the instructions at [cmake.org](https://cmake.org/resources/).
 
 When installation is complete, verify you can use CMake in your terminal by
 running:
@@ -99,7 +99,7 @@ one, you can clone the Conan [hello world starter project](https://github.com/co
 
 To build a package:
 
-1. Open a terminal and navigate to your project's root folder.
+1. Open a terminal and go to your project's root folder.
 1. Generate a new recipe by running `conan new` with a package name and version:
 
    ```shell

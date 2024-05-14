@@ -5,12 +5,12 @@
 
 default:
   # Full project: https://gitlab.com/pages/nanoc
-  image: ruby:2.6
+  image: ruby:2.7
 
 pages:
   script:
     - bundle install -j4
-    - nanoc
+    - bundle exec nanoc
   artifacts:
     paths:
       - public

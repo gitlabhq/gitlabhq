@@ -28,8 +28,6 @@ RSpec.describe Import::GitlabProjectsController, feature_category: :importers do
     end
 
     context 'with a valid path' do
-      let(:experiment) { instance_double(ApplicationExperiment) }
-
       it 'schedules an import and redirects to the new project path' do
         stub_import(namespace)
 
@@ -37,38 +35,6 @@ RSpec.describe Import::GitlabProjectsController, feature_category: :importers do
 
         expect(flash[:notice]).to include('is being imported')
         expect(response).to have_gitlab_http_status(:found)
-      end
-
-      it 'tracks default_to_import_tab experiment' do
-        stub_import(namespace)
-
-        allow_next_instance_of(described_class) do |controller|
-          allow(controller)
-            .to receive(:experiment)
-            .with(:default_to_import_tab, actor: user)
-            .and_return(experiment)
-        end
-
-        expect(experiment).to receive(:track).with(:successfully_imported, property: 'gitlab_export')
-
-        subject
-      end
-
-      it 'does not track default_to_import_tab experiment when project was not imported' do
-        allow_next_instance_of(::Projects::GitlabProjectsImportService) do |service|
-          allow(service).to receive(:execute).and_return(build(:project))
-        end
-
-        allow_next_instance_of(described_class) do |controller|
-          allow(controller)
-            .to receive(:experiment)
-            .with(:default_to_import_tab, actor: user)
-            .and_return(experiment)
-        end
-
-        expect(experiment).not_to receive(:track)
-
-        subject
       end
     end
 
@@ -129,7 +95,7 @@ RSpec.describe Import::GitlabProjectsController, feature_category: :importers do
 
   describe 'GET new' do
     context 'when the user is not allowed to import projects' do
-      let!(:group) { create(:group).tap { |group| group.add_developer(user) } }
+      let!(:group) { create(:group, developers: user) }
 
       it 'returns 404' do
         get new_import_gitlab_project_path, params: { namespace_id: group.id }

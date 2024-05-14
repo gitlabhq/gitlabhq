@@ -3,7 +3,7 @@
 - protected_branch_test_type = protected_branch.project_level? ? 'project-level' : 'group-level'
 
 %tr.js-protected-branch-edit-form{ data: { url: url, testid: 'protected-branch', test_type: protected_branch_test_type } }
-  %td{ class: 'gl-vertical-align-middle!', data: { label: s_("ProtectedBranch|Branch") } }
+  %td{ class: '!gl-align-middle', data: { label: s_("ProtectedBranch|Branch") } }
     %div
       %span.ref-name= protected_branch.name
 

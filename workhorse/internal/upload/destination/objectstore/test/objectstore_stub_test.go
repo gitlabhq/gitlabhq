@@ -134,7 +134,7 @@ func TestObjectStoreCompleteMultipartUpload(t *testing.T) {
 	</CompleteMultipartUpload>`, parts[0].contentMD5, parts[1].contentMD5)
 	require.NoError(t, doRequest(http.MethodPost, completePostURL, strings.NewReader(completeBody)))
 
-	require.Equal(t, len(parts), stub.PutsCnt())
+	require.Len(t, parts, stub.PutsCnt())
 	require.Equal(t, 0, stub.DeletesCnt())
 	require.False(t, stub.IsMultipartUpload(ObjectPath), "MultipartUpload is still in progress")
 }

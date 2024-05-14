@@ -15,24 +15,18 @@ query fetchDeployment($fullPath: ID!, $iid: ID!) {
       tags {
         name
         path
+        webPath
       }
       job {
         ...DeploymentJob
-        deploymentPipeline: pipeline {
-          id
-          jobs(whenExecuted: ["manual"], retried: false) {
-            nodes {
-              ...DeploymentJob
-              scheduledAt
-            }
-          }
-        }
+        canPlayJob
+        manualJob
       }
       commit {
         id
         shortId
-        message
-        webUrl
+        title
+        webPath
         authorGravatar
         authorName
         authorEmail
@@ -45,6 +39,9 @@ query fetchDeployment($fullPath: ID!, $iid: ID!) {
       }
       createdAt
       finishedAt
+      userPermissions {
+        updateDeployment
+      }
     }
   }
 }

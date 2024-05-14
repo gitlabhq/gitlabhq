@@ -108,7 +108,7 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Inputs, feature_category: :pip
     it 'is invalid' do
       expect(inputs).not_to be_valid
       expect(inputs.errors).to contain_exactly(
-        'unknown input specification for `foo` (valid types: boolean, number, string)'
+        'unknown input specification for `foo` (valid types: array, boolean, number, string)'
       )
     end
   end
@@ -316,8 +316,50 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Inputs, feature_category: :pip
       it 'is invalid' do
         expect(inputs).not_to be_valid
         expect(inputs.errors).to contain_exactly(
-          'unknown input specification for `unknown` (valid types: boolean, number, string)'
+          'unknown input specification for `unknown` (valid types: array, boolean, number, string)'
         )
+      end
+    end
+  end
+
+  describe 'array validation' do
+    context 'when the value is an array' do
+      let(:specs) { { array_input: { type: 'array' } } }
+      let(:args) { { array_input: [] } }
+
+      it 'is valid' do
+        expect(inputs).to be_valid
+        expect(inputs.to_hash).to eq(array_input: [])
+      end
+    end
+
+    context 'when the default is an array' do
+      let(:specs) { { array_input: { default: [], type: 'array' } } }
+      let(:args) { {} }
+
+      it 'is valid' do
+        expect(inputs).to be_valid
+        expect(inputs.to_hash).to eq(array_input: [])
+      end
+    end
+
+    context 'when the value is not an array' do
+      let(:specs) { { array_input: { type: 'array' } } }
+      let(:args) { { array_input: 'string' } }
+
+      it 'is invalid' do
+        expect(inputs).not_to be_valid
+        expect(inputs.errors).to contain_exactly('`array_input` input: provided value is not an array')
+      end
+    end
+
+    context 'when the default is not a boolean' do
+      let(:specs) { { array_input: { default: 'string', type: 'array' } } }
+      let(:args) { {} }
+
+      it 'is invalid' do
+        expect(inputs).not_to be_valid
+        expect(inputs.errors).to contain_exactly('`array_input` input: default value is not an array')
       end
     end
   end

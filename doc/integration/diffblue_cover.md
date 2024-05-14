@@ -11,7 +11,7 @@ description: >-
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 You can integrate the [Diffblue Cover](https://www.diffblue.com/) reinforcement learning AI tool into your CI/CD pipelines, to automatically write and maintain Java unit tests for your GitLab projects.
 The Diffblue Cover Pipeline for GitLab integration allows you to automatically:
@@ -42,7 +42,7 @@ To integrate Diffblue Cover into your pipeline:
 
    - Select the **Active** checkbox.
    - Enter your Diffblue Cover **License key** provided in your welcome email or by your organization.
-     If needed, select the [**Try Diffblue Cover**](https://www.diffblue.com/try-cover/gitlab) link to sign up for a free trial.
+     If needed, select the [**Try Diffblue Cover**](https://www.diffblue.com/try-cover/gitlab/) link to sign up for a free trial.
    - Enter details of your GitLab access token (**Name** and **Secret**) to allow Diffblue Cover to access your project.
      In general, use a GitLab [project access token](../user/project/settings/project_access_tokens.md) with the `Developer` role, plus `api` and `write_repository` scopes.
      If necessary you can use a [group access token](../user/group/settings/group_access_tokens.md) or a [personal access token](../user/profile/personal_access_tokens.md), again with the `Developer` role, plus `api` and `write_repository` scopes.

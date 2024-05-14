@@ -46,7 +46,7 @@ RSpec.describe 'Secure Files', :js, feature_category: :source_code_management do
     within '#js-secure-files' do
       expect(page).to have_content(file.name)
 
-      find('[data-testid="delete-button"]').click
+      find_by_testid('delete-button').click
     end
 
     expect(page).to have_content("Delete #{file.name}?")

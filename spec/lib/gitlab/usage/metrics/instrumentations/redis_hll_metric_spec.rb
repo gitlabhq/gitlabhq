@@ -27,6 +27,40 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::RedisHLLMetric, :clean_
     expect { described_class.new(time_frame: '28d') }.to raise_error(ArgumentError)
   end
 
+  context "with events attribute defined" do
+    let(:expected_value) { 2 }
+
+    before do
+      Gitlab::UsageDataCounters::HLLRedisCounter.track_event(:g_project_management_issue_iteration_changed, values: 1, time: 1.week.ago, property_name: 'user')
+      Gitlab::UsageDataCounters::HLLRedisCounter.track_event(:g_project_management_issue_iteration_changed, values: 2, time: 2.weeks.ago, property_name: 'user')
+      Gitlab::UsageDataCounters::HLLRedisCounter.track_event(:g_project_management_issue_iteration_changed, values: 1, time: 2.weeks.ago, property_name: 'user')
+      Gitlab::UsageDataCounters::HLLRedisCounter.track_event(:g_project_management_issue_iteration_changed, values: 3, time: 2.weeks.ago, property_name: 'project')
+    end
+
+    it_behaves_like 'a correct instrumented metric value', { time_frame: '28d', events: [name: 'g_project_management_issue_iteration_changed', unique: 'user.id'] }
+
+    context "with events having different `unique` values" do
+      let(:expected_value) { 3 }
+      let(:flag_enabled) { false }
+      let(:events) do
+        [
+          { name: 'g_project_management_issue_iteration_changed', unique: 'user.id' },
+          { name: 'g_project_management_issue_label_changed', unique: 'project.id' }
+        ]
+      end
+
+      it 'raises an exception' do
+        expect do
+          described_class.new(time_frame: '28d', events: events).value
+        end.to raise_error(Gitlab::Usage::MetricDefinition::InvalidError)
+      end
+    end
+
+    context "with options attributes also defined" do
+      it_behaves_like 'a correct instrumented metric value', { time_frame: '28d', options: { events: ['i_quickactions_approve'] }, events: [name: 'g_project_management_issue_iteration_changed', unique: 'user.id'] }
+    end
+  end
+
   describe 'children classes' do
     let(:options) { { events: ['i_quickactions_approve'] } }
 

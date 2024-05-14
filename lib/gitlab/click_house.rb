@@ -9,3 +9,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::ClickHouse.prepend_mod_with('Gitlab::ClickHouse')

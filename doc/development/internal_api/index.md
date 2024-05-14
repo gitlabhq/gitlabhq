@@ -465,7 +465,6 @@ Example response:
 
 ## GitLab agent endpoints
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41045) in GitLab 13.4.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/432773) in GitLab 16.7.
 
 The following endpoints are used by the GitLab agent server (`kas`)
@@ -528,7 +527,6 @@ metric counters.
 |:--------------------------------------------------------------------------|:--------------|:---------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `counters`                                                                | hash          | no       | Hash of counters                                                                                                                                                |
 | `counters["k8s_api_proxy_request"]`                                       | integer       | no       | The number to increase the `k8s_api_proxy_request` counter by                                                                                                   |
-| `counters["gitops_sync"]`                                                 | integer       | no       | The number to increase the `gitops_sync` counter by                                                                                                             |
 | `counters["flux_git_push_notifications_total"]`                           | integer       | no       | The number to increase the `flux_git_push_notifications_total` counter by                                                                                       |
 | `counters["k8s_api_proxy_requests_via_ci_access"]`                        | integer       | no       | The number to increase the `k8s_api_proxy_requests_via_ci_access` counter by                                                                                    |
 | `counters["k8s_api_proxy_requests_via_user_access"]`                      | integer       | no       | The number to increase the `k8s_api_proxy_requests_via_user_access` counter by                                                                                  |
@@ -550,7 +548,7 @@ Example Request:
 
 ```shell
 curl --request POST --header "Gitlab-Kas-Api-Request: <JWT token>" --header "Content-Type: application/json" \
-     --data '{"counters": {"gitops_sync":1}}' "http://localhost:3000/api/v4/internal/kubernetes/usage_metrics"
+     --data '{"counters": {"k8s_api_proxy_request":1}}' "http://localhost:3000/api/v4/internal/kubernetes/usage_metrics"
 ```
 
 ### GitLab agent events
@@ -908,11 +906,12 @@ POST /namespaces/:id/subscription_add_on_purchase/:add_on_name
 | `quantity` | integer | yes | Amount of units in the subscription add-on purchase (Example: Number of seats for a Code Suggestions add-on) |
 | `expires_on` | date | yes | Expiration date of the subscription add-on purchase |
 | `purchase_xid` | string | yes | Identifier for the subscription add-on purchase (Example: Subscription name for a Code Suggestions add-on) |
+| `trial` | boolean | no | Whether the add-on is a trial |
 
 Example request:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <admin_access_token>" "https://gitlab.com/api/v4/namespaces/1234/subscription_add_on_purchase/code_suggestions?&quantity=10&expires_on="2024-07-15"&purchase_xid="A-S12345678""
+curl --request POST --header "PRIVATE-TOKEN: <admin_access_token>" "https://gitlab.com/api/v4/namespaces/1234/subscription_add_on_purchase/code_suggestions?&quantity=10&expires_on="2024-07-15"&purchase_xid="A-S12345678"&trial=true"
 ```
 
 Example response:
@@ -924,7 +923,8 @@ Example response:
   "add_on":"Code Suggestions",
   "quantity":10,
   "expires_on":"2024-07-15",
-  "purchase_xid":"A-S12345678"
+  "purchase_xid":"A-S12345678",
+  "trial":true
 }
 ```
 
@@ -941,11 +941,12 @@ PUT /namespaces/:id/subscription_add_on_purchase/:add_on_name
 | `quantity` | integer | no | Amount of units in the subscription add-on purchase (Example: Number of seats for a Code Suggestions add-on) |
 | `expires_on` | date | yes | Expiration date of the subscription add-on purchase |
 | `purchase_xid` | string | no | Identifier for the subscription add-on purchase (Example: Subscription name for a Code Suggestions add-on) |
+| `trial` | boolean | no | Whether the add-on is a trial |
 
 Example request:
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <admin_access_token>" "https://gitlab.com/api/v4/namespaces/1234/subscription_add_on_purchase/code_suggestions?&quantity=15&expires_on="2024-07-15"&purchase_xid="A-S12345678""
+curl --request PUT --header "PRIVATE-TOKEN: <admin_access_token>" "https://gitlab.com/api/v4/namespaces/1234/subscription_add_on_purchase/code_suggestions?&quantity=15&expires_on="2024-07-15"&purchase_xid="A-S12345678"&trial=true"
 ```
 
 Example response:
@@ -957,7 +958,8 @@ Example response:
   "add_on":"Code Suggestions",
   "quantity":15,
   "expires_on":"2024-07-15",
-  "purchase_xid":"A-S12345678"
+  "purchase_xid":"A-S12345678",
+  "trial":true
 }
 ```
 
@@ -984,7 +986,8 @@ Example response:
   "add_on":"Code Suggestions",
   "quantity":15,
   "expires_on":"2024-07-15",
-  "purchase_xid":"A-S12345678"
+  "purchase_xid":"A-S12345678",
+  "trial":true
 }
 ```
 
@@ -1252,9 +1255,7 @@ Example response:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/9388) in GitLab 11.10.
+**Offering:** GitLab.com
 
 The group SCIM API partially implements the [RFC7644 protocol](https://www.rfc-editor.org/rfc/rfc7644). This API provides the `/groups/:group_path/Users` and `/groups/:group_path/Users/:id` endpoints. The base URL is `<http|https>://<GitLab host>/api/scim/v2`. Because this API is for
 **system** use for SCIM provider integration, it is subject to change without notice.

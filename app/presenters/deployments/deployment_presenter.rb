@@ -10,9 +10,11 @@ module Deployments
 
     def tags
       super.map do |tag|
+        name = tag.delete_prefix(Gitlab::Git::TAG_REF_PREFIX)
         {
-          name: tag.delete_prefix(Gitlab::Git::TAG_REF_PREFIX),
-          path: tag.delete_prefix('refs/')
+          name: name,
+          path: tag.delete_prefix('refs/'),
+          web_path: project_tag_path(project, id: name)
         }
       end
     end
@@ -20,6 +22,10 @@ module Deployments
     delegator_override :ref_path
     def ref_path
       project_tree_path(project, id: ref)
+    end
+
+    def web_path
+      project_environment_deployment_path(project, environment, deployment)
     end
   end
 end

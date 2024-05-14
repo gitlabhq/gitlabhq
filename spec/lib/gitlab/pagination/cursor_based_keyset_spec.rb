@@ -32,16 +32,18 @@ RSpec.describe Gitlab::Pagination::CursorBasedKeyset do
 
     subject { described_class.enforced_for_type?(project, relation) }
 
-    context 'when relation is Group' do
-      let(:relation) { Group.all }
-
-      it { is_expected.to be true }
+    where(:relation, :result) do
+      [
+        [Group.all, true],
+        [User.all, true],
+        [AuditEvent.all, false]
+      ]
     end
 
-    context 'when relation is AuditEvent' do
-      let(:relation) { AuditEvent.all }
-
-      it { is_expected.to be false }
+    with_them do
+      it "returns true only for enforced types" do
+        expect(subject).to be result
+      end
     end
 
     context 'when relation is Ci::Build' do

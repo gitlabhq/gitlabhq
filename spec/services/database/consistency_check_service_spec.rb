@@ -83,10 +83,10 @@ RSpec.describe Database::ConsistencyCheckService, feature_category: :cell do
         create_list(:namespace, 50) # This will also create Ci::NameSpaceMirror objects
       end
 
-      it 'picks a random start_id' do
+      it 'picks a random start_id within the range of available item ids' do
         expected_result = {
-          batches: 2,
-          matches: 10,
+          batches: be_between(1, max_batches),
+          matches: be_between(1, max_batches * batch_size),
           mismatches: 0,
           mismatches_details: [],
           start_id: be_between(min_id, max_id),

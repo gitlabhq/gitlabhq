@@ -20,7 +20,9 @@ module Gitlab
       end
 
       def convert_inline_anchor(node)
-        node.id = "user-content-#{node.id}" if node.id && !node.id.start_with?('user-content-')
+        if node.id && !node.id.start_with?(Banzai::Renderer::USER_CONTENT_ID_PREFIX)
+          node.id = "#{Banzai::Renderer::USER_CONTENT_ID_PREFIX}#{node.id}"
+        end
 
         super(node)
       end

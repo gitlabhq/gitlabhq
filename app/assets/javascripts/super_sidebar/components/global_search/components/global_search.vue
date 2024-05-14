@@ -1,15 +1,8 @@
 <script>
-import {
-  GlSearchBoxByType,
-  GlOutsideDirective as Outside,
-  GlTooltipDirective,
-  GlResizeObserverDirective,
-  GlModal,
-} from '@gitlab/ui';
+import { GlSearchBoxByType, GlOutsideDirective as Outside, GlModal } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapState, mapActions, mapGetters } from 'vuex';
 import { debounce, clamp } from 'lodash';
-import { truncate } from '~/lib/utils/text_utility';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { sprintf } from '~/locale';
@@ -28,7 +21,7 @@ import {
   SEARCH_DESCRIBED_BY_DEFAULT,
   SEARCH_DESCRIBED_BY_UPDATED,
   SEARCH_RESULTS_LOADING,
-  SEARCH_RESULTS_SCOPE,
+  COMMAND_PALETTE_TIP,
 } from '~/vue_shared/global_search/constants';
 import { darkModeEnabled } from '~/lib/utils/color_utils';
 import ScrollScrim from '~/super_sidebar/components/scroll_scrim.vue';
@@ -36,19 +29,17 @@ import {
   SEARCH_INPUT_DESCRIPTION,
   SEARCH_RESULTS_DESCRIPTION,
   SEARCH_SHORTCUTS_MIN_CHARACTERS,
-  SCOPE_TOKEN_MAX_LENGTH,
-  INPUT_FIELD_PADDING,
   SEARCH_MODAL_ID,
   SEARCH_INPUT_SELECTOR,
   SEARCH_RESULTS_ITEM_SELECTOR,
+  KEY_K,
 } from '../constants';
 import CommandPaletteItems from '../command_palette/command_palette_items.vue';
 import FakeSearchInput from '../command_palette/fake_search_input.vue';
-import {
-  COMMON_HANDLES,
-  PATH_HANDLE,
-  SEARCH_OR_COMMAND_MODE_PLACEHOLDER,
-} from '../command_palette/constants';
+import { COMMON_HANDLES, SEARCH_OR_COMMAND_MODE_PLACEHOLDER } from '../command_palette/constants';
+import CommandPaletteLottery from '../command_palette/command_palette_lottery.vue';
+import CommandsOverviewDropdown from '../command_palette/command_overview_dropdown.vue';
+import { commandPaletteDropdownItems } from '../utils';
 import GlobalSearchAutocompleteItems from './global_search_autocomplete_items.vue';
 import GlobalSearchDefaultItems from './global_search_default_items.vue';
 import GlobalSearchScopedItems from './global_search_scoped_items.vue';
@@ -63,33 +54,45 @@ export default {
     SEARCH_DESCRIBED_BY_UPDATED,
     SEARCH_OR_COMMAND_MODE_PLACEHOLDER,
     SEARCH_RESULTS_LOADING,
-    SEARCH_RESULTS_SCOPE,
     MIN_SEARCH_TERM,
+    COMMAND_PALETTE_TIP,
+    COMMON_HANDLES,
   },
-  directives: { Outside, GlTooltip: GlTooltipDirective, GlResizeObserverDirective },
+  directives: { Outside },
   components: {
     GlSearchBoxByType,
     GlobalSearchDefaultItems,
     GlobalSearchScopedItems,
     GlobalSearchAutocompleteItems,
-    ScrollScrim,
     GlModal,
     CommandPaletteItems,
     FakeSearchInput,
+    CommandPaletteLottery,
+    ScrollScrim,
+    CommandsOverviewDropdown,
   },
   data() {
     return {
       nextFocusedItemIndex: null,
+      commandPaletteDropdownItems,
+      commandPaletteDropdownOpen: false,
     };
   },
   computed: {
-    ...mapState(['search', 'loading', 'searchContext']),
-    ...mapGetters(['searchQuery', 'searchOptions', 'scopedSearchOptions']),
+    ...mapState(['search', 'loading', 'searchContext', 'commandChar']),
+    ...mapGetters(['searchQuery', 'searchOptions', 'scopedSearchOptions', 'isCommandMode']),
     searchText: {
       get() {
         return this.search;
       },
       set(value) {
+        if (this.stringHasCommand(value)) {
+          this.setCommand(this.stringFirstChar(value));
+          this.setSearch(value);
+          return;
+        }
+
+        this.setCommand('');
         this.setSearch(value);
       },
     },
@@ -119,37 +122,8 @@ export default {
             count: this.searchOptions.length,
           });
     },
-    showScopeToken() {
-      return this.searchTermOverMin && !this.isCommandMode;
-    },
     searchBarItem() {
       return this.searchOptions?.[0];
-    },
-    scopeTokenText() {
-      return this.searchBarItem?.scope || this.searchBarItem?.description;
-    },
-    scopeTokenIcon() {
-      if (!this.isCommandMode) {
-        return this.searchBarItem?.icon;
-      }
-      return null;
-    },
-    searchScope() {
-      return sprintf(this.$options.i18n.SEARCH_RESULTS_SCOPE, {
-        scope: this.scopeTokenText,
-      });
-    },
-    truncatedSearchScope() {
-      return truncate(this.searchScope, SCOPE_TOKEN_MAX_LENGTH);
-    },
-    searchTextFirstChar() {
-      return this.searchText?.trim().charAt(0);
-    },
-    isCommandMode() {
-      return (
-        COMMON_HANDLES.includes(this.searchTextFirstChar) ||
-        (this.searchContext?.project && this.searchTextFirstChar === PATH_HANDLE)
-      );
     },
     commandPaletteQuery() {
       if (this.isCommandMode) {
@@ -167,7 +141,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['setSearch', 'fetchAutocompleteOptions', 'clearAutocomplete']),
+    ...mapActions(['setSearch', 'setCommand', 'fetchAutocompleteOptions', 'clearAutocomplete']),
     getAutocompleteOptions: debounce(function debouncedSearch(searchTerm) {
       if (this.isCommandMode) {
         return;
@@ -178,13 +152,6 @@ export default {
         this.fetchAutocompleteOptions();
       }
     }, DEFAULT_DEBOUNCE_AND_THROTTLE_MS),
-    observeTokenWidth({ contentRect: { width } }) {
-      const inputField = this.$refs?.searchInputBox?.$el?.querySelector('input');
-      if (!inputField) {
-        return;
-      }
-      inputField.style.paddingRight = `${width + INPUT_FIELD_PADDING}px`;
-    },
     getFocusableOptions() {
       return Array.from(
         this.$refs.resultsList?.querySelectorAll(SEARCH_RESULTS_ITEM_SELECTOR) || [],
@@ -230,8 +197,20 @@ export default {
         event.preventDefault();
       }
     },
+    onKeyComboDown(event) {
+      const { code, metaKey } = event;
+
+      if (code === KEY_K && metaKey) {
+        if (!this.commandPaletteDropdownOpen) {
+          this.$refs.commandDropdown.open();
+        } else {
+          this.$refs.commandDropdown.close();
+        }
+        this.commandPaletteDropdownOpen = !this.commandPaletteDropdownOpen;
+      }
+    },
     focusSearchInput() {
-      this.$refs.searchInput.$el.querySelector('input').focus();
+      this.$refs.searchInput.$el.querySelector('input')?.focus();
     },
     focusNextItem(event, elements, offset) {
       const { target } = event;
@@ -260,10 +239,14 @@ export default {
     },
     onSearchModalShown() {
       this.$emit('shown');
+
+      window.addEventListener('keydown', this.onKeyComboDown);
     },
     onSearchModalHidden() {
       this.searchText = '';
       this.$emit('hidden');
+
+      window.removeEventListener('keydown', this.onKeyComboDown);
     },
     highlightFirstCommand() {
       if (this.isCommandMode) {
@@ -273,6 +256,24 @@ export default {
           Boolean(!this.nextFocusedItemIndex),
         );
       }
+    },
+    handleCommandSelection(selected) {
+      this.searchText = this.stringHasCommand(this.searchText)
+        ? `${selected}${this.searchText.slice(1)}`
+        : `${selected}${this.searchText}`;
+
+      this.focusSearchInput();
+    },
+    stringHasCommand(string) {
+      const isHandle = (handle) => handle === string?.trim().charAt(0);
+
+      return (
+        COMMON_HANDLES.some(isHandle) ||
+        (this.searchContext?.project && COMMON_HANDLES.some(isHandle))
+      );
+    },
+    stringFirstChar(string) {
+      return string?.trim().charAt(0);
     },
   },
   SEARCH_INPUT_DESCRIPTION,
@@ -285,7 +286,6 @@ export default {
     ref="searchModal"
     :modal-id="$options.SEARCH_MODAL_ID"
     hide-header
-    hide-footer
     hide-header-close
     scrollable
     :title="$options.i18n.COMMAND_PALETTE"
@@ -300,7 +300,7 @@ export default {
       :aria-label="$options.i18n.SEARCH_OR_COMMAND_MODE_PLACEHOLDER"
       class="gl-relative gl-rounded-lg gl-w-full gl-pb-0"
     >
-      <div class="gl-relative gl-bg-white gl-border-b gl-mb-n1 gl-p-2">
+      <div class="input-box-wrapper gl-bg-white gl-border-b gl-mb-n1 gl-p-2">
         <gl-search-box-by-type
           id="search"
           ref="searchInput"
@@ -322,8 +322,8 @@ export default {
         <fake-search-input
           v-if="isCommandMode"
           :user-input="commandPaletteQuery"
-          :scope="searchTextFirstChar"
-          class="gl-absolute"
+          :scope="commandChar"
+          class="fake-input-wrapper"
         />
       </div>
       <span
@@ -337,23 +337,25 @@ export default {
       </span>
       <div
         ref="resultsList"
-        class="global-search-results gl-overflow-y-auto gl-w-full gl-display-flex gl-flex-direction-column gl-flex-grow-1 gl-overflow-hidden gl-pb-3"
+        class="global-search-results gl-w-full gl-display-flex gl-flex-direction-column gl-flex-grow-1 gl-overflow-hidden"
         @keydown="onKeydown"
       >
-        <scroll-scrim class="gl-flex-grow-1" data-testid="nav-container">
-          <command-palette-items
-            v-if="isCommandMode"
-            :search-query="commandPaletteQuery"
-            :handle="searchTextFirstChar"
-            @updated="highlightFirstCommand"
-          />
+        <scroll-scrim class="gl-flex-grow-1 gl-overflow-x-hidden!" data-testid="nav-container">
+          <div class="gl-pb-3">
+            <command-palette-items
+              v-if="isCommandMode"
+              :search-query="commandPaletteQuery"
+              :handle="commandChar"
+              @updated="highlightFirstCommand"
+            />
 
-          <global-search-default-items v-else-if="showDefaultItems" />
+            <global-search-default-items v-else-if="showDefaultItems" />
 
-          <template v-else>
-            <global-search-autocomplete-items />
-            <global-search-scoped-items v-if="showScopedSearchItems" />
-          </template>
+            <template v-else>
+              <global-search-autocomplete-items />
+              <global-search-scoped-items v-if="showScopedSearchItems" />
+            </template>
+          </div>
         </scroll-scrim>
       </div>
       <template v-if="searchContext">
@@ -379,5 +381,29 @@ export default {
         <input type="hidden" name="repository_ref" :value="searchContext.ref" />
       </template>
     </form>
+    <template #modal-footer>
+      <div
+        class="gl-display-flex gl-flex-grow-1 gl-m-0 gl-align-middle gl-justify-content-space-between"
+      >
+        <span class="gl-text-gray-500"
+          >{{ $options.i18n.COMMAND_PALETTE_TIP }} <command-palette-lottery
+        /></span>
+        <span
+          ><commands-overview-dropdown
+            ref="commandDropdown"
+            :items="commandPaletteDropdownItems"
+            @selected="handleCommandSelection"
+        /></span>
+      </div>
+    </template>
   </gl-modal>
 </template>
+
+<style scoped>
+.input-box-wrapper {
+  position: relative;
+}
+.fake-input-wrapper {
+  position: absolute;
+}
+</style>

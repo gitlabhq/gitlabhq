@@ -39,7 +39,8 @@ RSpec.describe Keeps::Helpers::PostgresAi, feature_category: :tooling do
     let(:job_class_name) { 'ExampleJob' }
     let(:query) do
       <<~SQL
-      SELECT id, created_at, updated_at, finished_at, started_at, status, job_class_name, gitlab_schema
+      SELECT id, created_at, updated_at, finished_at, started_at, status, job_class_name,
+      gitlab_schema, total_tuple_count
       FROM batched_background_migrations
       WHERE job_class_name = $1::text
       SQL
@@ -51,6 +52,27 @@ RSpec.describe Keeps::Helpers::PostgresAi, feature_category: :tooling do
 
     it 'fetches background migration data from Postgres AI' do
       expect(pg_client).to receive(:exec_params).with(query, [job_class_name]).and_return(query_response)
+      expect(result).to eq(query_response)
+    end
+  end
+
+  describe '#fetch_migrated_tuple_count' do
+    let(:batched_background_migration_id) { 100 }
+    let(:query) do
+      <<~SQL
+      SELECT SUM("batched_background_migration_jobs"."batch_size")
+      FROM "batched_background_migration_jobs"
+      WHERE "batched_background_migration_jobs"."batched_background_migration_id" = 100
+      AND ("batched_background_migration_jobs"."status" IN (3))
+      SQL
+    end
+
+    let(:query_response) { double }
+
+    subject(:result) { described_class.new.fetch_migrated_tuple_count(batched_background_migration_id) }
+
+    it 'fetches data from Postgres AI' do
+      expect(pg_client).to receive(:exec_params).with(query).and_return(query_response)
       expect(result).to eq(query_response)
     end
   end

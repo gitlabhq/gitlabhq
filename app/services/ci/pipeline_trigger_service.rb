@@ -94,7 +94,8 @@ module Ci
     def payload_variable
       { key: PAYLOAD_VARIABLE_KEY,
         value: Gitlab::Json.dump(params.except(*PAYLOAD_VARIABLE_HIDDEN_PARAMS)),
-        variable_type: :file }
+        variable_type: :file,
+        raw: true }
     end
 
     def set_application_context_from_trigger(trigger)

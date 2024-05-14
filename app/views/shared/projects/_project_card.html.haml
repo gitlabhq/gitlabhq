@@ -48,7 +48,7 @@
         .gl-mt-3.gl-ml-n1
           = render "shared/projects/topics", project: project.present(current_user: current_user)
       - if project.catalog_resource
-        = render partial: 'shared/ci_catalog_badge', locals: { href: project_ci_catalog_resource_path(project, project.catalog_resource) }
+        = render partial: 'shared/ci_catalog_badge', locals: { href: explore_catalog_path(project.catalog_resource), css_class: 'gl-mt-2' }
 
       - if explore_projects_tab? && project_license_name(project)
         %span.gl-display-inline-flex.gl-align-items-center.gl-mr-3
@@ -84,8 +84,8 @@
             %span.icon-wrapper.pipeline-status
               = render 'ci/status/icon', status: last_pipeline.detailed_status(current_user), tooltip_placement: 'top', path: pipeline_path
 
-          = render_if_exists 'shared/projects/archived', project: project
-      .updated-note.gl-font-sm.gl-white-space-nowrap.gl-justify-content-start
+          = render_if_exists 'shared/projects/badges', project: project
+      .updated-note.gl-font-sm.gl-whitespace-nowrap.gl-justify-content-start
         %span
           = _('Updated')
           = updated_tooltip

@@ -15,7 +15,7 @@ module Ci
 
           def execute
             build_catalog_resource_version
-            fetch_and_build_components if Feature.enabled?(:ci_catalog_create_metadata, project)
+            fetch_and_build_components
             publish_catalog_resource!
 
             if errors.empty?
@@ -35,7 +35,8 @@ module Ci
             @version = Ci::Catalog::Resources::Version.new(
               release: release,
               catalog_resource: project.catalog_resource,
-              project: project
+              project: project,
+              semver: release.tag
             )
           end
 
@@ -69,8 +70,7 @@ module Ci
 
             {
               name: component_name,
-              inputs: components_project.extract_inputs(blob.data),
-              path: "#{Settings.gitlab.host}/#{project.full_path}/#{component_name}@#{release.tag}"
+              spec: components_project.extract_spec(blob.data)
             }
           end
 
@@ -80,9 +80,8 @@ module Ci
             component = @version.components.build(
               name: metadata[:name],
               project: @version.project,
-              inputs: metadata[:inputs],
+              spec: metadata[:spec],
               catalog_resource: @version.catalog_resource,
-              path: metadata[:path],
               created_at: Time.current
             )
 

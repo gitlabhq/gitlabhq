@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::BackfillClusterAgentsHasVulnerabilities, :migration do # rubocop:disable Layout/LineLength
+RSpec.describe Gitlab::BackgroundMigration::BackfillClusterAgentsHasVulnerabilities, :migration,
+  feature_category: :vulnerability_management do
   let(:migration) do
     described_class.new(
       start_id: 1, end_id: 10,
@@ -13,6 +14,8 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillClusterAgentsHasVulnerabilit
   end
 
   let(:users_table) { table(:users) }
+  let(:vulnerability_identifiers_table) { table(:vulnerability_identifiers) }
+  let(:vulnerability_occurrences_table) { table(:vulnerability_occurrences) }
   let(:vulnerability_reads_table) { table(:vulnerability_reads) }
   let(:vulnerability_scanners_table) { table(:vulnerability_scanners) }
   let(:vulnerabilities_table) { table(:vulnerabilities) }
@@ -84,6 +87,17 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillClusterAgentsHasVulnerabilit
   private
 
   def add_vulnerability_read!(id, project_id:, cluster_agent_id:, report_type:)
+    identifier = vulnerability_identifiers_table.create!(project_id: project_id, external_type: 'uuid-v5',
+      external_id: 'uuid-v5', fingerprint: OpenSSL::Digest.hexdigest('SHA256', SecureRandom.uuid),
+      name: "Identifier for UUIDv5 #{project_id} #{cluster_agent_id}")
+
+    finding = vulnerability_occurrences_table.create!(
+      project_id: project_id, scanner_id: project_id,
+      primary_identifier_id: identifier.id, name: 'test', severity: 4, confidence: 4, report_type: 0,
+      uuid: SecureRandom.uuid, project_fingerprint: '123qweasdzxc',
+      location_fingerprint: 'test', metadata_version: 'test',
+      raw_metadata: "")
+
     vulnerabilities_table.create!(
       id: id,
       project_id: project_id,
@@ -91,7 +105,8 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillClusterAgentsHasVulnerabilit
       title: "Vulnerability #{id}",
       severity: 5,
       confidence: 5,
-      report_type: report_type
+      report_type: report_type,
+      finding_id: finding.id
     )
 
     vulnerability_reads_table.create!(

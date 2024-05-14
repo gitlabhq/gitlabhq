@@ -7,24 +7,20 @@ describe('work items graphql cache utils', () => {
   const iid = '10';
   const mockCacheData = {
     workspace: {
-      workItems: {
-        nodes: [
+      workItem: {
+        id: 'gid://gitlab/WorkItem/10',
+        title: 'Work item',
+        widgets: [
           {
-            id: 'gid://gitlab/WorkItem/10',
-            title: 'Work item',
-            widgets: [
-              {
-                type: WIDGET_TYPE_HIERARCHY,
-                children: {
-                  nodes: [
-                    {
-                      id: 'gid://gitlab/WorkItem/20',
-                      title: 'Child',
-                    },
-                  ],
+            type: WIDGET_TYPE_HIERARCHY,
+            children: {
+              nodes: [
+                {
+                  id: 'gid://gitlab/WorkItem/20',
+                  title: 'Child',
                 },
-              },
-            ],
+              ],
+            },
           },
         ],
       },
@@ -50,25 +46,21 @@ describe('work items graphql cache utils', () => {
         variables: { fullPath, iid },
         data: {
           workspace: {
-            workItems: {
-              nodes: [
+            workItem: {
+              id: 'gid://gitlab/WorkItem/10',
+              title: 'Work item',
+              widgets: [
                 {
-                  id: 'gid://gitlab/WorkItem/10',
-                  title: 'Work item',
-                  widgets: [
-                    {
-                      type: WIDGET_TYPE_HIERARCHY,
-                      children: {
-                        nodes: [
-                          {
-                            id: 'gid://gitlab/WorkItem/20',
-                            title: 'Child',
-                          },
-                          child,
-                        ],
+                  type: WIDGET_TYPE_HIERARCHY,
+                  children: {
+                    nodes: [
+                      {
+                        id: 'gid://gitlab/WorkItem/20',
+                        title: 'Child',
                       },
-                    },
-                  ],
+                      child,
+                    ],
+                  },
                 },
               ],
             },
@@ -113,19 +105,15 @@ describe('work items graphql cache utils', () => {
         variables: { fullPath, iid },
         data: {
           workspace: {
-            workItems: {
-              nodes: [
+            workItem: {
+              id: 'gid://gitlab/WorkItem/10',
+              title: 'Work item',
+              widgets: [
                 {
-                  id: 'gid://gitlab/WorkItem/10',
-                  title: 'Work item',
-                  widgets: [
-                    {
-                      type: WIDGET_TYPE_HIERARCHY,
-                      children: {
-                        nodes: [],
-                      },
-                    },
-                  ],
+                  type: WIDGET_TYPE_HIERARCHY,
+                  children: {
+                    nodes: [],
+                  },
                 },
               ],
             },

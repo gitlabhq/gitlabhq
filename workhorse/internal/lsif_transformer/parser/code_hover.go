@@ -114,7 +114,7 @@ func (c *codeHover) setTokens() {
 	// be within the index, and bailing if not found.
 	//
 	// Not case-folding immediately is done intentionally. These two lookups
-	// mirror the behaviour of lexer.Get().
+	// mirror the behavior of lexer.Get().
 	if _, ok := supportedLexerLanguages[c.Language]; !ok {
 		if _, ok := supportedLexerLanguages[strings.ToLower(c.Language)]; !ok {
 			return
@@ -142,7 +142,7 @@ func (c *codeHover) setTokens() {
 			// [{ Class: "kd", Value: "func" }, { Value: " main() {" }] instead of
 			// [{ Class: "kd", Value: "func" }, { Value: " " }, { Value: "main" }, { Value: "(" }...]
 			if class == "" {
-				rawToken = rawToken + t.Value
+				rawToken += t.Value
 			} else {
 				if rawToken != "" {
 					tokens = append(tokens, token{Value: rawToken})

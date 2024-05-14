@@ -63,7 +63,7 @@ RSpec.describe Gitlab::Kas::Client do
           .with(agent_ids: [agent.id])
           .and_return(request)
 
-        expect(stub).to receive(:get_connected_agents_by_agent_ids)
+        expect(stub).to receive(:get_connected_agents_by_agent_i_ds)
           .with(request, metadata: { 'authorization' => 'bearer test-token' })
           .and_return(response)
       end

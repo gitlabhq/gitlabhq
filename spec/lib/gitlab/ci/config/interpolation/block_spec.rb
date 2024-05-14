@@ -25,26 +25,6 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Block, feature_category: :pipe
     expect(subject.value).to eq 'abcdef'
   end
 
-  describe '.match' do
-    it 'matches each block in a string' do
-      expect { |b| described_class.match('$[[ access1 ]] $[[ access2 ]]', &b) }
-        .to yield_successive_args(['$[[ access1 ]]', 'access1'], ['$[[ access2 ]]', 'access2'])
-    end
-
-    it 'does not match an empty block' do
-      expect { |b| described_class.match('$[[]]', &b) }
-        .not_to yield_with_args(anything)
-    end
-
-    context 'when functions are specified in the block' do
-      it 'matches each block in a string' do
-        expect { |b| described_class.match('$[[ access1 | func1 ]] $[[ access2 | func1 | func2(0,1) ]]', &b) }
-          .to yield_successive_args(['$[[ access1 | func1 ]]', 'access1 | func1'],
-            ['$[[ access2 | func1 | func2(0,1) ]]', 'access2 | func1 | func2(0,1)'])
-      end
-    end
-  end
-
   describe 'when functions are specified in the block' do
     let(:function_string1) { 'truncate(1,5)' }
     let(:data) { "inputs.data | #{function_string1}" }
@@ -107,6 +87,18 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Block, feature_category: :pipe
           expect(subject.errors.first).to eq('too many functions in interpolation block')
         end
       end
+    end
+  end
+
+  describe '#to_s' do
+    it 'returns the interpolation block' do
+      expect(subject.to_s).to eq(block)
+    end
+  end
+
+  describe '#length' do
+    it 'returns the length of the interpolation block' do
+      expect(subject.length).to eq(block.length)
     end
   end
 end

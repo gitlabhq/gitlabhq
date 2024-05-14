@@ -14,6 +14,7 @@ module TabHelper
     gl_tabs_classes = %w[nav gl-tabs-nav]
 
     html_options = html_options.merge(
+      role: 'tablist',
       class: [*html_options[:class], gl_tabs_classes].join(' ')
     )
 
@@ -42,6 +43,7 @@ module TabHelper
     end
 
     html_options = html_options.merge(
+      role: 'tab',
       class: [*html_options[:class], link_classes].join(' ')
     )
 
@@ -53,7 +55,7 @@ module TabHelper
     extra_tab_classes = html_options.delete(:tab_class)
     tab_class = %w[nav-item].push(*extra_tab_classes)
 
-    content_tag(:li, class: tab_class) do
+    content_tag(:li, role: 'presentation', class: tab_class) do
       if block
         link_to(options, html_options, &block)
       else

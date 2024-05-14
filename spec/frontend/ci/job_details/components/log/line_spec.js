@@ -105,6 +105,16 @@ describe('Job Log Line', () => {
       expect(findLinks().at(0).attributes('href')).toBe(url);
     });
 
+    it('renders links surrounded by brackets `[]`', () => {
+      const url = `[${httpUrl}]`;
+
+      createComponent(mockProps({ text: url }));
+
+      expect(findLine().text()).toBe(url);
+      expect(findLinks().at(0).text()).toBe(httpUrl);
+      expect(findLinks().at(0).attributes('href')).toBe(httpUrl);
+    });
+
     it('renders multiple links surrounded by text', () => {
       createComponent(
         mockProps({ text: `Well, my HTTP url: ${httpUrl} and my HTTPS url: ${httpsUrl}` }),

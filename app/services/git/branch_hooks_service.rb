@@ -81,7 +81,6 @@ module Git
       project.repository.after_push_commit(branch_name)
 
       branch_create_hooks if creating_branch?
-      branch_update_hooks if updating_branch?
       branch_change_hooks if creating_branch? || updating_branch?
       branch_remove_hooks if removing_branch?
 
@@ -91,12 +90,6 @@ module Git
     def branch_create_hooks
       project.repository.after_create_branch(expire_cache: false)
       project.after_create_default_branch if default_branch?
-    end
-
-    def branch_update_hooks
-      # Update the bare repositories info/attributes file using the contents of
-      # the default branch's .gitattributes file
-      project.repository.copy_gitattributes(ref) if default_branch?
     end
 
     def branch_change_hooks

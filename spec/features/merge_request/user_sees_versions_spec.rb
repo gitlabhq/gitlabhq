@@ -33,7 +33,7 @@ RSpec.describe 'Merge request > User sees versions', :js, feature_category: :cod
         # otherwise, the element could be hidden underneath a sticky header
         scroll_to_elements_bottom(line_code_element)
         line_code_element.hover
-        page.find("[data-testid='left-comment-button']", visible: true).click
+        find_by_testid('left-comment-button', visible: true).click
 
         expect(page).to have_selector("form", count: 1)
 

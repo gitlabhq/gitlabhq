@@ -123,10 +123,10 @@ and these checks verify them against current files.
 
 Integrity checks are supported for the following types of file:
 
-- CI artifacts (introduced in GitLab 10.7.0)
-- LFS objects (introduced in GitLab 10.6.0)
+- CI artifacts
+- LFS objects
 - Project-level Secure Files (introduced in GitLab 16.1.0)
-- User uploads (introduced in GitLab 10.6.0)
+- User uploads
 
 - Linux package installations:
 
@@ -210,8 +210,6 @@ executed as part of the `gitlab:check` task, but can run independently.
 See [LDAP Rake Tasks - LDAP Check](ldap.md#check) for details.
 
 ## Verify database values can be decrypted using the current secrets
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/20069) in GitLab 13.1.
 
 This task runs through all possible encrypted values in the
 database, verifying that they are decryptable using the current

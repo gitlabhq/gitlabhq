@@ -1,20 +1,20 @@
 import { buildDisplayListboxItem } from '~/organizations/show/utils';
-import { RESOURCE_TYPE_PROJECTS } from '~/organizations/constants';
-import { FILTER_FREQUENTLY_VISITED } from '~/organizations/show/constants';
+import { SORT_CREATED_AT, RESOURCE_TYPE_PROJECTS } from '~/organizations/shared/constants';
 
 describe('buildDisplayListboxItem', () => {
   it('returns list item in correct format', () => {
-    const text = 'Frequently visited projects';
+    const text = 'Recently created projects';
 
     expect(
       buildDisplayListboxItem({
-        filter: FILTER_FREQUENTLY_VISITED,
+        sortName: SORT_CREATED_AT,
         resourceType: RESOURCE_TYPE_PROJECTS,
         text,
       }),
     ).toEqual({
+      sortName: SORT_CREATED_AT,
       text,
-      value: 'frequently_visited_projects',
+      value: 'created_at_projects',
     });
   });
 });

@@ -17,6 +17,8 @@ module API
           }
         end
       end
+      expose :imported?, as: :imported, documentation: { type: 'boolean', example: false }
+      expose :imported_from, documentation: { type: 'string', example: 'none' }
 
       private
 

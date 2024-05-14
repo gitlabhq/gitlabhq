@@ -3,9 +3,6 @@
 module Packages
   module Protection
     class Rule < ApplicationRecord
-      include IgnorableColumns
-      ignore_column :package_name_pattern_ilike_query, remove_with: '16.11', remove_after: '2024-03-22'
-
       enum package_type: Packages::Package.package_types.slice(:npm)
       enum push_protected_up_to_access_level:
              Gitlab::Access.sym_options_with_owner.slice(:developer, :maintainer, :owner),

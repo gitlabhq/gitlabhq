@@ -14,8 +14,8 @@ describe QA::Tools::ReliableReport do
     allow(Slack::Notifier).to receive(:new).and_return(slack_notifier)
     allow(InfluxDB2::Client).to receive(:new).and_return(influx_client)
 
-    allow(query_api).to receive(:query).with(query: flux_query(reliable: false)).and_return(runs)
-    allow(query_api).to receive(:query).with(query: flux_query(reliable: true)).and_return(reliable_runs)
+    allow(query_api).to receive(:query).with(query: flux_query(blocking: false)).and_return(runs)
+    allow(query_api).to receive(:query).with(query: flux_query(blocking: true)).and_return(reliable_runs)
   end
 
   let(:slack_notifier) { instance_double("Slack::Notifier", post: nil) }
@@ -128,7 +128,7 @@ describe QA::Tools::ReliableReport do
     ]
   end
 
-  def flux_query(reliable:)
+  def flux_query(blocking:)
     <<~QUERY
       from(bucket: "e2e-test-stats-main")
         |> range(start: -#{range}d)
@@ -148,7 +148,7 @@ describe QA::Tools::ReliableReport do
           r.merge_request == "false" and
           r.quarantined == "false" and
           r.smoke == "false" and
-          (r.reliable == "#{reliable}" #{reliable ? 'or' : 'and'} r.blocking == "#{reliable}")
+          r.blocking == "#{blocking}"
         )
         |> filter(fn: (r) => r["_field"] == "job_url" or
           r["_field"] == "failure_exception" or
@@ -217,8 +217,7 @@ describe QA::Tools::ReliableReport do
       let(:common_api_args) do
         {
           verify_ssl: false,
-          headers: { "PRIVATE-TOKEN" => "gitlab_token" },
-          cookies: {}
+          headers: { "PRIVATE-TOKEN" => "gitlab_token" }
         }
       end
 
@@ -300,7 +299,7 @@ describe QA::Tools::ReliableReport do
           <<~TXT.strip
             [[_TOC_]]
 
-            # Candidates for promotion to reliable/blocking (#{Date.today - range} - #{Date.today})
+            # Candidates for promotion to blocking (#{Date.today - range} - #{Date.today})
 
             **Note: MRs will be auto-created for promoting the top #{QA::Tools::ReliableReport::PROMOTION_BATCH_LIMIT} specs sorted by most number of successful runs**
 
@@ -312,7 +311,7 @@ describe QA::Tools::ReliableReport do
 
             #{expected_stage_markdown([[name_column('stable spec2'), 3, 0, '0%']], 'manage', 'import and integrate', :stable)}
 
-            # Reliable specs with failures (#{Date.today - range} - #{Date.today})
+            # Blocking specs with failures (#{Date.today - range} - #{Date.today})
 
             **Note:**
 
@@ -351,7 +350,7 @@ describe QA::Tools::ReliableReport do
           <<~TXT.strip
             [[_TOC_]]
 
-            # Candidates for promotion to reliable/blocking (#{Date.today - range} - #{Date.today})
+            # Candidates for promotion to blocking (#{Date.today - range} - #{Date.today})
 
             **Note: MRs will be auto-created for promoting the top #{QA::Tools::ReliableReport::PROMOTION_BATCH_LIMIT} specs sorted by most number of successful runs**
 
@@ -521,15 +520,15 @@ describe QA::Tools::ReliableReport do
       allow(reliable_report).to receive(:report_web_url).and_return(report_web_url)
     end
 
-    shared_examples "spec attributes" do |reliable|
-      it "returns #{reliable} spec attributes" do
+    shared_examples "spec attributes" do |blocking|
+      it "returns #{blocking} spec attributes" do
         stub_const("QA::Tools::ReliableReport::PROMOTION_BATCH_LIMIT", promotion_batch_limit)
 
-        expect(reliable_report.send(:specs_attributes, reliable: reliable)).to eq(expected_specs_attributes)
+        expect(reliable_report.send(:specs_attributes, blocking: blocking)).to eq(expected_specs_attributes)
       end
     end
 
-    context "with reliable true" do
+    context "with blocking true" do
       let(:expected_specs_attributes) do
         { type: "Unstable Specs",
           report_issue: "https://report/url",
@@ -567,7 +566,7 @@ describe QA::Tools::ReliableReport do
       it_behaves_like "spec attributes", true
     end
 
-    context "with reliable false" do
+    context "with blocking false" do
       let(:expected_specs_attributes) do
         {
           type: "Stable Specs",
@@ -657,7 +656,7 @@ describe QA::Tools::ReliableReport do
     end
   end
 
-  describe "#skip_reliable_spec_record?" do
+  describe "#skip_blocking_spec_record?" do
     subject(:reliable_report) { described_class.new(14) }
 
     using RSpec::Parameterized::TableSyntax
@@ -674,7 +673,7 @@ describe QA::Tools::ReliableReport do
 
     with_them do
       it do
-        expect(reliable_report.send(:skip_reliable_spec_record?, failed_count: failed_count,
+        expect(reliable_report.send(:skip_blocking_spec_record?, failed_count: failed_count,
           failure_issue: failure_issue, failed_run_type: failed_run_type, failure_rate: failure_rate))
           .to eq result
       end

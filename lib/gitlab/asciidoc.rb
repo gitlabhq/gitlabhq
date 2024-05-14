@@ -14,11 +14,10 @@ module Gitlab
   # the resulting HTML through HTML pipeline filters.
   module Asciidoc
     MAX_INCLUDE_DEPTH = 5
-    MAX_INCLUDES = 32
     DEFAULT_ADOC_ATTRS = {
         'showtitle' => true,
         'sectanchors' => true,
-        'idprefix' => 'user-content-',
+        'idprefix' => Banzai::Renderer::USER_CONTENT_ID_PREFIX,
         'idseparator' => '-',
         'env' => 'gitlab',
         'env-gitlab' => '',
@@ -76,7 +75,7 @@ module Gitlab
                         extensions: extensions }
 
       context[:pipeline] = :ascii_doc
-      context[:max_includes] = [MAX_INCLUDES, context[:max_includes]].compact.min
+      context[:max_includes] = [::Gitlab::CurrentSettings.asciidoc_max_includes, context[:max_includes]].compact.min
 
       Gitlab::Plantuml.configure
 

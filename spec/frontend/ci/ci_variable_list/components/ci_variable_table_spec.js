@@ -46,7 +46,7 @@ describe('Ci variable table', () => {
     wrapper.findAllByTestId('ci-variable-table-row-attributes').at(rowIndex);
   const findAttributeByIndex = (rowIndex, attributeIndex) =>
     findAttributesRow(rowIndex).findAllComponents(GlBadge).at(attributeIndex).text();
-  const findTableColumnText = (index) => wrapper.findAll('th').at(index).text();
+  const findTableColumnText = (index) => wrapper.findAll('th > div > span').at(index).text();
   const findVariableRow = (rowIndex) =>
     wrapper.findAllByTestId('ci-variable-table-row-variable').at(rowIndex);
   const findGroupCiCdSettingsLink = (rowIndex) =>
@@ -105,7 +105,7 @@ describe('Ci variable table', () => {
       // last column is for the edit button, which has no text
       it.each`
         index | text
-        ${0}  | ${'Key (Click to sort descending)'}
+        ${0}  | ${'Key'}
         ${1}  | ${'Value'}
         ${2}  | ${'Environments'}
         ${3}  | ${'Actions'}

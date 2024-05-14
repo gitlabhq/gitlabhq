@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Use [`artifacts:reports`](index.md#artifactsreports) to:
 
@@ -96,7 +96,6 @@ The following is an example of what a job annotations report might look like:
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, self-managed
 
 The `api_fuzzing` report collects [API Fuzzing bugs](../../user/application_security/api_fuzzing/index.md)
 as artifacts.
@@ -112,12 +111,9 @@ GitLab can display the results of one or more reports in:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
-
-> [Name changed](https://gitlab.com/gitlab-org/gitlab/-/issues/225914) from `artifacts:reports:performance` in GitLab 14.0.
 
 The `browser_performance` report collects [Browser Performance Testing metrics](../testing/browser_performance_testing.md)
-as artifacts.
+as an artifact. This artifact is a JSON file output by the [Sitespeed plugin](https://gitlab.com/gitlab-org/gl-performance).
 
 GitLab can display the results of one report in the merge request
 [browser performance testing widget](../testing/browser_performance_testing.md#how-browser-performance-testing-works).
@@ -125,8 +121,6 @@ GitLab can display the results of one report in the merge request
 GitLab cannot display the combined results of multiple `browser_performance` reports.
 
 ## `artifacts:reports:coverage_report`
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344533) in GitLab 14.10.
 
 Use `coverage_report` to collect coverage report in Cobertura format.
 
@@ -168,7 +162,6 @@ The [`artifacts:expire_in`](../yaml/index.md#artifactsexpire_in) value is set to
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, self-managed
 
 The `container_scanning` report collects [Container Scanning vulnerabilities](../../user/application_security/container_scanning/index.md).
 The collected Container Scanning report uploads to GitLab as an artifact.
@@ -184,7 +177,6 @@ GitLab can display the results of one or more reports in:
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, self-managed
 
 The `coverage_fuzzing` report collects [coverage fuzzing bugs](../../user/application_security/coverage_fuzzing/index.md).
 The collected coverage fuzzing report uploads to GitLab as an artifact.
@@ -196,6 +188,9 @@ GitLab can display the results of one or more reports in:
 - The [security dashboard](../../user/application_security/security_dashboard/index.md).
 
 ## `artifacts:reports:cyclonedx`
+
+DETAILS:
+**Tier:** Ultimate
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/360766) in GitLab 15.3
 
@@ -224,7 +219,6 @@ artifacts:
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, self-managed
 
 The `dast` report collects [DAST vulnerabilities](../../user/application_security/dast/index.md). The collected DAST
 report uploads to GitLab as an artifact.
@@ -240,7 +234,6 @@ GitLab can display the results of one or more reports in:
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, self-managed
 
 The `dependency_scanning` report collects [Dependency Scanning vulnerabilities](../../user/application_security/dependency_scanning/index.md).
 The collected Dependency Scanning report uploads to GitLab as an artifact.
@@ -260,10 +253,12 @@ The `dotenv` report collects a set of environment variables as artifacts.
 The collected variables are registered as runtime-created variables of the job,
 which you can use to [set dynamic environment URLs after a job finishes](../environments/index.md#set-a-dynamic-environment-url).
 
-If duplicate environment variables are present in a `dotenv` report:
+If duplicate environment variables are present in a `dotenv` report, the last one specified is used.
 
-- In GitLab 14.6 and later, the last one specified is used.
-- In GitLab 14.5 and earlier, an error occurs.
+You should avoid storing sensitive data like credentials in dotenv reports, as the
+reports can be downloaded from the pipeline details page. If necessary, you can use
+[artifacts:access](index.md#artifactsaccess) to restrict the users that can download
+the report artifacts in a job.
 
 The exceptions to the [original dotenv rules](https://github.com/motdotla/dotenv#rules) are:
 
@@ -318,7 +313,6 @@ concatenate them into a single file. Use either:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
 
 The `load_performance` report collects [Load Performance Testing metrics](../testing/load_performance_testing.md).
 The report is uploaded to GitLab as an artifact.
@@ -332,7 +326,6 @@ GitLab cannot display the combined results of multiple `load_performance` report
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
 
 The `metrics` report collects [Metrics](../testing/metrics_reports.md). The collected Metrics report uploads to GitLab as an
 artifact.
@@ -344,7 +337,6 @@ GitLab can display the results of one or more reports in the merge request
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, self-managed
 
 The `requirements` report collects `requirements.json` files. The collected Requirements report uploads to GitLab as an
 artifact and existing [requirements](../../user/project/requirements/index.md) are marked as Satisfied.
@@ -356,7 +348,6 @@ GitLab can display the results of one or more reports in the
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/432235) in GitLab 16.7.
 
@@ -376,12 +367,12 @@ For more information, see:
 
 ## `artifacts:reports:secret_detection`
 
-The `secret-detection` report collects [detected secrets](../../user/application_security/secret_detection/index.md).
+The `secret-detection` report collects [detected secrets](../../user/application_security/secret_detection/pipeline/index.md).
 The collected Secret Detection report is uploaded to GitLab.
 
 GitLab can display the results of one or more reports in:
 
-- The merge request [secret scanning widget](../../user/application_security/secret_detection/index.md).
+- The merge request [secret scanning widget](../../user/application_security/secret_detection/pipeline/index.md).
 - The [pipeline security tab](../../user/application_security/index.md#pipeline-security-tab).
 - The [security dashboard](../../user/application_security/security_dashboard/index.md).
 

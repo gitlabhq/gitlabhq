@@ -1,0 +1,9 @@
+---
+name: label_keep_around_ref_metrics
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/383814
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145988
+rollout_issue_url:
+milestone: '16.10'
+group: group::gitaly::git
+type: ops
+default_enabled: false

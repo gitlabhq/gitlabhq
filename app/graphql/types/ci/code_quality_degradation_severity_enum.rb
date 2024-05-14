@@ -7,8 +7,8 @@ module Types
 
       ::Gitlab::Ci::Reports::CodequalityReports::SEVERITY_PRIORITIES.keys.each do |status|
         value status.upcase,
-              description: "Code Quality degradation has a status of #{status}.",
-              value: status
+          description: "Code Quality degradation has a status of #{status}.",
+          value: status
       end
     end
   end

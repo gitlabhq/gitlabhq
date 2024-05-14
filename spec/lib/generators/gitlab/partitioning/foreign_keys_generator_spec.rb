@@ -4,7 +4,7 @@ require 'spec_helper'
 require 'active_support/testing/stream'
 
 RSpec.describe Gitlab::Partitioning::ForeignKeysGenerator, :migration, :silence_stdout,
-feature_category: :continuous_integration do
+  feature_category: :continuous_integration, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/454333' do
   include ActiveSupport::Testing::Stream
   include MigrationsHelpers
 
@@ -34,10 +34,10 @@ feature_category: :continuous_integration do
   end
 
   let(:generator_config) { { destination_root: destination_root } }
-  let(:generator_args) { ['--source', '_test_tmp_metadata', '--target', '_test_tmp_builds', '--database', 'main'] }
+  let(:generator_args) { %w[--source _test_tmp_metadata --target _test_tmp_builds --database main] }
 
   context 'without foreign keys' do
-    let(:generator_args) { ['--source', '_test_tmp_metadata', '--target', 'projects', '--database', 'main'] }
+    let(:generator_args) { %w[--source _test_tmp_metadata --target projects --database main] }
 
     it 'does not generate migrations' do
       output = capture(:stderr) { run_generator }

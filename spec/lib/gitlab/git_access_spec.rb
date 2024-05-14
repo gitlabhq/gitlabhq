@@ -113,7 +113,7 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures, feature_category: :system
             end
           end
 
-          context 'when the the deploy key is restricted with external_authorization' do
+          context 'when the deploy key is restricted with external_authorization' do
             before do
               allow(Gitlab::ExternalAuthorization).to receive(:allow_deploy_tokens_and_deploy_keys?).and_return(false)
             end

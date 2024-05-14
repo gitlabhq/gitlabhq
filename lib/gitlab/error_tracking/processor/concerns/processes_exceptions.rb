@@ -8,11 +8,7 @@ module Gitlab
           private
 
           def extract_exceptions_from(event)
-            exceptions = if event.is_a?(Raven::Event)
-                           event.instance_variable_get(:@interfaces)[:exception]&.values
-                         else
-                           event&.exception&.instance_variable_get(:@values)
-                         end
+            exceptions = event&.exception&.instance_variable_get(:@values)
 
             Array.wrap(exceptions)
           end
@@ -27,7 +23,7 @@ module Gitlab
 
           def valid_exception?(exception)
             case exception
-            when Raven::SingleExceptionInterface, Sentry::SingleExceptionInterface
+            when Sentry::SingleExceptionInterface
               exception&.value.present?
             else
               false

@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Create' do
-    describe 'Commit data', :reliable, product_group: :source_code do
+    describe 'Commit data', :blocking, product_group: :source_code do
       before(:context) do
         # Get the user's details to confirm they're included in the email patch
         @user = create(:user, username: Runtime::User.username)
@@ -22,9 +22,7 @@ module QA
           project: @project,
           name: 'second',
           content: 'second file content',
-          commit_message: @commit_message,
-          author_name: @user.name,
-          author_email: @user.public_email)
+          commit_message: @commit_message)
       end
 
       def view_commit
@@ -45,7 +43,7 @@ module QA
 
         Page::Project::Commit::Show.perform(&:select_email_patches)
 
-        expect(page).to have_content(/From: "?#{Regexp.escape(@user.name)}"? <#{@user.public_email}>/)
+        expect(page).to have_content(/From: "?#{Regexp.escape(@user.name)}"? <#{@user.commit_email}>/)
         expect(page).to have_content('Subject: [PATCH] Add second file')
         expect(page).to have_content('diff --git a/second b/second')
       end

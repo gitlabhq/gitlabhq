@@ -11,17 +11,12 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
   let_it_be(:user2) { create(:user) }
   let_it_be(:user3) { create(:user) }
   let_it_be(:admin) { create(:admin) }
-  let_it_be(:group1) { create(:group, path: 'some_path', avatar: File.open(uploaded_image_temp_path)) }
-  let_it_be(:group2) { create(:group, :private) }
+  let_it_be(:group1) { create(:group, path: 'some_path', avatar: File.open(uploaded_image_temp_path), owners: user1) }
+  let_it_be(:group2) { create(:group, :private, owners: user2) }
   let_it_be(:project1) { create(:project, namespace: group1) }
-  let_it_be(:project2) { create(:project, namespace: group2) }
+  let_it_be(:project2) { create(:project, namespace: group2, name: 'testing') }
   let_it_be(:project3) { create(:project, namespace: group1, path: 'test', visibility_level: Gitlab::VisibilityLevel::PRIVATE) }
   let_it_be(:archived_project) { create(:project, namespace: group1, archived: true) }
-
-  before_all do
-    group1.add_owner(user1)
-    group2.add_owner(user2)
-  end
 
   shared_examples 'group avatar upload' do
     context 'when valid' do
@@ -78,6 +73,23 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
   end
 
   describe "GET /groups" do
+    shared_examples 'groups list N+1' do
+      it 'avoids N+1 queries', :use_sql_query_cache do
+        # warm-up
+        get api("/groups", user)
+
+        control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+          get api("/groups", user)
+        end
+
+        create(:group, :public)
+
+        expect do
+          get api("/groups", user)
+        end.not_to exceed_all_query_limit(control)
+      end
+    end
+
     context "when unauthenticated" do
       it "returns public groups", :aggregate_failures do
         get api("/groups")
@@ -91,16 +103,8 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
           .to satisfy_one { |group| group['name'] == group1.name }
       end
 
-      it 'avoids N+1 queries', :use_sql_query_cache do
-        control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
-          get api("/groups")
-        end
-
-        create(:group)
-
-        expect do
-          get api("/groups")
-        end.not_to exceed_all_query_limit(control)
+      it_behaves_like 'groups list N+1' do
+        let(:user) { nil }
       end
 
       context 'when statistics are requested' do
@@ -116,6 +120,10 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
     end
 
     context "when authenticated as user" do
+      it_behaves_like 'groups list N+1' do
+        let(:user) { user1 }
+      end
+
       it "normal user: returns an array of groups of user1", :aggregate_failures do
         get api("/groups", user1)
 
@@ -153,6 +161,66 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.first['created_at']).to be_present
+      end
+    end
+
+    context 'when using the visibility filter' do
+      let_it_be(:group_1) { create(:group, :private) }
+      let_it_be(:group_2) { create(:group, :internal) }
+      let_it_be(:group_3) { create(:group, :public) }
+      let_it_be(:group_4) { create(:group, :private) }
+      let_it_be(:group_5) { create(:group, :public) }
+      let(:response_groups) { json_response.map { |group| group['id'] } }
+
+      before_all do
+        group_1.add_owner(user1)
+        group_2.add_owner(user1)
+        group_3.add_owner(user1)
+        group_4.add_owner(user1)
+        group_5.add_owner(user1)
+      end
+
+      it 'filters based on private visibility param' do
+        get api("/groups", user1), params: { visibility: 'private' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(response_groups).to contain_exactly(group_1.id, group_4.id)
+      end
+
+      it 'filters based on internal visibility param' do
+        get api("/groups", user1), params: { visibility: 'internal' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(response_groups).to contain_exactly(group_2.id)
+      end
+
+      it 'filters based on public visibility param' do
+        get api("/groups", user1), params: { visibility: 'public' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(response_groups).to contain_exactly(group1.id, group_3.id, group_5.id)
+      end
+
+      it 'filters based on no visibility param passed' do
+        get api("/groups", user1)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(response_groups).to contain_exactly(group1.id, group_1.id, group_2.id, group_3.id, group_4.id, group_5.id)
+      end
+
+      it 'filters based on unknown visibility param' do
+        get api("/groups", user1), params: { visibility: 'something' }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['error']).to eq('visibility does not have a valid value')
       end
     end
 
@@ -778,7 +846,7 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
       let_it_be(:group_link_1) { create(:group_group_link, shared_group: shared_group, shared_with_group: group1) }
       let_it_be(:group_link_2) { create(:group_group_link, shared_group: shared_group, shared_with_group: group2_sub) }
 
-      subject(:shared_with_groups) { json_response['shared_with_groups'].map { _1['group_id']} }
+      subject(:shared_with_groups) { json_response['shared_with_groups'].map { _1['group_id'] } }
 
       context 'when authenticated as admin' do
         it 'returns all groups that share the group', :aggregate_failures do
@@ -916,6 +984,7 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
             project_creation_level: "noone",
             subgroup_creation_level: "maintainer",
             default_branch_protection: ::Gitlab::Access::MAINTAINER_PROJECT_ACCESS,
+            default_branch_protection_defaults: ::Gitlab::Access::BranchProtection.protected_after_initial_push.stringify_keys,
             prevent_sharing_groups_outside_hierarchy: true,
             avatar: fixture_file_upload(file_path),
             math_rendering_limits_enabled: false,
@@ -944,9 +1013,39 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
         expect(json_response['shared_projects']).to be_an Array
         expect(json_response['shared_projects'].length).to eq(0)
         expect(json_response['default_branch_protection']).to eq(::Gitlab::Access::MAINTAINER_PROJECT_ACCESS)
+        expect(json_response['default_branch_protection_defaults']).to eq(::Gitlab::Access::BranchProtection.protected_after_initial_push.stringify_keys)
         expect(json_response['avatar_url']).to end_with('dk.png')
         expect(json_response['math_rendering_limits_enabled']).to eq(false)
         expect(json_response['lock_math_rendering_limits_enabled']).to eq(true)
+      end
+
+      context 'when updating :emails_disabled' do
+        context 'when setting to true' do
+          it 'sets :emails_enabled to false' do
+            put api("/groups/#{group1.id}", user1), params: { emails_disabled: true }
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['emails_enabled']).to eq(false)
+          end
+        end
+
+        context 'when setting to nil' do
+          it 'sets :emails_enabled to default true' do
+            put api("/groups/#{group1.id}", user1), params: { emails_disabled: nil }
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['emails_enabled']).to eq(true)
+          end
+        end
+
+        context 'when setting to string "true"' do
+          it 'sets :emails_enabled to false' do
+            put api("/groups/#{group1.id}", user1), params: { emails_disabled: "true" }
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['emails_enabled']).to eq(false)
+          end
+        end
       end
 
       it 'removes the group avatar', :aggregate_failures do
@@ -966,6 +1065,36 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
 
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response['message']['visibility_level']).to include('internal has been restricted by your GitLab administrator')
+      end
+
+      context 'updating the `default_branch` attribute' do
+        subject do
+          put api("/groups/#{group1.id}", user1), params: { default_branch: default_branch }
+        end
+
+        let(:default_branch) { 'new' }
+
+        it 'updates the attribute', :aggregate_failures do
+          subject
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['default_branch']).to eq(default_branch)
+        end
+
+        context 'when "default_branch" attribute is removed' do
+          before do
+            group1.namespace_settings.update!(default_branch_name: 'new')
+          end
+
+          let(:default_branch) { '' }
+
+          it 'removes the attribute', :aggregate_failures do
+            subject
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['default_branch']).to be_nil
+          end
+        end
       end
 
       context 'updating the `default_branch_protection` attribute' do
@@ -1247,6 +1376,48 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
         end
       end
 
+      context 'with star_count ordering' do
+        let_it_be(:group_with_projects) { create(:group) }
+        let_it_be(:project_1) { create(:project, name: 'Project Test', path: 'project-test', group: group_with_projects) }
+        let_it_be(:project_2) { create(:project, name: 'Test Project', path: 'test-project', group: group_with_projects, star_count: 10) }
+        let_it_be(:project_3) { create(:project, name: 'Test', path: 'test', group: group_with_projects, star_count: 5) }
+
+        let(:params) { { order_by: 'star_count', search: 'test' } }
+
+        subject { get api("/groups/#{group_with_projects.id}/projects", user1), params: params }
+
+        before do
+          group_with_projects.add_owner(user1)
+        end
+
+        it 'returns items based ordered by star_count', :aggregate_failures do
+          subject
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to include_pagination_headers
+          filtered_response = json_response.map { |h| h.slice('star_count', 'name') }
+          expect(filtered_response).to eq([
+            { "star_count" => 10, "name" => "Test Project" },
+            { "star_count" => 5, "name" => "Test" },
+            { "star_count" => 0, "name" => "Project Test" }
+          ])
+        end
+
+        it 'returns items based ordered by star_count in ascending order', :aggregate_failures do
+          params[:sort] = 'asc'
+          subject
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to include_pagination_headers
+          filtered_response = json_response.map { |h| h.slice('star_count', 'name') }
+          expect(filtered_response).to eq([
+            { "star_count" => 0, "name" => "Project Test" },
+            { "star_count" => 5, "name" => "Test" },
+            { "star_count" => 10, "name" => "Test Project" }
+          ])
+        end
+      end
+
       it "returns the group's projects with simple representation", :aggregate_failures do
         get api("/groups/#{group1.id}/projects", user1), params: { simple: true }
 
@@ -1440,7 +1611,7 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
 
   describe "GET /groups/:id/projects/shared" do
     let!(:project4) do
-      create(:project, namespace: group2, path: 'test_project', visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+      create(:project, namespace: group2, name: 'test project', path: 'test_project', visibility_level: Gitlab::VisibilityLevel::PRIVATE, star_count: 5)
     end
 
     let(:path) { "/groups/#{group1.id}/projects/shared" }
@@ -1508,6 +1679,30 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
         expect(json_response).to be_an(Array)
         expect(json_response.length).to eq(1)
         expect(json_response.first['id']).to eq(project4.id)
+      end
+
+      it 'returns the shared projects in the group ordered by star count', :aggregate_failures do
+        get api(path, user1), params: { order_by: 'star_count', search: 'test' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        filtered_response = json_response.map { |h| h.slice('star_count', 'name') }
+        expect(filtered_response).to eq([
+          { "star_count" => 5, "name" => "test project" },
+          { "star_count" => 0, "name" => "testing" }
+        ])
+      end
+
+      it 'returns the shared projects in the group ordered by star count in ascending order', :aggregate_failures do
+        get api(path, user1), params: { order_by: 'star_count', search: 'test', sort: 'asc' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        filtered_response = json_response.map { |h| h.slice('star_count', 'name') }
+        expect(filtered_response).to eq([
+          { "star_count" => 0, "name" => "testing" },
+          { "star_count" => 5, "name" => "test project" }
+        ])
       end
 
       it 'does not return the projects owned by the group', :aggregate_failures do
@@ -1959,28 +2154,45 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
     end
 
     context 'when group is within a provided organization' do
+      let_it_be(:current_organization) { create(:organization, name: "Current Organization") }
       let_it_be(:organization) { create(:organization) }
+
+      before do
+        allow(Current).to receive(:organization).and_return(current_organization)
+      end
 
       context 'when user is an organization user' do
         before_all do
+          create(:organization_user, user: user3, organization: current_organization)
           create(:organization_user, user: user3, organization: organization)
         end
 
-        it 'creates group within organization' do
-          post api('/groups', user3), params: attributes_for_group_api(organization_id: organization.id)
+        context 'and organization_id is not passed' do
+          it 'creates organization using current organization' do
+            post api('/groups', user3), params: attributes_for_group_api
 
-          expect(response).to have_gitlab_http_status(:created)
-          expect(json_response['organization_id']).to eq(organization.id)
+            expect(response).to have_gitlab_http_status(:created)
+            expect(json_response['organization_id']).to eq(Current.organization.id)
+          end
         end
 
-        context 'when parent_group is not part of the organization' do
-          it 'does not create the group with not_found' do
-            post(
-              api('/groups', user3),
-              params: attributes_for_group_api(parent_id: group2.id, organization_id: organization.id)
-            )
+        context 'and organization_id is passed' do
+          it 'creates group within organization' do
+            post api('/groups', user3), params: attributes_for_group_api(organization_id: organization.id)
 
-            expect(response).to have_gitlab_http_status(:not_found)
+            expect(response).to have_gitlab_http_status(:created)
+            expect(json_response['organization_id']).to eq(organization.id)
+          end
+
+          context 'when parent_group is not part of the organization' do
+            it 'does not create the group with not_found' do
+              post(
+                api('/groups', user3),
+                params: attributes_for_group_api(parent_id: group2.id, organization_id: organization.id)
+              )
+
+              expect(response).to have_gitlab_http_status(:not_found)
+            end
           end
         end
       end
@@ -1994,10 +2206,22 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
       end
 
       context 'when user is not an organization user' do
-        it 'does not create the group' do
-          post api('/groups', user3), params: attributes_for_group_api(organization_id: organization.id)
+        context 'when organization is public' do
+          let_it_be(:organization) { create(:organization, :public) }
 
-          expect(response).to have_gitlab_http_status(:forbidden)
+          it 'does not create the group' do
+            post api('/groups', user3), params: attributes_for_group_api(organization_id: organization.id)
+
+            expect(response).to have_gitlab_http_status(:forbidden)
+          end
+        end
+
+        context 'when organization is private' do
+          it 'does not create the group' do
+            post api('/groups', user3), params: attributes_for_group_api(organization_id: organization.id)
+
+            expect(response).to have_gitlab_http_status(:not_found)
+          end
         end
       end
 
@@ -2076,6 +2300,19 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
             expect(response).to have_gitlab_http_status(:created)
             expect(json_response['default_branch_protection']).not_to eq(Gitlab::Access::PROTECTION_NONE)
           end
+        end
+      end
+
+      context 'when creating a group with "default_branch" attribute' do
+        let(:params) { attributes_for_group_api default_branch: 'main' }
+
+        subject { post api("/groups", user3), params: params }
+
+        it 'creates group with the specified default branch', :aggregate_failures do
+          subject
+
+          expect(response).to have_gitlab_http_status(:created)
+          expect(json_response['default_branch']).to eq('main')
         end
       end
 
@@ -2251,9 +2488,11 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
         maintainer_group.add_maintainer(user)
         owner_group_1.add_owner(user)
         owner_group_2.add_owner(user)
-        create(:group_group_link, :owner,
-               shared_with_group: owner_group_1,
-               shared_group: shared_with_group_where_direct_owner_as_owner
+        create(
+          :group_group_link,
+          :owner,
+          shared_with_group: owner_group_1,
+          shared_group: shared_with_group_where_direct_owner_as_owner
         )
       end
 

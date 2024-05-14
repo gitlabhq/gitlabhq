@@ -82,10 +82,10 @@ RSpec.describe SystemNoteService, feature_category: :shared do
 
     it 'calls IssuableService' do
       expect_next_instance_of(::SystemNotes::IssuablesService) do |service|
-        expect(service).to receive(:request_review).with(reviewer)
+        expect(service).to receive(:request_review).with(reviewer, true)
       end
 
-      described_class.request_review(noteable, project, author, reviewer)
+      described_class.request_review(noteable, project, author, reviewer, true)
     end
   end
 
@@ -168,6 +168,40 @@ RSpec.describe SystemNoteService, feature_category: :shared do
       end
 
       described_class.change_status(noteable, project, author, status, source)
+    end
+  end
+
+  describe '.merge_when_checks_pass' do
+    it 'calls MergeRequestsService' do
+      sha = double
+
+      expect_next_instance_of(::SystemNotes::MergeRequestsService) do |service|
+        expect(service).to receive(:merge_when_checks_pass).with(sha)
+      end
+
+      described_class.merge_when_checks_pass(noteable, project, author, sha)
+    end
+  end
+
+  describe '.cancel_auto_merge' do
+    it 'calls MergeRequestsService' do
+      expect_next_instance_of(::SystemNotes::MergeRequestsService) do |service|
+        expect(service).to receive(:cancel_auto_merge)
+      end
+
+      described_class.cancel_auto_merge(noteable, project, author)
+    end
+  end
+
+  describe '.abort_auto_merge' do
+    it 'calls MergeRequestsService' do
+      reason = double
+
+      expect_next_instance_of(::SystemNotes::MergeRequestsService) do |service|
+        expect(service).to receive(:abort_auto_merge).with(reason)
+      end
+
+      described_class.abort_auto_merge(noteable, project, author, reason)
     end
   end
 
@@ -788,6 +822,16 @@ RSpec.describe SystemNoteService, feature_category: :shared do
       end
 
       described_class.unrelate_work_item(noteable, work_item, double)
+    end
+  end
+
+  describe '.requested_changes' do
+    it 'calls MergeRequestsService' do
+      expect_next_instance_of(::SystemNotes::MergeRequestsService) do |service|
+        expect(service).to receive(:requested_changes)
+      end
+
+      described_class.requested_changes(noteable, author)
     end
   end
 end

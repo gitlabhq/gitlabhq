@@ -52,8 +52,8 @@ RSpec.describe 'User views diffs', :js, feature_category: :code_review_workflow 
     find('.js-show-diff-settings').click
 
     expect(page).to have_css('.tab-content #diffs.active')
-    expect(page).to have_css('#parallel-diff-btn', count: 1)
-    expect(page).to have_css('#inline-diff-btn', count: 1)
+    expect(page).to have_selector('li', text: 'Side-by-side')
+    expect(page).to have_selector('li', text: 'Inline')
   end
 
   it 'hides loading spinner after load' do

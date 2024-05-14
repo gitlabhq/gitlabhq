@@ -7,7 +7,7 @@ RSpec.describe Integrations::SlackInteractions::IncidentManagement::IncidentModa
   describe '#execute' do
     let_it_be(:slack_installation) { create(:slack_integration) }
     let_it_be(:project) { create(:project) }
-    let_it_be(:user) { create(:user, developer_projects: [project]) }
+    let_it_be(:user) { create(:user, developer_of: project) }
     let_it_be(:trigger_id) { '12345.98765.abcd2358fdea' }
 
     let(:slack_workspace_id) { slack_installation.team_id }

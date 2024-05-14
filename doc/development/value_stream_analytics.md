@@ -62,7 +62,7 @@ of the stage. Stages are configurable by the user within the pairing rules defin
 - End event column: uses the `merge_request_metrics.merged_at` timestamp column.
 - Stage event hash ID: a calculated hash for the pair of start and end event identifiers.
   - If two stages have the same configuration of start and end events, then their stage event hash.
-  IDs are identical.
+    IDs are identical.
   - The stage event hash ID is later used to store the aggregated data in partitioned database tables.
 
 Historically, value stream analytics defined [six stages](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/analytics/cycle_analytics/default_stages.rb)
@@ -263,8 +263,8 @@ The reason for this was that we'd like to add the abilities to hide and order st
   - Responsible for composing the initial query.
   - Deals with `Stage` specific configuration: events and their query customizations.
   - Parameters coming from the UI: date ranges.
-- `Median`: Calculates the median duration for a stage using the query from  `BaseQueryBuilder`.
-- `RecordsFetcher`: Loads relevant records for a stage using the query from  `BaseQueryBuilder` and specific `Finder` classes to apply visibility rules.
+- `Median`: Calculates the median duration for a stage using the query from `BaseQueryBuilder`.
+- `RecordsFetcher`: Loads relevant records for a stage using the query from `BaseQueryBuilder` and specific `Finder` classes to apply visibility rules.
 - `DataForDurationChart`: Loads calculated durations with the finish time (end event timestamp) for the scatterplot chart.
 
 For a new calculation or a query, implement it as a new method call in the `DataCollector` class.

@@ -81,9 +81,30 @@ export const updateScopeSuccess = {
   },
 };
 
+export const mockGroups = [
+  {
+    id: 1,
+    name: 'some-group',
+    fullPath: 'some-group',
+    __typename: 'Group',
+  },
+  {
+    id: 2,
+    name: 'another-group',
+    fullPath: 'another-group',
+    __typename: 'Group',
+  },
+  {
+    id: 3,
+    name: 'a-sub-group',
+    fullPath: 'another-group/a-sub-group',
+    __typename: 'Group',
+  },
+];
+
 export const mockProjects = [
   {
-    id: '1',
+    id: 1,
     name: 'merge-train-stuff',
     namespace: {
       id: '1235',
@@ -94,7 +115,7 @@ export const mockProjects = [
     __typename: 'Project',
   },
   {
-    id: '2',
+    id: 2,
     name: 'ci-project',
     namespace: {
       id: '1236',
@@ -108,12 +129,8 @@ export const mockProjects = [
 
 export const mockFields = [
   {
-    key: 'project',
-    label: 'Project with access',
-  },
-  {
-    key: 'namespace',
-    label: 'Namespace',
+    key: 'fullPath',
+    label: '',
   },
   {
     key: 'actions',
@@ -147,7 +164,7 @@ export const inboundJobTokenScopeDisabledResponse = {
   },
 };
 
-export const inboundProjectsWithScopeResponse = {
+export const inboundGroupsAndProjectsWithScopeResponse = {
   data: {
     project: {
       __typename: 'Project',
@@ -166,16 +183,36 @@ export const inboundProjectsWithScopeResponse = {
             },
           ],
         },
+        groupsAllowlist: {
+          __typename: 'GroupConnection',
+          nodes: [
+            {
+              __typename: 'Group',
+              fullPath: 'root/ci-group',
+              id: 'gid://gitlab/Group/45',
+              name: 'ci-group',
+            },
+          ],
+        },
       },
     },
   },
 };
 
-export const inboundAddProjectSuccessResponse = {
+export const inboundAddGroupOrProjectSuccessResponse = {
   data: {
     ciJobTokenScopeAddProject: {
       errors: [],
       __typename: 'CiJobTokenScopeAddProjectPayload',
+    },
+  },
+};
+
+export const inboundRemoveGroupSuccess = {
+  data: {
+    ciJobTokenScopeRemoveProject: {
+      errors: [],
+      __typename: 'CiJobTokenScopeRemoveGroupPayload',
     },
   },
 };

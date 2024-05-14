@@ -4,11 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Import/Export - Connect to another instance', :js, feature_category: :importers do
   let_it_be(:user) { create(:user) }
-  let_it_be(:group) { create(:group) }
-
-  before_all do
-    group.add_owner(user)
-  end
+  let_it_be(:group) { create(:group, owners: user) }
 
   context 'when importing group by direct transfer is enabled' do
     before do

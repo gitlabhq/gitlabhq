@@ -13,7 +13,7 @@ RSpec.describe 'Projects > Show > Collaboration links', :js, feature_category: :
   end
 
   def find_new_menu_toggle
-    find('[data-testid="base-dropdown-toggle"]', text: 'Create new...')
+    find_by_testid('base-dropdown-toggle', text: 'Create new...')
   end
 
   context 'with developer user' do
@@ -39,7 +39,7 @@ RSpec.describe 'Projects > Show > Collaboration links', :js, feature_category: :
 
       # The dropdown above the tree
       page.within('.repo-breadcrumb') do
-        find('[data-testid="add-to-tree"]').click
+        find_by_testid('add-to-tree').click
 
         aggregate_failures 'dropdown links above the repo tree' do
           expect(page).to have_link('New file')

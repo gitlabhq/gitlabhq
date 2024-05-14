@@ -8,9 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
-
-> `created_by` field [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/28789) in GitLab 14.10.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 ## Roles
 
@@ -18,16 +16,12 @@ The [role](../user/permissions.md) assigned to a user or group is defined
 in the `Gitlab::Access` module as `access_level`.
 
 - No access (`0`)
-- Minimal access (`5`) ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/220203) in GitLab 13.5.)
+- Minimal access (`5`)
 - Guest (`10`)
 - Reporter (`20`)
 - Developer (`30`)
 - Maintainer (`40`)
-- Owner (`50`). Valid for projects in [GitLab 14.9 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/21432).
-
-NOTE:
-In [GitLab 14.9](https://gitlab.com/gitlab-org/gitlab/-/issues/351211) and later, projects in personal namespaces have an `access_level` of `50`(Owner).
-In GitLab 14.8 and earlier, projects in personal namespaces have an `access_level` of `40` (Maintainer) due to [an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/219299)
+- Owner (`50`)
 
 ## Limitations
 
@@ -114,17 +108,29 @@ Example response:
 
 ## List all members of a group or project including inherited and invited members
 
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/219230) to return members of the invited private group if the current user is a member of the shared group or project in GitLab 16.10 [with a flag](../administration/feature_flags.md) named `webui_members_inherited_users`. Disabled by default.
+> - Feature flag `webui_members_inherited_users` was [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/219230) in GitLab 17.0.
+
+FLAG:
+On self-managed GitLab, by default this feature is available. To hide the feature per user, an administrator can [disable the feature flag](../administration/feature_flags.md) named `webui_members_inherited_users`.
+On GitLab.com and GitLab Dedicated, this feature is available.
+
 Gets a list of group or project members viewable by the authenticated user, including inherited members, invited users, and permissions through ancestor groups.
 
 If a user is a member of this group or project and also of one or more ancestor groups,
 only its membership with the highest `access_level` is returned.
-([Improved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56677) in GitLab 13.11.)
 This represents the effective permission of the user.
 
 Members from an invited group are returned if either:
 
 - The invited group is public.
 - The requester is also a member of the invited group.
+- The requester is a member of the shared group or project.
+
+NOTE:
+The invited group members have shared membership in the shared group or project.
+This means that if the requester is a member of a shared group or project, but not a member of an invited private group,
+then using this endpoint the requester can get all the shared group or project members, including the invited private group members.
 
 This function takes pagination parameters `page` and `per_page` to restrict the list of users.
 
@@ -266,8 +272,19 @@ Example response:
 ## Get a member of a group or project, including inherited and invited members
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17744) in GitLab 12.4.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/219230) to return members of the invited private group if the current user is a member of the shared group or project in GitLab 16.10 [with a flag](../administration/feature_flags.md) named `webui_members_inherited_users`. Disabled by default.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/219230) in GitLab 17.0.
+
+FLAG:
+On self-managed GitLab, by default this feature is available. To hide the feature per user, an administrator can [disable the feature flag](../administration/feature_flags.md) named `webui_members_inherited_users`.
+On GitLab.com and GitLab Dedicated, this feature is available.
 
 Gets a member of a group or project, including members inherited or invited through ancestor groups. See the corresponding [endpoint to list all inherited members](#list-all-members-of-a-group-or-project-including-inherited-and-invited-members) for details.
+
+NOTE:
+The invited group members have shared membership in the shared group or project.
+This means that if the requester is a member of a shared group or project, but not a member of an invited private group,
+then using this endpoint the requester can get all the shared group or project members, including the invited private group members.
 
 ```plaintext
 GET /groups/:id/members/all/:user_id
@@ -312,16 +329,13 @@ Example response:
 
 ## List all billable members of a group
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217384) in GitLab 13.5.
-
 Gets a list of group members that count as billable. The list includes members in subgroups and projects.
 
 This API endpoint works on top-level groups only. It does not work on subgroups.
 
 This function takes [pagination](rest/index.md#pagination) parameters `page` and `per_page` to restrict the list of users.
 
-[In GitLab 13.7 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/262875), use the `search` parameter
-to search for billable group members by name and `sort` to sort the results.
+Use the `search` parameter to search for billable group members by name and `sort` to sort the results.
 
 ```plaintext
 GET /groups/:id/billable_members
@@ -401,8 +415,6 @@ Example response:
 
 ## List memberships for a billable member of a group
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/321560) in GitLab 13.11.
-
 Gets a list of memberships for a billable member of a group.
 
 Lists all projects and groups a user is a member of. Only projects and groups within the group hierarchy are included.
@@ -455,6 +467,58 @@ Example response:
     "access_level": {
       "string_value": "Maintainer",
       "integer_value": 40
+    }
+  }
+]
+```
+
+## List indirect memberships for a billable member of a group
+
+DETAILS:
+**Status:** Experiment
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386583) in GitLab 16.11.
+
+Gets a list of indirect memberships for a billable member of a group.
+
+Lists all projects and groups that a user is a member of, that have been invited to the requested root group.
+For instance, if the requested group is `Root Group`, and the requested user is a direct member of `Other Group / Sub Group Two`, which was invited to `Root Group`, then only `Other Group / Sub Group Two` is returned.
+
+The response lists only indirect memberships. Direct memberships are not included.
+
+This API endpoint works on top-level groups only. It does not work on subgroups.
+
+This API endpoint requires permission to administer memberships for the group.
+
+This API endpoint takes [pagination](rest/index.md#pagination) parameters `page` and `per_page` to restrict the list of memberships.
+
+```plaintext
+GET /groups/:id/billable_members/:user_id/indirect
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
+| `user_id` | integer        | yes | The user ID of the billable member |
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/:id/billable_members/:user_id/indirect"
+```
+
+Example response:
+
+```json
+[
+  {
+    "id": 168,
+    "source_id": 132,
+    "source_full_name": "Invited Group / Sub Group One",
+    "source_members_url": "https://gitlab.example.com/groups/invited-group/sub-group-one/-/group_members",
+    "created_at": "2021-03-31T17:28:44.812Z",
+    "expires_at": "2022-03-21",
+    "access_level": {
+      "string_value": "Developer",
+      "integer_value": 30
     }
   }
 ]
@@ -611,8 +675,6 @@ Example response:
 
 ### Set override flag for a member of a group
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4875) in GitLab 13.0.
-
 By default, the access level of LDAP group members is set to the value specified
 by LDAP through Group Sync. You can allow access level overrides by calling this endpoint.
 
@@ -656,8 +718,6 @@ Example response:
 ```
 
 ### Remove override for a member of a group
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4875) in GitLab 13.0.
 
 Sets the override flag to false and allows LDAP Group Sync to reset the access
 level to the LDAP-prescribed value.
@@ -767,8 +827,6 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitla
 ```
 
 ## List pending members of a group and its subgroups and projects
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/332596) in GitLab 14.6.
 
 For a group and its subgroups and projects, get a list of all members in an `awaiting` state and those who are invited but do not have a GitLab account.
 

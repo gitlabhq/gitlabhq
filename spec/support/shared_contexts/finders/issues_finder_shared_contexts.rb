@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.shared_context 'IssuesFinder context' do
+RSpec.shared_context 'Issues or WorkItems Finder context' do |factory|
   let_it_be(:user) { create(:user) }
   let_it_be(:user2) { create(:user) }
   let_it_be(:group) { create(:group) }
@@ -14,7 +14,7 @@ RSpec.shared_context 'IssuesFinder context' do
   let_it_be(:label2) { create(:label, project: project2) }
   let_it_be_with_reload(:item1) do
     create(
-      :issue,
+      factory,
       author: user,
       assignees: [user],
       project: project1,
@@ -27,7 +27,7 @@ RSpec.shared_context 'IssuesFinder context' do
 
   let_it_be_with_reload(:item2) do
     create(
-      :issue,
+      factory,
       author: user,
       assignees: [user],
       project: project2,
@@ -39,7 +39,7 @@ RSpec.shared_context 'IssuesFinder context' do
 
   let_it_be_with_reload(:item3) do
     create(
-      :issue,
+      factory,
       author: user2,
       assignees: [user2],
       project: project2,
@@ -50,10 +50,10 @@ RSpec.shared_context 'IssuesFinder context' do
     )
   end
 
-  let_it_be_with_reload(:item4) { create(:issue, project: project3) }
+  let_it_be_with_reload(:item4) { create(factory, project: project3) }
   let_it_be_with_reload(:item5) do
     create(
-      :issue,
+      factory,
       author: user,
       assignees: [user],
       project: project1,
@@ -63,20 +63,15 @@ RSpec.shared_context 'IssuesFinder context' do
     )
   end
 
-  let_it_be(:group_level_item) { create(:issue, :group_level, namespace: group, author: user) }
-  let_it_be(:group_level_confidential_item) do
-    create(:issue, :confidential, :group_level, namespace: group, author: user2)
-  end
-
   let_it_be(:award_emoji1) { create(:award_emoji, name: 'thumbsup', user: user, awardable: item1) }
   let_it_be(:award_emoji2) { create(:award_emoji, name: 'thumbsup', user: user2, awardable: item2) }
   let_it_be(:award_emoji3) { create(:award_emoji, name: 'thumbsdown', user: user, awardable: item3) }
 
-  let(:items_model) { Issue }
+  let(:items_model) { factory.to_s.camelize.constantize }
 end
 
-RSpec.shared_context 'IssuesFinder#execute context' do
-  let!(:closed_item) { create(:issue, author: user2, assignees: [user2], project: project2, state: 'closed') }
+RSpec.shared_context '{Issues|WorkItems}Finder#execute context' do |factory|
+  let!(:closed_item) { create(factory, author: user2, assignees: [user2], project: project2, state: 'closed') }
   let!(:label_link) { create(:label_link, label: label, target: item2) }
   let!(:label_link2) { create(:label_link, label: label2, target: item3) }
   let(:search_user) { user }

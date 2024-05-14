@@ -25,6 +25,8 @@ class Namespace < ApplicationRecord
 
   cross_database_ignore_tables %w[routes redirect_routes], url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/424277'
 
+  ignore_column :emails_disabled, remove_with: '17.0', remove_after: '2024-04-24'
+
   # Tells ActiveRecord not to store the full class name, in order to save some space
   # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/69794
   self.store_full_sti_class = false
@@ -36,11 +38,9 @@ class Namespace < ApplicationRecord
   NUMBER_OF_ANCESTORS_ALLOWED = 20
 
   SR_DISABLED_AND_UNOVERRIDABLE = 'disabled_and_unoverridable'
-  # DISABLED_WITH_OVERRIDE is deprecated in favour of DISABLED_AND_OVERRIDABLE.
-  SR_DISABLED_WITH_OVERRIDE = 'disabled_with_override'
   SR_DISABLED_AND_OVERRIDABLE = 'disabled_and_overridable'
   SR_ENABLED = 'enabled'
-  SHARED_RUNNERS_SETTINGS = [SR_DISABLED_AND_UNOVERRIDABLE, SR_DISABLED_WITH_OVERRIDE, SR_DISABLED_AND_OVERRIDABLE, SR_ENABLED].freeze
+  SHARED_RUNNERS_SETTINGS = [SR_DISABLED_AND_UNOVERRIDABLE, SR_DISABLED_AND_OVERRIDABLE, SR_ENABLED].freeze
   URL_MAX_LENGTH = 255
 
   cache_markdown_field :description, pipeline: :description
@@ -96,6 +96,8 @@ class Namespace < ApplicationRecord
   has_many :namespace_commit_emails, class_name: 'Users::NamespaceCommitEmail'
   has_many :cycle_analytics_stages, class_name: 'Analytics::CycleAnalytics::Stage', foreign_key: :group_id, inverse_of: :namespace
   has_many :value_streams, class_name: 'Analytics::CycleAnalytics::ValueStream', foreign_key: :group_id, inverse_of: :namespace
+
+  has_many :jira_connect_subscriptions, class_name: 'JiraConnectSubscription', foreign_key: :namespace_id, inverse_of: :namespace
 
   validates :owner, presence: true, if: ->(n) { n.owner_required? }
   validates :name,
@@ -164,7 +166,6 @@ class Namespace < ApplicationRecord
     :lock_math_rendering_limits_enabled?,
     to: :namespace_settings
 
-  before_save :update_new_emails_created_column, if: -> { emails_disabled_changed? }
   before_create :sync_share_with_group_lock_with_parent
   before_update :sync_share_with_group_lock_with_parent, if: :parent_changed?
   after_update :force_share_with_group_lock_on_descendants, if: -> { saved_change_to_share_with_group_lock? && share_with_group_lock? }
@@ -177,8 +178,8 @@ class Namespace < ApplicationRecord
   after_sync_traversal_ids :schedule_sync_event_worker # custom callback defined in Namespaces::Traversal::Linear
 
   after_commit :expire_child_caches, on: :update, if: -> {
-    Feature.enabled?(:cached_route_lookups, self, type: :ops) &&
-      saved_change_to_name? || saved_change_to_path? || saved_change_to_parent_id?
+    (Feature.enabled?(:cached_route_lookups, self, type: :ops) &&
+      saved_change_to_name?) || saved_change_to_path? || saved_change_to_parent_id?
   }
 
   scope :user_namespaces, -> { where(type: Namespaces::UserNamespace.sti_name) }
@@ -189,6 +190,8 @@ class Namespace < ApplicationRecord
   scope :by_root_id, -> (root_id) { where('traversal_ids[1] IN (?)', root_id) }
   scope :filter_by_path, -> (query) { where('lower(path) = :query', query: query.downcase) }
   scope :in_organization, -> (organization) { where(organization: organization) }
+  scope :by_name, ->(name) { where('name LIKE ?', "#{sanitize_sql_like(name)}%") }
+  scope :ordered_by_name, -> { order(:name) }
 
   scope :with_statistics, -> do
     joins('LEFT JOIN project_statistics ps ON ps.namespace_id = namespaces.id')
@@ -205,6 +208,11 @@ class Namespace < ApplicationRecord
         'COALESCE(SUM(ps.packages_size), 0) AS packages_size',
         'COALESCE(SUM(ps.uploads_size), 0) AS uploads_size'
       )
+  end
+
+  scope :with_jira_installation, ->(installation_id) do
+    joins(:jira_connect_subscriptions)
+    .where(jira_connect_subscriptions: { jira_connect_installation_id: installation_id })
   end
 
   scope :sorted_by_similarity_and_parent_id_desc, -> (search) do
@@ -290,8 +298,8 @@ class Namespace < ApplicationRecord
         .order(
           Arel.sql(sanitize_sql(
             [
-              "CASE WHEN starts_with(REPLACE(routes.name, ' ', ''), :pattern) OR starts_with(routes.path, :pattern) THEN 1 ELSE 2 END",
-              { pattern: query }
+              "CASE WHEN REPLACE(routes.name, ' ', '') ILIKE :prefix_pattern OR routes.path ILIKE :prefix_pattern THEN 1 ELSE 2 END",
+              { prefix_pattern: "#{sanitize_sql_like(query)}%" }
             ]
           )),
           'routes.path'
@@ -321,9 +329,12 @@ class Namespace < ApplicationRecord
     end
   end
 
-  def to_reference_base(from = nil, full: false)
-    return full_path if full || cross_namespace_reference?(from)
-    return path if cross_project_reference?(from)
+  def to_reference_base(from = nil, full: false, absolute_path: false)
+    if full || cross_namespace_reference?(from)
+      absolute_path ? "/#{full_path}" : full_path
+    elsif cross_project_reference?(from)
+      path
+    end
   end
 
   def to_reference(*)
@@ -339,6 +350,8 @@ class Namespace < ApplicationRecord
   end
 
   def default_branch_protection_settings
+    return Gitlab::CurrentSettings.default_branch_protection_defaults if user_namespace?
+
     settings = default_branch_protection_defaults
 
     return settings unless settings.blank?
@@ -432,6 +445,10 @@ class Namespace < ApplicationRecord
     !emails_enabled?
   end
 
+  def default_branch_protected?
+    Gitlab::Access::DefaultBranchProtection.new(default_branch_protection_settings).any?
+  end
+
   def emails_enabled?
     # If no namespace_settings, we can assume it has not changed from enabled
     return true unless namespace_settings
@@ -461,8 +478,10 @@ class Namespace < ApplicationRecord
     Project.where(namespace: namespace)
   end
 
-  # Includes projects from this namespace and projects from all subgroups
-  # that belongs to this namespace, except the ones that are soft deleted
+  def all_catalog_resources
+    Ci::Catalog::Resource.where(project: all_projects)
+  end
+
   def all_projects_except_soft_deleted
     all_projects.not_aimed_for_deletion
   end
@@ -618,10 +637,10 @@ class Namespace < ApplicationRecord
     case other_setting
     when SR_ENABLED
       false
-    when SR_DISABLED_WITH_OVERRIDE, SR_DISABLED_AND_OVERRIDABLE
+    when SR_DISABLED_AND_OVERRIDABLE
       shared_runners_setting == SR_ENABLED
     when SR_DISABLED_AND_UNOVERRIDABLE
-      shared_runners_setting == SR_ENABLED || shared_runners_setting == SR_DISABLED_AND_OVERRIDABLE || shared_runners_setting == SR_DISABLED_WITH_OVERRIDE
+      shared_runners_setting == SR_ENABLED || shared_runners_setting == SR_DISABLED_AND_OVERRIDABLE
     else
       raise ArgumentError
     end
@@ -697,17 +716,6 @@ class Namespace < ApplicationRecord
       from.project_namespace_id != id
     else
       from && self != from
-    end
-  end
-
-  def update_new_emails_created_column
-    return if namespace_settings.nil?
-    return if namespace_settings.emails_enabled == !emails_disabled
-
-    if namespace_settings.persisted?
-      namespace_settings.update!(emails_enabled: !emails_disabled)
-    elsif namespace_settings
-      namespace_settings.emails_enabled = !emails_disabled
     end
   end
 
@@ -826,13 +834,6 @@ class Namespace < ApplicationRecord
 
     keys = descendants_to_expire.map { |group| first_auto_devops_config_cache_key_for(group.id) }
     Rails.cache.delete_multi(keys)
-  end
-
-  def write_projects_repository_config
-    all_projects.find_each do |project|
-      project.set_full_path
-      project.track_project_repository
-    end
   end
 
   def enforce_minimum_path_length?

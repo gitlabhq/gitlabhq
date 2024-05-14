@@ -8,11 +8,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/249160) in GitLab 13.7 for group resources [with a flag](../../feature_flags.md) named `bulk_import`. Disabled by default.
-> - Group items [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/338985) in GitLab 14.3.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267945) in GitLab 14.4 for project resources [with a flag](../../feature_flags.md) named `bulk_import_projects`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/339941) in GitLab 15.6.
 > - New application setting `bulk_import_enabled` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383268) in GitLab 15.8. `bulk_import` feature flag removed.
 > - `bulk_import_projects` feature flag [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/339941) in GitLab 15.10.
@@ -67,6 +64,14 @@ groups are in the same GitLab instance. Transferring groups is a faster and more
 - In GitLab 16.1 and earlier, you should **not** use direct transfer with
   [scheduled scan execution policies](../../../user/application_security/policies/scan-execution-policies.md).
 - For a list of other known issues, see [epic 6629](https://gitlab.com/groups/gitlab-org/-/epics/6629).
+- In GitLab 16.9 and earlier, because of [issue 438422](https://gitlab.com/gitlab-org/gitlab/-/issues/438422), you might see the
+  `DiffNote::NoteDiffFileCreationError` error. When this error occurs, the diff of a note on a merge request's diff
+  is missing, but the note and the merge request are still imported.
+- When imported from the source instance, shared members are created as direct members on the destination unless those
+  memberships already exist on the destination. This means that importing a top-level group on the source instance to a
+  top-level group on the destination instance always creates direct members in projects, even though the source top-level
+  group contains the necessary shared membership hierarchy details. Support for full replication of shared memberships is
+  proposed in [issue 458345](https://gitlab.com/gitlab-org/gitlab/-/issues/458345).
 
 ## Estimating migration duration
 
@@ -113,6 +118,11 @@ There's no exact formula to reliably estimate a migration. However, the average 
 | References                  | 5                                            |
 | Push Rule                   | 0.1                                          |
 
+Though it's difficult to predict migration duration, we've seen:
+
+- 100 projects (19.9k issues, 83k merge requests, 100k+ pipelines) migrated in 8 hours.
+- 1926 projects (22k issues, 160k merge requests, 1.1 million pipelines) migrated in 34 hours.
+
 If you are migrating large projects and encounter problems with timeouts or duration of the migration, see [Reducing migration duration](#reducing-migration-duration).
 
 ## Limits
@@ -158,26 +168,50 @@ After migration:
 If you used a private network on your source instance to hide content from the general public,
 make sure to have a similar setup on the destination instance, or to import into a private group.
 
-## Ensure projects can be imported
+## Memberships
 
-You cannot import groups with projects when the source instance or group has **Default project creation protection** set to **No one**. If required, this setting can
-be changed:
+> - Importing of shared and inherited shared members was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129017) in GitLab 16.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148220) in GitLab 16.11, shared and inherited shared members are no longer imported as direct members if they are already shared or inherited shared members of the imported group or project.
 
-- For [a whole instance](../../../administration/settings/visibility_and_access_controls.md#define-which-roles-can-create-projects).
-- For [specific groups](../index.md#specify-who-can-add-projects-to-a-group).
+Group and project members are imported if the [user account prerequisites](#user-accounts) are followed.
+
+All [direct and indirect](../../../user/project/members/index.md#membership-types) members are imported.
+
+Indirect members are imported as [direct members](../../project/members/index.md#membership-types) if:
+
+- They are not already an indirect member of the target namespace.
+- They are an indirect member, but have a lower [permission](../../../user/permissions.md).
+
+There is a [known issue](#known-issues) affecting the transfer of shared memberships.
 
 ## Prerequisites
 
 > - Requirement for Maintainer role instead of Developer role introduced in GitLab 16.0 and backported to GitLab 15.11.1 and GitLab 15.10.5.
 
-To migrate groups by direct transfer:
+Before migrating by using direct transfer, see the following prerequisites.
+
+### Network
 
 - The network connection between instances or GitLab.com must support HTTPS.
-- Any firewalls must not block the connection between the source and destination GitLab instances.
+- Firewalls must not block the connection between the source and destination GitLab instances.
+
+### Versions
+
+To maximize the chance of a successful and performant migration, you should:
+
+- To take advantage of [batched exports and imports](https://gitlab.com/groups/gitlab-org/-/epics/9036) of relations,
+  update the source and destinations instances to GitLab 16.2 or later.
+- Migrate between versions that are as new as possible. Update the source and destination instances to as late a version
+  as possible to take advantage of bug fixes and improvements added over time.
+
+We have successfully tested migrations between a source instance running GitLab 16.2 and a destination instance running
+GitLab 16.8.
+
+### Configuration
+
 - Both GitLab instances must have group migration by direct transfer
   [enabled in application settings](../../../administration/settings/import_and_export_settings.md#enable-migration-of-groups-and-projects-by-direct-transfer)
   by an instance administrator.
-- The source GitLab instance must be running GitLab 14.0 or later.
 - You must have a
   [personal access token](../../../user/profile/personal_access_tokens.md) for
   the source GitLab instance:
@@ -192,8 +226,12 @@ To migrate groups by direct transfer:
 - To import items stored in object storage, you must either:
   - [Configure `proxy_download`](../../../administration/object_storage.md#configure-the-common-parameters).
   - Ensure that the destination GitLab instance has access to the object storage of the source GitLab instance.
+- You cannot import groups with projects when the source instance or group has **Default project creation protection** set
+  to **No one**. If required, this setting can be changed:
+  - For [a whole instance](../../../administration/settings/visibility_and_access_controls.md#define-which-roles-can-create-projects).
+  - For [specific groups](../index.md#specify-who-can-add-projects-to-a-group).
 
-## Prepare user accounts
+### User accounts
 
 To ensure GitLab maps users and their contributions correctly:
 
@@ -217,7 +255,7 @@ Create the group you want to import to and connect the source GitLab instance:
    - A new subgroup. On existing group's page, either:
      - Select **New subgroup**.
      - On the left sidebar, at the top, select **Create new** (**{plus}**) and **New subgroup**. Then select the **import an existing group** link.
-1. Enter the base URL of a GitLab instance running GitLab 14.0 or later.
+1. Enter the base URL of a GitLab instance.
 1. Enter the [personal access token](../../../user/profile/personal_access_tokens.md) for your source GitLab instance.
 1. Select **Connect instance**.
 
@@ -231,7 +269,7 @@ role.
 
 1. By default, the proposed group namespaces match the names as they exist in source instance, but based on your permissions, you can choose to edit these names before you proceed to import any of them.
 1. Next to the groups you want to import, select either:
-   - **Import with projects**. If this is not available, see [Ensure projects can be imported](#ensure-projects-can-be-imported).
+   - **Import with projects**. If this is not available, see [prerequisites](#prerequisites).
    - **Import without projects**.
 1. The **Status** column shows the import status of each group. If you leave the page open, it updates in real-time.
 1. After a group has been imported, select its GitLab path to open its GitLab URL.
@@ -264,11 +302,47 @@ To view group import history:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429109) in GitLab 16.6 [with a flag](../../feature_flags.md) named `bulk_import_details_page`. Enabled by default.
 > - Feature flag `bulk_import_details_page` removed in GitLab 16.8.
+> - Details for partially completed and completed imports [added](https://gitlab.com/gitlab-org/gitlab/-/issues/437874) in GitLab 16.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/443492) in GitLab 17.0, an **Imported** badge to indicate that designs, epics, issues, merge requests, notes (system notes and comments), snippets, and user profile activity were imported.
 
 To review the results of an import:
 
 1. Go to the [Group import history page](#group-import-history).
 1. To see the details of a failed import, select the **See failures** link on any import with a **Failed** or **Partially completed** status.
+1. If the import has a **Partially completed** or **Complete** status, to see which items were and were not imported, select **Details**.
+
+You can also see that an item was imported when you see an **Imported** badge on some items in the GitLab UI.
+
+## Cancel a running import
+
+To cancel a running import:
+
+1. Start a [Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session)
+   on the destination GitLab instance.
+1. Find the last import by running the following command. Replace `USER_ID` with the user ID of the user that started the import:
+
+   ```ruby
+   bulk_import = BulkImport.where(user_id: USER_ID).last
+   ```
+
+1. Cause the import and all items associated with it to fail by running the following command:
+
+   ```ruby
+   bulk_import.entities.each do |entity|
+     entity.trackers.each do |tracker|
+       tracker.batches.each(&:fail_op!)
+     end
+     entity.trackers.each(&:fail_op!)
+     entity.fail_op!
+   end
+   bulk_import.fail_op!
+   ```
+
+Cancelling a `bulk_import` doesn't stop workers that are exporting the project on the source instance, but prevents the
+destination instance from:
+
+- Asking the source instance for more projects to be exported.
+- Making other API calls to the source instance for various checks and information.
 
 ## Migrated group items
 
@@ -300,7 +374,7 @@ Group items that are migrated to the destination GitLab instance include:
 | Group labels <sup>2</sup> | [GitLab 13.9](https://gitlab.com/gitlab-org/gitlab/-/issues/292429)    |
 | Iterations           | [GitLab 13.10](https://gitlab.com/gitlab-org/gitlab/-/issues/292428)        |
 | Iteration cadences   | [GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96570)  |
-| Members <sup>3</sup> | [GitLab 13.9](https://gitlab.com/gitlab-org/gitlab/-/issues/299415)         |
+| Members <sup>3</sup> | [GitLab 13.9](https://gitlab.com/gitlab-org/gitlab/-/issues/299415) |
 | Group milestones     | [GitLab 13.10](https://gitlab.com/gitlab-org/gitlab/-/issues/292427)        |
 | Namespace settings   | [GitLab 14.10](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85128) |
 | Release milestones   | [GitLab 15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/339422)         |
@@ -313,9 +387,7 @@ Group items that are migrated to the destination GitLab instance include:
    metadata [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63551) in GitLab 14.0.
 1. Group Labels cannot retain any associated Label Priorities during import. These labels will need to be re-prioritized manually
    once the relevant Project is migrated to the destination instance.
-1. Group members are associated with the imported group if the user:
-   - Already exists in the destination GitLab instance.
-   - Has a public email in the source GitLab instance that matches a confirmed email in the destination GitLab instance.
+1. See [Memberships](#memberships).
 
 ### Excluded items
 
@@ -329,7 +401,6 @@ Some group items are excluded from migration because they either:
 DETAILS:
 **Status:** Beta
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267945) in GitLab 14.4 [with a flag](../../feature_flags.md) named `bulk_import_projects`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/339941) in GitLab 15.6.
 > - `bulk_import_projects` feature flag [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/339941) in GitLab 15.10.
 > - Project-only migrations using API [added](https://gitlab.com/gitlab-org/gitlab/-/issues/390515) in GitLab 15.11.
@@ -376,7 +447,7 @@ Project items that are migrated to the destination GitLab instance include:
 | Issue boards                            | [GitLab 14.4](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71661) |
 | Labels                                  | [GitLab 14.4](https://gitlab.com/gitlab-org/gitlab/-/issues/339419)        |
 | LFS Objects                             | [GitLab 14.8](https://gitlab.com/gitlab-org/gitlab/-/issues/339405)        |
-| Members                                 | [GitLab 14.8](https://gitlab.com/gitlab-org/gitlab/-/issues/341886)        |
+| Members <sup>2</sup>                    | [GitLab 14.8](https://gitlab.com/gitlab-org/gitlab/-/issues/341886)        |
 | Merge requests                          | [GitLab 14.5](https://gitlab.com/gitlab-org/gitlab/-/issues/339403)        |
 | Push rules                              | [GitLab 14.6](https://gitlab.com/gitlab-org/gitlab/-/issues/339403)        |
 | Milestones                              | [GitLab 14.5](https://gitlab.com/gitlab-org/gitlab/-/issues/339417)        |
@@ -392,13 +463,11 @@ Project items that are migrated to the destination GitLab instance include:
 | Uploads                                 | [GitLab 14.5](https://gitlab.com/gitlab-org/gitlab/-/issues/339401)        |
 | Wikis                                   | [GitLab 14.6](https://gitlab.com/gitlab-org/gitlab/-/issues/345923)        |
 
-<html>
-<small>Footnotes:
-  <ol>
-    <li>Imported branches respect the [default branch protection settings](../../project/protected_branches.md) of the destination group, which can cause an unprotected branch to be imported as protected.</li>
-  </ol>
-</small>
-</html>
+**Footnotes:**
+
+1. Imported branches respect the [default branch protection settings](../../project/protected_branches.md)
+   of the destination group, which could cause an unprotected branch to be imported as protected.
+1. See [Memberships](#memberships).
 
 ### Issue-related items
 
@@ -485,8 +554,6 @@ You can also see all migrated entities with any failures related to them using a
 [API endpoint](../../../api/bulk_imports.md#list-all-group-or-project-migrations-entities).
 
 ### Stale imports
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352985) in GitLab 14.10.
 
 When troubleshooting group migration, an import may not complete because the import workers took
 longer than 8 hours to execute. In this case, the `status` of either a `BulkImport` or

@@ -164,13 +164,13 @@ module Gitlab
       # Their values must be given in seconds.
       # Example: timeouts: { open: 5, read: 5 }
       def send_url(
-        url, allow_redirects: false, method: 'GET', body: nil, headers: nil, timeouts: {}, response_statuses: {}
+        url, allow_redirects: false, method: 'GET', body: nil, headers: {}, timeouts: {}, response_statuses: {}
       )
         params = {
           'URL' => url,
           'AllowRedirects' => allow_redirects,
           'Body' => body.to_s,
-          'Header' => headers,
+          'Header' => headers.transform_values { |v| Array.wrap(v) },
           'Method' => method
         }.compact
 
@@ -347,7 +347,7 @@ module Gitlab
               commit_id: metadata['CommitId'],
               prefix: metadata['ArchivePrefix'],
               format: format,
-              path: path.presence || "",
+              path: Gitlab::EncodingHelper.encode_binary(path.presence || ""),
               include_lfs_blobs: true
             ).to_proto
           )

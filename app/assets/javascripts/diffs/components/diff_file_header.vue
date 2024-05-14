@@ -22,7 +22,7 @@ import { __, s__, sprintf } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
-import { fileContentsId, pinnedFileHref } from '~/diffs/components/diff_row_utils';
+import { createFileUrl, fileContentsId } from '~/diffs/components/diff_row_utils';
 import { DIFF_FILE_AUTOMATIC_COLLAPSE } from '../constants';
 import { DIFF_FILE_HEADER } from '../i18n';
 import { collapsedType, isCollapsed } from '../utils/diff_file';
@@ -114,7 +114,10 @@ export default {
     ...mapGetters('diffs', ['diffHasExpandedDiscussions', 'diffHasDiscussions']),
     ...mapGetters(['getNoteableData']),
     diffContentIDSelector() {
-      return `${pinnedFileHref(this.diffFile)}#${fileContentsId(this.diffFile)}`;
+      return fileContentsId(this.diffFile);
+    },
+    diffUrl() {
+      return createFileUrl(this.diffFile);
     },
     titleLink() {
       if (this.diffFile.submodule) {
@@ -122,7 +125,7 @@ export default {
       }
 
       if (!this.discussionPath) {
-        return this.diffContentIDSelector;
+        return this.diffUrl;
       }
 
       return this.discussionPath;
@@ -213,7 +216,6 @@ export default {
   },
   methods: {
     ...mapActions('diffs', [
-      'toggleFileDiscussions',
       'toggleFileDiscussionWrappers',
       'toggleFullDiff',
       'setCurrentFileHash',
@@ -317,7 +319,7 @@ export default {
       />
       <a
         :v-once="!viewDiffsFileByFile"
-        class="gl-mr-2 gl-text-decoration-none! gl-word-break-all"
+        class="gl-mr-2 gl-text-decoration-none! gl-break-all"
         :href="titleLink"
         data-testid="file-title"
         @click="handleFileNameClick"
@@ -388,7 +390,7 @@ export default {
       />
       <gl-form-checkbox
         v-if="isReviewable && showLocalFileReviews"
-        v-gl-tooltip.hover.focus
+        v-gl-tooltip.hover.focus.left
         data-testid="fileReviewCheckbox"
         class="gl-mr-5 gl-mb-n3 gl-display-flex gl-align-items-center"
         :title="$options.i18n.fileReviewTooltip"

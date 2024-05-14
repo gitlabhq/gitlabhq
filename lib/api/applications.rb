@@ -61,6 +61,26 @@ module API
 
         no_content!
       end
+
+      desc 'Renew an application secret' do
+        detail 'Renew the secret of a specific application'
+        success code: 200, model: Entities::ApplicationWithSecret
+      end
+      params do
+        requires :id, type: Integer, desc: 'The ID of the application (not the application_id)'
+      end
+      post ':id/renew-secret' do
+        application = ApplicationsFinder.new(params).execute
+        break not_found!('Application') unless application
+
+        application.renew_secret
+
+        if application.save
+          present application, with: Entities::ApplicationWithSecret
+        else
+          render_validation_error!(application)
+        end
+      end
     end
   end
 end

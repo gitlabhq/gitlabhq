@@ -46,7 +46,6 @@ RSpec/RepeatedExampleGroupBody:
     - 'spec/services/ci/create_web_ide_terminal_service_spec.rb'
     - 'spec/services/ci/pipeline_artifacts/create_code_quality_mr_diff_report_service_spec.rb'
     - 'spec/services/merge_requests/create_service_spec.rb'
-    - 'spec/services/merge_requests/mark_reviewer_reviewed_service_spec.rb'
     - 'spec/services/merge_requests/mergeability/check_base_service_spec.rb'
     - 'spec/services/packages/maven/metadata/sync_service_spec.rb'
     - 'spec/services/projects/group_links/destroy_service_spec.rb'

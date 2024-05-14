@@ -120,14 +120,21 @@ RSpec.describe Admin::ApplicationSettingsController, :do_not_mock_admin_mode_set
       end
 
       describe 'usage data counter' do
-        let(:counter) { Gitlab::UsageDataCounters::ServiceUsageDataCounter }
+        it_behaves_like 'internal event tracking' do
+          let(:event) { 'usage_data_download_payload_clicked' }
+          let(:user) { admin }
+          let(:project) { nil }
+          let(:namespace) { nil }
 
-        it 'incremented when json generated' do
-          expect { get :usage_data, format: :json }.to change { counter.read(:download_payload_click) }.by(1)
+          subject(:track_event) { get :usage_data, format: :json }
         end
 
-        it 'not incremented when html format requested' do
-          expect { get :usage_data }.not_to change { counter.read(:download_payload_click) }
+        context 'with html format requested' do
+          it 'not incremented when html format requested' do
+            expect(Gitlab::InternalEvents).not_to receive(:track_event)
+
+            get :usage_data, format: :html
+          end
         end
       end
     end
@@ -213,6 +220,13 @@ RSpec.describe Admin::ApplicationSettingsController, :do_not_mock_admin_mode_set
 
       expect(response).to redirect_to(general_admin_application_settings_path)
       expect(ApplicationSetting.current.default_branch_name).to eq("example_branch_name")
+    end
+
+    it "updates default_branch_protection_defaults" do
+      put :update, params: { application_setting: { default_branch_protection_defaults: ::Gitlab::Access::BranchProtection.protected_against_developer_pushes.deep_stringify_keys } }
+
+      expect(response).to redirect_to(general_admin_application_settings_path)
+      expect(ApplicationSetting.current.default_branch_protection_defaults).to eq(::Gitlab::Access::BranchProtection.protected_against_developer_pushes.deep_stringify_keys)
     end
 
     it 'updates valid_runner_registrars setting' do

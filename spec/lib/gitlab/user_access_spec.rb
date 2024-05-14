@@ -64,15 +64,15 @@ RSpec.describe Gitlab::UserAccess, feature_category: :system_access do
         end
 
         where(:default_branch_protection_level, :result) do
-          Gitlab::Access::PROTECTION_NONE          | true
-          Gitlab::Access::PROTECTION_DEV_CAN_PUSH  | true
-          Gitlab::Access::PROTECTION_DEV_CAN_MERGE | false
-          Gitlab::Access::PROTECTION_FULL          | false
+          Gitlab::Access::BranchProtection.protection_none                    | true
+          Gitlab::Access::BranchProtection.protection_partial                 | true
+          Gitlab::Access::BranchProtection.protected_against_developer_pushes | false
+          Gitlab::Access::BranchProtection.protected_fully                    | false
         end
 
         with_them do
           it do
-            expect(empty_project.namespace).to receive(:default_branch_protection).and_return(default_branch_protection_level).at_least(:once)
+            expect(empty_project.namespace).to receive(:default_branch_protection_settings).and_return(default_branch_protection_level).at_least(:once)
 
             expect(project_access.can_push_to_branch?('master')).to eq(result)
           end

@@ -10,12 +10,16 @@ import BranchRules from '~/projects/settings/repository/branch_rules/app.vue';
 import BranchRule from '~/projects/settings/repository/branch_rules/components/branch_rule.vue';
 import branchRulesQuery from 'ee_else_ce/projects/settings/repository/branch_rules/graphql/queries/branch_rules.query.graphql';
 import createBranchRuleMutation from '~/projects/settings/repository/branch_rules/graphql/mutations/create_branch_rule.mutation.graphql';
+import BranchRuleModal from '~/projects/settings/components/branch_rule_modal.vue';
+import getProtectableBranches from '~/projects/settings/graphql/queries/protectable_branches.query.graphql';
 
 import { createAlert } from '~/alert';
 import {
   branchRulesMockResponse,
+  predefinedBranchRulesMockResponse,
   appProvideMock,
   createBranchRuleMockResponse,
+  protectableBranchesMockResponse,
 } from 'ee_else_ce_jest/projects/settings/repository/branch_rules/mock_data';
 import {
   I18N,
@@ -36,20 +40,21 @@ Vue.use(VueApollo);
 describe('Branch rules app', () => {
   let wrapper;
   let fakeApollo;
-  const openBranches = [
-    { text: 'branch1', id: 'branch1', title: 'branch1' },
-    { text: 'branch2', id: 'branch2', title: 'branch2' },
-  ];
   const branchRulesQuerySuccessHandler = jest.fn().mockResolvedValue(branchRulesMockResponse);
   const addRuleMutationSuccessHandler = jest.fn().mockResolvedValue(createBranchRuleMockResponse);
+  const protectableBranchesSuccessHandler = jest
+    .fn()
+    .mockResolvedValue(protectableBranchesMockResponse);
+  const addBranchRulesItems = [I18N.branchName, I18N.allBranches, I18N.allProtectedBranches];
 
   const createComponent = async ({
-    glFeatures = { addBranchRule: true },
+    glFeatures = { editBranchRules: true },
     queryHandler = branchRulesQuerySuccessHandler,
     mutationHandler = addRuleMutationSuccessHandler,
   } = {}) => {
     fakeApollo = createMockApollo([
       [branchRulesQuery, queryHandler],
+      [getProtectableBranches, protectableBranchesSuccessHandler],
       [createBranchRuleMutation, mutationHandler],
     ]);
 
@@ -60,6 +65,7 @@ describe('Branch rules app', () => {
         glFeatures,
       },
       stubs: {
+        BranchRuleModal,
         GlDisclosureDropdown,
         GlModal: stubComponent(GlModal, { template: RENDER_ALL_SLOTS_TEMPLATE }),
       },
@@ -77,15 +83,13 @@ describe('Branch rules app', () => {
   const findCreateBranchRuleListbox = () => wrapper.findComponent(GlCollapsibleListbox);
 
   beforeEach(() => {
-    window.gon = {
-      open_branches: openBranches,
-    };
     setWindowLocation(TEST_HOST);
+    createComponent();
   });
 
-  beforeEach(() => createComponent());
+  it('renders branch rules', async () => {
+    await nextTick();
 
-  it('renders branch rules', () => {
     const { nodes } = branchRulesMockResponse.data.project.branchRules;
 
     expect(findAllBranchRules().length).toBe(nodes.length);
@@ -114,12 +118,34 @@ describe('Branch rules app', () => {
       expect(findAddBranchRuleDropdown().props('toggleText')).toBe('Add branch rule');
     });
 
+    it('renders a dropdown containing predefined branch rules with actions', () => {
+      expect(findAddBranchRuleDropdown().props('items')).toEqual([
+        { action: expect.any(Function), text: 'Branch name or pattern' },
+        { action: expect.any(Function), text: 'All branches' },
+        { action: expect.any(Function), text: 'All protected branches' },
+      ]);
+    });
+
+    it('does not render predefined branch rules when they are already set', async () => {
+      const { nodes } = predefinedBranchRulesMockResponse.data.project.branchRules;
+
+      await createComponent({
+        queryHandler: jest.fn().mockResolvedValue(predefinedBranchRulesMockResponse),
+      });
+      await findAddBranchRuleDropdown().vm.$emit('shown');
+      await nextTick();
+
+      expect(findAddBranchRuleDropdown().props('items').length).toEqual(
+        addBranchRulesItems.length - nodes.length,
+      );
+    });
+
     it('renders a modal with correct props/attributes', () => {
       expect(findModal().props()).toMatchObject({
         title: I18N.createBranchRule,
         modalId: BRANCH_PROTECTION_MODAL_ID,
         actionCancel: {
-          text: 'Create branch rule',
+          text: 'Cancel',
         },
         actionPrimary: {
           attributes: {
@@ -131,29 +157,21 @@ describe('Branch rules app', () => {
       });
     });
 
-    it('renders listbox with branch names', () => {
-      expect(findCreateBranchRuleListbox().exists()).toBe(true);
-      expect(findCreateBranchRuleListbox().props('items')).toHaveLength(openBranches.length);
-      expect(findCreateBranchRuleListbox().props('toggleText')).toBe(
-        'Select Branch or create wildcard',
-      );
-    });
-
     it('when the primary modal action is clicked it calls create rule mutation', async () => {
-      findCreateBranchRuleListbox().vm.$emit('select', openBranches[0].text);
+      findCreateBranchRuleListbox().vm.$emit('select', 'main');
       await nextTick();
       findModal().vm.$emit('primary');
       await nextTick();
       await nextTick();
       expect(addRuleMutationSuccessHandler).toHaveBeenCalledWith({
-        name: 'branch1',
+        name: 'main',
         projectPath: 'some/project/path',
       });
     });
 
     it('shows alert when mutation fails', async () => {
       createComponent({ mutationHandler: jest.fn().mockRejectedValue() });
-      findCreateBranchRuleListbox().vm.$emit('select', openBranches[0].text);
+      findCreateBranchRuleListbox().vm.$emit('select', 'main');
       await nextTick();
       findModal().vm.$emit('primary');
       await waitForPromises();
@@ -163,10 +181,9 @@ describe('Branch rules app', () => {
     });
   });
 
-  describe('Add branch rule when addBranchRule FF disabled', () => {
+  describe('Add branch rule when editBranchRules FF disabled', () => {
     beforeEach(() => {
-      window.gon.open_branches = openBranches;
-      createComponent({ glFeatures: { addBranchRule: false } });
+      createComponent({ glFeatures: { editBranchRules: false } });
     });
     it('renders an Add branch rule button', () => {
       expect(findAddBranchRuleButton().exists()).toBe(true);

@@ -6,6 +6,7 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload/destination"
 )
 
+// ObjectStoragePreparer prepares objects for upload to object storage.
 type ObjectStoragePreparer struct {
 	config      config.ObjectStorageConfig
 	credentials config.ObjectStorageCredentials
@@ -18,6 +19,7 @@ func NewObjectStoragePreparer(c config.Config) Preparer {
 	return &ObjectStoragePreparer{credentials: c.ObjectStorageCredentials, config: c.ObjectStorageConfig}
 }
 
+// Prepare prepares objects for upload to object storage.
 func (p *ObjectStoragePreparer) Prepare(a *api.Response) (*destination.UploadOpts, error) {
 	opts, err := destination.GetOpts(a)
 	if err != nil {

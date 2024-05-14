@@ -283,10 +283,11 @@ export default {
         redirectTo(data.web_url); // eslint-disable-line import/no-deprecated
       } catch (error) {
         this.isSaving = false;
+        const message =
+          error?.response?.data?.message?.join('. ') ||
+          s__('ForkProject|An error occurred while forking the project. Please try again.');
         createAlert({
-          message: s__(
-            'ForkProject|An error occurred while forking the project. Please try again.',
-          ),
+          message,
         });
       }
     },

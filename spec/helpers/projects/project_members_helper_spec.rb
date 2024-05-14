@@ -28,7 +28,8 @@ RSpec.describe Projects::ProjectMembersHelper do
             invited: present_members(invited),
             access_requests: present_members(access_requests),
             include_relations: [:inherited, :direct],
-            search: nil
+            search: nil,
+            pending_members: []
           )
         )
       end
@@ -113,6 +114,9 @@ RSpec.describe Projects::ProjectMembersHelper do
           let_it_be(:top_group) { create(:group) }
           let_it_be(:sub_group) { create(:group, parent: top_group) }
           let_it_be(:project) { create(:project, group: sub_group) }
+          let_it_be(:members) { create_list(:project_member, 2, project: project) }
+          let_it_be(:invited) { create_list(:project_member, 2, :invited, project: project) }
+          let_it_be(:access_requests) { create_list(:project_member, 2, :access_request, project: project) }
           let_it_be(:group_link_1) { create(:group_group_link, shared_group: top_group, shared_with_group: shared_with_group_1, group_access: Gitlab::Access::GUEST) }
           let_it_be(:group_link_2) { create(:group_group_link, shared_group: top_group, shared_with_group: shared_with_group_4, group_access: Gitlab::Access::GUEST) }
           let_it_be(:group_link_3) { create(:group_group_link, shared_group: top_group, shared_with_group: shared_with_group_5, group_access: Gitlab::Access::DEVELOPER) }
@@ -131,7 +135,8 @@ RSpec.describe Projects::ProjectMembersHelper do
                 invited: present_members(invited),
                 access_requests: present_members(access_requests),
                 include_relations: include_relations,
-                search: nil
+                search: nil,
+                pending_members: []
               )
             )
           end

@@ -25,7 +25,7 @@ to clone and fetch large repositories, speeding up development and increasing th
 
 Geo secondary sites transparently proxy write requests to the primary site. All Geo sites can be configured to respond to a single GitLab URL, to deliver a consistent, seamless, and comprehensive experience whichever site the user lands on.
 
-To make sure you're using the right version of the documentation, go to [the Geo page on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/administration/geo/index.md) and choose the appropriate release from the **Switch branch/tag** dropdown list. For example, [`v13.7.6-ee`](https://gitlab.com/gitlab-org/gitlab/-/blob/v13.7.6-ee/doc/administration/geo/index.md).
+To make sure you're using the right version of the documentation, go to [the Geo page on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/administration/geo/index.md) and choose the appropriate release from the **Switch branch/tag** dropdown list. For example, [`v15.7.6-ee`](https://gitlab.com/gitlab-org/gitlab/-/blob/v15.7.6-ee/doc/administration/geo/index.md).
 
 Geo uses a set of defined terms that are described in the [Geo Glossary](glossary.md).
 Be sure to familiarize yourself with those terms.
@@ -121,16 +121,13 @@ The following are required to run Geo:
   The following operating systems are known to ship with a current version of OpenSSH:
   - [CentOS](https://www.centos.org) 7.4 or later
   - [Ubuntu](https://ubuntu.com) 16.04 or later
-- [Supported PostgreSQL versions](https://handbook.gitlab.com/handbook/engineering/infrastructure/core-platform/data_stores/database/postgresql-upgrade-cadence/) for your GitLab releases with [Streaming Replication](https://wiki.postgresql.org/wiki/Streaming_Replication).
-
-NOTE:
-[PostgreSQL Logical replication](https://www.postgresql.org/docs/current/logical-replication.html) is not supported.
-
-- All sites must run [the same PostgreSQL versions](setup/database.md#postgresql-replication).
-  - Where possible, you should also use the same operating system version on all
+- Where possible, you should also use the same operating system version on all
   Geo sites. If using different operating system versions between Geo sites, you
-  **must** [check OS locale data compatibility](replication/troubleshooting.md#check-os-locale-data-compatibility)
-    across Geo sites to avoid silent corruption of database indexes.
+  **must** [check OS locale data compatibility](replication/troubleshooting/common.md#check-os-locale-data-compatibility)
+  across Geo sites to avoid silent corruption of database indexes.
+- [Supported PostgreSQL versions](https://handbook.gitlab.com/handbook/engineering/infrastructure/core-platform/data_stores/database/postgresql-upgrade-cadence/) for your GitLab releases with [Streaming Replication](https://wiki.postgresql.org/wiki/Streaming_Replication).
+  - [PostgreSQL Logical replication](https://www.postgresql.org/docs/current/logical-replication.html) is not supported.
+- All sites must run [the same PostgreSQL versions](setup/database.md#postgresql-replication).
 - Git 2.9 or later
 - Git-lfs 2.4.2 or later on the user side when using LFS
 - All sites must run the exact same GitLab version. The [major, minor, and patch versions](../../policy/maintenance.md#versioning) must all match.
@@ -208,15 +205,15 @@ This list of limitations only reflects the latest version of GitLab. If you are 
   [Epic 1465](https://gitlab.com/groups/gitlab-org/-/epics/1465) proposes to improve Geo installation even more.
 - Real-time updates of issues/merge requests (for example, via long polling) doesn't work on the **secondary** site.
 - Using Geo secondary sites to accelerate runners is not officially supported. Support for this functionality is planned and can be tracked in [epic 9779](https://gitlab.com/groups/gitlab-org/-/epics/9779). If a replication lag occurs between the primary and secondary site, and the pipeline ref is not available on the secondary site when the job is executed, the job will fail.
-- GitLab Runners cannot register with a **secondary** site. Support for this is [planned for the future](https://gitlab.com/gitlab-org/gitlab/-/issues/3294).
 - [Selective synchronization](replication/configuration.md#selective-synchronization) only limits what repositories and files are replicated. The entire PostgreSQL data is still replicated. Selective synchronization is not built to accommodate compliance / export control use cases.
 - [Pages access control](../../user/project/pages/pages_access_control.md) doesn't work on secondaries. See [GitLab issue #9336](https://gitlab.com/gitlab-org/gitlab/-/issues/9336) for details.
 - [Disaster recovery](disaster_recovery/index.md) for deployments that have multiple secondary sites causes downtime due to the need to perform complete re-synchronization and re-configuration of all non-promoted secondaries to follow the new primary site.
 - For Git over SSH, to make the project clone URL display correctly regardless of which site you are browsing, secondary sites must use the same port as the primary. [GitLab issue #339262](https://gitlab.com/gitlab-org/gitlab/-/issues/339262) proposes to remove this limitation.
 - Git push over SSH against a secondary site does not work for pushes over 1.86 GB. [GitLab issue #413109](https://gitlab.com/gitlab-org/gitlab/-/issues/413109) tracks this bug.
-- Backups [cannot be run on secondaries](replication/troubleshooting.md#message-error-canceling-statement-due-to-conflict-with-recovery).
+- Backups [cannot be run on secondaries](replication/troubleshooting/replication.md#message-error-canceling-statement-due-to-conflict-with-recovery).
 - Git clone and fetch requests with option `--depth` over SSH against a secondary site does not work and hangs indefinitely if the secondary site is not up to date at the time the request is initiated. For more information, see [issue 391980](https://gitlab.com/gitlab-org/gitlab/-/issues/391980).
 - Git push with options over SSH against a secondary site does not work and terminates the connection. For more information, see [issue 417186](https://gitlab.com/gitlab-org/gitlab/-/issues/417186).
+- The Geo secondary site does not accelerate (serve) the clone request for the first stage of the pipeline in most cases. Later stages are not guaranteed to be served by the secondary site either, for example if the Git change is large, bandwidth is small, or pipeline stages are short. In general, it does serve the clone request for subsequent stages. [Issue 446176](https://gitlab.com/gitlab-org/gitlab/-/issues/446176) discusses the reasons for this and proposes an enhancement to increase the chance that Runner clone requests are served from the secondary site.
 
 ### Limitations on replication/verification
 
@@ -240,8 +237,6 @@ For information on how to update your Geo sites to the latest GitLab version, se
 
 ### Pausing and resuming replication
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35913) in GitLab 13.2.
-
 WARNING:
 Pausing and resuming of replication is only supported for Geo installations using a
 Linux package-managed database. External databases are not supported.
@@ -250,7 +245,7 @@ In some circumstances, like during [upgrades](replication/upgrading_the_geo_site
 [planned failover](disaster_recovery/planned_failover.md), it is desirable to pause replication between the primary and secondary.
 
 If you plan to allow user activity on your secondary sites during the upgrade,
-do not pause replication for a [zero downtime upgrade](../../update/zero_downtime.md). While paused, the secondary site gets more and more out-of-date.
+do not pause replication for a [zero-downtime upgrade](../../update/zero_downtime.md). While paused, the secondary site gets more and more out-of-date.
 One known effect is that more and more Git fetches get redirected or proxied to the primary site. There may be additional unknown effects.
 
 Pausing and resuming replication is done through a command-line tool from a specific node in the secondary site. Depending on your database architecture,
@@ -327,6 +322,11 @@ dashboard in your browser.
 Failures that happen during a backfill are scheduled to be retried at the end
 of the backfill.
 
+### Runners
+
+- In addition to our standard best practices for deploying a [fleet of runners](https://docs.gitlab.com/runner/fleet_scaling/index.html), runners can also be configured to connect to Geo secondaries to spread out job load. See how to [register runners against secondaries](secondary_proxy/runners.md).
+- See also how to handle [Disaster Recovery with runners](disaster_recovery/planned_failover.md#runner-failover).
+
 ## Remove Geo site
 
 For more information on removing a Geo site, see [Removing **secondary** Geo sites](replication/remove_geo_site.md).
@@ -347,4 +347,4 @@ For more information on how to access and consume Geo logs, see the [Geo section
 
 ## Troubleshooting
 
-For troubleshooting steps, see [Geo Troubleshooting](replication/troubleshooting.md).
+For troubleshooting steps, see [Geo Troubleshooting](replication/troubleshooting/index.md).

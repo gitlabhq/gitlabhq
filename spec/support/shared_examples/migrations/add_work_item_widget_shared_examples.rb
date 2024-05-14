@@ -1,9 +1,17 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'migration that adds widget to work items definitions' do |widget_name:, work_item_types:|
+  include MigrationHelpers::WorkItemTypesHelper
+
   let(:migration) { described_class.new }
   let(:work_item_definitions) { table(:work_item_widget_definitions) }
   let(:work_item_type_count) { work_item_types.size }
+
+  after(:all) do
+    # Make sure base types are recreated after running the migration
+    # because migration specs are not run in a transaction
+    reset_work_item_types
+  end
 
   describe '#up' do
     it "creates widget definition in all types" do
@@ -22,6 +30,27 @@ RSpec.shared_examples 'migration that adds widget to work items definitions' do 
 
       expect(Gitlab::AppLogger).to receive(:warn).with("type #{type_name} is missing, not adding widget")
       migrate!
+    end
+
+    context 'when the widget already exists' do
+      let(:work_item_types_table) { table(:work_item_types) }
+
+      before do
+        work_item_types.each do |type_name|
+          type = work_item_types_table.find_by_name_and_namespace_id(type_name, nil)
+          work_item_definitions.create!(
+            name: widget_name,
+            work_item_type_id: type.id,
+            widget_type: described_class::WIDGET_ENUM_VALUE
+          )
+        end
+      end
+
+      it 'upserts the widget definitions and raises no error' do
+        expect { migrate! }.to not_change {
+          work_item_definitions.where(name: widget_name).count
+        }.from(work_item_type_count)
+      end
     end
   end
 

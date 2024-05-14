@@ -182,7 +182,7 @@ export default {
         <p class="gl-mt-4 gl-mb-0 gl-font-small">{{ loadingMessage }}</p>
       </template>
       <template v-else>
-        <ul class="gl-list-style-none gl-p-0 gl-mb-0">
+        <ul class="gl-list-none gl-p-0 gl-mb-0">
           <li v-for="(issuable, index) in displayedIssuables" :key="issuable.id">
             <gl-link :href="issuable.webUrl" class="gl-text-blue-500! gl-font-sm">{{
               issuable.reference

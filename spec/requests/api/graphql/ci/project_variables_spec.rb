@@ -20,6 +20,7 @@ RSpec.describe 'Query.project(fullPath).ciVariables', feature_category: :secrets
               value
               variableType
               protected
+              hidden
               masked
               raw
               environmentScope
@@ -36,8 +37,16 @@ RSpec.describe 'Query.project(fullPath).ciVariables', feature_category: :secrets
     end
 
     it "returns the project's CI variables" do
-      variable = create(:ci_variable, project: project, key: 'TEST_VAR', value: 'test',
-                                      masked: false, protected: true, raw: true, environment_scope: 'production')
+      variable = create(
+        :ci_variable,
+        project: project,
+        key: 'TEST_VAR',
+        value: 'test',
+        masked: false,
+        protected: true,
+        raw: true,
+        environment_scope: 'production'
+      )
 
       post_graphql(query, current_user: user)
 
@@ -49,9 +58,74 @@ RSpec.describe 'Query.project(fullPath).ciVariables', feature_category: :secrets
         'variableType' => 'ENV_VAR',
         'masked' => false,
         'protected' => true,
+        'hidden' => false,
         'raw' => true,
         'environmentScope' => 'production'
       })
+    end
+
+    it "sets the value to null if the variable is hidden" do
+      variable = create(
+        :ci_variable,
+        project: project,
+        key: 'TEST_VAR',
+        value: 'TestVariable',
+        masked: true,
+        hidden: true,
+        protected: true,
+        raw: false,
+        environment_scope: 'production'
+      )
+
+      post_graphql(query, current_user: user)
+
+      expect(graphql_data.dig('project', 'ciVariables', 'limit')).to be(8000)
+      expect(graphql_data.dig('project', 'ciVariables', 'nodes')).to contain_exactly({
+        'id' => variable.to_global_id.to_s,
+        'key' => 'TEST_VAR',
+        'value' => nil,
+        'variableType' => 'ENV_VAR',
+        'masked' => true,
+        'protected' => true,
+        'hidden' => true,
+        'raw' => false,
+        'environmentScope' => 'production'
+      })
+    end
+
+    context 'when feature flag `ci_hidden_variables is disabled`' do
+      before do
+        stub_feature_flags(ci_hidden_variables: false)
+      end
+
+      it "returns the value even it it is hidden" do
+        variable = create(
+          :ci_variable,
+          project: project,
+          key: 'TEST_VAR',
+          value: 'TestVariable',
+          masked: true,
+          hidden: true,
+          protected: true,
+          raw: false,
+          environment_scope: 'production'
+        )
+
+        post_graphql(query, current_user: user)
+
+        expect(graphql_data.dig('project', 'ciVariables', 'limit')).to be(8000)
+        expect(graphql_data.dig('project', 'ciVariables', 'nodes')).to contain_exactly({
+          'id' => variable.to_global_id.to_s,
+          'key' => 'TEST_VAR',
+          'value' => 'TestVariable',
+          'variableType' => 'ENV_VAR',
+          'masked' => true,
+          'protected' => true,
+          'hidden' => true,
+          'raw' => false,
+          'environmentScope' => 'production'
+        })
+      end
     end
   end
 

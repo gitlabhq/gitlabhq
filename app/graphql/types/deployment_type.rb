@@ -66,12 +66,16 @@ module Types
       method: :deployed_by
 
     field :tags,
-          [Types::DeploymentTagType],
-          description: 'Git tags that contain this deployment. ' \
-                       'This field can only be resolved for two deployments in any single request.',
-          calls_gitaly: true do
-            extension ::Gitlab::Graphql::Limit::FieldCallCount, limit: 2
-          end
+      [Types::DeploymentTagType],
+      description: 'Git tags that contain this deployment. ' \
+                   'This field can only be resolved for two deployments in any single request.',
+      calls_gitaly: true do
+      extension ::Gitlab::Graphql::Limit::FieldCallCount, limit: 2
+    end
+
+    field :web_path,
+      GraphQL::Types::String, null: true,
+      description: 'Web path to the deployment page.'
   end
 end
 

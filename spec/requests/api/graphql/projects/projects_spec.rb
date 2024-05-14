@@ -6,7 +6,7 @@ RSpec.describe 'getting a collection of projects', feature_category: :source_cod
   include GraphqlHelpers
 
   let_it_be(:current_user) { create(:user) }
-  let_it_be(:group) { create(:group, name: 'public-group') }
+  let_it_be(:group) { create(:group, name: 'public-group', developers: current_user) }
   let_it_be(:projects) { create_list(:project, 5, :public, group: group) }
   let_it_be(:other_project) { create(:project, :public, group: group) }
 
@@ -18,10 +18,6 @@ RSpec.describe 'getting a collection of projects', feature_category: :source_cod
       filters,
       "nodes {#{all_graphql_fields_for('Project', max_depth: 1, excluded: ['productAnalyticsState'])} }"
     )
-  end
-
-  before_all do
-    group.add_developer(current_user)
   end
 
   context 'when providing full_paths filter' do
@@ -50,9 +46,11 @@ RSpec.describe 'getting a collection of projects', feature_category: :source_cod
       end
 
       # There is an N+1 query for max_member_access_for_user_ids
+      # There is an N+1 query for duo_features_enabled cascading setting
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/442164
       expect do
         post_graphql(query, current_user: current_user)
-      end.not_to exceed_all_query_limit(control).with_threshold(5)
+      end.not_to exceed_all_query_limit(control).with_threshold(17)
     end
 
     it 'returns the expected projects' do

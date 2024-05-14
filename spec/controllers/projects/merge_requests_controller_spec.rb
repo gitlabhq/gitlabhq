@@ -1052,7 +1052,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
         .and_return(report)
 
       allow_any_instance_of(MergeRequest)
-        .to receive(:actual_head_pipeline)
+        .to receive(:diff_head_pipeline)
         .and_return(pipeline)
     end
 
@@ -1188,7 +1188,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
         .and_return(report)
 
       allow_any_instance_of(MergeRequest)
-        .to receive(:actual_head_pipeline)
+        .to receive(:diff_head_pipeline)
         .and_return(pipeline)
     end
 
@@ -1309,7 +1309,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
         .and_return(report)
 
       allow_any_instance_of(MergeRequest)
-        .to receive(:actual_head_pipeline)
+        .to receive(:diff_head_pipeline)
         .and_return(pipeline)
     end
 
@@ -1413,7 +1413,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
         .and_return(report)
 
       allow_any_instance_of(MergeRequest)
-        .to receive(:actual_head_pipeline)
+        .to receive(:diff_head_pipeline)
         .and_return(pipeline)
     end
 
@@ -1554,7 +1554,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
         .and_return(comparison_status)
 
       allow_any_instance_of(MergeRequest)
-        .to receive(:actual_head_pipeline)
+        .to receive(:diff_head_pipeline)
         .and_return(merge_request.all_pipelines.take)
     end
 
@@ -1653,7 +1653,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
         .and_return(accessibility_comparison)
 
       allow_any_instance_of(MergeRequest)
-        .to receive(:actual_head_pipeline)
+        .to receive(:diff_head_pipeline)
         .and_return(pipeline)
     end
 
@@ -1764,7 +1764,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
         .and_return(codequality_comparison)
 
       allow_any_instance_of(MergeRequest)
-        .to receive(:actual_head_pipeline)
+        .to receive(:diff_head_pipeline)
         .and_return(pipeline)
     end
 
@@ -2403,6 +2403,22 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
       expect(IssuableExportCsvWorker).to receive(:perform_async).with(:merge_request, user.id, project.id, anything)
 
       subject
+    end
+  end
+
+  describe '#append_info_to_payload' do
+    it 'appends diffs_files_count for logging' do
+      expect(controller).to receive(:append_info_to_payload).and_wrap_original do |method, payload|
+        method.call(payload)
+
+        expect(payload[:metadata]['meta.diffs_files_count']).to eq(merge_request.merge_request_diff.files_count)
+      end
+
+      get :diffs, params: {
+        namespace_id: project.namespace.to_param,
+        project_id: project,
+        id: merge_request.iid
+      }
     end
   end
 end

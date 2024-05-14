@@ -1,33 +1,40 @@
+- @no_container = true
+- container_class = fluid_layout ? '' : 'container-limited'
 - add_to_breadcrumbs s_("CompareRevisions|Compare revisions"), project_compare_index_path(@project)
 - page_title "#{params[:from]} to #{params[:to]}"
 - has_diff = @commits.present? || @diffs.present? && @diffs.diff_files.present?
 -# Only show commit list in the first page
 - hide_commit_list = params[:page].present? && params[:page] != '1'
 
-.sub-header-block.gl-border-b-0.gl-mb-0.gl-pt-4
-  .js-signature-container{ data: { 'signatures-path' => signatures_namespace_project_compare_index_path } }
-    #js-compare-selector{ data: project_compare_selector_data(@project, @merge_request, params) }
+.container-fluid{ class: [container_class] }
+  .gl-border-b-0.gl-mb-0.gl-pt-4
+    .js-signature-container{ data: { 'signatures-path' => signatures_namespace_project_compare_index_path } }
+      #js-compare-selector{ data: project_compare_selector_data(@project, @merge_request, params) }
 
 - if has_diff
-  = render "projects/commits/commit_list" unless hide_commit_list
-  = render "projects/diffs/diffs",
-    diffs: @diffs,
-    environment: @environment,
-    diff_page_context: "is-compare",
-    page: pagination_params[:page],
-    paginate_diffs: true,
-    paginate_diffs_per_page: Projects::CompareController::COMMIT_DIFFS_PER_PAGE
+  .container-fluid{ class: [container_class] }
+    = render "projects/commits/commit_list" unless hide_commit_list
+  .container-fluid
+    = render "projects/diffs/diffs",
+      diffs: @diffs,
+      environment: @environment,
+      diff_page_context: "is-compare",
+      page: pagination_params[:page],
+      paginate_diffs: true,
+      paginate_diffs_per_page: Projects::CompareController::COMMIT_DIFFS_PER_PAGE
 - else
-  = render Pajamas::CardComponent.new(card_options: { class: "gl-bg-gray-50 gl-mb-5 gl-border-none gl-text-center" }) do |c|
-    - c.with_body do
-      %h4
-        = s_("CompareRevisions|There isn't anything to compare.")
-      %p.gl-mb-4.gl-line-height-24
-        - if params[:to] == params[:from]
-          - source_branch = capture do
-            %span.ref-name= params[:from]
-          - target_branch = capture do
-            %span.ref-name= params[:to]
-          = (s_("CompareRevisions|%{source_branch} and %{target_branch} are the same.") % { source_branch: source_branch, target_branch: target_branch }).html_safe
-        - else
-          = _("You'll need to use different branch names to get a valid comparison.")
+  .container-fluid
+    = render Pajamas::CardComponent.new(card_options: { class: "gl-bg-gray-10" }) do |c|
+      - c.with_body do
+        = render Pajamas::EmptyStateComponent.new(svg_path: 'illustrations/empty-state/empty-commit-md.svg',
+          title: s_("CompareRevisions|There isn't anything to compare")) do |c|
+
+          - c.with_description do
+            - if params[:to] == params[:from]
+              - source_branch = capture do
+                %span.ref-name= params[:from]
+              - target_branch = capture do
+                %span.ref-name= params[:to]
+              = (s_("CompareRevisions|%{source_branch} and %{target_branch} are the same.") % { source_branch: source_branch, target_branch: target_branch }).html_safe
+            - else
+              = _("To get a valid comparison, select two different branches.")

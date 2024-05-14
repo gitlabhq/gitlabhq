@@ -1,6 +1,6 @@
 <script>
 import { __, s__ } from '~/locale';
-import { RESOURCE_TYPE_GROUPS, RESOURCE_TYPE_PROJECTS } from '../../constants';
+import { RESOURCE_TYPE_GROUPS, RESOURCE_TYPE_PROJECTS } from '~/organizations/shared/constants';
 import AssociationCountCard from './association_count_card.vue';
 
 export default {
@@ -19,6 +19,10 @@ export default {
       required: true,
     },
     groupsAndProjectsOrganizationPath: {
+      type: String,
+      required: true,
+    },
+    usersOrganizationPath: {
       type: String,
       required: true,
     },
@@ -49,9 +53,7 @@ export default {
           iconName: 'users',
           count: this.associationCounts.users,
           linkText: this.$options.i18n.manage,
-          // TODO: update `linkHref` prop to point to users route
-          // https://gitlab.com/gitlab-org/gitlab/-/issues/409313
-          linkHref: '/',
+          linkHref: this.usersOrganizationPath,
         },
       ];
     },

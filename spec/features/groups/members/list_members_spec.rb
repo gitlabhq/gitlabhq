@@ -34,6 +34,40 @@ RSpec.describe 'Groups > Members > List members', :js, feature_category: :groups
     expect(second_row).to be_blank
   end
 
+  context 'for private groups' do
+    let(:group) { create(:group, :private, developers: user1) }
+    let(:nested_group) { create(:group, :private, parent: group, developers: user2) }
+
+    before do
+      sign_in(user2)
+    end
+
+    shared_examples 'direct or inherited member' do
+      it 'sees the sources of inherited members' do
+        visit group_group_members_path(nested_group)
+
+        expect(first_row.text).to include(user1.name, group.name)
+        expect(second_row.text).to include(user2.name)
+      end
+    end
+
+    context 'when signed in using parent group member' do
+      before do
+        sign_in(user1)
+      end
+
+      it_behaves_like 'direct or inherited member'
+    end
+
+    context 'when signed in using subgroup member' do
+      before do
+        sign_in(user2)
+      end
+
+      it_behaves_like 'direct or inherited member'
+    end
+  end
+
   describe 'showing status of members' do
     before do
       group.add_developer(user2)

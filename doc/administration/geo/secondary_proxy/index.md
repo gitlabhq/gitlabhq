@@ -10,9 +10,6 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** Self-managed
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5914) in GitLab 14.4 [with a flag](../../feature_flags.md) named `geo_secondary_proxy`. Disabled by default.
-> - [Enabled by default for unified URLs](https://gitlab.com/gitlab-org/gitlab/-/issues/325732) in GitLab 14.6.
-> - [Disabled by default for different URLs](https://gitlab.com/gitlab-org/gitlab/-/issues/325732) in GitLab 14.6 [with a flag](../../feature_flags.md) named `geo_secondary_proxy_separate_urls`.
 > - [Enabled by default for different URLs](https://gitlab.com/gitlab-org/gitlab/-/issues/346112) in GitLab 15.1.
 
 Use Geo proxying to:
@@ -75,31 +72,6 @@ a single URL used by all Geo sites, including the primary.
    Make sure the primary site is also using this URL.
 
 In Kubernetes, you can [use the same domain under `global.hosts.domain` as for the primary site](https://docs.gitlab.com/charts/advanced/geo/index.html).
-
-## Geo proxying with Separate URLs
-
-> - Geo secondary proxying for separate URLs is [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/346112) in GitLab 15.1.
-
-NOTE:
-The feature flag described in this section is planned to be deprecated and removed in a future release. Support for read-only Geo secondary sites is proposed in [issue 366810](https://gitlab.com/gitlab-org/gitlab/-/issues/366810), you can upvote and share your use cases in that issue.
-
-If you run into issues, to disable this feature, disable the `geo_secondary_proxy_separate_urls` feature flag.
-
-1. SSH into one node running Rails on your primary Geo site and run:
-
-   ```shell
-   sudo gitlab-rails runner "Feature.disable(:geo_secondary_proxy_separate_urls)"
-   ```
-
-1. Restart Puma on all of the nodes running Rails on your secondary Geo site:
-
-   ```shell
-   sudo gitlab-ctl restart puma
-   ```
-
-In Kubernetes, you can run the same command in the toolbox pod. Refer to the
-[Kubernetes cheat sheet](https://docs.gitlab.com/charts/troubleshooting/kubernetes_cheat_sheet.html#gitlab-specific-kubernetes-information)
-for details.
 
 ## Limitations
 
@@ -204,3 +176,30 @@ gitlab:
     extraEnv:
       GEO_SECONDARY_PROXY: "0"
 ```
+
+## Geo proxying with Separate URLs
+
+> - Geo secondary proxying for separate URLs is [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/346112) in GitLab 15.1.
+
+NOTE:
+The feature flag described in this section is planned to be deprecated and removed in a future release. Support for read-only Geo secondary sites is proposed in [issue 366810](https://gitlab.com/gitlab-org/gitlab/-/issues/366810), you can upvote and share your use cases in that issue.
+
+Geo proxying for seperate URLs is enabled by default from GitLab 15.1. This allows secondary sites to proxy actions to the primary site even if the URLS are different.
+
+If you run into issues, disable the `geo_secondary_proxy_separate_urls` feature flag to disable the feature.
+
+1. SSH into one node running Rails on your primary Geo site and run:
+
+   ```shell
+   sudo gitlab-rails runner "Feature.disable(:geo_secondary_proxy_separate_urls)"
+   ```
+
+1. Restart Puma on all of the nodes running Rails on your secondary Geo site:
+
+   ```shell
+   sudo gitlab-ctl restart puma
+   ```
+
+In Kubernetes, you can run the same command in the toolbox pod. Refer to the
+[Kubernetes cheat sheet](https://docs.gitlab.com/charts/troubleshooting/kubernetes_cheat_sheet.html#gitlab-specific-kubernetes-information)
+for details.

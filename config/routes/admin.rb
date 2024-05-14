@@ -37,6 +37,8 @@ namespace :admin do
 
   resource :impersonation, only: :destroy
 
+  resource :initial_setup, controller: :initial_setup, only: [:new, :update]
+
   resources :abuse_reports, only: [:index, :show, :update, :destroy] do
     member do
       put :moderate_user
@@ -55,6 +57,8 @@ namespace :admin do
   end
 
   resources :groups, only: [:index, :new, :create]
+
+  resources :organizations, only: [:index]
 
   scope(
     path: 'groups/*id',
@@ -152,6 +156,10 @@ namespace :admin do
         put :test
         post :reset
       end
+    end
+
+    resource :slack, only: [:destroy] do
+      get :slack_auth
     end
 
     get :usage_data

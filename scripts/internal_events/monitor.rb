@@ -20,17 +20,9 @@
 
 require 'terminal-table'
 require 'net/http'
+require_relative '../../spec/support/helpers/service_ping_helpers'
 
-module ExtendedTimeFrame
-  def weekly_time_range
-    super.tap { |h| h[:end_date] = 1.week.from_now }
-  end
-
-  def monthly_time_range
-    super.tap { |h| h[:end_date] = 1.week.from_now }
-  end
-end
-Gitlab::Usage::TimeFrame.prepend(ExtendedTimeFrame)
+Gitlab::Usage::TimeFrame.prepend(ServicePingHelpers::CurrentTimeFrame)
 
 def metric_definitions_from_args
   args = ARGV
@@ -74,7 +66,19 @@ def generate_snowplow_table
   @initial_max_timestamp ||= events.map { |e| e['rawEvent']['parameters']['dtm'].to_i }.max || 0
 
   rows = []
-  rows << ['Event Name', 'Collector Timestamp', 'Category', 'user_id', 'namespace_id', 'project_id', 'plan']
+  rows << [
+    'Event Name',
+    'Collector Timestamp',
+    'Category',
+    'user_id',
+    'namespace_id',
+    'project_id',
+    'plan',
+    'Label',
+    'Property',
+    'Value'
+  ]
+
   rows << :separator
 
   events.each do |event|
@@ -87,7 +91,10 @@ def generate_snowplow_table
       standard_context[:user_id],
       standard_context[:namespace_id],
       standard_context[:project_id],
-      standard_context[:plan]
+      standard_context[:plan],
+      event['event']['se_label'],
+      event['event']['se_property'],
+      event['event']['se_value']
     ]
 
     row.map! { |value| red(value) } if event['rawEvent']['parameters']['dtm'].to_i > @initial_max_timestamp

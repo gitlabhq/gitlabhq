@@ -4,6 +4,7 @@ class SearchController < ApplicationController
   include ControllerWithCrossProjectAccessCheck
   include SearchHelper
   include ProductAnalyticsTracking
+  include Gitlab::InternalEventsTracking
   include SearchRateLimitable
 
   RESCUE_FROM_TIMEOUT_ACTIONS = [:count, :show, :autocomplete, :aggregations].freeze
@@ -100,18 +101,23 @@ class SearchController < ApplicationController
 
     scope = search_service.scope
 
+    @search_level = search_service.level
+    @search_type = search_type
+
     count = 0
-    ApplicationRecord.with_fast_read_statement_timeout do
-      count = search_service.search_results.formatted_count(scope)
+    @global_search_duration_s = Benchmark.realtime do
+      ApplicationRecord.with_fast_read_statement_timeout do
+        count = search_service.search_results.formatted_count(scope)
+      end
+
+      # Users switching tabs will keep fetching the same tab counts so it's a
+      # good idea to cache in their browser just for a short time. They can still
+      # clear cache if they are seeing an incorrect count but inaccurate count is
+      # not such a bad thing.
+      expires_in 1.minute
+
+      render json: { count: count }
     end
-
-    # Users switching tabs will keep fetching the same tab counts so it's a
-    # good idea to cache in their browser just for a short time. They can still
-    # clear cache if they are seeing an incorrect count but inaccurate count is
-    # not such a bad thing.
-    expires_in 1.minute
-
-    render json: { count: count }
   end
 
   def autocomplete
@@ -182,11 +188,11 @@ class SearchController < ApplicationController
   end
 
   def increment_search_counters
-    Gitlab::UsageDataCounters::SearchCounter.count(:all_searches)
+    track_internal_event('perform_search', user: current_user)
 
     return if params[:nav_source] != 'navbar'
 
-    Gitlab::UsageDataCounters::SearchCounter.count(:navbar_searches)
+    track_internal_event('perform_navbar_search', user: current_user)
   end
 
   def append_info_to_payload(payload)

@@ -6,7 +6,7 @@ RSpec.describe 'getting CRM contacts', feature_category: :service_desk do
   include GraphqlHelpers
 
   let_it_be(:current_user) { create(:user) }
-  let_it_be(:group) { create(:group) }
+  let_it_be(:group) { create(:group, reporters: current_user) }
 
   let_it_be(:contact_a) do
     create(
@@ -42,10 +42,6 @@ RSpec.describe 'getting CRM contacts', feature_category: :service_desk do
       description: "YZ",
       state: "active"
     )
-  end
-
-  before do
-    group.add_reporter(current_user)
   end
 
   it_behaves_like 'sorted paginated query' do

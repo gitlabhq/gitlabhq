@@ -70,7 +70,7 @@ module Features
         toggle_listbox
         select_listbox_item(role, exact_text: true)
       end
-      fill_in 'YYYY-MM-DD', with: expires_at.strftime('%Y-%m-%d') if expires_at
+      fill_in 'YYYY-MM-DD', with: expires_at.to_date.iso8601 if expires_at
     end
 
     def click_groups_tab

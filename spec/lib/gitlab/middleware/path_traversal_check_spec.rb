@@ -13,6 +13,15 @@ RSpec.describe ::Gitlab::Middleware::PathTraversalCheck, feature_category: :shar
   describe '#call' do
     let(:fullpath) { ::Rack::Request.new(env).fullpath }
     let(:decoded_fullpath) { CGI.unescape(fullpath) }
+    let(:graphql_query) do
+      <<~QUERY
+        {
+          currentUser {
+            username
+          }
+        }
+      QUERY
+    end
 
     let(:env) do
       Rack::MockRequest.env_for(
@@ -27,8 +36,8 @@ RSpec.describe ::Gitlab::Middleware::PathTraversalCheck, feature_category: :shar
     shared_examples 'no issue' do
       it 'measures and logs the execution time' do
         expect(::Gitlab::PathTraversal)
-          .to receive(:check_path_traversal!)
-                .with(decoded_fullpath, skip_decoding: true)
+          .to receive(:path_traversal?)
+                .with(decoded_fullpath, match_new_line: false)
                 .and_call_original
         expect(::Gitlab::AppLogger)
           .to receive(:warn)
@@ -48,11 +57,10 @@ RSpec.describe ::Gitlab::Middleware::PathTraversalCheck, feature_category: :shar
 
         it 'does nothing' do
           expect(::Gitlab::PathTraversal)
-            .to receive(:check_path_traversal!)
-                  .with(decoded_fullpath, skip_decoding: true)
+            .to receive(:path_traversal?)
+                  .with(decoded_fullpath, match_new_line: false)
                   .and_call_original
-          expect(::Gitlab::AppLogger)
-            .not_to receive(:warn)
+          expect(::Gitlab::AppLogger).not_to receive(:warn)
 
           expect(subject).to eq(fake_response)
         end
@@ -61,8 +69,7 @@ RSpec.describe ::Gitlab::Middleware::PathTraversalCheck, feature_category: :shar
 
     shared_examples 'excluded path' do
       it 'measures and logs the execution time' do
-        expect(::Gitlab::PathTraversal)
-          .not_to receive(:check_path_traversal!)
+        expect(::Gitlab::PathTraversal).not_to receive(:path_traversal?)
         expect(::Gitlab::AppLogger)
           .to receive(:warn)
                 .with({
@@ -80,10 +87,8 @@ RSpec.describe ::Gitlab::Middleware::PathTraversalCheck, feature_category: :shar
         end
 
         it 'does nothing' do
-          expect(::Gitlab::PathTraversal)
-            .not_to receive(:check_path_traversal!)
-          expect(::Gitlab::AppLogger)
-            .not_to receive(:warn)
+          expect(::Gitlab::PathTraversal).not_to receive(:path_traversal?)
+          expect(::Gitlab::AppLogger).not_to receive(:warn)
 
           expect(subject).to eq(fake_response)
         end
@@ -93,12 +98,9 @@ RSpec.describe ::Gitlab::Middleware::PathTraversalCheck, feature_category: :shar
     shared_examples 'path traversal' do
       it 'logs the problem and measures the execution time' do
         expect(::Gitlab::PathTraversal)
-          .to receive(:check_path_traversal!)
-                .with(decoded_fullpath, skip_decoding: true)
+          .to receive(:path_traversal?)
+                .with(decoded_fullpath, match_new_line: false)
                 .and_call_original
-        expect(::Gitlab::AppLogger)
-          .to receive(:warn)
-                .with({ message: described_class::PATH_TRAVERSAL_MESSAGE, path: instance_of(String) })
         expect(::Gitlab::AppLogger)
           .to receive(:warn)
                 .with({
@@ -120,12 +122,9 @@ RSpec.describe ::Gitlab::Middleware::PathTraversalCheck, feature_category: :shar
 
         it 'logs the problem without the execution time' do
           expect(::Gitlab::PathTraversal)
-            .to receive(:check_path_traversal!)
-                  .with(decoded_fullpath, skip_decoding: true)
+            .to receive(:path_traversal?)
+                  .with(decoded_fullpath, match_new_line: false)
                   .and_call_original
-          expect(::Gitlab::AppLogger)
-            .to receive(:warn)
-                  .with({ message: described_class::PATH_TRAVERSAL_MESSAGE, path: instance_of(String) })
           expect(::Gitlab::AppLogger)
             .to receive(:warn)
                   .with({
@@ -149,18 +148,20 @@ RSpec.describe ::Gitlab::Middleware::PathTraversalCheck, feature_category: :shar
       let(:method) { 'get' }
 
       where(:path, :query_params, :shared_example_name) do
-        '/foo/bar'            | {}                           | 'no issue'
-        '/foo/../bar'         | {}                           | 'path traversal'
-        '/foo%2Fbar'          | {}                           | 'no issue'
-        '/foo%2F..%2Fbar'     | {}                           | 'path traversal'
-        '/foo%252F..%252Fbar' | {}                           | 'no issue'
+        '/foo/bar'            | {}                                   | 'no issue'
+        '/foo/../bar'         | {}                                   | 'path traversal'
+        '/foo%2Fbar'          | {}                                   | 'no issue'
+        '/foo%2F..%2Fbar'     | {}                                   | 'path traversal'
+        '/foo%252F..%252Fbar' | {}                                   | 'no issue'
 
-        '/foo/bar'            | { x: 'foo' }                 | 'no issue'
-        '/foo/bar'            | { x: 'foo/../bar' }          | 'path traversal'
-        '/foo/bar'            | { x: 'foo%2Fbar' }           | 'no issue'
-        '/foo/bar'            | { x: 'foo%2F..%2Fbar' }      | 'no issue'
-        '/foo/bar'            | { x: 'foo%252F..%252Fbar' }  | 'no issue'
-        '/foo%2F..%2Fbar'     | { x: 'foo%252F..%252Fbar' }  | 'path traversal'
+        '/foo/bar'            | { x: 'foo' }                         | 'no issue'
+        '/foo/bar'            | { x: 'foo/../bar' }                  | 'path traversal'
+        '/foo/bar'            | { x: 'foo%2Fbar' }                   | 'no issue'
+        '/foo/bar'            | { x: 'foo%2F..%2Fbar' }              | 'no issue'
+        '/foo/bar'            | { x: 'foo%252F..%252Fbar' }          | 'no issue'
+        '/foo%2F..%2Fbar'     | { x: 'foo%252F..%252Fbar' }          | 'path traversal'
+
+        '/api/graphql'        | { query: CGI.escape(graphql_query) } | 'no issue'
       end
 
       with_them do
@@ -351,7 +352,7 @@ RSpec.describe ::Gitlab::Middleware::PathTraversalCheck, feature_category: :shar
             let(:method) { http_method }
 
             it 'does not check for path traversals' do
-              expect(::Gitlab::PathTraversal).not_to receive(:check_path_traversal!)
+              expect(::Gitlab::PathTraversal).not_to receive(:path_traversal?)
 
               subject
             end

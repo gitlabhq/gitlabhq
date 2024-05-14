@@ -11,10 +11,6 @@ module Admin
           inactive_projects_send_warning_email_after_months: settings.inactive_projects_send_warning_email_after_months
         }
       end
-
-      def project_missing_pipeline_yaml?(project)
-        !project.has_ci_config_file?
-      end
     end
   end
 end

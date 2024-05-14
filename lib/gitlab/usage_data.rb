@@ -231,7 +231,7 @@ module Gitlab
       # rubocop: disable CodeReuse/ActiveRecord
       def integrations_usage
         # rubocop: disable UsageData/LargeTable:
-        Integration.available_integration_names(include_dev: false).each_with_object({}) do |name, response|
+        Integration.available_integration_names(include_dev: false, include_disabled: true).each_with_object({}) do |name, response|
           type = Integration.integration_name_to_type(name)
 
           response[:"projects_#{name}_active"] = count(Integration.active.where.not(project: nil).where(type: type))

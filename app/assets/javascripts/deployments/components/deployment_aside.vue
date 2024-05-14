@@ -87,9 +87,10 @@ export default {
         <template #header>{{ $options.i18n.relatedTags }}</template>
         <show-more :items="deployment.tags" :limit="5">
           <template #default="{ item, isLast }">
-            <gl-link class="gl-mr-2" :href="item.path">
-              {{ item.name }}<template v-if="!isLast">,</template>
-            </gl-link>
+            <span class="gl-mr-2">
+              <gl-link :href="item.webPath">{{ item.name }}</gl-link
+              ><template v-if="!isLast">,</template>
+            </span>
           </template>
         </show-more>
       </aside-item>

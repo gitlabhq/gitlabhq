@@ -36,6 +36,7 @@ import { fetchPolicies } from '~/lib/graphql';
 import { isPositiveInteger } from '~/lib/utils/number_utils';
 import { scrollUp } from '~/lib/utils/scroll_utils';
 import { getParameterByName, joinPaths } from '~/lib/utils/url_utility';
+import { __ } from '~/locale';
 import {
   OPERATORS_IS,
   OPERATORS_IS_NOT,
@@ -75,6 +76,7 @@ import NewResourceDropdown from '~/vue_shared/components/new_resource_dropdown/n
 import WorkItemDetail from '~/work_items/components/work_item_detail.vue';
 import deleteWorkItemMutation from '~/work_items/graphql/delete_work_item.mutation.graphql';
 import { WORK_ITEM_TYPE_ENUM_OBJECTIVE } from '~/work_items/constants';
+import GitlabExperiment from '~/experimentation/components/gitlab_experiment.vue';
 import {
   CREATED_DESC,
   defaultTypeTokenOptions,
@@ -103,12 +105,11 @@ import {
   convertToApiParams,
   convertToSearchQuery,
   convertToUrlParams,
+  deriveSortKey,
   getFilterTokens,
   getInitialPageParams,
-  getSortKey,
   getSortOptions,
   groupMultiSelectFilterTokens,
-  isSortKey,
   mapWorkItemWidgetsToIssueFields,
   updateUpvotesCount,
 } from '../utils';
@@ -154,6 +155,7 @@ export default {
     LocalStorageSync,
     WorkItemDetail,
     GlLink,
+    GitlabExperiment,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -163,6 +165,7 @@ export default {
     'autocompleteAwardEmojisPath',
     'calendarPath',
     'canBulkUpdate',
+    'canCreateIssue',
     'canReadCrmContact',
     'canReadCrmOrganization',
     'exportCsvPath',
@@ -220,12 +223,12 @@ export default {
       subscribeDropdownOptions: {
         items: [
           {
-            text: i18n.rssLabel,
+            text: __('Subscribe to RSS feed'),
             href: this.rssPath,
             extraAttrs: { 'data-testid': 'subscribe-rss' },
           },
           {
-            text: i18n.calendarLabel,
+            text: __('Subscribe to calendar'),
             href: this.calendarPath,
             extraAttrs: { 'data-testid': 'subscribe-calendar' },
           },
@@ -330,7 +333,7 @@ export default {
       return this.isProject && this.isSignedIn;
     },
     showIssuableByEmail() {
-      return this.initialEmail && this.isSignedIn;
+      return this.initialEmail && this.canCreateIssue;
     },
     showNewIssueDropdown() {
       return !this.isProject && this.hasAnyProjects;
@@ -403,7 +406,7 @@ export default {
         {
           type: TOKEN_TYPE_MILESTONE,
           title: TOKEN_TITLE_MILESTONE,
-          icon: 'clock',
+          icon: 'milestone',
           token: MilestoneToken,
           recentSuggestionsStorageKey: `${this.fullPath}-issues-recent-tokens-milestone`,
           shouldSkipSort: true,
@@ -419,6 +422,7 @@ export default {
           fetchLabels: this.fetchLabels,
           fetchLatestLabels: this.glFeatures.frontendCaching ? this.fetchLatestLabels : null,
           recentSuggestionsStorageKey: `${this.fullPath}-issues-recent-tokens-label`,
+          multiSelect: this.glFeatures.groupMultiSelectTokens,
         },
         {
           type: TOKEN_TYPE_TYPE,
@@ -733,7 +737,7 @@ export default {
           });
         })
         .catch((error) => {
-          this.issuesError = this.$options.i18n.reorderError;
+          this.issuesError = __('An error occurred while reordering issues.');
           Sentry.captureException(error);
         });
     },
@@ -788,22 +792,16 @@ export default {
 
       this.$router.push({ query: this.urlParams });
     },
-    updateData(sortValue) {
+    updateData(sort) {
       const firstPageSize = getParameterByName(PARAM_FIRST_PAGE_SIZE);
       const lastPageSize = getParameterByName(PARAM_LAST_PAGE_SIZE);
       const state = getParameterByName(PARAM_STATE);
 
-      const defaultSortKey = state === STATUS_CLOSED ? UPDATED_DESC : CREATED_DESC;
-      const dashboardSortKey = getSortKey(sortValue);
-      const graphQLSortKey = isSortKey(sortValue?.toUpperCase()) && sortValue.toUpperCase();
-
-      // The initial sort is an old enum value when it is saved on the Haml dashboard issues page.
-      // The initial sort is a GraphQL enum value when it is saved on the Vue group/project issues page.
-      let sortKey = dashboardSortKey || graphQLSortKey || defaultSortKey;
+      let sortKey = deriveSortKey({ sort, state });
 
       if (this.isIssueRepositioningDisabled && sortKey === RELATIVE_POSITION_ASC) {
         this.showIssueRepositioningMessage();
-        sortKey = defaultSortKey;
+        sortKey = state === STATUS_CLOSED ? UPDATED_DESC : CREATED_DESC;
       }
 
       const tokens = getFilterTokens(window.location.search);
@@ -890,7 +888,7 @@ export default {
           this.refetchIssuables();
         })
         .catch((error) => {
-          this.issuesError = this.$options.i18n.deleteError;
+          this.issuesError = __('An error occurred while deleting an issuable.');
           Sentry.captureException(error);
         });
     },
@@ -927,7 +925,8 @@ export default {
         <work-item-detail
           :key="activeIssuable.iid"
           :work-item-iid="activeIssuable.iid"
-          class="gl-pt-0!"
+          is-drawer
+          class="gl-pt-0! work-item-drawer"
           @work-item-updated="updateIssuablesCache"
           @work-item-emoji-updated="updateIssuableEmojis"
           @addChild="refetchIssuables"
@@ -979,68 +978,76 @@ export default {
       @select-issuable="handleSelectIssuable"
     >
       <template #nav-actions>
-        <local-storage-sync
-          v-if="gridViewFeatureEnabled"
-          :value="viewType"
-          :storage-key="$options.ISSUES_VIEW_TYPE_KEY"
-          @input="switchViewType"
-        >
-          <gl-button-group>
-            <gl-button
-              :variant="isGridView ? 'default' : 'confirm'"
-              data-testid="list-view-type"
-              @click="switchViewType($options.ISSUES_LIST_VIEW_KEY)"
-            >
-              {{ $options.i18n.listLabel }}
-            </gl-button>
-            <gl-button
-              :variant="isGridView ? 'confirm' : 'default'"
-              data-testid="grid-view-type"
-              @click="switchViewType($options.ISSUES_GRID_VIEW_KEY)"
-            >
-              {{ $options.i18n.gridLabel }}
-            </gl-button>
-          </gl-button-group>
-        </local-storage-sync>
+        <div class="gl-display-flex gl-gap-3">
+          <local-storage-sync
+            v-if="gridViewFeatureEnabled"
+            :value="viewType"
+            :storage-key="$options.ISSUES_VIEW_TYPE_KEY"
+            @input="switchViewType"
+          >
+            <gl-button-group>
+              <gl-button
+                :variant="isGridView ? 'default' : 'confirm'"
+                data-testid="list-view-type"
+                @click="switchViewType($options.ISSUES_LIST_VIEW_KEY)"
+              >
+                {{ __('List') }}
+              </gl-button>
+              <gl-button
+                :variant="isGridView ? 'confirm' : 'default'"
+                data-testid="grid-view-type"
+                @click="switchViewType($options.ISSUES_GRID_VIEW_KEY)"
+              >
+                {{ __('Grid') }}
+              </gl-button>
+            </gl-button-group>
+          </local-storage-sync>
 
-        <gl-button
-          v-if="canBulkUpdate"
-          :disabled="isBulkEditButtonDisabled"
-          @click="handleBulkUpdateClick"
-        >
-          {{ $options.i18n.editIssues }}
-        </gl-button>
-        <slot name="new-issuable-button">
-          <gl-button v-if="showNewIssueLink" :href="newIssuePath" variant="confirm">
-            {{ $options.i18n.newIssueLabel }}
+          <gl-button
+            v-if="canBulkUpdate"
+            :disabled="isBulkEditButtonDisabled"
+            class="gl-flex-grow-1"
+            @click="handleBulkUpdateClick"
+          >
+            {{ __('Bulk edit') }}
           </gl-button>
-        </slot>
-        <new-resource-dropdown
-          v-if="showNewIssueDropdown"
-          :query="$options.searchProjectsQuery"
-          :query-variables="newIssueDropdownQueryVariables"
-          :extract-projects="extractProjects"
-          :group-id="groupId"
-        />
-        <gl-disclosure-dropdown
-          v-gl-tooltip.hover="$options.i18n.actionsLabel"
-          category="tertiary"
-          icon="ellipsis_v"
-          no-caret
-          :toggle-text="$options.i18n.actionsLabel"
-          text-sr-only
-          data-testid="issues-list-more-actions-dropdown"
-        >
-          <csv-import-export-buttons
-            v-if="showCsvButtons"
-            :export-csv-path="exportCsvPathWithQuery"
-            :issuable-count="currentTabCount"
+          <slot name="new-issuable-button">
+            <gl-button
+              v-if="showNewIssueLink"
+              :href="newIssuePath"
+              variant="confirm"
+              class="gl-flex-grow-1"
+            >
+              {{ __('New issue') }}
+            </gl-button>
+          </slot>
+          <new-resource-dropdown
+            v-if="showNewIssueDropdown"
+            :query="$options.searchProjectsQuery"
+            :query-variables="newIssueDropdownQueryVariables"
+            :extract-projects="extractProjects"
+            :group-id="groupId"
           />
-          <gl-disclosure-dropdown-group
-            :bordered="showCsvButtons"
-            :group="subscribeDropdownOptions"
-          />
-        </gl-disclosure-dropdown>
+          <gl-disclosure-dropdown
+            v-gl-tooltip.hover="$options.i18n.actionsLabel"
+            category="tertiary"
+            icon="ellipsis_v"
+            no-caret
+            :toggle-text="$options.i18n.actionsLabel"
+            text-sr-only
+            data-testid="issues-list-more-actions-dropdown"
+          >
+            <csv-import-export-buttons
+              v-if="showCsvButtons"
+              :export-csv-path="exportCsvPathWithQuery"
+              :issuable-count="currentTabCount"
+            />
+            <gl-disclosure-dropdown-group
+              :bordered="showCsvButtons"
+              :group="subscribeDropdownOptions"
+            />
+          </gl-disclosure-dropdown>
+        </div>
       </template>
 
       <template #timeframe="{ issuable = {} }">
@@ -1062,6 +1069,10 @@ export default {
       <template #list-body>
         <slot name="list-body"></slot>
       </template>
+
+      <template #title-icons="{ issuable }">
+        <slot name="title-icons" v-bind="{ issuable, apiFilterParams }"></slot>
+      </template>
     </issuable-list>
 
     <empty-state-without-any-issues
@@ -1070,8 +1081,18 @@ export default {
       :export-csv-path-with-query="exportCsvPathWithQuery"
       :show-csv-buttons="showCsvButtons"
       :show-new-issue-dropdown="showNewIssueDropdown"
+      :show-issuable-by-email="showIssuableByEmail"
     />
 
-    <issuable-by-email v-if="showIssuableByEmail" class="gl-text-center gl-pt-5 gl-pb-7" />
+    <gitlab-experiment v-if="showIssuableByEmail" name="issues_mrs_empty_state">
+      <template #control>
+        <issuable-by-email
+          class="gl-text-center gl-pt-5 gl-pb-7"
+          data-track-action="click_email_issue_project_issues_empty_list_page"
+          data-track-label="email_issue_project_issues_empty_list"
+          data-track-experiment="issues_mrs_empty_state"
+        />
+      </template>
+    </gitlab-experiment>
   </div>
 </template>

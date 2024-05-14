@@ -13,6 +13,20 @@ RSpec.shared_examples 'common user build items' do
     user
   end
 
+  context 'when organization_id is in the params' do
+    it 'creates personal namespace in specified organization' do
+      expect(user.namespace.organization).to eq(organization)
+    end
+  end
+
+  context 'when organization_id is not in the params' do
+    let(:params) { base_params.except(:organization_id) }
+
+    it 'does not assign organization' do
+      expect(user.namespace.organization).to eq(nil)
+    end
+  end
+
   context 'when user_type is provided' do
     context 'when project_bot' do
       before do
@@ -63,12 +77,15 @@ RSpec.shared_examples_for 'current user not admin build items' do
         password: 1,
         password_automatically_set: 1,
         username: 1,
-        user_type: 'project_bot'
+        user_type: 'project_bot',
+        organization_id: organization.id
       }
     end
 
+    let(:user_params) { params.except(:organization_id) }
+
     it 'sets all allowed attributes' do
-      expect(User).to receive(:new).with(hash_including(params)).and_call_original
+      expect(User).to receive(:new).with(hash_including(user_params)).and_call_original
 
       user
     end

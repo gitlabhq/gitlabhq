@@ -189,9 +189,9 @@ Use the following questions to guide you:
      or `ULTIMATE_FEATURES`.
 1. Will this feature be available globally (system-wide at the GitLab instance level)?
     - Features such as [Geo](../administration/geo/index.md) and
-    [Database Load Balancing](../administration/postgresql/database_load_balancing.md) are used by the entire instance
-    and cannot be restricted to individual user namespaces. These features are defined in the instance license.
-    Add these features to `GLOBAL_FEATURES`.
+      [Database Load Balancing](../administration/postgresql/database_load_balancing.md) are used by the entire instance
+      and cannot be restricted to individual user namespaces. These features are defined in the instance license.
+      Add these features to `GLOBAL_FEATURES`.
 
 ### Guard your EE feature
 

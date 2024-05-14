@@ -8,14 +8,14 @@ module Resolvers
       type ::Types::Ci::JobType.connection_type, null: true
 
       argument :statuses, [::Types::Ci::JobStatusEnum],
-              required: false,
-              description: 'Filter jobs by status.'
+        required: false,
+        description: 'Filter jobs by status.'
 
       argument :runner_types, [::Types::Ci::RunnerTypeEnum],
-              required: false,
-              alpha: { milestone: '16.4' },
-              description: 'Filter jobs by runner type if ' \
-                           'feature flag `:admin_jobs_filter_runner_type` is enabled.'
+        required: false,
+        alpha: { milestone: '16.4' },
+        description: 'Filter jobs by runner type if ' \
+                     'feature flag `:admin_jobs_filter_runner_type` is enabled.'
 
       def resolve_with_lookahead(**args)
         jobs = ::Ci::JobsFinder.new(current_user: current_user, params: params_data(args)).execute

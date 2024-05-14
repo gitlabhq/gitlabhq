@@ -4,20 +4,32 @@ require 'spec_helper'
 
 RSpec.describe Groups::RunnersController, feature_category: :fleet_visibility do
   let_it_be(:user) { create(:user) }
-  let_it_be(:namespace_settings) { create(:namespace_settings, runner_registration_enabled: true) }
+  let_it_be(:namespace_settings) do
+    create(:namespace_settings, runner_registration_enabled: true, allow_runner_registration_token: true)
+  end
+
   let_it_be(:group) { create(:group, namespace_settings: namespace_settings) }
   let_it_be(:project) { create(:project, group: group) }
   let_it_be(:runner) { create(:ci_runner, :group, groups: [group]) }
 
   let!(:project_runner) { create(:ci_runner, :project, projects: [project]) }
   let!(:instance_runner) { create(:ci_runner, :instance) }
+  let(:runner_registration_enabled) { true }
 
   before do
+    namespace_settings.update!(runner_registration_enabled: runner_registration_enabled)
+
     sign_in(user)
   end
 
   describe '#index', :snowplow do
+    let(:allow_runner_registration_token) { false }
+
     subject(:execute_get_request) { get :index, params: { group_id: group } }
+
+    before do
+      stub_application_setting(allow_runner_registration_token: allow_runner_registration_token)
+    end
 
     shared_examples 'can access the page' do
       it 'renders index with 200 status code' do
@@ -55,11 +67,15 @@ RSpec.describe Groups::RunnersController, feature_category: :fleet_visibility do
 
       include_examples 'can access the page'
 
-      it 'does not expose runner creation and registration variables' do
-        execute_get_request
+      context 'when runner registration is allowed' do
+        let(:allow_runner_registration_token) { true }
 
-        expect(assigns(:group_runner_registration_token)).to be_nil
-        expect(assigns(:group_new_runner_path)).to be_nil
+        it 'does not expose runner creation and registration variables' do
+          execute_get_request
+
+          expect(assigns(:group_runner_registration_token)).to be_nil
+          expect(assigns(:group_new_runner_path)).to be_nil
+        end
       end
     end
 
@@ -70,11 +86,32 @@ RSpec.describe Groups::RunnersController, feature_category: :fleet_visibility do
 
       include_examples 'can access the page'
 
-      it 'exposes runner creation and registration variables' do
+      it 'does not expose runner registration variables' do
         execute_get_request
 
-        expect(assigns(:group_runner_registration_token)).not_to be_nil
-        expect(assigns(:group_new_runner_path)).to eq(new_group_runner_path(group))
+        expect(assigns(:group_runner_registration_token)).to be_nil
+      end
+
+      context 'when runner registration is allowed' do
+        let(:allow_runner_registration_token) { true }
+
+        it 'exposes runner creation and registration variables' do
+          execute_get_request
+
+          expect(assigns(:group_runner_registration_token)).not_to be_nil
+          expect(assigns(:group_new_runner_path)).to eq(new_group_runner_path(group))
+        end
+
+        context 'when runner registration is disabled' do
+          let(:runner_registration_enabled) { false }
+
+          it 'does not expose runner creation and registration variables' do
+            execute_get_request
+
+            expect(assigns(:group_runner_registration_token)).to be_nil
+            expect(assigns(:group_new_runner_path)).to be_nil
+          end
+        end
       end
     end
 

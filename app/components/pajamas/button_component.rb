@@ -2,6 +2,10 @@
 
 module Pajamas
   class ButtonComponent < Pajamas::Component
+    # Below slot must be used as an exception to render custom icon image that is available from assets,
+    # configs, attachments, etc. For all other regular cases please use :icon param to add an icon.
+    renders_one :icon_content
+
     # @param [Symbol] category
     # @param [Symbol] variant
     # @param [Symbol] size
@@ -122,8 +126,15 @@ module Pajamas
       attributes['disabled'] = 'disabled' if @disabled || @loading
       attributes['aria-disabled'] = true if @disabled || @loading
       attributes['type'] = @type unless @href
+      attributes['rel'] = safe_rel_for_target_blank if link? && @target == '_blank'
 
       attributes
+    end
+
+    def safe_rel_for_target_blank
+      (@button_options[:rel] || '').split(' ')
+        .concat(%w[noopener noreferrer])
+        .uniq.join(' ')
     end
   end
 end

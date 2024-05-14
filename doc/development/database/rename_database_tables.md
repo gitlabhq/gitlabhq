@@ -6,8 +6,6 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # Rename table without downtime
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/54354) in GitLab 13.12.
-
 With our database helper methods built into GitLab, it's possible to rename a database table without downtime.
 
 The technique builds on top of database views, using the following steps:
@@ -60,8 +58,6 @@ Consider the next release as "Release N.M".
 Execute a standard migration (not a post-migration):
 
 ```ruby
-  enable_lock_retries!
-
   def up
     rename_table_safely(:issues, :tickets)
   end

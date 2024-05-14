@@ -1,9 +1,10 @@
 <script>
-import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
+import { s__ } from '~/locale';
+import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
 
 export default {
   components: {
-    ClipboardButton,
+    ModalCopyButton,
   },
   props: {
     prompt: {
@@ -16,6 +17,16 @@ export default {
       required: false,
       default: '',
     },
+    buttonTitle: {
+      type: String,
+      required: false,
+      default: s__('Runners|Copy command'),
+    },
+    modalId: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   computed: {
     lines() {
@@ -25,7 +36,7 @@ export default {
       return this.command;
     },
     clipboard() {
-      return this.lines.join('');
+      return this.lines?.join('') || '';
     },
   },
 };
@@ -35,8 +46,10 @@ export default {
     <!-- eslint-disable vue/require-v-for-key-->
     <pre
       class="gl-w-full"
-    ><span v-if="prompt" class="gl-user-select-none">{{ prompt }} </span><template v-for="line in lines">{{ line }}<br class="gl-user-select-none"/></template></pre>
+      :style="{ maxHeight: '300px' }"
+    ><span v-if="prompt" class="gl-select-none">{{ prompt }} </span><template v-for="line in lines">{{ line }}<br class="gl-select-none"/></template></pre>
     <!-- eslint-enable vue/require-v-for-key-->
-    <clipboard-button :text="clipboard" :title="__('Copy')" />
+
+    <modal-copy-button :text="clipboard" :modal-id="modalId" :title="buttonTitle" />
   </div>
 </template>

@@ -39,7 +39,6 @@ Style/HashEachMethods:
     - 'ee/app/graphql/types/vulnerability/external_issue_link_external_tracker_enum.rb'
     - 'ee/app/graphql/types/vulnerability/external_issue_link_type_enum.rb'
     - 'ee/app/graphql/types/vulnerability/issue_link_type_enum.rb'
-    - 'ee/app/graphql/types/vulnerability_confidence_enum.rb'
     - 'ee/app/graphql/types/vulnerability_grade_enum.rb'
     - 'ee/app/graphql/types/vulnerability_report_type_enum.rb'
     - 'ee/app/graphql/types/vulnerability_severities_count_type.rb'

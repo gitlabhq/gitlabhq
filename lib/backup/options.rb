@@ -35,6 +35,13 @@ module Backup
       keyword_init: true
     )
 
+    # A backup will by default use STREAM strategy where content is streamed to the archive
+    # With COPY strategy, files are copied first to a temporary location before they are added to the archive
+    module Strategy
+      STREAM = :stream
+      COPY = :copy
+    end
+
     # Backup ID is the backup filename portion without extensions
     # When this option is not provided, the backup name will be based on date, timestamp and gitlab version
     #
@@ -58,6 +65,11 @@ module Backup
     # @return [Boolean] whether to bypass warnings and perform dangerous operations
     attr_accessor :force
     alias_method :force?, :force
+
+    # What strategy the backup process should use
+    #
+    # @return [Strategy::STREAM|Strategy::COPY]
+    attr_accessor :strategy
 
     # A list of all tasks and whether they can be skipped or not
     #
@@ -138,7 +150,7 @@ module Backup
 
     # rubocop:disable Metrics/ParameterLists -- This is a data object with all possible CMD options
     def initialize(
-      backup_id: nil, previous_backup: nil, incremental: false, force: false,
+      backup_id: nil, previous_backup: nil, incremental: false, force: false, strategy: Strategy::STREAM,
       skippable_tasks: SkippableTasks.new, skippable_operations: SkippableOperations.new,
       max_parallelism: nil, max_storage_parallelism: nil,
       repository_storages: [], repository_paths: [], skip_repository_paths: [],
@@ -148,6 +160,7 @@ module Backup
       @previous_backup = previous_backup
       @incremental = incremental
       @force = force
+      @strategy = strategy
       @skippable_tasks = skippable_tasks
       @skippable_operations = skippable_operations
       @max_parallelism = max_parallelism
@@ -173,6 +186,7 @@ module Backup
       self.previous_backup = ENV['PREVIOUS_BACKUP']
       self.incremental = Gitlab::Utils.to_boolean(ENV['INCREMENTAL'], default: incremental)
       self.force = Gitlab::Utils.to_boolean(force_value, default: force)
+      self.strategy = Strategy::COPY if ENV['STRATEGY'] == 'copy'
       self.max_parallelism = ENV['GITLAB_BACKUP_MAX_CONCURRENCY']&.to_i
       self.max_storage_parallelism = ENV['GITLAB_BACKUP_MAX_STORAGE_CONCURRENCY']&.to_i
       self.remote_directory = ENV['DIRECTORY']

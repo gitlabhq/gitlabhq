@@ -11,8 +11,8 @@ module Mutations
         ScopeID = ::GraphQL::Types::ID
 
         argument :type, ::Types::Ci::RunnerTypeEnum,
-                 required: true,
-                 description: 'Scope of the object to reset the token for.'
+          required: true,
+          description: 'Scope of the object to reset the token for.'
 
         argument :id, ScopeID,
           required: false,

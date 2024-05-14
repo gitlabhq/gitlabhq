@@ -9,7 +9,7 @@ RSpec.describe 'User scrolls to deep-linked note', feature_category: :team_plann
   let_it_be(:comments) { create_list(:note_on_issue, 20, noteable: issue, project: project, note: 'spacer note') }
 
   context 'on issue page', :js do
-    it 'on comment' do
+    it 'on comment', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/446195' do
       visit project_issue_path(project, issue, anchor: "note_#{comment_1.id}")
 
       wait_for_requests

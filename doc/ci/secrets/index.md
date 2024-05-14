@@ -8,11 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218746) in GitLab 13.4 and GitLab Runner 13.4.
-> - `file` setting [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/250695) in GitLab 14.1 and GitLab Runner 14.1.
-> - `VAULT_NAMESPACE` setting [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/255619) in GitLab 14.9 and GitLab Runner 14.9.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Secrets represent sensitive information your CI job needs to complete work. This
 sensitive information can be items like API tokens, database credentials, or private keys.
@@ -57,6 +53,19 @@ Read the [Authenticating and Reading Secrets With HashiCorp Vault](../examples/a
 tutorial for a version of this feature. It's available to all
 subscription levels, supports writing secrets to and deleting secrets from Vault,
 and supports multiple secrets engines.
+
+## Vault Secrets Engines
+
+> - `generic` option [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366492) in GitLab Runner 16.11.
+
+The Vault Secrets Engines supported by GitLab Runner are:
+
+| Secrets engine                                                                                                                                     | [`secrets:engine:name`](../yaml/index.md#secretsvault) value | Runner version | Details |
+|----------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------|----------------|---------|
+| [KV secrets engine - version 2](https://developer.hashicorp.com/vault/docs/secrets/kv/kv-v2)                                                       | `kv-v2`                                                      | 13.4           | `kv-v2` is the default engine GitLab Runner uses when no engine type is explicitly specified. |
+| [KV secrets engine - version 1](https://developer.hashicorp.com/vault/docs/secrets/kv/kv-v1)                                                       | `kv-v1` or `generic`                                         | 13.4           | Support for the `generic` keyword [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366492) in GitLab 15.11. |
+| [The AWS secrets engine](https://developer.hashicorp.com/vault/docs/secrets/aws)                                                                   | `generic`                                                    | 16.11          |         |
+| [Hashicorp Vault Artifactory Secrets Plugin](https://jfrog.com/help/r/jfrog-integrations-documentation/hashicorp-vault-artifactory-secrets-plugin) | `generic`                                                    | 16.11          | This secrets backend talks to JFrog Artifactory server (5.0.0 or later) and dynamically provisions access tokens with specified scopes. |
 
 ## Configure your Vault server
 
@@ -110,12 +119,10 @@ To configure your Vault server:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/28321) in GitLab 13.4 and GitLab Runner 13.4.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 After [configuring your Vault server](#configure-your-vault-server), you can use
-the secrets stored in Vault by defining them with the `vault` keyword:
+the secrets stored in Vault by defining them with the [`vault` keyword](../yaml/index.md#secretsvault):
 
 ```yaml
 job_using_vault:
@@ -154,8 +161,31 @@ secrets:
 In this example, the secret value is put directly in the `DATABASE_PASSWORD` variable
 instead of pointing to a file that holds it.
 
-For more information about the supported syntax, read the
-[`.gitlab-ci.yml` reference](../yaml/index.md#secretsvault).
+## Use a different secrets engine
+
+The `kv-v2` secrets engine is used by default. To use [a different engine](#vault-secrets-engines), add an `engine` section
+under `vault` in the configuration.
+
+For example, to set the secret engine and path for Artifactory:
+
+```yaml
+job_using_vault:
+  id_tokens:
+    VAULT_ID_TOKEN:
+      aud: https://gitlab.com
+  secrets:
+    JFROG_TOKEN:
+      vault:
+        engine:
+          name: generic
+          path: artifactory
+        path: production/jfrog
+        field: access_token
+      file: false
+```
+
+In this example, the secret value is obtained from `artifactory/production/jfrog` with a field of `access_token`.
+The `generic` secrets engine can be used for [`kv-v1`, AWS, Artifactory and other similar vault secret engines](#vault-secrets-engines).
 
 ## Configure Vault server roles
 

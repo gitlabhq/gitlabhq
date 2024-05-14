@@ -11,14 +11,12 @@ milestone: "13.12"
 introduced_by_url:
 time_frame: 7d
 data_source: redis_hll
-instrumentation_class: AggregatedMetric
-options:
-  aggregate:
-    operator: OR
-    attribute: user_id
-  events:
-    - o_pipeline_authoring_unique_users_committing_ciconfigfile
-    - o_pipeline_authoring_unique_users_pushing_mr_ciconfigfile
+instrumentation_class: RedisHLLMetric
+events:
+- name: o_pipeline_authoring_unique_users_committing_ciconfigfile
+  unique: user.id
+- name: o_pipeline_authoring_unique_users_pushing_mr_ciconfigfile
+  unique: user.id
 distribution:
 - ce
 - ee

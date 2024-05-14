@@ -1,0 +1,12 @@
+-# no_container is needed here because of full width side-by-side diff view
+- @no_container = true
+- add_to_breadcrumbs _('Commits'), project_commits_path(@project)
+- breadcrumb_title @commit.short_id
+- container_class = !fluid_layout && diff_view == :inline ? 'container-limited' : ''
+- page_title        "#{@commit.title} (#{@commit.short_id})", _('Commits')
+- page_description  @commit.description
+- add_page_specific_style 'page_bundles/pipelines'
+
+.container-fluid{ class: [container_class] }
+  = render "commit_box"
+  = render "ci_menu"

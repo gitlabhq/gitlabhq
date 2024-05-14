@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::Importer::ProtectedBranchImporter do
+RSpec.describe Gitlab::GithubImport::Importer::ProtectedBranchImporter, feature_category: :importers do
   subject(:importer) { described_class.new(github_protected_branch, project, client) }
 
   let(:branch_name) { 'protection' }
@@ -120,9 +120,10 @@ RSpec.describe Gitlab::GithubImport::Importer::ProtectedBranchImporter do
       context 'when "allow force pushes - everyone" rule is enabled' do
         let(:allow_force_pushes_on_github) { true }
 
-        context 'when there is any default branch protection' do
+        context 'when default branch protection is applied' do
           before do
-            stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_FULL)
+            stub_application_setting(default_branch_protection_defaults:
+                                       Gitlab::Access::BranchProtection.protected_fully)
           end
 
           let(:expected_allow_force_push) { false }
@@ -132,7 +133,8 @@ RSpec.describe Gitlab::GithubImport::Importer::ProtectedBranchImporter do
 
         context 'when there is no default branch protection' do
           before do
-            stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_NONE)
+            stub_application_setting(default_branch_protection_defaults:
+                                       Gitlab::Access::BranchProtection.protection_none)
           end
 
           let(:expected_allow_force_push) { allow_force_pushes_on_github }
@@ -325,9 +327,10 @@ RSpec.describe Gitlab::GithubImport::Importer::ProtectedBranchImporter do
           allow(project).to receive(:default_branch).and_return(branch_name)
         end
 
-        context 'when default branch protection = Gitlab::Access::PROTECTION_DEV_CAN_PUSH' do
+        context 'when default branch protection is partially protected' do
           before do
-            stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_DEV_CAN_PUSH)
+            stub_application_setting(default_branch_protection_defaults:
+                                       Gitlab::Access::BranchProtection.protection_partial)
           end
 
           let(:expected_push_access_level) { Gitlab::Access::DEVELOPER }
@@ -336,9 +339,10 @@ RSpec.describe Gitlab::GithubImport::Importer::ProtectedBranchImporter do
           it_behaves_like 'create branch protection by the strictest ruleset'
         end
 
-        context 'when default branch protection = Gitlab::Access::PROTECTION_DEV_CAN_MERGE' do
+        context 'when default branch protection is protected against developer pushes' do
           before do
-            stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_DEV_CAN_MERGE)
+            stub_application_setting(default_branch_protection_defaults:
+                                       Gitlab::Access::BranchProtection.protected_against_developer_pushes)
           end
 
           let(:expected_push_access_level) { Gitlab::Access::MAINTAINER }

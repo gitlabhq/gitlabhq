@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - Ability to re-import projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23905) in GitLab 15.9.
 > - Ability to import reviewers [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416611) in GitLab 16.3.
@@ -27,7 +27,8 @@ This process is different than [importing from Bitbucket Cloud](bitbucket.md).
   must be enabled. If not enabled, ask your GitLab administrator to enable it. The Bitbucket Server import source is enabled
   by default on GitLab.com.
 - At least the Maintainer role on the destination group to import to.
-- Bitbucket Server authentication token with administrator access.
+- Bitbucket Server authentication token with administrator access. Without administrator access, some data is
+  [not imported](https://gitlab.com/gitlab-org/gitlab/-/issues/446218).
 
 ## Import repositories
 
@@ -90,7 +91,7 @@ The following items are changed when they are imported:
 FLAG:
 On self-managed GitLab, matching user mentions with GitLab users is not available. To make it available per user,
 an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `bitbucket_server_import_stage_import_users`.
-On GitLab.com, this feature is not available.
+On GitLab.com and GitLab Dedicated, this feature is not available.
 
 When issues and pull requests are importing, the importer tries to find the author's email address
 with a confirmed email address in the GitLab user database. If no such user is available, the
@@ -113,7 +114,6 @@ The importer attempts to find:
 
 ### User assignment by username
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218609) in GitLab 13.4 [with a flag](../../../administration/feature_flags.md) named `bitbucket_server_user_mapping_by_username`. Disabled by default.
 > - Not recommended for production use.
 
 FLAG:

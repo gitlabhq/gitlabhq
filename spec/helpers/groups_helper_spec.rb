@@ -105,10 +105,10 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
     end
 
     it 'enqueues the elements in the breadcrumb schema list' do
-      expect(helper).to receive(:push_to_schema_breadcrumb).with(group.name, group_path(group))
-      expect(helper).to receive(:push_to_schema_breadcrumb).with(nested_group.name, group_path(nested_group))
-      expect(helper).to receive(:push_to_schema_breadcrumb).with(deep_nested_group.name, group_path(deep_nested_group))
-      expect(helper).to receive(:push_to_schema_breadcrumb).with(very_deep_nested_group.name, group_path(very_deep_nested_group))
+      expect(helper).to receive(:push_to_schema_breadcrumb).with(group.name, group_path(group), nil)
+      expect(helper).to receive(:push_to_schema_breadcrumb).with(nested_group.name, group_path(nested_group), nil)
+      expect(helper).to receive(:push_to_schema_breadcrumb).with(deep_nested_group.name, group_path(deep_nested_group), nil)
+      expect(helper).to receive(:push_to_schema_breadcrumb).with(very_deep_nested_group.name, group_path(very_deep_nested_group), nil)
 
       subject
     end
@@ -301,6 +301,57 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
     end
   end
 
+  describe '#can_set_group_diff_preview_in_email?' do
+    let_it_be(:group) { create(:group, name: 'group') }
+    let_it_be(:subgroup) { create(:group, name: 'subgroup', parent: group) }
+
+    let_it_be(:current_user) { create(:user) }
+    let_it_be(:group_owner)  { create(:group_member, :owner, group: group, user: create(:user)).user }
+    let_it_be(:group_maintainer) { create(:group_member, :maintainer, group: group, user: create(:user)).user }
+
+    before do
+      group.update_attribute(:show_diff_preview_in_email, true)
+      stub_feature_flags(diff_preview_in_email: true)
+    end
+
+    it 'returns true for an owner of the group' do
+      allow(helper).to receive(:current_user) { group_owner }
+
+      expect(helper.can_set_group_diff_preview_in_email?(group)).to be_truthy
+    end
+
+    it 'returns false for a maintainer of the group' do
+      allow(helper).to receive(:current_user) { group_maintainer }
+
+      expect(helper.can_set_group_diff_preview_in_email?(group)).to be_falsey
+    end
+
+    it 'returns false for anyone else' do
+      allow(helper).to receive(:current_user) { current_user }
+
+      expect(helper.can_set_group_diff_preview_in_email?(group)).to be_falsey
+    end
+
+    context 'respects the settings of a parent group' do
+      context 'when a parent group has disabled diff previews ' do
+        before do
+          group.update_attribute(:show_diff_preview_in_email, false)
+        end
+
+        it 'returns false for all users' do
+          allow(helper).to receive(:current_user) { group_owner }
+          expect(helper.can_set_group_diff_preview_in_email?(subgroup)).to be_falsey
+
+          allow(helper).to receive(:current_user) { group_maintainer }
+          expect(helper.can_set_group_diff_preview_in_email?(subgroup)).to be_falsey
+
+          allow(helper).to receive(:current_user) { current_user }
+          expect(helper.can_set_group_diff_preview_in_email?(subgroup)).to be_falsey
+        end
+      end
+    end
+  end
+
   describe '#can_update_default_branch_protection?' do
     let_it_be(:current_user) { create(:user) }
     let_it_be(:group) { create(:group) }
@@ -422,7 +473,7 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
 
     context 'when group has a parent' do
       it 'returns expected hash' do
-        expect(subgroup_creation_data(subgroup)).to eq({
+        expect(subgroup_creation_data(subgroup)).to include({
           import_existing_group_path: '/groups/new#import-group-pane',
           parent_group_name: name,
           parent_group_url: group_url(group),
@@ -433,7 +484,7 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
 
     context 'when group does not have a parent' do
       it 'returns expected hash' do
-        expect(subgroup_creation_data(group)).to eq({
+        expect(subgroup_creation_data(group)).to include({
           import_existing_group_path: '/groups/new#import-group-pane',
           parent_group_name: nil,
           parent_group_url: nil,
@@ -480,7 +531,7 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
           group_id: group.id,
           subgroups_and_projects_endpoint: including("/groups/#{group.path}/-/children.json"),
           shared_projects_endpoint: including("/groups/#{group.path}/-/shared_projects.json"),
-          archived_projects_endpoint: including("/groups/#{group.path}/-/children.json?archived=only"),
+          inactive_projects_endpoint: including("/groups/#{group.path}/-/children.json?archived=only"),
           current_group_visibility: group.visibility,
           initial_sort: initial_sort,
           show_schema_markup: 'true',
@@ -689,6 +740,20 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
           expect(subject).to be_empty
         end
       end
+    end
+  end
+
+  describe '#show_prevent_inviting_groups_outside_hierarchy_setting?' do
+    let_it_be(:group) { create(:group) }
+
+    it 'returns true for a root group' do
+      expect(helper.show_prevent_inviting_groups_outside_hierarchy_setting?(group)).to eq(true)
+    end
+
+    it 'returns false for a subgroup' do
+      subgroup = create(:group, parent: group)
+
+      expect(helper.show_prevent_inviting_groups_outside_hierarchy_setting?(subgroup)).to eq(false)
     end
   end
 end

@@ -1,4 +1,5 @@
 import { GlFormInput, GlModal, GlAlert } from '@gitlab/ui';
+import { nextTick } from 'vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import DeleteModal from '~/projects/components/shared/delete_modal.vue';
 import { __, sprintf } from '~/locale';
@@ -17,6 +18,7 @@ describe('DeleteModal', () => {
     mergeRequestsCount: 2,
     forksCount: 3,
     starsCount: 4,
+    confirmLoading: false,
   };
 
   const createComponent = (propsData) => {
@@ -143,10 +145,12 @@ describe('DeleteModal', () => {
     });
   });
 
-  it('emits `primary` event', () => {
+  it('emits `primary` with .prevent event', () => {
     createComponent();
 
-    findGlModal().vm.$emit('primary');
+    findGlModal().vm.$emit('primary', {
+      preventDefault: jest.fn(),
+    });
 
     expect(wrapper.emitted('primary')).toEqual([[]]);
   });
@@ -163,5 +167,18 @@ describe('DeleteModal', () => {
     createComponent();
 
     expect(wrapper.findByTestId('modal-footer-slot').exists()).toBe(true);
+  });
+
+  it('when confirmLoading switches from true to false, emits `change event`', async () => {
+    createComponent({ confirmLoading: true });
+
+    // setProps is justified here because we are testing the component's
+    // reactive behavior which constitutes an exception
+    // See https://docs.gitlab.com/ee/development/fe_guide/style/vue.html#setting-component-state
+    wrapper.setProps({ confirmLoading: false });
+
+    await nextTick();
+
+    expect(wrapper.emitted('change')).toEqual([[false]]);
   });
 });

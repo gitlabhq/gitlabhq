@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 With Design Management you can upload design assets (including wireframes and mockups)
 to GitLab issues and keep them stored in a single place. Product designers, product managers, and
@@ -18,7 +18,8 @@ You can share mockups of designs with your team, or visual regressions can be
 viewed and addressed.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For a video overview, see [Design Management (GitLab 12.2)](https://www.youtube.com/watch?v=CCMtCqdK_aM).
+For a video overview, see [Design Management](https://www.youtube.com/watch?v=CCMtCqdK_aM).
+<!-- Video published on 2019-07-11 -->
 
 ## Requirements
 
@@ -27,7 +28,7 @@ For a video overview, see [Design Management (GitLab 12.2)](https://www.youtube.
   - On self-managed instances, a GitLab administrator must
     [enable LFS globally](../../../administration/lfs/index.md).
   - On both GitLab.com and self-managed instances, LFS must be
-    [enabled for the project itself](../settings/project_features_permissions.md#configure-project-features-and-permissions).
+    [enabled for the project itself](../settings/index.md#configure-project-features-and-permissions).
     If enabled globally, LFS is enabled by default for all projects. If you have
     disabled it for your project, you must enable it again.
 
@@ -110,10 +111,11 @@ To move around the image while zoomed in, drag the image.
 ## Add a design to an issue
 
 > - Ability to edit the description [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388449) in GitLab 16.1.
+> - Minimum role to add a design to an issue [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147053) from Developer to Reporter in GitLab 16.11.
 
 Prerequisites:
 
-- You must have at least the Developer role for the project.
+- You must have at least the Reporter role for the project.
 - The names of the uploaded files must be no longer than 255 characters.
 
 To add a design to an issue:
@@ -144,11 +146,13 @@ To add a design to an issue:
 
 ## Add a new version of a design
 
+> - Minimum role to add a new version of a design [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147053) from Developer to Reporter in GitLab 16.11.
+
 As discussion on a design continues, you might want to upload a new version of a design.
 
 Prerequisites:
 
-- You must have at least the Developer role for the project.
+- You must have at least the Reporter role for the project.
 
 To do so, [add a design](#add-a-design-to-an-issue) with the same filename.
 
@@ -163,6 +167,8 @@ When designs are skipped, a warning message is displayed.
 
 ## Archive a design
 
+> - Minimum role to archive a design [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147053) from Developer to Reporter in GitLab 16.11.
+
 You can archive individual designs or select a few of them to archive at once.
 
 Archived designs are not permanently lost.
@@ -174,7 +180,7 @@ URL.
 
 Prerequisites:
 
-- You must have at least the Developer role for the project.
+- You must have at least the Reporter role for the project.
 - You can archive only the latest version of a design.
 
 To archive a single design:
@@ -282,7 +288,7 @@ and [project](../working_with_projects.md#view-project-activity) activity pages.
 You can use the GitLab-Figma plugin to upload your designs from Figma directly to your issues
 in GitLab.
 
-To use the plugin in Figma, install it from the [Figma Directory](https://www.figma.com/community/plugin/860845891704482356)
+To use the plugin in Figma, install it from the [Figma Directory](https://www.figma.com/community/plugin/860845891704482356/gitlab)
 and connect to GitLab through a personal access token.
 
 For more information, see the [plugin documentation](https://gitlab.com/gitlab-org/gitlab-figma-plugin/-/wikis/home).

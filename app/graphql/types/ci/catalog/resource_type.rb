@@ -29,6 +29,9 @@ module Types
         field :icon, GraphQL::Types::String, null: true, description: 'Icon for the catalog resource.',
           method: :avatar_path, alpha: { milestone: '15.11' }
 
+        field :full_path, GraphQL::Types::String, null: true, description: 'Full project path of the catalog resource.',
+          alpha: { milestone: '16.11' }
+
         field :web_path, GraphQL::Types::String, null: true, description: 'Web path of the catalog resource.',
           alpha: { milestone: '16.1' }
 
@@ -38,11 +41,7 @@ module Types
           resolver: Resolvers::Ci::Catalog::Resources::VersionsResolver,
           alpha: { milestone: '16.2' }
 
-        field :latest_version, Types::Ci::Catalog::Resources::VersionType, null: true,
-          description: 'Latest version of the catalog resource.',
-          alpha: { milestone: '16.1' }
-
-        field :verification_level, Types::Ci::Catalog::Resources::Components::VerificationLevelEnum, null: true,
+        field :verification_level, Types::Ci::Catalog::Resources::VerificationLevelEnum, null: true,
           description: 'Verification level of the catalog resource.',
           alpha: { milestone: '16.9' }
 
@@ -53,6 +52,15 @@ module Types
         field :star_count, GraphQL::Types::Int, null: false,
           description: 'Number of times the catalog resource has been starred.',
           alpha: { milestone: '16.1' }
+
+        field :starrers_path, GraphQL::Types::String, null: true,
+          description: 'Relative path to the starrers page for the catalog resource project.',
+          alpha: { milestone: '16.10' }
+
+        field :last_30_day_usage_count, GraphQL::Types::Int, null: false,
+          description: 'Number of projects that used a component from this catalog resource in a pipeline, by using ' \
+                       '`include:component`, in the last 30 days.',
+          alpha: { milestone: '17.0' }
 
         def open_issues_count
           BatchLoader::GraphQL.wrap(object.project.open_issues_count)
@@ -66,20 +74,13 @@ module Types
           ::Gitlab::Routing.url_helpers.project_path(object.project)
         end
 
-        def latest_version
-          BatchLoader::GraphQL.for(object).batch do |catalog_resources, loader|
-            latest_versions = ::Ci::Catalog::Resources::VersionsFinder.new(
-              catalog_resources, current_user, latest: true).execute
-
-            latest_versions.index_by(&:catalog_resource).each do |catalog_resource, latest_version|
-              loader.call(catalog_resource, latest_version)
-            end
-          end
-        end
-
         def readme_html_resolver
           markdown_context = context.to_h.dup.merge(project: object.project)
           ::MarkupHelper.markdown(object.project.repository.readme&.data, markdown_context)
+        end
+
+        def starrers_path
+          Gitlab::Routing.url_helpers.project_starrers_path(object.project)
         end
       end
       # rubocop: enable Graphql/AuthorizeTypes

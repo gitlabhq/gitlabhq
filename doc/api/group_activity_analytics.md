@@ -8,9 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26460) in GitLab 12.9.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 ## Get count of recently created issues for group
 

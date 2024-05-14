@@ -10,9 +10,9 @@ import {
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { s__, __ } from '~/locale';
-import DeploymentStatusLink from '~/environments/environment_details/components/deployment_status_link.vue';
+import DeploymentStatusLink from '~/environments/components/deployment_status_link.vue';
 import DeploymentCommit from '~/environments/components/commit.vue';
-import { FINISHED_STATUSES } from '../utils';
+import { isFinished } from '../utils';
 
 export default {
   components: {
@@ -56,7 +56,7 @@ export default {
     },
     needsApproval() {
       return (
-        !this.isFinished(this.deployment.status) &&
+        !this.isFinished(this.deployment) &&
         this.deployment.approvalSummary?.status === 'PENDING_APPROVAL'
       );
     },
@@ -70,7 +70,7 @@ export default {
       return this.deployment.commit || {};
     },
     commitPath() {
-      return this.deployment.commit.webUrl || '';
+      return this.deployment.commit.webPath || '';
     },
     shortSha() {
       return this.deployment.commit?.shortId;
@@ -91,18 +91,16 @@ export default {
       return this.triggerer?.webUrl;
     },
     timeagoText() {
-      return this.isFinished(this.deployment.status)
+      return this.isFinished(this.deployment)
         ? this.$options.i18n.finishedTimeagoText
         : this.$options.i18n.startedTimeagoText;
     },
     timeagoTime() {
-      return this.isFinished(this.deployment.status) ? this.finishedAt : this.createdAt;
+      return this.isFinished(this.deployment) ? this.finishedAt : this.createdAt;
     },
   },
   methods: {
-    isFinished(status) {
-      return FINISHED_STATUSES.includes(status);
-    },
+    isFinished,
   },
   i18n: {
     copyButton: __('Copy commit SHA'),
@@ -151,7 +149,7 @@ export default {
       >
         <template #default="{ timeAgo }">
           <gl-icon name="calendar" class="gl-mr-2" />
-          <span class="gl-mr-2 gl-white-space-nowrap">
+          <span class="gl-mr-2 gl-whitespace-nowrap">
             <gl-sprintf :message="timeagoText">
               <template #timeago>{{ timeAgo }}</template>
               <template #username>

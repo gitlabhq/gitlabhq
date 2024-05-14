@@ -4,11 +4,7 @@ require 'spec_helper'
 
 RSpec.describe BulkImports::ExportService, feature_category: :importers do
   let_it_be(:group) { create(:group) }
-  let_it_be(:user) { create(:user) }
-
-  before do
-    group.add_owner(user)
-  end
+  let_it_be(:user) { create(:user, owner_of: group) }
 
   subject { described_class.new(portable: group, user: user) }
 

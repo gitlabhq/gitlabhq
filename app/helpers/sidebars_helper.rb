@@ -49,6 +49,7 @@ module SidebarsHelper
       current_menu_items: panel.super_sidebar_menu_items,
       current_context_header: panel.super_sidebar_context_header,
       support_path: support_url,
+      docs_path: help_docs_path,
       display_whats_new: display_whats_new?,
       whats_new_most_recent_release_items_count: whats_new_most_recent_release_items_count,
       whats_new_version_digest: whats_new_version_digest,
@@ -98,6 +99,7 @@ module SidebarsHelper
       can_sign_out: current_user_menu?(:sign_out),
       sign_out_link: destroy_user_session_path,
       issues_dashboard_path: issues_dashboard_path(assignee_username: user.username),
+      merge_request_dashboard_path: user.merge_request_dashboard_enabled? ? merge_requests_dashboard_path : nil,
       todos_dashboard_path: dashboard_todos_path,
       create_new_menu_groups: create_new_menu_groups(group: group, project: project),
       merge_request_menu: create_merge_request_menu(user),
@@ -112,8 +114,13 @@ module SidebarsHelper
       is_impersonating: impersonating?,
       stop_impersonation_path: admin_impersonation_path,
       shortcut_links: shortcut_links(user: user, project: project),
-      track_visits_path: track_namespace_visits_path
+      track_visits_path: track_namespace_visits_path,
+      work_items: work_items_modal_data(group)
     })
+  end
+
+  def work_items_modal_data(group)
+    { full_path: group.full_path } if group
   end
 
   def super_sidebar_nav_panel(
@@ -160,13 +167,13 @@ module SidebarsHelper
     end
   end
 
-  def command_palette_data(project: nil)
+  def command_palette_data(project: nil, current_ref: nil)
     return {} unless project&.repo_exists?
     return {} if project.empty_repo?
 
     {
-      project_files_url: project_files_path(project, project.default_branch, format: :json),
-      project_blob_url: project_blob_path(project, project.default_branch)
+      project_files_url: project_files_path(project, current_ref || project.default_branch, format: :json),
+      project_blob_url: project_blob_path(project, current_ref || project.default_branch)
     }
   end
 
@@ -220,6 +227,8 @@ module SidebarsHelper
   end
 
   def create_merge_request_menu(user)
+    return if user.merge_request_dashboard_enabled?
+
     [
       {
         name: _('Merge requests'),
@@ -390,7 +399,7 @@ module SidebarsHelper
       },
       {
         title: _('Projects'),
-        href: explore_projects_path,
+        href: starred_explore_projects_path,
         css_class: 'dashboard-shortcuts-projects'
       }
     ]

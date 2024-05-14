@@ -81,4 +81,20 @@ RSpec.describe CustomEmoji do
       it { expect(described_class.for_namespaces([subgroup.id, group.id])).to eq([subgroup_emoji]) }
     end
   end
+
+  describe '#url' do
+    before do
+      stub_asset_proxy_setting(
+        enabled: true,
+        secret_key: 'shared-secret',
+        url: 'https://assets.example.com'
+      )
+    end
+
+    it 'uses the asset proxy' do
+      emoji = build(:custom_emoji, name: 'gitlab', file: "http://example.com/test.png")
+
+      expect(emoji.url).to eq("https://assets.example.com/08df250eeeef1a8cf2c761475ac74c5065105612/687474703a2f2f6578616d706c652e636f6d2f746573742e706e67")
+    end
+  end
 end

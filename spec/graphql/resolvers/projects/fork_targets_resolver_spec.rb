@@ -8,7 +8,7 @@ RSpec.describe Resolvers::Projects::ForkTargetsResolver do
   let_it_be(:group) { create(:group, path: 'namespace-group') }
   let_it_be(:another_group) { create(:group, path: 'namespace-another-group') }
   let_it_be(:project) { create(:project, :private, group: group) }
-  let_it_be(:user) { create(:user, username: 'namespace-user', maintainer_projects: [project]) }
+  let_it_be(:user) { create(:user, username: 'namespace-user', maintainer_of: project) }
 
   let(:args) { { search: 'namespace' } }
 

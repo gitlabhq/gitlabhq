@@ -149,7 +149,7 @@ RSpec.describe 'Branches', feature_category: :source_code_management do
         visit project_branches_filtered_path(project, state: 'all')
 
         click_button "Updated date" # Open sorting dropdown
-        within '[data-testid="branches-dropdown"]' do
+        within_testid 'branches-dropdown' do
           first('span', text: 'Name').click
         end
 
@@ -160,7 +160,7 @@ RSpec.describe 'Branches', feature_category: :source_code_management do
         visit project_branches_filtered_path(project, state: 'all')
 
         click_button "Updated date" # Open sorting dropdown
-        within '[data-testid="branches-dropdown"]' do
+        within_testid 'branches-dropdown' do
           first('span', text: 'Oldest updated').click
         end
 
@@ -334,7 +334,9 @@ RSpec.describe 'Branches', feature_category: :source_code_management do
 
         page.within first('.all-branches li') do
           wait_for_requests
-          find('[data-testid="branch-more-actions"] .gl-new-dropdown-toggle').click
+          within_testid('branch-more-actions') do
+            find('.gl-new-dropdown-toggle').click
+          end
           click_link 'Compare'
         end
 
@@ -382,8 +384,10 @@ RSpec.describe 'Branches', feature_category: :source_code_management do
 
   def delete_branch_and_confirm
     wait_for_requests
-    find('[data-testid="branch-more-actions"] .gl-new-dropdown-toggle', match: :first).click
-    find('[data-testid="delete-branch-button"]').click
+    within_testid('branch-more-actions', match: :first) do
+      find('.gl-new-dropdown-toggle', match: :first).click
+    end
+    find_by_testid('delete-branch-button').click
 
     within '.modal-footer' do
       click_button 'Yes, delete branch'

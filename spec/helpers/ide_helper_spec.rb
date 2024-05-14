@@ -83,6 +83,15 @@ RSpec.describe IdeHelper, feature_category: :web_ide do
           .to include(base_data)
       end
 
+      it 'includes extensions gallery settings' do
+        expect(Gitlab::WebIde::ExtensionsMarketplace).to receive(:webide_extensions_gallery_settings)
+          .with(user: user).and_return({ enabled: false })
+
+        actual = helper.ide_data(project: nil, fork_info: fork_info, params: params)
+
+        expect(actual).to include({ 'extensions-gallery-settings' => { enabled: false }.to_json })
+      end
+
       it 'includes editor font configuration' do
         ide_data = helper.ide_data(project: nil, fork_info: fork_info, params: params)
         editor_font = ::Gitlab::Json.parse(ide_data.fetch('editor-font'), symbolize_names: true)

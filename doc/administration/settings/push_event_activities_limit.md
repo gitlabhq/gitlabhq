@@ -10,8 +10,6 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31007) in GitLab 12.4.
-
 Set the number of branches or tags to limit the number of single push events
 allowed at once. If the number of events is greater than this, GitLab creates
 bulk push event instead.

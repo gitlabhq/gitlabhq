@@ -4,13 +4,8 @@ require 'spec_helper'
 
 RSpec.describe Projects::FeatureFlagsUserListsController do
   let_it_be(:project) { create(:project) }
-  let_it_be(:reporter) { create(:user) }
-  let_it_be(:developer) { create(:user) }
-
-  before_all do
-    project.add_reporter(reporter)
-    project.add_developer(developer)
-  end
+  let_it_be(:reporter) { create(:user, reporter_of: project) }
+  let_it_be(:developer) { create(:user, developer_of: project) }
 
   def request_params(extra_params = {})
     { namespace_id: project.namespace, project_id: project }.merge(extra_params)

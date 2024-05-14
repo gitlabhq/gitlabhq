@@ -1,5 +1,5 @@
 ---
-stage: Service Management
+stage: Monitor
 group: Respond
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -8,9 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
-
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4638) in GitLab 14.1.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Escalation Policies protect your company from missed critical alerts. Escalation Policies contain
 time-boxed steps that automatically page the next responder in the escalation step if the responder
@@ -45,6 +43,8 @@ When configuring an escalation rule, you can designate who to page:
 
 When a notification is sent to a user through an on-call schedule or directly, a system note listing
 the paged users is created on the alert.
+
+The time specified for an escalation rule must be between 0 and 1440 minutes.
 
 ## Edit an escalation policy
 

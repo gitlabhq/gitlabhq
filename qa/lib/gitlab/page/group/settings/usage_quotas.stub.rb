@@ -293,7 +293,7 @@ module Gitlab
             # This is a stub, used for indexing. The method is dynamically generated.
           end
 
-          # @note Defined as +div :group_usage_message+
+          # @note Defined as +span :group_usage_message+
           # @return [String] The text content or value of +group_usage_message+
           def group_usage_message
             # This is a stub, used for indexing. The method is dynamically generated.
@@ -303,7 +303,7 @@ module Gitlab
           #   Gitlab::Page::Group::Settings::UsageQuotas.perform do |usage_quotas|
           #     expect(usage_quotas.group_usage_message_element).to exist
           #   end
-          # @return [Watir::Div] The raw +Div+ element
+          # @return [Watir::Span] The raw +Div+ element
           def group_usage_message_element
             # This is a stub, used for indexing. The method is dynamically generated.
           end

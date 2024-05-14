@@ -6,7 +6,7 @@ RSpec.describe 'Subscribe to a work item', feature_category: :team_planning do
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project, :private) }
-  let_it_be(:guest) { create(:user).tap { |user| project.add_guest(user) } }
+  let_it_be(:guest) { create(:user, guest_of: project) }
   let_it_be(:work_item) { create(:work_item, project: project) }
 
   let(:subscribed_state) { true }

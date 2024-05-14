@@ -1,0 +1,21 @@
+query inboundGetGroupsAndProjectsWithCIJobTokenScope($fullPath: ID!) {
+  project(fullPath: $fullPath) {
+    id
+    ciJobTokenScope {
+      groupsAllowlist {
+        nodes {
+          id
+          name
+          fullPath
+        }
+      }
+      inboundAllowlist {
+        nodes {
+          id
+          name
+          fullPath
+        }
+      }
+    }
+  }
+}

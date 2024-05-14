@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 ## List project jobs
 
@@ -193,7 +193,7 @@ GET /projects/:id/pipelines/:pipeline_id/jobs
 |-------------------|--------------------------------|----------|-------------|
 | `id`              | integer/string                 | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 | `pipeline_id`     | integer                        | Yes      | ID of a pipeline. Can also be obtained in CI jobs via the [predefined CI variable](../ci/variables/predefined_variables.md) `CI_PIPELINE_ID`. |
-| `include_retried` | boolean                        | No       | Include retried jobs in the response. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/272627) in GitLab 13.9. |
+| `include_retried` | boolean                        | No       | Include retried jobs in the response. Defaults to `false`. |
 | `scope`           | string **or** array of strings | No       | Scope of jobs to show. Either one of or an array of the following: `created`, `pending`, `running`, `failed`, `success`, `canceled`, `skipped`, `waiting_for_resource`, or `manual`. All jobs are returned if `scope` is not provided. |
 
 ```shell
@@ -512,7 +512,7 @@ Example of response
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Retrieve the job that generated the `CI_JOB_TOKEN`, along with a list of allowed
 [agents](../user/clusters/agent/index.md).
@@ -799,6 +799,9 @@ Example of response
 }
 ```
 
+NOTE:
+Prior to GitLab 17.0, this endpoint does not support trigger jobs.
+
 ## Erase a job
 
 Erase a single job of a project (remove job artifacts and a job log)
@@ -861,7 +864,7 @@ Example of response
 
 NOTE:
 You can't delete archived jobs with the API, but you can
-[delete job artifacts and logs from jobs completed before a specific date](../administration/job_artifacts_troubleshooting.md#delete-job-artifacts-and-logs-from-jobs-completed-before-a-specific-date)
+[delete job artifacts and logs from jobs completed before a specific date](../administration/job_artifacts_troubleshooting.md#delete-old-builds-and-artifacts)
 
 ## Run a job
 
@@ -875,7 +878,7 @@ POST /projects/:id/jobs/:job_id/play
 |----------------------------|-----------------|----------|-------------|
 | `id`                       | integer/string  | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 | `job_id`                   | integer         | Yes      | ID of a job. |
-| `job_variables_attributes` | array of hashes | No       | An array containing the custom variables available to the job. [Introduced in](https://gitlab.com/gitlab-org/gitlab/-/issues/37267) GitLab 14.9. |
+| `job_variables_attributes` | array of hashes | No       | An array containing the custom variables available to the job. |
 
 Example request:
 

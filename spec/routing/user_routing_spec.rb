@@ -11,7 +11,7 @@ RSpec.describe 'user routing', :clean_gitlab_redis_sessions, feature_category: :
 
   context 'when GitHub OAuth on sign in is cancelled' do
     before do
-      stub_session(auth_on_failure_path: '/projects/new#import_project')
+      stub_session(session_data: { auth_on_failure_path: '/projects/new#import_project' })
     end
 
     context 'when all required parameters are present' do

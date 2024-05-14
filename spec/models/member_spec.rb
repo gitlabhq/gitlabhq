@@ -182,7 +182,7 @@ RSpec.describe Member, feature_category: :groups_and_projects do
     let_it_be(:awaiting_project_member) { create(:project_member, :awaiting, project: project) }
 
     before_all do
-      @owner_user = create(:user).tap { |u| group.add_owner(u) }
+      @owner_user = create(:user, owner_of: group)
       @owner = group.members.find_by(user_id: @owner_user.id)
       @blocked_owner_user = create(:user).tap do |u|
         group.add_owner(u)
@@ -191,8 +191,11 @@ RSpec.describe Member, feature_category: :groups_and_projects do
       end
       @blocked_owner = group.members.find_by(user_id: @blocked_owner_user.id)
 
-      @maintainer_user = create(:user).tap { |u| project.add_maintainer(u) }
+      @maintainer_user = create(:user, maintainer_of: project)
       @maintainer = project.members.find_by(user_id: @maintainer_user.id)
+
+      @developer_user = create(:user).tap { |u| group.add_developer(u) }
+      @developer = project.members.find_by(user_id: @developer_user.id)
 
       @blocked_maintainer_user = create(:user).tap do |u|
         project.add_maintainer(u)
@@ -647,20 +650,78 @@ RSpec.describe Member, feature_category: :groups_and_projects do
 
     describe '.distinct_on_user_with_max_access_level' do
       let_it_be(:other_group) { create(:group) }
+      let_it_be(:group_project) { create(:project, group: group) }
       let_it_be(:member_with_lower_access_level) { create(:group_member, :developer, group: other_group, user: @owner_user) }
+      let_it_be(:member_with_same_access_level) { create(:group_member, :maintainer, group: other_group, user: @maintainer_user) }
+      let_it_be(:project_member_with_same_access_level) { create(:project_member, :maintainer, project: group_project, user: @maintainer_user) }
+      let_it_be(:member_with_higher_access_level) { create(:group_member, :maintainer, group: other_group, user: @developer_user) }
 
-      subject { described_class.default_scoped.distinct_on_user_with_max_access_level.to_a }
+      let(:for_object) { group }
 
-      it { is_expected.not_to include member_with_lower_access_level }
-      it { is_expected.to include @owner }
-      it { is_expected.to include @maintainer }
-      it { is_expected.to include @invited_member }
-      it { is_expected.to include @accepted_invite_member }
-      it { is_expected.to include @requested_member }
-      it { is_expected.to include @accepted_request_member }
-      it { is_expected.to include @blocked_maintainer }
-      it { is_expected.to include @blocked_developer }
-      it { is_expected.to include @member_with_minimal_access }
+      subject { described_class.default_scoped.distinct_on_user_with_max_access_level(for_object).to_a }
+
+      context 'for group' do
+        it { is_expected.not_to include member_with_lower_access_level }
+        it { is_expected.not_to include member_with_same_access_level }
+        it { is_expected.not_to include @developer }
+        it { is_expected.to include @owner }
+        it { is_expected.to include @maintainer }
+        it { is_expected.to include @invited_member }
+        it { is_expected.to include @accepted_invite_member }
+        it { is_expected.to include @requested_member }
+        it { is_expected.to include @accepted_request_member }
+        it { is_expected.to include @blocked_maintainer }
+        it { is_expected.to include @blocked_developer }
+        it { is_expected.to include @member_with_minimal_access }
+        it { is_expected.to include member_with_higher_access_level }
+      end
+
+      context 'for other_group' do
+        let(:for_object) { other_group }
+
+        it { is_expected.not_to include member_with_lower_access_level }
+        it { is_expected.not_to include @developer }
+        it { is_expected.not_to include @maintainer }
+
+        it { is_expected.to include @owner }
+        it { is_expected.to include @invited_member }
+        it { is_expected.to include @accepted_invite_member }
+        it { is_expected.to include @requested_member }
+        it { is_expected.to include @accepted_request_member }
+        it { is_expected.to include @blocked_maintainer }
+        it { is_expected.to include @blocked_developer }
+        it { is_expected.to include @member_with_minimal_access }
+        it { is_expected.to include member_with_same_access_level }
+        it { is_expected.to include member_with_higher_access_level }
+      end
+
+      context 'for project' do
+        let(:for_object) { group_project }
+
+        it { is_expected.not_to include member_with_lower_access_level }
+        it { is_expected.not_to include @developer }
+        it { is_expected.not_to include @maintainer }
+        it { is_expected.not_to include member_with_same_access_level }
+
+        it { is_expected.to include @owner }
+        it { is_expected.to include @invited_member }
+        it { is_expected.to include @accepted_invite_member }
+        it { is_expected.to include @requested_member }
+        it { is_expected.to include @accepted_request_member }
+        it { is_expected.to include @blocked_maintainer }
+        it { is_expected.to include @blocked_developer }
+        it { is_expected.to include @member_with_minimal_access }
+        it { is_expected.to include project_member_with_same_access_level }
+        it { is_expected.to include member_with_higher_access_level }
+      end
+
+      context 'for other object' do
+        let(:for_object) { build(:organization) }
+
+        it 'raises an error' do
+          expect { subject }.to raise_error ArgumentError, "Invalid object: Organizations::Organization"
+        end
+      end
 
       context 'with where conditions' do
         let_it_be(:example_member) { create(:group_member, invite_email: 'user@example.com') }
@@ -669,7 +730,7 @@ RSpec.describe Member, feature_category: :groups_and_projects do
           described_class
             .default_scoped
             .where(invite_email: 'user@example.com')
-            .distinct_on_user_with_max_access_level
+            .distinct_on_user_with_max_access_level(group)
             .to_a
         end
 
@@ -783,6 +844,51 @@ RSpec.describe Member, feature_category: :groups_and_projects do
     context 'when the user type is invalid' do
       it 'returns nil' do
         expect(described_class.filter_by_user_type('invalid_type')).to eq(nil)
+      end
+    end
+  end
+
+  describe '.with_group_group_sharing_access' do
+    let_it_be(:shared_group) { create(:group) }
+    let_it_be(:invited_group) { create(:group) }
+
+    where(:member_access_in_invited_group, :group_sharing_access) do
+      Gitlab::Access::REPORTER | Gitlab::Access::DEVELOPER
+      Gitlab::Access::DEVELOPER | Gitlab::Access::REPORTER
+    end
+
+    with_them do
+      before do
+        create(:group_group_link,
+          shared_group: shared_group,
+          shared_with_group: invited_group,
+          group_access: group_sharing_access)
+      end
+
+      let(:member) { create(:group_member, source: invited_group, access_level: member_access_in_invited_group) }
+
+      shared_examples 'returns the minimum of member access level and group sharing access level' do
+        specify do
+          members = invited_group
+                         .members
+                         .with_group_group_sharing_access(shared_group)
+                         .id_in(member.id)
+                         .to_a
+
+          expect(members.size).to eq(1)
+          expect(members.first.access_level).to eq(Gitlab::Access::REPORTER)
+        end
+      end
+
+      it_behaves_like 'returns the minimum of member access level and group sharing access level'
+
+      context 'with multiple group group links' do
+        before_all do
+          create(:group_group_link, :owner, shared_with_group: invited_group)
+          create(:group_group_link, :owner, shared_group: shared_group)
+        end
+
+        it_behaves_like 'returns the minimum of member access level and group sharing access level'
       end
     end
   end
@@ -1088,13 +1194,11 @@ RSpec.describe Member, feature_category: :groups_and_projects do
     let_it_be(:group) { create(:group, :with_organization) }
     let_it_be(:user) { create(:user) }
     let(:member) { create(:group_member, source: group, user: user) }
-    let(:update_organization_users_enabled) { true }
 
     subject(:commit_member) { member }
 
     before do
       allow(Organizations::OrganizationUser).to receive(:create_organization_record_for).once.and_call_original
-      stub_feature_flags(update_organization_users: update_organization_users_enabled)
     end
 
     shared_examples_for 'does not create an organization_user entry' do
@@ -1104,75 +1208,67 @@ RSpec.describe Member, feature_category: :groups_and_projects do
     end
 
     context 'when creating' do
-      context 'when update_organization_users is enabled' do
-        it 'inserts new record on member creation' do
-          expect { member }.to change { Organizations::OrganizationUser.count }.by(1)
-          record_attrs = { organization: group.organization, user: member.user, access_level: :default }
-          expect(Organizations::OrganizationUser.exists?(record_attrs)).to be(true)
-        end
+      it 'inserts new record on member creation' do
+        expect { member }.to change { Organizations::OrganizationUser.count }.by(1)
+        record_attrs = { organization: group.organization, user: member.user, access_level: :default }
+        expect(Organizations::OrganizationUser.exists?(record_attrs)).to be(true)
+      end
 
-        context 'when user already exists in the organization_users' do
-          let_it_be(:user) { create(:user) }
-          let_it_be(:common_attrs) { { organization: group.organization, user: user } }
-          let(:new_member) { create(:group_member, :owner, source: group, user: user) }
+      context 'when user already exists in the organization_users' do
+        let_it_be(:user) { create(:user) }
+        let_it_be(:common_attrs) { { organization: group.organization, user: user } }
+        let(:new_member) { create(:group_member, :owner, source: group, user: user) }
 
-          context 'for an already existing default organization_user' do
-            before_all do
-              create(:organization_user, common_attrs)
-            end
-
-            it 'does not insert a new record in organization_users' do
-              expect { new_member }.not_to change { Organizations::OrganizationUser.count }
-              expect(
-                Organizations::OrganizationUser.exists?(
-                  organization: group.organization, user: user, access_level: :default
-                )
-              ).to be(true)
-            end
-
-            it 'does not update timestamps' do
-              travel_to(1.day.from_now) do
-                expect { new_member }.not_to change { Organizations::OrganizationUser.last.updated_at }
-              end
-            end
+        context 'for an already existing default organization_user' do
+          before_all do
+            create(:organization_user, common_attrs)
           end
 
-          context 'for an already existing owner organization_user' do
-            before_all do
-              create(:organization_user, :owner, common_attrs)
-            end
+          it 'does not insert a new record in organization_users' do
+            expect { new_member }.not_to change { Organizations::OrganizationUser.count }
+            expect(
+              Organizations::OrganizationUser.exists?(
+                organization: group.organization, user: user, access_level: :default
+              )
+            ).to be(true)
+          end
 
-            it 'does not insert a new record in organization_users nor update the access_level' do
-              expect do
-                create(:group_member, :owner, source: group, user: user)
-              end.not_to change { Organizations::OrganizationUser.count }
-
-              expect(
-                Organizations::OrganizationUser.exists?(common_attrs.merge(access_level: :default))
-              ).to be(false)
-              expect(
-                Organizations::OrganizationUser.exists?(common_attrs.merge(access_level: :owner))
-              ).to be(true)
+          it 'does not update timestamps' do
+            travel_to(1.day.from_now) do
+              expect { new_member }.not_to change { Organizations::OrganizationUser.last.updated_at }
             end
           end
         end
 
-        context 'when updating the organization_users is not successful' do
-          it 'rolls back the member creation' do
-            allow(Organizations::OrganizationUser)
-              .to receive(:create_organization_record_for).once.and_raise(ActiveRecord::StatementTimeout)
+        context 'for an already existing owner organization_user' do
+          before_all do
+            create(:organization_user, :owner, common_attrs)
+          end
 
-            expect { commit_member }.to raise_error(ActiveRecord::StatementTimeout)
-            expect(Organizations::OrganizationUser.exists?(organization: group.organization)).to be(false)
-            expect(group.group_members).to be_empty
+          it 'does not insert a new record in organization_users nor update the access_level' do
+            expect do
+              create(:group_member, :owner, source: group, user: user)
+            end.not_to change { Organizations::OrganizationUser.count }
+
+            expect(
+              Organizations::OrganizationUser.exists?(common_attrs.merge(access_level: :default))
+            ).to be(false)
+            expect(
+              Organizations::OrganizationUser.exists?(common_attrs.merge(access_level: :owner))
+            ).to be(true)
           end
         end
       end
 
-      context 'when update_organization_users is disabled' do
-        let(:update_organization_users_enabled) { false }
+      context 'when updating the organization_users is not successful' do
+        it 'rolls back the member creation' do
+          allow(Organizations::OrganizationUser)
+            .to receive(:create_organization_record_for).once.and_raise(ActiveRecord::StatementTimeout)
 
-        it_behaves_like 'does not create an organization_user entry'
+          expect { commit_member }.to raise_error(ActiveRecord::StatementTimeout)
+          expect(Organizations::OrganizationUser.exists?(organization: group.organization)).to be(false)
+          expect(group.group_members).to be_empty
+        end
       end
 
       context 'when member is an invite' do
@@ -1197,30 +1293,22 @@ RSpec.describe Member, feature_category: :groups_and_projects do
 
           subject(:commit_member) { member.accept_invite!(user) }
 
-          context 'when update_organization_users is enabled' do
-            it 'inserts new record on member creation' do
-              expect { commit_member }.to change { Organizations::OrganizationUser.count }.by(1)
-              expect(group.organization.user?(user)).to be(true)
-            end
-
-            context 'when updating the organization_users is not successful' do
-              before do
-                allow(Organizations::OrganizationUser)
-                  .to receive(:create_organization_record_for).once.and_raise(ActiveRecord::StatementTimeout)
-              end
-
-              it 'rolls back the member creation' do
-                expect { commit_member }.to raise_error(ActiveRecord::StatementTimeout)
-                expect(group.organization.user?(user)).to be(false)
-                expect(member.reset.user).to be_nil
-              end
-            end
+          it 'inserts new record on member creation' do
+            expect { commit_member }.to change { Organizations::OrganizationUser.count }.by(1)
+            expect(group.organization.user?(user)).to be(true)
           end
 
-          context 'when update_organization_users is disabled' do
-            let(:update_organization_users_enabled) { false }
+          context 'when updating the organization_users is not successful' do
+            before do
+              allow(Organizations::OrganizationUser)
+                .to receive(:create_organization_record_for).once.and_raise(ActiveRecord::StatementTimeout)
+            end
 
-            it_behaves_like 'does not create an organization_user entry'
+            it 'rolls back the member creation' do
+              expect { commit_member }.to raise_error(ActiveRecord::StatementTimeout)
+              expect(group.organization.user?(user)).to be(false)
+              expect(member.reset.user).to be_nil
+            end
           end
 
           context 'when organization does not exist' do

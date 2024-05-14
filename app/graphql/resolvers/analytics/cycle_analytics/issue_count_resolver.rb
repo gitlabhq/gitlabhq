@@ -13,7 +13,7 @@ module Resolvers
 
           {
             value: value,
-            title: n_('New Issue', 'New Issues', value),
+            title: n_('New issue', 'New issues', value),
             identifier: 'issues',
             links: []
           }
@@ -22,7 +22,7 @@ module Resolvers
         private
 
         def process_params(params)
-          params[:assignee_username] = params.delete(:assignee_usernames) if params[:assignee_usernames]
+          params[:assignee_username] = params.delete(:assignee_usernames) if params[:assignee_usernames].present?
           params[:label_name] = params.delete(:label_names) if params[:label_names]
           params[:created_after] = params.delete(:from)
           params[:created_before] = params.delete(:to)

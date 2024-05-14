@@ -84,7 +84,7 @@ export default {
 </script>
 <template>
   <div>
-    <h2 class="gl-font-size-h2 gl-my-5">
+    <h2 class="gl-heading-2">
       {{ s__('Runners|Tags') }}
     </h2>
     <gl-skeleton-loader v-if="loading" :lines="16" />
@@ -104,7 +104,7 @@ export default {
           <gl-sprintf
             :message="
               s__(
-                'Runners|Add tags to specify jobs that the runner can run. %{helpLinkStart}Learn more.%{helpLinkEnd}',
+                'Runners|Add tags to specify jobs that the runner can run. %{helpLinkStart}Learn more%{helpLinkEnd}.',
               )
             "
           >
@@ -127,7 +127,7 @@ export default {
 
     <hr aria-hidden="true" />
 
-    <h2 class="gl-font-size-h2 gl-my-5">
+    <h2 class="gl-heading-2">
       {{ s__('Runners|Configuration') }}
       {{ __('(optional)') }}
     </h2>

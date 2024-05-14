@@ -10,26 +10,26 @@ module Mutations
       description 'Update attributes of a merge request'
 
       argument :title, GraphQL::Types::String,
-               required: false,
-               description: copy_field_description(Types::MergeRequestType, :title)
+        required: false,
+        description: copy_field_description(Types::MergeRequestType, :title)
 
       argument :target_branch, GraphQL::Types::String,
-               required: false,
-               description: copy_field_description(Types::MergeRequestType, :target_branch)
+        required: false,
+        description: copy_field_description(Types::MergeRequestType, :target_branch)
 
       argument :description, GraphQL::Types::String,
-               required: false,
-               description: copy_field_description(Types::MergeRequestType, :description)
+        required: false,
+        description: copy_field_description(Types::MergeRequestType, :description)
 
       argument :state, ::Types::MergeRequestStateEventEnum,
-               required: false,
-               as: :state_event,
-               description: 'Action to perform to change the state.'
+        required: false,
+        as: :state_event,
+        description: 'Action to perform to change the state.'
 
       argument :time_estimate, GraphQL::Types::String,
-               required: false,
-               description: 'Estimated time to complete the merge request. ' \
-                            'Use `null` or `0` to remove the current estimate.'
+        required: false,
+        description: 'Estimated time to complete the merge request. ' \
+                     'Use `null` or `0` to remove the current estimate.'
 
       def resolve(project_path:, iid:, **args)
         merge_request = authorized_find!(project_path: project_path, iid: iid)
@@ -66,3 +66,5 @@ module Mutations
     end
   end
 end
+
+Mutations::MergeRequests::Update.prepend_mod_with('Mutations::MergeRequests::Update')

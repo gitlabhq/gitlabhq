@@ -9,6 +9,9 @@ module Ci
     include Limitable
     include EachBatch
     include BatchNullifyDependentAssociations
+    include Gitlab::Utils::StrongMemoize
+
+    VALID_REF_FORMAT_REGEX = %r{\A(#{Gitlab::Git::TAG_REF_PREFIX}|#{Gitlab::Git::BRANCH_REF_PREFIX}).[^\/]+}
 
     self.limit_name = 'ci_pipeline_schedules'
     self.limit_scope = :project
@@ -90,6 +93,21 @@ module Ci
       nullify_dependent_associations_in_batches
 
       super
+    end
+
+    def expand_short_ref
+      return if ref.blank? || VALID_REF_FORMAT_REGEX.match?(ref) || ambiguous_ref?
+
+      # In case the ref doesn't exist default to the initial value
+      self.ref = project.repository.expand_ref(ref) || ref
+    end
+
+    private
+
+    def ambiguous_ref?
+      strong_memoize_with(:ambiguous_ref, ref) do
+        project.repository.ambiguous_ref?(ref)
+      end
     end
   end
 end

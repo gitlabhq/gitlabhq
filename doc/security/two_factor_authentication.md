@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 [Two-factor authentication (2FA)](../user/profile/account/two_factor_authentication.md)
 is an authentication method that requires the user to provide two different factors
@@ -27,7 +27,7 @@ If you are [using and enforcing SSO](../user/group/saml_sso/index.md#sso-enforce
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 Administrators can enforce 2FA for all users in two different ways:
 
@@ -61,7 +61,7 @@ For more information, see the [list of settings that can be accessed through API
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/427549) in GitLab 16.8.
 
@@ -82,9 +82,7 @@ If you are using an external provider to sign in into GitLab, this setting will 
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/24965) in GitLab 12.0, 2FA settings for a group are also applied to subgroups.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Prerequisites:
 
@@ -106,6 +104,8 @@ Enforcement affects all [direct and inherited members](../user/project/members/i
 
 Access tokens are not required to provide a second factor for authentication because
 they are API-based. Tokens generated before 2FA is enforced remain valid.
+
+The GitLab [incoming email](../administration/incoming_email.md) feature does not follow 2FA enforcement. Users can use incoming email features such as creating issues or commenting on merge requests without having to authenticate themselves using 2FA first. This applies even if 2FA is enforced.
 
 ### 2FA in subgroups
 
@@ -157,7 +157,7 @@ when they next sign in to GitLab.
 
 #### Administrators
 
-In GitLab 13.5 and later, use the [Rails console](../administration/operations/rails_console.md)
+It is possible to use the [Rails console](../administration/operations/rails_console.md)
 to disable 2FA for a single administrator:
 
 ```ruby
@@ -199,15 +199,13 @@ To disable 2FA for all users even when forced 2FA is disabled, use the following
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** Self-managed
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/270554) in GitLab 13.7.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/299088) from GitLab Free to GitLab Premium in 13.9.
 > - It's deployed behind a feature flag, disabled by default.
 > - Push notification support [introduced](https://gitlab.com/gitlab-org/gitlab-shell/-/issues/506) in GitLab 15.3.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../administration/feature_flags.md) named `two_factor_for_cli`. On GitLab.com, this feature is not available. The feature is not ready for production use. This feature flag also affects [session duration for Git Operations when 2FA is enabled](../administration/settings/account_and_limit_settings.md#customize-session-duration-for-git-operations-when-2fa-is-enabled).
+On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../administration/feature_flags.md) named `two_factor_for_cli`. On GitLab.com and GitLab Dedicated, this feature is not available. This feature is not ready for production use. This feature flag also affects [session duration for Git Operations when 2FA is enabled](../administration/settings/account_and_limit_settings.md#customize-session-duration-for-git-operations-when-2fa-is-enabled).
 
 You can enforce 2FA for [Git over SSH operations](../development/gitlab_shell/features.md#git-operations). However, you should use
 [ED25519_SK](../user/ssh.md#ed25519_sk-ssh-keys) or [ECDSA_SK](../user/ssh.md#ecdsa_sk-ssh-keys) SSH keys instead. 2FA is enforced for Git operations only, and internal commands such as [`personal_access_token`](../development/gitlab_shell/features.md#personal-access-token) are excluded.

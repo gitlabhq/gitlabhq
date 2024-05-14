@@ -36,13 +36,13 @@ RSpec.describe Gitlab::Ci::Build::Artifacts::Metadata, feature_category: :build_
   describe '#full_version' do
     subject { metadata.full_version }
 
-    it { is_expected.to eq 'GitLab Build Artifacts Metadata 0.0.1' }
+    it { is_expected.to eq 'GitLab Build Artifacts Metadata 0.0.2' }
   end
 
   describe '#version' do
     subject { metadata.version }
 
-    it { is_expected.to eq '0.0.1' }
+    it { is_expected.to eq '0.0.2' }
   end
 
   describe '#errors' do
@@ -65,7 +65,9 @@ RSpec.describe Gitlab::Ci::Build::Artifacts::Metadata, feature_category: :build_
             'ci_artifacts.txt',
             'other_artifacts_0.1.2/',
             'rails_sample.jpg',
-            'tests_encoding/'
+            'tests_encoding/',
+            'empty_image.png',
+            'generated.yml'
           )
         end
 
@@ -83,6 +85,7 @@ RSpec.describe Gitlab::Ci::Build::Artifacts::Metadata, feature_category: :build_
           it 'returns paths to all files and directories at the first level of the directory' do
             expect(find_entries.keys).to contain_exactly(
               'other_artifacts_0.1.2/',
+              'other_artifacts_0.1.2/.DS_Store',
               'other_artifacts_0.1.2/doc_sample.txt',
               'other_artifacts_0.1.2/another-subdirectory/'
             )
@@ -96,7 +99,8 @@ RSpec.describe Gitlab::Ci::Build::Artifacts::Metadata, feature_category: :build_
             expect(find_entries.keys).to contain_exactly(
               'other_artifacts_0.1.2/another-subdirectory/',
               'other_artifacts_0.1.2/another-subdirectory/empty_directory/',
-              'other_artifacts_0.1.2/another-subdirectory/banana_sample.gif'
+              'other_artifacts_0.1.2/another-subdirectory/banana_sample.gif',
+              'other_artifacts_0.1.2/another-subdirectory/.DS_Store'
             )
           end
         end
@@ -108,10 +112,12 @@ RSpec.describe Gitlab::Ci::Build::Artifacts::Metadata, feature_category: :build_
           it 'returns all paths recursively within the target directory' do
             expect(subject.keys).to contain_exactly(
               'other_artifacts_0.1.2/',
+              'other_artifacts_0.1.2/.DS_Store',
               'other_artifacts_0.1.2/doc_sample.txt',
               'other_artifacts_0.1.2/another-subdirectory/',
               'other_artifacts_0.1.2/another-subdirectory/empty_directory/',
-              'other_artifacts_0.1.2/another-subdirectory/banana_sample.gif'
+              'other_artifacts_0.1.2/another-subdirectory/banana_sample.gif',
+              'other_artifacts_0.1.2/another-subdirectory/.DS_Store'
             )
           end
         end

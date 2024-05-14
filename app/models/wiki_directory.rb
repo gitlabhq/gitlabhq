@@ -16,7 +16,7 @@ class WikiDirectory
     # @param [Array<WikiPage>] pages
     # @return [Array<WikiPage, WikiDirectory>]
     #
-    def group_pages(pages)
+    def group_pages(pages, templates: false)
       # Build a hash to map paths to created WikiDirectory objects,
       # and recursively create them for each level of the path.
       # For the toplevel directory we use '' as path, as that's what WikiPage#directory returns.
@@ -38,6 +38,8 @@ class WikiDirectory
 
         directories[page.directory].entries << page
       end
+
+      return directories['templates'].entries if templates
 
       directories[''].entries
     end

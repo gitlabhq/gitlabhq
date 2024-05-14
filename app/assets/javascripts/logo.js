@@ -15,7 +15,7 @@ export function initPortraitLogoDetection() {
         // Limit the width when the logo has portrait format
         img.classList.replace('gl-h-10', 'gl-w-10');
       }
-      img.classList.remove('gl-visibility-hidden');
+      img.classList.remove('gl-invisible');
     },
     { once: true },
   );

@@ -6,7 +6,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # Cloud Connector: Architecture
 
-[GitLab Cloud Connector](https://about.gitlab.com/direction/cloud-connector) is a way to access services common to
+[GitLab Cloud Connector](https://about.gitlab.com/direction/cloud-connector/) is a way to access services common to
 multiple GitLab deployments, instances, and cells. As of now, Cloud Connector is not a
 dedicated service itself, but rather a collection of APIs and code that standardizes the approach to authentication and
 other items when integrating Cloud based services with a GitLab instance.
@@ -140,6 +140,7 @@ There are two levels of access control when making requests into backend service
 The JWT issued for instance access carries the following claims (not exhaustive, subject to change):
 
 - `aud`: The audience. This is the name of the backend service (for example, `gitlab-ai-gateway`).
+- `sub`: The subject. This is the UUID of the GitLab instance the token was issued for (e.g.: `8f6e4253-58ce-42b9-869c-97f5c2287ad2`).
 - `iss`: The issuer URL. Either `https://gitlab.com` or `https://customers.gitlab.com`.
 - `exp`: The expiration time of the token (UNIX timestamp). Currently 1 hour for GitLab.com and 3 days
   for SM/Dedicated.

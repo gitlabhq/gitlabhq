@@ -8,7 +8,7 @@ RSpec.describe Ml::Model, feature_category: :mlops do
   let_it_be(:existing_model) { create(:ml_models, name: 'an_existing_model', project: project1) }
   let_it_be(:another_existing_model) { create(:ml_models, name: 'an_existing_model', project: project2) }
   let_it_be(:valid_name) { 'a_valid_name' }
-  let_it_be(:default_experiment) { create(:ml_experiments, name: valid_name, project: project1) }
+  let_it_be(:default_experiment) { create(:ml_experiments, name: "[model]#{valid_name}", project: project1) }
 
   describe 'associations' do
     it { is_expected.to belong_to(:project) }
@@ -162,6 +162,12 @@ RSpec.describe Ml::Model, feature_category: :mlops do
       all_packages = existing_model.all_packages
       expect(all_packages.length).to be(2)
       expect(all_packages).to match_array([version1.package, version2.package])
+    end
+  end
+
+  describe '.prefixed_experiment' do
+    it 'returns the given string prefixed with "[model]"' do
+      expect(described_class.prefixed_experiment('a_valid_name')).to eq('[model]a_valid_name')
     end
   end
 end

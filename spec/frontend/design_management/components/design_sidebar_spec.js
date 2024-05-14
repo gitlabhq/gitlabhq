@@ -1,12 +1,13 @@
-import { GlAccordionItem } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+import { GlAccordionItem, GlEmptyState } from '@gitlab/ui';
 import { nextTick } from 'vue';
+import emptyDiscussionUrl from '@gitlab/svgs/dist/illustrations/empty-state/empty-activity-md.svg';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import DesignDiscussion from '~/design_management/components/design_notes/design_discussion.vue';
 import DesignNoteSignedOut from '~/design_management/components/design_notes/design_note_signed_out.vue';
 import DesignSidebar from '~/design_management/components/design_sidebar.vue';
-import DesignTodoButton from '~/design_management/components/design_todo_button.vue';
+import DesignDisclosure from '~/design_management/components/design_disclosure.vue';
+import DescriptionForm from '~/design_management/components/design_description/description_form.vue';
 import updateActiveDiscussionMutation from '~/design_management/graphql/mutations/update_active_discussion.mutation.graphql';
-import Participants from '~/sidebar/components/participants/participants.vue';
 import design from '../mock_data/design';
 
 const scrollIntoViewMock = jest.fn();
@@ -29,7 +30,7 @@ const $route = {
 const mockDesignVariables = {
   fullPath: 'project-path',
   iid: '1',
-  filenames: ['gid::/gitlab/Design/1'],
+  filenames: ['gid:/gitlab/Design/1'],
   atVersion: null,
 };
 
@@ -39,22 +40,24 @@ describe('Design management design sidebar component', () => {
   let wrapper;
 
   const findDiscussions = () => wrapper.findAllComponents(DesignDiscussion);
+  const findDisclosure = () => wrapper.findAllComponents(DesignDisclosure);
   const findFirstDiscussion = () => findDiscussions().at(0);
-  const findUnresolvedDiscussions = () => wrapper.findAll('[data-testid="unresolved-discussion"]');
-  const findResolvedDiscussions = () => wrapper.findAll('[data-testid="resolved-discussion"]');
-  const findParticipants = () => wrapper.findComponent(Participants);
+  const findUnresolvedDiscussions = () => wrapper.findAllByTestId('unresolved-discussion');
+  const findResolvedDiscussions = () => wrapper.findAllByTestId('resolved-discussion');
   const findResolvedCommentsToggle = () => wrapper.findComponent(GlAccordionItem);
-  const findNewDiscussionDisclaimer = () =>
-    wrapper.find('[data-testid="new-discussion-disclaimer"]');
+  const findDescriptionForm = () => wrapper.findComponent(DescriptionForm);
+  const findEmptyState = () => wrapper.findComponent(GlEmptyState);
+  const findUnresolvedDiscussionsCount = () => wrapper.findByTestId('unresolved-discussion-count');
 
   function createComponent(props = {}) {
-    wrapper = shallowMount(DesignSidebar, {
+    wrapper = shallowMountExtended(DesignSidebar, {
       propsData: {
         design,
         resolvedDiscussionsExpanded: false,
-        markdownPreviewPath: '',
+        markdownPreviewPath: 'markdown/path',
         isLoading: false,
         designVariables: mockDesignVariables,
+        isOpen: true,
         ...props,
       },
       mocks: {
@@ -74,22 +77,57 @@ describe('Design management design sidebar component', () => {
     window.gon = { current_user_id: 1 };
   });
 
-  it('renders participants', () => {
+  it('renders disclosure', () => {
     createComponent();
 
-    expect(findParticipants().exists()).toBe(true);
+    expect(findDisclosure().exists()).toBe(true);
   });
 
-  it('passes the correct amount of participants to the Participants component', () => {
-    createComponent();
+  describe('description form', () => {
+    it('does not render when loading', () => {
+      createComponent({ isLoading: true });
 
-    expect(findParticipants().props('participants')).toHaveLength(1);
-  });
+      expect(findDescriptionForm().exists()).toBe(false);
+    });
 
-  it('renders To-Do button', () => {
-    createComponent();
+    it('renders with default props', () => {
+      createComponent();
 
-    expect(wrapper.findComponent(DesignTodoButton).exists()).toBe(true);
+      expect(findDescriptionForm().props()).toMatchObject({
+        design,
+        markdownPreviewPath: 'markdown/path',
+        designVariables: mockDesignVariables,
+      });
+    });
+
+    it('renders when there is permission but description is empty', () => {
+      createComponent({
+        design: { ...design, description: '', descriptionHtml: '' },
+      });
+
+      expect(findDescriptionForm().exists()).toBe(true);
+    });
+
+    it('renders when there is description but no permission', () => {
+      createComponent({
+        design: { ...design, issue: { userPermissions: { updateDesign: false } } },
+      });
+
+      expect(findDescriptionForm().exists()).toBe(true);
+    });
+
+    it('does not render when there is no permission and description is empty', () => {
+      createComponent({
+        design: {
+          ...design,
+          description: '',
+          descriptionHtml: '',
+          issue: { userPermissions: { updateDesign: false } },
+        },
+      });
+
+      expect(findDescriptionForm().exists()).toBe(false);
+    });
   });
 
   describe('when has no discussions', () => {
@@ -109,7 +147,15 @@ describe('Design management design sidebar component', () => {
     });
 
     it('renders a message about possibility to create a new discussion', () => {
-      expect(findNewDiscussionDisclaimer().exists()).toBe(true);
+      const emptyState = findEmptyState();
+      expect(emptyState.exists()).toBe(true);
+      expect(emptyState.props('svgPath')).toBe(emptyDiscussionUrl);
+      expect(emptyState.text()).toBe(`Click on the image where you'd like to add a new comment.`);
+    });
+
+    it('renders 0 Threads for unresolved discussions', () => {
+      expect(findUnresolvedDiscussionsCount().exists()).toBe(true);
+      expect(findUnresolvedDiscussionsCount().text()).toBe('0 Threads');
     });
   });
 
@@ -124,6 +170,54 @@ describe('Design management design sidebar component', () => {
 
     it('renders correct amount of resolved discussions', () => {
       expect(findResolvedDiscussions()).toHaveLength(1);
+    });
+
+    it('renders 1 Thread for unresolved discussions', () => {
+      expect(findUnresolvedDiscussionsCount().exists()).toBe(true);
+      expect(findUnresolvedDiscussionsCount().text()).toBe('1 Thread');
+    });
+
+    it('renders 2 Threads for unresolved discussions', () => {
+      createComponent({
+        design: {
+          ...design,
+          discussions: {
+            nodes: [
+              {
+                id: 'discussion-id-1',
+                resolved: false,
+                notes: {
+                  nodes: [
+                    {
+                      id: 'note-id-1',
+                      author: {
+                        id: 'gid://gitlab/User/1',
+                      },
+                    },
+                  ],
+                },
+              },
+              {
+                id: 'discussion-id-2',
+                resolved: false,
+                notes: {
+                  nodes: [
+                    {
+                      id: 'note-id-2',
+                      author: {
+                        id: 'gid://gitlab/User/1',
+                      },
+                    },
+                  ],
+                },
+              },
+            ],
+          },
+        },
+      });
+
+      expect(findUnresolvedDiscussionsCount().exists()).toBe(true);
+      expect(findUnresolvedDiscussionsCount().text()).toBe('2 Threads');
     });
 
     it('has resolved comments accordion item collapsed', () => {
@@ -152,7 +246,7 @@ describe('Design management design sidebar component', () => {
     });
 
     it('sends a mutation to reset an active discussion when clicking outside of discussion', () => {
-      wrapper.trigger('click');
+      wrapper.find('.image-notes').trigger('click');
 
       expect(mutate).toHaveBeenCalledWith({
         ...updateActiveDiscussionMutationVariables,
@@ -216,7 +310,7 @@ describe('Design management design sidebar component', () => {
     });
 
     it('renders a message about possibility to create a new discussion', () => {
-      expect(findNewDiscussionDisclaimer().exists()).toBe(true);
+      expect(findEmptyState().exists()).toBe(true);
     });
 
     it('does not render unresolved discussions', () => {
@@ -244,7 +338,7 @@ describe('Design management design sidebar component', () => {
       });
 
       it('does not render a message about possibility to create a new discussion', () => {
-        expect(findNewDiscussionDisclaimer().exists()).toBe(false);
+        expect(findEmptyState().exists()).toBe(false);
       });
 
       it('renders design-note-signed-out component', () => {

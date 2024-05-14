@@ -166,7 +166,7 @@ export default {
           $options.i18n.defaultLabel
         }}</gl-badge>
 
-        <gl-badge v-if="isProtected" variant="success" size="sm" class="gl-ml-2">{{
+        <gl-badge v-if="isProtected" variant="neutral" size="sm" class="gl-ml-2">{{
           $options.i18n.protectedLabel
         }}</gl-badge>
 

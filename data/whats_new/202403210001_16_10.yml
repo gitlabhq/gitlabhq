@@ -1,0 +1,83 @@
+- name: Semantic versioning in the CI/CD catalog
+  description: |
+    To enforce consistent behavior across published components, in GitLab 16.10 we will enforce Semantic versioning for components that are published to the CI/CD catalog. When publishing a component, the tag must follow the 3-digit semantic versioning standard (for example `1.0.0`).
+
+    When using a component with the `include: component` syntax, you should use the published semantic version (`x`, `x.x`. or `x.x.x`). Using `~latest` continues to be supported, but it will always return the latest published version, so you must use it with caution as it could include breaking changes. Shorthand syntax is not supported, but it will be in an upcoming milestone.
+  stage: verify
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/ci/components/#component-versions
+  image_url: https://about.gitlab.com/images/16_10/component.png
+  published_at: 2024-03-21
+  release: 16.10
+
+- name: Offload CI traffic to Geo secondaries
+  description: |
+    You can now offload CI runner traffic to Geo secondary sites. Locate runner fleets where they are more convenient and economical to operate and manage, while reducing cross-region traffic. Distribute the load across multiple secondary Geo sites. Reduce load on the primary site, reserving resources for serving developer traffic. After this setup, the developer experience is transparent and seamless. Developer workflows for the setup and configuration of jobs remain unchanged.
+  stage: systems
+  self-managed: true
+  gitlab-com: false
+  available_in: [Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/administration/geo/secondary_proxy/runners.html
+  image_url: https://about.gitlab.com/images/16_10/systems_geo_runner_acceleration.png
+  published_at: 2024-03-21
+  release: 16.10
+
+- name: Wiki templates
+  description: |
+    This version of GitLab introduces all-new templates to the Wiki. Now, you can create templates to streamline creating new pages or modifying existing ones. Templates are wiki pages that are stored in the templates directory in the wiki repository.
+
+    With this enhancement, you can make your wiki page layouts more consistent, create or restructure pages faster, and ensure that information is presented clearly and coherently in your knowledge base.
+  stage: plan
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/project/wiki/index.html#wiki-page-templates
+  image_url: https://about.gitlab.com/images/16_10/wiki_templates.gif
+  published_at: 2024-03-21
+  release: 16.10
+
+- name: New ClickHouse integration for high-performance DevOps Analytics
+  description: |
+    The [Contribution Analytics report](https://docs.gitlab.com/ee/user/group/contribution_analytics/) is now more performant and backed by an advanced analytics database using [ClickHouse](https://docs.gitlab.com/ee/architecture/blueprints/clickhouse_usage/#summary) on GitLab.com. This upgrade set the foundation for new extensive analytics and reporting features, allowing us to deliver high-performance analytics aggregations, filtering, and slicing across multiple dimensions. Support for self-managed customers to be able to add to this capability is proposed in [issue 441626](https://gitlab.com/gitlab-org/gitlab/-/issues/441626).
+
+    Although ClickHouse enhances GitLab's analytics capabilities, it's not meant to replace PostgreSQL or Redis, and the existing capabilities remain unchanged.
+  stage: plan
+  self-managed: false
+  gitlab-com: true
+  available_in: [Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/group/contribution_analytics/
+  image_url: https://about.gitlab.com/images/16_10/ca_ch16.10_2.png
+  published_at: 2024-03-21
+  release: 16.10
+
+- name: GitLab Duo access governance control
+  description: |
+    Generative AI is revolutionizing work processes, and you can now facilitate the adoption of these technologies without compromising privacy, compliance, or intellectual property (IP) protections.
+
+    You can now disable GitLab Duo AI features for a project, a group, or an instance by using the API. You can then enable GitLab Duo for specific projects or groups when you're ready. These changes are part of a suite of expected work to make AI features more granular to control.
+  stage: ai-powered
+  self-managed: true
+  gitlab-com: true
+  available_in: [Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/ai_features.html#disable-gitlab-duo-features
+  image_url: https://about.gitlab.com/images/16_10/Turn-off-GitLab-Duo-features.png
+  published_at: 2024-03-21
+  release: 16.10
+
+- name: GitLab Pages and Advanced Search available on GitLab Dedicated
+  description: |
+    [GitLab Pages](https://docs.gitlab.com/ee/user/project/pages/) and [Advanced Search](https://docs.gitlab.com/ee/user/search/advanced_search.html) have been enabled for all [GitLab Dedicated instances](https://about.gitlab.com/dedicated/). These features are included in your GitLab Dedicated subscription.
+
+    Advanced Search enables faster, more efficient search across your entire GitLab Dedicated instance. All capabilities of Advanced Search can be used with GitLab Dedicated instances.
+
+    With GitLab Pages, you can publish static websites directly from a repository in GitLab Dedicated. Some capabilities of Pages are [not yet available](https://docs.gitlab.com/ee/subscriptions/gitlab_dedicated/#gitlab-pages) for GitLab Dedicated instances.
+  stage: platforms
+  self-managed: false
+  gitlab-com: true
+  available_in: [Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/subscriptions/gitlab_dedicated/#available-features
+  image_url: https://about.gitlab.com/images/16_10/gitlab-dedicated.png
+  published_at: 2024-03-21
+  release: 16.10

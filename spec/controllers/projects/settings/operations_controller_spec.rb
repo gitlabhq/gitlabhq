@@ -4,11 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Projects::Settings::OperationsController, feature_category: :incident_management do
   let_it_be(:user) { create(:user) }
-  let_it_be(:project, reload: true) { create(:project) }
-
-  before_all do
-    project.add_maintainer(user)
-  end
+  let_it_be(:project, reload: true) { create(:project, maintainers: user) }
 
   before do
     sign_in(user)
@@ -126,6 +122,8 @@ RSpec.describe Projects::Settings::OperationsController, feature_category: :inci
 
   context 'incident management', feature_category: :incident_management do
     describe 'GET #show' do
+      render_views
+
       context 'with existing setting' do
         let!(:incident_management_setting) do
           create(:project_incident_management_setting, project: project)
@@ -134,8 +132,8 @@ RSpec.describe Projects::Settings::OperationsController, feature_category: :inci
         it 'loads existing setting' do
           get :show, params: project_params(project)
 
-          expect(controller.helpers.project_incident_management_setting)
-            .to eq(incident_management_setting)
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.body).to include('data-auto-close-incident="true"')
         end
       end
 
@@ -143,7 +141,8 @@ RSpec.describe Projects::Settings::OperationsController, feature_category: :inci
         it 'builds a new setting' do
           get :show, params: project_params(project)
 
-          expect(controller.helpers.project_incident_management_setting).to be_new_record
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.body).to include('data-auto-close-incident="true"')
         end
       end
     end

@@ -43,6 +43,42 @@ describe('IntegrationSectionCoonfiguration', () => {
         });
       });
 
+      it('applies classes to the fields', () => {
+        const fieldClass = 'dummy';
+        const fields = [
+          { name: 'username', type: 'text' },
+          { name: 'API token', type: 'password' },
+        ];
+        createComponent({
+          props: { fieldClass, fields },
+        });
+
+        const dynamicFields = findAllDynamicFields();
+
+        expect(dynamicFields).toHaveLength(2);
+        dynamicFields.wrappers.forEach((field) => {
+          expect(field.props()).toMatchObject({ fieldClass });
+        });
+      });
+
+      it('emits update event with field when Dynamic text field emits event', () => {
+        const fields = [{ name: 'username', type: 'text' }];
+
+        createComponent({
+          props: {
+            fields,
+          },
+        });
+
+        const dynamicFields = findAllDynamicFields();
+
+        const [dynamicField] = dynamicFields.wrappers;
+
+        dynamicField.vm.$emit('update', 'example');
+
+        expect(wrapper.emitted('update')).toEqual([[{ value: 'example', field: fields[0] }]]);
+      });
+
       it('does not render DynamicField when field is empty', () => {
         createComponent();
 

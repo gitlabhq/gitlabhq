@@ -80,15 +80,6 @@ the error message, and make sure it is listed as finished. If it is still active
 or [manually finish it](background_migrations.md#finish-a-failed-migration-manually).
 1. Re-run migrations for your installation, so the remaining post-deployment migrations finish.
 
-## The `BackfillNamespaceIdForNamespaceRoute` batched migration job fails
-
-In GitLab 14.8, the `BackfillNamespaceIdForNamespaceRoute` batched background migration job
-may fail to complete. When retried, a `500 Server Error` is returned. This issue was
-[resolved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82387) in GitLab 14.9.
-
-To resolve this issue, [upgrade GitLab](../update/index.md) from 14.8 to 14.9.
-You can ignore the failed batch migration until after you update to GitLab 14.9.
-
 ## Background migrations remain in the Sidekiq queue
 
 WARNING:
@@ -137,36 +128,7 @@ pending_job_classes.each { |job_class| Gitlab::BackgroundMigration.steal(job_cla
 
 ## Background migrations stuck in 'pending' state
 
-WARNING:
-The following operations can disrupt your GitLab performance. They run a number
-of Sidekiq jobs that perform various database or file updates.
-
-- GitLab 14.2 introduced an issue where a background migration named
-  `BackfillDraftStatusOnMergeRequests` can be permanently stuck in a
-  **pending** state across upgrades when the instance lacks records that match
-  the migration's target. To clean up this stuck migration, see the
-  [14.2.0 version-specific instructions](versions/gitlab_14_changes.md#1420).
-- GitLab 14.4 introduced an issue where a background migration named
-  `PopulateTopicsTotalProjectsCountCache` can be permanently stuck in a
-  **pending** state across upgrades when the instance lacks records that match
-  the migration's target. To clean up this stuck migration, see the
-  [14.4.0 version-specific instructions](versions/gitlab_14_changes.md#1440).
-- GitLab 14.5 introduced an issue where a background migration named
-  `UpdateVulnerabilityOccurrencesLocation` can be permanently stuck in a
-  **pending** state across upgrades when the instance lacks records that match
-  the migration's target. To clean up this stuck migration, see the
-  [14.5.0 version-specific instructions](versions/gitlab_14_changes.md#1450).
-- GitLab 14.8 introduced an issue where a background migration named
-  `PopulateTopicsNonPrivateProjectsCount` can be permanently stuck in a
-  **pending** state across upgrades. To clean up this stuck migration, see the
-  [14.8.0 version-specific instructions](versions/gitlab_14_changes.md#1480).
-- GitLab 14.9 introduced an issue where a background migration named
-  `ResetDuplicateCiRunnersTokenValuesOnProjects` can be permanently stuck in a
-  **pending** state across upgrades when the instance lacks records that match
-  the migration's target. To clean up this stuck migration, see the
-  [14.9.0 version-specific instructions](versions/gitlab_14_changes.md#1490).
-
-For other background migrations stuck in pending, run the following check. If
+For background migrations stuck in pending, run the following check. If
 it returns non-zero and the count does not decrease over time, follow the rest
 of the steps in this section.
 

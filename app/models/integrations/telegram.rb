@@ -2,6 +2,7 @@
 
 module Integrations
   class Telegram < BaseChatNotification
+    include HasAvatar
     TELEGRAM_HOSTNAME = "https://api.telegram.org/bot%{token}/sendMessage"
 
     field :token,
@@ -21,6 +22,13 @@ module Integrations
       placeholder: '@channelusername',
       required: true
 
+    field :thread,
+      title: 'Message thread ID',
+      section: SECTION_TYPE_CONFIGURATION,
+      help: 'Unique identifier for the target message thread (topic in a forum supergroup)',
+      placeholder: '123',
+      required: false
+
     field :notify_only_broken_pipelines,
       type: :checkbox,
       section: SECTION_TYPE_CONFIGURATION,
@@ -34,6 +42,7 @@ module Integrations
 
     with_options if: :activated? do
       validates :token, :room, presence: true
+      validates :thread, numericality: { only_integer: true }, allow_blank: true
     end
 
     before_validation :set_webhook
@@ -66,10 +75,6 @@ module Integrations
       super - ['deployment']
     end
 
-    def avatar_url
-      ActionController::Base.helpers.image_path('illustrations/third-party-logos/integrations-logos/telegram.svg')
-    end
-
     private
 
     def set_webhook
@@ -80,11 +85,19 @@ module Integrations
       body = {
         text: message.summary,
         chat_id: room,
+        message_thread_id: thread,
         parse_mode: 'markdown'
-      }
+      }.compact_blank
 
       header = { 'Content-Type' => 'application/json' }
       response = Gitlab::HTTP.post(webhook, headers: header, body: Gitlab::Json.dump(body))
+
+      # We're retrying the request with a different format to ensure accurate formatting and
+      # avoid receiving a 400 response due to invalid markdown.
+      if response.bad_request?
+        body.except!(:parse_mode)
+        response = Gitlab::HTTP.post(webhook, headers: header, body: Gitlab::Json.dump(body))
+      end
 
       response if response.success?
     end

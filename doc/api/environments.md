@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > Support for [GitLab CI/CD job token](../ci/jobs/ci_job_token.md) authentication [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/414549) in GitLab 16.2.
 
@@ -45,7 +45,8 @@ Example response:
     "created_at": "2019-05-25T18:55:13.252Z",
     "updated_at": "2019-05-27T18:55:13.252Z",
     "enable_advanced_logs_querying": false,
-    "logs_api_path": "/project/-/logs/k8s.json?environment_name=review%2Ffix-foo"
+    "logs_api_path": "/project/-/logs/k8s.json?environment_name=review%2Ffix-foo",
+    "auto_stop_at": "2019-06-03T18:55:13.252Z"
   }
 ]
 ```
@@ -79,6 +80,7 @@ Example of response
   "updated_at": "2019-05-27T18:55:13.252Z",
   "enable_advanced_logs_querying": false,
   "logs_api_path": "/project/-/logs/k8s.json?environment_name=review%2Ffix-foo",
+  "auto_stop_at": "2019-06-03T18:55:13.252Z",
   "last_deployment": {
     "id": 100,
     "iid": 34,
@@ -259,8 +261,6 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 ```
 
 ## Delete multiple stopped review apps
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/296625) in GitLab 14.2.
 
 It schedules for deletion multiple environments that have already been
 [stopped](../ci/environments/index.md#stopping-an-environment) and

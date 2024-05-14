@@ -26,7 +26,7 @@ module IncidentManagement
     validates :name, uniqueness: { scope: :project_id, case_sensitive: false }
     validates :name, length: { maximum: 255 }
 
-    scope :by_names, -> (tag_names) { where('lower(name) in (?)', tag_names.map(&:downcase)) }
+    scope :by_names, ->(tag_names) { where('lower(name) in (?)', tag_names.map(&:downcase)) }
 
     def self.pluck_names
       pluck(:name)

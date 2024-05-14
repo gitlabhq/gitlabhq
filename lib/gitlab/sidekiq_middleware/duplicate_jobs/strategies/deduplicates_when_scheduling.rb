@@ -43,7 +43,15 @@ module Gitlab
           end
 
           def deduplicatable_job?
+            return false if scheduled_deferred_job?
+
             !duplicate_job.scheduled? || duplicate_job.options[:including_scheduled]
+          end
+
+          # we do not deduplicate deferred perform_in/perform_at.
+          # note that the schedule enq will push the jobs out of the zset with `deferred: true`
+          def scheduled_deferred_job?
+            duplicate_job.scheduled? && duplicate_job.deferred?
           end
 
           def check!

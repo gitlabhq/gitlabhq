@@ -7,14 +7,13 @@ module WikiPages
         execute_hooks(page)
         ServiceResponse.success(payload: { page: page })
       else
-        ServiceResponse.error(
-          message: _('Could not delete wiki page'), payload: { page: page }
-        )
+        message = page.template? ? _('Could not delete wiki template') : _('Could not delete wiki page')
+        ServiceResponse.error(message: message, payload: { page: page })
       end
     end
 
-    def usage_counter_action
-      :delete
+    def internal_event_name
+      'delete_wiki_page'
     end
 
     def external_action

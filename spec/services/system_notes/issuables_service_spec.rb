@@ -214,17 +214,26 @@ RSpec.describe ::SystemNotes::IssuablesService, feature_category: :team_planning
   end
 
   describe '#request_review' do
-    subject(:request_review) { service.request_review(reviewer) }
+    subject(:request_review) { service.request_review(reviewer, unapproved) }
 
     let_it_be(:reviewer) { create(:user) }
     let_it_be(:noteable) { create(:merge_request, :simple, source_project: project, reviewers: [reviewer]) }
+    let(:unapproved) { false }
 
     it_behaves_like 'a system note' do
       let(:action) { 'reviewer' }
     end
 
-    it 'builds a correct phrase when a reviewer has been requested from a reviewer' do
+    it 'builds a correct phrase when a review has been requested from a reviewer' do
       expect(request_review.note).to eq "requested review from #{reviewer.to_reference}"
+    end
+
+    context 'when unapproving' do
+      let(:unapproved) { true }
+
+      it 'builds a correct phrase when a review has been requested from a reviewer and the reviewer has been unapproved' do
+        expect(request_review.note).to eq "requested review from #{reviewer.to_reference} and removed approval"
+      end
     end
   end
 

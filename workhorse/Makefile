@@ -64,22 +64,13 @@ WITHOUT_BUILD_ID ?=
 .PHONY:	all
 all:	clean-build $(EXE_ALL)
 
-.PHONY: gitlab-resize-image gitlab-zip-cat gitlab-zip-metadata
-gitlab-resize-image gitlab-zip-cat gitlab-zip-metadata:
+.PHONY: gitlab-resize-image gitlab-zip-cat gitlab-zip-metadata gitlab-workhorse
+gitlab-resize-image gitlab-zip-cat gitlab-zip-metadata gitlab-workhorse:
 	$(call message,Building $@)
 	go build -ldflags "$(GO_BUILD_GENERIC_LDFLAGS)" -tags "$(BUILD_TAGS)" -o $(BUILD_DIR)/$@ $(PKG)/cmd/$@
 ifndef WITHOUT_BUILD_ID
 	go build -ldflags "$(GO_BUILD_GENERIC_LDFLAGS) -B 0x$$(_support/make-gnu-build-id.sh $(BUILD_DIR)/$@)" -tags "$(BUILD_TAGS)" -o $(BUILD_DIR)/$@ $(PKG)/cmd/$@
 endif
-
-.PHONY: gitlab-workhorse
-gitlab-workhorse:
-	$(call message,Building $@)
-	go build -ldflags "$(GO_BUILD_GENERIC_LDFLAGS)" -tags "$(BUILD_TAGS)" -o $(BUILD_DIR)/$@ $(PKG)
-ifndef WITHOUT_BUILD_ID
-	go build -ldflags "$(GO_BUILD_GENERIC_LDFLAGS) -B 0x$$(_support/make-gnu-build-id.sh $(BUILD_DIR)/$@)" -tags "$(BUILD_TAGS)" -o $(BUILD_DIR)/$@ $(PKG)
-endif
-
 .PHONY:	install
 install: $(EXE_ALL)
 	$(call message,$@)

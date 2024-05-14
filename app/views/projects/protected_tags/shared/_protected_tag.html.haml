@@ -1,10 +1,10 @@
 %tr.js-protected-tag-edit-form{ data: { url: project_protected_tag_path(@project, protected_tag) } }
-  %td{ data: { label: s_('ProtectedBranch|Tag') }, class: 'gl-vertical-align-middle!' }
+  %td{ data: { label: s_('ProtectedBranch|Tag') }, class: '!gl-align-middle' }
     %span.ref-name= protected_tag.name
 
     - if @project.root_ref?(protected_tag.name)
       = gl_badge_tag s_('ProtectedTags|default'), variant: :info, class: 'gl-ml-2'
-  %td{ data: { label: s_('ProtectedBranch|Last commit') }, class: 'gl-vertical-align-middle!' }
+  %td{ data: { label: s_('ProtectedBranch|Last commit') }, class: '!gl-align-middle' }
     - if protected_tag.wildcard?
       - matching_tags = protected_tag.matching(repository.tag_names)
       = link_to pluralize(matching_tags.count, "matching tag"), project_protected_tag_path(@project, protected_tag)
@@ -18,5 +18,5 @@
   = yield
 
   - if can? current_user, :admin_project, @project
-    %td{ data: { label: _('Actions') }, class: 'gl-vertical-align-middle!' }
+    %td{ data: { label: _('Actions') }, class: '!gl-align-middle' }
       = link_button_to 'Unprotect', [@project, protected_tag, { update_section: 'js-protected-tags-settings' }], aria: { label: s_('ProtectedTags|Unprotect tag') }, data: { confirm: 'Tag will be writable for developers. Are you sure?', confirm_btn_variant: 'danger' }, method: :delete, variant: :danger, category: :secondary, size: :small

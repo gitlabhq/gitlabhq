@@ -33,8 +33,7 @@
       ]
     },
     "product_group": {
-      "type": "string",
-      "pattern": "^$|^([a-z]+_)*[a-z]+$"
+      "$ref": "product_groups.json"
     },
     "value_type": {
       "type": "string",

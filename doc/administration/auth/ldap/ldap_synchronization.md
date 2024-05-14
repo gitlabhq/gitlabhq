@@ -372,6 +372,10 @@ following.
 To take advantage of group sync, group Owners or users with the [Maintainer role](../../../user/permissions.md) must
 [create one or more LDAP group links](../../../user/group/access_and_permissions.md#manage-group-memberships-via-ldap).
 
+NOTE:
+If you frequently experience connection issues between your LDAP server and GitLab instance, try reducing the frequency with which GitLab performs an LDAP group sync by
+[setting the group sync worker interval](#adjust-ldap-group-sync-schedule) to be greater than the 1 hour default.
+
 ### Add group links
 
 For information on adding group links by using CNs and filters, refer to the
@@ -488,8 +492,6 @@ group, GitLab revokes their `admin` role when syncing.
 ::EndTabs
 
 ### Global group memberships lock
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4354) in GitLab 12.0.
 
 GitLab administrators can prevent group members from inviting new members to subgroups that have their membership synchronized with LDAP.
 

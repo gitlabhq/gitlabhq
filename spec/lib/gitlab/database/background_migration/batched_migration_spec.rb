@@ -65,6 +65,28 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
     end
   end
 
+  describe '#confirm_finalized!' do
+    context 'when an invalid transition is applied' do
+      %i[paused active failed finalizing].each do |state|
+        it 'raises an exception' do
+          batched_migration = create(:batched_background_migration, state)
+
+          expect { batched_migration.confirm_finalize! }.to raise_error(StateMachines::InvalidTransition, /Cannot transition status/)
+        end
+      end
+    end
+
+    context 'when a valid transition is applied' do
+      %i[finished].each do |state|
+        it 'moves to finalized' do
+          batched_migration = create(:batched_background_migration, state)
+
+          expect(batched_migration.confirm_finalize!).to be_truthy
+        end
+      end
+    end
+  end
+
   describe '#pause!' do
     context 'when an invalid transition is applied' do
       %i[finished failed finalizing].each do |state|
@@ -152,7 +174,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
   end
 
   describe '.valid_status' do
-    valid_status = [:paused, :active, :finished, :failed, :finalizing]
+    valid_status = [:paused, :active, :finished, :failed, :finalizing, :finalized]
 
     it 'returns valid status' do
       expect(described_class.valid_status).to eq(valid_status)
@@ -787,6 +809,18 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
     context 'when the migration is completed' do
       let(:migration) do
         create(:batched_background_migration, :finished, total_tuple_count: 1).tap do |record|
+          create(:batched_background_migration_job, :succeeded, batched_migration: record, batch_size: 1)
+        end
+      end
+
+      it 'returns 100' do
+        expect(subject).to be 100
+      end
+    end
+
+    context 'when the migration is finalized' do
+      let(:migration) do
+        create(:batched_background_migration, :finalized, total_tuple_count: 1).tap do |record|
           create(:batched_background_migration_job, :succeeded, batched_migration: record, batch_size: 1)
         end
       end

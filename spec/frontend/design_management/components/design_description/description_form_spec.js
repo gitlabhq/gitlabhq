@@ -39,7 +39,6 @@ describe('Design description form', () => {
   const createComponent = ({
     design = mockDesign,
     descriptionText = '',
-    showEditor = false,
     isSubmitting = false,
     designVariables = mockDesignVariables,
     designUpdateMutationHandler = mockDesignUpdateMutationHandler,
@@ -56,7 +55,6 @@ describe('Design description form', () => {
         return {
           formFieldProps,
           descriptionText,
-          showEditor,
           isSubmitting,
         };
       },
@@ -68,13 +66,14 @@ describe('Design description form', () => {
   });
 
   const findDesignContent = () => wrapper.findByTestId('design-description-content');
-  const findDesignNoneBlock = () => wrapper.findByTestId('design-description-none');
   const findEditDescriptionButton = () => wrapper.findByTestId('edit-description');
   const findSaveDescriptionButton = () => wrapper.findByTestId('save-description');
+  const findCancelDescriptionButton = () => wrapper.findByTestId('cancel');
   const findMarkdownEditor = () => wrapper.findComponent(MarkdownEditor);
   const findTextarea = () => wrapper.find('textarea');
   const findCheckboxAtIndex = (index) => wrapper.findAll('input[type="checkbox"]').at(index);
   const findAlert = () => wrapper.findComponent(GlAlert);
+  const findAddDesignDescriptionButton = () => wrapper.findByTestId('add-design-description');
 
   describe('user has updateDesign permission', () => {
     let trackingSpy;
@@ -99,27 +98,21 @@ describe('Design description form', () => {
       expect(findEditDescriptionButton().exists()).toBe(true);
     });
 
-    it('renders none when description is empty', () => {
-      createComponent({ design: designFactory({ description: '', descriptionHtml: '' }) });
+    it('renders save button when editor is open', async () => {
+      createComponent();
 
-      expect(findDesignNoneBlock().text()).toEqual('None');
-    });
-
-    it('renders save button when editor is open', () => {
-      createComponent({
-        design: designFactory({ description: '', descriptionHtml: '' }),
-        showEditor: true,
-      });
+      await findEditDescriptionButton().vm.$emit('click');
 
       expect(findSaveDescriptionButton().exists()).toBe(true);
       expect(findSaveDescriptionButton().attributes('disabled')).toBeUndefined();
     });
 
-    it('renders the markdown editor with default props', () => {
+    it('renders the markdown editor with default props', async () => {
       createComponent({
-        showEditor: true,
         descriptionText: 'Test description',
       });
+
+      await findEditDescriptionButton().vm.$emit('click');
 
       expect(findMarkdownEditor().exists()).toBe(true);
       expect(findMarkdownEditor().props()).toMatchObject({
@@ -135,6 +128,47 @@ describe('Design description form', () => {
         )}`,
         markdownDocsPath: '/help/user/markdown',
       });
+    });
+
+    it('renders add a description button when there is no description', () => {
+      createComponent({
+        design: designFactory({
+          description: '',
+          descriptionHtml: '',
+        }),
+      });
+
+      expect(findMarkdownEditor().exists()).toBe(false);
+      expect(findAddDesignDescriptionButton().exists()).toBe(true);
+    });
+
+    it('renders description form when add a description button is clicked', async () => {
+      createComponent({
+        design: designFactory({
+          description: '',
+          descriptionHtml: '',
+        }),
+      });
+
+      expect(findAddDesignDescriptionButton().exists()).toBe(true);
+      expect(findMarkdownEditor().exists()).toBe(false);
+
+      await findAddDesignDescriptionButton().vm.$emit('click');
+
+      expect(findMarkdownEditor().exists()).toBe(true);
+      expect(findAddDesignDescriptionButton().exists()).toBe(false);
+    });
+
+    it('resets description text if empty when form is closed', async () => {
+      createComponent();
+
+      await findEditDescriptionButton().vm.$emit('click');
+
+      findMarkdownEditor().vm.$emit('input', '');
+
+      await findCancelDescriptionButton().vm.$emit('click');
+
+      expect(findDesignContent().text()).toEqual('Test description');
     });
 
     describe.each`
@@ -154,9 +188,10 @@ describe('Design description form', () => {
         );
 
         createComponent({
-          showEditor: true,
           designUpdateMutationHandler: mockDesignUpdateResponseHandler,
         });
+
+        await findEditDescriptionButton().vm.$emit('click');
 
         findMarkdownEditor().vm.$emit('input', 'Hello world');
         if (isKeyEvent) {
@@ -172,7 +207,7 @@ describe('Design description form', () => {
         expect(mockDesignUpdateResponseHandler).toHaveBeenCalledWith({
           input: {
             description: 'Hello world',
-            id: 'gid::/gitlab/Design/1',
+            id: 'gid:/gitlab/Design/1',
           },
         });
 
@@ -192,11 +227,11 @@ describe('Design description form', () => {
     it('shows error message when mutation fails', async () => {
       const failureHandler = jest.fn().mockRejectedValue(new Error(errorMessage));
       createComponent({
-        showEditor: true,
         descriptionText: 'Hello world',
         designUpdateMutationHandler: failureHandler,
       });
 
+      await findEditDescriptionButton().vm.$emit('click');
       findMarkdownEditor().vm.$emit('input', 'Hello world');
       findSaveDescriptionButton().vm.$emit('click');
 
@@ -266,7 +301,7 @@ describe('Design description form', () => {
         expect(mockDesignUpdateResponseHandler).toHaveBeenCalledWith({
           input: {
             description: expectedDesignDescription,
-            id: 'gid::/gitlab/Design/1',
+            id: 'gid:/gitlab/Design/1',
           },
         });
 
@@ -289,14 +324,14 @@ describe('Design description form', () => {
   });
 
   describe('user has no updateDesign permission', () => {
-    beforeEach(() => {
-      const designWithNoUpdateUserPermission = designFactory({
-        updateDesign: false,
+    it('renders description content without edit button', () => {
+      createComponent({
+        design: designFactory({
+          updateDesign: false,
+        }),
       });
-      createComponent({ design: designWithNoUpdateUserPermission });
-    });
 
-    it('does not render edit button', () => {
+      expect(findDesignContent().text()).toEqual('Test description');
       expect(findEditDescriptionButton().exists()).toBe(false);
     });
   });

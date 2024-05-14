@@ -22,7 +22,7 @@
 # List of available variables: https://docs.gitlab.com/ee/user/application_security/dast/#available-variables
 
 variables:
-  DAST_VERSION: 4
+  DAST_VERSION: 5
   # Setting this variable will affect all Security templates
   # (SAST, Dependency Scanning, ...)
   SECURE_ANALYZERS_PREFIX: "$CI_TEMPLATE_REGISTRY_HOST/security-products"
@@ -36,12 +36,14 @@ dast:
     GIT_STRATEGY: none
   allow_failure: true
   script:
-    - export DAST_WEBSITE=${DAST_WEBSITE:-$(cat environment_url.txt)}
-    - if [ -z "$DAST_WEBSITE$DAST_API_SPECIFICATION" ]; then echo "Either DAST_WEBSITE or DAST_API_SPECIFICATION must be set. See https://docs.gitlab.com/ee/user/application_security/dast/#configuration for more details." && exit 1; fi
+    - if [[ -f "environment_url.txt" ]]; then DAST_WEBSITE="${DAST_WEBSITE:-$(cat environment_url.txt)}"; export DAST_WEBSITE; fi
     - /analyze
   artifacts:
+    when: always
     reports:
       dast: gl-dast-report.json
+    paths:
+      - gl-dast-*.*
   rules:
     - if: $DAST_DISABLED == 'true' || $DAST_DISABLED == '1'
       when: never
@@ -65,6 +67,6 @@ dast:
     - if: $CI_COMMIT_BRANCH &&
           $GITLAB_FEATURES =~ /\bdast\b/
   after_script:
-    # Remove any debug.log files because they might contain secrets.
+    # For DAST 4 compatibility, remove any debug.log files because they might contain secrets.
     - rm -f /zap/wrk/**/debug.log
     - cp -r /zap/wrk dast_artifacts

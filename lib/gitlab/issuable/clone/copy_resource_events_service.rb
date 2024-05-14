@@ -73,6 +73,11 @@ module Gitlab
               yield(event)
             end
 
+            # A cloned resource is not imported from another project
+            events.each do |event|
+              event['imported_from'] = ::Import::HasImportSource::IMPORT_SOURCES[:none] if event['imported_from']
+            end
+
             ApplicationRecord.legacy_bulk_insert(table_name, events) # rubocop:disable Gitlab/BulkInsert
           end
         end

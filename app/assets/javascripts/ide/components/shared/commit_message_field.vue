@@ -70,7 +70,7 @@ export default {
 
 <template>
   <fieldset
-    class="gl-rounded-base gl-inset-border-1-gray-400 gl-py-4 gl-px-5"
+    class="gl-rounded-base gl-shadow-inner-1-gray-400 gl-py-4 gl-px-5"
     :class="{
       'gl-outline-none! gl-focus-ring-border-1-gray-900!': isFocused,
     }"
@@ -92,7 +92,7 @@ export default {
       </div>
     </div>
     <div class="gl-relative gl-w-full gl-h-13 gl-overflow-hidden">
-      <div class="gl-absolute gl-z-index-1 gl-font-monospace gl-text-transparent">
+      <div class="gl-absolute gl-z-1 gl-font-monospace gl-text-transparent">
         <div
           data-testid="highlights"
           :style="{
@@ -120,7 +120,7 @@ export default {
         ref="textarea"
         :placeholder="placeholder"
         :value="text"
-        class="gl-absolute gl-w-full gl-h-full gl-z-index-2 gl-font-monospace p-0 gl-outline-0 gl-bg-transparent gl-border-0"
+        class="gl-absolute gl-w-full gl-h-full gl-z-2 gl-font-monospace p-0 gl-outline-0 gl-bg-transparent gl-border-0"
         dir="auto"
         name="commit-message"
         @scroll="handleScroll"

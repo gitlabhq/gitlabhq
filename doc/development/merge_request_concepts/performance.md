@@ -205,7 +205,7 @@ such as this [example](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/43242#
 With the currently supported PostgreSQL versions, the optimization fence behavior must be enabled
 with the `MATERIALIZED` keyword. By default CTEs are inlined then [optimized by default](https://paquier.xyz/postgresql-2/postgres-12-with-materialize/).
 
-When building CTE statements, use the `Gitlab::SQL::CTE` class [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56976) in GitLab 13.11.
+When building CTE statements, use the `Gitlab::SQL::CTE` class.
 By default, this `Gitlab::SQL::CTE` class forces materialization through adding the `MATERIALIZED` keyword.
 
 WARNING:

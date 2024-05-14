@@ -108,7 +108,7 @@ module ActiveRecord
 
     def ignorable?(values)
       return true if skip_schema_queries && values[:name]&.include?("SCHEMA")
-      return true if values[:name]&.match(/License Load/)
+      return true if values[:name]&.include?('License Load')
 
       false
     end

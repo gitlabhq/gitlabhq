@@ -407,7 +407,6 @@ RSpec.describe API::Helpers, feature_category: :shared do
   end
 
   describe '#find_organization!' do
-    let_it_be(:organization) { create(:organization) }
     let_it_be(:user) { create(:user) }
 
     before do
@@ -415,17 +414,53 @@ RSpec.describe API::Helpers, feature_category: :shared do
       allow(helper).to receive(:initial_current_user).and_return(user)
     end
 
-    context 'when user is authenticated' do
-      it 'returns requested organization' do
-        expect(helper.find_organization!(organization.id)).to eq(organization)
+    context 'when organization is public' do
+      let_it_be(:public_organization) { create(:organization, :public) }
+
+      context 'when user is authenticated' do
+        it 'returns requested organization' do
+          expect(helper.find_organization!(public_organization.id)).to eq(public_organization)
+        end
+      end
+
+      context 'when user is not authenticated' do
+        let(:user) { nil }
+
+        it 'returns requested organization' do
+          expect(helper.find_organization!(public_organization.id)).to eq(public_organization)
+        end
       end
     end
 
-    context 'when user is not authenticated' do
-      let(:user) { nil }
+    context 'when organization is private' do
+      let_it_be(:private_organization) { create(:organization) }
 
-      it 'returns requested organization' do
-        expect(helper.find_organization!(organization.id)).to eq(organization)
+      context 'when user is authenticated' do
+        context 'when user is part of the organization' do
+          before_all do
+            create(:organization_user, user: user, organization: private_organization)
+          end
+
+          it 'returns requested organization' do
+            expect(helper.find_organization!(private_organization.id)).to eq(private_organization)
+          end
+        end
+
+        context 'when user is not part of the organization' do
+          it 'returns nil' do
+            expect(helper).to receive(:render_api_error!).with('404 Organization Not Found', 404)
+            expect(helper.find_organization!(private_organization)).to be_nil
+          end
+        end
+      end
+
+      context 'when user is not authenticated' do
+        let(:user) { nil }
+
+        it 'returns nil' do
+          expect(helper).to receive(:render_api_error!).with('404 Organization Not Found', 404)
+          expect(helper.find_organization!(private_organization)).to be_nil
+        end
       end
     end
 
@@ -831,6 +866,7 @@ RSpec.describe API::Helpers, feature_category: :shared do
       expect(Gitlab::InternalEvents).to receive(:track_event).with(
         event_name,
         send_snowplow_event: true,
+        additional_properties: {},
         user: user,
         namespace: namespace,
         project: project
@@ -847,6 +883,7 @@ RSpec.describe API::Helpers, feature_category: :shared do
       expect(Gitlab::InternalEvents).to receive(:track_event).with(
         event_name,
         send_snowplow_event: false,
+        additional_properties: {},
         user: user,
         namespace: namespace,
         project: project
@@ -857,6 +894,24 @@ RSpec.describe API::Helpers, feature_category: :shared do
         user: user,
         namespace_id: namespace.id,
         project_id: project.id
+      )
+    end
+
+    it 'passes additional_properties on to InternalEvents.track_event' do
+      expect(Gitlab::InternalEvents).to receive(:track_event).with(
+        event_name,
+        send_snowplow_event: true,
+        additional_properties: { label: 'label2' },
+        user: user,
+        namespace: namespace,
+        project: project
+      )
+
+      helper.track_event(event_name,
+        user: user,
+        namespace_id: namespace.id,
+        project_id: project.id,
+        additional_properties: { label: 'label2' }
       )
     end
 
@@ -1119,7 +1174,9 @@ RSpec.describe API::Helpers, feature_category: :shared do
 
       it 'redirects to a CDN-fronted URL' do
         expect(helper).to receive(:redirect)
-        expect(helper).to receive(:cdn_fronted_url).and_call_original
+        expect_next_instance_of(ObjectStorage::CDN::FileUrl) do |instance|
+          expect(instance).to receive(:url).and_call_original
+        end
         expect(Gitlab::ApplicationContext).to receive(:push).with(artifact: artifact.file.model).and_call_original
         expect(Gitlab::ApplicationContext).to receive(:push).with(artifact_used_cdn: false).and_call_original
 
@@ -1136,35 +1193,6 @@ RSpec.describe API::Helpers, feature_category: :shared do
 
           subject
         end
-      end
-    end
-  end
-
-  describe '#cdn_frontend_url' do
-    before do
-      allow(helper).to receive(:env).and_return({})
-
-      stub_artifacts_object_storage(enabled: true)
-    end
-
-    context 'with a CI artifact' do
-      let(:artifact) { create(:ci_job_artifact, :zip, :remote_store) }
-
-      it 'retrieves a CDN-fronted URL' do
-        expect(artifact.file).to receive(:cdn_enabled_url).and_call_original
-        expect(Gitlab::ApplicationContext).to receive(:push).with(artifact_used_cdn: false).and_call_original
-        expect(helper.cdn_fronted_url(artifact.file)).to be_a(String)
-      end
-    end
-
-    context 'with a file upload' do
-      let(:url) { 'https://example.com/path/to/upload' }
-
-      it 'retrieves the file URL' do
-        file = double(url: url)
-
-        expect(Gitlab::ApplicationContext).not_to receive(:push)
-        expect(helper.cdn_fronted_url(file)).to eq(url)
       end
     end
   end

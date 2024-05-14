@@ -327,6 +327,28 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
       end
     end
 
+    describe '.expiring_and_not_notified_without_impersonation' do
+      let_it_be(:expired_token) { create(:personal_access_token, expires_at: 2.days.ago) }
+      let_it_be(:revoked_token) { create(:personal_access_token, revoked: true) }
+      let_it_be(:valid_token_and_notified) { create(:personal_access_token, expires_at: 2.days.from_now, expire_notification_delivered: true) }
+      let_it_be(:valid_token) { create(:personal_access_token, expires_at: 2.days.from_now, impersonation: false) }
+      let_it_be(:long_expiry_token) { create(:personal_access_token, expires_at: described_class::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS.days.from_now) }
+
+      context 'when token is there to be notified' do
+        it "has only unnotified tokens" do
+          expect(described_class.expiring_and_not_notified_without_impersonation).to contain_exactly(valid_token)
+        end
+      end
+
+      context 'when no token is there to be notified' do
+        it "return empty array" do
+          valid_token.update!(impersonation: true)
+
+          expect(described_class.expiring_and_not_notified_without_impersonation).to be_empty
+        end
+      end
+    end
+
     describe '.expired_today_and_not_notified' do
       let_it_be(:active) { create(:personal_access_token) }
       let_it_be(:expired_yesterday) { create(:personal_access_token, expires_at: Date.yesterday) }

@@ -6,8 +6,6 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # `NOT NULL` constraints
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38358) in GitLab 13.0.
-
 All attributes that should not have `NULL` as a value, should be defined as `NOT NULL`
 columns in the database.
 
@@ -37,7 +35,7 @@ end
 
 ## Add a `NOT NULL` column to an existing table
 
-With PostgreSQL 11 being the minimum version in GitLab 13.0 and later, adding columns with `NULL` and/or
+With PostgreSQL 11 being the minimum version in GitLab, adding columns with `NULL` and/or
 default values has become much easier and the standard `add_column` helper should be used in all cases.
 
 For example, consider a migration that adds a new `NOT NULL` column `active` to table `db_guides`,
@@ -65,7 +63,10 @@ The steps required are:
 
    1. Ensure $ATTRIBUTE value is being set at the application level.
       1. If the attribute has a default value, add the default value to the model so the default value is set for new records.
-      1. Update all places in the code where the attribute is being set to `nil`, if any, for new and existing records.
+      1. Update all places in the code where the attribute would be set to `nil`, if any, for new and existing records. Note that
+         using ActiveRecord callbacks such as `before_save` and `before_validation` may not be sufficient, as some processes
+         skip these callbacks. `update_column`, `update_columns`, and bulk operations such as `insert_all` and `update_all` are some
+         examples of methods to look out for.
    1. Add a post-deployment migration to fix the existing records.
 
      NOTE:
@@ -208,24 +209,6 @@ In this case the number of releases depends on the amount of time needed to migr
 scheduled after the background migration has completed, which could be several releases after the constraint was added.
 
 1. Release `N.M`:
-   - Add the `NOT NULL` constraint without validating it:
-
-     ```ruby
-     # db/post_migrate/
-     class AddMergeRequestDiffsProjectIdNotNullConstraint < Gitlab::Database::Migration[2.2]
-       disable_ddl_transaction!
-       milestone '16.7'
-
-       def up
-         add_not_null_constraint :merge_request_diffs, :project_id, validate: false
-       end
-
-       def down
-         remove_not_null_constraint :merge_request_diffs, :project_id
-       end
-     end
-     ```
-
    - Add the background-migration to fix the existing records:
 
      ```ruby
@@ -253,6 +236,8 @@ scheduled after the background migration has completed, which could be several r
      ```
 
 1. Release `N.M+X`, where `X` is the number of releases the migration was running:
+   - [Verify that all existing records are fixed](#check-if-all-records-are-fixed-next-release).
+
    - Cleanup the background migration:
 
      ```ruby
@@ -280,7 +265,41 @@ scheduled after the background migration has completed, which could be several r
      end
      ```
 
-   - **Optional.** For very large tables, schedule asynchronous validation of the `NOT NULL` constraint:
+   - Add the `NOT NULL` constraint:
+
+     ```ruby
+     # db/post_migrate/
+     class AddMergeRequestDiffsProjectIdNotNullConstraint < Gitlab::Database::Migration[2.2]
+       disable_ddl_transaction!
+       milestone '16.7'
+
+       def up
+         add_not_null_constraint :merge_request_diffs, :project_id
+       end
+
+       def down
+         remove_not_null_constraint :merge_request_diffs, :project_id
+       end
+     end
+     ```
+
+   - **Optional.** For very large tables, add an invalid `NOT NULL` constraint and schedule asynchronous validation:
+
+     ```ruby
+     # db/post_migrate/
+     class AddMergeRequestDiffsProjectIdNotNullConstraint < Gitlab::Database::Migration[2.2]
+       disable_ddl_transaction!
+       milestone '16.7'
+
+       def up
+         add_not_null_constraint :merge_request_diffs, :project_id, validate: false
+       end
+
+       def down
+         remove_not_null_constraint :merge_request_diffs, :project_id
+       end
+     end
+     ```
 
      ```ruby
      # db/post_migrate/
@@ -299,7 +318,7 @@ scheduled after the background migration has completed, which could be several r
      end
      ```
 
-1. Validate the `NOT NULL` constraint (if the constraint was validated asynchronously, wait for this validation to finish):
+1. **Optional.** If the constraint was validated asynchronously, validate the `NOT NULL` constraint once validation is complete:
 
    ```ruby
    # db/post_migrate/
@@ -319,3 +338,69 @@ scheduled after the background migration has completed, which could be several r
 For these cases, consult the database team early in the update cycle. The `NOT NULL`
 constraint may not be required or other options could exist that do not affect really large
 or frequently accessed tables.
+
+## `NOT NULL` constraints for multiple columns
+
+Sometimes we want to ensure a set of columns contains a specific number of `NOT NULL` values. A common example
+is a table that can belong to either a project or a group, and therefore `project_id` or `group_id` must
+be present. To enforce this, follow the steps for your use case above, but instead use the
+`add_multi_column_not_null_constraint` helper.
+
+In this example, `labels` must belong to either a project or a group, but not both. We can add
+a check constraint to enforce this:
+
+```ruby
+class AddLabelsNullConstraint < Gitlab::Database::Migration[2.2]
+  disable_ddl_transaction!
+  milestone '16.10'
+
+  def up
+    add_multi_column_not_null_constraint(:labels, :group_id, :project_id)
+  end
+
+  def down
+    remove_multi_column_not_null_constraint(:labels, :group_id, :project_id)
+  end
+end
+```
+
+This will add the following constraint to `labels`:
+
+```sql
+CREATE TABLE labels (
+    ...
+    CONSTRAINT check_45e873b2a8 CHECK ((num_nonnulls(group_id, project_id) = 1))
+);
+```
+
+`num_nonnulls` returns the number of supplied arguments that are non-null. Checking this value
+equals `1` in the constraint means that only one of `group_id` and `project_id` should contain
+a non-null value in a row, but not both.
+
+### Custom limits and operators
+
+If we want to customize the number of non-nulls required, we can use a different `limit` and/or `operator`:
+
+```ruby
+class AddLabelsNullConstraint < Gitlab::Database::Migration[2.2]
+  disable_ddl_transaction!
+  milestone '16.10'
+
+  def up
+    add_multi_column_not_null_constraint(:labels, :group_id, :project_id, limit: 0, operator: '>')
+  end
+
+  def down
+    remove_multi_column_not_null_constraint(:labels, :group_id, :project_id)
+  end
+end
+```
+
+This is then reflected in the constraint, allowing both `project_id` and `group_id` to be present:
+
+```sql
+CREATE TABLE labels (
+    ...
+    CONSTRAINT check_45e873b2a8 CHECK ((num_nonnulls(group_id, project_id) > 0))
+);
+```

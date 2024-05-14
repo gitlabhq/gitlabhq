@@ -5,6 +5,7 @@ import { mapActions, mapState } from 'vuex';
 import { createAlert, VARIANT_INFO } from '~/alert';
 import { historyReplaceState } from '~/lib/utils/common_utils';
 import { s__ } from '~/locale';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import { SHOW_DELETE_SUCCESS_ALERT } from '~/packages_and_registries/shared/constants';
 
 import { getQueryParams, extractFilterAndSorting } from '~/packages_and_registries/shared/utils';
@@ -34,11 +35,9 @@ export default {
   computed: {
     ...mapState({
       emptyListIllustration: (state) => state.config.emptyListIllustration,
-      emptyListHelpUrl: (state) => state.config.emptyListHelpUrl,
       filter: (state) => state.filter,
       isGroupPage: (state) => state.config.isGroupPage,
       selectedType: (state) => state.selectedType,
-      packageHelpUrl: (state) => state.config.packageHelpUrl,
       packagesCount: (state) => state.pagination?.total,
     }),
     emptySearch() {
@@ -92,12 +91,17 @@ export default {
   i18n: {
     widenFilters: s__('PackageRegistry|To widen your search, change or remove the filters above.'),
   },
+  terraformRegistryHelpUrl: helpPagePath('user/packages/terraform_module_registry/index'),
 };
 </script>
 
 <template>
   <div>
-    <infrastructure-title :help-url="packageHelpUrl" :count="packagesCount" />
+    <infrastructure-title
+      v-if="packagesCount > 0"
+      :help-url="$options.terraformRegistryHelpUrl"
+      :count="packagesCount"
+    />
     <infrastructure-search v-if="packagesCount > 0" @update="requestPackagesList" />
 
     <package-list @page:changed="onPageChanged" @package:delete="onPackageDeleteRequest">
@@ -107,7 +111,9 @@ export default {
             <gl-sprintf v-if="!emptySearch" :message="$options.i18n.widenFilters" />
             <gl-sprintf v-else :message="noResultsText">
               <template #noPackagesLink="{ content }">
-                <gl-link :href="emptyListHelpUrl" target="_blank">{{ content }}</gl-link>
+                <gl-link :href="$options.terraformRegistryHelpUrl" target="_blank">{{
+                  content
+                }}</gl-link>
               </template>
             </gl-sprintf>
           </template>

@@ -26,21 +26,21 @@ module Mutations
             'For example, `my-scope/my-project/container-dev-*`. ' \
             'Wildcard character `*` allowed.'
 
-          argument :delete_protected_up_to_access_level,
+          argument :minimum_access_level_for_delete,
             Types::ContainerRegistry::Protection::RuleAccessLevelEnum,
             required: false,
             validates: { allow_blank: false },
             description:
-            'Maximum GitLab access level prevented from deleting a container. ' \
-            'For example, `DEVELOPER`, `MAINTAINER`, `OWNER`.'
+            'Minimum GitLab access level allowed to delete container images to the container registry. ' \
+            'For example, `MAINTAINER`, `OWNER`, or `ADMIN`.'
 
-          argument :push_protected_up_to_access_level,
+          argument :minimum_access_level_for_push,
             Types::ContainerRegistry::Protection::RuleAccessLevelEnum,
             required: false,
             validates: { allow_blank: false },
             description:
-              'Maximum GitLab access level prevented from pushing a container. ' \
-              'For example, `DEVELOPER`, `MAINTAINER`, `OWNER`.'
+              'Minimum GitLab access level allowed to push container images to the container registry. ' \
+              'For example, `MAINTAINER`, `OWNER`, or `ADMIN`.'
 
           field :container_registry_protection_rule,
             Types::ContainerRegistry::Protection::RuleType,

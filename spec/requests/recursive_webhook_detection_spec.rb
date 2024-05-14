@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Recursive webhook detection', :sidekiq_inline, :clean_gitlab_redis_shared_state, :request_store,
-feature_category: :webhooks do
+  feature_category: :webhooks do
   include StubRequests
 
   let_it_be(:user) { create(:user) }

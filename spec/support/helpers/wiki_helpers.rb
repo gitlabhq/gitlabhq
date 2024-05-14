@@ -7,11 +7,6 @@ module WikiHelpers
     stub_licensed_features(group_wikis: enabled)
   end
 
-  def wait_for_svg_to_be_loaded(example = nil)
-    # Ensure the SVG is loaded first before clicking the button
-    find('.svg-content .js-lazy-loaded') if example.nil? || example.metadata.key?(:js)
-  end
-
   def upload_file_to_wiki(wiki, user, file_name)
     params = {
       file_name: file_name,

@@ -4,13 +4,29 @@
 # https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Pages/Hugo.gitlab-ci.yml
 
 ---
-# All available Hugo versions are listed here:
-# https://gitlab.com/pages/hugo/container_registry
+#
+# Before using this .gitlab-ci.yml:
+#
+# - This example uses the latest Docker image, but you might want to use the
+#   exact version to avoid any broken pipelines.
+#   All available Hugo versions are listed under https://gitlab.com/pages/hugo/container_registry.
+# - Read about the difference between hugo and hugo_extended
+#   https://gitlab.com/pages/hugo/-/blob/main/README.md#hugo-vs-hugo_extended.
+#   If you don't know what to use, better use the extended version.
+# - To change the theme, see
+#   https://gitlab.com/pages/hugo/-/blob/main/README.md#use-a-custom-theme.
+#
 default:
-  image: "${CI_TEMPLATE_REGISTRY_HOST}/pages/hugo:latest"
+  image: "${CI_TEMPLATE_REGISTRY_HOST}/pages/hugo/hugo_extended:latest"
 
 variables:
   GIT_SUBMODULE_STRATEGY: recursive
+  HUGO_ENV: production
+
+before_script:
+  - apk add --no-cache go curl bash nodejs
+  ## Uncomment the following if you use PostCSS. See https://gohugo.io/hugo-pipes/postcss/
+  # - npm install postcss postcss-cli autoprefixer
 
 test:
   script:

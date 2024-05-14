@@ -26,6 +26,19 @@ RSpec.describe API::PypiPackages, feature_category: :package_registry do
     end
   end
 
+  shared_context 'setup auth headers' do
+    let(:token) { personal_access_token.token }
+    let(:user_headers) { basic_auth_header(user.username, token) }
+    let(:headers) { user_headers.merge(workhorse_headers) }
+  end
+
+  shared_context 'add to project and group' do |user_type|
+    before do
+      project.send("add_#{user_type}", user)
+      group.send("add_#{user_type}", user)
+    end
+  end
+
   context 'simple index API endpoint' do
     let_it_be(:package) { create(:pypi_package, project: project) }
     let_it_be(:package2) { create(:pypi_package, project: project) }
@@ -207,6 +220,12 @@ RSpec.describe API::PypiPackages, feature_category: :package_registry do
     let(:url) { "/projects/#{project.id}/packages/pypi" }
     let(:headers) { {} }
     let(:requires_python) { '>=3.7' }
+    let(:keywords) { 'dog,puppy,voting,election' }
+    let(:description) { 'Example description' }
+    let(:metadata_version) { '2.3' }
+    let(:author_email) { 'cschultz@example.com, snoopy@peanuts.com' }
+    let(:description_content_type) { 'text/plain' }
+    let(:summary) { 'A module for collecting votes from beagles.' }
     let(:base_params) do
       {
         requires_python: requires_python,
@@ -214,12 +233,12 @@ RSpec.describe API::PypiPackages, feature_category: :package_registry do
         name: 'sample-project',
         sha256_digest: '1' * 64,
         md5_digest: '1' * 32,
-        metadata_version: '2.3',
-        author_email: 'cschultz@example.com, snoopy@peanuts.com',
-        description: 'Example description',
-        description_content_type: 'text/plain',
-        summary: 'A module for collecting votes from beagles.',
-        keywords: 'dog,puppy,voting,election'
+        metadata_version: metadata_version,
+        author_email: author_email,
+        description: description,
+        description_content_type: description_content_type,
+        summary: summary,
+        keywords: keywords
       }
     end
 
@@ -317,36 +336,45 @@ RSpec.describe API::PypiPackages, feature_category: :package_registry do
       end
     end
 
-    context 'with required_python too big' do
-      let(:requires_python) { 'x' * 256 }
-      let(:token) { personal_access_token.token }
-      let(:user_headers) { basic_auth_header(user.username, token) }
-      let(:headers) { user_headers.merge(workhorse_headers) }
-
-      before do
-        project.update_column(:visibility_level, Gitlab::VisibilityLevel::PRIVATE)
+    context 'with a very long metadata field' do
+      where(:field_name, :param_name, :max_length) do
+        :required_python          | :requires_python | ::Packages::Pypi::Metadatum::MAX_REQUIRED_PYTHON_LENGTH
+        :keywords                 | nil              | ::Packages::Pypi::Metadatum::MAX_KEYWORDS_LENGTH
+        :metadata_version         | nil              | ::Packages::Pypi::Metadatum::MAX_METADATA_VERSION_LENGTH
+        :description              | nil              | ::Packages::Pypi::Metadatum::MAX_DESCRIPTION_LENGTH
+        :summary                  | nil              | ::Packages::Pypi::Metadatum::MAX_SUMMARY_LENGTH
+        :description_content_type | nil              | ::Packages::Pypi::Metadatum::MAX_DESCRIPTION_CONTENT_TYPE_LENGTH
+        :author_email             | nil              | ::Packages::Pypi::Metadatum::MAX_AUTHOR_EMAIL_LENGTH
       end
 
-      it_behaves_like 'process PyPI api request', :developer, :bad_request, true
-    end
+      with_them do
+        include_context 'setup auth headers'
+        include_context 'add to project and group', 'developer'
 
-    context 'with description too big' do
-      let(:description) { 'x' * ::Packages::Pypi::Metadatum::MAX_DESCRIPTION_LENGTH + 1 }
-      let(:token) { personal_access_token.token }
-      let(:user_headers) { basic_auth_header(user.username, token) }
-      let(:headers) { user_headers.merge(workhorse_headers) }
+        let(:truncated_field) { ('x' * (max_length + 1)).truncate(max_length) }
 
-      before do
-        project.update_column(:visibility_level, Gitlab::VisibilityLevel::PRIVATE)
+        before do
+          key = param_name || field_name
+
+          params.merge!(
+            { key.to_sym => 'x' * (max_length + 1) }
+          )
+        end
+
+        it_behaves_like 'returning response status', :created
+
+        it 'truncates the field' do
+          subject
+
+          created_package = ::Packages::Package.pypi.last
+
+          expect(created_package.pypi_metadatum.public_send(field_name)).to eq(truncated_field)
+        end
       end
-
-      it_behaves_like 'process PyPI api request', :developer, :created, true
     end
 
     context 'with an invalid package' do
-      let(:token) { personal_access_token.token }
-      let(:user_headers) { basic_auth_header(user.username, token) }
-      let(:headers) { user_headers.merge(workhorse_headers) }
+      include_context 'setup auth headers'
 
       before do
         params[:name] = '.$/@!^*'
@@ -357,12 +385,10 @@ RSpec.describe API::PypiPackages, feature_category: :package_registry do
     end
 
     context 'with an invalid sha256' do
-      let(:token) { personal_access_token.token }
-      let(:user_headers) { basic_auth_header(user.username, token) }
-      let(:headers) { user_headers.merge(workhorse_headers) }
+      include_context 'setup auth headers'
 
       before do
-        params[:sha256_digest] = 'a' * 63 + '%'
+        params[:sha256_digest] = ('a' * 63) + '%'
         project.add_developer(user)
       end
 

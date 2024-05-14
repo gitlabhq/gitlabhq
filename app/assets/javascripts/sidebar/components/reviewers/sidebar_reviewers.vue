@@ -6,7 +6,6 @@ import { createAlert } from '~/alert';
 import { TYPE_ISSUE } from '~/issues/constants';
 import { __ } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { fetchUserCounts } from '~/super_sidebar/user_counts_fetch';
 import eventHub from '../../event_hub';
 import getMergeRequestReviewersQuery from '../../queries/get_merge_request_reviewers.query.graphql';
@@ -27,7 +26,6 @@ export default {
     ReviewerTitle,
     Reviewers,
   },
-  mixins: [glFeatureFlagsMixin()],
   props: {
     mediator: {
       type: Object,
@@ -58,7 +56,6 @@ export default {
         return {
           iid: this.issuableIid,
           fullPath: this.projectPath,
-          mrRequestChanges: this.glFeatures.mrRequestChanges,
         };
       },
       update(data) {
@@ -77,7 +74,6 @@ export default {
         variables() {
           return {
             issuableId: this.issuable?.id,
-            mrRequestChanges: this.glFeatures.mrRequestChanges,
           };
         },
         skip() {
@@ -187,6 +183,7 @@ export default {
       :users="reviewers"
       :editable="canUpdate"
       :issuable-type="issuableType"
+      class="gl-pt-2"
       @request-review="requestReview"
       @assign-self="reviewBySelf"
     />

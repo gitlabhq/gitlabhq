@@ -2,14 +2,16 @@
 
 RSpec.shared_examples 'issuable supports timelog creation mutation' do
   let(:mutation_response) { graphql_mutation_response(:timelog_create) }
-  let(:mutation) do
-    variables = {
+  let(:spent_at) { '2022-11-16T12:59:35+0100' }
+  let(:mutation) { graphql_mutation(:timelogCreate, variables) }
+
+  let(:variables) do
+    {
       'time_spent' => time_spent,
-      'spent_at' => '2022-11-16T12:59:35+0100',
+      'spent_at' => spent_at,
       'summary' => 'Test summary',
       'issuable_id' => issuable.to_global_id.to_s
     }
-    graphql_mutation(:timelogCreate, variables)
   end
 
   context 'when the user is anonymous' do
@@ -51,6 +53,30 @@ RSpec.shared_examples 'issuable supports timelog creation mutation' do
           'timeSpent' => 3600,
           # This also checks that the ISO time was converted to UTC
           'spentAt' => '2022-11-16T11:59:35Z',
+          'summary' => 'Test summary'
+        )
+      end
+    end
+
+    context 'when spent_at is not provided', time_travel_to: '2024-04-23 22:50:00 +0200' do
+      let(:variables) do
+        {
+          'time_spent' => time_spent,
+          'summary' => 'Test summary',
+          'issuable_id' => issuable.to_global_id.to_s
+        }
+      end
+
+      it 'creates the timelog using the current time' do
+        expect do
+          post_graphql_mutation(mutation, current_user: current_user)
+        end.to change { Timelog.count }.by(1)
+
+        expect(response).to have_gitlab_http_status(:success)
+        expect(mutation_response['errors']).to be_empty
+        expect(mutation_response['timelog']).to include(
+          'timeSpent' => 3600,
+          'spentAt' => '2024-04-23T20:50:00Z',
           'summary' => 'Test summary'
         )
       end

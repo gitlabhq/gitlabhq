@@ -25,7 +25,7 @@ The **Homepage** button is located on the upper-left corner of the left sidebar.
 Replace the default **GitLab logo** **{tanuki}** with any image.
 
 - The file should be less than 1 MB.
-- The image should be 28 pixels high. Images more than 28 px high will be resized.
+- The image should be 24 pixels high. Images more than 24 px high will be resized.
 
 To customize your **Homepage** icon image:
 
@@ -93,6 +93,16 @@ To customize the logo on your sign-in and register pages:
 1. At the bottom of the page, select **Update appearance settings**.
 
 You can add also add a [customized help message](settings/help_page.md) below the sign-in message or add [a sign-in text message](settings/sign_in_restrictions.md#sign-in-information).
+
+### Disable cookie-based language selector
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144484) in GitLab 16.10.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](feature_flags.md) named `disable_preferred_language_cookie`.
+On GitLab.com and GitLab Dedicated, this feature is not available.
+
+You can remove the cookie-based language selector from the footer of the sign-in and register pages by enabling the `disable_preferred_language_cookie` feature flag.
 
 ## Customize the Progressive Web App
 

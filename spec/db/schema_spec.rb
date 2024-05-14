@@ -48,7 +48,8 @@ RSpec.describe 'Database schema', feature_category: :database do
     broadcast_messages: %w[namespace_id],
     chat_names: %w[chat_id team_id user_id],
     chat_teams: %w[team_id],
-    ci_builds: %w[project_id runner_id user_id erased_by_id trigger_request_id partition_id auto_canceled_by_partition_id],
+    ci_builds: %w[project_id runner_id user_id erased_by_id trigger_request_id partition_id auto_canceled_by_partition_id execution_config_id],
+    ci_job_artifacts: %w[partition_id project_id job_id],
     ci_namespace_monthly_usages: %w[namespace_id],
     ci_pipeline_artifacts: %w[partition_id],
     ci_pipeline_chat_data: %w[partition_id],
@@ -58,7 +59,7 @@ RSpec.describe 'Database schema', feature_category: :database do
     ci_pipelines: %w[partition_id],
     ci_runner_projects: %w[runner_id],
     ci_sources_pipelines: %w[partition_id source_partition_id source_job_id],
-    ci_stages: %w[partition_id],
+    ci_stages: %w[partition_id project_id pipeline_id],
     ci_trigger_requests: %w[commit_id],
     ci_job_artifact_states: %w[partition_id],
     cluster_providers_aws: %w[security_group_id vpc_id access_key_id],
@@ -91,6 +92,12 @@ RSpec.describe 'Database schema', feature_category: :database do
     merge_requests_compliance_violations: %w[target_project_id],
     merge_request_diffs: %w[project_id],
     merge_request_diff_commits: %w[commit_author_id committer_id],
+    # merge_request_diff_commits_b5377a7a34 is the temporary table for the merge_request_diff_commits partitioning
+    # backfill. It will get foreign keys after the partitioning is finished.
+    merge_request_diff_commits_b5377a7a34: %w[merge_request_diff_id commit_author_id committer_id],
+    # merge_request_diff_files_99208b8fac is the temporary table for the merge_request_diff_commits partitioning
+    # backfill. It will get foreign keys after the partitioning is finished.
+    merge_request_diff_files_99208b8fac: %w[merge_request_diff_id],
     namespaces: %w[owner_id parent_id],
     namespace_descendants: %w[namespace_id],
     notes: %w[author_id commit_id noteable_id updated_by_id resolved_by_id confirmed_by_id discussion_id namespace_id],
@@ -98,13 +105,15 @@ RSpec.describe 'Database schema', feature_category: :database do
     oauth_access_grants: %w[resource_owner_id application_id],
     oauth_access_tokens: %w[resource_owner_id application_id],
     oauth_applications: %w[owner_id],
-    p_ci_builds: %w[erased_by_id trigger_request_id partition_id auto_canceled_by_partition_id],
+    p_ci_builds: %w[erased_by_id trigger_request_id partition_id auto_canceled_by_partition_id execution_config_id],
     p_batched_git_ref_updates_deletions: %w[project_id partition_id],
     p_catalog_resource_sync_events: %w[catalog_resource_id project_id partition_id],
+    p_catalog_resource_component_usages: %w[used_by_project_id], # No FK constraint because we want to preserve historical usage data
     p_ci_finished_build_ch_sync_events: %w[build_id],
     p_ci_job_artifacts: %w[partition_id project_id job_id],
     p_ci_pipeline_variables: %w[partition_id],
-    product_analytics_events_experimental: %w[event_id txn_id user_id],
+    p_ci_builds_execution_configs: %w[partition_id],
+    p_ci_stages: %w[partition_id project_id pipeline_id],
     project_build_artifacts_size_refreshes: %w[last_job_artifact_id],
     project_data_transfers: %w[project_id namespace_id],
     project_error_tracking_settings: %w[sentry_project_id],
@@ -121,11 +130,13 @@ RSpec.describe 'Database schema', feature_category: :database do
     subscriptions: %w[user_id subscribable_id],
     suggestions: %w[commit_id],
     taggings: %w[tag_id taggable_id tagger_id],
+    # temp_notes_backup is a temporary table created to store orphaned records from the notes table to insure against data loss.
+    temp_notes_backup: %w[author_id project_id commit_id noteable_id updated_by_id resolved_by_id discussion_id review_id namespace_id],
     timelogs: %w[user_id],
     todos: %w[target_id commit_id],
     uploads: %w[model_id],
     user_agent_details: %w[subject_id],
-    users: %w[color_scheme_id created_by_id theme_id managing_group_id],
+    users: %w[color_mode_id color_scheme_id created_by_id theme_id managing_group_id],
     users_star_projects: %w[user_id],
     vulnerability_identifiers: %w[external_id],
     vulnerability_scanners: %w[external_id],
@@ -139,7 +150,8 @@ RSpec.describe 'Database schema', feature_category: :database do
     ml_candidates: %w[internal_id],
     value_stream_dashboard_counts: %w[namespace_id],
     zoekt_indices: %w[namespace_id], # needed for cells sharding key
-    zoekt_repositories: %w[namespace_id project_identifier] # needed for cells sharding key
+    zoekt_repositories: %w[namespace_id project_identifier], # needed for cells sharding key
+    zoekt_tasks: %w[project_identifier partition_id zoekt_repository_id] # needed for: cells sharding key, partitioning, and performance reasons
   }.with_indifferent_access.freeze
 
   context 'for table' do
@@ -258,7 +270,7 @@ RSpec.describe 'Database schema', feature_category: :database do
     'Ci::JobArtifact' => %w[file_type],
     'Ci::Pipeline' => %w[source config_source failure_reason],
     'Ci::Processable' => %w[failure_reason],
-    'Ci::Runner' => %w[access_level],
+    'Ci::Runner' => %w[access_level executor_type],
     'Ci::Stage' => %w[status],
     'Clusters::Cluster' => %w[platform_type provider_type],
     'CommitStatus' => %w[failure_reason],
@@ -294,6 +306,7 @@ RSpec.describe 'Database schema', feature_category: :database do
     "ApplicationSetting" => %w[repository_storages_weighted],
     "AlertManagement::Alert" => %w[payload],
     "Ci::BuildMetadata" => %w[config_options config_variables],
+    "Ci::Runner" => %w[config],
     "ExperimentSubject" => %w[context],
     "ExperimentUser" => %w[context],
     "Geo::Event" => %w[payload],

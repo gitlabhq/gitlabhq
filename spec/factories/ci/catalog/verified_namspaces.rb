@@ -8,12 +8,12 @@ FactoryBot.define do
       verification_level { :gitlab_maintained }
     end
 
-    trait :partner do
-      verification_level { :partner }
+    trait :gitlab_partner_maintained do
+      verification_level { :gitlab_partner_maintained }
     end
 
-    trait :verified_creator do
-      verification_level { :verified_creator }
+    trait :verified_creator_maintained do
+      verification_level { :verified_creator_maintained }
     end
   end
 end

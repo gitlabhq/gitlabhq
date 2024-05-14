@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11739) in GitLab and GitLab Runner 16.8.
 
@@ -113,6 +113,30 @@ job_using_gcp_sm:
       token: $GCP_ID_TOKEN
 ```
 
+### Use secrets from a different GCP project
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/37487) in GitLab 17.0.
+
+Secret names in GCP are per-project. By default the secret named in `gcp_secret_manager:name`
+is read from the project specified in `GCP_PROJECT_NUMBER`.
+
+To read a secret from a different project than the project containing the WIF pool, use the
+fully-qualified secret name formatted as `projects/<project-number>/secrets/<secret-name>`.
+
+For example, if `my-project-secret` is in the GCP project number `123456789`,
+then you can access the secret with:
+
+```yaml
+job_using_gcp_sm:
+  # ... configured as above ...
+  secrets:
+    DATABASE_PASSWORD:
+      gcp_secret_manager:
+        name: projects/123456789/secrets/my-project-secret  # fully-qualified name of the secret defined in GCP Secret Manager
+        version: 1                                          # optional: defaults to `latest`.
+      token: $GCP_ID_TOKEN
+```
+
 ## Troubleshooting
 
 ### `The size of mapped attribute google.subject exceeds the 127 bytes limit` error
@@ -128,3 +152,12 @@ Either modify your attribute mapping or the incoming assertion to produce a mapp
 
 For example, for a `gitlab-org/gitlab` branch, the payload would be `project_path:gitlab-org/gitlab:ref_type:branch:ref:{branch_name}`,
 so the branch name should be 76 characters or less.
+
+### `WARNING: Not resolved: no resolver that can handle the secret` warning
+
+The Google Cloud Secret Manager integration requires at least GitLab 16.8 and GitLab Runner 16.8.
+This warning appears if the job is executed by a runner using a version earlier than 16.8.
+
+On GitLab.com, there is a [known issue](https://gitlab.com/gitlab-org/ci-cd/shared-runners/infrastructure/-/issues/176)
+causing SaaS runners to run an older version. As a workaround until this issue is fixed,
+you can register your own GitLab Runner with version 16.8 or later.

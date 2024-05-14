@@ -6,11 +6,11 @@ import { DEBOUNCE_DELAY } from '~/vue_shared/components/filtered_search_bar/cons
 import { markRaw } from '~/lib/utils/vue3compat/mark_raw';
 import GroupsStore from '../store/groups_store';
 import GroupsService from '../service/groups_service';
-import ArchivedProjectsService from '../service/archived_projects_service';
+import InactiveProjectsService from '../service/inactive_projects_service';
 import {
   ACTIVE_TAB_SUBGROUPS_AND_PROJECTS,
   ACTIVE_TAB_SHARED,
-  ACTIVE_TAB_ARCHIVED,
+  ACTIVE_TAB_INACTIVE,
   SORTING_ITEM_NAME,
   OVERVIEW_TABS_SORTING_ITEMS,
   OVERVIEW_TABS_ARCHIVED_PROJECTS_SORTING_ITEMS,
@@ -19,7 +19,7 @@ import eventHub from '../event_hub';
 import GroupsApp from './app.vue';
 import SubgroupsAndProjectsEmptyState from './empty_states/subgroups_and_projects_empty_state.vue';
 import SharedProjectsEmptyState from './empty_states/shared_projects_empty_state.vue';
-import ArchivedProjectsEmptyState from './empty_states/archived_projects_empty_state.vue';
+import InactiveProjectsEmptyState from './empty_states/inactive_projects_empty_state.vue';
 
 const MIN_SEARCH_LENGTH = 3;
 
@@ -32,7 +32,7 @@ export default {
     GlSorting,
     SubgroupsAndProjectsEmptyState,
     SharedProjectsEmptyState,
-    ArchivedProjectsEmptyState,
+    InactiveProjectsEmptyState,
   },
   inject: ['endpoints', 'initialSort', 'groupId'],
   data() {
@@ -59,11 +59,11 @@ export default {
         sortingItems: OVERVIEW_TABS_SORTING_ITEMS,
       },
       {
-        title: this.$options.i18n[ACTIVE_TAB_ARCHIVED],
-        key: ACTIVE_TAB_ARCHIVED,
-        emptyStateComponent: markRaw(ArchivedProjectsEmptyState),
-        lazy: this.$route.name !== ACTIVE_TAB_ARCHIVED,
-        service: new ArchivedProjectsService(this.groupId, this.initialSort),
+        title: this.$options.i18n[ACTIVE_TAB_INACTIVE],
+        key: ACTIVE_TAB_INACTIVE,
+        emptyStateComponent: markRaw(InactiveProjectsEmptyState),
+        lazy: this.$route.name !== ACTIVE_TAB_INACTIVE,
+        service: new InactiveProjectsService(this.groupId, this.initialSort),
         store: new GroupsStore(),
         sortingItems: OVERVIEW_TABS_ARCHIVED_PROJECTS_SORTING_ITEMS,
       },
@@ -205,7 +205,7 @@ export default {
   i18n: {
     [ACTIVE_TAB_SUBGROUPS_AND_PROJECTS]: __('Subgroups and projects'),
     [ACTIVE_TAB_SHARED]: __('Shared projects'),
-    [ACTIVE_TAB_ARCHIVED]: __('Archived projects'),
+    [ACTIVE_TAB_INACTIVE]: __('Inactive'),
     searchPlaceholder: __('Search'),
   },
 };

@@ -4,9 +4,10 @@ class MergeRequestsClosingIssues < ApplicationRecord
   belongs_to :merge_request
   belongs_to :issue
 
-  validates :merge_request_id, uniqueness: { scope: :issue_id }, presence: true
+  validates :merge_request_id, uniqueness: { scope: [:issue_id, :closes_work_item] }, presence: true
   validates :issue_id, presence: true
 
+  scope :closes_work_item, -> { where(closes_work_item: true) }
   scope :with_issues, ->(ids) { where(issue_id: ids) }
   scope :with_merge_requests_enabled, -> do
     joins(:merge_request)
@@ -25,11 +26,15 @@ class MergeRequestsClosingIssues < ApplicationRecord
   end
 
   class << self
-    def count_for_collection(ids, current_user)
+    def preload_merge_request_for_authorization
+      preload(merge_request: [:target_project, :author])
+    end
+
+    def closing_count_for_collection(ids, current_user)
       closing_merge_requests(ids, current_user).group(:issue_id).pluck('issue_id', Arel.sql('COUNT(*) as count'))
     end
 
-    def count_for_issue(id, current_user)
+    def closing_count_for_issue(id, current_user)
       closing_merge_requests(id, current_user).count
     end
 
@@ -39,7 +44,7 @@ class MergeRequestsClosingIssues < ApplicationRecord
       return with_issues(ids) if current_user&.admin?
       return with_issues(ids).with_merge_requests_enabled if current_user.blank?
 
-      with_issues(ids).accessible_by(current_user)
+      closes_work_item.with_issues(ids).accessible_by(current_user)
     end
   end
 end

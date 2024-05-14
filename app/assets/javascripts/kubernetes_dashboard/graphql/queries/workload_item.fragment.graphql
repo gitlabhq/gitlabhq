@@ -1,0 +1,11 @@
+fragment WorkloadItem on LocalWorkloadItem {
+  metadata {
+    name
+    namespace
+    creationTimestamp
+    labels
+    annotations
+  }
+  status
+  spec
+}

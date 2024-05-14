@@ -6,7 +6,7 @@ RSpec.describe 'Unsubscribe links', :sidekiq_inline, feature_category: :shared d
   include Warden::Test::Helpers
 
   let_it_be(:project) { create(:project, :public) }
-  let_it_be(:author) { create(:user).tap { |u| project.add_reporter(u) } }
+  let_it_be(:author) { create(:user, reporter_of: project) }
   let_it_be(:recipient) { create(:user) }
 
   let(:params) { { title: 'A bug!', description: 'Fix it!', assignee_ids: [recipient.id] } }

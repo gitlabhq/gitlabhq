@@ -26,7 +26,6 @@ Lint/ConstantDefinitionInBlock:
     - 'ee/lib/gitlab/subscription_portal/clients/rest.rb'
     - 'ee/lib/tasks/geo.rake'
     - 'ee/spec/db/schema_support.rb'
-    - 'ee/spec/support/matchers/locked_schema.rb'
     - 'lib/api/search.rb'
     - 'lib/gitlab/quick_actions/issue_actions.rb'
     - 'lib/tasks/cache.rake'

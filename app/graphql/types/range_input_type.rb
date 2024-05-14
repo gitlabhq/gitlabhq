@@ -7,12 +7,12 @@ module Types
 
       @subtypes[[type, closed]] ||= Class.new(self) do
         argument :start, type,
-                 required: closed,
-                 description: 'Start of the range.'
+          required: closed,
+          description: 'Start of the range.'
 
         argument :end, type,
-                 required: closed,
-                 description: 'End of the range.'
+          required: closed,
+          description: 'End of the range.'
       end
     end
 

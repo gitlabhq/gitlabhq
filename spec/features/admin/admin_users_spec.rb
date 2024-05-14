@@ -11,7 +11,7 @@ RSpec.describe "Admin::Users", feature_category: :user_management do
   end
 
   describe 'Tabs' do
-    let(:tabs_selector) { '.js-users-tabs' }
+    let(:tabs_selector) { '[data-testid="admin-users-tabs"]' }
     let(:active_tab_selector) { '.nav-link.active' }
 
     it 'links to the Users tab' do

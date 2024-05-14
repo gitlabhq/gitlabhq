@@ -686,6 +686,12 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
 
         expect(flash[:alert]).to start_with 'Signing in using your saml account without a pre-existing GitLab account is not allowed.'
       end
+
+      it 'logs saml_response for debugging' do
+        expect(Gitlab::AuthLogger).to receive(:info).with(payload_type: 'saml_response', saml_response: anything)
+
+        post :saml, params: { SAMLResponse: mock_saml_response }
+      end
     end
 
     context 'with GitLab initiated request' do

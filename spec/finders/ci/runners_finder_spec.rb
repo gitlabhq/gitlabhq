@@ -53,9 +53,11 @@ RSpec.describe Ci::RunnersFinder, feature_category: :fleet_visibility do
           context 'by upgrade status' do
             let(:upgrade_status) {}
 
-            let_it_be(:runner1) { create(:ci_runner, version: 'a') }
-            let_it_be(:runner2) { create(:ci_runner, version: 'b') }
-            let_it_be(:runner3) { create(:ci_runner, version: 'c') }
+            let_it_be(:runner1) { create(:ci_runner) }
+            let_it_be(:runner2) { create(:ci_runner) }
+            let_it_be(:runner_manager_1) { create(:ci_runner_machine, runner: runner1, version: 'a') }
+            let_it_be(:runner_manager_2) { create(:ci_runner_machine, runner: runner2, version: 'b') }
+            let_it_be(:runner_manager_3) { create(:ci_runner_machine, runner: runner2, version: 'c') }
             let_it_be(:runner_version_recommended) do
               create(:ci_runner_version, version: 'a', status: :recommended)
             end
@@ -137,7 +139,7 @@ RSpec.describe Ci::RunnersFinder, feature_category: :fleet_visibility do
             Ci::Runner.runner_types.each_key do |runner_type|
               context "when runner type is #{runner_type}" do
                 it "calls the corresponding scope on Ci::Runner" do
-                  expect(Ci::Runner).to receive(:with_runner_type).with(runner_type).and_call_original
+                  expect(Ci::Runner).to receive(:with_runner_type).with(runner_type.to_sym).and_call_original
 
                   described_class.new(current_user: admin, params: { type_type: runner_type }).execute
                 end

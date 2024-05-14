@@ -31,7 +31,7 @@ export default {
       return this.value && this.value === this.checked;
     },
     imgClass() {
-      return 'gl-h-6 gl-mt-n2 gl-mr-2';
+      return 'gl-h-6 -gl-mt-2 gl-mr-2';
     },
   },
   methods: {

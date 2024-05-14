@@ -22,7 +22,6 @@ import {
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import FilteredSearch from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import { AssigneeFilterType, GroupByParamType } from 'ee_else_ce/boards/constants';
-import eventHub from '../eventhub';
 
 export default {
   i18n: {
@@ -44,6 +43,10 @@ export default {
       required: false,
       type: Object,
       default: () => ({}),
+    },
+    filters: {
+      type: Object,
+      required: true,
     },
   },
   data() {
@@ -340,15 +343,20 @@ export default {
       );
     },
   },
+  watch: {
+    filters: {
+      handler(updatedFilters) {
+        this.filterParams = { ...this.filterParams, ...updatedFilters };
+        this.filteredSearchKey += 1;
+      },
+      immediate: true,
+    },
+  },
   created() {
-    eventHub.$on('updateTokens', this.updateTokens);
     if (!isEmpty(this.eeFilters)) {
       this.filterParams = this.eeFilters;
       this.$emit('setFilters', this.formattedFilterParams);
     }
-  },
-  beforeDestroy() {
-    eventHub.$off('updateTokens', this.updateTokens);
   },
   methods: {
     formattedFilterParams() {

@@ -64,7 +64,7 @@ export default {
 <template>
   <gl-accordion :header-level="3">
     <gl-accordion-item :title="__('Details')">
-      <ul class="gl-p-0 gl-mb-3 gl-list-style-none gl-font-sm">
+      <ul class="gl-p-0 gl-mb-3 gl-list-none gl-font-sm">
         <li v-for="key in Object.keys(stats)" :key="key" data-testid="import-stat-item">
           <div class="gl-display-flex gl-w-28 gl-align-items-center">
             <gl-icon :size="12" class="gl-mr-2 gl-flex-shrink-0" v-bind="statsIconProps(key)" />

@@ -25,9 +25,7 @@ RSpec.describe Gitlab::Graphql::QueryAnalyzers::AST::LoggerAnalyzer do
       RequestStore.store[:graphql_logs] = nil
 
       allow(Gitlab::Metrics::System).to receive(:monotonic_time)
-        .and_return(monotonic_time_before, monotonic_time_before,
-                    monotonic_time_before, monotonic_time_before,
-                    monotonic_time_after)
+        .and_return(monotonic_time_before, monotonic_time_before, monotonic_time_after)
     end
 
     it 'returns the complexity, depth, duration, etc' do

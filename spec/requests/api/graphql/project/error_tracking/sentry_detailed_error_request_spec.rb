@@ -4,9 +4,11 @@ require 'spec_helper'
 RSpec.describe 'getting a detailed sentry error', feature_category: :error_tracking do
   include GraphqlHelpers
 
-  let_it_be(:project) { create(:project, :repository) }
+  # user should have `last_on_activity` set to today,
+  # so that `Users::ActivityService` does not register any more updates.
+  let_it_be(:current_user) { create(:user, :with_last_activity_on_today) }
+  let_it_be(:project) { create(:project, :repository, namespace: create(:namespace, owner: current_user)) }
   let_it_be(:project_setting) { create(:project_error_tracking_setting, project: project) }
-  let_it_be(:current_user) { project.first_owner }
   let_it_be(:sentry_detailed_error) { build(:error_tracking_sentry_detailed_error) }
 
   let(:sentry_gid) { sentry_detailed_error.to_global_id.to_s }

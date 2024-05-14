@@ -4,10 +4,30 @@
   "type": "object",
   "additionalProperties": false,
   "properties": {
+    "concurrent_bitbucket_import_jobs_limit": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Maximum number of simultaneous import jobs for Bitbucket Cloud importer"
+    },
+    "concurrent_bitbucket_server_import_jobs_limit": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Maximum number of simultaneous import jobs for Bitbucket Server importer"
+    },
+    "concurrent_github_import_jobs_limit": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Maximum number of simultaneous import jobs for GitHub importer"
+    },
     "members_delete_limit": {
       "type": "integer",
       "minimum": 0,
       "description": "Number of project or group members a user can delete per minute."
+    },
+    "downstream_pipeline_trigger_limit_per_project_user_sha": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Maximum number of downstream pipelines that can be triggered per minute (for a given project, user, and commit)."
     }
   }
 }

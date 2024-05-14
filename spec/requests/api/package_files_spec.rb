@@ -93,9 +93,10 @@ RSpec.describe API::PackageFiles, feature_category: :package_registry do
 
       context 'with pagination params' do
         let(:per_page) { 2 }
-        let!(:package_file_1) { package.package_files[0] }
-        let!(:package_file_2) { package.package_files[1] }
-        let!(:package_file_3) { package.package_files[2] }
+        let(:package_files) { package.package_files.order(:id) }
+        let(:package_file_1) { package_files[0] }
+        let(:package_file_2) { package_files[1] }
+        let(:package_file_3) { package_files[2] }
 
         context 'when viewing the first page' do
           it 'returns first 2 packages' do

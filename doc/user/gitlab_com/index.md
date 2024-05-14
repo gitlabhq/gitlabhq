@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS
+**Offering:** GitLab.com
 
 This page contains information about the settings that are used on GitLab.com, available to
 [GitLab SaaS](https://about.gitlab.com/pricing/) customers.
@@ -50,9 +50,9 @@ In the instance configuration, you see the **SSH host key fingerprints**:
 
 | Algorithm        | MD5 (deprecated) | SHA256  |
 |------------------|------------------|---------|
-| ECDSA            | `f1:d0:fb:46:73:7a:70:92:5a:ab:5d:ef:43:e2:1c:35` | `HbW3g8zUjNSksFbqTiUWPWg2Bq1x8xdGUrliXFzSnUw` |
-| ED25519          | `2e:65:6a:c8:cf:bf:b2:8b:9a:bd:6d:9f:11:5c:12:16` | `eUXGGm1YGsMAS7vkcx6JOJdOGHPem5gQp4taiCfCLB8` |
-| RSA              | `b6:03:0e:39:97:9e:d0:e7:24:ce:a3:77:3e:01:42:09` | `ROQFvPThGrW4RuWLoL9tq9I9zJ42fK4XywyRtbOz/EQ` |
+| ECDSA            | `f1:d0:fb:46:73:7a:70:92:5a:ab:5d:ef:43:e2:1c:35` | `SHA256:HbW3g8zUjNSksFbqTiUWPWg2Bq1x8xdGUrliXFzSnUw` |
+| ED25519          | `2e:65:6a:c8:cf:bf:b2:8b:9a:bd:6d:9f:11:5c:12:16` | `SHA256:eUXGGm1YGsMAS7vkcx6JOJdOGHPem5gQp4taiCfCLB8` |
+| RSA              | `b6:03:0e:39:97:9e:d0:e7:24:ce:a3:77:3e:01:42:09` | `SHA256:ROQFvPThGrW4RuWLoL9tq9I9zJ42fK4XywyRtbOz/EQ` |
 
 The first time you connect to a GitLab.com repository, one of these keys is
 displayed in the output.
@@ -104,12 +104,10 @@ To back up an entire project on GitLab.com, you can export it either:
   can also use the API to programmatically upload exports to a storage platform,
   such as Amazon S3.
 
-With exports, be aware of [what is and is not](../project/settings/import_export.md#items-that-are-exported)
+With exports, be aware of [what is and is not](../project/settings/import_export.md#project-items-that-are-exported)
 included in a project export.
 
-GitLab is built on Git, so you can back up just the repository of a project by
-[cloning](../../gitlab-basics/start-using-git.md#clone-a-repository) it to
-another computer.
+GitLab is built on Git, so you can back up just the repository of a project by cloning it to another computer.
 Similarly, you can clone a project's wiki to back it up. All files
 [uploaded after August 22, 2020](../project/wiki/index.md#create-a-new-wiki-page)
 are included when cloning.
@@ -118,7 +116,7 @@ are included when cloning.
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS
+**Offering:** GitLab.com
 
 After May 08, 2023, all groups have delayed deletion enabled by default.
 
@@ -126,17 +124,21 @@ Groups are permanently deleted after a seven-day delay.
 
 If you are on the Free tier, your groups are immediately deleted, and you will not be able to restore them.
 
+You can [view and restore groups marked for deletion](../../user/group/index.md#restore-a-group).
+
 ## Delayed project deletion
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS
+**Offering:** GitLab.com
 
 After May 08, 2023, all groups have delayed project deletion enabled by default.
 
 Projects are permanently deleted after a seven-day delay.
 
 If you are on the Free tier, your projects are immediately deleted, and you will not be able to restore them.
+
+You can [view and restore projects marked for deletion](../../user/project/working_with_projects.md#restore-a-project).
 
 ## Inactive project deletion
 
@@ -181,6 +183,24 @@ which is part of [GitLab CI/CD](#gitlab-cicd).
 
 [Rate limits](#gitlabcom-specific-rate-limits) also exist for GitLab Pages.
 
+## GitLab container registry
+
+| Setting          | GitLab.com                        |
+|:-----------------|:----------------------------------|
+| Domain name      | `registry.gitlab.com`             |
+| IP address       | `35.227.35.254`                   |
+| CDN domain name  | `cdn.registry.gitlab-static.net`  |
+| CDN IP address   | `34.149.22.116`                   |
+
+To use the GitLab container registry, Docker clients must have access to:
+
+- The registry endpoint and GitLab.com for authorization.
+- Google Cloud Storage or Google Cloud Content Delivery Network to download images.
+
+GitLab.com is fronted by Cloudflare.
+For incoming connections to GitLab.com, you must allow CIDR blocks of Cloudflare
+([IPv4](https://www.cloudflare.com/ips-v4/) and [IPv6](https://www.cloudflare.com/ips-v6/)).
+
 ## GitLab CI/CD
 
 Below are the current settings regarding [GitLab CI/CD](../../ci/index.md).
@@ -194,7 +214,7 @@ the related documentation.
 | Scheduled Pipeline Cron                                                          | `*/5 * * * *`                                                                                                             | See [Pipeline schedules advanced configuration](../../administration/cicd.md#change-maximum-scheduled-pipeline-frequency). |
 | Maximum jobs in active pipelines                                                 | `500` for Free tier, `1000` for all trial tiers, `20000` for Premium, and `100000` for Ultimate.                                                 | See [Number of jobs in active pipelines](../../administration/instance_limits.md#number-of-jobs-in-active-pipelines). |
 | Maximum CI/CD subscriptions to a project                                         | `2`                                                                                                                       | See [Number of CI/CD subscriptions to a project](../../administration/instance_limits.md#number-of-cicd-subscriptions-to-a-project). |
-| Maximum number of pipeline triggers in a project                                 | `25000` for Free tier, Unlimited for all paid tiers                                                                       | See [Limit the number of pipeline triggers](../../administration/instance_limits.md#limit-the-number-of-pipeline-triggers). |
+| Maximum number of pipeline triggers in a project                                 | `25000` for all tiers                                                                                                     | See [Limit the number of pipeline triggers](../../administration/instance_limits.md#limit-the-number-of-pipeline-triggers). |
 | Maximum pipeline schedules in projects                                           | `10` for Free tier, `50` for all paid tiers                                                                               | See [Number of pipeline schedules](../../administration/instance_limits.md#number-of-pipeline-schedules). |
 | Maximum pipelines per schedule                                                   | `24` for Free tier, `288` for all paid tiers                                                                              | See [Limit the number of pipelines created by a pipeline schedule per day](../../administration/instance_limits.md#limit-the-number-of-pipelines-created-by-a-pipeline-schedule-per-day). |
 | Maximum number of schedule rules defined for each security policy project        | Unlimited for all paid tiers                                                                                              | See [Number of schedule rules defined for each security policy project](../../administration/instance_limits.md#limit-the-number-of-schedule-rules-defined-for-security-policy-project). |
@@ -203,6 +223,7 @@ the related documentation.
 | Maximum registered runners                                                       | Free tier: `50` per-group / `50` per-project<br/>All paid tiers: `1000` per-group  / `1000` per-project                   | See [Number of registered runners per scope](../../administration/instance_limits.md#number-of-registered-runners-per-scope). |
 | Limit of dotenv variables                                                        | Free tier: `50` / Premium tier: `100` / Ultimate tier: `150`                                                              | See [Limit dotenv variables](../../administration/instance_limits.md#limit-dotenv-variables). |
 | Authorization token duration (minutes)                                           | `15`                                                                                                                      | To set a custom value, in the Rails console, run `ApplicationSetting.last.update(container_registry_token_expire_delay: <integer>)`, where `<integer>` is the desired number of minutes. |
+| Maximum downstream pipeline trigger rate (for a given project, user, and commit) | `350` per minute                                                                                                          | See [Maximum downstream pipeline trigger rate](../../administration/settings/continuous_integration.md#maximum-downstream-pipeline-trigger-rate). |
 
 ## Package registry limits
 
@@ -235,6 +256,7 @@ the default value [is the same as for self-managed instances](../../administrati
 | [Maximum download file size when importing from source GitLab instances by direct transfer](../../administration/settings/import_and_export_settings.md#maximum-download-file-size-for-imports-by-direct-transfer) | 5 GiB              |
 | Maximum attachment size                                                                                                                                                                                            | 100 MiB            |
 | [Maximum decompressed file size for imported archives](../../administration/settings/import_and_export_settings.md#maximum-decompressed-file-size-for-imported-archives)                                           | 25 GiB             |
+| [Maximum push size](../../administration/settings/account_and_limit_settings.md#max-push-size)                                                                                                                     | 5 GiB              |
 
 If you are near or over the repository size limit, you can either:
 
@@ -300,17 +322,19 @@ The limit varies depending on your plan and the number of seats in your subscrip
 
 ### Other limits
 
-| Setting              | Default for GitLab.com  |
-|----------------------|-------------------------|
-| Number of webhooks   | `100` per project, `50` per group (subgroup webhooks are not counted towards parent group limits ) |
-| Maximum payload size | 25 MB                   |
-| Timeout              | 10 seconds              |
+| Setting                                                        | Default for GitLab.com |
+|:---------------------------------------------------------------|:-----------------------|
+| Number of webhooks                                             | 100 per project, 50 per group (subgroup webhooks are not counted towards parent group limits ) |
+| Maximum payload size                                           | 25 MB                  |
+| Timeout                                                        | 10 seconds             |
+| [Multiple Pages deployments](../project/pages/index.md#limits) | 100 extra deployments (Premium tier), 500 extra deployments (Ultimate tier) |
 
 For self-managed instance limits, see:
 
 - [Webhook rate limit](../../administration/instance_limits.md#webhook-rate-limit).
 - [Number of webhooks](../../administration/instance_limits.md#number-of-webhooks).
 - [Webhook timeout](../../administration/instance_limits.md#webhook-timeout).
+- [Multiple Pages deployments](../../administration/instance_limits.md#number-of-extra-pages-deployments-when-using-multiple-deployments).
 
 ## Runner SaaS
 
@@ -345,25 +369,26 @@ are also informational headers with this response detailed in
 
 The following table describes the rate limits for GitLab.com:
 
-| Rate limit                                                                 | Setting                              |
-|:---------------------------------------------------------------------------|:-------------------------------------|
-| **Protected paths** (for a given **IP address**)                           | **10** requests per minute           |
-| **Raw endpoint** traffic (for a given **project, commit, and file path**)  | **300** requests per minute          |
-| **Unauthenticated** traffic (from a given **IP address**)                  | **500** requests per minute          |
-| **Authenticated** API traffic (for a given **user**)                       | **2,000** requests per minute        |
-| **Authenticated** non-API HTTP traffic (for a given **user**)              | **1,000** requests per minute        |
-| **All** traffic (from a given **IP address**)                              | **2,000** requests per minute        |
-| **Issue creation**                                                         | **200** requests per minute          |
-| **Note creation** (on issues and merge requests)                           | **60** requests per minute           |
-| **Advanced, project, and group search** API (for a given **IP address**)   | **10** requests per minute           |
-| **GitLab Pages** requests (for a given **IP address**)                     | **1000** requests per **50 seconds** |
-| **GitLab Pages** requests (for a given **GitLab Pages domain**)            | **5000** requests per **10 seconds** |
-| **GitLab Pages** TLS connections (for a given **IP address**)              | **1000** requests per **50 seconds** |
-| **GitLab Pages** TLS connections (for a given **GitLab Pages domain**)     | **400** requests per **10 seconds**  |
-| **Pipeline creation** requests (for a given **project, user, and commit**) | **25** requests per minute           |
-| **Alert integration endpoint** requests (for a given **project**)          | **3600** requests per hour           |
-| **[Pull mirroring](../project/repository/mirror/pull.md)** intervals       | **5** minutes                        |
-| **API Requests** (from a given **user**) to `/api/v4/users/:id`            | **300** requests per **10 minutes**  |
+| Rate limit                                                       | Setting                       |
+|:-----------------------------------------------------------------|:------------------------------|
+| Protected paths for an IP address                                | 10 requests per minute        |
+| Raw endpoint traffic for a project, commit, or file path         | 300 requests per minute       |
+| Unauthenticated traffic from an IP address                       | 500 requests per minute       |
+| Authenticated API traffic for a user                             | 2,000 requests per minute     |
+| Authenticated non-API HTTP traffic for a user                    | 1,000 requests per minute     |
+| All traffic from an IP address                                   | 2,000 requests per minute     |
+| Issue creation                                                   | 200 requests per minute       |
+| Note creation on issues and merge requests                       | 60 requests per minute        |
+| Advanced, project, or group search API for an IP address         | 10 requests per minute        |
+| GitLab Pages requests for an IP address                          | 1,000 requests per 50 seconds |
+| GitLab Pages requests for a GitLab Pages domain                  | 5,000 requests per 10 seconds |
+| GitLab Pages TLS connections for an IP address                   | 1,000 requests per 50 seconds |
+| GitLab Pages TLS connections for a GitLab Pages domain           | 400 requests per 10 seconds   |
+| Pipeline creation requests for a project, user, or commit        | 25 requests per minute        |
+| Alert integration endpoint requests for a project                | 3,600 requests per hour       |
+| [Pull mirroring](../project/repository/mirror/pull.md) intervals | 5 minutes                     |
+| API requests from a user to `/api/v4/users/:id`                  | 300 requests per 10 minutes   |
+| GitLab package cloud requests for an IP address ([introduced](https://gitlab.com/gitlab-com/gl-infra/production-engineering/-/issues/24083) in GitLab 16.11) | 3,000 requests per minute |
 
 More details are available on the rate limits for
 [protected paths](#protected-paths-throttle) and

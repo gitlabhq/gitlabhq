@@ -48,6 +48,7 @@ RSpec.describe Emails::PagesDomains do
       before do
         domain.update!(remove_at: 1.week.from_now)
       end
+
       it 'notifies user that domain will be removed automatically' do
         aggregate_failures do
           is_expected.to have_body_text domain.remove_at.strftime('%F %T')

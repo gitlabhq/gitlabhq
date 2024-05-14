@@ -1,5 +1,5 @@
 ---
-stage: Service Management
+stage: Monitor
 group: Respond
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed
 
 By default, Service Desk is active in new projects.
 If it's not active, you can do it in the project's settings.
@@ -21,7 +21,7 @@ Prerequisites:
   [email sub-addressing](../../../administration/incoming_email.md#email-sub-addressing),
   but you can also use [catch-all mailboxes](../../../administration/incoming_email.md#catch-all-mailbox).
   To do this, you must have administrator access.
-- You must have enabled [issue](../settings/project_features_permissions.md#configure-project-features-and-permissions)
+- You must have enabled [issue](../settings/index.md#configure-project-features-and-permissions)
   tracker for the project.
 
 To enable Service Desk in your project:
@@ -40,6 +40,15 @@ Service Desk is now enabled for this project.
 If anyone sends an email to the address available below **Email address to use for Service Desk**,
 GitLab creates a confidential issue with the email's content.
 
+## Service Desk glossary
+
+This glossary provides definitions for terms related to Service Desk.
+
+| Term                                             | Definition |
+|--------------------------------------------------|------------|
+| [External participant](external_participants.md) | Users without a GitLab account that can interact with an issue or Service Desk ticket only by email. |
+| Requester                                        | External participant that created the Service Desk ticket or was added as requester using the [`/convert_to_ticket` quick action](using_service_desk.md#create-a-service-desk-ticket-in-gitlab-ui). |
+
 ## Improve your project's security
 
 To improve your Service Desk project's security, you should:
@@ -48,16 +57,16 @@ To improve your Service Desk project's security, you should:
 - [Enable Akismet](../../../integration/akismet.md) on your GitLab instance to add spam checking to this service.
   Unblocked email spam can result in many spam issues being created.
 
-## Customize emails sent to the requester
+## Customize emails sent to external participants
 
-> - Moved from GitLab Premium to GitLab Free in 13.2.
 > - `UNSUBSCRIBE_URL`, `SYSTEM_HEADER`, `SYSTEM_FOOTER`, and `ADDITIONAL_TEXT` placeholders [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/285512) in GitLab 15.9.
 > - `%{ISSUE_DESCRIPTION}` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/223751) in GitLab 16.0.
 > - `%{ISSUE_URL}` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/408793) in GitLab 16.1.
 
-An email is sent to the requester when:
+An email is sent to external participants when:
 
 - A requester submits a new ticket by emailing Service Desk.
+- An external participant is added to a Service Desk ticket.
 - A new public comment is added on a Service Desk ticket.
   - Editing a comment does not trigger a new email to be sent.
 
@@ -67,14 +76,14 @@ For example, you can format the emails to include a header and footer in accorda
 organization's brand guidelines. You can also include the following placeholders to display dynamic
 content specific to the Service Desk ticket or your GitLab instance.
 
-| Placeholder            | `thank_you.md`         | `new_note.md`          | Description |
-|------------------------|------------------------|------------------------|-------------|
-| `%{ISSUE_ID}`          | **{check-circle}** Yes | **{check-circle}** Yes | Ticket IID. |
-| `%{ISSUE_PATH}`        | **{check-circle}** Yes | **{check-circle}** Yes | Project path appended with the ticket IID. |
-| `%{ISSUE_URL}`         | **{check-circle}** Yes | **{check-circle}** Yes | URL of the ticket. External participants can only view the ticket if the project is public and ticket is not confidential (Service Desk tickets are confidential by default). |
-| `%{ISSUE_DESCRIPTION}` | **{check-circle}** Yes | **{check-circle}** Yes | Ticket description. If a user has edited the description, it may contain sensitive information that is not intended to be delivered to external participants. Use this placeholder with care and ideally only if you never modify descriptions or your team is aware of the template design. |
-| `%{UNSUBSCRIBE_URL}`   | **{check-circle}** Yes | **{check-circle}** Yes | Unsubscribe URL. |
-| `%{NOTE_TEXT}`         | **{dotted-circle}** No | **{check-circle}** Yes | The new comment added to the ticket by a user. Take care to include this placeholder in `new_note.md`. Otherwise, the requesters may never see the updates on their Service Desk ticket. |
+| Placeholder            | `thank_you.md` and `new_participant` | `new_note.md`          | Description |
+|------------------------|--------------------------------------|------------------------|-------------|
+| `%{ISSUE_ID}`          | **{check-circle}** Yes               | **{check-circle}** Yes | Ticket IID. |
+| `%{ISSUE_PATH}`        | **{check-circle}** Yes               | **{check-circle}** Yes | Project path appended with the ticket IID. |
+| `%{ISSUE_URL}`         | **{check-circle}** Yes               | **{check-circle}** Yes | URL of the ticket. External participants can only view the ticket if the project is public and ticket is not confidential (Service Desk tickets are confidential by default). |
+| `%{ISSUE_DESCRIPTION}` | **{check-circle}** Yes               | **{check-circle}** Yes | Ticket description. If a user has edited the description, it may contain sensitive information that is not intended to be delivered to external participants. Use this placeholder with care and ideally only if you never modify descriptions or your team is aware of the template design. |
+| `%{UNSUBSCRIBE_URL}`   | **{check-circle}** Yes               | **{check-circle}** Yes | Unsubscribe URL. |
+| `%{NOTE_TEXT}`         | **{dotted-circle}** No               | **{check-circle}** Yes | The new comment added to the ticket by a user. Take care to include this placeholder in `new_note.md`. Otherwise, the external participants may never see the updates on their Service Desk ticket. |
 
 ### Thank you email
 
@@ -84,6 +93,20 @@ Without additional configuration, GitLab sends the default thank you email.
 To create a custom thank you email template:
 
 1. In the `.gitlab/service_desk_templates/` directory of your repository, create a file named `thank_you.md`.
+1. Populate the Markdown file with text, [GitLab Flavored Markdown](../../markdown.md),
+   [some selected HTML tags](../../markdown.md#inline-html), and placeholders to customize the reply
+   to Service Desk requesters.
+
+### New participant email
+
+> - `new_participant` email [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299261) in GitLab 17.0.
+
+When an [external participant](external_participants.md) is added to the ticket, GitLab sends a **new participant email** to let them know they are part of the conversation.
+Without additional configuration, GitLab sends the default new participant email.
+
+To create a custom new participant email template:
+
+1. In the `.gitlab/service_desk_templates/` directory of your repository, create a file named `new_participant.md`.
 1. Populate the Markdown file with text, [GitLab Flavored Markdown](../../markdown.md),
    [some selected HTML tags](../../markdown.md#inline-html), and placeholders to customize the reply
    to Service Desk requesters.
@@ -110,7 +133,7 @@ DETAILS:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344819) in GitLab 15.9.
 
 Instance administrators can add a header, footer or additional text to the GitLab instance and apply
-them to all emails sent from GitLab. If you're using a custom `thank_you.md` or `new_note.md`, to include
+them to all emails sent from GitLab. If you're using a custom `thank_you.md`, `new_participant` or `new_note.md`, to include
 this content, add `%{SYSTEM_HEADER}`, `%{SYSTEM_FOOTER}`, or `%{ADDITIONAL_TEXT}` to your templates.
 
 For more information, see [System header and footer messages](../../../administration/appearance.md#add-system-header-and-footer-messages) and [custom additional text](../../../administration/settings/email.md#custom-additional-text).
@@ -317,9 +340,9 @@ To troubleshoot this:
 
 1. Find the correct email address to forward emails to. Either:
    - Note the address from the verification result email that all project owners and the user that
-      triggered the verification process receive.
+     triggered the verification process receive.
    - Copy the address from the **Service Desk email address to forward emails to** input in the
-      custom email setup form.
+     custom email setup form.
 1. Forward all emails to the custom email address to the correct target email address.
 
 ### Enable or disable the custom email address
@@ -459,9 +482,6 @@ In GitLab:
 DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2201) in GitLab 13.0.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/284656) in GitLab 13.8.
 
 You can use an additional alias email address for Service Desk on an instance level.
 
@@ -670,7 +690,6 @@ read about [Helm IMAP secrets](https://docs.gitlab.com/charts/installation/secre
 
 #### Microsoft Graph
 
-> - Alternative Azure deployments [introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/5978) in GitLab 14.9.
 > - [Introduced for self-compiled (source) installs](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/116494) in GitLab 15.11.
 
 `service_desk_email` can be configured to read Microsoft Exchange Online mailboxes with the Microsoft

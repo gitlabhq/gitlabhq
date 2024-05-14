@@ -96,7 +96,7 @@ export default {
         />
       </span>
       <span
-        class="gl-w-half gl-pl-8 gl-display-flex gl-align-items-center"
+        class="gl-w-1/2 gl-pl-8 gl-display-flex gl-align-items-center"
         data-testid="job-artifact-row-name"
       >
         <gl-friendly-wrap :text="artifact.name" />
@@ -108,11 +108,11 @@ export default {
         </gl-badge>
       </span>
 
-      <span class="gl-w-quarter gl-text-right gl-pr-5" data-testid="job-artifact-row-size">
+      <span class="gl-w-1/4 gl-text-right gl-pr-5" data-testid="job-artifact-row-size">
         {{ artifactSize }}
       </span>
 
-      <span class="gl-w-quarter gl-text-right gl-pr-5">
+      <span class="gl-w-1/4 gl-text-right gl-pr-5">
         <gl-button-group>
           <gl-button
             category="tertiary"

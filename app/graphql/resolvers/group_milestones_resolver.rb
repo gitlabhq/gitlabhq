@@ -5,11 +5,11 @@ module Resolvers
     include ::API::Concerns::Milestones::GroupProjectParams
 
     argument :include_ancestors, GraphQL::Types::Boolean,
-             required: false,
-             description: 'Include milestones from all parent groups.'
+      required: false,
+      description: 'Include milestones from all parent groups.'
     argument :include_descendants, GraphQL::Types::Boolean,
-             required: false,
-             description: 'Include milestones from all subgroups and subprojects.'
+      required: false,
+      description: 'Include milestones from all subgroups and subprojects.'
 
     type Types::MilestoneType.connection_type, null: true
 

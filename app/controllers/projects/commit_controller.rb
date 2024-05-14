@@ -15,8 +15,8 @@ class Projects::CommitController < Projects::ApplicationController
   before_action :authorize_read_code!
   before_action :authorize_read_pipeline!, only: [:pipelines]
   before_action :commit
-  before_action :define_commit_vars, only: [:show, :diff_for_path, :diff_files, :pipelines, :merge_requests]
-  before_action :define_commit_box_vars, only: [:show, :pipelines]
+  before_action :define_commit_vars, only: [:show, :diff_for_path, :diff_files, :pipelines, :merge_requests, :rapid_diffs]
+  before_action :define_commit_box_vars, only: [:show, :pipelines, :rapid_diffs]
   before_action :define_note_vars, only: [:show, :diff_for_path, :diff_files]
   before_action :authorize_edit_tree!, only: [:revert, :cherry_pick]
   before_action do
@@ -27,7 +27,7 @@ class Projects::CommitController < Projects::ApplicationController
   COMMIT_DIFFS_PER_PAGE = 20
 
   feature_category :source_code_management
-  urgency :low, [:pipelines, :merge_requests, :show]
+  urgency :low, [:pipelines, :merge_requests, :show, :rapid_diffs]
 
   def show
     apply_diff_view_cookie!
@@ -151,6 +151,12 @@ class Projects::CommitController < Projects::ApplicationController
     )
   end
 
+  def rapid_diffs
+    return render_404 unless ::Feature.enabled?(:rapid_diffs, current_user, type: :wip)
+
+    show
+  end
+
   private
 
   def create_new_branch?
@@ -245,5 +251,14 @@ class Projects::CommitController < Projects::ApplicationController
       .new(current_user: current_user, source_project: @project, project_feature: :repository)
       .execute
       .find_by_id(params[:target_project_id])
+  end
+
+  def append_info_to_payload(payload)
+    super
+
+    return unless action_name == 'show' && @diffs.present?
+
+    payload[:metadata] ||= {}
+    payload[:metadata]['meta.diffs_files_count'] = @diffs.size
   end
 end

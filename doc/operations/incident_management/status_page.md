@@ -1,5 +1,5 @@
 ---
-stage: Service Management
+stage: Monitor
 group: Respond
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -8,9 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, self-managed
-
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2479) in GitLab 12.10.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 With a GitLab Status Page, you can create and deploy a static website to communicate
 efficiently to users during an incident. The Status Page landing page displays an
@@ -26,7 +24,7 @@ Selecting an incident displays a detail page with more information about a parti
 - The incident title, including any emoji.
 - The description of the incident, including emoji.
 - Any file attachments provided in the incident description, or comments with a
-  valid image extension. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/205166) in GitLab 13.1.
+  valid image extension.
 - A chronological ordered list of updates to the incident.
 
 ## Set up a Status Page
@@ -142,7 +140,6 @@ you provided during setup. As part of publication, GitLab:
 - Anonymizes user and group mentions with `Incident Responder`.
 - Removes titles of non-public [GitLab references](../../user/markdown.md#gitlab-specific-references).
 - Publishes any files attached to incident issue descriptions, up to 5000 per issue.
-  ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/205166) in GitLab 13.1.)
 
 After publication, you can access the incident's details page by selecting the
 **Published on status page** button displayed under the Incident's title.
@@ -166,7 +163,6 @@ To publish comments to the Status Page Incident:
   adding a microphone [emoji reaction](../../user/emoji_reactions.md)
   reaction (`:microphone:` 🎤) to the comment.
 - Any files attached to the comment (up to 5000 per issue) are also published.
-  ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/205166) in GitLab 13.1.)
 
 WARNING:
 Anyone with access to view the Issue can add an emoji reaction to a comment, so

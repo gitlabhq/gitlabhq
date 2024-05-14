@@ -51,6 +51,7 @@ export default {
       'fetchSummary',
       'setSelectedSuiteIndex',
       'removeSelectedSuiteIndex',
+      'setPage',
     ]),
     summaryBackClick() {
       this.removeSelectedSuiteIndex();
@@ -60,6 +61,9 @@ export default {
         title: document.title,
         replace: true,
       });
+
+      // reset pagination to inital state
+      this.setPage(1);
     },
     summaryTableRowClick(index) {
       this.setSelectedSuiteIndex(index);

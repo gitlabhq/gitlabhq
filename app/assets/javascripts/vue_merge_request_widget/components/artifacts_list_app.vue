@@ -20,6 +20,9 @@ export default {
   computed: {
     ...mapState(['artifacts', 'isLoading', 'hasError']),
     ...mapGetters(['title']),
+    hasArtifacts() {
+      return this.artifacts.length > 0;
+    },
   },
   created() {
     this.setEndpoint(this.endpoint);
@@ -31,7 +34,12 @@ export default {
 };
 </script>
 <template>
-  <mr-collapsible-extension :title="title" :is-loading="isLoading" :has-error="hasError">
+  <mr-collapsible-extension
+    v-if="isLoading || hasArtifacts || hasError"
+    :title="title"
+    :is-loading="isLoading"
+    :has-error="hasError"
+  >
     <artifacts-list :artifacts="artifacts" />
   </mr-collapsible-extension>
 </template>

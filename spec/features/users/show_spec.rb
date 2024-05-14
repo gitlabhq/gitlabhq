@@ -22,7 +22,7 @@ RSpec.describe 'User page', feature_category: :user_profile do
   it 'shows name on breadcrumbs' do
     subject
 
-    page.within '.breadcrumbs' do
+    within_testid('breadcrumb-links') do
       expect(page).to have_content(user.name)
     end
   end
@@ -296,8 +296,12 @@ RSpec.describe 'User page', feature_category: :user_profile do
     end
 
     it 'shows no tab' do
-      expect(page).to have_css("div.profile-header")
+      expect(page).not_to have_css("div.profile-header")
       expect(page).not_to have_css("ul.nav-links")
+    end
+
+    it 'shows no sidebar' do
+      expect(page).not_to have_css(".user-profile-sidebar")
     end
 
     it 'shows blocked message' do
@@ -305,7 +309,7 @@ RSpec.describe 'User page', feature_category: :user_profile do
     end
 
     it 'shows user name as blocked' do
-      expect(page).to have_css(".user-profile-header", text: 'Blocked user')
+      expect(page).to have_css('[data-testid="user-profile-header"]', text: 'Blocked user')
     end
 
     it 'shows no additional fields' do
@@ -343,11 +347,11 @@ RSpec.describe 'User page', feature_category: :user_profile do
       end
 
       it 'shows user name as unconfirmed' do
-        expect(page).to have_css(".user-profile-header", text: 'Unconfirmed user')
+        expect(page).to have_css('[data-testid="user-profile-header"]', text: 'Unconfirmed user')
       end
 
       it 'shows no tab' do
-        expect(page).to have_css("div.profile-header")
+        expect(page).to have_css('[data-testid="user-profile-header"]')
         expect(page).not_to have_css("ul.nav-links")
       end
 
@@ -463,45 +467,18 @@ RSpec.describe 'User page', feature_category: :user_profile do
       stub_feature_flags(profile_tabs_vue: false)
     end
 
-    describe 'feature flag enabled' do
-      before do
-        stub_feature_flags(security_auto_fix: true)
-      end
+    it 'only shows Overview and Activity tabs' do
+      subject
 
-      it 'only shows Overview and Activity tabs' do
-        subject
-
-        page.within '.nav-links' do
-          expect(page).to have_link('Overview')
-          expect(page).to have_link('Activity')
-          expect(page).not_to have_link('Groups')
-          expect(page).not_to have_link('Contributed projects')
-          expect(page).not_to have_link('Personal projects')
-          expect(page).not_to have_link('Snippets')
-          expect(page).not_to have_link('Followers')
-          expect(page).not_to have_link('Following')
-        end
-      end
-    end
-
-    describe 'feature flag disabled' do
-      before do
-        stub_feature_flags(security_auto_fix: false)
-      end
-
-      it 'only shows Overview and Activity tabs' do
-        subject
-
-        page.within '.nav-links' do
-          expect(page).to have_link('Overview')
-          expect(page).to have_link('Activity')
-          expect(page).to have_link('Groups')
-          expect(page).to have_link('Contributed projects')
-          expect(page).to have_link('Personal projects')
-          expect(page).to have_link('Snippets')
-          expect(page).to have_link('Followers')
-          expect(page).to have_link('Following')
-        end
+      page.within '.nav-links' do
+        expect(page).to have_link('Overview')
+        expect(page).to have_link('Activity')
+        expect(page).to have_link('Groups')
+        expect(page).to have_link('Contributed projects')
+        expect(page).to have_link('Personal projects')
+        expect(page).to have_link('Snippets')
+        expect(page).to have_link('Followers')
+        expect(page).to have_link('Following')
       end
     end
   end

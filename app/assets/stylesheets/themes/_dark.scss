@@ -1,4 +1,4 @@
-@import '@gitlab/ui/dist/tokens/scss/tokens.dark';
+@import '@gitlab/ui/src/tokens/build/scss/tokens.dark';
 
 $gray-lightest: lighten($gray-10, 1);
 $gray-light: lighten($gray-10, 2);
@@ -43,4 +43,3 @@ $line-added-dark: $green-200;
 $line-removed-dark: $red-200;
 
 $well-expand-item: $gray-200;
-$well-inner-border: $gray-200;

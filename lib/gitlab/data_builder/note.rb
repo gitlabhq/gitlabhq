@@ -5,6 +5,8 @@ module Gitlab
     module Note
       extend self
 
+      VALID_ACTIONS = %i[create update].freeze
+
       # Produce a hash of post-receive data
       #
       # For all notes:
@@ -36,9 +38,11 @@ module Gitlab
       #  - merge_request
       #  - snippet
       #
-      def build(note, user)
+      def build(note, user, action)
+        raise ArgumentError, 'invalid action' unless action.in?(VALID_ACTIONS)
+
         project = note.project
-        data = build_base_data(project, user, note)
+        data = build_base_data(project, user, note, action)
 
         if note.for_commit?
           data[:commit] = build_data_for_commit(project, user, note)
@@ -53,22 +57,22 @@ module Gitlab
         data
       end
 
-      def build_base_data(project, user, note)
+      def build_base_data(project, user, note, action)
         event_type = note.confidential?(include_noteable: true) ? 'confidential_note' : 'note'
 
-        base_data = {
+        {
           object_kind: "note",
           event_type: event_type,
           user: user.hook_attrs,
           project_id: project.id,
           project: project.hook_attrs,
-          object_attributes: note.hook_attrs,
+          object_attributes: note.hook_attrs.merge(
+            action: action.to_s,
+            url: Gitlab::UrlBuilder.build(note)
+          ),
           # DEPRECATED
           repository: project.hook_attrs.slice(:name, :url, :description, :homepage)
         }
-
-        base_data[:object_attributes][:url] = Gitlab::UrlBuilder.build(note)
-        base_data
       end
 
       def build_data_for_commit(project, user, note)

@@ -7,8 +7,8 @@ RSpec.describe 'Environments Deployments query', feature_category: :continuous_d
 
   let_it_be(:project) { create(:project, :private, :repository) }
   let_it_be(:environment) { create(:environment, project: project) }
-  let_it_be(:developer) { create(:user).tap { |u| project.add_developer(u) } }
-  let_it_be(:guest) { create(:user).tap { |u| project.add_guest(u) } }
+  let_it_be(:developer) { create(:user, developer_of: project) }
+  let_it_be(:guest) { create(:user, guest_of: project) }
 
   let(:user) { developer }
 
@@ -321,10 +321,14 @@ RSpec.describe 'Environments Deployments query', feature_category: :continuous_d
       end
 
       def set_deployment_attributes(deployment, factory_type)
-        deployment.user = create(:user).tap { |u| project.add_developer(u) }
-        deployment.deployable =
-          create(factory_type, project: project, environment: environment.name, deployment: deployment,
-                               user: deployment.user)
+        deployment.user = create(:user, developer_of: project)
+        deployment.deployable = create(
+          factory_type,
+          project: project,
+          environment: environment.name,
+          deployment: deployment,
+          user: deployment.user
+        )
       end
     end
 

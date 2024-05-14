@@ -47,6 +47,7 @@ module InternalEventsCli
         { name: 'javascript (plain)', value: :js },
         { name: 'vue template', value: :vue_template },
         { name: 'haml', value: :haml },
+        { name: 'Manual testing in GDK', value: :gdk },
         { name: 'View examples for a different event', value: :other_event },
         { name: 'Exit', value: :exit }
       ]
@@ -80,6 +81,9 @@ module InternalEventsCli
       when :vue_template
         vue_template_examples
         prompt_for_usage_location('vue template')
+      when :gdk
+        gdk_examples
+        prompt_for_usage_location('Manual testing in GDK')
       when :other_event
         self.class.new(cli).run
       when :exit
@@ -97,7 +101,9 @@ module InternalEventsCli
         #{divider}
         #{format_help('# RAILS')}
 
-        Gitlab::InternalEvents.track_event(#{action}#{args.join(",\n")}#{"\n" unless args.empty?})
+        include Gitlab::InternalEventsTracking
+
+        track_internal_event(#{action}#{args.join(",\n")}#{"\n" unless args.empty?})
 
         #{divider}
       TEXT
@@ -242,6 +248,45 @@ module InternalEventsCli
       TEXT
 
       cli.say("Want to see the implementation details? See app/assets/javascripts/tracking/internal_events.js\n\n")
+    end
+
+    def gdk_examples
+      key_paths = get_existing_metrics_for_events([event]).map(&:key_path)
+
+      cli.say <<~TEXT
+        #{divider}
+        #{format_help('# TERMINAL -- monitor events sent to snowplow & changes to service ping metrics as they occur')}
+
+        1. Configure gdk with snowplow micro https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/snowplow_micro.md
+        2. From `gitlab/` directory, run the monitor script:
+
+        #{format_warning("bin/rails runner scripts/internal_events/monitor.rb #{event.action}")}
+
+        3. View all snowplow events in the browser at http://localhost:9091/micro/all (or whichever hostname & port you configured)
+        #{divider}
+        #{format_help('# RAILS CONSOLE -- generate service ping payload, including most recent usage data')}
+
+        #{format_warning("require_relative 'spec/support/helpers/service_ping_helpers.rb'")}
+
+        #{format_help('# Get current value of a metric')}
+        #{
+          if key_paths.any?
+            key_paths.map { |key_path| format_warning("ServicePingHelpers.get_current_usage_metric_value('#{key_path}')") }.join("\n")
+          else
+            format_help("# Warning: There are no metrics for #{event.action} yet. When there are, replace <key_path> below.\n") +
+            format_warning('ServicePingHelpers.get_current_usage_metric_value(<key_path>)')
+          end
+        }
+
+        #{format_help('# View entire service ping payload')}
+        #{format_warning('ServicePingHelpers.get_current_service_ping_payload')}
+        #{divider}
+        Need to test something else? Check these docs:
+        - https://docs.gitlab.com/ee/development/internal_analytics/internal_event_instrumentation/local_setup_and_debugging.html
+        - https://docs.gitlab.com/ee/development/internal_analytics/service_ping/troubleshooting.html
+        - https://docs.gitlab.com/ee/development/internal_analytics/review_guidelines.html
+
+      TEXT
     end
   end
 end

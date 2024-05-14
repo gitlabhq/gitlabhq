@@ -8,7 +8,7 @@ info: For assistance with this tutorial, see https://handbook.gitlab.com/handboo
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 When you work on a complex project (for example, a website), you likely collaborate with other people to build and maintain it.
 The way you collaborate and communicate in your team can make or break the project, so you want processes in place that help team members follow and achieve the common goal.
@@ -103,7 +103,7 @@ to go from an idea to production, and identify inefficiencies in the development
 To get started, create a value stream in the `My website` project:
 
 1. Select **Analyze > Value Stream Analytics**.
-1. Select **Create new Value Stream**.
+1. Select **New Value Stream**.
 1. Enter a name for the value stream, for example `My website value stream`.
 1. Select **Create from default template**.
 1. To add a custom stage, select **Add another stage**.
@@ -159,7 +159,7 @@ You and project members with at least the Developer role can view the Insights r
 ## View merge request and issue analytics
 
 In addition to the Insights reports, you can get detailed analytics on the merge requests and issues of your project.
-[Merge request analytics](../../user/analytics/merge_request_analytics.md) and [Issue analytics](../../user/analytics/issue_analytics.md) display charts and tables with metrics such as assignees, merge request throughput, and issue status.
+[Merge request analytics](../../user/analytics/merge_request_analytics.md) and [Issue analytics](../../user/group/issues_analytics/index.md) display charts and tables with metrics such as assignees, merge request throughput, and issue status.
 
 To view merge request and issue analytics, in the `My website` project, select **Analyze > Merge request analytics** or **Analyze > Issue analytics**.
 

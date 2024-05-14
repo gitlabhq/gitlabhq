@@ -8,12 +8,23 @@ query getContainerRepositoryTags(
   $before: String
   $name: String
   $sort: ContainerRepositoryTagSort
+  $referrers: Boolean = false
 ) {
   containerRepository(id: $id) {
     id
     tagsCount
-    canDelete
-    tags(after: $after, before: $before, first: $first, last: $last, name: $name, sort: $sort) {
+    userPermissions {
+      destroyContainerRepository
+    }
+    tags(
+      after: $after
+      before: $before
+      first: $first
+      last: $last
+      name: $name
+      sort: $sort
+      referrers: $referrers
+    ) {
       nodes {
         digest
         location
@@ -24,7 +35,13 @@ query getContainerRepositoryTags(
         createdAt
         publishedAt
         totalSize
-        canDelete
+        userPermissions {
+          destroyContainerRepositoryTag
+        }
+        referrers {
+          artifactType
+          digest
+        }
       }
       pageInfo {
         ...PageInfo

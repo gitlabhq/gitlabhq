@@ -33,7 +33,7 @@ RSpec.describe WorkerAttributes, feature_category: :shared do
       :get_weight                        | :weight                            | 1                | [3]                                | 3
       :get_tags                          | :tags                              | []               | [:foo, :bar]                       | [:foo, :bar]
       :get_deduplicate_strategy          | :deduplicate                       | :until_executing | [:none]                            | :none
-      :get_deduplication_options         | :deduplicate                       | {}               | [:none, including_scheduled: true] | { including_scheduled: true }
+      :get_deduplication_options         | :deduplicate                       | {}               | [:none, { including_scheduled: true }] | { including_scheduled: true }
       :worker_has_external_dependencies? | :worker_has_external_dependencies! | false            | []                                 | true
       :idempotent?                       | :idempotent!                       | false            | []                                 | true
       :big_payload?                      | :big_payload!                      | false            | []                                 | true

@@ -1,4 +1,4 @@
-import { GlLink, GlBadge } from '@gitlab/ui';
+import { GlCard, GlLink, GlBadge } from '@gitlab/ui';
 import { merge } from 'lodash';
 import originalRelease from 'test_fixtures/api/releases/release.json';
 import setWindowLocation from 'helpers/set_window_location_helper';
@@ -17,7 +17,7 @@ describe('Release block header', () => {
       propsData: {
         release: merge({}, release, releaseUpdates),
       },
-      stubs: { GlBadge },
+      stubs: { GlCard, GlBadge },
     });
   };
 
@@ -25,7 +25,7 @@ describe('Release block header', () => {
     release = convertObjectPropsToCamelCase(originalRelease, { deep: true });
   });
 
-  const findHeader = () => wrapper.find('h2');
+  const findHeader = () => wrapper.findByTestId('release-block-title');
   const findHeaderLink = () => findHeader().findComponent(GlLink);
   const findEditButton = () => wrapper.find('.js-edit-button');
   const findBadge = () => wrapper.findComponent(GlBadge);

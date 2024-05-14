@@ -51,6 +51,10 @@ class DeploymentEntity < Grape::Entity
     DeploymentClusterEntity.represent(deployment, options) unless deployment.cluster.nil?
   end
 
+  expose :web_path do |deployment|
+    project_environment_deployment_path(project, deployment.environment, deployment)
+  end
+
   private
 
   def include_details?

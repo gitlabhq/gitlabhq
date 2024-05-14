@@ -1,0 +1,14 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "WebHook#custom_headers",
+  "type": "object",
+  "additionalProperties": false,
+  "maxProperties": 20,
+  "patternProperties": {
+    "^[A-Za-z]+[0-9]*(?:[._-][A-Za-z0-9]+)*$": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2048
+    }
+  }
+}

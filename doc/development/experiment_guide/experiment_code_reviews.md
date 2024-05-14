@@ -15,7 +15,7 @@ experiments still need tests.
 
 Experiments must have corresponding [frontend or feature tests](../testing_guide/index.md) to ensure they
 exist in the application. These tests should help prevent the experiment code from
-being removed before the [experiment cleanup process](https://handbook.gitlab.com/handbook/engineering/development/growth/experimentation/#experiment-cleanup-issue) starts.
+being removed before the [experiment cleanup process](https://handbook.gitlab.com/handbook/marketing/growth/engineering/experimentation/#experiment-cleanup-issue) starts.
 
 If, as a reviewer or maintainer, you find code that would usually fail review
 but is acceptable for now, mention your concerns with a note that there's no

@@ -129,11 +129,13 @@ module Ci
         builds = queue.builds_with_any_tags(builds)
       end
 
-      build_ids = retrieve_queue(-> { queue.execute(builds) })
+      build_and_partition_ids = retrieve_queue(-> { queue.execute(builds) })
 
-      @metrics.observe_queue_size(-> { build_ids.size }, @runner.runner_type)
+      @metrics.observe_queue_size(-> { build_and_partition_ids.size }, @runner.runner_type)
 
-      build_ids.each { |build_id| yield Ci::Build.find(build_id) }
+      build_and_partition_ids.each do |build_id, partition_id|
+        yield Ci::Build.find_by!(partition_id: partition_id, id: build_id)
+      end
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
@@ -250,6 +252,8 @@ module Ci
         @metrics.increment_queue_operation(:runner_pre_assign_checks_success)
 
         build.run!
+        persist_runtime_features(build, params)
+
         build.runner_manager = runner_manager if runner_manager
       end
 
@@ -288,14 +292,23 @@ module Ci
       )
     end
 
+    def persist_runtime_features(build, params)
+      if params.dig(:info, :features, :cancel_gracefully) &&
+          Feature.enabled?(:ci_canceling_status, build.project)
+        build.set_cancel_gracefully
+
+        build.save
+      end
+    end
+
     def pre_assign_runner_checks
       {
-        missing_dependency_failure: -> (build, _) { !build.has_valid_build_dependencies? },
-        runner_unsupported: -> (build, params) { !build.supported_runner?(params.dig(:info, :features)) },
-        archived_failure: -> (build, _) { build.archived? },
-        project_deleted: -> (build, _) { build.project.pending_delete? },
-        builds_disabled: -> (build, _) { !build.project.builds_enabled? },
-        user_blocked: -> (build, _) { build.user&.blocked? }
+        missing_dependency_failure: ->(build, _) { !build.has_valid_build_dependencies? },
+        runner_unsupported: ->(build, params) { !build.supported_runner?(params.dig(:info, :features)) },
+        archived_failure: ->(build, _) { build.archived? },
+        project_deleted: ->(build, _) { build.project.pending_delete? },
+        builds_disabled: ->(build, _) { !build.project.builds_enabled? },
+        user_blocked: ->(build, _) { build.user&.blocked? }
       }
     end
   end

@@ -1,5 +1,6 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
+import projectWorkItemTypesQueryResponse from 'test_fixtures/graphql/work_items/project_work_item_types.query.graphql.json';
 import getIssueDetailsQuery from 'ee_else_ce/work_items/graphql/get_issue_details.query.graphql';
 import { TEST_HOST } from 'helpers/test_constants';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -17,7 +18,6 @@ import {
   createWorkItemMutationErrorResponse,
   createWorkItemMutationResponse,
   getIssueDetailsResponse,
-  projectWorkItemTypesQueryResponse,
   workItemByIidResponseFactory,
 } from 'jest/work_items/mock_data';
 import {
@@ -151,13 +151,13 @@ describe('Description component', () => {
       TaskList.mockClear();
     });
 
-    it('re-inits the TaskList when description changed', () => {
+    it('re-inits the TaskList when description changed', async () => {
       createComponent({
         props: {
           issuableType: 'issuableType',
         },
       });
-      wrapper.setProps({
+      await wrapper.setProps({
         descriptionHtml: 'changed',
       });
 
@@ -178,13 +178,13 @@ describe('Description component', () => {
       expect(TaskList).not.toHaveBeenCalled();
     });
 
-    it('calls with issuableType dataType', () => {
+    it('calls with issuableType dataType', async () => {
       createComponent({
         props: {
           issuableType: 'issuableType',
         },
       });
-      wrapper.setProps({
+      await wrapper.setProps({
         descriptionHtml: 'changed',
       });
 
@@ -284,6 +284,9 @@ describe('Description component', () => {
         });
 
         it('calls a mutation to create a task', () => {
+          const workItemTypeIdForTask = projectWorkItemTypesQueryResponse.data.workspace.workItemTypes.nodes.find(
+            (node) => node.name === 'Task',
+          ).id;
           const { confidential, iteration, milestone } = issueDetailsResponse.data.issue;
           expect(createWorkItemMutationHandler).toHaveBeenCalledWith({
             input: {
@@ -300,7 +303,7 @@ describe('Description component', () => {
               },
               projectPath: 'gitlab-org/gitlab-test',
               title: 'item 2',
-              workItemTypeId: 'gid://gitlab/WorkItems::Type/3',
+              workItemTypeId: workItemTypeIdForTask,
             },
           });
         });

@@ -24,6 +24,7 @@ module Ci
       delegate :environment_auto_stop_in, to: :metadata, prefix: false, allow_nil: true
       delegate :set_cancel_gracefully, to: :metadata, prefix: false, allow_nil: false
       delegate :id_tokens, to: :metadata, allow_nil: true
+      delegate :exit_code, to: :metadata, allow_nil: true
 
       before_validation :ensure_metadata, on: :create
 

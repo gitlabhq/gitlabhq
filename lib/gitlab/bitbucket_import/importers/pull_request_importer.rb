@@ -11,6 +11,7 @@ module Gitlab
           @project = project
           @formatter = Gitlab::ImportFormatter.new
           @user_finder = UserFinder.new(project)
+          @mentions_converter = Gitlab::Import::MentionsConverter.new('bitbucket', project)
           @object = hash.with_indifferent_access
         end
 
@@ -18,10 +19,6 @@ module Gitlab
           return if skip
 
           log_info(import_stage: 'import_pull_request', message: 'starting', iid: object[:iid])
-
-          description = ''
-          description += author_line
-          description += object[:description] if object[:description]
 
           attributes = {
             iid: object[:iid],
@@ -58,7 +55,7 @@ module Gitlab
 
         private
 
-        attr_reader :object, :project, :formatter, :user_finder
+        attr_reader :object, :project, :formatter, :user_finder, :mentions_converter
 
         def skip
           return false unless object[:source_and_target_project_different]
@@ -67,6 +64,14 @@ module Gitlab
           log_info(import_stage: 'import_pull_request', message: message, iid: object[:iid])
 
           true
+        end
+
+        def description
+          description = ''
+          description += author_line
+          description += object[:description] if object[:description]
+
+          mentions_converter.convert(description)
         end
 
         def author_line

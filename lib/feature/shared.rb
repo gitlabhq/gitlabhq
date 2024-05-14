@@ -18,7 +18,7 @@ module Feature
         optional: false,
         rollout_issue: true,
         can_be_default_enabled: false,
-        example: <<-EOS
+        example: <<~EOS
           Feature.enabled?(:my_feature_flag, project, type: :gitlab_com_derisk)
           push_frontend_feature_flag(:my_feature_flag, project)
         EOS
@@ -28,7 +28,7 @@ module Feature
         optional: false,
         rollout_issue: false,
         can_be_default_enabled: false,
-        example: <<-EOS
+        example: <<~EOS
           Feature.enabled?(:my_feature_flag, project, type: :wip)
           push_frontend_feature_flag(:my_feature_flag, project)
         EOS
@@ -39,7 +39,7 @@ module Feature
         optional: false,
         rollout_issue: true,
         can_be_default_enabled: true,
-        example: <<-EOS
+        example: <<~EOS
           Feature.enabled?(:my_feature_flag, project, type: :beta)
           push_frontend_feature_flag(:my_feature_flag, project)
         EOS
@@ -49,7 +49,7 @@ module Feature
         optional: false,
         rollout_issue: true,
         can_be_default_enabled: true,
-        example: <<-EOS
+        example: <<~EOS
           Feature.enabled?(:my_ops_flag, type: :ops)
           push_frontend_feature_flag(:my_ops_flag, project, type: :ops)
         EOS
@@ -59,7 +59,7 @@ module Feature
         optional: true,
         rollout_issue: true,
         can_be_default_enabled: false,
-        example: <<-EOS
+        example: <<~EOS
           experiment(:my_experiment, project: project, actor: current_user) { ...variant code... }
         EOS
       },
@@ -68,10 +68,10 @@ module Feature
         optional: true,
         rollout_issue: false,
         can_be_default_enabled: false,
-        example: '<<-EOS
+        example: <<~EOS
           Feature.enabled?(:"defer_sidekiq_jobs:AuthorizedProjectsWorker", type: :worker,
-                            default_enabled_if_undefined: false)
-        EOS'
+            default_enabled_if_undefined: false)
+        EOS
       },
       undefined: {
         description: "Feature flags that are undefined in GitLab codebase (should not be used)",

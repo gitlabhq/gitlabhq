@@ -1,16 +1,26 @@
-- add_page_specific_style 'page_bundles/labels'
+- if labels.any?
+  = render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card' }, body_options: { class: 'gl-new-card-body gl-px-0' }) do |c|
+    - c.with_body do
+      %ul.manage-labels-list.gl-px-0.gl-mb-0
+        - labels.each do |label|
+          - options = { milestone_title: @milestone.title, label_name: label.title }
+          - open_issues = milestone_issues_by_label_count(@milestone, label, state: :opened)
+          - closed_issues = milestone_issues_by_label_count(@milestone, label, state: :closed)
 
-%ul.bordered-list.manage-labels-list
-  - labels.each do |label|
-    - options = { milestone_title: @milestone.title, label_name: label.title }
-
-    %li.no-border
-      = render_label(label, tooltip: false, link: milestones_issues_path(options))
-      %span.prepend-description-left
-        = markdown_field(label, :description)
-
-      .gl-float-right.d-none.d-lg-block
-        = link_button_to milestones_issues_path(options.merge(state: 'opened')), category: :tertiary do
-          = n_('open issue', 'open issues', milestone_issues_by_label_count(@milestone, label, state: :opened))
-        = link_button_to milestones_issues_path(options.merge(state: 'closed')), category: :tertiary do
-          = n_('closed issue', 'closed issues', milestone_issues_by_label_count(@milestone, label, state: :closed))
+          %li.gl-list-style-none.gl-border-b.gl-last-of-type-border-b-0.gl-md-display-flex.gl-px-5.gl-py-4.gl-gap-5.gl-align-items-baseline
+            .gl-md-w-20.gl-flex-shrink-0.gl-flex-grow-1.gl-mb-4.gl-md-mb-0
+              = render_label(label, tooltip: false, link: milestones_issues_path(options))
+            - if markdown_field(label, :description).present?
+              .gl-w-full.gl-mb-4.gl-md-mb-0
+                = markdown_field(label, :description)
+            = render Pajamas::ButtonComponent.new(variant: :link, disabled: open_issues == 0, href: milestones_issues_path(options.merge(state: 'opened'))) do
+              = open_issues
+              = n_('Open issue', 'Open issues', open_issues)
+            = render Pajamas::ButtonComponent.new(variant: :link, disabled: closed_issues == 0, href: milestones_issues_path(options.merge(state: 'closed'))) do
+              = closed_issues
+              = n_('Closed issue', 'Closed issues', closed_issues)
+- else
+  = render Pajamas::EmptyStateComponent.new(svg_path: 'illustrations/empty-state/empty-labels-md.svg',
+    title: s_('Milestones|No labels found')) do |c|
+    - c.with_description do
+      = s_('Milestones|Labels from issues in this milestone will appear here.')

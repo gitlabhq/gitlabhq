@@ -48,78 +48,78 @@ RSpec.describe Gitlab::SidekiqConfig::WorkerRouter do
       end
     end
 
-    where(:routing_rules, :expected_queue) do
+    where(:routing_rules, :expected_queue, :expected_store) do
       # Default, no configuration
-      [] | 'foo_bar'
+      [] | 'foo_bar' | nil
       # Does not match, fallback to the named queue
       [
         ['feature_category=feature_b|urgency=high', 'queue_a'],
         ['resource_boundary=memory', 'queue_b'],
         ['tags=cheap', 'queue_c']
-      ] | 'foo_bar'
+      ] | 'foo_bar' | nil
       # Match a nil queue, fallback to named queue
       [
         ['feature_category=feature_b|urgency=high', 'queue_a'],
         ['resource_boundary=cpu', nil],
         ['tags=cheap', 'queue_c']
-      ] | 'foo_bar'
+      ] | 'foo_bar' | nil
       # Match an empty string, fallback to named queue
       [
         ['feature_category=feature_b|urgency=high', 'queue_a'],
         ['resource_boundary=cpu', ''],
         ['tags=cheap', 'queue_c']
-      ] | 'foo_bar'
+      ] | 'foo_bar' | nil
       # Match the first rule
       [
         ['feature_category=feature_a|urgency=high', 'queue_a'],
         ['resource_boundary=cpu', 'queue_b'],
         ['tags=cheap', 'queue_c']
-      ] | 'queue_a'
+      ] | 'queue_a' | nil
       # Match the first rule 2
       [
         ['feature_category=feature_b|urgency=low', 'queue_a'],
         ['resource_boundary=cpu', 'queue_b'],
         ['tags=cheap', 'queue_c']
-      ] | 'queue_a'
+      ] | 'queue_a' | nil
       # Match the third rule
       [
         ['feature_category=feature_b|urgency=high', 'queue_a'],
         ['resource_boundary=memory', 'queue_b'],
         ['tags=expensive', 'queue_c']
-      ] | 'queue_c'
+      ] | 'queue_c' | nil
       # Match all, first match wins
       [
         ['feature_category=feature_a|urgency=low', 'queue_a'],
         ['resource_boundary=cpu', 'queue_b'],
         ['tags=expensive', 'queue_c']
-      ] | 'queue_a'
+      ] | 'queue_a' | nil
       # Match the same rule multiple times, the first match wins
       [
         ['feature_category=feature_a', 'queue_a'],
         ['feature_category=feature_a', 'queue_b'],
         ['feature_category=feature_a', 'queue_c']
-      ] | 'queue_a'
+      ] | 'queue_a' | nil
       # Match wildcard
       [
         ['feature_category=feature_b|urgency=high', 'queue_a'],
         ['resource_boundary=memory', 'queue_b'],
         ['tags=cheap', 'queue_c'],
         ['*', 'default']
-      ] | 'default'
+      ] | 'default' | nil
       # Match wildcard at the top of the chain. It makes the following rules useless
       [
         ['*', 'queue_foo'],
         ['feature_category=feature_a|urgency=low', 'queue_a'],
         ['resource_boundary=cpu', 'queue_b'],
         ['tags=expensive', 'queue_c']
-      ] | 'queue_foo'
+      ] | 'queue_foo' | nil
       # Match by generated queue name
       [
-        ['name=foo_bar', 'queue_foo'],
+        ['name=foo_bar', 'queue_foo', 'store_foo'],
         ['feature_category=feature_a|urgency=low', 'queue_a'],
         ['resource_boundary=cpu', 'queue_b'],
         ['tags=expensive', 'queue_c']
-      ] | 'queue_foo'
+      ] | 'queue_foo' | 'store_foo'
     end
   end
 
@@ -139,6 +139,10 @@ RSpec.describe Gitlab::SidekiqConfig::WorkerRouter do
       with_them do
         it 'routes the worker to the correct queue' do
           expect(described_class.global.route(worker)).to eql(expected_queue)
+        end
+
+        it 'routes the worker to the correct store' do
+          expect(described_class.global.store(worker)).to eql(expected_store)
         end
       end
     end
@@ -215,7 +219,7 @@ RSpec.describe Gitlab::SidekiqConfig::WorkerRouter do
       it 'raises an exception' do
         expect { described_class.new(nil) }.to raise_error(described_class::InvalidRoutingRuleError)
         expect { described_class.new(['feature_category=a']) }.to raise_error(described_class::InvalidRoutingRuleError)
-        expect { described_class.new([['feature_category=a', 'queue_a', 'queue_b']]) }.to raise_error(described_class::InvalidRoutingRuleError)
+        expect { described_class.new([['feature_category=a', 'queue_a', 'shard_1', 'shard_2']]) }.to raise_error(described_class::InvalidRoutingRuleError)
         expect do
           described_class.new(
             [
@@ -225,6 +229,51 @@ RSpec.describe Gitlab::SidekiqConfig::WorkerRouter do
           )
         end.to raise_error(described_class::InvalidRoutingRuleError)
         expect { described_class.new([['invalid_term=a', 'queue_a']]) }.to raise_error(Gitlab::SidekiqConfig::WorkerMatcher::UnknownPredicate)
+      end
+    end
+  end
+
+  describe '#store' do
+    include_context 'router examples setup'
+
+    with_them do
+      it 'routes the worker to the correct store' do
+        router = described_class.new(routing_rules)
+
+        expect(router.store(worker)).to eql(expected_store)
+      end
+    end
+  end
+
+  describe '#stores_with_queue' do
+    include_context 'router examples setup'
+
+    with_them do
+      it 'routes the queue to the correct stores' do
+        router = described_class.new(routing_rules)
+
+        expect(router.stores_with_queue(expected_queue)).to eql([expected_store].compact)
+      end
+    end
+
+    context 'when multiple stores has a similar queue name' do
+      let(:routing_rules) do
+        [
+          ['name=foo_bar', 'queue_foo', 'store_foo'],
+          ['name=bar_baz', 'queue_foo', 'store_baz'],
+          ['feature_category=feature_a|urgency=low', 'queue_a'],
+          ['resource_boundary=cpu', 'queue_b'],
+          ['tags=expensive', 'queue_c']
+        ]
+      end
+
+      let(:queue) { 'queue_foo' }
+      let(:stores) { %w[store_foo store_baz] }
+
+      it 'routes the worker to the correct store' do
+        router = described_class.new(routing_rules)
+
+        expect(router.stores_with_queue(queue)).to match_array(stores)
       end
     end
   end

@@ -9,15 +9,14 @@ value_type: number
 status: active
 time_frame: 7d
 data_source: redis_hll
-instrumentation_class: AggregatedMetric
-options:
-  aggregate:
-    operator: OR
-    attribute: user_id
-  events:
-  - i_search_total
-  - i_search_advanced
-  - i_search_paid
+instrumentation_class: RedisHLLMetric
+events:
+- name: i_search_total
+  unique: user.id
+- name: i_search_advanced
+  unique: user.id
+- name: i_search_paid
+  unique: user.id
 distribution:
 - ee
 - ce

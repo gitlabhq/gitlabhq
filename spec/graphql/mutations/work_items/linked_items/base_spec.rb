@@ -6,7 +6,7 @@ RSpec.describe Mutations::WorkItems::LinkedItems::Base, feature_category: :group
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project).tap { |group| group.add_maintainer(user) } }
+  let_it_be(:project) { create(:project, maintainers: user) }
   let_it_be(:work_item) { create(:work_item, project: project) }
 
   it 'raises a NotImplementedError error if the update_links method is called on the base class' do

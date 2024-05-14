@@ -228,7 +228,7 @@ module API
       end
 
       def add_import_params(params)
-        params[:import_type] = 'git' if params[:import_url]&.present?
+        params[:import_type] = 'git' if params[:import_url].present?
         params
       end
     end
@@ -833,8 +833,8 @@ module API
 
         if result.success?
           { status: result.status }
-        elsif result.reason == :unprocessable_entity
-          render_api_error!(result.message, result.reason)
+        elsif result.reason
+          render_structured_api_error!({ 'message' => result.message, 'reason' => result.reason }, :unprocessable_entity)
         else
           { status: result.status, message: result.message, total_members_count: result.payload[:total_members_count] }
         end

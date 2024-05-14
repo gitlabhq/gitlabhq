@@ -22,8 +22,8 @@ RSpec.describe ResourceEvents::SyntheticMilestoneNotesBuilderService, feature_ca
       expect(notes.map(&:created_at)).to eq(events.map(&:created_at))
       expect(notes.map(&:note)).to eq(
         [
-          "changed milestone to %#{milestone.iid}",
-          "removed milestone %#{milestone.iid}",
+          "changed milestone to #{milestone.to_reference(format: :iid, full: true, absolute_path: true)}",
+          "removed milestone #{milestone.to_reference(format: :iid, full: true, absolute_path: true)}",
           "removed milestone "
         ])
     end

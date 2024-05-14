@@ -49,7 +49,7 @@ RSpec.describe DesignManagement::DeleteDesignsService, feature_category: :design
 
   before do
     enable_design_management(enabled)
-    project.add_developer(user)
+    project.add_reporter(user)
   end
 
   describe "#execute" do
@@ -99,7 +99,7 @@ RSpec.describe DesignManagement::DeleteDesignsService, feature_category: :design
           rescue StandardError
             nil
           end
-            .not_to change { redis_hll.unique_events(event_names: event, start_date: Date.today, end_date: 1.week.from_now) }
+            .not_to change { redis_hll.unique_events(event_names: event, property_name: :user, start_date: Date.today, end_date: 1.week.from_now) }
 
           begin
             run_service

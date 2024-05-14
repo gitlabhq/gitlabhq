@@ -71,5 +71,9 @@ describe('Direct transfer status utils', () => {
         expect(isProjectCreationAllowed({ projectCreationLevel })).toBe(expected);
       },
     );
+
+    it('when "No parent" is selected, returns true', () => {
+      expect(isProjectCreationAllowed({ fullPath: '' })).toBe(true);
+    });
   });
 });

@@ -101,6 +101,18 @@ RSpec.describe MergeRequests::HandleAssigneesChangeService, feature_category: :c
       execute
     end
 
+    context 'when merge_request_dashboard feature flag is enabled' do
+      before do
+        stub_feature_flags(merge_request_dashboard: true)
+      end
+
+      it 'invalidates cache counts' do
+        expect(merge_request.assignees).to all(receive(:invalidate_merge_request_cache_counts))
+
+        execute
+      end
+    end
+
     context 'when execute_hooks option is set to true' do
       let(:options) { { 'execute_hooks' => true } }
 

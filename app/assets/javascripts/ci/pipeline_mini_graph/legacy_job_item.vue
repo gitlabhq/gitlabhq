@@ -1,5 +1,5 @@
 <script>
-import { GlTooltipDirective, GlLink } from '@gitlab/ui';
+import { GlDisclosureDropdownItem, GlTooltipDirective } from '@gitlab/ui';
 import ActionComponent from '~/ci/common/private/job_action_component.vue';
 import JobNameComponent from '~/ci/common/private/job_name_component.vue';
 import { ICONS } from '~/ci/constants';
@@ -36,15 +36,10 @@ export default {
   i18n: {
     runAgainTooltipText: s__('Pipeline|Run again'),
   },
-  tooltipConfig: {
-    boundary: 'viewport',
-    placement: 'top',
-    customClass: 'gl-pointer-events-none',
-  },
   components: {
     ActionComponent,
     JobNameComponent,
-    GlLink,
+    GlDisclosureDropdownItem,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -72,37 +67,35 @@ export default {
     },
   },
   computed: {
-    boundary() {
-      return this.dropdownLength === 1 ? 'viewport' : 'scrollParent';
-    },
     detailsPath() {
       return this.status?.details_path;
     },
     hasDetails() {
       return this.status?.has_details;
     },
+    item() {
+      return {
+        text: this.job.name,
+        href: this.hasDetails ? this.detailsPath : '',
+      };
+    },
     status() {
       return this.job?.status ? this.job.status : {};
     },
     tooltipText() {
       const textBuilder = [];
-      const { name: jobName } = this.job;
-
-      if (jobName) {
-        textBuilder.push(jobName);
-      }
-
       const { tooltip: statusTooltip } = this.status;
-      if (jobName && statusTooltip) {
-        textBuilder.push('-');
-      }
 
       if (statusTooltip) {
+        const statusText = statusTooltip.charAt(0).toUpperCase() + statusTooltip.slice(1);
+
         if (this.isDelayedJob) {
-          textBuilder.push(sprintf(statusTooltip, { remainingTime: this.remainingTime }));
+          textBuilder.push(sprintf(statusText, { remainingTime: this.remainingTime }));
         } else {
-          textBuilder.push(statusTooltip);
+          textBuilder.push(statusText);
         }
+      } else {
+        textBuilder.push(this.status?.text);
       }
 
       return textBuilder.join(' ');
@@ -123,6 +116,9 @@ export default {
         ? this.$options.i18n.runAgainTooltipText
         : title;
     },
+    testid() {
+      return this.hasDetails ? 'job-with-link' : 'job-without-link';
+    },
   },
   errorCaptured(err, _vm, info) {
     reportToSentry('pipelines_job_item', `pipelines_job_item error: ${err}, info: ${info}`);
@@ -130,37 +126,38 @@ export default {
 };
 </script>
 <template>
-  <div
-    class="ci-job-component gl-display-flex gl-align-items-center gl-justify-content-space-between"
+  <gl-disclosure-dropdown-item
+    :item="item"
+    class="ci-job-component"
+    :class="[
+      cssClassJobName,
+      {
+        'js-pipeline-graph-job-link gl-text-gray-900 gl-active-text-decoration-none gl-focus-text-decoration-none gl-hover-text-decoration-none': hasDetails,
+        'js-job-component-tooltip non-details-job-component': !hasDetails,
+      },
+    ]"
+    :data-testid="testid"
   >
-    <gl-link
-      v-if="hasDetails"
-      v-gl-tooltip="$options.tooltipConfig"
-      :href="detailsPath"
-      :title="tooltipText"
-      :class="cssClassJobName"
-      class="js-pipeline-graph-job-link menu-item gl-text-gray-900 gl-active-text-decoration-none gl-focus-text-decoration-none gl-hover-text-decoration-none"
-      data-testid="job-with-link"
-    >
-      <job-name-component :name="job.name" :status="job.status" />
-    </gl-link>
+    <template #list-item>
+      <div
+        class="gl-display-flex gl-align-items-center gl-justify-content-space-between -gl-mt-2 -gl-mb-2 -gl-ml-2"
+      >
+        <job-name-component
+          v-gl-tooltip.viewport.left
+          :title="tooltipText"
+          :name="job.name"
+          :status="job.status"
+          data-testid="job-name"
+        />
 
-    <div
-      v-else
-      v-gl-tooltip="{ boundary, placement: 'bottom', customClass: 'gl-pointer-events-none' }"
-      :title="tooltipText"
-      :class="cssClassJobName"
-      class="js-job-component-tooltip non-details-job-component menu-item"
-      data-testid="job-without-link"
-    >
-      <job-name-component :name="job.name" :status="job.status" />
-    </div>
-
-    <action-component
-      v-if="hasJobAction"
-      :tooltip-text="jobActionTooltipText"
-      :link="status.action.path"
-      :action-icon="status.action.icon"
-    />
-  </div>
+        <action-component
+          v-if="hasJobAction"
+          :tooltip-text="jobActionTooltipText"
+          :link="status.action.path"
+          :action-icon="status.action.icon"
+          class="-gl-mt-2 -gl-mr-2"
+        />
+      </div>
+    </template>
+  </gl-disclosure-dropdown-item>
 </template>

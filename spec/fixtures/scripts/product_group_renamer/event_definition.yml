@@ -1,0 +1,18 @@
+---
+description: Engineer uses Internal Event CLI to define a new event
+internal_events: true
+action: internal_events_cli_used
+identifiers:
+- project
+- namespace
+- user
+product_group: a_group_name
+milestone: '16.6'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149010
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

@@ -10,9 +10,6 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3834) in GitLab 13.10, the GitLab agent server (KAS) became available on GitLab.com at `wss://kas.gitlab.com`.
-> - [Moved](https://gitlab.com/groups/gitlab-org/-/epics/6290) from GitLab Premium to GitLab Free in 14.5.
-
 The agent server is a component installed together with GitLab. It is required to
 manage the [GitLab agent for Kubernetes](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent).
 
@@ -72,7 +69,7 @@ To configure KAS to listen on a UNIX socket:
 
 1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
-For additional configuration options, see the **GitLab Kubernetes Agent Server** section of the
+For additional configuration options, see the **GitLab Kubernetes agent server** section of
 [`gitlab.rb.template`](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/files/gitlab-config-template/gitlab.rb.template).
 
 #### Enable on multiple nodes
@@ -90,6 +87,8 @@ To enable the agent server on multiple nodes:
    gitlab_kas['env'] = {
      'SSL_CERT_DIR' => "/opt/gitlab/embedded/ssl/certs/",
      'OWN_PRIVATE_API_URL' => 'grpc://<ip_or_hostname_of_this_host>:8155' # use grpcs:// when using TLS on the private API endpoint
+
+     # 'OWN_PRIVATE_API_HOST' => '<server-name-from-cert>' # Add if you want to use TLS for KAS->KAS communication. This is used to verify the TLS certificate host name.
 
      # 'OWN_PRIVATE_API_CIDR' => '10.0.0.0/8', # IPv4 example
      # 'OWN_PRIVATE_API_CIDR' => '2001:db8:8a2e:370::7334/64', # IPv6 example
@@ -123,11 +122,15 @@ To enable the agent server on multiple nodes:
 | `gitlab_kas['api_secret_key']` | The shared secret used for authentication between KAS and GitLab. The value must be Base64-encoded and exactly 32 bytes long. |
 | `gitlab_kas['private_api_secret_key']` | The shared secret used for authentication between different KAS instances. The value must be Base64-encoded and exactly 32 bytes long. |
 | `OWN_PRIVATE_API_URL` | The environment variable used by KAS for service discovery. Set to the hostname or IP address of the node you're configuring. The node must be reachable by other nodes in the cluster. |
-| `gitlab_kas_external_url` | The user-facing URL for the in-cluster `agentk`. Can be a fully qualified domain or subdomain, <sup>**1**</sup> or a GitLab external URL. <sup>**2**</sup> If blank, defaults to a GitLab external URL. |
+| `OWN_PRIVATE_API_HOST` | Optional value used to verify the TLS certificate host name. <sup>1</sup> A client compares this value to the host name in the server's TLS certificate file.|
+| `gitlab_kas_external_url` | The user-facing URL for the in-cluster `agentk`. Can be a fully qualified domain or subdomain, <sup>2</sup> or a GitLab external URL. <sup>3</sup> If blank, defaults to a GitLab external URL. |
 | `gitlab_rails['gitlab_kas_external_url']` | The user-facing URL for the in-cluster `agentk`. If blank, defaults to the `gitlab_kas_external_url`. |
 | `gitlab_rails['gitlab_kas_external_k8s_proxy_url']` | The user-facing URL for Kubernetes API proxying. If blank, defaults to a URL based on `gitlab_kas_external_url`. |
 | `gitlab_rails['gitlab_kas_internal_url']` | The internal URL the GitLab backend uses to communicate with KAS. |
 
+**Footnotes:**
+
+1. TLS for outbound connections is enabled when `OWN_PRIVATE_API_URL` or `OWN_PRIVATE_API_SCHEME` starts with `grpcs`.
 1. For example, `wss://kas.gitlab.example.com/`.
 1. For example, `wss://gitlab.example.com/-/kubernetes-agent/`.
 
@@ -164,18 +167,6 @@ kubectl logs -f -l=app=kas -n <YOUR-GITLAB-NAMESPACE>
 In Linux package installations, find the logs in `/var/log/gitlab/gitlab-kas/`.
 
 You can also [troubleshoot issues with individual agents](../../user/clusters/agent/troubleshooting.md).
-
-### GitOps: failed to get project information
-
-If you get the following error message:
-
-```json
-{"level":"warn","time":"2020-10-30T08:37:26.123Z","msg":"GitOps: failed to get project info","agent_id":4,"project_id":"root/kas-manifest001","error":"error kind: 0; status: 404"}
-```
-
-The project specified by the manifest (`root/kas-manifest001`)
-doesn't exist or the project where the manifest is kept is private. To fix this issue,
-ensure the project path is correct and that the project's visibility is [set to public](../../user/public_access.md).
 
 ### Configuration file not found
 

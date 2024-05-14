@@ -21,7 +21,7 @@ Mobile DevOps is still in development, but you can:
 
 ## Build environments
 
-Get started quickly by using [GitLab.com SaaS runners](../ci/runners/index.md),
+Get started quickly by using [GitLab-hosted runners](../ci/runners/index.md),
 or set up [self-managed runners](https://docs.gitlab.com/runner/#use-self-managed-runners)
 for complete control over the build environment.
 
@@ -43,9 +43,9 @@ test:
 
 ### iOS build environments
 
-[GitLab SaaS runners on macOS](../ci/runners/saas/macos_saas_runner.md) are in Beta.
+[GitLab hosted runners on macOS](../ci/runners/hosted_runners/macos.md) are in Beta.
 
-[Choose an image](../ci/runners/saas/macos_saas_runner.md#supported-macos-images) to run a job on a macOS GitLab SaaS runner and add it to your `.gitlab-ci.yml` file.
+[Choose an image](../ci/runners/hosted_runners/macos.md#supported-macos-images) to run a job on a macOS GitLab-hosted runner and add it to your `.gitlab-ci.yml` file.
 
 For example:
 
@@ -444,4 +444,4 @@ See the sample reference projects below for complete build, sign, and release pi
 
 ## Mobile DevOps Blog
 
-Additional reference material can be found in the [#mobile section](https://about.gitlab.com/blog/tags.html#mobile) of the GitLab blog.
+Additional reference material can be found in the [DevOps section](https://about.gitlab.com/blog/categories/devops/) of the GitLab blog.

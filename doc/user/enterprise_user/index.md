@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS
+**Offering:** GitLab.com
 
 Enterprise users have user accounts that are administered by an organization that
 has [verified their email domain](../project/pages/custom_domains_ssl_tls_certification/index.md) and purchased a [GitLab subscription](../../subscriptions/index.md).

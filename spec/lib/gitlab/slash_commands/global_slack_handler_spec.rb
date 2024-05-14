@@ -60,7 +60,10 @@ RSpec.describe Gitlab::SlashCommands::GlobalSlackHandler, feature_category: :int
 
     it 'returns error if project alias not found' do
       expect_next(Gitlab::SlashCommands::Command).not_to receive(:execute)
-      expect_next(Gitlab::SlashCommands::Presenters::Error).to receive(:message)
+      expect_next(
+        Gitlab::SlashCommands::Presenters::Error,
+        'GitLab error: project or alias not found'
+      ).to receive(:message)
 
       handler_with_valid_token(
         text: "fake/fake issue new title",
@@ -86,6 +89,50 @@ RSpec.describe Gitlab::SlashCommands::GlobalSlackHandler, feature_category: :int
       handler_with_valid_token(
         text: "help"
       ).trigger
+    end
+
+    context 'when integration is group-level' do
+      let_it_be(:group) { create(:group) }
+
+      let_it_be_with_reload(:slack_integration) do
+        create(:gitlab_slack_application_integration, :group, group: group,
+          slack_integration: build(:slack_integration, alias: group.full_path)
+        ).slack_integration
+      end
+
+      it 'returns error that the project alias not found' do
+        expect_next(Gitlab::SlashCommands::Command).not_to receive(:execute)
+        expect_next(
+          Gitlab::SlashCommands::Presenters::Error,
+          'GitLab error: project or alias not found'
+        ).to receive(:message)
+
+        handler_with_valid_token(
+          text: "#{group.full_path} issue new title",
+          team_id: slack_integration.team_id
+        ).trigger
+      end
+    end
+
+    context 'when integration is instance-level' do
+      let_it_be_with_reload(:slack_integration) do
+        create(:gitlab_slack_application_integration, :instance,
+          slack_integration: build(:slack_integration, alias: '_gitlab-instance')
+        ).slack_integration
+      end
+
+      it 'returns error that the project alias not found' do
+        expect_next(Gitlab::SlashCommands::Command).not_to receive(:execute)
+        expect_next(
+          Gitlab::SlashCommands::Presenters::Error,
+          'GitLab error: project or alias not found'
+        ).to receive(:message)
+
+        handler_with_valid_token(
+          text: "instance issue new title",
+          team_id: slack_integration.team_id
+        ).trigger
+      end
     end
   end
 end

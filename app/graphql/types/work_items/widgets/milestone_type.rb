@@ -13,9 +13,9 @@ module Types
         implements Types::WorkItems::WidgetInterface
 
         field :milestone,
-              ::Types::MilestoneType,
-              null: true,
-              description: 'Milestone of the work item.'
+          ::Types::MilestoneType,
+          null: true,
+          description: 'Milestone of the work item.'
       end
       # rubocop:enable Graphql/AuthorizeTypes
     end

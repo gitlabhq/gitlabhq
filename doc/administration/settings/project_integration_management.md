@@ -83,8 +83,6 @@ Resetting an instance-level default setting removes the integration from all pro
 
 ### View projects that use custom settings
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218252) in GitLab 14.2.
-
 Prerequisites:
 
 - You must have administrator access to the instance.

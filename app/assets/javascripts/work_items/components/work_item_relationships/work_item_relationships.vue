@@ -64,7 +64,7 @@ export default {
         };
       },
       update(data) {
-        return data.workspace.workItems.nodes[0] ?? {};
+        return data.workspace.workItem ?? {};
       },
       skip() {
         return !this.workItemIid;
@@ -167,7 +167,7 @@ export default {
               ...queryArgs,
               data: produce(sourceData, (draftState) => {
                 const linkedItems =
-                  draftState.workspace.workItems.nodes[0].widgets?.find(
+                  draftState.workspace.workItem.widgets?.find(
                     (widget) => widget.type === WIDGET_TYPE_LINKED_ITEMS,
                   )?.linkedItems?.nodes || [];
                 const index = linkedItems.findIndex((item) => {
@@ -245,7 +245,7 @@ export default {
       </gl-button>
     </template>
     <template #body>
-      <div class="gl-new-card-content">
+      <div class="gl-new-card-content gl-px-0">
         <work-item-add-relationship-form
           v-if="isShownLinkItemForm"
           :work-item-id="workItemId"
@@ -270,7 +270,7 @@ export default {
             <work-item-relationship-list
               v-if="linksBlocks.length"
               :class="{
-                'gl-pb-3 gl-border-b-1 gl-border-b-solid gl-border-b-gray-100':
+                'gl-pb-3 gl-mb-5 gl-border-b-1 gl-border-b-solid gl-border-b-gray-100':
                   linksIsBlockedBy.length,
               }"
               :linked-items="linksBlocks"
@@ -290,7 +290,7 @@ export default {
             <work-item-relationship-list
               v-if="linksIsBlockedBy.length"
               :class="{
-                'gl-pb-3 gl-border-b-1 gl-border-b-solid gl-border-b-gray-100':
+                'gl-pb-3 gl-mb-5 gl-border-b-1 gl-border-b-solid gl-border-b-gray-100':
                   linksRelatesTo.length,
               }"
               :linked-items="linksIsBlockedBy"

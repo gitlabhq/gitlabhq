@@ -107,4 +107,30 @@ RSpec.describe MigrationsHelpers, feature_category: :database do
       end
     end
   end
+
+  describe '#finalized_by_version' do
+    let(:dictionary_entry) { nil }
+
+    before do
+      allow(helper).to receive(:described_class)
+      allow(::Gitlab::Database::BackgroundMigration::BatchedBackgroundMigrationDictionary).to(
+        receive(:entry).and_return(dictionary_entry)
+      )
+    end
+
+    context 'when no dictionary was found' do
+      it { expect(helper.finalized_by_version).to be_nil }
+    end
+
+    context 'when finalized_by is a string' do
+      let(:dictionary_entry) do
+        instance_double(
+          ::Gitlab::Database::BackgroundMigration::BatchedBackgroundMigrationDictionary::Entry,
+          finalized_by: '20240104155616'
+        )
+      end
+
+      it { expect(helper.finalized_by_version).to eq(20240104155616) }
+    end
+  end
 end

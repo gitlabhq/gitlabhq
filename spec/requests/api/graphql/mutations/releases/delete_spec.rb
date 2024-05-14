@@ -11,7 +11,7 @@ RSpec.describe 'Deleting a release', feature_category: :release_orchestration do
   let_it_be(:reporter) { create(:user) }
   let_it_be(:developer) { create(:user) }
   let_it_be(:maintainer) { create(:user) }
-  let_it_be(:project) { create(:project, :public, :repository) }
+  let_it_be(:project) { create(:project, :public, :repository, guests: guest, reporters: reporter, developers: developer, maintainers: maintainer) }
   let_it_be(:tag_name) { 'v1.1.0' }
   let_it_be(:release) { create(:release, project: project, tag: tag_name) }
 
@@ -36,13 +36,6 @@ RSpec.describe 'Deleting a release', feature_category: :release_orchestration do
 
   let(:delete_release) { post_graphql_mutation(mutation, current_user: current_user) }
   let(:mutation_response) { graphql_mutation_response(mutation_name)&.with_indifferent_access }
-
-  before do
-    project.add_guest(guest)
-    project.add_reporter(reporter)
-    project.add_developer(developer)
-    project.add_maintainer(maintainer)
-  end
 
   shared_examples 'unauthorized or not found error' do
     it 'returns a top-level error with message' do

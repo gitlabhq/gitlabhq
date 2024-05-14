@@ -2,13 +2,14 @@
 stage: Create
 group: Source Code
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
+description: "Documentation for the REST API for Git repositories in GitLab."
 ---
 
 # Repositories API
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 ## List repository tree
 
@@ -131,9 +132,6 @@ Supported attributes:
 
 ## Get file archive
 
-> - Support for [including Git LFS blobs](../topics/git/lfs/index.md#lfs-objects-in-project-archives) was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15079) in GitLab 13.5.
-> - Support for downloading a subfolder was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/28827) in GitLab 14.4.
-
 Get an archive of the repository. This endpoint can be accessed without
 authentication if the repository is publicly accessible.
 
@@ -234,9 +232,6 @@ Example response:
 
 ## Contributors
 
-> - Attributes `additions` and `deletions` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/39653) in GitLab 13.4, because they [always returned `0`](https://gitlab.com/gitlab-org/gitlab/-/issues/233119).
-> - Attributes `additions` and `deletions` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38920) in GitLab 14.0.
-
 Get repository contributors list. This endpoint can be accessed without
 authentication if the repository is publicly accessible.
 
@@ -311,7 +306,6 @@ Example response:
 
 ## Add changelog data to a changelog file
 
-> - [Introduced](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/351) in GitLab 13.9.
 > - Commit range limits [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89032) in GitLab 15.1 [with a flag](../administration/feature_flags.md) named `changelog_commits_limitation`. Enabled by default.
 
 Generate changelog data based on commits in a repository.
@@ -357,18 +351,33 @@ must follow a specific format. By default, GitLab considers tags using these for
 Where `X.Y.Z` is a version that follows [semantic versioning](https://semver.org/).
 For example, consider a project with the following tags:
 
-- v1.0.0-pre1
-- v1.0.0
-- v1.1.0
-- v2.0.0
+- `v1.0.0-pre1`
+- `v1.0.0`
+- `v1.1.0`
+- `v2.0.0`
 
 If the `version` attribute is `2.1.0`, GitLab uses tag `v2.0.0`. And when the
-version is `1.1.1`, or `1.2.0`, GitLab uses tag v1.1.0. The tag `v1.0.0-pre1` is
+version is `1.1.1`, or `1.2.0`, GitLab uses tag `v1.1.0`. The tag `v1.0.0-pre1` is
 never used, because pre-release tags are ignored.
+
+The `version` attribute can start with `v`. For example: `v1.0.0`.
+The response is the same as for `version` value `1.0.0`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/437616) in GitLab 17.0.
 
 If `from` is unspecified and no tag to use is found, the API produces an error.
 To solve such an error, you must explicitly specify a value for the `from`
 attribute.
+
+### Migrating from a manually-managed changelog file to Git trailers
+
+When you migrate from an existing manually-managed changelog file to one that uses Git trailers,
+make sure that the changelog file matches [the expected format](../user/project/changelogs.md).
+Otherwise, new changelog entries added by the API might be inserted in an unexpected position.
+For example, if the version values in the manually-managed changelog file are specified as `vX.Y.Z`
+instead of `X.Y.Z`, then new changelog entries added using Git trailers are appended to the end of
+the changelog file.
+
+[Issue 444183](https://gitlab.com/gitlab-org/gitlab/-/issues/444183) proposes customizing the version header format in changelog files.
+However, until that issue has been completed, the expected version header format in changelog files is `X.Y.Z`.
 
 ### Examples
 
@@ -418,8 +427,6 @@ curl --request POST --header "PRIVATE-TOKEN: token" \
 ```
 
 ## Generate changelog data
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345934) in GitLab 14.6.
 
 Generate changelog data based on commits in a repository, without committing
 them to a changelog file.

@@ -1,0 +1,9 @@
+---
+name: web_hook_test_api_endpoint_rate_limit
+feature_issue_url:
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150066
+rollout_issue_url:
+milestone: '17.0'
+group: group::import and integrate
+type: ops
+default_enabled: true

@@ -58,12 +58,13 @@ export default {
           key: 'active',
           label: '',
           thClass: 'gl-w-7',
-          tdClass: 'gl-vertical-align-middle!',
+          tdClass: 'gl-border-bottom-0! !gl-align-middle',
         },
         {
           key: 'title',
           label: __('Integration'),
           thClass: 'd-sm-table-cell',
+          tdClass: 'gl-border-bottom-0!',
         },
       );
 
@@ -72,7 +73,8 @@ export default {
           key: 'updated_at',
           label: this.showUpdatedAt ? __('Last updated') : '',
           thClass: 'gl-display-none d-sm-table-cell gl-text-right',
-          tdClass: 'gl-text-right gl-display-none d-sm-table-cell gl-vertical-align-middle!',
+          tdClass:
+            'gl-border-bottom-0! gl-text-right gl-display-none d-sm-table-cell !gl-align-middle',
         });
       }
 
@@ -80,6 +82,7 @@ export default {
         key: 'edit_path',
         label: '',
         thClass: 'gl-w-15',
+        tdClass: 'gl-border-bottom-0!',
       });
 
       return fields;

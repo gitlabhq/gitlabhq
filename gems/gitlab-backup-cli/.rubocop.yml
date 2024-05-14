@@ -1,2 +1,8 @@
 inherit_from:
   - ../config/rubocop.yml
+
+Gemfile/MissingFeatureCategory:
+  Enabled: false
+
+Rails/Exit:
+  Enabled: false

@@ -6,6 +6,7 @@ class Projects::CommitsController < Projects::ApplicationController
   include ExtractsPath
   include RendersCommits
   include ParseCommitDate
+  include RedirectsForMissingPathOnTree
 
   COMMITS_DEFAULT_LIMIT = 40
   prepend_before_action(only: [:show]) { authenticate_sessionless_user!(:rss) }
@@ -14,6 +15,7 @@ class Projects::CommitsController < Projects::ApplicationController
   before_action :assign_ref_vars, except: :commits_root
   before_action :authorize_read_code!
   before_action :validate_ref!, except: :commits_root
+  before_action :validate_path, if: -> { !request.format.atom? }
   before_action :set_commits, except: :commits_root
 
   feature_category :source_code_management
@@ -68,9 +70,14 @@ class Projects::CommitsController < Projects::ApplicationController
     render_404 unless valid_ref?(@ref)
   end
 
-  def set_commits
-    render_404 unless @path.empty? || request.format == :atom || @repository.blob_at(@commit.id, @path) || @repository.tree(@commit.id, @path).entries.present?
+  def validate_path
+    return unless @path
 
+    path_exists = @repository.blob_at(@commit.id, @path) || @repository.tree(@commit.id, @path).entries.present?
+    redirect_to_tree_root_for_missing_path(@project, @ref, @path) unless path_exists
+  end
+
+  def set_commits
     limit = permitted_params[:limit].to_i
     @limit = limit > 0 ? limit : COMMITS_DEFAULT_LIMIT # limit can only ever be a positive number
     @offset = (permitted_params[:offset] || 0).to_i

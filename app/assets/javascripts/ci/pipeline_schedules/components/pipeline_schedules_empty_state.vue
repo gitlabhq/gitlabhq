@@ -52,7 +52,7 @@ export default {
     </template>
     <template #description>
       <p class="gl-mb-0">{{ $options.i18n.description }}</p>
-      <ul class="gl-list-style-position-inside" data-testid="pipeline-schedules-characteristics">
+      <ul class="gl-list-inside" data-testid="pipeline-schedules-characteristics">
         <li v-for="(el, index) in $options.i18n.listElements" :key="index">{{ el }}</li>
       </ul>
       <p>

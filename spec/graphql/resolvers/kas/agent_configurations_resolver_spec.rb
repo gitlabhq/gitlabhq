@@ -12,7 +12,7 @@ RSpec.describe Resolvers::Kas::AgentConfigurationsResolver do
   describe '#resolve' do
     let_it_be(:project) { create(:project) }
 
-    let(:user) { create(:user, maintainer_projects: [project]) }
+    let(:user) { create(:user, maintainer_of: project) }
     let(:ctx) { Hash(current_user: user) }
 
     let(:agent1) { double }

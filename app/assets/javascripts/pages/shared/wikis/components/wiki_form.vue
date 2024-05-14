@@ -22,6 +22,8 @@ import {
   WIKI_FORMAT_UPDATED_ACTION,
   CONTENT_EDITOR_LOADED_ACTION,
 } from '../constants';
+import { isTemplate } from '../utils';
+import WikiTemplate from './wiki_template.vue';
 
 const trackingMixin = Tracking.mixin({
   label: WIKI_CONTENT_EDITOR_TRACKING_LABEL,
@@ -62,6 +64,7 @@ export default {
     title: {
       label: s__('WikiPage|Title'),
       placeholder: s__('WikiPage|Page title'),
+      templatePlaceholder: s__('WikiPage|Template title'),
       helpText: {
         existingPage: s__(
           'WikiPage|Tip: You can move this page by adding the path to the beginning of the title.',
@@ -87,11 +90,14 @@ export default {
       value: {
         existingPage: s__('WikiPage|Update %{pageTitle}'),
         newPage: s__('WikiPage|Create %{pageTitle}'),
+        existingTemplate: s__('WikiPage|Update template %{pageTitle}'),
+        newTemplatePage: s__('WikiPage|Create template %{pageTitle}'),
       },
     },
     submitButton: {
       existingPage: s__('WikiPage|Save changes'),
       newPage: s__('WikiPage|Create page'),
+      newTemplate: s__('WikiPage|Create template'),
     },
     cancel: s__('WikiPage|Cancel'),
   },
@@ -105,13 +111,16 @@ export default {
     GlLink,
     GlButton,
     MarkdownEditor,
+    WikiTemplate,
   },
   mixins: [trackingMixin],
-  inject: ['formatOptions', 'pageInfo', 'drawioUrl'],
+  inject: ['formatOptions', 'pageInfo', 'drawioUrl', 'templates'],
   data() {
+    const title = window.location.href.includes('random_title=true') ? '' : getTitle(this.pageInfo);
     return {
       editingMode: 'source',
-      title: getTitle(this.pageInfo),
+      title,
+      pageTitle: title.replace('templates/', ''),
       format: getFormat(this.pageInfo),
       content: getContent(this.pageInfo),
       commitMessage: getCommitMessage(this.pageInfo),
@@ -124,10 +133,17 @@ export default {
         'aria-label': this.$options.i18n.content.label,
         id: 'wiki_content',
         name: 'wiki[content]',
+        class: 'note-textarea',
       },
     };
   },
   computed: {
+    isTemplate,
+    titlePlaceholder() {
+      return this.isTemplate
+        ? this.$options.i18n.title.templatePlaceholder
+        : this.$options.i18n.title.placeholder;
+    },
     autocompleteDataSources() {
       return gl.GfmAutoComplete?.dataSources;
     },
@@ -147,9 +163,12 @@ export default {
       );
     },
     commitMessageI18n() {
-      return this.pageInfo.persisted
-        ? this.$options.i18n.commitMessage.value.existingPage
-        : this.$options.i18n.commitMessage.value.newPage;
+      if (this.pageInfo.persisted) {
+        if (this.isTemplate) return this.$options.i18n.commitMessage.value.existingTemplate;
+        return this.$options.i18n.commitMessage.value.existingPage;
+      }
+      if (this.isTemplate) return this.$options.i18n.commitMessage.value.newTemplatePage;
+      return this.$options.i18n.commitMessage.value.newPage;
     },
     linkExample() {
       return MARKDOWN_LINK_TEXT[this.format];
@@ -190,6 +209,9 @@ export default {
   watch: {
     title() {
       this.updateCommitMessage();
+    },
+    pageTitle() {
+      this.title = this.isTemplate ? `templates/${this.pageTitle}` : this.pageTitle;
     },
   },
   mounted() {
@@ -246,7 +268,7 @@ export default {
       if (!this.title) return;
 
       // Replace hyphens with spaces
-      const newTitle = this.title.replace(/-+/g, ' ');
+      const newTitle = this.title.replace(/-+/g, ' ').replace('templates/', '');
 
       const newCommitMessage = sprintf(this.commitMessageI18n, { pageTitle: newTitle }, false);
       this.commitMessage = newCommitMessage;
@@ -284,6 +306,10 @@ export default {
     submitFormWithShortcut() {
       this.$refs.form.submit();
     },
+
+    setTemplate(template) {
+      this.$refs.markdownEditor.setTemplate(template);
+    },
   },
 };
 </script>
@@ -309,7 +335,7 @@ export default {
     <div class="row">
       <div class="col-12">
         <gl-form-group :label="$options.i18n.title.label" label-for="wiki_title">
-          <template #description>
+          <template v-if="!isTemplate" #description>
             <gl-icon class="gl-mr-n1" name="bulb" />
             {{ titleHelpText }}
             <gl-link :href="helpPath" target="_blank">
@@ -318,15 +344,15 @@ export default {
           </template>
           <gl-form-input
             id="wiki_title"
-            v-model="title"
-            name="wiki[title]"
+            v-model="pageTitle"
             type="text"
             class="form-control"
             data-testid="wiki-title-textbox"
             :required="true"
             :autofocus="!pageInfo.persisted"
-            :placeholder="$options.i18n.title.placeholder"
+            :placeholder="titlePlaceholder"
           />
+          <input v-model="title" type="hidden" name="wiki[title]" />
         </gl-form-group>
       </div>
 
@@ -350,8 +376,16 @@ export default {
 
     <div class="row">
       <div class="col-sm-12 row-sm-5">
-        <gl-form-group>
+        <gl-form-group :label="$options.i18n.content.label" label-for="wiki_content">
+          <wiki-template
+            v-if="!isTemplate && templates.length"
+            :format="format"
+            :templates="templates"
+            class="gl-mb-4"
+            @input="setTemplate"
+          />
           <markdown-editor
+            ref="markdownEditor"
             v-model="content"
             :form-field-props="formFieldProps"
             :render-markdown-path="pageInfo.markdownPreviewPath"
@@ -363,6 +397,7 @@ export default {
             :enable-autocomplete="true"
             :autocomplete-data-sources="autocompleteDataSources"
             :drawio-enabled="drawioEnabled"
+            :disable-attachments="isTemplate"
             @contentEditor="notifyContentEditorActive"
             @markdownField="notifyContentEditorInactive"
             @keydown.ctrl.enter="submitFormWithShortcut"
@@ -370,7 +405,7 @@ export default {
           />
           <div class="form-text gl-text-gray-600">
             <gl-sprintf
-              v-if="displayWikiSpecificMarkdownHelp"
+              v-if="displayWikiSpecificMarkdownHelp && !isTemplate"
               :message="$options.i18n.linksHelpText"
             >
               <template #linkExample>

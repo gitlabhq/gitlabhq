@@ -2,6 +2,8 @@
 
 module Snippets
   class CreateService < Snippets::BaseService
+    include Gitlab::InternalEventsTracking
+
     def initialize(project:, current_user: nil, params: {}, perform_spam_check: true)
       super(project: project, current_user: current_user, params: params)
       @perform_spam_check = perform_spam_check
@@ -24,7 +26,7 @@ module Snippets
 
       if save_and_commit
         UserAgentDetailService.new(spammable: @snippet, perform_spam_check: perform_spam_check).create
-        Gitlab::UsageDataCounters::SnippetCounter.count(:create)
+        track_internal_event('create_snippet', project: project, user: current_user)
 
         move_temporary_files
 

@@ -77,7 +77,7 @@ module SnippetsHelper
     tooltip = n_('%d file', '%d files', file_count) % file_count
 
     tag.span(class: 'file_count', title: tooltip, data: { toggle: 'tooltip', container: 'body' }) do
-      concat(sprite_icon('documents', css_class: 'gl-vertical-align-middle'))
+      concat(sprite_icon('documents', css_class: 'gl-align-middle'))
       concat(' ')
       concat(file_count)
     end

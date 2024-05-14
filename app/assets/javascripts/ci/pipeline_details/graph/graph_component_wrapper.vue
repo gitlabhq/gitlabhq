@@ -106,7 +106,7 @@ export default {
     },
     headerPipeline: {
       query: getPipelineQuery,
-      // this query is already being called in pipeline_details_header.vue, which shares the same cache as this component
+      // this query is already being called in pipeline_header.vue, which shares the same cache as this component
       // the skip here is to prevent sending double network requests on page load
       skip() {
         return !this.canRefetchHeaderPipeline;

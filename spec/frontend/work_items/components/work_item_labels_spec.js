@@ -1,23 +1,30 @@
-import { GlTokenSelector, GlSkeletonLoader } from '@gitlab/ui';
-import Vue, { nextTick } from 'vue';
+import { GlLabel } from '@gitlab/ui';
+import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { mountExtended } from 'helpers/vue_test_utils_helper';
-import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { mockTracking } from 'helpers/tracking_helper';
+import {
+  TRACKING_CATEGORY_SHOW,
+  I18N_WORK_ITEM_ERROR_FETCHING_LABELS,
+} from '~/work_items/constants';
 import groupLabelsQuery from '~/sidebar/components/labels/labels_select_widget/graphql/group_labels.query.graphql';
 import projectLabelsQuery from '~/sidebar/components/labels/labels_select_widget/graphql/project_labels.query.graphql';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import groupWorkItemByIidQuery from '~/work_items/graphql/group_work_item_by_iid.query.graphql';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import WorkItemLabels from '~/work_items/components/work_item_labels.vue';
-import { i18n, I18N_WORK_ITEM_ERROR_FETCHING_LABELS } from '~/work_items/constants';
+import WorkItemSidebarDropdownWidget from '~/work_items/components/shared/work_item_sidebar_dropdown_widget.vue';
 import {
   groupWorkItemByIidResponseFactory,
   projectLabelsResponse,
+  groupLabelsResponse,
+  getProjectLabelsResponse,
   mockLabels,
   workItemByIidResponseFactory,
-  updateWorkItemMutationResponse,
+  updateWorkItemMutationResponseFactory,
+  updateWorkItemMutationErrorResponse,
 } from '../mock_data';
 
 Vue.use(VueApollo);
@@ -27,23 +34,39 @@ const workItemId = 'gid://gitlab/WorkItem/1';
 describe('WorkItemLabels component', () => {
   let wrapper;
 
-  const findTokenSelector = () => wrapper.findComponent(GlTokenSelector);
-  const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
-  const findEmptyState = () => wrapper.findByTestId('empty-state');
-  const findLabelsTitle = () => wrapper.findByTestId('labels-title');
+  const label1Id = mockLabels[0].id;
+  const label2Id = mockLabels[1].id;
+  const label3Id = mockLabels[2].id;
 
   const workItemQuerySuccess = jest
     .fn()
     .mockResolvedValue(workItemByIidResponseFactory({ labels: null }));
+  const workItemQueryWithLabelsHandler = jest
+    .fn()
+    .mockResolvedValue(workItemByIidResponseFactory({ labels: mockLabels }));
+  const workItemQueryWithFewLabelsHandler = jest
+    .fn()
+    .mockResolvedValue(workItemByIidResponseFactory({ labels: [mockLabels[0], mockLabels[1]] }));
   const groupWorkItemQuerySuccess = jest
     .fn()
     .mockResolvedValue(groupWorkItemByIidResponseFactory({ labels: null }));
   const projectLabelsQueryHandler = jest.fn().mockResolvedValue(projectLabelsResponse);
-  const groupLabelsQueryHandler = jest.fn().mockResolvedValue(projectLabelsResponse);
+  const groupLabelsQueryHandler = jest.fn().mockResolvedValue(groupLabelsResponse);
+  const errorHandler = jest.fn().mockRejectedValue('Error');
   const successUpdateWorkItemMutationHandler = jest
     .fn()
-    .mockResolvedValue(updateWorkItemMutationResponse);
-  const errorHandler = jest.fn().mockRejectedValue('Houston, we have a problem');
+    .mockResolvedValue(updateWorkItemMutationResponseFactory({ labels: [mockLabels[0]] }));
+  const successRemoveLabelWorkItemMutationHandler = jest
+    .fn()
+    .mockResolvedValue(updateWorkItemMutationResponseFactory({ labels: [mockLabels[0]] }));
+  const successRemoveAllLabelWorkItemMutationHandler = jest
+    .fn()
+    .mockResolvedValue(updateWorkItemMutationResponseFactory({ labels: [] }));
+  const successAddRemoveLabelWorkItemMutationHandler = jest.fn().mockResolvedValue(
+    updateWorkItemMutationResponseFactory({
+      labels: [mockLabels[0], mockLabels[2]],
+    }),
+  );
 
   const createComponent = ({
     canUpdate = true,
@@ -53,7 +76,7 @@ describe('WorkItemLabels component', () => {
     updateWorkItemMutationHandler = successUpdateWorkItemMutationHandler,
     workItemIid = '1',
   } = {}) => {
-    wrapper = mountExtended(WorkItemLabels, {
+    wrapper = shallowMountExtended(WorkItemLabels, {
       apolloProvider: createMockApollo([
         [workItemByIidQuery, workItemQueryHandler],
         [groupWorkItemByIidQuery, groupWorkItemQuerySuccess],
@@ -63,258 +86,329 @@ describe('WorkItemLabels component', () => {
       ]),
       provide: {
         isGroup,
+        issuesListPath: 'test-project-path/issues',
       },
       propsData: {
-        fullPath: 'test-project-path',
         workItemId,
         workItemIid,
         canUpdate,
+        fullPath: 'test-project-path',
+        workItemType: 'Task',
       },
-      attachTo: document.body,
     });
   };
 
-  it('has a label', () => {
+  const findWorkItemSidebarDropdownWidget = () =>
+    wrapper.findComponent(WorkItemSidebarDropdownWidget);
+  const findAllLabels = () => wrapper.findAllComponents(GlLabel);
+  const findRegularLabel = () => findAllLabels().at(0);
+  const findLabelWithDescription = () => findAllLabels().at(2);
+
+  const showDropdown = () => {
+    findWorkItemSidebarDropdownWidget().vm.$emit('dropdownShown');
+  };
+
+  const updateLabels = (labels) => {
+    findWorkItemSidebarDropdownWidget().vm.$emit('updateSelected', labels);
+    findWorkItemSidebarDropdownWidget().vm.$emit('updateValue', labels);
+  };
+
+  const getMutationInput = (addLabelIds, removeLabelIds) => {
+    return {
+      input: {
+        id: workItemId,
+        labelsWidget: {
+          addLabelIds,
+          removeLabelIds,
+        },
+      },
+    };
+  };
+
+  const expectDropdownCountToBe = (count, toggleDropdownText) => {
+    expect(findWorkItemSidebarDropdownWidget().props('itemValue')).toHaveLength(count);
+    expect(findWorkItemSidebarDropdownWidget().props('toggleDropdownText')).toBe(
+      toggleDropdownText,
+    );
+  };
+
+  it('renders the work item sidebar dropdown widget with default props', () => {
     createComponent();
 
-    expect(findTokenSelector().props('ariaLabelledby')).toEqual(findLabelsTitle().attributes('id'));
+    expect(findWorkItemSidebarDropdownWidget().props()).toMatchObject({
+      dropdownLabel: 'Labels',
+      canUpdate: true,
+      dropdownName: 'label',
+      updateInProgress: false,
+      toggleDropdownText: 'No labels',
+      headerText: 'Select labels',
+      resetButtonLabel: 'Clear',
+      multiSelect: true,
+      itemValue: [],
+    });
+    expect(findAllLabels()).toHaveLength(0);
   });
 
-  it('focuses token selector on token selector input event', async () => {
-    createComponent();
-    findTokenSelector().vm.$emit('input', [mockLabels[0]]);
-    await waitForPromises();
-
-    expect(findEmptyState().exists()).toBe(false);
-    expect(findTokenSelector().element.contains(document.activeElement)).toBe(true);
-  });
-
-  it('does not start search by default', () => {
-    createComponent();
-
-    expect(findTokenSelector().props('loading')).toBe(false);
-    expect(findTokenSelector().props('dropdownItems')).toEqual([]);
-  });
-
-  it('starts search on hovering for more than 250ms', async () => {
-    createComponent();
-    findTokenSelector().trigger('mouseover');
-    jest.advanceTimersByTime(DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
-    await nextTick();
-
-    expect(findTokenSelector().props('loading')).toBe(true);
-  });
-
-  it('starts search on focusing token selector', async () => {
-    createComponent();
-    findTokenSelector().vm.$emit('focus');
-    await nextTick();
-
-    expect(findTokenSelector().props('loading')).toBe(true);
-  });
-
-  it('does not start searching if token-selector was hovered for less than 250ms', async () => {
-    createComponent();
-    findTokenSelector().trigger('mouseover');
-    jest.advanceTimersByTime(100);
-    await nextTick();
-
-    expect(findTokenSelector().props('loading')).toBe(false);
-  });
-
-  it('does not start searching if cursor was moved out from token selector before 250ms passed', async () => {
-    createComponent();
-    findTokenSelector().trigger('mouseover');
-    jest.advanceTimersByTime(100);
-
-    findTokenSelector().trigger('mouseout');
-    jest.advanceTimersByTime(DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
-    await nextTick();
-
-    expect(findTokenSelector().props('loading')).toBe(false);
-  });
-
-  it('shows skeleton loader on dropdown when loading', async () => {
-    createComponent();
-    findTokenSelector().vm.$emit('focus');
-    await nextTick();
-
-    expect(findSkeletonLoader().exists()).toBe(true);
-  });
-
-  it('shows list in dropdown when loaded', async () => {
-    createComponent();
-    findTokenSelector().vm.$emit('focus');
-    await nextTick();
-
-    expect(findSkeletonLoader().exists()).toBe(true);
+  it('renders the labels when they are already present', async () => {
+    createComponent({
+      workItemQueryHandler: workItemQueryWithLabelsHandler,
+    });
 
     await waitForPromises();
 
-    expect(findSkeletonLoader().exists()).toBe(false);
-    expect(findTokenSelector().props('dropdownItems')).toHaveLength(2);
+    expect(workItemQueryWithLabelsHandler).toHaveBeenCalled();
+    expect(groupWorkItemQuerySuccess).not.toHaveBeenCalled();
+
+    expect(findWorkItemSidebarDropdownWidget().props('itemValue')).toStrictEqual([
+      label1Id,
+      label2Id,
+      label3Id,
+    ]);
+    expect(findAllLabels()).toHaveLength(3);
+    expect(findRegularLabel().props()).toMatchObject({
+      backgroundColor: '#f00',
+      title: 'Label 1',
+      target: 'test-project-path/issues?label_name[]=Label%201',
+      scoped: false,
+      showCloseButton: true,
+    });
+    expect(findLabelWithDescription().props('description')).toBe('Label 3 description');
   });
 
-  it.each([true, false])(
-    'passes canUpdate=%s prop to view-only of token-selector',
-    async (canUpdate) => {
-      createComponent({ canUpdate });
+  it('renders the labels without close button when canUpdate is false', async () => {
+    createComponent({
+      workItemQueryHandler: workItemQueryWithLabelsHandler,
+      canUpdate: false,
+    });
 
-      await waitForPromises();
+    await waitForPromises();
 
-      expect(findTokenSelector().props('viewOnly')).toBe(!canUpdate);
-    },
-  );
+    expect(findWorkItemSidebarDropdownWidget().props('canUpdate')).toBe(false);
+    expect(findRegularLabel().props('showCloseButton')).toBe(false);
+  });
+
+  it.each`
+    expectedAssertion                                                  | searchTerm   | handler                                                                   | result
+    ${'when dropdown is shown'}                                        | ${''}        | ${projectLabelsQueryHandler}                                              | ${3}
+    ${'when correct input is entered'}                                 | ${'Label 1'} | ${jest.fn().mockResolvedValue(getProjectLabelsResponse([mockLabels[0]]))} | ${1}
+    ${'and shows no matching results when incorrect input is entered'} | ${'Label 2'} | ${jest.fn().mockResolvedValue(getProjectLabelsResponse([]))}              | ${0}
+  `('calls search label query $expectedAssertion', async ({ searchTerm, result, handler }) => {
+    createComponent({
+      searchQueryHandler: handler,
+    });
+
+    showDropdown();
+    await findWorkItemSidebarDropdownWidget().vm.$emit('searchStarted', searchTerm);
+
+    expect(findWorkItemSidebarDropdownWidget().props('loading')).toBe(true);
+
+    await waitForPromises();
+
+    expect(findWorkItemSidebarDropdownWidget().props('listItems')).toHaveLength(result);
+    expect(handler).toHaveBeenCalledWith({
+      fullPath: 'test-project-path',
+      searchTerm,
+    });
+    expect(groupLabelsQueryHandler).not.toHaveBeenCalled();
+    expect(findWorkItemSidebarDropdownWidget().props('loading')).toBe(false);
+  });
+
+  it('filters search results by title in frontend', async () => {
+    createComponent({
+      searchQueryHandler: jest.fn().mockResolvedValue(getProjectLabelsResponse(mockLabels)),
+    });
+
+    showDropdown();
+    await findWorkItemSidebarDropdownWidget().vm.$emit('searchStarted', mockLabels[0].title);
+
+    expect(findWorkItemSidebarDropdownWidget().props('loading')).toBe(true);
+
+    await waitForPromises();
+
+    expect(findWorkItemSidebarDropdownWidget().props('listItems')).toHaveLength(1);
+    expect(findWorkItemSidebarDropdownWidget().props('loading')).toBe(false);
+  });
 
   it('emits error event if search query fails', async () => {
     createComponent({ searchQueryHandler: errorHandler });
-    findTokenSelector().vm.$emit('focus');
+    showDropdown();
     await waitForPromises();
 
     expect(wrapper.emitted('error')).toEqual([[I18N_WORK_ITEM_ERROR_FETCHING_LABELS]]);
   });
 
-  it('should search for with correct key after text input', async () => {
-    const searchKey = 'Hello';
-
+  it('passes the correct props to clear search text on item select', () => {
     createComponent();
-    findTokenSelector().vm.$emit('focus');
-    findTokenSelector().vm.$emit('text-input', searchKey);
+
+    expect(findWorkItemSidebarDropdownWidget().props('clearSearchOnItemSelect')).toBe(true);
+  });
+
+  it('update labels when labels are added', async () => {
+    createComponent({
+      workItemQueryHandler: workItemQuerySuccess,
+      updateWorkItemMutationHandler: successUpdateWorkItemMutationHandler,
+    });
+
     await waitForPromises();
 
-    expect(projectLabelsQueryHandler).toHaveBeenCalledWith(
-      expect.objectContaining({ searchTerm: searchKey }),
+    showDropdown();
+
+    expectDropdownCountToBe(0, 'No labels');
+
+    updateLabels([label1Id]);
+
+    await waitForPromises();
+
+    expectDropdownCountToBe(1, '1 label');
+    expect(successUpdateWorkItemMutationHandler).toHaveBeenCalledWith(
+      getMutationInput([label1Id], []),
     );
   });
 
-  it('adds new labels to the end', async () => {
-    const response = workItemByIidResponseFactory({ labels: [mockLabels[1]] });
-    const workItemQueryHandler = jest.fn().mockResolvedValue(response);
+  it('update labels when labels are removed', async () => {
     createComponent({
-      workItemQueryHandler,
-      updateWorkItemMutationHandler: successUpdateWorkItemMutationHandler,
+      workItemQueryHandler: workItemQueryWithLabelsHandler,
+      updateWorkItemMutationHandler: successRemoveLabelWorkItemMutationHandler,
     });
+
     await waitForPromises();
 
-    findTokenSelector().vm.$emit('input', [mockLabels[0]]);
+    showDropdown();
+
+    expectDropdownCountToBe(3, '3 labels');
+
+    updateLabels([label1Id]);
+
     await waitForPromises();
 
-    const labels = findTokenSelector().props('selectedTokens');
-    expect(labels[0]).toMatchObject(mockLabels[1]);
-    expect(labels[1]).toMatchObject(mockLabels[0]);
+    expectDropdownCountToBe(1, '1 label');
+    expect(successRemoveLabelWorkItemMutationHandler).toHaveBeenCalledWith(
+      getMutationInput([], [label2Id, label3Id]),
+    );
   });
 
-  describe('when clicking outside the token selector', () => {
-    it('calls a mutation with correct variables', () => {
+  it('update labels when labels are added or removed at same time', async () => {
+    createComponent({
+      workItemQueryHandler: workItemQueryWithFewLabelsHandler,
+      updateWorkItemMutationHandler: successAddRemoveLabelWorkItemMutationHandler,
+    });
+
+    await waitForPromises();
+
+    showDropdown();
+
+    expectDropdownCountToBe(2, '2 labels');
+
+    updateLabels([label1Id, label3Id]);
+
+    await waitForPromises();
+
+    expectDropdownCountToBe(2, '2 labels');
+    expect(successAddRemoveLabelWorkItemMutationHandler).toHaveBeenCalledWith(
+      getMutationInput([label3Id], [label2Id]),
+    );
+  });
+
+  it('clears all labels when updateValue has no labels', async () => {
+    createComponent({
+      workItemQueryHandler: workItemQueryWithLabelsHandler,
+      updateWorkItemMutationHandler: successRemoveAllLabelWorkItemMutationHandler,
+    });
+
+    await waitForPromises();
+
+    showDropdown();
+
+    expectDropdownCountToBe(3, '3 labels');
+
+    findWorkItemSidebarDropdownWidget().vm.$emit('updateValue', []);
+
+    await waitForPromises();
+
+    expectDropdownCountToBe(0, 'No labels');
+    expect(successRemoveAllLabelWorkItemMutationHandler).toHaveBeenCalledWith(
+      getMutationInput([], [label1Id, label2Id, label3Id]),
+    );
+  });
+
+  describe('tracking', () => {
+    let trackingSpy;
+
+    beforeEach(() => {
       createComponent();
+      trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
+    });
 
-      findTokenSelector().vm.$emit('input', [mockLabels[0]]);
-      findTokenSelector().vm.$emit('blur', new FocusEvent({ relatedTarget: null }));
+    afterEach(() => {
+      trackingSpy = null;
+    });
 
-      expect(successUpdateWorkItemMutationHandler).toHaveBeenCalledWith({
-        input: {
-          labelsWidget: { addLabelIds: [mockLabels[0].id], removeLabelIds: [] },
-          id: 'gid://gitlab/WorkItem/1',
-        },
+    it('tracks editing the labels on dropdown widget updateValue', async () => {
+      showDropdown();
+      updateLabels([label1Id]);
+
+      await waitForPromises();
+
+      expect(trackingSpy).toHaveBeenCalledWith(TRACKING_CATEGORY_SHOW, 'updated_labels', {
+        category: TRACKING_CATEGORY_SHOW,
+        label: 'item_label',
+        property: 'type_Task',
       });
     });
-
-    it('emits an error and resets labels if mutation was rejected', async () => {
-      createComponent({ updateWorkItemMutationHandler: errorHandler });
-
-      await waitForPromises();
-
-      const initialLabels = findTokenSelector().props('selectedTokens');
-
-      findTokenSelector().vm.$emit('input', [mockLabels[0]]);
-      findTokenSelector().vm.$emit('blur', new FocusEvent({ relatedTarget: null }));
-
-      await waitForPromises();
-
-      const updatedLabels = findTokenSelector().props('selectedTokens');
-
-      expect(wrapper.emitted('error')).toEqual([[i18n.updateError]]);
-      expect(updatedLabels).toEqual(initialLabels);
-    });
-
-    it('does not make server request if no labels added or removed', async () => {
-      const updateWorkItemMutationHandler = jest
-        .fn()
-        .mockResolvedValue(updateWorkItemMutationResponse);
-
-      createComponent({ updateWorkItemMutationHandler });
-
-      await waitForPromises();
-
-      findTokenSelector().vm.$emit('input', []);
-      findTokenSelector().vm.$emit('blur', new FocusEvent({ relatedTarget: null }));
-
-      await waitForPromises();
-
-      expect(updateWorkItemMutationHandler).not.toHaveBeenCalled();
-    });
   });
 
-  describe('when project context', () => {
-    it('calls the project work item query', async () => {
-      createComponent();
+  it.each`
+    errorType          | expectedErrorMessage                                                      | failureHandler
+    ${'graphql error'} | ${'Something went wrong while updating the work item. Please try again.'} | ${jest.fn().mockResolvedValue(updateWorkItemMutationErrorResponse)}
+    ${'network error'} | ${'Something went wrong while updating the work item. Please try again.'} | ${jest.fn().mockRejectedValue(new Error())}
+  `(
+    'emits an error when there is a $errorType',
+    async ({ expectedErrorMessage, failureHandler }) => {
+      createComponent({
+        updateWorkItemMutationHandler: failureHandler,
+      });
+
+      updateLabels([label1Id]);
+
       await waitForPromises();
 
-      expect(workItemQuerySuccess).toHaveBeenCalled();
-    });
+      expect(wrapper.emitted('error')).toEqual([[expectedErrorMessage]]);
+    },
+  );
 
-    it('skips calling the group work item query', async () => {
-      createComponent();
-      await waitForPromises();
+  it('skips calling the work item query when missing workItemIid', async () => {
+    createComponent({ workItemIid: '' });
 
-      expect(groupWorkItemQuerySuccess).not.toHaveBeenCalled();
-    });
+    await waitForPromises();
 
-    it('skips calling the project work item query when missing workItemIid', async () => {
-      createComponent({ workItemIid: '' });
-      await waitForPromises();
+    expect(workItemQuerySuccess).not.toHaveBeenCalled();
+  });
 
-      expect(workItemQuerySuccess).not.toHaveBeenCalled();
-    });
+  it('skips calling the group work item query when missing workItemIid', async () => {
+    createComponent({ isGroup: true, workItemIid: '' });
 
-    it('calls the project labels query on search', async () => {
-      createComponent();
+    await waitForPromises();
 
-      findTokenSelector().vm.$emit('focus');
-      findTokenSelector().vm.$emit('text-input', 'hello');
-      await waitForPromises();
-
-      expect(projectLabelsQueryHandler).toHaveBeenCalled();
-    });
+    expect(groupWorkItemQuerySuccess).not.toHaveBeenCalled();
   });
 
   describe('when group context', () => {
-    it('skips calling the project work item query', async () => {
+    beforeEach(async () => {
       createComponent({ isGroup: true });
-      await waitForPromises();
 
+      await waitForPromises();
+    });
+
+    it('skips calling the project work item query', () => {
       expect(workItemQuerySuccess).not.toHaveBeenCalled();
     });
 
-    it('calls the group work item query', async () => {
-      createComponent({ isGroup: true });
-      await waitForPromises();
-
+    it('calls the group work item query', () => {
       expect(groupWorkItemQuerySuccess).toHaveBeenCalled();
     });
 
-    it('skips calling the group work item query when missing workItemIid', async () => {
-      createComponent({ isGroup: true, workItemIid: '' });
-      await waitForPromises();
-
-      expect(groupWorkItemQuerySuccess).not.toHaveBeenCalled();
-    });
-
     it('calls the group labels query on search', async () => {
-      createComponent({ isGroup: true });
-
-      findTokenSelector().vm.$emit('focus');
-      findTokenSelector().vm.$emit('text-input', 'hello');
+      showDropdown();
       await waitForPromises();
 
       expect(groupLabelsQueryHandler).toHaveBeenCalled();

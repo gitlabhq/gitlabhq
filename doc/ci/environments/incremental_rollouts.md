@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 When rolling out changes to your application, it is possible to release production changes
 to only a portion of your Kubernetes pods as a risk mitigation strategy. By releasing
@@ -66,12 +66,9 @@ rollout 10%:
     ROLLOUT_PERCENTAGE: 10
 ```
 
-When the jobs are built, a **play** button appears next to the job's name. Select **play**
+After the jobs are built, select **Run** (**{play}**) next to the job's name
 to release each stage of pods. You can also rollback by running a lower percentage job. Once 100%
-is reached, you cannot roll back using this method. It is still possible to roll back by redeploying
-the old version using the **Rollback** button on the environment page.
-
-![Play button](img/incremental_rollouts_play_v12_7.png)
+is reached, you cannot roll back using this method. To roll back a deployment, see [retry or roll back a deployment](../../ci/environments/index.md#retry-or-roll-back-a-deployment).
 
 A [deployable application](https://gitlab.com/gl-release/incremental-rollout-example) is
 available, demonstrating manually triggered incremental rollouts.
@@ -117,7 +114,7 @@ available, [demonstrating configuration of timed rollouts](https://gitlab.com/gl
 ## Blue-Green Deployment
 
 NOTE:
-As of GitLab 13.7, teams can leverage an Ingress annotation and [set traffic weight](../../user/project/canary_deployments.md#how-to-change-the-traffic-weight-on-a-canary-ingress-deprecated)
+Teams can leverage an Ingress annotation and [set traffic weight](../../user/project/canary_deployments.md#how-to-change-the-traffic-weight-on-a-canary-ingress-deprecated)
 as an alternative approach to the blue-green deployment strategy documented here.
 
 Also sometimes known as A/B deployment or red-black deployment, this technique is used to reduce

@@ -15,12 +15,12 @@ module Ci
 
     validates :description, length: { maximum: 255 }, allow_blank: true
     validates :key, uniqueness: {
-      message: -> (object, data) { _("(%{value}) has already been taken") }
+      message: ->(object, data) { _("(%{value}) has already been taken") }
     }
 
     validates :value, length: {
       maximum: 10_000,
-      too_long: -> (object, data) do
+      too_long: ->(object, data) do
         _('The value of the provided variable exceeds the %{count} character limit')
       end
     }

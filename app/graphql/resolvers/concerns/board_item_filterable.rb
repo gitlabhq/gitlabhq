@@ -10,9 +10,7 @@ module BoardItemFilterable
 
     set_filter_values(filters)
 
-    if filters[:not]
-      set_filter_values(filters[:not])
-    end
+    set_filter_values(filters[:not]) if filters[:not]
 
     if filters[:or]
       if ::Feature.disabled?(:or_issuable_queries, resource_parent)
@@ -37,9 +35,7 @@ module BoardItemFilterable
       raise ::Gitlab::Graphql::Errors::ArgumentError, 'Incompatible arguments: assigneeUsername, assigneeWildcardId.'
     end
 
-    if filters[:assignee_wildcard_id]
-      filters[:assignee_id] = filters.delete(:assignee_wildcard_id)
-    end
+    filters[:assignee_id] = filters.delete(:assignee_wildcard_id) if filters[:assignee_wildcard_id]
   end
 
   def rewrite_param_name(filters, old_name, new_name)

@@ -24,7 +24,6 @@ describe('ContributionEventApproved', () => {
     expect(wrapper.findComponent(ContributionEventBase).props()).toEqual({
       event: defaultPropsData.event,
       iconName: 'approval-solid',
-      iconClass: 'gl-text-green-500',
       message: ContributionEventApproved.i18n.message,
     });
   });

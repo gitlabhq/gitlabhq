@@ -85,9 +85,6 @@ For more information about our solution to mitigate this timeout risk, see [issu
 
 ## Change the default branch protection of a group
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7583) in GitLab 12.9.
-> - [Settings moved and renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/340403) in GitLab 14.9.
-
 By default, every group inherits the branch protection set at the global level.
 
 To change this setting for a specific group, see [group level default branch protection](../project/repository/branches/default.md#group-level-default-branch-protection).
@@ -99,8 +96,6 @@ In [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/), GitLab admin
 
 ## Use a custom name for the initial branch
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/43290) in GitLab 13.6.
-
 When you create a new project in GitLab, a default branch is created with the
 first push. The group owner can
 [customize the initial branch](../project/repository/branches/default.md#group-level-custom-initial-branch-name)
@@ -108,18 +103,13 @@ for the group's projects to meet your group's needs.
 
 ## Share a group with another group
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18328) in GitLab 12.7.
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/247208) in GitLab 13.11 from a form to a modal window [with a flag](../feature_flags.md). Disabled by default.
-> - Modal window [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/247208) in GitLab 14.8.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/352526) in GitLab 14.9. [Feature flag `invite_members_group_modal`](https://gitlab.com/gitlab-org/gitlab/-/issues/352526) removed.
-
 Similar to how you [share a project with a group](../project/members/share_project_with_groups.md),
 you can share a group with another group by invitation.
 For more information about sharing conditions and behavior, see [Sharing projects and groups](../project/members/sharing_projects_groups.md).
 
 Prerequisites:
 
-- You must be a member of the inviting group.
+- You must be a member of the invited and inviting groups.
 
 To invite a group to your group:
 
@@ -179,8 +169,6 @@ To transfer a group:
 
 ## Disable email notifications
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23585) in GitLab 12.2.
-
 You can disable all email notifications related to the group, which includes its subgroups and projects.
 
 To disable email notifications:
@@ -192,8 +180,6 @@ To disable email notifications:
 1. Select **Save changes**.
 
 ## Disable group mentions
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21301) in GitLab 12.6.
 
 You can prevent users from being added to a conversation and getting notified when
 anyone [mentions a group](../discussions/index.md#mentions)
@@ -215,10 +201,7 @@ To disable group mentions:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/287940) in GitLab 14.2.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/336520) in GitLab 14.5.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 You can export a list of members in a group or subgroup as a CSV.
 
@@ -233,7 +216,7 @@ For members with `Minimal Access` in the selected group, their `Max Role` and `S
 
 ## User cap for groups
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330027) in GitLab 14.7 [with a flag](../../administration/feature_flags.md) named `saas_user_caps`. Disabled by default.
+> - Behind a [feature flag](../../administration/feature_flags.md) named `saas_user_caps`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/9263) in GitLab 16.3.
 
 For more information about user caps for GitLab self-managed, see [User cap](../../administration/settings/sign_up_restrictions.md#user-cap).
@@ -308,13 +291,13 @@ in the hierarchy.
 
 To ensure that the user cap applies when groups, subgroups, or projects are shared externally, restrict group sharing only within the top-level namespace. This ensure that groups in the same top-leve namespace can be invited, and prevents the addition of new users (seats) when the group is shared.
 
-User cap doesn’t consider whether users are billable or not (e.g., Free Guest Users in Ultimate). In other words, if you set a cap of 500, user caps block new sign-ups after 500 users, regardless of whether those are all consuming paid seats or not.
+On GitLab.com, on the Ultimate tier, there is a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/441504) where you cannot add new guest users to a group when the amount of billable users exceeds the user cap. For example, suppose you have a user cap of 5, with 3 developers and 2 guests. After you add 2 more developers, you cannot add any more users, even if they are guest users that don't consume a billable seat.
 
 ## Group file templates
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Use group file templates to share a set of templates for common file
 types with every project in a group. It is analogous to the
@@ -340,7 +323,7 @@ For more information, see [group-level project templates](custom_project_templat
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 To enable group file templates:
 
@@ -354,7 +337,7 @@ To enable group file templates:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/372040) in GitLab 15.9 [with a flag](../../administration/feature_flags.md) name `support_group_level_merge_checks_setting`. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142708) in GitLab 16.9. Feature flag `support_group_level_merge_checks_setting` removed.
@@ -369,7 +352,7 @@ that inherited them.
 You can configure all child projects in your group to require a complete and successful pipeline before
 merge.
 
-See also [the project-level setting](../project/merge_requests/merge_when_pipeline_succeeds.md#require-a-successful-pipeline-for-merge).
+See also [the project-level setting](../project/merge_requests/auto_merge.md#require-a-successful-pipeline-for-merge).
 
 Prerequisites:
 
@@ -388,7 +371,7 @@ To enable this setting:
 
 You can configure [skipped pipelines](../../ci/pipelines/index.md#skip-a-pipeline) from preventing merge requests from being merged.
 
-See also [the project-level setting](../project/merge_requests/merge_when_pipeline_succeeds.md#allow-merge-after-skipped-pipelines).
+See also [the project-level setting](../project/merge_requests/auto_merge.md#allow-merge-after-skipped-pipelines).
 
 Prerequisites:
 
@@ -425,14 +408,10 @@ To enable this setting:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/285458) in GitLab 13.9. [Deployed behind the `group_merge_request_approval_settings_feature_flag` flag](../../administration/feature_flags.md), disabled by default.
-> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/285410) in GitLab 14.5.
-> - [Feature flag `group_merge_request_approval_settings_feature_flag`](https://gitlab.com/gitlab-org/gitlab/-/issues/343872) removed in GitLab 14.9.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Group approval settings manage [project merge request approval settings](../project/merge_requests/approvals/settings.md)
-for all projects in a top-level group. These settings [cascade to all projects](../project/merge_requests/approvals/settings.md#settings-cascading)
+for all projects in a top-level group. These settings [cascade to all projects](../project/merge_requests/approvals/settings.md#cascade-settings-from-the-instance-or-top-level-group)
 that belong to the group.
 
 To view the merge request approval settings for a group:
@@ -451,20 +430,18 @@ for the ability to set merge request approval rules for groups is tracked in
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS
+**Offering:** GitLab.com, Self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118222) in GitLab 16.0.
+> - [Added to GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147833) in GitLab 16.11.
 
 WARNING:
 [Experiment and Beta features](../../policy/experiment-beta-support.md) may produce unexpected results
 (for example, the results might be low-quality, incomplete, incoherent, offensive, or insensitive,
 and might include insecure code or failed pipelines).
 
-NOTE:
-[GitLab Duo Chat](../../user/gitlab_duo_chat.md) is an only feature available in Premium tier.
-
 You can give all users in a top-level group access to Experiment and Beta features.
-This setting [cascades to all projects](../project/merge_requests/approvals/settings.md#settings-cascading)
+This setting [cascades to all projects](../project/merge_requests/approvals/settings.md#cascade-settings-from-the-instance-or-top-level-group)
 that belong to the group.
 
 To enable Experiment features for a top-level group:
@@ -479,15 +456,9 @@ To enable Experiment features for a top-level group:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207164) in GitLab 12.10 as a [Beta feature](../../policy/experiment-beta-support.md#beta).
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 For a group, you can view how many merge requests, issues, and members were created in the last 90 days.
-
-These Group Activity Analytics can be enabled with the `group_activity_analytics` [feature flag](../../development/feature_flags/index.md#enabling-a-feature-flag-locally-in-development).
-
-![Recent Group Activity](img/group_activity_analytics_v13_10.png)
 
 Changes to [group wikis](../project/wiki/group.md) do not appear in group activity analytics.
 

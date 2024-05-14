@@ -23,28 +23,18 @@ module Issuable
       issuable.assignees.each(&:invalidate_cache_counts)
     end
 
-    def group_for(issuable)
-      if issuable.project.present?
-        issuable.project.group
-      else
-        issuable.namespace
-      end
-    end
-
     def delete_associated_records(issuable)
-      actor = group_for(issuable)
-
-      delete_todos(actor, issuable)
-      delete_label_links(actor, issuable)
+      delete_todos(issuable)
+      delete_label_links(issuable)
     end
 
-    def delete_todos(actor, issuable)
+    def delete_todos(issuable)
       issuable.run_after_commit_or_now do
         TodosDestroyer::DestroyedIssuableWorker.perform_async(issuable.id, issuable.class.name)
       end
     end
 
-    def delete_label_links(actor, issuable)
+    def delete_label_links(issuable)
       issuable.run_after_commit_or_now do
         Issuable::LabelLinksDestroyWorker.perform_async(issuable.id, issuable.class.name)
       end

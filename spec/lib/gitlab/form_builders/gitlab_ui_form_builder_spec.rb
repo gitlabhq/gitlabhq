@@ -77,6 +77,7 @@ RSpec.describe Gitlab::FormBuilders::GitlabUiFormBuilder do
             help_text: 'Instead of all the files changed, show only one file at a time.',
             checkbox_options: { class: 'checkbox-foo-bar' },
             label_options: { class: 'label-foo-bar' },
+            content_wrapper_options: { class: 'wrapper-foo-bar' },
             checked_value: '3',
             unchecked_value: '1'
           }
@@ -84,7 +85,7 @@ RSpec.describe Gitlab::FormBuilders::GitlabUiFormBuilder do
 
         it 'renders help text' do
           expected_html = <<~EOS
-            <div class="gl-form-checkbox custom-control custom-checkbox">
+            <div class="gl-form-checkbox custom-control custom-checkbox wrapper-foo-bar">
               <input name="user[view_diffs_file_by_file]" type="hidden" value="1" autocomplete="off" />
               <input class="custom-control-input checkbox-foo-bar" type="checkbox" value="3" name="user[view_diffs_file_by_file]" id="user_view_diffs_file_by_file" />
               <label class="custom-control-label label-foo-bar" for="user_view_diffs_file_by_file">

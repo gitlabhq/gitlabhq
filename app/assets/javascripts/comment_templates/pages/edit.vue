@@ -5,7 +5,6 @@ import { fetchPolicies } from '~/lib/graphql';
 import { createAlert } from '~/alert';
 import { __ } from '~/locale';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
-import { TYPE_USERS_SAVED_REPLY } from '~/graphql_shared/constants';
 import CreateForm from '../components/form.vue';
 
 export default {
@@ -21,7 +20,8 @@ export default {
       },
       variables() {
         return {
-          id: convertToGraphQLId(TYPE_USERS_SAVED_REPLY, this.$route.params.id),
+          id: convertToGraphQLId(this.savedReplyType, this.$route.params.id),
+          path: this.path,
         };
       },
       update: (r) => r.object.savedReply,
@@ -40,7 +40,7 @@ export default {
       },
     },
   },
-  inject: ['fetchSingleQuery'],
+  inject: ['path', 'fetchSingleQuery', 'savedReplyType'],
   data() {
     return {
       savedReply: null,

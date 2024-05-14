@@ -11,15 +11,14 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90205
 time_frame: 7d
 data_source: redis_hll
 data_category: optional
-instrumentation_class: AggregatedMetric
-options:
-  aggregate:
-    operator: OR
-    attribute: user_id
-  events:
-    - incident_management_timeline_event_created
-    - incident_management_timeline_event_edited
-    - incident_management_timeline_event_deleted
+instrumentation_class: RedisHLLMetric
+events:
+- name: incident_management_timeline_event_created
+  unique: user.id
+- name: incident_management_timeline_event_edited
+  unique: user.id
+- name: incident_management_timeline_event_deleted
+  unique: user.id
 performance_indicator_type: []
 distribution:
 - ce

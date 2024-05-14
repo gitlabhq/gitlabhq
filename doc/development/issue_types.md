@@ -7,7 +7,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 # Issue Types (deprecated)
 
 WARNING:
-We are deprecating Issue Types as of GitLab 14.2 in favor of [Work Items and Work Item Types](work_items.md).
+We have deprecated Issue Types in favor of [Work Items and Work Item Types](work_items.md).
 
 Sometimes when a new resource type is added it's not clear if it should be only an
 "extension" of Issue (Issue Type) or if it should be a new first-class resource type

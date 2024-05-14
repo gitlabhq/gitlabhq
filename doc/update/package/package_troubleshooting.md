@@ -76,16 +76,8 @@ To fix this issue:
 
 1. Start a database console:
 
-   In GitLab 14.2 and later:
-
    ```shell
    sudo gitlab-rails dbconsole --database main
-   ```
-
-   In GitLab 14.1 and earlier:
-
-   ```shell
-   sudo gitlab-rails dbconsole
    ```
 
 1. Manually add the missing `commit_message_negative_regex` column:
@@ -102,14 +94,28 @@ To fix this issue:
    ```shell
    sudo gitlab-ctl restart
    ```
+   
+## 500 errors with `PG::UndefinedColumn: ERROR:..` message in logs
 
-## Error `Failed to connect to the internal GitLab API` on a separate GitLab Pages server
+After upgrading, if you start getting `500` errors in the logs showings messages similar to `PG::UndefinedColumn: ERROR:...`, these errors could be cause by either:
 
-See [GitLab Pages administration troubleshooting](../../administration/pages/troubleshooting.md#failed-to-connect-to-the-internal-gitlab-api).
+- [Database migrations](../background_migrations.md) not being complete. Wait until migrations are completed. 
+- Database migrations being complete, but GitLab needing to load the new schema. To load the new schema, [restart GitLab](../../administration/restart_gitlab.md).
+ 
+## Error: Failed to connect to the internal GitLab API
 
-## Error `An error occurred during the signature verification` when running `apt-get update`
+If you receive the error `Failed to connect to the internal GitLab API` on a separate GitLab Pages server,
+see the [GitLab Pages administration troubleshooting](../../administration/pages/troubleshooting.md#failed-to-connect-to-the-internal-gitlab-api)
 
-To update the GPG key of the GitLab packages server run:
+## An error occurred during the signature verification
+
+If you receive this error when running `apt-get update`:
+
+```plaintext
+An error occurred during the signature verification
+```
+
+Update the GPG key of the GitLab packages server with this command:
 
 ```shell
 curl --silent "https://packages.gitlab.com/gpg.key" | apt-key add -

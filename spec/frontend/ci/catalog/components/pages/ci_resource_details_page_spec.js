@@ -9,7 +9,6 @@ import { cacheConfig } from '~/ci/catalog/graphql/settings';
 import { cleanLeadingSeparator } from '~/lib/utils/url_utility';
 
 import getCiCatalogResourceSharedData from '~/ci/catalog/graphql/queries/get_ci_catalog_resource_shared_data.query.graphql';
-import getCiCatalogResourceDetails from '~/ci/catalog/graphql/queries/get_ci_catalog_resource_details.query.graphql';
 
 import CiResourceDetails from '~/ci/catalog/components/details/ci_resource_details.vue';
 import CiResourceDetailsPage from '~/ci/catalog/components/pages/ci_resource_details_page.vue';
@@ -18,7 +17,7 @@ import CiResourceHeaderSkeletonLoader from '~/ci/catalog/components/details/ci_r
 
 import { createRouter } from '~/ci/catalog/router/index';
 import { CI_RESOURCE_DETAILS_PAGE_NAME } from '~/ci/catalog/router/constants';
-import { catalogSharedDataMock, catalogAdditionalDetailsMock } from '../../mock';
+import { catalogSharedDataMock } from '../../mock';
 
 Vue.use(VueApollo);
 Vue.use(VueRouter);
@@ -26,12 +25,10 @@ Vue.use(VueRouter);
 let router;
 
 const defaultSharedData = { ...catalogSharedDataMock.data.ciCatalogResource };
-const defaultAdditionalData = { ...catalogAdditionalDetailsMock.data.ciCatalogResource };
 
 describe('CiResourceDetailsPage', () => {
   let wrapper;
   let sharedDataResponse;
-  let additionalDataResponse;
 
   const defaultProps = {};
 
@@ -45,10 +42,7 @@ describe('CiResourceDetailsPage', () => {
   const findHeaderSkeletonLoader = () => wrapper.findComponent(CiResourceHeaderSkeletonLoader);
 
   const createComponent = ({ props = {} } = {}) => {
-    const handlers = [
-      [getCiCatalogResourceSharedData, sharedDataResponse],
-      [getCiCatalogResourceDetails, additionalDataResponse],
-    ];
+    const handlers = [[getCiCatalogResourceSharedData, sharedDataResponse]];
 
     const mockApollo = createMockApollo(handlers, undefined, cacheConfig);
 
@@ -70,7 +64,6 @@ describe('CiResourceDetailsPage', () => {
 
   beforeEach(async () => {
     sharedDataResponse = jest.fn();
-    additionalDataResponse = jest.fn();
 
     router = createRouter();
     await router.push({
@@ -85,7 +78,6 @@ describe('CiResourceDetailsPage', () => {
         // By mocking a return value and not a promise, we skip the loading
         // to simulate having the pre-fetched query
         sharedDataResponse.mockReturnValueOnce(catalogSharedDataMock);
-        additionalDataResponse.mockResolvedValue(catalogAdditionalDetailsMock);
         createComponent();
       });
 
@@ -97,8 +89,7 @@ describe('CiResourceDetailsPage', () => {
         sharedDataResponse.mockReturnValueOnce(catalogSharedDataMock);
 
         expect(findHeaderComponent().props()).toMatchObject({
-          isLoadingDetails: true,
-          isLoadingSharedData: false,
+          isLoadingData: false,
         });
       });
     });
@@ -106,7 +97,6 @@ describe('CiResourceDetailsPage', () => {
     describe('and shared data is not pre-fetched', () => {
       beforeEach(() => {
         sharedDataResponse.mockResolvedValue(catalogSharedDataMock);
-        additionalDataResponse.mockResolvedValue(catalogAdditionalDetailsMock);
         createComponent();
       });
 
@@ -116,8 +106,7 @@ describe('CiResourceDetailsPage', () => {
 
       it('passes all loading state to the header component as true', () => {
         expect(findHeaderComponent().props()).toMatchObject({
-          isLoadingDetails: true,
-          isLoadingSharedData: true,
+          isLoadingData: true,
         });
       });
     });
@@ -127,7 +116,6 @@ describe('CiResourceDetailsPage', () => {
     beforeEach(async () => {
       const mockError = new Error('error');
       sharedDataResponse.mockRejectedValue(mockError);
-      additionalDataResponse.mockRejectedValue(mockError);
 
       createComponent();
       await waitForPromises();
@@ -143,7 +131,6 @@ describe('CiResourceDetailsPage', () => {
   describe('when data has loaded', () => {
     beforeEach(async () => {
       sharedDataResponse.mockResolvedValue(catalogSharedDataMock);
-      additionalDataResponse.mockResolvedValue(catalogAdditionalDetailsMock);
       createComponent();
 
       await waitForPromises();
@@ -159,13 +146,8 @@ describe('CiResourceDetailsPage', () => {
       });
 
       it('passes expected props', () => {
-        expect(findHeaderComponent().props()).toEqual({
-          isLoadingDetails: false,
-          isLoadingSharedData: false,
-          openIssuesCount: defaultAdditionalData.openIssuesCount,
-          openMergeRequestsCount: defaultAdditionalData.openMergeRequestsCount,
-          pipelineStatus:
-            defaultAdditionalData.versions.nodes[0].commit.pipelines.nodes[0].detailedStatus,
+        expect(findHeaderComponent().props()).toMatchObject({
+          isLoadingData: false,
           resource: defaultSharedData,
         });
       });
@@ -179,6 +161,7 @@ describe('CiResourceDetailsPage', () => {
       it('passes expected props', () => {
         expect(findDetailsComponent().props()).toEqual({
           resourcePath: cleanLeadingSeparator(defaultSharedData.webPath),
+          version: defaultSharedData.versions.nodes[0].name,
         });
       });
     });

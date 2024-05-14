@@ -18,7 +18,7 @@ RSpec.describe Gitlab::Database::Reindexing::GrafanaNotifier do
   let(:headers) do
     {
       'Content-Type': 'application/json',
-      'Authorization': "Bearer #{api_key}"
+      Authorization: "Bearer #{api_key}"
     }
   end
 

@@ -82,7 +82,7 @@ export default {
         :img-src="note.author.avatar_url"
         :size="24"
         :tooltip-text="getTooltipText(note)"
-        lazy
+        pseudo
         class="diff-comment-avatar js-diff-comment-avatar"
         @click.native="$emit('toggleLineDiscussions')"
       />

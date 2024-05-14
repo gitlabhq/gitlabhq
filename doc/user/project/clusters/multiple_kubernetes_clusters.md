@@ -8,11 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
-
-> - Introduced in GitLab 10.3
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35094) from GitLab Premium to GitLab Free in 13.2.
-> - [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
+**Offering:** GitLab.com, Self-managed
 
 WARNING:
 Using multiple Kubernetes clusters for a single project **with cluster
@@ -44,8 +40,7 @@ For example, let's say the following Kubernetes clusters exist in a project:
 | Development | `*`               |
 | Production  | `production`      |
 
-And the following environments are set in the
-[`.gitlab-ci.yml` file](../../../ci/index.md#the-gitlab-ciyml-file):
+And the following environments are set in the `.gitlab-ci.yml` file:
 
 ```yaml
 stages:

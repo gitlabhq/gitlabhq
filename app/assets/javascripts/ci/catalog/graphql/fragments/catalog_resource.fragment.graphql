@@ -1,25 +1,31 @@
 fragment CatalogResourceFields on CiCatalogResource {
   id
-  webPath
+  description
+  fullPath
   icon
   name
-  description
   starCount
-  latestVersion {
-    id
-    components {
-      nodes {
+  starrersPath
+  verificationLevel
+  versions(first: 1) {
+    nodes {
+      id
+      components {
+        nodes {
+          id
+          name
+        }
+      }
+      name
+      path
+      createdAt
+      author {
         id
         name
+        state
+        webUrl
       }
     }
-    name
-    path
-    releasedAt
-    author {
-      id
-      name
-      webUrl
-    }
   }
+  webPath
 }

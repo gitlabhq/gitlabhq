@@ -1,19 +1,14 @@
 - anchors = local_assigns.fetch(:anchors, [])
 - project_buttons = local_assigns.fetch(:project_buttons, false)
-- ff_reorg_enabled = Feature.enabled?(:project_overview_reorg)
-- stat_text_classes = "stat-text d-flex gl-align-items-center #{'gl-px-0! gl-pb-2!' if ff_reorg_enabled}"
+- stat_text_classes = "stat-text d-flex gl-align-items-center gl-px-0! gl-pb-2!"
 
 - return unless anchors.any?
 
-%ul.nav.gl-row-gap-2.gl-column-gap-5
+%ul.nav.gl-row-gap-2.gl-gap-x-5
   - anchors.each do |anchor|
     %li.nav-item
       - if anchor.link # render actionable link/button
-        - if anchor.is_link || ff_reorg_enabled
-          = link_to(anchor.label, anchor.link, stat_anchor_attrs(anchor))
-        - else
-          = render Pajamas::ButtonComponent.new(href: anchor.link, button_options: stat_anchor_attrs(anchor)) do
-            = anchor.label
+        = link_to(anchor.label, anchor.link, stat_anchor_attrs(anchor))
       - elsif project_buttons # render disabled button
         = render Pajamas::ButtonComponent.new(disabled: true, button_options: { classes: stat_text_classes }) do
           = anchor.label

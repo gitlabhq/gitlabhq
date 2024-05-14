@@ -9,6 +9,10 @@ RSpec.describe Gitlab::Database::UnidirectionalCopyTrigger do
   let(:connection) { ActiveRecord::Base.connection }
   let(:copy_trigger) { described_class.on_table(table_name, connection: connection) }
 
+  before do
+    connection.schema_cache.clear!
+  end
+
   describe '#name' do
     context 'when a single column name is given' do
       subject(:trigger_name) { copy_trigger.name('id', 'other_id') }

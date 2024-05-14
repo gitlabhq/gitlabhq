@@ -8,7 +8,7 @@ module Sidebars
 
         override :link
         def link
-          profile_gpg_keys_path
+          user_settings_gpg_keys_path
         end
 
         override :title

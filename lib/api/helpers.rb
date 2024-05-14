@@ -384,8 +384,12 @@ module API
       authorize! :admin_group, user_group
     end
 
-    def authorize_admin_member_role!
+    def authorize_admin_member_role_on_group!
       authorize! :admin_member_role, user_group
+    end
+
+    def authorize_admin_member_role_on_instance!
+      authorize! :admin_member_role
     end
 
     def authorize_read_builds!
@@ -691,21 +695,12 @@ module API
       elsif supports_direct_download && file.class.direct_download_enabled?
         return redirect(ObjectStorage::S3.signed_head_url(file)) if request.head? && file.fog_credentials[:provider] == 'AWS'
 
-        redirect(cdn_fronted_url(file))
+        file_url = ObjectStorage::CDN::FileUrl.new(file: file, ip_address: ip_address)
+        redirect(file_url.url)
       else
         header(*Gitlab::Workhorse.send_url(file.url))
         status :ok
         body '' # to avoid an error from API::APIGuard::ResponseCoercerMiddleware
-      end
-    end
-
-    def cdn_fronted_url(file)
-      if file.respond_to?(:cdn_enabled_url)
-        result = file.cdn_enabled_url(ip_address)
-        Gitlab::ApplicationContext.push(artifact_used_cdn: result.used_cdn)
-        result.url
-      else
-        file.url
       end
     end
 
@@ -725,7 +720,7 @@ module API
       Gitlab::AppLogger.warn("Redis tracking event failed for event: #{event_name}, message: #{error.message}")
     end
 
-    def track_event(event_name, user:, send_snowplow_event: true, namespace_id: nil, project_id: nil)
+    def track_event(event_name, user:, send_snowplow_event: true, namespace_id: nil, project_id: nil, additional_properties: Gitlab::InternalEvents::DEFAULT_ADDITIONAL_PROPERTIES)
       return unless user.present?
 
       namespace = Namespace.find(namespace_id) if namespace_id
@@ -734,6 +729,7 @@ module API
       Gitlab::InternalEvents.track_event(
         event_name,
         send_snowplow_event: send_snowplow_event,
+        additional_properties: additional_properties,
         user: user,
         namespace: namespace,
         project: project

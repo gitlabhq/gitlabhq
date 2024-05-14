@@ -1,10 +1,6 @@
 @import 'page_bundles/mixins_and_variables_and_functions';
 
 .application-theme {
-  $ui-gray-bg: $gray-900;
-  $ui-light-gray-bg: $gray-50;
-  $ui-dark-mode-bg: $gray-950;
-
   .preview {
     font-size: 0;
     height: 48px;
@@ -25,7 +21,7 @@
     }
 
     &.ui-light-blue {
-      background-color: $theme-light-blue-700;
+      background-color: $theme-light-blue-800;
     }
 
     &.ui-green {
@@ -33,7 +29,7 @@
     }
 
     &.ui-light-green {
-      background-color: $theme-green-700;
+      background-color: $theme-green-800;
     }
 
     &.ui-red {
@@ -45,17 +41,17 @@
     }
 
     &.ui-gray {
-      background-color: $ui-gray-bg;
+      background-color: $gray-900;
       border: solid 1px $border-color;
     }
 
-    &.ui-light-gray {
-      background-color: $ui-light-gray-bg;
-    }
+    &.ui-neutral {
+      background-color: $gray-50;
 
-    &.gl-dark {
-      background-color: $ui-dark-mode-bg;
-      border: solid 1px $border-color;
+      .gl-dark & {
+        background-color: $gray-950;
+        border: solid 1px $border-color;
+      }
     }
   }
 

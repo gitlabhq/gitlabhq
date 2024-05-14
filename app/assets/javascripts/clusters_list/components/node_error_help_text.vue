@@ -28,7 +28,7 @@ export default {
 
 <template>
   <div :id="popoverId">
-    <span class="gl-font-style-italic">
+    <span class="gl-italic">
       {{ errorContent.tableText }}
     </span>
 

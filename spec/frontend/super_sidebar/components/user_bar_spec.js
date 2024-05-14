@@ -17,7 +17,7 @@ import { userCounts } from '~/super_sidebar/user_counts_manager';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { stubComponent } from 'helpers/stub_component';
 import { sidebarData as mockSidebarData, loggedOutSidebarData } from '../mock_data';
-import { MOCK_DEFAULT_SEARCH_OPTIONS } from './global_search/mock_data';
+import { MOCK_DEFAULT_SEARCH_OPTIONS, MOCK_SEARCH_QUERY } from './global_search/mock_data';
 
 jest.mock('~/lib/utils/common_utils');
 
@@ -42,8 +42,14 @@ describe('UserBar component', () => {
   Vue.use(Vuex);
 
   const store = new Vuex.Store({
+    state: {
+      search: 'test',
+      commandChar: '>',
+    },
     getters: {
       searchOptions: () => MOCK_DEFAULT_SEARCH_OPTIONS,
+      isCommandMode: () => true,
+      searchQuery: () => MOCK_SEARCH_QUERY,
     },
   });
   const createWrapper = ({
@@ -128,12 +134,20 @@ describe('UserBar component', () => {
         expect(todosCounter.attributes('class')).toContain('shortcuts-todos');
       });
 
-      it('should update todo counter when event is emitted', async () => {
+      it('should update todo counter when event with count is emitted', async () => {
         createWrapper();
         const count = 100;
         document.dispatchEvent(new CustomEvent('todo:toggle', { detail: { count } }));
         await nextTick();
         expect(findTodosCounter().props('count')).toBe(count);
+      });
+
+      it('should update todo counter when event with diff is emitted', async () => {
+        createWrapper();
+        expect(findTodosCounter().props('count')).toBe(3);
+        document.dispatchEvent(new CustomEvent('todo:toggle', { detail: { delta: -2 } }));
+        await nextTick();
+        expect(findTodosCounter().props('count')).toBe(1);
       });
     });
 
@@ -173,6 +187,12 @@ describe('UserBar component', () => {
         expect(badge.exists()).toBe(false);
       });
     });
+  });
+
+  it('does not render merge request menu when merge_request_menu is null', () => {
+    createWrapper({ sidebarData: { ...mockSidebarData, merge_request_menu: null } });
+
+    expect(findMergeRequestMenu().exists()).toBe(false);
   });
 
   describe('Search', () => {

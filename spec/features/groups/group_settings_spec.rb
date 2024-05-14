@@ -74,7 +74,7 @@ RSpec.describe 'Edit group settings', feature_category: :groups_and_projects do
         visit new_project_full_path
 
         expect(page).to have_current_path(new_project_full_path, ignore_query: true)
-        expect(find('.breadcrumbs')).to have_content(project.name)
+        expect(find_by_testid('breadcrumb-links')).to have_content(project.name)
       end
 
       it 'the old project path redirects to the new path' do
@@ -82,7 +82,7 @@ RSpec.describe 'Edit group settings', feature_category: :groups_and_projects do
         visit old_project_full_path
 
         expect(page).to have_current_path(new_project_full_path, ignore_query: true)
-        expect(find('.breadcrumbs')).to have_content(project.name)
+        expect(find_by_testid('breadcrumb-links')).to have_content(project.name)
       end
     end
   end
@@ -164,10 +164,10 @@ RSpec.describe 'Edit group settings', feature_category: :groups_and_projects do
         click_button s_('GroupSettings|Transfer group')
 
         page.within(confirm_modal) do
-          expect(page).to have_text "You are going to transfer #{selected_group.name} to another namespace. Are you ABSOLUTELY sure?"
+          expect(page).to have_text "You are about to transfer #{selected_group.full_path} to another namespace. This action changes the project's path and can lead to data loss."
 
           fill_in 'confirm_name_input', with: selected_group.full_path
-          click_button 'Confirm'
+          click_button 'Transfer group'
         end
 
         within_testid('breadcrumb-links') do
@@ -211,18 +211,18 @@ RSpec.describe 'Edit group settings', feature_category: :groups_and_projects do
     end
   end
 
-  context 'disable email notifications' do
+  context 'enable email notifications' do
     it 'is visible' do
       visit edit_group_path(group)
 
-      expect(page).to have_selector('#group_emails_disabled', visible: true)
+      expect(page).to have_selector('#group_emails_enabled', visible: true)
     end
 
     it 'accepts the changed state' do
       visit edit_group_path(group)
-      check 'group_emails_disabled'
+      uncheck 'group_emails_enabled'
 
-      expect { save_permissions_group }.to change { updated_emails_disabled? }.to(true)
+      expect { save_permissions_group }.to change { updated_emails_enabled? }.to(false)
     end
   end
 
@@ -328,8 +328,8 @@ RSpec.describe 'Edit group settings', feature_category: :groups_and_projects do
     end
   end
 
-  def updated_emails_disabled?
+  def updated_emails_enabled?
     group.reload.clear_memoization(:emails_enabled_memoized)
-    group.emails_disabled?
+    group.emails_enabled?
   end
 end

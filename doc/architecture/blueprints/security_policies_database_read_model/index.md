@@ -73,7 +73,7 @@ This worker is called whenever these events happen:
 - Protected branch is added/removed from a project
 - Policy is created/updated/deleted for a project
 
-To avoid this, we have created the `scan_result_policies` table (`Security::ScanResultPolicyRead` model) which acts as a read model for merge request approval policies to avoid reading from policy project. But currently, we don't store all the required fields in the table, we only store `role_approvers` , `license_state` and `match_on_inclusion`.
+To avoid this, we have created the `scan_result_policies` table (`Security::ScanResultPolicyRead` model) which acts as a read model for merge request approval policies to avoid reading from policy project. But currently, we don't store all the required fields in the table, we only store `role_approvers` , `license_state` and `match_on_inclusion` (previously `match_on_inclusion_license`).
 
 ```mermaid
 erDiagram

@@ -51,7 +51,7 @@ func TestImageTypeRecongition(t *testing.T) {
 			require.Equal(t, test.isTIFF, isTIFF(input))
 
 			runtime.ReadMemStats(&m)
-			require.Less(t, m.TotalAlloc-start, uint64(50000), "must take reasonable amount of memory to recognise the type")
+			require.Less(t, m.TotalAlloc-start, uint64(50000), "must take reasonable amount of memory to recognize the type")
 		})
 	}
 }

@@ -8,7 +8,7 @@
 .todos-list > .todo {
   // workaround because we cannot use border-collapse
   padding: 6px 12px !important;
-  border-top: 1px solid transparent;
+  margin-top: -1px;
 
   span:not(.todo-label),
   button,

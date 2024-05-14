@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 [CI/CD Pipelines](index.md) are the fundamental building blocks for [GitLab CI/CD](../index.md).
 Making pipelines more efficient helps you save developer time, which:
@@ -40,7 +40,7 @@ heavily influenced by the:
 Additional points to pay attention relate to [GitLab Runners](../runners/index.md):
 
 - Availability of the runners and the resources they are provisioned with.
-- Build dependencies and their installation time.
+- Build dependencies, their installation time, and storage space requirements.
 - [Container image size](#docker-images).
 - Network latency and slow connections.
 

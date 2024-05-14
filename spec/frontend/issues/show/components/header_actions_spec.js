@@ -13,6 +13,7 @@ import { stubComponent } from 'helpers/stub_component';
 import waitForPromises from 'helpers/wait_for_promises';
 import { mockTracking } from 'helpers/tracking_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { createAlert, VARIANT_SUCCESS } from '~/alert';
 import {
   STATUS_CLOSED,
@@ -131,6 +132,7 @@ describe('HeaderActions component', () => {
     findMobileDropdown().findAllComponents(GlDisclosureDropdownItem);
   const findDesktopDropdownItems = () =>
     findDesktopDropdown().findAllComponents(GlDisclosureDropdownItem);
+  const findDesktopDropdownTooltip = () => getBinding(findDesktopDropdown().element, 'gl-tooltip');
   const findAbuseCategorySelector = () => wrapper.findComponent(AbuseCategorySelector);
   const findReportAbuseButton = () => wrapper.findByTestId('report-abuse-item');
   const findCopyRefenceDropdownItem = () => wrapper.findByTestId('copy-reference');
@@ -176,6 +178,9 @@ describe('HeaderActions component', () => {
     return shallowMountExtended(HeaderActions, {
       apolloProvider: createMockApollo(handlers),
       store,
+      directives: {
+        GlTooltip: createMockDirective('gl-tooltip'),
+      },
       provide: {
         ...defaultProps,
         ...props,
@@ -252,19 +257,19 @@ describe('HeaderActions component', () => {
       ${'desktop dropdown'} | ${findDesktopDropdownItems}
     `('$description', ({ findDropdownItems }) => {
       describe.each`
-        description                               | itemText                           | isItemVisible | canUpdateIssue | canCreateIssue | isIssueAuthor | canReportSpam | canPromoteToEpic | canDestroyIssue
-        ${`when user can update ${issueType}`}    | ${`Close ${issueType}`}            | ${true}       | ${true}        | ${true}        | ${true}       | ${true}       | ${true}          | ${true}
-        ${`when user cannot update ${issueType}`} | ${`Close ${issueType}`}            | ${false}      | ${false}       | ${true}        | ${true}       | ${true}       | ${true}          | ${true}
-        ${`when user can create ${issueType}`}    | ${`New related ${issueType}`}      | ${true}       | ${true}        | ${true}        | ${true}       | ${true}       | ${true}          | ${true}
-        ${`when user cannot create ${issueType}`} | ${`New related ${issueType}`}      | ${false}      | ${true}        | ${false}       | ${true}       | ${true}       | ${true}          | ${true}
-        ${'when user can promote to epic'}        | ${'Promote to epic'}               | ${true}       | ${true}        | ${true}        | ${true}       | ${true}       | ${true}          | ${true}
-        ${'when user cannot promote to epic'}     | ${'Promote to epic'}               | ${false}      | ${true}        | ${true}        | ${true}       | ${true}       | ${false}         | ${true}
-        ${'when user can report abuse'}           | ${'Report abuse to administrator'} | ${true}       | ${true}        | ${true}        | ${false}      | ${true}       | ${true}          | ${true}
-        ${'when user cannot report abuse'}        | ${'Report abuse to administrator'} | ${false}      | ${true}        | ${true}        | ${true}       | ${true}       | ${true}          | ${true}
-        ${'when user can submit as spam'}         | ${'Submit as spam'}                | ${true}       | ${true}        | ${true}        | ${true}       | ${true}       | ${true}          | ${true}
-        ${'when user cannot submit as spam'}      | ${'Submit as spam'}                | ${false}      | ${true}        | ${true}        | ${true}       | ${false}      | ${true}          | ${true}
-        ${`when user can delete ${issueType}`}    | ${`Delete ${issueType}`}           | ${true}       | ${true}        | ${true}        | ${true}       | ${true}       | ${true}          | ${true}
-        ${`when user cannot delete ${issueType}`} | ${`Delete ${issueType}`}           | ${false}      | ${true}        | ${true}        | ${true}       | ${true}       | ${true}          | ${false}
+        description                               | itemText                      | isItemVisible | canUpdateIssue | canCreateIssue | isIssueAuthor | canReportSpam | canPromoteToEpic | canDestroyIssue
+        ${`when user can update ${issueType}`}    | ${`Close ${issueType}`}       | ${true}       | ${true}        | ${true}        | ${true}       | ${true}       | ${true}          | ${true}
+        ${`when user cannot update ${issueType}`} | ${`Close ${issueType}`}       | ${false}      | ${false}       | ${true}        | ${true}       | ${true}       | ${true}          | ${true}
+        ${`when user can create ${issueType}`}    | ${`New related ${issueType}`} | ${true}       | ${true}        | ${true}        | ${true}       | ${true}       | ${true}          | ${true}
+        ${`when user cannot create ${issueType}`} | ${`New related ${issueType}`} | ${false}      | ${true}        | ${false}       | ${true}       | ${true}       | ${true}          | ${true}
+        ${'when user can promote to epic'}        | ${'Promote to epic'}          | ${true}       | ${true}        | ${true}        | ${true}       | ${true}       | ${true}          | ${true}
+        ${'when user cannot promote to epic'}     | ${'Promote to epic'}          | ${false}      | ${true}        | ${true}        | ${true}       | ${true}       | ${false}         | ${true}
+        ${'when user can report abuse'}           | ${'Report abuse'}             | ${true}       | ${true}        | ${true}        | ${false}      | ${true}       | ${true}          | ${true}
+        ${'when user cannot report abuse'}        | ${'Report abuse'}             | ${false}      | ${true}        | ${true}        | ${true}       | ${true}       | ${true}          | ${true}
+        ${'when user can submit as spam'}         | ${'Submit as spam'}           | ${true}       | ${true}        | ${true}        | ${true}       | ${true}       | ${true}          | ${true}
+        ${'when user cannot submit as spam'}      | ${'Submit as spam'}           | ${false}      | ${true}        | ${true}        | ${true}       | ${false}      | ${true}          | ${true}
+        ${`when user can delete ${issueType}`}    | ${`Delete ${issueType}`}      | ${true}       | ${true}        | ${true}        | ${true}       | ${true}       | ${true}          | ${true}
+        ${`when user cannot delete ${issueType}`} | ${`Delete ${issueType}`}      | ${false}      | ${true}        | ${true}        | ${true}       | ${true}       | ${true}          | ${false}
       `(
         '$description',
         ({
@@ -304,6 +309,12 @@ describe('HeaderActions component', () => {
           });
         },
       );
+    });
+
+    it('renders tooltip on desktop dropdown', () => {
+      wrapper = mountComponent();
+
+      expect(findDesktopDropdownTooltip().value).toBe('Issue actions');
     });
 
     describe(`show edit button ${issueType}`, () => {

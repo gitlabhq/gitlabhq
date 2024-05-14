@@ -41,7 +41,7 @@ module APIInternalBaseHelpers
     )
   end
 
-  def push(key, container, protocol = 'ssh', env: nil, changes: nil, relative_path: nil)
+  def push(key, container, protocol = 'ssh', env: nil, changes: nil)
     push_with_path(
       key,
       full_path: full_path_for(container),
@@ -49,7 +49,7 @@ module APIInternalBaseHelpers
       protocol: protocol,
       env: env,
       changes: changes,
-      relative_path: relative_path
+      relative_path: container.repository.relative_path
     )
   end
 

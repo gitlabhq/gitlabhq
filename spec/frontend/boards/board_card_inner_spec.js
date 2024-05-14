@@ -10,13 +10,17 @@ import IssuableBlockedIcon from '~/vue_shared/components/issuable_blocked_icon/i
 import BoardCardInner from '~/boards/components/board_card_inner.vue';
 import isShowingLabelsQuery from '~/graphql_shared/client/is_showing_labels.query.graphql';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
-import eventHub from '~/boards/eventhub';
 import { TYPE_ISSUE } from '~/issues/constants';
 import { updateHistory } from '~/lib/utils/url_utility';
-import { mockLabelList, mockIssue, mockIssueFullPath, mockIssueDirectNamespace } from './mock_data';
+import {
+  mockLabelList,
+  mockIssue,
+  mockIssueFullPath,
+  mockIssueDirectNamespace,
+  mockMilestone,
+} from './mock_data';
 
 jest.mock('~/lib/utils/url_utility');
-jest.mock('~/boards/eventhub');
 
 Vue.use(VueApollo);
 
@@ -147,6 +151,25 @@ describe('Board card component', () => {
     expect(wrapper.find('.board-item-path').attributes('title')).toBe(mockIssueFullPath);
   });
 
+  describe('milestone', () => {
+    it('does not render milestone if issue has no milestone', () => {
+      expect(wrapper.findByTestId('issue-milestone').exists()).toBe(false);
+    });
+
+    it('renders milestone if issue has a milestone assigned', () => {
+      createWrapper({
+        props: {
+          item: {
+            ...issue,
+            milestone: mockMilestone,
+          },
+        },
+      });
+
+      expect(wrapper.findByTestId('issue-milestone').exists()).toBe(true);
+    });
+  });
+
   describe('blocked', () => {
     it('renders blocked icon if issue is blocked', () => {
       createWrapper({
@@ -267,7 +290,7 @@ describe('Board card component', () => {
         await nextTick();
 
         expect(wrapper.find('.board-card-assignee img').attributes('src')).toBe(
-          'test_image_from_avatar_url?width=24',
+          'test_image_from_avatar_url?width=48',
         );
       });
     });
@@ -295,7 +318,7 @@ describe('Board card component', () => {
       it('displays defaults avatar if users avatar is null', () => {
         expect(wrapper.find('.board-card-assignee img').exists()).toBe(true);
         expect(wrapper.find('.board-card-assignee img').attributes('src')).toBe(
-          'default_avatar?width=24',
+          'default_avatar?width=48',
         );
       });
     });
@@ -436,9 +459,8 @@ describe('Board card component', () => {
         expect(updateHistory).toHaveBeenCalledTimes(1);
       });
 
-      it('emits updateTokens event', () => {
-        expect(eventHub.$emit).toHaveBeenCalledTimes(1);
-        expect(eventHub.$emit).toHaveBeenCalledWith('updateTokens');
+      it('emits setFilters event', () => {
+        expect(wrapper.emitted('setFilters').length).toBe(1);
       });
     });
 
@@ -452,8 +474,8 @@ describe('Board card component', () => {
         expect(updateHistory).not.toHaveBeenCalled();
       });
 
-      it('does not emit updateTokens event', () => {
-        expect(eventHub.$emit).not.toHaveBeenCalled();
+      it('does not emit setFilters event', () => {
+        expect(wrapper.emitted('setFilters')).toBeUndefined();
       });
     });
   });

@@ -17,6 +17,7 @@ RSpec.describe Gitlab::BitbucketImport::Importers::IssueNotesImporter, :clean_gi
   let(:hash) { { iid: issue.iid } }
   let(:note_body) { 'body' }
   let(:client) { Bitbucket::Client.new({}) }
+  let(:mentions_converter) { Gitlab::Import::MentionsConverter.new('bitbucket', project) }
 
   subject(:importer) { described_class.new(project, hash) }
 
@@ -35,6 +36,7 @@ RSpec.describe Gitlab::BitbucketImport::Importers::IssueNotesImporter, :clean_gi
     before do
       allow(Bitbucket::Client).to receive(:new).and_return(client)
       allow(client).to receive(:issue_comments).and_return(issue_comments_response)
+      allow(Gitlab::Import::MentionsConverter).to receive(:new).and_return(mentions_converter)
     end
 
     it 'creates a new note with the correct attributes' do
@@ -47,6 +49,12 @@ RSpec.describe Gitlab::BitbucketImport::Importers::IssueNotesImporter, :clean_gi
       expect(note.author).to eq(bitbucket_user)
       expect(note.created_at).to eq(Date.today)
       expect(note.updated_at).to eq(Date.today)
+    end
+
+    it 'converts mentions in the note' do
+      expect(mentions_converter).to receive(:convert).once.and_call_original
+
+      importer.execute
     end
 
     context 'when the author does not have a bitbucket identity' do

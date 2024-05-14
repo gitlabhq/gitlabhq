@@ -17,6 +17,10 @@ module Types
       value 'INACTIVE',
         value: 'inactive',
         description: 'Mergeability check is disabled via settings.'
+
+      value 'WARNING',
+        value: 'warning',
+        description: 'Mergeability check has passed with a warning.'
     end
   end
 end

@@ -11,7 +11,7 @@ RSpec.describe 'Query', feature_category: :groups_and_projects do
   let_it_be(:group_namespace) { create(:group, :private) }
   let_it_be(:public_group_namespace) { create(:group, :public) }
   let_it_be(:user_namespace) { create(:user_namespace, owner: user) }
-  let_it_be(:project_namespace) { create(:project_namespace, parent: group_namespace) }
+  let_it_be(:project) { create(:project, group: group_namespace) }
 
   describe '.namespace' do
     subject { post_graphql(query, current_user: current_user) }
@@ -33,7 +33,8 @@ RSpec.describe 'Query', feature_category: :groups_and_projects do
           expect(query_result).to include(
             'fullPath' => target_namespace.full_path,
             'name' => target_namespace.name,
-            'crossProjectPipelineAvailable' => target_namespace.licensed_feature_available?(:cross_project_pipeline)
+            'crossProjectPipelineAvailable' => target_namespace.licensed_feature_available?(:cross_project_pipeline),
+            'achievementsPath' => achievements_path
           )
         end
       end
@@ -61,8 +62,24 @@ RSpec.describe 'Query', feature_category: :groups_and_projects do
       end
     end
 
+    context 'when achievements feature flag is off' do
+      let(:target_namespace) { public_group_namespace }
+
+      before do
+        stub_feature_flags(achievements: false)
+      end
+
+      it 'does not return achievementsPath' do
+        subject
+        expect(query_result).to include(
+          'achievementsPath' => nil
+        )
+      end
+    end
+
     context 'when used with a public group' do
       let(:target_namespace) { public_group_namespace }
+      let(:achievements_path) { ::Gitlab::Routing.url_helpers.group_achievements_path(target_namespace) }
 
       before do
         subject
@@ -78,7 +95,8 @@ RSpec.describe 'Query', feature_category: :groups_and_projects do
         it 'fetches the expected data' do
           expect(query_result).to include(
             'fullPath' => target_namespace.full_path,
-            'name' => target_namespace.name
+            'name' => target_namespace.name,
+            'achievementsPath' => achievements_path
           )
         end
       end
@@ -89,7 +107,8 @@ RSpec.describe 'Query', feature_category: :groups_and_projects do
         it 'fetches the expected data' do
           expect(query_result).to include(
             'fullPath' => target_namespace.full_path,
-            'name' => target_namespace.name
+            'name' => target_namespace.name,
+            'achievementsPath' => achievements_path
           )
         end
       end
@@ -100,33 +119,41 @@ RSpec.describe 'Query', feature_category: :groups_and_projects do
         it 'fetches the expected data' do
           expect(query_result).to include(
             'fullPath' => target_namespace.full_path,
-            'name' => target_namespace.name
+            'name' => target_namespace.name,
+            'achievementsPath' => achievements_path
           )
         end
       end
     end
 
-    it_behaves_like 'retrieving a namespace' do
-      let(:target_namespace) { group_namespace }
+    context 'when used with a private namespace' do
+      context 'retrieving a group' do
+        it_behaves_like 'retrieving a namespace' do
+          let(:target_namespace) { group_namespace }
+          let(:achievements_path) { ::Gitlab::Routing.url_helpers.group_achievements_path(target_namespace) }
 
-      before do
-        group_namespace.add_developer(user)
-      end
-    end
-
-    it_behaves_like 'retrieving a namespace' do
-      let(:target_namespace) { user_namespace }
-    end
-
-    context 'does not retrieve project namespace' do
-      let(:target_namespace) { project_namespace }
-
-      before do
-        subject
+          before do
+            group_namespace.add_developer(user)
+          end
+        end
       end
 
-      it 'does not retrieve the record' do
-        expect(query_result).to be_nil
+      context 'retrieving a user namespace' do
+        it_behaves_like 'retrieving a namespace' do
+          let(:target_namespace) { user_namespace }
+          let(:achievements_path) { nil }
+        end
+      end
+
+      context 'retrieving a project' do
+        it_behaves_like 'retrieving a namespace' do
+          let(:target_namespace) { project }
+          let(:achievements_path) { nil }
+
+          before do
+            group_namespace.add_developer(user)
+          end
+        end
       end
     end
   end

@@ -12,7 +12,8 @@ module Organizations
       return Organizations::Organization.none unless can_read_user_organizations?
       return Organizations::Organization.none if target_user.blank?
 
-      target_user.organizations
+      organizations = target_user.organizations
+      by_search(organizations)
     end
 
     private
@@ -21,6 +22,10 @@ module Organizations
 
     def can_read_user_organizations?
       current_user&.can?(:read_user_organizations, target_user)
+    end
+
+    def by_search(items)
+      params[:search].present? ? items.search(params[:search]) : items
     end
   end
 end

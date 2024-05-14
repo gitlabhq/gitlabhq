@@ -32,18 +32,18 @@ exports[`Snippet Visibility Edit component rendering matches the snapshot 1`] = 
       valuefield="value"
     >
       <gl-form-radio-stub
-        class="mb-3"
+        class="gl-mb-3"
         value="private"
       >
         <div
-          class="d-flex gl-align-items-center"
+          class="gl-align-items-center gl-display-flex"
         >
           <gl-icon-stub
             name="lock"
             size="16"
           />
           <span
-            class="font-weight-bold js-visibility-option ml-1"
+            class="gl-font-weight-semibold gl-ml-2 js-visibility-option"
             data-qa-visibility="Private"
             data-testid="visibility-content"
           >
@@ -52,18 +52,18 @@ exports[`Snippet Visibility Edit component rendering matches the snapshot 1`] = 
         </div>
       </gl-form-radio-stub>
       <gl-form-radio-stub
-        class="mb-3"
+        class="gl-mb-3"
         value="internal"
       >
         <div
-          class="d-flex gl-align-items-center"
+          class="gl-align-items-center gl-display-flex"
         >
           <gl-icon-stub
             name="shield"
             size="16"
           />
           <span
-            class="font-weight-bold js-visibility-option ml-1"
+            class="gl-font-weight-semibold gl-ml-2 js-visibility-option"
             data-qa-visibility="Internal"
             data-testid="visibility-content"
           >
@@ -72,18 +72,18 @@ exports[`Snippet Visibility Edit component rendering matches the snapshot 1`] = 
         </div>
       </gl-form-radio-stub>
       <gl-form-radio-stub
-        class="mb-3"
+        class="gl-mb-3"
         value="public"
       >
         <div
-          class="d-flex gl-align-items-center"
+          class="gl-align-items-center gl-display-flex"
         >
           <gl-icon-stub
             name="earth"
             size="16"
           />
           <span
-            class="font-weight-bold js-visibility-option ml-1"
+            class="gl-font-weight-semibold gl-ml-2 js-visibility-option"
             data-qa-visibility="Public"
             data-testid="visibility-content"
           >
@@ -94,7 +94,7 @@ exports[`Snippet Visibility Edit component rendering matches the snapshot 1`] = 
     </gl-form-radio-group-stub>
   </gl-form-group-stub>
   <div
-    class="text-muted"
+    class="gl-text-secondary"
     data-testid="restricted-levels-info"
   />
 </div>

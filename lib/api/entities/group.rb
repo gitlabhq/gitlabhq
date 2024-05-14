@@ -16,8 +16,9 @@ module API
       expose :lfs_enabled?, as: :lfs_enabled
       expose :math_rendering_limits_enabled, documentation: { type: 'boolean' }
       expose :lock_math_rendering_limits_enabled, documentation: { type: 'boolean' }
+      expose :default_branch_name, as: :default_branch
       expose :default_branch_protection
-      expose :default_branch_protection_defaults
+      expose :default_branch_protection_settings, as: :default_branch_protection_defaults
       expose :avatar_url do |group, options|
         group.avatar_url(only_path: false)
       end
@@ -31,7 +32,7 @@ module API
       expose :custom_attributes, using: 'API::Entities::CustomAttribute', if: :with_custom_attributes
 
       expose :statistics, if: :statistics do
-        with_options format_with: -> (value) { value.to_i } do
+        with_options format_with: ->(value) { value.to_i } do
           expose :storage_size
           expose :repository_size
           expose :wiki_size

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe Packages::Maven::FindOrCreatePackageService, feature_category: :package_registry do
@@ -16,7 +17,7 @@ RSpec.describe Packages::Maven::FindOrCreatePackageService, feature_category: :p
   describe '#execute' do
     using RSpec::Parameterized::TableSyntax
 
-    subject { service.execute }
+    subject(:execute_service) { service.execute }
 
     shared_examples 'reuse existing package' do
       it { expect { subject }.not_to change { Packages::Package.count } }
@@ -28,6 +29,8 @@ RSpec.describe Packages::Maven::FindOrCreatePackageService, feature_category: :p
 
     shared_examples 'create package' do
       it { expect { subject }.to change { Packages::Package.count }.by(1) }
+
+      it_behaves_like 'returning a success service response'
 
       it 'sets the proper name and version', :aggregate_failures do
         pkg = subject.payload[:package]
@@ -47,13 +50,12 @@ RSpec.describe Packages::Maven::FindOrCreatePackageService, feature_category: :p
     shared_examples 'returning an error' do |with_message: ''|
       it { expect { subject }.not_to change { project.package_files.count } }
 
-      it 'returns an error', :aggregate_failures do
-        expect(subject.payload).to be_empty
-        expect(subject.errors).to include(with_message)
+      it_behaves_like 'returning an error service response', message: with_message do
+        it { expect(subject.payload).to be_empty }
       end
     end
 
-    context 'path with version' do
+    context 'with path including version' do
       # Note that "path with version" and "file type maven metadata xml" only exists for snapshot versions
       # In other words, we will never have an metadata xml upload on a path with version for a non snapshot version
       where(:package_exist, :file_type, :snapshot_version, :shared_example_name) do
@@ -79,11 +81,11 @@ RSpec.describe Packages::Maven::FindOrCreatePackageService, feature_category: :p
       end
     end
 
-    context 'path without version' do
+    context 'with path not including version' do
       let(:param_path) { path }
       let(:version) { nil }
 
-      context 'maven-metadata.xml file' do
+      context 'and maven-metadata.xml file' do
         let(:file_name) { 'maven-metadata.xml' }
 
         context 'with existing package' do
@@ -91,7 +93,7 @@ RSpec.describe Packages::Maven::FindOrCreatePackageService, feature_category: :p
 
           it_behaves_like 'reuse existing package'
 
-          context 'marked as pending_destruction' do
+          context 'and marked as pending_destruction' do
             before do
               existing_package.pending_destruction!
             end
@@ -113,7 +115,7 @@ RSpec.describe Packages::Maven::FindOrCreatePackageService, feature_category: :p
       let(:params) { { path: param_path, file_name: file_name, build: build } }
 
       it 'creates a build_info' do
-        expect { subject }.to change { Packages::BuildInfo.count }.by(1)
+        expect { execute_service }.to change { Packages::BuildInfo.count }.by(1)
       end
 
       context 'with multiple files for the same package and the same pipeline' do
@@ -131,7 +133,10 @@ RSpec.describe Packages::Maven::FindOrCreatePackageService, feature_category: :p
     end
 
     context 'when package duplicates are not allowed' do
-      let_it_be_with_refind(:package_settings) { create(:namespace_package_setting, :group, maven_duplicates_allowed: false) }
+      let_it_be_with_refind(:package_settings) do
+        create(:namespace_package_setting, :group, maven_duplicates_allowed: false)
+      end
+
       let_it_be_with_refind(:group) { package_settings.namespace }
       let_it_be_with_refind(:project) { create(:project, group: group) }
 
@@ -203,6 +208,15 @@ RSpec.describe Packages::Maven::FindOrCreatePackageService, feature_category: :p
       let(:params) { super().merge(file_name: 'a' * (described_class::MAX_FILE_NAME_LENGTH + 1)) }
 
       it_behaves_like 'returning an error', with_message: 'File name is too long'
+    end
+
+    context 'with invalid params causing the erroneous service response' do
+      let(:params) { super().merge(path: '/') }
+
+      it_behaves_like 'returning an error',
+        with_message: "Validation failed: Maven metadatum app group can't be blank, " \
+                      "Maven metadatum app group is invalid, Maven metadatum app name can't be blank, " \
+                      "Maven metadatum app name is invalid, Name can't be blank, Name is invalid"
     end
   end
 end

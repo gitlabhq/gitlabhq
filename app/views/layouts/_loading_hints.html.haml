@@ -4,13 +4,13 @@
   - if ActionController::Base.asset_host
     %link{ rel: 'dns-prefetch', href: ActionController::Base.asset_host }
     %link{ rel: 'preconnect', href: ActionController::Base.asset_host, crossorigin: '' }
-  - if user_application_theme == 'gl-dark'
-    = preload_link_tag(path_to_stylesheet('application_utilities_dark'), crossorigin: css_crossorigin)
-    = preload_link_tag(path_to_stylesheet('application_dark'), crossorigin: css_crossorigin)
+  - if user_application_dark_mode?
+    = preload_link_tag(universal_path_to_stylesheet('application_utilities_dark'), as: 'style', crossorigin: css_crossorigin)
+    = preload_link_tag(universal_path_to_stylesheet('application_dark'), as: 'style', crossorigin: css_crossorigin)
   - else
-    = preload_link_tag(path_to_stylesheet('application_utilities'), crossorigin: css_crossorigin)
-    = preload_link_tag(path_to_stylesheet('application'), crossorigin: css_crossorigin)
-  = preload_link_tag(path_to_stylesheet("highlight/themes/#{user_color_scheme}"), crossorigin: css_crossorigin)
+    = preload_link_tag(universal_path_to_stylesheet('application_utilities'), as: 'style', crossorigin: css_crossorigin)
+    = preload_link_tag(universal_path_to_stylesheet('application'), as: 'style', crossorigin: css_crossorigin)
+  = preload_link_tag(universal_path_to_stylesheet("highlight/themes/#{user_color_scheme}"), as: 'style', crossorigin: css_crossorigin)
   - if Gitlab::Tracking.enabled? && Gitlab::Tracking.collector_hostname
     - unless Rails.env.development?
       %link{ rel: 'preconnect', href: "https://#{Gitlab::Tracking.collector_hostname}", crossorigin: '' }
@@ -20,4 +20,4 @@
     %link{ rel: 'preload', href: font_path('gitlab-sans/GitLabSans-Italic.woff2'), as: 'font', crossorigin: css_crossorigin }
     %link{ rel: 'preload', href: font_path('gitlab-mono/GitLabMono.woff2'), as: 'font', crossorigin: css_crossorigin }
     %link{ rel: 'preload', href: font_path('gitlab-mono/GitLabMono-Italic.woff2'), as: 'font', crossorigin: css_crossorigin }
-    = preload_link_tag(path_to_stylesheet('fonts'), crossorigin: css_crossorigin)
+    = preload_link_tag(universal_path_to_stylesheet('fonts'), as: 'style', crossorigin: css_crossorigin)

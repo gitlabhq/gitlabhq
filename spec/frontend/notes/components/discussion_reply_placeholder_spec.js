@@ -1,5 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
-import ReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
+import { GlFormInput } from '@gitlab/ui';
+import DiscussionReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
 
 const placeholderText = 'Test Button Text';
 
@@ -7,7 +8,7 @@ describe('ReplyPlaceholder', () => {
   let wrapper;
 
   const createComponent = ({ options = {} } = {}) => {
-    wrapper = shallowMount(ReplyPlaceholder, {
+    wrapper = shallowMount(DiscussionReplyPlaceholder, {
       propsData: {
         placeholderText,
       },
@@ -15,21 +16,21 @@ describe('ReplyPlaceholder', () => {
     });
   };
 
-  const findTextarea = () => wrapper.findComponent({ ref: 'textarea' });
+  const findInput = () => wrapper.findComponent(GlFormInput);
 
   it('emits focus event on button click', async () => {
     createComponent({ options: { attachTo: document.body } });
 
-    await findTextarea().trigger('focus');
+    await findInput().vm.$emit('focus');
 
     expect(wrapper.emitted()).toEqual({
       focus: [[]],
     });
   });
 
-  it('should render reply button', () => {
+  it('should render reply input', () => {
     createComponent();
 
-    expect(findTextarea().attributes('placeholder')).toEqual(placeholderText);
+    expect(findInput().attributes('placeholder')).toEqual(placeholderText);
   });
 });

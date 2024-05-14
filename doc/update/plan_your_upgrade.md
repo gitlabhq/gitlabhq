@@ -124,10 +124,10 @@ to your instance and then upgrade it for any relevant features you're using.
 - About PostgreSQL:
   1. On the left sidebar, at the bottom, select **Admin Area**..
   1. Look for the version of PostgreSQL you are using.
-    If [a PostgreSQL upgrade is needed](../administration/package_information/postgresql_versions.md),
-    account for the relevant
-    [packaged](https://docs.gitlab.com/omnibus/settings/database.html#upgrade-packaged-postgresql-server)
-    or [non-packaged](https://docs.gitlab.com/omnibus/settings/database.html#upgrade-a-non-packaged-postgresql-database) steps.
+     If [a PostgreSQL upgrade is needed](../administration/package_information/postgresql_versions.md),
+     account for the relevant
+     [packaged](https://docs.gitlab.com/omnibus/settings/database.html#upgrade-packaged-postgresql-server)
+     or [non-packaged](https://docs.gitlab.com/omnibus/settings/database.html#upgrade-a-non-packaged-postgresql-database) steps.
 
 ### Additional features
 
@@ -182,7 +182,7 @@ If anything doesn't go as planned:
     you installed GitLab using the Helm Charts.
 - For support:
   - [Contact GitLab Support](https://support.gitlab.com) and,
-    if you have one, your [Customer Success Managers](https://about.gitlab.com/job-families/sales/customer-success-management/).
+    if you have one, your Customer Success Manager.
   - If [the situation qualifies](https://about.gitlab.com/support/#definitions-of-support-impact)
     and [your plan includes emergency support](https://about.gitlab.com/support/#priority-support),
     create an emergency ticket.

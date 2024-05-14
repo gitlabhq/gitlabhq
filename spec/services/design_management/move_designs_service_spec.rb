@@ -5,7 +5,7 @@ RSpec.describe DesignManagement::MoveDesignsService, feature_category: :design_m
   include DesignManagementTestHelpers
 
   let_it_be(:issue) { create(:issue) }
-  let_it_be(:developer) { create(:user, developer_projects: [issue.project]) }
+  let_it_be(:developer) { create(:user, developer_of: issue.project) }
   let_it_be(:designs) { create_list(:design, 3, :with_relative_position, issue: issue) }
 
   let(:project) { issue.project }

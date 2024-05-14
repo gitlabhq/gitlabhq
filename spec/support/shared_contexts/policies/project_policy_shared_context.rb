@@ -11,6 +11,8 @@ RSpec.shared_context 'ProjectPolicy context' do
   let_it_be(:inherited_developer) { create(:user) }
   let_it_be(:inherited_maintainer) { create(:user) }
   let_it_be(:owner) { create(:user) }
+  let_it_be(:organization) { create(:organization, :default) }
+  let_it_be(:organization_owner) { create(:user, :organization_owner) }
   let_it_be(:admin) { create(:admin) }
   let_it_be(:non_member) { create(:user) }
   let_it_be_with_refind(:group) { create(:group, :public) }
@@ -32,7 +34,7 @@ RSpec.shared_context 'ProjectPolicy context' do
 
   let(:base_reporter_permissions) do
     %i[
-      admin_issue admin_issue_link admin_label admin_milestone admin_issue_board_list
+      admin_issue admin_label admin_milestone admin_issue_board_list
       create_snippet create_incident daily_statistics create_merge_request_in download_code
       download_wiki_code fork_project metrics_dashboard read_build
       read_commit_status read_confidential_issues read_container_image
@@ -93,6 +95,12 @@ RSpec.shared_context 'ProjectPolicy context' do
     %i[
       read_project_for_iids update_max_artifacts_size read_storage_disk_path
       owner_access admin_remote_mirror read_internal_note
+    ]
+  end
+
+  let(:organization_owner_permissions) do
+    %i[
+      owner_access admin_remote_mirror
     ]
   end
 

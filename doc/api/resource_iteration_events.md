@@ -8,11 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/229463) in GitLab 13.4.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/229463) in GitLab 13.5.
-> - Moved to GitLab Premium in 13.9.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Resource iteration events keep track of what happens to GitLab [issues](../user/project/issues/index.md).
 

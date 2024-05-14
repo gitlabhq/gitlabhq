@@ -2,7 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe Integrations::Youtrack do
+RSpec.describe Integrations::Youtrack, feature_category: :integrations do
+  it_behaves_like Integrations::HasAvatar
+
   describe 'Validations' do
     context 'when integration is active' do
       before do
@@ -41,6 +43,14 @@ RSpec.describe Integrations::Youtrack do
   describe '#fields' do
     it 'only returns the project_url and issues_url fields' do
       expect(subject.fields.pluck(:name)).to eq(%w[project_url issues_url])
+    end
+  end
+
+  describe '#attribution_notice' do
+    it do
+      expect(subject.attribution_notice)
+      .to eq('Copyright © 2024 JetBrains s.r.o. JetBrains YouTrack and the JetBrains YouTrack logo are registered ' \
+             'trademarks of JetBrains s.r.o.')
     end
   end
 end

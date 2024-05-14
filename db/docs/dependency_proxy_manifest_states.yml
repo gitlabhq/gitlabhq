@@ -1,10 +1,25 @@
 ---
 table_name: dependency_proxy_manifest_states
 classes:
-  - Geo::DependencyProxyManifestState
+- Geo::DependencyProxyManifestState
 feature_categories:
-  - geo_replication
+- geo_replication
 description: Separate table for dependency proxy manifest verification states
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102908
 milestone: '15.6'
-gitlab_schema: gitlab_main
+gitlab_schema: gitlab_main_cell
+allow_cross_joins:
+- gitlab_main_clusterwide
+allow_cross_transactions:
+- gitlab_main_clusterwide
+allow_cross_foreign_keys:
+- gitlab_main_clusterwide
+desired_sharding_key:
+  group_id:
+    references: namespaces
+    backfill_via:
+      parent:
+        foreign_key: dependency_proxy_manifest_id
+        table: dependency_proxy_manifests
+        sharding_key: group_id
+        belongs_to: dependency_proxy_manifest

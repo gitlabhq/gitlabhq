@@ -1,0 +1,41 @@
+{
+  "type": "object",
+  "required": [
+    "name",
+    "tags",
+    "uploadTime",
+    "updateTime",
+    "image",
+    "digest",
+    "uri"
+  ],
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "uploadTime": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "updateTime": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "image": {
+      "type": "string"
+    },
+    "digest": {
+      "type": "string"
+    }
+  }
+}

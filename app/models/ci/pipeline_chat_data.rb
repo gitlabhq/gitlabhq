@@ -4,9 +4,6 @@ module Ci
   class PipelineChatData < Ci::ApplicationRecord
     include Ci::Partitionable
     include Ci::NamespacedModelName
-    include SafelyChangeColumnDefault
-
-    columns_changing_default :partition_id
 
     self.table_name = 'ci_pipeline_chat_data'
 

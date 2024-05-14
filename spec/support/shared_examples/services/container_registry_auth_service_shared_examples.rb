@@ -86,7 +86,11 @@ RSpec.shared_examples 'an accessible' do
     [{ 'type' => 'repository',
        'name' => project.full_path,
        'actions' => actions,
-       'meta' => { 'project_path' => project.full_path } }]
+       'meta' => {
+         'project_path' => project.full_path,
+         'project_id' => project.id,
+         'root_namespace_id' => project.root_ancestor.id
+       } }]
   end
 
   it_behaves_like 'a valid token'
@@ -209,25 +213,6 @@ RSpec.shared_examples 'a container registry auth service' do
     it_behaves_like 'not a container repository factory'
   end
 
-  describe '.import_access_token' do
-    let(:access) do
-      [{ 'type' => 'registry',
-         'name' => 'import',
-         'actions' => ['*'] }]
-    end
-
-    let(:token) { described_class.import_access_token }
-
-    subject { { token: token } }
-
-    it_behaves_like 'a valid token'
-    it_behaves_like 'not a container repository factory'
-
-    it 'has the correct scope' do
-      expect(payload).to include('access' => access)
-    end
-  end
-
   describe '.pull_access_token' do
     let_it_be(:project) { create(:project) }
 
@@ -252,13 +237,21 @@ RSpec.shared_examples 'a container registry auth service' do
           'type' => 'repository',
           'name' => project.full_path,
           'actions' => ['pull'],
-          'meta' => { 'project_path' => project.full_path }
+          'meta' => {
+            'project_path' => project.full_path,
+            'project_id' => project.id,
+            'root_namespace_id' => project.root_ancestor.id
+          }
         },
         {
           'type' => 'repository',
           'name' => "#{project.full_path}/*",
           'actions' => ['pull'],
-          'meta' => { 'project_path' => project.full_path }
+          'meta' => {
+            'project_path' => project.full_path,
+            'project_id' => project.id,
+            'root_namespace_id' => project.root_ancestor.id
+          }
         }
       ]
     end
@@ -880,19 +873,35 @@ RSpec.shared_examples 'a container registry auth service' do
             { 'type' => 'repository',
               'name' => internal_project.full_path,
               'actions' => ['pull'],
-              'meta' => { 'project_path' => internal_project.full_path } },
+              'meta' => {
+                'project_path' => internal_project.full_path,
+                'project_id' => internal_project.id,
+                'root_namespace_id' => internal_project.root_ancestor.id
+              } },
             { 'type' => 'repository',
               'name' => private_project.full_path,
               'actions' => ['pull'],
-              'meta' => { 'project_path' => private_project.full_path } },
+              'meta' => {
+                'project_path' => private_project.full_path,
+                'project_id' => private_project.id,
+                'root_namespace_id' => private_project.root_ancestor.id
+              } },
             { 'type' => 'repository',
               'name' => public_project.full_path,
               'actions' => ['pull'],
-              'meta' => { 'project_path' => public_project.full_path } },
+              'meta' => {
+                'project_path' => public_project.full_path,
+                'project_id' => public_project.id,
+                'root_namespace_id' => public_project.root_ancestor.id
+              } },
             { 'type' => 'repository',
               'name' => public_project_private_container_registry.full_path,
               'actions' => ['pull'],
-              'meta' => { 'project_path' => public_project_private_container_registry.full_path } }
+              'meta' => {
+                'project_path' => public_project_private_container_registry.full_path,
+                'project_id' => public_project_private_container_registry.id,
+                'root_namespace_id' => public_project_private_container_registry.root_ancestor.id
+              } }
           ]
         end
       end
@@ -907,11 +916,19 @@ RSpec.shared_examples 'a container registry auth service' do
             { 'type' => 'repository',
               'name' => internal_project.full_path,
               'actions' => ['pull'],
-              'meta' => { 'project_path' => internal_project.full_path } },
+              'meta' => {
+                'project_path' => internal_project.full_path,
+                'project_id' => internal_project.id,
+                'root_namespace_id' => internal_project.root_ancestor.id
+              } },
             { 'type' => 'repository',
               'name' => public_project.full_path,
               'actions' => ['pull'],
-              'meta' => { 'project_path' => public_project.full_path } }
+              'meta' => {
+                'project_path' => public_project.full_path,
+                'project_id' => public_project.id,
+                'root_namespace_id' => public_project.root_ancestor.id
+              } }
           ]
         end
       end
@@ -926,7 +943,11 @@ RSpec.shared_examples 'a container registry auth service' do
             { 'type' => 'repository',
               'name' => public_project.full_path,
               'actions' => ['pull'],
-              'meta' => { 'project_path' => public_project.full_path } }
+              'meta' => {
+                'project_path' => public_project.full_path,
+                'project_id' => public_project.id,
+                'root_namespace_id' => public_project.root_ancestor.id
+              } }
           ]
         end
       end
@@ -1109,6 +1130,26 @@ RSpec.shared_examples 'a container registry auth service' do
 
         it_behaves_like 'able to login'
       end
+
+      context 'for private project when the deploy key is restricted with external_authorization' do
+        let_it_be(:project) { create(:project, :private) }
+
+        before do
+          allow(Gitlab::ExternalAuthorization).to receive(:allow_deploy_tokens_and_deploy_keys?).and_return(false)
+        end
+
+        context 'when pulling' do
+          it_behaves_like 'a forbidden'
+        end
+
+        context 'when pushing' do
+          let(:current_params) do
+            { scopes: ["repository:#{project.full_path}:push"], deploy_token: deploy_token }
+          end
+
+          it_behaves_like 'a forbidden'
+        end
+      end
     end
 
     context 'when deploy token does not have read_registry scope' do
@@ -1243,6 +1284,26 @@ RSpec.shared_examples 'a container registry auth service' do
     end
   end
 
+  context 'when the deploy token is restricted with external_authorization' do
+    context 'when the authenticator is a regular user' do
+      let_it_be(:current_user) { create(:user) }
+      let(:current_params) do
+        { scopes: ["repository:#{project.full_path}:pull"] }
+      end
+
+      let_it_be(:project) { create(:project, :private, :container_registry_enabled) }
+
+      before do
+        allow(Gitlab::ExternalAuthorization).to receive(:allow_deploy_tokens_and_deploy_keys?).and_return(false)
+        project.add_developer(current_user)
+      end
+
+      it_behaves_like 'an accessible' do
+        let(:actions) { ['pull'] }
+      end
+    end
+  end
+
   context 'user authorization' do
     let_it_be(:current_user) { create(:user) }
 
@@ -1270,74 +1331,6 @@ RSpec.shared_examples 'a container registry auth service' do
       end
 
       it_behaves_like 'with auth_type'
-    end
-  end
-
-  context 'when importing' do
-    let_it_be(:container_repository) { create(:container_repository, :root, :importing) }
-    let_it_be(:current_project) { container_repository.project }
-    let_it_be(:current_user) { create(:user) }
-
-    before do
-      current_project.add_developer(current_user)
-    end
-
-    shared_examples 'containing the import error' do
-      it 'includes a helpful error message' do
-        expect(subject[:errors].first).to include(message: /Your repository is currently being migrated/)
-      end
-    end
-
-    context 'push request' do
-      let(:current_params) do
-        { scopes: ["repository:#{container_repository.path}:push"] }
-      end
-
-      it_behaves_like 'a forbidden' do
-        it_behaves_like 'containing the import error'
-      end
-    end
-
-    context 'delete request' do
-      let(:current_params) do
-        { scopes: ["repository:#{container_repository.path}:delete"] }
-      end
-
-      it_behaves_like 'a forbidden' do
-        it_behaves_like 'containing the import error'
-      end
-    end
-
-    context '* request' do
-      let(:current_params) do
-        { scopes: ["repository:#{container_repository.path}:*"] }
-      end
-
-      it_behaves_like 'a forbidden' do
-        it_behaves_like 'containing the import error'
-      end
-    end
-
-    context 'pull request' do
-      let(:current_params) do
-        { scopes: ["repository:#{container_repository.path}:pull"] }
-      end
-
-      let(:project) { current_project }
-
-      it_behaves_like 'a pullable'
-    end
-
-    context 'mixed request' do
-      let(:current_params) do
-        { scopes: ["repository:#{container_repository.path}:pull,push"] }
-      end
-
-      let(:project) { current_project }
-
-      it_behaves_like 'a forbidden' do
-        it_behaves_like 'containing the import error'
-      end
     end
   end
 
@@ -1397,8 +1390,8 @@ RSpec.shared_examples 'a container registry auth service' do
         repository_path_pattern: container_repository_path)
     end
 
-    let_it_be(:project_developer) { create(:user).tap { |u| current_project.add_developer(u) } }
-    let_it_be(:project_maintainer) { create(:user).tap { |u| current_project.add_maintainer(u) } }
+    let_it_be(:project_developer) { create(:user, developer_of: current_project) }
+    let_it_be(:project_maintainer) { create(:user, maintainer_of: current_project) }
     let_it_be(:project_owner) { current_project.owner }
 
     let(:current_params) { { scopes: ["repository:#{container_repository_path}:push"] } }
@@ -1406,18 +1399,21 @@ RSpec.shared_examples 'a container registry auth service' do
     shared_examples 'a protected container repository' do
       it_behaves_like 'a forbidden'
 
-      it { is_expected.to include errors: [include(message: 'Pushing to protected repository path forbidden')] }
+      it do
+        is_expected.to include errors: [include(code: "DENIED",
+          message: 'Pushing to protected repository path forbidden')]
+      end
     end
 
     context 'for different repository_path_patterns and current user roles' do
       # rubocop:disable Layout/LineLength -- Avoid formatting to keep one-line table layout
-      where(:repository_path_pattern, :push_protected_up_to_access_level, :current_user, :shared_examples_name) do
-        ref(:container_repository_path)                  | :developer  | ref(:project_developer)  | 'a protected container repository'
-        ref(:container_repository_path)                  | :developer  | ref(:project_owner)      | 'a pushable'
-        ref(:container_repository_path)                  | :maintainer | ref(:project_maintainer) | 'a protected container repository'
-        ref(:container_repository_path)                  | :owner      | ref(:project_owner)      | 'a protected container repository'
-        ref(:container_repository_path_pattern_no_match) | :developer  | ref(:project_developer)  | 'a pushable'
-        ref(:container_repository_path_pattern_no_match) | :owner      | ref(:project_owner)      | 'a pushable'
+      where(:repository_path_pattern, :minimum_access_level_for_push, :current_user, :shared_examples_name) do
+        ref(:container_repository_path)                  | :maintainer | ref(:project_developer)  | 'a protected container repository'
+        ref(:container_repository_path)                  | :maintainer | ref(:project_owner)      | 'a pushable'
+        ref(:container_repository_path)                  | :owner      | ref(:project_maintainer) | 'a protected container repository'
+        ref(:container_repository_path)                  | :admin      | ref(:project_owner)      | 'a protected container repository'
+        ref(:container_repository_path_pattern_no_match) | :maintainer | ref(:project_developer)  | 'a pushable'
+        ref(:container_repository_path_pattern_no_match) | :admin      | ref(:project_owner)      | 'a pushable'
       end
       # rubocop:enable Layout/LineLength
 
@@ -1425,7 +1421,7 @@ RSpec.shared_examples 'a container registry auth service' do
         before do
           container_registry_protection_rule.update!(
             repository_path_pattern: repository_path_pattern,
-            push_protected_up_to_access_level: push_protected_up_to_access_level
+            minimum_access_level_for_push: minimum_access_level_for_push
           )
         end
 
@@ -1437,7 +1433,7 @@ RSpec.shared_examples 'a container registry auth service' do
       let_it_be(:current_user) { project_maintainer }
 
       before do
-        container_registry_protection_rule.update!(push_protected_up_to_access_level: :maintainer)
+        container_registry_protection_rule.update!(minimum_access_level_for_push: :owner)
       end
 
       where(:current_params_scopes, :shared_examples_name) do
@@ -1462,18 +1458,18 @@ RSpec.shared_examples 'a container registry auth service' do
       end
 
       context 'with matching package protection rule for all roles' do
-        where(:repository_path_pattern, :push_protected_up_to_access_level, :shared_examples_name) do
-          ref(:container_repository_path)                  | :developer | 'a pushable'
-          ref(:container_repository_path)                  | :owner     | 'a pushable'
-          ref(:container_repository_path_pattern_no_match) | :developer | 'a pushable'
-          ref(:container_repository_path_pattern_no_match) | :owner     | 'a pushable'
+        where(:repository_path_pattern, :minimum_access_level_for_push, :shared_examples_name) do
+          ref(:container_repository_path)                  | :maintainer | 'a pushable'
+          ref(:container_repository_path)                  | :admin      | 'a pushable'
+          ref(:container_repository_path_pattern_no_match) | :maintainer | 'a pushable'
+          ref(:container_repository_path_pattern_no_match) | :admin      | 'a pushable'
         end
 
         with_them do
           before do
             container_registry_protection_rule.update!(
               repository_path_pattern: repository_path_pattern,
-              push_protected_up_to_access_level: push_protected_up_to_access_level
+              minimum_access_level_for_push: minimum_access_level_for_push
             )
           end
 

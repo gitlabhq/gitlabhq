@@ -8,10 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1659) in GitLab 9.1.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212320) from GitLab Premium to GitLab Free in 13.8.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Canary deployments are a popular [continuous deployment](https://en.wikipedia.org/wiki/Continuous_deployment)
 strategy, where a small portion of the fleet is updated to the new version of
@@ -75,10 +72,6 @@ Here's an example setup flow from scratch:
    and make sure that the `canary` job succeeds and creates a canary deployment with Canary Ingress.
 
 ### Show Canary Ingress deployments on deploy boards (deprecated)
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/215501) in GitLab 13.6.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212320) from GitLab Premium to GitLab Free in 13.8.
-> - [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
 
 WARNING:
 This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.

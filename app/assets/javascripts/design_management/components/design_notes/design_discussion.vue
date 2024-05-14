@@ -3,7 +3,7 @@ import { GlButton, GlLink, GlTooltipDirective, GlFormCheckbox } from '@gitlab/ui
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { createAlert } from '~/alert';
 import { __, s__ } from '~/locale';
-import ReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
+import DiscussionReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
 import { updateGlobalTodoCount } from '~/sidebar/utils';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
@@ -40,7 +40,7 @@ export default {
     DesignReplyForm,
     GlButton,
     GlLink,
-    ReplyPlaceholder,
+    DiscussionReplyPlaceholder,
     TimeAgoTooltip,
     ToggleRepliesWidget,
     GlFormCheckbox,
@@ -146,13 +146,13 @@ export default {
       return this.discussion.notes.slice(1);
     },
     areRepliesShown() {
-      return !this.discussion.resolved || !this.areRepliesCollapsed;
+      return !this.areRepliesCollapsed;
     },
     resolveIconName() {
       return this.discussion.resolved ? 'check-circle-filled' : 'check-circle';
     },
     isRepliesWidgetVisible() {
-      return this.discussion.resolved && this.discussionReplies.length > 0;
+      return this.discussionReplies.length > 0;
     },
     isReplyPlaceholderVisible() {
       return this.areRepliesShown || !this.discussionReplies.length;
@@ -291,7 +291,7 @@ export default {
   <div class="design-discussion-wrapper" @click="$emit('update-active-discussion')">
     <design-note-pin :is-resolved="discussion.resolved" :label="discussion.index" />
     <ul
-      class="design-discussion bordered-box gl-relative gl-p-0 gl-list-style-none"
+      class="design-discussion bordered-box gl-relative gl-p-0 gl-list-none"
       :class="{ 'gl-bg-blue-50': isDiscussionActive }"
       data-testid="design-discussion-content"
     >
@@ -356,11 +356,7 @@ export default {
           <design-note-signed-out :register-path="registerPath" :sign-in-path="signInPath" />
         </template>
         <template v-else>
-          <reply-placeholder
-            v-if="!isFormVisible"
-            :placeholder-text="__('Reply…')"
-            @focus="showForm"
-          />
+          <discussion-reply-placeholder v-if="!isFormVisible" @focus="showForm" />
           <design-reply-form
             v-else
             :design-note-mutation="$options.createNoteMutation"

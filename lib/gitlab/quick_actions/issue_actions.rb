@@ -137,7 +137,7 @@ module Gitlab
           @execution_message[:clone] = message
         end
 
-        desc { _('Move this issue to another project.') }
+        desc { _('Move this issue to another project') }
         explanation do |path_to_project|
           _("Moves this issue to %{path_to_project}.") % { path_to_project: path_to_project }
         end
@@ -221,8 +221,8 @@ module Gitlab
           @execution_message[:remove_zoom] = result.message
         end
 
-        desc { _('Add email participant(s)') }
-        explanation { _('Adds email participant(s).') }
+        desc { _("Add email participants that don't have a GitLab account.") }
+        explanation { _("Adds email participants that don't have a GitLab account.") }
         params 'email1@example.com email2@example.com (up to 6 emails)'
         types Issue
         condition do
@@ -230,18 +230,18 @@ module Gitlab
             Feature.enabled?(:issue_email_participants, parent) &&
             current_user.can?(:"admin_#{quick_action_target.to_ability_name}", quick_action_target)
         end
-        command :invite_email do |emails = ""|
+        command :add_email do |emails = ""|
           response = ::IssueEmailParticipants::CreateService.new(
             target: quick_action_target,
             current_user: current_user,
             emails: emails.split(' ')
           ).execute
 
-          @execution_message[:invite_email] = response.message
+          @execution_message[:add_email] = response.message
         end
 
-        desc { _('Remove email participant(s)') }
-        explanation { _('Removes email participant(s).') }
+        desc { _('Remove email participants') }
+        explanation { _('Removes email participants.') }
         params 'email1@example.com email2@example.com (up to 6 emails)'
         types Issue
         condition do
@@ -266,7 +266,6 @@ module Gitlab
         types Issue
         condition do
           quick_action_target.persisted? &&
-            Feature.enabled?(:convert_to_ticket_quick_action, parent, type: :beta) &&
             current_user.can?(:"admin_#{quick_action_target.to_ability_name}", quick_action_target) &&
             quick_action_target.respond_to?(:from_service_desk?) &&
             !quick_action_target.from_service_desk?
@@ -294,7 +293,7 @@ module Gitlab
         end
 
         desc { _('Add customer relation contacts') }
-        explanation { _('Add customer relation contact(s).') }
+        explanation { _('Add customer relation contacts.') }
         params '[contact:contact@example.com] [contact:person@example.org]'
         types Issue
         condition do
@@ -309,7 +308,7 @@ module Gitlab
         end
 
         desc { _('Remove customer relation contacts') }
-        explanation { _('Remove customer relation contact(s).') }
+        explanation { _('Remove customer relation contacts.') }
         params '[contact:contact@example.com] [contact:person@example.org]'
         types Issue
         condition do

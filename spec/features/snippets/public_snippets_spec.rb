@@ -13,7 +13,7 @@ RSpec.describe 'Public Snippets', :js, feature_category: :source_code_management
     wait_for_requests
 
     expect(page).to have_content(content)
-    click_button('Embed')
+    click_button('Code')
     expect(page).to have_field('Embed', readonly: true, with: "<script src=\"#{url}.js\"></script>")
     expect(page).to have_field('Share', readonly: true, with: url)
   end

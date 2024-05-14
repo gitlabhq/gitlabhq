@@ -3,9 +3,9 @@
   %head
     %meta{ :content => "width=device-width, initial-scale=1", :name => "viewport" }
     %title= yield(:title)
-    = stylesheet_link_tag 'application_utilities'
+    = universal_stylesheet_link_tag 'application_utilities'
     %style
-      = Rails.application.assets_manifest.find_sources('errors.css').first.to_s.html_safe
+      = error_css
     :css
       svg {
         width: 280px;

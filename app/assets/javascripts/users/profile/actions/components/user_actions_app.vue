@@ -76,7 +76,7 @@ export default {
     userId: s__('UserProfile|Copy user ID: %{id}'),
     userIdCopied: s__('UserProfile|User ID copied to clipboard'),
     rssSubscribe: s__('UserProfile|Subscribe'),
-    reportToAdmin: s__('ReportAbuse|Report abuse to administrator'),
+    reportToAdmin: s__('ReportAbuse|Report abuse'),
   },
 };
 </script>

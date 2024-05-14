@@ -28,11 +28,6 @@ export default {
       required: false,
       default: '',
     },
-    iconClass: {
-      type: String,
-      required: false,
-      default: null,
-    },
   },
   computed: {
     author() {
@@ -46,23 +41,22 @@ export default {
 </script>
 
 <template>
-  <li class="gl-mt-5 gl-pb-5 gl-border-b gl-relative">
-    <time-ago-tooltip
-      :time="event.created_at"
-      class="gl-float-right gl-font-sm gl-text-secondary gl-mt-2"
-    />
-    <gl-avatar-link :href="author.web_url">
-      <gl-avatar-labeled
-        :label="author.name"
-        :sub-label="authorUsername"
-        inline-labels
-        :src="author.avatar_url"
-        :size="24"
-      />
-    </gl-avatar-link>
+  <li class="gl-flex gl-flex-col gl-mt-5 gl-pb-5 gl-border-b gl-relative">
+    <div class="gl-flex gl-items-center">
+      <gl-avatar-link :href="author.web_url" class="gl-grow">
+        <gl-avatar-labeled
+          :label="author.name"
+          :sub-label="authorUsername"
+          inline-labels
+          :src="author.avatar_url"
+          :size="24"
+        />
+      </gl-avatar-link>
+      <time-ago-tooltip :time="event.created_at" class="gl-text-sm gl-text-secondary gl-mt-2" />
+    </div>
     <div class="gl-pl-7" data-testid="event-body">
-      <div class="gl-text-secondary">
-        <gl-icon :class="iconClass" :name="iconName" />
+      <div class="gl-text-gray-500 gl-text-sm">
+        <gl-icon :name="iconName" />
         <gl-sprintf v-if="message" :message="message">
           <template #targetLink>
             <target-link :event="event" />

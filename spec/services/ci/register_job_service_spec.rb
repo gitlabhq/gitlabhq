@@ -199,7 +199,8 @@ module Ci
             let!(:build1_project3) { create(:ci_build, :pending, :queued, pipeline: pipeline3) }
 
             it 'picks builds one-by-one' do
-              expect(Ci::Build).to receive(:find).with(pending_job.id).and_call_original
+              expect(Ci::Build).to receive(:find_by!).with(partition_id: pending_job.partition_id, id: pending_job.id)
+                .and_call_original
 
               expect(build_on(shared_runner)).to eq(build1_project1)
             end
@@ -433,7 +434,7 @@ module Ci
             before do
               allow_any_instance_of(::Ci::Queue::BuildQueueService)
                 .to receive(:execute)
-                .and_return(Ci::Build.where(id: [pending_job, other_build]).pluck(:id))
+                .and_return(Ci::Build.where(id: [pending_job, other_build]).pluck(:id, :partition_id))
             end
 
             it "receives second build from the queue" do
@@ -446,7 +447,7 @@ module Ci
             before do
               allow_any_instance_of(::Ci::Queue::BuildQueueService)
                 .to receive(:execute)
-                .and_return(Ci::Build.where(id: pending_job).pluck(:id))
+                .and_return(Ci::Build.where(id: pending_job).pluck(:id, :partition_id))
             end
 
             it "does not receive any valid result" do
@@ -532,6 +533,33 @@ module Ci
           end
         end
 
+        describe 'persisting runtime features' do
+          let!(:pending_job) { create(:ci_build, :pending, :queued, pipeline: pipeline) }
+          let(:params) do
+            { info: { features: { cancel_gracefully: true } } }
+          end
+
+          subject { build_on(project_runner, params: params) }
+
+          it 'persists the feature to build metadata' do
+            subject
+
+            expect(pending_job.reload.cancel_gracefully?).to be true
+          end
+
+          context 'when ci_canceling_status is disabled' do
+            before do
+              stub_feature_flags(ci_canceling_status: false)
+            end
+
+            it 'does not persist the feature to build metadata' do
+              subject
+
+              expect(pending_job.reload.cancel_gracefully?).to be false
+            end
+          end
+        end
+
         context 'runner feature set is verified' do
           let(:options) { { artifacts: { reports: { junit: "junit.xml" } } } }
           let!(:pending_job) { create(:ci_build, :pending, :queued, pipeline: pipeline, options: options) }
@@ -594,7 +622,7 @@ module Ci
                 job.job_artifacts_archive.size
               end
 
-              expect(artifacts_size).to eq 107464 * 2
+              expect(artifacts_size).to eq ci_artifact_fixture_size * 2
               expect(Gitlab::ApplicationContext.current).to include({
                 'meta.artifacts_dependencies_size' => artifacts_size,
                 'meta.artifacts_dependencies_count' => 2
@@ -920,8 +948,8 @@ module Ci
           let(:build3) { create(:ci_build, :running, pipeline: pipeline, runner: shared_runner) }
 
           before do
-            ::Ci::RunningBuild.upsert_shared_runner_build!(build2)
-            ::Ci::RunningBuild.upsert_shared_runner_build!(build3)
+            ::Ci::RunningBuild.upsert_build!(build2)
+            ::Ci::RunningBuild.upsert_build!(build3)
           end
 
           it 'counts job queuing time histogram with expected labels' do

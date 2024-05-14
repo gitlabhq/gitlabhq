@@ -23,17 +23,12 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::Commented, feature_catego
     )
   end
 
-  let(:extended_events) { true }
-
   before do
     allow_next_instance_of(Gitlab::GithubImport::IssuableFinder) do |finder|
       allow(finder).to receive(:database_id).and_return(issuable.id)
     end
     allow_next_instance_of(Gitlab::GithubImport::UserFinder) do |finder|
       allow(finder).to receive(:find).with(user.id, user.username).and_return(user.id)
-    end
-    allow_next_instance_of(Gitlab::GithubImport::Settings) do |setting|
-      allow(setting).to receive(:extended_events?).and_return(extended_events)
     end
   end
 
@@ -46,14 +41,6 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::Commented, feature_catego
         author_id: user.id,
         noteable_type: issuable.class.name.to_s
       )
-    end
-
-    context 'when extended_events is disabled' do
-      let(:extended_events) { false }
-
-      it 'does not create a note' do
-        expect { importer.execute(issue_event) }.not_to change { Note.count }
-      end
     end
   end
 

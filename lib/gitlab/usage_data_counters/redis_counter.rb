@@ -6,17 +6,53 @@
 module Gitlab
   module UsageDataCounters
     module RedisCounter
-      def increment(redis_counter_key)
-        Gitlab::Redis::SharedState.with { |redis| redis.incr(redis_counter_key) }
+      include Gitlab::Utils::StrongMemoize
+
+      # This file overrides (or aliases) some keys for legacy Redis metric counters to delay migrating them to new
+      # names for now, because doing that in bulk will be a lot easier.
+      KEY_OVERRIDES_PATH = Rails.root.join('lib/gitlab/usage_data_counters/total_counter_redis_key_overrides.yml')
+
+      def increment(redis_counter_key, expiry: nil)
+        legacy_redis_counter_key = legacy_key(redis_counter_key)
+
+        Gitlab::Redis::SharedState.with do |redis|
+          redis.incr(legacy_redis_counter_key)
+
+          unless expiry.nil?
+            existing_expiry = redis.ttl(legacy_redis_counter_key) > 0
+            redis.expire(legacy_redis_counter_key, expiry) unless existing_expiry
+          end
+        end
       end
 
-      def increment_by(redis_counter_key, incr)
-        Gitlab::Redis::SharedState.with { |redis| redis.incrby(redis_counter_key, incr) }
+      def increment_by(redis_counter_key, incr, expiry: nil)
+        legacy_redis_counter_key = legacy_key(redis_counter_key)
+
+        Gitlab::Redis::SharedState.with do |redis|
+          redis.incrby(legacy_redis_counter_key, incr)
+
+          unless expiry.nil?
+            existing_expiry = redis.ttl(legacy_redis_counter_key) > 0
+            redis.expire(legacy_redis_counter_key, expiry) unless existing_expiry
+          end
+        end
       end
 
       def total_count(redis_counter_key)
-        Gitlab::Redis::SharedState.with { |redis| redis.get(redis_counter_key).to_i }
+        legacy_redis_counter_key = legacy_key(redis_counter_key)
+        Gitlab::Redis::SharedState.with { |redis| redis.get(legacy_redis_counter_key).to_i }
       end
+
+      private
+
+      def legacy_key(redis_key)
+        key_overrides.fetch(redis_key, redis_key)
+      end
+
+      def key_overrides
+        YAML.safe_load(File.read(KEY_OVERRIDES_PATH))
+      end
+      strong_memoize_attr :key_overrides
     end
   end
 end

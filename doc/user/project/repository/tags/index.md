@@ -2,13 +2,14 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: "Use Git tags to mark important points in a repository's history, and trigger CI/CD pipelines."
 ---
 
 # Tags
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 In Git, a tag marks an important point in a repository's history.
 Git supports two types of tags:
@@ -23,7 +24,7 @@ The creation or deletion of a tag can be used as a trigger for automation, inclu
 - Using a [webhook](../../integrations/webhook_events.md#tag-events) to automate actions
   like Slack notifications.
 - Signaling a [repository mirror](../mirror/index.md) to update.
-- Running a CI/CD pipeline with [`if: $CI_COMMIT_TAG`](../../../../ci/jobs/job_control.md#common-if-clauses-for-rules).
+- Running a CI/CD pipeline with [`if: $CI_COMMIT_TAG`](../../../../ci/jobs/job_rules.md#common-if-clauses-with-predefined-variables).
 
 When you [create a release](../../releases/index.md),
 GitLab also creates a tag to mark the release point.
@@ -118,7 +119,7 @@ GitLab enforces these additional rules on all tags:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 To prevent users from removing a tag with `git push`, create a [push rule](../push_rules.md).
 

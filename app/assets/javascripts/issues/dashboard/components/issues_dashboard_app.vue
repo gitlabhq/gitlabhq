@@ -10,29 +10,22 @@ import getIssuesQuery from 'ee_else_ce/issues/dashboard/queries/get_issues.query
 import IssueCardStatistics from 'ee_else_ce/issues/list/components/issue_card_statistics.vue';
 import IssueCardTimeInfo from 'ee_else_ce/issues/list/components/issue_card_time_info.vue';
 import { STATUS_ALL, STATUS_CLOSED, STATUS_OPEN } from '~/issues/constants';
-import {
-  CREATED_DESC,
-  defaultTypeTokenOptions,
-  i18n,
-  PARAM_STATE,
-  UPDATED_DESC,
-  urlSortParams,
-} from '~/issues/list/constants';
+import { defaultTypeTokenOptions, i18n, PARAM_STATE, urlSortParams } from '~/issues/list/constants';
 import setSortPreferenceMutation from '~/issues/list/queries/set_sort_preference.mutation.graphql';
 import {
   convertToApiParams,
   convertToSearchQuery,
   convertToUrlParams,
+  deriveSortKey,
   getFilterTokens,
   getInitialPageParams,
-  getSortKey,
   getSortOptions,
-  isSortKey,
 } from '~/issues/list/utils';
 import { fetchPolicies } from '~/lib/graphql';
 import axios from '~/lib/utils/axios_utils';
 import { scrollUp } from '~/lib/utils/scroll_utils';
 import { getParameterByName } from '~/lib/utils/url_utility';
+import { __ } from '~/locale';
 import {
   OPERATORS_IS,
   OPERATORS_IS_NOT_OR,
@@ -113,15 +106,6 @@ export default {
   data() {
     const state = getParameterByName(PARAM_STATE);
 
-    const defaultSortKey = state === STATUS_CLOSED ? UPDATED_DESC : CREATED_DESC;
-    const dashboardSortKey = getSortKey(this.initialSort);
-    const graphQLSortKey =
-      isSortKey(this.initialSort?.toUpperCase()) && this.initialSort.toUpperCase();
-
-    // The initial sort is an old enum value when it is saved on the dashboard issues page.
-    // The initial sort is a GraphQL enum value when it is saved on the Vue issues list page.
-    const sortKey = dashboardSortKey || graphQLSortKey || defaultSortKey;
-
     return {
       filterTokens: getFilterTokens(window.location.search),
       issues: [],
@@ -129,7 +113,7 @@ export default {
       issuesError: null,
       pageInfo: {},
       pageParams: getInitialPageParams(),
-      sortKey,
+      sortKey: deriveSortKey({ sort: this.initialSort, state }),
       state: state || STATUS_OPEN,
     };
   },
@@ -180,12 +164,14 @@ export default {
     },
     dropdownItems() {
       return [
-        { href: this.rssPath, text: i18n.rssLabel },
-        { href: this.calendarPath, text: i18n.calendarLabel },
+        { href: this.rssPath, text: __('Subscribe to RSS feed') },
+        { href: this.calendarPath, text: __('Subscribe to calendar') },
       ];
     },
     emptyStateDescription() {
-      return this.hasSearch ? this.$options.i18n.noSearchResultsDescription : undefined;
+      return this.hasSearch
+        ? __('To widen your search, change or remove filters above')
+        : undefined;
     },
     emptyStateSvgPath() {
       return this.hasSearch
@@ -194,8 +180,8 @@ export default {
     },
     emptyStateTitle() {
       return this.hasSearch
-        ? this.$options.i18n.noSearchResultsTitle
-        : this.$options.i18n.noSearchNoFilterTitle;
+        ? __('Sorry, your filter produced no results')
+        : __('Please select at least one filter to see results');
     },
     hasSearch() {
       return Boolean(this.searchQuery || Object.keys(this.urlFilterParams).length);
@@ -275,7 +261,7 @@ export default {
         {
           type: TOKEN_TYPE_MILESTONE,
           title: TOKEN_TITLE_MILESTONE,
-          icon: 'clock',
+          icon: 'milestone',
           token: MilestoneToken,
           fetchMilestones: this.fetchMilestones,
           recentSuggestionsStorageKey: 'dashboard-issues-recent-tokens-milestone',
@@ -546,7 +532,6 @@ export default {
       <gl-empty-state
         :description="emptyStateDescription"
         :svg-path="emptyStateSvgPath"
-        :svg-height="150"
         :title="emptyStateTitle"
       />
     </template>

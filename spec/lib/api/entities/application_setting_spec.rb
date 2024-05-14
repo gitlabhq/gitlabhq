@@ -28,4 +28,22 @@ RSpec.describe API::Entities::ApplicationSetting do
       end
     end
   end
+
+  context 'for container registry migration-related fields' do
+    it 'returns the static value assigned' do
+      {
+        container_registry_import_max_tags_count: 0,
+        container_registry_import_max_retries: 0,
+        container_registry_import_start_max_retries: 0,
+        container_registry_import_max_step_duration: 0,
+        container_registry_pre_import_tags_rate: 0,
+        container_registry_pre_import_timeout: 0,
+        container_registry_import_timeout: 0,
+        container_registry_import_target_plan: '',
+        container_registry_import_created_before: ''
+      }.each do |field, value|
+        expect(subject[field]).to eq(value)
+      end
+    end
+  end
 end

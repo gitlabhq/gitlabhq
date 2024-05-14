@@ -1,0 +1,13 @@
+#import "~/graphql_shared/fragments/page_info.fragment.graphql"
+#import "~/organizations/shared/graphql/fragments/organization.fragment.graphql"
+
+query getOrganizations($first: Int, $last: Int, $before: String, $after: String) {
+  organizations(first: $first, last: $last, before: $before, after: $after) {
+    nodes {
+      ...Organization
+    }
+    pageInfo {
+      ...PageInfo
+    }
+  }
+}

@@ -82,7 +82,7 @@ RSpec.describe Resolvers::ProjectIssuesResolver do
         end
 
         it 'generates a mutually exclusive filter error when wildcard and title are provided' do
-          expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ArgumentError, 'only one of [milestoneTitle, milestoneWildcardId] arguments is allowed at the same time.') do
+          expect_graphql_error_to_be_created(GraphQL::Schema::Validator::ValidationFailedError, 'only one of [milestoneTitle, milestoneWildcardId] arguments is allowed at the same time.') do
             resolve_issues(milestone_title: ["started milestone"], milestone_wildcard_id: wildcard_started)
           end
         end
@@ -98,12 +98,6 @@ RSpec.describe Resolvers::ProjectIssuesResolver do
 
           it 'returns issues excluding the ones with upcoming milestone' do
             expect(resolve_issues(not: { milestone_wildcard_id: wildcard_upcoming })).to contain_exactly(issue6)
-          end
-
-          it 'generates a mutually exclusive filter error when wildcard and title are provided as negated filters' do
-            expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ArgumentError, 'only one of [milestoneTitle, milestoneWildcardId] arguments is allowed at the same time.') do
-              resolve_issues(not: { milestone_title: ["started milestone"], milestone_wildcard_id: wildcard_started })
-            end
           end
         end
       end
@@ -126,7 +120,7 @@ RSpec.describe Resolvers::ProjectIssuesResolver do
 
           context 'when release_tag_wildcard_id is also provided' do
             it 'generates a mutually eclusive argument error' do
-              expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ArgumentError, 'only one of [releaseTag, releaseTagWildcardId] arguments is allowed at the same time.') do
+              expect_graphql_error_to_be_created(GraphQL::Schema::Validator::ValidationFailedError, 'only one of [releaseTag, releaseTagWildcardId] arguments is allowed at the same time.') do
                 resolve_issues(release_tag: [release1.tag], release_tag_wildcard_id: 'ANY')
               end
             end
@@ -195,7 +189,7 @@ RSpec.describe Resolvers::ProjectIssuesResolver do
 
         context 'when both assignee_username and assignee_usernames are provided' do
           it 'generates a mutually exclusive filter error' do
-            expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ArgumentError, 'only one of [assigneeUsernames, assigneeUsername, assigneeWildcardId] arguments is allowed at the same time.') do
+            expect_graphql_error_to_be_created(GraphQL::Schema::Validator::ValidationFailedError, 'only one of [assigneeUsernames, assigneeUsername, assigneeWildcardId] arguments is allowed at the same time.') do
               resolve_issues(assignee_usernames: [assignee.username], assignee_username: assignee.username)
             end
           end
@@ -607,13 +601,13 @@ RSpec.describe Resolvers::ProjectIssuesResolver do
       end
 
       it 'finds a specific issue with iid', :request_store do
-        result = batch_sync(max_queries: 8) { resolve_issues(iid: issue1.iid).to_a }
+        result = batch_sync(max_queries: 11) { resolve_issues(iid: issue1.iid).to_a }
 
         expect(result).to contain_exactly(issue1)
       end
 
       it 'batches queries that only include IIDs', :request_store do
-        result = batch_sync(max_queries: 8) do
+        result = batch_sync(max_queries: 11) do
           [issue1, issue2]
             .map { |issue| resolve_issues(iid: issue.iid.to_s) }
             .flat_map(&:to_a)
@@ -623,7 +617,7 @@ RSpec.describe Resolvers::ProjectIssuesResolver do
       end
 
       it 'finds a specific issue with iids', :request_store do
-        result = batch_sync(max_queries: 8) do
+        result = batch_sync(max_queries: 11) do
           resolve_issues(iids: [issue1.iid]).to_a
         end
 

@@ -52,10 +52,10 @@ project.
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 You can seed issues specifically for working with the
-[Insights charts](../user/group/insights/index.md) with the
+[Insights charts](../user/project/insights/index.md) with the
 `gitlab:seed:insights:issues` task:
 
 ```shell
@@ -164,6 +164,12 @@ bundle exec rake "gitlab:seed:project_environments[project_path, seed_count, pre
 # Examples
 bundle exec rake "gitlab:seed:project_environments[flightjs/Flight]"
 bundle exec rake "gitlab:seed:project_environments[flightjs/Flight, 25, FLIGHT_ENV_]"
+```
+
+#### Seed a group with dependencies
+
+```shell
+bundle exec rake gitlab:seed:dependencies
 ```
 
 #### Seed CI variables
@@ -395,26 +401,7 @@ task, then check the dimensions of the new sprite sheet and update the
 
 ## Update project templates
 
-Starting a project from a template needs this project to be exported. On a
-up to date main branch run:
-
-```shell
-gdk start
-bundle exec rake gitlab:update_project_templates
-git checkout -b update-project-templates
-git add vendor/project_templates
-git commit
-git push -u origin update-project-templates
-```
-
-Now create a merge request and merge that to main.
-
-To update just a single template instead of all of them, specify the template name
-between square brackets. For example, for the `cluster_management` template, run:
-
-```shell
-bundle exec rake gitlab:update_project_templates\[cluster_management\]
-```
+See [contributing to project templates for GitLab team members](project_templates.md#for-gitlab-team-members).
 
 ## Generate route lists
 
@@ -579,3 +566,16 @@ This task clones the remote repository, recursively walks the file system lookin
 ending in `.pub`, parses those files as SSH public keys, and then adds the public key fingerprints
 to `output_file`. The contents of `config/security/banned_ssh_keys.yml` is read by GitLab and kept
 in memory. It is not recommended to increase the size of this file beyond 1 megabyte in size.
+
+## Output current navigation structure to YAML
+
+_This task relies on your current environment setup (licensing, feature flags, projects/groups), so output may vary from run-to-run or environment-to-environment. We may look to standardize output in a future iteration._
+
+Product, UX, and tech writing need a way to audit the entire GitLab navigation,
+yet may not be comfortable directly reviewing the code in `lib/sidebars`. You
+can dump the entire nav structure to YAML via the `gitlab:nav:dump_structure`
+Rake task:
+
+```shell
+bundle exec rake gitlab:nav:dump_structure
+```

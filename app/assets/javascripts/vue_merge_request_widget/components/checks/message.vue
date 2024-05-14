@@ -6,6 +6,7 @@ const ICON_NAMES = {
   failed: 'failed',
   inactive: 'neutral',
   success: 'success',
+  warning: 'warning',
 };
 
 export default {
@@ -36,7 +37,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-py-3 gl-pl-7">
+  <div class="gl-py-3 gl-pl-7 gl-pr-4">
     <div class="gl-display-flex">
       <status-icon :icon-name="iconName" :level="2" />
       <div class="gl-w-full gl-min-w-0">
@@ -44,6 +45,7 @@ export default {
       </div>
       <slot></slot>
       <slot v-if="check.status === 'FAILED'" name="failed"></slot>
+      <slot v-if="check.status === 'WARNING'" name="warning"></slot>
     </div>
   </div>
 </template>

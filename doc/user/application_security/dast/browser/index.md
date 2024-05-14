@@ -9,9 +9,13 @@ type: reference, howto
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Generally available](https://gitlab.com/groups/gitlab-org/-/epics/9023) in GitLab 15.7 (GitLab DAST v3.0.50).
+
+WARNING:
+The DAST version 4 browser-based analyzer is replaced by DAST version 5 in GitLab 17.0.
+For instructions on how to migrate to DAST version 5, see the [migration guide](../browser_based_4_to_5_migration_guide.md).
 
 Browser-based DAST helps you identify security weaknesses (CWEs) in your web applications. After you
 deploy your web application, it becomes exposed to new types of attacks, many of which cannot be

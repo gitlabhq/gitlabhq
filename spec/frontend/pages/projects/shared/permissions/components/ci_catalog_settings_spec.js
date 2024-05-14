@@ -7,7 +7,6 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
 
-import BetaBadge from '~/vue_shared/components/badges/beta_badge.vue';
 import catalogResourcesCreate from '~/ci/catalog/graphql/mutations/catalog_resources_create.mutation.graphql';
 import catalogResourcesDestroy from '~/ci/catalog/graphql/mutations/catalog_resources_destroy.mutation.graphql';
 import getCiCatalogSettingsQuery from '~/ci/catalog/graphql/queries/get_ci_catalog_settings.query.graphql';
@@ -55,7 +54,6 @@ describe('CiCatalogSettings', () => {
   };
 
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
-  const findBadge = () => wrapper.findComponent(BetaBadge);
   const findModal = () => wrapper.findComponent(GlModal);
   const findToggle = () => wrapper.findComponent(GlToggle);
   const findCiCatalogSettings = () => wrapper.findByTestId('ci-catalog-settings');
@@ -109,10 +107,6 @@ describe('CiCatalogSettings', () => {
       expect(findCiCatalogSettings().exists()).toBe(true);
     });
 
-    it('renders the beta badge', () => {
-      expect(findBadge().exists()).toBe(true);
-    });
-
     it('renders the toggle', () => {
       expect(findToggle().exists()).toBe(true);
     });
@@ -151,7 +145,7 @@ describe('CiCatalogSettings', () => {
 
           await setCatalogResource();
 
-          expect(showToast).toHaveBeenCalledWith('This project is now a CI/CD Catalog resource.');
+          expect(showToast).toHaveBeenCalledWith('This project is now a CI/CD Catalog project.');
         });
       });
     });
@@ -200,7 +194,7 @@ describe('CiCatalogSettings', () => {
         await removeCatalogResource();
 
         expect(showToast).toHaveBeenCalledWith(
-          'This project is no longer a CI/CD Catalog resource.',
+          'This project is no longer a CI/CD Catalog project.',
         );
       });
     });
@@ -219,10 +213,10 @@ describe('CiCatalogSettings', () => {
     it.each`
       name         | errorType                                     | jestResolver           | mockResponse                 | expectedMessage
       ${'create'}  | ${'unhandled server error with a message'}    | ${'mockRejectedValue'} | ${new Error('server error')} | ${'server error'}
-      ${'create'}  | ${'unhandled server error without a message'} | ${'mockRejectedValue'} | ${new Error()}               | ${'Unable to set project as a CI/CD Catalog resource.'}
+      ${'create'}  | ${'unhandled server error without a message'} | ${'mockRejectedValue'} | ${new Error()}               | ${'Unable to set project as a CI/CD Catalog project.'}
       ${'create'}  | ${'handled Graphql error'}                    | ${'mockResolvedValue'} | ${createGraphqlError}        | ${'graphql error'}
       ${'destroy'} | ${'unhandled server'}                         | ${'mockRejectedValue'} | ${new Error('server error')} | ${'server error'}
-      ${'destroy'} | ${'unhandled server'}                         | ${'mockRejectedValue'} | ${new Error()}               | ${'Unable to remove project as a CI/CD Catalog resource.'}
+      ${'destroy'} | ${'unhandled server'}                         | ${'mockRejectedValue'} | ${new Error()}               | ${'Unable to remove project as a CI/CD Catalog project.'}
       ${'destroy'} | ${'handled Graphql error'}                    | ${'mockResolvedValue'} | ${destroyGraphqlError}       | ${'graphql error'}
     `(
       'when $name mutation returns an $errorType',

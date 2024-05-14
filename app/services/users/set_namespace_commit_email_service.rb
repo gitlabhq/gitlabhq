@@ -20,7 +20,7 @@ module Users
         return error(_("User doesn't exist or you don't have permission to change namespace commit emails."))
       end
 
-      unless can?(target_user, :read_namespace_via_membership, namespace)
+      unless can?(target_user, :read_namespace, namespace)
         return error(_("Namespace doesn't exist or you don't have permission."))
       end
 

@@ -15,6 +15,7 @@ module API
       expose :releases_events, documentation: { type: 'boolean' }
       expose :push_events_branch_filter, documentation: { type: 'string', example: 'my-branch-*' }
       expose :emoji_events, documentation: { type: 'boolean' }
+      expose :resource_access_token_events, documentation: { type: 'boolean' }
     end
   end
 end

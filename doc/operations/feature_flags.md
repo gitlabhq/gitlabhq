@@ -8,9 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
-
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212318) from GitLab Premium to GitLab Free in 13.5.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 With feature flags, you can deploy your application's new features to production in smaller batches.
 You can toggle a feature on and off to subsets of users, helping you achieve Continuous Delivery.
@@ -18,7 +16,8 @@ Feature flags help reduce risk, allowing you to do controlled testing, and separ
 delivery from customer launch.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an example of feature flags in action, see [Feature Flags configuration, instrumentation and use](https://www.youtube.com/watch?v=ViA6suScxkE).
+For an example of feature flags in action, see [Eliminating risk with feature flags](https://www.youtube.com/watch?v=U9WqoK9froI).
+<!-- Video published on 2024-02-01 -->
 
 For a click-through demo, see [Feature Flags](https://go.gitlab.com/YKuzLt).
 <!-- Demo published on 2023-07-13 -->
@@ -53,12 +52,10 @@ To create and enable a feature flag:
      and **Environments** (defaults to all environments).
 1. Select **Create feature flag**.
 
-To change these settings, select **Edit** (**{pencil}**).
+To change these settings, select **Edit** (**{pencil}**)
 next to any feature flag in the list.
 
 ## Maximum number of feature flags
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/254379) in GitLab 13.5.
 
 The maximum number of feature flags per project on self-managed GitLab instances
 is 200. For GitLab SaaS, the maximum number is determined by [tier](https://about.gitlab.com/pricing/):
@@ -70,12 +67,6 @@ is 200. For GitLab SaaS, the maximum number is determined by [tier](https://abou
 | Ultimate | 200                              | 200                                      |
 
 ## Feature flag strategies
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35555) in GitLab 13.0.
-> - It was deployed behind a feature flag, disabled by default.
-> - It became [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/214684) in GitLab 13.2.
-> - It's recommended for production use.
-> - It's enabled on GitLab.com.
 
 You can apply a feature flag strategy across multiple environments, without defining
 the strategy multiple times.
@@ -98,8 +89,6 @@ and selecting **Edit** (**{pencil}**).
 Enables the feature for all users. It uses the Standard (`default`) Unleash activation [strategy](https://docs.getunleash.io/reference/activation-strategies#standard).
 
 ### Percent Rollout
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/43340) in GitLab 13.5.
 
 Enables the feature for a percentage of page views, with configurable consistency
 of behavior. This consistency is also known as stickiness. It uses the
@@ -149,9 +138,6 @@ ID for the feature to be enabled. See the [Ruby example](#ruby-application-examp
 
 ### User IDs
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/8240) in GitLab 12.2.
-> - [Updated](https://gitlab.com/gitlab-org/gitlab/-/issues/34363) to be defined per environment in GitLab 12.6.
-
 Enables the feature for a list of target users. It is implemented
 using the Unleash UserIDs (`userWithId`) activation [strategy](https://docs.getunleash.io/reference/activation-strategies#userids).
 
@@ -165,8 +151,6 @@ target users. See the [Ruby example](#ruby-application-example) below.
 
 ### User List
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35930) in GitLab 13.1.
-
 Enables the feature for lists of users created [in the feature flags UI](#create-a-user-list), or with the [feature flag user list API](../api/feature_flag_user_lists.md).
 Similar to [User IDs](#user-ids), it uses the Unleash UsersIDs (`userWithId`) activation [strategy](https://docs.getunleash.io/reference/activation-strategies#userids).
 
@@ -178,9 +162,6 @@ For example:
 - `Full-user-list-excluding-B-users` = `User1A, User2A, User3A, ...`
 
 #### Create a user list
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13308) in GitLab 13.3.
-> - [Updated](https://gitlab.com/gitlab-org/gitlab/-/issues/322425) in GitLab 14.0.
 
 To create a user list:
 
@@ -196,8 +177,6 @@ When viewing a list, you can rename it by selecting **Edit** (**{pencil}**).
 
 #### Add users to a user list
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13308) in GitLab 13.3.
-
 To add users to a user list:
 
 1. On the left sidebar, select **Search or go to** and find your project.
@@ -210,8 +189,6 @@ To add users to a user list:
 
 #### Remove users from a user list
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13308) in GitLab 13.3.
-
 To remove users from a user list:
 
 1. On the left sidebar, select **Search or go to** and find your project.
@@ -223,9 +200,7 @@ To remove users from a user list:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/300299) in GitLab 14.4.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 To remove the feature flag from the code during cleanup, find any project references to it.
 
@@ -239,18 +214,13 @@ To search for code references of a feature flag:
 
 ## Disable a feature flag for a specific environment
 
-In [GitLab 13.0 and earlier](https://gitlab.com/gitlab-org/gitlab/-/issues/8621),
-to disable a feature flag for a specific environment:
+To disable a feature flag for a specific environment:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Deploy > Feature flags**.
 1. For the feature flag you want to disable, select **Edit** (**{pencil}**).
 1. To disable the flag:
-
-   - In GitLab 13.0 and earlier: Slide the Status toggle for the environment. Or, to delete the
-     environment spec, on the right, select **Remove (X)**.
-   - In GitLab 13.1 and later: For each strategy it applies to, under **Environments**, delete the environment.
-
+   - For each strategy it applies to, under **Environments**, delete the environment.
 1. Select **Save changes**.
 
 ## Disable a feature flag for all environments
@@ -412,11 +382,7 @@ this to GitLab on behalf of the client, which means the client can't override it
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36617) in GitLab 13.2.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/251234) in GitLab 13.5.
-> - Showing related feature flags in issues [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/220333) in GitLab 14.1.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 You can link related issues to a feature flag. In the feature flag **Linked issues** section,
 select the `+` button and input the issue reference number or the full URL of the issue.

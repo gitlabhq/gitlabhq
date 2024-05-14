@@ -26,7 +26,7 @@ module Lfs
 
     def create_lock!
       lock = project.lfs_file_locks.create!(user: current_user,
-                                            path: params[:path])
+        path: params[:path])
 
       success(http_status: 201, lock: lock)
     end

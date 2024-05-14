@@ -51,10 +51,6 @@ module Ci
         job_timeout_source: 4
     }
 
-    def self.use_partition_id_filter?
-      Ci::Pipeline.use_partition_id_filter?
-    end
-
     def update_timeout_state
       timeout = timeout_with_highest_precedence
 
@@ -64,7 +60,7 @@ module Ci
     end
 
     def set_cancel_gracefully
-      runtime_runner_features.merge!({ cancel_gracefully: true })
+      runtime_runner_features[:cancel_gracefully] = true
     end
 
     def cancel_gracefully?

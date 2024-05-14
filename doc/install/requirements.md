@@ -38,37 +38,22 @@ NOTE:
 
 CPU requirements are dependent on the number of users and expected workload. Your exact needs may be more, depending on your workload. Your workload is influenced by factors such as - but not limited to - how active your users are, how much automation you use, mirroring, and repository/change size.
 
-The following is the recommended minimum CPU hardware guidance for a handful of example GitLab user base sizes.
+Refer below for CPU recommendations depending on user count / load:
 
-- **4 cores** is the **recommended** minimum number of cores and supports up to 500 users
-- 8 cores supports up to 1000 users
-- More users? Consult the [reference architectures page](../administration/reference_architectures/index.md)
+- Up to 20 Requests per Second (RPS) or 1000 users - 8 vCPU.
+- More users or load? Consult the [reference architectures page](../administration/reference_architectures/index.md).
 
 ### Memory
 
 Memory requirements are dependent on the number of users and expected workload. Your exact needs may be more, depending on your workload. Your workload is influenced by factors such as - but not limited to - how active your users are, how much automation you use, mirroring, and repository/change size.
 
-The following is the recommended minimum Memory hardware guidance for a handful of example GitLab user base sizes.
+Refer below for Memory recommendations depending on user count / load:
 
-- **4 GB RAM** is the **required** minimum memory size and supports up to 500 users
-- 8 GB RAM supports up to 1000 users
-- More users? Consult the [reference architectures page](../administration/reference_architectures/index.md)
-
-For smaller installations, you should:
-
-- Have at least 2 GB of swap on your server, even if you have enough available RAM. Having swap helps to reduce the chance of
-  errors occurring if your available memory changes.
-- Configure the kernel's swappiness setting to a low value like `10` to make the most of your RAM while still having the swap available when needed.
-
-For larger installations that follow our reference architectures, you [shouldn't configure swap](../administration/reference_architectures/index.md#no-swap).
+- Up to 20 Requests per Second (RPS) or 1000 users - 8 GB (Minimum), 16 GB (Recommended).
+- More users or load? Consult the [reference architectures page](../administration/reference_architectures/index.md).
 
 NOTE:
-Although excessive swapping is undesired and degrades performance, it is an
-extremely important last resort against out-of-memory conditions. During
-unexpected system load, such as OS updates or other services on the same host,
-peak memory load spikes could be much higher than average. Having plenty of swap
-helps avoid the Linux OOM killer unsafely terminating a potentially critical
-process, such as PostgreSQL, which can have disastrous consequences.
+While not recommended, in certain circumstances GitLab may run in a [memory constrained environment](https://docs.gitlab.com/omnibus/settings/memory_constrained_envs.html).
 
 ## Database
 
@@ -115,9 +100,6 @@ The following managed PostgreSQL services are known to be incompatible and shoul
 |----------------|-------------------------------------------------------|
 | 14.4+          | Amazon Aurora (see [14.4.0](../update/versions/gitlab_14_changes.md#1440)) |
 
-NOTE:
-Support for [PostgreSQL 9.6 and 10 was removed in GitLab 13.0](https://about.gitlab.com/releases/2020/05/22/gitlab-13-0-released/#postgresql-11-is-now-the-minimum-required-version-to-install-gitlab) so that GitLab can benefit from PostgreSQL 11 improvements, such as partitioning.
-
 #### Additional requirements for GitLab Geo
 
 If you're using [GitLab Geo](../administration/geo/index.md), we strongly recommend running instances installed by using the Linux package or using
@@ -132,12 +114,14 @@ It is recommended to review the [full requirements for running Geo](../administr
 Changes to locale data in `glibc` means that PostgreSQL database files are not fully compatible
 between different OS releases.
 
-To avoid index corruption, [check for locale compatibility](../administration/geo/replication/troubleshooting.md#check-os-locale-data-compatibility)
+To avoid index corruption, [check for locale compatibility](../administration/geo/replication/troubleshooting/common.md#check-os-locale-data-compatibility)
 when:
 
 - Moving binary PostgreSQL data between servers.
 - Upgrading your Linux distribution.
 - Updating or changing third party container images.
+
+For more information, see how to [upgrade operating systems for PostgreSQL](../administration/postgresql/upgrading_os.md).
 
 #### Gitaly Cluster database requirements
 
@@ -315,9 +299,6 @@ are configured so that a **single job** runs in a **single instance** with:
 - 3.75 GB of RAM.
 
 ## Supported web browsers
-
-WARNING:
-With GitLab 13.0 (May 2020) we have removed official support for Internet Explorer 11.
 
 GitLab supports the following web browsers:
 

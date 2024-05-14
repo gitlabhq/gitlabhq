@@ -15,7 +15,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
   let(:issue_description) { 'closed' }
 
   let_it_be(:project, reload: true) do
-    create(:project, :public, creator_id: owner.id, namespace: owner.namespace)
+    create(:project, :public, creator_id: owner.id, namespace: owner.namespace, reporters: user, guests: guest)
   end
 
   let!(:closed_issue) do
@@ -69,11 +69,6 @@ RSpec.describe API::Issues, feature_category: :team_planning do
   let(:updated_title) { 'updated title' }
   let(:issue_path) { "/projects/#{project.id}/issues/#{issue.iid}" }
   let(:api_for_user) { api(issue_path, user) }
-
-  before_all do
-    project.add_reporter(user)
-    project.add_guest(guest)
-  end
 
   before do
     stub_licensed_features(multiple_issue_assignees: false, issue_weights: false)
@@ -454,7 +449,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
 
   describe 'PUT /projects/:id/issues/:issue_iid to update due date' do
     it 'creates a new project issue', :aggregate_failures do
-      due_date = 2.weeks.from_now.strftime('%Y-%m-%d')
+      due_date = 2.weeks.from_now.to_date.iso8601
 
       put api_for_user, params: { due_date: due_date }
 

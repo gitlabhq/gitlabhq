@@ -86,6 +86,8 @@ module Gitlab
 
       full_key = cache_key(key)
 
+      hash = standardize_hash(hash)
+
       with do |redis|
         results = redis.pipelined do |pipeline|
           # Set each hash key to the provided value

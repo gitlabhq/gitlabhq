@@ -57,11 +57,12 @@ RSpec.describe Gitlab::SidekiqMiddleware, feature_category: :shared do
     let(:middleware_expected_args) { [a_kind_of(worker_class), hash_including({ 'args' => job_args }), queue] }
     let(:all_sidekiq_middlewares) do
       [
+        ::Gitlab::SidekiqMiddleware::ShardAwarenessValidator,
         ::Gitlab::SidekiqMiddleware::Monitor,
         ::Labkit::Middleware::Sidekiq::Server,
+        ::Gitlab::SidekiqMiddleware::RequestStoreMiddleware,
         ::Gitlab::SidekiqMiddleware::ServerMetrics,
         ::Gitlab::SidekiqMiddleware::ArgumentsLogger,
-        ::Gitlab::SidekiqMiddleware::RequestStoreMiddleware,
         ::Gitlab::SidekiqMiddleware::ExtraDoneLogMetadata,
         ::Gitlab::SidekiqMiddleware::BatchLoader,
         ::Gitlab::SidekiqMiddleware::InstrumentationLogger,
@@ -88,6 +89,7 @@ RSpec.describe Gitlab::SidekiqMiddleware, feature_category: :shared do
           Sidekiq::Testing.inline! { example.run }
         end
       end
+
       let(:gitaly_histogram) { double(:gitaly_histogram) }
 
       before do

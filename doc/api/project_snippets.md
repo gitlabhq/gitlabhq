@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 ## Snippet visibility level
 
@@ -72,6 +72,8 @@ Parameters:
   },
   "updated_at": "2012-06-28T10:52:04Z",
   "created_at": "2012-06-28T10:52:04Z",
+  "imported": false,
+  "imported_from": "none",
   "project_id": 1,
   "web_url": "http://example.com/example/example/snippets/1",
   "raw_url": "http://example.com/example/example/snippets/1/raw"

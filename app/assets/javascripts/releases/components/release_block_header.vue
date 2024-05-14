@@ -6,7 +6,7 @@ import { BACK_URL_PARAM } from '~/releases/constants';
 
 export default {
   i18n: {
-    editButton: __('Edit this release'),
+    editButton: __('Edit release'),
     historical: __('Historical release'),
     historicalTooltip: __(
       'This release was created with a date in the past. Evidence collection at the moment of the release is unavailable.',
@@ -48,13 +48,16 @@ export default {
 </script>
 
 <template>
-  <div class="card-header d-flex gl-align-items-center bg-white pr-0">
-    <h2 class="card-title my-2 mr-auto">
-      <gl-link v-if="selfLink" :href="selfLink">
+  <div class="gl-display-flex gl-align-items-center gl-justify-content-space-between gl-w-full">
+    <h2
+      class="gl-new-card-title gl-heading-3 gl-m-0! gl-display-flex gl-gap-3"
+      data-testid="release-block-title"
+    >
+      <gl-link v-if="selfLink" class="gl-text-black-normal" :href="selfLink">
         {{ release.name }}
       </gl-link>
       <template v-else>
-        {{ release.name }}
+        <span class="gl-text-black-normal">{{ release.name }}</span>
         <gl-icon
           v-gl-tooltip
           name="lock"
@@ -63,31 +66,30 @@ export default {
               'Private - Guest users are not allowed to view detailed release information like title and source code.',
             )
           "
-          class="text-secondary gl-mb-2"
+          class="gl-text-secondary"
         />
       </template>
-      <gl-badge v-if="release.upcomingRelease" variant="warning" class="align-middle">{{
+      <gl-badge v-if="release.upcomingRelease" variant="warning" class="gl-align-self-center">{{
         __('Upcoming Release')
       }}</gl-badge>
       <gl-badge
         v-else-if="release.historicalRelease"
         v-gl-tooltip
         :title="$options.i18n.historicalTooltip"
-        class="gl-vertical-align-middle"
+        class="gl-align-self-center"
       >
         {{ $options.i18n.historical }}
       </gl-badge>
     </h2>
     <gl-button
       v-if="editLink"
-      v-gl-tooltip
       category="primary"
+      size="small"
       variant="default"
-      icon="pencil"
-      class="gl-mr-3 js-edit-button gl-ml-3 gl-pb-3"
-      :title="$options.i18n.editButton"
-      :aria-label="$options.i18n.editButton"
+      class="js-edit-button"
       :href="editLink"
-    />
+    >
+      {{ $options.i18n.editButton }}
+    </gl-button>
   </div>
 </template>

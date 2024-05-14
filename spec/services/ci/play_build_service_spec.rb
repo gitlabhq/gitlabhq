@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Ci::PlayBuildService, '#execute', feature_category: :continuous_integration do
-  let(:user) { create(:user, developer_projects: [project]) }
+  let(:user) { create(:user, developer_of: project) }
   let(:project) { create(:project) }
   let(:pipeline) { create(:ci_pipeline, project: project) }
   let(:build) { create(:ci_build, :manual, pipeline: pipeline) }

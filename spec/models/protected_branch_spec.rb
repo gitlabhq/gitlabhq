@@ -297,15 +297,15 @@ RSpec.describe ProtectedBranch, feature_category: :source_code_management do
 
       context 'when the group has set their own default_branch_protection level' do
         where(:default_branch_protection_level, :result) do
-          Gitlab::Access::PROTECTION_NONE          | false
-          Gitlab::Access::PROTECTION_DEV_CAN_PUSH  | false
-          Gitlab::Access::PROTECTION_DEV_CAN_MERGE | true
-          Gitlab::Access::PROTECTION_FULL          | true
+          Gitlab::Access::BranchProtection.protection_none                    | false
+          Gitlab::Access::BranchProtection.protection_partial                 | false
+          Gitlab::Access::BranchProtection.protected_against_developer_pushes | true
+          Gitlab::Access::BranchProtection.protected_fully                    | true
         end
 
         with_them do
           it 'protects the default branch based on the default branch protection setting of the group' do
-            expect(project.namespace).to receive(:default_branch_protection).and_return(default_branch_protection_level)
+            expect(project.namespace).to receive(:default_branch_protection_settings).and_return(default_branch_protection_level)
 
             expect(described_class.protected?(project, 'master')).to eq(result)
           end
@@ -314,15 +314,15 @@ RSpec.describe ProtectedBranch, feature_category: :source_code_management do
 
       context 'when the group has not set their own default_branch_protection level' do
         where(:default_branch_protection_level, :result) do
-          Gitlab::Access::PROTECTION_NONE          | false
-          Gitlab::Access::PROTECTION_DEV_CAN_PUSH  | false
-          Gitlab::Access::PROTECTION_DEV_CAN_MERGE | true
-          Gitlab::Access::PROTECTION_FULL          | true
+          Gitlab::Access::BranchProtection.protection_none                    | false
+          Gitlab::Access::BranchProtection.protection_partial                 | false
+          Gitlab::Access::BranchProtection.protected_against_developer_pushes | true
+          Gitlab::Access::BranchProtection.protected_fully                    | true
         end
 
         with_them do
           before do
-            stub_application_setting(default_branch_protection: default_branch_protection_level)
+            stub_application_setting(default_branch_protection_defaults: default_branch_protection_level)
           end
 
           it 'protects the default branch based on the instance level default branch protection setting' do

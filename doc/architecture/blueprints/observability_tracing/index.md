@@ -64,7 +64,7 @@ Much of the proposed architecture already exists and is in operation for GitLab.
 
  The following diagram outlines the architecture for GitLab Observability Backend and how clients, including the GitLab UI, will interact with it.
 
-<img src="./arch.png">
+<img src="./arch.png" alt="">
 
 ### Key Components
 

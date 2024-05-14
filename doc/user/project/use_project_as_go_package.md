@@ -8,7 +8,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Prerequisites:
 
@@ -28,7 +28,7 @@ Prerequisites:
 - Your GitLab instance must be accessible with HTTPS.
 - You must have a [personal access token](../profile/personal_access_tokens.md) with `read_api` scope.
 
-To authenticate Go requests, create a [`.netrc`](https://everything.curl.dev/usingcurl/netrc) file with the following information:
+To authenticate Go requests, create a [`.netrc`](https://everything.curl.dev/usingcurl/netrc.html) file with the following information:
 
 ```plaintext
 machine gitlab.example.com

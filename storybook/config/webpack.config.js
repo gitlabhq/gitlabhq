@@ -95,22 +95,38 @@ function sassSmartImporter(url, prev) {
 }
 
 const sassLoaderOptions = {
-  functions: {
-    'image-url($url)': function sassImageUrlStub() {
-      return new sass.types.String(TRANSPARENT_1X1_PNG);
+  sassOptions: {
+    functions: {
+      'image-url($url)': function sassImageUrlStub() {
+        return new sass.types.String(TRANSPARENT_1X1_PNG);
+      },
+      'asset_path($url)': function sassAssetPathStub() {
+        return new sass.types.String(TRANSPARENT_1X1_PNG);
+      },
+      'asset_url($url)': function sassAssetUrlStub() {
+        return new sass.types.String(TRANSPARENT_1X1_PNG);
+      },
+      'url($url)': function sassUrlStub() {
+        return new sass.types.String(TRANSPARENT_1X1_PNG);
+      },
     },
-    'asset_path($url)': function sassAssetPathStub() {
-      return new sass.types.String(TRANSPARENT_1X1_PNG);
-    },
-    'asset_url($url)': function sassAssetUrlStub() {
-      return new sass.types.String(TRANSPARENT_1X1_PNG);
-    },
-    'url($url)': function sassUrlStub() {
-      return new sass.types.String(TRANSPARENT_1X1_PNG);
-    },
+    includePaths: SASS_INCLUDE_PATHS,
+    importer: sassSmartImporter,
   },
-  includePaths: SASS_INCLUDE_PATHS,
-  importer: sassSmartImporter,
+};
+
+// Some dependencies need to be transpiled for webpack to be happy
+const transpileDependencyConfig = {
+  loader: 'babel-loader',
+  options: {
+    presets: [['@babel/preset-env', { targets: { esmodules: true } }]],
+    plugins: [
+      // See: https://gitlab.com/gitlab-org/gitlab/-/issues/336216
+      '@babel/plugin-proposal-optional-chaining',
+      // See: https://gitlab.com/gitlab-org/gitlab/-/issues/336216
+      '@babel/plugin-proposal-nullish-coalescing-operator',
+    ],
+  },
 };
 
 module.exports = function storybookWebpackConfig({ config }) {
@@ -150,6 +166,10 @@ module.exports = function storybookWebpackConfig({ config }) {
       options: {
         esModule: false,
       },
+    },
+    {
+      test: /marked\/.*\.js?$/,
+      use: transpileDependencyConfig,
     },
   ];
 

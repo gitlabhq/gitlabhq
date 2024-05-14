@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Create' do
-    describe 'Repository tags', :reliable, product_group: :source_code, quarantine: {
+    describe 'Repository tags', :blocking, product_group: :source_code, quarantine: {
       type: :flaky,
       issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/438349",
       only: { job: /gdk-qa-.*/ }
@@ -41,7 +41,7 @@ module QA
 
           Page::Project::Tag::New.perform do |new_tag|
             expect(new_tag).to have_content('You are not allowed to create this tag as it is protected.')
-            expect(new_tag).to have_element('create-tag-button')
+            expect(new_tag).to have_element('data-testid': 'create-tag-button')
           end
         end
       end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequestCurrentUserEntity do
+RSpec.describe MergeRequestCurrentUserEntity, feature_category: :code_review_workflow do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
   let(:request) { EntityRequest.new(project: project, current_user: user) }

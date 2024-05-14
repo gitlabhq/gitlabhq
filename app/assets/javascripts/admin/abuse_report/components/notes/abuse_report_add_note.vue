@@ -10,9 +10,9 @@ export default {
   i18n: {
     reply: __('Reply…'),
     replyToComment: __('Reply to comment'),
-    commentError: __('Your comment could not be submitted because %{reason}.'),
+    commentError: __('Comment could not be submitted: %{reason}.'),
     genericError: __(
-      'Your comment could not be submitted! Please check your network connection and try again.',
+      'Comment could not be submitted. Please check your network connection and try again.',
     ),
   },
   components: {

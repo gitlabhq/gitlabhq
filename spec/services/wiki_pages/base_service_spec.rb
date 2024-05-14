@@ -7,22 +7,19 @@ RSpec.describe WikiPages::BaseService, feature_category: :wiki do
   let(:user) { double('user') }
 
   describe '#increment_usage' do
-    counter = Gitlab::UsageDataCounters::WikiPageCounter
-    error = counter::UnknownEvent
-
     let(:subject) { bad_service_class.new(container: project, current_user: user) }
 
-    context 'the class implements usage_counter_action incorrectly' do
+    context 'the class implements internal_event_name incorrectly' do
       let(:bad_service_class) do
         Class.new(described_class) do
-          def usage_counter_action
+          def internal_event_name
             :bad_event
           end
         end
       end
 
       it 'raises an error on unknown events' do
-        expect { subject.send(:increment_usage) }.to raise_error(error)
+        expect { subject.send(:increment_usage) }.to raise_error(Gitlab::InternalEvents::UnknownEventError)
       end
     end
   end

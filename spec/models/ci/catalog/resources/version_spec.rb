@@ -3,13 +3,27 @@
 require 'spec_helper'
 
 RSpec.describe Ci::Catalog::Resources::Version, type: :model, feature_category: :pipeline_composition do
-  include_context 'when there are catalog resources with versions'
+  using RSpec::Parameterized::TableSyntax
+
+  let_it_be(:current_user) { create(:user) }
+  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:resource) { create(:ci_catalog_resource, project: project) }
+  let_it_be(:minor_release) { create(:release, project: project, tag: '1.1.0', created_at: Date.yesterday - 1.day) }
+  let_it_be(:major_release) { create(:release, project: project, tag: '2.0.0', created_at: Date.yesterday) }
+  let_it_be(:patch) { create(:release, project: project, tag: 'v1.1.3', created_at: Date.today, sha: 'patch_sha') }
+  let!(:v1_1_0) do
+    create(:ci_catalog_resource_version, semver: '1.1.0', catalog_resource: resource, release: minor_release)
+  end
+
+  let!(:v1_1_3) { create(:ci_catalog_resource_version, semver: 'v1.1.3', catalog_resource: resource, release: patch) }
+  let!(:v2_0_0) do
+    create(:ci_catalog_resource_version, semver: '2.0.0', catalog_resource: resource, release: major_release)
+  end
 
   it { is_expected.to belong_to(:release) }
   it { is_expected.to belong_to(:catalog_resource).class_name('Ci::Catalog::Resource') }
   it { is_expected.to belong_to(:project) }
   it { is_expected.to have_many(:components).class_name('Ci::Catalog::Resources::Component') }
-
   it { is_expected.to delegate_method(:sha).to(:release) }
   it { is_expected.to delegate_method(:author_id).to(:release) }
 
@@ -17,135 +31,146 @@ RSpec.describe Ci::Catalog::Resources::Version, type: :model, feature_category: 
     it { is_expected.to validate_presence_of(:release) }
     it { is_expected.to validate_presence_of(:catalog_resource) }
     it { is_expected.to validate_presence_of(:project) }
+
+    describe 'semver validation' do
+      where(:version, :valid, :semver_major, :semver_minor, :semver_patch, :semver_prerelease) do
+        '1'          | false | nil | nil | nil | nil
+        '1.2'        | false | nil | nil | nil | nil
+        '1.2.3'      | true  | 1   | 2   | 3   | nil
+        'v1.2.3'     | true  | 1   | 2   | 3   | nil
+        'V1.2.3'     | false | nil | nil | nil | nil
+        '1.2.3-beta' | true  | 1   | 2   | 3   | 'beta'
+        '1.2.3.beta' | true  | nil | nil | nil | nil
+      end
+
+      with_them do
+        let(:catalog_version) { build(:ci_catalog_resource_version, semver: version) }
+
+        it do
+          expect(catalog_version.semver_major).to be semver_major
+          expect(catalog_version.semver_minor).to be semver_minor
+          expect(catalog_version.semver_patch).to be semver_patch
+          expect(catalog_version.semver_prerelease).to eq semver_prerelease
+        end
+      end
+    end
   end
 
-  describe '.for_catalog resources' do
-    it 'returns versions for the given catalog resources' do
-      versions = described_class.for_catalog_resources([resource1, resource2])
+  describe 'with multiple catalog resources' do
+    let_it_be(:project2) { create(:project, :catalog_resource_with_components) }
+    let_it_be(:resource2) { create(:ci_catalog_resource, project: project2) }
+    let_it_be(:release_v3) { create(:release, tag: '3.0.0', project: project2, created_at: Date.yesterday) }
+    let_it_be(:v3_0_0) do
+      create(:ci_catalog_resource_version, catalog_resource: resource2, semver: '3.0.0', release: release_v3)
+    end
 
-      expect(versions).to match_array([v1_0, v1_1, v2_0, v2_1])
+    describe '.for_catalog resources' do
+      it 'returns versions for the given catalog resources' do
+        versions = described_class.for_catalog_resources([resource, resource2])
+
+        expect(versions).to match_array([v1_1_3, v2_0_0, v1_1_0, v3_0_0])
+      end
+    end
+
+    describe '.versions_for_catalog_resources' do
+      subject { described_class.versions_for_catalog_resources([resource, resource2]) }
+
+      it 'returns versions for each catalog resource ordered by semantic version' do
+        is_expected.to match_array([v3_0_0, v2_0_0, v1_1_3, v1_1_0])
+      end
+    end
+  end
+
+  describe '.with_semver' do
+    subject { described_class.with_semver }
+
+    it 'excludes non semver versions' do
+      v1_1_3.semver_major = nil
+      v1_1_3.save!(validate: false)
+
+      is_expected.to match_array([v2_0_0, v1_1_0])
+    end
+  end
+
+  describe '.latest' do
+    context 'when providing the ~latest tag' do
+      it 'returns the latest version' do
+        latest_version = described_class.latest
+
+        expect(latest_version).to eq(v2_0_0)
+      end
+    end
+
+    context 'when providing only a major version number' do
+      it 'returns the latest for the given major version' do
+        latest_major_version = described_class.latest('1')
+
+        expect(latest_major_version).to eq(v1_1_3)
+      end
+    end
+
+    context 'when providing a major and minor version number' do
+      it 'returns the latest for the given minor version' do
+        latest_minor_version = described_class.latest('1', '1')
+
+        expect(latest_minor_version).to eq(v1_1_3)
+      end
+    end
+
+    context 'when providing only a minor version but no major version' do
+      it 'raises an error' do
+        expect { described_class.latest(nil, '1') }
+        .to raise_error(ArgumentError, 'semver minor version used without major version')
+      end
     end
   end
 
   describe '.by_name' do
     it 'returns the version that matches the name' do
-      versions = described_class.by_name('v1.0')
+      versions = described_class.by_name('1.1.0')
 
       expect(versions.count).to eq(1)
-      expect(versions.first.name).to eq('v1.0')
-    end
-
-    context 'when no version matches the name' do
-      it 'returns empty response' do
-        versions = described_class.by_name('does_not_exist')
-
-        expect(versions).to be_empty
-      end
+      expect(versions.first.name).to eq('1.1.0')
     end
   end
 
-  describe '.order_by_created_at_asc' do
-    it 'returns versions ordered by created_at ascending' do
-      versions = described_class.order_by_created_at_asc
+  describe '.by_sha' do
+    it 'returns the version that matches the sha' do
+      versions = described_class.by_sha('patch_sha')
 
-      expect(versions).to eq([v2_1, v2_0, v1_1, v1_0])
-    end
-  end
-
-  describe '.order_by_created_at_desc' do
-    it 'returns versions ordered by created_at descending' do
-      versions = described_class.order_by_created_at_desc
-
-      expect(versions).to eq([v1_0, v1_1, v2_0, v2_1])
-    end
-  end
-
-  describe '.order_by_released_at_asc' do
-    it 'returns versions ordered by released_at ascending' do
-      versions = described_class.order_by_released_at_asc
-
-      expect(versions).to eq([v1_0, v1_1, v2_0, v2_1])
-    end
-  end
-
-  describe '.order_by_released_at_desc' do
-    it 'returns versions ordered by released_at descending' do
-      versions = described_class.order_by_released_at_desc
-
-      expect(versions).to eq([v2_1, v2_0, v1_1, v1_0])
-    end
-  end
-
-  describe '.latest' do
-    subject { described_class.latest }
-
-    it 'returns the latest version by released date' do
-      is_expected.to eq(v2_1)
-    end
-
-    context 'when there are no versions' do
-      it 'returns nil' do
-        resource1.versions.delete_all(:delete_all)
-        resource2.versions.delete_all(:delete_all)
-
-        is_expected.to be_nil
-      end
-    end
-  end
-
-  describe '.latest_for_catalog resources' do
-    subject { described_class.latest_for_catalog_resources([resource1, resource2]) }
-
-    it 'returns the latest version for each catalog resource' do
-      is_expected.to match_array([v1_1, v2_1])
-    end
-
-    context 'when one catalog resource does not have versions' do
-      it 'returns the latest version of only the catalog resource with versions' do
-        resource1.versions.delete_all(:delete_all)
-
-        is_expected.to match_array([v2_1])
-      end
-    end
-
-    context 'when no catalog resource has versions' do
-      it 'returns empty response' do
-        resource1.versions.delete_all(:delete_all)
-        resource2.versions.delete_all(:delete_all)
-
-        is_expected.to be_empty
-      end
+      expect(versions.count).to eq(1)
+      expect(versions.first.sha).to eq('patch_sha')
     end
   end
 
   describe '#name' do
-    it 'is equivalent to release.tag' do
-      v1_0.release.update!(name: 'Release v1.0')
-
-      expect(v1_0.name).to eq(v1_0.release.tag)
+    it 'is equivalent to semver' do
+      expect(v1_1_0.name).to eq(v1_1_0.semver.to_s)
     end
   end
 
   describe '#commit' do
-    subject(:commit) { v1_0.commit }
+    subject(:commit) { v1_1_0.commit }
 
     it 'returns a commit' do
       is_expected.to be_a(Commit)
     end
-
-    context 'when the sha is nil' do
-      it 'returns nil' do
-        v1_0.release.update!(sha: nil)
-
-        is_expected.to be_nil
-      end
-    end
   end
 
   describe '#readme' do
+    before_all do
+      project.repository.create_branch('patch_v1_1_2', project.default_branch)
+      project.repository.create_file(
+        current_user, 'README.md', 'Patch v1.2.3', message: 'Update', branch_name: 'patch_v1_2_3')
+      project.repository.add_tag(current_user, '1.2.3', 'patch_v1_2_3')
+    end
+
     it 'returns the correct readme for the version' do
-      expect(v1_0.readme.data).to include('Readme v1.0')
-      expect(v1_1.readme.data).to include('Readme v1.1')
+      v1_2_3 = create(:release, :with_catalog_resource_version, project: project, tag: '1.2.3',
+        sha: project.commit('1.2.3').sha)
+
+      expect(v1_1_0.readme.data).to include('testme')
+      expect(v1_2_3.catalog_resource_version.readme.data).to include('Patch v1.2.3')
     end
   end
 

@@ -4,7 +4,7 @@ import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import TrackEventDirective from '~/vue_shared/directives/track_event';
 import { trackClickErrorLinkToSentryOptions } from '../events_tracking';
 
-const CARD_CLASS = 'gl-mr-7 gl-w-15p gl-min-w-fit-content';
+const CARD_CLASS = 'gl-mr-7 gl-w-3/20 gl-min-w-fit-content';
 const HEADER_CLASS =
   'gl-p-2 gl-font-weight-bold gl-display-flex gl-justify-content-center gl-align-items-center';
 const BODY_CLASS =
@@ -74,9 +74,7 @@ export default {
         </template>
       </gl-card>
 
-      <!-- user count is currently not supported for integrated error tracking https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/2345 -->
       <gl-card
-        v-if="!error.integrated"
         :class="$options.CARD_CLASS"
         :body-class="$options.BODY_CLASS"
         :header-class="$options.HEADER_CLASS"

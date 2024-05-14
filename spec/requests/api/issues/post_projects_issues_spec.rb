@@ -5,12 +5,12 @@ require 'spec_helper'
 RSpec.describe API::Issues, :aggregate_failures, feature_category: :team_planning do
   let_it_be(:user) { create(:user) }
   let_it_be(:project, reload: true) do
-    create(:project, :public, creator_id: user.id, namespace: user.namespace)
+    create(:project, :public, creator_id: user.id, namespace: user.namespace, reporters: user)
   end
 
   let_it_be(:user2) { create(:user) }
   let_it_be(:non_member) { create(:user) }
-  let_it_be(:guest) { create(:user) }
+  let_it_be(:guest) { create(:user, guest_of: project) }
   let_it_be(:author) { create(:author) }
   let_it_be(:milestone) { create(:milestone, title: '1.0.0', project: project) }
   let_it_be(:assignee) { create(:assignee) }
@@ -63,11 +63,6 @@ RSpec.describe API::Issues, :aggregate_failures, feature_category: :team_plannin
 
   let(:no_milestone_title) { 'None' }
   let(:any_milestone_title) { 'Any' }
-
-  before_all do
-    project.add_reporter(user)
-    project.add_guest(guest)
-  end
 
   before do
     stub_licensed_features(multiple_issue_assignees: false, issue_weights: false)
@@ -290,7 +285,7 @@ RSpec.describe API::Issues, :aggregate_failures, feature_category: :team_plannin
         before do
           post api("/projects/#{project.id}/issues", user),
             params: {
-              title: 'New Issue',
+              title: 'New issue',
               merge_request_to_resolve_discussions_of: merge_request.iid
             }
         end
@@ -302,7 +297,7 @@ RSpec.describe API::Issues, :aggregate_failures, feature_category: :team_plannin
         before do
           post api("/projects/#{project.id}/issues", user),
             params: {
-              title: 'New Issue',
+              title: 'New issue',
               merge_request_to_resolve_discussions_of: merge_request.iid,
               discussion_to_resolve: discussion.id
             }
@@ -314,7 +309,7 @@ RSpec.describe API::Issues, :aggregate_failures, feature_category: :team_plannin
 
     context 'with due date' do
       it 'creates a new project issue' do
-        due_date = 2.weeks.from_now.strftime('%Y-%m-%d')
+        due_date = 2.weeks.from_now.to_date.iso8601
 
         post api("/projects/#{project.id}/issues", user),
           params: { title: 'new issue', due_date: due_date }
@@ -401,7 +396,7 @@ RSpec.describe API::Issues, :aggregate_failures, feature_category: :team_plannin
         allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(true)
 
         post api("/projects/#{project.id}/issues", user),
-        params: { title: 'new issue', labels: 'label, label2', weight: 3, assignee_ids: [user2.id] }
+          params: { title: 'new issue', labels: 'label, label2', weight: 3, assignee_ids: [user2.id] }
 
         expect(json_response['message']['error']).to eq('This endpoint has been requested too many times. Try again later.')
 

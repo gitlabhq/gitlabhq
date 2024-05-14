@@ -7,7 +7,6 @@ const PERSISTENT_USER_CALLOUTS = [
   '.js-token-expiry-callout',
   '.js-registration-enabled-callout',
   '.js-new-user-signups-cap-reached',
-  '.js-eoa-bronze-plan-banner',
   '.js-security-newsletter-callout',
   '.js-approaching-seat-count-threshold',
   '.js-storage-pre-enforcement-alert',
@@ -18,14 +17,17 @@ const PERSISTENT_USER_CALLOUTS = [
   '.js-namespace-storage-alert',
   '.js-web-hook-disabled-callout',
   '.js-merge-request-settings-callout',
+  '.js-compliance-framework-settings-callout',
   '.js-geo-enable-hashed-storage-callout',
   '.js-geo-migrate-hashed-storage-callout',
   '.js-unlimited-members-during-trial-alert',
   '.js-branch-rules-info-callout',
   '.js-new-nav-for-everyone-callout',
   '.js-namespace-over-storage-users-combined-alert',
-  '.js-code-suggestions-ga-alert',
   '.js-joining-a-project-alert',
+  '.js-duo-pro-trial-alert',
+  '.js-duo-chat-ga-alert',
+  '.js-all-seats-used',
 ];
 
 const initCallouts = () => {

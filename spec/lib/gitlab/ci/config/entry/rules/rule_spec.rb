@@ -13,7 +13,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Rules::Rule, feature_category: :pipeli
   let(:metadata) do
     {
       allowed_when: %w[on_success on_failure always never manual delayed],
-      allowed_keys: %i[if changes exists when start_in allow_failure variables needs auto_cancel]
+      allowed_keys: %i[if changes exists when start_in allow_failure variables needs auto_cancel interruptible]
     }
   end
 
@@ -38,8 +38,14 @@ RSpec.describe Gitlab::Ci::Config::Entry::Rules::Rule, feature_category: :pipeli
       it { is_expected.to be_valid }
     end
 
+    context 'with an interruptible: value but no clauses' do
+      let(:config) { { interruptible: true } }
+
+      it { is_expected.to be_valid }
+    end
+
     context 'when specifying an if: clause' do
-      let(:config) { { if: '$THIS || $THAT', when: 'manual', allow_failure: true } }
+      let(:config) { { if: '$THIS || $THAT', when: 'manual', allow_failure: true, interruptible: true } }
 
       it { is_expected.to be_valid }
 
@@ -51,6 +57,12 @@ RSpec.describe Gitlab::Ci::Config::Entry::Rules::Rule, feature_category: :pipeli
 
       describe '#allow_failure' do
         subject { entry.allow_failure }
+
+        it { is_expected.to eq(true) }
+      end
+
+      describe '#interruptible' do
+        subject { entry.interruptible }
 
         it { is_expected.to eq(true) }
       end
@@ -140,39 +152,73 @@ RSpec.describe Gitlab::Ci::Config::Entry::Rules::Rule, feature_category: :pipeli
       end
     end
 
-    context 'when using a exists: clause' do
-      let(:config) { { exists: %w[app/ lib/ spec/ other/* paths/**/*.rb] } }
+    context 'when specifying an exists: clause' do
+      context 'with a string' do
+        let(:config) { { exists: 'paths/**/*.rb' } }
 
-      it { is_expected.to be_valid }
-    end
-
-    context 'when using a string as an invalid exists: clause' do
-      let(:config) { { exists: 'a regular string' } }
-
-      it { is_expected.not_to be_valid }
-
-      it 'reports an error about invalid policy' do
-        expect(subject.errors).to include(/should be an array of strings/)
+        it { is_expected.to be_valid }
       end
-    end
 
-    context 'when using a list as an invalid exists: clause' do
-      let(:config) { { exists: [1, 2] } }
+      context 'with a nil value' do
+        let(:config) { { exists: nil } }
 
-      it { is_expected.not_to be_valid }
-
-      it 'returns errors' do
-        expect(subject.errors).to include(/exists should be an array of strings/)
+        it { is_expected.to be_valid }
       end
-    end
 
-    context 'when using a long list as an invalid exists: clause' do
-      let(:config) { { exists: ['app/'] * 51 } }
+      context 'with an array' do
+        let(:config) { { exists: ['this.md', 'subdir/that.md'] } }
 
-      it { is_expected.not_to be_valid }
+        it { is_expected.to be_valid }
 
-      it 'returns errors' do
-        expect(subject.errors).to include(/exists is too long \(maximum is 50 characters\)/)
+        context 'when empty array' do
+          let(:config) { { exists: [] } }
+
+          it { is_expected.to be_valid }
+        end
+
+        context 'when array contains integers' do
+          let(:config) { { exists: [1, 2, 3] } }
+
+          it 'returns an error' do
+            is_expected.not_to be_valid
+            expect(entry.errors).to include(/should be an array of strings/)
+          end
+        end
+
+        context 'when array has more items than MAX_PATHS' do
+          let(:config) { { exists: ['app/*'] * 51 } }
+
+          it 'returns an error' do
+            is_expected.not_to be_valid
+            expect(entry.errors).to include(/has too many entries \(maximum 50\)/)
+          end
+        end
+      end
+
+      context 'with a hash' do
+        context 'when empty hash' do
+          let(:config) { { exists: {} } }
+
+          it { is_expected.to be_valid }
+        end
+
+        context 'with paths:' do
+          let(:config) { { exists: { paths: ['this.md'] } } }
+
+          it { is_expected.to be_valid }
+
+          context 'with project:' do
+            let(:config) { { exists: { paths: ['this.md'], project: 'path/to/project' } } }
+
+            it { is_expected.to be_valid }
+          end
+
+          context 'with project: and ref:' do
+            let(:config) { { exists: { paths: ['this.md'], project: 'path/to/project', ref: 'refs/heads/branch1' } } }
+
+            it { is_expected.to be_valid }
+          end
+        end
       end
     end
 
@@ -386,16 +432,45 @@ RSpec.describe Gitlab::Ci::Config::Entry::Rules::Rule, feature_category: :pipeli
         end
       end
     end
+
+    context 'interruptible: validation' do
+      context 'with a boolean value' do
+        let(:config) do
+          { if: '$THIS == "that"', interruptible: false }
+        end
+
+        it { is_expected.to be_valid }
+      end
+
+      context 'with a null value' do
+        let(:config) do
+          { if: '$THIS == "that"', interruptible: nil }
+        end
+
+        it { is_expected.to be_valid }
+      end
+
+      context 'with a string value' do
+        let(:config) do
+          { if: '$THIS == "that"', interruptible: 'string' }
+        end
+
+        it 'returns an error' do
+          is_expected.not_to be_valid
+          expect(subject.errors).to include(/rule interruptible should be a boolean value/)
+        end
+      end
+    end
   end
 
   describe '#value' do
     subject { entry.value }
 
     context 'when specifying an if: clause' do
-      let(:config) { { if: '$THIS || $THAT', when: 'manual', allow_failure: true } }
+      let(:config) { { if: '$THIS || $THAT', when: 'manual', allow_failure: true, interruptible: true } }
 
       it 'stores the expression as "if"' do
-        expect(subject).to eq(if: '$THIS || $THAT', when: 'manual', allow_failure: true)
+        expect(subject).to eq(if: '$THIS || $THAT', when: 'manual', allow_failure: true, interruptible: true)
       end
     end
 
@@ -433,10 +508,50 @@ RSpec.describe Gitlab::Ci::Config::Entry::Rules::Rule, feature_category: :pipeli
       end
     end
 
-    context 'when using a exists: clause' do
-      let(:config) { { exists: %w[app/ lib/ spec/ other/* paths/**/*.rb] } }
+    context 'when specifying an exists: clause' do
+      context 'with a string' do
+        let(:config) { { exists: 'paths/**/*.rb' } }
 
-      it { is_expected.to eq(config) }
+        it { is_expected.to eq({ exists: { paths: ['paths/**/*.rb'] } }) }
+      end
+
+      context 'with a nil value' do
+        let(:config) { { exists: nil } }
+
+        it { is_expected.to eq({}) }
+      end
+
+      context 'with an array' do
+        let(:config) { { exists: ['this.md', 'subdir/that.md'] } }
+
+        it { is_expected.to eq({ exists: { paths: ['this.md', 'subdir/that.md'] } }) }
+
+        context 'when empty array' do
+          let(:config) { { exists: [] } }
+
+          it { is_expected.to eq({ exists: { paths: [] } }) }
+        end
+      end
+
+      context 'with a hash' do
+        context 'with paths:' do
+          let(:config) { { exists: { paths: ['this.md'] } } }
+
+          it { is_expected.to eq(config) }
+
+          context 'with project:' do
+            let(:config) { { exists: { paths: ['this.md'], project: 'path/to/project' } } }
+
+            it { is_expected.to eq(config) }
+          end
+
+          context 'with project: and ref:' do
+            let(:config) { { exists: { paths: ['this.md'], project: 'path/to/project', ref: 'refs/heads/branch1' } } }
+
+            it { is_expected.to eq(config) }
+          end
+        end
+      end
     end
 
     context 'when it has auto_cancel' do

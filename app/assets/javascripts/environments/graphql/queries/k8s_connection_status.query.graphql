@@ -1,0 +1,3 @@
+query getK8sConnectionStatus($configuration: LocalConfiguration, $namespace: String) {
+  k8sConnection(configuration: $configuration, namespace: $namespace) @client
+}

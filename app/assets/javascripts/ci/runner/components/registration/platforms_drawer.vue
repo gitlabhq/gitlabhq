@@ -3,13 +3,7 @@ import { GlDrawer, GlFormGroup, GlFormSelect, GlIcon, GlLink, GlSprintf } from '
 import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
 import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
 
-import {
-  DEFAULT_PLATFORM,
-  MACOS_PLATFORM,
-  LINUX_PLATFORM,
-  WINDOWS_PLATFORM,
-  INSTALL_HELP_URL,
-} from '../../constants';
+import { DEFAULT_PLATFORM, INSTALL_HELP_URL } from '../../constants';
 import { installScript, platformArchitectures } from './utils';
 
 import CliCommand from './cli_command.vue';
@@ -37,7 +31,6 @@ export default {
   },
   data() {
     return {
-      selectedPlatform: this.platform,
       selectedArchitecture: null,
     };
   },
@@ -46,22 +39,20 @@ export default {
       return getContentWrapperHeight();
     },
     architectureOptions() {
-      return platformArchitectures({ platform: this.selectedPlatform });
+      return platformArchitectures({ platform: this.platform });
     },
     script() {
       return installScript({
-        platform: this.selectedPlatform,
+        platform: this.platform,
         architecture: this.selectedArchitecture,
       });
     },
   },
   watch: {
-    selectedPlatform() {
+    platform() {
       this.selectedArchitecture =
         this.architectureOptions.find((value) => value === this.selectedArchitecture) ||
         this.architectureOptions[0];
-
-      this.$emit('selectPlatform', this.selectedPlatform);
     },
   },
   created() {
@@ -72,13 +63,6 @@ export default {
       this.$emit('close');
     },
   },
-  platformOptions: [
-    /* eslint-disable @gitlab/require-i18n-strings */
-    { value: LINUX_PLATFORM, text: 'Linux' },
-    { value: MACOS_PLATFORM, text: 'macOS' },
-    { value: WINDOWS_PLATFORM, text: 'Windows' },
-    /* eslint-enable @gitlab/require-i18n-strings */
-  ],
   INSTALL_HELP_URL,
   DRAWER_Z_INDEX,
 };
@@ -98,14 +82,6 @@ export default {
     </template>
     <div>
       <p>{{ s__('Runners|Select platform specifications to install GitLab Runner.') }}</p>
-
-      <gl-form-group :label="s__('Runners|Environment')" label-for="runner-environment-select">
-        <gl-form-select
-          id="runner-environment-select"
-          v-model="selectedPlatform"
-          :options="$options.platformOptions"
-        />
-      </gl-form-group>
 
       <gl-form-group :label="s__('Runners|Architecture')" label-for="runner-architecture-select">
         <gl-form-select

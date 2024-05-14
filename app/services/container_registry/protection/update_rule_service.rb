@@ -7,8 +7,8 @@ module ContainerRegistry
 
       ALLOWED_ATTRIBUTES = %i[
         repository_path_pattern
-        delete_protected_up_to_access_level
-        push_protected_up_to_access_level
+        minimum_access_level_for_delete
+        minimum_access_level_for_push
       ].freeze
 
       def initialize(container_registry_protection_rule, current_user:, params:)

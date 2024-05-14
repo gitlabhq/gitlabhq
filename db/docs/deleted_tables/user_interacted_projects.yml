@@ -1,0 +1,20 @@
+---
+table_name: user_interacted_projects
+classes:
+- UserInteractedProject
+feature_categories:
+- groups_and_projects
+description: Tracks which projects a given user has actively interacted with
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/17327
+milestone: '10.6'
+gitlab_schema: gitlab_main_cell
+allow_cross_joins:
+- gitlab_main_clusterwide
+allow_cross_transactions:
+- gitlab_main_clusterwide
+allow_cross_foreign_keys:
+- gitlab_main_clusterwide
+sharding_key:
+  project_id: projects
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145260
+removed_in_milestone: '16.10'

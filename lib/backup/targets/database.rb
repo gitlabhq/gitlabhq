@@ -7,7 +7,8 @@ module Backup
     class Database < Target
       extend ::Gitlab::Utils::Override
       include Backup::Helper
-      attr_reader :force
+
+      attr_reader :force, :errors, :logger
 
       IGNORED_ERRORS = [
         # Ignore warnings
@@ -19,9 +20,12 @@ module Backup
       ].freeze
       IGNORED_ERRORS_REGEXP = Regexp.union(IGNORED_ERRORS).freeze
 
-      def initialize(progress, options:, force:)
+      def initialize(progress, options:)
         super(progress, options: options)
-        @force = force
+
+        @errors = []
+        @force = options.force?
+        @logger = Gitlab::BackupLogger.new(progress)
       end
 
       override :dump
@@ -37,7 +41,7 @@ module Backup
           dump_file_name = file_name(destination_dir, backup_connection.connection_name)
           FileUtils.rm_f(dump_file_name)
 
-          progress.print "Dumping PostgreSQL database #{pg_database_name} ... "
+          logger.info "Dumping PostgreSQL database #{pg_database_name} ... "
 
           schemas = []
 
@@ -59,8 +63,7 @@ module Backup
           raise DatabaseBackupError.new(active_record_config, dump_file_name) unless success
 
           report_success(success)
-
-          progress.flush
+          logger.flush
         end
       ensure
         if multiple_databases?
@@ -81,6 +84,8 @@ module Backup
       override :restore
 
       def restore(destination_dir, _)
+        @errors = []
+
         base_models_for_backup.each do |database_name, _|
           backup_connection = Backup::DatabaseConnection.new(database_name)
 
@@ -92,12 +97,12 @@ module Backup
           unless File.exist?(db_file_name)
             raise(Backup::Error, "Source database file does not exist #{db_file_name}") if main_database?(database_name)
 
-            progress.puts "Source backup for the database #{database_name} doesn't exist. Skipping the task"
+            logger.info "Source backup for the database #{database_name} doesn't exist. Skipping the task"
             return false
           end
 
           unless force
-            progress.puts 'Removing all tables. Press `Ctrl-C` within 5 seconds to abort'.color(:yellow)
+            logger.info 'Removing all tables. Press `Ctrl-C` within 5 seconds to abort'
             sleep(5)
           end
 
@@ -105,16 +110,17 @@ module Backup
           # hanging out from a failed upgrade
           drop_tables(database_name)
 
+          tracked_errors = []
           pg_env = backup_connection.database_configuration.pg_env_variables
           success = with_transient_pg_env(pg_env) do
             decompress_rd, decompress_wr = IO.pipe
             decompress_pid = spawn(decompress_cmd, out: decompress_wr, in: db_file_name)
             decompress_wr.close
 
-            status, @errors =
+            status, tracked_errors =
               case config[:adapter]
               when "postgresql" then
-                progress.print "Restoring PostgreSQL database #{database} ... "
+                logger.info "Restoring PostgreSQL database #{database} ... "
                 execute_and_track_errors(pg_restore_cmd(database), decompress_rd)
               end
             decompress_rd.close
@@ -123,47 +129,17 @@ module Backup
             $?.success? && status.success?
           end
 
-          if @errors.present?
-            progress.print "------ BEGIN ERRORS -----\n".color(:yellow)
-            progress.print @errors.join.color(:yellow)
-            progress.print "------ END ERRORS -------\n".color(:yellow)
+          unless tracked_errors.empty?
+            logger.error "------ BEGIN ERRORS -----\n"
+            logger.error tracked_errors.join
+            logger.error "------ END ERRORS -------\n"
+
+            @errors += tracked_errors
           end
 
           report_success(success)
           raise Backup::Error, 'Restore failed' unless success
         end
-      end
-
-      override :pre_restore_warning
-
-      def pre_restore_warning
-        return if force
-
-        <<-MSG.strip_heredoc
-        Be sure to stop Puma, Sidekiq, and any other process that
-        connects to the database before proceeding. For Omnibus
-        installs, see the following link for more information:
-        #{help_page_url('raketasks/backup_restore.html', 'restore-for-omnibus-gitlab-installations')}
-
-        Before restoring the database, we will remove all existing
-        tables to avoid future upgrade problems. Be aware that if you have
-        custom tables in the GitLab database these tables and all data will be
-        removed.
-        MSG
-      end
-
-      override :post_restore_warning
-
-      def post_restore_warning
-        return unless @errors.present?
-
-        <<-MSG.strip_heredoc
-        There were errors in restoring the schema. This may cause
-        issues if this results in missing indexes, constraints, or
-        columns. Please record the errors above and contact GitLab
-        Support if you have questions:
-        https://about.gitlab.com/support/
-        MSG
       end
 
       protected
@@ -216,17 +192,13 @@ module Backup
       end
 
       def report_success(success)
-        if success
-          progress.puts '[DONE]'.color(:green)
-        else
-          progress.puts '[FAILED]'.color(:red)
-        end
+        success ? logger.info('[DONE]') : logger.error('[FAILED]')
       end
 
       private
 
       def drop_tables(database_name)
-        puts_time 'Cleaning the database ... '.color(:blue)
+        logger.info 'Cleaning the database ... '
 
         if Rake::Task.task_defined? "gitlab:db:drop_tables:#{database_name}"
           Rake::Task["gitlab:db:drop_tables:#{database_name}"].invoke
@@ -235,7 +207,7 @@ module Backup
           Rake::Task["gitlab:db:drop_tables"].invoke
         end
 
-        puts_time 'done'.color(:green)
+        logger.info 'done'
       end
 
       # @deprecated This will be removed when restore operation is refactored to use extended_env directly
@@ -282,10 +254,6 @@ module Backup
 
       def multiple_databases?
         Gitlab::Database.database_mode == Gitlab::Database::MODE_MULTIPLE_DATABASES
-      end
-
-      def help_page_url(path, anchor = nil)
-        ::Gitlab::Routing.url_helpers.help_page_url(path, anchor: anchor)
       end
     end
   end

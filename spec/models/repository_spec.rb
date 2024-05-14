@@ -398,8 +398,21 @@ RSpec.describe Repository, feature_category: :source_code_management do
       end
 
       context 'with path' do
-        it 'sets follow when it is a single path' do
-          expect(Gitlab::Git::Commit).to receive(:where).with(a_hash_including(follow: true)).and_call_original.twice
+        context 'when remove_file_commit_history_following feature flag is disabled' do
+          before do
+            stub_feature_flags(remove_file_commit_history_following: false)
+          end
+
+          it 'sets follow when it is a single path' do
+            expect(Gitlab::Git::Commit).to receive(:where).with(a_hash_including(follow: true)).and_call_original.twice
+
+            repository.commits('master', limit: 1, path: 'README.md')
+            repository.commits('master', limit: 1, path: ['README.md'])
+          end
+        end
+
+        it 'does not set follow when it is a single path' do
+          expect(Gitlab::Git::Commit).to receive(:where).with(a_hash_including(follow: false)).and_call_original.twice
 
           repository.commits('master', limit: 1, path: 'README.md')
           repository.commits('master', limit: 1, path: ['README.md'])
@@ -994,7 +1007,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
       expect(repository.blob_at('master', 'new_dir/new_file.txt').data).to eq('File!')
     end
 
-    it 'respects the autocrlf setting' do
+    it 'line endings are not mutated' do
       repository.create_file(
         user, 'hello.txt', "Hello,\r\nWorld",
         message: 'Add hello world',
@@ -1003,7 +1016,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
 
       blob = repository.blob_at('master', 'hello.txt')
 
-      expect(blob.data).to eq("Hello,\nWorld")
+      expect(blob.data).to eq("Hello,\r\nWorld")
     end
 
     context "when an author is specified" do
@@ -1561,27 +1574,6 @@ RSpec.describe Repository, feature_category: :source_code_management do
       )
 
       expect(repository.license_key).to eq(license.key)
-    end
-  end
-
-  describe "#gitlab_ci_yml", :use_clean_rails_memory_store_caching do
-    let(:project) { create(:project, :repository) }
-
-    it 'returns valid file' do
-      files = [TestBlob.new('file'), TestBlob.new('.gitlab-ci.yml'), TestBlob.new('copying')]
-      expect(repository.tree).to receive(:blobs).and_return(files)
-
-      expect(repository.gitlab_ci_yml.path).to eq('.gitlab-ci.yml')
-    end
-
-    it 'returns nil if not exists' do
-      expect(repository.tree).to receive(:blobs).and_return([])
-      expect(repository.gitlab_ci_yml).to be_nil
-    end
-
-    it 'returns nil for empty repository' do
-      allow(repository).to receive(:root_ref).and_raise(Gitlab::Git::Repository::NoRepository)
-      expect(repository.gitlab_ci_yml).to be_nil
     end
   end
 
@@ -2482,7 +2474,6 @@ RSpec.describe Repository, feature_category: :source_code_management do
           :license_blob,
           :license_gitaly,
           :gitignore,
-          :gitlab_ci_yml,
           :branch_names,
           :tag_names,
           :branch_count,
@@ -2599,6 +2590,34 @@ RSpec.describe Repository, feature_category: :source_code_management do
 
       repository.after_create
     end
+
+    context 'when repository is attached to a personal snippet' do
+      let(:repository) { create(:personal_snippet).repository }
+
+      it 'does not raise an error for onboarding considerations' do
+        expect { repository.after_create }.not_to raise_error
+      end
+    end
+
+    context 'when namespace is onboarded', :sidekiq_inline do
+      before do
+        ::Onboarding::Progress.onboard(project.namespace)
+      end
+
+      it 'records the onboarding progress' do
+        repository.after_create
+
+        expect(::Onboarding::Progress.completed?(project.namespace, :git_write)).to eq(true)
+      end
+    end
+
+    context 'when namespace is not onboarded', :sidekiq_inline do
+      it 'does not record the onboarding progress' do
+        repository.after_create
+
+        expect(::Onboarding::Progress.completed?(project.namespace, :git_write)).to eq(false)
+      end
+    end
   end
 
   describe '#expire_status_cache' do
@@ -2618,16 +2637,6 @@ RSpec.describe Repository, feature_category: :source_code_management do
       expect(repository).to receive(:expire_emptiness_caches)
 
       repository.expire_status_cache
-    end
-  end
-
-  describe "#copy_gitattributes" do
-    it 'returns true with a valid ref' do
-      expect(repository.copy_gitattributes('master')).to be_truthy
-    end
-
-    it 'returns false with an invalid ref' do
-      expect(repository.copy_gitattributes('invalid')).to be_falsey
     end
   end
 
@@ -3749,11 +3758,6 @@ RSpec.describe Repository, feature_category: :source_code_management do
         repository.change_head(branch)
       end
 
-      it 'copies the gitattributes' do
-        expect(repository).to receive(:copy_gitattributes).with(branch)
-        repository.change_head(branch)
-      end
-
       it 'reloads the default branch' do
         expect(repository.container).to receive(:reload_default_branch)
         repository.change_head(branch)
@@ -3789,7 +3793,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
       allow(repository.raw_repository).to receive(:branch_names).and_return([branch_name])
     end
 
-    context 'when prohibited branch exists' do
+    shared_examples 'deletes the branch' do
       it 'deletes prohibited branch' do
         expect(repository.raw_repository).to receive(:delete_branch).with(branch_name)
 
@@ -3803,6 +3807,16 @@ RSpec.describe Repository, feature_category: :source_code_management do
 
         repository.remove_prohibited_branches
       end
+    end
+
+    context 'when branch name is hexadecmal and 40-characters long' do
+      include_examples 'deletes the branch'
+    end
+
+    context 'when branch name is hexadecmal and 64-characters long' do
+      let(:branch_name) { '5f50b1461c836081ed677f05e08d10dc7dc68631fa5767bc3e3946349b348275' }
+
+      include_examples 'deletes the branch'
     end
 
     context 'when branch name is 40-characters long but not hexadecimal' do
@@ -3923,7 +3937,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
 
   describe '#object_pool' do
     let_it_be(:primary_project) { create(:project, :empty_repo) }
-    let_it_be(:forked_project) { create(:project, :empty_repo) }
+    let_it_be(:forked_project) { create(:project, :fork_repository, forked_from_project: primary_project) }
 
     let(:repository) { primary_project.repository }
 
@@ -4083,6 +4097,30 @@ RSpec.describe Repository, feature_category: :source_code_management do
     end
   end
 
+  describe '#empty_tree_id' do
+    subject { repository.empty_tree_id }
+
+    context 'for existing repository' do
+      context 'for SHA1 repository' do
+        it { is_expected.to eq(::Gitlab::Git::SHA1_EMPTY_TREE_ID) }
+      end
+
+      context 'for SHA256 repository' do
+        let_it_be(:project) { create(:project, :empty_repo, object_format: Repository::FORMAT_SHA256) }
+
+        it { is_expected.to eq(::Gitlab::Git::SHA256_EMPTY_TREE_ID) }
+      end
+    end
+
+    context 'for missing repository' do
+      before do
+        allow(repository).to receive(:exists?).and_return(false)
+      end
+
+      it { is_expected.to eq(::Gitlab::Git::SHA1_EMPTY_TREE_ID) }
+    end
+  end
+
   describe '#get_file_attributes' do
     let(:project) do
       create(:project, :custom_repo, files: {
@@ -4137,6 +4175,30 @@ RSpec.describe Repository, feature_category: :source_code_management do
       let(:attrs) { [] }
 
       it { expect { file_attributes }.to raise_error(ArgumentError) }
+    end
+  end
+
+  describe '#commit_files' do
+    let(:project) { create(:project, :empty_repo) }
+
+    it 'calls UserCommitFiles RPC' do
+      expect_next_instance_of(Gitlab::GitalyClient::OperationService) do |client|
+        expect(client).to receive(:user_commit_files).with(
+          user, 'extra-branch', 'commit message', [],
+          'author email', 'author name', nil, nil, true, nil, false
+        )
+      end
+
+      repository.commit_files(
+        user,
+        branch_name: 'extra-branch',
+        message: 'commit message',
+        author_name: 'author name',
+        author_email: 'author email',
+        actions: [],
+        force: true,
+        sign: false
+      )
     end
   end
 end

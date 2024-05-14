@@ -5,7 +5,4 @@ module Importable
 
   attr_accessor :importing
   alias_method :importing?, :importing
-
-  attr_accessor :imported
-  alias_method :imported?, :imported
 end

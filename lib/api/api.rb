@@ -265,6 +265,7 @@ module API
         mount ::API::GroupPackages
         mount ::API::GroupVariables
         mount ::API::HelmPackages
+        mount ::API::ImportBitbucket
         mount ::API::ImportBitbucketServer
         mount ::API::ImportGithub
         mount ::API::Integrations
@@ -388,7 +389,6 @@ module API
     mount ::API::Internal::Kubernetes
     mount ::API::Internal::ErrorTracking
     mount ::API::Internal::MailRoom
-    mount ::API::Internal::ContainerRegistry::Migration
     mount ::API::Internal::Workhorse
     mount ::API::Internal::Shellhorse
 

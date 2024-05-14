@@ -27,7 +27,7 @@ func (f *fakeResponseWriter) Write(b []byte) (int, error) {
 	return f.tmp.Write(b)
 }
 
-func (f *fakeResponseWriter) Close(b []byte) error {
+func (f *fakeResponseWriter) Close(_ []byte) error {
 	return f.tmp.Close()
 }
 
@@ -74,15 +74,15 @@ const (
 	sendAcceptRanges
 )
 
-type RSFactory func() *HttpReadSeeker
+type RSFactory func() *HTTPReadSeeker
 
 func newRSFactory(flags int) RSFactory {
-	return func() *HttpReadSeeker {
+	return func() *HTTPReadSeeker {
 		tmp, err := os.CreateTemp(os.TempDir(), "httprs")
 		if err != nil {
 			return nil
 		}
-		if err := os.Remove(tmp.Name()); err != nil {
+		if removeErr := os.Remove(tmp.Name()); removeErr != nil {
 			return nil
 		}
 
@@ -104,7 +104,7 @@ func newRSFactory(flags int) RSFactory {
 		}
 
 		downgradeZeroToNoRange := (flags & downgradeZeroToNoRange) > 0
-		return NewHttpReadSeeker(res, &http.Client{Transport: &fakeRoundTripper{src: tmp, downgradeZeroToNoRange: downgradeZeroToNoRange}})
+		return NewHTTPReadSeeker(res, &http.Client{Transport: &fakeRoundTripper{src: tmp, downgradeZeroToNoRange: downgradeZeroToNoRange}})
 	}
 }
 
@@ -119,9 +119,10 @@ func TestHttpWebServer(t *testing.T) {
 
 		Convey("When requesting /file", func() {
 			res, err := http.Get(server.URL + "/file")
+			defer func() { _ = res.Body.Close() }()
 			So(err, ShouldBeNil)
 
-			stream := NewHttpReadSeeker(res)
+			stream := NewHTTPReadSeeker(res)
 			So(stream, ShouldNotBeNil)
 
 			Convey("Can read 100 bytes from start of file", func() {
@@ -148,7 +149,7 @@ func TestHttpWebServer(t *testing.T) {
 func TestHttpReaderSeeker(t *testing.T) {
 	tests := []struct {
 		name  string
-		newRS func() *HttpReadSeeker
+		newRS func() *HTTPReadSeeker
 	}{
 		{name: "with no flags", newRS: newRSFactory(0)},
 		{name: "with only Accept-Ranges", newRS: newRSFactory(sendAcceptRanges)},
@@ -158,14 +159,13 @@ func TestHttpReaderSeeker(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			testHttpReaderSeeker(t, test.newRS)
+			testHTTPReaderSeeker(t, test.newRS)
 		})
 	}
 }
 
-func testHttpReaderSeeker(t *testing.T, newRS RSFactory) {
+func testHTTPReaderSeeker(t *testing.T, newRS RSFactory) {
 	Convey("Scenario: testing HttpReaderSeeker", t, func() {
-
 		Convey("Read should start at the beginning", func() {
 			r := newRS()
 			So(r, ShouldNotBeNil)

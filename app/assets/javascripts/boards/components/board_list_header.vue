@@ -21,12 +21,10 @@ import setActiveBoardItemMutation from 'ee_else_ce/boards/graphql/client/set_act
 import AccessorUtilities from '~/lib/utils/accessor';
 import {
   ListType,
-  toggleFormEventPrefix,
   updateListQueries,
   toggleCollapsedMutations,
   listsDeferredQuery,
 } from 'ee_else_ce/boards/constants';
-import eventHub from '../eventhub';
 import { setError } from '../graphql/cache_updates';
 import ItemCount from './item_count.vue';
 
@@ -244,18 +242,15 @@ export default {
     showScopedLabels(label) {
       return this.scopedLabelsAvailable && isScopedLabel(label);
     },
-    showNewIssueForm() {
+    showNewForm() {
       if (this.isSwimlanesHeader) {
         this.$emit('openUnassignedLane');
         this.$nextTick(() => {
-          eventHub.$emit(`${toggleFormEventPrefix.issue}${this.list.id}`);
+          this.$emit('toggleNewForm');
         });
       } else {
-        eventHub.$emit(`${toggleFormEventPrefix.issue}${this.list.id}`);
+        this.$emit('toggleNewForm');
       }
-    },
-    showNewEpicForm() {
-      eventHub.$emit(`${toggleFormEventPrefix.epic}${this.list.id}`);
     },
     toggleExpanded() {
       const collapsed = !this.list.collapsed;
@@ -421,7 +416,6 @@ export default {
           :background-color="list.label.color"
           :description="list.label.description"
           :scoped="showScopedLabels(list.label)"
-          :size="list.collapsed ? 'sm' : ''"
           :title="list.label.title"
         />
       </div>
@@ -497,7 +491,7 @@ export default {
           size="small"
           icon="plus"
           data-testid="new-issue-btn"
-          @click="showNewIssueForm"
+          @click="showNewForm"
         />
 
         <gl-button
@@ -508,7 +502,7 @@ export default {
           size="small"
           icon="plus"
           data-testid="new-epic-btn"
-          @click="showNewEpicForm"
+          @click="showNewForm"
         />
 
         <gl-button

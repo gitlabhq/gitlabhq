@@ -1,22 +1,19 @@
 = render 'devise/shared/tab_single', tab_title: 'Resend confirmation instructions'
-.login-box.gl-p-5
-  = gitlab_ui_form_for(resource, as: resource_name, url: confirmation_path(resource_name), html: { method: :post, class: 'gl-show-field-errors' }) do |f|
-    .devise-errors
-      = render "devise/shared/error_messages", resource: resource
-    .form-group
-      = f.label :email
-      = f.email_field :email, class: "form-control gl-form-input", required: true, autocomplete: 'off', title: _('Please provide a valid email address.'), value: nil
-      .form-text.gl-text-secondary
-        - emails_link = link_to('', profile_emails_url, target: '_blank', rel: 'noopener noreferrer')
-        = safe_format(s_('Requires your primary GitLab email address. If you want to confirm a secondary email address, go to %{emails_link_start}Emails%{emails_link_end}'), tag_pair(emails_link, :emails_link_start, :emails_link_end))
+= gitlab_ui_form_for(resource, as: resource_name, url: confirmation_path(resource_name), html: { method: :post, class: 'gl-show-field-errors', aria: { live: 'assertive' } }) do |f|
+  .devise-errors
+    = render "devise/shared/error_messages", resource: resource
+  .form-group
+    = f.label :email
+    = f.email_field :email, class: "form-control gl-form-input", required: true, autocomplete: 'off', title: _('Please provide a valid email address.'), value: nil
+    .form-text.gl-text-secondary
+      - emails_link = link_to('', profile_emails_url, target: '_blank', rel: 'noopener noreferrer')
+      = safe_format(s_('Requires your primary GitLab email address. If you want to confirm a secondary email address, go to %{emails_link_start}Emails%{emails_link_end}'), tag_pair(emails_link, :emails_link_start, :emails_link_end))
 
-    %div
+  .form-group
     - if recaptcha_enabled?
       = recaptcha_tags nonce: content_security_policy_nonce
 
-    .gl-mt-5
-      = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, block: true) do
-        = _("Resend")
+  = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, block: true) do
+    = _("Resend")
 
-.clearfix.prepend-top-20
-  = render 'devise/shared/sign_in_link'
+= render 'devise/shared/sign_in_link'

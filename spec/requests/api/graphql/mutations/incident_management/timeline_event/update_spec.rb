@@ -6,7 +6,7 @@ RSpec.describe 'Updating an incident timeline event', feature_category: :inciden
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project) { create(:project, developers: user) }
   let_it_be(:incident) { create(:incident, project: project) }
   let_it_be(:tag1) { create(:incident_management_timeline_event_tag, project: project, name: 'Tag 1') }
   let_it_be(:tag2) { create(:incident_management_timeline_event_tag, project: project, name: 'Tag 2') }
@@ -57,10 +57,6 @@ RSpec.describe 'Updating an incident timeline event', feature_category: :inciden
   end
 
   let(:mutation_response) { graphql_mutation_response(:timeline_event_update) }
-
-  before do
-    project.add_developer(user)
-  end
 
   it 'updates the timeline event', :aggregate_failures do
     post_graphql_mutation(mutation, current_user: user)

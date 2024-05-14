@@ -62,10 +62,10 @@ module QA
         "/user/keys/#{id}"
       end
 
-      def replicated?
+      def accessible_on_secondary?
         api_client = Runtime::API::Client.new(:geo_secondary)
 
-        QA::Runtime::Logger.debug('Checking for SSH key replication')
+        QA::Runtime::Logger.debug('Checking for SSH key on secondary Geo site')
 
         Support::Retrier.retry_until(max_duration: QA::EE::Runtime::Geo.max_db_replication_time, sleep_interval: 3) do
           response = get Runtime::API::Request.new(api_client, api_get_path).url

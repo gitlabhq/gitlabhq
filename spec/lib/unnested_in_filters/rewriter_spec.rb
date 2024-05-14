@@ -52,14 +52,51 @@ RSpec.describe UnnestedInFilters::Rewriter do
                   Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
                     attribute_name: 'user_type',
                     order_expression: User.arel_table['user_type'].desc,
-                    nullable: :not_nullable,
-                    distinct: false
+                    nullable: :not_nullable
                   )
                 ])
             end
 
             it { is_expected.to be_truthy }
           end
+        end
+      end
+
+      context 'with partial indices' do
+        let(:relation) { Vulnerability.where(state: [:detected, :confirmed], resolved_on_default_branch: false) }
+
+        before do
+          Vulnerability.reset_column_information
+        end
+
+        context 'when there is a partial index coverage for the used columns' do
+          before do
+            ApplicationRecord.connection.execute(<<~SQL)
+              CREATE INDEX on vulnerabilities USING btree(state) WHERE (resolved_on_default_branch = false)
+            SQL
+          end
+
+          it { is_expected.to be_truthy }
+        end
+
+        context 'when there is no partial index coverage for the used columns' do
+          before do
+            ApplicationRecord.connection.execute(<<~SQL)
+              CREATE INDEX on vulnerabilities USING btree(state) WHERE (id = 100)
+            SQL
+          end
+
+          it { is_expected.to be_falsey }
+        end
+
+        context 'when the partial index definition has more columns' do
+          before do
+            ApplicationRecord.connection.execute(<<~SQL)
+              CREATE INDEX on vulnerabilities USING btree(state) WHERE (resolved_on_default_branch = false AND id = 100)
+            SQL
+          end
+
+          it { is_expected.to be_falsey }
         end
       end
     end
@@ -164,8 +201,7 @@ RSpec.describe UnnestedInFilters::Rewriter do
               Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
                 attribute_name: 'user_type',
                 order_expression: User.arel_table['user_type'].desc,
-                nullable: :not_nullable,
-                distinct: false
+                nullable: :not_nullable
               )
             ])
         end

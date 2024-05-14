@@ -1,6 +1,6 @@
 - title: 'GraphQL field `confidential` changed to `internal` on notes'
   announcement_milestone: '15.5'
-  removal_milestone: '16.0'
+  removal_milestone: '17.0'
   breaking_change: true
   reporter: nicolasdular
   stage: plan

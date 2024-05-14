@@ -83,7 +83,7 @@ class ApplicationController < BaseActionController
     render_403
   end
 
-  rescue_from Gitlab::Auth::IpBlocked do
+  rescue_from Gitlab::Auth::IpBlocked do |e|
     Gitlab::AuthLogger.error(
       message: 'Rack_Attack',
       env: :blocklist,
@@ -92,7 +92,7 @@ class ApplicationController < BaseActionController
       path: request.fullpath
     )
 
-    head :forbidden
+    render plain: e.message, status: :forbidden
   end
 
   rescue_from Gitlab::Auth::TooManyIps do |e|

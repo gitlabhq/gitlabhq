@@ -3,7 +3,7 @@ key_path: redis_hll_counters.ci_users.ci_users_executing_verify_environment_job_
 description: Weekly counts of times users have executed verify jobs
 product_section: ops
 product_stage: release
-product_group: release
+product_group: environments
 value_type: number
 status: active
 milestone: "15.2"

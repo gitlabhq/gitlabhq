@@ -1,17 +1,19 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Parsers::Test::Junit do
   describe '#parse!' do
     subject { described_class.new.parse!(junit, test_report, job: job) }
 
-    let(:job) { double(test_suite_name: 'rspec', max_test_cases_per_report: max_test_cases) }
+    let(:project) { build(:project) }
+    let(:job) { double(test_suite_name: 'rspec', max_test_cases_per_report: max_test_cases, project: project) }
 
     let(:test_report) { Gitlab::Ci::Reports::TestReport.new }
     let(:test_suite) { test_report.get_suite(job.test_suite_name) }
     let(:test_cases) { flattened_test_cases(test_suite) }
     let(:max_test_cases) { 0 }
+    let(:junit) { '<testsuites></testsuites>' }
 
     context 'when data is JUnit style XML' do
       context 'when there are no <testcases> in <testsuite>' do
@@ -379,7 +381,7 @@ RSpec.describe Gitlab::Ci::Parsers::Test::Junit do
     end
 
     context 'when data is not XML' do
-      let(:junit) { double(:random_trash) }
+      let(:junit) { double(:random_trash, size: 1) }
 
       it 'attaches an error to the TestSuite object' do
         expect { subject }.not_to raise_error
@@ -518,6 +520,26 @@ RSpec.describe Gitlab::Ci::Parsers::Test::Junit do
         expect(test_cases[0].attachment).to eq("some/path.png")
 
         expect(test_cases[0].job).to eq(job)
+      end
+    end
+
+    it 'parses XML using XmlConverter' do
+      expect(Gitlab::XmlConverter).to receive(:new).with(junit).once.and_call_original
+
+      subject
+    end
+
+    context 'when XML is empty string' do
+      let(:junit) { '' }
+
+      it 'returns 0 tests cases and has no errors' do
+        expect { subject }.not_to raise_error
+        expect(test_suite.suite_error).to be_nil
+
+        expect(test_cases).to be_empty
+        expect(test_suite.total_count).to eq(0)
+        expect(test_suite.success_count).to eq(0)
+        expect(test_suite.error_count).to eq(0)
       end
     end
 

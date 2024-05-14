@@ -76,3 +76,5 @@ module Members
     end
   end
 end
+
+Members::InviteService.prepend_mod

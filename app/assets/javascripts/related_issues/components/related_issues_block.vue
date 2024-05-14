@@ -184,7 +184,7 @@ export default {
 <template>
   <div id="related-issues" class="related-issues-block">
     <gl-card
-      class="gl-new-card gl-overflow-hidden"
+      class="gl-new-card"
       header-class="gl-new-card-header"
       body-class="gl-new-card-body"
       :aria-expanded="isOpen.toString()"

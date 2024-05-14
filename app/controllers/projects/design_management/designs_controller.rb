@@ -9,9 +9,7 @@ class Projects::DesignManagement::DesignsController < Projects::ApplicationContr
   private
 
   def authorize_read_design!
-    unless can?(current_user, :read_design, design)
-      access_denied!
-    end
+    access_denied! unless can?(current_user, :read_design, design)
   end
 
   def design

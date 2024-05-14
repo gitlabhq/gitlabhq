@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlLink, GlForm } from '@gitlab/ui';
+import { GlButton, GlForm } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapActions, mapState, mapGetters } from 'vuex';
 import Tracking from '~/tracking';
@@ -14,7 +14,6 @@ export default {
   name: 'FiltersTemplate',
   components: {
     GlButton,
-    GlLink,
     GlForm,
   },
   computed: {
@@ -47,12 +46,23 @@ export default {
   >
     <slot></slot>
     <div class="gl-display-flex gl-align-items-center gl-mt-4">
-      <gl-button category="primary" variant="confirm" type="submit" :disabled="!sidebarDirty">
+      <gl-button
+        category="primary"
+        variant="confirm"
+        type="submit"
+        data-testid="search-apply-filters-btn"
+        :disabled="!sidebarDirty"
+      >
         {{ __('Apply') }}
       </gl-button>
-      <gl-link v-if="sidebarDirty" class="gl-ml-auto" @click="resetQueryWithTracking">{{
-        __('Reset filters')
-      }}</gl-link>
+      <gl-button
+        v-if="sidebarDirty"
+        category="tertiary"
+        class="gl-ml-auto"
+        data-testid="search-reset-filters-btn"
+        @click="resetQueryWithTracking"
+        >{{ __('Reset filters') }}
+      </gl-button>
     </div>
   </gl-form>
 </template>

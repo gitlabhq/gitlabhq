@@ -54,15 +54,26 @@ For push and tag events, the same structure and deprecations are followed as [pr
 
 ## Create a system hook
 
+> - **Name** and **Description** [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141977) in GitLab 16.9.
+
 To create a system hook:
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **System Hooks**.
 1. Select **Add new webhook**.
-1. Enter the **URL**.
-1. Optional. Enter a [**Secret Token**](../user/project/integrations/webhooks.md#validate-payloads-by-using-a-secret-token).
-1. Select the checkbox next to each optional **Trigger** you want to enable.
-1. Select **Enable SSL verification**, if desired.
+1. In **URL**, enter the URL of the webhook endpoint.
+   The URL must be percent-encoded if it contains one or more special characters.
+1. Optional. In **Name**, enter the name of the webhook.
+1. Optional. In **Description**, enter the description of the webhook.
+1. Optional. In **Secret token**, enter the secret token to validate requests.
+
+   The token is sent with the webhook request in the `X-Gitlab-Token` HTTP header.
+   Your webhook endpoint can check the token to verify the request is legitimate.
+
+1. In the **Trigger** section, select the checkbox for each GitLab
+   [event](../user/project/integrations/webhook_events.md) you want to trigger the webhook.
+1. Optional. Clear the **Enable SSL verification** checkbox
+   to disable [SSL verification](../user/project/integrations/index.md#ssl-verification).
 1. Select **Add system hook**.
 
 ## Hooks request example

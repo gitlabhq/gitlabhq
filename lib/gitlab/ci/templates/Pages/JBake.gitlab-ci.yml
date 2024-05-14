@@ -14,7 +14,7 @@
 # HowTo at: https://jorge.aguilera.gitlab.io/howtojbake/
 
 default:
-  image: java:8
+  image: openjdk:8
 
   # We use SDKMan as tool for managing versions
   before_script:

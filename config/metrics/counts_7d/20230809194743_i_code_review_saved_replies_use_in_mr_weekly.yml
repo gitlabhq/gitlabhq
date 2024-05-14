@@ -19,9 +19,6 @@ tier:
 - free
 - premium
 - ultimate
-options:
-  events:
-  - i_code_review_saved_replies_use_in_mr
 events:
   - name: i_code_review_saved_replies_use_in_mr
     unique: user.id

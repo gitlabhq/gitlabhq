@@ -6,7 +6,7 @@ RSpec.describe Gitlab::Seeder do
   describe Namespace do
     subject { described_class }
 
-    it 'has not_mass_generated scope' do
+    it 'has not_mass_generated scope', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/444919' do
       expect { described_class.not_mass_generated }.to raise_error(NoMethodError)
 
       Gitlab::Seeder.quiet do

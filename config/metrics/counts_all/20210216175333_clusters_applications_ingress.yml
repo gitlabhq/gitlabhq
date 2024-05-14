@@ -4,7 +4,7 @@ key_path: usage_activity_by_stage.configure.clusters_applications_ingress
 description: Total GitLab Managed clusters with GitLab Managed App:Ingress installed
 product_section: ops
 product_stage: configure
-product_group: configure
+product_group: environments
 product_category: deployment_management
 value_type: number
 status: removed

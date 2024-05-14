@@ -50,14 +50,14 @@ If the highest number stable branch is unclear, check the [GitLab blog](https://
 | Software                | Minimum version | Notes                                                                                                                                                                                                                                                                                  |
 |:------------------------|:----------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | [Ruby](#2-ruby)         | `3.1.x`         | From GitLab 16.7, Ruby 3.1 is required. You must use the standard MRI implementation of Ruby. We love [JRuby](https://www.jruby.org/) and [Rubinius](https://github.com/rubinius/rubinius#the-rubinius-language-platform), but GitLab needs several Gems that have native extensions. |
-| [RubyGems](#3-rubygems) | `3.4.x`         | A specific RubyGems version is not fully needed, but it's recommended to update so you can enjoy some known performance improvements.                                                                                                                                                  |
+| [RubyGems](#3-rubygems) | `3.5.x`         | A specific RubyGems version is not required, but you should update to benefit from some known performance improvements. |
 | [Go](#4-go)             | `1.20.x`        | From GitLab 16.4, Go 1.20 or later is required.                                                                                                                                                                                                                                        |
 | [Git](#git)             | `2.42.x`        | From GitLab 16.5, Git 2.42.x and later is required. You should use the [Git version provided by Gitaly](#git).                                                                                                                                                   |
 | [Node.js](#5-node)      | `18.17.x`       | From GitLab 16.3, Node.js 18.17 or later is required.                                                                                                                                                                                                                                  |
 
 ## GitLab directory structure
 
-When following the instructions on this page, you create this directory structure:
+The following directories are created as you go through the installation steps:
 
 ```plaintext
 |-- home
@@ -80,6 +80,8 @@ When following the instructions on this page, you create this directory structur
 
 The default locations for repositories can be configured in `config/gitlab.yml`
 of GitLab and `config.yml` of GitLab Shell.
+
+It is not necessary to create these directories manually now, and doing so can cause errors later in the installation.
 
 For a more in-depth overview, see the [GitLab architecture doc](../development/architecture.md).
 
@@ -129,7 +131,7 @@ you might have to install 1.1 manually.
 
 ### Git
 
-From GitLab 13.6, we recommend you use the
+You should use the
 [Git version provided by Gitaly](https://gitlab.com/gitlab-org/gitaly/-/issues/2729)
 that:
 
@@ -144,7 +146,7 @@ that:
 
 1. Clone the Gitaly repository and compile Git. Replace `<X-Y-stable>` with the
    stable branch that matches the GitLab version you want to install. For example,
-   if you want to install GitLab 13.6, use the branch name `13-6-stable`:
+   if you want to install GitLab 16.7, use the branch name `16-7-stable`:
 
    ```shell
    git clone https://gitlab.com/gitlab-org/gitaly.git -b <X-Y-stable> /tmp/gitaly
@@ -293,7 +295,8 @@ sudo adduser --disabled-login --gecos 'GitLab' git
 ## 7. Database
 
 NOTE:
-In GitLab 12.1 and later, only PostgreSQL is supported. In GitLab 16.0 and later, we [require PostgreSQL 13+](requirements.md#postgresql-requirements).
+Only PostgreSQL is supported.
+In GitLab 16.0 and later, we [require PostgreSQL 13+](requirements.md#postgresql-requirements).
 
 1. Install the database packages.
 
@@ -339,7 +342,7 @@ In GitLab 12.1 and later, only PostgreSQL is supported. In GitLab 16.0 and later
    sudo -u postgres psql -d template1 -c "CREATE EXTENSION IF NOT EXISTS pg_trgm;"
    ```
 
-1. Create the `btree_gist` extension (required for GitLab 13.1+):
+1. Create the `btree_gist` extension:
 
    ```shell
    sudo -u postgres psql -d template1 -c "CREATE EXTENSION IF NOT EXISTS btree_gist;"
@@ -640,8 +643,6 @@ sudo -u git -H chmod o-rwx config/database.yml
 
 You should have two sections in your `database.yml`: `main:` and `ci:`. The `ci`:
 connection [must be to the same database](../administration/postgresql/multiple_databases.md).
-If, for any reason, you wish to remain on a single database connection, remove the `ci:`
-section from `config/database.yml`.
 
 ### Install Gems
 

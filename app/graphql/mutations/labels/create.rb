@@ -8,29 +8,29 @@ module Mutations
       include Mutations::ResolvesResourceParent
 
       field :label,
-            Types::LabelType,
-            null: true,
-            description: 'Label after mutation.'
+        Types::LabelType,
+        null: true,
+        description: 'Label after mutation.'
 
       argument :title, GraphQL::Types::String,
-               required: true,
-               description: 'Title of the label.'
+        required: true,
+        description: 'Title of the label.'
 
       argument :description, GraphQL::Types::String,
-               required: false,
-               description: 'Description of the label.'
+        required: false,
+        description: 'Description of the label.'
 
       argument :color, GraphQL::Types::String,
-               required: false,
-               default_value: Label::DEFAULT_COLOR,
-               see: {
-                 'List of color keywords at mozilla.org' =>
-                   'https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#Color_keywords'
-               },
-               description: <<~DESC
+        required: false,
+        default_value: Label::DEFAULT_COLOR,
+        see: {
+          'List of color keywords at mozilla.org' =>
+            'https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#Color_keywords'
+        },
+        description: <<~DESC
                  The color of the label given in 6-digit hex notation with leading '#' sign
                  (for example, `#FFAABB`) or one of the CSS color names.
-               DESC
+        DESC
 
       authorize :admin_label
 

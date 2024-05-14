@@ -397,14 +397,12 @@ Your IdP may need additional configuration. For more information, see
 
 ### Configure GitLab to use multiple SAML IdPs
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14361) in GitLab 14.6.
-
 You can configure GitLab to use multiple SAML IdPs if:
 
 - Each provider has a unique name set that matches a name set in `args`. At least
   one provider must have the name `saml` to mitigate a
   [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/366450) in GitLab
-  14.6 and newer.
+  14.6 and later.
 - The providers' names are used:
   - In OmniAuth configuration for properties based on the provider name. For example,
     `allowBypassTwoFactor`, `allowSingleSignOn`, and `syncProfileFromProvider`.
@@ -716,7 +714,7 @@ Some IdPs have documentation on how to use them as the IdP in SAML configuration
 For example:
 
 - [Active Directory Federation Services (ADFS)](https://learn.microsoft.com/en-us/windows-server/identity/ad-fs/operations/create-a-relying-party-trust)
-- [Auth0](https://auth0.com/docs/authenticate/protocols/saml/saml-sso-integrations/configure-auth0-saml-identity-provider)
+- [Auth0](https://auth0.com/docs/authenticate/single-sign-on/outbound-single-sign-on/configure-auth0-saml-identity-provider)
 
 If you have any questions on configuring your IdP in a SAML configuration, contact
 your provider's support.
@@ -1258,9 +1256,7 @@ Example configuration:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
-
-> Introduced in GitLab 11.4.
+**Offering:** Self-managed, GitLab Dedicated
 
 Your IdP passes group information to GitLab in the SAML response. To use this
 response, configure GitLab to identify:
@@ -1993,7 +1989,7 @@ URL, for example: `https://gitlab.example.com/users/sign_in?auto_sign_in=false`.
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 You can use `attribute_statements` to map attribute names in a SAML response to entries
 in the OmniAuth [`info` hash](https://github.com/omniauth/omniauth/wiki/Auth-Hash-Schema#schema-10-and-later).
@@ -2987,7 +2983,7 @@ GitLab [generates and sets passwords for users created through SAML](../security
 Users authenticated with SSO or SAML must not use a password for Git operations
 over HTTPS. These users can instead:
 
-- Set up a [personal access token](../user/profile/personal_access_tokens.md).
+- Set up a [personal](../user/profile/personal_access_tokens.md), [project](../user/project/settings/project_access_tokens.md), or [group](../user/group/settings/group_access_tokens.md) access token.
 - Use an [OAuth credential helper](../user/profile/account/two_factor_authentication.md#oauth-credential-helpers).
 
 ## Link SAML identity for an existing user
@@ -3002,7 +2998,7 @@ see [Enable OmniAuth for an existing user](omniauth.md#enable-omniauth-for-an-ex
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 Use group SAML SSO if you have to allow access through multiple SAML IdPs on your
 self-managed instance.

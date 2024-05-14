@@ -49,8 +49,6 @@ export default {
     GlDisclosureDropdownGroup,
     SidebarSubscriptionsWidget,
     AbuseCategorySelector,
-    SummaryNotesToggle: () =>
-      import('ee_component/merge_requests/components/summary_notes_toggle.vue'),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -59,9 +57,6 @@ export default {
   inject: {
     reportAbusePath: {
       default: '',
-    },
-    showSummaryNotesToggle: {
-      default: false,
     },
   },
   props: {
@@ -135,6 +130,7 @@ export default {
       isLoadingDraft: false,
       isLoadingClipboard: false,
       isReportAbuseDrawerOpen: false,
+      isDropdownVisible: false,
     };
   },
   computed: {
@@ -152,6 +148,9 @@ export default {
         text: this.$options.i18n.edit,
         href: this.editUrl,
       };
+    },
+    showDropdownTooltip() {
+      return !this.isDropdownVisible ? this.$options.i18n.mergeRequestActions : '';
     },
   },
   methods: {
@@ -212,37 +211,48 @@ export default {
     showReopenMergeRequestOption() {
       return !this.sourceProjectMissing && !this.isOpen;
     },
+    showDropdown() {
+      this.isDropdownVisible = true;
+    },
+    hideDropdown() {
+      this.isDropdownVisible = false;
+    },
   },
 };
 </script>
 
 <template>
-  <div
-    class="gl-display-flex gl-justify-content-end gl-w-full gl-relative"
-    data-testid="merge-request-actions"
-  >
+  <div class="gl-display-flex gl-justify-content-end gl-w-full" data-testid="merge-request-actions">
     <gl-disclosure-dropdown
       id="new-actions-header-dropdown"
       ref="mrMoreActionsDropdown"
+      v-gl-tooltip="showDropdownTooltip"
+      :title="$options.i18n.mergeRequestActions"
       data-testid="dropdown-toggle"
       placement="right"
+      block
+      class="gl-w-full"
       :auto-close="false"
+      @shown="showDropdown"
+      @hidden="hideDropdown"
     >
       <template #toggle>
-        <div class="gl-min-h-7 gl-mb-2 gl-md-mb-0!">
+        <div class="gl-min-h-7 gl-mb-2 gl-sm-mb-0!">
           <gl-button
-            class="gl-md-display-none! gl-new-dropdown-toggle gl-absolute gl-top-0 gl-left-0 gl-w-full"
+            class="gl-sm-display-none! gl-new-dropdown-toggle gl-w-full"
+            button-text-classes="gl-display-flex gl-justify-content-space-between gl-w-full"
             category="secondary"
+            tabindex="0"
             :aria-label="$options.i18n.mergeRequestActions"
-            :title="$options.i18n.mergeRequestActions"
           >
             <span class="">{{ $options.i18n.mergeRequestActions }}</span>
             <gl-icon class="dropdown-chevron" name="chevron-down" />
           </gl-button>
           <gl-button
-            class="gl-display-none gl-md-display-flex! gl-new-dropdown-toggle gl-new-dropdown-icon-only gl-new-dropdown-toggle-no-caret gl-ml-3"
+            class="gl-display-none gl-sm-display-flex! gl-new-dropdown-toggle gl-new-dropdown-icon-only gl-new-dropdown-toggle-no-caret"
             category="tertiary"
             icon="ellipsis_v"
+            tabindex="0"
             :aria-label="$options.i18n.mergeRequestActions"
             :title="$options.i18n.mergeRequestActions"
           />
@@ -265,7 +275,7 @@ export default {
       >
         <gl-disclosure-dropdown-item
           v-if="canUpdateMergeRequest"
-          class="gl-md-display-none!"
+          class="gl-sm-display-none!"
           data-testid="edit-merge-request"
           :item="editItem"
         />
@@ -336,8 +346,6 @@ export default {
             {{ $options.i18n.copyReferenceText }}
           </template>
         </gl-disclosure-dropdown-item>
-
-        <summary-notes-toggle v-if="showSummaryNotesToggle" @action="closeActionsDropdown" />
       </gl-disclosure-dropdown-group>
 
       <gl-disclosure-dropdown-group

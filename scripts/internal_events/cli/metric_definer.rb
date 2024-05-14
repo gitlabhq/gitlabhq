@@ -6,6 +6,7 @@ module InternalEventsCli
   class MetricDefiner
     include Helpers
 
+    SCHEMA = ::JSONSchemer.schema(Pathname('config/metrics/schema/base.json'))
     STEPS = [
       'New Metric',
       'Type',
@@ -114,9 +115,9 @@ module InternalEventsCli
 
       @metrics = cli.select('Which metrics do you want to add?', eligible_metrics, **select_opts)
 
-      assign_shared_attrs(:options, :milestone) do
+      assign_shared_attrs(:actions, :milestone) do
         {
-          options: { 'events' => selected_events.map(&:action) },
+          actions: selected_events.map(&:action).sort,
           milestone: MILESTONE
         }
       end

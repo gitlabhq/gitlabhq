@@ -34,6 +34,15 @@ sast:
   script:
     - /analyzer run
 
+.deprecated-16.8:
+  extends: .sast-analyzer
+  script:
+    - echo "This job was deprecated in GitLab 16.8 and removed in GitLab 17.0"
+    - echo "For more information see https://docs.gitlab.com/ee/update/deprecations.html#sast-analyzer-coverage-changing-in-gitlab-170"
+    - exit 1
+  rules:
+    - when: never
+
 bandit-sast:
   extends: .sast-analyzer
   script:
@@ -44,21 +53,7 @@ bandit-sast:
     - when: never
 
 brakeman-sast:
-  extends: .sast-analyzer
-  image:
-    name: "$SAST_ANALYZER_IMAGE"
-  variables:
-    SAST_ANALYZER_IMAGE_TAG: 4
-    SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/brakeman:$SAST_ANALYZER_IMAGE_TAG"
-  rules:
-    - if: $SAST_DISABLED == 'true' || $SAST_DISABLED == '1'
-      when: never
-    - if: $SAST_EXCLUDED_ANALYZERS =~ /brakeman/
-      when: never
-    - if: $CI_COMMIT_BRANCH
-      exists:
-        - '**/*.rb'
-        - '**/Gemfile'
+  extends: .deprecated-16.8
 
 eslint-sast:
   extends: .sast-analyzer
@@ -70,32 +65,14 @@ eslint-sast:
     - when: never
 
 flawfinder-sast:
-  extends: .sast-analyzer
-  image:
-    name: "$SAST_ANALYZER_IMAGE"
-  variables:
-    SAST_ANALYZER_IMAGE_TAG: 4
-    SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/flawfinder:$SAST_ANALYZER_IMAGE_TAG"
-  rules:
-    - if: $SAST_DISABLED == 'true' || $SAST_DISABLED == '1'
-      when: never
-    - if: $SAST_EXCLUDED_ANALYZERS =~ /flawfinder/
-      when: never
-    - if: $CI_COMMIT_BRANCH
-      exists:
-        - '**/*.c'
-        - '**/*.cc'
-        - '**/*.cpp'
-        - '**/*.c++'
-        - '**/*.cp'
-        - '**/*.cxx'
+  extends: .deprecated-16.8
 
 kubesec-sast:
   extends: .sast-analyzer
   image:
     name: "$SAST_ANALYZER_IMAGE"
   variables:
-    SAST_ANALYZER_IMAGE_TAG: 4
+    SAST_ANALYZER_IMAGE_TAG: 5
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/kubesec:$SAST_ANALYZER_IMAGE_TAG"
   rules:
     - if: $SAST_DISABLED == 'true' || $SAST_DISABLED == '1'
@@ -114,78 +91,24 @@ gosec-sast:
   rules:
     - when: never
 
-.mobsf-sast:
-  extends: .sast-analyzer
-  image:
-    name: "$SAST_ANALYZER_IMAGE"
-  variables:
-    SAST_ANALYZER_IMAGE_TAG: 4
-    SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/mobsf:$SAST_ANALYZER_IMAGE_TAG"
-
 mobsf-android-sast:
-  extends: .mobsf-sast
-  rules:
-    - if: $SAST_DISABLED == 'true' || $SAST_DISABLED == '1'
-      when: never
-    - if: $SAST_EXCLUDED_ANALYZERS =~ /mobsf/
-      when: never
-    - if: $CI_COMMIT_BRANCH &&
-          $SAST_EXPERIMENTAL_FEATURES == 'true'
-      exists:
-        - '**/*.apk'
-        - '**/AndroidManifest.xml'
+  extends: .deprecated-16.8
 
 mobsf-ios-sast:
-  extends: .mobsf-sast
-  rules:
-    - if: $SAST_DISABLED == 'true' || $SAST_DISABLED == '1'
-      when: never
-    - if: $SAST_EXCLUDED_ANALYZERS =~ /mobsf/
-      when: never
-    - if: $CI_COMMIT_BRANCH &&
-          $SAST_EXPERIMENTAL_FEATURES == 'true'
-      exists:
-        - '**/*.ipa'
-        - '**/*.xcodeproj/*'
+  extends: .deprecated-16.8
 
 nodejs-scan-sast:
-  extends: .sast-analyzer
-  image:
-    name: "$SAST_ANALYZER_IMAGE"
-  variables:
-    SAST_ANALYZER_IMAGE_TAG: 4
-    SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/nodejs-scan:$SAST_ANALYZER_IMAGE_TAG"
-  rules:
-    - if: $SAST_DISABLED == 'true' || $SAST_DISABLED == '1'
-      when: never
-    - if: $SAST_EXCLUDED_ANALYZERS =~ /nodejs-scan/
-      when: never
-    - if: $CI_COMMIT_BRANCH
-      exists:
-        - '**/package.json'
+  extends: .deprecated-16.8
 
 phpcs-security-audit-sast:
-  extends: .sast-analyzer
-  image:
-    name: "$SAST_ANALYZER_IMAGE"
-  variables:
-    SAST_ANALYZER_IMAGE_TAG: 4
-    SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/phpcs-security-audit:$SAST_ANALYZER_IMAGE_TAG"
-  rules:
-    - if: $SAST_DISABLED == 'true' || $SAST_DISABLED == '1'
-      when: never
-    - if: $SAST_EXCLUDED_ANALYZERS =~ /phpcs-security-audit/
-      when: never
-    - if: $CI_COMMIT_BRANCH
-      exists:
-        - '**/*.php'
+  extends: .deprecated-16.8
 
 pmd-apex-sast:
   extends: .sast-analyzer
   image:
     name: "$SAST_ANALYZER_IMAGE"
   variables:
-    SAST_ANALYZER_IMAGE_TAG: 4
+    SAST_ANALYZER_IMAGE_TAG: 5
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/pmd-apex:$SAST_ANALYZER_IMAGE_TAG"
   rules:
     - if: $SAST_DISABLED == 'true' || $SAST_DISABLED == '1'
@@ -211,7 +134,7 @@ semgrep-sast:
     name: "$SAST_ANALYZER_IMAGE"
   variables:
     SEARCH_MAX_DEPTH: 20
-    SAST_ANALYZER_IMAGE_TAG: 4
+    SAST_ANALYZER_IMAGE_TAG: 5
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/semgrep:$SAST_ANALYZER_IMAGE_TAG$SAST_IMAGE_SUFFIX"
   rules:
     - if: $SAST_DISABLED == 'true' || $SAST_DISABLED == '1'
@@ -226,19 +149,29 @@ semgrep-sast:
         - '**/*.ts'
         - '**/*.tsx'
         - '**/*.c'
+        - '**/*.cc'
+        - '**/*.cpp'
+        - '**/*.c++'
+        - '**/*.cp'
+        - '**/*.cxx'
         - '**/*.go'
         - '**/*.java'
-        - '**/*.cs'
         - '**/*.html'
+        - '**/*.cs'
         - '**/*.scala'
         - '**/*.sc'
+        - '**/*.php'
+        - '**/*.swift'
+        - '**/*.m'
+        - '**/*.rb'
+        - '**/*.kt'
 
 sobelow-sast:
   extends: .sast-analyzer
   image:
     name: "$SAST_ANALYZER_IMAGE"
   variables:
-    SAST_ANALYZER_IMAGE_TAG: 4
+    SAST_ANALYZER_IMAGE_TAG: 5
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/sobelow:$SAST_ANALYZER_IMAGE_TAG"
   rules:
     - if: $SAST_DISABLED == 'true' || $SAST_DISABLED == '1'
@@ -254,7 +187,7 @@ spotbugs-sast:
   image:
     name: "$SAST_ANALYZER_IMAGE"
   variables:
-    SAST_ANALYZER_IMAGE_TAG: 4
+    SAST_ANALYZER_IMAGE_TAG: 5
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/spotbugs:$SAST_ANALYZER_IMAGE_TAG"
   rules:
     - if: $SAST_EXCLUDED_ANALYZERS =~ /spotbugs/

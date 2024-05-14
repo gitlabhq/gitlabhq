@@ -95,6 +95,7 @@ RSpec.describe QA::Support::PageErrorChecker do
         end
         stub_const('NokogiriParse', nokogiri_parse)
       end
+
       let(:error_500_str) do
         "<html><body><div><p><code>"\
         "req678"\
@@ -200,6 +201,7 @@ RSpec.describe QA::Support::PageErrorChecker do
       end
       stub_const('NokogiriParse', nokogiri_parse)
     end
+
     let(:error_404_str) do
       "<div class=\"error\">"\
         "<img src=\"404.png\" alt=\"404\" />"\

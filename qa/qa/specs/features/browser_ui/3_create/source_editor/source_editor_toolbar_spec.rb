@@ -10,7 +10,7 @@ module QA
         Flow::Login.sign_in
       end
 
-      it 'can preview markdown side-by-side while editing',
+      it 'can preview markdown side-by-side while editing', :blocking,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/367749' do
         project.visit!
         Page::Project::Show.perform do |project|

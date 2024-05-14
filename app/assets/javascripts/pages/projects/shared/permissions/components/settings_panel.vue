@@ -81,6 +81,11 @@ export default {
       'ProjectSettings|Highlight the usage of hidden unicode characters. These have innocent uses for right-to-left languages, but can also be used in potential exploits.',
     ),
     confirmButtonText: __('Save changes'),
+    emailsLabel: s__('ProjectSettings|Email notifications'),
+    showDiffPreviewLabel: s__('ProjectSettings|Include diff previews'),
+    showDiffPreviewHelpText: s__(
+      'ProjectSettings|Emails are not encrypted. Concerned administrators may want to disable diff previews.',
+    ),
   },
   VISIBILITY_LEVEL_PRIVATE_INTEGER,
   VISIBILITY_LEVEL_INTERNAL_INTEGER,
@@ -121,6 +126,11 @@ export default {
       required: true,
     },
     canDisableEmails: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    canSetDiffPreviewInEmail: {
       type: Boolean,
       required: false,
       default: false,
@@ -282,6 +292,7 @@ export default {
       enforceAuthChecksOnUploads: true,
       highlightChangesClass: false,
       emailsEnabled: true,
+      showDiffPreviewInEmail: true,
       cveIdRequestEnabled: true,
       featureAccessLevelEveryone,
       featureAccessLevelMembers,
@@ -381,6 +392,14 @@ export default {
     },
     monitorOperationsFeatureAccessLevelOptions() {
       return this.featureAccessLevelOptions.filter(([value]) => value <= this.monitorAccessLevel);
+    },
+    findDiffPreviewValue: {
+      get() {
+        return this.emailsEnabled && this.showDiffPreviewInEmail;
+      },
+      set(newValue) {
+        this.showDiffPreviewInEmail = newValue;
+      },
     },
   },
 
@@ -770,7 +789,11 @@ export default {
         <project-setting-row
           ref="pipeline-settings"
           :label="$options.i18n.ciCdLabel"
-          :help-text="s__('ProjectSettings|Build, test, and deploy your changes.')"
+          :help-text="
+            s__(
+              'ProjectSettings|Build, test, and deploy your changes. Does not apply to project integrations.',
+            )
+          "
         >
           <project-feature-setting
             v-model="buildsAccessLevel"
@@ -1021,8 +1044,10 @@ export default {
         />
       </project-setting-row>
     </div>
+
     <project-setting-row v-if="canDisableEmails" ref="email-settings" class="mb-3">
       <label class="js-emails-enabled">
+        <h5>{{ $options.i18n.emailsLabel }}</h5>
         <input
           :value="emailsEnabled"
           type="hidden"
@@ -1035,6 +1060,21 @@ export default {
           }}</template>
         </gl-form-checkbox>
       </label>
+      <project-setting-row
+        v-if="canSetDiffPreviewInEmail"
+        ref="enable-diff-preview-settings"
+        class="gl-px-7"
+      >
+        <input
+          :value="findDiffPreviewValue"
+          type="hidden"
+          name="project[project_setting_attributes][show_diff_preview_in_email]"
+        />
+        <gl-form-checkbox v-model="findDiffPreviewValue" :disabled="!emailsEnabled">
+          {{ $options.i18n.showDiffPreviewLabel }}
+          <template #help>{{ $options.i18n.showDiffPreviewHelpText }}</template>
+        </gl-form-checkbox>
+      </project-setting-row>
     </project-setting-row>
     <project-setting-row class="mb-3">
       <input

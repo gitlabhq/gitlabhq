@@ -47,29 +47,6 @@ RSpec.describe Projects::TreeController, feature_category: :source_code_manageme
       end
     end
 
-    context 'when there is a ref and tag with the same name' do
-      let(:id) { 'ambiguous_ref' }
-      let(:params) { { namespace_id: project.namespace, project_id: project, id: id, ref_type: ref_type } }
-
-      context 'and explicitly requesting a branch' do
-        let(:ref_type) { 'heads' }
-
-        it 'redirects to blob#show with sha for the branch' do
-          request
-          expect(response).to redirect_to(project_tree_path(project, RepoHelpers.another_sample_commit.id))
-        end
-      end
-
-      context 'and explicitly requesting a tag' do
-        let(:ref_type) { 'tags' }
-
-        it 'responds with success' do
-          request
-          expect(response).to be_ok
-        end
-      end
-    end
-
     context "valid branch, no path" do
       let(:id) { 'flatten-dir' }
 

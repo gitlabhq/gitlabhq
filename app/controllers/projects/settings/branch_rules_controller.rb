@@ -4,6 +4,10 @@ module Projects
   module Settings
     class BranchRulesController < Projects::ApplicationController
       before_action :authorize_admin_project!
+      before_action do
+        push_frontend_feature_flag(:approval_rules_drawer, @project)
+        push_frontend_feature_flag(:edit_branch_rules, @project)
+      end
 
       feature_category :source_code_management
 

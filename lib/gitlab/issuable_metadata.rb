@@ -89,7 +89,7 @@ module Gitlab
     def grouped_issuable_merge_requests_count
       strong_memoize(:grouped_issuable_merge_requests_count) do
         if collection_type == 'Issue'
-          ::MergeRequestsClosingIssues.count_for_collection(issuable_ids, current_user)
+          ::MergeRequestsClosingIssues.closing_count_for_collection(issuable_ids, current_user)
         else
           []
         end

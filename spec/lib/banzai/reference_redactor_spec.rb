@@ -103,6 +103,18 @@ RSpec.describe Banzai::ReferenceRedactor, feature_category: :team_planning do
         expect(doc2.to_html).to eq(doc2_html)
       end
     end
+
+    context 'when reference is a gollum wiki page link that is not visible to user' do
+      it 'redacts the wiki page title and href' do
+        doc = Nokogiri::HTML.fragment('<a class="gfm" href="https://gitlab.com/path/to/project/-/wikis/foo" data-reference-type="wiki_page" data-gollum="true">foo</a>')
+
+        expect(redactor).to receive(:nodes_visible_to_user).and_return([])
+
+        redactor.redact([doc])
+
+        expect(doc.to_html).to eq('[redacted]')
+      end
+    end
   end
 
   context 'when the user cannot read cross project' do

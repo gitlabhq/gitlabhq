@@ -177,8 +177,6 @@ You can do this by running the `./scripts/dump_graphql_schema` script.
 
 ## Formatting with Prettier
 
-> - Support for `.graphql` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227280) in GitLab 13.2.
-
 Our code is automatically formatted with [Prettier](https://prettier.io) to follow our style guides. Prettier is taking care of formatting `.js`, `.vue`, `.graphql`, and `.scss` files based on the standard prettier rules. You can find all settings for Prettier in `.prettierrc`.
 
 ### Editor

@@ -1,0 +1,39 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Merge request dashboard collapsible section renders section 1`] = `
+<section
+  class="gl-bg-gray-50 gl-p-4 gl-rounded-base"
+>
+  <header
+    class="gl-align-items-center gl-display-flex"
+  >
+    <gl-button-stub
+      aria-label="Collapse approved merge requests"
+      buttontextclasses=""
+      category="tertiary"
+      class="gl-mr-3"
+      data-testid="section-toggle-button"
+      icon="chevron-down"
+      size="small"
+      variant="default"
+    />
+    <strong>
+      Approved
+    </strong>
+    <gl-badge-stub
+      class="gl-ml-3"
+      iconsize="md"
+      size="sm"
+      variant="neutral"
+    >
+      3
+    </gl-badge-stub>
+  </header>
+  <div
+    class="gl-mt-3"
+    data-testid="section-content"
+  >
+    content
+  </div>
+</section>
+`;

@@ -20,23 +20,37 @@ RSpec.describe 'getting organization information', feature_category: :cell do
     FIELDS
   end
 
-  let_it_be(:organization_user) { create(:organization_user) }
-  let_it_be(:organization) { organization_user.organization }
-  let_it_be(:user) { organization_user.user }
+  let_it_be(:organization_owner) { create(:organization_owner) }
+  let_it_be(:organization) { organization_owner.organization }
+  let_it_be(:user) { organization_owner.user }
   let_it_be(:project) { create(:project, organization: organization) { |p| p.add_developer(user) } }
   let_it_be(:other_group) do
     create(:group, name: 'other-group', organization: organization) { |g| g.add_developer(user) }
   end
+
+  let_it_be(:organization_group) { create(:group, organization: organization) }
 
   subject(:request_organization) { post_graphql(query, current_user: current_user) }
 
   context 'when the user does not have access to the organization' do
     let(:current_user) { create(:user) }
 
-    it 'returns the organization as all organizations are public' do
-      request_organization
+    context 'when organization is private' do
+      it 'returns no organization' do
+        request_organization
 
-      expect(graphql_data_at(:organization, :id)).to eq(organization.to_global_id.to_s)
+        expect(graphql_data_at(:organization, :id)).to be_nil
+      end
+    end
+
+    context 'when organization is public' do
+      let_it_be(:organization) { create(:organization, :public) }
+
+      it 'only returns the public organization' do
+        request_organization
+
+        expect(graphql_data_at(:organization, :id)).to eq(organization.to_global_id.to_s)
+      end
     end
   end
 
@@ -52,11 +66,16 @@ RSpec.describe 'getting organization information', feature_category: :cell do
         <<~FIELDS
           organizationUsers {
             nodes {
+              accessLevel {
+                integerValue
+                stringValue
+              }
               badges {
                 text
                 variant
               }
               id
+              isLastOwner
               user {
                 id
               }
@@ -70,8 +89,10 @@ RSpec.describe 'getting organization information', feature_category: :cell do
 
         organization_user_nodes = graphql_data_at(:organization, :organizationUsers, :nodes)
         expected_attributes = {
+          "accessLevel" => { "integerValue" => 50, "stringValue" => "OWNER" },
           "badges" => [{ "text" => "It's you!", "variant" => 'muted' }],
-          "id" => organization_user.to_global_id.to_s,
+          "id" => organization_owner.to_global_id.to_s,
+          "isLastOwner" => true,
           "user" => { "id" => user.to_global_id.to_s }
         }
         expect(organization_user_nodes).to include(expected_attributes)
@@ -98,6 +119,7 @@ RSpec.describe 'getting organization information', feature_category: :cell do
     context 'when requesting groups' do
       let(:groups) { graphql_data_at(:organization, :groups, :nodes) }
       let_it_be(:parent_group) { create(:group, name: 'parent-group', organization: organization) }
+      let_it_be(:parent_group_global_id) { parent_group.to_global_id.to_s }
       let_it_be(:public_group) do
         create(:group, name: 'public-group', parent: parent_group, organization: organization)
       end
@@ -113,23 +135,18 @@ RSpec.describe 'getting organization information', feature_category: :cell do
         create(:group) { |g| g.add_developer(user) } # outside organization
       end
 
-      context 'when resolve_organization_groups feature flag is disabled' do
-        before do
-          stub_feature_flags(resolve_organization_groups: false)
-        end
-
-        it 'returns no groups' do
-          request_organization
-
-          expect(graphql_data_at(:organization)).not_to be_nil
-          expect(graphql_data_at(:organization, :groups, :nodes)).to be_empty
-        end
-      end
-
-      it 'does not return ancestors of authorized groups' do
+      it 'returns ancestors of authorized groups' do
         request_organization
 
-        expect(groups.pluck('id')).not_to include(parent_group.to_global_id.to_s)
+        expect(groups.pluck('id')).to include(parent_group_global_id)
+      end
+
+      it 'returns all visible groups' do
+        request_organization
+
+        expected_groups = [parent_group, public_group, private_group, other_group, organization_group]
+          .map { |group| group.to_global_id.to_s }
+        expect(groups.pluck('id')).to match_array(expected_groups)
       end
 
       context 'with `search` argument' do
@@ -154,8 +171,10 @@ RSpec.describe 'getting organization information', feature_category: :cell do
         end
       end
 
-      context 'with `sort` argument' do
-        let(:authorized_groups) { [public_group, private_group, other_group] }
+      describe 'group sorting' do
+        let_it_be(:authorized_groups) { [parent_group, public_group, private_group, other_group, organization_group] }
+        let_it_be(:first_param) { 2 }
+        let_it_be(:data_path) { [:organization, :groups] }
 
         where(:field, :direction, :sorted_groups) do
           'id'   | 'asc'  | lazy { authorized_groups.sort_by(&:id) }
@@ -167,24 +186,17 @@ RSpec.describe 'getting organization information', feature_category: :cell do
         end
 
         with_them do
-          let(:sort) { "#{field}_#{direction}".upcase }
-          let(:organization_fields) do
-            <<~FIELDS
-              id
-              path
-              groups(sort: #{sort}) {
-                nodes {
-                  id
-                }
-              }
-            FIELDS
+          it_behaves_like 'sorted paginated query' do
+            let(:sort_param) { "#{field}_#{direction}" }
+            let(:all_records) { sorted_groups.map { |p| global_id_of(p).to_s } }
           end
+        end
 
-          it 'sorts the groups' do
-            request_organization
-
-            expect(groups.pluck('id')).to eq(sorted_groups.map(&:to_global_id).map(&:to_s))
-          end
+        def pagination_query(params)
+          graphql_query_for(
+            :organization, { id: organization.to_global_id },
+            query_nodes(:groups, :id, include_pagination_info: true, args: params)
+          )
         end
       end
     end
@@ -215,6 +227,34 @@ RSpec.describe 'getting organization information', feature_category: :cell do
         expect(projects).to contain_exactly(a_graphql_entity_for(project))
       end
 
+      describe 'project searching' do
+        let_it_be(:other_project) do
+          create(:project, name: 'other-project', organization: organization) { |p| p.add_developer(user) }
+        end
+
+        let_it_be(:non_member_project) { create(:project, :public, organization: organization) }
+
+        context 'with `search` argument' do
+          let(:search) { 'other' }
+          let(:organization_fields) do
+            <<~FIELDS
+              projects(search: "#{search}") {
+                nodes {
+                  id
+                  name
+                }
+              }
+            FIELDS
+          end
+
+          it 'filters projects by name' do
+            request_organization
+
+            expect(projects).to contain_exactly(a_graphql_entity_for(other_project))
+          end
+        end
+      end
+
       describe 'project sorting' do
         let_it_be(:another_project) { create(:project, organization: organization) { |p| p.add_developer(user) } }
         let_it_be(:another_project2) { create(:project, organization: organization) { |p| p.add_developer(user) } }
@@ -235,24 +275,6 @@ RSpec.describe 'getting organization information', feature_category: :cell do
           it_behaves_like 'sorted paginated query' do
             let(:sort_param) { "#{field}_#{direction}" }
             let(:all_records) { sorted_projects.map { |p| global_id_of(p).to_s } }
-          end
-        end
-
-        context 'with project_path_sort disabled sorts the projects by id_desc' do
-          before do
-            stub_feature_flags(project_path_sort: false)
-          end
-
-          where(:field, :direction) do
-            'path' | 'asc'
-            'path' | 'desc'
-          end
-
-          with_them do
-            it_behaves_like 'sorted paginated query' do
-              let(:sort_param) { "#{field}_#{direction}" }
-              let(:all_records) { all_projects.sort_by(&:id).reverse.map { |p| global_id_of(p).to_s } }
-            end
           end
         end
       end

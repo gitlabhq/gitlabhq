@@ -61,22 +61,7 @@ class Projects::MergeRequests::DraftsController < Projects::MergeRequests::Appli
       merge_request_activity_counter.track_submit_review_comment(user: current_user)
     end
 
-    if Feature.enabled?(:mr_request_changes, current_user) && reviewer_state_params[:reviewer_state]
-      update_reviewer_state
-    elsif Gitlab::Utils.to_boolean(approve_params[:approve])
-      unless merge_request.approved_by?(current_user)
-        success = ::MergeRequests::ApprovalService
-          .new(project: @project, current_user: current_user, params: approve_params)
-          .execute(merge_request)
-
-        unless success
-          return render json: { message: _('An error occurred while approving, please try again.') },
-            status: :internal_server_error
-        end
-      end
-
-      merge_request_activity_counter.track_submit_review_approve(user: current_user)
-    end
+    update_reviewer_state if reviewer_state_params[:reviewer_state]
 
     if result[:status] == :success
       head :ok
@@ -124,7 +109,8 @@ class Projects::MergeRequests::DraftsController < Projects::MergeRequests::Appli
       :note,
       :position,
       :resolve_discussion,
-      :line_code
+      :line_code,
+      :internal
     ).tap do |h|
       # Old FE version will still be sending `draft_note[commit_id]` as 'undefined'.
       # That can result to having a note linked to a commit with 'undefined' ID
@@ -192,6 +178,8 @@ class Projects::MergeRequests::DraftsController < Projects::MergeRequests::Appli
       ::MergeRequests::ApprovalService
         .new(project: @project, current_user: current_user, params: approve_params)
         .execute(merge_request)
+
+      merge_request_activity_counter.track_submit_review_approve(user: current_user)
     else
       ::MergeRequests::UpdateReviewerStateService
         .new(project: @project, current_user: current_user)

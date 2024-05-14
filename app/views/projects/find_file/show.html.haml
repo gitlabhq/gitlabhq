@@ -9,7 +9,7 @@
     .tree-ref-holder.gl-mb-3.gl-sm-mb-0.gl-max-w-26
       #js-blob-ref-switcher{ data: { project_id: @project.id, ref: @ref, ref_type: @ref_type, namespace: "/-/find_file" } }
     %ul.breadcrumb.repo-breadcrumb.gl-flex-nowrap
-      %li.breadcrumb-item.gl-white-space-nowrap
+      %li.breadcrumb-item.gl-whitespace-nowrap
         = link_to project_tree_path(@project, @ref, ref_type: @ref_type) do
           = @project.path
       %li.file-finder.breadcrumb-item

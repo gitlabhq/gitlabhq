@@ -9,7 +9,7 @@ extra_properties:
 identifiers:
 product_section: dev
 product_stage: plan
-product_group: group::knowledge
+product_group: knowledge
 milestone: "16.3"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127218
 distributions:

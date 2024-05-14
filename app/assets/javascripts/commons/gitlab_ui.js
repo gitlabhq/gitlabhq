@@ -1,5 +1,6 @@
 import applyGitLabUIConfig from '@gitlab/ui/dist/config';
-import { __ } from '~/locale';
+import { __, s__ } from '~/locale';
+import { NEXT, PREV } from '~/vue_shared/components/pagination/constants';
 
 applyGitLabUIConfig({
   translations: {
@@ -8,5 +9,8 @@ applyGitLabUIConfig({
     'GlSorting.sortAscending': __('Sort direction: Ascending'),
     'GlSorting.sortDescending': __('Sort direction: Descending'),
     'ClearIconButton.title': __('Clear'),
+    'GlKeysetPagination.prevText': PREV,
+    'GlKeysetPagination.navigationLabel': s__('Pagination|Pagination'),
+    'GlKeysetPagination.nextText': NEXT,
   },
 });

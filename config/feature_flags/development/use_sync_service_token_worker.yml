@@ -1,8 +1,0 @@
----
-name: use_sync_service_token_worker
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136078
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/431608
-milestone: '16.9'
-type: development
-group: group::cloud connector
-default_enabled: true

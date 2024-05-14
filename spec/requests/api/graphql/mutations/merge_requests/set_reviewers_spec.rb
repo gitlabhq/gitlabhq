@@ -6,7 +6,7 @@ RSpec.describe 'Setting reviewers of a merge request', :assume_throttled, featur
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:current_user) { create(:user, developer_projects: [project]) }
+  let_it_be(:current_user) { create(:user, developer_of: project) }
   let_it_be(:reviewer) { create(:user) }
   let_it_be(:reviewer2) { create(:user) }
   let_it_be_with_reload(:merge_request) { create(:merge_request, source_project: project) }

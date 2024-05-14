@@ -21,6 +21,7 @@ module Tasks
       # or have a direct impact on asset compilation (e.g. scss) and therefore
       # we should compile when these change
       RAILS_ASSET_FILES = %w[
+        config/application.rb
         Gemfile
         Gemfile.lock
       ].freeze
@@ -83,11 +84,21 @@ namespace :gitlab do
   namespace :assets do
     desc 'GitLab | Assets | Return the hash sum of all frontend assets'
     task :hash_sum do
+      Rake::Task['gitlab:assets:tailwind'].invoke('silent')
       print Tasks::Gitlab::Assets.sha256_of_assets_impacting_compilation(verbose: false)
     end
 
+    task :tailwind, [:silent] do |_t, args|
+      cmd = 'yarn tailwindcss:build'
+      cmd += '> /dev/null 2>&1' if args[:silent].present?
+
+      unless system(cmd)
+        abort Rainbow('Error: Unable to build Tailwind CSS bundle.').red
+      end
+    end
+
     desc 'GitLab | Assets | Compile all frontend assets'
-    task :compile do
+    task compile: :tailwind do
       require 'fileutils'
 
       require_dependency 'gitlab/task_helpers'
@@ -102,20 +113,34 @@ namespace :gitlab do
         # app/assets/javascripts/locale/**/app.js are pre-compiled by Sprockets
         Gitlab::TaskHelpers.invoke_and_time_task('gettext:compile')
         # Skip Yarn Install when using Cssbundling
-        Rake::Task["css:install"].clear if defined?(Cssbundling)
+        Rake::Task["css:install"].clear
         Gitlab::TaskHelpers.invoke_and_time_task('rake:assets:precompile')
 
         log_path = ENV['WEBPACK_COMPILE_LOG_PATH']
 
         cmd = 'yarn webpack'
-        cmd += " > #{log_path}" if log_path
+        cmd += " > #{log_path} 2>&1" if log_path
 
-        puts "Written webpack stdout log to #{log_path}" if log_path
-        puts "You can inspect the webpack log here: #{ENV['CI_JOB_URL']}/artifacts/file/#{log_path}" if log_path && ENV['CI_JOB_URL']
+        log_path_message = ""
+        if log_path
+          puts "Compiling frontend assets with webpack, running: #{cmd}"
+          log_path_message += "\nWritten webpack log written to #{log_path}"
+          log_path_message += "\nYou can inspect the webpack full log here: #{ENV['CI_JOB_URL']}/artifacts/file/#{log_path}" if ENV['CI_JOB_URL']
+        end
 
         unless system(cmd)
-          abort 'Error: Unable to compile webpack production bundle.'.color(:red)
+          puts Rainbow('Error: Unable to compile webpack production bundle.').red
+
+          if log_path
+            puts "Last 100 line of webpack log:"
+            system("tail -n 100 #{log_path}")
+          end
+
+          puts Rainbow(log_path_message).yellow unless log_path_message.empty?
+          abort
         end
+
+        puts log_path_message unless log_path_message.empty?
 
         Gitlab::TaskHelpers.invoke_and_time_task('gitlab:assets:fix_urls')
         Gitlab::TaskHelpers.invoke_and_time_task('gitlab:assets:check_page_bundle_mixins_css_for_sideeffects')
@@ -162,14 +187,14 @@ namespace :gitlab do
     desc 'GitLab | Assets | Compile vendor assets'
     task :vendor do
       unless system('yarn webpack-vendor')
-        abort 'Error: Unable to compile webpack DLL.'.color(:red)
+        abort Rainbow('Error: Unable to compile webpack DLL.').red
       end
     end
 
     desc 'GitLab | Assets | Check that scss mixins do not introduce any sideffects'
     task :check_page_bundle_mixins_css_for_sideeffects do
       unless system('./scripts/frontend/check_page_bundle_mixins_css_for_sideeffects.js')
-        abort 'Error: At least one CSS changes introduces an unwanted sideeffect'.color(:red)
+        abort Rainbow('Error: At least one CSS changes introduces an unwanted sideeffect').red
       end
     end
   end

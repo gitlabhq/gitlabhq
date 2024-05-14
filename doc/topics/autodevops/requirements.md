@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Before enabling [Auto DevOps](index.md), we recommend you to prepare it for
 deployment. If you don't, you can use it to build and test your apps, and
@@ -30,8 +30,6 @@ To prepare the deployment:
 1. [Enable Auto DevOps](index.md#enable-or-disable-auto-devops).
 
 ## Auto DevOps deployment strategy
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/38542) in GitLab 11.0.
 
 When using Auto DevOps to deploy your applications, choose the
 [continuous deployment strategy](../../ci/index.md)
@@ -144,7 +142,7 @@ To make full use of Auto DevOps with Kubernetes, you need:
 
 - **cert-manager** (optional, for TLS/HTTPS)
 
-  To enable HTTPS endpoints for your application, you can [install cert-manager](https://cert-manager.io/docs/installation/supported-releases/),
+  To enable HTTPS endpoints for your application, you can [install cert-manager](https://cert-manager.io/docs/releases/),
   a native Kubernetes certificate management controller that helps with issuing
   certificates. Installing cert-manager on your cluster issues a
   [Let's Encrypt](https://letsencrypt.org/) certificate and ensures the

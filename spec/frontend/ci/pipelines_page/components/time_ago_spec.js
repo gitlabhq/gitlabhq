@@ -28,8 +28,8 @@ describe('Timeago component', () => {
     );
   };
 
-  const duration = () => wrapper.find('.duration');
-  const finishedAt = () => wrapper.find('.finished-at');
+  const duration = () => wrapper.find('[data-testid="duration"]');
+  const finishedAt = () => wrapper.find('[data-testid="finished-at"]');
   const findCalendarIcon = () => wrapper.findByTestId('calendar-icon');
 
   describe('with duration', () => {

@@ -32,10 +32,12 @@ RSpec.describe 'Project callouts', feature_category: :navigation do
 
       context 'when callout entry already exists' do
         let!(:callout) do
-          create(:project_callout,
-                 feature_name: Users::ProjectCallout.feature_names.each_key.first,
-                 user: user,
-                 project: project)
+          create(
+            :project_callout,
+            feature_name: Users::ProjectCallout.feature_names.each_key.first,
+            user: user,
+            project: project
+          )
         end
 
         it 'returns success', :aggregate_failures do

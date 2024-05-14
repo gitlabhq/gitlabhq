@@ -136,11 +136,11 @@ In Prometheus, look for the following metrics:
 You can observe the status of [control groups (cgroups)](configure_gitaly.md#control-groups) using Prometheus:
 
 - `gitaly_cgroups_reclaim_attempts_total`, a gauge for the total number of times
-   there has been a memory reclaim attempt. This number resets each time a server is
-   restarted.
+  there has been a memory reclaim attempt. This number resets each time a server is
+  restarted.
 - `gitaly_cgroups_cpu_usage`, a gauge that measures CPU usage per cgroup.
 - `gitaly_cgroup_procs_total`, a gauge that measures the total number of
-   processes Gitaly has spawned under the control of cgroups.
+  processes Gitaly has spawned under the control of cgroups.
 - `gitaly_cgroup_cpu_cfs_periods_total`, a counter that for the value of [`nr_periods`](https://docs.kernel.org/scheduler/sched-bwc.html#statistics).
 - `gitaly_cgroup_cpu_cfs_throttled_periods_total`, a counter for the value of [`nr_throttled`](https://docs.kernel.org/scheduler/sched-bwc.html#statistics).
 - `gitaly_cgroup_cpu_cfs_throttled_seconds_total`, a counter for the value of [`throttled_time`](https://docs.kernel.org/scheduler/sched-bwc.html#statistics) in seconds.
@@ -253,10 +253,10 @@ The following metrics are available from the `/metrics` endpoint:
   They reflect configuration defined for this instance of Praefect.
 
 - `gitaly_praefect_replication_latency_bucket`, a histogram measuring the amount of time it takes
-  for replication to complete after the replication job starts. Available in GitLab 12.10 and later.
+  for replication to complete after the replication job starts.
 - `gitaly_praefect_replication_delay_bucket`, a histogram measuring how much time passes between
-  when the replication job is created and when it starts. Available in GitLab 12.10 and later.
-- `gitaly_praefect_connections_total`, the total number of connections to Praefect. [Introduced](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/4220) in GitLab 14.7.
+  when the replication job is created and when it starts.
+- `gitaly_praefect_connections_total`, the total number of connections to Praefect.
 - `gitaly_praefect_method_types`, a count of accessor and mutator RPCs per node.
 
 To monitor [strong consistency](index.md#strong-consistency), you can use the following Prometheus metrics:
@@ -287,8 +287,6 @@ To monitor [repository verification](praefect.md#repository-verification), use t
 You can also monitor the [Praefect logs](../logs/index.md#praefect-logs).
 
 ### Database metrics `/db_metrics` endpoint
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/3286) in GitLab 14.5.
 
 The following metrics are available from the `/db_metrics` endpoint:
 

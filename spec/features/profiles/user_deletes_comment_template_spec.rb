@@ -15,7 +15,7 @@ RSpec.describe 'Profile > Comment templates > User deletes comment template', :j
     visit profile_comment_templates_path
 
     click_button 'Comment template actions'
-    find('[data-testid="comment-template-delete-btn"]').click
+    find_by_testid('comment-template-delete-btn').click
 
     page.within('.gl-modal') do
       click_button 'Delete'

@@ -5,7 +5,10 @@ import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { s__ } from '~/locale';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
+import { joinPaths } from '~/lib/utils/url_utility';
 import getUserAchievements from './graphql/get_user_achievements.query.graphql';
+
+export const MAX_VISIBLE_ACHIEVEMENTS = 7;
 
 export default {
   name: 'UserAchievements',
@@ -36,7 +39,7 @@ export default {
   methods: {
     processNodes(nodes) {
       return Object.entries(groupBy(nodes, 'achievement.id'))
-        .slice(0, 3)
+        .slice(0, MAX_VISIBLE_ACHIEVEMENTS)
         .map(([id, values]) => {
           const {
             achievement: { name, avatarUrl, description, namespace },
@@ -51,7 +54,7 @@ export default {
             description,
             namespace: namespace && {
               fullPath: namespace.fullPath,
-              webUrl: this.rootUrl + namespace.fullPath,
+              webUrl: joinPaths(this.rootUrl, namespace.achievementsPath),
             },
             count,
           };
@@ -85,7 +88,7 @@ export default {
     <div
       v-for="userAchievement in userAchievements"
       :key="userAchievement.id"
-      class="gl-display-inline-block gl-vertical-align-top"
+      class="gl-mr-2 gl-display-inline-block gl-align-top gl-text-center"
       data-testid="user-achievement"
     >
       <gl-avatar
@@ -94,7 +97,7 @@ export default {
         :size="32"
         tabindex="0"
         shape="rect"
-        class="gl-mr-2 gl-p-1 gl-border-none"
+        class="gl-p-1 gl-border-none"
       />
       <br />
       <gl-badge v-if="showCountBadge(userAchievement.count)" variant="info" size="sm">{{

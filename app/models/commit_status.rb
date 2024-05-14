@@ -32,7 +32,7 @@ class CommitStatus < Ci::ApplicationRecord
   belongs_to :project
   belongs_to :pipeline, ->(build) { in_partition(build) }, class_name: 'Ci::Pipeline', foreign_key: :commit_id, inverse_of: :statuses, partition_foreign_key: :partition_id
   belongs_to :auto_canceled_by, class_name: 'Ci::Pipeline', inverse_of: :auto_canceled_jobs
-  belongs_to :ci_stage, class_name: 'Ci::Stage', foreign_key: :stage_id
+  belongs_to :ci_stage, ->(build) { in_partition(build) }, class_name: 'Ci::Stage', foreign_key: :stage_id, partition_foreign_key: :partition_id
 
   has_many :needs, class_name: 'Ci::BuildNeed', foreign_key: :build_id, inverse_of: :build
 
@@ -165,15 +165,18 @@ class CommitStatus < Ci::ApplicationRecord
     end
 
     event :drop do
+      transition canceling: :canceled # runner returns success/failed
       transition [:created, :waiting_for_resource, :preparing, :waiting_for_callback, :pending, :running, :manual, :scheduled] => :failed
     end
 
     event :success do
+      transition canceling: :canceled # runner returns success/failed
       transition [:created, :waiting_for_resource, :preparing, :waiting_for_callback, :pending, :running] => :success
     end
 
     event :cancel do
-      transition [:created, :waiting_for_resource, :preparing, :waiting_for_callback, :pending, :running, :manual, :scheduled] => :canceled
+      transition running: :canceling, if: :supports_canceling?
+      transition CANCELABLE_STATUSES.map(&:to_sym) + [:manual] => :canceled
     end
 
     before_transition [:created, :waiting_for_resource, :preparing, :skipped, :manual, :scheduled] => :pending do |commit_status|
@@ -194,6 +197,11 @@ class CommitStatus < Ci::ApplicationRecord
 
       commit_status.failure_reason = reason.failure_reason_enum
       commit_status.allow_failure = true if reason.force_allow_failure?
+      # Windows exit codes can reach a max value of 32-bit unsigned integer
+      # We only allow a smallint for exit_code in the db, hence the added limit of 32767
+      if reason.exit_code && Feature.enabled?(:ci_retry_on_exit_codes, Feature.current_request)
+        commit_status.exit_code = reason.exit_code % 32768
+      end
     end
 
     before_transition [:skipped, :manual] => :created do |commit_status, transition|
@@ -239,10 +247,6 @@ class CommitStatus < Ci::ApplicationRecord
     false
   end
 
-  def self.use_partition_id_filter?
-    Ci::Pipeline.use_partition_id_filter?
-  end
-
   def locking_enabled?
     will_save_change_to_status?
   end
@@ -255,6 +259,10 @@ class CommitStatus < Ci::ApplicationRecord
     regex = %r{([\b\s:]+((\[.*\])|(\d+[\s:\/\\]+\d+))){1,3}\s*\z}
 
     name.to_s.sub(regex, '').strip
+  end
+
+  def supports_canceling?
+    false
   end
 
   # Time spent running.
@@ -337,6 +345,9 @@ class CommitStatus < Ci::ApplicationRecord
   def stage_name
     ci_stage&.name
   end
+
+  # Handled only by ci_build
+  def exit_code=(value); end
 
   # For AiAction
   def to_ability_name

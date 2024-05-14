@@ -50,7 +50,7 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-display-inline-block">
+  <div class="gl-display-inline-block gl-max-w-full">
     <gl-form-input
       v-if="hasFilter"
       v-model="filterInput"

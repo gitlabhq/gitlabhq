@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 GitLab has several keyboard shortcuts you can use to access its different
 features.
@@ -43,6 +43,7 @@ These shortcuts are available in most areas of GitLab:
 | <kbd>Shift</kbd> + <kbd>t</kbd>    | Go to your To-Do List page. |
 | <kbd>p</kbd>, then <kbd>b</kbd>     | Show or hide the Performance Bar. |
 | <kbd>Escape</kbd>                  | Hide tooltips or popovers. |
+| <kbd>Escape</kbd>                  | Hide tooltips or popovers. |
 | <kbd>g</kbd>, then <kbd>x</kbd>     | Toggle between [GitLab](https://gitlab.com/) and [GitLab Next](https://next.gitlab.com/) (GitLab SaaS only). |
 | <kbd>.</kbd>                       | Open the [Web IDE](project/web_ide/index.md). |
 
@@ -60,6 +61,7 @@ descriptions):
 | <kbd>Command</kbd> + <kbd>k</kbd>       | <kbd>Control</kbd> + <kbd>k</kbd> | Add a link (surround the selected text with `[]()`). |
 | <kbd>Command</kbd> + <kbd>&#93;</kbd> | <kbd>Control</kbd> + <kbd>&#93;</kbd> |  Indent list item. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/351924) in GitLab 15.3. |
 | <kbd>Command</kbd> + <kbd>&#91;</kbd> | <kbd>Control</kbd> + <kbd>&#91;</kbd> |  Outdent list item. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/351924) in GitLab 15.3. |
+| <kbd>Command</kbd> + <kbd>Enter</kbd> | <kbd>Control</kbd> + <kbd>Enter</kbd> |  Submit or save changes |
 
 The shortcuts for editing in text fields are always enabled, even if other
 keyboard shortcuts are disabled.
@@ -75,7 +77,7 @@ relatively quickly to work, and they take you to another page in the project.
 | <kbd>g</kbd> + <kbd>v</kbd> | Go to the project activity feed (**Manage > Activity**). |
 | <kbd>g</kbd> + <kbd>r</kbd> | Go to the project releases list (**Deploy > Releases**). |
 | <kbd>g</kbd> + <kbd>f</kbd> | Go to the [project files](#project-files) list (**Code > Repository**). |
-| <kbd>t</kbd>                | Go to the project file search page. (**Code > Repository**, select **Find Files**). |
+| <kbd>t</kbd>                | Open the project file search dialog. (**Code > Repository**, select **Find Files**). |
 | <kbd>g</kbd> + <kbd>c</kbd> | Go to the project commits list (**Code > Commits**). |
 | <kbd>g</kbd> + <kbd>n</kbd> | Go to the [repository graph](#repository-graph) page (**Code > Repository graph**). |
 | <kbd>g</kbd> + <kbd>d</kbd> | Go to repository charts (**Analyze > Repository analytics**). |
@@ -122,6 +124,8 @@ These shortcuts are available when viewing [merge requests](project/merge_reques
 | <kbd>b</kbd>                      |                                   | Copy source branch name. |
 | <kbd>c</kbd> + <kbd>r</kbd>       |                                   | Copy merge request reference. |
 | <kbd>r</kbd>                      |                                   | Start writing a comment. Pre-selected text is quoted in the comment. Can't be used to reply in a thread. |
+| <kbd>Shift</kbd> + <kbd>Command</kbd> + <kbd>Enter</kbd> | <kbd>Shift</kbd> + <kbd>Control</kbd> + <kbd>Enter</kbd> | Publish your comment immediately. |
+| <kbd>Command</kbd> + <kbd>Enter</kbd> | <kbd>Control</kbd> + <kbd>Enter</kbd> | Add your comment in a pending state, as part of a [review](project/merge_requests/reviews/index.md#start-a-review). |
 | <kbd>c</kbd>                      |                                   | Move to next commit. |
 | <kbd>x</kbd>                      |                                   | Move to previous commit. |
 | <kbd>f</kbd>                      |                                   | Toggle file browser. |
@@ -320,7 +324,7 @@ These shortcuts are available when using a [filtered search input](search/index.
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 These shortcuts are available when viewing [epics](group/epics/index.md):
 

@@ -120,14 +120,16 @@ RSpec.describe Banzai::Filter::SanitizationFilter, feature_category: :team_plann
       expect(filter(act).to_html).to eq exp
     end
 
-    it 'allows `data-math-style` attribute on `code` and `pre` elements' do
+    it 'allows `data-math-style` attribute on `span`, code` and `pre` elements' do
       html = <<-HTML
+      <span class="code" data-math-style="inline">something</span>
       <pre class="code" data-math-style="inline">something</pre>
       <code class="code" data-math-style="inline">something</code>
       <div class="code" data-math-style="inline">something</div>
       HTML
 
       output = <<-HTML
+      <span data-math-style="inline">something</span>
       <pre data-math-style="inline">something</pre>
       <code data-math-style="inline">something</code>
       <div>something</div>
@@ -188,6 +190,36 @@ RSpec.describe Banzai::Filter::SanitizationFilter, feature_category: :team_plann
 
           expect(act.to_html).to eq exp
         end
+      end
+    end
+
+    describe 'link anchors' do
+      it 'allows id property on anchor links' do
+        exp = %q(<a href="#this-is-a-header" class="anchor" id="user-content-this-is-a-header"></a>)
+        act = filter(exp)
+
+        expect(act.to_html).to eq exp
+      end
+
+      it 'removes id property for non-anchor links' do
+        exp = %q(<a href="#this-is-a-header"></a>)
+        act = filter(%q(<a href="#this-is-a-header" id="user-content-this-is-a-header"></a>))
+
+        expect(act.to_html).to eq exp
+      end
+
+      it 'removes id property for non-user-content links' do
+        exp = %q(<a href="#this-is-a-header" class="anchor"></a>)
+        act = filter(%q(<a href="#this-is-a-header" class="anchor" id="this-is-a-header"></a>))
+
+        expect(act.to_html).to eq exp
+      end
+
+      it 'removes class property for non-anchor links' do
+        exp = %q(<a href="#this-is-a-header"></a>)
+        act = filter(%q(<a href="#this-is-a-header" class="some-other-class anchor"></a>))
+
+        expect(act.to_html).to eq exp
       end
     end
   end

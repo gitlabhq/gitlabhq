@@ -2,13 +2,14 @@
 stage: Create
 group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: "Set a merge request dependency to control the merge order of merge requests with related or dependent content."
 ---
 
 # Merge request dependencies
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - Support for complex merge dependencies [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11393) in GitLab 16.6 [with a flag](../../../administration/feature_flags.md) named `remove_mr_blocking_constraints`. Disabled by default.
 > - Support for complex merge dependencies [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136775) in GitLab 16.7. Feature flag `remove_mr_blocking_constraints` removed.
@@ -31,7 +32,11 @@ new feature, you would break the default branch in your project. A merge request
 dependency prevents your work from merging too soon:
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
+
 graph TB
+  accTitle: Merge request dependencies
+  accDescr: Shows how a merge request dependency prevents work from merging too soon.
   A['me/myexample' project]
   B['myfriend/library' project]
   C[Merge request #1:<br>Create new version 2.5]
@@ -62,7 +67,11 @@ in turn, can block up to 10 merge requests. In this example, `myfriend/library!1
 depends on `herfriend/another-lib!1`, which in turn depends on `mycorp/example!100`:
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
+
 graph LR;
+    accTitle: Merge request dependency chain
+    accDescr: Flowchart that shows how merge request A depends on merge request B, while merge request B depends on merge request C
     A[myfriend/library!10]-->|depends on| B[herfriend/another-lib!1]
     B-->|depends on| C[mycorp/example!100]
 ```

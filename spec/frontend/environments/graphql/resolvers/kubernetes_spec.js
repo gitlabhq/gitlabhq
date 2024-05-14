@@ -1,11 +1,25 @@
 import MockAdapter from 'axios-mock-adapter';
-import { CoreV1Api, WatchApi } from '@gitlab/cluster-client';
+import {
+  CoreV1Api,
+  WatchApi,
+  EVENT_DATA,
+  EVENT_TIMEOUT,
+  EVENT_ERROR,
+} from '@gitlab/cluster-client';
 import axios from '~/lib/utils/axios_utils';
 import { resolvers } from '~/environments/graphql/resolvers';
 import { CLUSTER_AGENT_ERROR_MESSAGES } from '~/environments/constants';
 import k8sPodsQuery from '~/environments/graphql/queries/k8s_pods.query.graphql';
 import k8sServicesQuery from '~/environments/graphql/queries/k8s_services.query.graphql';
-import { k8sPodsMock, k8sServicesMock, k8sNamespacesMock } from '../mock_data';
+import { updateConnectionStatus } from '~/environments/graphql/resolvers/kubernetes/k8s_connection_status';
+import {
+  connectionStatus,
+  k8sResourceType,
+} from '~/environments/graphql/resolvers/kubernetes/constants';
+import { k8sPodsMock, k8sServicesMock } from 'jest/kubernetes_dashboard/graphql/mock_data';
+import { k8sNamespacesMock } from '../mock_data';
+
+jest.mock('~/environments/graphql/resolvers/kubernetes/k8s_connection_status');
 
 describe('~/frontend/environments/graphql/resolvers', () => {
   let mockResolvers;
@@ -29,7 +43,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
   });
 
   describe('k8sPods', () => {
-    const client = { writeQuery: jest.fn() };
+    const client = { writeQuery: jest.fn(), readQuery: jest.fn() };
     const mockPodsListFn = jest.fn().mockImplementation(() => {
       return Promise.resolve({
         items: k8sPodsMock,
@@ -47,6 +61,20 @@ describe('~/frontend/environments/graphql/resolvers', () => {
         jest
           .spyOn(CoreV1Api.prototype, 'listCoreV1PodForAllNamespaces')
           .mockImplementation(mockAllPodsListFn);
+      });
+
+      it('should not update k8s connection status', async () => {
+        const pods = await mockResolvers.Query.k8sPods(
+          null,
+          {
+            configuration,
+            namespace,
+          },
+          { client },
+        );
+
+        expect(updateConnectionStatus).not.toHaveBeenCalled();
+        expect(pods).toEqual(k8sPodsMock);
       });
 
       it('should request namespaced pods from the cluster_client library if namespace is specified', async () => {
@@ -96,16 +124,34 @@ describe('~/frontend/environments/graphql/resolvers', () => {
         return Promise.resolve(mockWatcher);
       });
 
-      const mockOnDataFn = jest.fn().mockImplementation((eventName, callback) => {
-        if (eventName === 'data') {
-          callback([]);
-        }
-      });
+      const MockWatchStream = () => {
+        const callbacks = {};
+
+        const registerCallback = (eventName, callback) => {
+          if (callbacks[eventName]) {
+            callbacks[eventName].push(callback);
+          } else {
+            callbacks[eventName] = [callback];
+          }
+        };
+
+        const triggerEvent = (eventName, data) => {
+          if (callbacks[eventName]) {
+            callbacks[eventName].forEach((callback) => callback(data));
+          }
+        };
+
+        return {
+          registerCallback,
+          triggerEvent,
+        };
+      };
 
       describe('when the pods data is present', () => {
+        let watchStream;
         beforeEach(() => {
           gon.features = { k8sWatchApi: true };
-
+          watchStream = new MockWatchStream();
           jest
             .spyOn(CoreV1Api.prototype, 'listCoreV1NamespacedPod')
             .mockImplementation(mockNamespacedPodsListFn);
@@ -113,8 +159,31 @@ describe('~/frontend/environments/graphql/resolvers', () => {
             .spyOn(CoreV1Api.prototype, 'listCoreV1PodForAllNamespaces')
             .mockImplementation(mockAllPodsListFn);
           jest.spyOn(mockWatcher, 'subscribeToStream').mockImplementation(mockPodsListWatcherFn);
-          jest.spyOn(mockWatcher, 'on').mockImplementation(mockOnDataFn);
+          jest.spyOn(mockWatcher, 'on').mockImplementation(watchStream.registerCallback);
         });
+
+        it.each([
+          [null, connectionStatus.connecting],
+          [EVENT_DATA, connectionStatus.connected],
+          [EVENT_TIMEOUT, connectionStatus.disconnected],
+          [EVENT_ERROR, connectionStatus.disconnected],
+        ])(
+          'when "%s" event is received should update k8s connection status to "%s"',
+          async (eventName, expectedStatus) => {
+            await mockResolvers.Query.k8sPods(null, { configuration, namespace }, { client });
+
+            if (eventName) {
+              watchStream.triggerEvent(eventName, []);
+            }
+
+            expect(updateConnectionStatus).toHaveBeenCalledWith(expect.anything(), {
+              configuration,
+              namespace,
+              resourceType: k8sResourceType.k8sPods,
+              status: expectedStatus,
+            });
+          },
+        );
 
         it('should request namespaced pods from the cluster_client library if namespace is specified', async () => {
           await mockResolvers.Query.k8sPods(null, { configuration, namespace }, { client });
@@ -133,6 +202,8 @@ describe('~/frontend/environments/graphql/resolvers', () => {
         });
         it('should update cache with the new data when received from the library', async () => {
           await mockResolvers.Query.k8sPods(null, { configuration, namespace: '' }, { client });
+
+          watchStream.triggerEvent(EVENT_DATA, []);
 
           expect(client.writeQuery).toHaveBeenCalledWith({
             query: k8sPodsQuery,
@@ -272,7 +343,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
         });
       });
 
-      it('should not watch pods from the cluster_client library when the services data is not present', async () => {
+      it('should not watch services from the cluster_client library when the services data is not present', async () => {
         jest.spyOn(CoreV1Api.prototype, 'listCoreV1NamespacedService').mockImplementation(
           jest.fn().mockImplementation(() => {
             return Promise.resolve({

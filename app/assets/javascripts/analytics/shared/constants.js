@@ -91,6 +91,7 @@ export const FLOW_METRICS = {
   ISSUES_COMPLETED: ISSUES_COMPLETED_TYPE,
   COMMITS: 'commits',
   DEPLOYS: 'deploys',
+  MEDIAN_TIME_TO_MERGE: 'median_time_to_merge',
 };
 
 export const DORA_METRICS = {
@@ -126,6 +127,10 @@ export const CONTRIBUTOR_COUNT_TYPE = 'contributor_count';
 
 export const CONTRIBUTOR_METRICS = {
   COUNT: CONTRIBUTOR_COUNT_TYPE,
+};
+
+export const AI_METRICS = {
+  CODE_SUGGESTIONS_USAGE_RATE: 'code_suggestions_usage_rate',
 };
 
 export const METRIC_TOOLTIPS = {
@@ -165,8 +170,8 @@ export const METRIC_TOOLTIPS = {
     description: s__('ValueStreamAnalytics|Median time from issue created to issue closed.'),
     groupLink: '-/analytics/value_stream_analytics',
     projectLink: '-/value_stream_analytics',
-    docsLink: helpPagePath('user/analytics/value_stream_analytics', {
-      anchor: 'view-the-lead-time-and-cycle-time-for-issues',
+    docsLink: helpPagePath('user/group/value_stream_analytics/index', {
+      anchor: 'lifecycle-metrics',
     }),
   },
   [FLOW_METRICS.CYCLE_TIME]: {
@@ -175,8 +180,8 @@ export const METRIC_TOOLTIPS = {
     ),
     groupLink: '-/analytics/value_stream_analytics',
     projectLink: '-/value_stream_analytics',
-    docsLink: helpPagePath('user/analytics/value_stream_analytics', {
-      anchor: 'view-the-lead-time-and-cycle-time-for-issues',
+    docsLink: helpPagePath('user/group/value_stream_analytics/index', {
+      anchor: 'lifecycle-metrics',
     }),
   },
   [FLOW_METRICS.ISSUES]: {
@@ -228,6 +233,22 @@ export const METRIC_TOOLTIPS = {
       anchor: 'view-the-number-of-merge-requests-in-a-date-range',
     }),
   },
+  [FLOW_METRICS.MEDIAN_TIME_TO_MERGE]: {
+    description: s__(
+      'ValueStreamAnalytics|Median time between merge request created and merge request merged.',
+    ),
+    groupLink: '-/analytics/productivity_analytics',
+    projectLink: '-/analytics/merge_request_analytics',
+    docsLink: helpPagePath('user/analytics/merge_request_analytics'),
+  },
+  [AI_METRICS.CODE_SUGGESTIONS_USAGE_RATE]: {
+    description: s__(
+      'AiImpactAnalytics|Monthly user engagement with AI Code Suggestions. Percentage ratio calculated as monthly unique Code Suggestions users / total monthly unique code contributors.',
+    ),
+    groupLink: '',
+    projectLink: '',
+    docsLink: helpPagePath('user/project/repository/code_suggestions/index'),
+  },
 };
 
 // TODO: Remove this once the migration to METRIC_TOOLTIPS is complete
@@ -277,6 +298,7 @@ export const USAGE_OVERVIEW_DEFAULT_DATE_RANGE = {
 
 export const USAGE_OVERVIEW_IDENTIFIER_GROUPS = 'groups';
 export const USAGE_OVERVIEW_IDENTIFIER_PROJECTS = 'projects';
+export const USAGE_OVERVIEW_IDENTIFIER_USERS = 'users';
 export const USAGE_OVERVIEW_IDENTIFIER_ISSUES = 'issues';
 export const USAGE_OVERVIEW_IDENTIFIER_MERGE_REQUESTS = 'merge_requests';
 export const USAGE_OVERVIEW_IDENTIFIER_PIPELINES = 'pipelines';
@@ -286,6 +308,9 @@ export const USAGE_OVERVIEW_METADATA = {
   [USAGE_OVERVIEW_IDENTIFIER_GROUPS]: { options: { title: __('Groups'), titleIcon: 'group' } },
   [USAGE_OVERVIEW_IDENTIFIER_PROJECTS]: {
     options: { title: __('Projects'), titleIcon: 'project' },
+  },
+  [USAGE_OVERVIEW_IDENTIFIER_USERS]: {
+    options: { title: __('Users'), titleIcon: 'user' },
   },
   [USAGE_OVERVIEW_IDENTIFIER_ISSUES]: {
     options: { title: __('Issues'), titleIcon: 'issues' },
@@ -301,6 +326,7 @@ export const USAGE_OVERVIEW_METADATA = {
 export const USAGE_OVERVIEW_QUERY_INCLUDE_KEYS = {
   [USAGE_OVERVIEW_IDENTIFIER_GROUPS]: 'includeGroups',
   [USAGE_OVERVIEW_IDENTIFIER_PROJECTS]: 'includeProjects',
+  [USAGE_OVERVIEW_IDENTIFIER_USERS]: 'includeUsers',
   [USAGE_OVERVIEW_IDENTIFIER_ISSUES]: 'includeIssues',
   [USAGE_OVERVIEW_IDENTIFIER_MERGE_REQUESTS]: 'includeMergeRequests',
   [USAGE_OVERVIEW_IDENTIFIER_PIPELINES]: 'includePipelines',

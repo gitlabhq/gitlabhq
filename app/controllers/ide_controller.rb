@@ -4,6 +4,7 @@ class IdeController < ApplicationController
   include WebIdeCSP
   include StaticObjectExternalStorageCSP
   include Gitlab::Utils::StrongMemoize
+  include ProductAnalyticsTracking
 
   before_action :authorize_read_project!, only: [:index]
   before_action :ensure_web_ide_oauth_application!, only: [:index]
@@ -17,13 +18,10 @@ class IdeController < ApplicationController
 
   urgency :low
 
-  def index
-    Gitlab::UsageDataCounters::WebIdeCounter.increment_views_count
+  track_internal_event :index, name: 'web_ide_viewed'
 
-    if project
-      Gitlab::Tracking.event(self.class.to_s, 'web_ide_views', namespace: project.namespace, user: current_user)
-      @fork_info = fork_info(project, params[:branch])
-    end
+  def index
+    @fork_info = fork_info(project, params[:branch])
 
     render layout: helpers.use_new_web_ide? ? 'fullscreen' : 'application'
   end
@@ -70,5 +68,13 @@ class IdeController < ApplicationController
 
       Project.find_by_full_path(params[:project_id])
     end
+  end
+
+  def tracking_namespace_source
+    project.namespace
+  end
+
+  def tracking_project_source
+    project
   end
 end

@@ -263,6 +263,8 @@ The project for a new Gem should always be created in [`gitlab-org/ruby/gems` na
    gem owner <gem-name> --add gitlab_rubygems
    ```
 
+   - Ping [Rémy Coutable](https://gitlab.com/rymai) to confirm the ownership in the [Rubygems committee project](https://gitlab.com/gitlab-dependency-committees/rubygems-committee/-/issues/).
+
 1. Optional. Add some or all of the following users as co-owners:
    - [Marin Jankovski](https://rubygems.org/profiles/marinjankovski)
    - [Rémy Coutable](https://rubygems.org/profiles/rymai)
@@ -346,12 +348,22 @@ to store them in monorepo:
   - Those Gems will not be published by us to RubyGems.
   - Those Gems will be referenced via `path:` in `Gemfile`, since we cannot depend on RubyGems.
 
-## Reserve a gem name
+## Considerations regarding rubygems.org
 
-We reserve a gem name as a precaution **before publishing any public code that contains a new gem**, to avoid name-squatters taking over the name in RubyGems.
+### Reserve a gem name
+
+We may reserve gem names as a precaution **before publishing any public code that contains a new gem**, to avoid name-squatters taking over the name in RubyGems.
 
 To reserve a gem name, follow the steps to [Create and publish a Ruby gem](#create-and-publish-a-ruby-gem), with the following changes:
 
 - Use `0.0.0` as the version.
 - Include a single file `lib/NAME.rb` with the content `raise "Reserved for GitLab"`.
 - Perform the `build` and `publish`, and check <https://rubygems.org/gems/> to confirm it succeeded.
+
+### Account creation
+
+In case you are considering the creation of an account on RubyGems.org for the purpose of your work at GitLab, make sure to use your corporate email account.
+
+### Maintainer and Account Changes
+
+All changes such as modifications to account emails or passwords, gem owners, and gem deletion ought to be communicated previously to the directly responsible teams, through issues or Slack (the team's Slack channel, `#rubygems`, `#ruby`, `#development`).

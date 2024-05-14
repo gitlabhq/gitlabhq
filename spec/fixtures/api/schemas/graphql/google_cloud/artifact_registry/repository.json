@@ -1,0 +1,24 @@
+{
+  "type": "object",
+  "required": [
+    "projectId",
+    "repository",
+    "artifactRegistryRepositoryUrl",
+    "artifacts"
+  ],
+  "properties": {
+    "artifacts": {
+      "type": "object",
+      "$ref": "./artifacts.json"
+    },
+    "projectId": {
+      "type": "string"
+    },
+    "repository": {
+      "type": "string"
+    },
+    "artifactRegistryRepositoryUrl": {
+      "type": "string"
+    }
+  }
+}

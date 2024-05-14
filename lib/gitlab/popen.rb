@@ -31,6 +31,10 @@ module Gitlab
         raise "System commands must be given as an array of strings"
       end
 
+      if cmd.one? && cmd.first.match?(/\s/)
+        raise "System commands must be split into an array of space-separated values"
+      end
+
       path ||= Dir.pwd
       vars['PWD'] = path
       options = { chdir: path }

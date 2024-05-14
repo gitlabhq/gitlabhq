@@ -1,19 +1,19 @@
 ---
 stage: core platform
 group: Tenant Scale
-description: 'Cells: Routing Service'
+description: 'Cells: HTTP Routing Service'
 status: accepted
 ---
 
-# Cells: Routing Service
+# Cells: HTTP Routing Service
 
 This document describes design goals and architecture of Routing Service
 used by Cells. To better understand where the Routing Service fits
-into architecture take a look at [Deployment Architecture](deployment-architecture.md).
+into architecture take a look at [Infrastructure Architecture](infrastructure/index.md#architecture).
 
 ## Goals
 
-The routing layer is meant to offer a consistent user experience where all Cells are presented under a single domain (for example, `gitlab.com`), instead of having to navigate to separate domains.
+The routing layer is meant to offer a consistent user experience where all Cells are presented under a single domain (for example, `gitlab.com`), instead of having to go to separate domains.
 
 The user will be able to use `https://gitlab.com` to access Cell-enabled GitLab.
 Depending on the URL access, it will be transparently proxied to the correct Cell that can serve this particular information.
@@ -260,6 +260,8 @@ Each Cell will publish a precompiled list of routing rules that will be consumed
   routing rules to call `/api/v4/internal/cells/classify`.
 - The routing rules should use `prefix` as a way to speed up classification. During the compilation phase
   the routing service transforms all found prefixes into a decision tree to speed up any subsequent regex matches.
+- Some of the prefixes need to be Cell independent, example Personal Access Tokens prefix need to be organization bound and not Cell bound.
+  We want the ability to move an organization from 1 cell to another without changing the Personal Access Token or any other token.
 - The routing rules is ideally compiled into source code to avoid expensive parsing and evaluation of the rules
   dynamically as part of deployment.
 
@@ -573,7 +575,7 @@ Cell EU0:
 }
 ```
 
-#### Navigates to `/my-company/my-project` while logged in into Cell EU0
+#### Goes to `/my-company/my-project` while logged in into Cell EU0
 
 1. Because user switched the Organization to `my-company`, its session cookie is prefixed with `eu0_`.
 1. User sends request `/my-company/my-project`, and because the cookie is prefixed with `eu0_` it is directed to Cell EU0.
@@ -590,7 +592,7 @@ sequenceDiagram
     cell_eu0->>user: <h1>My Project...
 ```
 
-#### Navigates to `/my-company/my-project` while not logged in
+#### Goes to `/my-company/my-project` while not logged in
 
 1. User visits `/my-company/my-project`, and because it does not have session cookie, the request is forwarded to `Cell US0`.
 1. User signs in.
@@ -619,7 +621,7 @@ sequenceDiagram
     cell_eu0->>user: <h1>My Project...
 ```
 
-#### Navigates to `/gitlab-org/gitlab` after last step
+#### Goes to `/gitlab-org/gitlab` after last step
 
 User visits `/my-company/my-project`, and because it does not have a session cookie, the request is forwarded to `Cell US0`.
 
@@ -665,7 +667,7 @@ Cell US0 and EU0:
 }
 ```
 
-#### Navigates to `/my-company/my-project` while logged in into Cell EU0
+#### Goes to `/my-company/my-project` while logged in into Cell EU0
 
 1. The `/my-company/my-project/` is visited.
 1. Router decodes sharding key `top_level_group=my-company`.
@@ -691,7 +693,7 @@ sequenceDiagram
     cell_eu0->>user: <h1>My Project...
 ```
 
-#### Navigates to `/my-company/my-project` while not logged in
+### Goes to `/my-company/my-project` while not logged in
 
 1. The `/my-company/my-project/` is visited.
 1. Router decodes sharding key `top_level_group=my-company`.
@@ -732,7 +734,7 @@ sequenceDiagram
     cell_eu0->>user: <h1>My Project...
 ```
 
-#### Navigates to `/gitlab-org/gitlab` after last step
+#### Goes to `/gitlab-org/gitlab` after last step
 
 1. Because the `/gitlab-org` is not found in cache, it will be classified and then directed to correct Cell.
 

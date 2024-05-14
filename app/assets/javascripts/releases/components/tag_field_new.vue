@@ -120,7 +120,7 @@ export default {
         :show="show"
         :target="id"
         :title="title"
-        :css-classes="['gl-z-index-200', 'release-tag-selector']"
+        :css-classes="['gl-z-200', 'release-tag-selector']"
         placement="bottom"
         triggers="manual"
         container="content-body"

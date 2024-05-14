@@ -90,6 +90,10 @@ RSpec.describe Gitlab::ImportExport::Project::TreeSaver, :with_license, feature_
 
         it 'has merge requests comments' do
           expect(subject.first['notes']).not_to be_empty
+
+          diff_note = subject.first['notes'].find { |note| note['type'] == 'DiffNote' }
+
+          expect(diff_note['note_diff_file']['diff_export']).to be_present
         end
 
         it 'has author on merge requests comments' do
@@ -389,7 +393,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeSaver, :with_license, feature_
         end
 
         context 'as admin' do
-          let(:user) { create(:admin) }
+          let(:user) { create(:admin, :without_default_org) }
 
           before do
             project_tree_saver.save # rubocop:disable Rails/SaveBang
@@ -509,6 +513,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeSaver, :with_license, feature_
     milestone = create(:milestone, project: project)
     merge_request = create(:merge_request, source_project: project, milestone: milestone, assignees: [user], reviewers: [user])
     create(:approval, merge_request: merge_request, user: user)
+    create(:diff_note_on_merge_request, project: project, author: user, noteable: merge_request)
 
     ci_build = create(:ci_build, project: project, when: nil)
     ci_build.pipeline.update!(project: project)

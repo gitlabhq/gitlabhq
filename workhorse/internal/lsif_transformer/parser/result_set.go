@@ -17,13 +17,13 @@ type ResultSet struct {
 }
 
 type ResultSetRef struct {
-	Id       Id
+	Id       ID
 	Property Property
 }
 
 type RawResultSetRef struct {
-	ResultSetId Id `json:"outV"`
-	RefId       Id `json:"inV"`
+	ResultSetId ID `json:"outV"`
+	RefId       ID `json:"inV"`
 }
 
 func NewResultSet() (*ResultSet, error) {
@@ -60,7 +60,7 @@ func (r *ResultSet) Read(label string, line []byte) error {
 	return nil
 }
 
-func (r *ResultSet) RefById(refId Id) (*ResultSetRef, error) {
+func (r *ResultSet) RefById(refId ID) (*ResultSetRef, error) {
 	var ref ResultSetRef
 	if err := r.Cache.Entry(refId, &ref); err != nil {
 		return nil, err

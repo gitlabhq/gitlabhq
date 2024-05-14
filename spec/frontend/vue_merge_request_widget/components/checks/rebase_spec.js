@@ -320,4 +320,17 @@ describe('Merge request merge checks rebase component', () => {
       expect(toast).toHaveBeenCalledWith('Rebase completed');
     });
   });
+
+  describe('error states', () => {
+    it('does not render action buttons', async () => {
+      createWrapper({
+        handler: jest.fn().mockResolvedValue({ data: { project: null } }),
+      });
+
+      await waitForPromises();
+
+      expect(findStandardRebaseButton().exists()).toBe(false);
+      expect(findRebaseWithoutCiButton().exists()).toBe(false);
+    });
+  });
 });

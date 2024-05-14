@@ -11,26 +11,26 @@ module Mutations
         authorize :admin_project
 
         argument :project_path, GraphQL::Types::ID,
-                 required: true,
-                 description: 'Project that the CI job token scope belongs to.'
+          required: true,
+          description: 'Project that the CI job token scope belongs to.'
 
         argument :target_project_path, GraphQL::Types::ID,
-                 required: true,
-                 description: 'Project to be added to the CI job token scope.'
+          required: true,
+          description: 'Project to be added to the CI job token scope.'
 
         argument :direction,
-                 ::Types::Ci::JobTokenScope::DirectionEnum,
-                 required: false,
-                 deprecated: {
-                   reason: 'Outbound job token scope is being removed. This field can now only be set to INBOUND',
-                   milestone: '16.0'
-                 },
-                 description: 'Direction of access, which defaults to INBOUND.'
+          ::Types::Ci::JobTokenScope::DirectionEnum,
+          required: false,
+          deprecated: {
+            reason: 'Outbound job token scope is being removed. This field can now only be set to INBOUND',
+            milestone: '16.0'
+          },
+          description: 'Direction of access, which defaults to INBOUND.'
 
         field :ci_job_token_scope,
-              Types::Ci::JobTokenScopeType,
-              null: true,
-              description: "CI job token's access scope."
+          Types::Ci::JobTokenScopeType,
+          null: true,
+          description: "CI job token's access scope."
 
         def resolve(project_path:, target_project_path:, direction: nil)
           project = authorized_find!(project_path)

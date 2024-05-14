@@ -11,8 +11,7 @@ DETAILS:
 **Offering:** Self-managed
 
 NOTE:
-In GitLab 13.9 and later, the recommended method to
-place GitLab in a read-only state is to enable
+The recommended method to place GitLab in a read-only state is to enable
 [maintenance mode](../administration/maintenance_mode/index.md).
 
 In some cases, you might want to place GitLab under a read-only state.

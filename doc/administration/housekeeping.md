@@ -136,6 +136,10 @@ If a concurrent process (like `git push`) has created an object but hasn't creat
 a reference to the object yet, your repository can become corrupted if a reference
 to the object is added after the object is deleted. The grace period exists to
 reduce the likelihood of such race conditions.
+For example, if pushing many large objects frequently over a sometimes very slow connection,
+then the risk that comes with pruning unreachable objects is much higher than in a corporate
+environment where the project can be accessed only from inside the company with a performant
+connection. Consider the project usage profile when using this option and select a quiet period.
 
 To trigger a manual prune of unreachable objects:
 

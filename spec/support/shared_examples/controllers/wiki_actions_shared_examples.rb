@@ -81,11 +81,11 @@ RSpec.shared_examples 'wiki controller actions' do
     it_behaves_like 'recovers from git errors' do
       subject(:request) { get :pages, params: routing_params.merge(id: wiki_title) }
 
-      let(:method_name) { :wiki_pages }
+      let(:method_name) { :pages_list }
     end
 
     it 'assigns the page collections' do
-      expect(assigns(:wiki_pages)).to contain_exactly(an_instance_of(WikiPage))
+      expect(assigns(:pages_list)).to contain_exactly(an_instance_of(WikiPage))
       expect(assigns(:wiki_entries)).to contain_exactly(an_instance_of(WikiPage))
     end
 
@@ -238,12 +238,12 @@ RSpec.shared_examples 'wiki controller actions' do
           let(:expected_value) { instance_of(String) }
         end
 
-        it 'increases the page view counter' do
-          expect do
-            request
+        it_behaves_like 'internal event tracking' do
+          let(:event) { 'view_wiki_page' }
+          let(:project) { container if container.is_a?(Project) }
+          let(:namespace) { container.is_a?(Group) ? container : container.namespace }
 
-            expect(response).to have_gitlab_http_status(:ok)
-          end.to change { Gitlab::UsageDataCounters::WikiPageCounter.read(:view) }.by(1)
+          subject(:track_event) { request }
         end
       end
 
@@ -273,14 +273,6 @@ RSpec.shared_examples 'wiki controller actions' do
 
         it 'builds a new wiki page with the id as the title' do
           expect(assigns(:page).title).to eq(id)
-        end
-
-        context 'when a random_title param is present' do
-          let(:random_title) { true }
-
-          it 'builds a new wiki page with no title' do
-            expect(assigns(:page).title).to be_empty
-          end
         end
       end
 

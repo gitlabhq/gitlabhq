@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, Self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 ## Security Dashboards
 
@@ -108,8 +108,6 @@ To view group security dashboard:
 ![Group Security Dashboard](img/group_security_dashboard.png)
 
 ## Security Center
-
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3426) in GitLab 13.4.
 
 The Security Center is a configurable personal space where you can view vulnerabilities across all the
 projects you belong to. The Security Center includes:

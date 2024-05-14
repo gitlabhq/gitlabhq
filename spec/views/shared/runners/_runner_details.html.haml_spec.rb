@@ -6,13 +6,18 @@ RSpec.describe 'shared/runners/_runner_details.html.haml', feature_category: :fl
   include PageLayoutHelper
 
   let_it_be(:runner) do
-    build_stubbed(
-      :ci_runner,
-      name: 'test runner',
+    create(:ci_runner, description: 'Test runner') # rubocop:disable RSpec/FactoryBot/AvoidCreate -- must be linked to a manager
+  end
+
+  let_it_be(:runner_manager) do
+    create( # rubocop:disable RSpec/FactoryBot/AvoidCreate -- must be linked to a runner
+      :ci_runner_machine,
+      runner: runner,
       version: '11.4.0',
       ip_address: '127.1.2.3',
       revision: 'abcd1234',
-      architecture: 'amd64'
+      architecture: 'amd64',
+      contacted_at: 1.second.ago
     )
   end
 
@@ -23,6 +28,10 @@ RSpec.describe 'shared/runners/_runner_details.html.haml', feature_category: :fl
   subject do
     render
     rendered
+  end
+
+  describe 'Runner description' do
+    it { is_expected.to have_content("Description #{runner.description}") }
   end
 
   describe 'Runner id and type' do
@@ -43,15 +52,15 @@ RSpec.describe 'shared/runners/_runner_details.html.haml', feature_category: :fl
     end
   end
 
-  describe 'Active value' do
+  describe 'Paused value' do
     context 'when runner is active' do
-      it { is_expected.to have_content('Active Yes') }
+      it { is_expected.to have_content('Paused No') }
     end
 
     context 'when runner is inactive' do
       let(:runner) { build_stubbed(:ci_runner, :inactive) }
 
-      it { is_expected.to have_content('Active No') }
+      it { is_expected.to have_content('Paused Yes') }
     end
   end
 
@@ -117,16 +126,6 @@ RSpec.describe 'shared/runners/_runner_details.html.haml', feature_category: :fl
     end
   end
 
-  describe 'Metadata values' do
-    it { is_expected.to have_content("Name #{runner.name}") }
-    it { is_expected.to have_content("Version #{runner.version}") }
-    it { is_expected.to have_content("IP Address #{runner.ip_address}") }
-    it { is_expected.to have_content("Revision #{runner.revision}") }
-    it { is_expected.to have_content("Platform #{runner.platform}") }
-    it { is_expected.to have_content("Architecture #{runner.architecture}") }
-    it { is_expected.to have_content("Description #{runner.description}") }
-  end
-
   describe 'Maximum job timeout value' do
     let(:runner) { build_stubbed(:ci_runner, maximum_timeout: 5400) }
 
@@ -144,5 +143,13 @@ RSpec.describe 'shared/runners/_runner_details.html.haml', feature_category: :fl
 
       it { is_expected.to have_content("Last contact #{expected_contacted_at}") }
     end
+  end
+
+  describe 'Runner manager values' do
+    it { is_expected.to have_content("Version #{runner_manager.version}") }
+    it { is_expected.to have_content("IP Address #{runner_manager.ip_address}") }
+    it { is_expected.to have_content("Revision #{runner_manager.revision}") }
+    it { is_expected.to have_content("Platform #{runner_manager.platform}") }
+    it { is_expected.to have_content("Architecture #{runner_manager.architecture}") }
   end
 end

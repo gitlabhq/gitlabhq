@@ -80,7 +80,6 @@ Graphql/Descriptions:
     - 'ee/app/graphql/types/epic_type.rb'
     - 'ee/app/graphql/types/geo/geo_node_type.rb'
     - 'ee/app/graphql/types/iterations/cadence_type.rb'
-    - 'ee/app/graphql/types/network_policy_type.rb'
     - 'ee/app/graphql/types/path_lock_type.rb'
     - 'ee/app/graphql/types/security_orchestration/group_security_policy_source_type.rb'
     - 'ee/app/graphql/types/security_orchestration/orchestration_policy_type.rb'

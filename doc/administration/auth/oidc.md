@@ -233,14 +233,14 @@ gitlab_rails['omniauth_providers'] = [
 
 ### Configure Microsoft Azure
 
-The OpenID Connect (OIDC) protocol for Microsoft Azure uses the [Microsoft identity platform (v2) endpoints](https://learn.microsoft.com/en-us/azure/active-directory/azuread-dev/azure-ad-endpoint-comparison).
+The OpenID Connect (OIDC) protocol for Microsoft Azure uses the [Microsoft identity platform (v2) endpoints](https://learn.microsoft.com/en-us/previous-versions/azure/active-directory/azuread-dev/azure-ad-endpoint-comparison).
 To get started, sign in to the [Azure Portal](https://portal.azure.com). For your app,
 you need the following information:
 
 - A tenant ID. You may already have one. For more information, see the
-  [Microsoft Azure Tenant](https://learn.microsoft.com/en-us/azure/active-directory/develop/quickstart-create-new-tenant) documentation.
+  [Microsoft Azure Tenant](https://learn.microsoft.com/en-us/entra/identity-platform/quickstart-create-new-tenant) documentation.
 - A client ID and a client secret. Follow the instructions in the
-  [Microsoft Quickstart Register an Application](https://learn.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app) documentation
+  [Microsoft Quickstart Register an Application](https://learn.microsoft.com/en-us/entra/identity-platform/quickstart-register-app) documentation
   to obtain the tenant ID, client ID, and client secret for your app.
 
 Example configuration block for Linux package installations:
@@ -269,7 +269,79 @@ gitlab_rails['omniauth_providers'] = [
 ]
 ```
 
-Microsoft has documented how its platform works with [the OIDC protocol](https://learn.microsoft.com/en-us/azure/active-directory/develop/v2-protocols-oidc).
+Microsoft has documented how its platform works with [the OIDC protocol](https://learn.microsoft.com/en-us/entra/identity-platform/v2-protocols-oidc).
+
+#### Migrate to Generic OpenID Connect configuration
+
+You can migrate to the Generic OpenID Connect configuration from both `azure_activedirectory_v2` and `azure_oauth2`.
+
+First, set the `uid_field`, which differs between providers:
+
+| Provider                                                                                                        | `uid` | Supporting information  |
+|-----------------------------------------------------------------------------------------------------------------|-------|-----------------------------------------------------------------------|
+| [`omniauth-azure-oauth2`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/vendor/gems/omniauth-azure-oauth2) | `sub` | Additional attributes `oid` and `tid` are offered within the `info` object. |
+| [`omniauth-azure-activedirectory-v2`](https://github.com/RIPAGlobal/omniauth-azure-activedirectory-v2/)         | `oid` | You must configure `oid` as `uid_field` when migrating. |
+| [`omniauth_openid_connect`](https://github.com/omniauth/omniauth_openid_connect/)                               | `sub` | Specify `uid_field` to use another field. |
+
+To migrate to the Generic OpenID Connect configuration, you must change the configuration to the following:
+
+::Tabs
+
+:::Azure OAuth 2.0
+
+```ruby
+gitlab_rails['omniauth_providers'] = [
+  {
+    name: "azure_oauth2",
+    label: "Azure OIDC", # optional label for login button, defaults to "Openid Connect"
+    args: {
+      name: "azure_activedirectory_v2",
+      strategy_class: "OmniAuth::Strategies::OpenIDConnect",
+      scope: ["openid", "profile", "email"],
+      response_type: "code",
+      issuer:  "https://login.microsoftonline.com/<YOUR-TENANT-ID>/v2.0",
+      client_auth_method: "query",
+      discovery: true,
+      uid_field: "sub",
+      send_scope_to_token_endpoint: "false",
+      client_options: {
+        identifier: "<YOUR APP CLIENT ID>",
+        secret: "<YOUR APP CLIENT SECRET>",
+        redirect_uri: "https://gitlab.example.com/users/auth/azure_oauth2/callback"
+      }
+    }
+  }
+]
+```
+
+:::Azure Active Directory v2
+
+```ruby
+gitlab_rails['omniauth_providers'] = [
+  {
+    name: "azure_oauth2",
+    label: "Azure OIDC", # optional label for login button, defaults to "Openid Connect"
+    args: {
+      name: "azure_activedirectory_v2",
+      strategy_class: "OmniAuth::Strategies::OpenIDConnect",
+      scope: ["openid", "profile", "email"],
+      response_type: "code",
+      issuer:  "https://login.microsoftonline.com/<YOUR-TENANT-ID>/v2.0",
+      client_auth_method: "query",
+      discovery: true,
+      uid_field: "oid",
+      send_scope_to_token_endpoint: "false",
+      client_options: {
+        identifier: "<YOUR APP CLIENT ID>",
+        secret: "<YOUR APP CLIENT SECRET>",
+        redirect_uri: "https://gitlab.example.com/users/auth/azure_activedirectory_v2/callback"
+      }
+    }
+  }
+]
+```
+
+::EndTabs
 
 ### Configure Microsoft Azure Active Directory B2C
 
@@ -278,7 +350,7 @@ configuration to work with [Azure Active Directory B2C](https://learn.microsoft.
 For your app, you need the following information from Azure:
 
 - A tenant ID. You may already have one. For more information, review the
-  [Microsoft Azure Tenant](https://learn.microsoft.com/en-us/azure/active-directory/develop/quickstart-create-new-tenant) documentation.
+  [Microsoft Azure Tenant](https://learn.microsoft.com/en-us/entra/identity-platform/quickstart-create-new-tenant) documentation.
 - A client ID and a client secret. Follow the instructions in the
   [Microsoft tutorial](https://learn.microsoft.com/en-us/azure/active-directory-b2c/tutorial-register-applications?tabs=app-reg-ga) documentation to obtain the
   client ID and client secret for your app.
@@ -328,7 +400,7 @@ but `LocalAccounts` authenticates against local Active Directory accounts. Befor
    ```
 
 1. For OIDC discovery to work with B2C, configure the policy with an issuer compatible with the
-  [OIDC specification](https://openid.net/specs/openid-connect-discovery-1_0.html#rfc.section.4.3).
+   [OIDC specification](https://openid.net/specs/openid-connect-discovery-1_0.html#rfc.section.4.3).
    See the [token compatibility settings](https://learn.microsoft.com/en-us/azure/active-directory-b2c/configure-tokens?pivots=b2c-custom-policy#token-compatibility-settings).
    In `TrustFrameworkBase.xml` under `JwtIssuer`, set `IssuanceClaimPattern` to `AuthorityWithTfp`:
 
@@ -463,8 +535,6 @@ gitlab_rails['omniauth_providers'] = [
 
 #### Configure Keycloak with a symmetric key algorithm
 
-> - Introduced in GitLab 14.2.
-
 WARNING:
 The following instructions are included for completeness, but only use symmetric key
 encryption if absolutely necessary.
@@ -477,7 +547,7 @@ To use symmetric key encryption:
 
    For example, if you use PostgreSQL as the backend database for Keycloak:
 
-   - Sign into the database console.
+   - Sign in to the database console.
    - Run the following SQL query to extract the key:
 
      ```sql
@@ -612,7 +682,7 @@ You can configure your application to use multiple OpenID Connect (OIDC) provide
 
 You should do this in either of the following scenarios:
 
-- [Migrating to the OpenID Connect protocol](../../integration/azure.md#migrate-to-the-openid-connect-protocol).
+- [Migrating to the OpenID Connect protocol](#migrate-to-generic-openid-connect-configuration).
 - Offering different levels of authentication.
 
 NOTE:
@@ -757,7 +827,7 @@ For more information, see the [GitLab API user method documentation](https://pyt
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/209898) in GitLab 15.10.
 

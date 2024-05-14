@@ -2,28 +2,37 @@
 
 exports[`Design management toolbar component renders design and updated data 1`] = `
 <header
-  class="gl-align-items-center gl-bg-white gl-display-flex gl-justify-content-space-between gl-pl-4 gl-py-4 js-design-header"
+  class="gl-bg-white gl-border-b gl-display-flex gl-flex-direction-column gl-justify-content-space-between gl-max-w-full gl-md-align-items-center gl-md-flex-direction-row gl-pl-5 gl-py-4 js-design-header"
 >
   <div
-    class="gl-align-items-center gl-display-flex"
+    class="gl-align-items-center gl-display-flex gl-flex-direction-row gl-mb-3 gl-md-mb-0 gl-overflow-hidden"
   >
-    <a
-      aria-label="Go back to designs"
-      class="gl-align-items-center gl-display-flex gl-justify-content-center gl-mr-5 text-plain"
-      data-testid="close-design"
-    >
-      <gl-icon-stub
-        name="close"
-        size="16"
-      />
-    </a>
     <div
-      class="gl-align-items-center gl-display-flex gl-overflow-hidden"
+      class="gl-display-flex gl-mr-3 gl-overflow-hidden"
     >
       <h2
-        class="gl-font-base gl-m-0 str-truncated-100"
+        class="gl-align-items-center gl-display-flex gl-font-base gl-m-0 gl-overflow-hidden"
       >
-        test.jpg
+        <span
+          class="gl-text-decoration-none gl-text-gray-900 gl-text-truncate"
+        >
+          My precious issue
+        </span>
+        <gl-icon-stub
+          class="gl-flex-shrink-0 gl-text-gray-200"
+          name="chevron-right"
+          size="16"
+        />
+        <span
+          class="gl-font-weight-normal gl-text-truncate"
+        >
+          test.jpg
+        </span>
+        <imported-badge-stub
+          class="gl-ml-2"
+          importabletype="design"
+          size="sm"
+        />
       </h2>
       <small
         class="gl-text-gray-500"
@@ -31,30 +40,56 @@ exports[`Design management toolbar component renders design and updated data 1`]
         Updated 1 hour ago by Test Name
       </small>
     </div>
+    <close-button-stub
+      class="gl-md-display-none gl-ml-auto"
+    />
   </div>
-  <design-navigation-stub
-    class="gl-flex-shrink-0 gl-ml-auto"
-    id="reference-0"
-  />
-  <gl-button-stub
-    aria-label="Download design"
-    buttontextclasses=""
-    category="primary"
-    href="/-/designs/306/7f747adcd4693afadbe968d7ba7d983349b9012d"
-    icon="download"
-    size="medium"
-    title="Download design"
-    variant="default"
-  />
-  <delete-button-stub
-    buttoncategory="secondary"
-    buttonclass=""
-    buttonicon="archive"
-    buttonsize="medium"
-    buttonvariant="default"
-    class="gl-ml-3"
-    hasselecteddesigns="true"
-    title="Archive design"
+  <div
+    class="gl-display-flex gl-flex-shrink-0 gl-md-flex-direction-row gl-md-ml-auto gl-mr-5"
+  >
+    <design-todo-button-stub
+      class="gl-md-ml-3 gl-ml-0"
+      design="[object Object]"
+    />
+    <gl-button-stub
+      aria-label="Download design"
+      buttontextclasses=""
+      category="tertiary"
+      class="gl-ml-2"
+      href="/-/designs/306/7f747adcd4693afadbe968d7ba7d983349b9012d"
+      icon="download"
+      size="medium"
+      title="Download design"
+      variant="default"
+    />
+    <delete-button-stub
+      buttoncategory="tertiary"
+      buttonclass=""
+      buttonicon="archive"
+      buttonsize="medium"
+      buttonvariant="default"
+      class="gl-ml-2"
+      hasselecteddesigns="true"
+      title="Archive design"
+    />
+    <gl-button-stub
+      aria-label="Show comments"
+      buttontextclasses=""
+      category="tertiary"
+      class="gl-ml-2 gl-mr-6"
+      data-testid="toggle-design-sidebar"
+      icon="comments"
+      size="medium"
+      title="Show comments"
+      variant="default"
+    />
+    <design-navigation-stub
+      class="gl-ml-auto"
+      id="reference-0"
+    />
+  </div>
+  <close-button-stub
+    class="gl-display-none gl-md-display-flex"
   />
 </header>
 `;

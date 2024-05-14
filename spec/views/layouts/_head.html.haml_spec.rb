@@ -62,6 +62,39 @@ RSpec.describe 'layouts/_head' do
     expect(rendered).to match('<link rel="stylesheet" href="/stylesheets/highlight/themes/solarised-light.css" media="all" />')
   end
 
+  context 'for apple touch icon' do
+    let_it_be(:appearance) { build_stubbed(:appearance, :with_pwa_icon) }
+
+    context 'if no pwa icon is defined' do
+      it 'link to the default icon' do
+        render
+        expect(rendered).to include(
+          "<link rel=\"apple-touch-icon\" type=\"image/x-icon\" " \
+          "href=\"/assets/apple-touch-icon-b049d4bc0dd9626f31db825d61880737befc7835982586d015bded10b4435460.png\" />"
+        )
+      end
+    end
+
+    context 'if pwa icon is defined' do
+      before do
+        allow(view).to receive(:current_appearance).and_return(appearance)
+      end
+
+      it 'link to the pwa icons', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/457108' do
+        render
+
+        expect(rendered).to include(
+          "<link rel=\"apple-touch-icon\" type=\"image/x-icon\" " \
+          "href=\"#{appearance.pwa_icon_path}?width=192\" />\n" \
+          "<link rel=\"apple-touch-icon\" type=\"image/x-icon\" " \
+          "href=\"#{appearance.pwa_icon_path}?width=192\" sizes=\"192x192\" />\n" \
+          "<link rel=\"apple-touch-icon\" type=\"image/x-icon\" " \
+          "href=\"#{appearance.pwa_icon_path}?width=512\" sizes=\"512x512\" />"
+        )
+      end
+    end
+  end
+
   context 'when an asset_host is set and snowplow url is set', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/346542' do
     let(:asset_host) { 'http://test.host' }
     let(:snowplow_collector_hostname) { 'www.snow.plow' }

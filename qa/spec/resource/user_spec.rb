@@ -6,7 +6,7 @@ RSpec.describe QA::Resource::User do
       name: "GitLab QA",
       username: "gitlab-qa",
       web_url: "https://staging.gitlab.com/gitlab-qa",
-      public_email: "1614863-gitlab-qa@users.noreply.staging.gitlab.com"
+      commit_email: "1614863-gitlab-qa@users.noreply.staging.gitlab.com"
     }
   end
 
@@ -65,21 +65,21 @@ RSpec.describe QA::Resource::User do
     end
   end
 
-  describe '#public_email' do
+  describe '#commit_email' do
     it 'defaults to QA::Runtime::User.default_email' do
-      expect(subject.public_email).to eq(QA::Runtime::User.default_email)
+      expect(subject.commit_email).to eq(QA::Runtime::User.default_email)
     end
 
-    it 'retrieves the public_email from the api_resource if present' do
+    it 'retrieves the commit_email from the api_resource if present' do
       subject.__send__(:api_resource=, api_resource)
 
-      expect(subject.public_email).to eq(api_resource[:public_email])
+      expect(subject.commit_email).to eq(api_resource[:commit_email])
     end
 
-    it 'defaults to QA::Runtime::User.default_email if the public_email from the api_resource is blank' do
-      subject.__send__(:api_resource=, api_resource.merge(public_email: ''))
+    it 'defaults to QA::Runtime::User.default_email if the commit_email from the api_resource is blank' do
+      subject.__send__(:api_resource=, api_resource.merge(commit_email: ''))
 
-      expect(subject.public_email).to eq(QA::Runtime::User.default_email)
+      expect(subject.commit_email).to eq(QA::Runtime::User.default_email)
     end
   end
 
@@ -136,7 +136,8 @@ RSpec.describe QA::Resource::User do
         allow(QA::Page::Admin::Menu).to receive(:perform)
         allow(QA::Page::Admin::Overview::Users::Index).to receive(:perform).and_yield(index_mock)
 
-        expect(index_mock).to receive(:search_user).with(username)
+        expect(index_mock).to receive(:choose_search_user).with(username)
+        expect(index_mock).to receive(:click_search)
         expect(index_mock).to receive(:has_username?).with(username).and_return(found)
 
         expect(subject.has_user?(subject)).to eq(found)

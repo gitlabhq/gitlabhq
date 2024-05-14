@@ -9,9 +9,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed
 
-> [Renamed](https://gitlab.com/groups/gitlab-com/-/epics/2150) from "CI/CD minutes" to "compute quota" or "compute minutes" in GitLab 16.1.
+> - [Renamed](https://gitlab.com/groups/gitlab-com/-/epics/2150) from "CI/CD minutes" to "compute quota" or "compute minutes" in GitLab 16.1.
 
 NOTE:
 The term `CI/CD minutes` is being renamed to `compute minutes`. During this transition, you might see references in the UI and documentation to `CI/CD minutes`, `CI minutes`, `pipeline minutes`, `CI pipeline minutes`, `pipeline minutes quota`, `compute credits`, `compute units`, and `compute minutes`. For more information, see [epic 2150](https://gitlab.com/groups/gitlab-com/-/epics/2150).
@@ -145,16 +145,16 @@ is sorted in descending order of compute usage.
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS
+**Offering:** GitLab.com
 
-If you're using GitLab SaaS, you can purchase additional packs of compute minutes.
+If you're using GitLab.com, you can purchase additional packs of compute minutes.
 These additional compute minutes:
 
 - Are used only after the monthly quota included in your subscription runs out.
 - Are carried over to the next month, if any remain at the end of the month.
 - Are valid for 12 months from date of purchase or until all compute minutes are consumed, whichever comes first. Expiry of compute minutes is not enforced.
 
-For example, with a GitLab SaaS Premium license:
+For example, with a GitLab.com Premium license:
 
 - You have `10,000` monthly compute minutes.
 - You purchase an additional `5,000` compute minutes.
@@ -172,7 +172,7 @@ You can find pricing for additional compute minutes on the
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS
+**Offering:** GitLab.com
 
 Prerequisites:
 
@@ -195,7 +195,7 @@ namespace.
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS
+**Offering:** GitLab.com
 
 Prerequisites:
 
@@ -207,7 +207,7 @@ To purchase additional compute minutes for your personal namespace:
 1. Select **Edit profile**.
 1. On the left sidebar, select **Usage Quotas**.
 1. Select **Buy additional compute minutes**. GitLab redirects you to the Customers Portal.
-1. Locate the subscription card that's linked to your personal namespace on GitLab SaaS, select **Buy more compute minutes**,
+1. Locate the subscription card that's linked to your personal namespace on GitLab.com, select **Buy more compute minutes**,
    and complete the details of the transaction.
 
 After your payment is processed, the additional compute minutes are added to your personal
@@ -247,7 +247,7 @@ The cost factors for jobs running on instance runners on GitLab.com are:
 - Exceptions for public projects:
   - `0.5` for projects in the [GitLab for Open Source program](../../subscriptions/community_programs.md#gitlab-for-open-source).
   - `0.008` for forks of projects in the [GitLab for Open Source program](../../subscriptions/community_programs.md#gitlab-for-open-source). For every 125 minutes of job execution time,
-  you use 1 compute minute.
+    you use 1 compute minute.
 - Discounted dynamically for [community contributions to GitLab projects](#cost-factor-for-community-contributions-to-gitlab-projects).
 
 The cost factors on self-managed instances are:
@@ -279,11 +279,11 @@ For this reduced cost factor:
 GitLab administrators can add a namespace to the reduced cost factor
 [with a flag](../../administration/feature_flags.md) named `ci_minimal_cost_factor_for_gitlab_namespaces`.
 
-### Additional costs on GitLab SaaS
+### GitLab-hosted runner costs
 
-GitLab SaaS runners have different cost factors, depending on the runner type (Linux, Windows, macOS) and the virtual machine configuration.
+GitLab-hosted runners have different cost factors, depending on the runner type (Linux, Windows, macOS) and the virtual machine configuration.
 
-| GitLab SaaS runner type      | Machine Size           | Cost factor |
+| GitLab-hosted runner type    | Machine Size           | Cost factor |
 |:-----------------------------|:-----------------------|:------------|
 | Linux OS amd64               | `small`                | 1           |
 | Linux OS amd64               | `medium`               | 2           |
@@ -291,8 +291,10 @@ GitLab SaaS runners have different cost factors, depending on the runner type (L
 | Linux OS amd64               | `xlarge`               | 6           |
 | Linux OS amd64               | `2xlarge`              | 12          |
 | Linux OS amd64 + GPU-enabled | `medium`, GPU standard | 7           |
-| macOS M1                     | `medium`               | 6 (Beta)    |
-| Windows Server               | -                      | 1 (Beta)    |
+| Linux arm64                  | `medium`               | 2           |
+| Linux arm64                  | `large`                | 3           |
+| macOS M1                     | `medium`               | 6 (**Status:** Beta) |
+| Windows Server               | -                      | 1 (**Status:** Beta) |
 
 ### Monthly reset of compute usage
 
@@ -336,9 +338,9 @@ The grace period for running jobs is `1,000` compute minutes.
 
 Jobs on project runners are not affected by the compute quota.
 
-### GitLab SaaS usage notifications
+### GitLab.com usage notifications
 
-On GitLab SaaS an in-app banner is displayed and an email notification sent to the namespace owners when:
+On GitLab.com an in-app banner is displayed and an email notification sent to the namespace owners when:
 
 - The remaining compute minutes is below 30% of the quota.
 - The remaining compute minutes is below 5% of the quota.
@@ -377,18 +379,18 @@ See our [pipeline efficiency guide](pipeline_efficiency.md) for more details.
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 An administrator can reset the compute usage for a namespace for the current month.
 
 ### Reset usage for a personal namespace
 
-1. Find the [user in the admin area](../../administration/admin_area.md#administering-users).
+1. Find the [user in the Admin Area](../../administration/admin_area.md#administering-users).
 1. Select **Edit**.
 1. In **Limits**, select **Reset compute usage**.
 
 ### Reset usage for a group namespace
 
-1. Find the [group in the admin area](../../administration/admin_area.md#administering-groups).
+1. Find the [group in the Admin Area](../../administration/admin_area.md#administering-groups).
 1. Select **Edit**.
 1. In **Permissions and group features**, select **Reset compute usage**.

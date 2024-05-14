@@ -5,8 +5,8 @@ module Resolvers
     type Types::Projects::TopicType, null: true
 
     argument :search, GraphQL::Types::String,
-             required: false,
-             description: 'Search query for topic name.'
+      required: false,
+      description: 'Search query for topic name.'
 
     def resolve(**args)
       if args[:search].present?

@@ -57,4 +57,4 @@ Considering that [we expect most users to work in a single Organization](../../o
 
 ## 4.2. Cons
 
-- Users working across multiple Organizations will have to navigate to each Organization to access all of their work items.
+- Users working across multiple Organizations will have to go to each Organization to access all of their work items.

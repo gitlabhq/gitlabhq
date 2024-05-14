@@ -3,6 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe 'Work item', :js, feature_category: :team_planning do
+  before do
+    stub_feature_flags(notifications_todos_buttons: false)
+  end
+
   include ListboxHelpers
 
   let_it_be_with_reload(:user) { create(:user) }
@@ -20,6 +24,7 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
 
   context 'for signed in user' do
     before do
+      stub_feature_flags(notifications_todos_buttons: false)
       stub_const("AutocompleteSources::ExpiresIn::AUTOCOMPLETE_EXPIRES_IN", 0)
       project.add_developer(user)
       sign_in(user)
@@ -27,13 +32,13 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
     end
 
     it 'shows project issues link in breadcrumbs' do
-      within('[data-testid="breadcrumb-links"]') do
+      within_testid('breadcrumb-links') do
         expect(page).to have_link('Issues', href: project_issues_path(project))
       end
     end
 
     it 'uses IID path in breadcrumbs' do
-      within('[data-testid="breadcrumb-current-link"]') do
+      within_testid('breadcrumb-current-link') do
         expect(page).to have_link("##{work_item.iid}", href: work_items_path)
       end
     end
@@ -42,9 +47,10 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
       expect(page).to have_button _('More actions')
     end
 
-    context 'when work_items_mvc_2 is disabled' do
+    context 'when work_items_beta is enabled' do
       before do
-        stub_feature_flags(work_items_mvc_2: false)
+        stub_feature_flags(work_items_beta: true)
+        stub_feature_flags(notifications_todos_buttons: false)
 
         page.refresh
         wait_for_all_requests
@@ -52,35 +58,7 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
 
       it 'reassigns to another user',
         quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/413074' do
-        find('[data-testid="work-item-assignees-input"]').fill_in(with: user.username)
-        wait_for_requests
-
-        send_keys(:enter)
-        find("body").click
-        wait_for_requests
-
-        find('[data-testid="work-item-assignees-input"]').fill_in(with: user2.username)
-        wait_for_requests
-
-        send_keys(:enter)
-        find("body").click
-        wait_for_requests
-
-        expect(work_item.reload.assignees).to include(user2)
-      end
-    end
-
-    context 'when work_items_mvc_2 is enabled' do
-      before do
-        stub_feature_flags(work_items_mvc_2: true)
-
-        page.refresh
-        wait_for_all_requests
-      end
-
-      it 'reassigns to another user',
-        quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/413074' do
-        within('[data-testid="work-item-assignees-with-edit"]') do
+        within_testid('work-item-assignees') do
           click_button 'Edit'
         end
 
@@ -88,7 +66,7 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
 
         wait_for_requests
 
-        within('[data-testid="work-item-assignees-with-edit"]') do
+        within_testid('work-item-assignees') do
           click_button 'Edit'
         end
 
@@ -158,39 +136,24 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
       expect(page).to have_selector('[data-testid="award-button"].disabled')
     end
 
-    context 'when work_items_mvc_2 is disabled' do
+    context 'when work_items_beta is enabled' do
       before do
-        stub_feature_flags(work_items_mvc_2: false)
+        stub_feature_flags(work_items_beta: true)
 
         page.refresh
         wait_for_all_requests
       end
 
-      it 'assignees input field is disabled' do
-        within('[data-testid="work-item-assignees-input"]') do
-          expect(page).to have_field(type: 'text', disabled: true)
-        end
-      end
-    end
-
-    context 'when work_items_mvc_2 is enabled' do
-      before do
-        stub_feature_flags(work_items_mvc_2: true)
-
-        page.refresh
-        wait_for_all_requests
-      end
-
-      it 'assignees edit button is not visible' do
-        within('[data-testid="work-item-assignees-with-edit"]') do
+      it 'hides the assignees edit button' do
+        within_testid('work-item-assignees') do
           expect(page).not_to have_button('Edit')
         end
       end
-    end
 
-    it 'labels input field is disabled' do
-      within('[data-testid="work-item-labels-input"]') do
-        expect(page).to have_field(type: 'text', disabled: true)
+      it 'hides the labels edit button' do
+        within_testid('work-item-labels') do
+          expect(page).not_to have_button('Edit')
+        end
       end
     end
   end

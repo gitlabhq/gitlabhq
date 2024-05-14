@@ -11,12 +11,12 @@ module Resolvers
     extension ::Gitlab::Graphql::Limit::FieldCallCount, limit: 1
 
     argument :statuses, [::Types::Ci::JobStatusEnum],
-              required: false,
-              description: 'Filter jobs by status.'
+      required: false,
+      description: 'Filter jobs by status.'
 
     argument :with_artifacts, ::GraphQL::Types::Boolean,
-              required: false,
-              description: 'Filter by artifacts presence.'
+      required: false,
+      description: 'Filter by artifacts presence.'
 
     alias_method :project, :object
 

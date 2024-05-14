@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 GitLab has its own [issue tracker](../user/project/issues/index.md),
 but you can also configure an external issue tracker per GitLab project.
@@ -46,5 +46,6 @@ You can configure any of the following external issue trackers:
 - [Custom issue tracker](../user/project/integrations/custom_issue_tracker.md)
 - [Engineering Workflow Management (EWM)](../user/project/integrations/ewm.md)
 - [Jira](../integration/jira/index.md)
+- [Phorge](../user/project/integrations/phorge.md)
 - [Redmine](../user/project/integrations/redmine.md)
 - [YouTrack](../user/project/integrations/youtrack.md)

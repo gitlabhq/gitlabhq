@@ -6,7 +6,7 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::RedisMetric, :clean_git
   feature_category: :service_ping do
   before do
     4.times do
-      Gitlab::UsageDataCounters::SourceCodeCounter.count(:pushes)
+      Gitlab::Redis::SharedState.with { |redis| redis.incr('USAGE_SOURCE_CODE_PUSHES') }
     end
   end
 
@@ -65,20 +65,6 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::RedisMetric, :clean_git
     it_behaves_like 'a correct instrumented metric value', {
       options: { event: 'merge_requests_count', prefix: 'web_ide', include_usage_prefix: false },
       time_frame: 'all'
-    }
-  end
-
-  context "with prefix disabled" do
-    let(:expected_value) { 3 }
-
-    before do
-      3.times do
-        Gitlab::UsageDataCounters::SearchCounter.count(:all_searches)
-      end
-    end
-
-    it_behaves_like 'a correct instrumented metric value', {
-      options: { event: 'all_searches_count', prefix: nil, include_usage_prefix: false }, time_frame: 'all'
     }
   end
 end

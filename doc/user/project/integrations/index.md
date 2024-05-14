@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 NOTE:
 This page contains user documentation for project integrations. For administrator documentation, see [Project integration administration](../../../administration/settings/project_integration_management.md).
@@ -135,7 +135,7 @@ To use custom settings for a project or group integration:
 | [GitGuardian](git_guardian.md)                                              | Reject commits based on GitGuardian policies.                         | **{dotted-circle}** No |
 | [GitHub](github.md)                                                         | Receive statuses for commits and pull requests.                       | **{dotted-circle}** No |
 | [GitLab for Slack app](gitlab_slack_application.md)                         | Use the native Slack app to receive notifications and run commands.   | **{dotted-circle}** No |
-| [Google Chat](hangouts_chat.md)                                             | Send notifications from your GitLab project to a room in Google Chat. | **{dotted-circle}** No |
+| [Google Chat](hangouts_chat.md)                                             | Send notifications from your GitLab project to a space in Google Chat. | **{dotted-circle}** No |
 | [Harbor](harbor.md)                                                         | Use Harbor as the container registry for GitLab.                      | **{dotted-circle}** No |
 | [irker (IRC gateway)](irker.md)                                             | Send IRC messages.                                                    | **{dotted-circle}** No |
 | [Jenkins](../../../integration/jenkins.md)                                  | Run CI/CD pipelines with Jenkins.                                     | **{check-circle}** Yes |
@@ -145,6 +145,7 @@ To use custom settings for a project or group integration:
 | [Mattermost slash commands](mattermost_slash_commands.md)                   | Run slash commands from a Mattermost chat environment.                | **{dotted-circle}** No |
 | [Microsoft Teams notifications](microsoft_teams.md)                         | Receive event notifications in Microsoft Teams.                       | **{dotted-circle}** No |
 | Packagist                                                                   | Update your PHP dependencies in Packagist.                            | **{check-circle}** Yes |
+| [Phorge](phorge.md)                                                         | Use Phorge as an issue tracker.                                       | **{dotted-circle}** No |
 | [Pipeline status emails](pipeline_status_emails.md)                         | Send the pipeline status to a list of recipients by email.            | **{dotted-circle}** No |
 | [Pivotal Tracker](pivotal_tracker.md)                                       | Add commit messages as comments to Pivotal Tracker stories.           | **{dotted-circle}** No |
 | [Pumble](pumble.md)                                                         | Send event notifications to a Pumble channel.                         | **{dotted-circle}** No |
@@ -182,7 +183,7 @@ an internal list of certificate authorities. The SSL certificate cannot
 be self-signed.
 
 You can disable SSL verification when you configure
-[webhooks](webhooks.md#configure-a-webhook-in-gitlab) and some integrations.
+[webhooks](webhooks.md#configure-webhooks-in-gitlab) and some integrations.
 
 ## Related topics
 

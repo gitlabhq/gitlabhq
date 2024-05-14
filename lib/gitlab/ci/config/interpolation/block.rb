@@ -13,11 +13,9 @@ module Gitlab
         # manipulate the access value. Functions are evaluated in the order
         # they are presented.
         class Block
-          PREFIX = '$[['
-          PATTERN = /(?<block>\$\[\[\s*(?<data>\S{1}.*?\S{1})\s*\]\])/
           MAX_FUNCTIONS = 3
 
-          attr_reader :block, :data, :ctx, :errors
+          attr_reader :data, :ctx, :errors
 
           def initialize(block, data, ctx)
             @block = block
@@ -43,15 +41,17 @@ module Gitlab
             @value
           end
 
-          def self.match(data)
-            return data unless data.is_a?(String) && data.include?(PREFIX)
+          def length
+            block.length
+          end
 
-            data.gsub(PATTERN) do
-              yield ::Regexp.last_match(1), ::Regexp.last_match(2)
-            end
+          def to_s
+            block
           end
 
           private
+
+          attr_reader :block
 
           # We expect the block data to be a string with one or more entities delimited by pipes:
           # <access> | <function1> | <function2> | ... <functionN>

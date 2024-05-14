@@ -38,6 +38,8 @@ module QA
         end
 
         def leave_group
+          dismiss_duo_chat_popup if respond_to?(:dismiss_duo_chat_popup)
+
           click_element 'groups-projects-more-actions-dropdown'
           wait_for_requests
 
@@ -55,3 +57,6 @@ module QA
     end
   end
 end
+
+QA::Page::Group::Show.prepend_mod_with('Page::Component::DuoChatCallout', namespace: QA)
+QA::Page::Group::Show.prepend_mod_with('Page::Alert::FreeTrial', namespace: QA)

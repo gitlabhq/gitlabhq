@@ -34,10 +34,10 @@ describe('Notes Store mutations', () => {
         notes: [note],
         reply_id: note.discussion_id,
       };
-      mutations.ADD_NEW_NOTE(state, note);
     });
 
     it('should add a new note to an array of notes', () => {
+      mutations.ADD_NEW_NOTE(state, note);
       expect(state).toEqual(expect.objectContaining({ discussions: [noteData] }));
 
       expect(state.discussions.length).toBe(1);
@@ -45,8 +45,20 @@ describe('Notes Store mutations', () => {
 
     it('should not add the same note to the notes array', () => {
       mutations.ADD_NEW_NOTE(state, note);
+      mutations.ADD_NEW_NOTE(state, note);
 
       expect(state.discussions.length).toBe(1);
+    });
+
+    it('trims first character from truncated_diff_lines', () => {
+      mutations.ADD_NEW_NOTE(state, {
+        discussion: {
+          notes: [{ ...note }],
+          truncated_diff_lines: [{ text: '+a', rich_text: '+<span>a</span>' }],
+        },
+      });
+
+      expect(state.discussions[0].truncated_diff_lines).toEqual([{ rich_text: '<span>a</span>' }]);
     });
   });
 
@@ -938,6 +950,18 @@ describe('Notes Store mutations', () => {
       mutations.SET_DONE_FETCHING_BATCH_DISCUSSIONS(state, true);
 
       expect(state.doneFetchingBatchDiscussions).toEqual(true);
+    });
+  });
+
+  describe('SET_EXPAND_ALL_DISCUSSIONS', () => {
+    it('should set expanded for every discussion', () => {
+      const state = {
+        discussions: [{ expanded: false }, { expanded: false }],
+      };
+
+      mutations.SET_EXPAND_ALL_DISCUSSIONS(state, true);
+
+      expect(state.discussions).toStrictEqual([{ expanded: true }, { expanded: true }]);
     });
   });
 });

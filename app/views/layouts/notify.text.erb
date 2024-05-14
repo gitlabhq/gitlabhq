@@ -1,8 +1,18 @@
+<% note = local_assigns.fetch(:note, @note) -%>
+<% show_no_diff_preview_message = false -%>
+<% unless @note.nil? -%>
+<%   discussion = local_assigns.fetch(:discussion) { note.discussion } if note.part_of_discussion? -%>
+<%   project = local_assigns.fetch(:project, @project) -%>
+<%   show_no_diff_preview_message = discussion&.diff_discussion? && discussion.on_text? && !project.show_diff_preview_in_email? -%>
+<% end -%>
 <%= text_header_message %>
 
 <%= yield -%>
 
 -- <%# signature marker %>
+<%  if show_no_diff_preview_message -%>
+<%=   "This project does not include diff previews in email notifications.\n" -%>
+<%  end -%>
 <%  if @target_url -%>
 <%    if @reply_by_email -%>
 <%=     "Reply to this email directly or view it on GitLab: #{@target_url}" -%>

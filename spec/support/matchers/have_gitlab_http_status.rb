@@ -14,7 +14,7 @@ RSpec::Matchers.define :have_gitlab_http_status do |expected|
     # or a Capybara::Session (which uses #status_code)
     response_code = actual.try(:response_code) || actual.try(:status_code)
 
-    "expected the response to have status code #{expected.inspect}" \
-    " but it was #{response_code}. The response was: #{actual.body}"
+    "expected the response to have status code #{expected.inspect} " \
+    "but it was #{response_code}. The response was: #{actual.body}"
   end
 end

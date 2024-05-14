@@ -22,10 +22,6 @@ RSpec.describe Gitlab::UsageDataCounters::WebIdeCounter, :clean_gitlab_redis_sha
     it_behaves_like 'counter examples', 'merge_requests'
   end
 
-  describe 'views counter' do
-    it_behaves_like 'counter examples', 'views'
-  end
-
   describe 'terminals counter' do
     it_behaves_like 'counter examples', 'terminals'
   end
@@ -37,14 +33,12 @@ RSpec.describe Gitlab::UsageDataCounters::WebIdeCounter, :clean_gitlab_redis_sha
   describe '.totals' do
     commits = 5
     merge_requests = 3
-    views = 2
     terminals = 1
     pipelines = 2
 
     before do
       commits.times { described_class.increment_commits_count }
       merge_requests.times { described_class.increment_merge_requests_count }
-      views.times { described_class.increment_views_count }
       terminals.times { described_class.increment_terminals_count }
       pipelines.times { described_class.increment_pipelines_count }
     end
@@ -52,7 +46,6 @@ RSpec.describe Gitlab::UsageDataCounters::WebIdeCounter, :clean_gitlab_redis_sha
     it 'can report all totals' do
       expect(described_class.totals).to include(
         web_ide_commits: commits,
-        web_ide_views: views,
         web_ide_merge_requests: merge_requests,
         web_ide_terminals: terminals
       )

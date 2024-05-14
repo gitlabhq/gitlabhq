@@ -94,45 +94,50 @@ export const SERVICES_LIMIT_PER_PAGE = 10;
 export const CLUSTER_STATUS_HEALTHY_TEXT = s__('Environment|Healthy');
 export const CLUSTER_STATUS_UNHEALTHY_TEXT = s__('Environment|Unhealthy');
 
+export const CLUSTER_HEALTH_SUCCESS = 'success';
+export const CLUSTER_HEALTH_ERROR = 'error';
+
 export const HEALTH_BADGES = {
-  success: {
+  [CLUSTER_HEALTH_SUCCESS]: {
     variant: 'success',
     text: CLUSTER_STATUS_HEALTHY_TEXT,
+    icon: 'status-success',
   },
-  error: {
+  [CLUSTER_HEALTH_ERROR]: {
     variant: 'danger',
     text: CLUSTER_STATUS_UNHEALTHY_TEXT,
+    icon: 'status-alert',
   },
 };
 
 export const SYNC_STATUS_BADGES = {
   reconciled: {
     variant: 'success',
-    icon: 'status_success',
+    icon: 'status-success',
     text: s__('Environment|Reconciled'),
     popoverText: s__('Deployment|Flux sync reconciled successfully'),
   },
   reconciling: {
     variant: 'info',
-    icon: 'status_running',
+    icon: 'status-running',
     text: s__('Environment|Reconciling'),
     popoverText: s__('Deployment|Flux sync reconciling'),
   },
   stalled: {
     variant: 'warning',
-    icon: 'status_pending',
+    icon: 'status-paused',
     text: s__('Environment|Stalled'),
     popoverTitle: s__('Deployment|Flux sync stalled'),
   },
   failed: {
     variant: 'danger',
-    icon: 'status_failed',
+    icon: 'status-failed',
     text: s__('Deployment|Failed'),
     popoverTitle: s__('Deployment|Flux sync failed'),
   },
   unknown: {
     variant: 'neutral',
-    icon: 'status_notfound',
+    icon: 'status-waiting',
     text: s__('Deployment|Unknown'),
     popoverTitle: s__('Deployment|Flux sync status is unknown'),
     popoverText: s__(
@@ -142,7 +147,7 @@ export const SYNC_STATUS_BADGES = {
   },
   unavailable: {
     variant: 'muted',
-    icon: 'status_notfound',
+    icon: 'status-waiting',
     text: s__('Deployment|Unavailable'),
     popoverTitle: s__('Deployment|Flux sync status is unavailable'),
     popoverText: s__(

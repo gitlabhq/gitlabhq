@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 ## Pipelines pagination
 
@@ -24,9 +24,12 @@ Read more on [pagination](rest/index.md#pagination).
 > - `name` in request [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115310) in 15.11 [with a flag](../administration/feature_flags.md) named `pipeline_name_search`. Disabled by default.
 > - `name` in response [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/398131) in GitLab 16.3. Feature flag `pipeline_name_in_api` removed.
 > - `name` in request [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/385864) in GitLab 16.9. Feature flag `pipeline_name_search` removed.
+> - Support for returning child pipelines with `source` set to `parent_pipeline` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/39503) in GitLab 17.0.
 
-List pipelines in a project. Child pipelines are not included in the results,
-but you can [get child pipeline](pipelines.md#get-a-single-pipeline) individually.
+List pipelines in a project.
+
+By default, [child pipelines](../ci/pipelines/downstream_pipelines.md#parent-child-pipelines)
+are not included in the results. To return child pipelines, set `source` to `parent_pipeline`.
 
 ```plaintext
 GET /projects/:id/pipelines
@@ -35,13 +38,13 @@ GET /projects/:id/pipelines
 | Attribute        | Type           | Required | Description |
 |------------------|----------------|----------|-------------|
 | `id`             | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
-| `name`           | string         | No       | Return pipelines with the specified name. Introduced in GitLab 15.11, not available by default. |
+| `name`           | string         | No       | Return pipelines with the specified name. |
 | `order_by`       | string         | No       | Order pipelines by `id`, `status`, `ref`, `updated_at` or `user_id` (default: `id`) |
 | `ref`            | string         | No       | The ref of pipelines |
 | `scope`          | string         | No       | The scope of pipelines, one of: `running`, `pending`, `finished`, `branches`, `tags` |
 | `sha`            | string         | No       | The SHA of pipelines |
 | `sort`           | string         | No       | Sort pipelines in `asc` or `desc` order (default: `desc`) |
-| `source`         | string         | No       | In [GitLab 14.3 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/325439), how the pipeline was triggered, one of: `api`, `chat`, `external`, `external_pull_request_event`, `merge_request_event`, `ondemand_dast_scan`, `ondemand_dast_validation`, `parent_pipeline`, `pipeline`, `push`, `schedule`, `security_orchestration_policy`, `trigger`, `web`, or `webide`. |
+| `source`         | string         | No       | Returns how the pipeline was triggered, one of: `api`, `chat`, `external`, `external_pull_request_event`, `merge_request_event`, `ondemand_dast_scan`, `ondemand_dast_validation`, `parent_pipeline`, `pipeline`, `push`, `schedule`, `security_orchestration_policy`, `trigger`, `web`, or `webide`. |
 | `status`         | string         | No       | The status of pipelines, one of: `created`, `waiting_for_resource`, `preparing`, `pending`, `running`, `success`, `failed`, `canceled`, `skipped`, `manual`, `scheduled` |
 | `updated_after`  | datetime       | No       | Return pipelines updated after the specified date. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
 | `updated_before` | datetime       | No       | Return pipelines updated before the specified date. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
@@ -229,8 +232,6 @@ Sample response:
 
 ### Get a pipeline's test report summary
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65471) in GitLab 14.2.
-
 NOTE:
 This API route is part of the [Unit test report](../ci/testing/unit_test_reports.md) feature.
 
@@ -399,6 +400,8 @@ Example of response
 ## Retry jobs in a pipeline
 
 > - `iid` in response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342223) in GitLab 14.6.
+
+Retry failed or canceled jobs in a pipeline. If there are no failed or canceled jobs in the pipeline, calling this endpoint has no effect.
 
 ```plaintext
 POST /projects/:id/pipelines/:pipeline_id/retry

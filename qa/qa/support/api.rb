@@ -15,81 +15,87 @@ module QA
       HTTP_STATUS_SERVER_ERROR = 500
 
       def post(url, payload, args = {})
-        with_retry_on_too_many_requests do
-          default_args = {
-            method: :post,
-            url: url,
-            payload: payload,
-            verify_ssl: false
-          }
+        request_args = {
+          method: :post,
+          url: url,
+          payload: payload,
+          verify_ssl: false
+        }.merge(with_canary(args))
 
-          RestClient::Request.execute(default_args.merge(with_canary(args)))
+        with_retry_on_too_many_requests do
+          RestClient::Request.execute(request_args)
         rescue StandardError => e
           return_response_or_raise(e)
         end
       end
 
       def get(url, args = {})
-        with_retry_on_too_many_requests do
-          default_args = {
-            method: :get,
-            url: url,
-            verify_ssl: false
-          }
+        request_args = {
+          method: :get,
+          url: url,
+          verify_ssl: false
+        }.merge(with_canary(args))
 
-          RestClient::Request.execute(default_args.merge(with_canary(args)))
+        with_retry_on_too_many_requests do
+          RestClient::Request.execute(request_args)
         rescue StandardError => e
           return_response_or_raise(e)
         end
       end
 
       def patch(url, payload = nil, args = {})
-        with_retry_on_too_many_requests do
-          default_args = {
-            method: :patch,
-            url: url,
-            payload: payload,
-            verify_ssl: false
-          }
+        request_args = {
+          method: :patch,
+          url: url,
+          payload: payload,
+          verify_ssl: false
+        }.merge(with_canary(args))
 
-          RestClient::Request.execute(default_args.merge(with_canary(args)))
+        with_retry_on_too_many_requests do
+          RestClient::Request.execute(request_args)
         rescue StandardError => e
           return_response_or_raise(e)
         end
       end
 
       def put(url, payload = nil, args = {})
-        with_retry_on_too_many_requests do
-          default_args = {
-            method: :put,
-            url: url,
-            payload: payload,
-            verify_ssl: false
-          }
+        request_args = {
+          method: :put,
+          url: url,
+          payload: payload,
+          verify_ssl: false
+        }.merge(with_canary(args))
 
-          RestClient::Request.execute(default_args.merge(with_canary(args)))
+        with_retry_on_too_many_requests do
+          RestClient::Request.execute(request_args)
         rescue StandardError => e
           return_response_or_raise(e)
         end
       end
 
-      def delete(url)
+      def delete(url, args = {})
+        request_args = {
+          method: :delete,
+          url: url,
+          verify_ssl: false
+        }.merge(with_canary(args))
+
         with_retry_on_too_many_requests do
-          RestClient::Request.execute(
-            method: :delete,
-            url: url,
-            verify_ssl: false)
+          RestClient::Request.execute(request_args)
         rescue StandardError => e
           return_response_or_raise(e)
         end
       end
 
-      def head(url)
+      def head(url, args = {})
+        request_args = {
+          method: :head,
+          url: url,
+          verify_ssl: false
+        }.merge(with_canary(args))
+
         with_retry_on_too_many_requests do
-          RestClient::Request.execute(
-            method: :head,
-            url: url,
-            verify_ssl: false)
+          RestClient::Request.execute(request_args)
         rescue StandardError => e
           return_response_or_raise(e)
         end
@@ -113,6 +119,9 @@ module QA
       # @param [Hash] args the existing args passed to method
       # @return [Hash] args or args with merged canary cookie if it exists
       def with_canary(args)
+        canary_cookie = QA::Runtime::Env.canary_cookie
+        return args if canary_cookie.empty?
+
         args.deep_merge(cookies: QA::Runtime::Env.canary_cookie)
       end
 
@@ -177,6 +186,10 @@ module QA
 
           url = url.match?(/&page=\d+/) ? url.gsub(/&page=\d+/, "&page=#{next_page}") : "#{url}&page=#{next_page}"
         end
+      end
+
+      def success?(response_code)
+        [HTTP_STATUS_NO_CONTENT, HTTP_STATUS_ACCEPTED, HTTP_STATUS_OK, HTTP_STATUS_CREATED].include?(response_code)
       end
     end
   end

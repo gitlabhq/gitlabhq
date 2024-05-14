@@ -16,6 +16,7 @@ module Namespaces
 
     rule { can?(:reporter_access) }.policy do
       enable :read_timelog_category
+      enable :reopen_issue
     end
 
     rule { can?(:guest_access) }.policy do

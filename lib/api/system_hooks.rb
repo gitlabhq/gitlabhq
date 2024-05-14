@@ -10,7 +10,8 @@ module API
 
     before do
       authenticate!
-      authenticated_as_admin!
+      ability = route.request_method == 'GET' ? :read_web_hook : :admin_web_hook
+      authorize! ability
     end
 
     helpers ::API::Helpers::WebHooksHelpers
@@ -21,6 +22,8 @@ module API
       end
 
       params :hook_parameters do
+        optional :name, type: String, desc: 'Name of the hook'
+        optional :description, type: String, desc: 'Description of the hook'
         optional :token, type: String,
                          desc: "Secret token to validate received payloads; this isn't returned in the response"
         optional :push_events, type: Boolean, desc: 'When true, the hook fires on push events'

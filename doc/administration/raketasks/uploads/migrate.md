@@ -49,8 +49,7 @@ To migrate all uploads from local storage to object storage, run:
 You can optionally track progress and verify that all uploads migrated successfully using the
 [PostgreSQL console](https://docs.gitlab.com/omnibus/settings/database.html#connecting-to-the-bundled-postgresql-database):
 
-- `sudo gitlab-rails dbconsole` for Linux package installations running GitLab 14.1 and earlier.
-- `sudo gitlab-rails dbconsole --database main` for Linux package installations running GitLab 14.2 and later.
+- `sudo gitlab-rails dbconsole --database main` for Linux package installations.
 - `sudo -u git -H psql -d gitlabhq_production` for self-compiled installations.
 
 Verify `objectstg` below (where `store=2`) has count of all artifacts:

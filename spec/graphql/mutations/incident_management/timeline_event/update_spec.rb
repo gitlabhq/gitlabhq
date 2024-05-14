@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Mutations::IncidentManagement::TimelineEvent::Update do
   let_it_be(:developer) { create(:user) }
   let_it_be(:reporter) { create(:user) }
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project) { create(:project, developers: developer, reporters: reporter) }
   let_it_be(:incident) { create(:incident, project: project) }
   let_it_be(:tag1) { create(:incident_management_timeline_event_tag, project: project, name: 'Tag 1') }
   let_it_be(:tag2) { create(:incident_management_timeline_event_tag, project: project, name: 'Tag 2') }
@@ -34,11 +34,6 @@ RSpec.describe Mutations::IncidentManagement::TimelineEvent::Update do
   let(:timeline_event_id) { GitlabSchema.id_from_object(timeline_event).to_s }
   let(:occurred_at) { 1.minute.ago }
   let(:tag_names) { [] }
-
-  before do
-    project.add_developer(developer)
-    project.add_reporter(reporter)
-  end
 
   describe '#resolve' do
     let(:current_user) { developer }

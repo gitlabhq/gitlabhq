@@ -4,7 +4,7 @@ key_path: counts.package_events_i_package_tag_delete_package
 description: A count of package tags that have been deleted from the package registry
 product_section: ops
 product_stage: package
-product_group: package
+product_group: package_registry
 value_type: number
 status: removed
 time_frame: all

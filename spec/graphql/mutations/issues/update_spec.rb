@@ -61,7 +61,7 @@ RSpec.describe Mutations::Issues::Update, feature_category: :team_planning do
       context 'when setting milestone to nil' do
         let(:expected_attributes) { { milestone_id: nil } }
 
-        it 'changes the milestone corrrectly' do
+        it 'changes the milestone correctly' do
           issue.update_column(:milestone_id, milestone.id)
 
           expect { subject }.to change { issue.reload.milestone }.from(milestone).to(nil)
@@ -201,6 +201,20 @@ RSpec.describe Mutations::Issues::Update, feature_category: :team_planning do
 
           it 'updates the time estimate' do
             expect { subject }.to change { issue.reload.time_estimate }.from(3600).to(5400)
+          end
+
+          context 'when user is a guest' do
+            let_it_be(:guest) { create(:user) }
+            let(:user) { guest }
+
+            before do
+              issue.update!(author: guest)
+              project.add_guest(guest)
+            end
+
+            it 'does not change time_estimate' do
+              expect { subject }.not_to change { issue.reload.time_estimate }
+            end
           end
         end
       end

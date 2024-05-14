@@ -104,7 +104,7 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
           # Check the same comments in the side-by-side view.
           execute_script "window.scrollTo(0,0)"
           find('.js-show-diff-settings').click
-          click_button 'Side-by-side'
+          find_by_testid('listbox-item-parallel').click
 
           second_line_element = find_by_scrolling("[id='#{sample_compare.changes[1][:line_code]}']")
           second_root_element = second_line_element.ancestor('[data-path]')
@@ -141,7 +141,7 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
         visit(merge_request_path(merge_request))
 
         page.within('.notes .discussion') do
-          find('.js-vue-discussion-reply').click
+          find_by_testid('discussion-reply-tab').click
           click_button "Switch to rich text editing"
           click_button "Insert suggestion"
         end

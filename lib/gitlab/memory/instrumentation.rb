@@ -52,7 +52,7 @@ module Gitlab
           [KEY_MAPPING.fetch(key), current[key].to_i - value]
         end
 
-        result[:mem_total_bytes] = result[:mem_bytes] + result[:mem_objects] * GC::INTERNAL_CONSTANTS[:RVALUE_SIZE]
+        result[:mem_total_bytes] = result[:mem_bytes] + (result[:mem_objects] * GC::INTERNAL_CONSTANTS[:RVALUE_SIZE])
 
         result
       end

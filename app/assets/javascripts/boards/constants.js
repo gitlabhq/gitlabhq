@@ -46,11 +46,6 @@ export const formType = {
   edit: 'edit',
 };
 
-export const toggleFormEventPrefix = {
-  epic: 'toggle-epic-form-',
-  issue: 'toggle-issue-form-',
-};
-
 export const INCIDENT = 'INCIDENT';
 
 export const flashAnimationDuration = 2000;
@@ -128,7 +123,7 @@ export const listIssuablesQueries = {
       confidential: false,
       closedAt: null,
       dueDate: null,
-      emailsDisabled: false,
+      emailsEnabled: true,
       hidden: false,
       humanTimeEstimate: null,
       humanTotalTimeSpent: null,

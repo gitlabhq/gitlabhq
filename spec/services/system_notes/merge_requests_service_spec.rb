@@ -13,6 +13,44 @@ RSpec.describe ::SystemNotes::MergeRequestsService, feature_category: :code_revi
 
   let(:service) { described_class.new(noteable: noteable, project: project, author: author) }
 
+  describe '.merge_when_checks_pass' do
+    let(:pipeline) { build(:ci_pipeline) }
+
+    subject { service.merge_when_checks_pass(pipeline.sha) }
+
+    it_behaves_like 'a system note' do
+      let(:action) { 'merge' }
+    end
+
+    it "posts the 'merge when merge checks pass' system note" do
+      expect(subject.note).to match(%r{enabled an automatic merge when all merge checks for #{pipeline.sha} pass})
+    end
+  end
+
+  describe '.cancel_auto_merge' do
+    subject { service.cancel_auto_merge }
+
+    it_behaves_like 'a system note' do
+      let(:action) { 'merge' }
+    end
+
+    it "posts the 'canceled auto merge' system note" do
+      expect(subject.note).to eq "canceled the automatic merge"
+    end
+  end
+
+  describe '.abort_auto_merge' do
+    subject { service.abort_auto_merge('merge request was closed') }
+
+    it_behaves_like 'a system note' do
+      let(:action) { 'merge' }
+    end
+
+    it "posts the 'abort auto merge' system note" do
+      expect(subject.note).to eq "aborted the automatic merge because merge request was closed"
+    end
+  end
+
   describe '.merge_when_pipeline_succeeds' do
     let(:pipeline) { build(:ci_pipeline) }
 
@@ -197,7 +235,7 @@ RSpec.describe ::SystemNotes::MergeRequestsService, feature_category: :code_revi
         subject { service.change_branch('target', 'invalid', old_branch, new_branch) }
 
         it 'raises exception' do
-          expect { subject }.to raise_error /invalid value for event_type/
+          expect { subject }.to raise_error(/invalid value for event_type/)
         end
       end
     end
@@ -292,6 +330,20 @@ RSpec.describe ::SystemNotes::MergeRequestsService, feature_category: :code_revi
     context 'when merge request approved' do
       it 'sets the note text' do
         expect(subject.note).to eq "approved this merge request"
+      end
+    end
+  end
+
+  describe '#requested_changes' do
+    subject { described_class.new(noteable: noteable, project: project, author: author).requested_changes }
+
+    it_behaves_like 'a system note' do
+      let(:action) { 'requested_changes' }
+    end
+
+    context 'when the user has requested changes' do
+      it 'sets the note text' do
+        expect(subject.note).to eq "requested changes"
       end
     end
   end

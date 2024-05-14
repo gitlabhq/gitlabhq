@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Depending on the frequency with which images or tags are downloaded from the container registry,
 data transfers can exceed the GitLab.com limit. This page offers several recommendations and tips for
@@ -84,7 +84,7 @@ Another useful strategy is to ensure that you remove all transient build depende
 empty the operating system package manager cache before and after installing a package.
 
 When building your images, make sure you only copy the relevant files. For Docker, using a
-[`.dockerignore`](https://docs.docker.com/engine/reference/builder/#dockerignore-file)
+[`.dockerignore`](https://docs.docker.com/reference/dockerfile/#dockerignore-file)
 helps ensure that the build process ignores irrelevant files.
 
 You can use other third-party tools to minify your images, such as [DockerSlim](https://github.com/docker-slim/docker-slim).

@@ -116,78 +116,8 @@ be configured already.
 
 ### Object Storage Settings
 
-In GitLab 13.2 and later, you should use the
+You should use the
 [consolidated object storage settings](object_storage.md#configure-a-single-storage-connection-for-all-object-types-consolidated-form).
-This section describes the earlier configuration format.
-
-For self-compiled installations, these settings are nested under `external_diffs:` and
-then `object_store:`. On Linux package installations, they are prefixed by
-`external_diffs_object_store_`.
-
-| Setting | Description | Default |
-|---------|-------------|---------|
-| `enabled` | Enable/disable object storage | `false` |
-| `remote_directory` | The bucket name where external diffs are stored| |
-| `proxy_download` | Set to `true` to enable proxying all files served. Option allows to reduce egress traffic as this allows clients to download directly from remote storage instead of proxying all data | `false` |
-| `connection` | Various connection options described below | |
-
-#### S3 compatible connection settings
-
-See [the available connection settings for different providers](object_storage.md#configure-the-connection-settings).
-
-::Tabs
-
-:::TabTitle Linux package (Omnibus)
-
-1. Edit `/etc/gitlab/gitlab.rb` and add the following lines by replacing with
-   the values you want:
-
-   ```ruby
-   gitlab_rails['external_diffs_enabled'] = true
-   gitlab_rails['external_diffs_object_store_enabled'] = true
-   gitlab_rails['external_diffs_object_store_remote_directory'] = "external-diffs"
-   gitlab_rails['external_diffs_object_store_connection'] = {
-     'provider' => 'AWS',
-     'region' => 'eu-central-1',
-     'aws_access_key_id' => 'AWS_ACCESS_KEY_ID',
-     'aws_secret_access_key' => 'AWS_SECRET_ACCESS_KEY'
-   }
-   ```
-
-   If you are using AWS IAM profiles, omit the
-   AWS access key and secret access key/value pairs. For example:
-
-   ```ruby
-   gitlab_rails['external_diffs_object_store_connection'] = {
-     'provider' => 'AWS',
-     'region' => 'eu-central-1',
-     'use_iam_profile' => true
-   }
-   ```
-
-1. Save the file and [reconfigure GitLab](restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
-
-:::TabTitle Self-compiled (source)
-
-1. Edit `/home/git/gitlab/config/gitlab.yml` and add or amend the following
-   lines:
-
-   ```yaml
-   external_diffs:
-     enabled: true
-     object_store:
-       enabled: true
-       remote_directory: "external-diffs" # The bucket name
-       connection:
-         provider: AWS # Only AWS supported at the moment
-         aws_access_key_id: AWS_ACCESS_KEY_ID
-         aws_secret_access_key: AWS_SECRET_ACCESS_KEY
-         region: eu-central-1
-   ```
-
-1. Save the file and [restart GitLab](restart_gitlab.md#self-compiled-installations) for the changes to take effect.
-
-::EndTabs
 
 ## Alternative in-database storage
 

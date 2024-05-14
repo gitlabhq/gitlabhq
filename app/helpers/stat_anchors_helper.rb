@@ -11,25 +11,15 @@ module StatAnchorsHelper
 
   private
 
-  def new_button_attribute(anchor)
+  def button_attribute(anchor)
     anchor.class_modifier || 'btn-link gl-text-blue-500!'
   end
 
-  def button_attribute(anchor)
-    anchor.class_modifier || 'btn-dashed'
-  end
-
   def extra_classes(anchor)
-    if Feature.enabled?(:project_overview_reorg)
-      if anchor.is_link
-        'stat-link gl-px-0! gl-pb-2!'
-      else
-        "stat-link gl-px-0! gl-pb-2! #{new_button_attribute(anchor)}"
-      end
-    elsif anchor.is_link
-      'stat-link'
+    if anchor.is_link
+      'stat-link gl-px-0! gl-pb-2!'
     else
-      button_attribute(anchor)
+      "stat-link gl-px-0! gl-pb-2! #{button_attribute(anchor)}"
     end
   end
 end

@@ -1,5 +1,5 @@
 <script>
-import { GlModal, GlAlert } from '@gitlab/ui';
+import { GlForm, GlModal, GlAlert } from '@gitlab/ui';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { __, s__ } from '~/locale';
 import { formType } from '../constants';
@@ -43,6 +43,7 @@ export default {
     GlModal,
     BoardConfigurationOptions,
     GlAlert,
+    GlForm,
   },
   inject: {
     fullPath: {
@@ -295,7 +296,7 @@ export default {
     <p v-if="isDeleteForm" data-testid="delete-confirmation-message">
       {{ $options.i18n.deleteConfirmationMessage }}
     </p>
-    <form v-else data-testid="board-form-wrapper" @submit.prevent>
+    <gl-form v-else data-testid="board-form-wrapper" @submit.prevent="submit">
       <div v-if="!readonly" class="gl-mb-5" data-testid="board-form">
         <label class="gl-font-weight-bold gl-font-lg" for="board-new-name">
           {{ $options.i18n.titleFieldLabel }}
@@ -308,7 +309,6 @@ export default {
           data-testid="board-name-field"
           type="text"
           :placeholder="$options.i18n.titleFieldPlaceholder"
-          @keyup.enter="submit"
         />
       </div>
 
@@ -330,6 +330,6 @@ export default {
         @set-milestone="setMilestone"
         @set-weight="setWeight"
       />
-    </form>
+    </gl-form>
   </gl-modal>
 </template>

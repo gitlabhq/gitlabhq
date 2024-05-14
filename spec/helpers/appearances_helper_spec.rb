@@ -55,6 +55,32 @@ RSpec.describe AppearancesHelper do
     end
   end
 
+  describe '#appearance_apple_touch_icon' do
+    it 'returns the default icon' do
+      create(:appearance)
+
+      expect(helper.appearance_apple_touch_icon).to match(
+        "<link rel=\"apple-touch-icon\" type=\"image/x-icon\" " \
+        "href=\"/assets/apple-touch-icon-b049d4bc0dd9626f31db825d61880737befc7835982586d015bded10b4435460.png\" />"
+      )
+    end
+
+    context 'with pwa icons defined' do
+      let!(:appearance) { create(:appearance, :with_pwa_icon) }
+
+      it 'returns the pwa icons' do
+        expect(helper.appearance_apple_touch_icon).to match(
+          "<link rel=\"apple-touch-icon\" type=\"image/x-icon\" " \
+          "href=\"#{appearance.pwa_icon_path}?width=192\" />\n" \
+          "<link rel=\"apple-touch-icon\" type=\"image/x-icon\" " \
+          "href=\"#{appearance.pwa_icon_path}?width=192\" sizes=\"192x192\" />\n" \
+          "<link rel=\"apple-touch-icon\" type=\"image/x-icon\" " \
+          "href=\"#{appearance.pwa_icon_path}?width=512\" sizes=\"512x512\" />"
+        )
+      end
+    end
+  end
+
   describe '#appearance_pwa_name' do
     it 'returns the default value' do
       create(:appearance)
@@ -208,22 +234,22 @@ RSpec.describe AppearancesHelper do
   describe '#custom_sign_in_description' do
     it 'returns an empty string if no custom description is found' do
       allow(helper).to receive(:current_appearance).and_return(nil)
-      allow(Gitlab::CurrentSettings).to receive(:current_application_settings).and_return(nil)
+      allow(Gitlab::CurrentSettings).to receive(:sign_in_text).and_return(nil)
       allow(Gitlab::CurrentSettings).to receive(:help_text).and_return(nil)
 
       expect(helper.custom_sign_in_description).to eq('')
     end
 
     it 'returns a custom description if all the setting options are found' do
-      allow(helper).to receive(:markdown_field).and_return('1', '2')
-      allow(helper).to receive(:markdown).and_return('3')
+      allow(helper).to receive(:markdown_field).and_return('1')
+      allow(helper).to receive(:markdown).and_return('2', '3')
 
       expect(helper.custom_sign_in_description).to eq('1<br>2<br>3')
     end
 
     it 'returns a custom description if only one setting options is found' do
-      allow(helper).to receive(:markdown_field).and_return('', '2')
-      allow(helper).to receive(:markdown).and_return('')
+      allow(helper).to receive(:markdown_field).and_return('')
+      allow(helper).to receive(:markdown).and_return('2', '')
 
       expect(helper.custom_sign_in_description).to eq('2')
     end

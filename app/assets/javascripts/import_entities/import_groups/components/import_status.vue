@@ -1,6 +1,5 @@
 <script>
 import { GlBadge, GlLink } from '@gitlab/ui';
-import { mergeUrlParams } from '~/lib/utils/url_utility';
 import { STATUSES, STATUS_ICON_MAP } from '~/import_entities/constants';
 
 export default {
@@ -59,7 +58,9 @@ export default {
         return null;
       }
 
-      return mergeUrlParams({ id: this.id, entity_id: this.entityId }, this.detailsPath);
+      return this.detailsPath
+        .replace(':id', encodeURIComponent(this.id))
+        .replace(':entity_id', encodeURIComponent(this.entityId));
     },
   },
 };

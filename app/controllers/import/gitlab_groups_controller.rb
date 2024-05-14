@@ -18,9 +18,10 @@ class Import::GitlabGroupsController < ApplicationController
       import_export_upload: ImportExportUpload.new(import_file: group_params[:file])
     )
 
-    group = ::Groups::CreateService.new(current_user, group_data).execute
+    response = ::Groups::CreateService.new(current_user, group_data).execute
+    group = response[:group]
 
-    if group.persisted?
+    if response.success?
       if Groups::ImportExport::ImportService.new(group: group, user: current_user).async_execute
         redirect_to(
           group_path(group),

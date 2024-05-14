@@ -218,5 +218,7 @@ export default {
         {{ $options.i18n.configurationGuide }}
       </gl-button>
     </div>
+
+    <component :is="feature.slotComponent" v-if="feature.slotComponent" :feature="feature" />
   </gl-card>
 </template>

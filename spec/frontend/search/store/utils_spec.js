@@ -57,7 +57,7 @@ describe('Global Search Store Utils', () => {
 
       it('wipes local storage and returns an empty array', () => {
         expect(localStorage.removeItem).toHaveBeenCalledWith(MOCK_LS_KEY);
-        expect(res).toStrictEqual([]);
+        expect(res).toStrictEqual(null);
       });
     });
   });

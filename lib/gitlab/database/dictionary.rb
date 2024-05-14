@@ -25,6 +25,10 @@ module Gitlab
         @dictionary_entries.select { |entry| entry.schema?(schema_name) }
       end
 
+      def find_all_having_desired_sharding_key_migration_job
+        @dictionary_entries.select { |entry| entry.desired_sharding_key_migration_job_name.present? }
+      end
+
       def self.entries(scope = '')
         @entries ||= {}
         @entries[scope] ||= new(
@@ -82,6 +86,18 @@ module Gitlab
           data['milestone']
         end
 
+        def milestone_greater_than_or_equal_to?(other_milestone)
+          # some tables have milestones denoted as <6.0 or TODO, which are not clean milestones.
+          # For these tables, we just return `false` as these are probably older tables and we needn't run checks.
+          return false if not_having_a_clean_milestone?
+
+          # we use Gem::Version to compare version numbers correctly
+          my_milestone = Gem::Version.new(milestone.to_s)
+          other_milestone = Gem::Version.new(other_milestone.to_s)
+
+          my_milestone >= other_milestone
+        end
+
         def gitlab_schema
           data['gitlab_schema']
         end
@@ -94,12 +110,24 @@ module Gitlab
           data['desired_sharding_key']
         end
 
+        def sharding_key_issue_url
+          data['sharding_key_issue_url']
+        end
+
+        def exempt_from_sharding?
+          !!data['exempt_from_sharding']
+        end
+
         def classes
           data['classes']
         end
 
         def allow_cross_to_schemas(type)
           data["allow_cross_#{type}"].to_a.map(&:to_sym)
+        end
+
+        def desired_sharding_key_migration_job_name
+          data['desired_sharding_key_migration_job_name']
         end
 
         def schema?(schema_name)
@@ -121,6 +149,10 @@ module Gitlab
         end
 
         private
+
+        def not_having_a_clean_milestone?
+          milestone.to_s == 'TODO' || milestone.to_s.start_with?('<')
+        end
 
         attr_reader :file_path, :data
 

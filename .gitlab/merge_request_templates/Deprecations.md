@@ -28,7 +28,7 @@ Deprecation announcements can and should be created and merged into Docs at any 
 Please review:
 
 - The definitions of ["Deprecation", "End of Support", and "Removal"](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
-- The [guidelines for deprecations](https://about.gitlab.com/handbook/marketing/blog/release-posts/#deprecations-removals-and-breaking-changes).
+- The [guidelines for deprecations](https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#deprecations-removals-and-breaking-changes).
 - The process for [creating a deprecation announcement](https://about.gitlab.com/handbook/marketing/blog/release-posts/#creating-the-announcement).
 
 They are frequently updated, and everyone should make sure they are aware of the current standards (PM, PMM, EM, and TW).
@@ -42,6 +42,7 @@ They are frequently updated, and everyone should make sure they are aware of the
 - [ ] Add reviewers by the 10th.
 - [ ] Add scoped `devops::` and `group::` labels as necessary.
 - [ ] Add the appropriate milestone to this MR.
+- [ ] If the changes modify log format(addition/deletion/modification) of product feature, tag `@gitlab-com/gl-security/engineering-and-research/security-logging` team over the GitLab issue/MR. 
 - [ ] When ready to be merged (and no later than the 15th) `@mention` the TW for final review and merge.
 
 ## Reviewers

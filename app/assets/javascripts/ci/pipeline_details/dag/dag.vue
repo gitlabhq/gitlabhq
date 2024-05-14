@@ -179,7 +179,9 @@ export default {
       this.showFailureAlert = false;
     },
     removeAnnotationFromMap({ uid }) {
-      this.$delete(this.annotationsMap, uid);
+      const copy = { ...this.annotationsMap };
+      delete copy[uid];
+      this.annotationsMap = copy;
     },
     reportFailure(type) {
       this.showFailureAlert = true;

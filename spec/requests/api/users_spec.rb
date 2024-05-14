@@ -1187,7 +1187,12 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile 
   end
 
   describe "POST /users" do
+    let_it_be(:current_organization) { create(:organization) }
     let(:path) { '/users' }
+
+    before do
+      allow(Current).to receive(:organization).and_return(current_organization)
+    end
 
     it_behaves_like 'POST request permissions for admin mode' do
       let(:params) { attributes_for(:user, projects_limit: 3) }
@@ -1206,6 +1211,7 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile 
       new_user = User.find(user_id)
       expect(new_user.admin).to eq(true)
       expect(new_user.can_create_group).to eq(true)
+      expect(new_user.namespace.organization).to eq(current_organization)
     end
 
     it "creates user with optional attributes" do
@@ -1602,6 +1608,10 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile 
     end
 
     context 'updating password' do
+      # user should have `last_on_activity` set to today,
+      # so that `Users::ActivityService` does not register any more updates.
+      let_it_be(:admin) { create(:admin, :with_last_activity_on_today) }
+
       def update_password(user, admin, password = User.random_password)
         put api("/users/#{user.id}", admin, admin_mode: true), params: { password: password }
       end
@@ -1611,7 +1621,7 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile 
           update_password(admin, admin)
 
           expect(response).to have_gitlab_http_status(:ok)
-          expect(user.reload.password_expired?).to eq(false)
+          expect(admin.reload.password_expired?).to eq(false)
         end
 
         it 'does not enqueue the `admin changed your password` email' do
@@ -2799,7 +2809,7 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile 
     end
 
     context "sole owner of a group" do
-      let!(:group) { create(:group).tap { |group| group.add_owner(user) } }
+      let!(:group) { create(:group, owners: user) }
 
       context "hard delete disabled" do
         it "does not delete user" do
@@ -4598,6 +4608,36 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile 
           expect(user_with_status.status.clear_status_at).not_to be_nil
         end
       end
+    end
+  end
+
+  describe 'PUT /user/avatar' do
+    let(:path) { "/user/avatar" }
+
+    it "returns 200 OK on success" do
+      workhorse_form_with_file(
+        api(path, user),
+        method: :put,
+        file_key: :avatar,
+        params: { avatar: fixture_file_upload('spec/fixtures/banana_sample.gif', 'image/gif') }
+      )
+
+      user.reload
+      expect(user.avatar).to be_present
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['avatar_url']).to include(user.avatar_path)
+    end
+
+    it "returns 400 when avatar file size over 200 KiB" do
+      workhorse_form_with_file(
+        api(path, user),
+        method: :put,
+        file_key: :avatar,
+        params: { avatar: fixture_file_upload('spec/fixtures/big-image.png', 'image/png') }
+      )
+
+      expect(response).to have_gitlab_http_status(:bad_request)
+      expect(json_response['message']).to include("Avatar is too big (should be at most 200 KiB)")
     end
   end
 

@@ -8,26 +8,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384932) in GitLab 15.9 for GitLab SaaS [with two flags](../../../administration/feature_flags.md) named `license_scanning_sbom_scanner` and `package_metadata_synchronization`. Both flags disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/385176) in GitLab 16.4. Feature flags `license_scanning_sbom_scanner` and `package_metadata_synchronization` removed.
-
-NOTE:
-The legacy License Compliance analyzer was deprecated in GitLab 15.9 and removed in GitLab 16.3.
-To continue using GitLab for License Compliance, remove the License Compliance template from your
-CI/CD pipeline and add the [Dependency Scanning template](../../application_security/dependency_scanning/index.md#configuration).
-The Dependency Scanning template is now capable of gathering the required license information so it
-is no longer necessary to run a separate License Compliance job. The License Compliance CI/CD
-template should not be removed prior to verifying that the instance has been upgraded to a version
-that supports the new method of license scanning. To begin using the Dependency Scanner quickly at
-scale, you may set up a [scan execution policy](../../application_security/policies/scan-execution-policies.md)
-at the group level to enforce the SBOM-based license scan for all projects in the group.
-Then, you may remove the inclusion of the `Jobs/License-Scanning.gitlab-ci.yml` template from your
-CI/CD configuration. If you wish to continue using the legacy License Compliance feature, you can do
-so by setting the `LICENSE_MANAGEMENT_VERSION CI` variable to `4`. This variable can be set at the
-[project](../../../ci/variables/index.md#for-a-project), [group](../../../ci/variables/index.md#for-a-group)
-or [instance](../../../ci/variables/index.md#for-an-instance) level.
+> - The legacy License Compliance analyzer (`License-Scanning.gitlab-ci.yml`) was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/439162) in GitLab 17.0.
 
 To detect the licenses in use, License Compliance relies on running the
 [Dependency Scanning CI Jobs](../../application_security/dependency_scanning/index.md),
@@ -46,7 +31,7 @@ No contextual information (for example, a list of project dependencies) is sent 
 
 To enable License scanning of CycloneDX files:
 
-- Enable [Dependency Scanning](../../application_security/dependency_scanning/index.md#enabling-the-analyzer)
+- Enable [Dependency Scanning](../../application_security/dependency_scanning/index.md#enabling-the-analyzer-by-using-the-cicd-template)
   and ensure that its prerequisites are met.
 - On GitLab self-managed only, you can [choose package registry metadata to synchronize](../../../administration/settings/security_and_compliance.md#choose-package-registry-metadata-to-sync) in the Admin Area for the GitLab instance. For this data synchronization to work, you must allow outbound network traffic from your GitLab instance to the domain `storage.googleapis.com`. If you have limited or no network connectivity then refer to the documentation section [running in an offline environment](#running-in-an-offline-environment) for further guidance.
 

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::Migrations::LockRetryMixin do
+RSpec.describe Gitlab::Database::Migrations::LockRetryMixin, feature_category: :database do
   describe Gitlab::Database::Migrations::LockRetryMixin::ActiveRecordMigrationProxyLockRetries do
     let(:connection) { ActiveRecord::Base.connection }
     let(:migration) { double(connection: connection) }
@@ -18,16 +18,26 @@ RSpec.describe Gitlab::Database::Migrations::LockRetryMixin do
       end
     end
 
-    describe '#enable_lock_retries?' do
-      subject { class_def.new(migration).enable_lock_retries? }
+    shared_examples 'delegable' do |method|
+      subject { class_def.new(migration).public_send(method) }
 
-      it 'delegates to #migration' do
-        expect(migration).to receive(:enable_lock_retries?).and_return(return_value)
+      it 'delegates to migration' do
+        expect(migration).to receive(method).and_return(return_value)
 
-        result = subject
-
-        expect(result).to eq(return_value)
+        expect(subject).to eq(return_value)
       end
+    end
+
+    describe '#enable_lock_retries?' do
+      it_behaves_like 'delegable', :enable_lock_retries?
+    end
+
+    describe '#with_lock_retries_used!' do
+      it_behaves_like 'delegable', :with_lock_retries_used!
+    end
+
+    describe '#with_lock_retries_used?' do
+      it_behaves_like 'delegable', :with_lock_retries_used?
     end
 
     describe '#migration_class' do
@@ -82,7 +92,7 @@ RSpec.describe Gitlab::Database::Migrations::LockRetryMixin do
     end
 
     context 'with transactions disabled' do
-      let(:migration) { double('migration', enable_lock_retries?: false) }
+      let(:migration) { double('migration') }
       let(:receiver) { double('receiver', use_transaction?: false) }
 
       it 'calls super method' do
@@ -94,33 +104,37 @@ RSpec.describe Gitlab::Database::Migrations::LockRetryMixin do
       end
     end
 
-    context 'with transactions enabled, but lock retries disabled' do
-      let(:receiver) { double('receiver', use_transaction?: true) }
-      let(:migration) { double('migration', enable_lock_retries?: false) }
-
-      it 'calls super method' do
-        p = proc {}
-
-        expect(receiver).to receive(:ddl_transaction).with(migration, &p)
-
-        subject.ddl_transaction(migration, &p)
+    context 'with transactions enabled' do
+      before do
+        allow(migration).to receive(:migration_connection).and_return(connection)
       end
-    end
 
-    context 'with transactions enabled and lock retries enabled' do
       let(:receiver) { double('receiver', use_transaction?: true) }
-      let(:migration) { double('migration', migration_connection: connection, enable_lock_retries?: true) }
+
+      let(:migration) do
+        Class.new(Gitlab::Database::Migration[2.2]) do
+          milestone 16.10
+
+          def change
+            # no-op
+          end
+        end.new
+      end
+
       let(:connection) { ActiveRecord::Base.connection }
 
-      it 'calls super method' do
+      it 'calls super method and sets with_lock_retries_used! on the migration' do
         p = proc {}
 
         expect(receiver).not_to receive(:ddl_transaction)
+
         expect_next_instance_of(Gitlab::Database::WithLockRetries) do |retries|
           expect(retries).to receive(:run).with(raise_on_exhaustion: false, &p)
         end
 
         subject.ddl_transaction(migration, &p)
+
+        expect(migration.with_lock_retries_used?).to be_truthy
       end
     end
   end

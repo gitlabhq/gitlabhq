@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 If you're migrating from Jenkins to GitLab CI/CD, you are able to create CI/CD
 pipelines that replicate and enhance your Jenkins workflows.
@@ -41,7 +41,7 @@ functionality.
 
 ### Configuration file
 
-Jenkins can be configured with a [`Jenkinsfile` in the Groovy format](https://www.jenkins.io/doc/book/pipeline/jenkinsfile/). GitLab CI/CD uses a [`.gitlab-ci.yml` YAML file](../../ci/index.md#the-gitlab-ciyml-file) by default.
+Jenkins can be configured with a [`Jenkinsfile` in the Groovy format](https://www.jenkins.io/doc/book/pipeline/jenkinsfile/). GitLab CI/CD uses a `.gitlab-ci.yml` file by default.
 
 Example of a `Jenkinsfile`:
 
@@ -104,7 +104,7 @@ from Jenkins to GitLab CI/CD.
 
 [Jenkins pipelines](https://www.jenkins.io/doc/book/pipeline/) generate automated CI/CD jobs
 that are triggered when certain event take place, such as a new commit being pushed.
-A Jenkins pipeline is defined in a `Jenkinsfile`. The GitLab equivalent is the [`.gitlab-ci.yml` configuration file](../../ci/index.md#the-gitlab-ciyml-file).
+A Jenkins pipeline is defined in a `Jenkinsfile`. The GitLab equivalent is the [`.gitlab-ci.yml` configuration file](../../ci/yaml/index.md).
 
 Jenkins does not provide a place to store source code, so the `Jenkinsfile` must be stored
 in a separate source control repository.
@@ -638,7 +638,7 @@ SAST scanning to your pipeline, add the following to your `.gitlab-ci.yml`:
 
 ```yaml
 include:
-  - template: Security/SAST.gitlab-ci.yml
+  - template: Jobs/SAST.gitlab-ci.yml
 ```
 
 You can customize the behavior of security scanners by using CI/CD variables, for example

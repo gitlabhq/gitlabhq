@@ -6,13 +6,8 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
   let_it_be(:user) { create(:user) }
   let_it_be(:developer) { create(:user) }
   let_it_be(:non_member) { create(:user) }
-  let_it_be(:project) { create(:project, :private, :repository, namespace: user.namespace) }
+  let_it_be(:project) { create(:project, :private, :repository, namespace: user.namespace, maintainers: user, developers: developer) }
   let_it_be_with_reload(:environment) { create(:environment, project: project) }
-
-  before do
-    project.add_maintainer(user)
-    project.add_developer(developer)
-  end
 
   describe 'GET /projects/:id/environments', :aggregate_failures do
     context 'as member of the project' do
@@ -193,7 +188,7 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
         job = create(:ci_build, :running, project: project, user: user)
 
         post api("/projects/#{project.id}/environments/stop_stale"),
-             params: { before: 1.week.ago.to_date.to_s, job_token: job.token }
+          params: { before: 1.week.ago.to_date.to_s, job_token: job.token }
 
         expect(response).to have_gitlab_http_status(:ok)
       end
@@ -238,7 +233,7 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
     it 'returns a 200 if external_url is changed' do
       url = 'https://mepmep.whatever.ninja'
       put api("/projects/#{project.id}/environments/#{environment.id}", user),
-          params: { external_url: url }
+        params: { external_url: url }
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(response).to match_response_schema('public_api/v4/environment')
@@ -247,7 +242,7 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
 
     it 'returns a 200 if tier is changed' do
       put api("/projects/#{project.id}/environments/#{environment.id}", user),
-          params: { tier: 'production' }
+        params: { tier: 'production' }
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(response).to match_response_schema('public_api/v4/environment')
@@ -258,7 +253,7 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
       job = create(:ci_build, :running, project: project, user: user)
 
       put api("/projects/#{project.id}/environments/#{environment.id}"),
-          params: { tier: 'production', job_token: job.token }
+        params: { tier: 'production', job_token: job.token }
 
       expect(response).to have_gitlab_http_status(:ok)
     end
@@ -301,7 +296,7 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
         job = create(:ci_build, :running, project: project, user: user)
 
         delete api("/projects/#{project.id}/environments/#{environment.id}"),
-               params: { job_token: job.token }
+          params: { job_token: job.token }
 
         expect(response).to have_gitlab_http_status(:no_content)
       end
@@ -350,7 +345,7 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
           job = create(:ci_build, :running, project: project, user: user)
 
           post api("/projects/#{project.id}/environments/#{environment.id}/stop"),
-               params: { job_token: job.token }
+            params: { job_token: job.token }
 
           expect(response).to have_gitlab_http_status(:ok)
         end
@@ -416,6 +411,34 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
           )
 
           expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
+
+      context "when auto_stop_at is present" do
+        before do
+          environment.update!(auto_stop_at: Time.current)
+        end
+
+        it "returns the expected response" do
+          get api("/projects/#{project.id}/environments/#{environment.id}", user)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to match_response_schema('public_api/v4/environment')
+          expect(json_response['auto_stop_at']).to be_present
+        end
+      end
+
+      context "when auto_stop_at is not present" do
+        before do
+          environment.update!(auto_stop_at: nil)
+        end
+
+        it "returns the expected response" do
+          get api("/projects/#{project.id}/environments/#{environment.id}", user)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to match_response_schema('public_api/v4/environment')
+          expect(json_response['auto_stop_at']).to be_nil
         end
       end
     end

@@ -1,0 +1,56 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Scan result policy violation data",
+  "type": "object",
+  "properties": {
+    "context": {
+      "type": "object"
+    },
+    "violations": {
+      "type": "object",
+      "properties": {
+        "any_merge_request": {
+          "type": "object",
+          "properties": {
+            "commits": {
+              "oneOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "license_scanning": {
+          "type": "object",
+          "minProperties": 1,
+          "patternProperties": {
+            "^.+$": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "additionalProperties": false
+        }
+      }
+    },
+    "errors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "error"
+        ]
+      }
+    }
+  }
+}

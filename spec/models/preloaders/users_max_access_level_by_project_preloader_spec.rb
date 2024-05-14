@@ -7,20 +7,9 @@ RSpec.describe Preloaders::UsersMaxAccessLevelByProjectPreloader, feature_catego
   let_it_be(:user_2) { create(:user) }
   let_it_be(:user_with_no_access) { create(:user) } # ensures we correctly cache NO_ACCESS
 
-  let_it_be(:project_1) { create(:project) }
-  let_it_be(:project_2) { create(:project) }
-  let_it_be(:project_3) { create(:project) }
-
-  before do
-    project_1.add_developer(user_1)
-    project_1.add_developer(user_2)
-
-    project_2.add_developer(user_1)
-    project_2.add_developer(user_2)
-
-    project_3.add_developer(user_1)
-    project_3.add_developer(user_2)
-  end
+  let_it_be(:project_1) { create(:project, developers: [user_1, user_2]) }
+  let_it_be(:project_2) { create(:project, developers: [user_1, user_2]) }
+  let_it_be(:project_3) { create(:project, developers: [user_1, user_2]) }
 
   describe '#execute', :request_store do
     let(:project_users) do

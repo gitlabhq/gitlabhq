@@ -49,16 +49,9 @@ gitlab-ctl restart
 
 ## Changing time zone per user
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/57654) in GitLab 11.11, disabled by default behind `user_time_settings` [feature flag](feature_flags.md).
-> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/29669) in GitLab 13.9.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/29669) in GitLab 14.1.
-
 Users can set their time zone in their profile. On GitLab.com, the default time zone is UTC.
 
-New users do not have a default time zone in [GitLab 14.4 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/340795). New users must
+New users do not have a default time zone. New users must
 explicitly set their time zone before it displays on their profile.
-
-In GitLab 14.3 and earlier, users with no configured time zone default to the time zone
-[configured at the instance level](#changing-your-time-zone).
 
 For more information, see [Set your time zone](../user/profile/index.md#set-your-time-zone).

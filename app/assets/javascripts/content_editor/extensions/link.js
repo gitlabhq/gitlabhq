@@ -52,6 +52,17 @@ export default Link.extend({
         title: null,
         parseHTML: (element) => element.getAttribute('title'),
       },
+      // only for gollum links (wikis)
+      isGollumLink: {
+        default: false,
+        parseHTML: (element) => Boolean(element.dataset.gollum),
+        renderHTML: () => '',
+      },
+      isWikiPage: {
+        default: false,
+        parseHTML: (element) => Boolean(element.classList.contains('gfm-gollum-wiki-page')),
+        renderHTML: ({ isWikiPage }) => (isWikiPage ? { class: 'gfm-gollum-wiki-page' } : {}),
+      },
       canonicalSrc: {
         default: null,
         parseHTML: (element) => element.dataset.canonicalSrc,

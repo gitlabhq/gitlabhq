@@ -20,6 +20,6 @@ class NotificationReason
 
   # returns the priority of a reason as an integer
   def self.priority(reason)
-    REASON_PRIORITY.index(reason) || REASON_PRIORITY.length + 1
+    REASON_PRIORITY.index(reason) || (REASON_PRIORITY.length + 1)
   end
 end

@@ -3,9 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe Projects::MergeRequestsController, feature_category: :source_code_management do
-  let_it_be(:merge_request) { create(:merge_request) }
-  let_it_be(:project) { merge_request.project }
-  let_it_be(:user) { merge_request.author }
+  # user should have `last_on_activity` set to today,
+  # so that `Users::ActivityService` does not register any more updates.
+  let_it_be(:user) { create(:user, :with_last_activity_on_today, :with_namespace) }
+  let_it_be(:project) { create(:project, :repository, namespace: user.namespace) }
+  let_it_be(:merge_request) { create(:merge_request, source_project: project, author: user) }
 
   describe 'GET #show' do
     let_it_be(:group) { create(:group) }
@@ -186,6 +188,41 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(Gitlab::Json.parse(response.body)['count']['all']).to eq(2)
+      end
+    end
+
+    describe '#rapid_diffs' do
+      context 'when the feature flag rapid_diffs is disabled' do
+        before do
+          stub_feature_flags(rapid_diffs: false)
+        end
+
+        it 'returns 404' do
+          get diffs_project_merge_request_path(project, merge_request, rapid_diffs: 'true')
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+
+        it 'uses diffs action when rapid_diffs query parameter doesnt exist' do
+          get diffs_project_merge_request_path(project, merge_request)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.body).to include('data-page="projects:merge_requests:diffs"')
+        end
+      end
+
+      it 'returns 200' do
+        get diffs_project_merge_request_path(project, merge_request, rapid_diffs: 'true')
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.body).to include('data-page="projects:merge_requests:rapid_diffs"')
+      end
+
+      it 'uses diffs action when rapid_diffs query parameter doesnt exist' do
+        get diffs_project_merge_request_path(project, merge_request)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.body).to include('data-page="projects:merge_requests:diffs"')
       end
     end
 

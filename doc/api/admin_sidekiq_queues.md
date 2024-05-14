@@ -8,9 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25998) in GitLab 12.9
+**Offering:** Self-managed, GitLab Dedicated
 
 Delete jobs from a Sidekiq queue that match the given
 [metadata](../development/logging.md#logging-context-metadata-through-rails-or-grape-requests).

@@ -6,8 +6,6 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # Migrations for Multiple databases
 
-> - Support for describing migration purposes was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/73756) in GitLab 14.8.
-
 This document describes how to properly write database migrations
 for [the decomposed GitLab application using multiple databases](https://gitlab.com/groups/gitlab-org/-/epics/6168).
 For more information, see [Multiple databases](multiple_databases.md).

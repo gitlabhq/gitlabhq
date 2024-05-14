@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe PaginatedDiffEntity do
+RSpec.describe PaginatedDiffEntity, feature_category: :code_review_workflow do
   let(:user) { create(:user) }
   let(:request) { double('request', current_user: user) }
   let(:merge_request) { create(:merge_request) }
@@ -42,12 +42,13 @@ RSpec.describe PaginatedDiffEntity do
     end
 
     context 'when there are conflicts' do
-      let(:conflict_file) { double(path: diff_files.first.new_path, conflict_type: :both_modified) }
-      let(:conflicts) { double(conflicts: double(files: [conflict_file]), can_be_resolved_in_ui?: false) }
-
       before do
-        allow(merge_request).to receive(:cannot_be_merged?).and_return(true)
-        allow(MergeRequests::Conflicts::ListService).to receive(:new).and_return(conflicts)
+        allow(entity).to receive(:conflicts_with_types).and_return({
+          diff_files.first.new_path => {
+            conflict_type: :both_modified,
+            conflict_type_when_renamed: :both_modified
+          }
+        })
       end
 
       it 'serializes diff files with conflicts' do
@@ -55,7 +56,7 @@ RSpec.describe PaginatedDiffEntity do
           .to receive(:represent)
           .with(
             diff_files,
-            hash_including(options.merge(conflicts: { conflict_file.path => conflict_file }))
+            hash_including(options.merge(conflicts: entity.conflicts_with_types))
           )
 
         subject[:diff_files]

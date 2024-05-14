@@ -15,7 +15,7 @@ export default {
 };
 </script>
 <template>
-  <ul class="gl-list-style-none gl-px-0">
+  <ul class="gl-list-none gl-px-0">
     <li
       v-for="label in labels"
       :id="label.key"
@@ -31,10 +31,10 @@ export default {
       >
         <span
           data-testid="label-color-indicator"
-          class="gl-rounded-base gl-min-w-5 gl-h-5 gl-display-inline-block gl-vertical-align-bottom gl-mr-3"
+          class="gl-rounded-base gl-min-w-5 gl-h-5 gl-display-inline-block gl-align-bottom gl-mr-3"
           :style="{ 'background-color': label.color }"
         ></span>
-        <span class="gl-reset-text-align gl-m-0 gl-p-0 label-title gl-word-break-all">{{
+        <span class="gl-reset-text-align gl-m-0 gl-p-0 label-title gl-break-all">{{
           label.title
         }}</span></gl-form-checkbox
       >

@@ -5,14 +5,25 @@ import ModelVersionDetail from '~/ml/model_registry/components/model_version_det
 import PackageFiles from '~/packages_and_registries/package_registry/components/details/package_files.vue';
 import CandidateDetail from '~/ml/model_registry/components/candidate_detail.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
-import { makeModelVersion, MODEL_VERSION } from '../mock_data';
+import { convertCandidateFromGraphql } from '~/ml/model_registry/utils';
+import { modelVersionWithCandidate } from '../graphql_mock_data';
 
 Vue.use(VueApollo);
 
+const makeGraphqlModelVersion = (overrides = {}) => {
+  return { ...modelVersionWithCandidate, ...overrides };
+};
+
 let wrapper;
-const createWrapper = (modelVersion = MODEL_VERSION) => {
+const createWrapper = (modelVersion = modelVersionWithCandidate) => {
   const apolloProvider = createMockApollo([]);
-  wrapper = shallowMount(ModelVersionDetail, { apolloProvider, propsData: { modelVersion } });
+  wrapper = shallowMount(ModelVersionDetail, {
+    apolloProvider,
+    propsData: { modelVersion },
+    provide: {
+      projectPath: 'path/to/project',
+    },
+  });
 };
 
 const findPackageFiles = () => wrapper.findComponent(PackageFiles);
@@ -23,11 +34,13 @@ describe('ml/model_registry/components/model_version_detail.vue', () => {
     beforeEach(() => createWrapper());
 
     it('shows the description', () => {
-      expect(wrapper.text()).toContain(MODEL_VERSION.description);
+      expect(wrapper.text()).toContain('A model version description');
     });
 
     it('shows the candidate', () => {
-      expect(findCandidateDetail().props('candidate')).toBe(MODEL_VERSION.candidate);
+      expect(findCandidateDetail().props('candidate')).toMatchObject(
+        convertCandidateFromGraphql(modelVersionWithCandidate.candidate),
+      );
     });
 
     it('shows the mlflow label string', () => {
@@ -35,13 +48,13 @@ describe('ml/model_registry/components/model_version_detail.vue', () => {
     });
 
     it('shows the mlflow id', () => {
-      expect(wrapper.text()).toContain(MODEL_VERSION.candidate.info.eid);
+      expect(wrapper.text()).toContain(modelVersionWithCandidate.candidate.eid);
     });
 
     it('renders files', () => {
       expect(findPackageFiles().props()).toEqual({
         packageId: 'gid://gitlab/Packages::Package/12',
-        projectPath: MODEL_VERSION.projectPath,
+        projectPath: 'path/to/project',
         packageType: 'ml_model',
         canDelete: false,
       });
@@ -49,7 +62,7 @@ describe('ml/model_registry/components/model_version_detail.vue', () => {
   });
 
   describe('if package does not exist', () => {
-    beforeEach(() => createWrapper(makeModelVersion({ packageId: 0 })));
+    beforeEach(() => createWrapper(makeGraphqlModelVersion({ packageId: 0 })));
 
     it('does not render files', () => {
       expect(findPackageFiles().exists()).toBe(false);
@@ -57,7 +70,7 @@ describe('ml/model_registry/components/model_version_detail.vue', () => {
   });
 
   describe('if model version does not have description', () => {
-    beforeEach(() => createWrapper(makeModelVersion({ description: null })));
+    beforeEach(() => createWrapper(makeGraphqlModelVersion({ description: null })));
 
     it('renders no description provided label', () => {
       expect(wrapper.text()).toContain('No description provided');

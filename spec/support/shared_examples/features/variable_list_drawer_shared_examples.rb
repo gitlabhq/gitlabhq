@@ -113,7 +113,7 @@ RSpec.shared_examples 'variable list drawer' do
 
     fill_variable('EDITED_KEY', 'EDITED_VALUE', 'EDITED_DESCRIPTION')
     toggle_protected
-    toggle_masked
+    set_visible
     toggle_expanded
     find_by_testid('ci-variable-confirm-button').click
 
@@ -127,7 +127,8 @@ RSpec.shared_examples 'variable list drawer' do
 
       # form is NOT reset (unlike when adding a variable)
       expect(find('[data-testid="ci-variable-protected-checkbox"]')).to be_checked
-      expect(find('[data-testid="ci-variable-masked-checkbox"]')).not_to be_checked
+      expect(find('[data-testid="ci-variable-visible-radio"]')).to be_checked
+      expect(find('[data-testid="ci-variable-masked-radio"]')).not_to be_checked
       expect(find('[data-testid="ci-variable-expanded-checkbox"]')).not_to be_checked
       expect(page).to have_field(s_('CiVariables|Key'), with: 'EDITED_KEY')
       expect(page).to have_field(s_('CiVariables|Description'), with: 'EDITED_DESCRIPTION')
@@ -194,7 +195,7 @@ RSpec.shared_examples 'variable list drawer' do
   it 'shows validation error for unmaskable values' do
     open_drawer
 
-    toggle_masked
+    set_masked
     fill_variable('EMPTY_MASK_KEY', '???')
 
     expect(page).to have_content('This value cannot be masked because it contains the following characters: ?.')
@@ -290,15 +291,21 @@ RSpec.shared_examples 'variable list drawer' do
     end
   end
 
-  def toggle_masked
-    page.within('[data-testid="ci-variable-drawer"]') do
-      find('[data-testid="ci-variable-masked-checkbox"]').click
-    end
-  end
-
   def toggle_expanded
     page.within('[data-testid="ci-variable-drawer"]') do
       find('[data-testid="ci-variable-expanded-checkbox"]').click
+    end
+  end
+
+  def set_masked
+    page.within('[data-testid="ci-variable-drawer"]') do
+      find('[data-testid="ci-variable-masked-radio"]').click
+    end
+  end
+
+  def set_visible
+    page.within('[data-testid="ci-variable-drawer"]') do
+      find('[data-testid="ci-variable-visible-radio"]').click
     end
   end
 end

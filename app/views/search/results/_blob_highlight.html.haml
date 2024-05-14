@@ -1,7 +1,7 @@
 - offset = defined?(first_line_number) ? first_line_number : 1
 - highlight = defined?(highlight_line) && highlight_line ? highlight_line - offset : nil
 
-#search-blob-content.file-content.code.js-syntax-highlight{ class: 'gl-py-3!' }
+#search-blob-content.file-content.code.js-syntax-highlight
   - if blob.present?
     .blob-content{ data: { blob_id: blob.id, path: blob.path, highlight_line: highlight } }
       - blob_highlight = blob.present.highlight_and_trim(trim_length: 1024, ellipsis_svg: sprite_icon('ellipsis_h', size: 12, css_class: "gl-text-gray-700"))
@@ -21,7 +21,6 @@
                   = sprite_icon('git')
               %span.diff-line-num.flex-grow-1.gl-pr-3
                 %a{ href: "#{blob_link}#L#{i}", id: "blob-L#{i}", 'data-line-number' => i, class: 'gl-display-flex! gl-align-items-center gl-justify-content-end' }
-                  = sprite_icon('link', css_class: 'gl-ml-3! gl-mr-1!')
                   = i
           %pre.code.highlight.flex-grow-1
             %code

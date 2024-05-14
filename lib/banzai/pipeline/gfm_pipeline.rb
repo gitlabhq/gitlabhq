@@ -16,7 +16,9 @@ module Banzai
           # Must always be before the SanitizationFilter to prevent XSS attacks
           Filter::SpacedLinkFilter,
           Filter::SanitizationFilter,
+          Filter::EscapedCharFilter,
           Filter::KrokiFilter,
+          Filter::GollumTagsFilter,
           Filter::AssetProxyFilter,
           Filter::MathFilter,
           Filter::ColorFilter,
@@ -26,7 +28,7 @@ module Banzai
           Filter::AudioLinkFilter,
           Filter::ImageLazyLoadFilter,
           Filter::ImageLinkFilter,
-          Filter::TableOfContentsFilter,
+          Filter::TableOfContentsLegacyFilter,
           Filter::TableOfContentsTagFilter,
           Filter::AutolinkFilter,
           Filter::ExternalLinkFilter,

@@ -6,10 +6,10 @@ RSpec.describe WorkItemPolicy, feature_category: :team_planning do
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, group: group) }
   let_it_be(:public_project) { create(:project, :public, group: group) }
-  let_it_be(:guest) { create(:user).tap { |user| project.add_guest(user) } }
-  let_it_be(:guest_author) { create(:user).tap { |user| project.add_guest(user) } }
-  let_it_be(:reporter) { create(:user).tap { |user| project.add_reporter(user) } }
-  let_it_be(:group_reporter) { create(:user).tap { |user| group.add_reporter(user) } }
+  let_it_be(:guest) { create(:user, guest_of: project) }
+  let_it_be(:guest_author) { create(:user, guest_of: project, developer_of: public_project) }
+  let_it_be(:reporter) { create(:user, reporter_of: project) }
+  let_it_be(:group_reporter) { create(:user, reporter_of: group) }
   let_it_be(:non_member_user) { create(:user) }
   let_it_be_with_reload(:work_item) { create(:work_item, project: project) }
   let_it_be(:authored_work_item) { create(:work_item, project: project, author: guest_author) }
@@ -18,10 +18,6 @@ RSpec.describe WorkItemPolicy, feature_category: :team_planning do
   let(:work_item_subject) { work_item }
 
   subject { described_class.new(current_user, work_item_subject) }
-
-  before_all do
-    public_project.add_developer(guest_author)
-  end
 
   describe 'read_work_item' do
     context 'when project is public' do
@@ -251,7 +247,7 @@ RSpec.describe WorkItemPolicy, feature_category: :team_planning do
       context 'when group is public' do
         let_it_be(:public_group) { create(:group, :public) }
         let_it_be(:public_group_work_item) { create(:work_item, :group_level, namespace: public_group) }
-        let_it_be(:public_group_member) { create(:user).tap { |u| public_group.add_reporter(u) } }
+        let_it_be(:public_group_member) { create(:user, reporter_of: public_group) }
         let(:work_item_subject) { public_group_work_item }
 
         let_it_be(:public_group_confidential_work_item) do
@@ -286,7 +282,7 @@ RSpec.describe WorkItemPolicy, feature_category: :team_planning do
       context 'when group is not public' do
         let_it_be(:private_group) { create(:group, :private) }
         let_it_be(:private_group_work_item) { create(:work_item, :group_level, namespace: private_group) }
-        let_it_be(:private_group_reporter) { create(:user).tap { |u| private_group.add_reporter(u) } }
+        let_it_be(:private_group_reporter) { create(:user, reporter_of: private_group) }
         let(:work_item_subject) { private_group_work_item }
 
         context 'when user is not a member of the group' do
@@ -339,7 +335,7 @@ RSpec.describe WorkItemPolicy, feature_category: :team_planning do
       context 'when group is public' do
         let_it_be(:public_group) { create(:group, :public) }
         let_it_be(:public_group_work_item) { create(:work_item, :group_level, namespace: public_group) }
-        let_it_be(:public_group_member) { create(:user).tap { |u| public_group.add_reporter(u) } }
+        let_it_be(:public_group_member) { create(:user, reporter_of: public_group) }
         let(:work_item_subject) { public_group_work_item }
 
         context 'when user is not a member of the group' do
@@ -358,7 +354,7 @@ RSpec.describe WorkItemPolicy, feature_category: :team_planning do
       context 'when group is not public' do
         let_it_be(:private_group) { create(:group, :private) }
         let_it_be(:private_group_work_item) { create(:work_item, :group_level, namespace: private_group) }
-        let_it_be(:private_group_reporter) { create(:user).tap { |u| private_group.add_reporter(u) } }
+        let_it_be(:private_group_reporter) { create(:user, reporter_of: private_group) }
         let(:work_item_subject) { private_group_work_item }
 
         context 'when user is not a member of the group' do

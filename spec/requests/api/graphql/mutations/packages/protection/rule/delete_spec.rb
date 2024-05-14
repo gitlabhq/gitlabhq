@@ -7,7 +7,7 @@ RSpec.describe 'Deleting a package protection rule', :aggregate_failures, featur
 
   let_it_be(:project) { create(:project, :repository) }
   let_it_be_with_refind(:package_protection_rule) { create(:package_protection_rule, project: project) }
-  let_it_be(:current_user) { create(:user, maintainer_projects: [project]) }
+  let_it_be(:current_user) { create(:user, maintainer_of: project) }
 
   let(:mutation) { graphql_mutation(:delete_packages_protection_rule, input) }
   let(:mutation_response) { graphql_mutation_response(:delete_packages_protection_rule) }
@@ -60,9 +60,9 @@ RSpec.describe 'Deleting a package protection rule', :aggregate_failures, featur
   end
 
   context 'when current_user does not have permission' do
-    let_it_be(:developer) { create(:user).tap { |u| project.add_developer(u) } }
-    let_it_be(:reporter) { create(:user).tap { |u| project.add_reporter(u) } }
-    let_it_be(:guest) { create(:user).tap { |u| project.add_guest(u) } }
+    let_it_be(:developer) { create(:user, developer_of: project) }
+    let_it_be(:reporter) { create(:user, reporter_of: project) }
+    let_it_be(:guest) { create(:user, guest_of: project) }
     let_it_be(:anonymous) { create(:user) }
 
     where(:current_user) do

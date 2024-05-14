@@ -8,15 +8,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 ## List all deploy tokens
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21811) in GitLab 12.9.
+**Offering:** Self-managed, GitLab Dedicated
 
 Get a list of all deploy tokens across the GitLab instance. This endpoint requires administrator access.
 
@@ -62,8 +60,6 @@ for the project.
 
 ### List project deploy tokens
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21811) in GitLab 12.9.
-
 Get a list of a project's deploy tokens.
 
 ```plaintext
@@ -104,8 +100,6 @@ Example response:
 
 ### Get a project deploy token
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82467) in GitLab 14.9.
-
 Get a single project's deploy token by ID.
 
 ```plaintext
@@ -143,8 +137,6 @@ Example response:
 ```
 
 ### Create a project deploy token
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21811) in GitLab 12.9.
 
 Creates a new deploy token for a project.
 
@@ -189,8 +181,6 @@ Example response:
 
 ### Delete a project deploy token
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21811) in GitLab 12.9.
-
 Removes a deploy token from the project.
 
 ```plaintext
@@ -217,8 +207,6 @@ Users with at least the Maintainer role for the group can list group deploy
 tokens. Only group Owners can create and delete group deploy tokens.
 
 ### List group deploy tokens
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21811) in GitLab 12.9.
 
 Get a list of a group's deploy tokens
 
@@ -260,8 +248,6 @@ Example response:
 
 ### Get a group deploy token
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82467) in GitLab 14.9.
-
 Get a single group's deploy token by ID.
 
 ```plaintext
@@ -299,8 +285,6 @@ Example response:
 ```
 
 ### Create a group deploy token
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21811) in GitLab 12.9.
 
 Creates a new deploy token for a group.
 
@@ -344,8 +328,6 @@ Example response:
 ```
 
 ### Delete a group deploy token
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21811) in GitLab 12.9.
 
 Removes a deploy token from the group.
 

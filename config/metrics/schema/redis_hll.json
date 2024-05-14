@@ -30,14 +30,8 @@
           }
         },
         "required": [
-          "instrumentation_class",
-          "options"
-        ],
-        "not": {
-          "required": [
-            "events"
-          ]
-        }
+          "instrumentation_class"
+        ]
       },
       {
         "properties": {
@@ -50,18 +44,14 @@
               "aggregate": {
                 "type": "object",
                 "properties": {
-                  "operator": {
-                    "enum": [
-                      "OR",
-                      "AND"
-                    ]
-                  },
                   "attribute": {
-                    "type": "string"
+                    "enum": [
+                      "user.id",
+                      "project.id"
+                    ]
                   }
                 },
                 "required": [
-                  "operator",
                   "attribute"
                 ],
                 "additionalProperties": false

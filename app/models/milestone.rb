@@ -53,7 +53,7 @@ class Milestone < ApplicationRecord
 
   scope :order_by_name_asc, -> { order(Arel::Nodes::Ascending.new(arel_table[:title].lower)) }
   scope :reorder_by_due_date_asc, -> { reorder(arel_table[:due_date].asc.nulls_last) }
-  scope :with_api_entity_associations, -> { preload(project: [:project_feature, :route, namespace: :route]) }
+  scope :with_api_entity_associations, -> { preload(project: [:project_feature, :route, { namespace: :route }]) }
   scope :preload_for_indexing, -> { includes(project: [:project_feature]) }
   scope :order_by_dates_and_title, -> { order(due_date: :asc, start_date: :asc, title: :asc) }
   scope :with_ids_or_title, ->(ids:, title:) { id_in(ids).or(with_title(title)) }
@@ -132,7 +132,7 @@ class Milestone < ApplicationRecord
   end
 
   def self.with_web_entity_associations
-    preload(:group, project: [:project_feature, group: [:parent], namespace: :route])
+    preload(:group, project: [:project_feature, { group: [:parent], namespace: :route }])
   end
 
   def participants
@@ -251,15 +251,17 @@ class Milestone < ApplicationRecord
   #
   #   Milestone.first.to_reference                           # => "%1"
   #   Milestone.first.to_reference(cross_namespace_project)  # => "gitlab-org/gitlab-foss%1"
+  #   Milestone.first
+  #     .to_reference(project, full: true, absolute_path: true) # => "/gitlab-org/gitlab-foss%1"
   #
-  def to_reference(from = nil, format: :name, full: false)
+  def to_reference(from = nil, format: :name, full: false, absolute_path: false)
     format_reference = timebox_format_reference(format)
     reference = "#{self.class.reference_prefix}#{format_reference}"
 
     if project
-      "#{project.to_reference_base(from, full: full)}#{reference}"
+      "#{project.to_reference_base(from, full: full, absolute_path: absolute_path)}#{reference}"
     else
-      reference
+      "#{group.to_reference_base(from, full: full, absolute_path: absolute_path)}#{reference}"
     end
   end
 
@@ -276,7 +278,7 @@ class Milestone < ApplicationRecord
       raise ArgumentError, _('Cannot refer to a group milestone by an internal id!')
     end
 
-    if format == :name && !name.include?('"')
+    if format == :name && name.exclude?('"')
       %("#{name}")
     else
       iid
@@ -298,9 +300,9 @@ class Milestone < ApplicationRecord
   # milestone titles must be unique across project and group milestones
   def uniqueness_of_title
     if project
-      relation = self.class.for_projects_and_groups([project_id], [project.group&.id])
+      relation = self.class.for_projects_and_groups([project_id], [project.group&.self_and_ancestors_ids])
     elsif group
-      relation = self.class.for_projects_and_groups(group.projects.select(:id), [group.id])
+      relation = self.class.for_projects_and_groups(group.all_project_ids, [group.self_and_hierarchy])
     end
 
     title_exists = relation.find_by_title(title)

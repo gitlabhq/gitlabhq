@@ -65,6 +65,14 @@ RSpec.describe Projects::MergeRequests::DraftsController, feature_category: :cod
       expect { create_draft_note }.to change { DraftNote.count }.by(1)
     end
 
+    it 'creates an internal draft note' do
+      create_draft_note(draft_overrides: { internal: true })
+
+      draft_note = DraftNote.find_by(author: user)
+
+      expect(draft_note.internal).to eq(true)
+    end
+
     it 'creates draft note with position' do
       diff_refs = project.commit(sample_commit.id).try(:diff_refs)
 
@@ -499,19 +507,19 @@ RSpec.describe Projects::MergeRequests::DraftsController, feature_category: :cod
       end
 
       it 'approves merge request' do
-        post :publish, params: params.merge!(approve: true)
+        post :publish, params: params.merge!(reviewer_state: 'approved')
 
         expect(merge_request.approvals.reload.size).to be(1)
       end
 
       it 'does not approve merge request' do
-        post :publish, params: params.merge!(approve: false)
+        post :publish, params: params.merge!(reviewer_state: 'reviewed')
 
         expect(merge_request.approvals.reload.size).to be(0)
       end
 
       it 'tracks merge request activity' do
-        post :publish, params: params.merge!(approve: true)
+        post :publish, params: params.merge!(reviewer_state: 'approved')
 
         expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
           .to have_received(:track_submit_review_approve).with(user: user)
@@ -523,7 +531,7 @@ RSpec.describe Projects::MergeRequests::DraftsController, feature_category: :cod
         end
 
         it 'does return 200' do
-          post :publish, params: params.merge!(approve: true)
+          post :publish, params: params.merge!(reviewer_state: 'approved')
 
           expect(response).to have_gitlab_http_status(:ok)
 

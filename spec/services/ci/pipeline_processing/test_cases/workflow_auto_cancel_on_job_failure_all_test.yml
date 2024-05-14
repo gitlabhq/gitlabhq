@@ -1,0 +1,34 @@
+config:
+  stages: [build]
+
+  workflow:
+    auto_cancel:
+      on_job_failure: all
+
+  build_1:
+    stage: build
+    script: exit 0
+
+  build_2:
+    stage: build
+    script: exit 1
+
+init:
+  expect:
+    pipeline: pending
+    stages:
+      build: pending
+    jobs:
+      build_1: pending
+      build_2: pending
+
+transitions:
+  - event: drop
+    jobs: [build_2]
+    expect:
+      pipeline: failed
+      stages:
+        build: failed
+      jobs:
+        build_1: canceled
+        build_2: failed

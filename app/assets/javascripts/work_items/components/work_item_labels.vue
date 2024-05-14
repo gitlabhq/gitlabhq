@@ -1,45 +1,33 @@
 <script>
-import { GlTokenSelector, GlLabel, GlSkeletonLoader } from '@gitlab/ui';
-import { debounce, uniqueId, without } from 'lodash';
-import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import Tracking from '~/tracking';
+import { GlLabel } from '@gitlab/ui';
+import fuzzaldrinPlus from 'fuzzaldrin-plus';
+import { difference } from 'lodash';
+import { __, n__ } from '~/locale';
+import WorkItemSidebarDropdownWidget from '~/work_items/components/shared/work_item_sidebar_dropdown_widget.vue';
 import groupLabelsQuery from '~/sidebar/components/labels/labels_select_widget/graphql/group_labels.query.graphql';
 import projectLabelsQuery from '~/sidebar/components/labels/labels_select_widget/graphql/project_labels.query.graphql';
-import LabelItem from '~/sidebar/components/labels/labels_select_widget/label_item.vue';
-import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { isScopedLabel } from '~/lib/utils/common_utils';
-import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
+import Tracking from '~/tracking';
 import groupWorkItemByIidQuery from '../graphql/group_work_item_by_iid.query.graphql';
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
+import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
 import { i18n, I18N_WORK_ITEM_ERROR_FETCHING_LABELS, TRACKING_CATEGORY_SHOW } from '../constants';
 import { isLabelsWidget } from '../utils';
 
-function isTokenSelectorElement(el) {
-  return (
-    el?.classList.contains('gl-label-close') ||
-    el?.classList.contains('dropdown-item') ||
-    // TODO: replace this logic when we have a class added to clear-all button in GitLab UI
-    (el?.classList.contains('gl-button') &&
-      el?.closest('.form-control')?.classList.contains('gl-token-selector'))
-  );
-}
-
-function addClass(el) {
-  return {
-    ...el,
-    class: 'gl-bg-transparent',
-  };
-}
-
 export default {
   components: {
-    GlTokenSelector,
+    WorkItemSidebarDropdownWidget,
     GlLabel,
-    GlSkeletonLoader,
-    LabelItem,
   },
   mixins: [Tracking.mixin()],
-  inject: ['isGroup'],
+  inject: {
+    issuesListPath: {
+      type: String,
+    },
+    isGroup: {
+      type: Boolean,
+    },
+  },
   props: {
     fullPath: {
       type: String,
@@ -53,21 +41,75 @@ export default {
       type: String,
       required: true,
     },
+    workItemType: {
+      type: String,
+      required: true,
+    },
     canUpdate: {
       type: Boolean,
-      required: true,
+      required: false,
+      default: false,
     },
   },
   data() {
     return {
-      isEditing: false,
+      searchTerm: '',
       searchStarted: false,
-      localLabels: [],
-      searchKey: '',
-      searchLabels: [],
-      addLabelIds: [],
+      updateInProgress: false,
       removeLabelIds: [],
+      addLabelIds: [],
     };
+  },
+  computed: {
+    tracking() {
+      return {
+        category: TRACKING_CATEGORY_SHOW,
+        label: 'item_label',
+        property: `type_${this.workItemType}`,
+      };
+    },
+    areLabelsSelected() {
+      return this.addLabelIds.length > 0 || this.itemValues.length > 0;
+    },
+    selectedLabelCount() {
+      return this.addLabelIds.length + this.itemValues.length - this.removeLabelIds.length;
+    },
+    dropDownLabelText() {
+      return n__('%d label', '%d labels', this.selectedLabelCount);
+    },
+    dropdownText() {
+      return this.areLabelsSelected ? `${this.dropDownLabelText}` : __('No labels');
+    },
+    isLoadingLabels() {
+      return this.$apollo.queries.searchLabels.loading;
+    },
+    visibleLabels() {
+      if (this.searchTerm) {
+        return fuzzaldrinPlus.filter(this.searchLabels, this.searchTerm, {
+          key: ['title'],
+        });
+      }
+      return this.searchLabels;
+    },
+    labelsList() {
+      return this.visibleLabels?.map(({ id, title, color }) => ({
+        value: id,
+        text: title,
+        color,
+      }));
+    },
+    labelsWidget() {
+      return this.workItem?.widgets?.find(isLabelsWidget);
+    },
+    localLabels() {
+      return this.labelsWidget?.labels?.nodes || [];
+    },
+    itemValues() {
+      return this.localLabels.map(({ id }) => id);
+    },
+    allowsScopedLabels() {
+      return this.labelsWidget?.allowsScopedLabels;
+    },
   },
   apollo: {
     workItem: {
@@ -81,7 +123,7 @@ export default {
         };
       },
       update(data) {
-        return data.workspace.workItems.nodes[0];
+        return data.workspace?.workItem || {};
       },
       skip() {
         return !this.workItemIid;
@@ -97,81 +139,45 @@ export default {
       variables() {
         return {
           fullPath: this.fullPath,
-          searchTerm: this.searchKey,
+          searchTerm: this.searchTerm,
         };
       },
       skip() {
         return !this.searchStarted;
       },
       update(data) {
-        return data.workspace?.labels?.nodes.map((node) => addClass({ ...node, ...node.label }));
+        return data.workspace?.labels?.nodes;
       },
       error() {
         this.$emit('error', I18N_WORK_ITEM_ERROR_FETCHING_LABELS);
       },
     },
   },
-  computed: {
-    labelsTitleId() {
-      return uniqueId('labels-title-');
-    },
-    tracking() {
-      return {
-        category: TRACKING_CATEGORY_SHOW,
-        label: 'item_labels',
-        property: `type_${this.workItem.workItemType?.name}`,
-      };
-    },
-    allowScopedLabels() {
-      return this.labelsWidget?.allowsScopedLabels;
-    },
-    containerClass() {
-      return !this.isEditing ? 'gl-shadow-none! hide-unfocused-input-decoration' : '';
-    },
-    isLoading() {
-      return this.$apollo.queries.searchLabels.loading;
-    },
-    labelsWidget() {
-      return this.workItem?.widgets?.find(isLabelsWidget);
-    },
-    labels() {
-      return this.labelsWidget?.labels?.nodes || [];
-    },
-  },
-  watch: {
-    labels(newVal) {
-      if (!this.isEditing) {
-        // remove labels that aren't in list from server
-        this.localLabels = this.localLabels.filter((label) =>
-          newVal.find((l) => l.id === label.id),
-        );
-
-        // add any that we don't have to the end
-        const labelsToAdd = newVal
-          .map(addClass)
-          .filter((label) => !this.localLabels.find((l) => l.id === label.id));
-
-        this.localLabels = this.localLabels.concat(labelsToAdd);
-      }
-    },
-  },
-  created() {
-    this.debouncedSearchKeyUpdate = debounce(this.setSearchKey, DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
-  },
   methods: {
-    getId(id) {
-      return getIdFromGraphQLId(id);
+    onDropdownShown() {
+      this.searchTerm = '';
+      this.searchStarted = true;
+    },
+    search(searchTerm) {
+      this.searchTerm = searchTerm;
+      this.searchStarted = true;
     },
     removeLabel({ id }) {
-      this.localLabels = this.localLabels.filter((label) => label.id !== id);
       this.removeLabelIds.push(id);
-      this.setLabels();
+      this.updateLabels();
     },
-    async setLabels() {
-      this.searchKey = '';
-      this.isEditing = false;
+    updateLabel(labels) {
+      this.removeLabelIds = difference(this.itemValues, labels);
+      this.addLabelIds = difference(labels, this.itemValues);
+    },
+    async updateLabels(labels) {
+      this.searchTerm = '';
+      this.updateInProgress = true;
 
-      if (this.addLabelIds.length === 0 && this.removeLabelIds.length === 0) return;
+      if (labels && labels.length === 0) {
+        this.removeLabelIds = this.itemValues;
+        this.addLabelIds = [];
+      }
 
       try {
         const {
@@ -195,130 +201,78 @@ export default {
           this.throwUpdateError();
           return;
         }
-
         this.addLabelIds = [];
         this.removeLabelIds = [];
 
         this.track('updated_labels');
       } catch {
         this.throwUpdateError();
+      } finally {
+        this.updateInProgress = false;
       }
+    },
+    scopedLabel(label) {
+      return this.allowsScopedLabels && isScopedLabel(label);
+    },
+    isSelected(id) {
+      return this.itemValues.includes(id) || this.addLabelIds.includes(id);
     },
     throwUpdateError() {
       this.$emit('error', i18n.updateError);
-      // If mutation is rejected, we're rolling back to initial state
-      this.localLabels = this.labels.map(addClass);
       this.addLabelIds = [];
       this.removeLabelIds = [];
     },
-    handleBlur(event) {
-      if (isTokenSelectorElement(event.relatedTarget) || !this.isEditing) return;
-      this.setLabels();
-    },
-    handleFocus() {
-      this.isEditing = true;
-      this.searchStarted = true;
-    },
-    async focusTokenSelector(labels) {
-      const labelsToAdd = without(labels, ...this.localLabels);
-      const labelIdsToAdd = labelsToAdd.map((label) => label.id);
-      const labelIdsToRemove = without(this.localLabels, ...labels).map((label) => label.id);
-
-      if (labelIdsToAdd.length > 0) {
-        this.addLabelIds.push(...labelIdsToAdd);
-      }
-
-      if (labelIdsToRemove.length > 0) {
-        this.removeLabelIds.push(...labelIdsToRemove);
-      }
-
-      if (labels.length === 0) {
-        this.localLabels = [];
-      } else {
-        this.localLabels = this.localLabels.concat(labelsToAdd);
-      }
-
-      this.handleFocus();
-      await this.$nextTick();
-      this.$refs.tokenSelector.focusTextInput();
-    },
-    handleMouseOver() {
-      this.timeout = setTimeout(() => {
-        this.searchStarted = true;
-      }, DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
-    },
-    handleMouseOut() {
-      clearTimeout(this.timeout);
-    },
-    setSearchKey(value) {
-      this.searchKey = value;
-    },
-    scopedLabel(label) {
-      return this.allowScopedLabels && isScopedLabel(label);
+    labelFilterUrl(label) {
+      return `${this.issuesListPath}?label_name[]=${encodeURIComponent(label.title)}`;
     },
   },
 };
 </script>
 
 <template>
-  <div class="form-row gl-mb-5 work-item-labels gl-relative gl-flex-nowrap">
-    <span
-      :id="labelsTitleId"
-      class="gl-font-weight-bold gl-mt-2 col-lg-2 col-3 gl-pt-2 min-w-fit-content gl-overflow-wrap-break work-item-field-label"
-      data-testid="labels-title"
-      >{{ __('Labels') }}</span
-    >
-    <gl-token-selector
-      ref="tokenSelector"
-      :selected-tokens="localLabels"
-      :aria-labelledby="labelsTitleId"
-      :container-class="containerClass"
-      :dropdown-items="searchLabels"
-      :loading="isLoading"
-      :view-only="!canUpdate"
-      :allow-clear-all="isEditing"
-      class="hide-unfocused-input-decoration work-item-field-value gl-flex-grow-1 gl-border gl-rounded-base col-9 gl-align-self-start gl-px-0! gl-mx-2!"
-      menu-class="token-selector-menu-class"
-      data-testid="work-item-labels-input"
-      :class="{ 'gl-hover-border-gray-200': canUpdate }"
-      @input="focusTokenSelector"
-      @text-input="debouncedSearchKeyUpdate"
-      @focus="handleFocus"
-      @blur="handleBlur"
-      @mouseover.native="handleMouseOver"
-      @mouseout.native="handleMouseOut"
-    >
-      <template #empty-placeholder>
-        <div
-          class="add-labels gl-min-w-fit-content gl-display-flex gl-align-items-center gl-text-secondary gl-pr-4 gl-top-2"
-          data-testid="empty-state"
-        >
-          <span v-if="canUpdate" class="gl-ml-2">{{ __('Add labels') }}</span>
-          <span v-else class="gl-ml-2">{{ __('None') }}</span>
-        </div>
-      </template>
-      <template #token-content="{ token }">
+  <work-item-sidebar-dropdown-widget
+    :dropdown-label="__('Labels')"
+    :can-update="canUpdate"
+    dropdown-name="label"
+    :loading="isLoadingLabels"
+    :list-items="labelsList"
+    :item-value="itemValues"
+    :update-in-progress="updateInProgress"
+    :toggle-dropdown-text="dropdownText"
+    :header-text="__('Select labels')"
+    :reset-button-label="__('Clear')"
+    :multi-select="true"
+    clear-search-on-item-select
+    data-testid="work-item-labels"
+    @dropdownShown="onDropdownShown"
+    @searchStarted="search"
+    @updateValue="updateLabels"
+    @updateSelected="updateLabel"
+  >
+    <template #list-item="{ item }">
+      <span>
+        <span
+          :style="{ background: item.color }"
+          :class="{ 'gl-border gl-border-white': isSelected(item.value) }"
+          class="gl-display-inline-block gl-rounded-base gl-mr-1 gl-w-5 gl-h-3 gl-align-middle -gl-mt-1"
+        ></span>
+        {{ item.text }}
+      </span>
+    </template>
+    <template #readonly>
+      <div class="gl-display-flex gl-gap-2 gl-flex-wrap gl-mt-1">
         <gl-label
-          :data-qa-label-name="token.title"
-          :title="token.title"
-          :description="token.description"
-          :background-color="token.color"
-          :scoped="scopedLabel(token)"
+          v-for="label in localLabels"
+          :key="label.id"
+          :title="label.title"
+          :description="label.description"
+          :background-color="label.color"
+          :scoped="scopedLabel(label)"
           :show-close-button="canUpdate"
-          @close="removeLabel(token)"
+          :target="labelFilterUrl(label)"
+          @close="removeLabel(label)"
         />
-      </template>
-      <template #dropdown-item-content="{ dropdownItem }">
-        <label-item :label="dropdownItem" />
-      </template>
-      <template #loading-content>
-        <gl-skeleton-loader :height="170">
-          <rect width="380" height="20" x="10" y="15" rx="4" />
-          <rect width="280" height="20" x="10" y="50" rx="4" />
-          <rect width="380" height="20" x="10" y="95" rx="4" />
-          <rect width="280" height="20" x="10" y="130" rx="4" />
-        </gl-skeleton-loader>
-      </template>
-    </gl-token-selector>
-  </div>
+      </div>
+    </template>
+  </work-item-sidebar-dropdown-widget>
 </template>

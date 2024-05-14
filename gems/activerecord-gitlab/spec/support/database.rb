@@ -6,7 +6,9 @@ RSpec.configure do |config|
     ActiveRecord::Base.logger = Logger.new('/dev/null')
 
     ActiveRecord::Schema.define do
-      create_table :projects, force: true
+      create_table :projects, force: true do |t|
+        t.string :name
+      end
 
       create_table :pipelines, force: true do |t|
         t.integer :project_id

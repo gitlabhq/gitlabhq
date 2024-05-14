@@ -8,10 +8,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+
+An epic in GitLab describes a large body of work that can be broken down into smaller parts.
+Epics organize issues and features into a high-level theme or goal.
 
 When [issues](../../project/issues/index.md) share a theme across projects and
-milestones, you can manage them by using epics.
+milestones, you can group them by using epics.
 
 You can also create child epics and assign start and end dates, which creates
 a visual roadmap for you to view progress.
@@ -60,7 +63,7 @@ To do it, paste the issue URL when
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 If your epic contains one or more [child epics](manage_epics.md#multi-level-child-epics) that
 have a start or due date, a visual

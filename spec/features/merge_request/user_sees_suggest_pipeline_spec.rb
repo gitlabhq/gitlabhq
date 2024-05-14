@@ -20,7 +20,7 @@ RSpec.describe 'Merge request > User sees suggest pipeline', :js, feature_catego
     expect(page).to have_content(content)
 
     page.within '.mr-pipeline-suggest' do
-      find('[data-testid="close"]').click
+      find_by_testid('close').click
     end
 
     wait_for_requests
@@ -37,7 +37,7 @@ RSpec.describe 'Merge request > User sees suggest pipeline', :js, feature_catego
     expect(page).to have_content('GitLab CI/CD can automatically build, test, and deploy your application')
 
     page.within '.mr-pipeline-suggest' do
-      find('[data-testid="ok"]').click
+      find_by_testid('ok').click
     end
 
     wait_for_requests

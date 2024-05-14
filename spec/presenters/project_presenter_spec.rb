@@ -61,7 +61,7 @@ RSpec.describe ProjectPresenter do
           allow(presenter).to receive(:can?).with(nil, :download_code, project).and_return(false)
           allow(presenter).to receive(:can?).with(nil, :read_issue, project).and_call_original
 
-          expect(presenter.default_view).to eq('projects/issues/issues')
+          expect(presenter.default_view).to eq('projects/issues')
         end
 
         it 'returns activity if user can read neither wiki nor issues' do
@@ -163,7 +163,7 @@ RSpec.describe ProjectPresenter do
           allow(presenter).to receive(:can?).with(user, :read_issue, project).and_return(true)
           allow(presenter).to receive(:can?).with(user, :read_wiki, project).and_return(false)
 
-          expect(presenter.default_view).to eq('projects/issues/issues')
+          expect(presenter.default_view).to eq('projects/issues')
         end
       end
 
@@ -266,6 +266,12 @@ RSpec.describe ProjectPresenter do
           label: a_string_including('0'),
           link: nil
         )
+      end
+    end
+
+    describe '#pages_anchor_data' do
+      it 'does not return pages url' do
+        expect(presenter.pages_anchor_data).to be_nil
       end
     end
   end
@@ -420,18 +426,13 @@ RSpec.describe ProjectPresenter do
     end
 
     describe '#new_file_anchor_data' do
-      before do
-        stub_feature_flags(project_overview_reorg: false)
-      end
-
       it 'returns new file data if user can push' do
         project.add_developer(user)
 
         expect(presenter.new_file_anchor_data).to have_attributes(
           is_link: false,
           label: a_string_including("New file"),
-          link: presenter.project_new_blob_path(project, 'master'),
-          class_modifier: 'btn-dashed'
+          link: presenter.project_new_blob_path(project, 'master')
         )
       end
 
@@ -722,6 +723,38 @@ RSpec.describe ProjectPresenter do
         it { expect(presenter.wiki_anchor_data).to match(expected_result) }
       end
     end
+
+    describe '#pages_anchor_data' do
+      using RSpec::Parameterized::TableSyntax
+
+      let(:anchor_goto_pages) do
+        have_attributes(
+          is_link: false,
+          label: a_string_ending_with('GitLab Pages'),
+          link: Gitlab::Pages::UrlBuilder
+          .new(project)
+          .pages_url(with_unique_domain: true),
+          class_modifier: 'btn-default'
+        )
+      end
+
+      where(:pages_deployed, :read_pages_content, :expected_result) do
+        true  | true  | ref(:anchor_goto_pages)
+        true  | false | nil
+        false | true  | nil
+        false | false | nil
+      end
+
+      with_them do
+        before do
+          allow(project).to receive(:pages_deployed?).and_return(pages_deployed)
+          allow(presenter).to receive(:can?).with(user, :read_pages_content,
+            project).and_return(read_pages_content)
+        end
+
+        it { expect(presenter.pages_anchor_data).to match(expected_result) }
+      end
+    end
   end
 
   describe '#statistics_buttons' do
@@ -747,7 +780,6 @@ RSpec.describe ProjectPresenter do
     subject(:empty_repo_statistics_buttons) { presenter.empty_repo_statistics_buttons }
 
     before do
-      stub_feature_flags(project_overview_reorg: false)
       allow(project).to receive(:auto_devops_enabled?).and_return(false)
     end
 

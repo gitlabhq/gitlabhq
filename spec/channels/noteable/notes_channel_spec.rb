@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Noteable::NotesChannel, feature_category: :team_planning do
   let_it_be(:project) { create(:project, :repository, :private) }
-  let_it_be(:user) { create(:user).tap { |u| project.add_developer(u) } }
+  let_it_be(:user) { create(:user, developer_of: project) }
 
   let_it_be(:read_api_token) { create(:personal_access_token, scopes: ['read_api'], user: user) }
   let_it_be(:read_user_token) { create(:personal_access_token, scopes: ['read_user'], user: user) }

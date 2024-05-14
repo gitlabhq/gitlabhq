@@ -21,6 +21,10 @@ RSpec.describe 'OAuth Tokens requests', feature_category: :system_access do
       }
   end
 
+  def request_token_info(token, headers: {})
+    get '/oauth/token/info', params: {}, headers: { 'Authorization' => "Bearer #{token}" }.merge(headers)
+  end
+
   def generate_access_grant(user)
     create(:oauth_access_grant, application: application, resource_owner_id: user.id)
   end
@@ -46,6 +50,15 @@ RSpec.describe 'OAuth Tokens requests', feature_category: :system_access do
       end
     end
 
+    it 'allows cross origin for token info' do
+      request_token_info(existing_token.token, headers: { 'Origin' => 'http://notgitlab.example.com' })
+
+      expect(response.headers['Access-Control-Allow-Origin']).to eq '*'
+      expect(response.headers['Access-Control-Allow-Methods']).to eq 'GET, HEAD, OPTIONS'
+      expect(response.headers['Access-Control-Allow-Headers']).to be_nil
+      expect(response.headers['Access-Control-Allow-Credentials']).to be_nil
+    end
+
     context 'and the request is done by the resource owner' do
       context 'with authorization code grant type' do
         include_examples 'issues a new token'
@@ -66,10 +79,13 @@ RSpec.describe 'OAuth Tokens requests', feature_category: :system_access do
 
         context 'expired refresh token' do
           let!(:existing_token) do
-            create(:oauth_access_token, application: application,
-                                        resource_owner_id: user.id,
-                                        created_at: 10.minutes.ago,
-                                        expires_in: 5)
+            create(
+              :oauth_access_token,
+              application: application,
+              resource_owner_id: user.id,
+              created_at: 10.minutes.ago,
+              expires_in: 5
+            )
           end
 
           include_examples 'issues a new token'

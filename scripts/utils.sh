@@ -67,14 +67,21 @@ function test_url() {
 function section_start () {
   local section_title="${1}"
   local section_description="${2:-$section_title}"
+  local collapsed="${3:-true}"
 
-  echo -e "section_start:`date +%s`:${section_title}[collapsed=true]\r\e[0K${section_description}"
+  echo -e "section_start:`date +%s`:${section_title}[collapsed=${collapsed}]\r\e[0K${section_description}"
 }
 
 function section_end () {
   local section_title="${1}"
 
   echo -e "section_end:`date +%s`:${section_title}\r\e[0K"
+}
+
+function rspec_section() {
+  section_start "rspec" "RSpec" "false"
+  "$@"
+  section_end "rspec"
 }
 
 function bundle_install_script() {
@@ -115,9 +122,15 @@ function yarn_install_script() {
 
   retry yarn install --frozen-lockfile
 
+  section_end "yarn-install"
+}
+
+function yarn_install_script_storybook() {
+  section_start "yarn-install-storybook" "Installing Yarn packages for Storybook"
+
   retry yarn storybook:install --frozen-lockfile
 
-  section_end "yarn-install"
+  section_end "yarn-install-storybook"
 }
 
 function assets_compile_script() {
@@ -196,7 +209,7 @@ function install_gitlab_gem() {
 }
 
 function install_tff_gem() {
-  run_timed_command "gem install test_file_finder --no-document --version 0.2.1"
+  run_timed_command "gem install test_file_finder --no-document --version 0.3.1"
 }
 
 function install_activesupport_gem() {

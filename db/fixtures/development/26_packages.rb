@@ -21,7 +21,11 @@ class Gitlab::Seeder::Packages
           .gsub('1.0.1', version))
         .with_indifferent_access
 
-      ::Packages::Npm::CreatePackageService.new(project, project.creator, params).execute
+      Gitlab::ExclusiveLease.skipping_transaction_check do
+        Sidekiq::Worker.skipping_transaction_check do
+          ::Packages::Npm::CreatePackageService.new(project, project.creator, params).execute
+        end
+      end
 
       print '.'
     end
@@ -38,7 +42,8 @@ class Gitlab::Seeder::Packages
         path: "#{name}/#{version}"
       }
 
-      pkg = ::Packages::Maven::CreatePackageService.new(project, project.creator, params).execute
+      service_response = ::Packages::Maven::CreatePackageService.new(project, project.creator, params).execute
+      pkg = service_response[:package]
 
       %w(maven-metadata.xml my-app-1.0-20180724.124855-1.pom my-app-1.0-20180724.124855-1.jar).each do |filename|
         with_cloned_fixture_file('maven', filename) do |filepath|

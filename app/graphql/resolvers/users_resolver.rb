@@ -8,29 +8,29 @@ module Resolvers
     description 'Find Users'
 
     argument :ids, [GraphQL::Types::ID],
-             required: false,
-             description: 'List of user Global IDs.'
+      required: false,
+      description: 'List of user Global IDs.'
 
     argument :usernames, [GraphQL::Types::String], required: false,
-                                                   description: 'List of usernames.'
+      description: 'List of usernames.'
 
     argument :sort, Types::SortEnum,
-             description: 'Sort users by this criteria.',
-             required: false,
-             default_value: :created_desc
+      description: 'Sort users by this criteria.',
+      required: false,
+      default_value: :created_desc
 
     argument :search, GraphQL::Types::String,
-             required: false,
-             description: "Query to search users by name, username, or primary email."
+      required: false,
+      description: "Query to search users by name, username, or primary email."
 
     argument :admins, GraphQL::Types::Boolean,
-              required: false,
-              default_value: false,
-              description: 'Return only admin users.'
+      required: false,
+      default_value: false,
+      description: 'Return only admin users.'
 
     argument :group_id, ::Types::GlobalIDType[::Group],
-             required: false,
-             description: 'Return users member of a given group.'
+      required: false,
+      description: 'Return users member of a given group.'
 
     def resolve(ids: nil, usernames: nil, sort: nil, search: nil, admins: nil, group_id: nil)
       authorize!(usernames)
@@ -48,7 +48,7 @@ module Resolvers
 
       return super if args.values.compact.blank?
 
-      if args[:usernames]&.present? && args[:ids]&.present?
+      if args[:usernames].present? && args[:ids].present?
         raise Gitlab::Graphql::Errors::ArgumentError, 'Provide either a list of usernames or ids'
       end
 

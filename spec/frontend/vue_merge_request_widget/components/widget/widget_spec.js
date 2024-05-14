@@ -4,7 +4,7 @@ import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_help
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import { assertProps } from 'helpers/assert_props';
-import StatusIcon from '~/vue_merge_request_widget/components/extensions/status_icon.vue';
+import StatusIcon from '~/vue_merge_request_widget/components/widget/status_icon.vue';
 import ActionButtons from '~/vue_merge_request_widget/components/widget/action_buttons.vue';
 import Widget from '~/vue_merge_request_widget/components/widget/widget.vue';
 import WidgetContentRow from '~/vue_merge_request_widget/components/widget/widget_content_row.vue';
@@ -12,7 +12,7 @@ import * as logger from '~/lib/logger';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 
-jest.mock('~/vue_merge_request_widget/components/extensions/telemetry', () => ({
+jest.mock('~/vue_merge_request_widget/components/widget/telemetry', () => ({
   createTelemetryHub: jest.fn().mockReturnValue({
     viewed: jest.fn(),
     expanded: jest.fn(),

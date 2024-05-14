@@ -20,7 +20,7 @@ RSpec.describe 'gitlab:workhorse namespace rake task', :silence_stdout, feature_
       it 'aborts and display a help message' do
         # avoid writing task output to spec progress
         allow($stderr).to receive :write
-        expect { run_rake_task('gitlab:workhorse:install') }.to raise_error /Please specify the directory where you want to install gitlab-workhorse/
+        expect { run_rake_task('gitlab:workhorse:install') }.to raise_error(/Please specify the directory where you want to install gitlab-workhorse/)
       end
     end
 

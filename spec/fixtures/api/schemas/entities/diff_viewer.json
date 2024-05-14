@@ -32,6 +32,12 @@
         "null"
       ]
     },
+    "expandable": {
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
     "whitespace_only": {
       "type": [
         "boolean",

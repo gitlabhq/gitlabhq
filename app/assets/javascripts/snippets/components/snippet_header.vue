@@ -1,13 +1,12 @@
 <script>
 import {
-  GlAvatar,
   GlIcon,
   GlSprintf,
   GlModal,
   GlAlert,
-  GlLoadingIcon,
-  GlDropdown,
-  GlDropdownItem,
+  GlDisclosureDropdown,
+  GlDisclosureDropdownGroup,
+  GlDisclosureDropdownItem,
   GlButton,
   GlTooltipDirective,
 } from '@gitlab/ui';
@@ -18,9 +17,12 @@ import { fetchPolicies } from '~/lib/graphql';
 import axios from '~/lib/utils/axios_utils';
 import { joinPaths } from '~/lib/utils/url_utility';
 import { __, s__, sprintf } from '~/locale';
+import SnippetCodeDropdown from '~/vue_shared/components/code_dropdown/snippet_code_dropdown.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { createAlert, VARIANT_DANGER, VARIANT_SUCCESS } from '~/alert';
-
+import { VISIBILITY_LEVEL_PUBLIC_STRING } from '~/visibility_level/constants';
+import { TYPE_SNIPPET } from '~/import/constants';
+import ImportedBadge from '~/vue_shared/components/imported_badge.vue';
 import DeleteSnippetMutation from '../mutations/delete_snippet.mutation.graphql';
 
 export const i18n = {
@@ -29,20 +31,24 @@ export const i18n = {
     { spammable_titlecase: __('Snippet') },
   ),
   snippetSpamFailure: s__('Snippets|Error with Akismet. Please check the logs for more info.'),
+  hiddenTooltip: s__('Snippets|This snippet is hidden because its author has been banned'),
+  hiddenAriaLabel: __('Hidden'),
+  snippetAction: s__('Snippets|Snippet actions'),
 };
 
 export default {
   components: {
-    GlAvatar,
+    SnippetCodeDropdown,
     GlIcon,
     GlSprintf,
     GlModal,
     GlAlert,
-    GlLoadingIcon,
-    GlDropdown,
-    GlDropdownItem,
-    TimeAgoTooltip,
     GlButton,
+    GlDisclosureDropdown,
+    GlDisclosureDropdownGroup,
+    GlDisclosureDropdownItem,
+    TimeAgoTooltip,
+    ImportedBadge,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -79,6 +85,7 @@ export default {
       errorMessage: '',
       canCreateSnippet: false,
       isDeleteModalVisible: false,
+      isDropdownShown: false,
     };
   },
   computed: {
@@ -90,44 +97,54 @@ export default {
         ? __('Authored %{timeago} by %{author}')
         : __('Authored %{timeago}');
     },
-    personalSnippetActions() {
-      return [
-        {
-          condition: this.snippet.userPermissions.updateSnippet,
-          text: __('Edit'),
-          href: this.editLink,
-          disabled: this.snippetHasBinary,
-          title: this.snippetHasBinary
-            ? __('Snippets with non-text files can only be edited via Git.')
-            : undefined,
+    editItem() {
+      return {
+        text: __('Edit'),
+        href: this.editLink,
+        disabled: this.snippetHasBinary,
+        title: this.snippetHasBinary
+          ? __('Snippets with non-text files can only be edited via Git.')
+          : undefined,
+        extraAttrs: {
+          class: 'gl-sm-display-none!',
         },
-        {
-          condition: this.snippet.userPermissions.adminSnippet,
-          text: __('Delete'),
-          click: this.showDeleteModal,
-          variant: 'danger',
-          category: 'secondary',
+      };
+    },
+    canReportSpaCheck() {
+      return this.canReportSpam && !isEmpty(this.reportAbusePath);
+    },
+    spamItem() {
+      return {
+        text: __('Submit as spam'),
+        action: () => this.submitAsSpam(),
+      };
+    },
+    deleteItem() {
+      return {
+        text: __('Delete'),
+        action: () => this.showDeleteModal(),
+        extraAttrs: {
+          class: 'gl-text-red-500!',
         },
-        {
-          condition: this.canCreateSnippet,
-          text: __('New snippet'),
-          href: this.snippet.project
-            ? joinPaths(this.snippet.project.webUrl, '-/snippets/new')
-            : joinPaths('/', gon.relative_url_root, '/-/snippets/new'),
-          variant: 'confirm',
-          category: 'secondary',
-        },
-        {
-          condition: this.canReportSpam && !isEmpty(this.reportAbusePath),
-          text: __('Submit as spam'),
-          click: this.submitAsSpam,
-          title: __('Submit as spam'),
-          loading: this.isSubmittingSpam,
-        },
-      ];
+      };
+    },
+    newSnippetItem() {
+      return {
+        text: __('New snippet'),
+        href: this.snippet.project
+          ? joinPaths(this.snippet.project.webUrl, '-/snippets/new')
+          : joinPaths('/', gon.relative_url_root, '/-/snippets/new'),
+      };
     },
     hasPersonalSnippetActions() {
-      return Boolean(this.personalSnippetActions.filter(({ condition }) => condition).length);
+      return (
+        this.snippet.userPermissions.updateSnippet ||
+        this.canCreateSnippet ||
+        this.snippet.userPermissions.adminSnippet ||
+        this.canReportSpaCheck ||
+        this.embedDropdown ||
+        this.canBeCloned
+      );
     },
     editLink() {
       return `${this.snippet.webUrl}/edit`;
@@ -157,6 +174,23 @@ export default {
           return 'earth';
       }
     },
+    showDropdownTooltip() {
+      return !this.isDropdownShown ? this.$options.i18n.snippetAction : '';
+    },
+    isInPrivateProject() {
+      const projectVisibility = this.snippet?.project?.visibility;
+      const isLimitedVisibilityProject = projectVisibility !== VISIBILITY_LEVEL_PUBLIC_STRING;
+      return projectVisibility ? isLimitedVisibilityProject : false;
+    },
+    embeddable() {
+      return this.visibility === VISIBILITY_LEVEL_PUBLIC_STRING && !this.isInPrivateProject;
+    },
+    canBeCloned() {
+      return Boolean(this.snippet.sshUrlToRepo || this.snippet.httpUrlToRepo);
+    },
+    canBeClonedOrEmbedded() {
+      return this.canBeCloned || this.embeddable;
+    },
   },
   methods: {
     redirectToSnippets() {
@@ -169,6 +203,12 @@ export default {
     },
     showDeleteModal() {
       this.isDeleteModalVisible = true;
+    },
+    onShowDropdown() {
+      this.isDropdownShown = true;
+    },
+    onHideDropdown() {
+      this.isDropdownShown = false;
     },
     deleteSnippet() {
       this.isLoading = true;
@@ -209,133 +249,176 @@ export default {
     },
   },
   i18n,
+  TYPE_SNIPPET,
 };
 </script>
 <template>
-  <div class="detail-page-header">
-    <div class="detail-page-header-body gl-align-items-baseline">
-      <div
-        class="snippet-box has-tooltip d-flex gl-align-items-center gl-mr-2 mb-1"
-        data-testid="snippet-container"
-        :title="snippetVisibilityLevelDescription"
-        data-container="body"
+  <div>
+    <div
+      class="gl-display-flex gl-align-items-flex-start gl-flex-direction-column gl-sm-flex-direction-row gl-gap-3 gl-pt-3"
+    >
+      <span
+        v-if="snippet.hidden"
+        class="gl-bg-orange-50 gl-text-orange-600 gl-h-6 gl-w-6 gl-rounded-base gl-line-height-24 gl-text-center gl-mt-2"
       >
-        <span class="sr-only">{{ s__(`VisibilityLevel|${visibility}`) }}</span>
-        <gl-icon :name="visibilityLevelIcon" :size="14" />
-      </div>
-      <div class="creator" data-testid="authored-message">
-        <gl-sprintf :message="authoredMessage">
-          <template #timeago>
-            <time-ago-tooltip
-              :time="snippet.createdAt"
-              tooltip-placement="bottom"
-              css-class="snippet_updated_ago"
-            />
-          </template>
-          <template #author>
-            <a :href="snippet.author.webUrl" class="d-inline">
-              <gl-avatar :size="24" :src="snippet.author.avatarUrl" />
-              <span class="bold gl-display-none gl-sm-display-inline">{{
-                snippet.author.name
-              }}</span>
-              <strong
-                v-if="snippet.author.username"
-                data-testid="authored-username"
-                class="gl-display-inline gl-sm-display-none!"
-                >@{{ snippet.author.username }}</strong
+        <gl-icon
+          v-gl-tooltip.bottom
+          name="spam"
+          :title="$options.i18n.hiddenTooltip"
+          :aria-label="$options.i18n.hiddenAriaLabel"
+        />
+      </span>
+
+      <h1
+        class="gl-font-size-h-display gl-w-full gl-m-0! gl-flex-grow-1"
+        data-testid="snippet-title-content"
+      >
+        {{ snippet.title }}
+      </h1>
+
+      <div
+        v-if="hasPersonalSnippetActions"
+        class="gl-display-flex gl-align-self-center gl-gap-3 gl-w-full gl-sm-w-auto gl-flex-direction-column gl-sm-flex-direction-row"
+      >
+        <gl-button
+          v-if="snippet.userPermissions.updateSnippet"
+          :href="editItem.href"
+          :title="editItem.title"
+          :disabled="editItem.disabled"
+          class="gl-display-none gl-sm-display-inline-block"
+          data-testid="snippet-action-button"
+          :data-qa-action="editItem.text"
+        >
+          {{ editItem.text }}
+        </gl-button>
+
+        <snippet-code-dropdown
+          v-if="canBeClonedOrEmbedded"
+          :ssh-link="snippet.sshUrlToRepo"
+          :http-link="snippet.httpUrlToRepo"
+          :url="snippet.webUrl"
+          :embeddable="embeddable"
+          data-testid="code-button"
+        />
+
+        <gl-disclosure-dropdown
+          data-testid="snippets-more-actions-dropdown"
+          placement="right"
+          block
+          @shown="onShowDropdown"
+          @hidden="onHideDropdown"
+        >
+          <template #toggle>
+            <div class="gl-w-full gl-min-h-7">
+              <gl-button
+                class="gl-sm-display-none! gl-new-dropdown-toggle gl-w-full"
+                button-text-classes="gl-display-flex gl-justify-content-space-between gl-w-full"
+                category="secondary"
+                tabindex="0"
               >
-            </a>
-            <gl-emoji
-              v-if="snippet.author.status"
-              v-gl-tooltip
-              class="gl-vertical-align-baseline gl-reset-font-size gl-mr-1"
-              :title="snippet.author.status.message"
-              :data-name="snippet.author.status.emoji"
+                <span>{{ $options.i18n.snippetAction }}</span>
+                <gl-icon class="dropdown-chevron" name="chevron-down" />
+              </gl-button>
+              <gl-button
+                v-gl-tooltip="showDropdownTooltip"
+                class="gl-display-none gl-sm-display-flex! gl-new-dropdown-toggle gl-new-dropdown-icon-only gl-new-dropdown-toggle-no-caret"
+                category="tertiary"
+                icon="ellipsis_v"
+                :aria-label="$options.i18n.snippetAction"
+                tabindex="0"
+                data-testid="snippets-more-actions-dropdown-toggle"
+              />
+            </div>
+          </template>
+          <gl-disclosure-dropdown-item
+            v-if="snippet.userPermissions.updateSnippet"
+            :item="editItem"
+          />
+          <gl-disclosure-dropdown-item v-if="canCreateSnippet" :item="newSnippetItem" />
+          <gl-disclosure-dropdown-group bordered>
+            <gl-disclosure-dropdown-item v-if="canReportSpaCheck" :item="spamItem" />
+            <gl-disclosure-dropdown-item
+              v-if="snippet.userPermissions.adminSnippet"
+              :item="deleteItem"
             />
+          </gl-disclosure-dropdown-group>
+        </gl-disclosure-dropdown>
+      </div>
+    </div>
+
+    <div
+      class="detail-page-header gl-flex-direction-column gl-md-flex-direction-row gl-p-0 gl-mb-5"
+    >
+      <div class="gl-display-flex gl-align-items-baseline">
+        <div
+          class="has-tooltip gl-display-flex gl-align-self-baseline gl-mt-3 gl-mr-2"
+          data-testid="snippet-container"
+          :title="snippetVisibilityLevelDescription"
+          data-container="body"
+        >
+          <span class="gl-sr-only">{{ snippetVisibilityLevelDescription }}</span>
+          <gl-icon :name="visibilityLevelIcon" :size="14" class="gl-relative gl-top-1" />
+        </div>
+
+        <imported-badge
+          v-if="snippet.imported"
+          :importable-type="$options.TYPE_SNIPPET"
+          class="gl-mr-2"
+        />
+
+        <div data-testid="authored-message" class="gl-line-height-20">
+          <gl-sprintf :message="authoredMessage">
+            <template #timeago>
+              <time-ago-tooltip
+                :time="snippet.createdAt"
+                tooltip-placement="bottom"
+                css-class="snippet_updated_ago"
+              />
+            </template>
+            <template #author>
+              <a :href="snippet.author.webUrl" class="gl-font-weight-bold">
+                {{ snippet.author.name }}
+              </a>
+            </template>
+          </gl-sprintf>
+        </div>
+      </div>
+
+      <gl-modal
+        v-model="isDeleteModalVisible"
+        modal-id="delete-modal"
+        :title="__('Delete snippet modal')"
+      >
+        <template #modal-title>{{ __('Delete snippet?') }}</template>
+
+        <gl-alert
+          v-if="errorMessage"
+          variant="danger"
+          class="gl-mb-3"
+          data-testid="delete-alert"
+          @dismiss="errorMessage = ''"
+          >{{ errorMessage }}</gl-alert
+        >
+
+        <gl-sprintf :message="__('Are you sure you want to delete %{name}?')">
+          <template #name>
+            <strong>{{ snippet.title }}</strong>
           </template>
         </gl-sprintf>
-      </div>
-    </div>
 
-    <div v-if="hasPersonalSnippetActions" class="detail-page-header-actions gl-align-self-start">
-      <div class="d-none d-sm-flex">
-        <template v-for="(action, index) in personalSnippetActions">
-          <div
-            v-if="action.condition"
-            :key="index"
-            v-gl-tooltip
-            :title="action.title"
-            class="d-inline-block"
-            :class="{ 'gl-ml-3': index > 0 }"
+        <template #modal-footer>
+          <gl-button @click="closeDeleteModal">{{ __('Cancel') }}</gl-button>
+          <gl-button
+            variant="danger"
+            category="primary"
+            :loading="isLoading"
+            data-testid="delete-snippet-button"
+            @click="deleteSnippet"
           >
-            <gl-button
-              :disabled="action.disabled"
-              :loading="action.loading"
-              :variant="action.variant"
-              :category="action.category"
-              :class="action.cssClass"
-              :href="action.href"
-              data-testid="snippet-action-button"
-              :data-qa-action="action.text"
-              @click="action.click ? action.click() : undefined"
-              >{{ action.text }}</gl-button
-            >
-          </div>
+            {{ __('Delete snippet') }}
+          </gl-button>
         </template>
-      </div>
-      <div class="d-block d-sm-none dropdown">
-        <gl-dropdown :text="__('Options')" block>
-          <template v-for="(action, index) in personalSnippetActions">
-            <gl-dropdown-item
-              v-if="action.condition"
-              :key="index"
-              :disabled="action.disabled"
-              :title="action.title"
-              :href="action.href"
-              @click="action.click ? action.click() : undefined"
-              >{{ action.text }}</gl-dropdown-item
-            >
-          </template>
-        </gl-dropdown>
-      </div>
+      </gl-modal>
     </div>
-
-    <gl-modal
-      ref="deleteModal"
-      v-model="isDeleteModalVisible"
-      modal-id="delete-modal"
-      title="Example title"
-    >
-      <template #modal-title>{{ __('Delete snippet?') }}</template>
-
-      <gl-alert
-        v-if="errorMessage"
-        variant="danger"
-        class="mb-2"
-        data-testid="delete-alert"
-        @dismiss="errorMessage = ''"
-        >{{ errorMessage }}</gl-alert
-      >
-
-      <gl-sprintf :message="__('Are you sure you want to delete %{name}?')">
-        <template #name>
-          <strong>{{ snippet.title }}</strong>
-        </template>
-      </gl-sprintf>
-
-      <template #modal-footer>
-        <gl-button @click="closeDeleteModal">{{ __('Cancel') }}</gl-button>
-        <gl-button
-          variant="danger"
-          category="primary"
-          :disabled="isLoading"
-          data-testid="delete-snippet-button"
-          @click="deleteSnippet"
-        >
-          <gl-loading-icon v-if="isLoading" size="sm" inline />
-          {{ __('Delete snippet') }}
-        </gl-button>
-      </template>
-    </gl-modal>
   </div>
 </template>

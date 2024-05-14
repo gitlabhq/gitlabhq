@@ -2,13 +2,14 @@
 stage: Create
 group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: "Use diff versions to compare pushes contained in a single merge request."
 ---
 
 # Merge request diff versions
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 When you create a merge request, you select two branches to compare. The differences
 between the two branches are shown as a **diff** in the merge request. Each time

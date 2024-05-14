@@ -3,8 +3,8 @@
   removal_milestone: '16.0'
   breaking_change: true
   body: |
-    The [Phabricator task importer](https://docs.gitlab.com/ee/user/project/import/phabricator.html) is being deprecated. Phabricator itself as a project is no longer actively maintained since June 1, 2021. We haven't observed imports using this tool. There has been no activity on the open related issues on GitLab.
+    The Phabricator task importer is being deprecated. Phabricator itself as a project is no longer actively maintained since June 1, 2021. We haven't observed imports using this tool. There has been no activity on the open related issues on GitLab.
   stage: manage
   tiers:
   issue_url: https://gitlab.com/gitlab-com/Product/-/issues/4894
-  documentation_url: https://docs.gitlab.com/ee/user/project/import/phabricator.html
+  documentation_url: https://docs.gitlab.com/ee/user/project/import/

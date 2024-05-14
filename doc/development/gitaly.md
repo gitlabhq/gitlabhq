@@ -288,7 +288,7 @@ the integration by using GDK:
 
 1. The state of the flag must be observable. To check it, you must enable it
    by fetching the Prometheus metrics:
-   1. Navigate to the GDK root directory.
+   1. Go to the GDK root directory.
    1. Make sure you have the proper branch checked out for Gitaly.
    1. Recompile it with `make gitaly-setup` and restart the service with `gdk restart gitaly`.
    1. Make sure your setup is running: `gdk status | grep praefect`.
@@ -306,7 +306,7 @@ the integration by using GDK:
 
 1. After you observe the metrics for the new feature flag and it increments, you
    can enable the new feature:
-   1. Navigate to the GDK root directory.
+   1. Go to the GDK root directory.
    1. Start a Rails console:
 
       ```shell
@@ -368,7 +368,7 @@ These GitLab-specific references are used exclusively by GitLab (through Gitaly)
 
 - `refs/keep-around/<object-id>`. References to commits that have pipeline jobs or merge requests. The `object-id` points to the commit the pipeline was run on.
 - `refs/merge-requests/<merge-request-iid>/`. [Merges](https://git-scm.com/docs/git-merge) merge two histories together. This ref namespace tracks information about a
-   merge using the following refs under it:
+  merge using the following refs under it:
   - `head`. Current `HEAD` of the merge request.
   - `merge`. Commit for the merge request. Every merge request creates a commit object under `refs/keep-around`.
   - If [merge trains are enabled](../ci/pipelines/merge_trains.md): `train`. Commit for the merge train.

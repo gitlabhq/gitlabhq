@@ -33,6 +33,10 @@ RSpec.describe SendFileUpload, feature_category: :user_profile do
       end
 
       def current_user; end
+
+      def request
+        ActionDispatch::Request.new({})
+      end
     end
   end
 

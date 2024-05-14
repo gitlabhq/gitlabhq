@@ -83,7 +83,7 @@ export default {
     <template #left-primary>
       <div class="gl-display-flex gl-align-items-center">
         <router-link
-          class="gl-text-body gl-font-weight-bold gl-word-break-all"
+          class="gl-text-body gl-font-weight-bold gl-break-all"
           data-testid="name"
           :to="linkTo"
         >

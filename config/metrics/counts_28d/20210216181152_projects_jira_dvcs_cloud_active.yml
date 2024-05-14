@@ -5,7 +5,7 @@ description: Distinct count of creator_id from projects with an active Jira Clou
   DVCS integration.
 product_section: dev
 product_stage: manage
-product_group: integration
+product_group: import_and_integrate
 value_type: number
 status: removed
 time_frame: 28d
@@ -17,8 +17,6 @@ tier:
 - free
 - premium
 - ultimate
-performance_indicator_type:
-- customer_health_score
 milestone: "<13.9"
 removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136484
 milestone_removed: "16.7"

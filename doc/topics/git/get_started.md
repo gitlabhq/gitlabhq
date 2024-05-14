@@ -4,82 +4,105 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Get started with Git
+# Get started learning Git
 
-You can use Git from a command line to interact with GitLab.
+Git is a version control system you use to track changes to your code
+and collaborate with others. GitLab is a web-based Git repository manager
+that provides CI/CD and other features to help you manage your software development lifecycle.
 
-## Common terms
+To use GitLab, you don't need to know how to use Git. However, if you're going to
+use GitLab for source control, it can be useful to understand how to use Git.
 
-If you're new to Git, start by reviewing some of the most commonly used terms.
+Learning Git is part of a larger workflow:
 
-### Repository
+![Workflow](img/get_started_git_v16_11.png)
 
-Files are stored in a **repository**. A repository is similar to how you
-store files in a folder or directory on your computer.
+## Step 1: Understand repositories and working directories
 
-- A **remote repository** refers to the files in GitLab.
-- A **local copy** refers to the files on your computer.
+A Git repository is essentially a directory that contains all the files,
+folders, and version history of a project.
+It serves as a central hub where you can store, manage, and share your code or content.
 
-The word **repository** is often shortened to **repo**.
+When you initialize a Git repository or clone an existing one, Git
+creates a hidden directory called `.git` in the project directory.
+This hidden directory contains all the necessary metadata and objects
+that Git uses to manage the repository, including the complete history
+of changes made to the files. Git tracks changes at the file level, so you can
+view the modifications made to individual files over time.
 
-In GitLab, a repository is part of a **project**.
+To create and change code, you clone a Git repository and work in the local copy,
+in your working directory. Then, to collaborate, you push your changes to a remote
+Git repository, which is hosted on GitLab. Then the changes are available
+to other team members. And you can pull changes made by others, so that your local repository
+stays up to date.
 
-**Get started:**
+For more information, see:
 
-- [Learn more about repositories](../../user/project/repository/index.md).
-- [Tutorial: Make your first Git commit](../../tutorials/make_first_git_commit/index.md).
+- [Repositories](../../user/project/repository/index.md)
 
-### Clone
+## Step 2: Learn about branching and merging
 
-To create a copy of a remote repository's files on your computer, you **clone** it.
-When you clone a repository, you can sync the repository with the remote repository in GitLab.
-You can modify the files locally and upload the changes to the remote repository on GitLab.
+In Git, you use branches so that you and your team can work on different features,
+bug fixes, or experiments simultaneously, without interfering with each other's work.
+You can then make changes, commit them, and test them in isolation without impacting
+the stability of the default branch. Branches can be created, merged, and deleted.
 
-**Get started:**
+The default branch is usually called `main` or `master`.
+After a feature is complete or a bug is fixed, you can merge the changes from your branch
+into the default branch. Merging combines the changes from one branch into another.
 
-- [Clone a repository from GitLab to your local machine](../../gitlab-basics/start-using-git.md#clone-a-repository).
+If conflicts arise during the merge process (for example, if the same lines of code have been
+modified in both branches), the conflicts must be resolved manually. After a successful merge,
+the branch can be deleted if it is no longer needed. Deleting the branch helps keep the repository
+organized and maintainable.
 
-### Pull
+For more information, see:
 
-When the remote repository changes, your local copy is behind. You can update your local copy with the new
-changes in the remote repository.
-This action is known as **pulling** from the remote, because you use the command `git pull`.
+- [Branches](../../user/project/repository/branches/index.md)
 
-**Get started**:
+## Step 3: Understand the Git workflow
 
-- [Download the latest changes in the project](../../gitlab-basics/start-using-git.md#download-the-latest-changes-in-the-project).
+A typical Git workflow involves the following steps:
 
-### Push
+1. Cloning a repository to your local machine.
+1. Creating a new branch for your changes.
+1. Making changes to files in your working directory.
+1. Staging the changes you want to commit.
+1. Committing the changes to your local repository.
+1. Pushing the changes to the remote repository.
+1. Merging your branch into the default branch.
 
-After you save a local copy of a repository and modify the files on your computer, you can upload the
-changes to GitLab. This action is known as **pushing** to the remote, because you use the command
-`git push`.
+Your organization might use a slightly different workflow,
+including using forks. A fork is a personal copy of the repository
+and all its branches, which you create in a namespace of your choice.
+You might work on your changes in a fork before merging them to
+the default branch of the source project.
 
-**Get started**:
+For more information, see:
 
-- [Send changes to GitLab](../../gitlab-basics/start-using-git.md#send-changes-to-gitlab).
+- [Tutorial: Make your first Git commit](../../tutorials/make_first_git_commit/index.md)
+- [Forks](../../user/project/repository/forking_workflow.md)
 
-### Fork
+## Step 4: Familiarize yourself with Git commands
 
-When you want to contribute to someone else's repository, you make a copy of it.
-This copy is called a **fork**.
+To work with Git from the command line, you'll need to use various Git commands.
+Some of the most commonly used commands include:
 
-When you create a fork of a repository, you create a copy of the project in your own
-namespace in the remote repository.
-You then have write permissions to modify the project files and settings.
+- `git clone`: Clone a repository to your local machine
+- `git branch`: List, create, or delete branches
+- `git checkout`: Switch between branches
+- `git add`: Stage changes for commit
+- `git commit`: Commit staged changes to your local repository
+- `git push`: Push local commits to the remote repository
+- `git pull`: Fetch changes from the remote repository and merge them into your local branch
 
-For example, you can fork this project in to your namespace:
+For more information, see:
 
-- <https://gitlab.com/gitlab-tests/sample-project/>
+- [Command line Git](../../gitlab-basics/start-using-git.md)
 
-You now have your own copy of the repository. You can view the namespace in the URL, for example:
+## Step 5: Practice using Git
 
-- `https://gitlab.com/your-namespace/sample-project/`
-
-Then you can clone the repository to your local machine, work on the files, and submit changes back to the
-original repository.
-
-**Get started**
-
-- [Learn more about forks](../../user/project/repository/forking_workflow.md).
-- [Learn more about namespaces](../../user/namespace/index.md).
+The best way to learn Git is by using it in practice. Create a test project,
+experiment with different commands, and try out various workflows.
+GitLab provides a web-based interface for many Git operations,
+but it's also useful to understand how to use Git from the command line.

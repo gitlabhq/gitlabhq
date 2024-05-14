@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QuickActions
-  class InterpretService < BaseService
+  class InterpretService < BaseContainerService
     include Gitlab::Utils::StrongMemoize
     include Gitlab::QuickActions::Dsl
     include Gitlab::QuickActions::IssueActions
@@ -89,10 +89,10 @@ module QuickActions
         failed_parse(format(_("Failed to find users for %{missing}"), missing: err.message))
       when Gitlab::QuickActions::UsersExtractor::TooManyRefsError
         failed_parse(format(_('Too many references. Quick actions are limited to at most %{max_count} user references'),
-                 max_count: err.limit))
+          max_count: err.limit))
       when Gitlab::QuickActions::UsersExtractor::TooManyFoundError
         failed_parse(format(_("Too many users found. Quick actions are limited to at most %{max_count} users"),
-                 max_count: err.limit))
+          max_count: err.limit))
       else
         Gitlab::ErrorTracking.track_and_raise_for_dev_exception(err)
         failed_parse(_('Something went wrong'))
@@ -107,12 +107,6 @@ module QuickActions
 
     def parent
       project || group
-    end
-
-    def group
-      strong_memoize(:group) do
-        quick_action_target.group if quick_action_target.respond_to?(:group)
-      end
     end
 
     def find_labels(labels_params = nil)
@@ -205,6 +199,12 @@ module QuickActions
     # rubocop: enable CodeReuse/ActiveRecord
 
     def usage_ping_tracking(quick_action_name, arg)
+      # Need to add this guard clause as `ai_review` quick action will fail
+      # if we continue to track its usage. This is because we don't have a metric
+      # for it and this is something that can change soon (e.g. quick action may
+      # be replaced by a UI component).
+      return if quick_action_name == :ai_review
+
       Gitlab::UsageDataCounters::QuickActionActivityUniqueCounter.track_unique_action(
         quick_action_name.to_s,
         args: arg&.strip,
@@ -218,4 +218,4 @@ module QuickActions
   end
 end
 
-QuickActions::InterpretService.prepend_mod_with('QuickActions::InterpretService')
+QuickActions::InterpretService.prepend_mod

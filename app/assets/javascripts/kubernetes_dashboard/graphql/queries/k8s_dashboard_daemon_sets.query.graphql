@@ -1,16 +1,7 @@
-query getK8sDashboardDaemonSets($configuration: LocalConfiguration) {
+#import "./workload_item.fragment.graphql"
+
+query getK8sDashboardDaemonSets($configuration: K8sDashboardConfig) {
   k8sDaemonSets(configuration: $configuration) @client {
-    metadata {
-      name
-      namespace
-      creationTimestamp
-      labels
-      annotations
-    }
-    status {
-      numberMisscheduled
-      numberReady
-      desiredNumberScheduled
-    }
+    ...WorkloadItem
   }
 }

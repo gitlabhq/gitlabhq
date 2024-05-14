@@ -26,6 +26,7 @@ export const downstream = {
         group: 'success',
         label: 'passed',
         icon: 'status_success',
+        text: 'Success',
         __typename: 'DetailedStatus',
       },
       sourceJob: {
@@ -57,6 +58,7 @@ export const downstream = {
         group: 'success',
         label: 'passed',
         icon: 'status_success',
+        text: 'Success',
         __typename: 'DetailedStatus',
       },
       sourceJob: {
@@ -91,6 +93,7 @@ export const upstream = {
     group: 'success',
     label: 'passed',
     icon: 'status_success',
+    text: 'Success',
     __typename: 'DetailedStatus',
   },
   sourceJob: null,
@@ -144,6 +147,7 @@ export const wrappedPipelineReturn = {
             group: 'success',
             label: 'passed',
             icon: 'status_success',
+            text: 'Success',
           },
           sourceJob: {
             name: 'test_c',
@@ -182,6 +186,7 @@ export const wrappedPipelineReturn = {
                       label: 'passed',
                       group: 'success',
                       icon: 'status_success',
+                      text: 'Success',
                     },
                     name: 'build_n',
                     size: 1,
@@ -206,6 +211,7 @@ export const wrappedPipelineReturn = {
                             __typename: 'DetailedStatus',
                             id: '84',
                             icon: 'status_success',
+                            text: 'Success',
                             tooltip: 'passed',
                             label: 'passed',
                             hasDetails: true,
@@ -276,6 +282,7 @@ export const delayedJob = {
     hasDetails: true,
     detailsPath: '/root/kinder-pipe/-/jobs/5339',
     group: 'scheduled',
+    text: 'Success',
     action: {
       __typename: 'StatusAction',
       icon: 'time-out',

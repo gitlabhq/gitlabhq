@@ -18,12 +18,22 @@ export default {
     SafeHtml,
   },
   props: {
+    fieldClass: {
+      type: String,
+      required: false,
+      default: null,
+    },
     choices: {
       type: Array,
       required: false,
       default: null,
     },
     help: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    labelDescription: {
       type: String,
       required: false,
       default: null,
@@ -130,6 +140,11 @@ export default {
       return !this.propsSource.editable;
     },
   },
+  watch: {
+    model(newValue) {
+      this.$emit('update', newValue);
+    },
+  },
   created() {
     if (this.isNonEmptyPassword) {
       this.model = null;
@@ -141,9 +156,11 @@ export default {
 <template>
   <gl-form-group
     :label="humanizedTitle"
+    :label-description="labelDescription"
     :label-for="fieldId"
     :invalid-feedback="__('This field is required.')"
     :state="valid"
+    :class="fieldClass"
   >
     <template v-if="!isCheckbox" #description>
       <span v-safe-html="help"></span>

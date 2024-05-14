@@ -38,8 +38,8 @@ or [feature group](../../feature_flags/index.md#feature-groups).
 
 - If a global feature flag must be used, it is strongly recommended to apply `scope: :global` to the `feature_flag` metadata. This is, however, left up to the SET's discretion to determine the level of risk.
   - For example, a test uses a global feature flag that only affects a small area of the application and is also needed to check for critical issues on live environments.
-  In such a scenario, it would be riskier to skip running the test. For cases like this, `scope` can be left out of the metadata so that it can still run in live environments
-  with administrator access, such as staging.
+    In such a scenario, it would be riskier to skip running the test. For cases like this, `scope` can be left out of the metadata so that it can still run in live environments
+    with administrator access, such as staging.
 
 **Note on `requires_admin`:** This tag should still be applied if there are other actions within the test that require administrator access that are unrelated to updating a
 feature flag (like creating a user via the API).
@@ -122,7 +122,7 @@ displays on the page. You should:
 # This is the link to the old file
 view 'app/views/devise/passwords/edit.html.haml' do
   # The new selector should have the same name
-  element :password_field
+  element 'password-field'
   ...
 end
 ```
@@ -131,14 +131,14 @@ end
 
 ```ruby
 view 'app/views/devise/passwords/edit.html.haml' do
-  element :password_field
+  element 'password-field'
   ...
 end
 
 # Now it can verify the selector is available
 view 'app/views/devise/passwords/new_edit_behind_ff.html.haml' do
   # The selector has the same name
-  element :password_field
+  element 'password-field'
 end
 ```
 

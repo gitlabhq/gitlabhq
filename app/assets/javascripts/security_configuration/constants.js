@@ -8,11 +8,14 @@ import {
   REPORT_TYPE_SAST,
   REPORT_TYPE_SAST_IAC,
   REPORT_TYPE_SECRET_DETECTION,
+  REPORT_TYPE_CONTAINER_SCANNING,
 } from '~/vue_shared/security_reports/constants';
 
 import configureSastMutation from './graphql/configure_sast.mutation.graphql';
 import configureSastIacMutation from './graphql/configure_iac.mutation.graphql';
 import configureSecretDetectionMutation from './graphql/configure_secret_detection.mutation.graphql';
+
+import ContinuousContainerRegistryScan from './components/continous_container_registry_scan.vue';
 
 /**
  * Translations for Security Configuration Page
@@ -47,6 +50,10 @@ export const API_FUZZING_NAME = __('API Fuzzing');
 
 export const CLUSTER_IMAGE_SCANNING_NAME = s__('ciReport|Cluster Image Scanning');
 
+export const PRE_RECEIVE_SECRET_DETECTION = 'pre_receive_secret_detection';
+
+export const PRE_RECEIVE_SECRET_DETECTION_NAME = __('Pre-receive Secret Detection');
+
 export const SCANNER_NAMES_MAP = {
   SAST: SAST_SHORT_NAME,
   SAST_IAC: SAST_IAC_NAME,
@@ -58,7 +65,14 @@ export const SCANNER_NAMES_MAP = {
   DEPENDENCY_SCANNING: DEPENDENCY_SCANNING_NAME,
   BREACH_AND_ATTACK_SIMULATION: BAS_NAME,
   CLUSTER_IMAGE_SCANNING: CLUSTER_IMAGE_SCANNING_NAME,
+  PRE_RECEIVE_SECRET_DETECTION: PRE_RECEIVE_SECRET_DETECTION_NAME,
   GENERIC: s__('ciReport|Manually added'),
+};
+
+export const securityFeatures = {
+  [REPORT_TYPE_CONTAINER_SCANNING]: {
+    slotComponent: ContinuousContainerRegistryScan,
+  },
 };
 
 export const featureToMutationMap = {

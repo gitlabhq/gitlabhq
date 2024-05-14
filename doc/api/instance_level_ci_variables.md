@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 ## List all instance variables
 
@@ -83,7 +83,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 
 Create a new instance-level variable.
 
-The [maximum number of instance-level variables](../administration/instance_limits.md#number-of-instance-level-variables) can be changed.
+The [maximum number of instance-level variables](../administration/instance_limits.md#cicd-variable-limits) can be changed.
 
 ```plaintext
 POST /admin/ci/variables

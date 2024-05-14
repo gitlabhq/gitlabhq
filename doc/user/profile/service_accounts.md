@@ -8,19 +8,19 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 A service account is a type of machine user that is not tied to an individual human
 user.
 
 A service account:
 
-- Does not use a licensed seat.
+- Does not use a licensed seat, but is not available on [trial versions](https://gitlab.com/-/trial_registrations/new?glm_source=docs.gitlab.com?&glm_content=free-user-limit-faq/ee/user/free_user_limit.html).
 - Is not a:
   - Billable user.
   - Bot user.
 - Is listed in group membership as a service account.
-- Cannot sign into GitLab through the UI.
+- Cannot sign in to GitLab through the UI.
 
 You should use service accounts in pipelines or integrations where credentials must be
 set up and maintained without being impacted by changes in human user membership.
@@ -135,9 +135,21 @@ Prerequisites:
 
 Use the groups API to [rotate the personal access token](../../api/groups.md#rotate-a-personal-access-token-for-service-account-user) for a service account user.
 
+### Delete a service account
+
+Prerequisites:
+
+- You must be an administrator for the instance the service account is associated with.
+
+To delete a service account, [use the API to delete the service account user](../../api/users.md#user-deletion).
+
 ### Disable a service account
 
-You cannot directly disable or delete a service account. Instead, you must:
+Prerequisites:
+
+- You must have the Owner role for the group the service account is associated with.
+
+If you are not an administrator for the instance or group a service account is associated with, you cannot directly delete that service account. Instead:
 
 1. Remove the service account as a member of all subgroups and projects:
 
@@ -147,7 +159,7 @@ You cannot directly disable or delete a service account. Instead, you must:
 
    For more information, see the [API documentation on removing a member from a group or project](../../api/members.md#remove-a-member-from-a-group-or-project).
 
-1. Revoke the personal access token using the [UI](personal_access_tokens.md#revoke-a-personal-access-token) or the [API](../../api/personal_access_tokens.md#revoke-a-personal-access-token).
+1. Revoke the personal access token by using the [API](../../api/personal_access_tokens.md#revoke-a-personal-access-token).
 
 ## Related topics
 

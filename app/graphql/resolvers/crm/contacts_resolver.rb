@@ -11,21 +11,21 @@ module Resolvers
       type Types::CustomerRelations::ContactType, null: true
 
       argument :sort, Types::CustomerRelations::ContactSortEnum,
-               description: 'Criteria to sort contacts by.',
-               required: false,
-               default_value: { field: 'last_name', direction: :asc }
+        description: 'Criteria to sort contacts by.',
+        required: false,
+        default_value: { field: 'last_name', direction: :asc }
 
       argument :search, GraphQL::Types::String,
-               required: false,
-               description: 'Search term to find contacts with.'
+        required: false,
+        description: 'Search term to find contacts with.'
 
       argument :state, Types::CustomerRelations::ContactStateEnum,
-               required: false,
-               description: 'State of the contacts to search for.'
+        required: false,
+        description: 'State of the contacts to search for.'
 
       argument :ids, [::Types::GlobalIDType[CustomerRelations::Contact]],
-               required: false,
-               description: 'Filter contacts by IDs.'
+        required: false,
+        description: 'Filter contacts by IDs.'
 
       def resolve(**args)
         args[:ids] = resolve_ids(args.delete(:ids))

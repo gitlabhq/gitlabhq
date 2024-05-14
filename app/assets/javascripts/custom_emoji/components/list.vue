@@ -71,20 +71,20 @@ export default {
       key: 'emoji',
       label: __('Image'),
       thClass: 'gl-border-t-0!',
-      tdClass: 'gl-vertical-align-middle!',
+      tdClass: '!gl-align-middle',
       columnWidth: '70px',
     },
     {
       key: 'name',
       label: __('Name'),
       thClass: 'gl-border-t-0!',
-      tdClass: 'gl-vertical-align-middle! gl-font-monospace',
+      tdClass: '!gl-align-middle gl-font-monospace',
     },
     {
       key: 'created_at',
       label: __('Created date'),
       thClass: 'gl-border-t-0!',
-      tdClass: 'gl-vertical-align-middle!',
+      tdClass: '!gl-align-middle',
       columnWidth: '25%',
     },
     {
@@ -110,7 +110,7 @@ export default {
           <gl-table-lite
             :items="customEmojis"
             :fields="$options.fields"
-            table-class="gl-table-layout-fixed"
+            table-class="gl-table-fixed"
           >
             <template #table-colgroup="scope">
               <col

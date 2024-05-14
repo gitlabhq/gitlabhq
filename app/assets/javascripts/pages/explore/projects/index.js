@@ -1,3 +1,3 @@
-import ProjectsList from '~/projects_list';
+import { initProjectsExploreFilteredSearchAndSort } from '~/projects/explore';
 
-new ProjectsList(); // eslint-disable-line no-new
+initProjectsExploreFilteredSearchAndSort();

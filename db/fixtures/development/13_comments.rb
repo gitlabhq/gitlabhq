@@ -11,7 +11,9 @@ Gitlab::Seeder.quiet do
         note: FFaker::Lorem.sentence,
       }
 
-      Notes::CreateService.new(project, user, note_params).execute
+      Gitlab::ExclusiveLease.skipping_transaction_check do
+        Notes::CreateService.new(project, user, note_params).execute
+      end
       print '.'
     end
   end
@@ -25,8 +27,9 @@ Gitlab::Seeder.quiet do
         noteable_id: mr.id,
         note: FFaker::Lorem.sentence,
       }
-
-      Notes::CreateService.new(project, user, note_params).execute
+      Gitlab::ExclusiveLease.skipping_transaction_check do
+        Notes::CreateService.new(project, user, note_params).execute
+      end
       print '.'
     end
   end

@@ -65,23 +65,29 @@ module API
         requires :name, type: String, desc: 'Group name'
         requires :file, type: ::API::Validations::Types::WorkhorseFile, desc: 'The group export file to be imported', documentation: { type: 'file' }
         optional :parent_id, type: Integer, desc: "The ID of the parent group that the group will be imported into. Defaults to the current user's namespace."
+        optional :organization_id, type: Integer, desc: "The ID of the organization that the group will be part of. "
       end
       post 'import' do
         authorize_create_group!
         require_gitlab_workhorse!
         validate_file!
 
+        # Only set `organization_id` if it isn't already present and can't be inferred from the `parent_id`.
+        params[:organization_id] ||= Current.organization_id if params[:parent_id].blank?
+
         group_params = {
           path: params[:path],
           name: params[:name],
           parent_id: params[:parent_id],
           visibility_level: closest_allowed_visibility_level,
-          import_export_upload: ImportExportUpload.new(import_file: params[:file])
+          import_export_upload: ImportExportUpload.new(import_file: params[:file]),
+          organization_id: params[:organization_id]
         }
 
-        group = ::Groups::CreateService.new(current_user, group_params).execute
+        response = ::Groups::CreateService.new(current_user, group_params).execute
+        group = response[:group]
 
-        if group.persisted?
+        if response.success?
           ::Groups::ImportExport::ImportService.new(group: group, user: current_user).async_execute
 
           accepted!

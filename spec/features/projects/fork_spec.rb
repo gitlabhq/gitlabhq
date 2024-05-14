@@ -247,7 +247,7 @@ RSpec.describe 'Project fork', feature_category: :source_code_management do
 
         visit project_path(project)
 
-        forks_count_button = find('[data-testid="forks-count"]')
+        forks_count_button = find_by_testid('forks-count')
         expect(forks_count_button).to have_content("2")
       end
     end

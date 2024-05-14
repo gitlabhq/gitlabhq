@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'active_support/inflector'
-
 require_relative '../helpers/predictive_tests_helper'
 require_relative '../../../../lib/gitlab_edition'
 
@@ -104,7 +102,12 @@ module Tooling
       end
 
       def filename_to_class_name(filename)
-        File.basename(filename, '.*').camelize
+        camelize(File.basename(filename, '.*'))
+      end
+
+      # We don't want to use active_support for this method, so we're making it ourselves
+      def camelize(str)
+        str.split('_').collect(&:capitalize).join
       end
 
       def filename_to_spec_filename(filename)

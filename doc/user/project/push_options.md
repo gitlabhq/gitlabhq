@@ -2,13 +2,14 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: "When you push commits from the command line, use push rules to pass CI/CD variables and set values for merge request fields."
 ---
 
 # Push options
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 When you push changes to a branch, you can use client-side
 [Git push options](https://git-scm.com/docs/git-push#Documentation/git-push.txt--oltoptiongt).
@@ -60,11 +61,19 @@ Git push options can perform actions for merge requests while pushing changes:
 | `merge_request.title="<title>"`              | Set the title of the merge request. For example: `git push -o merge_request.title="The title I want"`. |
 | `merge_request.description="<description>"`  | Set the description of the merge request. For example: `git push -o merge_request.description="The description I want"`. |
 | `merge_request.draft`                        | Mark the merge request as a draft. For example: `git push -o merge_request.draft`. Introduced in [GitLab 15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/296673). |
-| `merge_request.milestone="<milestone>"`      | Set the milestone of the merge request. For example: `git push -o merge_request.milestone="3.0"`. Introduced in [GitLab 14.1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63960). |
+| `merge_request.milestone="<milestone>"`      | Set the milestone of the merge request. For example: `git push -o merge_request.milestone="3.0"`. |
 | `merge_request.label="<label>"`              | Add labels to the merge request. If the label does not exist, it is created. For example, for two labels: `git push -o merge_request.label="label1" -o merge_request.label="label2"`. |
 | `merge_request.unlabel="<label>"`            | Remove labels from the merge request. For example, for two labels: `git push -o merge_request.unlabel="label1" -o merge_request.unlabel="label2"`. |
 | `merge_request.assign="<user>"`              | Assign users to the merge request. Accepts username or user ID. For example, for two users: `git push -o merge_request.assign="user1" -o merge_request.assign="user2"`. Support for usernames added in [GitLab 15.5](https://gitlab.com/gitlab-org/gitlab/-/issues/344276). |
 | `merge_request.unassign="<user>"`            | Remove assigned users from the merge request. Accepts username or user ID. For example, for two users: `git push -o merge_request.unassign="user1" -o merge_request.unassign="user2"`. Support for usernames added in [GitLab 15.5](https://gitlab.com/gitlab-org/gitlab/-/issues/344276). |
+
+## Push options for secret detection
+
+You can use push options to skip [pre-receive secret detection](../application_security/secret_detection/pre_receive/index.md).
+
+| Push option                    | Description | Example |
+|--------------------------------|-------------|---------|
+| `secret_detection.skip_all` | Do not perform pre-receive secret detection for any commit in this push. | `git push -o secret_detection.skip_all` |
 
 ## Formats for push options
 

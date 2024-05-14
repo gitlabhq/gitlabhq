@@ -38,7 +38,7 @@ module Integrations
     validates :webhook,
       presence: true,
       public_url: true,
-      if: -> (integration) { integration.activated? && integration.class.requires_webhook? }
+      if: ->(integration) { integration.activated? && integration.class.requires_webhook? }
     validates :labels_to_be_notified_behavior, inclusion: { in: LABEL_NOTIFICATION_BEHAVIOURS }, allow_blank: true, if: :activated?
     validate :validate_channel_limit, if: :activated?
 

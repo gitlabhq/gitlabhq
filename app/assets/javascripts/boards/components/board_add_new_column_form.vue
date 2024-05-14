@@ -41,7 +41,7 @@ export default {
 
 <template>
   <div
-    class="board-add-new-list board gl-display-inline-block gl-h-full gl-vertical-align-top gl-white-space-normal gl-flex-shrink-0 gl-rounded-base gl-px-3"
+    class="board-add-new-list board gl-display-inline-block gl-h-full gl-align-top gl-white-space-normal gl-flex-shrink-0 gl-rounded-base gl-pl-2"
     data-testid="board-add-new-column"
   >
     <div
@@ -72,7 +72,7 @@ export default {
           <slot name="dropdown"></slot>
         </gl-form-group>
       </div>
-      <div class="gl-display-flex gl-mb-4">
+      <div class="gl-display-flex gl-mb-4 gl-pr-4">
         <gl-button
           data-testid="addNewColumnButton"
           variant="confirm"

@@ -29,27 +29,10 @@ RSpec.describe Projects::BlobController, feature_category: :source_code_manageme
         let(:id) { "#{ref}/#{path}" }
 
         it_behaves_like '#set_is_ambiguous_ref when ref is ambiguous'
-
-        context 'and explicitly requesting a branch' do
-          let(:ref_type) { 'heads' }
-
-          it 'redirects to blob#show with sha for the branch' do
-            expect(response).to redirect_to(project_blob_path(project, "#{RepoHelpers.another_sample_commit.id}/#{path}"))
-          end
-        end
-
-        context 'and explicitly requesting a tag' do
-          let(:ref_type) { 'tags' }
-
-          it 'responds with success' do
-            expect(response).to be_ok
-          end
-        end
       end
 
       describe '#set_is_ambiguous_ref with no ambiguous ref' do
         let(:id) { 'master/invalid-path.rb' }
-        let(:ambiguous_ref_modal) { true }
 
         it_behaves_like '#set_is_ambiguous_ref when ref is not ambiguous'
       end
@@ -518,7 +501,8 @@ RSpec.describe Projects::BlobController, feature_category: :source_code_manageme
   end
 
   describe 'POST create' do
-    let(:user) { create(:user) }
+    let_it_be(:user) { create(:user) }
+
     let(:target_event) { 'g_edit_by_sfe' }
     let(:default_params) do
       {
@@ -549,6 +533,29 @@ RSpec.describe Projects::BlobController, feature_category: :source_code_manageme
       request
 
       expect(response).to redirect_to(project_blob_path(project, 'master/docs/EXAMPLE_FILE'))
+    end
+
+    context 'when file_name is missing' do
+      let(:default_params) do
+        {
+          namespace_id: project.namespace,
+          project_id: project,
+          id: 'master',
+          branch_name: 'master',
+          content: 'Added changes',
+          commit_message: 'Create CHANGELOG'
+        }
+      end
+
+      render_views
+
+      it 'renders an error message' do
+        request
+
+        expect(response).to be_successful
+        expect(response).to render_template(:new)
+        expect(response.body).to include('You must provide a file path')
+      end
     end
   end
 end

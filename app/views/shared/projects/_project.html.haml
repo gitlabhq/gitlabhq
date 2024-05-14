@@ -9,7 +9,7 @@
 - use_creator_avatar = local_assigns[:use_creator_avatar]
 - show_last_commit_as_description = false unless local_assigns[:show_last_commit_as_description] == true && can_show_last_commit_in_list?(project)
 - access = max_project_member_access(project)
-- css_class = "gl-sm-display-flex gl-align-items-center gl-vertical-align-middle!" if project.description.blank? && !show_last_commit_as_description
+- css_class = "gl-sm-display-flex gl-align-items-center !gl-align-middle" if project.description.blank? && !show_last_commit_as_description
 - updated_tooltip = time_ago_with_tooltip(project.last_activity_at || project.updated_at)
 - show_pipeline_status_icon = pipeline_status && can?(current_user, :read_cross_project) && project.pipeline_status.has_status? && can?(current_user, :read_build, project)
 - last_pipeline = last_pipeline_from_status_cache(project) if show_pipeline_status_icon
@@ -19,12 +19,11 @@
 %li.project-row
   - if avatar
     .project-cell.gl-w-11
-      .project-avatar-container.gl-mr-5.gl-relative.gl-pb-4
-        = link_to project_path(project), class: dom_class(project) do
-          - if project.creator && use_creator_avatar
-            = render Pajamas::AvatarComponent.new(project.creator, size: 48, alt: '')
-          - else
-            = render Pajamas::AvatarComponent.new(project, size: 48, alt: '')
+      = link_to project_path(project), class: dom_class(project) do
+        - if project.creator && use_creator_avatar
+          = render Pajamas::AvatarComponent.new(project.creator, size: 48, alt: '')
+        - else
+          = render Pajamas::AvatarComponent.new(project, size: 48, alt: '')
 
   .project-cell{ class: css_class }
     .project-details.gl-pr-9.gl-sm-pr-0.gl-w-full.gl-display-flex.gl-flex-direction-column{ data: { testid: 'project-content', qa_project_name: project.name } }
@@ -36,12 +35,15 @@
                 = project.namespace.human_name
                 \/
             %span.project-name<
-              = project.name
+              - if @search_term.present?
+                = simple_search_highlight_and_truncate(project.name, @search_term)
+              - else
+                = project.name
 
         = visibility_level_content(project, css_class: 'gl-mr-2')
 
         - if project.catalog_resource
-          = render partial: 'shared/ci_catalog_badge', locals: { href: explore_catalog_path(project.catalog_resource), css_class: 'gl-mr-2' }
+          = render partial: 'shared/ci_catalog_badge', locals: { href: explore_catalog_path(project.catalog_resource), css_class: 'gl-align-self-center gl-mr-2' }
 
         - if explore_projects_tab? && project_license_name(project)
           %span.gl-display-inline-flex.gl-align-items-center.gl-mr-3
@@ -51,10 +53,10 @@
         - if !explore_projects_tab? && access&.nonzero?
           -# haml-lint:disable UnnecessaryStringOutput
           = ' ' # prevent haml from eating the space between elements
-          %span.user-access-role.gl-display-block.gl-m-0{ data: { testid: 'user-role-content' } }= localized_project_human_access(access)
+          = render Pajamas::BadgeComponent.new(localized_project_human_access(access), variant: 'neutral', class: 'gl-bg-transparent! !gl-shadow-inner-1-gray-100', data: { testid: 'user-access-role' })
 
         - if !explore_projects_tab?
-          = render_if_exists 'compliance_management/compliance_framework/compliance_framework_badge', project: project, additional_classes: 'gl-ml-3!'
+          = render_if_exists 'compliance_management/compliance_framework/compliance_framework_badge', project: project, additional_classes: 'gl-ml-2!'
 
       - if show_last_commit_as_description
         .description.gl-display-none.gl-sm-display-block.gl-overflow-hidden.gl-mr-3.gl-mt-2.gl-font-sm
@@ -69,14 +71,14 @@
 
       = render_if_exists 'shared/projects/removed', project: project
 
-      .gl-display-flex.gl-mt-3{ class: "#{css_class} gl-sm-display-none!" }
+      .gl-display-flex.gl-align-items-center.gl-mt-3{ class: "#{css_class} gl-sm-display-none!" }
         .controls.gl-display-flex.gl-align-items-center
           - if show_pipeline_status_icon && last_pipeline.present?
             - pipeline_path = pipelines_project_commit_path(project.pipeline_status.project, project.pipeline_status.sha, ref: project.pipeline_status.ref)
             %span.icon-wrapper.pipeline-status
               = render 'ci/status/icon', status: last_pipeline.detailed_status(current_user), tooltip_placement: 'top', path: pipeline_path
 
-          = render_if_exists 'shared/projects/archived', project: project
+          = render_if_exists 'shared/projects/badges', project: project
           - if stars
             = link_to project_starrers_path(project), class: "#{css_metadata_classes} stars", title: _('Stars'), data: { container: 'body', placement: 'top' } do
               = sprite_icon('star-o', size: 14, css_class: 'gl-mr-2')
@@ -85,6 +87,7 @@
           %span
             = _('Updated')
             = updated_tooltip
+        = render_if_exists 'shared/projects/actions', project: project
 
   .project-cell.project-controls{ class: "#{css_class} gl-display-none! gl-sm-display-table-cell!", data: { testid: 'project_controls'} }
     .controls.gl-display-flex.gl-align-items-center.gl-mb-2.gl-gap-4{ class: "#{css_controls_class} gl-pr-0! gl-justify-content-end!" }
@@ -93,7 +96,7 @@
         %span.icon-wrapper.pipeline-status
           = render 'ci/status/icon', status: last_pipeline.detailed_status(current_user), tooltip_placement: 'top', path: pipeline_path
 
-      = render_if_exists 'shared/projects/archived', project: project
+      = render_if_exists 'shared/projects/badges', project: project
       - if stars
         = link_to project_starrers_path(project), class: "#{css_metadata_classes} stars", title: _('Stars'), data: { container: 'body', placement: 'top' } do
           = sprite_icon('star-o', size: 14, css_class: 'gl-mr-2')
@@ -110,7 +113,8 @@
         = link_to project_issues_path(project), class: "#{css_metadata_classes} issues", title: _('Issues'), data: { container: 'body', placement: 'top' } do
           = sprite_icon('issues', size: 14, css_class: 'gl-mr-2')
           = badge_count(project.open_issues_count)
-    .updated-note.gl-font-sm.gl-white-space-nowrap.gl-justify-content-end
+      = render_if_exists 'shared/projects/actions', project: project
+    .updated-note.gl-font-sm.gl-whitespace-nowrap.gl-justify-content-end
       %span
         = _('Updated')
         = updated_tooltip

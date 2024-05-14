@@ -1,12 +1,17 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`SidebarTodo template renders component container element with proper data attributes 1`] = `
-<button
+<gl-button-stub
   aria-label="Mark as done"
-  class="btn btn-default btn-todo gl-button gl-float-right issuable-header-btn"
+  buttontextclasses=""
+  category="primary"
+  class="gl-float-right issuable-header-btn"
   data-issuable-id="1"
   data-issuable-type="epic"
+  icon=""
+  size="small"
   type="button"
+  variant="default"
 >
   <gl-icon-stub
     class="todo-undone"
@@ -19,13 +24,5 @@ exports[`SidebarTodo template renders component container element with proper da
   >
     Mark as done
   </span>
-  <gl-loading-icon-stub
-    color="dark"
-    inline="true"
-    label="Loading"
-    size="sm"
-    style="display: none;"
-    variant="spinner"
-  />
-</button>
+</gl-button-stub>
 `;

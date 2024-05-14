@@ -4,11 +4,11 @@ group: Security Policies
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Merge request approval policies (Previously: Scan result policies)
+# Merge request approval policies
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, Self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - Group-level scan result policies [introduced](https://gitlab.com/groups/gitlab-org/-/epics/7622) in GitLab 15.6.
 > - Scan result policies feature was renamed to merge request approval policies in GitLab 16.9.
@@ -16,7 +16,7 @@ DETAILS:
 NOTE:
 Scan result policies feature was renamed to merge request approval policies in GitLab 16.9.
 
-You can use merge request approval policies to enforce project level settings and create approval rules based on scan results. For example, one type of scan
+Use merge request approval policies to enforce project-level settings and approval rules based on scan results. For example, one type of scan
 result policy is a security approval policy that allows approval to be required based on the
 findings of one or more security scan jobs. Merge request approval policies are evaluated after a CI scanning job is fully executed and both vulnerability and license type policies are evaluated based on the job artifact reports that are published in the completed pipeline.
 
@@ -48,13 +48,18 @@ The following video gives you an overview of GitLab merge request approval polic
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/379108) in GitLab 16.2 [with a flag](../../../administration/feature_flags.md) named `multi_pipeline_scan_result_policies`. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/409482) in GitLab 16.3. Feature flag `multi_pipeline_scan_result_policies` removed.
+> - Support for parent-child pipelines [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/428591) in GitLab 16.11 [with a flag](../../../administration/feature_flags.md) named `approval_policy_parent_child_pipeline`. Disabled by default.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/451597) in GitLab 17.0.
+
+FLAG:
+On self-managed GitLab, by default support for parent-child pipelines is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `approval_policy_parent_child_pipeline`.
 
 A project can have multiple pipeline types configured. A single commit can initiate multiple
 pipelines, each of which may contain a security scan.
 
 - In GitLab 16.3 and later, the results of all completed pipelines for the latest commit in
   the merge request's source and target branch are evaluated and used to enforce the merge request approval policy.
-  Parent-child pipelines and on-demand DAST pipelines are not considered.
+  On-demand DAST pipelines are not considered.
 - In GitLab 16.2 and earlier, only the results of the latest completed pipeline were evaluated
   when enforcing merge request approval policies.
 
@@ -63,7 +68,6 @@ For more information see [Use security scanning tools with merge request pipelin
 
 ## Merge request approval policy editor
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77814) in GitLab 14.8.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/369473) in GitLab 15.6.
 
 NOTE:
@@ -114,6 +118,7 @@ the following sections and tables provide an alternative.
 | `rules`             | `array` of rules   | true     |                 | List of rules that the policy applies.                   |
 | `actions`           | `array` of actions | false    |                 | List of actions that the policy enforces.                |
 | `approval_settings` | `object`           | false    |                 | Project settings that the policy overrides.              |
+| `fallback_behavior` | `object`           | false    |                 | Settings that affect invalid or unenforceable rules.     |
 
 ## `scan_finding` rule type
 
@@ -144,15 +149,15 @@ This rule enforces the defined actions based on security scan findings.
 
 This rule enforces the defined actions based on license findings.
 
-| Field                | Type                | Required                                   | Possible values              | Description                                                                                                                                                                                                                                                                      |
-|----------------------|---------------------|--------------------------------------------|------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `type`               | `string`            | true                                       | `license_finding`            | The rule's type.                                                                                                                                                                                                                                                                 |
-| `branches`           | `array` of `string` | true if `branch_type` field does not exist | `[]` or the branch's name    | Applicable only to protected target branches. An empty array, `[]`, applies the rule to all protected target branches. Cannot be used with the `branch_type` field.                                                                                                              |
-| `branch_type`        | `string`            | true if `branches` field does not exist    | `default` or `protected`     | The types of protected branches the given policy applies to. Cannot be used with the `branches` field. Default branches must also be `protected`.                                                                                                                                |
-| `branch_exceptions`  | `array` of `string` | false                                      | Names of branches            | Branches to exclude from this rule.                                                                                                                                                                                                                                              |
-| `match_on_inclusion` | `boolean`           | true                                       | `true`, `false`              | **{warning}** **[Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/424513)** in GitLab 16.9. Whether the rule matches inclusion or exclusion of licenses listed in `license_types`. When `false`, any detected licenses excluded from `license_types` require approval. |
-| `license_types`      | `array` of `string` | true                                       | license types                | [SPDX license names](https://spdx.org/licenses) to match on, for example `Affero General Public License v1.0` or `MIT License`.                                                                                                                                                  |
-| `license_states`     | `array` of `string` | true                                       | `newly_detected`, `detected` | Whether to match newly detected and/or previously detected licenses. The `newly_detected` state triggers approval when either a new package is introduced or when a new license for an existing package is detected.                                                             |
+| Field                | Type                | Required                                   | Possible values              | Description |
+|----------------------|---------------------|--------------------------------------------|------------------------------|-------------|
+| `type`               | `string`            | true                                       | `license_finding`            | The rule's type. |
+| `branches`           | `array` of `string` | true if `branch_type` field does not exist | `[]` or the branch's name    | Applicable only to protected target branches. An empty array, `[]`, applies the rule to all protected target branches. Cannot be used with the `branch_type` field. |
+| `branch_type`        | `string`            | true if `branches` field does not exist    | `default` or `protected`     | The types of protected branches the given policy applies to. Cannot be used with the `branches` field. Default branches must also be `protected`. |
+| `branch_exceptions`  | `array` of `string` | false                                      | Names of branches            | Branches to exclude from this rule. |
+| `match_on_inclusion_license` | `boolean` | true | `true`, `false` | Whether the rule matches inclusion or exclusion of licenses listed in `license_types`. |
+| `license_types`      | `array` of `string` | true                                       | license types                | [SPDX license names](https://spdx.org/licenses) to match on, for example `Affero General Public License v1.0` or `MIT License`. |
+| `license_states`     | `array` of `string` | true                                       | `newly_detected`, `detected` | Whether to match newly detected and/or previously detected licenses. The `newly_detected` state triggers approval when either a new package is introduced or when a new license for an existing package is detected. |
 
 ## `any_merge_request` rule type
 
@@ -161,13 +166,13 @@ This rule enforces the defined actions based on license findings.
 
 This rule enforces the defined actions for any merge request based on the commits signature.
 
-| Field         | Type                | Required                                   | Possible values           | Description                                                                                                                                                         |
-|---------------|---------------------|--------------------------------------------|---------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `type`        | `string`            | true                                       | `any_merge_request`       | The rule's type. |
-| `branches`    | `array` of `string` | true if `branch_type` field does not exist | `[]` or the branch's name | Applicable only to protected target branches. An empty array, `[]`, applies the rule to all protected target branches. Cannot be used with the `branch_type` field. |
-| `branch_type` | `string`            | true if `branches` field does not exist    | `default` or `protected`  |  The types of protected branches the given policy applies to. Cannot be used with the `branches` field. Default branches must also be `protected`. |
-| `branch_exceptions` | `array` of `string` | false |  Names of branches | Branches to exclude from this rule. |
-| `commits`     | `string`            | true                                       | `any`, `unsigned`         | Whether the rule matches for any commits, or only if unsigned commits are detected in the merge request. |
+| Field               | Type                | Required                                   | Possible values           | Description |
+|---------------------|---------------------|--------------------------------------------|---------------------------|-------------|
+| `type`              | `string`            | true                                       | `any_merge_request`       | The rule's type. |
+| `branches`          | `array` of `string` | true if `branch_type` field does not exist | `[]` or the branch's name | Applicable only to protected target branches. An empty array, `[]`, applies the rule to all protected target branches. Cannot be used with the `branch_type` field. |
+| `branch_type`       | `string`            | true if `branches` field does not exist    | `default` or `protected`  | The types of protected branches the given policy applies to. Cannot be used with the `branches` field. Default branches must also be `protected`. |
+| `branch_exceptions` | `array` of `string` | false                                      | Names of branches         | Branches to exclude from this rule. |
+| `commits`           | `string`            | true                                       | `any`, `unsigned`         | Whether the rule matches for any commits, or only if unsigned commits are detected in the merge request. |
 
 ## `require_approval` action type
 
@@ -183,6 +188,29 @@ the defined policy.
 | `group_approvers` | `array` of `string` | false | Path of one of more groups | The groups to consider as approvers. Users with [direct membership in the group](../../project/merge_requests/approvals/rules.md#group-approvers) are eligible to approve. |
 | `group_approvers_ids` | `array` of `integer` | false | ID of one of more groups | The IDs of groups to consider as approvers. Users with [direct membership in the group](../../project/merge_requests/approvals/rules.md#group-approvers) are eligible to approve. |
 | `role_approvers` | `array` of `string` | false | One or more [roles](../../../user/permissions.md#roles) (for example: `owner`, `maintainer`)  | The roles to consider as approvers that are eligible to approve. |
+
+## `send_bot_message` action type
+
+> - The `send_bot_message` action type was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/438269) in GitLab 16.11 [with a flag](../../../administration/feature_flags.md) named `approval_policy_disable_bot_comment`. Disabled by default.
+> - [Enabled on GitLab.com, self-managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/454852) in GitLab 17.0.
+
+FLAG:
+The availability of this feature is controlled by a feature flag. For more information, see the history.
+
+This action enables configuration of the bot message in merge requests when policy violations are detected.
+If the action is not specified, the bot message is enabled by default. If there are multiple policies defined,
+the bot message is sent as long as at least one of those policies has the `send_bot_message` action is enabled.
+
+| Field | Type | Required | Possible values | Description |
+|-------|------|----------|-----------------|-------------|
+| `type` | `string` | true | `send_bot_message` | The action's type. |
+| `enabled` | `boolean` | true | `true`, `false` | Whether a bot message should be created when policy violations are detected. Default: `true` |
+
+### Example bot messages
+
+![scan_results_example_bot_message_v17_0](img/scan_result_policy_example_bot_message_vulnerabilities_v17_0.png)
+
+![scan_results_example_bot_message_v17_0](img/scan_result_policy_example_bot_message_artifacts_v17_0.png)
 
 ## `approval_settings`
 
@@ -202,19 +230,31 @@ the defined policy.
 > - Feature flag `scan_result_policies_block_force_push` [was removed](https://gitlab.com/gitlab-org/gitlab/-/issues/432123) in GitLab 16.8.
 
 FLAG:
-On self-managed GitLab, by default the `block_branch_modification` field is available. To hide the feature, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `scan_result_policies_block_unprotecting_branches`. On GitLab.com, this feature is available.
+On self-managed GitLab, by default the `block_branch_modification` field is available. To hide the feature, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `scan_result_policies_block_unprotecting_branches`. On GitLab.com and GitLab Dedicated, this feature is available.
 
 The settings set in the policy overwrite settings in the project.
 
-| Field                               | Type                  | Required | Possible values                                               | Applicable rule type | Description                                                                                                                                                                                                                                                                                      |
-|-------------------------------------|-----------------------|----------|---------------------------------------------------------------|----------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `block_branch_modification`         | `boolean`             | false    | `true`, `false`                                               | All                  | When enabled, prevents a user from removing a branch from the protected branches list, deleting a protected branch, or changing the default branch if that branch is included in the security policy. This ensures users cannot remove protection status from a branch to merge vulnerable code. |
-| `block_group_branch_modification`   | `boolean` or `object` | false    | `true`, `false`, `{ enabled: boolean, exceptions: [string] }` | All                  | When enabled, prevents a user from removing group-level protected branches on every group the policy applies to. If `block_branch_modification` is `true`, implicitly defaults to `true`.                                                                                                        |
-| `prevent_approval_by_author`        | `boolean`             | false    | `true`, `false`                                               | `Any merge request`  | When enabled, merge request authors cannot approve their own MRs. This ensures code authors cannot introduce vulnerabilities and approve code to merge.                                                                                                                                          |
-| `prevent_approval_by_commit_author` | `boolean`             | false    | `true`, `false`                                               | `Any merge request`  | When enabled, users who have contributed code to the MR are ineligible for approval. This ensures code committers cannot introduce vulnerabilities and approve code to merge.                                                                                                                    |
-| `remove_approvals_with_new_commit`  | `boolean`             | false    | `true`, `false`                                               | `Any merge request`  | When enabled, if an MR receives all necessary approvals to merge, but then a new commit is added, new approvals are required. This ensures new commits that may include vulnerabilities cannot be introduced.                                                                                    |
-| `require_password_to_approve`       | `boolean`             | false    | `true`, `false`                                               | `Any merge request`  | When enabled, there will be password confirmation on approvals. Password confirmation adds an extra layer of security.                                                                                                                                                                           |
-| `prevent_pushing_and_force_pushing` | `boolean`             | false    | `true`, `false`                                               | All                  | When enabled, prevents users from pushing and force pushing to a protected branch if that branch is included in the security policy. This ensures users do not bypass the merge request process to add vulnerable code to a branch.                                                              |
+| Field                               | Type                  | Required | Possible values                                               | Applicable rule type | Description |
+|-------------------------------------|-----------------------|----------|---------------------------------------------------------------|----------------------|-------------|
+| `block_branch_modification`         | `boolean`             | false    | `true`, `false`                                               | All                  | When enabled, prevents a user from removing a branch from the protected branches list, deleting a protected branch, or changing the default branch if that branch is included in the security policy. This ensures users cannot remove protection status from a branch to merge vulnerable code. Enforced based on `branches`, `branch_type` and `policy_scope` and regardless of detected vulnerabilities. |
+| `block_group_branch_modification`   | `boolean` or `object` | false    | `true`, `false`, `{ enabled: boolean, exceptions: [string] }` | All                  | When enabled, prevents a user from removing group-level protected branches on every group the policy applies to. If `block_branch_modification` is `true`, implicitly defaults to `true`. Enforced based on `branches`, `branch_type` and `policy_scope` and regardless of detected vulnerabilities. |
+| `prevent_approval_by_author`        | `boolean`             | false    | `true`, `false`                                               | `Any merge request`  | When enabled, merge request authors cannot approve their own MRs. This ensures code authors cannot introduce vulnerabilities and approve code to merge. |
+| `prevent_approval_by_commit_author` | `boolean`             | false    | `true`, `false`                                               | `Any merge request`  | When enabled, users who have contributed code to the MR are ineligible for approval. This ensures code committers cannot introduce vulnerabilities and approve code to merge. |
+| `remove_approvals_with_new_commit`  | `boolean`             | false    | `true`, `false`                                               | `Any merge request`  | When enabled, if an MR receives all necessary approvals to merge, but then a new commit is added, new approvals are required. This ensures new commits that may include vulnerabilities cannot be introduced. |
+| `require_password_to_approve`       | `boolean`             | false    | `true`, `false`                                               | `Any merge request`  | When enabled, there will be password confirmation on approvals. Password confirmation adds an extra layer of security. |
+| `prevent_pushing_and_force_pushing` | `boolean`             | false    | `true`, `false`                                               | All                  | When enabled, prevents users from pushing and force pushing to a protected branch if that branch is included in the security policy. This ensures users do not bypass the merge request process to add vulnerable code to a branch. |
+
+## `fallback_behavior`
+
+> - The `fallback_behavior` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/451784) in GitLab 16.11 [with a flag](../../../administration/feature_flags.md) named `security_scan_result_policies_unblock_fail_open_approval_rules`. Disabled by default.
+> - The `fallback_behavior` field was [enabled on GitLab.com, self-managed, and GitLab Dedicated](https://gitlab.com/groups/gitlab-org/-/epics/10816) in GitLab 17.0.
+
+FLAG:
+On self-managed GitLab, by default the `fallback_behavior` field is available. To hide the feature, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `security_scan_result_policies_unblock_fail_open_approval_rules`. On GitLab.com and GitLab Dedicated, this feature is available.
+
+| Field  | Type     | Required | Possible values    | Description                                                                                                          |
+|--------|----------|----------|--------------------|----------------------------------------------------------------------------------------------------------------------|
+| `fail` | `string` | false    | `open` or `closed` | `closed` (default): Invalid or unenforceable rules of a policy require approval. `open`: Invalid or unenforceable rules of a policy do not require approval. |
 
 ## Example security merge request approval policies project
 
@@ -315,9 +355,10 @@ actions:
 ### Scope of merge request approval policy comparison
 
 - To determine when approval is required on a merge request, we compare completed pipelines for each supported pipeline source for the source and target branch (for example, `feature`/`main`). This ensures the most comprehensive evaluation of scan results.
-- For the source branch, the comparison pipeline is its latest completed `HEAD` pipeline.
-- For the target branch, we compare to a common ancestor's latest completed pipeline.
-- Merge request approval policies considers all supported pipeline sources (based on the [`CI_PIPELINE_SOURCE` variable](../../../ci/variables/predefined_variables.md)) when comparing results from both the source and target branches when determining if a merge request requires approval. Pipeline sources `webide` and `parent_pipeline` are not supported.
+- For the source branch, the comparison pipelines are all completed pipelines for each supported pipeline source for the latest commit in the source branch.
+- For the target branch, we compare to all common ancestor's completed pipelines for each supported pipeline source.
+- Merge request approval policies considers all supported pipeline sources (based on the [`CI_PIPELINE_SOURCE` variable](../../../ci/variables/predefined_variables.md)) when comparing results from both the source and target branches when determining if a merge request requires approval. Pipelines with source `webide` are not supported.
+- In GitLab 16.11 and later, the child pipelines of each of the selected pipelines are also considered for comparison. This is available [with a flag](../../../administration/feature_flags.md) named `approval_policy_parent_child_pipeline`.
 
 ### Accepting risk and ignoring vulnerabilities in future merge requests
 
@@ -361,9 +402,10 @@ Lock file tampering, for example, is outside of the scope of security policy man
 
 We have identified in [epic 11020](https://gitlab.com/groups/gitlab-org/-/epics/11020) common areas of confusion in scan result findings that need to be addressed. Below are a few of the known issues:
 
-- When using `newly_detected`, some findings may require approval when they are not introduced by the merge request (such as a new CVE on a related dependency). We currently use `main tip` of the target branch for comparison. In the future, we plan to use `merge base` for `newly_detected` policies (see [issue 428518](https://gitlab.com/gitlab-org/gitlab/-/issues/428518)).
-- Findings or errors that cause approval to be required on a merge request approval policy may not be evident in the Security MR Widget. By using `merge base` in [issue 428518](https://gitlab.com/gitlab-org/gitlab/-/issues/428518) some cases will be addressed. We will additionally be [displaying more granular details](https://gitlab.com/groups/gitlab-org/-/epics/11185) about what caused security policy violations.
+- When using `newly_detected`, some findings may require approval when they are not introduced by the merge request (such as a new CVE on a related dependency)
+- Findings or errors that cause approval to be required on a merge request approval policy may not be evident in the Security MR widget. With `merge base` introduced in [issue 428518](https://gitlab.com/gitlab-org/gitlab/-/issues/428518) some cases were addressed. Support for displaying more granular details about what caused security policy violations is proposed in [epic 11185](https://gitlab.com/groups/gitlab-org/-/epics/11185).
 - Security policy violations are distinct compared to findings displayed in the MR widgets. Some violations may not be present in the MR widget. We are working to harmonize our features in [epic 11020](https://gitlab.com/groups/gitlab-org/-/epics/11020) and to display policy violations explicitly in merge requests in [epic 11185](https://gitlab.com/groups/gitlab-org/-/epics/11185).
+- When merged results pipelines are enabled for the project, along with branch pipelines for created MRs, the comparison between source and target branches depends on the order in which the source branch's pipeline finishes. This can create race conditions, a resolution of which is proposed in [issue 384927](https://gitlab.com/gitlab-org/gitlab/-/issues/384927). The approvals may behave differently, depending on which target branch pipeline is selected.
 
 ## Experimental features
 
@@ -381,6 +423,8 @@ Prerequisites:
   1. Expand **Permissions and group features**.
   1. Select the **Security Policy Scopes** checkbox.
   1. Optional. Select **Enforce for all subgroups**.
+
+     If the setting is not enforced for all subgroups, subgroup owners can manage the setting per subgroup.
 
 Have feedback on our experimental features? We'd love to hear it! Please share your thoughts in our
 [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/434425).
@@ -406,8 +450,8 @@ You can refine a security policy's scope to:
 
 | Field | Type | Possible values | Description |
 |-------|------|-----------------|-------------|
-| `compliance_frameworks` | `object` |  `ids` | List of IDs of the compliance frameworks in scope of enforcement, in an `ids` array. |
-| `projects` | `object` |  `including`, `excluding` | Use `excluding:` or `including:` then list the IDs of the projects you wish to include or exclude, in an `ids` array. |
+| `compliance_frameworks` | `array` |  | List of IDs of the compliance frameworks in scope of enforcement, in an array of objects with key `id`. |
+| `projects` | `object` |  `including`, `excluding` | Use `excluding:` or `including:` then list the IDs of the projects you wish to include or exclude, in an array of objects with key `id`. |
 
 #### Example `policy.yml` with security policy scopes
 
@@ -435,14 +479,12 @@ approval_policy:
     - adalberto.dare
   policy_scope:
     compliance_frameworks:
-      ids:
-      - 2
-      - 11
+      - id: 2
+      - id: 11
     projects:
       including:
-        ids:
-        - 24
-        - 27
+        - id: 24
+        - id: 27
 ```
 
 ## Troubleshooting
@@ -451,7 +493,7 @@ approval_policy:
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 On GitLab self-managed from 15.0 to 16.4, the most likely cause is that the project was exported from a group and imported into another, and had merge request approval policy rules. These rules are stored in a separate project to the one that was exported. As a result, the project contains policy rules that reference entities that don't exist in the imported project's group. The result is policy rules that are invalid, duplicated, or both.
 
@@ -485,6 +527,8 @@ GitLab SaaS users may submit a [support ticket](https://about.gitlab.com/support
 - Current behavior
 - Expected behavior
 
+### GitLab SaaS
+
 Support teams will investigate [logs](https://log.gprd.gitlab.net/) (`pubsub-sidekiq-inf-gprd*`) to identify the failure `reason`. Below is an example response snippet from logs. You can use this query to find logs related to approvals: `json.event.keyword: "update_approvals"` and `json.project_path: "group-path/project-path"`. Optionally, you can further filter by the merge request identifier using `json.merge_request_iid`:
 
 ```json
@@ -498,6 +542,14 @@ Support teams will investigate [logs](https://log.gprd.gitlab.net/) (`pubsub-sid
   "event": "update_approvals",
 }
 ```
+
+### GitLab self-managed
+
+Search for keywords such as the `project-path`, `api_fuzzing`, and `merge_request`. Example: `grep group-path/project-path`, and `grep merge_request`. If you know the correlation ID you can search by correlation ID. For example, if the value of `correlation_id` is 01HWN2NFABCEDFG, search for `01HWN2NFABCEDFG`.
+Search in the following files:
+
+- `/gitlab/gitlab-rails/production_json.log`
+- `/gitlab/sidekiq/current`
 
 Common failure reasons:
 

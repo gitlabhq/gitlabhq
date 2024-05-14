@@ -3,6 +3,7 @@ import axios from '../lib/utils/axios_utils';
 import { buildApiUrl } from './api_utils';
 
 const PROJECTS_PATH = '/api/:version/projects.json';
+const PROJECT_PATH = '/api/:version/projects/:id';
 const PROJECT_MEMBERS_PATH = '/api/:version/projects/:id/members';
 const PROJECT_ALL_MEMBERS_PATH = '/api/:version/projects/:id/members/all';
 const PROJECT_IMPORT_MEMBERS_PATH = '/api/:version/projects/:id/import_project_members/:project_id';
@@ -41,6 +42,18 @@ export function createProject(projectData) {
   return axios.post(url, projectData).then(({ data }) => {
     return data;
   });
+}
+
+export function updateProject(projectId, data) {
+  const url = buildApiUrl(PROJECT_PATH).replace(':id', projectId);
+
+  return axios.put(url, data);
+}
+
+export function deleteProject(projectId, params) {
+  const url = buildApiUrl(PROJECT_PATH).replace(':id', projectId);
+
+  return axios.delete(url, { params });
 }
 
 export function importProjectMembers(sourceId, targetId) {

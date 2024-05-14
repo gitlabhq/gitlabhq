@@ -1,7 +1,7 @@
 <script>
 import { GlBadge, GlLink, GlTooltipDirective } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
-import { generateText } from '../extensions/utils';
+import { generateText } from './utils';
 import ContentRow from './widget_content_row.vue';
 import Actions from './action_buttons.vue';
 
@@ -107,7 +107,7 @@ export default {
           />
           <p v-if="data.subtext" v-safe-html="generatedSubtext" class="gl-m-0 gl-font-sm"></p>
         </div>
-        <ul v-if="shouldShowThirdLevel" class="gl-m-0 gl-p-0 gl-list-style-none">
+        <ul v-if="shouldShowThirdLevel" class="gl-m-0 gl-p-0 gl-list-none">
           <li v-for="(childData, index) in data.children" :key="childData.id || index">
             <dynamic-content
               :data="childData"

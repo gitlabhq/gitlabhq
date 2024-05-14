@@ -31,6 +31,9 @@ FactoryBot.define do
     end
 
     factory :deploy_key, class: 'DeployKey' do
+      after(:build) { Gitlab::ExclusiveLease.set_skip_transaction_check_flag(true) }
+      after(:create) { Gitlab::ExclusiveLease.set_skip_transaction_check_flag(nil) }
+
       trait :private do
         public { false }
       end
@@ -55,6 +58,9 @@ FactoryBot.define do
     end
 
     factory :another_key do
+      after(:build) { Gitlab::ExclusiveLease.set_skip_transaction_check_flag(true) }
+      after(:create) { Gitlab::ExclusiveLease.set_skip_transaction_check_flag(nil) }
+
       factory :another_deploy_key, class: 'DeployKey'
     end
 
@@ -70,7 +76,10 @@ FactoryBot.define do
         KEY
       end
 
-      factory :rsa_deploy_key_2048, class: 'DeployKey'
+      factory :rsa_deploy_key_2048, class: 'DeployKey' do
+        after(:build) { Gitlab::ExclusiveLease.set_skip_transaction_check_flag(true) }
+        after(:create) { Gitlab::ExclusiveLease.set_skip_transaction_check_flag(nil) }
+      end
     end
 
     factory :rsa_key_4096 do
@@ -110,7 +119,10 @@ FactoryBot.define do
         KEY
       end
 
-      factory :rsa_deploy_key_5120, class: 'DeployKey'
+      factory :rsa_deploy_key_5120, class: 'DeployKey' do
+        after(:build) { Gitlab::ExclusiveLease.set_skip_transaction_check_flag(true) }
+        after(:create) { Gitlab::ExclusiveLease.set_skip_transaction_check_flag(nil) }
+      end
     end
 
     factory :rsa_key_8192 do

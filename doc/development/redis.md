@@ -77,14 +77,14 @@ with the [`RedisClusterValidator`](https://gitlab.com/gitlab-org/gitlab/-/blob/m
 which is enabled for the `cache` and `shared_state`
 [Redis instances](https://docs.gitlab.com/omnibus/settings/redis.html#running-with-multiple-redis-instances)..
 
-Developers are highly encouraged to use [hash-tags](https://redis.io/docs/reference/cluster-spec/#hash-tags)
+Developers are highly encouraged to use [hash-tags](https://redis.io/docs/latest/operate/oss_and_stack/reference/cluster-spec/#hash-tags)
 where appropriate to facilitate future adoption of Redis Cluster in more Redis types. For example, the Namespace model uses hash-tags
 for its [config cache keys](https://gitlab.com/gitlab-org/gitlab/-/blob/1a12337058f260d38405886d82da5e8bb5d8da0b/app/models/namespace.rb#L786).
 
-To perform multi-key commands, developers may use the [`Gitlab::Redis::CrossSlot::Pipeline`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/redis/cross_slot.rb) wrapper.
-However, this does not work for [transactions](https://redis.io/docs/interact/transactions/) as Redis Cluster does not support cross-slot transactions.
+To perform multi-key commands, developers may use the [`.pipelined`](https://github.com/redis-rb/redis-cluster-client#interfaces) method which splits and sends commands to each node and aggregates replies.
+However, this does not work for [transactions](https://redis.io/docs/latest/develop/interact/transactions/) as Redis Cluster does not support cross-slot transactions.
 
-For `Rails.cache`, we handle the `MGET` command found in `read_multi_get` by [patching it](https://gitlab.com/gitlab-org/gitlab/-/blob/c2bad2aac25e2f2778897bd4759506a72b118b15/lib/gitlab/patch/redis_cache_store.rb#L10) to use the `Gitlab::Redis::CrossSlot::Pipeline` wrapper.
+For `Rails.cache`, we handle the `MGET` command found in `read_multi_get` by [patching it](https://gitlab.com/gitlab-org/gitlab/-/blob/c2bad2aac25e2f2778897bd4759506a72b118b15/lib/gitlab/patch/redis_cache_store.rb#L10) to use the `.pipelined` method.
 The minimum size of the pipeline is set to 1000 commands and it can be adjusted by using the `GITLAB_REDIS_CLUSTER_PIPELINE_BATCH_LIMIT` environment variable.
 
 ## Redis in structured logging
@@ -129,7 +129,7 @@ on GitLab.com
 
 <!-- vale gitlab.Substitutions = NO -->
 
-On GitLab.com, entries from the [Redis slow log](https://redis.io/commands/slowlog/) are available in the
+On GitLab.com, entries from the [Redis slow log](https://redis.io/docs/latest/commands/slowlog/) are available in the
 `pubsub-redis-inf-gprd*` index with the [`redis.slowlog` tag](https://log.gprd.gitlab.net/app/kibana#/discover?_g=(filters:!(),refreshInterval:(pause:!t,value:0),time:(from:now-1d,to:now))&_a=(columns:!(json.type,json.command,json.exec_time_s),filters:!(('$state':(store:appState),meta:(alias:!n,disabled:!f,index:AWSQX_Vf93rHTYrsexmk,key:json.tag,negate:!f,params:(query:redis.slowlog),type:phrase),query:(match:(json.tag:(query:redis.slowlog,type:phrase))))),index:AWSQX_Vf93rHTYrsexmk)).
 This shows commands that have taken a long time and may be a performance
 concern.
@@ -269,8 +269,8 @@ makes sure that booleans are encoded and decoded consistently.
 ### `Gitlab::Redis::HLL`
 
 The Redis [`PFCOUNT`](https://redis.io/commands/pfcount/),
-[`PFADD`](https://redis.io/commands/pfadd/), and
-[`PFMERGE`](https://redis.io/commands/pfmerge/) commands operate on
+[`PFADD`](https://redis.io/docs/latest/commands/pfadd/), and
+[`PFMERGE`](https://redis.io/docs/latest/commands/pfmerge/) commands operate on
 HyperLogLogs, a data structure that allows estimating the number of unique
 elements with low memory usage. For more information,
 see [HyperLogLogs in Redis](https://thoughtbot.com/blog/hyperloglogs-in-redis).
@@ -284,7 +284,7 @@ For cases where we need to efficiently check the whether an item is in a group
 of items, we can use a Redis set.
 [`Gitlab::SetCache`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/set_cache.rb)
 provides an `#include?` method that uses the
-[`SISMEMBER`](https://redis.io/commands/sismember/) command, as well as `#read`
+[`SISMEMBER`](https://redis.io/docs/latest/commands/sismember/) command, as well as `#read`
 to fetch all entries in the set.
 
 This is used by the

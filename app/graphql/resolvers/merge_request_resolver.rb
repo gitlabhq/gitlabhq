@@ -9,9 +9,9 @@ module Resolvers
     type ::Types::MergeRequestType, null: true
 
     argument :iid, GraphQL::Types::String,
-             required: true,
-             as: :iids,
-             description: 'IID of the merge request, for example `1`.'
+      required: true,
+      as: :iids,
+      description: 'IID of the merge request, for example `1`.'
 
     def no_results_possible?(args)
       project.nil?

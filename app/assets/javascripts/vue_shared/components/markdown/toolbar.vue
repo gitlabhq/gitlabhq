@@ -100,7 +100,7 @@ export default {
               <gl-button
                 variant="link"
                 category="primary"
-                class="retry-uploading-link gl-vertical-align-baseline gl-font-sm!"
+                class="retry-uploading-link gl-align-baseline gl-font-sm!"
               >
                 {{ content }}
               </gl-button>
@@ -109,7 +109,7 @@ export default {
               <gl-button
                 variant="link"
                 category="primary"
-                class="markdown-selector attach-new-file gl-vertical-align-baseline gl-font-sm!"
+                class="markdown-selector attach-new-file gl-align-baseline gl-font-sm!"
               >
                 {{ content }}
               </gl-button>
@@ -119,7 +119,7 @@ export default {
         <gl-button
           variant="link"
           category="primary"
-          class="button-cancel-uploading-files gl-vertical-align-baseline hide gl-font-sm!"
+          class="button-cancel-uploading-files gl-align-baseline hide gl-font-sm!"
         >
           {{ __('Cancel') }}
         </gl-button>

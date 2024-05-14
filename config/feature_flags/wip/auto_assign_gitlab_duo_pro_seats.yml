@@ -1,0 +1,9 @@
+---
+name: auto_assign_gitlab_duo_pro_seats
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/epics/13637
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150824
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/457488
+milestone: '17.0'
+group: group::provision
+type: wip
+default_enabled: false

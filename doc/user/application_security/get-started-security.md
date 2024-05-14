@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, Self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview, see [Adopting GitLab application security](https://www.youtube.com/watch?v=5QlxkiKR04k).
@@ -34,15 +34,15 @@ After you've gotten familiar with how scanning works, you can then choose to:
    - That uses your organization's typical programming languages and technologies, because some scanning features work differently across languages.
    - Where you can try out new settings, like required approvals, without interrupting your team's daily work.
      You could create a copy of a higher-traffic project for testing, or select a project that's not as busy.
-1. Create a merge request to [enable Secret Detection](secret_detection/index.md#enable-secret-detection) and [enable Dependency Scanning](dependency_scanning/index.md#configuration)
+1. Create a merge request to [enable Secret Detection](secret_detection/pipeline/index.md#enabling-the-analyzer) and [enable Dependency Scanning](dependency_scanning/index.md#configuration)
    to identify any leaked secrets and vulnerable packages in that project.
-   - Security scanners run in your project's [CI/CD pipelines](../../ci/pipelines/index.md). Creating a merge request to update your [`.gitlab-ci.yml`](../../ci/index.md#the-gitlab-ciyml-file) helps you check how the scanners work with your project before they start running in every pipeline. In the merge request, you can change relevant [Secret Detection settings](secret_detection/index.md#configure-scan-settings) or [Dependency Scanning settings](dependency_scanning/index.md#available-cicd-variables) to accommodate your project's layout or configuration. For example, you might choose to exclude a directory of third-party code from scanning.
+   - Security scanners run in your project's [CI/CD pipelines](../../ci/pipelines/index.md). Creating a merge request to update your `.gitlab-ci.yml` file helps you check how the scanners work with your project before they start running in every pipeline. In the merge request, you can change relevant [Secret Detection settings](secret_detection/pipeline/index.md#configuration) or [Dependency Scanning settings](dependency_scanning/index.md#available-cicd-variables) to accommodate your project's layout or configuration. For example, you might choose to exclude a directory of third-party code from scanning.
    - After you merge this MR to your [default branch](../project/repository/branches/default.md), the system creates a baseline scan. This scan identifies which vulnerabilities already exist on the default branch so [merge requests](../project/merge_requests/index.md) can highlight only newly-introduced problems. Without a baseline scan, merge requests display every
-   vulnerability in the branch, even if the vulnerability already exists on the default branch.
+     vulnerability in the branch, even if the vulnerability already exists on the default branch.
 1. Let your team get comfortable with [viewing security findings in merge requests](index.md#view-security-scan-information) and the [vulnerability report](vulnerability_report/index.md).
 1. Establish a vulnerability triage workflow.
    - Consider creating [labels](../project/labels.md) and [issue boards](../project/issue_board.md) to
-   help manage issues created from vulnerabilities. Issue boards allow all stakeholders to have a
+     help manage issues created from vulnerabilities. Issue boards allow all stakeholders to have a
    common view of all issues and track remediation progress.
 1. Monitor the [Security Dashboard](security_dashboard/index.md) trends to gauge success in remediating existing vulnerabilities and preventing the introduction of new ones.
 1. Enforce scheduled security scanning jobs by using a [scan execution policy](policies/scan-execution-policies.md).
@@ -56,7 +56,7 @@ After you've gotten familiar with how scanning works, you can then choose to:
 1. Use [Compliance Pipelines](../group/compliance_pipelines.md)
    or [Scan Execution Policies](policies/scan-execution-policies.md) to enforce required scan types
    and ensure separation of duties between security and engineering.
-1. Consider enabling [Review Apps](../../development/testing_guide/review_apps.md) to allow for DAST
+1. Consider enabling [review apps](../../development/testing_guide/review_apps.md) to allow for DAST
    and [Web API fuzzing](api_fuzzing/index.md) on ephemeral test environments.
 1. Enable [operational container scanning](../../user/clusters/agent/vulnerabilities.md) to scan
    container images in your production cluster for security vulnerabilities.

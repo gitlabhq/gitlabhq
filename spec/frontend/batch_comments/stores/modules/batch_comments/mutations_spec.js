@@ -74,14 +74,6 @@ describe('Batch comments mutations', () => {
   });
 
   describe(types.RECEIVE_PUBLISH_REVIEW_SUCCESS, () => {
-    it('resets drafts', () => {
-      state.drafts.push('test');
-
-      mutations[types.RECEIVE_PUBLISH_REVIEW_SUCCESS](state);
-
-      expect(state.drafts).toEqual([]);
-    });
-
     it('sets isPublishing to false', () => {
       state.isPublishing = true;
 

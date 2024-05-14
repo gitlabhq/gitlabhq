@@ -3,15 +3,18 @@
 require 'spec_helper'
 
 RSpec.describe API::IssueLinks, feature_category: :team_planning do
-  let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project) }
-  let_it_be(:issue) { create(:issue, project: project) }
+  let_it_be(:non_member) { create(:user) }
+  let_it_be(:guest_user) { create(:user) }
+  let_it_be(:public_project) { create(:project, :public, guests: guest_user) }
+  let_it_be(:private_project) { create(:project, :private, guests: guest_user) }
 
-  before do
-    project.add_guest(user)
-  end
+  let_it_be(:project) { public_project }
+  let_it_be(:issue) { create(:issue, project: project) }
+  let_it_be(:target_issue) { create(:issue, project: project) }
 
   describe 'GET /links' do
+    let_it_be(:issue_link) { create(:issue_link, source: issue, target: target_issue) }
+
     def perform_request(user = nil, params = {})
       get api("/projects/#{project.id}/issues/#{issue.iid}/links", user), params: params
     end
@@ -25,11 +28,11 @@ RSpec.describe API::IssueLinks, feature_category: :team_planning do
     end
 
     context 'when authenticated' do
-      let_it_be(:issue_link1) { create(:issue_link, source: issue, target: create(:issue, project: project)) }
-      let_it_be(:issue_link2) { create(:issue_link, source: issue, target: create(:issue, project: project)) }
+      let_it_be(:target_issue2) { create(:issue, project: project) }
+      let_it_be(:issue_link2) { create(:issue_link, source: issue, target: target_issue2) }
 
       it 'returns related issues' do
-        perform_request(user)
+        perform_request(guest_user)
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).to be_an Array
@@ -38,24 +41,25 @@ RSpec.describe API::IssueLinks, feature_category: :team_planning do
       end
 
       it 'returns multiple links without N + 1' do
-        perform_request(user)
+        perform_request(guest_user)
 
-        control = ActiveRecord::QueryRecorder.new { perform_request(user) }
+        control = ActiveRecord::QueryRecorder.new { perform_request(guest_user) }
 
         create(:issue_link, source: issue, target: create(:issue, project: project))
 
-        expect { perform_request(user) }.not_to exceed_query_limit(control)
+        expect { perform_request(guest_user) }.not_to exceed_query_limit(control)
       end
     end
   end
 
   describe 'POST /links' do
+    def perform_request(user = nil, params: {})
+      post api("/projects/#{project.id}/issues/#{issue.iid}/links", user), params: params
+    end
+
     context 'when unauthenticated' do
       it 'returns 401' do
-        target_issue = create(:issue)
-
-        post api("/projects/#{project.id}/issues/#{issue.iid}/links"),
-             params: { target_project_id: target_issue.project.id, target_issue_iid: target_issue.iid }
+        perform_request(params: { target_project_id: target_issue.project.id, target_issue_iid: target_issue.iid })
 
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
@@ -64,10 +68,7 @@ RSpec.describe API::IssueLinks, feature_category: :team_planning do
     context 'when authenticated' do
       context 'given target project not found' do
         it 'returns 404' do
-          target_issue = create(:issue)
-
-          post api("/projects/#{project.id}/issues/#{issue.iid}/links", user),
-               params: { target_project_id: -1, target_issue_iid: target_issue.iid }
+          perform_request(guest_user, params: { target_project_id: -1, target_issue_iid: target_issue.iid })
 
           expect(response).to have_gitlab_http_status(:not_found)
           expect(json_response['message']).to eq('404 Project Not Found')
@@ -76,37 +77,31 @@ RSpec.describe API::IssueLinks, feature_category: :team_planning do
 
       context 'given target issue not found' do
         it 'returns 404' do
-          target_project = create(:project, :public)
-
-          post api("/projects/#{project.id}/issues/#{issue.iid}/links", user),
-               params: { target_project_id: target_project.id, target_issue_iid: non_existing_record_iid }
+          perform_request(
+            guest_user,
+            params: { target_project_id: project.id, target_issue_iid: non_existing_record_iid }
+          )
 
           expect(response).to have_gitlab_http_status(:not_found)
           expect(json_response['message']).to eq('404 Not found')
         end
       end
 
-      context 'when user does not have write access to given issue' do
-        it 'returns 403' do
-          unauthorized_project = create(:project)
-          target_issue = create(:issue, project: unauthorized_project)
-          unauthorized_project.add_guest(user)
-
-          post api("/projects/#{project.id}/issues/#{issue.iid}/links", user),
-               params: { target_project_id: unauthorized_project.id, target_issue_iid: target_issue.iid }
+      context 'when user does not have access to given issue' do
+        it 'returns 404' do
+          perform_request(non_member, params: { target_project_id: project.id, target_issue_iid: target_issue.iid })
 
           expect(response).to have_gitlab_http_status(:forbidden)
-          expect(json_response['message']).to eq("Couldn't link issue. You must have at least the Reporter role in both projects.")
+          expect(json_response['message'])
+            .to eq("Couldn't link issues. You must have at least the Guest role in both projects.")
         end
       end
 
       context 'when trying to relate to a confidential issue' do
-        it 'returns 404' do
-          project = create(:project, :public)
-          target_issue = create(:issue, :confidential, project: project)
+        let_it_be(:target_issue) { create(:issue, :confidential, project: project) }
 
-          post api("/projects/#{project.id}/issues/#{issue.iid}/links", user),
-               params: { target_project_id: project.id, target_issue_iid: target_issue.iid }
+        it 'returns 404' do
+          perform_request(guest_user, params: { target_project_id: project.id, target_issue_iid: target_issue.iid })
 
           expect(response).to have_gitlab_http_status(:not_found)
           expect(json_response['message']).to eq('404 Not found')
@@ -114,12 +109,10 @@ RSpec.describe API::IssueLinks, feature_category: :team_planning do
       end
 
       context 'when trying to relate to a private project issue' do
-        it 'returns 404' do
-          project = create(:project, :private)
-          target_issue = create(:issue, project: project)
+        let_it_be(:project) { private_project }
 
-          post api("/projects/#{project.id}/issues/#{issue.iid}/links", user),
-               params: { target_project_id: project.id, target_issue_iid: target_issue.iid }
+        it 'returns 404' do
+          perform_request(non_member, params: { target_project_id: project.id, target_issue_iid: target_issue.iid })
 
           expect(response).to have_gitlab_http_status(:not_found)
           expect(json_response['message']).to eq('404 Project Not Found')
@@ -127,15 +120,11 @@ RSpec.describe API::IssueLinks, feature_category: :team_planning do
       end
 
       context 'when user has ability to create an issue link' do
-        let_it_be(:target_issue) { create(:issue, project: project) }
-
-        before do
-          project.add_reporter(user)
-        end
-
         it 'returns 201 status and contains the expected link response' do
-          post api("/projects/#{project.id}/issues/#{issue.iid}/links", user),
-               params: { target_project_id: project.id, target_issue_iid: target_issue.iid, link_type: 'relates_to' }
+          perform_request(
+            guest_user,
+            params: { target_project_id: project.id, target_issue_iid: target_issue.iid, link_type: 'relates_to' }
+          )
 
           expect_link_response(link_type: 'relates_to')
           expect(json_response['source_issue']['id']).to eq(issue.id)
@@ -143,8 +132,10 @@ RSpec.describe API::IssueLinks, feature_category: :team_planning do
         end
 
         it 'returns 201 when sending full path of target project' do
-          post api("/projects/#{project.id}/issues/#{issue.iid}/links", user),
-               params: { target_project_id: project.full_path, target_issue_iid: target_issue.iid }
+          perform_request(
+            guest_user,
+            params: { target_project_id: project.full_path, target_issue_iid: target_issue.iid }
+          )
 
           expect_link_response
         end
@@ -159,15 +150,17 @@ RSpec.describe API::IssueLinks, feature_category: :team_planning do
   end
 
   describe 'GET /links/:issue_link_id' do
+    let_it_be(:issue_link) { create(:issue_link, source: issue, target: target_issue) }
+
     def perform_request(issue_link_id, user = nil, params = {})
       get api("/projects/#{project.id}/issues/#{issue.iid}/links/#{issue_link_id}", user), params: params
     end
 
     context 'when unauthenticated' do
       context 'when accessing an issue of a private project' do
-        it 'returns 401' do
-          issue_link = create(:issue_link)
+        let_it_be(:project) { private_project }
 
+        it 'returns 401' do
           perform_request(issue_link.id)
 
           expect(response).to have_gitlab_http_status(:unauthorized)
@@ -176,13 +169,7 @@ RSpec.describe API::IssueLinks, feature_category: :team_planning do
 
       # This isn't ideal, see https://gitlab.com/gitlab-org/gitlab/-/issues/364077
       context 'when accessing an issue of a public project' do
-        let(:project) { create(:project, :public) }
-        let(:issue) { create(:issue, project: project) }
-        let(:public_issue) { create(:issue, project: project) }
-
         it 'returns 401' do
-          issue_link = create(:issue_link, source: issue, target: public_issue)
-
           perform_request(issue_link.id)
 
           expect(response).to have_gitlab_http_status(:unauthorized)
@@ -191,11 +178,9 @@ RSpec.describe API::IssueLinks, feature_category: :team_planning do
     end
 
     context 'when authenticated' do
-      let_it_be(:target_issue) { create(:issue, project: project) }
-
       context 'when issue link does not exist' do
         it 'returns 404' do
-          perform_request(non_existing_record_id, user)
+          perform_request(non_existing_record_id, guest_user)
 
           expect(response).to have_gitlab_http_status(:not_found)
         end
@@ -205,9 +190,8 @@ RSpec.describe API::IssueLinks, feature_category: :team_planning do
         it 'returns 404' do
           other_issue = create(:issue, project: project)
           # source is different than the given API route issue
-          issue_link = create(:issue_link, source: other_issue, target: target_issue)
-
-          perform_request(issue_link.id, user)
+          other_link = create(:issue_link, source: other_issue, target: target_issue)
+          perform_request(other_link.id, guest_user)
 
           expect(response).to have_gitlab_http_status(:not_found)
         end
@@ -215,9 +199,7 @@ RSpec.describe API::IssueLinks, feature_category: :team_planning do
 
       context 'when user has ability to read the issue link' do
         it 'returns 200' do
-          issue_link = create(:issue_link, source: issue, target: target_issue)
-
-          perform_request(issue_link.id, user)
+          perform_request(issue_link.id, guest_user)
 
           aggregate_failures "testing response" do
             expect(response).to have_gitlab_http_status(:ok)
@@ -227,16 +209,12 @@ RSpec.describe API::IssueLinks, feature_category: :team_planning do
       end
 
       context 'when user cannot read issue link' do
-        let(:private_project) { create(:project) }
-        let(:public_project) { create(:project, :public) }
-        let(:public_issue) { create(:issue, project: public_project) }
-
         context 'when the issue link targets an issue in a non-accessible project' do
           it 'returns 404' do
-            private_issue = create(:issue, project: private_project)
-            issue_link = create(:issue_link, source: public_issue, target: private_issue)
+            private_issue = create(:issue, project: create(:project, :private))
+            private_link = create(:issue_link, source: issue, target: private_issue)
 
-            perform_request(issue_link.id, user)
+            perform_request(private_link.id, guest_user)
 
             expect(response).to have_gitlab_http_status(:not_found)
           end
@@ -245,9 +223,9 @@ RSpec.describe API::IssueLinks, feature_category: :team_planning do
         context 'when issue link targets a non-accessible issue' do
           it 'returns 404' do
             confidential_issue = create(:issue, :confidential, project: public_project)
-            issue_link = create(:issue_link, source: public_issue, target: confidential_issue)
+            confidential_link = create(:issue_link, source: issue, target: confidential_issue)
 
-            perform_request(issue_link.id, user)
+            perform_request(confidential_link.id, guest_user)
 
             expect(response).to have_gitlab_http_status(:not_found)
           end
@@ -257,11 +235,15 @@ RSpec.describe API::IssueLinks, feature_category: :team_planning do
   end
 
   describe 'DELETE /links/:issue_link_id' do
+    let_it_be(:issue_link) { create(:issue_link, source: issue, target: target_issue) }
+
+    def perform_request(issue_link_id, user = nil)
+      delete api("/projects/#{project.id}/issues/#{issue.iid}/links/#{issue_link_id}", user)
+    end
+
     context 'when unauthenticated' do
       it 'returns 401' do
-        issue_link = create(:issue_link)
-
-        delete api("/projects/#{project.id}/issues/#{issue.iid}/links/#{issue_link.id}")
+        perform_request(issue_link.id)
 
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
@@ -270,12 +252,9 @@ RSpec.describe API::IssueLinks, feature_category: :team_planning do
     context 'when authenticated' do
       context 'when user does not have write access to given issue link' do
         it 'returns 404' do
-          unauthorized_project = create(:project)
-          target_issue = create(:issue, project: unauthorized_project)
-          issue_link = create(:issue_link, source: issue, target: target_issue)
-          unauthorized_project.add_guest(user)
-
-          delete api("/projects/#{project.id}/issues/#{issue.iid}/links/#{issue_link.id}", user)
+          external_public_issue = create(:issue, project: create(:project, :public))
+          external_link = create(:issue_link, source: issue, target: external_public_issue)
+          perform_request(external_link.id, guest_user)
 
           expect(response).to have_gitlab_http_status(:not_found)
           expect(json_response['message']).to eq('No Issue Link found')
@@ -284,7 +263,7 @@ RSpec.describe API::IssueLinks, feature_category: :team_planning do
 
       context 'issue link not found' do
         it 'returns 404' do
-          delete api("/projects/#{project.id}/issues/#{issue.iid}/links/#{non_existing_record_id}", user)
+          perform_request(non_existing_record_id, guest_user)
 
           expect(response).to have_gitlab_http_status(:not_found)
           expect(json_response['message']).to eq('404 Not found')
@@ -292,12 +271,10 @@ RSpec.describe API::IssueLinks, feature_category: :team_planning do
       end
 
       context 'when trying to delete a link with a private project issue' do
-        it 'returns 404' do
-          project = create(:project, :private)
-          target_issue = create(:issue, project: project)
-          issue_link = create(:issue_link, source: issue, target: target_issue)
+        let_it_be(:project) { private_project }
 
-          delete api("/projects/#{project.id}/issues/#{issue.iid}/links/#{issue_link.id}", user)
+        it 'returns 404' do
+          perform_request(issue_link.id, non_member)
 
           expect(response).to have_gitlab_http_status(:not_found)
           expect(json_response['message']).to eq('404 Project Not Found')
@@ -305,16 +282,8 @@ RSpec.describe API::IssueLinks, feature_category: :team_planning do
       end
 
       context 'when user has ability to delete the issue link' do
-        let_it_be(:target_issue) { create(:issue, project: project) }
-
-        before do
-          project.add_reporter(user)
-        end
-
         it 'returns 200' do
-          issue_link = create(:issue_link, source: issue, target: target_issue)
-
-          delete api("/projects/#{project.id}/issues/#{issue.iid}/links/#{issue_link.id}", user)
+          perform_request(issue_link.id, guest_user)
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(response).to match_response_schema('public_api/v4/issue_link')
@@ -322,9 +291,9 @@ RSpec.describe API::IssueLinks, feature_category: :team_planning do
 
         it 'returns 404 when the issue link does not belong to the specified issue' do
           other_issue = create(:issue, project: project)
-          issue_link = create(:issue_link, source: other_issue, target: target_issue)
+          other_link = create(:issue_link, source: other_issue, target: target_issue)
 
-          delete api("/projects/#{project.id}/issues/#{issue.iid}/links/#{issue_link.id}", user)
+          perform_request(other_link.id, guest_user)
 
           expect(response).to have_gitlab_http_status(:not_found)
           expect(json_response['message']).to eq('404 Not found')

@@ -6,13 +6,14 @@ RSpec.describe MergeRequests::RemoveApprovalService, feature_category: :code_rev
   describe '#execute' do
     let(:user) { create(:user) }
     let(:project) { create(:project) }
-    let(:merge_request) { create(:merge_request, source_project: project) }
+    let(:merge_request) { create(:merge_request, source_project: project, reviewers: [user]) }
     let!(:existing_approval) { create(:approval, merge_request: merge_request) }
 
     subject(:service) { described_class.new(project: project, current_user: user) }
 
-    def execute!
-      service.execute(merge_request)
+    def execute!(skip_updating_state: false, skip_system_note: false, skip_notification: false)
+      service.execute(merge_request, skip_updating_state: skip_updating_state, skip_system_note: skip_system_note,
+        skip_notification: skip_notification)
     end
 
     before do
@@ -65,6 +66,18 @@ RSpec.describe MergeRequests::RemoveApprovalService, feature_category: :code_rev
         expect { execute! }.to change { merge_request.approvals.size }.from(2).to(1)
       end
 
+      it 'changes reviewers state to unapproved' do
+        expect { execute! }.to change {
+          merge_request.merge_request_reviewers.reload.all?(&:unapproved?)
+        }.from(false).to(true)
+      end
+
+      it 'does not change reviewers state when skip_updating_state is true' do
+        expect { execute!(skip_updating_state: true) }.not_to change {
+          merge_request.merge_request_reviewers.reload.all?(&:unapproved?)
+        }
+      end
+
       it 'creates an unapproval note, triggers a web hook, and sends a notification' do
         expect(service).to receive(:execute_hooks).with(merge_request, 'unapproved')
         expect(SystemNoteService).to receive(:unapprove_mr)
@@ -73,11 +86,35 @@ RSpec.describe MergeRequests::RemoveApprovalService, feature_category: :code_rev
         execute!
       end
 
+      it 'does not trigger a web hook when skip_notification is true' do
+        expect(service).not_to receive(:execute_hooks)
+
+        execute!(skip_notification: true)
+      end
+
+      it 'does not send notification when skip_notification is true' do
+        expect(notification_service).not_to receive(:async)
+
+        execute!(skip_notification: true)
+      end
+
+      it 'does not create system note when skip_system_note is true' do
+        expect(SystemNoteService).not_to receive(:unapprove_mr)
+
+        execute!(skip_system_note: true)
+      end
+
       it 'tracks merge request unapprove action' do
         expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
           .to receive(:track_unapprove_mr_action).with(user: user)
 
         execute!
+      end
+
+      it 'does not track merge request unapprove action when skip_system_note is true' do
+        expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter).not_to receive(:track_unapprove_mr_action)
+
+        execute!(skip_system_note: true)
       end
 
       it_behaves_like 'triggers GraphQL subscription mergeRequestMergeStatusUpdated' do

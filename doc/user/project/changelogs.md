@@ -8,7 +8,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Changelogs are generated based on commit titles and Git trailers. To be included
 in a changelog, a commit must contain a specific Git trailer. Changelogs are generated
@@ -40,7 +40,7 @@ of these sections can be changed. The section names derive from the values of th
 Git trailer used to include or exclude commits.
 
 Commits for changelogs can be retrieved when operating on a mirror. GitLab itself
-uses this feature, because security releases can include changes from both public
+uses this feature, because patch releases can include changes from both public
 projects and private security mirrors.
 
 ## Add a trailer to a Git commit
@@ -65,7 +65,7 @@ GitLab CLI. The changelog output is formatted in Markdown, and
 
 ### From the API
 
-To generate changelogs via the API with a `curl` command, see
+To use the API to generate changelogs with a `curl` command, see
 [Add changelog data to a changelog file](../../api/repositories.md#add-changelog-data-to-a-changelog-file)
 in the API documentation.
 
@@ -273,6 +273,26 @@ In an entry, the following variables are available (here `foo.bar` means that
   `gitlab-org/gitlab@0a4cdd86ab31748ba6dac0f69a8653f206e5cfc7`.
 - `commit.trailers`: an object containing all the Git trailers that were present
   in the commit body.
+
+  These trailers can be referenced using `commit.trailers.<name>`. For example, assuming the following commit:
+
+  ```plaintext
+  Add some impressive new feature
+
+  Changelog: added
+  Issue: https://gitlab.com/gitlab-org/gitlab/-/issues/1234
+  Status: important
+  ```
+
+  The `Changelog`, `Issue` and `Status` trailers can be accessed in the template as follows:
+
+  ```yaml
+  {% each entries %}
+  {% if commit.trailers.Issue %} ([link to issue]({{ commit.trailers.Issue }})){% end %}
+  {% if commit.trailers.Status %}Status: {{ commit.trailers.Status }}{% end %}
+  {% end %}
+  ```
+
 - `merge_request.reference`: a reference to the merge request that first
   introduced the change (for example, `gitlab-org/gitlab!50063`).
 - `title`: the title of the changelog entry (this is the commit title).
@@ -282,8 +302,6 @@ couldn't be determined. For example, when a commit is created without a
 corresponding merge request, no merge request is displayed.
 
 ### Customize the tag format when extracting versions
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56889) in GitLab 13.11.
 
 GitLab uses a regular expression (using the
 [re2](https://github.com/google/re2/) engine and syntax) to extract a semantic
@@ -331,8 +349,6 @@ an error is produced when generating a changelog.
 
 ## Reverted commit handling
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55537) in GitLab 13.10.
-
 To be treated as a revert commit, the commit message must contain the string
 `This reverts commit <SHA>`, where `SHA` is the SHA of the commit to be reverted.
 
@@ -341,6 +357,7 @@ reverted in that range. In this example, commit C reverts commit B. Because
 commit C has no other trailer, only commit A is added to the changelog:
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 graph LR
     A[Commit A<br>Changelog: changed] --> B[Commit B<br>Changelog: changed]
     B --> C[Commit C<br>Reverts commit B]
@@ -350,6 +367,7 @@ However, if the revert commit (commit C) _also_ contains a changelog trailer,
 both commits A and C are included in the changelog:
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 graph LR
     A[Commit A<br><br>Changelog: changed] --> B[Commit B<br><br>Changelog: changed]
     B --> C[Commit C<br>Reverts commit B<br>Changelog: changed]
@@ -360,3 +378,4 @@ Commit B is skipped.
 ## Related topics
 
 - [Changelog-related endpoints](../../api/repositories.md) in the Repositories API.
+- [`glab changelog`](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source/changelog) in the GitLab CLI documentation.

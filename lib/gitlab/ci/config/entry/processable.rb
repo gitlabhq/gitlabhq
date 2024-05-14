@@ -59,7 +59,7 @@ module Gitlab
               inherit: false,
               metadata: {
                 allowed_when: %w[on_success on_failure always never manual delayed].freeze,
-                allowed_keys: %i[if changes exists when start_in allow_failure variables needs].freeze
+                allowed_keys: %i[if changes exists when start_in allow_failure variables needs interruptible].freeze
               }
 
             entry :variables, ::Gitlab::Ci::Config::Entry::Variables,

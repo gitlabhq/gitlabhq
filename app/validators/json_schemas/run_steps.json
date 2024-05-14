@@ -1,0 +1,52 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://gitlab.com/gitlab-org/step-runner/schema/v1/steps",
+  "items": {
+    "oneOf": [
+      {
+        "required": [
+          "step"
+        ],
+        "title": "step"
+      },
+      {
+        "required": [
+          "script"
+        ],
+        "title": "script"
+      }
+    ],
+    "properties": {
+      "name": {
+        "type": "string",
+        "description": "Name is a unique identifier for this step."
+      },
+      "step": {
+        "type": "string",
+        "description": "Step is a reference to the step to invoke."
+      },
+      "env": {
+        "additionalProperties": {
+          "type": "string"
+        },
+        "type": "object",
+        "description": "Env is a map of environment variable names to string values."
+      },
+      "inputs": {
+        "type": "object",
+        "description": "Inputs is a map of step input names to structured values."
+      },
+      "script": {
+        "type": "string",
+        "description": "Script is a shell script to evaluate."
+      }
+    },
+    "additionalProperties": false,
+    "type": "object",
+    "required": [
+      "name"
+    ],
+    "description": "Step is a single step invocation."
+  },
+  "type": "array"
+}

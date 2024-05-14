@@ -6,7 +6,7 @@ RSpec.describe 'Resetting a token on an existing Prometheus Integration', featur
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project) { create(:project, maintainers: user) }
   let_it_be(:integration) { create(:prometheus_integration, project: project) }
 
   let(:mutation) do
@@ -26,10 +26,6 @@ RSpec.describe 'Resetting a token on an existing Prometheus Integration', featur
   end
 
   let(:mutation_response) { graphql_mutation_response(:prometheus_integration_reset_token) }
-
-  before do
-    project.add_maintainer(user)
-  end
 
   it 'creates a token' do
     post_graphql_mutation(mutation, current_user: user)

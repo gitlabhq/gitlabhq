@@ -67,7 +67,7 @@ class ProfilesController < Profiles::ApplicationController
   end
 
   def authorize_change_username!
-    return render_404 unless @user.can_change_username?
+    render_404 unless @user.can_change_username?
   end
 
   def username_param
@@ -104,7 +104,7 @@ class ProfilesController < Profiles::ApplicationController
       :pronouns,
       :pronunciation,
       :validation_password,
-      status: [:emoji, :message, :availability, :clear_status_after]
+      { status: [:emoji, :message, :availability, :clear_status_after] }
     ]
   end
 

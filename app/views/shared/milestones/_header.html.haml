@@ -8,10 +8,13 @@
           = _('Milestone')
       - if milestone.due_date || milestone.start_date
         = milestone_date_range(milestone)
-      = render Pajamas::ButtonComponent.new(icon: 'chevron-double-lg-left', button_options: { 'aria-label' => _('Toggle sidebar'), class: 'btn-grouped gl-float-right! gl-sm-display-none js-sidebar-toggle' })
+      = render Pajamas::ButtonComponent.new(icon: 'chevron-double-lg-left', button_options: { 'aria-label' => _('Toggle sidebar'), class: 'btn-grouped !gl-float-right gl-sm-display-none js-sidebar-toggle' })
 
   - if can?(current_user, :admin_milestone, @group || @project)
-    .milestone-buttons.detail-page-header-actions.gl-display-flex.gl-align-self-start
+    - can_promote = @project && can_admin_group_milestones? && milestone.project
+    - can_read_milestone = can?(current_user, :read_milestone, @milestone)
+
+    .milestone-buttons.detail-page-header-actions.gl-display-flex.gl-align-self-start.gl-gap-3
       - if milestone.active?
         = render Pajamas::ButtonComponent.new(href: update_milestone_path(milestone, { state_event: :close }), method: :put, button_options: { class: 'btn-close gl-display-none gl-md-display-inline-block' }) do
           = _('Close milestone')
@@ -19,38 +22,18 @@
         = render Pajamas::ButtonComponent.new(href: update_milestone_path(milestone, { state_event: :activate }), method: :put, button_options: { class: 'gl-display-none gl-md-display-inline-block' }) do
           = _('Reopen milestone')
 
-      .gl-md-ml-3.gl-display-flex.dropdown.gl-dropdown.gl-md-w-auto.gl-w-full
-        = render Pajamas::ButtonComponent.new(category: :tertiary, icon: 'ellipsis_v', button_options: { class: 'has-tooltip gl-display-none! gl-md-display-inline-flex!', 'aria-label': _('Milestone actions'), data: { toggle: 'dropdown', title: _('Milestone actions'), testid: 'milestone-actions' } })
-        = render Pajamas::ButtonComponent.new(button_options: { class: 'btn-block gl-md-display-none!', data: { toggle: 'dropdown' } }) do
-          = _('Milestone actions')
-          = sprite_icon "chevron-down", size: 16, css_class: "dropdown-icon gl-icon"
-        .dropdown-menu.dropdown-menu-right
-          .gl-dropdown-inner
-            .gl-dropdown-contents
-              %ul
-                %li.gl-dropdown-item
-                  = link_to edit_milestone_path(milestone), class: 'menu-item' do
-                    .gl-dropdown-item-text-wrapper
-                      = _('Edit')
-                - if milestone.project_milestone? && milestone.project.group
-                  %li.gl-dropdown-item
-                    %button.gl-button.btn.btn-link.menu-item.js-promote-project-milestone-button{ data: { milestone_title: milestone.title,
-                      group_name: milestone.project.group.name,
-                      url: promote_project_milestone_path(milestone.project, milestone)},
-                      disabled: true,
-                      type: 'button' }
-                      .gl-dropdown-item-text-wrapper
-                        = _('Promote')
-                    #promote-milestone-modal
-                - if milestone.active?
-                  %li.gl-dropdown-item{ class: "gl-md-display-none!" }
-                    = link_to update_milestone_path(milestone, { state_event: :close }), method: :put, class: 'menu-item' do
-                      .gl-dropdown-item-text-wrapper
-                        = _('Close milestone')
-                - else
-                  %li.gl-dropdown-item{ class: "gl-md-display-none!" }
-                    = link_to update_milestone_path(milestone, { state_event: :activate }), method: :put, class: 'menu-item' do
-                      .gl-dropdown-item-text-wrapper
-                        = _('Reopen milestone')
-                %li.gl-dropdown-item
-                  = render 'shared/milestones/delete_button'
+      .js-vue-milestone-actions{ data: { id: @milestone.id,
+        title: milestone.title,
+        is_active: milestone.active?.to_s,
+        show_delete: 'true',
+        is_detail_page: 'true',
+        can_read_milestone: can_read_milestone.to_s,
+        milestone_url: Gitlab::UrlBuilder.build(milestone, only_path: true),
+        edit_url: edit_milestone_path(milestone),
+        close_url: update_milestone_path(milestone, { state_event: :close }),
+        reopen_url: update_milestone_path(milestone, { state_event: :activate }),
+        promote_url: can_promote ? promote_project_milestone_path(milestone.project, milestone) : '',
+        group_name: can_promote && milestone.project_milestone? && milestone.project.group ? milestone.project.group.name : '',
+        issue_count: @milestone.issues.count,
+        merge_request_count: @milestone.merge_requests.count
+      } }

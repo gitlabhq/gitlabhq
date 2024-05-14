@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 This page describes how you can use the GraphiQL explorer to identify
 existing [issue boards](../../user/project/issue_board.md) in the `gitlab-docs` documentation repository.
@@ -45,7 +45,7 @@ instance of the [GraphiQL explorer](https://gitlab.com/-/graphql-explorer):
 
 ![GraphiQL explorer search for boards](img/sample_issue_boards_v13_2.png)
 
-If you want to view one of these boards, take one of the numeric identifiers shown in the output. From the screenshot, the first identifier is `105011`. Navigate to the following URL, which includes the identifier:
+If you want to view one of these boards, take one of the numeric identifiers shown in the output. From the screenshot, the first identifier is `105011`. Go to the following URL, which includes the identifier:
 
 ```markdown
 https://gitlab.com/gitlab-org/gitlab-docs/-/boards/105011

@@ -4,17 +4,12 @@ require 'spec_helper'
 
 RSpec.describe Dashboard::LabelsController do
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project) }
-  let_it_be(:project_2) { create(:project) }
+  let_it_be(:project) { create(:project, reporters: user) }
+  let_it_be(:project_2) { create(:project, reporters: user) }
 
   let_it_be(:label) { create(:label, project: project, title: 'some_label') }
   let_it_be(:label_with_same_title) { create(:label, project: project_2, title: 'some_label') }
   let_it_be(:unrelated_label) { create(:label, project: create(:project, :public)) }
-
-  before_all do
-    project.add_reporter(user)
-    project_2.add_reporter(user)
-  end
 
   before do
     sign_in(user)

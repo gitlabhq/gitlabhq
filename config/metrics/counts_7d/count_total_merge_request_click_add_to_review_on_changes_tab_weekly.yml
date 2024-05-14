@@ -19,8 +19,5 @@ tier:
 - free
 - premium
 - ultimate
-options:
-  events:
-  - merge_request_click_add_to_review_on_changes_tab
 events:
 - name: merge_request_click_add_to_review_on_changes_tab

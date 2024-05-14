@@ -12,7 +12,6 @@ RSpec.describe 'Project', feature_category: :source_code_management do
     before do
       sign_in user
       visit new_project_path
-      stub_feature_flags(project_overview_reorg: false)
     end
 
     shared_examples 'creates from template' do |template, sub_template_tab = nil|
@@ -100,19 +99,18 @@ RSpec.describe 'Project', feature_category: :source_code_management do
 
     before do
       sign_in(project.first_owner)
-      stub_feature_flags(project_overview_reorg: false)
     end
 
     it 'parses Markdown' do
       project.update_attribute(:description, 'This is **my** project')
       visit path
-      expect(page).to have_css('.home-panel-description > .home-panel-description-markdown > p > strong')
+      expect(page).to have_css('.home-panel-description .home-panel-description-markdown p > strong')
     end
 
     it 'passes through html-pipeline' do
       project.update_attribute(:description, 'This project is the :poop:')
       visit path
-      expect(page).to have_css('.home-panel-description > .home-panel-description-markdown > p > gl-emoji')
+      expect(page).to have_css('.home-panel-description .home-panel-description-markdown p > gl-emoji')
     end
 
     it 'sanitizes unwanted tags' do
@@ -128,24 +126,11 @@ RSpec.describe 'Project', feature_category: :source_code_management do
     end
 
     context 'read more', :js do
-      let(:read_more_selector)         { '.read-more-container' }
-      let(:read_more_trigger_selector) { '.home-panel-home-desc .js-read-more-trigger' }
-
-      it 'does not display "read more" link on desktop breakpoint' do
-        project.update_attribute(:description, 'This is **my** project')
+      it 'displays "read more" link', :js do
+        project.update_attribute(:description, "This is **my** project\n\nA\n\nB\n\nC\n\nD\n\nE\n\nF\n\nG\n\nH\n\nI\n\nJ\nK\n\nL\n\nM\n\nN\n\nEnd test.")
         visit path
 
-        expect(find(read_more_trigger_selector, visible: false)).not_to be_visible
-      end
-
-      it 'displays "read more" link on mobile breakpoint' do
-        project.update_attribute(:description, 'This is **my** project')
-        visit path
-        resize_screen_xs
-
-        find(read_more_trigger_selector).click
-
-        expect(page).to have_css('.home-panel-description .is-expanded')
+        expect(page).to have_css('.home-panel-description .js-read-more-trigger')
       end
     end
 
@@ -166,7 +151,6 @@ RSpec.describe 'Project', feature_category: :source_code_management do
     before do
       sign_in(project.first_owner)
       visit path
-      stub_feature_flags(project_overview_reorg: false)
     end
 
     it 'shows project topics' do
@@ -198,7 +182,6 @@ RSpec.describe 'Project', feature_category: :source_code_management do
     before do
       sign_in(project.first_owner)
       visit path
-      stub_feature_flags(project_overview_reorg: false)
     end
 
     context 'desktop component' do
@@ -431,10 +414,6 @@ RSpec.describe 'Project', feature_category: :source_code_management do
     let(:project) { create(:project, :repository) }
     let(:user) { create(:user) }
 
-    before do
-      stub_feature_flags(project_overview_reorg: false)
-    end
-
     it 'does not contain default branch information in its content', :js do
       default_branch = 'merge-commit-analyze-side-branch'
 
@@ -448,6 +427,80 @@ RSpec.describe 'Project', feature_category: :source_code_management do
         lines_with_default_branch = page.html.lines.select { |line| line.include?(default_branch) }
         expect(lines_with_default_branch).to eq([])
       end
+    end
+  end
+
+  context 'badges' do
+    shared_examples 'show badges' do
+      it 'renders the all badges' do
+        expect(page).to have_selector('.project-badges a')
+
+        badges.each do |badge|
+          expect(page).to have_link(href: badge.rendered_link_url)
+        end
+      end
+    end
+
+    let(:user) { create(:user) }
+    let(:badges) { project.badges }
+
+    context 'has no badges' do
+      let(:project) { create(:project, :repository) }
+
+      before do
+        sign_in(user)
+        project.add_maintainer(user)
+        visit project_path(project)
+      end
+
+      it 'does not render any badge' do
+        expect(page).not_to have_selector('.project-badges')
+      end
+    end
+
+    context 'only has group badges' do
+      let(:group) { create(:group) }
+      let(:project) { create(:project, :repository, namespace: group) }
+
+      before do
+        create(:group_badge, group: project.group)
+
+        sign_in(user)
+        project.add_maintainer(user)
+        visit project_path(project)
+      end
+
+      it_behaves_like 'show badges'
+    end
+
+    context 'only has project badges' do
+      let(:project) { create(:project, :repository) }
+
+      before do
+        create(:project_badge, project: project)
+
+        sign_in(user)
+        project.add_maintainer(user)
+        visit project_path(project)
+      end
+
+      it_behaves_like 'show badges'
+    end
+
+    context 'has both group and project badges' do
+      let(:group) { create(:group) }
+      let(:project) { create(:project, :repository, namespace: group) }
+
+      before do
+        create(:project_badge, project: project)
+        create(:group_badge, group: project.group)
+
+        sign_in(user)
+        project.add_maintainer(user)
+        visit project_path(project)
+      end
+
+      it_behaves_like 'show badges'
     end
   end
 

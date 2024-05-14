@@ -2,7 +2,8 @@
 
 module QA
   RSpec.describe 'Systems', product_group: :gitaly do
-    describe 'Changing Gitaly repository storage', :requires_admin, except: { job: 'review-qa-*' } do
+    describe 'Changing Gitaly repository storage',
+      :requires_admin, :orchestrated, :skip_live_env, :repository_storage do
       praefect_manager = Service::PraefectManager.new
 
       shared_examples 'repository storage move' do
@@ -12,7 +13,7 @@ module QA
           expect { praefect_manager.verify_storage_move(source_storage, destination_storage, repo_type: :project) }
             .not_to raise_error
 
-          Support::Retrier.retry_on_exception(sleep_interval: 5) do
+          Support::Retrier.retry_on_exception(sleep_interval: 1, max_attempts: 120) do
             # For a short period of time after migrating, the repository can be 'read only' which may lead to errors
             # 'The repository is temporarily read-only. Please try again later.'
             create(:commit, project: project, commit_message: 'Add new file', actions: [
@@ -25,9 +26,9 @@ module QA
         end
       end
 
-      context 'when moving from one Gitaly storage to another', :orchestrated, :repository_storage,
+      context 'when moving from one Gitaly storage to another',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347827' do
-        let(:source_storage) { { type: :gitaly, name: 'default' } }
+        let(:source_storage) { { type: :gitaly, name: QA::Runtime::Env.non_cluster_repository_storage } }
         let(:destination_storage) { { type: :gitaly, name: QA::Runtime::Env.additional_repository_storage } }
         let(:project) do
           create(:project, :with_readme, name: 'repo-storage-move-status', api_client: Runtime::API::Client.as_admin)
@@ -40,14 +41,13 @@ module QA
         it_behaves_like 'repository storage move'
       end
 
-      # Note: This test doesn't have the :orchestrated tag because it runs in the Test::Integration::Praefect
-      # scenario with other tests that aren't considered orchestrated.
-      # It also runs on staging using nfs-file07 as non-cluster storage and nfs-file22 as cluster/praefect storage
-      context 'when moving from Gitaly to Gitaly Cluster', :requires_praefect,
+      context 'when moving from Gitaly to Gitaly Cluster',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347828' do
         let(:source_storage) { { type: :gitaly, name: QA::Runtime::Env.non_cluster_repository_storage } }
         let(:destination_storage) { { type: :praefect, name: QA::Runtime::Env.praefect_repository_storage } }
         let(:project) do
+          QA::Runtime::Logger.info("source_storage #{source_storage}")
+          QA::Runtime::Logger.info("destination_storage #{destination_storage}")
           create(:project,
             :with_readme,
             name: 'repo-storage-move',
@@ -56,20 +56,19 @@ module QA
         end
 
         before do
-          praefect_manager.gitlab = 'gitlab-gitaly-cluster'
+          praefect_manager.gitlab = 'gitlab'
         end
 
         it_behaves_like 'repository storage move'
       end
 
-      # Note: This test doesn't have the :orchestrated tag because it runs in the Test::Integration::Praefect
-      # scenario with other tests that aren't considered orchestrated.
-      # It also runs on staging using nfs-file07 as non-cluster storage and nfs-file22 as cluster/praefect storage
-      context 'when moving from Gitaly Cluster to Gitaly', :requires_praefect,
+      context 'when moving from Gitaly Cluster to Gitaly',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/369204' do
         let(:source_storage) { { type: :praefect, name: QA::Runtime::Env.praefect_repository_storage } }
         let(:destination_storage) { { type: :gitaly, name: QA::Runtime::Env.non_cluster_repository_storage } }
         let(:project) do
+          QA::Runtime::Logger.info("source_storage #{source_storage}")
+          QA::Runtime::Logger.info("destination_storage #{destination_storage}")
           create(:project,
             :with_readme,
             name: 'repo-storage-move',
@@ -78,7 +77,7 @@ module QA
         end
 
         before do
-          praefect_manager.gitlab = 'gitlab-gitaly-cluster'
+          praefect_manager.gitlab = 'gitlab'
         end
 
         it_behaves_like 'repository storage move'

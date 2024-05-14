@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Milestones in GitLab are a way to track issues and merge requests created to achieve a broader goal in a certain period of time.
 
@@ -49,7 +49,7 @@ In a group, GitLab displays milestones that belong to the group and all projects
 ### View milestones in a project with issues turned off
 
 If a project has issue tracking
-[turned off](../settings/project_features_permissions.md#configure-project-features-and-permissions),
+[turned off](../settings/index.md#configure-project-features-and-permissions),
 to get to the milestones page, enter its URL.
 
 To do so:
@@ -150,6 +150,22 @@ To edit a milestone:
 1. Edit the title, start date, due date, or description.
 1. Select **Save changes**.
 
+## Close a milestone
+
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/343889) the minimum user role from Developer to Reporter in GitLab 15.0.
+
+Prerequisites:
+
+- You must have at least the Reporter role for the project or group the milestone belongs to.
+
+To close a milestone:
+
+1. On the left sidebar, select **Search or go to** and find your project or group.
+1. Select **Plan > Milestones**.
+1. Either:
+   - Next to the milestone you want to close, select **Milestone actions** (**{ellipsis_v}**) > **Close**.
+   - Select the milestone title, and then select **Close**.
+
 ## Delete a milestone
 
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/343889) the minimum user role from Developer to Reporter in GitLab 15.0.
@@ -158,12 +174,13 @@ Prerequisites:
 
 - You must have at least the Reporter role for the project or group the milestone belongs to.
 
-To edit a milestone:
+To delete a milestone:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Plan > Milestones**.
-1. Select a milestone's title.
-1. In the upper-right corner, select **Milestone actions** (**{ellipsis_v}**) and then select **Delete**.
+1. Either:
+   - Next to the milestone you want to delete, select **Milestone actions** (**{ellipsis_v}**) > **Delete**.
+   - Select the milestone title, and then select **Milestone actions** (**{ellipsis_v}**) > **Delete**.
 1. Select **Delete milestone**.
 
 ## Promote a project milestone to a group milestone
@@ -189,7 +206,7 @@ To promote a project milestone:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Plan > Milestones**.
 1. Either:
-   - Select **Promote to Group Milestone** (**{level-up}**) next to the milestone you want to promote.
+   - Next to the milestone you want to promote, select **Milestone actions** (**{ellipsis_v}**) > **Promote**.
    - Select the milestone title, and then select **Milestone actions** (**{ellipsis_v}**) > **Promote**.
 1. Select **Promote Milestone**.
 

@@ -1,6 +1,5 @@
 <script>
 import { sprintf, s__, __ } from '~/locale';
-import { getParameterValues } from '~/lib/utils/url_utility';
 
 import ImportDetailsTable from '~/import/details/components/import_details_table.vue';
 
@@ -14,7 +13,7 @@ export default {
     {
       key: 'relation',
       label: __('Type'),
-      tdClass: 'gl-white-space-nowrap',
+      tdClass: 'gl-whitespace-nowrap',
     },
     {
       key: 'source_title',
@@ -35,11 +34,29 @@ export default {
 
   gitlabLogo: window.gon.gitlab_logo,
 
+  props: {
+    id: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    entityId: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    fullPath: {
+      type: String,
+      required: false,
+      default: null,
+    },
+  },
+
   computed: {
     title() {
-      const id = getParameterValues('entity_id')[0];
-
-      return sprintf(s__('BulkImport|Items that failed to be imported for %{id}'), { id });
+      return sprintf(s__('BulkImport|Items that failed to be imported for %{id}'), {
+        id: this.fullPath || this.entityId,
+      });
     },
   },
 };
@@ -53,7 +70,9 @@ export default {
     </h1>
 
     <import-details-table
+      :id="id"
       bulk-import
+      :entity-id="entityId"
       :fields="$options.fields"
       :local-storage-key="$options.LOCAL_STORAGE_KEY"
     />

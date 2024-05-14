@@ -25,6 +25,7 @@ RSpec.describe Packages::Nuget::Symbol, type: :model, feature_category: :package
 
   describe 'delegations' do
     it { is_expected.to delegate_method(:project_id).to(:package) }
+    it { is_expected.to delegate_method(:project).to(:package) }
   end
 
   describe 'scopes' do

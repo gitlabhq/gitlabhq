@@ -4,7 +4,7 @@
 - page_title _('Terminal'), "#{@build.name} (##{@build.id})", _('Jobs')
 - add_page_specific_style 'page_bundles/terminal'
 - content_for :page_specific_javascripts do
-  = stylesheet_link_tag "xterm.css"
+  = universal_stylesheet_link_tag "xterm.css"
 
 
 .terminal-container

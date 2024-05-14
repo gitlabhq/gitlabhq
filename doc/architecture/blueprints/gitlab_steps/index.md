@@ -15,7 +15,7 @@ participating-stages: [ ]
 This document describes architecture of a new component called Step Runner, the GitLab Steps syntax it uses,
 and how the GitHub Actions support will be achieved.
 
-The competitive CI products [drone.io](https://drone.io/),
+The competitive CI products [drone.io](https://www.drone.io/),
 [GitHub Actions](https://docs.github.com/en/actions/creating-actions)
 have a composable CI jobs execution in form of steps, or actions.
 
@@ -33,12 +33,12 @@ shows a need for a better way to define CI job execution.
 
 ## Motivation
 
-Even though the current [`.gitlab-ci.yml`](../../../ci/index.md#the-gitlab-ciyml-file) is reasonably flexible, it easily becomes very
+Even though the current `.gitlab-ci.yml` file is reasonably flexible, it easily becomes very
 complex when trying to support complex workflows. This complexity is represented
-with repetetitve patterns, a purpose-specific syntax, or a complex sequence of commands
+with repetitive patterns, a purpose-specific syntax, or a complex sequence of commands
 to execute.
 
-This is particularly challenging, because the [`.gitlab-ci.yml`](../../../ci/index.md#the-gitlab-ciyml-file)
+This is particularly challenging, because the `.gitlab-ci.yml` file
 is inflexible on more complex workflows that require fine-tuning or special behavior
 for the CI job execution. Its prescriptive approach how to handle Git cloning,
 when artifacts are downloaded, or how the shell script is being executed quite often
@@ -46,7 +46,7 @@ results in the need to work around the system for pipelines that are not "standa
 or when new features are requested.
 
 This proves especially challenging when trying to add a new syntax to the
-[`.gitlab-ci.yml`](../../../ci/index.md#the-gitlab-ciyml-file)
+`.gitlab-ci.yml` file
 to support a specific feature, like [`secure files`](../../../ci/secure_files/index.md)
 or `release:` keyword. Adding these special features on a syntax level
 results in a more complex config, which is harder to maintain, and more complex

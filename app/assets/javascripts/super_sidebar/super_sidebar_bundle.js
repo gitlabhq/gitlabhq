@@ -1,9 +1,10 @@
 import Vue from 'vue';
-import { GlToast } from '@gitlab/ui';
+import { GlBreadcrumb, GlToast } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_utils';
 import createDefaultClient from '~/lib/graphql';
-import { JS_TOGGLE_EXPAND_CLASS } from './constants';
+import { staticBreadcrumbs } from '~/lib/utils/breadcrumbs';
+import { JS_TOGGLE_EXPAND_CLASS, CONTEXT_NAMESPACE_GROUPS } from './constants';
 import createStore from './components/global_search/store';
 import {
   bindSuperSidebarCollapsedEvents,
@@ -45,6 +46,7 @@ const getTrialStatusWidgetData = (sidebarData) => {
       createHandRaiseLeadPath,
       trackAction,
       trackLabel,
+      productInteraction,
     } = convertObjectPropsToCamelCase(sidebarData.trial_status_popover_data_attrs);
 
     return {
@@ -63,10 +65,40 @@ const getTrialStatusWidgetData = (sidebarData) => {
       trackLabel,
       trialEndDate: new Date(trialEndDate),
       trialDiscoverPagePath,
-      user: { namespaceId, userName, firstName, lastName, companyName, glmContent },
+      user: {
+        namespaceId,
+        userName,
+        firstName,
+        lastName,
+        companyName,
+        glmContent,
+        productInteraction,
+      },
     };
   }
   return { showTrialStatusWidget: false };
+};
+
+const getDuoProdTrialStatusWidgetData = (sidebarData) => {
+  if (sidebarData.duo_pro_trial_status_widget_data_attrs) {
+    const {
+      containerId,
+      trialDaysUsed,
+      trialDuration,
+      percentageComplete,
+      widgetUrl,
+    } = convertObjectPropsToCamelCase(sidebarData.duo_pro_trial_status_widget_data_attrs);
+
+    return {
+      showDuoProTrialStatusWidget: true,
+      containerId,
+      trialDaysUsed: Number(trialDaysUsed),
+      trialDuration: Number(trialDuration),
+      percentageComplete: Number(percentageComplete),
+      widgetUrl,
+    };
+  }
+  return { showDuoProTrialStatusWidget: false };
 };
 
 export const initSuperSidebar = () => {
@@ -95,6 +127,8 @@ export const initSuperSidebar = () => {
   const { searchPath, issuesPath, mrPath, autocompletePath, searchContext } = searchData;
   const isImpersonating = parseBoolean(sidebarData.is_impersonating);
 
+  const isGroup = Boolean(sidebarData.current_context?.namespace === CONTEXT_NAMESPACE_GROUPS);
+
   return new Vue({
     el,
     name: 'SuperSidebarRoot',
@@ -103,6 +137,7 @@ export const initSuperSidebar = () => {
       rootPath,
       isImpersonating,
       ...getTrialStatusWidgetData(sidebarData),
+      ...getDuoProdTrialStatusWidgetData(sidebarData),
       commandPaletteCommands,
       commandPaletteLinks,
       contextSwitcherLinks,
@@ -112,6 +147,8 @@ export const initSuperSidebar = () => {
       projectBlobPath,
       projectsPath,
       groupsPath,
+      fullPath: sidebarData.work_items?.full_path,
+      isGroup,
     },
     store: createStore({
       searchPath,
@@ -154,3 +191,21 @@ export const initSuperSidebarToggle = () => {
     },
   });
 };
+
+export function initPageBreadcrumbs() {
+  const el = document.querySelector('#js-vue-page-breadcrumbs');
+  if (!el) return false;
+  const { breadcrumbsJson } = el.dataset;
+
+  staticBreadcrumbs.items = JSON.parse(breadcrumbsJson);
+
+  return new Vue({
+    el,
+    render(h) {
+      return h(GlBreadcrumb, {
+        props: staticBreadcrumbs,
+        attrs: { 'data-testid': 'breadcrumb-links' },
+      });
+    },
+  });
+}

@@ -1,4 +1,11 @@
-import { GlTable, GlAlert, GlLoadingIcon, GlDropdown, GlIcon, GlAvatar, GlLink } from '@gitlab/ui';
+import {
+  GlTable,
+  GlAlert,
+  GlLoadingIcon,
+  GlDisclosureDropdown,
+  GlAvatar,
+  GlLink,
+} from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
@@ -26,7 +33,7 @@ describe('AlertManagementTable', () => {
   const findAlerts = () => wrapper.findAll('table tbody tr');
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findLoader = () => wrapper.findComponent(GlLoadingIcon);
-  const findStatusDropdown = () => wrapper.findComponent(GlDropdown);
+  const findStatusDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
   const findDateFields = () => wrapper.findAllComponents(TimeAgo);
   const findSearch = () => wrapper.findComponent(FilteredSearchBar);
   const findSeverityColumnHeader = () => wrapper.findByTestId('alert-management-severity-sort');
@@ -174,7 +181,7 @@ describe('AlertManagementTable', () => {
       await nextTick();
 
       expect(wrapper.findComponent(GlTable).exists()).toBe(true);
-      expect(findAlertsTable().findComponent(GlIcon).classes('icon-critical')).toBe(true);
+      expect(findAlertsTable().find('[data-testid="severity-critical-icon"]').exists()).toBe(true);
     });
 
     it('renders severity text', () => {

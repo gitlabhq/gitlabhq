@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Namespaces::ProjectNamespace, type: :model do
+  let_it_be(:organization) { create(:organization) }
+
   describe 'relationships' do
     it { is_expected.to have_one(:project).inverse_of(:project_namespace) }
 
@@ -46,7 +48,7 @@ RSpec.describe Namespaces::ProjectNamespace, type: :model do
     end
 
     context 'for new record when namespace exists' do
-      let(:project) { build(:project) }
+      let(:project) { build(:project, organization: organization) }
       let(:project_namespace) { project.project_namespace }
 
       it 'syncs the project attributes to project namespace' do
@@ -55,6 +57,7 @@ RSpec.describe Namespaces::ProjectNamespace, type: :model do
 
         described_class.create_from_project!(project)
         expect(project.project_namespace.name).to eq(project_name)
+        expect(project.project_namespace.organization_id).to eq(project.organization_id)
       end
 
       context 'when project has an unsaved project namespace' do
@@ -69,7 +72,7 @@ RSpec.describe Namespaces::ProjectNamespace, type: :model do
 
   describe '#sync_attributes_from_project' do
     context 'with existing project' do
-      let(:project) { create(:project) }
+      let(:project) { build(:project, organization: organization) }
       let(:project_namespace) { project.project_namespace }
       let(:project_new_namespace) { create(:namespace) }
       let(:project_new_path) { 'project-new-path' }
@@ -94,6 +97,7 @@ RSpec.describe Namespaces::ProjectNamespace, type: :model do
         expect(project_namespace.namespace).to eq(project_new_namespace)
         expect(project_namespace.namespace_id).to eq(project_new_namespace.id)
         expect(project_namespace.shared_runners_enabled).to eq(project_shared_runners_enabled)
+        expect(project_namespace.organization_id).to eq(project.organization_id)
       end
     end
 

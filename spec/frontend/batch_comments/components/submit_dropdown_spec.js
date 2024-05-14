@@ -9,8 +9,11 @@ import waitForPromises from 'helpers/wait_for_promises';
 import SubmitDropdown from '~/batch_comments/components/submit_dropdown.vue';
 import { mockTracking } from 'helpers/tracking_helper';
 import userCanApproveQuery from '~/batch_comments/queries/can_approve.query.graphql';
+import { CLEAR_AUTOSAVE_ENTRY_EVENT } from '~/vue_shared/constants';
+import markdownEditorEventHub from '~/vue_shared/components/markdown/eventhub';
 
 jest.mock('~/autosave');
+jest.mock('~/vue_shared/components/markdown/eventhub');
 
 Vue.use(VueApollo);
 Vue.use(Vuex);
@@ -19,12 +22,8 @@ let wrapper;
 let publishReview;
 let trackingSpy;
 
-function factory({
-  canApprove = true,
-  shouldAnimateReviewButton = false,
-  mrRequestChanges = false,
-} = {}) {
-  publishReview = jest.fn();
+function factory({ canApprove = true, shouldAnimateReviewButton = false } = {}) {
+  publishReview = jest.fn().mockResolvedValue();
   trackingSpy = mockTracking(undefined, null, jest.spyOn);
   const requestHandlers = [
     [
@@ -79,9 +78,6 @@ function factory({
   wrapper = mountExtended(SubmitDropdown, {
     store,
     apolloProvider,
-    provide: {
-      glFeatures: { mrRequestChanges },
-    },
   });
 }
 
@@ -110,6 +106,33 @@ describe('Batch comments submit dropdown', () => {
       approval_password: '',
       reviewer_state: 'reviewed',
     });
+  });
+
+  it('emits CLEAR_AUTOSAVE_ENTRY_EVENT with autosave key', async () => {
+    factory();
+
+    findCommentTextarea().setValue('Hello world');
+
+    findForm().vm.$emit('submit', { preventDefault: jest.fn() });
+
+    await waitForPromises();
+
+    expect(markdownEditorEventHub.$emit).toHaveBeenCalledWith(
+      CLEAR_AUTOSAVE_ENTRY_EVENT,
+      'submit_review_dropdown/1',
+    );
+  });
+
+  it('clears textarea value', async () => {
+    factory();
+
+    findCommentTextarea().setValue('Hello world');
+
+    findForm().vm.$emit('submit', { preventDefault: jest.fn() });
+
+    await waitForPromises();
+
+    expect(findCommentTextarea().element.value).toBe('');
   });
 
   it('tracks submit action', () => {
@@ -149,9 +172,9 @@ describe('Batch comments submit dropdown', () => {
   });
 
   it.each`
-    canApprove | exists   | existsText
-    ${true}    | ${true}  | ${'shows'}
-    ${false}   | ${false} | ${'hides'}
+    canApprove | exists        | existsText
+    ${true}    | ${undefined}  | ${'shows'}
+    ${false}   | ${'disabled'} | ${'hides'}
   `(
     '$existsText approve checkbox if can_approve is $canApprove',
     async ({ canApprove, exists }) => {
@@ -161,7 +184,7 @@ describe('Batch comments submit dropdown', () => {
 
       await waitForPromises();
 
-      expect(wrapper.findByTestId('approve_merge_request').exists()).toBe(exists);
+      expect(wrapper.findAll('input').at(1).attributes('disabled')).toBe(exists);
     },
   );
 
@@ -180,51 +203,51 @@ describe('Batch comments submit dropdown', () => {
     },
   );
 
-  describe('when mrRequestChanges feature flag is enabled', () => {
-    it('renders a radio group with review state options', async () => {
-      factory({ mrRequestChanges: true });
+  it('renders a radio group with review state options', async () => {
+    factory();
 
-      await waitForPromises();
+    await waitForPromises();
 
-      expect(wrapper.findAll('.gl-form-radio').length).toBe(3);
-    });
+    expect(wrapper.findAll('.gl-form-radio').length).toBe(3);
+  });
 
-    it('renders disabled approve radio button when user can not approve', async () => {
-      factory({ mrRequestChanges: true, canApprove: false });
+  it('renders disabled approve radio button when user can not approve', async () => {
+    factory({ mrRequestChanges: true, canApprove: false });
 
-      wrapper.findComponent(GlDisclosureDropdown).vm.$emit('shown');
+    wrapper.findComponent(GlDisclosureDropdown).vm.$emit('shown');
 
-      await waitForPromises();
+    await waitForPromises();
 
-      expect(wrapper.find('.custom-control-input[value="approved"]').attributes('disabled')).toBe(
-        'disabled',
-      );
-    });
+    expect(wrapper.find('.custom-control-input[value="approved"]').attributes('disabled')).toBe(
+      'disabled',
+    );
+  });
 
-    it.each`
-      value
-      ${'approved'}
-      ${'reviewed'}
-      ${'requested_changes'}
-    `('sends $value review state to api when submitting', async ({ value }) => {
-      factory({ mrRequestChanges: true });
+  it.each`
+    value
+    ${'approved'}
+    ${'reviewed'}
+    ${'requested_changes'}
+  `('sends $value review state to api when submitting', async ({ value }) => {
+    factory();
 
-      wrapper.findComponent(GlDisclosureDropdown).vm.$emit('shown');
+    wrapper.findComponent(GlDisclosureDropdown).vm.$emit('shown');
 
-      await waitForPromises();
+    await waitForPromises();
 
-      await wrapper.find(`.custom-control-input[value="${value}"]`).trigger('change');
+    await wrapper.find(`.custom-control-input[value="${value}"]`).trigger('change');
 
-      findForm().vm.$emit('submit', { preventDefault: jest.fn() });
+    findCommentTextarea().setValue('Hello world');
 
-      expect(publishReview).toHaveBeenCalledWith(expect.anything(), {
-        noteable_type: 'merge_request',
-        noteable_id: 1,
-        note: 'Hello world',
-        approve: false,
-        approval_password: '',
-        reviewer_state: value,
-      });
+    findForm().vm.$emit('submit', { preventDefault: jest.fn() });
+
+    expect(publishReview).toHaveBeenCalledWith(expect.anything(), {
+      noteable_type: 'merge_request',
+      noteable_id: 1,
+      note: 'Hello world',
+      approve: false,
+      approval_password: '',
+      reviewer_state: value,
     });
   });
 });

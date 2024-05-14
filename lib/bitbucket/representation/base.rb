@@ -5,6 +5,8 @@ module Bitbucket
     class Base
       attr_reader :raw
 
+      delegate :present?, to: :raw
+
       def initialize(raw)
         @raw = raw
       end

@@ -83,7 +83,7 @@ export default {
           </div>
         </div>
         <div class="gl-px-4">
-          <div class="gl-pb-3 gl-font-style-italic">
+          <div class="gl-pb-3 gl-italic">
             {{ s__('ValueStreamEvent|Only items that reached their stop event.') }}
           </div>
         </div>

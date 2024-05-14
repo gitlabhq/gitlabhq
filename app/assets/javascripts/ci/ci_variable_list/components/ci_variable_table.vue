@@ -30,7 +30,7 @@ export default {
       label: s__('CiVariables|Key'),
       tdClass: 'text-plain',
       sortable: true,
-      thClass: 'gl-w-40p',
+      thClass: 'gl-w-2/5',
     },
     {
       key: 'value',
@@ -269,7 +269,6 @@ export default {
         stacked="md"
         fixed
         show-empty
-        sort-icon-left
         no-sort-reset
         no-local-sorting
         @sort-changed="(val) => $emit('sort-changed', val)"
@@ -280,7 +279,7 @@ export default {
         <template #cell(key)="{ item }">
           <div data-testid="ci-variable-table-row-variable">
             <div
-              class="gl-display-flex gl-align-items-flex-start gl-justify-content-end gl-md-justify-content-start gl-mr-n3"
+              class="gl-display-flex gl-align-items-flex-start gl-justify-content-end gl-md-justify-content-start -gl-mr-3"
             >
               <span
                 :id="`ci-variable-key-${item.id}`"
@@ -316,7 +315,7 @@ export default {
         </template>
         <template v-if="!isInheritedGroupVars" #cell(value)="{ item }">
           <div
-            class="gl-display-flex gl-align-items-flex-start gl-justify-content-end gl-md-justify-content-start gl-mr-n3"
+            class="gl-display-flex gl-align-items-flex-start gl-justify-content-end gl-md-justify-content-start -gl-mr-3"
           >
             <span v-if="areValuesHidden" data-testid="hiddenValue">*****</span>
             <span
@@ -340,7 +339,7 @@ export default {
         </template>
         <template #cell(environmentScope)="{ item }">
           <div
-            class="gl-display-flex gl-align-items-flex-start gl-justify-content-end gl-md-justify-content-start gl-mr-n3"
+            class="gl-display-flex gl-align-items-flex-start gl-justify-content-end gl-md-justify-content-start -gl-mr-3"
           >
             <span
               :id="`ci-variable-env-${item.id}`"
@@ -361,7 +360,7 @@ export default {
         </template>
         <template v-if="isInheritedGroupVars" #cell(group)="{ item }">
           <div
-            class="gl-display-flex gl-align-items-flex-start gl-justify-content-end gl-md-justify-content-start gl-mr-n3"
+            class="gl-display-flex gl-align-items-flex-start gl-justify-content-end gl-md-justify-content-start -gl-mr-3"
           >
             <gl-link
               :id="`ci-variable-group-${item.id}`"
@@ -374,7 +373,7 @@ export default {
           </div>
         </template>
         <template v-if="!isInheritedGroupVars" #cell(actions)="{ item }">
-          <div class="gl-display-flex gl-justify-content-end gl-mt-n2 gl-mb-n2">
+          <div class="gl-display-flex gl-justify-content-end -gl-mt-2 -gl-mb-2">
             <gl-button
               icon="pencil"
               size="small"
@@ -422,8 +421,6 @@ export default {
       <div v-if="showPagination" class="gl-display-flex gl-justify-content-center gl-mt-5">
         <gl-keyset-pagination
           v-bind="pageInfo"
-          :prev-text="__('Previous')"
-          :next-text="__('Next')"
           @prev="$emit('handle-prev-page')"
           @next="$emit('handle-next-page')"
         />

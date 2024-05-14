@@ -18,7 +18,7 @@ module Gitlab
           end
 
           def action_title
-            'Play'
+            'Run'
           end
 
           def action_button_title
@@ -31,6 +31,10 @@ module Gitlab
 
           def action_method
             :post
+          end
+
+          def confirmation_message
+            subject.manual_confirmation_message
           end
 
           def self.matches?(build, user)

@@ -22,13 +22,13 @@ module QA
         Flow::Login.sign_in
       end
 
-      it 'creates a personal snippet with multiple files', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347723' do
+      it 'creates a personal snippet with multiple files', :blocking, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347723' do
         snippet
 
         Page::Dashboard::Snippet::Show.perform do |snippet|
           expect(snippet).to have_snippet_title('Personal snippet with multiple files')
           expect(snippet).to have_snippet_description('Snippet description')
-          expect(snippet).to have_visibility_type(/private/i)
+          expect(snippet).to have_visibility_description('The snippet is visible only to me.')
           expect(snippet).to have_file_name('First file name', 1)
           expect(snippet).to have_file_content('First file content', 1)
           expect(snippet).to have_file_name('Second file name', 2)

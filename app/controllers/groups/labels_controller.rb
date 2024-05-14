@@ -77,15 +77,15 @@ class Groups::LabelsController < Groups::ApplicationController
   protected
 
   def authorize_group_for_admin_labels!
-    return render_404 unless can?(current_user, :admin_label, @group)
+    render_404 unless can?(current_user, :admin_label, @group)
   end
 
   def authorize_label_for_admin_label!
-    return render_404 unless can?(current_user, :admin_label, @label)
+    render_404 unless can?(current_user, :admin_label, @label)
   end
 
   def authorize_read_labels!
-    return render_404 unless can?(current_user, :read_label, @group)
+    render_404 unless can?(current_user, :read_label, @group)
   end
 
   def label

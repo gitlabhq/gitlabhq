@@ -8,9 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3619) in GitLab 13.6.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Export all the data collected from a project's merge requests into a comma-separated values (CSV) file.
 
@@ -50,7 +48,3 @@ The following table shows the attributes in the CSV file.
 | Milestone ID       | ID of the merge request milestone                            |
 | Created At (UTC)   | Formatted as `YYYY-MM-DD HH:MM:SS`                           |
 | Updated At (UTC)   | Formatted as `YYYY-MM-DD HH:MM:SS`                           |
-
-In GitLab 14.7 and earlier, the first two columns were `MR ID` and `URL`,
-which [caused an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/34769)
-when importing back into GitLab.

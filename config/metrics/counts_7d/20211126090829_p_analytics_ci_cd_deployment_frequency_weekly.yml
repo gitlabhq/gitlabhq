@@ -22,6 +22,3 @@ tier:
   - free
   - premium
   - ultimate
-options:
-  events:
-    - p_analytics_ci_cd_deployment_frequency

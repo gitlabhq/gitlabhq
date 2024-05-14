@@ -246,7 +246,8 @@ module.exports = (path, options = {}) => {
     resolver: './jest_resolver.js',
     setupFilesAfterEnv,
     restoreMocks: true,
-    slowTestThreshold: process.env.CI ? 6000 : 500,
+    // actual test timeouts
+    testTimeout: process.env.CI ? 10000 : 5000,
     transform: {
       '^.+\\.(gql|graphql)$': './spec/frontend/__helpers__/graphql_transformer.js',
       '^.+_worker\\.js$': './spec/frontend/__helpers__/web_worker_transformer.js',
@@ -280,5 +281,12 @@ module.exports = (path, options = {}) => {
       ...(IS_EE ? ['<rootDir>/ee/app/assets/javascripts/', ...extRootsEE] : []),
       ...(IS_JH ? ['<rootDir>/jh/app/assets/javascripts/', ...extRootsJH] : []),
     ],
+    /*
+    Reduce the amount of max workers in development mode.
+    If we use all available cores, on machines with efficiency cores, we actually will be slower
+
+    Set nothing for CI, because we want to use the auto-logic for the cores
+     */
+    maxWorkers: process.env.CI ? '' : '60%',
   };
 };

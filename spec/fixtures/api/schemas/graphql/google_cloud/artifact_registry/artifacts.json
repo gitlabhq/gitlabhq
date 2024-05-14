@@ -1,0 +1,14 @@
+{
+  "type": "object",
+  "required": [
+    "nodes"
+  ],
+  "properties": {
+    "nodes": {
+      "type": "array",
+      "items": {
+        "$ref": "./docker_image.json"
+      }
+    }
+  }
+}

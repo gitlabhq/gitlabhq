@@ -21,7 +21,7 @@ module Ci
       # Therefore, we can deduplicate the sidekiq jobs until the on-going
       # assignment process has been finished.
       idempotent!
-      deduplicate :until_executed, if_deduplicated: :reschedule_once
+      deduplicate :until_executed, if_deduplicated: :reschedule_once, including_scheduled: true
 
       def perform(resource_group_id)
         ::Ci::ResourceGroup.find_by_id(resource_group_id).try do |resource_group|

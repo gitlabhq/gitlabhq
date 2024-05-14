@@ -30,7 +30,7 @@ module QA
         runner.remove_via_api!
       end
 
-      it 'runs the pipeline with composed config', :reliable,
+      it 'runs the pipeline with composed config', :blocking,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348087' do
         Page::Project::Pipeline::Show.perform do |pipeline|
           aggregate_failures 'pipeline has all expected jobs' do
@@ -44,8 +44,8 @@ module QA
 
         Page::Project::Job::Show.perform do |job|
           aggregate_failures 'main CI is not overridden' do
-            expect(job.output).not_to have_content("#{unexpected_text}")
-            expect(job.output).to have_content("#{expected_text}")
+            expect(job.output).not_to have_content(unexpected_text.to_s)
+            expect(job.output).to have_content(expected_text.to_s)
           end
         end
       end
@@ -53,23 +53,19 @@ module QA
       private
 
       def add_main_ci_file
-        Resource::Repository::Commit.fabricate_via_api! do |commit|
-          commit.project = project
-          commit.commit_message = 'Add config file'
-          commit.add_files([main_ci_file])
-        end
+        create(:commit, project: project, commit_message: 'Add config file', actions: [main_ci_file])
       end
 
       def add_included_files
-        Resource::Repository::Commit.fabricate_via_api! do |commit|
-          commit.project = other_project
-          commit.commit_message = 'Add files'
-          commit.add_files([included_file_1, included_file_2])
-        end
+        create(:commit,
+          project: other_project,
+          commit_message: 'Add files',
+          actions: [included_file_1, included_file_2])
       end
 
       def main_ci_file
         {
+          action: 'create',
           file_path: '.gitlab-ci.yml',
           content: <<~YAML
             include:
@@ -93,6 +89,7 @@ module QA
 
       def included_file_1
         {
+          action: 'create',
           file_path: 'file1.yml',
           content: <<~YAML
             test:
@@ -105,6 +102,7 @@ module QA
 
       def included_file_2
         {
+          action: 'create',
           file_path: 'file2.yml',
           content: <<~YAML
             deploy:

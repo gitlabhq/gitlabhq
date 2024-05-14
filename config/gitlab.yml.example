@@ -1014,7 +1014,7 @@ production: &base
 
   ## OmniAuth settings
   omniauth:
-    # Allow login via Twitter, Google, etc. using OmniAuth providers
+    # Allow login via Google, GitHub, etc. using OmniAuth providers
     # enabled: true
 
     # Uncomment this to automatically sign in with a specific omniauth provider's without
@@ -1022,7 +1022,7 @@ production: &base
     # auto_sign_in_with_provider: saml
 
     # Sync user's profile from the specified Omniauth providers every time the user logs in (default: empty).
-    # Define the allowed providers using an array, e.g. ["saml", "twitter"],
+    # Define the allowed providers using an array, e.g. ["saml", "google_oauth2"],
     # or as true/false to allow all providers or none.
     # When authenticating using LDAP, the user's email is always synced.
     # sync_profile_from_provider: []
@@ -1035,7 +1035,7 @@ production: &base
 
     # CAUTION!
     # This allows users to login without having a user account first. Define the allowed providers
-    # using an array, e.g. ["saml", "twitter"], or as true/false to allow all providers or none.
+    # using an array, e.g. ["saml", "google_oauth2"], or as true/false to allow all providers or none.
     # User accounts will be created automatically when authentication was successful.
     allow_single_sign_on: ["saml"]
 
@@ -1057,10 +1057,10 @@ production: &base
 
     # Allow users with existing accounts to sign in and auto link their account via OmniAuth
     # login, without having to do a manual login first and manually add OmniAuth. Links on email.
-    # Define the allowed providers using an array, e.g. ["saml", "twitter"], or as true/false to
+    # Define the allowed providers using an array, e.g. ["saml", "google_oauth2"], or as true/false to
     # allow all providers or none.
     # (default: false)
-    auto_link_user: ["saml", "twitter"]
+    auto_link_user: ["saml", "google_oauth2"]
 
     # Set different Omniauth providers as external so that all users creating accounts
     # via these providers will not be able to have access to internal projects. You
@@ -1071,11 +1071,11 @@ production: &base
 
     # CAUTION!
     # This allows users to login with the specified providers without two factor. Define the allowed providers
-    # using an array, e.g. ["twitter", 'google_oauth2'], or as true/false to allow all providers or none.
+    # using an array, e.g. ["saml", 'google_oauth2'], or as true/false to allow all providers or none.
     # This option should only be configured for providers which already have two factor.
     # This configration dose not apply to SAML.
     # (default: false)
-    allow_bypass_two_factor: ["twitter", 'google_oauth2']
+    allow_bypass_two_factor: ["saml", "google_oauth2"]
 
     ## Auth providers
     # Uncomment the following lines and fill in the data of the auth provider you want to use
@@ -1097,9 +1097,6 @@ production: &base
       # - { name: 'bitbucket',
       #     app_id: 'YOUR_APP_ID',
       #     app_secret: 'YOUR_APP_SECRET' }
-      # - { name: 'dingtalk',
-      #     app_id: 'YOUR_APP_ID',
-      #     app_secret: 'YOUR_APP_SECRET' }
       # - { name: 'gitlab',
       #     app_id: 'YOUR_APP_ID',
       #     app_secret: 'YOUR_APP_SECRET',
@@ -1108,12 +1105,6 @@ production: &base
       #     app_id: 'YOUR_APP_ID',
       #     app_secret: 'YOUR_APP_SECRET',
       #     args: { access_type: 'offline', approval_prompt: '' } }
-      # - { name: 'facebook',
-      #     app_id: 'YOUR_APP_ID',
-      #     app_secret: 'YOUR_APP_SECRET' }
-      # - { name: 'twitter',
-      #     app_id: 'YOUR_APP_ID',
-      #     app_secret: 'YOUR_APP_SECRET' }
       # - { name: 'jwt',
       #     args: {
       #       secret: 'YOUR_APP_SECRET',
@@ -1437,6 +1428,8 @@ development:
 
 test:
   <<: *base
+  object_store:
+    enabled: false
   gravatar:
     enabled: true
   external_diffs:
@@ -1602,9 +1595,6 @@ test:
       - { name: 'bitbucket',
           app_id: 'YOUR_APP_ID',
           app_secret: 'YOUR_APP_SECRET' }
-      - { name: 'dingtalk',
-          app_id: 'YOUR_APP_ID',
-          app_secret: 'YOUR_APP_SECRET' }
       - { name: 'gitlab',
           app_id: 'YOUR_APP_ID',
           app_secret: 'YOUR_APP_SECRET',
@@ -1613,12 +1603,6 @@ test:
           app_id: 'YOUR_APP_ID',
           app_secret: 'YOUR_APP_SECRET',
           args: { access_type: 'offline', approval_prompt: '' } }
-      - { name: 'facebook',
-          app_id: 'YOUR_APP_ID',
-          app_secret: 'YOUR_APP_SECRET' }
-      - { name: 'twitter',
-          app_id: 'YOUR_APP_ID',
-          app_secret: 'YOUR_APP_SECRET' }
       - { name: 'jwt',
           app_secret: 'YOUR_APP_SECRET',
           args: {

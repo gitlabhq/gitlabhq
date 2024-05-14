@@ -19,7 +19,7 @@ module Gitlab
         # Allows to give a description to the next quick action.
         # This description is shown in the autocomplete menu.
         # It accepts a block that will be evaluated with the context given to
-        # `CommandDefintion#to_h`.
+        # `CommandDefinition#to_h`.
         #
         # Example:
         #
@@ -136,7 +136,7 @@ module Gitlab
         # both to `command` and `explanation` blocks, instead of the raw
         # parameters.
         # It accepts a block that will be evaluated with the context given to
-        # `CommandDefintion#to_h`.
+        # `CommandDefinition#to_h`.
         #
         # Example:
         #
@@ -150,7 +150,7 @@ module Gitlab
           @parse_params_block = block
         end
 
-        # Registers a new command which is recognizeable from body of email or
+        # Registers a new command which is recognizable from body of email or
         # comment.
         # It accepts aliases and takes a block.
         #

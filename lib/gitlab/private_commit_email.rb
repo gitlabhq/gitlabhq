@@ -6,9 +6,11 @@ module Gitlab
 
     class << self
       def regex
-        hostname_regexp = Regexp.escape(Gitlab::CurrentSettings.current_application_settings.commit_email_hostname)
+        Gitlab::SafeRequestStore.fetch(:private_commit_email_regex) do
+          hostname_regexp = Regexp.escape(Gitlab::CurrentSettings.current_application_settings.commit_email_hostname)
 
-        /\A(?<id>([0-9]+))\-([^@]+)@#{hostname_regexp}\z/
+          /\A(?<id>([0-9]+))\-([^@]+)@#{hostname_regexp}\z/
+        end
       end
 
       def user_id_for_email(email)

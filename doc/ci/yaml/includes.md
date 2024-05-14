@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 You can use [`include`](index.md#include) to include external YAML files in your CI/CD jobs.
 
@@ -302,8 +302,6 @@ default:
 
 ### Use nested includes with duplicate `includes` entries
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/28987) in GitLab 14.8
-
 Nested includes can include the same configuration file. The duplicate configuration
 file is included multiple times, but the effect is the same as if it was only
 included once.
@@ -365,29 +363,20 @@ smoke-test-job:
 
 ## Use variables with `include`
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/284883) in GitLab 13.8.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/294294) in GitLab 13.9.
-> - [Support for project, group, and instance variables added](https://gitlab.com/gitlab-org/gitlab/-/issues/219065) in GitLab 14.2.
-> - [Support for pipeline variables added](https://gitlab.com/gitlab-org/gitlab/-/issues/337633) in GitLab 14.5.
-
 In `include` sections in your `.gitlab-ci.yml` file, you can use:
 
 - [Project variables](../variables/index.md#for-a-project).
 - [Group variables](../variables/index.md#for-a-group).
 - [Instance variables](../variables/index.md#for-an-instance).
 - Project [predefined variables](../variables/predefined_variables.md) (`CI_PROJECT_*`).
-- In GitLab 14.2 and later, the `$CI_COMMIT_REF_NAME` [predefined variable](../variables/predefined_variables.md).
-
-  When used in `include`, the `CI_COMMIT_REF_NAME` variable returns the full
-  ref path, like `refs/heads/branch-name`. In `include:rules`, you might need to use
-  `if: $CI_COMMIT_REF_NAME =~ /main/` (not `== main`). This behavior is resolved in GitLab 14.5.
-
-In GitLab 14.5 and later, you can also use:
-
 - [Trigger variables](../triggers/index.md#pass-cicd-variables-in-the-api-call).
 - [Scheduled pipeline variables](../pipelines/schedules.md#add-a-pipeline-schedule).
 - [Manual pipeline run variables](../pipelines/index.md#run-a-pipeline-manually).
 - The `CI_PIPELINE_SOURCE` and `CI_PIPELINE_TRIGGERED` [predefined variables](../variables/predefined_variables.md).
+- The `$CI_COMMIT_REF_NAME` [predefined variable](../variables/predefined_variables.md).
+
+  When used in `include`, the `CI_COMMIT_REF_NAME` variable returns the full
+  ref path, like `refs/heads/branch-name`.
 
 For example:
 
@@ -406,10 +395,6 @@ see this [CI/CD variable demo](https://youtu.be/4XR8gw3Pkos).
 
 ## Use `rules` with `include`
 
-> - Introduced in GitLab 14.2 [with a flag](../../administration/feature_flags.md) named `ci_include_rules`. Disabled by default.
-> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/337507) in GitLab 14.3.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/337507) in GitLab 14.4. Feature flag `ci_include_rules` removed.
-> - Support for `exists` keyword [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/341511) in GitLab 14.5.
 > - Support for `needs` job dependency [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345377) in GitLab 15.11.
 
 You can use [`rules`](index.md#rules) with `include` to conditionally include other configuration files.
@@ -419,6 +404,7 @@ these keywords:
 
 - [`rules:if`](index.md#rulesif).
 - [`rules:exists`](index.md#rulesexists).
+- [`rules:changes`](index.md#ruleschanges).
 
 ### `include` with `rules:if`
 
@@ -482,27 +468,49 @@ test:
 
 In this example, GitLab checks for the existence of `file.md` in the current project.
 
-There is a known issue if you configure `include` with `rules:exists` to add a configuration file
+There is a known issue if you configure `include` with `rules:exists` in an include file
 from a different project. GitLab checks for the existence of the file in the _other_ project.
 For example:
 
 ```yaml
+# Pipeline configuration in my-group/my-project
 include:
-- project: my-group/my-project-2
-  ref: main
-  file: test-file.yml
-  rules:
-    - exists:
-        - file.md
+  - project: my-group/other-project
+    ref: other_branch
+    file: other-file.yml
 
 test:
-  stage: test
   script: exit 0
+
+# other-file.yml in my-group/other-project on ref other_branch
+include:
+  - project: my-group/my-project
+    ref: main
+    file: my-file.yml
+    rules:
+      - exists:
+          - file.md
 ```
 
-In this example, GitLab checks for the existence of `test-file.yml` in `my-group/my-project-2`,
-not the current project. Follow [issue 386040](https://gitlab.com/gitlab-org/gitlab/-/issues/386040)
-for information about work to improve this behavior.
+In this example, GitLab searches for the existence of `file.md` in `my-group/other-project`
+on commit ref `other_branch`, not the project/ref in which the pipeline runs.
+
+To change the search context you can use [`rules:exists:paths`](index.md#rulesexistspaths)
+with [`rules:exists:project`](index.md#rulesexistsproject).
+For example:
+
+```yaml
+include:
+  - project: my-group/my-project
+    ref: main
+    file: my-file.yml
+    rules:
+      - exists:
+          paths:
+            - file.md
+          project: my-group/my-project
+          ref: main
+```
 
 ### `include` with `rules:changes`
 
@@ -543,9 +551,6 @@ In this example:
 - `builds3.yml` is included when `Dockerfile` has changed and the pipeline source is a merge request event.
 
 ## Use `include:local` with wildcard file paths
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25921) in GitLab 13.11.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/327315) in GitLab 14.2.
 
 You can use wildcard paths (`*` and `**`) with `include:local`.
 
@@ -588,3 +593,21 @@ which configuration file is the source of the loop or excessive included files.
 
 In [GitLab 16.0 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/207270) self-managed users can
 change the [maximum includes](../../administration/settings/continuous_integration.md#maximum-includes) value.
+
+### `SSL_connect SYSCALL returned=5 errno=0 state=SSLv3/TLS write client hello` and other network failures
+
+When using [`include:remote`](index.md#includeremote), GitLab tries to fetch the remote file
+through HTTP(S). This process can fail because of a variety of connectivity issues.
+
+The `SSL_connect SYSCALL returned=5 errno=0 state=SSLv3/TLS write client hello` error
+happens when GitLab can't establish an HTTPS connection to the remote host. This issue
+can be caused if the remote host has rate limits to prevent overloading the server
+with requests.
+
+For example, the [GitLab Pages](../../user/project/pages/index.md) server for GitLab.com
+is rate limited. Repeated attempts to fetch CI/CD configuration files hosted on GitLab Pages
+can cause the rate limit to be reached and cause the error. You should avoid hosting
+CI/CD configuration files on a GitLab Pages site.
+
+When possible, use [`include:project`](index.md#includeproject) to fetch configuration
+files from other projects within the GitLab instance without making external HTTP(S) requests.

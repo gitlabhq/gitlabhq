@@ -13,30 +13,10 @@ module UpdateRepositoryStorageWorker
 
   LEASE_TIMEOUT = 30.minutes.to_i
 
-  # `container_id` and `new_repository_storage_key` arguments have been deprecated.
-  # `repository_storage_move_id` is now a mandatory argument.
-  # We are using *args for backwards compatability. Previously defined as:
-  # perform(container_id, new_repository_storage_key, repository_storage_move_id = nil)
-  def perform(*args)
-    if args.length == 1
-      repository_storage_move_id = args[0]
-    else
-      container_id, new_repository_storage_key, repository_storage_move_id = *args
-    end
+  def perform(repository_storage_move_id)
+    repository_storage_move = find_repository_storage_move(repository_storage_move_id)
 
-    repository_storage_move =
-      if repository_storage_move_id
-        find_repository_storage_move(repository_storage_move_id)
-      else
-        # maintain compatibility with workers queued before release
-        container = find_container(container_id)
-        container.repository_storage_moves.create!(
-          source_storage_name: container.repository_storage,
-          destination_storage_name: new_repository_storage_key
-        )
-      end
-
-    container_id ||= repository_storage_move.container_id
+    container_id = repository_storage_move.container_id
 
     # Use exclusive lock to prevent multiple storage migrations at the same time
     #
@@ -70,10 +50,6 @@ module UpdateRepositoryStorageWorker
   private
 
   def find_repository_storage_move(repository_storage_move_id)
-    raise NotImplementedError
-  end
-
-  def find_container(container_id)
     raise NotImplementedError
   end
 

@@ -27,7 +27,7 @@ module Ci
       def insert_runner_versions
         versions_from_runners = Set[]
         new_record_count = 0
-        Ci::Runner.distinct_each_batch(column: :version, of: VERSION_BATCH_SIZE) do |version_batch|
+        Ci::RunnerManager.distinct_each_batch(column: :version, of: VERSION_BATCH_SIZE) do |version_batch|
           batch_versions = version_batch.pluck(:version).to_set
           versions_from_runners += batch_versions
 

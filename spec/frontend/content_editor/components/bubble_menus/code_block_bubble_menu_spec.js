@@ -46,7 +46,7 @@ describe('content_editor/components/bubble_menus/code_block_bubble_menu', () => 
   };
 
   const preTag = ({ language, content = 'test' } = {}) => {
-    const languageAttr = language ? ` lang="${language}"` : '';
+    const languageAttr = language ? ` data-canonical-lang="${language}"` : '';
 
     return `<pre class="js-syntax-highlight"${languageAttr}>${content}</pre>`;
   };
@@ -135,14 +135,14 @@ describe('content_editor/components/bubble_menus/code_block_bubble_menu', () => 
 
   describe('preview button', () => {
     it('does not appear for a regular code block', () => {
-      tiptapEditor.commands.insertContent('<pre lang="javascript">var a = 2;</pre>');
+      tiptapEditor.commands.insertContent('<pre data-canonical-lang="javascript">var a = 2;</pre>');
 
       expect(wrapper.findByTestId('preview-diagram').exists()).toBe(false);
     });
 
     it.each`
       diagramType  | diagramCode
-      ${'mermaid'} | ${'<pre lang="mermaid">graph TD;\n    A-->B;</pre>'}
+      ${'mermaid'} | ${'<pre data-canonical-lang="mermaid">graph TD;\n    A-->B;</pre>'}
       ${'nomnoml'} | ${'<img data-diagram="nomnoml" data-diagram-src="data:text/plain;base64,WzxmcmFtZT5EZWNvcmF0b3IgcGF0dGVybl0=">'}
     `('toggles preview for a $diagramType diagram', async ({ diagramType, diagramCode }) => {
       tiptapEditor.commands.insertContent(diagramCode);
@@ -219,7 +219,9 @@ describe('content_editor/components/bubble_menus/code_block_bubble_menu', () => 
 
     describe('Create custom type', () => {
       beforeEach(async () => {
-        tiptapEditor.commands.insertContent('<pre lang="javascript">var a = 2;</pre>');
+        tiptapEditor.commands.insertContent(
+          '<pre data-canonical-lang="javascript">var a = 2;</pre>',
+        );
 
         await wrapper.findComponent(GlDropdown).vm.show();
         await wrapper.findByTestId('create-custom-type').trigger('click');

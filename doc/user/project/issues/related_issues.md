@@ -8,9 +8,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - The simple "relates to" relationship [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212329) from GitLab Premium to GitLab Free in 13.4.
+> - [Changed](https://gitlab.com/groups/gitlab-org/-/epics/10267) minimum required role from Reporter (if true) to Guest in GitLab 17.0.
 
 Linked issues are a bi-directional relationship between any two issues and appear in a block below
 the issue description. You can link issues in different projects.
@@ -23,13 +23,9 @@ To manage linked issues through our API, see [Issue links API](../../../api/issu
 
 ## Add a linked issue
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2035) in GitLab 12.8.
-> - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/34239) to warn when attempting to close an issue that is blocked by others in GitLab 13.0.
->   When you try to close an issue with open blockers, you see a warning that you can dismiss.
-
 Prerequisites:
 
-- You must have at least the Reporter role for both projects.
+- You must have at least the Guest role for both projects.
 
 To link one issue to another:
 
@@ -78,7 +74,7 @@ Access our [permissions](../../permissions.md) page for more information.
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 When you [add a linked issue](#add-a-linked-issue), you can show that it **blocks** or
 **is blocked by** another issue.

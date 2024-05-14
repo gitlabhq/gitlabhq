@@ -131,13 +131,37 @@ RSpec.describe WorkItems::Type, feature_category: :team_planning do
         described_class.delete_all
       end
 
-      it 'creates types and restrictions and returns default work item type by base type' do
-        expect(Gitlab::DatabaseImporters::WorkItems::BaseTypeImporter).to receive(:upsert_types).and_call_original
-        expect(Gitlab::DatabaseImporters::WorkItems::BaseTypeImporter).to receive(:upsert_widgets)
-        expect(Gitlab::DatabaseImporters::WorkItems::HierarchyRestrictionsImporter).to receive(:upsert_restrictions)
-        expect(Gitlab::DatabaseImporters::WorkItems::RelatedLinksRestrictionsImporter).to receive(:upsert_restrictions)
+      it 'raises an error' do
+        expect do
+          subject
+        end.to raise_error(
+          WorkItems::Type::DEFAULT_TYPES_NOT_SEEDED,
+          <<~STRING
+            Default work item types have not been created yet. Make sure the DB has been seeded successfully.
+            See related documentation in
+            https://docs.gitlab.com/omnibus/settings/database.html#seed-the-database-fresh-installs-only
 
-        expect(subject).to eq(default_issue_type)
+            If you have additional questions, you can ask in
+            https://gitlab.com/gitlab-org/gitlab/-/issues/423483
+          STRING
+        )
+      end
+
+      context 'when rely_on_work_item_type_seeder feature flag is disabled' do
+        before do
+          stub_feature_flags(rely_on_work_item_type_seeder: false)
+        end
+
+        it 'creates types and restrictions and returns default work item type by base type' do
+          expect(Gitlab::DatabaseImporters::WorkItems::BaseTypeImporter).to receive(:upsert_types).and_call_original
+          expect(Gitlab::DatabaseImporters::WorkItems::BaseTypeImporter).to receive(:upsert_widgets)
+          expect(Gitlab::DatabaseImporters::WorkItems::HierarchyRestrictionsImporter).to receive(:upsert_restrictions)
+          expect(
+            Gitlab::DatabaseImporters::WorkItems::RelatedLinksRestrictionsImporter
+          ).to receive(:upsert_restrictions)
+
+          expect(subject).to eq(default_issue_type)
+        end
       end
     end
   end

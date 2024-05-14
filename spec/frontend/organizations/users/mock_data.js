@@ -1,3 +1,5 @@
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+
 const createUser = (id) => {
   return {
     id: `gid://gitlab/User/${id}`,
@@ -38,7 +40,7 @@ export const MOCK_USERS = [
 ];
 
 export const MOCK_USERS_FORMATTED = MOCK_USERS.map(({ badges, user }) => {
-  return { ...user, badges, email: user.publicEmail };
+  return { ...user, id: getIdFromGraphQLId(user.id), badges, email: user.publicEmail };
 });
 
 export const MOCK_PAGE_INFO = {

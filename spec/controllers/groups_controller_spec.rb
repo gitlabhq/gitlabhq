@@ -6,11 +6,12 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
   include ExternalAuthorizationServiceHelpers
   include AdminModeHelper
 
-  let_it_be_with_refind(:group) { create_default(:group, :public) }
+  let_it_be(:group_organization) { create(:organization) }
+  let_it_be_with_refind(:group) { create_default(:group, :public, organization: group_organization) }
   let_it_be_with_refind(:project) { create(:project, namespace: group) }
   let_it_be(:user) { create(:user) }
   let_it_be(:admin_with_admin_mode) { create(:admin) }
-  let_it_be(:admin_without_admin_mode) { create(:admin) }
+  let_it_be(:admin_without_admin_mode) { create(:admin, :without_default_org) }
   let_it_be(:group_member) { create(:group_member, group: group, user: user) }
   let_it_be(:owner) { group.add_owner(create(:user)).user }
   let_it_be(:maintainer) { group.add_maintainer(create(:user)).user }
@@ -128,6 +129,33 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
 
   describe 'GET #new' do
     context 'when creating subgroups' do
+      context 'when user does not have `:create_subgroup` permissions' do
+        before do
+          sign_in(user)
+          allow(controller).to receive(:can?).with(user, :create_subgroup, group).and_return(false)
+        end
+
+        it 'returns a 404' do
+          get :new, params: { parent_id: group.id }
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      context 'when user has `:create_subgroup` permissions' do
+        before do
+          sign_in(user)
+          allow(controller).to receive(:can?).with(user, :create_subgroup, group).and_return(true)
+        end
+
+        it 'renders `new` template' do
+          get :new, params: { parent_id: group.id }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to render_template(:new)
+        end
+      end
+
       [true, false].each do |can_create_group_status|
         context "and can_create_group is #{can_create_group_status}" do
           before do
@@ -252,6 +280,7 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
 
               expect(response).to be_redirect
               expect(response.location).to eq("http://test.host/#{group.path}/subgroup")
+              expect(Group.last.organization.id).to eq(group_organization.id)
             end
           end
 
@@ -272,9 +301,10 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
       end
     end
 
-    context 'when creating a top level group' do
+    context 'when creating a top level group', :with_current_organization do
       before do
         sign_in(developer)
+        Current.organization.users << developer
       end
 
       context 'and can_create_group is enabled' do
@@ -286,9 +316,9 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
           original_group_count = Group.count
 
           post :create, params: { group: { path: 'subgroup' } }
-
           expect(Group.count).to eq(original_group_count + 1)
           expect(response).to be_redirect
+          expect(Group.last.organization.id).to eq(Current.organization.id)
         end
       end
 
@@ -352,6 +382,15 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
     end
 
     context 'when creating a group with `default_branch_protection_defaults` attribute' do
+      let(:protection_defaults) do
+        {
+          "allowed_to_push" => [{ 'access_level' => Gitlab::Access::MAINTAINER.to_s }],
+          "allowed_to_merge" => [{ 'access_level' => Gitlab::Access::DEVELOPER.to_s }],
+          "allow_force_push" => "false",
+          "developer_can_initial_push" => "false"
+        }
+      end
+
       before do
         sign_in(user)
       end
@@ -362,16 +401,19 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
           allow(Ability).to receive(:allowed?).with(user, :update_default_branch_protection, an_instance_of(Group)).and_return(true)
         end
 
-        subject do
-          post :create, params: { group: { name: 'new_group', path: 'new_group', default_branch_protection_defaults: ::Gitlab::Access::BranchProtection.protected_against_developer_pushes.stringify_keys } }, as: :json
-        end
-
         context 'for users who have the ability to create a group with `default_branch_protection_defaults`' do
           it 'creates group with the specified default branch protection level' do
-            subject
+            post :create, params: { group: { name: 'new_group', path: 'new_group', default_branch_protected: "true", default_branch_protection_defaults: protection_defaults } }, as: :json
 
             expect(response).to have_gitlab_http_status(:found)
             expect(Group.last.default_branch_protection_defaults).to eq(::Gitlab::Access::BranchProtection.protected_against_developer_pushes.stringify_keys)
+          end
+
+          it 'ignores default_branch_protection_defaults if default_branch_protected is set to false' do
+            post :create, params: { group: { name: 'new_group', path: 'new_group', default_branch_protected: "false", default_branch_protection_defaults: protection_defaults } }, as: :json
+
+            expect(response).to have_gitlab_http_status(:found)
+            expect(Group.last.default_branch_protection_defaults).to eq(::Gitlab::Access::BranchProtection.protection_none.stringify_keys)
           end
         end
       end

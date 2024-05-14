@@ -37,10 +37,10 @@ const stageFixtures = {
 };
 
 export const summary = [
-  { value: '20', title: 'New Issues' },
+  { value: '20', title: 'New issues' },
   { value: null, title: 'Commits' },
   { value: null, title: 'Deploys' },
-  { value: null, title: 'Deployment Frequency', unit: '/day' },
+  { value: null, title: 'Deployment frequency', unit: '/day' },
 ];
 
 export const issueStage = {
@@ -109,10 +109,10 @@ export const selectedStage = {
 
 export const convertedData = {
   summary: [
-    { value: '20', title: 'New Issues' },
+    { value: '20', title: 'New issues' },
     { value: '-', title: 'Commits' },
     { value: '-', title: 'Deploys' },
-    { value: '-', title: 'Deployment Frequency', unit: '/day' },
+    { value: '-', title: 'Deployment frequency', unit: '/day' },
   ],
 };
 

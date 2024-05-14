@@ -69,6 +69,90 @@ module UnnestedInFilters
       end
     end
 
+    # A naive query planner implementation.
+    # Checks if a database-level index can be utilized by given filtering and ordering predicates.
+    #
+    # Partial index support:
+    #     - Supports partial indices if the partial index predicate contains only one column.
+    #     - Supports only the `=` operator in partial index predicate.
+    class IndexCoverage
+      PARTIAL_INDEX_REGEX = /(?<!\s)(?>\(*(?<column_name>\b\w+)\s*=\s*(?<column_value>\w+)\)*)(?!\s)/
+
+      def initialize(index, where_hash, order_attributes)
+        @index = index
+        @where_hash = where_hash
+        @order_attributes = order_attributes
+      end
+
+      def covers?
+        filter_attributes_covered? &&
+          can_be_used_for_sorting? &&
+          does_not_contain_any_other_column?
+      end
+
+      private
+
+      attr_reader :index, :where_hash, :order_attributes
+
+      def filter_attributes_covered?
+        partial? ? partial_index_coverage? : full_index_coverage?
+      end
+
+      def can_be_used_for_sorting?
+        index.columns.last(order_attributes.length) == order_attributes
+      end
+
+      def does_not_contain_any_other_column?
+        (index.columns - combined_attributes).empty?
+      end
+
+      def partial?
+        index.where.present?
+      end
+
+      def full_index_coverage?
+        (filter_attributes - Array(index.columns)).empty?
+      end
+
+      def partial_index_coverage?
+        return false unless partial_column
+
+        full_index_coverage_with_partial_column? && partial_filter_matches?
+      end
+
+      def full_index_coverage_with_partial_column?
+        (filter_attributes - Array(index.columns) - Array(partial_column)).empty?
+      end
+
+      def combined_attributes
+        filter_attributes + order_attributes
+      end
+
+      def filter_attributes
+        @filter_attributes ||= where_hash.keys
+      end
+
+      def partial_filter_matches?
+        partial_filter == partial_value
+      end
+
+      def partial_filter
+        where_hash[partial_column].to_s
+      end
+
+      def partial_column
+        index_filter['column_name']
+      end
+
+      def partial_value
+        index_filter['column_value']
+      end
+
+      def index_filter
+        @index_filter ||= index.where.match(PARTIAL_INDEX_REGEX)&.named_captures.to_h
+      end
+    end
+
     def initialize(relation)
       @relation = relation
     end
@@ -252,11 +336,7 @@ module UnnestedInFilters
     end
 
     def has_index_coverage?
-      indices.any? do |index|
-        (filter_attributes - Array(index.columns)).empty? && # all the filter attributes are indexed
-          index.columns.last(order_attributes.length) == order_attributes && # index can be used in sorting
-          (index.columns - combined_attributes).empty? # there is no other columns in the index
-      end
+      indices.any?(&:covers?)
     end
 
     def primary_key_present?
@@ -285,7 +365,9 @@ module UnnestedInFilters
     end
 
     def indices
-      model.connection.schema_cache.indexes(model.table_name)
+      model.connection.schema_cache.indexes(model.table_name).map do |index|
+        IndexCoverage.new(index, where_clause.to_h, order_attributes)
+      end
     end
 
     def value_tables

@@ -1,22 +1,21 @@
 import { nextTick } from 'vue';
 import { shallowMount } from '@vue/test-utils';
 import Participants from '~/sidebar/components/participants/participants.vue';
-import WorkItemAssigneesWithEdit from '~/work_items/components/work_item_assignees_with_edit.vue';
-import WorkItemDueDateInline from '~/work_items/components/work_item_due_date_inline.vue';
-import WorkItemDueDateWithEdit from '~/work_items/components/work_item_due_date_with_edit.vue';
+import WorkItemAssignees from '~/work_items/components/work_item_assignees.vue';
+import WorkItemDueDate from '~/work_items/components/work_item_due_date.vue';
 import WorkItemLabels from '~/work_items/components/work_item_labels.vue';
-import WorkItemMilestoneInline from '~/work_items/components/work_item_milestone_inline.vue';
-import WorkItemMilestoneWithEdit from '~/work_items/components/work_item_milestone_with_edit.vue';
-import WorkItemParentInline from '~/work_items/components/work_item_parent_inline.vue';
-import WorkItemParent from '~/work_items/components/work_item_parent_with_edit.vue';
+import WorkItemMilestone from '~/work_items/components/work_item_milestone.vue';
+import WorkItemParent from '~/work_items/components/work_item_parent.vue';
+import WorkItemTimeTracking from '~/work_items/components/work_item_time_tracking.vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import WorkItemAttributesWrapper from '~/work_items/components/work_item_attributes_wrapper.vue';
 import {
   workItemResponseFactory,
   taskType,
-  issueType,
   objectiveType,
   keyResultType,
+  issueType,
+  epicType,
 } from '../mock_data';
 
 describe('WorkItemAttributesWrapper component', () => {
@@ -24,19 +23,17 @@ describe('WorkItemAttributesWrapper component', () => {
 
   const workItemQueryResponse = workItemResponseFactory({ canUpdate: true, canDelete: true });
 
-  const findWorkItemAssignees = () => wrapper.findComponent(WorkItemAssigneesWithEdit);
-  const findWorkItemDueDate = () => wrapper.findComponent(WorkItemDueDateWithEdit);
-  const findWorkItemDueDateInline = () => wrapper.findComponent(WorkItemDueDateInline);
+  const findWorkItemAssignees = () => wrapper.findComponent(WorkItemAssignees);
+  const findWorkItemDueDate = () => wrapper.findComponent(WorkItemDueDate);
   const findWorkItemLabels = () => wrapper.findComponent(WorkItemLabels);
-  const findWorkItemMilestone = () => wrapper.findComponent(WorkItemMilestoneWithEdit);
-  const findWorkItemMilestoneInline = () => wrapper.findComponent(WorkItemMilestoneInline);
-  const findWorkItemParentInline = () => wrapper.findComponent(WorkItemParentInline);
+  const findWorkItemMilestone = () => wrapper.findComponent(WorkItemMilestone);
   const findWorkItemParent = () => wrapper.findComponent(WorkItemParent);
-  const findWorkItemParticipents = () => wrapper.findComponent(Participants);
+  const findWorkItemTimeTracking = () => wrapper.findComponent(WorkItemTimeTracking);
+  const findWorkItemParticipants = () => wrapper.findComponent(Participants);
 
   const createComponent = ({
     workItem = workItemQueryResponse.data.workItem,
-    workItemsMvc2 = true,
+    workItemsBeta = true,
   } = {}) => {
     wrapper = shallowMount(WorkItemAttributesWrapper, {
       propsData: {
@@ -50,8 +47,7 @@ describe('WorkItemAttributesWrapper component', () => {
         hasIssuableHealthStatusFeature: true,
         projectNamespace: 'namespace',
         glFeatures: {
-          workItemsMvc: true,
-          workItemsMvc2,
+          workItemsBeta,
         },
       },
       stubs: {
@@ -89,6 +85,14 @@ describe('WorkItemAttributesWrapper component', () => {
 
       expect(findWorkItemLabels().exists()).toBe(exists);
     });
+
+    it('renders WorkItemLabels', async () => {
+      createComponent();
+
+      await waitForPromises();
+
+      expect(findWorkItemLabels().exists()).toBe(true);
+    });
   });
 
   describe('dates widget', () => {
@@ -105,25 +109,13 @@ describe('WorkItemAttributesWrapper component', () => {
       });
     });
 
-    it.each`
-      description                                                     | dueDateWidgetInlinePresent | dueDateWidgetWithEditPresent | workItemsMvc2FlagEnabled
-      ${'renders WorkItemDueDateWithEdit when workItemsMvc2 enabled'} | ${false}                   | ${true}                      | ${true}
-      ${'renders WorkItemDueDateInline when workItemsMvc2 disabled'}  | ${true}                    | ${false}                     | ${false}
-    `(
-      '$description',
-      async ({
-        dueDateWidgetInlinePresent,
-        dueDateWidgetWithEditPresent,
-        workItemsMvc2FlagEnabled,
-      }) => {
-        createComponent({ workItemsMvc2: workItemsMvc2FlagEnabled });
+    it('renders WorkItemDueDate', async () => {
+      createComponent();
 
-        await waitForPromises();
+      await waitForPromises();
 
-        expect(findWorkItemDueDate().exists()).toBe(dueDateWidgetWithEditPresent);
-        expect(findWorkItemDueDateInline().exists()).toBe(dueDateWidgetInlinePresent);
-      },
-    );
+      expect(findWorkItemDueDate().exists()).toBe(true);
+    });
   });
 
   describe('milestone widget', () => {
@@ -138,34 +130,23 @@ describe('WorkItemAttributesWrapper component', () => {
       expect(findWorkItemMilestone().exists()).toBe(exists);
     });
 
-    it.each`
-      description                                                      | milestoneWidgetInlinePresent | milestoneWidgetWithEditPresent | workItemsMvc2FlagEnabled
-      ${'renders WorkItemMilestone when workItemsMvc2 enabled'}        | ${false}                     | ${true}                        | ${true}
-      ${'renders WorkItemMilestoneInline when workItemsMvc2 disabled'} | ${true}                      | ${false}                       | ${false}
-    `(
-      '$description',
-      async ({
-        milestoneWidgetInlinePresent,
-        milestoneWidgetWithEditPresent,
-        workItemsMvc2FlagEnabled,
-      }) => {
-        createComponent({ workItemsMvc2: workItemsMvc2FlagEnabled });
+    it('renders WorkItemMilestone', async () => {
+      createComponent();
 
-        await waitForPromises();
+      await waitForPromises();
 
-        expect(findWorkItemMilestone().exists()).toBe(milestoneWidgetWithEditPresent);
-        expect(findWorkItemMilestoneInline().exists()).toBe(milestoneWidgetInlinePresent);
-      },
-    );
+      expect(findWorkItemMilestone().exists()).toBe(true);
+    });
   });
 
   describe('parent widget', () => {
     describe.each`
-      description                           | workItemType     | exists
-      ${'when work item type is task'}      | ${taskType}      | ${true}
-      ${'when work item type is objective'} | ${objectiveType} | ${true}
-      ${'when work item type is keyresult'} | ${keyResultType} | ${true}
-      ${'when work item type is issue'}     | ${issueType}     | ${false}
+      description                            | workItemType     | exists
+      ${'when work item type is task'}       | ${taskType}      | ${true}
+      ${'when work item type is objective'}  | ${objectiveType} | ${true}
+      ${'when work item type is key result'} | ${keyResultType} | ${true}
+      ${'when work item type is issue'}      | ${issueType}     | ${true}
+      ${'when work item type is epic'}       | ${epicType}      | ${true}
     `('$description', ({ workItemType, exists }) => {
       it(`${exists ? 'renders' : 'does not render'} parent component`, async () => {
         const response = workItemResponseFactory({ workItemType });
@@ -177,22 +158,12 @@ describe('WorkItemAttributesWrapper component', () => {
       });
     });
 
-    it('renders WorkItemParent when workItemsMvc2 enabled', async () => {
+    it('renders WorkItemParent when workItemsBeta enabled', async () => {
       createComponent();
 
       await waitForPromises();
 
       expect(findWorkItemParent().exists()).toBe(true);
-      expect(findWorkItemParentInline().exists()).toBe(false);
-    });
-
-    it('renders WorkItemParentInline when workItemsMvc2 disabled', async () => {
-      createComponent({ workItemsMvc2: false });
-
-      await waitForPromises();
-
-      expect(findWorkItemParent().exists()).toBe(false);
-      expect(findWorkItemParentInline().exists()).toBe(true);
     });
 
     it('emits an error event to the wrapper', async () => {
@@ -209,6 +180,19 @@ describe('WorkItemAttributesWrapper component', () => {
     });
   });
 
+  describe('time tracking widget', () => {
+    it.each`
+      description                                               | timeTrackingWidgetPresent | exists
+      ${'renders when widget is returned from API'}             | ${true}                   | ${true}
+      ${'does not render when widget is not returned from API'} | ${false}                  | ${false}
+    `('$description', ({ timeTrackingWidgetPresent, exists }) => {
+      const response = workItemResponseFactory({ timeTrackingWidgetPresent });
+      createComponent({ workItem: response.data.workItem });
+
+      expect(findWorkItemTimeTracking().exists()).toBe(exists);
+    });
+  });
+
   describe('participants widget', () => {
     it.each`
       description                                               | participantsWidgetPresent | exists
@@ -218,7 +202,7 @@ describe('WorkItemAttributesWrapper component', () => {
       const response = workItemResponseFactory({ participantsWidgetPresent });
       createComponent({ workItem: response.data.workItem });
 
-      expect(findWorkItemParticipents().exists()).toBe(exists);
+      expect(findWorkItemParticipants().exists()).toBe(exists);
     });
   });
 });

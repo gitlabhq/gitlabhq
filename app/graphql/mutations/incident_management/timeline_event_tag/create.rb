@@ -9,12 +9,12 @@ module Mutations
         include FindsProject
 
         argument :project_path, GraphQL::Types::ID,
-                 required: true,
-                 description: 'Project to create the timeline event tag in.'
+          required: true,
+          description: 'Project to create the timeline event tag in.'
 
         argument :name, GraphQL::Types::String,
-                 required: true,
-                 description: 'Name of the tag.'
+          required: true,
+          description: 'Name of the tag.'
 
         def resolve(project_path:, **args)
           project = authorized_find!(project_path)

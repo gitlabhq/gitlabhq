@@ -12,7 +12,7 @@ author_gitlab: mehranrasulian
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 ## Introduction
 
@@ -208,7 +208,7 @@ It should execute the `list` task we defined earlier, which connects to the serv
 
 Envoy is not a dependency of Laravel, therefore you can use it for any PHP application.
 
-### Zero downtime deployment
+### Zero-downtime deployment
 
 Every time we deploy to the production server, Envoy downloads the latest release of our app from GitLab repository and replace it with preview's release.
 Envoy does this without any [downtime](https://en.wikipedia.org/wiki/Downtime),
@@ -284,7 +284,7 @@ The `--depth 1` option is a great solution which saves systems time and disk spa
 
 #### Installing dependencies with Composer
 
-As you may know, this task just navigates to the new release directory and runs Composer to install the application dependencies:
+This task goes to the new release directory and runs Composer to install the application dependencies:
 
 ```php
 ...
@@ -440,7 +440,7 @@ Now that we have our `Dockerfile` let's build and push it to our [GitLab contain
 
 > The registry is the place to store and tag images for later use. Developers may want to maintain their own registry for private, company images, or for throw-away images used only in testing. Using GitLab container registry means you don't need to set up and administer yet another service or use a public registry.
 
-On your GitLab project repository navigate to the **Registry** tab.
+In your GitLab project repository, go to the **Registry** tab.
 
 ![container registry page empty image](img/container_registry_page_empty_image.png)
 
@@ -632,11 +632,11 @@ Select it to see the runner's output.
 
 ![pipeline page](img/pipeline_page.png)
 
-After our code passed through the pipeline successfully, we can deploy to our production server by selecting the **play** button on the right side.
+After our code passed through the pipeline successfully, we can deploy to our production server by selecting **Run** (**{play}**) on the right side.
 
 ![pipelines page deploy button](img/pipelines_page_deploy_button.png)
 
-After the deploy pipeline passed successfully, navigate to **Pipelines > Environments**.
+After the deploy pipeline passes successfully, go to **Pipelines > Environments**.
 
 ![environments page](img/environments_page.png)
 
@@ -655,7 +655,7 @@ The `.env` file consists of our Laravel environment variables.
 
 ![production server app directory](img/production_server_app_directory.png)
 
-If you navigate to the `current` directory, you should see the application's content.
+If you go to the `current` directory, you should see the application's content.
 As you see, the `.env` is pointing to the `/var/www/app/.env` file and also `storage` is pointing to the `/var/www/app/storage/` directory.
 
 ![production server current directory](img/production_server_current_directory.png)

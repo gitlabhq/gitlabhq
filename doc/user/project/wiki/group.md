@@ -8,9 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13195) in GitLab 13.5.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 If you use GitLab groups to manage multiple projects, some of your documentation
 might span multiple groups. You can create group wikis, instead of [project wikis](index.md),
@@ -37,8 +35,6 @@ To access a group wiki:
      [wiki keyboard shortcut](../../shortcuts.md).
 
 ## Export a group wiki
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/53247) in GitLab 13.9.
 
 Users with the Owner role in a group can
 [import or export a group wiki](../../project/settings/import_export.md#migrate-groups-by-uploading-an-export-file-deprecated) when they

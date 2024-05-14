@@ -1,6 +1,6 @@
 ---
 description: User clicks Create confidential merge request on issues list
-category: InternalEventTracking
+internal_events: true
 action: click_create_confidential_mr_issues_list
 identifiers:
   - project

@@ -79,7 +79,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
         context 'with namespaced packages present' do
           let_it_be(:package) { create(:npm_package, project: project, name: "@#{project.root_namespace.path}/test") }
 
-          it 'does not allow transfer' do
+          it 'does not allow transfer', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/444687' do
             transfer_service.execute(new_group)
 
             expect(transfer_service.error).to eq('Transfer failed: Group contains projects with NPM packages scoped to the current root level group.')
@@ -138,6 +138,27 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
         transfer_service.execute(new_parent_group)
         expect(transfer_service.error).to eq('Transfer failed: namespace directory cannot be moved')
       end
+    end
+  end
+
+  context 'transferring labels' do
+    let(:new_parent_group) { create(:group, :private) }
+    let(:parent_group) { create(:group) }
+    let(:group) { create(:group, parent: parent_group) }
+    let(:project) { create(:project, group: group) }
+
+    before do
+      group.add_owner(user)
+      parent_group.add_owner(user)
+      new_parent_group.add_owner(user)
+    end
+
+    it 'delegates transfer to Labels::TransferService' do
+      expect_next_instance_of(Labels::TransferService, user, project.group, project) do |labels_transfer_service|
+        expect(labels_transfer_service).to receive(:execute).once.and_call_original
+      end
+
+      transfer_service.execute(new_parent_group)
     end
   end
 

@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Terraform::States::TriggerDestroyService, feature_category: :infrastructure_as_code do
   let_it_be(:project) { create(:project) }
-  let_it_be(:user) { create(:user, maintainer_projects: [project]) }
+  let_it_be(:user) { create(:user, maintainer_of: project) }
 
   describe '#execute', :aggregate_failures do
     let_it_be(:state) { create(:terraform_state, project: project) }
@@ -40,7 +40,7 @@ RSpec.describe Terraform::States::TriggerDestroyService, feature_category: :infr
     end
 
     context 'user does not have permission' do
-      let(:user) { create(:user, developer_projects: [project]) }
+      let(:user) { create(:user, developer_of: project) }
       let(:message) { 'You have insufficient permissions to delete this state' }
 
       include_examples 'unable to delete state'

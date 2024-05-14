@@ -7,24 +7,9 @@ module IssuesHelper
     can?(current_user, :admin_issue, @group || @project)
   end
 
-  def issue_css_classes(issue)
-    classes = ["issue"]
-    classes << "closed" if issue.closed?
-    classes << "gl-cursor-grab" if @sort == 'relative_position'
-    classes.join(' ')
-  end
-
   def show_timeline_view_toggle?(issue)
     # Overridden in EE
     false
-  end
-
-  def issue_manual_ordering_class
-    is_sorting_by_relative_position = @sort == 'relative_position'
-
-    if is_sorting_by_relative_position && !issue_repositioning_disabled?
-      "manual-ordering"
-    end
   end
 
   def issue_repositioning_disabled?
@@ -41,12 +26,6 @@ module IssuesHelper
 
   def issue_hidden?(issue)
     issue.hidden?
-  end
-
-  def hidden_issue_icon(issue)
-    return unless issue_hidden?(issue)
-
-    hidden_resource_icon(issue)
   end
 
   def award_user_list(awards, current_user, limit: 10)
@@ -156,7 +135,7 @@ module IssuesHelper
     {
       autocomplete_award_emojis_path: autocomplete_award_emojis_path,
       calendar_path: url_for(safe_params.merge(calendar_url_options)),
-      empty_state_svg_path: image_path('illustrations/empty-state/empty-issues-md.svg'),
+      empty_state_svg_path: image_path('illustrations/empty-state/empty-service-desk-md.svg'),
       full_path: namespace.full_path,
       initial_sort: current_user&.user_preference&.issues_sort,
       is_issue_repositioning_disabled: issue_repositioning_disabled?.to_s,
@@ -183,6 +162,7 @@ module IssuesHelper
   def project_issues_list_data(project, current_user)
     common_issues_list_data(project, current_user).merge(
       can_bulk_update: can?(current_user, :admin_issue, project).to_s,
+      can_create_issue: can?(current_user, :create_issue, project).to_s,
       can_edit: can?(current_user, :admin_project, project).to_s,
       can_import_issues: can?(current_user, :import_issues, @project).to_s,
       can_read_crm_contact: can?(current_user, :read_crm_contact, project.group).to_s,
@@ -227,7 +207,7 @@ module IssuesHelper
       dashboard_labels_path: dashboard_labels_path(format: :json, include_ancestor_groups: true),
       dashboard_milestones_path: dashboard_milestones_path(format: :json),
       empty_state_with_filter_svg_path: image_path('illustrations/empty-state/empty-issues-md.svg'),
-      empty_state_without_filter_svg_path: image_path('illustrations/issue-dashboard_results-without-filter.svg'),
+      empty_state_without_filter_svg_path: image_path('illustrations/empty-state/empty-search-md.svg'),
       has_issue_date_filter_feature: Feature.enabled?(:issue_date_filter, current_user).to_s,
       initial_sort: current_user&.user_preference&.issues_sort,
       is_public_visibility_restricted:

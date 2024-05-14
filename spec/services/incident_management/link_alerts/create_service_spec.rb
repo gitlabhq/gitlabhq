@@ -10,18 +10,9 @@ RSpec.describe IncidentManagement::LinkAlerts::CreateService, feature_category: 
   let_it_be(:alert2) { create(:alert_management_alert, project: project) }
   let_it_be(:external_alert) { create(:alert_management_alert, project: another_project) }
   let_it_be(:incident) { create(:incident, project: project, alert_management_alerts: [linked_alert]) }
-  let_it_be(:guest) { create(:user) }
-  let_it_be(:developer) { create(:user) }
-  let_it_be(:another_developer) { create(:user) }
-
-  before_all do
-    project.add_guest(guest)
-    project.add_developer(developer)
-    project.add_developer(another_developer)
-
-    another_project.add_guest(guest)
-    another_project.add_developer(developer)
-  end
+  let_it_be(:guest) { create(:user, guest_of: [project, another_project]) }
+  let_it_be(:developer) { create(:user, developer_of: [project, another_project]) }
+  let_it_be(:another_developer) { create(:user, developer_of: project) }
 
   describe '#execute' do
     subject(:execute) { described_class.new(incident, current_user, alert_references).execute }

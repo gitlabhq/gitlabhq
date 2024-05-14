@@ -174,7 +174,7 @@ export default {
         <h3 class="text-secondary gl-mt-0" data-testid="step-count">
           {{ sprintf($options.i18n.stepNofN, { currentStep, stepCount }) }}
         </h3>
-        <gl-progress-bar :value="progress" variant="success" />
+        <gl-progress-bar :value="progress" />
       </header>
       <section class="gl-mb-4">
         <commit-step
@@ -227,10 +227,10 @@ export default {
             data-testid="placeholder-overlay"
           >
             <div
-              class="gl-absolute gl-top-0 gl-right-0 gl-bottom-0 gl-left-0 bg-white gl-opacity-5 gl-z-index-2"
+              class="gl-absolute gl-top-0 gl-right-0 gl-bottom-0 gl-left-0 bg-white gl-opacity-5 gl-z-2"
             ></div>
             <div
-              class="gl-relative gl-h-full gl-display-flex gl-align-items-center gl-justify-content-center gl-z-index-3"
+              class="gl-relative gl-h-full gl-display-flex gl-align-items-center gl-justify-content-center gl-z-3"
             >
               <div class="gl-max-w-34">
                 <h4 data-testid="filename">{{ filename }}</h4>

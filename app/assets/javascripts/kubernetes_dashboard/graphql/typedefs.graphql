@@ -1,0 +1,29 @@
+type LocalWorkloadMetadata {
+  name: String
+  namespace: String
+  creationTimestamp: String
+  labels: JSON
+  annotations: JSON
+}
+
+type LocalWorkloadItem {
+  metadata: LocalWorkloadMetadata
+  status: JSON
+  spec: JSON
+}
+
+input K8sDashboardConfig {
+  basePath: String
+  baseOptions: JSON
+}
+
+extend type Query {
+  k8sCronJobs(configuration: K8sDashboardConfig): [LocalWorkloadItem]
+  k8sDaemonSets(configuration: K8sDashboardConfig): [LocalWorkloadItem]
+  k8sDeployments(configuration: K8sDashboardConfig): [LocalWorkloadItem]
+  k8sJobs(configuration: K8sDashboardConfig): [LocalWorkloadItem]
+  k8sDashboardPods(configuration: K8sDashboardConfig): [LocalWorkloadItem]
+  k8sReplicaSets(configuration: K8sDashboardConfig): [LocalWorkloadItem]
+  k8sDashboardServices(configuration: K8sDashboardConfig): [LocalWorkloadItem]
+  k8sStatefulSets(configuration: K8sDashboardConfig): [LocalWorkloadItem]
+}

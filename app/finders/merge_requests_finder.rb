@@ -21,6 +21,7 @@
 #     label_name: string
 #     sort: string
 #     non_archived: boolean
+#     merged_without_event_source: boolean
 #     my_reaction_emoji: string
 #     source_branch: string
 #     target_branch: string
@@ -49,6 +50,7 @@ class MergeRequestsFinder < IssuableFinder
       :merged_before,
       :reviewer_id,
       :reviewer_username,
+      :review_state,
       :source_branch,
       :target_branch,
       :wip
@@ -77,7 +79,9 @@ class MergeRequestsFinder < IssuableFinder
     items = by_approvals(items)
     items = by_deployments(items)
     items = by_reviewer(items)
+    items = by_review_state(items)
     items = by_source_project_id(items)
+    items = by_resource_event_state(items)
 
     by_approved(items)
   end
@@ -164,6 +168,12 @@ class MergeRequestsFinder < IssuableFinder
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
+  def by_resource_event_state(items)
+    return items unless params[:merged_without_event_source].present?
+
+    items.merged_without_state_event_source
+  end
+
   # rubocop: disable CodeReuse/ActiveRecord
   def by_draft(items)
     draft_param = Gitlab::Utils.to_boolean(params.fetch(:draft) { params.fetch(:wip, nil) })
@@ -235,10 +245,17 @@ class MergeRequestsFinder < IssuableFinder
     elsif params.filter_by_any_reviewer?
       items.review_requested
     elsif params.reviewer
-      items.review_requested_to(params.reviewer)
+      items.review_requested_to(params.reviewer, params.review_state)
     else # reviewer not found
       items.none
     end
+  end
+
+  def by_review_state(items)
+    return items unless params.review_state.present?
+    return items if params.reviewer_id? || params.reviewer_username?
+
+    items.review_states(params.review_state)
   end
 
   def by_negated_reviewer(items)

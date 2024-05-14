@@ -371,14 +371,13 @@ RSpec.describe Gitlab::GitAccessSnippet do
       it_behaves_like 'migration bot does not err'
     end
 
-    context 'when GIT_OBJECT_DIRECTORY_RELATIVE env var is set' do
+    context 'when GIT_OBJECT_DIRECTORY_RELATIVE env var is set', :request_store do
       let(:change_size) { 100 }
 
       before do
-        allow(Gitlab::Git::HookEnv)
-          .to receive(:all)
-            .with(repository.gl_repository)
-            .and_return({ 'GIT_OBJECT_DIRECTORY_RELATIVE' => 'objects' })
+        ::Gitlab::Git::HookEnv.set(repository.gl_repository,
+          repository.raw_repository.relative_path,
+          'GIT_OBJECT_DIRECTORY_RELATIVE' => 'objects')
 
         # Stub the object directory size to "simulate" quarantine size
         allow(repository).to receive(:object_directory_size).and_return(change_size)

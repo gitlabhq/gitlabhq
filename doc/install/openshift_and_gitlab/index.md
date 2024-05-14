@@ -14,9 +14,8 @@ OpenShift helps you to develop, deploy, and manage container-based applications.
 
 ## Use OpenShift to run GitLab self-managed
 
-Running GitLab within an OpenShift cluster is officially supported using the GitLab Operator. You can learn more on
-[setting up GitLab on OpenShift on the GitLab Operator's documentation](https://docs.gitlab.com/charts/installation/operator.html).
-Some components (documented on the GitLab Operator doc) are not supported yet.
+You can run GitLab in an OpenShift cluster with the GitLab Operator. For more information about
+setting up GitLab on OpenShift, see [GitLab Operator](https://docs.gitlab.com/operator/).
 
 ## Use OpenShift to run a GitLab Runner Fleet
 
@@ -38,7 +37,6 @@ For Auto DevOps, the following features are not supported yet:
 
 - [Auto Code Quality](../../ci/testing/code_quality.md)
 - [License approval policies](../../user/compliance/license_approval_policies.md)
-- [License Scanning](../../user/compliance/license_scanning_of_cyclonedx_files/index.md) is supported on OpenShift.
 - Auto Browser Performance Testing
 - Auto Build
 - [Operational Container Scanning](../../user/clusters/agent/vulnerabilities.md) (Note: Pipeline [Container Scanning](../../user/application_security/container_scanning/index.md) is supported)

@@ -15,8 +15,7 @@ module EnvironmentsHelper
       "folder_name" => folder,
       "project_path" => project.full_path,
       "help_page_path" => help_page_path("ci/environments/index"),
-      "can_read_environment" => can?(current_user, :read_environment, @project).to_s,
-      "kas_tunnel_url" => ::Gitlab::Kas.tunnel_url
+      "can_read_environment" => can?(current_user, :read_environment, @project).to_s
     }
   end
 
@@ -80,12 +79,7 @@ module EnvironmentsHelper
   def static_metrics_data
     {
       'documentation_path' => help_page_path('administration/monitoring/prometheus/index'),
-      'add_dashboard_documentation_path' => help_page_path('operations/metrics/dashboards/index', anchor: 'add-a-new-dashboard-to-your-project'),
-      'empty_getting_started_svg_path' => image_path('illustrations/monitoring/getting_started.svg'),
-      'empty_loading_svg_path' => image_path('illustrations/monitoring/loading.svg'),
-      'empty_no_data_svg_path' => image_path('illustrations/monitoring/no_data.svg'),
-      'empty_no_data_small_svg_path' => image_path('illustrations/chart-empty-state-small.svg'),
-      'empty_unable_to_connect_svg_path' => image_path('illustrations/monitoring/unable_to_connect.svg')
+      'add_dashboard_documentation_path' => help_page_path('operations/metrics/dashboards/index', anchor: 'add-a-new-dashboard-to-your-project')
     }
   end
 end

@@ -223,7 +223,7 @@ RSpec.shared_examples "chat integration" do |integration_name, supports_deployme
     end
 
     context "with note events" do
-      let(:sample_data) { Gitlab::DataBuilder::Note.build(note, user) }
+      let(:sample_data) { Gitlab::DataBuilder::Note.build(note, user, :create) }
 
       context "with commit comment" do
         let_it_be(:note) do

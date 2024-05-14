@@ -12,3 +12,7 @@ export const NO_ENVIRONMENT_OPTION = {
   type: 'Not applicable',
   text: __('Not applicable'),
 };
+
+export const ENVIRONMENT_FETCH_ERROR = __(
+  'There was an error fetching the environments information.',
+);

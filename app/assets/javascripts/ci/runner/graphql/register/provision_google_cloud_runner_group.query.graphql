@@ -1,0 +1,25 @@
+query provisionGoogleCloudRunnerGroup(
+  $fullPath: ID!
+  $cloudProjectId: GoogleCloudProject!
+  $region: GoogleCloudRegion!
+  $zone: GoogleCloudZone!
+  $machineType: GoogleCloudMachineType!
+  $runnerToken: String
+) {
+  group(fullPath: $fullPath) {
+    id
+    runnerCloudProvisioning(provider: GOOGLE_CLOUD, cloudProjectId: $cloudProjectId) {
+      ... on CiRunnerGoogleCloudProvisioning {
+        projectSetupShellScript
+        provisioningSteps(
+          region: $region
+          zone: $zone
+          ephemeralMachineType: $machineType
+          runnerToken: $runnerToken
+        ) {
+          instructions
+        }
+      }
+    }
+  }
+}

@@ -4,7 +4,7 @@ import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import { throttle, isEmpty } from 'lodash';
 // eslint-disable-next-line no-restricted-imports
 import { mapGetters, mapState, mapActions } from 'vuex';
-import LogTopBar from 'ee_else_ce/ci/job_details/components/job_log_controllers.vue';
+import JobLogTopBar from 'ee_else_ce/ci/job_details/components/job_log_top_bar.vue';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { isScrolledToBottom } from '~/lib/utils/scroll_utils';
 import { __, sprintf } from '~/locale';
@@ -28,7 +28,7 @@ export default {
     ErasedBlock,
     GlIcon,
     Log,
-    LogTopBar,
+    JobLogTopBar,
     StuckBlock,
     UnmetPrerequisitesBlock,
     Sidebar,
@@ -57,6 +57,11 @@ export default {
       default: null,
     },
     subscriptionsMoreMinutesUrl: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    logViewerPath: {
       type: String,
       required: false,
       default: null,
@@ -275,21 +280,22 @@ export default {
 
         <div
           v-if="job.archived"
-          class="gl-mt-3 gl-py-2 gl-px-3 gl-align-items-center gl-z-index-1 gl-m-auto archived-job"
+          class="gl-mt-3 gl-py-2 gl-px-3 gl-align-items-center gl-z-1 gl-m-auto archived-job"
           :class="{ 'sticky-top gl-border-bottom-0': hasJobLog }"
           data-testid="archived-job"
         >
-          <gl-icon name="lock" class="gl-vertical-align-bottom" />
+          <gl-icon name="lock" class="gl-align-bottom" />
           {{ __('This job is archived. Only the complete pipeline can be retried.') }}
         </div>
         <!-- job log -->
         <div v-if="hasJobLog && !showUpdateVariablesState" class="build-log-container gl-relative">
-          <log-top-bar
+          <job-log-top-bar
             :class="{
               'has-archived-block': job.archived,
             }"
             :size="jobLogSize"
             :raw-path="job.raw_path"
+            :log-viewer-path="logViewerPath"
             :is-scroll-bottom-disabled="isScrollBottomDisabled"
             :is-scroll-top-disabled="isScrollTopDisabled"
             :is-job-log-size-visible="isJobLogSizeVisible"

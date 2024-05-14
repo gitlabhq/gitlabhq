@@ -2,6 +2,7 @@
 stage: Create
 group: Source Code
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
+description: "Debugging tips for fixing problems in Git."
 ---
 
 # Troubleshooting Git
@@ -71,10 +72,15 @@ git config http.postBuffer 52428800
 The value is specified in bytes, so in the above case the buffer size has been
 set to 50 MB. The default is 1 MB.
 
-### RPC failed; curl 92 HTTP/2 stream 0 was not closed cleanly: INTERNAL_ERROR (err 2)
+### Stream 0 was not closed cleanly
 
-This problem may be caused by a slow internet connection. If you use Git over HTTP
-instead of SSH, try one of these fixes:
+If you see this error, it may be caused by a slow internet connection:
+
+```plaintext
+RPC failed; curl 92 HTTP/2 stream 0 was not closed cleanly: INTERNAL_ERROR (err 2)
+```
+
+If you use Git over HTTP instead of SSH, try one of these fixes:
 
 - Increase the POST buffer size in the Git configuration with `git config http.postBuffer 52428800`.
 - Switch to the `HTTP/1.1` protocol with `git config http.version HTTP/1.1`.

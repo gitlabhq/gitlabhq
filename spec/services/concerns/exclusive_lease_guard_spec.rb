@@ -40,6 +40,50 @@ RSpec.describe ExclusiveLeaseGuard, :clean_gitlab_redis_shared_state, feature_ca
       expect(subject.exclusive_lease.exists?).to be_falsey
     end
 
+    describe 'instrumentation', :request_store do
+      it 'increments the lock requested count and computes the duration of holding the lock' do
+        subject.call do
+          sleep 0.1
+        end
+
+        expect(Gitlab::Instrumentation::ExclusiveLock.requested_count).to eq(1)
+        expect(Gitlab::Instrumentation::ExclusiveLock.hold_duration).to be_between(0.1, 0.11)
+      end
+
+      context 'when exclusive lease is not obtained' do
+        before do
+          allow_next_instance_of(Gitlab::ExclusiveLease) do |instance|
+            allow(instance).to receive(:try_obtain).and_return(false)
+          end
+        end
+
+        it 'increments the lock requested count and does not computes the duration of holding the lock' do
+          subject.call do
+            sleep 0.1
+          end
+
+          expect(Gitlab::Instrumentation::ExclusiveLock.requested_count).to eq(1)
+          expect(Gitlab::Instrumentation::ExclusiveLock.hold_duration).to eq(0)
+        end
+      end
+
+      context 'when an exception is raised during the lease' do
+        subject do
+          subject_class.new.call do
+            sleep 0.1
+            raise StandardError
+          end
+        end
+
+        it 'increments the lock requested count and computes the duration of holding the lock' do
+          expect { subject }.to raise_error(StandardError)
+
+          expect(Gitlab::Instrumentation::ExclusiveLock.requested_count).to eq(1)
+          expect(Gitlab::Instrumentation::ExclusiveLock.hold_duration).to be_between(0.1, 0.11)
+        end
+      end
+    end
+
     context 'when the lease is already obtained' do
       before do
         subject.exclusive_lease.try_obtain

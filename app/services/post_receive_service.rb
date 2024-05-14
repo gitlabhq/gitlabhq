@@ -27,7 +27,7 @@ class PostReceiveService
     repository&.expire_branches_cache if mr_options&.fetch(:create, false)
 
     PostReceive.perform_async(params[:gl_repository], params[:identifier],
-                              params[:changes], push_options.as_json)
+      params[:changes], push_options.as_json)
 
     if mr_options.present?
       message = process_mr_push_options(mr_options, params[:changes])
@@ -102,6 +102,10 @@ class PostReceiveService
   def record_onboarding_progress
     return unless project
 
+    # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/456533 we should remove from here and place this
+    # when repository is created instead.
+    # In order to do that, we need to check for all onboarded namespaces where this action is not
+    # completed and then see if any project underneath them has a repository.
     Onboarding::ProgressService.new(project.namespace).execute(action: :git_write)
   end
 end

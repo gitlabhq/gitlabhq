@@ -35,13 +35,7 @@ export default {
     <template v-else>
       <users-table :users="users" :admin-user-path="paths.adminUser" />
       <div class="gl-display-flex gl-justify-content-center">
-        <gl-keyset-pagination
-          v-bind="pageInfo"
-          :prev-text="__('Previous')"
-          :next-text="__('Next')"
-          @prev="$emit('prev')"
-          @next="$emit('next')"
-        />
+        <gl-keyset-pagination v-bind="pageInfo" @prev="$emit('prev')" @next="$emit('next')" />
       </div>
     </template>
   </div>

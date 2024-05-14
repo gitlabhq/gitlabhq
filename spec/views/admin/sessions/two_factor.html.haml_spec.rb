@@ -13,7 +13,6 @@ RSpec.describe 'admin/sessions/two_factor.html.haml', feature_category: :system_
     it 'shows enter otp form' do
       render
 
-      expect(rendered).to have_css('.login-box')
       expect(rendered).to have_field('user[otp_attempt]')
     end
   end

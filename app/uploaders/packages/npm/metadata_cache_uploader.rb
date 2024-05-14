@@ -4,6 +4,7 @@ module Packages
   module Npm
     class MetadataCacheUploader < GitlabUploader
       include ObjectStorage::Concern
+      include Packages::GcsSignedUrlMetadata
 
       FILENAME = 'metadata.json'
 

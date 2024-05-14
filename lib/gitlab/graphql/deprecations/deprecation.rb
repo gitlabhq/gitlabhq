@@ -60,7 +60,7 @@ module Gitlab
 
           case context
           when :block
-            ['NOTE:', *parts].join("\n")
+            ['DETAILS:', *parts].join("\n")
           when :inline
             parts.join(' ')
           end
@@ -128,8 +128,8 @@ module Gitlab
           " #{changed_in_milestone}: #{reason_text}"
         end
 
-        # Returns 'Deprecated in <milestone>' for proper deprecations.
-        # Retruns 'Introduced in <milestone>' for :alpha deprecations.
+        # Returns 'Deprecated in GitLab <milestone>' for proper deprecations.
+        # Returns 'Introduced in GitLab <milestone>' for :alpha deprecations.
         # Formatted to markdown or plain format.
         def changed_in_milestone(format: :plain)
           verb = if alpha?
@@ -140,9 +140,9 @@ module Gitlab
 
           case format
           when :plain
-            "#{verb} in #{milestone}"
+            "#{verb} in GitLab #{milestone}"
           when :markdown
-            "**#{verb}** in #{milestone}"
+            "**#{verb}** in GitLab #{milestone}"
           end
         end
       end

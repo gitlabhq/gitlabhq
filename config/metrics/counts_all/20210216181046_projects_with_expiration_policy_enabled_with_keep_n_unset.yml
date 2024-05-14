@@ -5,7 +5,7 @@ description: A count of projects with the cleanup policy with the number of tags
   keep unset
 product_section: ops
 product_stage: package
-product_group: package
+product_group: container_registry
 value_type: number
 status: active
 time_frame: all

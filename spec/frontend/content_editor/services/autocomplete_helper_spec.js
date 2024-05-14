@@ -17,9 +17,13 @@ import {
   MOCK_MERGE_REQUESTS,
   MOCK_ASSIGNEES,
   MOCK_REVIEWERS,
+  MOCK_WIKIS,
 } from './autocomplete_mock_data';
 
-jest.mock('~/emoji');
+jest.mock('~/emoji', () => ({
+  initEmojiMap: () => jest.fn(),
+  getAllEmoji: () => [{ name: 'thumbsup' }],
+}));
 
 describe('defaultSorter', () => {
   it('returns items as is if query is empty', () => {
@@ -119,6 +123,7 @@ describe('AutocompleteHelper', () => {
       mergeRequests: '/mergeRequests',
       vulnerabilities: '/vulnerabilities',
       commands: '/commands',
+      wikis: '/wikis',
     };
 
     mock.onGet('/members').reply(200, MOCK_MEMBERS);
@@ -130,6 +135,7 @@ describe('AutocompleteHelper', () => {
     mock.onGet('/mergeRequests').reply(200, MOCK_MERGE_REQUESTS);
     mock.onGet('/vulnerabilities').reply(200, MOCK_VULNERABILITIES);
     mock.onGet('/commands').reply(200, MOCK_COMMANDS);
+    mock.onGet('/wikis').reply(200, MOCK_WIKIS);
 
     const sidebarMediator = {
       store: {
@@ -151,6 +157,8 @@ describe('AutocompleteHelper', () => {
   afterEach(() => {
     mock.restore();
 
+    delete gl.GfmAutoComplete;
+
     jest.spyOn(Date, 'now').mockImplementation(() => dateNowOld);
   });
 
@@ -165,6 +173,7 @@ describe('AutocompleteHelper', () => {
     ${'merge_request'} | ${'n'}
     ${'vulnerability'} | ${'cross'}
     ${'command'}       | ${'re'}
+    ${'wiki'}          | ${'ho'}
   `(
     'for reference type "$referenceType", searches for "$query" correctly',
     async ({ referenceType, query }) => {
@@ -199,4 +208,26 @@ describe('AutocompleteHelper', () => {
       ).toMatchSnapshot();
     },
   );
+
+  it('loads default datasources if not passed', () => {
+    gl.GfmAutoComplete = {
+      dataSources: {
+        members: '/gitlab-org/gitlab-test/-/autocomplete_sources/members',
+      },
+    };
+    autocompleteHelper = new AutocompleteHelper({});
+
+    expect(autocompleteHelper.dataSourceUrls.members).toBe(
+      '/gitlab-org/gitlab-test/-/autocomplete_sources/members',
+    );
+  });
+
+  it("loads emoji if dataSources doesn't exist", async () => {
+    autocompleteHelper = new AutocompleteHelper({});
+
+    const dataSource = autocompleteHelper.getDataSource('emoji');
+    const results = await dataSource.search('');
+
+    expect(results).toEqual([{ emoji: { name: 'thumbsup' }, fieldValue: 'thumbsup' }]);
+  });
 });

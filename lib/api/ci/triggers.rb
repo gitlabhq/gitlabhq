@@ -168,7 +168,7 @@ module API
           end
         end
 
-        desc 'Delete a trigger' do
+        desc 'Delete a trigger token' do
           success code: 204
           failure [
             { code: 401, message: 'Unauthorized' },
@@ -178,11 +178,11 @@ module API
           ]
         end
         params do
-          requires :trigger_id, type: Integer, desc: 'The trigger ID', documentation: { example: 10 }
+          requires :trigger_id, type: Integer, desc: 'The trigger token ID', documentation: { example: 10 }
         end
         delete ':id/triggers/:trigger_id' do
           authenticate!
-          authorize! :admin_build, user_project
+          authorize! :manage_trigger, user_project
 
           trigger = user_project.triggers.find(params.delete(:trigger_id))
           break not_found!('Trigger') unless trigger

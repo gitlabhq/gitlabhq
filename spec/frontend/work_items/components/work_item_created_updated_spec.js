@@ -123,13 +123,13 @@ describe('WorkItemCreatedUpdated component', () => {
     await createComponent();
 
     const {
-      data: { workspace: { workItems } = {} },
+      data: { workspace: { workItem } = {} },
     } = workItemByIidResponseFactory();
 
     expect(findWorkItemTypeIcon().props()).toMatchObject({
       showText: true,
-      workItemIconName: workItems.nodes[0].workItemType.iconName,
-      workItemType: workItems.nodes[0].workItemType.name,
+      workItemIconName: workItem.workItemType.iconName,
+      workItemType: workItem.workItemType.name,
     });
   });
 

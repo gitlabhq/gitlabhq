@@ -18,7 +18,11 @@ export default {
     MarkdownEditor,
   },
   mixins: [InternalEvents.mixin()],
-  inject: ['createMutation', 'updateMutation'],
+  inject: {
+    namespaceId: { default: undefined },
+    createMutation: { required: true },
+    updateMutation: { required: true },
+  },
   props: {
     id: {
       type: String,
@@ -93,6 +97,7 @@ export default {
         .mutate({
           mutation: this.id ? this.updateMutation : this.createMutation,
           variables: {
+            namespaceId: this.namespaceId,
             id: this.id,
             name: this.updateCommentTemplate.name,
             content: this.updateCommentTemplate.content,

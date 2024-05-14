@@ -1,4 +1,4 @@
-@import '@gitlab/ui/dist/tokens/scss/tokens';
+@import '@gitlab/ui/src/tokens/build/scss/tokens';
 
 /*
  * Layout
@@ -122,8 +122,6 @@ $contextual-sidebar-border-color: #e9e9e9;
 $border-color: $gray-100;
 $shadow-color: $t-gray-a-08;
 $well-expand-item: #e8f2f7 !default;
-$well-inner-border: #eef0f2 !default;
-$well-light-border: #f1f1f1;
 $nav-active-bg: $t-gray-a-08;
 
 /*
@@ -207,6 +205,7 @@ $fixed-layout-width: 1296px;
 $container-margin: $gl-padding;
 $container-margin-xl: $gl-padding-24;
 $border-radius-default: 4px;
+$border-radius-default-inner: $border-radius-default - 1px;
 $border-radius-small: 2px;
 $border-radius-large: 8px;
 $default-icon-size: 16px;
@@ -229,6 +228,7 @@ $gl-line-height-18: 18px;
 $gl-line-height-20: 20px;
 $gl-line-height-24: 24px;
 $gl-line-height-14: 14px;
+$file-header-height: 42px;
 
 /*
  * Calculated heights
@@ -346,14 +346,6 @@ $gl-btn-small-line-height: 18px;
 * Badges
 */
 $badge-bg: rgba($black, 0.07);
-
-/*
-* Social Icons
-*/
-$discord: #5865f2;
-$linkedin: #2867b2;
-$mastodon: #6364ff;
-$skype: #0078d7;
 
 /*
  *  Award emoji

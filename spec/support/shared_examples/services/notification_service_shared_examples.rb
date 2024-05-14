@@ -49,7 +49,7 @@ RSpec.shared_examples 'group emails are disabled' do
   end
 
   it 'sends no emails with group emails disabled' do
-    target_group.update_attribute(:emails_disabled, true)
+    target_group.update_attribute(:emails_enabled, false)
 
     notification_trigger
 
@@ -57,7 +57,7 @@ RSpec.shared_examples 'group emails are disabled' do
   end
 
   it 'sends emails to someone' do
-    target_group.update_attribute(:emails_disabled, false)
+    target_group.update_attribute(:emails_enabled, true)
 
     notification_trigger
 

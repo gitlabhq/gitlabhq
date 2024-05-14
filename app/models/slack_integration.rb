@@ -13,6 +13,9 @@ class SlackIntegration < ApplicationRecord
   # will need reauthorization.
   # https://api.slack.com/authentication/oauth-v2#asking
   SCOPES = [SCOPE_COMMANDS, SCOPE_CHAT_WRITE, SCOPE_CHAT_WRITE_PUBLIC].freeze
+  DATABASE_ATTRIBUTES = %w[
+    team_id team_name user_id bot_user_id encrypted_bot_access_token encrypted_bot_access_token_iv
+  ].freeze
 
   belongs_to :integration
 
@@ -32,6 +35,7 @@ class SlackIntegration < ApplicationRecord
 
   scope :with_bot, -> { where.not(bot_user_id: nil) }
   scope :by_team, ->(team_id) { where(team_id: team_id) }
+  scope :by_integration, ->(integration_ids) { where(integration_id: integration_ids) }
 
   validates :team_id, presence: true
   validates :team_name, presence: true
@@ -42,10 +46,6 @@ class SlackIntegration < ApplicationRecord
   validates :integration, presence: true
 
   after_commit :update_active_status_of_integration, on: [:create, :destroy]
-
-  def update_active_status_of_integration
-    integration.update_active_status
-  end
 
   def feature_available?(feature_name)
     case feature_name
@@ -79,7 +79,15 @@ class SlackIntegration < ApplicationRecord
     slack_api_scopes.pluck(:name)
   end
 
+  def to_database_hash
+    attributes_for_database.slice(*DATABASE_ATTRIBUTES)
+  end
+
   private
+
+  def update_active_status_of_integration
+    integration.update(active: persisted?)
+  end
 
   def scoped_to?(*names)
     return false if names.empty?

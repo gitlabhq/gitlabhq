@@ -48,7 +48,7 @@ RSpec.describe ::Gitlab::BeyondIdentity::Client, feature_category: :source_code_
 
     it 'executes successfully' do
       expect { client.execute(params) }.to raise_error(
-        ::Gitlab::BeyondIdentity::Client::Error
+        ::Gitlab::BeyondIdentity::Client::ApiError
       ).with_message('invalid response format')
     end
   end
@@ -61,21 +61,40 @@ RSpec.describe ::Gitlab::BeyondIdentity::Client, feature_category: :source_code_
     let(:status) { 400 }
 
     it 'returns an error' do
-      expect { client.execute(params) }.to raise_error(
-        ::Gitlab::BeyondIdentity::Client::Error
-      ).with_message('gpg_key is invalid')
+      expect { client.execute(params) }.to raise_error do |error|
+        expect(error).to be_a(::Gitlab::BeyondIdentity::Client::ApiError)
+        expect(error.message).to eq('gpg_key is invalid')
+        expect(error.code).to eq(status)
+        expect(error).not_to be_acceptable_error
+      end
+    end
+
+    context 'when the error is acceptable' do
+      let(:status) { 404 }
+
+      it 'returns an error' do
+        expect { client.execute(params) }.to raise_error do |error|
+          expect(error).to be_a(::Gitlab::BeyondIdentity::Client::ApiError)
+          expect(error.message).to eq('gpg_key is invalid')
+          expect(error.code).to eq(status)
+          expect(error).to be_acceptable_error
+        end
+      end
     end
   end
 
   context 'when key is unauthorized' do
     let(:stubbed_response) do
-      { 'unauthorized' => false, 'message' => 'key is unauthorized' }.to_json
+      { 'authorized' => false, 'message' => 'key is unauthorized' }.to_json
     end
 
     it 'returns an error' do
-      expect { client.execute(params) }.to raise_error(
-        ::Gitlab::BeyondIdentity::Client::Error
-      ).with_message('authorization denied: key is unauthorized')
+      expect { client.execute(params) }.to raise_error do |error|
+        expect(error).to be_a(::Gitlab::BeyondIdentity::Client::ApiError)
+        expect(error.message).to eq('key is unauthorized')
+        expect(error.code).to eq(status)
+        expect(error).not_to be_acceptable_error
+      end
     end
   end
 end

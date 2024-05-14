@@ -1,7 +1,11 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package', :object_storage, product_group: :package_registry do
+  RSpec.describe 'Package', :object_storage, product_group: :package_registry, quarantine: {
+    issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/455027',
+    only: { condition: -> { ENV['QA_RUN_TYPE']&.match?('gdk-qa-blocking') } },
+    type: :investigating
+  } do
     describe 'NuGet project level endpoint', :external_api_calls do
       include Support::Helpers::MaskToken
 
@@ -77,7 +81,7 @@ module QA
           end
         end
 
-        it 'publishes a nuget package and installs', testcase: params[:testcase] do
+        it 'publishes a nuget package and installs', :blocking, testcase: params[:testcase] do
           Flow::Login.sign_in
 
           Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do

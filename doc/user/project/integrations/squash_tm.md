@@ -8,13 +8,18 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/337855) in GitLab 15.10.
 
-When [Squash TM](https://www.squashtest.com/squash-gitlab-integration?lang=en) (Test Management)
+When [Squash TM](https://www.squashtest.com/squash-gitlab-platform?lang=en) (Test Management)
 integration is enabled and configured in GitLab, issues (typically user stories) created in GitLab
 are synchronized as requirements in Squash TM and test progress is reported in GitLab issues.
+
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an overview of optimizing your DevSecOps workflow with the Squash TM and GitLab integration,
+see [Leverage Requirements and Test management in your SDLC](https://www.youtube.com/watch?v=XAiNUmBiqm4).
+<!-- Video published on 2024-05-15 -->
 
 ## Configure Squash TM
 

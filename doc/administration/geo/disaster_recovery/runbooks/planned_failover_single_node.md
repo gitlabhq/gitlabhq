@@ -54,7 +54,7 @@ Before following any of those steps, make sure you have `root` access to the
 **secondary** to promote it, since there isn't provided an automated way to
 promote a Geo replica and perform a failover.
 
-On the **secondary** site, navigate to the **Admin Area > Geo** dashboard to
+On the **secondary** site, go to the **Admin Area > Geo** dashboard to
 review its status. Replicated objects (shown in green) should be close to 100%,
 and there should be no failures (shown in red). If a large proportion of
 objects aren't yet replicated (shown in gray), consider giving the site more
@@ -220,9 +220,9 @@ Note the following when promoting a secondary:
   the **secondary** to the **primary**.
 - If you encounter an `ActiveRecord::RecordInvalid: Validation failed: Name has already been taken`
   error during this process, read
-  [the troubleshooting advice](../../replication/troubleshooting.md#fixing-errors-during-a-failover-or-when-promoting-a-secondary-to-a-primary-site).
+  [the troubleshooting advice](../../replication/troubleshooting/failover.md#fixing-errors-during-a-failover-or-when-promoting-a-secondary-to-a-primary-site).
 
-To promote the secondary site running GitLab 14.5 and later:
+To promote the secondary site:
 
 1. SSH in to your **secondary** site and run one of the following commands:
 
@@ -237,75 +237,6 @@ To promote the secondary site running GitLab 14.5 and later:
      ```shell
      sudo gitlab-ctl geo promote --force
      ```
-
-1. Verify you can connect to the newly promoted **primary** site using the URL used
-   previously for the **secondary** site.
-
-   If successful, the **secondary** site is now promoted to the **primary** site.
-
-To promote the secondary site running GitLab 14.4 and earlier:
-
-WARNING:
-The `gitlab-ctl promote-to-primary-node` and `gitlab-ctl promoted-db` commands are
-deprecated in GitLab 14.5 and later, and [removed in GitLab 15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/345207).
-Use `gitlab-ctl geo promote` instead.
-
-1. SSH in to your **secondary** site and login as root:
-
-   ```shell
-   sudo -i
-   ```
-
-1. Edit `/etc/gitlab/gitlab.rb` to reflect its new status as **primary** by
-   removing any lines that enabled the `geo_secondary_role`:
-
-   ```ruby
-   ## In pre-11.5 documentation, the role was enabled as follows. Remove this line.
-   geo_secondary_role['enable'] = true
-
-   ## In 11.5+ documentation, the role was enabled as follows. Remove this line.
-   roles ['geo_secondary_role']
-   ```
-
-1. Run the following command to list out all preflight checks and automatically
-   check if replication and verification are complete before scheduling a planned
-   failover to ensure the process goes smoothly:
-
-   NOTE:
-   In GitLab 13.7 and earlier, if you have a data type with zero items to sync,
-   this command reports `ERROR - Replication is not up-to-date` even if
-   replication is actually up-to-date. This bug was fixed in GitLab 13.8 and
-   later.
-
-   ```shell
-   gitlab-ctl promotion-preflight-checks
-   ```
-
-1. Promote the **secondary**:
-
-   NOTE:
-   In GitLab 13.7 and earlier, if you have a data type with zero items to sync,
-   this command reports `ERROR - Replication is not up-to-date` even if
-   replication is actually up-to-date. If replication and verification output
-   shows that it is complete, you can add `--skip-preflight-checks` to make the
-   command complete promotion. This bug was fixed in GitLab 13.8 and later.
-
-   ```shell
-   gitlab-ctl promote-to-primary-node
-   ```
-
-   If you have already run the [preflight checks](../planned_failover.md#preflight-checks)
-   or don't want to run them, you can skip them:
-
-   ```shell
-   gitlab-ctl promote-to-primary-node --skip-preflight-check
-   ```
-
-   You can also promote the secondary site to primary **without any further confirmation**, even when preflight checks fail:
-
-   ```shell
-   sudo gitlab-ctl promote-to-primary-node --force
-   ```
 
 1. Verify you can connect to the newly promoted **primary** site using the URL used
    previously for the **secondary** site.

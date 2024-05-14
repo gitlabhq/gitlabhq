@@ -15,6 +15,7 @@ module Gitlab
 
           def parse
             ::Gitlab::Ci::Reports::Sbom::Component.new(
+              ref: data['bom-ref'],
               type: data['type'],
               name: data['name'],
               purl: purl,

@@ -1,102 +1,106 @@
 #!/usr/bin/env bash
 
-# This script runs a suite of non-E2E specs related to the Remote Development category, as
-# a pre-commit/pre-push "Smoke Test" to catch any broken tests without having to wait
-# on CI to catch them. Note that there are some shared/common specs related to
-# Remote Development which are not included in this suite.
-# https://en.wikipedia.org/wiki/Smoke_testing_(software)
-
 # shellcheck disable=SC2059
 
-set -o errexit # AKA -e - exit immediately on errors (http://mywiki.wooledge.org/BashFAQ/105)
+BCyan='\033[1;36m'
+BRed='\033[1;31m'
+BGreen='\033[1;32m'
+BBlue='\033[1;34m'
+Color_Off='\033[0m'
 
-###########
-## Setup ##
-###########
-
-# https://stackoverflow.com/a/28938235
-BCyan='\033[1;36m' # Bold Cyan
-BRed='\033[1;31m' # Bold Red
-BGreen='\033[1;32m' # Bold Green
-BBlue='\033[1;34m' # Bold Blue
-Color_Off='\033[0m' # Text Reset
-
+# Exit handling
 function onexit_err() {
   local exit_status=${1:-$?}
   printf "\n❌❌❌ ${BRed}Remote Development smoke test failed!${Color_Off} ❌❌❌\n"
-
-  if [ ${REVEAL_RUBOCOP_TODO} -ne 0 ]; then
+  if [ "${REVEAL_RUBOCOP_TODO}" -ne 0 ]; then
     printf "\n(If the failure was due to rubocop, set REVEAL_RUBOCOP_TODO=0 to ignore TODOs)\n"
   fi
-
   exit "${exit_status}"
 }
 trap onexit_err ERR
 set -o errexit
 
-#####################
-## Invoke commands ##
-#####################
+function print_start_message {
+  printf "${BCyan}\nStarting Remote Development smoke test...${Color_Off}\n\n"
+}
 
-printf "${BCyan}\nStarting Remote Development smoke test...\n\n${Color_Off}"
+function run_rubocop {
+  printf "${BBlue}Running RuboCop${Color_Off}\n\n"
+  files_for_rubocop=()
+  while IFS= read -r -d '' file; do
+    files_for_rubocop+=("$file")
+  done < <(find . -path './**/remote_development/*.rb' -print0)
+  REVEAL_RUBOCOP_TODO=${REVEAL_RUBOCOP_TODO:-1} bundle exec rubocop --parallel --force-exclusion --no-server "${files_for_rubocop[@]}"
+}
 
-#############
-## RUBOCOP ##
-#############
+function run_rspec_fast {
+  printf "\n\n${BBlue}Running backend RSpec fast specs${Color_Off}\n\n"
 
-printf "${BBlue}Running RuboCop for Remote Development and related files${Color_Off}\n\n"
+  # NOTE: We do not use `--tag rd_fast` here, because `rd_fast_spec_helper` has a check to ensure that all the
+  #       files which require it are tagged with `rd_fast`.
 
-# TODO: Also run rubocop for the other non-remote-development files once they are passing rubocop
-#       with REVEAL_RUBOCOP_TODO=1
-while IFS= read -r -d '' file; do
-  files_for_rubocop+=("$file")
-done < <(find . -path './**/remote_development/*.rb' -print0)
+  files_for_fast=()
+  while IFS= read -r file; do
+      files_for_fast+=("$file")
+  done < <(find ee/spec -path '**/remote_development/*_spec.rb' -exec grep -lE 'require_relative.*rd_fast_spec_helper' {} +)
 
-REVEAL_RUBOCOP_TODO=${REVEAL_RUBOCOP_TODO:-1} bundle exec rubocop --parallel --force-exclusion --no-server "${files_for_rubocop[@]}"
+  bin/rspec "${files_for_fast[@]}"
+}
 
-##########
-## JEST ##
-##########
+function run_jest {
+  printf "\n\n${BBlue}Running Remote Development frontend Jest specs${Color_Off}\n\n"
+  yarn jest ee/spec/frontend/workspaces
+}
 
-printf "\n\n${BBlue}Running Remote Development frontend Jest specs${Color_Off}\n\n"
+function run_rspec_rails {
+  printf "\n\n${BBlue}Running backend RSpec non-fast specs${Color_Off}\n\n"
+  files_for_rails=()
+  while IFS= read -r file; do
+      files_for_rails+=("$file")
+  done < <(find ee/spec -path '**/remote_development/*_spec.rb' | grep -v 'qa/qa' | grep -v '/features/')
 
-yarn jest ee/spec/frontend/remote_development
+  files_for_rails+=(
+      "ee/spec/graphql/types/query_type_spec.rb"
+      "ee/spec/graphql/types/subscription_type_spec.rb"
+      "ee/spec/requests/api/internal/kubernetes_spec.rb"
+      "spec/graphql/types/subscription_type_spec.rb"
+      "spec/lib/result_spec.rb"
+      "spec/support_specs/matchers/result_matchers_spec.rb"
+  )
 
-#######################
-## RSPEC NON-FEATURE ##
-#######################
+  bin/rspec -r spec_helper --tag ~rd_fast "${files_for_rails[@]}"
+}
 
-printf "\n\n${BBlue}Running Remote Development and related backend RSpec non-selenium specs${Color_Off}\n\n"
+function run_rspec_feature {
+  printf "\n\n${BBlue}Running backend RSpec feature specs${Color_Off}\n\n"
+  files_for_feature=()
+  while IFS= read -r file; do
+      files_for_feature+=("$file")
+  done < <(find ee/spec -path '**/remote_development/*_spec.rb' | grep -v 'qa/qa' | grep '/features/')
 
-while IFS= read -r file; do
-    files_for_rspec+=("$file")
-done < <(find . -path './**/remote_development/*_spec.rb' | grep -v 'qa/qa' | grep -v '/features/')
+  bin/rspec -r spec_helper "${files_for_feature[@]}"
+}
 
-files_for_rspec+=(
-    "ee/spec/graphql/types/query_type_spec.rb"
-    "ee/spec/graphql/types/subscription_type_spec.rb"
-    "ee/spec/requests/api/internal/kubernetes_spec.rb"
-    "spec/graphql/types/subscription_type_spec.rb"
-    "spec/lib/result_spec.rb"
-    "spec/support_specs/matchers/result_matchers_spec.rb"
-)
-bin/rspec -r spec_helper "${files_for_rspec[@]}"
+function print_success_message {
+  printf "\n✅✅✅ ${BGreen}All executed linters/specs passed successfully!${Color_Off} ✅✅✅\n"
+}
 
-###################
-## RSPEC FEATURE ##
-###################
+function main {
+  # cd to gitlab root directory
+  cd "$(dirname "${BASH_SOURCE[0]}")"/../..
 
-printf "\n\n${BBlue}Running Remote Development and related backend RSpec feature specs${Color_Off}\n\n"
+  print_start_message
 
-while IFS= read -r file; do
-    files_for_rspec_selenium+=("$file")
-done < <(find . -path './**/remote_development/*_spec.rb' | grep -v 'qa/qa' | grep '/features/')
+  # Run linting before tests
+  [ -z "${SKIP_RUBOCOP}" ] && run_rubocop
 
-printf "\n${BRed}SKIPPING FEATURE SPECS, THEY ARE CURRENTLY BROKEN. SEE https://gitlab.slack.com/archives/C3JJET4Q6/p1702638503864429 and https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140015${Color_Off} ❌❌❌\n"
-# bin/rspec -r spec_helper "${files_for_rspec_selenium[@]}"
+  # Test sections are sorted roughly in increasing order of execution time.
+  [ -z "${SKIP_FAST}" ] && run_rspec_fast
+  [ -z "${SKIP_JEST}" ] && run_jest
+  [ -z "${SKIP_RAILS}" ] && run_rspec_rails
+  [ -z "${SKIP_FEATURE}" ] && run_rspec_feature
 
-###########################
-## Print success message ##
-###########################
+  print_success_message
+}
 
-printf "\n✅✅✅ ${BGreen}All Remote Development specs passed successfully!${Color_Off} ✅✅✅\n"
+main "$@"

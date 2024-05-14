@@ -14,7 +14,6 @@ RSpec.shared_examples 'a resource event' do
 
   describe 'importable' do
     it { is_expected.to respond_to(:importing?) }
-    it { is_expected.to respond_to(:imported?) }
   end
 
   describe 'validations' do
@@ -53,6 +52,13 @@ RSpec.shared_examples 'a resource event' do
 
       expect(events).to be_empty
     end
+  end
+end
+
+RSpec.shared_examples 'a resource event that responds to imported' do
+  describe 'import source' do
+    it { is_expected.to respond_to(:imported?) }
+    it { is_expected.to respond_to(:imported_from) }
   end
 end
 

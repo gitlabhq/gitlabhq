@@ -24,11 +24,7 @@ export default {
 };
 </script>
 <template>
-  <gl-empty-state
-    :title="s__('ServicePing|Service ping is off')"
-    :svg-path="svgPath"
-    :svg-height="null"
-  >
+  <gl-empty-state :title="s__('ServicePing|Service ping is off')" :svg-path="svgPath">
     <template #description>
       <gl-sprintf
         v-if="!isAdmin"

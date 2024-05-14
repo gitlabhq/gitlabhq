@@ -12,6 +12,7 @@ module Types
         running: 'Pipeline is running.',
         failed: 'At least one stage of the pipeline failed.',
         success: 'Pipeline completed successfully.',
+        canceling: 'Pipeline is in the process of canceling.',
         canceled: 'Pipeline was canceled before completion.',
         skipped: 'Pipeline was skipped.',
         manual: 'Pipeline needs to be manually started.',
@@ -20,8 +21,8 @@ module Types
 
       STATUSES_DESCRIPTION.each do |state, description|
         value state.to_s.upcase,
-              description: description,
-              value: state.to_s
+          description: description,
+          value: state.to_s
       end
     end
   end

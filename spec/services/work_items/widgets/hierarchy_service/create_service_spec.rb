@@ -4,17 +4,13 @@ require 'spec_helper'
 
 RSpec.describe WorkItems::Widgets::HierarchyService::CreateService, feature_category: :portfolio_management do
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project) { create(:project, developers: user) }
   let_it_be(:parent_item) { create(:work_item, project: project) }
 
   let(:widget) { parent_item.widgets.find { |widget| widget.is_a?(WorkItems::Widgets::Hierarchy) } }
 
   shared_examples 'raises a WidgetError' do
     it { expect { subject }.to raise_error(described_class::WidgetError, message) }
-  end
-
-  before_all do
-    project.add_developer(user)
   end
 
   describe '#create' do

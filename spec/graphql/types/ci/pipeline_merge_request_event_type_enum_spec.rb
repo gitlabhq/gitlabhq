@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GitlabSchema.types['PipelineMergeRequestEventType'] do
+RSpec.describe GitlabSchema.types['PipelineMergeRequestEventType'], feature_category: :continuous_integration do
   specify { expect(described_class.graphql_name).to eq('PipelineMergeRequestEventType') }
 
   it 'has specific values' do

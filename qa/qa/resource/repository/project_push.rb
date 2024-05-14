@@ -25,6 +25,7 @@ module QA
           @project_name = 'project-with-code'
           @wait_for_push = true
           @group = nil
+          @max_attempts = 3
         end
 
         def repository_http_uri

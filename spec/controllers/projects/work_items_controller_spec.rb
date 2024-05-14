@@ -5,15 +5,10 @@ require 'spec_helper'
 RSpec.describe Projects::WorkItemsController, feature_category: :team_planning do
   let_it_be(:reporter) { create(:user) }
   let_it_be(:guest) { create(:user) }
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project) { create(:project, reporters: reporter, guests: guest) }
   let_it_be(:work_item) { create(:work_item, project: project) }
 
   let(:file) { 'file' }
-
-  before do
-    project.add_reporter(reporter)
-    project.add_guest(guest)
-  end
 
   shared_examples 'response with 404 status' do
     it 'renders a not found message' do

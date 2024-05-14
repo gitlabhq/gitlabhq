@@ -78,7 +78,7 @@ Note the Redis node's IP address or hostname, port, and password (if required).
 
 When running a single Redis instance the eviction policy should be set to `noeviction`.
 
-If you are running separate Redis Cache and Persistent instances, Cache should be configured as a [Least Recently Used cache](https://redis.io/docs/manual/eviction/) (LRU) with `allkeys-lru` while Persistent should be set to `noeviction`.
+If you are running separate Redis Cache and Persistent instances, Cache should be configured as a [Least Recently Used cache](https://redis.io/docs/latest/operate/rs/databases/memory-performance/eviction-policy/) (LRU) with `allkeys-lru` while Persistent should be set to `noeviction`.
 
 Configuring this depends on the cloud provider or service, but generally the following settings and values configure a cache:
 
@@ -184,7 +184,7 @@ starting with `sentinel` prefix.
 Assuming that the Redis Sentinel is installed on the same instance as Redis
 primary with IP `10.0.0.1` (some settings might overlap with the primary):
 
-1. [Install Redis Sentinel](https://redis.io/docs/manual/sentinel/).
+1. [Install Redis Sentinel](https://redis.io/docs/latest/operate/oss_and_stack/management/sentinel/).
 1. Edit `/etc/redis/sentinel.conf`:
 
    ```conf

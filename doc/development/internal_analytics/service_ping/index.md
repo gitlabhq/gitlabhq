@@ -6,9 +6,6 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # Service Ping development guidelines
 
-> - Introduced in GitLab Ultimate 11.2, more statistics.
-> - In GitLab 14.1, [renamed from Usage Ping to Service Ping](https://gitlab.com/groups/gitlab-org/-/epics/5990). In 14.0 and earlier, use the Usage Ping documentation for the Rails commands appropriate to your version.
-
 Service Ping is a GitLab process that collects and sends a weekly payload to GitLab.
 The payload provides important high-level data that helps our product, support,
 and sales teams understand how GitLab is used. The data helps to:
@@ -390,11 +387,11 @@ We return fallback values in these cases:
 
 ## Monitoring
 
-Service Ping reporting process state is monitored with [internal SiSense dashboard](https://app.periscopedata.com/app/gitlab/968489/Product-Intelligence---Service-Ping-Health).
+Service Ping reporting process state is monitored with [Tableau dashboard](https://10az.online.tableau.com/#/site/gitlab/workbooks/2327447/views).
 
 ## Related topics
 
-- [Analytics Instrumentation Direction](https://about.gitlab.com/direction/analytics/analytics-instrumentation/)
+- [Analytics Instrumentation Direction](https://about.gitlab.com/direction/monitor/analytics-instrumentation/)
 - [Data Analysis Process](https://handbook.gitlab.com/handbook/business-technology/data-team/organization/analytics/#data-analysis-process)
 - [Data for Product Managers](https://handbook.gitlab.com/handbook/business-technology/data-team/programs/data-for-product-managers/)
 - [Data Infrastructure](https://handbook.gitlab.com/handbook/business-technology/data-team/platform/infrastructure/)

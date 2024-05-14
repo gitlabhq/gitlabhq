@@ -8,6 +8,10 @@ class Projects::ProjectMembersController < Projects::ApplicationController
   # Authorize
   before_action :authorize_admin_project_member!, except: [:index, :leave, :request_access]
 
+  before_action only: [:index] do
+    push_frontend_feature_flag(:webui_members_inherited_users, current_user)
+  end
+
   feature_category :groups_and_projects
   urgency :low
 

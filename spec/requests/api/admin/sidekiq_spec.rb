@@ -8,18 +8,26 @@ RSpec.describe API::Admin::Sidekiq, :clean_gitlab_redis_queues, feature_category
   describe 'DELETE /admin/sidekiq/queues/:queue_name' do
     context 'when the user is an admin' do
       around do |example|
-        Sidekiq::Queue.new('authorized_projects').clear
+        Gitlab::SidekiqSharding::Validator.allow_unrouted_sidekiq_calls do
+          Sidekiq::Queue.new('authorized_projects').clear
+        end
+
         Sidekiq::Testing.disable!(&example)
-        Sidekiq::Queue.new('authorized_projects').clear
+
+        Gitlab::SidekiqSharding::Validator.allow_unrouted_sidekiq_calls do
+          Sidekiq::Queue.new('authorized_projects').clear
+        end
       end
 
       def add_job(user, args)
-        Sidekiq::Client.push(
-          'class' => 'AuthorizedProjectsWorker',
-          'queue' => 'authorized_projects',
-          'args' => args,
-          'meta.user' => user.username
-        )
+        Gitlab::SidekiqSharding::Validator.allow_unrouted_sidekiq_calls do
+          Sidekiq::Client.push(
+            'class' => 'AuthorizedProjectsWorker',
+            'queue' => 'authorized_projects',
+            'args' => args,
+            'meta.user' => user.username
+          )
+        end
       end
 
       context 'valid request' do
@@ -38,9 +46,7 @@ RSpec.describe API::Admin::Sidekiq, :clean_gitlab_redis_queues, feature_category
         it 'returns info about the deleted jobs' do
           delete api(path, admin, admin_mode: true)
 
-          expect(json_response).to eq('completed' => true,
-                                      'deleted_jobs' => 2,
-                                      'queue_size' => 1)
+          expect(json_response).to eq('completed' => true, 'deleted_jobs' => 2, 'queue_size' => 1)
         end
       end
 

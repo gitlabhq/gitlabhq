@@ -1,20 +1,12 @@
-query getCiCatalogResourceReadme(
-  $fullPath: ID!
-  $latest_version: Boolean = true
-  $version: String
-) {
+query getCiCatalogResourceReadme($fullPath: ID!, $version: String) {
   ciCatalogResource(fullPath: $fullPath) {
     id
     webPath
-    versions(name: $version) @skip(if: $latest_version) {
+    versions(name: $version) {
       nodes {
         id
         readmeHtml
       }
-    }
-    latestVersion @include(if: $latest_version) {
-      id
-      readmeHtml
     }
   }
 }

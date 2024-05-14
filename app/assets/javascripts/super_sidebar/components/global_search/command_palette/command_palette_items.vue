@@ -229,7 +229,7 @@ export default {
   <div>
     <gl-loading-icon v-if="loading" size="lg" class="gl-my-5" />
 
-    <ul v-else-if="hasResults" class="gl-p-0 gl-m-0 gl-list-style-none">
+    <ul v-else-if="hasResults" class="gl-p-0 gl-m-0 gl-list-none">
       <gl-disclosure-dropdown-group
         v-for="(group, index) in groups"
         :key="index"

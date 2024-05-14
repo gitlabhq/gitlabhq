@@ -8,7 +8,7 @@ RSpec.describe WorkItems::Widgets::LabelsService::UpdateService, feature_categor
   let_it_be(:label1) { create(:label, project: project) }
   let_it_be(:label2) { create(:label, project: project) }
   let_it_be(:label3) { create(:label, project: project) }
-  let_it_be(:current_user) { create(:user).tap { |user| project.add_reporter(user) } }
+  let_it_be(:current_user) { create(:user, reporter_of: project) }
 
   let(:work_item) { create(:work_item, project: project, labels: [label1, label2]) }
   let(:widget) { work_item.widgets.find { |widget| widget.is_a?(WorkItems::Widgets::Labels) } }

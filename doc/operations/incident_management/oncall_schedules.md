@@ -1,5 +1,5 @@
 ---
-stage: Service Management
+stage: Monitor
 group: Respond
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -8,9 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
-
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4544) in GitLab 13.11.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Use on-call schedule management to create schedules for responders to rotate on-call
 responsibilities. Maintain the availability of your software services by putting your teams on-call.

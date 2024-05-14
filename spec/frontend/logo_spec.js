@@ -10,7 +10,7 @@ describe('initPortraitLogoDetection', () => {
   };
 
   beforeEach(() => {
-    setHTMLFixture('<img class="gl-visibility-hidden gl-h-10 js-portrait-logo-detection" />');
+    setHTMLFixture('<img class="gl-invisible gl-h-10 js-portrait-logo-detection" />');
     initPortraitLogoDetection();
     img = document.querySelector('img');
   });
@@ -25,13 +25,13 @@ describe('initPortraitLogoDetection', () => {
       img.width = 10;
     });
 
-    it('removes gl-visibility-hidden', () => {
-      expect(img.classList).toContain('gl-visibility-hidden');
+    it('removes gl-invisible', () => {
+      expect(img.classList).toContain('gl-invisible');
       expect(img.classList).toContain('gl-h-10');
 
       loadImage();
 
-      expect(img.classList).not.toContain('gl-visibility-hidden');
+      expect(img.classList).not.toContain('gl-invisible');
       expect(img.classList).toContain('gl-h-10');
     });
   });
@@ -42,13 +42,13 @@ describe('initPortraitLogoDetection', () => {
       img.width = 10;
     });
 
-    it('removes gl-visibility-hidden', () => {
-      expect(img.classList).toContain('gl-visibility-hidden');
+    it('removes gl-invisible', () => {
+      expect(img.classList).toContain('gl-invisible');
       expect(img.classList).toContain('gl-h-10');
 
       loadImage();
 
-      expect(img.classList).not.toContain('gl-visibility-hidden');
+      expect(img.classList).not.toContain('gl-invisible');
       expect(img.classList).toContain('gl-w-10');
     });
   });

@@ -1,6 +1,5 @@
 <script>
-import { convertToGraphQLId } from '~/graphql_shared/utils';
-import { TYPENAME_PACKAGES_PACKAGE } from '~/graphql_shared/constants';
+import { convertCandidateFromGraphql } from '~/ml/model_registry/utils';
 import * as i18n from '../translations';
 import CandidateDetail from './candidate_detail.vue';
 
@@ -11,6 +10,7 @@ export default {
       import('~/packages_and_registries/package_registry/components/details/package_files.vue'),
     CandidateDetail,
   },
+  inject: ['projectPath'],
   props: {
     modelVersion: {
       type: Object,
@@ -18,14 +18,14 @@ export default {
     },
   },
   computed: {
-    packageId() {
-      return convertToGraphQLId(TYPENAME_PACKAGES_PACKAGE, this.modelVersion.packageId);
-    },
-    projectPath() {
-      return this.modelVersion.projectPath;
-    },
     packageType() {
       return 'ml_model';
+    },
+    candidate() {
+      return convertCandidateFromGraphql(this.modelVersion.candidate);
+    },
+    packageId() {
+      return this.modelVersion.packageId;
     },
   },
   i18n,
@@ -53,9 +53,9 @@ export default {
 
     <div class="gl-mt-5">
       <span class="gl-font-weight-bold">{{ $options.i18n.MLFLOW_ID_LABEL }}:</span>
-      {{ modelVersion.candidate.info.eid }}
+      {{ candidate.info.eid }}
     </div>
 
-    <candidate-detail :candidate="modelVersion.candidate" :show-info-section="false" />
+    <candidate-detail :candidate="candidate" :show-info-section="false" />
   </div>
 </template>

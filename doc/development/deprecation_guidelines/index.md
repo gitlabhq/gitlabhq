@@ -33,7 +33,7 @@ However, at GitLab, we [give agency](https://handbook.gitlab.com/handbook/values
 
 Features or configuration can only be removed/changed in a major release.
 
-They must be [deprecated in advance](https://about.gitlab.com/handbook/marketing/blog/release-posts/#deprecations).
+They must be [deprecated in advance](https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#update-the-deprecations-doc).
 
 For API removals, see the [GraphQL](../../api/graphql/index.md#deprecation-and-removal-process) and [GitLab API](../documentation/restful_api_styleguide.md#deprecations) guidelines.
 
@@ -47,7 +47,7 @@ GitLab self-managed packages are semantically versioned and follow our [maintena
 
 This maintenance policy is in place to allow our customers to prepare for disruptive changes by establishing a clear and predictable pattern that is widely used in the software industry. For many of our customers, GitLab is a business-critical application and surprising changes can cause damages and erode trust.
 
-Introducing breaking changes in minor releases is against policy because it can disrupt our customers and introduces an element of randomness that requires customers to check for breaking changes every minor release to ensure that their business is not impacted. This does not align with our goal [to make it as easy as possible for customers to do business with GitLab](https://about.gitlab.com/company/yearlies/#fy24-yearlies) and is strongly discouraged.
+Introducing breaking changes in minor releases is against policy because it can disrupt our customers and introduces an element of randomness that requires customers to check for breaking changes every minor release to ensure that their business is not impacted. This does not align with our goal [to make it as easy as possible for customers to do business with GitLab](https://handbook.gitlab.com/handbook/company/yearlies/) and is strongly discouraged.
 
 Breaking changes are deployed to GitLab.com after they are merged into the codebase and do not respect the minor release cadence. Special care must be taken to inform the [Customer Support](https://handbook.gitlab.com/handbook/support/) and [Customer Success](https://handbook.gitlab.com/handbook/customer-success/) teams so that we can offer fast resolution to any customers that may be impacted by unexpected breaking changes.
 
@@ -77,7 +77,7 @@ documentation is generated from the YAML files located in
 To update the deprecations and removals page when a YAML file is added,
 edited, or removed:
 
-1. From the command line, navigate to your local clone of the [`gitlab-org/gitlab`](https://gitlab.com/gitlab-org/gitlab) project.
+1. From the command line, go to your local clone of the [`gitlab-org/gitlab`](https://gitlab.com/gitlab-org/gitlab) project.
 1. Create, edit, or remove the YAML file under [`data/deprecations`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/data/deprecations).
 1. Compile the deprecations and removals documentation:
 
@@ -85,7 +85,7 @@ edited, or removed:
    bin/rake gitlab:docs:compile_deprecations
    ```
 
-1. If needed, you can verify the docs are up to date with:
+1. If needed, you can verify the documentation is up to date with:
 
    ```shell
    bin/rake gitlab:docs:check_deprecations

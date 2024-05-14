@@ -16,34 +16,22 @@ module QA
         # Based on https://github.com/rspec/rspec-core/blob/main/lib/rspec/core/formatters/json_formatter.rb#L35
         # But modified to include full details of multiple exceptions and to provide output similar to
         # https://github.com/sj26/rspec_junit_formatter
-        @output_hash[:examples] = example_notification.notifications.map do |notification|
-          format_example(notification.example).tap do |hash|
-            e = notification.example.exception
-            if e
-              exceptions = e.respond_to?(:all_exceptions) ? e.all_exceptions : [e]
-              hash[:exceptions] = exceptions.map do |exception|
-                {
-                  class: exception.class.name,
-                  message: exception.message,
-                  message_lines: strip_ansi_codes(notification.message_lines),
-                  correlation_id: exception.message[match_data_after(Loglinking::CORRELATION_ID_TITLE)],
-                  sentry_url: exception.message[match_data_after(Loglinking::SENTRY_URL_TITLE)],
-                  kibana_discover_url: exception.message[match_data_after(Loglinking::KIBANA_DISCOVER_URL_TITLE)],
-                  kibana_dashboard_url: exception.message[match_data_after(Loglinking::KIBANA_DASHBOARD_URL_TITLE)],
-                  backtrace: notification.formatted_backtrace
-                }
-              end
-            end
-          end
+        @output_hash[:examples] = example_notification.notifications.filter_map do |notification|
+          format_example(notification)
         end
       end
 
       private
 
-      def format_example(example)
+      def format_example(notification)
+        example = notification.example
+
+        # Remove failures from initial run if retry is enabled
+        return if initial_rspec_run? && example.execution_result.status == :failed
+
         file_path, line_number = location_including_shared_examples(example.metadata)
 
-        {
+        data = {
           id: example.id,
           description: example.description,
           full_description: example.full_description,
@@ -58,6 +46,25 @@ module QA
           product_group: example.metadata[:product_group],
           ci_job_url: QA::Runtime::Env.ci_job_url
         }
+
+        e = example.exception
+        return data unless e
+
+        exceptions = e.respond_to?(:all_exceptions) ? e.all_exceptions : [e]
+        data.merge({
+          exceptions: exceptions.map do |exception|
+            {
+              class: exception.class.name,
+              message: exception.message,
+              message_lines: strip_ansi_codes(notification.message_lines),
+              correlation_id: exception.message[match_data_after(Loglinking::CORRELATION_ID_TITLE)],
+              sentry_url: exception.message[match_data_after(Loglinking::SENTRY_URL_TITLE)],
+              kibana_discover_url: exception.message[match_data_after(Loglinking::KIBANA_DISCOVER_URL_TITLE)],
+              kibana_dashboard_url: exception.message[match_data_after(Loglinking::KIBANA_DASHBOARD_URL_TITLE)],
+              backtrace: notification.formatted_backtrace
+            }
+          end
+        })
       end
 
       def location_including_shared_examples(metadata)
@@ -77,6 +84,10 @@ module QA
 
       def match_data_after(title)
         /(?<=#{title} ).*/
+      end
+
+      def initial_rspec_run?
+        ::Gitlab::QA::Runtime::Env.retry_failed_specs? && !Runtime::Env.rspec_retried?
       end
     end
   end

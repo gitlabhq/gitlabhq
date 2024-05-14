@@ -1,4 +1,4 @@
-import { GlLoadingIcon, GlIcon } from '@gitlab/ui';
+import { GlButton, GlLoadingIcon, GlIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 
 import { nextTick } from 'vue';
@@ -20,14 +20,15 @@ describe('SidebarTodo', () => {
       },
     });
   };
+  const findButton = () => wrapper.findComponent(GlButton);
 
   it.each`
     state    | classes
-    ${false} | ${['gl-button', 'btn', 'btn-default', 'btn-todo', 'issuable-header-btn', 'gl-float-right']}
-    ${true}  | ${['btn-blank', 'btn-todo', 'sidebar-collapsed-icon', 'js-dont-change-state']}
+    ${false} | ${['issuable-header-btn', 'gl-float-right']}
+    ${true}  | ${['sidebar-collapsed-icon', 'js-dont-change-state']}
   `('returns todo button classes for when `collapsed` prop is `$state`', ({ state, classes }) => {
     createComponent({ collapsed: state });
-    expect(wrapper.find('button').classes()).toStrictEqual(classes);
+    expect(findButton().classes()).toStrictEqual(classes);
   });
 
   it.each`
@@ -41,14 +42,14 @@ describe('SidebarTodo', () => {
 
       expect(wrapper.findComponent(GlIcon).classes().join(' ')).toStrictEqual(iconClass);
       expect(wrapper.findComponent(GlIcon).props('name')).toStrictEqual(icon);
-      expect(wrapper.find('button').text()).toBe(label);
+      expect(findButton().text()).toBe(label);
     },
   );
 
   describe('template', () => {
     it('emits `toggleTodo` event when clicked on button', async () => {
       createComponent();
-      wrapper.find('button').trigger('click');
+      findButton().vm.$emit('click');
 
       await nextTick();
       expect(wrapper.emitted().toggleTodo).toHaveLength(1);

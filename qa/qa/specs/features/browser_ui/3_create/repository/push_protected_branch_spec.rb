@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create', :reliable, product_group: :source_code do
+  RSpec.describe 'Create', :blocking, product_group: :source_code do
     describe 'Protected branch support' do
       let(:branch_name) { 'protected-branch' }
       let(:commit_message) { 'Protected push commit message' }
@@ -39,11 +39,7 @@ module QA
       end
 
       def create_protected_branch(allowed_to_push:)
-        Resource::ProtectedBranch.fabricate_via_api! do |resource|
-          resource.branch_name = branch_name
-          resource.project = project
-          resource.allowed_to_push = allowed_to_push
-        end
+        create(:protected_branch, branch_name: branch_name, project: project, allowed_to_push: allowed_to_push)
       end
 
       def push_new_file(branch)

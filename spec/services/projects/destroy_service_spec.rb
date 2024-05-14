@@ -641,7 +641,7 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
   end
 
   context 'when project has project bots' do
-    let!(:project_bot) { create(:user, :project_bot).tap { |user| project.add_maintainer(user) } }
+    let!(:project_bot) { create(:user, :project_bot, maintainer_of: project) }
 
     it 'deletes bot user as well' do
       expect_next_instance_of(Users::DestroyService, user) do |instance|

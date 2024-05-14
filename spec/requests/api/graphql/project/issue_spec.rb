@@ -8,7 +8,7 @@ RSpec.describe 'Query.project(fullPath).issue(iid)', feature_category: :team_pla
   let_it_be(:project) { create(:project) }
   let_it_be(:issue) { create(:issue, project: project) }
   let_it_be(:issue_b) { create(:issue, project: project) }
-  let_it_be(:developer) { create(:user) }
+  let_it_be(:developer) { create(:user, developer_of: project) }
   let(:current_user) { developer }
 
   let_it_be(:project_params) { { 'fullPath' => project.full_path } }
@@ -78,10 +78,6 @@ RSpec.describe 'Query.project(fullPath).issue(iid)', feature_category: :team_pla
 
       it_behaves_like 'a failure to find anything'
     end
-  end
-
-  before do
-    project.add_developer(developer)
   end
 
   let(:post_query) { post_graphql(query, current_user: current_user) }

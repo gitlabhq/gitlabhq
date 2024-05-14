@@ -162,7 +162,7 @@ module Gitlab
           def create_group(**args)
             logger.info(message: 'Creating group', **args)
 
-            ensure_success(::Groups::CreateService.new(@user, **args).execute)
+            ensure_success(::Groups::CreateService.new(@user, **args).execute[:group])
           end
 
           def ensure_project(name:, namespace_id:, **args)
@@ -200,41 +200,46 @@ module Gitlab
             scope_name = scope.class.name if scope
             logger.info(message: 'Creating runner', scope: scope_name, name: name)
 
-            executor = ::Ci::Runner::EXECUTOR_NAME_TO_TYPES.keys.sample
-            args.merge!(additional_runner_args(name, executor))
-
-            runners_token = if scope.nil?
-                              Gitlab::CurrentSettings.runners_registration_token
-                            else
-                              scope.runners_token
-                            end
-
-            response = ::Ci::Runners::RegisterRunnerService.new(runners_token, name: name, **args).execute
+            executor = ::Ci::RunnerManager::EXECUTOR_NAME_TO_TYPES.keys.sample
+            response = ::Ci::Runners::CreateRunnerService.new(
+              user: @user, params: args.merge(additional_runner_args(name, scope, executor))
+            ).execute
             runner = response.payload[:runner]
 
             ::Ci::Runners::ProcessRunnerVersionUpdateWorker.new.perform(args[:version])
 
             if runner && runner.errors.empty? &&
                 Random.rand(0..100) < 70 # % of runners having contacted GitLab instance
-              runner.heartbeat(args.merge(executor: executor))
+              system_id = ::API::Ci::Helpers::Runner::LEGACY_SYSTEM_XID
+              runner.heartbeat
+              runner.ensure_manager(system_id).heartbeat(args.merge(executor: executor))
               runner.save!
             end
 
             ensure_success(runner)
           end
 
-          def additional_runner_args(name, executor)
+          def additional_runner_args(name, scope, executor)
             base_tags = ['runner-fleet', "#{@registration_prefix}runner", executor]
             tag_limit = ::Ci::Runner::TAG_LIST_MAX_LENGTH - base_tags.length
 
+            runner_type =
+              if scope.is_a?(::Group)
+                'group_type'
+              elsif scope.is_a?(::Project)
+                'project_type'
+              else
+                'instance_type'
+              end
+
             {
+              scope: scope,
+              runner_type: runner_type,
               tag_list: base_tags + TAG_LIST.sample(Random.rand(1..tag_limit)),
               description: "Runner fleet #{name}",
               run_untagged: false,
-              active: Random.rand(1..3) != 1,
-              version: ::Gitlab::Ci::RunnerReleases.instance.releases.sample.to_s,
-              ip_address: '127.0.0.1'
-            }
+              active: Random.rand(1..3) != 1
+            }.compact
           end
 
           def assign_runner(runner, project)

@@ -23,7 +23,7 @@ module QA
       def rspec_tags
         tags_for_rspec = []
 
-        return tags_for_rspec if Runtime::Scenario.attributes[:test_metadata_only]
+        return tags_for_rspec if Runtime::Scenario.attributes[:test_metadata_only] || Runtime::Env.rspec_retried?
 
         if tags.any?
           tags.each { |tag| tags_for_rspec.push(['--tag', tag.to_s]) }
@@ -33,7 +33,6 @@ module QA
 
         tags_for_rspec.push(%w[--tag ~geo]) unless QA::Runtime::Env.geo_environment?
         tags_for_rspec.push(%w[--tag ~skip_signup_disabled]) if QA::Runtime::Env.signup_disabled?
-        tags_for_rspec.push(%w[--tag ~smoke --tag ~reliable]) if QA::Runtime::Env.skip_smoke_reliable?
         tags_for_rspec.push(%w[--tag ~skip_live_env]) if QA::Specs::Helpers::ContextSelector.dot_com?
 
         QA::Runtime::Env.supported_features.each_key do |key|

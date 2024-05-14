@@ -1,6 +1,6 @@
 <script>
 import { isEmpty } from 'lodash';
-import { GlAlert, GlSkeletonLoader, GlButton, GlTooltipDirective, GlEmptyState } from '@gitlab/ui';
+import { GlAlert, GlButton, GlTooltipDirective, GlEmptyState } from '@gitlab/ui';
 import noAccessSvg from '@gitlab/svgs/dist/illustrations/analytics/no-access.svg?raw';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { s__ } from '~/locale';
@@ -22,6 +22,7 @@ import {
   WORK_ITEM_TYPE_VALUE_EPIC,
   WIDGET_TYPE_NOTES,
   WIDGET_TYPE_LINKED_ITEMS,
+  WIDGET_TYPE_DESIGNS,
   LINKED_ITEMS_ANCHOR,
 } from '../constants';
 
@@ -34,7 +35,7 @@ import { findHierarchyWidgetChildren } from '../utils';
 import WorkItemTree from './work_item_links/work_item_tree.vue';
 import WorkItemActions from './work_item_actions.vue';
 import WorkItemTodos from './work_item_todos.vue';
-import WorkItemTitle from './work_item_title.vue';
+import WorkItemNotificationsWidget from './work_item_notifications_widget.vue';
 import WorkItemAttributesWrapper from './work_item_attributes_wrapper.vue';
 import WorkItemCreatedUpdated from './work_item_created_updated.vue';
 import WorkItemDescription from './work_item_description.vue';
@@ -44,7 +45,9 @@ import WorkItemAwardEmoji from './work_item_award_emoji.vue';
 import WorkItemRelationships from './work_item_relationships/work_item_relationships.vue';
 import WorkItemStickyHeader from './work_item_sticky_header.vue';
 import WorkItemAncestors from './work_item_ancestors/work_item_ancestors.vue';
-import WorkItemTitleWithEdit from './work_item_title_with_edit.vue';
+import WorkItemTitle from './work_item_title.vue';
+import WorkItemLoading from './work_item_loading.vue';
+import DesignWidget from './design_management/design_management_widget.vue';
 
 export default {
   i18n,
@@ -53,16 +56,16 @@ export default {
   },
   isLoggedIn: isLoggedIn(),
   components: {
+    DesignWidget,
     GlAlert,
     GlButton,
-    GlSkeletonLoader,
     GlEmptyState,
     WorkItemActions,
     WorkItemTodos,
+    WorkItemNotificationsWidget,
     WorkItemCreatedUpdated,
     WorkItemDescription,
     WorkItemAwardEmoji,
-    WorkItemTitle,
     WorkItemAttributesWrapper,
     WorkItemTree,
     WorkItemNotes,
@@ -71,7 +74,8 @@ export default {
     WorkItemRelationships,
     WorkItemStickyHeader,
     WorkItemAncestors,
-    WorkItemTitleWithEdit,
+    WorkItemTitle,
+    WorkItemLoading,
   },
   mixins: [glFeatureFlagMixin()],
   inject: ['fullPath', 'isGroup', 'reportAbusePath'],
@@ -86,6 +90,16 @@ export default {
       required: false,
       default: null,
     },
+    modalWorkItemFullPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    isDrawer: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -95,6 +109,7 @@ export default {
       updateInProgress: false,
       modalWorkItemId: undefined,
       modalWorkItemIid: getParameterByName('work_item_iid'),
+      modalWorkItemNamespaceFullPath: '',
       isReportDrawerOpen: false,
       reportedUrl: '',
       reportedUserId: 0,
@@ -110,7 +125,7 @@ export default {
       },
       variables() {
         return {
-          fullPath: this.fullPath,
+          fullPath: this.modalWorkItemFullPath || this.fullPath,
           iid: this.workItemIid,
         };
       },
@@ -118,7 +133,7 @@ export default {
         return !this.workItemIid;
       },
       update(data) {
-        return data.workspace.workItems.nodes[0] ?? {};
+        return data.workspace.workItem ?? {};
       },
       error() {
         this.setEmptyState();
@@ -181,6 +196,9 @@ export default {
     workItemsMvc2Enabled() {
       return this.glFeatures.workItemsMvc2;
     },
+    newTodoAndNotificationsEnabled() {
+      return this.glFeatures.notificationsTodosButtons;
+    },
     parentWorkItem() {
       return this.isWidgetPresent(WIDGET_TYPE_HIERARCHY)?.parent;
     },
@@ -195,6 +213,9 @@ export default {
     },
     hasDescriptionWidget() {
       return this.isWidgetPresent(WIDGET_TYPE_DESCRIPTION);
+    },
+    hasDesignWidget() {
+      return this.isWidgetPresent(WIDGET_TYPE_DESIGNS);
     },
     workItemNotificationsSubscribed() {
       return Boolean(this.isWidgetPresent(WIDGET_TYPE_NOTIFICATIONS)?.subscribed);
@@ -223,16 +244,16 @@ export default {
     children() {
       return this.workItem ? findHierarchyWidgetChildren(this.workItem) : [];
     },
+    hasChildren() {
+      return !isEmpty(this.children);
+    },
     workItemBodyClass() {
       return {
         'gl-pt-5': !this.updateError && !this.isModal,
       };
     },
     showIntersectionObserver() {
-      return !this.isModal && this.workItemsMvc2Enabled && !this.editMode;
-    },
-    hasLinkedWorkItems() {
-      return this.glFeatures.linkedWorkItems;
+      return !this.isModal && !this.editMode;
     },
     workItemLinkedItems() {
       return this.isWidgetPresent(WIDGET_TYPE_LINKED_ITEMS);
@@ -241,9 +262,6 @@ export default {
       return [WORK_ITEM_TYPE_VALUE_OBJECTIVE, WORK_ITEM_TYPE_VALUE_EPIC].includes(
         this.workItemType,
       );
-    },
-    showWorkItemLinkedItems() {
-      return this.hasLinkedWorkItems && this.workItemLinkedItems;
     },
     titleClassHeader() {
       return {
@@ -261,7 +279,7 @@ export default {
       };
     },
     shouldShowEditButton() {
-      return this.workItemsMvc2Enabled && !this.editMode && this.canUpdate;
+      return !this.editMode && this.canUpdate;
     },
   },
   mounted() {
@@ -344,6 +362,7 @@ export default {
       }
       this.modalWorkItemId = modalWorkItem.id;
       this.modalWorkItemIid = modalWorkItem.iid;
+      this.modalWorkItemNamespaceFullPath = modalWorkItem.namespace?.fullPath;
       this.$refs.modal.show();
     },
     openReportAbuseDrawer(reply) {
@@ -413,19 +432,14 @@ export default {
 </script>
 
 <template>
-  <section>
+  <section class="work-item-view">
     <section v-if="updateError" class="flash-container flash-container-page sticky">
       <gl-alert class="gl-mb-3" variant="danger" @dismiss="updateError = undefined">
         {{ updateError }}
       </gl-alert>
     </section>
     <section :class="workItemBodyClass">
-      <div v-if="workItemLoading" class="gl-max-w-26 gl-py-5">
-        <gl-skeleton-loader :height="65" :width="240">
-          <rect width="240" height="20" x="5" y="0" rx="4" />
-          <rect width="100" height="20" x="5" y="45" rx="4" />
-        </gl-skeleton-loader>
-      </div>
+      <work-item-loading v-if="workItemLoading" />
       <template v-else>
         <div class="gl-sm-display-none! gl-display-flex">
           <gl-button
@@ -447,21 +461,13 @@ export default {
             :class="titleClassHeader"
             data-testid="work-item-type"
           >
-            <work-item-title-with-edit
-              v-if="workItem.title && workItemsMvc2Enabled"
+            <work-item-title
+              v-if="workItem.title"
               ref="title"
               :is-editing="editMode"
               :title="workItem.title"
               @updateWorkItem="updateWorkItem"
               @updateDraft="updateDraft('title', $event)"
-            />
-            <work-item-title
-              v-else-if="workItem.title"
-              ref="title"
-              :work-item-id="workItem.id"
-              :work-item-title="workItem.title"
-              :work-item-type="workItemType"
-              :can-update="canUpdate"
               @error="updateError = $event"
             />
           </div>
@@ -470,6 +476,7 @@ export default {
               v-if="shouldShowEditButton"
               category="secondary"
               data-testid="work-item-edit-form-button"
+              class="shortcut-edit-wi-description"
               @click="enableEditMode"
             >
               {{ __('Edit') }}
@@ -482,12 +489,22 @@ export default {
               :current-user-todos="currentUserTodos"
               @error="updateError = $event"
             />
-            <work-item-actions
+            <work-item-notifications-widget
+              v-if="newTodoAndNotificationsEnabled"
               :full-path="fullPath"
               :work-item-id="workItem.id"
               :subscribed-to-notifications="workItemNotificationsSubscribed"
+              :can-update="canUpdate"
+              @error="updateError = $event"
+            />
+            <work-item-actions
+              :full-path="fullPath"
+              :work-item-id="workItem.id"
+              :hide-subscribe="newTodoAndNotificationsEnabled"
+              :subscribed-to-notifications="workItemNotificationsSubscribed"
               :work-item-type="workItemType"
               :work-item-type-id="workItemTypeId"
+              :work-item-iid="workItemIid"
               :can-delete="canDelete"
               :can-update="canUpdate"
               :is-confidential="workItem.confidential"
@@ -497,6 +514,7 @@ export default {
               :work-item-create-note-email="workItem.createNoteEmail"
               :is-modal="isModal"
               :work-item-state="workItem.state"
+              :has-children="hasChildren"
               @deleteWorkItem="$emit('deleteWorkItem', { workItemType, workItemId: workItem.id })"
               @toggleWorkItemConfidentiality="toggleConfidentiality"
               @error="updateError = $event"
@@ -514,25 +532,15 @@ export default {
           />
         </div>
         <div>
-          <work-item-title-with-edit
-            v-if="workItem.title && workItemsMvc2Enabled && parentWorkItem"
+          <work-item-title
+            v-if="workItem.title && parentWorkItem"
             ref="title"
             :is-editing="editMode"
             :class="titleClassComponent"
             :title="workItem.title"
+            @error="updateError = $event"
             @updateWorkItem="updateWorkItem"
             @updateDraft="updateDraft('title', $event)"
-          />
-          <work-item-title
-            v-else-if="workItem.title && parentWorkItem"
-            ref="title"
-            :class="titleClassComponent"
-            :work-item-id="workItem.id"
-            :work-item-title="workItem.title"
-            :work-item-type="workItemType"
-            :can-update="canUpdate"
-            :use-h1="!isModal"
-            @error="updateError = $event"
           />
           <work-item-created-updated
             v-if="!editMode"
@@ -558,24 +566,12 @@ export default {
           @toggleWorkItemConfidentiality="toggleConfidentiality"
           @error="updateError = $event"
           @promotedToObjective="$emit('promotedToObjective', workItemIid)"
+          @toggleEditMode="enableEditMode"
         />
-        <div
-          data-testid="work-item-overview"
-          :class="{ 'work-item-overview': workItemsMvc2Enabled }"
-        >
+        <div data-testid="work-item-overview" class="work-item-overview">
           <section>
-            <work-item-attributes-wrapper
-              v-if="!workItemsMvc2Enabled"
-              :class="{ 'gl-md-display-none!': workItemsMvc2Enabled }"
-              class="gl-border-b"
-              :full-path="fullPath"
-              :work-item="workItem"
-              @error="updateError = $event"
-            />
             <work-item-description
               v-if="hasDescriptionWidget"
-              :class="workItemsMvc2Enabled ? '' : 'gl-pt-5'"
-              :disable-inline-editing="workItemsMvc2Enabled"
               :edit-mode="editMode"
               :full-path="fullPath"
               :work-item-id="workItem.id"
@@ -595,9 +591,12 @@ export default {
               @error="updateError = $event"
               @emoji-updated="$emit('work-item-emoji-updated', $event)"
             />
+            <design-widget
+              v-if="!workItemLoading && !isDrawer && hasDesignWidget"
+              :work-item-id="workItem.id"
+            />
           </section>
           <aside
-            v-if="workItemsMvc2Enabled"
             data-testid="work-item-overview-right-sidebar"
             class="work-item-overview-right-sidebar"
             :class="{ 'is-modal': isModal }"
@@ -623,7 +622,7 @@ export default {
             @addChild="$emit('addChild')"
           />
           <work-item-relationships
-            v-if="showWorkItemLinkedItems"
+            v-if="workItemLinkedItems"
             :work-item-id="workItem.id"
             :work-item-iid="workItemIid"
             :work-item-full-path="fullPath"
@@ -662,6 +661,7 @@ export default {
         ref="modal"
         :work-item-id="modalWorkItemId"
         :work-item-iid="modalWorkItemIid"
+        :work-item-full-path="modalWorkItemNamespaceFullPath"
         :show="true"
         @close="updateUrl"
         @openReportAbuse="toggleReportAbuseDrawer(true, $event)"

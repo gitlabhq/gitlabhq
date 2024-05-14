@@ -4,6 +4,7 @@ module Integrations
   class Teamcity < BaseCi
     include PushDataValidations
     include ReactivelyCached
+    include HasAvatar
     prepend EnableSslVerification
 
     TEAMCITY_SAAS_HOSTNAME = /\A[^\.]+\.teamcity\.com\z/i
@@ -89,6 +90,10 @@ module Integrations
     def enable_ssl_verification
       original_value = Gitlab::Utils.to_boolean(properties['enable_ssl_verification'])
       original_value.nil? ? (new_record? || url_is_saas?) : original_value
+    end
+
+    def self.attribution_notice
+      'Copyright © 2024 JetBrains s.r.o. JetBrains TeamCity and the JetBrains TeamCity logo are registered trademarks of JetBrains s.r.o.'
     end
 
     private

@@ -13,3 +13,10 @@ graphql-verify:
     - bundle exec rake gitlab:graphql:check_docs
     - bundle exec rake gitlab:graphql:schema:dump
     - node scripts/frontend/graphql_possible_types_extraction.js --check
+  artifacts:
+    expire_in: 7 days
+    name: graphql-schema-verify
+    paths:
+      - tmp/tests/graphql/gitlab_schema.graphql
+      - tmp/tests/graphql/gitlab_schema.json
+    when: always

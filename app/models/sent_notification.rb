@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class SentNotification < ApplicationRecord
+  include IgnorableColumns
+
   belongs_to :project
   belongs_to :noteable, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
   belongs_to :recipient, class_name: "User"
@@ -122,6 +124,6 @@ class SentNotification < ApplicationRecord
   end
 
   def keep_around_commit
-    project.repository.keep_around(self.commit_id)
+    project.repository.keep_around(self.commit_id, source: self.class.name)
   end
 end

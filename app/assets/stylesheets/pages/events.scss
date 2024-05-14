@@ -58,17 +58,12 @@
     }
   }
 
-  .event-title {
-    .event-type {
-      &::first-letter {
-        text-transform: capitalize;
-      }
-    }
+  .event-title .event-title-block::first-letter {
+    text-transform: capitalize;
   }
 
   .event-body {
     margin-top: $gl-padding-4;
-    margin-right: 174px;
     color: $gl-text-color;
 
     .event-note {
@@ -83,10 +78,6 @@
 
         iframe.twitter-share-button {
           vertical-align: bottom;
-        }
-
-        .gl-label-scoped.gl-label-sm {
-          --label-inset-border: inset 0 0 0 1px currentColor;
         }
       }
 
@@ -154,7 +145,9 @@
   }
 
   .event-item-timestamp {
-    float: right;
+    @include media-breakpoint-up(sm) {
+      float: right;
+    }
   }
 }
 

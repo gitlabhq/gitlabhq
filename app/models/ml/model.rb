@@ -5,6 +5,8 @@ module Ml
     include Presentable
     include Sortable
 
+    EXPERIMENT_NAME_PREFIX = '[model]'
+
     validates :project, :default_experiment, presence: true
     validates :name,
       format: Gitlab::Regex.ml_model_name_regex,
@@ -39,7 +41,7 @@ module Ml
     def valid_default_experiment?
       return unless default_experiment
 
-      errors.add(:default_experiment) unless default_experiment.name == name
+      errors.add(:default_experiment) unless default_experiment.name == self.class.prefixed_experiment(name)
       errors.add(:default_experiment) unless default_experiment.project_id == project_id
     end
 
@@ -49,6 +51,10 @@ module Ml
 
     def self.by_project_id_and_name(project_id, name)
       find_by(project_id: project_id, name: name)
+    end
+
+    def self.prefixed_experiment(string)
+      "#{EXPERIMENT_NAME_PREFIX}#{string}"
     end
   end
 end

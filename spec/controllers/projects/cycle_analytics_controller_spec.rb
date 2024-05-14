@@ -12,12 +12,9 @@ RSpec.describe Projects::CycleAnalyticsController do
   end
 
   context "counting page views for 'show'" do
-    it 'increases the counter' do
-      expect(Gitlab::UsageDataCounters::CycleAnalyticsCounter).to receive(:count).with(:views)
-
-      get :show, params: { namespace_id: project.namespace, project_id: project }
-
-      expect(response).to be_successful
+    it_behaves_like 'internal event tracking' do
+      let(:event) { 'view_cycle_analytics' }
+      subject(:request) { get :show, params: { namespace_id: project.namespace, project_id: project } }
     end
   end
 

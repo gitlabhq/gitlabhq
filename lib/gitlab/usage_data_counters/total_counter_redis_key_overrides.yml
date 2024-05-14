@@ -1,0 +1,31 @@
+# This file holds a list of Redis keys for Internal Events tracking total
+# counters in the new format, mapped to the existing legacy keys, in order
+# to keep the continuity of past data and not have to migrate the keys.
+#
+# Format:
+# NEW_KEY_1: LEGACY_KEY_1
+# NEW_KEY_2: LEGACY_KEY_2
+# ...
+#
+'{event_counters}_analytics_dashboard_viewed': USAGE_PRODUCT_ANALYTICS_VIEW_DASHBOARD
+'{event_counters}_create_commit_note': USAGE_NOTE_CREATE_COMMIT
+'{event_counters}_create_snippet': USAGE_SNIPPET_CREATE
+'{event_counters}_create_snippet_note': USAGE_NOTE_CREATE_SNIPPET
+'{event_counters}_licenses_list_viewed': USAGE_LICENSES_LIST_VIEWS
+'{event_counters}_update_snippet': USAGE_SNIPPET_UPDATE
+'{event_counters}_usage_data_download_payload_clicked': USAGE_SERVICE_USAGE_DATA_DOWNLOAD_PAYLOAD_CLICK
+'{event_counters}_value_streams_dashboard_viewed': USAGE_VALUE_STREAMS_DASHBOARD_VIEWS
+'{event_counters}_view_cycle_analytics': USAGE_CYCLE_ANALYTICS_VIEWS
+'{event_counters}_view_productivity_analytics': USAGE_PRODUCTIVITY_ANALYTICS_VIEWS
+'{event_counters}_web_ide_viewed': WEB_IDE_VIEWS_COUNT
+'{event_counters}_status_page_incident_published': USAGE_STATUS_PAGE_INCIDENT_PUBLISHES
+'{event_counters}_status_page_incident_unpublished': USAGE_STATUS_PAGE_INCIDENT_UNPUBLISHES
+'{event_counters}_create_wiki_page': USAGE_WIKI_PAGES_CREATE
+'{event_counters}_delete_wiki_page': USAGE_WIKI_PAGES_DELETE
+'{event_counters}_update_wiki_page': USAGE_WIKI_PAGES_UPDATE
+'{event_counters}_view_wiki_page': USAGE_WIKI_PAGES_VIEW
+'{event_counters}_click_full_report_license_compliance': USAGE_USERS_VISITING_TESTING_LICENSE_COMPLIANCE_FULL_REPORT
+'{event_counters}_click_external_link_license_compliance': USAGE_USERS_CLICKING_LICENSE_TESTING_VISITING_EXTERNAL_WEBSITE
+'{event_counters}_perform_search': ALL_SEARCHES_COUNT
+'{event_counters}_perform_navbar_search': NAVBAR_SEARCHES_COUNT
+'{event_counters}_source_code_pushed': USAGE_SOURCE_CODE_PUSHES

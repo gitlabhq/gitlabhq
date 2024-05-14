@@ -47,7 +47,7 @@ RSpec.describe 'Projects settings', feature_category: :groups_and_projects do
       # disable by clicking toggle
       forking_enabled_button.click
       page.within('.sharing-permissions') do
-        find('[data-testid="project-features-save-button"]').click
+        find_by_testid('project-features-save-button').click
       end
       wait_for_requests
 
@@ -77,7 +77,7 @@ RSpec.describe 'Projects settings', feature_category: :groups_and_projects do
       expect(default_award_emojis_input.value).to eq('false')
 
       page.within('.sharing-permissions') do
-        find('[data-testid="project-features-save-button"]').click
+        find_by_testid('project-features-save-button').click
       end
       wait_for_requests
 

@@ -11,11 +11,9 @@ class GitlabSchema < GraphQL::Schema
   AUTHENTICATED_MAX_DEPTH = 20
 
   # Tracers (order is important)
-  use Gitlab::Graphql::Tracers::ApplicationContextTracer
-  use Gitlab::Graphql::Tracers::MetricsTracer
-  use Gitlab::Graphql::Tracers::LoggerTracer
-
-  use Gitlab::Graphql::Tracers::TimerTracer
+  trace_with Gitlab::Graphql::Tracers::MetricsTracer
+  trace_with Gitlab::Graphql::Tracers::LoggerTracer
+  trace_with Gitlab::Graphql::Tracers::ApplicationContextTracer
 
   use Gitlab::Graphql::Subscriptions::ActionCableWithLoadBalancing
   use BatchLoader::GraphQL

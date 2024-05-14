@@ -8,9 +8,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2673) in GitLab 13.0.
 > - Support for state names that contain periods introduced in GitLab 15.7 [with a flag](../../../administration/feature_flags.md) named `allow_dots_on_tf_state_names`. Disabled by default.
 > - Support for state names that contain periods [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/385597) in GitLab 16.0. Feature flag `allow_dots_on_tf_state_names` removed.
 
@@ -294,8 +293,6 @@ To read the Terraform state in the target project, you need at least the Develop
 
 ## Manage Terraform state files
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/273592) in GitLab 13.8.
-
 To view Terraform state files:
 
 1. On the left sidebar, select **Search or go to** and find your project.
@@ -304,8 +301,6 @@ To view Terraform state files:
 [An epic exists](https://gitlab.com/groups/gitlab-org/-/epics/4563) to track improvements to this UI.
 
 ### Manage individual Terraform state versions
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207347) in GitLab 13.4.
 
 Individual state versions can be managed using the GitLab REST API.
 
@@ -330,10 +325,16 @@ If you have at least the Maintainer role, you can remove a state file.
 
 ### Remove a state file by using the API
 
-You can remove a state file by making a request to the REST API. For example:
+You can remove a state file by making a request to the REST API using a personal access token:
 
 ```shell
 curl --header "Private-Token: <your_access_token>" --request DELETE "https://gitlab.example.com/api/v4/projects/<your_project_id>/terraform/state/<your_state_name>"
+```
+
+You can also use [CI/CD job token](../../../ci/jobs/ci_job_token.md) and basic authentication:
+
+```shell
+curl --user "gitlab-ci-token:$CI_JOB_TOKEN" --request DELETE "https://gitlab.example.com/api/v4/projects/<your_project_id>/terraform/state/<your_state_name>"
 ```
 
 You can also use [the GraphQL API](../../../api/graphql/reference/index.md#mutationterraformstatedelete).

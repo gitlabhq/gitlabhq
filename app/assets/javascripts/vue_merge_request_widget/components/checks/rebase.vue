@@ -26,7 +26,7 @@ export default {
       variables() {
         return this.mergeRequestQueryVariables;
       },
-      update: (data) => data.project.mergeRequest,
+      update: (data) => data.project?.mergeRequest || null,
     },
   },
   inject: {
@@ -52,13 +52,13 @@ export default {
   },
   data() {
     return {
-      state: {},
+      state: null,
       isMakingRequest: false,
     };
   },
   computed: {
     isLoading() {
-      return this.$apollo.queries.state.loading;
+      return this.$apollo.queries.state.loading || !this.state;
     },
     rebaseInProgress() {
       return this.state.rebaseInProgress;

@@ -446,6 +446,133 @@ WHERE EXISTS (
 )
 ```
 
+## Query plan flip problem with `.exists?` queries
+
+In Rails, calling `.exists?` on an ActiveRecord scope could cause query plan flip issues, which
+could lead to database statement timeouts. When preparing query plans for review, it's advisable to
+check all variants of the underlying query form ActiveRecord scopes.
+
+Example: check if there are any epics in the group and its subgroups.
+
+```ruby
+# Similar queries, but they might behave differently (different query execution plan)
+
+Epic.where(group_id: group.first.self_and_descendant_ids).order(:id).limit(20) # for pagination
+Epic.where(group_id: group.first.self_and_descendant_ids).count # for providing total count
+Epic.where(group_id: group.first.self_and_descendant_ids).exists? # for checking if there is at least one epic present
+```
+
+When the `.exists?` method is called, Rails modifies the active record scope:
+
+- Replaces the select columns with `SELECT 1`.
+- Adds `LIMIT 1` to the query.
+
+When invoked, complex ActiveRecord scopes, such as those with `IN` queries, could negatively alter database query planning behavior.
+
+Execution plan:
+
+```ruby
+Epic.where(group_id: group.first.self_and_descendant_ids).exists?
+```
+
+```plain
+Limit  (cost=126.86..591.11 rows=1 width=4)
+  ->  Nested Loop Semi Join  (cost=126.86..3255965.65 rows=7013 width=4)
+        Join Filter: (epics.group_id = namespaces.traversal_ids[array_length(namespaces.traversal_ids, 1)])
+        ->  Index Only Scan using index_epics_on_group_id_and_iid on epics  (cost=0.42..8846.02 rows=426445 width=4)
+        ->  Materialize  (cost=126.43..808.15 rows=435 width=28)
+              ->  Bitmap Heap Scan on namespaces  (cost=126.43..805.98 rows=435 width=28)
+                    Recheck Cond: ((traversal_ids @> '{9970}'::integer[]) AND ((type)::text = 'Group'::text))
+                    ->  Bitmap Index Scan on index_namespaces_on_traversal_ids_for_groups  (cost=0.00..126.32 rows=435 width=0)
+                          Index Cond: (traversal_ids @> '{9970}'::integer[])
+```
+
+Notice the `Index Only Scan` on the `index_epics_on_group_id_and_iid` index where the planner estimates reading more than 400,000 rows.
+
+If we execute the query without `exists?`, we get a different execution plan:
+
+```ruby
+Epic.where(group_id: Group.first.self_and_descendant_ids).to_a
+```
+
+Execution plan:
+
+```plain
+Nested Loop  (cost=807.49..11198.57 rows=7013 width=1287)
+  ->  HashAggregate  (cost=807.06..811.41 rows=435 width=28)
+        Group Key: namespaces.traversal_ids[array_length(namespaces.traversal_ids, 1)]
+        ->  Bitmap Heap Scan on namespaces  (cost=126.43..805.98 rows=435 width=28)
+              Recheck Cond: ((traversal_ids @> '{9970}'::integer[]) AND ((type)::text = 'Group'::text))
+              ->  Bitmap Index Scan on index_namespaces_on_traversal_ids_for_groups  (cost=0.00..126.32 rows=435 width=0)
+                    Index Cond: (traversal_ids @> '{9970}'::integer[])
+  ->  Index Scan using index_epics_on_group_id_and_iid on epics  (cost=0.42..23.72 rows=16 width=1287)
+        Index Cond: (group_id = (namespaces.traversal_ids)[array_length(namespaces.traversal_ids, 1)])
+```
+
+This query plan doesn't contain the `MATERIALIZE` nodes and uses a more efficient access method by loading the group
+hierarchy first.
+
+Query plan flips can be accidentally introduced by even the smallest query change. Revisiting the `.exists?` query where selecting
+the group ID database column differently:
+
+```ruby
+Epic.where(group_id: group.first.select(:id)).exists?
+```
+
+```plain
+Limit  (cost=126.86..672.26 rows=1 width=4)
+  ->  Nested Loop  (cost=126.86..1763.07 rows=3 width=4)
+        ->  Bitmap Heap Scan on namespaces  (cost=126.43..805.98 rows=435 width=4)
+              Recheck Cond: ((traversal_ids @> '{9970}'::integer[]) AND ((type)::text = 'Group'::text))
+              ->  Bitmap Index Scan on index_namespaces_on_traversal_ids_for_groups  (cost=0.00..126.32 rows=435 width=0)
+                    Index Cond: (traversal_ids @> '{9970}'::integer[])
+        ->  Index Only Scan using index_epics_on_group_id_and_iid on epics  (cost=0.42..2.04 rows=16 width=4)
+              Index Cond: (group_id = namespaces.id)
+```
+
+Here we see again the better execution plan. In case we do a small change to the query, it flips again:
+
+```ruby
+Epic.where(group_id: group.first.self_and_descendants.select('id + 0')).exists?
+```
+
+```plain
+Limit  (cost=126.86..591.11 rows=1 width=4)
+  ->  Nested Loop Semi Join  (cost=126.86..3255965.65 rows=7013 width=4)
+        Join Filter: (epics.group_id = (namespaces.id + 0))
+        ->  Index Only Scan using index_epics_on_group_id_and_iid on epics  (cost=0.42..8846.02 rows=426445 width=4)
+        ->  Materialize  (cost=126.43..808.15 rows=435 width=4)
+              ->  Bitmap Heap Scan on namespaces  (cost=126.43..805.98 rows=435 width=4)
+                    Recheck Cond: ((traversal_ids @> '{9970}'::integer[]) AND ((type)::text = 'Group'::text))
+                    ->  Bitmap Index Scan on index_namespaces_on_traversal_ids_for_groups  (cost=0.00..126.32 rows=435 width=0)
+                          Index Cond: (traversal_ids @> '{9970}'::integer[])
+```
+
+Forcing an execution plan is possible if the `IN` subquery is moved to a CTE:
+
+```ruby
+cte = Gitlab::SQL::CTE.new(:group_ids, Group.first.self_and_descendant_ids)
+Epic.where('epics.id IN (SELECT id FROM group_ids)').with(cte.to_arel).exists?
+```
+
+```plain
+Limit  (cost=817.27..818.12 rows=1 width=4)
+  CTE group_ids
+    ->  Bitmap Heap Scan on namespaces  (cost=126.43..807.06 rows=435 width=4)
+          Recheck Cond: ((traversal_ids @> '{9970}'::integer[]) AND ((type)::text = 'Group'::text))
+          ->  Bitmap Index Scan on index_namespaces_on_traversal_ids_for_groups  (cost=0.00..126.32 rows=435 width=0)
+                Index Cond: (traversal_ids @> '{9970}'::integer[])
+  ->  Nested Loop  (cost=10.21..380.29 rows=435 width=4)
+        ->  HashAggregate  (cost=9.79..11.79 rows=200 width=4)
+              Group Key: group_ids.id
+              ->  CTE Scan on group_ids  (cost=0.00..8.70 rows=435 width=4)
+        ->  Index Only Scan using epics_pkey on epics  (cost=0.42..1.84 rows=1 width=4)
+              Index Cond: (id = group_ids.id)
+```
+
+NOTE:
+Due to their complexity, using CTEs should be the last resort. Use CTEs only when simpler query changes don't produce a favorable execution plan.
+
 ## `.find_or_create_by` is not atomic
 
 The inherent pattern with methods like `.find_or_create_by` and

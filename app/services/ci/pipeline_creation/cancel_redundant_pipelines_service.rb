@@ -67,23 +67,10 @@ module Ci
       def parent_and_child_pipelines(ids)
         Ci::Pipeline.object_hierarchy(parent_auto_cancelable_pipelines(ids), project_condition: :same)
           .base_and_descendants
-          .alive_or_scheduled
-      end
-
-      def legacy_auto_cancel_pipelines(pipeline_ids)
-        ::Ci::Pipeline
-          .id_in(pipeline_ids)
-          .conservative_interruptible
-          .each do |cancelable_pipeline|
-            cancel_pipeline(cancelable_pipeline, safe_cancellation: false)
-          end
+          .cancelable
       end
 
       def auto_cancel_pipelines(pipeline_ids)
-        if Feature.disabled?(:ci_workflow_auto_cancel_on_new_commit, project)
-          return legacy_auto_cancel_pipelines(pipeline_ids)
-        end
-
         ::Ci::Pipeline
           .id_in(pipeline_ids)
           .each do |cancelable_pipeline|

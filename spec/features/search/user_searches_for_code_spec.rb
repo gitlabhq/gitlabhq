@@ -35,11 +35,11 @@ RSpec.describe 'User searches for code', :js, :disable_rate_limiter, feature_cat
     context 'when on a project search page' do
       before do
         visit(search_path)
-        find('[data-testid="project-filter"]').click
+        find_by_testid('project-filter').click
 
         wait_for_requests
 
-        page.within('[data-testid="project-filter"]') do
+        within_testid('project-filter') do
           select_listbox_item(project.name)
         end
       end
@@ -83,7 +83,7 @@ RSpec.describe 'User searches for code', :js, :disable_rate_limiter, feature_cat
           end
 
           it 'shows scopes' do
-            page.within('[data-testid="search-filter"]') do
+            within_testid('search-filter') do
               expect(page).to have_selector('[data-testid="nav-item"]', minimum: 5)
             end
           end

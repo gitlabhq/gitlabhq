@@ -6,15 +6,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # GitHub importer developer documentation
 
-The GitHub importer offers two different types of importers:
-
-- A sequential importer. Used by the `import:github` Rake task.
-- A parallel importer. Used by everything else.
-
-The difference between these two importers is:
-
-- The sequential importer does all the work in a single thread, so it's more suited for debugging purposes or Rake tasks.
-- The parallel importer uses Sidekiq.
+The GitHub importer is a parallel importer that uses Sidekiq.
 
 ## Prerequisites
 
@@ -95,43 +87,7 @@ For every collaborator, we schedule a job for the `Gitlab::GithubImport::ImportC
 NOTE:
 This stage is optional (controlled by `Gitlab::GithubImport::Settings`) and is selected by default.
 
-### 6. Stage::ImportPullRequestsMergedByWorker (deprecated)
-
-This worker imports the pull requests' _merged-by_ user information. The
-[_List pull requests_](https://docs.github.com/en/rest/pulls#list-pull-requests)
-API doesn't provide this information. Therefore, this stage must fetch each merged pull request
-individually to import this information. A
-`Gitlab::GithubImport::PullRequests::ImportMergedByWorker` job is scheduled for each fetched pull
-request.
-
-NOTE:
-This stage is skipped when `github_import_extended_events` feature flag is enabled as pull requests merged by information
-is imported in the `10. Stage::ImportIssueEventsWorker` stage. This stage will be removed along with the feature flag.
-
-### 7. Stage::ImportPullRequestsReviewRequestsWorker (deprecated)
-
-This worker imports assigned reviewers of pull requests. For each pull request, this worker:
-
-- Fetches all assigned review requests.
-- Schedules a `Gitlab::GithubImport::PullRequests::ImportReviewRequestWorker` job for each fetched review request.
-
-NOTE:
-This stage is skipped when `github_import_extended_events` feature flag is enabled as pull requests review requests
-information is imported in the `10. Stage::ImportIssueEventsWorker` stage. This stage will be removed along with the
-feature flag.
-
-### 8. Stage::ImportPullRequestsReviewsWorker (deprecated)
-
-This worker imports reviews of pull requests. For each pull request, this worker:
-
-- Fetches all the pages of reviews.
-- Schedules a `Gitlab::GithubImport::PullRequests::ImportReviewWorker` job for each fetched review.
-
-NOTE:
-This stage is skipped when `github_import_extended_events` feature flag is enabled as pull requests reviews information
-is imported in the`10. Stage::ImportIssueEventsWorker` stage. This stage will be removed along with the feature flag.
-
-### 9. Stage::ImportIssuesAndDiffNotesWorker
+### 6. Stage::ImportIssuesAndDiffNotesWorker
 
 This worker imports all issues and pull request comments. For every issue, we
 schedule a job for the `Gitlab::GithubImport::ImportIssueWorker` worker. For
@@ -147,7 +103,7 @@ label links in the same worker removes the need for performing a separate crawl
 through the API data, reducing the number of API calls necessary to import a
 project.
 
-### 10. Stage::ImportIssueEventsWorker
+### 7. Stage::ImportIssueEventsWorker
 
 This worker imports all issues and pull request events. For every event, we
 schedule a job for the `Gitlab::GithubImport::ImportIssueEventWorker` worker.
@@ -160,36 +116,12 @@ GitHub are stored in a single table. Therefore, they have globally-unique IDs an
 
 Therefore, both issues and pull requests have a common API for most related things.
 
-When the feature flag `github_import_extended_events` is enabled, this stage is used to import
-`pull request merged by`, `pull request reviews`, `pull request review requests` and `notes`. This is possible because
-[timeline events endpoint](https://docs.github.com/en/rest/issues/timeline?apiVersion=2022-11-28#list-timeline-events-for-an-issue)
-also contains such information.
-
 To facilitate the import of `pull request review requests` using the timeline events endpoint,
 events must be processed sequentially. Given that import workers do not execute in a guaranteed order,
 the `pull request review requests` events are initially placed in a Redis ordered list. Subsequently, they are consumed
 in sequence by the `Gitlab::GithubImport::ReplayEventsWorker`.
 
-NOTE:
-This stage is mandatory when `github_import_extended_events` feature flag is enabled. Otherwise the stage is optional
-and can executed using the [import options](../user/project/import/github.md#select-additional-items-to-import).
-
-### 11. Stage::ImportNotesWorker (deprecated)
-
-This worker imports regular comments for both issues and pull requests. For
-every comment, we schedule a job for the
-`Gitlab::GithubImport::ImportNoteWorker` worker.
-
-Regular comments have to be imported at the end because the GitHub API used
-returns comments for both issues and pull requests. This means we have to wait
-for all issues and pull requests to be imported before we can import regular
-comments.
-
-NOTE:
-This stage is skipped when `github_import_extended_events` feature flag is enabled as notes are imported in the
-`10. Stage::ImportIssueEventsWorker` stage. This stage will be removed along with the feature flag.
-
-### 12. Stage::ImportAttachmentsWorker
+### 8. Stage::ImportAttachmentsWorker
 
 This worker imports note attachments that are linked inside Markdown.
 For each entity with Markdown text in the project, we schedule a job of:
@@ -208,7 +140,7 @@ Each job:
 NOTE:
 It's an optional stage that could consume significant extra import time (controlled by `Gitlab::GithubImport::Settings`).
 
-### 13. Stage::ImportProtectedBranchesWorker
+### 9. Stage::ImportProtectedBranchesWorker
 
 This worker imports protected branch rules.
 For every rule that exists on GitHub, we schedule a job of
@@ -217,7 +149,7 @@ For every rule that exists on GitHub, we schedule a job of
 Each job compares the branch protection rules from GitHub and GitLab and applies
 the strictest of the rules to the branches in GitLab.
 
-### 14. Stage::FinishImportWorker
+### 10. Stage::FinishImportWorker
 
 This worker completes the import process by performing some housekeeping
 (such as flushing any caches) and by marking the import as completed.
@@ -228,7 +160,7 @@ Advancing stages is done in one of two ways:
 
 - Scheduling the worker for the next stage directly.
 - Scheduling a job for `Gitlab::GithubImport::AdvanceStageWorker` which will
-   advance the stage when all work of the current stage has been completed.
+  advance the stage when all work of the current stage has been completed.
 
 The first approach should only be used by workers that perform all their work in
 a single thread, while `AdvanceStageWorker` should be used for everything else.
@@ -309,14 +241,14 @@ We cache two types of lookups:
 
 - A positive lookup, meaning we found a GitLab user ID.
 - A negative lookup, meaning we didn't find a GitLab user ID. Caching this
-   prevents us from performing the same work for users that we know don't exist
-   in our GitLab database.
+  prevents us from performing the same work for users that we know don't exist
+  in our GitLab database.
 
 The expiration time of these keys is 24 hours. When retrieving the cache of a
 positive lookup, we refresh the TTL automatically. The TTL of false lookups is
 never refreshed.
 
-If a lookup for email returns an empty or negative lookup, a [Conditional Request](https://docs.github.com/en/rest/overview/resources-in-the-rest-api#conditional-requests) is made with a cached ETAG in the header once for every project.
+If a lookup for email returns an empty or negative lookup, a [Conditional Request](https://docs.github.com/en/rest/using-the-rest-api/best-practices-for-using-the-rest-api?apiVersion=2022-11-28#use-conditional-requests-if-appropriate) is made with a cached ETAG in the header once for every project.
 Conditional Requests do not count towards the GitHub API rate limit.
 
 Because of this caching layer, it's possible newly registered GitLab accounts
@@ -414,11 +346,6 @@ The code for this resides in:
 - `lib/gitlab/cache/import/caching.rb`
 
 ## Logs
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/48512/diffs) in GitLab 13.7.
-> - Number of imported objects [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64256) in GitLab 14.1.
-> - `Gitlab::GithubImport::Logger` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65968) in GitLab 14.2.
-> - `import_source` [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67726) to `import_type` in GitLab 14.2.
 
 The import progress can be checked in the `logs/importer.log` file. Each relevant import is logged
 with `"import_type": "github"` and the `"project_id"`.

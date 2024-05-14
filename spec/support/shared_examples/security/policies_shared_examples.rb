@@ -40,7 +40,7 @@ RSpec.shared_examples 'policy editor' do
     click_button _('Select scan type')
     select_listbox_item _('Security Scan')
     page.within(find_by_testid('actions-section')) do
-      click_button _('Remove')
+      click_button _('Remove'), match: :first
     end
     click_button _('Configure with a merge request')
     expect(page).to have_current_path(project_merge_request_path(policy_management_project, 1))

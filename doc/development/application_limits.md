@@ -139,8 +139,6 @@ end
 
 ### Subscription Plans
 
-> - The `opensource` plan was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/346399) in GitLab 14.7.
-
 Self-managed:
 
 - `default`: Everyone.
@@ -171,7 +169,7 @@ The process for adding a new throttle is loosely:
 in the `ApplicationSetting` model.
 1. Update the JSON schema validator for the [rate_limits column](https://gitlab.com/gitlab-org/gitlab/-/blob/63b37287ae028842fcdcf56d311e6bb0c7e09e79/app/validators/json_schemas/application_setting_rate_limits.json).
 1. Extend `Gitlab::RackAttack` and `Gitlab::RackAttack::Request` to configure the new rate limit,
-  and apply it to the desired requests.
+   and apply it to the desired requests.
 1. Add the new settings to the Admin Area form in `app/views/admin/application_settings/_ip_limits.html.haml`.
 1. Document the new settings in [User and IP rate limits](../administration/settings/user_and_ip_rate_limits.md) and [Application settings API](../api/settings.md).
 1. Configure the rate limit for GitLab.com and document it in [GitLab.com-specific rate limits](../user/gitlab_com/index.md#gitlabcom-specific-rate-limits).
@@ -198,7 +196,7 @@ limits framework using a forward looking rate limiting architecture.
 We are working on defining new requirements and designing the next
 architecture, so if you need new functionalities to add new limits, instead of
 building them right now, consider contributing to the
-[Rate Limiting Architecture Working Group](https://about.gitlab.com/company/team/structure/working-groups/rate-limit-architecture/)
+[Rate Limiting Architecture Working Group](https://handbook.gitlab.com/handbook/company/working-groups/rate-limit-architecture/)
 
 Examples of what features we might want to build into the next iteration of
 rate limiting architecture:

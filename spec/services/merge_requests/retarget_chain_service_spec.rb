@@ -153,6 +153,20 @@ RSpec.describe MergeRequests::RetargetChainService, feature_category: :code_revi
             merge_request.target_branch => 4
           )
       end
+
+      context 'when rebase_when_retargetting_mrs is disabled' do
+        before do
+          stub_feature_flags(rebase_when_retargetting_mrs: false)
+        end
+
+        it 'does not rebase any MRs' do
+          expect { subject }.not_to change {
+            many_merge_requests.any? { |mr| mr.reload.rebase_jid.present? }
+          }.from(false)
+
+          subject
+        end
+      end
     end
   end
 end

@@ -3,8 +3,8 @@ import { GlButton } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import { createAlert } from '~/alert';
 import { DEFAULT_PER_PAGE } from '~/api';
+import OrganizationsView from '~/organizations/shared/components/organizations_view.vue';
 import organizationsQuery from '../../shared/graphql/queries/organizations.query.graphql';
-import OrganizationsView from './organizations_view.vue';
 
 export default {
   name: 'OrganizationsIndexApp',
@@ -49,6 +49,9 @@ export default {
     showHeader() {
       return this.loading || this.organizations.nodes?.length;
     },
+    showNewOrganizationButton() {
+      return gon.features?.allowOrganizationCreation;
+    },
     loading() {
       return this.$apollo.queries.organizations.loading;
     },
@@ -79,7 +82,7 @@ export default {
     <div v-if="showHeader" class="gl-display-flex gl-align-items-center">
       <h1 class="gl-my-4 gl-font-size-h-display">{{ $options.i18n.organizations }}</h1>
       <div class="gl-ml-auto">
-        <gl-button :href="newOrganizationUrl" variant="confirm">{{
+        <gl-button v-if="showNewOrganizationButton" :href="newOrganizationUrl" variant="confirm">{{
           $options.i18n.newOrganization
         }}</gl-button>
       </div>

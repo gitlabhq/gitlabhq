@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 If you're migrating from GitHub Actions to GitLab CI/CD, you are able to create CI/CD
 pipelines that replicate and enhance your GitHub Action workflows.
@@ -42,7 +42,7 @@ functionality.
 ### Configuration file
 
 GitHub Actions can be configured with a [workflow YAML file](https://docs.github.com/en/actions/learn-github-actions/understanding-github-actions#understanding-the-workflow-file).
-GitLab CI/CD uses a [`.gitlab-ci.yml` YAML file](../../ci/index.md#the-gitlab-ciyml-file) by default.
+GitLab CI/CD uses a `.gitlab-ci.yml` YAML file by default.
 
 For example, in a GitHub Actions `workflow` file:
 
@@ -91,7 +91,7 @@ from GitHub Actions to GitLab CI/CD.
 generate automated CI/CD jobs that are triggered when certain event take place, for example
 pushing a new commit. A GitHub Action workflow is a YAML file defined in the `.github/workflows`
 directory located in the root of the repository. The GitLab equivalent is the
-[`.gitlab-ci.yml` configuration file](../../ci/index.md#the-gitlab-ciyml-file) which also resides
+`.gitlab-ci.yml` configuration file, which also resides
 in the repository's root directory.
 
 #### Jobs
@@ -626,7 +626,7 @@ for example to add SAST scanning to your pipeline, add the following to your `.g
 
 ```yaml
 include:
-  - template: Security/SAST.gitlab-ci.yml
+  - template: Jobs/SAST.gitlab-ci.yml
 ```
 
 You can customize the behavior of security scanners by using CI/CD variables, for example

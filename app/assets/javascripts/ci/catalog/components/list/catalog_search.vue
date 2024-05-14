@@ -8,11 +8,18 @@ export default {
     GlSearchBoxByClick,
     GlSorting,
   },
+  props: {
+    initialSearchTerm: {
+      default: '',
+      required: false,
+      type: String,
+    },
+  },
   data() {
     return {
       currentSortOption: SORT_OPTION_RELEASED,
       isAscending: false,
-      searchTerm: '',
+      searchTerm: this.initialSearchTerm,
     };
   },
   computed: {
@@ -67,6 +74,7 @@ export default {
       :text="currentSortText"
       :sort-options="$options.sortOptions"
       :sort-by="currentSortOption"
+      data-testid="catalog-sorting-option-button"
       @sortByChange="setSelectedSortOption"
       @sortDirectionChange="onSortDirectionChange"
     />

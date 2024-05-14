@@ -9,7 +9,7 @@ RSpec.describe Resolvers::Environments::LastDeploymentResolver do
   let_it_be(:project) { create(:project, :repository, :private) }
   let_it_be(:environment) { create(:environment, project: project) }
   let_it_be(:deployment) { create(:deployment, :created, environment: environment, project: project) }
-  let_it_be(:developer) { create(:user).tap { |u| project.add_developer(u) } }
+  let_it_be(:developer) { create(:user, developer_of: project) }
 
   let(:current_user) { developer }
 

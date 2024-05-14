@@ -121,6 +121,20 @@ module Factories
             end
           end
 
+          trait :deploy_job do
+            name { 'deploy job' }
+            environment { 'env' }
+
+            options do
+              {
+                script: %w(ls),
+                environment: { name: environment, action: 'start' }
+              }
+            end
+
+            set_expanded_environment_name
+          end
+
           trait :with_deployment do
             after(:build) do |job, evaluator|
               ##

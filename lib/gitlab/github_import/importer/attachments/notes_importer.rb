@@ -23,10 +23,8 @@ module Gitlab
 
           private
 
-          # TODO: exclude :system, :noteable_type from select after removing override Note#note method
-          # https://gitlab.com/gitlab-org/gitlab/-/issues/369923
           def collection
-            project.notes.id_not_in(already_imported_ids).user.select(:id, :note, :system, :noteable_type)
+            project.notes.id_not_in(already_imported_ids).user.select(:id, :note)
           end
         end
       end

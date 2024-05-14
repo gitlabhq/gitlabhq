@@ -1,9 +1,41 @@
+#import "~/graphql_shared/fragments/page_info.fragment.graphql"
 #import "ee_else_ce/work_items/list/queries/work_item_widgets.fragment.graphql"
 
-query getWorkItems($fullPath: ID!) {
+query getWorkItems(
+  $fullPath: ID!
+  $search: String
+  $sort: WorkItemSort
+  $state: IssuableState
+  $authorUsername: String
+  $in: [IssuableSearchableField!]
+  $afterCursor: String
+  $beforeCursor: String
+  $firstPageSize: Int
+  $lastPageSize: Int
+  $types: [IssueType!] = null
+) {
   group(fullPath: $fullPath) {
     id
-    workItems {
+    workItemStateCounts(sort: $sort, state: $state, types: $types) {
+      all
+      closed
+      opened
+    }
+    workItems(
+      search: $search
+      sort: $sort
+      state: $state
+      authorUsername: $authorUsername
+      in: $in
+      after: $afterCursor
+      before: $beforeCursor
+      first: $firstPageSize
+      last: $lastPageSize
+      types: $types
+    ) {
+      pageInfo {
+        ...PageInfo
+      }
       nodes {
         id
         author {
@@ -12,6 +44,7 @@ query getWorkItems($fullPath: ID!) {
           name
           username
           webUrl
+          webPath
         }
         closedAt
         confidential

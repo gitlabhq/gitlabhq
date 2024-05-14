@@ -1,14 +1,6 @@
 # ------------------------------------------
 # Conditions
 # ------------------------------------------
-# Triggered by change pattern
-.app-changes: &app-changes
-  if: $APP_CHANGE_TRIGGER == "true"
-
-# Run all tests when framework changes present or explicitly enabled full suite execution
-.qa-run-all-tests: &qa-run-all-tests
-  if: $QA_FRAMEWORK_CHANGES == "true" || $QA_RUN_ALL_TESTS == "true" || $QA_RUN_ALL_E2E_LABEL == "true"
-
 .default-branch: &default-branch
   if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
 
@@ -68,20 +60,6 @@
 # ------------------------------------------
 # Test
 # ------------------------------------------
-.rules:qa-smoke:
-  rules:
-    # always trigger smoke suite if review pipeline got triggered by specific changes in application code
-    - <<: *app-changes
-      variables:
-        QA_TESTS: ""  # unset QA_TESTS even if specific tests were inferred from stage label
-    - *qa-run-all-tests
-    - if: $QA_SUITES =~ /Test::Instance::Smoke/
-    # keep option to trigger tests manually even if no rules match
-    - when: manual
-      allow_failure: true
-      variables:
-        QA_TESTS: ""
-
 .review:rules:review-performance:
   rules:
     - if: '$DAST_RUN == "true"'  # Skip this job when DAST is run

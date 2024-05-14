@@ -50,7 +50,7 @@ RSpec.describe Ci::JobArtifacts::DestroyBatchService, feature_category: :build_a
     it 'reports metrics for destroyed artifacts' do
       expect_next_instance_of(Gitlab::Ci::Artifacts::Metrics) do |metrics|
         expect(metrics).to receive(:increment_destroyed_artifacts_count).with(2).and_call_original
-        expect(metrics).to receive(:increment_destroyed_artifacts_bytes).with(107464).and_call_original
+        expect(metrics).to receive(:increment_destroyed_artifacts_bytes).with(ci_artifact_fixture_size).and_call_original
       end
 
       execute

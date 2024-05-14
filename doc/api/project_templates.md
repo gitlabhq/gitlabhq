@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 This API is a project-specific version of these endpoints:
 
@@ -17,7 +17,6 @@ This API is a project-specific version of these endpoints:
 - [GitLab CI/CD Configuration templates](templates/gitlab_ci_ymls.md)
 - [Open source license templates](templates/licenses.md)
 - [Issue and merge request templates](../user/project/description_templates.md)
-  ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37890) in GitLab 13.3)
 
 It deprecates these endpoints, which are scheduled for removal in API version 5.
 

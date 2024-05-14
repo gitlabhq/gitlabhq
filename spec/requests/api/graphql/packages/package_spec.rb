@@ -16,7 +16,7 @@ RSpec.describe 'package details', feature_category: :package_registry do
   end
 
   let(:depth) { 3 }
-  let(:excluded) { %w[metadata apiFuzzingCiConfiguration pipeline packageFiles runners] }
+  let(:excluded) { %w[metadata apiFuzzingCiConfiguration pipeline packageFiles runners inboundAllowlistCount groupsAllowlistCount] }
   let(:metadata) { query_graphql_fragment('ComposerMetadata') }
   let(:package_files) { all_graphql_fields_for('PackageFile') }
   let(:package_global_id) { global_id_of(composer_package) }
@@ -312,7 +312,7 @@ RSpec.describe 'package details', feature_category: :package_registry do
         let(:package_global_id) { global_id_of(terraform_package) }
 
         it 'returns web_path correctly' do
-          expect(graphql_data_at(:package, :_links, :web_path)).to eq("/#{project.full_path}/-/infrastructure_registry/#{terraform_package.id}")
+          expect(graphql_data_at(:package, :_links, :web_path)).to eq("/#{project.full_path}/-/terraform_module_registry/#{terraform_package.id}")
         end
       end
     end

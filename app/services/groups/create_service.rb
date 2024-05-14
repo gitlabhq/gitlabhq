@@ -2,43 +2,65 @@
 
 module Groups
   class CreateService < Groups::BaseService
-    include Organization::CurrentOrganization
+    VisibilityError = Class.new(StandardError)
+    PermissionError = Class.new(StandardError)
 
     def initialize(user, params = {})
       @current_user = user
       @params = params.dup
       @chat_team = @params.delete(:create_chat_team)
-      @create_event = @params.delete(:create_event)
     end
 
     def execute
-      remove_unallowed_params
-      set_visibility_level
+      build_group
+      after_build_hook
 
-      @group = Group.new(params.except(*::NamespaceSetting.allowed_namespace_settings_params))
-
-      set_organization unless @params[:organization_id]
-
-      @group.build_namespace_settings
-      handle_namespace_settings
-
-      after_build_hook(@group, params)
-
-      inherit_group_shared_runners_settings
-
-      unless can_use_visibility_level? && can_create_group?
-        return @group
-      end
+      validate_visibility_level!
+      validate_user_permissions!
 
       @group.name ||= @group.path.dup
 
-      if create_chat_team?
-        response = ::Mattermost::CreateTeamService.new(@group, current_user).execute
-        return @group if @group.errors.any?
+      create_chat_team
+      create_group
 
-        @group.build_chat_team(name: response['name'], team_id: response['id'])
+      if @group.persisted?
+        after_successful_creation_hook
+
+        ServiceResponse.success(payload: { group: @group })
+      else
+        ServiceResponse.error(message: 'Group has errors', payload: { group: @group })
       end
 
+    rescue VisibilityError, PermissionError
+      ServiceResponse.error(message: 'Group has errors', payload: { group: @group })
+    end
+
+    private
+
+    def create_chat_team
+      return unless valid_to_create_chat_team?
+
+      response = ::Mattermost::CreateTeamService.new(@group, current_user).execute
+      return ServiceResponse.error(message: 'Group has errors', payload: { group: @group }) if @group.errors.any?
+
+      @group.build_chat_team(name: response['name'], team_id: response['id'])
+    end
+
+    def build_group
+      remove_unallowed_params
+
+      set_visibility_level
+
+      except_keys = ::NamespaceSetting.allowed_namespace_settings_params + [:organization_id]
+      @group = Group.new(params.except(*except_keys))
+
+      set_organization
+
+      @group.build_namespace_settings
+      handle_namespace_settings
+    end
+
+    def create_group
       Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModification.temporary_ignore_tables_in_transaction(
         %w[routes redirect_routes], url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/424281'
       ) do
@@ -46,24 +68,28 @@ module Groups
           if @group.save
             @group.add_owner(current_user)
             Integration.create_from_active_default_integrations(@group, :group_id)
+            add_creator
           end
         end
       end
-
-      after_create_hook
-
-      @group
     end
 
-    private
-
-    attr_reader :create_event
-
-    def after_build_hook(group, params)
-      # overridden in EE
+    def after_build_hook
+      inherit_group_shared_runners_settings
     end
 
-    def after_create_hook
+    def add_creator
+      # The creator needs to be added after the group is saved because a database trigger automatically creates the
+      # namespace_details after a namespace is created. If we attempt to build the namespace details
+      # like we do with the namespace settings, the trigger will fire first and rails will subsequently try
+      # to create the namespace_details which will result in an error due to a primary key conflict.
+      #
+      # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82958/diffs#diff-content-c02244956d423e6837379548e5f9b1fa093bb289
+      @group.namespace_details.creator = current_user
+      @group.namespace_details.save
+    end
+
+    def after_successful_creation_hook
       # overridden in EE
     end
 
@@ -78,35 +104,33 @@ module Groups
       params.delete(:lock_math_rendering_limits_enabled)
     end
 
-    def create_chat_team?
-      Gitlab.config.mattermost.enabled && @chat_team && group.chat_team.nil?
+    def valid_to_create_chat_team?
+      Gitlab.config.mattermost.enabled && @chat_team && @group.chat_team.nil?
     end
 
-    def can_create_group?
+    def validate_user_permissions!
       if @group.subgroup?
         unless can?(current_user, :create_subgroup, @group.parent)
           @group.parent = nil
           @group.errors.add(:parent_id, s_('CreateGroup|You don’t have permission to create a subgroup in this group.'))
 
-          return false
+          raise PermissionError
         end
       else
         unless can?(current_user, :create_group)
           @group.errors.add(:base, s_('CreateGroup|You don’t have permission to create groups.'))
 
-          return false
+          raise PermissionError
         end
       end
 
-      unless organization_setting_valid?
-        # We are unsetting this here to match behavior of invalid parent_id above and protect against possible
-        # committing to the database of a value that isn't allowed.
-        @group.organization = nil
+      return if organization_setting_valid?
 
-        return false
-      end
+      # We are unsetting this here to match behavior of invalid parent_id above and protect against possible
+      # committing to the database of a value that isn't allowed.
+      @group.organization = nil
 
-      true
+      raise PermissionError
     end
 
     def can_create_group_in_organization?
@@ -136,18 +160,21 @@ module Groups
       # 2. We shouldn't need to check if this is allowed if the user didn't try to set it themselves. i.e.
       #    provided in the params
       return true if params[:organization_id].blank?
-      return true if @group.organization.blank?
+      # There is a chance the organization is still blank(if not default organization), but that is the only case
+      # where we should allow this to not actually be a record in the database.
+      # Otherwise it isn't valid to set this to a non-existent record id and we'll check that in the lines after
+      # this code.
+      return true if @group.organization.blank? && Organizations::Organization.default?(params[:organization_id])
 
       can_create_group_in_organization? && matches_parent_organization?
     end
 
-    def can_use_visibility_level?
-      unless Gitlab::VisibilityLevel.allowed_for?(current_user, visibility_level)
-        deny_visibility_level(@group)
-        return false
-      end
+    def validate_visibility_level!
+      return if Gitlab::VisibilityLevel.allowed_for?(current_user, visibility_level)
 
-      true
+      deny_visibility_level(@group)
+
+      raise VisibilityError, 'Visibility level not allowed'
     end
 
     def set_visibility_level
@@ -164,10 +191,13 @@ module Groups
     end
 
     def set_organization
-      if @group.parent_id
+      if params[:organization_id]
+        @group.organization_id = params[:organization_id]
+      elsif @group.parent_id
         @group.organization = @group.parent.organization
-      elsif current_organization
-        @group.organization = current_organization
+      # Rely on middleware setting of the organization, but sometimes it won't be set, so we need to guard it here.
+      elsif Current.organization
+        @group.organization = Current.organization
       end
     end
   end

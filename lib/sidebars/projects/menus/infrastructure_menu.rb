@@ -123,7 +123,7 @@ module Sidebars
 
         def google_oauth2_configured?
           config = Gitlab::Auth::OAuth::Provider.config_for('google_oauth2')
-          config&.present? && config.app_id.present? && config.app_secret.present?
+          config.present? && config.app_id.present? && config.app_secret.present?
         end
       end
     end

@@ -9,8 +9,8 @@ module Mutations
         include NotesHelper
 
         argument :note_id, Types::GlobalIDType[::Note],
-                 required: true,
-                 description: 'Note ID from which the timeline event promoted.'
+          required: true,
+          description: 'Note ID from which the timeline event promoted.'
 
         def resolve(note_id:)
           note = find_object(id: note_id)

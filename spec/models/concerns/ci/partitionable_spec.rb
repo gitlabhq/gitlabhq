@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::Partitionable do
+RSpec.describe Ci::Partitionable, feature_category: :continuous_integration do
   let(:ci_model) { Class.new(Ci::ApplicationRecord) }
 
   around do |ex|
@@ -91,12 +91,34 @@ RSpec.describe Ci::Partitionable do
           end
 
           ci_model.table_name = :_test_table_name
+          stub_const('Ci::Pipeline::NEXT_PARTITION_VALUE', 101)
         end
 
         subject(:value) { partitioning_strategy.next_partition_if.call(active_partition) }
 
         context 'without any existing partitions' do
           it { is_expected.to eq(true) }
+
+          context 'with ci_partitioning_first_records disabled' do
+            before do
+              stub_feature_flags(ci_partitioning_first_records: false)
+            end
+
+            it 'does not create the first record' do
+              expect { subject }.not_to change { Ci::Partition.count }
+            end
+          end
+
+          context 'with ci_partitioning_first_records enabled' do
+            before do
+              stub_feature_flags(ci_partitioning_first_records: true)
+              Ci::Partitionable::Organizer.clear_memoization(:insert_first_partitions)
+            end
+
+            it 'creates the first record' do
+              expect { subject }.to change { Ci::Partition.count }
+            end
+          end
         end
 
         context 'with initial partition attached' do
@@ -162,6 +184,26 @@ RSpec.describe Ci::Partitionable do
       it 'adds a partition_id filter' do
         expect(scope_values).to include('partition_id' => 101)
       end
+    end
+  end
+
+  describe '.registered_models' do
+    subject(:ci_partitioned_models) { described_class.registered_models }
+
+    it 'returns a list of CI models being partitioned' do
+      expected_list = %w[
+        Ci::BuildMetadata
+        Ci::BuildExecutionConfig
+        Ci::BuildName
+        Ci::JobAnnotation
+        Ci::JobArtifact
+        Ci::PipelineVariable
+        Ci::RunnerManagerBuild
+        Ci::Stage
+        CommitStatus
+      ]
+
+      expect(ci_partitioned_models.map(&:name)).to eq(expected_list)
     end
   end
 end

@@ -10,7 +10,7 @@ module QA
 
         view 'app/views/shared/projects/_project.html.haml' do
           element 'project-content'
-          element 'user-role-content'
+          element 'user-access-role'
         end
 
         view 'app/views/dashboard/_projects_head.html.haml' do
@@ -62,7 +62,7 @@ module QA
 
         def has_project_with_access_role?(project_name, access_role)
           within_element('project-content', text: project_name) do
-            has_element?('user-role-content', text: access_role)
+            has_element?('user-access-role', text: access_role)
           end
         end
       end

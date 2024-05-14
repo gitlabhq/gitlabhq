@@ -108,7 +108,7 @@ export default {
             <template #environment>{{ environmentName }}</template>
           </gl-sprintf>
         </p>
-        <ul class="gl-list-style-none gl-p-0">
+        <ul class="gl-list-none gl-p-0">
           <li>
             <gl-sprintf :message="$options.translations.stableWeight">
               <template #bold="{ content }">

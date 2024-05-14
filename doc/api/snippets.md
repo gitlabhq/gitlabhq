@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Snippets API operates on [snippets](../user/snippets.md). Related APIs exist for
 [project snippets](project_snippets.md) and
@@ -60,6 +60,8 @@ Example response:
         "file_name": "mclaughlin.rb",
         "description": null,
         "visibility": "internal",
+        "imported": false,
+        "imported_from": "none",
         "author": {
             "id": 22,
             "name": "User 0",
@@ -80,6 +82,8 @@ Example response:
         "file_name": "ondrickaemard.rb",
         "description": null,
         "visibility": "internal",
+        "imported": false,
+        "imported_from": "none",
         "author": {
             "id": 22,
             "name": "User 0",
@@ -126,6 +130,8 @@ Example response:
   "file_name": "add.rb",
   "description": "Ruby test snippet",
   "visibility": "private",
+  "imported": false,
+  "imported_from": "none",
   "author": {
     "id": 1,
     "username": "john_smith",
@@ -254,6 +260,8 @@ Example response:
   "title": "This is a snippet",
   "description": "Hello World snippet",
   "visibility": "internal",
+  "imported": false,
+  "imported_from": "none",
   "author": {
     "id": 1,
     "username": "john_smith",
@@ -339,6 +347,8 @@ Example response:
   "title": "test",
   "description": "description of snippet",
   "visibility": "internal",
+  "imported": false,
+  "imported_from": "none",
   "author": {
     "id": 1,
     "username": "john_smith",
@@ -496,6 +506,8 @@ Example response:
     "title": "Internal Project Snippet",
     "description": null,
     "visibility": "internal",
+    "imported": false,
+    "imported_from": "none",
     "author": {
       "id": 17,
       "username": "tim_kreiger",
@@ -518,6 +530,8 @@ Example response:
     "title": "Private Personal Snippet",
     "description": null,
     "visibility": "private",
+    "imported": false,
+    "imported_from": "none",
     "author": {
       "id": 1,
       "username": "root",
@@ -540,6 +554,8 @@ Example response:
     "title": "Public Personal Snippet",
     "description": null,
     "visibility": "public",
+    "imported": false,
+    "imported_from": "none",
     "author": {
       "id": 17,
       "username": "tim_kreiger",

@@ -16,6 +16,7 @@ class DraftNoteEntity < Grape::Entity
   expose :discussion_id
   expose :resolve_discussion
   expose :noteable_type
+  expose :internal
 
   expose :current_user do
     expose :can_edit do |note|

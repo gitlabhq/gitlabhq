@@ -15,7 +15,7 @@ module ClustersHelper
         gcp: { path: image_path('illustrations/logos/google_gke.svg'), text: s_('ClusterIntegration|Google GKE') }
       },
       clusters_empty_state_image: image_path('illustrations/empty-state/empty-state-clusters.svg'),
-      empty_state_image: image_path('illustrations/empty-state/empty-state-agents.svg'),
+      empty_state_image: image_path('illustrations/empty-state/empty-environment-md.svg'),
       empty_state_help_text: clusterable.empty_state_help_text,
       add_cluster_path: clusterable.connect_path,
       new_cluster_docs_path: clusterable.new_cluster_docs_path,
@@ -26,7 +26,6 @@ module ClustersHelper
       default_branch_name: default_branch_name(clusterable),
       project_path: clusterable_project_path(clusterable),
       kas_address: Gitlab::Kas.external_url,
-      gitlab_version: Gitlab.version_info,
       kas_install_version: Gitlab::Kas.install_version_info,
       kas_check_version: Gitlab::Kas.display_version_info
     }

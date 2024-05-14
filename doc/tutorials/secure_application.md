@@ -18,4 +18,4 @@ GitLab can check your application for security vulnerabilities and that it meets
 | [Set up a scan execution policy](scan_execution_policy/index.md) | Learn how to create a scan execution policy to enforce security scanning of your project. | **{star}** |
 | [Scan a Docker container for vulnerabilities](container_scanning/index.md) | Learn how to use container scanning templates to add container scanning to your projects. | **{star}** |
 | [Get started with GitLab application security](../user/application_security/get-started-security.md) | Follow recommended steps to set up security tools. | |
-| [GitLab Security Essentials](https://levelup.gitlab.com/courses/security-essentials) | Learn about the essential security capabilities of GitLab in this self-paced course. | |
+| [GitLab Security Essentials](https://university.gitlab.com/courses/security-essentials) | Learn about the essential security capabilities of GitLab in this self-paced course. | |

@@ -5,6 +5,8 @@ module QA
     describe 'Testing wiki content creation inside a project' do
       let(:new_wiki_title) { "just_another_wiki_page" }
       let(:new_wiki_content) { "this content is changed or added" }
+      let(:new_wiki_page_with_spaces_in_the_path) { "a wiki page with spaces in the path" }
+      let(:new_wiki_page_with_spaces_in_the_path_content) { "content for the wiki page with spaces in the path" }
       let(:commit_message) { "this is a new addition to the wiki" }
 
       let(:project) { create(:project) }
@@ -86,6 +88,22 @@ module QA
         Page::Project::Wiki::Show.perform do |wiki|
           expect(wiki).to have_title new_wiki_title
           expect(wiki).to have_content new_wiki_content
+        end
+      end
+
+      it 'by adding a wiki page with spaces in the path using git push',
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/442387' do
+        Resource::Repository::WikiPush.fabricate! do |push|
+          push.file_name = "#{new_wiki_page_with_spaces_in_the_path}.md"
+          push.file_content = new_wiki_page_with_spaces_in_the_path_content
+          push.commit_message = commit_message
+          push.wiki = wiki
+          push.new_branch = false
+        end.visit!
+
+        Page::Project::Wiki::Show.perform do |wiki|
+          expect(wiki).to have_title new_wiki_page_with_spaces_in_the_path
+          expect(wiki).to have_content new_wiki_page_with_spaces_in_the_path_content
         end
       end
     end

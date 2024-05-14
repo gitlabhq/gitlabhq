@@ -4,16 +4,16 @@ require 'spec_helper'
 
 RSpec.describe API::Issues, feature_category: :team_planning do
   let_it_be(:user) { create(:user) }
-  let_it_be(:project, reload: true) { create(:project, :public, :repository, creator_id: user.id, namespace: user.namespace) }
+  let_it_be(:project, reload: true) { create(:project, :public, :repository, creator_id: user.id, namespace: user.namespace, reporters: user) }
   let_it_be(:private_mrs_project) do
-    create(:project, :public, :repository, creator_id: user.id, namespace: user.namespace, merge_requests_access_level: ProjectFeature::PRIVATE)
+    create(:project, :public, :repository, creator_id: user.id, namespace: user.namespace, merge_requests_access_level: ProjectFeature::PRIVATE, reporters: user)
   end
 
-  let_it_be(:group) { create(:group, :public) }
+  let_it_be(:group) { create(:group, :public, reporters: user) }
 
   let_it_be(:user2)       { create(:user) }
   let_it_be(:non_member)  { create(:user) }
-  let_it_be(:guest)       { create(:user) }
+  let_it_be(:guest)       { create(:user, guest_of: [group, project, private_mrs_project]) }
   let_it_be(:author)      { create(:author) }
   let_it_be(:assignee)    { create(:assignee) }
   let_it_be(:admin)       { create(:user, :admin) }
@@ -68,30 +68,25 @@ RSpec.describe API::Issues, feature_category: :team_planning do
   let_it_be(:note) { create(:note_on_issue, author: user, project: project, noteable: issue) }
 
   let_it_be(:merge_request1) do
-    create(:merge_request,
-           :simple,
-           author: user,
-           source_project: project,
-           target_project: project,
-           description: "closes #{issue.to_reference}")
+    create(
+      :merge_request,
+      :simple,
+      author: user,
+      source_project: project,
+      target_project: project,
+      description: "closes #{issue.to_reference}"
+    )
   end
 
   let_it_be(:merge_request2) do
-    create(:merge_request,
-           :simple,
-           author: user,
-           source_project: private_mrs_project,
-           target_project: private_mrs_project,
-           description: "closes #{issue.to_reference(private_mrs_project)}")
-  end
-
-  before_all do
-    group.add_reporter(user)
-    group.add_guest(guest)
-    project.add_reporter(user)
-    project.add_guest(guest)
-    private_mrs_project.add_reporter(user)
-    private_mrs_project.add_guest(guest)
+    create(
+      :merge_request,
+      :simple,
+      author: user,
+      source_project: private_mrs_project,
+      target_project: private_mrs_project,
+      description: "closes #{issue.to_reference(private_mrs_project)}"
+    )
   end
 
   before do
@@ -721,11 +716,14 @@ RSpec.describe API::Issues, feature_category: :team_planning do
     end
 
     it 'returns 404 if issue id not found' do
-      get api("/projects/#{project.id}/issues/54321", user)
+      get api("/projects/#{project.id}/issues/#{non_existing_record_id}", user)
       expect(response).to have_gitlab_http_status(:not_found)
     end
 
     it 'returns 404 if the issue ID is used' do
+      # Make sure other issues don't exist with a matching iid
+      Issue.where.not(id: issue.id).delete_all
+
       get api("/projects/#{project.id}/issues/#{issue.id}", user)
 
       expect(response).to have_gitlab_http_status(:not_found)
@@ -796,6 +794,15 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       get api("/projects/#{project.id}/issues/#{issue.iid}/closed_by", user)
 
       expect_paginated_array_response(merge_request1.id)
+    end
+
+    it 'ignores related merge requests that will not close the issue' do
+      # Not using update_all here to make sure the record exists before updating it
+      MergeRequestsClosingIssues.find_by(merge_request: merge_request1).update!(closes_work_item: false)
+
+      get api("/projects/#{project.id}/issues/#{issue.iid}/closed_by", user)
+
+      expect_paginated_array_response([])
     end
 
     context 'when no merge requests will close issue' do

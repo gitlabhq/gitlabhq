@@ -30,7 +30,9 @@ export const isInIncidentPage = () => checkPageAndAction('incidents', 'show');
 export const isInIssuePage = () => checkPageAndAction('issues', 'show');
 export const isInDesignPage = () => checkPageAndAction('issues', 'designs');
 export const isInMRPage = () =>
-  checkPageAndAction('merge_requests', 'show') || checkPageAndAction('merge_requests', 'diffs');
+  checkPageAndAction('merge_requests', 'show') ||
+  checkPageAndAction('merge_requests', 'diffs') ||
+  checkPageAndAction('merge_requests', 'rapid_diffs');
 export const isInEpicPage = () => checkPageAndAction('epics', 'show');
 
 export const getDashPath = (path = window.location.pathname) => path.split('/-/')[1] || null;
@@ -87,9 +89,12 @@ export const handleLocationHash = () => {
   const performanceBar = document.querySelector('#js-peek');
   const topPadding = 8;
   const diffFileHeader = document.querySelector('.js-file-title');
-  const fixedIssuableTitle = document.querySelector('.issue-sticky-header');
+  const getFixedIssuableTitle = () => document.querySelector('.issue-sticky-header');
+  const getMRStickyHeader = () => document.querySelector('.merge-request-sticky-header');
+  const isIssuePage = isInIssuePage();
 
   let adjustment = 0;
+  let fixedIssuableTitleOffset = 0;
 
   adjustment -= getElementOffsetHeight(headerLoggedOut);
   adjustment -= getElementOffsetHeight(fixedTabs);
@@ -98,12 +103,15 @@ export const handleLocationHash = () => {
   adjustment -= getElementOffsetHeight(performanceBar);
   adjustment -= getElementOffsetHeight(diffFileHeader);
 
-  if (isInIssuePage()) {
-    adjustment -= getElementOffsetHeight(fixedIssuableTitle);
+  if (isIssuePage) {
+    adjustment -= topPadding;
+    fixedIssuableTitleOffset = getElementOffsetHeight(getFixedIssuableTitle());
+    adjustment -= fixedIssuableTitleOffset;
   }
 
   if (isInMRPage()) {
     adjustment -= topPadding;
+    adjustment -= getElementOffsetHeight(getMRStickyHeader()) - getElementOffsetHeight(fixedTabs);
   }
 
   if (target?.scrollIntoView) {
@@ -113,6 +121,15 @@ export const handleLocationHash = () => {
   setTimeout(() => {
     window.scrollBy(0, adjustment);
   });
+
+  if (isIssuePage) {
+    if (fixedIssuableTitleOffset === 0) {
+      setTimeout(() => {
+        fixedIssuableTitleOffset = -1 * getElementOffsetHeight(getFixedIssuableTitle());
+        window.scrollBy(0, fixedIssuableTitleOffset);
+      }, 200);
+    }
+  }
 };
 
 // Check if element scrolled into viewport from above or below
@@ -277,10 +294,17 @@ export const getSelectedFragment = (restrictToNode) => {
   return documentFragment;
 };
 
-function execInsertText(text) {
-  if (text === '') return document.execCommand('delete');
+function execInsertText(text, hasSelection) {
+  if (text !== '') {
+    return document.execCommand('insertText', false, text);
+  }
 
-  return document.execCommand('insertText', false, text);
+  if (hasSelection) {
+    return document.execCommand('delete');
+  }
+
+  // Nothing to do :)
+  return true;
 }
 
 /**
@@ -295,6 +319,7 @@ export const insertText = (target, text) => {
   const textBefore = value.substring(0, selectionStart);
   const textAfter = value.substring(selectionEnd, value.length);
   const insertedText = text instanceof Function ? text(textBefore, textAfter) : text;
+  const hasSelection = selectionEnd !== selectionStart;
 
   // The `execCommand` is officially deprecated.  However, for `insertText`,
   // there is currently no alternative. We need to use it in order to trigger
@@ -310,7 +335,7 @@ export const insertText = (target, text) => {
   //     87 was released in Mar of 2021
   //   89 and above: works well
   //     89 was released in May of 2021
-  if (!execInsertText(insertedText)) {
+  if (!execInsertText(insertedText, hasSelection)) {
     const newText = textBefore + insertedText + textAfter;
 
     // eslint-disable-next-line no-param-reassign

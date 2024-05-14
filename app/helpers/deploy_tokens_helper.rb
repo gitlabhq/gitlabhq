@@ -8,13 +8,17 @@ module DeployTokensHelper
   end
 
   def container_registry_enabled?(group_or_project)
-    Gitlab.config.registry.enabled &&
-      can?(current_user, :read_container_image, group_or_project)
+    return false unless ::Gitlab.config.registry.enabled
+
+    can?(current_user, :read_container_image, group_or_project) ||
+      can?(current_user, :manage_deploy_tokens, group_or_project)
   end
 
   def packages_registry_enabled?(group_or_project)
-    Gitlab.config.packages.enabled &&
-      can?(current_user, :read_package, group_or_project&.packages_policy_subject)
+    return false unless ::Gitlab.config.packages.enabled
+
+    can?(current_user, :read_package, group_or_project&.packages_policy_subject) ||
+      can?(current_user, :manage_deploy_tokens, group_or_project)
   end
 
   def deploy_token_revoke_button_data(token:, group_or_project:)

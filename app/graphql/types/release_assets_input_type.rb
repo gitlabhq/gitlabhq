@@ -6,7 +6,7 @@ module Types
     description 'Fields that are available when modifying release assets'
 
     argument :links, [Types::ReleaseAssetLinkInputType],
-             required: false,
-             description: 'List of asset links to associate to the release.'
+      required: false,
+      description: 'List of asset links to associate to the release.'
   end
 end

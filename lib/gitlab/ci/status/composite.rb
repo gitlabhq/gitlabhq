@@ -71,6 +71,8 @@ module Gitlab
               'preparing'
             elsif any_of?(:created)
               'running'
+            elsif any_of?(:canceling)
+              'canceling'
             else
               'failed'
             end

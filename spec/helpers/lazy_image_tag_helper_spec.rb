@@ -30,7 +30,7 @@ RSpec.describe LazyImageTagHelper do
     end
 
     context 'when Dark Mode is enabled' do
-      let(:current_user) { create(:user, theme_id: 11) }
+      let(:current_user) { create(:user, color_mode_id: 2) }
 
       context 'when auto dark enabled' do
         let(:result) { image_tag(image_src, auto_dark: true) }
@@ -64,7 +64,7 @@ RSpec.describe LazyImageTagHelper do
     end
 
     context 'when Dark Mode is disabled' do
-      let(:current_user) { create(:user, theme_id: 1) }
+      let(:current_user) { create(:user, color_mode_id: 1) }
 
       context 'when auto dark enabled' do
         let(:result) { image_tag(image_src, auto_dark: true) }

@@ -232,7 +232,7 @@ export default {
           </gl-button>
           <gl-link v-if="url" :href="url" target="_blank" data-testid="metric-image-label-span">
             {{ urlText == null || urlText == '' ? filename : urlText }}
-            <gl-icon name="external-link" class="gl-vertical-align-middle" />
+            <gl-icon name="external-link" class="gl-align-middle" />
           </gl-link>
           <span v-else data-testid="metric-image-label-span">{{
             urlText == null || urlText == '' ? filename : urlText

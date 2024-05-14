@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Sidebars::Projects::Menus::AnalyticsMenu, feature_category: :navigation do
   let_it_be_with_refind(:project) { create(:project, :repository) }
   let_it_be(:guest) do
-    create(:user).tap { |u| project.add_guest(u) }
+    create(:user, guest_of: project)
   end
 
   let(:owner) { project.first_owner }

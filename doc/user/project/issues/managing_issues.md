@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 After you create an issue, you can start working with it.
 
@@ -46,10 +46,6 @@ Any nested task list items are moved up a nested level.
 
 ## Bulk edit issues from a project
 
-> - Assigning epic [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/210470) in GitLab 13.2.
-> - Editing health status [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218395) in GitLab 13.2.
-> - Editing iteration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/196806) in GitLab 13.9.
-
 You can edit multiple issues at a time when you're in a project.
 
 Prerequisites:
@@ -63,7 +59,7 @@ To edit multiple issues at the same time:
 1. Select **Bulk edit**. A sidebar on the right of your screen appears.
 1. Select the checkboxes next to each issue you want to edit.
 1. From the sidebar, edit the available fields.
-1. Select **Update all**.
+1. Select **Update selected**.
 
 When bulk editing issues in a project, you can edit the following attributes:
 
@@ -81,12 +77,7 @@ When bulk editing issues in a project, you can edit the following attributes:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7249) in GitLab 12.1.
-> - Assigning epic [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/210470) in GitLab 13.2.
-> - Editing health status [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218395) in GitLab 13.2.
-> - Editing iteration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/196806) in GitLab 13.9.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 You can edit multiple issues across multiple projects when you're in a group.
 
@@ -101,7 +92,7 @@ To edit multiple issues at the same time:
 1. Select **Bulk edit**. A sidebar on the right of your screen appears.
 1. Select the checkboxes next to each issue you want to edit.
 1. From the sidebar, edit the available fields.
-1. Select **Update all**.
+1. Select **Update selected**.
 
 When bulk editing issues in a group, you can edit the following attributes:
 
@@ -131,11 +122,26 @@ To move an issue:
 1. Search for a project to move the issue to.
 1. Select **Move**.
 
+### Moving tasks when the parent issue is moved
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371252) in GitLab 16.9 [with a flag](../../../administration/feature_flags.md) named `move_issue_children`. Disabled by default.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/371252) in GitLab 16.11.
+
+FLAG:
+On self-managed GitLab, by default this feature is available. To hide the feature, an administrator can
+[disable the feature flag](../../../administration/feature_flags.md) named `move_issue_children`.
+On GitLab.com, this feature is available.
+
+When this feature is enabled, when you move an issue to another project, all its child tasks are also
+moved to the target project and remain associated as child tasks on the moved issue.
+Each task is moved the same way as the parent, that is, it's closed in the original project and
+copied to the target project.
+
 ### Bulk move issues
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 #### From the issues list
 
@@ -303,11 +309,10 @@ The default issue closing pattern regex:
 
 #### Disable automatic issue closing
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/19754) in GitLab 12.7.
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/240922) in GitLab 15.4: The referenced issue's project setting is checked instead of the project of the commit or merge request.
 
 You can disable the automatic issue closing feature on a per-project basis
-in the [project's settings](../settings/index.md).
+in the [project's settings](#disable-automatic-issue-closing).
 
 Prerequisites:
 
@@ -332,13 +337,13 @@ Merge requests and commits in this project can still close another project's iss
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 Prerequisites:
 
 - You must have [administrator access](../../../administration/index.md) to your GitLab instance.
 
-Learn how to change the default [issue closing pattern](../../../administration/issue_closing_pattern.md).
+Learn how to change the default [issue closing pattern](../../../administration/issue_closing_pattern.md)
 of your installation.
 
 ## Change the issue type
@@ -360,8 +365,6 @@ To change issue type:
 1. Select **Save changes**.
 
 ## Delete an issue
-
-> - Deleting from the vertical ellipsis menu [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299933) in GitLab 14.6.
 
 Prerequisites:
 
@@ -385,7 +388,7 @@ Alternatively:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 You can promote an issue to an [epic](../../group/epics/index.md) in the immediate parent group.
 
@@ -427,7 +430,6 @@ Alternatively, you can use the `/promote` [quick action](../quick_actions.md#iss
 
 ## Promote an issue to an incident
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/296787) in GitLab 14.5.
 > - Quick actions to set issue type as incident upon creation [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/376760) in GitLab 15.8.
 
 You can use the `/promote_to_incident` [quick action](../quick_actions.md) to promote the issue to an [incident](../../../operations/incident_management/incidents.md).
@@ -436,7 +438,7 @@ You can use the `/promote_to_incident` [quick action](../quick_actions.md) to pr
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 To add an issue to an [iteration](../../group/iterations/index.md):
 
@@ -462,8 +464,6 @@ Or:
 
 ## Filter the list of issues
 
-> - Filtering by iterations was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118742) in GitLab 13.6.
-> - Filtering by iterations was moved from GitLab Ultimate to GitLab Premium in 13.9.
 > - Filtering by type was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/322755) in GitLab 13.10 [with a flag](../../../administration/feature_flags.md) named `vue_issues_list`. Disabled by default.
 > - Filtering by type was [enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/322755) in GitLab 14.10.
 > - Filtering by type is generally available in GitLab 15.1. [Feature flag `vue_issues_list`](https://gitlab.com/gitlab-org/gitlab/-/issues/359966) removed.
@@ -473,7 +473,7 @@ To filter the list of issues:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Plan > Issues**.
-1. Above the list of issues, select **Search or filter results...**.
+1. Above the list of issues, select **Search or filter results**.
 1. In the dropdown list that appears, select the attribute you want to filter by.
 1. Select or type the operator to use for filtering the attribute. The following operators are
    available:
@@ -484,6 +484,27 @@ To filter the list of issues:
 1. Repeat this process to filter by multiple attributes. Multiple attributes are joined by a logical
    `AND`.
 
+### Filter by title or description
+
+To filter the list issues for text in a title or description:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Plan > Issues**.
+1. Above the list of issues, in the **Search or filter results** text box, enter the searched phrase.
+1. In the dropdown list that appears, select **Search for this text**.
+1. Select the text box again, and in the dropdown list that appears, select **Search Within**, and then either **Titles** or **Descriptions**.
+1. Press <kbd>Enter</kbd> or select the search icon (**{search}**).
+
+Filtering issues uses [PostgreSQL full text search](https://www.postgresql.org/docs/current/textsearch-intro.html)
+to match meaningful and significant words to answer a query.
+
+For example, if you search for `I am securing information for M&A`,
+GitLab can return results with `securing`, `secured`,
+or `information` in the title or description.
+However, GitLab won't match the sentence or the words `I`, `am` or `M&A` exactly,
+as they aren't deemed lexically meaningful or significant.
+It's a limitation of PostgreSQL full text search.
+
 ### Filter with the OR operator
 
 > - OR filtering for author and assignee was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23532) in GitLab 15.6 [with a flag](../../../administration/feature_flags.md) named `or_issuable_queries`. Disabled by default.
@@ -493,7 +514,7 @@ To filter the list of issues:
 FLAG:
 On self-managed GitLab, by default this feature is available.
 To hide the feature, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `or_issuable_queries`.
-On GitLab.com, this feature is available.
+On GitLab.com and GitLab Dedicated, this feature is available.
 
 When this feature is enabled, you can use the OR operator (**is one of: `||`**)
 when you [filter the list of issues](#filter-the-list-of-issues) by:
@@ -506,8 +527,6 @@ when you [filter the list of issues](#filter-the-list-of-issues) by:
 `Assignee is one of Zhang Wei`, GitLab shows issues where either `Sidney`, `Zhang`, or both of them are assignees.
 
 ### Filter issues by ID
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/39908) in GitLab 12.1.
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Plan > Issues**.
@@ -531,8 +550,6 @@ You can now paste the reference into another description or comment.
 Read more about issue references in [GitLab-Flavored Markdown](../../markdown.md#gitlab-specific-references).
 
 ## Copy issue email address
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18816) in GitLab 13.8.
 
 You can create a comment in an issue by sending an email.
 Sending an email to this address creates a comment that contains the email body.
@@ -584,12 +601,8 @@ Up to five similar issues, sorted by most recently updated, are displayed below 
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36427) in GitLab 12.10.
-> - Health status of closed issues [can't be edited](https://gitlab.com/gitlab-org/gitlab/-/issues/220867) in GitLab 13.4 and later.
-> - Issue health status visible in issue lists [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45141) in GitLab 13.6.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/213567) in GitLab 13.7.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218618) in GitLab 15.4: health status is visible on issue cards in issue boards.
 
 To better track the risk in meeting your plans, you can assign a health status to each issue.
@@ -629,9 +642,7 @@ You can also set and clear health statuses using the `/health_status` and `/clea
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, self-managed
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/30906) in GitLab 13.1.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 If a status page application is associated with the project, you can use the `/publish`
 [quick action](../quick_actions.md) to publish the issue.

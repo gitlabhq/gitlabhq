@@ -17,17 +17,17 @@ export default {
     {
       key: 'freezeStart',
       label: s__('DeployFreeze|Freeze start'),
-      tdClass: 'gl-vertical-align-middle!',
+      tdClass: '!gl-align-middle',
     },
     {
       key: 'freezeEnd',
       label: s__('DeployFreeze|Freeze end'),
-      tdClass: 'gl-vertical-align-middle!',
+      tdClass: '!gl-align-middle',
     },
     {
       key: 'cronTimezone',
       label: s__('DeployFreeze|Time zone'),
-      tdClass: 'gl-vertical-align-middle!',
+      tdClass: '!gl-align-middle',
     },
     {
       key: 'actions',

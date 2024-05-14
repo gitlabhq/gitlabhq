@@ -13,7 +13,7 @@ RSpec.describe Resolvers::Kas::AgentConnectionsResolver do
     let_it_be(:agent1) { create(:cluster_agent, project: project) }
     let_it_be(:agent2) { create(:cluster_agent, project: project) }
 
-    let(:user) { create(:user, maintainer_projects: [project]) }
+    let(:user) { create(:user, maintainer_of: project) }
     let(:ctx) { Hash(current_user: user) }
 
     let(:connection1) { double(agent_id: agent1.id) }

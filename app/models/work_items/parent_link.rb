@@ -50,7 +50,7 @@ module WorkItems
     private
 
     def validate_max_children
-      return unless work_item_parent
+      return unless work_item_parent && work_item_parent_id_changed?
 
       max = persisted? ? MAX_CHILDREN : MAX_CHILDREN - 1
       if work_item_parent.child_links.count > max

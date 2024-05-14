@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe API::ProjectMilestones, feature_category: :team_planning do
   let_it_be(:user) { create(:user) }
-  let_it_be_with_reload(:project) { create(:project, namespace: user.namespace) }
+  let_it_be_with_reload(:project) { create(:project, namespace: user.namespace, reporters: user) }
   let_it_be(:closed_milestone) { create(:closed_milestone, project: project, title: 'version1', description: 'closed milestone') }
   let_it_be(:route) { "/projects/#{project.id}/milestones" }
   let_it_be(:milestone) do
@@ -12,10 +12,6 @@ RSpec.describe API::ProjectMilestones, feature_category: :team_planning do
   end
 
   let(:params) { {} }
-
-  before_all do
-    project.add_reporter(user)
-  end
 
   it_behaves_like 'group and project milestones', "/projects/:id/milestones"
 

@@ -1,7 +1,7 @@
 import resolvedEnvironmentDetails from 'test_fixtures/graphql/environments/graphql/queries/environment_details.query.graphql.json';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import Commit from '~/vue_shared/components/commit.vue';
-import DeploymentStatusLink from '~/environments/environment_details/components/deployment_status_link.vue';
+import DeploymentStatusLink from '~/environments/components/deployment_status_link.vue';
 import DeploymentJob from '~/environments/environment_details/components/deployment_job.vue';
 import DeploymentTriggerer from '~/environments/environment_details/components/deployment_triggerer.vue';
 import DeploymentActions from '~/environments/environment_details/components/deployment_actions.vue';

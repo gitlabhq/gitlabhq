@@ -1,8 +1,13 @@
 <script>
 import { GlSprintf, GlLink } from '@gitlab/ui';
-import { s__, __ } from '~/locale';
+import { s__, __, sprintf } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
+import axios from '~/lib/utils/axios_utils';
 import NewGroupForm from '~/groups/components/new_group_form.vue';
+import { FORM_FIELD_NAME, FORM_FIELD_PATH, FORM_FIELD_VISIBILITY_LEVEL } from '~/groups/constants';
+import { VISIBILITY_LEVELS_INTEGER_TO_STRING } from '~/visibility_level/constants';
+import { createAlert } from '~/alert';
+import { visitUrlWithAlerts } from '~/lib/utils/url_utility';
 
 export default {
   name: 'OrganizationGroupsNewApp',
@@ -14,6 +19,10 @@ export default {
     description2: s__(
       'GroupsNew|Groups can also be nested by creating %{linkStart}subgroups%{linkEnd}.',
     ),
+    errorMessage: s__(
+      'Organization|An error occurred creating a group in this organization. Please try again.',
+    ),
+    successMessage: __('Group %{group_name} was successfully created.'),
   },
   groupsHelpPagePath: helpPagePath('user/group/index'),
   subgroupsHelpPagePath: helpPagePath('user/group/subgroups/index'),
@@ -23,15 +32,60 @@ export default {
     NewGroupForm,
   },
   inject: [
-    'organizationId',
     'basePath',
+    'groupsAndProjectsOrganizationPath',
     'groupsOrganizationPath',
     'mattermostEnabled',
     'availableVisibilityLevels',
     'restrictedVisibilityLevels',
+    'defaultVisibilityLevel',
     'pathMaxlength',
     'pathPattern',
   ],
+  data() {
+    return {
+      loading: false,
+    };
+  },
+  computed: {
+    initialFormValues() {
+      return {
+        [FORM_FIELD_NAME]: '',
+        [FORM_FIELD_PATH]: '',
+        [FORM_FIELD_VISIBILITY_LEVEL]: this.defaultVisibilityLevel,
+      };
+    },
+  },
+  methods: {
+    async onSubmit({
+      [FORM_FIELD_NAME]: name,
+      [FORM_FIELD_PATH]: path,
+      [FORM_FIELD_VISIBILITY_LEVEL]: visibilityLevelInteger,
+    }) {
+      try {
+        this.loading = true;
+        const { data: group } = await axios.post(this.groupsOrganizationPath, {
+          group: {
+            name,
+            path,
+            visibility_level: VISIBILITY_LEVELS_INTEGER_TO_STRING[visibilityLevelInteger],
+          },
+        });
+
+        visitUrlWithAlerts(group.web_url, [
+          {
+            id: 'organization-group-successfully-created',
+            message: sprintf(this.$options.i18n.successMessage, { group_name: group.full_name }),
+            variant: 'info',
+          },
+        ]);
+      } catch (error) {
+        this.loading = false;
+        // We cannot show specific error message until https://gitlab.com/gitlab-org/gitlab/-/issues/443588 is completed
+        createAlert({ message: this.$options.i18n.errorMessage, error, captureError: true });
+      }
+    },
+  },
 };
 </script>
 
@@ -53,10 +107,15 @@ export default {
       </gl-sprintf>
     </p>
     <new-group-form
+      :loading="loading"
       :base-path="basePath"
       :path-maxlength="pathMaxlength"
       :path-pattern="pathPattern"
-      :cancel-path="groupsOrganizationPath"
+      :cancel-path="groupsAndProjectsOrganizationPath"
+      :available-visibility-levels="availableVisibilityLevels"
+      :restricted-visibility-levels="restrictedVisibilityLevels"
+      :initial-form-values="initialFormValues"
+      @submit="onSubmit"
     />
   </div>
 </template>

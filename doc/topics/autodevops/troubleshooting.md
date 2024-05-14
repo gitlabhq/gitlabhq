@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 The information in this documentation page describes common errors when using
 Auto DevOps, and any available workarounds.
@@ -21,7 +21,7 @@ You can resolve some problems with Auto DevOps deployment by changing advanced A
 
 ## Unable to select a buildpack
 
-Auto Build and Auto Test may fail to detect your language or framework with the
+Auto Test may fail to detect your language or framework with the
 following error:
 
 ```plaintext
@@ -38,6 +38,30 @@ The following are possible reasons:
   even though it's possible to write a Ruby app without a `Gemfile`.
 - No buildpack may exist for your application. Try specifying a
   [custom buildpack](customize.md#custom-buildpacks).
+
+## Builder sunset error
+
+Because of this [Heroku update](https://github.com/heroku/cnb-builder-images/pull/478), legacy shimmed `heroku/buildpacks:20` and `heroku/builder-classic:22` images now generate errors instead of warnings.
+
+To resolve this issue, you should to migrate to the `heroku/builder:*` builder images. As a temporary workaround, you can also set an environment variable to skip errors.
+
+### Migrating to `heroku/builder:*`
+
+Before you migrate, you should read the release notes for the each [spec release](https://github.com/buildpacks/spec/releases) to determine potential breaking changes.
+In this case, the relevant buildpack API versions are 0.6 and 0.7.
+These breaking changes are especially relevant to buildpack maintainers.
+
+For more information about the changes, you can also diff the [spec itself](https://github.com/buildpacks/spec/compare/buildpack/v0.5...buildpack/v0.7#files_bucket).
+
+### Skipping errors
+
+As a temporary workaround, you can skip the errors by setting and forwarding the `ALLOW_EOL_SHIMMED_BUILDER` environment variable:
+
+```yaml
+  variables:
+    ALLOW_EOL_SHIMMED_BUILDER: "1"
+    AUTO_DEVOPS_BUILD_IMAGE_FORWARDED_CI_VARIABLES: ALLOW_EOL_SHIMMED_BUILDER
+```
 
 ## Pipeline that extends Auto DevOps with only / except fails
 
@@ -69,7 +93,7 @@ with Auto DevOps:
 ```plaintext
 Detected an existing PostgreSQL database installed on the
 deprecated channel 1, but the current channel is set to 2. The default
-channel changed to 2 in of GitLab 13.0.
+channel changed to 2 in GitLab 13.0.
 [...]
 ```
 

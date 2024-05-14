@@ -10,6 +10,7 @@ import (
 	"gocloud.dev/gcerrors"
 )
 
+// GoCloudObject represents an object in a Go Cloud Object Storage.
 type GoCloudObject struct {
 	bucket     *blob.Bucket
 	mux        *blob.URLMux
@@ -18,6 +19,7 @@ type GoCloudObject struct {
 	*uploader
 }
 
+// GoCloudObjectParams holds the parameters required to create a GoCloudObject instance.
 type GoCloudObjectParams struct {
 	Ctx        context.Context
 	Mux        *blob.URLMux
@@ -25,6 +27,7 @@ type GoCloudObjectParams struct {
 	ObjectName string
 }
 
+// NewGoCloudObject creates a new GoCloudObject instance with the provided parameters.
 func NewGoCloudObject(p *GoCloudObjectParams) (*GoCloudObject, error) {
 	bucket, err := p.Mux.OpenBucket(p.Ctx, p.BucketURL)
 	if err != nil {
@@ -42,13 +45,16 @@ func NewGoCloudObject(p *GoCloudObjectParams) (*GoCloudObject, error) {
 	return o, nil
 }
 
+// ChunkSize defines the size of each chunk for multipart upload in bytes.
 const ChunkSize = 5 * 1024 * 1024
 
+// Upload uploads the content of the object to the object store.
 func (o *GoCloudObject) Upload(ctx context.Context, r io.Reader) error {
-	defer o.bucket.Close()
+	defer func() { _ = o.bucket.Close() }()
 
 	writerOptions := &blob.WriterOptions{
-		BufferSize: ChunkSize,
+		BufferSize:                  ChunkSize,
+		DisableContentTypeDetection: true,
 	}
 	writer, err := o.bucket.NewWriter(ctx, o.objectName, writerOptions)
 	if err != nil {
@@ -58,7 +64,10 @@ func (o *GoCloudObject) Upload(ctx context.Context, r io.Reader) error {
 
 	if _, err = io.Copy(writer, r); err != nil {
 		log.ContextLogger(ctx).WithError(err).Error("error writing to GoCloud bucket")
-		writer.Close()
+		if writerErr := writer.Close(); writerErr != nil {
+			log.ContextLogger(ctx).WithError(writerErr).Error("error closing GoCloud bucket")
+			return err
+		}
 		return err
 	}
 
@@ -70,10 +79,12 @@ func (o *GoCloudObject) Upload(ctx context.Context, r io.Reader) error {
 	return nil
 }
 
+// ETag returns the entity tag of the object.
 func (o *GoCloudObject) ETag() string {
 	return ""
 }
 
+// Abort aborts the multipart upload.
 func (o *GoCloudObject) Abort() {
 	o.Delete()
 }
@@ -86,7 +97,7 @@ func (o *GoCloudObject) Delete() {
 		return
 	}
 
-	// Note we can't use the request context because in a successful
+	// We can't use the request context because in a successful
 	// case, the original request has already completed.
 	deleteCtx, cancel := context.WithTimeout(context.Background(), 60*time.Second) // lint:allow context.Background
 	defer cancel()

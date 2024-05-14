@@ -329,7 +329,7 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
 
           it 'sets the latest detached merge request pipeline as a head pipeline' do
             @merge_request.reload
-            expect(@merge_request.actual_head_pipeline).to be_merge_request_event
+            expect(@merge_request.diff_head_pipeline).to be_merge_request_event
           end
 
           it 'returns pipelines in correct order' do
@@ -509,14 +509,50 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
         end
 
         it 'updates the merge state' do
-          expect(@merge_request.resource_state_events.last.state).to eq('merged')
-          expect(@fork_merge_request.resource_state_events.last.state).to eq('merged')
+          commit = @project.repository.commit('feature')
+
+          state_event_1 = @merge_request.resource_state_events.last
+          expect(state_event_1.state).to eq('merged')
+          expect(state_event_1.source_merge_request).to eq(nil)
+          expect(state_event_1.source_commit).to eq(commit.id)
+
+          state_event_2 = @fork_merge_request.resource_state_events.last
+          expect(state_event_2.state).to eq('merged')
+          expect(state_event_2.source_merge_request).to eq(nil)
+          expect(state_event_2.source_commit).to eq(commit.id)
 
           expect(@merge_request).to be_merged
           expect(@merge_request.diffs.size).to be > 0
           expect(@fork_merge_request).to be_merged
           expect(@build_failed_todo).to be_done
           expect(@fork_build_failed_todo).to be_done
+        end
+      end
+
+      context 'With merged MR that contains the same SHA' do
+        before do
+          # Merged via UI
+          MergeRequests::MergeService
+            .new(project: @merge_request.target_project, current_user: @user, params: { sha: @merge_request.diff_head_sha })
+            .execute(@merge_request)
+
+          commit = @project.repository.commit('feature')
+          service.new(project: @project, current_user: @user).execute(@oldrev, commit.id, 'refs/heads/feature')
+          reload_mrs
+        end
+
+        it 'updates the merge state' do
+          state_event_1 = @merge_request.resource_state_events.last
+          expect(state_event_1.state).to eq('merged')
+          expect(state_event_1.source_merge_request).to eq(nil)
+          expect(state_event_1.source_commit).to eq(nil)
+
+          state_event_2 = @fork_merge_request.resource_state_events.last
+          expect(state_event_2.state).to eq('merged')
+          expect(state_event_2.source_merge_request).to eq(@merge_request)
+          expect(state_event_2.source_commit).to eq(nil)
+
+          expect(@fork_merge_request).to be_merged
         end
       end
     end
@@ -763,8 +799,9 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
           allow(refresh_service).to receive(:execute_hooks)
           refresh_service.execute(@oldrev, @newrev, 'refs/heads/close-by-commit')
 
-          issue_ids = MergeRequestsClosingIssues.where(merge_request: merge_request).pluck(:issue_id)
-          expect(issue_ids).to eq([issue.id])
+          expect(MergeRequestsClosingIssues.where(merge_request: merge_request)).to contain_exactly(
+            have_attributes(issue_id: issue.id, closes_work_item: true)
+          )
         end
       end
 
@@ -788,8 +825,9 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
           allow(refresh_service).to receive(:execute_hooks)
           refresh_service.execute(@oldrev, @newrev, 'refs/heads/close-by-commit')
 
-          issue_ids = MergeRequestsClosingIssues.where(merge_request: merge_request).pluck(:issue_id)
-          expect(issue_ids).to eq([issue.id])
+          expect(MergeRequestsClosingIssues.where(merge_request: merge_request)).to contain_exactly(
+            have_attributes(issue_id: issue.id, closes_work_item: true)
+          )
         end
       end
     end

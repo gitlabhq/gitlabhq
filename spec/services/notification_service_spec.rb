@@ -384,7 +384,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
       let_it_be(:owner2) { create(:user) }
 
       subject(:notification_service) do
-        notification.resource_access_tokens_about_to_expire(project_bot, [expiring_token.name])
+        notification.bot_resource_access_token_about_to_expire(project_bot, [expiring_token.name])
       end
 
       context 'when the resource is a group' do
@@ -402,13 +402,13 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
               owner1,
               project_bot.resource_bot_resource,
               [expiring_token.name],
-              mail: "resource_access_tokens_about_to_expire_email"
+              mail: "bot_resource_access_token_about_to_expire_email"
             ).and(
               have_enqueued_email(
                 owner2,
                 project_bot.resource_bot_resource,
                 [expiring_token.name],
-                mail: "resource_access_tokens_about_to_expire_email"
+                mail: "bot_resource_access_token_about_to_expire_email"
               )
             )
           )
@@ -430,13 +430,13 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
               owner1,
               project_bot.resource_bot_resource,
               [expiring_token.name],
-              mail: "resource_access_tokens_about_to_expire_email"
+              mail: "bot_resource_access_token_about_to_expire_email"
             ).and(
               have_enqueued_email(
                 owner2,
                 project_bot.resource_bot_resource,
                 [expiring_token.name],
-                mail: "resource_access_tokens_about_to_expire_email"
+                mail: "bot_resource_access_token_about_to_expire_email"
               )
             )
           )
@@ -1349,9 +1349,9 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
 
       let_it_be(:design) { create(:design, :with_file) }
       let_it_be(:project) { design.project }
-      let_it_be(:member_and_mentioned) { create(:user, developer_projects: [project]) }
-      let_it_be(:member_and_author_of_second_note) { create(:user, developer_projects: [project]) }
-      let_it_be(:member_and_not_mentioned) { create(:user, developer_projects: [project]) }
+      let_it_be(:member_and_mentioned) { create(:user, developer_of: project) }
+      let_it_be(:member_and_author_of_second_note) { create(:user, developer_of: project) }
+      let_it_be(:member_and_not_mentioned) { create(:user, developer_of: project) }
       let_it_be(:non_member_and_mentioned) { create(:user) }
       let_it_be(:note) do
         create(
@@ -3403,7 +3403,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
 
       context 'for a project in a group' do
         let(:group_owner) { create(:user) }
-        let(:group) { create(:group).tap { |g| g.add_owner(group_owner) } }
+        let(:group) { create(:group, owners: group_owner) }
 
         context 'when the project has no maintainers' do
           context 'when the group has at least one owner' do

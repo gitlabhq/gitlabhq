@@ -263,7 +263,7 @@ export default {
           :size="16"
           :shape="$options.AVATAR_SHAPE_OPTION_RECT"
           :alt="selectedProjects[0].name"
-          class="gl-display-inline-flex gl-vertical-align-middle gl-mr-2 gl-flex-shrink-0"
+          class="gl-display-inline-flex gl-align-middle gl-mr-2 gl-flex-shrink-0"
         />
         <gl-truncate :text="selectedProjectsLabel" class="gl-min-w-0 gl-flex-grow-1" />
         <gl-icon class="gl-ml-2 gl-flex-shrink-0" name="chevron-down" />
@@ -272,7 +272,7 @@ export default {
     <template #list-item="{ item }">
       <div class="gl-display-flex">
         <gl-avatar
-          class="gl-mr-2 gl-vertical-align-middle"
+          class="gl-mr-2 gl-align-middle"
           :alt="item.name"
           :size="16"
           :entity-id="getEntityId(item)"

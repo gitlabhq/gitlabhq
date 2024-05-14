@@ -10,19 +10,21 @@ status: active
 milestone: '13.12'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/53553
 time_frame: 28d
-instrumentation_class: AggregatedMetric
+instrumentation_class: RedisHLLMetric
 data_source: redis_hll
-options:
-  aggregate:
-    operator: OR
-    attribute: user_id
-  events:
-    - 'i_code_review_user_vs_code_api_request'
-    - 'i_code_review_user_jetbrains_api_request'
-    - 'i_editor_extensions_user_jetbrains_bundled_api_request'
-    - 'i_code_review_user_gitlab_cli_api_request'
-    - 'i_editor_extensions_user_visual_studio_api_request'
-    - 'i_editor_extensions_user_neovim_plugin_api_request'
+events:
+- name: i_code_review_user_vs_code_api_request
+  unique: user.id
+- name: i_code_review_user_jetbrains_api_request
+  unique: user.id
+- name: i_editor_extensions_user_jetbrains_bundled_api_request
+  unique: user.id
+- name: i_code_review_user_gitlab_cli_api_request
+  unique: user.id
+- name: i_editor_extensions_user_visual_studio_api_request
+  unique: user.id
+- name: i_editor_extensions_user_neovim_plugin_api_request
+  unique: user.id
 distribution:
   - ce
   - ee

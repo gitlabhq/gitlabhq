@@ -8,11 +8,17 @@ info: 'To determine the technical writer assigned to the Stage/Group associated 
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 ## Transfer a project to another namespace
 
 When you transfer a project to another namespace, you move the project to a different group.
+All of the project's components (such as issues, merge requests, pipelines, and dashboards)
+move with the transferred project.
+The project's [path also changes](../repository/index.md#what-happens-when-a-repository-path-changes), so make sure to update the URLs to the project components where necessary.
+
+WARNING:
+Errors during the transfer process may lead to data loss of the project's components or dependencies of end users.
 
 Prerequisites:
 

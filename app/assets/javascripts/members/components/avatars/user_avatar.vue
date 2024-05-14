@@ -38,6 +38,13 @@ export default {
     user() {
       return this.member.user;
     },
+    userAvatarUrl() {
+      const { avatarUrl } = this.user;
+      if (!avatarUrl) return null;
+      const baseUrl = new URL(avatarUrl);
+      baseUrl.searchParams.set('width', AVATAR_SIZE * 2);
+      return baseUrl.href;
+    },
     badges() {
       return generateBadges({
         member: this.member,
@@ -70,7 +77,7 @@ export default {
     <gl-avatar-labeled
       :label="user.name"
       :sub-label="`@${user.username}`"
-      :src="user.avatarUrl"
+      :src="userAvatarUrl"
       :alt="user.name"
       :size="$options.avatarSize"
       :entity-name="user.name"

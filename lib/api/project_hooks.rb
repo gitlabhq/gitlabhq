@@ -7,7 +7,10 @@ module API
     project_hooks_tags = %w[project_hooks]
 
     before { authenticate! }
-    before { authorize_admin_project }
+    before do
+      ability = route.request_method == 'GET' ? :read_web_hook : :admin_web_hook
+      authorize! ability, user_project
+    end
 
     feature_category :webhooks
 
@@ -19,6 +22,8 @@ module API
       end
 
       params :common_hook_parameters do
+        optional :name, type: String, desc: 'Name of the hook'
+        optional :description, type: String, desc: 'Description of the hook'
         optional :push_events, type: Boolean, desc: "Trigger hook on push events"
         optional :issues_events, type: Boolean, desc: "Trigger hook on issues events"
         optional :confidential_issues_events, type: Boolean, desc: "Trigger hook on confidential issues events"
@@ -32,9 +37,11 @@ module API
         optional :deployment_events, type: Boolean, desc: "Trigger hook on deployment events"
         optional :releases_events, type: Boolean, desc: "Trigger hook on release events"
         optional :emoji_events, type: Boolean, desc: "Trigger hook on emoji events"
+        optional :resource_access_token_events, type: Boolean, desc: "Trigger hook on project access token expiry events"
         optional :enable_ssl_verification, type: Boolean, desc: "Do SSL verification when triggering the hook"
         optional :token, type: String, desc: "Secret token to validate received payloads; this will not be returned in the response"
         optional :push_events_branch_filter, type: String, desc: "Trigger hook on specified branch only"
+        optional :custom_webhook_template, type: String, desc: "Custom template for the request payload"
         use :url_variables
       end
     end
@@ -132,6 +139,38 @@ module API
 
         destroy_conditionally!(hook) do
           WebHooks::DestroyService.new(current_user).execute(hook)
+        end
+      end
+
+      desc 'Triggers a project hook test' do
+        detail 'Triggers a project hook test'
+        success code: 201
+        failure [
+          { code: 400, message: 'Bad request' },
+          { code: 404, message: 'Not found' },
+          { code: 422, message: 'Unprocessable entity' },
+          { code: 429, message: 'Too many requests' }
+        ]
+      end
+      params do
+        requires :trigger,
+          type: String,
+          desc: 'The type of trigger hook',
+          values: ProjectHook.triggers.values.map(&:to_s)
+      end
+      post ":id/hooks/:hook_id/test/:trigger", urgency: :low do
+        hook = find_hook
+
+        if Feature.enabled?(:web_hook_test_api_endpoint_rate_limit)
+          check_rate_limit!(:web_hook_test_api_endpoint, scope: hook)
+        end
+
+        result = TestHooks::ProjectService.new(hook, current_user, params[:trigger]).execute
+        success = (200..299).cover?(result.payload[:http_status])
+        if success
+          created!
+        else
+          render_api_error!(result.message, 422)
         end
       end
     end

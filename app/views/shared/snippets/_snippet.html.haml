@@ -1,37 +1,37 @@
 - link_project = local_assigns.fetch(:link_project, false)
 - notes_count = @noteable_meta_data[snippet.id].user_notes_count
 
-%li.snippet-row.py-3{ data: { testid: 'snippet-link', qa_snippet_title: snippet.title } }
-  = render Pajamas::AvatarComponent.new(snippet.author, size: 48, alt: "", class: 'gl-display-none gl-sm-display-block gl-float-left gl-mr-3')
+%li.gl-py-4.gl-sm-display-flex.gl-align-items-center.gl-justify-content-space-between.gl-border-b{ data: { testid: 'snippet-link', qa_snippet_title: snippet.title } }
+  - unless current_path?('users#snippets')
+    .gl-display-none.gl-sm-display-block.gl-sm-mr-3
+      = render Pajamas::AvatarComponent.new(snippet.author, size: 32, alt: "")
 
-  = link_to gitlab_snippet_path(snippet), class: "title" do
-    = snippet.title
-  - if snippet.hidden_due_to_author_ban?
-    %span{ class: 'has-tooltip gl-bg-orange-50 gl-text-orange-600 border-radius-default gl-p-2', title: s_("Snippets|This snippet is hidden because its author has been banned") }
-      = sprite_icon('spam', size: '16')
+  .gl-sm-display-flex.gl-justify-content-space-between.gl-align-items-center.gl-flex-grow-1
+    %div
+      = link_to gitlab_snippet_path(snippet), class: "title gl-text-black-normal gl-font-weight-bold" do
+        = snippet.title
+      - if snippet.hidden_due_to_author_ban?
+        %span{ class: 'has-tooltip gl-bg-orange-50 gl-text-orange-600 border-radius-default gl-p-2', title: s_("Snippets|This snippet is hidden because its author has been banned") }
+          = sprite_icon('spam', size: '16')
 
-  %ul.controls{ data: { testid: 'snippet-file-count-content', qa_snippet_files: snippet.statistics&.file_count } }
-    %li
-      = snippet_file_count(snippet)
-    %li
-      = link_to gitlab_snippet_path(snippet, anchor: 'notes'), class: ('no-comments' if notes_count == 0) do
-        = sprite_icon('comments', css_class: 'gl-vertical-align-text-bottom')
-        = notes_count
-    %li
-      %span.sr-only{ data: { testid: 'snippet-visibility-content', qa_snippet_visibility: visibility_level_label(snippet.visibility_level) } }
-        = visibility_level_label(snippet.visibility_level)
-      = visibility_level_icon(snippet.visibility_level)
+      .snippet-info.gl-font-sm.gl-text-gray-500!
+        .gl-display-inline{ data: { testid: 'snippet-created-at'} }
+          - created_at = time_ago_with_tooltip(snippet.created_at, placement: 'bottom')
+          - author = link_to(snippet.author_name, user_snippets_path(snippet.author), data: { user_id: snippet.author.id }, class: 'gl-text-black-normal')
+          #{snippet.to_reference} &middot;
+          - if link_project && snippet.project_id?
+            - project_link = link_to(snippet.project.full_name, project_path(snippet.project))
+            = _('created %{timeAgo} by %{author} in %{project_link}').html_safe % { timeAgo: created_at, author: author, project_link: project_link }
+          - else
+            = _('created %{timeAgo} by %{author}').html_safe % { timeAgo: created_at, author: author }
 
-  .snippet-info
-    .gl-display-inline{ data: { testid: 'snippet-created-at'} }
-      - created_at = time_ago_with_tooltip(snippet.created_at, placement: 'bottom')
-      - author = link_to(snippet.author_name, user_snippets_path(snippet.author), data: { user_id: snippet.author.id })
-      #{snippet.to_reference} &middot;
-      - if link_project && snippet.project_id?
-        - project_link = link_to(snippet.project.full_name, project_path(snippet.project))
-        = _('created %{timeAgo} by %{author} in %{project_link}').html_safe % { timeAgo: created_at, author: author, project_link: project_link }
-      - else
-        = _('created %{timeAgo} by %{author}').html_safe % { timeAgo: created_at, author: author }
-
-    .gl-float-right
-      = _('updated %{timeAgo}').html_safe % { timeAgo: time_ago_with_tooltip(snippet.updated_at, placement: 'bottom') }
+    .gl-sm-display-flex.gl-flex-direction-column.gl-align-items-flex-end{ data: { testid: 'snippet-file-count-content', qa_snippet_files: snippet.statistics&.file_count } }
+      .gl-display-flex.gl-gap-4.gl-align-items-center
+        - if notes_count > 0
+          %span.has-tooltip{ title: _('Comments') }
+            = sprite_icon('comments')
+            = notes_count
+        = snippet_file_count(snippet)
+        %span.has-tooltip{ title: visibility_level_label(snippet.visibility_level), data: { testid: 'snippet-visibility-content', qa_snippet_visibility: visibility_level_label(snippet.visibility_level) } }
+          = visibility_level_icon(snippet.visibility_level)
+      .gl-whitespace-nowrap.gl-font-sm.gl-text-secondary= _('updated %{timeAgo}').html_safe % { timeAgo: time_ago_with_tooltip(snippet.updated_at, placement: 'bottom') }

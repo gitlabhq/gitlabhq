@@ -68,7 +68,7 @@ module ObjectStorage
         workhorse_aws_hash
       elsif config.azure?
         workhorse_azure_hash
-      elsif Feature.enabled?(:workhorse_google_client) && config.google?
+      elsif config.google?
         workhorse_google_hash
       else
         {}

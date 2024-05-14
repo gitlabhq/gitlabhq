@@ -12,6 +12,7 @@ RSpec.describe Projects::Security::ConfigurationPresenter, feature_category: :so
 
   before do
     stub_licensed_features(licensed_scan_types.index_with { true })
+    stub_licensed_features(pre_receive_secret_detection: true)
   end
 
   describe '#to_html_data_attribute' do
@@ -45,10 +46,6 @@ RSpec.describe Projects::Security::ConfigurationPresenter, feature_category: :so
 
       it 'includes a link to the latest pipeline' do
         expect(html_data[:latest_pipeline_path]).to eq(project_pipeline_path(project, pipeline))
-      end
-
-      it 'has stubs for autofix' do
-        expect(html_data.keys).to include(:can_toggle_auto_fix_settings, :auto_fix_enabled, :auto_fix_user_path)
       end
 
       context "while retrieving information about user's ability to enable auto_devops" do
@@ -303,6 +300,47 @@ RSpec.describe Projects::Security::ConfigurationPresenter, feature_category: :so
 
             expect(feature['configured']).to eq(configured)
           end
+        end
+      end
+    end
+
+    describe 'pre_receive_secret_detection' do
+      let_it_be(:project) { create(:project, :repository) }
+      let(:features) { Gitlab::Json.parse(html_data[:features]) }
+
+      context 'when the feature flag is disabled' do
+        before do
+          stub_feature_flags(pre_receive_secret_detection_beta_release: false)
+        end
+
+        it 'feature does not include pre_receive_secret_detection' do
+          feature = features.find { |scan| scan["type"] == 'pre_receive_secret_detection' }
+          expect(feature).to be_nil
+        end
+      end
+
+      context 'when the feature flags are enabled' do
+        before do
+          stub_feature_flags(pre_receive_secret_detection_beta_release: true)
+          stub_feature_flags(pre_receive_secret_detection_push_check: true)
+        end
+
+        it 'feature includes pre_receive_secret_detection' do
+          skip unless Gitlab.ee?
+
+          feature = features.find { |scan| scan["type"] == 'pre_receive_secret_detection' }
+          expect(feature).not_to be_nil
+        end
+      end
+
+      context 'when it is a dedicated instance' do
+        before do
+          stub_application_setting(gitlab_dedicated_instance: true)
+        end
+
+        it 'feature includes pre_receive_secret_detection' do
+          feature = features.find { |scan| scan["type"] == 'pre_receive_secret_detection' }
+          expect(feature).not_to be_nil
         end
       end
     end

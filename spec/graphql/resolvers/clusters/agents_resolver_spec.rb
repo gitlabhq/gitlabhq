@@ -15,7 +15,7 @@ RSpec.describe Resolvers::Clusters::AgentsResolver do
 
   describe '#resolve' do
     let_it_be(:project) { create(:project) }
-    let_it_be(:maintainer) { create(:user, developer_projects: [project]) }
+    let_it_be(:maintainer) { create(:user, developer_of: project) }
     let_it_be(:reporter) { create(:user) }
     let_it_be(:agents) { create_list(:cluster_agent, 2, project: project) }
 

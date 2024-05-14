@@ -1,4 +1,4 @@
-- title: "GitLab Helm chart values `gitlab.kas.privateApi.*` are deprecated"
+- title: "GitLab Helm chart values `gitlab.kas.privateApi.tls.*` are deprecated"
   announcement_milestone: "15.8"
   removal_milestone: "17.0"
   breaking_change: true

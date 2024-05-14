@@ -8,20 +8,20 @@ module Types
       description 'An object containing a stack trace entry for a Sentry error'
 
       field :col, GraphQL::Types::String,
-            null: true,
-            description: 'Function in which the Sentry error occurred.'
+        null: true,
+        description: 'Function in which the Sentry error occurred.'
       field :file_name, GraphQL::Types::String,
-            null: true,
-            description: 'File in which the Sentry error occurred.'
+        null: true,
+        description: 'File in which the Sentry error occurred.'
       field :function, GraphQL::Types::String,
-            null: true,
-            description: 'Function in which the Sentry error occurred.'
+        null: true,
+        description: 'Function in which the Sentry error occurred.'
       field :line, GraphQL::Types::String,
-            null: true,
-            description: 'Function in which the Sentry error occurred.'
+        null: true,
+        description: 'Function in which the Sentry error occurred.'
       field :trace_context, [Types::ErrorTracking::SentryErrorStackTraceContextType],
-            null: true,
-            description: 'Context of the Sentry error.'
+        null: true,
+        description: 'Context of the Sentry error.'
 
       def function
         object['function']

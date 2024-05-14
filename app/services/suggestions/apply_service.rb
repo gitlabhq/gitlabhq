@@ -54,6 +54,13 @@ module Suggestions
         author_email: author&.email
       }
 
+      if ::Feature.enabled?(:web_ui_commit_author_change, project)
+        params.merge!({
+          author_name: current_user.name,
+          author_email: current_user.commit_email_or_default
+        })
+      end
+
       ::Files::MultiService.new(suggestion_set.source_project, current_user, params)
     end
 

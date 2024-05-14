@@ -9,7 +9,7 @@
       = link_to group.full_name, group, class: 'group-name'
 
       - if access&.nonzero?
-        %span.user-access-role= Gitlab::Access.human_access(access)
+        = render Pajamas::BadgeComponent.new(Gitlab::Access.human_access(access), variant: 'neutral', class: 'gl-bg-transparent! !gl-shadow-inner-1-gray-100')
 
     - if group.description.present?
       .description
@@ -18,11 +18,11 @@
   .stats.gl-text-gray-500.gl-flex-shrink-0
     %span.gl-ml-5.has-tooltip{ title: _('Projects') }
       = sprite_icon('project', css_class: 'gl-vertical-align-text-bottom')
-      = number_with_delimiter(group.projects.non_archived.count)
+      = number_with_delimiter(group.non_archived_projects.size)
 
     %span.gl-ml-5.has-tooltip{ title: _('Users') }
       = sprite_icon('users', css_class: 'gl-vertical-align-text-bottom')
-      = number_with_delimiter(group.group_members.non_invite.count)
+      = number_with_delimiter(group.non_invite_group_members.size)
 
     %span.gl-ml-5.visibility-icon.has-tooltip{ data: { container: 'body', placement: 'left' }, title: visibility_icon_description(group) }
       = visibility_level_icon(group.visibility_level)

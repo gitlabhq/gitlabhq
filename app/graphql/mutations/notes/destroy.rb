@@ -8,9 +8,9 @@ module Mutations
       authorize :admin_note
 
       argument :id,
-               ::Types::GlobalIDType[::Note],
-               required: true,
-               description: 'Global ID of the note to destroy.'
+        ::Types::GlobalIDType[::Note],
+        required: true,
+        description: 'Global ID of the note to destroy.'
 
       def resolve(id:)
         note = authorized_find!(id: id)

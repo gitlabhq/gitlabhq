@@ -16,9 +16,11 @@ module Sidebars
         true
       end
 
+      # We render the header directly in a Vue portal
+      # So we do not need to expose this in the search panel
       override :super_sidebar_context_header
       def super_sidebar_context_header
-        aria_label
+        nil
       end
     end
   end

@@ -105,7 +105,7 @@
     - "\n" # Create file
     - "\n" # Select: View Usage -- look at code examples
     - "\n" # Select: Ruby/Rails
-    - "8\n" # Exit
+    - "9\n" # Exit
   outputs:
     files:
     - path: config/events/random_name.yml
@@ -150,7 +150,7 @@
     - "1\n" # Select: [free, premium, ultimate]
     - "y\n" # Create file
     - "2\n" # Select: View Usage
-    - "8\n" # Exit
+    - "9\n" # Exit
   outputs:
     files:
     - path: config/events/internal_events_cli_used.yml
@@ -181,3 +181,22 @@
       content: spec/fixtures/scripts/internal_events/events/event_with_identifiers.yml
     - path: config/metrics/counts_all/count_total_internal_events_cli_used.yml
       content: spec/fixtures/scripts/internal_events/metrics/total_single_event.yml
+
+
+- description: Creates a new event with an entirely valid output
+  inputs:
+    keystrokes:
+    - "1\n" # Enum-select: New Event -- start tracking when an action or scenario occurs on gitlab instances
+    - "Engineer uses Internal Event CLI to define a new event\n" # Submit description
+    - "internal_events_cli_used\n" # Submit action name
+    - "1\n" # Select: [namespace, project, user]
+    - "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143433\n" # Submit MR URL
+    - "instrumentation" # Filters to the analytics instrumentation group
+    - "\n" # Accept analytics:monitor:analytics_instrumentation
+    - "1\n" # Select: [free, premium, ultimate]
+    - "y\n" # Create file
+    - "3\n" # Exit
+  outputs:
+    files:
+    - path: config/events/internal_events_cli_used.yml
+      content: spec/fixtures/scripts/internal_events/events/event_with_mr_url.yml

@@ -5,9 +5,9 @@ module Mutations
     module TimelineEventTag
       class Base < BaseMutation
         field :timeline_event_tag,
-              ::Types::IncidentManagement::TimelineEventTagType,
-              null: true,
-              description: 'Timeline event tag.'
+          ::Types::IncidentManagement::TimelineEventTagType,
+          null: true,
+          description: 'Timeline event tag.'
 
         authorize :admin_incident_management_timeline_event_tag
 

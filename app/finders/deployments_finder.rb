@@ -139,9 +139,7 @@ class DeploymentsFinder
     # Implicitly enforce the ordering when filtered by `updated_at` column for performance optimization.
     # See https://gitlab.com/gitlab-org/gitlab/-/issues/325627#note_552417509.
     # We remove this in https://gitlab.com/gitlab-org/gitlab/-/issues/328500.
-    if filter_by_updated_at?
-      sort_params.replace('updated_at' => sort_direction)
-    end
+    sort_params.replace('updated_at' => sort_direction) if filter_by_updated_at?
 
     if sort_params['created_at'] || sort_params['iid']
       # Sorting by `id` produces the same result as sorting by `created_at` or `iid`

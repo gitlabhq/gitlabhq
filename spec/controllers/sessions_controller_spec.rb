@@ -70,6 +70,14 @@ RSpec.describe SessionsController, feature_category: :system_access do
       expect(controller.stored_location_for(:redirect)).to eq(search_path)
     end
 
+    it 'redirects when in_initial_setup_state? is detected' do
+      allow(controller).to receive(:in_initial_setup_state?).and_return(true)
+
+      get(:new)
+
+      expect(response).to redirect_to(new_admin_initial_setup_path)
+    end
+
     it_behaves_like "switches to user preferred language", 'Sign in'
   end
 
@@ -87,7 +95,39 @@ RSpec.describe SessionsController, feature_category: :system_access do
         it 'does not authenticate user' do
           post(:create, params: { user: { login: 'invalid', password: 'invalid' } })
 
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(@request.env['warden']).not_to be_authenticated
           expect(controller).to set_flash.now[:alert].to(/Invalid login or password/)
+        end
+      end
+
+      context 'mass assignment' do
+        it 'does not authenticate with multiple usernames' do
+          expect do
+            post(:create, params: { user: { login: ['invalid', user.username], password: user.password } })
+          end.to raise_error(NoMethodError)
+          expect(@request.env['warden']).not_to be_authenticated
+        end
+
+        it 'does not authenticate with multiple passwords' do
+          expect do
+            post(:create, params: { user: { login: user.username, password: ['aaaaaa', user.password] } })
+          end.to raise_error(NoMethodError)
+          expect(@request.env['warden']).not_to be_authenticated
+        end
+      end
+
+      context 'when user with LDAP identity' do
+        before do
+          create(:identity, provider: 'ldapmain', user: user)
+        end
+
+        it 'does not authenticate user' do
+          post_action
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(@request.env['warden']).not_to be_authenticated
+          expect(flash[:alert]).to include(I18n.t('devise.failure.invalid'))
         end
       end
 
@@ -420,6 +460,16 @@ RSpec.describe SessionsController, feature_category: :system_access do
                 authenticate_2fa(otp_attempt: code)
               end
             end
+
+            context 'when OTP is an array' do
+              let(:code) { %w[000000 000001] }
+
+              it 'does not authenticate' do
+                authenticate_2fa(otp_attempt: code)
+
+                expect(subject.current_user).not_to eq user
+              end
+            end
           end
 
           context 'when the user is on their last attempt' do
@@ -552,6 +602,26 @@ RSpec.describe SessionsController, feature_category: :system_access do
         post_action
 
         expect(subject.current_user).to eq user
+      end
+
+      context 'when the verification token is invalid' do
+        let(:user_params) { { verification_token: 'not-the-token' } }
+
+        it 'does not log the user in' do
+          post_action
+
+          expect(subject.current_user).to eq nil
+        end
+      end
+
+      context 'when the verification token is an array' do
+        let(:user_params) { { verification_token: %w[not-the-token still-not-the-token] } }
+
+        it 'does not log the user in' do
+          post_action
+
+          expect(subject.current_user).to eq nil
+        end
       end
     end
   end

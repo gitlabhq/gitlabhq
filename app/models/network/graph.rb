@@ -88,7 +88,7 @@ module Network
 
       if self.class.max_count / 2 < offset
         # get max index that commit is displayed in the center.
-        offset - self.class.max_count / 2
+        offset - (self.class.max_count / 2)
       else
         0
       end

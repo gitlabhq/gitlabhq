@@ -8,7 +8,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 GitLab provides syntax highlighting on all files through [Highlight.js](https://github.com/highlightjs/highlight.js/) and the
 [Rouge](https://rubygems.org/gems/rouge) Ruby gem. It attempts to guess what language

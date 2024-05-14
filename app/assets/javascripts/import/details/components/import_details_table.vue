@@ -34,6 +34,18 @@ export default {
   },
 
   props: {
+    id: {
+      type: String,
+      required: false,
+      default: null,
+    },
+
+    entityId: {
+      type: String,
+      required: false,
+      default: null,
+    },
+
     bulkImport: {
       type: Boolean,
       required: false,
@@ -96,11 +108,7 @@ export default {
 
     fetchFn(params) {
       return this.bulkImport
-        ? getBulkImportFailures(
-            getParameterValues('id')[0],
-            getParameterValues('entity_id')[0],
-            params,
-          )
+        ? getBulkImportFailures(this.id, this.entityId, params)
         : fetchImportFailures(this.failuresPath, {
             projectId: getParameterValues('project_id')[0],
             ...params,

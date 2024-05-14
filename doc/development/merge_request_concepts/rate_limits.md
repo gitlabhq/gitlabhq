@@ -18,7 +18,7 @@ Limits are applicable for:
 
 ## When limits are required
 
-1. Limits are required if the absence of the limit matches severity 1 - 3 in the severity definitions for [limit-related bugs](https://handbook.gitlab.com/handbook/engineering/quality/issue-triage/#limit-related-bugs).
+1. Limits are required if the absence of the limit matches severity 1 - 3 in the severity definitions for [limit-related bugs](https://handbook.gitlab.com/handbook/engineering/infrastructure/engineering-productivity/issue-triage/#limit-related-bugs).
 1. [GitLab application limits](../../administration/instance_limits.md) documentation must be updated anytime limits are added, removed, or updated.
 
 ## Additional reading

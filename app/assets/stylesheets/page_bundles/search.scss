@@ -15,6 +15,18 @@ $language-filter-max-height: 20rem;
     &:last-child {
       border-bottom: 0;
     }
+
+    .fork-sprite {
+      margin-right: -5px;
+    }
+  }
+
+  mark {
+    position: relative;
+    background-color: $orange-100;
+    padding: 0;
+    box-shadow: 0 0 0 $gl-spacing-scale-1 $orange-100;
+    z-index: -1;
   }
 }
 
@@ -324,6 +336,8 @@ $language-filter-max-height: 20rem;
   .line_holder {
     pre {
       padding: 0; // This overrides the existing style that will add space between each line.
+      border-radius: 0;
+
       .line {
         word-break: break-word;
         white-space: break-spaces;
@@ -361,6 +375,18 @@ $language-filter-max-height: 20rem;
 
       .line-numbers {
         min-width: 4rem;
+      }
+    }
+
+    &:last-of-type {
+      border-radius: 0 0 $border-radius-default-inner $border-radius-default-inner;
+
+      pre {
+        border-bottom-right-radius: $border-radius-default-inner;
+      }
+
+      .diff-line-num:first-of-type {
+        border-bottom-left-radius: $border-radius-default-inner;
       }
     }
   }

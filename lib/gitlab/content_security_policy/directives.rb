@@ -16,11 +16,15 @@ module Gitlab
       end
 
       def self.script_src
-        "'strict-dynamic' 'self' 'unsafe-inline' 'unsafe-eval' https://www.google.com/recaptcha/ https://www.recaptcha.net"
+        "'strict-dynamic' 'self' 'unsafe-eval' https://www.google.com/recaptcha/ https://www.recaptcha.net"
       end
 
       def self.style_src
         "'self' 'unsafe-inline'"
+      end
+
+      def self.worker_src
+        "'self' #{Gitlab::Utils.append_path(Gitlab.config.gitlab.url, 'assets/')} blob: data:"
       end
     end
   end

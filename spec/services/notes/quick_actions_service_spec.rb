@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Notes::QuickActionsService, feature_category: :team_planning do
   shared_context 'note on noteable' do
     let_it_be(:project) { create(:project, :repository) }
-    let_it_be(:maintainer) { create(:user).tap { |u| project.add_maintainer(u) } }
+    let_it_be(:maintainer) { create(:user, maintainer_of: project) }
     let_it_be(:assignee) { create(:user) }
 
     before do
@@ -70,6 +70,7 @@ RSpec.describe Notes::QuickActionsService, feature_category: :team_planning do
           note.noteable.close!
           expect(note.noteable).to be_closed
         end
+
         let(:note_text) { '/reopen' }
 
         it 'opens the noteable, and leave no note' do
@@ -152,10 +153,11 @@ RSpec.describe Notes::QuickActionsService, feature_category: :team_planning do
 
       shared_examples 'does not update time_estimate and displays the correct error message' do
         it 'shows validation error message' do
-          content = execute(note)
+          content, update_params = service.execute(note)
+          service_response = service.apply_updates(update_params, note)
 
           expect(content).to be_empty
-          expect(note.noteable.errors[:time_estimate]).to include('must have a valid format and be greater than or equal to zero.')
+          expect(service_response.message).to include('Time estimate must have a valid format and be greater than or equal to zero.')
           expect(note.noteable.reload.time_estimate).to eq(600)
         end
       end
@@ -262,6 +264,7 @@ RSpec.describe Notes::QuickActionsService, feature_category: :team_planning do
           note.noteable.close
           expect(note.noteable).to be_closed
         end
+
         let(:note_text) { "HELLO\n/reopen\nWORLD" }
 
         it 'opens the noteable' do
@@ -347,10 +350,42 @@ RSpec.describe Notes::QuickActionsService, feature_category: :team_planning do
       end
     end
 
+    describe '/remind_me' do
+      let(:issue) { create(:issue, project: project, milestone: milestone) }
+      let(:note_text) { '/remind_me 1d' }
+      let(:note) { create(:note_on_issue, noteable: issue, project: project, note: note_text) }
+
+      context 'on an issue' do
+        it 'leaves the note empty' do
+          expect(execute(note)).to be_empty
+        end
+
+        it 'attempts to set a reminder' do
+          expect(Issuable::CreateReminderWorker).to receive(:perform_in)
+
+          execute(note)
+        end
+      end
+
+      context 'on a merge request' do
+        let(:note_mr) { create(:note_on_merge_request, project: project, note: note_text) }
+
+        it 'leaves the note empty' do
+          expect(execute(note_mr)).to be_empty
+        end
+
+        it 'attempts to set a reminder' do
+          expect(Issuable::CreateReminderWorker).to receive(:perform_in)
+
+          execute(note)
+        end
+      end
+    end
+
     describe '/add_child' do
-      let_it_be_with_reload(:noteable) { create(:work_item, :objective, project: project) }
-      let_it_be_with_reload(:child) { create(:work_item, :objective, project: project) }
-      let_it_be_with_reload(:second_child) { create(:work_item, :objective, project: project) }
+      let_it_be(:noteable) { create(:work_item, :objective, project: project) }
+      let_it_be(:child) { create(:work_item, :objective, project: project) }
+      let_it_be(:second_child) { create(:work_item, :objective, project: project) }
       let_it_be(:note_text) { "/add_child #{child.to_reference}, #{second_child.to_reference}" }
       let_it_be(:note) { create(:note, noteable: noteable, project: project, note: note_text) }
       let_it_be(:children) { [child, second_child] }
@@ -361,20 +396,17 @@ RSpec.describe Notes::QuickActionsService, feature_category: :team_planning do
         end
 
         it 'adds child work items' do
-          execute(note)
-
+          expect { execute(note) }.to change { WorkItems::ParentLink.count }.by(2)
+          expect(noteable.reload.work_item_children).to match_array(children)
           expect(noteable.valid?).to be_truthy
-          expect(noteable.work_item_children).to eq(children)
         end
       end
 
-      context 'when using work item reference' do
+      it_behaves_like 'adds child work items'
+
+      context 'when using work item full reference' do
         let_it_be(:note_text) { "/add_child #{child.to_reference(full: true)}, #{second_child.to_reference(full: true)}" }
 
-        it_behaves_like 'adds child work items'
-      end
-
-      context 'when using work item iid' do
         it_behaves_like 'adds child work items'
       end
 
@@ -384,6 +416,48 @@ RSpec.describe Notes::QuickActionsService, feature_category: :team_planning do
         let_it_be(:note_text) { "/add_child #{url}" }
 
         it_behaves_like 'adds child work items'
+      end
+    end
+
+    describe '/remove_child' do
+      let_it_be_with_reload(:noteable) { create(:work_item, :objective, project: project) }
+      let_it_be_with_reload(:child) { create(:work_item, :objective, project: project) }
+      let_it_be(:note_text) { "/remove_child #{child.to_reference}" }
+      let_it_be(:note) { create(:note, noteable: noteable, project: project, note: note_text) }
+
+      before do
+        create(:parent_link, work_item_parent: noteable, work_item: child)
+      end
+
+      shared_examples 'removes child work item' do
+        it 'leaves the note empty' do
+          expect(execute(note)).to be_empty
+        end
+
+        it 'removes child work item' do
+          expect { execute(note) }.to change { WorkItems::ParentLink.count }.by(-1)
+
+          expect(noteable.valid?).to be_truthy
+          expect(noteable.work_item_children).to be_empty
+        end
+      end
+
+      context 'when using work item reference' do
+        let_it_be(:note_text) { "/remove_child #{child.to_reference(full: true)}" }
+
+        it_behaves_like 'removes child work item'
+      end
+
+      context 'when using work item iid' do
+        it_behaves_like 'removes child work item'
+      end
+
+      context 'when using work item URL' do
+        let_it_be(:project_path) { "#{Gitlab.config.gitlab.url}/#{project.full_path}" }
+        let_it_be(:url) { "#{project_path}/work_items/#{child.iid}" }
+        let_it_be(:note_text) { "/remove_child #{url}" }
+
+        it_behaves_like 'removes child work item'
       end
     end
 
@@ -574,6 +648,7 @@ RSpec.describe Notes::QuickActionsService, feature_category: :team_planning do
             note.noteable.close!
             expect(note.noteable).to be_closed
           end
+
           let(:note_text) { '/reopen' }
 
           it 'opens the noteable, and leave no note' do
@@ -606,6 +681,7 @@ RSpec.describe Notes::QuickActionsService, feature_category: :team_planning do
             note.noteable.close
             expect(note.noteable).to be_closed
           end
+
           let(:note_text) { "HELLO\n/reopen\nWORLD" }
 
           it 'opens the noteable' do

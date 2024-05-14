@@ -48,5 +48,21 @@ module WebHooks
 
       DateTime.parse(last_failure) if last_failure
     end
+
+    def update_last_webhook_failure(hook)
+      if hook.executable?
+        cache_web_hook_failure if get_web_hook_failure # may need update
+      else
+        cache_web_hook_failure(true) # definitely failing, no need to check
+
+        Gitlab::Redis::SharedState.with do |redis|
+          last_failure_key = last_failure_redis_key
+          time = Time.current.utc.iso8601
+          prev = redis.get(last_failure_key)
+
+          redis.set(last_failure_key, time) if !prev || prev < time
+        end
+      end
+    end
   end
 end

@@ -2,13 +2,14 @@
 stage: Create
 group: Source Code
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
+description: "Use push rules to control the content and format of Git commits your repository will accept. Set standards for commit messages, and block secrets or credentials from being added accidentally."
 ---
 
 # Push rules
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - Maximum regular expression length for push rules [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/411901) from 255 to 511 characters in GitLab 16.3.
 
@@ -142,7 +143,7 @@ Some validation examples:
 
 Use these rules to prevent unintended consequences.
 
-- **Reject unsigned commits**: Commit must be signed through [GPG](signed_commits/gpg.md). This rule
+- **Reject unsigned commits**: Commit [must be signed](signed_commits). This rule
   can block some legitimate commits [created in the Web IDE](#reject-unsigned-commits-push-rule-disables-web-ide),
   and allow [unsigned commits created in the GitLab UI](#unsigned-commits-created-in-the-gitlab-ui).
 - **Do not allow users to remove Git tags with `git push`**: Users cannot use `git push` to remove Git tags.
@@ -159,8 +160,6 @@ Use these rules to validate files contained in the commit.
   file size (in MB). To allow files of any size, set to `0`. Files tracked by Git LFS are exempted.
 
 ### Prevent pushing secrets to the repository
-
-> - Moved to GitLab Premium in 13.9.
 
 Never commit secrets, such as credential files and SSH private keys, to a version control
 system. In GitLab, you can use a predefined list of files to block those files from a
@@ -210,7 +209,7 @@ Files blocked by this rule are listed below. For a complete list of criteria, re
   - `id_ecdsa`
   - `.id_ecdsa`
 
-- Private ECDSA_SK SSH keys (GitLab 14.8 and later):
+- Private ECDSA_SK SSH keys:
 
   - `/ssh/id_ecdsa_sk`
   - `/.ssh/personal_ecdsa_sk`
@@ -218,7 +217,7 @@ Files blocked by this rule are listed below. For a complete list of criteria, re
   - `id_ecdsa_sk`
   - `.id_ecdsa_sk`
 
-- Private ED25519_SK SSH keys (GitLab 14.8 and later):
+- Private ED25519_SK SSH keys:
 
   - `/ssh/id_ed25519_sk`
   - `/.ssh/personal_ed25519_sk`
@@ -234,8 +233,6 @@ Files blocked by this rule are listed below. For a complete list of criteria, re
   - `*_history`
 
 ### Prohibit files by name
-
-> - Moved to GitLab Premium in 13.9.
 
 In Git, filenames include both the file's name, and all directories preceding the name.
 When you `git push`, each filename in the push is compared to the regular expression
@@ -291,13 +288,15 @@ to use them as standard characters in a match condition.
 
 - [Git server hooks](../../../administration/server_hooks.md) (previously called server hooks), to create complex custom push rules
 - [Signing commits with GPG](signed_commits/gpg.md)
+- [Signing commits with SSH](signed_commits/ssh.md)
+- [Signing commits with X.509](signed_commits/x509.md)
 - [Protected branches](../protected_branches.md)
 
 ## Troubleshooting
 
 ### Reject unsigned commits push rule disables Web IDE
 
-In GitLab 13.10, if a project has the **Reject unsigned commits** push rule, the user cannot
+If a project has the **Reject unsigned commits** push rule, the user cannot
 create commits through the GitLab Web IDE.
 
 To allow committing through the Web IDE on a project with this push rule, a GitLab administrator

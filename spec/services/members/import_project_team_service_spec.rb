@@ -38,7 +38,7 @@ RSpec.describe Members::ImportProjectTeamService, feature_category: :groups_and_
           expect(result).to be_a(ServiceResponse)
           expect(result.error?).to be(true)
           expect(result.message).to eq('Target project does not exist')
-          expect(result.reason).to eq(:unprocessable_entity)
+          expect(result.reason).to eq(:argument_error)
         end
       end
 
@@ -51,7 +51,7 @@ RSpec.describe Members::ImportProjectTeamService, feature_category: :groups_and_
           expect(result).to be_a(ServiceResponse)
           expect(result.error?).to be(true)
           expect(result.message).to eq('Source project does not exist')
-          expect(result.reason).to eq(:unprocessable_entity)
+          expect(result.reason).to eq(:argument_error)
         end
       end
 
@@ -64,7 +64,7 @@ RSpec.describe Members::ImportProjectTeamService, feature_category: :groups_and_
           expect(result).to be_a(ServiceResponse)
           expect(result.error?).to be(true)
           expect(result.message).to eq('Forbidden')
-          expect(result.reason).to eq(:unprocessable_entity)
+          expect(result.reason).to eq(:import_project_team_forbidden_error)
         end
       end
 
@@ -77,7 +77,7 @@ RSpec.describe Members::ImportProjectTeamService, feature_category: :groups_and_
           expect(result).to be_a(ServiceResponse)
           expect(result.error?).to be(true)
           expect(result.message).to eq('Forbidden')
-          expect(result.reason).to eq(:unprocessable_entity)
+          expect(result.reason).to eq(:import_project_team_forbidden_error)
         end
       end
 
@@ -90,7 +90,7 @@ RSpec.describe Members::ImportProjectTeamService, feature_category: :groups_and_
           expect(result).to be_a(ServiceResponse)
           expect(result.error?).to be(true)
           expect(result.message).to eq('Forbidden')
-          expect(result.reason).to eq(:unprocessable_entity)
+          expect(result.reason).to eq(:import_project_team_forbidden_error)
         end
       end
 
@@ -107,7 +107,7 @@ RSpec.describe Members::ImportProjectTeamService, feature_category: :groups_and_
           expect(result).to be_a(ServiceResponse)
           expect(result.error?).to be(true)
           expect(result.message).to eq('Import failed')
-          expect(result.reason).to eq(:unprocessable_entity)
+          expect(result.reason).to eq(:import_failed_error)
         end
       end
 

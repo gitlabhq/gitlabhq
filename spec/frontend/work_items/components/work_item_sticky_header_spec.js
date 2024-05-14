@@ -1,4 +1,4 @@
-import { GlIntersectionObserver } from '@gitlab/ui';
+import { GlIntersectionObserver, GlLink } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { STATE_OPEN } from '~/work_items/constants';
@@ -8,14 +8,19 @@ import WorkItemStickyHeader from '~/work_items/components/work_item_sticky_heade
 import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
 import WorkItemActions from '~/work_items/components/work_item_actions.vue';
 import WorkItemTodos from '~/work_items/components/work_item_todos.vue';
+import WorkItemStateBadge from '~/work_items/components/work_item_state_badge.vue';
 
 describe('WorkItemStickyHeader', () => {
   let wrapper;
 
-  const createComponent = ({ confidential = false, discussionLocked = false } = {}) => {
+  const createComponent = ({
+    confidential = false,
+    discussionLocked = false,
+    canUpdate = true,
+  } = {}) => {
     wrapper = shallowMountExtended(WorkItemStickyHeader, {
       propsData: {
-        workItem: workItemResponseFactory({ canUpdate: true, confidential, discussionLocked }).data
+        workItem: workItemResponseFactory({ canUpdate, confidential, discussionLocked }).data
           .workItem,
         fullPath: '/test',
         isStickyHeaderShowing: true,
@@ -36,6 +41,9 @@ describe('WorkItemStickyHeader', () => {
   const findWorkItemActions = () => wrapper.findComponent(WorkItemActions);
   const findWorkItemTodos = () => wrapper.findComponent(WorkItemTodos);
   const findIntersectionObserver = () => wrapper.findComponent(GlIntersectionObserver);
+  const findWorkItemStateBadge = () => wrapper.findComponent(WorkItemStateBadge);
+  const findEditButton = () => wrapper.findByTestId('work-item-edit-button-sticky');
+  const findWorkItemTitle = () => wrapper.findComponent(GlLink);
   const triggerPageScroll = () => findIntersectionObserver().vm.$emit('disappear');
 
   it('has the sticky header when the page is scrolled', async () => {
@@ -50,9 +58,33 @@ describe('WorkItemStickyHeader', () => {
   it('renders title, todos, and actions', () => {
     createComponent();
 
-    expect(wrapper.findByText('Updated title').exists()).toBe(true);
+    expect(findWorkItemTitle().exists()).toBe(true);
     expect(findWorkItemTodos().exists()).toBe(true);
     expect(findWorkItemActions().exists()).toBe(true);
+  });
+
+  it('has title with the link to the top', () => {
+    createComponent();
+    expect(findWorkItemTitle().attributes('href')).toBe('#top');
+  });
+
+  it('renders the state badge', () => {
+    createComponent();
+    expect(findWorkItemStateBadge().exists()).toBe(true);
+  });
+
+  describe('edit button', () => {
+    it('renders the button when it has permissions to edit', () => {
+      createComponent({ canUpdate: true });
+
+      expect(findEditButton().exists()).toBe(true);
+    });
+
+    it('does not render the button when it does not have permissions to edit', () => {
+      createComponent({ canUpdate: false });
+
+      expect(findEditButton().exists()).toBe(false);
+    });
   });
 
   describe('confidential badge', () => {

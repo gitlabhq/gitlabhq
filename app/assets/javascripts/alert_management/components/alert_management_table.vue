@@ -21,7 +21,6 @@ import AlertStatus from '~/vue_shared/alert_details/components/alert_status.vue'
 import { TOKEN_TYPE_ASSIGNEE } from '~/vue_shared/components/filtered_search_bar/constants';
 import {
   tdClass,
-  thClass,
   bodyTrClass,
   initialPaginationState,
 } from '~/vue_shared/components/paginated_table_with_search_and_tabs/constants';
@@ -53,7 +52,8 @@ export default {
     {
       key: 'severity',
       label: s__('AlertManagement|Severity'),
-      thClass: `${thClass} gl-w-eighth`,
+      variant: 'secondary',
+      thClass: `gl-w-1/8`,
       thAttr: TH_TEST_ID,
       tdClass: `${tdClass} rounded-top text-capitalize sortable-cell`,
       sortable: true,
@@ -61,7 +61,8 @@ export default {
     {
       key: 'startedAt',
       label: s__('AlertManagement|Start time'),
-      thClass: `${thClass} js-started-at w-15p`,
+      variant: 'secondary',
+      thClass: `js-started-at gl-w-3/20`,
       tdClass: `${tdClass} sortable-cell`,
       sortable: true,
     },
@@ -74,26 +75,27 @@ export default {
     {
       key: 'eventCount',
       label: s__('AlertManagement|Events'),
-      thClass: `${thClass} text-right gl-w-12`,
-      tdClass: `${tdClass} text-md-right sortable-cell`,
+      variant: 'secondary',
+      tdClass: `${tdClass} sortable-cell`,
       sortable: true,
     },
     {
       key: 'issue',
       label: s__('AlertManagement|Incident'),
-      thClass: 'gl-w-15p gl-pointer-events-none',
+      thClass: 'gl-w-3/20 gl-pointer-events-none',
       tdClass,
     },
     {
       key: 'assignees',
       label: s__('AlertManagement|Assignees'),
-      thClass: 'gl-w-eighth gl-pointer-events-none',
+      thClass: 'gl-w-1/8 gl-pointer-events-none',
       tdClass,
     },
     {
       key: 'status',
       label: s__('AlertManagement|Status'),
-      thClass: `${thClass} w-15p`,
+      variant: 'secondary',
+      thClass: `gl-w-3/20`,
       tdClass: `${tdClass} rounded-bottom sortable-cell`,
       sortable: true,
     },
@@ -329,8 +331,10 @@ export default {
           :sort-direction="sortDirection"
           :sort-desc.sync="sortDesc"
           :sort-by.sync="sortBy"
-          sort-icon-left
           fixed
+          hover
+          selectable
+          selected-variant="primary"
           @row-clicked="navigateToAlertDetails"
           @sort-changed="fetchSortedData"
         >

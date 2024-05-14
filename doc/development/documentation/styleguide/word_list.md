@@ -77,10 +77,25 @@ When you create a user, you choose an access level: **Regular**, **Auditor**, or
 
 Capitalize these words when you refer to the UI. Otherwise use lowercase.
 
+## add
+
+Use **add** when an object already exists. If the object does not exist yet, use [**create**](#create) instead.
+**Add** is the opposite of [remove](#remove).
+
+For example:
+
+- Add a user to the list.
+- Add an issue to the epic.
+
+Do not confuse **add** with [**create**](#create).
+
+Do not use **Add new**.
+
 ## Admin Area
 
-Use title case for **Admin Area**.
-This area of the UI says **Admin Area** at the top of the page and on the menu.
+Use title case for **Admin Area**. The UI uses title case.
+
+Do not use **administrator area**, **administration area**, or other variants.
 
 ## Admin Mode
 
@@ -222,16 +237,20 @@ Try to avoid **below** when referring to an example or table in a documentation 
 
 - In the following example, the dog has fleas.
 
-## Beta
+## beta
 
-Use uppercase for **Beta**. For example: **The XYZ feature is in Beta.** or **This Beta release is ready to test.**
+Use lowercase for **beta**. For example:
+
+- The feature is in beta.
+- This is a beta feature.
+- This beta release is ready to test.
 
 You might also want to link to [this topic](../../../policy/experiment-beta-support.md#beta)
-when writing about Beta features.
+when writing about beta features.
 
 ## blacklist
 
-Do not use **blacklist**. Another option is **denylist**. ([Vale](../testing.md#vale) rule: [`InclusionCultural.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/InclusionCultural.yml))
+Do not use **blacklist**. Another option is **denylist**. ([Vale](../testing/vale.md) rule: [`InclusionCultural.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/InclusionCultural.yml))
 
 ## board
 
@@ -305,7 +324,7 @@ If you must refer to the checkbox, you can say it is selected or cleared. For ex
 - Ensure the **Protect environment** checkbox is cleared.
 - Ensure the **Protect environment** checkbox is selected.
 
-(For `deselect`, [Vale](../testing.md#vale) rule: [`SubstitutionWarning.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SubstitutionWarning.yml))
+(For `deselect`, [Vale](../testing/vale.md) rule: [`SubstitutionWarning.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SubstitutionWarning.yml))
 
 ## checkout, check out
 
@@ -335,6 +354,15 @@ Do not use **CI/CD minutes**. This term was renamed to [**compute minutes**](#co
 
 Do not use **click**. Instead, use **select** with buttons, links, menu items, and lists.
 **Select** applies to more devices, while **click** is more specific to a mouse.
+
+## cloud licensing
+
+Do not use the phrase **cloud licensing**. Instead, focus on the fact
+that this subscription is synchronized with GitLab.
+
+For example:
+
+- Your instance must be able to synchronize your subscription data with GitLab.
 
 ## cloud native
 
@@ -429,10 +457,22 @@ Use:
 - The GitLab container registry supports A, B, and C.
 - You can push a Docker image to your project's container registry.
 
+## create
+
+Use **create** when an object does not exist and you are creating it for the first time.  **Create** is the opposite of [delete](#delete).
+
+For example:
+
+- Create an issue.
+
+Do not confuse **create** with [**add**](#add).
+
+Do not use **create new**. The word **create** implies that the object is new, and the extra word is not necessary.
+
 ## currently
 
 Do not use **currently** when talking about the product or its features. The documentation describes the product as it is today.
-([Vale](../testing.md#vale) rule: [`CurrentStatus.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/CurrentStatus.yml))
+([Vale](../testing/vale.md) rule: [`CurrentStatus.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/CurrentStatus.yml))
 
 ## custom role
 
@@ -470,7 +510,7 @@ Do not use **static role**, **built-in role**, or **predefined role**.
 
 ## delete
 
-Use **delete** when an object is completely deleted. **Delete** is the opposite of **create**.
+Use **delete** when an object is completely deleted. **Delete** is the opposite of [create](#create).
 
 When the object continues to exist, use [**remove**](#remove) instead.
 For example, you can remove an issue from an epic, but the issue still exists.
@@ -528,7 +568,7 @@ Use **inactive** or **off** instead.
 
 ## disallow
 
-Use **prevent** instead of **disallow**. ([Vale](../testing.md#vale) rule: [`Substitutions.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/Substitutions.yml))
+Use **prevent** instead of **disallow**. ([Vale](../testing/vale.md) rule: [`Substitutions.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/Substitutions.yml))
 
 ## Discussion summary
 
@@ -585,7 +625,7 @@ Do not use **easily**. If the user doesn't find the process to be easy, we lose 
 
 ## e.g.
 
-Do not use Latin abbreviations. Use **for example**, **such as**, **for instance**, or **like** instead. ([Vale](../testing.md#vale) rule: [`LatinTerms.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/LatinTerms.yml))
+Do not use Latin abbreviations. Use **for example**, **such as**, **for instance**, or **like** instead. ([Vale](../testing/vale.md) rule: [`LatinTerms.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/LatinTerms.yml))
 
 ## ellipsis
 
@@ -602,7 +642,7 @@ Instead of:
 
 ## email
 
-Do not use **e-mail** with a hyphen. When plural, use **emails** or **email messages**. ([Vale](../testing.md#vale) rule: [`SubstitutionWarning.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SubstitutionWarning.yml))
+Do not use **e-mail** with a hyphen. When plural, use **emails** or **email messages**. ([Vale](../testing/vale.md) rule: [`SubstitutionWarning.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SubstitutionWarning.yml))
 
 ## email address
 
@@ -663,12 +703,18 @@ Instead of:
 
 Use **expand** instead of **open** when you are talking about expanding or collapsing a section in the UI.
 
-## Experiment
+## experiment
 
-Use uppercase for **Experiment**. For example: **The XYZ feature is an Experiment.** or **This Experiment is ready to test.**
+Use lowercase for **experiment**. For example:
+
+- This feature is an experiment.
+- These features are experiments.
+- This experiment is ready to test.
+
+If you must, you can use **experimental**. 
 
 You might also want to link to [this topic](../../../policy/experiment-beta-support.md#experiment)
-when writing about Experiment features.
+when writing about experimental features.
 
 ## export
 
@@ -732,7 +778,7 @@ Learn more about [documenting multiple fields at once](index.md#documenting-mult
 
 Use one word for **filename**. When using filename as a variable, use `<filename>`.
 
-([Vale](../testing.md#vale) rule: [`SubstitutionWarning.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SubstitutionWarning.yml))
+([Vale](../testing/vale.md) rule: [`SubstitutionWarning.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SubstitutionWarning.yml))
 
 ## filter
 
@@ -759,11 +805,11 @@ If the **fork relationship** is removed, the
 ## full screen
 
 Use two words for **full screen**.
-([Vale](../testing.md#vale) rule: [`SubstitutionWarning.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SubstitutionWarning.yml))
+([Vale](../testing/vale.md) rule: [`SubstitutionWarning.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SubstitutionWarning.yml))
 
 ## future tense
 
-When possible, use present tense instead of future tense. For example, use **after you execute this command, GitLab displays the result** instead of **after you execute this command, GitLab will display the result**. ([Vale](../testing.md#vale) rule: [`FutureTense.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/FutureTense.yml))
+When possible, use present tense instead of future tense. For example, use **after you execute this command, GitLab displays the result** instead of **after you execute this command, GitLab will display the result**. ([Vale](../testing/vale.md) rule: [`FutureTense.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/FutureTense.yml))
 
 ## GB, gigabytes
 
@@ -772,6 +818,20 @@ For **GB** and **MB**, follow the [Microsoft guidance](https://learn.microsoft.c
 ## Geo
 
 Use title case for **Geo**.
+
+## generally available, general availability
+
+Use lowercase for **generally available** and **general availability**.
+For example:
+
+- This feature is generally available.
+
+Use **generally available** more often. For example,
+do not say:
+
+- This feature has reached general availability.
+
+You can use **GA** to indicate general availability if you spell it out on first use.
 
 ## Git suggestions
 
@@ -807,7 +867,7 @@ the following are the names of GitLab Duo features:
 - GitLab Duo Merge request summary
 - GitLab Duo Code review summary
 - GitLab Duo Code explanation
-- GitLab Duo Vulnerability summary
+- GitLab Duo Vulnerability explanation
 - GitLab Duo Vulnerability resolution
 - GitLab Duo Test generation
 - GitLab Duo Git suggestions
@@ -841,7 +901,7 @@ Do not use **the `gitlab` chart**, **the GitLab Chart**, or **the cloud-native c
 You use the **GitLab Helm chart** to deploy **cloud-native GitLab** in a Kubernetes cluster.
 
 If you use it in a context of describing the
-[different installation methods](index.md#how-to-document-different-installation-methods).
+[different installation methods](index.md#how-to-document-different-installation-methods)
 use `Helm chart (Kubernetes)`.
 
 ## GitLab Pages
@@ -864,8 +924,9 @@ See also:
 
 ## GitLab SaaS
 
-Use **GitLab SaaS** to refer to the product offering.
-It does not refer to the GitLab instance, which is [GitLab.com](#gitlabcom).
+**GitLab SaaS** refers to both [GitLab.com](#gitlabcom) (multi-tenant SaaS) as well as [GitLab Dedicated](#gitlab-dedicated) (single-tenant SaaS).
+
+Try to avoid **GitLab SaaS** and instead, refer to the [specific offering](#offerings) instead.
 
 ## GitLab self-managed
 
@@ -873,7 +934,7 @@ Use **GitLab self-managed** to refer to the product offering. It refers to a Git
 
 ## GitLab.com
 
-Use **GitLab.com** to refer to the URL. GitLab.com is the instance that's managed by GitLab.
+Use **GitLab.com** to refer to the URL or product offering. GitLab.com is the instance that's managed by GitLab.
 
 ## guide
 
@@ -899,7 +960,7 @@ Do not use **Guest permissions**. A user who is assigned the Guest role has a se
 
 ## handy
 
-Do not use **handy**. If the user doesn't find the feature or process to be handy, we lose their trust. ([Vale](../testing.md#vale) rule: [`Simplicity.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/Simplicity.yml))
+Do not use **handy**. If the user doesn't find the feature or process to be handy, we lose their trust. ([Vale](../testing/vale.md) rule: [`Simplicity.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/Simplicity.yml))
 
 ## high availability, HA
 
@@ -938,11 +999,11 @@ Do not use first-person singular. Use **you** or rewrite the phrase instead.
 
 ## i.e.
 
-Do not use Latin abbreviations. Use **that is** instead. ([Vale](../testing.md#vale) rule: [`LatinTerms.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/LatinTerms.yml))
+Do not use Latin abbreviations. Use **that is** instead. ([Vale](../testing/vale.md) rule: [`LatinTerms.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/LatinTerms.yml))
 
 ## in order to
 
-Do not use **in order to**. Use **to** instead. ([Vale](../testing.md#vale) rule: [`Wordy.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/Wordy.yml))
+Do not use **in order to**. Use **to** instead. ([Vale](../testing/vale.md) rule: [`Wordy.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/Wordy.yml))
 
 ## indexes, indices
 
@@ -1056,7 +1117,7 @@ Use the full phrase **dropdown list** instead.
 
 When writing about licenses:
 
-- Do not use variations such as **cloud license**, **offline license**, or **legacy license**.
+- Do not use variations such as [**cloud license**](#cloud-licensing), **offline license**, or **legacy license**.
 - Do not use interchangeably with **subscription**:
   - A license grants users access to the subscription they purchased, and contains information such as the number of seats they purchased and subscription dates.
   - A subscription is the subscription tier that the user purchases.
@@ -1131,16 +1192,16 @@ Do not use **Maintainer permissions**. A user who is assigned the Maintainer rol
 
 ## mankind
 
-Do not use **mankind**. Use **people** or **humanity** instead. ([Vale](../testing.md#vale) rule: [`InclusionGender.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/InclusionGender.yml))
+Do not use **mankind**. Use **people** or **humanity** instead. ([Vale](../testing/vale.md) rule: [`InclusionGender.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/InclusionGender.yml))
 
 ## manpower
 
-Do not use **manpower**. Use words like **workforce** or **GitLab team members**. ([Vale](../testing.md#vale) rule: [`InclusionGender.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/InclusionGender.yml))
+Do not use **manpower**. Use words like **workforce** or **GitLab team members**. ([Vale](../testing/vale.md) rule: [`InclusionGender.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/InclusionGender.yml))
 
 ## master
 
 Do not use **master**. Use **main** when you need a sample [default branch name](#branch).
-([Vale](../testing.md#vale) rule: [`InclusionCultural.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/InclusionCultural.yml))
+([Vale](../testing/vale.md) rule: [`InclusionCultural.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/InclusionCultural.yml))
 
 ## may, might
 
@@ -1219,7 +1280,7 @@ Do not use **navigate**. Use **go** instead. For example:
 - Go to this webpage.
 - Open a terminal and go to the `runner` directory.
 
-([Vale](../testing.md#vale) rule: [`SubstitutionWarning.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SubstitutionWarning.yml))
+([Vale](../testing/vale.md) rule: [`SubstitutionWarning.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SubstitutionWarning.yml))
 
 ## need to
 
@@ -1238,6 +1299,13 @@ When the variable is **recommended**:
 When the variable is **optional**:
 
 - You can set the variable.
+
+## new
+
+Often, you can avoid the word **new**. When you create an object, it is new,
+so you don't need this additional word.
+
+See also [**create**](#create) and [**add**](#add).
 
 ## newer
 
@@ -1269,7 +1337,7 @@ Instead of:
 - Normally, you specify a certificate.
 - Follow the normal Git workflow.
 
-([Vale](../testing.md#vale) rule: [`Normal.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/Normal.yml))
+([Vale](../testing/vale.md) rule: [`Normal.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/Normal.yml))
 
 ## note that
 
@@ -1287,7 +1355,7 @@ Instead of:
 
 The current product offerings are:
 
-- [GitLab SaaS](#gitlab-saas)
+- [GitLab.com](#gitlabcom)
 - [GitLab self-managed](#gitlab-self-managed)
 - [GitLab Dedicated](#gitlab-dedicated)
 
@@ -1602,6 +1670,21 @@ Use **runner authentication token** instead of variations like **runner token**,
 Runners are assigned runner authentication tokens when they are created, and use them to authenticate with GitLab when
 they execute jobs.
 
+## Runner SaaS, SaaS runners
+
+Do not use **Runner SaaS** or **SaaS runners**.
+
+Use **GitLab-hosted runners** as the main feature name that describes runners hosted on GitLab.com and GitLab Dedicated.
+
+To specify offerings and operating systems use:
+
+- **hosted runners for GitLab.com**
+- **hosted runners for GitLab Dedicated**
+- **hosted runners on Linux for GitLab.com**
+- **hosted runners on Windows for GitLab.com**
+
+Do not use **hosted runners** without the **GitLab-** prefix or without the offering or operating system.
+
 ## (s)
 
 Do not use **(s)** to make a word optionally plural. It can slow down comprehension. For example:
@@ -1618,7 +1701,7 @@ If you can select multiples of something, then write the word as plural.
 
 ## sanity check
 
-Do not use **sanity check**. Use **check for completeness** instead. ([Vale](../testing.md#vale) rule: [`InclusionAbleism.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/InclusionAbleism.yml))
+Do not use **sanity check**. Use **check for completeness** instead. ([Vale](../testing/vale.md) rule: [`InclusionAbleism.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/InclusionAbleism.yml))
 
 ## scalability
 
@@ -1719,7 +1802,7 @@ Use **authenticated user** instead of **signed-in user** or **signed in user**.
 
 ## simply, simple
 
-Do not use **simply** or **simple**. If the user doesn't find the process to be simple, we lose their trust. ([Vale](../testing.md#vale) rule: [`Simplicity.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/Simplicity.yml))
+Do not use **simply** or **simple**. If the user doesn't find the process to be simple, we lose their trust. ([Vale](../testing/vale.md) rule: [`Simplicity.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/Simplicity.yml))
 
 ## since
 
@@ -1739,7 +1822,7 @@ Instead of **and/or**, use **or** or re-write the sentence. This rule also appli
 
 ## slave
 
-Do not use **slave**. Another option is **secondary**. ([Vale](../testing.md#vale) rule: [`InclusionCultural.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/InclusionCultural.yml))
+Do not use **slave**. Another option is **secondary**. ([Vale](../testing/vale.md) rule: [`InclusionCultural.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/InclusionCultural.yml))
 
 ## storages
 
@@ -1757,7 +1840,7 @@ Gitaly storages have physical paths and virtual storages have virtual paths.
 Use **subgroup** (no hyphen) instead of **sub-group**.
 Also, avoid using alternative terms for subgroups, such as **child group** or **low-level group**.
 
-([Vale](../testing.md#vale) rule: [`SubstitutionWarning.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SubstitutionWarning.yml))
+([Vale](../testing/vale.md) rule: [`SubstitutionWarning.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SubstitutionWarning.yml))
 
 ## subscription tier
 
@@ -1865,11 +1948,11 @@ For examples, see [Prepositions](index.md#prepositions).
 
 ## to-do item
 
-Use lowercase and hyphenate **to-do** item. ([Vale](../testing.md#vale) rule: [`ToDo.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/ToDo.yml))
+Use lowercase and hyphenate **to-do** item. ([Vale](../testing/vale.md) rule: [`ToDo.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/ToDo.yml))
 
 ## To-Do List
 
-Use title case for **To-Do List**. ([Vale](../testing.md#vale) rule: [`ToDo.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/ToDo.yml))
+Use title case for **To-Do List**. ([Vale](../testing/vale.md) rule: [`ToDo.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/ToDo.yml))
 
 ## toggle
 
@@ -1907,7 +1990,7 @@ See the [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/a-
 ## units of measurement
 
 Use a space between the number and the unit of measurement. For example, **128 GB**.
-([Vale](../testing.md#vale) rule: [`Units.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/Units.yml))
+([Vale](../testing/vale.md) rule: [`Units.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/Units.yml))
 
 For more information, see the
 [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/term-collections/bits-bytes-terms).
@@ -1950,7 +2033,7 @@ For more information, see the [Microsoft Style Guide](https://learn.microsoft.co
 
 ## useful
 
-Do not use **useful**. If the user doesn't find the process to be useful, we lose their trust. ([Vale](../testing.md#vale) rule: [`Simplicity.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/Simplicity.yml))
+Do not use **useful**. If the user doesn't find the process to be useful, we lose their trust. ([Vale](../testing/vale.md) rule: [`Simplicity.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/Simplicity.yml))
 
 ## user account
 
@@ -1973,7 +2056,7 @@ For example:
 ## utilize
 
 Do not use **utilize**. Use **use** instead. It's more succinct and easier for non-native English speakers to understand.
-([Vale](../testing.md#vale) rule: [`SubstitutionWarning.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SubstitutionWarning.yml))
+([Vale](../testing/vale.md) rule: [`SubstitutionWarning.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SubstitutionWarning.yml))
 
 ## Value stream forecasting
 
@@ -1981,9 +2064,24 @@ Use sentence case for **Value stream forecasting**. On first mention on a page, 
 
 Thereafter, use **Value stream forecasting** by itself.
 
+## version, v
+
+To describe versions of GitLab, use **GitLab `<version number>`**. For example:
+
+- You must have GitLab 16.0 or later.
+
+To describe other software, use the same style as the documentation for that software.
+For example:
+
+- In Kubernetes 1.4, you can...
+
+Pay attention to spacing by the letter **v**. In semantic versioning, no space exists after the **v**. For example:
+
+- v1.2.3
+
 ## via
 
-Do not use Latin abbreviations. Use **with**, **through**, or **by using** instead. ([Vale](../testing.md#vale) rule: [`LatinTerms.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/LatinTerms.yml))
+Do not use Latin abbreviations. Use **with**, **through**, or **by using** instead. ([Vale](../testing/vale.md) rule: [`LatinTerms.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/LatinTerms.yml))
 
 ## Vulnerability resolution
 
@@ -1992,12 +2090,12 @@ Use sentence case for **Vulnerability resolution**.
 On first mention on a page, use **GitLab Duo Vulnerability resolution**.
 Thereafter, use **Vulnerability resolution** by itself.
 
-## Vulnerability summary
+## Vulnerability explanation
 
-Use sentence case for **Vulnerability summary**.
+Use sentence case for **Vulnerability explanation**.
 
-On first mention on a page, use **GitLab Duo Vulnerability summary**.
-Thereafter, use **Vulnerability summary** by itself.
+On first mention on a page, use **GitLab Duo Vulnerability explanation**.
+Thereafter, use **Vulnerability explanation** by itself.
 
 ## we
 
@@ -2042,7 +2140,7 @@ Do not use **whilst**. Use [while](#while) instead. **While** is more succinct a
 
 ## whitelist
 
-Do not use **whitelist**. Another option is **allowlist**. ([Vale](../testing.md#vale) rule: [`InclusionCultural.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/InclusionCultural.yml))
+Do not use **whitelist**. Another option is **allowlist**. ([Vale](../testing/vale.md) rule: [`InclusionCultural.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/InclusionCultural.yml))
 
 ## yet
 

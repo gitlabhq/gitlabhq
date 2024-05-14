@@ -395,7 +395,7 @@ RSpec.describe Gitlab::Metrics::RequestsRackMiddleware, :aggregate_failures, fea
         context 'A request with urgency set on the env (from ETag-caching)' do
           let(:env) do
             { described_class::REQUEST_URGENCY_KEY => Gitlab::EndpointAttributes::Config::REQUEST_URGENCIES[:medium],
-            'REQUEST_METHOD' => 'GET' }
+              'REQUEST_METHOD' => 'GET' }
           end
 
           it 'records the request with the correct urgency' do

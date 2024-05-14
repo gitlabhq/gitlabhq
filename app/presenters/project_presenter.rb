@@ -12,6 +12,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   include Gitlab::Utils::StrongMemoize
   include Gitlab::Experiment::Dsl
   include SafeFormatHelper
+  include Projects::PagesHelper
 
   delegator_override_with GitlabRoutingHelper # TODO: Remove `GitlabRoutingHelper` inclusion as it's duplicate
   delegator_override_with Gitlab::Utils::StrongMemoize # This module inclusion is expected. See https://gitlab.com/gitlab-org/gitlab/-/issues/352884.
@@ -22,14 +23,10 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   MAX_TOPICS_TO_SHOW = 3
 
   def statistic_default_class_list
-    Feature.enabled?(:project_overview_reorg) ? 'icon gl-mr-3 gl-text-gray-500' : 'icon gl-mr-2 gl-text-gray-500'
+    'icon gl-mr-3 gl-text-gray-500'
   end
 
-  def statistic_default_icon
-    Feature.enabled?(:project_overview_reorg) ? 'plus' : 'plus-square-o'
-  end
-
-  def statistic_icon(icon_name = statistic_default_icon, class_list = statistic_default_class_list)
+  def statistic_icon(icon_name = 'plus', class_list = statistic_default_class_list)
     sprite_icon(icon_name, css_class: class_list)
   end
 
@@ -55,7 +52,8 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
       kubernetes_cluster_anchor_data,
       gitlab_ci_anchor_data,
       wiki_anchor_data,
-      integrations_anchor_data
+      integrations_anchor_data,
+      pages_anchor_data
     ].compact.reject(&:is_link).sort_by.with_index { |item, idx| [item.class_modifier ? 0 : 1, idx] }
   end
 
@@ -89,7 +87,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     elsif project.wiki_repository_exists? && can?(current_user, :read_wiki, project)
       'wiki'
     elsif can?(current_user, :read_issue, project)
-      'projects/issues/issues'
+      'projects/issues'
     else
       'activity'
     end
@@ -296,17 +294,13 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     if can_current_user_push_to_default_branch?
       new_file_path = empty_repo? ? ide_edit_path(project, default_branch_or_main) : project_new_blob_path(project, default_branch_or_main)
 
-      if Feature.enabled?(:project_overview_reorg)
-        AnchorData.new(false, statistic_icon('plus', 'gl-text-blue-500! gl-mr-3') + _('New file'), new_file_path)
-      else
-        AnchorData.new(false, statistic_icon + _('New file'), new_file_path, 'btn-dashed')
-      end
+      AnchorData.new(false, statistic_icon('plus', 'gl-text-blue-500! gl-mr-3') + _('New file'), new_file_path)
     end
   end
 
   def readme_anchor_data
     if can_current_user_push_to_default_branch? && readme_path.nil?
-      icon = Feature.enabled?(:project_overview_reorg) ? statistic_icon('plus', 'gl-text-blue-500! gl-mr-3') : statistic_icon
+      icon = statistic_icon('plus', 'gl-text-blue-500! gl-mr-3')
       label = icon + _('Add README')
       AnchorData.new(false, label, empty_repo? ? add_readme_ide_path : add_readme_path)
     elsif readme_path
@@ -322,7 +316,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
 
   def changelog_anchor_data
     if can_current_user_push_to_default_branch? && repository.changelog.blank?
-      icon = Feature.enabled?(:project_overview_reorg) ? statistic_icon('plus', 'gl-mr-3') : statistic_icon
+      icon = statistic_icon('plus', 'gl-mr-3')
       label = icon + _('Add CHANGELOG')
       AnchorData.new(
         false,
@@ -352,7 +346,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
         'license'
       )
     elsif can_current_user_push_to_default_branch?
-      icon = Feature.enabled?(:project_overview_reorg) ? statistic_icon('plus', 'gl-text-blue-500! gl-mr-3') : statistic_icon
+      icon = statistic_icon('plus', 'gl-text-blue-500! gl-mr-3')
       label = icon + _('Add LICENSE')
       AnchorData.new(
         false,
@@ -364,7 +358,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
 
   def contribution_guide_anchor_data
     if can_current_user_push_to_default_branch? && repository.contribution_guide.blank?
-      icon = Feature.enabled?(:project_overview_reorg) ? statistic_icon('plus', 'gl-text-blue-500! gl-mr-3') : statistic_icon
+      icon = statistic_icon('plus', 'gl-text-blue-500! gl-mr-3')
       label = icon + _('Add CONTRIBUTING')
       AnchorData.new(
         false,
@@ -407,11 +401,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   def kubernetes_cluster_anchor_data
     if can_instantiate_cluster?
       if clusters.empty?
-        if Feature.enabled?(:project_overview_reorg)
-          AnchorData.new(false, content_tag(:span, statistic_icon('plus', 'gl-mr-3') + _('Add Kubernetes cluster')), project_clusters_path(project))
-        else
-          AnchorData.new(false, content_tag(:span, statistic_icon + _('Add Kubernetes cluster')), project_clusters_path(project))
-        end
+        AnchorData.new(false, content_tag(:span, statistic_icon('plus', 'gl-mr-3') + _('Add Kubernetes cluster')), project_clusters_path(project))
       else
         cluster_link = clusters.count == 1 ? project_cluster_path(project, clusters.first) : project_clusters_path(project)
 
@@ -436,7 +426,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     if project.wiki.has_home_page?
       AnchorData.new(false, statistic_icon('book') + _('Wiki'), project_wiki_path, 'btn-default', nil, nil)
     elsif can_create_wiki?
-      icon = Feature.enabled?(:project_overview_reorg) ? statistic_icon('plus', 'gl-mr-3') : statistic_icon
+      icon = statistic_icon('plus', 'gl-mr-3')
       label = icon + _('Add Wiki')
       AnchorData.new(false, label, project_create_wiki_path, nil, nil, nil)
     end
@@ -478,16 +468,19 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     end
   end
 
+  def pages_anchor_data
+    return unless project.pages_deployed? && can?(current_user, :read_pages_content, project)
+
+    pages_url = build_pages_url(project, with_unique_domain: true)
+    AnchorData.new(false, statistic_icon('external-link') + _('GitLab Pages'), pages_url, 'btn-default', nil)
+  end
+
   private
 
   def integrations_anchor_data
     return unless can?(current_user, :admin_project, project)
 
-    if Feature.enabled?(:project_overview_reorg)
-      AnchorData.new(false, content_tag(:span, statistic_icon('plus', 'gl-blue-500! gl-mr-3') + _('Configure Integrations')), project_settings_integrations_path(project), nil, nil, nil)
-    else
-      AnchorData.new(false, content_tag(:span, statistic_icon('settings') + _('Configure Integrations')), project_settings_integrations_path(project), nil, nil, nil)
-    end
+    AnchorData.new(false, content_tag(:span, statistic_icon('plus', 'gl-blue-500! gl-mr-3') + _('Configure Integrations')), project_settings_integrations_path(project), nil, nil, nil)
   end
 
   def cicd_missing?
@@ -510,7 +503,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     elsif project.wiki_repository_exists? && can?(current_user, :read_wiki, project)
       'wiki'
     elsif can?(current_user, :read_issue, project)
-      'projects/issues/issues'
+      'projects/issues'
     else
       'activity'
     end

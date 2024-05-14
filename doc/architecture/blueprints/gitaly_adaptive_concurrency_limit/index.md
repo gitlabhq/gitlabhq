@@ -25,8 +25,8 @@ trouble.
 
 To reduce the risk of incidents and protect itself, Gitaly should be able to
 push back on its clients when it determines some limits have been reached. In
-the [prior attempt](https://Gitlab.com/groups/Gitlab-org/-/epics/7891), we laid
-out some foundations for [backpressure](https://Gitlab.com/Gitlab-org/Gitaly/-/blob/382d1e57b2cf02763d3d65e31ff4d38f467b797c/doc/backpressure.md)
+the [prior attempt](https://gitlab.com/groups/gitlab-org/-/epics/7891), we laid
+out some foundations for [backpressure](https://gitlab.com/gitlab-org/gitaly/-/blob/382d1e57b2cf02763d3d65e31ff4d38f467b797c/doc/backpressure.md)
 by introducing two systems: per-RPC concurrency limits and pack-objects
 concurrency limits.
 
@@ -170,7 +170,7 @@ Regardless of the rejection reason, the client received a `ResourceExhausted`
 response code as a signal that they would back off and retry later. Since most
 direct clients of Gitaly are internal, especially GitLab Shell and Workhorse,
 the actual users received some friendly messages. Gitaly can attach
-[exponential pushback headers](https://Gitlab.com/Gitlab-org/Gitaly/-/issues/5023)
+[exponential pushback headers](https://gitlab.com/gitlab-org/gitaly/-/issues/5023)
 to force internal clients to back off. However, that's a bit brutal and may lead
 to unexpected results. We can consider that later.
 
@@ -194,7 +194,7 @@ aspects to consider:
 Apart from the above signals, we can consider adding more signals in the future
 to make the system smarter. Some examples are Go garbage collector statistics,
 networking stats, file descriptors, etc. Some companies have clever tricks, such
-as [using time drifting to estimate CPU saturation](https://engineering.linkedin.com/blog/2022/hodor--detecting-and-addressing-overload-in-linkedin-microservic).
+as [using time drifting to estimate CPU saturation](https://www.linkedin.com/blog/engineering/data-management/hodor-detecting-and-addressing-overload-in-linkedin-microservic).
 
 #### Backoff events of Upload Pack RPCs
 
@@ -222,9 +222,9 @@ RPCs should use both latency measurement and resource accounting signals.
 
 The issue with saturation is typically not caused by Gitaly, itself but rather by the
 spawned Git processes that handle most of the work. These processes are contained
-within a [cgroup](https://Gitlab.com/Gitlab-org/Gitaly/-/blob/382d1e57b2cf02763d3d65e31ff4d38f467b797c/doc/cgroups.md),
+within a [cgroup](https://gitlab.com/gitlab-org/gitaly/-/blob/382d1e57b2cf02763d3d65e31ff4d38f467b797c/doc/cgroups.md),
 and the algorithm for bucketing cgroup can be
-found [here](https://Gitlab.com/Gitlab-org/Gitaly/-/blob/382d1e57b2cf02763d3d65e31ff4d38f467b797c/internal/cgroups/v1_linux.go#L166-166).
+found [here](https://gitlab.com/gitlab-org/gitaly/-/blob/382d1e57b2cf02763d3d65e31ff4d38f467b797c/internal/cgroups/v1_linux.go#L166-166).
 Typically, Gitaly selects the appropriate cgroup for a request based on the
 target repository. There is also a parent cgroup to which all repository-level
 cgroups belong to.
@@ -250,7 +250,7 @@ to run without interference. However, when the limits set by cgroup are reached
 an increase in page faults, slow system calls, memory allocation problems, and
 even out-of-memory kills. The consequences of such incidents are
 highlighted in
-[this example](https://Gitlab.com/Gitlab-com/gl-infra/production/-/issues/8713#note_1352403481). Inflight requests are significantly impacted, resulting in unacceptable delays,
+[this example](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/8713#note_1352403481). Inflight requests are significantly impacted, resulting in unacceptable delays,
 timeouts, and even cancellations.
 
 Besides, through various observations in the past, some Git processes such as
@@ -352,8 +352,8 @@ reinforced when learning from production later.
 
 - Linkedin HODOR system
   - [https://www.youtube.com/watch?v=-haM4ZpYNko](https://www.youtube.com/watch?v=-haM4ZpYNko)
-  - [https://engineering.linkedin.com/blog/2022/hodor--detecting-and-addressing-overload-in-linkedin-microservic](https://engineering.linkedin.com/blog/2022/hodor--detecting-and-addressing-overload-in-linkedin-microservic)
-- [https://engineering.linkedin.com/blog/2023/hodor--overload-scenarios-and-the-evolution-of-their-detection-a](https://engineering.linkedin.com/blog/2023/hodor--overload-scenarios-and-the-evolution-of-their-detection-a)
+  - [Hodor: Detecting and addressing overload in LinkedIn microservices](https://www.linkedin.com/blog/engineering/data-management/hodor-detecting-and-addressing-overload-in-linkedin-microservic)
+- [https://www.linkedin.com/blog/engineering/infrastructure/hodor-overload-scenarios-and-the-evolution-of-their-detection-a](https://www.linkedin.com/blog/engineering/infrastructure/hodor-overload-scenarios-and-the-evolution-of-their-detection-a)
 - Google SRE chapters about load balancing and overload:
   - [https://sre.google/sre-book/load-balancing-frontend/](https://sre.google/sre-book/load-balancing-frontend/)
   - [https://sre.google/sre-book/load-balancing-datacenter/](https://sre.google/sre-book/load-balancing-datacenter/)

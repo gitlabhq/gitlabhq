@@ -13,6 +13,11 @@ export default {
     GlSprintf,
   },
   props: {
+    visible: {
+      type: Boolean,
+      default: false,
+      required: false,
+    },
     issueCount: {
       type: Number,
       required: true,
@@ -98,7 +103,13 @@ Once deleted, it cannot be undone or recovered.`),
             });
           }
           throw error;
+        })
+        .finally(() => {
+          this.onClose();
         });
+    },
+    onClose() {
+      this.$emit('deleteModalVisible', false);
     },
   },
   primaryProps: {
@@ -113,11 +124,13 @@ Once deleted, it cannot be undone or recovered.`),
 
 <template>
   <gl-modal
+    :visible="visible"
     modal-id="delete-milestone-modal"
     :title="title"
     :action-primary="$options.primaryProps"
     :action-cancel="$options.cancelProps"
     @primary="onSubmit"
+    @hide="onClose"
   >
     <gl-sprintf :message="text">
       <template #milestoneTitle>

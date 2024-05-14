@@ -2,6 +2,6 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Debian::GroupComponent do
+RSpec.describe Packages::Debian::GroupComponent, feature_category: :package_registry do
   it_behaves_like 'Debian Distribution Component', :debian_group_component, :group, false
 end

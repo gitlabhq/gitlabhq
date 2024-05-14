@@ -25,6 +25,7 @@ RSpec.describe ObjectStoreSettings, feature_category: :shared do
           'artifacts' => { 'enabled' => true },
           'external_diffs' => { 'enabled' => false },
           'pages' => { 'enabled' => true },
+          'ci_secure_files' => { 'enabled' => true },
           'object_store' => {
             'enabled' => true,
             'connection' => connection,
@@ -54,6 +55,8 @@ RSpec.describe ObjectStoreSettings, feature_category: :shared do
 
       shared_examples 'consolidated settings for objects accelerated by Workhorse' do
         it 'consolidates active object storage settings' do
+          expect(subject).to be_present
+
           described_class::WORKHORSE_ACCELERATED_TYPES.each do |object_type|
             # Use to_h to avoid https://gitlab.com/gitlab-org/gitlab/-/issues/286873
             section = subject.try(object_type).to_h
@@ -114,6 +117,74 @@ RSpec.describe ObjectStoreSettings, feature_category: :shared do
         expect(settings.lfs['object_store']['bucket_prefix']).to eq('lfs')
       end
 
+      context 'when the same section-specified connection is specified' do
+        before do
+          config['artifacts'] = GitlabSettings::Options.build(
+            {
+              'enabled' => true,
+              'object_store' => {
+                'enabled' => true,
+                'connection' => connection
+              }
+            }
+          )
+        end
+
+        it_behaves_like 'consolidated settings for objects accelerated by Workhorse'
+      end
+
+      context 'when a different section-specified connection is specified' do
+        let(:gcs_connection) { GitlabSettings::Options.build("provider" => "GCS") }
+
+        before do
+          config['artifacts'] = GitlabSettings::Options.build(
+            {
+              'enabled' => true,
+              'object_store' => {
+                'enabled' => true,
+                'connection' => gcs_connection
+              }
+            }
+          )
+        end
+
+        it 'disables consolidated object settings' do
+          expect(settings.artifacts['enabled']).to be true
+          expect(settings.artifacts['object_store']['connection']).to eq(gcs_connection)
+
+          described_class::WORKHORSE_ACCELERATED_TYPES.each do |object_type|
+            section = subject.try(object_type).to_h
+
+            next unless section.dig('object_store', 'enabled')
+
+            expect(section['object_store']['consolidated_settings']).to_be falsey
+          end
+        end
+      end
+
+      context 'CI secure files' do
+        let(:ci_secure_files_connection) { { 'provider' => 'Google', 'google_application_default' => true } }
+
+        before do
+          config['ci_secure_files'] = {
+            'enabled' => true,
+            'object_store' => {
+              'enabled' => true,
+              'connection' => ci_secure_files_connection
+            }
+          }
+        end
+
+        it_behaves_like 'consolidated settings for objects accelerated by Workhorse'
+
+        it 'allows CI secure files to define its own connection' do
+          expect { subject }.not_to raise_error
+
+          expect(settings.ci_secure_files['object_store']['connection'].to_hash).to eq(ci_secure_files_connection)
+          expect(settings.ci_secure_files['object_store']['consolidated_settings']).to be_falsey
+        end
+      end
+
       context 'with Google CDN enabled' do
         let(:cdn_config) do
           {
@@ -146,6 +217,13 @@ RSpec.describe ObjectStoreSettings, feature_category: :shared do
 
         expect { subject }.not_to raise_error
         expect(settings.pages['object_store']).to eq(nil)
+      end
+
+      it 'does not raise error if ci_secure_files config is missing' do
+        config['object_store']['objects'].delete('ci_secure_files')
+
+        expect { subject }.not_to raise_error
+        expect(settings.ci_secure_files['object_store']).to eq(nil)
       end
 
       context 'GitLab Pages' do
@@ -195,13 +273,38 @@ RSpec.describe ObjectStoreSettings, feature_category: :shared do
         end
       end
 
+      context 'when object storage is disabled for ci_secure_files with no bucket' do
+        before do
+          config['ci_secure_files'] = {
+            'enabled' => true,
+            'object_store' => {}
+          }
+          config['object_store']['objects']['ci_secure_files'] = {
+            'enabled' => false
+          }
+        end
+
+        it 'does not enable consolidated settings for ci_secure_files' do
+          subject
+
+          expect(settings.ci_secure_files['enabled']).to be true
+          expect(settings.ci_secure_files['object_store']['remote_directory']).to be_nil
+          expect(settings.ci_secure_files['object_store']['bucket_prefix']).to be_nil
+          expect(settings.ci_secure_files['object_store']['enabled']).to be_falsey
+          expect(settings.ci_secure_files['object_store']['consolidated_settings']).to be_falsey
+        end
+      end
+
       context 'with legacy config' do
         let(:legacy_settings) do
           {
             'enabled' => true,
             'remote_directory' => 'some-bucket',
             'direct_upload' => false,
-            'proxy_download' => false
+            'proxy_download' => false,
+            'connection' => {
+              'provider' => 'GCS'
+            }
           }
         end
 

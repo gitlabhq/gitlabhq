@@ -18,10 +18,8 @@
   .repo-charts.my-5
     #js-code-coverage-chart{ data: project_coverage_chart_data_attributes(@daily_coverage_options, @ref) }
 
-.repo-charts
-  .sub-header-block.border-top
-
-  .row.tree-ref-header
+.repo-charts.gl-border-t
+  .row.tree-ref-header.gl-pt-5
     .col-md-6
       %h4
         - start_time = capture do

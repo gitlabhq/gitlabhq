@@ -100,7 +100,7 @@ export default {
           v-if="hoverMap[`code-${index}`]"
           :title="$options.i18n.copyCodeTitle"
           :text="block.text"
-          class="gl-absolute gl-top-3 gl-right-3 gl-z-index-1 gl-transition-duration-medium"
+          class="gl-absolute gl-top-3 gl-right-3 gl-z-1 gl-transition-duration-medium"
         />
         <code-block-highlighted
           class="gl-border gl-rounded-0! gl-p-4 gl-mb-0 gl-overflow-y-auto"
@@ -118,3 +118,12 @@ export default {
     </template>
   </div>
 </template>
+
+<style lang="scss">
+/* This is to override a margin caused by bootstrap */
+.non-gfm-markdown-block {
+  p {
+    margin-bottom: 0;
+  }
+}
+</style>

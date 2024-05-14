@@ -39,4 +39,24 @@ RSpec.describe 'projects/merge_requests/_commits.html.haml', :sidekiq_might_not_
 
     expect(rendered).to have_css('.js-loading-signature-badge')
   end
+
+  context 'when MR has no commits' do
+    let(:merge_request) { create(:merge_request, source_project: create(:project, :custom_repo)) }
+
+    it 'renders empty state' do
+      assign(:context_commits, [])
+
+      render
+
+      expect(rendered).to have_css('.gl-empty-state')
+    end
+
+    it 'renders the svg' do
+      assign(:context_commits, [])
+
+      render
+
+      expect(rendered).to include('empty-commit-md')
+    end
+  end
 end

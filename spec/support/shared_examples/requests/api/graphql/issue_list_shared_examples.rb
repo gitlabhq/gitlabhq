@@ -38,6 +38,22 @@ RSpec.shared_examples 'graphql issue list request spec' do
       end
     end
 
+    context 'when filtering by milestone' do
+      context 'when both negated milestone_id and milestone_wildcard_id filters are provided' do
+        let(:issue_filter_params) do
+          { not: { milestone_title: 'some_milestone', milestone_wildcard_id: :STARTED } }
+        end
+
+        it 'returns a mutually exclusive param error' do
+          post_query
+
+          expect_graphql_errors_to_include(
+            'only one of [milestoneTitle, milestoneWildcardId] arguments is allowed at the same time.'
+          )
+        end
+      end
+    end
+
     context 'when filtering by assignees' do
       context 'when both assignee_username filters are provided' do
         let(:issue_filter_params) do

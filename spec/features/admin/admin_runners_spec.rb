@@ -221,9 +221,44 @@ RSpec.describe "Admin Runners", feature_category: :fleet_visibility do
         end
       end
 
+      describe 'filter by creator' do
+        before_all do
+          create(:ci_runner, :instance, description: 'runner-creator-admin', creator: admin)
+          create(:ci_runner, :instance, description: 'runner-creator-user', creator: user)
+        end
+
+        before do
+          visit admin_runners_path
+        end
+
+        it 'shows all runners' do
+          expect(page).to have_link('All 2')
+
+          expect(page).to have_content 'runner-creator-admin'
+          expect(page).to have_content 'runner-creator-user'
+        end
+
+        it 'shows filtered runner based on creator' do
+          input_filtered_search_filter_is_only(s_('Runners|Creator'), admin.username)
+
+          expect(page).to have_link('All 1')
+
+          expect(page).to have_content 'runner-creator-admin'
+          expect(page).not_to have_content 'runner-creator-user'
+        end
+
+        it 'shows filtered search suggestions' do
+          open_filtered_search_suggestions(s_('Runners|Creator'))
+          page.within(search_bar_selector) do
+            expect(page).to have_content admin.username
+            expect(page).to have_content user.username
+          end
+        end
+      end
+
       describe 'filter by status' do
         let_it_be(:never_contacted) do
-          create(:ci_runner, :instance, description: 'runner-never-contacted', contacted_at: nil)
+          create(:ci_runner, :instance, :unregistered, description: 'runner-never-contacted')
         end
 
         before_all do
@@ -520,15 +555,7 @@ RSpec.describe "Admin Runners", feature_category: :fleet_visibility do
   end
 
   describe "Runner show page", :js do
-    let_it_be(:runner) do
-      create(
-        :ci_runner,
-        description: 'runner-foo',
-        version: '14.0',
-        tag_list: ['tag1']
-      )
-    end
-
+    let_it_be(:runner) { create(:ci_runner, description: 'runner-foo', tag_list: ['tag1']) }
     let_it_be(:runner_job) { create(:ci_build, runner: runner) }
 
     before do
@@ -579,7 +606,7 @@ RSpec.describe "Admin Runners", feature_category: :fleet_visibility do
   describe "Runner edit page" do
     let_it_be(:project1) { create(:project) }
     let_it_be(:project2) { create(:project) }
-    let_it_be(:project_runner) { create(:ci_runner, :project) }
+    let_it_be(:project_runner) { create(:ci_runner, :unregistered, :project) }
 
     before do
       visit edit_admin_runner_path(project_runner)

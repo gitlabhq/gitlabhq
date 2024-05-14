@@ -60,7 +60,7 @@ export default {
       'Terraform|To remove the State file and its versions, type %{name} to confirm:',
     ),
     modalRemove: s__('Terraform|Remove'),
-    remove: s__('Terraform|Remove state file and versions'),
+    remove: s__('Terraform|Remove'),
     removeSuccessful: s__('Terraform|%{name} successfully removed'),
     unlock: s__('Terraform|Unlock'),
     copyCommand: s__('Terraform|Copy Terraform init command'),
@@ -195,6 +195,7 @@ export default {
   <div>
     <gl-dropdown
       icon="ellipsis_v"
+      category="tertiary"
       right
       :data-testid="`terraform-state-actions-${state.name}`"
       :disabled="loading"
@@ -232,7 +233,7 @@ export default {
       <gl-dropdown-divider />
 
       <gl-dropdown-item data-testid="terraform-state-remove" @click="showRemoveModal = true">
-        {{ $options.i18n.remove }}
+        <span class="gl-text-red-500">{{ $options.i18n.remove }}</span>
       </gl-dropdown-item>
     </gl-dropdown>
 

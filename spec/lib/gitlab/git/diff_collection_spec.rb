@@ -600,26 +600,12 @@ RSpec.describe Gitlab::Git::DiffCollection, feature_category: :source_code_manag
 
     context 'with existing generated value in the hash' do
       let(:collection) do
-        described_class.new([{ diff: 'some content', generated: true }], options)
+        described_class.new([{ diff: 'some content', generated: true }])
       end
 
-      context 'when collapse_generated on' do
-        let(:options) { { collapse_generated: true } }
-
-        it 'sets the diff as generated' do
-          collection.each do |diff|
-            expect(diff.generated).to eq true
-          end
-        end
-      end
-
-      context 'when collapse_generated off' do
-        let(:options) { { collapse_generated: false } }
-
-        it 'does not set the diff as generated' do
-          collection.each do |diff|
-            expect(diff.generated).to be_nil
-          end
+      it 'sets the diff as generated' do
+        collection.each do |diff|
+          expect(diff.generated).to eq true
         end
       end
     end

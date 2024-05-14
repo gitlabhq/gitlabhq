@@ -77,7 +77,7 @@ describe('Repository last commit component', () => {
 
     it('strips the first newline of the description', () => {
       expect(findCommitRowDescription().html()).toBe(
-        '<pre class="commit-row-description gl-mb-3 gl-white-space-pre-line">Update ADOPTERS.md</pre>',
+        '<pre class="commit-row-description gl-mb-3 gl-white-space-pre-wrap">Update ADOPTERS.md</pre>',
       );
     });
 
@@ -116,6 +116,6 @@ describe('Repository last commit component', () => {
   it('sets correct CSS class if the commit message is empty', () => {
     createComponent({ commitMock: { message: '' } });
 
-    expect(findTitleHtml().classes()).toContain('gl-font-style-italic');
+    expect(findTitleHtml().classes()).toContain('gl-italic');
   });
 });

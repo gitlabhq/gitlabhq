@@ -9,7 +9,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
   let_it_be(:public_project) { create(:project, :public, group: group) }
   let_it_be(:repository_project) { create(:project, :repository) }
   let_it_be(:project) { public_project }
-  let_it_be(:developer) { create(:user) }
+  let_it_be(:developer) { create(:user, developer_of: [public_project, repository_project]) }
   let_it_be(:developer2) { create(:user) }
   let_it_be(:developer3) { create(:user) }
   let_it_be_with_reload(:issue) { create(:issue, project: project) }
@@ -20,13 +20,9 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
   let(:milestone) { create(:milestone, project: project, title: '9.10') }
   let(:commit) { create(:commit, project: project) }
   let(:current_user) { developer }
+  let(:container) { project }
 
-  subject(:service) { described_class.new(project, current_user) }
-
-  before_all do
-    public_project.add_developer(developer)
-    repository_project.add_developer(developer)
-  end
+  subject(:service) { described_class.new(container: container, current_user: current_user) }
 
   before do
     stub_licensed_features(
@@ -272,7 +268,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       it 'returns the subscribe message' do
         _, _, message = service.execute(content, issuable)
 
-        expect(message).to eq("Subscribed to this #{issuable.to_ability_name.humanize(capitalize: false)}.")
+        expect(message).to eq("Subscribed to notifications.")
       end
     end
 
@@ -288,7 +284,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
         issuable.subscribe(developer, project)
         _, _, message = service.execute(content, issuable)
 
-        expect(message).to eq("Unsubscribed from this #{issuable.to_ability_name.humanize(capitalize: false)}.")
+        expect(message).to eq("Unsubscribed from notifications.")
       end
     end
 
@@ -647,7 +643,13 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       it 'returns the confidential message' do
         _, _, message = service.execute(content, issuable)
 
-        expect(message).to eq('Made this issue confidential.')
+        issuable_type = if issuable.to_ability_name == "work_item"
+                          'item'
+                        else
+                          issuable.to_ability_name.humanize(capitalize: false)
+                        end
+
+        expect(message).to eq("Made this #{issuable_type} confidential.")
       end
 
       context 'when issuable is already confidential' do
@@ -860,8 +862,14 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
     end
 
     context 'merge command' do
-      let(:service) { described_class.new(project, developer, { merge_request_diff_head_sha: merge_request.diff_head_sha }) }
       let(:merge_request) { create(:merge_request, source_project: repository_project) }
+      let(:service) do
+        described_class.new(
+          container: project,
+          current_user: developer,
+          params: { merge_request_diff_head_sha: merge_request.diff_head_sha }
+        )
+      end
 
       it_behaves_like 'merge immediately command' do
         let(:content) { '/merge' }
@@ -881,7 +889,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       end
 
       context 'can not be merged when logged user does not have permissions' do
-        let(:service) { described_class.new(project, create(:user)) }
+        let(:service) { described_class.new(container: project, current_user: create(:user)) }
 
         it_behaves_like 'failed command', 'Could not apply merge command.' do
           let(:content) { "/merge" }
@@ -890,7 +898,13 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       end
 
       context 'can not be merged when sha does not match' do
-        let(:service) { described_class.new(project, developer, { merge_request_diff_head_sha: 'othersha' }) }
+        let(:service) do
+          described_class.new(
+            container: project,
+            current_user: developer,
+            params: { merge_request_diff_head_sha: 'othersha' }
+          )
+        end
 
         it_behaves_like 'failed command', 'Branch has been updated since the merge was requested.' do
           let(:content) { "/merge" }
@@ -900,7 +914,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
 
       context 'when sha is missing' do
         let(:project) { repository_project }
-        let(:service) { described_class.new(project, developer, {}) }
+        let(:service) { described_class.new(container: project, current_user: developer) }
 
         it_behaves_like 'failed command', 'The `/merge` quick action requires the SHA of the head of the branch.' do
           let(:content) { "/merge" }
@@ -1602,12 +1616,18 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       end
 
       it_behaves_like 'confidential command' do
+        let_it_be(:work_item) { create(:work_item, :task, project: project) }
+        let(:content) { '/confidential' }
+        let(:issuable) { work_item }
+      end
+
+      it_behaves_like 'confidential command' do
         let(:content) { '/confidential' }
         let(:issuable) { create(:incident, project: project) }
       end
 
       context 'when non-member is creating a new issue' do
-        let(:service) { described_class.new(project, create(:user)) }
+        let(:service) { described_class.new(container: project, current_user: create(:user)) }
 
         it_behaves_like 'confidential command' do
           let(:content) { '/confidential' }
@@ -1697,6 +1717,33 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       end
     end
 
+    context '/label command' do
+      context 'when target is a group level work item' do
+        let_it_be(:new_group) { create(:group, developers: developer) }
+        let_it_be(:group_level_work_item) { create(:work_item, :group_level, namespace: new_group) }
+        # this label should not be show on the list as belongs to another group
+        let_it_be(:invalid_label) { create(:group_label, title: 'not_from_group', group: group) }
+        let(:container) { new_group }
+
+        # This spec was introduced just to validate that the label finder scopes que query to a single group.
+        # The command checks that labels are available as part of the condition.
+        # Query was timing out in .com https://gitlab.com/gitlab-org/gitlab/-/issues/441123
+        it 'is not available when there are no labels associated with the group' do
+          expect(service.available_commands(group_level_work_item)).not_to include(a_hash_including(name: :label))
+        end
+
+        context 'when a label exists at the group level' do
+          before do
+            create(:group_label, group: new_group)
+          end
+
+          it 'is available' do
+            expect(service.available_commands(group_level_work_item)).to include(a_hash_including(name: :label))
+          end
+        end
+      end
+    end
+
     context '/copy_metadata command' do
       let(:todo_label) { create(:label, project: project, title: 'To Do') }
       let(:inreview_label) { create(:label, project: project, title: 'In Review') }
@@ -1707,7 +1754,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
 
       context 'when the user does not have permission' do
         let(:guest) { create(:user) }
-        let(:service) { described_class.new(project, guest) }
+        let(:service) { described_class.new(container: project, current_user: guest) }
 
         it 'is not available' do
           expect(service.available_commands(issue)).not_to include(a_hash_including(name: :copy_metadata))
@@ -1814,7 +1861,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
     context 'when current_user cannot :admin_issue' do
       let(:visitor) { create(:user) }
       let(:issue) { create(:issue, project: project, author: visitor) }
-      let(:service) { described_class.new(project, visitor) }
+      let(:service) { described_class.new(container: project, current_user: visitor) }
 
       it_behaves_like 'failed command', 'Could not apply assign command.' do
         let(:content) { "/assign @#{developer.username}" }
@@ -1959,7 +2006,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
     context '/target_branch command' do
       let(:non_empty_project) { create(:project, :repository) }
       let(:another_merge_request) { create(:merge_request, author: developer, source_project: non_empty_project) }
-      let(:service) { described_class.new(non_empty_project, developer) }
+      let(:service) { described_class.new(container: non_empty_project, current_user: developer) }
 
       it 'updates target_branch if /target_branch command is executed' do
         _, updates, _ = service.execute('/target_branch merge-test', merge_request)
@@ -2164,7 +2211,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
 
       context 'when logged user cannot push code to the project' do
         let(:project) { create(:project, :private) }
-        let(:service) { described_class.new(project, create(:user)) }
+        let(:service) { described_class.new(container: project, current_user: create(:user)) }
 
         it_behaves_like 'failed command', 'Could not apply create_merge_request command.'
       end
@@ -2238,18 +2285,6 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
     context 'request_changes command' do
       let(:merge_request) { create(:merge_request, source_project: project) }
       let(:content) { '/request_changes' }
-
-      context "when `mr_request_changes` feature flag is disabled" do
-        before do
-          stub_feature_flags(mr_request_changes: false)
-        end
-
-        it 'does not call MergeRequests::UpdateReviewerStateService' do
-          expect(MergeRequests::UpdateReviewerStateService).not_to receive(:new)
-
-          service.execute(content, merge_request)
-        end
-      end
 
       context "when the user is a reviewer" do
         before do
@@ -2340,15 +2375,15 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       end
     end
 
-    describe 'invite_email command' do
+    describe 'add_email command' do
       let_it_be(:issuable) { issue }
 
       it_behaves_like 'failed command', "No email participants were added. Either none were provided, or they already exist." do
-        let(:content) { '/invite_email' }
+        let(:content) { '/add_email' }
       end
 
       context 'with existing email participant' do
-        let(:content) { '/invite_email a@gitlab.com' }
+        let(:content) { '/add_email a@gitlab.com' }
 
         before do
           issuable.issue_email_participants.create!(email: "a@gitlab.com")
@@ -2358,7 +2393,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       end
 
       context 'with new email participants' do
-        let(:content) { '/invite_email a@gitlab.com b@gitlab.com' }
+        let(:content) { '/add_email a@gitlab.com b@gitlab.com' }
 
         subject(:add_emails) { service.execute(content, issuable) }
 
@@ -2373,7 +2408,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
         end
 
         context 'with mixed case email' do
-          let(:content) { '/invite_email FirstLast@GitLab.com' }
+          let(:content) { '/add_email FirstLast@GitLab.com' }
 
           it 'returns correctly cased message' do
             _, _, message = add_emails
@@ -2383,7 +2418,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
         end
 
         context 'with invalid email' do
-          let(:content) { '/invite_email a@gitlab.com bad_email' }
+          let(:content) { '/add_email a@gitlab.com bad_email' }
 
           it 'only adds valid emails' do
             expect { add_emails }.to change { issue.issue_email_participants.count }.by(1)
@@ -2391,7 +2426,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
         end
 
         context 'with existing email' do
-          let(:content) { '/invite_email a@gitlab.com existing@gitlab.com' }
+          let(:content) { '/add_email a@gitlab.com existing@gitlab.com' }
 
           it 'only adds new emails' do
             issue.issue_email_participants.create!(email: 'existing@gitlab.com')
@@ -2407,7 +2442,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
         end
 
         context 'with duplicate email' do
-          let(:content) { '/invite_email a@gitlab.com a@gitlab.com' }
+          let(:content) { '/add_email a@gitlab.com a@gitlab.com' }
 
           it 'only adds unique new emails' do
             expect { add_emails }.to change { issue.issue_email_participants.count }.by(1)
@@ -2415,7 +2450,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
         end
 
         context 'with more than 6 emails' do
-          let(:content) { '/invite_email a@gitlab.com b@gitlab.com c@gitlab.com d@gitlab.com e@gitlab.com f@gitlab.com g@gitlab.com' }
+          let(:content) { '/add_email a@gitlab.com b@gitlab.com c@gitlab.com d@gitlab.com e@gitlab.com f@gitlab.com g@gitlab.com' }
 
           it 'only adds 6 new emails' do
             expect { add_emails }.to change { issue.issue_email_participants.count }.by(6)
@@ -2428,7 +2463,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
             stub_const("IssueEmailParticipants::CreateService::MAX_NUMBER_OF_RECORDS", 1)
           end
 
-          let(:content) { '/invite_email a@gitlab.com' }
+          let(:content) { '/add_email a@gitlab.com' }
 
           it_behaves_like 'failed command',
             "No email participants were added. Either none were provided, or they already exist."
@@ -2439,7 +2474,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
             stub_const("IssueEmailParticipants::CreateService::MAX_NUMBER_OF_RECORDS", 1)
           end
 
-          let(:content) { '/invite_email a@gitlab.com b@gitlab.com' }
+          let(:content) { '/add_email a@gitlab.com b@gitlab.com' }
 
           it 'only adds one new email' do
             expect { add_emails }.to change { issue.issue_email_participants.count }.by(1)
@@ -2458,14 +2493,14 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       end
 
       it 'is part of the available commands' do
-        expect(service.available_commands(issuable)).to include(a_hash_including(name: :invite_email))
+        expect(service.available_commands(issuable)).to include(a_hash_including(name: :add_email))
       end
 
       context 'with non-persisted issue' do
         let(:issuable) { build(:issue) }
 
         it 'is not part of the available commands' do
-          expect(service.available_commands(issuable)).not_to include(a_hash_including(name: :invite_email))
+          expect(service.available_commands(issuable)).not_to include(a_hash_including(name: :add_email))
         end
       end
     end
@@ -2637,16 +2672,6 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
           expect(service.available_commands(issuable)).not_to include(a_hash_including(name: :convert_to_ticket))
         end
       end
-
-      context 'with feature flag convert_to_ticket_quick_action disabled' do
-        before do
-          stub_feature_flags(convert_to_ticket_quick_action: false)
-        end
-
-        it 'is not part of the available commands' do
-          expect(service.available_commands(issuable)).not_to include(a_hash_including(name: :convert_to_ticket))
-        end
-      end
     end
 
     context 'severity command' do
@@ -2761,7 +2786,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
           MergeRequests::UpdateReviewerStateService,
           project: project, current_user: current_user
         ) do |service|
-          expect(service).to receive(:execute).with(merge_request, "unreviewed")
+          expect(service).to receive(:execute).with(merge_request, 'unapproved')
         end
 
         service.execute(content, merge_request)
@@ -2844,7 +2869,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       it 'returns success message' do
         _, _, message = service.execute(content, work_item)
 
-        expect(message).to eq('Work item parent set successfully')
+        expect(message).to eq('Parent set successfully')
       end
 
       it 'sets correct update params' do
@@ -2878,21 +2903,21 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
           _, explanations = service.explain(content, work_item)
 
           expect(explanations)
-            .to contain_exactly("Remove #{parent.to_reference(work_item)} as this work item's parent.")
+            .to contain_exactly("Remove #{parent.to_reference(work_item)} as this item's parent.")
         end
 
         it 'returns success message' do
           _, updates, message = service.execute(content, work_item)
 
           expect(updates).to eq(remove_parent: true)
-          expect(message).to eq('Work item parent removed successfully')
+          expect(message).to eq('Parent removed successfully')
         end
       end
     end
   end
 
   describe '#explain' do
-    let(:service) { described_class.new(project, developer) }
+    let(:service) { described_class.new(container: project, current_user: developer) }
     let(:merge_request) { create(:merge_request, source_project: project) }
 
     describe 'close command' do
@@ -3018,7 +3043,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       it 'includes current milestone name' do
         _, explanations = service.explain(content, merge_request)
 
-        expect(explanations).to eq(['Removes %"9.10" milestone.'])
+        expect(explanations).to eq(["Removes /#{project.full_path}%\"9.10\" milestone."])
       end
     end
 
@@ -3062,7 +3087,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       it 'includes issuable name' do
         _, explanations = service.explain(content, issue)
 
-        expect(explanations).to eq(['Subscribes to this issue.'])
+        expect(explanations).to eq(['Subscribes to notifications.'])
       end
     end
 
@@ -3073,7 +3098,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
         merge_request.subscribe(developer, project)
         _, explanations = service.explain(content, merge_request)
 
-        expect(explanations).to eq(['Unsubscribes from this merge request.'])
+        expect(explanations).to eq(['Unsubscribes from notifications.'])
       end
     end
 
@@ -3318,7 +3343,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
         it '/add_contacts is available' do
           _, explanations = service.explain(add_contacts, issue)
 
-          expect(explanations).to contain_exactly("Add customer relation contact(s).")
+          expect(explanations).to contain_exactly("Add customer relation contacts.")
         end
 
         context 'when issue has no contacts' do
@@ -3335,7 +3360,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
           it '/remove_contacts is available' do
             _, explanations = service.explain(remove_contacts, issue)
 
-            expect(explanations).to contain_exactly("Remove customer relation contact(s).")
+            expect(explanations).to contain_exactly("Remove customer relation contacts.")
           end
         end
       end
@@ -3369,7 +3394,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
         _, explanations = service.explain(command, work_item)
 
         expect(explanations)
-          .to contain_exactly("Converts work item to issue. Widgets not supported in new type are removed.")
+          .to contain_exactly("Converts item to issue. Widgets not supported in new type are removed.")
       end
     end
 
@@ -3420,7 +3445,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
 
         it 'includes the value' do
           _, explanations = service.explain(content, task)
-          expect(explanations).to eq(['Promotes work item to issue.'])
+          expect(explanations).to eq(['Promotes item to issue.'])
         end
       end
 
@@ -3446,7 +3471,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
           _, explanations = service.explain(command, work_item)
 
           expect(explanations)
-            .to contain_exactly("Change work item's parent to #{parent_ref}.")
+            .to contain_exactly("Change item's parent to #{parent_ref}.")
         end
 
         it 'contains command' do
@@ -3477,7 +3502,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       end
 
       context 'when user cannot admin link' do
-        subject(:service) { described_class.new(project, create(:user)) }
+        subject(:service) { described_class.new(container: project, current_user: create(:user)) }
 
         it_behaves_like 'command is not available'
       end
@@ -3495,7 +3520,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
           _, explanations = service.explain(command, work_item)
 
           expect(explanations)
-            .to contain_exactly("Add #{child_ref} to this work item as child(ren).")
+            .to contain_exactly("Add #{child_ref} as a child item.")
         end
 
         it 'contains command' do
@@ -3526,7 +3551,60 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       end
 
       context 'when user cannot admin link' do
-        subject(:service) { described_class.new(project, create(:user)) }
+        subject(:service) { described_class.new(container: project, current_user: create(:user)) }
+
+        it_behaves_like 'command is not available'
+      end
+    end
+
+    describe '/remove child command' do
+      let_it_be(:child) { create(:work_item, :objective, project: project) }
+      let_it_be(:work_item) { create(:work_item, :objective, project: project) }
+      let_it_be(:child_ref) { child.to_reference(project) }
+
+      let(:command) { "/remove_child #{child_ref}" }
+
+      shared_examples 'command is available' do
+        before do
+          create(:parent_link, work_item_parent: work_item, work_item: child)
+        end
+
+        it 'explanation contains correct message' do
+          _, explanations = service.explain(command, work_item)
+
+          expect(explanations)
+            .to contain_exactly("Remove #{child_ref} as a child item.")
+        end
+
+        it 'contains command' do
+          expect(service.available_commands(work_item)).to include(a_hash_including(name: :remove_child))
+        end
+      end
+
+      shared_examples 'command is not available' do
+        it 'explanation is empty' do
+          _, explanations = service.explain(command, work_item)
+
+          expect(explanations).to eq([])
+        end
+
+        it 'does not contain command' do
+          expect(service.available_commands(work_item)).not_to include(a_hash_including(name: :remove_child))
+        end
+      end
+
+      context 'when user can admin link' do
+        it_behaves_like 'command is available'
+      end
+
+      context 'when user cannot admin link' do
+        subject(:service) { described_class.new(container: project, current_user: create(:user)) }
+
+        it_behaves_like 'command is not available'
+      end
+
+      context 'when work item does not support children' do
+        let_it_be(:work_item) { create(:work_item, :key_result, project: project) }
 
         it_behaves_like 'command is not available'
       end
@@ -3538,7 +3616,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       let_it_be(:guest) { create(:user) }
 
       let(:issue) { build(:issue, project: public_project) }
-      let(:service) { described_class.new(project, guest) }
+      let(:service) { described_class.new(container: project, current_user: guest) }
 
       before_all do
         public_project.add_guest(guest)

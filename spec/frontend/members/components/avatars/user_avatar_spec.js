@@ -55,7 +55,21 @@ describe('UserAvatar', () => {
   it("renders user's avatar", () => {
     createComponent();
 
-    expect(wrapper.find('img').attributes('src')).toBe(user.avatarUrl);
+    expect(wrapper.find('img').attributes('src')).toBe(
+      'https://www.gravatar.com/avatar/4816142ef496f956a277bedf1a40607b?s=80&d=identicon&width=96',
+    );
+  });
+  it('does not render user avatar image if avatarUrl is null', () => {
+    createComponent({
+      member: {
+        ...memberMock,
+        user: {
+          ...memberMock.user,
+          avatarUrl: null,
+        },
+      },
+    });
+    expect(wrapper.find('img').exists()).toBe(false);
   });
 
   describe('when user property does not exist', () => {

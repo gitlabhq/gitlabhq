@@ -8,7 +8,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+
+Prerequisites:
+
+- You must disable [GitLab internal issue tracking](../issues/index.md) in the project. For more information about the steps and consequences of disabling
+  GitLab issues, see [Change project visibility](../../../user/public_access.md#change-project-visibility), and also
+  [Configure project features and permissions](../settings/index.md#configure-project-features-and-permissions).
 
 You can use [Redmine](https://www.redmine.org/) as an external issue tracker.
 To enable the Redmine integration in a project:
@@ -39,10 +45,6 @@ For example, this is a configuration for a project named `gitlab-ci`:
 - Project URL: `https://redmine.example.com/projects/gitlab-ci`
 - Issue URL: `https://redmine.example.com/issues/:id`
 - New issue URL: `https://redmine.example.com/projects/gitlab-ci/issues/new`
-
-You can also disable [GitLab internal issue tracking](../issues/index.md) in this project.
-For more information about the steps and consequences of disabling GitLab issues, see
-Configure project [visibility](../../../user/public_access.md#change-project-visibility), [features, and permissions](../settings/project_features_permissions.md#configure-project-features-and-permissions).
 
 ## Reference Redmine issues in GitLab
 

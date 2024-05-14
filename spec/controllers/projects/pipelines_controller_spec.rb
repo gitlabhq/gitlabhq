@@ -6,7 +6,7 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
   include ApiHelpers
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project, :public, :repository) }
+  let_it_be_with_reload(:project) { create(:project, :public, :repository) }
 
   let(:feature) { ProjectFeature::ENABLED }
 
@@ -1014,24 +1014,55 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
 
   describe 'POST cancel.json' do
     let!(:pipeline) { create(:ci_pipeline, project: project) }
-    let!(:build) { create(:ci_build, :running, pipeline: pipeline) }
+    let!(:job) { create(:ci_build, :running, pipeline: pipeline) }
 
-    before do
+    subject do
       post :cancel, params: {
         namespace_id: project.namespace, project_id: project, id: pipeline.id
       }, format: :json
     end
 
-    it 'cancels a pipeline without returning any content', :sidekiq_might_not_need_inline do
-      expect(response).to have_gitlab_http_status(:no_content)
-      expect(pipeline.reload).to be_canceled
+    context 'when supports canceling is true' do
+      include_context 'when canceling support'
+
+      it 'sets a pipeline status to canceling', :sidekiq_inline do
+        subject
+
+        expect(pipeline.reload).to be_canceling
+      end
+
+      it 'returns a no content http status' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:no_content)
+      end
     end
 
-    context 'when builds are disabled' do
-      let(:feature) { ProjectFeature::DISABLED }
+    context 'when supports canceling is false' do
+      before do
+        allow(job).to receive(:supports_canceling?).and_return(false)
+      end
 
-      it 'fails to retry pipeline' do
-        expect(response).to have_gitlab_http_status(:not_found)
+      it 'sets a pipeline status to canceled', :sidekiq_inline do
+        subject
+
+        expect(pipeline.reload).to be_canceled
+      end
+
+      it 'returns a no content http status' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:no_content)
+      end
+
+      context 'when builds are disabled' do
+        let(:feature) { ProjectFeature::DISABLED }
+
+        it 'fails to retry pipeline' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
       end
     end
   end

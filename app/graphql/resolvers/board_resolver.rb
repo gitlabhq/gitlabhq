@@ -7,8 +7,8 @@ module Resolvers
     type Types::BoardType, null: true
 
     argument :id, ::Types::GlobalIDType[::Board],
-             required: true,
-             description: 'ID of the board.'
+      required: true,
+      description: 'ID of the board.'
 
     def resolve(id: nil)
       return unless parent

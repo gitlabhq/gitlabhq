@@ -5,6 +5,14 @@ require 'spec_helper'
 RSpec.describe IssueEmailParticipants::CreateService, feature_category: :service_desk do
   shared_examples 'a successful service execution' do
     it 'creates new participants', :aggregate_failures do
+      metric_transaction = instance_double(Gitlab::Metrics::WebTransaction, increment: true, observe: true)
+      allow(::Gitlab::Metrics::BackgroundTransaction).to receive(:current).and_return(metric_transaction)
+      expect(metric_transaction).to receive(:add_event).with(:service_desk_new_participant_email)
+        .exactly(expected_emails.size).times
+
+      expect(Notify).to receive(:service_desk_new_participant_email).exactly(expected_emails.size).times
+        .and_return(instance_double(ActionMailer::MessageDelivery, deliver_later: true))
+
       response = service.execute
       expect(response).to be_success
 
@@ -12,6 +20,7 @@ RSpec.describe IssueEmailParticipants::CreateService, feature_category: :service
       note = issue.notes.last
       expect(note.system?).to be true
       expect(note.author).to eq(user)
+      expect(note.system_note_metadata.action).to eq('issue_email_participants')
 
       participants_emails = issue.email_participants_emails_downcase
 

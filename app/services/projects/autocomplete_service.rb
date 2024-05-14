@@ -3,6 +3,8 @@
 module Projects
   class AutocompleteService < BaseService
     include LabelsAsHash
+    include Routing::WikiHelper
+
     def issues
       IssuesFinder.new(current_user, project_id: project.id, state: 'opened').execute.select([:iid, :title])
     end
@@ -26,11 +28,21 @@ module Projects
     def commands(noteable)
       return [] unless noteable && current_user
 
-      QuickActions::InterpretService.new(project, current_user).available_commands(noteable)
+      QuickActions::InterpretService.new(container: project, current_user: current_user).available_commands(noteable)
     end
 
     def snippets
       SnippetsFinder.new(current_user, project: project).execute.select([:id, :title])
+    end
+
+    def wikis
+      wiki = Wiki.for_container(project, current_user)
+      return [] unless can?(current_user, :read_wiki, wiki.container)
+
+      wiki
+        .list_pages(limit: 5000)
+        .reject { |page| page.slug.start_with?('templates/') }
+        .map { |page| { path: wiki_page_path(page.wiki, page), slug: page.slug, title: page.title } }
     end
 
     def contacts(target)

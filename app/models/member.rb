@@ -183,9 +183,27 @@ class Member < ApplicationRecord
   scope :with_source_id, ->(source_id) { where(source_id: source_id) }
   scope :including_source, -> { includes(:source) }
 
-  scope :distinct_on_user_with_max_access_level, -> do
+  scope :distinct_on_user_with_max_access_level, -> (for_object) do
+    valid_objects = %w[Project Namespace]
+    obj_class = if for_object.is_a?(Group)
+                  'Namespace'
+                else
+                  for_object.class.name
+                end
+
+    raise ArgumentError, "Invalid object: #{obj_class}" unless valid_objects.include?(obj_class)
+
+    # in case a user has same access_level in multiple groups/project, we always want to retrieve the one
+    # that belongs to the object we request for
+    order = <<~SQL
+      user_id, invite_email,
+      CASE WHEN source_id = #{for_object.id} and source_type = '#{obj_class}'
+      THEN access_level + 1 ELSE access_level END DESC,
+      expires_at DESC, created_at ASC
+    SQL
+
     distinct_members = select('DISTINCT ON (user_id, invite_email) *')
-                       .order('user_id, invite_email, access_level DESC, expires_at DESC, created_at ASC')
+                       .order(Arel.sql(order))
 
     unscoped.from(distinct_members, :members)
   end
@@ -293,6 +311,9 @@ class Member < ApplicationRecord
   end
 
   attribute :notification_level, default: -> { NotificationSetting.levels[:global] }
+  # Only false when the current user is a member of the shared group or project but not of the invited private group
+  # so the current user can't see the source of the membership.
+  attribute :is_source_accessible_to_current_user, default: true
 
   class << self
     def search(query)
@@ -375,6 +396,29 @@ class Member < ApplicationRecord
 
     def pluck_user_ids
       pluck(:user_id)
+    end
+
+    def with_group_group_sharing_access(shared_groups)
+      joins("LEFT OUTER JOIN group_group_links ON members.source_id = group_group_links.shared_with_group_id")
+        .select(member_columns_with_group_sharing_access)
+        .where(group_group_links: { shared_group_id: shared_groups })
+    end
+
+    def member_columns_with_group_sharing_access
+      group_group_link_table = GroupGroupLink.arel_table
+
+      column_names.map do |column_name|
+        if column_name == 'access_level'
+          args = [group_group_link_table[:group_access], arel_table[:access_level]]
+          smallest_value_arel(args, 'access_level')
+        else
+          arel_table[column_name]
+        end
+      end
+    end
+
+    def smallest_value_arel(args, column_alias)
+      Arel::Nodes::As.new(Arel::Nodes::NamedFunction.new('LEAST', args), Arel::Nodes::SqlLiteral.new(column_alias))
     end
   end
 
@@ -680,7 +724,6 @@ class Member < ApplicationRecord
   end
 
   def create_organization_user_record
-    return if Feature.disabled?(:update_organization_users, source.root_ancestor, type: :gitlab_com_derisk)
     return if invite?
     return if source.organization.blank?
 

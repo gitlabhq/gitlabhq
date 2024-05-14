@@ -49,8 +49,6 @@ Specifically, GitLab has been tested by vendors and customers on a number of obj
 
 ## Configure a single storage connection for all object types (consolidated form)
 
-> - [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/4368) in GitLab 13.2.
-
 Most types of objects, such as CI artifacts, LFS files, and upload attachments
 can be saved in object storage by specifying a single credential for object
 storage with multiple buckets.
@@ -97,7 +95,7 @@ common set of parameters.
 | `enabled`         | Enable or disable object storage. |
 | `proxy_download`  | Set to `true` to [enable proxying all files served](#proxy-download). Option allows to reduce egress traffic as this allows clients to download directly from remote storage instead of proxying all data. |
 | `connection`      | Various [connection options](#configure-the-connection-settings) described below. |
-| `storage_options` | Options to use when saving new objects, such as [server side encryption](#server-side-encryption-headers). Introduced in GitLab 13.3. |
+| `storage_options` | Options to use when saving new objects, such as [server side encryption](#server-side-encryption-headers). |
 | `objects`         | [Object-specific configuration](#configure-the-parameters-of-each-object). |
 
 For an example, see how to [use the consolidated form and Amazon S3](#full-example-using-the-consolidated-form-and-amazon-s3).
@@ -149,8 +147,8 @@ gitlab_rails['artifacts_enabled'] = false
 ## Configure each object type to define its own storage connection (storage-specific form)
 
 With the storage-specific form, every object defines its own object
-storage connection and configuration. If you're using GitLab 13.2 and later,
-you should [transition to the consolidated form](#transition-to-consolidated-form).
+storage connection and configuration. You should [use the consolidated form](#transition-to-consolidated-form) instead,
+except for the storage types not supported by the consolidated form.
 
 The use of [encrypted S3 buckets](#encrypted-s3-buckets) with non-consolidated form is not supported.
 You may get [ETag mismatch errors](#etag-mismatch) if you use it.
@@ -160,7 +158,7 @@ For the storage-specific form,
 [direct upload may become the default](https://gitlab.com/gitlab-org/gitlab/-/issues/27331)
 because it does not require a shared folder.
 
-For configuring object storage in GitLab 13.1 and earlier, _or_ for storage types not
+For storage types not
 supported by the consolidated form, refer to the following guides:
 
 | Object storage type | Supported by consolidated form? |
@@ -247,9 +245,6 @@ To set up an instance profile:
 
 #### Encrypted S3 buckets
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/466) in GitLab 13.1 for instance profiles only and [S3 default encryption](https://docs.aws.amazon.com/AmazonS3/latest/dev/bucket-encryption.html).
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/34460) in GitLab 13.2 for static credentials when the [consolidated form](#configure-a-single-storage-connection-for-all-object-types-consolidated-form) and [S3 default encryption](https://docs.aws.amazon.com/AmazonS3/latest/dev/bucket-encryption.html) is used.
-
 When configured either with an instance profile or with the consolidated
 form, GitLab Workhorse properly uploads files to S3
 buckets that have [SSE-S3 or SSE-KMS encryption enabled by default](https://docs.aws.amazon.com/kms/latest/developerguide/services-s3.html).
@@ -257,8 +252,6 @@ AWS KMS keys and SSE-C encryption are
 [not supported since this requires sending the encryption keys in every request](https://gitlab.com/gitlab-org/gitlab/-/issues/226006).
 
 #### Server-side encryption headers
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38240) in GitLab 13.3.
 
 Setting a default encryption on an S3 bucket is the easiest way to
 enable encryption, but you may want to
@@ -316,7 +309,7 @@ The service account must have permission to access the bucket. For more informat
 see the [Cloud Storage authentication documentation](https://cloud.google.com/storage/docs/authentication).
 
 NOTE:
-Bucket encryption with the [Cloud Key Management Service (KMS)](https://cloud.google.com/kms/docs) is not supported and results in [ETag mismatch errors](#etag-mismatch).
+To use bucket encryption with [customer-managed encryption keys](https://cloud.google.com/storage/docs/encryption/using-customer-managed-keys), use the [consolidated form](#configure-a-single-storage-connection-for-all-object-types-consolidated-form).
 
 #### GCS example
 
@@ -331,8 +324,6 @@ gitlab_rails['object_store']['connection'] = {
 ```
 
 #### GCS example with ADC
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/275979) in GitLab 13.6.
 
 Google Cloud Application Default Credentials (ADC) are typically
 used with GitLab to use the default service account. This eliminates the
@@ -358,8 +349,6 @@ If you use ADC, be sure that:
   ```
 
 ### Azure Blob storage
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25877) in GitLab 13.4.
 
 Although Azure uses the word `container` to denote a collection of
 blobs, GitLab standardizes on the term `bucket`. Be sure to configure
@@ -757,12 +746,11 @@ To migrate existing local data to object storage see the following guides:
 
 ## Transition to consolidated form
 
-Prior to GitLab 13.2:
+In storage-specific configuration:
 
 - Object storage configuration for all types of objects such as CI/CD artifacts, LFS
-  files, and upload attachments had to be configured independently.
-- Object store connection parameters such as passwords and endpoint URLs had to be
-  duplicated for each type.
+  files, and upload attachments is configured independently.
+- Object store connection parameters such as passwords and endpoint URLs is duplicated for each type.
 
 For example, a Linux package installation might have the following configuration:
 
@@ -826,8 +814,8 @@ Prerequisites:
    ```
 
 1. After the first sync completes, use the web UI or command-line interface of your new object storage provider to
-   verify that there are objects in the new bucket. If there are none, or if you encounter an error while running `rclone
-   sync`, check your Rclone configuration and try again.
+   verify that there are objects in the new bucket. If there are none, or if you encounter an error while running
+   `rclone sync`, check your Rclone configuration and try again.
 
 After you have done at least one successful Rclone copy from the old location to the new location, schedule maintenance and take your GitLab server offline. During your maintenance window you must do two things:
 
@@ -945,6 +933,8 @@ Using the default GitLab settings, some object storage back-ends such as
 and [Alibaba](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/1564)
 might generate `ETag mismatch` errors.
 
+#### Amazon S3 encryption
+
 If you are seeing this ETag mismatch error with Amazon Web Services S3,
 it's likely this is due to [encryption settings on your bucket](https://docs.aws.amazon.com/AmazonS3/latest/API/RESTCommonResponseHeaders.html).
 To fix this issue, you have two options:
@@ -961,8 +951,8 @@ GitLab Workhorse uploads files to S3 using pre-signed URLs that do
 not have a `Content-MD5` HTTP header computed for them. To ensure data
 is not corrupted, Workhorse checks that the MD5 hash of the data sent
 equals the ETag header returned from the S3 server. When encryption is
-enabled, this is not the case, which causes Workhorse to report an `ETag
-mismatch` error during an upload.
+enabled, this is not the case, which causes Workhorse to report an `ETag mismatch`
+error during an upload.
 
 When the consolidated form is:
 
@@ -973,7 +963,13 @@ When the consolidated form is:
 - Not used with an S3-compatible object storage, Workhorse falls back to using
   pre-signed URLs.
 
-Encrypting buckets with the GCS [Cloud Key Management Service (KMS)](https://cloud.google.com/kms/docs) is not supported and results in ETag mismatch errors.
+#### Google Cloud Storage encryption
+
+> - [Introduced in GitLab 16.11](https://gitlab.com/gitlab-org/gitlab/-/issues/441782).
+
+ETag mismatch errors occur also in Google Cloud Storage (GCS) when enabling [data encryption with customer-managed encryption keys (CMEK)](https://cloud.google.com/storage/docs/encryption/using-customer-managed-keys).
+
+To use CMEK, use the [consolidated form](#configure-a-single-storage-connection-for-all-object-types-consolidated-form).
 
 ### Multi-threaded copying
 

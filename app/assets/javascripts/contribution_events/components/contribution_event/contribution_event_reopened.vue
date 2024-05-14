@@ -27,10 +27,5 @@ export default {
 </script>
 
 <template>
-  <contribution-event-base
-    :event="event"
-    :message="message"
-    :icon-name="iconName"
-    icon-class="gl-text-green-500"
-  />
+  <contribution-event-base :event="event" :message="message" :icon-name="iconName" />
 </template>

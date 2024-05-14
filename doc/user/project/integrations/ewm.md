@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 The EWM integration allows you to go from GitLab to EWM work items mentioned in merge request
 descriptions and commit messages.
@@ -26,7 +26,7 @@ To enable the EWM integration, in a project:
 
    - **Project URL**: The URL to the EWM project area.
 
-     To obtain your project area URL, navigate to the
+     To obtain your project area URL, go to the
      path `/ccm/web/projects` and copy the listed project's URL. For example, `https://example.com/ccm/web/Example%20Project`.
    - **Issue URL**: The URL to the work item editor in the EWM project area.
 

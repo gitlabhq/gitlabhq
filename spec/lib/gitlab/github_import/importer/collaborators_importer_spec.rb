@@ -70,6 +70,13 @@ RSpec.describe Gitlab::GithubImport::Importer::CollaboratorsImporter, feature_ca
 
       importer.sequential_import
     end
+
+    it 'raises an error while importing collaborators' do
+      allow(importer)
+        .to receive(:each_object_to_import)
+        .and_raise(StandardError, 'An error occurred during yield')
+      expect { importer.sequential_import }.to raise_error(StandardError, 'An error occurred during yield')
+    end
   end
 
   describe '#parallel_import', :clean_gitlab_redis_shared_state do
@@ -127,6 +134,24 @@ RSpec.describe Gitlab::GithubImport::Importer::CollaboratorsImporter, feature_ca
         .to yield_successive_args(github_collaborator, github_collaborator_2)
 
       expect(Gitlab::GithubImport::ObjectCounter).to have_received(:increment).twice
+    end
+
+    context 'when one of the collaborator raises exception while importing' do
+      before do
+        allow(github_collaborator_3).to receive(:each_object_to_import)
+        .and_raise(StandardError, 'Error importing collaborator')
+        allow(client).to receive(:collaborators).with(project.import_source, affiliation: 'direct')
+        .and_return([github_collaborator, github_collaborator_3])
+        allow(Gitlab::GithubImport::ObjectCounter).to receive(:increment)
+        .with(project, :collaborator, :fetched)
+      end
+
+      it 'yields only one direct collaborator' do
+        expect { |b| importer.each_object_to_import(&b) }
+          .to yield_successive_args(github_collaborator)
+
+        expect(Gitlab::GithubImport::ObjectCounter).to have_received(:increment).once
+      end
     end
 
     context 'when a collaborator has been already imported' do

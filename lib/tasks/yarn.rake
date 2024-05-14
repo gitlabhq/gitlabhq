@@ -5,8 +5,8 @@ namespace :yarn do
   task :available do
     unless system('yarn --version', out: File::NULL)
       warn(
-        'Error: Yarn executable was not detected in the system.'.color(:red),
-        'Download Yarn at https://yarnpkg.com/en/docs/install'.color(:green)
+        Rainbow('Error: Yarn executable was not detected in the system.').red,
+        Rainbow('Download Yarn at https://yarnpkg.com/en/docs/install').green
       )
       abort
     end
@@ -16,8 +16,8 @@ namespace :yarn do
   task check: ['yarn:available'] do
     unless system('yarn check --ignore-engines', out: File::NULL)
       warn(
-        'Error: You have unmet dependencies. (`yarn check` command failed)'.color(:red),
-        'Run `yarn install` to install missing modules.'.color(:green)
+        Rainbow('Error: You have unmet dependencies. (`yarn check` command failed)').red,
+        Rainbow('Run `yarn install` to install missing modules.').green
       )
       abort
     end
@@ -26,13 +26,13 @@ namespace :yarn do
   desc 'Install Node dependencies with Yarn'
   task install: ['yarn:available'] do
     unless system('yarn install --pure-lockfile --ignore-engines --prefer-offline')
-      abort 'Error: Unable to install node modules.'.color(:red)
+      abort Rainbow('Error: Unable to install node modules.').red
     end
   end
 
   desc 'Remove Node dependencies'
   task :clobber do
-    warn 'Purging ./node_modules directory'.color(:red)
+    warn Rainbow('Purging ./node_modules directory').red
     FileUtils.rm_rf 'node_modules'
   end
 end

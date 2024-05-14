@@ -9,11 +9,11 @@ workflow:
 
 .ce:
   variables:
-    RELEASE: ${REGISTRY_HOST}/${REGISTRY_GROUP}/build/omnibus-gitlab-mirror/gitlab-ce:${CI_COMMIT_SHA}
+    RELEASE: "${REGISTRY_HOST}/${REGISTRY_GROUP}/build/omnibus-gitlab-mirror/gitlab-ce:${RELEASE_IMAGE_TAG}"
 
 .ee:
   variables:
-    RELEASE: ${REGISTRY_HOST}/${REGISTRY_GROUP}/build/omnibus-gitlab-mirror/gitlab-ee:${CI_COMMIT_SHA}
+    RELEASE: "${REGISTRY_HOST}/${REGISTRY_GROUP}/build/omnibus-gitlab-mirror/gitlab-ee:${RELEASE_IMAGE_TAG}"
 
 # ==========================================
 # Prepare stage
@@ -75,7 +75,7 @@ integration-elasticsearch-compatibility-version-8:
     - .qa
     - .ee
   variables:
-    ELASTIC_VERSION: "8.6.2"
+    ELASTIC_VERSION: "8.11.4"
     QA_SCENARIO: "Test::Integration::Elasticsearch"
 
 # ------------------------------------------

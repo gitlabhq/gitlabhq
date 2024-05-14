@@ -112,7 +112,7 @@ RSpec.shared_examples '#valid_level_roles' do |entity_name|
 end
 
 RSpec.shared_examples_for "member creation" do
-  let_it_be(:admin) { create(:admin) }
+  let_it_be(:admin) { create(:admin, :without_default_org) }
 
   it 'returns a Member object', :aggregate_failures do
     member = described_class.add_member(source, user, :maintainer)
@@ -385,7 +385,7 @@ RSpec.shared_examples_for "member creation" do
 end
 
 RSpec.shared_examples_for "bulk member creation" do
-  let_it_be(:admin) { create(:admin) }
+  let_it_be(:admin) { create(:admin, :without_default_org) }
   let_it_be(:user1) { create(:user) }
   let_it_be(:user2) { create(:user) }
 

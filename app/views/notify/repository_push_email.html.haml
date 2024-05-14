@@ -1,5 +1,5 @@
 = content_for :head do
-  = stylesheet_link_tag 'mailers/highlighted_diff_email'
+  = universal_stylesheet_link_tag 'mailers/highlighted_diff_email'
 
 %h3
   = s_('Notify|%{author_name} %{action_name} %{ref_type} %{ref_name} at %{project_link}').html_safe % {author_name: @message.author_name, action_name: @message.action_name, ref_type: @message.ref_type, ref_name: @message.ref_name, project_link: link_to(@message.project_name_with_namespace, strip_tags(project_url(@message.project)))}

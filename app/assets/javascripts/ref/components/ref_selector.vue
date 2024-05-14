@@ -127,7 +127,7 @@ export default {
     extendedToggleButtonClass() {
       const classes = [
         {
-          'gl-inset-border-1-red-500!': !this.state,
+          '!gl-shadow-inner-1-red-500': !this.state,
           'gl-font-monospace': Boolean(this.selectedRef),
         },
         'gl-mb-0',

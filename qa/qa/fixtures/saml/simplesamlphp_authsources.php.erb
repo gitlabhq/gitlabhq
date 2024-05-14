@@ -1,0 +1,20 @@
+<?php
+
+$config = array(
+    'admin' => array(
+        'core:AdminPassword',
+    ),
+
+    'example-userpass' => array(
+        'exampleauth:UserPass',
+        <% @users.each_with_index do |user, index| %>
+        '<%= user.username %>:<%= user.password %>' => array(
+            'uid' => array('<%= index %>'),
+            'first_name' => '<%= user.first_name %>',
+            'last_name' => '<%= user.last_name %>',
+            'email' => '<%= user.email %>',
+            'groups' => '<%= @group %>'
+        ),
+        <% end %>
+    ),
+);

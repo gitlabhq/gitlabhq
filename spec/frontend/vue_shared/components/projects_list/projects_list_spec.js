@@ -3,6 +3,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ProjectsList from '~/vue_shared/components/projects_list/projects_list.vue';
 import ProjectsListItem from '~/vue_shared/components/projects_list/projects_list_item.vue';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import { TIMESTAMP_TYPE_CREATED_AT } from '~/vue_shared/components/resource_lists/constants';
 
 describe('ProjectsList', () => {
   let wrapper;
@@ -33,6 +34,7 @@ describe('ProjectsList', () => {
       defaultPropsData.projects.map((project) => ({
         project,
         showProjectIcon: false,
+        timestampType: TIMESTAMP_TYPE_CREATED_AT,
       })),
     );
     expect(expectedClasses).toEqual(

@@ -6,16 +6,6 @@
 
 .groups-list {
   @include basic-list;
-
-  li {
-    a {
-      text-decoration: none;
-
-      &:hover {
-        text-decoration: underline;
-      }
-    }
-  }
 }
 
 .group-root-path {
@@ -90,18 +80,6 @@ table.pipeline-project-metrics tr td {
   }
 }
 
-.user-access-role {
-  padding-left: $gl-spacing-scale-3;
-  padding-right: $gl-spacing-scale-3;
-  display: inline-block;
-  color: $gl-text-color-secondary;
-  font-size: 12px;
-  line-height: 20px;
-  border: 1px solid $border-color;
-  border-radius: $label-border-radius;
-  font-weight: $gl-font-weight-normal;
-}
-
 .groups-list-tree-container {
   > .group-list-tree > .group-row.has-children:first-child {
     border-top: 0;
@@ -126,40 +104,8 @@ table.pipeline-project-metrics tr td {
   .group-list-tree {
     margin-bottom: 0;
     margin-left: 30px;
-    position: relative;
-
-    &::before {
-      content: '';
-      display: block;
-      width: 0;
-      position: absolute;
-      top: 5px;
-      bottom: 0;
-      left: -16px;
-      border-left: 2px solid $border-color;
-    }
 
     .group-row {
-      position: relative;
-
-      &::before {
-        content: '';
-        display: block;
-        width: 10px;
-        height: 0;
-        border-top: 2px solid $border-color;
-        position: absolute;
-        top: 30px;
-        left: -16px;
-      }
-
-      &:last-child::before {
-        background: $white;
-        height: auto;
-        top: 30px;
-        bottom: 0;
-      }
-
       &.being-removed {
         opacity: 0.5;
       }

@@ -52,7 +52,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::Abilities, feature_categor
 
     it 'adds an error about insufficient permissions' do
       expect(pipeline.errors.to_a)
-        .to include /Insufficient permissions/
+        .to include(/Insufficient permissions/)
     end
 
     it 'breaks the pipeline builder chain' do
@@ -92,7 +92,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::Abilities, feature_categor
 
       it 'adds an error about imports' do
         expect(pipeline.errors.to_a)
-          .to include /before project import is complete/
+          .to include(/before project import is complete/)
       end
 
       it 'breaks the pipeline builder chain' do

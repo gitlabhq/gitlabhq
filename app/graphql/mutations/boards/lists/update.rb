@@ -7,14 +7,14 @@ module Mutations
         graphql_name 'UpdateBoardList'
 
         argument :list_id, Types::GlobalIDType[List],
-                  required: true,
-                  loads: Types::BoardListType,
-                  description: 'Global ID of the list.'
+          required: true,
+          loads: Types::BoardListType,
+          description: 'Global ID of the list.'
 
         field :list,
-              Types::BoardListType,
-              null: true,
-              description: 'Mutated list.'
+          Types::BoardListType,
+          null: true,
+          description: 'Mutated list.'
 
         private
 

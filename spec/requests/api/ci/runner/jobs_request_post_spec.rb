@@ -20,7 +20,10 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
     let_it_be(:group) { create(:group, :nested) }
     let_it_be(:user) { create(:user) }
 
-    let(:project) { create(:project, namespace: group, shared_runners_enabled: false) }
+    let(:project) do
+      create(:project, :empty_repo, namespace: group, shared_runners_enabled: false).tap(&:track_project_repository)
+    end
+
     let(:runner) { create(:ci_runner, :project, projects: [project]) }
     let(:pipeline) { create(:ci_pipeline, project: project, ref: 'master') }
     let(:job) do
@@ -206,7 +209,8 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
               'ref_type' => 'branch',
               'refspecs' => ["+refs/pipelines/#{pipeline.id}:refs/pipelines/#{pipeline.id}",
                              "+refs/heads/#{job.ref}:refs/remotes/origin/#{job.ref}"],
-              'depth' => project.ci_default_git_depth }
+              'depth' => project.ci_default_git_depth,
+              'repo_object_format' => 'sha1' }
           end
 
           let(:expected_steps) do
@@ -266,7 +270,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
             expect(response).to have_gitlab_http_status(:created)
             expect(response.headers['Content-Type']).to eq('application/json')
             expect(response.headers).not_to have_key('X-GitLab-Last-Update')
-            expect(runner.reload.platform).to eq('darwin')
+            expect(runner.reload.runner_managers.last.platform).to eq('darwin')
             expect(json_response['id']).to eq(job.id)
             expect(json_response['token']).to eq(job.token)
             expect(json_response['job_info']).to include(expected_job_info)
@@ -471,52 +475,52 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
             end
           end
 
-          it 'updates runner info' do
-            expect { request_job }.to change { runner.reload.contacted_at }
-          end
+          describe 'updates runner info' do
+            it { expect { request_job }.to change { runner.reload.contacted_at } }
 
-          %w[version revision platform architecture].each do |param|
-            context "when info parameter '#{param}' is present" do
-              let(:value) { "#{param}_value" }
+            %w[version revision platform architecture].each do |param|
+              context "when info parameter '#{param}' is present" do
+                let(:value) { "#{param}_value" }
 
-              it "updates provided Runner's parameter" do
-                request_job info: { param => value }
+                it "updates provided Runner's parameter" do
+                  request_job info: { param => value }
 
-                expect(response).to have_gitlab_http_status(:created)
-                expect(runner.reload.read_attribute(param.to_sym)).to eq(value)
+                  expect(response).to have_gitlab_http_status(:created)
+                  expect(job.runner_manager.reload.read_attribute(param.to_sym)).to eq(value)
+                end
               end
             end
-          end
 
-          it "sets the runner's config" do
-            request_job info: { 'config' => { 'gpus' => 'all', 'ignored' => 'hello' } }
+            it "sets the runner's config" do
+              request_job info: { 'config' => { 'gpus' => 'all', 'ignored' => 'hello' } }
 
-            expect(response).to have_gitlab_http_status(:created)
-            expect(runner.reload.config).to eq({ 'gpus' => 'all' })
-          end
+              expect(response).to have_gitlab_http_status(:created)
+              expect(job.runner_manager.reload.config).to eq({ 'gpus' => 'all' })
+            end
 
-          it "sets the runner's ip_address" do
-            post api('/jobs/request'),
-              params: { token: runner.token },
-              headers: { 'User-Agent' => user_agent, 'X-Forwarded-For' => '123.222.123.222' }
+            it "sets the runner's ip_address" do
+              post api('/jobs/request'),
+                params: { token: runner.token },
+                headers: { 'User-Agent' => user_agent, 'X-Forwarded-For' => '123.222.123.222' }
 
-            expect(response).to have_gitlab_http_status(:created)
-            expect(runner.reload.ip_address).to eq('123.222.123.222')
-          end
+              expect(response).to have_gitlab_http_status(:created)
+              expect(job.runner_manager.reload.ip_address).to eq('123.222.123.222')
+            end
 
-          it "handles multiple X-Forwarded-For addresses" do
-            post api('/jobs/request'),
-              params: { token: runner.token },
-              headers: { 'User-Agent' => user_agent, 'X-Forwarded-For' => '123.222.123.222, 127.0.0.1' }
+            it "handles multiple X-Forwarded-For addresses" do
+              post api('/jobs/request'),
+                params: { token: runner.token },
+                headers: { 'User-Agent' => user_agent, 'X-Forwarded-For' => '123.222.123.222, 127.0.0.1' }
 
-            expect(response).to have_gitlab_http_status(:created)
-            expect(runner.reload.ip_address).to eq('123.222.123.222')
+              expect(response).to have_gitlab_http_status(:created)
+              expect(job.runner_manager.reload.ip_address).to eq('123.222.123.222')
+            end
           end
 
           context 'when concurrently updating a job' do
             before do
               expect_any_instance_of(::Ci::Build).to receive(:run!)
-                  .and_raise(ActiveRecord::StaleObjectError.new(nil, nil))
+                .and_raise(ActiveRecord::StaleObjectError.new(nil, nil))
             end
 
             it 'returns a conflict' do
@@ -575,7 +579,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
               expect(json_response['dependencies'].count).to eq(1)
               expect(json_response['dependencies']).to include(
                 { 'id' => job.id, 'name' => job.name, 'token' => test_job.token,
-                  'artifacts_file' => { 'filename' => 'ci_build_artifacts.zip', 'size' => 107464 } })
+                  'artifacts_file' => { 'filename' => 'ci_build_artifacts.zip', 'size' => ci_artifact_fixture_size } })
             end
           end
 
@@ -691,7 +695,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
               expect(response).to have_gitlab_http_status(:created)
               expect(response.headers['Content-Type']).to eq('application/json')
               expect(response.headers).not_to have_key('X-GitLab-Last-Update')
-              expect(runner.reload.platform).to eq('darwin')
+              expect(runner.reload.runner_managers.last.platform).to eq('darwin')
               expect(json_response['id']).to eq(job.id)
               expect(json_response['token']).to eq(job.token)
               expect(json_response['job_info']).to include(expected_job_info)

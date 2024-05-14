@@ -8,9 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
-
-> - The abbreviation [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/24592) from `GFM` to `GLFM` in GitLab 14.10.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 When you enter text in the GitLab UI, GitLab assumes the text is in the Markdown language.
 The text is rendered with a set of styles. These styles are called *GitLab Flavored Markdown*.
@@ -682,6 +680,8 @@ The selected diagram is replaced with an updated version.
 
 ## GitLab-specific references
 
+> - Autocomplete for wiki pages [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/442229) in GitLab 16.11.
+
 GitLab Flavored Markdown renders GitLab-specific references. For example, you can reference
 an issue, a commit, a team member, or even an entire project team. GitLab Flavored Markdown turns
 that reference into a link so you can navigate between them. All references to projects should use the
@@ -692,44 +692,46 @@ version to reference other projects from the same namespace.
 
 GitLab Flavored Markdown recognizes the following:
 
-| References                                                     | Input                          | Cross-project reference                 | Shortcut inside the same namespace |
-| -------------------------------------------------------------- | ------------------------------ | --------------------------------------- | ---------------------------------- |
-| Specific user                                                  | `@user_name`                   |                                         |                                    |
-| Specific group                                                 | `@group_name`                  |                                         |                                    |
-| Entire team                                                    | [`@all`](discussions/index.md#mentioning-all-members) |                  |                                    |
-| Project                                                        | `namespace/project>`           |                                         |                                    |
-| Issue                                                          | ``#123``                       | `namespace/project#123`                 | `project#123`                      |
-| Merge request                                                  | `!123`                         | `namespace/project!123`                 | `project!123`                      |
-| Snippet                                                        | `$123`                         | `namespace/project$123`                 | `project$123`                      |
-| [Epic](group/epics/index.md)                                   | `&123`                         | `group1/subgroup&123`                   |                                    |
-| [Iteration](group/iterations/index.md)                         | `*iteration:"iteration title"` |                                         |                                    |
-| [Iteration cadence](group/iterations/index.md) by ID<sup>1</sup>                     | `[cadence:123]`      |                             |                                    |
-| [Iteration cadence](group/iterations/index.md) by title (one word)<sup>1</sup>       | `[cadence:plan]`     |                             |                                    |
-| [Iteration cadence](group/iterations/index.md) by title (multiple words)<sup>1</sup> | `[cadence:"plan a"]` |                             |                                    |
-| [Vulnerability](application_security/vulnerabilities/index.md) | `[vulnerability:123]`          | `[vulnerability:namespace/project/123]` | `[vulnerability:project/123]`      |
-| Feature flag                                                   | `[feature_flag:123]`           | `[feature_flag:namespace/project/123]`  | `[feature_flag:project/123]`       |
-| Label by ID                                                    | `~123`                         | `namespace/project~123`                 | `project~123`                      |
-| Label by name (one word)                                       | `~bug`                         | `namespace/project~bug`                 | `project~bug`                      |
-| Label by name (multiple words)                                 | `~"feature request"`           | `namespace/project~"feature request"`   | `project~"feature request"`        |
-| Label by name (scoped)                                         | `~"priority::high"`            | `namespace/project~"priority::high"`    | `project~"priority::high"`         |
-| Project milestone by ID                                        | `%123`                         | `namespace/project%123`                 | `project%123`                      |
-| Milestone by name (one word)                                   | `%v1.23`                       | `namespace/project%v1.23`               | `project%v1.23`                    |
-| Milestone by name (multiple words)                             | `%"release candidate"`         | `namespace/project%"release candidate"` | `project%"release candidate"`      |
-| Commit (specific)                                              | `9ba12248`                     | `namespace/project@9ba12248`            | `project@9ba12248`                 |
-| Commit range comparison                                        | `9ba12248...b19a04f5`          | `namespace/project@9ba12248...b19a04f5` | `project@9ba12248...b19a04f5`      |
-| Repository file reference                                      | `[README](doc/README.md)`      |                                         |                                    |
-| Repository file reference (specific line)                      | `[README](doc/README.md#L13)`  |                                         |                                    |
-| [Alert](../operations/incident_management/alerts.md)           | `^alert#123`                   | `namespace/project^alert#123`           | `project^alert#123`                |
-| [Contact](crm/index.md#contacts)                               | `[contact:test@example.com]`   |                                         |                                    |
+| References                                                                           | Input                                                 | Cross-project reference                 | Shortcut inside the same namespace |
+|--------------------------------------------------------------------------------------|-------------------------------------------------------|-----------------------------------------|------------------------------------|
+| Specific user                                                                        | `@user_name`                                          |                                         |                                    |
+| Specific group                                                                       | `@group_name`                                         |                                         |                                    |
+| Entire team                                                                          | [`@all`](discussions/index.md#mentioning-all-members) |                                         |                                    |
+| Project                                                                              | `namespace/project>`                                  |                                         |                                    |
+| Issue                                                                                | ``#123``                                              | `namespace/project#123`                 | `project#123`                      |
+| Merge request                                                                        | `!123`                                                | `namespace/project!123`                 | `project!123`                      |
+| Snippet                                                                              | `$123`                                                | `namespace/project$123`                 | `project$123`                      |
+| [Epic](group/epics/index.md)                                                         | `&123`                                                | `group1/subgroup&123`                   |                                    |
+| [Iteration](group/iterations/index.md)                                               | `*iteration:"iteration title"`                        |                                         |                                    |
+| [Iteration cadence](group/iterations/index.md) by ID<sup>1</sup>                     | `[cadence:123]`                                       |                                         |                                    |
+| [Iteration cadence](group/iterations/index.md) by title (one word)<sup>1</sup>       | `[cadence:plan]`                                      |                                         |                                    |
+| [Iteration cadence](group/iterations/index.md) by title (multiple words)<sup>1</sup> | `[cadence:"plan a"]`                                  |                                         |                                    |
+| [Vulnerability](application_security/vulnerabilities/index.md)                       | `[vulnerability:123]`                                 | `[vulnerability:namespace/project/123]` | `[vulnerability:project/123]`      |
+| Feature flag                                                                         | `[feature_flag:123]`                                  | `[feature_flag:namespace/project/123]`  | `[feature_flag:project/123]`       |
+| Label by ID                                                                          | `~123`                                                | `namespace/project~123`                 | `project~123`                      |
+| Label by name (one word)                                                             | `~bug`                                                | `namespace/project~bug`                 | `project~bug`                      |
+| Label by name (multiple words)                                                       | `~"feature request"`                                  | `namespace/project~"feature request"`   | `project~"feature request"`        |
+| Label by name (scoped)                                                               | `~"priority::high"`                                   | `namespace/project~"priority::high"`    | `project~"priority::high"`         |
+| Project milestone by ID <sup>2</sup>                                                 | `%123`                                                | `namespace/project%123`                 | `project%123`                      |
+| Milestone by name (one word) <sup>2</sup>                                            | `%v1.23`                                              | `namespace/project%v1.23`               | `project%v1.23`                    |
+| Milestone by name (multiple words) <sup>2</sup>                                      | `%"release candidate"`                                | `namespace/project%"release candidate"` | `project%"release candidate"`      |
+| Commit (specific)                                                                    | `9ba12248`                                            | `namespace/project@9ba12248`            | `project@9ba12248`                 |
+| Commit range comparison                                                              | `9ba12248...b19a04f5`                                 | `namespace/project@9ba12248...b19a04f5` | `project@9ba12248...b19a04f5`      |
+| Repository file reference                                                            | `[README](doc/README.md)`                             |                                         |                                    |
+| Repository file reference (specific line)                                            | `[README](doc/README.md#L13)`                         |                                         |                                    |
+| [Alert](../operations/incident_management/alerts.md)                                 | `^alert#123`                                          | `namespace/project^alert#123`           | `project^alert#123`                |
+| [Contact](crm/index.md#contacts)                                                     | `[contact:test@example.com]`                          |                                         |                                    |
+| [Wiki page](project/wiki/index.md) (if the page slug is the same as the title)        | `[[Home]]`                                            |                                         |                                    |
+| [Wiki page](project/wiki/index.md) (if the page slug is different from the title)     | `[[How to use GitLab\|how-to-use-gitlab]]`            |                                         |                                    |
 
-<ol>
-  <li>
-    <small>
-      <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/384885">Introduced</a> in GitLab 16.9. Iteration cadence references are always rendered following the format <code>[cadence:&lt;ID>]</code>.
-    For example, the text reference <code>[cadence:"plan"]</code> renders as <code>[cadence:1]</code> if the referenced iterations cadence's ID is <code>1</code>.
-    </small>
-  </li>
-</ol>
+**Footnotes:**
+
+1. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384885) in GitLab 16.9.
+   Iteration cadence references are always rendered following the format `[cadence:<ID>]`.
+   For example, the text reference `[cadence:"plan"]` renders as `[cadence:1]` if the referenced
+   iterations cadence's ID is `1`.
+1. For milestones, prepend a `/` before `namespace/project` to specify the exact milestone,
+   removing any possible ambiguity.
 
 For example, referencing an issue by using `#123` formats the output as a link
 to issue number 123 with text `#123`. Likewise, a link to issue number 123 is
@@ -745,7 +747,6 @@ For example:
 
 ### Show the issue, merge request, or epic title in the reference
 
-> - Support for issues, merge requests, and epics [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15694) in GitLab 14.6.
 > - Support for work items [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390854) in GitLab 16.0.
 
 To include the title in the rendered link of an issue, work item, merge request, or epic:
@@ -815,9 +816,17 @@ Quote break.
 
 [View this topic in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#multiline-blockquote).
 
-Create multi-line blockquotes fenced by `>>>`, with a blank line before and after the block:
+Create multi-line blockquotes fenced by `>>>`:
 
 ```markdown
+>>>
+If you paste a message from somewhere else
+
+that spans multiple lines,
+
+you can quote that without having to manually prepend `>` to every line!
+>>>
+```
 
 >>>
 If you paste a message from somewhere else
@@ -826,20 +835,6 @@ that spans multiple lines,
 
 you can quote that without having to manually prepend `>` to every line!
 >>>
-
-```
-
-<!--
-Use a standard blockquote here until https://gitlab.com/gitlab-org/gitlab/-/issues/390290
-gets properly fixed. The mixture of HTML comments and HTML tags
-trigger this problem.
--->
-
-> If you paste a message from somewhere else
->
-> that spans multiple lines,
->
-> you can quote that without having to manually prepend `>` to every line!
 
 ## Code spans and blocks
 
@@ -1107,6 +1102,8 @@ Alt-H2
 
 ### Heading IDs and links
 
+> - Heading link generation [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/440733) in GitLab 17.0.
+
 [View this topic in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#heading-ids-and-links).
 
 All Markdown-rendered headings automatically
@@ -1133,19 +1130,18 @@ Example:
 ## This heading has spaces in it
 ### This heading has spaces in it
 ## This heading has 3.5 in it (and parentheses)
+## This heading has  multiple spaces and --- hyphens
 ```
 
 Would generate the following link IDs:
 
 1. `this-heading-has-spaces-in-it`
-1. `this-heading-has-a-in-it`
+1. `this-heading-has-a-thumbsup-in-it`
 1. `this-heading-has-unicode-in-it-한글`
 1. `this-heading-has-spaces-in-it-1`
 1. `this-heading-has-spaces-in-it-2`
-1. `this-heading-has-3-5-in-it-and-parentheses`
-
-Emoji processing happens before the heading IDs are generated. The
-emoji is converted to an image, which is then removed from the ID.
+1. `this-heading-has-35-in-it-and-parentheses`
+1. `this-heading-has--multiple-spaces-and-----hyphens`
 
 ## Horizontal rule
 
@@ -1268,8 +1264,6 @@ Here's an example audio clip:
 ![Sample Audio](img/markdown_audio.mp3)
 
 ## Inline HTML
-
-> - Allowing `rel="license"` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/20857) in GitLab 14.6.
 
 [View this topic in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#inline-html).
 
@@ -1483,7 +1477,7 @@ Some text to show that the reference links can follow later.
 
 &#91;arbitrary case-insensitive reference text]: https://www.mozilla.org/en-US/
 &#91;1]: https://slashdot.org
-&#91;link text itself]: https://www.reddit.com
+&#91;link text itself]: https://about.gitlab.com/
 </code></pre>
 
 - This line shows an [inline-style link](https://www.google.com)
@@ -1505,7 +1499,7 @@ Do not change to reference style links.
 
 - This line is a [reference-style link, see below](https://www.mozilla.org/en-US/)
 - You can [use numbers for reference-style link definitions, see below](https://slashdot.org)
-- Or leave it empty and use the [link text itself](https://www.reddit.com), see below.
+- Or leave it empty and use the [link text itself](https://about.gitlab.com/), see below.
 
 Some text to show that the reference links can follow later.
 
@@ -1739,15 +1733,15 @@ When creating tables:
 - The first line contains the headers, separated by "pipes" (`|`).
 - The second line separates the headers from the cells.
   - The cells can contain only empty spaces, hyphens, and
-   (optionally) colons for horizontal alignment.
+    (optionally) colons for horizontal alignment.
   - Each cell must contain at least one hyphen, but adding more hyphens to a
-   cell does not change the cell's rendering.
+    cell does not change the cell's rendering.
   - Any content other than hyphens, whitespace, or colons is not allowed
 - The third, and any following lines, contain the cell values.
   - You **can't** have cells separated over many lines in the Markdown, they must be kept to single lines,
-   but they can be very long. You can also include HTML `<br>` tags to force newlines if needed.
+    but they can be very long. You can also include HTML `<br>` tags to force newlines if needed.
   - The cell sizes **don't** have to match each other. They are flexible, but must be separated
-   by pipes (`|`).
+    by pipes (`|`).
   - You **can** have blank cells.
 - Column widths are calculated dynamically based on the content of the cells.
 - To use the pipe character (`|`) in the text and not as table delimiter, you must escape it with a backslash (`\|`).

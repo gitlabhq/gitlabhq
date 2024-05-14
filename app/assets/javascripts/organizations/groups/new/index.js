@@ -14,12 +14,13 @@ export const initOrganizationsGroupsNew = () => {
     dataset: { appData },
   } = el;
   const {
-    organizationId,
     basePath,
+    groupsAndProjectsOrganizationPath,
     groupsOrganizationPath,
     mattermostEnabled,
     availableVisibilityLevels,
     restrictedVisibilityLevels,
+    defaultVisibilityLevel,
     pathMaxlength,
     pathPattern,
   } = convertObjectPropsToCamelCase(JSON.parse(appData));
@@ -33,12 +34,13 @@ export const initOrganizationsGroupsNew = () => {
     name: 'OrganizationGroupsNewRoot',
     apolloProvider,
     provide: {
-      organizationId,
       basePath,
+      groupsAndProjectsOrganizationPath,
       groupsOrganizationPath,
       mattermostEnabled,
       availableVisibilityLevels,
       restrictedVisibilityLevels,
+      defaultVisibilityLevel,
       pathMaxlength,
       pathPattern,
     },

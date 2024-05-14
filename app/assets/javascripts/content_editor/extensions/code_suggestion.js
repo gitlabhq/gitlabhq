@@ -67,7 +67,7 @@ export default CodeBlockHighlight.extend({
     return [
       {
         priority: PARSE_HTML_PRIORITY_HIGHEST,
-        tag: 'pre[lang="suggestion"]',
+        tag: 'pre[data-canonical-lang="suggestion"]',
       },
     ];
   },

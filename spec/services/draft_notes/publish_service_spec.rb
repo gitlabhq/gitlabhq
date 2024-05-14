@@ -8,6 +8,7 @@ RSpec.describe DraftNotes::PublishService, feature_category: :code_review_workfl
   let(:project) { merge_request.target_project }
   let(:user) { merge_request.author }
   let(:commit) { project.commit(sample_commit.id) }
+  let(:internal) { false }
 
   let(:position) do
     Gitlab::Diff::Position.new(
@@ -25,7 +26,7 @@ RSpec.describe DraftNotes::PublishService, feature_category: :code_review_workfl
 
   context 'single draft note' do
     let(:commit_id) { nil }
-    let!(:drafts) { create_list(:draft_note, 2, merge_request: merge_request, author: user, commit_id: commit_id, position: position) }
+    let!(:drafts) { create_list(:draft_note, 2, merge_request: merge_request, author: user, commit_id: commit_id, position: position, internal: internal) }
 
     it 'publishes' do
       expect { publish(draft: drafts.first) }.to change { DraftNote.count }.by(-1).and change { Note.count }.by(1)
@@ -59,6 +60,18 @@ RSpec.describe DraftNotes::PublishService, feature_category: :code_review_workfl
 
         expect(result[:status]).to eq(:success)
         expect(merge_request.notes.first.commit_id).to eq(commit_id)
+      end
+    end
+
+    context 'internal is set' do
+      let(:position) { nil }
+      let(:internal) { true }
+
+      it 'creates internal note from draft' do
+        result = publish(draft: drafts.first)
+
+        expect(result[:status]).to eq(:success)
+        expect(merge_request.notes.first.internal).to eq(internal)
       end
     end
   end
@@ -172,16 +185,21 @@ RSpec.describe DraftNotes::PublishService, feature_category: :code_review_workfl
         end
       end
 
-      it 'does not request a lot from Gitaly', :request_store, :clean_gitlab_redis_cache do
-        merge_request
-        position
+      context 'checking gitaly calls' do
+        # NOTE: This was added to avoid test flakiness.
+        let(:merge_request) { create(:merge_request) }
 
-        Gitlab::GitalyClient.reset_counts
+        it 'does not request a lot from Gitaly', :request_store, :clean_gitlab_redis_cache do
+          merge_request
+          position
 
-        # NOTE: This should be reduced as we work on reducing Gitaly calls.
-        # Gitaly requests shouldn't go above this threshold as much as possible
-        # as it may add more to the Gitaly N+1 issue we are experiencing.
-        expect { publish }.to change { Gitlab::GitalyClient.get_request_count }.by(19)
+          Gitlab::GitalyClient.reset_counts
+
+          # NOTE: This should be reduced as we work on reducing Gitaly calls.
+          # Gitaly requests shouldn't go above this threshold as much as possible
+          # as it may add more to the Gitaly N+1 issue we are experiencing.
+          expect { publish }.to change { Gitlab::GitalyClient.get_request_count }.by(19)
+        end
       end
     end
 
@@ -204,22 +222,19 @@ RSpec.describe DraftNotes::PublishService, feature_category: :code_review_workfl
 
       expect(MergeRequests::UpdateReviewerStateService).not_to receive(:new)
     end
+  end
 
-    context 'when `mr_request_changes` feature flag is disabled' do
-      before do
-        stub_feature_flags(mr_request_changes: false)
+  context 'with many draft notes', :use_sql_query_cache, :request_store do
+    let(:merge_request) { create(:merge_request) }
+
+    it 'reduce N+1 queries' do
+      5.times do
+        create(:draft_note_on_discussion, merge_request: merge_request, author: user, note: 'some note')
       end
 
-      it 'calls UpdateReviewerStateService' do
-        expect_next_instance_of(
-          MergeRequests::UpdateReviewerStateService,
-          project: project, current_user: user
-        ) do |service|
-          expect(service).to receive(:execute).with(merge_request, "reviewed")
-        end
+      recorder = ActiveRecord::QueryRecorder.new(skip_cached: false) { publish }
 
-        publish
-      end
+      expect(recorder.count).not_to be > 105
     end
   end
 
@@ -286,6 +301,7 @@ RSpec.describe DraftNotes::PublishService, feature_category: :code_review_workfl
         refresh = MergeRequests::RefreshService.new(project: project, current_user: user)
         refresh.execute(oldrev, newrev, merge_request.source_branch_ref)
 
+        merge_request.reload
         expect { publish(draft: draft) }.to change { Suggestion.count }.by(1)
           .and change { DiffNote.count }.from(0).to(1)
 

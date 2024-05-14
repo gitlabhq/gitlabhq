@@ -1,7 +1,8 @@
 ---
 stage: Create
 group: Code Review
-info: Detailing the process to add a new mergeability check
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+description: "Developer information explaining the process to add a new mergeability check"
 ---
 
 # Mergeability framework
@@ -14,6 +15,15 @@ in the backend. This allows the frontend to simply consume the API and display t
 
 ## Add a new check
 
+When adding a new merge check, we must make a few choices:
+
+- Is this check skippable, and part of the **Merge when checks pass** feature?
+- Is this check cacheable?
+  - If so, what is an appropriate cache key?
+- Does this check have a setting to turn this check on or off?
+
+After we answer these questions, we can create the new check.
+
 The mergeability checks live under `app/services/merge_requests/mergeability/`.
 
 1. To create a new check, we can use this as a base:
@@ -23,8 +33,8 @@ The mergeability checks live under `app/services/merge_requests/mergeability/`.
    module MergeRequests
      module Mergeability
        class CheckCiStatusService < CheckBaseService
-         identifier :ci_must_pass
-         description 'Checks whether CI has passed'
+          identifier :ci_must_pass # Identifier used to state which check failed
+          description 'Checks whether CI has passed' # Description of the check returned through GraphQL
 
          def execute
            # If the merge check is behind a setting, we return inactive if the setting is false
@@ -43,6 +53,8 @@ The mergeability checks live under `app/services/merge_requests/mergeability/`.
            params[:skip_ci_check].present?
          end
 
+         # If we return true here, we need to create the method def cache_key and provide
+         # an approriate cache key that will invalidate correctly.
          def cacheable?
            false
          end
@@ -77,6 +89,13 @@ The mergeability checks live under `app/services/merge_requests/mergeability/`.
 1. The main methods that call the mergeability framework are: `def mergeable?`, and `DetailedMergeStatusService`.
 1. These methods call the `RunChecksService` class which handles the iterating
    of the mergeability checks, caching and instrumentation.
+
+## Merge when checks pass
+
+When we want to add the check to the Merge When Checks Pass feature, we must:
+
+1. Allow the check to be skipped in the class.
+1. Add the parameter to the list in the method `skipped_mergeable_checks`.
 
 ## Future work
 

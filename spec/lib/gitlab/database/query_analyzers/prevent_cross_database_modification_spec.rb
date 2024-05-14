@@ -19,14 +19,14 @@ RSpec.describe Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModificatio
     describe '.context_key' do
       it 'contains class name' do
         expect(described_class.context_key)
-          .to eq 'analyzer_prevent_cross_database_modification_context'.to_sym
+          .to eq :analyzer_prevent_cross_database_modification_context
       end
     end
 
     describe '.suppress_key' do
       it 'contains class name' do
         expect(described_class.suppress_key)
-          .to eq 'analyzer_prevent_cross_database_modification_suppressed'.to_sym
+          .to eq :analyzer_prevent_cross_database_modification_suppressed
       end
     end
   end
@@ -178,7 +178,7 @@ RSpec.describe Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModificatio
 
       context 'when data modification happens in a transaction' do
         include_examples 'cross-database modification errors', model: Project,
-          sql_log_contains: [/UPDATE "projects"/, /SELECT "ci_pipelines"."id".*FOR UPDATE/]
+          sql_log_contains: [/UPDATE "projects"/, /SELECT .*"ci_pipelines"\."id".* FROM "ci_pipelines" .*FOR UPDATE/]
 
         context 'when the modification is inside a factory save! call' do
           let(:runner) { create(:ci_runner, :project, projects: [build(:project)]) }

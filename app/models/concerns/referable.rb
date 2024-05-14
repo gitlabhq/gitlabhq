@@ -27,7 +27,7 @@ module Referable
   # reference of child objects (e.g. projects are the base of
   # issues), but it is formatted differently, then you may wish
   # to override this method.
-  def to_reference_base(from = nil, full:)
+  def to_reference_base(from = nil, full:, absolute_path: false)
     to_reference(from, full: full)
   end
 

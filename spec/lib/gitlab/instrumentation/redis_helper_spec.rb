@@ -116,6 +116,23 @@ RSpec.describe Gitlab::Instrumentation::RedisHelper, :request_store, feature_cat
       end
     end
 
+    context 'when a RedisClient::Cluster::Pipeline::RedirectionNeeded is raised' do
+      before do
+        allow(Gitlab::Instrumentation::Redis::Cache).to receive(:instance_count_request)
+          .and_raise(RedisClient::Cluster::Pipeline::RedirectionNeeded)
+      end
+
+      it 'calls instance_count_cluster_pipeline_redirection' do
+        expect(Gitlab::Instrumentation::Redis::Cache)
+          .to receive(:instance_count_cluster_pipeline_redirection)
+            .with(RedisClient::Cluster::Pipeline::RedirectionNeeded)
+
+        expect(Gitlab::Instrumentation::Redis::Cache).not_to receive(:instance_count_exception)
+
+        expect { instrumented_command }.to raise_error(RedisClient::Cluster::Pipeline::RedirectionNeeded)
+      end
+    end
+
     context 'when pipelined' do
       let(:command) { [[:get, '{user1}:bar'], [:get, '{user1}:foo']] }
       let(:pipelined) { true }

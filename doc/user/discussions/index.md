@@ -2,13 +2,14 @@
 stage: Create
 group: Code Review
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
+description: "Use comments to discuss work, mention users, and suggest changes."
 ---
 
 # Comments and threads
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - Paginated merge request discussions [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340172) in GitLab 15.1 [with a flag](../../administration/feature_flags.md) named `paginated_mr_discussions`. Disabled by default.
 > - Paginated merge request discussions [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/364497) in GitLab 15.2.
@@ -107,9 +108,15 @@ To add a commit diff comment:
 1. Select the **Commits** tab, then select the commit message.
 1. By the line you want to comment on, hover over the line number and select **Comment** (**{comment}**).
    You can select multiple lines by dragging the **Comment** (**{comment}**) icon.
-1. Enter your comment and select **Start a review** or **Add comment now**.
+1. Enter your comment.
+1. To add your comment immediately, select **Add comment now**, or use the keyboard shortcut:
+   - macOS: <kbd>Shift</kbd> + <kbd>Command</kbd> + <kbd>Enter</kbd>
+   - All other OSes: <kbd>Shift</kbd> + <kbd>Control</kbd> + <kbd>Enter</kbd>
+1. To leave your comment unpublished until you finish a review, select **Start a review**, or use the keyboard shortcut:
+   - macOS: <kbd>Command</kbd> + <kbd>Enter</kbd>
+   - All other OSes: <kbd>Control</kbd> + <kbd>Enter</kbd>
 
-The comment is displayed on the merge request's **Overview** tab.
+The comment displays on the merge request's **Overview** tab.
 
 The comment is not displayed on your project's **Code > Commits** page.
 
@@ -175,8 +182,6 @@ If an issue or merge request is closed with a locked discussion, then you cannot
 
 ## Add an internal note
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207473) in GitLab 13.9 [with a flag](../../administration/feature_flags.md) named `confidential_notes`. Disabled by default.
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/351143) in GitLab 14.10: you can only mark comments in issues and epics as confidential. Previously, it was also possible for comments in merge requests and snippets.
 > - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87403) from "confidential comments" to "internal notes" in GitLab 15.0.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87383) in GitLab 15.0.
 > - [Feature flag `confidential_notes`](https://gitlab.com/gitlab-org/gitlab/-/issues/362712) removed in GitLab 15.2.
@@ -232,7 +237,7 @@ To change the activity sort order:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 You can see changes to the description listed in the history.
 

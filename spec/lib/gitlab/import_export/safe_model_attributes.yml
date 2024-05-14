@@ -34,6 +34,8 @@ Issue:
 - external_key
 - issue_type
 - email_message_id
+- imported
+- imported_from
 Event:
 - id
 - target_type
@@ -44,6 +46,8 @@ Event:
 - action
 - author_id
 - fingerprint
+- imported
+- imported_from
 WikiPage::Meta:
 - id
 - title
@@ -87,6 +91,8 @@ Note:
 - confidential
 - last_edited_at
 - internal
+- imported
+- imported_from
 Notes::NoteMetadata:
 - note_id
 - email_participant
@@ -133,6 +139,8 @@ ProjectSnippet:
 - file_name
 - type
 - visibility_level
+- imported
+- imported_from
 Release:
 - id
 - name
@@ -217,6 +225,8 @@ MergeRequest:
 - allow_maintainer_to_push
 - merge_ref_sha
 - draft
+- imported
+- imported_from
 MergeRequestDiff:
 - id
 - state
@@ -609,6 +619,7 @@ ProjectHook:
 - repository_update_events
 - releases_events
 - emoji_events
+- resource_access_token_events
 ProtectedBranch:
 - id
 - project_id
@@ -995,6 +1006,8 @@ Epic:
   - total_closed_issue_weight
   - total_opened_issue_count
   - total_closed_issue_count
+  - imported
+  - imported_from
 EpicIssue:
   - id
   - relative_position
@@ -1006,10 +1019,6 @@ SystemNoteMetadata:
   - updated_at
 ProjectSecuritySetting:
   - project_id
-  - auto_fix_container_scanning
-  - auto_fix_dast
-  - auto_fix_dependency_scanning
-  - auto_fix_sast
   - created_at
   - updated_at
 IssuableSla:
@@ -1095,3 +1104,11 @@ TimeTracking::TimelogCategories:
   - description
   - billable
   - billing_rate
+NoteDiffFile:
+  - new_file
+  - renamed_file
+  - deleted_file
+  - a_mode
+  - b_mode
+  - new_path
+  - old_path

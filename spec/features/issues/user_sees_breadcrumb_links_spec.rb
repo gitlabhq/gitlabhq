@@ -13,7 +13,7 @@ RSpec.describe 'New issue breadcrumb', feature_category: :team_planning do
   end
 
   it 'displays link to project issues and new issue' do
-    page.within '.breadcrumbs' do
+    within_testid('breadcrumb-links') do
       expect(find_link('Issues')[:href]).to end_with(project_issues_path(project))
       expect(find_link('New')[:href]).to end_with(new_project_issue_path(project))
     end
@@ -34,6 +34,6 @@ RSpec.describe 'New issue breadcrumb', feature_category: :team_planning do
     visit project_issues_path(project, assignee_id: user.id)
 
     expect(page).to have_content 'foobar'
-    expect(page.all('.no-comments').first.text).to eq "0"
+    expect(page).not_to have_selector("[data-testid='issuable-comments']")
   end
 end

@@ -45,6 +45,6 @@ export default {
       </span>
     </p>
 
-    <p class="gl-mb-0">{{ commit.title }}</p>
+    <p class="gl-mb-0 gl-break-all">{{ commit.title }}</p>
   </div>
 </template>

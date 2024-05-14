@@ -47,7 +47,7 @@ RSpec.describe BulkImports::Projects::Pipelines::CiPipelinesPipeline, feature_ca
     allow(pipeline).to receive(:set_source_objects_counter)
   end
 
-  describe '#run', :clean_gitlab_redis_cache do
+  describe '#run', :clean_gitlab_redis_shared_state do
     before do
       group.add_owner(user)
 

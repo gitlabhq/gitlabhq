@@ -12,3 +12,6 @@
         .info-well
           .well-segment
             = markdown integration.help
+            - if integration.attribution_notice.present?
+              %p
+                %em= integration.attribution_notice

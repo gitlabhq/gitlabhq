@@ -138,5 +138,6 @@ export const convertToDeploymentTableRow = (deploymentNode, environment) => {
     actions: getActionsFromDeploymentNode(deploymentNode, lastDeployment?.job?.name),
     rollback: getRollbackActionFromDeploymentNode(deploymentNode, environment),
     deploymentApproval: getDeploymentApprovalFromDeploymentNode(deploymentNode, environment),
+    webPath: deploymentNode.webPath || '',
   };
 };

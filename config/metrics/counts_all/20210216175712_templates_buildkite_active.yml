@@ -4,7 +4,7 @@ key_path: counts.templates_buildkite_active
 description: Count of active service templates for Buildkite
 product_section: dev
 product_stage: manage
-product_group: integrations
+product_group: import_and_integrate
 value_type: number
 status: removed
 milestone_removed: '14.4'

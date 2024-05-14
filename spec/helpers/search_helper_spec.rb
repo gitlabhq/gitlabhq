@@ -23,7 +23,7 @@ RSpec.describe SearchHelper, feature_category: :global_search do
     end
 
     context "with a standard user" do
-      let(:user) { create(:user) }
+      let_it_be(:user) { create(:user) }
 
       before do
         allow(self).to receive(:current_user).and_return(user)
@@ -169,106 +169,151 @@ RSpec.describe SearchHelper, feature_category: :global_search do
         expect(result.keys).to match_array(%i[category id value label url avatar_url])
       end
 
-      it 'includes the users recently viewed issues and project with correct order', :aggregate_failures do
-        recent_issues = instance_double(::Gitlab::Search::RecentIssues)
-        expect(::Gitlab::Search::RecentIssues).to receive(:new).with(user: user).and_return(recent_issues)
-        project1 = create(:project, :with_avatar, namespace: user.namespace)
-        project2 = create(:project, namespace: user.namespace)
-        issue1 = create(:issue, title: 'issue 1', project: project1)
-        issue2 = create(:issue, title: 'issue 2', project: project2)
-        project = create(:project, title: 'the search term')
-        project.add_developer(user)
+      context 'for recently reviewed items' do
+        let(:search_term) { 'the search term' }
+        let(:recent_issues) { instance_double(::Gitlab::Search::RecentIssues) }
+        let(:recent_merge_requests) { instance_double(::Gitlab::Search::RecentMergeRequests) }
 
-        expect(recent_issues).to receive(:search).with('the search term').and_return(Issue.id_in_ordered([issue1.id, issue2.id]))
+        let_it_be(:project1) { create(:project, namespace: user.namespace) }
+        let_it_be(:project2) { create(:project) }
 
-        results = search_autocomplete_opts("the search term")
+        it 'includes the users recently viewed issues and project with correct order', :aggregate_failures do
+          project = create(:project, :with_avatar, title: 'the search term')
+          project.add_developer(user)
 
-        expect(results.count).to eq(3)
+          issue1 = create(:issue, title: 'issue 1', project: project)
+          issue2 = create(:issue, title: 'issue 2', project: project2)
 
-        expect(results[0]).to include({
-          category: 'Recent issues',
-          id: issue1.id,
-          label: 'issue 1',
-          url: Gitlab::Routing.url_helpers.project_issue_path(issue1.project, issue1),
-          avatar_url: project1.avatar_url
-        })
+          expect(::Gitlab::Search::RecentIssues).to receive(:new).with(user: user).and_return(recent_issues)
+          expect(recent_issues).to receive(:search).with(search_term).and_return(Issue.id_in_ordered([issue1.id, issue2.id]))
 
-        expect(results[1]).to include({
-          category: 'Recent issues',
-          id: issue2.id,
-          label: 'issue 2',
-          url: Gitlab::Routing.url_helpers.project_issue_path(issue2.project, issue2),
-          avatar_url: '' # This project didn't have an avatar so set this to ''
-        })
+          results = search_autocomplete_opts(search_term)
 
-        expect(results[2]).to include({
-          category: 'Projects',
-          id: project.id,
-          label: project.full_name,
-          url: Gitlab::Routing.url_helpers.project_path(project)
-        })
-      end
+          expect(results.count).to eq(3)
 
-      it 'includes the users recently viewed issues with the exact same name', :aggregate_failures do
-        recent_issues = instance_double(::Gitlab::Search::RecentIssues)
-        expect(::Gitlab::Search::RecentIssues).to receive(:new).with(user: user).and_return(recent_issues)
-        project1 = create(:project, namespace: user.namespace)
-        project2 = create(:project, namespace: user.namespace)
-        issue1 = create(:issue, title: 'issue same_name', project: project1)
-        issue2 = create(:issue, title: 'issue same_name', project: project2)
+          expect(results[0]).to include({
+            category: 'Recent issues',
+            id: issue1.id,
+            label: 'issue 1',
+            url: Gitlab::Routing.url_helpers.project_issue_path(issue1.project, issue1),
+            avatar_url: project.avatar_url
+          })
 
-        expect(recent_issues).to receive(:search).with('the search term').and_return(Issue.id_in_ordered([issue1.id, issue2.id]))
+          expect(results[1]).to include({
+            category: 'Recent issues',
+            id: issue2.id,
+            label: 'issue 2',
+            url: Gitlab::Routing.url_helpers.project_issue_path(issue2.project, issue2),
+            avatar_url: '' # This project didn't have an avatar so set this to ''
+          })
 
-        results = search_autocomplete_opts("the search term")
+          expect(results[2]).to include({
+            category: 'Projects',
+            id: project.id,
+            label: project.full_name,
+            url: Gitlab::Routing.url_helpers.project_path(project)
+          })
+        end
 
-        expect(results.count).to eq(2)
+        it 'includes the users recently viewed issues with the exact same name', :aggregate_failures do
+          expect(::Gitlab::Search::RecentIssues).to receive(:new).with(user: user).and_return(recent_issues)
+          project3 = create(:project, :with_avatar, namespace: user.namespace)
+          issue1 = create(:issue, title: 'issue same_name', project: project3)
+          issue2 = create(:issue, title: 'issue same_name', project: project2)
 
-        expect(results[0]).to include({
-          category: 'Recent issues',
-          id: issue1.id,
-          label: 'issue same_name',
-          url: Gitlab::Routing.url_helpers.project_issue_path(issue1.project, issue1),
-          avatar_url: '' # This project didn't have an avatar so set this to ''
-        })
+          expect(recent_issues).to receive(:search).with(search_term)
+            .and_return(Issue.id_in_ordered([issue1.id, issue2.id]))
 
-        expect(results[1]).to include({
-          category: 'Recent issues',
-          id: issue2.id,
-          label: 'issue same_name',
-          url: Gitlab::Routing.url_helpers.project_issue_path(issue2.project, issue2),
-          avatar_url: '' # This project didn't have an avatar so set this to ''
-        })
-      end
+          results = search_autocomplete_opts(search_term)
 
-      it 'includes the users recently viewed merge requests', :aggregate_failures do
-        recent_merge_requests = instance_double(::Gitlab::Search::RecentMergeRequests)
-        expect(::Gitlab::Search::RecentMergeRequests).to receive(:new).with(user: user).and_return(recent_merge_requests)
-        project1 = create(:project, :with_avatar, namespace: user.namespace)
-        project2 = create(:project, namespace: user.namespace)
-        merge_request1 = create(:merge_request, :unique_branches, title: 'Merge request 1', target_project: project1, source_project: project1)
-        merge_request2 = create(:merge_request, :unique_branches, title: 'Merge request 2', target_project: project2, source_project: project2)
+          expect(results.count).to eq(2)
 
-        expect(recent_merge_requests).to receive(:search).with('the search term').and_return(MergeRequest.id_in_ordered([merge_request1.id, merge_request2.id]))
+          expect(results[0]).to include({
+            category: 'Recent issues',
+            id: issue1.id,
+            label: 'issue same_name',
+            url: Gitlab::Routing.url_helpers.project_issue_path(issue1.project, issue1),
+            avatar_url: project3.avatar_url
+          })
 
-        results = search_autocomplete_opts("the search term")
+          expect(results[1]).to include({
+            category: 'Recent issues',
+            id: issue2.id,
+            label: 'issue same_name',
+            url: Gitlab::Routing.url_helpers.project_issue_path(issue2.project, issue2),
+            avatar_url: '' # This project didn't have an avatar so set this to ''
+          })
+        end
 
-        expect(results.count).to eq(2)
+        it 'includes the users recently viewed merge requests', :aggregate_failures do
+          expect(::Gitlab::Search::RecentMergeRequests).to receive(:new).with(user: user)
+            .and_return(recent_merge_requests)
 
-        expect(results[0]).to include({
-          category: 'Recent merge requests',
-          id: merge_request1.id,
-          label: 'Merge request 1',
-          url: Gitlab::Routing.url_helpers.project_merge_request_path(merge_request1.project, merge_request1),
-          avatar_url: project1.avatar_url
-        })
+          merge_request1 = create(:merge_request, :unique_branches,
+            title: 'Merge request 1', target_project: project1, source_project: project1)
+          merge_request2 = create(:merge_request, :unique_branches,
+            title: 'Merge request 2', target_project: project2, source_project: project2)
 
-        expect(results[1]).to include({
-          category: 'Recent merge requests',
-          id: merge_request2.id,
-          label: 'Merge request 2',
-          url: Gitlab::Routing.url_helpers.project_merge_request_path(merge_request2.project, merge_request2),
-          avatar_url: '' # This project didn't have an avatar so set this to ''
-        })
+          expect(recent_merge_requests).to receive(:search).with(search_term)
+            .and_return(MergeRequest.id_in_ordered([merge_request1.id, merge_request2.id]))
+
+          results = search_autocomplete_opts(search_term)
+
+          expect(results.count).to eq(2)
+
+          expect(results[0]).to include({
+            category: 'Recent merge requests',
+            id: merge_request1.id,
+            label: 'Merge request 1',
+            url: Gitlab::Routing.url_helpers.project_merge_request_path(merge_request1.project, merge_request1),
+            avatar_url: '' # This project didn't have an avatar so set this to ''
+          })
+
+          expect(results[1]).to include({
+            category: 'Recent merge requests',
+            id: merge_request2.id,
+            label: 'Merge request 2',
+            url: Gitlab::Routing.url_helpers.project_merge_request_path(merge_request2.project, merge_request2),
+            avatar_url: '' # This project didn't have an avatar so set this to ''
+          })
+        end
+
+        it 'does not have an N+1 for recently viewed issues' do
+          issue1 = create(:issue, title: 'issue 1', project: project1)
+          issue2 = create(:issue, title: 'issue 2', project: project2)
+          issue_ids = [issue1.id, issue2.id]
+
+          allow(::Gitlab::Search::RecentIssues).to receive(:new).with(user: user).and_return(recent_issues)
+          expect(recent_issues).to receive(:search).with(search_term).and_return(Issue.id_in_ordered(issue_ids))
+
+          control = ActiveRecord::QueryRecorder.new(skip_cached: true) { search_autocomplete_opts(search_term) }
+
+          issue_ids += create_list(:issue, 3).map(&:id)
+          expect(recent_issues).to receive(:search).with(search_term).and_return(Issue.id_in_ordered(issue_ids))
+
+          expect { search_autocomplete_opts(search_term) }.to issue_same_number_of_queries_as(control)
+        end
+
+        it 'does not have an N+1 for recently viewed merge_requests' do
+          merge_request1 = create(:merge_request, :unique_branches,
+            title: 'Merge request 1', target_project: project1, source_project: project1)
+          merge_request2 = create(:merge_request, :unique_branches,
+            title: 'Merge request 2', target_project: project2, source_project: project2)
+          merge_request_ids = [merge_request1.id, merge_request2.id]
+
+          expect(::Gitlab::Search::RecentMergeRequests).to receive(:new).with(user: user)
+            .and_return(recent_merge_requests).twice
+          expect(recent_merge_requests).to receive(:search).with(search_term)
+            .and_return(MergeRequest.id_in_ordered(merge_request_ids))
+
+          control = ActiveRecord::QueryRecorder.new(skip_cached: true) { search_autocomplete_opts(search_term) }
+
+          merge_request_ids += create_list(:merge_request, 3, :unique_branches).map(&:id)
+          expect(recent_merge_requests).to receive(:search).with(search_term)
+            .and_return(MergeRequest.id_in_ordered(merge_request_ids))
+
+          expect { search_autocomplete_opts(search_term) }.to issue_same_number_of_queries_as(control)
+        end
       end
 
       it "does not include the public group" do
@@ -435,12 +480,15 @@ RSpec.describe SearchHelper, feature_category: :global_search do
     let_it_be(:project) { create(:project, name: 'Searched') }
     let_it_be(:issue) { create(:issue, title: 'Searched', project: project) }
 
+    before_all do
+      project.add_developer(user)
+    end
+
     before do
       allow(self).to receive(:current_user).and_return(user)
       allow_next_instance_of(Gitlab::Search::RecentIssues) do |recent_issues|
-        allow(recent_issues).to receive(:search).and_return([issue])
+        allow(recent_issues).to receive(:search).and_return(Issue.id_in(issue.id))
       end
-      project.add_developer(user)
     end
 
     where(:scope, :category) do
@@ -771,13 +819,13 @@ RSpec.describe SearchHelper, feature_category: :global_search do
       using RSpec::Parameterized::TableSyntax
 
       where(:description, :expected) do
-        'test'                                                                 | '<span class="gl-text-gray-900 gl-font-weight-bold">test</span>'
-        '<span style="color: blue;">this test should not be blue</span>'       | 'this <span class="gl-text-gray-900 gl-font-weight-bold">test</span> should not be blue'
-        '<a href="#" onclick="alert(\'XSS\')">Click Me test</a>'               | '<a href="#">Click Me <span class="gl-text-gray-900 gl-font-weight-bold">test</span></a>'
-        '<script type="text/javascript">alert(\'Another XSS\');</script> test' | ' <span class="gl-text-gray-900 gl-font-weight-bold">test</span>'
-        'Lorem test ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec.' | 'Lorem <span class="gl-text-gray-900 gl-font-weight-bold">test</span> ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Don...'
+        'test'                                                                 | '<mark>test</mark>'
+        '<span style="color: blue;">this test should not be blue</span>'       | 'this <mark>test</mark> should not be blue'
+        '<a href="#" onclick="alert(\'XSS\')">Click Me test</a>'               | '<a href="#">Click Me <mark>test</mark></a>'
+        '<script type="text/javascript">alert(\'Another XSS\');</script> test' | ' <mark>test</mark>'
+        'Lorem test ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec.' | 'Lorem <mark>test</mark> ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Don...'
         '<img src="https://random.foo.com/test.png" width="128" height="128" />some image' | 'some image'
-        '<h2 data-sourcepos="11:1-11:26" dir="auto"><a id="user-content-additional-information" class="anchor" href="#additional-information" aria-hidden="true"></a>Additional information test:</h2><textarea data-update-url="/freepascal.org/fpc/source/-/issues/6163.json" dir="auto" data-testid="textarea" class="hidden js-task-list-field"></textarea>' | '<a class="anchor" href="#additional-information"></a>Additional information <span class="gl-text-gray-900 gl-font-weight-bold">test</span>:'
+        '<h2 data-sourcepos="11:1-11:26" dir="auto"><a id="user-content-additional-information" class="anchor" href="#additional-information" aria-hidden="true"></a>Additional information test:</h2><textarea data-update-url="/freepascal.org/fpc/source/-/issues/6163.json" dir="auto" data-testid="textarea" class="hidden js-task-list-field"></textarea>' | '<a class="anchor" href="#additional-information"></a>Additional information <mark>test</mark>:'
       end
 
       with_them do
@@ -789,53 +837,16 @@ RSpec.describe SearchHelper, feature_category: :global_search do
   end
 
   describe '#search_service' do
-    using RSpec::Parameterized::TableSyntax
-
-    subject { search_service }
+    let(:params) { { include_archived: true } }
 
     before do
       allow(self).to receive(:current_user).and_return(:the_current_user)
     end
 
-    shared_context 'with inputs' do
-      where(:input, :expected) do
-        '0'       | false
-        '1'       | true
-        'yes'     | true
-        'no'      | false
-        'true'    | true
-        'false'   | false
-        true      | true
-        false     | false
-      end
-    end
+    it 'instantiates a new SearchService with current_user and params' do
+      expect(::SearchService).to receive(:new).with(:the_current_user, { include_archived: true })
 
-    describe 'for confidential' do
-      let(:params) { { confidential: input } }
-
-      include_context 'with inputs'
-
-      with_them do
-        it 'transforms param' do
-          expect(::SearchService).to receive(:new).with(:the_current_user, { confidential: expected })
-
-          subject
-        end
-      end
-    end
-
-    describe 'for include_archived' do
-      let(:params) { { include_archived: input } }
-
-      include_context 'with inputs'
-
-      with_them do
-        it 'transforms param' do
-          expect(::SearchService).to receive(:new).with(:the_current_user, { include_archived: expected })
-
-          subject
-        end
-      end
+      search_service
     end
   end
 

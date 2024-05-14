@@ -1,8 +1,13 @@
 <script>
-import { GlForm, GlFormFields, GlButton } from '@gitlab/ui';
+import { GlForm, GlFormFields, GlButton, GlLink, GlAlert } from '@gitlab/ui';
 import { formValidators } from '@gitlab/ui/dist/utils';
 import { __, s__, sprintf } from '~/locale';
-import { FORM_FIELD_PATH } from '../constants';
+import { slugify } from '~/lib/utils/text_utility';
+import VisibilityLevelRadioButtons from '~/visibility_level/components/visibility_level_radio_buttons.vue';
+import { GROUP_VISIBILITY_LEVEL_DESCRIPTIONS } from '~/visibility_level/constants';
+import { restrictedVisibilityLevelsMessage } from '~/visibility_level/utils';
+import { helpPagePath } from '~/helpers/help_page_helper';
+import { FORM_FIELD_NAME, FORM_FIELD_PATH, FORM_FIELD_VISIBILITY_LEVEL } from '../constants';
 import GroupPathField from './group_path_field.vue';
 
 export default {
@@ -11,14 +16,25 @@ export default {
     GlForm,
     GlFormFields,
     GlButton,
+    GlLink,
+    GlAlert,
     GroupPathField,
+    VisibilityLevelRadioButtons,
   },
   i18n: {
     cancel: __('Cancel'),
     submitButtonText: __('Create group'),
+    warningForUsingDotInName: s__(
+      'Groups|Your group name must not contain a period if you intend to use SCIM integration, as it can lead to errors.',
+    ),
   },
+  GROUP_VISIBILITY_LEVEL_DESCRIPTIONS,
   formId: 'organization-new-group-form',
   props: {
+    loading: {
+      type: Boolean,
+      required: true,
+    },
     basePath: {
       type: String,
       required: true,
@@ -35,19 +51,44 @@ export default {
       required: true,
       type: String,
     },
+    availableVisibilityLevels: {
+      type: Array,
+      required: true,
+    },
+    restrictedVisibilityLevels: {
+      type: Array,
+      required: true,
+    },
+    initialFormValues: {
+      type: Object,
+      required: true,
+    },
   },
   data() {
     return {
       hasPathBeenManuallySet: false,
       isPathLoading: false,
-      formValues: {
-        [FORM_FIELD_PATH]: '',
-      },
+      formValues: this.initialFormValues,
     };
   },
   computed: {
     fields() {
       return {
+        [FORM_FIELD_NAME]: {
+          label: s__('Groups|Group name'),
+          validators: [
+            formValidators.required(s__('Groups|Enter a descriptive name for your group.')),
+          ],
+          inputAttrs: {
+            width: { md: 'lg' },
+            placeholder: __('My awesome group'),
+          },
+          groupAttrs: {
+            description: s__(
+              'Groups|Must start with letter, digit, emoji, or underscore. Can also contain periods, dashes, spaces, and parentheses.',
+            ),
+          },
+        },
         [FORM_FIELD_PATH]: {
           label: s__('Groups|Group URL'),
           validators: [
@@ -73,7 +114,32 @@ export default {
               : null,
           },
         },
+        [FORM_FIELD_VISIBILITY_LEVEL]: {
+          label: __('Visibility level'),
+          labelDescription: {
+            text: __('Who will be able to see this group?'),
+            linkText: __('Learn more'),
+            linkHref: helpPagePath('user/public_access'),
+          },
+          groupAttrs: {
+            // eslint-disable-next-line @gitlab/require-i18n-strings
+            'data-testid': `${FORM_FIELD_VISIBILITY_LEVEL}-group`,
+            description: restrictedVisibilityLevelsMessage({
+              availableVisibilityLevels: this.availableVisibilityLevels,
+              restrictedVisibilityLevels: this.restrictedVisibilityLevels,
+            }),
+          },
+        },
       };
+    },
+  },
+  watch: {
+    [`formValues.${FORM_FIELD_NAME}`](newName) {
+      if (this.hasPathBeenManuallySet) {
+        return;
+      }
+
+      this.formValues[FORM_FIELD_PATH] = slugify(newName);
     },
   },
   methods: {
@@ -96,6 +162,16 @@ export default {
       :fields="fields"
       @submit="$emit('submit', formValues)"
     >
+      <template #after(name)>
+        <gl-alert
+          class="gl-mb-5"
+          :dismissible="false"
+          variant="warning"
+          data-testid="dot-in-path-alert"
+        >
+          {{ $options.i18n.warningForUsingDotInName }}
+        </gl-alert>
+      </template>
       <template #input(path)="{ id, value, validation, input, blur }">
         <group-path-field
           :id="id"
@@ -108,11 +184,27 @@ export default {
           @loading-change="onPathLoading"
         />
       </template>
+      <template #input(visibilityLevel)="{ value, input }">
+        <visibility-level-radio-buttons
+          :checked="value"
+          :visibility-levels="availableVisibilityLevels"
+          :visibility-level-descriptions="$options.GROUP_VISIBILITY_LEVEL_DESCRIPTIONS"
+          @input="input"
+        />
+      </template>
+      <template #group(visibilityLevel)-label-description>
+        {{ fields.visibilityLevel.labelDescription.text }}
+        <gl-link :href="fields.visibilityLevel.labelDescription.linkHref">{{
+          fields.visibilityLevel.labelDescription.linkText
+        }}</gl-link
+        >.
+      </template>
     </gl-form-fields>
     <div class="gl-display-flex gl-gap-3">
       <gl-button
         type="submit"
         variant="confirm"
+        :loading="loading"
         class="js-no-auto-disable"
         data-testid="submit-button"
         >{{ $options.i18n.submitButtonText }}</gl-button

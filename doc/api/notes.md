@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Notes are comments on:
 
@@ -22,9 +22,6 @@ This includes system notes, which are notes about changes to the object (for exa
 assignee changes, GitLab posts a system note).
 
 ## Resource events
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38096) in GitLab 13.3 for state, milestone, and weight events.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40850) in GitLab 13.4 for iteration events.
 
 Some system notes are not part of this API, but are recorded as separate events:
 
@@ -87,7 +84,9 @@ GET /projects/:id/issues/:issue_iid/notes?sort=asc&order_by=updated_at
     "noteable_iid": 377,
     "resolvable": false,
     "confidential": false,
-    "internal": false
+    "internal": false,
+    "imported": false,
+    "imported_from": "none"
   },
   {
     "id": 305,
@@ -110,7 +109,9 @@ GET /projects/:id/issues/:issue_iid/notes?sort=asc&order_by=updated_at
     "noteable_iid": 121,
     "resolvable": false,
     "confidential": true,
-    "internal": true
+    "internal": true,
+    "imported": false,
+    "imported_from": "none"
   }
 ]
 ```
@@ -266,7 +267,9 @@ Parameters:
   "noteable_iid": 377,
   "resolvable": false,
   "confidential": false,
-  "internal": false
+  "internal": false,
+  "imported": false,
+  "imported_from": "none"
 }
 ```
 
@@ -475,7 +478,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 ### List all epic notes
 
@@ -540,7 +543,9 @@ Parameters:
   "noteable_iid": 11,
   "resolvable": false,
   "confidential": false,
-  "internal": false
+  "internal": false,
+  "imported": false,
+  "imported_from": "none"
 }
 ```
 

@@ -2,15 +2,20 @@ import { GlAvatarLabeled, GlIcon, GlBadge } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import GroupsListItem from '~/vue_shared/components/groups_list/groups_list_item.vue';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
+import GroupListItemDeleteModal from 'ee_else_ce/vue_shared/components/groups_list/group_list_item_delete_modal.vue';
 import {
   VISIBILITY_TYPE_ICON,
   VISIBILITY_LEVEL_INTERNAL_STRING,
   GROUP_VISIBILITY_TYPE,
 } from '~/visibility_level/constants';
-import { ACCESS_LEVEL_LABELS } from '~/access_level/constants';
+import { ACCESS_LEVEL_LABELS, ACCESS_LEVEL_NO_ACCESS_INTEGER } from '~/access_level/constants';
 import ListActions from '~/vue_shared/components/list_actions/list_actions.vue';
+import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { ACTION_EDIT, ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
-import DangerConfirmModal from '~/vue_shared/components/confirm_danger/confirm_danger_modal.vue';
+import {
+  TIMESTAMP_TYPE_CREATED_AT,
+  TIMESTAMP_TYPE_UPDATED_AT,
+} from '~/vue_shared/components/resource_lists/constants';
 import { groups } from './mock_data';
 
 describe('GroupsListItem', () => {
@@ -33,7 +38,9 @@ describe('GroupsListItem', () => {
   const findGroupDescription = () => wrapper.findByTestId('group-description');
   const findVisibilityIcon = () => findAvatarLabeled().findComponent(GlIcon);
   const findListActions = () => wrapper.findComponent(ListActions);
-  const findConfirmationModal = () => wrapper.findComponent(DangerConfirmModal);
+  const findConfirmationModal = () => wrapper.findComponent(GroupListItemDeleteModal);
+  const findAccessLevelBadge = () => wrapper.findByTestId('access-level-badge');
+  const findTimeAgoTooltip = () => wrapper.findComponent(TimeAgoTooltip);
 
   it('renders group avatar', () => {
     createComponent();
@@ -108,12 +115,39 @@ describe('GroupsListItem', () => {
     });
   });
 
-  it('renders access role badge', () => {
+  it('renders access level badge', () => {
     createComponent();
 
     expect(findAvatarLabeled().findComponent(GlBadge).text()).toBe(
       ACCESS_LEVEL_LABELS[group.accessLevel.integerValue],
     );
+  });
+
+  describe('when access level is not available', () => {
+    const { accessLevel, ...groupWithoutAccessLevel } = group;
+    beforeEach(() => {
+      createComponent({
+        propsData: { group: groupWithoutAccessLevel },
+      });
+    });
+
+    it('does not render level role badge', () => {
+      expect(findAccessLevelBadge().exists()).toBe(false);
+    });
+  });
+
+  describe('when access level is `No access`', () => {
+    beforeEach(() => {
+      createComponent({
+        propsData: {
+          group: { ...group, accessLevel: { integerValue: ACCESS_LEVEL_NO_ACCESS_INTEGER } },
+        },
+      });
+    });
+
+    it('does not render level role badge', () => {
+      expect(findAccessLevelBadge().exists()).toBe(false);
+    });
   });
 
   describe('when group has a description', () => {
@@ -186,7 +220,14 @@ describe('GroupsListItem', () => {
 
   describe('when group has actions', () => {
     beforeEach(() => {
-      createComponent();
+      createComponent({
+        propsData: {
+          group: {
+            ...group,
+            actionLoadingStates: { [ACTION_DELETE]: false },
+          },
+        },
+      });
     });
 
     it('displays actions dropdown', () => {
@@ -212,16 +253,29 @@ describe('GroupsListItem', () => {
         expect(findConfirmationModal().props()).toMatchObject({
           visible: true,
           phrase: group.fullName,
+          confirmLoading: false,
         });
       });
 
       describe('when deletion is confirmed', () => {
         beforeEach(() => {
-          findConfirmationModal().vm.$emit('confirm');
+          findConfirmationModal().vm.$emit('confirm', {
+            preventDefault: jest.fn(),
+          });
         });
 
         it('emits `delete` event', () => {
           expect(wrapper.emitted('delete')).toMatchObject([[group]]);
+        });
+      });
+
+      describe('when change is fired', () => {
+        beforeEach(() => {
+          findConfirmationModal().vm.$emit('change', false);
+        });
+
+        it('updates visibility prop', () => {
+          expect(findConfirmationModal().props('visible')).toBe(false);
         });
       });
     });
@@ -245,6 +299,44 @@ describe('GroupsListItem', () => {
 
     it('does not display confirmation modal', () => {
       expect(findConfirmationModal().exists()).toBe(false);
+    });
+  });
+
+  describe.each`
+    timestampType                | expectedText | expectedTimeProp
+    ${TIMESTAMP_TYPE_CREATED_AT} | ${'Created'} | ${group.createdAt}
+    ${TIMESTAMP_TYPE_UPDATED_AT} | ${'Updated'} | ${group.updatedAt}
+    ${undefined}                 | ${'Created'} | ${group.createdAt}
+  `(
+    'when `timestampType` prop is $timestampType',
+    ({ timestampType, expectedText, expectedTimeProp }) => {
+      beforeEach(() => {
+        createComponent({
+          propsData: {
+            timestampType,
+          },
+        });
+      });
+
+      it('displays correct text and passes correct `time` prop to `TimeAgoTooltip`', () => {
+        expect(wrapper.findByText(expectedText).exists()).toBe(true);
+        expect(findTimeAgoTooltip().props('time')).toBe(expectedTimeProp);
+      });
+    },
+  );
+
+  describe('when timestamp type is not available in group data', () => {
+    beforeEach(() => {
+      const { createdAt, ...groupWithoutCreatedAt } = group;
+      createComponent({
+        propsData: {
+          group: groupWithoutCreatedAt,
+        },
+      });
+    });
+
+    it('does not render timestamp', () => {
+      expect(findTimeAgoTooltip().exists()).toBe(false);
     });
   });
 });

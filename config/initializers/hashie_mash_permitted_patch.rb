@@ -28,7 +28,7 @@ module Hashie
       def respond_to_missing?(method_name, *args)
         if method_name == :permitted?
           Gitlab::AppLogger.info(message: 'Hashie::Mash#respond_to?(:permitted?)',
-                                 caller: Gitlab::BacktraceCleaner.clean_backtrace(caller))
+            caller: Gitlab::BacktraceCleaner.clean_backtrace(caller))
 
           return false
         end
@@ -39,7 +39,7 @@ module Hashie
       def method_missing(method_name, *args)
         if method_name == :permitted?
           Gitlab::AppLogger.info(message: 'Hashie::Mash#permitted?',
-                                 caller: Gitlab::BacktraceCleaner.clean_backtrace(caller))
+            caller: Gitlab::BacktraceCleaner.clean_backtrace(caller))
 
           raise ArgumentError
         end

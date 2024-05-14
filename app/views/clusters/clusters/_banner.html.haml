@@ -1,10 +1,17 @@
-.hidden.js-cluster-error.bs-callout.bs-callout-danger{ role: 'alert' }
-  = s_('ClusterIntegration|Something went wrong while creating your Kubernetes cluster')
-  %p.js-error-reason
+= render Pajamas::AlertComponent.new(variant: :danger,
+  dismissible: false,
+  show_icon: false,
+  alert_options: { class: 'hidden js-cluster-error gl-mt-5 gl-mb-5' }) do |c|
+  - c.with_body do
+    = s_('ClusterIntegration|Something went wrong while creating your Kubernetes cluster')
+    .js-error-reason
 
-.hidden.js-cluster-creating.bs-callout.bs-callout-info{ role: 'alert' }
-  %span.gl-spinner.gl-spinner-dark{ 'aria-label': 'Loading' }
-  %span.gl-ml-2= s_('ClusterIntegration|Kubernetes cluster is being created...')
+= render Pajamas::AlertComponent.new(dismissible: false,
+  show_icon: false,
+  alert_options: { class: 'hidden js-cluster-creating gl-mt-5 gl-mb-5' }) do |c|
+  - c.with_body do
+    = render Pajamas::SpinnerComponent.new(inline: true)
+    %span.gl-ml-2= s_('ClusterIntegration|Kubernetes cluster is being created...')
 
 = render Pajamas::AlertComponent.new(variant: :warning,
   alert_options: { class: 'hidden js-cluster-api-unreachable' }) do |c|
@@ -16,5 +23,9 @@
   - c.with_body do
     = s_('ClusterIntegration|There was a problem authenticating with your cluster. Please ensure your CA Certificate and Token are valid.')
 
-.hidden.js-cluster-success.bs-callout.bs-callout-success{ role: 'alert' }
-  = s_("ClusterIntegration|Kubernetes cluster was successfully created.")
+= render Pajamas::AlertComponent.new(variant: :success,
+  dismissible: false,
+  show_icon: false,
+  alert_options: { class: 'hidden js-cluster-success gl-mt-5 gl-mb-5' }) do |c|
+  - c.with_body do
+    = s_("ClusterIntegration|Kubernetes cluster was successfully created.")

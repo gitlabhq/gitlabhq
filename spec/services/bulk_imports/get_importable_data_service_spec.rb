@@ -16,7 +16,7 @@ RSpec.describe BulkImports::GetImportableDataService, feature_category: :importe
             available: true,
             min_version: BulkImport.min_gl_version_for_project_migration.to_s
           },
-          'source_instance_version': BulkImport.min_gl_version_for_project_migration.to_s
+          source_instance_version: BulkImport.min_gl_version_for_project_migration.to_s
         }
       }
     end

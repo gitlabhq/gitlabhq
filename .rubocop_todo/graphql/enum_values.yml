@@ -30,7 +30,6 @@ Graphql/EnumValues:
     - 'ee/app/graphql/types/incident_management/issuable_resource_link_type_enum.rb'
     - 'ee/app/graphql/types/iteration_state_enum.rb'
     - 'ee/app/graphql/types/move_type_enum.rb'
-    - 'ee/app/graphql/types/network_policy_kind_enum.rb'
     - 'ee/app/graphql/types/security_scanner_type_enum.rb'
     - 'ee/app/graphql/types/vulnerability_report_type_enum.rb'
     - 'ee/app/graphql/types/vulnerability_sort_enum.rb'

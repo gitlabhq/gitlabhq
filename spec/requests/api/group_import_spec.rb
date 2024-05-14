@@ -242,6 +242,34 @@ RSpec.describe API::GroupImport, feature_category: :importers do
       end
     end
 
+    context 'when organization_id is missing' do
+      context 'and current organization is defined' do
+        let_it_be(:current_organization) { create(:organization, users: [user]) }
+
+        before do
+          allow(Current).to receive(:organization_id).and_return(current_organization.id)
+        end
+
+        it 'assigns current organization' do
+          subject
+
+          expect(Group.last.organization_id).to eq(current_organization.id)
+        end
+
+        include_examples 'when all params are correct'
+      end
+
+      context 'and current organization is not defined' do
+        let_it_be(:default_organization) { create(:organization, :default) }
+
+        it 'assigns default organization' do
+          subject
+
+          expect(Group.last.organization_id).to eq(default_organization.id)
+        end
+      end
+    end
+
     def upload_archive(file, headers = {}, params = {})
       workhorse_finalize(
         api('/groups/import', user),

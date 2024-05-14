@@ -1,0 +1,13 @@
+- @no_container = true
+- add_to_breadcrumbs _("Jobs"), project_jobs_path(@project)
+- add_to_breadcrumbs "##{@build.id}", project_job_path(@project, @build)
+- breadcrumb_title s_("Job|Full log viewer")
+- page_title "#{@build.name} (##{@build.id})", _("Jobs")
+
+- add_page_specific_style 'page_bundles/xterm'
+- add_page_specific_style 'page_bundles/log_viewer'
+
+%h1.gl-font-size-h-display.gl-m-3
+  = @build.name
+
+#js-job-log-viewer{ data: { raw_log_path: raw_project_job_path(@project, @build, params: { proxy: true }) } }

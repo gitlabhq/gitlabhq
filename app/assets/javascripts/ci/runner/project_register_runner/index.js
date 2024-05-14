@@ -15,7 +15,7 @@ export const initProjectRegisterRunner = (selector = '#js-project-register-runne
     return null;
   }
 
-  const { runnerId, runnersPath } = el.dataset;
+  const { runnerId, runnersPath, projectPath } = el.dataset;
 
   const apolloProvider = new VueApollo({
     defaultClient: createDefaultClient(),
@@ -29,6 +29,7 @@ export const initProjectRegisterRunner = (selector = '#js-project-register-runne
         props: {
           runnerId,
           runnersPath,
+          projectPath,
         },
       });
     },

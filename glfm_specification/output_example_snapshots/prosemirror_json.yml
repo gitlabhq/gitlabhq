@@ -3200,6 +3200,8 @@
                       "uploading": false,
                       "href": "bar",
                       "title": null,
+                      "isGollumLink": false,
+                      "isWikiPage": false,
                       "canonicalSrc": "bar",
                       "isReference": false
                     }
@@ -3286,6 +3288,8 @@
                   "uploading": false,
                   "href": "foo",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "foo",
                   "isReference": false
                 }
@@ -3815,6 +3819,8 @@
                   "uploading": false,
                   "href": "bar",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "bar",
                   "isReference": false
                 }
@@ -3975,6 +3981,8 @@
                   "uploading": false,
                   "href": "/url",
                   "title": "title",
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "foo",
                   "isReference": true
                 }
@@ -4016,6 +4024,8 @@
                   "uploading": false,
                   "href": "/url",
                   "title": "the title",
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "foo",
                   "isReference": true
                 }
@@ -4057,6 +4067,8 @@
                   "uploading": false,
                   "href": "my_(url)",
                   "title": "title (with parens)",
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "foo*bar\\]",
                   "isReference": true
                 }
@@ -4098,6 +4110,8 @@
                   "uploading": false,
                   "href": "my%20url",
                   "title": "title",
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "foo bar",
                   "isReference": true
                 }
@@ -4139,6 +4153,8 @@
                   "uploading": false,
                   "href": "/url",
                   "title": "\ntitle\nline1\nline2\n",
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "foo",
                   "isReference": true
                 }
@@ -4213,6 +4229,8 @@
                   "uploading": false,
                   "href": "/url",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "foo",
                   "isReference": true
                 }
@@ -4278,6 +4296,8 @@
                   "uploading": false,
                   "href": "",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "foo",
                   "isReference": true
                 }
@@ -4343,6 +4363,8 @@
                   "uploading": false,
                   "href": "/url%5Cbar*baz",
                   "title": "foo\"bar\\baz",
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "foo",
                   "isReference": true
                 }
@@ -4370,6 +4392,8 @@
                   "uploading": false,
                   "href": "url",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "foo",
                   "isReference": true
                 }
@@ -4411,6 +4435,8 @@
                   "uploading": false,
                   "href": "first",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "foo",
                   "isReference": true
                 }
@@ -4480,6 +4506,8 @@
                   "uploading": false,
                   "href": "/url",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "foo",
                   "isReference": true
                 }
@@ -4521,6 +4549,8 @@
                   "uploading": false,
                   "href": "/%CF%86%CE%BF%CF%85",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "αγω",
                   "isReference": true
                 }
@@ -4726,6 +4756,8 @@
                   "uploading": false,
                   "href": "/url",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "foo",
                   "isReference": true
                 }
@@ -4810,6 +4842,8 @@
                   "uploading": false,
                   "href": "/url",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "foo",
                   "isReference": true
                 }
@@ -4855,6 +4889,8 @@
                   "uploading": false,
                   "href": "/url",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "foo",
                   "isReference": true
                 }
@@ -4924,6 +4960,8 @@
                   "uploading": false,
                   "href": "/foo-url",
                   "title": "foo",
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "foo",
                   "isReference": true
                 }
@@ -4944,6 +4982,8 @@
                   "uploading": false,
                   "href": "/bar-url",
                   "title": "bar",
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "bar",
                   "isReference": true
                 }
@@ -4964,6 +5004,8 @@
                   "uploading": false,
                   "href": "/baz-url",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "baz",
                   "isReference": true
                 }
@@ -4991,6 +5033,8 @@
                   "uploading": false,
                   "href": "/url",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "foo",
                   "isReference": true
                 }
@@ -10817,6 +10861,8 @@
                   "uploading": false,
                   "href": "http://example.com?find=%5C*",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "http://example.com?find=%5C*",
                   "isReference": false
                 }
@@ -10853,6 +10899,8 @@
                   "uploading": false,
                   "href": "/bar*",
                   "title": "ti*tle",
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "/bar*",
                   "isReference": false
                 }
@@ -10880,6 +10928,8 @@
                   "uploading": false,
                   "href": "/bar*",
                   "title": "ti*tle",
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "foo",
                   "isReference": true
                 }
@@ -11040,6 +11090,8 @@
                   "uploading": false,
                   "href": "/f%C3%B6%C3%B6",
                   "title": "föö",
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "/f%C3%B6%C3%B6",
                   "isReference": false
                 }
@@ -11067,6 +11119,8 @@
                   "uploading": false,
                   "href": "/f%C3%B6%C3%B6",
                   "title": "föö",
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "foo",
                   "isReference": true
                 }
@@ -11603,6 +11657,8 @@
                   "uploading": false,
                   "href": "`",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "`",
                   "isReference": false
                 }
@@ -11654,6 +11710,8 @@
                   "uploading": false,
                   "href": "http://foo.bar.%60baz",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "http://foo.bar.%60baz",
                   "isReference": false
                 }
@@ -12810,6 +12868,8 @@
                   "uploading": false,
                   "href": "/url",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "/url",
                   "isReference": false
                 }
@@ -13280,6 +13340,8 @@
                   "uploading": false,
                   "href": "/url",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "/url",
                   "isReference": false
                 }
@@ -13349,6 +13411,8 @@
                   "uploading": false,
                   "href": "/url",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "/url",
                   "isReference": false
                 }
@@ -13708,6 +13772,8 @@
                   "uploading": false,
                   "href": "/url",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "/url",
                   "isReference": false
                 }
@@ -14614,6 +14680,8 @@
                   "uploading": false,
                   "href": "/url",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "/url",
                   "isReference": false
                 }
@@ -14645,6 +14713,8 @@
                   "uploading": false,
                   "href": "/url",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "/url",
                   "isReference": false
                 }
@@ -14798,6 +14868,8 @@
                   "uploading": false,
                   "href": "http://foo.bar/?q=**",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "http://foo.bar/?q=**",
                   "isReference": false
                 }
@@ -14829,6 +14901,8 @@
                   "uploading": false,
                   "href": "http://foo.bar/?q=__",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "http://foo.bar/?q=__",
                   "isReference": false
                 }
@@ -14907,6 +14981,8 @@
                   "uploading": false,
                   "href": "/uri",
                   "title": "title",
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "/uri",
                   "isReference": false
                 }
@@ -14934,6 +15010,8 @@
                   "uploading": false,
                   "href": "/uri",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "/uri",
                   "isReference": false
                 }
@@ -14961,6 +15039,8 @@
                   "uploading": false,
                   "href": "",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "",
                   "isReference": false
                 }
@@ -14988,6 +15068,8 @@
                   "uploading": false,
                   "href": "",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "",
                   "isReference": false
                 }
@@ -15030,6 +15112,8 @@
                   "uploading": false,
                   "href": "/my%20uri",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "/my%20uri",
                   "isReference": false
                 }
@@ -15087,6 +15171,8 @@
                   "uploading": false,
                   "href": "b)c",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "b)c",
                   "isReference": false
                 }
@@ -15153,6 +15239,8 @@
                   "uploading": false,
                   "href": "(foo)",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "(foo)",
                   "isReference": false
                 }
@@ -15180,6 +15268,8 @@
                   "uploading": false,
                   "href": "foo(and(bar))",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "foo(and(bar))",
                   "isReference": false
                 }
@@ -15207,6 +15297,8 @@
                   "uploading": false,
                   "href": "foo(and(bar)",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "foo(and(bar)",
                   "isReference": false
                 }
@@ -15234,6 +15326,8 @@
                   "uploading": false,
                   "href": "foo(and(bar)",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "foo(and(bar)",
                   "isReference": false
                 }
@@ -15261,6 +15355,8 @@
                   "uploading": false,
                   "href": "foo):",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "foo):",
                   "isReference": false
                 }
@@ -15288,6 +15384,8 @@
                   "uploading": false,
                   "href": "#fragment",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "#fragment",
                   "isReference": false
                 }
@@ -15309,6 +15407,8 @@
                   "uploading": false,
                   "href": "http://example.com#fragment",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "http://example.com#fragment",
                   "isReference": false
                 }
@@ -15330,6 +15430,8 @@
                   "uploading": false,
                   "href": "http://example.com?foo=3#frag",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "http://example.com?foo=3#frag",
                   "isReference": false
                 }
@@ -15357,6 +15459,8 @@
                   "uploading": false,
                   "href": "foo%5Cbar",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "foo%5Cbar",
                   "isReference": false
                 }
@@ -15384,6 +15488,8 @@
                   "uploading": false,
                   "href": "foo%20b%C3%A4",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "foo%20b%C3%A4",
                   "isReference": false
                 }
@@ -15411,6 +15517,8 @@
                   "uploading": false,
                   "href": "%22title%22",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "%22title%22",
                   "isReference": false
                 }
@@ -15438,6 +15546,8 @@
                   "uploading": false,
                   "href": "/url",
                   "title": "title",
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "/url",
                   "isReference": false
                 }
@@ -15465,6 +15575,8 @@
                   "uploading": false,
                   "href": "/url",
                   "title": "title \"\"",
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "/url",
                   "isReference": false
                 }
@@ -15492,6 +15604,8 @@
                   "uploading": false,
                   "href": "/url%C2%A0%22title%22",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "/url%C2%A0%22title%22",
                   "isReference": false
                 }
@@ -15534,6 +15648,8 @@
                   "uploading": false,
                   "href": "/url",
                   "title": "title \"and\" title",
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "/url",
                   "isReference": false
                 }
@@ -15561,6 +15677,8 @@
                   "uploading": false,
                   "href": "/uri",
                   "title": "title",
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "/uri",
                   "isReference": false
                 }
@@ -15603,6 +15721,8 @@
                   "uploading": false,
                   "href": "/uri",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "/uri",
                   "isReference": false
                 }
@@ -15649,6 +15769,8 @@
                   "uploading": false,
                   "href": "/uri",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "/uri",
                   "isReference": false
                 }
@@ -15676,6 +15798,8 @@
                   "uploading": false,
                   "href": "/uri",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "/uri",
                   "isReference": false
                 }
@@ -15703,6 +15827,8 @@
                   "uploading": false,
                   "href": "/uri",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "/uri",
                   "isReference": false
                 }
@@ -15719,6 +15845,8 @@
                   "uploading": false,
                   "href": "/uri",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "/uri",
                   "isReference": false
                 }
@@ -15738,6 +15866,8 @@
                   "uploading": false,
                   "href": "/uri",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "/uri",
                   "isReference": false
                 }
@@ -15760,6 +15890,8 @@
                   "uploading": false,
                   "href": "/uri",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "/uri",
                   "isReference": false
                 }
@@ -15806,6 +15938,8 @@
                   "uploading": false,
                   "href": "/uri",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "/uri",
                   "isReference": false
                 }
@@ -15836,6 +15970,8 @@
                   "uploading": false,
                   "href": "/uri",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "/uri",
                   "isReference": false
                 }
@@ -15880,6 +16016,8 @@
                   "uploading": false,
                   "href": "/uri",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "/uri",
                   "isReference": false
                 }
@@ -15951,6 +16089,8 @@
                   "uploading": false,
                   "href": "/uri",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "/uri",
                   "isReference": false
                 }
@@ -15978,6 +16118,8 @@
                   "uploading": false,
                   "href": "baz*",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "baz*",
                   "isReference": false
                 }
@@ -16072,6 +16214,8 @@
                   "uploading": false,
                   "href": "http://example.com/?search=%5D(uri)",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "http://example.com/?search=%5D(uri)",
                   "isReference": false
                 }
@@ -16099,6 +16243,8 @@
                   "uploading": false,
                   "href": "/url",
                   "title": "title",
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "bar",
                   "isReference": true
                 }
@@ -16140,6 +16286,8 @@
                   "uploading": false,
                   "href": "/uri",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "ref",
                   "isReference": true
                 }
@@ -16181,6 +16329,8 @@
                   "uploading": false,
                   "href": "/uri",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "ref",
                   "isReference": true
                 }
@@ -16222,6 +16372,8 @@
                   "uploading": false,
                   "href": "/uri",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "ref",
                   "isReference": true
                 }
@@ -16238,6 +16390,8 @@
                   "uploading": false,
                   "href": "/uri",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "ref",
                   "isReference": true
                 }
@@ -16257,6 +16411,8 @@
                   "uploading": false,
                   "href": "/uri",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "ref",
                   "isReference": true
                 }
@@ -16279,6 +16435,8 @@
                   "uploading": false,
                   "href": "/uri",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "ref",
                   "isReference": true
                 }
@@ -16339,6 +16497,8 @@
                   "uploading": false,
                   "href": "/uri",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "ref",
                   "isReference": true
                 }
@@ -16383,6 +16543,8 @@
                   "uploading": false,
                   "href": "/uri",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "/uri",
                   "isReference": false
                 }
@@ -16403,6 +16565,8 @@
                   "uploading": false,
                   "href": "/uri",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "ref",
                   "isReference": true
                 }
@@ -16457,6 +16621,8 @@
                   "uploading": false,
                   "href": "/uri",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "ref",
                   "isReference": true
                 }
@@ -16480,6 +16646,8 @@
                   "uploading": false,
                   "href": "/uri",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "ref",
                   "isReference": true
                 }
@@ -16525,6 +16693,8 @@
                   "uploading": false,
                   "href": "/uri",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "ref",
                   "isReference": true
                 }
@@ -16566,6 +16736,8 @@
                   "uploading": false,
                   "href": "/uri",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "ref",
                   "isReference": true
                 }
@@ -16678,6 +16850,8 @@
                   "uploading": false,
                   "href": "http://example.com/?search=%5D%5Bref%5D",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "http://example.com/?search=%5D%5Bref%5D",
                   "isReference": false
                 }
@@ -16719,6 +16893,8 @@
                   "uploading": false,
                   "href": "/url",
                   "title": "title",
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "bar",
                   "isReference": true
                 }
@@ -16760,6 +16936,8 @@
                   "uploading": false,
                   "href": "/url",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "толпой",
                   "isReference": true
                 }
@@ -16819,6 +16997,8 @@
                   "uploading": false,
                   "href": "/url",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "foo bar",
                   "isReference": true
                 }
@@ -16850,6 +17030,8 @@
                   "uploading": false,
                   "href": "/url",
                   "title": "title",
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "bar",
                   "isReference": true
                 }
@@ -16895,6 +17077,8 @@
                   "uploading": false,
                   "href": "/url",
                   "title": "title",
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "bar",
                   "isReference": true
                 }
@@ -16964,6 +17148,8 @@
                   "uploading": false,
                   "href": "/url1",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "foo",
                   "isReference": true
                 }
@@ -17092,6 +17278,8 @@
                   "uploading": false,
                   "href": "/uri",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "ref\\[",
                   "isReference": true
                 }
@@ -17147,6 +17335,8 @@
                   "uploading": false,
                   "href": "/uri",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "bar\\\\",
                   "isReference": true
                 }
@@ -17222,6 +17412,8 @@
                   "uploading": false,
                   "href": "/url",
                   "title": "title",
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "foo",
                   "isReference": true
                 }
@@ -17263,6 +17455,8 @@
                   "uploading": false,
                   "href": "/url",
                   "title": "title",
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "*foo* bar",
                   "isReference": true
                 }
@@ -17282,6 +17476,8 @@
                   "uploading": false,
                   "href": "/url",
                   "title": "title",
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "*foo* bar",
                   "isReference": true
                 }
@@ -17323,6 +17519,8 @@
                   "uploading": false,
                   "href": "/url",
                   "title": "title",
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "foo",
                   "isReference": true
                 }
@@ -17364,6 +17562,8 @@
                   "uploading": false,
                   "href": "/url",
                   "title": "title",
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "foo",
                   "isReference": true
                 }
@@ -17409,6 +17609,8 @@
                   "uploading": false,
                   "href": "/url",
                   "title": "title",
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "foo",
                   "isReference": true
                 }
@@ -17450,6 +17652,8 @@
                   "uploading": false,
                   "href": "/url",
                   "title": "title",
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "*foo* bar",
                   "isReference": true
                 }
@@ -17469,6 +17673,8 @@
                   "uploading": false,
                   "href": "/url",
                   "title": "title",
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "*foo* bar",
                   "isReference": true
                 }
@@ -17514,6 +17720,8 @@
                   "uploading": false,
                   "href": "/url",
                   "title": "title",
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "*foo* bar",
                   "isReference": true
                 }
@@ -17533,6 +17741,8 @@
                   "uploading": false,
                   "href": "/url",
                   "title": "title",
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "*foo* bar",
                   "isReference": true
                 }
@@ -17582,6 +17792,8 @@
                   "uploading": false,
                   "href": "/url",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "foo",
                   "isReference": true
                 }
@@ -17623,6 +17835,8 @@
                   "uploading": false,
                   "href": "/url",
                   "title": "title",
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "foo",
                   "isReference": true
                 }
@@ -17664,6 +17878,8 @@
                   "uploading": false,
                   "href": "/url",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "foo",
                   "isReference": true
                 }
@@ -17756,6 +17972,8 @@
                   "uploading": false,
                   "href": "/url",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "foo*",
                   "isReference": true
                 }
@@ -17783,6 +18001,8 @@
                   "uploading": false,
                   "href": "/url2",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "bar",
                   "isReference": true
                 }
@@ -17838,6 +18058,8 @@
                   "uploading": false,
                   "href": "/url1",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "foo",
                   "isReference": true
                 }
@@ -17879,6 +18101,8 @@
                   "uploading": false,
                   "href": "",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "",
                   "isReference": false
                 }
@@ -17920,6 +18144,8 @@
                   "uploading": false,
                   "href": "/url1",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "foo",
                   "isReference": true
                 }
@@ -17969,6 +18195,8 @@
                   "uploading": false,
                   "href": "/url",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "baz",
                   "isReference": true
                 }
@@ -18010,6 +18238,8 @@
                   "uploading": false,
                   "href": "/url2",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "bar",
                   "isReference": true
                 }
@@ -18026,6 +18256,8 @@
                   "uploading": false,
                   "href": "/url1",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "baz",
                   "isReference": true
                 }
@@ -18085,6 +18317,8 @@
                   "uploading": false,
                   "href": "/url1",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "baz",
                   "isReference": true
                 }
@@ -18829,6 +19063,8 @@
                   "uploading": false,
                   "href": "/url",
                   "title": "title",
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "foo",
                   "isReference": true
                 }
@@ -18870,6 +19106,8 @@
                   "uploading": false,
                   "href": "http://foo.bar.baz",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "http://foo.bar.baz",
                   "isReference": false
                 }
@@ -18897,6 +19135,8 @@
                   "uploading": false,
                   "href": "http://foo.bar.baz/test?q=hello&id=22&boolean",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "http://foo.bar.baz/test?q=hello&id=22&boolean",
                   "isReference": false
                 }
@@ -18924,6 +19164,8 @@
                   "uploading": false,
                   "href": null,
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": null,
                   "isReference": false
                 }
@@ -18951,6 +19193,8 @@
                   "uploading": false,
                   "href": "MAILTO:FOO@BAR.BAZ",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "MAILTO:FOO@BAR.BAZ",
                   "isReference": false
                 }
@@ -18978,6 +19222,8 @@
                   "uploading": false,
                   "href": null,
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": null,
                   "isReference": false
                 }
@@ -19005,6 +19251,8 @@
                   "uploading": false,
                   "href": null,
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": null,
                   "isReference": false
                 }
@@ -19032,6 +19280,8 @@
                   "uploading": false,
                   "href": "http://../",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "http://../",
                   "isReference": false
                 }
@@ -19059,6 +19309,8 @@
                   "uploading": false,
                   "href": null,
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": null,
                   "isReference": false
                 }
@@ -19090,6 +19342,8 @@
                   "uploading": false,
                   "href": "http://foo.bar/baz",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "http://foo.bar/baz",
                   "isReference": false
                 }
@@ -19121,6 +19375,8 @@
                   "uploading": false,
                   "href": "http://example.com/%5C%5B%5C",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "http://example.com/%5C%5B%5C",
                   "isReference": false
                 }
@@ -19148,6 +19404,8 @@
                   "uploading": false,
                   "href": "mailto:foo@bar.example.com",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "mailto:foo@bar.example.com",
                   "isReference": false
                 }
@@ -19175,6 +19433,8 @@
                   "uploading": false,
                   "href": "mailto:foo+special@Bar.baz-bar0.com",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "mailto:foo+special@Bar.baz-bar0.com",
                   "isReference": false
                 }
@@ -19206,6 +19466,8 @@
                   "uploading": false,
                   "href": "mailto:foo+@bar.example.com",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "mailto:foo+@bar.example.com",
                   "isReference": false
                 }
@@ -19256,6 +19518,8 @@
                   "uploading": false,
                   "href": "http://foo.bar",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "http://foo.bar",
                   "isReference": false
                 }
@@ -19317,6 +19581,8 @@
                   "uploading": false,
                   "href": "http://example.com",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "http://example.com",
                   "isReference": false
                 }
@@ -19344,6 +19610,8 @@
                   "uploading": false,
                   "href": "mailto:foo@bar.example.com",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "mailto:foo@bar.example.com",
                   "isReference": false
                 }
@@ -19371,6 +19639,8 @@
                   "uploading": false,
                   "href": "http://www.commonmark.org",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "http://www.commonmark.org",
                   "isReference": false
                 }
@@ -19402,6 +19672,8 @@
                   "uploading": false,
                   "href": "http://www.commonmark.org/help",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "http://www.commonmark.org/help",
                   "isReference": false
                 }
@@ -19437,6 +19709,8 @@
                   "uploading": false,
                   "href": "http://www.commonmark.org",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "http://www.commonmark.org",
                   "isReference": false
                 }
@@ -19466,6 +19740,8 @@
                   "uploading": false,
                   "href": "http://www.commonmark.org/a.b",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "http://www.commonmark.org/a.b",
                   "isReference": false
                 }
@@ -19497,6 +19773,8 @@
                   "uploading": false,
                   "href": "http://www.google.com/search?q=Markup+(business)",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "http://www.google.com/search?q=Markup+(business)",
                   "isReference": false
                 }
@@ -19518,6 +19796,8 @@
                   "uploading": false,
                   "href": "http://www.google.com/search?q=Markup+(business)",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "http://www.google.com/search?q=Markup+(business)",
                   "isReference": false
                 }
@@ -19547,6 +19827,8 @@
                   "uploading": false,
                   "href": "http://www.google.com/search?q=Markup+(business)",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "http://www.google.com/search?q=Markup+(business)",
                   "isReference": false
                 }
@@ -19576,6 +19858,8 @@
                   "uploading": false,
                   "href": "http://www.google.com/search?q=Markup+(business)",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "http://www.google.com/search?q=Markup+(business)",
                   "isReference": false
                 }
@@ -19603,6 +19887,8 @@
                   "uploading": false,
                   "href": "http://www.google.com/search?q=(business))+ok",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "http://www.google.com/search?q=(business))+ok",
                   "isReference": false
                 }
@@ -19630,6 +19916,8 @@
                   "uploading": false,
                   "href": "http://www.google.com/search?q=commonmark&hl=en",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "http://www.google.com/search?q=commonmark&hl=en",
                   "isReference": false
                 }
@@ -19651,6 +19939,8 @@
                   "uploading": false,
                   "href": "http://www.google.com/search?q=commonmark",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "http://www.google.com/search?q=commonmark",
                   "isReference": false
                 }
@@ -19682,6 +19972,8 @@
                   "uploading": false,
                   "href": "http://www.commonmark.org/he",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "http://www.commonmark.org/he",
                   "isReference": false
                 }
@@ -19713,6 +20005,8 @@
                   "uploading": false,
                   "href": "http://commonmark.org",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "http://commonmark.org",
                   "isReference": false
                 }
@@ -19738,6 +20032,8 @@
                   "uploading": false,
                   "href": "https://encrypted.google.com/search?q=Markup+(business)",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "https://encrypted.google.com/search?q=Markup+(business)",
                   "isReference": false
                 }
@@ -19778,6 +20074,8 @@
                   "uploading": false,
                   "href": "mailto:foo@bar.baz",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "mailto:foo@bar.baz",
                   "isReference": false
                 }
@@ -19809,6 +20107,8 @@
                   "uploading": false,
                   "href": "mailto:hello+xyz@mail.example",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "mailto:hello+xyz@mail.example",
                   "isReference": false
                 }
@@ -19840,6 +20140,8 @@
                   "uploading": false,
                   "href": "mailto:a.b-c_d@a.b",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "mailto:a.b-c_d@a.b",
                   "isReference": false
                 }
@@ -19861,6 +20163,8 @@
                   "uploading": false,
                   "href": "mailto:a.b-c_d@a.b",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "mailto:a.b-c_d@a.b",
                   "isReference": false
                 }
@@ -21095,6 +21399,8 @@
                   "uploading": false,
                   "href": "/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.zip",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.zip",
                   "isReference": false
                 }
@@ -21122,6 +21428,8 @@
                   "uploading": false,
                   "href": "/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.zip",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.zip",
                   "isReference": false
                 }
@@ -21177,6 +21485,8 @@
                   "uploading": false,
                   "href": "test-file.zip",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "test-file.zip",
                   "isReference": false
                 }
@@ -22867,6 +23177,8 @@
                   "uploading": false,
                   "href": "https://gitlab.com",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "https://gitlab.com",
                   "isReference": false
                 }
@@ -23787,6 +24099,8 @@
                   "uploading": false,
                   "href": "http://www.google.com",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "http://www.google.com",
                   "isReference": false
                 }
@@ -23814,6 +24128,8 @@
                   "uploading": false,
                   "href": "http://google.com",
                   "title": null,
+                  "isGollumLink": false,
+                  "isWikiPage": false,
                   "canonicalSrc": "http://google.com",
                   "isReference": false
                 }
@@ -23910,6 +24226,8 @@
                               "uploading": false,
                               "href": "https://github.com",
                               "title": null,
+                              "isGollumLink": false,
+                              "isWikiPage": false,
                               "canonicalSrc": "https://github.com",
                               "isReference": false
                             }
@@ -23926,6 +24244,8 @@
                               "uploading": false,
                               "href": "http://www.github.com",
                               "title": null,
+                              "isGollumLink": false,
+                              "isWikiPage": false,
                               "canonicalSrc": "http://www.github.com",
                               "isReference": false
                             }
@@ -23958,6 +24278,8 @@
                               "uploading": false,
                               "href": "http://pokemon.com",
                               "title": null,
+                              "isGollumLink": false,
+                              "isWikiPage": false,
                               "canonicalSrc": "http://pokemon.com",
                               "isReference": false
                             }

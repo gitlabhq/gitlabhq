@@ -1,0 +1,20 @@
+---
+key_path: gitlab_environment_toolkit
+description: Is the instance provisioned with the Gitlab Environment Toolkit
+product_section: analytics
+product_stage: analytics
+product_group: analytics_instrumentation
+value_type: boolean
+status: active
+milestone: "17.0"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148077
+time_frame: none
+data_source: database
+data_category: optional
+instrumentation_class: GitlabEnvironmentToolkitMetric
+performance_indicator_type: []
+distribution:
+- ee
+tier:
+- premium
+- ultimate

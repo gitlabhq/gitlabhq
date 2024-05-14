@@ -36,11 +36,11 @@ const mockNotesWidgetResponse = mockWorkItemNotesResponse.data.workItem.widgets.
   (widget) => widget.type === WIDGET_TYPE_NOTES,
 );
 
-const mockMoreNotesWidgetResponse = mockMoreWorkItemNotesResponse.data.workspace.workItems.nodes[0].widgets.find(
+const mockMoreNotesWidgetResponse = mockMoreWorkItemNotesResponse.data.workspace.workItem.widgets.find(
   (widget) => widget.type === WIDGET_TYPE_NOTES,
 );
 
-const mockWorkItemNotesWidgetResponseWithComments = mockWorkItemNotesResponseWithComments.data.workspace.workItems.nodes[0].widgets.find(
+const mockWorkItemNotesWidgetResponseWithComments = mockWorkItemNotesResponseWithComments.data.workspace.workItem.widgets.find(
   (widget) => widget.type === WIDGET_TYPE_NOTES,
 );
 
@@ -246,7 +246,10 @@ describe('WorkItemNotes component', () => {
           fullPath: 'test-path',
           iid: mockWorkItemIid,
         }),
-        markdownPreviewPath: markdownPreviewPath('test-path', mockWorkItemIid),
+        markdownPreviewPath: markdownPreviewPath({
+          fullPath: 'test-path',
+          iid: mockWorkItemIid,
+        }),
       });
     });
   });

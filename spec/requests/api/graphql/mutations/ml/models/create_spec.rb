@@ -13,7 +13,7 @@ RSpec.describe 'Creation of a machine learning model', feature_category: :mlops 
   let(:name) { 'some_name' }
   let(:description) { 'A description' }
 
-  let(:mutation) { graphql_mutation(:ml_model_create, input) }
+  let(:mutation) { graphql_mutation(:ml_model_create, input, nil, ['version']) }
   let(:mutation_response) { graphql_mutation_response(:ml_model_create) }
 
   context 'when user is not allowed write changes' do
@@ -28,7 +28,7 @@ RSpec.describe 'Creation of a machine learning model', feature_category: :mlops 
   end
 
   context 'when user is allowed write changes' do
-    it 'creates a models' do
+    it 'creates a model' do
       post_graphql_mutation(mutation, current_user: current_user)
 
       expect(response).to have_gitlab_http_status(:success)
@@ -39,7 +39,7 @@ RSpec.describe 'Creation of a machine learning model', feature_category: :mlops 
     end
 
     context 'when name already exists' do
-      err_msg = "Name has already been taken"
+      err_msg = "Name should be unique in the project"
       let(:name) { model.name }
 
       it_behaves_like 'a mutation that returns errors in the response', errors: [err_msg]

@@ -14,7 +14,7 @@ export default {
   },
   inject: ['reportedUserId', 'reportedFromUrl'],
   i18n: {
-    reportAbuse: s__('ReportAbuse|Report abuse to administrator'),
+    reportAbuse: s__('ReportAbuse|Report abuse'),
   },
   data() {
     return {

@@ -40,4 +40,13 @@
       = f.label :decompress_archive_file_timeout, s_('Import|Timeout for decompressing archived files (seconds)'), class: 'label-light'
       = f.number_field :decompress_archive_file_timeout, class: 'form-control gl-form-input', title: s_('Import|Timeout for decompressing archived files.'), data: { toggle: 'tooltip', container: 'body' }
       %span.form-text.text-muted= _('Set to 0 to disable timeout.')
+    .form-group
+      = f.label :concurrent_github_import_jobs_limit, s_('Import|Maximum number of simultaneous import jobs for GitHub importer'), class: 'label-light'
+      = f.number_field :concurrent_github_import_jobs_limit, class: 'form-control gl-form-input', title: s_('Import|Maximum number of simultaneous import jobs for GitHub importer'), data: { toggle: 'tooltip', container: 'body' }
+    .form-group
+      = f.label :concurrent_bitbucket_import_jobs_limit, s_('Import|Maximum number of simultaneous import jobs for Bitbucket Cloud importer'), class: 'label-light'
+      = f.number_field :concurrent_bitbucket_import_jobs_limit, class: 'form-control gl-form-input', title: s_('Import|Maximum number of simultaneous import jobs for Bitbucket Cloud importer'), data: { toggle: 'tooltip', container: 'body' }
+    .form-group
+      = f.label :concurrent_bitbucket_server_import_jobs_limit, s_('Import|Maximum number of simultaneous import jobs for Bitbucket Server importer'), class: 'label-light'
+      = f.number_field :concurrent_bitbucket_server_import_jobs_limit, class: 'form-control gl-form-input', title: s_('Import|Maximum number of simultaneous import jobs for Bitbucket Server importer'), data: { toggle: 'tooltip', container: 'body' }
   = f.submit _('Save changes'), pajamas_button: true

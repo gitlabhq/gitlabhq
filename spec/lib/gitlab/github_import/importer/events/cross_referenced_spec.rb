@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::Importer::Events::CrossReferenced, :clean_gitlab_redis_cache do
+RSpec.describe Gitlab::GithubImport::Importer::Events::CrossReferenced, :clean_gitlab_redis_cache, feature_category: :importers do
   subject(:importer) { described_class.new(project, client) }
 
   let_it_be(:project) { create(:project, :repository) }
@@ -67,6 +67,11 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::CrossReferenced, :clean_g
         expect(issuable.notes[0]).to have_attributes expected_note_attrs
         expect(issuable.notes[0].system_note_metadata.action).to eq 'cross_reference'
       end
+
+      it_behaves_like 'internal event tracking' do
+        let(:event) { 'g_project_management_issue_cross_referenced' }
+        let(:subject) { importer.execute(issue_event) }
+      end
     end
 
     context 'when referenced in pull request' do
@@ -91,6 +96,12 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::CrossReferenced, :clean_g
         expect(issuable.notes.count).to eq 1
         expect(issuable.notes[0]).to have_attributes expected_note_attrs
         expect(issuable.notes[0].system_note_metadata.action).to eq 'cross_reference'
+      end
+
+      it_behaves_like 'internal event not tracked' do
+        let(:event) { 'g_project_management_issue_cross_referenced' }
+
+        subject { importer.execute(issue_event) }
       end
     end
 

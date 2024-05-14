@@ -143,7 +143,7 @@ RSpec.describe Integrations::MicrosoftTeams, feature_category: :integrations do
       end
 
       it "calls Microsoft Teams API for commit comment events" do
-        data = Gitlab::DataBuilder::Note.build(commit_note, user)
+        data = Gitlab::DataBuilder::Note.build(commit_note, user, :create)
 
         chat_integration.execute(data)
 
@@ -157,7 +157,7 @@ RSpec.describe Integrations::MicrosoftTeams, feature_category: :integrations do
       end
 
       it "calls Microsoft Teams API for merge request comment events" do
-        data = Gitlab::DataBuilder::Note.build(merge_request_note, user)
+        data = Gitlab::DataBuilder::Note.build(merge_request_note, user, :create)
 
         chat_integration.execute(data)
 
@@ -171,7 +171,7 @@ RSpec.describe Integrations::MicrosoftTeams, feature_category: :integrations do
       end
 
       it "calls Microsoft Teams API for issue comment events" do
-        data = Gitlab::DataBuilder::Note.build(issue_note, user)
+        data = Gitlab::DataBuilder::Note.build(issue_note, user, :create)
 
         chat_integration.execute(data)
 
@@ -185,7 +185,7 @@ RSpec.describe Integrations::MicrosoftTeams, feature_category: :integrations do
       end
 
       it "calls Microsoft Teams API for snippet comment events" do
-        data = Gitlab::DataBuilder::Note.build(snippet_note, user)
+        data = Gitlab::DataBuilder::Note.build(snippet_note, user, :create)
 
         chat_integration.execute(data)
 
@@ -236,6 +236,7 @@ RSpec.describe Integrations::MicrosoftTeams, feature_category: :integrations do
       before do
         chat_integration.branches_to_be_notified = branches_to_be_notified if branches_to_be_notified
       end
+
       it 'does not call Microsoft Teams API for pipeline events' do
         data = Gitlab::DataBuilder::Pipeline.build(pipeline)
         result = chat_integration.execute(data)

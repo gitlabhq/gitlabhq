@@ -1,6 +1,5 @@
 <script>
 import { GlSkeletonLoader, GlTable } from '@gitlab/ui';
-import { thWidthPercent } from '~/lib/utils/table_utility';
 import { __ } from '~/locale';
 import UserDate from '~/vue_shared/components/user_date.vue';
 import UserAvatar from './user_avatar.vue';
@@ -36,32 +35,32 @@ export default {
     {
       key: 'name',
       label: __('Name'),
-      thClass: thWidthPercent(40),
+      thClass: 'gl-w-8/20',
     },
     {
       key: 'projectsCount',
       label: __('Projects'),
-      thClass: thWidthPercent(10),
+      thClass: 'gl-w-2/20',
     },
     {
       key: 'groupCount',
       label: __('Groups'),
-      thClass: thWidthPercent(10),
+      thClass: 'gl-w-2/20',
     },
     {
       key: 'createdAt',
       label: __('Created on'),
-      thClass: thWidthPercent(15),
+      thClass: 'gl-w-3/20',
     },
     {
       key: 'lastActivityOn',
       label: __('Last activity'),
-      thClass: thWidthPercent(15),
+      thClass: 'gl-w-3/20',
     },
     {
       key: 'settings',
       label: '',
-      thClass: thWidthPercent(10),
+      thClass: 'gl-w-2/20',
     },
   ],
 };

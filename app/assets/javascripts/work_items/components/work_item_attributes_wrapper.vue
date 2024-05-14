@@ -11,49 +11,36 @@ import {
   WIDGET_TYPE_PARTICIPANTS,
   WIDGET_TYPE_PROGRESS,
   WIDGET_TYPE_START_AND_DUE_DATE,
+  WIDGET_TYPE_TIME_TRACKING,
+  WIDGET_TYPE_ROLLEDUP_DATES,
   WIDGET_TYPE_WEIGHT,
   WIDGET_TYPE_COLOR,
-  WORK_ITEM_TYPE_VALUE_KEY_RESULT,
-  WORK_ITEM_TYPE_VALUE_OBJECTIVE,
-  WORK_ITEM_TYPE_VALUE_TASK,
+  WORK_ITEM_TYPE_VALUE_EPIC,
 } from '../constants';
-import WorkItemAssigneesInline from './work_item_assignees_inline.vue';
-import WorkItemAssigneesWithEdit from './work_item_assignees_with_edit.vue';
-import WorkItemDueDateInline from './work_item_due_date_inline.vue';
-import WorkItemDueDateWithEdit from './work_item_due_date_with_edit.vue';
+import WorkItemAssignees from './work_item_assignees.vue';
+import WorkItemDueDate from './work_item_due_date.vue';
 import WorkItemLabels from './work_item_labels.vue';
-import WorkItemMilestoneInline from './work_item_milestone_inline.vue';
-import WorkItemMilestoneWithEdit from './work_item_milestone_with_edit.vue';
-import WorkItemParentInline from './work_item_parent_inline.vue';
-import WorkItemParent from './work_item_parent_with_edit.vue';
+import WorkItemMilestone from './work_item_milestone.vue';
+import WorkItemParent from './work_item_parent.vue';
+import WorkItemTimeTracking from './work_item_time_tracking.vue';
 
 export default {
   components: {
     Participants,
     WorkItemLabels,
-    WorkItemMilestoneInline,
-    WorkItemMilestoneWithEdit,
-    WorkItemAssigneesInline,
-    WorkItemAssigneesWithEdit,
-    WorkItemDueDateInline,
-    WorkItemDueDateWithEdit,
+    WorkItemMilestone,
+    WorkItemAssignees,
+    WorkItemDueDate,
     WorkItemParent,
-    WorkItemParentInline,
-    WorkItemWeightInline: () =>
-      import('ee_component/work_items/components/work_item_weight_inline.vue'),
-    WorkItemWeight: () =>
-      import('ee_component/work_items/components/work_item_weight_with_edit.vue'),
+    WorkItemTimeTracking,
+    WorkItemWeight: () => import('ee_component/work_items/components/work_item_weight.vue'),
     WorkItemProgress: () => import('ee_component/work_items/components/work_item_progress.vue'),
-    WorkItemIterationInline: () =>
-      import('ee_component/work_items/components/work_item_iteration_inline.vue'),
-    WorkItemIteration: () =>
-      import('ee_component/work_items/components/work_item_iteration_with_edit.vue'),
+    WorkItemIteration: () => import('ee_component/work_items/components/work_item_iteration.vue'),
     WorkItemHealthStatus: () =>
-      import('ee_component/work_items/components/work_item_health_status_with_edit.vue'),
-    WorkItemHealthStatusInline: () =>
-      import('ee_component/work_items/components/work_item_health_status_inline.vue'),
-    WorkItemColorInline: () =>
-      import('ee_component/work_items/components/work_item_color_inline.vue'),
+      import('ee_component/work_items/components/work_item_health_status.vue'),
+    WorkItemColor: () => import('ee_component/work_items/components/work_item_color.vue'),
+    WorkItemRolledupDates: () =>
+      import('ee_component/work_items/components/work_item_rolledup_dates.vue'),
   },
   mixins: [glFeatureFlagMixin()],
   props: {
@@ -85,6 +72,9 @@ export default {
     workItemDueDate() {
       return this.isWidgetPresent(WIDGET_TYPE_START_AND_DUE_DATE);
     },
+    workItemRolledupDates() {
+      return this.isWidgetPresent(WIDGET_TYPE_ROLLEDUP_DATES);
+    },
     workItemWeight() {
       return this.isWidgetPresent(WIDGET_TYPE_WEIGHT);
     },
@@ -106,18 +96,25 @@ export default {
     workItemMilestone() {
       return this.isWidgetPresent(WIDGET_TYPE_MILESTONE);
     },
-    showWorkItemParent() {
+    showRolledupDates() {
       return (
-        this.workItemType === WORK_ITEM_TYPE_VALUE_OBJECTIVE ||
-        this.workItemType === WORK_ITEM_TYPE_VALUE_KEY_RESULT ||
-        this.workItemType === WORK_ITEM_TYPE_VALUE_TASK
+        this.glFeatures.workItemsRolledupDates && this.workItemType === WORK_ITEM_TYPE_VALUE_EPIC
       );
     },
     workItemParent() {
       return this.isWidgetPresent(WIDGET_TYPE_HIERARCHY)?.parent;
     },
+    workItemTimeTracking() {
+      return this.isWidgetPresent(WIDGET_TYPE_TIME_TRACKING);
+    },
     workItemColor() {
       return this.isWidgetPresent(WIDGET_TYPE_COLOR);
+    },
+    workItemParticipantNodes() {
+      return this.workItemParticipants?.participants?.nodes ?? [];
+    },
+    workItemAuthor() {
+      return this.workItem?.author;
     },
   },
   methods: {
@@ -131,41 +128,81 @@ export default {
 <template>
   <div class="work-item-attributes-wrapper">
     <template v-if="workItemAssignees">
-      <work-item-assignees-with-edit
-        v-if="glFeatures.workItemsMvc2"
-        class="gl-mb-5"
+      <work-item-assignees
+        class="gl-mb-5 js-assignee"
         :can-update="canUpdate"
         :full-path="fullPath"
         :work-item-id="workItem.id"
         :assignees="workItemAssignees.assignees.nodes"
-        :allows-multiple-assignees="workItemAssignees.allowsMultipleAssignees"
-        :work-item-type="workItemType"
-        :can-invite-members="workItemAssignees.canInviteMembers"
-        @error="$emit('error', $event)"
-      />
-      <work-item-assignees-inline
-        v-else
-        :can-update="canUpdate"
-        :full-path="fullPath"
-        :work-item-id="workItem.id"
-        :assignees="workItemAssignees.assignees.nodes"
+        :participants="workItemParticipantNodes"
+        :work-item-author="workItemAuthor"
         :allows-multiple-assignees="workItemAssignees.allowsMultipleAssignees"
         :work-item-type="workItemType"
         :can-invite-members="workItemAssignees.canInviteMembers"
         @error="$emit('error', $event)"
       />
     </template>
-    <work-item-labels
-      v-if="workItemLabels"
-      :can-update="canUpdate"
-      :full-path="fullPath"
-      :work-item-id="workItem.id"
-      :work-item-iid="workItem.iid"
-      @error="$emit('error', $event)"
-    />
-    <template v-if="workItemDueDate">
-      <work-item-due-date-with-edit
-        v-if="glFeatures.workItemsMvc2"
+    <template v-if="workItemLabels">
+      <work-item-labels
+        class="gl-mb-5 js-labels"
+        :can-update="canUpdate"
+        :full-path="fullPath"
+        :work-item-id="workItem.id"
+        :work-item-iid="workItem.iid"
+        :work-item-type="workItemType"
+        @error="$emit('error', $event)"
+      />
+    </template>
+    <template v-if="workItemWeight">
+      <work-item-weight
+        class="gl-mb-5"
+        :can-update="canUpdate"
+        :weight="workItemWeight.weight"
+        :work-item-id="workItem.id"
+        :work-item-iid="workItem.iid"
+        :work-item-type="workItemType"
+        @error="$emit('error', $event)"
+      />
+    </template>
+    <template v-if="workItemRolledupDates && showRolledupDates">
+      <work-item-rolledup-dates
+        :can-update="canUpdate"
+        :due-date-is-fixed="workItemRolledupDates.dueDateIsFixed"
+        :due-date-fixed="workItemRolledupDates.dueDateFixed"
+        :due-date-inherited="workItemRolledupDates.dueDate"
+        :start-date-is-fixed="workItemRolledupDates.startDateIsFixed"
+        :start-date-fixed="workItemRolledupDates.startDateFixed"
+        :start-date-inherited="workItemRolledupDates.startDate"
+        :work-item-type="workItemType"
+        :work-item="workItem"
+        @error="$emit('error', $event)"
+      />
+    </template>
+    <template v-if="workItemMilestone">
+      <work-item-milestone
+        class="gl-mb-5 js-milestone"
+        :full-path="fullPath"
+        :work-item-id="workItem.id"
+        :work-item-milestone="workItemMilestone.milestone"
+        :work-item-type="workItemType"
+        :can-update="canUpdate"
+        @error="$emit('error', $event)"
+      />
+    </template>
+    <template v-if="workItemIteration">
+      <work-item-iteration
+        class="gl-mb-5"
+        :full-path="fullPath"
+        :iteration="workItemIteration.iteration"
+        :can-update="canUpdate"
+        :work-item-id="workItem.id"
+        :work-item-iid="workItem.iid"
+        :work-item-type="workItemType"
+        @error="$emit('error', $event)"
+      />
+    </template>
+    <template v-if="workItemDueDate && !showRolledupDates">
+      <work-item-due-date
         :can-update="canUpdate"
         :due-date="workItemDueDate.dueDate"
         :start-date="workItemDueDate.startDate"
@@ -173,106 +210,19 @@ export default {
         :work-item="workItem"
         @error="$emit('error', $event)"
       />
-      <work-item-due-date-inline
-        v-else
-        :can-update="canUpdate"
-        :due-date="workItemDueDate.dueDate"
-        :start-date="workItemDueDate.startDate"
-        :work-item-id="workItem.id"
-        :work-item-type="workItemType"
-        @error="$emit('error', $event)"
-      />
     </template>
-    <template v-if="workItemMilestone">
-      <work-item-milestone-with-edit
-        v-if="glFeatures.workItemsMvc2"
-        class="gl-mb-5"
-        :full-path="fullPath"
-        :work-item-id="workItem.id"
-        :work-item-milestone="workItemMilestone.milestone"
-        :work-item-type="workItemType"
-        :can-update="canUpdate"
-        @error="$emit('error', $event)"
-      />
-      <work-item-milestone-inline
-        v-else
-        class="gl-mb-5"
-        :full-path="fullPath"
-        :work-item-id="workItem.id"
-        :work-item-milestone="workItemMilestone.milestone"
-        :work-item-type="workItemType"
-        :can-update="canUpdate"
-        @error="$emit('error', $event)"
-      />
-    </template>
-    <template v-if="workItemWeight">
-      <work-item-weight
-        v-if="glFeatures.workItemsMvc2"
+    <template v-if="workItemProgress">
+      <work-item-progress
         class="gl-mb-5"
         :can-update="canUpdate"
-        :weight="workItemWeight.weight"
+        :progress="workItemProgress.progress"
         :work-item-id="workItem.id"
-        :work-item-iid="workItem.iid"
-        :work-item-type="workItemType"
-        @error="$emit('error', $event)"
-      />
-      <work-item-weight-inline
-        v-else
-        class="gl-mb-5"
-        :can-update="canUpdate"
-        :weight="workItemWeight.weight"
-        :work-item-id="workItem.id"
-        :work-item-iid="workItem.iid"
-        :work-item-type="workItemType"
-        @error="$emit('error', $event)"
-      />
-    </template>
-    <work-item-progress
-      v-if="workItemProgress"
-      class="gl-mb-5"
-      :can-update="canUpdate"
-      :progress="workItemProgress.progress"
-      :work-item-id="workItem.id"
-      :work-item-type="workItemType"
-      @error="$emit('error', $event)"
-    />
-    <template v-if="workItemIteration">
-      <work-item-iteration
-        v-if="glFeatures.workItemsMvc2"
-        class="gl-mb-5"
-        :full-path="fullPath"
-        :iteration="workItemIteration.iteration"
-        :can-update="canUpdate"
-        :work-item-id="workItem.id"
-        :work-item-iid="workItem.iid"
-        :work-item-type="workItemType"
-        @error="$emit('error', $event)"
-      />
-      <work-item-iteration-inline
-        v-else
-        class="gl-mb-5"
-        :full-path="fullPath"
-        :iteration="workItemIteration.iteration"
-        :can-update="canUpdate"
-        :work-item-id="workItem.id"
-        :work-item-iid="workItem.iid"
         :work-item-type="workItemType"
         @error="$emit('error', $event)"
       />
     </template>
     <template v-if="workItemHealthStatus">
       <work-item-health-status
-        v-if="glFeatures.workItemsMvc2"
-        class="gl-mb-5"
-        :health-status="workItemHealthStatus.healthStatus"
-        :can-update="canUpdate"
-        :work-item-id="workItem.id"
-        :work-item-iid="workItem.iid"
-        :work-item-type="workItemType"
-        @error="$emit('error', $event)"
-      />
-      <work-item-health-status-inline
-        v-else
         class="gl-mb-5"
         :health-status="workItemHealthStatus.healthStatus"
         :can-update="canUpdate"
@@ -282,19 +232,17 @@ export default {
         @error="$emit('error', $event)"
       />
     </template>
-    <template v-if="showWorkItemParent">
+    <template v-if="workItemColor">
+      <work-item-color
+        class="gl-mb-5"
+        :work-item="workItem"
+        :can-update="canUpdate"
+        @error="$emit('error', $event)"
+      />
+    </template>
+    <template v-if="workItemHierarchy">
       <work-item-parent
-        v-if="glFeatures.workItemsMvc2"
-        class="gl-mb-5"
-        :can-update="canUpdate"
-        :work-item-id="workItem.id"
-        :work-item-type="workItemType"
-        :parent="workItemParent"
-        @error="$emit('error', $event)"
-      />
-      <work-item-parent-inline
-        v-else
-        class="gl-mb-5"
+        class="gl-mb-5 gl-pt-5 gl-border-t gl-border-gray-50"
         :can-update="canUpdate"
         :work-item-id="workItem.id"
         :work-item-type="workItemType"
@@ -302,16 +250,20 @@ export default {
         @error="$emit('error', $event)"
       />
     </template>
-    <work-item-color-inline
-      v-if="workItemColor"
-      class="gl-mb-5"
-      :work-item="workItem"
+    <work-item-time-tracking
+      v-if="workItemTimeTracking"
+      class="gl-mb-5 gl-pt-5 gl-border-t gl-border-gray-50"
       :can-update="canUpdate"
-      @error="$emit('error', $event)"
+      :time-estimate="workItemTimeTracking.timeEstimate"
+      :timelogs="workItemTimeTracking.timelogs.nodes"
+      :total-time-spent="workItemTimeTracking.totalTimeSpent"
+      :work-item-id="workItem.id"
+      :work-item-iid="workItem.iid"
+      :work-item-type="workItemType"
     />
     <participants
-      v-if="workItemParticipants && glFeatures.workItemsMvc"
-      class="gl-mb-5"
+      v-if="workItemParticipants"
+      class="gl-mb-5 gl-pt-5 gl-border-t gl-border-gray-50"
       :number-of-less-participants="10"
       :participants="workItemParticipants.participants.nodes"
     />

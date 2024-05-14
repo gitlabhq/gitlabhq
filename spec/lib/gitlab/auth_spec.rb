@@ -76,7 +76,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
     end
 
     context 'with observability feature flags' do
-      feature_flags = [:observability_tracing, :observability_metrics]
+      feature_flags = [:observability_tracing, :observability_metrics, :observability_logs]
 
       context 'when all disabled' do
         before do
@@ -403,6 +403,10 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
         token = Gitlab::LfsToken.new(key).token
 
         expect(gl_auth.find_for_git_client("lfs+deploy-key-#{key.id}", token, project: project, request: request)).to have_attributes(actor: key, project: nil, type: :lfs_deploy_token, authentication_abilities: described_class.read_only_authentication_abilities)
+      end
+
+      it 'does fail if the user and token are nil' do
+        expect(gl_auth.find_for_git_client(nil, nil, project: project, request: request)).to have_attributes(auth_failure)
       end
     end
 

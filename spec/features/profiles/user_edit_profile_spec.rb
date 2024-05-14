@@ -24,7 +24,7 @@ RSpec.describe 'User edit profile', feature_category: :user_profile do
   end
 
   def toggle_busy_status
-    find('[data-testid="user-availability-checkbox"]').set(true)
+    find_by_testid('user-availability-checkbox').set(true)
   end
 
   it 'changes user profile' do
@@ -276,7 +276,7 @@ RSpec.describe 'User edit profile', feature_category: :user_profile do
       end
 
       it 'sets the users status to busy' do
-        busy_status = find('[data-testid="user-availability-checkbox"]')
+        busy_status = find_by_testid('user-availability-checkbox')
 
         expect(busy_status.checked?).to eq(false)
 
@@ -400,7 +400,7 @@ RSpec.describe 'User edit profile', feature_category: :user_profile do
 
       it 'sets the users status to busy' do
         open_user_status_modal
-        busy_status = find('[data-testid="user-availability-checkbox"]')
+        busy_status = find_by_testid('user-availability-checkbox')
 
         expect(busy_status.checked?).to eq(false)
 
@@ -543,7 +543,9 @@ RSpec.describe 'User edit profile', feature_category: :user_profile do
 
       page.find('.user-time-preferences .gl-new-dropdown-toggle').click
 
-      expect(page.find('.user-time-preferences [data-testid="base-dropdown-menu"]')).to be_visible
+      within('.user-time-preferences') do
+        expect(find_by_testid('base-dropdown-menu')).to be_visible
+      end
 
       page.find("li", text: "Arizona").click
 

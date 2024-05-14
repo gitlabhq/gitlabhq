@@ -67,7 +67,7 @@ export default {
   data() {
     return {
       alerts: [],
-      approvals: {},
+      approvals: null,
       disableCommittersApproval: false,
     };
   },

@@ -8,8 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 ## Validation errors on namespaces and groups
 
-[GitLab 14.4 and later](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/70365) performs
-the following checks when creating or updating namespaces or groups:
+Performs the following checks when creating or updating namespaces or groups:
 
 - Namespaces must not have parents.
 - Group parents must be groups and not namespaces.

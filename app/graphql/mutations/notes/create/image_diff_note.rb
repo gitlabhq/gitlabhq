@@ -7,9 +7,9 @@ module Mutations
         graphql_name 'CreateImageDiffNote'
 
         argument :position,
-                  Types::Notes::DiffImagePositionInputType,
-                  required: true,
-                  description: copy_field_description(Types::Notes::NoteType, :position)
+          Types::Notes::DiffImagePositionInputType,
+          required: true,
+          description: copy_field_description(Types::Notes::NoteType, :position)
 
         private
 

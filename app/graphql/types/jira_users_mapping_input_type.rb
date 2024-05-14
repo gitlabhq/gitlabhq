@@ -5,12 +5,12 @@ module Types
     graphql_name 'JiraUsersMappingInputType'
 
     argument :gitlab_id,
-             GraphQL::Types::Int,
-             required: false,
-             description: 'ID of the GitLab user.'
+      GraphQL::Types::Int,
+      required: false,
+      description: 'ID of the GitLab user.'
     argument :jira_account_id,
-             GraphQL::Types::String,
-             required: true,
-             description: 'Jira account ID of the user.'
+      GraphQL::Types::String,
+      required: true,
+      description: 'Jira account ID of the user.'
   end
 end

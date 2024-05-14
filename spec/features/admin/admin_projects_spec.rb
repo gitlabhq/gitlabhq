@@ -62,7 +62,7 @@ RSpec.describe "Admin::Projects", feature_category: :groups_and_projects do
 
       expect(page).to have_content(project.name)
       expect(page).to have_content(archived_project.name)
-      expect(page).to have_xpath("//span[@class='gl-badge badge badge-pill badge-warning md']", text: 'archived')
+      expect(page).to have_xpath("//span[@class='gl-badge badge badge-pill badge-info md gl-mr-3']", text: 'Archived')
     end
 
     it 'renders only archived projects', :js do
@@ -165,7 +165,7 @@ RSpec.describe "Admin::Projects", feature_category: :groups_and_projects do
       expect(find_member_row(current_user)).to have_content('Developer')
 
       show_actions_for_username(current_user)
-      click_button _('Leave group')
+      click_button _('Leave project')
 
       within_modal do
         click_button _('Leave')

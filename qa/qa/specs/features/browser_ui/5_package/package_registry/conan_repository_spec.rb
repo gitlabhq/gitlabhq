@@ -2,7 +2,10 @@
 
 module QA
   RSpec.describe 'Package', :object_storage, :external_api_calls, product_group: :package_registry, quarantine: {
-    only: { job: 'object_storage', condition: -> { QA::Support::FIPS.enabled? } },
+    only: {
+      job: /object_storage|cng-instance|release-environments-qa/,
+      condition: -> { QA::Support::FIPS.enabled? }
+    },
     issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/417584',
     type: :bug
   } do
@@ -29,12 +32,13 @@ module QA
         package.remove_via_api!
       end
 
-      it 'publishes, installs, and deletes a Conan package',
+      it 'publishes, installs, and deletes a Conan package', :blocking,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348014' do
         Flow::Login.sign_in
 
         Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
-          conan_yaml = ERB.new(read_fixture('package_managers/conan', 'conan_upload_install_package.yaml.erb')).result(binding)
+          conan_yaml = ERB.new(read_fixture('package_managers/conan',
+            'conan_upload_install_package.yaml.erb')).result(binding)
 
           create(:commit, project: project, commit_message: 'Add .gitlab-ci.yml', actions: [
             { action: 'create', file_path: '.gitlab-ci.yml', content: conan_yaml }

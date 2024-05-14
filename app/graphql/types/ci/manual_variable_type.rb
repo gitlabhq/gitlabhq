@@ -10,12 +10,12 @@ module Types
       implements VariableInterface
 
       field :environment_scope, GraphQL::Types::String,
-            null: true,
-            deprecated: {
-              reason: 'No longer used, only available for GroupVariableType and ProjectVariableType',
-              milestone: '15.3'
-            },
-            description: 'Scope defining the environments that can use the variable.'
+        null: true,
+        deprecated: {
+          reason: 'No longer used, only available for GroupVariableType and ProjectVariableType',
+          milestone: '15.3'
+        },
+        description: 'Scope defining the environments that can use the variable.'
 
       def environment_scope
         nil

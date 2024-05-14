@@ -4,13 +4,11 @@ module Gitlab
   module Utils
     module Markdown
       PUNCTUATION_REGEXP = /[^\p{Word}\- ]/u
-      PRODUCT_SUFFIX = /\s*\**\((premium|ultimate|free|beta|experiment)(\s+(all|self|saas))?(\s+(beta|experiment))?\)\**/
 
       def string_to_anchor(string)
         string
           .strip
           .downcase
-          .gsub(PRODUCT_SUFFIX, '')
           .gsub(PUNCTUATION_REGEXP, '') # remove punctuation
           .tr(' ', '-') # replace spaces with dash
           .squeeze('-') # replace multiple dashes with one

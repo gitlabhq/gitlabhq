@@ -21,8 +21,6 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects, type: :
   end
 
   describe "validations" do
-    it { is_expected.to validate_inclusion_of(:code_suggestions).in_array([true, false]) }
-
     describe "#default_branch_name_content" do
       let_it_be(:group) { create(:group) }
 
@@ -57,36 +55,6 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects, type: :
         end
 
         it_behaves_like "doesn't return an error"
-      end
-    end
-
-    describe '#code_suggestions' do
-      context 'when group namespaces' do
-        let(:settings) { group.namespace_settings }
-        let(:group) { create(:group) }
-
-        context 'when group is created' do
-          it 'sets default code_suggestions value to true' do
-            expect(settings.code_suggestions).to eq true
-          end
-        end
-
-        context 'when setting is updated' do
-          it 'persists the code suggestions setting' do
-            settings.update!(code_suggestions: false)
-
-            expect(settings.code_suggestions).to eq false
-          end
-        end
-      end
-
-      context 'when user namespace' do
-        let(:user) { create(:user) }
-        let(:settings) { user.namespace.namespace_settings }
-
-        it 'defaults to false' do
-          expect(settings.code_suggestions).to eq false
-        end
       end
     end
 
@@ -240,52 +208,42 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects, type: :
   end
 
   describe '#emails_enabled?' do
-    context 'when a group has no parent'
-    let(:settings) { create(:namespace_settings, emails_enabled: true) }
-    let(:grandparent) { create(:group) }
-    let(:parent)      { create(:group, parent: grandparent) }
-    let(:group)       { create(:group, parent: parent, namespace_settings: settings) }
+    let_it_be_with_refind(:group) { create(:group) }
 
-    context 'when the groups setting is changed' do
-      it 'returns false when the attribute is false' do
-        group.update_attribute(:emails_enabled, false)
+    it 'returns true when the attribute is true' do
+      group.emails_enabled = true
 
-        expect(group.emails_enabled?).to be_falsey
-      end
+      expect(group.emails_enabled?).to be_truthy
     end
 
-    context 'when a group has a parent' do
+    it 'returns false when the attribute is false' do
+      group.emails_enabled = false
+
+      expect(group.emails_enabled?).to be_falsey
+    end
+
+    context 'when a group has parent groups' do
+      let_it_be(:grandparent) { create(:group) }
+      let_it_be(:parent) { create(:group, parent: grandparent) }
+      let_it_be_with_refind(:group) { create(:group, parent: parent) }
+
       it 'returns true when no parent has disabled emails' do
         expect(group.emails_enabled?).to be_truthy
       end
 
-      context 'when ancestor emails are disabled' do
+      context 'when grandparent emails are disabled' do
         it 'returns false' do
-          grandparent.update_attribute(:emails_enabled, false)
+          grandparent.update!(emails_enabled: false)
 
           expect(group.emails_enabled?).to be_falsey
         end
       end
-    end
 
-    context 'when a group has parent groups' do
-      let(:grandparent) { create(:group, namespace_settings: settings) }
-      let(:parent)      { create(:group, parent: grandparent) }
-      let!(:group)      { create(:group, parent: parent) }
-
-      context "when a parent group has emails disabled" do
-        let(:settings) { create(:namespace_settings, emails_enabled: false) }
-
+      context "when parent emails are disabled" do
         it 'returns false' do
+          parent.update!(emails_enabled: false)
+
           expect(group.emails_enabled?).to be_falsey
-        end
-      end
-
-      context 'when all parent groups have emails enabled' do
-        let(:settings) { create(:namespace_settings, emails_enabled: true) }
-
-        it 'returns true' do
-          expect(group.emails_enabled?).to be_truthy
         end
       end
     end
@@ -450,10 +408,6 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects, type: :
 
   describe '#toggle_security_policy_custom_ci' do
     it_behaves_like 'a cascading namespace setting boolean attribute', settings_attribute_name: :toggle_security_policy_custom_ci
-  end
-
-  describe '#toggle_security_policies_policy_scope' do
-    it_behaves_like 'a cascading namespace setting boolean attribute', settings_attribute_name: :toggle_security_policies_policy_scope
   end
 
   describe '#math_rendering_limits_enabled' do

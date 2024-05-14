@@ -30,8 +30,7 @@ preventing other threads from continuing.
 
 ## Log arguments to Sidekiq jobs
 
-[In GitLab 13.6 and later](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/44853)
-some arguments passed to Sidekiq jobs are logged by default.
+Some arguments passed to Sidekiq jobs are logged by default.
 To avoid logging sensitive information (for instance, password reset tokens),
 GitLab logs numeric arguments for all workers, with overrides for some specific
 workers where their arguments are not sensitive.
@@ -57,8 +56,6 @@ Example:
 ```ruby
 gitlab_rails['env'] = {"SIDEKIQ_LOG_ARGUMENTS" => "0"}
 ```
-
-In GitLab 13.5 and earlier, set `SIDEKIQ_LOG_ARGUMENTS` to `1` to start logging arguments passed to Sidekiq.
 
 ## Investigating Sidekiq queue backlogs or slow performance
 
@@ -478,8 +475,6 @@ end
 
 ## Canceling running jobs (destructive)
 
-> - Introduced in GitLab 12.3.
-
 This is highly risky operation and use it as last resort.
 Doing that might result in data corruption, as the job
 is interrupted mid-execution and it is not guaranteed
@@ -542,7 +537,7 @@ For more information about Sidekiq jobs, see the [Sidekiq-cron](https://github.c
 
 ## Disabling cron jobs
 
-You can disable any Sidekiq cron jobs by visiting the [Monitoring section in the Admin area](../admin_area.md#monitoring-section). You can also perform the same action using the command line and [Rails Runner](../operations/rails_console.md#using-the-rails-runner).
+You can disable any Sidekiq cron jobs by visiting the [Monitoring section in the Admin Area](../admin_area.md#monitoring-section). You can also perform the same action using the command line and [Rails Runner](../operations/rails_console.md#using-the-rails-runner).
 
 To disable all cron jobs:
 
@@ -587,63 +582,6 @@ but if you want to clear the idempotency key immediately, follow the following s
   dj.send(:idempotency_key)
   dj.delete!
   ```
-
-## GitLab 14.0 and later: remove the `sidekiq-cluster` service (Linux package installations)
-
-Linux package instances that were configured to run `sidekiq-cluster` prior to GitLab 14.0
-might still have this service running along side `sidekiq` in later releases.
-
-The code to manage `sidekiq-cluster` was removed in GitLab 14.0.
-The configuration files remain on disk so the `sidekiq-cluster` process continues
-to be started by the GitLab systemd service .
-
-The extra service can be identified as running by:
-
-- `gitlab-ctl status` showing both services:
-
-  ```plaintext
-  run: sidekiq: (pid 1386) 445s; run: log: (pid 1385) 445s
-  run: sidekiq-cluster: (pid 1388) 445s; run: log: (pid 1381) 445s
-  ```
-
-- `ps -ef | grep 'runsv sidekiq'` showing two processes:
-
-  ```plaintext
-  root     31047 31045  0 13:54 ?        00:00:00 runsv sidekiq-cluster
-  root     31054 31045  0 13:54 ?        00:00:00 runsv sidekiq
-  ```
-
-To remove the `sidekiq-cluster` service from servers running GitLab 14.0 and later:
-
-1. Stop GitLab and the systemd service:
-
-   ```shell
-   sudo gitlab-ctl stop
-   sudo systemctl stop gitlab-runsvdir.service
-   ```
-
-1. Remove the `runsv` service definition:
-
-   ```shell
-   sudo rm -rf /opt/gitlab/sv/sidekiq-cluster
-   ```
-
-1. Restart GitLab:
-
-   ```shell
-   sudo systemctl start gitlab-runsvdir.service
-   ```
-
-1. Check that all services are up, and the `sidekiq-cluster` service is not listed:
-
-   ```shell
-   sudo gitlab-ctl status
-   ```
-
-This change might reduce the amount of work Sidekiq can do. Symptoms like delays creating pipelines
-indicate that additional Sidekiq processes would be beneficial.
-Consider [adding additional Sidekiq processes](extra_sidekiq_processes.md)
-to compensate for removing the `sidekiq-cluster` service.
 
 ## CPU saturation in Redis caused by Sidekiq BRPOP calls
 

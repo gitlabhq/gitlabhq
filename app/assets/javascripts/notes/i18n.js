@@ -4,7 +4,7 @@ export const COMMENT_FORM = {
   GENERIC_UNSUBMITTABLE_NETWORK: __(
     'Your comment could not be submitted! Please check your network connection and try again.',
   ),
-  error: __('Your comment could not be submitted because %{reason}.'),
+  error: __('Comment could not be submitted: %{reason}.'),
   note: __('Note'),
   comment: __('Comment'),
   internalComment: __('Add internal note'),
@@ -57,6 +57,6 @@ export const EDITED_TEXT = {
 };
 
 export const UPDATE_COMMENT_FORM = {
-  error: __('Your comment could not be updated because %{reason}.'),
+  error: __('Comment could not be updated: %{reason}.'),
   defaultError: __('Something went wrong while editing your comment. Please try again.'),
 };

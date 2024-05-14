@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Review apps are a collaboration tool that provide an environment to showcase product changes.
 
@@ -67,8 +67,6 @@ The process of configuring review apps is as follows:
 
 ### Enable review apps button
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118844) in GitLab 12.8.
-
 When configuring review apps for a project, you add a new job to the `.gitlab-ci.yml` file,
 as mentioned above. To facilitate this, and if you are using Kubernetes, you can select
 **Enable review apps** and GitLab prompts you with a template code block that
@@ -84,12 +82,8 @@ To use the review apps template:
    find the project you want to create a review app job for.
 1. Select **Operate > Environments**.
 1. Select **Enable review apps**.
-1. Copy the provided code snippet and paste it into your
-   `.gitlab-ci.yml` file:
-
-   ![enable review apps modal](img/enable_review_app_v16.png)
-
-You can edit this template as needed.
+1. Follow the instructions in the dialog.
+   You can edit the provided `.gitlab-ci.yml` template as needed.
 
 ## Review apps auto-stop
 
@@ -127,8 +121,8 @@ and faster to preview proposed modifications.
 
 Configuring Route Maps involves telling GitLab how the paths of files
 in your repository map to paths of pages on your website using a Route Map.
-Once set, GitLab displays **View on ...** buttons, which take you
-to the pages changed directly from merge requests.
+When you configure Route Maps, **View on** buttons are displayed.
+Select these buttons to go to the pages changed directly from merge requests.
 
 To set up a route map, add a file inside the repository at `.gitlab/route-map.yml`,
 which contains a YAML array that maps `source` paths (in the repository) to `public`
@@ -193,127 +187,3 @@ After you have the route mapping set up, it takes effect in the following locati
 - In the diff for a comparison or commit, by selecting **View** (**{external-link}**) next to the file.
 
 - In the blob file view, by selecting **View** (**{external-link}**) next to the file.
-
-<!--- start_remove The following content will be removed on remove_date: '2024-05-22' -->
-## Visual Reviews (deprecated)
-
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10761) in GitLab 12.0.
-> - [Moved](https://about.gitlab.com/blog/2021/01/26/new-gitlab-product-subscription-model/) to GitLab Premium in 13.9.
-> - It's [deployed behind a feature flag](../../user/feature_flags.md), `anonymous_visual_review_feedback`, disabled by default.
-> - It's disabled on GitLab.com.
-
-WARNING:
-This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/387751) in GitLab 15.8
-and is planned for removal in 17.0. This change is a breaking change.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available,
-an administrator can [enable the feature flag](../../administration/feature_flags.md) named `anonymous_visual_review_feedback`.
-
-With Visual Reviews, members of any team (Product, Design, Quality, and so on) can provide feedback comments through a form in your review apps. The comments are added to the merge request that triggered the review app.
-
-### Using Visual Reviews
-
-After Visual Reviews has been [configured](#configure-review-apps-for-visual-reviews) for the
-review app, the Visual Reviews feedback form is overlaid on the right side of every page.
-
-![Visual review feedback form](img/toolbar_feedback_form_v13_5.png)
-
-To use the feedback form to make a comment in the merge request:
-
-1. On the right side of a page, select the **Review** tab.
-1. Make a comment on the visual review. You can make use of all the
-   [Markdown annotations](../../user/markdown.md) that are also available in
-   merge request comments.
-1. Enter your personal information:
-   - If [`data-require-auth`](#authentication-for-visual-reviews) is `true`, you must enter your [personal access token](../../user/profile/personal_access_tokens.md).
-   - Otherwise, enter your name, and optionally your email.
-1. Select **Send feedback**.
-
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-To see Visual reviews in action, see the [Visual Reviews Walk through](https://youtu.be/1_tvWTlPfM4).
-
-### Configure review apps for Visual Reviews
-
-The feedback form is served through a script you add to pages in your review app.
-It should be added to the `<head>` of your application and
-consists of some project and merge request specific values. Here's how it
-looks for a project with code hosted in a project on GitLab.com:
-
-```html
-<script
-  data-project-id='11790219'
-  data-merge-request-id='1'
-  data-mr-url='https://gitlab.com'
-  data-project-path='sarah/review-app-tester'
-  data-require-auth='true'
-  id='review-app-toolbar-script'
-  src='https://gitlab.com/assets/webpack/visual_review_toolbar.js'>
-</script>
-```
-
-Ideally, you should use [CI/CD variables](../variables/predefined_variables.md)
-to replace those values at runtime when each review app is created:
-
-- `data-project-id` is the project ID, which can be found by the `CI_PROJECT_ID`
-  variable or on the [project overview page](../../user/project/working_with_projects.md#access-the-project-overview-page-by-using-the-project-id).
-- `data-merge-request-id` is the merge request ID, which can be found by the
-  `CI_MERGE_REQUEST_IID` variable. `CI_MERGE_REQUEST_IID` is available only if
-  [`rules:if: $CI_PIPELINE_SOURCE == "merge_request_event`](../pipelines/merge_request_pipelines.md#use-rules-to-add-jobs)
-  is used and the merge request is created.
-- `data-mr-url` is the URL of the GitLab instance and is the same for all
-  review apps.
-- `data-project-path` is the project's path, which can be found by `CI_PROJECT_PATH`.
-- `data-require-auth` is optional for public projects but required for [private and internal ones](#authentication-for-visual-reviews). If this is set to `true`, the user is required to enter their [personal access token](../../user/profile/personal_access_tokens.md) instead of their name and email.
-- `id` is always `review-app-toolbar-script`, you don't need to change that.
-- `src` is the source of the review toolbar script, which resides in the
-  respective GitLab instance and is the same for all review apps.
-
-For example, in a Ruby application with code hosted on in a project GitLab.com, you would need to have this script:
-
-```html
-<script
-  data-project-id="ENV['CI_PROJECT_ID']"
-  data-merge-request-id="ENV['CI_MERGE_REQUEST_IID']"
-  data-mr-url='https://gitlab.com'
-  data-project-path="ENV['CI_PROJECT_PATH']"
-  id='review-app-toolbar-script'
-  src='https://gitlab.com/assets/webpack/visual_review_toolbar.js'>
-</script>
-```
-
-Then, when your app is deployed via GitLab CI/CD, those variables should get
-replaced with their real values.
-
-### Determining merge request ID
-
-The visual review tools retrieve the merge request ID from the `data-merge-request-id`
-data attribute included in the `script` HTML tag used to add the visual review tools
-to your review app.
-
-After determining the ID for the merge request to link to a visual review app, you
-can supply the ID by either:
-
-- Hard-coding it in the script tag via the data attribute `data-merge-request-id` of the app.
-- Dynamically adding the `data-merge-request-id` value during the build of the app.
-- Supplying it manually through the visual review form in the app.
-
-If the ID is missing from the `script`, the visual review tool prompts you to enter the
-merge request ID before you can provide feedback.
-
-### Authentication for Visual Reviews
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/42750#note_317271120) in GitLab 12.10.
-
-To enable visual reviews for private and internal projects, set the
-[`data-require-auth` variable](#configure-review-apps-for-visual-reviews) to `true`. When enabled,
-the user must enter a [personal access token](../../user/profile/personal_access_tokens.md)
-with `api` scope before submitting feedback.
-
-This same method can be used to require authentication for any public projects.
-
-<!--- end_remove -->

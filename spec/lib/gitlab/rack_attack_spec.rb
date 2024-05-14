@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::RackAttack, :aggregate_failures do
+RSpec.describe Gitlab::RackAttack, :aggregate_failures, feature_category: :rate_limiting do
   describe '.configure' do
     let(:fake_rack_attack) { class_double("Rack::Attack") }
     let(:fake_rack_attack_request) { class_double(Rack::Attack::Request) }

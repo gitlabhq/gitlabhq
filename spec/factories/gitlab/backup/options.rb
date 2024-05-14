@@ -38,6 +38,10 @@ FactoryBot.define do
       remote_directory { %w[daily weekly monthly quarterly upgrade].sample }
     end
 
+    trait :strategy_copy do
+      strategy { ::Backup::Options::Strategy::COPY }
+    end
+
     trait :all do
       backup_id
       previous_backup
@@ -45,6 +49,7 @@ FactoryBot.define do
       repositories_paths
       skip_repositories_paths
       remote_directory
+      strategy_copy
       skip_all
       compression_options { attributes_for(:backup_compression_options, :all) }
     end

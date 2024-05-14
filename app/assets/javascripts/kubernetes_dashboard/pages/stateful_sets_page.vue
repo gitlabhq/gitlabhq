@@ -22,13 +22,15 @@ export default {
         return (
           data?.k8sStatefulSets?.map((statefulSet) => {
             return {
-              name: statefulSet.metadata?.name,
-              namespace: statefulSet.metadata?.namespace,
+              name: statefulSet.metadata.name,
+              namespace: statefulSet.metadata.namespace,
               status: calculateStatefulSetStatus(statefulSet),
-              age: getAge(statefulSet.metadata?.creationTimestamp),
-              labels: statefulSet.metadata?.labels,
-              annotations: statefulSet.metadata?.annotations,
+              age: getAge(statefulSet.metadata.creationTimestamp),
+              labels: statefulSet.metadata.labels,
+              annotations: statefulSet.metadata.annotations,
               kind: s__('KubernetesDashboard|StatefulSet'),
+              spec: statefulSet.spec,
+              fullStatus: statefulSet.status,
             };
           }) || []
         );

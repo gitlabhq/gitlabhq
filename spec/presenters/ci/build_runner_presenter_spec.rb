@@ -66,7 +66,7 @@ RSpec.describe Ci::BuildRunnerPresenter do
     end
 
     context "with reports" do
-      Ci::JobArtifact::DEFAULT_FILE_NAMES.each do |file_type, filename|
+      Enums::Ci::JobArtifact.default_file_names.each do |file_type, filename|
         context file_type.to_s do
           let(:report) { { "#{file_type}": [filename] } }
           let(:build) { create(:ci_build, options: { artifacts: { reports: report } }) }
@@ -75,7 +75,7 @@ RSpec.describe Ci::BuildRunnerPresenter do
             {
               name: filename,
               artifact_type: :"#{file_type}",
-              artifact_format: Ci::JobArtifact::TYPE_AND_FORMAT_PAIRS.fetch(file_type),
+              artifact_format: Enums::Ci::JobArtifact.type_and_format_pairs.fetch(file_type),
               paths: [filename],
               when: 'always'
             }.compact
@@ -99,7 +99,7 @@ RSpec.describe Ci::BuildRunnerPresenter do
         {
           name: filename,
           artifact_type: coverage_format,
-          artifact_format: Ci::JobArtifact::TYPE_AND_FORMAT_PAIRS.fetch(coverage_format),
+          artifact_format: Enums::Ci::JobArtifact.type_and_format_pairs.fetch(coverage_format),
           paths: [filename],
           when: 'always'
         }
@@ -123,7 +123,7 @@ RSpec.describe Ci::BuildRunnerPresenter do
         {
           name: coverage_filename,
           artifact_type: coverage_format,
-          artifact_format: Ci::JobArtifact::TYPE_AND_FORMAT_PAIRS.fetch(coverage_format),
+          artifact_format: Enums::Ci::JobArtifact.type_and_format_pairs.fetch(coverage_format),
           paths: [coverage_filename],
           when: 'always'
         }
@@ -133,7 +133,7 @@ RSpec.describe Ci::BuildRunnerPresenter do
         {
           name: ds_filename,
           artifact_type: :dependency_scanning,
-          artifact_format: Ci::JobArtifact::TYPE_AND_FORMAT_PAIRS.fetch(:dependency_scanning),
+          artifact_format: Enums::Ci::JobArtifact.type_and_format_pairs.fetch(:dependency_scanning),
           paths: [ds_filename],
           when: 'always'
         }
@@ -218,6 +218,18 @@ RSpec.describe Ci::BuildRunnerPresenter do
 
     it 'defaults to git depth setting for the project' do
       expect(git_depth).to eq(build.project.ci_default_git_depth)
+    end
+  end
+
+  describe '#repo_object_format' do
+    let(:build) { create(:ci_build) }
+
+    subject { presenter.repo_object_format }
+
+    it 'delegates the call to #repository_object_format' do
+      expect(build.project).to receive(:repository_object_format).and_return('object_format')
+
+      is_expected.to eq 'object_format'
     end
   end
 

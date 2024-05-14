@@ -13,15 +13,11 @@ RSpec.describe Resolvers::ReleasesResolver, feature_category: :release_orchestra
   let_it_be(:release_v1) { create(:release, project: project, tag: 'v1.0.0', released_at: yesterday, created_at: tomorrow) }
   let_it_be(:release_v2) { create(:release, project: project, tag: 'v2.0.0', released_at: today,     created_at: yesterday) }
   let_it_be(:release_v3) { create(:release, project: project, tag: 'v3.0.0', released_at: tomorrow,  created_at: today) }
-  let_it_be(:developer) { create(:user) }
+  let_it_be(:developer) { create(:user, developer_of: project) }
   let_it_be(:public_user) { create(:user) }
 
   let(:args) { { sort: :released_at_desc } }
   let(:all_releases) { [release_v1, release_v2, release_v3] }
-
-  before do
-    project.add_developer(developer)
-  end
 
   describe '#resolve' do
     it_behaves_like 'releases and group releases resolver'

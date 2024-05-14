@@ -1,17 +1,32 @@
 import { shallowMount } from '@vue/test-utils';
-import NotesFilters from '~/search/sidebar/components/projects_filters.vue';
+import Vue from 'vue';
+// eslint-disable-next-line no-restricted-imports
+import Vuex from 'vuex';
+import NotesFilters from '~/search/sidebar/components/notes_filters.vue';
 import ArchivedFilter from '~/search/sidebar/components/archived_filter/index.vue';
 import FiltersTemplate from '~/search/sidebar/components/filters_template.vue';
+
+Vue.use(Vuex);
 
 describe('GlobalSearch ProjectsFilters', () => {
   let wrapper;
 
-  const findArchivedFilter = () => wrapper.findComponent(ArchivedFilter);
-  const findFiltersTemplate = () => wrapper.findComponent(FiltersTemplate);
+  const defaultGetters = {
+    showArchived: () => true,
+  };
 
   const createComponent = () => {
-    wrapper = shallowMount(NotesFilters);
+    const store = new Vuex.Store({
+      getters: defaultGetters,
+    });
+
+    wrapper = shallowMount(NotesFilters, {
+      store,
+    });
   };
+
+  const findArchivedFilter = () => wrapper.findComponent(ArchivedFilter);
+  const findFiltersTemplate = () => wrapper.findComponent(FiltersTemplate);
 
   describe('Renders correctly', () => {
     beforeEach(() => {
@@ -23,6 +38,17 @@ describe('GlobalSearch ProjectsFilters', () => {
 
     it('renders FiltersTemplate', () => {
       expect(findFiltersTemplate().exists()).toBe(true);
+    });
+  });
+
+  describe('ShowArchived getter', () => {
+    beforeEach(() => {
+      defaultGetters.showArchived = () => false;
+      createComponent();
+    });
+
+    it('hides archived filter', () => {
+      expect(findArchivedFilter().exists()).toBe(false);
     });
   });
 });

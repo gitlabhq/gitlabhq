@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 This is the API documentation for [PyPI Packages](../../user/packages/pypi_repository/index.md).
 
@@ -29,8 +29,6 @@ NOTE:
 is recommended when [FIPS mode](../../development/fips_compliance.md) is enabled.
 
 ## Download a package file from a group
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/225545) in GitLab 13.12.
 
 Download a PyPI package file. The [simple API](#group-level-simple-api-entry-point)
 usually supplies this URL.
@@ -101,8 +99,6 @@ This writes the downloaded file to `simple_index.html` in the current directory.
 
 ## Group level simple API entry point
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/225545) in GitLab 13.12.
-
 Returns the package descriptor as an HTML file:
 
 ```plaintext
@@ -142,8 +138,6 @@ curl --user <username>:<personal_access_token> "https://gitlab.example.com/api/v
 This writes the downloaded file to `simple.html` in the current directory.
 
 ## Download a package file from a project
-
-> - Introduced in GitLab 12.10.
 
 Download a PyPI package file. The [simple API](#project-level-simple-api-entry-point)
 usually supplies this URL.
@@ -214,8 +208,6 @@ This writes the downloaded file to `simple_index.html` in the current directory.
 
 ## Project-level simple API entry point
 
-> - Introduced in GitLab 12.10.
-
 Returns the package descriptor as an HTML file:
 
 ```plaintext
@@ -259,7 +251,7 @@ This writes the downloaded file to `simple.html` in the current directory.
 Upload a PyPI package:
 
 ```plaintext
-PUT projects/:id/packages/pypi
+POST projects/:id/packages/pypi
 ```
 
 | Attribute | Type | Required | Description |
@@ -270,8 +262,8 @@ PUT projects/:id/packages/pypi
 ```shell
 curl --request POST \
      --form 'content=@path/to/my.pypi.package-0.0.1.tar.gz' \
-     --form 'name=my.pypi.package'
-     --form 'version=1.3.7'
+     --form 'name=my.pypi.package' \
+     --form 'version=1.3.7' \
      --user <username>:<personal_access_token> \
      "https://gitlab.example.com/api/v4/projects/1/packages/pypi"
 ```

@@ -7,6 +7,25 @@ module Gitlab
 
       Error = Class.new(StandardError)
 
+      class ApiError < Class.new(StandardError)
+        ACCEPTABLE_ERROR_CODES = [404].freeze
+
+        attr_reader :code, :message
+
+        def initialize(message, code)
+          @code = code
+          @message = message
+        end
+
+        # In some cases, we treat error response as acceptable:
+        #
+        # A GPG key that wasn't issued by BeyondIdentity returns 404 status code
+        # but users should be able to add those GPG keys to their profile.
+        def acceptable_error?
+          ACCEPTABLE_ERROR_CODES.include?(code)
+        end
+      end
+
       attr_reader :integration
 
       def initialize(integration)
@@ -20,12 +39,12 @@ module Gitlab
         response = Gitlab::HTTP.get(API_URL, options)
         body = Gitlab::Json.parse(response.body) || {}
 
-        raise Error, body.dig('error', 'message') unless response.success?
-        raise Error, "authorization denied: #{body['message']}" unless body['authorized']
+        raise ApiError.new(body.dig('error', 'message'), response.code) unless response.success?
+        raise ApiError.new(body['message'], response.code) unless body['authorized']
 
         body
       rescue JSON::ParserError
-        raise Error, 'invalid response format'
+        raise ApiError.new('invalid response format', response.code)
       end
 
       private

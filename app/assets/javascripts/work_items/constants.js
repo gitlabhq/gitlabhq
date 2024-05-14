@@ -16,6 +16,8 @@ export const WIDGET_TYPE_NOTIFICATIONS = 'NOTIFICATIONS';
 export const WIDGET_TYPE_CURRENT_USER_TODOS = 'CURRENT_USER_TODOS';
 export const WIDGET_TYPE_LABELS = 'LABELS';
 export const WIDGET_TYPE_START_AND_DUE_DATE = 'START_AND_DUE_DATE';
+export const WIDGET_TYPE_TIME_TRACKING = 'TIME_TRACKING';
+export const WIDGET_TYPE_ROLLEDUP_DATES = 'ROLLEDUP_DATES';
 export const WIDGET_TYPE_WEIGHT = 'WEIGHT';
 export const WIDGET_TYPE_PARTICIPANTS = 'PARTICIPANTS';
 export const WIDGET_TYPE_PROGRESS = 'PROGRESS';
@@ -26,12 +28,13 @@ export const WIDGET_TYPE_NOTES = 'NOTES';
 export const WIDGET_TYPE_HEALTH_STATUS = 'HEALTH_STATUS';
 export const WIDGET_TYPE_LINKED_ITEMS = 'LINKED_ITEMS';
 export const WIDGET_TYPE_COLOR = 'COLOR';
+export const WIDGET_TYPE_DESIGNS = 'DESIGNS';
 
 export const WORK_ITEM_TYPE_ENUM_INCIDENT = 'INCIDENT';
 export const WORK_ITEM_TYPE_ENUM_ISSUE = 'ISSUE';
 export const WORK_ITEM_TYPE_ENUM_TASK = 'TASK';
 export const WORK_ITEM_TYPE_ENUM_TEST_CASE = 'TEST_CASE';
-export const WORK_ITEM_TYPE_ENUM_REQUIREMENTS = 'REQUIREMENTS';
+export const WORK_ITEM_TYPE_ENUM_REQUIREMENTS = 'REQUIREMENT';
 export const WORK_ITEM_TYPE_ENUM_OBJECTIVE = 'OBJECTIVE';
 export const WORK_ITEM_TYPE_ENUM_KEY_RESULT = 'KEY_RESULT';
 export const WORK_ITEM_TYPE_ENUM_EPIC = 'EPIC';
@@ -46,6 +49,9 @@ export const WORK_ITEM_TYPE_VALUE_KEY_RESULT = 'Key Result';
 export const WORK_ITEM_TYPE_VALUE_OBJECTIVE = 'Objective';
 
 export const WORK_ITEM_TITLE_MAX_LENGTH = 255;
+
+export const WORK_ITEM_ROUTE_NAME = 'workItem';
+export const DESIGN_ROUTE_NAME = 'design';
 
 export const i18n = {
   fetchErrorTitle: s__('WorkItem|Work item not found'),
@@ -77,6 +83,10 @@ export const I18N_WORK_ITEM_DELETE = s__('WorkItem|Delete %{workItemType}');
 export const I18N_WORK_ITEM_ARE_YOU_SURE_DELETE = s__(
   'WorkItem|Are you sure you want to delete the %{workItemType}? This action cannot be reversed.',
 );
+export const I18N_WORK_ITEM_ARE_YOU_SURE_DELETE_HIERARCHY = s__(
+  'WorkItem|Delete this %{workItemType} and release all child items? This action cannot be reversed.',
+);
+export const I18N_WORK_ITEM_CREATED = s__('WorkItem|%{workItemType} created');
 export const I18N_WORK_ITEM_DELETED = s__('WorkItem|%{workItemType} deleted');
 
 export const I18N_WORK_ITEM_FETCH_ITERATIONS_ERROR = s__(
@@ -87,6 +97,7 @@ export const I18N_WORK_ITEM_FETCH_AWARD_EMOJI_ERROR = s__(
   'WorkItem|Something went wrong while fetching work item award emojis. Please try again.',
 );
 
+export const I18N_NEW_WORK_ITEM_BUTTON_LABEL = s__('WorkItem|New %{workItemType}');
 export const I18N_WORK_ITEM_CREATE_BUTTON_LABEL = s__('WorkItem|Create %{workItemType}');
 export const I18N_WORK_ITEM_ADD_BUTTON_LABEL = s__('WorkItem|Add %{workItemType}');
 export const I18N_WORK_ITEM_ADD_MULTIPLE_BUTTON_LABEL = s__('WorkItem|Add %{workItemType}s');
@@ -218,18 +229,6 @@ export const WORK_ITEMS_TREE_TEXT_MAP = {
   },
 };
 
-export const WORK_ITEM_NAME_TO_ICON_MAP = {
-  Epic: 'epic',
-  Issue: 'issue-type-issue',
-  Task: 'issue-type-task',
-  Objective: 'issue-type-objective',
-  Incident: 'issue-type-incident',
-  // eslint-disable-next-line @gitlab/require-i18n-strings
-  'Key Result': 'issue-type-keyresult',
-  // eslint-disable-next-line @gitlab/require-i18n-strings
-  'Test Case': 'issue-type-test-case',
-};
-
 export const FORM_TYPES = {
   create: 'create',
   add: 'add',
@@ -320,8 +319,32 @@ export const SUPPORTED_PARENT_TYPE_MAP = {
   [WORK_ITEM_TYPE_VALUE_OBJECTIVE]: [WORK_ITEM_TYPE_ENUM_OBJECTIVE],
   [WORK_ITEM_TYPE_VALUE_KEY_RESULT]: [WORK_ITEM_TYPE_ENUM_OBJECTIVE],
   [WORK_ITEM_TYPE_VALUE_TASK]: [WORK_ITEM_TYPE_ENUM_ISSUE],
+  [WORK_ITEM_TYPE_VALUE_EPIC]: [WORK_ITEM_TYPE_ENUM_EPIC],
 };
 
 export const LINKED_ITEMS_ANCHOR = 'linkeditems';
 export const CHILD_ITEMS_ANCHOR = 'childitems';
 export const TASKS_ANCHOR = 'tasks';
+
+export const ISSUABLE_EPIC = 'issue-type-epic';
+
+export const EPIC_COLORS = [
+  { '#1068bf': s__('WorkItem|Blue') },
+  { '#217645': s__('WorkItem|Forest green') },
+  { '#c91c00': s__('WorkItem|Dark red') },
+  { '#9e5400': s__('WorkItem|Coffee') },
+  { '#694cc0': s__('WorkItem|Purple') },
+  { '#de198f': s__('WorkItem|Magenta') },
+  { '#2e90a5': s__('WorkItem|Teal') },
+  { '#55aafe': s__('WorkItem|Light blue') },
+  { '#4dd787': s__('WorkItem|Mint green') },
+  { '#f17763': s__('WorkItem|Rose') },
+  { '#f3ad5d': s__('WorkItem|Apricot') },
+  { '#b7a0fd': s__('WorkItem|Lavender') },
+  { '#fd8cd0': s__('WorkItem|Pink') },
+  { '#6cd3ea': s__('WorkItem|Aqua') },
+];
+
+export const DEFAULT_EPIC_COLORS = '#1068bf';
+
+export const CREATE_NEW_WORK_ITEM_MODAL = 'create_new_work_item_modal';

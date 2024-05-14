@@ -7,7 +7,9 @@ module Ci
 
       PARTITIONABLE_MODELS = %w[
         CommitStatus
+        Ci::BuildExecutionConfig
         Ci::BuildMetadata
+        Ci::BuildName
         Ci::BuildNeed
         Ci::BuildReportResult
         Ci::BuildRunnerSession

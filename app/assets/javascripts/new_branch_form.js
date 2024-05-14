@@ -1,4 +1,7 @@
 /* eslint-disable func-names, no-return-assign, @gitlab/require-i18n-strings */
+
+const NAME_ERROR_CLASS = 'gl-border-red-500';
+
 export default class NewBranchForm {
   constructor(form) {
     this.validate = this.validate.bind(this);
@@ -77,7 +80,10 @@ export default class NewBranchForm {
     const errors = this.restrictions.reduce(validator, []);
     if (errors.length > 0) {
       this.branchNameError.textContent = errors.join(', ');
+      this.name.classList.add(NAME_ERROR_CLASS);
       this.name.focus();
+    } else {
+      this.name.classList.remove(NAME_ERROR_CLASS);
     }
   }
 }

@@ -169,6 +169,65 @@ describe('common_utils', () => {
 
       document.getElementById('parent').remove();
     });
+
+    it('Scrolls element to correct height on issue page', () => {
+      jest.spyOn(window, 'scrollBy');
+      const stickyHeaderHeight = 50;
+      const topPadding = 8;
+
+      const expectedOffset = stickyHeaderHeight + topPadding;
+
+      document.body.dataset.page = 'projects:issues:show';
+      document.body.innerHTML += `
+      <div id="parent">
+        <div class="issue-sticky-header" style="position: fixed; top: 0px; height: ${stickyHeaderHeight}px;"></div>
+        <div style="height: 2000px; margin-top: ${stickyHeaderHeight}px;"></div>
+        <div id="user-content-test" style="height: 2000px;"></div>
+      </div>
+      `;
+      window.history.pushState({}, null, '#test');
+      commonUtils.handleLocationHash();
+      jest.advanceTimersByTime(1);
+
+      expectGetElementIdToHaveBeenCalledWith('test');
+      expectGetElementIdToHaveBeenCalledWith('user-content-test');
+
+      expect(window.scrollBy).toHaveBeenCalledWith(0, -1 * expectedOffset);
+
+      document.getElementById('parent').remove();
+    });
+
+    it('Scrolls element to correct height on MR page', () => {
+      jest.spyOn(window, 'scrollBy');
+      const stickyHeaderHeight = 100;
+      const fixedTabsHeight = 50;
+      const topPadding = 8;
+
+      const expectedOffset = stickyHeaderHeight + topPadding;
+
+      document.body.dataset.page = 'projects:merge_requests:show';
+
+      document.body.innerHTML += `
+      <div id="parent">
+        <div class="js-tabs-affix outer" style="height: ${fixedTabsHeight}px;"></div>
+        <div class="merge-request-sticky-header" style="position: fixed; top: 0px; height: ${stickyHeaderHeight}px;">
+          <div class="js-tabs-affix inner" style="height: ${fixedTabsHeight}px;"></div>
+        </div>
+        <div style="height: 2000px; margin-top: ${stickyHeaderHeight * 2}px;"></div>
+        <div id="user-content-test" style="height: 2000px;"></div>
+      </div>
+      `;
+      window.history.pushState({}, null, '#test');
+      commonUtils.handleLocationHash();
+      jest.advanceTimersByTime(1);
+
+      expectGetElementIdToHaveBeenCalledWith('test');
+      expectGetElementIdToHaveBeenCalledWith('user-content-test');
+
+      expect(window.scrollBy).toHaveBeenCalledWith(0, -1 * expectedOffset);
+
+      document.getElementById('parent').remove();
+    });
   });
 
   describe('historyPushState', () => {
@@ -303,16 +362,12 @@ describe('common_utils', () => {
   describe('insertText', () => {
     let textArea;
 
-    beforeAll(() => {
+    beforeEach(() => {
       textArea = document.createElement('textarea');
       document.querySelector('body').appendChild(textArea);
       textArea.value = 'two';
       textArea.setSelectionRange(0, 0);
       textArea.focus();
-    });
-
-    afterAll(() => {
-      textArea.parentNode.removeChild(textArea);
     });
 
     describe('using execCommand', () => {
@@ -332,6 +387,14 @@ describe('common_utils', () => {
         commonUtils.insertText(textArea, '');
 
         expect(document.execCommand).toHaveBeenCalledWith('delete');
+      });
+
+      // It's not clear when this actually happens but it has been observed
+      // in the wild. Probably related to the very large `insertMarkdownText` function.
+      it('does nothing if no selection', () => {
+        commonUtils.insertText(textArea, '');
+
+        expect(document.execCommand).not.toHaveBeenCalled();
       });
     });
 

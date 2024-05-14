@@ -18,6 +18,7 @@ RSpec.describe 'Project > Settings > Packages and registries > Container registr
 
     sign_in(user)
     stub_container_registry_config(enabled: container_registry_enabled)
+    allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(true)
   end
 
   context 'as owner', :js do
@@ -33,9 +34,9 @@ RSpec.describe 'Project > Settings > Packages and registries > Container registr
     it 'shows available section' do
       subject
 
-      expect(find('.breadcrumbs')).to have_content('Cleanup policies')
+      expect(find_by_testid('breadcrumb-links')).to have_content('Cleanup policies')
 
-      section = find('[data-testid="container-expiration-policy-project-settings"]')
+      section = find_by_testid('container-expiration-policy-project-settings')
       expect(section).to have_text 'Cleanup policies'
     end
 
@@ -44,21 +45,21 @@ RSpec.describe 'Project > Settings > Packages and registries > Container registr
 
       wait_for_requests
 
-      expect(page).to be_axe_clean.within('[data-testid="container-expiration-policy-project-settings"]')
-                                  .skipping :'link-in-text-block', :'heading-order'
+      expect(page).to be_axe_clean.within('[data-testid="container-expiration-policy-project-settings"]') # rubocop:todo Capybara/TestidFinders -- Doesn't cover use case, see https://gitlab.com/gitlab-org/gitlab/-/issues/442224
+                                  .skipping :'link-in-text-block'
     end
 
     it 'saves cleanup policy submit the form' do
       subject
 
-      within '[data-testid="container-expiration-policy-project-settings"]' do
+      within_testid 'container-expiration-policy-project-settings' do
         select('Every day', from: 'Run cleanup')
         select('50 tags per image name', from: 'Keep the most recent:')
         fill_in('Keep tags matching:', with: 'stable')
         select('7 days', from: 'Remove tags older than:')
         fill_in('Remove tags matching:', with: '.*-production')
 
-        submit_button = find('[data-testid="save-button"')
+        submit_button = find_by_testid('save-button')
         expect(submit_button).not_to be_disabled
         submit_button.click
       end
@@ -70,10 +71,10 @@ RSpec.describe 'Project > Settings > Packages and registries > Container registr
     it 'does not save cleanup policy submit form with invalid regex' do
       subject
 
-      within '[data-testid="container-expiration-policy-project-settings"]' do
+      within_testid 'container-expiration-policy-project-settings' do
         fill_in('Remove tags matching:', with: '*-production')
 
-        submit_button = find('[data-testid="save-button"')
+        submit_button = find_by_testid('save-button')
         expect(submit_button).not_to be_disabled
         submit_button.click
       end
@@ -95,8 +96,8 @@ RSpec.describe 'Project > Settings > Packages and registries > Container registr
       it 'displays the related section' do
         subject
 
-        within '[data-testid="container-expiration-policy-project-settings"]' do
-          expect(find('[data-testid="enable-toggle"]'))
+        within_testid 'container-expiration-policy-project-settings' do
+          expect(find_by_testid('enable-toggle'))
             .to have_content('Disabled - Tags will not be automatically deleted.')
         end
       end
@@ -110,7 +111,7 @@ RSpec.describe 'Project > Settings > Packages and registries > Container registr
       it 'does not display the related section' do
         subject
 
-        within '[data-testid="container-expiration-policy-project-settings"]' do
+        within_testid 'container-expiration-policy-project-settings' do
           expect(find('.gl-alert-title')).to have_content('Cleanup policy for tags is disabled')
         end
       end

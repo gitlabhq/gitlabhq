@@ -18,12 +18,6 @@ FactoryBot.define do
 
       designs_count { 0 }
       importing { true }
-      imported { false }
-    end
-
-    trait :imported do
-      importing { false }
-      imported { true }
     end
 
     after(:build) do |version, evaluator|

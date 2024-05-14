@@ -107,6 +107,7 @@ module IntegrationsHelper
   def integration_form_data(integration, project: nil, group: nil)
     form_data = {
       id: integration.id,
+      project_id: integration.project_id,
       show_active: integration.show_active_box?.to_s,
       activated: (integration.active || (integration.new_record? && integration.activate_disabled_reason.nil?)).to_s,
       activate_disabled: integration.activate_disabled_reason.present?.to_s,
@@ -137,7 +138,7 @@ module IntegrationsHelper
     end
 
     if integration.is_a?(::Integrations::GitlabSlackApplication)
-      form_data[:upgrade_slack_url] = add_to_slack_link(project, slack_app_id)
+      form_data[:upgrade_slack_url] = add_to_slack_link(integration.parent, slack_app_id)
       form_data[:should_upgrade_slack] = integration.upgrade_needed?.to_s
     end
 
@@ -212,21 +213,36 @@ module IntegrationsHelper
       wiki_page_events: s_('Webhooks|Wiki page events'),
       deployment_events: s_('Webhooks|Deployment events'),
       feature_flag_events: s_('Webhooks|Feature flag events'),
-      releases_events: s_('Webhooks|Releases events')
+      releases_events: s_('Webhooks|Releases events'),
+      resource_access_token_events: s_('Webhooks|Project or group access token events')
     }
 
     event_i18n_map[event] || event.to_s.humanize
   end
 
-  def add_to_slack_link(project, slack_app_id)
+  def add_to_slack_link(parent, slack_app_id)
     query = {
       scope: SlackIntegration::SCOPES.join(','),
       client_id: slack_app_id,
-      redirect_uri: slack_auth_project_settings_slack_url(project),
+      redirect_uri: add_to_slack_link_redirect_url(parent),
       state: form_authenticity_token
     }
 
-    "#{::Projects::SlackApplicationInstallService::SLACK_AUTHORIZE_URL}?#{query.to_query}"
+    Gitlab::Utils.add_url_parameters(
+      Integrations::SlackInstallation::BaseService::SLACK_AUTHORIZE_URL,
+      query
+    )
+  end
+
+  def slack_integration_destroy_path(parent)
+    case parent
+    when Project
+      project_settings_slack_path(parent)
+    when Group
+      group_settings_slack_path(parent)
+    when nil
+      admin_application_settings_slack_path
+    end
   end
 
   def gitlab_slack_application_data(projects)
@@ -243,6 +259,17 @@ module IntegrationsHelper
   extend self
 
   private
+
+  def add_to_slack_link_redirect_url(parent)
+    case parent
+    when Project
+      slack_auth_project_settings_slack_url(parent)
+    when Group
+      slack_auth_group_settings_slack_url(parent)
+    when nil
+      slack_auth_admin_application_settings_slack_url
+    end
+  end
 
   def jira_integration_event_description(event)
     case event

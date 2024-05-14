@@ -8,9 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340920) in GitLab 14.5.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Interact with project topics using the REST API.
 
@@ -204,8 +202,6 @@ curl --request PUT \
 
 ### Remove a topic avatar
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348148) in GitLab 14.6.
-
 To remove a topic avatar, use a blank value for the `avatar` attribute.
 
 Example request:
@@ -218,8 +214,6 @@ curl --request PUT \
 ```
 
 ## Delete a project topic
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80725) in GitLab 14.9.
 
 You must be an administrator to delete a project topic.
 When you delete a project topic, you also delete the topic assignment for projects.

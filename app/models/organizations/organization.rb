@@ -2,6 +2,10 @@
 
 module Organizations
   class Organization < MainClusterwide::ApplicationRecord
+    include Gitlab::Utils::StrongMemoize
+    include Gitlab::SQL::Pattern
+    include Gitlab::VisibilityLevel
+
     DEFAULT_ORGANIZATION_ID = 1
 
     scope :without_default, -> { where.not(id: DEFAULT_ORGANIZATION_ID) }
@@ -35,8 +39,21 @@ module Organizations
     accepts_nested_attributes_for :organization_detail
     accepts_nested_attributes_for :organization_users
 
+    def self.search(query, use_minimum_char_limit: true)
+      fuzzy_search(query, [:name, :path], use_minimum_char_limit: use_minimum_char_limit)
+    end
+
     def self.default_organization
       find_by(id: DEFAULT_ORGANIZATION_ID)
+    end
+
+    def self.default?(id)
+      id == DEFAULT_ORGANIZATION_ID
+    end
+
+    # Required for Gitlab::VisibilityLevel module
+    def visibility_level_field
+      :visibility_level
     end
 
     def organization_detail
@@ -44,12 +61,19 @@ module Organizations
     end
 
     def default?
-      id == DEFAULT_ORGANIZATION_ID
+      self.class.default?(id)
     end
 
     def to_param
       path
     end
+
+    def owner_user_ids
+      # rubocop:disable Database/AvoidUsingPluckWithoutLimit -- few owners, and not used with IN clause
+      organization_users.owners.pluck(:user_id)
+      # rubocop:enable Database/AvoidUsingPluckWithoutLimit
+    end
+    strong_memoize_attr :owner_user_ids
 
     def user?(user)
       organization_users.exists?(user: user)

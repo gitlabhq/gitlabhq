@@ -7,9 +7,9 @@ module Mutations
         graphql_name 'PipelineRetry'
 
         field :pipeline,
-              Types::Ci::PipelineType,
-              null: true,
-              description: 'Pipeline after mutation.'
+          Types::Ci::PipelineType,
+          null: true,
+          description: 'Pipeline after mutation.'
 
         authorize :update_pipeline
 

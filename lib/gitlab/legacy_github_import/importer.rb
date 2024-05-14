@@ -29,7 +29,7 @@ module Gitlab
         # Gitea plan to be GitHub compliant
         if project.gitea_import?
           uri = URI.parse(project.import_url)
-          host = "#{uri.scheme}://#{uri.host}:#{uri.port}#{uri.path}".sub(%r{/?[\w-]+/[\w-]+\.git\z}, '')
+          host = "#{uri.scheme}://#{uri.host}:#{uri.port}#{uri.path}".sub(%r{/?[\w.-]+/[\w.-]+\.git\z}, '')
           opts = {
             host: host,
             api_version: 'v1'
@@ -247,7 +247,7 @@ module Gitlab
 
             issuable.notes.create!(comment.attributes)
           rescue StandardError => e
-            errors << { type: :comment, url: Gitlab::UrlSanitizer.sanitize(raw[:url]), errors: e.message }
+            errors << { type: :comment, url: Gitlab::UrlSanitizer.sanitize(raw[:html_url]), errors: e.message }
           end
         end
       end

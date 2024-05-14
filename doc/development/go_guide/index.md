@@ -109,15 +109,21 @@ projects:
 
 ### Automatic linting
 
-All Go projects should include these GitLab CI/CD jobs:
+WARNING:
+The use of `registry.gitlab.com/gitlab-org/gitlab-build-images:golangci-lint-alpine` has been [deprecated as of 16.10](https://gitlab.com/gitlab-org/gitlab-build-images/-/issues/131).
+
+Use the upstream version of [golangci-lint](https://golangci-lint.run/).
+See the list of linters [enabled/disabled by default](https://golangci-lint.run/usage/linters/#enabled-by-default).
+
+Go projects should include this GitLab CI/CD job:
 
 ```yaml
+variables:
+  GOLANGCI_LINT_VERSION: 'v1.56.2'
 lint:
-  image: registry.gitlab.com/gitlab-org/gitlab-build-images:golangci-lint-alpine
+  image: golangci/golangci-lint:$GOLANGCI_LINT_VERSION
   stage: test
   script:
-    # Use default .golangci.yml file from the image if one is not present in the project root.
-    - '[ -e .golangci.yml ] || cp /golangci/.golangci.yml .'
     # Write the code coverage report to gl-code-quality-report.json
     # and print linting issues to stdout in the format: path/to/file:line description
     # remove `--issues-exit-code 0` or set to non-zero to fail the job if linting issues are detected
@@ -372,7 +378,7 @@ Every binary ideally must have structured (JSON) logging in place as it helps
 with searching and filtering the logs. LabKit provides an abstraction over [Logrus](https://github.com/sirupsen/logrus).
 We use structured logging in JSON format, because all our infrastructure assumes that. When using
 [Logrus](https://github.com/sirupsen/logrus) you can turn on structured
-logging by using the build in [JSON formatter](https://github.com/sirupsen/logrus#formatters). This follows the
+logging by using the built-in [JSON formatter](https://github.com/sirupsen/logrus#formatters). This follows the
 same logging type we use in our [Ruby applications](../logging.md#use-structured-json-logging).
 
 #### How to use Logrus

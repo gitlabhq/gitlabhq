@@ -6,17 +6,11 @@ RSpec.describe Issues::BuildService, feature_category: :team_planning do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:developer) { create(:user) }
-  let_it_be(:reporter) { create(:user) }
-  let_it_be(:guest) { create(:user) }
+  let_it_be(:developer) { create(:user, developer_of: project) }
+  let_it_be(:reporter) { create(:user, reporter_of: project) }
+  let_it_be(:guest) { create(:user, guest_of: project) }
 
   let(:user) { developer }
-
-  before_all do
-    project.add_developer(developer)
-    project.add_reporter(reporter)
-    project.add_guest(guest)
-  end
 
   def build_issue(issue_params = {})
     described_class.new(container: project, current_user: user, params: issue_params).execute
@@ -68,12 +62,12 @@ RSpec.describe Issues::BuildService, feature_category: :team_planning do
                     "with a blockquote\n"\
                     "> That has a quote\n"\
                     ">>>\n"
-        note_result = "    > This is a string\n"\
-                      "    > \n"\
-                      "    > \n"\
-                      "    > > with a blockquote\n"\
-                      "    > > > That has a quote\n"\
-                      "    > \n"
+        note_result = "    > This is a string\n    "\
+                      "> \n    "\
+                      "> >>>\n    "\
+                      "> with a blockquote\n    "\
+                      "> > That has a quote\n    "\
+                      "> >>>\n"
         discussion = create(:diff_note_on_merge_request, note: note_text).to_discussion
         expect(service.item_for_discussion(discussion)).to include(note_result)
       end

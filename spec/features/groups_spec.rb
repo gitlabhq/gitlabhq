@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Group', feature_category: :groups_and_projects do
-  let(:user) { create(:user) }
+  let_it_be(:user) { create(:user) }
 
   before do
     sign_in(user)
@@ -34,6 +34,33 @@ RSpec.describe 'Group', feature_category: :groups_and_projects do
         expect(group.visibility_level).to eq(Gitlab::VisibilityLevel::PUBLIC)
         expect(page).to have_current_path(group_path(group), ignore_query: true)
         expect(page).to have_selector '.visibility-icon [data-testid="earth-icon"]'
+      end
+
+      context 'with current organization setting in middleware' do
+        let_it_be(:another_organization) { create(:organization, users: [user]) }
+
+        before_all do
+          create(:organization, :default)
+        end
+
+        context 'for setting from the header' do
+          it 'sets the organization to another organization', :feature do
+            fill_in 'Group name', with: 'test-group'
+
+            inspect_requests(
+              inject_headers: {
+                ::Organizations::ORGANIZATION_HTTP_HEADER.sub(/^HTTP_/, '') => another_organization.id.to_s
+              }
+            ) do
+              click_button 'Create group'
+            end
+
+            group = Group.find_by(name: 'test-group')
+
+            expect(group.organization).to eq(another_organization)
+            expect(page).to have_current_path(group_path(group), ignore_query: true)
+          end
+        end
       end
     end
 
@@ -221,7 +248,7 @@ RSpec.describe 'Group', feature_category: :groups_and_projects do
     let_it_be(:group) { create(:group, path: 'foo') }
 
     context 'as admin' do
-      let(:user) { create(:admin) }
+      let(:user) { create(:admin, :without_default_org) }
 
       before do
         visit new_group_path(parent_id: group.id, anchor: 'create-group-pane')
@@ -375,19 +402,19 @@ RSpec.describe 'Group', feature_category: :groups_and_projects do
       expect(page).to have_content 'successfully updated'
       expect(find('#group_name').value).to eq(new_name)
 
-      page.within ".breadcrumbs" do
+      within_testid "breadcrumb-links" do
         expect(page).to have_content new_name
       end
     end
 
     it 'focuses confirmation field on remove group' do
-      click_button('Remove group')
+      click_button('Delete group')
 
       expect(page).to have_selector '#confirm_name_input:focus'
     end
 
     it 'removes group', :sidekiq_might_not_need_inline do
-      expect { remove_with_confirm('Remove group', group.path) }.to change { Group.count }.by(-1)
+      expect { remove_with_confirm('Delete group', group.path) }.to change { Group.count }.by(-1)
       expect(group.members.all.count).to be_zero
       expect(page).to have_content "scheduled for deletion"
     end
@@ -553,6 +580,14 @@ RSpec.describe 'Group', feature_category: :groups_and_projects do
 
           within_testid 'group-buttons' do
             expect(page).not_to have_link('New project')
+          end
+        end
+
+        it 'does not display the "New subgroup" button' do
+          visit group_path(group)
+
+          within_testid 'group-buttons' do
+            expect(page).not_to have_link('New subgroup')
           end
         end
       end

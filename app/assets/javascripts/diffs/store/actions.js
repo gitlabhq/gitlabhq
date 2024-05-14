@@ -17,7 +17,6 @@ import { sortTree } from '~/ide/stores/utils';
 import { containsSensitiveToken, confirmSensitiveAction } from '~/lib/utils/secret_detection';
 import { isCollapsed } from '~/diffs/utils/diff_file';
 import {
-  PARALLEL_DIFF_VIEW_TYPE,
   INLINE_DIFF_VIEW_TYPE,
   DIFF_VIEW_COOKIE_NAME,
   MR_TREE_SHOW_KEY,
@@ -437,6 +436,8 @@ export const assignDiscussionsToDiff = (
 };
 
 export const removeDiscussionsFromDiff = ({ commit }, removeDiscussion) => {
+  if (!removeDiscussion.diff_file) return;
+
   const {
     diff_file: { file_hash: fileHash },
     line_code: lineCode,
@@ -473,24 +474,19 @@ export const renderFileForDiscussionId = ({ commit, rootState, state }, discussi
   }
 };
 
-export const setInlineDiffViewType = ({ commit }) => {
-  commit(types.SET_DIFF_VIEW_TYPE, INLINE_DIFF_VIEW_TYPE);
+export const setDiffViewType = ({ commit }, diffViewType) => {
+  commit(types.SET_DIFF_VIEW_TYPE, diffViewType);
 
-  setCookie(DIFF_VIEW_COOKIE_NAME, INLINE_DIFF_VIEW_TYPE);
-  const url = mergeUrlParams({ view: INLINE_DIFF_VIEW_TYPE }, window.location.href);
+  setCookie(DIFF_VIEW_COOKIE_NAME, diffViewType);
+  const url = mergeUrlParams({ view: diffViewType }, window.location.href);
   historyPushState(url);
 
-  queueRedisHllEvents([TRACKING_CLICK_DIFF_VIEW_SETTING, TRACKING_DIFF_VIEW_INLINE]);
-};
-
-export const setParallelDiffViewType = ({ commit }) => {
-  commit(types.SET_DIFF_VIEW_TYPE, PARALLEL_DIFF_VIEW_TYPE);
-
-  setCookie(DIFF_VIEW_COOKIE_NAME, PARALLEL_DIFF_VIEW_TYPE);
-  const url = mergeUrlParams({ view: PARALLEL_DIFF_VIEW_TYPE }, window.location.href);
-  historyPushState(url);
-
-  queueRedisHllEvents([TRACKING_CLICK_DIFF_VIEW_SETTING, TRACKING_DIFF_VIEW_PARALLEL]);
+  queueRedisHllEvents([
+    TRACKING_CLICK_DIFF_VIEW_SETTING,
+    diffViewType === INLINE_DIFF_VIEW_TYPE
+      ? TRACKING_DIFF_VIEW_INLINE
+      : TRACKING_DIFF_VIEW_PARALLEL,
+  ]);
 };
 
 export const showCommentForm = ({ commit }, { lineCode, fileHash }) => {
@@ -586,29 +582,10 @@ export const loadCollapsedDiff = ({ commit, getters, state }, { file, params = {
 
 /**
  * Toggles the file discussions after user clicked on the toggle discussions button.
- *
- * Gets the discussions for the provided diff.
- *
- * If all discussions are expanded, it will collapse all of them
- * If all discussions are collapsed, it will expand all of them
- * If some discussions are open and others closed, it will expand the closed ones.
- *
- * @param {Object} diff
+ * @param {Object} discussion
  */
-export const toggleFileDiscussions = ({ getters, dispatch }, diff) => {
-  const discussions = getters.getDiffFileDiscussions(diff);
-  const shouldCloseAll = getters.diffHasAllExpandedDiscussions(diff);
-  const shouldExpandAll = getters.diffHasAllCollapsedDiscussions(diff);
-
-  discussions.forEach((discussion) => {
-    const data = { discussionId: discussion.id };
-
-    if (shouldCloseAll) {
-      dispatch('collapseDiscussion', data, { root: true });
-    } else if (shouldExpandAll || (!shouldCloseAll && !shouldExpandAll && !discussion.expanded)) {
-      dispatch('expandDiscussion', data, { root: true });
-    }
-  });
+export const toggleFileDiscussion = ({ commit }, discussion) => {
+  commit(types.TOGGLE_FILE_DISCUSSION_EXPAND, discussion);
 };
 
 export const toggleFileDiscussionWrappers = ({ commit }, diff) => {
@@ -1115,4 +1092,8 @@ export const unpinFile = ({ getters, commit }) => {
   newUrl.searchParams.delete('pin');
   newUrl.hash = '';
   window.history.replaceState(null, undefined, newUrl);
+};
+
+export const toggleAllDiffDiscussions = ({ commit, getters }) => {
+  commit(types.SET_EXPAND_ALL_DIFF_DISCUSSIONS, !getters.allDiffDiscussionsExpanded);
 };

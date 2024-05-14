@@ -146,6 +146,14 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
         execute_service
       end
 
+      it 'tracks included catalog component usage' do
+        expect_next_instance_of(Gitlab::Ci::Pipeline::Chain::ComponentUsage) do |instance|
+          expect(instance).to receive(:perform!)
+        end
+
+        execute_service
+      end
+
       context 'when merge requests already exist for this source branch' do
         let!(:merge_request_1) do
           create(:merge_request, source_branch: 'feature', target_branch: "master", source_project: project)
@@ -306,7 +314,7 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
 
           context 'when only interruptible builds are running' do
             context 'when build marked explicitly by interruptible is running' do
-              it 'cancels running outdated pipelines', :sidekiq_might_not_need_inline do
+              it 'cancels running outdated pipelines', :sidekiq_inline do
                 pipeline_on_previous_commit
                   .builds
                   .find_by_name('build_1_2')
@@ -320,7 +328,7 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
             end
 
             context 'when build that is not marked as interruptible is running' do
-              it 'cancels running outdated pipelines', :sidekiq_might_not_need_inline do
+              it 'cancels running outdated pipelines', :sidekiq_inline do
                 build_2_1 = pipeline_on_previous_commit
                   .builds.find_by_name('build_2_1')
 
@@ -463,7 +471,7 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
         it 'pull it from Auto-DevOps' do
           pipeline = execute_service.payload
           expect(pipeline).to be_auto_devops_source
-          expect(pipeline.builds.map(&:name)).to match_array(%w[brakeman-sast build code_quality container_scanning secret_detection semgrep-sast test])
+          expect(pipeline.builds.map(&:name)).to match_array(%w[build code_quality container_scanning secret_detection semgrep-sast test])
         end
       end
 

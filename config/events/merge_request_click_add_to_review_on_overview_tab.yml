@@ -1,6 +1,6 @@
 ---
 description: User clicks the "Add to review" button on the Merge Request Overview tab
-category: InternalEventTracking
+internal_events: true
 action: merge_request_click_add_to_review_on_overview_tab
 identifiers:
 - project

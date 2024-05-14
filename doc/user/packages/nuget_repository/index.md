@@ -8,11 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/20050) in GitLab 12.8.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) from GitLab Premium to GitLab Free in 13.3.
-> - Symbol package support [added](https://gitlab.com/gitlab-org/gitlab/-/issues/262081) in GitLab 14.1.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Publish NuGet packages in your project's package registry. Then, install the
 packages whenever you need to use them as a dependency.
@@ -29,8 +25,6 @@ clients use, see the [NuGet API documentation](../../../api/packages/nuget.md).
 Learn how to [install NuGet](../workflows/build_packages.md#nuget).
 
 ## Use the GitLab endpoint for NuGet Packages
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36423) group-level endpoint in GitLab 13.8.
 
 To use the GitLab endpoint for NuGet Packages, choose an option:
 
@@ -376,8 +370,6 @@ dotnet nuget push MyPackage.1.0.0.nupkg --source https://gitlab.example.com/api/
 
 ### Publish a NuGet package by using CI/CD
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36424) in GitLab 13.3.
-
 If you're using NuGet with GitLab CI/CD, a CI job token can be used instead of a
 personal access token or deploy token. The token inherits the permissions of the
 user that generates the pipeline.
@@ -440,6 +432,7 @@ the existing package is overwritten.
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/293748) in GitLab 16.3 [with a flag](../../../administration/feature_flags.md) named `nuget_duplicates_option`. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/419078) in GitLab 16.6. Feature flag `nuget_duplicates_option` removed.
+> - Required role [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/370471) from Maintainer to Owner in GitLab 17.0.
 
 To prevent users from publishing duplicate NuGet packages, you can use the [GraphQl API](../../../api/graphql/reference/index.md#packagesettings) or the UI.
 
@@ -581,8 +574,6 @@ nuget delete MyPackage 1.0.0 -Source gitlab -ApiKey <gitlab_personal_access_toke
 ```
 
 ## Symbol packages
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/262081) in GitLab 14.1.
 
 If you push a `.nupkg`, symbol package files in the `.snupkg` format are uploaded automatically. You
 can also push them manually:

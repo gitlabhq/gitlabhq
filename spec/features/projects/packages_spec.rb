@@ -49,8 +49,8 @@ RSpec.describe 'Packages', feature_category: :package_registry do
         let_it_be(:package) { create(:package, project: project) }
 
         it 'allows you to delete a package' do
-          find('[data-testid="delete-dropdown"]').click
-          find('[data-testid="action-delete"]').click
+          find_by_testid('delete-dropdown').click
+          find_by_testid('action-delete').click
           click_button('Permanently delete')
 
           expect(page).to have_content 'Package deleted successfully'
@@ -61,6 +61,13 @@ RSpec.describe 'Packages', feature_category: :package_registry do
       it_behaves_like 'shared package sorting' do
         let_it_be(:package_one) { maven_package }
         let_it_be(:package_two) { npm_package }
+      end
+
+      context 'filtering' do
+        it_behaves_like 'shared package filtering' do
+          let_it_be(:package_one) { maven_package }
+          let_it_be(:package_two) { npm_package }
+        end
       end
     end
 

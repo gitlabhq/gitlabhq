@@ -18,7 +18,8 @@ module Projects::ProjectMembersHelper
 
   private
 
-  def project_members_app_data(project, members:, invited:, access_requests:, include_relations:, search:)
+  def project_members_app_data(
+    project, members:, invited:, access_requests:, include_relations:, search:, pending_members:) # rubocop:disable Lint/UnusedMethodArgument -- Argument used in EE
     {
       user: project_members_list_data(project, members, { param_name: :page, params: { search_groups: nil } }),
       group: project_group_links_list_data(project, include_relations, search),

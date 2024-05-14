@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 To protect against the risk of data loss and exposure, GitLab administrators can now use outbound request filtering controls to restrict certain outbound requests made by the GitLab instance.
 
@@ -111,8 +111,6 @@ rules.
 
 ## Allow outbound requests to certain IP addresses and domains
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/44496) in GitLab 12.2.
-
 Prerequisites:
 
 - You must have administrator access to the instance.
@@ -176,3 +174,24 @@ is blocked.
 
 To work around this problem, add `customers.gitlab.com:443` to the
 [allowlist](#allow-outbound-requests-to-certain-ip-addresses-and-domains).
+
+### GitLab documentation is blocked
+
+When you [filter requests](#filter-requests), you might get an error that states `Help page documentation base url is blocked: Requests to hosts and IP addresses not on the Allow List are denied`.
+To work around this error:
+
+1. Revert the change so the error message `Help page documentation base url is blocked` does not appear anymore.
+1. Add `docs.gitlab.com` , or [the redirect help documentation pages URL](../administration/settings/help_page.md#redirect-help-pages) to the [allowlist](#allow-outbound-requests-to-certain-ip-addresses-and-domains).
+1. Select **Save Changes**.
+
+### GitLab Duo functionality is blocked
+
+When you [filter requests](#filter-requests), you might see `401` errors when trying to use [GitLab Duo features](../user/ai_features.md).
+
+This error can occur when outbound requests to the GitLab cloud server are not allowed. To work around this error:
+
+1. Add `https://cloud.gitlab.com:443` to the [allowlist](#allow-outbound-requests-to-certain-ip-addresses-and-domains).
+1. Select **Save Changes**.
+1. After GitLab has access to the [cloud server](../user/ai_features.md), [manually sychronize your license](../subscriptions/self_managed/index.md#manually-synchronize-your-subscription-details)
+
+For more information, see the [GitLab Duo Code Suggestions troubleshooting documentation](../user/project/repository/code_suggestions/troubleshooting.md).

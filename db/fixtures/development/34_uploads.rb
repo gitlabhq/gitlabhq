@@ -1,4 +1,4 @@
-# frozen_string_literal: true 
+# frozen_string_literal: true
 
 # This seeder seeds comments as well, because uploads are not relevant by
 # themselves
@@ -24,7 +24,9 @@ Gitlab::Seeder.quiet do
         note: "Seeded upload: #{uploader.to_h[:markdown]}",
       }
 
-      Notes::CreateService.new(project, user, note_params).execute
+      Gitlab::ExclusiveLease.skipping_transaction_check do
+        Notes::CreateService.new(project, user, note_params).execute
+      end
       print '.'
     end
   end
@@ -47,7 +49,9 @@ Gitlab::Seeder.quiet do
         note: "Seeded upload: #{uploader.to_h[:markdown]}",
       }
 
-      Notes::CreateService.new(project, user, note_params).execute
+      Gitlab::ExclusiveLease.skipping_transaction_check do
+        Notes::CreateService.new(project, user, note_params).execute
+      end
       print '.'
     end
   end

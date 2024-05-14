@@ -2,13 +2,14 @@
 stage: Create
 group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: "Understand how to read the changes proposed in a merge request."
 ---
 
 # Changes in merge requests
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 A [merge request](index.md) proposes a set of changes to files in a branch in your repository. These
 changes are shown as a _diff_ (difference) between the current state and the proposed
@@ -46,6 +47,18 @@ The diff also includes navigation and comment aids to the left of the file, in t
     a line number, then select **Copy link address**.
   - To highlight a line, select the line number.
 
+## Show a list of changed files
+
+Use the **file browser** to view a list of files changed in a merge request:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Code > Merge requests** and find your merge request.
+1. Below the merge request title, select **Changes**.
+1. Select **Show file browser** (**{file-tree}**) or press <kbd>F</kbd> to show
+   the file tree.
+   - For a tree view that shows nesting, select **Tree view** (**{file-tree}**).
+   - For a file list without nesting, select **List view** (**{list-bulleted}**).
+
 ## Show all changes in a merge request
 
 To view the diff of changes included in a merge request:
@@ -65,15 +78,11 @@ Files with many changes are collapsed to improve performance. GitLab displays th
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140180) in GitLab 16.8 [with a flag](../../../administration/feature_flags.md) named `collapse_generated_diff_files`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available,
-an administrator can [enable the feature flag](../../../administration/feature_flags.md)
-named `collapse_generated_diff_files`.
-On GitLab.com, this feature is not available.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145100) in GitLab 16.10.
+> - `generated_file` [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148478) in GitLab 16.11. Feature flag `collapse_generated_diff_files` removed.
 
 To help reviewers focus on the files needed to perform a code review, GitLab collapses
 several common types of generated files. These files are collapsed by default, because
@@ -86,9 +95,8 @@ they are unlikely to require code reviews:
 1. Source map reference files.
 1. Generated Go files, including the generated files by protocol buffer compiler.
 
-If you want to automatically collapse additional files or file types, you can use
-the `gitlab-generated` attribute, which marks or unmarks certain files/paths as generated. See [overriding syntax highlighting](../highlighting.md#override-syntax-highlighting-for-a-file-type) for more
-detail on how to use override attributes.
+To mark a file or path as generated, set the `gitlab-generated` attribute for it
+in your [`.gitattributes` file](../git_attributes.md).
 
 #### View a collapsed file
 
@@ -138,8 +146,8 @@ To temporarily change your viewing preferences for a specific merge request:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code > Merge requests** and find your merge request.
 1. Below the merge request title, select **Changes**.
-1. Select **Preferences** (**{settings}**).
-1. Select or clear the **Show one file at a time** checkbox.
+1. Select **Preferences** (**{preferences}**).
+1. Select or clear **Show one file at a time**.
 
 This change overrides your choice in your user preferences. It persists until you
 clear your browser's cookies or change this behavior again.
@@ -159,34 +167,35 @@ merge requests. To view other changed files, either:
 - Scroll to the end of the file and select either **Prev** or **Next**.
 - Select **Show file browser** (**{file-tree}**) and select another file to view.
 
-## Compare changes inline
+## Compare changes
 
-You can view the changes inline:
+You can view the changes in a merge request either:
 
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Merge requests** and find your merge request.
-1. Below the title, select **Changes**.
-1. Select **Preferences** (**{settings}**).
-1. In the **Compare changes** area, select **Inline**.
+- Inline, which shows the changes vertically. The old version of a line is shown
+  first, with the new version shown directly below it.
+  Inline mode is often better for changes to single lines.
+- Side-by-side, which shows the old and new versions of lines in separate columns.
+  Side-by-side mode is often better for changes affecting large numbers of sequential lines.
 
-The changes are displayed after the original text.
-
-![inline changes](img/changes-inline_v14_8.png)
-
-## Compare changes side-by-side
-
-Depending on the length of the changes in your merge request, you might find it
-easier to view the changes inline, or side-by-side:
+To change how a merge request shows changed lines:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code > Merge requests** and find your merge request.
 1. Below the title, select **Changes**.
-1. Select **Preferences** (**{settings}**).
-1. In the **Compare changes** area, select **Side-by-side**.
+1. Select **Preferences** (**{preferences}**). Select either **Side-by-side** or **Inline**.
+   This example shows how the same change is rendered in both inline and side-by-side mode:
 
-The changes are displayed across from one another.
+   ::Tabs
 
-![side-by-side changes](img/changes-sidebyside_v14_8.png)
+   :::TabTitle Inline changes
+
+   ![inline changes](img/changes-inline_v14_8.png)
+
+   :::TabTitle Side-by-side changes
+
+   ![side-by-side changes](img/changes-sidebyside_v14_8.png)
+
+   ::EndTabs
 
 ## Expand or collapse comments
 
@@ -216,15 +225,12 @@ a merge request. You can choose to hide or show whitespace changes:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code > Merge requests** and find your merge request.
 1. Below the title, select **Changes**.
-1. Before the list of changed files, select **Preferences** (**{settings}**).
-1. Select or clear the **Show whitespace changes** checkbox:
+1. Before the list of changed files, select **Preferences** (**{preferences}**).
+1. Select or clear **Show whitespace changes**:
 
    ![MR diff](img/merge_request_diff_v14_2.png)
 
 ## Mark files as viewed
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/51513) in GitLab 13.9 [with a flag](../../../administration/feature_flags.md) named `local_file_reviews`. Enabled by default.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/296674) in GitLab 14.3.
 
 When reviewing a merge request with many files multiple times, you can ignore files
 you've already reviewed. To hide files that haven't changed since your last review:
@@ -241,7 +247,6 @@ Files marked as viewed are not shown to you again unless either:
 
 ## Show merge request conflicts in diff
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/232484) in GitLab 13.5 [with a flag](../../../administration/feature_flags.md) named `display_merge_conflicts_in_diff`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/276918) in GitLab 15.7.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/276918) in GitLab 15.8. Feature flag `display_merge_conflicts_in_diff` removed.
 
@@ -257,7 +262,7 @@ per conflicted file on the merge request diff:
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 You can show scanner findings in the diff. For details, see:
 

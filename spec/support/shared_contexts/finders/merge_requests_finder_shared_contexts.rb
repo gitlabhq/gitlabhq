@@ -18,7 +18,7 @@ RSpec.shared_context 'MergeRequestsFinder multiple projects with merge requests 
   let_it_be(:group) { create(:group) }
   let_it_be(:subgroup) { create(:group, parent: group) }
   let_it_be(:project1, reload: true) do
-    allow_gitaly_n_plus_1 { create(:project, :public, group: group) }
+    allow_gitaly_n_plus_1 { create(:project, :public, group: group, maintainers: user) }
   end
   # We cannot use `let_it_be` here otherwise we get:
   #   Failure/Error: allow(RepositoryForkWorker).to receive(:perform_async).and_return(true)
@@ -39,15 +39,15 @@ RSpec.shared_context 'MergeRequestsFinder multiple projects with merge requests 
   end
 
   let_it_be(:project4, reload: true) do
-    allow_gitaly_n_plus_1 { create(:project, :repository, group: subgroup) }
+    allow_gitaly_n_plus_1 { create(:project, :repository, group: subgroup, developers: user) }
   end
 
   let_it_be(:project5, reload: true) do
-    allow_gitaly_n_plus_1 { create(:project, group: subgroup) }
+    allow_gitaly_n_plus_1 { create(:project, group: subgroup, developers: user) }
   end
 
   let_it_be(:project6, reload: true) do
-    allow_gitaly_n_plus_1 { create(:project, group: subgroup) }
+    allow_gitaly_n_plus_1 { create(:project, group: subgroup, developers: user) }
   end
 
   let_it_be(:label) { create(:label, project: project1) }
@@ -96,13 +96,6 @@ RSpec.shared_context 'MergeRequestsFinder multiple projects with merge requests 
 
   let!(:label_link) { create(:label_link, label: label, target: merge_request2) }
   let!(:label_link2) { create(:label_link, label: label2, target: merge_request3) }
-
-  before_all do
-    project1.add_maintainer(user)
-    project4.add_developer(user)
-    project5.add_developer(user)
-    project6.add_developer(user)
-  end
 
   before do
     project2.add_developer(user)

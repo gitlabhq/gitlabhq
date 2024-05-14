@@ -9,7 +9,6 @@ import updateWorkItemMutation from '../../graphql/update_work_item.mutation.grap
 import {
   STATE_OPEN,
   WIDGET_TYPE_HIERARCHY,
-  WORK_ITEM_NAME_TO_ICON_MAP,
   WORK_ITEM_TYPE_VALUE_OBJECTIVE,
   WORK_ITEM_TYPE_VALUE_TASK,
 } from '../../constants';
@@ -59,6 +58,11 @@ export default {
       required: false,
       default: '',
     },
+    isTopLevel: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -80,12 +84,6 @@ export default {
     childItemType() {
       return this.childItem.workItemType.name;
     },
-    iconName() {
-      if (this.childItemType === WORK_ITEM_TYPE_VALUE_TASK) {
-        return this.isItemOpen ? 'issue-open-m' : 'issue-close';
-      }
-      return WORK_ITEM_NAME_TO_ICON_MAP[this.childItemType];
-    },
     iconClass() {
       if (this.childItemType === WORK_ITEM_TYPE_VALUE_TASK) {
         return this.isItemOpen ? 'gl-text-green-500' : 'gl-text-blue-500';
@@ -103,6 +101,12 @@ export default {
     },
     chevronTooltip() {
       return this.isExpanded ? __('Collapse') : __('Expand');
+    },
+    childItemClass() {
+      return {
+        'gl-ml-5': !this.hasChildren,
+        'gl-ml-0!': this.hasChildren || (!this.hasIndirectChildren && this.isTopLevel),
+      };
     },
   },
   watch: {
@@ -219,10 +223,7 @@ export default {
 
 <template>
   <li class="tree-item gl-p-0! gl-border-bottom-0!">
-    <div
-      class="gl-display-flex gl-align-items-flex-start"
-      :class="{ 'gl-ml-5 gl-pl-2': canHaveChildren && !hasChildren && hasIndirectChildren }"
-    >
+    <div class="gl-display-flex gl-align-items-flex-start">
       <gl-button
         v-if="hasChildren"
         v-gl-tooltip.hover
@@ -232,13 +233,14 @@ export default {
         category="tertiary"
         size="small"
         :loading="isLoadingChildren"
-        class="gl-px-0! gl-py-3! gl-mr-2"
+        class="gl-px-0! gl-py-3!"
         data-testid="expand-child"
         @click="toggleItem"
       />
       <work-item-link-child-contents
         :child-item="childItem"
         :can-update="canUpdate"
+        :class="childItemClass"
         :parent-work-item-id="issuableGid"
         :work-item-type="workItemType"
         :show-labels="showLabels"

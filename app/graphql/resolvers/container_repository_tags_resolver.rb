@@ -5,19 +5,24 @@ module Resolvers
     type Types::ContainerRepositoryTagType.connection_type, null: true
 
     argument :sort, Types::ContainerRepositoryTagsSortEnum,
-        description: 'Sort tags by these criteria.',
-        required: false,
-        default_value: nil
+      description: 'Sort tags by these criteria.',
+      required: false,
+      default_value: nil
 
     argument :name, GraphQL::Types::String,
-        description: 'Search by tag name.',
-        required: false,
-        default_value: nil
+      description: 'Search by tag name.',
+      required: false,
+      default_value: nil
 
     argument :referrers, GraphQL::Types::Boolean,
-        description: 'Include tag referrers.',
-        required: false,
-        default_value: nil
+      description: 'Include tag referrers.',
+      required: false,
+      default_value: nil
+
+    argument :referrer_type, GraphQL::Types::String,
+      description: 'Comma-separated list of artifact types used to filter referrers. Applies only when `referrers` is set to `true`.',
+      required: false,
+      default_value: nil
 
     alias_method :container_repository, :object
 
@@ -31,7 +36,8 @@ module Resolvers
           sort: map_sort_field(sort),
           name: filters[:name],
           page_size: page_size,
-          referrers: filters[:referrers]
+          referrers: filters[:referrers],
+          referrer_type: filters[:referrer_type]
         )
 
         Gitlab::Graphql::ExternallyPaginatedArray.new(
@@ -66,13 +72,13 @@ module Resolvers
       query_params[key]&.first
     end
 
-    def map_sort_field(sort)
-      return unless sort
+    def map_sort_field(sort_value)
+      return if sort_value.blank?
 
-      sort_field, direction = sort.to_s.split('_')
-      return sort_field if direction == 'asc'
+      sort = sort_value.to_s.gsub(/_(desc|asc)$/, '')
+      sort = "-#{sort}" if sort_value.end_with?('_desc')
 
-      "-#{sort_field}"
+      sort
     end
 
     def sort_tags(to_be_sorted, sort)

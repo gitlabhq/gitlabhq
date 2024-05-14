@@ -34,37 +34,105 @@ module Gitlab
           end
 
           job_klasses_queues = job_klasses
-            .select { |job_klass| job_klass.to_s.safe_constantize.present? }
-            .map { |job_klass| job_klass.safe_constantize.queue }
+            .map { |job_klass| job_klass.to_s.safe_constantize }
+            .select(&:present?)
+            .map { |job_klass| [job_klass.queue, job_klass.get_sidekiq_options['store']] }
             .uniq
 
-          job_klasses_queues.each do |queue|
-            delete_jobs_for(
-              set: Sidekiq::Queue.new(queue),
-              job_klasses: job_klasses,
-              kwargs: kwargs
-            )
+          job_klasses_queues.each do |queue, store|
+            _, pool = Gitlab::SidekiqSharding::Router.get_shard_instance(store)
+            Sidekiq::Client.via(pool) do
+              delete_jobs_for(
+                set: Sidekiq::Queue.new(queue),
+                job_klasses: job_klasses,
+                kwargs: kwargs
+              )
+            end
           end
 
-          delete_jobs_for(
-            set: Sidekiq::RetrySet.new,
-            kwargs: kwargs,
-            job_klasses: job_klasses
-          )
+          results = job_klasses_queues.map(&:last).uniq.map do |store|
+            _, pool = Gitlab::SidekiqSharding::Router.get_shard_instance(store)
+            Sidekiq::Client.via(pool) do
+              delete_jobs_for(
+                set: Sidekiq::RetrySet.new,
+                kwargs: kwargs,
+                job_klasses: job_klasses
+              )
 
-          delete_jobs_for(
-            set: Sidekiq::ScheduledSet.new,
-            kwargs: kwargs,
-            job_klasses: job_klasses
-          )
+              delete_jobs_for(
+                set: Sidekiq::ScheduledSet.new,
+                kwargs: kwargs,
+                job_klasses: job_klasses
+              )
+            end
+          end
+
+          aggregate_results(results)
         end
 
         def sidekiq_queue_migrate(queue_from, to:)
-          while sidekiq_queue_length(queue_from) > 0
-            Sidekiq.redis do |conn|
-              conn.rpoplpush "queue:#{queue_from}", "queue:#{to}"
+          src_stores = Gitlab::SidekiqConfig::WorkerRouter.global.stores_with_queue(queue_from)
+          dst_stores = Gitlab::SidekiqConfig::WorkerRouter.global.stores_with_queue(to)
+
+          if migrate_within_instance?(src_stores, dst_stores) || !Gitlab::SidekiqSharding::Router.enabled?
+            migrate_within_instance(queue_from, to)
+          else
+            src_stores = [nil] if src_stores.empty? # route from main shard if empty
+            dst_stores = [nil] if dst_stores.empty? # route to main shard if empty
+
+            src_stores.each do |src_store|
+              migrate_across_instance(queue_from, to, src_store, dst_stores)
             end
           end
+        end
+
+        # cross instance transfers are not atomic and data loss is possible
+        def migrate_across_instance(queue_from, to, src_store, dst_stores)
+          _, src_pool = Gitlab::SidekiqSharding::Router.get_shard_instance(src_store)
+          buffer_queue_name = "migration_buffer:queue:#{queue_from}"
+
+          while Sidekiq::Client.via(src_pool) { sidekiq_queue_length(queue_from) } > 0
+            job = Sidekiq::Client.via(src_pool) do
+              Sidekiq.redis do |c|
+                c.rpoplpush("queue:#{queue_from}", buffer_queue_name)
+              end
+            end
+            job_hash = Sidekiq.load_json(job)
+
+            # In the case of multiple stores having the same queue name, we look up the store which the particular job
+            # would have been enqueued to if `.perform_async` were called.
+            dst_store_name = Gitlab::SidekiqConfig::WorkerRouter.global.store(job_hash["class"].safe_constantize)
+
+            # Send the job to the first shard that contains the queue. This assumes that the queue has a listener
+            # on that particular Redis instance. This only affects configurations which use multiple shards per queue.
+            store_name = dst_stores.find { |ds| dst_store_name == ds } || dst_stores.first
+            _, pool = Gitlab::SidekiqSharding::Router.get_shard_instance(store_name)
+            Sidekiq::Client.via(pool) { Sidekiq.redis { |c| c.lpush("queue:#{to}", job) } }
+          end
+
+          Sidekiq::Client.via(src_pool) { Sidekiq.redis { |c| c.unlink(buffer_queue_name) } }
+        end
+
+        def migrate_within_instance(queue_from, to)
+          Sidekiq.redis do |conn|
+            conn.rpoplpush "queue:#{queue_from}", "queue:#{to}" while sidekiq_queue_length(queue_from) > 0
+          end
+        end
+
+        private
+
+        def aggregate_results(results)
+          { attempts: 0, success: false }.tap do |h|
+            results.each do |result|
+              h[:attempts] += result[:attempts]
+              h[:success] |= result[:success]
+            end
+          end
+        end
+
+        def migrate_within_instance?(src_stores, dst_stores)
+          (src_stores.empty? && dst_stores.empty?) ||
+            (src_stores.size == 1 && dst_stores.size == 1 && src_stores.first == dst_stores.first)
         end
 
         def sidekiq_queue_length(queue_name)
@@ -72,8 +140,6 @@ module Gitlab
             conn.llen("queue:#{queue_name}")
           end
         end
-
-        private
 
         # Handle the "jobs deleted" tracking that is needed in order to track
         # whether a job was deleted or not.

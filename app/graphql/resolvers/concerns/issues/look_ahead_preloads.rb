@@ -15,7 +15,8 @@ module Issues
         {
           project: [:project_feature, :group]
         },
-        :author
+        :author,
+        :work_item_type
       ]
     end
 

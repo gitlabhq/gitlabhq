@@ -10,8 +10,9 @@ RSpec.describe API::Entities::Hook, feature_category: :webhooks do
   subject(:json) { entity.as_json }
 
   it 'exposes correct attributes' do
-    expect(json.keys).to contain_exactly(:alert_status, :created_at, :disabled_until, :enable_ssl_verification, :id,
-      :merge_requests_events, :push_events, :repository_update_events, :tag_push_events, :url, :url_variables
+    expect(json.keys).to contain_exactly(
+      :id, :name, :description, :alert_status, :created_at, :disabled_until, :enable_ssl_verification, :tag_push_events,
+      :merge_requests_events, :push_events, :repository_update_events, :url, :url_variables, :custom_webhook_template
     )
   end
 

@@ -8,12 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
-
-NOTE:
-Watch the
-["Mastering continuous software development"](https://about.gitlab.com/webcast/mastering-ci-cd/)
-webcast to see a comprehensive demo of a GitLab CI/CD pipeline.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Pipelines are the top-level component of continuous integration, delivery, and deployment.
 
@@ -71,7 +66,7 @@ Pipelines and their component jobs and stages are defined in the CI/CD pipeline 
 - [Jobs](../jobs/index.md) are the basic configuration component.
 - Stages are defined by using the [`stages`](../yaml/index.md#stages) keyword.
 
-For a list of configuration options in the CI pipeline file, see the [CI/CD YAML syntax reference](../yaml/index.md).
+For a list of configuration options for the CI/CD configuration file, see the [CI/CD YAML syntax reference](../yaml/index.md).
 
 You can also configure specific aspects of your pipelines through the GitLab UI. For example:
 
@@ -79,58 +74,10 @@ You can also configure specific aspects of your pipelines through the GitLab UI.
 - [Pipeline schedules](schedules.md).
 - [Custom CI/CD variables](../variables/index.md#for-a-project).
 
-### Ref specs for runners
+The recommended tool for editing CI/CD configuration is the [pipeline editor](../pipeline_editor/index.md).
 
-When a runner picks a pipeline job, GitLab provides that job's metadata. This includes the [Git refspecs](https://git-scm.com/book/en/v2/Git-Internals-The-Refspec),
-which indicate which ref (such as branch or tag) and commit (SHA1) are checked out from your
-project repository.
-
-This table lists the refspecs injected for each pipeline type:
-
-| Pipeline type                                                     | Refspecs |
-|-------------------------------------------------------------------|----------|
-| pipeline for branches                                             | `+<sha>:refs/pipelines/<id>` and `+refs/heads/<name>:refs/remotes/origin/<name>` |
-| pipeline for tags                                                 | `+<sha>:refs/pipelines/<id>` and `+refs/tags/<name>:refs/tags/<name>` |
-| [merge request pipeline](../pipelines/merge_request_pipelines.md) | `+refs/pipelines/<id>:refs/pipelines/<id>` |
-
-The refs `refs/heads/<name>` and `refs/tags/<name>` exist in your
-project repository. GitLab generates the special ref `refs/pipelines/<id>` during a
-running pipeline job. This ref can be created even after the associated branch or tag has been
-deleted. It's therefore useful in some features such as [automatically stopping an environment](../environments/index.md#stopping-an-environment),
-and [merge trains](../pipelines/merge_trains.md)
-that might run pipelines after branch deletion.
-
-### View pipelines
-
-You can find the current and historical pipeline runs under your project's
-**Build > Pipelines** page. You can also access pipelines for a merge request by navigating
-to its **Pipelines** tab.
-
-![Pipelines index page](img/pipelines_index_v13_0.png)
-
-Select a pipeline to open the **Pipeline Details** page and show
-the jobs that were run for that pipeline. From here you can cancel a running pipeline,
-retry jobs on a failed pipeline, or [delete a pipeline](#delete-a-pipeline).
-
-A link to the latest pipeline for the last commit of a given branch is available at
-`/project/-/pipelines/[branch]/latest`. Also, `/project/-/pipelines/latest` redirects
-you to the latest pipeline for the last commit on the project's default branch.
-
-[Starting in GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/issues/215367),
-you can filter the pipeline list by:
-
-- Trigger author
-- Branch name
-- Status ([GitLab 13.1 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/217617))
-- Tag ([GitLab 13.1 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/217617))
-- Source ([GitLab 14.3 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/338347))
-
-[Starting in GitLab 14.2](https://gitlab.com/gitlab-org/gitlab/-/issues/26621), you can change the
-pipeline column to display the pipeline ID or the pipeline IID.
-
-If you use VS Code to edit your GitLab CI/CD configuration, the
-[GitLab Workflow VS Code extension](../../editor_extensions/visual_studio_code/index.md) helps you
-[validate your configuration](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#validate-gitlab-ci-configuration)
+If you use VS Code to edit your GitLab CI/CD configuration, the [GitLab Workflow VS Code extension](../../editor_extensions/visual_studio_code/index.md)
+helps you [validate your configuration](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#validate-gitlab-ci-configuration)
 and [view your pipeline status](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#information-about-your-branch-pipelines-mr-closing-issue).
 
 ### Run a pipeline manually
@@ -153,8 +100,6 @@ To execute a pipeline manually:
 The pipeline now executes the jobs as configured.
 
 #### Prefill variables in manual pipelines
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30101) in GitLab 13.7.
 
 You can use the [`description` and `value`](../yaml/index.md#variablesdescription)
 keywords to [define pipeline-level (global) variables](../variables/index.md#define-a-cicd-variable-in-the-gitlab-ciyml-file)
@@ -223,8 +168,6 @@ variables:
 
 ### Run a pipeline by using a URL query string
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24146) in GitLab 12.5.
-
 You can use a query string to pre-populate the **Run Pipeline** page. For example, the query string
 `.../pipelines/new?ref=my_branch&var[foo]=bar&file_var[file_foo]=file_bar` pre-populates the
 **Run Pipeline** page with:
@@ -257,8 +200,7 @@ For each `var` or `file_var`, a key and value are required.
 [Manual jobs](../jobs/job_control.md#create-a-job-that-must-be-run-manually),
 allow you to require manual interaction before moving forward in the pipeline.
 
-You can do this straight from the pipeline graph. Just select the play button
-to execute that particular job.
+You can do this straight from the pipeline graph. Select **Run** (**{play}**) to execute that particular job.
 
 For example, your pipeline can start automatically, but require a manual action to
 [deploy to production](../environments/index.md#configure-manual-deployments).
@@ -269,7 +211,7 @@ In the example below, the `production` stage has a job with a manual action:
 #### Start all manual jobs in a stage
 
 If a stage contains only manual jobs, you can start all the jobs at the same time
-by selecting **Play all manual** (**{play}**) above the stage. If the stage contains
+by selecting **Run all manual** (**{play}**) above the stage. If the stage contains
 non-manual jobs, the option is not displayed.
 
 ### Skip a pipeline
@@ -277,28 +219,25 @@ non-manual jobs, the option is not displayed.
 To push a commit without triggering a pipeline, add `[ci skip]` or `[skip ci]`, using any
 capitalization, to your commit message.
 
-Alternatively, if you are using Git 2.10 or later, use the `ci.skip` [Git push option](../../user/project/push_options.md#push-options-for-gitlab-cicd).
-The `ci.skip` push option does not skip merge request
-pipelines.
+Alternatively, with Git 2.10 or later, use the `ci.skip` [Git push option](../../user/project/push_options.md#push-options-for-gitlab-cicd).
+The `ci.skip` push option does not skip merge request pipelines.
 
 ### Delete a pipeline
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24851) in GitLab 12.7.
+Users with the Owner role for a project can delete a pipeline:
 
-Users with the Owner role for a project can delete a pipeline
-by selecting the pipeline in the **Build > Pipelines** to get to the **Pipeline Details**
-page, then selecting **Delete**.
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Build > Pipelines**.
+1. Select either the pipeline ID (for example `#123456789`) or the pipeline status icon
+   (for example **Passed**) of the pipeline to delete.
+1. In the top right of the pipeline details page, select **Delete**.
 
-![Pipeline Delete](img/pipeline-delete.png)
-
-Deleting a pipeline does not automatically delete its
-[child pipelines](downstream_pipelines.md#parent-child-pipelines).
-See the [related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/39503)
-for details.
+Deleting a pipeline does not automatically delete its [child pipelines](downstream_pipelines.md#parent-child-pipelines).
+See [issue 39503](https://gitlab.com/gitlab-org/gitlab/-/issues/39503) for more details.
 
 WARNING:
 Deleting a pipeline expires all pipeline caches, and deletes all immediately
-related objects, such as builds, logs, artifacts, and triggers.
+related objects, such as jobs, logs, artifacts, and triggers.
 **This action cannot be undone.**
 
 ### Pipeline security on protected branches
@@ -332,9 +271,7 @@ page for additional security recommendations for securing your pipelines.
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9045) in GitLab 12.8.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 You can trigger a pipeline in your project whenever a pipeline finishes for a new
 tag in a different project.
@@ -408,97 +345,116 @@ running time is:
 (4 - 1) + (7 - 6) => 4
 ```
 
-## Visualize pipelines
+## View pipelines
 
-Pipelines can be complex structures with many sequential and parallel jobs.
+To view all the pipelines that ran for your project:
 
-To make it easier to understand the flow of a pipeline, GitLab has pipeline graphs for viewing pipelines
-and their statuses.
+1. On the left sidebar, select **Search or go to** and find your project.
+1. **Build > Pipelines** page.
 
-Pipeline graphs can be displayed as a large graph or a miniature representation, depending on the page you
-access the graph from.
+You can filter the pipeline list by:
 
-GitLab capitalizes the stages' names in the pipeline graphs.
+- Trigger author
+- Branch name
+- Status
+- Tag
+- Source
 
-### View full pipeline graph
+Select **Pipeline ID** in the dropdown list in the top right to display the pipeline IDs
+(unique ID across the instance).
+Select **pipeline IID** to display the pipeline IIDs (internal ID, unique across the project only).
 
-> - Visualization improvements [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/276949) in GitLab 13.11.
+For example:
 
-The [pipeline details page](#view-pipelines) displays the full pipeline graph of
-all the jobs in the pipeline.
+![Pipelines list page](img/pipeline_list_v16_11.png)
 
-You can group the jobs by:
+To view the pipelines that relate to a specific merge request, go to the **Pipelines** tab
+in the merge request.
 
-- Stage, which arranges jobs in the same stage together in the same column:
+### Pipeline details
 
-  ![jobs grouped by stage](img/pipelines_graph_stage_view_v14_2.png)
+> - Pipeline detail view [updated](https://gitlab.com/gitlab-org/gitlab/-/issues/424403) in GitLab 16.6 [with a flag](../../administration/feature_flags.md) named `new_pipeline_graph`. Disabled by default.
+> - Updated pipeline detail view [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/426902) in GitLab 16.8.
 
-- [Job dependencies](#view-job-dependencies-in-the-pipeline-graph), which arranges
-  jobs based on their [`needs`](../yaml/index.md#needs) dependencies.
+Select a pipeline to open the pipeline details page which shows every job in the pipeline.
+From this page you can cancel a running pipeline, retry failed jobs, or [delete a pipeline](#delete-a-pipeline).
 
-Multi-project pipeline graphs help you visualize the entire pipeline, including all cross-project inter-dependencies.
+The pipeline details page displays a graph of all the jobs in the pipeline:
 
-If a stage contains more than 100 jobs, only the first 100 jobs are listed in the
-pipeline graph. The remaining jobs still run as usual. To see the jobs:
+![Pipeline detail page](img/pipeline_detail_v16_11.png)
 
-- Select the pipeline, and the jobs are listed on the right side of the pipeline details page.
-- On the left sidebar, select **Build > Jobs**.
+You can use a standard URL to access the details for specific pipelines:
 
-### View job dependencies in the pipeline graph
+- `gitlab.example.com/my-group/my-project/-/pipelines/pipelines/latest`: The details page
+  for the latest pipeline for the most recent commit on the default branch in the project.
+- `gitlab.example.com/my-group/my-project/-/pipelines/<branch>/latest`: The details page
+  for the latest pipeline for the most recent commit on branch `<branch>` in the project.
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/298973) in GitLab 13.12.
-> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/328538) in GitLab 14.0.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/328538) in GitLab 14.2.
+#### Group jobs by stage or `needs` configuration
 
-To arrange jobs in the pipeline graph based on their [`needs`](../yaml/index.md#needs)
-dependencies, select **Job dependencies** in the **Group jobs by** section. This option
-is available for pipelines with 3 or more jobs with `needs` job dependencies.
+When you configure jobs with the [`needs`](../yaml/index.md#needs) keyword, you have
+two options for how to group the jobs in the pipeline details page. To group the jobs
+by stage configuration, select **stage** in the **Group jobs by** section:
+
+![jobs grouped by stage](img/pipeline_stage_view_v16_11.png)
+
+To group the jobs by [`needs`](../yaml/index.md#needs) configuration, select **Job dependencies**.
+You can optionally select **Show dependencies** to render lines between dependent jobs,
+similar to the [`needs` visualization](../directed_acyclic_graph/index.md#needs-visualization)
+in the pipeline editor:
+
+![jobs grouped by job dependencies](img/pipeline_dependency_view_v16_11.png)
 
 Jobs in the leftmost column run first, and jobs that depend on them are grouped in the next columns.
+In this example:
 
-For example, `test-job1` depends only on jobs in the first column, so it displays
-in the second column from the left. `deploy-job1` depends on jobs in both the first
-and second column and displays in the third column:
+- `lint-job` is configured with `needs: []` and depends on no jobs, so it displays in the first column,
+  despite being in the `test` stage.
+- `test-job1` depends on `build-job1`, and `test-job2` depends on both `build-job1` and `build-job2`,
+  so both test jobs display in the second column.
+- Both `deploy` jobs depend on jobs in second column (which themselves depend on other earlier jobs),
+  so the deploy jobs display in the third column.
 
-![jobs grouped by needs dependency](img/pipelines_graph_dependency_view_v13_12.png)
+When you hover over a job in the **Job dependencies** view, every job that must run
+before the selected job is highlighted:
 
-To add lines that show the `needs` relationships between jobs, select the **Show dependencies** toggle.
-These lines are similar to the [needs visualization](../directed_acyclic_graph/index.md#needs-visualization):
-
-![jobs grouped by needs dependency with lines displayed](img/pipelines_graph_dependency_view_links_v13_12.png)
-
-To see the full `needs` dependency tree for a job, hover over it:
-
-![single job dependency tree highlighted](img/pipelines_graph_dependency_view_hover_v13_12.png)
+![pipeline dependency view on hover](img/pipeline_dependency_view_on_hover_v16_11.png)
 
 ### Pipeline mini graphs
 
-Pipeline mini graphs take less space and can tell you at a
-quick glance if all jobs passed or something failed. The pipeline mini graph can
-be found when you go to:
+> - Pipeline mini graph in the pipeline editor [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/337514) in GitLab 14.5.
 
-- The pipelines index page.
-- A single commit page.
-- A merge request page.
-- The [pipeline editor](../pipeline_editor/index.md), [in GitLab 14.5](https://gitlab.com/gitlab-org/gitlab/-/issues/337514) and later.
+Pipeline mini graphs take less space and can tell you at a quick glance if all jobs passed
+or something failed. They show all related jobs for a single commit and the net result
+of each stage of your pipeline. You can quickly see what failed and fix it.
 
-Pipeline mini graphs allow you to see all related jobs for a single commit and the net result
-of each stage of your pipeline. This allows you to quickly see what failed and
-fix it.
+The pipeline mini graph always group jobs by stage, and display throughout GitLab
+when displaying pipeline or commit details.
 
-Pipeline mini graphs only display jobs by stage.
+![Pipeline mini graph](img/pipeline_mini_graph_v16_11.png)
 
-Stages in pipeline mini graphs are expandable. Hover your mouse over each stage to see the name and status, and select a stage to expand its jobs list.
+Stages in pipeline mini graphs are expandable. Hover your mouse over each stage
+to see the name and status, and select a stage to expand its jobs list.
 
-| Mini graph                                                   | Mini graph expanded                                            |
-|:-------------------------------------------------------------|:---------------------------------------------------------------|
-| ![Pipelines mini graph](img/pipelines_mini_graph_simple.png) | ![Pipelines mini graph extended](img/pipelines_mini_graph.png) |
+### Downstream pipeline graphs
 
-### Pipeline success and duration charts
+When a pipeline contains a job that triggers a [downstream pipeline](downstream_pipelines.md),
+you can see the downstream pipeline in the pipeline details view and mini graphs.
+
+In the pipeline details view, a card displays for every triggered downstream pipeline
+on the right of the pipeline graph. Hover over a card to see which job triggered the
+downstream pipeline. Select a card to display the downstream pipeline to the right
+of the pipeline graph.
+
+In the pipeline mini graph, the status of every triggered downstream pipeline displays
+as additional status icons to the right of the mini graph. Select a downstream pipeline
+status icon to go to the detail page of that downstream pipeline.
+
+## Pipeline success and duration charts
 
 Pipeline analytics are available on the [**CI/CD Analytics** page](../../user/analytics/ci_cd_analytics.md#pipeline-success-and-duration-charts).
 
-### Pipeline badges
+## Pipeline badges
 
 Pipeline status and test coverage report badges are available and configurable for each project.
 For information on adding pipeline badges to projects, see [Pipeline badges](settings.md#pipeline-badges).
@@ -512,3 +468,23 @@ GitLab provides API endpoints to:
 - Trigger pipeline runs. For more information, see:
   - [Triggering pipelines through the API](../triggers/index.md).
   - [Pipeline triggers API](../../api/pipeline_triggers.md).
+
+## Ref specs for runners
+
+When a runner picks a pipeline job, GitLab provides that job's metadata. This includes the [Git refspecs](https://git-scm.com/book/en/v2/Git-Internals-The-Refspec),
+which indicate which ref (such as branch or tag) and commit (SHA1) are checked out from your
+project repository.
+
+This table lists the refspecs injected for each pipeline type:
+
+| Pipeline type                                                     | Refspecs |
+|-------------------------------------------------------------------|----------|
+| pipeline for branches                                             | `+<sha>:refs/pipelines/<id>` and `+refs/heads/<name>:refs/remotes/origin/<name>` |
+| pipeline for tags                                                 | `+<sha>:refs/pipelines/<id>` and `+refs/tags/<name>:refs/tags/<name>` |
+| [merge request pipeline](../pipelines/merge_request_pipelines.md) | `+refs/pipelines/<id>:refs/pipelines/<id>` |
+
+The refs `refs/heads/<name>` and `refs/tags/<name>` exist in your
+project repository. GitLab generates the special ref `refs/pipelines/<id>` during a
+running pipeline job. This ref can be created even after the associated branch or tag has been
+deleted. It's therefore useful in some features such as [automatically stopping an environment](../environments/index.md#stopping-an-environment),
+and [merge trains](../pipelines/merge_trains.md) that might run pipelines after branch deletion.

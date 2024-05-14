@@ -17,7 +17,7 @@ Keeping up with the latest version of Vue ensures that the GitLab frontend lever
 **Current Status**
 
 - **As of December 2023**: GitLab is currently using Vue 2.x.
-- **Progress**: [Brief description of progress]
+- **Progress**: (Brief description of progress)
 
 **Responsible Team**
 
@@ -26,11 +26,11 @@ Keeping up with the latest version of Vue ensures that the GitLab frontend lever
 
 **Milestones and Timelines**
 
-- [Key milestones, expected completions]
+- (Key milestones, expected completions)
 
 **Challenges and Dependencies**
 
-- [Any major challenges]
+- (Any major challenges)
 
 **Success Metrics**
 
@@ -38,12 +38,12 @@ Keeping up with the latest version of Vue ensures that the GitLab frontend lever
 
 ### State Management
 
-When global state management is needed, it should happen in Apollo instead of Vuex or other state management libraries. See [https://docs.gitlab.com/ee/development/fe_guide/migrating_from_vuex.html](migrating_from_vuex.md) for more details regarding why and how we plan on migrating.
+When global state management is needed, it should happen in Apollo instead of Vuex or other state management libraries. See [Migrating from Vuex](migrating_from_vuex.md) for more details regarding why and how we plan on migrating.
 
 **Current Status**
 
-- **As of December 2023**: [Status]
-- **Progress**: [Brief description of progress]
+- **As of December 2023**: (Status)
+- **Progress**: (Brief description of progress)
 
 **Responsible Team**
 
@@ -52,24 +52,24 @@ When global state management is needed, it should happen in Apollo instead of Vu
 
 **Milestones and Timelines**
 
-- [Key milestones, expected completions]
+- (Key milestones, expected completions)
 
 **Challenges and Dependencies**
 
-- [Any major challenges]
+- (Any major challenges)
 
 **Success Metrics**
 
-- [Potential metrics]
+- (Potential metrics)
 
 ### HAML by default
 
-We'll continue using HAML over Vue when appropriate. See [https://docs.gitlab.com/ee/development/fe_guide/vue.html#when-to-add-vue-application](vue.md#when-to-add-vue-application) on how to decide when Vue should be chosen.
+We'll continue using HAML over Vue when appropriate. See [when to add Vue application](vue.md#when-to-add-vue-application) on how to decide when Vue should be chosen.
 
 **Current Status**
 
-- **As of December 2023**: [Status]
-- **Progress**: [Brief description of progress]
+- **As of December 2023**: (Status)
+- **Progress**: (Brief description of progress)
 
 **Responsible Team**
 
@@ -78,15 +78,15 @@ We'll continue using HAML over Vue when appropriate. See [https://docs.gitlab.co
 
 **Milestones and Timelines**
 
-- [Key milestones, expected completions]
+- (Key milestones, expected completions)
 
 **Challenges and Dependencies**
 
-- [Any major challenges]
+- (Any major challenges)
 
 **Success Metrics**
 
-- [Potential metrics]
+- (Potential metrics)
 
 ### Complete removal of jQuery
 
@@ -94,8 +94,8 @@ In 2019 we committed to no longer use jQuery, however we have not prioritized fu
 
 **Current Status**
 
-- **As of December 2023**: [Status]
-- **Progress**: [Brief description of progress]
+- **As of December 2023**: (Status)
+- **Progress**: (Brief description of progress)
 
 **Responsible Team**
 
@@ -104,15 +104,15 @@ In 2019 we committed to no longer use jQuery, however we have not prioritized fu
 
 **Milestones and Timelines**
 
-- [Key milestones, expected completions]
+- (Key milestones, expected completions)
 
 **Challenges and Dependencies**
 
-- [Any major challenges]
+- (Any major challenges)
 
 **Success Metrics**
 
-- [Potential metrics]
+- (Potential metrics)
 
 ### Dependencies management
 
@@ -120,8 +120,8 @@ Similar to keeping on the latest major version of Vue, we should try to keep as 
 
 **Current Status**
 
-- **As of December 2023**: [Status]
-- **Progress**: [Brief description of progress]
+- **As of December 2023**: (Status)
+- **Progress**: (Brief description of progress)
 
 **Responsible Team**
 
@@ -130,15 +130,15 @@ Similar to keeping on the latest major version of Vue, we should try to keep as 
 
 **Milestones and Timelines**
 
-- [Key milestones, expected completions]
+- (Key milestones, expected completions)
 
 **Challenges and Dependencies**
 
-- [Any major challenges]
+- (Any major challenges)
 
 **Success Metrics**
 
-- [Potential metrics]
+- (Potential metrics)
 
 ## Best Practices
 
@@ -168,8 +168,8 @@ For navigation between clusters, we can still rely on Rails routing. These cases
 
 **Current Status**
 
-- **As of December 2023**: [Status]
-- **Progress**: [Brief description of progress]
+- **As of December 2023**: (Status)
+- **Progress**: (Brief description of progress)
 
 **Responsible Team**
 
@@ -178,15 +178,15 @@ For navigation between clusters, we can still rely on Rails routing. These cases
 
 **Milestones and Timelines**
 
-- [Key milestones, expected completions]
+- (Key milestones, expected completions)
 
 **Challenges and Dependencies**
 
-- [Any major challenges]
+- (Any major challenges)
 
 **Success Metrics**
 
-- [Potential metrics]
+- (Potential metrics)
 
 ### Reusable components
 
@@ -203,8 +203,8 @@ This is currently under development. Follow the [GitLab Modular Monolith for FE]
 
 **Current Status**
 
-- **As of December 2023**: [Status]
-- **Progress**: [Brief description of progress]
+- **As of December 2023**: (Status)
+- **Progress**: (Brief description of progress)
 
 **Responsible Team**
 
@@ -213,15 +213,15 @@ This is currently under development. Follow the [GitLab Modular Monolith for FE]
 
 **Milestones and Timelines**
 
-- [Key milestones, expected completions]
+- (Key milestones, expected completions)
 
 **Challenges and Dependencies**
 
-- [Any major challenges]
+- (Any major challenges)
 
 **Success Metrics**
 
-- [Potential metrics]
+- (Potential metrics)
 
 ### Migrate to PostCSS
 
@@ -229,8 +229,8 @@ SASS compilation takes almost half of the total frontend compilation time. This 
 
 **Current Status**
 
-- **As of December 2023**: [Status]
-- **Progress**: [Brief description of progress]
+- **As of December 2023**: (Status)
+- **Progress**: (Brief description of progress)
 
 **Responsible Team**
 
@@ -239,15 +239,15 @@ SASS compilation takes almost half of the total frontend compilation time. This 
 
 **Milestones and Timelines**
 
-- [Key milestones, expected completions]
+- (Key milestones, expected completions)
 
 **Challenges and Dependencies**
 
-- [Any major challenges]
+- (Any major challenges)
 
 **Success Metrics**
 
-- [Potential metrics]
+- (Potential metrics)
 
 ## Collaboration and Tooling
 
@@ -257,8 +257,8 @@ We're early in the process of adding visual testing, but we should have a framew
 
 **Current Status**
 
-- **As of December 2023**: [Status]
-- **Progress**: [Brief description of progress]
+- **As of December 2023**: (Status)
+- **Progress**: (Brief description of progress)
 
 **Responsible Team**
 
@@ -267,15 +267,15 @@ We're early in the process of adding visual testing, but we should have a framew
 
 **Milestones and Timelines**
 
-- [Key milestones, expected completions]
+- (Key milestones, expected completions)
 
 **Challenges and Dependencies**
 
-- [Any major challenges]
+- (Any major challenges)
 
 **Success Metrics**
 
-- [Potential metrics]
+- (Potential metrics)
 
 ### Accessibility testing
 
@@ -283,8 +283,8 @@ In 2023 we determined the tooling for accessibility testing. We opted for axe-co
 
 **Current Status**
 
-- **As of December 2023**: [Status]
-- **Progress**: [Brief description of progress]
+- **As of December 2023**: (Status)
+- **Progress**: (Brief description of progress)
 
 **Responsible Team**
 
@@ -293,12 +293,12 @@ In 2023 we determined the tooling for accessibility testing. We opted for axe-co
 
 **Milestones and Timelines**
 
-- [Key milestones, expected completions]
+- (Key milestones, expected completions)
 
 **Challenges and Dependencies**
 
-- [Any major challenges]
+- (Any major challenges)
 
 **Success Metrics**
 
-- [Potential metrics]
+- (Potential metrics)

@@ -10,8 +10,6 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68982) in GitLab 14.3.
-
 [Sidekiq](../sidekiq/index.md) jobs get stored in
 Redis. To avoid excessive memory for Redis, we:
 

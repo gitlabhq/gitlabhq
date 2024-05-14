@@ -1,0 +1,21 @@
+---
+table_name: geo_reset_checksum_events
+classes:
+- Geo::ResetChecksumEvent
+feature_categories:
+- geo_replication
+description: Geo event for when a project gets reverified on the primary, belongs
+  to geo_event_log.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/7394
+milestone: '11.4'
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151938
+removed_in_milestone: '17.0'
+gitlab_schema: gitlab_main_cell
+allow_cross_joins:
+- gitlab_main_clusterwide
+allow_cross_transactions:
+- gitlab_main_clusterwide
+allow_cross_foreign_keys:
+- gitlab_main_clusterwide
+sharding_key:
+  project_id: projects

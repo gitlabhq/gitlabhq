@@ -66,7 +66,7 @@ export default {
         :alert="alert"
         :sidebar-collapsed="sidebarStatus"
         text-class="gl-text-gray-500"
-        class="gl-w-70p"
+        class="gl-w-7/10"
         @toggle-sidebar="$emit('toggle-sidebar')"
         @alert-error="$emit('alert-error', $event)"
       />

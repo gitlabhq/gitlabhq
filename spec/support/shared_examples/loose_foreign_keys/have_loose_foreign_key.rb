@@ -13,6 +13,10 @@ RSpec.shared_examples 'it has loose foreign keys' do
     end
   end
 
+  before do
+    allow(Gitlab::Database::SharedModel).to receive(:using_connection).and_yield
+  end
+
   it 'has at least one loose foreign key definition' do
     definitions = Gitlab::Database::LooseForeignKeys.definitions_by_table[table_name]
     expect(definitions.size).to be > 0

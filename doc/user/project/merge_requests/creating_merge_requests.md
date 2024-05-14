@@ -9,7 +9,7 @@ description: "How to create merge requests in GitLab."
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 GitLab provides many different ways to create a merge request.
 
@@ -33,8 +33,6 @@ Each branch can be associated with only one open merge request. If a merge reque
 already exists for this branch, a link to the existing merge request is shown.
 
 ## From an issue
-
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/349566) the behavior of the **Create merge request** button to open the merge request creation form in GitLab 14.8.
 
 If your development workflow requires an issue for every merge
 request, you can create a branch directly from the issue to speed the process up.
@@ -136,7 +134,7 @@ You can create a merge request by running Git commands on your local machine.
    git commit -m "My commit message"
    ```
 
-1. [Push your branch and its commits to GitLab](../../../gitlab-basics/start-using-git.md#send-changes-to-gitlab):
+1. Push your branch and its commits to GitLab:
 
    ```shell
    git push origin my-new-branch

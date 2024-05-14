@@ -1,46 +1,27 @@
 import { GlDisclosureDropdown, GlDisclosureDropdownItem } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
-import Vue, { nextTick } from 'vue';
+import Vue from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import DiscussionCounter from '~/notes/components/discussion_counter.vue';
-import notesModule from '~/notes/stores/modules';
 import * as types from '~/notes/stores/mutation_types';
-import { discussionMock, noteableDataMock, notesDataMock, userDataMock } from '../mock_data';
+import { createStore } from '~/mr_notes/stores';
+import { discussionMock, noteableDataMock, notesDataMock } from '../mock_data';
 
 describe('DiscussionCounter component', () => {
   let store;
   let wrapper;
-  let setExpandDiscussionsFn;
 
   Vue.use(Vuex);
 
   beforeEach(() => {
     window.mrTabs = {};
-    const { state, getters, mutations, actions } = notesModule();
-    setExpandDiscussionsFn = jest.fn().mockImplementation(actions.setExpandDiscussions);
-
-    store = new Vuex.Store({
-      state: {
-        ...state,
-        userData: userDataMock,
-      },
-      getters,
-      mutations,
-      actions: {
-        ...actions,
-        setExpandDiscussions: setExpandDiscussionsFn,
-      },
-    });
+    store = createStore();
     store.dispatch('setNoteableData', {
       ...noteableDataMock,
       create_issue_to_resolve_discussions_path: '/test',
     });
     store.dispatch('setNotesData', notesDataMock);
-  });
-
-  afterEach(() => {
-    wrapper.vm.$destroy();
   });
 
   describe('has no discussions', () => {
@@ -88,7 +69,7 @@ describe('DiscussionCounter component', () => {
       'changes background color to $color if blocksMerge is $blocksMerge',
       ({ blocksMerge, color }) => {
         updateStore();
-        store.state.unresolvedDiscussionsCount = 1;
+        store.state.notes.unresolvedDiscussionsCount = 1;
         wrapper = mount(DiscussionCounter, { store, propsData: { blocksMerge } });
 
         expect(wrapper.find('[data-testid="discussions-counter-text"]').classes()).toContain(color);
@@ -125,8 +106,10 @@ describe('DiscussionCounter component', () => {
 
   describe('toggle all threads button', () => {
     let toggleAllButton;
+    let discussion;
+
     const updateStoreWithExpanded = async (expanded) => {
-      const discussion = { ...discussionMock, expanded };
+      discussion = { ...discussionMock, expanded };
       store.commit(types.ADD_OR_UPDATE_DISCUSSIONS, [discussion]);
       store.dispatch('updateResolvableDiscussionsCounts');
       wrapper = mount(DiscussionCounter, { store, propsData: { blocksMerge: true } });
@@ -134,34 +117,25 @@ describe('DiscussionCounter component', () => {
       toggleAllButton = wrapper.find('[data-testid="toggle-all-discussions-btn"]');
     };
 
-    it('calls button handler when clicked', async () => {
-      await updateStoreWithExpanded(true);
-
-      toggleAllButton.trigger('click');
-
-      expect(setExpandDiscussionsFn).toHaveBeenCalledTimes(1);
+    afterEach(() => {
+      toggleAllButton = undefined;
+      discussion = undefined;
     });
 
     it('collapses all discussions if expanded', async () => {
       await updateStoreWithExpanded(true);
 
-      expect(wrapper.vm.allExpanded).toBe(true);
-
       toggleAllButton.trigger('click');
 
-      await nextTick();
-      expect(wrapper.vm.allExpanded).toBe(false);
+      expect(store.state.notes.discussions[0].expanded).toBe(false);
     });
 
     it('expands all discussions if collapsed', async () => {
       await updateStoreWithExpanded(false);
 
-      expect(wrapper.vm.allExpanded).toBe(false);
-
       toggleAllButton.trigger('click');
 
-      await nextTick();
-      expect(wrapper.vm.allExpanded).toBe(true);
+      expect(store.state.notes.discussions[0].expanded).toBe(true);
     });
   });
 });

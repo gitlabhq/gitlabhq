@@ -40,15 +40,6 @@ jest.mock('~/alert', () => ({
 
 jest.mock('~/vue_shared/plugins/global_toast');
 
-jest.mock('@rails/actioncable', () => {
-  const mockConsumer = {
-    subscriptions: { create: jest.fn().mockReturnValue({ unsubscribe: jest.fn() }) },
-  };
-  return {
-    createConsumer: jest.fn().mockReturnValue(mockConsumer),
-  };
-});
-
 describe('Actions Notes Store', () => {
   let commit;
   let dispatch;
@@ -257,21 +248,57 @@ describe('Actions Notes Store', () => {
   });
 
   describe('initPolling', () => {
+    beforeAll(() => {
+      global.JEST_DEBOUNCE_THROTTLE_TIMEOUT = 100;
+    });
+
+    afterAll(() => {
+      global.JEST_DEBOUNCE_THROTTLE_TIMEOUT = undefined;
+    });
+
+    const notesChannelParams = () => ({
+      channel: 'Noteable::NotesChannel',
+      project_id: store.state.notesData.projectId,
+      group_id: store.state.notesData.groupId,
+      noteable_type: store.state.notesData.noteableType,
+      noteable_id: store.state.notesData.noteableId,
+    });
+
+    const notifyNotesChannel = () => {
+      actionCable.subscriptions.notify(JSON.stringify(notesChannelParams()), 'received', {
+        event: 'updated',
+      });
+    };
+
     it('creates the Action Cable subscription', () => {
+      jest.spyOn(actionCable.subscriptions, 'create');
+
       store.dispatch('setNotesData', notesDataMock);
       store.dispatch('initPolling');
 
       expect(actionCable.subscriptions.create).toHaveBeenCalledTimes(1);
       expect(actionCable.subscriptions.create).toHaveBeenCalledWith(
-        {
-          channel: 'Noteable::NotesChannel',
-          project_id: store.state.notesData.projectId,
-          group_id: store.state.notesData.groupId,
-          noteable_type: store.state.notesData.noteableType,
-          noteable_id: store.state.notesData.noteableId,
-        },
+        notesChannelParams(),
         expect.any(Object),
       );
+    });
+
+    it('prevents `fetchUpdatedNotes` being called multiple times within time limit when action cable receives contineously new events', () => {
+      const getters = { getNotesDataByProp: () => 123456789 };
+
+      store.dispatch('setNotesData', notesDataMock);
+      actions.initPolling({ commit, state: store.state, getters, dispatch });
+
+      dispatch.mockClear();
+
+      notifyNotesChannel();
+      notifyNotesChannel();
+      notifyNotesChannel();
+
+      jest.runOnlyPendingTimers();
+
+      expect(dispatch).toHaveBeenCalledTimes(1);
+      expect(dispatch).toHaveBeenCalledWith('fetchUpdatedNotes');
     });
   });
 
@@ -587,7 +614,8 @@ describe('Actions Notes Store', () => {
       actions.updateOrCreateNotes({ commit, state, getters, dispatch }, [note]);
       actions.updateOrCreateNotes({ commit, state, getters, dispatch }, [note]);
 
-      jest.runAllTimers();
+      jest.runOnlyPendingTimers();
+
       actions.updateOrCreateNotes({ commit, state, getters, dispatch }, [note]);
 
       expect(dispatch).toHaveBeenCalledTimes(2);
@@ -1446,6 +1474,18 @@ describe('Actions Notes Store', () => {
             payload: { ...actionPayload, perPage: 30, cursor: 1 },
           },
         ],
+      );
+    });
+  });
+
+  describe('toggleAllDiscussions', () => {
+    it('commits SET_EXPAND_ALL_DISCUSSIONS', () => {
+      return testAction(
+        actions.toggleAllDiscussions,
+        undefined,
+        { allDiscussionsExpanded: false },
+        [{ type: mutationTypes.SET_EXPAND_ALL_DISCUSSIONS, payload: true }],
+        [],
       );
     });
   });

@@ -10,8 +10,6 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68645) in GitLab 14.4.
-
 Deprecated API endpoints are those which have been replaced with alternative
 functionality, but cannot be removed without breaking backward compatibility.
 Setting a restrictive rate limit on these endpoints can encourage users to

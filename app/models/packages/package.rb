@@ -58,6 +58,7 @@ class Packages::Package < ApplicationRecord
   has_many :pipelines, through: :build_infos, disable_joins: true
   has_one :debian_publication, inverse_of: :package, class_name: 'Packages::Debian::Publication'
   has_one :debian_distribution, through: :debian_publication, source: :distribution, inverse_of: :packages, class_name: 'Packages::Debian::ProjectDistribution'
+  has_many :matching_package_protection_rules, -> (package) { where(package_type: package.package_type).for_package_name(package.name) }, through: :project, source: :package_protection_rules
 
   accepts_nested_attributes_for :conan_metadatum
   accepts_nested_attributes_for :debian_publication
@@ -95,7 +96,6 @@ class Packages::Package < ApplicationRecord
   validates :version, format: { with: Gitlab::Regex.conan_recipe_component_regex }, if: :conan?
   validates :version, format: { with: Gitlab::Regex.maven_version_regex }, if: -> { version? && maven? }
   validates :version, format: { with: Gitlab::Regex.pypi_version_regex }, if: :pypi?
-  validates :version, format: { with: Gitlab::Regex.prefixed_semver_regex }, if: :golang?
   validates :version, format: { with: Gitlab::Regex.helm_version_regex }, if: :helm?
   validates :version, format: { with: Gitlab::Regex.semver_regex, message: Gitlab::Regex.semver_regex_message },
     if: -> { composer_tag_version? || npm? || terraform_module? }
@@ -208,21 +208,30 @@ class Packages::Package < ApplicationRecord
   scope :order_by_package_file, -> { joins(:package_files).order('packages_package_files.created_at ASC') }
 
   scope :order_project_path, -> do
-    keyset_order = keyset_pagination_order(join_class: Project, column_name: :path, direction: :asc)
-
-    joins(:project).reorder(keyset_order)
+    build_keyset_order_on_joined_column(
+      scope: joins(:project),
+      attribute_name: 'project_path',
+      column: Project.arel_table[:path],
+      direction: :asc,
+      nullable: :nulls_last
+    )
   end
 
   scope :order_project_path_desc, -> do
-    keyset_order = keyset_pagination_order(join_class: Project, column_name: :path, direction: :desc)
-
-    joins(:project).reorder(keyset_order)
+    build_keyset_order_on_joined_column(
+      scope: joins(:project),
+      attribute_name: 'project_path',
+      column: Project.arel_table[:path],
+      direction: :desc,
+      nullable: :nulls_first
+    )
   end
 
   def self.inheritance_column = 'package_type'
 
   def self.inheritance_column_to_class_map = {
     ml_model: 'Packages::MlModel::Package',
+    golang: 'Packages::Go::Package',
     rubygems: 'Packages::Rubygems::Package'
   }.freeze
 
@@ -291,33 +300,6 @@ class Packages::Package < ApplicationRecord
     else
       order_created_desc
     end
-  end
-
-  def self.keyset_pagination_order(join_class:, column_name:, direction: :asc)
-    join_table = join_class.table_name
-    asc_order_expression = join_class.arel_table[column_name].asc.nulls_last
-    desc_order_expression = join_class.arel_table[column_name].desc.nulls_first
-    order_direction = direction == :asc ? asc_order_expression : desc_order_expression
-    reverse_order_direction = direction == :asc ? desc_order_expression : asc_order_expression
-    arel_order_classes = ::Gitlab::Pagination::Keyset::ColumnOrderDefinition::AREL_ORDER_CLASSES.invert
-
-    ::Gitlab::Pagination::Keyset::Order.build(
-      [
-        ::Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-          attribute_name: "#{join_table}_#{column_name}",
-          column_expression: join_class.arel_table[column_name],
-          order_expression: order_direction,
-          reversed_order_expression: reverse_order_direction,
-          order_direction: direction,
-          distinct: false,
-          add_to_projections: true
-        ),
-        ::Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-          attribute_name: 'id',
-          order_expression: arel_order_classes[direction].new(Packages::Package.arel_table[:id]),
-          add_to_projections: true
-        )
-      ])
   end
 
   def versions

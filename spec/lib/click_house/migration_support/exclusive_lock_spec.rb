@@ -5,6 +5,8 @@ require 'spec_helper'
 RSpec.describe ClickHouse::MigrationSupport::ExclusiveLock, feature_category: :database do
   include ExclusiveLeaseHelpers
 
+  let(:worker_id) { 1 }
+
   let(:worker_class) do
     # This worker will be active longer than the ClickHouse worker TTL
     Class.new do
@@ -81,7 +83,7 @@ RSpec.describe ClickHouse::MigrationSupport::ExclusiveLock, feature_category: :d
       end
 
       around do |example|
-        described_class.register_running_worker(worker_class, anything) do
+        described_class.register_running_worker(worker_class, worker_id) do
           example.run
         end
       end
@@ -92,17 +94,6 @@ RSpec.describe ClickHouse::MigrationSupport::ExclusiveLock, feature_category: :d
         expect { migration }.to raise_error(ClickHouse::MigrationSupport::Errors::LockError,
           /Timed out waiting for active workers/)
         expect(Time.current - started_at).to eq(described_class::DEFAULT_CLICKHOUSE_WORKER_TTL)
-      end
-
-      context 'when wait_for_clickhouse_workers_during_migration FF is disabled' do
-        before do
-          stub_feature_flags(wait_for_clickhouse_workers_during_migration: false)
-        end
-
-        it 'runs migration without waiting for workers' do
-          expect { migration }.not_to raise_error
-          expect(Time.current - started_at).to eq(0.0)
-        end
       end
 
       it 'ignores expired workers' do

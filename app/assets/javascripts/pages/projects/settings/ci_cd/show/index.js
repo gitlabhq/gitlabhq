@@ -12,6 +12,7 @@ import { initCiSecureFiles } from '~/ci_secure_files';
 import initDeployTokens from '~/deploy_tokens';
 import { initProjectRunnersRegistrationDropdown } from '~/ci/runner/project_runners/register';
 import { initGeneralPipelinesOptions } from '~/ci_settings_general_pipeline';
+import { renderGFM } from '~/behaviors/markdown/render_gfm';
 
 // Initialize expandable settings panels
 initSettingsPanels();
@@ -22,7 +23,9 @@ initInheritedGroupCiVariables();
 // hide extra auto devops settings based checkbox state
 const autoDevOpsExtraSettings = document.querySelector('.js-extra-settings');
 const instanceDefaultBadge = document.querySelector('.js-instance-default-badge');
-document.querySelector('.js-toggle-extra-settings').addEventListener('click', (event) => {
+const extraSettingsToggle = document.querySelector('.js-toggle-extra-settings');
+
+extraSettingsToggle?.addEventListener('click', (event) => {
   const { target } = event;
   if (instanceDefaultBadge) instanceDefaultBadge.style.display = 'none';
   autoDevOpsExtraSettings.classList.toggle('hidden', !target.checked);
@@ -40,3 +43,5 @@ initRefSwitcherBadges();
 initTokenAccess();
 initCiSecureFiles();
 initGeneralPipelinesOptions();
+
+renderGFM(document.getElementById('js-shared-runners-markdown'));

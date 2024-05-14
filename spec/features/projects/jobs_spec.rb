@@ -203,7 +203,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :grou
       end
 
       it 'renders escaped tooltip name' do
-        page.find('[data-testid="active-job"]').hover
+        find_by_testid('active-job').hover
         expect(page).to have_content('<img src=x onerror=alert(document.domain)> - passed')
       end
     end
@@ -240,7 +240,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :grou
           href = new_project_issue_path(project, options)
 
           page.within('aside.right-sidebar') do
-            expect(find('[data-testid="job-new-issue"]')['href']).to include(href)
+            expect(find_by_testid('job-new-issue')['href']).to include(href)
           end
         end
       end
@@ -257,7 +257,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :grou
 
       context 'job is cancelable' do
         it 'shows cancel button' do
-          find('[data-testid="cancel-button"]').click
+          find_by_testid('cancel-button').click
 
           expect(page).to have_current_path(job_url, ignore_query: true)
         end
@@ -544,7 +544,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :grou
 
         it 'shows deployment message' do
           expect(page).to have_content 'This job is deployed to production'
-          expect(find('[data-testid="job-environment-link"]')['href']).to match("environments/#{environment.id}")
+          expect(find_by_testid('job-environment-link')['href']).to match("environments/#{environment.id}")
         end
 
         context 'when there is a cluster used for the deployment' do
@@ -576,7 +576,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :grou
 
         it 'shows a link for the job' do
           expect(page).to have_link environment.name
-          expect(find('[data-testid="job-environment-link"]')['href']).to match("environments/#{environment.id}")
+          expect(find_by_testid('job-environment-link')['href']).to match("environments/#{environment.id}")
         end
       end
 
@@ -586,7 +586,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :grou
         it 'shows a link to latest deployment' do
           expect(page).to have_link environment.name
           expect(page).to have_content 'This job is creating a deployment'
-          expect(find('[data-testid="job-environment-link"]')['href']).to match("environments/#{environment.id}")
+          expect(find_by_testid('job-environment-link')['href']).to match("environments/#{environment.id}")
         end
       end
     end
@@ -638,15 +638,15 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :grou
         end
 
         it 'renders a link to the most recent deployment' do
-          expect(find('[data-testid="job-environment-link"]')['href']).to match("environments/#{environment.id}")
-          expect(find('[data-testid="job-deployment-link"]')['href']).to include(second_deployment.deployable.project.path, second_deployment.deployable_id.to_s)
+          expect(find_by_testid('job-environment-link')['href']).to match("environments/#{environment.id}")
+          expect(find_by_testid('job-deployment-link')['href']).to include(second_deployment.deployable.project.path, second_deployment.deployable_id.to_s)
         end
 
         context 'when deployment does not have a deployable' do
           let!(:second_deployment) { create(:deployment, :success, environment: environment, deployable: nil) }
 
           it 'has an empty href' do
-            expect(find('[data-testid="job-deployment-link"]')['href']).to be_empty
+            expect(find_by_testid('job-deployment-link')['href']).to be_empty
           end
         end
       end
@@ -672,7 +672,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :grou
             expected_text = 'This job is creating a deployment to staging'
 
             expect(page).to have_css('.environment-information', text: expected_text)
-            expect(find('[data-testid="job-environment-link"]')['href']).to match("environments/#{environment.id}")
+            expect(find_by_testid('job-environment-link')['href']).to match("environments/#{environment.id}")
           end
 
           context 'when it has deployment' do
@@ -683,7 +683,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :grou
 
               expect(page).to have_css('.environment-information', text: expected_text)
               expect(page).to have_css('.environment-information', text: 'latest deployment')
-              expect(find('[data-testid="job-environment-link"]')['href']).to match("environments/#{environment.id}")
+              expect(find_by_testid('job-environment-link')['href']).to match("environments/#{environment.id}")
             end
           end
         end
@@ -698,7 +698,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :grou
               '.environment-information', text: expected_text)
             expect(page).not_to have_css(
               '.environment-information', text: 'latest deployment')
-            expect(find('[data-testid="job-environment-link"]')['href']).to match("environments/#{environment.id}")
+            expect(find_by_testid('job-environment-link')['href']).to match("environments/#{environment.id}")
           end
         end
       end
@@ -878,7 +878,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :grou
         visit project_job_path(project, job)
         wait_for_requests
 
-        page.within('[data-testid="job-erased-block"]') do
+        within_testid('job-erased-block') do
           expect(page).to have_content('Job has been erased')
         end
       end
@@ -987,7 +987,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :grou
       before do
         job.run!
         visit project_job_path(project, job)
-        find('[data-testid="cancel-button"]').click
+        find_by_testid('cancel-button').click
       end
 
       it 'loads the page and shows all needed controls' do
@@ -1004,7 +1004,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :grou
         visit project_job_path(project, job)
         wait_for_requests
 
-        find('[data-testid="retry-button"]').click
+        find_by_testid('retry-button').click
       end
 
       it 'shows the right status and buttons' do
@@ -1039,7 +1039,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :grou
         visit project_job_path(project, job)
         wait_for_requests
 
-        find('[data-testid="retry-button"]').click
+        find_by_testid('retry-button').click
       end
 
       it 'shows a modal to warn the user' do
@@ -1049,9 +1049,9 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :grou
       end
 
       it 'retries the job' do
-        find('[data-testid="retry-button-modal"]').click
+        find_by_testid('retry-button-modal').click
 
-        within '[data-testid="job-header-content"]' do
+        within_testid 'job-header-content' do
           expect(page).to have_content('Pending')
         end
       end

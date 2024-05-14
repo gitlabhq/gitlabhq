@@ -3,17 +3,23 @@
 Gitlab::Database::Partitioning.register_models(
   [
     AuditEvent,
-    WebHookLog,
-    LooseForeignKeys::DeletedRecord,
-    Gitlab::Database::BackgroundMigration::BatchedJobTransitionLog,
-    Ci::RunnerManagerBuild,
-    Ci::JobAnnotation,
-    Ci::BuildMetadata,
-    CommitStatus,
     BatchedGitRefUpdates::Deletion,
-    Users::ProjectVisit,
+    Ci::BuildMetadata,
+    Ci::BuildExecutionConfig,
+    Ci::BuildName,
+    Ci::Catalog::Resources::Components::Usage,
+    Ci::Catalog::Resources::SyncEvent,
+    Ci::JobAnnotation,
+    Ci::JobArtifact,
+    Ci::PipelineVariable,
+    Ci::RunnerManagerBuild,
+    Ci::Stage,
+    CommitStatus,
+    Gitlab::Database::BackgroundMigration::BatchedJobTransitionLog,
+    LooseForeignKeys::DeletedRecord,
     Users::GroupVisit,
-    Ci::Catalog::Resources::SyncEvent
+    Users::ProjectVisit,
+    WebHookLog
   ])
 
 if Gitlab.ee?
@@ -23,7 +29,8 @@ if Gitlab.ee?
       IncidentManagement::PendingEscalations::Issue,
       Security::Finding,
       Analytics::ValueStreamDashboard::Count,
-      Ci::FinishedBuildChSyncEvent
+      Ci::FinishedBuildChSyncEvent,
+      Search::Zoekt::Task
     ])
 else
   Gitlab::Database::Partitioning.register_tables(
@@ -55,4 +62,29 @@ unless Gitlab.jh?
     ])
 end
 
+# Enable partition management for the backfill table during merge_request_diff_commits partitioning.
+# This way new partitions will be created as the trigger syncs new rows across to this table.
+#
+Gitlab::Database::Partitioning.register_tables(
+  [
+    {
+      limit_connection_names: %i[main],
+      table_name: 'merge_request_diff_commits_b5377a7a34',
+      partitioned_column: :merge_request_diff_id, strategy: :int_range, partition_size: 200_000_000
+    }
+  ]
+)
+
+# Enable partition management for the backfill table during merge_request_diff_files partitioning.
+# This way new partitions will be created as the trigger syncs new rows across to this table.
+#
+Gitlab::Database::Partitioning.register_tables(
+  [
+    {
+      limit_connection_names: %i[main],
+      table_name: 'merge_request_diff_files_99208b8fac',
+      partitioned_column: :merge_request_diff_id, strategy: :int_range, partition_size: 200_000_000
+    }
+  ]
+)
 Gitlab::Database::Partitioning.sync_partitions_ignore_db_error

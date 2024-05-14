@@ -99,13 +99,14 @@ module Gitlab
 
           parent_group = @groups_mapping.fetch(parent_id) { raise(ArgumentError, 'Parent group not found') }
 
-          group = ::Groups::CreateService.new(
+          result = ::Groups::CreateService.new(
             user,
             name: name,
             path: path,
             parent_id: parent_group.id,
             visibility_level: sub_group_visibility_level(visibility_level, parent_group)
           ).execute
+          group = result[:group]
 
           group.validate!
 

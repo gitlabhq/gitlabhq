@@ -23,4 +23,4 @@ toggleRememberMeQuery();
 initVueAlerts();
 initLanguageSwitcher();
 mountEmailVerificationApplication();
-renderGFM(document.body);
+renderGFM(document.getElementById('js-custom-sign-in-description'));

@@ -19,7 +19,7 @@ module Ci
       def builds_for_group_runner
         return new_builds.none if runner.namespace_ids.empty?
 
-        new_builds_relation = new_builds.where('ci_pending_builds.namespace_traversal_ids && ARRAY[?]::int[]', runner.namespace_ids)
+        new_builds_relation = new_builds.where("ci_pending_builds.namespace_traversal_ids && '{?}'", runner.namespace_ids)
 
         return order(new_builds_relation) if ::Feature.enabled?(:order_builds_for_group_runner)
 
@@ -42,8 +42,8 @@ module Ci
         ::Ci::PendingBuild.all
       end
 
-      def build_ids(relation)
-        relation.pluck(:build_id)
+      def build_and_partition_ids(relation)
+        relation.pluck(:build_id, :partition_id)
       end
 
       private

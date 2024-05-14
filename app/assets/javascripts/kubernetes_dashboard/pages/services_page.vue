@@ -20,18 +20,20 @@ export default {
       },
       update(data) {
         return (
-          data?.k8sServices?.map((service) => {
+          data?.k8sDashboardServices?.map((service) => {
             return {
-              name: service.metadata?.name,
-              namespace: service.metadata?.namespace,
-              type: service.spec?.type,
-              clusterIP: service.spec?.clusterIP,
-              externalIP: service.spec?.externalIP,
-              ports: generateServicePortsString(service?.spec?.ports),
-              age: getAge(service.metadata?.creationTimestamp),
-              labels: service.metadata?.labels,
-              annotations: service.metadata?.annotations,
+              name: service.metadata.name,
+              namespace: service.metadata.namespace,
+              type: service.spec.type,
+              clusterIP: service.spec.clusterIP || '-',
+              externalIP: service.spec.externalIP || '-',
+              ports: generateServicePortsString(service.spec.ports),
+              age: getAge(service.metadata.creationTimestamp),
+              labels: service.metadata.labels,
+              annotations: service.metadata.annotations,
               kind: s__('KubernetesDashboard|Service'),
+              spec: service.spec,
+              fullStatus: service.status,
             };
           }) || []
         );

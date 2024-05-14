@@ -1,18 +1,17 @@
-.login-box
-  = gitlab_ui_form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post, class: 'gl-p-5 gl-show-field-errors', aria: { live: 'assertive' }}) do |f|
-    .devise-errors
-      = render "devise/shared/error_messages", resource: resource
-    .form-group
-      = f.label :email, _('Email')
-      = f.email_field :email, class: "form-control gl-form-input", required: true, autocomplete: 'off', value: params[:user_email], autofocus: true, title: _('Please provide a valid email address.')
-      .form-text.text-muted
-        = _('Requires your primary or verified secondary GitLab email address.')
+= gitlab_ui_form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post, class: 'gl-show-field-errors', aria: { live: 'assertive' }}) do |f|
+  .devise-errors
+    = render "devise/shared/error_messages", resource: resource
+  .form-group
+    = f.label :email, _('Email')
+    = f.email_field :email, class: "form-control gl-form-input", required: true, autocomplete: 'off', value: params[:user_email], autofocus: true, title: _('Please provide a valid email address.')
+    .form-text.text-muted
+      = _('Requires your primary or verified secondary GitLab email address.')
 
+  .form-group
     - if recaptcha_enabled?
-      .gl-mb-5
-        = recaptcha_tags nonce: content_security_policy_nonce
+      = recaptcha_tags nonce: content_security_policy_nonce
 
-    = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, block: true) do
-      = _('Reset password')
+  = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, block: true) do
+    = _('Reset password')
 
 = render 'devise/shared/sign_in_link'

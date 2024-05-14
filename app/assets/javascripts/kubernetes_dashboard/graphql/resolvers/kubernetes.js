@@ -4,12 +4,8 @@ import {
   getK8sPods,
   handleClusterError,
   mapWorkloadItem,
-  mapSetItem,
   buildWatchPath,
   watchWorkloadItems,
-  mapJobItem,
-  mapCronJobItem,
-  mapServicesItems,
 } from '../helpers/resolver_helpers';
 import k8sDashboardPodsQuery from '../queries/k8s_dashboard_pods.query.graphql';
 import k8sDashboardDeploymentsQuery from '../queries/k8s_dashboard_deployments.query.graphql';
@@ -21,10 +17,11 @@ import k8sCronJobsQuery from '../queries/k8s_dashboard_cron_jobs.query.graphql';
 import k8sServicesQuery from '../queries/k8s_dashboard_services.query.graphql';
 
 export default {
-  k8sPods(_, { configuration }, { client }) {
+  k8sDashboardPods(_, { configuration }, { client }) {
     const query = k8sDashboardPodsQuery;
     const enableWatch = true;
-    return getK8sPods({ client, query, configuration, enableWatch });
+    const queryField = 'k8sDashboardPods';
+    return getK8sPods({ client, query, configuration, enableWatch, queryField });
   },
 
   k8sDeployments(_, { configuration, namespace = '' }, { client }) {
@@ -84,12 +81,11 @@ export default {
           namespace,
           watchPath,
           queryField: 'k8sStatefulSets',
-          mapFn: mapSetItem,
         });
 
         const data = res?.items || [];
 
-        return data.map(mapSetItem);
+        return data.map(mapWorkloadItem);
       })
       .catch(async (err) => {
         try {
@@ -121,12 +117,11 @@ export default {
           namespace,
           watchPath,
           queryField: 'k8sReplicaSets',
-          mapFn: mapSetItem,
         });
 
         const data = res?.items || [];
 
-        return data.map(mapSetItem);
+        return data.map(mapWorkloadItem);
       })
       .catch(async (err) => {
         try {
@@ -194,12 +189,11 @@ export default {
           namespace,
           watchPath,
           queryField: 'k8sJobs',
-          mapFn: mapJobItem,
         });
 
         const data = res?.items || [];
 
-        return data.map(mapJobItem);
+        return data.map(mapWorkloadItem);
       })
       .catch(async (err) => {
         try {
@@ -231,12 +225,11 @@ export default {
           namespace,
           watchPath,
           queryField: 'k8sCronJobs',
-          mapFn: mapCronJobItem,
         });
 
         const data = res?.items || [];
 
-        return data.map(mapCronJobItem);
+        return data.map(mapWorkloadItem);
       })
       .catch(async (err) => {
         try {
@@ -247,7 +240,7 @@ export default {
       });
   },
 
-  k8sServices(_, { configuration, namespace = '' }, { client }) {
+  k8sDashboardServices(_, { configuration, namespace = '' }, { client }) {
     const config = new Configuration(configuration);
 
     const coreV1Api = new CoreV1Api(config);
@@ -266,13 +259,12 @@ export default {
           configuration,
           namespace,
           watchPath,
-          queryField: 'k8sServices',
-          mapFn: mapServicesItems,
+          queryField: 'k8sDashboardServices',
         });
 
         const data = res?.items || [];
 
-        return data.map(mapServicesItems);
+        return data.map(mapWorkloadItem);
       })
       .catch(async (err) => {
         try {

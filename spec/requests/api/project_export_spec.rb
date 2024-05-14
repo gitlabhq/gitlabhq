@@ -519,15 +519,27 @@ RSpec.describe API::ProjectExport, :aggregate_failures, :clean_gitlab_redis_cach
       end
 
       context 'when overriding description' do
-        it 'starts', :sidekiq_might_not_need_inline do
-          params = { description: "Foo" }
+        context 'when parallel_project_export feature flag is disabled' do
+          it 'starts export service', :sidekiq_might_not_need_inline do
+            stub_feature_flags(parallel_project_export: false)
 
-          expect_next_instance_of(Projects::ImportExport::ExportService) do |service|
-            expect(service).to receive(:execute)
+            params = { description: "Foo" }
+
+            expect_next_instance_of(Projects::ImportExport::ExportService) do |service|
+              expect(service).to receive(:execute)
+            end
+            post api(path, project.first_owner), params: params
+
+            expect(response).to have_gitlab_http_status(:accepted)
           end
-          post api(path, project.first_owner), params: params
+        end
 
-          expect(response).to have_gitlab_http_status(:accepted)
+        context 'when parallel_project_export feature flag is enabled' do
+          it 'enqueues CreateRelationExportsWorker' do
+            expect(Projects::ImportExport::CreateRelationExportsWorker).to receive(:perform_async)
+
+            post api(path, project.first_owner), params: params
+          end
         end
       end
     end

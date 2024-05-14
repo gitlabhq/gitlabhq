@@ -28,13 +28,15 @@ query getProjectContainerRepositories(
         path
         status
         location
-        canDelete
         createdAt
         expirationPolicyStartedAt
         expirationPolicyCleanupStatus
         project {
           id
           path
+        }
+        userPermissions {
+          destroyContainerRepository
         }
         __typename
       }
@@ -67,13 +69,15 @@ query getProjectContainerRepositories(
         path
         status
         location
-        canDelete
         createdAt
         expirationPolicyStartedAt
         expirationPolicyCleanupStatus
         project {
           id
           path
+        }
+        userPermissions {
+          destroyContainerRepository
         }
         __typename
       }

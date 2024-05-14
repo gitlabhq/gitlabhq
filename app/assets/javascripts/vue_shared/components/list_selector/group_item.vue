@@ -38,10 +38,17 @@ export default {
 
 <template>
   <span class="gl-display-flex gl-align-items-center gl-gap-3" @click="$emit('select', name)">
-    <gl-avatar :alt="fullName" :size="32" :src="avatarUrl" />
+    <gl-avatar
+      :alt="fullName"
+      :entity-name="fullName"
+      :size="32"
+      shape="rect"
+      :src="avatarUrl"
+      fallback-on-error
+    />
     <span class="gl-display-flex gl-flex-direction-column gl-flex-grow-1">
-      <span class="gl-font-weight-bold">{{ fullName }}</span>
-      <span class="gl-text-gray-600">@{{ name }}</span>
+      <span class="gl-font-weight-bold">{{ name }}</span>
+      <span class="gl-text-gray-600">{{ fullName }}</span>
     </span>
 
     <gl-button

@@ -301,10 +301,10 @@ it's time to look at a custom solution:
 
 In short: the oldest stuff is replaced with new stuff:
 
-- A [useful article](https://redis.io/docs/manual/eviction/) about configuring Redis as an LRU cache.
+- A [useful article](https://redis.io/docs/latest/operate/rs/databases/memory-performance/eviction-policy/) about configuring Redis as an LRU cache.
 - Lots of options for different cache eviction strategies.
 - You probably want `allkeys-lru`, which is functionally similar to Memcached.
-- In Redis 4.0 and later, [allkeys-lfu is available](https://redis.io/docs/manual/eviction/#the-new-lfu-mode),
+- In Redis 4.0 and later, [allkeys-lfu is available](https://redis.io/docs/latest/operate/rs/databases/memory-performance/eviction-policy/),
   which is similar but different.
 - We handle all explicit deletes using `UNLINK` instead of `DEL` now, which allows Redis to
   reclaim memory in its own time, rather than immediately.

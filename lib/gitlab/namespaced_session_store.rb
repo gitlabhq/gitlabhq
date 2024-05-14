@@ -2,6 +2,8 @@
 
 module Gitlab
   class NamespacedSessionStore
+    include Enumerable
+
     def initialize(key, session = Session.current)
       @namespace_key = key
       @session = session
@@ -9,6 +11,12 @@ module Gitlab
 
     def initiated?
       !session.nil?
+    end
+
+    def each(&block)
+      return unless session
+
+      session.fetch(@namespace_key, {}).each(&block)
     end
 
     def [](key)

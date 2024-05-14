@@ -4,7 +4,7 @@ key_path: redis_hll_counters.deploy_token_packages.i_package_helm_deploy_token_w
 description: Distinct Helm pakages deployed in recent 7 days
 product_section: ops
 product_stage: package
-product_group: package
+product_group: package_registry
 value_type: number
 status: active
 milestone: "14.0"

@@ -6,10 +6,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Responding to security incidents
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
-
 When a security incident occurs, you should follow the processes defined by your organization. The GitLab SIRT team created this guide:
 
 - For administrators and maintainers of self-managed GitLab instances and groups on GitLab.com.
@@ -24,10 +20,6 @@ Use the suggestions/recommendations mentioned in this guide at your own risk.
 ## Common breach scenarios
 
 ### Credential exposure to public internet
-
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
 
 This scenario refers to security events where sensitive authentication or authorization information has been exposed to the Internet due to misconfigurations or human errors. Such information might include:
 
@@ -57,20 +49,12 @@ Security incidents related to credentials exposure can vary in severity from low
 
 #### Event types
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** Self-managed
-
-- Review the available [audit events](../administration/audit_events.md) for your group or namespace.
-- Adversaries may attempt to create tokens, SSH keys, or user accounts to maintain persistence. Look for [audit events](../administration/audit_event_streaming/audit_event_types.md) related to these activities.
+- Review the available [audit events](../administration/audit_event_reports.md) for your group or namespace.
+- Adversaries may attempt to create tokens, SSH keys, or user accounts to maintain persistence. Look for [audit events](../administration/audit_event_types.md) related to these activities.
 - Focus on CI-related [audit events](../administration/audit_event_types.md#continuous-integration) to identify any modifications to CI/CD variables.
 - Review [job logs](../administration/job_logs.md) for any pipelines ran by an adversary
 
 ### Suspected compromised user account
-
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
 
 #### Response
 
@@ -84,11 +68,7 @@ If you suspect that a user account or bot account has been compromised, you shou
 
 #### Event types
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** Self-managed
-
-Review the [audit events](../administration/audit_events.md) available to you to identify any suspicious account behavior. For example:
+Review the [audit events](../administration/audit_event_reports.md) available to you to identify any suspicious account behavior. For example:
 
 - Suspicious sign-in events.
 - Creation or deletion of personal, project, and group access tokens.
@@ -103,10 +83,6 @@ Review the [audit events](../administration/audit_events.md) available to you to
 - Changes to email addresses or notifications.
 
 ### CI/CD-related security incidents
-
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
 
 CI/CD workflows are an integral part of modern day software development and primarily used by developers and SREs to build, test and deploy code to production. Because these workflows are attached to the production environments, they often require access to sensitive secrets within the CI/CD pipelines. Security incidents related to CI/CD might vary based on your setup, but they can be broadly classified as follows:
 
@@ -124,7 +100,7 @@ Under normal circumstances, the `CI_JOB_TOKEN` is not displayed in the job logs.
 - Check if there are any recent modifications to the source code in the repo. You can check the commit history of the modified file to determine the actor who made the changes. If you suspect suspicious edits, investigate the user activity using the [suspected compromised user account guide](#suspected-compromised-user-account).
 - Any suspicious modification to any code that is called by that file can cause issues and should be investigated and may lead to exposed secrets.
 - Consider rotating the exposed secrets after determining the production impact of revocation.
-- Review [audit logs](../administration/audit_events.md) available to you for any suspicious modifications to user and project settings.
+- Review [audit logs](../administration/audit_event_reports.md) available to you for any suspicious modifications to user and project settings.
 
 ##### Secrets exposed through misconfigured GitLab CI/CD
 
@@ -141,10 +117,6 @@ When secrets stored as CI variables are not [masked](../ci/variables/index.md#ma
 
 ### Suspected compromised instance
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
-
 Self-managed GitLab customers and administrators are responsible for:
 
 - The security of their underlying infrastructure.
@@ -156,7 +128,7 @@ It is important to [regularly update GitLab](../policy/maintenance.md), update y
 
 If you suspect that your GitLab instance has been compromised, you should:
 
-- Review the [audit events](../administration/audit_events.md) available to you for suspicious account behavior.
+- Review the [audit events](../administration/audit_event_reports.md) available to you for suspicious account behavior.
 - Review [all users](../administration/moderate_users.md) (including the Administrative root user), and follow the steps in the [suspected compromised user account guide](#suspected-compromised-user-account) if necessary.
 - Review the Credentials Inventory, if available to you.
 - Change any sensitive credentials, variables, tokens, and secrets. For example, those located in instance configuration, database, CI/CD pipelines, or elsewhere.
@@ -173,17 +145,9 @@ If you suspect that your GitLab instance has been compromised, you should:
 
 #### Event types
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** Self-managed
-
 Review [system access audit events](../administration/audit_event_types.md#system-access) to determine any changes related to system settings, user permissions and user login events.
 
 ### Misconfigured project or group settings
-
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
 
 Security incidents can occur as a result of improperly configured project or group settings, potentially leading to unauthorized access to sensitive or proprietary data. These incidents may include but are not limited to:
 
@@ -197,15 +161,11 @@ Security incidents can occur as a result of improperly configured project or gro
 
 If you suspect unauthorized modifications to project settings, consider taking the following steps:
 
-- Begin by reviewing the available [audit events](../administration/audit_events.md) to identify the user responsible for the action.
+- Begin by reviewing the available [audit events](../administration/audit_event_reports.md) to identify the user responsible for the action.
 - If the user account appears suspicious, follow the steps outlined in the [suspected compromised user account guide](#suspected-compromised-user-account).
 - Consider reverting the settings to their original state by referring to the audit events and consulting the project owners and maintainers for guidance.
 
 #### Event types
-
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** Self-managed
 
 - Audit logs can be filtered based on the `target_type` field. Based on the security incident context, apply a filter to this field to narrow down the scope.
 - Look for specific audit events of [compliance management](../administration/audit_event_types.md#compliance-management) and [audit events of groups and projects](../administration/audit_event_types.md#groups-and-projects).

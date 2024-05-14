@@ -8,11 +8,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22011) in GitLab 11.5.
-> - Became [optional](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/26565) in GitLab 11.11.
-> - [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
 > - [Disabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/353410) in GitLab 15.0.
 
 WARNING:
@@ -40,8 +37,6 @@ namespaces and service accounts, can cause unexpected errors. If this occurs, tr
 
 ## Clearing the cluster cache
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31759) in GitLab 12.6.
-
 If you allow GitLab to manage your cluster, GitLab stores a cached
 version of the namespaces and service accounts it creates for your projects. If you
 modify these resources in your cluster manually, this cache can fall out of sync with
@@ -49,13 +44,11 @@ your cluster. This can cause deployment jobs to fail.
 
 To clear the cache:
 
-1. Navigate to your project's **Operate > Kubernetes clusters** page, and select your cluster.
+1. Go to your project's **Operate > Kubernetes clusters** page, and select your cluster.
 1. Expand the **Advanced settings** section.
 1. Select **Clear cluster cache**.
 
 ## Base domain
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/24580) in GitLab 11.8.
 
 Specifying a base domain automatically sets `KUBE_INGRESS_BASE_DOMAIN` as an deployment variable.
 If you are using [Auto DevOps](../../../topics/autodevops/index.md), this domain is used for the different

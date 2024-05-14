@@ -1,20 +1,8 @@
 ---
 # It maps table_name to {index1: array_of_duplicate_indexes, index2: array_of_duplicate_indexes, ... }
-abuse_reports:
-  idx_abuse_reports_user_id_status_and_category:
-    - index_abuse_reports_on_user_id
 alert_management_http_integrations:
   index_http_integrations_on_project_and_endpoint:
     - index_alert_management_http_integrations_on_project_id
-approval_project_rules_users:
-  index_approval_project_rules_users_1:
-    - index_approval_project_rules_users_on_approval_project_rule_id
-approvals:
-  index_approvals_on_merge_request_id_and_created_at:
-    - index_approvals_on_merge_request_id
-board_group_recent_visits:
-  index_board_group_recent_visits_on_user_group_and_board:
-    - index_board_group_recent_visits_on_user_id
 board_project_recent_visits:
   index_board_project_recent_visits_on_user_project_and_board:
     - index_board_project_recent_visits_on_user_id
@@ -27,16 +15,6 @@ boards_epic_board_recent_visits:
 boards_epic_user_preferences:
   index_boards_epic_user_preferences_on_board_user_epic_unique:
     - index_boards_epic_user_preferences_on_board_id
-ci_job_artifacts:
-  index_ci_job_artifacts_on_id_project_id_and_created_at:
-    - index_ci_job_artifacts_on_project_id
-  index_ci_job_artifacts_on_id_project_id_and_file_type:
-    - index_ci_job_artifacts_on_project_id
-  index_ci_job_artifacts_on_project_id_and_id:
-    - index_ci_job_artifacts_on_project_id
-ci_pipeline_artifacts:
-  index_ci_pipeline_artifacts_on_pipeline_id_and_file_type:
-    - index_ci_pipeline_artifacts_on_pipeline_id
 ci_stages:
   index_ci_stages_on_pipeline_id_and_position:
     - index_ci_stages_on_pipeline_id
@@ -96,16 +74,13 @@ ml_model_versions:
 ml_models:
   index_ml_models_on_project_id_and_name:
     - index_ml_models_on_project_id
-p_ci_runner_machine_builds:
-  index_p_ci_runner_machine_builds_on_runner_machine_id:
-    - index_ci_runner_machine_builds_on_runner_machine_id
-p_ci_job_artifacts:
-  p_ci_job_artifacts_project_id_file_type_id_idx:
-    - p_ci_job_artifacts_project_id_idx
-  p_ci_job_artifacts_project_id_created_at_id_idx:
-    - p_ci_job_artifacts_project_id_idx
-  p_ci_job_artifacts_project_id_id_idx1:
-    - p_ci_job_artifacts_project_id_idx
+p_ci_stages:
+  p_ci_stages_pipeline_id_name_partition_id_idx:
+    - p_ci_stages_pipeline_id_idx
+  p_ci_stages_pipeline_id_idx:
+    - p_ci_stages_pipeline_id_idx
+  p_ci_stages_pipeline_id_position_idx:
+    - p_ci_stages_pipeline_id_idx
 pages_domains:
   index_pages_domains_on_project_id_and_enabled_until:
     - index_pages_domains_on_project_id
@@ -126,12 +101,6 @@ pm_package_versions:
 project_compliance_standards_adherence:
   u_project_compliance_standards_adherence_for_reporting:
     - index_project_compliance_standards_adherence_on_project_id
-project_repositories:
-  index_project_repositories_on_shard_id_and_project_id:
-    - index_project_repositories_on_shard_id
-protected_tags:
-  index_protected_tags_on_project_id_and_name:
-    - index_protected_tags_on_project_id
 related_epic_links:
   index_related_epic_links_on_source_id_and_target_id:
     - index_related_epic_links_on_source_id

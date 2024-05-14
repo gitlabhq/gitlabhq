@@ -47,9 +47,7 @@ module API
           end
 
           put 'authorize' do
-            project = authorized_user_project
-
-            authorize_workhorse!(subject: project, maximum_size: project.actual_limits.generic_packages_max_file_size)
+            authorize_workhorse!(**authorize_workhorse_params)
           end
 
           desc 'Upload package file' do
@@ -121,7 +119,7 @@ module API
             requires :file_name, type: String, desc: 'Package file name', regexp: Gitlab::Regex.generic_package_file_name_regex, file_path: true
           end
 
-          route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true, deploy_token_allowed: true
+          route_setting :authentication, job_token_allowed: %i[request basic_auth], basic_auth_personal_access_token: true, deploy_token_allowed: true
 
           get do
             project = authorized_user_project(action: :read_package)
@@ -145,6 +143,16 @@ module API
 
       def max_file_size_exceeded?
         authorized_user_project.actual_limits.exceeded?(:generic_packages_max_file_size, params[:file].size)
+      end
+
+      def authorize_workhorse_params
+        project = authorized_user_project
+
+        {
+          subject: project,
+          maximum_size: project.actual_limits.generic_packages_max_file_size,
+          use_final_store_path: true
+        }
       end
     end
   end

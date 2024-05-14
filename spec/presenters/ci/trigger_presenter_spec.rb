@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Ci::TriggerPresenter do
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project) { create(:project, maintainers: user) }
 
   let_it_be(:trigger) do
     create(:ci_trigger, token: '123456789abcd', project: project)
@@ -12,10 +12,6 @@ RSpec.describe Ci::TriggerPresenter do
 
   subject do
     described_class.new(trigger, current_user: user)
-  end
-
-  before do
-    project.add_maintainer(user)
   end
 
   context 'when user is not a trigger owner' do

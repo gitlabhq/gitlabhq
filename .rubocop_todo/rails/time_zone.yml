@@ -41,7 +41,6 @@ Rails/TimeZone:
     - 'lib/quality/seeders/issues.rb'
     - 'lib/tasks/gitlab/assets.rake'
     - 'lib/tasks/gitlab/cleanup.rake'
-    - 'lib/tasks/gitlab/list_repos.rake'
     - 'spec/lib/api/helpers_spec.rb'
     - 'spec/lib/gitlab/analytics/cycle_analytics/base_query_builder_spec.rb'
     - 'spec/lib/gitlab/app_json_logger_spec.rb'

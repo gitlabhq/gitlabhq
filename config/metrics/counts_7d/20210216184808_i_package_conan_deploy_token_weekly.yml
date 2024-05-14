@@ -5,7 +5,7 @@ description: A weekly count of Conan packages published to the registry using a 
   token
 product_section: ops
 product_stage: package
-product_group: package
+product_group: package_registry
 value_type: number
 status: active
 time_frame: 7d

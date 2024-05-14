@@ -40,7 +40,7 @@ Depending on your GitLab deployment, [additional configuration](#additional-conf
 
 ### Multi-node Geo sites
 
-If one or more of your sites is using the [2K reference architecture](../../reference_architectures/2k_users.md) or larger, see
+If one or more of your sites is using the [40 RPS / 2,000 user reference architecture](../../reference_architectures/2k_users.md) or larger, see
 [Configure Geo for multiple nodes](../replication/multiple_servers.md).
 
 Depending on your GitLab deployment, [additional configuration](#additional-configuration) for LDAP, object storage, and the container registry might be required.

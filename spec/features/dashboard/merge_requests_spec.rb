@@ -80,7 +80,7 @@ RSpec.describe 'Dashboard Merge Requests', :js, feature_category: :code_review_w
     it 'shows an empty state' do
       visit merge_requests_dashboard_path(assignee_username: current_user.username)
 
-      expect(page).to have_selector('.empty-state')
+      expect(page).to have_selector('.gl-empty-state')
     end
   end
 

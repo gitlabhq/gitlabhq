@@ -89,14 +89,12 @@ export default {
         class="commit-content gl-w-full gl-display-inline-flex gl-flex-wrap gl-align-items-baseline"
         data-testid="commit-content"
       >
-        <div
-          class="gl-flex-basis-full gl-display-inline-flex gl-align-items-center gl-column-gap-3"
-        >
+        <div class="gl-flex-basis-full gl-display-inline-flex gl-align-items-center gl-gap-x-3">
           <gl-link
             v-safe-html:[$options.safeHtmlConfig]="commit.titleHtml"
             :href="commit.webPath"
-            :class="{ 'gl-font-style-italic': !commit.message }"
-            class="commit-row-message item-title gl-line-clamp-1 gl-word-break-all!"
+            :class="{ 'gl-italic': !commit.message }"
+            class="commit-row-message item-title gl-line-clamp-1 !gl-break-all"
           />
           <gl-button
             v-if="commit.descriptionHtml"
@@ -133,12 +131,16 @@ export default {
           v-if="commitDescription"
           v-safe-html:[$options.safeHtmlConfig]="commitDescription"
           :class="{ 'gl-display-block!': showDescription }"
-          class="commit-row-description gl-mb-3 gl-white-space-pre-line"
+          class="commit-row-description gl-mb-3 gl-white-space-pre-wrap"
         ></pre>
       </div>
       <div class="gl-flex-grow-1"></div>
       <slot></slot>
     </div>
-    <div v-if="prevBlameLink" v-safe-html:[$options.safeHtmlConfig]="prevBlameLink"></div>
+    <div
+      v-if="prevBlameLink"
+      v-safe-html:[$options.safeHtmlConfig]="prevBlameLink"
+      data-event-tracking="click_previous_blame_on_blob_page"
+    ></div>
   </div>
 </template>

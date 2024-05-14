@@ -28,7 +28,7 @@ inherit_mode:
 
 AllCops:
   # The oldest supported Ruby version.
-  TargetRubyVersion: 3.0
+  TargetRubyVersion: 3.1
   TargetRailsVersion: 7.0
   Exclude:
     - 'gems/**/*'
@@ -198,6 +198,7 @@ Naming/FileName:
     - 'qa/bin/*'
     - 'qa/spec/**/*'
     - 'qa/qa/factories/**/*'
+    - 'qa/qa/ee/factories/**/*'
     - 'qa/qa/specs/**/*'
     - 'qa/tasks/**/*.rake'
     - '**/*.ru'
@@ -328,6 +329,14 @@ Rails/InverseOf:
   Include:
     - app/models/**/*.rb
     - ee/app/models/**/*.rb
+
+Rails/MigrationTimestamp:
+  Enabled: true
+  Include:
+    - db/migrate/*.rb
+    - db/post_migrate/*.rb
+    - ee/db/geo/migrate/*.rb
+    - ee/db/geo/post_migrate/*.rb
 
 # This is currently exiting with a rubocop exception error and should be
 # resolved hopefully a future update
@@ -472,6 +481,11 @@ Migration/BatchMigrationsPostOnly:
     - 'db/migrate/*.rb'
     - 'db/post_migrate/*.rb'
 
+Migration/EnsureFactoryForTable:
+  Enabled: true
+  Include:
+    - 'db/migrate/*.rb'
+
 Migration/UnfinishedDependencies:
   Enabled: true
   Include:
@@ -488,6 +502,24 @@ BackgroundMigration/DictionaryFile:
   EnforcedSince: 20231018100907
   Include:
     - 'db/post_migrate/*.rb'
+
+# See https://gitlab.com/gitlab-org/gitlab/-/issues/442751
+Gitlab/AvoidCurrentOrganization:
+  Enabled: true
+  Exclude:
+    - 'app/controllers/**/*'
+    - 'ee/app/controllers/**/*'
+    - 'app/helpers/**/*'
+    - 'ee/app/helpers/**/*'
+    - 'app/views/**/*'
+    - 'ee/app/views/**/*'
+    - 'lib/api/**/*'
+    - 'ee/lib/api/**/*'
+    - 'app/graphql/**/*'
+    - 'ee/app/graphql/**/*'
+    - 'lib/gitlab/middleware/organizations/current.rb'
+    - 'spec/**/*'
+    - 'ee/spec/**/*'
 
 # See https://gitlab.com/groups/gitlab-org/-/epics/7374
 Gitlab/AvoidGitlabInstanceChecks:
@@ -1014,6 +1046,10 @@ Cop/RedisQueueUsage:
     - 'lib/gitlab/redis.rb'
     - 'lib/system_check/app/redis_version_check.rb'
     - 'lib/gitlab/mail_room.rb'
+    - 'lib/gitlab/sidekiq_sharding/scheduled_enq.rb'
+    - 'lib/gitlab/sidekiq_sharding/router.rb'
+    - 'app/workers/concerns/application_worker.rb'
+    - 'lib/gitlab/sidekiq_queue.rb'
 
 Cop/SidekiqApiUsage:
   Enabled: true
@@ -1027,6 +1063,11 @@ Cop/SidekiqApiUsage:
     - 'lib/gitlab/sidekiq_queue.rb'
     - 'config/initializers/sidekiq.rb'
     - 'config/initializers/forbid_sidekiq_in_transactions.rb'
+    - 'lib/gitlab/sidekiq_sharding/scheduled_enq.rb'
+    - 'lib/gitlab/sidekiq_sharding/router.rb'
+    - 'lib/gitlab/redis/queues.rb'
+    - 'app/workers/concerns/application_worker.rb'
+    - 'config/initializers/active_job_shard_support.rb'
 
 Cop/FeatureFlagUsage:
   Include:
@@ -1060,10 +1101,6 @@ SidekiqLoadBalancing/WorkerDataConsistency:
   Include:
     - 'app/workers/**/*'
     - 'ee/app/workers/**/*'
-
-# This cop is disabled for Ruby 3.0+ anyway.
-Lint/NonDeterministicRequireOrder:
-  Enabled: false
 
 Graphql/ResourceNotAvailableError:
   Exclude:

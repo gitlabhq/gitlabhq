@@ -19,5 +19,6 @@ module Gitlab
     UnknownIncomingEmail = Class.new(ProcessingError)
     InvalidAttachment = Class.new(ProcessingError)
     EmailTooLarge = Class.new(ProcessingError)
+    MultipleRecipientsError = Class.new(ArgumentError)
   end
 end

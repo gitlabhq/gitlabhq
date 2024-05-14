@@ -32,7 +32,8 @@ module Ci
     CANCELABLE_STATUSES = (Ci::HasStatus::CANCELABLE_STATUSES + ['manual']).freeze
     UNLOCKABLE_STATUSES = (Ci::Pipeline.completed_statuses + [:manual]).freeze
     INITIAL_PARTITION_VALUE = 100
-    NEXT_PARTITION_VALUE = 101
+    SECOND_PARTITION_VALUE = 101
+    NEXT_PARTITION_VALUE = 102
 
     paginates_per 15
 
@@ -69,7 +70,8 @@ module Ci
         end
       end
 
-    has_many :stages, -> { order(position: :asc) }, inverse_of: :pipeline
+    has_many :stages, ->(pipeline) { in_partition(pipeline).order(position: :asc) },
+      partition_foreign_key: :partition_id, inverse_of: :pipeline
 
     #
     # In https://gitlab.com/groups/gitlab-org/-/epics/9991, we aim to convert all CommitStatus related models to
@@ -78,12 +80,13 @@ module Ci
     # DEPRECATED:
     has_many :statuses, ->(pipeline) { in_partition(pipeline) }, class_name: 'CommitStatus', foreign_key: :commit_id, inverse_of: :pipeline, partition_foreign_key: :partition_id
     has_many :processables, ->(pipeline) { in_partition(pipeline) }, class_name: 'Ci::Processable', foreign_key: :commit_id, inverse_of: :pipeline, partition_foreign_key: :partition_id
-    has_many :latest_statuses_ordered_by_stage, -> (pipeline) { latest.in_partition(pipeline).order(:stage_idx, :stage) }, class_name: 'CommitStatus', foreign_key: :commit_id, inverse_of: :pipeline, partition_foreign_key: :partition_id
+    has_many :latest_statuses_ordered_by_stage, ->(pipeline) { latest.in_partition(pipeline).order(:stage_idx, :stage) }, class_name: 'CommitStatus', foreign_key: :commit_id, inverse_of: :pipeline, partition_foreign_key: :partition_id
     has_many :latest_statuses, ->(pipeline) { latest.in_partition(pipeline) }, class_name: 'CommitStatus', foreign_key: :commit_id, inverse_of: :pipeline, partition_foreign_key: :partition_id
     has_many :statuses_order_id_desc, ->(pipeline) { in_partition(pipeline).order_id_desc }, class_name: 'CommitStatus', foreign_key: :commit_id,
       inverse_of: :pipeline, partition_foreign_key: :partition_id
     has_many :bridges, ->(pipeline) { in_partition(pipeline) }, class_name: 'Ci::Bridge', foreign_key: :commit_id, inverse_of: :pipeline, partition_foreign_key: :partition_id
     has_many :builds, ->(pipeline) { in_partition(pipeline) }, foreign_key: :commit_id, inverse_of: :pipeline, partition_foreign_key: :partition_id
+    has_many :build_execution_configs, ->(pipeline) { in_partition(pipeline) }, class_name: 'Ci::BuildExecutionConfig', inverse_of: :pipeline, partition_foreign_key: :partition_id
     has_many :generic_commit_statuses, ->(pipeline) { in_partition(pipeline) }, foreign_key: :commit_id, inverse_of: :pipeline, class_name: 'GenericCommitStatus', partition_foreign_key: :partition_id
     #
     # NEW:
@@ -151,7 +154,7 @@ module Ci
     accepts_nested_attributes_for :variables, reject_if: :persisted?
 
     delegate :full_path, to: :project, prefix: true
-    delegate :name, :auto_cancel_on_job_failure, to: :pipeline_metadata, allow_nil: true
+    delegate :name, to: :pipeline_metadata, allow_nil: true
 
     validates :sha, presence: { unless: :importing? }
     validates :ref, presence: { unless: :importing? }
@@ -187,7 +190,7 @@ module Ci
     state_machine :status, initial: :created do
       event :enqueue do
         transition [:created, :manual, :waiting_for_resource, :preparing, :skipped, :scheduled] => :pending
-        transition [:success, :failed, :canceled] => :running
+        transition [:success, :failed, :canceling, :canceled] => :running
 
         # this is needed to ensure tests to be covered
         transition [:running] => :running
@@ -224,6 +227,10 @@ module Ci
         # manual job transitions to the `manual` status.
         # More info: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98967#note_1144718316
         transition any => :success
+      end
+
+      event :start_cancel do
+        transition any - [:canceling, :canceled] => :canceling
       end
 
       event :cancel do
@@ -403,6 +410,7 @@ module Ci
 
     scope :with_unlockable_status, -> { with_status(*UNLOCKABLE_STATUSES) }
     scope :internal, -> { where(source: internal_sources) }
+    scope :no_tag, -> { where(tag: false) }
     scope :no_child, -> { where.not(source: :parent_pipeline) }
     scope :ci_sources, -> { where(source: Enums::Ci::Pipeline.ci_sources.values) }
     scope :ci_branch_sources, -> { where(source: Enums::Ci::Pipeline.ci_branch_sources.values) }
@@ -411,32 +419,32 @@ module Ci
       where(source: Enums::Ci::Pipeline.ci_and_security_orchestration_sources.values)
     end
 
-    scope :for_user, -> (user) { where(user: user) }
-    scope :for_sha, -> (sha) { where(sha: sha) }
-    scope :where_not_sha, -> (sha) { where.not(sha: sha) }
-    scope :for_source_sha, -> (source_sha) { where(source_sha: source_sha) }
-    scope :for_sha_or_source_sha, -> (sha) { for_sha(sha).or(for_source_sha(sha)) }
-    scope :for_ref, -> (ref) { where(ref: ref) }
-    scope :for_branch, -> (branch) { for_ref(branch).where(tag: false) }
-    scope :for_iid, -> (iid) { where(iid: iid) }
-    scope :for_project, -> (project_id) { where(project_id: project_id) }
-    scope :for_name, -> (name) do
+    scope :for_user, ->(user) { where(user: user) }
+    scope :for_sha, ->(sha) { where(sha: sha) }
+    scope :where_not_sha, ->(sha) { where.not(sha: sha) }
+    scope :for_source_sha, ->(source_sha) { where(source_sha: source_sha) }
+    scope :for_sha_or_source_sha, ->(sha) { for_sha(sha).or(for_source_sha(sha)) }
+    scope :for_ref, ->(ref) { where(ref: ref) }
+    scope :for_branch, ->(branch) { for_ref(branch).where(tag: false) }
+    scope :for_iid, ->(iid) { where(iid: iid) }
+    scope :for_project, ->(project_id) { where(project_id: project_id) }
+    scope :for_name, ->(name) do
       name_column = Ci::PipelineMetadata.arel_table[:name]
 
       joins(:pipeline_metadata).where(name_column.eq(name))
     end
-    scope :for_status, -> (status) { where(status: status) }
-    scope :created_after, -> (time) { where(arel_table[:created_at].gt(time)) }
-    scope :created_before_id, -> (id) { where(arel_table[:id].lt(id)) }
-    scope :before_pipeline, -> (pipeline) { created_before_id(pipeline.id).outside_pipeline_family(pipeline) }
-    scope :with_pipeline_source, -> (source) { where(source: source) }
+    scope :for_status, ->(status) { where(status: status) }
+    scope :created_after, ->(time) { where(arel_table[:created_at].gt(time)) }
+    scope :created_before_id, ->(id) { where(arel_table[:id].lt(id)) }
+    scope :before_pipeline, ->(pipeline) { created_before_id(pipeline.id).outside_pipeline_family(pipeline) }
+    scope :with_pipeline_source, ->(source) { where(source: source) }
     scope :preload_pipeline_metadata, -> { preload(:pipeline_metadata) }
 
     scope :outside_pipeline_family, ->(pipeline) do
       where.not(id: pipeline.same_family_pipeline_ids)
     end
 
-    scope :with_reports, -> (reports_scope) do
+    scope :with_reports, ->(reports_scope) do
       where_exists(Ci::Build.latest.scoped_pipeline.with_artifacts(reports_scope))
     end
 
@@ -449,7 +457,7 @@ module Ci
     # Returns the pipelines that associated with the given merge request.
     # In general, please use `Ci::PipelinesForMergeRequestFinder` instead,
     # for checking permission of the actor.
-    scope :triggered_by_merge_request, -> (merge_request) do
+    scope :triggered_by_merge_request, ->(merge_request) do
       where(
         source: :merge_request_event,
         merge_request: merge_request,
@@ -568,8 +576,10 @@ module Ci
 
     def self.current_partition_value(project = nil)
       Gitlab::SafeRequestStore.fetch(:ci_current_partition_value) do
-        if Feature.enabled?(:ci_current_partition_value_101, project)
+        if Feature.enabled?(:ci_current_partition_value_102, project)
           NEXT_PARTITION_VALUE
+        elsif Feature.enabled?(:ci_current_partition_value_101, project)
+          SECOND_PARTITION_VALUE
         else
           INITIAL_PARTITION_VALUE
         end
@@ -578,10 +588,6 @@ module Ci
 
     def self.object_hierarchy(relation, options = {})
       ::Gitlab::Ci::PipelineObjectHierarchy.new(relation, options: options)
-    end
-
-    def self.use_partition_id_filter?
-      true
     end
 
     def uses_needs?
@@ -621,7 +627,7 @@ module Ci
 
     def valid_commit_sha
       if Gitlab::Git.blank_ref?(self.sha)
-        self.errors.add(:sha, " cant be 00000000 (branch removal)")
+        self.errors.add(:sha, "can't be 00000000 (branch removal)")
       end
     end
 
@@ -769,7 +775,7 @@ module Ci
       ::Gitlab::SafeRequestStore.fetch("pipeline:#{self.id}:latest_report_artifacts") do
         ::Ci::JobArtifact.where(
           id: job_artifacts.all_reports
-            .select('max(ci_job_artifacts.id) as id')
+            .select("max(#{Ci::JobArtifact.quoted_table_name}.id) as id")
             .group(:file_type)
         )
           .preload(:job)
@@ -866,6 +872,7 @@ module Ci
       project.notes.for_commit_id(sha)
     end
 
+    # rubocop: disable Metrics/CyclomaticComplexity -- breaking apart hurts readability
     def set_status(new_status)
       retry_optimistic_lock(self, name: 'ci_pipeline_set_status') do
         case new_status
@@ -877,6 +884,7 @@ module Ci
         when 'running' then run
         when 'success' then succeed
         when 'failed' then drop
+        when 'canceling' then start_cancel
         when 'canceled' then cancel
         when 'skipped' then skip
         when 'manual' then block
@@ -886,6 +894,7 @@ module Ci
         end
       end
     end
+    # rubocop: enable Metrics/CyclomaticComplexity
 
     def protected_ref?
       strong_memoize(:protected_ref) { project.protected_for?(git_ref) }
@@ -1132,6 +1141,14 @@ module Ci
       end
     end
 
+    def complete_or_manual_and_has_reports?(reports_scope)
+      return complete_and_has_reports?(reports_scope) unless include_manual_to_pipeline_completion_enabled?
+
+      return latest_report_builds(reports_scope).exists? if Feature.enabled?(:mr_show_reports_immediately, project, type: :development)
+
+      complete_or_manual? && has_reports?(reports_scope)
+    end
+
     def has_coverage_reports?
       pipeline_artifacts&.report_exists?(:code_coverage)
     end
@@ -1348,17 +1365,6 @@ module Ci
       false
     end
 
-    def security_reports(report_types: [])
-      reports_scope = report_types.empty? ? ::Ci::JobArtifact.security_reports : ::Ci::JobArtifact.security_reports(file_types: report_types)
-      types_to_collect = report_types.empty? ? ::Ci::JobArtifact::SECURITY_REPORT_FILE_TYPES : report_types
-
-      ::Gitlab::Ci::Reports::Security::Reports.new(self).tap do |security_reports|
-        latest_report_builds_in_self_and_project_descendants(reports_scope).includes(pipeline: { project: :route }).each do |build| # rubocop:disable Rails/FindEach
-          build.collect_security_reports!(security_reports, report_types: types_to_collect)
-        end
-      end
-    end
-
     def build_matchers
       self.builds.latest.build_matchers(project)
     end
@@ -1393,8 +1399,30 @@ module Ci
       merge_request.merge_request_diff_for(merge_request_diff_sha)
     end
 
+    def auto_cancel_on_job_failure
+      pipeline_metadata&.auto_cancel_on_job_failure || 'none'
+    end
+
     def auto_cancel_on_new_commit
       pipeline_metadata&.auto_cancel_on_new_commit || 'conservative'
+    end
+
+    def include_manual_to_pipeline_completion_enabled?
+      strong_memoize(:include_manual_to_pipeline_completion_enabled) do
+        ::Feature.enabled?(:include_manual_to_pipeline_completion, self.project, type: :beta)
+      end
+    end
+
+    def cancel_async_on_job_failure
+      case auto_cancel_on_job_failure
+      when 'none'
+        # no-op
+      when 'all'
+        ::Ci::UserCancelPipelineWorker.perform_async(id, id, user.id)
+      else
+        raise ArgumentError,
+          "Unknown auto_cancel_on_job_failure value: #{auto_cancel_on_job_failure}"
+      end
     end
 
     private
@@ -1438,7 +1466,7 @@ module Ci
     def keep_around_commits
       return unless project
 
-      project.repository.keep_around(self.sha, self.before_sha)
+      project.repository.keep_around(self.sha, self.before_sha, source: self.class.name)
     end
 
     def observe_age_in_minutes

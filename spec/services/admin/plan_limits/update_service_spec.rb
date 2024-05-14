@@ -44,7 +44,7 @@ RSpec.describe Admin::PlanLimits::UpdateService, feature_category: :shared do
         end
       end
 
-      it 'logs the allowed attributes only' do
+      it 'logs the allowed attributes only', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/436572' do
         update_plan_limits
 
         expect(limits.limits_history).to eq(

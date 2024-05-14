@@ -246,19 +246,40 @@ RSpec.describe MergeRequests::MergeService, feature_category: :code_review_workf
     end
 
     context 'closes related issues' do
+      let(:issue) { create(:issue, project: project) }
+      let(:commit) do
+        double('commit', safe_message: "Fixes #{issue.to_reference}", date: Time.current, authored_date: Time.current)
+      end
+
       before do
         allow(project).to receive(:default_branch).and_return(merge_request.target_branch)
+        allow(merge_request).to receive(:commits).and_return([commit])
       end
 
       it 'closes GitLab issue tracker issues', :sidekiq_inline do
-        issue  = create :issue, project: project
-        commit = double('commit', safe_message: "Fixes #{issue.to_reference}", date: Time.current, authored_date: Time.current)
-        allow(merge_request).to receive(:commits).and_return([commit])
         merge_request.cache_merge_request_closes_issues!
 
-        service.execute(merge_request)
+        expect do
+          service.execute(merge_request)
+        end.to change { issue.reload.closed? }.from(false).to(true)
+      end
 
-        expect(issue.reload.closed?).to be_truthy
+      it 'does not close issues when merge_requests_closing_issues.closes_work_item = false', :sidekiq_inline do
+        not_closing_issue = create(:issue, project: project)
+        create(
+          :merge_requests_closing_issues,
+          issue: not_closing_issue,
+          merge_request: merge_request,
+          closes_work_item: false
+        )
+
+        merge_request.cache_merge_request_closes_issues!
+
+        expect do
+          service.execute(merge_request)
+        end.to change { issue.reload.closed? }.from(false).to(true).and(
+          not_change { not_closing_issue.reload.opened? }.from(true)
+        )
       end
 
       context 'with Jira integration' do

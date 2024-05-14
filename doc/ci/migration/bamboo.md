@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 This migration guide looks at how you can migrate from Atlassian Bamboo to GitLab CI/CD.
 The focus is on [Bamboo Specs YAML](https://docs.atlassian.com/bamboo-specs-docs/8.1.12/specs.html?yaml)
@@ -39,7 +39,7 @@ single-tenant SaaS service.
 
 ### Agents vs Runners
 
-Bamboo uses [agents](https://confluence.atlassian.com/confeval/development-tools-evaluator-resources/bamboo/bamboo-remote-agents-and-local-agents)
+Bamboo uses [agents](https://confluence.atlassian.com/bamboo/configuring-agents-289277172.html)
 to run builds and deployments. Agents can be local agents running on the Bamboo server or
 remote agents running external to the server.
 
@@ -47,7 +47,7 @@ GitLab uses a similar concept to agents called [runners](https://docs.gitlab.com
 which use [executors](https://docs.gitlab.com/runner/executors/) to run builds.
 
 Examples of executors are shell, Docker, or Kubernetes. You can choose to use GitLab [SaaS runners](../runners/index.md)
-or deploy your own [self-managed runners](https://docs.gitlab.com/runner/install/index.md).
+or deploy your own [self-managed runners](https://docs.gitlab.com/runner/install/index.html).
 
 ### Workflow
 
@@ -81,7 +81,7 @@ Bamboo Specs can also be [repository-stored](https://confluence.atlassian.com/ba
 
 #### `.gitlab-ci.yml` configuration file
 
-GitLab, by default, uses a [`.gitlab-ci.yml` file](../index.md#the-gitlab-ciyml-file) for CI/CD configuration.
+GitLab, by default, uses a `.gitlab-ci.yml` file for CI/CD configuration.
 Alternatively, [Auto DevOps](../../topics/autodevops/index.md) can automatically build,
 test, and deploy your application without a manually configured `.gitlab-ci.yml` file.
 
@@ -506,7 +506,7 @@ For example, in a GitLab CI/CD `.gitlab-ci.yml` file:
 workflow:
   rules:
     - changes:
-      - .gitlab/**/**.md
+        - .gitlab/**/**.md
       when: never
 ```
 
@@ -690,7 +690,7 @@ SAST scanning to your pipeline, add the following to your `.gitlab-ci.yml`:
 
 ```yaml
 include:
-  - template: Security/SAST.gitlab-ci.yml
+  - template: Jobs/SAST.gitlab-ci.yml
 ```
 
 You can customize the behavior of security scanners by using CI/CD variables, for example

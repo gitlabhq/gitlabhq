@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, Self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 GitLab can check your application for security vulnerabilities including:
 
@@ -18,6 +18,9 @@ GitLab can check your application for security vulnerabilities including:
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview of GitLab application security, see [Shifting Security Left](https://www.youtube.com/watch?v=XnYstHObqlA&t).
+
+For a click-through demo, see [Integrating security to the pipeline](https://gitlab.navattic.com/gitlab-scans).
+<!-- Demo published on 2024-01-15 -->
 
 Statistics and details on vulnerabilities are included in the merge request. Providing
 actionable information _before_ changes are merged enables you to be proactive.
@@ -43,7 +46,6 @@ Each of the GitLab application security tools is relevant to specific stages of 
   - Secret Detection
   - IaC Scanning
   - Dependency Scanning
-  - License Scanning
   - Coverage-guided Fuzz Testing
 - Build
   - Container Scanning
@@ -114,7 +116,7 @@ The following vulnerability scanners and their databases are regularly updated:
 | [Container Scanning](container_scanning/index.md)            | A job runs on a daily basis to build new images with the latest vulnerability database updates from the upstream scanner. GitLab monitors this job through an internal alert that tells the engineering team when the database becomes more than 48 hours old. For more information, see the [Vulnerabilities database update](container_scanning/index.md#vulnerabilities-database). |
 | [Dependency Scanning](dependency_scanning/index.md)          | Relies on the [GitLab Advisory Database](https://gitlab.com/gitlab-org/security-products/gemnasium-db). It is updated on a daily basis using [data from NVD, the `ruby-advisory-db` and the GitHub Advisory Database as data sources](https://gitlab.com/gitlab-org/security-products/gemnasium-db/-/blob/master/SOURCES.md). See our [current measurement of time from CVE being issued to our product being updated](https://handbook.gitlab.com/handbook/engineering/development/performance-indicators/#cve-issue-to-update). |
 | [Dynamic Application Security Testing (DAST)](dast/index.md) | [DAST proxy-based](dast/proxy-based.md) and [browser-based](dast/browser_based.md) engines are updated on a periodic basis. [DAST proxy-based](dast/proxy-based.md) analyzer downloads the scanning rules at scan runtime. See the [version of the underlying tool `zaproxy`](https://gitlab.com/gitlab-org/security-products/dast/blob/main/Dockerfile#L27). [DAST browser-based](dast/browser_based.md) rules run [different vulnerability checks](dast/checks/index.md). |
-| [Secret Detection](secret_detection/index.md#detected-secrets) | GitLab maintains the [detection rules](secret_detection/index.md#detected-secrets) and [accepts community contributions](secret_detection/index.md#adding-new-patterns). The scanning engine is updated at least once per month if a relevant update is available. |
+| [Secret Detection](secret_detection/pipeline/index.md#detected-secrets) | GitLab maintains the [detection rules](secret_detection/pipeline/index.md#detected-secrets) and [accepts community contributions](secret_detection/pipeline/index.md#adding-new-patterns). The scanning engine is updated at least once per month if a relevant update is available. |
 | [Static Application Security Testing (SAST)](sast/index.md)  | The source of scan rules depends on which [analyzer](sast/analyzers.md) is used for each [supported programming language](sast/index.md#supported-languages-and-frameworks). GitLab maintains a ruleset for the Semgrep-based analyzer and updates it regularly based on internal research and user feedback. For other analyzers, the ruleset is sourced from the upstream open-source scanner. Each analyzer is updated at least once per month if a relevant update is available. |
 
 In versions of GitLab that use the same major version of the analyzer, you do not have to update
@@ -124,6 +126,9 @@ Docker images. The vendored job definitions that enable them use major release t
 Although in a major analyzer version you automatically get the latest versions of the scanning
 tools, there are some [known issues](https://gitlab.com/gitlab-org/gitlab/-/issues/9725) with this
 approach.
+
+NOTE:
+To get the most updated vulnerability information on existing vulnerabilities you may need to re-run the default branch's pipeline.
 
 ## Security scanning with Auto DevOps
 
@@ -148,15 +153,14 @@ All customization of GitLab security scanning tools should be tested in a merge 
 merging these changes to the default branch. Failure to do so can give unexpected results,
 including a large number of false positives.
 
-To enable Static Application Security Testing, Dependency Scanning, License Scanning, and Secret
+To enable Static Application Security Testing, Dependency Scanning, and Secret
 Detection, add:
 
 ```yaml
 include:
-  - template: Security/Dependency-Scanning.gitlab-ci.yml
-  - template: Security/License-Scanning.gitlab-ci.yml
-  - template: Security/SAST.gitlab-ci.yml
-  - template: Security/Secret-Detection.gitlab-ci.yml
+  - template: Jobs/Dependency-Scanning.gitlab-ci.yml
+  - template: Jobs/SAST.gitlab-ci.yml
+  - template: Jobs/Secret-Detection.gitlab-ci.yml
 ```
 
 To enable Dynamic Application Security Testing (DAST) scanning, add the following to your
@@ -209,19 +213,50 @@ Latest templates can receive breaking changes in any release.
 For more information about template versioning, see the
 [CI/CD documentation](../../development/cicd/templates.md#latest-version).
 
-## Default behavior of GitLab security scanning tools
+## Security scanning
 
-### Secure jobs in your pipeline
+For security scans that run in a CI/CD pipeline, the results are determined by:
 
-If you add the security scanning jobs as described in [Security scanning with Auto DevOps](#security-scanning-with-auto-devops) or [Security scanning without Auto DevOps](#security-scanning-without-auto-devops) to your `.gitlab-ci.yml` each added [security scanning tool](#application-coverage) behave as described below.
+- Which security scanning jobs run in the pipeline.
+- Each job's status.
+- Each job's output.
 
-For each compatible analyzer, a job is created in the `test`, `dast` or `fuzz` stage of your pipeline and runs on the next new branch pipeline.
-Features such as the [Security Dashboard](security_dashboard/index.md), [Vulnerability Report](vulnerability_report/index.md), and [Dependency List](dependency_list/index.md)
-that rely on this scan data only show results from pipelines on the default branch, only if all jobs are finished, including manual ones. One tool might use many analyzers.
+### Security jobs in your pipeline
 
-Our language and package manager specific jobs attempt to assess which analyzers they should run for your project so that you can do less configuration.
+The security scanning jobs that run in a CI/CD pipeline are determined by the following criteria:
 
-If you want to override this to increase the pipeline speed, you may choose which analyzers to exclude if you know they are not applicable (languages or package managers not contained in your project) by following variable customization directions for that specific tool.
+1. Inclusion of security scanning templates
+
+   The selection of security scanning jobs is first determined by which templates are included.
+   Templates can be included by using AutoDevOps, a scan execution policy, or the
+   `.gitlab-ci.yml` configuration file.
+
+1. Evaluation of rules
+
+   Each template has defined [rules](../../ci/yaml/index.md#rules) which determine if the analyzer
+   is run.
+
+   For example, the Secret Detection template includes the following rule. This rule states that
+   secret detection should be run in branch pipelines. In the case of a merge request pipeline,
+   secret detection is not run.
+
+   ```yaml
+   rules:
+     - if: $CI_COMMIT_BRANCH
+   ```
+
+1. Analyzer logic
+
+   If the template's rules dictate that the job is to be run, a job is created in the pipeline stage
+   specified in the template. However, each analyzer has its own logic which determines if the
+   analyzer itself is to be run.
+
+   For example, if dependency scanning doesn't detect supported files at the default depth, the
+   analyzer is not run and no artifacts are output.
+
+After completing successfully, each job outputs artifacts. These artifacts are processed and the
+results are available in GitLab. Results are shown only if all jobs are finished, including manual
+ones. Additionally for some features, results are shown only if the pipeline runs on the default branch.
 
 ### Secure job status
 
@@ -253,7 +288,7 @@ Security scan information appears in multiple locations and formats:
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Output of all enabled application security tools is shown in a merge request widget. You can use
 this information to manage the risk of any issues identified in the source branch.
@@ -333,7 +368,6 @@ For more details, see [extension page](https://marketplace.visualstudio.com/item
 
 ## Security approvals in merge requests
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9928) in GitLab 12.2.
 > - [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/357300) the Vulnerability-Check feature in GitLab 15.0.
 > - [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/397067) the License-Check feature in GitLab 16.0.
 
@@ -382,10 +416,9 @@ For example, the following attempts to use a `unit-tests` stage:
 
 ```yaml
 include:
-  - template: Security/Dependency-Scanning.gitlab-ci.yml
-  - template: Security/License-Scanning.gitlab-ci.yml
-  - template: Security/SAST.gitlab-ci.yml
-  - template: Security/Secret-Detection.gitlab-ci.yml
+  - template: Jobs/Dependency-Scanning.gitlab-ci.yml
+  - template: Jobs/SAST.gitlab-ci.yml
+  - template: Jobs/Secret-Detection.gitlab-ci.yml
 
 stages:
   - unit-tests
@@ -412,10 +445,9 @@ To fix this issue, you can either:
 
   ```yaml
   include:
-    - template: Security/Dependency-Scanning.gitlab-ci.yml
-    - template: Security/License-Scanning.gitlab-ci.yml
-    - template: Security/SAST.gitlab-ci.yml
-    - template: Security/Secret-Detection.gitlab-ci.yml
+    - template: Jobs/Dependency-Scanning.gitlab-ci.yml
+    - template: Jobs/SAST.gitlab-ci.yml
+    - template: Jobs/Secret-Detection.gitlab-ci.yml
 
   stages:
     - test
@@ -431,18 +463,14 @@ To fix this issue, you can either:
 
   ```yaml
   include:
-    - template: Security/Dependency-Scanning.gitlab-ci.yml
-    - template: Security/License-Scanning.gitlab-ci.yml
-    - template: Security/SAST.gitlab-ci.yml
-    - template: Security/Secret-Detection.gitlab-ci.yml
+    - template: Jobs/Dependency-Scanning.gitlab-ci.yml
+    - template: Jobs/SAST.gitlab-ci.yml
+    - template: Jobs/Secret-Detection.gitlab-ci.yml
 
   stages:
     - unit-tests
 
   dependency_scanning:
-    stage: unit-tests
-
-  license_scanning:
     stage: unit-tests
 
   sast:
@@ -462,7 +490,7 @@ For more information about overriding security jobs, see:
 - [Overriding SAST jobs](sast/index.md#overriding-sast-jobs).
 - [Overriding Dependency Scanning jobs](dependency_scanning/index.md#overriding-dependency-scanning-jobs).
 - [Overriding Container Scanning jobs](container_scanning/index.md#overriding-the-container-scanning-template).
-- [Overriding Secret Detection jobs](secret_detection/index.md#configure-scan-settings).
+- [Overriding Secret Detection jobs](secret_detection/pipeline/index.md#configuration).
 - [Overriding DAST jobs](dast/proxy-based.md#customize-dast-settings).
 
 All the security scanning tools define their stage, so this error can occur with all of them.
@@ -474,9 +502,6 @@ For self managed installations, you can choose to run most of the GitLab securit
 Self managed installations can also run the security scanners on a GitLab Runner [running inside OpenShift](../../install/openshift_and_gitlab/index.md).
 
 ## Security report validation
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/321918) in GitLab 13.11.
-> - Schema validation message [added](https://gitlab.com/gitlab-org/gitlab/-/issues/321730) in GitLab 14.0.
 
 GitLab 15.0 enforces validation of the security report artifacts before ingesting the vulnerabilities.
 This prevents ingestion of broken vulnerability data into the database. GitLab validates the
@@ -492,8 +517,8 @@ Validation depends on the schema version declared in the security report artifac
 - If your security report uses a deprecated version, GitLab attempts validation against that version and adds a deprecation warning to the validation result.
 - If your security report uses a supported MAJOR-MINOR version of the report schema but the PATCH version doesn't match any vendored versions, GitLab attempts to validate it against latest vendored PATCH version of the schema.
   - Example: security report uses version 14.1.1 but the latest vendored version is 14.1.0. GitLab would validate against schema version 14.1.0.
-- If your security report uses a version that is not supported, GitLab attempts to validate it against the latest schema version available in your installation but doesn't ingest the report.
-- If your security report does not specify a schema version, GitLab attempts to validate it against the latest schema version available in GitLab. Because the `version` property is required, validation always fails in this case, but other validation errors may also be present.
+- If your security report uses a version that is not supported, GitLab attempts to validate it against the earliest schema version available in your installation but doesn't ingest the report.
+- If your security report does not specify a schema version, GitLab attempts to validate it against the earliest schema version available in GitLab. Because the `version` property is required, validation always fails in this case, but other validation errors may also be present.
 
 You can always find supported and deprecated schema versions in the [source code](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/parsers/security/validators/schema_validator.rb).
 
@@ -550,7 +575,7 @@ GitLab provides two methods of accomplishing this, each with advantages and disa
   are recommended when:
 
   - Scan execution enforcement is required for any scanner that uses a GitLab template, such as SAST IaC, DAST, Dependency Scanning,
-    License Compliance, API Fuzzing, or Coverage-guided Fuzzing.
+    API Fuzzing, or Coverage-guided Fuzzing.
   - Scan execution enforcement is required for scanners external to GitLab.
   - Scan execution enforcement is required for custom jobs other than security scans.
 
@@ -559,7 +584,7 @@ GitLab provides two methods of accomplishing this, each with advantages and disa
 
   - Scan execution enforcement is required for DAST which uses a DAST site or scan profile.
   - Scan execution enforcement is required for SAST, SAST IaC, Secret Detection, Dependency Scanning, or Container Scanning with project-specific
-variable customizations. To accomplish this, users must create a separate security policy per project.
+    variable customizations. To accomplish this, users must create a separate security policy per project.
   - Scans are required to run on a regular, scheduled cadence.
 
 - Either solution can be used equally well when:

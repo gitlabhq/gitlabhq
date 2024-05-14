@@ -1,6 +1,5 @@
 <script>
 import { GlCollapsibleListbox } from '@gitlab/ui';
-import SuggestGitlabCiYml from '~/blob/suggest_gitlab_ci_yml/components/popover.vue';
 import { __ } from '~/locale';
 import { DEFAULT_CI_CONFIG_PATH, CI_CONFIG_PATH_EXTENSION } from '~/lib/utils/constants';
 
@@ -34,7 +33,6 @@ const templateSelectors = [
 export default {
   name: 'TemplateSelector',
   components: {
-    SuggestGitlabCiYml,
     GlCollapsibleListbox,
   },
   props: {
@@ -48,11 +46,6 @@ export default {
     },
     initialTemplate: {
       type: String,
-      required: false,
-      default: undefined,
-    },
-    suggestCiYmlData: {
-      type: Object,
       required: false,
       default: undefined,
     },
@@ -97,9 +90,6 @@ export default {
     showDropdown() {
       return this.activeType && this.templateItems.length > 0;
     },
-    showPopover() {
-      return this.activeType?.key === 'gitlab_ci_ymls' && this.suggestCiYmlData;
-    },
   },
   beforeMount() {
     if (this.activeType) this.applyTemplate(this.initialTemplate);
@@ -135,14 +125,6 @@ export default {
 </script>
 <template>
   <div v-if="showDropdown">
-    <suggest-gitlab-ci-yml
-      v-if="showPopover"
-      target="template-selector"
-      :track-label="suggestCiYmlData.trackLabel"
-      :dismiss-key="suggestCiYmlData.dismissKey"
-      :merge-request-path="suggestCiYmlData.mergeRequestPath"
-      :human-access="suggestCiYmlData.humanAccess"
-    />
     <gl-collapsible-listbox
       id="template-selector"
       searchable

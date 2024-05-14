@@ -22,7 +22,7 @@ describe('Mapping Transformation Utilities', () => {
     it('should return mapping data', () => {
       const result = getMappingData(
         alertFields,
-        parsedMapping.payloadAlerFields.slice(0, 3),
+        parsedMapping.payloadAlertFields.slice(0, 3),
         parsedMapping.payloadAttributeMappings.slice(0, 3),
       );
 

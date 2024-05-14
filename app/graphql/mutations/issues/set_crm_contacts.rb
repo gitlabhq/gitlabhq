@@ -6,14 +6,14 @@ module Mutations
       graphql_name 'IssueSetCrmContacts'
 
       argument :contact_ids,
-               [::Types::GlobalIDType[::CustomerRelations::Contact]],
-               required: true,
-               description: 'Customer relations contact IDs to set. Replaces existing contacts by default.'
+        [::Types::GlobalIDType[::CustomerRelations::Contact]],
+        required: true,
+        description: 'Customer relations contact IDs to set. Replaces existing contacts by default.'
 
       argument :operation_mode,
-               Types::MutationOperationModeEnum,
-               required: false,
-               description: 'Changes the operation mode. Defaults to REPLACE.'
+        Types::MutationOperationModeEnum,
+        required: false,
+        description: 'Changes the operation mode. Defaults to REPLACE.'
 
       def resolve(project_path:, iid:, contact_ids:, operation_mode: Types::MutationOperationModeEnum.enum[:replace])
         issue = authorized_find!(project_path: project_path, iid: iid)
@@ -22,7 +22,9 @@ module Mutations
         raise Gitlab::Graphql::Errors::ResourceNotAvailable, 'Feature disabled' unless feature_enabled?(project)
 
         contact_ids = contact_ids.compact.map do |contact_id|
-          raise Gitlab::Graphql::Errors::ArgumentError, "Contact #{contact_id} is invalid." unless contact_id.respond_to?(:model_id)
+          unless contact_id.respond_to?(:model_id)
+            raise Gitlab::Graphql::Errors::ArgumentError, "Contact #{contact_id} is invalid."
+          end
 
           contact_id.model_id.to_i
         end

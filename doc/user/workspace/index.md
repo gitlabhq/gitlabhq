@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112397) in GitLab 15.11 [with a flag](../../administration/feature_flags.md) named `remote_development_feature_flag`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/391543) in GitLab 16.0.
@@ -20,7 +20,6 @@ These environments ensure that different projects don't interfere with each othe
 
 Each workspace includes its own set of dependencies, libraries, and tools,
 which you can customize to meet the specific needs of each project.
-Workspaces use the AMD64 architecture.
 
 ## Workspaces and projects
 
@@ -144,13 +143,13 @@ components:
     attributes:
       gl/inject-editor: true
     container:
-      image: "{{registry-root}}/gitlab-org/remote-development/gitlab-remote-development-docs/debian-bullseye-ruby-3.2-node-18.12:rubygems-3.4-git-2.33-lfs-2.9-yarn-1.22-graphicsmagick-1.3.36-gitlab-workspaces"
+      image: "{{registry-root}}/gitlab-org/remote-development/gitlab-remote-development-docs/ubuntu:22.04"
       env:
         - name: KEY
           value: VALUE
       endpoints:
-      - name: http-3000
-        targetPort: 3000
+        - name: http-3000
+          targetPort: 3000
 ```
 
 For more information, see the [devfile documentation](https://devfile.io/docs/2.2.0/devfile-schema).
@@ -159,13 +158,20 @@ For other examples, see the [`examples` projects](https://gitlab.com/gitlab-org/
 This container image is for demonstration purposes only.
 To use your own container image, see [Arbitrary user IDs](#arbitrary-user-ids).
 
-## Web IDE
+## Workspace container requirements
 
-Workspaces are bundled with the Web IDE by default.
-The Web IDE is the only code editor available for workspaces.
+By default, workspaces inject and start the [GitLab VS Code fork](https://gitlab.com/gitlab-org/gitlab-web-ide-vscode-fork)
+in the container that has a defined `gl/inject-editor` attribute in the devfile.
+The workspace container where the GitLab VS Code fork is injected
+must meet the following system requirements:
 
-The Web IDE is powered by the [GitLab VS Code fork](https://gitlab.com/gitlab-org/gitlab-web-ide-vscode-fork).
-For more information, see [Web IDE](../project/web_ide/index.md).
+- **System architecture:** AMD64
+- **System libraries:**
+  - `glibc` 2.28 and later
+  - `glibcxx` 3.4.25 and later
+
+These requirements have been tested on Debian 10.13 and Ubuntu 20.04.
+For more information, see the [VS Code documentation](https://code.visualstudio.com/docs/remote/linux).
 
 ## Personal access token
 

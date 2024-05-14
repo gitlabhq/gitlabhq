@@ -112,7 +112,7 @@ See the [Rails guides](https://guides.rubyonrails.org/action_mailer_basics.html#
 
 ## Email namespace
 
-As of GitLab 11.7, we support a new format for email handler addresses. This was done to
+GitLab supports the new format for email handler addresses. This was done to
 support catch-all mailboxes.
 
 If you need to implement a feature which requires a new email handler, follow these rules

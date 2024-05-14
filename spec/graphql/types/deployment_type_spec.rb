@@ -8,7 +8,7 @@ RSpec.describe GitlabSchema.types['Deployment'], feature_category: :continuous_d
 
   it 'has the expected fields' do
     expected_fields = %w[
-      id iid ref tag tags sha created_at updated_at finished_at status commit job triggerer userPermissions
+      id iid ref tag tags sha created_at updated_at finished_at status commit job triggerer userPermissions webPath
     ]
 
     expect(described_class).to include_graphql_fields(*expected_fields)

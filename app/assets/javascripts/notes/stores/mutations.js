@@ -34,6 +34,10 @@ export default {
         }
       }
 
+      if (discussion.truncated_diff_lines) {
+        discussion.truncated_diff_lines = utils.prepareDiffLines(discussion.truncated_diff_lines);
+      }
+
       // note.base_discussion = undefined; // No point keeping a reference to this
       delete note.base_discussion;
       discussion.notes = [note];
@@ -231,6 +235,12 @@ export default {
         Object.assign(discussion, { expanded });
       });
     }
+  },
+
+  [types.SET_EXPAND_ALL_DISCUSSIONS](state, expanded) {
+    state.discussions.forEach((discussion) => {
+      Object.assign(discussion, { expanded });
+    });
   },
 
   [types.SET_RESOLVING_DISCUSSION](state, isResolving) {

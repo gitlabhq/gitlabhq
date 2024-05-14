@@ -156,11 +156,12 @@ RSpec.describe Tooling::Mappings::JsToSystemSpecsMappings, feature_category: :to
       %w[
         app/assets/javascripts/boards/issue_board_filters.js
         ee/app/assets/javascripts/queries/epic_due_date.query.graphql
+        app/assets/javascripts/protected_branches/constants.js
       ]
     end
 
     it 'returns a singularized keyword based on the first folder the file is in' do
-      expect(subject).to eq(%w[board query])
+      expect(subject).to eq(%w[board query protected_branch])
     end
 
     context 'when the files are under the pages folder' do

@@ -1,0 +1,137 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Design item component when item appears in view after image is loaded renders media broken icon when image onerror triggered 1`] = `
+<gl-icon-stub
+  class="text-secondary"
+  name="media-broken"
+  size="32"
+/>
+`;
+
+exports[`Design item component with notes renders item with multiple comments 1`] = `
+<a
+  class="card design-list-item gl-cursor-pointer gl-mb-0 js-design-list-item text-plain"
+>
+  <div
+    class="card-body gl-flex gl-items-center gl-justify-content-center gl-overflow-hidden gl-p-0 gl-relative gl-rounded-top-base"
+  >
+    <gl-intersection-observer-stub
+      class="gl-grow"
+      data-qa-filename="test"
+      data-testid="design-image"
+    >
+      <img
+        alt="test"
+        class="design-img gl-display-block gl-max-h-full gl-max-w-full gl-mx-auto gl-w-auto"
+        data-testid="design-img-1"
+        src="null"
+      />
+    </gl-intersection-observer-stub>
+  </div>
+  <div
+    class="card-footer gl-bg-white gl-flex gl-px-4 gl-py-3 gl-w-full"
+  >
+    <div
+      class="gl-flex gl-flex-col str-truncated-100"
+    >
+      <span
+        class="gl-font-sm str-truncated-100"
+        data-testid="design-img-filename-1"
+        title="test"
+      >
+        test
+      </span>
+      <span
+        class="str-truncated-100"
+      >
+        Updated
+        <timeago-stub
+          cssclass=""
+          datetimeformat="asDateTime"
+          time="01-01-2019"
+          tooltipplacement="bottom"
+        />
+      </span>
+    </div>
+    <div
+      class="gl-flex gl-items-center gl-ml-auto gl-text-gray-500"
+    >
+      <gl-icon-stub
+        class="gl-ml-2"
+        name="comments"
+        size="16"
+      />
+      <span
+        aria-label="2 comments"
+        class="gl-font-sm gl-ml-2"
+      >
+        2
+      </span>
+    </div>
+  </div>
+</a>
+`;
+
+exports[`Design item component with notes renders item with single comment 1`] = `
+<a
+  class="card design-list-item gl-cursor-pointer gl-mb-0 js-design-list-item text-plain"
+>
+  <div
+    class="card-body gl-flex gl-items-center gl-justify-content-center gl-overflow-hidden gl-p-0 gl-relative gl-rounded-top-base"
+  >
+    <gl-intersection-observer-stub
+      class="gl-grow"
+      data-qa-filename="test"
+      data-testid="design-image"
+    >
+      <img
+        alt="test"
+        class="design-img gl-display-block gl-max-h-full gl-max-w-full gl-mx-auto gl-w-auto"
+        data-testid="design-img-1"
+        src="null"
+      />
+    </gl-intersection-observer-stub>
+  </div>
+  <div
+    class="card-footer gl-bg-white gl-flex gl-px-4 gl-py-3 gl-w-full"
+  >
+    <div
+      class="gl-flex gl-flex-col str-truncated-100"
+    >
+      <span
+        class="gl-font-sm str-truncated-100"
+        data-testid="design-img-filename-1"
+        title="test"
+      >
+        test
+      </span>
+      <span
+        class="str-truncated-100"
+      >
+        Updated
+        <timeago-stub
+          cssclass=""
+          datetimeformat="asDateTime"
+          time="01-01-2019"
+          tooltipplacement="bottom"
+        />
+      </span>
+    </div>
+    <div
+      class="gl-flex gl-items-center gl-ml-auto gl-text-gray-500"
+    >
+      <gl-icon-stub
+        class="gl-ml-2"
+        name="comments"
+        size="16"
+      />
+      <span
+        aria-label="1 comment"
+        class="gl-font-sm gl-ml-2"
+      >
+        1
+      </span>
+    </div>
+  </div>
+</a>
+`;

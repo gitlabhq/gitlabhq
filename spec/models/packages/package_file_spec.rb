@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Packages::PackageFile, type: :model do
+RSpec.describe Packages::PackageFile, type: :model, feature_category: :package_registry do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:project) { create(:project) }

@@ -36,7 +36,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed
 
 Audit event types are used to [filter streamed audit events](audit_event_streaming/index.md#update-event-filters).
 
@@ -50,6 +50,9 @@ Every audit event is associated with an event type. Audit event types can allow 
 Some audit event types don't allow saving audit events to the database. Other audit event types don't allow streaming
 audit events to external destinations.
 
+An audit event type's scope limits the availability of the audit event type to either project, group,
+or instance and user audit events. You can see the audit events in [audit event reports](audit_event_reports.md).
+
 ## Available audit event types
 
 Audit event types belong to the following product categories.
@@ -57,8 +60,8 @@ Audit event types belong to the following product categories.
 
 ### <%= "#{humanize(category)}" %>
 
-| Name | Description | Saved to database | Streamed | Introduced in |
-|:-----|:------------|:------------------|:---------|:--------------|
-<% audit_event_types.each do |event_type| %>| <%= "[`#{event_type.name}`](#{event_type.introduced_by_mr})" %> | <%= event_type.description %>| <%= boolean_to_docs(event_type.saved_to_database) %> | <%= boolean_to_docs(event_type.streamed) %> | GitLab <%= "[#{event_type.milestone}](#{event_type.introduced_by_issue})" %> |
+| Name | Description | Saved to database | Streamed | Introduced in | Scope |
+|:------------|:------------|:------------------|:---------|:--------------|:--------------|
+<% audit_event_types.each do |event_type| %>| <%= "[`#{event_type.name}`](#{event_type.introduced_by_mr})" %> | <%= event_type.description %>| <%= boolean_to_docs(event_type.saved_to_database) %> | <%= boolean_to_docs(event_type.streamed) %> | GitLab <%= "[#{event_type.milestone}](#{event_type.introduced_by_issue})" %> | <%= event_type.scope&.join(", ") %> |
 <% end %>
 <% end %>

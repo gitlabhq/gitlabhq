@@ -1,0 +1,9 @@
+---
+name: approval_rules_drawer
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/439397
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146502
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/444628
+milestone: '16.10'
+group: group::source code
+type: beta
+default_enabled: true

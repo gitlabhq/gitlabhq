@@ -50,6 +50,11 @@ func validateMetadata(r io.Reader) error {
 		}
 	}
 
+	emptyEntry := `{"crc":0,"size":0,"zipped":0}`
+	if !bytes.Contains(meta, []byte(emptyEntry)) {
+		return fmt.Errorf("zipartifacts: metadata for empty file not found")
+	}
+
 	return nil
 }
 

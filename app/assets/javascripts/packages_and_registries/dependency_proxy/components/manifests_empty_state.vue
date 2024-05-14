@@ -59,7 +59,7 @@ export default {
           id="code-example"
           readonly
           :value="$options.codeExample"
-          class="gl-w-70p gl-mx-auto"
+          class="gl-w-7/10 gl-mx-auto"
           select-on-click
         >
           <template #append>

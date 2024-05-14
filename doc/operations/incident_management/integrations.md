@@ -1,5 +1,5 @@
 ---
-stage: Service Management
+stage: Monitor
 group: Respond
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -8,17 +8,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13203) in GitLab 12.4.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/42640) from GitLab Ultimate to GitLab Free in 12.8.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 GitLab can accept alerts from any source via a webhook receiver. [Alert notifications](alerts.md)
 can [trigger paging](paging.md#paging) for on-call rotations or be used to [create incidents](manage_incidents.md#from-an-alert).
 
 ## Integrations list
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/245331) in GitLab 13.5.
 
 With at least the Maintainer role, you can view the list of configured
 alerts integrations by navigating to **Settings > Monitor**
@@ -39,7 +34,7 @@ receive alert payloads in JSON format. You can always
 
 1. Sign in to GitLab as a user with the Maintainer role
    for a project.
-1. Navigate to **Settings > Monitor** in your project.
+1. Go to **Settings > Monitor** in your project.
 1. Expand the **Alerts** section, and in the **Select integration type** dropdown list,
    select **HTTP Endpoint**.
 1. Toggle the **Active** alert setting. The URL and Authorization Key for the webhook configuration
@@ -50,9 +45,7 @@ receive alert payloads in JSON format. You can always
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
-
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4442) in GitLab 13.6.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 In [GitLab Premium](https://about.gitlab.com/pricing/), you can create multiple
 unique HTTP endpoints to receive alerts from any external source in JSON format,
@@ -60,7 +53,7 @@ and you can [customize the payload](#customize-the-alert-payload-outside-of-gitl
 
 1. Sign in to GitLab as a user with the Maintainer role
    for a project.
-1. Navigate to **Settings > Monitor** in your project.
+1. Go to **Settings > Monitor** in your project.
 1. Expand the **Alerts** section.
 1. For each endpoint you want to create:
 
@@ -84,8 +77,6 @@ You can edit the integration by selecting the **{settings}** settings icon on th
 side of the integrations list.
 
 #### Map fields in custom alerts
-
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4443) in GitLab 13.10.
 
 You can integrate your monitoring tool's alert format with GitLab alerts. To show the
 correct information in the [Alert list](alerts.md) and the
@@ -244,8 +235,6 @@ Ensure your requests are smaller than the
 
 #### Prometheus severity options
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50871) in GitLab 13.9
-
 Alerts from Prometheus can provide any of the case-insensitive follow values for [alert severity](../incident_management/alerts.md#alert-severity):
 
 - **Critical**: `critical`, `s1`, `p1`, `emergency`, `fatal`
@@ -366,8 +355,6 @@ using one of the above header options if your tooling supports it.
 
 ## Response body
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342730) in GitLab 14.5.
-
 The JSON response body contains a list of any alerts created within the request:
 
 ```json
@@ -387,14 +374,12 @@ Successful responses return a `200` response code.
 
 ## Triggering test alerts
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3066) in GitLab in 13.2.
-
 After a [project maintainer or owner](../../user/permissions.md)
 configures an integration, you can trigger a test
 alert to confirm your integration works properly.
 
 1. Sign in as a user with at least the Developer role.
-1. Navigate to **Settings > Monitor** in your project.
+1. Go to **Settings > Monitor** in your project.
 1. Select **Alerts** to expand the section.
 1. Select the **{settings}** settings icon on the right side of the integration in [the list](#integrations-list).
 1. Select the **Send test alert** tab to open it.
@@ -407,12 +392,9 @@ GitLab displays an error or success message, depending on the outcome of your te
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214557) in GitLab 13.2.
-
-In GitLab versions 13.2 and greater, GitLab groups alerts based on their
-payload. When an incoming alert contains the same payload as another alert
+GitLab groups alerts based on their payload. When an incoming alert contains the same payload as another alert
 (excluding the `start_time` and `hosts` attributes), GitLab groups these alerts
 together and displays a counter on the [Alert Management List](incidents.md)
 and details pages.
@@ -422,8 +404,6 @@ If the existing alert is already `resolved`, GitLab creates a new alert instead.
 ![Alert Management List](img/alert_list_v13_1.png)
 
 ## Recovery alerts
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13402) in GitLab 13.4.
 
 The alert in GitLab is automatically resolved when an HTTP Endpoint
 receives a payload with the end time of the alert set. For HTTP Endpoints
@@ -441,16 +421,14 @@ You can also configure the associated [incident to be closed automatically](../i
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3066) in GitLab 13.2.
 
 WARNING:
 We are building deeper integration with Opsgenie and other alerting tools through
 [HTTP endpoint integrations](#single-http-endpoint) so you can see alerts in
-the GitLab interface. As a result, the previous direct link to Opsgenie Alerts from
-the GitLab alerts list is deprecated in
-GitLab versions [13.8 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/273657).
+the GitLab interface.
 
 You can monitor alerts using a GitLab integration with [Opsgenie](https://www.atlassian.com/software/opsgenie).
 
@@ -461,12 +439,12 @@ active at the same time.
 To enable Opsgenie integration:
 
 1. Sign in as a user with the Maintainer or Owner role.
-1. Navigate to **Monitor > Alerts**.
+1. Go to **Monitor > Alerts**.
 1. In the **Integrations** select box, select **Opsgenie**.
 1. Select the **Active** toggle.
 1. In the **API URL** field, enter the base URL for your Opsgenie integration,
    such as `https://app.opsgenie.com/alert/list`.
 1. Select **Save changes**.
 
-After you enable the integration, navigate to the Alerts list page at
+After you enable the integration, go to the Alerts list page at
 **Monitor > Alerts**, and then select **View alerts in Opsgenie**.

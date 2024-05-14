@@ -7,4 +7,14 @@ feature_categories:
 description: Store context commit related data for merge requests
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/23701
 milestone: '12.8'
-gitlab_schema: gitlab_main
+gitlab_schema: gitlab_main_cell
+desired_sharding_key:
+  project_id:
+    references: projects
+    backfill_via:
+      parent:
+        foreign_key: merge_request_id
+        table: merge_requests
+        sharding_key: target_project_id
+        belongs_to: merge_request
+

@@ -70,7 +70,7 @@ export default {
       class="gl-display-flex gl-align-items-center gl-justify-content-space-between hide-collapsed"
     >
       <span
-        class="gl-overflow-hidden gl-text-overflow-ellipsis gl-white-space-nowrap"
+        class="gl-overflow-hidden gl-text-overflow-ellipsis gl-whitespace-nowrap"
         :title="value"
       >
         <gl-sprintf :message="$options.i18n.templateText">

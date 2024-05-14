@@ -16,7 +16,7 @@ RSpec.shared_examples 'a deployable job policy' do |factory_type|
 
     context 'when job is oudated deployment job' do
       before do
-        allow(job).to receive(:outdated_deployment?).and_return(true)
+        allow(job).to receive(:has_outdated_deployment?).and_return(true)
       end
 
       it { expect(policy).not_to be_allowed :update_build }

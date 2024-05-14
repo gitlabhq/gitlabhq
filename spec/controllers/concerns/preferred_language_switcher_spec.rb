@@ -15,6 +15,10 @@ RSpec.describe PreferredLanguageSwitcher, type: :controller do
 
   subject { cookies[:preferred_language] }
 
+  before do
+    stub_feature_flags(disable_preferred_language_cookie: false)
+  end
+
   context 'when first visit' do
     let(:glm_source) { 'about.gitlab.com' }
     let(:accept_language_header) { nil }
@@ -112,6 +116,17 @@ RSpec.describe PreferredLanguageSwitcher, type: :controller do
       it 'sets preferred_language to default' do
         expect(subject).to eq Gitlab::CurrentSettings.default_preferred_language
       end
+    end
+  end
+
+  context 'with disable_preferred_language_cookie feature flag enabled' do
+    before do
+      stub_feature_flags(disable_preferred_language_cookie: true)
+      get :new
+    end
+
+    it 'does not set the cookie' do
+      expect(subject).to be_nil
     end
   end
 end

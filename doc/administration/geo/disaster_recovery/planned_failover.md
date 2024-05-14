@@ -188,7 +188,15 @@ On the **primary** site:
 
 ### Runner failover
 
-If you have any runners connected to your current secondary, see [how to handle them](../secondary_proxy/runners.md#handling-a-planned-failover-with-secondary-runners) during the failover.
+Depending on how your instance URL is configured, there may be additional steps to keep your runner fleet at 100% after the failover.
+
+The token used to register runners should work on the primary or secondary instances. If you are seeing issues connecting after failover, it is possible that the secrets were not copied over during the [secondary configuration](../setup/two_single_node_sites.md#manually-replicate-secret-gitlab-values). You can [reset runner tokens](../../backup_restore/troubleshooting_backup_gitlab.md#reset-runner-registration-tokens), however, be aware that you may experience other issues unrelated to runners, if secrets are not in sync.
+
+If a runner is repeatedly unable to connect to a GitLab instance, it stops trying to connect for a period of time (default 1 hour). If you would like to avoid this, the runners should be shutdown until the GitLab instance is reachable. See [the `check_interval` documentation](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#how-check_interval-works), and the configuration options `unhealthy_requests_limit` and `unhealthy_interval`.
+
+- If you are using our Location aware URL, after the old primary is removed from the DNS configuration, runners should automatically connect to the next closest instance.
+- If you are using separate URLs, then any runner connected to the current primary needs to be updated to connect to the new primary, once promoted.
+- If you have any runners connected to your current secondary, see [how to handle them](../secondary_proxy/runners.md#handling-a-planned-failover-with-secondary-runners) during the failover.
 
 ## Prevent updates to the **primary** site
 

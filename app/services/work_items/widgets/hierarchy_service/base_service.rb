@@ -7,12 +7,14 @@ module WorkItems
         private
 
         def handle_hierarchy_changes(params)
-          return incompatible_args_error if incompatible_args?(params)
+          return incompatible_args_error if params.slice(*mutually_exclusive_args).size > 1
 
           if params.key?(:parent)
             update_work_item_parent(params.delete(:parent))
           elsif params.key?(:children)
             update_work_item_children(params.delete(:children))
+          elsif params.key?(:remove_child)
+            remove_child(params.delete(:remove_child))
           else
             invalid_args_error(params)
           end
@@ -33,13 +35,21 @@ module WorkItems
         end
 
         # rubocop: disable CodeReuse/ActiveRecord
-        def remove_parent
-          link = ::WorkItems::ParentLink.find_by(work_item: work_item)
+        def remove_parent_link(child)
+          link = ::WorkItems::ParentLink.find_by(work_item: child)
           return success unless link.present?
 
           ::WorkItems::ParentLinks::DestroyService.new(link, current_user).execute
         end
         # rubocop: enable CodeReuse/ActiveRecord
+
+        def remove_parent
+          remove_parent_link(work_item)
+        end
+
+        def remove_child(child)
+          remove_parent_link(child)
+        end
 
         def update_work_item_children(children)
           ::WorkItems::ParentLinks::CreateService
@@ -47,12 +57,15 @@ module WorkItems
             .execute
         end
 
-        def incompatible_args?(params)
-          params[:children] && params[:parent]
+        def mutually_exclusive_args
+          [:children, :parent, :remove_child]
         end
 
         def incompatible_args_error
-          error(_('A Work Item can be a parent or a child, but not both.'))
+          error(format(
+            _("One and only one of %{params} is required"),
+            params: mutually_exclusive_args.to_sentence(last_word_connector: ' or ')
+          ))
         end
 
         def invalid_args_error(params)

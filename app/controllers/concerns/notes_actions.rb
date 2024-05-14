@@ -211,7 +211,7 @@ module NotesActions
   end
 
   def authorize_admin_note!
-    return access_denied! unless can?(current_user, :admin_note, note)
+    access_denied! unless can?(current_user, :admin_note, note)
   end
 
   def create_note_params

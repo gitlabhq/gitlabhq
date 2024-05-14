@@ -76,13 +76,3 @@
   width: 600px;
 }
 
-.modal-security-report-dast {
-  .modal-dialog {
-    max-width: $modal-lg;
-  }
-
-  // This is temporary till we get the new modals hooked up
-  &.modal-hide-footer .modal-footer {
-    display: none;
-  }
-}

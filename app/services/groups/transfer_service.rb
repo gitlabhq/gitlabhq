@@ -73,12 +73,21 @@ module Groups
         end
       end
 
+      transfer_labels
       remove_paid_features_for_projects(old_root_ancestor_id)
       post_update_hooks(@updated_project_ids, old_root_ancestor_id)
       propagate_integrations
       update_pending_builds
 
       true
+    end
+
+    def transfer_labels
+      @group.all_projects.each_batch(of: 10) do |projects|
+        projects.each do |project|
+          Labels::TransferService.new(current_user, @group, project).execute
+        end
+      end
     end
 
     # Overridden in EE

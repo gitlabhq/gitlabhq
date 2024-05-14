@@ -4,7 +4,7 @@ key_path: counts.incident_issues
 description: Count of incidents (issues where issue_type=incident)
 product_section: ops
 product_stage: monitor
-product_group: monitor
+product_group: respond
 value_type: number
 status: active
 time_frame: all

@@ -1,0 +1,9 @@
+---
+name: skip_committer_email_check
+feature_issue_url:
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146878
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/448342
+milestone: '16.10'
+group: group::source code
+type: beta
+default_enabled: true

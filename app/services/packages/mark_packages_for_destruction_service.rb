@@ -60,8 +60,8 @@ module Packages
     def mark_package_files_for_destruction(packages)
       ::Packages::MarkPackageFilesForDestructionWorker.bulk_perform_async_with_contexts(
         packages,
-        arguments_proc: -> (package) { package.id },
-        context_proc: -> (package) { { project: package.project, user: @current_user } }
+        arguments_proc: ->(package) { package.id },
+        context_proc: ->(package) { { project: package.project, user: @current_user } }
       )
     end
 
@@ -69,8 +69,8 @@ module Packages
       maven_packages_with_version = packages.select { |pkg| pkg.maven? && pkg.version? }
       ::Packages::Maven::Metadata::SyncWorker.bulk_perform_async_with_contexts(
         maven_packages_with_version,
-        arguments_proc: -> (package) { [@current_user.id, package.project_id, package.name] },
-        context_proc: -> (package) { { project: package.project, user: @current_user } }
+        arguments_proc: ->(package) { [@current_user.id, package.project_id, package.name] },
+        context_proc: ->(package) { { project: package.project, user: @current_user } }
       )
     end
 
@@ -78,8 +78,8 @@ module Packages
       npm_packages = packages.select(&:npm?)
       ::Packages::Npm::CreateMetadataCacheWorker.bulk_perform_async_with_contexts(
         npm_packages,
-        arguments_proc: -> (package) { [package.project_id, package.name] },
-        context_proc: -> (package) { { project: package.project, user: @current_user } }
+        arguments_proc: ->(package) { [package.project_id, package.name] },
+        context_proc: ->(package) { { project: package.project, user: @current_user } }
       )
     end
 

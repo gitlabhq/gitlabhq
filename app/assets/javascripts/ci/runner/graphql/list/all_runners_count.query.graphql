@@ -5,6 +5,7 @@ query getAllRunnersCount(
   $tagList: [String!]
   $search: String
   $versionPrefix: String
+  $creator: String
 ) {
   runners(
     paused: $paused
@@ -13,6 +14,7 @@ query getAllRunnersCount(
     tagList: $tagList
     search: $search
     versionPrefix: $versionPrefix
+    creatorUsername: $creator
   ) {
     count
   }

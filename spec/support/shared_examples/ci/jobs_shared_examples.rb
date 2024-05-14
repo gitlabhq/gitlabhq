@@ -25,3 +25,10 @@ RSpec.shared_examples 'a job with artifacts and trace' do |result_is_array: true
     end
   end
 end
+
+RSpec.shared_context 'when canceling support' do
+  before do
+    job.metadata.set_cancel_gracefully
+    job.save!
+  end
+end

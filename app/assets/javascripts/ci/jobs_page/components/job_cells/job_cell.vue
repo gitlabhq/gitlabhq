@@ -68,7 +68,7 @@ export default {
 
 <template>
   <div>
-    <div class="gl-text-truncate gl-p-3 gl-mt-n3 gl-mx-n3 gl-mb-n2">
+    <div class="gl-text-truncate gl-p-3 -gl-mt-3 gl-mx-n3 -gl-mb-2">
       <gl-icon
         v-if="jobStuck"
         v-gl-tooltip="$options.i18n.stuckText"

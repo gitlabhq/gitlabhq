@@ -536,7 +536,9 @@ export default {
               </div>
             </template>
           </div>
-          <div class="gl-display-flex gl-justify-content-start gl-py-3">
+          <div
+            class="gl-display-flex gl-gap-3 gl-justify-content-start gl-py-3 gl-flex-direction-column gl-md-flex-direction-row"
+          >
             <gl-button
               :disabled="!canSubmitForm"
               variant="confirm"
@@ -551,14 +553,14 @@ export default {
               :disabled="!canSubmitForm"
               variant="confirm"
               category="secondary"
-              class="gl-ml-3 js-no-auto-disable"
+              class="js-no-auto-disable"
               data-testid="save-and-create-alert-button"
               @click="submit(true)"
             >
               {{ $options.i18n.saveAndTestIntegration }}
             </gl-button>
 
-            <gl-button type="reset" class="gl-ml-3 js-no-auto-disable">{{
+            <gl-button type="reset" class="js-no-auto-disable">{{
               $options.i18n.cancelAndClose
             }}</gl-button>
           </div>

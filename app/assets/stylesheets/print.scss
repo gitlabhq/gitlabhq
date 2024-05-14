@@ -52,7 +52,7 @@
       margin-top: $gl-spacing-scale-3;
       margin-bottom: $gl-spacing-scale-3;
       margin-right: 0;
-      @include gl-inset-border-l-4-gray-100;
+      @apply gl-shadow-inner-l-4-gray-100;
       margin-left: 4px;
       border: 0 !important;
     }

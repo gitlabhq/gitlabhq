@@ -5,11 +5,21 @@ module Ci
     class BaseSaveService
       include Gitlab::Utils::StrongMemoize
 
+      # The only way that ref can be unexpanded after #expand_short_ref runs is if the ref
+      # is ambiguous because both a branch and a tag with the name exist, or it is
+      # ambiguous because neither exists.
+      INVALID_REF_MESSAGE = 'Ref is ambiguous'
+
       def execute
         schedule.assign_attributes(params)
 
         return forbidden_to_save unless allowed_to_save?
         return forbidden_to_save_variables unless allowed_to_save_variables?
+
+        unless valid_ref_format?
+          schedule.expand_short_ref
+          return ServiceResponse.error(payload: schedule, message: INVALID_REF_MESSAGE) unless valid_ref_format?
+        end
 
         if schedule.save
           ServiceResponse.success(payload: schedule)
@@ -21,6 +31,10 @@ module Ci
       private
 
       attr_reader :project, :user, :params, :schedule
+
+      def valid_ref_format?
+        schedule.ref.present? && Ci::PipelineSchedule::VALID_REF_FORMAT_REGEX.match?(schedule.ref)
+      end
 
       def allowed_to_save?
         # Disable cache because the same ability may already have been checked

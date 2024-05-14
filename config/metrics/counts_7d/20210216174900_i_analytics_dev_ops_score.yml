@@ -9,12 +9,9 @@ value_type: number
 status: active
 time_frame: 7d
 data_source: internal_events
-options:
-  events:
-  - i_analytics_dev_ops_score
 events:
-  - name: i_analytics_dev_ops_score
-    unique: user.id
+- name: i_analytics_dev_ops_score
+  unique: user.id
 distribution:
 - ce
 - ee

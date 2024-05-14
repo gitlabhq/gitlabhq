@@ -7,8 +7,8 @@ RSpec.describe 'Delete an upload', feature_category: :navigation do
 
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, group: group) }
-  let_it_be(:developer) { create(:user).tap { |user| group.add_developer(user) } }
-  let_it_be(:maintainer) { create(:user).tap { |user| group.add_maintainer(user) } }
+  let_it_be(:developer) { create(:user, developer_of: group) }
+  let_it_be(:maintainer) { create(:user, maintainer_of: group) }
 
   let(:extra_params) { {} }
   let(:params) { { filename: File.basename(upload.path), secret: upload.secret }.merge(extra_params) }

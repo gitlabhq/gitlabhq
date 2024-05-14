@@ -95,8 +95,6 @@ Do not backup or restore GitLab through a PgBouncer connection: it causes a GitL
 
 ## Enable Monitoring
 
-> - [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/3786) in GitLab 12.0.
-
 If you enable Monitoring, it must be enabled on **all** PgBouncer servers.
 
 1. Create/edit `/etc/gitlab/gitlab.rb` and add the following configuration:
@@ -182,7 +180,7 @@ ote_pid | tls
 Some database changes have to be done directly, and not through PgBouncer.
 
 The main affected tasks are [database restores](../../administration/backup_restore/backup_gitlab.md#back-up-and-restore-for-installations-using-pgbouncer)
-and [GitLab upgrades with database migrations](../../update/zero_downtime.md#postgresql).
+and [GitLab upgrades with database migrations](../../update/zero_downtime.md).
 
 1. To find the primary node, run the following on a database node:
 
@@ -232,9 +230,9 @@ You can find the parameters and respective documentation on the [official PgBoun
 Listed below are the most relevant ones and their defaults on a Linux package installation:
 
 - `pgbouncer['max_client_conn']` (default: `2048`, depends on server file descriptor limits)
-    This is the "frontend" pool in PgBouncer: connections from Rails to PgBouncer.
+  This is the "frontend" pool in PgBouncer: connections from Rails to PgBouncer.
 - `pgbouncer['default_pool_size']` (default: `100`)
-    This is the "backend" pool in PgBouncer: connections from PgBouncer to the database.
+  This is the "backend" pool in PgBouncer: connections from PgBouncer to the database.
 
 The ideal number for `default_pool_size` must be enough to handle all provisioned services that need to access
 the database. Each of the listed services below use the following formula to define database pool size:
@@ -277,8 +275,8 @@ Additionally, `current_connections` should be greater than 1.
 
 ### Message: `LOG:  invalid CIDR mask in address`
 
-See the suggested fix [in Geo documentation](../geo/replication/troubleshooting.md#message-log--invalid-cidr-mask-in-address).
+See the suggested fix [in Geo documentation](../geo/replication/troubleshooting/replication.md#message-log--invalid-cidr-mask-in-address).
 
 ### Message: `LOG:  invalid IP mask "md5": Name or service not known`
 
-See the suggested fix [in Geo documentation](../geo/replication/troubleshooting.md#message-log--invalid-ip-mask-md5-name-or-service-not-known).
+See the suggested fix [in Geo documentation](../geo/replication/troubleshooting/replication.md#message-log--invalid-ip-mask-md5-name-or-service-not-known).

@@ -1,11 +1,13 @@
-import { GlAlert, GlSprintf } from '@gitlab/ui';
+import { GlAlert, GlButton } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { TEST_HOST } from 'spec/test_constants';
 import { stubComponent } from 'helpers/stub_component';
 import PackagesListRow from '~/packages_and_registries/package_registry/components/list/package_list_row.vue';
 import PackagesListLoader from '~/packages_and_registries/shared/components/packages_list_loader.vue';
 import DeleteModal from '~/packages_and_registries/package_registry/components/delete_modal.vue';
 import RegistryList from '~/packages_and_registries/shared/components/registry_list.vue';
+import setWindowLocation from 'helpers/set_window_location_helper';
 import {
   DELETE_PACKAGE_TRACKING_ACTION,
   DELETE_PACKAGES_TRACKING_ACTION,
@@ -51,11 +53,12 @@ describe('packages_list', () => {
   const findRegistryList = () => wrapper.findComponent(RegistryList);
   const findPackagesListRow = () => wrapper.findComponent(PackagesListRow);
   const findErrorPackageAlert = () => wrapper.findComponent(GlAlert);
+  const findErrorAlertButton = () => findErrorPackageAlert().findComponent(GlButton);
   const findDeletePackagesModal = () => wrapper.findComponent(DeleteModal);
 
   const showMock = jest.fn();
 
-  const mountComponent = ({ props = {}, provide = defaultProvide } = {}) => {
+  const mountComponent = ({ props = {}, provide = defaultProvide, stubs = {} } = {}) => {
     wrapper = shallowMountExtended(PackagesList, {
       provide,
       propsData: {
@@ -68,8 +71,7 @@ describe('packages_list', () => {
             show: showMock,
           },
         }),
-        GlSprintf,
-        RegistryList,
+        ...stubs,
       },
       slots: {
         'empty-state': EmptySlotStub,
@@ -97,7 +99,7 @@ describe('packages_list', () => {
 
   describe('when is not loading', () => {
     beforeEach(() => {
-      mountComponent();
+      mountComponent({ stubs: { RegistryList } });
     });
 
     it('does not show skeleton loader', () => {
@@ -161,7 +163,7 @@ describe('packages_list', () => {
 
     beforeEach(() => {
       eventSpy = jest.spyOn(Tracking, 'event');
-      mountComponent();
+      mountComponent({ stubs: { RegistryList } });
       finderFunction().vm.$emit('delete', deletePayload);
     });
 
@@ -277,11 +279,9 @@ describe('packages_list', () => {
   describe('when an error package is present', () => {
     beforeEach(() => {
       mountComponent({ props: { list: [firstPackage, errorPackage] } });
-
-      return nextTick();
     });
 
-    it('should display an alert', () => {
+    it('should display an alert with default body message', () => {
       expect(findErrorPackageAlert().exists()).toBe(true);
       expect(findErrorPackageAlert().props('title')).toBe(
         'There was an error publishing a error package package',
@@ -291,14 +291,84 @@ describe('packages_list', () => {
       );
     });
 
-    it('should display the deletion modal when clicked on the confirm button', async () => {
-      findErrorPackageAlert().vm.$emit('primaryAction');
+    it('should display alert body with message set in `statusMessage`', () => {
+      mountComponent({
+        props: { list: [firstPackage, { ...errorPackage, statusMessage: 'custom error message' }] },
+      });
 
-      await nextTick();
+      expect(findErrorPackageAlert().exists()).toBe(true);
+      expect(findErrorPackageAlert().props('title')).toBe(
+        'There was an error publishing a error package package',
+      );
+      expect(findErrorPackageAlert().text()).toBe('custom error message');
+    });
 
-      expect(showMock).toHaveBeenCalledTimes(1);
+    describe('`Delete this package` button', () => {
+      beforeEach(() => {
+        mountComponent({ props: { list: [firstPackage, errorPackage] }, stubs: { GlAlert } });
+      });
 
-      expect(findDeletePackagesModal().props('itemsToBeDeleted')).toStrictEqual([errorPackage]);
+      it('displays the button within the alert', () => {
+        expect(findErrorAlertButton().text()).toBe('Delete this package');
+      });
+
+      it('should display the deletion modal when clicked on the `Delete this package` button', async () => {
+        findErrorAlertButton().vm.$emit('click');
+
+        await nextTick();
+
+        expect(showMock).toHaveBeenCalledTimes(1);
+
+        expect(findDeletePackagesModal().props('itemsToBeDeleted')).toStrictEqual([errorPackage]);
+      });
+    });
+
+    describe('when `hideErrorAlert` is true', () => {
+      beforeEach(() => {
+        mountComponent({
+          props: { list: [firstPackage, errorPackage], hideErrorAlert: true },
+        });
+      });
+
+      it('does not display alert message', () => {
+        expect(findErrorPackageAlert().exists()).toBe(false);
+      });
+    });
+  });
+
+  describe('when multiple error packages are present', () => {
+    beforeEach(() => {
+      mountComponent({
+        props: { list: [{ ...firstPackage, status: errorPackage.status }, errorPackage] },
+      });
+    });
+
+    it('should display an alert with default body message', () => {
+      expect(findErrorPackageAlert().props('title')).toBe(
+        'There was an error publishing 2 packages',
+      );
+      expect(findErrorPackageAlert().text()).toBe(
+        '2 packages were not published to the registry. Remove these packages and try again.',
+      );
+    });
+
+    describe('`Show packages with errors` button', () => {
+      beforeEach(() => {
+        setWindowLocation(`${TEST_HOST}/foo?type=maven&after=1234`);
+        mountComponent({
+          props: {
+            list: [{ ...firstPackage, status: errorPackage.status }, errorPackage],
+          },
+          stubs: { GlAlert },
+        });
+      });
+
+      it('is shown with correct href within the alert', () => {
+        expect(findErrorAlertButton().text()).toBe('Show packages with errors');
+        expect(findErrorAlertButton().attributes('href')).toBe(
+          `${TEST_HOST}/foo?type=maven&status=error`,
+        );
+      });
     });
   });
 

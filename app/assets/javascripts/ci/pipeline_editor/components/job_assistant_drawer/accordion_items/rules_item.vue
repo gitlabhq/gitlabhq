@@ -95,7 +95,7 @@ export default {
             data-testid="rules-start-in-number-input"
             type="number"
             :state="isStartValid"
-            :class="{ 'gl-visibility-hidden': !isDelayed }"
+            :class="{ 'gl-invisible': !isDelayed }"
             number
             @input="updateStartIn"
           />
@@ -104,7 +104,7 @@ export default {
             class="gl-flex-grow-1 gl-flex-basis-half"
             data-testid="rules-start-in-unit-select"
             :state="isStartValid"
-            :class="{ 'gl-visibility-hidden': !isDelayed }"
+            :class="{ 'gl-invisible': !isDelayed }"
             :options="$options.unitOptions"
             @input="updateStartIn"
           />

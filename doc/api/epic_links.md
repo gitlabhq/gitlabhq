@@ -8,9 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, self-managed
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/9188) in GitLab 11.8.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Manages parent-child [epic relationships](../user/group/epics/manage_epics.md#multi-level-child-epics).
 

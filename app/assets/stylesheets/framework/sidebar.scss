@@ -506,9 +506,10 @@
             top: calc(#{$calc-application-header-height} + #{$mr-sticky-header-height});
             height: calc(#{$calc-application-viewport-height} - #{$mr-sticky-header-height} - var(--mr-review-bar-height));
             position: sticky;
-            overflow: auto;
             padding: 0 15px;
             margin-bottom: calc((#{$content-wrapper-padding} * -1) + var(--mr-review-bar-height));
+            overflow-y: auto;
+            overscroll-behavior: contain;
           }
         }
       }
@@ -743,8 +744,8 @@
 
 .issuable-show-labels {
   .gl-label {
-    margin-bottom: 5px;
-    margin-right: 5px;
+    margin-bottom: $gl-spacing-scale-2;
+    margin-right: $gl-spacing-scale-2;
   }
 
   a {

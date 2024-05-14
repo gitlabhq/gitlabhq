@@ -6,7 +6,6 @@ import {
   ROUGE_TO_HLJS_LANGUAGE_MAP,
 } from '~/vue_shared/components/source_viewer/constants';
 import { splitIntoChunks } from '~/vue_shared/components/source_viewer/workers/highlight_utils';
-import LineHighlighter from '~/blob/line_highlighter';
 import languageLoader from '~/content_editor/services/highlight_js_language_loader';
 import Tracking from '~/tracking';
 import axios from '~/lib/utils/axios_utils';
@@ -90,32 +89,35 @@ export default {
       this.instructWorker(rawTextBlob, language, fileType);
     },
     handleWorkerMessage({ data }) {
+      // If the current length of chunks is bigger, it means we've highlighted the whole file already, so nothing to be done here
+      if (data.length < this.chunks.length) return;
       this.chunks = data;
       this.highlightHash(); // highlight the line if a line number hash is present in the URL
     },
     instructWorker(content, language, fileType) {
       this.highlightWorker.postMessage({ content, language, fileType });
     },
-    async highlightHash() {
+    highlightHash() {
       const { hash } = this.$route;
       if (!hash) return;
 
-      // Make the chunk containing the line number visible
-      const lineNumber = hash.substring(hash.indexOf('L') + 1).split('-')[0];
-      const chunkToHighlight = this.chunks.find(
-        (chunk) =>
-          chunk.startingFrom <= lineNumber && chunk.startingFrom + chunk.totalLines >= lineNumber,
-      );
+      const [fromLineNumber, toLineNumber] = hash.substring(hash.indexOf('L') + 1).split('-');
+      const isInRange = ({ startingFrom, totalLines }, lineNumber) =>
+        startingFrom <= lineNumber && startingFrom + totalLines >= lineNumber;
 
-      if (chunkToHighlight) {
-        chunkToHighlight.isHighlighted = true;
-      }
+      this.chunks.map((chunk) => {
+        const formattedChunk = chunk;
+        const totalLineSpan = chunk.startingFrom + chunk.totalLines;
+        if (
+          fromLineNumber >= chunk.startingFrom ||
+          totalLineSpan <= toLineNumber ||
+          isInRange(chunk, toLineNumber)
+        ) {
+          formattedChunk.isHighlighted = true; // Make the chunk containing the line number visible
+        }
 
-      // Line numbers in the DOM needs to update first based on changes made to `chunks`.
-      await this.$nextTick();
-
-      const lineHighlighter = new LineHighlighter({ scrollBehavior: 'auto' });
-      lineHighlighter.highlightHash(hash);
+        return formattedChunk;
+      });
     },
   },
 };

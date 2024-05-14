@@ -3,10 +3,17 @@ import { GlLoadingIcon, GlEmptyState, GlKeysetPagination } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { s__, __ } from '~/locale';
 import GroupsList from '~/vue_shared/components/groups_list/groups_list.vue';
+import { ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
 import { DEFAULT_PER_PAGE } from '~/api';
+import { deleteGroup } from 'ee_else_ce/rest_api';
+import {
+  renderDeleteSuccessToast,
+  deleteParams,
+  formatGroups,
+  timestampType,
+} from 'ee_else_ce/organizations/shared/utils';
 import groupsQuery from '../graphql/queries/groups.query.graphql';
 import { SORT_ITEM_NAME, SORT_DIRECTION_ASC } from '../constants';
-import { formatGroups } from '../utils';
 import NewGroupButton from './new_group_button.vue';
 
 export default {
@@ -14,14 +21,16 @@ export default {
     errorMessage: s__(
       'Organization|An error occurred loading the groups. Please refresh the page to try again.',
     ),
+    deleteErrorMessage: s__(
+      'Organization|An error occurred deleting the group. Please refresh the page to try again.',
+    ),
     emptyState: {
       title: s__("Organization|You don't have any groups yet."),
       description: s__(
         'Organization|A group is a collection of several projects. If you organize your projects under a group, it works like a folder.',
       ),
     },
-    prev: __('Prev'),
-    next: __('Next'),
+    group: __('Group'),
   },
   components: { GlLoadingIcon, GlEmptyState, GlKeysetPagination, GroupsList, NewGroupButton },
   inject: {
@@ -126,7 +135,7 @@ export default {
       };
     },
     sort() {
-      return `${this.sortName}_${this.sortDirection}`.toUpperCase();
+      return `${this.sortName}_${this.sortDirection}`;
     },
     isLoading() {
       return this.$apollo.queries.groups.loading;
@@ -140,6 +149,9 @@ export default {
       };
 
       return baseProps;
+    },
+    timestampType() {
+      return timestampType(this.sortName);
     },
   },
   methods: {
@@ -155,6 +167,23 @@ export default {
         startCursor,
       });
     },
+    setGroupIsDeleting(nodeIndex, value) {
+      this.groups.nodes[nodeIndex].actionLoadingStates[ACTION_DELETE] = value;
+    },
+    async deleteGroup(group) {
+      const nodeIndex = this.groups.nodes.findIndex((node) => node.id === group.id);
+
+      try {
+        this.setGroupIsDeleting(nodeIndex, true);
+        await deleteGroup(group.id, deleteParams(group));
+        this.$apollo.queries.groups.refetch();
+        renderDeleteSuccessToast(group, this.$options.i18n.group);
+      } catch (error) {
+        createAlert({ message: this.$options.i18n.deleteErrorMessage, error, captureError: true });
+      } finally {
+        this.setGroupIsDeleting(nodeIndex, false);
+      }
+    },
   },
 };
 </script>
@@ -162,16 +191,16 @@ export default {
 <template>
   <gl-loading-icon v-if="isLoading" class="gl-mt-5" size="md" />
   <div v-else-if="nodes.length">
-    <groups-list :groups="nodes" show-group-icon :list-item-class="listItemClass" />
+    <groups-list
+      :groups="nodes"
+      show-group-icon
+      :list-item-class="listItemClass"
+      :timestamp-type="timestampType"
+      @delete="deleteGroup"
+    />
 
     <div v-if="pageInfo.hasNextPage || pageInfo.hasPreviousPage" class="gl-text-center gl-mt-5">
-      <gl-keyset-pagination
-        v-bind="pageInfo"
-        :prev-text="$options.i18n.prev"
-        :next-text="$options.i18n.next"
-        @prev="onPrev"
-        @next="onNext"
-      />
+      <gl-keyset-pagination v-bind="pageInfo" @prev="onPrev" @next="onNext" />
     </div>
   </div>
   <gl-empty-state v-else v-bind="emptyStateProps">

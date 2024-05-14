@@ -1,0 +1,22 @@
+- @force_desktop_expanded_sidebar = true
+- page_title s_("UsageQuota|Usage")
+
+- content_for :page_specific_javascripts do
+  = render "layouts/one_trust"
+= render_if_exists 'shared/usage_quotas/google_tag_manager'
+
+= yield :usage_quotas_alerts
+
+%h1.page-title.gl-font-size-h-display
+  = s_('UsageQuota|Usage Quotas')
+
+.row
+  .col-sm-12
+    %p.gl-text-secondary
+      = yield :usage_quotas_subtitle
+
+#js-usage-quotas-view
+  .gl-font-lg.text-center
+    %span.gl-mr-1= s_('UsageQuota|Loading Usage Quotas tabs')
+    = render Pajamas::SpinnerComponent.new(inline: true, size: :md)
+  = yield :usage_quotas_tabs

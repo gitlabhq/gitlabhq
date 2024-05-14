@@ -99,11 +99,22 @@
   .value {
     display: inline-block;
     padding: 2px 7px;
+    @include gl-font-sm;
+    color: $gl-text-color;
+  }
+
+  .name,
+  .operator,
+  .value-container,
+  .value {
+    display: inline-flex;
+    align-self: center;
+    align-items: center;
+    height: 24px;
   }
 
   .name {
     background-color: $gray-50;
-    color: $gl-text-color-secondary;
     border-radius: 2px 0 0 2px;
     margin-right: 1px;
     text-transform: capitalize;
@@ -111,7 +122,6 @@
 
   .operator {
     background-color: $gray-50;
-    color: $gl-text-color;
     margin-right: 1px;
   }
 
@@ -119,10 +129,9 @@
     display: flex;
     align-items: center;
     background-color: $gray-50;
-    color: $gl-text-color;
     border-radius: 0 2px 2px 0;
-    margin-right: 5px;
-    padding-right: 8px;
+    margin-right: 4px;
+    padding-right: 4px;
   }
 
   .value {
@@ -130,7 +139,8 @@
   }
 
   .remove-token {
-    display: inline-block;
+    display: inline-flex;
+    align-self: center;
     padding-left: 8px;
     padding-right: 0;
 
@@ -199,11 +209,6 @@
   background-color: $white;
   border-radius: $border-radius-default;
 
-  @include media-breakpoint-down(sm) {
-    flex: 1 1 auto;
-    margin-bottom: 10px;
-  }
-
   &.focus,
   &.focus:hover {
     @include gl-focus;
@@ -235,23 +240,6 @@
       outline: none;
       border-color: transparent;
       box-shadow: none;
-    }
-  }
-
-  .clear-search-icon {
-    right: 10px;
-    color: $gray-darkest;
-  }
-
-  .clear-search {
-    width: 35px;
-    background-color: $white;
-    border: 0;
-    outline: none;
-    z-index: 1;
-
-    &:hover .clear-search-icon {
-      color: $gray-800;
     }
   }
 }
@@ -291,8 +279,7 @@
 }
 
 .filtered-search-history-dropdown-toggle-button.gl-button {
-  $inner-border: #{$border-radius-default - 1px};
-  border-radius: $inner-border 0 0 $inner-border;
+  border-radius: $border-radius-default-inner 0 0 $border-radius-default-inner;
   color: $gl-text-color-secondary;
   margin: -1px 0 -1px -1px;
   box-shadow: inset 0 0 0 1px $gray-400;
@@ -339,13 +326,6 @@
 }
 
 @include media-breakpoint-down(sm) {
-  .issues-details-filters,
-  .epics-details-filters {
-    padding-top: $gl-padding-8;
-    padding-bottom: $gl-padding-8;
-    background-color: $white;
-  }
-
   .filtered-search-block .boards-switcher {
     margin-right: 0;
     margin-bottom: $gl-input-padding;

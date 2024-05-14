@@ -3,6 +3,7 @@
 class SessionsController < Devise::SessionsController
   include InternalRedirect
   include AuthenticatesWithTwoFactor
+  include CheckInitialSetup
   include Devise::Controllers::Rememberable
   include Recaptcha::Adapters::ViewMethods
   include Recaptcha::Adapters::ControllerMethods
@@ -26,8 +27,6 @@ class SessionsController < Devise::SessionsController
   prepend_before_action :check_captcha, only: [:create]
   prepend_before_action :store_redirect_uri, only: [:new]
   prepend_before_action :require_no_authentication_without_flash, only: [:new, :create]
-  prepend_before_action :ensure_user_allowed_to_password_authenticate,
-    if: -> { action_name == 'create' && password_based_login? }
   prepend_before_action :ensure_password_authentication_enabled!,
     if: -> { action_name == 'create' && password_based_login? }
   before_action :auto_sign_in_with_provider, only: [:new]
@@ -40,7 +39,7 @@ class SessionsController < Devise::SessionsController
   after_action :log_failed_login, if: :action_new_and_failed_login?
   after_action :verify_known_sign_in, only: [:create]
 
-  helper_method :captcha_enabled?, :captcha_on_login_required?
+  helper_method :captcha_enabled?, :captcha_on_login_required?, :onboarding_status_tracking_label
 
   # protect_from_forgery is already prepended in ApplicationController but
   # authenticate_with_two_factor which signs in the user is prepended before
@@ -68,9 +67,7 @@ class SessionsController < Devise::SessionsController
   def create
     super do |resource|
       # User has successfully signed in, so clear any unused reset token
-      if resource.reset_password_token.present?
-        resource.update(reset_password_token: nil, reset_password_sent_at: nil)
-      end
+      resource.update(reset_password_token: nil, reset_password_sent_at: nil) if resource.reset_password_token.present?
 
       if resource.deactivated?
         resource.activate
@@ -185,18 +182,9 @@ class SessionsController < Devise::SessionsController
   # Handle an "initial setup" state, where there's only one user, it's an admin,
   # and they require a password change.
   def check_initial_setup
-    return unless User.limit(2).count == 1 # Count as much 2 to know if we have exactly one
+    return unless in_initial_setup_state?
 
-    user = User.admins.last
-
-    return unless user && user.require_password_creation_for_web?
-
-    Users::UpdateService.new(current_user, user: user).execute do |user|
-      @token = user.generate_reset_token
-    end
-
-    redirect_to edit_user_password_path(reset_password_token: @token),
-      notice: _("Please create a password for your new account.")
+    redirect_to new_admin_initial_setup_path
   end
 
   def ensure_password_authentication_enabled!
@@ -319,12 +307,8 @@ class SessionsController < Devise::SessionsController
     @invite_email = ActionController::Base.helpers.sanitize(params[:invite_email])
   end
 
-  def ensure_user_allowed_to_password_authenticate
-    return unless find_user
-    return if find_user.allow_password_authentication_for_web? && !find_user.password_based_login_forbidden?
-
-    redirect_to new_user_session_path, alert: I18n.t('devise.failure.invalid')
-  end
+  # overridden by EE module
+  def onboarding_status_tracking_label; end
 end
 
 SessionsController.prepend_mod_with('SessionsController')

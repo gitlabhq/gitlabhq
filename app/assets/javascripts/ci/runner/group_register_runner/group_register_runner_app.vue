@@ -1,17 +1,17 @@
 <script>
 import { GlButton } from '@gitlab/ui';
 import { getParameterByName, updateHistory, mergeUrlParams } from '~/lib/utils/url_utility';
-import { PARAM_KEY_PLATFORM, DEFAULT_PLATFORM } from '../constants';
+import { InternalEvents } from '~/tracking';
+import { PARAM_KEY_PLATFORM, GOOGLE_CLOUD_PLATFORM, DEFAULT_PLATFORM } from '../constants';
 import RegistrationInstructions from '../components/registration/registration_instructions.vue';
-import PlatformsDrawer from '../components/registration/platforms_drawer.vue';
 
 export default {
   name: 'GroupRegisterRunnerApp',
   components: {
     GlButton,
     RegistrationInstructions,
-    PlatformsDrawer,
   },
+  mixins: [InternalEvents.mixin()],
   props: {
     runnerId: {
       type: String,
@@ -21,11 +21,14 @@ export default {
       type: String,
       required: true,
     },
+    groupPath: {
+      type: String,
+      required: true,
+    },
   },
   data() {
     return {
       platform: getParameterByName(PARAM_KEY_PLATFORM) || DEFAULT_PLATFORM,
-      isDrawerOpen: false,
     };
   },
   watch: {
@@ -39,8 +42,10 @@ export default {
     onSelectPlatform(platform) {
       this.platform = platform;
     },
-    onToggleDrawer(val = !this.isDrawerOpen) {
-      this.isDrawerOpen = val;
+    onRunnerRegistered() {
+      if (this.platform === GOOGLE_CLOUD_PLATFORM) {
+        this.trackEvent('provision_group_runner_on_google_cloud');
+      }
     },
   },
 };
@@ -49,21 +54,20 @@ export default {
   <div>
     <registration-instructions
       :runner-id="runnerId"
+      :group-path="groupPath"
       :platform="platform"
-      @toggleDrawer="onToggleDrawer"
+      @selectPlatform="onSelectPlatform"
+      @runnerRegistered="onRunnerRegistered"
     >
       <template #runner-list-name>{{ s__('Runners|Group area › Runners') }}</template>
     </registration-instructions>
 
-    <platforms-drawer
-      :platform="platform"
-      :open="isDrawerOpen"
-      @selectPlatform="onSelectPlatform"
-      @close="onToggleDrawer(false)"
-    />
-
-    <gl-button :href="runnersPath" variant="confirm">{{
-      s__('Runners|Go to runners page')
-    }}</gl-button>
+    <gl-button
+      :href="runnersPath"
+      variant="confirm"
+      data-event-tracking="click_view_runners_button_in_new_group_runner_form"
+    >
+      {{ s__('Runners|View runners') }}
+    </gl-button>
   </div>
 </template>

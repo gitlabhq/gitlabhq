@@ -1,3 +1,4 @@
+// Package upload contains tests for artifact storage functionality.
 package upload
 
 import (
@@ -19,6 +20,10 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/testhelper"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload/destination/objectstore/test"
+)
+
+const (
+	putURL = "/url/put"
 )
 
 func createTestZipArchive(t *testing.T) (data []byte, md5Hash string) {
@@ -67,7 +72,7 @@ func TestUploadHandlerSendingToExternalStorage(t *testing.T) {
 
 	storeServerCalled := 0
 	storeServerMux := http.NewServeMux()
-	storeServerMux.HandleFunc("/url/put", func(w http.ResponseWriter, r *http.Request) {
+	storeServerMux.HandleFunc(putURL, func(w http.ResponseWriter, r *http.Request) {
 		require.Equal(t, "PUT", r.Method)
 
 		receivedData, err := io.ReadAll(r.Body)
@@ -103,7 +108,7 @@ func TestUploadHandlerSendingToExternalStorage(t *testing.T) {
 			name: "ObjectStore Upload",
 			preauth: &api.Response{
 				RemoteObject: api.RemoteObject{
-					StoreURL: storeServer.URL + "/url/put" + qs,
+					StoreURL: storeServer.URL + putURL + qs,
 					ID:       "store-id",
 					GetURL:   storeServer.URL + "/store-id",
 				},
@@ -177,7 +182,7 @@ func TestUploadHandlerSendingToExternalStorageAndItReturnsAnError(t *testing.T) 
 	putCalledTimes := 0
 
 	storeServerMux := http.NewServeMux()
-	storeServerMux.HandleFunc("/url/put", func(w http.ResponseWriter, r *http.Request) {
+	storeServerMux.HandleFunc(putURL, func(w http.ResponseWriter, r *http.Request) {
 		putCalledTimes++
 		require.Equal(t, "PUT", r.Method)
 		w.WriteHeader(510)
@@ -192,7 +197,7 @@ func TestUploadHandlerSendingToExternalStorageAndItReturnsAnError(t *testing.T) 
 
 	authResponse := &api.Response{
 		RemoteObject: api.RemoteObject{
-			StoreURL: storeServer.URL + "/url/put",
+			StoreURL: storeServer.URL + putURL,
 			ID:       "store-id",
 		},
 	}
@@ -208,7 +213,7 @@ func TestUploadHandlerSendingToExternalStorageAndItReturnsAnError(t *testing.T) 
 func TestUploadHandlerSendingToExternalStorageAndSupportRequestTimeout(t *testing.T) {
 	shutdown := make(chan struct{})
 	storeServerMux := http.NewServeMux()
-	storeServerMux.HandleFunc("/url/put", func(w http.ResponseWriter, r *http.Request) {
+	storeServerMux.HandleFunc(putURL, func(w http.ResponseWriter, r *http.Request) {
 		<-shutdown
 	})
 
@@ -224,7 +229,7 @@ func TestUploadHandlerSendingToExternalStorageAndSupportRequestTimeout(t *testin
 
 	authResponse := &api.Response{
 		RemoteObject: api.RemoteObject{
-			StoreURL: storeServer.URL + "/url/put",
+			StoreURL: storeServer.URL + putURL,
 			ID:       "store-id",
 			Timeout:  0.1,
 		},

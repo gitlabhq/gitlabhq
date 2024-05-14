@@ -3,6 +3,8 @@
 class RawUsageData < ApplicationRecord
   REPORTING_CADENCE = 7.days.freeze
 
+  belongs_to :organization, class_name: 'Organizations::Organization'
+
   validates :payload, presence: true
   validates :recorded_at, presence: true, uniqueness: true
 

@@ -1,7 +1,11 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package', :object_storage, product_group: :package_registry do
+  RSpec.describe 'Package', :object_storage, product_group: :package_registry, quarantine: {
+    issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/455304',
+    only: { condition: -> { ENV['QA_RUN_TYPE']&.match?('gdk-qa-blocking') } },
+    type: :investigating
+  } do
     describe 'NuGet group level endpoint', :external_api_calls do
       using RSpec::Parameterized::TableSyntax
       include Runtime::Fixtures

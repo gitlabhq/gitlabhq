@@ -1,0 +1,21 @@
+---
+table_name: geo_repository_updated_events
+classes:
+- Geo::RepositoryUpdatedEvent
+feature_categories:
+- geo_replication
+description: Geo event for when a repository gets updated (content changed), belongs
+  to geo_event_log.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/71cc57b1e4b7721c93107357517235a18f7ba8e2
+milestone: '9.3'
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151938
+removed_in_milestone: '17.0'
+gitlab_schema: gitlab_main_cell
+allow_cross_joins:
+- gitlab_main_clusterwide
+allow_cross_transactions:
+- gitlab_main_clusterwide
+allow_cross_foreign_keys:
+- gitlab_main_clusterwide
+sharding_key:
+  project_id: projects

@@ -7,7 +7,7 @@ module Gitlab
       attr_reader :start_sha
       attr_reader :head_sha
 
-      def initialize(base_sha:, start_sha: base_sha, head_sha:)
+      def initialize(base_sha:, head_sha:, start_sha: base_sha)
         @base_sha = base_sha
         @start_sha = start_sha
         @head_sha = head_sha

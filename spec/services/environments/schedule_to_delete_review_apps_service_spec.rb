@@ -8,17 +8,11 @@ RSpec.describe Environments::ScheduleToDeleteReviewAppsService, feature_category
   let_it_be(:maintainer) { create(:user) }
   let_it_be(:developer)  { create(:user) }
   let_it_be(:reporter)   { create(:user) }
-  let_it_be(:project)    { create(:project, :private, :repository, namespace: maintainer.namespace) }
+  let_it_be(:project)    { create(:project, :private, :repository, namespace: maintainer.namespace, maintainers: maintainer, developers: developer, reporters: reporter) }
 
   let(:service)      { described_class.new(project, current_user, before: 30.days.ago, dry_run: dry_run) }
   let(:dry_run)      { false }
   let(:current_user) { maintainer }
-
-  before do
-    project.add_maintainer(maintainer)
-    project.add_developer(developer)
-    project.add_reporter(reporter)
-  end
 
   describe "#execute" do
     subject { service.execute }

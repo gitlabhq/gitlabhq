@@ -40,7 +40,7 @@ application to have multiple callback URLs configured. Check with your IdP provi
 
 If a secondary site uses a different `external_url` to the primary site, then configure your SAML Identity Provider (IdP) to allow the secondary site's SAML callback URL. For example, to configure Okta:
 
-1. [Sign in to Okta](https://www.okta.com/login/).
+1. [Sign in to Okta](https://login.okta.com/).
 1. Go to **Okta Admin Dashboard** > **Applications** > **Your App Name** > **General**.
 1. In **SAML Settings**, select **Edit**.
 1. In **General Settings**, select **Next** to go to **SAML Settings**.

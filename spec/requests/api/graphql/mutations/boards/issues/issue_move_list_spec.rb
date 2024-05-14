@@ -8,7 +8,7 @@ RSpec.describe 'Reposition and move issue within board lists', feature_category:
   let_it_be(:group)   { create(:group, :private) }
   let_it_be(:project) { create(:project, group: group) }
   let_it_be(:board)   { create(:board, group: group) }
-  let_it_be(:user)    { create(:user) }
+  let_it_be(:user)    { create(:user, maintainer_of: group) }
   let_it_be(:development) { create(:label, project: project, name: 'Development') }
   let_it_be(:testing) { create(:label, project: project, name: 'Testing') }
   let_it_be(:list1)   { create(:list, board: board, label: development, position: 0) }
@@ -28,10 +28,6 @@ RSpec.describe 'Reposition and move issue within board lists', feature_category:
       from_list_id: list1.id,
       to_list_id: list2.id
     }
-  end
-
-  before_all do
-    group.add_maintainer(user)
   end
 
   shared_examples 'returns an error' do

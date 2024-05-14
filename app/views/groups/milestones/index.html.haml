@@ -19,6 +19,7 @@
             = _('New milestone')
   - else
     .milestones
+      #js-delete-milestone-modal
       %ul.content-list
         - @milestones.each do |milestone|
           - if milestone.project_milestone?

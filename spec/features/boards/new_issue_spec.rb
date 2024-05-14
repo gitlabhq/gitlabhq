@@ -106,7 +106,7 @@ RSpec.describe 'Issue Boards new issue', :js, feature_category: :team_planning d
     end
 
     it 'allows creating an issue in newly created list' do
-      click_button 'Create list'
+      click_button 'New list'
       wait_for_all_requests
 
       click_button 'Select a label'

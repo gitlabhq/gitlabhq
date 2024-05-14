@@ -300,7 +300,7 @@ module X509Helpers
       type commit
       tag v1.0.0
       tagger Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com> 1393491299 +0200
-      
+
       Release
       SIGNEDDATA
     end
@@ -365,7 +365,7 @@ module X509Helpers
       ['r.meier@siemens.com']
     end
   end
-  
+
   module User2
     extend self
 
@@ -432,7 +432,7 @@ module X509Helpers
       parent 4b4918a572fa86f9771e5ba40fbd48e1eb03e2c6
       author Mona Lisa <gitlabgpgtest@gmail.com> 1692467872 +0000
       committer Mona Lisa <gitlabgpgtest@gmail.com> 1692467872 +0000
-      
+
       Sigstore Signed Commit
       SIGNEDDATA
     end
@@ -481,7 +481,7 @@ module X509Helpers
       type commit
       tag v1.1.2
       tagger Mona Lisa <gitlabgpgtest@gmail.com> 1692467901 +0000
-      
+
       Sigstore Signed Tag
       SIGNEDDATA
     end

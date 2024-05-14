@@ -1,0 +1,12 @@
+---
+table_name: security_policies
+classes:
+- Security::Policy
+feature_categories:
+- security_policy_management
+description: Stores policy data.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146504
+milestone: '16.11'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  security_policy_management_project_id: projects

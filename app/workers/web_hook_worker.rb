@@ -17,7 +17,7 @@ class WebHookWorker
     hook = WebHook.find_by_id(hook_id)
     return unless hook
 
-    data = data.with_indifferent_access
+    data = Gitlab::WebHooks.prepare_data(data)
     params.symbolize_keys!
 
     # Before executing the hook, reapply any recursion detection UUID that was initially

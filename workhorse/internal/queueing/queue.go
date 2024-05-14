@@ -11,7 +11,10 @@ import (
 type errTooManyRequests struct{ error }
 type errQueueingTimedout struct{ error }
 
+// ErrTooManyRequests is returned when too many requests are queued.
 var ErrTooManyRequests = &errTooManyRequests{errors.New("too many requests queued")}
+
+// ErrQueueingTimedout is returned when queueing times out.
 var ErrQueueingTimedout = &errQueueingTimedout{errors.New("queueing timedout")}
 
 type queueMetrics struct {
@@ -46,70 +49,93 @@ func newQueueMetrics(name string, timeout time.Duration, reg prometheus.Register
 
 	promFactory := promauto.With(reg)
 	metrics := &queueMetrics{
-		queueingLimit: promFactory.NewGauge(prometheus.GaugeOpts{
-			Name: "gitlab_workhorse_queueing_limit",
-			Help: "Current limit set for the queueing mechanism",
-			ConstLabels: prometheus.Labels{
-				"queue_name": name,
-			},
-		}),
-
-		queueingQueueLimit: promFactory.NewGauge(prometheus.GaugeOpts{
-			Name: "gitlab_workhorse_queueing_queue_limit",
-			Help: "Current queueLimit set for the queueing mechanism",
-			ConstLabels: prometheus.Labels{
-				"queue_name": name,
-			},
-		}),
-
-		queueingQueueTimeout: promFactory.NewGauge(prometheus.GaugeOpts{
-			Name: "gitlab_workhorse_queueing_queue_timeout",
-			Help: "Current queueTimeout set for the queueing mechanism",
-			ConstLabels: prometheus.Labels{
-				"queue_name": name,
-			},
-		}),
-
-		queueingBusy: promFactory.NewGauge(prometheus.GaugeOpts{
-			Name: "gitlab_workhorse_queueing_busy",
-			Help: "How many queued requests are now processed",
-			ConstLabels: prometheus.Labels{
-				"queue_name": name,
-			},
-		}),
-
-		queueingWaiting: promFactory.NewGauge(prometheus.GaugeOpts{
-			Name: "gitlab_workhorse_queueing_waiting",
-			Help: "How many requests are now queued",
-			ConstLabels: prometheus.Labels{
-				"queue_name": name,
-			},
-		}),
-
-		queueingWaitingTime: promFactory.NewHistogram(prometheus.HistogramOpts{
-			Name: "gitlab_workhorse_queueing_waiting_time",
-			Help: "How many time a request spent in queue",
-			ConstLabels: prometheus.Labels{
-				"queue_name": name,
-			},
-			Buckets: waitingTimeBuckets,
-		}),
-
-		queueingErrors: promFactory.NewCounterVec(
-			prometheus.CounterOpts{
-				Name: "gitlab_workhorse_queueing_errors",
-				Help: "How many times the TooManyRequests or QueueintTimedout errors were returned while queueing, partitioned by error type",
-				ConstLabels: prometheus.Labels{
-					"queue_name": name,
-				},
-			},
-			[]string{"type"},
-		),
+		queueingLimit:        createQueuingLimit(promFactory, name),
+		queueingQueueLimit:   createQueuingQueueLimit(promFactory, name),
+		queueingQueueTimeout: createQueuingQueueTimeout(promFactory, name),
+		queueingBusy:         createQueuingBusy(promFactory, name),
+		queueingWaiting:      createQueuingWaiting(promFactory, name),
+		queueingWaitingTime:  createQueuingWaitingTime(promFactory, name, waitingTimeBuckets),
+		queueingErrors:       createQueuingErrors(promFactory, name),
 	}
 
 	return metrics
 }
 
+func createQueuingLimit(promFactory promauto.Factory, name string) prometheus.Gauge {
+	return promFactory.NewGauge(prometheus.GaugeOpts{
+		Name: "gitlab_workhorse_queueing_limit",
+		Help: "Current limit set for the queueing mechanism",
+		ConstLabels: prometheus.Labels{
+			"queue_name": name,
+		},
+	})
+}
+
+func createQueuingQueueLimit(promFactory promauto.Factory, name string) prometheus.Gauge {
+	return promFactory.NewGauge(prometheus.GaugeOpts{
+		Name: "gitlab_workhorse_queueing_queue_limit",
+		Help: "Current queueLimit set for the queueing mechanism",
+		ConstLabels: prometheus.Labels{
+			"queue_name": name,
+		},
+	})
+}
+
+func createQueuingQueueTimeout(promFactory promauto.Factory, name string) prometheus.Gauge {
+	return promFactory.NewGauge(prometheus.GaugeOpts{
+		Name: "gitlab_workhorse_queueing_queue_timeout",
+		Help: "Current queueTimeout set for the queueing mechanism",
+		ConstLabels: prometheus.Labels{
+			"queue_name": name,
+		},
+	})
+}
+
+func createQueuingBusy(promFactory promauto.Factory, name string) prometheus.Gauge {
+	return promFactory.NewGauge(prometheus.GaugeOpts{
+		Name: "gitlab_workhorse_queueing_busy",
+		Help: "How many queued requests are now processed",
+		ConstLabels: prometheus.Labels{
+			"queue_name": name,
+		},
+	})
+}
+
+func createQueuingWaiting(promFactory promauto.Factory, name string) prometheus.Gauge {
+	return promFactory.NewGauge(prometheus.GaugeOpts{
+		Name: "gitlab_workhorse_queueing_waiting",
+		Help: "How many requests are now queued",
+		ConstLabels: prometheus.Labels{
+			"queue_name": name,
+		},
+	})
+}
+
+func createQueuingWaitingTime(promFactory promauto.Factory, name string, waitingTimeBuckets []float64) prometheus.Histogram {
+	return promFactory.NewHistogram(prometheus.HistogramOpts{
+		Name: "gitlab_workhorse_queueing_waiting_time",
+		Help: "How many time a request spent in queue",
+		ConstLabels: prometheus.Labels{
+			"queue_name": name,
+		},
+		Buckets: waitingTimeBuckets,
+	})
+}
+
+func createQueuingErrors(promFactory promauto.Factory, name string) *prometheus.CounterVec {
+	return promFactory.NewCounterVec(
+		prometheus.CounterOpts{
+			Name: "gitlab_workhorse_queueing_errors",
+			Help: "How many times the TooManyRequests or QueueintTimedout errors were returned while queueing, partitioned by error type",
+			ConstLabels: prometheus.Labels{
+				"queue_name": name,
+			},
+		},
+		[]string{"type"},
+	)
+}
+
+// Queue represents a queue for managing requests.
 type Queue struct {
 	*queueMetrics
 
@@ -160,7 +186,7 @@ func (s *Queue) Acquire() (err error) {
 		if err != nil {
 			waitStarted := <-s.waitingCh
 			s.queueingWaiting.Dec()
-			s.queueingWaitingTime.Observe(float64(time.Since(waitStarted).Seconds()))
+			s.queueingWaitingTime.Observe(time.Since(waitStarted).Seconds())
 		}
 	}()
 
@@ -194,7 +220,7 @@ func (s *Queue) Release() {
 	// dequeue from queue to allow next request to be processed
 	waitStarted := <-s.waitingCh
 	s.queueingWaiting.Dec()
-	s.queueingWaitingTime.Observe(float64(time.Since(waitStarted).Seconds()))
+	s.queueingWaitingTime.Observe(time.Since(waitStarted).Seconds())
 
 	<-s.busyCh
 	s.queueingBusy.Dec()

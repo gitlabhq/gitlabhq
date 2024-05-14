@@ -2,8 +2,6 @@
 
 module Users
   class ActivityService
-    LEASE_TIMEOUT = 1.minute.to_i
-
     def initialize(author:, namespace: nil, project: nil)
       @user = if author.respond_to?(:username)
                 author
@@ -31,9 +29,6 @@ module Users
 
       today = Date.today
       return if user.last_activity_on == today
-
-      lease = Gitlab::ExclusiveLease.new("activity_service:#{user.id}", timeout: LEASE_TIMEOUT)
-      return unless lease.try_obtain
 
       user.update_attribute(:last_activity_on, today)
 

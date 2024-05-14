@@ -7,8 +7,8 @@ RSpec.describe API::ProjectSnippets, :aggregate_failures, feature_category: :sou
 
   let_it_be(:project) { create(:project, :public) }
   let_it_be(:project_no_snippets) { create(:project, :snippets_disabled) }
-  let_it_be(:user) { create(:user, developer_projects: [project_no_snippets]) }
-  let_it_be(:admin) { create(:admin, developer_projects: [project_no_snippets]) }
+  let_it_be(:user) { create(:user, developer_of: project_no_snippets) }
+  let_it_be(:admin) { create(:admin, developer_of: project_no_snippets) }
   let_it_be(:public_snippet, reload: true) { create(:project_snippet, :public, :repository, project: project) }
 
   describe "GET /projects/:project_id/snippets/:id/user_agent_detail" do

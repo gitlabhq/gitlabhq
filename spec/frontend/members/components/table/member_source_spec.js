@@ -109,6 +109,21 @@ describe('MemberSource', () => {
         expect(tooltipDirective).not.toBeUndefined();
         expect(tooltipDirective.value).toBe('Inherited');
       });
+      describe('when `webuiMembersInheritedUsers` FF is on', () => {
+        beforeEach(() => {
+          gon.features = { webuiMembersInheritedUsers: true };
+          createComponent({
+            isDirectMember: false,
+          });
+        });
+
+        it('displays tooltip with "Indirect"', () => {
+          const tooltipDirective = getTooltipDirective(wrapper);
+
+          expect(tooltipDirective).not.toBeUndefined();
+          expect(tooltipDirective.value).toBe('Indirect');
+        });
+      });
     });
   });
 });

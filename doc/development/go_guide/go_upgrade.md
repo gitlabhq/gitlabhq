@@ -41,7 +41,7 @@ if this is enough to support backports to the last 3 minor GitLab releases.
 For example, if we want to drop support for `go 1.11` in GitLab `12.10`, we need
 to verify which Go versions we are using in `12.9`, `12.8`, and `12.7`. We do not
 consider the active milestone, `12.10`, because a backport for `12.7` is required
-in case of a critical security release.
+in case of a critical patch release.
 
 - If both [Omnibus GitLab and Cloud-Native GitLab (CNG)](#updating-go-version) were using Go `1.12` in GitLab `12.7` and later,
   then we can safely drop support for `1.11`.

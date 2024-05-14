@@ -63,10 +63,16 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::UsersImporter, feature_
 
       importer.execute
 
-      cache_key_prefix = "bitbucket_server/project/#{project.id}/source/username"
-      expect(Gitlab::Cache::Import::Caching.read("#{cache_key_prefix}/username1")).to eq('email1')
-      expect(Gitlab::Cache::Import::Caching.read("#{cache_key_prefix}/username2")).to eq('email2')
-      expect(Gitlab::Cache::Import::Caching.read("#{cache_key_prefix}/username3")).to eq('email3')
+      cache_key_prefix = "bitbucket_server/project/#{project.id}/source"
+      expect(Gitlab::Cache::Import::Caching.read("#{cache_key_prefix}/username1")).to eq(
+        { value: 'email1', type: :email }.to_json
+      )
+      expect(Gitlab::Cache::Import::Caching.read("#{cache_key_prefix}/username2")).to eq(
+        { value: 'email2', type: :email }.to_json
+      )
+      expect(Gitlab::Cache::Import::Caching.read("#{cache_key_prefix}/username3")).to eq(
+        { value: 'email3', type: :email }.to_json
+      )
     end
   end
 end

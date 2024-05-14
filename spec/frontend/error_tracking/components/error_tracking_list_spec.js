@@ -1,6 +1,7 @@
 import {
   GlEmptyState,
   GlLoadingIcon,
+  GlForm,
   GlFormInput,
   GlPagination,
   GlDropdown,
@@ -146,26 +147,8 @@ describe('ErrorTrackingList', () => {
       expect(findErrorListRows().length).toEqual(store.state.list.errors.length);
     });
 
-    describe('user count', () => {
-      it('shows user count', () => {
-        mountComponent({
-          integratedErrorTrackingEnabled: false,
-          stubs: {
-            GlTable: false,
-          },
-        });
-        expect(findErrorListTable().find('thead').text()).toContain('Users');
-      });
-
-      it('does not show user count', () => {
-        mountComponent({
-          integratedErrorTrackingEnabled: true,
-          stubs: {
-            GlTable: false,
-          },
-        });
-        expect(findErrorListTable().find('thead').text()).not.toContain('Users');
-      });
+    it('shows user count', () => {
+      expect(findErrorListTable().find('thead').text()).toContain('Users');
     });
 
     describe.each([
@@ -224,6 +207,7 @@ describe('ErrorTrackingList', () => {
 
     describe('filtering', () => {
       const findSearchBox = () => wrapper.findComponent(GlFormInput);
+      const findGlForm = () => wrapper.findComponent(GlForm);
 
       it('shows search box & sort dropdown', () => {
         expect(findSearchBox().exists()).toBe(true);
@@ -232,7 +216,7 @@ describe('ErrorTrackingList', () => {
 
       it('searches by query', () => {
         findSearchBox().vm.$emit('input', 'search');
-        findSearchBox().trigger('keyup.enter');
+        findGlForm().vm.$emit('submit', { preventDefault: () => {} });
         expect(actions.searchByQuery.mock.calls[0][1]).toBe('search');
       });
 

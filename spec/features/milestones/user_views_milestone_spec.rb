@@ -5,13 +5,9 @@ require 'spec_helper'
 RSpec.describe "User views milestone", feature_category: :team_planning do
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
-  let_it_be(:project) { create(:project, :repository, group: group) }
+  let_it_be(:project) { create(:project, :repository, group: group, developers: user) }
   let_it_be(:milestone) { create(:milestone, project: project, description: '**Lorem** _ipsum_ dolor sit [amet](https://example.com)') }
   let_it_be(:labels) { create_list(:label, 2, project: project) }
-
-  before_all do
-    project.add_developer(user)
-  end
 
   before do
     sign_in(user)

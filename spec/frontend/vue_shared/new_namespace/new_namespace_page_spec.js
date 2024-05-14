@@ -1,4 +1,4 @@
-import { GlBreadcrumb } from '@gitlab/ui';
+import { GlBreadcrumb, GlAlert } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import LegacyContainer from '~/vue_shared/new_namespace/components/legacy_container.vue';
@@ -19,6 +19,7 @@ describe('Experimental new namespace creation app', () => {
   const findImage = () => wrapper.find('img');
   const findNewTopLevelGroupAlert = () => wrapper.findComponent(NewTopLevelGroupAlert);
   const findSuperSidebarToggle = () => wrapper.findComponent(SuperSidebarToggle);
+  const findAccountVerificationAlert = () => wrapper.findComponent(GlAlert);
 
   const DEFAULT_PROPS = {
     title: 'Create something',
@@ -30,12 +31,16 @@ describe('Experimental new namespace creation app', () => {
     persistenceKey: 'DEMO-PERSISTENCE-KEY',
   };
 
-  const createComponent = ({ slots, propsData } = {}) => {
+  const createComponent = ({ slots, propsData, identityVerificationRequired = false } = {}) => {
     wrapper = shallowMountExtended(NewNamespacePage, {
       slots,
       propsData: {
         ...DEFAULT_PROPS,
         ...propsData,
+      },
+      provide: {
+        identityVerificationRequired,
+        identityVerificationPath: '#',
       },
     });
   };
@@ -107,9 +112,7 @@ describe('Experimental new namespace creation app', () => {
     expect(findWelcomePage().exists()).toBe(true);
 
     window.location.hash = `#${DEFAULT_PROPS.panels[0].name}`;
-    const ev = document.createEvent('HTMLEvents');
-    ev.initEvent('hashchange', false, false);
-    window.dispatchEvent(ev);
+    window.dispatchEvent(new Event('hashchange'));
 
     await nextTick();
     expect(findWelcomePage().exists()).toBe(false);
@@ -176,6 +179,48 @@ describe('Experimental new namespace creation app', () => {
       createComponent();
 
       expect(findTopBar().classes()).toEqual(['top-bar-fixed', 'container-fluid']);
+    });
+  });
+
+  describe('account verification alert', () => {
+    describe('when identity verification is not required', () => {
+      beforeEach(() => {
+        window.location.hash = 'panel1';
+        createComponent({ identityVerificationRequired: false });
+      });
+
+      it('does not show account verification alert', () => {
+        expect(findAccountVerificationAlert().exists()).toBe(false);
+      });
+
+      it('shows the group create form', () => {
+        expect(findLegacyContainer().exists()).toBe(true);
+      });
+    });
+
+    describe('when identity verification is required', () => {
+      beforeEach(() => {
+        window.location.hash = 'panel1';
+        createComponent({ identityVerificationRequired: true });
+      });
+
+      it('shows the account verification alert', () => {
+        expect(findAccountVerificationAlert().props()).toMatchObject({
+          title: 'Before you can create additional groups, we need to verify your account.',
+          dismissible: false,
+          variant: 'danger',
+          primaryButtonText: 'Verify my account',
+          primaryButtonLink: '#',
+        });
+
+        expect(findAccountVerificationAlert().text()).toBe(
+          `We won't ask you for this information again. It will never be used for marketing purposes.`,
+        );
+      });
+
+      it('does not show the group create form', () => {
+        expect(findLegacyContainer().exists()).toBe(false);
+      });
     });
   });
 });

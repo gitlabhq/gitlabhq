@@ -43,6 +43,8 @@ module Gitlab
           :title
         ].freeze
 
+        EPOCH_MILLISECONDS_DIGIT_COUNT = (Time.current.to_f * 1000).to_i.to_s.size
+
         private_constant :EXPECTED_PAYLOAD_ATTRIBUTES
 
         # Define expected API for a payload
@@ -188,6 +190,12 @@ module Gitlab
 
         def parse_value(value, type)
           case type
+          when :time_with_epoch_millis
+            if value.is_a?(Integer) && value.to_s.size == EPOCH_MILLISECONDS_DIGIT_COUNT
+              Time.at(0, value, :millisecond).utc
+            else
+              parse_time(value)
+            end
           when :time
             parse_time(value)
           when :integer

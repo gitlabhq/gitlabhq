@@ -10,6 +10,7 @@ import createRouter from '~/repository/router';
 import { updateElementsVisibility } from '~/repository/utils/dom';
 import { resetShortcutsForTests } from '~/behaviors/shortcuts';
 import ShortcutsBlob from '~/behaviors/shortcuts/shortcuts_blob';
+import Shortcuts from '~/behaviors/shortcuts/shortcuts';
 import BlobLinePermalinkUpdater from '~/blob/blob_line_permalink_updater';
 import { blobControlsDataMock, refMock } from '../mock_data';
 
@@ -53,8 +54,12 @@ describe('Blob controls component', () => {
 
   beforeEach(() => createComponent());
 
-  it('renders a find button with the correct href', () => {
-    expect(findFindButton().attributes('href')).toBe('find/file.js');
+  it('triggers a `focusSearchFile` shortcut when the findFile button is clicked', () => {
+    const findFileButton = findFindButton();
+    jest.spyOn(Shortcuts, 'focusSearchFile').mockResolvedValue();
+    findFileButton.vm.$emit('click');
+
+    expect(Shortcuts.focusSearchFile).toHaveBeenCalled();
   });
 
   it('renders a blame button with the correct href', () => {

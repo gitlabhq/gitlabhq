@@ -8,7 +8,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 [Push mirrors](../user/project/repository/mirror/push.md)
 defined on a project's repository settings are called "remote mirrors". You
@@ -43,6 +43,7 @@ Example response:
   {
     "enabled": true,
     "id": 101486,
+    "auth_method": "ssh_public_key",
     "last_error": null,
     "last_successful_update_at": "2020-01-06T17:32:02.823Z",
     "last_update_at": "2020-01-06T17:32:02.823Z",
@@ -56,8 +57,6 @@ Example response:
 ```
 
 ## Get a single project's remote mirror
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82770) in GitLab 14.10.
 
 Returns a remote mirror and its statuses:
 
@@ -97,6 +96,7 @@ Learn how to [configure a pull mirror](projects.md#configure-pull-mirroring-for-
 > - Field `mirror_branch_regex` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381667) in GitLab 15.8 [with a flag](../administration/feature_flags.md) named `mirror_only_branches_match_regex`. Disabled by default.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/381667) in GitLab 16.0.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/410354) in GitLab 16.2. Feature flag `mirror_only_branches_match_regex` removed.
+> - Field `auth_method` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75155) in GitLab 16.10.
 
 Push mirroring is disabled by default. To enable it, include the optional parameter
 `enabled` when you create the mirror:
@@ -112,6 +112,7 @@ POST /projects/:id/remote_mirrors
 | `keep_divergent_refs`     | Boolean | no         | Determines if divergent refs are skipped.           |
 | `only_protected_branches` | Boolean | no         | Determines if only protected branches are mirrored. |
 | `mirror_branch_regex`     | String  | no         | Contains a regular expression. Only branches with names matching the regex are mirrored. Requires `only_protected_branches` to be disabled. Premium and Ultimate only. |
+| `auth_method`             | String  | no         | Determines the mirror authentication method (`ssh_public_key` or `password`). |
 
 Example request:
 
@@ -126,6 +127,7 @@ Example response:
 {
     "enabled": false,
     "id": 101486,
+    "auth_method": "password",
     "last_error": null,
     "last_successful_update_at": null,
     "last_update_at": null,
@@ -138,6 +140,8 @@ Example response:
 ```
 
 ## Update a remote mirror's attributes
+
+> - Field `auth_method` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75155) in GitLab 16.10.
 
 Toggle a remote mirror on or off, or change which types of branches are
 mirrored:
@@ -153,6 +157,7 @@ PUT /projects/:id/remote_mirrors/:mirror_id
 | `keep_divergent_refs`     | Boolean | no         | Determines if divergent refs are skipped.           |
 | `only_protected_branches` | Boolean | no         | Determines if only protected branches are mirrored. |
 | `mirror_branch_regex`     | String  | no         |  Determines if only the branch whose name matches the regex is mirrored. It does not work with `only_protected_branches` enabled. Premium and Ultimate only. |
+| `auth_method`             | String  | no         | Determines the mirror authentication method (`ssh_public_key` or `password`). |
 
 Example request:
 
@@ -166,6 +171,7 @@ Example response:
 {
     "enabled": false,
     "id": 101486,
+    "auth_method": "password",
     "last_error": null,
     "last_successful_update_at": "2020-01-06T17:32:02.823Z",
     "last_update_at": "2020-01-06T17:32:02.823Z",
@@ -177,9 +183,36 @@ Example response:
 }
 ```
 
-## Delete a remote mirror
+## Force push mirror update
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82778) in GitLab 14.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388907) in GitLab 16.11.
+
+[Force an update](../user/project/repository/mirror/index.md#force-an-update) to a push mirror.
+
+```plaintext
+POST /projects/:id/remote_mirrors/:mirror_id/sync
+```
+
+Supported attributes:
+
+| Attribute   | Type              | Required | Description                                                                          |
+|-------------|-------------------|----------|--------------------------------------------------------------------------------------|
+| `id`        | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `mirror_id` | Integer           | Yes      | The remote mirror ID.                                                                |
+
+If successful, returns [`204`](rest/index.md#status-codes).
+
+Example request:
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/42/remote_mirrors/101486/sync"
+```
+
+Example response:
+
+An empty response with a HTTP response code 204.
+
+## Delete a remote mirror
 
 Delete a remote mirror.
 

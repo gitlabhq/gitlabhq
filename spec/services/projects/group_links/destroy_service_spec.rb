@@ -6,7 +6,7 @@ RSpec.describe Projects::GroupLinks::DestroyService, '#execute', feature_categor
   let_it_be(:user) { create :user }
   let_it_be(:project) { create(:project, :private) }
   let_it_be(:group) { create(:group) }
-  let_it_be(:group_user) { create(:user).tap { |user| group.add_guest(user) } }
+  let_it_be(:group_user) { create(:user, guest_of: group) }
 
   let(:group_access) { Gitlab::Access::DEVELOPER }
   let!(:group_link) { create(:project_group_link, project: project, group: group, group_access: group_access) }

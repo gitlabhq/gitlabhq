@@ -6,6 +6,7 @@ module Projects
 
     ImportSourceDisabledError = Class.new(StandardError)
     INTERNAL_IMPORT_SOURCES = %w[gitlab_custom_project_template gitlab_project_migration].freeze
+    README_FILE = 'README.md'
 
     def initialize(user, params)
       @current_user = user
@@ -112,11 +113,6 @@ module Projects
 
       if @project.import?
         Gitlab::Tracking.event(self.class.name, 'import_project', user: current_user)
-      else
-        # Skip writing the config for project imports/forks because it
-        # will always fail since the Git directory doesn't exist until
-        # a background job creates it (see Project#add_import_job).
-        @project.set_full_path
       end
 
       unless @project.gitlab_project_import?
@@ -202,7 +198,7 @@ module Projects
       commit_attrs = {
         branch_name: default_branch,
         commit_message: 'Initial commit',
-        file_path: 'README.md',
+        file_path: README_FILE,
         file_content: readme_content
       }
 

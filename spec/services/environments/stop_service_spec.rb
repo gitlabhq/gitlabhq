@@ -14,8 +14,8 @@ RSpec.describe Environments::StopService, feature_category: :continuous_delivery
     subject { service.execute(environment) }
 
     let_it_be(:project) { create(:project, :private, :repository) }
-    let_it_be(:developer) { create(:user).tap { |u| project.add_developer(u) } }
-    let_it_be(:reporter) { create(:user).tap { |u| project.add_reporter(u) } }
+    let_it_be(:developer) { create(:user, developer_of: project) }
+    let_it_be(:reporter) { create(:user, reporter_of: project) }
 
     let(:user) { developer }
 

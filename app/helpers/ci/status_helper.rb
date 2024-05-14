@@ -80,7 +80,7 @@ module Ci
 
       gl_badge_tag(variant: variant, size: :md, href: path, class: badge_classes, title: title, data: data) do
         if show_status_text
-          content_tag(:span, ci_icon_for_status(status), { class: icon_wrapper_class }) + content_tag(:span, status.label, { class: 'gl-mx-2 gl-white-space-nowrap', data: { testid: 'ci-icon-text' } })
+          content_tag(:span, ci_icon_for_status(status), { class: icon_wrapper_class }) + content_tag(:span, status.label, { class: 'gl-mx-2 gl-whitespace-nowrap', data: { testid: 'ci-icon-text' } })
         else
           content_tag(:span, ci_icon_for_status(status), { class: icon_wrapper_class })
         end

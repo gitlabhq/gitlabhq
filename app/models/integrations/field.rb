@@ -7,6 +7,7 @@ module Integrations
     ATTRIBUTES = %i[
       section type placeholder choices value checkbox_label
       title help if description
+      label_description
       non_empty_password_help
       non_empty_password_title
     ].concat(BOOLEAN_ATTRIBUTES).freeze
@@ -30,7 +31,7 @@ module Integrations
       invalid_attributes = attributes.keys - ATTRIBUTES
       if invalid_attributes.present?
         raise ArgumentError, "Invalid attributes #{invalid_attributes.inspect}"
-      elsif !TYPES.include?(self[:type])
+      elsif TYPES.exclude?(self[:type])
         raise ArgumentError, "Invalid type #{self[:type].inspect}"
       end
     end

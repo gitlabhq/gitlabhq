@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Mutations::WorkItems::Update, feature_category: :portfolio_management do
   let_it_be(:project) { create(:project) }
-  let_it_be(:developer) { create(:user).tap { |user| project.add_developer(user) } }
+  let_it_be(:developer) { create(:user, developer_of: project) }
   let_it_be(:current_work_item) { create(:work_item, :task, project: project) }
   let_it_be(:parent_work_item) { create(:work_item, project: project) }
 

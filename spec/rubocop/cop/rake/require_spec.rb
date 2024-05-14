@@ -26,12 +26,32 @@ RSpec.describe RuboCop::Cop::Rake::Require do
       allow(cop).to receive(:in_rake_file?).and_return(true)
     end
 
-    it 'registers an offenses for require methods' do
+    it 'registers offenses for require methods' do
       expect_offense(<<~RUBY)
         require 'json'
         ^^^^^^^^^^^^^^ #{msg}
         require_relative 'gitlab/json'
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{msg}
+      RUBY
+    end
+
+    it 'registers offenses for require methods inside `namespace` definitions' do
+      expect_offense(<<~RUBY)
+        namespace :foo do
+          require 'json'
+          ^^^^^^^^^^^^^^ #{msg}
+
+          task :parse do
+          end
+        end
+
+        namespace :bar do
+          require_relative 'gitlab/json'
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{msg}
+
+          task :parse do
+          end
+        end
       RUBY
     end
 
@@ -63,8 +83,13 @@ RSpec.describe RuboCop::Cop::Rake::Require do
           require 'json'
         end
 
+        def self.run
+          require 'yaml'
+        end
+
         task :parse do
           load_deps
+          run
         end
       RUBY
     end

@@ -6,10 +6,25 @@ RSpec.describe 'Query.runners', feature_category: :fleet_visibility do
 
   let_it_be(:current_user) { create_default(:user, :admin) }
 
+  def create_ci_runner(version:, revision: nil, ip_address: nil, **args)
+    runner_manager_args = { version: version, revision: revision, ip_address: ip_address }.compact
+
+    create(:ci_runner, :project, **args).tap do |runner|
+      create(:ci_runner_machine, runner: runner, **runner_manager_args)
+    end
+  end
+
   describe 'Query.runners' do
     let_it_be(:project) { create(:project, :repository, :public) }
-    let_it_be(:instance_runner) { create(:ci_runner, :instance, version: 'abc', revision: '123', description: 'Instance runner', ip_address: '127.0.0.1') }
-    let_it_be(:project_runner) { create(:ci_runner, :project, active: false, version: 'def', revision: '456', description: 'Project runner', projects: [project], ip_address: '127.0.0.1') }
+    let_it_be(:instance_runner) { create(:ci_runner, :instance, description: 'Instance runner') }
+    let_it_be(:instance_runner_manager) do
+      create(:ci_runner_machine, runner: instance_runner, version: 'abc', revision: '123', ip_address: '127.0.0.1')
+    end
+
+    let_it_be(:project_runner) { create(:ci_runner, :project, active: false, description: 'Project runner', projects: [project]) }
+    let_it_be(:project_runner_manager) do
+      create(:ci_runner_machine, runner: project_runner, version: 'def', revision: '456', ip_address: '127.0.0.1')
+    end
 
     let(:runners_graphql_data) { graphql_data_at(:runners) }
 
@@ -158,12 +173,6 @@ RSpec.describe 'Query.runners', feature_category: :fleet_visibility do
             end
           end
         end
-
-        def create_ci_runner(args = {}, version:)
-          create(:ci_runner, :project, **args).tap do |runner|
-            create(:ci_runner_machine, runner: runner, version: version)
-          end
-        end
       end
 
       context 'when filtered by creator' do
@@ -307,11 +316,11 @@ RSpec.describe 'Query.runners', feature_category: :fleet_visibility do
       }
 
       [
-        create(:ci_runner, :instance, created_at: 4.days.ago, contacted_at: 3.days.ago, **common_args),
-        create(:ci_runner, :instance, created_at: 30.hours.ago, contacted_at: 1.day.ago, **common_args),
-        create(:ci_runner, :instance, created_at: 1.day.ago, contacted_at: 1.hour.ago, **common_args),
-        create(:ci_runner, :instance, created_at: 2.days.ago, contacted_at: 2.days.ago, **common_args),
-        create(:ci_runner, :instance, created_at: 3.days.ago, contacted_at: 1.second.ago, **common_args)
+        create_ci_runner(created_at: 4.days.ago, contacted_at: 3.days.ago, **common_args),
+        create_ci_runner(created_at: 30.hours.ago, contacted_at: 1.day.ago, **common_args),
+        create_ci_runner(created_at: 1.day.ago, contacted_at: 1.hour.ago, **common_args),
+        create_ci_runner(created_at: 2.days.ago, contacted_at: 2.days.ago, **common_args),
+        create_ci_runner(created_at: 3.days.ago, contacted_at: 1.second.ago, **common_args)
       ]
     end
 
@@ -341,22 +350,10 @@ RSpec.describe 'Group.runners' do
   include GraphqlHelpers
 
   let_it_be(:group) { create(:group) }
-  let_it_be(:group_owner) { create_default(:user) }
-
-  before do
-    group.add_owner(group_owner)
-  end
+  let_it_be(:group_owner) { create_default(:user, owner_of: group) }
 
   describe 'edges' do
-    let_it_be(:runner) do
-      create(:ci_runner, :group,
-        active: false,
-        version: 'def',
-        revision: '456',
-        description: 'Project runner',
-        groups: [group],
-        ip_address: '127.0.0.1')
-    end
+    let_it_be(:runner) { create(:ci_runner, :group, active: false, description: 'Project runner', groups: [group]) }
 
     let(:query) do
       %(
@@ -375,9 +372,7 @@ RSpec.describe 'Group.runners' do
     end
 
     it 'contains custom edge information' do
-      r = GitlabSchema.execute(query,
-                               context: { current_user: group_owner },
-                               variables: { path: group.full_path })
+      r = GitlabSchema.execute(query, context: { current_user: group_owner }, variables: { path: group.full_path })
 
       edges = graphql_dig_at(r.to_h, :data, :group, :runners, :edges)
 

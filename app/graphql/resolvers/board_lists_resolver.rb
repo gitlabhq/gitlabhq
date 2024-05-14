@@ -11,12 +11,12 @@ module Resolvers
     authorizes_object!
 
     argument :id, Types::GlobalIDType[List],
-             required: false,
-             description: 'Find a list by its global ID.'
+      required: false,
+      description: 'Find a list by its global ID.'
 
     argument :issue_filters, Types::Boards::BoardIssueInputType,
-             required: false,
-             description: 'Filters applied when getting issue metadata in the board list.'
+      required: false,
+      description: 'Filters applied when getting issue metadata in the board list.'
 
     alias_method :board, :object
 

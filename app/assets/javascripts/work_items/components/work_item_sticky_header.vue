@@ -1,11 +1,12 @@
 <script>
-import { GlLoadingIcon, GlIntersectionObserver } from '@gitlab/ui';
+import { GlLoadingIcon, GlIntersectionObserver, GlButton, GlLink } from '@gitlab/ui';
 import LockedBadge from '~/issuable/components/locked_badge.vue';
 import { WORKSPACE_PROJECT } from '~/issues/constants';
 import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
 import { isNotesWidget } from '../utils';
 import WorkItemActions from './work_item_actions.vue';
 import WorkItemTodos from './work_item_todos.vue';
+import WorkItemStateBadge from './work_item_state_badge.vue';
 
 export default {
   components: {
@@ -15,6 +16,9 @@ export default {
     WorkItemActions,
     WorkItemTodos,
     ConfidentialityBadge,
+    WorkItemStateBadge,
+    GlButton,
+    GlLink,
   },
   props: {
     workItem: {
@@ -78,6 +82,9 @@ export default {
     projectFullPath() {
       return this.workItem.namespace?.fullPath;
     },
+    workItemState() {
+      return this.workItem.state;
+    },
   },
   WORKSPACE_PROJECT,
 };
@@ -91,22 +98,37 @@ export default {
     <transition name="issuable-header-slide">
       <div
         v-if="isStickyHeaderShowing"
-        class="issue-sticky-header gl-fixed gl-bg-white gl-border-b gl-z-index-3 gl-py-2"
+        class="issue-sticky-header gl-fixed gl-bg-white gl-border-b gl-z-3 gl-py-2"
         data-testid="work-item-sticky-header"
       >
         <div
-          class="gl-align-items-center gl-mx-auto gl-px-5 gl-display-flex gl-max-w-container-xl gl-gap-3"
+          class="work-item-sticky-header-text gl-items-center gl-mx-auto gl-px-5 xl:gl-px-6 gl-flex gl-gap-3"
         >
-          <span class="gl-text-truncate gl-font-weight-bold gl-pr-3 gl-mr-auto">
-            {{ workItem.title }}
-          </span>
+          <work-item-state-badge v-if="workItemState" :work-item-state="workItemState" />
           <gl-loading-icon v-if="updateInProgress" />
           <confidentiality-badge
             v-if="workItem.confidential"
             :issuable-type="workItemType"
             :workspace-type="$options.WORKSPACE_PROJECT"
+            hide-text-in-small-screens
           />
           <locked-badge v-if="isDiscussionLocked" :issuable-type="workItemType" />
+          <gl-link
+            class="gl-truncate gl-block gl-font-bold gl-pr-3 gl-mr-auto gl-text-black"
+            href="#top"
+            :title="workItem.title"
+          >
+            {{ workItem.title }}
+          </gl-link>
+          <gl-button
+            v-if="canUpdate"
+            category="secondary"
+            data-testid="work-item-edit-button-sticky"
+            class="shortcut-edit-wi-description"
+            @click="$emit('toggleEditMode')"
+          >
+            {{ __('Edit') }}
+          </gl-button>
           <work-item-todos
             v-if="showWorkItemCurrentUserTodos"
             :work-item-id="workItem.id"
@@ -118,12 +140,14 @@ export default {
           <work-item-actions
             :full-path="fullPath"
             :work-item-id="workItem.id"
+            :work-item-iid="workItem.iid"
             :subscribed-to-notifications="workItemNotificationsSubscribed"
             :work-item-type="workItemType"
             :work-item-type-id="workItemTypeId"
             :can-delete="canDelete"
             :can-update="canUpdate"
             :is-confidential="workItem.confidential"
+            :is-discussion-locked="isDiscussionLocked"
             :is-parent-confidential="parentWorkItemConfidentiality"
             :work-item-reference="workItem.reference"
             :work-item-create-note-email="workItem.createNoteEmail"

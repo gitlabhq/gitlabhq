@@ -5,6 +5,16 @@ require 'spec_helper'
 RSpec.describe ::MergeRequests::Mergeability::DetailedMergeStatusService, feature_category: :code_review_workflow do
   subject(:detailed_merge_status) { described_class.new(merge_request: merge_request).execute }
 
+  let(:merge_request) { create(:merge_request) }
+
+  it 'calls every mergeability check' do
+    expect(merge_request).to receive(:execute_merge_checks)
+      .with(MergeRequest.all_mergeability_checks, any_args)
+      .and_call_original
+
+    detailed_merge_status
+  end
+
   context 'when merge status is cannot_be_merged_rechecking' do
     let(:merge_request) { create(:merge_request, merge_status: :cannot_be_merged_rechecking) }
 
@@ -20,16 +30,6 @@ RSpec.describe ::MergeRequests::Mergeability::DetailedMergeStatusService, featur
       allow(merge_request.merge_request_diff).to receive(:persisted?).and_return(false)
 
       expect(detailed_merge_status).to eq(:preparing)
-    end
-  end
-
-  context 'when merge status is preparing and merge request diff is persisted' do
-    let(:merge_request) { create(:merge_request, merge_status: :preparing) }
-
-    it 'returns :checking' do
-      allow(merge_request.merge_request_diff).to receive(:persisted?).and_return(true)
-
-      expect(detailed_merge_status).to eq(:mergeable)
     end
   end
 
@@ -83,6 +83,8 @@ RSpec.describe ::MergeRequests::Mergeability::DetailedMergeStatusService, featur
     end
 
     context 'when pipeline exists' do
+      using RSpec::Parameterized::TableSyntax
+
       before do
         create(
           :ci_pipeline,
@@ -94,25 +96,37 @@ RSpec.describe ::MergeRequests::Mergeability::DetailedMergeStatusService, featur
         )
       end
 
-      context 'when the pipeline is running' do
-        let(:ci_status) { :running }
+      where(:ci_status, :expected_detailed_merge_status) do
+        :created   | :ci_still_running
+        :pending   | :ci_still_running
+        :running   | :ci_still_running
+        :manual    | :ci_still_running
+        :scheduled | :ci_still_running
+        :failed    | :ci_must_pass
+        :success   | :mergeable
+      end
 
-        it 'returns the failed check' do
-          expect(detailed_merge_status).to eq(:ci_still_running)
+      with_them do
+        it { expect(detailed_merge_status).to eq(expected_detailed_merge_status) }
+      end
+
+      context 'with FF auto_merge_when_incomplete_pipeline_succeeds disabled' do
+        before do
+          stub_feature_flags(auto_merge_when_incomplete_pipeline_succeeds: false)
         end
-      end
 
-      context 'when the pipeline is pending' do
-        let(:ci_status) { :pending }
+        where(:ci_status, :expected_detailed_merge_status) do
+          :created   | :ci_must_pass
+          :pending   | :ci_still_running
+          :running   | :ci_still_running
+          :manual    | :ci_must_pass
+          :scheduled | :ci_must_pass
+          :failed    | :ci_must_pass
+          :success   | :mergeable
+        end
 
-        it { expect(detailed_merge_status).to eq(:ci_still_running) }
-      end
-
-      context 'when the pipeline is not running' do
-        let(:ci_status) { :failed }
-
-        it 'returns the failed check' do
-          expect(detailed_merge_status).to eq(:ci_must_pass)
+        with_them do
+          it { expect(detailed_merge_status).to eq(expected_detailed_merge_status) }
         end
       end
     end

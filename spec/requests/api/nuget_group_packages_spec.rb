@@ -39,38 +39,38 @@ RSpec.describe API::NugetGroupPackages, feature_category: :package_registry do
 
     describe 'GET /api/v4/groups/:id/-/packages/nuget/metadata/*package_name/index' do
       it_behaves_like 'handling nuget metadata requests with package name',
-                      example_names_with_status:
-                        {
-                          anonymous_requests_example_name: 'rejects nuget packages access',
-                          anonymous_requests_status: :unauthorized,
-                          guest_requests_example_name: 'rejects nuget packages access',
-                          guest_requests_status: :not_found
-                        } do
+        example_names_with_status:
+        {
+          anonymous_requests_example_name: 'rejects nuget packages access',
+          anonymous_requests_status: :unauthorized,
+          guest_requests_example_name: 'rejects nuget packages access',
+          guest_requests_status: :not_found
+        } do
         let(:url) { "/groups/#{target.id}/-/packages/nuget/metadata/#{package_name}/index.json" }
       end
     end
 
     describe 'GET /api/v4/groups/:id/-/packages/nuget/metadata/*package_name/*package_version' do
       it_behaves_like 'handling nuget metadata requests with package name and package version',
-                      example_names_with_status:
-                        {
-                          anonymous_requests_example_name: 'rejects nuget packages access',
-                          anonymous_requests_status: :unauthorized,
-                          guest_requests_example_name: 'rejects nuget packages access',
-                          guest_requests_status: :not_found
-                        } do
+        example_names_with_status:
+        {
+          anonymous_requests_example_name: 'rejects nuget packages access',
+          anonymous_requests_status: :unauthorized,
+          guest_requests_example_name: 'rejects nuget packages access',
+          guest_requests_status: :not_found
+        } do
         let(:url) { "/groups/#{target.id}/-/packages/nuget/metadata/#{package_name}/#{package.version}.json" }
       end
     end
 
     describe 'GET /api/v4/groups/:id/-/packages/nuget/query' do
       it_behaves_like 'handling nuget search requests',
-                      example_names_with_status: {
-                        anonymous_requests_example_name: 'rejects nuget packages access',
-                        anonymous_requests_status: :unauthorized,
-                        guest_requests_example_name: 'process empty nuget search request',
-                        guest_requests_status: :success
-                      } do
+        example_names_with_status: {
+          anonymous_requests_example_name: 'rejects nuget packages access',
+          anonymous_requests_status: :unauthorized,
+          guest_requests_example_name: 'process empty nuget search request',
+          guest_requests_status: :success
+        } do
         let(:url) { "/groups/#{target.id}/-/packages/nuget/query?#{query_parameters.to_query}" }
       end
     end

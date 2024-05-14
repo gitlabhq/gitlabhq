@@ -8,10 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/45318) in GitLab 11.2. Requires GitLab Runner 11.2 and above.
-> - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/39737) from JUnit test reports to Unit test reports in GitLab 13.4.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 It is very common that a [CI/CD pipeline](../pipelines/index.md) contains a
 test job that verifies your code.
@@ -91,10 +88,6 @@ To copy the name of a single failed test:
 
 ### Number of recent failures
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/241759) in merge requests in GitLab 13.7.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/268249) in GitLab 13.8.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/235525) in Test Reports in GitLab 13.9.
-
 If a test failed in the project's default branch in the last 14 days, a message like
 `Failed {n} time(s) in {default_branch} in the last 14 days` is displayed for that test.
 
@@ -143,9 +136,6 @@ and all report information is displayed.
 
 ## View Unit test reports on GitLab
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24792) in GitLab 12.5 behind a feature flag (`junit_pipeline_view`), disabled by default.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/216478) in GitLab 13.3.
-
 If JUnit report format XML files are generated and uploaded as part of a pipeline, these reports
 can be viewed inside the pipelines details page. The **Tests** tab on this page
 displays a list of test suites and cases reported from the XML file.
@@ -159,8 +149,6 @@ You can also retrieve the reports via the [GitLab API](../../api/pipelines.md#ge
 
 ### Unit test reports parsing errors
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/263457) in GitLab 13.10.
-
 If parsing JUnit report XML results in an error, an indicator is shown next to the job name. Hovering over the icon shows the parser error in a tooltip. If multiple parsing errors come from [grouped jobs](../jobs/index.md#group-jobs-in-a-pipeline), GitLab shows only the first error from the group.
 
 ![Test Reports With Errors](img/pipelines_junit_test_report_with_errors_v13_10.png)
@@ -171,14 +159,11 @@ GitLab does not parse very [large nodes](https://nokogiri.org/tutorials/parsing_
 
 ## View JUnit screenshots on GitLab
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/202114) in GitLab 13.0 behind the `:junit_pipeline_screenshots_view` feature flag, disabled by default.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/216979) in GitLab 13.12.
-
 You can upload your screenshots as [artifacts](../yaml/artifacts_reports.md#artifactsreportsjunit) to GitLab.
 If JUnit report format XML files contain an `attachment` tag, GitLab parses the attachment.
 When uploading screenshot artifacts:
 
-- The `attachment` tag **must** contain the relative path to `$CI_PROJECT_DIR` of the screenshots you uploaded. For
+- The `attachment` tags **must** contain the paths of the screenshots you uploaded relative to `$CI_PROJECT_DIR`. For
   example:
 
   ```xml

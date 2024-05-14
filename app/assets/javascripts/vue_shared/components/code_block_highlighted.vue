@@ -36,7 +36,7 @@ export default {
   computed: {
     highlighted() {
       if (this.hljs && this.languageLoaded) {
-        return this.hljs.highlight(this.code, { language: this.language }).value;
+        return this.hljs.default.highlight(this.code, { language: this.language }).value;
       }
 
       return escape(this.code);
@@ -53,7 +53,7 @@ export default {
       try {
         const { default: languageDefinition } = await languageLoader[this.language]();
 
-        this.hljs.registerLanguage(this.language, languageDefinition);
+        this.hljs.default.registerLanguage(this.language, languageDefinition);
         this.languageLoaded = true;
       } catch (e) {
         this.$emit('error', e);

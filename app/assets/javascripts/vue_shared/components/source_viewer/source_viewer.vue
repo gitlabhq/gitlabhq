@@ -85,14 +85,19 @@ export default {
       },
       immediate: true,
     },
+    chunks: {
+      handler() {
+        this.selectLine();
+      },
+    },
+  },
+  mounted() {
+    this.selectLine();
   },
   created() {
     this.handleAppear = debounce(this.handleChunkAppear, DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
     this.track(EVENT_ACTION, { label: EVENT_LABEL_VIEWER, property: this.blob.language });
     addBlobLinksTracking();
-  },
-  mounted() {
-    this.selectLine();
   },
   methods: {
     async handleChunkAppear(chunkIndex, handleOverlappingChunk = true) {

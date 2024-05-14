@@ -54,12 +54,26 @@ RSpec.shared_examples 'set up an integration' do |endpoint:, integration:|
     expect(response).to have_gitlab_http_status(expected_code)
   end
 
-  context 'when an integration is unavailable' do
+  context 'when an integration is disabled' do
+    before do
+      allow(Integration).to receive(:disabled_integration_names).and_return([integration.to_param])
+    end
+
     it 'returns bad request' do
+      put url, params: integration_attrs
+
+      expect(response).to have_gitlab_http_status(:bad_request)
+    end
+  end
+
+  context 'when an integration is disabled at the project-level' do
+    before do
       allow_next_found_instance_of(Project) do |project|
         allow(project).to receive(:disabled_integrations).and_return([integration])
       end
+    end
 
+    it 'returns bad request' do
       put url, params: integration_attrs
 
       expect(response).to have_gitlab_http_status(:bad_request)

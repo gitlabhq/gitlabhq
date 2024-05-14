@@ -37,6 +37,12 @@ module Ci
       end
     end
 
+    def self.registered_models
+      Gitlab::Database::Partitioning
+        .registered_models
+        .select { |model| model < Ci::ApplicationRecord && model < Ci::Partitionable }
+    end
+
     class_methods do
       def partitionable(scope:, through: nil, partitioned: false)
         handle_partitionable_through(through)
@@ -75,7 +81,8 @@ module Ci
         partitioned_by :partition_id,
           strategy: :ci_sliding_list,
           next_partition_if: ->(latest_partition) do
-            latest_partition.blank? || Ci::Pipeline::NEXT_PARTITION_VALUE > latest_partition.values.max
+            latest_partition.blank? ||
+              ::Ci::Partitionable::Organizer.new_partition_required?(latest_partition.values.max)
           end,
           detach_partition_if: proc { false },
           # Most of the db tasks are run in a weekly basis, e.g. execute_batched_migrations.

@@ -47,7 +47,7 @@ in the upcoming years.
 ## Opportunity
 
 CI/CD data is subject to
-[time-decay](https://about.gitlab.com/company/team/structure/working-groups/database-scalability/time-decay.html)
+[time-decay](https://handbook.gitlab.com/handbook/company/working-groups/database-scalability/time-decay/)
 because, usually, pipelines that are a few months old are not frequently
 accessed or are even not relevant anymore. Restricting access to processing
 pipelines that are older than a few months might help us to move this data out
@@ -240,3 +240,8 @@ In progress.
 - 2022-06-31: [Pipeline partitioning design](pipeline_partitioning.md) document [merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87683) merged.
 - 2022-09-01: Engineering effort started to implement partitioning.
 - 2022-11-01: The fastest growing CI table partitioned: `ci_builds_metadata`.
+- 2023-06-30: The second largest table partitioned: `ci_builds`.
+- 2023-12-12: `ci_builds` and `ci_builds_metadata` growth is stopped by writing data to new partitions.
+- 2024-02-05: `ci_pipeline_variables` is partitioned.
+- 2024-03-26: `ci_job_artifacts` is partitioned.
+- 2024-04-26: `ci_stages` is partitioned.

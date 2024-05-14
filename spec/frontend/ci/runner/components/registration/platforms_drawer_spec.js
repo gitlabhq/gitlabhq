@@ -1,16 +1,10 @@
-import { nextTick } from 'vue';
 import { GlDrawer, GlLink, GlIcon, GlSprintf } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 
 import PlatformsDrawer from '~/ci/runner/components/registration/platforms_drawer.vue';
 import CliCommand from '~/ci/runner/components/registration/cli_command.vue';
-import {
-  LINUX_PLATFORM,
-  MACOS_PLATFORM,
-  WINDOWS_PLATFORM,
-  INSTALL_HELP_URL,
-} from '~/ci/runner/constants';
+import { LINUX_PLATFORM, MACOS_PLATFORM, INSTALL_HELP_URL } from '~/ci/runner/constants';
 import { installScript, platformArchitectures } from '~/ci/runner/components/registration/utils';
 
 const MOCK_WRAPPER_HEIGHT = '99px';
@@ -25,8 +19,6 @@ describe('RegistrationInstructions', () => {
   let wrapper;
 
   const findDrawer = () => wrapper.findComponent(GlDrawer);
-  const findEnvironmentOptions = () =>
-    wrapper.findByLabelText(s__('Runners|Environment')).findAll('option');
   const findArchitectureOptions = () =>
     wrapper.findByLabelText(s__('Runners|Architecture')).findAll('option');
   const findCliCommand = () => wrapper.findComponent(CliCommand);
@@ -63,12 +55,6 @@ describe('RegistrationInstructions', () => {
   it('shows selection options', () => {
     createComponent({ mountFn: mountExtended });
 
-    expect(findEnvironmentOptions().wrappers.map((w) => w.attributes('value'))).toEqual([
-      LINUX_PLATFORM,
-      MACOS_PLATFORM,
-      WINDOWS_PLATFORM,
-    ]);
-
     expect(findArchitectureOptions().wrappers.map((w) => w.attributes('value'))).toEqual(
       LINUX_ARCHS,
     );
@@ -82,13 +68,13 @@ describe('RegistrationInstructions', () => {
     );
   });
 
-  it('shows selection options for another platform', async () => {
-    createComponent({ mountFn: mountExtended });
-
-    findEnvironmentOptions().at(1).setSelected(); // macos
-    await nextTick();
-
-    expect(wrapper.emitted('selectPlatform')).toEqual([[MACOS_PLATFORM]]);
+  it('shows selection options for another platform', () => {
+    createComponent({
+      mountFn: mountExtended,
+      props: {
+        platform: MACOS_PLATFORM,
+      },
+    });
 
     expect(findArchitectureOptions().wrappers.map((w) => w.attributes('value'))).toEqual(
       MACOS_ARCHS,

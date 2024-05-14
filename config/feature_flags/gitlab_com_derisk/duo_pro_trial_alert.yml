@@ -1,0 +1,9 @@
+---
+name: duo_pro_trial_alert
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/448671
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148012
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/452164
+milestone: '16.11'
+type: gitlab_com_derisk
+group: group::acquisition
+default_enabled: false

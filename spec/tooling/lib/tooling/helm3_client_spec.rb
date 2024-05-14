@@ -34,7 +34,7 @@ RSpec.describe Tooling::Helm3Client do
   describe '#releases' do
     it 'raises an error if the Helm command fails' do
       expect(Gitlab::Popen).to receive(:popen_with_detail)
-        .with([%(helm list --max 256 --offset 0 --output json)])
+        .with(["helm", "list", "--max", "256", "--offset", "0", "--output", "json"])
         .and_return(Gitlab::Popen::Result.new([], '', '', double(success?: false)))
 
       expect { subject.releases.to_a }.to raise_error(described_class::CommandFailedError)
@@ -42,7 +42,7 @@ RSpec.describe Tooling::Helm3Client do
 
     it 'calls helm list with default arguments' do
       expect(Gitlab::Popen).to receive(:popen_with_detail)
-        .with([%(helm list --max 256 --offset 0 --output json)])
+        .with(["helm", "list", "--max", "256", "--offset", "0", "--output", "json"])
         .and_return(Gitlab::Popen::Result.new([], '', '', double(success?: true)))
 
       subject.releases.to_a
@@ -50,7 +50,7 @@ RSpec.describe Tooling::Helm3Client do
 
     it 'calls helm list with extra arguments' do
       expect(Gitlab::Popen).to receive(:popen_with_detail)
-        .with([%(helm list --max 256 --offset 0 --output json --deployed)])
+        .with(["helm", "list", "--max", "256", "--offset", "0", "--output", "json", "--deployed"])
         .and_return(Gitlab::Popen::Result.new([], '', '', double(success?: true)))
 
       subject.releases(args: ['--deployed']).to_a
@@ -58,7 +58,7 @@ RSpec.describe Tooling::Helm3Client do
 
     it 'returns a list of Release objects' do
       expect(Gitlab::Popen).to receive(:popen_with_detail)
-        .with([%(helm list --max 256 --offset 0 --output json --deployed)])
+        .with(["helm", "list", "--max", "256", "--offset", "0", "--output", "json", "--deployed"])
         .and_return(Gitlab::Popen::Result.new([], raw_helm_list_page2, '', double(success?: true)))
       expect(Gitlab::Popen).to receive(:popen_with_detail).ordered
         .and_return(Gitlab::Popen::Result.new([], raw_helm_list_empty, '', double(success?: true)))
@@ -79,13 +79,13 @@ RSpec.describe Tooling::Helm3Client do
 
     it 'automatically paginates releases' do
       expect(Gitlab::Popen).to receive(:popen_with_detail).ordered
-        .with([%(helm list --max 256 --offset 0 --output json)])
+        .with(["helm", "list", "--max", "256", "--offset", "0", "--output", "json"])
         .and_return(Gitlab::Popen::Result.new([], raw_helm_list_page1, '', double(success?: true)))
       expect(Gitlab::Popen).to receive(:popen_with_detail).ordered
-        .with([%(helm list --max 256 --offset 256 --output json)])
+        .with(["helm", "list", "--max", "256", "--offset", "256", "--output", "json"])
         .and_return(Gitlab::Popen::Result.new([], raw_helm_list_page2, '', double(success?: true)))
       expect(Gitlab::Popen).to receive(:popen_with_detail).ordered
-        .with([%(helm list --max 256 --offset 512 --output json)])
+        .with(["helm", "list", "--max", "256", "--offset", "512", "--output", "json"])
         .and_return(Gitlab::Popen::Result.new([], raw_helm_list_empty, '', double(success?: true)))
       releases = subject.releases.to_a
 
@@ -97,7 +97,7 @@ RSpec.describe Tooling::Helm3Client do
   describe '#delete' do
     it 'raises an error if the Helm command fails' do
       expect(Gitlab::Popen).to receive(:popen_with_detail)
-        .with([%(helm uninstall --namespace #{release_name} #{release_name})])
+        .with(["helm", "uninstall", "--namespace", release_name, release_name])
         .and_return(Gitlab::Popen::Result.new([], '', '', double(success?: false)))
 
       expect { subject.delete(release_name: release_name, namespace: release_name) }
@@ -106,7 +106,7 @@ RSpec.describe Tooling::Helm3Client do
 
     it 'calls helm uninstall with default arguments' do
       expect(Gitlab::Popen).to receive(:popen_with_detail)
-        .with([%(helm uninstall --namespace #{release_name} #{release_name})])
+        .with(["helm", "uninstall", "--namespace", release_name, release_name])
         .and_return(Gitlab::Popen::Result.new([], '', '', double(success?: true)))
 
       subject.delete(release_name: release_name, namespace: release_name)
@@ -117,7 +117,7 @@ RSpec.describe Tooling::Helm3Client do
 
       it 'raises an error if the Helm command fails' do
         expect(Gitlab::Popen).to receive(:popen_with_detail)
-          .with([%(helm uninstall --namespace #{release_name[0]} #{release_name[0]})])
+          .with(["helm", "uninstall", "--namespace", release_name[0], release_name[0]])
           .and_return(Gitlab::Popen::Result.new([], '', '', double(success?: false)))
 
         expect { subject.delete(release_name: release_name) }.to raise_error(described_class::CommandFailedError)
@@ -126,7 +126,7 @@ RSpec.describe Tooling::Helm3Client do
       it 'calls helm uninstall with multiple release names and a namespace' do
         release_name.each do |release|
           expect(Gitlab::Popen).to receive(:popen_with_detail)
-            .with([%(helm uninstall --namespace namespace #{release})])
+            .with(["helm", "uninstall", "--namespace", "namespace", release])
             .and_return(Gitlab::Popen::Result.new([], '', '', double(success?: true)))
         end
 
@@ -136,7 +136,7 @@ RSpec.describe Tooling::Helm3Client do
       it 'calls helm uninstall with multiple release names and no namespace' do
         release_name.each do |release|
           expect(Gitlab::Popen).to receive(:popen_with_detail)
-            .with([%(helm uninstall --namespace #{release} #{release})])
+            .with(["helm", "uninstall", "--namespace", release, release])
             .and_return(Gitlab::Popen::Result.new([], '', '', double(success?: true)))
         end
 

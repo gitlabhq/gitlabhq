@@ -7,16 +7,18 @@ module Gitlab
         class Component
           include Gitlab::Utils::StrongMemoize
 
-          attr_reader :component_type, :version, :path
-          attr_accessor :properties, :purl, :source_package_name
+          attr_reader :ref, :component_type, :version, :path
+          attr_accessor :properties, :purl, :source_package_name, :ancestors
 
-          def initialize(type:, name:, purl:, version:, properties: nil, source_package_name: nil)
+          def initialize(ref:, type:, name:, purl:, version:, properties: nil, source_package_name: nil)
+            @ref = ref
             @component_type = type
             @name = name
             @purl = purl
             @version = version
             @properties = properties
             @source_package_name = source_package_name
+            @ancestors = []
           end
 
           def <=>(other)
@@ -28,7 +30,7 @@ module Gitlab
           end
 
           def purl_type
-            purl.type
+            purl&.type
           end
 
           def type
@@ -36,13 +38,7 @@ module Gitlab
           end
 
           def name
-            return @name unless purl
-
-            [purl.namespace, purl.name].compact.join('/')
-          end
-
-          def name_without_namespace
-            @name
+            use_namespaced_name? ? [purl.namespace, purl.name].compact.join('/') : @name
           end
 
           def key
@@ -78,6 +74,10 @@ module Gitlab
 
           def purl_type_int(component)
             ::Enums::Sbom::PURL_TYPES.fetch(component.purl&.type&.to_sym, 0)
+          end
+
+          def use_namespaced_name?
+            purl.present? && Enums::Sbom.use_namespaced_name?(purl_type)
           end
         end
       end

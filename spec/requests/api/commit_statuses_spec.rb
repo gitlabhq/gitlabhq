@@ -67,9 +67,9 @@ RSpec.describe API::CommitStatuses, :clean_gitlab_redis_cache, feature_category:
             expect(response).to have_gitlab_http_status(:ok)
             expect(response).to include_pagination_headers
             expect(json_response).to be_an Array
-            expect(statuses_id).to contain_exactly(status1.id, status2.id,
-                                                   status3.id, status4.id,
-                                                   status5.id, status6.id)
+            expect(statuses_id).to contain_exactly(
+              status1.id, status2.id, status3.id, status4.id, status5.id, status6.id
+            )
           end
         end
 
@@ -293,9 +293,11 @@ RSpec.describe API::CommitStatuses, :clean_gitlab_redis_cache, feature_category:
           end
 
           context 'when merge request exists for given branch' do
-            let!(:merge_request) { create(:merge_request, source_project: project, source_branch: 'master', target_branch: 'develop') }
+            let!(:merge_request) do
+              create(:merge_request, source_project: project, head_pipeline_id: nil)
+            end
 
-            it 'sets head pipeline' do
+            it 'sets head pipeline', :sidekiq_inline do
               subject
 
               expect(response).to have_gitlab_http_status(:created)

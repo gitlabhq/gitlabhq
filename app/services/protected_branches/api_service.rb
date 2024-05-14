@@ -8,7 +8,7 @@ module ProtectedBranches
 
     def update(protected_branch)
       ::ProtectedBranches::UpdateService.new(project_or_group, @current_user,
-protected_branch_params(with_defaults: false)).execute(protected_branch)
+        protected_branch_params(with_defaults: false)).execute(protected_branch)
     end
 
     private

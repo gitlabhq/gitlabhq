@@ -38,26 +38,4 @@ RSpec.describe Ci::PipelineVariable, feature_category: :continuous_integration d
       end
     end
   end
-
-  describe 'routing table switch' do
-    context 'with ff disabled' do
-      before do
-        stub_feature_flags(ci_partitioning_use_ci_pipeline_variables_routing_table: false)
-      end
-
-      it 'uses the legacy table' do
-        expect(described_class.table_name).to eq('ci_pipeline_variables')
-      end
-    end
-
-    context 'with ff enabled' do
-      before do
-        stub_feature_flags(ci_partitioning_use_ci_pipeline_variables_routing_table: true)
-      end
-
-      it 'uses the routing table' do
-        expect(described_class.table_name).to eq('p_ci_pipeline_variables')
-      end
-    end
-  end
 end

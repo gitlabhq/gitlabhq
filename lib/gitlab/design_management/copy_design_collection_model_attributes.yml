@@ -17,6 +17,8 @@ design_attributes:
   - filename
   - relative_position
   - description
+  - imported
+  - imported_from
 
 version_attributes:
   - author_id

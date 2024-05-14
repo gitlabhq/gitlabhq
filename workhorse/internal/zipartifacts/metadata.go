@@ -1,3 +1,4 @@
+// Package zipartifacts provides functionality for handling zip artifacts.
 package zipartifacts
 
 import (
@@ -5,6 +6,7 @@ import (
 	"compress/gzip"
 	"encoding/binary"
 	"encoding/json"
+	"fmt"
 	"io"
 	"path"
 	"sort"
@@ -14,13 +16,16 @@ import (
 type metadata struct {
 	Modified int64  `json:"modified,omitempty"`
 	Mode     string `json:"mode,omitempty"`
-	CRC      uint32 `json:"crc,omitempty"`
-	Size     uint64 `json:"size,omitempty"`
-	Zipped   uint64 `json:"zipped,omitempty"`
+	CRC      uint32 `json:"crc"`
+	Size     uint64 `json:"size"`
+	Zipped   uint64 `json:"zipped"`
 	Comment  string `json:"comment,omitempty"`
 }
 
-const MetadataHeaderPrefix = "\x00\x00\x00&" // length of string below, encoded properly
+// MetadataHeaderPrefix is the prefix indicating the length of the string below, encoded properly.
+const MetadataHeaderPrefix = "\x00\x00\x00&"
+
+// MetadataHeader is a string that represents the metadata header for GitLab Build Artifacts.
 const MetadataHeader = "GitLab Build Artifacts Metadata 0.0.2\n"
 
 func newMetadata(file *zip.File) metadata {
@@ -59,9 +64,15 @@ func writeZipEntryMetadata(output io.Writer, path string, entry *zip.File) error
 	return nil
 }
 
+// GenerateZipMetadata generates metadata for the provided zip archive and writes it to the given writer.
+// It writes metadata headers and information about each file in the zip archive.
 func GenerateZipMetadata(w io.Writer, archive *zip.Reader) error {
 	output := gzip.NewWriter(w)
-	defer output.Close()
+	defer func() {
+		if err := output.Close(); err != nil {
+			fmt.Printf("Error closing output: %v\n", err)
+		}
+	}()
 
 	if err := writeString(output, MetadataHeader); err != nil {
 		return err

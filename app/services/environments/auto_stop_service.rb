@@ -34,8 +34,8 @@ module Environments
 
       Environments::AutoStopWorker.bulk_perform_async_with_contexts(
         environments,
-        arguments_proc: -> (environment) { environment.id },
-        context_proc: -> (environment) { { project: environment.project } }
+        arguments_proc: ->(environment) { environment.id },
+        context_proc: ->(environment) { { project: environment.project } }
       )
 
       true

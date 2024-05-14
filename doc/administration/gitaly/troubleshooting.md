@@ -251,10 +251,8 @@ server.
 
 ## Repository pushes fail with a `deny updating a hidden ref` error
 
-Due to [a change](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/3426)
-introduced in GitLab 13.12, Gitaly has read-only, internal GitLab references that users are not
-permitted to update. If you attempt to update internal references with `git push --mirror`, Git
-returns the rejection error, `deny updating a hidden ref`.
+Gitaly has read-only, internal GitLab references that users are not permitted to update. If you attempt to update
+internal references with `git push --mirror`, Git returns the rejection error, `deny updating a hidden ref`.
 
 The following references are read-only:
 
@@ -428,8 +426,8 @@ and:
 
 ## Gitaly fails to fork processes stored on `noexec` file systems
 
-Because of changes [introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/5999) in GitLab 14.10, applying the `noexec` option to a mount
-point (for example, `/var`) causes Gitaly to throw `permission denied` errors related to forking processes. For example:
+Applying the `noexec` option to a mount point (for example, `/var`) causes Gitaly to throw `permission denied` errors
+related to forking processes. For example:
 
 ```shell
 fork/exec /var/opt/gitlab/gitaly/run/gitaly-2057/gitaly-git2go: permission denied
@@ -509,7 +507,7 @@ go tool trace heap.bin
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../administration/feature_flags.md)
-named `log_git_traces`. On GitLab.com, this feature is available but can be configured by GitLab.com administrators only.
+named `log_git_traces`. On GitLab.com, this feature is available but can be configured by GitLab.com administrators only. On GitLab Dedicated, this feature is not available.
 
 You can profile Git operations that Gitaly performs by sending additional information about Git operations to Gitaly logs. With this information, users have more insight
 for performance optimization, debugging, and general telemetry collection. For more information, see the [Git Trace2 API reference](https://git-scm.com/docs/api-trace2).
@@ -525,16 +523,16 @@ When using `fapolicyd` for increased security, GitLab can report that a restore 
 - Creating new files causes an error similar to:
 
   ```plaintext
-  13:commit: commit: starting process [/var/opt/gitlab/gitaly/run/gitaly-5428/gitaly-git2go -log-format json -log-level -correlation-id 
+  13:commit: commit: starting process [/var/opt/gitlab/gitaly/run/gitaly-5428/gitaly-git2go -log-format json -log-level -correlation-id
   01GP1383JV6JD6MQJBH2E1RT03 -enabled-feature-flags -disabled-feature-flags commit]: fork/exec /var/opt/gitlab/gitaly/run/gitaly-5428/gitaly-git2go: operation not permitted.
   ```
 
 - Gitaly logs might contain errors similar to:
 
   ```plaintext
-   "error": "exit status 128, stderr: \"fatal: cannot exec '/var/opt/gitlab/gitaly/run/gitaly-5428/hooks-1277154941.d/reference-transaction': 
+   "error": "exit status 128, stderr: \"fatal: cannot exec '/var/opt/gitlab/gitaly/run/gitaly-5428/hooks-1277154941.d/reference-transaction':
 
-    Operation not permitted\\nfatal: cannot exec '/var/opt/gitlab/gitaly/run/gitaly-5428/hooks-1277154941.d/reference-transaction': Operation 
+    Operation not permitted\\nfatal: cannot exec '/var/opt/gitlab/gitaly/run/gitaly-5428/hooks-1277154941.d/reference-transaction': Operation
     not permitted\\nfatal: ref updates aborted by hook\\n\"",
    "grpc.code": "Internal",
    "grpc.meta.deadline_type": "none",
@@ -556,7 +554,13 @@ If you find that `fapolicyd` is denying execution, consider the following:
    allow perm=any all : ftype=application/x-executable dir=/var/opt/gitlab/gitaly/
    ```
 
-1. Restart the service.
+1. Restart the services:
+
+   ```shell
+   sudo systemctl restart fapolicyd
+
+   sudo gitlab-ctl restart gitaly
+   ```
 
 ## `Pre-receive hook declined` error when pushing to RHEL instance with `fapolicyd` enabled
 
@@ -576,7 +580,7 @@ To create a rule to allow Gitaly binary execution:
    ```
 
 1. Restart the service:
-   
+
    ```shell
    systemctl restart fapolicyd
    ```

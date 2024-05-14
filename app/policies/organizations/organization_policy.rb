@@ -6,7 +6,7 @@ module Organizations
     condition(:organization_owner) { @subject.owner?(@user) }
 
     desc 'Organization is public'
-    condition(:public_organization, scope: :subject, score: 0) { true }
+    condition(:public_organization, scope: :subject, score: 0) { @subject.public? }
 
     rule { public_organization }.policy do
       enable :read_organization

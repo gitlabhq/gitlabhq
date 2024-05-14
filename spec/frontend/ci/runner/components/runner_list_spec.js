@@ -10,9 +10,10 @@ import { stubComponent } from 'helpers/stub_component';
 import RunnerList from '~/ci/runner/components/runner_list.vue';
 import RunnerBulkDelete from '~/ci/runner/components/runner_bulk_delete.vue';
 import RunnerBulkDeleteCheckbox from '~/ci/runner/components/runner_bulk_delete_checkbox.vue';
+import RunnerConfigurationPopover from '~/ci/runner/components/runner_configuration_popover.vue';
 
 import { I18N_PROJECT_TYPE, I18N_STATUS_NEVER_CONTACTED } from '~/ci/runner/constants';
-import { allRunnersData, onlineContactTimeoutSecs, staleTimeoutSecs } from '../mock_data';
+import { allRunnersData } from '../mock_data';
 
 const mockRunners = allRunnersData.data.runners.nodes;
 
@@ -41,8 +42,6 @@ describe('RunnerList', () => {
       },
       provide: {
         localMutations,
-        onlineContactTimeoutSecs,
-        staleTimeoutSecs,
       },
       ...options,
     });
@@ -60,17 +59,19 @@ describe('RunnerList', () => {
       mountExtended,
     );
 
-    const headerLabels = findHeaders().wrappers.map((w) => w.text());
+    const headers = findHeaders().wrappers;
 
-    expect(findHeaders().at(0).findComponent(HelpPopover).exists()).toBe(true);
-    expect(findHeaders().at(2).findComponent(HelpPopover).exists()).toBe(true);
+    expect(headers).toHaveLength(4);
 
-    expect(headerLabels).toEqual([
-      s__('Runners|Status'),
-      s__('Runners|Runner'),
-      s__('Runners|Owner'),
-      '', // actions has no label
-    ]);
+    expect(headers[0].text()).toBe(s__('Runners|Status'));
+
+    expect(headers[1].findComponent(RunnerConfigurationPopover).exists()).toBe(true);
+    expect(headers[1].text()).toBe(s__('Runners|Runner configuration'));
+
+    expect(headers[2].findComponent(HelpPopover).exists()).toBe(true);
+    expect(headers[2].text()).toBe(s__('Runners|Owner'));
+
+    expect(headers[3].text()).toBe(''); // actions has no label
   });
 
   it('Sets runner id as a row key', () => {
@@ -94,7 +95,8 @@ describe('RunnerList', () => {
   it('Displays details of a runner', () => {
     createComponent({}, mountExtended);
 
-    const { id, description, version, shortSha } = mockRunners[0];
+    const { id, description, shortSha } = mockRunners[0];
+
     const numericId = getIdFromGraphQLId(id);
 
     // Badges
@@ -108,11 +110,10 @@ describe('RunnerList', () => {
     expect(summary).toContain(`#${numericId} (${shortSha})`);
     expect(summary).toContain(I18N_PROJECT_TYPE);
 
-    expect(summary).toContain(version);
     expect(summary).toContain(description);
 
     expect(summary).toContain('Last contact');
-    expect(summary).toContain('0'); // job count
+    expect(summary).toContain('-'); // job count
     expect(summary).toContain('Created');
 
     // Actions

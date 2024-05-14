@@ -16,10 +16,6 @@ export default {
       type: Object,
       required: true,
     },
-    formEventPrefix: {
-      type: String,
-      required: true,
-    },
     disableSubmit: {
       type: Boolean,
       required: false,
@@ -66,7 +62,7 @@ export default {
 </script>
 
 <template>
-  <div class="board-new-issue-form gl-z-index-3 gl-m-3">
+  <div class="board-new-issue-form gl-z-3 gl-m-3">
     <div class="board-card position-relative gl-p-5 rounded">
       <gl-form @submit.prevent="handleFormSubmit" @reset="handleFormCancel">
         <label :for="inputFieldId" class="gl-font-weight-bold">{{ __('Title') }}</label>

@@ -206,8 +206,12 @@ class UsersController < ApplicationController
   end
 
   def unfollow
-    current_user.unfollow(user)
+    response = ::Users::UnfollowService.new(
+      follower: current_user,
+      followee: user
+    ).execute
 
+    flash[:alert] = response.message if response.error?
     redirect_path = referer_path(request) || @user
 
     redirect_to redirect_path
@@ -224,7 +228,7 @@ class UsersController < ApplicationController
   end
 
   def contributed_projects
-    ContributedProjectsFinder.new(user).execute(current_user)
+    ContributedProjectsFinder.new(user).execute(current_user, order_by: 'latest_activity_desc')
   end
 
   def starred_projects
@@ -263,7 +267,7 @@ class UsersController < ApplicationController
 
   def load_groups
     groups = JoinedGroupsFinder.new(user).execute(current_user)
-    @groups = groups.with_route.page(params[:page]).without_count
+    @groups = groups.page(params[:page]).without_count
 
     prepare_groups_for_rendering(@groups)
   end

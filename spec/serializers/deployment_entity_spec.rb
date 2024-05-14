@@ -6,7 +6,7 @@ RSpec.describe DeploymentEntity do
   let_it_be(:developer) { create(:user) }
   let_it_be(:reporter) { create(:user) }
   let_it_be(:user) { developer }
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :repository, developers: developer, reporters: reporter) }
   let_it_be(:environment) { create(:environment, project: project) }
   let_it_be_with_reload(:pipeline) { create(:ci_pipeline, project: project, user: user) }
   let_it_be_with_reload(:build) { create(:ci_build, :manual, :environment_with_deployment_tier, pipeline: pipeline) }
@@ -20,11 +20,6 @@ RSpec.describe DeploymentEntity do
   let(:entity) { described_class.new(deployment, request: request) }
 
   subject { entity.as_json }
-
-  before_all do
-    project.add_developer(developer)
-    project.add_reporter(reporter)
-  end
 
   before do
     allow(request).to receive(:current_user).and_return(user)
@@ -40,6 +35,7 @@ RSpec.describe DeploymentEntity do
       expect(subject).to include(:deployed_at)
       expect(subject).to include(:is_last)
       expect(subject).to include(:tier_in_yaml)
+      expect(subject).to include(:web_path)
     end
   end
 

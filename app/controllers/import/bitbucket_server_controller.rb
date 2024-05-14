@@ -49,9 +49,6 @@ class Import::BitbucketServerController < Import::BaseController
     session[bitbucket_server_username_key] = params[:bitbucket_server_username]
     session[bitbucket_server_url_key] = params[:bitbucket_server_url]
 
-    experiment(:default_to_import_tab, actor: current_user)
-      .track(:authentication, property: provider_name)
-
     redirect_to status_import_bitbucket_server_path(namespace_id: params[:namespace_id])
   end
 
@@ -107,7 +104,8 @@ class Import::BitbucketServerController < Import::BaseController
     return render_validation_error('Missing project key') unless @project_key.present? && @repo_slug.present?
     return render_validation_error('Missing repository slug') unless @repo_slug.present?
     return render_validation_error('Invalid project key') unless VALID_BITBUCKET_PROJECT_CHARS.match?(@project_key)
-    return render_validation_error('Invalid repository slug') unless VALID_BITBUCKET_CHARS.match?(@repo_slug)
+
+    render_validation_error('Invalid repository slug') unless VALID_BITBUCKET_CHARS.match?(@repo_slug)
   end
 
   def render_validation_error(message)

@@ -1,36 +1,39 @@
-- layout_path = 'shared/empty_states/wikis_layout'
 - messages = wiki_empty_state_messages(@wiki)
 - hide_create = local_assigns[:hide_create]
 
-- if !hide_create && can?(current_user, :create_wiki, @wiki.container)
-  - create_path = wiki_page_path(@wiki, params[:id], view: 'create')
-  - create_link = link_button_to s_('WikiEmpty|Create your first page'), create_path, title: s_('WikiEmpty|Create your first page'), data: { testid: 'create-first-page-link' }, variant: :confirm
+- illustration = 'illustrations/empty-state/empty-wiki-md.svg'
+- title = messages.dig(:readonly, :title)
+- description = messages.dig(:readonly, :body)
+- primary_button_text = nil
+- primary_button_link = nil
+- secondary_button_text = nil
+- secondary_button_link = nil
 
-  = render layout: layout_path, locals: { image_path: 'illustrations/empty-state/empty-wiki-md.svg' } do
-    %h4.text-left
-      = messages.dig(:writable, :title)
-    %p.text-left
-      = messages.dig(:writable, :body)
-    = create_link
-    - if show_enable_confluence_integration?(@wiki.container)
-      = link_button_to s_('WikiEmpty|Enable the Confluence Wiki integration'),
-          edit_project_settings_integration_path(@project, :confluence),
-          title: s_('WikiEmpty|Enable the Confluence Wiki integration')
+- if !hide_create && can?(current_user, :create_wiki, @wiki.container)
+  - title = messages.dig(:writable, :title)
+  - primary_button_text = s_('WikiEmpty|Create your first page')
+  - primary_button_link = wiki_page_path(@wiki, params[:id], view: 'create')
+  - description = messages.dig(:writable, :body)
+
+  - if show_enable_confluence_integration?(@wiki.container)
+    - secondary_button_text = s_('WikiEmpty|Enable the Confluence Wiki integration')
+    - secondary_button_link = edit_project_settings_integration_path(@project, :confluence)
 
 - elsif @project && can?(current_user, :read_issue, @project)
+  - title = messages.dig(:issuable, :title)
   - issues_link = link_to s_('WikiEmptyIssueMessage|issue tracker'), project_issues_path(@project)
+  - description = messages.dig(:issuable, :body).html_safe % { issues_link: issues_link }
+  - if show_new_issue_link?(@project)
+    - primary_button_text = s_('WikiEmpty|Suggest wiki improvement')
+    - primary_button_link = new_project_issue_path(@project)
 
-  = render layout: layout_path, locals: { image_path: 'illustrations/empty-state/empty-wiki-md.svg' } do
-    %h4
-      = messages.dig(:issuable, :title)
-    %p.text-left
-      = messages.dig(:issuable, :body).html_safe % { issues_link: issues_link }
-    - if show_new_issue_link?(@project)
-      = link_button_to s_('WikiEmpty|Suggest wiki improvement'), new_project_issue_path(@project), title: s_('WikiEmptyIssueMessage|Suggest wiki improvement'), variant: :confirm
+= render Pajamas::EmptyStateComponent.new(svg_path: illustration,
+  title: title,
+  primary_button_text: primary_button_text,
+  primary_button_link: primary_button_link,
+  secondary_button_text: secondary_button_text,
+  secondary_button_link: secondary_button_link,
+  empty_state_options: { data: { testid: 'wiki-empty-state' } }) do |c|
 
-- else
-  = render layout: layout_path, locals: { image_path: 'illustrations/empty-state/empty-wiki-md.svg' } do
-    %h4
-      = messages.dig(:readonly, :title)
-    %p
-      = messages.dig(:readonly, :body)
+  - c.with_description do
+    = description

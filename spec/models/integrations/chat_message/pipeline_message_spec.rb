@@ -68,9 +68,9 @@ RSpec.describe Integrations::ChatMessage::PipelineMessage do
 
   it "returns the pipeline summary in the activity's title" do
     expect(subject.activity[:title]).to eq(
-      "Pipeline [#123](http://example.gitlab.com/-/pipelines/123)" \
-        " of branch [develop](http://example.gitlab.com/-/commits/develop)" \
-        " by The Hacker (hacker) has passed"
+      "Pipeline [#123](http://example.gitlab.com/-/pipelines/123) " \
+        "of branch [develop](http://example.gitlab.com/-/commits/develop) " \
+        "by The Hacker (hacker) has passed"
     )
   end
 
@@ -87,9 +87,9 @@ RSpec.describe Integrations::ChatMessage::PipelineMessage do
 
     it "returns the summary with a 'failed' status" do
       expect(subject.activity[:title]).to eq(
-        "Pipeline [#123](http://example.gitlab.com/-/pipelines/123)" \
-          " of branch [develop](http://example.gitlab.com/-/commits/develop)" \
-          " by The Hacker (hacker) has failed"
+        "Pipeline [#123](http://example.gitlab.com/-/pipelines/123) " \
+          "of branch [develop](http://example.gitlab.com/-/commits/develop) " \
+          "by The Hacker (hacker) has failed"
       )
     end
   end
@@ -101,9 +101,9 @@ RSpec.describe Integrations::ChatMessage::PipelineMessage do
 
     it "returns the summary with a 'passed with warnings' status" do
       expect(subject.activity[:title]).to eq(
-        "Pipeline [#123](http://example.gitlab.com/-/pipelines/123)" \
-          " of branch [develop](http://example.gitlab.com/-/commits/develop)" \
-          " by The Hacker (hacker) has passed with warnings"
+        "Pipeline [#123](http://example.gitlab.com/-/pipelines/123) " \
+          "of branch [develop](http://example.gitlab.com/-/commits/develop) " \
+          "by The Hacker (hacker) has passed with warnings"
       )
     end
   end
@@ -115,9 +115,9 @@ RSpec.describe Integrations::ChatMessage::PipelineMessage do
 
     it "returns the summary with 'API' as the username" do
       expect(subject.activity[:title]).to eq(
-        "Pipeline [#123](http://example.gitlab.com/-/pipelines/123)" \
-          " of branch [develop](http://example.gitlab.com/-/commits/develop)" \
-          " by API has passed"
+        "Pipeline [#123](http://example.gitlab.com/-/pipelines/123) " \
+          "of branch [develop](http://example.gitlab.com/-/commits/develop) " \
+          "by API has passed"
       )
     end
   end
@@ -146,10 +146,10 @@ RSpec.describe Integrations::ChatMessage::PipelineMessage do
 
   it "returns the pipeline summary as the attachment's fallback property" do
     expect(subject.attachments.first[:fallback]).to eq(
-      "<http://example.gitlab.com|project_name>:" \
-        " Pipeline <http://example.gitlab.com/-/pipelines/123|#123>" \
-        " of branch <http://example.gitlab.com/-/commits/develop|develop>" \
-        " by The Hacker (hacker) has passed in 02:00:10"
+      "<http://example.gitlab.com|project_name>: " \
+        "Pipeline <http://example.gitlab.com/-/pipelines/123|#123> " \
+        "of branch <http://example.gitlab.com/-/commits/develop|develop> " \
+        "by The Hacker (hacker) has passed in 02:00:10"
     )
   end
 
@@ -381,10 +381,10 @@ RSpec.describe Integrations::ChatMessage::PipelineMessage do
 
     it 'returns the pipeline summary as the attachments in markdown format' do
       expect(subject.attachments).to eq(
-        "[project_name](http://example.gitlab.com):" \
-          " Pipeline [#123](http://example.gitlab.com/-/pipelines/123)" \
-          " of branch [develop](http://example.gitlab.com/-/commits/develop)" \
-          " by The Hacker (hacker) has passed in 02:00:10"
+        "[project_name](http://example.gitlab.com): " \
+          "Pipeline [#123](http://example.gitlab.com/-/pipelines/123) " \
+          "of branch [develop](http://example.gitlab.com/-/commits/develop) " \
+          "by The Hacker (hacker) has passed in 02:00:10"
       )
     end
   end

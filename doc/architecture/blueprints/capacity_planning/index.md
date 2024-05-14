@@ -1,5 +1,5 @@
 ---
-status: proposed
+status: implemented
 creation-date: "2023-09-11"
 authors: [ "@abrandl" ]
 coach: "@andrewn"
@@ -179,7 +179,7 @@ For additional visibility, we may want to consider enabling getting Slack update
 
 ### Tamland as a Service (not chosen)
 
-An alternative design, we don't consider an option at this point, is to setup Tamland as a Service and run it fully **outside** of tenant environments.
+An alternative design, we don't consider an option at this point, is to set up Tamland as a Service and run it fully **outside** of tenant environments.
 
 ![dedicated-capacity-planning-as-a-service](images/dedicated-capacity-planning-as-a-service.png)
 

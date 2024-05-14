@@ -1,21 +1,70 @@
 ---
-stage: none
-group: unassigned
+stage: AI-powered
+group: AI Framework
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
 # AI Architecture
 
-GitLab has created a common set of tools to support our product groups and their utilization of AI. Our goals with this common architecture are:
+This document describes architecture shared by the GitLab Duo AI features. For historical motivation and goals of this architecture, see the [AI Gateway Architecture blueprint](../architecture/blueprints/ai_gateway/index.md).
 
-1. Increase the velocity of feature teams by providing a set of high quality, ready to use tools
-1. Ability to switch underlying technologies quickly and easily
+## Introduction
 
-AI is moving very quickly, and we need to be able to keep pace with changes in the area. We have built an [abstraction layer](ai_features/index.md) to do this, allowing us to take a more "pluggable" approach to the underlying models, data stores, and other technologies.
+The following diagram shows a simplified view of how the different components in GitLab interact.
 
-The following diagram from the [architecture blueprint](../architecture/blueprints/ai_gateway/index.md) shows a simplified view of how the different components in GitLab interact. The abstraction layer helps avoid code duplication within the REST APIs.
+```plantuml
+@startuml
+!theme cloudscape-design
+skinparam componentStyle rectangle
 
-![architecture diagram](../architecture/blueprints/ai_gateway/img/architecture.png)
+package Clients {
+  [IDEs, Code Editors, Language Server] as IDE
+  [GitLab Web Frontend] as GLWEB
+}
+
+[GitLab.com] as GLCOM
+[Self-Managed/Dedicated] as SMI
+[CustomersDot API] as CD
+[AI Gateway] as AIGW
+
+package Models {
+  [3rd party models (Anthropic,VertexAI)] as THIRD
+  [GitLab Native Models] as GLNM
+}
+
+Clients -down-> GLCOM : REST/Websockets
+Clients -down-> SMI : REST/Websockets
+SMI -right-> CD : License + JWT Sync
+GLCOM -down-> AIGW : Prompts + Telemetry + JWT (REST)
+
+SMI -down-> AIGW : Prompts + Telemetry + JWT (REST)
+AIGW -up-> GLCOM : JWKS public key sync
+AIGW -up-> CD : JWKS public key sync
+AIGW -down-> Models : prompts
+@enduml
+```
+
+- **AI Abstraction layer** - Every GitLab instance (Self-Managed, GitLab.com, ..) contains an [AI Abstraction layer](ai_features/index.md) which provides a framework for implementing new AI features in the monolith. This layer adds contextual information to the request and does request pre/post processing.
+
+### Systems
+
+- [GitLab instances](https://gitlab.com/gitlab-org/gitlab) - GitLab monolith that powers all types of GitLab instances
+- [CustomersDot](https://gitlab.com/gitlab-org/customers-gitlab-com) - Allows customers to buy and upgrade subscriptions by adding more seats and add/edit payment records. It also manages self-managed licenses.
+- [AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist) - System that provides unified interface for invoking models. Deployed in Google Cloud Run (using [Runway](https://gitlab.com/gitlab-com/gl-infra/platform/runway)).
+- Extensions
+  - [Language Server](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp) (powers code suggestions in VS Code, VisualStudio and Neovim)
+  - [VS Code](https://gitlab.com/gitlab-org/gitlab-vscode-extension)
+  - [JetBrains](https://gitlab.com/gitlab-org/editor-extensions/gitlab-jetbrains-plugin)
+  - [Visual Studio](https://gitlab.com/gitlab-org/editor-extensions/gitlab-visual-studio-extension)
+  - [Neovim](https://gitlab.com/gitlab-org/editor-extensions/gitlab.vim)
+
+### Difference between how GitLab.com and Self-Managed/Dedicated access AI Gateway
+
+- GitLab.com
+  - GitLab.com instances self-issue JWT Auth token signed with a private key.
+- Other types of instances
+  - Self-Managed and Dedicated regularly synchronise their licenses and AI Access tokens with CustomersDot.
+  - Self-Managed and Dedicated instances route traffic to appropriate AI Gateway.
 
 ## SaaS-based AI abstraction layer
 
@@ -28,7 +77,7 @@ There are two primary reasons for this: the best AI models are cloud-based as th
 The AI Gateway (formerly the [model gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist)) is a standalone-service that will give access to AI features to all users of GitLab, no matter which instance they are using: self-managed, dedicated or GitLab.com. The SaaS-based AI abstraction layer will transition to connecting to this gateway, rather than accessing cloud-based providers directly.
 
 Calls to the AI-gateway from GitLab-rails can be made using the
-[Abstraction Layer](ai_features/index.md#abstraction-layer).
+[Abstraction Layer](ai_features/index.md#feature-development-abstraction-layer).
 By default, these actions are performed asynchronously via a Sidekiq
 job to prevent long-running requests in Puma. It should be used for
 non-latency sensitive actions due to the added latency by Sidekiq.
@@ -56,7 +105,7 @@ It is possible to utilize other models or technologies, however they will need t
 The following models have been approved for use:
 
 - Google's [Vertex AI](https://cloud.google.com/vertex-ai) and [model garden](https://cloud.google.com/model-garden)
-- [Anthropic models](https://docs.anthropic.com/claude/reference/selecting-a-model)
+- [Anthropic models](https://docs.anthropic.com/claude/docs/models-overview)
 - [Suggested reviewer](https://gitlab.com/gitlab-org/modelops/applied-ml/applied-ml-updates/-/issues/10)
 
 ### Vector stores
@@ -128,3 +177,8 @@ Code Suggestions acceptance rates are _highly_ sensitive to latency. While writi
 In a worst case with sufficient latency, the IDE could be issuing a string of requests, each of which is then ignored as the user proceeds without waiting for the response. This adds no value for the user, while still putting load on our services.
 
 See our discussions [here](https://gitlab.com/gitlab-org/gitlab/-/issues/418955) around how we plan to iterate on latency for this feature.
+
+## Future changes to the architecture
+
+- We plan on deploying [AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist) in different regions to improve latency (see the ed epic [Multi-region support for AI Gateway](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/1206)).
+- We would like to centralize telemetry. However, centralizing AI (or, Cloud Connector) telemetry is a difficult and unsolved problem as of now.

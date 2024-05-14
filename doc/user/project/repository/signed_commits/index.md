@@ -8,13 +8,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 When you add a cryptographic signature to your commit, you provide extra assurance that a commit
 originated from you, rather than an impersonator. If GitLab can verify a commit
 author's identity with a public GPG key, the commit is marked **Verified** in the
 GitLab UI. You can then configure [push rules](../push_rules.md)
-for your project to reject individual commits not signed with GPG, or reject all
+for your project to reject individual unsigned commits, or reject all
 commits from unverified users.
 
 Sign commits with your:
@@ -47,8 +47,19 @@ they are signed.
 
    ![Signed commit with unverified signature](img/project_signed_commit_unverified_signature.png)
 
-You can also [use the Commits API](../../../../api/commits.md#get-gpg-signature-of-a-commit)
+You can also [use the Commits API](../../../../api/commits.md#get-signature-of-a-commit)
 to check a commit's signature.
+
+### Verify commits made in the web UI
+
+GitLab signs the commits created using the web UI using SSH.
+To verify these commits locally, [follow the steps for SSH](ssh.md#verify-commits-locally)
+and add the following public key to the `allowed_signers` file:
+`ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIADOCCUoN3Q1UPQqUvp845fKy7haJH17qsSkVXzWXilW`.
+
+```plaintext
+noreply@gitlab.com namespaces="git" ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIADOCCUoN3Q1UPQqUvp845fKy7haJH17qsSkVXzWXilW
+```
 
 ## Troubleshooting
 

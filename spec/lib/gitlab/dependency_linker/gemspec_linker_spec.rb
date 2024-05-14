@@ -21,7 +21,7 @@ RSpec.describe Gitlab::DependencyLinker::GemspecLinker do
         Gem::Specification.new do |s|
           s.name        = 'gitlab_git'
           s.version     = `cat VERSION`
-          s.date        = Time.now.strftime('%Y-%m-%d')
+          s.date        = Date.current.iso8601
           s.summary     = "Gitlab::Git library"
           s.description = "GitLab wrapper around git objects"
           s.authors     = ["Dmitriy Zaporozhets"]

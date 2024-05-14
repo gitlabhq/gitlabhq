@@ -93,7 +93,6 @@ export const dependencyLinks = () => [
 export const packageProject = () => ({
   id: '1',
   name: 'gitlab-test',
-  fullPath: 'gitlab-org/gitlab-test',
   webUrl: 'http://gdk.test:3000/gitlab-org/gitlab-test',
   __typename: 'Project',
 });
@@ -101,6 +100,12 @@ export const packageProject = () => ({
 export const linksData = {
   _links: {
     webPath: '/gitlab-org/package-15',
+  },
+};
+
+const userPermissionsData = {
+  userPermissions: {
+    destroyPackage: true,
   },
 };
 
@@ -117,11 +122,12 @@ export const packageVersions = () => [
     id: 'gid://gitlab/Packages::Package/243',
     name: '@gitlab-org/package-15',
     status: 'DEFAULT',
+    statusMessage: null,
     packageType: 'NPM',
-    canDestroy: true,
     tags: { nodes: packageTags() },
     version: '1.0.1',
     ...linksData,
+    ...userPermissionsData,
     __typename: 'Package',
   },
   {
@@ -129,11 +135,12 @@ export const packageVersions = () => [
     id: 'gid://gitlab/Packages::Package/244',
     name: '@gitlab-org/package-15',
     status: 'DEFAULT',
+    statusMessage: null,
     packageType: 'NPM',
-    canDestroy: true,
     tags: { nodes: packageTags() },
     version: '1.0.2',
     ...linksData,
+    ...userPermissionsData,
     __typename: 'Package',
   },
 ];
@@ -141,7 +148,6 @@ export const packageVersions = () => [
 export const packageData = (extend) => ({
   __typename: 'Package',
   id: 'gid://gitlab/Packages::Package/1',
-  canDestroy: true,
   name: '@gitlab-org/package-15',
   packageType: 'NPM',
   version: '1.0.0',
@@ -149,6 +155,7 @@ export const packageData = (extend) => ({
   updatedAt: '2020-08-17T14:23:32Z',
   lastDownloadedAt: '2021-08-17T14:23:32Z',
   status: 'DEFAULT',
+  statusMessage: null,
   mavenUrl: 'http://gdk.test:3000/api/v4/projects/1/packages/maven',
   npmUrl: 'http://gdk.test:3000/api/v4/projects/1/packages/npm',
   nugetUrl: 'http://gdk.test:3000/api/v4/projects/1/packages/nuget/index.json',
@@ -159,6 +166,8 @@ export const packageData = (extend) => ({
     'http://__token__:<your_personal_token>@gdk.test:3000/api/v4/projects/1/packages/pypi/simple',
   publicPackage: false,
   pypiSetupUrl: 'http://gdk.test:3000/api/v4/projects/1/packages/pypi',
+  packageProtectionRuleExists: false,
+  ...userPermissionsData,
   ...extend,
 });
 
@@ -422,8 +431,9 @@ export const packagesListQuery = ({
         nodes: [
           {
             ...packageData(),
+            packageProtectionRuleExists: false,
             ...linksData,
-            project: packageProject(),
+            ...(type === 'group' && { project: packageProject() }),
             tags: { nodes: packageTags() },
             pipelines: {
               nodes: packagePipelines(),
@@ -431,7 +441,8 @@ export const packagesListQuery = ({
           },
           {
             ...packageData(),
-            project: packageProject(),
+            packageProtectionRuleExists: false,
+            ...(type === 'group' && { project: packageProject() }),
             tags: { nodes: [] },
             pipelines: { nodes: [] },
             ...linksData,

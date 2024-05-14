@@ -26,13 +26,13 @@ RSpec.describe Projects::Members::EffectiveAccessLevelPerUserFinder, '#execute' 
     end
 
     it 'includes the highest access level from all avenues of memberships for the specific user alone' do
-      expect(subject).to eq(
-        [{
+      expect(subject.first).to match(hash_including(
+        {
           'user_id' => user.id,
           'access_level' => Gitlab::Access::MAINTAINER, # From project_group_link
           'id' => nil
-        }]
-      )
+        }
+      ))
     end
   end
 end

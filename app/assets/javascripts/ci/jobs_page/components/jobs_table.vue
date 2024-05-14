@@ -39,8 +39,11 @@ export default {
     },
   },
   methods: {
+    showCoverage(coverage) {
+      return coverage || coverage === 0;
+    },
     formatCoverage(coverage) {
-      return coverage ? `${coverage}%` : '';
+      return `${coverage}%`;
     },
   },
 };
@@ -90,9 +93,9 @@ export default {
     </template>
 
     <template #cell(coverage)="{ item }">
-      <span v-if="item.coverage" data-testid="job-coverage">{{
-        formatCoverage(item.coverage)
-      }}</span>
+      <span v-if="showCoverage(item.coverage)" data-testid="job-coverage">
+        {{ formatCoverage(item.coverage) }}
+      </span>
     </template>
 
     <template #cell(actions)="{ item }">

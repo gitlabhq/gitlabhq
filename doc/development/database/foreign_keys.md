@@ -74,7 +74,7 @@ To replace a foreign key:
 
      # foreign key added in <link to MR or path to migration adding new FK>
      def up
-       validate_foreign_key(:packages_packages, name: NEW_CONSTRAINT_NAME)
+       validate_foreign_key(:packages_packages, :project_id, name: NEW_CONSTRAINT_NAME)
      end
 
      def down
@@ -87,12 +87,16 @@ To replace a foreign key:
 
    ```ruby
    class RemoveFkOld < Gitlab::Database::Migration[2.1]
+     disable_ddl_transaction!
+
      OLD_CONSTRAINT_NAME = 'fk_old'
 
      # new foreign key added in <link to MR or path to migration adding new FK>
      # and validated in <link to MR or path to migration validating new FK>
      def up
-       remove_foreign_key_if_exists(:packages_packages, column: :project_id, on_delete: :cascade, name: OLD_CONSTRAINT_NAME)
+       with_lock_retries do
+         remove_foreign_key_if_exists(:packages_packages, column: :project_id, on_delete: :cascade, name: OLD_CONSTRAINT_NAME)
+       end
      end
 
      def down

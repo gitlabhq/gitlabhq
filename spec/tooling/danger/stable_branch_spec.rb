@@ -263,7 +263,7 @@ RSpec.describe Tooling::Danger::StableBranch, feature_category: :delivery do
               }
             },
             {
-              'name' => 'follow-up-e2e:package-and-test-ee',
+              'name' => 'follow-up:e2e:package-and-test-ee',
               'status' => 'failed',
               'downstream_pipeline' => {
                 'id' => '456',

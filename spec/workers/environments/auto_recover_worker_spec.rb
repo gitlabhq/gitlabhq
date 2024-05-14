@@ -8,8 +8,8 @@ RSpec.describe Environments::AutoRecoverWorker, feature_category: :continuous_de
   subject { worker.perform(environment_id) }
 
   let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:developer) { create(:user).tap { |u| project.add_developer(u) } }
-  let_it_be(:reporter) { create(:user).tap { |u| project.add_reporter(u) } }
+  let_it_be(:developer) { create(:user, developer_of: project) }
+  let_it_be(:reporter) { create(:user, reporter_of: project) }
 
   let!(:environment) { create_review_app(user, project, 'review/feature').environment }
   let(:environment_id) { environment.id }

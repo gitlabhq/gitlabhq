@@ -330,7 +330,7 @@ After configuring your local PlantUML server, you're ready to enable the PlantUM
 Depending on your PlantUML and GitLab version numbers, you may also need to take
 these steps:
 
-- For PlantUML servers running v1.2020.9 and above, such as [plantuml.com](https://plantuml.com),
+- For PlantUML servers running v1.2020.9 and later, such as [plantuml.com](https://plantuml.com),
   you must set the `PLANTUML_ENCODING` environment variable to enable the `deflate`
   compression. In Linux package installations, you can set this value in `/etc/gitlab/gitlab.rb` with
   this command:

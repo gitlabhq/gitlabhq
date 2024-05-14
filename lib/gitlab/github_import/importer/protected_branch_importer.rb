@@ -145,7 +145,7 @@ module Gitlab
         end
 
         def default_branch_push_access_level
-          if default_branch_protection.developer_can_push?
+          if default_branch_protection.any? && default_branch_protection.developer_can_push?
             Gitlab::Access::DEVELOPER
           else
             gitlab_default_access_level_for(:push)
@@ -153,7 +153,7 @@ module Gitlab
         end
 
         def default_branch_merge_access_level
-          if default_branch_protection.developer_can_merge?
+          if default_branch_protection.any? && default_branch_protection.developer_can_merge?
             Gitlab::Access::DEVELOPER
           else
             gitlab_default_access_level_for(:merge)
@@ -161,7 +161,7 @@ module Gitlab
         end
 
         def default_branch_protection
-          Gitlab::Access::BranchProtection.new(project.namespace.default_branch_protection)
+          Gitlab::Access::DefaultBranchProtection.new(project.namespace.default_branch_protection_settings)
         end
 
         def protected_on_gitlab?
@@ -170,7 +170,7 @@ module Gitlab
 
         def non_default_branch_access_level_for(action)
           access_level = ProtectedBranch.access_levels_for_ref(protected_branch.id, action: action)
-            .find(&:role?)&.access_level
+                                        .find(&:role?)&.access_level
 
           access_level || gitlab_default_access_level_for(action)
         end

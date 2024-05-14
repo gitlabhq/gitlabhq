@@ -166,8 +166,6 @@ This technique does not improve the performance of the `COUNT(*)` queries.
 
 ## The `InOperatorOptimization` module
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67352) in GitLab 14.3.
-
 The `Gitlab::Pagination::Keyset::InOperatorOptimization` module implements utilities for applying a generalized version of
 the efficient `IN` query technique described in the previous section.
 
@@ -622,7 +620,6 @@ order = Gitlab::Pagination::Keyset::Order.build([
   Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
     attribute_name: 'duration_in_seconds',
     order_expression: Arel.sql('EXTRACT(EPOCH FROM epics.closed_at - epics.created_at)').desc,
-    distinct: false,
     sql_type: 'double precision' # important for calculated SQL expressions
   ),
   Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
@@ -697,8 +694,7 @@ order = Gitlab::Pagination::Keyset::Order.build([
             attribute_name: 'projects_name',
             order_expression: Issue.arel_table[:projects_name].asc,
             sql_type: 'character varying',
-            nullable: :nulls_last,
-            distinct: false
+            nullable: :nulls_last
           ),
           Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
             attribute_name: :id,

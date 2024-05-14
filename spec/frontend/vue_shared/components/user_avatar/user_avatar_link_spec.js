@@ -47,6 +47,7 @@ describe('User Avatar Link Component', () => {
       imgAlt: defaultProps.imgAlt,
       imgSrc: defaultProps.imgSrc,
       lazy: false,
+      pseudo: false,
       size: defaultProps.imgSize,
       tooltipPlacement: defaultProps.tooltipPlacement,
       tooltipText: '',

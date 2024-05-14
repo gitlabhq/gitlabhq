@@ -9,6 +9,7 @@ class Projects::ReleasesController < Projects::ApplicationController
   before_action :authorize_create_release!, only: :new
   before_action :validate_suffix_path, :fetch_latest_tag, only: :latest_permalink
 
+  prepend_before_action(only: [:index]) { authenticate_sessionless_user!(:rss) }
   prepend_before_action(only: [:downloads]) do
     authenticate_sessionless_user!(:download)
   end
@@ -24,6 +25,10 @@ class Projects::ReleasesController < Projects::ApplicationController
       format.json do
         render json: ReleaseSerializer.new.represent(releases)
       end
+      format.atom do
+        @releases = releases
+        render layout: 'xml'
+      end
     end
   end
 
@@ -32,9 +37,7 @@ class Projects::ReleasesController < Projects::ApplicationController
   end
 
   def latest_permalink
-    unless @latest_tag.present?
-      return render_404
-    end
+    return render_404 unless @latest_tag.present?
 
     query_parameters_except_order_by = request.query_parameters.except(:order_by)
 

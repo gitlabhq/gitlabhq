@@ -11,6 +11,8 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
     allow(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
     allow(Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:track_event)
     allow(redis).to receive(:incr)
+    allow(redis).to receive(:set)
+    allow(redis).to receive(:ttl).and_return(123456)
     allow(Gitlab::Redis::SharedState).to receive(:with).and_yield(redis)
     allow(Gitlab::Tracking).to receive(:tracker).and_return(fake_snowplow)
     allow(Gitlab::InternalEvents::EventDefinitions).to receive(:unique_properties).and_return(unique_properties)
@@ -19,12 +21,13 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
 
   shared_examples 'an event that logs an error' do
     it 'logs an error' do
-      described_class.track_event(event_name, **event_kwargs)
+      described_class.track_event(event_name, additional_properties: additional_properties, **event_kwargs)
 
       expect(Gitlab::ErrorTracking).to have_received(:track_and_raise_for_dev_exception)
-        .with(described_class::InvalidPropertyTypeError,
+        .with(error_class,
           event_name: event_name,
-          kwargs: event_kwargs
+          kwargs: logged_kwargs,
+          additional_properties: additional_properties
         )
     end
   end
@@ -45,7 +48,7 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
     end
   end
 
-  def expect_snowplow_tracking(expected_namespace = nil)
+  def expect_snowplow_tracking(expected_namespace = nil, expected_additional_properties = {})
     service_ping_context = Gitlab::Tracking::ServicePingContext
       .new(data_source: :redis_hll, event: event_name)
       .to_context
@@ -58,6 +61,7 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
       expect(provided_category).to eq(category)
       expect(provided_event_name).to eq(event_name)
 
+      expect(args).to include(expected_additional_properties)
       contexts = args[:context]&.map(&:to_json)
 
       # Verify Standard Context
@@ -91,6 +95,7 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
   let_it_be(:user) { build(:user, id: 1) }
   let_it_be(:project_namespace) { build(:namespace, id: 2) }
   let_it_be(:project) { build(:project, id: 3, namespace: project_namespace) }
+  let_it_be(:additional_properties) { {} }
 
   let(:redis) { instance_double('Redis') }
   let(:fake_snowplow) { instance_double(Gitlab::Tracking::Destinations::Snowplow) }
@@ -150,12 +155,59 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
     end
   end
 
+  context 'when additional properties are passed' do
+    let(:additional_properties) do
+      {
+        label: 'label_name',
+        property: 'property_name',
+        value: 16.17
+      }
+    end
+
+    it 'is sent to Snowplow' do
+      described_class.track_event(
+        event_name,
+        additional_properties: additional_properties,
+        user: user,
+        project: project
+      )
+
+      expect_snowplow_tracking(nil, additional_properties)
+    end
+  end
+
+  context 'when feature_enabled_by_namespace_ids is passed' do
+    let(:feature_enabled_by_namespace_ids) { [1, 2, 3] }
+
+    it 'is sent to Snowplow' do
+      described_class.track_event(
+        event_name,
+        user: user,
+        project: project,
+        feature_enabled_by_namespace_ids: feature_enabled_by_namespace_ids
+      )
+
+      expect(fake_snowplow).to have_received(:event) do |_, _, args|
+        contexts = args[:context]&.map(&:to_json)
+
+        standard_context = contexts.find do |c|
+          c[:schema] == Gitlab::Tracking::StandardContext::GITLAB_STANDARD_SCHEMA_URL
+        end
+
+        expect(standard_context[:data][:feature_enabled_by_namespace_ids]).to eq(feature_enabled_by_namespace_ids)
+      end
+    end
+  end
+
   context 'when arguments are invalid' do
+    let(:error_class) { described_class::InvalidPropertyTypeError }
+
     context 'when user is not an instance of User' do
       let(:user) { 'a_string' }
 
       it_behaves_like 'an event that logs an error' do
-        let(:event_kwargs) { { user: user, project: project.id } }
+        let(:event_kwargs) { { user: user, project: project } }
+        let(:logged_kwargs) { { user: user, project: project.id } }
       end
     end
 
@@ -163,7 +215,8 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
       let(:project) { 42 }
 
       it_behaves_like 'an event that logs an error' do
-        let(:event_kwargs) { { user: user.id, project: project } }
+        let(:event_kwargs) { { user: user, project: project } }
+        let(:logged_kwargs) { { user: user.id, project: project } }
       end
     end
 
@@ -171,7 +224,29 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
       let(:namespace) { false }
 
       it_behaves_like 'an event that logs an error' do
-        let(:event_kwargs) { { user: user.id, namespace: namespace } }
+        let(:event_kwargs) { { user: user, namespace: namespace } }
+        let(:logged_kwargs) { { user: user.id, namespace: namespace } }
+      end
+    end
+
+    %i[label value property].each do |attribute_name|
+      context "when #{attribute_name} has an invalid value" do
+        let(:additional_properties) { { "#{attribute_name}": :symbol } }
+
+        it_behaves_like 'an event that logs an error' do
+          let(:event_kwargs) { { user: user } }
+          let(:logged_kwargs) { { user: user.id } }
+        end
+      end
+    end
+
+    context "when disallowed additional properties are passed" do
+      let(:error_class) { described_class::InvalidPropertyError }
+      let(:additional_properties) { { new_property: 'value' } }
+
+      it_behaves_like 'an event that logs an error' do
+        let(:event_kwargs) { { user: user } }
+        let(:logged_kwargs) { { user: user.id } }
       end
     end
   end
@@ -201,7 +276,7 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
 
   it 'logs error on unknown event', :aggregate_failures do
     expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
-      .with(described_class::UnknownEventError, event_name: 'unknown_event', kwargs: {})
+      .with(described_class::UnknownEventError, event_name: 'unknown_event', kwargs: {}, additional_properties: {})
 
     expect { described_class.track_event('unknown_event') }.not_to raise_error
   end
@@ -272,56 +347,13 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
     context 'when there are multiple unique keys' do
       let(:property_names) { [:project, :user] }
 
-      context "with the property_name tracking feature flag enabled" do
-        before do
-          stub_feature_flags(redis_hll_property_name_tracking: true)
-        end
+      it 'all of them are used when logging to RedisHLL', :aggregate_failures do
+        described_class.track_event(event_name, user: user, project: project)
 
-        it 'all of them are used when logging to RedisHLL', :aggregate_failures do
-          described_class.track_event(event_name, user: user, project: project)
-
-          expect_redis_tracking
-          expect_redis_hll_tracking(user.id, :user)
-          expect_redis_hll_tracking(project.id, :project)
-          expect_snowplow_tracking
-        end
-      end
-
-      context "with the property_name tracking feature flag disabled" do
-        context "with multiple property_names defined" do
-          it 'logs an error', :aggregate_failures do
-            described_class.track_event(event_name, user: user, project: project)
-
-            expect(Gitlab::ErrorTracking).to have_received(:track_and_raise_for_dev_exception).with(
-              Gitlab::InternalEvents::EventDefinitions::InvalidMetricConfiguration, anything
-            )
-            expect(Gitlab::UsageDataCounters::HLLRedisCounter).not_to have_received(:track_event)
-          end
-        end
-
-        context "with single property_names defined" do
-          let(:property_names) { [:project] }
-
-          it 'logs to RedisHLL only once' do
-            described_class.track_event(event_name, user: user, project: project)
-
-            expect(Gitlab::UsageDataCounters::HLLRedisCounter).to have_received(:track_event).once
-          end
-        end
-
-        context "when event_name is user_visited_dashboard" do
-          let(:event_name) { 'user_visited_dashboard' }
-
-          it 'logs to RedisHLL only once with user_id' do
-            # make it defined also on FOSS tests
-            allow(Gitlab::InternalEvents::EventDefinitions).to receive(:known_event?).with(event_name).and_return(true)
-
-            described_class.track_event(event_name, user: user, project: project)
-
-            expect(Gitlab::UsageDataCounters::HLLRedisCounter).to have_received(:track_event).once
-              .with(event_name, values: user.id, property_name: :user)
-          end
-        end
+        expect_redis_tracking
+        expect_redis_hll_tracking(user.id, :user)
+        expect_redis_hll_tracking(project.id, :project)
+        expect_snowplow_tracking
       end
     end
 
@@ -357,17 +389,32 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
   describe 'Product Analytics tracking' do
     let(:app_id) { 'foobar' }
     let(:url) { 'http://localhost:4000' }
-    let(:sdk_client) { instance_double('GitlabSDK::Client') }
-    let(:event_kwargs) { { user: user, project: project } }
+    let(:sdk_client) { instance_double('GitlabSDK::Client', identify: true) }
+    let(:event_kwargs) { { user: user, project: project, send_snowplow_event: send_snowplow_event } }
+    let(:additional_properties) { {} }
+    let(:send_snowplow_event) { true }
 
     before do
       described_class.clear_memoization(:gitlab_sdk_client)
 
       stub_env('GITLAB_ANALYTICS_ID', app_id)
       stub_env('GITLAB_ANALYTICS_URL', url)
+
+      stub_feature_flags(internal_events_batching: true)
+
+      allow(GitlabSDK::Client)
+        .to receive(:new)
+        .with(app_id: app_id, host: url, buffer_size: described_class::SNOWPLOW_EMITTER_BUFFER_SIZE)
+        .and_return(sdk_client)
     end
 
-    subject(:track_event) { described_class.track_event(event_name, **event_kwargs) }
+    after do
+      described_class.clear_memoization(:gitlab_sdk_client)
+    end
+
+    subject(:track_event) do
+      described_class.track_event(event_name, additional_properties: additional_properties, **event_kwargs)
+    end
 
     shared_examples 'does not send a Product Analytics event' do
       it 'does not call the Product Analytics Ruby SDK' do
@@ -377,46 +424,142 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
       end
     end
 
-    context 'when internal_events_for_product_analytics FF is enabled' do
-      before do
-        stub_feature_flags(internal_events_for_product_analytics: true)
+    it 'calls Product Analytics Ruby SDK', :aggregate_failures do
+      expect(sdk_client).to receive(:identify).with(user.id)
+      expect(sdk_client).to receive(:track)
+        .with(event_name, { project_id: project.id, namespace_id: project.namespace.id })
 
-        allow(GitlabSDK::Client)
-          .to receive(:new)
-          .with(app_id: app_id, host: url, buffer_size: described_class::SNOWPLOW_EMITTER_BUFFER_SIZE)
-          .and_return(sdk_client)
+      track_event
+    end
+
+    context 'when additional properties are passed' do
+      let(:additional_properties) do
+        {
+          label: 'label_name',
+          property: 'property_name',
+          value: 16.17
+        }
       end
 
-      it 'calls Product Analytics Ruby SDK', :aggregate_failures do
+      let(:tracked_attributes) do
+        {
+          project_id: project.id,
+          namespace_id: project.namespace.id,
+          additional_properties: additional_properties
+        }
+      end
+
+      it 'passes additional_properties to Product Analytics Ruby SDK', :aggregate_failures do
         expect(sdk_client).to receive(:identify).with(user.id)
-        expect(sdk_client).to receive(:track)
-          .with(event_name, { project_id: project.id, namespace_id: project.namespace.id })
+        expect(sdk_client).to receive(:track).with(event_name, tracked_attributes)
 
         track_event
       end
+    end
 
-      context 'when GITLAB_ANALYTICS_ID is nil' do
-        let(:app_id) { nil }
+    context 'when GITLAB_ANALYTICS_ID is nil' do
+      let(:app_id) { nil }
 
-        it_behaves_like 'does not send a Product Analytics event'
+      it_behaves_like 'does not send a Product Analytics event'
+    end
+
+    context 'when GITLAB_ANALYTICS_URL is nil' do
+      let(:url) { nil }
+
+      it_behaves_like 'does not send a Product Analytics event'
+    end
+
+    context 'when send_snowplow_event is false' do
+      let(:send_snowplow_event) { false }
+
+      it_behaves_like 'does not send a Product Analytics event'
+    end
+
+    context 'with internal_events_batching FF off' do
+      before do
+        stub_feature_flags(internal_events_batching: false)
       end
 
-      context 'when GITLAB_ANALYTICS_URL is nil' do
-        let(:url) { nil }
+      it 'passes buffer_size 1 to SDK client' do
+        expect(GitlabSDK::Client)
+          .to receive(:new)
+                .with(app_id: app_id, host: url, buffer_size: described_class::DEFAULT_BUFFER_SIZE)
 
-        it_behaves_like 'does not send a Product Analytics event'
+        track_event
       end
     end
 
-    context 'when internal_events_for_product_analytics FF is disabled' do
-      let(:app_id) { 'foobar' }
-      let(:url) { 'http://localhost:4000' }
+    context 'with early access program tracking' do
+      shared_examples 'does not create early access program tracking event' do
+        it do
+          track_event
 
-      before do
-        stub_feature_flags(internal_events_for_product_analytics: false)
+          expect(user&.early_access_program_tracking_events).to be_blank
+        end
       end
 
-      it_behaves_like 'does not send a Product Analytics event'
+      before do
+        allow(sdk_client).to receive(:track)
+          .with(event_name, { project_id: project.id, namespace_id: project.namespace.id })
+      end
+
+      context 'when early_access_program FF is enabled' do
+        before do
+          stub_feature_flags(early_access_program: true)
+        end
+
+        context 'without user' do
+          let(:user) { nil }
+
+          it_behaves_like 'does not create early access program tracking event'
+        end
+
+        context 'with user' do
+          context 'when user is not early access program participant' do
+            it_behaves_like 'does not create early access program tracking event'
+          end
+
+          context 'when user is early access program participant' do
+            let(:event_name) { 'g_edit_by_snippet_ide' }
+            let(:additional_properties) { { label: 'label_name' } }
+            let(:user) { create(:user) }
+
+            before do
+              preference_stub = instance_double(UserPreference, early_access_event_tracking?: true)
+              allow(user).to receive(:user_preference).and_return(preference_stub)
+              allow(sdk_client).to receive(:track)
+                .with(
+                  event_name,
+                  {
+                    project_id: project.id,
+                    namespace_id: project.namespace.id,
+                    additional_properties: additional_properties
+                  }
+                )
+            end
+
+            it 'creates user early access program event' do
+              described_class.track_event(
+                event_name, category: category, additional_properties: additional_properties, **event_kwargs
+              )
+
+              expect(user.early_access_program_tracking_events.size).to eq 1
+              expect(user.early_access_program_tracking_events.first)
+                .to have_attributes(
+                  event_name: 'g_edit_by_snippet_ide', event_label: 'label_name', category: 'InternalEventTracking'
+                )
+            end
+          end
+        end
+      end
+
+      context 'when early_access_program FF is disabled' do
+        before do
+          stub_feature_flags(early_access_program: false)
+        end
+
+        it_behaves_like 'does not create early access program tracking event'
+      end
     end
   end
 end

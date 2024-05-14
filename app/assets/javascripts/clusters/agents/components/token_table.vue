@@ -44,7 +44,7 @@ export default {
   },
   computed: {
     fields() {
-      const tdClass = 'gl-vertical-align-middle!';
+      const tdClass = '!gl-align-middle';
       return [
         {
           key: 'name',

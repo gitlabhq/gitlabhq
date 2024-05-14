@@ -53,11 +53,11 @@ For `.eslintrc.json` (or `.eslintrc.js`):
 - Make sure that TypeScript-specific parsing and linting are placed in an `overrides`
   for `**/*.ts` files. This way, linting regular `.js` files
   remains unaffected by the TypeScript-specific rules.
-- Extend from [`plugin:@typescript-eslint/recommended`](https://typescript-eslint.io/rules?supported-rules=recommended)
+- Extend from [`plugin:@typescript-eslint/recommended`](https://typescript-eslint.io/rules/?supported-rules=recommended)
   which has some very sensible defaults, such as:
   - [`"@typescript-eslint/no-explicit-any": "error"`](https://typescript-eslint.io/rules/no-explicit-any/)
   - [`"@typescript-eslint/no-unsafe-assignment": "error"`](https://typescript-eslint.io/rules/no-unsafe-assignment/)
-  - [`"@typescript-eslint/no-unsafe-return": "error"`](https://typescript-eslint.io/rules/no-unsafe-return)
+  - [`"@typescript-eslint/no-unsafe-return": "error"`](https://typescript-eslint.io/rules/no-unsafe-return/)
 
 ### Avoid `any`
 

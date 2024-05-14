@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 This page describes how to enable advanced search. When enabled,
 advanced search provides faster search response times and [improved search features](../../user/search/advanced_search.md).
@@ -67,14 +67,22 @@ The search index updates after you:
 - Add data to the database or repository.
 - [Enable Elasticsearch](#enable-advanced-search) in the Admin Area.
 
+NOTE:
+Before you use a new Elasticsearch cluster in production, see the
+[Elasticsearch documentation on important settings](https://www.elastic.co/guide/en/elasticsearch/reference/current/important-settings.html).
+
 ## Upgrade to a new Elasticsearch major version
 
 > - Support for Elasticsearch 6.8 [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/350275) in GitLab 15.0.
 
-You don't have to change the GitLab configuration when you upgrade Elasticsearch.
+When you upgrade Elasticsearch, you do not have to change the GitLab configuration.
 
-You should pause indexing during an Elasticsearch upgrade so changes can still be tracked.
-When the Elasticsearch cluster is fully upgraded and active, [resume indexing](#unpause-indexing).
+During an Elasticsearch upgrade, you must:
+
+- Pause indexing so changes can still be tracked.
+- Disable advanced search so searches do not fail with an `HTTP 500` error.
+
+When the Elasticsearch cluster is fully upgraded and active, [resume indexing](#unpause-indexing) and enable advanced search.
 
 When you upgrade to GitLab 15.0 and later, you must use Elasticsearch 7.x and later.
 
@@ -246,11 +254,11 @@ The following Elasticsearch settings are available:
 | `Pause Elasticsearch indexing`                        | Enables or disables temporary indexing pause. This is useful for cluster migration/reindexing. All changes are still tracked, but they are not committed to the Elasticsearch index until resumed. |
 | `Search with Elasticsearch enabled`                   | Enables or disables using Elasticsearch in search. |
 | `Requeue indexing workers`                            | Enable automatic requeuing of indexing workers. This improves non-code indexing throughput by enqueuing Sidekiq jobs until all documents are processed. Requeuing indexing workers is not recommended for smaller instances or instances with few Sidekiq processes. |
-| `URL`                                                 | The URL of your Elasticsearch instance. Use a comma-separated list to support clustering (for example, `http://host1, https://host2:9200`). If your Elasticsearch instance is password-protected, use the `Username` and `Password` fields described below. Alternatively, use inline credentials such as `http://<username>:<password>@<elastic_host>:9200/`. |
+| `URL`                                                 | The URL of your Elasticsearch instance. Use a comma-separated list to support clustering (for example, `http://host1, https://host2:9200`). If your Elasticsearch instance is password-protected, use the `Username` and `Password` fields. Alternatively, use inline credentials such as `http://<username>:<password>@<elastic_host>:9200/`. If you use [OpenSearch](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/vpc.html), only connections over ports `80` and `443` are accepted. |
 | `Username`                                                 | The `username` of your Elasticsearch instance. |
 | `Password`                                                 | The password of your Elasticsearch instance. |
 | `Number of Elasticsearch shards and replicas per index`    | Elasticsearch indices are split into multiple shards for performance reasons. In general, you should use at least five shards. Indices with tens of millions of documents should have more shards ([see the guidance](#guidance-on-choosing-optimal-cluster-configuration)). Changes to this value do not take effect until you re-create the index. For more information about scalability and resilience, see the [Elasticsearch documentation](https://www.elastic.co/guide/en/elasticsearch/reference/current/scalability.html). Each Elasticsearch shard can have a number of replicas. These replicas are a complete copy of the shard and can provide increased query performance or resilience against hardware failure. Increasing this value increases the total disk space required by the index. You can set the number of shards and replicas for each of the indices. |
-| `Limit the number of namespaces and projects that can be indexed`   | Enabling this allows you to select namespaces and projects to index. All other namespaces and projects use database search instead. If you enable this option but do not select any namespaces or projects, none are indexed. [Read more below](#limit-the-number-of-namespaces-and-projects-that-can-be-indexed).|
+| `Limit the amount of namespace and project data to index` | When you enable this setting, you can specify namespaces and projects to index. All other namespaces and projects use database search instead. If you enable this setting but do not specify any namespace or project, [only project records are indexed](#all-project-records-are-indexed). For more information, see [Limit the amount of namespace and project data to index](#limit-the-amount-of-namespace-and-project-data-to-index). |
 | `Using AWS OpenSearch Service with IAM credentials` | Sign your OpenSearch requests using [AWS IAM authorization](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html), [AWS EC2 Instance Profile Credentials](https://docs.aws.amazon.com/codedeploy/latest/userguide/getting-started-create-iam-instance-profile.html#getting-started-create-iam-instance-profile-cli), or [AWS ECS Tasks Credentials](https://docs.aws.amazon.com/AmazonECS/latest/userguide/task-iam-roles.html). Refer to [Identity and Access Management in Amazon OpenSearch Service](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/ac.html) for details of AWS hosted OpenSearch domain access policy configuration. |
 | `AWS Region`                                          | The AWS region in which your OpenSearch Service is located. |
 | `AWS Access Key`                                      | The AWS access key. |
@@ -376,28 +384,33 @@ The following permissions are required for advanced search. See [Creating roles]
 
 The index pattern `*` requires a few permissions for advanced search to work.
 
-### Limit the number of namespaces and projects that can be indexed
+### Limit the amount of namespace and project data to index
 
-When you select the **Limit the number of namespaces and projects that can be indexed**
+When you select the **Limit the amount of namespace and project data to index**
 checkbox, you can specify namespaces and projects to index. If the namespace is a group,
 any subgroups and projects belonging to those subgroups are also indexed.
 
-![limit namespaces and projects options](img/limit_namespaces_projects_options.png)
-
 Advanced search only provides cross-group code/commit search (global) if all name-spaces are indexed. In this particular scenario where only a subset of namespaces are indexed, a global search does not provide a code or commit scope. This is possible only in the scope of an indexed namespace. There is no way to code/commit search in multiple indexed namespaces (when only a subset of namespaces has been indexed). For example if two groups are indexed, there is no way to run a single code search on both. You can only run a code search on the first group and then on the second.
 
-You can filter the selection dropdown list by writing part of the namespace or project name you're interested in.
-
-![limit namespace filter](img/limit_namespace_filter.png)
-
-NOTE:
-If no namespaces or projects are selected, no advanced search indexing takes place.
+If you do not specify any namespace or project, [only project records are indexed](#all-project-records-are-indexed).
 
 WARNING:
 If you have already indexed your instance, you must regenerate the index to delete all existing data
 for filtering to work correctly. To do this, run the Rake tasks `gitlab:elastic:recreate_index` and
 `gitlab:elastic:clear_index_status`. Afterwards, removing a namespace or a project from the list deletes the data
 from the Elasticsearch index as expected.
+
+#### All project records are indexed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/428070) in GitLab 16.7 [with a flag](../../administration/feature_flags.md) named `search_index_all_projects`. Disabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148111) in GitLab 16.11. Feature flag `search_index_all_projects` removed.
+
+When you select the **Limit the amount of namespace and project data to index** checkbox:
+
+- All project records are indexed.
+- Associated data (issues, merge requests, or code) is not indexed.
+
+If you do not specify any namespace or project, only project records are indexed.
 
 ## Enable custom language analyzers
 
@@ -411,7 +424,7 @@ To enable languages support:
 1. Locate **Custom analyzers: language support**.
 1. Enable plugins support for **Indexing**.
 1. Select **Save changes** for the changes to take effect.
-1. Trigger [Zero downtime reindexing](#zero-downtime-reindexing) or reindex everything from scratch to create a new index with updated mappings.
+1. Trigger [zero-downtime reindexing](#zero-downtime-reindexing) or reindex everything from scratch to create a new index with updated mappings.
 1. Enable plugins support for **Searching** after the previous step is completed.
 
 For guidance on what to install, see the following Elasticsearch language plugin options:
@@ -574,7 +587,7 @@ You can use this information, for example, to identify when a migration was intr
 To check for pending advanced search migrations, run this command:
 
 ```shell
-curl "$CLUSTER_URL/gitlab-production-migrations/_search?q=*" | jq .
+curl "$CLUSTER_URL/gitlab-production-migrations/_search?size=100&q=*" | jq .
 ```
 
 This should return something similar to:
@@ -642,6 +655,14 @@ any pending migrations that have been removed in the new version cannot be execu
 In this case, you must
 [re-create your index from scratch](elasticsearch_troubleshooting.md#last-resort-to-recreate-an-index).
 
+### Skippable migrations
+
+Skippable migrations are only executed when a condition is met.
+For example, if a migration depends on a specific version of Elasticsearch, it could be skipped until that version is reached.
+
+If a skippable migration is not executed by the time the migration is marked as obsolete, to apply the change you must
+[re-create the index](elasticsearch_troubleshooting.md#last-resort-to-recreate-an-index).
+
 ## GitLab advanced search Rake tasks
 
 Rake tasks are available to:
@@ -669,11 +690,12 @@ The following are some available Rake tasks:
 | [`sudo gitlab-rake gitlab:elastic:recreate_index`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)     | Wrapper task for `gitlab:elastic:delete_index` and `gitlab:elastic:create_empty_index`.                                                                       |
 | [`sudo gitlab-rake gitlab:elastic:index_snippets`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                   | Performs an Elasticsearch import that indexes the snippets data.                                                                                                                          |
 | [`sudo gitlab-rake gitlab:elastic:index_users`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                   | Imports all users into Elasticsearch.                                                                                                                 |
-| [`sudo gitlab-rake gitlab:elastic:projects_not_indexed`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)             | Displays which projects are not indexed.                                                                                                                                                  |
+| [`sudo gitlab-rake gitlab:elastic:projects_not_indexed`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)             | Displays which projects do not have repository data indexed. This task does not include non-repository data such as issues, merge requests, or milestones.                                                                                                                                    |
 | [`sudo gitlab-rake gitlab:elastic:reindex_cluster`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                  | Schedules a zero-downtime cluster reindexing task. |
 | [`sudo gitlab-rake gitlab:elastic:mark_reindex_failed`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)              | Mark the most recent re-index job as failed. |
 | [`sudo gitlab-rake gitlab:elastic:list_pending_migrations`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)          | List pending migrations. Pending migrations include those that have not yet started, have started but not finished, and those that are halted. |
 | [`sudo gitlab-rake gitlab:elastic:estimate_cluster_size`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)            | Get an estimate of cluster size based on the total repository size. |
+| [`sudo gitlab-rake gitlab:elastic:estimate_shard_sizes`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)            | Get an estimate of shard sizes for each index based on approximate database counts. This estimate does not include repository data (code, commits, and wikis). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146108) in GitLab 16.11. |
 | [`sudo gitlab-rake gitlab:elastic:enable_search_with_elasticsearch`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)            | Enables advanced search with Elasticsearch. |
 | [`sudo gitlab-rake gitlab:elastic:disable_search_with_elasticsearch`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)            | Disables advanced search with Elasticsearch. |
 
@@ -732,21 +754,51 @@ For basic guidance on choosing a cluster configuration you may refer to [Elastic
 - You should not use [coordinating-only nodes](https://www.elastic.co/guide/en/elasticsearch/reference/current/modules-node.html#coordinating-only-node) with large instances. Coordinating-only nodes are smaller than [data nodes](https://www.elastic.co/guide/en/elasticsearch/reference/current/modules-node.html#data-node), which can impact performance and [advanced search migrations](#advanced-search-migrations).
 - You can use the [GitLab Performance Tool](https://gitlab.com/gitlab-org/quality/performance) to benchmark search performance with different search cluster sizes and configurations.
 - `Heap size` should be set to no more than 50% of your physical RAM. Additionally, it shouldn't be set to more than the threshold for zero-based compressed oops. The exact threshold varies, but 26 GB is safe on most systems, but can also be as large as 30 GB on some systems. See [Heap size settings](https://www.elastic.co/guide/en/elasticsearch/reference/current/important-settings.html#heap-size-settings) and [Setting JVM options](https://www.elastic.co/guide/en/elasticsearch/reference/current/jvm-options.html) for more details.
-- Number of CPUs (CPU cores) per node usually corresponds to the `Number of Elasticsearch shards` setting described below.
-- A good guideline is to ensure you keep the number of shards per node below 20 per GB heap it has configured. A node with a 30 GB heap should therefore have a maximum of 600 shards, but the further below this limit you can keep it the better. This generally helps the cluster stay in good health.
-- Number of Elasticsearch shards:
-  - Small shards result in small segments, which increases overhead. Aim to keep the average shard size between at least a few GB and a few tens of GB.
-  - Another consideration is the number of documents. To determine the number of shards to use, sum the numbers in the Admin Area under **Dashboard > Statistics** (the number of documents to be indexed), divide by 5 million, and add 5. For example:
-    - If you have fewer than about 2,000,000 documents, use the default of 5 shards
-    - 10,000,000 documents: `10000000/5000000 + 5` = 7 shards
-    - 100,000,000 documents: `100000000/5000000 + 5` = 25 shards
 - `refresh_interval` is a per index setting. You may want to adjust that from default `1s` to a bigger value if you don't need data in real-time. This changes how soon you see fresh results. If that's important for you, you should leave it as close as possible to the default value.
 - You might want to raise [`indices.memory.index_buffer_size`](https://www.elastic.co/guide/en/elasticsearch/reference/current/indexing-buffer.html) to 30% or 40% if you have a lot of heavy indexing operations.
 
-### Advanced search integration settings guidance
+### Advanced search settings
 
-- The `Number of Elasticsearch shards` setting usually corresponds with the number of CPUs available in your cluster. For example, if you have a 3-node cluster with 4 cores each, this means you benefit from having at least 3*4=12 shards in the cluster. It's only possible to change the shards number by using [Split index API](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-split-index.html) or by reindexing to a different index with a changed number of shards.
-- The `Number of Elasticsearch replicas` setting should most of the time be equal to `1` (each shard has 1 replica). Using `0` is not recommended, because losing one node corrupts the index.
+#### Number of Elasticsearch shards
+
+Set the number of Elasticsearch shards per index to at least `5`.
+To update the shard size for an index, change the setting and trigger [zero-downtime reindexing](#zero-downtime-reindexing).
+
+##### Indices with database data
+
+> - `gitlab:elastic:estimate_shard_sizes` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146108) in GitLab 16.11.
+
+For indices that contain database data:
+
+- `gitlab-production-projects`
+- `gitlab-production-issues`
+- `gitlab-production-epics`
+- `gitlab-production-merge_requests`
+- `gitlab-production-notes`
+- `gitlab-production-users`
+
+Run the Rake task `gitlab:elastic:estimate_shard_sizes` to determine the number of shards.
+The task returns approximate document counts and recommendations for shard and replica sizes.
+
+##### Indices with repository data
+
+For indices that contain repository data:
+
+- `gitlab-production`
+- `gitlab-production-wikis`
+- `gitlab-production-commits`
+
+Keep the average shard size between a few GB and 30 GB.
+If the average shard size grows to more than 30 GB, increase the shard size
+for the index and trigger [zero-downtime reindexing](#zero-downtime-reindexing).
+To ensure the cluster is healthy, the number of shards per node
+must not exceed 20 times the configured heap size.
+For example, a node with a 30 GB heap must have a maximum of 600 shards.
+
+#### Number of Elasticsearch replicas
+
+Set the number of Elasticsearch replicas per index to `1` (each shard has one replica).
+The number must not be `0` because losing one node corrupts the index.
 
 ### How to index large instances efficiently
 

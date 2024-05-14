@@ -4,7 +4,7 @@ key_path: usage_activity_by_stage.monitor.projects_with_alert_incidents
 description: Count of unique projects with an incident from an alert
 product_section: ops
 product_stage: monitor
-product_group: monitor
+product_group: respond
 value_type: number
 status: active
 time_frame: all

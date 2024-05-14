@@ -11,7 +11,13 @@ import {
 import { logError } from '~/lib/logger';
 import { __ } from '~/locale';
 import { labelFilterData } from '~/search/sidebar/components/label_filter/data';
-import { GROUPS_LOCAL_STORAGE_KEY, PROJECTS_LOCAL_STORAGE_KEY, SIDEBAR_PARAMS } from './constants';
+import {
+  GROUPS_LOCAL_STORAGE_KEY,
+  PROJECTS_LOCAL_STORAGE_KEY,
+  SIDEBAR_PARAMS,
+  PRESERVED_PARAMS,
+  LOCAL_STORAGE_NAME_SPACE_EXTENSION,
+} from './constants';
 import * as types from './mutation_types';
 import {
   loadDataFromLS,
@@ -20,6 +26,7 @@ import {
   isSidebarDirty,
   getAggregationsUrl,
   prepareSearchAggregations,
+  setDataToLS,
 } from './utils';
 
 export const fetchGroups = ({ commit }, search) => {
@@ -61,10 +68,10 @@ export const fetchProjects = ({ commit, state }, search) => {
 };
 
 export const preloadStoredFrequentItems = ({ commit }) => {
-  const storedGroups = loadDataFromLS(GROUPS_LOCAL_STORAGE_KEY);
+  const storedGroups = loadDataFromLS(GROUPS_LOCAL_STORAGE_KEY) || [];
   commit(types.LOAD_FREQUENT_ITEMS, { key: GROUPS_LOCAL_STORAGE_KEY, data: storedGroups });
 
-  const storedProjects = loadDataFromLS(PROJECTS_LOCAL_STORAGE_KEY);
+  const storedProjects = loadDataFromLS(PROJECTS_LOCAL_STORAGE_KEY) || [];
   commit(types.LOAD_FREQUENT_ITEMS, { key: PROJECTS_LOCAL_STORAGE_KEY, data: storedProjects });
 };
 
@@ -105,6 +112,10 @@ export const setQuery = ({ state, commit }, { key, value }) => {
 
   if (SIDEBAR_PARAMS.includes(key)) {
     commit(types.SET_SIDEBAR_DIRTY, isSidebarDirty(state.query, state.urlQuery));
+  }
+
+  if (PRESERVED_PARAMS.includes(key)) {
+    setDataToLS(`${key}_${LOCAL_STORAGE_NAME_SPACE_EXTENSION}`, value);
   }
 };
 

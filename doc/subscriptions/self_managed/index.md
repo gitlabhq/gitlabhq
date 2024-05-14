@@ -95,7 +95,7 @@ If you do not add these users during the renewal process, your license key will 
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 In the **Ultimate** tier, users who are assigned the Guest role do not consume a seat.
 The user must not be assigned any other role, anywhere in the instance.
@@ -126,14 +126,12 @@ GitLab has several features which can help you manage the number of users:
   option.
 - Enable `block_auto_created_users` for new sign-ups via [LDAP](../../administration/auth/ldap/index.md#basic-configuration-settings) or [OmniAuth](../../integration/omniauth.md#configure-common-settings).
 - Enable the [User cap](../../administration/settings/sign_up_restrictions.md#user-cap)
-  option. **Available in GitLab 13.7 and later**.
+  option.
 - [Disable new sign-ups](../../administration/settings/sign_up_restrictions.md), and instead manage new
   users manually.
 - View a breakdown of users by role in the [Users statistics](../../administration/admin_area.md#users-statistics) page.
 
 ## Subscription data synchronization
-
-> - Introduced in GitLab 14.1.
 
 Subscription data can be automatically synchronized between your self-managed instance and GitLab.
 To enable subscription data synchronization you must have:
@@ -254,8 +252,6 @@ It also displays the following information:
 | Users over subscription | Calculated as `Maximum users` - `Users in subscription` for the current license term. This number incurs a retroactive charge that must be paid before renewal. |
 
 ## Export your license usage
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66826) in GitLab 14.2.
 
 If you are an administrator, you can export your license usage into a CSV:
 

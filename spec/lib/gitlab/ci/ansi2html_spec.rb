@@ -213,9 +213,9 @@ RSpec.describe Gitlab::Ci::Ansi2html do
     let(:section_start) { "section_start:#{section_start_time.to_i}:#{section_name}\r\033[0K" }
     let(:section_end) { "section_end:#{section_end_time.to_i}:#{section_name}\r\033[0K" }
     let(:section_start_html) do
-      '<div class="section-start"' \
-      " data-timestamp=\"#{section_start_time.to_i}\" data-section=\"#{class_name(section_name)}\"" \
-      ' role="button"></div>'
+      '<div class="section-start" ' \
+      "data-timestamp=\"#{section_start_time.to_i}\" data-section=\"#{class_name(section_name)}\" " \
+      'role="button"></div>'
     end
 
     let(:section_end_html) do

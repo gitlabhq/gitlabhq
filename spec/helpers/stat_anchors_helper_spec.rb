@@ -8,15 +8,11 @@ RSpec.describe StatAnchorsHelper do
   describe '#stat_anchor_attrs' do
     subject { helper.stat_anchor_attrs(anchor) }
 
-    before do
-      stub_feature_flags(project_overview_reorg: false)
-    end
-
     context 'when anchor is a link' do
       let(:anchor) { anchor_klass.new(true) }
 
       it 'returns the proper attributes' do
-        expect(subject[:class]).to include('stat-link')
+        expect(subject[:class]).to include('stat-link gl-px-0! gl-pb-2!')
       end
     end
 
@@ -25,7 +21,7 @@ RSpec.describe StatAnchorsHelper do
         let(:anchor) { anchor_klass.new(false, nil, nil, 'btn-default') }
 
         it 'returns the proper attributes' do
-          expect(subject[:class]).to include('btn-default')
+          expect(subject[:class]).to include('stat-link gl-px-0! gl-pb-2! btn-default')
         end
       end
 
@@ -33,7 +29,7 @@ RSpec.describe StatAnchorsHelper do
         let(:anchor) { anchor_klass.new(false) }
 
         it 'returns the proper attributes' do
-          expect(subject[:class]).to include('btn-dashed')
+          expect(subject[:class]).to include('stat-link gl-px-0! gl-pb-2! btn-link gl-text-blue-500!')
         end
       end
     end

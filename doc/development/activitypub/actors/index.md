@@ -15,8 +15,8 @@ FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available,
 an administrator can [enable the feature flags](../../../administration/feature_flags.md)
 named `activity_pub` and `activity_pub_project`.
-On GitLab.com, this feature is not available.
-The feature is not ready for production use.
+On GitLab.com and GitLab Dedicated, this feature is not available.
+This feature is not ready for production use.
 
 This feature requires two feature flags:
 
@@ -139,7 +139,7 @@ https://gitlab.com/user/project/-/releases#release-1
 - [Object types](https://www.w3.org/TR/activitystreams-vocabulary/#object-types)
 
 The properties you can use are all documented in
-[the ActivityStreams vocabulary document](https://www.w3.org/TR/activitystreams-vocabulary).
+[the ActivityStreams vocabulary document](https://www.w3.org/TR/activitystreams-vocabulary/).
 Given the type you have chosen for your resource, find the
 `properties` list, telling you all available properties, direct or
 inherited.

@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 class Projects::VariablesController < Projects::ApplicationController
-  before_action :authorize_admin_build!
+  before_action :authorize_admin_build!, except: :update
+  before_action :authorize_admin_cicd_variables!, only: :update
 
   feature_category :secrets_management
 

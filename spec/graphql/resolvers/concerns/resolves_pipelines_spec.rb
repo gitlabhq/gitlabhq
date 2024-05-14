@@ -17,7 +17,7 @@ RSpec.describe ResolvesPipelines do
 
   let_it_be(:current_user) { create(:user) }
 
-  let_it_be(:project) { create(:project, :private) }
+  let_it_be(:project) { create(:project, :private, developers: current_user) }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
   let_it_be(:failed_pipeline) { create(:ci_pipeline, :failed, project: project) }
   let_it_be(:success_pipeline) { create(:ci_pipeline, :success, project: project) }
@@ -33,10 +33,6 @@ RSpec.describe ResolvesPipelines do
       sha_pipeline,
       username_pipeline
     ]
-  end
-
-  before do
-    project.add_developer(current_user)
   end
 
   it { is_expected.to have_graphql_arguments(:status, :scope, :ref, :sha, :source, :updated_after, :updated_before, :username) }

@@ -6,7 +6,8 @@ RSpec.describe 'Query.note(id)', feature_category: :team_planning do
   include GraphqlHelpers
 
   let_it_be(:current_user) { create(:user) }
-  let_it_be(:project) { create(:project, :private) }
+  let_it_be(:reporter_user) { create(:user) }
+  let_it_be(:project) { create(:project, :private, reporters: reporter_user) }
   let_it_be(:issue) { create(:issue, project: project) }
   let_it_be(:note) { create(:note, noteable: issue, project: project) }
   let_it_be(:system_note) { create(:note, :system, noteable: issue, project: project) }
@@ -44,7 +45,7 @@ RSpec.describe 'Query.note(id)', feature_category: :team_planning do
   end
 
   context 'when the user has access to read the note' do
-    before do
+    before_all do
       project.add_guest(current_user)
     end
 
@@ -61,6 +62,40 @@ RSpec.describe 'Query.note(id)', feature_category: :team_planning do
         post_graphql(query, current_user: current_user)
 
         expect(note_data['id']).to eq(global_id_of(system_note).to_s)
+      end
+
+      context 'with issue_email_participants action' do
+        let_it_be(:email) { 'user@example.com' }
+        let_it_be(:note_text) { "added #{email}" }
+        let_it_be(:issue_email_participants_system_note) do
+          create(:note, :system,
+            project: project, noteable: issue, author: Users::Internal.support_bot, note: note_text)
+        end
+
+        let_it_be(:system_note_metadata) do
+          create(:system_note_metadata, note: issue_email_participants_system_note, action: :issue_email_participants)
+        end
+
+        let(:obfuscated_email) { 'us*****@e*****.c**' }
+        let(:note_params) { { 'id' => global_id_of(issue_email_participants_system_note) } }
+
+        it 'returns obfuscated email' do
+          post_graphql(query, current_user: current_user)
+
+          expect(note_data['id']).to eq(global_id_of(issue_email_participants_system_note).to_s)
+          expect(note_data['body']).to include(obfuscated_email)
+          expect(note_data['bodyHtml']).to include(obfuscated_email)
+        end
+
+        context 'when user has at least the reporter role in project' do
+          it 'returns email' do
+            post_graphql(query, current_user: reporter_user)
+
+            expect(note_data['id']).to eq(global_id_of(issue_email_participants_system_note).to_s)
+            expect(note_data['body']).to include(email)
+            expect(note_data['bodyHtml']).to include(email)
+          end
+        end
       end
     end
 

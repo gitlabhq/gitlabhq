@@ -255,7 +255,7 @@ export default {
           return this.createAndAssignId(d, 'uid', LINK_SELECTOR);
         })
         .classed(
-          `${LINK_SELECTOR} gl-transition-property-stroke-opacity ${this.$options.viewOptions.hoverFadeClasses}`,
+          `${LINK_SELECTOR} gl-transition-stroke-opacity ${this.$options.viewOptions.hoverFadeClasses}`,
           true,
         );
     },
@@ -270,7 +270,7 @@ export default {
         .enter()
         .append('line')
         .classed(
-          `${NODE_SELECTOR} gl-transition-property-stroke ${this.$options.viewOptions.hoverFadeClasses}`,
+          `${NODE_SELECTOR} gl-transition-stroke ${this.$options.viewOptions.hoverFadeClasses}`,
           true,
         )
         .attr('id', (d) => {

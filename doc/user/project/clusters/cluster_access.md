@@ -8,10 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
-
-> - Restricted service account for deployment was [introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/51716) in GitLab 11.5.
-> - [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
+**Offering:** GitLab.com, Self-managed
 
 WARNING:
 This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
@@ -59,10 +56,6 @@ GitLab creates the following resources for RBAC clusters.
 | Environment namespace | `ServiceAccount`     | Uses namespace of environment                                                                              | Deploying to a cluster |
 | Environment namespace | `Secret`             | Token for environment ServiceAccount                                                                       | Deploying to a cluster |
 | Environment namespace | `RoleBinding`        | [`admin`](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles) role            | Deploying to a cluster |
-
-The environment namespace `RoleBinding` was
-[updated](https://gitlab.com/gitlab-org/gitlab/-/issues/31113) in GitLab 13.6
-to `admin` role. Previously, the `edit` role was used.
 
 ## ABAC cluster resources
 

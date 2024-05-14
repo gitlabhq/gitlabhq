@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363084) for self-managed instances in GitLab 15.1.
 
@@ -26,7 +26,10 @@ For a demo of Group Sync using Azure, see [Demo: SAML Group Sync](https://youtu.
 
 SAML Group Sync only manages a group if that group has one or more SAML group links.
 
-You must configure the SAML group links before you configure SAML Group Sync.
+Prerequisites:
+
+- Self-managed GitLab instances must have configured [SAML Group Sync](#configure-saml-group-sync). GitLab.com
+  instances are already configured for SAML Group Sync, and require no extra configuration.
 
 When SAML is enabled, users with the Owner role see a new menu
 item in group **Settings > SAML Group Links**.
@@ -43,15 +46,10 @@ item in group **Settings > SAML Group Links**.
   - No other SAML group links configured, users remain in the group during sync.
     Those users must be manually removed from the group.
 
-Prerequisites:
-
-- Self-managed GitLab instances must have configured SAML Group Sync. GitLab.com
-  instances are already configured for SAML Group Sync, and require no extra configuration.
-
 To link the SAML groups:
 
 1. In **SAML Group Name**, enter the value of the relevant `saml:AttributeValue`. The value entered here must exactly match the value sent in the SAML response. For some IdPs, this may be a group ID or object ID (Azure AD) instead of a friendly group name.
-1. Choose the role in **Access Level**.
+1. Choose a [default role](../../permissions.md) or [custom role](../../custom_roles.md) in **Access Level**.
 1. Select **Save**.
 1. Repeat to add additional group links if required.
 
@@ -87,7 +85,7 @@ enabling Group Sync in GitLab.
 To configure SAML Group Sync for **self-managed GitLab instances**:
 
 1. Configure the [SAML OmniAuth Provider](../../../integration/saml.md).
-1. Ensure your SAML identity provider sends an attribute statement with the same name as the value of the `groups_attribute` setting. See the following attribute statement example for reference:
+1. Ensure your SAML identity provider sends an attribute statement with the same name as the value of the `groups_attribute` setting. See the following provider configuration example in `/etc/gitlab/gitlab.rb` for reference:
 
    ```ruby
    gitlab_rails['omniauth_providers'] = [
@@ -140,6 +138,14 @@ Microsoft has [announced](https://azure.microsoft.com/en-us/updates/azure-ad-is-
 
 Azure AD sends up to 150 groups in the groups claim. When users are members of more than 150 groups Azure AD sends a
 group overage claim attribute in the SAML response. Then group memberships must be obtained using the Microsoft Graph API.
+
+The [Graph API endpoint](https://learn.microsoft.com/en-us/graph/api/user-list-transitivememberof?view=graph-rest-1.0&tabs=http#http-request) supports only a
+[user object ID](https://learn.microsoft.com/en-us/partner-center/find-ids-and-domain-names#find-the-user-object-id) or
+[userPrincipalName](https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/plan-connect-userprincipalname#what-is-userprincipalname)
+as the [configured](../../../user/group/saml_sso/index.md#azure) Unique User Identifier (Name identifier) attribute. 
+
+When the integration processes Group Sync, only Group Links configured with
+group unique identifiers (like `12345678-9abc-def0-1234-56789abcde`) are supported.
 
 To integrate Microsoft Azure AD, you:
 
@@ -205,7 +211,7 @@ Then the GitLab Group membership is updated according to SAML Group Links.
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386390) in GitLab 15.10.
 
@@ -324,6 +330,6 @@ GitLab has a [Microsoft Azure Active Directory integration](#microsoft-azure-act
 with users in more than 150 groups. This integration uses the Microsoft Graph API to obtain all user memberships and is
 not limited to 150 groups.
 
-Otherwise, you can work around this issue by changing the [group claims](https://learn.microsoft.com/en-us/azure/active-directory/hybrid/connect/how-to-connect-fed-group-claims#configure-the-azure-ad-application-registration-for-group-attributes) to use the `Groups assigned to the application` option instead.
+Otherwise, you can work around this issue by changing the [group claims](https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/how-to-connect-fed-group-claims#configure-the-microsoft-entra-application-registration-for-group-attributes) to use the `Groups assigned to the application` option instead.
 
 ![Manage Group Claims](img/Azure-manage-group-claims.png).

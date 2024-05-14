@@ -46,6 +46,7 @@ class Label < ApplicationRecord
   scope :with_lists_and_board, -> { joins(lists: :board).merge(List.movable) }
   scope :with_lock_on_merge, -> { where(lock_on_merge: true) }
   scope :on_project_boards, ->(project_id) { with_lists_and_board.where(boards: { project_id: project_id }) }
+  scope :on_board, ->(board_id) { with_lists_and_board.where(boards: { id: board_id }) }
   scope :order_name_asc, -> { reorder(title: :asc) }
   scope :order_name_desc, -> { reorder(title: :desc) }
   scope :subscribed_by, ->(user_id) { joins(:subscriptions).where(subscriptions: { user_id: user_id, subscribed: true }) }
@@ -72,6 +73,32 @@ class Label < ApplicationRecord
       .merge(LabelLink.where(target: target_relation))
       .select(arel_table[Arel.star], LabelLink.arel_table[:target_id])
       .with_preloaded_container
+  end
+
+  scope :sorted_by_similarity_desc, -> (search) do
+    order_expression = Gitlab::Database::SimilarityScore.build_expression(
+      search: search,
+      rules: [
+        { column: arel_table["title"], multiplier: 1 },
+        { column: arel_table["description"], multiplier: 0.2 }
+      ])
+
+    order = Gitlab::Pagination::Keyset::Order.build(
+      [
+        Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+          attribute_name: 'similarity',
+          column_expression: order_expression,
+          order_expression: order_expression.desc,
+          order_direction: :desc,
+          add_to_projections: true
+        ),
+        Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+          attribute_name: 'id',
+          order_expression: Label.arel_table[:id].desc
+        )
+      ])
+
+    order.apply_cursor_conditions(reorder(order))
   end
 
   def self.pluck_titles
@@ -149,6 +176,10 @@ class Label < ApplicationRecord
 
   def self.link_reference_pattern
     nil
+  end
+
+  def self.ids_on_board(board_id)
+    on_board(board_id).pluck(:label_id)
   end
 
   # Searches for labels with a matching title or description.
@@ -276,7 +307,20 @@ class Label < ApplicationRecord
   end
 
   def hook_attrs
-    attributes
+    return attributes unless Feature.enabled?(:webhooks_static_label_hook_attrs, Group.actor_from_id(group_id))
+
+    {
+      id: id,
+      title: title,
+      color: color,
+      project_id: project_id,
+      created_at: created_at,
+      updated_at: updated_at,
+      template: template,
+      description: description,
+      type: type,
+      group_id: group_id
+    }
   end
 
   def present(attributes = {})
@@ -303,7 +347,7 @@ class Label < ApplicationRecord
   def label_format_reference(format = :id)
     raise StandardError, 'Unknown format' unless [:id, :name].include?(format)
 
-    if format == :name && !name.include?('"')
+    if format == :name && name.exclude?('"')
       %("#{name}")
     else
       id

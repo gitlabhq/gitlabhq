@@ -2,13 +2,14 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: "Protected branches in GitLab restrict who can push to, merge, or modify a Git branch."
 ---
 
 # Protected branches
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 In GitLab, [permissions](../permissions.md) are fundamentally defined around the
 idea of having read or write permission to the repository and branches. To impose
@@ -123,7 +124,7 @@ The protected branch displays in the list of protected branches.
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** Self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106532) in GitLab 15.9 [with a flag](../../administration/feature_flags.md) named `group_protected_branches`. Disabled by default.
 
@@ -131,7 +132,7 @@ FLAG:
 On self-managed GitLab, by default this feature is not available.
 To make it available, an administrator can
 [enable the feature flag](../../administration/feature_flags.md)
-named `group_protected_branches`. On GitLab.com, this feature is not available.
+named `group_protected_branches`. On GitLab.com and GitLab Dedicated, this feature is not available.
 
 Group owners can create protected branches for a group. These settings are inherited
 by all projects in the group and can't be overridden by project settings. If a
@@ -241,10 +242,6 @@ You can allow everyone with write access to push to the protected branch.
 
 ## Allow deploy keys to push to a protected branch
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30769) in GitLab 13.7.
-> - This feature was selectively deployed in GitLab.com 13.7, and may not be available for all users.
-> - This feature is available for all users in GitLab 13.9.
-
 You can permit the owner of a [deploy key](deploy_keys/index.md) to push to a protected branch.
 The deploy key works, even if the user isn't a member of the related project. However, the owner of the deploy
 key must have at least read access to the project.
@@ -271,9 +268,6 @@ To allow a deploy key to push to a protected branch:
 Deploy keys are not available in the **Allowed to merge** dropdown list.
 
 ## Allow force push on a protected branch
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15611) in GitLab 13.10 [with a flag](../../administration/feature_flags.md) named `allow_force_push_to_protected_branches`. Disabled by default.
-> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/323431) in GitLab 14.0. Feature flag `allow_force_push_to_protected_branches` removed.
 
 You can allow [force pushes](../../topics/git/git_rebase.md#force-pushing) to
 protected branches.
@@ -327,9 +321,7 @@ if the `group_protected_branches` feature flag is enabled and a group owner has 
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35097) in GitLab 13.5, users and groups who can push to protected branches do not have to use a merge request to merge their feature branches. This means they can skip merge request approval rules.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 For a protected branch, you can require at least one approval by a [Code Owner](codeowners/index.md).
 If a branch is protected by multiple rules, code owner approval is required if _any_ of

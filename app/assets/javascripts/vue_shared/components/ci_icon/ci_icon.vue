@@ -1,5 +1,6 @@
 <script>
 import { GlBadge, GlTooltipDirective, GlIcon } from '@gitlab/ui';
+import { sprintf, __ } from '~/locale';
 
 /**
  * Renders CI icon based on API response shared between all places where it is used.
@@ -10,6 +11,9 @@ import { GlBadge, GlTooltipDirective, GlIcon } from '@gitlab/ui';
  *   text: "Running",
  *   detailsPath: '/project1/jobs/1' // can also be details_path
  * }
+ *
+ * You may use ~/graphql_shared/fragments/ci_icon.fragment.graphql to fetch this
+ * from the GraphQL API.
  *
  */
 
@@ -55,11 +59,7 @@ export default {
       return null;
     },
     ariaLabel() {
-      // show aria-label only when text is not rendered
-      if (!this.showStatusText) {
-        return this.status?.text;
-      }
-      return null;
+      return sprintf(__('Status: %{status}'), { status: this.status?.text });
     },
     href() {
       // href can come from GraphQL (camelCase) or REST API (snake_case)
@@ -96,7 +96,7 @@ export default {
 </script>
 <template>
   <gl-badge
-    v-gl-tooltip
+    v-gl-tooltip.viewport.left
     class="ci-icon gl-p-2"
     :class="`ci-icon-variant-${variant}`"
     :variant="variant"
@@ -108,7 +108,7 @@ export default {
     @click="$emit('ciStatusBadgeClick')"
   >
     <span class="ci-icon-gl-icon-wrapper"><gl-icon :name="icon" /></span
-    ><span v-if="showStatusText" class="gl-mx-2 gl-white-space-nowrap" data-testid="ci-icon-text">{{
+    ><span v-if="showStatusText" class="gl-mx-2 gl-whitespace-nowrap" data-testid="ci-icon-text">{{
       status.text
     }}</span>
   </gl-badge>

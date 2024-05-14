@@ -18,6 +18,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
     create(
       :merge_request,
       :simple,
+      :unchanged,
       title: 'Old title',
       description: "FYI #{user2.to_reference}",
       assignee_ids: [user3.id],
@@ -284,24 +285,6 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
         end
       end
 
-      it 'executes hooks with update action' do
-        expect(service).to have_received(:execute_hooks)
-          .with(
-            @merge_request,
-            'update',
-            old_associations: {
-              labels: [],
-              mentioned_users: [user2],
-              assignees: [user3],
-              reviewers: [],
-              milestone: nil,
-              total_time_spent: 0,
-              time_change: 0,
-              description: "FYI #{user2.to_reference}"
-            }
-          )
-      end
-
       context 'with reviewers' do
         let(:opts) { { reviewer_ids: [user2.id] } }
 
@@ -552,8 +535,13 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
             head_pipeline_of: merge_request
           )
 
-          strategies_count = Gitlab.ee? ? :twice : :once
-          expect(AutoMerge::MergeWhenPipelineSucceedsService).to receive(:new).exactly(strategies_count).with(project, user, { sha: merge_request.diff_head_sha })
+          expected_class = if Gitlab.ee?
+                             AutoMerge::MergeWhenChecksPassService
+                           else
+                             AutoMerge::MergeWhenPipelineSucceedsService
+                           end
+
+          expect(expected_class).to receive(:new).with(project, user, { sha: merge_request.diff_head_sha })
             .and_return(service_mock)
           allow(service_mock).to receive(:available_for?) { true }
           expect(service_mock).to receive(:execute).with(merge_request)
@@ -1086,26 +1074,38 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
       let(:first_issue) { create(:issue, project: project) }
       let(:second_issue) { create(:issue, project: project) }
 
-      it 'creates a `MergeRequestsClosingIssues` record for each issue' do
+      it 'creates a `MergeRequestsClosingIssues` record marked as closes_work_item for each issue' do
         issue_closing_opts = { description: "Closes #{first_issue.to_reference} and #{second_issue.to_reference}" }
         service = described_class.new(project: project, current_user: user, params: issue_closing_opts)
         allow(service).to receive(:execute_hooks)
-        service.execute(merge_request)
 
-        issue_ids = MergeRequestsClosingIssues.where(merge_request: merge_request).pluck(:issue_id)
-        expect(issue_ids).to match_array([first_issue.id, second_issue.id])
+        expect do
+          service.execute(merge_request)
+        end.to change { MergeRequestsClosingIssues.count }.by(2)
+
+        expect(MergeRequestsClosingIssues.where(merge_request: merge_request)).to contain_exactly(
+          have_attributes(issue_id: first_issue.id, closes_work_item: true),
+          have_attributes(issue_id: second_issue.id, closes_work_item: true)
+        )
       end
 
-      it 'removes `MergeRequestsClosingIssues` records when issues are not closed anymore' do
+      it 'removes `MergeRequestsClosingIssues` records marked as closes_work_item' do
         create(:merge_requests_closing_issues, issue: first_issue, merge_request: merge_request)
         create(:merge_requests_closing_issues, issue: second_issue, merge_request: merge_request)
+        create(
+          :merge_requests_closing_issues,
+          issue: second_issue,
+          merge_request: merge_request,
+          closes_work_item: false
+        )
 
         service = described_class.new(project: project, current_user: user, params: { description: "not closing any issues" })
         allow(service).to receive(:execute_hooks)
-        service.execute(merge_request.reload)
 
-        issue_ids = MergeRequestsClosingIssues.where(merge_request: merge_request).pluck(:issue_id)
-        expect(issue_ids).to be_empty
+        # Does not delete the one marked as closes_work_item: false
+        expect do
+          service.execute(merge_request.reload)
+        end.to change { MergeRequestsClosingIssues.count }.from(3).to(1)
       end
     end
 
@@ -1238,7 +1238,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
 
     it_behaves_like 'issuable update service' do
       let(:open_issuable) { merge_request }
-      let(:closed_issuable) { create(:closed_merge_request, source_project: project) }
+      let(:closed_issuable) { create(:closed_merge_request, :unchanged, source_project: project) }
     end
 
     context 'setting `allow_collaboration`' do
@@ -1255,7 +1255,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
       end
 
       before do
-        allow(ProtectedBranch).to receive(:protected?).with(source_project, 'fixes') { false }
+        allow(ProtectedBranch).to receive(:protected?).and_return(false)
       end
 
       it 'does not allow a maintainer of the target project to set `allow_collaboration`' do

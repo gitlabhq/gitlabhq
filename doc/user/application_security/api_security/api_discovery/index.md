@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, Self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9302) in GitLab 15.9. The API Discovery feature is in [Beta](../../../../policy/experiment-beta-support.md).
 
@@ -32,7 +32,7 @@ The following projects demonstrate API Discovery:
 
 ## Java Spring-Boot
 
-[Spring Boot](https://spring.io/projects/spring-boot) is a popular framework for creating stand-alone, production-grade Spring-based applications.
+[Spring Boot](https://spring.io/projects/spring-boot/) is a popular framework for creating stand-alone, production-grade Spring-based applications.
 
 ### Supported Applications
 

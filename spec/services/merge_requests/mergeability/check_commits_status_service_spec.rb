@@ -19,39 +19,27 @@ RSpec.describe MergeRequests::Mergeability::CheckCommitsStatusService, feature_c
       allow(merge_request).to receive(:branch_missing?).and_return(branch_missing)
     end
 
-    context 'when switch_broken_status is true' do
-      context 'when the merge request branch is missing' do
-        let(:branch_missing) { true }
+    context 'when the merge request branch is missing' do
+      let(:branch_missing) { true }
 
-        it 'returns a check result with status failed' do
-          expect(result.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::FAILED_STATUS
-          expect(result.payload[:identifier]).to eq(:commits_status)
-        end
-      end
-
-      context 'when the merge request has no commits' do
-        let(:has_no_commits) { true }
-
-        it 'returns a check result with status failed' do
-          expect(result.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::FAILED_STATUS
-          expect(result.payload[:identifier]).to eq(:commits_status)
-        end
-      end
-
-      context 'when the merge request contains commits' do
-        it 'returns a check result with status success' do
-          expect(result.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::SUCCESS_STATUS
-        end
+      it 'returns a check result with status failed' do
+        expect(result.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::FAILED_STATUS
+        expect(result.payload[:identifier]).to eq(:commits_status)
       end
     end
 
-    context 'when switch_broken_status is false' do
-      before do
-        stub_feature_flags(switch_broken_status: false)
-      end
+    context 'when the merge request has no commits' do
+      let(:has_no_commits) { true }
 
-      it 'returns a check result with inactive status' do
-        expect(result.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::INACTIVE_STATUS
+      it 'returns a check result with status failed' do
+        expect(result.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::FAILED_STATUS
+        expect(result.payload[:identifier]).to eq(:commits_status)
+      end
+    end
+
+    context 'when the merge request contains commits' do
+      it 'returns a check result with status success' do
+        expect(result.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::SUCCESS_STATUS
       end
     end
   end

@@ -33,7 +33,7 @@ class Packages::Conan::Metadatum < ApplicationRecord
 
   def self.validate_username_and_channel(username, channel)
     return if (username != NONE_VALUE && channel != NONE_VALUE) ||
-              (username == NONE_VALUE && channel == NONE_VALUE)
+      (username == NONE_VALUE && channel == NONE_VALUE)
 
     none_field = username == NONE_VALUE ? :username : :channel
 

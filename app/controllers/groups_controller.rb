@@ -2,6 +2,7 @@
 
 class GroupsController < Groups::ApplicationController
   include API::Helpers::RelatedResourcesHelpers
+  include Groups::Params
   include IssuableCollectionsAction
   include ParamsBackwardCompatibility
   include PreviewMarkdown
@@ -21,7 +22,9 @@ class GroupsController < Groups::ApplicationController
   before_action :group, except: [:index, :new, :create]
 
   # Authorize
-  before_action :authorize_admin_group!, only: [:edit, :update, :destroy, :projects, :transfer, :export, :download_export]
+  before_action :authorize_admin_group!, only: [:update, :projects, :transfer, :export, :download_export]
+  before_action :authorize_view_edit_page!, only: :edit
+  before_action :authorize_remove_group!, only: :destroy
   before_action :authorize_create_group!, only: [:new]
   before_action :load_recaptcha, only: [:new], if: -> { captcha_required? }
 
@@ -36,16 +39,14 @@ class GroupsController < Groups::ApplicationController
     push_frontend_feature_flag(:or_issuable_queries, group)
     push_frontend_feature_flag(:frontend_caching, group)
     push_force_frontend_feature_flag(:work_items, group.work_items_feature_flag_enabled?)
-    push_force_frontend_feature_flag(:work_items_mvc, group.work_items_mvc_feature_flag_enabled?)
+    push_force_frontend_feature_flag(:work_items_beta, group.work_items_beta_feature_flag_enabled?)
     push_force_frontend_feature_flag(:work_items_mvc_2, group.work_items_mvc_2_feature_flag_enabled?)
-    push_force_frontend_feature_flag(:linked_work_items, group.linked_work_items_feature_flag_enabled?)
     push_frontend_feature_flag(:issues_grid_view)
     push_frontend_feature_flag(:group_multi_select_tokens, group)
   end
 
   before_action only: :merge_requests do
     push_frontend_feature_flag(:mr_approved_filter, type: :ops)
-    push_frontend_feature_flag(:mr_merge_user_filter, type: :development)
   end
 
   helper_method :captcha_required?
@@ -83,9 +84,13 @@ class GroupsController < Groups::ApplicationController
   end
 
   def create
-    @group = Groups::CreateService.new(current_user, group_params).execute
+    response = Groups::CreateService.new(
+      current_user,
+      group_params.merge(organization_id: Current.organization_id)
+    ).execute
+    @group = response[:group]
 
-    if @group.persisted?
+    if response.success?
       successful_creation_hooks
 
       notice = if @group.chat_team.present?
@@ -272,6 +277,7 @@ class GroupsController < Groups::ApplicationController
   end
 
   def group_params
+    normalize_default_branch_params!(:group)
     params.require(:group).permit(group_params_attributes)
   end
 
@@ -299,7 +305,15 @@ class GroupsController < Groups::ApplicationController
       :project_creation_level,
       :subgroup_creation_level,
       :default_branch_protection,
-      { default_branch_protection_defaults: [:allow_force_push, { allowed_to_merge: [:access_level], allowed_to_push: [:access_level] }] },
+      { default_branch_protection_defaults: [
+        :allow_force_push,
+        :developer_can_initial_push,
+        :code_owner_approval_required,
+        {
+          allowed_to_merge: [:access_level],
+          allowed_to_push: [:access_level]
+        }
+      ] },
       :default_branch_name,
       :allow_mfa_for_subgroups,
       :resource_access_token_creation_allowed,
@@ -332,9 +346,7 @@ class GroupsController < Groups::ApplicationController
   # rubocop: enable CodeReuse/ActiveRecord
 
   def user_actions
-    if current_user
-      @notification_setting = current_user.notification_settings_for(group)
-    end
+    @notification_setting = current_user.notification_settings_for(group) if current_user
   end
 
   def build_canonical_path(group)
@@ -379,14 +391,16 @@ class GroupsController < Groups::ApplicationController
 
   def update_user_role_and_setup_for_company
     user_params = params.fetch(:user, {}).permit(:role)
-    user_params[:setup_for_company] = @group.setup_for_company if !@group.setup_for_company.nil? && current_user.setup_for_company.nil?
+
+    if !@group.setup_for_company.nil? && current_user.setup_for_company.nil?
+      user_params[:setup_for_company] = @group.setup_for_company
+    end
+
     Users::UpdateService.new(current_user, user_params.merge(user: current_user)).execute if user_params.present?
   end
 
   def groups
-    if @group.supports_events?
-      @group.self_and_descendants.public_or_visible_to_user(current_user)
-    end
+    @group.self_and_descendants.public_or_visible_to_user(current_user) if @group.supports_events?
   end
 
   override :resource_parent
@@ -405,10 +419,6 @@ class GroupsController < Groups::ApplicationController
 
   def captcha_required?
     captcha_enabled? && !params[:parent_id]
-  end
-
-  def group_feature_attributes
-    []
   end
 end
 

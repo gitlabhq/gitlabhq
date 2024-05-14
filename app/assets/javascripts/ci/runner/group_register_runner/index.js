@@ -15,7 +15,7 @@ export const initGroupRegisterRunner = (selector = '#js-group-register-runner') 
     return null;
   }
 
-  const { runnerId, runnersPath } = el.dataset;
+  const { runnerId, runnersPath, groupPath } = el.dataset;
 
   const apolloProvider = new VueApollo({
     defaultClient: createDefaultClient(),
@@ -29,6 +29,7 @@ export const initGroupRegisterRunner = (selector = '#js-group-register-runner') 
         props: {
           runnerId,
           runnersPath,
+          groupPath,
         },
       });
     },

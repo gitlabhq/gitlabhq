@@ -7,28 +7,32 @@ module Resolvers
     alias_method :target, :object
 
     argument :action, [Types::TodoActionEnum],
-             required: false,
-             description: 'Action to be filtered.'
+      required: false,
+      description: 'Action to be filtered.'
 
     argument :author_id, [GraphQL::Types::ID],
-             required: false,
-             description: 'ID of an author.'
+      required: false,
+      description: 'ID of an author.'
 
     argument :project_id, [GraphQL::Types::ID],
-             required: false,
-             description: 'ID of a project.'
+      required: false,
+      description: 'ID of a project.'
 
     argument :group_id, [GraphQL::Types::ID],
-             required: false,
-             description: 'ID of a group.'
+      required: false,
+      description: 'ID of a group.'
 
     argument :state, [Types::TodoStateEnum],
-             required: false,
-             description: 'State of the todo.'
+      required: false,
+      description: 'State of the todo.'
 
     argument :type, [Types::TodoTargetEnum],
-             required: false,
-             description: 'Type of the todo.'
+      required: false,
+      description: 'Type of the todo.'
+
+    argument :sort, Types::TodoSortEnum,
+      required: false,
+      description: 'Sort todos by given criteria.'
 
     before_connection_authorization do |nodes, current_user|
       Preloaders::UserMaxAccessLevelInProjectsPreloader.new(
@@ -53,7 +57,8 @@ module Resolvers
         group_id: args[:group_id],
         author_id: args[:author_id],
         action_id: args[:action],
-        project_id: args[:project_id]
+        project_id: args[:project_id],
+        sort: args[:sort]
       }.merge(target_params)
     end
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::IndexHelpers do
+RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::IndexHelpers, feature_category: :database do
   include Database::TableSchemaHelpers
 
   let(:migration) do
@@ -11,18 +11,23 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::IndexHelpers do
 
   let(:table_name) { '_test_partitioned_table' }
   let(:column_name) { 'created_at' }
+  let(:second_column_name) { 'updated_at' }
   let(:index_name) { '_test_partitioning_index_name' }
+  let(:second_index_name) { '_test_second_partitioning_index_name' }
   let(:partition_schema) { 'gitlab_partitions_dynamic' }
   let(:partition1_identifier) { "#{partition_schema}.#{table_name}_202001" }
   let(:partition2_identifier) { "#{partition_schema}.#{table_name}_202002" }
   let(:partition1_index) { "index_#{table_name}_202001_#{column_name}" }
   let(:partition2_index) { "index_#{table_name}_202002_#{column_name}" }
+  let(:second_partition1_index) { "index_#{table_name}_202001_#{second_column_name}" }
+  let(:second_partition2_index) { "index_#{table_name}_202002_#{second_column_name}" }
 
   before do
     allow(migration).to receive(:puts)
     allow(migration).to receive(:transaction_open?).and_return(false)
 
     connection.execute(<<~SQL)
+      DROP TABLE IF EXISTS #{table_name};
       CREATE TABLE #{table_name} (
         id serial NOT NULL,
         created_at timestamptz NOT NULL,
@@ -30,9 +35,11 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::IndexHelpers do
         PRIMARY KEY (id, created_at)
       ) PARTITION BY RANGE (created_at);
 
+      DROP TABLE IF EXISTS #{partition1_identifier};
       CREATE TABLE #{partition1_identifier} PARTITION OF #{table_name}
       FOR VALUES FROM ('2020-01-01') TO ('2020-02-01');
 
+      DROP TABLE IF EXISTS #{partition2_identifier};
       CREATE TABLE #{partition2_identifier} PARTITION OF #{table_name}
       FOR VALUES FROM ('2020-02-01') TO ('2020-03-01');
     SQL
@@ -397,5 +404,159 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::IndexHelpers do
         expect_index_to_exist(generated_index_name)
       end
     end
+  end
+
+  shared_examples 'raising undefined object error' do
+    specify do
+      expect { execute }.to raise_error(
+        ArgumentError,
+        /Could not find index for _test_partitioned_table/
+      )
+    end
+  end
+
+  describe '#rename_partitioned_index' do
+    subject(:execute) { migration.rename_partitioned_index(table_name, old_index_name, new_index_name) }
+
+    let(:old_index_name) { index_name }
+    let(:new_index_name) { :_test_partitioning_index_name_new }
+
+    before do
+      allow(migration.connection).to receive(:transaction_open?).and_return(false)
+    end
+
+    context 'when old index exists' do
+      before do
+        create_old_partitioned_index
+      end
+
+      context 'when new index does not exists' do
+        it 'renames the old index into the new name' do
+          expect { execute }
+            .to change { index_by_name(table_name, old_index_name) }.from(be_present).to(nil)
+            .and change { index_by_name(partition1_identifier, old_index_name, partitioned_table: table_name) }
+            .from(be_present).to(nil)
+            .and change { index_by_name(partition2_identifier, old_index_name, partitioned_table: table_name) }
+            .from(be_present).to(nil)
+            .and change { index_by_name(table_name, new_index_name) }.from(nil).to(be_present)
+            .and change { index_by_name(partition1_identifier, new_index_name, partitioned_table: table_name) }
+            .from(nil).to(be_present)
+            .and change { index_by_name(partition2_identifier, new_index_name, partitioned_table: table_name) }
+            .from(nil).to(be_present)
+        end
+      end
+
+      context 'when new index exists' do
+        before do
+          create_new_partitioned_index
+        end
+
+        it 'raises duplicate table error' do
+          expect { execute }.to raise_error(
+            ActiveRecord::StatementInvalid,
+            /PG::DuplicateTable: ERROR: .*"#{new_index_name}".* exists/
+          )
+        end
+      end
+    end
+
+    context 'when old index does not exist' do
+      context 'when new index does not exists' do
+        it_behaves_like 'raising undefined object error'
+      end
+
+      context 'when new index exists' do
+        before do
+          connection.execute(<<~SQL)
+            CREATE INDEX #{second_partition1_index} ON #{partition1_identifier} (#{second_column_name});
+            CREATE INDEX #{second_partition2_index} ON #{partition2_identifier} (#{second_column_name});
+
+            CREATE INDEX #{new_index_name} ON #{table_name} (#{second_column_name});
+          SQL
+        end
+
+        it_behaves_like 'raising undefined object error'
+      end
+    end
+  end
+
+  describe '#swap_partitioned_indexes' do
+    subject(:execute) { migration.swap_partitioned_indexes(table_name, old_index_name, new_index_name) }
+
+    let(:old_index_name) { index_name }
+    let(:new_index_name) { :_test_partitioning_index_name_new }
+
+    before do
+      allow(migration.connection).to receive(:transaction_open?).and_return(false)
+    end
+
+    context 'when old index exists' do
+      before do
+        create_old_partitioned_index
+      end
+
+      context 'when new index does not exists' do
+        it_behaves_like 'raising undefined object error'
+      end
+
+      context 'when new index exists' do
+        before do
+          create_new_partitioned_index
+        end
+
+        it 'swaps indexs' do
+          expect { execute }
+            .to change { index_by_name(table_name, old_index_name).columns }
+            .from(match_array(column_name)).to(match_array(second_column_name))
+            .and change { index_by_name(partition1_identifier, old_index_name, partitioned_table: table_name).columns }
+            .from(match_array(column_name)).to(match_array(second_column_name))
+            .and change { index_by_name(partition2_identifier, old_index_name, partitioned_table: table_name).columns }
+            .from(match_array(column_name)).to(match_array(second_column_name))
+            .and change { index_by_name(table_name, new_index_name).columns }
+            .from(match_array(second_column_name)).to(match_array(column_name))
+            .and change { index_by_name(partition1_identifier, new_index_name, partitioned_table: table_name).columns }
+            .from(match_array(second_column_name)).to(match_array(column_name))
+            .and change { index_by_name(partition2_identifier, new_index_name, partitioned_table: table_name).columns }
+            .from(match_array(second_column_name)).to(match_array(column_name))
+        end
+      end
+    end
+
+    context 'when old index does not exist' do
+      context 'when new index does not exists' do
+        it_behaves_like 'raising undefined object error'
+      end
+
+      context 'when new index exists' do
+        before do
+          connection.execute(<<~SQL)
+            CREATE INDEX #{second_partition1_index} ON #{partition1_identifier} (#{second_column_name});
+            CREATE INDEX #{second_partition2_index} ON #{partition2_identifier} (#{second_column_name});
+
+            CREATE INDEX #{new_index_name} ON #{table_name} (#{second_column_name});
+          SQL
+        end
+
+        it_behaves_like 'raising undefined object error'
+      end
+    end
+  end
+
+  def create_old_partitioned_index
+    connection.execute(<<~SQL)
+      CREATE INDEX #{partition1_index} ON #{partition1_identifier} (#{column_name});
+      CREATE INDEX #{partition2_index} ON #{partition2_identifier} (#{column_name});
+
+      CREATE INDEX #{old_index_name} ON #{table_name} (#{column_name});
+    SQL
+  end
+
+  def create_new_partitioned_index
+    connection.execute(<<~SQL)
+      CREATE INDEX #{second_partition1_index} ON #{partition1_identifier} (#{second_column_name});
+      CREATE INDEX #{second_partition2_index} ON #{partition2_identifier} (#{second_column_name});
+
+      CREATE INDEX #{new_index_name} ON #{table_name} (#{second_column_name});
+    SQL
   end
 end

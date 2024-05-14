@@ -28,11 +28,6 @@ export default {
       default: PAGE_SIZE,
       required: false,
     },
-    rowClickable: {
-      type: Boolean,
-      default: true,
-      required: false,
-    },
   },
   data() {
     return {
@@ -48,9 +43,6 @@ export default {
         };
       });
     },
-    tableRowClass() {
-      return this.rowClickable ? 'gl-hover-cursor-pointer' : '';
-    },
   },
   methods: {
     selectItem(item) {
@@ -58,6 +50,8 @@ export default {
 
       if (selectedItem) {
         this.$emit('select-item', selectedItem);
+      } else {
+        this.$emit('remove-selection');
       }
     },
   },
@@ -76,10 +70,8 @@ export default {
       :per-page="pageSize"
       :current-page="currentPage"
       :empty-text="$options.i18n.emptyText"
-      :tbody-tr-class="tableRowClass"
-      :hover="rowClickable"
-      :selectable="rowClickable"
-      :no-select-on-click="!rowClickable"
+      hover
+      selectable
       select-mode="single"
       selected-variant="primary"
       show-empty

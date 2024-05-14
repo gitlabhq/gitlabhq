@@ -7,19 +7,8 @@ module QA
       let(:changed_content) { 'changes' }
       let(:commit_message) { 'Changes to snippets' }
       let(:added_content) { 'updated ' }
-
-      let(:snippet) do
-        Resource::Snippet.fabricate! do |snippet|
-          snippet.file_name = new_file
-        end
-      end
-
-      let(:ssh_key) do
-        Resource::SSHKey.fabricate_via_api! do |resource|
-          resource.title = "my key title #{Time.now.to_f}"
-        end
-      end
-
+      let(:snippet) { create(:snippet, file_name: new_file) }
+      let(:ssh_key) { create(:ssh_key, title: "my key title #{Time.now.to_f}") }
       let(:repository_uri_http) do
         snippet.visit!
         Page::Dashboard::Snippet::Show.perform(&:get_repository_uri_http)
@@ -39,7 +28,7 @@ module QA
         ssh_key.remove_via_api!
       end
 
-      it 'clones, pushes, and pulls a snippet over HTTP, edits via UI', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347793' do
+      it 'clones, pushes, and pulls a snippet over HTTP, edits via UI', :blocking, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347793' do
         push = Resource::Repository::Push.fabricate! do |push|
           push.repository_http_uri = repository_uri_http
           push.file_name = new_file
@@ -70,7 +59,7 @@ module QA
         snippet.remove_via_api!
       end
 
-      it 'clones, pushes, and pulls a snippet over SSH, deletes via UI', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347792' do
+      it 'clones, pushes, and pulls a snippet over SSH, deletes via UI', :blocking, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347792' do
         push = Resource::Repository::Push.fabricate! do |push|
           push.repository_ssh_uri = repository_uri_ssh
           push.ssh_key = ssh_key

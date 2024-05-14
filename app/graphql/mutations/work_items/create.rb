@@ -16,6 +16,9 @@ module Mutations
       MUTUALLY_EXCLUSIVE_ARGUMENTS_ERROR = 'Please provide either projectPath or namespacePath argument, but not both.'
       DISABLED_FF_ERROR = 'namespace_level_work_items feature flag is disabled. Only project paths allowed.'
 
+      argument :assignees_widget, ::Types::WorkItems::Widgets::AssigneesInputType,
+               required: false,
+               description: 'Input for assignees widget.'
       argument :confidential, GraphQL::Types::Boolean,
                required: false,
                description: 'Sets the work item confidentiality.'
@@ -29,6 +32,9 @@ module Mutations
       argument :hierarchy_widget, ::Types::WorkItems::Widgets::HierarchyCreateInputType,
                required: false,
                description: 'Input for hierarchy widget.'
+      argument :labels_widget, ::Types::WorkItems::Widgets::LabelsCreateInputType,
+               required: false,
+               description: 'Input for labels widget.'
       argument :milestone_widget, ::Types::WorkItems::Widgets::MilestoneInputType,
                required: false,
                description: 'Input for milestone widget.'

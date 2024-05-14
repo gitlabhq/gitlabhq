@@ -247,7 +247,7 @@ export default {
           :aria-label="mediaCanonicalSrc"
           :title="mediaCanonicalSrc"
           target="_blank"
-          class="gl-px-3 gl-overflow-hidden gl-white-space-nowrap gl-text-overflow-ellipsis"
+          class="gl-px-3 gl-overflow-hidden gl-whitespace-nowrap gl-text-overflow-ellipsis"
         >
           {{ mediaCanonicalSrc }}
         </gl-link>

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Profile > GPG Keys', feature_category: :user_profile do
+RSpec.describe 'User Settings > GPG Keys', feature_category: :user_profile do
   let(:user) { create(:user, email: GpgHelpers::User2.emails.first) }
 
   before do
@@ -11,7 +11,7 @@ RSpec.describe 'Profile > GPG Keys', feature_category: :user_profile do
 
   describe 'User adds a key' do
     before do
-      visit profile_gpg_keys_path
+      visit user_settings_gpg_keys_path
     end
 
     it 'saves the new key' do
@@ -40,7 +40,7 @@ RSpec.describe 'Profile > GPG Keys', feature_category: :user_profile do
 
   it 'user sees their key' do
     gpg_key = create(:gpg_key, user: user, key: GpgHelpers::User2.public_key)
-    visit profile_gpg_keys_path
+    visit user_settings_gpg_keys_path
 
     expect(page).to have_content('bette.cartwright@example.com Verified')
     expect(page).to have_content('bette.cartwright@example.net Unverified')
@@ -50,7 +50,7 @@ RSpec.describe 'Profile > GPG Keys', feature_category: :user_profile do
 
   it 'user removes a key via the key index' do
     create(:gpg_key, user: user, key: GpgHelpers::User2.public_key)
-    visit profile_gpg_keys_path
+    visit user_settings_gpg_keys_path
 
     click_link('Remove')
 
@@ -64,7 +64,7 @@ RSpec.describe 'Profile > GPG Keys', feature_category: :user_profile do
     gpg_key = create :gpg_key, user: user, key: GpgHelpers::User2.public_key
     gpg_signature = create :gpg_signature, gpg_key: gpg_key, verification_status: :verified
 
-    visit profile_gpg_keys_path
+    visit user_settings_gpg_keys_path
 
     click_link('Revoke')
 
@@ -77,5 +77,34 @@ RSpec.describe 'Profile > GPG Keys', feature_category: :user_profile do
       verification_status: 'unknown_key',
       gpg_key: nil
     )
+  end
+
+  context 'when external verification is required' do
+    let!(:beyond_identity_integration) { create(:beyond_identity_integration) }
+    let!(:gpg_key) do
+      create :gpg_key, externally_verified: externally_verified, user: user, key: GpgHelpers::User2.public_key
+    end
+
+    before do
+      visit user_settings_gpg_keys_path
+    end
+
+    context 'and user has a key that is externally verified' do
+      let(:externally_verified) { true }
+
+      it 'considers the key Verified' do
+        expect(page).to have_content('bette.cartwright@example.com Verified')
+      end
+    end
+
+    context 'and user has a key that is not externally verified' do
+      let(:externally_verified) { false }
+
+      it 'considers the key Unverified' do
+        expect(page).not_to have_content('bette.cartwright@example.com')
+        expect(page).not_to have_content('Verified')
+        expect(page).not_to have_content('Unverified')
+      end
+    end
   end
 end

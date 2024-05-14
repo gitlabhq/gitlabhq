@@ -2,7 +2,7 @@
 stage: Manage
 group: Foundations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: Data Seeder test data harness created by the Test Data Working Group https://about.gitlab.com/company/team/structure/working-groups/demo-test-data/
+description: Data Seeder test data harness created by the Test Data Working Group https://handbook.gitlab.com/handbook/company/working-groups/demo-test-data/
 ---
 
 # GitLab Data Seeder
@@ -56,7 +56,7 @@ $ docker exec gitlab cat /etc/gitlab/initial_root_password
 
 _If you receive `cat: /etc/gitlab/initialize_root_password: No such file or directory`, please wait for a bit for GitLab to boot and try again._
 
-You can then sign into `http://localhost:8080/users/sign_in` using the credentials: `root / <Password taken from initial_root_password>`
+You can then sign in to `http://localhost:8080/users/sign_in` using the credentials: `root / <Password taken from initial_root_password>`
 
 ### Import the test resources
 
@@ -264,7 +264,12 @@ my_iteration = create(:iteration, :with_title, :current, title: 'My Iteration', 
 
 ### Frequently encountered issues
 
-#### ActiveRecord::RecordInvalid: Validation failed: Email has already been taken, Username has already been taken
+#### Username or email has already been taken
+
+If you see either of these errors:
+
+- `ActiveRecord::RecordInvalid: Validation failed: Email has already been taken`
+- `ActiveRecord::RecordInvalid: Validation failed: Username has already been taken`
 
 This is because, by default, our factories are written to backfill any data that is missing. For instance, when a project
 is created, the project must have somebody that created it. If the owner is not specified, the factory attempts to create it.
@@ -293,7 +298,7 @@ Given that non-Ruby parsers parse IDs as Ruby Objects, the [naming conventions](
 Examples of invalid IDs:
 
 - IDs that start with a number
-- IDs that have special characters (-, !, $, @, `, =, <, >, ;, :)
+- IDs that have special characters (`-`, `!`, `$`, `@`, `` ` ``, `=`, `<`, `>`, `;`, `:`)
 
 #### ActiveRecord::AssociationTypeMismatch: Model expected, got ... which is an instance of String
 

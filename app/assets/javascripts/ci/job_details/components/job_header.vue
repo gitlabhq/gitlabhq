@@ -100,7 +100,7 @@ export default {
         {{ name }}
       </h1>
 
-      <div class="gl-display-flex gl-align-self-start gl-mt-n2">
+      <div class="gl-display-flex gl-align-self-start -gl-mt-2">
         <div class="gl-flex-grow-1 gl-flex-shrink-0 gl-text-right">
           <gl-button
             :aria-label="__('Toggle sidebar')"
@@ -129,7 +129,7 @@ export default {
           :data-name="user.name"
           :href="webUrl"
           target="_blank"
-          class="js-user-link gl-vertical-align-middle gl-mx-2 gl-align-items-center"
+          class="js-user-link gl-align-middle gl-mx-2 gl-align-items-center"
         >
           <gl-avatar-labeled
             :size="24"

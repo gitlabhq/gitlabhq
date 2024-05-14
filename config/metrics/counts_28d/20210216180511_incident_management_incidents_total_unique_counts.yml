@@ -4,28 +4,35 @@ key_path: counts_monthly.aggregated_metrics.incident_management_incidents_total_
 description: Count of unique users per month to take an action on an incident
 product_section: ops
 product_stage: monitor
-product_group: monitor
+product_group: respond
 value_type: number
 status: active
 time_frame: 28d
-instrumentation_class: AggregatedMetric
+instrumentation_class: RedisHLLMetric
 data_source: redis_hll
-options:
-  aggregate:
-    operator: OR
-    attribute: user_id
-  events:
-    - 'incident_management_incident_created'
-    - 'incident_management_incident_reopened'
-    - 'incident_management_incident_closed'
-    - 'incident_management_incident_assigned'
-    - 'incident_management_incident_todo'
-    - 'incident_management_incident_comment'
-    - 'incident_management_incident_zoom_meeting'
-    - 'incident_management_incident_published'
-    - 'incident_management_incident_relate'
-    - 'incident_management_incident_unrelate'
-    - 'incident_management_incident_change_confidential'
+events:
+- name: incident_management_incident_created
+  unique: user.id
+- name: incident_management_incident_reopened
+  unique: user.id
+- name: incident_management_incident_closed
+  unique: user.id
+- name: incident_management_incident_assigned
+  unique: user.id
+- name: incident_management_incident_todo
+  unique: user.id
+- name: incident_management_incident_comment
+  unique: user.id
+- name: incident_management_incident_zoom_meeting
+  unique: user.id
+- name: incident_management_incident_published
+  unique: user.id
+- name: incident_management_incident_relate
+  unique: user.id
+- name: incident_management_incident_unrelate
+  unique: user.id
+- name: incident_management_incident_change_confidential
+  unique: user.id
 distribution:
 - ce
 - ee

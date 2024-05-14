@@ -21,15 +21,7 @@
  - mini graph in Commit widget pipeline
 */
 @mixin pipeline-graph-dropdown-menu() {
-  width: auto;
-  max-width: 400px;
-
-  // override dropdown.scss
-  &.dropdown-menu li button,
-  &.dropdown-menu li a.ci-action-icon-container {
-    padding: 0;
-    text-align: center;
-  }
+  max-height: $gl-max-dropdown-max-height;
 
   .ci-action-icon-container {
     position: absolute;
@@ -66,34 +58,34 @@
     padding: 0;
     max-height: 245px;
     overflow: auto;
-  }
 
-  li {
-    position: relative;
+    li {
+      position: relative;
 
-    // link to the build
-    .pipeline-job-item {
-      align-items: center;
-      clear: both;
-      display: flex;
-      font-weight: normal;
-      line-height: $line-height-base;
-      white-space: nowrap;
+      // link to the build
+      .pipeline-job-item {
+        align-items: center;
+        clear: both;
+        display: flex;
+        font-weight: normal;
+        line-height: $line-height-base;
+        white-space: nowrap;
 
-      // Match dropdown.scss for all `a` tags
-      &.non-details-job-component {
-        padding: $gl-padding-8 $gl-btn-horz-padding;
+        // Match dropdown.scss for all `a` tags
+        &.non-details-job-component {
+          padding: $gl-padding-8 $gl-btn-horz-padding;
+        }
       }
-    }
 
-    // ensure .pipeline-job-item has hover style when action-icon is hovered
-    &:hover > .pipeline-job-item,
-    &:hover > .ci-job-component > .pipeline-job-item,
-    .pipeline-job-item:hover,
-    .pipeline-job-item:focus {
-      outline: none;
-      text-decoration: none;
-      background-color: var(--gray-100, $gray-50);
+      // ensure .pipeline-job-item has hover style when action-icon is hovered
+      &:hover > .pipeline-job-item,
+      &:hover > .ci-job-component > .pipeline-job-item,
+      .pipeline-job-item:hover,
+      .pipeline-job-item:focus {
+        outline: none;
+        text-decoration: none;
+        background-color: var(--gray-100, $gray-50);
+      }
     }
   }
 }

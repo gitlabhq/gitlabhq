@@ -173,151 +173,6 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
         sign_in(user)
       end
 
-      context "user does not have access to project" do
-        let(:private_project) { create(:project, :private) }
-
-        it "does not initialize notification setting" do
-          get :show, params: { namespace_id: private_project.namespace, id: private_project }
-          expect(assigns(:notification_setting)).to be_nil
-        end
-      end
-
-      context "user has access to project" do
-        before do
-          expect(::Gitlab::GitalyClient).to receive(:allow_ref_name_caching).and_call_original
-        end
-
-        context "and does not have notification setting" do
-          it "initializes notification as disabled" do
-            get :show, params: { namespace_id: public_project.namespace, id: public_project }
-            expect(assigns(:notification_setting).level).to eq("global")
-          end
-        end
-
-        context "and has notification setting" do
-          before do
-            setting = user.notification_settings_for(public_project)
-            setting.level = :watch
-            setting.save!
-          end
-
-          it "shows current notification setting" do
-            get :show, params: { namespace_id: public_project.namespace, id: public_project }
-            expect(assigns(:notification_setting).level).to eq("watch")
-          end
-        end
-
-        context 'when ambiguous_ref_modal is disabled' do
-          before do
-            stub_feature_flags(ambiguous_ref_modal: false)
-          end
-
-          context 'when there is a tag with the same name as the default branch' do
-            let_it_be(:tagged_project) { create(:project, :public, :custom_repo, files: ['somefile']) }
-            let(:tree_with_default_branch) do
-              branch = tagged_project.repository.find_branch(tagged_project.default_branch)
-              project_tree_path(tagged_project, branch.target)
-            end
-
-            before do
-              tagged_project.repository.create_file(
-                tagged_project.creator,
-                'file_for_tag',
-                'content for file',
-                message: "Automatically created file",
-                branch_name: 'branch-to-tag'
-              )
-
-              tagged_project.repository.add_tag(
-                tagged_project.creator,
-                tagged_project.default_branch, # tag name
-                'branch-to-tag' # target
-              )
-            end
-
-            it 'redirects to tree view for the default branch' do
-              get :show, params: { namespace_id: tagged_project.namespace, id: tagged_project }
-              expect(response).to redirect_to(tree_with_default_branch)
-            end
-          end
-
-          context 'when the default branch name is ambiguous' do
-            let_it_be(:project_with_default_branch) do
-              create(:project, :public, :custom_repo, files: ['somefile'])
-            end
-
-            shared_examples 'ambiguous ref redirects' do
-              let(:project) { project_with_default_branch }
-              let(:branch_ref) { "refs/heads/#{ref}" }
-              let(:repo) { project.repository }
-
-              before do
-                repo.create_branch(branch_ref, 'master')
-                repo.change_head(ref)
-              end
-
-              after do
-                repo.change_head('master')
-                repo.delete_branch(branch_ref)
-              end
-
-              subject do
-                get(
-                  :show,
-                  params: {
-                    namespace_id: project.namespace,
-                    id: project
-                  }
-                )
-              end
-
-              context 'when there is no conflicting ref' do
-                let(:other_ref) { 'non-existent-ref' }
-
-                it { is_expected.to have_gitlab_http_status(:ok) }
-              end
-
-              context 'and that other ref exists' do
-                let(:other_ref) { 'master' }
-
-                let(:project_default_root_tree_path) do
-                  sha = repo.find_branch(project.default_branch).target
-                  project_tree_path(project, sha)
-                end
-
-                it 'redirects to tree view for the default branch' do
-                  is_expected.to redirect_to(project_default_root_tree_path)
-                end
-              end
-            end
-
-            context 'when ref starts with ref/heads/' do
-              let(:ref) { "refs/heads/#{other_ref}" }
-
-              include_examples 'ambiguous ref redirects'
-            end
-
-            context 'when ref starts with ref/tags/' do
-              let(:ref) { "refs/tags/#{other_ref}" }
-
-              include_examples 'ambiguous ref redirects'
-            end
-
-            context 'when ref starts with heads/' do
-              let(:ref) { "heads/#{other_ref}" }
-
-              include_examples 'ambiguous ref redirects'
-            end
-
-            context 'when ref starts with tags/' do
-              let(:ref) { "tags/#{other_ref}" }
-
-              include_examples 'ambiguous ref redirects'
-            end
-          end
-        end
-      end
-
       describe "when project repository is disabled" do
         render_views
 
@@ -338,7 +193,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
 
           get :show, params: { namespace_id: project.namespace, id: project }
 
-          expect(response).to render_template('projects/issues/_issues')
+          expect(response).to render_template('projects/_issues')
           expect(assigns(:issuable_meta_data)).not_to be_nil
         end
 
@@ -412,7 +267,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
         sign_in(user)
 
         expect_next_instance_of(Repository) do |repository|
-          expect(repository).to receive(:root_ref).and_raise(Gitlab::Git::CommandError, 'get default branch').twice
+          expect(repository).to receive(:root_ref).and_raise(Gitlab::Git::CommandError, 'get default branch')
         end
       end
 

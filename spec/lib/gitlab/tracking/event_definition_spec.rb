@@ -26,6 +26,12 @@ RSpec.describe Gitlab::Tracking::EventDefinition, feature_category: :service_pin
   let(:definition) { described_class.new(path, attributes) }
   let(:yaml_content) { attributes.deep_stringify_keys.to_yaml }
 
+  around do |example|
+    described_class.instance_variable_set(:@definitions, nil)
+    example.run
+    described_class.instance_variable_set(:@definitions, nil)
+  end
+
   def write_metric(metric, path, content)
     path = File.join(metric, path)
     dir = File.dirname(path)
@@ -34,13 +40,25 @@ RSpec.describe Gitlab::Tracking::EventDefinition, feature_category: :service_pin
   end
 
   it 'has no duplicated actions in InternalEventTracking events', :aggregate_failures do
-    definitions_by_action = described_class.definitions
-                                           .select { |d| d.category == 'InternalEventTracking' }
-                                           .group_by(&:action)
+    definitions_by_action = described_class
+                              .definitions
+                              .select { |d| d.attributes[:internal_events] }
+                              .group_by { |d| d.attributes[:action] }
 
     definitions_by_action.each do |action, definitions|
       expect(definitions.size).to eq(1),
         "Multiple definitions use the action '#{action}': #{definitions.map(&:path).join(', ')}"
+    end
+  end
+
+  it 'only has internal events without category', :aggregate_failures do
+    internal_events = described_class
+      .definitions
+      .select { |d| d.attributes[:internal_events] }
+
+    internal_events.each do |event|
+      expect(event.attributes[:category]).to be_nil,
+        "Event definition with internal_events: true should not have a category: #{event.path}"
     end
   end
 
@@ -117,6 +135,18 @@ RSpec.describe Gitlab::Tracking::EventDefinition, feature_category: :service_pin
       write_metric(metric1, path, yaml_content)
 
       is_expected.to be_one
+    end
+
+    context 'when definitions are already loaded' do
+      before do
+        allow(Dir).to receive(:glob).and_call_original
+        described_class.definitions
+      end
+
+      it 'does not read any files' do
+        expect(Dir).not_to receive(:glob)
+        described_class.definitions
+      end
     end
   end
 end

@@ -91,8 +91,5 @@ export const EXPANDED_VARIABLES_NOTE = __(
   '%{codeStart}$%{codeEnd} will be treated as the start of a reference to another variable.',
 );
 
-export const environmentFetchErrorText = __(
-  'There was an error fetching the environments information.',
-);
 export const genericMutationErrorText = __('Something went wrong on our end. Please try again.');
 export const variableFetchErrorText = __('There was an error fetching the variables.');

@@ -6,18 +6,29 @@ import environmentToDeleteQuery from './queries/environment_to_delete.query.grap
 import environmentToRollbackQuery from './queries/environment_to_rollback.query.graphql';
 import environmentToStopQuery from './queries/environment_to_stop.query.graphql';
 import k8sPodsQuery from './queries/k8s_pods.query.graphql';
+import k8sConnectionStatusQuery from './queries/k8s_connection_status.query.graphql';
 import k8sServicesQuery from './queries/k8s_services.query.graphql';
 import k8sNamespacesQuery from './queries/k8s_namespaces.query.graphql';
 import fluxKustomizationStatusQuery from './queries/flux_kustomization_status.query.graphql';
 import fluxHelmReleaseStatusQuery from './queries/flux_helm_release_status.query.graphql';
 import { resolvers } from './resolvers';
 import typeDefs from './typedefs.graphql';
+import { connectionStatus } from './resolvers/kubernetes/constants';
 
 export const apolloProvider = (endpoint) => {
   const defaultClient = createDefaultClient(resolvers(endpoint), {
     typeDefs,
   });
   const { cache } = defaultClient;
+
+  const k8sMetadata = {
+    name: null,
+    namespace: null,
+    creationTimestamp: null,
+    labels: null,
+    annotations: null,
+  };
+  const k8sData = { nodes: { metadata: k8sMetadata, status: {}, spec: {} } };
 
   cache.writeQuery({
     query: environmentApp,
@@ -89,32 +100,24 @@ export const apolloProvider = (endpoint) => {
   });
   cache.writeQuery({
     query: k8sPodsQuery,
+    data: k8sData,
+  });
+  cache.writeQuery({
+    query: k8sConnectionStatusQuery,
     data: {
-      metadata: {
-        name: null,
-        namespace: null,
-        creationTimestamp: null,
-      },
-      status: {
-        phase: null,
+      k8sConnection: {
+        k8sPods: {
+          connectionStatus: connectionStatus.disconnected,
+        },
+        k8sServices: {
+          connectionStatus: connectionStatus.disconnected,
+        },
       },
     },
   });
   cache.writeQuery({
     query: k8sServicesQuery,
-    data: {
-      metadata: {
-        name: null,
-        namespace: null,
-        creationTimestamp: null,
-      },
-      spec: {
-        type: null,
-        clusterIP: null,
-        externalIP: null,
-        ports: [],
-      },
-    },
+    data: k8sData,
   });
   cache.writeQuery({
     query: k8sNamespacesQuery,

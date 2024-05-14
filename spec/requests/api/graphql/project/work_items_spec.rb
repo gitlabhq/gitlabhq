@@ -8,7 +8,7 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, :repository, :public, group: group) }
   let_it_be(:current_user) { create(:user) }
-  let_it_be(:reporter) { create(:user).tap { |reporter| project.add_reporter(reporter) } }
+  let_it_be(:reporter) { create(:user, reporter_of: project) }
   let_it_be(:label1) { create(:label, project: project) }
   let_it_be(:label2) { create(:label, project: project) }
   let_it_be(:milestone1) { create(:milestone, project: project) }
@@ -452,6 +452,60 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
 
       expect_graphql_errors_to_be_empty
       expect { post_graphql(query, current_user: current_user) }.not_to exceed_all_query_limit(control)
+    end
+  end
+
+  context 'with development widget' do
+    context 'for the related merge requests field' do
+      before do
+        [item1, item2].each do |item|
+          create(
+            :merge_requests_closing_issues,
+            issue: item,
+            merge_request: create(:merge_request, source_project: project, target_branch: "feature#{item.id}")
+          )
+        end
+      end
+
+      let(:fields) do
+        <<~GRAPHQL
+          nodes {
+            id
+            widgets {
+              type
+              ... on WorkItemWidgetDevelopment {
+                relatedMergeRequests {
+                  nodes {
+                    closesWorkItem
+                    mergeRequest { id }
+                  }
+                }
+              }
+            }
+          }
+        GRAPHQL
+      end
+
+      it 'avoids N+1 queries' do
+        post_graphql(query, current_user: current_user) # warmup
+
+        control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+          post_graphql(query, current_user: current_user)
+        end
+        expect(graphql_errors).to be_blank
+
+        2.times do
+          new_work_item = create(:work_item, project: project)
+          create(
+            :merge_requests_closing_issues,
+            issue: new_work_item,
+            merge_request: create(:merge_request, source_project: project, target_branch: "feature#{new_work_item.id}")
+          )
+        end
+
+        expect { post_graphql(query, current_user: current_user) }.to issue_same_number_of_queries_as(control)
+        expect(graphql_errors).to be_blank
+      end
     end
   end
 

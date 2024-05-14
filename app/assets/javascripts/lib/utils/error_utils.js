@@ -52,6 +52,23 @@ function getMessageFromType(errorAttributeMap = {}, errorDictionary = {}) {
 }
 
 /**
+ * @param {String} cause
+ * @param {Object} errorDictionary
+ * @returns {(null|string)} null or error message if found
+ */
+function getMessageFromCause(cause, errorDictionary = {}) {
+  if (!cause) {
+    return null;
+  }
+  const errorType = errorDictionary[cause];
+  if (!errorType) {
+    return null;
+  }
+
+  return errorType;
+}
+
+/**
  * @example "Email has already been taken, Email is invalid"
  * // returns `${UNLINKED_ACCOUNT_ERROR}`, i.e. the `EMAIL_TAKEN_ERROR_TYPE` error message
  *
@@ -105,10 +122,15 @@ export function mapSystemToFriendlyError(
     return defaultError;
   }
 
-  const { errorAttributeMap, message } = systemError;
+  const { errorAttributeMap, cause, message } = systemError;
   const messageFromType = getMessageFromType(errorAttributeMap, errorDictionary);
   if (messageFromType) {
     return messageFromType;
+  }
+
+  const messageFromCause = getMessageFromCause(cause, errorDictionary);
+  if (messageFromCause) {
+    return messageFromCause;
   }
 
   const messageFromErrorString = getMessageFromErrorString(message, errorDictionary);
@@ -146,4 +168,20 @@ export const generateHelpTextWithLinks = (error) => {
 
   const links = generateLinks(error.links);
   return sprintf(error.message, links, false);
+};
+
+/**
+ * Receives an error code and an error dictionary and returns true
+ * if the error code is found in the dictionary and false otherwise.
+ *
+ * @param {String} errorCode
+ * @param {Object} errorDictionary
+ * @returns {Boolean}
+ */
+export const isKnownErrorCode = (errorCode, errorDictionary) => {
+  if (errorCode instanceof String || typeof errorCode === 'string') {
+    return Object.keys(errorDictionary).includes(errorCode.toLowerCase());
+  }
+
+  return false;
 };

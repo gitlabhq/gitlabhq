@@ -37,7 +37,7 @@ RSpec.describe Gitlab::GithubGistsImport::ImportGistWorker, feature_category: :i
   let(:log_attributes) do
     {
       'user_id' => user.id,
-      'external_identifiers' => { 'id': gist_object.id },
+      'external_identifiers' => { id: gist_object.id },
       'class' => 'Gitlab::GithubGistsImport::ImportGistWorker',
       'correlation_id' => 'new-correlation-id',
       'jid' => nil,
@@ -108,17 +108,24 @@ RSpec.describe Gitlab::GithubGistsImport::ImportGistWorker, feature_category: :i
 
         before do
           allow(importer).to receive(:execute).and_return(importer_result)
+          allow(Gitlab::GithubGistsImport::Representation::Gist)
+            .to receive(:from_json_hash)
+            .with(anything)
+            .and_return(gist_object)
         end
 
         it 'tracks and logs error' do
+          # use `anything` since jid is created in Sidekiq's middleware. `jid` does not exist until
+          # perform_inline is called.
           expect(Gitlab::GithubImport::Logger)
             .to receive(:error)
-            .with(log_attributes.merge('message' => 'importer failed', 'exception.message' => 'error_message'))
+            .with(log_attributes.merge('message' => 'importer failed', 'exception.message' => 'error_message',
+              'jid' => anything))
           expect(Gitlab::JobWaiter)
             .to receive(:notify)
-            .with('some_key', subject.jid, ttl: Gitlab::Import::JOB_WAITER_TTL)
+            .with('some_key', anything, ttl: Gitlab::Import::JOB_WAITER_TTL)
 
-          subject.perform(user.id, gist_hash, 'some_key')
+          subject.class.perform_inline(user.id, gist_hash, 'some_key') # perform_inline calls .perform
 
           expect_snowplow_event(
             category: 'Gitlab::GithubGistsImport::ImportGistWorker',
@@ -130,7 +137,7 @@ RSpec.describe Gitlab::GithubGistsImport::ImportGistWorker, feature_category: :i
         end
 
         it 'persists failure' do
-          expect { subject.perform(user.id, gist_hash, 'some_key') }
+          expect { subject.class.perform_inline(user.id, gist_hash, 'some_key') }
             .to change { ImportFailure.where(user: user).count }.from(0).to(1)
 
           expect(ImportFailure.where(user_id: user.id).first).to have_attributes(

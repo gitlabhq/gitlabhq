@@ -55,7 +55,7 @@ export default {
     promoteSuccessMessage: __(
       'The issue was successfully promoted to an epic. Redirecting to epic...',
     ),
-    reportAbuse: __('Report abuse to administrator'),
+    reportAbuse: __('Report abuse'),
     referenceFetchError: __('An error occurred while fetching reference'),
     copyReferenceText: __('Copy reference'),
   },
@@ -99,6 +99,7 @@ export default {
     return {
       isReportAbuseDrawerOpen: false,
       isUserSignedIn: isLoggedIn(),
+      isDesktopDropdownVisible: false,
     };
   },
   apollo: {
@@ -202,6 +203,9 @@ export default {
       return shouldDisableShortcuts()
         ? description
         : sanitize(`${description} <kbd class="flat gl-ml-1" aria-hidden=true>${key}</kbd>`);
+    },
+    showDropdownTooltip() {
+      return !this.isDesktopDropdownVisible ? this.dropdownText : '';
     },
   },
   created() {
@@ -308,13 +312,21 @@ export default {
       this.$refs.issuableActionsDropdownMobile?.close();
       this.$refs.issuableActionsDropdownDesktop?.close();
     },
+    showDesktopDropdown() {
+      this.isDesktopDropdownVisible = true;
+    },
+    hideDesktopDropdown() {
+      this.isDesktopDropdownVisible = false;
+    },
   },
   TYPE_ISSUE,
 };
 </script>
 
 <template>
-  <div class="detail-page-header-actions gl-display-flex gl-align-self-start gl-sm-gap-3">
+  <div
+    class="detail-page-header-actions gl-display-flex gl-align-self-start gl-sm-gap-3 gl-w-full gl-md-w-auto"
+  >
     <div class="gl-md-display-none! gl-w-full">
       <gl-disclosure-dropdown
         v-if="hasMobileDropdown"
@@ -325,7 +337,7 @@ export default {
         :auto-close="false"
         data-testid="mobile-dropdown"
         :loading="isToggleStateButtonLoading"
-        placement="left"
+        placement="right"
       >
         <template v-if="showMovedSidebarOptions && !glFeatures.notificationsTodosButtons">
           <sidebar-subscriptions-widget
@@ -381,10 +393,11 @@ export default {
           <gl-dropdown-divider />
           <gl-disclosure-dropdown-item
             v-gl-modal="$options.deleteModalId"
-            variant="danger"
             @action="track('click_dropdown')"
           >
-            <template #list-item>{{ deleteButtonText }}</template>
+            <template #list-item>
+              <span class="gl-text-red-500">{{ deleteButtonText }}</span>
+            </template>
           </gl-disclosure-dropdown-item>
         </template>
         <gl-disclosure-dropdown-item
@@ -414,7 +427,7 @@ export default {
       v-if="hasDesktopDropdown"
       id="new-actions-header-dropdown"
       ref="issuableActionsDropdownDesktop"
-      v-gl-tooltip.hover
+      v-gl-tooltip="showDropdownTooltip"
       class="gl-display-none gl-md-display-inline-flex!"
       icon="ellipsis_v"
       category="tertiary"
@@ -426,6 +439,8 @@ export default {
       :auto-close="false"
       data-testid="desktop-dropdown"
       no-caret
+      @shown="showDesktopDropdown"
+      @hidden="hideDesktopDropdown"
     >
       <template v-if="showMovedSidebarOptions && !glFeatures.notificationsTodosButtons">
         <sidebar-subscriptions-widget
@@ -488,11 +503,14 @@ export default {
       <template v-if="canDestroyIssue">
         <gl-disclosure-dropdown-item
           v-gl-modal="$options.deleteModalId"
-          variant="danger"
           data-testid="delete-issue-button"
           @action="track('click_dropdown')"
         >
-          <template #list-item>{{ deleteButtonText }}</template>
+          <template #list-item>
+            <span class="text-danger">
+              {{ deleteButtonText }}
+            </span>
+          </template>
         </gl-disclosure-dropdown-item>
       </template>
     </gl-disclosure-dropdown>

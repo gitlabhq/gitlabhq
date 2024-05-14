@@ -137,10 +137,6 @@
   }
 }
 
-.gl-pipeline-job-width\! {
-  width: 100% !important;
-}
-
 .gl-downstream-pipeline-job-width {
   width: 8rem;
 
@@ -244,17 +240,11 @@
   background-color: var(--blue-500, $blue-500) !important;
 }
 
-.ci-job-component {
-  .job-failed {
-    background-color: var(--red-50, $red-50);
-  }
-}
+.ci-job-item-failed {
+  background-color: var(--red-50, $red-50);
 
-.gl-dark {
-  .ci-job-component {
-    .job-failed {
-      background-color: var(--gray-200, $gray-200);
-    }
+  .gl-dark & {
+    background-color: var(--gray-200, $gray-200);
   }
 }
 
@@ -320,8 +310,38 @@
   }
 
   .pipeline-graph .pipeline-graph {
-    background-color: $gray-100;
+    background-color: var(--gray-100, $gray-100);
   }
+}
+
+.stage-column .ci-job-group-dropdown {
+  &,
+  .gl-new-dropdown-custom-toggle {
+    width: 100%;
+  }
+
+  // Reset padding, as inner element will
+  // define padding
+  .gl-new-dropdown-item-content,
+  .gl-new-dropdown-item-text-wrapper {
+    padding: 0;
+  }
+
+  // Set artificial focus on the menu-item to keep
+  // it consistent with the original dropdown items
+  .gl-new-dropdown-item:focus,
+  .gl-new-dropdown-item-content:focus {
+    outline: none;
+
+    .menu-item {
+      background-color: var(--gray-50, $gray-50);
+      border-radius: $border-radius-default;
+      box-shadow: inset 0 0 0 2px $blue-400,
+        inset 0 0 0 3px var(--white, $white);
+      outline: none;
+    }
+  }
+
 }
 
 .scan-reports-summary-grid {

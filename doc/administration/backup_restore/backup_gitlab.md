@@ -106,13 +106,6 @@ The [backup command](#backup-command) doesn't back up blobs that aren't stored o
 
 The backup command backs up registry data when they are stored in the default location on the file system.
 
-#### Object storage
-
-The [backup command](#backup-command) doesn't back up blobs that aren't stored on the file system. If you're using [object storage](../object_storage.md), be sure to enable backups with your object storage provider. For example, see:
-
-- [Amazon S3 backups](https://docs.aws.amazon.com/aws-backup/latest/devguide/s3-backups.html)
-- [Google Cloud Storage Transfer Service](https://cloud.google.com/storage-transfer-service) and [Google Cloud Storage Object Versioning](https://cloud.google.com/storage/docs/object-versioning)
-
 ### Storing configuration files
 
 WARNING:
@@ -159,7 +152,7 @@ In the unlikely event that the secrets file is lost, see
 
 ### Other data
 
-GitLab uses Redis both as a cache store and to hold persistent data for our background jobs system, Sidekiq. The provided [backup command](#backup-command) does _not_ back up Redis data. This means that in order to take a consistent backup with the [backup command](#backup-command), there must be no pending or running background jobs. It is possible to [manually back up Redis](https://redis.io/docs/management/persistence/#backing-up-redis-data).
+GitLab uses Redis both as a cache store and to hold persistent data for our background jobs system, Sidekiq. The provided [backup command](#backup-command) does _not_ back up Redis data. This means that in order to take a consistent backup with the [backup command](#backup-command), there must be no pending or running background jobs. It is possible to [manually back up Redis](https://redis.io/docs/latest/operate/oss_and_stack/management/persistence/#backing-up-redis-data).
 
 Elasticsearch is an optional database for advanced search. It can improve search
 in both source-code level, and user generated content in issues, merge requests, and discussions. The [backup command](#backup-command) does _not_ back up Elasticsearch data. Elasticsearch data can be regenerated from PostgreSQL data after a restore. It is possible to [manually back up Elasticsearch](https://www.elastic.co/guide/en/elasticsearch/reference/current/snapshot-restore.html).
@@ -175,10 +168,10 @@ including:
 - CI/CD job output logs
 - CI/CD job artifacts
 - LFS objects
-- Terraform states ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/331806) in GitLab 14.7)
+- Terraform states
 - Container registry images
 - GitLab Pages content
-- Packages ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/332006) in GitLab 14.7)
+- Packages
 - Snippets
 - [Group wikis](../../user/project/wiki/group.md)
 - Project-level Secure Files ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121142) in GitLab 16.1)
@@ -302,8 +295,8 @@ The default backup strategy is to essentially stream data from the respective
 data locations to the backup using the Linux command `tar` and `gzip`. This works
 fine in most cases, but can cause problems when data is rapidly changing.
 
-When data changes while `tar` is reading it, the error `file changed as we read
-it` may occur, and causes the backup process to fail. In that case, you can use
+When data changes while `tar` is reading it, the error `file changed as we read it`
+may occur, and causes the backup process to fail. In that case, you can use
 the backup strategy called `copy`. The strategy copies data files
 to a temporary location before calling `tar` and `gzip`, avoiding the error.
 
@@ -570,21 +563,16 @@ sudo -u git -H bundle exec rake gitlab:backup:create REPOSITORIES_SERVER_SIDE=tr
 
 #### Back up Git repositories concurrently
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37158) in GitLab 13.3.
-> - [Concurrent restore introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/69330) in GitLab 14.3
-
 When using [multiple repository storages](../repository_storage_paths.md),
 repositories can be backed up or restored concurrently to help fully use CPU time. The
 following variables are available to modify the default behavior of the Rake
 task:
 
 - `GITLAB_BACKUP_MAX_CONCURRENCY`: The maximum number of projects to back up at
-  the same time. Defaults to the number of logical CPUs (in GitLab 14.1 and
-  earlier, defaults to `1`).
+  the same time. Defaults to the number of logical CPUs.
 - `GITLAB_BACKUP_MAX_STORAGE_CONCURRENCY`: The maximum number of projects to
   back up at the same time on each storage. This allows the repository backups
-  to be spread across storages. Defaults to `2` (in GitLab 14.1 and earlier,
-  defaults to `1`).
+  to be spread across storages. Defaults to `2`.
 
 For example, with 4 repository storages:
 
@@ -606,14 +594,12 @@ sudo -u git -H bundle exec rake gitlab:backup:create GITLAB_BACKUP_MAX_CONCURREN
 
 #### Incremental repository backups
 
-> - Introduced in GitLab 14.9 [with a flag](../feature_flags.md) named `incremental_repository_backup`. Disabled by default.
-> - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/355945) in GitLab 14.10.
 > - `PREVIOUS_BACKUP` option [introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/4184) in GitLab 15.0.
 > - Server-side support for creating incremental backups [introduced](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/6475) in GitLab 16.6.
 
 FLAG:
 On self-managed GitLab, by default this feature is available. To hide the feature, an administrator can [disable the feature flag](../feature_flags.md) named `incremental_repository_backup`.
-On GitLab.com, this feature is not available.
+On GitLab.com and GitLab Dedicated, this feature is not available.
 
 NOTE:
 Only repositories support incremental backups. Therefore, if you use `INCREMENTAL=yes`, the task
@@ -624,26 +610,17 @@ support incremental backups for all subtasks.
 
 Incremental repository backups can be faster than full repository backups because they only pack changes since the last backup into the backup bundle for each repository.
 The incremental backup archives are not linked to each other: each archive is a self-contained backup of the instance. There must be an existing backup
-to create an incremental backup from:
+to create an incremental backup from.
 
-- In GitLab 14.9 and 14.10, use the `BACKUP=<backup-id>` option to choose the backup to use. The chosen previous backup is overwritten.
-- In GitLab 15.0 and later, use the `PREVIOUS_BACKUP=<backup-id>` option to choose the backup to use. By default, a backup file is created
-  as documented in the [Backup ID](index.md#backup-id) section. You can override the `<backup-id>` portion of the filename by setting the
-  [`BACKUP` environment variable](#backup-filename).
+Use the `PREVIOUS_BACKUP=<backup-id>` option to choose the backup to use. By default, a backup file is created
+as documented in the [Backup ID](index.md#backup-id) section. You can override the `<backup-id>` portion of the filename by setting the
+[`BACKUP` environment variable](#backup-filename).
 
 To create an incremental backup, run:
 
-- In GitLab 15.0 or later:
-
-  ```shell
-  sudo gitlab-backup create INCREMENTAL=yes PREVIOUS_BACKUP=<backup-id>
-  ```
-
-- In GitLab 14.9 and 14.10:
-
-  ```shell
-  sudo gitlab-backup create INCREMENTAL=yes BACKUP=<backup-id>
-  ```
+```shell
+sudo gitlab-backup create INCREMENTAL=yes PREVIOUS_BACKUP=<backup-id>
+```
 
 To create an [untarred](#skipping-tar-creation) incremental backup from a tarred backup, use `SKIP=tar`:
 
@@ -746,8 +723,6 @@ For Linux package (Omnibus):
    for the changes to take effect
 
 ##### S3 Encrypted Buckets
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64765) in GitLab 14.3.
 
 AWS supports these [modes for server side encryption](https://docs.aws.amazon.com/AmazonS3/latest/userguide/serv-side-encryption.html):
 
@@ -866,7 +841,7 @@ For self-compiled installations:
          # Turns on AWS Server-Side Encryption with Amazon Customer-Provided Encryption Keys for backups, this is optional
          #   'encryption' must be set in order for this to have any effect.
          #   'encryption_key' should be set to the 256-bit encryption key for Amazon S3 to use to encrypt or decrypt.
-         #   To avoid storing the key on disk, the key can also be specified via the `GITLAB_BACKUP_ENCRYPTION_KEY`  your data.
+         #   To avoid storing the key on disk, the key can also be specified via the `GITLAB_BACKUP_ENCRYPTION_KEY` your data.
          # encryption: 'AES256'
          # encryption_key: '<key>'
          #
@@ -988,8 +963,6 @@ For self-compiled installations:
    for the changes to take effect
 
 ##### Using Azure Blob storage
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25877) in GitLab 13.4.
 
 ::Tabs
 
@@ -1341,10 +1314,6 @@ for more details on what these parameters do.
 
 #### `gitaly-backup` for repository backup and restore
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/333034) in GitLab 14.2.
-> - [Deployed behind a feature flag](../../user/feature_flags.md), enabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/333034) in GitLab 14.10. [Feature flag `gitaly_backup`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/83254) removed.
-
 The `gitaly-backup` binary is used by the backup Rake task to create and restore repository backups from Gitaly.
 `gitaly-backup` replaces the previous backup method that directly calls RPCs on Gitaly from GitLab.
 
@@ -1380,8 +1349,8 @@ When considering using file system data transfer or snapshots:
 
 - Don't use these methods to migrate from one operating system to another. The operating systems of the source and destination should be as similar as possible. For example,
   don't use these methods to migrate from Ubuntu to RHEL.
-- Data consistency is very important. You should stop GitLab with `sudo gitlab-ctl stop` before taking doing a file system transfer (with `rsync`, for example) or taking a
-  snapshot.
+- Data consistency is very important. You should stop GitLab (`sudo gitlab-ctl stop`) before
+  doing a file system transfer (with `rsync`, for example) or taking a snapshot.
 
 Example: Amazon Elastic Block Store (EBS)
 

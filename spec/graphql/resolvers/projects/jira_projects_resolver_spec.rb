@@ -86,7 +86,7 @@ RSpec.describe Resolvers::Projects::JiraProjectsResolver, feature_category: :int
         context 'when Jira connection is not valid' do
           before do
             WebMock.stub_request(:get, 'https://jira.example.com/rest/api/2/project')
-              .to_raise(JIRA::HTTPError.new(double(message: '{"errorMessages":["Some failure"]}')))
+              .to_raise(JIRA::HTTPError.new(double(message: 'Bad Request', body: '{"errorMessages":["Some failure."]}')))
           end
 
           it 'generates a failure error' do

@@ -28,6 +28,20 @@ For more information about our commitment to an open and welcoming environment, 
 Issues and merge requests should be in English and contain appropriate language
 for audiences of all ages.
 
+## GitLab technologies
+
+[GitLab](https://gitlab.com/gitlab-org/gitlab) is a [Ruby on Rails](https://rubyonrails.org/) application.
+It uses [Haml](https://haml.info/) and a JavaScript-based frontend with [Vue.js](https://vuejs.org/).
+
+Some satellite projects use [Go](https://go.dev/).
+For example:
+
+- [GitLab Runner](https://gitlab.com/gitlab-org/gitlab-runner)
+- [Gitaly](https://gitlab.com/gitlab-org/gitaly)
+- [GLab](https://gitlab.com/gitlab-org/cli)
+
+We have [development style guides for each technology](style_guides.md) to help you align with our coding standards.
+
 ### Choose or create an issue
 
 If you know what you're going to work on, see if an issue exists. If it doesn't,
@@ -164,6 +178,6 @@ If you need any help while contributing to GitLab:
 - Join the community on the [GitLab Community Discord](https://discord.com/invite/gitlab) and find other
   contributors in the `#contribute` channel or [initiate a mentor session](https://about.gitlab.com/community/contribute/mentor-sessions/).
 - For any other questions or feedback on contributing:
-  - Ping `@gitlab-org/community-relations/contributor-success` in a comment on your merge request or issue.
+  - Ping `@gitlab-org/developer-relations/contributor-success` in a comment on your merge request or issue.
   - Feel free to [make a new issue with the Contributor Success team](https://gitlab.com/gitlab-org/community-relations/contributor-success/team-task/-/issues/) sharing your experience.
 - Did you run out of compute minutes for your GitLab merge requests? Join the [GitLab community forks](https://gitlab.com/gitlab-community/meta) project.

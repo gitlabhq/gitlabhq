@@ -1,3 +1,4 @@
+// Package queueing provides functionality for managing queues of requests.
 package queueing
 
 import (
@@ -10,6 +11,7 @@ import (
 )
 
 const (
+	// DefaultTimeout is the default timeout duration for queueing requests.
 	DefaultTimeout            = 30 * time.Second
 	httpStatusTooManyRequests = 429
 )
@@ -50,6 +52,5 @@ func QueueRequests(name string, h http.Handler, limit, queueLimit uint, queueTim
 		default:
 			fail.Request(w, r, err)
 		}
-
 	})
 }

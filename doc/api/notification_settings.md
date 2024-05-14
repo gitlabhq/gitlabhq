@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Change [notification settings](../user/profile/notifications.md) using the REST API.
 
@@ -96,9 +96,9 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
 | `failed_pipeline` | boolean | no | Enable/disable this notification |
 | `fixed_pipeline` | boolean | no | Enable/disable this notification |
 | `success_pipeline` | boolean | no | Enable/disable this notification |
-| `moved_project` | boolean | no | Enable/disable this notification ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30371) in GitLab 13.3) |
-| `merge_when_pipeline_succeeds` | boolean | no | Enable/disable this notification ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/244840) in GitLab 13.9) |
-| `new_epic` | boolean | no | Enable/disable this notification ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5863) in GitLab 11.3). Ultimate only. |
+| `moved_project` | boolean | no | Enable/disable this notification |
+| `merge_when_pipeline_succeeds` | boolean | no | Enable/disable this notification |
+| `new_epic` | boolean | no | Enable/disable this notification Ultimate only. |
 
 Example response:
 
@@ -168,9 +168,9 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
 | `failed_pipeline` | boolean | no | Enable/disable this notification |
 | `fixed_pipeline` | boolean | no | Enable/disable this notification |
 | `success_pipeline` | boolean | no | Enable/disable this notification |
-| `moved_project` | boolean | no | Enable/disable this notification ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30371) in GitLab 13.3) |
-| `merge_when_pipeline_succeeds` | boolean | no | Enable/disable this notification ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/244840) in GitLab 13.9) |
-| `new_epic` | boolean | no | Enable/disable this notification ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5863) in GitLab 11.3). Ultimate only. |
+| `moved_project` | boolean | no | Enable/disable this notification |
+| `merge_when_pipeline_succeeds` | boolean | no | Enable/disable this notification |
+| `new_epic` | boolean | no | Enable/disable this notification Ultimate only. |
 
 Example responses:
 

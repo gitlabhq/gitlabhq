@@ -7,20 +7,20 @@ module Types
       graphql_name 'Topic'
 
       field :id, GraphQL::Types::ID, null: false,
-                                     description: 'ID of the topic.'
+        description: 'ID of the topic.'
 
       field :name, GraphQL::Types::String, null: false,
-                                           description: 'Name of the topic.'
+        description: 'Name of the topic.'
 
       field :title, GraphQL::Types::String, null: false,
-                                            method: :title_or_name,
-                                            description: 'Title of the topic.'
+        method: :title_or_name,
+        description: 'Title of the topic.'
 
       field :description, GraphQL::Types::String, null: true,
-                                                  description: 'Description of the topic.'
+        description: 'Description of the topic.'
 
       field :avatar_url, GraphQL::Types::String, null: true,
-                                                 description: 'URL to avatar image file of the topic.'
+        description: 'URL to avatar image file of the topic.'
 
       markdown_field :description_html, null: true
 

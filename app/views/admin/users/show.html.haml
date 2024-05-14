@@ -37,6 +37,10 @@
             %span.light= _('Email:')
             %strong
               = render partial: 'shared/email_with_badge', locals: { email: mail_to(@user.email), verified: @user.confirmed? }
+          %li{ data: { testid: 'email-verification-last-sent-at' } }
+            %span.light= s_('UserProfile|Email verification last sent at:')
+            %strong
+              = @user.confirmation_sent_at&.to_fs(:medium) || _('never')
           - @user.emails.reject(&:user_primary_email?).each do |email|
             %li
               %span.light= _('Secondary email:')
@@ -94,7 +98,7 @@
                 = @user.confirmed_at.to_fs(:medium)
           - else
             %li
-              %span.ligh= _('Confirmed:')
+              %span.light= _('Confirmed:')
               %strong.cred
                 = _('No')
 

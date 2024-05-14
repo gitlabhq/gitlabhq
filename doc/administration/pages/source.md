@@ -89,7 +89,7 @@ because that is needed in all configurations.
 
 ### Wildcard domains
 
-**Requirements:**
+Prerequisites:
 
 - [Wildcard DNS setup](#dns-configuration)
 
@@ -192,7 +192,7 @@ The Pages daemon doesn't listen to the outside world.
 
 ### Wildcard domains with TLS support
 
-**Requirements:**
+Prerequisites:
 
 - [Wildcard DNS setup](#dns-configuration)
 - Wildcard TLS certificate
@@ -256,7 +256,7 @@ that without TLS certificates.
 
 ### Custom domains
 
-**Requirements:**
+Prerequisites:
 
 - [Wildcard DNS setup](#dns-configuration)
 - Secondary IP
@@ -319,7 +319,7 @@ world. Custom domains are supported, but no TLS.
 
 ### Custom domains with TLS support
 
-**Requirements:**
+Prerequisites:
 
 - [Wildcard DNS setup](#dns-configuration)
 - Wildcard TLS certificate
@@ -428,7 +428,6 @@ Each request to view a resource in a private site is authenticated by Pages
 using that token. For each request it receives, it makes a request to the GitLab
 API to check that the user is authorized to read that site.
 
-From [GitLab 12.8](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/3689) onward,
 Access Control parameters for Pages are set in a configuration file, which
 by convention is named `gitlab-pages-config`. The configuration file is passed to
 pages using the `-config flag` or `CONFIG` environment variable.

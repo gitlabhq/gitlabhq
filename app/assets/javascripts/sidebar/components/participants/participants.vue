@@ -91,9 +91,12 @@ export default {
 
 <template>
   <div>
-    <div v-if="showParticipantLabel" class="title gl-line-height-20 gl-font-weight-bold gl-mb-2">
-      <gl-loading-icon v-if="loading" inline />
+    <div
+      v-if="showParticipantLabel"
+      class="gl-display-flex gl-align-items-center gl-line-height-24 gl-text-gray-900 gl-font-weight-bold gl-mb-2 gl-gap-2"
+    >
       {{ participantLabel }}
+      <gl-loading-icon v-if="loading" inline />
     </div>
     <div class="gl-display-flex gl-flex-wrap gl-gap-3">
       <a

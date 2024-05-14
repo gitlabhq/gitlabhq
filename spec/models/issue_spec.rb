@@ -340,6 +340,27 @@ RSpec.describe Issue, feature_category: :team_planning do
     end
   end
 
+  describe 'scopes for preloading' do
+    before_all do
+      create(:issue, project: reusable_project)
+    end
+
+    describe '.preload_namespace' do
+      subject(:preload_namespace) { described_class.in_projects(reusable_project).preload_namespace }
+
+      it { expect(preload_namespace.first.association(:namespace)).to be_loaded }
+    end
+
+    describe '.preload_routables' do
+      subject(:preload_routables) { described_class.in_projects(reusable_project).preload_routables }
+
+      it { expect(preload_routables.first.association(:project)).to be_loaded }
+      it { expect(preload_routables.first.project.association(:route)).to be_loaded }
+      it { expect(preload_routables.first.project.association(:namespace)).to be_loaded }
+      it { expect(preload_routables.first.project.namespace.association(:route)).to be_loaded }
+    end
+  end
+
   context 'order by upvotes' do
     let!(:issue) { create(:issue) }
     let!(:issue2) { create(:issue) }
@@ -1122,7 +1143,7 @@ RSpec.describe Issue, feature_category: :team_planning do
         allow(project).to receive(:forked?).and_return(true)
       end
 
-      it { is_expected.not_to be_can_be_worked_on }
+      it { is_expected.to be_can_be_worked_on }
     end
 
     it { is_expected.to be_can_be_worked_on }
@@ -1185,6 +1206,54 @@ RSpec.describe Issue, feature_category: :team_planning do
         project.project_feature.update_attribute(:issues_access_level, ProjectFeature::DISABLED)
 
         is_expected.to eq(false)
+      end
+    end
+
+    context 'with a group level issue' do
+      let_it_be(:group) { create(:group) }
+      let(:issue) { build(:work_item, :group_level, namespace: group) }
+
+      context 'when readable_by? is false' do
+        it 'returns false' do
+          allow(issue).to receive(:readable_by?).and_return false
+          is_expected.to eq(false)
+        end
+      end
+
+      context 'when readable_by? is true' do
+        before do
+          allow(issue).to receive(:readable_by?).and_return true
+        end
+
+        it { is_expected.to eq(true) }
+
+        context 'when user.can_read_all_resources? is true' do
+          before do
+            allow(user).to receive(:can_read_all_resources?).and_return true
+          end
+
+          it { is_expected.to eq(true) }
+
+          it 'does not check project external authorization' do
+            expect(::Gitlab::ExternalAuthorization).not_to receive(:access_allowed?)
+
+            is_expected.to eq(true)
+          end
+        end
+
+        context 'when user.can_read_all_resources? is false' do
+          before do
+            allow(user).to receive(:can_read_all_resources?).and_return false
+          end
+
+          it { is_expected.to eq(true) }
+
+          it 'does not check project external authorization' do
+            expect(::Gitlab::ExternalAuthorization).not_to receive(:access_allowed?)
+
+            is_expected.to eq(true)
+          end
+        end
       end
     end
 
@@ -2044,30 +2113,6 @@ RSpec.describe Issue, feature_category: :team_planning do
     it { is_expected.to eq(WorkItems::Type.default_by_type(::Issue::DEFAULT_ISSUE_TYPE)) }
   end
 
-  describe '#unsubscribe_email_participant' do
-    let_it_be(:email) { 'email@example.com' }
-
-    let_it_be(:issue1) do
-      create(:issue, project: reusable_project, external_author: email) do |issue|
-        issue.issue_email_participants.create!(email: email)
-      end
-    end
-
-    let_it_be(:issue2) do
-      create(:issue, project: reusable_project, external_author: email) do |issue|
-        issue.issue_email_participants.create!(email: email)
-      end
-    end
-
-    it 'deletes email for issue1' do
-      expect { issue1.unsubscribe_email_participant(email) }.to change { issue1.issue_email_participants.count }.by(-1)
-    end
-
-    it 'does not delete email for issue2 when issue1 is used' do
-      expect { issue1.unsubscribe_email_participant(email) }.not_to change { issue2.issue_email_participants.count }
-    end
-  end
-
   describe '#update_search_data!' do
     it 'copies namespace_id to search data' do
       issue = create(:issue)
@@ -2100,8 +2145,8 @@ RSpec.describe Issue, feature_category: :team_planning do
 
     context 'when issue belongs directly to a project' do
       let_it_be_with_reload(:project_issue) { create(:issue, project: reusable_project) }
-      let_it_be(:project_reporter) { create(:user).tap { |u| reusable_project.add_reporter(u) } }
-      let_it_be(:project_guest) { create(:user).tap { |u| reusable_project.add_guest(u) } }
+      let_it_be(:project_reporter) { create(:user, reporter_of: reusable_project) }
+      let_it_be(:project_guest) { create(:user, guest_of: reusable_project) }
 
       let(:issue_subject) { project_issue }
 
@@ -2157,8 +2202,8 @@ RSpec.describe Issue, feature_category: :team_planning do
     context 'when issue belongs directly to the group' do
       let_it_be(:group) { create(:group) }
       let_it_be_with_reload(:group_issue) { create(:issue, :group_level, namespace: group) }
-      let_it_be(:group_reporter) { create(:user).tap { |u| group.add_reporter(u) } }
-      let_it_be(:group_guest) { create(:user).tap { |u| group.add_guest(u) } }
+      let_it_be(:group_reporter) { create(:user, reporter_of: group) }
+      let_it_be(:group_guest) { create(:user, guest_of: group) }
 
       let(:issue_subject) { group_issue }
 

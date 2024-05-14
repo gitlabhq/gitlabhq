@@ -19,6 +19,7 @@ export default {
   data() {
     return {
       currentFiles: [],
+      isModalUrlValid: true,
       modalVisible: false,
       modalUrl: '',
       modalUrlText: '',
@@ -31,7 +32,7 @@ export default {
         text: this.$options.i18n.modalUpload,
         attributes: {
           loading: this.isUploadingImage,
-          disabled: this.isUploadingImage,
+          disabled: this.isUploadingImage || !this.isModalUrlValid,
           category: 'primary',
           variant: 'confirm',
         },
@@ -55,6 +56,8 @@ export default {
       this.currentFiles = files;
     },
     async onUpload() {
+      if (!this.isModalUrlValid) return;
+
       try {
         await this.uploadImage({
           files: this.currentFiles,
@@ -64,6 +67,16 @@ export default {
         // Error case handled within action
       } finally {
         this.clearInputs();
+      }
+    },
+    onModalUrlInput(value) {
+      if (value === '') this.validateModalUrl();
+    },
+    validateModalUrl() {
+      try {
+        this.isModalUrlValid = Boolean(new URL(this.modalUrl));
+      } catch (err) {
+        this.isModalUrlValid = false;
       }
     },
   },
@@ -77,6 +90,10 @@ export default {
     dropDescription: s__(
       'Incidents|Drop or %{linkStart}upload%{linkEnd} a metric screenshot to attach it to the incident',
     ),
+    textInputLabel: __('Text (optional)'),
+    urlInputLabel: __('Link (optional)'),
+    urlInputDescription: s__('Incidents|Must start with http:// or https://'),
+    invalidUrlMessage: __('Invalid URL'),
   },
 };
 </script>
@@ -99,16 +116,25 @@ export default {
       @primary.prevent="onUpload"
     >
       <p>{{ $options.i18n.modalDescription }}</p>
-      <gl-form-group :label="__('Text (optional)')" label-for="upload-text-input">
+      <gl-form-group :label="$options.i18n.textInputLabel" label-for="upload-text-input">
         <gl-form-input id="upload-text-input" v-model="modalUrlText" />
       </gl-form-group>
 
       <gl-form-group
-        :label="__('Link (optional)')"
+        id="upload-url-group"
+        :label="$options.i18n.urlInputLabel"
         label-for="upload-url-input"
-        :description="s__('Incidents|Must start with http or https')"
+        :description="$options.i18n.urlInputDescription"
+        :invalid-feedback="$options.i18n.invalidUrlMessage"
+        :state="isModalUrlValid"
       >
-        <gl-form-input id="upload-url-input" v-model="modalUrl" />
+        <gl-form-input
+          id="upload-url-input"
+          v-model="modalUrl"
+          :state="isModalUrlValid"
+          @blur="validateModalUrl"
+          @input="onModalUrlInput"
+        />
       </gl-form-group>
     </gl-modal>
     <metric-images-table v-for="metric in metricImages" :key="metric.id" v-bind="metric" />

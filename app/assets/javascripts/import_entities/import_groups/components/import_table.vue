@@ -143,13 +143,13 @@ export default {
     {
       key: 'webUrl',
       label: s__('BulkImport|Source group'),
-      thClass: 'gl-pl-0! gl-w-half',
+      thClass: 'gl-pl-0! gl-w-1/2',
       tdClass: 'gl-pl-0!',
     },
     {
       key: 'importTarget',
       label: s__('BulkImport|New group'),
-      thClass: `gl-w-half`,
+      thClass: `gl-w-1/2`,
     },
     {
       key: 'progress',
@@ -568,6 +568,10 @@ export default {
     }, VALIDATION_DEBOUNCE_TIME),
 
     setDefaultImportTarget(group) {
+      if (!this.availableNamespaces) {
+        return;
+      }
+
       const lastTargetNamespace = this.availableNamespaces.find(
         (ns) => ns.id === this.defaultTargetNamespace,
       );
@@ -767,7 +771,7 @@ export default {
       </gl-empty-state>
       <template v-else>
         <div
-          class="gl-bg-gray-10 gl-border-solid gl-border-gray-200 gl-border-0 gl-border-b-1 gl-px-4 gl-display-flex gl-align-items-center gl-sticky gl-z-index-3 import-table-bar"
+          class="gl-bg-gray-10 gl-border-solid gl-border-gray-200 gl-border-0 gl-border-b-1 gl-px-4 gl-display-flex gl-align-items-center gl-sticky gl-z-3 import-table-bar"
         >
           <span data-test-id="selection-count">
             <gl-sprintf :message="__('%{count} selected')">
@@ -822,7 +826,7 @@ export default {
           class="gl-w-full import-table"
           :tbody-tr-class="rowClasses"
           :tbody-tr-attr="qaRowAttributes"
-          thead-class="gl-sticky gl-z-index-2 gl-bg-gray-10"
+          thead-class="gl-sticky gl-z-2 gl-bg-gray-10"
           :items="groupsTableData"
           :fields="$options.fields"
           selectable

@@ -16,10 +16,10 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
   prepend_before_action(only: [:index]) { authenticate_sessionless_user!(:rss) }
   skip_before_action :merge_request, only: [:index, :bulk_update, :export_csv]
-  before_action :apply_diff_view_cookie!, only: [:show, :diffs]
+  before_action :apply_diff_view_cookie!, only: [:show, :diffs, :rapid_diffs]
   before_action :disable_query_limiting, only: [:assign_related_issues, :update]
   before_action :authorize_update_issuable!, only: [:close, :edit, :update, :remove_wip, :sort]
-  before_action :authorize_read_actual_head_pipeline!, only: [
+  before_action :authorize_read_diff_head_pipeline!, only: [
     :test_reports,
     :exposed_artifacts,
     :coverage_reports,
@@ -35,31 +35,29 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
   before_action only: :index do
     push_frontend_feature_flag(:mr_approved_filter, type: :ops)
-    push_frontend_feature_flag(:mr_merge_user_filter, type: :development)
   end
 
-  before_action only: [:show, :diffs] do
+  before_action only: [:show, :diffs, :rapid_diffs] do
     push_frontend_feature_flag(:core_security_mr_widget_counts, project)
     push_frontend_feature_flag(:mr_experience_survey, project)
     push_frontend_feature_flag(:ci_job_failures_in_mr, project)
     push_frontend_feature_flag(:mr_pipelines_graphql, project)
     push_frontend_feature_flag(:notifications_todos_buttons, current_user)
-    push_frontend_feature_flag(:mr_request_changes, current_user)
     push_frontend_feature_flag(:merge_blocked_component, current_user)
-    push_frontend_feature_flag(:mention_autocomplete_backend_filtering, project)
+    push_frontend_feature_flag(:auto_merge_when_incomplete_pipeline_succeeds, project)
     push_frontend_feature_flag(:pinned_file, project)
-    push_frontend_feature_flag(:merge_request_diff_generated_subscription, project)
+    push_frontend_feature_flag(:reviewer_assign_drawer, current_user)
   end
 
-  around_action :allow_gitaly_ref_name_caching, only: [:index, :show, :diffs, :discussions]
+  around_action :allow_gitaly_ref_name_caching, only: [:index, :show, :diffs, :rapid_diffs, :discussions]
 
-  after_action :log_merge_request_show, only: [:show, :diffs]
+  after_action :log_merge_request_show, only: [:show, :diffs, :rapid_diffs]
 
   feature_category :code_review_workflow, [
     :assign_related_issues, :bulk_update, :cancel_auto_merge,
     :commit_change_content, :commits, :context_commits, :destroy,
     :discussions, :edit, :index, :merge, :rebase, :remove_wip,
-    :show, :diffs, :toggle_award_emoji, :toggle_subscription, :update
+    :show, :diffs, :rapid_diffs, :toggle_award_emoji, :toggle_subscription, :update
   ]
 
   feature_category :code_testing, [:test_reports, :coverage_reports]
@@ -73,6 +71,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     :index,
     :show,
     :diffs,
+    :rapid_diffs,
     :commits,
     :bulk_update,
     :edit,
@@ -106,6 +105,12 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   def diffs
+    show_merge_request
+  end
+
+  def rapid_diffs
+    return render_404 unless ::Feature.enabled?(:rapid_diffs, current_user, type: :wip)
+
     show_merge_request
   end
 
@@ -149,27 +154,18 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
     Gitlab::PollingInterval.set_header(response, interval: 10_000)
 
-    serializer_options = {
-      disable_coverage: true,
-      disable_failed_builds: true,
-      preload: true
-    }
-
-    if Feature.enabled?(:skip_status_preload_in_pipeline_lists, @project, type: :gitlab_com_derisk)
-      serializer_options.merge!(
-        disable_manual_and_scheduled_actions: true,
-        preload_statuses: false,
-        preload_downstream_statuses: false
-      )
-    end
-
     render json: {
       pipelines: PipelineSerializer
         .new(project: @project, current_user: @current_user)
         .with_pagination(request, response)
         .represent(
           @pipelines,
-          **serializer_options
+          disable_coverage: true,
+          disable_failed_builds: true,
+          disable_manual_and_scheduled_actions: true,
+          preload: true,
+          preload_statuses: false,
+          preload_downstream_statuses: false
         ),
       count: {
         all: @pipelines.count
@@ -618,8 +614,8 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     ::Gitlab::Search::RecentMergeRequests.new(user: current_user).log_view(@merge_request)
   end
 
-  def authorize_read_actual_head_pipeline!
-    render_404 unless can?(current_user, :read_build, merge_request.actual_head_pipeline)
+  def authorize_read_diff_head_pipeline!
+    render_404 unless can?(current_user, :read_build, merge_request.diff_head_pipeline)
   end
 
   def show_whitespace
@@ -651,6 +647,15 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
       file_hash: params[:pin],
       diff_head: true
     )
+  end
+
+  def append_info_to_payload(payload)
+    super
+
+    return unless action_name == 'diffs' && @merge_request&.merge_request_diff.present?
+
+    payload[:metadata] ||= {}
+    payload[:metadata]['meta.diffs_files_count'] = @merge_request.merge_request_diff.files_count
   end
 end
 

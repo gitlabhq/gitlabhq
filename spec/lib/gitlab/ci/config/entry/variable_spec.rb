@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Config::Entry::Variable do
+RSpec.describe Gitlab::Ci::Config::Entry::Variable, feature_category: :pipeline_composition do
   let(:config) { {} }
   let(:metadata) { {} }
 
@@ -17,45 +17,22 @@ RSpec.describe Gitlab::Ci::Config::Entry::Variable do
   end
 
   describe 'SimpleVariable' do
-    context 'when config is a string' do
-      let(:config) { 'value' }
+    using RSpec::Parameterized::TableSyntax
 
-      describe '#valid?' do
-        it { is_expected.to be_valid }
-      end
-
-      describe '#value' do
-        subject(:value) { entry.value }
-
-        it { is_expected.to eq('value') }
-      end
+    where(:config, :valid_result) do
+      'string' | true
+      :symbol  | true
+      true     | true
+      false    | true
+      2        | true
+      2.2      | true
+      []       | false
+      {}       | false
     end
 
-    context 'when config is an integer' do
-      let(:config) { 1 }
-
-      describe '#valid?' do
-        it { is_expected.to be_valid }
-      end
-
-      describe '#value' do
-        subject(:value) { entry.value }
-
-        it { is_expected.to eq('1') }
-      end
-    end
-
-    context 'when config is an array' do
-      let(:config) { [] }
-
-      describe '#valid?' do
-        it { is_expected.not_to be_valid }
-      end
-
-      describe '#errors' do
-        subject(:errors) { entry.errors }
-
-        it { is_expected.to include 'variable definition must be either a string or a hash' }
+    with_them do
+      it 'validates the config data type' do
+        expect(entry.valid?).to be(valid_result)
       end
     end
   end
@@ -101,69 +78,32 @@ RSpec.describe Gitlab::Ci::Config::Entry::Variable do
           it { is_expected.to eq(value: 'value', description: 'description') }
         end
 
-        context 'when config value is a symbol' do
-          let(:config) { { value: :value, description: 'description' } }
+        context 'when validating config value data type' do
+          using RSpec::Parameterized::TableSyntax
 
-          describe '#value' do
-            subject(:value) { entry.value }
+          let(:config) { { value: value, description: 'description' } }
 
-            it { is_expected.to eq('value') }
+          where(:value, :valid_result) do
+            'string' | true
+            :symbol  | true
+            true     | true
+            false    | true
+            2        | true
+            2.2      | true
+            []       | false
+            {}       | false
           end
 
-          describe '#value_with_data' do
-            subject(:value_with_data) { entry.value_with_data }
+          with_them do
+            it 'casts valid values to a string' do
+              expect(entry.valid?).to be(valid_result)
+              expect(entry.value).to eq(value.to_s) if valid_result
+              expect(entry.value_with_data).to eq({ value: value.to_s }) if valid_result
 
-            it { is_expected.to eq(value: 'value') }
-          end
-
-          describe '#value_with_prefill_data' do
-            subject(:value_with_prefill_data) { entry.value_with_prefill_data }
-
-            it { is_expected.to eq(value: 'value', description: 'description') }
-          end
-        end
-
-        context 'when config value is an integer' do
-          let(:config) { { value: 123, description: 'description' } }
-
-          describe '#value' do
-            subject(:value) { entry.value }
-
-            it { is_expected.to eq('123') }
-          end
-
-          describe '#value_with_data' do
-            subject(:value_with_data) { entry.value_with_data }
-
-            it { is_expected.to eq(value: '123') }
-          end
-
-          describe '#value_with_prefill_data' do
-            subject(:value_with_prefill_data) { entry.value_with_prefill_data }
-
-            it { is_expected.to eq(value: '123', description: 'description') }
-          end
-        end
-
-        context 'when config description is a symbol' do
-          let(:config) { { value: 'value', description: :description } }
-
-          describe '#value' do
-            subject(:value) { entry.value }
-
-            it { is_expected.to eq('value') }
-          end
-
-          describe '#value_with_data' do
-            subject(:value_with_data) { entry.value_with_data }
-
-            it { is_expected.to eq(value: 'value') }
-          end
-
-          describe '#value_with_prefill_data' do
-            subject(:value_with_prefill_data) { entry.value_with_prefill_data }
-
-            it { is_expected.to eq(value: 'value', description: :description) }
+              if valid_result
+                expect(entry.value_with_prefill_data).to eq({ value: value.to_s, description: 'description' })
+              end
+            end
           end
         end
       end

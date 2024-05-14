@@ -30,7 +30,9 @@ module MergeRequests
           }
         ).execute(other_merge_request)
 
-        other_merge_request.rebase_async(current_user.id)
+        if Feature.enabled?(:rebase_when_retargetting_mrs, other_merge_request.project, type: :gitlab_com_derisk)
+          other_merge_request.rebase_async(current_user.id)
+        end
       end
     end
   end

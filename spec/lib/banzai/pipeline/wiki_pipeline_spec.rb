@@ -9,7 +9,7 @@ RSpec.describe Banzai::Pipeline::WikiPipeline, feature_category: :wiki do
   let_it_be(:page)      { build(:wiki_page, wiki: wiki, title: 'nested/twice/start-page') }
 
   describe 'TableOfContents' do
-    it 'replaces the tag with the TableOfContentsFilter result' do
+    it 'replaces the tag with the TableOfContentsTagFilter result' do
       markdown = <<-MD.strip_heredoc
           [[_TOC_]]
 

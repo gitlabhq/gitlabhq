@@ -8,7 +8,7 @@ RSpec.describe "Sync project fork", feature_category: :source_code_management do
   include ExclusiveLeaseHelpers
 
   let_it_be(:source_project) { create(:project, :repository, :public) }
-  let_it_be(:current_user) { create(:user, maintainer_projects: [source_project]) }
+  let_it_be(:current_user) { create(:user, maintainer_of: source_project) }
   let_it_be(:project, refind: true) { fork_project(source_project, current_user, { repository: true }) }
   let_it_be(:target_branch) { project.default_branch }
 

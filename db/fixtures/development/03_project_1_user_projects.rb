@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require './db/fixtures/development/03_project'
+
 class Gitlab::Seeder::UserProjects
   def seed!
     create_user_projects!

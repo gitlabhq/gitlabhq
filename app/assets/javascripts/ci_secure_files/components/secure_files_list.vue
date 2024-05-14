@@ -83,18 +83,18 @@ export default {
     {
       key: 'name',
       label: __('File name'),
-      tdClass: 'gl-vertical-align-middle!',
+      tdClass: '!gl-align-middle',
     },
     {
       key: 'created_at',
       label: __('Uploaded date'),
-      tdClass: 'gl-vertical-align-middle!',
+      tdClass: '!gl-align-middle',
     },
     {
       key: 'actions',
       label: __('Actions'),
       thClass: 'gl-text-right',
-      tdClass: 'gl-text-right gl-vertical-align-middle!',
+      tdClass: 'gl-text-right !gl-align-middle',
     },
   ],
   computed: {
@@ -238,7 +238,6 @@ export default {
           stacked="md"
           table-class="text-secondary"
           show-empty
-          sort-icon-left
           no-sort-reset
           :empty-text="$options.i18n.noFilesMessage"
         >

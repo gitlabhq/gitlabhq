@@ -33,15 +33,18 @@
     %span.form-text.gl-text-gray-600
       - code_pair = tag_pair(tag.code, :code_start, :code_end)
       - github_link_tag_pair = tag_pair(link_to('', 'https://github.com/settings/tokens', target: '_blank', rel: 'noopener noreferrer'), :link_start, :link_end)
-      = safe_format(s_('GithubImport|Create and provide your GitHub %{link_start}personal access token%{link_end}. You must select the following scopes:'), github_link_tag_pair)
+      = safe_format(s_('GithubImport|Create and provide your GitHub %{link_start}personal access token%{link_end}.'), github_link_tag_pair)
+      %br
+      = safe_format(s_('GithubImport|Use a classic GitHub personal access token with the following scopes:'))
       %ul
         - if has_ci_cd_only_params?
           %li= safe_format(s_('GithubImporter|%{code_start}repo%{code_end}: Used to display a list of your public and private repositories that are available to connect to.'), code_pair)
         - else
           %li= safe_format(s_('GithubImporter|%{code_start}repo%{code_end}: Used to display a list of your public and private repositories that are available to import from.'), code_pair)
-          %li= safe_format(s_('GithubImporter|%{code_start}repo.org%{code_end} (optional): Used to import collaborators from GitHub repositories.'), code_pair)
-
-  = render_if_exists 'import/github/ci_cd_only'
+          %li= safe_format(s_('GithubImporter|%{code_start}read:org%{code_end} (optional): Used to import collaborators from GitHub repositories, or if your project has Git LFS files.'), code_pair)
+      - docs_link = link_to('', help_page_path('user/project/import/github', anchor: 'use-a-github-personal-access-token'), target: '_blank', rel: 'noopener noreferrer')
+      - docs_link_tag_pair = tag_pair(docs_link, :link_start, :link_end)
+      = safe_format(s_('GithubImport|%{link_start}Learn more%{link_end}.'), docs_link_tag_pair)
 
   .form-actions.gl-display-flex.gl-justify-content-end
     = render Pajamas::ButtonComponent.new(href: new_project_path) do

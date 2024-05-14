@@ -85,20 +85,66 @@ RSpec.describe Gitlab::Ci::Config::Entry::Include::Rules::Rule, feature_category
   end
 
   context 'when specifying an exists: clause' do
-    let(:config) { { exists: './this.md' } }
+    context 'with a string' do
+      let(:config) { { exists: 'paths/**/*.rb' } }
 
-    it_behaves_like 'a valid config'
+      it_behaves_like 'a valid config', { exists: { paths: ['paths/**/*.rb'] } }
+    end
 
-    context 'when exists: clause is an array' do
-      let(:config) { { exists: ['./this.md', './that.md'] } }
+    context 'with a nil value' do
+      let(:config) { { exists: nil } }
 
       it_behaves_like 'a valid config'
     end
 
-    context 'when exists: clause is null' do
-      let(:config) { { exists: nil } }
+    context 'with an array' do
+      let(:config) { { exists: ['this.md', 'subdir/that.md'] } }
 
-      it_behaves_like 'a valid config'
+      it_behaves_like 'a valid config', { exists: { paths: ['this.md', 'subdir/that.md'] } }
+
+      context 'when empty array' do
+        let(:config) { { exists: [] } }
+
+        it_behaves_like 'a valid config', { exists: { paths: [] } }
+      end
+
+      context 'when array contains integers' do
+        let(:config) { { exists: [1, 2, 3] } }
+
+        it_behaves_like 'an invalid config', /should be an array of strings/
+      end
+
+      context 'when array has more items than MAX_PATHS' do
+        let(:config) { { exists: ['app/*'] * 51 } }
+
+        it_behaves_like 'a valid config', { exists: { paths: ['app/*'] * 51 } }
+      end
+    end
+
+    context 'with a hash' do
+      context 'when empty hash' do
+        let(:config) { { exists: {} } }
+
+        it_behaves_like 'a valid config', { exists: { paths: [] } }
+      end
+
+      context 'with paths:' do
+        let(:config) { { exists: { paths: ['this.md'] } } }
+
+        it_behaves_like 'a valid config'
+
+        context 'with project:' do
+          let(:config) { { exists: { paths: ['this.md'], project: 'path/to/project' } } }
+
+          it_behaves_like 'a valid config'
+        end
+
+        context 'with project: and ref:' do
+          let(:config) { { exists: { paths: ['this.md'], project: 'path/to/project', ref: 'refs/heads/branch1' } } }
+
+          it_behaves_like 'a valid config'
+        end
+      end
     end
   end
 

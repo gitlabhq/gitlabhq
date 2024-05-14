@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 There are several ways to mention an issue or make [issues](index.md) appear in each other's
 [Linked issues](related_issues.md) section.
@@ -52,7 +52,7 @@ git commit -m "this is my commit message. Related to https://gitlab.com/<usernam
 Of course, you can replace `gitlab.com` with the URL of your own GitLab instance.
 
 Linking your first commit to your issue is relevant
-for tracking your process with [GitLab Value Stream Analytics](https://about.gitlab.com/stages-devops-lifecycle/value-stream-analytics/).
+for tracking your process with [GitLab Value Stream Analytics](https://about.gitlab.com/solutions/value-stream-management/).
 It measures the time taken for planning the implementation of that issue,
 which is the time between creating an issue and making the first commit.
 

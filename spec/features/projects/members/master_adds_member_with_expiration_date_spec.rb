@@ -52,7 +52,7 @@ RSpec.describe 'Projects > Members > Maintainer adds member with expiration date
     page.within find_member_row(new_member) do
       expect(page).to have_field('Expiration date', with: five_days_from_now)
 
-      find('[data-testid="clear-button"]').click
+      find_by_testid('clear-button').click
 
       wait_for_requests
 

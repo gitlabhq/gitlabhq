@@ -4,7 +4,7 @@ key_path: redis_hll_counters.user_packages.i_package_tag_user_monthly
 description: A monthly count of users that have published a package tag to the registry
 product_section: ops
 product_stage: package
-product_group: package
+product_group: package_registry
 value_type: number
 status: removed
 time_frame: 28d

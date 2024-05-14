@@ -1,0 +1,22 @@
+---
+key_path: settings.allow_runner_registration_token
+description: Whether runner registration tokens are allowed on the instance
+product_section: ops
+product_stage: verify
+product_group: runner
+value_type: boolean
+status: active
+milestone: "17.0"
+introduced_by_url: 'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150885'
+time_frame: none
+data_source: system
+instrumentation_class: RunnerRegistrationTokensAllowedMetric
+data_category: optional
+performance_indicator_type: []
+distribution:
+  - ce
+  - ee
+tier:
+  - free
+  - premium
+  - ultimate

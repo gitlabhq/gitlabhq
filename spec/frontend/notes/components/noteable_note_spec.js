@@ -250,6 +250,7 @@ describe('issue_note', () => {
       expect(noteHeaderProps.createdAt).toBe(note.created_at);
       expect(noteHeaderProps.noteId).toBe(note.id);
       expect(noteHeaderProps.noteableType).toBe(NOTEABLE_TYPE_MAPPING[note.noteable_type]);
+      expect(noteHeaderProps.isImported).toBe(note.imported);
     });
 
     it('should render note actions', () => {

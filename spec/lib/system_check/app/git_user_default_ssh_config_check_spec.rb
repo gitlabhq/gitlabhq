@@ -18,7 +18,7 @@ RSpec.describe SystemCheck::App::GitUserDefaultSSHConfigCheck do
   end
 
   it 'only whitelists safe files' do
-    expect(described_class::WHITELIST).to contain_exactly(
+    expect(described_class::ALLOWLIST).to contain_exactly(
       'authorized_keys',
       'authorized_keys2',
       'authorized_keys.lock',
@@ -63,7 +63,7 @@ RSpec.describe SystemCheck::App::GitUserDefaultSSHConfigCheck do
     end
 
     it 'succeeds if all the whitelisted files exist' do
-      described_class::WHITELIST.each do |filename|
+      described_class::ALLOWLIST.each do |filename|
         stub_ssh_file(filename)
       end
 

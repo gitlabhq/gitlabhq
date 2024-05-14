@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 You can customize how pipelines run for your project.
 
@@ -87,7 +87,6 @@ running job can be cancelled before it completes. After a job with
 
 ## Prevent outdated deployment jobs
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25276) in GitLab 12.9.
 > - In GitLab 15.5, the behavior was [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/363328) to prevent outdated job runs.
 
 Your project may have multiple concurrent deployment jobs that are
@@ -111,7 +110,7 @@ For more information, see [Deployment safety](../environments/deployment_safety.
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137301) in GitLab 16.7.
 
@@ -130,8 +129,6 @@ To change the permissions to cancel pipelines or jobs:
 1. Select **Save changes**.
 
 ## Specify a custom CI/CD configuration file
-
-> - Support for external `.gitlab-ci.yml` locations [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14376) in GitLab 12.6.
 
 GitLab expects to find the CI/CD configuration file (`.gitlab-ci.yml`) in the project's root
 directory. However, you can specify an alternate filename path, including locations outside the project.
@@ -201,9 +198,6 @@ The configured Git strategy can be overridden by the [`GIT_STRATEGY` variable](.
 in the `.gitlab-ci.yml` file.
 
 ## Limit the number of changes fetched during clone
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/28919) in GitLab 12.0.
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77576) `git depth` value in GitLab 14.7.
 
 You can limit the number of changes that GitLab CI/CD fetches when it clones
 a repository.

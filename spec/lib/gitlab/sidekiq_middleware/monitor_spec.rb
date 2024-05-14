@@ -38,13 +38,17 @@ RSpec.describe Gitlab::SidekiqMiddleware::Monitor do
       end
 
       it 'puts job in DeadSet' do
-        ::Sidekiq::DeadSet.new.clear
+        Gitlab::SidekiqSharding::Validator.allow_unrouted_sidekiq_calls { ::Sidekiq::DeadSet.new.clear }
 
         expect do
           subject
         rescue Sidekiq::JobRetry::Skip
           nil
-        end.to change { ::Sidekiq::DeadSet.new.size }.by(1)
+        end.to change {
+                 Gitlab::SidekiqSharding::Validator.allow_unrouted_sidekiq_calls do
+                   ::Sidekiq::DeadSet.new.size
+                 end
+               }.by(1)
       end
     end
   end

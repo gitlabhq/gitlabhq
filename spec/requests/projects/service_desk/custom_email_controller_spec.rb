@@ -8,8 +8,8 @@ RSpec.describe Projects::ServiceDesk::CustomEmailController, feature_category: :
   end
 
   let_it_be(:custom_email_path) { project_service_desk_custom_email_path(project, format: :json) }
-  let_it_be(:user) { create(:user) }
-  let_it_be(:illegitimite_user) { create(:user) }
+  let_it_be(:user) { create(:user, maintainer_of: project) }
+  let_it_be(:illegitimite_user) { create(:user, developer_of: project) }
 
   let(:message) { instance_double(Mail::Message) }
   let(:error_cannot_create_custom_email) { s_("ServiceDesk|Cannot create custom email") }
@@ -36,11 +36,6 @@ RSpec.describe Projects::ServiceDesk::CustomEmailController, feature_category: :
       "custom_email_smtp_address" => nil,
       "error_message" => nil
     }
-  end
-
-  before_all do
-    project.add_developer(illegitimite_user)
-    project.add_maintainer(user)
   end
 
   shared_examples 'a json response with empty values' do

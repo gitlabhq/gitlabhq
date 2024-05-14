@@ -18,7 +18,9 @@ module InternalEventsCli
 
         options.sort_by do |option|
           category = events.dig(option[:value], 'category')
-          event_sort_param(category, option[:name])
+          internal_events = events.dig(option[:value], 'internal_events')
+
+          event_sort_param(internal_events, category, option[:name])
         end
       end
 
@@ -37,23 +39,18 @@ module InternalEventsCli
       end
 
       def format_event_name(event)
-        case event.category
-        when 'InternalEventTracking', 'default'
+        if event.internal_events || event.category == 'default'
           event.action
         else
           "#{event.category}:#{event.action}"
         end
       end
 
-      def event_sort_param(category, name)
-        case category
-        when 'InternalEventTracking'
-          "0#{name}"
-        when 'default'
-          "1#{name}"
-        else
-          "2#{category}#{name}"
-        end
+      def event_sort_param(internal_events, category, name)
+        return "0#{name}" if internal_events
+        return "1#{name}" if category == 'default'
+
+        "2#{category}#{name}"
       end
 
       def get_existing_events_for_paths(event_paths)

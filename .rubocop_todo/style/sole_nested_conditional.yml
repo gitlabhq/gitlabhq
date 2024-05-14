@@ -16,7 +16,6 @@ Style/SoleNestedConditional:
     - 'app/services/incident_management/incidents/create_service.rb'
     - 'app/services/merge_requests/update_service.rb'
     - 'app/services/packages/generic/create_package_file_service.rb'
-    - 'app/services/packages/maven/find_or_create_package_service.rb'
     - 'app/services/projects/container_repository/delete_tags_service.rb'
     - 'app/services/projects/create_service.rb'
     - 'app/services/projects/hashed_storage/migration_service.rb'

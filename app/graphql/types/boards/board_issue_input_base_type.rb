@@ -12,7 +12,7 @@ module Types
                required: false,
                description: 'Filter by milestone title.'
 
-      argument :assignee_username, [GraphQL::Types::String, null: true],
+      argument :assignee_username, [GraphQL::Types::String, { null: true }],
                required: false,
                description: 'Filter by assignee username.'
 

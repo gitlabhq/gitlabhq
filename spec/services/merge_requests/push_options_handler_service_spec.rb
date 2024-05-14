@@ -8,9 +8,9 @@ RSpec.describe MergeRequests::PushOptionsHandlerService, feature_category: :sour
   let_it_be(:parent_group) { create(:group, :public) }
   let_it_be(:child_group) { create(:group, :public, parent: parent_group) }
   let_it_be(:project) { create(:project, :public, :repository, group: child_group) }
-  let_it_be(:user1) { create(:user, developer_projects: [project]) }
-  let_it_be(:user2) { create(:user, developer_projects: [project]) }
-  let_it_be(:user3) { create(:user, developer_projects: [project]) }
+  let_it_be(:user1) { create(:user, developer_of: project) }
+  let_it_be(:user2) { create(:user, developer_of: project) }
+  let_it_be(:user3) { create(:user, developer_of: project) }
   let_it_be(:forked_project) { fork_project(project, user1, repository: true) }
   let_it_be(:parent_group_milestone) { create(:milestone, group: parent_group, title: 'ParentGroupMilestone1.0') }
   let_it_be(:child_group_milestone) { create(:milestone, group: child_group, title: 'ChildGroupMilestone1.0') }
@@ -769,8 +769,8 @@ RSpec.describe MergeRequests::PushOptionsHandlerService, feature_category: :sour
 
     context 'when passing in usernames' do
       # makes sure that usernames starting with numbers aren't treated as IDs
-      let(:user2) { create(:user, username: '123user', developer_projects: [project]) }
-      let(:user3) { create(:user, username: '999user', developer_projects: [project]) }
+      let(:user2) { create(:user, username: '123user', developer_of: project) }
+      let(:user3) { create(:user, username: '999user', developer_of: project) }
       let(:assigned) { { user2.username => 1, user3.username => 1 } }
 
       it_behaves_like 'with an existing branch that has a merge request open in foss'
@@ -924,7 +924,7 @@ RSpec.describe MergeRequests::PushOptionsHandlerService, feature_category: :sour
   end
 
   describe 'when MRs are not enabled' do
-    let(:project) { create(:project, :public, :repository).tap { |pr| pr.add_developer(user1) } }
+    let(:project) { create(:project, :public, :repository, developers: user1) }
     let(:push_options) { { create: true } }
     let(:changes) { new_branch_changes }
 

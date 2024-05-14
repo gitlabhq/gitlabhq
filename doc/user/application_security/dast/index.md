@@ -8,12 +8,14 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, Self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 WARNING:
-Proxy-based DAST was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/430966) in GitLab
-16.9 and is planned for removal in 17.0. Use [browser-based DAST](browser_based.md) instead. This
-change is a breaking change.
+The DAST proxy-based analyzer was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/430966) in GitLab 16.9 and
+is replaced by DAST version 5 in GitLab 17.0. This change is a breaking change. For instructions on how to migrate from
+the DAST proxy-based analyzer to DAST version 5, see the [proxy-based migration guide](proxy_based_to_browser_based_migration_guide.md).
+For instructions on how to migrate from the DAST version 4 browser-based analyzer to DAST version 5,
+see the [browser-based migration guide](browser_based_4_to_5_migration_guide.md).
 
 Dynamic Application Security Testing (DAST) runs automated penetration tests to find vulnerabilities
 in your web applications and APIs as they are running. DAST automates a hacker’s approach and
@@ -56,8 +58,10 @@ which GitLab uses to determine discovered vulnerabilities based on differences b
 
 #### Prerequisites
 
+> - Support for the arm64 architecture was [introduced](https://gitlab.com/groups/gitlab-org/-/epics/13757) in GitLab 17.0.
+
 - [GitLab Runner](../../../ci/runners/index.md) available, with the
-  [`docker` executor](https://docs.gitlab.com/runner/executors/docker.html) on Linux/amd64.
+  [`docker` executor](https://docs.gitlab.com/runner/executors/docker.html) on Linux/amd64 or Linux/arm64.
 - Target application deployed. For more details, read [Deployment options](#application-deployment-options).
 - `dast` stage added to the CI/CD pipeline definition. This should be added after the deploy step, for example:
 
@@ -89,8 +93,6 @@ See [DAST proxy-based analyzer](proxy-based.md), [DAST browser-based analyzer](b
 analyzer-specific configuration instructions.
 
 ### View scan results
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36332) in GitLab 13.1.
 
 Detected vulnerabilities appear in [merge requests](../index.md#merge-request), the [pipeline security tab](../index.md#pipeline-security-tab),
 and the [vulnerability report](../index.md#vulnerability-report).
@@ -140,13 +142,13 @@ Depending on the complexity of the target application, there are a few options a
 the DAST template. A set of example applications have been provided with their configurations in the
 [DAST demonstrations](https://gitlab.com/gitlab-org/security-products/demos/dast/) project.
 
-#### Review Apps
+#### Review apps
 
-Review Apps are the most involved method of deploying your DAST target application. To assist in the process,
+Review apps are the most involved method of deploying your DAST target application. To assist in the process,
 we created a Review App deployment using Google Kubernetes Engine (GKE). This example can be found in our
-[Review Apps - GKE](https://gitlab.com/gitlab-org/security-products/demos/dast/review-app-gke) project, along with detailed
+[Review apps - GKE](https://gitlab.com/gitlab-org/security-products/demos/dast/review-app-gke) project, along with detailed
 instructions in the [README.md](https://gitlab.com/gitlab-org/security-products/demos/dast/review-app-gke/-/blob/master/README.md)
-on how to configure Review Apps for DAST.
+on how to configure review apps for DAST.
 
 #### Docker Services
 

@@ -1,17 +1,57 @@
 #!/bin/bash
 
-if [[ $# -ne 1 ]]; then
-  echo "usage: $0 <gem-name>"
+set -euo pipefail
+
+OWNER_HANDLE="gitlab_rubygems"
+
+error() {
+  echo "ERROR:" "$@"
   exit 1
+}
+
+warn() {
+  echo "WARNING:" "$@"
+}
+
+validate_gem() {
+  validate_existence "$1"
+  validate_owners "$1"
+  validate_content "$1"
+}
+
+validate_existence() {
+  if gem specification --quiet --silent --remote --ruby "$1"; then
+    return 0
+  fi
+
+  if gem specification --quiet --silent --remote --ruby --pre "$1"; then
+    return 0
+  fi
+
+  error "The '$1' is missing. Push stub gem to RubyGems with version 0.0.0. See https://docs.gitlab.com/ee/development/gems.html#reserve-a-gem-name"
+}
+
+validate_owners() {
+  if ! curl --silent --fail "https://rubygems.org/api/v1/gems/$1/owners.json" | grep --silent "\"handle\":\"$OWNER_HANDLE\""; then
+    error "Gem '$1' does not contain '$OWNER_HANDLE' as owner."
+  fi
+}
+
+validate_content() {
+  local tmpdir
+  tmpdir=$(mktemp --directory)
+  gem unpack "$1" --quiet --silent --target "$tmpdir"
+
+  if ! grep --silent --recursive --perl-regexp '^\s*raise "Reserved for GitLab"$' "$tmpdir"; then
+    warn "Contents of gem '$1' does not contain 'raise \"Reserved for GitLab\"'."
+  fi
+}
+
+if [[ $# -ne 1 ]]; then
+  error "usage: $0 <gem-name>"
 fi
 
-if gem specification --remote --ruby "$1"; then
-  exit 0
-fi
+echo "Validating gem '$1'"
 
-if gem specification --remote --ruby --pre "$1"; then
-  exit 0
-fi
-
-echo "The '$1' is missing. Push stub gem to RubyGems with version 0.0.1."
-exit 1
+validate_gem "$1"
+echo "SUCCESS!"

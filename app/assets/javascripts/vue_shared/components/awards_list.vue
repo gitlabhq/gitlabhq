@@ -9,6 +9,10 @@ import { glEmojiTag } from '~/emoji';
 
 // Internal constant, specific to this component, used when no `currentUserId` is given
 const NO_USER_ID = -1;
+const TOOLTIP_NAME_COUNT = 10;
+
+// Make sure the right capizalization is used depending on where you appear in the list
+const insertYou = (index) => (index === 0 ? __('You') : __('you'));
 
 export default {
   components: {
@@ -101,25 +105,27 @@ export default {
         return '';
       }
 
-      const hasReactionByCurrentUser = this.hasReactionByCurrentUser(awardsList);
-      const TOOLTIP_NAME_COUNT = hasReactionByCurrentUser ? 9 : 10;
-      let awardList = awardsList;
+      const awardList = awardsList;
 
-      // Filter myself from list if I am awarded.
-      if (hasReactionByCurrentUser) {
-        awardList = awardList.filter((award) => award.user.id !== this.currentUserId);
+      // Make sure current user shows in the list if there are too many reactions to list all users
+      if (awardList.length > TOOLTIP_NAME_COUNT && this.hasReactionByCurrentUser(awardList)) {
+        const currentUserIndex = awardList.findIndex(
+          (award) => award.user.id === this.currentUserId,
+        );
+        if (currentUserIndex > TOOLTIP_NAME_COUNT - 1) {
+          const currentUser = awardList[currentUserIndex];
+          awardList.splice(currentUserIndex, 1);
+          awardList.splice(TOOLTIP_NAME_COUNT - 1, 0, currentUser);
+        }
       }
 
-      // Get only 9-10 usernames to show in tooltip text.
-      const namesToShow = awardList.slice(0, TOOLTIP_NAME_COUNT).map((award) => award.user.name);
+      // Get only TOOLTIP_NAME_COUNT usernames to show in tooltip text.
+      const namesToShow = awardList
+        .map(({ user }, index) => (user.id === this.currentUserId ? insertYou(index) : user.name)) // Replace your own username with "You" or "you"
+        .slice(0, TOOLTIP_NAME_COUNT); // Only take the first TOOLTIP_NAME_COUNT items
 
       // Get the remaining list to use in `and x more` text.
       const remainingAwardList = awardList.slice(TOOLTIP_NAME_COUNT, awardList.length);
-
-      // Add myself to the beginning of the list so title will start with You.
-      if (hasReactionByCurrentUser) {
-        namesToShow.unshift(__('You'));
-      }
 
       let title = '';
 

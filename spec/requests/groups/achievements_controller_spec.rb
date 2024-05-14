@@ -75,4 +75,10 @@ RSpec.describe Groups::AchievementsController, feature_category: :user_profile d
 
     it_behaves_like 'ok response with index template if authorized'
   end
+
+  describe 'GET #new' do
+    subject { get new_group_achievement_path(group) }
+
+    it_behaves_like 'ok response with index template if authorized'
+  end
 end

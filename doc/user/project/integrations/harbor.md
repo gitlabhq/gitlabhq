@@ -1,6 +1,6 @@
 ---
-stage: Manage
-group: Import and Integrate
+stage: Package
+group: Container Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -8,9 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80999) in GitLab 14.9.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 You can use Harbor as the container registry for your GitLab project.
 

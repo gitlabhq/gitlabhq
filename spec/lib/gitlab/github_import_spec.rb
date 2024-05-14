@@ -13,9 +13,9 @@ RSpec.describe Gitlab::GithubImport, feature_category: :importers do
     it 'returns a new Client with a custom token' do
       expect(described_class::Client)
         .to receive(:new)
-        .with('123', host: nil, parallel: true, per_page: 100)
+        .with('ghp_123', host: nil, parallel: true, per_page: 100)
 
-      described_class.new_client_for(project, token: '123')
+      described_class.new_client_for(project, token: 'ghp_123')
     end
 
     it 'returns a new Client with a token stored in the import data' do
@@ -32,7 +32,7 @@ RSpec.describe Gitlab::GithubImport, feature_category: :importers do
       described_class.new_client_for(project)
     end
 
-    it 'returns the ID of the ghost user', :clean_gitlab_redis_cache do
+    it 'returns the ID of the ghost user', :clean_gitlab_redis_shared_state do
       expect(described_class.ghost_user_id).to eq(Users::Internal.ghost.id)
     end
 
@@ -54,9 +54,9 @@ RSpec.describe Gitlab::GithubImport, feature_category: :importers do
     it 'returns a new Client with a custom token' do
       expect(described_class::Client)
         .to receive(:new)
-        .with('123', host: 'http://github.another-domain.com/api/v3', parallel: true, per_page: 100)
+        .with('ghp_123', host: 'http://github.another-domain.com/api/v3', parallel: true, per_page: 100)
 
-      described_class.new_client_for(project, token: '123')
+      described_class.new_client_for(project, token: 'ghp_123')
     end
 
     it 'returns a new Client with a token stored in the import data' do
@@ -73,11 +73,11 @@ RSpec.describe Gitlab::GithubImport, feature_category: :importers do
       described_class.new_client_for(project)
     end
 
-    it 'returns the ID of the ghost user', :clean_gitlab_redis_cache do
+    it 'returns the ID of the ghost user', :clean_gitlab_redis_shared_state do
       expect(described_class.ghost_user_id).to eq(Users::Internal.ghost.id)
     end
 
-    it 'caches the ghost user ID', :clean_gitlab_redis_cache do
+    it 'caches the ghost user ID', :clean_gitlab_redis_shared_state do
       expect(Gitlab::Cache::Import::Caching)
         .to receive(:write)
         .once

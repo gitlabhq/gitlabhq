@@ -1,0 +1,13 @@
+#!/usr/bin/env ruby
+
+# frozen_string_literal: true
+
+require "bundler/setup"
+require "gitlab/cng/cli"
+
+require "pry"
+
+# This module just allows to not disable rubocop rule
+module Console
+  Pry.start
+end

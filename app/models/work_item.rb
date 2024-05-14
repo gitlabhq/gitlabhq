@@ -11,6 +11,8 @@ class WorkItem < Issue
   self.table_name = 'issues'
   self.inheritance_column = :_type_disabled
 
+  strip_attributes! :title
+
   belongs_to :namespace, inverse_of: :work_items
 
   has_one :parent_link, class_name: '::WorkItems::ParentLink', foreign_key: :work_item_id
@@ -24,7 +26,7 @@ class WorkItem < Issue
     through: :child_links, class_name: 'WorkItem',
     foreign_key: :work_item_id, source: :work_item
 
-  scope :inc_relations_for_permission_check, -> { includes(:author, project: :project_feature) }
+  scope :inc_relations_for_permission_check, -> { includes(:author, :work_item_type, project: :project_feature) }
 
   class << self
     def find_by_namespace_and_iid!(namespace, iid)
@@ -53,14 +55,12 @@ class WorkItem < Issue
           attribute_name: :relative_position,
           column_expression: WorkItems::ParentLink.arel_table[:relative_position],
           order_expression: WorkItems::ParentLink.arel_table[:relative_position].asc.nulls_last,
-          nullable: :nulls_last,
-          distinct: false
+          nullable: :nulls_last
         ),
         Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
           attribute_name: :created_at,
           order_expression: WorkItem.arel_table[:created_at].asc,
-          nullable: :not_nullable,
-          distinct: false
+          nullable: :not_nullable
         )
       ])
 
@@ -74,8 +74,7 @@ class WorkItem < Issue
             attribute_name: 'issue_link_id',
             column_expression: IssueLink.arel_table[:id],
             order_expression: IssueLink.arel_table[:id].asc,
-            nullable: :not_nullable,
-            distinct: true
+            nullable: :not_nullable
           )
         ])
     end

@@ -95,10 +95,10 @@ module NavbarStructureHelper
     )
   end
 
-  def insert_harbor_registry_nav(within)
+  def insert_harbor_registry_nav
     insert_after_sub_nav_item(
-      within,
-      within: _('Operate'),
+      _('Package Registry'),
+      within: _('Deploy'),
       new_sub_nav_item_name: _('Harbor Registry')
     )
   end
@@ -132,6 +132,14 @@ module NavbarStructureHelper
       within,
       within: _('Deploy'),
       new_sub_nav_item_name: _('Model registry')
+    )
+  end
+
+  def insert_ai_agents_nav(within)
+    insert_after_sub_nav_item(
+      within,
+      within: _('Deploy'),
+      new_sub_nav_item_name: s_('AIAgents|AI Agents')
     )
   end
 

@@ -1,6 +1,7 @@
+import { GlBadge } from '@gitlab/ui';
 import $ from 'jquery';
 import '~/lib/utils/jquery_at_who';
-import { escape as lodashEscape, sortBy, template, escapeRegExp } from 'lodash';
+import { escape as lodashEscape, sortBy, template, escapeRegExp, memoize } from 'lodash';
 import * as Emoji from '~/emoji';
 import axios from '~/lib/utils/axios_utils';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
@@ -13,6 +14,7 @@ import AjaxCache from './lib/utils/ajax_cache';
 import { spriteIcon } from './lib/utils/common_utils';
 import { parsePikadayDate } from './lib/utils/datetime_utility';
 import { unicodeLetters } from './lib/utils/regexp';
+import { renderVueComponentForLegacyJS } from './render_vue_component_for_legacy_js';
 
 const USERS_ALIAS = 'users';
 const ISSUES_ALIAS = 'issues';
@@ -21,6 +23,7 @@ const MERGEREQUESTS_ALIAS = 'mergerequests';
 const LABELS_ALIAS = 'labels';
 const SNIPPETS_ALIAS = 'snippets';
 const CONTACTS_ALIAS = 'contacts';
+const WIKIS_ALIAS = 'wikis';
 
 const CADENCE_REFERENCE_PREFIX = '[cadence:';
 const ITERATION_REFERENCE_PREFIX = '*iteration:';
@@ -30,7 +33,20 @@ export const CONTACT_STATE_ACTIVE = 'active';
 export const CONTACTS_ADD_COMMAND = '/add_contacts';
 export const CONTACTS_REMOVE_COMMAND = '/remove_contacts';
 
-const useMentionsBackendFiltering = window.gon.features?.mentionAutocompleteBackendFiltering;
+const busyBadge = memoize(
+  () =>
+    renderVueComponentForLegacyJS(
+      GlBadge,
+      {
+        class: 'gl-ml-2',
+        props: {
+          variant: 'warning',
+          size: 'sm',
+        },
+      },
+      s__('UserProfile|Busy'),
+    ).outerHTML,
+);
 
 /**
  * Escapes user input before we pass it to at.js, which
@@ -130,6 +146,7 @@ export const defaultAutocompleteConfig = {
   snippets: true,
   vulnerabilities: true,
   contacts: true,
+  wikis: true,
 };
 
 class GfmAutoComplete {
@@ -172,6 +189,7 @@ class GfmAutoComplete {
     if (this.enableMap.labels) this.setupLabels($input);
     if (this.enableMap.snippets) this.setupSnippets($input);
     if (this.enableMap.contacts) this.setupContacts($input);
+    if (this.enableMap.wikis) this.setupWikis($input);
 
     $input.filter('[data-supports-quick-actions="true"]').atwho({
       at: '/',
@@ -181,6 +199,7 @@ class GfmAutoComplete {
       skipSpecialCharacterTest: true,
       skipMarkdownCharacterTest: true,
       data: GfmAutoComplete.defaultLoadingData,
+      maxLen: 100,
       displayTpl(value) {
         const cssClasses = [];
 
@@ -219,7 +238,7 @@ class GfmAutoComplete {
         let tpl = '/${name} ';
         let referencePrefix = null;
         if (value.params.length > 0) {
-          const regexp = /^<\[[a-z]+:/;
+          const regexp = /^\[[a-z]+:/;
           const match = regexp.exec(value.params);
           if (match) {
             [referencePrefix] = match;
@@ -277,8 +296,6 @@ class GfmAutoComplete {
 
   // eslint-disable-next-line class-methods-use-this
   setSubmitReviewStates($input) {
-    if (!window.gon.features?.mrRequestChanges) return;
-
     const REVIEW_STATES = {
       reviewed: {
         header: __('Comment'),
@@ -299,6 +316,7 @@ class GfmAutoComplete {
       at: '/submit_review ',
       alias: 'submit_review',
       data: Object.keys(REVIEW_STATES),
+      maxLen: 100,
       displayTpl({ name }) {
         const reviewState = REVIEW_STATES[name];
 
@@ -317,6 +335,7 @@ class GfmAutoComplete {
       insertTpl: GfmAutoComplete.Emoji.insertTemplateFunction,
       skipSpecialCharacterTest: true,
       data: GfmAutoComplete.defaultLoadingData,
+      maxLen: 100,
       callbacks: {
         ...this.getDefaultCallbacks(),
         matcher(flag, subtext) {
@@ -375,6 +394,7 @@ class GfmAutoComplete {
     $input.atwho({
       at: '@',
       alias: USERS_ALIAS,
+      maxLen: 100,
       displayTpl(value) {
         let tmpl = GfmAutoComplete.Loading.template;
         const { avatarTag, username, title, icon, availability } = value;
@@ -384,12 +404,7 @@ class GfmAutoComplete {
             username,
             title,
             icon,
-            availabilityStatus:
-              availability && isUserBusy(availability)
-                ? `<span class="badge badge-warning badge-pill gl-badge sm gl-ml-2"> ${s__(
-                    'UserProfile|Busy',
-                  )}</span>`
-                : '',
+            availabilityStatus: availability && isUserBusy(availability) ? busyBadge() : '',
           });
         }
         return tmpl;
@@ -397,7 +412,7 @@ class GfmAutoComplete {
       // eslint-disable-next-line no-template-curly-in-string
       insertTpl: '${atwho-at}${username}',
       limit: 10,
-      delay: useMentionsBackendFiltering ? DEFAULT_DEBOUNCE_AND_THROTTLE_MS : null,
+      delay: DEFAULT_DEBOUNCE_AND_THROTTLE_MS,
       searchKey: 'search',
       alwaysHighlightFirst: true,
       skipSpecialCharacterTest: true,
@@ -425,15 +440,10 @@ class GfmAutoComplete {
           return match && match.length ? match[1] : null;
         },
         filter(query, data) {
-          if (useMentionsBackendFiltering) {
-            if (GfmAutoComplete.isLoading(data) || instance.previousQuery !== query) {
-              instance.previousQuery = query;
+          if (GfmAutoComplete.isLoading(data) || instance.previousQuery !== query) {
+            instance.previousQuery = query;
 
-              fetchData(this.$inputor, this.at, query);
-              return data;
-            }
-          } else if (GfmAutoComplete.isLoading(data)) {
-            fetchData(this.$inputor, this.at);
+            fetchData(this.$inputor, this.at, query);
             return data;
           }
 
@@ -480,6 +490,7 @@ class GfmAutoComplete {
       at: '#',
       alias: ISSUES_ALIAS,
       searchKey: 'search',
+      maxLen: 100,
       displayTpl(value) {
         let tmpl = GfmAutoComplete.Loading.template;
         if (value.title != null) {
@@ -517,6 +528,7 @@ class GfmAutoComplete {
       searchKey: 'search',
       // eslint-disable-next-line no-template-curly-in-string
       insertTpl: '${atwho-at}${title}',
+      maxLen: 100,
       displayTpl(value) {
         let tmpl = GfmAutoComplete.Loading.template;
         if (value.title != null) {
@@ -572,6 +584,7 @@ class GfmAutoComplete {
       at: '!',
       alias: MERGEREQUESTS_ALIAS,
       searchKey: 'search',
+      maxLen: 100,
       displayTpl(value) {
         let tmpl = GfmAutoComplete.Loading.template;
         if (value.title != null) {
@@ -618,6 +631,7 @@ class GfmAutoComplete {
       alias: LABELS_ALIAS,
       searchKey: 'search',
       data: GfmAutoComplete.defaultLoadingData,
+      maxLen: 100,
       displayTpl(value) {
         let tmpl = GfmAutoComplete.Labels.templateFunction(value.color, value.title);
         if (GfmAutoComplete.isLoading(value)) {
@@ -705,6 +719,7 @@ class GfmAutoComplete {
       at: '$',
       alias: SNIPPETS_ALIAS,
       searchKey: 'search',
+      maxLen: 100,
       displayTpl(value) {
         let tmpl = GfmAutoComplete.Loading.template;
         if (value.title != null) {
@@ -734,6 +749,47 @@ class GfmAutoComplete {
     showAndHideHelper($input, SNIPPETS_ALIAS);
   }
 
+  setupWikis($input) {
+    $input.atwho({
+      at: '[[',
+      suffix: ']]',
+      alias: WIKIS_ALIAS,
+      searchKey: 'title',
+      data: GfmAutoComplete.defaultLoadingData,
+      displayTpl(value) {
+        let tmpl = GfmAutoComplete.Loading.template;
+        if (value.title != null) {
+          tmpl = GfmAutoComplete.Wikis.templateFunction(value);
+        }
+        return tmpl;
+      },
+      // eslint-disable-next-line no-template-curly-in-string
+      insertTpl: '${atwho-at}${title}|${slug}',
+      callbacks: {
+        ...this.getDefaultCallbacks(),
+        beforeInsert(value) {
+          const [title, slug] = value.substr(2).split('|');
+          if (title.toLowerCase() === slug.toLowerCase()) {
+            return `[[${slug}`;
+          }
+          return `[[${title}|${slug}`;
+        },
+        beforeSave(wikis) {
+          return $.map(wikis, (m) => {
+            if (m.title == null) {
+              return m;
+            }
+            return {
+              title: m.title,
+              slug: m.slug,
+            };
+          });
+        },
+      },
+    });
+    showAndHideHelper($input, WIKIS_ALIAS);
+  }
+
   setupContacts($input) {
     const fetchData = this.fetchData.bind(this);
     let command = '';
@@ -743,6 +799,7 @@ class GfmAutoComplete {
       suffix: ']',
       alias: CONTACTS_ALIAS,
       searchKey: 'search',
+      maxLen: 100,
       displayTpl(value) {
         let tmpl = GfmAutoComplete.Loading.template;
         if (value.email != null) {
@@ -1003,13 +1060,10 @@ GfmAutoComplete.atTypeMap = {
   '[vulnerability:': 'vulnerabilities',
   $: 'snippets',
   '[contact:': 'contacts',
+  '[[': 'wikis',
 };
 
-GfmAutoComplete.typesWithBackendFiltering = ['vulnerabilities'];
-
-if (useMentionsBackendFiltering) {
-  GfmAutoComplete.typesWithBackendFiltering.push('members');
-}
+GfmAutoComplete.typesWithBackendFiltering = ['vulnerabilities', 'members'];
 
 GfmAutoComplete.isTypeWithBackendFiltering = (type) =>
   GfmAutoComplete.typesWithBackendFiltering.includes(GfmAutoComplete.atTypeMap[type]);
@@ -1106,6 +1160,14 @@ GfmAutoComplete.Milestones = {
 GfmAutoComplete.Contacts = {
   templateFunction({ email, firstName, lastName }) {
     return `<li><small>${escape(firstName)} ${escape(lastName)}</small> ${escape(email)}</li>`;
+  },
+};
+GfmAutoComplete.Wikis = {
+  templateFunction({ title, slug }) {
+    const icon = spriteIcon('document', 's16 vertical-align-middle gl-mr-2');
+    const slugSpan =
+      title.toLowerCase() !== slug.toLowerCase() ? ` <small>(${escape(slug)})</small>` : '';
+    return `<li>${icon} ${escape(title)} ${slugSpan}</li>`;
   },
 };
 

@@ -96,7 +96,6 @@ Layout/ArrayAlignment:
     - 'ee/spec/lib/ee/gitlab/auth/ldap/sync/group_spec.rb'
     - 'ee/spec/lib/ee/gitlab/usage_data_spec.rb'
     - 'ee/spec/lib/gitlab/auth/ldap/person_spec.rb'
-    - 'ee/spec/lib/gitlab/ci/config/security_orchestration_policies/processor_spec.rb'
     - 'ee/spec/lib/gitlab/ci/reports/dependency_list/report_spec.rb'
     - 'ee/spec/lib/gitlab/graphql/loaders/oncall_participant_loader_spec.rb'
     - 'ee/spec/lib/gitlab/search/index_curator_spec.rb'

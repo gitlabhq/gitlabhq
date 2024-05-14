@@ -247,6 +247,9 @@ RSpec.describe Tooling::Danger::ProjectHelper, feature_category: :tooling do
         [:analytics_instrumentation]                      | '+ data: { track_label:'                       | ['admin/groups/_form.html.haml']
         [:analytics_instrumentation]                      | '+ Gitlab::Tracking.event'                     | ['dashboard/todos_controller.rb', 'admin/groups/_form.html.haml']
         [:analytics_instrumentation]                      | '+ Gitlab::Tracking.event("c", "a")'           | ['dashboard/todos_controller.rb', 'admin/groups/_form.html.haml']
+        [:analytics_instrumentation]                      | '+ Gitlab::InternalEvents.track_event("c")'    | ['dashboard/todos_controller.rb', 'admin/groups/_form.html.haml']
+        [:analytics_instrumentation]                      | '+ include Gitlab::InternalEventsTracking'     | ['dashboard/todos_controller.rb', 'admin/groups/_form.html.haml']
+        [:analytics_instrumentation]                      | '+ track_internal_event("c")'                  | ['dashboard/todos_controller.rb', 'admin/groups/_form.html.haml']
         [:database, :backend, :analytics_instrumentation] | '+ count(User.active)'                         | ['usage_data.rb', 'lib/gitlab/usage_data.rb', 'ee/lib/ee/gitlab/usage_data.rb']
         [:database, :backend, :analytics_instrumentation] | '+ estimate_batch_distinct_count(User.active)' | ['usage_data.rb']
         [:backend, :analytics_instrumentation]            | '+ alt_usage_data(User.active)'                | ['lib/gitlab/usage_data.rb']
@@ -267,6 +270,7 @@ RSpec.describe Tooling::Danger::ProjectHelper, feature_category: :tooling do
         [:import_integrate_be, :backend]                  | '+ project.execute_integrations(foo, :bar)'    | ['app/foo.rb']
         [:frontend, :analytics_instrumentation]           | '+ api.trackRedisCounterEvent("foo")'          | ['app/assets/javascripts/telemetry.js', 'ee/app/assets/javascripts/mr_widget.vue']
         [:frontend, :analytics_instrumentation]           | '+ api.trackRedisHllUserEvent("bar")'          | ['app/assets/javascripts/telemetry.js', 'ee/app/assets/javascripts/mr_widget.vue']
+        [:frontend, :analytics_instrumentation]           | '+ InternalEvents.trackEvent("foo")'           | ['app/assets/javascripts/telemetry.js', 'ee/app/assets/javascripts/mr_widget.vue']
       end
 
       with_them do

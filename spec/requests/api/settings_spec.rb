@@ -95,6 +95,10 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
       expect(json_response['max_login_attempts']).to be_nil
       expect(json_response['failed_login_attempts_unlock_period_in_minutes']).to be_nil
       expect(json_response['bulk_import_concurrent_pipeline_batch_limit']).to eq(25)
+      expect(json_response['downstream_pipeline_trigger_limit_per_project_user_sha']).to eq(0)
+      expect(json_response['concurrent_github_import_jobs_limit']).to eq(1000)
+      expect(json_response['concurrent_bitbucket_import_jobs_limit']).to eq(100)
+      expect(json_response['concurrent_bitbucket_server_import_jobs_limit']).to eq(100)
     end
   end
 
@@ -169,7 +173,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
             diff_max_files: 2000,
             diff_max_lines: 50000,
             default_branch_protection: ::Gitlab::Access::PROTECTION_DEV_CAN_MERGE,
-            default_branch_protection_defaults: ::Gitlab::Access::BranchProtection.protected_against_developer_pushes.stringify_keys,
+            default_branch_protection_defaults: ::Gitlab::Access::BranchProtection.protected_after_initial_push.stringify_keys,
             local_markdown_version: 3,
             allow_local_requests_from_web_hooks_and_services: true,
             allow_local_requests_from_system_hooks: false,
@@ -216,7 +220,11 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
             gitlab_shell_operation_limit: 500,
             namespace_aggregation_schedule_lease_duration_in_seconds: 400,
             max_import_remote_file_size: 2,
-            security_txt_content: nil
+            security_txt_content: nil,
+            downstream_pipeline_trigger_limit_per_project_user_sha: 300,
+            concurrent_github_import_jobs_limit: 2,
+            concurrent_bitbucket_import_jobs_limit: 2,
+            concurrent_bitbucket_server_import_jobs_limit: 2
           }
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -254,7 +262,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
         expect(json_response['diff_max_files']).to eq(2000)
         expect(json_response['diff_max_lines']).to eq(50000)
         expect(json_response['default_branch_protection']).to eq(Gitlab::Access::PROTECTION_DEV_CAN_MERGE)
-        expect(json_response['default_branch_protection_defaults']).to eq(::Gitlab::Access::BranchProtection.protected_against_developer_pushes.stringify_keys)
+        expect(json_response['default_branch_protection_defaults']).to eq(::Gitlab::Access::BranchProtection.protected_after_initial_push.stringify_keys)
         expect(json_response['local_markdown_version']).to eq(3)
         expect(json_response['allow_local_requests_from_web_hooks_and_services']).to eq(true)
         expect(json_response['allow_local_requests_from_system_hooks']).to eq(false)
@@ -302,6 +310,10 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
         expect(json_response['bulk_import_max_download_file_size']).to be(1)
         expect(json_response['security_txt_content']).to be(nil)
         expect(json_response['bulk_import_concurrent_pipeline_batch_limit']).to be(2)
+        expect(json_response['downstream_pipeline_trigger_limit_per_project_user_sha']).to be(300)
+        expect(json_response['concurrent_github_import_jobs_limit']).to be(2)
+        expect(json_response['concurrent_bitbucket_import_jobs_limit']).to be(2)
+        expect(json_response['concurrent_bitbucket_server_import_jobs_limit']).to be(2)
       end
     end
 
@@ -1019,6 +1031,40 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
 
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response['message']['ci_max_includes'])
+          .to include(a_string_matching('is not a number'))
+      end
+    end
+
+    context 'with downstream_pipeline_trigger_limit_per_project_user_sha' do
+      it 'updates the settings' do
+        put api("/application/settings", admin), params: {
+          downstream_pipeline_trigger_limit_per_project_user_sha: 200
+        }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to include(
+          'downstream_pipeline_trigger_limit_per_project_user_sha' => 200
+        )
+      end
+
+      it 'allows a zero value' do
+        put api("/application/settings", admin), params: {
+          downstream_pipeline_trigger_limit_per_project_user_sha: 0
+        }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to include(
+          'downstream_pipeline_trigger_limit_per_project_user_sha' => 0
+        )
+      end
+
+      it 'does not allow a nil value' do
+        put api("/application/settings", admin), params: {
+          downstream_pipeline_trigger_limit_per_project_user_sha: nil
+        }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']['downstream_pipeline_trigger_limit_per_project_user_sha'])
           .to include(a_string_matching('is not a number'))
       end
     end

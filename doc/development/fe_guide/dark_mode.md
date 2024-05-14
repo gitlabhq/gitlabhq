@@ -4,27 +4,30 @@ group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
-This page is about developing dark mode for GitLab. For more information on how to enable dark mode, see [Change the syntax highlighting theme](../../user/profile/preferences.md#change-the-syntax-highlighting-theme).
+# Dark mode
 
-# How dark mode works
+This page is about developing dark mode for GitLab. For more information on how to enable dark mode, see [Profile preferences](../../user/profile/preferences.md#dark-mode).
 
-Short version: Reverse the color palette and override a few Bootstrap variables.
+## How dark mode works
 
-Note the following:
+1. The [color palette](https://design.gitlab.com/product-foundations/color) values are reversed using [dark mode design tokens](design_tokens.md#modes) to provide darker colors for smaller scales.
+1. `app/assets/stylesheets/themes/_dark.scss` imports [dark mode design token](design_tokens.md#dark-mode) SCSS variables for colors.
+1. `app/assets/stylesheets/themes/dark_mode_overrides.scss` imports [dark mode design token](design_tokens.md#dark-mode) CSS custom properties for colors.
+1. Bootstrap variables overridden in `app/assets/stylesheets/framework/variables_overrides.scss` are given dark mode values in `_dark.scss`.
+1. `_dark.scss` is loaded _before_ `application.scss` to generate separate `application_dark.css` stylesheet for dark mode users only.
 
-- The dark mode palette is defined in `app/assets/stylesheets/themes/_dark.scss`.
-  This is loaded _before_ application.scss to generate `application_dark.css`
-  - We define two types of variables in `_dark.scss`:
-    - SCSS variables are used in framework, components, and utility classes.
-    - CSS variables are used for any colors within the `app/assets/stylesheets/page_bundles` directory.
-- `app/views/layouts/_head.html.haml` then loads `application` or `application_dark` based on the user's theme preference.
+## SCSS variables vs CSS custom properties
 
-As we do not want to generate separate `_dark.css` variants of every `page_bundle` file,
-we use CSS variables with SCSS variables as fallbacks. This is because when we generate the `page_bundles`
+Design tokens generate both SCSS variables and CSS custom properties which are imported into the dark mode stylesheet.
+
+- **SCSS variables:** are used in framework, components, and utility classes and override existing color usage for dark mode.
+- **CSS custom properties:** are used for any colors within the `app/assets/stylesheets/page_bundles` directory.
+
+As we do not want to generate separate `*_dark.css` variants of every `page_bundle` file,
+we use CSS custom properties with SCSS variables as fallbacks. This is because when we generate the `page_bundles`
 CSS, we get the variable values from `_variables.scss`, so any SCSS variables have light mode values.
 
-As the CSS variables defined in `_dark.scss` are available in the browser, they have the
-correct colors for dark mode.
+As the CSS custom properties defined in `_dark.scss` are available in the browser, they have the correct colors for dark mode.
 
 ```scss
 color: var(--gray-500, $gray-500);
@@ -39,7 +42,7 @@ add multiple classes every time you want to add a color.
 Currently, we cannot set up a utility class only in dark mode. We hope to address that
 [issue](https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1141) soon.
 
-## Using different values in light and dark mode
+## Using different values between light and dark mode
 
 In most cases, we can use the same values for light and dark mode. If that is not possible, you
 can add an override using the `.gl-dark` class that dark mode adds to `body`:
@@ -61,15 +64,4 @@ Avoid using a different value for the SCSS fallback
 color: var(--gray-500, $gray-700);
 ```
 
-We [plan to add](https://gitlab.com/gitlab-org/gitlab/-/issues/301147) the CSS variables to light mode. When that happens, different values for the SCSS fallback will no longer work.
-
-## When to use SCSS variables
-
-There are a few things we do in SCSS that we cannot (easily) do with CSS, such as the following
-functions:
-
-- `lighten`
-- `darken`
-- `color-yiq` (color contrast)
-
-If those are needed then SCSS variables should be used.
+We [plan to add](https://gitlab.com/groups/gitlab-org/-/epics/7400) the CSS variables to light mode. When that happens, different values for the SCSS fallback will no longer work.

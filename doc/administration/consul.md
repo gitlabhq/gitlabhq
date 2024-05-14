@@ -258,5 +258,5 @@ sudo rm -rf /var/opt/gitlab/consul/data
 
 If you have taken advantage of Consul to store other data and want to restore
 the failed node, follow the
-[Consul guide](https://developer.hashicorp.com/consul/tutorials/datacenter-operations/recovery-outage)
+[Consul guide](https://developer.hashicorp.com/consul/tutorials/operate-consul/recovery-outage)
 to recover a failed cluster.

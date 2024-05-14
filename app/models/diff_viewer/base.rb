@@ -68,6 +68,14 @@ module DiffViewer
       @too_large = size_limit && diff_file.raw_size > size_limit
     end
 
+    def expandable?
+      if Feature.enabled?(:increase_diff_file_performance, diff_file.repository.project)
+        !too_large? && text?
+      else
+        diff_file&.blob&.readable_text?
+      end
+    end
+
     def binary_detected_after_load?
       !@initially_binary && diff_file.binary_in_repo?
     end
@@ -88,7 +96,7 @@ module DiffViewer
     def render_error_message
       return unless render_error
 
-      _("This %{viewer} could not be displayed because %{reason}. You can %{options} instead.") %
+      _("%{viewer} could not be displayed: %{reason}. Options to address this: %{options}.") %
         {
           viewer: switcher_title,
           reason: render_error_reason,

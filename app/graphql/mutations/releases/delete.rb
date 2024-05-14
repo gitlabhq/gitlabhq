@@ -6,13 +6,13 @@ module Mutations
       graphql_name 'ReleaseDelete'
 
       field :release,
-            Types::ReleaseType,
-            null: true,
-            description: 'Deleted release.'
+        Types::ReleaseType,
+        null: true,
+        description: 'Deleted release.'
 
       argument :tag_name, GraphQL::Types::String,
-               required: true, as: :tag,
-               description: 'Name of the tag associated with the release to delete.'
+        required: true, as: :tag,
+        description: 'Name of the tag associated with the release to delete.'
 
       authorize :destroy_release
 

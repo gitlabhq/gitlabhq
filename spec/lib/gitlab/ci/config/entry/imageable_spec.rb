@@ -51,7 +51,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Imageable do
     describe '#errors' do
       it 'saves errors' do
         expect(entry.errors.first)
-          .to match /config should be a hash or a string/
+          .to match(/config should be a hash or a string/)
       end
     end
 
@@ -68,7 +68,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Imageable do
     describe '#errors' do
       it 'saves errors' do
         expect(entry.errors.first)
-          .to match /config contains unknown keys: non_existing/
+          .to match(/config contains unknown keys: non_existing/)
       end
     end
 

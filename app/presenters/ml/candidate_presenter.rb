@@ -11,10 +11,23 @@ module Ml
       )
     end
 
-    def artifact_path
-      return unless candidate.package_id.present?
+    def artifact_show_path
+      package_id = if candidate.model_version
+                     candidate.model_version.package_id
+                   else
+                     candidate.package_id
+                   end
 
-      project_package_path(candidate.project, candidate.package_id)
+      return unless package_id.present?
+
+      project_package_path(candidate.project, package_id)
+    end
+
+    delegator_override :ci_build
+    def ci_build
+      return unless candidate.from_ci? && Ability.allowed?(current_user, :read_build, candidate.ci_build)
+
+      candidate.ci_build
     end
   end
 end

@@ -90,89 +90,6 @@ However, it has the following limitations:
   always runs as a process alongside other GitLab components on any given node. For Service Ping, none of the node data would therefore
   appear to be associated to any of the services running, because they all appear to be running on different hosts. To alleviate this problem, the `node_exporter` in GCK was arbitrarily "assigned" to the `web` service, meaning only for this service `node_*` metrics appears in Service Ping.
 
-## Troubleshooting
-
-### Cannot disable Service Ping with the configuration file
-
-The method to disable Service Ping with the GitLab configuration file does not work in
-GitLab versions 9.3.0 to 13.12.3. To disable it, you must use the Admin Area in
-the GitLab UI instead. For more information, see
-[this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/333269).
-
-GitLab functionality and application settings cannot override or circumvent
-restrictions at the network layer. If Service Ping is blocked by your firewall,
-you are not impacted by this bug.
-
-#### Check if you are affected
-
-You can check if you were affected by this bug by using the Admin Area or by
-checking the configuration file of your GitLab instance:
-
-- Using the Admin Area:
-
-  1. On the left sidebar, at the bottom, select **Admin Area**.
-  1. On the left sidebar, select **Settings > Metrics and profiling**.
-  1. Expand **Usage statistics**.
-  1. Are you able to check or uncheck the checkbox to disable Service Ping?
-
-     - If _yes_, your GitLab instance is not affected by this bug.
-     - If you can't check or uncheck the checkbox, you are affected by this bug.
-       See the steps on [how to fix this](#how-to-fix-the-cannot-disable-service-ping-bug).
-
-- Checking your GitLab instance configuration file:
-
-  To check whether you're impacted by this bug, check your instance configuration
-  settings. The configuration file in which Service Ping can be disabled depends
-  on your installation and deployment method, but is typically one of the following:
-
-  - `/etc/gitlab/gitlab.rb` for Linux package installations and Docker.
-  - `charts.yaml` for GitLab Helm and cloud-native Kubernetes deployments.
-  - `gitlab.yml` for self-compiled installations.
-
-  To check the relevant configuration file for strings that indicate whether
-  Service Ping is disabled, you can use `grep`:
-
-  ```shell
-  # Linux package
-  grep "usage_ping_enabled'\] = false" /etc/gitlab/gitlab.rb
-
-  # Kubernetes charts
-  grep "enableUsagePing: false" values.yaml
-
-  # From source
-  grep "usage_ping_enabled'\] = false" gitlab/config.yml
-  ```
-
-  If you see any output after running the relevant command, your GitLab instance
-  may be affected by the bug. Otherwise, your instance is not affected.
-
-#### How to fix the "Cannot disable Service Ping" bug
-
-To work around this bug, you have two options:
-
-- [Update](../../../update/index.md) to GitLab 13.12.4 or newer to fix this bug.
-- If you can't update to GitLab 13.12.4 or newer, enable Service Ping in the
-  configuration file, then disable Service Ping in the UI. For example, if you're
-  using the Linux package:
-
-  1. Edit `/etc/gitlab/gitlab.rb`:
-
-     ```ruby
-     gitlab_rails['usage_ping_enabled'] = true
-     ```
-
-  1. Reconfigure GitLab:
-
-     ```shell
-     sudo gitlab-ctl reconfigure
-     ```
-
-  1. On the left sidebar, at the bottom, select **Admin Area**.
-  1. On the left sidebar, select **Settings > Metrics and profiling**.
-  1. Expand **Usage statistics**.
-  1. Clear the **Enable Service Ping** checkbox.
-  1. Select **Save Changes**.
-
 ## Generate Service Ping
 
 ### Generate or get the cached Service Ping in rails console
@@ -191,6 +108,19 @@ This also refreshes the cached Service Ping displayed in the Admin Area.
 
 ```ruby
 Gitlab::Usage::ServicePingReport.for(output: :all_metrics_values)
+```
+
+### Generate a new Service Ping including today's usage data
+
+Use the following methods in the [rails console](../../../administration/operations/rails_console.md#starting-a-rails-console-session).
+
+```ruby
+require_relative 'spec/support/helpers/service_ping_helpers.rb'
+
+ServicePingHelpers.get_current_service_ping_payload
+
+# To get a single metric's value, provide the metric's key_path like so:
+ServicePingHelpers.get_current_usage_metric_value('counts.count_total_render_duo_pro_lead_page')
 ```
 
 ### Generate and print

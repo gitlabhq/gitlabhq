@@ -1,23 +1,38 @@
 - page_title _('Preferences')
 - add_page_specific_style 'page_bundles/profiles/preferences'
 - user_theme_id = Gitlab::Themes.for_user(@user).id
+- user_color_mode_id = Gitlab::ColorModes.for_user(@user).id
 - user_color_schema_id = Gitlab::ColorSchemes.for_user(@user).id
-- user_fields = { theme: user_theme_id, gitpod_enabled: @user.gitpod_enabled, sourcegraph_enabled: @user.sourcegraph_enabled }.to_json
+- user_fields = { color_mode_id: user_color_mode_id, theme: user_theme_id, gitpod_enabled: @user.gitpod_enabled, sourcegraph_enabled: @user.sourcegraph_enabled, extensions_marketplace_enabled: @user.extensions_marketplace_enabled }.to_json
 - fixed_help_text = s_('Preferences|Content will be a maximum of 1280 pixels wide.')
 - fluid_help_text = s_('Preferences|Content will span %{percentage} of the page width.').html_safe % { percentage: '100%' }
+- @color_modes = Gitlab::ColorModes::available_modes.to_json
 - @themes = Gitlab::Themes::available_themes.to_json
-- data_attributes = { themes: @themes, integration_views: integration_views.to_json, user_fields: user_fields, body_classes: Gitlab::Themes.body_classes, profile_preferences_path: profile_preferences_path }
+- extensions_marketplace_url = ::Gitlab::WebIde::ExtensionsMarketplace.marketplace_home_url
+- data_attributes = { color_modes: @color_modes, themes: @themes, integration_views: integration_views.to_json, user_fields: user_fields, body_classes: Gitlab::Themes.body_classes, profile_preferences_path: profile_preferences_path, extensions_marketplace_url: extensions_marketplace_url }
 - @force_desktop_expanded_sidebar = true
 
 = gitlab_ui_form_for @user, url: profile_preferences_path, remote: true, method: :put, html: { id: "profile-preferences-form" } do |f|
   = render_if_exists 'profiles/preferences/code_suggestions_settings_self_assignment'
+  .settings-section.js-preferences-form.js-search-settings-section#appearance
+    .settings-sticky-header
+      .settings-sticky-header-inner
+        %h4.gl-my-0
+          = s_('Preferences|Appearance')
+    %p.gl-text-secondary
+      = s_('Preferences|Choose the appearance of the application.')
+    - Gitlab::ColorModes.each do |mode|
+      = f.gitlab_ui_radio_component :color_mode_id, mode.id,
+        mode.name,
+        radio_options: { checked: user_color_mode_id == mode.id }
+
   .settings-section.js-preferences-form.js-search-settings-section.application-theme#navigation-theme
     .settings-sticky-header
       .settings-sticky-header-inner
         %h4.gl-my-0
-          = s_('Preferences|Color theme')
+          = s_('Preferences|Navigation theme')
     %p.gl-text-secondary
-      = s_('Preferences|Customize the color of GitLab.')
+      = s_('Preferences|Choose the navigation theme.')
     .application-theme.row
       - Gitlab::Themes.each do |theme|
         %label.col-6.col-sm-4.col-md-3.col-xl-2.gl-mb-5

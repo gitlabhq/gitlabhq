@@ -4,29 +4,82 @@ require 'spec_helper'
 
 RSpec.describe ::Gitlab::Ci::Config::Yaml::Loader, feature_category: :pipeline_composition do
   describe '#load' do
-    let_it_be(:project) { create(:project) }
+    let_it_be(:yaml) do
+      File.read(Rails.root.join('spec/lib/gitlab/ci/config/yaml/fixtures/complex-included-ci.yml'))
+    end
 
-    let(:inputs) { { test_input: 'hello test' } }
-    let(:variables) { [] }
+    let(:expected_config) do
+      {
+        variables: {
+          ALLOW_FAILURE: false
+        },
+        'my-job-build': {
+          stage: 'build',
+          script: [
+            'echo "Building with clang and optimization level 3"',
+            'echo "1.0.0"'
+          ],
+          parallel: 2
+        },
+        'my-job-test': {
+          stage: 'build',
+          script: [
+            'echo "Testing with pytest"',
+            'if [ true == true ]; then echo "Coverage is enabled"; fi'
+          ],
+          allow_failure: false
+        },
+        'my-job-test-2': {
+          stage: 'build',
+          script: [
+            'array item script 1',
+            'array item script 2'
+          ],
+          rules: [
+            { if: '$CI_PIPELINE_SOURCE == "merge_request_event"', changes: ['.gitlab-ci.yml'] },
+            { if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^feature/', when: 'never' },
+            { if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME != $CI_DEFAULT_BRANCH', when: 'manual' }
+          ]
+        },
+        'my-job-deploy': {
+          stage: 'build',
+          script: ['echo "Deploying to production using blue-green strategy"'],
+          rules: [
+            { if: '$CI_PIPELINE_SOURCE != "merge_request_event"' }
+          ]
+        }
+      }
+    end
 
-    let(:yaml) do
-      <<~YAML
-      ---
-      spec:
-        inputs:
-          test_input:
-      ---
-      test_job:
-        script:
-          - echo "$[[ inputs.test_input ]]"
-      YAML
+    let(:inputs) do
+      {
+        compiler: 'clang',
+        optimization_level: 3,
+        test_framework: '$TEST_FRAMEWORK',
+        coverage_enabled: true,
+        environment: 'production',
+        deploy_strategy: 'blue-green',
+        job_stage: 'build',
+        test_script: [
+          'array item script 1',
+          'array item script 2'
+        ],
+        test_rules: [
+          { if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^feature/', when: 'never' },
+          { if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME != $CI_DEFAULT_BRANCH', when: 'manual' }
+        ]
+      }
+    end
+
+    let(:variables) do
+      Gitlab::Ci::Variables::Collection.new([
+        { key: 'TEST_FRAMEWORK', value: 'pytest', masked: false }
+      ])
     end
 
     subject(:result) { described_class.new(yaml, inputs: inputs, variables: variables).load }
 
     it 'loads and interpolates CI config YAML' do
-      expected_config = { test_job: { script: ['echo "hello test"'] } }
-
       expect(result).to be_valid
       expect(result).to be_interpolated
       expect(result.content).to eq(expected_config)
@@ -50,102 +103,22 @@ RSpec.describe ::Gitlab::Ci::Config::Yaml::Loader, feature_category: :pipeline_c
       end
     end
 
-    context 'when there is an error interpolating the YAML' do
-      let(:inputs) { {} }
-
-      it 'returns an error result' do
-        expect(result).not_to be_valid
-        expect(result.error).to eq('`test_input` input: required value has not been provided')
-      end
-    end
-
-    context 'when interpolating into a YAML key' do
-      let(:yaml) do
-        <<~YAML
-        ---
-        spec:
-          inputs:
-            test_input:
-        ---
-        "$[[ inputs.test_input ]]_job":
-          script:
-            - echo "test"
-        YAML
-      end
-
-      it 'loads and interpolates CI config YAML' do
-        expected_config = { 'hello test_job': { script: ['echo "test"'] } }
-
-        expect(result).to be_valid
-        expect(result).to be_interpolated
-        expect(result.content).to eq(expected_config)
-      end
-    end
-
-    context 'when interpolating values of different types' do
+    context 'when there are errors with the inputs' do
       let(:inputs) do
         {
-          test_boolean: true,
-          test_number: 8,
-          test_string: 'test'
+          coverage_enabled: 'true',
+          deploy_strategy: 'not-an-option',
+          version: 'test-version'
         }
       end
 
-      let(:yaml) do
-        <<~YAML
-        ---
-        spec:
-          inputs:
-            test_string:
-              type: string
-            test_boolean:
-              type: boolean
-            test_number:
-              type: number
-        ---
-        "$[[ inputs.test_string ]]_job":
-          allow_failure: $[[ inputs.test_boolean ]]
-          parallel: $[[ inputs.test_number ]]
-        YAML
-      end
-
-      it 'loads and interpolates CI config YAML', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/434826' do
-        expected_config = { test_job: { allow_failure: true, parallel: 8 } }
-
-        expect(result).to be_valid
-        expect(result).to be_interpolated
-        expect(result.content).to eq(expected_config)
-      end
-    end
-
-    context 'when interpolating and expanding variables' do
-      let(:inputs) { { test_input: '$TEST_VAR' } }
-
-      let(:variables) do
-        Gitlab::Ci::Variables::Collection.new([
-          { key: 'TEST_VAR', value: 'test variable', masked: false }
-        ])
-      end
-
-      let(:yaml) do
-        <<~YAML
-        ---
-        spec:
-          inputs:
-            test_input:
-        ---
-        "test_job":
-          script:
-            - echo "$[[ inputs.test_input | expand_vars ]]"
-        YAML
-      end
-
-      it 'loads and interpolates CI config YAML' do
-        expected_config = { test_job: { script: ['echo "test variable"'] } }
-
-        expect(result).to be_valid
-        expect(result).to be_interpolated
-        expect(result.content).to eq(expected_config)
+      it 'returns up to 3 error messages for input errors' do
+        expect(result).not_to be_valid
+        expect(result.error).to eq(
+          '`coverage_enabled` input: provided value is not a boolean, ' \
+          '`deploy_strategy` input: `not-an-option` cannot be used because it is not in the list of allowed options, ' \
+          '`job_stage` input: required value has not been provided'
+        )
       end
     end
 
@@ -188,6 +161,8 @@ RSpec.describe ::Gitlab::Ci::Config::Yaml::Loader, feature_category: :pipeline_c
             - echo "$[[ inputs.test_input | expand_vars | truncate(0,1) ]]"
         YAML
       end
+
+      let(:inputs) { { test_input: 'test' } }
 
       it 'returns an error result' do
         stub_const('::Gitlab::Ci::Config::Interpolation::Block::MAX_FUNCTIONS', 1)

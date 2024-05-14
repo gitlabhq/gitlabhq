@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 A cache is one or more files a job downloads and saves. Subsequent jobs that use
 the same cache don't have to download the files again, so they execute more quickly.
@@ -69,9 +69,6 @@ For runners to work with caches efficiently, you must do one of the following:
   These runners must be in autoscale mode.
 
 ## Use multiple caches
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32814) in GitLab 13.10.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/321877), in GitLab 13.12.
 
 You can have a maximum of four caches:
 

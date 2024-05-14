@@ -8,13 +8,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 You can read more about [group access tokens](../user/group/settings/group_access_tokens.md).
 
 ## List group access tokens
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77236) in GitLab 14.7.
 
 Get a list of [group access tokens](../user/group/settings/group_access_tokens.md).
 
@@ -50,8 +48,6 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 
 ## Get a group access token
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82714) in GitLab 14.10.
-
 Get a [group access token](../user/group/settings/group_access_tokens.md) by ID.
 
 ```plaintext
@@ -61,7 +57,7 @@ GET groups/:id/access_tokens/:token_id
 | Attribute | Type    | required | Description         |
 |-----------|---------|----------|---------------------|
 | `id` | integer or string | yes | ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
-| `token_id` | integer or string | yes | ID of the group access token |
+| `token_id` | integer | yes | ID of the group access token |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/<group_id>/access_tokens/<token_id>"
@@ -85,7 +81,6 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 
 ## Create a group access token
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77236) in GitLab 14.7.
 > - The `expires_at` attribute default was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120213) in GitLab 16.0.
 
 Create a [group access token](../user/group/settings/group_access_tokens.md). You must have the Owner role for the
@@ -146,12 +141,9 @@ POST /groups/:id/access_tokens/:token_id/rotate
 
 | Attribute | Type       | required | Description         |
 |-----------|------------|----------|---------------------|
-| `id` | integer/string  | yes      | ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
-| `token_id` | integer/string | yes | ID of the access token |
+| `id` | integer or string  | yes      | ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
+| `token_id` | integer | yes | ID of the access token |
 | `expires_at` | date    | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416795) in GitLab 16.6. |
-
-NOTE:
-Non-administrators can rotate their own tokens. Administrators can rotate tokens of any user in the group.
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/<group_id>/access_tokens/<token_id>/rotate"
@@ -191,8 +183,6 @@ for more information.
 
 ## Revoke a group access token
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77236) in GitLab 14.7.
-
 Revoke a [group access token](../user/group/settings/group_access_tokens.md).
 
 ```plaintext
@@ -202,7 +192,7 @@ DELETE groups/:id/access_tokens/:token_id
 | Attribute | Type    | required | Description         |
 |-----------|---------|----------|---------------------|
 | `id` | integer or string | yes | ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
-| `token_id` | integer or string | yes | ID of the group access token |
+| `token_id` | integer | yes | ID of the group access token |
 
 ```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/<group_id>/access_tokens/<token_id>"

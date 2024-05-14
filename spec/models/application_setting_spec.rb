@@ -29,6 +29,19 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { expect(setting.bulk_import_concurrent_pipeline_batch_limit).to eq(25) }
     it { expect(setting.allow_project_creation_for_guest_and_below).to eq(true) }
     it { expect(setting.members_delete_limit).to eq(60) }
+    it { expect(setting.downstream_pipeline_trigger_limit_per_project_user_sha).to eq(0) }
+    it { expect(setting.asciidoc_max_includes).to eq(32) }
+    it { expect(setting.concurrent_github_import_jobs_limit).to eq(1000) }
+    it { expect(setting.concurrent_bitbucket_import_jobs_limit).to eq(100) }
+    it { expect(setting.concurrent_bitbucket_server_import_jobs_limit).to eq(100) }
+    it { expect(setting.nuget_skip_metadata_url_validation).to eq(false) }
+    it { expect(setting.silent_admin_exports_enabled).to eq(false) }
+  end
+
+  describe 'USERS_UNCONFIRMED_SECONDARY_EMAILS_DELETE_AFTER_DAYS' do
+    subject { described_class::USERS_UNCONFIRMED_SECONDARY_EMAILS_DELETE_AFTER_DAYS }
+
+    it { is_expected.to eq(3) }
   end
 
   describe 'validations' do
@@ -60,6 +73,9 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     end
 
     it { expect(described_class).to validate_jsonb_schema(['application_setting_rate_limits']) }
+    it { expect(described_class).to validate_jsonb_schema(['application_setting_package_registry']) }
+
+    it { expect(described_class).to validate_jsonb_schema(['application_setting_service_ping_settings']) }
 
     it { is_expected.to allow_value(nil).for(:home_page_url) }
     it { is_expected.to allow_value(http).for(:home_page_url) }
@@ -106,13 +122,6 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { is_expected.to allow_value([]).for(:protected_paths_for_get_request) }
 
     it { is_expected.to validate_inclusion_of(:container_registry_expiration_policies_caching).in_array([true, false]) }
-
-    it { is_expected.to validate_numericality_of(:container_registry_pre_import_tags_rate).is_greater_than_or_equal_to(0) }
-    it { is_expected.not_to allow_value(nil).for(:container_registry_pre_import_tags_rate) }
-    it { is_expected.to allow_value(1.5).for(:container_registry_pre_import_tags_rate) }
-
-    it { is_expected.to validate_presence_of(:container_registry_import_target_plan) }
-    it { is_expected.to validate_presence_of(:container_registry_import_created_before) }
 
     it { is_expected.to validate_numericality_of(:wiki_page_max_content_bytes).only_integer.is_greater_than_or_equal_to(1024) }
     it { is_expected.to validate_inclusion_of(:wiki_asciidoc_allow_uri_includes).in_array([true, false]) }
@@ -192,6 +201,8 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
 
     it { is_expected.to validate_inclusion_of(:bulk_import_enabled).in_array([true, false]) }
 
+    it { is_expected.to validate_inclusion_of(:silent_admin_exports_enabled).in_array([true, false]) }
+
     it { is_expected.to validate_inclusion_of(:allow_runner_registration_token).in_array([true, false]) }
 
     it { is_expected.to validate_inclusion_of(:gitlab_dedicated_instance).in_array([true, false]) }
@@ -212,12 +223,6 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
           container_registry_data_repair_detail_worker_max_concurrency
           container_registry_delete_tags_service_timeout
           container_registry_expiration_policies_worker_capacity
-          container_registry_import_max_retries
-          container_registry_import_max_step_duration
-          container_registry_import_max_tags_count
-          container_registry_import_start_max_retries
-          container_registry_import_timeout
-          container_registry_pre_import_timeout
           decompress_archive_file_timeout
           dependency_proxy_ttl_group_policy_worker_capacity
           gitlab_shell_operation_limit
@@ -244,6 +249,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
           sidekiq_job_limiter_limit_bytes
           terminal_max_session_time
           users_get_by_id_limit
+          downstream_pipeline_trigger_limit_per_project_user_sha
         ]
       end
 
@@ -328,8 +334,6 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     end
 
     it { is_expected.to validate_inclusion_of(:remember_me_enabled).in_array([true, false]) }
-
-    it { is_expected.to validate_inclusion_of(:instance_level_code_suggestions_enabled).in_array([true, false]) }
 
     it { is_expected.to validate_inclusion_of(:package_registry_allow_anyone_to_pull_option).in_array([true, false]) }
 
@@ -1662,5 +1666,10 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
 
   context 'security txt content' do
     it { is_expected.to validate_length_of(:security_txt_content).is_at_most(2048) }
+  end
+
+  context 'ascii max includes' do
+    it { is_expected.to validate_numericality_of(:asciidoc_max_includes).only_integer.is_greater_than_or_equal_to(0) }
+    it { is_expected.to validate_numericality_of(:asciidoc_max_includes).only_integer.is_less_than_or_equal_to(64) }
   end
 end

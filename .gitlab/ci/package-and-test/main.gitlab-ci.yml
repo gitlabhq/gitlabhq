@@ -40,15 +40,16 @@ _quarantine:
   extends:
     - .qa
     - .rules:test:manual-except-default-branch
-  needs:
-    - job: trigger-omnibus
-      optional: true
   stage: test
   variables:
-    RSPEC_REPORT_OPTS: "--format html --out tmp/rspec-${CI_JOB_NAME}.htm --color --format documentation"
     QA_RSPEC_TAGS: --tag quarantine
   after_script:
     - echo "After script overridden in _quarantine job"
+  artifacts:
+    when: always
+    expire_in: 1 day
+    paths:
+      - gitlab-qa-run-*/**/test-metrics-*.json
 
 # ------------------------------------------
 # FF changes
@@ -114,6 +115,7 @@ praefect:
   variables:
     QA_SCENARIO: Test::Integration::Praefect
     QA_CAN_TEST_PRAEFECT: "true"
+    QA_GITALY_TRANSACTIONS_ENABLED: "false"
     KNAPSACK_TEST_FILE_PATTERN: "qa/specs/features/**/3_create/**/*_spec.rb"
   rules:
     - !reference [.rules:test:smoke-for-omnibus-mr, rules]
@@ -125,6 +127,7 @@ praefect-selective:
   variables:
     QA_SCENARIO: Test::Integration::Praefect
     QA_CAN_TEST_PRAEFECT: "true"
+    QA_GITALY_TRANSACTIONS_ENABLED: "false"
   rules:
     - !reference [.rules:test:qa-selective, rules]
     - if: $QA_SUITES =~ /Test::Instance::All/
@@ -137,6 +140,50 @@ praefect-selective-parallel:
   variables:
     QA_SCENARIO: Test::Integration::Praefect
     QA_CAN_TEST_PRAEFECT: "true"
+    QA_GITALY_TRANSACTIONS_ENABLED: "false"
+    KNAPSACK_TEST_FILE_PATTERN: "qa/specs/features/**/3_create/**/*_spec.rb"
+  rules:
+    - !reference [.rules:test:qa-selective-parallel, rules]
+    - if: $QA_SUITES =~ /Test::Instance::All/
+      variables:
+        QA_TESTS: ""
+
+# ========== gitaly transactions enabled ===========
+# https://docs.gitlab.com/ee/architecture/blueprints/gitaly_transaction_management/
+gitaly-transactions:
+  extends:
+    - .parallel
+    - .qa
+  parallel: 2
+  variables:
+    QA_SCENARIO: Test::Integration::Praefect
+    QA_CAN_TEST_PRAEFECT: "true"
+    KNAPSACK_TEST_FILE_PATTERN: "qa/specs/features/**/3_create/**/*_spec.rb"
+    QA_GITALY_TRANSACTIONS_ENABLED: "true"
+  rules:
+    - !reference [.rules:test:smoke-for-omnibus-mr, rules]
+    - !reference [.rules:test:qa-parallel, rules]
+    - if: $QA_SUITES =~ /Test::Instance::All/
+
+gitaly-transactions-selective:
+  extends: .qa
+  variables:
+    QA_SCENARIO: Test::Integration::Praefect
+    QA_CAN_TEST_PRAEFECT: "true"
+    QA_GITALY_TRANSACTIONS_ENABLED: "true"
+  rules:
+    - !reference [.rules:test:qa-selective, rules]
+    - if: $QA_SUITES =~ /Test::Instance::All/
+
+gitaly-transactions-selective-parallel:
+  extends:
+    - .qa
+    - .parallel
+  parallel: 2
+  variables:
+    QA_SCENARIO: Test::Integration::Praefect
+    QA_CAN_TEST_PRAEFECT: "true"
+    QA_GITALY_TRANSACTIONS_ENABLED: "true"
     KNAPSACK_TEST_FILE_PATTERN: "qa/specs/features/**/3_create/**/*_spec.rb"
   rules:
     - !reference [.rules:test:qa-selective-parallel, rules]
@@ -570,15 +617,57 @@ importers:
     - if: $QA_SUITES =~ /Test::Integration::Import/
     - !reference [.rules:test:manual, rules]
 
-ai-gateway:
+# ========== ai-gateway ===========
+
+.ai-gateway-base:
   extends:
     - .qa
     - .failure-videos
+
+ai-gateway:
+  extends:
+    - .ai-gateway-base
   variables:
     QA_SCENARIO: Test::Integration::AiGateway
   rules:
     - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Integration::AiGateway/
+    - !reference [.rules:test:manual, rules]
+
+ai-gateway-no-seat-assigned:
+  extends:
+    - .ai-gateway-base
+  variables:
+    QA_SCENARIO: Test::Integration::AiGatewayNoSeatAssigned
+  rules:
+    - !reference [.rules:test:qa, rules]
+    - if: $QA_SUITES =~ /Test::Integration::AiGatewayNoSeatAssigned/
+    - !reference [.rules:test:manual, rules]
+
+ai-gateway-no-add-on:
+  extends:
+    - .ai-gateway-base
+  variables:
+    QA_SCENARIO: Test::Integration::AiGatewayNoAddOn
+  before_script:
+    - export QA_EE_ACTIVATION_CODE=$QA_EE_ACTIVATION_CODE_NO_ADD_ON
+    - !reference [.ai-gateway-base, before_script]
+  rules:
+    - !reference [.rules:test:qa, rules]
+    - if: $QA_SUITES =~ /Test::Integration::AiGatewayNoAddOn/
+    - !reference [.rules:test:manual, rules]
+
+ai-gateway-no-license:
+  extends:
+    - .ai-gateway-base
+  variables:
+    QA_SCENARIO: Test::Integration::AiGatewayNoLicense
+  before_script:
+    - unset QA_EE_LICENSE
+    - !reference [.ai-gateway-base, before_script]
+  rules:
+    - !reference [.rules:test:qa, rules]
+    - if: $QA_SUITES =~ /Test::Integration::AiGatewayNoLicense/
     - !reference [.rules:test:manual, rules]
 
 # ------------------------------------------

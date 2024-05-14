@@ -11,8 +11,8 @@ module Mutations
         TokenID = ::Types::GlobalIDType[::Clusters::AgentToken]
 
         argument :id, TokenID,
-                 required: true,
-                 description: 'Global ID of the agent token that will be revoked.'
+          required: true,
+          description: 'Global ID of the agent token that will be revoked.'
 
         def resolve(id:)
           token = authorized_find!(id: id)

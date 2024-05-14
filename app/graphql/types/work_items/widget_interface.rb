@@ -24,8 +24,9 @@ module Types
         ::Types::WorkItems::Widgets::AwardEmojiType,
         ::Types::WorkItems::Widgets::LinkedItemsType,
         ::Types::WorkItems::Widgets::ParticipantsType,
-        ::Types::WorkItems::Widgets::TimeTrackingType,
-        ::Types::WorkItems::Widgets::DesignsType
+        ::Types::WorkItems::Widgets::TimeTracking::TimeTrackingType,
+        ::Types::WorkItems::Widgets::DesignsType,
+        ::Types::WorkItems::Widgets::DevelopmentType
       ].freeze
 
       def self.ce_orphan_types
@@ -64,9 +65,11 @@ module Types
         when ::WorkItems::Widgets::Participants
           ::Types::WorkItems::Widgets::ParticipantsType
         when ::WorkItems::Widgets::TimeTracking
-          ::Types::WorkItems::Widgets::TimeTrackingType
+          ::Types::WorkItems::Widgets::TimeTracking::TimeTrackingType
         when ::WorkItems::Widgets::Designs
           ::Types::WorkItems::Widgets::DesignsType
+        when ::WorkItems::Widgets::Development
+          ::Types::WorkItems::Widgets::DevelopmentType
         else
           raise "Unknown GraphQL type for widget #{object}"
         end

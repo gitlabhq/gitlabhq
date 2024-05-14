@@ -132,7 +132,7 @@ export default {
 
 <template>
   <div>
-    <p class="gl-text-gray-900 gl-white-space-nowrap gl-mt-3">
+    <p class="gl-text-gray-900 gl-whitespace-nowrap gl-mt-3">
       {{ s__('ImportProjects|Select the repositories you want to import') }}
     </p>
     <template v-if="hasIncompatibleRepos">
@@ -187,10 +187,10 @@ export default {
       <table class="table gl-table">
         <thead>
           <tr>
-            <th class="gl-w-half">
+            <th class="gl-w-1/2">
               {{ fromHeaderText }}
             </th>
-            <th class="gl-w-half">
+            <th class="gl-w-1/2">
               {{ __('To GitLab') }}
             </th>
             <th>

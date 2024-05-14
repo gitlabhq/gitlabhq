@@ -9,7 +9,7 @@ RSpec.describe SearchService, feature_category: :global_search do
   let_it_be(:inaccessible_group) { create(:group, :private) }
   let_it_be(:group_member) { create(:group_member, group: accessible_group, user: user) }
 
-  let_it_be(:accessible_project) { create(:project, :repository, :private, name: 'accessible_project') }
+  let_it_be(:accessible_project) { create(:project, :repository, :private, name: 'accessible_project', maintainers: user) }
   let_it_be(:note) { create(:note_on_issue, project: accessible_project) }
 
   let_it_be(:inaccessible_project) { create(:project, :repository, :private, name: 'inaccessible_project') }
@@ -23,10 +23,6 @@ RSpec.describe SearchService, feature_category: :global_search do
   let(:valid_search) { "what is love?" }
 
   subject(:search_service) { described_class.new(user, search: search, scope: scope, page: page, per_page: per_page) }
-
-  before do
-    accessible_project.add_maintainer(user)
-  end
 
   describe '#project' do
     context 'when the project is accessible' do

@@ -7,7 +7,8 @@ RSpec.describe GitlabSchema.types['CiCatalogResourceSort'], feature_category: :p
 
   it 'exposes all the existing catalog resource sort orders' do
     expect(described_class.values.keys).to include(
-      *%w[NAME_ASC NAME_DESC LATEST_RELEASED_AT_ASC LATEST_RELEASED_AT_DESC CREATED_ASC CREATED_DESC]
+      *%w[NAME_ASC NAME_DESC LATEST_RELEASED_AT_ASC LATEST_RELEASED_AT_DESC CREATED_ASC CREATED_DESC
+        STAR_COUNT_ASC STAR_COUNT_DESC USAGE_COUNT_ASC USAGE_COUNT_DESC]
     )
   end
 end

@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.shared_examples 'issues or work items finder' do |factory, execute_context|
   describe '#execute' do
-    include_context execute_context
+    include_context execute_context, factory
 
     context 'scope: all' do
       let(:scope) { 'all' }
@@ -198,86 +198,6 @@ RSpec.shared_examples 'issues or work items finder' do |factory, execute_context
           let(:params) { { projects: Project.id_in(project1.id) } }
 
           it 'returns the item belonging to the projects' do
-            expect(items).to contain_exactly(item1, item5)
-          end
-        end
-      end
-
-      context 'filtering by group_id' do
-        let(:params) { { group_id: group.id } }
-
-        context 'when include_subgroup param not set' do
-          it 'returns all group items' do
-            expect(items).to contain_exactly(item1, item5, group_level_item)
-          end
-
-          context 'when projects outside the group are passed' do
-            let(:params) { { group_id: group.id, projects: [project2.id] } }
-
-            it 'returns no items' do
-              expect(items).to be_empty
-            end
-          end
-
-          context 'when projects of the group are passed' do
-            let(:params) { { group_id: group.id, projects: [project1.id] } }
-
-            it 'returns the item within the group and projects' do
-              expect(items).to contain_exactly(item1, item5)
-            end
-          end
-
-          context 'when projects of the group are passed as a subquery' do
-            let(:params) { { group_id: group.id, projects: Project.id_in(project1.id) } }
-
-            it 'returns the item within the group and projects' do
-              expect(items).to contain_exactly(item1, item5)
-            end
-          end
-
-          context 'when release_tag is passed as a parameter' do
-            let(:params) { { group_id: group.id, release_tag: 'dne-release-tag' } }
-
-            it 'ignores the release_tag parameter' do
-              expect(items).to contain_exactly(item1, item5, group_level_item)
-            end
-          end
-        end
-
-        context 'when include_subgroup param is true' do
-          before do
-            params[:include_subgroups] = true
-          end
-
-          it 'returns all group and subgroup items' do
-            expect(items).to contain_exactly(item1, item4, item5, group_level_item)
-          end
-
-          context 'when mixed projects are passed' do
-            let(:params) { { group_id: group.id, projects: [project2.id, project3.id] } }
-
-            it 'returns the item within the group and projects' do
-              expect(items).to contain_exactly(item4)
-            end
-          end
-        end
-
-        context 'when user has access to confidential items' do
-          before do
-            group.add_reporter(user)
-          end
-
-          it 'includes confidential group-level items' do
-            expect(items).to contain_exactly(item1, item5, group_level_item, group_level_confidential_item)
-          end
-        end
-
-        context 'when namespace_level_work_items is disabled' do
-          before do
-            stub_feature_flags(namespace_level_work_items: false)
-          end
-
-          it 'only returns project-level items' do
             expect(items).to contain_exactly(item1, item5)
           end
         end

@@ -70,7 +70,7 @@ RSpec.describe 'Math rendering', :js, feature_category: :team_planning do
         create_and_visit_issue_with_description(lazy_load_description)
 
         page.within '.description > .md' do
-          expect(page).to have_selector('.js-lazy-render-math-container', text: /math block exceeds 1000 characters/)
+          expect(page).to have_selector('[role="alert"]', text: /math block exceeds 1000 characters/)
         end
       end
 
@@ -111,9 +111,9 @@ RSpec.describe 'Math rendering', :js, feature_category: :team_planning do
           # the find is needed to ensure the lazy container is loaded, otherwise
           # it can be a flaky test, similar to
           # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25408
-          find('.js-lazy-render-math-container')
+          find('[role="alert"]')
 
-          expect(page).to have_selector('.js-lazy-render-math-container', text: /math block exceeds 1000 characters/)
+          expect(page).to have_selector('[role="alert"]', text: /math block exceeds 1000 characters/)
         end
       end
     end
@@ -128,8 +128,7 @@ RSpec.describe 'Math rendering', :js, feature_category: :team_planning do
 
         page.within '.description > .md' do
           expect(page).not_to have_selector('button', text: 'Display anyway')
-          expect(page)
-            .not_to have_selector('.js-lazy-render-math-container', text: /math block exceeds 1000 characters/)
+          expect(page).not_to have_selector('[role="alert"]', text: /math block exceeds 1000 characters/)
         end
       end
 

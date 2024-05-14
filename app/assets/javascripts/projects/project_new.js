@@ -17,7 +17,7 @@ import { checkRules } from './project_name_rules';
 let hasUserDefinedProjectPath = false;
 let hasUserDefinedProjectName = false;
 const invalidInputClass = 'gl-field-error-outline';
-const invalidDropdownClass = 'gl-inset-border-1-red-400!';
+const invalidDropdownClass = '!gl-shadow-inner-1-red-400';
 
 const cancelSource = axios.CancelToken.source();
 const endpoint = `${gon.relative_url_root}/import/url/validate`;

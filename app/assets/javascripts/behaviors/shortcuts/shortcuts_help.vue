@@ -68,7 +68,7 @@ export default {
       <gl-search-box-by-type
         v-model.trim="searchTerm"
         :aria-label="$options.i18n.search"
-        class="gl-w-half gl-mr-3"
+        class="gl-w-1/2 gl-mr-3"
       />
       <span>
         <gl-sprintf
@@ -93,7 +93,7 @@ export default {
         :key="group.id"
         class="shortcut-help-mapping gl-mb-4"
       >
-        <strong class="shortcut-help-mapping-title gl-w-half gl-display-inline-block">
+        <strong class="shortcut-help-mapping-title gl-w-1/2 gl-display-inline-block">
           {{ group.name }}
         </strong>
         <div
@@ -102,10 +102,10 @@ export default {
           class="gl-display-flex gl-align-items-center"
         >
           <shortcut
-            class="gl-w-40p gl-flex-shrink-0 gl-text-right gl-pr-4"
+            class="gl-w-2/5 gl-flex-shrink-0 gl-text-right gl-pr-4"
             :shortcuts="keybinding.defaultKeys"
           />
-          <div class="gl-w-half gl-flex-shrink-0 gl-flex-grow-1">
+          <div class="gl-w-1/2 gl-flex-shrink-0 gl-flex-grow-1">
             {{ keybinding.description }}
           </div>
         </div>

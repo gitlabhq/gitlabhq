@@ -4,22 +4,18 @@
 
 = render_dashboard_ultimate_trial(current_user)
 
-.page-title-holder.gl-display-flex.gl-align-items-center
-  %h1.page-title.gl-font-size-h-display= page_title
-  .page-title-controls
+.page-title-holder.gl-display-flex.gl-align-items
+  %div
+    %h1.page-title.gl-font-size-h-display= page_title
+    %p
+      - if Gitlab.com?
+        = _("Below you will find all the groups that are public. Contribute by requesting to join a group.")
+      - else
+        = _("Below you will find all the groups that are public or internal. Contribute by requesting to join a group.")
+      #{link_to _('Learn more'), help_page_path('user/group/index', { anchor: 'view-groups' })}.
+  .page-title-controls.gl-mt-4
     - if current_user&.can_create_group?
       = render Pajamas::ButtonComponent.new(href: new_group_path, variant: :confirm) do
         = _("New group")
-
-= render 'nav'
-
-- if cookies[:explore_groups_landing_dismissed] != 'true'
-  .explore-groups.landing.content-block.js-explore-groups-landing.hide
-    %button.dismiss-button{ type: 'button', 'aria-label' => _('Dismiss') }= sprite_icon('close')
-    .svg-container
-      = custom_icon('icon_explore_groups_splash')
-    .inner-content
-      %p= _("Below you will find all the groups that are public.")
-      %p= _("You can easily contribute to them by requesting to join these groups.")
 
 = render 'groups'

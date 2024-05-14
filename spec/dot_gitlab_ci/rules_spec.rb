@@ -26,6 +26,136 @@ RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', feature_category: :tooling do
     end
   end
 
+  describe '.qa:rules:manual-e2e' do
+    let(:base_rules) { config.dig('.qa:rules:manual-e2e', 'rules') }
+
+    context 'with .qa:rules:follow-up-e2e' do
+      let(:derived_rules) { config.dig('.qa:rules:follow-up-e2e', 'rules') }
+
+      it 'has the same rules as the base, but with manual jobs changed to automatic' do
+        base_rules.zip(derived_rules).each do |(base, derived)|
+          # Exception:
+          #
+          # - !reference [".qa:rules:code-merge-request-manual", rules] becomes
+          # - !reference [".qa:rules:code-merge-request-allowed-to-fail", rules]
+          #
+          # This is because we want the rules to be automatic, but still allowed to fail
+          if base.is_a?(Array) && base.first == '.qa:rules:code-merge-request-manual'
+            expect(derived.first).to eq('.qa:rules:code-merge-request-allowed-to-fail')
+            next
+          end
+
+          expect(derived).to eq(base)
+        end
+      end
+    end
+  end
+
+  describe '.review:rules:start-review-app-pipeline' do
+    let(:base_rules) { config.dig('.review:rules:start-review-app-pipeline', 'rules') }
+
+    context 'with .review:rules:review-stop' do
+      let(:derived_rules) { config.dig('.review:rules:review-stop', 'rules') }
+
+      it 'has the same rules as the base, but automatic jobs changed to manual' do
+        base_rules.zip(derived_rules).each do |(base, derived)|
+          # .review:rules:review-stop don't set variables
+          base.delete('variables')
+          base_with_manual_and_allowed_to_fail =
+            if base['when'] == 'never'
+              base
+            else
+              base.merge('when' => 'manual', 'allow_failure' => true)
+            end
+
+          expect(derived).to eq(base_with_manual_and_allowed_to_fail)
+        end
+      end
+    end
+  end
+
+  shared_examples 'predictive is inverse of non-predictive' do
+    context 'with derived rules' do
+      it 'has the "when: never" in reverse compared to the base' do
+        rules_pairs = base_rules.zip(derived_rules)
+
+        cut_point = rules_pairs.each.with_index do |(base, derived), index|
+          # exception: `.if-merge-request-labels-pipeline-expedite` should both be set to "never",
+          #            because when we set this label on an MR, we don't want to run either jobs.
+          if base['if'] == config['.if-merge-request-labels-pipeline-expedite']['if']
+            expect(derived).to eq(base)
+            expect(derived['when']).to eq('never')
+            next
+          end
+
+          # exception: `.if-merge-request-not-approved` in the base should be `.if-merge-request-approved` in derived.
+          #            The base wants to run when the MR is approved, and the derived wants to run if it's not approved,
+          #            and both are specifying this with `when: never`.
+          if base['if'] == config['.if-merge-request-not-approved']['if']
+            expect(derived).to eq(base.merge(config['.if-merge-request-approved']))
+            expect(derived['when']).to eq('never')
+
+            # The following rules should match exactly, because after the
+            # approval rules, the logic is flipped.
+            break index
+          end
+
+          if base['when'] == 'never'
+            expect(derived).to eq(base.except('when'))
+          elsif base['if'].start_with?('$ENABLE_')
+            derived_if = base['if'].sub('RSPEC', 'RSPEC_PREDICTIVE_TRIGGER')
+            expect(derived).to eq(base.merge('if' => derived_if))
+          elsif base['when'].nil?
+            expect(derived).to eq(base.merge('when' => 'never'))
+          end
+        end
+
+        # Match the remaining rules that should be the same
+        rules_pairs.drop(cut_point + 1).each do |(base, derived)|
+          expect(derived).to eq(base)
+        end
+      end
+    end
+  end
+
+  describe '.rails:rules:ee-and-foss-default-rules' do
+    it_behaves_like 'predictive is inverse of non-predictive' do
+      let(:base_rules) { config.dig('.rails:rules:ee-and-foss-default-rules', 'rules') }
+
+      let(:derived_rules) do
+        config.dig('.rails:rules:rspec-predictive', 'rules').reject do |rule|
+          # This happens in each specific rspec,
+          # which is outside of .rails:rules:ee-and-foss-default-rules
+          rule['if'].start_with?('$ENABLE_')
+        end
+      end
+
+      it 'contains an additional allow rule about code-backstage-patterns not present in the base' do
+        expected_rule = {
+          'if' => config['.if-merge-request']['if'],
+          'changes' => config['.code-backstage-patterns']
+        }
+
+        expect(base_rules).not_to include(expected_rule)
+        expect(derived_rules).to include(expected_rule)
+      end
+    end
+  end
+
+  describe '.rails:rules:single-db' do
+    it_behaves_like 'predictive is inverse of non-predictive' do
+      let(:base_rules) { config.dig('.rails:rules:single-db', 'rules') }
+      let(:derived_rules) { config.dig('.rails:rules:rspec-predictive:single-db', 'rules') }
+    end
+  end
+
+  describe '.rails:rules:single-db-ci-connection' do
+    it_behaves_like 'predictive is inverse of non-predictive' do
+      let(:base_rules) { config.dig('.rails:rules:single-db-ci-connection', 'rules') }
+      let(:derived_rules) { config.dig('.rails:rules:rspec-predictive:single-db-ci-connection', 'rules') }
+    end
+  end
+
   describe 'start-as-if-foss' do
     let(:base_rules) { config.dig('.as-if-foss:rules:start-as-if-foss', 'rules') }
 
@@ -68,7 +198,6 @@ RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', feature_category: :tooling do
         '.byebug_history',
         '.editorconfig',
         '.eslintcache',
-        '.foreman',
         '.git-blame-ignore-revs',
         '.gitlab_kas_secret',
         '.gitlab_shell_secret',
@@ -78,6 +207,8 @@ RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', feature_category: :tooling do
         '.gitlab/CODEOWNERS',
         '.gitleaksignore',
         '.gitpod.yml',
+        '.graphqlrc',
+        '.index.yml.example',
         '.license_encryption_key.pub',
         '.mailmap',
         '.prettierignore',
@@ -113,11 +244,10 @@ RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', feature_category: :tooling do
       Dir.glob('{.git,.lefthook,.ruby-lsp}/**/*') +
       Dir.glob('{file_hooks,log}/**/*') +
       Dir.glob('{metrics_server,sidekiq_cluster}/*') +
-      Dir.glob('{spec/fixtures,tmp}/**/*', File::FNM_DOTMATCH) +
+      Dir.glob('{{,ee/}spec/fixtures,tmp}/**/*', File::FNM_DOTMATCH) +
       Dir.glob('*.md') +
       Dir.glob('changelogs/*') +
-      Dir.glob('doc/.{markdownlint,vale}/**/*') +
-      Dir.glob('keeps/**/*') +
+      Dir.glob('doc/.{markdownlint,vale}/**/*', File::FNM_DOTMATCH) +
       Dir.glob('node_modules/**/*', File::FNM_DOTMATCH) +
       Dir.glob('patches/*') +
       Dir.glob('public/assets/**/.*') +
@@ -144,10 +274,13 @@ RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', feature_category: :tooling do
     patterns_lists = config.filter_map do |name, patterns|
       next unless name.start_with?('.')
       next unless name.end_with?('patterns')
-      # Ignore EE-only patterns list when in FOSS context
-      next if foss_context && patterns.all? { |pattern| pattern =~ %r|{?ee/| }
 
-      PatternsList.new(name, patterns)
+      # Ignore EE-only patterns list when in FOSS context
+      relevant_patterns = foss_context ? patterns.reject { |pattern| pattern =~ %r|^{?ee/| } : patterns
+      next if relevant_patterns.empty?
+      next if foss_context && name == '.custom-roles-patterns'
+
+      PatternsList.new(name, relevant_patterns)
     end
 
     # One loop to gather a { pattern => files } hash

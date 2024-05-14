@@ -35,7 +35,7 @@ RSpec.describe Projects::ErrorTrackingHelper do
           'integrated-error-tracking-enabled' => 'false',
           'list-path' => list_path,
           'project-path' => project_path,
-          'illustration-path' => match_asset_path('/assets/illustrations/cluster_popover.svg'),
+          'illustration-path' => match_asset_path('/assets/illustrations/empty-state/empty-radar-md.svg'),
           'show-integrated-tracking-disabled-alert' => 'false'
         )
       end

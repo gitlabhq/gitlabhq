@@ -24,7 +24,8 @@ class ProjectHook < WebHook
     :deployment_hooks,
     :feature_flag_hooks,
     :release_hooks,
-    :emoji_hooks
+    :emoji_hooks,
+    :resource_access_token_hooks
   ]
 
   belongs_to :project
@@ -44,23 +45,6 @@ class ProjectHook < WebHook
   override :parent
   def parent
     project
-  end
-
-  override :update_last_failure
-  def update_last_failure
-    if executable?
-      project.cache_web_hook_failure if project.get_web_hook_failure # may need update
-    else
-      project.cache_web_hook_failure(true) # definitely failing, no need to check
-
-      Gitlab::Redis::SharedState.with do |redis|
-        last_failure_key = project.last_failure_redis_key
-        time = Time.current.utc.iso8601
-        prev = redis.get(last_failure_key)
-
-        redis.set(last_failure_key, time) if !prev || prev < time
-      end
-    end
   end
 end
 

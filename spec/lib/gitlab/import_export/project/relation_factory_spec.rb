@@ -3,10 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::ImportExport::Project::RelationFactory, :use_clean_rails_memory_store_caching, feature_category: :importers do
-  let(:group) { create(:group).tap { |g| g.add_maintainer(importer_user) } }
+  let(:group) { create(:group, maintainers: importer_user) }
   let(:project) { create(:project, :repository, group: group) }
   let(:members_mapper) { double('members_mapper').as_null_object }
-  let(:admin) { create(:admin) }
+  let(:admin) { create(:admin, :without_default_org) }
   let(:importer_user) { admin }
   let(:excluded_keys) { [] }
   let(:additional_relation_attributes) { {} }
@@ -65,6 +65,7 @@ RSpec.describe Gitlab::ImportExport::Project::RelationFactory, :use_clean_rails_
         'wiki_page_events' => true,
         'releases_events' => false,
         'emoji_events' => false,
+        'resource_access_token_events' => false,
         'token' => token
       }
     end
@@ -279,16 +280,16 @@ RSpec.describe Gitlab::ImportExport::Project::RelationFactory, :use_clean_rails_
     let(:relation_sym) { :labels }
     let(:relation_hash) do
       {
-        "id": 3,
-        "title": "test3",
-        "color": "#428bca",
-        "group_id": project.group.id,
-        "created_at": "2016-07-22T08:55:44.161Z",
-        "updated_at": "2016-07-22T08:55:44.161Z",
-        "template": false,
-        "description": "",
-        "project_id": project.id,
-        "type": "GroupLabel"
+        id: 3,
+        title: "test3",
+        color: "#428bca",
+        group_id: project.group.id,
+        created_at: "2016-07-22T08:55:44.161Z",
+        updated_at: "2016-07-22T08:55:44.161Z",
+        template: false,
+        description: "",
+        project_id: project.id,
+        type: "GroupLabel"
       }
     end
 
@@ -611,6 +612,27 @@ RSpec.describe Gitlab::ImportExport::Project::RelationFactory, :use_clean_rails_
           expect(created_object.change_position.line_range).to eq(expected_line_range)
         end
       end
+    end
+  end
+
+  describe 'note diff files' do
+    let(:relation_sym) { :note_diff_file }
+    let(:relation_hash) do
+      {
+        'diff' => 'diff',
+        'new_file' => true,
+        'renamed_file' => false,
+        'deleted_file' => false,
+        'a_mode' => '100644',
+        'b_mode' => '100644',
+        'new_path' => 'new_path',
+        'old_path' => 'old_path',
+        'diff_export' => 'diff_export'
+      }
+    end
+
+    it 'sets diff to diff_export value' do
+      expect(created_object.diff).to eq('diff_export')
     end
   end
 end

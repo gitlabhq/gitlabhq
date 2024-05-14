@@ -2,7 +2,7 @@
 
 # rubocop: disable Gitlab/NamespacedClass
 class ClickHouseTestRunner
-  include ClickHouseTestHelpers
+  include ClickHouseSchemaHelpers
 
   def truncate_tables
     ClickHouse::Client.configuration.databases.each_key do |db|
@@ -32,7 +32,7 @@ class ClickHouseTestRunner
     schema_migration.ensure_table
     migration_context = ClickHouse::MigrationSupport::MigrationContext.new(connection,
       migrations_paths, schema_migration)
-    migrate(migration_context, nil)
+    Gitlab::ExclusiveLease.skipping_transaction_check { migrate(migration_context, nil) }
 
     @ensure_schema = true
   end

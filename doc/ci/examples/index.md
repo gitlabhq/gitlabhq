@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 This page contains links to a variety of examples that can help you understand how to
 implement [GitLab CI/CD](../index.md) for your specific use case.
@@ -17,7 +17,7 @@ Examples are available in several forms. As a collection of:
 
 - `.gitlab-ci.yml` [template files](#cicd-templates) maintained in GitLab, for many
   common frameworks and programming languages.
-- Repositories with [example projects](https://gitlab.com/gitlab-examples) for various languages. You can fork and adjust them to your own needs. Projects include an example of using [Review Apps with a static site served by NGINX](https://gitlab.com/gitlab-examples/review-apps-nginx/).
+- Repositories with [example projects](https://gitlab.com/gitlab-examples) for various languages. You can fork and adjust them to your own needs. Projects include an example of using [review apps with a static site served by NGINX](https://gitlab.com/gitlab-examples/review-apps-nginx/).
 - Examples and [other resources](#other-resources) listed below.
 
 ## CI/CD examples
@@ -106,7 +106,7 @@ to [the templates list](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/g
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 You can add custom examples and templates to your self-managed GitLab instance.
 Your GitLab administrator can [designate an instance template repository](../../administration/settings/instance_template_repository.md)
@@ -124,7 +124,7 @@ For examples of setting up GitLab CI/CD for cloud-based environments, see:
 - [How to set up multi-account AWS SAM deployments with GitLab CI](https://about.gitlab.com/blog/2019/02/04/multi-account-aws-sam-deployments-with-gitlab-ci/)
 - Video: [Automating Kubernetes Deployments with GitLab CI/CD](https://www.youtube.com/watch?v=wEDRfAz6_Uw)
 - [How to autoscale continuous deployment with GitLab Runner on DigitalOcean](https://about.gitlab.com/blog/2018/06/19/autoscale-continuous-deployment-gitlab-runner-digital-ocean/)
-- [How to create a CI/CD pipeline with Auto Deploy to Kubernetes using GitLab and Helm](https://about.gitlab.com/blog/2017/09/21/how-to-create-ci-cd-pipeline-with-autodeploy-to-kubernetes-using-gitlab-and-helm/)
+- [How to create a CI/CD pipeline with Auto Deploy to Kubernetes using GitLab and Helm](https://about.gitlab.com/blog/2017/09/21/how-to-create-a-ci-cd-pipeline-with-auto-deploy-to-kubernetes-using-gitlab/)
 - Video: [Demo - Deploying from GitLab to OpenShift Container Cluster](https://youtu.be/EwbhA53Jpp4)
 - Tutorial: [Set up a GitLab.com Civo Kubernetes integration with Gitpod](https://gitlab.com/k33g_org/k33g_org.gitlab.io/-/issues/82)
 
@@ -160,15 +160,19 @@ For examples of others who have implemented GitLab CI/CD, see:
 - [GitBot - automating boring Git operations with CI](https://about.gitlab.com/blog/2017/11/02/automating-boring-git-operations-gitlab-ci/)
 - [How to use GitLab CI for Vue.js](https://about.gitlab.com/blog/2017/09/12/vuejs-app-gitlab/)
 - Video: [GitLab CI/CD Deep Dive](https://youtu.be/pBe4t1CD8Fc?t=195)
-- [Dockerizing GitLab Review Apps](https://about.gitlab.com/blog/2017/07/11/dockerizing-review-apps/)
+- [Dockerizing GitLab review apps](https://about.gitlab.com/blog/2017/07/11/dockerizing-review-apps/)
 - [Fast and natural continuous integration with GitLab CI](https://about.gitlab.com/blog/2017/05/22/fast-and-natural-continuous-integration-with-gitlab-ci/)
 - [Demo: CI/CD with GitLab in action](https://about.gitlab.com/blog/2017/03/13/ci-cd-demo/)
 
 ### Migrating to GitLab from third-party CI tools
 
-- [Migrating from CircleCI to GitLab](../migration/circleci.md)
-- [Migrating from Jenkins to GitLab](../migration/jenkins.md)
-- Video: [Migrating from Jenkins to GitLab](https://youtu.be/RlEVGOpYF5Y)
+Examples of migration to GitLab CI/CD from other tools:
+
+- [Bamboo](../migration/bamboo.md)
+- [CircleCI](../migration/circleci.md)
+- [GitHub Actions](../migration/github_actions.md)
+- [Jenkins](../migration/jenkins.md)
+- [TeamCity](../migration/teamcity.md)
 
 ### Integrating GitLab CI/CD with other systems
 

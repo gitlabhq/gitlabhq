@@ -9,8 +9,6 @@ RSpec.describe ContainerRegistry::GitlabApiClient, feature_category: :container_
   include_context 'container registry client stubs'
 
   let(:path) { 'namespace/path/to/repository' }
-  let(:import_token) { 'import_token' }
-  let(:options) { { token: token, import_token: import_token } }
 
   describe '#supports_gitlab_api?' do
     subject { client.supports_gitlab_api? }
@@ -54,132 +52,16 @@ RSpec.describe ContainerRegistry::GitlabApiClient, feature_category: :container_
 
       it { is_expected.to be_truthy }
     end
-  end
 
-  describe '#pre_import_repository' do
-    subject { client.pre_import_repository(path) }
-
-    where(:status_code, :expected_result) do
-      200 | :already_imported
-      202 | :ok
-      400 | :bad_request
-      401 | :unauthorized
-      404 | :not_found
-      409 | :already_being_imported
-      418 | :error
-      424 | :pre_import_failed
-      425 | :already_being_imported
-      429 | :too_many_imports
-    end
-
-    with_them do
+    context "when the response is a Faraday::Error" do
       before do
-        stub_pre_import(path, status_code, pre: true)
+        allow(::Gitlab).to receive(:com_except_jh?).and_return(false)
+        stub_application_setting(container_registry_features: [])
+        stub_request(:get, "#{registry_api_url}/gitlab/v1/")
+          .to_raise(::Faraday::Error)
       end
 
-      it { is_expected.to eq(expected_result) }
-    end
-  end
-
-  describe '#import_repository' do
-    subject { client.import_repository(path) }
-
-    where(:status_code, :expected_result) do
-      200 | :already_imported
-      202 | :ok
-      400 | :bad_request
-      401 | :unauthorized
-      404 | :not_found
-      409 | :already_being_imported
-      418 | :error
-      424 | :pre_import_failed
-      425 | :already_being_imported
-      429 | :too_many_imports
-    end
-
-    with_them do
-      before do
-        stub_pre_import(path, status_code, pre: false)
-      end
-
-      it { is_expected.to eq(expected_result) }
-    end
-  end
-
-  describe '#cancel_repository_import' do
-    let(:force) { false }
-
-    subject { client.cancel_repository_import(path, force: force) }
-
-    where(:status_code, :expected_result) do
-      200 | :already_imported
-      202 | :ok
-      400 | :bad_request
-      401 | :unauthorized
-      404 | :not_found
-      409 | :already_being_imported
-      418 | :error
-      424 | :pre_import_failed
-      425 | :already_being_imported
-      429 | :too_many_imports
-    end
-
-    with_them do
-      before do
-        stub_import_cancel(path, status_code, force: force)
-      end
-
-      it { is_expected.to eq({ status: expected_result, migration_state: nil }) }
-    end
-
-    context 'bad request' do
-      let(:status) { 'this_is_a_test' }
-
-      before do
-        stub_import_cancel(path, 400, status: status, force: force)
-      end
-
-      it { is_expected.to eq({ status: :bad_request, migration_state: status }) }
-    end
-
-    context 'force cancel' do
-      let(:force) { true }
-
-      before do
-        stub_import_cancel(path, 202, force: force)
-      end
-
-      it { is_expected.to eq({ status: :ok, migration_state: nil }) }
-    end
-  end
-
-  describe '#import_status' do
-    subject { client.import_status(path) }
-
-    context 'with successful response' do
-      before do
-        stub_import_status(path, status)
-      end
-
-      context 'with a status' do
-        let(:status) { 'this_is_a_test' }
-
-        it { is_expected.to eq(status) }
-      end
-
-      context 'with no status' do
-        let(:status) { nil }
-
-        it { is_expected.to eq('error') }
-      end
-    end
-
-    context 'with non successful response' do
-      before do
-        stub_import_status(path, nil, status_code: 404)
-      end
-
-      it { is_expected.to eq('pre_import_failed') }
+      it { is_expected.to be_falsey }
     end
   end
 
@@ -257,8 +139,6 @@ RSpec.describe ContainerRegistry::GitlabApiClient, feature_category: :container_
     end
 
     context 'with referrers included' do
-      subject { client.tags(path, page_size: page_size, referrers: true) }
-
       let(:expected) do
         {
           pagination: {},
@@ -266,8 +146,12 @@ RSpec.describe ContainerRegistry::GitlabApiClient, feature_category: :container_
         }
       end
 
+      let(:input) { { referrers: 'true', referrer_type: 'application/vnd.example%2Btype' } }
+
+      subject { client.tags(path, page_size: page_size, **input) }
+
       before do
-        stub_tags(path, page_size: page_size, input: { referrers: 'true' }, respond_with: response)
+        stub_tags(path, page_size: page_size, input: input, respond_with: response)
       end
 
       it { is_expected.to eq(expected) }
@@ -914,53 +798,11 @@ RSpec.describe ContainerRegistry::GitlabApiClient, feature_category: :container_
     end
   end
 
-  def stub_pre_import(path, status_code, pre:)
-    import_type = pre ? 'pre' : 'final'
-    stub_request(:put, "#{registry_api_url}/gitlab/v1/import/#{path}/?import_type=#{import_type}")
-      .with(headers: { 'Accept' => described_class::JSON_TYPE, 'Authorization' => "bearer #{import_token}" })
-      .to_return(status: status_code, body: '')
-  end
-
   def stub_registry_gitlab_api_support(supported = true)
     status_code = supported ? 200 : 404
     stub_request(:get, "#{registry_api_url}/gitlab/v1/")
       .with(headers: { 'Accept' => described_class::JSON_TYPE })
       .to_return(status: status_code, body: '')
-  end
-
-  def stub_import_status(path, status, status_code: 200)
-    stub_request(:get, "#{registry_api_url}/gitlab/v1/import/#{path}/")
-      .with(headers: { 'Accept' => described_class::JSON_TYPE, 'Authorization' => "bearer #{import_token}" })
-      .to_return(
-        status: status_code,
-        body: { status: status }.to_json,
-        headers: { content_type: 'application/json' }
-      )
-  end
-
-  def stub_import_cancel(path, http_status, status: nil, force: false)
-    body = {}
-
-    if http_status == 400
-      body = { status: status }
-    end
-
-    headers = {
-      'Accept' => described_class::JSON_TYPE,
-      'Authorization' => "bearer #{import_token}",
-      'User-Agent' => "GitLab/#{Gitlab::VERSION}",
-      'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3'
-    }
-
-    params = force ? '?force=true' : ''
-
-    stub_request(:delete, "#{registry_api_url}/gitlab/v1/import/#{path}/#{params}")
-      .with(headers: headers)
-      .to_return(
-        status: http_status,
-        body: body.to_json,
-        headers: { content_type: 'application/json' }
-      )
   end
 
   def stub_repository_details(path, sizing: nil, status_code: 200, respond_with: {})
@@ -979,7 +821,8 @@ RSpec.describe ContainerRegistry::GitlabApiClient, feature_category: :container_
       name: input[:name],
       sort: input[:sort],
       before: input[:before],
-      referrers: input[:referrers]
+      referrers: input[:referrers],
+      referrer_type: input[:referrer_type]
     }.compact
 
     url = "#{registry_api_url}/gitlab/v1/repositories/#{path}/tags/list/"

@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS
+**Offering:** GitLab.com
 
 The [Sigstore](https://www.sigstore.dev/) project provides a CLI called
 [Cosign](https://docs.sigstore.dev/signing/quickstart/) which can be used for keyless signing of container images built
@@ -21,7 +21,7 @@ see Cosign [documentation](https://docs.sigstore.dev/signing/quickstart/#example
 For details on the mapping between GitLab OIDC claims and Fulcio certificate extensions, see the GitLab column of
 [Mapping OIDC token claims to Fulcio OIDs](https://github.com/sigstore/fulcio/blob/main/docs/oid-info.md#mapping-oidc-token-claims-to-fulcio-oids).
 
-**Requirements:**
+Prerequisites:
 
 - You must be using GitLab.com.
 - Your project's CI/CD configuration must be located in the project.
@@ -30,7 +30,7 @@ For details on the mapping between GitLab OIDC claims and Fulcio certificate ext
 
 You can use Cosign to sign and verify container images and build artifacts.
 
-**Requirements:**
+Prerequisites:
 
 - You must use a version of Cosign that is `>= 2.0.1`.
 

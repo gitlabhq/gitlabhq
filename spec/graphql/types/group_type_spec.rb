@@ -18,7 +18,7 @@ RSpec.describe GitlabSchema.types['Group'], feature_category: :groups_and_projec
       web_url avatar_url share_with_group_lock project_creation_level
       descendant_groups_count group_members_count projects_count
       subgroup_creation_level require_two_factor_authentication
-      two_factor_grace_period auto_devops_enabled emails_disabled
+      two_factor_grace_period auto_devops_enabled emails_disabled emails_enabled
       mentions_disabled parent boards milestones group_members
       merge_requests container_repositories container_repositories_count
       packages dependency_proxy_setting dependency_proxy_manifests
@@ -28,7 +28,7 @@ RSpec.describe GitlabSchema.types['Group'], feature_category: :groups_and_projec
       shared_runners_setting timelogs organization_state_counts organizations
       contact_state_counts contacts work_item_types
       recent_issue_boards ci_variables releases environment_scopes work_items autocomplete_users
-      lock_math_rendering_limits_enabled math_rendering_limits_enabled
+      lock_math_rendering_limits_enabled math_rendering_limits_enabled created_at updated_at
     ]
 
     expect(described_class).to include_graphql_fields(*expected_fields)

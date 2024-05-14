@@ -25,6 +25,7 @@ module Gitlab
         checked_value: '1',
         unchecked_value: '0',
         label_options: {},
+        content_wrapper_options: {},
         &block
       )
         Pajamas::CheckboxComponent.new(
@@ -35,7 +36,8 @@ module Gitlab
           checkbox_options: format_options(checkbox_options),
           checked_value: checked_value,
           unchecked_value: unchecked_value,
-          label_options: format_options(label_options)
+          label_options: format_options(label_options),
+          content_wrapper_options: content_wrapper_options
         ).render_in(@template, &block)
       end
 

@@ -397,6 +397,7 @@ RSpec.describe 'project routing' do
       expect(get('/gitlab/gitlabhq/-/commit/4246fbd.patch')).to route_to('projects/commit#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '4246fbd', format: 'patch')
       expect(get('/gitlab/gitlabhq/-/commit/4246fbd13872934f72a8fd0d6fb1317b47b59cb5')).to route_to('projects/commit#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '4246fbd13872934f72a8fd0d6fb1317b47b59cb5')
       expect(get('/gitlab/gitlabhq/-/commit/6ef19b41225c5369f1c104d45d8d85efa9b057b53b14b4b9b939dd74decc5321')).to route_to('projects/commit#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '6ef19b41225c5369f1c104d45d8d85efa9b057b53b14b4b9b939dd74decc5321')
+      expect(get('/gitlab/gitlabhq/-/commit/4246fbd?rapid_diffs=true')).to route_to('projects/commit#rapid_diffs', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '4246fbd', rapid_diffs: "true")
     end
 
     it_behaves_like 'redirecting a legacy path', "/gitlab/gitlabhq/commit/4246fbd", "/gitlab/gitlabhq/-/commit/4246fbd"

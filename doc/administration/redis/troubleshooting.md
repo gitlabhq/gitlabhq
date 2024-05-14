@@ -124,7 +124,7 @@ To make sure your configuration is correct:
 1. Run in the console:
 
    ```ruby
-   redis = Redis.new(Gitlab::Redis::SharedState.params)
+   redis = Gitlab::Redis::SharedState.redis
    redis.info
    ```
 
@@ -186,4 +186,4 @@ production:
       port: 26379  # point to sentinel, not to redis port
 ```
 
-When in doubt, read the [Redis Sentinel](https://redis.io/docs/manual/sentinel/) documentation.
+When in doubt, read the [Redis Sentinel](https://redis.io/docs/latest/operate/oss_and_stack/management/sentinel/) documentation.

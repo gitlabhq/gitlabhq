@@ -30,12 +30,11 @@ module QA
       let(:issue) { create(:issue, project: project, api_client: followed_user_api_client) }
 
       let(:comment) do
-        Resource::ProjectIssueNote.fabricate_via_api! do |project_issue_note|
-          project_issue_note.project = project
-          project_issue_note.issue = issue
-          project_issue_note.body = 'This is a comment'
-          project_issue_note.api_client = followed_user_api_client
-        end
+        create(:issue_note,
+          project: project,
+          issue: issue,
+          body: 'This is a comment',
+          api_client: followed_user_api_client)
       end
 
       before do
@@ -51,7 +50,7 @@ module QA
         following_user&.remove_via_api!
       end
 
-      it 'can be followed and their activity seen', :reliable,
+      it 'can be followed and their activity seen', :blocking,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347678' do
         Flow::Login.sign_in(as: following_user)
         page.visit Runtime::Scenario.gitlab_address + "/#{followed_user.username}"

@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe GraphqlChannel, feature_category: :api do
   let_it_be(:merge_request) { create(:merge_request) }
-  let_it_be(:user) { create(:user).tap { |u| merge_request.project.add_developer(u) } }
+  let_it_be(:user) { create(:user, developer_of: merge_request.project) }
   let_it_be(:read_api_token) { create(:personal_access_token, scopes: ['read_api'], user: user) }
   let_it_be(:read_user_token) { create(:personal_access_token, scopes: ['read_user'], user: user) }
   let_it_be(:read_api_and_read_user_token) do

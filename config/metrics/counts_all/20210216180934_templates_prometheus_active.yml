@@ -4,7 +4,7 @@ key_path: counts.templates_prometheus_active
 description: Count of active service templates for Prometheus
 product_section: ops
 product_stage: monitor
-product_group: monitor
+product_group: respond
 value_type: number
 status: removed
 milestone_removed: '14.4'

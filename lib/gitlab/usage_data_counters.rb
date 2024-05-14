@@ -9,14 +9,7 @@ module Gitlab
       DiffsCounter,
       KubernetesAgentCounter,
       NoteCounter,
-      SearchCounter,
-      ServiceUsageDataCounter,
       WebIdeCounter,
-      WikiPageCounter,
-      SnippetCounter,
-      CycleAnalyticsCounter,
-      ProductivityAnalyticsCounter,
-      SourceCodeCounter,
       MergeRequestWidgetExtensionCounter
     ].freeze
 

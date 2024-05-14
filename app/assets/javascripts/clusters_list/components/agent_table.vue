@@ -47,7 +47,7 @@ export default {
   configHelpLink: helpPagePath('user/clusters/agent/install/index', {
     anchor: 'create-an-agent-configuration-file',
   }),
-  inject: ['gitlabVersion', 'kasCheckVersion'],
+  inject: ['kasCheckVersion'],
   props: {
     agents: {
       required: true,
@@ -72,7 +72,7 @@ export default {
   },
   computed: {
     fields() {
-      const tdClass = 'gl-pt-3! gl-pb-4! gl-vertical-align-middle!';
+      const tdClass = 'gl-pt-3! gl-pb-4! !gl-align-middle';
       return [
         {
           key: 'name',
@@ -120,9 +120,6 @@ export default {
         const versions = this.getAgentVersions(agent);
         return { ...agent, versions };
       });
-    },
-    serverVersion() {
-      return this.kasCheckVersion || this.gitlabVersion;
     },
     showPagination() {
       return !this.maxAgents && this.agents.length > this.limit;
@@ -180,12 +177,12 @@ export default {
       const agentVersion = this.getAgentVersionString(agent);
       let allowableAgentVersion = semverInc(agentVersion, 'minor');
 
-      const isServerPrerelease = Boolean(semverPrerelease(this.serverVersion));
+      const isServerPrerelease = Boolean(semverPrerelease(this.kasCheckVersion));
       if (isServerPrerelease) {
         allowableAgentVersion = semverInc(allowableAgentVersion, 'minor');
       }
 
-      return semverLt(allowableAgentVersion, this.serverVersion);
+      return semverLt(allowableAgentVersion, this.kasCheckVersion);
     },
 
     getVersionPopoverTitle(agent) {
@@ -293,7 +290,7 @@ export default {
 
             <p class="gl-mb-0">
               <gl-sprintf :message="$options.i18n.versionOutdatedText">
-                <template #version>{{ serverVersion }}</template>
+                <template #version>{{ kasCheckVersion }}</template>
               </gl-sprintf>
               <gl-link :href="$options.versionUpdateLink" class="gl-font-sm">
                 {{ $options.i18n.viewDocsText }}</gl-link
@@ -306,7 +303,7 @@ export default {
 
           <p v-else-if="isVersionOutdated(item)" class="gl-mb-0">
             <gl-sprintf :message="$options.i18n.versionOutdatedText">
-              <template #version>{{ serverVersion }}</template>
+              <template #version>{{ kasCheckVersion }}</template>
             </gl-sprintf>
             <gl-link :href="$options.versionUpdateLink" class="gl-font-sm">
               {{ $options.i18n.viewDocsText }}</gl-link
@@ -338,7 +335,7 @@ export default {
               :href="$options.configHelpLink"
               :title="$options.i18n.defaultConfigTooltip"
               :aria-label="$options.i18n.defaultConfigTooltip"
-              class="gl-vertical-align-middle"
+              class="gl-align-middle"
               ><gl-icon name="question-o" :size="14" /></gl-link
           ></span>
         </span>

@@ -33,18 +33,29 @@ export const shouldRenderCommentButton = (isLoggedIn, isCommentButtonRendered) =
 
 export const hasDiscussions = (line) => line?.discussions?.length > 0;
 
-export const pinnedFileHref = (diffFile) => {
-  if (!window?.gon?.features?.pinnedFile) return '';
-  return `?pin=${diffFile.file_hash}`;
-};
-
-export const lineHref = (line, content) => {
-  if (!line || !line.line_code) return '';
-  return `${pinnedFileHref(content.diffFile)}#${line.line_code}`;
-};
-
 export const fileContentsId = (diffFile) => {
   return `diff-content-${diffFile.file_hash}`;
+};
+
+const createDiffUrl = (diffFile) => {
+  const url = new URL(window.location);
+  if (window?.gon?.features?.pinnedFile) {
+    url.searchParams.set('pin', diffFile.file_hash);
+  }
+  return url;
+};
+
+export const createFileUrl = (diffFile) => {
+  const url = createDiffUrl(diffFile);
+  url.hash = fileContentsId(diffFile);
+  return url;
+};
+
+export const lineHref = (line, diffFile) => {
+  if (!line || !line.line_code) return '';
+  const url = createDiffUrl(diffFile);
+  url.hash = line.line_code;
+  return url.toString();
 };
 
 export const lineCode = (line) => {
@@ -142,7 +153,12 @@ export const shouldShowCommentButton = (hover, context, meta, discussions) => {
   return hover && !context && !meta && !discussions;
 };
 
-export const mapParallel = (content) => (line) => {
+export const mapParallel = ({
+  diffFile,
+  hasParallelDraftLeft,
+  hasParallelDraftRight,
+  draftsForLine,
+}) => (line) => {
   let { left, right } = line;
 
   // Dicussions/Comments
@@ -158,8 +174,8 @@ export const mapParallel = (content) => (line) => {
     left = {
       ...left,
       renderDiscussion: hasExpandedDiscussionOnLeft,
-      hasDraft: content.hasParallelDraftLeft(content.diffFile.file_hash, line),
-      lineDrafts: content.draftsForLine(content.diffFile.file_hash, line, 'left'),
+      hasDraft: hasParallelDraftLeft(diffFile.file_hash, line),
+      lineDrafts: draftsForLine(diffFile.file_hash, line, 'left'),
       hasCommentForm: left.hasForm,
       isConflictMarker:
         line.left.type === CONFLICT_MARKER_OUR || line.left.type === CONFLICT_MARKER_THEIR,
@@ -173,8 +189,8 @@ export const mapParallel = (content) => (line) => {
       renderDiscussion: Boolean(
         hasExpandedDiscussionOnRight && right.type && right.type !== EXPANDED_LINE_TYPE,
       ),
-      hasDraft: content.hasParallelDraftRight(content.diffFile.file_hash, line),
-      lineDrafts: content.draftsForLine(content.diffFile.file_hash, line, 'right'),
+      hasDraft: hasParallelDraftRight(diffFile.file_hash, line),
+      lineDrafts: draftsForLine(diffFile.file_hash, line, 'right'),
       hasCommentForm: Boolean(right.hasForm && right.type && right.type !== EXPANDED_LINE_TYPE),
       emptyCellClassMap: { conflict_their: line.left?.type === CONFLICT_OUR },
       addCommentTooltip: addCommentTooltip(line.right),
@@ -191,8 +207,8 @@ export const mapParallel = (content) => (line) => {
     isContextLineRight: isContextLine(right?.type),
     hasDiscussionsLeft: hasDiscussions(left),
     hasDiscussionsRight: hasDiscussions(right),
-    lineHrefOld: lineHref(left, content),
-    lineHrefNew: lineHref(right, content),
+    lineHrefOld: lineHref(left, diffFile),
+    lineHrefNew: lineHref(right, diffFile),
     lineCode: lineCode(line),
     isMetaLineLeft: isMetaLine(left?.type),
     isMetaLineRight: isMetaLine(right?.type),

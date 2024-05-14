@@ -17,7 +17,7 @@ module QA
 
       InvalidCredentialsError = Class.new(RuntimeError)
 
-      def initialize
+      def initialize(command_retry_sleep_interval: 10)
         # We set HOME to the current working directory (which is a
         # temporary directory created in .perform()) so the temporarily dropped
         # .netrc can be utilised
@@ -25,7 +25,10 @@ module QA
         @use_lfs = false
         @gpg_key_id = nil
         @default_branch = Runtime::Env.default_branch
+        @command_retry_sleep_interval = command_retry_sleep_interval
       end
+
+      attr_reader :command_retry_sleep_interval
 
       def self.perform(*args)
         Dir.mktmpdir do |dir|
@@ -94,11 +97,11 @@ module QA
         ::File.write(name, contents)
 
         if use_lfs?
-          git_lfs_track_result = run_git(%(git lfs track #{name} --lockable))
+          git_lfs_track_result = run_git(%(git lfs track "#{name}" --lockable))
           return git_lfs_track_result.response unless git_lfs_track_result.success?
         end
 
-        git_add_result = run_git(%(git add #{name}))
+        git_add_result = run_git(%(git add "#{name}"))
 
         git_lfs_track_result.to_s + git_add_result.to_s
       end
@@ -123,12 +126,12 @@ module QA
         run_git("git rev-parse --abbrev-ref HEAD").to_s
       end
 
-      def push_changes(branch = @default_branch, push_options: nil)
+      def push_changes(branch = @default_branch, push_options: nil, max_attempts: 3)
         cmd = ['git push']
         cmd << push_options_hash_to_string(push_options)
         cmd << uri
         cmd << branch
-        run_git(cmd.compact.join(' '), max_attempts: 3).to_s
+        run_git(cmd.compact.join(' '), max_attempts: max_attempts).to_s
       end
 
       def push_all_branches
@@ -331,7 +334,13 @@ module QA
       end
 
       def run_git(command_str, env: env_vars, max_attempts: 1)
-        run(command_str, env: env, max_attempts: max_attempts, sleep_internal: 10, log_prefix: 'Git: ')
+        run(
+          command_str,
+          env: env,
+          max_attempts: max_attempts,
+          sleep_internal: command_retry_sleep_interval,
+          log_prefix: 'Git: '
+        )
       end
     end
   end

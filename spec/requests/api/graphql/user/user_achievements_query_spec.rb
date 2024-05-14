@@ -6,7 +6,7 @@ RSpec.describe 'UserAchievements', feature_category: :user_profile do
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:group) { create(:group, :private) }
+  let_it_be(:group) { create(:group, :private, guests: user) }
   let_it_be(:achievement) { create(:achievement, namespace: group) }
   let_it_be(:non_revoked_achievement) { create(:user_achievement, achievement: achievement, user: user) }
   let_it_be(:revoked_achievement) { create(:user_achievement, :revoked, achievement: achievement, user: user) }
@@ -38,10 +38,6 @@ RSpec.describe 'UserAchievements', feature_category: :user_profile do
   end
 
   let(:current_user) { user }
-
-  before_all do
-    group.add_guest(user)
-  end
 
   before do
     post_graphql(query, current_user: current_user)
@@ -91,10 +87,8 @@ RSpec.describe 'UserAchievements', feature_category: :user_profile do
   context 'when current user is not a member of the private group' do
     let(:current_user) { create(:user) }
 
-    it 'returns all achievements' do
-      expect(graphql_data_at(:user, :userAchievements, :nodes)).to contain_exactly(
-        a_graphql_entity_for(non_revoked_achievement)
-      )
+    it 'returns no achievements' do
+      expect(graphql_data_at(:user, :userAchievements, :nodes)).to be_empty
     end
   end
 end

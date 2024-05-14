@@ -85,12 +85,12 @@ export default {
     tableCell({
       key: 'source_full_path',
       label: s__('BulkImport|Source'),
-      thClass: `gl-w-30p`,
+      thClass: `gl-w-3/10`,
     }),
     tableCell({
       key: 'destination_name',
       label: s__('BulkImport|Destination'),
-      thClass: `gl-w-30p`,
+      thClass: `gl-w-3/10`,
     }),
     tableCell({
       key: 'created_at',
@@ -99,7 +99,7 @@ export default {
     tableCell({
       key: 'status',
       label: __('Status'),
-      thClass: `gl-w-quarter`,
+      thClass: `gl-w-1/4`,
     }),
   ],
 
@@ -237,7 +237,7 @@ export default {
 <template>
   <div>
     <h1 class="gl-font-size-h1 gl-my-0 gl-py-4 gl-display-flex gl-align-items-center gl-gap-3">
-      <img :src="$options.gitlabLogo" class="gl-w-6 gl-h-6" />
+      <img :src="$options.gitlabLogo" :alt="__('GitLab Logo')" class="gl-w-6 gl-h-6" />
       <span>{{ s__('BulkImport|Direct transfer history') }}</span>
     </h1>
 

@@ -112,10 +112,10 @@ RSpec.describe Ci::CreateCommitStatusService, :clean_gitlab_redis_cache, feature
 
       context 'when merge request exists for given branch' do
         let!(:merge_request) do
-          create(:merge_request, source_project: project, source_branch: 'master', target_branch: 'develop')
+          create(:merge_request, source_project: project, head_pipeline: nil)
         end
 
-        it 'sets head pipeline' do
+        it 'sets head pipeline', :sidekiq_inline do
           expect { response }
             .to change { ::Ci::Pipeline.count }.by(1)
             .and change { ::Ci::Stage.count }.by(1)
@@ -123,6 +123,34 @@ RSpec.describe Ci::CreateCommitStatusService, :clean_gitlab_redis_cache, feature
 
           expect(response).to be_success
           expect(merge_request.reload.head_pipeline).not_to be_nil
+        end
+
+        context 'when the MR has a branch head pipeline' do
+          let!(:merge_request) do
+            create(:merge_request, :with_head_pipeline, source_project: project)
+          end
+
+          it 'adds the status to the existing pipeline' do
+            expect { response }.not_to change { ::Ci::Pipeline.count }
+            expect(response.payload[:job].pipeline_id).to eq(merge_request.head_pipeline_id)
+          end
+        end
+
+        context 'when the MR has a merged result head pipeline' do
+          let!(:merge_request) do
+            create(:merge_request, source_project: project, head_pipeline: head_pipeline)
+          end
+
+          let(:head_pipeline) { create(:ci_pipeline, :merged_result_pipeline) }
+
+          it 'creates a new branch pipeline but does not change the head pipeline' do
+            expect { response }
+              .to change { ::Ci::Pipeline.count }.by(1)
+              .and change { ::Ci::Stage.count }.by(1)
+              .and change { ::CommitStatus.count }.by(1)
+
+            expect(merge_request.reload.head_pipeline_id).to eq(head_pipeline.id)
+          end
         end
       end
     end
@@ -437,7 +465,7 @@ RSpec.describe Ci::CreateCommitStatusService, :clean_gitlab_redis_cache, feature
       expect do
         snyk_params_list.map do |snyk_params|
           Thread.new do
-            response = execute_service(snyk_params)
+            response = Gitlab::ExclusiveLease.skipping_transaction_check { execute_service(snyk_params) }
             expect(response).to be_success
           end
         end.each(&:join)

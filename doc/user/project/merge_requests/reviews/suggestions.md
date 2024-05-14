@@ -2,13 +2,14 @@
 stage: Create
 group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: "Suggest improvements to the code in a merge request, and commit those improvements to the merge request directly from your browser."
 ---
 
 # Suggest changes
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Reviewers can suggest code changes with a Markdown syntax in merge request diff threads.
 The merge request author (or other users with the appropriate role) can apply any or
@@ -24,7 +25,8 @@ merge request, authored by the user who suggested the changes.
    - To select a single line, hover over the line number and
      select **Add a comment to this line** (**{comment}**).
    - To select multiple lines:
-     1. Hover over the line number, and select **Add a comment to this line** (**{comment}**).
+     1. Hover over the line number, and select **Add a comment to this line** (**{comment}**):
+        ![Comment on any diff file line](img/comment_on_any_diff_line_v16_6.png)
      1. Select and drag your selection until all desired lines are included. To
         learn more, see [Multi-line suggestions](#multi-line-suggestions).
 1. In the comment toolbar, select **Insert suggestion** (**{doc-code}**). GitLab
@@ -37,11 +39,13 @@ merge request, authored by the user who suggested the changes.
    ````
 
 1. Edit the pre-populated code block to add your suggestion.
-1. Select whether you want your comment to appear immediately:
-
-   - **Start a review** or **Add to review** creates your comment in a pending state
-     as part of a [review](index.md).
-   - **Add comment now** adds your comment immediately.
+1. To add your comment immediately, select **Add comment now**, or use the keyboard shortcut:
+   - macOS: <kbd>Shift</kbd> + <kbd>Command</kbd> + <kbd>Enter</kbd>
+   - All other OSes: <kbd>Shift</kbd> + <kbd>Control</kbd> + <kbd>Enter</kbd>
+1. To leave your comment unpublished until you finish a [review](index.md), select
+   **Start a review**, or use the keyboard shortcut:
+   - macOS: <kbd>Command</kbd> + <kbd>Enter</kbd>
+   - All other OSes: <kbd>Control</kbd> + <kbd>Enter</kbd>
 
 ### Multi-line suggestions
 
@@ -72,6 +76,10 @@ When applied, the suggestion replaces from 2 lines above to 2 lines below the co
 Suggestions for multiple lines are limited to 100 lines _above_ and 100
 lines _below_ the commented diff line. This allows for up to 200 changed lines per
 suggestion.
+
+Multiline comments display the comment's line numbers above the body of the comment:
+
+![Multiline comment selection displayed above comment](img/multiline-comment-saved.png)
 
 #### Using the rich text editor
 
@@ -168,14 +176,13 @@ The template for commit messages for applied suggestions supports these variable
 | `%{suggestions_count}` | The number of suggestions applied.| `3` |
 | `%{username}`          | The username of the user applying suggestions. | `user_1` |
 | `%{user_full_name}`    | The full name of the user applying suggestions. | `User 1` |
+| `%{co_authored_by}`    | Names and emails of suggestion authors in a `Co-authored-by` Git commit trailer format. | `Co-authored-by: Zane Doe <zdoe@example.com>` <br> `Co-authored-by: Blake Smith <bsmith@example.com>` |
 
 For example, to customize the commit message to output
 `Addresses user_1's review`, set the custom text to
 `Addresses %{username}'s review`.
 
 ## Batch suggestions
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/326168) custom commit messages for batch suggestions in GitLab 14.4.
 
 Prerequisites:
 
@@ -197,7 +204,7 @@ suggestions in a single commit.
    approver for this merge request.
 
 1. Optional. Provide a custom commit message for [batch suggestions](#batch-suggestions)
-   (GitLab 14.4 and later) to describe your change. If you don't specify one,
+   to describe your change. If you don't specify one,
    the default commit message is used.
 
 ## Related topics

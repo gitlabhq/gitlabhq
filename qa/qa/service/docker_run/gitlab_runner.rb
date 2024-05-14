@@ -70,17 +70,22 @@ module QA
           args << '--non-interactive'
           args << "--name #{@name}"
           args << "--url #{@address}"
-          args << "--registration-token #{@token}"
 
-          args << if run_untagged
-                    raise format(CONFLICTING_VARIABLES_MESSAGE, :tags=, :run_untagged, run_untagged) if @tags&.any?
+          if @token.starts_with?('glrt-')
+            args << "--token #{@token}"
+          else
+            args << "--registration-token #{@token}"
 
-                    '--run-untagged=true'
-                  else
-                    raise 'You must specify tags to run!' unless @tags&.any?
+            args << if run_untagged
+                      raise format(CONFLICTING_VARIABLES_MESSAGE, :tags=, :run_untagged, run_untagged) if @tags&.any?
 
-                    "--tag-list #{@tags.join(',')}"
-                  end
+                      '--run-untagged=true'
+                    else
+                      raise 'You must specify tags to run!' unless @tags&.any?
+
+                      "--tag-list #{@tags.join(',')}"
+                    end
+          end
 
           args << "--executor #{@executor}"
 

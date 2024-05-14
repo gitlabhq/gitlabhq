@@ -8,12 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
-
-> - Notifications for expiring tokens [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3649) in GitLab 12.6.
-> - Token lifetime limits [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3649) in GitLab 12.6.
-> - Additional notifications for expiring tokens [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214721) in GitLab 13.3.
-> - Prefill for token name and scopes [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/334664) in GitLab 14.1.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Personal access tokens can be an alternative to [OAuth2](../../api/oauth2.md) and used to:
 
@@ -27,7 +22,8 @@ The ability to create personal access tokens without expiry was [deprecated](htt
 
 Personal access tokens are:
 
-- Required when [two-factor authentication (2FA)](account/two_factor_authentication.md) is enabled.
+- Required when [two-factor authentication (2FA)](account/two_factor_authentication.md) or
+  [SAML](../../integration/saml.md#password-generation-for-users-created-through-saml) is enabled.
 - Used with a GitLab username to authenticate with GitLab features that require usernames. For example,
   [GitLab-managed Terraform state backend](../infrastructure/iac/terraform_state.md#use-your-gitlab-backend-as-a-remote-data-source)
   and [Docker container registry](../packages/container_registry/authenticate_with_container_registry.md),
@@ -93,7 +89,7 @@ At any time, you can revoke a personal access token.
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 Prerequisites:
 
@@ -101,9 +97,34 @@ Prerequisites:
 
 In GitLab 15.7 and later, you can [use the application settings API to disable personal access tokens](../../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls).
 
+### Disable personal access tokens for enterprise users
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369504) in GitLab 16.11 [with a flag](../../administration/feature_flags.md) named `enterprise_disable_personal_access_tokens`. Disabled by default.
+
+Prerequisites:
+
+- You must have the Owner role in the group that the enterprise user belongs to.
+
+Disabling the personal access tokens of a group's [enterprise users](../enterprise_user/index.md):
+
+- Stops the enterprise users from creating new personal access tokens. This behavior applies
+  even if an enterprise user is also an administrator of the group.
+- Disables the existing personal access tokens of the enterprise users.
+
+NOTE:
+Disabling personal access tokens for enterprise users does not disable personal access tokens for [service accounts](service_accounts.md).
+
+To disable the enterprise users' personal access tokens:
+
+1. On the left sidebar, select **Search or go to** and find your group or subgroup.
+1. Select **Settings > General**.
+1. Expand **Permissions and group features**.
+1. Under **Personal access tokens**, select **Disable personal access tokens**.
+1. Select **Save changes**.
+
 ## View the last time a token was used
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33162) in GitLab 13.2. Token usage information is updated every 24 hours.
+> - In GitLab 16.0 and earlier, token usage information is updated every 24 hours.
 > - The frequency of token usage information updates [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/410168) in GitLab 16.1 from 24 hours to 10 minutes.
 
 Token usage information is updated every 10 minutes. GitLab considers a token used when the token is used to:
@@ -131,11 +152,11 @@ A personal access token can perform actions based on the assigned scopes.
 |--------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `api`              | Grants complete read/write access to the API, including all groups and projects, the container registry, the dependency proxy, and the package registry. Also grants complete read/write access to the registry and repository using Git over HTTP.                                                                                                                                                           |
 | `read_user`        | Grants read-only access to the authenticated user's profile through the `/user` API endpoint, which includes username, public email, and full name. Also grants access to read-only API endpoints under [`/users`](../../api/users.md).                                                                            |
-| `read_api`         | Grants read access to the API, including all groups and projects, the container registry, and the package registry. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28944) in GitLab 12.10.)                                                                                                   |
+| `read_api`         | Grants read access to the API, including all groups and projects, the container registry, and the package registry.                    |
 | `read_repository`  | Grants read-only access to repositories on private projects using Git-over-HTTP or the Repository Files API.                                                                                                                                                                                                       |
 | `write_repository` | Grants read-write access to repositories on private projects using Git-over-HTTP (not using the API).                                                                                                                                                                                                              |
 | `read_registry`    | Grants read-only (pull) access to [container registry](../packages/container_registry/index.md) images if a project is private and authorization is required. Available only when the container registry is enabled.                                                                                               |
-| `write_registry`   | Grants read-write (push) access to [container registry](../packages/container_registry/index.md) images if a project is private and authorization is required. Available only when the container registry is enabled. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28958) in GitLab 12.10.) |
+| `write_registry`   | Grants read-write (push) access to [container registry](../packages/container_registry/index.md) images if a project is private and authorization is required. Available only when the container registry is enabled.  |
 | `sudo`             | Grants permission to perform API actions as any user in the system, when authenticated as an administrator.                                                                                                                                                                                                        |
 | `admin_mode`       | Grants permission to perform API actions as an administrator, when Admin Mode is enabled. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107875) in GitLab 15.8.)                                                                                                                             |
 | `create_runner`    | Grants permission to create runners.                                                                                                                                                                                                                                                                               |
@@ -195,7 +216,7 @@ You can now create personal access tokens for a service account user with no exp
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 You can create a predetermined personal access token
 as part of your tests or automation.
@@ -239,7 +260,7 @@ sudo gitlab-rails runner "token = User.find_by_username('automation-bot').person
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 You can programmatically revoke a personal access token
 as part of your tests or automation.
@@ -275,7 +296,7 @@ sudo gitlab-rails runner "PersonalAccessToken.find_by_token('token-string-here12
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 To clone a repository when SSH is disabled, clone it using a personal access token by running the following command:
 
@@ -304,7 +325,7 @@ Remember this if you set up an automation pipeline that depends on authenticatio
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 If a personal access token is revoked accidentally by any method, administrators can unrevoke that token. By default, a daily job deletes revoked tokens at 1:00 AM system time.
 

@@ -8,7 +8,7 @@
     = link_to tag.name, project_tag_path(@project, tag.name), class: 'item-title ref-name'
 
     - if protected_tag?(@project, tag)
-      = gl_badge_tag s_('TagsPage|protected'), variant: :success, size: :sm, class: 'gl-ml-2'
+      = gl_badge_tag s_('TagsPage|protected'), variant: :neutral, size: :sm, class: 'gl-ml-2'
 
     - if commit
       .block-truncated
@@ -30,9 +30,9 @@
         = render partial: 'projects/commit/signature', object: tag.signature
 
     - if commit_status
-      = render 'ci/status/icon', status: commit_status, option_css_classes: 'gl-display-inline-flex gl-vertical-align-middle gl-mr-5'
+      = render 'ci/status/icon', status: commit_status, option_css_classes: 'gl-display-inline-flex gl-align-middle gl-mr-5'
     - elsif @tag_pipeline_statuses && @tag_pipeline_statuses.any?
-      .gl-display-inline-flex.gl-vertical-align-middle.gl-mr-5
+      .gl-display-inline-flex.gl-align-middle.gl-mr-5
         %svg.s24
 
     - if can?(current_user, :admin_tag, @project)

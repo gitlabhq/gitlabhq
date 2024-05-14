@@ -57,7 +57,7 @@ RSpec.describe 'bin/diagnostic-reports-uploader' do
     FileUtils.rm_rf(reports_dir, secure: true)
   end
 
-  it 'starts successfully' do
+  it 'starts successfully', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/448411' do
     expect(File.exist?(report.path)).to be true
 
     bin_path = rails_root_join("bin/diagnostic-reports-uploader")

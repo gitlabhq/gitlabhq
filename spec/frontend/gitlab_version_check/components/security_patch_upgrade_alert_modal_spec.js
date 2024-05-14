@@ -70,7 +70,7 @@ describe('SecurityPatchUpgradeAlertModal', () => {
     });
 
     it('renders the modal title correctly', () => {
-      expect(findGlModalTitle().text()).toBe('Important notice - Critical security release');
+      expect(findGlModalTitle().text()).toBe('Important notice - Critical patch release');
     });
 
     it('renders modal body without suggested versions', () => {
@@ -95,7 +95,7 @@ describe('SecurityPatchUpgradeAlertModal', () => {
 
     describe('Learn more link', () => {
       it('renders with correct text and link', () => {
-        expect(findGlLink().text()).toBe('Learn more about this critical security release.');
+        expect(findGlLink().text()).toBe('Learn more about this critical patch release.');
         expect(findGlLink().attributes('href')).toBe(ABOUT_RELEASES_PAGE);
       });
 

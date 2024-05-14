@@ -4,6 +4,7 @@ module Packages
   module Nuget
     class SymbolUploader < GitlabUploader
       include ObjectStorage::Concern
+      include Packages::GcsSignedUrlMetadata
 
       storage_location :packages
 

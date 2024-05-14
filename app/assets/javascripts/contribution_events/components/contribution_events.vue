@@ -170,7 +170,7 @@ export default {
 </script>
 
 <template>
-  <ul class="gl-list-style-none gl-p-0">
+  <ul class="gl-list-none gl-p-0">
     <component
       :is="eventComponent(event.action)"
       v-for="(event, index) in events"

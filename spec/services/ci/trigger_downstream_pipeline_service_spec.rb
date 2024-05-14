@@ -50,7 +50,7 @@ RSpec.describe Ci::TriggerDownstreamPipelineService, feature_category: :continuo
 
       context 'when the limit is exceeded' do
         before do
-          stub_const("#{described_class.name}::DOWNSTREAM_PIPELINE_TRIGGER_LIMIT_PER_PROJECT_USER_SHA", 1)
+          stub_application_setting(downstream_pipeline_trigger_limit_per_project_user_sha: 1)
         end
 
         it 'drops the bridge and does not schedule the downstream pipeline worker', :aggregate_failures do
@@ -79,23 +79,6 @@ RSpec.describe Ci::TriggerDownstreamPipelineService, feature_category: :continuo
           end
 
           it_behaves_like 'creates a log entry', 'child'
-        end
-
-        context 'when FF `ci_rate_limit_downstream_pipelines` is disabled' do
-          before do
-            stub_feature_flags(ci_rate_limit_downstream_pipelines: false)
-          end
-
-          it 'schedules the downstream pipeline worker' do
-            service.execute
-
-            expect { execute }.to change { ::Ci::CreateDownstreamPipelineWorker.jobs.size }.by(1)
-            expect(bridge).not_to be_failed
-            expect(execute).to be_success
-            expect(execute.message).to eq('Downstream pipeline enqueued')
-          end
-
-          it_behaves_like 'creates a log entry'
         end
       end
 

@@ -31,6 +31,8 @@ module QA
           end
 
           def open_invite_members_modal
+            dismiss_duo_chat_popup if respond_to?(:dismiss_duo_chat_popup)
+
             click_element 'invite-members-button'
           end
 

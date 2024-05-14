@@ -3,11 +3,11 @@
 require 'spec_helper'
 
 MAIL_ROOM_CONFIG_ENABLED_SAMPLE =
-  ":mailboxes:\n"\
-  "  \n"\
-  "    -\n"\
-  "      :host: \"gitlab.example.com\"\n"\
-  "      :port: 143\n"\
+  ":mailboxes:\n  "\
+  "\n    "\
+  "-\n      "\
+  ":host: \"gitlab.example.com\"\n      "\
+  ":port: 143\n"\
   ""
 
 RSpec.describe SystemCheck::IncomingEmail::ImapAuthenticationCheck do

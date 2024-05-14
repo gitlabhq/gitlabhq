@@ -9,21 +9,6 @@
   "then": {
     "properties": {
       "instrumentation_class": false,
-      "options": {
-        "type": "object",
-        "properties": {
-          "events": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          }
-        },
-        "required": [
-          "events"
-        ],
-        "additionalProperties": false
-      },
       "events": {
         "type": "array",
         "items": {
@@ -49,8 +34,7 @@
       }
     },
     "required": [
-      "events",
-      "options"
+      "events"
     ]
   }
 }

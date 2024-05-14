@@ -137,7 +137,7 @@ sudo gitlab-ctl restart
 sudo gitlab-rake gitlab:check SANITIZE=true
 ```
 
-In GitLab 13.1 and later, check [database values can be decrypted](../raketasks/check.md#verify-database-values-can-be-decrypted-using-the-current-secrets)
+Verify that the [database values can be decrypted](../raketasks/check.md#verify-database-values-can-be-decrypted-using-the-current-secrets)
 especially if `/etc/gitlab/gitlab-secrets.json` was restored, or if a different server is
 the target for the restore.
 
@@ -333,8 +333,6 @@ To disable these prompts, set the `GITLAB_ASSUME_YES` environment variable to `1
 The `force=yes` environment variable also disables these prompts.
 
 ### Excluding tasks on restore
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/19347) in GitLab 14.10.
 
 You can exclude specific tasks on restore by adding the environment variable `SKIP`, whose values are a comma-separated list of the following options:
 

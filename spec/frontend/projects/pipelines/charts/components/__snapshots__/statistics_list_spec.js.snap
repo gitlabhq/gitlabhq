@@ -1,40 +1,66 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`StatisticsList displays the counts data with labels 1`] = `
-<ul>
-  <li>
-    <span>
-      Total:
-    </span>
-    <strong>
-      40,000 pipelines
-    </strong>
-  </li>
-  <li>
-    <span>
-      Successful:
-    </span>
-    <strong>
-      20,000 pipelines
-    </strong>
-  </li>
-  <li>
-    <span>
-      Failed:
-    </span>
+<div
+  class="gl-display-flex gl-flex-wrap gl-gap-6 gl-mb-6"
+>
+  <div>
+    <gl-single-stat-stub
+      animationdecimalplaces="0"
+      id="reference-0"
+      shouldanimate="true"
+      title="Total pipelines"
+      titleiconclass=""
+      unit=""
+      usedelimiters="true"
+      value="40,000"
+      variant="muted"
+    />
+  </div>
+  <div>
+    <gl-single-stat-stub
+      animationdecimalplaces="0"
+      id="reference-1"
+      shouldanimate="true"
+      title="Success ratio"
+      titleiconclass=""
+      unit=""
+      usedelimiters="true"
+      value="50.00%"
+      variant="muted"
+    />
+  </div>
+  <div>
+    <gl-single-stat-stub
+      animationdecimalplaces="0"
+      id="reference-2"
+      shouldanimate="true"
+      title="Successful pipelines"
+      titleiconclass=""
+      unit=""
+      usedelimiters="true"
+      value="20,000"
+      variant="muted"
+    />
+  </div>
+  <div>
+    <gl-single-stat-stub
+      animationdecimalplaces="0"
+      id="reference-3"
+      shouldanimate="true"
+      title="Failed pipelines"
+      titleiconclass=""
+      unit=""
+      usedelimiters="true"
+      value="20,000"
+      variant="muted"
+    />
     <gl-link-stub
+      class="gl-p-2"
       href="/flightjs/Flight/-/pipelines?page=1&scope=all&status=failed"
     >
-      20,000 pipelines
+      See details
     </gl-link-stub>
-  </li>
-  <li>
-    <span>
-      Success ratio:
-    </span>
-    <strong>
-      50.00%
-    </strong>
-  </li>
-</ul>
+  </div>
+</div>
 `;

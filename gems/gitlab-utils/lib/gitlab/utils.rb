@@ -11,10 +11,8 @@ module Gitlab
     ConcurrentRubyThreadIsUsedError = Class.new(StandardError)
 
     def allowlisted?(absolute_path, allowlist)
-      path = absolute_path.downcase
-
-      allowlist.map(&:downcase).any? do |allowed_path|
-        path.start_with?(allowed_path)
+      allowlist.any? do |allowed_path|
+        absolute_path.start_with?(allowed_path)
       end
     end
 

@@ -84,7 +84,7 @@ module Projects
         # been instantiated to avoid ActiveRecord trying to create it when
         # initializing the project, as that would cause a foreign key constraint
         # exception.
-        relations_block: -> (project) { build_fork_network_member(project) },
+        relations_block: ->(project) { build_fork_network_member(project) },
         skip_disk_validation: skip_disk_validation,
         external_authorization_classification_label: @project.external_authorization_classification_label,
         suggestion_commit_message: @project.suggestion_commit_message,

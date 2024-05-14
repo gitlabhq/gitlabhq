@@ -75,6 +75,10 @@ module Gitlab
         sym_options.merge(owner: OWNER)
       end
 
+      def sym_options_with_admin
+        sym_options_with_owner.merge(admin: ADMIN)
+      end
+
       def protection_options
         [
           {
@@ -101,6 +105,21 @@ module Gitlab
             label: s_('DefaultBranchProtection|Fully protected after initial push'),
             help_text: s_('DefaultBranchProtection|Developers can push the initial commit to a repository, but none afterward. Maintainers can always push. No one can force push.'),
             value: PROTECTION_DEV_CAN_INITIAL_PUSH
+          }
+        ]
+      end
+
+      def global_protection_levels
+        [
+          {
+            label: s_('DefaultBranchProtection|Not protected'),
+            help_text: s_('DefaultBranchProtection|Both developers and maintainers can push new commits, force push, or delete the branch.'),
+            value: false
+          },
+          {
+            label: s_('DefaultBranchProtection|Protected'),
+            help_text: s_('DefaultBranchProtection|Once a repository is created this branch will be protected.'),
+            value: true
           }
         ]
       end

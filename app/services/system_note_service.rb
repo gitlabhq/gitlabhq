@@ -45,8 +45,8 @@ module SystemNoteService
     ::SystemNotes::IssuablesService.new(noteable: issuable, project: project, author: author).change_issuable_reviewers(old_reviewers)
   end
 
-  def request_review(issuable, project, author, user)
-    ::SystemNotes::IssuablesService.new(noteable: issuable, project: project, author: author).request_review(user)
+  def request_review(issuable, project, author, user, has_unapproved)
+    ::SystemNotes::IssuablesService.new(noteable: issuable, project: project, author: author).request_review(user, has_unapproved)
   end
 
   def change_issuable_contacts(issuable, project, author, added_count, removed_count)
@@ -158,6 +158,21 @@ module SystemNoteService
 
   def change_status(noteable, project, author, status, source = nil)
     ::SystemNotes::IssuablesService.new(noteable: noteable, project: project, author: author).change_status(status, source)
+  end
+
+  # Called when 'merge when checks pass' is executed
+  def merge_when_checks_pass(noteable, project, author, sha)
+    ::SystemNotes::MergeRequestsService.new(noteable: noteable, project: project, author: author).merge_when_checks_pass(sha)
+  end
+
+  # Called when 'auto merge' is canceled
+  def cancel_auto_merge(noteable, project, author)
+    ::SystemNotes::MergeRequestsService.new(noteable: noteable, project: project, author: author).cancel_auto_merge
+  end
+
+  # Called when 'auto merge' is aborted
+  def abort_auto_merge(noteable, project, author, reason)
+    ::SystemNotes::MergeRequestsService.new(noteable: noteable, project: project, author: author).abort_auto_merge(reason)
   end
 
   # Called when 'merge when pipeline succeeds' is executed
@@ -366,6 +381,10 @@ module SystemNoteService
 
   def unapprove_mr(noteable, user)
     merge_requests_service(noteable, noteable.project, user).unapprove_mr
+  end
+
+  def requested_changes(noteable, user)
+    merge_requests_service(noteable, noteable.project, user).requested_changes
   end
 
   def change_alert_status(alert, author, reason = nil)

@@ -60,7 +60,7 @@ export default () => {
       provide: {
         containerClass,
         buttonSize,
-        disabled: parseBoolean(disabled),
+        emailsDisabled: parseBoolean(disabled),
         dropdownItems: JSON.parse(dropdownItems),
         initialNotificationLevel: notificationLevel,
         helpPagePath,

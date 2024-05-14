@@ -1,4 +1,4 @@
-import { GlModal } from '@gitlab/ui';
+import { GlModal, GlForm } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import setWindowLocation from 'helpers/set_window_location_helper';
@@ -18,7 +18,6 @@ jest.mock('~/lib/utils/url_utility', () => ({
   ...jest.requireActual('~/lib/utils/url_utility'),
   visitUrl: jest.fn().mockName('visitUrlMock'),
 }));
-jest.mock('~/boards/eventhub');
 
 const currentBoard = {
   id: 'gid://gitlab/Board/1',
@@ -49,6 +48,7 @@ describe('BoardForm', () => {
   const findFormWrapper = () => wrapper.findByTestId('board-form-wrapper');
   const findDeleteConfirmation = () => wrapper.findByTestId('delete-confirmation-message');
   const findInput = () => wrapper.find('#board-new-name');
+  const findInputFormWrapper = () => wrapper.findComponent(GlForm);
 
   const defaultHandlers = {
     createBoardMutationHandler: jest.fn().mockResolvedValue({
@@ -95,6 +95,9 @@ describe('BoardForm', () => {
         ...provide,
       },
       attachTo: document.body,
+      stubs: {
+        GlForm,
+      },
     });
   };
 
@@ -176,14 +179,14 @@ describe('BoardForm', () => {
       const fillForm = () => {
         findInput().value = 'Test name';
         findInput().trigger('input');
-        findInput().trigger('keyup.enter', { metaKey: true });
+        findInputFormWrapper().trigger('submit');
       };
 
       it('does not call API if board name is empty', async () => {
         createComponent({
           props: { canAdminBoard: true, currentPage: formType.new },
         });
-        findInput().trigger('keyup.enter', { metaKey: true });
+        findInputFormWrapper().trigger('submit');
 
         await waitForPromises();
 
@@ -266,7 +269,7 @@ describe('BoardForm', () => {
         props: { canAdminBoard: true, currentPage: formType.edit },
       });
 
-      findInput().trigger('keyup.enter', { metaKey: true });
+      findInputFormWrapper().trigger('submit');
 
       await waitForPromises();
 
@@ -295,7 +298,7 @@ describe('BoardForm', () => {
         props: { canAdminBoard: true, currentPage: formType.edit },
       });
 
-      findInput().trigger('keyup.enter', { metaKey: true });
+      findInputFormWrapper().trigger('submit');
 
       await waitForPromises();
 
@@ -318,7 +321,7 @@ describe('BoardForm', () => {
         },
       });
 
-      findInput().trigger('keyup.enter', { metaKey: true });
+      findInputFormWrapper().trigger('submit');
 
       await waitForPromises();
 

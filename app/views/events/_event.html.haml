@@ -4,6 +4,9 @@
   .event-item.gl-border-bottom-0.gl-pb-3{ class: current_path?('users#activity') ? 'user-profile-activity gl-pl-7!' : 'project-activity-item' }
     .event-item-timestamp.gl-font-sm
       #{time_ago_with_tooltip(event.created_at)}
+      - if event.imported?
+        %span &middot;
+        = render "import/shared/imported_badge", text_only: true, importable: _('event')
 
     - if event.wiki_page?
       = render "events/event/wiki", event: event

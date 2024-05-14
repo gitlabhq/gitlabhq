@@ -88,7 +88,7 @@ export default {
           message: __('Failed to load error details from Sentry.'),
         }),
       result(res) {
-        if (res.data.project?.sentryErrors?.detailedError) {
+        if (res.data?.project?.sentryErrors?.detailedError) {
           this.$apollo.queries.error.stopPolling();
           this.setStatus(this.error.status);
         } else {

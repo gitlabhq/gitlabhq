@@ -3,7 +3,7 @@
 - button_class = admin_mode ? '' : 'js-sign-in-button'
 - submit_message = admin_mode ? _('Enter admin mode') : _('Sign in')
 
-= gitlab_ui_form_for(:user, url: url, html: { class: ['gl-p-5 gl-show-field-errors', form_class], aria: { live: 'assertive' }, data: { testid: 'sign-in-form' }}) do |f|
+= gitlab_ui_form_for(:user, url: url, html: { class: ['gl-show-field-errors', form_class], aria: { live: 'assertive' }, data: { testid: 'sign-in-form' }}) do |f|
   - if admin_mode
     .form-group
       = f.label :password, _('Password')

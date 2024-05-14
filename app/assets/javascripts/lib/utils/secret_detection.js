@@ -22,7 +22,7 @@ export const containsSensitiveToken = (message) => {
     {
       // eslint-disable-next-line @gitlab/require-i18n-strings
       name: 'Feed Token',
-      regex: 'feed_token=((glft-)?[0-9a-zA-Z_-]{20}|glft-[a-h0-9]+-[0-9]+_)',
+      regex: 'feed_token=[0-9a-zA-Z_-]{20}|glft-[0-9a-zA-Z_-]{20}|glft-[a-h0-9]+-[0-9]+_',
     },
     {
       name: 'GitLab OAuth Application Secret',
@@ -40,6 +40,26 @@ export const containsSensitiveToken = (message) => {
       name: 'GitLab CI Build (Job) Token',
       regex: `glcbt-[0-9a-zA-Z]{1,5}_[0-9a-zA-Z_-]{20}`,
     },
+    {
+      name: 'GitLab Feature Flags Client Token',
+      regex: `glffct-[0-9a-zA-Z_-]{20}`,
+    },
+    {
+      name: 'GitLab Runner Token',
+      regex: 'glrt-[0-9a-zA-Z_-]{20}',
+    },
+    {
+      name: 'GitLab Incoming Mail Token',
+      regex: 'glimt-[0-9a-zA-Z_-]{25}',
+    },
+    {
+      name: 'GitLab Agent for Kubernetes Token',
+      regex: 'glagent-[0-9a-zA-Z_-]{50}',
+    },
+    {
+      name: 'GitLab Pipeline Trigger Token',
+      regex: 'glptt-[0-9a-zA-Z_-]{40}',
+    },
   ];
 
   for (const rule of sensitiveDataPatterns) {
@@ -52,12 +72,8 @@ export const containsSensitiveToken = (message) => {
 };
 
 export async function confirmSensitiveAction(prompt = i18n.defaultPrompt) {
-  const confirmed = await confirmAction(prompt, {
+  return confirmAction(prompt, {
     primaryBtnVariant: 'danger',
     primaryBtnText: i18n.primaryBtnText,
   });
-  if (!confirmed) {
-    return false;
-  }
-  return true;
 }

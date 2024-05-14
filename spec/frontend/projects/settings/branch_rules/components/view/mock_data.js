@@ -104,7 +104,7 @@ export const matchingBranchesCount = 3;
 export const branchProtectionsMockResponse = {
   data: {
     project: {
-      id: 'gid://gitlab/Project/6',
+      id: 'gid://gitlab/Project/1',
       __typename: 'Project',
       branchRules: {
         __typename: 'BranchRuleConnection',
@@ -112,6 +112,8 @@ export const branchProtectionsMockResponse = {
           {
             __typename: 'BranchRule',
             name: 'main',
+            isDefault: true,
+            id: 'gid://gitlab/Projects/BranchRule/1',
             matchingBranchesCount,
             branchProtection: {
               __typename: 'BranchProtection',
@@ -129,6 +131,8 @@ export const branchProtectionsMockResponse = {
           {
             __typename: 'BranchRule',
             name: '*',
+            isDefault: false,
+            id: 'gid://gitlab/Projects/BranchRule/2',
             matchingBranchesCount,
             branchProtection: {
               __typename: 'BranchProtection',
@@ -145,6 +149,66 @@ export const branchProtectionsMockResponse = {
           },
         ],
       },
+    },
+  },
+};
+
+export const predefinedBranchRulesMockResponse = {
+  data: {
+    project: {
+      id: 'gid://gitlab/Project/1',
+      __typename: 'Project',
+      branchRules: {
+        __typename: 'BranchRuleConnection',
+        nodes: [
+          {
+            name: 'All branches',
+            id: 'gid://gitlab/Projects::AllBranchesRule/7',
+            isDefault: false,
+            matchingBranchesCount: 12,
+            branchProtection: null,
+            __typename: 'BranchRule',
+          },
+          {
+            name: 'All protected branches',
+            id: 'gid://gitlab/Projects::AllBranchesRule/6',
+            isDefault: false,
+            matchingBranchesCount: 14,
+            branchProtection: null,
+            __typename: 'BranchRule',
+          },
+        ],
+      },
+    },
+  },
+};
+
+export const deleteBranchRuleMockResponse = {
+  data: {
+    branchRuleDelete: {
+      errors: [],
+      __typename: 'BranchRuleDeletePayload',
+    },
+  },
+};
+
+export const editBranchRuleMockResponse = {
+  data: {
+    branchRule: {
+      errors: [],
+      __typename: 'BranchRuleEditPayload',
+    },
+  },
+};
+
+export const protectableBranches = ['make-release-umd-bundle', 'main', 'v2.x'];
+
+export const protectableBranchesMockResponse = {
+  data: {
+    project: {
+      id: 'gid://gitlab/Project/1',
+      protectableBranches,
+      __typename: 'Project',
     },
   },
 };

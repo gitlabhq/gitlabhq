@@ -61,7 +61,7 @@ RSpec.describe 'shared/snippets/_snippet.html.haml' do
       end
 
       it 'does not render tooltip' do
-        expect(rendered).not_to have_selector("span.has-tooltip")
+        expect(rendered).not_to have_selector("span.has-tooltip[title='This snippet is hidden because its author has been banned']")
       end
     end
 

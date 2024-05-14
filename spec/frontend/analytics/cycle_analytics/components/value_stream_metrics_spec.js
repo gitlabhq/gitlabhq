@@ -95,7 +95,7 @@ describe('ValueStreamMetrics', () => {
 
         it('with a filter function, will call the function with the metrics data', async () => {
           const filteredData = [
-            { identifier: 'issues', value: '3', title: 'New Issues', description: 'foo' },
+            { identifier: 'issues', value: '3', title: 'New issues', description: 'foo' },
           ];
           mockFilterFn = jest.fn(() => filteredData);
 
@@ -106,7 +106,7 @@ describe('ValueStreamMetrics', () => {
           await waitForPromises();
 
           expect(mockFilterFn).toHaveBeenCalledWith(transferredMetricsData);
-          expect(wrapper.vm.metrics).toEqual(filteredData);
+          expect(findMetrics().at(0).props('metric')).toEqual(filteredData[0]);
         });
 
         it('without a filter function, it will only update the metrics', async () => {
@@ -115,7 +115,7 @@ describe('ValueStreamMetrics', () => {
           await waitForPromises();
 
           expect(mockFilterFn).not.toHaveBeenCalled();
-          expect(wrapper.vm.metrics).toEqual(transferredMetricsData);
+          expect(findMetrics().at(0).props('metric')).toEqual(transferredMetricsData[0]);
         });
       });
 

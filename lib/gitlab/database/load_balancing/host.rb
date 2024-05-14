@@ -161,11 +161,31 @@ module Gitlab
         end
 
         def replication_lag_below_threshold?
-          if (lag_time = replication_lag_time)
-            lag_time <= load_balancer.configuration.max_replication_lag_time
-          else
-            false
+          lag_time = replication_lag_time
+          return false unless lag_time
+          return true if lag_time <= load_balancer.configuration.max_replication_lag_time
+
+          if ignore_replication_lag_time?
+            ::Gitlab::Database::LoadBalancing::Logger.info(
+              event: :replication_lag_ignored,
+              lag_time: lag_time,
+              message: 'Replication lag is treated as low because of load_balancer_ignore_replication_lag_time feature flag'
+            )
+
+            return true
           end
+
+          if double_replication_lag_time? && lag_time <= (load_balancer.configuration.max_replication_lag_time * 2)
+            ::Gitlab::Database::LoadBalancing::Logger.info(
+              event: :replication_lag_below_double,
+              lag_time: lag_time,
+              message: 'Replication lag is treated as low because of load_balancer_double_replication_lag_time feature flag'
+            )
+
+            return true
+          end
+
+          false
         end
 
         # Returns true if the replica has replicated enough data to be useful.
@@ -256,6 +276,14 @@ module Gitlab
         # We fallback gracefully to the query that does not correctly handle logical replicas for such configurations.
         def latest_lsn_query
           @latest_lsn_query ||= can_track_logical_lsn? ? LATEST_LSN_WITH_LOGICAL_QUERY : LATEST_LSN_WITHOUT_LOGICAL_QUERY
+        end
+
+        def ignore_replication_lag_time?
+          Feature::BypassLoadBalancer.enabled? && Feature.enabled?(:load_balancer_ignore_replication_lag_time, type: :ops)
+        end
+
+        def double_replication_lag_time?
+          Feature::BypassLoadBalancer.enabled? && Feature.enabled?(:load_balancer_double_replication_lag_time, type: :ops)
         end
       end
     end

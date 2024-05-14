@@ -21,8 +21,8 @@
     "@storybook/vue": "^6.5.10",
     "graphql-tag": "^2.12.5",
     "postcss-loader": "3.0.0",
-    "sass": "^1.49.9",
-    "sass-loader": "^7.1.0"
+    "sass": "^1.75.0",
+    "sass-loader": "^10"
   },
   "resolutions": {
     "chokidar": "^3.5.2"

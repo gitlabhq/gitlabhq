@@ -7,7 +7,7 @@ RSpec.describe TabHelper do
 
   describe 'gl_tabs_nav' do
     it 'creates a tabs navigation' do
-      expect(helper.gl_tabs_nav).to match(%r{<ul class="nav gl-tabs-nav"></ul>})
+      expect(helper.gl_tabs_nav).to match(%r{<ul role="tablist" class="nav gl-tabs-nav"></ul>})
     end
 
     it 'captures block output' do
@@ -25,7 +25,7 @@ RSpec.describe TabHelper do
     end
 
     it 'creates a tab' do
-      expect(helper.gl_tab_link_to('Link', '/url')).to eq('<li class="nav-item"><a class="nav-link gl-tab-nav-item" href="/url">Link</a></li>')
+      expect(helper.gl_tab_link_to('Link', '/url')).to eq('<li role="presentation" class="nav-item"><a role="tab" class="nav-link gl-tab-nav-item" href="/url">Link</a></li>')
     end
 
     it 'creates a tab with block output' do
@@ -33,19 +33,19 @@ RSpec.describe TabHelper do
     end
 
     it 'creates a tab with custom classes for enclosing list item without content block provided' do
-      expect(helper.gl_tab_link_to('Link', '/url', { tab_class: 'my-class' })).to match(/<li class=".*my-class.*"/)
+      expect(helper.gl_tab_link_to('Link', '/url', { tab_class: 'my-class' })).to match(/<li role="presentation" class=".*my-class.*"/)
     end
 
     it 'creates a tab with custom classes for enclosing list item with content block provided' do
-      expect(helper.gl_tab_link_to('/url', { tab_class: 'my-class' }) { 'Link' }).to match(/<li class=".*my-class.*"/)
+      expect(helper.gl_tab_link_to('/url', { tab_class: 'my-class' }) { 'Link' }).to match(/<li role="presentation" class=".*my-class.*"/)
     end
 
     it 'creates a tab with custom classes for anchor element' do
-      expect(helper.gl_tab_link_to('Link', '/url', { class: 'my-class' })).to match(/<a class=".*my-class.*"/)
+      expect(helper.gl_tab_link_to('Link', '/url', { class: 'my-class' })).to match(/<a class=".*my-class.*" role="tab"/)
     end
 
     it 'creates an active tab with item_active = true' do
-      expect(helper.gl_tab_link_to('Link', '/url', { item_active: true })).to match(/<a class=".*active gl-tab-nav-item-active.*"/)
+      expect(helper.gl_tab_link_to('Link', '/url', { item_active: true })).to match(/<a role="tab" class=".*active gl-tab-nav-item-active.*"/)
     end
 
     context 'when on the active page' do
@@ -54,11 +54,11 @@ RSpec.describe TabHelper do
       end
 
       it 'creates an active tab' do
-        expect(helper.gl_tab_link_to('Link', '/url')).to match(/<a class=".*active gl-tab-nav-item-active.*"/)
+        expect(helper.gl_tab_link_to('Link', '/url')).to match(/<a role="tab" class=".*active gl-tab-nav-item-active.*"/)
       end
 
       it 'creates an inactive tab with item_active = false' do
-        expect(helper.gl_tab_link_to('Link', '/url', { item_active: false })).not_to match(/<a class=".*active.*"/)
+        expect(helper.gl_tab_link_to('Link', '/url', { item_active: false })).not_to match(/<a role="tab" class=".*active.*"/)
       end
     end
   end

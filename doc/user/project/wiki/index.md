@@ -8,10 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
-
-> - Page loading [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/336792) to asynchronous in GitLab 14.9.
-> - Page slug encoding method [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71753) to `ERB::Util.url_encode` in GitLab 14.9.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 If you don't want to keep your documentation in your repository, but you want
 to keep it in the same project as your code, you can use the wiki GitLab provides
@@ -23,8 +20,7 @@ Wiki pages written in Markdown support all [Markdown features](../../markdown.md
 and also provide some [wiki-specific behavior](../../markdown.md#wiki-specific-markdown)
 for links.
 
-In [GitLab 13.5 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/17673/),
-wiki pages display a sidebar, which you [can customize](#customize-sidebar). This
+Wiki pages display a sidebar, which you [can customize](#customize-sidebar). This
 sidebar contains a partial list of pages in the wiki, displayed as a nested tree,
 with sibling pages listed in alphabetical order. To view a list of all pages, select
 **View All Pages** in the sidebar:
@@ -45,8 +41,6 @@ If **Plan > Wiki** is not listed in the left sidebar of your project, a project 
 has [disabled it](#enable-or-disable-a-project-wiki).
 
 ## Configure a default branch for your wiki
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/221159) in GitLab 14.1.
 
 The default branch for your wiki repository depends on your version of GitLab:
 
@@ -126,8 +120,6 @@ Wiki pages are stored as files in a Git repository, so certain characters have a
 
 ### Length restrictions for file and directory names
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/24364) in GitLab 12.8.
-
 Many common file systems have a [limit of 255 bytes](https://en.wikipedia.org/wiki/Comparison_of_file_systems#Limits)
 for file and directory names. Git and GitLab both support paths exceeding
 those limits. However, if your file system enforces these limits, you cannot check out a
@@ -204,6 +196,43 @@ You can export a wiki page as a PDF file:
 
 A PDF of the wiki page is created.
 
+## Wiki page templates
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/442228) in GitLab 16.10.
+
+You can create templates to use when creating new pages, or to apply
+to existing pages. Templates are wiki pages that are stored in the `templates/`
+directory in the wiki repository.
+
+### Create a template
+
+Prerequisites:
+
+- You must have at least the Developer role.
+
+1. On the left sidebar, select **Search or go to** and find your project or group.
+1. Select **Plan > Wiki**.
+1. On the right sidebar, select **Templates**.
+1. Select **New Template**.
+1. Enter template title, format and content, as if creating a regular wiki page.
+
+Templates of a particular format can only be applied to pages of the same format.
+For example, Markdown templates only apply to Markdown pages.
+
+### Apply a template
+
+When you are [creating](#create-a-new-wiki-page) or [editing](#edit-a-wiki-page) a wiki page,
+you can apply a template.
+
+Prerequisites:
+
+- You must have [created](#create-a-template) at least one template already.
+
+1. In the **Content** section, select the **Choose a template** dropdown list.
+1. Select a template from the list. If the page already has some content, a warning displays
+   indicating that the existing content will be overridden.
+1. Select **Apply template**.
+
 ## View history of a wiki page
 
 The changes of a wiki page over time are recorded in the wiki's Git repository.
@@ -226,8 +255,6 @@ To view the changes for a wiki page:
 
 ### View changes between page versions
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15242) in GitLab 13.2.
-
 You can see the changes made in a version of a wiki page, similar to versioned diff file views:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
@@ -240,10 +267,6 @@ You can see the changes made in a version of a wiki page, similar to versioned d
 
 ## Track wiki events
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14902) in GitLab 12.10.
-> - Git events were [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216014) in GitLab 13.0.
-> - [Feature flag for Git events was removed](https://gitlab.com/gitlab-org/gitlab/-/issues/258665) in GitLab 13.5.
-
 GitLab tracks wiki creation, deletion, and update events. These events are displayed on these pages:
 
 - [User profile](../../profile/index.md#access-your-user-profile).
@@ -255,7 +278,7 @@ Commits to wikis are not counted in [repository analytics](../../analytics/repos
 
 ## Customize sidebar
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23109) in GitLab 13.8, the sidebar can be customized by selecting the **Edit sidebar** button.
+You can manually edit the contents of the sidebar navigation.
 
 Prerequisites:
 
@@ -287,7 +310,7 @@ A `_sidebar` example, formatted with Markdown:
 
 Wikis are enabled by default in GitLab. Project [administrators](../../permissions.md)
 can enable or disable a project wiki by following the instructions in
-[Sharing and permissions](../settings/project_features_permissions.md#configure-project-features-and-permissions).
+[Sharing and permissions](../settings/index.md#configure-project-features-and-permissions).
 
 Administrators for self-managed GitLab installs can
 [configure additional wiki settings](../../../administration/wikis/index.md).
@@ -342,9 +365,6 @@ to disable the wiki but toggle it on (in blue).
 
 ## Rich text editor
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5643) in GitLab 14.0.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345398) switching between editing experiences in GitLab 14.7 [with a flag](../../../administration/feature_flags.md) named `wiki_switch_between_content_editor_raw_markdown`. Enabled by default.
-> - Switching between editing experiences generally available in GitLab 14.10. [Feature flag `wiki_switch_between_content_editor_raw_markdown`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/83760) removed.
 > - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/398152) from content editor to rich text editor in GitLab 16.2.
 
 GitLab provides a WYSIWYG editing experience for GitLab Flavored Markdown in wikis.
@@ -394,7 +414,7 @@ For the status of the ongoing development for CommonMark and GitLab Flavored Mar
 
 ### Page slug rendering with Apache reverse proxy
 
-In GitLab 14.9 and later, page slugs are now encoded using the
+Page slugs are encoded using the
 [`ERB::Util.url_encode`](https://www.rubydoc.info/stdlib/erb/ERB%2FUtil.url_encode) method.
 If you use an Apache reverse proxy, you can add a `nocanon` argument to the `ProxyPass`
 line of your Apache configuration to ensure your page slugs render correctly.
@@ -403,7 +423,7 @@ line of your Apache configuration to ensure your page slugs render correctly.
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 WARNING:
 This operation deletes all data in the wiki.

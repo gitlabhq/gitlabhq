@@ -1,0 +1,131 @@
+- name: GitLab Duo Chat now generally available
+  description: |
+    GitLab Duo Chat is now [generally available](https://docs.gitlab.com/ee/policy/experiment-beta-support.html#generally-available-ga). As part of this release, we are also making these capabilities generally available:
+
+    - Code explanation helps developers and less technical users understand unfamiliar code faster
+    - Code refactoring enables developers to simplify and improve existing code
+    - Test generation automates repetitive tasks and helps teams catch bugs sooner
+
+    Users can access GitLab Duo Chat in the GitLab UI, in the Web IDE, in VS Code, or in JetBrains IDEs.
+  stage: ai-powered
+  self-managed: true
+  gitlab-com: true
+  available_in: [Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/gitlab_duo_chat.html
+  image_url: https://img.youtube.com/vi/ZQBAuf-CTAY/hqdefault.jpg
+  published_at: 2024-04-18
+  release: 16.11
+
+- name: Understand your users better with Product Analytics
+  description: |
+    With GitLab's new Product Analytics feature, you can instrument your applications, collect key usage and adoption data about your users, and then display it inside GitLab.
+
+    You can visualize data in dashboards, report on it, and filter it in a variety of different ways to find insights about your users. Your team can now quickly identify and respond to unexpected dips or spikes in customer usage that signify an issue, as well as celebrate the success of their recent releases.
+  stage: monitor
+  self-managed: true
+  gitlab-com: true
+  available_in: [Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/product_analytics/
+  image_url: https://img.youtube.com/vi/i8Mze9lRZiY/hqdefault.jpg
+  published_at: 2024-04-18
+  release: 16.11
+
+- name: Security policy scopes
+  description: |
+    Policy scoping provides granular management and enforcement of policies. Across both merge request approval (scan result) policies and scan execution policies, this new feature enables security and compliance teams to scope policy enforcement to a compliance framework or to a set of included/excluded projects in a group.
+
+    While today all policies managed in a security policy project are enforced against all linked groups, subgroups, and projects, policy scoping will allow you to refine that enforcement policy by policy.
+  stage: govern
+  self-managed: true
+  gitlab-com: true
+  available_in: [Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/application_security/policies/scan-execution-policies.html#security-policy-scopes
+  image_url: https://about.gitlab.com/images/16_11/policy-scoping-release-post-image-optimized.png
+  published_at: 2024-04-18
+  release: 16.11
+
+- name: GitLab Duo Chat available in JetBrains IDEs
+  description: |
+   As part of GitLab's AI offerings, Duo Chat further streamlines the developer experience by directly bringing an interactive chat window into any supported JetBrains IDE and the ability to explain code, write tests, and refactor existing code.
+
+   For a complete list of capabilities, see our [Duo Chat documentation](https://docs.gitlab.com/ee/user/gitlab_duo_chat.html).
+  stage: govern
+  self-managed: true
+  gitlab-com: true
+  available_in: [Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/editor_extensions/jetbrains_ide/index.html
+  image_url: https://about.gitlab.com/images/16_11/create-duo-chat-in-jetbrains.png
+  published_at: 2024-04-18
+  release: 16.11
+
+- name: Disable personal access tokens for Enterprise Users
+  description: |
+    GitLab.com group Owners can now disable the creation and use of personal access tokens for any enterprise users in their groups. Due to the powerful privileges that can be associated with personal access tokens, some Owners may want to disable these tokens for security reasons.
+
+    This granular control gives options when it comes to balancing security and accessibility on GitLab.com.
+  stage: govern
+  self-managed: false
+  gitlab-com: true
+  available_in: [Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html#disable-personal-access-tokens-for-enterprise-users
+  image_url: https://about.gitlab.com/images/16_11/govern-disable-pats.jpg
+  published_at: 2024-04-18
+  release: 16.11
+
+- name: Autocomplete support for links to wiki pages
+  description: |
+    We're thrilled to introduce autocomplete support for links to wiki pages in GitLab 16.11! With this new feature, linking to wiki pages from your epics and issues
+    has never been easier - it's just a matter of a few keystrokes.
+
+    Gone are the days of having to copy and paste wiki page URLs into epic and issue comments. Now, simply navigate to any group or project with wiki pages, access an epic or
+    issue, and use the autocomplete shortcut to seamlessly link to your wiki pages from the epic or issue!
+  stage: plan
+  self-managed: false
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/markdown.html#gitlab-specific-references
+  image_url: https://img.youtube.com/vi/qqN6KxMB06E/hqdefault.jpg
+  published_at: 2024-04-18
+  release: 16.11
+
+- name: Sidebar for metadata on the project overview page
+  description: |
+    We've redesigned the project overview page. Now you can find all of the project information and links in one sidebar rather than multiple areas.
+  stage: data_stores
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/project/working_with_projects.html
+  image_url: https://about.gitlab.com/images/16_11/project-overview-sidebar.png
+  published_at: 2024-04-18
+  release: 16.11
+
+- name: Email notifications for changes made using Switchboard
+  description: |
+   Configuration changes made to your GitLab Dedicated instance by tenant administrators using Switchboard will now generate email notifications when complete.
+
+   All users with access to view or edit your tenant in Switchboard will receive a notification for each change made.
+  stage: platforms
+  self-managed: true
+  gitlab-com: false
+  available_in: [Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/administration/dedicated/configure_instance.html#manage-notification-preferences
+  image_url: https://about.gitlab.com/images/16_11/gitlab-dedicated.png
+  published_at: 2024-04-18
+  release: 16.11
+
+- name: Option to cancel a pipeline immediately if any jobs fails
+  description: |
+   Sometimes after you notice a job fails, you might manually cancel the rest of the pipeline to save resources while you work on the issue causing the failure. With GitLab 16.11, you can now configure pipelines to be cancelled automatically when any job fails. With large pipelines that take a long time to run, especially with many long-running jobs that run in parallel, this can be an effective way to reduce resource usage and costs.
+
+    You can even configure a pipeline to immediately [cancel if a downstream pipeline fails](https://docs.gitlab.com/ee/ci/pipelines/downstream_pipelines.html#auto-cancel-the-parent-pipeline-from-a-downstream-pipeline), which cancels the parent pipeline and all other downstream pipelines.
+
+    Special thanks to [Marco](https://gitlab.com/zillemarco) for contributing to the feature!
+  stage: verify
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/ci/yaml/#workflowauto_cancelon_job_failure
+  image_url: https://about.gitlab.com/images/16_11/16.11_auto_cancel_on_job_failure.png
+  published_at: 2024-04-18
+  release: 16.11

@@ -1,5 +1,5 @@
 ---
-stage: Service Management
+stage: Monitor
 group: Respond
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -11,7 +11,7 @@ DETAILS:
 **Offering:** Self-managed
 
 GitLab has an advanced log system where everything is logged, so you can analyze your instance using various system log
-files. The log system is similar to [audit events](../audit_events.md).
+files. The log system is similar to [audit events](../audit_event_reports.md).
 
 System log files are typically plain text in a standard log file format.
 This guide talks about how to read and use these system log files.
@@ -62,12 +62,10 @@ Some of these services have their own environment variables to override the log 
 | GitLab Cleanup       | `INFO`    | `DEBUG`              |
 | GitLab Doctor        | `INFO`    | `VERBOSE`            |
 | GitLab Export        | `INFO`    | `EXPORT_DEBUG`       |
-| GitLab Geo           | `INFO`    |                      |
 | GitLab Import        | `INFO`    | `IMPORT_DEBUG`       |
 | GitLab QA Runtime    | `INFO`    | `QA_LOG_LEVEL`       |
 | Google APIs          | `INFO`    |                      |
 | Rack Timeout         | `ERROR`   |                      |
-| Sidekiq (server)     | `INFO`    |                      |
 | Snowplow Tracker     | `FATAL`   |                      |
 | gRPC Client (Gitaly) | `WARN`    | `GRPC_LOG_LEVEL`     |
 | LLM                  | `INFO`    | `LLM_DEBUG`          |
@@ -193,7 +191,7 @@ which correspond to:
 - `elasticsearch_calls`: Total number of calls to Elasticsearch
 - `elasticsearch_duration_s`: Total time taken by Elasticsearch calls
 - `elasticsearch_timed_out_count`: Total number of calls to Elasticsearch that
-   timed out and therefore returned partial results
+  timed out and therefore returned partial results
 
 ActionCable connection and subscription events are also logged to this file and they follow the
 previous format. The `method`, `path`, and `format` fields are not applicable, and are always empty.
@@ -219,7 +217,7 @@ The ActionCable connection or channel class is used as the `controller`.
 ```
 
 NOTE:
-Starting with GitLab 12.5, if an error occurs, an
+If an error occurs, an
 `exception` field is included with `class`, `message`, and
 `backtrace`. Previous versions included an `error` field instead of
 `exception.class` and `exception.message`. For example:
@@ -377,8 +375,6 @@ October 07, 2014 11:25: Project "project133" was removed
 
 ## `application_json.log`
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22812) in GitLab 12.7.
-
 This file is located at:
 
 - `/var/log/gitlab/gitlab-rails/application_json.log` on Linux package installations.
@@ -453,9 +449,6 @@ This file is located at:
 - `/var/log/gitlab/gitlab-rails/git_json.log` on Linux package installations.
 - `/home/git/gitlab/log/git_json.log` on self-compiled installations.
 
-After GitLab version 12.2, this file was renamed from `githost.log` to
-`git_json.log` and stored in JSON format.
-
 GitLab has to interact with Git repositories, but in some rare cases
 something can go wrong. If this happens, you need to know exactly what
 happened. This log file contains all failed requests from GitLab to Git
@@ -475,7 +468,7 @@ only. For example:
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 NOTE:
 GitLab Free tracks a small number of different audit events.
@@ -581,8 +574,6 @@ For self-compiled installations, edit the `gitlab.yml` and set the Sidekiq
 
 ### `sidekiq_client.log`
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26586) in GitLab 12.9.
-
 This file is located at:
 
 - `/var/log/gitlab/gitlab-rails/sidekiq_client.log` on Linux package installations.
@@ -655,10 +646,10 @@ Example log entries for `/var/log/gitlab/gitaly/current`:
 
 ## Gitaly logs
 
-This file is in `/var/log/gitlab/gitaly/current` and is produced by [runit](http://smarden.org/runit/).
+This file is in `/var/log/gitlab/gitaly/current` and is produced by [runit](https://smarden.org/runit/).
 `runit` is packaged with the Linux package and a brief explanation of its purpose
 is available [in the Linux package documentation](https://docs.gitlab.com/omnibus/architecture/#runit).
-[Log files are rotated](http://smarden.org/runit/svlogd.8.html), renamed in
+[Log files are rotated](https://smarden.org/runit/svlogd.8), renamed in
 Unix timestamp format, and `gzip`-compressed (like `@1584057562.s`).
 
 ### `grpc.log`
@@ -709,8 +700,6 @@ This file logs the progress of [project imports and migrations](../../user/proje
 
 ## `exporter.log`
 
-> - Introduced in GitLab 13.1.
-
 This file is located at:
 
 - `/var/log/gitlab/gitlab-rails/exporter.log` on Linux package installations.
@@ -719,8 +708,6 @@ This file is located at:
 It logs the progress of the export process.
 
 ## `features_json.log`
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/59587) in GitLab 13.7.
 
 This file is located at:
 
@@ -763,8 +750,6 @@ The examples show the `resource_group_id`, `processable_id`, `message`, and `suc
 
 ## `auth.log`
 
-> - Introduced in GitLab 12.0.
-
 This file is located at:
 
 - `/var/log/gitlab/gitlab-rails/auth.log` on Linux package installations.
@@ -774,8 +759,7 @@ This log records:
 
 - Requests over the [Rate Limit](../settings/rate_limits_on_raw_endpoints.md) on raw endpoints.
 - [Protected paths](../settings/protected_paths.md) abusive requests.
-- In GitLab versions [12.3](https://gitlab.com/gitlab-org/gitlab/-/issues/29239) and later,
-  user ID and username, if available.
+- User ID and username, if available.
 
 ## `auth_json.log`
 
@@ -801,8 +785,6 @@ This file contains the JSON version of the logs in `auth.log`, for example:
 
 ## `graphql_json.log`
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/59587) in GitLab 12.0.
-
 This file is located at:
 
 - `/var/log/gitlab/gitlab-rails/graphql_json.log` on Linux package installations.
@@ -823,8 +805,6 @@ The `clickhouse.log` file logs information related to the
 
 ## `migrations.log`
 
-> - Introduced in GitLab 12.3.
-
 This file is located at:
 
 - `/var/log/gitlab/gitlab-rails/migrations.log` on Linux package installations.
@@ -833,8 +813,6 @@ This file is located at:
 This file logs the progress of [database migrations](../raketasks/maintenance.md#display-status-of-database-migrations).
 
 ## `mail_room_json.log` (default)
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/19186) in GitLab 12.6.
 
 This file is located at:
 
@@ -898,8 +876,6 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** Self-managed
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/15442) in GitLab 12.3.
-
 Contains details of GitLab [Database Load Balancing](../postgresql/database_load_balancing.md).
 This file is located at:
 
@@ -914,10 +890,7 @@ DETAILS:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110980) in GitLab 15.9.
 
-This file logs information related to the
-[Exact code search](../../user/search/exact_code_search.md) feature which is
-powered by Zoekt.
-
+This file logs information related to [exact code search](../../user/search/exact_code_search.md).
 This file is located at:
 
 - `/var/log/gitlab/gitlab-rails/zoekt.log` on Linux package installations.
@@ -928,8 +901,6 @@ This file is located at:
 DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** Self-managed
-
-> - Introduced in GitLab 12.6.
 
 This file logs information related to the Elasticsearch Integration, including
 errors during indexing or searching Elasticsearch. This file is located at:
@@ -955,8 +926,6 @@ Line breaks have been added to the following example line for clarity:
 ```
 
 ## `exceptions_json.log`
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17819) in GitLab 12.6.
 
 This file logs the information about exceptions being tracked by
 `Gitlab::ErrorTracking`, which provides a standard and consistent way of
@@ -986,8 +955,6 @@ Each line contains JSON that can be ingested by Elasticsearch. For example:
 ```
 
 ## `service_measurement.log`
-
-> - Introduced in GitLab 13.0.
 
 This file is located at:
 
@@ -1058,7 +1025,7 @@ can be used.
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS
+**Offering:** GitLab.com
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120506) in GitLab 16.0.
 
@@ -1074,7 +1041,7 @@ This file is located at:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-Managed, SaaS
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120506) in GitLab 16.9.
 
@@ -1213,15 +1180,11 @@ GitLab also tracks [Prometheus metrics for Praefect](../gitaly/monitoring.md#mon
 
 ## Backup log
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63832) in GitLab 14.1.
-
 For Linux package installations, the backup log is located at `/var/log/gitlab/gitlab-rails/backup_json.log`.
 
 This log is populated when a [GitLab backup is created](../../administration/backup_restore/index.md). You can use this log to understand how the backup process performed.
 
 ## Performance bar stats
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/48149) in GitLab 13.7.
 
 This file is located at:
 

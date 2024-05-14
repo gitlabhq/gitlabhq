@@ -3308,8 +3308,8 @@ module Gitlab
           it_behaves_like 'returns errors', 'variables config should be a hash'
         end
 
-        context 'returns errors if variables is not a map of key-value strings' do
-          let(:config) { YAML.dump({ variables: { test: false }, rspec: { script: "test" } }) }
+        context 'returns errors if variables is not a map of scalars' do
+          let(:config) { YAML.dump({ variables: { test: [] }, rspec: { script: "test" } }) }
 
           it_behaves_like 'returns errors', 'variable definition must be either a string or a hash'
         end

@@ -86,7 +86,7 @@ export default {
   <span>
     <span
       v-if="milestone"
-      class="issuable-milestone gl-mr-3 gl-text-truncate gl-max-w-26 gl-display-inline-block gl-vertical-align-bottom"
+      class="issuable-milestone gl-mr-3 gl-text-truncate gl-max-w-26 gl-display-inline-block gl-align-bottom"
       data-testid="issuable-milestone"
     >
       <gl-link
@@ -95,7 +95,7 @@ export default {
         :title="milestoneDate"
         class="gl-font-sm gl-text-gray-500!"
       >
-        <gl-icon name="clock" :size="12" />
+        <gl-icon name="milestone" :size="12" />
         {{ milestone.title }}
       </gl-link>
     </span>

@@ -10,9 +10,9 @@ module Mutations
       NB
 
       field :note,
-            Types::Notes::NoteType,
-            null: true,
-            description: 'Note after mutation.'
+        Types::Notes::NoteType,
+        null: true,
+        description: 'Note after mutation.'
     end
   end
 end

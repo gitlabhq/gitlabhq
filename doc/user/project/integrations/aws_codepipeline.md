@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS
+**Offering:** GitLab.com
 
 > - [Introduced](https://gitlab.com/gitlab-com/alliances/aws/wip/aws-cs-collab/aws-gitlab-collaboration/-/issues/25) in GitLab 16.5.
 

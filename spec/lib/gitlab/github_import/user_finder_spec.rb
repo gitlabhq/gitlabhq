@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::UserFinder, :clean_gitlab_redis_cache, feature_category: :importers do
+RSpec.describe Gitlab::GithubImport::UserFinder, :clean_gitlab_redis_shared_state, feature_category: :importers do
   let(:project) do
     create(
       :project,
@@ -211,7 +211,7 @@ RSpec.describe Gitlab::GithubImport::UserFinder, :clean_gitlab_redis_cache, feat
     let(:username) { 'kittens' }
     let(:user) { {} }
     let(:etag) { 'etag' }
-    let(:lease_name) { "gitlab:github_import:user_finder:#{project.id}" }
+    let(:lease_name) { "gitlab:github_import:user_finder:#{username}" }
     let(:cache_key) { described_class::EMAIL_FOR_USERNAME_CACHE_KEY % username }
     let(:etag_cache_key) { described_class::USERNAME_ETAG_CACHE_KEY % username }
     let(:email_fetched_for_project_key) do
@@ -307,7 +307,7 @@ RSpec.describe Gitlab::GithubImport::UserFinder, :clean_gitlab_redis_cache, feat
           it 'makes an API call' do
             expect(client).to receive(:user).with(username, { headers: {} }).and_return({ email: email }).once
             expect(finder).to receive(:in_lock).with(
-              lease_name, ttl: 3.minutes, sleep_sec: 1.second, retries: 30
+              lease_name, sleep_sec: 0.2.seconds, retries: 30
             ).and_call_original
 
             email_for_github_username
@@ -370,7 +370,7 @@ RSpec.describe Gitlab::GithubImport::UserFinder, :clean_gitlab_redis_cache, feat
           it 'makes a non-rate-limited API call' do
             expect(client).to receive(:user).with(username, { headers: { 'If-None-Match' => etag } }).once
             expect(finder).to receive(:in_lock).with(
-              lease_name, ttl: 3.minutes, sleep_sec: 1.second, retries: 30
+              lease_name, sleep_sec: 0.2.seconds, retries: 30
             ).and_call_original
 
             email_for_github_username
@@ -442,7 +442,7 @@ RSpec.describe Gitlab::GithubImport::UserFinder, :clean_gitlab_redis_cache, feat
           it 'makes a non-rate-limited API call' do
             expect(client).to receive(:user).with(username, { headers: { 'If-None-Match' => etag } }).once
             expect(finder).to receive(:in_lock).with(
-              lease_name, ttl: 3.minutes, sleep_sec: 1.second, retries: 30
+              lease_name, sleep_sec: 0.2.seconds, retries: 30
             ).and_call_original
 
             email_for_github_username

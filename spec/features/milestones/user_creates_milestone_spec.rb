@@ -6,7 +6,7 @@ RSpec.describe "User creates milestone", :js, feature_category: :team_planning d
   let_it_be(:developer) { create(:user) }
   let_it_be(:inherited_guest) { create(:user) }
   let_it_be(:inherited_developer) { create(:user) }
-  let_it_be(:group) { create(:group, :public) }
+  let_it_be(:group) { create(:group, :public, guests: inherited_guest, developers: inherited_developer) }
 
   shared_examples 'creates milestone' do
     specify do
@@ -31,11 +31,6 @@ RSpec.describe "User creates milestone", :js, feature_category: :team_planning d
       expect(page).to have_title('Not Found')
       expect(page).to have_content('Page Not Found')
     end
-  end
-
-  before_all do
-    group.add_guest(inherited_guest)
-    group.add_developer(inherited_developer)
   end
 
   before do

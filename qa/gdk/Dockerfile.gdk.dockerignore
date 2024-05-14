@@ -3,14 +3,12 @@
 .bundle/
 .gitlab/
 .lefthook/
-.rubocop_todo/
 .vscode/
 builds/
 changelogs/
 danger/
 data/
 doc/
-rubocop/
 storybook/
 node_modules/
 log/*.log
@@ -19,7 +17,6 @@ log/*.log
 .gitlab-ci.yml
 .haml-lint*
 .prettier*
-.rubocop*
 .stylelintrc
 .yamllint
 docker-compose.yml
@@ -40,6 +37,9 @@ db/fixtures/
 !db/fixtures/development/01_admin.rb
 !db/fixtures/development/02_application_settings.rb
 !db/fixtures/development/25_api_personal_access_token.rb
+!db/fixtures/development/001_create_base_work_item_types.rb
+!db/fixtures/development/50_create_work_item_hierarchy_restrictions.rb
+!db/fixtures/development/51_create_work_item_related_link_restrictions.rb
 
 ee/db/fixtures/
 !ee/db/fixtures/development/10_license_file.rb

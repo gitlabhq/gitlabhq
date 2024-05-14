@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Git is a distributed version control system, which means you can work locally,
 then share or *push* your changes to a server. In this case, the server you push to is GitLab.
@@ -46,10 +46,9 @@ To view the version of SSH installed on your system, run `ssh -V`.
 To communicate with GitLab, you can use the following SSH key types:
 
 - [ED25519](#ed25519-ssh-keys)
-- [ED25519_SK](#ed25519_sk-ssh-keys) (Available in GitLab 14.8 and later.)
-- [ECDSA_SK](#ecdsa_sk-ssh-keys) (Available in GitLab 14.8 and later.)
+- [ED25519_SK](#ed25519_sk-ssh-keys)
+- [ECDSA_SK](#ecdsa_sk-ssh-keys)
 - [RSA](#rsa-ssh-keys)
-- DSA ([Deprecated](https://about.gitlab.com/releases/2018/06/22/gitlab-11-0-released/#support-for-dsa-ssh-keys) in GitLab 11.0.)
 - ECDSA (As noted in [Practical Cryptography With Go](https://leanpub.com/gocrypto/read#leanpub-auto-ecdsa), the security issues related to DSA also apply to ECDSA.)
 
 Administrators can [restrict which keys are permitted and their minimum lengths](../security/ssh_keys_restrictions.md).
@@ -64,14 +63,10 @@ operating systems.
 
 ### ED25519_SK SSH keys
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78934) in GitLab 14.8.
-
 To use ED25519_SK SSH keys on GitLab, your local client and GitLab server
 must have [OpenSSH 8.2](https://www.openssh.com/releasenotes.html#8.2) or later installed.
 
 ### ECDSA_SK SSH keys
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78934) in GitLab 14.8.
 
 To use ECDSA_SK SSH keys on GitLab, your local client and GitLab server
 must have [OpenSSH 8.2](https://www.openssh.com/releasenotes.html#8.2) or later installed.
@@ -344,12 +339,10 @@ To use SSH with GitLab, copy your public key to your GitLab account:
    `Home Workstation`.
 1. Optional. Select the **Usage type** of the key. It can be used either for `Authentication` or `Signing` or both. `Authentication & Signing` is the default value.
 1. Optional. Update **Expiration date** to modify the default expiration date.
-   In:
-   - GitLab 13.12 and earlier, the expiration date is informational only. It doesn't prevent
-     you from using the key. Administrators can view expiration dates and use them for
+   - Administrators can view expiration dates and use them for
      guidance when [deleting keys](../administration/credentials_inventory.md#delete-a-users-ssh-key).
-   - GitLab checks all SSH keys at 02:00 AM UTC every day. It emails an expiration notice for all SSH keys that expire on the current date. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/322637) in GitLab 13.11.)
-   - GitLab checks all SSH keys at 01:00 AM UTC every day. It emails an expiration notice for all SSH keys that are scheduled to expire seven days from now. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/322637) in GitLab 13.11.)
+   - GitLab checks all SSH keys at 01:00 AM UTC every day. It emails an expiration notice for all SSH keys that are scheduled to expire seven days from now.
+   - GitLab checks all SSH keys at 02:00 AM UTC every day. It emails an expiration notice for all SSH keys that expire on the current date.
 1. Select **Add key**.
 
 ## Verify that you can connect
@@ -406,7 +399,8 @@ on `ssh` command options, see the `man` pages for both `ssh` and `ssh_config`.
 
 ## View your account's SSH keys
 
-1. Sign in to GitLab.
+To view the SSH keys for your account:
+
 1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **SSH Keys**.
@@ -418,9 +412,17 @@ Your existing SSH keys are listed at the bottom of the page. The information inc
   - Public fingerprint.
   - Expiry date.
   - Permitted usage types.
-- The time a key was last used. On GitLab.com this value is unavailable, and you are unable to see if or when an SSH key has been used. For more information, see [issue 324764](https://gitlab.com/gitlab-org/gitlab/-/issues/324764).
+- The time a key was last used.
 
-Select **Delete** to permanently delete an SSH key.
+## Delete an SSH key
+
+To permanently delete an SSH key:
+
+1. On the left sidebar, select your avatar.
+1. Select **Edit profile**.
+1. On the left sidebar, select **SSH Keys**.
+1. Next to the key you want to delete, select **Remove** (**{remove}**).
+1. Select **Delete**.
 
 ## Use different accounts on a single GitLab instance
 
@@ -475,7 +477,7 @@ You can set up two-factor authentication (2FA) for
 
 ## Use EGit on Eclipse
 
-If you are using [EGit](https://www.eclipse.org/egit/), you can [add your SSH key to Eclipse](https://wiki.eclipse.org/EGit/User_Guide#Eclipse_SSH_Configuration).
+If you are using [EGit](https://eclipse.dev/egit/), you can [add your SSH key to Eclipse](https://wiki.eclipse.org/EGit/User_Guide#Eclipse_SSH_Configuration).
 
 ## Use SSH on Microsoft Windows
 
@@ -498,7 +500,7 @@ environment variable is set correctly. Otherwise, your private SSH key might not
 Alternative tools include:
 
 - [Cygwin](https://www.cygwin.com)
-- [PuttyGen](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html)
+- [PuTTYgen](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html) 0.81 and later (earlier versions are [vulnerable to disclosure attacks](https://www.openwall.com/lists/oss-security/2024/04/15/6))
 
 ## Overriding SSH settings on the GitLab server
 

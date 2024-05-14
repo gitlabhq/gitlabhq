@@ -8,7 +8,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 ## Valid access levels
 
@@ -16,12 +16,12 @@ The access levels are defined in the `Gitlab::Access` module, and the
 following levels are recognized:
 
 - No access (`0`)
-- Minimal access (`5`) ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/220203) in GitLab 13.5.)
+- Minimal access (`5`)
 - Guest (`10`)
 - Reporter (`20`)
 - Developer (`30`)
 - Maintainer (`40`)
-- Owner (`50`). Valid for projects in [GitLab 14.9 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/21432).
+- Owner (`50`).
 
 ## List access requests for a group or project
 

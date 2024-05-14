@@ -100,6 +100,59 @@ RSpec.describe DiffViewer::Base do
     end
   end
 
+  describe '#expandable?' do
+    subject(:expandable) { viewer.expandable? }
+
+    let(:too_large) { false }
+    let(:text) { true }
+
+    before do
+      allow(viewer).to receive(:too_large?).and_return(too_large)
+      allow(viewer).to receive(:text?).and_return(text)
+    end
+
+    it 'is expandable' do
+      expect(expandable).to be_truthy
+    end
+
+    context 'when it is too large' do
+      let(:too_large) { true }
+
+      it 'is not expandable' do
+        expect(expandable).to be_falsey
+      end
+    end
+
+    context 'when it is not text' do
+      let(:text) { false }
+
+      it 'is not expandable' do
+        expect(expandable).to be_falsey
+      end
+    end
+
+    context 'when increase_diff_file_performance is off' do
+      before do
+        stub_feature_flags(increase_diff_file_performance: false)
+      end
+
+      context 'when the blob readable_text is true' do
+        it 'is expandable' do
+          expect(expandable).to be_truthy
+        end
+      end
+
+      context 'when the blob readable_text is false' do
+        let(:commit) { project.commit('2f63565e7aac07bcdadb654e253078b727143ec4') }
+        let(:diff_file) { commit.diffs.diff_file_with_new_path('files/images/6049019_460s.jpg') }
+
+        it 'is not expandable' do
+          expect(expandable).to be_falsey
+        end
+      end
+    end
+  end
+
   describe '#generated?' do
     before do
       allow(diff_file).to receive(:generated?).and_return(generated)

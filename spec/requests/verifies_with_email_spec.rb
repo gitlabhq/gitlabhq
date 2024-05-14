@@ -147,7 +147,7 @@ RSpec.describe 'VerifiesWithEmail', :clean_gitlab_redis_sessions, :clean_gitlab_
       before do
         encrypted_token = Devise.token_generator.digest(User, user.email, 'token')
         user.update!(locked_at: Time.current, unlock_token: encrypted_token)
-        stub_session(verification_user_id: user.id)
+        stub_session(session_data: { verification_user_id: user.id })
       end
 
       context 'when rate limited and a verification_token param exists' do
@@ -305,7 +305,7 @@ RSpec.describe 'VerifiesWithEmail', :clean_gitlab_redis_sessions, :clean_gitlab_
 
     context 'when a verification_user_id session variable exists' do
       before do
-        stub_session(verification_user_id: user.id)
+        stub_session(session_data: { verification_user_id: user.id })
 
         perform_enqueued_jobs do
           post(users_resend_verification_code_path)
@@ -319,7 +319,7 @@ RSpec.describe 'VerifiesWithEmail', :clean_gitlab_redis_sessions, :clean_gitlab_
       before do
         allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(true)
 
-        stub_session(verification_user_id: user.id)
+        stub_session(session_data: { verification_user_id: user.id })
 
         perform_enqueued_jobs do
           post(users_resend_verification_code_path)
@@ -355,7 +355,7 @@ RSpec.describe 'VerifiesWithEmail', :clean_gitlab_redis_sessions, :clean_gitlab_
 
     context 'when a verification_user_id session variable exists' do
       before do
-        stub_session(verification_user_id: user.id)
+        stub_session(session_data: { verification_user_id: user.id })
       end
 
       it 'locks the user' do
@@ -397,7 +397,7 @@ RSpec.describe 'VerifiesWithEmail', :clean_gitlab_redis_sessions, :clean_gitlab_
       end
 
       before do
-        stub_session(verification_user_id: user.id)
+        stub_session(session_data: { verification_user_id: user.id })
       end
 
       it 'calls the UpdateEmailService and returns an error response' do
@@ -419,7 +419,7 @@ RSpec.describe 'VerifiesWithEmail', :clean_gitlab_redis_sessions, :clean_gitlab_
     end
 
     it 'renders the template and removes the verification_user_id session variable' do
-      stub_session(verification_user_id: user.id)
+      stub_session(session_data: { verification_user_id: user.id })
 
       get(users_successful_verification_path)
 

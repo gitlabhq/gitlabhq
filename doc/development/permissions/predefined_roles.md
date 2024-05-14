@@ -1,6 +1,6 @@
 ---
 stage: Govern
-group: Authentication
+group: Authorization
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
@@ -93,8 +93,7 @@ Project membership (where the group membership is already taken into account)
 is stored in the `project_authorizations` table.
 
 NOTE:
-In [GitLab 14.9](https://gitlab.com/gitlab-org/gitlab/-/issues/351211) and later, projects in personal namespaces have a maximum role of Owner.
-Because of a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/219299) in GitLab 14.8 and earlier, projects in personal namespaces have a maximum role of Maintainer.
+Projects in personal namespaces have a maximum role of Owner.
 
 #### Guest role
 

@@ -10,9 +10,9 @@ RSpec.describe 'Terraform-Module.gitlab-ci.yml', feature_category: :continuous_i
   subject(:template) { Gitlab::Template::GitlabCiYmlTemplate.find('Terraform-Module') }
 
   shared_examples 'on any branch' do
-    it 'creates fmt and kics job', :aggregate_failures do
+    it 'creates kics job', :aggregate_failures do
       expect(pipeline.errors).to be_empty
-      expect(build_names).to include('fmt', 'kics-iac-sast')
+      expect(build_names).to include('kics-iac-sast')
     end
 
     it 'does not create a deploy job', :aggregate_failures do
@@ -53,9 +53,9 @@ RSpec.describe 'Terraform-Module.gitlab-ci.yml', feature_category: :continuous_i
     context 'when on tag' do
       let(:pipeline_ref) { '1.0.0' }
 
-      it 'creates fmt and deploy job', :aggregate_failures do
+      it 'creates deploy job', :aggregate_failures do
         expect(pipeline.errors).to be_empty
-        expect(build_names).to include('fmt', 'deploy')
+        expect(build_names).to include('deploy')
       end
     end
   end

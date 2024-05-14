@@ -8,12 +8,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, Self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/235382) in GitLab 13.5.
-> - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/339614) support for
->   passthrough chains. Expanded to include additional passthrough types of `file`, `git`, and `url` in GitLab 14.6.
-> - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/235359) support for overriding rules in GitLab 14.8.
 > - [Enabled](https://gitlab.com/gitlab-org/security-products/analyzers/ruleset/-/merge_requests/18) support for specifying ambiguous passthrough refs in GitLab 16.2.
 
 You can customize the behavior of our SAST analyzers by [defining a ruleset configuration file](#create-the-configuration-file) in the
@@ -62,7 +58,7 @@ You can completely replace the predefined rules of some SAST analyzers:
   can replace the default [njsscan configuration file](https://github.com/ajinabraham/njsscan#configure-njsscan)
   with your own.
 - [semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) - you can replace
-  the [GitLab-maintained ruleset](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/-/tree/main/rules)
+  the [GitLab-maintained ruleset](https://gitlab.com/gitlab-org/security-products/sast-rules)
   with your own.
 
 You provide your customizations via passthroughs, which are composed into a
@@ -531,7 +527,7 @@ are used to iteratively assemble the `/sgrules/my-rules.yml` file, which
 is then provided to Semgrep as the ruleset. Each passthrough appends a
 single rule to the ruleset. The first passthrough is responsible for
 initialising the top-level `rules` object, according to the
-[Semgrep rule syntax](https://semgrep.dev/docs/writing-rules/rule-syntax/).
+[Semgrep rule syntax](https://semgrep.dev/docs/writing-rules/rule-syntax).
 
 ```toml
 [semgrep]
@@ -618,7 +614,7 @@ See [group access tokens](../../group/settings/group_access_tokens.md#bot-users-
 
 ```yaml
 include:
-  - template: Security/SAST.gitlab-ci.yml
+  - template: Jobs/SAST.gitlab-ci.yml
 
 variables:
   SAST_RULESET_GIT_REFERENCE: "group_2504721_bot_7c9311ffb83f2850e794d478ccee36f5:$PERSONAL_ACCESS_TOKEN@gitlab.com/example-group/example-ruleset-project@c8ea7e3ff126987fb4819cc35f2310755511c2ab"

@@ -13,174 +13,174 @@ module Types
       expose_permissions Types::PermissionTypes::Ci::Pipeline
 
       field :id, GraphQL::Types::ID, null: false,
-                                     description: 'ID of the pipeline.'
+        description: 'ID of the pipeline.'
 
       field :iid, GraphQL::Types::String, null: false,
-                                          description: 'Internal ID of the pipeline.'
+        description: 'Internal ID of the pipeline.'
 
       field :name, GraphQL::Types::String, null: true,
-                                          description: 'Name of the pipeline.'
+        description: 'Name of the pipeline.'
 
       field :sha, GraphQL::Types::String, null: true,
-                                          method: :sha,
-                                          description: "SHA of the pipeline's commit." do
+        method: :sha,
+        description: "SHA of the pipeline's commit." do
         argument :format,
-                 type: Types::ShaFormatEnum,
-                 required: false,
-                 description: 'Format of the SHA.'
+          type: Types::ShaFormatEnum,
+          required: false,
+          description: 'Format of the SHA.'
       end
 
       field :before_sha, GraphQL::Types::String, null: true,
-                                                 description: 'Base SHA of the source branch.',
-                                                 calls_gitaly: true
+        description: 'Base SHA of the source branch.',
+        calls_gitaly: true
 
       field :complete, GraphQL::Types::Boolean, null: false, method: :complete?,
-                                                description: 'Indicates if a pipeline is complete.'
+        description: 'Indicates if a pipeline is complete.'
 
       field :status, PipelineStatusEnum, null: false,
-                                         description: "Status of the pipeline (#{::Ci::Pipeline.all_state_names.compact.join(', ').upcase})"
+        description: "Status of the pipeline (#{::Ci::Pipeline.all_state_names.compact.join(', ').upcase})"
 
       field :warnings, GraphQL::Types::Boolean, null: false, method: :has_warnings?,
-                                                description: "Indicates if a pipeline has warnings."
+        description: "Indicates if a pipeline has warnings."
 
       field :detailed_status, Types::Ci::DetailedStatusType, null: false,
-                                                             description: 'Detailed status of the pipeline.'
+        description: 'Detailed status of the pipeline.'
 
       field :config_source, PipelineConfigSourceEnum, null: true,
-                                                      description: "Configuration source of the pipeline (#{::Enums::Ci::Pipeline.config_sources.keys.join(', ').upcase})"
+        description: "Configuration source of the pipeline (#{::Enums::Ci::Pipeline.config_sources.keys.join(', ').upcase})"
 
       field :duration, GraphQL::Types::Int, null: true,
-                                            description: 'Duration of the pipeline in seconds.'
+        description: 'Duration of the pipeline in seconds.'
 
       field :queued_duration, Types::DurationType, null: true,
-                                                   description: 'How long the pipeline was queued before starting.'
+        description: 'How long the pipeline was queued before starting.'
 
       field :coverage, GraphQL::Types::Float, null: true,
-                                              description: 'Coverage percentage.'
+        description: 'Coverage percentage.'
 
       field :created_at, Types::TimeType, null: false,
-                                          description: "Timestamp of the pipeline's creation."
+        description: "Timestamp of the pipeline's creation."
 
       field :updated_at, Types::TimeType, null: false,
-                                          description: "Timestamp of the pipeline's last activity."
+        description: "Timestamp of the pipeline's last activity."
 
       field :started_at, Types::TimeType, null: true,
-                                            description: 'Timestamp when the pipeline was started.'
+        description: 'Timestamp when the pipeline was started.'
 
       field :finished_at, Types::TimeType, null: true,
-                                           description: "Timestamp of the pipeline's completion."
+        description: "Timestamp of the pipeline's completion."
 
       field :committed_at, Types::TimeType, null: true,
-                                            description: "Timestamp of the pipeline's commit."
+        description: "Timestamp of the pipeline's commit."
 
       field :stages,
-            type: Types::Ci::StageType.connection_type,
-            null: true,
-            authorize: :read_build,
-            description: 'Stages of the pipeline.',
-            extras: [:lookahead],
-            resolver: Resolvers::Ci::PipelineStagesResolver
+        type: Types::Ci::StageType.connection_type,
+        null: true,
+        authorize: :read_build,
+        description: 'Stages of the pipeline.',
+        extras: [:lookahead],
+        resolver: Resolvers::Ci::PipelineStagesResolver
 
       field :user,
-            type: 'Types::UserType',
-            null: true,
-            description: 'Pipeline user.'
+        type: 'Types::UserType',
+        null: true,
+        description: 'Pipeline user.'
 
       field :retryable, GraphQL::Types::Boolean,
-            description: 'Specifies if a pipeline can be retried.',
-            method: :retryable?,
-            null: false
+        description: 'Specifies if a pipeline can be retried.',
+        method: :retryable?,
+        null: false
 
       field :cancelable, GraphQL::Types::Boolean,
-            description: 'Specifies if a pipeline can be canceled.',
-            method: :cancelable?,
-            null: false
+        description: 'Specifies if a pipeline can be canceled.',
+        method: :cancelable?,
+        null: false
 
       field :jobs,
-            ::Types::Ci::JobType.connection_type,
-            null: true,
-            authorize: :read_build,
-            description: 'Jobs belonging to the pipeline.',
-            resolver: ::Resolvers::Ci::JobsResolver
+        ::Types::Ci::JobType.connection_type,
+        null: true,
+        authorize: :read_build,
+        description: 'Jobs belonging to the pipeline.',
+        resolver: ::Resolvers::Ci::JobsResolver
 
       field :job,
-            type: ::Types::Ci::JobType,
-            null: true,
-            authorize: :read_build,
-            description: 'Specific job in this pipeline, either by name or ID.' do
+        type: ::Types::Ci::JobType,
+        null: true,
+        authorize: :read_build,
+        description: 'Specific job in this pipeline, either by name or ID.' do
         argument :id,
-                 type: ::Types::GlobalIDType[::CommitStatus],
-                 required: false,
-                 description: 'ID of the job.'
+          type: ::Types::GlobalIDType[::CommitStatus],
+          required: false,
+          description: 'ID of the job.'
         argument :name,
-                 type: ::GraphQL::Types::String,
-                 required: false,
-                 description: 'Name of the job.'
+          type: ::GraphQL::Types::String,
+          required: false,
+          description: 'Name of the job.'
       end
 
       field :job_artifacts,
-            null: true,
-            description: 'Job artifacts of the pipeline.',
-            resolver: ::Resolvers::Ci::PipelineJobArtifactsResolver
+        null: true,
+        description: 'Job artifacts of the pipeline.',
+        resolver: ::Resolvers::Ci::PipelineJobArtifactsResolver
 
       field :source_job,
-            type: Types::Ci::JobType,
-            null: true,
-            authorize: :read_build,
-            description: 'Job where pipeline was triggered from.'
+        type: Types::Ci::JobType,
+        null: true,
+        authorize: :read_build,
+        description: 'Job where pipeline was triggered from.'
 
       field :downstream, Types::Ci::PipelineType.connection_type, null: true,
-                                                                  description: 'Pipelines this pipeline will trigger.',
-                                                                  method: :triggered_pipelines_with_preloads
+        description: 'Pipelines this pipeline will trigger.',
+        method: :triggered_pipelines_with_preloads
 
       field :upstream, Types::Ci::PipelineType, null: true,
-                                                description: 'Pipeline that triggered the pipeline.',
-                                                method: :triggered_by_pipeline
+        description: 'Pipeline that triggered the pipeline.',
+        method: :triggered_by_pipeline
 
       field :path, GraphQL::Types::String, null: true,
-                                           description: "Relative path to the pipeline's page."
+        description: "Relative path to the pipeline's page."
 
       field :commit, Types::CommitType, null: true,
-                                        description: "Git commit of the pipeline.",
-                                        calls_gitaly: true
+        description: "Git commit of the pipeline.",
+        calls_gitaly: true
 
       field :commit_path, GraphQL::Types::String, null: true,
-                                                  description: 'Path to the commit that triggered the pipeline.'
+        description: 'Path to the commit that triggered the pipeline.'
 
       field :project, Types::ProjectType, null: true,
-                                          description: 'Project the pipeline belongs to.'
+        description: 'Project the pipeline belongs to.'
 
       field :active, GraphQL::Types::Boolean, null: false, method: :active?,
-                                              description: 'Indicates if the pipeline is active.'
+        description: 'Indicates if the pipeline is active.'
 
       field :uses_needs, GraphQL::Types::Boolean, null: true,
-                                                  method: :uses_needs?,
-                                                  description: 'Indicates if the pipeline has jobs with `needs` dependencies.'
+        method: :uses_needs?,
+        description: 'Indicates if the pipeline has jobs with `needs` dependencies.'
 
       field :test_report_summary,
-            Types::Ci::TestReportSummaryType,
-            null: false,
-            description: 'Summary of the test report generated by the pipeline.',
-            resolver: Resolvers::Ci::TestReportSummaryResolver
+        Types::Ci::TestReportSummaryType,
+        null: false,
+        description: 'Summary of the test report generated by the pipeline.',
+        resolver: Resolvers::Ci::TestReportSummaryResolver
 
       field :test_suite,
-            Types::Ci::TestSuiteType,
-            null: true,
-            description: 'A specific test suite in a pipeline test report.',
-            resolver: Resolvers::Ci::TestSuiteResolver
+        Types::Ci::TestSuiteType,
+        null: true,
+        description: 'A specific test suite in a pipeline test report.',
+        resolver: Resolvers::Ci::TestSuiteResolver
 
       field :ref, GraphQL::Types::String, null: true,
-                                          description: 'Reference to the branch from which the pipeline was triggered.'
+        description: 'Reference to the branch from which the pipeline was triggered.'
 
       field :ref_path, GraphQL::Types::String, null: true,
-                                               description: 'Reference path to the branch from which the pipeline was triggered.',
-                                               method: :source_ref_path
+        description: 'Reference path to the branch from which the pipeline was triggered.',
+        method: :source_ref_path
 
       field :warning_messages, [Types::Ci::PipelineMessageType], null: true,
-                                                                 description: 'Pipeline warning messages.'
+        description: 'Pipeline warning messages.'
 
       field :merge_request_event_type, Types::Ci::PipelineMergeRequestEventTypeEnum, null: true,
-                                                                                     description: "Event type of the pipeline associated with a merge request."
+        description: "Event type of the pipeline associated with a merge request."
 
       field :total_jobs, GraphQL::Types::Int, null: false, method: :total_size, description: "The total number of jobs in the pipeline"
 
@@ -201,6 +201,8 @@ module Types
       field :stuck, GraphQL::Types::Boolean, method: :stuck?, null: false, description: "If the pipeline is stuck."
 
       field :yaml_errors, GraphQL::Types::Boolean, method: :yaml_errors?, null: false, description: "If the pipeline has YAML errors."
+
+      field :yaml_error_messages, GraphQL::Types::String, method: :yaml_errors, null: true, description: "The pipeline YAML errors."
 
       field :trigger, GraphQL::Types::Boolean, method: :trigger?, null: false, description: "If the pipeline was created by a Trigger request."
 

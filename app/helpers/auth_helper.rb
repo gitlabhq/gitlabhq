@@ -8,8 +8,6 @@ module AuthHelper
     azure_activedirectory_v2
     azure_oauth2
     bitbucket
-    facebook
-    dingtalk
     github
     gitlab
     google_oauth2
@@ -69,7 +67,7 @@ module AuthHelper
   end
 
   def form_based_provider_priority
-    ['crowd', /^ldap/, 'kerberos']
+    ['crowd', /^ldap/]
   end
 
   def form_based_provider_with_highest_priority

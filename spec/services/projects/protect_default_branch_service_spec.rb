@@ -16,7 +16,7 @@ RSpec.describe Projects::ProtectDefaultBranchService, feature_category: :source_
       it 'does nothing' do
         allow(service)
           .to receive(:default_branch)
-          .and_return(nil)
+                .and_return(nil)
 
         service.execute
 
@@ -29,7 +29,7 @@ RSpec.describe Projects::ProtectDefaultBranchService, feature_category: :source_
       it 'protects the default branch' do
         allow(service)
           .to receive(:default_branch)
-          .and_return('master')
+                .and_return('master')
 
         service.execute
 
@@ -43,11 +43,11 @@ RSpec.describe Projects::ProtectDefaultBranchService, feature_category: :source_
     before do
       allow(service)
         .to receive(:default_branch)
-        .and_return('master')
+              .and_return('master')
 
       allow(project)
         .to receive(:change_head)
-        .with('master')
+              .with('master')
 
       allow(service)
         .to receive(:create_protected_branch)
@@ -57,7 +57,7 @@ RSpec.describe Projects::ProtectDefaultBranchService, feature_category: :source_
       before do
         allow(service)
           .to receive(:protect_branch?)
-          .and_return(true)
+                .and_return(true)
 
         allow(service)
           .to receive(:create_protected_branch)
@@ -82,7 +82,7 @@ RSpec.describe Projects::ProtectDefaultBranchService, feature_category: :source_
       before do
         allow(service)
           .to receive(:protect_branch?)
-          .and_return(false)
+                .and_return(false)
       end
 
       it 'changes the HEAD of the project' do
@@ -156,33 +156,43 @@ RSpec.describe Projects::ProtectDefaultBranchService, feature_category: :source_
       params = {
         name: 'master',
         push_access_levels_attributes: [{ access_level: access_level }],
-        merge_access_levels_attributes: [{ access_level: access_level }]
+        merge_access_levels_attributes: [{ access_level: access_level }],
+        code_owner_approval_required: false,
+        allow_force_push: false
       }
 
       allow(project)
         .to receive(:creator)
-        .and_return(creator)
+              .and_return(creator)
 
       allow(ProtectedBranches::CreateService)
         .to receive(:new)
-        .with(project, creator, params)
-        .and_return(create_service)
+              .with(project, creator, params)
+              .and_return(create_service)
 
       allow(service)
         .to receive(:push_access_level)
-        .and_return(access_level)
+              .and_return(access_level)
 
       allow(service)
         .to receive(:merge_access_level)
-        .and_return(access_level)
+              .and_return(access_level)
 
       allow(service)
         .to receive(:default_branch)
-        .and_return('master')
+              .and_return('master')
+
+      allow(service)
+        .to receive(:code_owner_approval_required?)
+              .and_return(false)
+
+      allow(service)
+        .to receive(:allow_force_push?)
+              .and_return(false)
 
       allow(create_service)
         .to receive(:execute)
-        .with(skip_authorization: true)
+              .with(skip_authorization: true)
 
       service.create_protected_branch
 
@@ -195,8 +205,8 @@ RSpec.describe Projects::ProtectDefaultBranchService, feature_category: :source_
     context 'when default branch protection is disabled' do
       it 'returns false' do
         allow(project.namespace)
-          .to receive(:default_branch_protection)
-          .and_return(Gitlab::Access::PROTECTION_NONE)
+          .to receive(:default_branch_protection_settings)
+                .and_return(Gitlab::Access::BranchProtection.protection_none)
 
         expect(service.protect_branch?).to eq(false)
       end
@@ -205,19 +215,19 @@ RSpec.describe Projects::ProtectDefaultBranchService, feature_category: :source_
     context 'when default branch protection is enabled' do
       before do
         allow(project.namespace)
-          .to receive(:default_branch_protection)
-          .and_return(Gitlab::Access::PROTECTION_DEV_CAN_MERGE)
+          .to receive(:default_branch_protection_settings)
+                .and_return(Gitlab::Access::BranchProtection.protected_against_developer_pushes)
 
         allow(service)
           .to receive(:default_branch)
-          .and_return('master')
+                .and_return('master')
       end
 
       it 'returns false if the branch is already protected' do
         allow(ProtectedBranch)
           .to receive(:protected?)
-          .with(project, 'master')
-          .and_return(true)
+                .with(project, 'master')
+                .and_return(true)
 
         expect(service.protect_branch?).to eq(false)
       end
@@ -225,8 +235,8 @@ RSpec.describe Projects::ProtectDefaultBranchService, feature_category: :source_
       it 'returns true if the branch is not yet protected' do
         allow(ProtectedBranch)
           .to receive(:protected?)
-          .with(project, 'master')
-          .and_return(false)
+                .with(project, 'master')
+                .and_return(false)
 
         expect(service.protect_branch?).to eq(true)
       end
@@ -271,7 +281,7 @@ RSpec.describe Projects::ProtectDefaultBranchService, feature_category: :source_
     it 'returns the default branch of the project' do
       allow(project)
         .to receive(:default_branch)
-        .and_return('master')
+              .and_return('master')
 
       expect(service.default_branch).to eq('master')
     end
@@ -281,8 +291,8 @@ RSpec.describe Projects::ProtectDefaultBranchService, feature_category: :source_
     context 'when developers can push' do
       it 'returns the DEVELOPER access level' do
         allow(project.namespace)
-          .to receive(:default_branch_protection)
-          .and_return(Gitlab::Access::PROTECTION_DEV_CAN_PUSH)
+          .to receive(:default_branch_protection_settings)
+                .and_return(Gitlab::Access::BranchProtection.protection_partial)
 
         expect(service.push_access_level).to eq(Gitlab::Access::DEVELOPER)
       end
@@ -291,8 +301,8 @@ RSpec.describe Projects::ProtectDefaultBranchService, feature_category: :source_
     context 'when developers can not push' do
       it 'returns the MAINTAINER access level' do
         allow(project.namespace)
-          .to receive(:default_branch_protection)
-          .and_return(Gitlab::Access::PROTECTION_DEV_CAN_MERGE)
+          .to receive(:default_branch_protection_settings)
+                .and_return(Gitlab::Access::BranchProtection.protected_against_developer_pushes)
 
         expect(service.push_access_level).to eq(Gitlab::Access::MAINTAINER)
       end
@@ -303,8 +313,8 @@ RSpec.describe Projects::ProtectDefaultBranchService, feature_category: :source_
     context 'when developers can merge' do
       it 'returns the DEVELOPER access level' do
         allow(project.namespace)
-          .to receive(:default_branch_protection)
-          .and_return(Gitlab::Access::PROTECTION_DEV_CAN_MERGE)
+          .to receive(:default_branch_protection_settings)
+                .and_return(Gitlab::Access::BranchProtection.protected_against_developer_pushes)
 
         expect(service.merge_access_level).to eq(Gitlab::Access::DEVELOPER)
       end
@@ -313,11 +323,34 @@ RSpec.describe Projects::ProtectDefaultBranchService, feature_category: :source_
     context 'when developers can not merge' do
       it 'returns the MAINTAINER access level' do
         allow(project.namespace)
-          .to receive(:default_branch_protection)
-          .and_return(Gitlab::Access::PROTECTION_DEV_CAN_PUSH)
+          .to receive(:default_branch_protection_settings)
+                .and_return(Gitlab::Access::BranchProtection.protection_partial)
 
         expect(service.merge_access_level).to eq(Gitlab::Access::MAINTAINER)
       end
+    end
+  end
+
+  describe '#allow_force_push?' do
+    before do
+      allow(project.namespace)
+        .to receive(:default_branch_protection_settings)
+              .and_return(Gitlab::Access::BranchProtection.protected_against_developer_pushes)
+    end
+
+    it 'calls allow_force_push? method of Gitlab::Access::DefaultBranchProtection and returns correct value',
+      :aggregate_failures do
+      expect_next_instance_of(Gitlab::Access::DefaultBranchProtection) do |instance|
+        expect(instance).to receive(:allow_force_push?)
+      end
+
+      expect(service.allow_force_push?).to be_falsey
+    end
+  end
+
+  describe '#code_owner_approval_required?' do
+    it 'is falsey' do
+      expect(service.code_owner_approval_required?).to be_falsey
     end
   end
 end

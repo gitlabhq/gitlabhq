@@ -7,7 +7,7 @@ RSpec.describe Groups::CreateService, '#execute', feature_category: :groups_and_
   let(:current_user) { user }
   let(:group_params) { { path: 'group_path', visibility_level: Gitlab::VisibilityLevel::PUBLIC }.merge(extra_params) }
   let(:extra_params) { {} }
-  let(:created_group) { response }
+  let(:created_group) { response[:group] }
 
   subject(:response) { described_class.new(current_user, group_params).execute }
 
@@ -20,14 +20,15 @@ RSpec.describe Groups::CreateService, '#execute', feature_category: :groups_and_
   shared_examples 'creating a group' do
     specify do
       expect { response }.to change { Group.count }
-      expect(created_group).to be_persisted
+      expect(response).to be_success
+      expect(created_group.namespace_details.creator).to eq(current_user)
     end
   end
 
   shared_examples 'does not create a group' do
     specify do
       expect { response }.not_to change { Group.count }
-      expect(created_group).not_to be_persisted
+      expect(response).to be_error
     end
   end
 
@@ -127,6 +128,24 @@ RSpec.describe Groups::CreateService, '#execute', feature_category: :groups_and_
       context 'with before_commit callback' do
         it_behaves_like 'has sync-ed traversal_ids'
       end
+
+      describe 'handling of allow_runner_registration_token default' do
+        context 'when on self-managed' do
+          it 'does not disallow runner registration token' do
+            expect(created_group.allow_runner_registration_token?).to eq true
+          end
+        end
+
+        context 'when instance is dedicated' do
+          before do
+            Gitlab::CurrentSettings.update!(gitlab_dedicated_instance: true)
+          end
+
+          it 'does not disallow runner registration token' do
+            expect(created_group.allow_runner_registration_token?).to eq true
+          end
+        end
+      end
     end
 
     context 'when user can not create a group' do
@@ -151,6 +170,18 @@ RSpec.describe Groups::CreateService, '#execute', feature_category: :groups_and_
         end
 
         it_behaves_like 'creating a group'
+      end
+
+      context 'when organization_id is not a valid id' do
+        let(:extra_params) { { organization_id: non_existing_record_id } }
+
+        it_behaves_like 'does not create a group'
+
+        it 'returns an error and does not set organization_id', :aggregate_failures do
+          expect(created_group.errors[:organization_id].first)
+            .to eq(s_("CreateGroup|You don't have permission to create a group in the provided organization."))
+          expect(created_group.organization_id).to be_nil
+        end
       end
 
       context 'when user is an admin', :enable_admin_mode do
@@ -189,10 +220,7 @@ RSpec.describe Groups::CreateService, '#execute', feature_category: :groups_and_
       end
     end
 
-    context 'when organization is not set by params' do
-      let_it_be(:default_organization) { create(:organization, :default) }
-      let_it_be(:current_organization) { create(:organization, name: 'Current Organization') }
-
+    context 'when organization is not set by params', :with_current_organization do
       context 'and the parent of the group has an organization' do
         let_it_be(:parent_group) { create(:group, organization: other_organization) }
 
@@ -203,22 +231,27 @@ RSpec.describe Groups::CreateService, '#execute', feature_category: :groups_and_
         end
       end
 
-      context 'and current_organization is known' do
-        before do
-          allow_next_instance_of(Groups::CreateService) do |instance|
-            allow(instance).to receive(:current_organization).and_return(current_organization)
-          end
-        end
-
+      context 'and has no parent group' do
         it 'creates group with the current organization' do
           expect(created_group.organization).to eq(current_organization)
         end
       end
+    end
 
-      context 'and no group can be found' do
-        it 'creates group with the default organization' do
-          expect(created_group.organization).to eq(default_organization)
-        end
+    context 'when organization_id is set to nil' do
+      let_it_be(:default_organization) { create(:organization, :default) }
+      let(:extra_params) { { organization_id: nil } }
+
+      it 'creates group in default organization' do
+        expect(created_group.organization).to eq(default_organization)
+      end
+    end
+
+    context 'when organization is not set at all' do
+      it 'creates group without an organization' do
+        expect(created_group.organization).to eq(nil)
+        # let db default happen even if the organization record itself doesn't exist
+        expect(created_group.organization_id).not_to be_nil
       end
     end
   end

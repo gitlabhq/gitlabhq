@@ -1,0 +1,12 @@
+---
+# Cop supports --autocorrect.
+RuboCop/FakeRule2:
+  Exclude:
+    - rule2_violation1.rb
+    - rule2_violation2.rb
+    - rule2_violation3.rb
+    - rule2_violation4.rb
+    - rule2_violation5.rb
+    - rule2_violation6.rb
+    - rule2_violation7.rb
+    - rule2_violation8.rb

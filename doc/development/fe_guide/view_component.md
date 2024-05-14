@@ -194,7 +194,7 @@ The `Pajamas::ToggleComponent` follows the [Pajamas Toggle](https://design.gitla
 = render Pajamas::ToggleComponent.new(classes: 'js-force-push-toggle',
   label: s_("ProtectedBranch|Toggle allowed to force push"),
   is_checked: protected_branch.allow_force_push,
-  label_position: :hidden)
+  label_position: :hidden) do
   Leverage this block to render a rich help text. To render a plain text help text, prefer the `help` parameter.
 ```
 

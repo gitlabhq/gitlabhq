@@ -10,9 +10,7 @@ class FeatureFlagsFinder
   end
 
   def execute(preload: true)
-    unless Ability.allowed?(current_user, :read_feature_flag, project)
-      return Operations::FeatureFlag.none
-    end
+    return Operations::FeatureFlag.none unless Ability.allowed?(current_user, :read_feature_flag, project)
 
     items = feature_flags
     items = by_scope(items)

@@ -13,13 +13,8 @@ module Organizations
         organization: organization.slice(:id, :name, :description_html)
           .merge({ avatar_url: organization.avatar_url(size: 128) }),
         groups_and_projects_organization_path: groups_and_projects_organization_path(organization),
-        # TODO: Update counts to use real data
-        # https://gitlab.com/gitlab-org/gitlab/-/issues/424531
-        association_counts: {
-          groups: 10,
-          projects: 5,
-          users: 1050
-        }
+        users_organization_path: users_organization_path(organization),
+        association_counts: association_counts(organization)
       }.merge(shared_groups_and_projects_app_data(organization)).to_json
     end
 
@@ -39,10 +34,7 @@ module Organizations
     end
 
     def organization_index_app_data
-      {
-        new_organization_url: new_organization_path,
-        organizations_empty_state_svg_path: image_path('illustrations/empty-state/empty-organizations-md.svg')
-      }
+      shared_organization_index_app_data
     end
 
     def organization_user_app_data(organization)
@@ -60,14 +52,34 @@ module Organizations
 
     def organization_groups_new_app_data(organization)
       {
-        organization_id: organization.id,
         base_path: root_url,
-        groups_organization_path: groups_and_projects_organization_path(organization, { display: 'groups' }),
+        groups_and_projects_organization_path:
+          groups_and_projects_organization_path(organization, { display: 'groups' }),
+        groups_organization_path: groups_organization_path(organization),
         mattermost_enabled: Gitlab.config.mattermost.enabled,
         available_visibility_levels: available_visibility_levels(Group),
         restricted_visibility_levels: restricted_visibility_levels,
+        default_visibility_level: default_group_visibility,
         path_maxlength: ::Namespace::URL_MAX_LENGTH,
         path_pattern: Gitlab::PathRegex::NAMESPACE_FORMAT_REGEX_JS
+      }.to_json
+    end
+
+    def admin_organizations_index_app_data
+      shared_organization_index_app_data.to_json
+    end
+
+    def organization_projects_edit_app_data(organization, project)
+      {
+        projects_organization_path: groups_and_projects_organization_path(organization, { display: 'projects' }),
+        preview_markdown_path: preview_markdown_organizations_path,
+        project: project.slice(:id, :name, :full_name, :description)
+      }.to_json
+    end
+
+    def organization_activity_app_data(organization)
+      {
+        organization_activity_path: activity_organization_path(organization, { format: :json })
       }.to_json
     end
 
@@ -78,7 +90,7 @@ module Organizations
         organization_gid: organization.to_global_id,
         projects_empty_state_svg_path: image_path('illustrations/empty-state/empty-projects-md.svg'),
         groups_empty_state_svg_path: image_path('illustrations/empty-state/empty-groups-md.svg'),
-        new_group_path: new_group_path,
+        new_group_path: new_groups_organization_path(organization),
         new_project_path: new_project_path,
         can_create_group: can?(current_user, :create_group, organization),
         can_create_project: current_user&.can_create_project?,
@@ -94,6 +106,13 @@ module Organizations
       }
     end
 
+    def shared_organization_index_app_data
+      {
+        new_organization_url: new_organization_path,
+        organizations_empty_state_svg_path: image_path('illustrations/empty-state/empty-organizations-md.svg')
+      }
+    end
+
     # See UsersHelper#admin_users_paths for inspiration to this method
     def organizations_users_paths
       {
@@ -103,6 +122,10 @@ module Organizations
 
     def has_groups?(organization)
       organization.groups.exists?
+    end
+
+    def association_counts(organization)
+      Organizations::OrganizationAssociationCounter.new(organization: organization, current_user: current_user).execute
     end
   end
 end

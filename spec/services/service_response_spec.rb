@@ -225,4 +225,11 @@ RSpec.describe ServiceResponse, feature_category: :shared do
       expect(status).to eq(:error)
     end
   end
+
+  describe '#cause' do
+    it 'returns a string inquirer' do
+      response = described_class.error(message: 'Bad apple', reason: :invalid_input)
+      expect(response.cause).to be_invalid_input
+    end
+  end
 end

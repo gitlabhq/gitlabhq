@@ -22,8 +22,8 @@ module Ml
 
       def create!(name, tags = nil)
         experiment = ::Ml::Experiment.create!(name: name,
-                                              user: user,
-                                              project: project)
+          user: user,
+          project: project)
 
         add_tags(experiment, tags)
 

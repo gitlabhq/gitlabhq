@@ -21,9 +21,9 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
       get :download_export, as: :download_export_group # rubocop:disable Cop/PutGroupRoutesUnderScope
       get :unfoldered_environment_names, as: :unfoldered_environment_names_group # rubocop:disable Cop/PutGroupRoutesUnderScope
 
-      # TODO: Remove as part of refactor in https://gitlab.com/gitlab-org/gitlab-foss/issues/49693
       get 'shared', action: :show, as: :group_shared # rubocop:disable Cop/PutGroupRoutesUnderScope
-      get 'archived', action: :show, as: :group_archived # rubocop:disable Cop/PutGroupRoutesUnderScope
+      get 'inactive', action: :show, as: :group_inactive # rubocop:disable Cop/PutGroupRoutesUnderScope
+      get 'archived', to: redirect('groups/%{id}/-/inactive') # rubocop:disable Cop/PutGroupRoutesUnderScope
     end
 
     get '/', action: :show, as: :group_canonical
@@ -60,6 +60,10 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
         end
       end
 
+      resource :slack, only: [:destroy] do
+        get :slack_auth
+      end
+
       resources :applications do
         put 'renew', on: :member
       end
@@ -82,7 +86,8 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
 
     resources :packages, only: [:index, :show]
 
-    resources :infrastructure_registry, only: [:index]
+    resources :terraform_module_registry, only: [:index], as: :infrastructure_registry, controller: 'infrastructure_registry'
+    get :infrastructure_registry, to: redirect('groups/%{group_id}/-/terraform_module_registry')
 
     resources :milestones, constraints: { id: %r{[^/]+} } do
       member do
@@ -160,6 +165,8 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
     resources :achievements, only: [:index, :new, :edit]
 
     resources :work_items, only: [:index, :show], param: :iid
+
+    post :preview_markdown
   end
 
   scope(

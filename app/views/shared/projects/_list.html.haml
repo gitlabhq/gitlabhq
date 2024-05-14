@@ -12,20 +12,21 @@
 - compact_mode = false unless local_assigns[:compact_mode] == true
 - card_mode = local_assigns[:card_mode] == true
 - css_classes = "#{'compact' if compact_mode} #{'explore' if explore_projects_tab?}"
-- contributed_projects_current_user_empty_message_header = s_('UserProfile|Explore public groups to find projects to contribute to.')
+- contributed_projects_current_user_empty_message_header = s_('UserProfile|Explore public groups to find projects to contribute to')
 - contributed_projects_visitor_empty_message = s_('UserProfile|This user hasn\'t contributed to any projects')
 - starred_projects_illustration_path = 'illustrations/empty-state/empty-projects-starred-md.svg'
-- starred_projects_current_user_empty_message_header = s_('UserProfile|Star projects to track their progress and show your appreciation.')
+- starred_projects_current_user_empty_message_header = s_('UserProfile|Star projects to track their progress and show your appreciation')
 - starred_projects_visitor_empty_message = s_('UserProfile|This user hasn\'t starred any projects')
 - own_projects_illustration_path = 'illustrations/empty-state/empty-projects-md.svg'
-- own_projects_current_user_empty_message_header = s_('UserProfile|You haven\'t created any personal projects.')
+- own_projects_current_user_empty_message_header = s_('UserProfile|You haven\'t created any personal projects')
 - own_projects_current_user_empty_message_description = s_('UserProfile|Your projects can be available publicly, internally, or privately, at your choice.')
-- own_projects_visitor_empty_message = s_('UserProfile|There are no projects available to be displayed here.')
-- explore_page_empty_message = s_('UserProfile|Explore public groups to find projects to contribute to.')
+- own_projects_current_user_cant_create_description = s_("UserProfile|You cannot create projects in your personal namespace. Contact your GitLab administrator.")
+- own_projects_visitor_empty_message = s_('UserProfile|There are no projects available to be displayed here')
+- explore_page_empty_message = s_('UserProfile|Explore public groups to find projects to contribute to')
 - new_project_button_label = _('New project')
 - new_project_button_link = new_project_path
 - explore_projects_button_label = _('Explore projects')
-- explore_projects_button_link = explore_projects_path
+- explore_projects_button_link = starred_explore_projects_path
 - explore_groups_button_label = _('Explore groups')
 - explore_groups_button_link = explore_groups_path
 
@@ -69,9 +70,10 @@
         primary_button_link: explore_projects_button_link,
         visitor_empty_message: starred_projects_visitor_empty_message }
     - else
+      - user_has_limits = current_user&.projects_limit.to_i > 0
       = render partial: 'shared/empty_states/profile_tabs', locals: { illustration_path: own_projects_illustration_path,
         current_user_empty_message_header: own_projects_current_user_empty_message_header,
-        current_user_empty_message_description: own_projects_current_user_empty_message_description,
-        primary_button_label: new_project_button_label,
-        primary_button_link: new_project_button_link,
+        current_user_empty_message_description: user_has_limits ? own_projects_current_user_empty_message_description : own_projects_current_user_cant_create_description,
+        primary_button_label: user_has_limits ? new_project_button_label : nil,
+        primary_button_link: user_has_limits ? new_project_button_link : nil,
         visitor_empty_message: defined?(explore_page) && explore_page ? explore_page_empty_message : own_projects_visitor_empty_message }

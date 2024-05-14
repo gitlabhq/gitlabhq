@@ -1,0 +1,54 @@
+# This is a template for announcing a feature deprecation or other important planned change.
+#
+# Please refer to the deprecation guidelines to confirm your understanding of GitLab's definitions.
+# https://docs.gitlab.com/ee/development/deprecation_guidelines/#terminology
+#
+# Deprecations and other future breaking changes must be announced at least
+# three releases prior to removal.
+#
+# Breaking changes must happen in a major release.
+#
+# See the OPTIONAL END OF SUPPORT FIELDS section below if an End of Support period also applies.
+#
+# For more information please refer to the handbook documentation here:
+# https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#deprecations-and-other-planned-breaking-change-announcements
+#
+# Please delete this line and above before submitting your merge request.
+#
+# REQUIRED FIELDS
+#
+- title: "HashiCorp Vault integration will no longer use CI_JOB_JWT by default"
+  announcement_milestone: "15.9"  # (required) The milestone when this feature was first announced as deprecated.
+  removal_milestone: "17.0"  # (required) The milestone when this feature is planned to be removed
+  breaking_change: true  # (required) Change to false if this is not a breaking change.
+  reporter: dhershkovitch  # (required) GitLab username of the person reporting the change
+  stage: Verify  # (required) String value of the stage that the feature was created in. e.g., Growth
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/366798  # (required) Link to the deprecation issue in GitLab
+  body: |  # (required) Do not modify this line, instead modify the lines below.
+    As part of our effort to improve the security of your CI workflows using JWT and OIDC, the native HashiCorp integration is also being updated in GitLab 16.0. Any projects that use the [`secrets:vault`](https://docs.gitlab.com/ee/ci/yaml/#secretsvault) keyword to retrieve secrets from Vault will need to be [configured to use the ID tokens](https://docs.gitlab.com/ee/ci/secrets/id_token_authentication.html#configure-automatic-id-token-authentication). ID tokens were introduced in 15.7.
+
+    To prepare for this change, use the new [`id_tokens`](https://docs.gitlab.com/ee/ci/yaml/#id_tokens)
+    keyword and configure the `aud` claim. Ensure the bound audience is prefixed with `https://`.
+
+    In GitLab 15.9 to 15.11, you can [enable the **Limit JSON Web Token (JWT) access**](https://docs.gitlab.com/ee/ci/secrets/id_token_authentication.html#enable-automatic-id-token-authentication)
+    setting, which prevents the old tokens from being exposed to any jobs and enables
+    [ID token authentication for the `secrets:vault` keyword](https://docs.gitlab.com/ee/ci/secrets/id_token_authentication.html#configure-automatic-id-token-authentication).
+
+    In GitLab 16.0 and later:
+
+    - This setting will be removed.
+    - CI/CD jobs that use the `id_tokens` keyword can use ID tokens with `secrets:vault`,
+      and will not have any `CI_JOB_JWT*` tokens available.
+    - Jobs that do not use the `id_tokens` keyword will continue to have the `CI_JOB_JWT*`
+      tokens available until GitLab 17.0.
+# If an End of Support period applies, the announcement should be shared with GitLab Support
+# in the `#spt_managers` channel in Slack, and mention `@gitlab-com/support` in this MR.
+#
+  end_of_support_milestone:  # (optional) Use "XX.YY" format. The milestone when support for this feature will end.
+  #
+  # OTHER OPTIONAL FIELDS
+  #
+  tiers:  # (optional - may be required in the future) An array of tiers that the feature is available in currently.  e.g., [Free, Silver, Gold, Core, Premium, Ultimate]
+  documentation_url:  # (optional) This is a link to the current documentation page
+  image_url:  # (optional) This is a link to a thumbnail image depicting the feature
+  video_url:  # (optional) Use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg

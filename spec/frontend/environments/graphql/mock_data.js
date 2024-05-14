@@ -153,8 +153,8 @@ export const environmentsApp = {
               details_path: '/h5bp/html5-boilerplate/-/jobs/911',
               illustration: {
                 image:
-                  '/assets/illustrations/manual_action-c55aee2c5f9ebe9f72751480af8bb307be1a6f35552f344cc6d1bf979d3422f6.svg',
-                size: 'svg-content svg-394',
+                  '/assets/illustrations/empty-state/empty-job-manual-md-c55aee2c5f9ebe9f72751480af8bb307be1a6f35552f344cc6d1bf979d3422f6.svg',
+                size: '',
                 title: 'This job requires a manual action',
                 content:
                   'This job requires manual intervention to start. Before starting this job, you can add variables below for last-minute configuration changes.',
@@ -362,8 +362,8 @@ export const resolvedEnvironmentsApp = {
               detailsPath: '/h5bp/html5-boilerplate/-/jobs/911',
               illustration: {
                 image:
-                  '/assets/illustrations/manual_action-c55aee2c5f9ebe9f72751480af8bb307be1a6f35552f344cc6d1bf979d3422f6.svg',
-                size: 'svg-content svg-394',
+                  '/assets/illustrations/empty-state/empty-job-manual-md-c55aee2c5f9ebe9f72751480af8bb307be1a6f35552f344cc6d1bf979d3422f6.svg',
+                size: '',
                 title: 'This job requires a manual action',
                 content:
                   'This job requires manual intervention to start. Before starting this job, you can add variables below for last-minute configuration changes.',
@@ -664,8 +664,8 @@ export const resolvedEnvironment = {
           detailsPath: '/h5bp/html5-boilerplate/-/jobs/1015',
           illustration: {
             image:
-              '/assets/illustrations/manual_action-c55aee2c5f9ebe9f72751480af8bb307be1a6f35552f344cc6d1bf979d3422f6.svg',
-            size: 'svg-content svg-394',
+              '/assets/illustrations/empty-state/empty-job-manual-md-c55aee2c5f9ebe9f72751480af8bb307be1a6f35552f344cc6d1bf979d3422f6.svg',
+            size: '',
             title: 'This job requires a manual action',
             content:
               'This job requires manual intervention to start. Before starting this job, you can add variables below for last-minute configuration changes.',
@@ -810,140 +810,6 @@ export const agent = {
 
 export const kubernetesNamespace = 'agent-namespace';
 
-const runningPod = {
-  metadata: { name: 'pod-1', namespace: 'default', creationTimestamp: '2023-07-31T11:50:17Z' },
-  status: { phase: 'Running' },
-};
-const pendingPod = {
-  metadata: {
-    name: 'pod-2',
-    namespace: 'new-namespace',
-    creationTimestamp: '2023-11-21T11:50:59Z',
-  },
-  status: { phase: 'Pending' },
-};
-const succeededPod = {
-  metadata: { name: 'pod-3', namespace: 'default', creationTimestamp: '2023-07-31T11:50:17Z' },
-  status: { phase: 'Succeeded' },
-};
-const failedPod = {
-  metadata: { name: 'pod-4', namespace: 'default', creationTimestamp: '2023-11-21T11:50:59Z' },
-  status: { phase: 'Failed' },
-};
-
-export const k8sPodsMock = [runningPod, runningPod, pendingPod, succeededPod, failedPod, failedPod];
-
-export const k8sPodsStatsData = [
-  {
-    value: 2,
-    title: 'Running',
-  },
-  {
-    value: 1,
-    title: 'Pending',
-  },
-  {
-    value: 1,
-    title: 'Succeeded',
-  },
-  {
-    value: 2,
-    title: 'Failed',
-  },
-];
-
-export const k8sPodsTableData = [
-  {
-    name: 'pod-1',
-    namespace: 'default',
-    status: 'Running',
-    age: '114d',
-  },
-  {
-    name: 'pod-1',
-    namespace: 'default',
-    status: 'Running',
-    age: '114d',
-  },
-  {
-    name: 'pod-2',
-    namespace: 'new-namespace',
-    status: 'Pending',
-    age: '1d',
-  },
-  {
-    name: 'pod-3',
-    namespace: 'default',
-    status: 'Succeeded',
-    age: '114d',
-  },
-  {
-    name: 'pod-4',
-    namespace: 'default',
-    status: 'Failed',
-    age: '1d',
-  },
-  {
-    name: 'pod-4',
-    namespace: 'default',
-    status: 'Failed',
-    age: '1d',
-  },
-];
-
-export const k8sServicesMock = [
-  {
-    metadata: {
-      name: 'my-first-service',
-      namespace: 'default',
-      creationTimestamp: new Date(),
-    },
-    spec: {
-      ports: [
-        {
-          name: 'https',
-          protocol: 'TCP',
-          port: 443,
-          targetPort: 8443,
-        },
-      ],
-      clusterIP: '10.96.0.1',
-      externalIP: '-',
-      type: 'ClusterIP',
-    },
-  },
-  {
-    metadata: {
-      name: 'my-second-service',
-      namespace: 'default',
-      creationTimestamp: '2020-07-03T14:06:04Z',
-    },
-    spec: {
-      ports: [
-        {
-          name: 'http',
-          protocol: 'TCP',
-          appProtocol: 'http',
-          port: 80,
-          targetPort: 'http',
-          nodePort: 31989,
-        },
-        {
-          name: 'https',
-          protocol: 'TCP',
-          appProtocol: 'https',
-          port: 443,
-          targetPort: 'https',
-          nodePort: 32679,
-        },
-      ],
-      clusterIP: '10.105.219.238',
-      externalIP: '-',
-      type: 'NodePort',
-    },
-  },
-];
-
 export const k8sNamespacesMock = [
   { metadata: { name: 'default' } },
   { metadata: { name: 'agent' } },
@@ -956,7 +822,7 @@ export const fluxKustomizationsMock = [
   },
 ];
 
-export const fluxResourcePathMock = 'path/to/flux/resource';
+export const fluxResourcePathMock = 'kustomize.toolkit.fluxcd.io/v1/path/to/flux/resource';
 
 export const resolvedEnvironmentToDelete = {
   __typename: 'LocalEnvironment',
@@ -1084,8 +950,8 @@ export const resolvedEnvironmentToRollback = {
           detailsPath: '/h5bp/html5-boilerplate/-/jobs/1015',
           illustration: {
             image:
-              '/assets/illustrations/manual_action-c55aee2c5f9ebe9f72751480af8bb307be1a6f35552f344cc6d1bf979d3422f6.svg',
-            size: 'svg-content svg-394',
+              '/assets/illustrations/empty-state/empty-job-manual-md-c55aee2c5f9ebe9f72751480af8bb307be1a6f35552f344cc6d1bf979d3422f6.svg',
+            size: '',
             title: 'This job requires a manual action',
             content:
               'This job requires manual intervention to start. Before starting this job, you can add variables below for last-minute configuration changes.',

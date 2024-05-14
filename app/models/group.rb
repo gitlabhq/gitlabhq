@@ -38,6 +38,7 @@ class Group < Namespace
   has_many :all_group_members, -> { non_request }, dependent: :destroy, as: :source, class_name: 'GroupMember' # rubocop:disable Cop/ActiveRecordDependent
   has_many :all_owner_members, -> { non_request.all_owners }, as: :source, class_name: 'GroupMember'
   has_many :group_members, -> { non_request.non_minimal_access }, dependent: :destroy, as: :source # rubocop:disable Cop/ActiveRecordDependent
+  has_many :non_invite_group_members, -> { non_request.non_minimal_access.non_invite }, class_name: 'GroupMember', as: :source
   has_many :namespace_members, -> { non_request.non_minimal_access.unscope(where: %i[source_id source_type]) },
     foreign_key: :member_namespace_id, inverse_of: :group, class_name: 'GroupMember'
   alias_method :members, :group_members
@@ -180,9 +181,13 @@ class Group < Namespace
 
   scope :with_onboarding_progress, -> { joins(:onboarding_progress) }
 
+  scope :with_non_archived_projects, -> { includes(:non_archived_projects) }
+
+  scope :with_non_invite_group_members, -> { includes(:non_invite_group_members) }
+
   scope :by_id, ->(groups) { where(id: groups) }
 
-  scope :by_ids_or_paths, -> (ids, paths) do
+  scope :by_ids_or_paths, ->(ids, paths) do
     return by_id(ids) unless paths.present?
 
     ids_by_full_path = Route
@@ -196,26 +201,30 @@ class Group < Namespace
 
   scope :excluding_groups, ->(groups) { where.not(id: groups) }
 
-  scope :for_authorized_group_members, -> (user_ids) do
+  scope :by_visibility_level, ->(visibility) do
+    where(visibility_level: Gitlab::VisibilityLevel.level_value(visibility)) if visibility.present?
+  end
+
+  scope :for_authorized_group_members, ->(user_ids) do
     joins(:group_members)
       .where(members: { user_id: user_ids })
       .where("access_level >= ?", Gitlab::Access::GUEST)
   end
 
-  scope :for_authorized_project_members, -> (user_ids) do
+  scope :for_authorized_project_members, ->(user_ids) do
     joins(projects: :project_authorizations)
       .where(project_authorizations: { user_id: user_ids })
   end
 
-  scope :with_project_creation_levels, -> (project_creation_levels) do
+  scope :with_project_creation_levels, ->(project_creation_levels) do
     where(project_creation_level: project_creation_levels)
   end
 
-  scope :excluding_restricted_visibility_levels_for_user, -> (user) do
+  scope :excluding_restricted_visibility_levels_for_user, ->(user) do
     user.can_admin_all_resources? ? all : where.not(visibility_level: Gitlab::CurrentSettings.restricted_visibility_levels)
   end
 
-  scope :project_creation_allowed, -> (user) do
+  scope :project_creation_allowed, ->(user) do
     project_creation_allowed_on_levels = [
       ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS,
       ::Gitlab::Access::MAINTAINER_PROJECT_ACCESS,
@@ -234,9 +243,30 @@ class Group < Namespace
     with_project_creation_levels(project_creation_allowed_on_levels).excluding_restricted_visibility_levels_for_user(user)
   end
 
-  scope :shared_into_ancestors, -> (group) do
+  scope :shared_into_ancestors, ->(group) do
     joins(:shared_group_links)
       .where(group_group_links: { shared_group_id: group.self_and_ancestors })
+  end
+
+  # Returns all groups that are shared with the given group (see :shared_with_group)
+  # and all descendents of the given group
+  # returns none if the given group is nil
+  scope :descendants_with_shared_with_groups, ->(group) do
+    return none if group.nil?
+
+    descendants_query = group.descendants.select(:id)
+    # since we're only interested in ids, we query GroupGroupLink directly instead of using :shared_with_group
+    # to avoid an extra JOIN in the resulting query
+    shared_groups_query = GroupGroupLink
+      .where(shared_group_id: group.id)
+      .select('shared_with_group_id AS id')
+
+    combined_query = Group
+      .from_union(descendants_query, shared_groups_query, alias_as: :combined)
+      .unscope(where: :type)
+      .select(:id)
+
+    id_in(combined_query)
   end
 
   # WARNING: This method should never be used on its own
@@ -245,7 +275,7 @@ class Group < Namespace
   #
   # It's a replacement for `public_or_visible_to_user` that correctly
   # supports subgroup permissions
-  scope :accessible_to_user, -> (user) do
+  scope :accessible_to_user, ->(user) do
     if user
       Preloaders::GroupPolicyPreloader.new(self, user).execute
 
@@ -257,6 +287,7 @@ class Group < Namespace
 
   scope :order_path_asc, -> { reorder(self.arel_table['path'].asc) }
   scope :order_path_desc, -> { reorder(self.arel_table['path'].desc) }
+  scope :in_organization, ->(organization) { where(organization: organization) }
 
   class << self
     def sort_by_attribute(method)
@@ -306,6 +337,12 @@ class Group < Namespace
       where('NOT EXISTS (?)', integrations)
     end
 
+    def groups_user_can(groups, user, action, same_root: false)
+      DeclarativePolicy.user_scope do
+        groups.select { |group| Ability.allowed?(user, action, group) }
+      end
+    end
+
     # This method can be used only if all groups have the same top-level
     # group
     def preset_root_ancestor_for(groups)
@@ -319,7 +356,6 @@ class Group < Namespace
     # column is set to false anywhere in the ancestor hierarchy.
     def ids_with_disabled_email(groups)
       inner_groups = Group.where('id = namespaces_with_emails_disabled.id')
-
       inner_query = inner_groups
         .self_and_ancestors
         .joins(:namespace_settings)
@@ -350,6 +386,10 @@ class Group < Namespace
 
     def group_members_counts
       left_joins(:group_members).group(:id).count(:members)
+    end
+
+    def with_api_scopes
+      preload(:namespace_settings, :group_feature, :parent)
     end
 
     private
@@ -685,7 +725,11 @@ class Group < Namespace
   # @param only_concrete_membership [Bool] whether require admin concrete membership status
   def max_member_access_for_user(user, only_concrete_membership: false)
     return GroupMember::NO_ACCESS unless user
-    return GroupMember::OWNER if user.can_admin_all_resources? && !only_concrete_membership
+
+    unless only_concrete_membership
+      return GroupMember::OWNER if user.can_admin_all_resources?
+      return GroupMember::OWNER if user.can_admin_organization?(organization_id)
+    end
 
     max_member_access(user)
   end
@@ -738,6 +782,8 @@ class Group < Namespace
   # we do this on read since migrating all existing groups is not a feasible
   # solution.
   def runners_token
+    return unless allow_runner_registration_token?
+
     ensure_runners_token!
   end
 
@@ -876,16 +922,16 @@ class Group < Namespace
     feature_flag_enabled_for_self_or_ancestor?(:work_items)
   end
 
-  def work_items_mvc_feature_flag_enabled?
-    feature_flag_enabled_for_self_or_ancestor?(:work_items_mvc)
+  def work_items_beta_feature_flag_enabled?
+    feature_flag_enabled_for_self_or_ancestor?(:work_items_beta, type: :beta)
   end
 
   def work_items_mvc_2_feature_flag_enabled?
     feature_flag_enabled_for_self_or_ancestor?(:work_items_mvc_2)
   end
 
-  def linked_work_items_feature_flag_enabled?
-    feature_flag_enabled_for_self_or_ancestor?(:linked_work_items)
+  def work_items_rolledup_dates_feature_flag_enabled?
+    feature_flag_enabled_for_self_or_ancestor?(:work_items_rolledup_dates)
   end
 
   def supports_lock_on_merge?
@@ -893,7 +939,11 @@ class Group < Namespace
   end
 
   def usage_quotas_enabled?
-    ::Feature.enabled?(:usage_quotas_for_all_editions, self) && root?
+    root?
+  end
+
+  def supports_saved_replies?
+    false
   end
 
   # Check for enabled features, similar to `Project#feature_available?`
@@ -915,6 +965,10 @@ class Group < Namespace
 
   def packages_policy_subject
     ::Packages::Policies::Group.new(self)
+  end
+
+  def dependency_proxy_for_containers_policy_subject
+    ::Packages::Policies::DependencyProxy::Group.new(self)
   end
 
   def update_two_factor_requirement_for_members

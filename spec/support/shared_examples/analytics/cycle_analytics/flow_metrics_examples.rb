@@ -98,7 +98,7 @@ RSpec.shared_examples 'value stream analytics flow metrics issueCount examples' 
       'identifier' => 'issues',
       'unit' => nil,
       'value' => 4,
-      'title' => n_('New Issue', 'New Issues', 4)
+      'title' => n_('New issue', 'New issues', 4)
     })
   end
 
@@ -118,7 +118,7 @@ RSpec.shared_examples 'value stream analytics flow metrics issueCount examples' 
         'identifier' => 'issues',
         'unit' => nil,
         'value' => 2,
-        'title' => n_('New Issue', 'New Issues', 2)
+        'title' => n_('New issue', 'New issues', 2)
       })
     end
   end
@@ -141,7 +141,7 @@ RSpec.shared_examples 'value stream analytics flow metrics issueCount examples' 
         'identifier' => 'issues',
         'unit' => nil,
         'value' => 1,
-        'title' => n_('New Issue', 'New Issues', 1)
+        'title' => n_('New issue', 'New issues', 1)
       })
     end
   end

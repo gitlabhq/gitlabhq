@@ -22,6 +22,7 @@ module Gitlab
       def link_packages_at_key(key)
         dependencies = json[key]
         return unless dependencies
+        return unless dependencies.is_a?(Hash)
 
         dependencies.each do |name, version|
           external_url = external_url(name, version)

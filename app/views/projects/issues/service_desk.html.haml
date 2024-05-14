@@ -3,32 +3,16 @@
 - page_title _("Service Desk")
 - add_page_specific_style 'page_bundles/issuable_list'
 - add_page_specific_style 'page_bundles/issues_list'
-- content_for :breadcrumbs_extra do
-  = render "projects/issues/service_desk/nav_btns", show_export_button: false, show_rss_button: false
 
 - support_bot_attrs = { service_desk_enabled: @project.service_desk_enabled?, **UserSerializer.new.represent(Users::Internal.support_bot) }.to_json
 
 .js-service-desk-issues.service-desk-issues{ data: { support_bot: support_bot_attrs } }
-  - if ::Feature.enabled?(:service_desk_vue_list, @project)
-    .js-service-desk-list{ data: { project_data: project_issues_list_data(@project, current_user),
-      service_desk_email_address: @project.service_desk_address,
-      can_admin_issues: can?(current_user, :admin_issue, @project).to_s,
-      can_edit_project_settings: can?(current_user, :admin_project, @project).to_s,
-      service_desk_callout_svg_path: image_path('service_desk_callout.svg'),
-      service_desk_settings_path: edit_project_path(@project, anchor: 'js-service-desk'),
-      service_desk_help_path: help_page_path('user/project/service_desk/index'),
-      is_service_desk_supported: Gitlab::ServiceDesk.supported?.to_s,
-      is_service_desk_enabled: @project.service_desk_enabled?.to_s } }
-  - else
-    .top-area
-      = render 'shared/issuable/nav', type: :issues
-      .nav-controls.gl-display-block.gl-sm-display-none
-        = render "projects/issues/service_desk/nav_btns", show_feed_buttons: false, show_import_button: false, show_export_button: false
-
-    - if @issues.present?
-      = render 'shared/issuable/search_bar', type: :issues
-      - if Gitlab::ServiceDesk.supported?
-        = render 'projects/issues/service_desk/service_desk_info_content'
-
-    .issues-holder
-      = render 'projects/issues/issues', empty_state_path: 'projects/issues/service_desk/service_desk_empty_state'
+  .js-service-desk-list{ data: { project_data: project_issues_list_data(@project, current_user),
+    service_desk_email_address: @project.service_desk_address,
+    can_admin_issues: can?(current_user, :admin_issue, @project).to_s,
+    can_edit_project_settings: can?(current_user, :admin_project, @project).to_s,
+    service_desk_callout_svg_path: image_path('illustrations/service-desk-sm.svg'),
+    service_desk_settings_path: edit_project_path(@project, anchor: 'js-service-desk'),
+    service_desk_help_path: help_page_path('user/project/service_desk/index'),
+    is_service_desk_supported: Gitlab::ServiceDesk.supported?.to_s,
+    is_service_desk_enabled: @project.service_desk_enabled?.to_s } }

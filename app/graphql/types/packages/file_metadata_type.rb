@@ -24,7 +24,7 @@ module Types
       end
 
       orphan_types Types::Packages::Conan::FileMetadatumType,
-                   Types::Packages::Helm::FileMetadatumType
+        Types::Packages::Helm::FileMetadatumType
     end
   end
 end

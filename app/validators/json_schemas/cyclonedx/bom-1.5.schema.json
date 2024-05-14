@@ -521,7 +521,9 @@
           "description": "The name of the component. This will often be a shortened, single name of the component. Examples: commons-lang3 and jquery",
           "examples": [
             "tomcat-catalina"
-          ]
+          ],
+          "minLength": 1,
+          "maxLength": 255
         },
         "version": {
           "type": "string",
@@ -529,7 +531,9 @@
           "description": "The component version. The version should ideally comply with semantic versioning but is not enforced.",
           "examples": [
             "9.0.14"
-          ]
+          ],
+          "minLength": 1,
+          "maxLength": 255
         },
         "description": {
           "type": "string",

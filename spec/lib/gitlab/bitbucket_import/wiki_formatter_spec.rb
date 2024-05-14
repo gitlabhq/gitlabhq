@@ -4,9 +4,11 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::BitbucketImport::WikiFormatter do
   let(:project) do
-    create(:project,
-           namespace: create(:namespace, path: 'gitlabhq'),
-           import_url: 'https://xxx@bitbucket.org/gitlabhq/sample.gitlabhq.git')
+    create(
+      :project,
+      namespace: create(:namespace, path: 'gitlabhq'),
+      import_url: 'https://xxx@bitbucket.org/gitlabhq/sample.gitlabhq.git'
+    )
   end
 
   subject(:wiki) { described_class.new(project) }

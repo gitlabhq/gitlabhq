@@ -1,0 +1,164 @@
+---
+# Base Markdownlint configuration
+# Extended Markdownlint configuration in doc/.markdownlint/
+# See https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md for explanations of each rule
+config:
+  # First, set the default
+  default: true
+
+  # Per-rule settings in alphabetical order
+  code-block-style:                 # MD046
+    style: "fenced"
+  emphasis-style: false             # MD049
+  first-header-h1: true             # MD002
+  first-line-h1: false              # MD041
+  header-style:                     # MD003
+    style: "atx"
+  hr-style:                         # MD035
+    style: "---"
+  line-length: false                # MD013
+  no-duplicate-heading:             # MD024
+    siblings_only: true
+  no-emphasis-as-heading: false     # MD036
+  no-inline-html: false             # MD033
+  no-trailing-punctuation:          # MD026
+    punctuation: ".,;:!。，；：！？"
+  no-trailing-spaces: false         # MD009
+  ol-prefix:                        # MD029
+    style: "one"
+  reference-links-images: false     # MD052
+  ul-style:                         # MD004
+    style: "dash"
+
+  # Keep this item last due to length
+  proper-names:                     # MD044
+    code_blocks: false
+    html_elements: false
+    names: [
+      "Akismet",
+      "Alertmanager",
+      "AlmaLinux",
+      "API",
+      "Asana",
+      "Auth0",
+      "Azure",
+      "Bamboo",
+      "Bitbucket",
+      "Bugzilla",
+      "CAS",
+      "CentOS",
+      "Consul",
+      "Debian",
+      "DevOps",
+      "Docker",
+      "DockerSlim",
+      "Elasticsearch",
+      "Facebook",
+      "fastlane",
+      "fluent-plugin-redis-slowlog",
+      "GDK",
+      "Geo",
+      "Git LFS",
+      "git-annex",
+      "git-credential-oauth",
+      "git-sizer",
+      "Git",
+      "Gitaly",
+      "GitHub",
+      "gitlab.vim",
+      "GitLab Geo",
+      "GitLab Monitor",
+      "GitLab Operator",
+      "GitLab Pages",
+      "GitLab Rails",
+      "GitLab Runner",
+      "GitLab Shell",
+      "GitLab Workhorse",
+      "GitLab",
+      "Gitleaks",
+      "Gmail",
+      "Google",
+      "Grafana",
+      "Gzip",
+      "Helm",
+      "HipChat",
+      "ID",
+      "IP",
+      "Ingress",
+      "jasmine-jquery",
+      "JavaScript",
+      "Jaeger",
+      "Jenkins",
+      "Jira",
+      "Jira Cloud",
+      "Jira Server",
+      "jQuery",
+      "JSON",
+      "JupyterHub",
+      "Karma",
+      "Kerberos",
+      "Knative",
+      "Kubernetes",
+      "LDAP",
+      "Let's Encrypt",
+      "Markdown",
+      "markdownlint",
+      "Mattermost",
+      "Microsoft",
+      "minikube",
+      "MinIO",
+      "ModSecurity",
+      "Neovim",
+      "NGINX Ingress",
+      "NGINX",
+      "OAuth",
+      "OAuth 2",
+      "OmniAuth",
+      "OpenID",
+      "OpenShift",
+      "PgBouncer",
+      "Postfix",
+      "PostgreSQL",
+      "PowerShell",
+      "Praefect",
+      "Prometheus",
+      "Puma",
+      "puma-worker-killer",
+      "Python",
+      "Rake",
+      "Redis",
+      "Redmine",
+      "reCAPTCHA",
+      "Ruby",
+      "runit",
+      "Salesforce",
+      "SAML",
+      "Sendmail",
+      "Sentry",
+      "Service Desk",
+      "Sidekiq",
+      "Shibboleth",
+      "Slack",
+      "SMTP",
+      "SpotBugs",
+      "SSH",
+      "Tiller",
+      "TOML",
+      "Trello",
+      "Trello Power-Ups",
+      "TypeScript",
+      "Twitter",
+      "Ubuntu",
+      "Ultra Auth",
+      "Unicorn",
+      "unicorn-worker-killer",
+      "URL",
+      "WebdriverIO",
+      "YAML",
+      "YouTrack"
+    ]
+customRules:
+  - "./doc/.markdownlint/rules/tabs_blank_lines.js"
+  - "./doc/.markdownlint/rules/tabs_title_markup.js"
+  - "./doc/.markdownlint/rules/tabs_title_text.js"
+  - "./doc/.markdownlint/rules/tabs_wrapper_tags.js"

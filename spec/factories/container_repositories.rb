@@ -37,52 +37,6 @@ FactoryBot.define do
       expiration_policy_cleanup_status { :cleanup_ongoing }
     end
 
-    trait :default do
-      migration_state { 'default' }
-    end
-
-    trait :pre_importing do
-      migration_state { 'pre_importing' }
-      migration_pre_import_started_at { Time.zone.now }
-    end
-
-    trait :pre_import_done do
-      migration_state { 'pre_import_done' }
-      migration_pre_import_started_at { Time.zone.now }
-      migration_pre_import_done_at { Time.zone.now }
-    end
-
-    trait :importing do
-      migration_state { 'importing' }
-      migration_pre_import_started_at { Time.zone.now }
-      migration_pre_import_done_at { Time.zone.now }
-      migration_import_started_at { Time.zone.now }
-    end
-
-    trait :import_done do
-      migration_state { 'import_done' }
-      migration_pre_import_started_at { Time.zone.now }
-      migration_pre_import_done_at { Time.zone.now }
-      migration_import_started_at { Time.zone.now }
-      migration_import_done_at { Time.zone.now }
-    end
-
-    trait :import_aborted do
-      migration_state { 'import_aborted' }
-      migration_pre_import_started_at { Time.zone.now }
-      migration_pre_import_done_at { Time.zone.now }
-      migration_import_started_at { Time.zone.now }
-      migration_aborted_at { Time.zone.now }
-      migration_aborted_in_state { 'importing' }
-      migration_retries_count { 1 }
-    end
-
-    trait :import_skipped do
-      migration_state { 'import_skipped' }
-      migration_skipped_at { Time.zone.now }
-      migration_skipped_reason { :too_many_tags }
-    end
-
     after(:build) do |repository, evaluator|
       next if evaluator.tags.to_a.none?
 

@@ -174,13 +174,13 @@ RSpec.describe Gitlab::Harbor::Query do
           body:
           [
             {
-              "id": 3,
-              "name": "testproject/thirdbusybox",
-              "artifact_count": 1,
-              "creation_time": "2022-03-15T07:12:14.479Z",
-              "update_time": "2022-03-15T07:12:14.479Z",
-              "project_id": 3,
-              "pull_count": 0
+              id: 3,
+              name: "testproject/thirdbusybox",
+              artifact_count: 1,
+              creation_time: "2022-03-15T07:12:14.479Z",
+              update_time: "2022-03-15T07:12:14.479Z",
+              project_id: 3,
+              pull_count: 0
             }.with_indifferent_access
           ]
         }
@@ -194,8 +194,8 @@ RSpec.describe Gitlab::Harbor::Query do
         end
 
         expect(query.repositories.first).to include(
-          "name": "testproject/thirdbusybox",
-          "artifact_count": 1
+          name: "testproject/thirdbusybox",
+          artifact_count: 1
         )
       end
     end
@@ -245,34 +245,34 @@ RSpec.describe Gitlab::Harbor::Query do
           body:
           [
             {
-              "digest": "sha256:14d4f50961544fdb669075c442509f194bdc4c0e344bde06e35dbd55af842a38",
-              "icon": "sha256:0048162a053eef4d4ce3fe7518615bef084403614f8bca43b40ae2e762e11e06",
-              "id": 5,
-              "project_id": 14,
-              "push_time": "2022-03-22T09:04:56.170Z",
-              "repository_id": 5,
-              "size": 774790,
-              "tags": [
+              digest: "sha256:14d4f50961544fdb669075c442509f194bdc4c0e344bde06e35dbd55af842a38",
+              icon: "sha256:0048162a053eef4d4ce3fe7518615bef084403614f8bca43b40ae2e762e11e06",
+              id: 5,
+              project_id: 14,
+              push_time: "2022-03-22T09:04:56.170Z",
+              repository_id: 5,
+              size: 774790,
+              tags: [
                 {
-                  "artifact_id": 5,
-                  "id": 7,
-                  "immutable": false,
-                  "name": "2",
-                  "pull_time": "0001-01-01T00:00:00.000Z",
-                  "push_time": "2022-03-22T09:05:04.844Z",
-                  "repository_id": 5
+                  artifact_id: 5,
+                  id: 7,
+                  immutable: false,
+                  name: "2",
+                  pull_time: "0001-01-01T00:00:00.000Z",
+                  push_time: "2022-03-22T09:05:04.844Z",
+                  repository_id: 5
                 },
                 {
-                  "artifact_id": 5,
-                  "id": 6,
-                  "immutable": false,
-                  "name": "1",
-                  "pull_time": "0001-01-01T00:00:00.000Z",
-                  "push_time": "2022-03-22T09:04:56.186Z",
-                  "repository_id": 5
+                  artifact_id: 5,
+                  id: 6,
+                  immutable: false,
+                  name: "1",
+                  pull_time: "0001-01-01T00:00:00.000Z",
+                  push_time: "2022-03-22T09:04:56.186Z",
+                  repository_id: 5
                 }
               ],
-              "type": "IMAGE"
+              type: "IMAGE"
             }.with_indifferent_access
           ]
         }
@@ -288,8 +288,8 @@ RSpec.describe Gitlab::Harbor::Query do
         artifact = query.artifacts.first
 
         expect(artifact).to include(
-          "digest": "sha256:14d4f50961544fdb669075c442509f194bdc4c0e344bde06e35dbd55af842a38",
-          "push_time": "2022-03-22T09:04:56.170Z"
+          digest: "sha256:14d4f50961544fdb669075c442509f194bdc4c0e344bde06e35dbd55af842a38",
+          push_time: "2022-03-22T09:04:56.170Z"
         )
         expect(artifact["tags"].size).to eq(2)
       end
@@ -338,22 +338,22 @@ RSpec.describe Gitlab::Harbor::Query do
           body:
           [
             {
-              "artifact_id": 5,
-              "id": 7,
-              "immutable": false,
-              "name": "2",
-              "pull_time": "0001-01-01T00:00:00.000Z",
-              "push_time": "2022-03-22T09:05:04.844Z",
-              "repository_id": 5
+              artifact_id: 5,
+              id: 7,
+              immutable: false,
+              name: "2",
+              pull_time: "0001-01-01T00:00:00.000Z",
+              push_time: "2022-03-22T09:05:04.844Z",
+              repository_id: 5
             },
             {
-              "artifact_id": 5,
-              "id": 6,
-              "immutable": false,
-              "name": "1",
-              "pull_time": "0001-01-01T00:00:00.000Z",
-              "push_time": "2022-03-22T09:04:56.186Z",
-              "repository_id": 5
+              artifact_id: 5,
+              id: 6,
+              immutable: false,
+              name: "1",
+              pull_time: "0001-01-01T00:00:00.000Z",
+              push_time: "2022-03-22T09:04:56.186Z",
+              repository_id: 5
             }.with_indifferent_access
           ]
         }
@@ -369,8 +369,8 @@ RSpec.describe Gitlab::Harbor::Query do
         tag = query.tags.first
 
         expect(tag).to include(
-          "immutable": false,
-          "push_time": "2022-03-22T09:05:04.844Z"
+          immutable: false,
+          push_time: "2022-03-22T09:05:04.844Z"
         )
       end
     end

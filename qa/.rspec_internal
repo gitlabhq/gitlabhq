@@ -1,4 +1,5 @@
 --force-color
+--profile
 --order random
 --format documentation
 --require spec_helper

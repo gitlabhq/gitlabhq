@@ -8,13 +8,9 @@ RSpec.describe "User comments on commit", :js, feature_category: :source_code_ma
   include RepoHelpers
 
   let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user) { create(:user, developer_of: project) }
 
   let(:comment_text) { "XML attached" }
-
-  before_all do
-    project.add_developer(user)
-  end
 
   before do
     sign_in(user)

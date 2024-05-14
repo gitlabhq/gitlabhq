@@ -12,15 +12,20 @@ RSpec.describe Gitlab::Doctor::ResetTokens, feature_category: :fleet_visibility 
   let_it_be(:functional_project) { create(:project).tap(&:runners_token) }
   let_it_be(:functional_group) { create(:group).tap(&:runners_token) }
 
-  let(:broken_project) { create(:project).tap { |project| project.update_columns(runners_token_encrypted: 'aaa') } }
+  let(:broken_project) do
+    create(:project, :allow_runner_registration_token).tap do |project|
+      project.update_columns(runners_token_encrypted: 'aaa')
+    end
+  end
+
   let(:project_with_cipher_error) do
-    create(:project).tap do |project|
+    create(:project, :allow_runner_registration_token).tap do |project|
       project.update_columns(
         runners_token_encrypted: '|rXs75DSHXPE9MGAIgyxcut8pZc72gaa/2ojU0GS1+R+cXNqkbUB13Vb5BaMwf47d98980fc1')
     end
   end
 
-  let(:broken_group) { create(:group, runners_token_encrypted: 'aaa') }
+  let(:broken_group) { create(:group, :allow_runner_registration_token, runners_token_encrypted: 'aaa') }
 
   subject(:run!) do
     expect(logger).to receive(:info).with(

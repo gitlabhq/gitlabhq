@@ -6,6 +6,24 @@ module Bitbucket
       def username
         raw['username']
       end
+
+      def account_id
+        user['account_id']
+      end
+
+      def name
+        user['display_name']
+      end
+
+      def nickname
+        user['nickname']
+      end
+
+      private
+
+      def user
+        raw['user']
+      end
     end
   end
 end

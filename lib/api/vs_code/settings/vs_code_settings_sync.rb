@@ -7,6 +7,7 @@ module API
         include ::VsCode::Settings
 
         feature_category :web_ide
+        urgency :low
 
         helpers do
           def find_settings

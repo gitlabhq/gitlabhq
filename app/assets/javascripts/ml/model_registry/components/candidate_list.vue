@@ -1,6 +1,5 @@
 <script>
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { makeLoadCandidatesErrorMessage, NO_CANDIDATES_LABEL } from '../translations';
 import getModelCandidatesQuery from '../graphql/queries/get_model_candidates.query.graphql';
 import { GRAPHQL_PAGE_SIZE } from '../constants';
@@ -15,14 +14,16 @@ export default {
   },
   props: {
     modelId: {
-      type: Number,
+      type: String,
       required: true,
     },
   },
   data() {
     return {
       candidates: {},
-      errorMessage: undefined,
+      errorMessage: '',
+      skipQueries: true,
+      queryVariables: undefined,
     };
   },
   apollo: {
@@ -37,43 +38,30 @@ export default {
       error(error) {
         this.handleError(error);
       },
+      skip() {
+        return !this.queryVariables;
+      },
     },
   },
   computed: {
-    gid() {
-      return convertToGraphQLId('Ml::Model', this.modelId);
-    },
     isLoading() {
       return this.$apollo.queries.candidates.loading;
     },
     pageInfo() {
       return this.candidates?.pageInfo ?? {};
     },
-    queryVariables() {
-      return {
-        id: this.gid,
-        first: GRAPHQL_PAGE_SIZE,
-      };
-    },
     items() {
       return this.candidates?.nodes ?? [];
     },
   },
   methods: {
-    fetchPage(newPageInfo) {
-      const variables = {
-        ...this.queryVariables,
-        ...newPageInfo,
+    fetchPage(variables) {
+      this.errorMessage = '';
+      this.queryVariables = {
+        id: this.modelId,
+        first: GRAPHQL_PAGE_SIZE,
+        ...variables,
       };
-
-      this.$apollo.queries.candidates
-        .fetchMore({
-          variables,
-          updateQuery: (previousResult, { fetchMoreResult }) => {
-            return fetchMoreResult;
-          },
-        })
-        .catch(this.handleError);
     },
     handleError(error) {
       this.errorMessage = makeLoadCandidatesErrorMessage(error.message);
@@ -91,6 +79,7 @@ export default {
       :page-info="pageInfo"
       :items="items"
       :error-message="errorMessage"
+      :is-loading="isLoading"
       @fetch-page="fetchPage"
     >
       <template #empty-state>

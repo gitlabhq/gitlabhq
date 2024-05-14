@@ -19,7 +19,7 @@ RSpec.describe BulkImports::Groups::Pipelines::ProjectEntitiesPipeline, feature_
 
   subject { described_class.new(context) }
 
-  describe '#run', :clean_gitlab_redis_cache do
+  describe '#run', :clean_gitlab_redis_shared_state do
     let(:extracted_data) do
       BulkImports::Pipeline::ExtractedData.new(data: {
         'id' => 'gid://gitlab/Project/1234567',

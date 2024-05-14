@@ -21,9 +21,6 @@ class Import::GitlabProjectsController < Import::BaseController
     @project = ::Projects::GitlabProjectsImportService.new(current_user, project_params).execute
 
     if @project.saved?
-      experiment(:default_to_import_tab, actor: current_user)
-        .track(:successfully_imported, property: 'gitlab_export')
-
       redirect_to(
         project_path(@project),
         notice: _("Project '%{project_name}' is being imported.") % { project_name: @project.name }

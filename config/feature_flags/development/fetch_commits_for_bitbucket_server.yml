@@ -1,8 +1,0 @@
----
-name: fetch_commits_for_bitbucket_server
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133606
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/427699
-milestone: '16.5'
-type: development
-group: group::import and integrate
-default_enabled: false

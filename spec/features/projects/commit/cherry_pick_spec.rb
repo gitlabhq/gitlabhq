@@ -77,12 +77,14 @@ RSpec.describe 'Cherry-pick Commits', :js, feature_category: :source_code_manage
           click_button 'master'
         end
 
-        page.within("#{modal_selector} [data-testid=\"base-dropdown-menu\"]") do
-          fill_in 'Search branches', with: 'feature'
+        page.within(modal_selector) do
+          within_testid('base-dropdown-menu') do
+            fill_in 'Search branches', with: 'feature'
 
-          wait_for_requests
+            wait_for_requests
 
-          find('[data-testid="listbox-item-feature"]').click
+            find_by_testid('listbox-item-feature').click
+          end
         end
 
         submit_cherry_pick

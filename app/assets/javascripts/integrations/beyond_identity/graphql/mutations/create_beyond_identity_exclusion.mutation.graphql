@@ -1,0 +1,11 @@
+mutation integrationExclusionCreate($input: IntegrationExclusionCreateInput!) {
+  integrationExclusionCreate(input: $input) {
+    exclusions {
+      project {
+        id
+        name
+      }
+    }
+    errors
+  }
+}

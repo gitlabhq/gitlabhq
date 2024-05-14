@@ -2,15 +2,14 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: "Create a push mirror to passively receive changes from an upstream repository."
 ---
 
 # Push mirroring
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40137) in GitLab 13.5: LFS support over HTTPS.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 A _push mirror_ is a downstream repository that [mirrors](index.md) the commits made
 to the upstream repository. Push mirrors passively receive copies of the commits made to the
@@ -59,8 +58,6 @@ You can also create and modify project push mirrors through the
 
 ## Keep divergent refs
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/208828) in GitLab 13.0.
-
 By default, if any ref (branch or tag) on the remote (downstream) mirror diverges from the
 local repository, the upstream repository overwrites any changes on the remote:
 
@@ -85,9 +82,9 @@ through the [remote mirrors API](../../../../api/remote_mirrors.md).
 To configure a mirror from GitLab to GitHub:
 
 1. Create a [GitHub fine-grained personal access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#fine-grained-personal-access-tokens)
-   with at least read and write permissions on the [repository contents](https://docs.github.com/en/rest/overview/permissions-required-for-fine-grained-personal-access-tokens#repository-permissions-for-contents). If your
+   with at least read and write permissions on the [repository contents](https://docs.github.com/en/rest/authentication/permissions-required-for-fine-grained-personal-access-tokens?apiVersion=2022-11-28#repository-permissions-for-contents). If your
    repository contains a `.github/workflows` directory, you must also grant
-   read and write access for the [Workflows](https://docs.github.com/en/rest/overview/permissions-required-for-fine-grained-personal-access-tokens#repository-permissions-for-workflows).
+   read and write access for the [Workflows](https://docs.github.com/en/rest/authentication/permissions-required-for-fine-grained-personal-access-tokens?apiVersion=2022-11-28#repository-permissions-for-workflows).
    For a more fine-grained access, you can configure your token to only apply
    to the specific repository.
 1. Enter a **Git repository URL** with this format, changing the variables as needed:

@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe API::GroupPackages, feature_category: :package_registry do
   let_it_be(:group) { create(:group, :public) }
-  let_it_be(:project) { create(:project, :public, namespace: group, name: 'project A') }
+  let_it_be(:project) { create(:project, :public, namespace: group, name: 'project A', path: 'project-a') }
   let_it_be(:user) { create(:user) }
 
   let(:params) { {} }
@@ -54,10 +54,11 @@ RSpec.describe API::GroupPackages, feature_category: :package_registry do
       end
 
       it_behaves_like 'package sorting', 'project_path' do
-        let(:another_project) { create(:project, :public, namespace: group, name: 'project B') }
-        let!(:package4) { create(:npm_package, project: another_project, version: '3.1.0', name: "@#{project.root_namespace.path}/bar") }
+        let_it_be(:another_project) { create(:project, :public, namespace: group, name: 'project B', path: 'project-b') }
+        let_it_be(:package4) { create(:npm_package, project: another_project, version: '3.1.0', name: "@#{project.root_namespace.path}/bar") }
 
-        let(:packages) { [package1, package2, package3, package4] }
+        let(:packages) { [package3, package2, package1, package4] }
+        let(:package_ids_desc) { [package4.id, package3.id, package2.id, package1.id] }
       end
     end
 
@@ -166,6 +167,24 @@ RSpec.describe API::GroupPackages, feature_category: :package_registry do
       let(:url) { group_filter_url(:type, 'foo') }
 
       it_behaves_like 'returning response status', :bad_request
+    end
+
+    context 'with build info' do
+      let_it_be(:package1) { create(:npm_package, :with_build, project: project) }
+
+      it 'returns an empty array for the pipelines attribute' do
+        subject
+
+        expect(json_response.first['pipelines']).to be_empty
+      end
+    end
+
+    context 'without build info' do
+      it 'does not include the pipeline attributes' do
+        subject
+
+        expect(json_response).not_to include('pipeline', 'pipelines')
+      end
     end
 
     it_behaves_like 'with versionless packages'

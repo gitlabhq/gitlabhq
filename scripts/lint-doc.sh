@@ -90,15 +90,30 @@ fi
 
 # Do not use dashes (-) in directory names, use underscores (_) instead.
 # Number of directories with dashes as of 2021-09-17
-NUMBER_DASHES=2
-FIND_DASHES=$(find doc -type d -name "*-*" | wc -l)
+DIR_NUMBER_DASHES=2
+DIR_FIND_DASHES=$(find doc -type d -name "*-*" | wc -l)
 # shellcheck disable=2059
 printf "${COLOR_GREEN}INFO: Checking for directory names containing dashes...${COLOR_RESET}\n"
-if [ "${FIND_DASHES}" -ne $NUMBER_DASHES ]
+if [ "${DIR_FIND_DASHES}" -ne $DIR_NUMBER_DASHES ]
 then
   # shellcheck disable=2059
   printf "${COLOR_RED}ERROR: The number of directory names containing dashes has changed!${COLOR_RESET} Use underscores instead of dashes for the directory names.\n" >&2
   printf "If removing a directory containing dashes, update NUMBER_DASHES in lint-doc.sh.\n" >&2
+  printf "https://docs.gitlab.com/ee/development/documentation/site_architecture/folder_structure.html#work-with-directories-and-files\n"
+   ((ERRORCODE++))
+fi
+
+# Do not use dashes (-) in filenames, use underscores (_) instead.
+# Number of filenames with dashes as of 2024-03-29
+FILE_NUMBER_DASHES=73
+FILE_FIND_DASHES=$(find doc -type f -name "*-*.md" | wc -l)
+# shellcheck disable=2059
+printf "${COLOR_GREEN}INFO: Checking for filenames containing dashes...${COLOR_RESET}\n"
+if [ "${FILE_FIND_DASHES}" -ne $FILE_NUMBER_DASHES ]
+then
+  # shellcheck disable=2059
+  printf "${COLOR_RED}ERROR: The number of filenames containing dashes has changed!${COLOR_RESET} Use underscores instead of dashes for the filenames.\n" >&2
+  printf "If removing a file containing dashes, update the filename NUMBER_DASHES in lint-doc.sh.\n" >&2
   printf "https://docs.gitlab.com/ee/development/documentation/site_architecture/folder_structure.html#work-with-directories-and-files\n"
    ((ERRORCODE++))
 fi
@@ -148,7 +163,7 @@ then
     ).execute"
   if grep -E "\.vale|\.markdownlint|lint-doc\.sh|docs\.gitlab-ci\.yml" < $DOC_CHANGES_FILE
   then
-    MD_DOC_PATH=${MD_DOC_PATH:-doc}
+    MD_DOC_PATH=${MD_DOC_PATH:-'doc/{*,**/*}.md'}
     # shellcheck disable=2059
     printf "${COLOR_GREEN}INFO: Vale, Markdownlint, lint-doc.sh, or pipeline configuration changed. Testing all files.${COLOR_RESET}\n"
   else
@@ -161,7 +176,7 @@ then
   fi
   rm $DOC_CHANGES_FILE
 else
-  MD_DOC_PATH=${MD_DOC_PATH:-doc}
+  MD_DOC_PATH=${MD_DOC_PATH:-'doc/{*,**/*}.md'}
   # shellcheck disable=2059
   printf "${COLOR_GREEN}INFO: No merge request pipeline detected. Running Markdownlint and Vale on all files...${COLOR_RESET}\n"
 fi
@@ -170,7 +185,7 @@ function run_locally_or_in_container() {
   local cmd=$1
   local args=$2
   local files=$3
-  local registry_url="registry.gitlab.com/gitlab-org/gitlab-docs/lint-markdown:alpine-3.18-vale-2.29.6-markdownlint-0.37.0-markdownlint2-0.10.0"
+  local registry_url="registry.gitlab.com/gitlab-org/gitlab-docs/lint-markdown:alpine-3.19-vale-3.0.7-markdownlint-0.39.0-markdownlint2-0.12.1"
 
   if hash "${cmd}" 2>/dev/null
   then
@@ -210,7 +225,7 @@ then
   # shellcheck disable=2059
   printf "${COLOR_GREEN}INFO: Merge request pipeline detected, but no markdown files found. Skipping.${COLOR_RESET}\n"
 else
-  if ! yarn markdownlint --rules doc/.markdownlint/rules ${MD_DOC_PATH};
+  if ! yarn markdownlint ${MD_DOC_PATH};
   then
     # shellcheck disable=2059
     printf "${COLOR_RED}ERROR: Markdownlint failed with errors!${COLOR_RESET}\n" >&2

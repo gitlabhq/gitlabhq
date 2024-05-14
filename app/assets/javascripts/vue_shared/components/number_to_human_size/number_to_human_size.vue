@@ -1,4 +1,5 @@
 <script>
+import { getPreferredLocales } from '~/locale';
 import { numberToHumanSizeSplit } from '~/lib/utils/number_utils';
 
 export default {
@@ -18,6 +19,11 @@ export default {
       required: false,
       default: null,
     },
+    locale: {
+      type: Array,
+      required: false,
+      default: () => getPreferredLocales(),
+    },
     plainZero: {
       type: Boolean,
       required: false,
@@ -29,8 +35,11 @@ export default {
       if (this.plainZero && this.value === 0) {
         return ['0'];
       }
-
-      return numberToHumanSizeSplit(this.value, this.fractionDigits);
+      return numberToHumanSizeSplit({
+        size: this.value,
+        digits: this.fractionDigits,
+        locale: this.locale,
+      });
     },
     number() {
       return this.formattedValue[0];

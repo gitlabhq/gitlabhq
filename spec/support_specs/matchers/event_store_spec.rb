@@ -2,6 +2,7 @@
 
 require 'fast_spec_helper'
 require 'json_schemer'
+require 'oj'
 
 load File.expand_path('../../../spec/support/matchers/event_store.rb', __dir__)
 
@@ -122,5 +123,25 @@ RSpec.describe 'event store matchers', feature_category: :shared do
       expect(&matcher)
         .to raise_error('expected FakeEventType1 not to be published')
     end
+  end
+
+  it 'validates with published_event and not_publish_event' do
+    matcher = -> do
+      expect { publishing_event(FakeEventType1, { 'id' => 1 }) }
+        .to publish_event(FakeEventType1).with('id' => 1)
+        .and not_publish_event(FakeEventType2)
+    end
+
+    expect(&matcher).not_to raise_error
+  end
+
+  it 'validates with not_publish_event and published_event' do
+    matcher = -> do
+      expect { publishing_event(FakeEventType2, { 'id' => 1 }) }
+        .to not_publish_event(FakeEventType1)
+        .and publish_event(FakeEventType2).with('id' => 1)
+    end
+
+    expect(&matcher).not_to raise_error
   end
 end

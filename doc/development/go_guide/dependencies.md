@@ -77,10 +77,9 @@ Prior to Go 1.12, the process for fetching a package was as follows:
 1. Scan the response for the `go-import` meta tag.
 1. Fetch the repository indicated by the meta tag using the indicated VCS.
 
-The meta tag should have the form `<meta name="go-import" content="{prefix}
-{vcs} {url}">`. For example, `gitlab.com/my/project git
-https://gitlab.com/my/project.git` indicates that packages beginning with
-`gitlab.com/my/project` should be fetched from
+The meta tag should have the form `<meta name="go-import" content="{prefix} {vcs} {url}">`.
+For example, `gitlab.com/my/project git https://gitlab.com/my/project.git` indicates
+that packages beginning with `gitlab.com/my/project` should be fetched from
 `https://gitlab.com/my/project.git` using Git.
 
 ## Fetching Modules

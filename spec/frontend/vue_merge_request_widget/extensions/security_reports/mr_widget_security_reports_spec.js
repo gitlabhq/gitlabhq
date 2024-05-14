@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import { GlDisclosureDropdown } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
+import api from '~/api';
 import MRSecurityWidget from '~/vue_merge_request_widget/extensions/security_reports/mr_widget_security_reports.vue';
 import Widget from '~/vue_merge_request_widget/components/widget/widget.vue';
 import securityReportMergeRequestDownloadPathsQuery from '~/vue_merge_request_widget/extensions/security_reports/graphql/security_report_merge_request_download_paths.query.graphql';
@@ -31,6 +32,7 @@ describe('vue_merge_request_widget/extensions/security_reports/mr_widget_securit
 
   describe('with data', () => {
     beforeEach(async () => {
+      jest.spyOn(api, 'trackRedisCounterEvent').mockImplementation(() => {});
       createComponent();
       await waitForPromises();
     });
@@ -106,6 +108,7 @@ describe('vue_merge_request_widget/extensions/security_reports/mr_widget_securit
 
   describe('without data', () => {
     beforeEach(() => {
+      jest.spyOn(api, 'trackRedisCounterEvent').mockImplementation(() => {});
       createComponent({ mockResponse: { data: { project: { id: 'project-id' } } } });
     });
 

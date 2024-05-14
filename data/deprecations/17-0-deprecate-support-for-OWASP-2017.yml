@@ -1,0 +1,15 @@
+- title: "Group vulnerability report by OWASP top 10 2017 is deprecated"
+  removal_milestone: "17.3"
+  announcement_milestone: "17.0"
+  breaking_change: false
+  reporter: abellucci
+  stage: govern
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/458835
+  impact: low
+  scope: project
+  manual_task: false
+  body: |  # (required) Don't change this line.
+    Grouping the vulnerability report by OWASP top 10 2017 is deprecated, replaced by grouping by OWASP top 10 2021.
+    In the future we will support the most recent version of OWASP top 10 for grouping on the vulnerability report.
+  tiers: [Gold, Ultimate]
+  documentation_url: https://docs.gitlab.com/ee/user/application_security/vulnerability_report/#group-vulnerabilities

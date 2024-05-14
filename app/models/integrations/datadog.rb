@@ -93,8 +93,8 @@ module Integrations
       validates :api_key, presence: true, format: { with: /\A\w+\z/ }
       validates :datadog_site, format: { with: %r{\A\w+([-.]\w+)*\.[a-zA-Z]{2,5}(:[0-9]{1,5})?\z}, allow_blank: true }
       validates :api_url, public_url: { allow_blank: true }
-      validates :datadog_site, presence: true, unless: -> (obj) { obj.api_url.present? }
-      validates :api_url, presence: true, unless: -> (obj) { obj.datadog_site.present? }
+      validates :datadog_site, presence: true, unless: ->(obj) { obj.api_url.present? }
+      validates :api_url, presence: true, unless: ->(obj) { obj.datadog_site.present? }
       validate :datadog_tags_are_valid
     end
 

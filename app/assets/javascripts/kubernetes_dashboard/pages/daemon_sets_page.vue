@@ -22,13 +22,15 @@ export default {
         return (
           data?.k8sDaemonSets?.map((daemonSet) => {
             return {
-              name: daemonSet.metadata?.name,
-              namespace: daemonSet.metadata?.namespace,
+              name: daemonSet.metadata.name,
+              namespace: daemonSet.metadata.namespace,
               status: calculateDaemonSetStatus(daemonSet),
-              age: getAge(daemonSet.metadata?.creationTimestamp),
-              labels: daemonSet.metadata?.labels,
-              annotations: daemonSet.metadata?.annotations,
+              age: getAge(daemonSet.metadata.creationTimestamp),
+              labels: daemonSet.metadata.labels,
+              annotations: daemonSet.metadata.annotations,
               kind: s__('KubernetesDashboard|DaemonSet'),
+              spec: daemonSet.spec,
+              fullStatus: daemonSet.status,
             };
           }) || []
         );

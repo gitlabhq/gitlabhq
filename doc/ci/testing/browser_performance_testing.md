@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 If your application offers a web interface and you're using
 [GitLab CI/CD](../index.md), you can quickly determine the rendering performance
@@ -98,7 +98,7 @@ You can also customize the jobs with CI/CD variables:
 - `SITESPEED_IMAGE`: Configure the Docker image to use for the job (default `sitespeedio/sitespeed.io`), but not the image version.
 - `SITESPEED_VERSION`: Configure the version of the Docker image to use for the job (default `14.1.0`).
 - `SITESPEED_OPTIONS`: Configure any additional sitespeed.io options as required (default `nil`). Refer to the [sitespeed.io documentation](https://www.sitespeed.io/documentation/sitespeed.io/configuration/) for more details.
-- `SITESPEED_DOCKER_OPTIONS`: Configure any additional Docker options (default `nil`). Refer to the [Docker options documentation](https://docs.docker.com/engine/reference/commandline/run/#options) for more details.
+- `SITESPEED_DOCKER_OPTIONS`: Configure any additional Docker options (default `nil`). Refer to the [Docker options documentation](https://docs.docker.com/reference/cli/docker/container/run/#options) for more details.
 
 For example, you can override the number of runs sitespeed.io
 makes on the given URL, and change the version:
@@ -132,7 +132,7 @@ browser_performance:
 
 The `Total Score` metric is based on sitespeed.io's [coach performance score](https://www.sitespeed.io/documentation/sitespeed.io/metrics/#performance-score). There is more information in [the coach documentation](https://www.sitespeed.io/documentation/coach/how-to/#what-do-the-coach-do).
 
-### Performance testing on Review Apps
+### Performance testing on review apps
 
 The above CI YAML configuration is great for testing against static environments, and it can
 be extended for dynamic environments, but a few extra steps are required:

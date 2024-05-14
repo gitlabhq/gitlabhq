@@ -15,6 +15,7 @@ prepare-as-if-foss-branch:
   before_script:
     - git clone --single-branch --branch master "${FOSS_REPOSITORY}" gitlab-foss
     - git -C gitlab-foss checkout -b "${AS_IF_FOSS_BRANCH}" master
+    - git -C gitlab-foss rev-parse HEAD
     - rm -r .git/
     - mv gitlab-foss/.git .
     - rm -r gitlab-foss
@@ -29,7 +30,9 @@ prepare-as-if-foss-branch:
     - rm -f CHANGELOG-EE.md
     - rm -f changelogs/*-ee.md
     - git add -A
-    - git commit -m 'Update from merge request'  # TODO: Mark which SHA we add
+    # --allow-empty accounts for the edge case where FOSS matchess EE repository
+    # and a merge request only contains EE related changes.
+    - git commit -m 'Update from merge request' --allow-empty  # TODO: Mark which SHA we add
     - git push -f "${FOSS_REPOSITORY}" "${AS_IF_FOSS_BRANCH}"
 
 prepare-as-if-foss-env:
@@ -64,6 +67,10 @@ start-as-if-foss:
   variables:
     START_AS_IF_FOSS: $START_AS_IF_FOSS
     RUBY_VERSION: $RUBY_VERSION
+    # Variables for `detect-tests` to work in FOSS
+    FIND_CHANGES_MERGE_REQUEST_PROJECT_PATH: $FIND_CHANGES_MERGE_REQUEST_PROJECT_PATH
+    FIND_CHANGES_MERGE_REQUEST_IID: $FIND_CHANGES_MERGE_REQUEST_IID
+    # Enabling each individual jobs
     ENABLE_RSPEC: $ENABLE_RSPEC
     ENABLE_RSPEC_FAST_SPEC_HELPER: $ENABLE_RSPEC_FAST_SPEC_HELPER
     ENABLE_RSPEC_PRAEFECT: $ENABLE_RSPEC_PRAEFECT
@@ -81,11 +88,18 @@ start-as-if-foss:
     ENABLE_COMPILE_PRODUCTION_ASSETS: $ENABLE_COMPILE_PRODUCTION_ASSETS
     ENABLE_COMPILE_STORYBOOK: $ENABLE_COMPILE_STORYBOOK
     ENABLE_COMPILE_TEST_ASSETS: $ENABLE_COMPILE_TEST_ASSETS
+    ENABLE_CACHE_ASSETS: $ENABLE_CACHE_ASSETS
+    ENABLE_DETECT_TESTS: $ENABLE_DETECT_TESTS
     ENABLE_ESLINT: $ENABLE_ESLINT
     ENABLE_GENERATE_APOLLO_GRAPHQL_SCHEMA: $ENABLE_GENERATE_APOLLO_GRAPHQL_SCHEMA
     ENABLE_GRAPHQL_SCHEMA_DUMP: $ENABLE_GRAPHQL_SCHEMA_DUMP
     ENABLE_JEST: $ENABLE_JEST
     ENABLE_JEST_INTEGRATION: $ENABLE_JEST_INTEGRATION
+    ENABLE_RSPEC_PREDICTIVE_PIPELINE_GENERATE: $ENABLE_RSPEC_PREDICTIVE_PIPELINE_GENERATE
+    ENABLE_RSPEC_PREDICTIVE_TRIGGER: $ENABLE_RSPEC_PREDICTIVE_TRIGGER
+    ENABLE_RSPEC_PREDICTIVE_TRIGGER_SINGLE_DB: $ENABLE_RSPEC_PREDICTIVE_TRIGGER_SINGLE_DB
+    ENABLE_RSPEC_PREDICTIVE_TRIGGER_SINGLE_DB_CI_CONNECTION: $ENABLE_RSPEC_PREDICTIVE_TRIGGER_SINGLE_DB_CI_CONNECTION
+    ENABLE_RUBOCOP: $ENABLE_RUBOCOP
     ENABLE_QA_INTERNAL: $ENABLE_QA_INTERNAL
     ENABLE_QA_SELECTORS: $ENABLE_QA_SELECTORS
     ENABLE_STATIC_ANALYSIS: $ENABLE_STATIC_ANALYSIS

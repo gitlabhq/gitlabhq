@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Onboarding::Progress do
+RSpec.describe Onboarding::Progress, feature_category: :onboarding do
   let(:namespace) { create(:namespace) }
   let(:action) { :subscription_created }
 
@@ -176,7 +176,7 @@ RSpec.describe Onboarding::Progress do
           let(:action) { :foo }
 
           it 'does not register the action for the namespace' do
-            expect { register_action }.not_to change { described_class.completed?(namespace, action) }.from(nil)
+            expect { register_action }.not_to change { described_class.completed?(namespace, action) }.from(false)
           end
         end
       end
@@ -223,7 +223,7 @@ RSpec.describe Onboarding::Progress do
           it 'does not register any action for the namespace' do
             expect { register_action }.not_to change {
               [described_class.completed?(namespace, action1), described_class.completed?(namespace, action2)]
-            }.from([false, nil])
+            }.from([false, false])
           end
         end
       end

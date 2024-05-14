@@ -44,18 +44,6 @@ resource :profile, only: [] do
 
     resources :comment_templates, only: [:index, :show], action: :index
 
-    resources :keys, only: [:index, :show, :create, :destroy] do
-      member do
-        delete :revoke
-      end
-    end
-
-    resources :gpg_keys, only: [:index, :create, :destroy] do
-      member do
-        put :revoke
-      end
-    end
-
     resources :emails, only: [:index, :create, :destroy] do
       member do
         put :resend_confirmation_instructions
@@ -79,5 +67,7 @@ resource :profile, only: [] do
     end
 
     resources :webauthn_registrations, only: [:destroy]
+
+    resources :usage_quotas, only: [:index]
   end
 end

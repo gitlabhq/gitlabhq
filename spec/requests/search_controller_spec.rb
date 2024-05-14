@@ -17,7 +17,7 @@ RSpec.describe SearchController, type: :request, feature_category: :global_searc
   end
 
   shared_examples 'an efficient database result' do
-    it 'avoids N+1 database queries' do
+    it 'avoids N+1 database queries', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/446130' do
       create(object, *creation_traits, creation_args)
 
       control = ActiveRecord::QueryRecorder.new(skip_cached: false) { send_search_request(params) }
@@ -121,7 +121,7 @@ RSpec.describe SearchController, type: :request, feature_category: :global_searc
       let(:params_for_one) { { search: 'test', project_id: project.id, scope: 'commits', per_page: 1 } }
       let(:params_for_many) { { search: 'test', project_id: project.id, scope: 'commits', per_page: 5 } }
 
-      it 'avoids N+1 database queries' do
+      it 'avoids N+1 database queries', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/444710' do
         control = ActiveRecord::QueryRecorder.new { send_search_request(params_for_one) }
         expect(response.body).to include('search-results') # Confirm search results to prevent false positives
 

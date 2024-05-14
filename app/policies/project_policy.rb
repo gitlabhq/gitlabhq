@@ -49,6 +49,13 @@ class ProjectPolicy < BasePolicy
     project.internal? && !user.external?
   end
 
+  desc "User owns the project's organization"
+  condition(:organization_owner) do
+    owns_project_organization?
+  end
+
+  rule { admin | organization_owner }.enable :read_all_organization_resources
+
   desc "User is a member of the group"
   condition(:group_member, scope: :subject) { project_group_member? }
 
@@ -67,7 +74,10 @@ class ProjectPolicy < BasePolicy
   condition(:default_issues_tracker, scope: :subject) { project.default_issues_tracker? }
 
   desc "Container registry is disabled"
-  condition(:container_registry_disabled, scope: :subject) do
+  # Do not use the scope option here as this condition depends
+  # on both the user and the subject, and can lead to bugs like
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/391551
+  condition(:container_registry_disabled) do
     if user.is_a?(DeployToken)
       (!user.read_registry? && !user.write_registry?) ||
       user.revoked? ||
@@ -233,8 +243,9 @@ class ProjectPolicy < BasePolicy
     !@subject.restrict_user_defined_variables?
   end
 
-  with_scope :subject
-  condition(:packages_disabled) { !@subject.packages_enabled }
+  condition(:packages_disabled, scope: :subject) { !@subject.packages_enabled }
+
+  condition(:runner_registration_token_enabled, scope: :subject) { @subject.namespace.allow_runner_registration_token? }
 
   features = %w[
     merge_requests
@@ -286,7 +297,7 @@ class ProjectPolicy < BasePolicy
 
   # `:read_project` may be prevented in EE, but `:read_project_for_iids` should
   # not.
-  rule { guest | admin }.enable :read_project_for_iids
+  rule { guest | admin | organization_owner }.enable :read_project_for_iids
 
   rule { admin }.enable :update_max_artifacts_size
   rule { admin }.enable :read_storage_disk_path
@@ -296,7 +307,7 @@ class ProjectPolicy < BasePolicy
   rule { reporter }.enable :reporter_access
   rule { developer }.enable :developer_access
   rule { maintainer }.enable :maintainer_access
-  rule { owner | admin }.enable :owner_access
+  rule { owner | admin | organization_owner }.enable :owner_access
 
   rule { can?(:owner_access) }.policy do
     enable :guest_access
@@ -378,7 +389,6 @@ class ProjectPolicy < BasePolicy
     enable :admin_label
     enable :admin_milestone
     enable :admin_issue_board_list
-    enable :admin_issue_link
     enable :read_commit_status
     enable :read_build
     enable :read_container_image
@@ -399,6 +409,10 @@ class ProjectPolicy < BasePolicy
     enable :read_external_emails
     enable :read_grafana
     enable :export_work_items
+    enable :create_design
+    enable :update_design
+    enable :move_design
+    enable :destroy_design
   end
 
   # We define `:public_user_access` separately because there are cases in gitlab-ee
@@ -474,7 +488,7 @@ class ProjectPolicy < BasePolicy
     prevent(*create_read_update_admin_destroy(:package))
   end
 
-  rule { owner | admin | guest | group_member | group_requester }.prevent :request_access
+  rule { owner | admin | organization_owner | guest | group_member | group_requester }.prevent :request_access
   rule { ~request_access_enabled }.prevent :request_access
 
   rule { can?(:developer_access) & can?(:create_issue) }.enable :import_issues
@@ -514,10 +528,6 @@ class ProjectPolicy < BasePolicy
     enable :admin_metrics_dashboard_annotation
     enable :read_alert_management_alert
     enable :update_alert_management_alert
-    enable :create_design
-    enable :update_design
-    enable :move_design
-    enable :destroy_design
     enable :read_terraform_state
     enable :read_pod_logs
     enable :read_feature_flag
@@ -593,6 +603,9 @@ class ProjectPolicy < BasePolicy
     enable :admin_incident_management_timeline_event_tag
     enable :stop_environment
     enable :read_import_error
+    enable :admin_cicd_variables
+    enable :admin_push_rules
+    enable :manage_deploy_tokens
   end
 
   rule { can?(:admin_build) }.enable :manage_trigger
@@ -713,11 +726,14 @@ class ProjectPolicy < BasePolicy
   rule { public_or_internal & ~project_allowed_for_job_token }.policy do
     prevent :guest_access
     prevent :public_access
-    prevent :public_user_access
     prevent :reporter_access
     prevent :developer_access
     prevent :maintainer_access
     prevent :owner_access
+  end
+
+  rule { public_project & ~project_allowed_for_job_token }.policy do
+    prevent :public_user_access
   end
 
   rule { public_or_internal & job_token_container_registry }.policy do
@@ -917,6 +933,8 @@ class ProjectPolicy < BasePolicy
   rule { can?(:admin_project) }.policy do
     enable :read_usage_quotas
     enable :view_edit_page
+    enable :read_web_hook
+    enable :admin_web_hook
   end
 
   rule { can?(:project_bot_access) }.policy do
@@ -936,9 +954,14 @@ class ProjectPolicy < BasePolicy
     enable :access_security_and_compliance
   end
 
-  rule { ~admin & ~project_runner_registration_allowed }.policy do
+  rule { ~admin & ~organization_owner & ~project_runner_registration_allowed }.policy do
     prevent :register_project_runners
     prevent :create_runner
+  end
+
+  rule { ~runner_registration_token_enabled }.policy do
+    prevent :register_project_runners
+    prevent :update_runners_registration_token
   end
 
   rule { can?(:admin_project_member) }.policy do
@@ -986,7 +1009,7 @@ class ProjectPolicy < BasePolicy
     enable :write_model_experiments
   end
 
-  rule { ~admin & created_and_owned_by_banned_user }.policy do
+  rule { ~admin & ~organization_owner & created_and_owned_by_banned_user }.policy do
     prevent :read_project
   end
 
@@ -1045,6 +1068,21 @@ class ProjectPolicy < BasePolicy
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
+  # rubocop:disable Cop/UserAdmin -- specifically check the admin attribute
+  def owns_project_organization?
+    return false unless @user
+    return false unless user_is_user?
+    return false unless @subject.organization
+    # Ensure admins can't bypass admin mode.
+    return false if @user.admin? && !can?(:admin)
+
+    # Load the owners with a single query.
+    @subject.organization
+            .owner_user_ids
+            .include?(@user.id)
+  end
+  # rubocop:enable Cop/UserAdmin
+
   def team_access_level
     return -1 if @user.nil?
     return -1 unless user_is_user?
@@ -1067,7 +1105,9 @@ class ProjectPolicy < BasePolicy
     when ProjectFeature::DISABLED
       false
     when ProjectFeature::PRIVATE
-      can?(:read_all_resources) || team_access_level >= ProjectFeature.required_minimum_access_level(feature)
+      can?(:read_all_resources) ||
+      can?(:read_all_organization_resources) ||
+        team_access_level >= ProjectFeature.required_minimum_access_level(feature)
     else
       true
     end

@@ -1,43 +1,7 @@
+import { parseBoolean } from '~/lib/utils/common_utils';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { __ } from '~/locale';
-
-/**
- * Populates an array of storage types with usage value and other details
- *
- * @param {Array} selectedStorageTypes selected storage types that will be populated
- * @param {Object} projectStatistics object of storage values, with storage type as keys
- * @param {Object} statisticsDetailsPaths object of storage detail paths, with storage type as keys
- * @param {Object} helpLinks object of help paths, with storage type as keys
- * @returns {Array}
- */
-export const getStorageTypesFromProjectStatistics = (
-  selectedStorageTypes,
-  projectStatistics,
-  statisticsDetailsPaths = {},
-  helpLinks = {},
-) =>
-  selectedStorageTypes.reduce((types, currentType) => {
-    const helpPath = helpLinks[currentType.id];
-    const value = projectStatistics[`${currentType.id}Size`];
-    const detailsPath = statisticsDetailsPaths[currentType.id];
-
-    return types.concat({
-      ...currentType,
-      helpPath,
-      detailsPath,
-      value,
-    });
-  }, []);
-
-/**
- * Creates a sorting function to sort storage types by usage in the graph and in the table
- *
- * @param {string} storageUsageKey key storing value of storage usage
- * @returns {Function} sorting function
- */
-export function descendingStorageUsageSort(storageUsageKey) {
-  return (a, b) => b[storageUsageKey] - a[storageUsageKey];
-}
+import { storageTypeHelpPaths } from './constants';
 
 /**
  * This method parses the results from `getNamespaceStorageStatistics`
@@ -79,5 +43,33 @@ export const parseGetStorageResults = (data) => {
     totalUsage,
     rootStorageStatistics,
     limit: storageSizeLimit,
+  };
+};
+
+export const parseNamespaceProvideData = (el) => {
+  if (!el) {
+    return {};
+  }
+
+  const { namespaceId, namespacePath, userNamespace, defaultPerPage } = el.dataset;
+
+  return {
+    namespaceId,
+    namespacePath,
+    userNamespace: parseBoolean(userNamespace),
+    defaultPerPage: Number(defaultPerPage),
+    helpLinks: storageTypeHelpPaths,
+    // only used in EE
+    purchaseStorageUrl: '',
+    buyAddonTargetAttr: '',
+    namespacePlanName: '',
+    isInNamespaceLimitsPreEnforcement: false,
+    perProjectStorageLimit: false,
+    namespaceStorageLimit: false,
+    totalRepositorySizeExcess: false,
+    isUsingProjectEnforcementWithLimits: false,
+    isUsingProjectEnforcementWithNoLimits: false,
+    isUsingNamespaceEnforcement: false,
+    customSortKey: null,
   };
 };

@@ -8,29 +8,29 @@ module Types
       authorize :read_user_email_address
 
       field :id,
-            GraphQL::Types::ID,
-            null: false,
-            description: 'Internal ID of the namespace commit email.'
+        GraphQL::Types::ID,
+        null: false,
+        description: 'Internal ID of the namespace commit email.'
 
       field :email,
-            Types::Users::EmailType,
-            null: false,
-            description: 'Email.'
+        Types::Users::EmailType,
+        null: false,
+        description: 'Email.'
 
       field :namespace,
-            Types::NamespaceType,
-            null: false,
-            description: 'Namespace.'
+        Types::NamespaceType,
+        null: false,
+        description: 'Namespace.'
 
       field :created_at,
-            Types::TimeType,
-            null: false,
-            description: 'Timestamp the namespace commit email was created.'
+        Types::TimeType,
+        null: false,
+        description: 'Timestamp the namespace commit email was created.'
 
       field :updated_at,
-            Types::TimeType,
-            null: false,
-            description: 'Timestamp the namespace commit email was last updated.'
+        Types::TimeType,
+        null: false,
+        description: 'Timestamp the namespace commit email was last updated.'
     end
   end
 end

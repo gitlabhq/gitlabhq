@@ -106,9 +106,7 @@ class TodosFinder
 
   def author
     strong_memoize(:author) do
-      if author? && params[:author_id] != NONE
-        User.find(params[:author_id])
-      end
+      User.find(params[:author_id]) if author? && params[:author_id] != NONE
     end
   end
 

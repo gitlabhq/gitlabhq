@@ -90,8 +90,8 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
 
     subject do
       post api('/internal/two_factor_recovery_codes'),
-           params: { key_id: key_id },
-           headers: gitlab_shell_internal_api_request_header
+        params: { key_id: key_id },
+        headers: gitlab_shell_internal_api_request_header
     end
 
     it_behaves_like 'actor key validations'
@@ -137,8 +137,8 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
 
     subject do
       post api('/internal/personal_access_token'),
-           params: { key_id: key_id },
-           headers: gitlab_shell_internal_api_request_header
+        params: { key_id: key_id },
+        headers: gitlab_shell_internal_api_request_header
     end
 
     it_behaves_like 'actor key validations'
@@ -156,8 +156,8 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
 
     it 'returns an error message when given an non existent user' do
       post api('/internal/personal_access_token'),
-           params: { user_id: 0 },
-           headers: gitlab_shell_internal_api_request_header
+        params: { user_id: 0 },
+        headers: gitlab_shell_internal_api_request_header
 
       expect(json_response['success']).to be_falsey
       expect(json_response['message']).to eq("Could not find the given user")
@@ -165,8 +165,8 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
 
     it 'returns an error message when no name parameter is received' do
       post api('/internal/personal_access_token'),
-           params: { key_id: key.id },
-           headers: gitlab_shell_internal_api_request_header
+        params: { key_id: key.id },
+        headers: gitlab_shell_internal_api_request_header
 
       expect(json_response['success']).to be_falsey
       expect(json_response['message']).to eq("No token name specified")
@@ -174,8 +174,8 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
 
     it 'returns an error message when no scopes parameter is received' do
       post api('/internal/personal_access_token'),
-           params: { key_id: key.id, name: 'newtoken' },
-           headers: gitlab_shell_internal_api_request_header
+        params: { key_id: key.id, name: 'newtoken' },
+        headers: gitlab_shell_internal_api_request_header
 
       expect(json_response['success']).to be_falsey
       expect(json_response['message']).to eq("No token scopes specified")
@@ -183,13 +183,13 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
 
     it 'returns an error message when expires_at contains an invalid date' do
       post api('/internal/personal_access_token'),
-           params: {
-             key_id: key.id,
-             name: 'newtoken',
-             scopes: ['api'],
-             expires_at: 'invalid-date'
-           },
-           headers: gitlab_shell_internal_api_request_header
+        params: {
+          key_id: key.id,
+          name: 'newtoken',
+          scopes: ['api'],
+          expires_at: 'invalid-date'
+        },
+        headers: gitlab_shell_internal_api_request_header
 
       expect(json_response['success']).to be_falsey
       expect(json_response['message']).to eq("Invalid token expiry date: 'invalid-date'")
@@ -197,12 +197,12 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
 
     it 'returns an error message when it receives an invalid scope' do
       post api('/internal/personal_access_token'),
-           params: {
-             key_id: key.id,
-             name: 'newtoken',
-             scopes: %w[read_api badscope read_repository]
-           },
-           headers: gitlab_shell_internal_api_request_header
+        params: {
+          key_id: key.id,
+          name: 'newtoken',
+          scopes: %w[read_api badscope read_repository]
+        },
+        headers: gitlab_shell_internal_api_request_header
 
       expect(json_response['success']).to be_falsey
       expect(json_response['message']).to match(/\AInvalid scope: 'badscope'. Valid scopes are: /)
@@ -490,6 +490,7 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
     end
 
     context "access granted" do
+      let(:relative_path) { nil }
       let(:env) { {} }
 
       around do |example|
@@ -515,7 +516,7 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
         include_context 'with env passed as a JSON'
 
         it 'sets env in RequestStore' do
-          expect(Gitlab::Git::HookEnv).to receive(:set).with(gl_repository, env.stringify_keys)
+          expect(Gitlab::Git::HookEnv).to receive(:set).with(gl_repository, relative_path, env.stringify_keys)
 
           subject
 
@@ -551,7 +552,7 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
         end
 
         it 'sets env in RequestStore and routes gRPC messages to primary', :request_store do
-          expect(Gitlab::Git::HookEnv).to receive(:set).with(gl_repository, env.stringify_keys).and_call_original
+          expect(Gitlab::Git::HookEnv).to receive(:set).with(gl_repository, relative_path, env.stringify_keys).and_call_original
 
           subject
 
@@ -560,21 +561,9 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
         end
       end
 
-      context 'when Gitaly provides a relative_path argument', :request_store do
-        subject { push(key, project, relative_path: relative_path) }
-
-        let(:relative_path) { 'relative_path' }
-
-        it 'stores relative_path value in RequestStore' do
-          allow(Gitlab::SafeRequestStore).to receive(:[]=).and_call_original
-          expect(Gitlab::SafeRequestStore).to receive(:[]=).with(:gitlab_git_relative_path, relative_path)
-          subject
-
-          expect(response).to have_gitlab_http_status(:ok)
-        end
-      end
-
       context "git push with project.wiki" do
+        let(:relative_path) { project.wiki.repository.relative_path }
+
         subject { push(key, project.wiki, env: env.to_json) }
 
         it 'responds with success' do
@@ -584,6 +573,8 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
           expect(json_response["status"]).to be_truthy
           expect(json_response["gl_project_path"]).to eq(project.wiki.full_path)
           expect(json_response["gl_repository"]).to eq("wiki-#{project.id}")
+          expect(json_response["gl_project_id"]).to eq(project.id)
+          expect(json_response["gl_root_namespace_id"]).to eq(project.root_namespace.id)
           expect(json_response["gl_key_type"]).to eq("key")
           expect(json_response["gl_key_id"]).to eq(key.id)
           expect(user.reload.last_activity_on).to eql(Date.today)
@@ -604,6 +595,8 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
           expect(json_response["status"]).to be_truthy
           expect(json_response["gl_project_path"]).to eq(project.wiki.full_path)
           expect(json_response["gl_repository"]).to eq("wiki-#{project.id}")
+          expect(json_response["gl_project_id"]).to eq(project.id)
+          expect(json_response["gl_root_namespace_id"]).to eq(project.root_namespace.id)
           expect(user.reload.last_activity_on).to eql(Date.today)
         end
       end
@@ -618,6 +611,11 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
       end
 
       context 'git push with personal snippet' do
+        # relative_path is sent from Gitaly to Rails when invoking internal API. In production it points to the
+        # transaction's snapshot repository. As Gitaly is stubbed out from the invocation loop, there is no transaction
+        # and thus no snapshot repository. Pass the original relative path.
+        let(:relative_path) { personal_snippet.repository.relative_path }
+
         subject { push(key, personal_snippet, env: env.to_json, changes: snippet_changes) }
 
         it 'responds with success' do
@@ -627,6 +625,8 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
           expect(json_response["status"]).to be_truthy
           expect(json_response["gl_project_path"]).to eq(personal_snippet.repository.full_path)
           expect(json_response["gl_repository"]).to eq("snippet-#{personal_snippet.id}")
+          expect(json_response["gl_project_id"]).to be_nil
+          expect(json_response["gl_root_namespace_id"]).to be_nil
           expect(user.reload.last_activity_on).to eql(Date.today)
         end
 
@@ -645,11 +645,18 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
           expect(json_response["status"]).to be_truthy
           expect(json_response["gl_project_path"]).to eq(personal_snippet.repository.full_path)
           expect(json_response["gl_repository"]).to eq("snippet-#{personal_snippet.id}")
+          expect(json_response["gl_project_id"]).to be_nil
+          expect(json_response["gl_root_namespace_id"]).to be_nil
           expect(user.reload.last_activity_on).to eql(Date.today)
         end
       end
 
       context 'git push with project snippet' do
+        # relative_path is sent from Gitaly to Rails when invoking internal API. In production it points to the
+        # transaction's snapshot repository. As Gitaly is stubbed out from the invocation loop, there is no transaction
+        # and thus no snapshot repository. Pass the original relative path.
+        let(:relative_path) { project_snippet.repository.relative_path }
+
         subject { push(key, project_snippet, env: env.to_json, changes: snippet_changes) }
 
         it 'responds with success' do
@@ -659,6 +666,8 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
           expect(json_response["status"]).to be_truthy
           expect(json_response["gl_project_path"]).to eq(project_snippet.repository.full_path)
           expect(json_response["gl_repository"]).to eq("snippet-#{project_snippet.id}")
+          expect(json_response["gl_project_id"]).to eq(project.id)
+          expect(json_response["gl_root_namespace_id"]).to eq(project.root_namespace.id)
           expect(user.reload.last_activity_on).to eql(Date.today)
         end
 
@@ -675,6 +684,8 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
           expect(json_response["status"]).to be_truthy
           expect(json_response["gl_project_path"]).to eq(project_snippet.repository.full_path)
           expect(json_response["gl_repository"]).to eq("snippet-#{project_snippet.id}")
+          expect(json_response["gl_project_id"]).to eq(project.id)
+          expect(json_response["gl_root_namespace_id"]).to eq(project.root_namespace.id)
           expect(user.reload.last_activity_on).to eql(Date.today)
         end
       end
@@ -692,6 +703,8 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
             expect(json_response["status"]).to be_truthy
             expect(json_response["gl_repository"]).to eq("project-#{project.id}")
             expect(json_response["gl_project_path"]).to eq(project.full_path)
+            expect(json_response["gl_project_id"]).to eq(project.id)
+            expect(json_response["gl_root_namespace_id"]).to eq(project.root_namespace.id)
             expect(json_response["gitaly"]).not_to be_nil
             expect(json_response["gitaly"]["repository"]).not_to be_nil
             expect(json_response["gitaly"]["repository"]["storage_name"]).to eq(project.repository.gitaly_repository.storage_name)
@@ -780,6 +793,8 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
             expect(json_response["status"]).to be_truthy
             expect(json_response["gl_repository"]).to eq("project-#{project.id}")
             expect(json_response["gl_project_path"]).to eq(project.full_path)
+            expect(json_response["gl_project_id"]).to eq(project.id)
+            expect(json_response["gl_root_namespace_id"]).to eq(project.root_namespace.id)
             expect(json_response["gl_key_type"]).to eq("key")
             expect(json_response["gl_key_id"]).to eq(key.id)
             expect(json_response["need_audit"]).to be_falsy
@@ -931,7 +946,8 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
           {
             authentication_abilities: [:read_project, :download_code, :push_code],
             repository_path: "#{project.full_path}.git",
-            redirected_path: nil
+            redirected_path: nil,
+            push_options: nil
           }
         ) do |access_checker|
           expect(access_checker).to receive(:check).with(
@@ -1311,13 +1327,13 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
 
       it 'does not allow access' do
         post(api('/internal/allowed'),
-             params: {
-               key_id: key.id,
-               project: project.full_path,
-               gl_repository: gl_repository,
-               protocol: 'ssh'
-             }, headers: gitlab_shell_internal_api_request_header
-            )
+          params: {
+            key_id: key.id,
+            project: project.full_path,
+            gl_repository: gl_repository,
+            protocol: 'ssh'
+          }, headers: gitlab_shell_internal_api_request_header
+        )
 
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
@@ -1570,8 +1586,8 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
 
     subject do
       post api('/internal/two_factor_config'),
-           params: { key_id: key_id },
-           headers: gitlab_shell_internal_api_request_header
+        params: { key_id: key_id },
+        headers: gitlab_shell_internal_api_request_header
     end
 
     it_behaves_like 'actor key validations'
@@ -1632,12 +1648,12 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
 
     subject do
       post api('/internal/two_factor_manual_otp_check'),
-           params: {
-             secret_token: secret_token,
-             key_id: key_id,
-             otp_attempt: otp
-           },
-           headers: gitlab_shell_internal_api_request_header
+        params: {
+          secret_token: secret_token,
+          key_id: key_id,
+          otp_attempt: otp
+        },
+        headers: gitlab_shell_internal_api_request_header
     end
 
     it 'is not available' do
@@ -1654,12 +1670,12 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
 
     subject do
       post api('/internal/two_factor_push_otp_check'),
-           params: {
-             secret_token: secret_token,
-             key_id: key_id,
-             otp_attempt: otp
-           },
-           headers: gitlab_shell_internal_api_request_header
+        params: {
+          secret_token: secret_token,
+          key_id: key_id,
+          otp_attempt: otp
+        },
+        headers: gitlab_shell_internal_api_request_header
     end
 
     it 'is not available' do
@@ -1676,12 +1692,12 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
 
     subject do
       post api('/internal/two_factor_manual_otp_check'),
-           params: {
-             secret_token: secret_token,
-             key_id: key_id,
-             otp_attempt: otp
-           },
-           headers: gitlab_shell_internal_api_request_header
+        params: {
+          secret_token: secret_token,
+          key_id: key_id,
+          otp_attempt: otp
+        },
+        headers: gitlab_shell_internal_api_request_header
     end
 
     it 'is not available' do
@@ -1697,12 +1713,12 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
 
     subject do
       post api('/internal/two_factor_push_otp_check'),
-           params: {
-             secret_token: secret_token,
-             key_id: key_id,
-             otp_attempt: otp
-           },
-           headers: gitlab_shell_internal_api_request_header
+        params: {
+          secret_token: secret_token,
+          key_id: key_id,
+          otp_attempt: otp
+        },
+        headers: gitlab_shell_internal_api_request_header
     end
 
     it 'is not available' do

@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed
 
 > - [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
 
@@ -29,7 +29,6 @@ See the prerequisites below to add existing clusters to GitLab.
 To add any cluster to GitLab, you need:
 
 - Either a GitLab.com account or an account for a self-managed installation
-  running GitLab 12.5 or later.
 - The Maintainer role for group-level and project-level clusters.
 - Access to the Admin Area for instance-level clusters.
 - A Kubernetes cluster.
@@ -69,7 +68,7 @@ To add an existing **GKE** cluster, you need:
 
 To add a Kubernetes cluster to your project, group, or instance:
 
-1. Navigate to your:
+1. Go to your:
    1. Project's **{cloud-gear}** **Operate > Kubernetes clusters** page, for a project-level cluster.
    1. Group's **{cloud-gear}** **Kubernetes** page, for a group-level cluster.
    1. The Admin Area's **Kubernetes** page, for an instance-level cluster.

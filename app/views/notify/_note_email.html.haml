@@ -6,6 +6,7 @@
 
 - author = local_assigns.fetch(:author) { note.author }
 - discussion = local_assigns.fetch(:discussion) { note.discussion } if note.part_of_discussion?
+- project = local_assigns.fetch(:project, @project)
 
 %p{ style: "color: #777777;" }
   = succeed ':' do
@@ -23,10 +24,10 @@
       - else
         = link_to 'discussion', target_url
 
-- if discussion&.diff_discussion? && discussion.on_text?
+- if discussion&.diff_discussion? && discussion.on_text? && project.show_diff_preview_in_email?
   - if include_stylesheet_link
     = content_for :head do
-      = stylesheet_link_tag 'mailers/highlighted_diff_email'
+      = universal_stylesheet_link_tag 'mailers/highlighted_diff_email'
 
   %table.code.gl-mb-5
     = render partial: "projects/diffs/email_line",

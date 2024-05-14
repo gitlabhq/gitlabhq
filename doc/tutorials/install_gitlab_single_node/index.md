@@ -12,7 +12,7 @@ DETAILS:
 
 In this tutorial you will learn how to install and securely configure a single
 node GitLab instance that can accommodate up to
-[1,000 users](../../administration/reference_architectures/1k_users.md).
+[20 RPS or 1,000 users](../../administration/reference_architectures/1k_users.md).
 
 To install a single node GitLab instance and configure it to be secure:
 
@@ -291,7 +291,7 @@ you of GitLab activity.
 #### Configure SMTP
 
 In this tutorial, you'll set up an [SMTP](https://docs.gitlab.com/omnibus/settings/smtp.html)
-server and use the [Mailgun](https://mailgun.com) SMTP provider.
+server and use the [Mailgun](https://www.mailgun.com/) SMTP provider.
 
 First, start by creating an encrypted file that will contain the login
 credentials, and then configure SMTP for the Linux package:

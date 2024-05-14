@@ -4,11 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Projects::ReleasesController', feature_category: :release_orchestration do
   let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:user) { create(:user) }
-
-  before do
-    project.add_developer(user)
-  end
+  let_it_be(:user) { create(:user, developer_of: project) }
 
   # Added as a request spec because of https://gitlab.com/gitlab-org/gitlab/-/issues/232386
   describe 'GET #downloads' do
@@ -73,6 +69,28 @@ RSpec.describe 'Projects::ReleasesController', feature_category: :release_orches
 
     it 'cannot create an invalid filepath' do
       expect { subject }.to raise_error(ActiveRecord::RecordInvalid)
+    end
+  end
+
+  context 'token authentication' do
+    context 'when public project' do
+      let_it_be(:public_project) { create(:project, :repository, :public) }
+
+      it_behaves_like 'authenticates sessionless user for the request spec', 'index atom', public_resource: true do
+        let(:url) { project_releases_url(public_project, format: :atom) }
+      end
+    end
+
+    context 'when private project' do
+      let_it_be(:private_project) { create(:project, :repository, :private) }
+
+      it_behaves_like 'authenticates sessionless user for the request spec', 'index atom', public_resource: false, ignore_metrics: true do # rubocop:disable Layout/LineLength -- We prefer to keep it on a single line, for simplicity sake
+        let(:url) { project_releases_url(private_project, format: :atom) }
+
+        before do
+          private_project.add_maintainer(user)
+        end
+      end
     end
   end
 end

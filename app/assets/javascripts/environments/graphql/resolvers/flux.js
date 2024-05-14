@@ -1,14 +1,16 @@
-import { Configuration, WatchApi, EVENT_DATA } from '@gitlab/cluster-client';
+import { Configuration, WatchApi, EVENT_DATA, EVENT_TIMEOUT } from '@gitlab/cluster-client';
 import axios from '~/lib/utils/axios_utils';
 import {
   HELM_RELEASES_RESOURCE_TYPE,
   KUSTOMIZATIONS_RESOURCE_TYPE,
 } from '~/environments/constants';
+import { updateConnectionStatus } from '~/environments/graphql/resolvers/kubernetes/k8s_connection_status';
+import { connectionStatus } from '~/environments/graphql/resolvers/kubernetes/constants';
 import fluxKustomizationStatusQuery from '../queries/flux_kustomization_status.query.graphql';
 import fluxHelmReleaseStatusQuery from '../queries/flux_helm_release_status.query.graphql';
 
 const helmReleasesApiVersion = 'helm.toolkit.fluxcd.io/v2beta1';
-const kustomizationsApiVersion = 'kustomize.toolkit.fluxcd.io/v1beta1';
+const kustomizationsApiVersion = 'kustomize.toolkit.fluxcd.io/v1';
 
 const helmReleaseField = 'fluxHelmReleaseStatus';
 const kustomizationField = 'fluxKustomizationStatus';
@@ -22,14 +24,30 @@ const buildFluxResourceUrl = ({ basePath, namespace, apiVersion, resourceType })
   return `${basePath}/apis/${apiVersion}/namespaces/${namespace}/${resourceType}`;
 };
 
-const buildFluxResourceWatchPath = ({ namespace, apiVersion, resourceType }) => {
+export const buildFluxResourceWatchPath = ({ namespace, apiVersion, resourceType }) => {
   return `/apis/${apiVersion}/namespaces/${namespace}/${resourceType}`;
 };
 
-const watchFluxResource = ({ watchPath, resourceName, query, variables, field, client }) => {
+const watchFluxResource = ({
+  watchPath,
+  resourceName,
+  namespace,
+  query,
+  variables,
+  resourceType,
+  field,
+  client,
+}) => {
   const config = new Configuration(variables.configuration);
   const watcherApi = new WatchApi(config);
   const fieldSelector = `metadata.name=${decodeURIComponent(resourceName)}`;
+
+  updateConnectionStatus(client, {
+    configuration: variables.configuration,
+    namespace,
+    resourceType,
+    status: connectionStatus.connecting,
+  });
 
   watcherApi
     .subscribeToStream(watchPath, { watch: true, fieldSelector })
@@ -43,6 +61,22 @@ const watchFluxResource = ({ watchPath, resourceName, query, variables, field, c
           query,
           variables,
           data: { [field]: result },
+        });
+
+        updateConnectionStatus(client, {
+          configuration: variables.configuration,
+          namespace,
+          resourceType,
+          status: connectionStatus.connected,
+        });
+      });
+
+      watcher.on(EVENT_TIMEOUT, () => {
+        updateConnectionStatus(client, {
+          configuration: variables.configuration,
+          namespace,
+          resourceType,
+          status: connectionStatus.disconnected,
         });
       });
     })
@@ -70,8 +104,10 @@ const getFluxResourceStatus = ({ query, variables, field, resourceType, client }
         watchFluxResource({
           watchPath,
           resourceName,
+          namespace,
           query,
           variables,
+          resourceType,
           field,
           client,
         });
@@ -82,6 +118,24 @@ const getFluxResourceStatus = ({ query, variables, field, resourceType, client }
     .catch((err) => {
       handleClusterError(err);
     });
+};
+
+export const watchFluxKustomization = ({ configuration, client, fluxResourcePath }) => {
+  const query = fluxKustomizationStatusQuery;
+  const variables = { configuration, fluxResourcePath };
+  const field = kustomizationField;
+  const resourceType = KUSTOMIZATIONS_RESOURCE_TYPE;
+
+  getFluxResourceStatus({ query, variables, field, resourceType, client });
+};
+
+export const watchFluxHelmRelease = ({ configuration, client, fluxResourcePath }) => {
+  const query = fluxHelmReleaseStatusQuery;
+  const variables = { configuration, fluxResourcePath };
+  const field = helmReleaseField;
+  const resourceType = HELM_RELEASES_RESOURCE_TYPE;
+
+  getFluxResourceStatus({ query, variables, field, resourceType, client });
 };
 
 const getFluxResources = (configuration, url) => {

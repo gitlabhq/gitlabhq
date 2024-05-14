@@ -12,7 +12,7 @@ class HelpController < ApplicationController
   YAML_FRONT_MATTER_REGEXP = /\A(---\s*\n.*?\n?)^((---|\.\.\.)\s*$\n?)/m
 
   def index
-    @help_index = get_markdown_without_frontmatter(path_to_doc('index.md'))
+    @help_index = markdown_for(path_to_doc('index.md'))
 
     # Prefix Markdown links with `help/` unless they are external links.
     # '//' not necessarily part of URL, e.g., mailto:mail@example.com
@@ -51,6 +51,10 @@ class HelpController < ApplicationController
     end
   end
 
+  def redirect_to_docs
+    redirect_to documentation_base_url
+  end
+
   def shortcuts
   end
 
@@ -74,7 +78,16 @@ class HelpController < ApplicationController
   # Remove YAML frontmatter so that it doesn't look weird
   helper_method :get_markdown_without_frontmatter
   def get_markdown_without_frontmatter(path)
-    File.read(path).gsub(YAML_FRONT_MATTER_REGEXP, '')
+    markdown = File.read(path)
+    markdown_title_matches = markdown.match(/^title: (?<title>.+)$/)
+
+    without_frontmatter = markdown.sub(YAML_FRONT_MATTER_REGEXP, '')
+
+    if markdown_title_matches
+      "# #{markdown_title_matches[:title]}\n\n#{without_frontmatter}"
+    else
+      without_frontmatter
+    end
   end
 
   def redirect_to_documentation_website?
@@ -115,9 +128,9 @@ class HelpController < ApplicationController
     # Note: We are purposefully NOT using `Rails.root.join` because of https://gitlab.com/gitlab-org/gitlab/-/issues/216028.
     path = path_to_doc("#{@path}.md")
 
-    if File.exist?(path)
-      @markdown = get_markdown_without_frontmatter(path)
+    @markdown = markdown_for(path)
 
+    if @markdown
       render :show, formats: :html
     else
       # Force template to Haml
@@ -127,6 +140,18 @@ class HelpController < ApplicationController
 
   def path_to_doc(file_name)
     File.join(Rails.root, 'doc', file_name)
+  end
+
+  def markdown_for(raw_path)
+    if File.exist?(raw_path)
+      path = raw_path
+    elsif raw_path.ends_with?('index.md')
+      munged_path = raw_path.gsub('index.md', '_index.md')
+
+      path = munged_path if File.exist?(munged_path)
+    end
+
+    path ? get_markdown_without_frontmatter(path) : nil
   end
 end
 

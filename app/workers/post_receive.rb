@@ -146,26 +146,11 @@ class PostReceive
   def after_project_changes_hooks(project, user, refs, changes)
     repository_update_hook_data = Gitlab::DataBuilder::Repository.update(project, user, changes, refs)
     SystemHooksService.new.execute_hooks(repository_update_hook_data, :repository_update_hooks)
-    Gitlab::UsageDataCounters::SourceCodeCounter.count(:pushes)
-    emit_snowplow_event(project, user)
+    Gitlab::InternalEvents.track_event('source_code_pushed', project: project, user: user)
   end
 
   def log(message)
     Gitlab::GitLogger.error("POST-RECEIVE: #{message}")
-  end
-
-  def emit_snowplow_event(project, user)
-    metric_path = 'counts.source_code_pushes'
-    Gitlab::Tracking.event(
-      'PostReceive',
-      :push,
-      project: project,
-      namespace: project.namespace,
-      user: user,
-      property: 'source_code_pushes',
-      label: metric_path,
-      context: [Gitlab::Usage::MetricDefinition.context_for(metric_path).to_context]
-    )
   end
 end
 

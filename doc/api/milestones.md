@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Use project [milestones](../user/project/milestones/index.md) with the REST API.
 There's a separate [group milestones API](group_milestones.md) page.
@@ -39,7 +39,7 @@ Parameters:
 | `title`                           | string | no | Return only the milestones having the given `title` |
 | `search`                          | string | no | Return only milestones with a title or description matching the provided string |
 | `include_parent_milestones`       | boolean | no | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/433298) in GitLab 16.7. Use `include_ancestors` instead. |
-| `include_ancestors`               | boolean | no | Include milestones from all parent groups. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/196066) in GitLab 13.4. |
+| `include_ancestors`               | boolean | no | Include milestones from all parent groups. |
 | `updated_before`                  | datetime | no | Return only milestones updated before the given datetime. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). Introduced in GitLab 15.10 |
 | `updated_after`                   | datetime | no | Return only milestones updated after the given datetime. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). Introduced in GitLab 15.10 |
 
@@ -188,10 +188,7 @@ Parameters:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4737) in GitLab 12.1
-> - Moved to GitLab Premium in 13.9.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Gets all burndown chart events for a single milestone.
 

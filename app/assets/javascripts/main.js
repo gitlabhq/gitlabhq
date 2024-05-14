@@ -49,6 +49,23 @@ if (process.env.NODE_ENV !== 'production' && gon?.test_env) {
   import(/* webpackMode: "eager" */ './test_utils');
 }
 
+if (gon?.user_color_mode === 'gl-system') {
+  const root = document.documentElement;
+  // eslint-disable-next-line @gitlab/require-i18n-strings
+  if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    root.classList.add('gl-dark');
+  }
+
+  // eslint-disable-next-line @gitlab/require-i18n-strings
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+    if (e.matches) {
+      root.classList.add('gl-dark');
+    } else {
+      root.classList.remove('gl-dark');
+    }
+  });
+}
+
 document.addEventListener('beforeunload', () => {
   // Unbind scroll events
   // eslint-disable-next-line @gitlab/no-global-event-off
@@ -140,7 +157,7 @@ const isBoardsOrMR = /((projects|groups):boards:show|projects:merge_requests:)/.
   document.body.dataset.page,
 );
 if (!isBoardsOrMR && (bootstrapBreakpoint === 'sm' || bootstrapBreakpoint === 'xs')) {
-  const $rightSidebar = $('aside.right-sidebar');
+  const $rightSidebar = $('.js-right-sidebar[data-auto-collapse]');
   const $layoutPage = $('.layout-page');
 
   if ($rightSidebar.length > 0) {
@@ -227,7 +244,7 @@ requestIdleCallback(deferredInitialisation);
 
 // initialize hiding of tooltip after clicking on dropdown's links and buttons
 document
-  .querySelectorAll('a[data-toggle="dropdown"], button[data-toggle="dropdown"]')
+  .querySelectorAll('a[data-toggle="dropdown"], button[data-toggle="dropdown"], a.has-tooltip')
   .forEach((element) => {
     element.addEventListener('click', () => tooltips.hide(element));
   });

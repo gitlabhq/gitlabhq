@@ -51,7 +51,7 @@ export default {
     tokens() {
       return [
         {
-          icon: 'clock',
+          icon: 'milestone',
           title: TOKEN_TITLE_MILESTONE,
           type: TOKEN_TYPE_MILESTONE,
           token: MilestoneToken,

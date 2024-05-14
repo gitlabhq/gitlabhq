@@ -25,14 +25,14 @@ class BulkImports::Tracker < ApplicationRecord
 
   DEFAULT_PAGE_SIZE = 500
 
-  scope :next_pipeline_trackers_for, -> (entity_id) {
+  scope :next_pipeline_trackers_for, ->(entity_id) {
     entity_scope = where(bulk_import_entity_id: entity_id)
     next_stage_scope = entity_scope.with_status(:created).select('MIN(stage)')
 
     entity_scope.where(stage: next_stage_scope).with_status(:created)
   }
 
-  scope :running_trackers, -> (entity_id) {
+  scope :running_trackers, ->(entity_id) {
     where(bulk_import_entity_id: entity_id).with_status(:enqueued, :started)
   }
 

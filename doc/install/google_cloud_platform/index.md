@@ -80,7 +80,7 @@ By default, Google assigns an ephemeral IP to your instance. It is strongly
 recommended to assign a static IP if you are using GitLab in production
 and use a domain name as shown below.
 
-Read Google's documentation on how to [promote an ephemeral IP address](https://cloud.google.com/compute/docs/ip-addresses/reserve-static-external-ip-address#promote_ephemeral_ip).
+Read Google's documentation on how to [promote an ephemeral IP address](https://cloud.google.com/vpc/docs/reserve-static-external-ip-address#promote_ephemeral_ip).
 
 ### Using a domain name
 
@@ -93,7 +93,7 @@ here's how you configure GitLab to be aware of the change:
 
    ![SSH button](img/vm_created.png)
 
-   In the future you might want to set up [connecting with an SSH key](https://cloud.google.com/compute/docs/instances/connecting-to-instance)
+   In the future you might want to set up [connecting with an SSH key](https://cloud.google.com/compute/docs/connect/standard-ssh)
    instead.
 
 1. Edit the configuration file of the Linux package using your favorite text editor:

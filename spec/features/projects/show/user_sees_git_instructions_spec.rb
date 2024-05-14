@@ -10,7 +10,6 @@ RSpec.describe 'Projects > Show > User sees Git instructions', feature_category:
     # validation failure on NotificationSetting.
     # See https://gitlab.com/gitlab-org/gitlab/-/issues/299822#note_492817174
     user.notification_settings.reset
-    stub_feature_flags(project_overview_reorg: false)
   end
 
   shared_examples_for 'redirects to the sign in page' do
@@ -23,7 +22,7 @@ RSpec.describe 'Projects > Show > User sees Git instructions', feature_category:
     it 'shows Git command line instructions' do
       click_link 'Create empty repository'
 
-      page.within '.empty-wrapper' do
+      page.within '.project-page-layout-content' do
         expect(page).to have_content('Command line instructions')
       end
 
@@ -34,12 +33,16 @@ RSpec.describe 'Projects > Show > User sees Git instructions', feature_category:
   shared_examples_for 'shows details of empty project' do
     let(:user_has_ssh_key) { false }
 
-    it 'shows details' do
+    it 'shows details', :js do
       expect(page).not_to have_content('Git global setup')
 
       page.all(:css, '.git-empty .clone').each do |element|
         expect(element.text).to include(project.http_url_to_repo)
       end
+
+      find_by_testid('code-dropdown').click
+
+      wait_for_requests
 
       expect(page).to have_field('http_project_clone', with: project.http_url_to_repo) unless user_has_ssh_key
     end
@@ -48,10 +51,14 @@ RSpec.describe 'Projects > Show > User sees Git instructions', feature_category:
   shared_examples_for 'shows details of non empty project' do
     let(:user_has_ssh_key) { false }
 
-    it 'shows details' do
-      page.within('.breadcrumbs .js-breadcrumb-item-text') do
-        expect(page).to have_content(project.title)
+    it 'shows details', :js do
+      within_testid('breadcrumb-links') do
+        expect(find('li:last-of-type')).to have_content(project.title)
       end
+
+      find_by_testid('code-dropdown').click
+
+      wait_for_requests
 
       expect(page).to have_field('http_project_clone', with: project.http_url_to_repo) unless user_has_ssh_key
     end

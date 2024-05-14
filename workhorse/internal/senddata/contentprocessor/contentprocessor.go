@@ -1,3 +1,4 @@
+// Package contentprocessor provides content header processing for HTTP responses
 package contentprocessor
 
 import (
@@ -122,7 +123,7 @@ func (cd *contentDisposition) isUnbuffered() bool {
 }
 
 func (cd *contentDisposition) Flush() {
-	cd.FlushError()
+	_ = cd.FlushError()
 }
 
 // FlushError lets http.ResponseController to be used to flush the underlying http.ResponseWriter.
@@ -131,6 +132,7 @@ func (cd *contentDisposition) FlushError() error {
 	if err != nil {
 		return err
 	}
+
 	return http.NewResponseController(cd.rw).Flush()
 }
 

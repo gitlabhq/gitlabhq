@@ -99,7 +99,7 @@ export default {
     <gl-collapsible-listbox
       v-model="selectedSortOptionTitle"
       placement="right"
-      class="gl-z-index-1"
+      class="gl-z-1"
       toggle-class="gl-rounded-top-right-none! gl-rounded-bottom-right-none!"
       :toggle-text="selectedSortOptionTitle"
       :items="listboxOptions"

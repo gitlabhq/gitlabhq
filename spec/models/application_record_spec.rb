@@ -246,6 +246,52 @@ RSpec.describe ApplicationRecord do
     end
   end
 
+  describe '.nullable_column?' do
+    subject { Project.nullable_column?(attribute) }
+
+    context 'when the column is defined as NOT NULL' do
+      let(:attribute) { 'id' }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when the column is not defined as NOT NULL' do
+      let(:attribute) { 'name' }
+
+      before do
+        Project.clear_constraints_cache!
+      end
+
+      context 'when there is no check constraint' do
+        it { is_expected.to be_truthy }
+      end
+
+      context 'when there is an `IS NOT NULL` check constraint' do
+        context 'when the constraint is not valid' do
+          before do
+            Project.connection.execute(<<~SQL)
+              ALTER TABLE projects
+              ADD CONSTRAINT test_constraint CHECK (name is not null) not valid;
+            SQL
+          end
+
+          it { is_expected.to be_truthy }
+        end
+
+        context 'when the constraint is valid' do
+          before do
+            Project.connection.execute(<<~SQL)
+              ALTER TABLE projects
+              ADD CONSTRAINT test_constraint CHECK (name is not null);
+            SQL
+          end
+
+          it { is_expected.to be_falsey }
+        end
+      end
+    end
+  end
+
   describe '.default_select_columns' do
     shared_examples_for 'selects identically to the default' do
       it 'generates the same sql as the default' do
@@ -264,6 +310,7 @@ RSpec.describe ApplicationRecord do
         )
       SQL
     end
+
     context 'without an ignored column' do
       let(:test_model) do
         Class.new(ApplicationRecord) do

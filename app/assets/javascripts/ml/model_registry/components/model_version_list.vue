@@ -1,7 +1,6 @@
 <script>
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { makeLoadVersionsErrorMessage } from '~/ml/model_registry/translations';
-import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { s__ } from '~/locale';
 import getModelVersionsQuery from '../graphql/queries/get_model_versions.query.graphql';
 import {
@@ -24,14 +23,14 @@ export default {
   },
   props: {
     modelId: {
-      type: Number,
+      type: String,
       required: true,
     },
   },
   data() {
     return {
       modelVersions: {},
-      errorMessage: undefined,
+      errorMessage: '',
       skipQueries: true,
       queryVariables: {},
     };
@@ -54,9 +53,6 @@ export default {
     },
   },
   computed: {
-    gid() {
-      return convertToGraphQLId('Ml::Model', this.modelId);
-    },
     isLoading() {
       return this.$apollo.queries.modelVersions.loading;
     },
@@ -70,7 +66,7 @@ export default {
   methods: {
     fetchPage(variables) {
       this.queryVariables = {
-        id: this.gid,
+        id: this.modelId,
         first: GRAPHQL_PAGE_SIZE,
         ...variables,
         version: variables.name,
@@ -78,7 +74,7 @@ export default {
         sort: variables.sort?.toUpperCase() || SORT_KEY_ORDER,
       };
 
-      this.errorMessage = null;
+      this.errorMessage = '';
       this.skipQueries = false;
 
       this.$apollo.queries.modelVersions.fetchMore({});

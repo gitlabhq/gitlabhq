@@ -4,6 +4,11 @@ require 'spec_helper'
 
 RSpec.describe 'Explore Groups page', :js, feature_category: :groups_and_projects do
   let!(:user) { create :user }
+  let(:com?) { false }
+
+  before do
+    allow(Gitlab).to receive(:com?).and_return(com?)
+  end
 
   context 'when there are groups to show' do
     let!(:group) { create(:group) }
@@ -27,7 +32,8 @@ RSpec.describe 'Explore Groups page', :js, feature_category: :groups_and_project
     end
 
     it 'filters groups' do
-      fill_in 'filter', with: group.name
+      search(group.name)
+      click_button 'Search'
       wait_for_requests
 
       expect(page).to have_content(group.full_name)
@@ -36,58 +42,62 @@ RSpec.describe 'Explore Groups page', :js, feature_category: :groups_and_project
     end
 
     it 'resets search when user cleans the input' do
-      fill_in 'filter', with: group.name
+      search(group.name)
+      click_button 'Search'
       wait_for_requests
 
       expect(page).to have_content(group.full_name)
       expect(page).not_to have_content(public_group.full_name)
 
-      fill_in 'filter', with: ""
-      page.find('[name="filter"]').send_keys(:enter)
+      click_button 'Clear'
       wait_for_requests
 
       expect(page).to have_content(group.full_name)
       expect(page).to have_content(public_group.full_name)
       expect(page).not_to have_content(private_group.full_name)
-      expect(page.all('.js-groups-list-holder .groups-list li').length).to eq 2
+      expect(page.all('[data-testid="groups-list-tree-container"] .groups-list li').length).to eq 2
     end
 
     it 'shows non-archived projects count' do
       # Initially project is not archived
-      expect(find('.js-groups-list-holder .groups-list li:first-child .stats .number-projects')).to have_text("1")
+      expect(
+        find('[data-testid="groups-list-tree-container"] .groups-list li:first-child .stats .number-projects')
+      ).to have_text("1")
 
       # Archive project
       ::Projects::UpdateService.new(empty_project, user, archived: true).execute
       visit explore_groups_path
 
       # Check project count
-      expect(find('.js-groups-list-holder .groups-list li:first-child .stats .number-projects')).to have_text("0")
+      expect(
+        find('[data-testid="groups-list-tree-container"] .groups-list li:first-child .stats .number-projects')
+      ).to have_text("0")
 
       # Unarchive project
       ::Projects::UpdateService.new(empty_project, user, archived: false).execute
       visit explore_groups_path
 
       # Check project count
-      expect(find('.js-groups-list-holder .groups-list li:first-child .stats .number-projects')).to have_text("1")
+      expect(
+        find('[data-testid="groups-list-tree-container"] .groups-list li:first-child .stats .number-projects')
+      ).to have_text("1")
     end
 
-    describe 'landing component' do
-      it 'shows a landing component' do
-        expect(page).to have_content('Below you will find all the groups that are public.')
+    context 'when on gitlab.com' do
+      let(:com?) { true }
+
+      it 'renders page description' do
+        expect(page).to have_content(
+          'Below you will find all the groups that are public. Contribute by requesting to join a group.'
+        )
       end
+    end
 
-      it 'is dismissable' do
-        find('.dismiss-button').click
-
-        expect(page).not_to have_content('Below you will find all the groups that are public.')
-      end
-
-      it 'does not show persistently once dismissed' do
-        find('.dismiss-button').click
-
-        visit explore_groups_path
-
-        expect(page).not_to have_content('Below you will find all the groups that are public.')
+    context 'when on self-managed' do
+      it 'renders page description' do
+        expect(page).to have_content(
+          'Below you will find all the groups that are public or internal. Contribute by requesting to join a group.'
+        )
       end
     end
   end
@@ -100,8 +110,25 @@ RSpec.describe 'Explore Groups page', :js, feature_category: :groups_and_project
       wait_for_requests
     end
 
-    it 'shows empty state' do
-      expect(page).to have_content(_('No public groups'))
+    context 'when on gitlab.com' do
+      let(:com?) { true }
+
+      it 'shows empty state' do
+        expect(page).to have_content(_('No public groups'))
+      end
     end
+
+    context 'when on self-managed' do
+      it 'shows empty state' do
+        expect(page).to have_content(_('No public or internal groups'))
+      end
+    end
+  end
+
+  def search(term)
+    filter_input = find_by_testid('filtered-search-term-input')
+    filter_input.click
+    filter_input.set(term)
+    click_button 'Search'
   end
 end

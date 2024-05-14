@@ -6,9 +6,9 @@ RSpec.describe 'Adding a Note', feature_category: :team_planning do
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:group) { create(:group).tap { |g| g.add_developer(developer) } }
+  let_it_be(:group) { create(:group, developers: developer) }
   let_it_be_with_reload(:project) { create(:project, :repository, group: group) }
-  let_it_be(:developer) { create(:user).tap { |u| group.add_developer(u) } }
+  let_it_be(:developer) { create(:user, developer_of: group) }
   let(:noteable) { create(:merge_request, source_project: project, target_project: project) }
   let(:discussion) { nil }
   let(:head_sha) { nil }
@@ -95,24 +95,12 @@ RSpec.describe 'Adding a Note', feature_category: :team_planning do
         it_behaves_like 'a Note mutation with confidential notes'
       end
 
-      context 'when using deprecated confidential param' do
-        let(:variables_extra) { { confidential: true } }
-
-        it_behaves_like 'a Note mutation with confidential notes'
-      end
-
       context 'as work item' do
         let_it_be_with_reload(:work_item) { create(:work_item, :task, project: project) }
         let(:noteable) { work_item }
 
         context 'when using internal param' do
           let(:variables_extra) { { internal: true } }
-
-          it_behaves_like 'a Note mutation with confidential notes'
-        end
-
-        context 'when using deprecated confidential param' do
-          let(:variables_extra) { { confidential: true } }
 
           it_behaves_like 'a Note mutation with confidential notes'
         end

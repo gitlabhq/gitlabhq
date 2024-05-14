@@ -34,6 +34,14 @@ const getMRTargetProject = () => {
   return url.searchParams.get('target_project') || '';
 };
 
+const getCrossOriginExtensionHostFlagValue = (extensionsGallerySettings) => {
+  return (
+    extensionsGallerySettings?.enabled ||
+    extensionsGallerySettings?.reason === 'opt_in_unset' ||
+    extensionsGallerySettings?.reason === 'opt_in_disabled'
+  );
+};
+
 export const initGitlabWebIDE = async (el) => {
   // what: Pull what we need from the element. We will replace it soon.
   const {
@@ -46,6 +54,7 @@ export const initGitlabWebIDE = async (el) => {
     forkInfo: forkInfoJSON,
     editorFont: editorFontJSON,
     codeSuggestionsEnabled,
+    extensionsGallerySettings: extensionsGallerySettingsJSON,
   } = el.dataset;
 
   const rootEl = setupRootElement(el);
@@ -53,6 +62,9 @@ export const initGitlabWebIDE = async (el) => {
     ? convertObjectPropsToCamelCase(JSON.parse(editorFontJSON), { deep: true })
     : null;
   const forkInfo = forkInfoJSON ? JSON.parse(forkInfoJSON) : null;
+  const extensionsGallerySettings = extensionsGallerySettingsJSON
+    ? convertObjectPropsToCamelCase(JSON.parse(extensionsGallerySettingsJSON), { deep: true })
+    : undefined;
 
   const oauthConfig = getOAuthConfig(el.dataset);
   const httpHeaders = oauthConfig
@@ -81,7 +93,12 @@ export const initGitlabWebIDE = async (el) => {
       userPreferences: el.dataset.userPreferencesPath,
       signIn: el.dataset.signInPath,
     },
+    featureFlags: {
+      settingsSync: true,
+      crossOriginExtensionHost: getCrossOriginExtensionHostFlagValue(extensionsGallerySettings),
+    },
     editorFont,
+    extensionsGallerySettings,
     codeSuggestionsEnabled,
     handleTracking,
     // See https://gitlab.com/gitlab-org/gitlab-web-ide/-/blob/main/packages/web-ide-types/src/config.ts#L86

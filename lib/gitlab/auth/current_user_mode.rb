@@ -8,6 +8,7 @@ module Gitlab
     # an administrator must have explicitly enabled admin-mode
     # e.g. on web access require re-authentication
     class CurrentUserMode
+      include Gitlab::Utils::StrongMemoize
       NotRequestedError = Class.new(StandardError)
 
       # RequestStore entries
@@ -85,8 +86,9 @@ module Gitlab
         end
       end
 
-      def initialize(user)
+      def initialize(user, session = Gitlab::Session.current)
         @user = user
+        @session = session
       end
 
       def admin_mode?
@@ -138,6 +140,11 @@ module Gitlab
         current_session_data[ADMIN_MODE_REQUESTED_TIME_KEY] = Time.now
       end
 
+      def current_session_data
+        Gitlab::NamespacedSessionStore.new(SESSION_STORE_KEY, @session)
+      end
+      strong_memoize_attr :current_session_data
+
       private
 
       attr_reader :user
@@ -150,10 +157,6 @@ module Gitlab
       # RequestStore entry to cache #admin_mode_requested? result
       def admin_mode_requested_rs_key
         @admin_mode_requested_rs_key ||= { res: :current_user_mode, user: user.id, method: :admin_mode_requested? }
-      end
-
-      def current_session_data
-        @current_session ||= Gitlab::NamespacedSessionStore.new(SESSION_STORE_KEY)
       end
 
       def session_with_admin_mode?

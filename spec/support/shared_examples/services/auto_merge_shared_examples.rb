@@ -2,7 +2,7 @@
 
 RSpec.shared_context 'for auto_merge strategy context' do
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :repository, maintainers: user) }
 
   let(:mr_merge_if_green_enabled) do
     create(:merge_request,
@@ -16,10 +16,6 @@ RSpec.shared_context 'for auto_merge strategy context' do
   let(:pipeline) { create(:ci_pipeline, ref: mr_merge_if_green_enabled.source_branch, project: project) }
 
   let(:service) { described_class.new(project, user, commit_message: 'Awesome message') }
-
-  before_all do
-    project.add_maintainer(user)
-  end
 
   before do
     allow(MergeWorker).to receive(:with_status).and_return(MergeWorker)
@@ -35,7 +31,7 @@ RSpec.shared_examples 'auto_merge service #execute' do
   context 'when first time enabling' do
     before do
       allow(merge_request)
-        .to receive_messages(head_pipeline: pipeline, actual_head_pipeline: pipeline)
+        .to receive_messages(head_pipeline: pipeline, diff_head_pipeline: pipeline)
       allow(MailScheduler::NotificationServiceWorker).to receive(:perform_async)
 
       service.execute(merge_request)
@@ -56,7 +52,7 @@ RSpec.shared_examples 'auto_merge service #execute' do
 
     it 'creates a system note' do
       pipeline = build(:ci_pipeline)
-      allow(merge_request).to receive(:actual_head_pipeline) { pipeline }
+      allow(merge_request).to receive(:diff_head_pipeline) { pipeline }
 
       note = merge_request.notes.last
       expect(note.note).to match expected_note
@@ -69,7 +65,7 @@ RSpec.shared_examples 'auto_merge service #execute' do
 
     before do
       allow(mr_merge_if_green_enabled)
-        .to receive_messages(head_pipeline: pipeline, actual_head_pipeline: pipeline)
+        .to receive_messages(head_pipeline: pipeline, diff_head_pipeline: pipeline)
 
       allow(mr_merge_if_green_enabled).to receive(:mergeable?)
                                             .and_return(true)
@@ -103,7 +99,7 @@ RSpec.shared_examples 'auto_merge service #process' do
 
     it "merges all merge requests with merge when the pipeline succeeds enabled" do
       allow(mr_merge_if_green_enabled)
-        .to receive_messages(head_pipeline: triggering_pipeline, actual_head_pipeline: triggering_pipeline)
+        .to receive_messages(head_pipeline: triggering_pipeline, diff_head_pipeline: triggering_pipeline)
 
       expect(MergeWorker).to receive(:perform_async)
       service.process(mr_merge_if_green_enabled)
@@ -145,7 +141,7 @@ RSpec.shared_examples 'auto_merge service #process' do
 
     it 'merges the associated merge request' do
       allow(mr_merge_if_green_enabled)
-        .to receive_messages(head_pipeline: pipeline, actual_head_pipeline: pipeline)
+        .to receive_messages(head_pipeline: pipeline, diff_head_pipeline: pipeline)
 
       expect(MergeWorker).to receive(:perform_async)
       service.process(mr_merge_if_green_enabled)

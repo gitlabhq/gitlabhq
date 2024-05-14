@@ -1,4 +1,4 @@
-import { identity, memoize, throttle } from 'lodash';
+import { identity, memoize, isEmpty } from 'lodash';
 import { initEmojiMap, getAllEmoji, searchEmoji } from '~/emoji';
 import { parsePikadayDate } from '~/lib/utils/datetime_utility';
 import axios from '~/lib/utils/axios_utils';
@@ -91,13 +91,12 @@ export function createDataSource({
     }
   };
 
-  const init = memoize(sync);
-  const throttledSync = throttle(sync, 5000);
+  const cacheTimeoutFn = () => (cache ? 0 : Math.floor(Date.now() / 1e4));
+  const init = memoize(sync, cacheTimeoutFn);
 
   return {
     search: async (query) => {
       await init();
-      if (!cache) throttledSync();
 
       let results = items.map(mapper);
       if (filter) results = filter(items, query);
@@ -118,7 +117,10 @@ export function createDataSource({
 
 export default class AutocompleteHelper {
   constructor({ dataSourceUrls, sidebarMediator }) {
-    this.dataSourceUrls = dataSourceUrls;
+    this.dataSourceUrls = !isEmpty(dataSourceUrls)
+      ? dataSourceUrls
+      : gl.GfmAutoComplete?.dataSources || {};
+
     this.sidebarMediator = sidebarMediator;
 
     initEmojiMap();
@@ -136,6 +138,7 @@ export default class AutocompleteHelper {
         merge_request: this.dataSourceUrls.mergeRequests,
         vulnerability: this.dataSourceUrls.vulnerabilities,
         command: this.dataSourceUrls.commands,
+        wiki: this.dataSourceUrls.wikis,
       };
 
       const searchFields = {
@@ -148,6 +151,7 @@ export default class AutocompleteHelper {
         merge_request: ['iid', 'title'],
         milestone: ['title', 'iid'],
         command: ['name'],
+        wiki: ['title'],
         emoji: [],
       };
 
@@ -203,6 +207,6 @@ export default class AutocompleteHelper {
         limit: config.limit,
       });
     },
-    (referenceType, config) => JSON.stringify({ referenceType, config }),
+    (referenceType) => referenceType,
   );
 }

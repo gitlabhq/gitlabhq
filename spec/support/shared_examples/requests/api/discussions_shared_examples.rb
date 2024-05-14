@@ -3,8 +3,8 @@
 RSpec.shared_examples 'with cross-reference system notes' do
   let_it_be(:user) { create(:user) }
   let_it_be(:pat) { create(:personal_access_token, user: user) }
-  let_it_be(:project) { create(:project, :small_repo) }
-  let_it_be(:project2) { create(:project, :small_repo) }
+  let_it_be(:project) { create(:project, :small_repo, developers: user) }
+  let_it_be(:project2) { create(:project, :small_repo, developers: user) }
   let_it_be(:project3) { create(:project, :small_repo) }
 
   let_it_be(:merge_request) { create(:merge_request, source_project: project) }
@@ -20,11 +20,6 @@ RSpec.shared_examples 'with cross-reference system notes' do
   let!(:new_note_metadata) { create(:system_note_metadata, note: new_note, action: 'cross_reference') }
   let(:hidden_cross_reference) { "test commit #{hidden_commit.to_reference(project)}" }
   let(:hidden_commit) { hidden_merge_request.project.commit }
-
-  before_all do
-    project.add_developer(user)
-    project2.add_developer(user)
-  end
 
   it 'returns only the note that the user should see' do
     get api(url, user, personal_access_token: pat)
@@ -121,12 +116,6 @@ RSpec.shared_examples 'discussions API' do |parent_type, noteable_type, id_name,
       post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/discussions"), params: { body: 'hi!' }
 
       expect(response).to have_gitlab_http_status(:unauthorized)
-    end
-
-    it 'tracks a Notes::CreateService event', :snowplow do
-      post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/discussions", user), params: { body: 'hi!' }
-
-      expect_snowplow_event(category: 'Notes::CreateService', action: 'execute', label: 'note', value: anything)
     end
 
     context 'when an admin or owner makes the request' do

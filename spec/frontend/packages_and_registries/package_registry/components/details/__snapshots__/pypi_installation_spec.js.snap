@@ -16,6 +16,7 @@ exports[`PypiInstallation renders all the messages 1`] = `
       >
         <button
           aria-controls="reference-1"
+          aria-expanded="false"
           aria-haspopup="listbox"
           aria-labelledby="reference-0"
           class="btn btn-default btn-md gl-button gl-new-dropdown-toggle"

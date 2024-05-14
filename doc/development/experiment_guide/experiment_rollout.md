@@ -72,6 +72,3 @@ _inactive_ experiment until we set the feature flag to `conditional`. After whic
 our experiment is then considered _running_. If you choose to "enable" your feature flag,
 you should consider the experiment to be _resolved_, because everyone is assigned
 the candidate unless they've opted out of experimentation.
-
-As of GitLab 13.10, work is being done to improve this process and how we communicate
-about it.

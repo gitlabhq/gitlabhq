@@ -78,18 +78,16 @@ RSpec.describe Snippets::CreateService, feature_category: :source_code_managemen
     end
 
     shared_examples 'snippet create data is tracked' do
-      let(:counter) { Gitlab::UsageDataCounters::SnippetCounter }
+      let(:event) { 'create_snippet' }
+      let(:category) { 'Snippets::CreateService' }
+      let(:user) { admin }
 
-      it 'increments count when create succeeds' do
-        expect { subject }.to change { counter.read(:create) }.by 1
-      end
+      it_behaves_like 'internal event tracking'
 
       context 'when create fails' do
         let(:opts) { {} }
 
-        it 'does not increment count' do
-          expect { subject }.not_to change { counter.read(:create) }
-        end
+        it_behaves_like 'internal event not tracked'
       end
     end
 

@@ -15,8 +15,8 @@ RSpec.shared_examples 'a deployable job' do
     end
   end
 
-  describe '#outdated_deployment?' do
-    subject { job.outdated_deployment? }
+  describe '#has_outdated_deployment?' do
+    subject { job.has_outdated_deployment? }
 
     let(:job) { create(factory_type, :created, :with_deployment, project: project, pipeline: pipeline, environment: 'production') }
 
@@ -24,6 +24,31 @@ RSpec.shared_examples 'a deployable job' do
       let(:job) { create(factory_type, :created, pipeline: pipeline, environment: nil) }
 
       it { expect(subject).to be_falsey }
+    end
+
+    context 'when deployment is not persisted' do
+      let_it_be(:project) { create(:project, :repository) }
+      let_it_be(:commits) { project.repository.commits('master', limit: 2) }
+      let_it_be(:environment) { create(:environment, project: project) }
+
+      let(:unpersisted_deployment) do
+        FactoryBot.build(
+          :deployment,
+          :success,
+          project: project,
+          environment: environment,
+          finished_at: 1.year.ago,
+          sha: nil # Required attribute, nil prevents the record from being persisted and getting an ID
+        )
+      end
+
+      let!(:last_deployment) do
+        create(:deployment, :success, project: project, environment: environment, sha: commits[1].sha)
+      end
+
+      it 'returns false to ignore the Build and not take any Deployment-related action' do
+        expect(unpersisted_deployment.job.has_outdated_deployment?).to eq(false)
+      end
     end
 
     context 'when project has forward deployment disabled' do

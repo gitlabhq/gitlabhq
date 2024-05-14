@@ -102,11 +102,11 @@ module Gitlab
         end
 
         if entry.plural_id_contains_potential_html?
-          errors << 'plural id ' + common_message
+          errors << ('plural id ' + common_message)
         end
 
         if entry.translations_contain_potential_html?
-          errors << 'translation ' + common_message
+          errors << ('translation ' + common_message)
         end
       end
 

@@ -1,0 +1,43 @@
+- title: "Duplicate storages in Gitaly configuration"
+  # The milestones for the deprecation announcement, and the removal.
+  removal_milestone: "17.0"
+  announcement_milestone: "16.10"
+  # Change breaking_change to false if needed.
+  breaking_change: true
+  # The stage and GitLab username of the person reporting the change,
+  # and a link to the deprecation issue
+  reporter: mjwood
+  stage: systems
+  issue_url: https://gitlab.com/gitlab-org/gitaly/-/issues/5598
+  impact: low  # Can be one of: [critical, high, medium, low]
+  scope: instance  # Can be one or a combination of: [instance, group, project]
+  resolution_role: Admin  # Can be one of: [Admin, Owner, Maintainer, Developer]
+  manual_task: true  # Can be true or false. Use this to denote whether a resolution action must be performed manually (true), or if it can be automated by using the API or other automation (false).
+  body: |  # (required) Don't change this line.
+    Support for configuring multiple Gitaly storages that point to the same storage path is deprecated and will be removed in GitLab 17.0
+    In GitLab 17.0 and later, this type of configuration will cause an error.
+
+    We're removing support for this type of configuration because it can cause problems with background repository
+    maintenance and will not be compatible with future Gitaly storage implementations.
+
+    Instance administrators must update the `storage` entries of the `gitaly['configuration']`
+    section in `gitlab.rb` configuration file to ensure each storage is configured with a unique path.
+
+# ==============================
+# OPTIONAL END-OF-SUPPORT FIELDS
+# ==============================
+#
+# If an End of Support period applies:
+# 1) Share this announcement in the `#spt_managers` Support channel in Slack
+# 2) Mention `@gitlab-com/support` in this merge request.
+#
+  # When support for this feature ends, in XX.YY milestone format.
+  end_of_support_milestone:
+  # Array of tiers the feature is currently available to,
+  # like [Free, Silver, Gold, Core, Premium, Ultimate]
+  tiers:
+  # Links to documentation and thumbnail image
+  documentation_url:
+  image_url:
+  # Use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg
+  video_url:

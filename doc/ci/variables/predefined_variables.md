@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Predefined [CI/CD variables](index.md) are available in every GitLab CI/CD pipeline.
 
@@ -96,8 +96,9 @@ as it can cause the pipeline to behave unexpectedly.
 | `CI_PAGES_URL`                    | Pipeline    | 11.8   | all    | The URL for a GitLab Pages site. Always a subdomain of `CI_PAGES_DOMAIN`. |
 | `CI_PIPELINE_ID`                  | Jobs only   | 8.10   | all    | The instance-level ID of the current pipeline. This ID is unique across all projects on the GitLab instance. |
 | `CI_PIPELINE_IID`                 | Pipeline    | 11.0   | all    | The project-level IID (internal ID) of the current pipeline. This ID is unique only within the current project. |
-| `CI_PIPELINE_SOURCE`              | Pipeline    | 10.0   | all    | How the pipeline was triggered. Can be `push`, `web`, `schedule`, `api`, `external`, `chat`, `webide`, `merge_request_event`, `external_pull_request_event`, `parent_pipeline`, [`trigger`, or `pipeline`](../triggers/index.md#configure-cicd-jobs-to-run-in-triggered-pipelines). For a description of each value, see [Common `if` clauses for `rules`](../jobs/job_control.md#common-if-clauses-for-rules), which uses this variable to control when jobs run. |
+| `CI_PIPELINE_SOURCE`              | Pipeline    | 10.0   | all    | How the pipeline was triggered. Can be `push`, `web`, `schedule`, `api`, `external`, `chat`, `webide`, `merge_request_event`, `external_pull_request_event`, `parent_pipeline`, [`trigger`, or `pipeline`](../triggers/index.md#configure-cicd-jobs-to-run-in-triggered-pipelines). For a description of each value, see [Common `if` clauses for `rules`](../jobs/job_rules.md#common-if-clauses-with-predefined-variables), which uses this variable to control when jobs run. |
 | `CI_PIPELINE_TRIGGERED`           | Pipeline    | all    | all    | `true` if the job was [triggered](../triggers/index.md). |
+| `CI_TRIGGER_SHORT_TOKEN`          | Jobs only   | 17.0   | all    | First 4 characters of the [trigger token](../triggers/index.md#create-a-pipeline-trigger-token) of the current job. Only available if the pipeline was [triggered with a trigger token](../triggers/index.md). For example, for a trigger token of `glptt-dbf556605bcad4d9db3ec5fcef84f78f9b4fec28`, `CI_TRIGGER_SHORT_TOKEN` would be `dbf5`. |
 | `CI_PIPELINE_URL`                 | Jobs only   | 11.1   | 0.5    | The URL for the pipeline details. |
 | `CI_PIPELINE_CREATED_AT`          | Pipeline    | 13.10  | all    | The date and time when the pipeline was created, in [ISO 8601](https://www.rfc-editor.org/rfc/rfc3339#appendix-A) format. For example, `2022-01-31T16:47:55Z`. [UTC by default](../../administration/timezone.md). |
 | `CI_PIPELINE_NAME`                | Pipeline    | 16.3   | all    | The pipeline name defined in [`workflow:name`](../yaml/index.md#workflowname) |
@@ -124,9 +125,10 @@ as it can cause the pipeline to behave unexpectedly.
 | `CI_RUNNER_EXECUTABLE_ARCH`       | Jobs only   | all    | 10.6   | The OS/architecture of the GitLab Runner executable. Might not be the same as the environment of the executor. |
 | `CI_RUNNER_ID`                    | Jobs only   | 8.10   | 0.5    | The unique ID of the runner being used. |
 | `CI_RUNNER_REVISION`              | Jobs only   | all    | 10.6   | The revision of the runner running the job. |
-| `CI_RUNNER_SHORT_TOKEN`           | Jobs only   | all    | 12.3   | The runner's unique ID, used to authenticate new job requests. In [GitLab 14.9](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/2251) and later, the token contains a prefix, and the first 17 characters are used. Prior to 14.9, the first eight characters are used. |
+| `CI_RUNNER_SHORT_TOKEN`           | Jobs only   | all    | 12.3   | The runner's unique ID, used to authenticate new job requests. The token contains a prefix, and the first 17 characters are used. |
 | `CI_RUNNER_TAGS`                  | Jobs only   | 8.10   | 0.5    | A comma-separated list of the runner tags. |
 | `CI_RUNNER_VERSION`               | Jobs only   | all    | 10.6   | The version of the GitLab Runner running the job. |
+| `CI_SERVER_FQDN`                  | Pipeline    | 16.10  | all    | The fully qualified domain name (FQDN) of the instance. For example `gitlab.example.com:8080`. |
 | `CI_SERVER_HOST`                  | Pipeline    | 12.1   | all    | The host of the GitLab instance URL, without protocol or port. For example `gitlab.example.com`. |
 | `CI_SERVER_NAME`                  | Pipeline    | all    | all    | The name of CI/CD server that coordinates jobs. |
 | `CI_SERVER_PORT`                  | Pipeline    | 12.8   | all    | The port of the GitLab instance URL, without host or protocol. For example `8080`. |

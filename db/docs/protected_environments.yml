@@ -4,9 +4,18 @@ classes:
 - ProtectedEnvironment
 feature_categories:
 - continuous_delivery
-description: >-
-  Project or group-level record associated to one or more environments by name/pattern.
-  See https://docs.gitlab.com/ee/ci/environments/protected_environments.html for more details.
+description: Project or group-level record associated to one or more environments
+  by name/pattern. See https://docs.gitlab.com/ee/ci/environments/protected_environments.html
+  for more details.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6672
 milestone: '11.3'
-gitlab_schema: gitlab_main
+gitlab_schema: gitlab_main_cell
+allow_cross_joins:
+- gitlab_main_clusterwide
+allow_cross_transactions:
+- gitlab_main_clusterwide
+allow_cross_foreign_keys:
+- gitlab_main_clusterwide
+sharding_key:
+  project_id: projects
+  group_id: namespaces

@@ -7,7 +7,13 @@ import RegistrySearch from '~/vue_shared/components/registry/registry_search.vue
 import Pagination from '~/vue_shared/components/incubation/pagination.vue';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import * as urlHelpers from '~/lib/utils/url_utility';
-import { MOCK_START_CURSOR, MOCK_PAGE_INFO, MOCK_CANDIDATES, MOCK_EXPERIMENT } from './mock_data';
+import {
+  MOCK_START_CURSOR,
+  MOCK_PAGE_INFO,
+  MOCK_CANDIDATES,
+  MOCK_EXPERIMENT,
+  MOCK_EXPERIMENT_METADATA,
+} from './mock_data';
 
 describe('MlExperimentsShow', () => {
   let wrapper;
@@ -29,6 +35,17 @@ describe('MlExperimentsShow', () => {
     createWrapper(MOCK_CANDIDATES, ['rmse', 'auc', 'mae'], ['l1_ratio'], pageInfo);
   };
 
+  const createWrapperWithExperimentMetadata = () => {
+    createWrapper(
+      [],
+      [],
+      [],
+      MOCK_PAGE_INFO,
+      { ...MOCK_EXPERIMENT, metadata: MOCK_EXPERIMENT_METADATA },
+      'path',
+    );
+  };
+
   const findPagination = () => wrapper.findComponent(Pagination);
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findRegistrySearch = () => wrapper.findComponent(RegistrySearch);
@@ -40,6 +57,10 @@ describe('MlExperimentsShow', () => {
   const findExperimentHeader = () => wrapper.findComponent(ModelExperimentsHeader);
   const findDeleteButton = () => wrapper.findComponent(DeleteButton);
   const findDownloadButton = () => findExperimentHeader().findComponent(GlButton);
+  const findMetadataTableRow = (idx) => wrapper.findAll('.experiment-metadata tbody > tr').at(idx);
+  const findMetadataTableColumn = (row, col) => findMetadataTableRow(row).findAll('td').at(col);
+  const findMetadataHeader = () => wrapper.find('.experiment-metadata h3');
+  const findMetadataEmptyState = () => wrapper.find('.experiment-metadata .gl-text-secondary');
 
   const hrefInRowAndColumn = (row, col) =>
     findColumnInRow(row, col).findComponent(GlLink).attributes().href;
@@ -315,6 +336,29 @@ describe('MlExperimentsShow', () => {
 
       it('when there is no user shows nothing', () => {
         expect(findColumnInRow(secondCandidateIndex, nameColumnIndex).text()).toBe('No name');
+      });
+    });
+  });
+
+  describe('Experiments metadata', () => {
+    it('has correct header', () => {
+      createWrapper();
+
+      expect(findMetadataHeader().text()).toBe('Experiment metadata');
+    });
+
+    it('shows empty state if there is no metadata', () => {
+      createWrapper();
+
+      expect(findMetadataEmptyState().text()).toBe('No logged experiment metadata');
+    });
+
+    it('shows the metadata', () => {
+      createWrapperWithExperimentMetadata();
+
+      MOCK_EXPERIMENT_METADATA.forEach((metadata, idx) => {
+        expect(findMetadataTableColumn(idx, 0).text()).toContain(metadata.name);
+        expect(findMetadataTableColumn(idx, 1).text()).toContain(metadata.value);
       });
     });
   });

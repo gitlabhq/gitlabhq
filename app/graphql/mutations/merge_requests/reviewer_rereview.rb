@@ -6,11 +6,11 @@ module Mutations
       graphql_name 'MergeRequestReviewerRereview'
 
       argument :user_id, ::Types::GlobalIDType[::User],
-               loads: Types::UserType,
-               required: true,
-               description: <<~DESC
+        loads: Types::UserType,
+        required: true,
+        description: <<~DESC
                             User ID for the user that has been requested for a new review.
-               DESC
+        DESC
 
       def resolve(project_path:, iid:, user:)
         merge_request = authorized_find!(project_path: project_path, iid: iid)

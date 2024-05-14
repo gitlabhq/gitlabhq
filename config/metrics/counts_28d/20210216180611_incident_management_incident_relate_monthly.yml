@@ -5,7 +5,7 @@ description: Count of unique users adding issues per month that are related to a
   incident
 product_section: ops
 product_stage: monitor
-product_group: monitor
+product_group: respond
 value_type: number
 status: active
 time_frame: 28d

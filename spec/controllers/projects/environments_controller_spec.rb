@@ -6,8 +6,8 @@ RSpec.describe Projects::EnvironmentsController, feature_category: :continuous_d
   include KubernetesHelpers
 
   let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:maintainer) { create(:user, name: 'main-dos').tap { |u| project.add_maintainer(u) } }
-  let_it_be(:reporter) { create(:user, name: 'repo-dos').tap { |u| project.add_reporter(u) } }
+  let_it_be(:maintainer) { create(:user, name: 'main-dos', maintainer_of: project) }
+  let_it_be(:reporter) { create(:user, name: 'repo-dos', reporter_of: project) }
 
   let(:user) { maintainer }
 
@@ -279,6 +279,24 @@ RSpec.describe Projects::EnvironmentsController, feature_category: :continuous_d
       it_behaves_like 'tracking unique visits', :show do
         let(:request_params) { environment_params }
         let(:target_id) { 'users_visiting_environments_pages' }
+      end
+
+      it 'sets the kas cookie if the request format is html' do
+        allow(::Gitlab::Kas::UserAccess).to receive(:enabled?).and_return(true)
+        get :show, params: environment_params
+
+        expect(
+          request.env['action_dispatch.cookies'][Gitlab::Kas::COOKIE_KEY]
+        ).to be_present
+      end
+
+      it 'does not set the kas_cookie if the request format is not html' do
+        allow(::Gitlab::Kas::UserAccess).to receive(:enabled?).and_return(true)
+        get :show, params: environment_params(format: :json)
+
+        expect(
+          request.env['action_dispatch.cookies'][Gitlab::Kas::COOKIE_KEY]
+        ).to be_nil
       end
     end
 

@@ -4,7 +4,7 @@ module Gitlab
   module Suggestions
     class CommitMessage
       DEFAULT_SUGGESTION_COMMIT_MESSAGE =
-        'Apply %{suggestions_count} suggestion(s) to %{files_count} file(s)'
+        "Apply %{suggestions_count} suggestion(s) to %{files_count} file(s)\n\n%{co_authored_by}"
 
       def initialize(user, suggestion_set, custom_message = nil)
         @user = user
@@ -41,7 +41,12 @@ module Gitlab
         'project_path' => ->(user, suggestion_set) { suggestion_set.target_project.path },
         'user_full_name' => ->(user, suggestion_set) { user.name },
         'username' => ->(user, suggestion_set) { user.username },
-        'suggestions_count' => ->(user, suggestion_set) { suggestion_set.suggestions.size }
+        'suggestions_count' => ->(user, suggestion_set) { suggestion_set.suggestions.size },
+        'co_authored_by' => ->(user, suggestions_set) {
+          suggestions_set.authors.without(user).map do |author|
+            "#{Commit::CO_AUTHORED_TRAILER}: #{author.name} <#{author.commit_email_or_default}>"
+          end.join("\n")
+        }
       }.freeze
 
       # This regex is built dynamically using the keys from the PLACEHOLDER struct.

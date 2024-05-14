@@ -10,8 +10,8 @@ module Mutations
           authorize :admin_metrics_dashboard_annotation
 
           argument :id, GraphQL::Types::String,
-                  required: true,
-                  description: 'Global ID of the annotation to delete.'
+            required: true,
+            description: 'Global ID of the annotation to delete.'
 
           # rubocop:disable Lint/UnusedMethodArgument
           def resolve(id:)

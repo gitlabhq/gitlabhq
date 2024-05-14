@@ -15,6 +15,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   after_action :verify_known_sign_in
 
   protect_from_forgery except: [:failure] + AuthHelper.saml_providers, with: :exception, prepend: true
+  before_action :log_saml_response, only: [:saml]
 
   feature_category :system_access
 
@@ -46,12 +47,14 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   # the number of failed sign in attempts
   def failure
     update_login_counter_metric(failed_strategy.name, 'failed')
+    log_saml_response if params['SAMLResponse']
 
-    if params[:username].present? && AuthHelper.form_based_provider?(failed_strategy.name)
-      user = User.find_by_login(params[:username])
+    username = params[:username].to_s
+    if username.present? && AuthHelper.form_based_provider?(failed_strategy.name)
+      user = User.find_by_login(username)
 
       user&.increment_failed_attempts!
-      log_failed_login(params[:username], failed_strategy.name)
+      log_failed_login(username, failed_strategy.name)
     end
 
     super
@@ -370,7 +373,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   end
 
   def onboarding_status
-    Onboarding::Status.new(params.to_unsafe_h.deep_symbolize_keys, session, @user)
+    Onboarding::Status.new(request.env.fetch('omniauth.params', {}).deep_symbolize_keys, session, @user)
   end
   strong_memoize_attr :onboarding_status
 
@@ -385,6 +388,10 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     else
       session.delete(:provider_2FA)
     end
+  end
+
+  def log_saml_response
+    ParameterFilters::SamlResponse.log(params['SAMLResponse'].dup)
   end
 end
 

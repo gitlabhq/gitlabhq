@@ -1,5 +1,7 @@
 <script>
+import { GlAlert } from '@gitlab/ui';
 import Autosize from 'autosize';
+import { __ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import { updateDraft, clearDraft, getDraft } from '~/lib/utils/autosave';
@@ -31,6 +33,7 @@ async function waitFor(getEl, interval = 10, timeout = 2000) {
 
 export default {
   components: {
+    GlAlert,
     LocalStorageSync,
     MarkdownField,
     ContentEditor: () =>
@@ -122,6 +125,7 @@ export default {
     const editingMode =
       localStorage.getItem(this.$options.EDITING_MODE_KEY) || EDITING_MODE_MARKDOWN_FIELD;
     return {
+      alert: null,
       markdown: this.value || (this.autosaveKey ? getDraft(this.autosaveKey) : '') || '',
       editingMode,
       autofocused: false,
@@ -173,6 +177,27 @@ export default {
 
       this.saveDraft();
       this.autosizeTextarea();
+    },
+    setTemplate(template, force = false) {
+      if (!this.markdown || force) {
+        this.setValue(template);
+      } else {
+        const dismiss = () => {
+          this.alert = null;
+        };
+        this.alert = {
+          message: this.$options.i18n.applyTemplateAlert.message,
+          variant: 'warning',
+          primaryButtonText: this.$options.i18n.applyTemplateAlert.primaryButtonText,
+          secondaryButtonText: this.$options.i18n.applyTemplateAlert.secondaryButtonText,
+          primaryAction: () => {
+            this.setValue(template, true);
+            dismiss();
+          },
+          secondaryAction: dismiss,
+          dismiss,
+        };
+      }
     },
     updateMarkdownFromContentEditor({ markdown }) {
       this.markdown = markdown;
@@ -257,6 +282,15 @@ export default {
     },
   },
   EDITING_MODE_KEY,
+  i18n: {
+    applyTemplateAlert: {
+      message: __(
+        'Applying a template will replace the existing content. Any changes you have made will be lost.',
+      ),
+      primaryButtonText: __('Apply template'),
+      secondaryButtonText: __('Cancel'),
+    },
+  },
 };
 </script>
 <template>
@@ -267,6 +301,18 @@ export default {
       :storage-key="$options.EDITING_MODE_KEY"
       @input="onEditingModeRestored"
     />
+    <gl-alert
+      v-if="alert"
+      class="gl-mb-4"
+      :variant="alert.variant"
+      :primary-button-text="alert.primaryButtonText"
+      :secondary-button-text="alert.secondaryButtonText"
+      @primaryAction="alert.primaryAction"
+      @secondaryAction="alert.secondaryAction"
+      @dismiss="alert.dismiss"
+    >
+      {{ alert.message }}
+    </gl-alert>
     <markdown-field
       v-if="!isContentEditorActive"
       ref="markdownField"

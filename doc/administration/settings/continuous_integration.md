@@ -42,6 +42,23 @@ You can set all new projects to have instance runners available by default.
 
 Any time a new project is created, the instance runners are available.
 
+## Enable runner registrations tokens
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147559) in GitLab 16.11
+
+WARNING:
+The ability to pass a runner registration token, and support for certain configuration arguments was deprecated in GitLab 15.6 and will be removed in GitLab 18.0. Runner authentication tokens should be used instead. For more information, see [Migrating to the new runner registration workflow](../../ci/runners/new_creation_workflow.md).
+
+In GitLab 17.0, the use of runner registration tokens to create runners will be disabled in all GitLab instances.
+Users must use runner authentication tokens instead.
+If you have not yet [migrated to the use of runner authentication tokens](../../ci/runners/new_creation_workflow.md),
+you can enable runner registration tokens. This setting and support for runner registration tokens will be removed in GitLab 18.0.
+
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Settings > CI/CD**.
+1. Expand **Runners**.
+1. Select the **Allow runner registration token** checkbox.
+
 ## Instance runners compute quota
 
 As an administrator you can set either a global or namespace-specific
@@ -131,11 +148,9 @@ NOTE:
 Any changes to this setting applies to new artifacts only. The expiration time is not
 be updated for artifacts created before this setting was changed.
 The administrator may need to manually search for and expire previously-created
-artifacts, as described in the [troubleshooting documentation](../../administration/job_artifacts_troubleshooting.md#delete-job-artifacts-from-jobs-completed-before-a-specific-date).
+artifacts, as described in the [troubleshooting documentation](../../administration/job_artifacts_troubleshooting.md#delete-old-builds-and-artifacts).
 
 ## Keep the latest artifacts for all jobs in the latest successful pipelines
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50889) in GitLab 13.9.
 
 When enabled (default), the artifacts of the most recent pipeline for each Git ref
 ([branches and tags](https://git-scm.com/book/en/v2/Git-Internals-Git-References))
@@ -205,9 +220,20 @@ The default is `150`.
 1. Change the value of **Maximum includes**.
 1. Select **Save changes** for the changes to take effect.
 
-## Default CI/CD configuration file
+## Maximum downstream pipeline trigger rate
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18073) in GitLab 12.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144077) in GitLab 16.10.
+
+The maximum number of [downstream pipelines](../../ci/pipelines/downstream_pipelines.md) that can be triggered per minute
+(for a given project, user, and commit) can be set at the instance level.
+The default is `0` (no restriction).
+
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Settings > CI/CD**.
+1. Change the value of **Maximum downstream pipeline trigger rate**.
+1. Select **Save changes** for the changes to take effect.
+
+## Default CI/CD configuration file
 
 The default CI/CD configuration file and path for new projects can be set in the Admin Area
 of your GitLab instance (`.gitlab-ci.yml` if not set):
@@ -221,7 +247,6 @@ It is also possible to specify a [custom CI/CD configuration file for a specific
 
 ## Set CI/CD limits
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352175) in GitLab 14.10.
 > - **Maximum number of active pipelines per project** setting [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/368195) in GitLab 16.0.
 
 You can configure some [CI/CD limits](../../administration/instance_limits.md#cicd-limits)
@@ -269,46 +294,18 @@ so you can view job artifact pages directly:
 1. Expand **Continuous Integration and Deployment**.
 1. Deselect **Enable the external redirect page for job artifacts**.
 
-## Required pipeline configuration
+<!--- start_remove The following content will be removed on remove_date: '2024-08-01' -->
+
+## Required pipeline configuration (removed)
 
 DETAILS:
 **Tier:** Ultimate
 **Offering:** Self-managed
 
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/352316) from GitLab Premium to GitLab Ultimate in 15.0.
-> - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/389467) in GitLab 15.9.
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/389467) in GitLab 15.9 and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/389467) in 17.0.
+Use [compliance pipelines](../../user/group/compliance_pipelines.md) instead.
 
-WARNING:
-This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/389467) in GitLab 15.9
-and is planned for removal in 17.0. Use [compliance pipelines](../../user/group/compliance_pipelines.md)
-instead. This change is a breaking change.
-
-You can set a [CI/CD template](../../ci/examples/index.md#cicd-templates)
-as a required pipeline configuration for all projects on a GitLab instance. You can
-use a template from:
-
-- The default CI/CD templates.
-- A custom template stored in an [instance template repository](instance_template_repository.md).
-
-  NOTE:
-  When you use a configuration defined in an instance template repository,
-  nested [`include:`](../../ci/yaml/index.md#include) keywords
-  (including `include:file`, `include:local`, `include:remote`, and `include:template`)
-  [do not work](https://gitlab.com/gitlab-org/gitlab/-/issues/35345).
-
-The project CI/CD configuration merges into the required pipeline configuration when
-a pipeline runs. The merged configuration is the same as if the required pipeline configuration
-added the project configuration with the [`include` keyword](../../ci/yaml/index.md#include).
-To view a project's full merged configuration, [View full configuration](../../ci/pipeline_editor/index.md#view-full-configuration)
-in the pipeline editor.
-
-To select a CI/CD template for the required pipeline configuration:
-
-1. On the left sidebar, at the bottom, select **Admin Area**.
-1. Select **Settings > CI/CD**.
-1. Expand the **Required pipeline configuration** section.
-1. Select a CI/CD template from the dropdown list.
-1. Select **Save changes**.
+<!--- end_remove -->
 
 ## Package registry configuration
 
@@ -375,7 +372,6 @@ To set the maximum file size:
 
 ## Restrict runner registration by all users in an instance
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22225) in GitLab 14.1.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/368008) in GitLab 15.5.
 
 GitLab administrators can adjust who is allowed to register runners, by showing and hiding areas of the UI.

@@ -125,6 +125,6 @@
               icon: 'time-out'
           - elsif allow_retry
             - if job.playable? && !admin
-              = link_button_to nil, play_project_job_path(job.project, job, return_to: request.original_url), method: :post, title: _('Play'), icon: 'play'
+              = link_button_to nil, play_project_job_path(job.project, job, return_to: request.original_url), method: :post, title: _('Run'), icon: 'play'
             - elsif job.retryable?
               = link_button_to nil, retry_project_job_path(job.project, job, return_to: request.original_url), method: :post, title: _('Retry'), icon: 'retry'

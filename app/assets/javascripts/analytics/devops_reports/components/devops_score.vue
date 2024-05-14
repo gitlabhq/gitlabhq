@@ -72,7 +72,6 @@ export default {
       v-if="isEmpty"
       :title="__('Data is still calculating...')"
       :svg-path="noDataImagePath"
-      :svg-height="null"
     >
       <template #description>
         <p class="gl-mb-0">{{ __('It may be several days before you see feature usage data.') }}</p>

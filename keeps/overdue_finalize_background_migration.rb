@@ -3,6 +3,7 @@
 require_relative '../config/environment'
 require_relative '../lib/generators/post_deployment_migration/post_deployment_migration_generator'
 require_relative './helpers/postgres_ai'
+require_relative 'helpers/groups'
 require 'rubocop'
 
 module Keeps
@@ -23,66 +24,32 @@ module Keeps
   #   -k Keeps::OverdueFinalizeBackgroundMigration
   # ```
   class OverdueFinalizeBackgroundMigration < ::Gitlab::Housekeeper::Keep
-    CUTOFF_MILESTONE = '16.8' # Only finalize migrations added before this
-
-    def initialize; end
-
     def each_change
       each_batched_background_migration do |migration_yaml_file, migration|
         next unless before_cuttoff_milestone?(migration['milestone'])
 
         job_name = migration['migration_job_name']
-
         next if migration_finalized?(job_name)
 
         migration_record = fetch_migration_status(job_name)
-
         next unless migration_record
-
-        # Finalize the migration
-        change = ::Gitlab::Housekeeper::Change.new
-        change.title = "Finalize migration #{job_name}"
-
-        change.identifiers = [self.class.name.demodulize, job_name]
 
         last_migration_file = last_migration_for_job(job_name)
         next unless last_migration_file
 
-        # rubocop:disable Gitlab/DocUrl -- Not running inside rails application
-        change.description = <<~MARKDOWN
-        This migration was finished at `#{migration_record.finished_at || migration_record.updated_at}`, you can confirm
-        the status using our
-        [batched background migration chatops commands](https://docs.gitlab.com/ee/development/database/batched_background_migrations.html#monitor-the-progress-and-status-of-a-batched-background-migration).
-          To confirm it is finished you can run:
-
-          ```
-        /chatops run batched_background_migrations status #{migration_record.id}
-        ```
-
-        The last time this background migration was triggered was in [#{last_migration_file}](https://gitlab.com/gitlab-org/gitlab/-/blob/master/#{last_migration_file})
-
-          You can read more about the process for finalizing batched background migrations in
-        https://docs.gitlab.com/ee/development/database/batched_background_migrations.html .
-
-          As part of our process we want to ensure all batched background migrations have had at least one
-        [required stop](https://docs.gitlab.com/ee/development/database/required_stops.html)
-        to process the migration. Therefore we can finalize any batched background migration that was added before the
-        last required stop.
-        MARKDOWN
-        # rubocop:enable Gitlab/DocUrl
+        change = initialize_change(migration, migration_record, job_name, last_migration_file)
 
         queue_method_node = find_queue_method_node(last_migration_file)
 
-        # TODO: Can runner figure out what changed during this block?
         migration_name = truncate_migration_name("Finalize#{migration['migration_job_name']}")
         PostDeploymentMigration::PostDeploymentMigrationGenerator
           .source_root('generator_templates/post_deployment_migration/post_deployment_migration/')
-        generator = ::PostDeploymentMigration::PostDeploymentMigrationGenerator.new([migration_name], force: true)
+        generator = ::PostDeploymentMigration::PostDeploymentMigrationGenerator.new([migration_name])
         migration_file = generator.invoke_all.first
         change.changed_files = [migration_file]
 
         add_ensure_call_to_migration(migration_file, queue_method_node, job_name, migration_record)
-        ::Gitlab::Housekeeper::Shell.execute('rubocop', '-a', migration_file)
+        ::Gitlab::Housekeeper::Shell.rubocop_autocorrect(migration_file)
 
         digest = Digest::SHA256.hexdigest(generator.migration_number)
         digest_file = Pathname.new('db').join('schema_migrations', generator.migration_number.to_s).to_s
@@ -95,6 +62,47 @@ module Keeps
 
         yield(change)
       end
+    end
+
+    def initialize_change(migration, migration_record, job_name, last_migration_file)
+      # Finalize the migration
+      change = ::Gitlab::Housekeeper::Change.new
+      change.title = "Finalize migration #{job_name}"
+
+      change.identifiers = [self.class.name.demodulize, job_name]
+
+      # rubocop:disable Gitlab/DocUrl -- Not running inside rails application
+      change.description = <<~MARKDOWN
+      This migration was finished at `#{migration_record.finished_at || migration_record.updated_at}`, you can confirm
+      the status using our
+      [batched background migration chatops commands](https://docs.gitlab.com/ee/development/database/batched_background_migrations.html#monitor-the-progress-and-status-of-a-batched-background-migration).
+        To confirm it is finished you can run:
+
+        ```
+      /chatops run batched_background_migrations status #{migration_record.id}
+      ```
+
+      The last time this background migration was triggered was in [#{last_migration_file}](https://gitlab.com/gitlab-org/gitlab/-/blob/master/#{last_migration_file})
+
+        You can read more about the process for finalizing batched background migrations in
+      https://docs.gitlab.com/ee/development/database/batched_background_migrations.html .
+
+        As part of our process we want to ensure all batched background migrations have had at least one
+      [required stop](https://docs.gitlab.com/ee/development/database/required_stops.html)
+      to process the migration. Therefore we can finalize any batched background migration that was added before the
+      last required stop.
+      MARKDOWN
+      # rubocop:enable Gitlab/DocUrl
+
+      feature_category = migration['feature_category']
+
+      change.labels = groups_helper.labels_for_feature_category(feature_category) + [
+        'maintenance::removal'
+      ]
+
+      change.reviewers = groups_helper.pick_reviewer_for_feature_category(feature_category, change.identifiers)
+
+      change
     end
 
     def truncate_migration_name(migration_name)
@@ -208,7 +216,7 @@ module Keeps
     end
 
     def before_cuttoff_milestone?(milestone)
-      Gem::Version.new(milestone) < Gem::Version.new(CUTOFF_MILESTONE)
+      Gem::Version.new(milestone) <= Gem::Version.new(::Gitlab::Database::MIN_SCHEMA_GITLAB_VERSION)
     end
 
     def each_batched_background_migration
@@ -219,6 +227,10 @@ module Keeps
 
     def all_batched_background_migration_files
       Dir.glob("db/docs/batched_background_migrations/*.yml")
+    end
+
+    def groups_helper
+      @groups_helper ||= ::Keeps::Helpers::Groups.new
     end
   end
 end

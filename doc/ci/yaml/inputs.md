@@ -8,10 +8,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Status:** Beta
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391331) in GitLab 15.11 as a Beta feature.
-> - Made generally available in GitLab 16.6.
 
 Use inputs to increase the flexibility of CI/CD configuration files that are designed
 to be reused.
@@ -64,7 +64,7 @@ Additionally, use:
 - [`spec:inputs:regex`](index.md#specinputsoptions) to specify a regular expression
   that the input must match.
 - [`spec:inputs:type`](index.md#specinputstype) to force a specific input type, which
-  can be `string` (default when not specified), `number`, or `boolean`.
+  can be `string` (default when not specified), `array`, `number`, or `boolean`.
 
 ### Define inputs with multiple parameters
 
@@ -109,7 +109,78 @@ In this example:
 - `version` is a mandatory string input that must match the specified regular expression.
 - `export_results` is an optional boolean input. When not specified, it defaults to `true`.
 
-### Multi-line input string values
+### Input types
+
+You can specify that an input must use a specific type with the optional `spec:inputs:type` keyword.
+
+The input types are:
+
+- [`array`](#array-type)
+- `boolean`
+- `number`
+- `string` (default when not specified)
+
+When an input replaces an entire YAML value in the CI/CD configuration, it is interpolated
+into the configuration as its specified type. For example:
+
+```yaml
+spec:
+  inputs:
+    array_input:
+      type: array
+    boolean_input:
+      type: boolean
+    number_input:
+      type: number
+    string_input:
+      type: string
+---
+
+test_job:
+  allow_failure: $[[ inputs.boolean_input ]]
+  needs: $[[ inputs.array_input ]]
+  parallel: $[[ inputs.number_input ]]
+  script: $[[ inputs.string_input ]]
+```
+
+When an input is inserted into a YAML value as part of a larger string, the input
+is always interpolated as a string. For example:
+
+```yaml
+spec:
+  inputs:
+    port:
+      type: number
+---
+
+test_job:
+  script: curl "https://gitlab.com:$[[ inputs.port ]]"
+```
+
+#### Array type
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/407176) in GitLab 16.11.
+
+The content of the items in an array type can be any valid YAML map, sequence, or scalar. More complex YAML features
+like [`!reference`](yaml_optimization.md#reference-tags) cannot be used.
+
+```yaml
+spec:
+  inputs:
+    rules-config:
+      type: array
+      default:
+        - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+          when: manual
+        - if: $CI_PIPELINE_SOURCE == "schedule"
+---
+
+test_job:
+  rules: $[[ inputs.rules-config ]]
+  script: ls
+```
+
+#### Multi-line input string values
 
 [Inputs](../yaml/inputs.md) support different value types. You can pass multi-string values using the following format:
 
@@ -172,6 +243,25 @@ include:
       stage: my-stage
 ```
 
+### Use `inputs` with child pipelines
+
+You can pass inputs to [child pipelines](../pipelines/downstream_pipelines.md),
+if the child pipeline's configuration file uses [`spec:inputs`](#define-input-parameters-with-specinputs).
+For example:
+
+```yaml
+trigger-job:
+  trigger:
+    strategy: depend
+    include:
+      - project: my-group/my-project
+        file: ".gitlab-ci.yml"
+        inputs:
+          job-name: "defined"
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+```
+
 ### Include the same file multiple times
 
 You can include the same file multiple times, with different inputs. However, if multiple jobs
@@ -184,11 +274,11 @@ For example, including the same configuration multiple times with different inpu
 include:
   - local: path/to/my-super-linter.yml
     inputs:
-      type: docs
+      linter: docs
       lint-path: "doc/"
   - local: path/to/my-super-linter.yml
     inputs:
-      type: yaml
+      linter: yaml
       lint-path: "data/yaml/"
 ```
 
@@ -198,11 +288,11 @@ each time it is included:
 ```yaml
 spec:
   inputs:
-    type:
+    linter:
     lint-path:
 ---
-"run-$[[ inputs.type ]]-lint":
-  script: ./lint --$[[ inputs.type ]] --path=$[[ inputs.lint-path ]]
+"run-$[[ inputs.linter ]]-lint":
+  script: ./lint --$[[ inputs.linter ]] --path=$[[ inputs.lint-path ]]
 ```
 
 ## Specify functions to manipulate input values
@@ -292,7 +382,7 @@ Assuming the value of `inputs.test` is `0123456789`, then the output would be `3
 
 ### YAML syntax errors when using `inputs`
 
-[CI/CD variable expressions](../jobs/job_control.md#cicd-variable-expressions)
+[CI/CD variable expressions](../jobs/job_rules.md#cicd-variable-expressions)
 in `rules:if` expect a comparison of a CI/CD variable with a string, otherwise
 [a variety of syntax errors could be returned](../jobs/job_troubleshooting.md#this-gitlab-ci-configuration-is-invalid-for-variable-expressions).
 
@@ -332,7 +422,7 @@ spec:
 $[[ inputs.environment | expand_vars ]] job:
   script: echo
   rules:
-    - if: '"$[[ inputs.environment1 | expand_vars ]]" == "production"'
+    - if: '"$[[ inputs.environment | expand_vars ]]" == "production"'
 ```
 
 In this example, quoting the input block and also the entire variable expression

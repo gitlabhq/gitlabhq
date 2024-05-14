@@ -26,6 +26,7 @@ def webmock_allowed_hosts
 
     if ViteRuby.env['VITE_ENABLED'] == "true"
       hosts << ViteRuby.instance.config.host
+      hosts << ViteRuby.env['VITE_HMR_HOST']
     end
   end.compact.uniq
 end

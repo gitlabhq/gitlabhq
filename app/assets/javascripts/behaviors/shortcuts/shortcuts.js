@@ -1,15 +1,18 @@
 import $ from 'jquery';
 import { flatten } from 'lodash';
 import Vue from 'vue';
+import { InternalEvents } from '~/tracking';
 import { Mousetrap, addStopCallback } from '~/lib/mousetrap';
 import { getCookie, setCookie, parseBoolean } from '~/lib/utils/common_utils';
-
+import { waitForElement } from '~/lib/utils/dom_utils';
 import findAndFollowLink from '~/lib/utils/navigation_utility';
-import { refreshCurrentPage, visitUrl } from '~/lib/utils/url_utility';
+import { refreshCurrentPage } from '~/lib/utils/url_utility';
+import { helpCenterState } from '~/super_sidebar/constants';
 import {
   keysFor,
   TOGGLE_KEYBOARD_SHORTCUTS_DIALOG,
   START_SEARCH,
+  START_SEARCH_PROJECT_FILE,
   FOCUS_FILTER_BAR,
   TOGGLE_PERFORMANCE_BAR,
   HIDE_APPEARING_CONTENT,
@@ -21,9 +24,9 @@ import {
   GO_TO_YOUR_MERGE_REQUESTS,
   GO_TO_YOUR_PROJECTS,
   GO_TO_YOUR_GROUPS,
+  TOGGLE_DUO_CHAT,
   GO_TO_MILESTONE_LIST,
   GO_TO_YOUR_SNIPPETS,
-  GO_TO_PROJECT_FIND_FILE,
   GO_TO_YOUR_REVIEW_REQUESTS,
 } from './keybindings';
 import { disableShortcuts, shouldDisableShortcuts } from './shortcuts_toggle';
@@ -75,11 +78,13 @@ export default class Shortcuts {
 
     this.addAll([
       [TOGGLE_KEYBOARD_SHORTCUTS_DIALOG, this.onToggleHelp],
+      [START_SEARCH_PROJECT_FILE, Shortcuts.focusSearchFile],
       [START_SEARCH, Shortcuts.focusSearch],
       [FOCUS_FILTER_BAR, this.focusFilter.bind(this)],
       [TOGGLE_PERFORMANCE_BAR, Shortcuts.onTogglePerfBar],
       [HIDE_APPEARING_CONTENT, Shortcuts.hideAppearingContent],
       [TOGGLE_CANARY, Shortcuts.onToggleCanary],
+      [TOGGLE_DUO_CHAT, Shortcuts.onToggleDuoChat],
 
       [GO_TO_YOUR_TODO_LIST, () => findAndFollowLink('.shortcuts-todos')],
       [GO_TO_ACTIVITY_FEED, () => findAndFollowLink('.dashboard-shortcuts-activity')],
@@ -97,13 +102,6 @@ export default class Shortcuts {
     addStopCallback((e, element, combo) =>
       keysFor(TOGGLE_MARKDOWN_PREVIEW).includes(combo) ? false : undefined,
     );
-
-    const findFileURL = document.body.dataset.findFile;
-    if (typeof findFileURL !== 'undefined' && findFileURL !== null) {
-      this.add(GO_TO_PROJECT_FIND_FILE, () => {
-        visitUrl(findFileURL);
-      });
-    }
 
     $(document).on('click', '.js-shortcuts-modal-trigger', this.onToggleHelp);
 
@@ -224,6 +222,11 @@ export default class Shortcuts {
     }
   }
 
+  static onToggleDuoChat(e) {
+    e.preventDefault();
+    helpCenterState.showTanukiBotChatDrawer = !helpCenterState.showTanukiBotChatDrawer;
+  }
+
   static onTogglePerfBar(e) {
     e.preventDefault();
     const performanceBarCookieName = 'perf_bar_enabled';
@@ -257,10 +260,22 @@ export default class Shortcuts {
 
   static focusSearch(e) {
     document.querySelector('#super-sidebar-search')?.click();
+    InternalEvents.trackEvent('press_keyboard_shortcut_to_activate_command_palette');
 
     if (e.preventDefault) {
       e.preventDefault();
     }
+  }
+
+  static async focusSearchFile(e) {
+    e?.preventDefault();
+    document.querySelector('#super-sidebar-search')?.click();
+
+    const searchInput = await waitForElement('#super-sidebar-search-modal #search');
+    if (!searchInput) return;
+
+    searchInput.value = '~';
+    searchInput.dispatchEvent(new Event('input'));
   }
 
   static hideAppearingContent(e) {

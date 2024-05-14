@@ -8,7 +8,7 @@ info: For assistance with this tutorial, see https://handbook.gitlab.com/handboo
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS
+**Offering:** GitLab.com
 
 If you created a project under a [personal namespace](../../user/namespace/index.md),
 you can perform common tasks, like managing issue and merge requests,

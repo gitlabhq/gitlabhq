@@ -49,7 +49,7 @@ module MarkdownMatchers
     end
   end
 
-  # TableOfContentsFilter
+  # TableOfContentsLegacyFilter
   matcher :create_header_links do
     set_default_markdown_messages
 
@@ -57,6 +57,16 @@ module MarkdownMatchers
       expect(actual).to have_selector('h1 a#user-content-gitlab-markdown')
       expect(actual).to have_selector('h2 a#user-content-markdown')
       expect(actual).to have_selector('h3 a#user-content-autolinkfilter')
+    end
+  end
+
+  # TableOfContentsTagFilter
+  matcher :create_toc do
+    set_default_markdown_messages
+
+    match do |actual|
+      expect(actual).to have_selector('li > a[href="#gitlab-markdown"]')
+      expect(actual).to have_selector('li > a[href="#tableofcontentstagfilter"]')
     end
   end
 

@@ -5,7 +5,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import MergeChecksComponent from '~/vue_merge_request_widget/components/merge_checks.vue';
 import mergeChecksQuery from '~/vue_merge_request_widget/queries/merge_checks.query.graphql';
-import StatusIcon from '~/vue_merge_request_widget/components/extensions/status_icon.vue';
+import StatusIcon from '~/vue_merge_request_widget/components/widget/status_icon.vue';
 import StateContainer from '~/vue_merge_request_widget/components/state_container.vue';
 import { COMPONENTS } from '~/vue_merge_request_widget/components/checks/constants';
 import conflictsStateQuery from '~/vue_merge_request_widget/queries/states/conflicts.query.graphql';
@@ -115,6 +115,7 @@ describe('Merge request merge checks component', () => {
     mergeabilityChecks                                                                               | text
     ${[{ identifier: 'discussions', status: 'FAILED' }]}                                             | ${'Merge blocked: 1 check failed'}
     ${[{ identifier: 'discussions', status: 'FAILED' }, { identifier: 'rebase', status: 'FAILED' }]} | ${'Merge blocked: 2 checks failed'}
+    ${[{ identifier: 'discussions', status: 'WARNING' }]}                                            | ${'Merge with caution: Override added'}
   `('renders $text for $mergeabilityChecks', async ({ mergeabilityChecks, text }) => {
     mountComponent({ mergeabilityChecks });
 
@@ -124,9 +125,10 @@ describe('Merge request merge checks component', () => {
   });
 
   it.each`
-    status      | statusIcon
-    ${'FAILED'} | ${'failed'}
-    ${'PASSED'} | ${'success'}
+    status       | statusIcon
+    ${'FAILED'}  | ${'failed'}
+    ${'PASSED'}  | ${'success'}
+    ${'WARNING'} | ${'warning'}
   `('renders $statusIcon for $status result', async ({ status, statusIcon }) => {
     mountComponent({ mergeabilityChecks: [{ status, identifier: 'discussions' }] });
 
@@ -140,7 +142,7 @@ describe('Merge request merge checks component', () => {
     ${'conflict'}                 | ${'conflict'}
     ${'discussions_not_resolved'} | ${'discussions_not_resolved'}
     ${'need_rebase'}              | ${'need_rebase'}
-    ${'policies_denied'}          | ${'default'}
+    ${'requested_changes'}        | ${'requested_changes'}
   `('renders $identifier merge check', async ({ identifier, componentName }) => {
     shallowMountComponent({ mergeabilityChecks: [{ status: 'failed', identifier }] });
 
@@ -151,6 +153,17 @@ describe('Merge request merge checks component', () => {
     const { default: component } = await COMPONENTS[componentName]();
 
     expect(wrapper.findComponent(component).exists()).toBe(true);
+  });
+
+  it('renders ready to merge caution message when canMerge is false', async () => {
+    mountComponent({
+      canMerge: false,
+      mergeabilityChecks: [{ status: 'WARNING', identifier: 'discussions' }],
+    });
+
+    await waitForPromises();
+
+    expect(wrapper.text()).toBe('Ready to be merged with caution: Override added');
   });
 
   it('expands collapsed area', async () => {

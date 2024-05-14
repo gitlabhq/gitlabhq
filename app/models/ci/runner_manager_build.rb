@@ -7,6 +7,7 @@ module Ci
     self.table_name = :p_ci_runner_machine_builds
     self.primary_key = :build_id
 
+    query_constraints :build_id, :partition_id
     partitionable scope: :build, partitioned: true
 
     alias_attribute :runner_manager_id, :runner_machine_id

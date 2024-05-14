@@ -13,6 +13,7 @@ import { getInstrumentationLink } from './apollo/instrumentation_link';
 import { getSuppressNetworkErrorsDuringNavigationLink } from './apollo/suppress_network_errors_during_navigation_link';
 import { getPersistLink } from './apollo/persist_link';
 import { persistenceMapper } from './apollo/persistence_mapper';
+import { correlationIdLink } from './apollo/correlation_id_link';
 
 export const fetchPolicies = {
   CACHE_FIRST: 'cache-first',
@@ -69,6 +70,15 @@ export const typePolicies = {
     merge: true,
   },
   ProjectValueStreamAnalyticsFlowMetrics: {
+    merge: true,
+  },
+  ScanExecutionPolicy: {
+    keyFields: ['name'],
+  },
+  ApprovalPolicy: {
+    keyFields: ['name'],
+  },
+  ComplianceFrameworkConnection: {
     merge: true,
   },
 };
@@ -240,6 +250,7 @@ function createApolloClient(resolvers = {}, config = {}) {
       [
         getSuppressNetworkErrorsDuringNavigationLink(),
         getInstrumentationLink(),
+        correlationIdLink,
         requestCounterLink,
         performanceBarLink,
         new StartupJSLink(),

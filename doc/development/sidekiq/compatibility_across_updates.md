@@ -172,6 +172,16 @@ To remove a worker class, follow these steps over two minor releases:
      # Always use `disable_ddl_transaction!` while using the `sidekiq_remove_jobs` method, as we had multiple production incidents due to `idle-in-transaction` timeout.
      disable_ddl_transaction!
      def up
+       # If the job has been scheduled via `sidekiq-cron`, we must also remove
+       # it from the scheduled worker set using the key used to define the cron
+       # schedule in config/initializers/1_settings.rb.
+       job_to_remove = Sidekiq::Cron::Job.find('my_deprecated_worker')
+       # The job may be removed entirely:
+       job_to_remove.destroy if job_to_remove
+       # The job may be disabled:
+       job_to_remove.disable! if job_to_remove
+
+       # Removes scheduled instances from Sidekiq queues
        sidekiq_remove_jobs(job_klasses: DEPRECATED_JOB_CLASSES)
      end
 
@@ -208,3 +218,17 @@ end
 You must rename the queue in a post-deployment migration not in a standard
 migration. Otherwise, it runs too early, before all the workers that
 schedule these jobs have stopped running. See also [other examples](../database/post_deployment_migrations.md#use-cases).
+
+## Renaming worker classes
+
+We should treat this similar to adding a new worker. That means we only start scheduling the newly-named worker after the Sidekiq deployment finishes.
+
+   To ensure backward and forward compatibility between consecutive versions
+of the application, follow these steps over three minor releases:
+
+1. Create the newly named worker, and have the old worker call the new worker's `#perform` method. Inroduce a feature flag to control when we start scheduling the new worker. (Release M)
+
+    Any old worker jobs that are still in the queue will delegate to the new worker. When this version is deployed, it is no longer relevant which version of the job is scheduled or which Sidekiq handles it, an old-Sidekiq will use the old worker's full implementation, a new-Sidekiq will delegate to the new worker.
+
+1. Enable the feature flag for GitLab.com, and after that prepare an MR to enable it by default. (Release M+1)
+1. Remove the old worker class and the feature flag. (Release M+2)

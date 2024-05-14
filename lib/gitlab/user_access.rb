@@ -121,7 +121,7 @@ module Gitlab
         ref, user,
         project: project,
         action: action,
-        protected_refs: project.protected_branches)
+        protected_refs: project.all_protected_branches)
     end
 
     def protected_tag_accessible_to?(ref, action:)

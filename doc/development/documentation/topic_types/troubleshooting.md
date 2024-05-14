@@ -68,7 +68,7 @@ For more guidance on solution types, see [workaround](../../documentation/styleg
 For the title of a **Troubleshooting reference** topic:
 
 - Consider including at least a partial error message.
-- Use fewer than 70 characters.
+  If the message is more than 70 characters, include the text that's most important, or describe the message instead.
 - Do not use links in the title.
 
 If you do not put the full error in the title, include it in the body text.

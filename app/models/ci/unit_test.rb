@@ -11,7 +11,7 @@ module Ci
 
     belongs_to :project
 
-    scope :by_project_and_keys, -> (project, keys) { where(project_id: project.id, key_hash: keys) }
+    scope :by_project_and_keys, ->(project, keys) { where(project_id: project.id, key_hash: keys) }
     scope :deletable, -> { where('NOT EXISTS (?)', Ci::UnitTestFailure.select(1).where("#{Ci::UnitTestFailure.table_name}.unit_test_id = #{table_name}.id")) }
 
     class << self

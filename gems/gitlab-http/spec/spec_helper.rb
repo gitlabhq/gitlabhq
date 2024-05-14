@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'rails'
 require 'rspec/mocks'
 
 require 'gitlab/rspec/all'

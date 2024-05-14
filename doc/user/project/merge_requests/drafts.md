@@ -2,13 +2,14 @@
 stage: Create
 group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: "Prevent an incomplete merge request from merging until it's ready by setting it as a draft."
 ---
 
 # Draft merge requests
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 If a merge request isn't ready to merge, you can block it from merging until you
 [mark it as ready](#mark-merge-requests-as-ready). Merge requests marked as **Draft**
@@ -18,13 +19,13 @@ cannot merge until the **Draft** flag is removed, even if all other merge criter
 
 ## Mark merge requests as drafts
 
-> - [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/228685) all support for the term **WIP** in GitLab 14.8.
 > - `/draft` quick action as a toggle [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92654) in GitLab 15.4.
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108073) the draft status to use a checkbox in GitLab 15.8.
 
 You can flag a merge request as a draft in several ways:
 
-- **Viewing a merge request**: In the upper-right corner of the merge request, select **Mark as draft**.
+- **Viewing a merge request**: In the upper-right corner of the merge request,
+  select **Merge request actions** (**{ellipsis_v}**), then **Mark as draft**.
 - **Creating or editing a merge request**: Add `[Draft]`, `Draft:` or `(Draft)` to
   the beginning of the merge request's title, or select **Mark as draft**
   below the **Title** field.

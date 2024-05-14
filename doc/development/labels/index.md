@@ -75,7 +75,7 @@ The Stage labels are used to generate the [direction pages](https://about.gitlab
 
 ## Group labels
 
-Group labels specify which [groups](https://about.gitlab.com/company/team/structure/#product-groups) the issue belongs to.
+Group labels specify which [groups](https://handbook.gitlab.com/handbook/company/structure/#product-groups) the issue belongs to.
 
 It's highly recommended to add a group label, as it's used by our triage
 automation to
@@ -220,7 +220,7 @@ any issue.
 
 ## Specialization labels
 
-These labels narrow the [specialization](https://about.gitlab.com/company/team/structure/#specialist) on a unit of work.
+These labels narrow the [specialization](https://handbook.gitlab.com/handbook/company/structure/#specialist) on a unit of work.
 
 - `~"frontend"`
 - `~"backend"`
@@ -252,7 +252,7 @@ We have the following priority labels:
 - `~"priority::3"`
 - `~"priority::4"`
 
-Refer to the issue triage [priority label](https://handbook.gitlab.com/handbook/engineering/quality/issue-triage/#priority) section in our handbook to see how it's used.
+Refer to the issue triage [priority label](https://handbook.gitlab.com/handbook/engineering/infrastructure/engineering-productivity/issue-triage/#priority) section in our handbook to see how it's used.
 
 ## Severity labels
 
@@ -263,7 +263,7 @@ We have the following severity labels:
 - `~"severity::3"`
 - `~"severity::4"`
 
-Refer to the issue triage [severity label](https://handbook.gitlab.com/handbook/engineering/quality/issue-triage/#severity) section in our handbook to see how it's used.
+Refer to the issue triage [severity label](https://handbook.gitlab.com/handbook/engineering/infrastructure/engineering-productivity/issue-triage/#severity) section in our handbook to see how it's used.
 
 ## Label for community contributors
 
@@ -302,7 +302,7 @@ If your MR for the `~"Community Challenge"` issue gets merged, you will also hav
 GitLab merchandise.
 
 If you've decided that you would like to work on an issue, @-mention
-the [appropriate product manager](https://about.gitlab.com/handbook/product/#who-to-talk-to-for-what)
+the [appropriate product manager](https://handbook.gitlab.com/handbook/product/how-to-engage/)
 as soon as possible. The product manager will then pull in appropriate GitLab team
 members to further discuss scope, design, and technical considerations. This will
 ensure that your contribution is aligned with the GitLab product and minimize
@@ -325,18 +325,18 @@ features from GitLab EE to GitLab CE, related issues would be labeled with
 A recent example of this was the issue for
 [bringing the time tracking API to GitLab CE](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/25517#note_20019084).
 
-## Technical and UX debt
+## Technical debt and Deferred UX
 
 In order to track things that can be improved in the GitLab codebase,
 we use the `~"technical debt"` label in the [GitLab issue tracker](https://gitlab.com/gitlab-org/gitlab/-/issues).
-We use the `~"UX debt"` label when we choose to deviate from the MVC, in a way that harms the user experience.
+We use the `~"Deferred UX"` label when we choose to deviate from the MVC, in a way that harms the user experience.
 
 These labels should be added to issues that describe things that can be improved,
 shortcuts that have been taken, features that need additional attention, and all
 other things that have been left behind due to high velocity of development.
 For example, code that needs refactoring should use the `~"technical debt"` label,
 something that didn't ship according to our Design System guidelines should
-use the `~"UX debt"` label.
+use the `~"Deferred UX"` label.
 
 Everyone can create an issue, though you may need to ask for adding a specific
 label, if you do not have permissions to do it by yourself. Additional labels
@@ -348,4 +348,4 @@ that describe a new feature to be introduced in GitLab, and should be scheduled
 for a release by the appropriate person.
 
 Make sure to mention the merge request that the `~"technical debt"` issue or
-`~"UX debt"` issue is associated with in the description of the issue.
+`~"Deferred UX"` issue is associated with in the description of the issue.

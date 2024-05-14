@@ -19,13 +19,20 @@
 - if !password_authentication_enabled_for_web? && !ldap_sign_in_enabled? && !(omniauth_enabled? && devise_mapping.omniauthable?)
   %div
     = _('No authentication methods configured.')
+
 - if Gitlab::CurrentSettings.current_application_settings.terms
-  %p.gl-px-5
+  .gl-mt-3
     = html_escape(s_("SignUp|By signing in you accept the %{link_start}Terms of Use and acknowledge the Privacy Statement and Cookie Policy%{link_end}.")) % { link_start: "<a href='#{terms_path}' target='_blank' rel='noreferrer noopener'>".html_safe,
     link_end: '</a>'.html_safe }
+
 - if allow_signup?
-  %p.gl-mt-3.gl-text-center
+  .gl-mt-3.gl-text-center
     = _("Don't have an account yet?")
-    = link_to _("Register now"), new_registration_path(:user, invite_email: @invite_email), data: { testid: 'register-link' }
+    = link_to _("Register now"),
+      new_registration_path(:user, invite_email: @invite_email),
+      data: { testid: 'register-link',
+        track_action: 'click_register_from_sign_in_page',
+        track_label: onboarding_status_tracking_label }
+
 - if omniauth_enabled? && devise_mapping.omniauthable? && button_based_providers_enabled?
   = render 'devise/shared/omniauth_box'

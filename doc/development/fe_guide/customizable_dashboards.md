@@ -102,6 +102,17 @@ To add a new visualization render type:
 1. Add your component to the list of conditional imports in [`panel_base.vue`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/assets/javascripts/vue_shared/components/customizable_dashboard/panels_base.vue#L13).
 1. Add your component to the schema's list of `AnalyticsVisualization` types in [`analytics_visualizations.json`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/validators/json_schemas/analytics_visualization.json).
 
+##### Migrating existing components to visualizations
+
+You can migrate existing components to dashboard visualizations. To do this,
+wrap your existing component in a new visualization that provides the component with the
+required context and data. See [`dora_performers_score.vue`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/assets/javascripts/analytics/analytics_dashboards/components/visualizations/dora_performers_score.vue) as an example.
+
+As an upgrade path, your component may fetch its own data internally.
+This method is fine for the first few iterations, but eventually you should migrate
+your visualization to use the standard and shared analytics data sources method.
+See [`value_stream.js`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/assets/javascripts/analytics/analytics_dashboards/data_sources/value_stream.js) as an example.
+
 #### Adding a new visualization data source
 
 To add a new data source:

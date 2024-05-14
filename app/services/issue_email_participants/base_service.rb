@@ -4,29 +4,33 @@ module IssueEmailParticipants
   class BaseService < ::BaseProjectService
     MAX_NUMBER_OF_EMAILS = 6
 
-    attr_reader :target, :emails
+    attr_reader :target, :emails, :options
 
-    def initialize(target:, current_user:, emails:)
+    def initialize(target:, current_user:, emails:, options: {})
       super(project: target.project, current_user: current_user)
 
       @target = target
       @emails = emails
+      @options = options
     end
 
     private
 
-    def response_from_guard_checks
-      return error_feature_flag unless Feature.enabled?(:issue_email_participants, target.project)
-      return error_underprivileged unless current_user.can?(:"admin_#{target.to_ability_name}", target)
+    def add_system_note(emails, user: nil)
+      return unless emails.present?
 
-      nil
-    end
-
-    def add_system_note(emails)
       message = format(system_note_text, emails: emails.to_sentence)
-      ::SystemNoteService.email_participants(target, project, current_user, message)
+      ::SystemNoteService.email_participants(target, project, (user || current_user), message)
 
       message
+    end
+
+    def user_privileged?
+      current_user&.can?(:"admin_#{target.to_ability_name}", target) || skip_permission_check?
+    end
+
+    def skip_permission_check?
+      options[:skip_permission_check] == true
     end
 
     def error(message)

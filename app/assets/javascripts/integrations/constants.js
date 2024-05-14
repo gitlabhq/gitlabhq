@@ -31,9 +31,12 @@ export const integrationFormSections = {
   CONNECTION: 'connection',
   JIRA_TRIGGER: 'jira_trigger',
   JIRA_ISSUES: 'jira_issues',
+  JIRA_ISSUE_CREATION: 'jira_issue_creation',
   TRIGGER: 'trigger',
   APPLE_APP_STORE: 'apple_app_store',
   GOOGLE_PLAY: 'google_play',
+  GOOGLE_ARTIFACT_MANAGEMENT: 'google_artifact_management',
+  GOOGLE_CLOUD_IAM: 'google_cloud_iam',
 };
 
 export const integrationFormSectionComponents = {
@@ -41,9 +44,13 @@ export const integrationFormSectionComponents = {
   [integrationFormSections.CONNECTION]: 'IntegrationSectionConnection',
   [integrationFormSections.JIRA_TRIGGER]: 'IntegrationSectionJiraTrigger',
   [integrationFormSections.JIRA_ISSUES]: 'IntegrationSectionJiraIssues',
+  [integrationFormSections.JIRA_ISSUE_CREATION]: 'IntegrationSectionJiraIssueCreation',
   [integrationFormSections.TRIGGER]: 'IntegrationSectionTrigger',
   [integrationFormSections.APPLE_APP_STORE]: 'IntegrationSectionAppleAppStore',
   [integrationFormSections.GOOGLE_PLAY]: 'IntegrationSectionGooglePlay',
+  [integrationFormSections.GOOGLE_ARTIFACT_MANAGEMENT]:
+    'IntegrationSectionGoogleArtifactManagement',
+  [integrationFormSections.GOOGLE_CLOUD_IAM]: 'IntegrationSectionGoogleCloudIAM',
 };
 
 export const integrationTriggerEvents = {
@@ -118,6 +125,10 @@ export const placeholderForType = {
   [INTEGRATION_TYPE_MATTERMOST]: __('my-channel'),
 };
 
+export const INTEGRATION_FORM_TYPE_GOOGLE_CLOUD_ARTIFACT_REGISTRY =
+  'google_cloud_platform_artifact_registry';
+export const INTEGRATION_FORM_TYPE_GOOGLE_CLOUD_IAM =
+  'google_cloud_platform_workload_identity_federation';
 export const INTEGRATION_FORM_TYPE_JIRA = 'jira';
 export const INTEGRATION_FORM_TYPE_SLACK = 'gitlab_slack_application';
 

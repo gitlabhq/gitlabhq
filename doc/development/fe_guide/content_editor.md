@@ -14,7 +14,7 @@ that target other engines, like static site generators.
 We use [Tiptap 2.0](https://tiptap.dev/) and [ProseMirror](https://prosemirror.net/)
 to build the rich text editor. These frameworks provide a level of abstraction on top of
 the native
-[`contenteditable`](https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/Editable_content) web technology.
+[`contenteditable`](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/contenteditable) web technology.
 
 ## Usage guide
 
@@ -143,7 +143,7 @@ The rich text editor is composed of three main layers:
 ### Editing tools UI
 
 The editing tools UI are Vue components that display the editor's state and
-dispatch [commands](https://tiptap.dev/api/commands/#commands) to mutate it.
+dispatch [commands](https://tiptap.dev/docs/editor/api/commands) to mutate it.
 They are located in the `~/content_editor/components` directory. For example,
 the **Bold** toolbar button displays the editor's state by becoming active when
 the user selects bold text. This button also dispatches the `toggleBold` command
@@ -159,7 +159,7 @@ sequenceDiagram
 
 #### Node views
 
-We implement [node views](https://tiptap.dev/guide/node-views/vue/#node-views-with-vue)
+We implement [node views](https://tiptap.dev/docs/editor/guide/node-views/vue)
 to provide inline editing tools for some content types, like tables and images. Node views
 allow separating the presentation of a content type from its
 [model](https://prosemirror.net/docs/guide/#doc.data_structures). Using a Vue component in
@@ -209,7 +209,7 @@ the following events:
 - `blur`
 - `error`.
 
-Learn more about these events in [the Tiptap event guide](https://tiptap.dev/api/events/).
+Learn more about these events in [the Tiptap event guide](https://tiptap.dev/docs/editor/api/events).
 
 ```html
 <script>
@@ -246,7 +246,7 @@ export default {
 
 ### The Tiptap editor object
 
-The Tiptap [Editor](https://tiptap.dev/api/editor) class manages
+The Tiptap [Editor](https://tiptap.dev/docs/editor/api/editor) class manages
 the editor's state and encapsulates all the business logic that powers
 the rich text editor. The rich text editor constructs a new instance of this class and
 provides all the necessary extensions to support
@@ -255,9 +255,9 @@ provides all the necessary extensions to support
 #### Implement new extensions
 
 Extensions are the building blocks of the rich text editor. You can learn how to implement
-new ones by reading [the Tiptap guide](https://tiptap.dev/guide/custom-extensions).
-We recommend checking the list of built-in [nodes](https://tiptap.dev/api/nodes) and
-[marks](https://tiptap.dev/api/marks) before implementing a new extension
+new ones by reading [the Tiptap guide](https://tiptap.dev/docs/editor/guide/custom-extensions).
+We recommend checking the list of built-in [nodes](https://tiptap.dev/docs/editor/api/nodes) and
+[marks](https://tiptap.dev/docs/editor/api/marks) before implementing a new extension
 from scratch.
 
 Store the rich text editor extensions in the `~/content_editor/extensions` directory.
@@ -327,8 +327,8 @@ sequenceDiagram
 ```
 
 Deserializers live in the extension modules. Read Tiptap documentation about
-[`parseHTML`](https://tiptap.dev/guide/custom-extensions#parse-html) and
-[`addAttributes`](https://tiptap.dev/guide/custom-extensions#attributes) to
+[`parseHTML`](https://tiptap.dev/docs/editor/guide/custom-extensions#parse-html) and
+[`addAttributes`](https://tiptap.dev/docs/editor/guide/custom-extensions#attributes) to
 learn how to implement them. The Tiptap API is a wrapper around ProseMirror's
 [schema spec API](https://prosemirror.net/docs/ref/#model.SchemaSpec).
 

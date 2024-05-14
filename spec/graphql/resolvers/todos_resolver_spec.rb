@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Resolvers::TodosResolver do
+RSpec.describe Resolvers::TodosResolver, feature_category: :team_planning do
   include GraphqlHelpers
   include DesignManagementTestHelpers
 
@@ -43,7 +43,7 @@ RSpec.describe Resolvers::TodosResolver do
 
     context 'when using filters' do
       it 'returns the todos for multiple states' do
-        todos = resolve_todos(state: [:done, :pending])
+        todos = resolve_todos(args: { state: [:done, :pending] })
 
         expect(todos).to contain_exactly(merge_request_todo_pending, issue_todo_done, issue_todo_pending)
       end
@@ -53,13 +53,13 @@ RSpec.describe Resolvers::TodosResolver do
         design = create(:design, issue: issue)
         design_todo_pending = create(:todo, target: design, user: current_user, state: :pending, action: Todo::ASSIGNED, author: author1)
 
-        todos = resolve_todos(type: ['MergeRequest', 'DesignManagement::Design'])
+        todos = resolve_todos(args: { type: ['MergeRequest', 'DesignManagement::Design'] })
 
         expect(todos).to contain_exactly(merge_request_todo_pending, design_todo_pending)
       end
 
       it 'returns the todos for single filter' do
-        todos = resolve_todos(type: ['MergeRequest'])
+        todos = resolve_todos(args: { type: ['MergeRequest'] })
 
         expect(todos).to contain_exactly(merge_request_todo_pending)
       end
@@ -80,7 +80,7 @@ RSpec.describe Resolvers::TodosResolver do
         todo5 = create(:todo, group: group2, user: current_user, state: :pending, action: Todo::ASSIGNED, author: author1, target: issue2)
         create(:todo, group: group3, user: current_user, state: :pending, action: Todo::ASSIGNED, author: author1, target: issue3)
 
-        todos = resolve_todos(group_id: [group2.id, group1.id])
+        todos = resolve_todos(args: { group_id: [group2.id, group1.id] })
 
         expect(todos).to contain_exactly(todo4, todo5)
       end
@@ -90,7 +90,7 @@ RSpec.describe Resolvers::TodosResolver do
 
         create(:todo, user: current_user, state: :pending, action: Todo::ASSIGNED, author: author3)
 
-        todos = resolve_todos(author_id: [author2.id, author1.id])
+        todos = resolve_todos(args: { author_id: [author2.id, author1.id] })
 
         expect(todos).to contain_exactly(merge_request_todo_pending, issue_todo_pending)
       end
@@ -98,7 +98,7 @@ RSpec.describe Resolvers::TodosResolver do
       it 'returns the todos for multiple actions' do
         create(:todo, user: current_user, state: :pending, action: Todo::DIRECTLY_ADDRESSED, author: author1)
 
-        todos = resolve_todos(action: [Todo::MENTIONED, Todo::ASSIGNED])
+        todos = resolve_todos(args: { action: [Todo::MENTIONED, Todo::ASSIGNED] })
 
         expect(todos).to contain_exactly(merge_request_todo_pending, issue_todo_pending)
       end
@@ -116,9 +116,29 @@ RSpec.describe Resolvers::TodosResolver do
         todo5 = create(:todo, project: project2, user: current_user, state: :pending, action: Todo::ASSIGNED, author: author1, target: create(:issue, project: project2))
         create(:todo, project: project3, user: current_user, state: :pending, action: Todo::ASSIGNED, author: author1, target: create(:issue, project: project3))
 
-        todos = resolve_todos(project_id: [project2.id, project1.id])
+        todos = resolve_todos(args: { project_id: [project2.id, project1.id] })
 
         expect(todos).to contain_exactly(todo4, todo5)
+      end
+    end
+
+    context 'when sort is provided' do
+      let_it_be(:new_user) { create(:user) }
+
+      let(:todo1) { create(:todo, user: new_user, project: project, created_at: 5.hours.ago) }
+      let(:todo2) { create(:todo, user: new_user, project: project, created_at: 4.hours.ago) }
+      let(:todo3) { create(:todo, user: new_user, project: project, created_at: 3.hours.ago) }
+
+      it 'sorts in ascendent order' do
+        todos = resolve_todos(args: { sort: 'CREATED_ASC' }, context: { current_user: new_user })
+
+        expect(todos.items).to eq([todo1, todo2, todo3])
+      end
+
+      it 'sorts in descendent order' do
+        todos = resolve_todos(args: { sort: 'CREATED_DESC' }, context: { current_user: new_user })
+
+        expect(todos.items).to eq([todo3, todo2, todo1])
       end
     end
 
@@ -151,7 +171,7 @@ RSpec.describe Resolvers::TodosResolver do
     end
   end
 
-  def resolve_todos(args = {}, context = { current_user: current_user })
-    resolve(described_class, obj: current_user, args: args, ctx: context)
+  def resolve_todos(args: {}, context: { current_user: current_user })
+    resolve(described_class, obj: context[:current_user], args: args, ctx: context)
   end
 end

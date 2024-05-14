@@ -172,3 +172,9 @@ Questions to answer:
 1. Does the failure look related to a particular component? (database, Redis, ...)
 1. Does the failure affect a specific endpoint? Or is it system-wide?
 1. Does the failure appear caused by infrastructure incidents?
+
+## GitLab instrumentation for OpenTelemetry
+
+There is an ongoing effort to instrument the GitLab codebase for OpenTelemetry.
+
+For more specific information on this effort, see [GitLab instrumentation for OpenTelemetry](gitlab_instrumentation_for_opentelemetry.md).

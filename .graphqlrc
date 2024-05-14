@@ -1,0 +1,8 @@
+schema:
+  - ./tmp/tests/graphql/gitlab_schema.graphql
+  - ./tmp/tests/graphql/gitlab_schema_apollo.graphql
+documents:
+  - ./app/assets/javascripts/**/*.graphql
+  - ./ee/app/assets/javascripts/**/*.graphql
+  - ./jh/app/assets/javascripts/**/*.graphql
+  - ./app/graphql/queries/**/*.graphql

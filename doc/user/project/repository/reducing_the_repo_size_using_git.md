@@ -2,13 +2,14 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: "To remove unwanted large files from a Git repository and reduce its storage size, use the filter-repo command."
 ---
 
 # Reduce repository size
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Git repositories become larger over time. When large files are added to a Git repository:
 
@@ -75,7 +76,7 @@ To purge files from a GitLab repository:
    This contains a `project.bundle` file, which was created by
    [`git bundle`](https://git-scm.com/docs/git-bundle).
 
-1. Clone a fresh copy of the repository from the bundle using  `--bare` and `--mirror` options:
+1. Clone a fresh copy of the repository from the bundle using `--bare` and `--mirror` options:
 
    ```shell
    git clone --bare --mirror /path/to/project.bundle
@@ -182,8 +183,7 @@ references to these objects. You can use
 [`git filter-repo`](https://github.com/newren/git-filter-repo) to produce a list of objects (in a
 `commit-map` file) that can be used with repository cleanup.
 
-[Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45058) in GitLab 13.6,
-safely cleaning the repository requires it to be made read-only for the duration
+Safely cleaning the repository requires it to be made read-only for the duration
 of the operation. This happens automatically, but submitting the cleanup request
 fails if any writes are ongoing, so cancel any outstanding `git push`
 operations before continuing.
@@ -196,6 +196,7 @@ To clean up a repository:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Go to **Settings > Repository**.
+1. Expand **Repository maintenance**.
 1. Upload a list of objects. For example, a `commit-map` file created by `git filter-repo` which is located in the
    `filter-repo` directory.
 
@@ -333,7 +334,7 @@ To expedite this process, see the
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 Occasionally the Sidekiq process can fail to export a project, for example if
 it is terminated during execution.

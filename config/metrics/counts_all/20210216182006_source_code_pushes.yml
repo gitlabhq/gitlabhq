@@ -8,13 +8,9 @@ product_group: source_code
 value_type: number
 status: active
 time_frame: all
-data_source: redis
-instrumentation_class: RedisMetric
-options:
-  prefix: source_code
-  event: pushes
+data_source: internal_events
 events:
-  - name: source_code_pushed
+- name: source_code_pushed
 distribution:
 - ce
 - ee

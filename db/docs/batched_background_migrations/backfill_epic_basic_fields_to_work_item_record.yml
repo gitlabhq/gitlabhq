@@ -1,0 +1,9 @@
+---
+migration_job_name: BackfillEpicBasicFieldsToWorkItemRecord
+description: Backfills records in `issues` table for every record in `epics` table. This is to prepare us to move away from epics altogether.
+feature_category: team_planning
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143844
+milestone: '17.0'
+queued_migration_version: 20240503103337
+finalize_after: '2024-05-29'
+finalized_by:

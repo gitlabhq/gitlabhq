@@ -6,8 +6,8 @@ RSpec.describe 'Export work items', feature_category: :team_planning do
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project) }
-  let_it_be(:reporter) { create(:user).tap { |user| project.add_reporter(user) } }
-  let_it_be(:guest) { create(:user).tap { |user| project.add_guest(user) } }
+  let_it_be(:reporter) { create(:user, reporter_of: project) }
+  let_it_be(:guest) { create(:user, guest_of: project) }
   let_it_be(:work_item) { create(:work_item, project: project) }
 
   let(:input) { { 'projectPath' => project.full_path } }

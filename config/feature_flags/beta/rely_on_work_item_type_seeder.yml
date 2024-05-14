@@ -1,0 +1,9 @@
+---
+name: rely_on_work_item_type_seeder
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/459904
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151817
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/460107
+milestone: '17.0'
+group: group::project management
+type: beta
+default_enabled: true

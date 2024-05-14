@@ -46,7 +46,7 @@ RSpec.describe QA::Runtime::Feature do
         expect(QA::Runtime::Logger).to receive(:info).with("Disabling feature: a_flag for scope \"#{scope}: #{actor_name}\"")
         expect(QA::Runtime::Logger).to receive(:info).with("Successfully disabled and verified feature flag: a_flag")
 
-        described_class.disable(feature_flag, scope => actor )
+        described_class.disable(feature_flag, scope => actor)
       end
     end
 

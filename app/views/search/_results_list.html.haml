@@ -17,6 +17,14 @@
         - if @scope == 'projects'
           .term
             = render 'shared/projects/list', projects: @search_objects, pipeline_status: false
+        - elsif @scope === 'users'
+          %table.table.b-table.gl-table.b-table-stacked-md{ role: 'table' }
+            %thead
+              %tr
+                %th= _('User')
+                %th.text-right= _('Activity')
+            %tbody
+              = render_if_exists partial: "search/results/user", collection: @search_objects
         - else
           = render_if_exists partial: "search/results/#{@scope.singularize}", collection: @search_objects
 

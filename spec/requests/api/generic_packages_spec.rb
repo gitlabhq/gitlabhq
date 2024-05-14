@@ -29,6 +29,8 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
       personal_access_token_header
     when :job_token
       job_token_header
+    when :job_basic_auth
+      job_basic_auth_header
     when :invalid_personal_access_token
       personal_access_token_header('wrong token')
     when :invalid_job_token
@@ -59,6 +61,10 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
 
   def job_token_header(value = nil)
     { Gitlab::Auth::AuthFinders::JOB_TOKEN_HEADER => value || ci_build.token }
+  end
+
+  def job_basic_auth_header(value = nil)
+    basic_auth_header(Gitlab::Auth::CI_JOB_USER, value || ci_build.token)
   end
 
   def deploy_token_header(value)
@@ -167,6 +173,20 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
         subject { authorize_upload_file(workhorse_headers.merge(personal_access_token_header), param_name => param_value) }
 
         it_behaves_like 'secure endpoint'
+      end
+    end
+
+    context 'for use_final_store_path' do
+      before do
+        project.add_developer(user)
+      end
+
+      it 'sends use_final_store_path with true' do
+        expect(::Packages::PackageFileUploader).to receive(:workhorse_authorize).with(
+          hash_including(use_final_store_path: true, final_store_path_root_id: project.id)
+        ).and_call_original
+
+        authorize_upload_file(workhorse_headers.merge(personal_access_token_header))
       end
     end
 
@@ -550,12 +570,16 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
         'PRIVATE' | :guest     | false | :invalid_user_basic_auth       | :unauthorized
         'PRIVATE' | :anonymous | false | :none                          | :unauthorized
         'PUBLIC'  | :developer | true  | :job_token                     | :success
+        'PUBLIC'  | :developer | true  | :job_basic_auth                | :success
         'PUBLIC'  | :developer | true  | :invalid_job_token             | :unauthorized
         'PUBLIC'  | :developer | false | :job_token                     | :success
+        'PUBLIC'  | :developer | false | :job_basic_auth                | :success
         'PUBLIC'  | :developer | false | :invalid_job_token             | :unauthorized
         'PRIVATE' | :developer | true  | :job_token                     | :success
+        'PRIVATE' | :developer | true  | :job_basic_auth                | :success
         'PRIVATE' | :developer | true  | :invalid_job_token             | :unauthorized
         'PRIVATE' | :developer | false | :job_token                     | :not_found
+        'PRIVATE' | :developer | false | :job_basic_auth                | :not_found
         'PRIVATE' | :developer | false | :invalid_job_token             | :unauthorized
       end
 

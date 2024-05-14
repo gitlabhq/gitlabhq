@@ -93,7 +93,7 @@ RSpec.describe Integrations::GroupMentionService, feature_category: :integration
   end
 
   context 'for issue notes' do
-    let(:hook_data) { Gitlab::DataBuilder::Note.build(mentionable, mentionable.author) }
+    let(:hook_data) { Gitlab::DataBuilder::Note.build(mentionable, mentionable.author, :create) }
     let(:is_confidential) { mentionable.confidential?(include_noteable: true) }
 
     context 'in public projects' do

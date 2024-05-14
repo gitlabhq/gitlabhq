@@ -13,10 +13,14 @@ module Ci
     include TaggableQueries
     include Presentable
     include EachBatch
+    include IgnorableColumns
     include Ci::HasRunnerExecutor
     include Ci::HasRunnerStatus
 
     extend ::Gitlab::Utils::Override
+
+    ignore_column %i[config version revision platform architecture ip_address executor_type],
+      remove_with: '17.2', remove_after: '2024-07-22'
 
     add_authentication_token_field :token,
       encrypted: :optional,
@@ -34,6 +38,11 @@ module Ci
       project_type: 3
     }
 
+    enum creation_state: {
+      started: 0,
+      finished: 100
+    }, _suffix: true
+
     enum registration_type: {
       registration_token: 0,
       authenticated_user: 1
@@ -41,6 +50,8 @@ module Ci
 
     # Prefix assigned to runners created from the UI, instead of registered via the command line
     CREATED_RUNNER_TOKEN_PREFIX = 'glrt-'
+
+    RUNNER_SHORT_SHA_LENGTH = 8
 
     # This `ONLINE_CONTACT_TIMEOUT` needs to be larger than
     #   `RUNNER_QUEUE_EXPIRY_TIME+UPDATE_CONTACT_COLUMN_EVERY`
@@ -53,7 +64,7 @@ module Ci
     RUNNER_QUEUE_EXPIRY_TIME = 1.hour
 
     # The `UPDATE_CONTACT_COLUMN_EVERY` defines how often the Runner DB entry can be updated
-    UPDATE_CONTACT_COLUMN_EVERY = (40.minutes..55.minutes)
+    UPDATE_CONTACT_COLUMN_EVERY = ((40.minutes)..(55.minutes))
 
     # The `STALE_TIMEOUT` constant defines the how far past the last contact or creation date a runner will be considered stale
     STALE_TIMEOUT = 3.months
@@ -79,8 +90,10 @@ module Ci
     has_many :runner_namespaces, inverse_of: :runner, autosave: true
     has_many :groups, through: :runner_namespaces, disable_joins: true
 
+    # currently we have only 1 namespace assigned, but order is here for consistency
+    has_one :owner_runner_namespace, -> { order(:id) }, class_name: 'Ci::RunnerNamespace'
+
     has_one :last_build, -> { order('id DESC') }, class_name: 'Ci::Build'
-    has_one :runner_version, primary_key: :version, foreign_key: :version, class_name: 'Ci::RunnerVersion'
 
     belongs_to :creator, class_name: 'User', optional: true
 
@@ -116,17 +129,17 @@ module Ci
     scope :deprecated_shared, -> { instance_type }
     scope :deprecated_specific, -> { project_type.or(group_type) }
 
-    scope :belonging_to_project, -> (project_id) {
+    scope :belonging_to_project, ->(project_id) {
       joins(:runner_projects).where(ci_runner_projects: { project_id: project_id })
     }
 
-    scope :belonging_to_group, -> (group_id) {
+    scope :belonging_to_group, ->(group_id) {
       joins(:runner_namespaces).where(ci_runner_namespaces: { namespace_id: group_id })
     }
 
-    scope :with_creator_id, -> (value) { where(creator_id: value) }
+    scope :with_creator_id, ->(value) { where(creator_id: value) }
 
-    scope :belonging_to_group_or_project_descendants, -> (group_id) {
+    scope :belonging_to_group_or_project_descendants, ->(group_id) {
       group_ids = Ci::NamespaceMirror.by_group_and_descendants(group_id).select(:namespace_id)
       project_ids = Ci::ProjectMirror.by_namespace_id(group_ids).select(:project_id)
 
@@ -139,13 +152,13 @@ module Ci
       )
     }
 
-    scope :belonging_to_group_and_ancestors, -> (group_id) {
+    scope :belonging_to_group_and_ancestors, ->(group_id) {
       group_self_and_ancestors_ids = ::Group.find_by(id: group_id)&.self_and_ancestor_ids
 
       belonging_to_group(group_self_and_ancestors_ids)
     }
 
-    scope :belonging_to_parent_groups_of_project, -> (project_id) {
+    scope :belonging_to_parent_groups_of_project, ->(project_id) {
       raise ArgumentError, "only 1 project_id allowed for performance reasons" unless project_id.is_a?(Integer)
 
       project_groups = ::Group.joins(:projects).where(projects: { id: project_id })
@@ -153,7 +166,7 @@ module Ci
       belonging_to_group(project_groups.self_and_ancestors.pluck(:id))
     }
 
-    scope :owned_or_instance_wide, -> (project_id) do
+    scope :owned_or_instance_wide, ->(project_id) do
       project = project_id.respond_to?(:shared_runners) ? project_id : Project.find(project_id)
 
       from_union(
@@ -166,7 +179,7 @@ module Ci
       )
     end
 
-    scope :group_or_instance_wide, -> (group) do
+    scope :group_or_instance_wide, ->(group) do
       from_union(
         [
           belonging_to_group_and_ancestors(group.id),
@@ -176,7 +189,7 @@ module Ci
       )
     end
 
-    scope :usable_from_scope, -> (group) do
+    scope :usable_from_scope, ->(group) do
       from_union(
         [
           belonging_to_group(group.ancestor_ids),
@@ -231,7 +244,7 @@ module Ci
 
     after_destroy :cleanup_runner_queue
 
-    cached_attr_reader :version, :revision, :platform, :architecture, :ip_address, :contacted_at, :executor_type
+    cached_attr_reader :contacted_at
 
     chronic_duration_attr :maximum_timeout_human_readable, :maximum_timeout,
       error_message: 'Maximum job timeout has a value which could not be accepted'
@@ -242,8 +255,6 @@ module Ci
     validates :public_projects_minutes_cost_factor, :private_projects_minutes_cost_factor,
       allow_nil: false,
       numericality: { greater_than_or_equal_to: 0.0, message: 'needs to be non-negative' }
-
-    validates :config, json_schema: { filename: 'ci_runner_config' }
 
     validates :maintenance_note, length: { maximum: 1024 }
 
@@ -394,7 +405,7 @@ module Ci
       return unless token
 
       start_index = authenticated_user_registration_type? ? CREATED_RUNNER_TOKEN_PREFIX.length : 0
-      token[start_index..start_index + 8]
+      token[start_index..start_index + RUNNER_SHORT_SHA_LENGTH]
     end
 
     def tag_list
@@ -441,21 +452,14 @@ module Ci
       ensure_runner_queue_value == value if value.present?
     end
 
-    def heartbeat(values, update_contacted_at: true)
+    def heartbeat
       ##
       # We can safely ignore writes performed by a runner heartbeat. We do
       # not want to upgrade database connection proxy to use the primary
       # database after heartbeat write happens.
       #
       ::Gitlab::Database::LoadBalancing::Session.without_sticky_writes do
-        values = values&.slice(:version, :revision, :platform, :architecture, :ip_address, :config, :executor) || {}
-        values[:contacted_at] = Time.current if update_contacted_at
-        if values.include?(:executor)
-          values[:executor_type] = EXECUTOR_NAME_TO_TYPES.fetch(values.delete(:executor), :unknown)
-        end
-
-        new_version = values[:version]
-        schedule_runner_version_update(new_version) if new_version && new_version != version
+        values = { contacted_at: Time.current, creation_state: :finished }
 
         merge_cache_attributes(values)
 
@@ -465,16 +469,8 @@ module Ci
     end
 
     def clear_heartbeat
-      cleared_attributes = {
-        version: nil,
-        revision: nil,
-        platform: nil,
-        architecture: nil,
-        ip_address: nil,
-        executor_type: nil,
-        config: {},
-        contacted_at: nil
-      }
+      cleared_attributes = { contacted_at: nil }
+
       merge_cache_attributes(cleared_attributes)
       update_columns(cleared_attributes)
     end
@@ -527,25 +523,6 @@ module Ci
     scope :with_upgrade_status, ->(upgrade_status) do
       joins(:runner_managers).merge(RunnerManager.with_upgrade_status(upgrade_status))
     end
-
-    EXECUTOR_NAME_TO_TYPES = {
-      'unknown' => :unknown,
-      'custom' => :custom,
-      'shell' => :shell,
-      'docker' => :docker,
-      'docker-windows' => :docker_windows,
-      'docker-ssh' => :docker_ssh,
-      'ssh' => :ssh,
-      'parallels' => :parallels,
-      'virtualbox' => :virtualbox,
-      'docker+machine' => :docker_machine,
-      'docker-ssh+machine' => :docker_ssh_machine,
-      'kubernetes' => :kubernetes,
-      'docker-autoscaler' => :docker_autoscaler,
-      'instance' => :instance
-    }.freeze
-
-    EXECUTOR_TYPE_TO_NAMES = EXECUTOR_NAME_TO_TYPES.invert.freeze
 
     def compute_token_expiration_instance
       return unless expiration_interval = Gitlab::CurrentSettings.runner_token_expiration_interval
@@ -618,6 +595,7 @@ module Ci
     # For now, heartbeats with version updates might result in two Sidekiq jobs being queued if a runner has a system_id
     # This is not a problem since the jobs are deduplicated on the version
     def schedule_runner_version_update(new_version)
+      return if Feature.enabled?(:hide_duplicate_runner_manager_fields_in_runner)
       return unless new_version && Gitlab::Ci::RunnerReleases.instance.enabled?
 
       Ci::Runners::ProcessRunnerVersionUpdateWorker.perform_async(new_version)

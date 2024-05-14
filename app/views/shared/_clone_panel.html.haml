@@ -16,7 +16,7 @@
           = http_clone_button(container)
         = render_if_exists 'shared/kerberos_clone_button', container: container
 
-  = text_field_tag :clone_url, default_url_to_repo(container), class: "js-select-on-focus btn gl-button", readonly: true, aria: { label: _('Repository clone URL') }, data: { testid: 'clone-url-content' }
+  = text_field_tag :clone_url, default_url_to_repo(container), class: "js-select-on-focus gl-form-input form-control", readonly: true, aria: { label: _('Repository clone URL') }, data: { testid: 'clone-url-content' }
   .input-group-append
     = clipboard_button(target: '#clone_url', title: _("Copy URL"), variant: :default, category: :primary, size: :medium)
 

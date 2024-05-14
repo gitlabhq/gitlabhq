@@ -7,3 +7,4 @@ feature_category: feature_flags
 milestone: '15.10'
 saved_to_database: true
 streamed: true
+scope: [Project]

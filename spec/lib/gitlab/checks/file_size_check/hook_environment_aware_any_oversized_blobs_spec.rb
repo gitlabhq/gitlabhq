@@ -29,16 +29,12 @@ RSpec.describe Gitlab::Checks::FileSizeCheck::HookEnvironmentAwareAnyOversizedBl
     end
 
     context 'with hook env' do
-      context 'with hook environment' do
-        let(:git_env) do
-          {
-            'GIT_OBJECT_DIRECTORY_RELATIVE' => "objects",
-            'GIT_ALTERNATE_OBJECT_DIRECTORIES_RELATIVE' => ['/dir/one', '/dir/two']
-          }
-        end
-
+      context 'with hook environment', :request_store do
         before do
-          allow(Gitlab::Git::HookEnv).to receive(:all).with(repository.gl_repository).and_return(git_env)
+          ::Gitlab::Git::HookEnv.set(project.repository.gl_repository,
+            project.repository.raw_repository.relative_path,
+            'GIT_OBJECT_DIRECTORY_RELATIVE' => 'objects',
+            'GIT_ALTERNATE_OBJECT_DIRECTORIES_RELATIVE' => ['/dir/one', '/dir/two'])
         end
 
         it 'returns an emtpy array' do

@@ -95,12 +95,14 @@ module Users
 
       # rubocop:enable CodeReuse/ActiveRecord
 
-      private
-
       def bot_avatar(image:)
         Rails.root.join('lib', 'assets', 'images', 'bot_avatars', image).open
       end
 
+      private
+
+      # NOTE: This method is patched in spec/spec_helper.rb to allow use of exclusive lease in RSpec's
+      # :before_all scope to keep the specs DRY.
       def unique_internal(scope, username, email_pattern, &block)
         scope.first || create_unique_internal(scope, username, email_pattern, &block)
       end
@@ -138,7 +140,7 @@ module Users
           email: email,
           &creation_block
         )
-        user.assign_personal_namespace
+        user.assign_personal_namespace(Organizations::Organization.default_organization)
 
         Users::UpdateService.new(user, user: user).execute(validate: false)
         user

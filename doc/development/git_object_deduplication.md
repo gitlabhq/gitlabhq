@@ -80,7 +80,7 @@ projects benefit from the new objects that got added to the pool.
 
 ## SQL model
 
-As of GitLab 11.8, project repositories in GitLab do not have their own
+Project repositories in GitLab do not have their own
 SQL table. They are indirectly identified by columns on the `projects`
 table. In other words, the only way to look up a project repository is to
 first look up its project, and then call `project.repository`.
@@ -95,9 +95,6 @@ are as follows:
   many `Project`s
 - a `PoolRepository` has exactly one "source `Project`"
   (`pool.source_project`)
-
-> TODO Fix invalid SQL data for pools created prior to GitLab 11.11
-> <https://gitlab.com/gitlab-org/gitaly/-/issues/1653>.
 
 ### Assumptions
 
@@ -139,9 +136,6 @@ are as follows:
   Now C gets created as a fork of B. C is not part of a pool
   repository.
 
-> TODO should forks of forks be deduplicated?
-> <https://gitlab.com/gitlab-org/gitaly/-/issues/1532>
-
 ### Consequences
 
 - If a typical Project participating in a pool gets moved to another
@@ -151,7 +145,7 @@ are as follows:
   of the project's repository on the new storage shard.
 - If the source project of a pool gets moved to another Gitaly storage
   shard or is deleted the "source project" relation is not broken.
-  However, as of GitLab 12.0 a pool does not fetch from a source
+  However, a pool does not fetch from a source
   unless the source is on the same Gitaly shard.
 
 ## Consistency between the SQL pool relation and Gitaly
@@ -195,7 +189,3 @@ then creates the pool repository in Gitaly. This leads to an
 "eventually consistent" situation because as each pool participant gets
 synchronized, Geo eventually triggers garbage collection in Gitaly on
 the secondary, at which stage Git objects are deduplicated.
-
-> TODO How do we handle the edge case where at the time the Geo
-> secondary tries to create the pool repository, the source project does
-> not exist? <https://gitlab.com/gitlab-org/gitaly/-/issues/1533>

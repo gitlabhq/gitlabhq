@@ -4,6 +4,8 @@ import confidentialState from '~/confidential_merge_request/state';
 import CreateMergeRequestDropdown from '~/issues/create_merge_request_dropdown';
 import axios from '~/lib/utils/axios_utils';
 
+const REFS_PATH = `${TEST_HOST}/dummy/refs?search=`;
+
 describe('CreateMergeRequestDropdown', () => {
   let axiosMock;
   let dropdown;
@@ -12,7 +14,7 @@ describe('CreateMergeRequestDropdown', () => {
     axiosMock = new MockAdapter(axios);
 
     document.body.innerHTML = `
-      <div id="dummy-wrapper-element">
+      <div id="dummy-wrapper-element" data-refs-path="${REFS_PATH}">
         <div class="available"></div>
         <div class="unavailable">
           <div class="js-create-mr-spinner"></div>
@@ -30,7 +32,6 @@ describe('CreateMergeRequestDropdown', () => {
 
     const dummyElement = document.getElementById('dummy-wrapper-element');
     dropdown = new CreateMergeRequestDropdown(dummyElement);
-    dropdown.refsPath = `${TEST_HOST}/dummy/refs?search=`;
   });
 
   afterEach(() => {
@@ -39,7 +40,7 @@ describe('CreateMergeRequestDropdown', () => {
 
   describe('getRef', () => {
     it('escapes branch names correctly', async () => {
-      const endpoint = `${dropdown.refsPath}contains%23hash`;
+      const endpoint = `${REFS_PATH}contains%23hash`;
       jest.spyOn(axios, 'get');
       axiosMock.onGet(endpoint).replyOnce({});
 

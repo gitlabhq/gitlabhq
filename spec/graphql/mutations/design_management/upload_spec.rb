@@ -15,7 +15,9 @@ RSpec.describe Mutations::DesignManagement::Upload do
 
   def run_mutation(files_to_upload = files, project_path = project.full_path, iid = issue.iid)
     mutation = described_class.new(object: nil, context: { current_user: user }, field: nil)
-    mutation.resolve(project_path: project_path, iid: iid, files: files_to_upload)
+    Gitlab::ExclusiveLease.skipping_transaction_check do
+      mutation.resolve(project_path: project_path, iid: iid, files: files_to_upload)
+    end
   end
 
   describe "#resolve" do
@@ -66,8 +68,18 @@ RSpec.describe Mutations::DesignManagement::Upload do
 
         describe 'running requests in parallel' do
           it 'does not cause errors' do
+            # max_concurrency is set to be less than the LOCK_RETRY_COUNT to avoid
+            # Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError.
+            #
+            # When the number of processes attempting to obtain the lock exceeds the number of retries
+            # permitted, at least 1 process will reach the retry limit and raise the error.
             creates_designs do
-              run_parallel(files.map { |f| -> { run_mutation([f]) } })
+              run_parallel(
+                files.map { |f| -> { run_mutation([f]) } },
+                # We reduce by 2 for more allowance as the delay between the initial few retries are very small.
+                # The retry delays are 0.2, 0.4, 0.8, 1.6, 3.2 seconds.
+                max_concurrency: DesignManagement::Version::LOCK_RETRY_COUNT - 2
+              )
             end
           end
         end

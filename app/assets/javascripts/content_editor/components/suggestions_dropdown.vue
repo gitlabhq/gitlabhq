@@ -1,5 +1,5 @@
 <script>
-import { GlAvatar, GlLoadingIcon } from '@gitlab/ui';
+import { GlAvatar, GlLoadingIcon, GlIcon } from '@gitlab/ui';
 import { escape } from 'lodash';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 
@@ -7,6 +7,7 @@ export default {
   components: {
     GlAvatar,
     GlLoadingIcon,
+    GlIcon,
   },
 
   directives: {
@@ -99,6 +100,10 @@ export default {
       return this.isReference && this.nodeProps.referenceType === 'milestone';
     },
 
+    isWiki() {
+      return this.nodeProps.referenceType === 'wiki';
+    },
+
     isEmoji() {
       return this.nodeType === 'emoji';
     },
@@ -147,6 +152,8 @@ export default {
           return item.reference;
         case 'vulnerability':
           return `[vulnerability:${item.id}]`;
+        case 'wiki':
+          return item.title;
         default:
           return '';
       }
@@ -176,6 +183,16 @@ export default {
         Object.assign(props, {
           text: item.title,
           color: item.color,
+        });
+      }
+
+      if (this.isWiki) {
+        Object.assign(props, {
+          text: item.title,
+          href: item.path,
+          isGollumLink: true,
+          isWikiPage: true,
+          canonicalSrc: item.slug,
         });
       }
 
@@ -272,15 +289,14 @@ export default {
               @click="selectItem(index)"
             >
               <div class="gl-new-dropdown-item-text-wrapper">
-                <span v-if="isUser" class="gl-flex">
+                <span v-if="isUser" class="gl-display-flex gl-align-items-center gl-gap-3">
                   <gl-avatar
                     :src="item.avatar_url"
                     :entity-name="item.username"
                     :size="24"
                     :shape="item.type === 'Group' ? 'rect' : 'circle'"
-                    class="gl-vertical-align-middle gl-mx-2"
                   />
-                  <span class="gl-vertical-align-middle">
+                  <span>
                     <span v-safe-html:[$options.safeHtmlConfig]="highlight(item.username)"></span>
                     <small
                       v-safe-html:[$options.safeHtmlConfig]="highlight(avatarSubLabel(item))"
@@ -312,6 +328,15 @@ export default {
                 <span v-if="isMilestone">
                   <span v-safe-html:[$options.safeHtmlConfig]="highlight(item.title)"></span>
                   <span v-if="item.expired">{{ __('(expired)') }}</span>
+                </span>
+                <span v-if="isWiki">
+                  <gl-icon class="gl-mr-2" name="document" />
+                  <span v-safe-html:[$options.safeHtmlConfig]="highlight(item.title)"></span>
+                  <small
+                    v-if="item.title.toLowerCase() !== item.slug.toLowerCase()"
+                    v-safe-html:[$options.safeHtmlConfig]="highlight(`(${item.slug})`)"
+                    class="gl-text-gray-500"
+                  ></small>
                 </span>
                 <span v-if="isLabel" class="gl-display-flex">
                   <span

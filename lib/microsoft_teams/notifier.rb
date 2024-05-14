@@ -27,7 +27,7 @@ module MicrosoftTeams
 
     private
 
-    def body(title: nil, summary: nil, attachments: nil, activity:)
+    def body(activity:, title: nil, summary: nil, attachments: nil)
       result = { 'sections' => [] }
 
       result['title'] = title

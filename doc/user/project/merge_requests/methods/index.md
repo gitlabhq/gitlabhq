@@ -2,13 +2,14 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: "Your project's merge method determines whether to squash commits before merging, and if merge commits are created when work merges."
 ---
 
 # Merge methods
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 The merge method you select for your project determines how the changes in your
 merge requests are merged into an existing branch.
@@ -17,6 +18,7 @@ The examples on this page assume a `main` branch with commits A, C, and E, and a
 `feature` branch with commits B and D:
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 gitGraph
    commit id: "A"
    branch feature
@@ -56,7 +58,7 @@ and selecting `Merge commit` as the **Merge method** in the GitLab UI:
 The merge strategy:
 
 ```mermaid
-%%{init: { 'gitGraph': {'logLevel': 'debug', 'showBranches': true, 'showCommitLabel':true,'mainBranchName': 'main'}} }%%
+%%{init: { 'gitGraph': {'logLevel': 'debug', 'showBranches': true, 'showCommitLabel':true,'mainBranchName': 'main', 'fontFamily': 'GitLab Sans'}} }%%
 gitGraph
    commit id: "A"
    branch feature
@@ -72,7 +74,7 @@ After a feature branch is merged with the **Merge commit** method, your `main` b
 looks like this:
 
 ```mermaid
-%%{init: { 'gitGraph': {'logLevel': 'debug', 'showBranches': true, 'showCommitLabel':true,'mainBranchName': 'main'}} }%%
+%%{init: { 'gitGraph': {'logLevel': 'debug', 'showBranches': true, 'showCommitLabel':true,'mainBranchName': 'main', 'fontFamily': 'GitLab Sans'}} }%%
 gitGraph
    commit id: "A"
    commit id: "C"
@@ -86,7 +88,7 @@ from the `feature` branch. The original commits (B and D) remain unchanged
 on the `feature` branch, and the squash commit is placed on the `main` branch:
 
 ```mermaid
-%%{init: { 'gitGraph': {'showBranches': true, 'showCommitLabel':true,'mainBranchName': 'main'}} }%%
+%%{init: { 'gitGraph': {'showBranches': true, 'showCommitLabel':true,'mainBranchName': 'main', 'fontFamily': 'GitLab Sans'}} }%%
 gitGraph
    commit id:"A"
    branch feature
@@ -125,6 +127,7 @@ succeeded, the target branch build also succeeds after the merge. An example
 commit graph generated using this merge method:
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 gitGraph
   commit id: "Init"
   branch mr-branch-1
@@ -164,6 +167,7 @@ to accept merge requests without creating merge commits. An example commit graph
 generated using this merge method:
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 gitGraph
   commit id: "Init"
   commit id: "Merge mr-branch-1"
@@ -186,6 +190,9 @@ NOTE:
 Projects that use the fast-forward merge strategy can't
 [filter merge requests](../index.md#filter-the-list-of-merge-requests)
 by deployment date, because no merge commit is created.
+Features that rely on the deployment-MR relationship do not work when fast-forward merges are
+enabled.
+This bug is tracked in [issue 398611](https://gitlab.com/gitlab-org/gitlab/-/issues/398611).
 
 When you visit the merge request page with `Fast-forward merge`
 method selected, you can accept it **only if a fast-forward merge is possible**.
@@ -218,7 +225,6 @@ considered equivalent to rebasing.
 
 ### Rebase without CI/CD pipeline
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118825) in GitLab 14.7 [with a flag](../../../../administration/feature_flags.md) named `rebase_without_ci_ui`. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/350262) in GitLab 15.3. Feature flag `rebase_without_ci_ui` removed.
 
 To rebase a merge request's branch without triggering a CI/CD pipeline, select

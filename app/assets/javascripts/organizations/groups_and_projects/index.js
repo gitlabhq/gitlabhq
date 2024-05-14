@@ -3,7 +3,7 @@ import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
 import createDefaultClient from '~/lib/graphql';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
-import { ORGANIZATION_ROOT_ROUTE_NAME } from '../constants';
+import { ORGANIZATION_ROOT_ROUTE_NAME } from '~/organizations/shared/constants';
 import App from './components/app.vue';
 
 export const createRouter = () => {

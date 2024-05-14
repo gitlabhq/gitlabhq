@@ -2,6 +2,7 @@
 stage: Create
 group: Code Review
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
+description: "Use this tutorial to build a protected workflow for your GitLab project."
 ---
 
 <!-- vale gitlab.FutureTense = NO -->
@@ -10,14 +11,14 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 When your team starts a new project, they need a workflow that balances efficiency
 with appropriate reviews. In GitLab, you can create user groups, combine those
 groups with branch protections, and then enforce those protections with approval rules.
 
-This tutorial sets up protections for Excelsior Project's `1.x` and `1.x.x`
-release branches, and creates a minimal approval workflow for the project:
+This tutorial sets up protections for the `1.x` and `1.x.x` release branches of an
+example project named "Excelsior", and creates a minimal approval workflow for the project:
 
 1. [Create the `engineering` group](#create-the-engineering-group)
 1. [Create subgroups in `engineering`](#create-subgroups-in-engineering)
@@ -40,7 +41,7 @@ release branches, and creates a minimal approval workflow for the project:
 Before setting up Excelsior Project, you should create a group to own
 the project. Here, you'll set up the Engineering group:
 
-1. On the left sidebar, at the top, select **Create new...** (**{plus}**) and **New group**.
+1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New group**.
 1. Select **Create group**.
 1. For **Group name**, enter `Engineering`.
 1. For the **Group URL**, enter `engineering`.
@@ -134,7 +135,7 @@ To create the new `excelsior` project:
 1. On the left sidebar, select **Search or go to** and
    search for `engineering`. Select the group named `Engineering`.
 1. On the overview page for the `engineering` group, on the left sidebar, at the top,
-   select **Create new...** (**{plus}**) and **In this group > New project/repository**.
+   select **Create new** (**{plus}**) and **In this group > New project/repository**.
 1. Select **Create blank project**.
 1. Enter the project details:
    - In the **Project name** field, enter `Excelsior`. The **Project slug** should
@@ -215,7 +216,9 @@ file types. Approval rules direct merge requests to those reviewers.
 Here, you will set up an approval rule that uses the information in your new CODEOWNERS
 file and adds protection for release branches:
 
-1. On the left sidebar, select **Settings > Merge requests**.
+1. On the left sidebar, select **Search or go to** and
+   search for `Excelsior`. Select the project named `Excelsior`.
+1. Select **Settings > Merge requests**.
 1. In the **Merge request approvals** section, scroll to **Approval rules**.
 1. Select **Add approval rule**.
 1. Create a rule named `Enforce CODEOWNERS`.
@@ -251,7 +254,9 @@ into the release branch.
 Rather than create protections for a branch at a time, configure wildcard branch rules
 to protect multiple branches:
 
-1. On the left sidebar, select **Settings > Repository**.
+1. On the left sidebar, select **Search or go to** and
+   search for `Excelsior`. Select the project named `Excelsior`.
+1. Select **Settings > Repository**.
 1. Expand **Protected branches**.
 1. From the **Branch** dropdown list, type `1.*`, and then select **Create wildcard `1.*`**.
 1. To require everyone to submit merge requests, rather than pushing commits directly:
@@ -273,7 +278,9 @@ Your rules are now in place, even though no `1.*` branches exist yet:
 
 Now that all branch protections in place, you're ready to create your 1.0.0 release branch:
 
-1. On the left sidebar, select **Code > Branches**.
+1. On the left sidebar, select **Search or go to** and
+   search for `Excelsior`. Select the project named `Excelsior`.
+1. Select **Code > Branches**.
 1. In the upper-right corner, select **New branch**. Name it `1.0.0`.
 1. Select **Create branch**.
 

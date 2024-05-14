@@ -2,7 +2,6 @@
   "type": "object",
   "required": [
     "description",
-    "category",
     "action",
     "product_section",
     "product_stage",
@@ -19,6 +18,10 @@
     },
     "category": {
       "type": "string"
+    },
+    "internal_events": {
+      "type": "boolean",
+      "const": true
     },
     "action": {
       "type": "string",
@@ -61,6 +64,48 @@
           "namespace"
         ]
       }
+    },
+    "additional_properties": {
+      "type": "object",
+      "properties": {
+        "label": {
+          "type": "object",
+          "properties": {
+            "description": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "description"
+          ],
+          "additionalProperties": false
+        },
+        "property": {
+          "type": "object",
+          "properties": {
+            "description": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "description"
+          ],
+          "additionalProperties": false
+        },
+        "value": {
+          "type": "object",
+          "properties": {
+            "description": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "description"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
     },
     "iglu_schema_url": {
       "type": [

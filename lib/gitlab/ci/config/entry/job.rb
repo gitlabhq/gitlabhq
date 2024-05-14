@@ -14,7 +14,7 @@ module Gitlab
           ALLOWED_KEYS = %i[tags script image services start_in artifacts
                             cache dependencies before_script after_script hooks
                             coverage retry parallel timeout
-                            release id_tokens publish pages].freeze
+                            release id_tokens publish pages manual_confirmation].freeze
 
           validations do
             validates :config, allowed_keys: Gitlab::Ci::Config::Entry::Job.allowed_keys + PROCESSABLE_ALLOWED_KEYS
@@ -28,6 +28,7 @@ module Gitlab
 
               validates :dependencies, array_of_strings: true
               validates :allow_failure, hash_or_boolean: true
+              validates :manual_confirmation, type: String
             end
 
             validates :start_in, duration: { limit: '1 week' }, if: :delayed?
@@ -136,7 +137,7 @@ module Gitlab
           attributes :script, :tags, :when, :dependencies,
                      :needs, :retry, :parallel, :start_in,
                      :timeout, :release,
-                     :allow_failure, :publish, :pages
+                     :allow_failure, :publish, :pages, :manual_confirmation
 
           def self.matching?(name, config)
             !name.to_s.start_with?('.') &&
@@ -176,7 +177,8 @@ module Gitlab
               scheduling_type: needs_defined? ? :dag : :stage,
               id_tokens: id_tokens_value,
               publish: publish,
-              pages: pages
+              pages: pages,
+              manual_confirmation: self.manual_confirmation
             ).compact
           end
 

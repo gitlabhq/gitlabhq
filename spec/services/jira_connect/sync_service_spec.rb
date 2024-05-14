@@ -21,7 +21,7 @@ RSpec.describe JiraConnect::SyncService, feature_category: :integrations do
       create(:jira_connect_subscription, namespace: project.namespace)
     end
 
-    def store_info(return_values = [{ 'status': 'success' }])
+    def store_info(return_values = [{ status: 'success' }])
       receive(:send_info).with(project: project, **info).and_return(return_values)
     end
 
@@ -41,7 +41,7 @@ RSpec.describe JiraConnect::SyncService, feature_category: :integrations do
     it 'calls Atlassian::JiraConnect::Client#store_dev_info and logs the response' do
       expect_next(client).to store_info
 
-      expect_log(:info, { 'status': 'success' })
+      expect_log(:info, { status: 'success' })
 
       subject
     end
@@ -49,7 +49,7 @@ RSpec.describe JiraConnect::SyncService, feature_category: :integrations do
     it 'does not execute any queries for preloaded reviewers' do
       expect_next(client).to store_info
 
-      expect_log(:info, { 'status': 'success' })
+      expect_log(:info, { status: 'success' })
 
       amount = ActiveRecord::QueryRecorder
         .new { info[:merge_requests].flat_map(&:merge_request_reviewers).map(&:reviewer) }

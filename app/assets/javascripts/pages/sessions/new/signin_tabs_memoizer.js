@@ -1,11 +1,12 @@
 import AccessorUtilities from '~/lib/utils/accessor';
+import { GlTabsBehavior } from '~/tabs';
 
 /**
  * Memorize the last selected tab after reloading a page.
  * Does that setting the current selected tab in the localStorage
  */
 export default class SigninTabsMemoizer {
-  constructor({ currentTabKey = 'current_signin_tab', tabSelector = 'ul.new-session-tabs' } = {}) {
+  constructor({ currentTabKey = 'current_signin_tab', tabSelector = '#js-signin-tabs' } = {}) {
     this.currentTabKey = currentTabKey;
     this.tabSelector = tabSelector;
     this.isLocalStorageAvailable = AccessorUtilities.canUseLocalStorage();
@@ -18,9 +19,11 @@ export default class SigninTabsMemoizer {
   }
 
   bootstrap() {
-    const tabs = document.querySelectorAll(this.tabSelector);
-    if (tabs.length > 0) {
-      tabs[0].addEventListener('click', (e) => {
+    const tabNav = document.querySelector(this.tabSelector);
+    if (tabNav) {
+      // eslint-disable-next-line no-new
+      new GlTabsBehavior(tabNav);
+      tabNav.addEventListener('click', (e) => {
         if (e.target && e.target.nodeName === 'A') {
           const anchorName = e.target.getAttribute('href');
           this.saveData(anchorName);

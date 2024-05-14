@@ -61,7 +61,7 @@ RSpec.describe AutoMerge::BaseService, feature_category: :code_review_workflow d
 
       before do
         pipeline = build(:ci_pipeline)
-        allow(merge_request).to receive(:actual_head_pipeline) { pipeline }
+        allow(merge_request).to receive(:diff_head_pipeline) { pipeline }
       end
 
       it 'sets the auto merge strategy' do
@@ -305,22 +305,65 @@ RSpec.describe AutoMerge::BaseService, feature_category: :code_review_workflow d
   describe '#available_for?' do
     using RSpec::Parameterized::TableSyntax
 
-    subject(:available_for) { service.available_for?(merge_request) { true } }
+    subject(:available_for) { service.available_for?(merge_request) { yield_result } }
 
     let(:merge_request) { create(:merge_request) }
+    let(:yield_result) { true }
+    let(:checks_pass) { true }
+    let(:can_be_merged) { true }
 
-    where(:can_be_merged, :open, :broken, :discussions, :blocked, :draft, :result) do
-      true | true | false | true | false | false | true
-      false | true | false | true | false | false | false
-      true | false | false | true | false | false | false
-      true | true | true | true | false | false | false
-      true | true | false | false | false | false | false
-      true | true | false | true | true | false | false
-      true | true | false | true | false | true | false
+    context 'when can_be_merged is true' do
+      before do
+        allow(merge_request).to receive(:can_be_merged_by?).and_return(can_be_merged)
+        allow(merge_request).to receive(:mergeability_checks_pass?).and_return(checks_pass)
+      end
+
+      context 'when the mergeabilty checks pass is true' do
+        context 'when the yield is true' do
+          it 'returns true' do
+            expect(available_for).to be_truthy
+          end
+        end
+
+        context 'when the yield is false' do
+          let(:yield_result) { false }
+
+          it 'returns false' do
+            expect(available_for).to be_falsey
+          end
+        end
+      end
+
+      context 'when the mergeabilty checks pass is false' do
+        let(:checks_pass) { false }
+
+        context 'when the yield is true' do
+          it 'returns false' do
+            expect(available_for).to be_falsey
+          end
+        end
+
+        context 'when the yield is false' do
+          let(:yield_result) { false }
+
+          it 'returns false' do
+            expect(available_for).to be_falsey
+          end
+        end
+      end
     end
 
-    with_them do
+    context 'when can_be_merged is false' do
+      let(:can_be_merged) { false }
+
+      it 'returns false' do
+        expect(available_for).to be_falsey
+      end
+    end
+
+    context 'when refactor_auto_merge is disabled' do
       before do
+        stub_feature_flags(refactor_auto_merge: false)
         allow(merge_request).to receive(:can_be_merged_by?).and_return(can_be_merged)
         allow(merge_request).to receive(:open?).and_return(open)
         allow(merge_request).to receive(:broken?).and_return(broken)
@@ -329,8 +372,20 @@ RSpec.describe AutoMerge::BaseService, feature_category: :code_review_workflow d
         allow(merge_request).to receive(:merge_blocked_by_other_mrs?).and_return(blocked)
       end
 
-      it 'returns the expected results' do
-        expect(available_for).to eq(result)
+      where(:can_be_merged, :open, :broken, :discussions, :blocked, :draft, :result) do
+        true | true | false | true | false | false | true
+        false | true | false | true | false | false | false
+        true | false | false | true | false | false | false
+        true | true | true | true | false | false | false
+        true | true | false | false | false | false | false
+        true | true | false | true | true | false | false
+        true | true | false | true | false | true | false
+      end
+
+      with_them do
+        it 'returns the expected results' do
+          expect(available_for).to eq(result)
+        end
       end
     end
   end

@@ -72,6 +72,12 @@ const INVITE_LIMIT = {
   status: 'error',
 };
 
+const ERROR_SEAT_LIMIT_REACHED = {
+  message: 'No seats available',
+  status: 'error',
+  reason: 'seat_limit_exceeded_error',
+};
+
 export const GROUPS_INVITATIONS_PATH = '/api/v4/groups/1/invitations';
 
 export const invitationsApiResponse = {
@@ -82,6 +88,7 @@ export const invitationsApiResponse = {
   EMAIL_TAKEN,
   EXPANDED_RESTRICTED,
   INVITE_LIMIT,
+  ERROR_SEAT_LIMIT_REACHED,
 };
 
 export const IMPORT_PROJECT_MEMBERS_PATH = '/api/v4/projects/1/import_project_members/2';
@@ -103,7 +110,12 @@ const NO_COLLAPSE_IMPORT_ERRORS = {
   total_members_count: '2',
   status: 'error',
 };
+const SEAT_OVERAGE_IMPORT_ERRORS = {
+  message: 'There are not enough available seats to invite this many users.',
+  reason: 'seat_limit_exceeded_error',
+};
 export const importProjectMembersApiResponse = {
   EXPANDED_IMPORT_ERRORS,
   NO_COLLAPSE_IMPORT_ERRORS,
+  SEAT_OVERAGE_IMPORT_ERRORS,
 };

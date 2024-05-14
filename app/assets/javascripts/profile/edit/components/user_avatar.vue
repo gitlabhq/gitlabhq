@@ -109,7 +109,10 @@ export default {
             name="user[avatar]"
           />
         </div>
-        <p class="gl-mb-0 gl-text-gray-500">{{ $options.i18n.maximumFileSize }}</p>
+        <p class="gl-mb-0 gl-text-gray-500">
+          {{ $options.i18n.imageDimensions }}
+          {{ $options.i18n.maximumFileSize }}
+        </p>
         <gl-button
           v-if="hasAvatar"
           class="gl-mt-3"

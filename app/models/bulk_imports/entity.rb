@@ -189,6 +189,10 @@ class BulkImports::Entity < ApplicationRecord
     project? ? project&.full_path : group&.full_path
   end
 
+  def full_path_with_fallback
+    full_path || Gitlab::Utils.append_path(destination_namespace, destination_slug)
+  end
+
   def default_visibility_level
     return default_group_visibility if group?
 

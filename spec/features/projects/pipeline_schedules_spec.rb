@@ -25,9 +25,10 @@ RSpec.describe 'Pipeline Schedules', :js, feature_category: :continuous_integrat
       end
 
       it 'edits the pipeline' do
-        page.find('[data-testid="edit-pipeline-schedule-btn"]').click
+        find_by_testid('edit-pipeline-schedule-btn').click
 
-        expect(page).to have_content(s_('PipelineSchedules|Edit pipeline schedule'))
+        expect(page).to have_content(s_('PipelineSchedules|Edit Pipeline Schedule'))
+        expect(page).to have_button(s_('PipelineSchedules|Save changes'))
       end
 
       context 'when the owner is nil' do
@@ -108,12 +109,18 @@ RSpec.describe 'Pipeline Schedules', :js, feature_category: :continuous_integrat
 
       describe 'the view' do
         it 'displays the required information description' do
-          page.within('[data-testid="pipeline-schedule-table-row"]') do
+          within_testid('pipeline-schedule-table-row') do
             expect(page).to have_content('pipeline schedule')
-            expect(find('[data-testid="next-run-cell"] time')['title'])
-              .to include(pipeline_schedule.real_next_run.strftime('%B %-d, %Y'))
+
+            within_testid('next-run-cell') do
+              expect(find('time')['title']).to include(pipeline_schedule.real_next_run.strftime('%B %-d, %Y'))
+            end
+
             expect(page).to have_link('master')
-            expect(find("[data-testid='last-pipeline-status'] a")['href']).to include(pipeline.id.to_s)
+
+            within_testid('last-pipeline-status') do
+              expect(find("a")['href']).to include(pipeline.id.to_s)
+            end
           end
         end
 
@@ -124,7 +131,7 @@ RSpec.describe 'Pipeline Schedules', :js, feature_category: :continuous_integrat
         end
 
         it 'changes ownership of the pipeline' do
-          find("[data-testid='take-ownership-pipeline-schedule-btn']").click
+          find_by_testid('take-ownership-pipeline-schedule-btn').click
 
           page.within('#pipeline-take-ownership-modal') do
             click_button s_('PipelineSchedules|Take ownership')
@@ -132,14 +139,14 @@ RSpec.describe 'Pipeline Schedules', :js, feature_category: :continuous_integrat
             wait_for_requests
           end
 
-          page.within('[data-testid="pipeline-schedule-table-row"]') do
+          within_testid('pipeline-schedule-table-row') do
             expect(page).not_to have_content('No owner')
             expect(page).to have_link('Sidney Jones')
           end
         end
 
         it 'deletes the pipeline' do
-          page.within('[data-testid="pipeline-schedule-table-row"]') do
+          within_testid('pipeline-schedule-table-row') do
             click_button s_('PipelineSchedules|Delete pipeline schedule')
           end
 
@@ -157,9 +164,9 @@ RSpec.describe 'Pipeline Schedules', :js, feature_category: :continuous_integrat
         end
 
         it 'shows a list of the pipeline schedules with empty ref column' do
-          target = find('[data-testid="pipeline-schedule-target"]')
+          target = find_by_testid('pipeline-schedule-target')
 
-          page.within('[data-testid="pipeline-schedule-table-row"]') do
+          within_testid('pipeline-schedule-table-row') do
             expect(target.text).to eq(s_('PipelineSchedules|None'))
           end
         end
@@ -173,7 +180,7 @@ RSpec.describe 'Pipeline Schedules', :js, feature_category: :continuous_integrat
         end
 
         it 'shows a list of the pipeline schedules with empty ref column' do
-          target = find('[data-testid="pipeline-schedule-target"]')
+          target = find_by_testid('pipeline-schedule-target')
 
           expect(target.text).to eq(s_('PipelineSchedules|None'))
         end
@@ -261,7 +268,7 @@ RSpec.describe 'Pipeline Schedules', :js, feature_category: :continuous_integrat
 
         visit_pipelines_schedules
         first('[data-testid="edit-pipeline-schedule-btn"]').click
-        find('[data-testid="remove-ci-variable-row"]').click
+        find_by_testid('remove-ci-variable-row').click
         save_pipeline_schedule
       end
 
@@ -362,7 +369,7 @@ RSpec.describe 'Pipeline Schedules', :js, feature_category: :continuous_integrat
   end
 
   def save_pipeline_schedule
-    click_button s_('PipelineSchedules|Edit pipeline schedule')
+    click_button s_('PipelineSchedules|Save changes')
   end
 
   def fill_in_schedule_form

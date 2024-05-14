@@ -20,17 +20,19 @@ RSpec.describe 'Updating the container expiration policy', feature_category: :co
   end
 
   let(:mutation) do
-    graphql_mutation(:update_container_expiration_policy, params,
-                     <<~QL
-                       containerExpirationPolicy {
-                         cadence
-                         keepN
-                         nameRegexKeep
-                         nameRegex
-                         olderThan
-                       }
-                       errors
-                     QL
+    graphql_mutation(
+      :update_container_expiration_policy,
+      params,
+      <<~QL
+        containerExpirationPolicy {
+          cadence
+          keepN
+          nameRegexKeep
+          nameRegex
+          olderThan
+        }
+        errors
+      QL
     )
   end
 

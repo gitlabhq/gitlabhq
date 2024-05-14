@@ -513,9 +513,9 @@ module Gitlab
           delimiter = ",\n    "
           column_names = connection.columns(partitioned_table_name).map(&:name)
           set_statements = build_set_statements(column_names, unique_key)
-          insert_values = column_names.map { |name| "NEW.#{name}" }
-          delete_where_statement = unique_key.map { |unique_key| "#{unique_key} = OLD.#{unique_key}" }.join(' AND ')
-          update_where_statement = unique_key.map { |unique_key| "#{partitioned_table_name}.#{unique_key} = NEW.#{unique_key}" }.join(' AND ')
+          insert_values = column_names.map { |name| "NEW.#{connection.quote_column_name(name)}" }
+          delete_where_statement = unique_key.map { |unique_key| "#{connection.quote_column_name(unique_key)} = OLD.#{connection.quote_column_name(unique_key)}" }.join(' AND ')
+          update_where_statement = unique_key.map { |unique_key| "#{partitioned_table_name}.#{connection.quote_column_name(unique_key)} = NEW.#{connection.quote_column_name(unique_key)}" }.join(' AND ')
 
           create_trigger_function(name, replace: false) do
             <<~SQL
@@ -526,7 +526,7 @@ module Gitlab
                 SET #{set_statements.join(delimiter)}
                 WHERE #{update_where_statement};
               ELSIF (TG_OP = 'INSERT') THEN
-                INSERT INTO #{partitioned_table_name} (#{column_names.join(delimiter)})
+                INSERT INTO #{partitioned_table_name} (#{column_names.map { |name| connection.quote_column_name(name).to_s }.join(delimiter)})
                 VALUES (#{insert_values.join(delimiter)});
               END IF;
               RETURN NULL;
@@ -543,7 +543,8 @@ module Gitlab
         end
 
         def build_set_statements(column_names, unique_key)
-          column_names.reject { |name| unique_key.include?(name) }.map { |name| "#{name} = NEW.#{name}" }
+          column_names.reject { |name| unique_key.include?(name) }
+            .map { |name| "#{connection.quote_column_name(name)} = NEW.#{connection.quote_column_name(name)}" }
         end
 
         def create_sync_trigger(table_name, trigger_name, function_name)

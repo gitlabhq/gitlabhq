@@ -1,6 +1,6 @@
 ---
 stage: Govern
-group: Compliance
+group: Security Policies
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
@@ -8,11 +8,8 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3869) in GitLab 14.0, disabled behind the `:ff_external_status_checks` feature flag.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/320783) in GitLab 14.1.
-> - `failed` status [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/329636) in GitLab 14.9.
 > - `pending` status [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/413723) in GitLab 16.5
 > - Timeout interval of two minutes for `pending` status checks [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388725) in GitLab 16.6.
 
@@ -52,9 +49,8 @@ By default, merge requests in projects can be merged even if external status che
 
 External status checks have an **asynchronous** workflow. Merge requests emit a merge request webhook payload to an external service whenever:
 
-- The merge request is changed. For example, title or description.
+- A merge request is updated, closed, reopened, approved, unapproved, or merged.
 - Code is pushed to the source branch of the merge request.
-- A comment is made in the merge request discussion.
 
 ```mermaid
 sequenceDiagram
@@ -80,7 +76,8 @@ using the API. You don't need to wait for a merge request webhook payload to be 
 
 Within each project's settings, you can see a list of status check services added to the project:
 
-1. In your project, go to **Settings > Merge requests** section.
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > Merge requests**.
 1. Scroll down to **Status checks**.
 
 ![Status checks list](img/status_checks_list_view_v14_0.png)
@@ -121,8 +118,8 @@ The name **has** to be unique for the project.
 
 #### API to check
 
-This field requires a URL and **must** use either the HTTP or HTTPs protocols.
-We **recommend** using HTTPs to protect your merge request data in transit.
+This field requires a URL and **must** use either the HTTP or HTTPS protocols.
+We **recommend** using HTTPS to protect your merge request data in transit.
 The URL **must** be set and **must** be unique for the project.
 
 #### Target branch
@@ -156,7 +153,6 @@ the status check and it **is not** recoverable.
 
 ## Status checks widget
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327634) in GitLab 14.1.
 > - UI [updated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91504) in GitLab 15.2.
 > - Ability to retry failed external status checks [added](https://gitlab.com/gitlab-org/gitlab/-/issues/383200) in GitLab 15.8.
 > - Widget [updated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111763) to poll for updates when there are pending status checks in GitLab 15.11.
@@ -170,7 +166,9 @@ When there are pending status checks, the widget polls for updates every few sec
 
 To retry a failed status check:
 
-1. Expand the merge request widget to show the list of external status checks.
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Code > Merge requests** and find your merge request.
+1. Scroll to the merge request reports section, and expand the dropdown list to show the list of external status checks.
 1. Select **Retry** (**{retry}**) on the failed external status check row. The status check is put back into a pending state.
 
 An organization might have a policy that does not allow merging merge requests if

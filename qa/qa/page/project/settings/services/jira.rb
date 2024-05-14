@@ -25,7 +25,7 @@ module QA
 
             view 'app/assets/javascripts/integrations/edit/components/jira_issues_fields.vue' do
               element 'jira-issues-enabled-checkbox'
-              element 'jira-project-key-field'
+              element 'jira-project-keys-field'
             end
 
             def setup_service_with(url:)
@@ -48,8 +48,8 @@ module QA
               check_element('jira-issues-enabled-checkbox', true)
             end
 
-            def set_jira_project_key(key)
-              fill_element('jira-project-key-field', key)
+            def set_jira_project_keys(key)
+              fill_element('jira-project-keys-field', key)
             end
 
             def click_save_changes_and_wait

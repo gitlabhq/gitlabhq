@@ -12,10 +12,10 @@ module Types
         authorize :admin_project
 
         field :projects,
-              Types::Projects::Services::JiraProjectType.connection_type,
-              null: true,
-              description: 'List of all Jira projects fetched through Jira REST API.',
-              resolver: Resolvers::Projects::JiraProjectsResolver
+          Types::Projects::Services::JiraProjectType.connection_type,
+          null: true,
+          description: 'List of all Jira projects fetched through Jira REST API.',
+          resolver: Resolvers::Projects::JiraProjectsResolver
       end
     end
   end

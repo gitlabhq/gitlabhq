@@ -8,9 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/16647) in GitLab 12.7.
+**Offering:** Self-managed, GitLab Dedicated
 
 The appearance API allows you to maintain the appearance of GitLab as if
 you're using the GitLab UI at `/admin/appearance`. The API requires
@@ -71,7 +69,7 @@ PUT /application/appearance
 | `logo`                            | mixed   | no       | Instance image used on the sign in / sign up page. See [Change logo](#change-logo) |
 | `header_logo`                     | mixed   | no       | Instance image used for the main navigation bar |
 | `favicon`                         | mixed   | no       | Instance favicon in `.ico` or `.png` format |
-| `member_guidelines`               | string  | no       | Markdown text shown on the group or project member page for users with permission to change members
+| `member_guidelines`               | string  | no       | Markdown text shown on the group or project member page for users with permission to change members |
 | `new_project_guidelines`          | string  | no       | Markdown text shown on the new project page |
 | `profile_image_guidelines`        | string  | no       | Markdown text shown on the profile page below Public Avatar |
 | `header_message`                  | string  | no       | Message in the system header bar |

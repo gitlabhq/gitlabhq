@@ -81,7 +81,7 @@ module Feature
         raise Feature::InvalidFeatureFlagError,
           "The given `type: :#{type_in_code}` for `#{key}` is not equal to the " \
           ":#{type} set in its definition file. Ensure to use a valid type in #{path} or ensure that you use " \
-          "a valid syntax: #{TYPES.dig(type, :example)}"
+          "a valid syntax:\n\n#{TYPES.dig(type.to_sym, :example)}"
       end
     end
 

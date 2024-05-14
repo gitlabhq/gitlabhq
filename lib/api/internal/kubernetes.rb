@@ -118,7 +118,6 @@ module API
           end
           params do
             optional :counters, type: Hash do
-              optional :gitops_sync, type: Integer, desc: 'The count to increment the gitops_sync metric by'
               optional :k8s_api_proxy_request, type: Integer, desc: 'The count to increment the k8s_api_proxy_request metric by'
               optional :flux_git_push_notifications_total, type: Integer, desc: 'The count to increment the flux_git_push_notifications_total metrics by'
               optional :k8s_api_proxy_requests_via_ci_access, type: Integer, desc: 'The count to increment the k8s_api_proxy_requests_via_ci_access metric by'

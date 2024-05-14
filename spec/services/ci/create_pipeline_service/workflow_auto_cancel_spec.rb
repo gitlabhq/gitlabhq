@@ -149,40 +149,6 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
         expect(pipeline.errors).to be_empty
         expect(pipeline.pipeline_metadata.auto_cancel_on_job_failure).to eq('all')
       end
-
-      context 'when auto_cancel_pipeline_on_job_failure feature flag is disabled' do
-        before do
-          stub_feature_flags(auto_cancel_pipeline_on_job_failure: false)
-        end
-
-        context 'when there are no other metadata settings present' do
-          it 'creates a pipeline without metadata' do
-            expect(pipeline).to be_persisted
-            expect(pipeline.errors).to be_empty
-            expect(pipeline.pipeline_metadata).to be_nil
-          end
-        end
-
-        context 'when other metadata settings are present' do
-          let(:config) do
-            <<~YAML
-              workflow:
-                name: pipeline_name
-                auto_cancel:
-                  on_job_failure: all
-
-              test1:
-                script: exit 0
-            YAML
-          end
-
-          it 'creates a pipeline with on_job_failure' do
-            expect(pipeline).to be_persisted
-            expect(pipeline.errors).to be_empty
-            expect(pipeline.pipeline_metadata.auto_cancel_on_job_failure).to eq('none')
-          end
-        end
-      end
     end
 
     context 'when on_job_failure is set to invalid' do

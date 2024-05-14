@@ -51,6 +51,14 @@ module API
             def package_name
               "#{params[:module_name]}/#{params[:module_system]}"
             end
+
+            def authorize_workhorse_params
+              {
+                subject: authorized_user_project,
+                maximum_size: authorized_user_project.actual_limits.terraform_module_max_file_size,
+                use_final_store_path: true
+              }
+            end
           end
 
           params do
@@ -127,10 +135,7 @@ module API
                   end
 
                   put :authorize do
-                    authorize_workhorse!(
-                      subject: authorized_user_project,
-                      maximum_size: authorized_user_project.actual_limits.terraform_module_max_file_size
-                    )
+                    authorize_workhorse!(**authorize_workhorse_params)
                   end
 
                   desc 'Upload Terraform Module package file' do

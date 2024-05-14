@@ -6,8 +6,6 @@ module Gitlab
       module Events
         class Commented < BaseImporter
           def execute(issue_event)
-            return true unless import_settings.extended_events?
-
             note = Representation::Note.from_json_hash(
               noteable_id: issue_event.issuable_id,
               noteable_type: issue_event.issuable_type,

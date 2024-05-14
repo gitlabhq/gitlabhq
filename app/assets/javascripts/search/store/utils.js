@@ -18,15 +18,30 @@ function extractKeys(object, keyList) {
 
 export const loadDataFromLS = (key) => {
   if (!AccessorUtilities.canUseLocalStorage()) {
-    return [];
+    return null;
   }
 
   try {
-    return JSON.parse(localStorage.getItem(key)) || [];
+    return JSON.parse(localStorage.getItem(key)) || null;
   } catch {
     // The LS got in a bad state, let's wipe it
     localStorage.removeItem(key);
-    return [];
+    return null;
+  }
+};
+
+export const setDataToLS = (key, value) => {
+  if (!AccessorUtilities.canUseLocalStorage()) {
+    return null;
+  }
+
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+    return value;
+  } catch {
+    // The LS got in a bad state, let's wipe it
+    localStorage.removeItem(key);
+    return null;
   }
 };
 

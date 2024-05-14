@@ -6,20 +6,20 @@ module Ci
 
     DEFAULT_STATUS = 'created'
     BLOCKED_STATUS = %w[manual scheduled].freeze
-    AVAILABLE_STATUSES = %w[created waiting_for_resource preparing waiting_for_callback pending running success failed canceled skipped manual scheduled].freeze
+    AVAILABLE_STATUSES = %w[created waiting_for_resource preparing waiting_for_callback pending running success failed canceling canceled skipped manual scheduled].freeze
     STARTED_STATUSES = %w[running success failed].freeze
     ACTIVE_STATUSES = %w[waiting_for_resource preparing waiting_for_callback pending running].freeze
     COMPLETED_STATUSES = %w[success failed canceled skipped].freeze
     STOPPED_STATUSES = COMPLETED_STATUSES + BLOCKED_STATUS
-    ORDERED_STATUSES = %w[failed preparing pending running waiting_for_callback waiting_for_resource manual scheduled canceled success skipped created].freeze
+    ORDERED_STATUSES = %w[failed preparing pending running waiting_for_callback waiting_for_resource manual scheduled canceling canceled success skipped created].freeze
     PASSED_WITH_WARNINGS_STATUSES = %w[failed canceled].to_set.freeze
     IGNORED_STATUSES = %w[manual].to_set.freeze
-    ALIVE_STATUSES = (ACTIVE_STATUSES + ['created']).freeze
-    CANCELABLE_STATUSES = (ALIVE_STATUSES + ['scheduled']).freeze
+    ALIVE_STATUSES = ORDERED_STATUSES - COMPLETED_STATUSES - BLOCKED_STATUS
+    CANCELABLE_STATUSES = (ALIVE_STATUSES + ['scheduled'] - ['canceling']).freeze
     STATUSES_ENUM = { created: 0, pending: 1, running: 2, success: 3,
                       failed: 4, canceled: 5, skipped: 6, manual: 7,
                       scheduled: 8, preparing: 9, waiting_for_resource: 10,
-                      waiting_for_callback: 11 }.freeze
+                      waiting_for_callback: 11, canceling: 12 }.freeze
 
     UnknownStatusError = Class.new(StandardError)
 
@@ -47,6 +47,10 @@ module Ci
         COMPLETED_STATUSES.map(&:to_sym)
       end
 
+      def completed_with_manual_statuses
+        completed_statuses + [:manual]
+      end
+
       def stopped_statuses
         STOPPED_STATUSES.map(&:to_sym)
       end
@@ -65,6 +69,7 @@ module Ci
         state :failed, value: 'failed'
         state :success, value: 'success'
         state :canceled, value: 'canceled'
+        state :canceling, value: 'canceling'
         state :skipped, value: 'skipped'
         state :manual, value: 'manual'
         state :scheduled, value: 'scheduled'
@@ -79,18 +84,19 @@ module Ci
       scope :pending, -> { with_status(:pending) }
       scope :success, -> { with_status(:success) }
       scope :failed, -> { with_status(:failed) }
+      scope :canceling, -> { with_status(:canceling) }
       scope :canceled, -> { with_status(:canceled) }
       scope :skipped, -> { with_status(:skipped) }
       scope :manual, -> { with_status(:manual) }
       scope :scheduled, -> { with_status(:scheduled) }
       scope :alive, -> { with_status(*ALIVE_STATUSES) }
-      scope :alive_or_scheduled, -> { with_status(*klass::CANCELABLE_STATUSES) }
       scope :created_or_pending, -> { with_status(:created, :pending) }
       scope :running_or_pending, -> { with_status(:running, :pending) }
       scope :finished, -> { with_status(:success, :failed, :canceled) }
-      scope :failed_or_canceled, -> { with_status(:failed, :canceled) }
+      scope :failed_or_canceled, -> { with_status(:failed, :canceled, :canceling) }
       scope :complete, -> { with_status(completed_statuses) }
       scope :incomplete, -> { without_statuses(completed_statuses) }
+      scope :complete_or_manual, -> { with_status(completed_with_manual_statuses) }
       scope :waiting_for_resource_or_upcoming, -> { with_status(:created, :scheduled, :waiting_for_resource) }
 
       scope :cancelable, -> do
@@ -112,6 +118,10 @@ module Ci
 
     def complete?
       COMPLETED_STATUSES.include?(status)
+    end
+
+    def complete_or_manual?
+      self.class.completed_with_manual_statuses.map(&:to_s).include?(status)
     end
 
     def incomplete?

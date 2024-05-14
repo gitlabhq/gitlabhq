@@ -12,10 +12,8 @@ Configure your groups to control group permissions and access.
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34370) in GitLab 12.8.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/224129) in GitLab 13.4.
 > - [Moved to Settings/Repository](https://gitlab.com/gitlab-org/gitlab/-/issues/220365) in GitLab 15.4.
 
 Group push rules allow group maintainers to set
@@ -60,16 +58,13 @@ To change the permitted Git access protocols for a group:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1985) in GitLab 12.0.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/215410) from GitLab Ultimate to GitLab Premium in 13.1.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 To ensure only people from your organization can access particular resources, you can restrict access to groups by IP
 address. This top-level group setting applies to:
 
 - The GitLab UI, including subgroups, projects, and issues. It does not apply to GitLab Pages.
-- [In GitLab 12.3 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/12874), the API.
+- The API.
 - In self-managed installations of GitLab 15.1 and later, you can also configure
   [globally-allowed IP address ranges](../../administration/settings/visibility_and_access_controls.md#configure-globally-allowed-ip-address-ranges)
   at the group level.
@@ -106,6 +101,7 @@ Keep in mind that restricting group access by IP address has the following impli
   restricted IP address, the IP restriction prevents code from being cloned.
 - Users might still see some events from the IP-restricted groups and projects on their dashboard. Activity might include
   push, merge, issue, or comment events.
+- IP access restrictions do not stop users from using the [reply by email feature](../../administration/reply_by_email.md) to create or edit comments on issues or merge requests.
 - IP access restrictions for Git operations via SSH are supported on GitLab SaaS.
   IP access restrictions applied to self-managed instances are possible with [`gitlab-sshd`](../../administration/operations/gitlab_sshd.md)
   with [PROXY protocol](../../administration/operations/gitlab_sshd.md#proxy-protocol-support) enabled.
@@ -124,10 +120,8 @@ To allow runner downloading, add the [outbound runner CIDR ranges](../gitlab_com
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - Support for specifying multiple email domains [added](https://gitlab.com/gitlab-org/gitlab/-/issues/33143) in GitLab 13.1.
-> - Support for restricting access to projects in the group [added](https://gitlab.com/gitlab-org/gitlab/-/issues/14004) in GitLab 14.1.2.
 > - Support for restricting group memberships to groups with a subset of the allowed email domains [added](https://gitlab.com/gitlab-org/gitlab/-/issues/354791) in GitLab 15.1.1
 
 To ensure only users with email addresses in specific domains are added to a group and its projects, define an email domain allowlist at the top-level namespace. Subgroups do not offer the ability to define an alternative allowlist.
@@ -220,17 +214,20 @@ your group.
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216987) in GitLab 13.3.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 By default, projects in a group can be forked.
-Optionally, on [GitLab Premium and Ultimate tiers](https://about.gitlab.com/pricing/),
+In [GitLab Premium and Ultimate tiers](https://about.gitlab.com/pricing/),
 you can prevent the projects in a group from being forked outside of the current top-level group.
 
-This setting is removed from the SAML setting page, and migrated to the
-group settings page. In the interim period, both of these settings are taken into consideration.
-If even one is set to `true`, then the group does not allow outside forks.
+NOTE:
+Whenever possible, you should prevent forking outside the top-level group. This setting reduces the number of avenues that bad actors can potentially use. However, if you expect a lot of collaboration from outside the top-level group, you might not want to prevent forking outside the top-level group.
+
+Prerequisites:
+
+- This setting is enabled on the top-level group only.
+- All subgroups inherit this setting from the top-level group, and it cannot be
+  changed at the subgroup level.
 
 To prevent projects from being forked outside the group:
 
@@ -246,12 +243,12 @@ Existing forks are not removed.
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 As a group Owner, you can prevent any new project membership for all
 projects in a group, allowing tighter control over project membership.
 
-For example, if you want to lock the group for an [Audit Event](../../administration/audit_events.md),
+For example, if you want to lock the group for an [Audit Event](../../administration/audit_event_reports.md),
 you can guarantee that project membership cannot be modified during the audit.
 
 If group membership lock is enabled, the group Owner can still:
@@ -305,7 +302,7 @@ You can use a workaround to [manage project access through LDAP groups](../proje
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 To create group links via CN:
 
@@ -323,7 +320,7 @@ To create group links via CN:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 To create group links via filter:
 
@@ -337,7 +334,7 @@ To create group links via filter:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 LDAP user permissions can be manually overridden by an administrator. To override a user's permissions:
 

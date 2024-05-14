@@ -6,7 +6,7 @@ RSpec.describe 'getting Alert Management Alert Assignees', feature_category: :te
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project) }
-  let_it_be(:current_user) { create(:user) }
+  let_it_be(:current_user) { create(:user, developer_of: project) }
   let_it_be(:alert) { create(:alert_management_alert, project: project) }
   let_it_be(:other_alert) { create(:alert_management_alert, project: project) }
   let_it_be(:todo) { create(:todo, :pending, target: alert, user: current_user, project: project) }
@@ -37,10 +37,6 @@ RSpec.describe 'getting Alert Management Alert Assignees', feature_category: :te
   let(:gql_todos) { gql_alerts.to_h { |gql_alert| [gql_alert['iid'], gql_alert['todos']['nodes']] } }
   let(:gql_alert_todo) { gql_todos[alert.iid.to_s].first }
   let(:gql_other_alert_todo) { gql_todos[other_alert.iid.to_s].first }
-
-  before do
-    project.add_developer(current_user)
-  end
 
   it 'includes the correct metrics dashboard url' do
     post_graphql(graphql_query, current_user: current_user)

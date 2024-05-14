@@ -4,8 +4,8 @@ require 'spec_helper'
 
 RSpec.describe Preloaders::UserMaxAccessLevelInGroupsPreloader, feature_category: :system_access do
   let_it_be(:user) { create(:user) }
-  let_it_be(:group1) { create(:group, :private).tap { |g| g.add_developer(user) } }
-  let_it_be(:group2) { create(:group, :private).tap { |g| g.add_developer(user) } }
+  let_it_be(:group1) { create(:group, :private, developers: user) }
+  let_it_be(:group2) { create(:group, :private, developers: user) }
   let_it_be(:group3) { create(:group, :private) }
 
   let(:max_query_regex) { /SELECT MAX\("members"\."access_level"\).+/ }
@@ -29,7 +29,7 @@ RSpec.describe Preloaders::UserMaxAccessLevelInGroupsPreloader, feature_category
 
   context 'when the preloader is used', :request_store do
     context 'when user has indirect access to groups' do
-      let_it_be(:child_maintainer) { create(:group, :private, parent: group1).tap { |g| g.add_maintainer(user) } }
+      let_it_be(:child_maintainer) { create(:group, :private, parent: group1, maintainers: user) }
       let_it_be(:child_indirect_access) { create(:group, :private, parent: group1) }
 
       let(:groups) { [group1, group2, group3, child_maintainer, child_indirect_access] }

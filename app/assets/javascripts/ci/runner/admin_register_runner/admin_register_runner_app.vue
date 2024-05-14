@@ -3,14 +3,12 @@ import { GlButton } from '@gitlab/ui';
 import { getParameterByName, updateHistory, mergeUrlParams } from '~/lib/utils/url_utility';
 import { PARAM_KEY_PLATFORM, DEFAULT_PLATFORM } from '../constants';
 import RegistrationInstructions from '../components/registration/registration_instructions.vue';
-import PlatformsDrawer from '../components/registration/platforms_drawer.vue';
 
 export default {
   name: 'AdminRegisterRunnerApp',
   components: {
     GlButton,
     RegistrationInstructions,
-    PlatformsDrawer,
   },
   props: {
     runnerId: {
@@ -25,7 +23,6 @@ export default {
   data() {
     return {
       platform: getParameterByName(PARAM_KEY_PLATFORM) || DEFAULT_PLATFORM,
-      isDrawerOpen: false,
     };
   },
   watch: {
@@ -39,9 +36,6 @@ export default {
     onSelectPlatform(platform) {
       this.platform = platform;
     },
-    onToggleDrawer(val = !this.isDrawerOpen) {
-      this.isDrawerOpen = val;
-    },
   },
 };
 </script>
@@ -50,20 +44,11 @@ export default {
     <registration-instructions
       :runner-id="runnerId"
       :platform="platform"
-      @toggleDrawer="onToggleDrawer"
+      @selectPlatform="onSelectPlatform"
     >
       <template #runner-list-name>{{ s__('Runners|Admin area › Runners') }}</template>
     </registration-instructions>
 
-    <platforms-drawer
-      :platform="platform"
-      :open="isDrawerOpen"
-      @selectPlatform="onSelectPlatform"
-      @close="onToggleDrawer(false)"
-    />
-
-    <gl-button :href="runnersPath" variant="confirm">{{
-      s__('Runners|Go to runners page')
-    }}</gl-button>
+    <gl-button :href="runnersPath" variant="confirm">{{ s__('Runners|View runners') }}</gl-button>
   </div>
 </template>

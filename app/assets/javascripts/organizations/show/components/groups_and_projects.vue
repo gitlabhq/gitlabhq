@@ -2,12 +2,19 @@
 import { GlCollapsibleListbox, GlLink } from '@gitlab/ui';
 import { isEqual } from 'lodash';
 import { s__, __ } from '~/locale';
-import GroupsView from '../../shared/components/groups_view.vue';
-import ProjectsView from '../../shared/components/projects_view.vue';
-import { onPageChange } from '../../shared/utils';
-import { QUERY_PARAM_END_CURSOR, QUERY_PARAM_START_CURSOR } from '../../shared/constants';
-import { RESOURCE_TYPE_GROUPS, RESOURCE_TYPE_PROJECTS } from '../../constants';
-import { FILTER_FREQUENTLY_VISITED, GROUPS_AND_PROJECTS_PER_PAGE } from '../constants';
+import GroupsView from '~/organizations/shared/components/groups_view.vue';
+import ProjectsView from '~/organizations/shared/components/projects_view.vue';
+import { onPageChange } from '~/organizations/shared/utils';
+import {
+  RESOURCE_TYPE_GROUPS,
+  RESOURCE_TYPE_PROJECTS,
+  QUERY_PARAM_END_CURSOR,
+  QUERY_PARAM_START_CURSOR,
+  SORT_CREATED_AT,
+  SORT_UPDATED_AT,
+  SORT_DIRECTION_DESC,
+} from '~/organizations/shared/constants';
+import { GROUPS_AND_PROJECTS_PER_PAGE } from '../constants';
 import { buildDisplayListboxItem } from '../utils';
 
 export default {
@@ -20,17 +27,28 @@ export default {
   components: { GlCollapsibleListbox, GlLink },
   displayListboxItems: [
     buildDisplayListboxItem({
-      filter: FILTER_FREQUENTLY_VISITED,
-      resourceType: RESOURCE_TYPE_PROJECTS,
-      text: s__('Organization|Frequently visited projects'),
+      sortName: SORT_UPDATED_AT,
+      resourceType: RESOURCE_TYPE_GROUPS,
+      text: s__('Organization|Recently updated groups'),
     }),
     buildDisplayListboxItem({
-      filter: FILTER_FREQUENTLY_VISITED,
+      sortName: SORT_CREATED_AT,
       resourceType: RESOURCE_TYPE_GROUPS,
-      text: s__('Organization|Frequently visited groups'),
+      text: s__('Organization|Recently created groups'),
+    }),
+    buildDisplayListboxItem({
+      sortName: SORT_UPDATED_AT,
+      resourceType: RESOURCE_TYPE_PROJECTS,
+      text: s__('Organization|Recently updated projects'),
+    }),
+    buildDisplayListboxItem({
+      sortName: SORT_CREATED_AT,
+      resourceType: RESOURCE_TYPE_PROJECTS,
+      text: s__('Organization|Recently created projects'),
     }),
   ],
   PER_PAGE: GROUPS_AND_PROJECTS_PER_PAGE,
+  SORT_DIRECTION_DESC,
   props: {
     groupsAndProjectsOrganizationPath: {
       type: String,
@@ -40,11 +58,10 @@ export default {
   computed: {
     displayListboxSelected() {
       const { display } = this.$route.query;
-      const [{ value: fallbackSelected }] = this.$options.displayListboxItems;
+      const [fallbackSelected] = this.$options.displayListboxItems;
 
       return (
-        this.$options.displayListboxItems.find(({ value }) => value === display)?.value ||
-        fallbackSelected
+        this.$options.displayListboxItems.find(({ value }) => value === display) || fallbackSelected
       );
     },
     startCursor() {
@@ -55,8 +72,11 @@ export default {
     },
     resourceTypeSelected() {
       return [RESOURCE_TYPE_PROJECTS, RESOURCE_TYPE_GROUPS].find((resourceType) =>
-        this.displayListboxSelected.endsWith(resourceType),
+        this.displayListboxSelected.value.endsWith(resourceType),
       );
+    },
+    sortName() {
+      return this.displayListboxSelected.sortName;
     },
     routerView() {
       switch (this.resourceTypeSelected) {
@@ -107,7 +127,7 @@ export default {
         <gl-collapsible-listbox
           block
           toggle-class="gl-w-30"
-          :selected="displayListboxSelected"
+          :selected="displayListboxSelected.value"
           :items="$options.displayListboxItems"
           :toggle-aria-labelled-by="$options.displayListboxLabelId"
           @select="onDisplayListboxSelect"
@@ -124,6 +144,8 @@ export default {
       :start-cursor="startCursor"
       :end-cursor="endCursor"
       :per-page="$options.PER_PAGE"
+      :sort-name="sortName"
+      :sort-direction="$options.SORT_DIRECTION_DESC"
       @page-change="onPageChange"
     />
   </div>

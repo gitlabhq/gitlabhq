@@ -129,7 +129,7 @@ export default {
           <template #head(lastUsedAt)="{ label }">
             <span>{{ label }}</span>
             <gl-link :href="$options.lastUsedHelpLink"
-              ><gl-icon name="question-o" /><span class="gl-sr-only">{{
+              ><gl-icon name="question-o" class="gl-ml-2" /><span class="gl-sr-only">{{
                 s__('AccessTokens|The last time a token was used')
               }}</span></gl-link
             >

@@ -38,6 +38,10 @@ func TestGoCloudObjectUpload(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, []byte(test.ObjectContent), received)
 
+	attr, err := bucket.Attributes(ctx, objectName)
+	require.NoError(t, err)
+	require.Equal(t, "", attr.ContentType)
+
 	cancel()
 
 	require.Eventually(t, func() bool {

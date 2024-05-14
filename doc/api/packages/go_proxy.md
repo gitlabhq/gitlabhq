@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 This is the API documentation for [Go Packages](../../user/packages/go_proxy/index.md).
 This API is behind a feature flag that is disabled by default. GitLab administrators with access to
@@ -27,8 +27,6 @@ See the [Go Proxy package documentation](../../user/packages/go_proxy/index.md)
 for details on which headers and token types are supported. Undocumented authentication methods might be removed in the future.
 
 ## List
-
-> - Introduced in GitLab 13.1.
 
 Get all tagged versions for a given Go module:
 
@@ -52,8 +50,6 @@ Example output:
 ```
 
 ## Version metadata
-
-> - Introduced in GitLab 13.1.
 
 Get all tagged versions for a given Go module:
 
@@ -82,8 +78,6 @@ Example output:
 
 ## Download module file
 
-> - Introduced in GitLab 13.1.
-
 Fetch the `.mod` module file:
 
 ```plaintext
@@ -109,8 +103,6 @@ curl --header "Private-Token: <personal_access_token>" "https://gitlab.example.c
 This writes to `foo.mod` in the current directory.
 
 ## Download module source
-
-> - Introduced in GitLab 13.1.
 
 Fetch the `.zip` of the module source:
 

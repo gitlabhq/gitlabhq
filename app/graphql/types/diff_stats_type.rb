@@ -9,11 +9,15 @@ module Types
     description 'Changes to a single file'
 
     field :additions, GraphQL::Types::Int, null: false,
-                                           description: 'Number of lines added to this file.'
+      description: 'Number of lines added to this file.'
     field :deletions, GraphQL::Types::Int, null: false,
-                                           description: 'Number of lines deleted from this file.'
+      description: 'Number of lines deleted from this file.'
     field :path, GraphQL::Types::String, null: false,
-                                         description: 'File path, relative to repository root.'
+      description: 'File path, relative to repository root.'
+
+    def path
+      object.path.dup.force_encoding('UTF-8')
+    end
   end
   # rubocop: enable Graphql/AuthorizeTypes
 end

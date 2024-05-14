@@ -14,7 +14,13 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
   it_behaves_like 'having unique enum values'
 
-  it_behaves_like 'ensures runners_token is prefixed', :project
+  context 'when runner registration is allowed' do
+    let_it_be(:project) { create(:project, :allow_runner_registration_token) }
+
+    it_behaves_like 'ensures runners_token is prefixed' do
+      subject(:record) { project }
+    end
+  end
 
   describe 'associations' do
     it { is_expected.to belong_to(:organization) }
@@ -49,6 +55,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it { is_expected.to have_one(:slack_integration) }
     it { is_expected.to have_one(:catalog_resource) }
     it { is_expected.to have_many(:ci_components).class_name('Ci::Catalog::Resources::Component') }
+    it { is_expected.to have_many(:ci_component_usages).class_name('Ci::Catalog::Resources::Components::Usage') }
     it { is_expected.to have_many(:catalog_resource_versions).class_name('Ci::Catalog::Resources::Version') }
     it { is_expected.to have_many(:catalog_resource_sync_events).class_name('Ci::Catalog::Resources::SyncEvent') }
     it { is_expected.to have_one(:microsoft_teams_integration) }
@@ -59,6 +66,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it { is_expected.to have_one(:pumble_integration) }
     it { is_expected.to have_one(:webex_teams_integration) }
     it { is_expected.to have_one(:packagist_integration) }
+    it { is_expected.to have_one(:phorge_integration) }
     it { is_expected.to have_one(:pushover_integration) }
     it { is_expected.to have_one(:apple_app_store_integration) }
     it { is_expected.to have_one(:google_play_integration) }
@@ -185,6 +193,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it { is_expected.to have_many(:deployment_hooks_integrations).class_name('Integration') }
     it { is_expected.to have_many(:alert_hooks_integrations).class_name('Integration') }
     it { is_expected.to have_many(:incident_hooks_integrations).class_name('Integration') }
+    it { is_expected.to have_many(:relation_import_trackers).class_name('Projects::ImportExport::RelationImportTracker') }
 
     # GitLab Pages
     it { is_expected.to have_many(:pages_domains) }
@@ -1047,7 +1056,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     let_it_be(:personal_project) { create(:project, namespace: namespace_user.namespace) }
     let_it_be(:group_project) { create(:project, group: group) }
     let_it_be(:another_user) { create(:user) }
-    let_it_be(:group_owner_user) { create(:user).tap { |user| group.add_owner(user) } }
+    let_it_be(:group_owner_user) { create(:user, owner_of: group) }
 
     where(:project, :user, :result) do
       ref(:personal_project)      | ref(:namespace_user)   | true
@@ -1141,15 +1150,24 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
-  describe 'project token' do
-    it 'sets an random token if none provided' do
-      project = FactoryBot.create(:project, runners_token: '')
-      expect(project.runners_token).not_to eq('')
+  describe 'runner registration token' do
+    let(:project) { create(:project, :allow_runner_registration_token, runners_token: initial_token) }
+
+    context 'when no token provided' do
+      let(:initial_token) { '' }
+
+      it 'sets a random token as the project runners_token' do
+        expect(project.runners_token).to be_present
+        expect(project.runners_token).not_to eq(initial_token)
+      end
     end
 
-    it 'does not set an random token if one provided' do
-      project = FactoryBot.create(:project, runners_token: "#{RunnersTokenPrefixable::RUNNERS_TOKEN_PREFIX}my-token")
-      expect(project.runners_token).to eq("#{RunnersTokenPrefixable::RUNNERS_TOKEN_PREFIX}my-token")
+    context 'when initial token exists' do
+      let(:initial_token) { "#{RunnersTokenPrefixable::RUNNERS_TOKEN_PREFIX}my-token" }
+
+      it 'assigns the provided token value as the project runners_token' do
+        expect(project.runners_token).to eq(initial_token)
+      end
     end
   end
 
@@ -1418,6 +1436,14 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         end
       end
 
+      context 'when absolute_path is true' do
+        it 'returns complete path to the project with leading slash', :aggregate_failures do
+          be_full_path = eq('/sample-namespace/sample-project')
+
+          expect(project.to_reference_base(full: true, absolute_path: true)).to be_full_path
+        end
+      end
+
       context 'when same project argument' do
         it 'returns nil' do
           expect(project.to_reference_base(project)).to be_nil
@@ -1489,6 +1515,26 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         it 'returns name of the project' do
           expect(project.to_human_reference(another_project)).to eq 'Sample project'
         end
+      end
+    end
+
+    describe '#reference_pattern' do
+      it 'matches a normal reference' do
+        reference = project.to_reference
+        match = reference.match(described_class.reference_pattern)
+
+        expect(match[:namespace]).to eq project.namespace.full_path
+        expect(match[:project]).to eq project.path
+        expect(match[:absolute_path]).to eq nil
+      end
+
+      it 'matches an absolute reference' do
+        reference = "/#{project.to_reference}"
+        match = reference.match(described_class.reference_pattern)
+
+        expect(match[:namespace]).to eq project.namespace.full_path
+        expect(match[:project]).to eq project.path
+        expect(match[:absolute_path]).to eq '/'
       end
     end
   end
@@ -2181,6 +2227,32 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
+  describe '.sorted_by_similarity_desc' do
+    let_it_be(:project_a) { create(:project, path: 'similar-1', name: 'similar-1', description: 'A similar project') }
+    let_it_be_with_reload(:project_b) { create(:project, path: 'similar-2', name: 'similar-2', description: 'A related project') }
+    let_it_be(:project_c) { create(:project, path: 'different-path', name: 'different-name', description: 'A different project') }
+
+    let(:search_term) { 'similar' }
+
+    subject(:relation) { described_class.sorted_by_similarity_desc(search_term) }
+
+    context 'when sorting with full similarity' do
+      it 'sorts projects based on path, name, and description similarity' do
+        expect(relation).to eq([project_a, project_b, project_c])
+      end
+    end
+
+    context 'when sorting with path-only similarity' do
+      let(:search_term) { 'diff' }
+
+      subject(:relation) { described_class.sorted_by_similarity_desc(search_term, full_path_only: true) }
+
+      it 'sorts projects based on path similarity only' do
+        expect(relation).to eq([project_c, project_b, project_a])
+      end
+    end
+  end
+
   describe '.with_shared_runners_enabled' do
     subject { described_class.with_shared_runners_enabled }
 
@@ -2234,6 +2306,16 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       jira_dvcs_server_project = create(:project, :jira_dvcs_server)
 
       expect(described_class.with_jira_dvcs_server).to contain_exactly(jira_dvcs_server_project)
+    end
+  end
+
+  describe '.by_name' do
+    let_it_be(:project1) { create(:project, :small_repo, name: 'Project 1') }
+    let_it_be(:project2) { create(:project, :small_repo, name: 'Project 2') }
+
+    it 'includes correct projects' do
+      expect(described_class.by_name(project1.name)).to eq([project1])
+      expect(described_class.by_name(project2.name.chop)).to match_array([project1, project2])
     end
   end
 
@@ -2884,16 +2966,18 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     subject { project.default_branch_protected? }
 
     where(:default_branch_protection_level, :result) do
-      Gitlab::Access::PROTECTION_NONE                 | false
-      Gitlab::Access::PROTECTION_DEV_CAN_PUSH         | false
-      Gitlab::Access::PROTECTION_DEV_CAN_MERGE        | true
-      Gitlab::Access::PROTECTION_FULL                 | true
-      Gitlab::Access::PROTECTION_DEV_CAN_INITIAL_PUSH | true
+      Gitlab::Access::BranchProtection.protection_none                    | false
+      Gitlab::Access::BranchProtection.protection_partial                 | false
+      Gitlab::Access::BranchProtection.protected_against_developer_pushes | true
+      Gitlab::Access::BranchProtection.protected_fully                    | true
+      Gitlab::Access::BranchProtection.protected_after_initial_push       | true
     end
 
     with_them do
       before do
-        expect(project.namespace).to receive(:default_branch_protection).and_return(default_branch_protection_level)
+        expect(project.namespace)
+          .to receive(:default_branch_protection_settings)
+                .and_return(default_branch_protection_level)
       end
 
       it { is_expected.to eq(result) }
@@ -2907,16 +2991,18 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     subject { project.initial_push_to_default_branch_allowed_for_developer? }
 
     where(:default_branch_protection_level, :result) do
-      Gitlab::Access::PROTECTION_NONE                 | true
-      Gitlab::Access::PROTECTION_DEV_CAN_PUSH         | true
-      Gitlab::Access::PROTECTION_DEV_CAN_MERGE        | false
-      Gitlab::Access::PROTECTION_FULL                 | false
-      Gitlab::Access::PROTECTION_DEV_CAN_INITIAL_PUSH | true
+      Gitlab::Access::BranchProtection.protection_none                    | true
+      Gitlab::Access::BranchProtection.protection_partial                 | true
+      Gitlab::Access::BranchProtection.protected_against_developer_pushes | false
+      Gitlab::Access::BranchProtection.protected_fully                    | false
+      Gitlab::Access::BranchProtection.protected_after_initial_push       | true
     end
 
     with_them do
       before do
-        expect(project.namespace).to receive(:default_branch_protection).and_return(default_branch_protection_level)
+        expect(project.namespace)
+          .to receive(:default_branch_protection_settings)
+                .and_return(default_branch_protection_level)
       end
 
       it { is_expected.to eq(result) }
@@ -3129,22 +3215,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
               shard_name: project.repository_storage,
               object_format: 'sha256'
             )
-          end
-
-          context 'when feature flag "store_object_format" is disabled' do
-            before do
-              stub_feature_flags(store_object_format: false)
-            end
-
-            it 'tracks a SHA1 object format' do
-              project.track_project_repository
-
-              expect(project.project_repository).to have_attributes(
-                disk_path: project.disk_path,
-                shard_name: project.repository_storage,
-                object_format: 'sha1'
-              )
-            end
           end
         end
       end
@@ -3902,6 +3972,40 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     subject(:project) { build(:project, import_type: 'gitea') }
 
     it { expect(project.gitea_import?).to be true }
+  end
+
+  describe '#any_import_in_progress?' do
+    let_it_be_with_reload(:project) { create(:project) }
+
+    subject { project.any_import_in_progress? }
+
+    context 'when a file import is in progress' do
+      before do
+        create(:import_state, :started, project: project)
+      end
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when a relation import is in progress' do
+      before do
+        create(:relation_import_tracker, :started, project: project)
+      end
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when direct transfer is in progress' do
+      before do
+        create(:bulk_import_entity, :project_entity, :started, project: project)
+      end
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when no imports are in progress' do
+      it { is_expected.to be_falsy }
+    end
   end
 
   describe '#has_remote_mirror?' do
@@ -5894,7 +5998,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       expect(ProjectCacheWorker).to receive(:perform_async).with(project.id, [], [:repository_size, :wiki_size])
       expect(DetectRepositoryLanguagesWorker).to receive(:perform_async).with(project.id)
       expect(AuthorizedProjectUpdate::ProjectRecalculateWorker).to receive(:perform_async).with(project.id)
-      expect(project).to receive(:set_full_path)
 
       project.after_import
     end
@@ -5916,14 +6019,14 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     context 'branch protection' do
       let_it_be(:namespace) { create(:namespace) }
 
-      let(:project) { create(:project, :repository, namespace: namespace) }
+      let_it_be(:project) { create(:project, :repository, namespace: namespace) }
 
       before do
         create(:import_state, :started, project: project)
       end
 
       it 'does not protect when branch protection is disabled' do
-        expect(project.namespace).to receive(:default_branch_protection).and_return(Gitlab::Access::PROTECTION_NONE)
+        expect(project.namespace).to receive(:default_branch_protection_settings).and_return(Gitlab::Access::BranchProtection.protection_none)
 
         project.after_import
 
@@ -5931,7 +6034,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       end
 
       it "gives developer access to push when branch protection is set to 'developers can push'" do
-        expect(project.namespace).to receive(:default_branch_protection).and_return(Gitlab::Access::PROTECTION_DEV_CAN_PUSH)
+        expect(project.namespace).to receive(:default_branch_protection_settings).and_return(Gitlab::Access::BranchProtection.protection_partial)
 
         project.after_import
 
@@ -5941,7 +6044,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       end
 
       it "gives developer access to merge when branch protection is set to 'developers can merge'" do
-        expect(project.namespace).to receive(:default_branch_protection).and_return(Gitlab::Access::PROTECTION_DEV_CAN_MERGE)
+        expect(project.namespace).to receive(:default_branch_protection_settings).and_return(Gitlab::Access::BranchProtection.protected_against_developer_pushes)
 
         project.after_import
 
@@ -5986,30 +6089,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         .and_call_original
 
       project.update_project_counter_caches
-    end
-  end
-
-  describe '#set_full_path' do
-    let_it_be(:project) { create(:project, :repository) }
-
-    let(:repository) { project.repository.raw }
-
-    it 'writes full path in .git/config when key is missing' do
-      project.set_full_path
-
-      expect(repository.full_path).to eq project.full_path
-    end
-
-    it 'updates full path in .git/config when key is present' do
-      project.set_full_path(gl_full_path: 'old/path')
-
-      expect { project.set_full_path }.to change { repository.full_path }.from('old/path').to(project.full_path)
-    end
-
-    it 'does not raise an error with an empty repository' do
-      project = create(:project_empty_repo)
-
-      expect { project.set_full_path }.not_to raise_error
     end
   end
 
@@ -6215,6 +6294,14 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         create(:project_hook, emoji_events: true, project: project)
 
         expect(project.has_active_hooks?(:emoji_hooks)).to eq(true)
+      end
+    end
+
+    context 'with :access_token_hooks scope' do
+      it 'returns true when a matching access token hook exists' do
+        create(:project_hook, resource_access_token_events: true, project: project)
+
+        expect(project.has_active_hooks?(:resource_access_token_hooks)).to eq(true)
       end
     end
   end
@@ -6752,26 +6839,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
   describe '#disabled_integrations' do
     subject { build(:project).disabled_integrations }
 
-    it { is_expected.to include('gitlab_slack_application') }
-    it { is_expected.not_to include('slack_slash_commands') }
-
-    context 'when slack_app_enabled setting is enabled' do
-      before do
-        stub_application_setting(slack_app_enabled: true)
-      end
-
-      it { is_expected.to include('slack_slash_commands') }
-      it { is_expected.not_to include('gitlab_slack_application') }
-    end
-
-    context 'when Rails.env.development?' do
-      before do
-        allow(Rails.env).to receive(:development?).and_return(true)
-      end
-
-      it { is_expected.not_to include('slack_slash_commands') }
-      it { is_expected.not_to include('gitlab_slack_application') }
-    end
+    it { is_expected.to include('zentao') }
   end
 
   describe '#find_or_initialize_integration' do
@@ -6876,6 +6944,18 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       create(:project, package_registry_access_level: ProjectFeature::DISABLED, packages_enabled: false)
 
       expect(subject).to contain_exactly(project_1)
+    end
+  end
+
+  describe '.not_a_fork' do
+    let_it_be(:project) { create(:project, :public) }
+
+    subject(:not_a_fork) { described_class.not_a_fork }
+
+    it 'returns projects which are not forks' do
+      fork_project(project)
+
+      expect(not_a_fork).to contain_exactly(project)
     end
   end
 
@@ -7628,33 +7708,55 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     let_it_be(:user) { create(:user) }
     let_it_be(:project) { create(:project) }
 
-    context 'when project storage_size does not exceed the application setting max_export_size' do
-      it 'starts project export worker' do
-        stub_application_setting(max_export_size: 1)
-        allow(project.statistics).to receive(:storage_size).and_return(0.megabytes)
-
-        expect(ProjectExportWorker).to receive(:perform_async).with(user.id, project.id, nil, {})
+    context 'when parallel_project_export feature flag is enabled' do
+      it 'enqueues CreateionProjectExportWorker' do
+        expect(Projects::ImportExport::CreateRelationExportsWorker)
+          .to receive(:perform_async)
+          .with(user.id, project.id, nil, {})
 
         project.add_export_job(current_user: user)
       end
     end
 
-    context 'when project storage_size exceeds the application setting max_export_size' do
-      it 'raises Project::ExportLimitExceeded' do
-        stub_application_setting(max_export_size: 1)
-        allow(project.statistics).to receive(:storage_size).and_return(2.megabytes)
-
-        expect(ProjectExportWorker).not_to receive(:perform_async).with(user.id, project.id, nil, {})
-        expect { project.add_export_job(current_user: user) }.to raise_error(Project::ExportLimitExceeded)
+    context 'when parallel_project_export feature flag is disabled' do
+      before do
+        stub_feature_flags(parallel_project_export: false)
       end
-    end
 
-    context 'when application setting max_export_size is not set' do
-      it 'starts project export worker' do
-        allow(project.statistics).to receive(:storage_size).and_return(2.megabytes)
+      it 'enquques ProjectExportWorker' do
         expect(ProjectExportWorker).to receive(:perform_async).with(user.id, project.id, nil, {})
 
         project.add_export_job(current_user: user)
+      end
+
+      context 'when project storage_size does not exceed the application setting max_export_size' do
+        it 'starts project export worker' do
+          stub_application_setting(max_export_size: 1)
+          allow(project.statistics).to receive(:storage_size).and_return(0.megabytes)
+
+          expect(ProjectExportWorker).to receive(:perform_async).with(user.id, project.id, nil, {})
+
+          project.add_export_job(current_user: user)
+        end
+      end
+
+      context 'when project storage_size exceeds the application setting max_export_size' do
+        it 'raises Project::ExportLimitExceeded' do
+          stub_application_setting(max_export_size: 1)
+          allow(project.statistics).to receive(:storage_size).and_return(2.megabytes)
+
+          expect(ProjectExportWorker).not_to receive(:perform_async).with(user.id, project.id, nil, {})
+          expect { project.add_export_job(current_user: user) }.to raise_error(Project::ExportLimitExceeded)
+        end
+      end
+
+      context 'when application setting max_export_size is not set' do
+        it 'starts project export worker' do
+          allow(project.statistics).to receive(:storage_size).and_return(2.megabytes)
+          expect(ProjectExportWorker).to receive(:perform_async).with(user.id, project.id, nil, {})
+
+          project.add_export_job(current_user: user)
+        end
       end
     end
   end
@@ -8643,12 +8745,12 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
-  describe '#work_items_mvc_feature_flag_enabled?' do
+  describe '#work_items_beta_feature_flag_enabled?' do
     let_it_be(:group_project) { create(:project, :in_subgroup) }
 
     it_behaves_like 'checks parent group feature flag' do
-      let(:feature_flag_method) { :work_items_mvc_feature_flag_enabled? }
-      let(:feature_flag) { :work_items_mvc }
+      let(:feature_flag_method) { :work_items_beta_feature_flag_enabled? }
+      let(:feature_flag) { :work_items_beta }
       let(:subject_project) { group_project }
     end
   end
@@ -9170,14 +9272,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it { is_expected.to be_falsy }
   end
 
-  describe '#code_suggestions_enabled?' do
-    let(:project) { build_stubbed(:project) }
-
-    subject(:code_suggestions_enabled?) { project.code_suggestions_enabled? }
-
-    it { is_expected.to be_falsy }
-  end
-
   private
 
   def finish_job(export_job)
@@ -9233,5 +9327,32 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         expect(groups_path).to eq([])
       end
     end
+  end
+
+  describe '.by_project_namespace' do
+    let_it_be(:project) { create(:project) }
+    let(:project_namespace) { project.project_namespace }
+
+    it 'returns project' do
+      expect(described_class.by_project_namespace(project_namespace)).to match_array([project])
+    end
+
+    context 'when using ID' do
+      it 'returns project' do
+        expect(described_class.by_project_namespace(project_namespace.id)).to match_array([project])
+      end
+    end
+
+    context 'when using non-existent-id' do
+      it 'returns nothing' do
+        expect(described_class.by_project_namespace(non_existing_record_id)).to be_empty
+      end
+    end
+  end
+
+  describe '#supports_saved_replies?' do
+    let_it_be(:project) { create(:project) }
+
+    it { expect(project.supports_saved_replies?).to eq(false) }
   end
 end

@@ -137,6 +137,25 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
       expect(bridge.reload).to be_success
     end
 
+    it 'returns and tracks an error for invalid status transitions' do
+      allow(bridge).to receive(:success!).and_raise(
+        StateMachines::InvalidTransition.new(
+          bridge,
+          Ci::Bridge.state_machines[:status],
+          'success'
+        )
+      )
+
+      expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+        instance_of(Ci::Bridge::InvalidTransitionError),
+        { bridge_id: bridge.id, downstream_pipeline_id: anything }
+      ) do |error|
+        expect(error.backtrace).to be_present
+      end
+
+      expect(subject).to be_error
+    end
+
     it 'triggers the upstream pipeline duration calculation', :sidekiq_inline do
       expect { subject }
         .to change { upstream_pipeline.reload.duration }.from(nil).to(an_instance_of(Integer))

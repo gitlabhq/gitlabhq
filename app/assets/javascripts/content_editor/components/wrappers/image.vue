@@ -88,7 +88,7 @@ export default {
 </script>
 <template>
   <node-view-wrapper
-    v-if="!isStaleUploadedImage"
+    v-show="!isStaleUploadedImage"
     as="span"
     class="gl-relative gl-display-inline-block"
   >

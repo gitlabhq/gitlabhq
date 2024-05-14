@@ -28,6 +28,8 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
       # Begin of the /-/ scope.
       # Use this scope for all new project routes.
       scope '-' do
+        post :preview_markdown
+
         get 'archive/*id', format: true, constraints: { format: Gitlab::PathRegex.archive_formats_regex, id: /.+?/ }, to: 'repositories#archive', as: 'archive'
 
         namespace :security do
@@ -45,7 +47,8 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           end
         end
 
-        resources :infrastructure_registry, only: [:index, :show], module: :packages
+        resources :terraform_module_registry, only: [:index, :show], module: :packages, as: :infrastructure_registry, controller: 'infrastructure_registry'
+        get :infrastructure_registry, to: redirect('%{namespace_id}/%{project_id}/-/terraform_module_registry')
 
         resources :jobs, only: [:index, :show], constraints: { id: /\d+/ } do
           collection do
@@ -67,6 +70,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
             post :erase
             get :trace, defaults: { format: 'json' }
             get :raw
+            get :viewer
             get :terminal
             get :proxy
             get :test_report_summary
@@ -172,6 +176,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
             get 'commands'
             get 'snippets'
             get 'contacts'
+            get 'wikis'
           end
         end
 
@@ -354,6 +359,10 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           collection do
             post :import_csv
             post 'import_csv/authorize', to: 'work_items#authorize'
+          end
+
+          member do
+            get '/designs(/*vueroute)', to: 'work_items#show', as: :designs, format: false
           end
         end
 

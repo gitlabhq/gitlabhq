@@ -17,8 +17,27 @@ self-managed instances. If you are an administrator, to access the Admin Area:
 - In GitLab 16.1 and later: on the left sidebar, select **Search or go to**, then select **Admin Area**.
 - In GitLab 16.0 and earlier: on the top bar, select **Main menu > Admin**.
 
+If the GitLab instance uses Admin Mode, you must [enable Admin Mode for your session](settings/sign_in_restrictions.md#turn-on-admin-mode-for-your-session) before
+the **Admin Area** button is visible.
+
 NOTE:
 Only administrators can access the Admin Area.
+
+## Administering organizations
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419540) in GitLab 16.10 [with a flag](feature_flags.md) named `ui_for_organizations`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](feature_flags.md) named `ui_for_organizations`.
+On GitLab.com and GitLab Dedicated, this feature is not available.
+This feature is not ready for production use.
+
+You can administer all organizations in the GitLab instance from the Admin Area's Organizations page.
+
+To access the Organizations page:
+
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Overview > Organizations**.
 
 ## Administering projects
 
@@ -71,37 +90,39 @@ To filter only projects in that namespace, select from the **Namespace** dropdow
 You can combine the filter options. For example, to list only public projects with `score` in their name:
 
 1. Select the **Public** tab.
-1. Enter `score` in the **Filter by name...** input box.
+1. Enter `score` in the **Filter by name** text box.
 
 ## Administering users
+
+> - Filtering users [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238183) in GitLab 17.0.
 
 You can administer all users in the GitLab instance from the Admin Area's Users page:
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Overview > Users**.
 
-To list users matching a specific criteria, select one of the following tabs on the **Users** page:
+You can use the user search box to search and filter users by:
 
-- **Active**
-- **Admins**
-- **2FA Enabled**
-- **2FA Disabled**
-- **External**
-- **[Blocked](../administration/moderate_users.md#block-a-user)**
-- **[Deactivated](../administration/moderate_users.md#deactivate-a-user)**
-- **Without projects**
+- User **access level**.
+- Whether **two-factor authentication** is enabled or disabled.
+- User **state**.
+
+You can also type text into the search box. For example, the name of a specific user.
+This text search is case insensitive, and applies partial matching to name and username.
+To search for an email address, you must provide the complete email address.
 
 For each user, the following are listed:
 
-1. Username
-1. Email address
-1. Project membership count
-1. Group membership count ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/276215) in GitLab 13.12)
-1. Date of account creation
-1. Date of last activity
+- Username
+- Email address
+- Project membership count
+- Group membership count
+- Date of account creation
+- Date of last activity
 
-To edit a user, in the user's row, select **Edit**. To delete the user, or delete the user and their contributions, select the cog dropdown list in
-that user's row, and select the desired option.
+To edit a user, in the user's row, select **Edit**. To delete the user, or delete
+the user and their contributions, select the cog dropdown list in that user's row,
+and select the desired option.
 
 To change the sort order:
 
@@ -109,10 +130,6 @@ To change the sort order:
 1. Select the desired order.
 
 By default the sort dropdown list shows **Name**.
-
-To search for users, enter your criteria in the search field. The user search is case
-insensitive, and applies partial matching to name and username. To search for an email address,
-you must provide the complete email address.
 
 ### User impersonation
 
@@ -152,9 +169,6 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** Self-managed
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1772) in GitLab 13.8.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/292436) in GitLab 13.9.
-
 An administrator can export user permissions for all users in the GitLab instance from the Admin Area's Users page.
 The export lists direct membership the users have in groups and projects.
 
@@ -165,7 +179,7 @@ The following data is included in the export:
 - Type
 - Path
 - Access level ([Project](../user/permissions.md#project-members-permissions) and [Group](../user/permissions.md#group-members-permissions))
-- Date of last activity ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345388) in GitLab 14.6). For a list of activities that populate this column, see the [Users API documentation](../api/users.md#get-user-activities).
+- Date of last activity. For a list of activities that populate this column, see the [Users API documentation](../api/users.md#get-user-activities).
 
 Only the first 100,000 user accounts are exported.
 
@@ -235,10 +249,9 @@ To [Create a new group](../user/group/index.md#create-a-group) select **New grou
 
 ## Administering topics
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340920) in GitLab 14.4.
 > - Merging topics [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366884) in GitLab 15.5.
 
-[Topics](../user/project/settings/project_features_permissions.md#project-topics) are used to categorize and find similar projects.
+You can categorize and find similar projects with [topics](../user/project/project_topics.md).
 
 ### View all topics
 
@@ -347,17 +360,17 @@ To access the **Runners** page:
 
 To search runners' descriptions:
 
-1. In the **Search or filter results...** field, type the description of the runner you want to
+1. In the **Search or filter results** text box, type the description of the runner you want to
    find.
 1. Press <kbd>Enter</kbd>.
 
 You can also filter runners by status, type, and tag. To filter:
 
-1. Select a tab or the **Search or filter results...** field.
+1. Select a tab or the **Search or filter results** text box.
 1. Select any **Type**, or filter by **Status** or **Tags**.
 1. Select or enter your search criteria.
 
-![Attributes of a runner, with the **Search or filter results...** field active](img/index_runners_search_or_filter_v14_5.png)
+![Attributes of a runner filtered by status](img/index_runners_search_or_filter_v14_5.png)
 
 #### Bulk delete runners
 
@@ -432,7 +445,7 @@ The **System Info** page provides the following statistics:
 | Disk Usage     | Disk space in use, and total disk space available |
 | System started | When the system hosting GitLab was started. In GitLab 15.1 and earlier, this was an uptime statistic. |
 
-These statistics are updated only when you navigate to the **System Info** page, or you refresh the page in your browser.
+These statistics are updated only when you go to the **System Info** page, or you refresh the page in your browser.
 
 ### Background Jobs
 
@@ -454,7 +467,7 @@ The Sidekiq dashboard consists of the following elements:
 
 ### Logs
 
-Since GitLab 13.0, **Log** view has been removed from the Admin Area dashboard since the logging does not work in multi-node setups and could cause confusion for administrators by displaying partial information.
+**Log** view has been removed from the Admin Area dashboard since the logging does not work in multi-node setups and could cause confusion for administrators by displaying partial information.
 
 For multi-node systems we recommend ingesting the logs into services like Elasticsearch and Splunk.
 
@@ -489,4 +502,3 @@ The **Instance overview** section of the Dashboard lists the current statistics 
 NOTE:
 These statistics show exact counts for values less than 10,000. For values of 10,000 and higher, these statistics show approximate data
 when [TablesampleCountStrategy](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/database/count/tablesample_count_strategy.rb?ref_type=heads#L16) and [ReltuplesCountStrategy](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/database/count/reltuples_count_strategy.rb?ref_type=heads) strategies are used for calculations.
-.

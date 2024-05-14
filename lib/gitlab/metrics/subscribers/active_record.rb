@@ -9,15 +9,15 @@ module Gitlab
 
         attach_to :active_record
 
-        DB_COUNTERS = %i[count write_count cached_count].freeze
+        DB_COUNTERS = %i[count write_count cached_count txn_count].freeze
         SQL_COMMANDS_WITH_COMMENTS_REGEX = %r{\A(/\*.*\*/\s)?((?!(.*[^\w'"](DELETE|UPDATE|INSERT INTO)[^\w'"])))(WITH.*)?(SELECT)((?!(FOR UPDATE|FOR SHARE)).)*$}i
 
         SQL_DURATION_BUCKET = [0.05, 0.1, 0.25].freeze
         TRANSACTION_DURATION_BUCKET = [0.1, 0.25, 1].freeze
 
         DB_LOAD_BALANCING_ROLES = %i[replica primary].freeze
-        DB_LOAD_BALANCING_COUNTERS = %i[count cached_count wal_count wal_cached_count].freeze
-        DB_LOAD_BALANCING_DURATIONS = %i[duration_s].freeze
+        DB_LOAD_BALANCING_COUNTERS = %i[txn_count count cached_count wal_count wal_cached_count].freeze
+        DB_LOAD_BALANCING_DURATIONS = %i[txn_max_duration_s txn_duration_s duration_s].freeze
 
         SQL_WAL_LOCATION_REGEX = /(pg_current_wal_insert_lsn\(\)::text|pg_last_wal_replay_lsn\(\)::text)/
 
@@ -28,6 +28,20 @@ module Gitlab
           observe(:gitlab_database_transaction_seconds, event) do
             buckets TRANSACTION_DURATION_BUCKET
           end
+
+          return unless ::Gitlab::SafeRequestStore.active?
+
+          # transactions uses a Gitlab::Database::Loadbalancing::ConnectionProxy which has a :unknown role
+          # so we only track the overall and per-config txn duration
+          db_config_name = db_config_name(event.payload)
+          increment_log_key(compose_metric_key(:txn_count))
+          increment_log_key(compose_metric_key(:txn_count, nil, db_config_name))
+
+          duration = convert_ms_to_s(event.duration)
+          increment_duration_key(compose_metric_key(:txn_duration_s), duration)
+          increment_duration_key(compose_metric_key(:txn_duration_s, nil, db_config_name), duration)
+          update_max_duration_key(:txn_max_duration_s, duration)
+          update_max_duration_key(:txn_max_duration_s, duration, db_config_name)
         end
 
         def sql(event)
@@ -102,14 +116,12 @@ module Gitlab
 
           return unless ::Gitlab::SafeRequestStore.active?
 
-          duration = event.duration / 1000.0
-          duration_key = compose_metric_key(:duration_s, db_role)
-          ::Gitlab::SafeRequestStore[duration_key] = (::Gitlab::SafeRequestStore[duration_key].presence || 0) + duration
+          duration = convert_ms_to_s(event.duration)
+          increment_duration_key(compose_metric_key(:duration_s, db_role), duration)
 
           # Per database metrics
           db_config_name = db_config_name(event.payload)
-          duration_key = compose_metric_key(:duration_s, nil, db_config_name)
-          ::Gitlab::SafeRequestStore[duration_key] = (::Gitlab::SafeRequestStore[duration_key].presence || 0) + duration
+          increment_duration_key(compose_metric_key(:duration_s, nil, db_config_name), duration)
         end
 
         def ignored_query?(payload)
@@ -125,8 +137,6 @@ module Gitlab
         end
 
         def increment(counter, db_config_name:, db_role: nil)
-          log_key = compose_metric_key(counter, db_role)
-
           prometheus_key = if db_role
                              :"gitlab_transaction_db_#{db_role}_#{counter}_total"
                            else
@@ -135,21 +145,21 @@ module Gitlab
 
           current_transaction&.increment(prometheus_key, 1, { db_config_name: db_config_name })
 
-          Gitlab::SafeRequestStore[log_key] = Gitlab::SafeRequestStore[log_key].to_i + 1
+          increment_log_key(compose_metric_key(counter, db_role))
 
           # To avoid confusing log keys we only log the db_config_name metrics
           # when we are also logging the db_role. Otherwise it will be hard to
           # tell if the log key is referring to a db_role OR a db_config_name.
           if db_role.present? && db_config_name.present?
-            log_key = compose_metric_key(counter, nil, db_config_name)
-            Gitlab::SafeRequestStore[log_key] = Gitlab::SafeRequestStore[log_key].to_i + 1
+            increment_log_key(compose_metric_key(counter, nil, db_config_name))
           end
         end
 
         def observe(histogram, event, &block)
           db_config_name = db_config_name(event.payload)
 
-          current_transaction&.observe(histogram, event.duration / 1000.0, { db_config_name: db_config_name }, &block)
+          duration = convert_ms_to_s(event.duration)
+          current_transaction&.observe(histogram, duration, { db_config_name: db_config_name }, &block)
         end
 
         def current_transaction
@@ -204,6 +214,29 @@ module Gitlab
 
         def self.compose_metric_key(metric, db_role = nil, db_config_name = nil)
           [:db, db_role, db_config_name, metric].compact.join("_").to_sym
+        end
+
+        def increment_log_key(log_key)
+          Gitlab::SafeRequestStore[log_key] = Gitlab::SafeRequestStore[log_key].to_i + 1
+        end
+
+        def increment_duration_key(duration_key, duration)
+          ::Gitlab::SafeRequestStore[duration_key] = (::Gitlab::SafeRequestStore[duration_key].presence || 0) + duration
+        end
+
+        def update_max_duration_key(duration_key, duration, db_config_name = nil)
+          metric_key = compose_metric_key(duration_key, nil, db_config_name)
+          ::Gitlab::SafeRequestStore[metric_key] = [::Gitlab::SafeRequestStore[metric_key].to_f, duration].max
+
+          return if db_config_name.nil?
+
+          txn_duration_key = Gitlab::Metrics::DatabaseTransactionSlis::REQUEST_STORE_KEY
+          ::Gitlab::SafeRequestStore[txn_duration_key] ||= {}
+          ::Gitlab::SafeRequestStore[txn_duration_key][db_config_name] = ::Gitlab::SafeRequestStore[metric_key]
+        end
+
+        def convert_ms_to_s(duration)
+          duration / 1000.0
         end
       end
     end

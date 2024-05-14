@@ -6,8 +6,8 @@ RSpec.describe "deleting designs", feature_category: :design_management do
   include GraphqlHelpers
   include DesignManagementTestHelpers
 
-  let(:developer) { create(:user) }
-  let(:current_user) { developer }
+  let(:reporter) { create(:user) }
+  let(:current_user) { reporter }
   let(:issue) { create(:issue) }
   let(:project) { issue.project }
   let(:designs) { create_designs }
@@ -31,7 +31,7 @@ RSpec.describe "deleting designs", feature_category: :design_management do
   before do
     enable_design_management
 
-    project.add_developer(developer)
+    project.add_reporter(reporter)
   end
 
   shared_examples 'a failed request' do
@@ -58,7 +58,7 @@ RSpec.describe "deleting designs", feature_category: :design_management do
     end
   end
 
-  context 'the current user does not have developer access' do
+  context 'the current user does not have reporter access' do
     it_behaves_like 'a failed request' do
       let(:current_user) { create(:user) }
       let(:the_error) { a_string_matching %r{you don't have permission} }

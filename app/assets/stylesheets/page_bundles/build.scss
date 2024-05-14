@@ -14,10 +14,7 @@
   }
 
   .top-bar {
-    @include build-log-top-bar(50px);
-    z-index: 2;
-    border-radius: $border-radius-default $border-radius-default 0 0;
-    box-shadow: 0 -4px 0 0 var(--white);
+    @include job-log-top-bar;
 
     &.has-archived-block {
       top: calc(#{$calc-application-header-height} + 28px);
@@ -175,7 +172,7 @@
   word-wrap: break-word;
   color: color-yiq($builds-log-bg);
   border-radius: 0 0 $border-radius-default $border-radius-default;
-  min-height: 42px;
+  @include gl-min-h-8;
   background-color: $builds-log-bg;
 }
 

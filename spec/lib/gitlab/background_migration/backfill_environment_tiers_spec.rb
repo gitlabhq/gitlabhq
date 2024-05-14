@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::BackfillEnvironmentTiers,
-  :migration, schema: 20230216060333, feature_category: :continuous_delivery do
+  :migration, schema: 20230718020825, feature_category: :continuous_delivery do
   let!(:namespace) { table(:namespaces).create!(name: 'user', path: 'user') }
   let!(:project) { table(:projects).create!(namespace_id: namespace.id, project_namespace_id: namespace.id) }
 

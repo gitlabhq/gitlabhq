@@ -5,15 +5,10 @@ require 'spec_helper'
 RSpec.describe Projects::Settings::DeployKeysPresenter do
   let_it_be(:project, refind: true) { create(:project) }
   let_it_be(:other_project) { create(:project) }
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user) { create(:user, maintainer_of: [project, other_project]) }
 
   subject(:presenter) do
     described_class.new(project, current_user: user)
-  end
-
-  before_all do
-    project.add_maintainer(user)
-    other_project.add_maintainer(user)
   end
 
   it 'inherits from Gitlab::View::Presenter::Simple' do

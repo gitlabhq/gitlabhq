@@ -30,7 +30,7 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
     it_behaves_like 'a user cannot unsubscribe through footer link'
 
     it 'contains the password text' do
-      is_expected.to have_body_text /Click here to set your password/
+      is_expected.to have_body_text(/Click here to set your password/)
     end
 
     it 'includes a link for user to set password' do
@@ -60,7 +60,7 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
 
     it 'does not contain the new user\'s password' do
       is_expected.not_to have_body_text(new_user.password)
-      is_expected.not_to have_body_text /password/
+      is_expected.not_to have_body_text(/password/)
     end
   end
 
@@ -78,15 +78,15 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
     end
 
     it 'has the correct subject' do
-      is_expected.to have_subject /^SSH key was added to your account$/i
+      is_expected.to have_subject(/^SSH key was added to your account$/i)
     end
 
     it 'contains the new ssh key title' do
-      is_expected.to have_body_text /#{key.title}/
+      is_expected.to have_body_text(/#{key.title}/)
     end
 
     it 'includes a link to ssh keys page' do
-      is_expected.to have_body_text /#{profile_keys_path}/
+      is_expected.to have_body_text(/#{user_settings_ssh_keys_path}/)
     end
 
     context 'with SSH key that does not exist' do
@@ -108,15 +108,15 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
     end
 
     it 'has the correct subject' do
-      is_expected.to have_subject /^GPG key was added to your account$/i
+      is_expected.to have_subject(/^GPG key was added to your account$/i)
     end
 
     it 'contains the new gpg key title' do
-      is_expected.to have_body_text /#{gpg_key.fingerprint}/
+      is_expected.to have_body_text(/#{gpg_key.fingerprint}/)
     end
 
     it 'includes a link to gpg keys page' do
-      is_expected.to have_body_text /#{profile_gpg_keys_path}/
+      is_expected.to have_body_text(/#{user_settings_gpg_keys_path}/)
     end
 
     context 'with GPG key that does not exist' do
@@ -140,15 +140,15 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
       end
 
       it 'has the correct subject' do
-        is_expected.to have_subject /^A new personal access token has been created$/i
+        is_expected.to have_subject(/^A new personal access token has been created$/i)
       end
 
       it 'provides the names of the token' do
-        is_expected.to have_body_text /#{token.name}/
+        is_expected.to have_body_text(/#{token.name}/)
       end
 
       it 'includes a link to personal access tokens page' do
-        is_expected.to have_body_text /#{user_settings_personal_access_tokens_path}/
+        is_expected.to have_body_text(/#{user_settings_personal_access_tokens_path}/)
       end
 
       it 'includes the email reason' do
@@ -166,15 +166,15 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
       end
 
       it 'has the correct subject' do
-        is_expected.to have_subject /^Your resource access tokens will expire in 7 days or less$/i
+        is_expected.to have_subject(/^Your resource access tokens will expire in 7 days or less$/i)
       end
 
       it 'includes a link to access tokens page' do
-        is_expected.to have_body_text /#{resource_access_tokens_path}/
+        is_expected.to have_body_text(/#{resource_access_tokens_path}/)
       end
 
       it 'provides the names of expiring tokens' do
-        is_expected.to have_body_text /#{expiring_token.name}/
+        is_expected.to have_body_text(/#{expiring_token.name}/)
       end
 
       it 'includes the email reason' do
@@ -193,7 +193,7 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
         resource.add_developer(project_bot)
       end
 
-      subject { Notify.resource_access_tokens_about_to_expire_email(user, resource, [expiring_token.name]) }
+      subject { Notify.bot_resource_access_token_about_to_expire_email(user, resource, expiring_token.name) }
 
       it_behaves_like 'an email sent from GitLab'
       it_behaves_like 'it should not have Gmail Actions links'
@@ -216,7 +216,7 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
         resource.add_reporter(project_bot)
       end
 
-      subject { Notify.resource_access_tokens_about_to_expire_email(user, resource, [expiring_token.name]) }
+      subject { Notify.bot_resource_access_token_about_to_expire_email(user, resource, expiring_token.name) }
 
       it_behaves_like 'an email sent from GitLab'
       it_behaves_like 'it should not have Gmail Actions links'
@@ -245,16 +245,16 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
       end
 
       it 'has the correct subject' do
-        is_expected.to have_subject /Your personal access tokens have expired/
+        is_expected.to have_subject(/Your personal access tokens have expired/)
       end
 
       it 'mentions the access token has expired' do
-        is_expected.to have_body_text /The following personal access tokens have expired:/
-        is_expected.to have_body_text /#{pat.name}/
+        is_expected.to have_body_text(/The following personal access tokens have expired:/)
+        is_expected.to have_body_text(/#{pat.name}/)
       end
 
       it 'includes a link to personal access tokens page' do
-        is_expected.to have_body_text /#{user_settings_personal_access_tokens_path}/
+        is_expected.to have_body_text(/#{user_settings_personal_access_tokens_path}/)
       end
 
       it 'includes the email reason' do
@@ -297,11 +297,11 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
       end
 
       it 'has the correct subject' do
-        is_expected.to have_subject /^Your personal access token has been revoked$/i
+        is_expected.to have_subject(/^Your personal access token has been revoked$/i)
       end
 
       it 'provides the names of the token' do
-        is_expected.to have_body_text /#{token.name}/
+        is_expected.to have_body_text(/#{token.name}/)
       end
 
       it 'wont include the revocation reason' do
@@ -325,11 +325,11 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
       end
 
       it 'has the correct subject' do
-        is_expected.to have_subject /^Your personal access token has been revoked$/i
+        is_expected.to have_subject(/^Your personal access token has been revoked$/i)
       end
 
       it 'provides the names of the token' do
-        is_expected.to have_body_text /#{token.name}/
+        is_expected.to have_body_text(/#{token.name}/)
       end
 
       it 'includes the revocation reason' do
@@ -359,7 +359,7 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
     end
 
     shared_examples 'includes a link to ssh key page' do
-      it { is_expected.to have_body_text /#{profile_keys_url}/ }
+      it { is_expected.to have_body_text(/#{user_settings_ssh_keys_url}/) }
     end
 
     shared_examples 'includes the email reason' do
@@ -492,7 +492,7 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
 
       it 'does not mention two factor authentication' do
         expect( Notify.unknown_sign_in_email(user, ip, current_time) )
-          .not_to have_body_text /two-factor authentication/
+          .not_to have_body_text(/two-factor authentication/)
       end
     end
   end
@@ -544,11 +544,11 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
     end
 
     it 'has the correct subject' do
-      is_expected.to have_subject /^Two-factor authentication disabled$/i
+      is_expected.to have_subject(/^Two-factor authentication disabled$/i)
     end
 
     it 'includes a link to two-factor authentication settings page' do
-      is_expected.to have_body_text /#{profile_two_factor_auth_path}/
+      is_expected.to have_body_text(/#{profile_two_factor_auth_path}/)
     end
   end
 
@@ -567,11 +567,11 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
     end
 
     it 'has the correct subject' do
-      is_expected.to have_subject /^New email address added$/i
+      is_expected.to have_subject(/^New email address added$/i)
     end
 
     it 'includes a link to the email address page' do
-      is_expected.to have_body_text /#{profile_emails_path}/
+      is_expected.to have_body_text(/#{profile_emails_path}/)
     end
   end
 

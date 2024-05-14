@@ -10,8 +10,6 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/30635) in GitLab 12.2.
-
 This setting defaults to `300` requests per minute, and allows you to rate limit the requests to raw endpoints:
 
 1. On the left sidebar, at the bottom, select **Admin Area**.

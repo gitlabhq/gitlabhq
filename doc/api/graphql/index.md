@@ -9,13 +9,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 [GraphQL](https://graphql.org/) is a query language for APIs. You can use it to
 request the exact data you need, and therefore limit the number of requests you need.
 
 GraphQL data is arranged in types, so your client can use
-[client-side GraphQL libraries](https://graphql.org/code/#graphql-clients)
+[client-side GraphQL libraries](https://graphql.org/community/tools-and-libraries/)
 to consume the API and avoid manual parsing.
 
 The GraphQL API is [versionless](https://graphql.org/learn/best-practices/#versioning).
@@ -210,12 +210,12 @@ possible. You should [verify your API calls against the schema without the depre
 #### Deprecation example
 
 The following fields are deprecated in different minor releases, but both
-removed in GitLab 14.0:
+removed in GitLab 17.0:
 
 | Field deprecated in | Reason |
 |:--------------------|:-------|
-| 12.7                | GitLab traditionally has 12 minor releases per major release. To ensure the field is available for 6 more releases, it is removed in the 14.0 major release (and not 13.0). |
-| 13.6                | The removal in 14.0 allows for 6 months of availability. |
+| 15.7                | GitLab traditionally has 12 minor releases per major release. To ensure the field is available for 6 more releases, it is removed in the 17.0 major release (and not 16.0). |
+| 16.6                | The removal in 17.0 allows for 6 months of availability. |
 
 ### List of removed items
 

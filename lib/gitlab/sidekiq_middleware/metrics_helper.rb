@@ -19,12 +19,13 @@ module Gitlab
         # metrics.
         worker_name = worker.try(:name) || worker.class.name
 
-        labels = { queue: queue.to_s,
+        labels = { queue: queue.to_s, # rubocop:disable Cop/RedisQueueUsage -- assigning a constant is acceptable
                    worker: worker_name,
                    urgency: "",
                    external_dependencies: FALSE_LABEL,
                    feature_category: "",
-                   boundary: "" }
+                   boundary: "",
+                   destination_shard_redis: Gitlab::Redis::Queues::SIDEKIQ_MAIN_SHARD_INSTANCE_NAME }
 
         return labels unless worker.respond_to?(:get_urgency)
 
@@ -34,6 +35,11 @@ module Gitlab
 
         resource_boundary = worker.get_worker_resource_boundary
         labels[:boundary] = resource_boundary == :unknown ? "" : resource_boundary.to_s
+
+        if worker_class.respond_to?(:get_sidekiq_options)
+          shard_name, _ = Gitlab::SidekiqSharding::Router.get_shard_instance(worker_class.get_sidekiq_options['store'])
+          labels[:destination_shard_redis] = shard_name
+        end
 
         labels
       end

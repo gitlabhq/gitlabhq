@@ -64,7 +64,7 @@ export default {
   apollo: {
     issue: {
       query,
-      update: (data) => data.project.issue,
+      update: (data) => data.project?.issue || {},
       variables() {
         const { namespacePath, iid } = this;
 
@@ -112,7 +112,7 @@ export default {
         :closed="isIssueClosed"
         tooltip-placement="top"
         class="gl-mr-4"
-        css-class="gl-display-flex gl-white-space-nowrap"
+        css-class="gl-display-flex gl-whitespace-nowrap"
       />
       <issue-weight
         v-if="issue.weight"

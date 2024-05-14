@@ -32,6 +32,7 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
     stub_licensed_features(merge_request_approvers: true) if Gitlab.ee?
     # rubocop:enable RSpec/AvoidConditionalStatements
 
+    project.update!(only_allow_merge_if_pipeline_succeeds: true)
     stub_application_setting(auto_devops_enabled: false)
     stub_ci_pipeline_yaml_file(YAML.dump(config))
     project.add_maintainer(user)
@@ -381,10 +382,6 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
           end
 
           context 'when the parent project enables pipeline must succeed' do
-            before do
-              project.update!(only_allow_merge_if_pipeline_succeeds: true)
-            end
-
             it 'shows Set to auto-merge button' do
               visit project_merge_request_path(project, merge_request)
 

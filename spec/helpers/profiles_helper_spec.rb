@@ -126,13 +126,14 @@ RSpec.describe ProfilesHelper do
 
   describe '#user_profile_data' do
     let(:time) { 3.hours.ago }
+    let(:timezone) { 'Europe/London' }
     let(:user) do
       build_stubbed(:user, status: UserStatus.new(
         message: 'Some message',
         emoji: 'basketball',
         availability: 'busy',
         clear_status_at: time
-      ))
+      ), timezone: timezone)
     end
 
     before do
@@ -156,6 +157,8 @@ RSpec.describe ProfilesHelper do
       expect(data[:current_availability]).to eq('busy')
       expect(data[:current_clear_status_after]).to eq(time.to_fs(:iso8601))
       expect(data[:default_emoji]).to eq(UserStatus::DEFAULT_EMOJI)
+      expect(data[:timezones]).to eq(helper.timezone_data_with_unique_identifiers.to_json)
+      expect(data[:user_timezone]).to eq(timezone)
     end
   end
 

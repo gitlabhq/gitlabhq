@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Types::Ci::PipelineMessageType do
+RSpec.describe Types::Ci::PipelineMessageType, feature_category: :continuous_integration do
   specify { expect(described_class.graphql_name).to eq('PipelineMessage') }
 
   it 'contains attributes related to a pipeline message' do

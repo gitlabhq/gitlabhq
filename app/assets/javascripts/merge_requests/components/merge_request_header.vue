@@ -8,6 +8,7 @@ import StatusBadge from '~/issuable/components/status_badge.vue';
 import { TYPE_ISSUE, TYPE_MERGE_REQUEST, WORKSPACE_PROJECT } from '~/issues/constants';
 import { fetchPolicies } from '~/lib/graphql';
 import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
+import ImportedBadge from '~/vue_shared/components/imported_badge.vue';
 
 export const badgeState = Vue.observable({
   state: '',
@@ -22,6 +23,7 @@ export default {
     ConfidentialityBadge,
     LockedBadge,
     HiddenBadge,
+    ImportedBadge,
     StatusBadge,
   },
   inject: {
@@ -35,6 +37,11 @@ export default {
       type: String,
       required: false,
       default: null,
+    },
+    isImported: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   data() {
@@ -108,6 +115,11 @@ export default {
       v-if="hidden"
       class="gl-align-self-center gl-mr-2"
       :issuable-type="$options.TYPE_MERGE_REQUEST"
+    />
+    <imported-badge
+      v-if="isImported"
+      class="gl-align-self-center gl-mr-2"
+      :importable-type="$options.TYPE_MERGE_REQUEST"
     />
   </span>
 </template>

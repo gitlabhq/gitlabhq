@@ -21,6 +21,10 @@ RSpec.describe 'Issue board filters', :js, feature_category: :team_planning do
   let(:filter_first_suggestion) { find('.gl-filtered-search-suggestion-list').first('.gl-filtered-search-suggestion') }
   let(:filter_submit) { find('.gl-search-box-by-click-search-button') }
 
+  before_all do
+    create(:callout, feature_name: :board_add_new_column_trigger_popover, user: user)
+  end
+
   context 'for a project board' do
     let_it_be(:board) { create(:board, project: project) }
 
@@ -191,7 +195,7 @@ RSpec.describe 'Issue board filters', :js, feature_category: :team_planning do
   context 'for a group board' do
     let_it_be(:board) { create(:board, group: group) }
 
-    let_it_be(:child_project_member) { create(:user).tap { |u| project.add_maintainer(u) } }
+    let_it_be(:child_project_member) { create(:user, maintainer_of: project) }
 
     before do
       group.add_maintainer(user)

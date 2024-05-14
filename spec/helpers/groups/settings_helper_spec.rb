@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Groups::SettingsHelper do
   include GroupsHelper
+  include NumbersHelper
 
   let_it_be(:group) { create(:group, path: "foo") }
 
@@ -24,12 +25,13 @@ RSpec.describe Groups::SettingsHelper do
 
         expected = helper.group_settings_confirm_modal_data(group, form_value_id)
         expect(expected).to eq({
-          button_text: "Remove group",
+          button_text: "Delete group",
           confirm_danger_message: remove_group_message(group),
           remove_form_id: form_value_id,
           phrase: group.full_path,
           button_testid: "remove-group-button",
-          disabled: is_button_disabled
+          disabled: is_button_disabled,
+          html_confirmation_message: 'true'
         })
       end
     end

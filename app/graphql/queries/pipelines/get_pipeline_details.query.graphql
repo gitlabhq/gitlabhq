@@ -29,6 +29,7 @@ fragment LinkedPipelineData on Pipeline {
     group
     label
     icon
+    text
   }
   sourceJob {
     __typename
@@ -94,6 +95,7 @@ query getPipelineDetails($projectPath: ID!, $iid: ID!) {
                 label
                 group
                 icon
+                text
               }
               name
               size
@@ -128,6 +130,7 @@ query getPipelineDetails($projectPath: ID!, $iid: ID!) {
                     detailsPath
                     group
                     label
+                    text
                     action {
                       __typename
                       id

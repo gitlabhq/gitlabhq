@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import CustomMetricsForm from '~/custom_metrics/components/custom_metrics_form.vue';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 
 describe('CustomMetricsForm', () => {
   let wrapper;
@@ -15,7 +15,7 @@ describe('CustomMetricsForm', () => {
       legend: '',
     },
   }) {
-    wrapper = shallowMount(CustomMetricsForm, {
+    wrapper = shallowMountExtended(CustomMetricsForm, {
       propsData: {
         customMetricsPath: '',
         editIntegrationPath: '',
@@ -26,19 +26,22 @@ describe('CustomMetricsForm', () => {
     });
   }
 
+  const findHeader = () => wrapper.findByTestId('metrics-header');
+  const findSaveButton = () => wrapper.findByTestId('metrics-save-button');
+
   describe('Computed', () => {
     it('Form button and title text indicate the custom metric is being edited', () => {
       mountComponent({ metricPersisted: true });
 
-      expect(wrapper.vm.saveButtonText).toBe('Save Changes');
-      expect(wrapper.vm.titleText).toBe('Edit metric');
+      expect(findHeader().text()).toBe('Edit metric');
+      expect(findSaveButton().text()).toBe('Save Changes');
     });
 
     it('Form button and title text indicate the custom metric is being created', () => {
       mountComponent({ metricPersisted: false });
 
-      expect(wrapper.vm.saveButtonText).toBe('Create metric');
-      expect(wrapper.vm.titleText).toBe('New metric');
+      expect(findSaveButton().text()).toBe('Create metric');
+      expect(findHeader().text()).toBe('New metric');
     });
   });
 });

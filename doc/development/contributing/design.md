@@ -100,7 +100,7 @@ Check responsive behavior using your browser's _responsive mode_ ([Chrome](https
 ### Accessibility
 
 Check accessibility using your browser's _accessibility inspector_ ([Chrome](https://developer.chrome.com/docs/devtools/accessibility/reference/),
-[Firefox](https://developer.mozilla.org/en-US/docs/Tools/Accessibility_inspector#accessing_the_accessibility_inspector)).
+[Firefox](https://firefox-source-docs.mozilla.org/devtools-user/accessibility_inspector/index.html#accessing-the-accessibility-inspector)).
 
 - Conform to level AA of the World Wide Web Consortium (W3C) [Web Content Accessibility Guidelines 2.1](https://www.w3.org/TR/WCAG21/),
   according to our [statement of compliance](https://design.gitlab.com/accessibility/a11y/).
@@ -111,7 +111,7 @@ Check accessibility using your browser's _accessibility inspector_ ([Chrome](htt
 
 When the design is ready, _before_ starting its implementation:
 
-- Share design specifications in the related issue, preferably through a [Figma link](https://help.figma.com/hc/en-us/articles/360040531773-Share-Files-with-anyone-using-Link-Sharing#Copy_link)
+- Share design specifications in the related issue, preferably through a [Figma link](https://help.figma.com/hc/en-us/articles/360040531773-Share-files-and-prototypes)
   or [GitLab Designs feature](../../user/project/issues/design_management.md).
   See [when you should use each tool](https://handbook.gitlab.com/handbook/product/ux/product-designer/#deliver).
 - Document user flow and states (for example, using [Mermaid flowcharts in Markdown](../../user/markdown.md#mermaid)).
@@ -128,7 +128,7 @@ At any moment, but usually _during_ or _after_ the design's implementation:
 
 - Contribute [issues to Pajamas](https://design.gitlab.com/get-started/contributing#contribute-an-issue)
   for additions or enhancements to the design system.
-- Create issues with the [`~UX debt`](../labels/index.md#technical-and-ux-debt)
+- Create issues with the [`~Deferred UX`](../labels/index.md#technical-debt-and-deferred-ux)
   label for intentional deviations from the agreed-upon UX requirements due to
   time or feasibility challenges, linking back to the corresponding issues or
   merge requests.

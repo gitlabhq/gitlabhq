@@ -17,110 +17,88 @@ module Types
       alias_method :runner, :object
 
       field :access_level, ::Types::Ci::RunnerAccessLevelEnum, null: false,
-                                                               description: 'Access level of the runner.'
+        description: 'Access level of the runner.'
       field :active, GraphQL::Types::Boolean, null: false,
-                                              description: 'Indicates the runner is allowed to receive jobs.',
-                                              deprecated: { reason: 'Use paused', milestone: '14.8' }
+        description: 'Indicates the runner is allowed to receive jobs.',
+        deprecated: { reason: 'Use paused', milestone: '14.8' }
       field :admin_url, GraphQL::Types::String, null: true,
-                                                description: 'Admin URL of the runner. Only available for administrators.'
-      field :architecture_name, GraphQL::Types::String, null: true,
-            deprecated: { reason: "Use field in `manager` object instead", milestone: '16.2' },
-            description: 'Architecture provided by the the runner.',
-            method: :architecture
+        description: 'Admin URL of the runner. Only available for administrators.'
       field :contacted_at, Types::TimeType, null: true,
-                                            description: 'Timestamp of last contact from this runner.',
-                                            method: :contacted_at
+        description: 'Timestamp of last contact from this runner.',
+        method: :contacted_at
       field :created_at, Types::TimeType, null: true,
-                                          description: 'Timestamp of creation of this runner.'
+        description: 'Timestamp of creation of this runner.'
       field :created_by, Types::UserType, null: true,
-                                          description: 'User that created this runner.',
-                                          method: :creator
+        description: 'User that created this runner.',
+        method: :creator
       field :description, GraphQL::Types::String, null: true,
-                                                  description: 'Description of the runner.'
+        description: 'Description of the runner.'
       field :edit_admin_url, GraphQL::Types::String, null: true,
-                                                     description: 'Admin form URL of the runner. Only available for administrators.'
+        description: 'Admin form URL of the runner. Only available for administrators.'
       field :ephemeral_authentication_token, GraphQL::Types::String, null: true,
-            description: 'Ephemeral authentication token used for runner manager registration. Only available for the creator of the runner for a limited time during registration.',
-            authorize: :read_ephemeral_token,
-            alpha: { milestone: '15.9' }
+        description: 'Ephemeral authentication token used for runner manager registration. Only available for the creator of the runner for a limited time during registration.',
+        authorize: :read_ephemeral_token,
+        alpha: { milestone: '15.9' }
       field :ephemeral_register_url, GraphQL::Types::String, null: true,
-            description: 'URL of the registration page of the runner manager. Only available for the creator of the runner for a limited time during registration.',
-            alpha: { milestone: '15.11' }
-      field :executor_name, GraphQL::Types::String, null: true,
-            deprecated: { reason: "Use field in `manager` object instead", milestone: '16.2' },
-            description: 'Executor last advertised by the runner.',
-            method: :executor_name
+        description: 'URL of the registration page of the runner manager. Only available for the creator of the runner for a limited time during registration.',
+        alpha: { milestone: '15.11' }
       field :groups, null: true,
-                     resolver: ::Resolvers::Ci::RunnerGroupsResolver,
-                     description: 'Groups the runner is associated with. For group runners only.'
+        resolver: ::Resolvers::Ci::RunnerGroupsResolver,
+        description: 'Groups the runner is associated with. For group runners only.'
       field :id, ::Types::GlobalIDType[::Ci::Runner], null: false, description: 'ID of the runner.'
-      field :ip_address, GraphQL::Types::String, null: true,
-            deprecated: { reason: "Use field in `manager` object instead", milestone: '16.2' },
-            description: 'IP address of the runner.'
       field :job_count, GraphQL::Types::Int, null: true,
-            description: "Number of jobs processed by the runner (limited to #{JOB_COUNT_LIMIT}, plus one to " \
-                         "indicate that more items exist).\n`jobCount` is an optimized version of `jobs { count }`, " \
-                         "and can be requested for multiple runners on the same request.",
-            resolver: ::Resolvers::Ci::RunnerJobCountResolver
+        description: "Number of jobs processed by the runner (limited to #{JOB_COUNT_LIMIT}, plus one to " \
+                     "indicate that more items exist).\n`jobCount` is an optimized version of `jobs { count }`, " \
+                     "and can be requested for multiple runners on the same request.",
+        resolver: ::Resolvers::Ci::RunnerJobCountResolver
       field :job_execution_status,
-            Types::Ci::RunnerJobExecutionStatusEnum,
-            null: true,
-            description: 'Job execution status of the runner.',
-            alpha: { milestone: '15.7' }
+        Types::Ci::RunnerJobExecutionStatusEnum,
+        null: true,
+        description: 'Job execution status of the runner.',
+        alpha: { milestone: '15.7' }
       field :jobs, ::Types::Ci::JobType.connection_type, null: true,
-                                                         description: 'Jobs assigned to the runner. This field can only be resolved for one runner in any single request.',
-                                                         authorize: :read_builds,
-                                                         resolver: ::Resolvers::Ci::RunnerJobsResolver
+        description: 'Jobs assigned to the runner. This field can only be resolved for one runner in any single request.',
+        authorize: :read_builds,
+        resolver: ::Resolvers::Ci::RunnerJobsResolver
       field :locked, GraphQL::Types::Boolean, null: true,
-                                              description: 'Indicates the runner is locked.'
+        description: 'Indicates the runner is locked.'
       field :maintenance_note, GraphQL::Types::String, null: true,
-                                                       description: 'Runner\'s maintenance notes.'
+        description: 'Runner\'s maintenance notes.'
       field :managers, ::Types::Ci::RunnerManagerType.connection_type, null: true,
-            description: 'Runner managers associated with the runner configuration.',
-            resolver: Resolvers::Ci::RunnerManagersResolver,
-            alpha: { milestone: '15.10' }
+        description: 'Runner managers associated with the runner configuration.',
+        resolver: Resolvers::Ci::RunnerManagersResolver,
+        alpha: { milestone: '15.10' }
       field :maximum_timeout, GraphQL::Types::Int, null: true,
-                                                   description: 'Maximum timeout (in seconds) for jobs processed by the runner.'
+        description: 'Maximum timeout (in seconds) for jobs processed by the runner.'
       field :owner_project, ::Types::ProjectType, null: true,
-                                                  description: 'Project that owns the runner. For project runners only.',
-                                                  resolver: ::Resolvers::Ci::RunnerOwnerProjectResolver
+        description: 'Project that owns the runner. For project runners only.',
+        resolver: ::Resolvers::Ci::RunnerOwnerProjectResolver
       field :paused, GraphQL::Types::Boolean, null: false,
-                                              description: 'Indicates the runner is paused and not available to run jobs.'
-      field :platform_name, GraphQL::Types::String, null: true,
-            deprecated: { reason: "Use field in `manager` object instead", milestone: '16.2' },
-            description: 'Platform provided by the runner.',
-            method: :platform
+        description: 'Indicates the runner is paused and not available to run jobs.'
       field :project_count, GraphQL::Types::Int, null: true,
-                                                 description: 'Number of projects that the runner is associated with.'
+        description: 'Number of projects that the runner is associated with.'
       field :projects,
-            ::Types::ProjectType.connection_type,
-            null: true,
-            resolver: ::Resolvers::Ci::RunnerProjectsResolver,
-            description: 'Find projects the runner is associated with. For project runners only.'
+        ::Types::ProjectType.connection_type,
+        null: true,
+        resolver: ::Resolvers::Ci::RunnerProjectsResolver,
+        description: 'Find projects the runner is associated with. For project runners only.'
       field :register_admin_url, GraphQL::Types::String, null: true,
-                                                         description: 'URL of the temporary registration page of the runner. Only available before the runner is registered. Only available for administrators.'
-      field :revision, GraphQL::Types::String, null: true,
-            deprecated: { reason: "Use field in `manager` object instead", milestone: '16.2' },
-            description: 'Revision of the runner.'
+        description: 'URL of the temporary registration page of the runner. Only available before the runner is registered. Only available for administrators.'
       field :run_untagged, GraphQL::Types::Boolean, null: false,
-                                                    description: 'Indicates the runner is able to run untagged jobs.'
+        description: 'Indicates the runner is able to run untagged jobs.'
       field :runner_type, ::Types::Ci::RunnerTypeEnum, null: false,
-                                                       description: 'Type of the runner.'
+        description: 'Type of the runner.'
       field :short_sha, GraphQL::Types::String, null: true,
-                                                description: %q(First eight characters of the runner's token used to authenticate new job requests. Used as the runner's unique ID.)
+        description: %q(First eight characters of the runner's token used to authenticate new job requests. Used as the runner's unique ID.)
       field :status,
-            Types::Ci::RunnerStatusEnum,
-            null: false,
-            description: 'Status of the runner.',
-            resolver: ::Resolvers::Ci::RunnerStatusResolver # TODO: Remove :resolver in %17.0
+        Types::Ci::RunnerStatusEnum,
+        null: false,
+        description: 'Status of the runner.'
       field :tag_list, [GraphQL::Types::String], null: true,
-                                                 description: 'Tags associated with the runner.'
+        description: 'Tags associated with the runner.'
       field :token_expires_at, Types::TimeType, null: true,
-                                                description: 'Runner token expiration time.',
-                                                method: :token_expires_at
-      field :version, GraphQL::Types::String, null: true,
-            deprecated: { reason: "Use field in `manager` object instead", milestone: '16.2' },
-            description: 'Version of the runner.'
+        description: 'Runner token expiration time.',
+        method: :token_expires_at
 
       markdown_field :maintenance_note_html, null: true
 
@@ -168,9 +146,7 @@ module Types
             .group(:id) # rubocop: disable CodeReuse/ActiveRecord
             .index_by(&:id)
 
-          ids.each do |id|
-            loader.call(id, counts[id]&.count)
-          end
+          ids.each { |id| loader.call(id, counts[id]&.count) }
         end
       end
 

@@ -1,12 +1,14 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Packages::Rpm::RepositoryFileUploader do
+RSpec.describe Packages::Rpm::RepositoryFileUploader, feature_category: :package_registry do
   let_it_be(:repository_file) { create(:rpm_repository_file) }
   let(:uploader) { described_class.new(repository_file, :file) }
   let(:path) { Gitlab.config.packages.storage_path }
 
   subject { uploader }
+
+  it { is_expected.to include_module(Packages::GcsSignedUrlMetadata) }
 
   it_behaves_like 'builds correct paths',
     store_dir: %r[^\h{2}/\h{2}/\h{64}/projects/\d+/rpm/repository_files/\d+$],
@@ -33,11 +35,11 @@ RSpec.describe Packages::Rpm::RepositoryFileUploader do
       end
 
       it 'can store file remotely' do
-        repository_file
-
         expect(repository_file.file_store).to eq(described_class::Store::REMOTE)
         expect(repository_file.file.path).not_to be_blank
       end
+
+      it_behaves_like 'augmenting GCS signed URL with metadata'
     end
   end
 end

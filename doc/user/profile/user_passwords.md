@@ -8,10 +8,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 If you use a password to sign in to GitLab, a strong password is very important. A weak or guessable password makes it
-easier for unauthorized people to log into your account.
+easier for unauthorized people to sign in to your account.
 
 Some organizations require you to meet certain requirements when choosing a password.
 
@@ -59,7 +59,7 @@ Your passwords must meet a set of requirements when:
 - You choose a new password using the forgotten password reset flow.
 - You change your password proactively.
 - You change your password after it expires.
-- An an administrator creates your account.
+- An administrator creates your account.
 - An administrator updates your account.
 
 By default GitLab enforces the following password requirements:

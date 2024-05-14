@@ -17,9 +17,7 @@ class Profiles::EmailsController < Profiles::ApplicationController
 
   def create
     @email = Emails::CreateService.new(current_user, email_params.merge(user: current_user)).execute
-    unless @email.errors.blank?
-      flash[:alert] = @email.errors.full_messages.first
-    end
+    flash[:alert] = @email.errors.full_messages.first unless @email.errors.blank?
 
     redirect_to profile_emails_url
   end

@@ -15,12 +15,10 @@ module Gitlab
             with_validate_configuration(aggregation, time_frame) do
               source = SOURCES[aggregation[:source]]
               events = select_defined_events(aggregation[:events], aggregation[:source])
+              property_name = aggregation[:attribute]
 
-              if aggregation[:operator] == UNION_OF_AGGREGATED_METRICS
-                source.calculate_metrics_union(**time_constraints(time_frame).merge(metric_names: events, recorded_at: recorded_at))
-              else
-                source.calculate_metrics_intersections(**time_constraints(time_frame).merge(metric_names: events, recorded_at: recorded_at))
-              end
+              source.calculate_metrics_union(**time_constraints(time_frame)
+                .merge(metric_names: events, property_name: property_name, recorded_at: recorded_at))
             end
           rescue Gitlab::UsageDataCounters::HLLRedisCounter::EventError, AggregatedMetricError => error
             failure(error)
@@ -32,13 +30,6 @@ module Gitlab
 
           def with_validate_configuration(aggregation, time_frame)
             source = aggregation[:source]
-
-            unless ALLOWED_METRICS_AGGREGATIONS.include?(aggregation[:operator])
-              return failure(
-                UnknownAggregationOperator
-                  .new("Events should be aggregated with one of operators #{ALLOWED_METRICS_AGGREGATIONS}")
-              )
-            end
 
             unless SOURCES[source]
               return failure(

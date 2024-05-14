@@ -182,6 +182,7 @@ project_setting:
     - product_analytics_configurator_connection_string
     - code_suggestions
     - duo_features_enabled
+    - require_reauthentication_to_approve
 
 build_service_desk_setting: # service_desk_setting
   unexposed_attributes:
@@ -199,5 +200,6 @@ build_service_desk_setting: # service_desk_setting
     - custom_email_smtp_password
     - add_external_participants_from_cc
     - reopen_issue_on_external_participant_note
+    - tickets_confidential_by_default
   remapped_attributes:
     project_key: service_desk_address

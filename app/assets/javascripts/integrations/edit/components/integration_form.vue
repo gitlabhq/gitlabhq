@@ -10,11 +10,12 @@ import {
   I18N_FETCH_TEST_SETTINGS_DEFAULT_ERROR_MESSAGE,
   I18N_DEFAULT_ERROR_MESSAGE,
   I18N_SUCCESSFUL_CONNECTION_MESSAGE,
+  INTEGRATION_FORM_TYPE_GOOGLE_CLOUD_ARTIFACT_REGISTRY,
+  INTEGRATION_FORM_TYPE_GOOGLE_CLOUD_IAM,
   INTEGRATION_FORM_TYPE_SLACK,
 } from '~/integrations/constants';
 import { refreshCurrentPage } from '~/lib/utils/url_utility';
 import csrf from '~/lib/utils/csrf';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { testIntegrationSettings } from '../api';
 import ActiveCheckbox from './active_checkbox.vue';
 import DynamicField from './dynamic_field.vue';
@@ -38,7 +39,6 @@ export default {
   directives: {
     SafeHtml,
   },
-  mixins: [glFeatureFlagsMixin()],
   inject: {
     helpHtml: {
       default: '',
@@ -73,8 +73,18 @@ export default {
     isSlackIntegration() {
       return this.propsSource.type === INTEGRATION_FORM_TYPE_SLACK;
     },
+    isGoogleArtifactManagementIntegration() {
+      return this.propsSource.type === INTEGRATION_FORM_TYPE_GOOGLE_CLOUD_ARTIFACT_REGISTRY;
+    },
+    isGoogleCloudIAMIntegration() {
+      return this.propsSource.type === INTEGRATION_FORM_TYPE_GOOGLE_CLOUD_IAM;
+    },
     showHelpHtml() {
-      if (this.isSlackIntegration) {
+      if (
+        this.isSlackIntegration ||
+        this.isGoogleArtifactManagementIntegration ||
+        this.isGoogleCloudIAMIntegration
+      ) {
         return this.helpHtml;
       }
       return !this.hasSections && this.helpHtml;

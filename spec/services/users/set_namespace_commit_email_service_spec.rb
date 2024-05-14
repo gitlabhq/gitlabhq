@@ -6,7 +6,7 @@ RSpec.describe Users::SetNamespaceCommitEmailService, feature_category: :user_pr
   include AfterNextHelpers
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:group) { create(:group) }
+  let_it_be(:group) { create(:group, reporters: user) }
   let_it_be(:email) { create(:email, user: user) }
   let_it_be(:existing_achievement) { create(:achievement, namespace: group) }
 
@@ -16,10 +16,6 @@ RSpec.describe Users::SetNamespaceCommitEmailService, feature_category: :user_pr
   let(:email_id) { email.id }
   let(:params) { { user: target_user } }
   let(:service) { described_class.new(current_user, namespace, email_id, params) }
-
-  before_all do
-    group.add_reporter(user)
-  end
 
   shared_examples 'success' do
     it 'creates namespace commit email' do
@@ -50,11 +46,17 @@ RSpec.describe Users::SetNamespaceCommitEmailService, feature_category: :user_pr
     end
 
     context 'when target_user does not have permission to access the namespace' do
-      let(:namespace) { create(:group) }
+      let(:namespace) { create(:group, :private) }
 
       it 'returns error message' do
         expect(service.execute.message).to eq("Namespace doesn't exist or you don't have permission.")
       end
+    end
+
+    context 'when namespace is public' do
+      let(:namespace) { create(:group, :public) }
+
+      it_behaves_like 'success'
     end
 
     context 'when namespace is not provided' do

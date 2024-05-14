@@ -197,7 +197,7 @@ module Banzai
             parent_path = if parent_type == :group
                             reference_cache.full_group_path(namespace_ref)
                           else
-                            reference_cache.full_project_path(namespace_ref, project_ref)
+                            reference_cache.full_project_path(namespace_ref, project_ref, matches)
                           end
 
             parent = from_ref_cached(parent_path)

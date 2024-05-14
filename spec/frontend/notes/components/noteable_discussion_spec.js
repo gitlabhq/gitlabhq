@@ -11,7 +11,7 @@ import { trimText } from 'helpers/text_helper';
 import { HTTP_STATUS_UNPROCESSABLE_ENTITY } from '~/lib/utils/http_status';
 import { getDiffFileMock } from 'jest/diffs/mock_data/diff_file';
 import DiscussionNotes from '~/notes/components/discussion_notes.vue';
-import ReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
+import DiscussionReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
 import ResolveWithIssueButton from '~/notes/components/discussion_resolve_with_issue_button.vue';
 import NoteForm from '~/notes/components/note_form.vue';
 import NoteableDiscussion from '~/notes/components/noteable_discussion.vue';
@@ -27,6 +27,7 @@ import {
   loggedOutnoteableData,
   userDataMock,
 } from '../mock_data';
+import { useLocalStorageSpy } from '../../__helpers__/local_storage_helper';
 
 Vue.use(Vuex);
 
@@ -98,13 +99,41 @@ describe('noteable_discussion component', () => {
     expect(wrapper.vm.canShowReplyActions).toBe(false);
   });
 
+  describe('drafts', () => {
+    useLocalStorageSpy();
+
+    afterEach(() => {
+      localStorage.clear();
+    });
+
+    it.each`
+      show          | exists              | hasDraft
+      ${'show'}     | ${'exists'}         | ${true}
+      ${'not show'} | ${'does not exist'} | ${false}
+    `(
+      'should $show markdown editor on create if reply draft $exists in localStorage',
+      ({ hasDraft }) => {
+        if (hasDraft) {
+          localStorage.setItem(`autosave/Note/Issue/${discussionMock.id}/Reply`, 'draft');
+        }
+        window.gon.current_user_id = userDataMock.id;
+        store.dispatch('setUserData', userDataMock);
+        wrapper = mount(NoteableDiscussion, {
+          store,
+          propsData: { discussion: discussionMock },
+        });
+        expect(wrapper.find('.note-edit-form').exists()).toBe(hasDraft);
+      },
+    );
+  });
+
   describe('actions', () => {
     it('should toggle reply form', async () => {
       await nextTick();
 
       expect(wrapper.vm.isReplying).toEqual(false);
 
-      const replyPlaceholder = wrapper.findComponent(ReplyPlaceholder);
+      const replyPlaceholder = wrapper.findComponent(DiscussionReplyPlaceholder);
       replyPlaceholder.vm.$emit('focus');
       await nextTick();
 
@@ -131,7 +160,7 @@ describe('noteable_discussion component', () => {
         wrapper.setProps({ discussion: { ...discussionMock, internal: isNoteInternal } });
         await nextTick();
 
-        const replyPlaceholder = wrapper.findComponent(ReplyPlaceholder);
+        const replyPlaceholder = wrapper.findComponent(DiscussionReplyPlaceholder);
         replyPlaceholder.vm.$emit('focus');
         await nextTick();
 
@@ -244,7 +273,7 @@ describe('noteable_discussion component', () => {
 
         createComponent({ storeMock });
 
-        wrapper.findComponent(ReplyPlaceholder).vm.$emit('focus');
+        wrapper.findComponent(DiscussionReplyPlaceholder).vm.$emit('focus');
         await nextTick();
 
         wrapper

@@ -208,6 +208,20 @@ RSpec.describe Label, feature_category: :team_planning do
   end
 
   describe 'scopes' do
+    describe '.on_board' do
+      let(:board) { create(:board, project: project) }
+      let!(:list1) { create(:list, board: board, label: development) }
+      let!(:list2) { create(:list, board: board, label: testing) }
+
+      let!(:development) { create(:label, project: project, name: 'Development') }
+      let!(:testing) { create(:label, project: project, name: 'Testing') }
+      let!(:regression) { create(:label, project: project, name: 'Regression') }
+
+      it 'returns only the board labels' do
+        expect(described_class.on_board(board.id)).to match_array([development, testing])
+      end
+    end
+
     describe '.with_lock_on_merge' do
       let(:label) { create(:label, project: project, name: 'Label') }
       let(:label_locked) { create(:label, project: project, name: 'Label locked', lock_on_merge: true) }
@@ -285,6 +299,49 @@ RSpec.describe Label, feature_category: :team_planning do
       label = described_class.new(title: 'foo', description: 'bar')
       label.update!(description: '')
       expect(label.description).to eq('')
+    end
+  end
+
+  describe '#hook_attrs' do
+    let_it_be(:label) { build_stubbed(:label) }
+
+    subject(:attrs) { label.hook_attrs }
+
+    it 'has the expected attributes' do
+      is_expected.to match(
+        {
+          id: label.id,
+          title: label.title,
+          color: label.color,
+          project_id: label.project.id,
+          created_at: be_like_time(label.created_at),
+          updated_at: be_like_time(label.updated_at),
+          template: label.template,
+          description: label.description,
+          type: label.type,
+          group_id: nil
+        }
+      )
+    end
+
+    context 'when label has a group' do
+      let_it_be(:group) { build_stubbed(:group) }
+
+      before do
+        label.group_id = group.id
+      end
+
+      it 'has the group ID' do
+        is_expected.to include(group_id: group.id)
+      end
+    end
+
+    context 'when flag is disabled' do
+      before do
+        stub_feature_flags(webhooks_static_label_hook_attrs: false)
+      end
+
+      it { is_expected.to eq(label.attributes) }
     end
   end
 
@@ -400,6 +457,17 @@ RSpec.describe Label, feature_category: :team_planning do
       top_labels = described_class.top_labels_by_target(merge_requests)
 
       expect(top_labels).to match_array([popular_label])
+    end
+  end
+
+  describe '.sorted_by_similarity_desc' do
+    context 'when sorted by similarity' do
+      it 'returns most relevant labels first' do
+        label1 = create(:label, title: 'exact')
+        label2 = create(:label, title: 'less exact')
+        label3 = create(:label, title: 'other', description: 'mentions exact')
+        expect(described_class.sorted_by_similarity_desc('exact')).to eq([label1, label2, label3])
+      end
     end
   end
 

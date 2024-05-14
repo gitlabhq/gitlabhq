@@ -7,4 +7,11 @@ export default {
   isLoggedIn(state, getters) {
     return Boolean(getters.getUserData.id);
   },
+  isDiffsPage(state) {
+    return state.activeTab === 'diffs';
+  },
+  allVisibleDiscussionsExpanded(state, getters) {
+    if (getters.isDiffsPage) return getters['diffs/allDiffDiscussionsExpanded'];
+    return getters.allDiscussionsExpanded;
+  },
 };

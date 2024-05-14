@@ -12,8 +12,12 @@ import {
 } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
+import VueApollo from 'vue-apollo';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
+import getErrorDetailsQuery from '~/error_tracking/queries/details.query.graphql';
 import { severityLevel, severityLevelVariant, errorStatus } from '~/error_tracking/constants';
 import ErrorDetails from '~/error_tracking/components/error_details.vue';
 import Stacktrace from '~/error_tracking/components/stacktrace.vue';
@@ -27,13 +31,61 @@ jest.mock('~/alert');
 jest.mock('~/tracking');
 
 Vue.use(Vuex);
+Vue.use(VueApollo);
+
+const defaultError = {
+  id: 'gid://gitlab/Gitlab::ErrorTracking::DetailedError/129381',
+  sentryId: 129381,
+  title: 'Issue title',
+  userCount: 2,
+  count: 12,
+  status: 'open',
+  firstSeen: '2017-05-26T13:32:48Z',
+  lastSeen: '2018-05-26T13:32:48Z',
+  message: 'Error',
+  culprit: 'Error',
+  tags: {
+    level: 'high',
+    logger: 'ruby',
+  },
+  externalUrl: 'http://sentry.gitlab.net/gitlab',
+  externalBaseUrl: 'https://gitlab.com',
+  firstReleaseVersion: 1,
+  frequency: null,
+  lastReleaseVersion: 2,
+  gitlabCommit: '12345678',
+  gitlabCommitPath: '/commit/12345678',
+  gitlabIssuePath: '/issues/1',
+  integrated: true,
+};
 
 describe('ErrorDetails', () => {
   let store;
   let wrapper;
   let actions;
   let getters;
-  let mocks;
+  let requestHandlers;
+
+  const mockApolloHandlers = ({ detailedError, getErrorDetailsQueryHandler }) => {
+    return {
+      getErrorDetailsQuery:
+        getErrorDetailsQueryHandler ||
+        jest.fn().mockResolvedValue({
+          data: {
+            id: 1,
+            project: {
+              id: 2,
+              sentryErrors: { id: 3, detailedError: { ...defaultError, ...detailedError } },
+            },
+          },
+        }),
+    };
+  };
+
+  const createMockApolloProvider = (handlers) => {
+    requestHandlers = handlers;
+    return createMockApollo([[getErrorDetailsQuery, requestHandlers.getErrorDetailsQuery]]);
+  };
 
   const findInput = (name) => {
     const inputs = wrapper
@@ -48,8 +100,15 @@ describe('ErrorDetails', () => {
     wrapper.find('[data-testid="update-resolve-status-btn"]');
   const findAlert = () => wrapper.findComponent(GlAlert);
 
-  function mountComponent({ integratedErrorTrackingEnabled = false } = {}) {
+  const createComponent = async ({
+    integratedErrorTrackingEnabled = false,
+    getErrorDetailsQueryHandler = null,
+    detailedError = {},
+  } = {}) => {
     wrapper = shallowMount(ErrorDetails, {
+      apolloProvider: createMockApolloProvider(
+        mockApolloHandlers({ detailedError, getErrorDetailsQueryHandler }),
+      ),
       stubs: {
         GlButton,
         GlSprintf,
@@ -58,7 +117,6 @@ describe('ErrorDetails', () => {
         GlDisclosureDropdownGroup,
       },
       store,
-      mocks,
       propsData: {
         issueId: '123',
         projectPath: '/root/gitlab-test',
@@ -70,11 +128,14 @@ describe('ErrorDetails', () => {
         integratedErrorTrackingEnabled,
       },
     });
-  }
+
+    await waitForPromises();
+  };
 
   beforeEach(() => {
     actions = {
-      startPollingStacktrace: () => {},
+      setStatus: jest.fn().mockImplementation(() => {}),
+      startPollingStacktrace: jest.fn().mockImplementation(() => {}),
       updateIgnoreStatus: jest.fn().mockResolvedValue({}),
       updateResolveStatus: jest.fn().mockResolvedValue({ closed_issue_iid: 1 }),
     };
@@ -85,7 +146,7 @@ describe('ErrorDetails', () => {
     };
 
     const state = {
-      stacktraceData: {},
+      stacktraceData: { date_received: '2020-01-01' },
       loadingStacktrace: true,
       errorStatus: '',
     };
@@ -100,28 +161,11 @@ describe('ErrorDetails', () => {
         },
       },
     });
-
-    const query = jest.fn();
-    mocks = {
-      $apollo: {
-        query,
-        queries: {
-          error: {
-            loading: true,
-            stopPolling: jest.fn(),
-            setOptions: jest.fn(),
-          },
-        },
-      },
-    };
   });
 
   describe('loading', () => {
-    beforeEach(() => {
-      mountComponent();
-    });
-
     it('should show spinner while loading', () => {
+      createComponent();
       expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
       expect(wrapper.findComponent(GlLink).exists()).toBe(false);
       expect(wrapper.findComponent(Stacktrace).exists()).toBe(false);
@@ -132,76 +176,42 @@ describe('ErrorDetails', () => {
     const initTime = 300000;
     const endTime = initTime + 10000;
 
-    beforeEach(() => {
-      mocks.$apollo.queries.error.loading = false;
-      jest.spyOn(Date, 'now').mockReturnValue(initTime);
-      mountComponent();
-    });
-
     it('when before timeout, still shows loading', async () => {
-      Date.now.mockReturnValue(endTime - 1);
+      jest
+        .spyOn(Date, 'now')
+        .mockReturnValueOnce(initTime)
+        .mockReturnValueOnce(endTime - 1);
 
-      wrapper.vm.onNoApolloResult();
-
-      await nextTick();
+      await createComponent({ getErrorDetailsQueryHandler: jest.fn().mockRejectedValue({}) });
       expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
-      expect(createAlert).not.toHaveBeenCalled();
-      expect(mocks.$apollo.queries.error.stopPolling).not.toHaveBeenCalled();
+      expect(createAlert).toHaveBeenCalledTimes(1);
     });
 
     it('when timeout is hit and no apollo result, stops loading and shows alert', async () => {
-      Date.now.mockReturnValue(endTime + 1);
-
-      wrapper.vm.onNoApolloResult();
-
-      await nextTick();
+      jest
+        .spyOn(Date, 'now')
+        .mockReturnValueOnce(initTime)
+        .mockReturnValueOnce(endTime + 1);
+      await createComponent({ getErrorDetailsQueryHandler: jest.fn().mockRejectedValue({}) });
       expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(false);
       expect(wrapper.findComponent(GlLink).exists()).toBe(false);
-      expect(createAlert).toHaveBeenCalledWith({
+      expect(createAlert).toHaveBeenCalledTimes(2);
+      expect(createAlert).toHaveBeenLastCalledWith({
         message: 'Could not connect to Sentry. Refresh the page to try again.',
         variant: VARIANT_WARNING,
       });
-      expect(mocks.$apollo.queries.error.stopPolling).toHaveBeenCalled();
     });
   });
 
   describe('Error details', () => {
-    beforeEach(() => {
-      mocks.$apollo.queries.error.loading = false;
-      mountComponent();
-      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-      // TODO remove setData usage https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/2216
-      // eslint-disable-next-line no-restricted-syntax
-      wrapper.setData({
-        error: {
-          id: 'gid://gitlab/Gitlab::ErrorTracking::DetailedError/129381',
-          sentryId: 129381,
-          title: 'Issue title',
-          externalUrl: 'http://sentry.gitlab.net/gitlab',
-          firstSeen: '2017-05-26T13:32:48Z',
-          lastSeen: '2018-05-26T13:32:48Z',
-          count: 12,
-          userCount: 2,
-        },
-        stacktraceData: {
-          date_received: '2020-05-20',
-        },
-      });
-    });
-
     describe('unsafe chars for culprit field', () => {
       const findReportedText = () => wrapper.find('[data-testid="reported-text"]');
       const culprit = '<script>console.log("surprise!")</script>';
-      beforeEach(() => {
+
+      beforeEach(async () => {
         store.state.details.loadingStacktrace = false;
-        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-        // TODO remove setData usage https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/2216
-        // eslint-disable-next-line no-restricted-syntax
-        wrapper.setData({
-          error: {
-            culprit,
-          },
-        });
+        const detailedError = { culprit };
+        await createComponent({ detailedError });
       });
 
       it('should not convert interpolated text to html entities', () => {
@@ -216,43 +226,22 @@ describe('ErrorDetails', () => {
 
     describe('Badges', () => {
       it('should show language and error level badges', async () => {
-        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-        // TODO remove setData usage https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/2216
-        // eslint-disable-next-line no-restricted-syntax
-        wrapper.setData({
-          error: {
-            tags: { level: 'error', logger: 'ruby' },
-          },
-        });
-        await nextTick();
+        const detailedError = { tags: { level: 'error', logger: 'ruby' } };
+        await createComponent({ detailedError });
         expect(wrapper.findAllComponents(GlBadge).length).toBe(2);
       });
 
       it('should NOT show the badge if the tag is not present', async () => {
-        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-        // TODO remove setData usage https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/2216
-        // eslint-disable-next-line no-restricted-syntax
-        wrapper.setData({
-          error: {
-            tags: { level: 'error' },
-          },
-        });
-        await nextTick();
+        const detailedError = { tags: { level: 'error', logger: null } };
+        await createComponent({ detailedError });
         expect(wrapper.findAllComponents(GlBadge).length).toBe(1);
       });
 
       it.each(Object.keys(severityLevel))(
         'should set correct severity level variant for %s badge',
         async (level) => {
-          // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-          // TODO remove setData usage https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/2216
-          // eslint-disable-next-line no-restricted-syntax
-          wrapper.setData({
-            error: {
-              tags: { level: severityLevel[level] },
-            },
-          });
-          await nextTick();
+          const detailedError = { tags: { level: severityLevel[level], logger: null } };
+          await createComponent({ detailedError });
           expect(wrapper.findComponent(GlBadge).props('variant')).toEqual(
             severityLevelVariant[severityLevel[level]],
           );
@@ -260,15 +249,8 @@ describe('ErrorDetails', () => {
       );
 
       it('should fallback for ERROR severityLevelVariant when severityLevel is unknown', async () => {
-        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-        // TODO remove setData usage https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/2216
-        // eslint-disable-next-line no-restricted-syntax
-        wrapper.setData({
-          error: {
-            tags: { level: 'someNewErrorLevel' },
-          },
-        });
-        await nextTick();
+        const detailedError = { tags: { level: 'someNewErrorLevel', logger: null } };
+        await createComponent({ detailedError });
         expect(wrapper.findComponent(GlBadge).props('variant')).toEqual(
           severityLevelVariant[severityLevel.ERROR],
         );
@@ -277,6 +259,7 @@ describe('ErrorDetails', () => {
 
     describe('ErrorDetailsInfo', () => {
       it('should show ErrorDetailsInfo', async () => {
+        await createComponent();
         store.state.details.loadingStacktrace = false;
         await nextTick();
         expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(false);
@@ -286,25 +269,19 @@ describe('ErrorDetails', () => {
     });
 
     describe('timeline chart', () => {
-      it('should not show timeline chart if frequency data does not exist', () => {
+      it('should not show timeline chart if frequency data does not exist', async () => {
+        await createComponent();
         expect(wrapper.findComponent(TimelineChart).exists()).toBe(false);
         expect(wrapper.text()).not.toContain('Last 24 hours');
       });
 
       it('should show timeline chart', async () => {
         const mockFrequency = [
-          [0, 1],
-          [2, 3],
+          { count: 0, time: 1 },
+          { count: 2, time: 3 },
         ];
-        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-        // TODO remove setData usage https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/2216
-        // eslint-disable-next-line no-restricted-syntax
-        wrapper.setData({
-          error: {
-            frequency: mockFrequency,
-          },
-        });
-        await nextTick();
+        const detailedError = { frequency: mockFrequency };
+        await createComponent({ detailedError });
         expect(wrapper.findComponent(TimelineChart).exists()).toBe(true);
         expect(wrapper.findComponent(TimelineChart).props('timelineData')).toEqual(mockFrequency);
         expect(wrapper.text()).toContain('Last 24 hours');
@@ -312,6 +289,10 @@ describe('ErrorDetails', () => {
     });
 
     describe('Stacktrace', () => {
+      beforeEach(async () => {
+        await createComponent();
+      });
+
       it('should show stacktrace', async () => {
         store.state.details.loadingStacktrace = false;
         await nextTick();
@@ -331,6 +312,10 @@ describe('ErrorDetails', () => {
     });
 
     describe('When a user clicks the create issue button', () => {
+      beforeEach(async () => {
+        await createComponent({ detailedError: { gitlabIssuePath: '' } });
+      });
+
       it('should send sentry_issue_identifier', () => {
         const sentryErrorIdInput = findInput(
           'issue[sentry_issue_attributes][sentry_issue_identifier]',
@@ -364,8 +349,8 @@ describe('ErrorDetails', () => {
 
       describe('when error is unresolved', () => {
         beforeEach(async () => {
+          await createComponent();
           store.state.details.errorStatus = errorStatus.UNRESOLVED;
-
           await nextTick();
         });
 
@@ -391,8 +376,8 @@ describe('ErrorDetails', () => {
 
       describe('when error is ignored', () => {
         beforeEach(async () => {
+          await createComponent();
           store.state.details.errorStatus = errorStatus.IGNORED;
-
           await nextTick();
         });
 
@@ -418,8 +403,8 @@ describe('ErrorDetails', () => {
 
       describe('when error is resolved', () => {
         beforeEach(async () => {
+          await createComponent();
           store.state.details.errorStatus = errorStatus.RESOLVED;
-
           await nextTick();
         });
 
@@ -443,18 +428,12 @@ describe('ErrorDetails', () => {
         });
 
         it('should show alert with closed issueId', async () => {
-          const closedIssueId = 123;
-          // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-          // TODO remove setData usage https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/2216
-          // eslint-disable-next-line no-restricted-syntax
-          wrapper.setData({
-            isAlertVisible: true,
-            closedIssueId,
-          });
-
-          await nextTick();
+          await findUpdateResolveStatusButton().vm.$emit('click');
+          await waitForPromises();
           expect(findAlert().exists()).toBe(true);
-          expect(findAlert().text()).toContain(`#${closedIssueId}`);
+          expect(findAlert().text()).toBe(
+            'The associated issue #1 has been closed as the error is now resolved.',
+          );
         });
       });
     });
@@ -466,15 +445,9 @@ describe('ErrorDetails', () => {
       const findViewIssueButton = () => wrapper.find('[data-testid="view-issue-button"]');
 
       describe('is present', () => {
-        beforeEach(() => {
-          // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-          // TODO remove setData usage https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/2216
-          // eslint-disable-next-line no-restricted-syntax
-          wrapper.setData({
-            error: {
-              gitlabIssuePath,
-            },
-          });
+        beforeEach(async () => {
+          const detailedError = { gitlabIssuePath };
+          await createComponent({ detailedError });
         });
 
         it('should display the View issue button', () => {
@@ -491,15 +464,9 @@ describe('ErrorDetails', () => {
       });
 
       describe('is not present', () => {
-        beforeEach(() => {
-          // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-          // TODO remove setData usage https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/2216
-          // eslint-disable-next-line no-restricted-syntax
-          wrapper.setData({
-            error: {
-              gitlabIssuePath: null,
-            },
-          });
+        beforeEach(async () => {
+          const detailedError = { gitlabIssuePath: null };
+          await createComponent({ detailedError });
         });
 
         it('should not display the View issue button', () => {
@@ -518,55 +485,44 @@ describe('ErrorDetails', () => {
   });
 
   describe('Snowplow tracking', () => {
-    beforeEach(() => {
-      mocks.$apollo.queries.error.loading = false;
-    });
-
-    describe.each([true, false])(`when integratedErrorTracking is %s`, (integrated) => {
+    describe.each`
+      integrated | variant
+      ${true}    | ${'integrated'}
+      ${false}   | ${'external'}
+    `(`when integratedErrorTracking is $integrated`, ({ integrated, variant }) => {
       const category = 'Error Tracking';
 
-      beforeEach(() => {
-        mountComponent({ integratedErrorTrackingEnabled: integrated });
-        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-        // TODO remove setData usage https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/2216
-        // eslint-disable-next-line no-restricted-syntax
-        wrapper.setData({
-          error: {},
+      beforeEach(async () => {
+        await createComponent({
+          integratedErrorTrackingEnabled: integrated,
+          detailedError: { gitlabIssuePath: '' },
         });
       });
 
       it('should track detail page views', () => {
         expect(Tracking.event).toHaveBeenCalledWith(category, 'view_error_details', {
-          extra: {
-            variant: integrated ? 'integrated' : 'external',
-          },
+          extra: { variant },
         });
       });
 
       it('should track IGNORE status update', async () => {
         await findUpdateIgnoreStatusButton().trigger('click');
         expect(Tracking.event).toHaveBeenCalledWith(category, 'update_ignored_status', {
-          extra: {
-            variant: integrated ? 'integrated' : 'external',
-          },
+          extra: { variant },
         });
       });
 
       it('should track RESOLVE status update', async () => {
         await findUpdateResolveStatusButton().trigger('click');
         expect(Tracking.event).toHaveBeenCalledWith(category, 'update_resolved_status', {
-          extra: {
-            variant: integrated ? 'integrated' : 'external',
-          },
+          extra: { variant },
         });
       });
 
       it('should track create issue button click', async () => {
         await wrapper.find('[data-testid="create-issue-button"]').vm.$emit('click');
         expect(Tracking.event).toHaveBeenCalledWith(category, 'click_create_issue_from_error', {
-          extra: {
-            variant: integrated ? 'integrated' : 'external',
-          },
+          extra: { variant },
         });
       });
     });

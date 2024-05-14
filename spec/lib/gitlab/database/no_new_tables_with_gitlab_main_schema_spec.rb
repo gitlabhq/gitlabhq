@@ -12,7 +12,6 @@ RSpec.describe 'new tables with gitlab_main schema', feature_category: :cell do
   # Specific tables can be exempted from this requirement, and such tables must be added to the `exempted_tables` list.
   let!(:exempted_tables) do
     [
-      "audit_events_instance_amazon_s3_configurations", # https://gitlab.com/gitlab-org/gitlab/-/issues/431327
       "sbom_source_packages"                            # https://gitlab.com/gitlab-org/gitlab/-/issues/437718
     ]
   end
@@ -52,7 +51,7 @@ RSpec.describe 'new tables with gitlab_main schema', feature_category: :cell do
 
   def tables_having_gitlab_main_schema(starting_from_milestone:)
     gitlab_main_schema_tables.filter_map do |entry|
-      entry.table_name if entry.milestone.to_f >= starting_from_milestone
+      entry.table_name if entry.milestone_greater_than_or_equal_to?(starting_from_milestone)
     end
   end
 

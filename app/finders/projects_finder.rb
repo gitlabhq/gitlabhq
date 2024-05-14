@@ -142,7 +142,7 @@ class ProjectsFinder < UnionFinder
 
     public_visibility_levels = Gitlab::VisibilityLevel.levels_for_user(current_user)
 
-    !public_visibility_levels.include?(params[:visibility_level].to_i)
+    public_visibility_levels.exclude?(params[:visibility_level].to_i)
   end
 
   def owned_projects?
@@ -222,7 +222,10 @@ class ProjectsFinder < UnionFinder
     params[:search] ||= params[:name]
 
     return items if Feature.enabled?(:disable_anonymous_project_search, type: :ops) && current_user.nil?
-    return items.none if params[:search].present? && params[:minimum_search_length].present? && params[:search].length < params[:minimum_search_length].to_i
+
+    if params[:search].present? && params[:minimum_search_length].present? && params[:search].length < params[:minimum_search_length].to_i
+      return items.none
+    end
 
     items.optionally_search(params[:search], include_namespace: params[:search_namespaces].present?)
   end
@@ -266,9 +269,7 @@ class ProjectsFinder < UnionFinder
   def sort(items)
     return items.projects_order_id_desc unless params[:sort]
 
-    if params[:sort] == 'similarity' && params[:search].present?
-      return items.sorted_by_similarity_desc(params[:search], include_in_select: true)
-    end
+    return items.sorted_by_similarity_desc(params[:search]) if params[:sort] == 'similarity' && params[:search].present?
 
     items.sort_by_attribute(params[:sort])
   end

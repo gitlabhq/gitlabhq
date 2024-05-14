@@ -19,6 +19,7 @@ swap:
   at least the Owner role: the Owner role
   can login: can log in
   can log-in: can log in
+  can setup: can set up
   can signin: can sign in
   can sign-in: can sign in
   codequality: code quality
@@ -27,7 +28,6 @@ swap:
   developer permission: the Developer role
   developer permissions: the Developer role
   disallow: prevent
-  '(?<!GitLab )Duo': GitLab Duo
   frontmatter: front matter
   GitLab self hosted: GitLab self-managed # https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html#gitlab-self-managed
   GitLab self-hosted: GitLab self-managed # https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html#gitlab-self-managed
@@ -55,12 +55,14 @@ swap:
   reporter access: the Reporter role
   reporter permission: the Reporter role
   reporter permissions: the Reporter role
+  rubocop: RuboCop
   self hosted GitLab: GitLab self-managed # https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html#gitlab-self-managed
   self-hosted GitLab: GitLab self-managed # https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html#gitlab-self-managed
   styleguide: style guide
   the administrator access level: administrator access
   to login: to log in
   to log-in: to log in
+  to setup: to set up
   to signin: to sign in
   to sign-in: to sign in
   x509: X.509

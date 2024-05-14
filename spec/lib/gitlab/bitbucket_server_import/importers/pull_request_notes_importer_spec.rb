@@ -100,7 +100,7 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotesImporte
       end
     end
 
-    context 'when a matching merge request is found', :clean_gitlab_redis_cache do
+    context 'when a matching merge request is found', :clean_gitlab_redis_shared_state do
       let_it_be(:merge_request) { create(:merge_request, iid: pull_request.iid, source_project: project) }
 
       it 'logs its progress' do

@@ -1,7 +1,6 @@
 <script>
 import { GlButton, GlModalDirective } from '@gitlab/ui';
 import { formType } from '~/boards/constants';
-import eventHub from '~/boards/eventhub';
 import { s__ } from '~/locale';
 import Tracking from '~/tracking';
 import GitlabExperiment from '~/experimentation/components/gitlab_experiment.vue';
@@ -27,7 +26,7 @@ export default {
   methods: {
     showDialog() {
       this.track('click_button', { label: 'create_board' });
-      eventHub.$emit('showBoardModal', formType.new);
+      this.$emit('showBoardModal', formType.new);
     },
   },
 };
@@ -37,7 +36,10 @@ export default {
   <gitlab-experiment name="prominent_create_board_btn">
     <template #control> </template>
     <template #candidate>
-      <div v-if="canShowCreateButton" class="gl-ml-1 gl-mr-3 gl-display-flex gl-align-items-center">
+      <div
+        v-if="canShowCreateButton"
+        class="gl-ml-1 gl-mr-3 gl-display-flex gl-align-items-flex-start"
+      >
         <gl-button @click.prevent="showDialog">
           {{ createButtonText }}
         </gl-button>

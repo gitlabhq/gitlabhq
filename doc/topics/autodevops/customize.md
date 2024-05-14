@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 You can customize components of Auto DevOps to fit your needs. For example, you can:
 
@@ -49,37 +49,10 @@ You can customize your buildpacks when either:
 
 ### Customize buildpacks with Cloud Native Buildpacks
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28165) in GitLab 12.10.
-
 Specify either:
 
 - The CI/CD variable `BUILDPACK_URL` with any of [`pack`'s URI specification formats](https://buildpacks.io/docs/app-developer-guide/specify-buildpacks/).
 - A [`project.toml` project descriptor](https://buildpacks.io/docs/app-developer-guide/using-project-descriptor/) with the buildpacks you would like to include.
-
-<!--- start_remove The following content will be removed on remove_date: '2024-08-22' -->
-
-### Customize buildpacks with Herokuish (deprecated)
-
-WARNING:
-Support for Herokuish was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108234) in GitLab 15.8,
-and is planned for removal in 17.0. Use [Cloud Native Buildpacks](stages.md#moving-from-herokuish-to-cloud-native-buildpacks) instead.
-
-Specify either:
-
-- The CI/CD variable `BUILDPACK_URL`.
-- A `.buildpacks` file at the root of your project that contains one buildpack URL per line.
-
-The buildpack URL can point to either a Git repository URL or a tarball URL.
-
-For Git repositories, you can point to a specific Git reference by
-appending `#<ref>` to the Git repository URL. For example, you can
-reference:
-
-- The tag `v142`: `https://github.com/heroku/heroku-buildpack-ruby.git#v142`.
-- The branch `mybranch`: `https://github.com/heroku/heroku-buildpack-ruby.git#mybranch`.
-- The commit SHA `f97d8a8ab49`: `https://github.com/heroku/heroku-buildpack-ruby.git#f97d8a8ab49`.
-
-<!--- end_remove -->
 
 ### Multiple buildpacks
 
@@ -93,8 +66,6 @@ To use only a single custom buildpack, you should provide the project CI/CD vari
 `BUILDPACK_URL` instead.
 
 ## Custom Dockerfiles
-
-> - `DOCKERFILE_PATH` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35662) in GitLab 13.2.
 
 If you have a Dockerfile in the root of your project repository, Auto
 DevOps builds a Docker image based on the Dockerfile. This can be
@@ -168,8 +139,6 @@ You can extend and manage your Auto DevOps configuration with GitLab APIs:
 
 ## Forward CI/CD variables to the build environment
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25514) in GitLab 12.3.
-
 To forward CI/CD variables to the build environment, add the names of the variables
 you want to forward to the `AUTO_DEVOPS_BUILD_IMAGE_FORWARDED_CI_VARIABLES` CI/CD variable.
 Separate multiple variables with commas.
@@ -223,12 +192,10 @@ repository or by specifying a project CI/CD variable:
 
 ### Customize Helm chart values
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30628) in GitLab 12.6, `.gitlab/auto-deploy-values.yaml` is used by default for Helm upgrades.
-
 To override the default values in the `values.yaml` file in the
 [default Helm chart](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image/-/tree/master/assets/auto-deploy-app), either:
 
-- Add a file named `.gitlab/auto-deploy-values.yaml` to your repository. This file is automatically used.
+- Add a file named `.gitlab/auto-deploy-values.yaml` to your repository. This file is used by default for Helm upgrades.
 - Add a file with a different name or path to the repository. Set the
   `HELM_UPGRADE_VALUES_FILE` [CI/CD variable](cicd_variables.md) with the path and name of the file.
 
@@ -257,7 +224,7 @@ For more information, see [Limit the environment scope of CI/CD variables](../..
 ## Customize `.gitlab-ci.yml`
 
 Auto DevOps is highly customizable because the [Auto DevOps template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml)
-is an implementation of a [`.gitlab-ci.yml` file](../../ci/index.md#the-gitlab-ciyml-file).
+is an implementation of a `.gitlab-ci.yml` file.
 The template uses only features available to any implementation of `.gitlab-ci.yml`.
 
 To add custom behaviors to the CI/CD pipeline used by Auto DevOps:
@@ -297,17 +264,6 @@ include:
 ```
 
 For a list of available jobs, see the [Auto DevOps template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml).
-
-WARNING:
-From [GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/issues/213336),
-Auto DevOps templates that use the [`only`](../../ci/yaml/index.md#only--except) or
-[`except`](../../ci/yaml/index.md#only--except) syntax have switched
-to the [`rules`](../../ci/yaml/index.md#rules) syntax.
-If your `.gitlab-ci.yml` extends these Auto DevOps templates and overrides `only` or
-`except`, migrate your templates to the
-[`rules`](../../ci/yaml/index.md#rules) syntax.
-If you cannot migrate, you can pin your templates to
-the [GitLab 12.10 based templates](https://gitlab.com/gitlab-org/auto-devops-v12-10).
 
 ## Use multiple Kubernetes clusters
 
@@ -378,8 +334,6 @@ To use the old PostgreSQL, set the `AUTO_DEVOPS_POSTGRES_CHANNEL` variable to
 
 ### Customize values for PostgreSQL Helm Chart
 
-> - [Introduced](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image/-/issues/113) in GitLab 13.8 with auto-deploy-image v2.
-
 To set custom values, do one of the following:
 
 - Add a file named `.gitlab/auto-deploy-postgres-values.yaml` to your repository. If found, this
@@ -399,7 +353,7 @@ To use an external managed provider:
 
 1. Disable the built-in PostgreSQL installation for the required environments with
    environment-scoped [CI/CD variables](../../ci/environments/index.md#limit-the-environment-scope-of-a-cicd-variable).
-   Because the built-in PostgreSQL setup for Review Apps and staging is sufficient, you might only need to
+   Because the built-in PostgreSQL setup for review apps and staging is sufficient, you might only need to
    disable the installation for `production`.
 
    ![Auto Metrics](img/disable_postgres.png)

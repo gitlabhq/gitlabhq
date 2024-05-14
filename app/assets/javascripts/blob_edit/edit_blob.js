@@ -7,9 +7,11 @@ import SourceEditor from '~/editor/source_editor';
 import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { addEditorMarkdownListeners } from '~/lib/utils/text_markdown';
-import { insertFinalNewline } from '~/lib/utils/text_utility';
 import FilepathFormMediator from '~/blob/filepath_form_mediator';
-import { BLOB_EDITOR_ERROR, BLOB_PREVIEW_ERROR } from './constants';
+import { visitUrl } from '~/lib/utils/url_utility';
+import Api from '~/api';
+
+import { BLOB_EDITOR_ERROR, BLOB_PREVIEW_ERROR, BLOB_EDIT_ERROR } from './constants';
 
 export default class EditBlob {
   // The options object has:
@@ -20,18 +22,8 @@ export default class EditBlob {
     this.isMarkdown = this.options.isMarkdown;
     this.markdownLivePreviewOpened = false;
 
-    if (this.isMarkdown) {
-      this.fetchMarkdownExtension();
-    }
-
-    if (this.options.filePath === '.gitlab/security-policies/policy.yml') {
-      this.fetchSecurityPolicyExtension(this.options.projectPath);
-    }
-
     this.initModePanesAndLinks();
-    this.initFilepathForm();
     this.initSoftWrap();
-    this.editor.focus();
   }
 
   async fetchMarkdownExtension() {
@@ -72,16 +64,28 @@ export default class EditBlob {
     }
   }
 
-  configureMonacoEditor() {
+  async configureMonacoEditor() {
     const editorEl = document.getElementById('editor');
-    const fileContentEl = document.getElementById('file-content');
     const form = document.querySelector('.js-edit-blob-form');
 
     const rootEditor = new SourceEditor();
+    const { filePath, projectId } = this.options;
+    const { ref } = editorEl.dataset;
+    let blobContent = '';
+
+    if (filePath) {
+      const { data } = await Api.getRawFile(
+        projectId,
+        filePath,
+        { ref },
+        { responseType: 'text', transformResponse: (x) => x },
+      );
+      blobContent = String(data);
+    }
 
     this.editor = rootEditor.createInstance({
       el: editorEl,
-      blobContent: editorEl.innerText,
+      blobContent,
       blobPath: this.options.filePath,
     });
     this.editor.use([
@@ -90,8 +94,31 @@ export default class EditBlob {
       { definition: FileTemplateExtension },
     ]);
 
-    form.addEventListener('submit', () => {
-      fileContentEl.value = insertFinalNewline(this.editor.getValue());
+    if (this.isMarkdown) {
+      this.fetchMarkdownExtension();
+    }
+
+    if (this.options.filePath === '.gitlab/security-policies/policy.yml') {
+      await this.fetchSecurityPolicyExtension(this.options.projectPath);
+    }
+
+    this.initFilepathForm();
+    this.editor.focus();
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const { formMethod } = form.dataset;
+      const endpoint = form.action;
+      const formData = new FormData(form);
+      formData.set('content', this.editor.getValue());
+
+      try {
+        const { data } = await axios[formMethod](endpoint, Object.fromEntries(formData));
+        visitUrl(data.filePath);
+      } catch (error) {
+        createAlert({ message: BLOB_EDIT_ERROR, captureError: true });
+      }
     });
 
     // onDidChangeModelLanguage is part of the native Monaco API

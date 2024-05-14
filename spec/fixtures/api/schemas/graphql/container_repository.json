@@ -8,7 +8,6 @@
     "createdAt",
     "updatedAt",
     "tagsCount",
-    "canDelete",
     "expirationPolicyCleanupStatus",
     "project",
     "lastCleanupDeletedTagsCount",
@@ -47,9 +46,6 @@
     },
     "tagsCount": {
       "type": "integer"
-    },
-    "canDelete": {
-      "type": "boolean"
     },
     "expirationPolicyCleanupStatus": {
       "type": "string",

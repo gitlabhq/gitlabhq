@@ -76,6 +76,7 @@
           "name",
           "stage",
           "image",
+          "tag_list",
           "services",
           "script"
         ],
@@ -83,6 +84,10 @@
           "name": { "type": "string" },
           "stage": { "type": "string" },
           "image": { "type": ["string", "null"] },
+          "tag_list": {
+            "type": ["array", "null"] },
+            "items": { "type": "string" }
+          },
           "services": {
             "type": ["array", "null"],
             "items": { "type": "string" }

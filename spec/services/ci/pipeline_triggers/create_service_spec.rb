@@ -5,14 +5,9 @@ require 'spec_helper'
 RSpec.describe Ci::PipelineTriggers::CreateService, feature_category: :continuous_integration do
   let_it_be(:developer) { create(:user) }
   let_it_be_with_reload(:user) { create(:user) }
-  let_it_be_with_reload(:project) { create(:project, :public) }
+  let_it_be_with_reload(:project) { create(:project, :public, maintainers: user, developers: developer) }
 
   subject(:service) { described_class.new(project: project, user: user, description: description) }
-
-  before_all do
-    project.add_maintainer(user)
-    project.add_developer(developer)
-  end
 
   describe "execute" do
     context 'when user does not have permission' do

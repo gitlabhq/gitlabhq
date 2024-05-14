@@ -6,23 +6,33 @@ import { initNewResourceDropdown } from '~/vue_shared/components/new_resource_dr
 import { RESOURCE_TYPE_MERGE_REQUEST } from '~/vue_shared/components/new_resource_dropdown/constants';
 import searchUserProjectsWithMergeRequestsEnabled from '~/vue_shared/components/new_resource_dropdown/graphql/search_user_projects_with_merge_requests_enabled.query.graphql';
 
-const IssuableFilteredSearchTokenKeys = createFilteredSearchTokenKeys({
-  disableReleaseFilter: true,
-});
+const el = document.getElementById('js-merge-request-dashboard');
 
-addExtraTokensForMergeRequests(IssuableFilteredSearchTokenKeys, {
-  disableBranchFilter: true,
-  disableReleaseFilter: true,
-  disableEnvironmentFilter: true,
-});
+if (el) {
+  requestIdleCallback(async () => {
+    const { initMergeRequestDashboard } = await import('~/merge_request_dashboard');
 
-initFilteredSearch({
-  page: FILTERED_SEARCH.MERGE_REQUESTS,
-  filteredSearchTokenKeys: IssuableFilteredSearchTokenKeys,
-  useDefaultState: true,
-});
+    initMergeRequestDashboard(el);
+  });
+} else {
+  const IssuableFilteredSearchTokenKeys = createFilteredSearchTokenKeys({
+    disableReleaseFilter: true,
+  });
 
-initNewResourceDropdown({
-  resourceType: RESOURCE_TYPE_MERGE_REQUEST,
-  query: searchUserProjectsWithMergeRequestsEnabled,
-});
+  addExtraTokensForMergeRequests(IssuableFilteredSearchTokenKeys, {
+    disableBranchFilter: true,
+    disableReleaseFilter: true,
+    disableEnvironmentFilter: true,
+  });
+
+  initFilteredSearch({
+    page: FILTERED_SEARCH.MERGE_REQUESTS,
+    filteredSearchTokenKeys: IssuableFilteredSearchTokenKeys,
+    useDefaultState: true,
+  });
+
+  initNewResourceDropdown({
+    resourceType: RESOURCE_TYPE_MERGE_REQUEST,
+    query: searchUserProjectsWithMergeRequestsEnabled,
+  });
+}

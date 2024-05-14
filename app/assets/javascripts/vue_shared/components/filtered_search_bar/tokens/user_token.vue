@@ -115,6 +115,7 @@ export default {
     :get-active-token-value="getActiveUser"
     :default-suggestions="defaultUsers"
     :preloaded-suggestions="preloadedUsers"
+    value-identifier="username"
     v-bind="$attrs"
     @fetch-suggestions="fetchUsers"
     v-on="$listeners"

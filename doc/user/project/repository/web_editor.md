@@ -2,13 +2,14 @@
 stage: Create
 group: IDE
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: "Use the Web Editor to create, upload, and edit text files directly in the GitLab UI."
 ---
 
 # Web Editor
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 You can use the Web Editor to make changes to a single file directly from the GitLab UI.
 To make changes to multiple files, see [Web IDE](../web_ide/index.md).

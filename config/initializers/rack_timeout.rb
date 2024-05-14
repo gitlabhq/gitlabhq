@@ -13,8 +13,8 @@ if Gitlab::Runtime.puma? && !Rails.env.test?
 
   Gitlab::Application.configure do |config|
     config.middleware.insert_before(Rack::Runtime, Rack::Timeout,
-                                    service_timeout: ENV.fetch('GITLAB_RAILS_RACK_TIMEOUT', 60).to_i,
-                                    wait_timeout: ENV.fetch('GITLAB_RAILS_WAIT_TIMEOUT', 90).to_i)
+      service_timeout: ENV.fetch('GITLAB_RAILS_RACK_TIMEOUT', 60).to_i,
+      wait_timeout: ENV.fetch('GITLAB_RAILS_WAIT_TIMEOUT', 90).to_i)
   end
 
   observer = Gitlab::Cluster::RackTimeoutObserver.new

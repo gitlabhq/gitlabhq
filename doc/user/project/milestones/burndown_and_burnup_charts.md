@@ -8,16 +8,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 [Burndown](#burndown-charts) and [burnup](#burnup-charts) charts show the progress of completing a milestone.
 
 ![burndown and burnup chart](img/burndown_and_burnup_charts_v15_3.png)
 
 ## Burndown charts
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/6903) [fixed burndown charts](#fixed-burndown-charts) in GitLab 13.6.
-> - Moved to GitLab Premium in 13.9.
 
 Burndown charts show the number of issues over the course of a milestone.
 
@@ -103,10 +100,6 @@ change.
 Reopened issues are considered as having been opened on the day after they were last closed.
 
 ## Burnup charts
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/6903) in GitLab 13.6.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/268350) in GitLab 13.7.
-> - Moved to GitLab Premium in 13.9.
 
 Burnup charts show the assigned and completed work for a milestone.
 

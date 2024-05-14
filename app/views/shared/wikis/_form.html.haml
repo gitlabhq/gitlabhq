@@ -1,6 +1,6 @@
-- page_info = { last_commit_sha: @page.last_commit_sha, persisted: @page.persisted?, title: @page.title, content: @page.raw_content || '', format: @page.format.to_s, uploads_path: uploads_path, path: wiki_page_path(@wiki, @page), wiki_path: wiki_path(@wiki), help_path: help_page_path('user/project/wiki/index'), markdown_help_path: help_page_path('user/markdown'), markdown_preview_path: wiki_page_path(@wiki, @page, action: :preview_markdown), create_path: wiki_path(@wiki, action: :create) }
-
 .gl-mt-3
   = form_errors(@page, truncate: :title)
 
-#js-wiki-form{ data: { page_info: page_info.to_json, format_options: wiki_markup_hash_by_name_id.to_json } }
+- templates = @templates.map { |t| wiki_page_basic_info(t) }
+
+#js-wiki-form{ data: { page_info: wiki_page_info(@page, uploads_path: uploads_path).to_json, templates: templates.to_json, format_options: wiki_markup_hash_by_name_id.to_json } }

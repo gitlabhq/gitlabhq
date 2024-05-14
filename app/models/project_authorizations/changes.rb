@@ -141,29 +141,22 @@ module ProjectAuthorizations
     end
 
     def publish_events
-      publish_changed_event
       publish_removed_event
       publish_added_event
-    end
-
-    def publish_changed_event
-      # This event is used to add policy approvers to approval rules by re-syncing all project policies which is costly.
-      # If the feature flag below is enabled, the policies won't be re-synced and
-      # the approvers will be added via `AuthorizationsAddedEvent`.
-      return if ::Feature.enabled?(:add_policy_approvers_to_rules)
-
-      @affected_project_ids.each do |project_id|
-        ::Gitlab::EventStore.publish(
-          ::ProjectAuthorizations::AuthorizationsChangedEvent.new(data: { project_id: project_id })
-        )
-      end
     end
 
     def publish_removed_event
       return if @removed_user_ids.none?
 
       events = @affected_project_ids.flat_map do |project_id|
-        @removed_user_ids.to_a.each_slice(EVENT_USER_BATCH_SIZE).map do |user_ids_batch|
+        # NOTE: AuthorizationsRemovedEvent triggers MergeRequests::RemoveUserApprovalRulesWorker, but the approval rules
+        # should not be removed when the user's role is just being changed.
+        added_user_ids_for_project = @authorizations_to_add
+          .select { |data| data[:project_id] == project_id }
+          .pluck(:user_id)
+        removed_user_ids_for_project = @removed_user_ids - added_user_ids_for_project
+
+        removed_user_ids_for_project.each_slice(EVENT_USER_BATCH_SIZE).map do |user_ids_batch|
           ::ProjectAuthorizations::AuthorizationsRemovedEvent.new(data: {
             project_id: project_id,
             user_ids: user_ids_batch
@@ -174,7 +167,6 @@ module ProjectAuthorizations
     end
 
     def publish_added_event
-      return if ::Feature.disabled?(:add_policy_approvers_to_rules)
       return if @added_user_ids.none?
 
       events = @affected_project_ids.flat_map do |project_id|

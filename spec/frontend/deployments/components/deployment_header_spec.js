@@ -2,7 +2,7 @@ import { GlSkeletonLoader } from '@gitlab/ui';
 import mockDeploymentFixture from 'test_fixtures/graphql/deployments/graphql/queries/deployment.query.graphql.json';
 import mockEnvironmentFixture from 'test_fixtures/graphql/deployments/graphql/queries/environment.query.graphql.json';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
-import DeploymentStatusLink from '~/environments/environment_details/components/deployment_status_link.vue';
+import DeploymentStatusLink from '~/environments/components/deployment_status_link.vue';
 import DeploymentHeader from '~/deployments/components/deployment_header.vue';
 import DeploymentCommit from '~/environments/components/commit.vue';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
@@ -59,7 +59,7 @@ describe('~/deployments/components/deployment_header.vue', () => {
 
     it('shows a link to the commit', () => {
       const link = wrapper.findByRole('link', { name: deployment.commit.shortId });
-      expect(link.attributes('href')).toBe(deployment.commit.webUrl);
+      expect(link.attributes('href')).toBe(deployment.commit.webPath);
     });
 
     it('has a clipboard button that copies the commit SHA', () => {

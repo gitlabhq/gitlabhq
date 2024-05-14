@@ -11,6 +11,7 @@ FactoryBot.define do
     confirmation_token { nil }
     can_create_group { true }
     color_scheme_id { 1 }
+    color_mode_id { 1 }
 
     after(:build) do |user, evaluator|
       # UserWithNamespaceShim is not defined in gdk reset-data. We assume the shim is enabled in this case.
@@ -20,7 +21,7 @@ FactoryBot.define do
                     true
                   end
 
-      user.assign_personal_namespace if assign_ns
+      user.assign_personal_namespace(create(:organization)) if assign_ns
     end
 
     trait :without_default_org do
@@ -28,11 +29,23 @@ FactoryBot.define do
     end
 
     trait :with_namespace do
-      namespace { assign_personal_namespace }
+      # rubocop: disable RSpec/FactoryBot/InlineAssociation -- We need to pass an Organization to this method
+      namespace { assign_personal_namespace(create(:organization)) }
+      # rubocop: enable RSpec/FactoryBot/InlineAssociation
     end
 
     trait :admin do
       admin { true }
+    end
+
+    # Set user as owner of all their organizations.
+    # The intention of this trait is to work with the User #create_default_organization_user calllback. The callback
+    # will be removed in https://gitlab.com/gitlab-org/gitlab/-/issues/443611 and this trait will probably be moved to
+    # the organization_user factory.
+    trait :organization_owner do
+      after(:create) do |user|
+        user.organization_users.update_all(access_level: Gitlab::Access::OWNER)
+      end
     end
 
     trait :public_email do
@@ -52,7 +65,9 @@ FactoryBot.define do
     end
 
     trait :locked do
-      after(:build) { |user, _| user.lock_access! }
+      after(:build) do |user, _|
+        Gitlab::ExclusiveLease.skipping_transaction_check { user.lock_access! }
+      end
     end
 
     trait :disallowed_password do
@@ -110,6 +125,10 @@ FactoryBot.define do
       user_type { :llm_bot }
     end
 
+    trait :placeholder do
+      user_type { :placeholder }
+    end
+
     trait :external do
       external { true }
     end
@@ -131,18 +150,16 @@ FactoryBot.define do
       avatar { fixture_file_upload('spec/fixtures/dk.png') }
     end
 
+    trait :with_last_activity_on_today do
+      last_activity_on { Date.today }
+    end
+
     trait :with_sign_ins do
       sign_in_count { 3 }
       current_sign_in_at { FFaker::Time.between(10.days.ago, 1.day.ago) }
       last_sign_in_at { FFaker::Time.between(10.days.ago, 1.day.ago) }
       current_sign_in_ip { '127.0.0.1' }
       last_sign_in_ip { '127.0.0.1' }
-    end
-
-    trait :with_credit_card_validation do
-      after :create do |user|
-        create :credit_card_validation, user: user
-      end
     end
 
     trait :two_factor_via_otp do
@@ -182,18 +199,21 @@ FactoryBot.define do
     end
 
     transient do
-      developer_projects { [] }
-      maintainer_projects { [] }
+      # rubocop:disable Lint/EmptyBlock -- block is required by factorybot
+      guest_of {}
+      reporter_of {}
+      developer_of {}
+      maintainer_of {}
+      owner_of {}
+      # rubocop:enable Lint/EmptyBlock
     end
 
     after(:create) do |user, evaluator|
-      evaluator.developer_projects.each do |project|
-        project.add_developer(user)
-      end
-
-      evaluator.maintainer_projects.each do |project|
-        project.add_maintainer(user)
-      end
+      Array.wrap(evaluator.guest_of).each { |target| target.add_guest(user) }
+      Array.wrap(evaluator.reporter_of).each { |target| target.add_reporter(user) }
+      Array.wrap(evaluator.developer_of).each { |target| target.add_developer(user) }
+      Array.wrap(evaluator.maintainer_of).each { |target| target.add_maintainer(user) }
+      Array.wrap(evaluator.owner_of).each { |target| target.add_owner(user) }
     end
 
     factory :omniauth_user do

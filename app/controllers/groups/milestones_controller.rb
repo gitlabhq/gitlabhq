@@ -46,7 +46,11 @@ class Groups::MilestonesController < Groups::ApplicationController
 
     respond_to do |format|
       format.html do
-        redirect_to milestone_path(@milestone)
+        if @milestone.valid?
+          redirect_to milestone_path(@milestone)
+        else
+          render :edit
+        end
       end
 
       format.json do
@@ -89,7 +93,7 @@ class Groups::MilestonesController < Groups::ApplicationController
   private
 
   def authorize_admin_milestones!
-    return render_404 unless can?(current_user, :admin_milestone, group)
+    render_404 unless can?(current_user, :admin_milestone, group)
   end
 
   def milestone_params

@@ -203,7 +203,7 @@ describe('prepareTimeMetricsData', () => {
   });
 
   it('will add a `label` key', () => {
-    expect(prepared).toMatchObject([{ label: 'New Issues' }, { label: 'Commits' }]);
+    expect(prepared).toMatchObject([{ label: 'New issues' }, { label: 'Commits' }]);
   });
 
   it('will add a popover description using the key if it is provided', () => {

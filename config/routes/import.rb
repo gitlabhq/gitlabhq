@@ -74,12 +74,12 @@ namespace :import do
     get :status
     get :realtime_changes
     get :history
-    get :details
   end
 
   resources :bulk_imports, only: [] do
     member do
       get :history
+      get '/history/:entity_id/failures', action: :failures, as: :failures
     end
   end
 
@@ -87,5 +87,12 @@ namespace :import do
     get :status
     get :realtime_changes
     post :upload
+  end
+
+  resources :source_users, only: [] do
+    member do
+      post :accept
+      post :decline
+    end
   end
 end

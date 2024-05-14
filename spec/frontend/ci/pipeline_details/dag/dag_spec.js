@@ -118,7 +118,7 @@ describe('Pipeline DAG graph wrapper', () => {
     describe('the returned data is empty', () => {
       beforeEach(() => {
         createComponent({
-          method: mount,
+          method: shallowMount,
           graphData: graphWithoutDependencies,
         });
       });

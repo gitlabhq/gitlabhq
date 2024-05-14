@@ -1,7 +1,9 @@
 .search-result-row
-  %h4
-    = link_to project_milestone_path(milestone.project, milestone), data: {track_action: 'click_text', track_label: 'milestone_title', track_property: 'search_result'} do
-      %span.term.str-truncated= milestone.title
+  = link_to project_milestone_path(milestone.project, milestone), class: 'gl-font-bold gl-text-black-normal', data: {track_action: 'click_text', track_label: 'milestone_title', track_property: 'search_result'} do
+    %span.term.str-truncated= simple_search_highlight_and_truncate(milestone.title, @search_term)
+
+  - if milestone.project_milestone?
+    .gl-mt-2= gl_badge_tag milestone.project.full_name, { variant: :muted }, { class: 'gl-white-space-normal gl-text-left' }
 
   - if milestone.description.present?
     .description.term

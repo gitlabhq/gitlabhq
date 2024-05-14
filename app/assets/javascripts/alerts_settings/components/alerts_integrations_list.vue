@@ -82,23 +82,23 @@ export default {
     {
       key: 'active',
       label: __('Status'),
-      tdClass: 'gl-vertical-align-middle!',
+      tdClass: '!gl-align-middle',
     },
     {
       key: 'name',
       label: s__('AlertsIntegrations|Integration Name'),
-      tdClass: 'gl-vertical-align-middle!',
+      tdClass: '!gl-align-middle',
     },
     {
       key: 'type',
       label: __('Type'),
-      tdClass: 'gl-vertical-align-middle!',
+      tdClass: '!gl-align-middle',
       formatter: (value) => (value === typeSet.prometheus ? capitalize(value) : value),
     },
     {
       key: 'actions',
       thClass: 'gl-text-right',
-      tdClass: 'gl-text-right gl-vertical-align-middle!',
+      tdClass: 'gl-text-right !gl-align-middle',
       label: __('Actions'),
     },
   ],

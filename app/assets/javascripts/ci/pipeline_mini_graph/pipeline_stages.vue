@@ -38,11 +38,11 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-display-inline gl-vertical-align-middle">
+  <div class="gl-display-inline gl-align-middle">
     <div
       v-for="stage in stages"
       :key="stage.name"
-      class="pipeline-mini-graph-stage-container dropdown gl-display-inline-flex gl-mr-2 gl-my-2 gl-vertical-align-middle"
+      class="pipeline-mini-graph-stage-container dropdown gl-display-inline-flex gl-mr-2 gl-my-2 gl-align-middle"
     >
       <pipeline-stage
         v-if="isGraphql"

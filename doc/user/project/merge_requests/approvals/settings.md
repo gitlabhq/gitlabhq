@@ -2,30 +2,22 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: "Define approval rules and limits in GitLab with merge request approval settings. Options include preventing author approval, requiring re-authentication, and removing approvals on new commits."
 ---
 
 # Merge request approval settings
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 You can configure the settings for [merge request approvals](index.md) to
 ensure the approval rules meet your use case. You can also configure
 [approval rules](rules.md), which define the number and type of users who must
 approve work before it's merged. Merge request approval settings define how
-those rules are applied as a merge request moves toward completion.
+to apply those rules as a merge request moves toward completion.
 
-## Edit merge request approval settings
-
-To view or edit merge request approval settings:
-
-1. Go to your project and select **Settings > Merge requests**.
-1. Expand **Approvals**.
-
-### Approval settings
-
-These settings limit who can approve merge requests:
+Use any combination of these settings to configure approval limits for merge requests:
 
 - [**Prevent approval by author**](#prevent-approval-by-author):
   Prevents the author of a merge request from approving it.
@@ -44,13 +36,33 @@ These settings limit who can approve merge requests:
     If a Code Owner approves a merge request, and a later commit changes files
     they are a Code Owner for, their approval is removed.
 
-## Prevent approval by author
+## Edit merge request approval settings
 
-> - Moved to GitLab Premium in 13.9.
+To view or edit merge request approval settings for a single project:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > Merge requests**.
+1. Expand **Approvals**.
+
+### Cascade settings from the instance or top-level group
+
+To simplify the management of approval rule settings, configure the approval rules
+at the broadest possible level. Rules created:
+
+- At the [instance level](../../../../administration/merge_requests_approvals.md) apply to all groups
+  and projects on an instance.
+- On a [top-level group](../../../group/manage.md#group-merge-request-approval-settings) apply to all subgroups
+  and projects.
+
+If a group or project inherits settings, you can't change them in the inheriting group or project.
+You must change the settings where they originated: the top-level group or instance.
+
+## Prevent approval by author
 
 By default, the author of a merge request cannot approve it. To change this setting:
 
-1. On the left sidebar, select **Settings > Merge requests**.
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > Merge requests**.
 1. In the **Merge request approvals** section, scroll to **Approval settings** and
    clear the **Prevent approval by author** checkbox.
 1. Select **Save changes**.
@@ -67,7 +79,6 @@ this setting, unless you configure one of these options:
 
 ## Prevent approvals by users who add commits
 
-> - Moved to GitLab Premium in 13.9.
 > - [Feature flag `keep_merge_commits_for_approvals`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127744) added in GitLab 16.3 to also include merge commits in this check.
 > - [Feature flag `keep_merge_commits_for_approvals`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131778) removed in GitLab 16.5. This check now includes merge commits.
 
@@ -76,22 +87,17 @@ the project level or instance level,
 you can prevent committers from approving merge requests that are partially
 their own. To do this:
 
-1. On the left sidebar, select **Settings > Merge requests**.
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > Merge requests**.
 1. In the **Merge request approvals** section, scroll to **Approval settings** and
    select **Prevent approvals by users who add commits**.
    If this checkbox is cleared, an administrator has disabled it
    [at the instance level](../../../../administration/merge_requests_approvals.md), and
-   it can't be changed at the project level.
+   you can't change it at the project level.
 1. Select **Save changes**.
 
-Depending on your version of GitLab, [code owners](../../codeowners/index.md) who commit
-to a merge request may or may not be able to approve the work:
-
-- In GitLab 13.10 and earlier, code owners who commit
-  to a merge request can approve it, even if the merge request affects files they own.
-- In [GitLab 13.11 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/331548),
-  code owners who commit
-  to a merge request cannot approve it, when the merge request affects files they own.
+[Code owners](../../codeowners/index.md) who commit to a merge request cannot approve it,
+if the merge request affects files they own.
 
 For more information, see the [official Git documentation](https://git-scm.com/book/en/v2/Git-Basics-Viewing-the-Commit-History).
 
@@ -101,17 +107,18 @@ By default, users can override the approval rules you [create for a project](rul
 on a per-merge-request basis. If you don't want users to change approval rules
 on merge requests, you can disable this setting:
 
-1. On the left sidebar, select **Settings > Merge requests**.
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > Merge requests**.
 1. In the **Merge request approvals** section, scroll to **Approval settings** and
    select **Prevent editing approval rules in merge requests**.
 1. Select **Save changes**.
 
 This change affects all open merge requests.
 
-When this field is changed, it can affect all open merge requests depending on the setting:
+When you change this field, it can affect all open merge requests depending on the setting:
 
 - If users could edit approval rules previously, and you disable this behavior,
-  all open merge requests are updated to enforce the approval rules.
+  GitLab updates all open merge requests to enforce the approval rules.
 - If users could **not** edit approval rules previously, and you enable approval rule
   editing, open merge requests remain unchanged. This preserves any changes already
   made to approval rules in those merge requests.
@@ -124,17 +131,17 @@ When this field is changed, it can affect all open merge requests depending on t
 
 FLAG:
 On self-managed GitLab, by default requiring re-authentication by using SAML authentication is available. To hide the feature, an administrator can
-[disable the feature flag](../../../../administration/feature_flags.md) named `ff_require_saml_auth_to_approve`. On GitLab.com, this feature is available.
+[disable the feature flag](../../../../administration/feature_flags.md) named `ff_require_saml_auth_to_approve`. On GitLab.com and GitLab Dedicated, this feature is available.
 
-You can force potential approvers to first authenticate with either:
-
-- A password.
-- SAML.
-
+You can force potential approvers to first authenticate with SAML or a password.
 This permission enables an electronic signature for approvals, such as the one defined by
-[Code of Federal Regulations (CFR) Part 11](https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfcfr/CFRSearch.cfm?CFRPart=11&showFR=1&subpartNode=21:1.0.1.1.8.3)). This
-setting is only available on top-level groups. For more information, see [Settings cascading](#settings-cascading).
+[Code of Federal Regulations (CFR) Part 11](https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfcfr/CFRSearch.cfm?CFRPart=11&showFR=1&subpartNode=21:1.0.1.1.8.3).
 
+Prerequisites:
+
+- This setting is only available on top-level groups.
+
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Enable password authentication and SAML authentication. For more information on:
    - Password authentication, see
      [sign-in restrictions documentation](../../../../administration/settings/sign_in_restrictions.md#password-authentication-enabled).
@@ -148,27 +155,29 @@ setting is only available on top-level groups. For more information, see [Settin
 
 ## Remove all approvals when commits are added to the source branch
 
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+
 By default, an approval on a merge request is removed when you add more changes
 after the approval. In GitLab Premium and Ultimate tiers, to keep existing approvals
 after more changes are added to the merge request:
 
-1. On the left sidebar, select **Settings > Merge requests**.
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > Merge requests**.
 1. In the **Merge request approvals** section, scroll to **Approval settings** and
    clear the **Remove all approvals** checkbox.
-
-   NOTE:
-   This setting is not available in GitLab Free.
-
 1. Select **Save changes**.
 
-Approvals aren't removed when a merge request is [rebased from the UI](../methods/index.md#rebasing-in-semi-linear-merge-methods)
-However, approvals are reset if the target branch is changed.
+Approvals aren't removed when a merge request is
+[rebased from the UI](../methods/index.md#rebasing-in-semi-linear-merge-methods)
+However, approvals are reset if the target branch changes.
 
 ## Remove approvals by Code Owners if their files changed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90578) in GitLab 15.3.
 
-If you only want to remove approvals by Code Owners whose files have been changed when a commit is added:
+To remove approvals only from Code Owners whose files change in a new commit:
 
 Prerequisites:
 
@@ -176,26 +185,11 @@ Prerequisites:
 
 To do this:
 
-1. On the left sidebar, select **Settings > Merge requests**.
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > Merge requests**.
 1. In the **Merge request approvals** section, scroll to **Approval settings** and
    select **Remove approvals by Code Owners if their files changed**.
 1. Select **Save changes**.
-
-## Settings cascading
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/285410) in GitLab 14.4. [Deployed behind the `group_merge_request_approval_settings_feature_flag` flag](../../../../administration/feature_flags.md), disabled by default.
-> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/285410) in GitLab 14.5.
-> - [Feature flag `group_merge_request_approval_settings_feature_flag`](https://gitlab.com/gitlab-org/gitlab/-/issues/343872) removed in GitLab 14.9.
-
-You can also enforce merge request approval settings:
-
-- At the [instance level](../../../../administration/merge_requests_approvals.md), which apply to all groups
-  on an instance and, therefore, all projects.
-- On a [top-level group](../../../group/manage.md#group-merge-request-approval-settings), which apply to all subgroups
-  and projects.
-
-If the settings are inherited by a group or project, they cannot be changed in the group or project
-that inherited them.
 
 ## Related topics
 

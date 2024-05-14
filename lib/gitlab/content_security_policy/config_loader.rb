@@ -27,7 +27,6 @@ module Gitlab
           allow_sentry(directives)
           allow_framed_gitlab_paths(directives)
           allow_customersdot(directives)
-          allow_review_apps(directives)
           csp_level_3_backport(directives)
           add_browsersdk_tracking(directives)
 
@@ -48,7 +47,7 @@ module Gitlab
             'media_src' => "'self' data: blob: http: https:",
             'script_src' => ContentSecurityPolicy::Directives.script_src,
             'style_src' => ContentSecurityPolicy::Directives.style_src,
-            'worker_src' => "#{Gitlab::Utils.append_path(Gitlab.config.gitlab.url, 'assets/')} blob: data:",
+            'worker_src' => ContentSecurityPolicy::Directives.worker_src,
             'object_src' => "'none'",
             'report_uri' => nil
           }
@@ -133,24 +132,11 @@ module Gitlab
         end
 
         def allow_sentry(directives)
-          allow_legacy_sentry(directives) if legacy_sentry_configured?
           return unless sentry_client_side_dsn_enabled?
 
           sentry_uri = URI(Gitlab::CurrentSettings.sentry_clientside_dsn)
 
           append_to_directive(directives, 'connect_src', "#{sentry_uri.scheme}://#{sentry_uri.host}")
-        end
-
-        def allow_legacy_sentry(directives)
-          # Support for Sentry setup via configuration files will be removed in 16.0
-          # in favor of Gitlab::CurrentSettings.
-          sentry_uri = URI(Gitlab.config.sentry.clientside_dsn)
-
-          append_to_directive(directives, 'connect_src', "#{sentry_uri.scheme}://#{sentry_uri.host}")
-        end
-
-        def legacy_sentry_configured?
-          Gitlab.config.sentry&.enabled && Gitlab.config.sentry&.clientside_dsn
         end
 
         def sentry_client_side_dsn_enabled?
@@ -170,13 +156,6 @@ module Gitlab
           return unless customersdot_host
 
           append_to_directive(directives, 'frame_src', customersdot_host)
-        end
-
-        def allow_review_apps(directives)
-          return unless ENV['REVIEW_APPS_ENABLED'].presence
-
-          # Allow-listed to allow POSTs to https://gitlab.com/api/v4/projects/278964/merge_requests/:merge_request_iid/visual_review_discussions
-          append_to_directive(directives, 'connect_src', 'https://gitlab.com/api/v4/projects/278964/merge_requests/')
         end
 
         # The follow contains workarounds to patch Safari's lack of support for CSP Level 3

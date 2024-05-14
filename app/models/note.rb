@@ -12,6 +12,7 @@ class Note < ApplicationRecord
   include Mentionable
   include Awardable
   include Importable
+  include Import::HasImportSource
   include FasterCacheKeys
   include Redactable
   include CacheMarkdownField
@@ -24,8 +25,6 @@ class Note < ApplicationRecord
   include Sortable
   include EachBatch
   include Spammable
-
-  ISSUE_TASK_SYSTEM_NOTE_PATTERN = /\A.*marked\sthe\stask.+as\s(completed|incomplete).*\z/
 
   cache_markdown_field :note, pipeline: :note, issuable_reference_expansion_enabled: true
 
@@ -652,7 +651,7 @@ class Note < ApplicationRecord
   end
 
   def resource_parent
-    project
+    noteable.try(:resource_parent) || project
   end
 
   def user_mentions
@@ -762,22 +761,6 @@ class Note < ApplicationRecord
     Ability.users_that_can_read_internal_notes(users, resource_parent).pluck(:id)
   end
 
-  # Method necessary while we transition into the new format for task system notes
-  # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/369923
-  def note
-    return super unless system? && for_issue? && super&.match?(ISSUE_TASK_SYSTEM_NOTE_PATTERN)
-
-    super.sub!('task', 'checklist item')
-  end
-
-  # Method necesary while we transition into the new format for task system notes
-  # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/369923
-  def note_html
-    return super unless system? && for_issue? && super&.match?(ISSUE_TASK_SYSTEM_NOTE_PATTERN)
-
-    super.sub!('task', 'checklist item')
-  end
-
   def issuable_ability_name
     confidential? ? :read_internal_note : :read_note
   end
@@ -829,7 +812,7 @@ class Note < ApplicationRecord
   end
 
   def keep_around_commit
-    project.repository.keep_around(self.commit_id)
+    project.repository.keep_around(self.commit_id, source: self.class.name)
   end
 
   def ensure_namespace_id
@@ -870,7 +853,7 @@ class Note < ApplicationRecord
     if user_visible_reference_count.present? && total_reference_count.present?
       # if they are not equal, then there are private/confidential references as well
       total_reference_count == 0 ||
-        user_visible_reference_count > 0 && user_visible_reference_count == total_reference_count
+        (user_visible_reference_count > 0 && user_visible_reference_count == total_reference_count)
     else
       refs = all_references(user)
       refs.all
@@ -943,4 +926,4 @@ class Note < ApplicationRecord
   end
 end
 
-Note.prepend_mod_with('Note')
+Note.prepend_mod

@@ -8,7 +8,10 @@ code_quality:
   extends:
     - .default-retry
     - .use-docker-in-docker
+    - .code-quality-cache-push
   stage: lint
+  # P95 duration for this job has been 14min from 2023-04-01 until 2024-04-01
+  timeout: 15m
   artifacts:
     paths:
       - gl-code-quality-report.json  # GitLab-specific
@@ -16,6 +19,21 @@ code_quality:
   # Use !reference as a workaround here
   rules: !reference [".reports:rules:code_quality", rules]
   allow_failure: true
+
+code_quality cache:
+  image: busybox
+  extends:
+    - .default-retry
+    - .reports:rules:code_quality_cache
+    - .code-quality-cache-master-pull
+  stage: lint
+  needs: []
+  dependencies: []
+  allow_failure: true
+  script: echo "This job pulls and uses the cached code quality report from the master branch to speed up docs pipelines"
+  artifacts:
+    reports:
+      codequality: gl-code-quality-report.json
 
 .sast-analyzer:
   # We need to re-`extends` from `sast` as the `extends` here overrides the one from the template.
@@ -27,6 +45,7 @@ code_quality:
   artifacts:
     paths:
       - gl-sast-report.json  # GitLab-specific
+    access: 'developer'
     expire_in: 1 week  # GitLab-specific
   variables:
     SAST_BRAKEMAN_LEVEL: 2  # GitLab-specific
@@ -46,6 +65,7 @@ semgrep-sast:
   artifacts:
     paths:
       - gl-secret-detection-report.json  # GitLab-specific
+    access: 'developer'
     expire_in: 1 week  # GitLab-specific
 
 secret_detection:
@@ -64,6 +84,7 @@ secret_detection:
   artifacts:
     paths:
       - gl-dependency-scanning-report.json  # GitLab-specific
+    access: 'developer'
     expire_in: 1 week  # GitLab-specific
 
 gemnasium-dependency_scanning:
@@ -101,6 +122,7 @@ gemnasium-python-dependency_scanning:
   artifacts:
     paths:
       - gl-dependency-scanning-report.json
+    access: 'developer'
     reports:
       dependency_scanning: gl-dependency-scanning-report.json
     expire_in: 1 week

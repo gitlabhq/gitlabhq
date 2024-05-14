@@ -28,7 +28,7 @@ RSpec.describe Gitlab::Graphql::MarkdownField do
       let_it_be(:note) { build(:note, note: '# Markdown!') }
       let_it_be(:expected_markdown) { '<h1 data-sourcepos="1:1-1:11" dir="auto">Markdown!</h1>' }
       let_it_be(:query) { GraphQL::Query.new(empty_schema, document: nil, context: {}, variables: {}) }
-      let_it_be(:context) { GraphQL::Query::Context.new(query: query, values: {}, object: nil) }
+      let_it_be(:context) { GraphQL::Query::Context.new(query: query, values: {}) }
 
       let(:type_class) { class_with_markdown_field(:note_html, null: false) }
       let(:type_instance) { type_class.authorized_new(note, context) }
@@ -79,7 +79,7 @@ RSpec.describe Gitlab::Graphql::MarkdownField do
           end
 
           it 'shows the reference to users that are allowed to see it' do
-            context = GraphQL::Query::Context.new(query: query, values: { current_user: project.first_owner }, object: nil)
+            context = GraphQL::Query::Context.new(query: query, values: { current_user: project.first_owner })
             type_instance = type_class.authorized_new(note, context)
 
             expect(field.resolve(type_instance, {}, context)).to include(issue_path(issue))

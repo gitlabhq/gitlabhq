@@ -8,10 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
-
-> - Issue analytics for groups [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7478) in GitLab 11.5.
-> - Issue analytics for projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/196561) in GitLab 12.9.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Issue analytics is a bar graph which illustrates the number of issues created each month.
 The default time span is 13 months, which includes the current month, and the 12 months prior.
@@ -27,7 +24,7 @@ You can also access the chart from the [Value Streams Dashboard](../../analytics
 Hover over each bar to see the total number of issues.
 
 To narrow the scope of issues included in the graph, enter your criteria in the
-**Search or filter results...** field. Criteria from the following list can be typed in or selected from a menu:
+**Search or filter results** text box. Criteria from the following list can be typed in or selected from a menu:
 
 - Author
 - Assignee
@@ -46,13 +43,11 @@ shows a total of 15 months for the chart in the GitLab.org group.
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/233905/) in GitLab 16.3 [with a flag](../../../administration/feature_flags.md) named `issues_completed_analytics_feature_flag`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/437542) in GitLab 16.8.
-
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `issues_completed_analytics_feature_flag`. On GitLab.com, this feature is available.
+> - [Feature flag `issues_completed_analytics_feature_flag`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146766) removed in GitLab 16.10.
 
 Enhanced issue analytics display the additional metric "Issues closed", which represents the total number of resolved issues in your group over a selected period.
 You can use this metric to improve the overall turn-around time and value delivered to your customers.
@@ -60,8 +55,6 @@ You can use this metric to improve the overall turn-around time and value delive
 ![Issues opened and closed per month](img/enhanced_issue_analytics_v16_7.png)
 
 ## Drill into the information
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/196547) in GitLab 13.1.
 
 You can examine details of individual issues by browsing the table
 located below the chart.

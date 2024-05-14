@@ -19,14 +19,15 @@ module QA
           project.visit!
 
           Page::Project::Show.perform do |project|
-            Support::Waiter.wait_until(reload_page: project, message: 'Waiting for licence') do
+            Support::Waiter.wait_until(reload_page: project, retry_on_exception: true,
+              message: 'Waiting for licence') do
               project.has_license?(rendered_license_name)
             end
           end
         end
       end
 
-      context 'on a project with a commonly used LICENSE',
+      context 'on a project with a commonly used LICENSE', :blocking,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/366842' do
         it_behaves_like 'project license detection' do
           let(:license_file_name) { 'bsd-3-clause' }

@@ -45,6 +45,7 @@ RSpec.describe Admin::SpamLogsController, feature_category: :instance_resiliency
         allow(instance).to receive(:submit_ham).and_return(true)
       end
     end
+
     it 'submits the log as ham' do
       post :mark_as_ham, params: { id: first_spam.id }
 

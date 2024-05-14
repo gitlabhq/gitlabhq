@@ -36,7 +36,7 @@ tests.each do |test|
   next if test['id'] =~ %r{.\/qa\/specs\/features\/sanity\/*}
 
   if test['testcase']
-    testcases.push(["#{test['testcase']}", "#{test['id']} - #{test['full_description']}"])
+    testcases.push([(test['testcase']).to_s, "#{test['id']} - #{test['full_description']}"])
 
     unless TESTCASE_FORMAT =~ test['testcase']
       testcase_format_errors.push(

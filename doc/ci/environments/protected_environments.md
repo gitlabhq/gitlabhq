@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 [Environments](../environments/index.md) can be used for both testing and
 production reasons.
@@ -120,7 +120,7 @@ Alternatively, you can use the API to protect an environment:
 1. Use the API to add the group with protected environment access:
 
    ```shell
-   curl --header 'Content-Type: application/json' --request POST --data '{"name": "production", "deploy_access_levels": [{"group_id": 9899826}], "required_approval_count": 0}' \
+   curl --header 'Content-Type: application/json' --request POST --data '{"name": "production", "deploy_access_levels": [{"group_id": 9899826}]}' \
         --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.com/api/v4/projects/22034114/protected_environments"
    ```
 
@@ -174,10 +174,6 @@ be re-entered if the environment is re-protected.
 For more information, see [Deployment safety](deployment_safety.md).
 
 ## Group-level protected environments
-
-> - Introduced in GitLab 14.0 [with a flag](https://gitlab.com/gitlab-org/gitlab/-/issues/215888) named `group_level_protected_environments`. Disabled by default.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/331085) in GitLab 14.3.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/331085) in GitLab 14.3.
 
 Typically, large enterprise organizations have an explicit permission boundary
 between [developers and operators](https://about.gitlab.com/topics/devops/).

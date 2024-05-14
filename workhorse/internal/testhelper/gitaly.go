@@ -1,3 +1,4 @@
+// Package testhelper provides helper functions and utilities for testing Gitaly-related functionality.
 package testhelper
 
 import (
@@ -24,6 +25,7 @@ import (
 	"gitlab.com/gitlab-org/labkit/log"
 )
 
+// GitalyTestServer is a test server implementation used for testing Gitaly-related functionality.
 type GitalyTestServer struct {
 	finalMessageCode codes.Code
 	sync.WaitGroup
@@ -35,16 +37,24 @@ type GitalyTestServer struct {
 }
 
 var (
-	GitalyInfoRefsResponseMock   = strings.Repeat("Mock Gitaly InfoRefsResponse data", 100000)
-	GitalyGetBlobResponseMock    = strings.Repeat("Mock Gitaly GetBlobResponse data", 100000)
+	// GitalyInfoRefsResponseMock represents mock data for Gitaly's InfoRefsResponse.
+	GitalyInfoRefsResponseMock = strings.Repeat("Mock Gitaly InfoRefsResponse data", 100000)
+	// GitalyGetBlobResponseMock represents mock data for Gitaly's GetBlobResponse.
+	GitalyGetBlobResponseMock = strings.Repeat("Mock Gitaly GetBlobResponse data", 100000)
+	// GitalyGetArchiveResponseMock represents mock data for Gitaly's GetArchiveResponse.
 	GitalyGetArchiveResponseMock = strings.Repeat("Mock Gitaly GetArchiveResponse data", 100000)
-	GitalyGetDiffResponseMock    = strings.Repeat("Mock Gitaly GetDiffResponse data", 100000)
-	GitalyGetPatchResponseMock   = strings.Repeat("Mock Gitaly GetPatchResponse data", 100000)
+	// GitalyGetDiffResponseMock represents mock data for Gitaly's GetDiffResponse.
+	GitalyGetDiffResponseMock = strings.Repeat("Mock Gitaly GetDiffResponse data", 100000)
+	// GitalyGetPatchResponseMock represents mock data for Gitaly's GetPatchResponse.
+	GitalyGetPatchResponseMock = strings.Repeat("Mock Gitaly GetPatchResponse data", 100000)
 
+	// GitalyGetSnapshotResponseMock represents mock data for Gitaly's GetSnapshotResponse.
 	GitalyGetSnapshotResponseMock = strings.Repeat("Mock Gitaly GetSnapshotResponse data", 100000)
 
+	// GitalyReceivePackResponseMock represents mock data for Gitaly's ReceivePackResponse.
 	GitalyReceivePackResponseMock []byte
-	GitalyUploadPackResponseMock  []byte
+	// GitalyUploadPackResponseMock represents mock data for Gitaly's UploadPackResponse.
+	GitalyUploadPackResponseMock []byte
 )
 
 func init() {
@@ -57,10 +67,12 @@ func init() {
 	}
 }
 
+// NewGitalyServer creates a new instance of a Gitaly server for testing purposes.
 func NewGitalyServer(finalMessageCode codes.Code) *GitalyTestServer {
 	return &GitalyTestServer{finalMessageCode: finalMessageCode}
 }
 
+// InfoRefsUploadPack is a method on GitalyTestServer that handles the InfoRefsUploadPack RPC call.
 func (s *GitalyTestServer) InfoRefsUploadPack(in *gitalypb.InfoRefsRequest, stream gitalypb.SmartHTTPService_InfoRefsUploadPackServer) error {
 	s.WaitGroup.Add(1)
 	defer s.WaitGroup.Done()
@@ -90,6 +102,7 @@ func (s *GitalyTestServer) InfoRefsUploadPack(in *gitalypb.InfoRefsRequest, stre
 	return s.sendInfoRefs(stream, data)
 }
 
+// InfoRefsReceivePack is a method on GitalyTestServer that handles the InfoRefsReceivePack RPC call.
 func (s *GitalyTestServer) InfoRefsReceivePack(in *gitalypb.InfoRefsRequest, stream gitalypb.SmartHTTPService_InfoRefsReceivePackServer) error {
 	s.WaitGroup.Add(1)
 	defer s.WaitGroup.Done()
@@ -127,7 +140,7 @@ type infoRefsSender interface {
 }
 
 func (s *GitalyTestServer) sendInfoRefs(stream infoRefsSender, data []byte) error {
-	nSends, err := sendBytes(data, 100, func(p []byte) error {
+	nSends, err := sendBytes(data, func(p []byte) error {
 		return stream.Send(&gitalypb.InfoRefsResponse{Data: p})
 	})
 	if err != nil {
@@ -140,6 +153,7 @@ func (s *GitalyTestServer) sendInfoRefs(stream infoRefsSender, data []byte) erro
 	return s.finalError()
 }
 
+// PostReceivePack is a method on GitalyTestServer that handles the PostReceivePack RPC call.
 func (s *GitalyTestServer) PostReceivePack(stream gitalypb.SmartHTTPService_PostReceivePackServer) error {
 	s.WaitGroup.Add(1)
 	defer s.WaitGroup.Done()
@@ -150,7 +164,7 @@ func (s *GitalyTestServer) PostReceivePack(stream gitalypb.SmartHTTPService_Post
 	}
 
 	repo := req.GetRepository()
-	if err := validateRepository(repo); err != nil {
+	if err = validateRepository(repo); err != nil {
 		return err
 	}
 
@@ -175,7 +189,7 @@ func (s *GitalyTestServer) PostReceivePack(stream gitalypb.SmartHTTPService_Post
 		data = append(data, req.GetData()...)
 	}
 
-	nSends, _ := sendBytes(data, 100, func(p []byte) error {
+	nSends, _ := sendBytes(data, func(p []byte) error {
 		return stream.Send(&gitalypb.PostReceivePackResponse{Data: p})
 	})
 
@@ -186,6 +200,7 @@ func (s *GitalyTestServer) PostReceivePack(stream gitalypb.SmartHTTPService_Post
 	return s.finalError()
 }
 
+// PostUploadPackWithSidechannel is a method on GitalyTestServer that handles the PostUploadPackWithSidechannel RPC call.
 func (s *GitalyTestServer) PostUploadPackWithSidechannel(ctx context.Context, req *gitalypb.PostUploadPackWithSidechannelRequest) (*gitalypb.PostUploadPackWithSidechannelResponse, error) {
 	s.WaitGroup.Add(1)
 	defer s.WaitGroup.Done()
@@ -198,7 +213,11 @@ func (s *GitalyTestServer) PostUploadPackWithSidechannel(ctx context.Context, re
 	if err != nil {
 		return nil, err
 	}
-	defer conn.Close()
+	defer func() {
+		if err = conn.Close(); err != nil {
+			fmt.Printf("error closing sidechannel: %v\n", err)
+		}
+	}()
 
 	jsonBytes, err := protojson.Marshal(req)
 	if err != nil {
@@ -215,10 +234,12 @@ func (s *GitalyTestServer) PostUploadPackWithSidechannel(ctx context.Context, re
 	return &gitalypb.PostUploadPackWithSidechannelResponse{}, s.finalError()
 }
 
-func (s *GitalyTestServer) CommitIsAncestor(ctx context.Context, in *gitalypb.CommitIsAncestorRequest) (*gitalypb.CommitIsAncestorResponse, error) {
+// CommitIsAncestor checks if one commit is an ancestor of another in the git repository.
+func (s *GitalyTestServer) CommitIsAncestor(_ context.Context, _ *gitalypb.CommitIsAncestorRequest) (*gitalypb.CommitIsAncestorResponse, error) {
 	return nil, nil
 }
 
+// GetBlob is a method on GitalyTestServer that handles the GetBlob RPC call.
 func (s *GitalyTestServer) GetBlob(in *gitalypb.GetBlobRequest, stream gitalypb.BlobService_GetBlobServer) error {
 	s.WaitGroup.Add(1)
 	defer s.WaitGroup.Done()
@@ -231,7 +252,7 @@ func (s *GitalyTestServer) GetBlob(in *gitalypb.GetBlobRequest, stream gitalypb.
 		Oid:  in.GetOid(),
 		Size: int64(len(GitalyGetBlobResponseMock)),
 	}
-	nSends, err := sendBytes([]byte(GitalyGetBlobResponseMock), 100, func(p []byte) error {
+	nSends, err := sendBytes([]byte(GitalyGetBlobResponseMock), func(p []byte) error {
 		response.Data = p
 
 		if err := stream.Send(response); err != nil {
@@ -261,7 +282,7 @@ func (s *GitalyTestServer) GetArchive(in *gitalypb.GetArchiveRequest, stream git
 		return err
 	}
 
-	nSends, err := sendBytes([]byte(GitalyGetArchiveResponseMock), 100, func(p []byte) error {
+	nSends, err := sendBytes([]byte(GitalyGetArchiveResponseMock), func(p []byte) error {
 		return stream.Send(&gitalypb.GetArchiveResponse{Data: p})
 	})
 	if err != nil {
@@ -274,8 +295,9 @@ func (s *GitalyTestServer) GetArchive(in *gitalypb.GetArchiveRequest, stream git
 	return s.finalError()
 }
 
-func (s *GitalyTestServer) RawDiff(in *gitalypb.RawDiffRequest, stream gitalypb.DiffService_RawDiffServer) error {
-	nSends, err := sendBytes([]byte(GitalyGetDiffResponseMock), 100, func(p []byte) error {
+// RawDiff is a method on GitalyTestServer that handles the RawDiff RPC call.
+func (s *GitalyTestServer) RawDiff(_ *gitalypb.RawDiffRequest, stream gitalypb.DiffService_RawDiffServer) error {
+	nSends, err := sendBytes([]byte(GitalyGetDiffResponseMock), func(p []byte) error {
 		return stream.Send(&gitalypb.RawDiffResponse{
 			Data: p,
 		})
@@ -298,7 +320,7 @@ func (s *GitalyTestServer) RawPatch(in *gitalypb.RawPatchRequest, stream gitalyp
 		return err
 	}
 
-	nSends, err := sendBytes([]byte(GitalyGetPatchResponseMock), 100, func(p []byte) error {
+	nSends, err := sendBytes([]byte(GitalyGetPatchResponseMock), func(p []byte) error {
 		return stream.Send(&gitalypb.RawPatchResponse{
 			Data: p,
 		})
@@ -321,7 +343,7 @@ func (s *GitalyTestServer) GetSnapshot(in *gitalypb.GetSnapshotRequest, stream g
 		return err
 	}
 
-	nSends, err := sendBytes([]byte(GitalyGetSnapshotResponseMock), 100, func(p []byte) error {
+	nSends, err := sendBytes([]byte(GitalyGetSnapshotResponseMock), func(p []byte) error {
 		return stream.Send(&gitalypb.GetSnapshotResponse{Data: p})
 	})
 	if err != nil {
@@ -335,10 +357,10 @@ func (s *GitalyTestServer) GetSnapshot(in *gitalypb.GetSnapshotRequest, stream g
 }
 
 // sendBytes returns the number of times the 'sender' function was called and an error.
-func sendBytes(data []byte, chunkSize int, sender func([]byte) error) (int, error) {
+func sendBytes(data []byte, sender func([]byte) error) (int, error) {
 	i := 0
 	for ; len(data) > 0; i++ {
-		n := chunkSize
+		n := 100
 		if n > len(data) {
 			n = len(data)
 		}
@@ -370,6 +392,7 @@ func validateRepository(repo *gitalypb.Repository) error {
 	return nil
 }
 
+// WithSidechannel returns a gRPC server option to enable the sidechannel functionality.
 func WithSidechannel() grpc.ServerOption {
 	return client.SidechannelServer(logrus.NewEntry(logrus.StandardLogger()), insecure.NewCredentials())
 }

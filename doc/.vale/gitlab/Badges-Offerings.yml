@@ -1,0 +1,12 @@
+# Warning: gitlab.Badges-Offerings
+#
+# Tests the offering information in the tier badges that appear below topic titles.
+#
+# For a list of all options, see https://docs.gitlab.com/ee/development/documentation/styleguide/#available-product-tier-badges
+extends: existence
+message: "Offerings should be comma-separated, without `and`, and must be capitalized. Example: `GitLab.com, Self-managed, GitLab Dedicated`."
+link: https://docs.gitlab.com/ee/development/documentation/styleguide/#available-product-tier-badges
+level: error
+scope: raw
+raw:
+- (?<=\n\*\*Offering:\*\* )(Dedicated|[^\n]*(SaaS|self-managed|Self-Managed|GitLab dedicated|and|GitLab Dedicated,|, GitLab\.com|, Dedicated))

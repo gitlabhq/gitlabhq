@@ -191,7 +191,7 @@ export default {
         <template #toggle>
           <gl-button
             class="gl-max-w-full gl-display-flex gl-align-items-center gl-text-truncate"
-            :class="{ 'gl-inset-border-1-red-400!': !selectedIdValid }"
+            :class="{ '!gl-shadow-inner-1-red-400': !selectedIdValid }"
             button-text-classes="gl-display-flex"
           >
             <template v-if="selectedLabel">

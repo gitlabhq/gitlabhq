@@ -2,6 +2,7 @@
 
 module Integrations
   class Pushover < Integration
+    include HasAvatar
     BASE_URI = 'https://api.pushover.net/1'
 
     validates :api_key, :user_key, :priority, presence: true, if: :activated?
@@ -124,10 +125,6 @@ module Integrations
       end
 
       Gitlab::HTTP.post('/messages.json', base_uri: BASE_URI, body: pushover_data)
-    end
-
-    def avatar_url
-      ActionController::Base.helpers.image_path('illustrations/third-party-logos/integrations-logos/pushover.svg')
     end
   end
 end

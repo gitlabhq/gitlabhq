@@ -26,6 +26,7 @@ fragment IssueFragment on Issue {
       name
       username
       webUrl
+      webPath
     }
   }
   author @skip(if: $hideUsers) {
@@ -35,6 +36,7 @@ fragment IssueFragment on Issue {
     name
     username
     webUrl
+    webPath
   }
   labels {
     nodes {

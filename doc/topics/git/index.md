@@ -22,9 +22,11 @@ These resources can help you to get the best from using Git with GitLab.
 New to Git? These resources can help you understand basic Git concepts before
 you dive in:
 
-- [Git concepts](terminology.md)
+- [Git concepts](get_started.md)
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-  Video tutorial: [Git-ing started with Git](https://www.youtube.com/watch?v=Ce5nz5n41z4)
+  GitLab workflow video tutorial: [GitLab source code management walkthrough](https://www.youtube.com/watch?v=wTQ3aXJswtM)
+- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+  Git basics video tutorial: [Git-ing started with Git](https://www.youtube.com/watch?v=Ce5nz5n41z4)
 - PDF download: [GitLab Git Cheat Sheet](https://about.gitlab.com/images/press/git-cheat-sheet.pdf)
 
 The official Git documentation also offers information on
@@ -36,18 +38,16 @@ After you learn how Git works, you're ready to try it out. These resources are
 appropriate for when you're ready to start learning Git by doing:
 
 - [How to install Git](how_to_install_git/index.md)
-- [Start using Git on the command line](../../gitlab-basics/start-using-git.md)
 - Tutorial: [Make your first Git commit](../../tutorials/make_first_git_commit/index.md)
 - Tutorial: [Update Git commit messages](../../tutorials/update_commit_messages/index.md)
 - The [GitLab CLI](https://gitlab.com/gitlab-org/cli/)
 
 A typical Git user encounters these concepts soon after starting to use Git:
 
-- [`git add`](git_add.md) to start tracking files with Git.
+- [`git add`](../../gitlab-basics/add-file.md) to start tracking files with Git.
 - [Tags](../../user/project/repository/tags/index.md) and
   [branches](../../user/project/repository/branches/index.md).
-- [How to undo mistakes](numerous_undo_possibilities_in_git/index.md),
-  including [`git reset`](rollback_commits.md).
+- [How to undo changes](undo.md), including [`git reset`](rollback_commits.md).
 - View a chronological list of changes to a file with
   [Git history](../../user/project/repository/git_history.md).
 - View a line-by-line editing history of a file with
@@ -81,6 +81,8 @@ you're ready to learn about Git workflows and branching strategies:
 
 - [Feature branch workflow](../../gitlab-basics/feature_branch_workflow.md)
 - [Introduction to Git rebase, force-push, and merge conflicts](git_rebase.md)
+- [GitLab Flow](https://about.gitlab.com/topics/version-control/what-is-gitlab-flow/)
+  - [GitLab Flow best practices](https://about.gitlab.com/topics/version-control/what-are-gitlab-flow-best-practices/)
 - From the official Git documentation:
   - [Git Branching - Branches in a Nutshell](https://git-scm.com/book/en/v2/Git-Branching-Branches-in-a-Nutshell)
   - [Git Branching - Branching Workflows](https://git-scm.com/book/en/v2/Git-Branching-Branching-Workflows)
@@ -103,14 +105,14 @@ Git and GitLab, combined together, provide advanced features for repository mana
 ### Git Large File Storage (LFS)
 
 Many Git projects must manage large binary assets, such as videos and images.
-Implementing Git Large File Storage can help manage these assets while keeping
+Implementing [Git Large File Storage](https://git-lfs.com) can help manage these assets while keeping
 your repository small:
 
 - [User documentation](lfs/index.md) for Git LFS at GitLab
 - [Administrator documentation](../../administration/lfs/index.md) for Git LFS at GitLab
 - Blog post: [Getting Started with Git LFS](https://about.gitlab.com/blog/2017/01/30/getting-started-with-git-lfs-tutorial/)
-- [Migrate an existing Git repository](lfs/migrate_to_git_lfs.md) with Git LFS
-- [Remove objects](lfs/index.md#removing-objects-from-lfs) from Git LFS
+- [Migrate an existing Git repository](lfs/index.md#migrate-an-existing-repository-to-git-lfs) to Git LFS
+- [Stop tracking a file](lfs/index.md#stop-tracking-a-file-with-git-lfs) with Git LFS
 - Blog post: [Towards a production-quality open source Git LFS server](https://about.gitlab.com/blog/2015/08/13/towards-a-production-quality-open-source-git-lfs-server/)
 
 ## Related topics
@@ -118,6 +120,5 @@ your repository small:
 - Official [Git documentation](https://git-scm.com), including
   [Git on the Server - GitLab](https://git-scm.com/book/en/v2/Git-on-the-Server-GitLab)
 - [Git troubleshooting](troubleshooting_git.md) techniques
-- [Git commands](useful_git_commands.md) collected by the GitLab support team
 - Blog post: [Git Tips & Tricks](https://about.gitlab.com/blog/2016/12/08/git-tips-and-tricks/)
 - Blog post: [Eight Tips to help you work better with Git](https://about.gitlab.com/blog/2015/02/19/8-tips-to-help-you-work-better-with-git/)

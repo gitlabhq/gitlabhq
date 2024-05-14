@@ -22,8 +22,12 @@ RSpec.describe Operations::FeatureFlagsClient do
   end
 
   describe '#token' do
+    # Specify a blank token_encrypted so that the model's method is used
+    # instead of the factory value
+    subject { create(:operations_feature_flags_client, token_encrypted: nil) }
+
     it "ensures that token is always set" do
-      expect(subject.token).not_to be_empty
+      expect(subject.token).to match(/glffct-[A-Za-z0-9_-]{20}/)
     end
   end
 

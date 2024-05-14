@@ -168,6 +168,14 @@ describe('Sidebar details block', () => {
       expect(findArtifactsBlock().exists()).toBe(false);
     });
 
+    it.each([[null], [undefined]])('artifacts are not shown if they are %s', async (value) => {
+      store.state.job.artifact = value;
+
+      await nextTick();
+
+      expect(findArtifactsBlock().exists()).toBe(false);
+    });
+
     it('artifacts are shown if present', async () => {
       store.state.job.artifact = {
         download_path: '/root/ci-project/-/jobs/1960/artifacts/download',

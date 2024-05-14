@@ -37,7 +37,7 @@ underlying implementation for shared, distributed, highly-available
 
 Over time, we have built support for object storage across the
 application, solving specific problems in a
-[multitude of iterations](https://about.gitlab.com/company/team/structure/working-groups/object-storage/#company-efforts-on-uploads).
+[multitude of iterations](https://handbook.gitlab.com/handbook/company/working-groups/object-storage/#company-efforts-on-uploads).
 This has led to increased complexity across the board, from development
 (new features and bug fixes) to installation:
 
@@ -73,7 +73,7 @@ The following is a brief description of the main directions we can take to
 remove the pain points affecting our object storage implementation.
 
 This is also available as [a YouTube video](https://youtu.be/X9V_w8hsM8E) recorded for the
-[Object Storage Working Group](https://about.gitlab.com/company/team/structure/working-groups/object-storage/).
+[Object Storage Working Group](https://handbook.gitlab.com/handbook/company/working-groups/object-storage/).
 
 ### Simplify GitLab architecture by shipping MinIO
 

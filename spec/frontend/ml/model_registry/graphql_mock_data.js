@@ -41,6 +41,78 @@ export const modelVersionsQuery = (versions = graphqlModelVersions) => ({
   },
 });
 
+export const candidate = {
+  id: 'gid://gitlab/Ml::Candidate/1',
+  name: 'hare-zebra-cobra-9745',
+  iid: 1,
+  eid: 'e9a71521-45c6-4b0a-b0c3-21f0b4528a5c',
+  status: 'running',
+  params: {
+    nodes: [
+      {
+        id: 'gid://gitlab/Ml::CandidateParam/1',
+        name: 'param1',
+        value: 'value1',
+      },
+    ],
+  },
+  metadata: {
+    nodes: [
+      {
+        id: 'gid://gitlab/Ml::CandidateMetadata/1',
+        name: 'metadata1',
+        value: 'metadataValue1',
+      },
+    ],
+  },
+  metrics: {
+    nodes: [
+      {
+        id: 'gid://gitlab/Ml::CandidateMetric/1',
+        name: 'metric1',
+        value: 0.3,
+        step: 0,
+      },
+    ],
+  },
+  ciJob: {
+    id: 'gid://gitlab/Ci::Build/1',
+    webPath: '/gitlab-org/gitlab-test/-/jobs/1',
+    name: 'build:linux',
+    pipeline: {
+      id: 'gid://gitlab/Ci::Pipeline/1',
+      mergeRequest: {
+        id: 'gid://gitlab/MergeRequest/1',
+        title: 'Merge Request 1',
+        webUrl: 'path/to/mr',
+        iid: 1,
+      },
+      user: {
+        id: 'gid://gitlab/User/1',
+        avatarUrl: 'path/to/avatar',
+        webUrl: 'path/to/user/1',
+        username: 'user1',
+        name: 'User 1',
+      },
+    },
+  },
+  _links: {
+    showPath: '/root/test-project/-/ml/candidates/1',
+    artifactPath: '/root/test-project/-/packages/1',
+  },
+};
+
+export const modelVersionWithCandidate = {
+  id: 'gid://gitlab/Ml::ModelVersion/1',
+  version: '1.0.4999',
+  packageId: 'gid://gitlab/Packages::Package/12',
+  description: 'A model version description',
+  candidate,
+  _links: {
+    showPath: '/root/test-project/-/ml/models/1/versions/5000',
+  },
+};
+
 export const graphqlCandidates = [
   {
     id: 'gid://gitlab/Ml::Candidate/1',
@@ -139,6 +211,23 @@ export const createModelResponses = {
   },
 };
 
+export const destroyModelResponses = {
+  success: {
+    data: {
+      mlModelDestroy: {
+        errors: [],
+      },
+    },
+  },
+  failure: {
+    data: {
+      mlModelDestroy: {
+        errors: ['Model not found'],
+      },
+    },
+  },
+};
+
 export const modelWithVersions = {
   id: 'gid://gitlab/Ml::Model/1',
   name: 'model_1',
@@ -184,6 +273,21 @@ export const modelWithoutVersion = {
   },
 };
 
+export const model = {
+  id: 'gid://gitlab/Ml::Model/1',
+  description: 'A model description',
+  name: 'gitlab_amazing_model',
+  versionCount: 1,
+  candidateCount: 0,
+  latestVersion: modelVersionWithCandidate,
+};
+
+export const modelDetailQuery = {
+  data: {
+    mlModel: model,
+  },
+};
+
 export const modelsQuery = (
   models = [modelWithOneVersion, modelWithoutVersion],
   pageInfo = graphqlPageInfo,
@@ -199,3 +303,13 @@ export const modelsQuery = (
     },
   },
 });
+
+export const modelVersionQuery = {
+  data: {
+    mlModel: {
+      id: 'gid://gitlab/Ml::Model/1',
+      name: 'blah',
+      version: modelVersionWithCandidate,
+    },
+  },
+};

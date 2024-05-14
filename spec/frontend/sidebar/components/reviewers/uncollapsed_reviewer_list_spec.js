@@ -4,7 +4,7 @@ import { TEST_HOST } from 'helpers/test_constants';
 import ReviewerAvatarLink from '~/sidebar/components/reviewers/reviewer_avatar_link.vue';
 import UncollapsedReviewerList from '~/sidebar/components/reviewers/uncollapsed_reviewer_list.vue';
 
-const userDataMock = ({ approved = false, reviewState = 'UNREVIEWED' } = {}) => ({
+const userDataMock = ({ approved = true, reviewState = 'UNREVIEWED' } = {}) => ({
   id: 1,
   name: 'Root',
   state: 'active',
@@ -24,15 +24,16 @@ describe('UncollapsedReviewerList component', () => {
   let wrapper;
 
   const findAllRerequestButtons = () => wrapper.findAll('[data-testid="re-request-button"]');
-  const findAllReviewerApprovalIcons = () => wrapper.findAll('[data-testid="approved"]');
-  const findAllReviewedNotApprovedIcons = () =>
-    wrapper.findAll('[data-testid="reviewed-not-approved"]');
+  const findAllReviewerApprovalIcons = () => wrapper.findAll('[name="check-circle"]');
   const findAllReviewerAvatarLinks = () => wrapper.findAllComponents(ReviewerAvatarLink);
 
   const hasApprovalIconAnimation = () =>
-    findAllReviewerApprovalIcons().at(0).classes('merge-request-approved-icon');
+    wrapper
+      .findAll('[data-testid="reviewer-state-icon-parent"]')
+      .at(0)
+      .classes('merge-request-approved-icon');
 
-  function createComponent(props = {}, glFeatures = {}) {
+  function createComponent(props = {}) {
     const propsData = {
       users: [],
       rootPath: TEST_HOST,
@@ -41,9 +42,6 @@ describe('UncollapsedReviewerList component', () => {
 
     wrapper = shallowMount(UncollapsedReviewerList, {
       propsData,
-      provide: {
-        glFeatures,
-      },
     });
   }
 
@@ -112,19 +110,13 @@ describe('UncollapsedReviewerList component', () => {
     });
 
     it('renders approval icon', () => {
-      expect(findAllReviewerApprovalIcons()).toHaveLength(1);
+      expect(findAllReviewerApprovalIcons()).toHaveLength(2);
     });
 
     it('shows that hello-world approved', () => {
       const icon = findAllReviewerApprovalIcons().at(0);
 
-      expect(icon.attributes('title')).toBe('Approved by @hello-world');
-    });
-
-    it('shows that lizabeth-wilderman reviewed but did not approve', () => {
-      const icon = findAllReviewedNotApprovedIcons().at(1);
-
-      expect(icon.attributes('title')).toBe('Reviewed by @lizabeth-wilderman but not yet approved');
+      expect(icon.attributes('arialabel')).toBe('Reviewer approved changes');
     });
 
     it('renders re-request loading icon', async () => {
@@ -132,7 +124,7 @@ describe('UncollapsedReviewerList component', () => {
 
       const allRerequestButtons = findAllRerequestButtons();
 
-      expect(allRerequestButtons).toHaveLength(3);
+      expect(allRerequestButtons).toHaveLength(2);
       expect(allRerequestButtons.at(1).props('loading')).toBe(true);
     });
   });
@@ -210,20 +202,17 @@ describe('UncollapsedReviewerList component', () => {
     it.each`
       reviewState            | approved | icon
       ${'UNREVIEWED'}        | ${false} | ${'dash-circle'}
-      ${'REVIEWED'}          | ${true}  | ${'status-success'}
-      ${'REVIEWED'}          | ${false} | ${'comment'}
-      ${'REQUESTED_CHANGES'} | ${false} | ${'status-alert'}
+      ${'REVIEWED'}          | ${true}  | ${'check-circle'}
+      ${'REVIEWED'}          | ${false} | ${'comment-lines'}
+      ${'REQUESTED_CHANGES'} | ${false} | ${'error'}
     `(
       'renders $icon for reviewState:$reviewState and approved:$approved',
       ({ reviewState, approved, icon }) => {
         const user = userDataMock({ approved, reviewState });
 
-        createComponent(
-          {
-            users: [user],
-          },
-          { mrRequestChanges: true },
-        );
+        createComponent({
+          users: [user],
+        });
 
         expect(wrapper.find('[data-testid="reviewer-state-icon"]').props('name')).toBe(icon);
       },

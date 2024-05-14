@@ -1,0 +1,25 @@
+query milestone($id: MilestoneID!) {
+  milestone(id: $id) {
+    id
+    title
+    expired
+    upcoming
+    startDate
+    dueDate
+    groupMilestone
+    group {
+      id
+      fullPath
+    }
+    projectMilestone
+    project {
+      id
+      fullPath
+    }
+    state
+    stats {
+      closedIssuesCount
+      totalIssuesCount
+    }
+  }
+}

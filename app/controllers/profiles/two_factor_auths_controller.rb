@@ -105,9 +105,7 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
   private
 
   def update_current_user_otp!
-    if current_user.needs_new_otp_secret?
-      current_user.update_otp_secret!
-    end
+    current_user.update_otp_secret! if current_user.needs_new_otp_secret?
 
     unless current_user.otp_grace_period_started_at && two_factor_grace_period
       current_user.otp_grace_period_started_at = Time.current
@@ -162,9 +160,7 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
     @registrations = webauthn_registrations
     @webauthn_registration ||= WebauthnRegistration.new
 
-    unless current_user.webauthn_xid
-      current_user.user_detail.update!(webauthn_xid: WebAuthn.generate_user_id)
-    end
+    current_user.user_detail.update!(webauthn_xid: WebAuthn.generate_user_id) unless current_user.webauthn_xid
 
     options = webauthn_options
     session[:challenge] = options.challenge

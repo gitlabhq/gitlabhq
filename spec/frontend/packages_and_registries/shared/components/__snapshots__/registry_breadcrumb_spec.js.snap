@@ -4,6 +4,7 @@ exports[`Registry Breadcrumb when is not rootRoute renders 1`] = `
 <nav
   aria-label="Breadcrumb"
   class="gl-breadcrumbs"
+  style=""
 >
   <ol
     class="breadcrumb gl-breadcrumb-list"
@@ -14,7 +15,9 @@ exports[`Registry Breadcrumb when is not rootRoute renders 1`] = `
       <a
         target="_self"
       >
-        <span />
+        <span>
+          mock name
+        </span>
       </a>
     </li>
     <li
@@ -25,7 +28,9 @@ exports[`Registry Breadcrumb when is not rootRoute renders 1`] = `
         href="#"
         target="_self"
       >
-        <span />
+        <span>
+          mock name
+        </span>
       </a>
     </li>
   </ol>
@@ -36,18 +41,22 @@ exports[`Registry Breadcrumb when is rootRoute renders 1`] = `
 <nav
   aria-label="Breadcrumb"
   class="gl-breadcrumbs"
+  style=""
 >
   <ol
     class="breadcrumb gl-breadcrumb-list"
   >
     <li
       class="gl-breadcrumb-item"
+      style="flex-shrink: 1; text-overflow: ellipsis; overflow-x: hidden; text-wrap: nowrap;"
     >
       <a
         aria-current="page"
         target="_self"
       >
-        <span />
+        <span>
+          mock name
+        </span>
       </a>
     </li>
   </ol>

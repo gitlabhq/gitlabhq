@@ -8,33 +8,33 @@ module Mutations
       include FindsProject
 
       argument :project_path, GraphQL::Types::ID,
-               required: true,
-               description: 'Project full path the merge request is associated with.'
+        required: true,
+        description: 'Project full path the merge request is associated with.'
 
       argument :title, GraphQL::Types::String,
-               required: true,
-               description: copy_field_description(Types::MergeRequestType, :title)
+        required: true,
+        description: copy_field_description(Types::MergeRequestType, :title)
 
       argument :source_branch, GraphQL::Types::String,
-               required: true,
-               description: copy_field_description(Types::MergeRequestType, :source_branch)
+        required: true,
+        description: copy_field_description(Types::MergeRequestType, :source_branch)
 
       argument :target_branch, GraphQL::Types::String,
-               required: true,
-               description: copy_field_description(Types::MergeRequestType, :target_branch)
+        required: true,
+        description: copy_field_description(Types::MergeRequestType, :target_branch)
 
       argument :description, GraphQL::Types::String,
-               required: false,
-               description: copy_field_description(Types::MergeRequestType, :description)
+        required: false,
+        description: copy_field_description(Types::MergeRequestType, :description)
 
       argument :labels, [GraphQL::Types::String],
-               required: false,
-               description: copy_field_description(Types::MergeRequestType, :labels)
+        required: false,
+        description: copy_field_description(Types::MergeRequestType, :labels)
 
       field :merge_request,
-            Types::MergeRequestType,
-            null: true,
-            description: 'Merge request after mutation.'
+        Types::MergeRequestType,
+        null: true,
+        description: 'Merge request after mutation.'
 
       authorize :create_merge_request_from
 

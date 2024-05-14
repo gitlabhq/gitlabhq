@@ -8,9 +8,9 @@ module Types
         graphql_name 'CiConfigStage'
 
         field :groups, Types::Ci::Config::GroupType.connection_type, null: true,
-                                                                     description: 'Groups of jobs for the stage.'
+          description: 'Groups of jobs for the stage.'
         field :name, GraphQL::Types::String, null: true,
-                                             description: 'Name of the stage.'
+          description: 'Name of the stage.'
       end
     end
   end

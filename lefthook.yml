@@ -25,7 +25,7 @@ pre-push:
     markdownlint:
       tags: documentation style
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
-      exclude: "doc/api/graphql/reference/index.md"
+      exclude: 'doc/api/graphql/reference/index.md'
       glob: 'doc/*.md'
       run: yarn markdownlint {files}
     yamllint:
@@ -33,6 +33,11 @@ pre-push:
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
       glob: '*.{yml,yaml}{,.*}'
       run: scripts/lint-yaml.sh {files}
+    mermaidlint:
+      tags: documentation style,backend style,frontend style
+      files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
+      glob: '{app,lib,ee,spec,doc,scripts}/**/*.md'
+      run: scripts/lint/check_mermaid.mjs {files}
     stylelint:
       tags: stylesheet css style
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
@@ -53,28 +58,22 @@ pre-push:
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
       glob: '{,ee/}app/graphql/**/*.rb'
       run: bundle exec rake gitlab:graphql:check_docs
-    vale: # Requires Vale: https://docs.gitlab.com/ee/development/documentation/testing.html#install-linters
+    vale: # Requires Vale: https://docs.gitlab.com/ee/development/documentation/testing/vale.html
       tags: documentation style
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
-      exclude: "doc/api/graphql/reference/index.md"
+      exclude: 'doc/api/graphql/reference/index.md'
       glob: 'doc/*.md'
       run: 'if [ $VALE_WARNINGS ]; then minWarnings=warning; else minWarnings=error; fi; if command -v vale > /dev/null 2>&1; then if ! vale --config .vale.ini --minAlertLevel $minWarnings {files}; then echo "ERROR: Fix any linting errors and make sure you are using the latest version of Vale."; exit 1; fi; else echo "ERROR: Vale not found. For more information, see https://vale.sh/docs/vale-cli/installation/."; exit 1; fi'
     gettext:
       tags: backend frontend view haml
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD | while read file;do git diff --unified=1 $(git merge-base origin/master HEAD)..HEAD $file | grep -Fqe '_(' && echo $file;done; true
       glob: '*.{haml,rb,js,vue}'
-      run: tooling/bin/gettext_extractor /dev/stdout --silent | diff - locale/gitlab.pot || ( echo "\nPO files need to be updated. Try running bin/rake gettext:regenerate" && exit 1 )
-    docs-metadata: # See https://docs.gitlab.com/ee/development/documentation/#metadata
+      run: tooling/bin/gettext_extractor /dev/stdout --silent | diff - locale/gitlab.pot || ( echo "\nPO files need to be updated. Try running tooling/bin/gettext_extractor locale/gitlab.pot" && exit 1 )
+    docs-metadata: # See https://docs.gitlab.com/ee/development/documentation/metadata.html
       tags: documentation style
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
       glob: 'doc/*.md'
       run: scripts/lint-docs-metadata.sh {files}
-    docs-trailing_spaces: # Not enforced in CI/CD pipelines, but reduces the amount of required cleanup: https://gitlab.com/gitlab-org/technical-writing/-/blob/main/.gitlab/issue_templates/tw-monthly-tasks.md#remote-tasks
-      tags: documentation style
-      files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
-      exclude: "doc/api/graphql/reference/index.md"
-      glob: 'doc/*.md'
-      run: yarn markdownlint:no-trailing-spaces {files}
     docs-deprecations:
       tags: documentation
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
@@ -105,22 +104,32 @@ pre-push:
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
       glob: '{config/audit_events/types/*.yml,ee/config/audit_events/types/*yml,doc/administration/audit_event_types.md,tooling/audit_events/docs/templates/audit_event_types.md.erb}'
       run: bundle exec rake gitlab:audit_event_types:check_docs
+    custom_roles_docs:
+      tags: documentation
+      files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
+      glob: '{ee/config/custom_abilities/*yml,doc/user/custom_roles/abilities.md,tooling/custom_roles/docs/templates/custom_abilities.md.erb}'
+      run: bundle exec rake gitlab:custom_roles:check_docs
     rubocop:
       tags: backend style
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
-      glob: '*.{rb,rake}'
+      # foo.rb, foo.rake or Foofile
+      glob: '{*.{rb,rake},[A-Z]*file}'
       run: REVEAL_RUBOCOP_TODO=0 bundle exec rubocop --parallel --force-exclusion --no-server {files}
     verify-tff-mapping:
       tags: backend style
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
       glob: 'tests.yml'
       run: scripts/verify-tff-mapping
+    secrets-detection:
+      tags: secrets
+      files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
+      run: 'if command -v gitleaks > /dev/null 2>&1; then gitleaks detect --log-opts="$(git merge-base origin/master HEAD)..HEAD" --no-banner --redact --verbose; else echo "WARNING: gitleaks is not installed. Please install it. See https://github.com/zricethezav/gitleaks#installing."; fi'
 
   scripts:
-    "merge_conflicts":
+    'merge_conflicts':
       skip: true # This is disabled by default. You can enable this check by adding skip: false in lefthook-local.yml https://github.com/evilmartians/lefthook/blob/master/docs/configuration.md#skip
       runner: bash
-    "security_harness":
+    'security_harness':
       tags: security
       runner: bash
 
@@ -130,7 +139,8 @@ pre-commit:
     rubocop:
       tags: backend style
       files: git diff --name-only --diff-filter=d --staged
-      glob: '*.{rb,rake}'
+      # foo.rb, foo.rake or Foofile
+      glob: '{*.{rb,rake},[A-Z]*file}'
       run: REVEAL_RUBOCOP_TODO=0 bundle exec rubocop --parallel --force-exclusion --no-server {files}
     verify-tff-mapping:
       tags: backend style

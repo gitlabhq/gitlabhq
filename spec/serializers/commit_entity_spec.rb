@@ -51,7 +51,7 @@ RSpec.describe CommitEntity do
   end
 
   it 'exposes gravatar url that belongs to author' do
-    expect(subject.fetch(:author_gravatar_url)).to match /gravatar/
+    expect(subject.fetch(:author_gravatar_url)).to match(/gravatar/)
   end
 
   context 'when type is not set' do

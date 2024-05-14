@@ -57,8 +57,6 @@ module ClickHouse
           workers_active = true
 
           loop do
-            return if Feature.disabled?(:wait_for_clickhouse_workers_during_migration)
-
             workers_active = active_sidekiq_workers?
             break unless workers_active
             break if Time.current >= worker_wait_ttl

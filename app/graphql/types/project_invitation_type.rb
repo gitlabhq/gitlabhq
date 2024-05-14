@@ -12,7 +12,7 @@ module Types
     authorize :admin_project
 
     field :project, Types::ProjectType, null: true,
-                                        description: 'Project ID for the project of the invitation.'
+      description: 'Project ID for the project of the invitation.'
 
     def project
       Gitlab::Graphql::Loaders::BatchModelLoader.new(Project, object.source_id).find

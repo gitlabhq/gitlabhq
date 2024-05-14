@@ -4,12 +4,12 @@
 # https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Pages/Lektor.gitlab-ci.yml
 
 default:
-  # Full project: https://gitlab.com/pages/hyde
-  image: python:2.7
+  # Full project: https://gitlab.com/pages/lektor
+  image: python:3.11
 
 pages:
   script:
-    - pip install lektor
+    - pip install lektor==3.3.11
     - lektor build --output-path public
   artifacts:
     paths:

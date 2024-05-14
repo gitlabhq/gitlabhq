@@ -8,6 +8,8 @@ import {
   GlLink,
   GlModal,
   GlSprintf,
+  GlFormRadio,
+  GlFormRadioGroup,
 } from '@gitlab/ui';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { helpPagePath } from '~/helpers/help_page_helper';
@@ -89,7 +91,8 @@ describe('CI Variable Drawer', () => {
   const findExpandedCheckbox = () => wrapper.findByTestId('ci-variable-expanded-checkbox');
   const findFlagsDocsLink = () => wrapper.findByTestId('ci-variable-flags-docs-link');
   const findKeyField = () => wrapper.findComponent(GlFormCombobox);
-  const findMaskedCheckbox = () => wrapper.findByTestId('ci-variable-masked-checkbox');
+  const findMaskedRadioButtons = () => wrapper.findAllComponents(GlFormRadio);
+  const findMaskedRadioGroup = () => wrapper.findByTestId('ci-variable-masked');
   const findProtectedCheckbox = () => wrapper.findByTestId('ci-variable-protected-checkbox');
   const findValueField = () => wrapper.findByTestId('ci-variable-value');
   const findValueLabel = () => wrapper.findByTestId('ci-variable-value-label');
@@ -190,6 +193,35 @@ describe('CI Variable Drawer', () => {
       });
     });
 
+    describe('visibility section', () => {
+      it('renders radio buttons for Variable masking', () => {
+        createComponent({ stubs: { GlFormRadioGroup, GlFormRadio } });
+
+        expect(findMaskedRadioButtons()).toHaveLength(2);
+      });
+
+      describe('masked radio', () => {
+        beforeEach(() => {
+          createComponent();
+        });
+
+        it('is false by default', () => {
+          expect(findMaskedRadioGroup().attributes('checked')).toBeUndefined();
+        });
+
+        it('inherits value of selected variable when editing', () => {
+          createComponent({
+            props: {
+              selectedVariable: mockProjectVariableFileType,
+              mode: EDIT_VARIABLE_ACTION,
+            },
+          });
+
+          expect(findMaskedRadioGroup().attributes('checked')).toBe('true');
+        });
+      });
+    });
+
     describe('protected flag', () => {
       beforeEach(() => {
         createComponent();
@@ -214,27 +246,6 @@ describe('CI Variable Drawer', () => {
         });
 
         expect(findProtectedCheckbox().attributes('checked')).toBeUndefined();
-      });
-    });
-
-    describe('masked flag', () => {
-      beforeEach(() => {
-        createComponent();
-      });
-
-      it('is false by default', () => {
-        expect(findMaskedCheckbox().attributes('checked')).toBeUndefined();
-      });
-
-      it('inherits value of selected variable when editing', () => {
-        createComponent({
-          props: {
-            selectedVariable: mockProjectVariableFileType,
-            mode: EDIT_VARIABLE_ACTION,
-          },
-        });
-
-        expect(findMaskedCheckbox().attributes('checked')).toBeDefined();
       });
     });
 
@@ -388,7 +399,7 @@ describe('CI Variable Drawer', () => {
             trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
             findKeyField().vm.$emit('input', 'NEW_VARIABLE');
             findValueField().vm.$emit('input', value);
-            findMaskedCheckbox().vm.$emit('input', true);
+            findMaskedRadioGroup().vm.$emit('input', true);
           });
 
           itif(canSubmit)(`can submit when value is ${value}`, () => {
@@ -436,7 +447,7 @@ describe('CI Variable Drawer', () => {
       it('only sends the tracking event once', async () => {
         trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
         await findKeyField().vm.$emit('input', 'NEW_VARIABLE');
-        await findMaskedCheckbox().vm.$emit('input', true);
+        await findMaskedRadioGroup().vm.$emit('input', true);
 
         expect(trackingSpy).toHaveBeenCalledTimes(0);
 
@@ -488,7 +499,7 @@ describe('CI Variable Drawer', () => {
         await findKeyField().vm.$emit('input', 'NEW_VARIABLE');
         await findProtectedCheckbox().vm.$emit('input', false);
         await findExpandedCheckbox().vm.$emit('input', true);
-        await findMaskedCheckbox().vm.$emit('input', true);
+        await findMaskedRadioGroup().vm.$emit('input', true);
         await findValueField().vm.$emit('input', 'NEW_VALUE');
 
         findConfirmBtn().vm.$emit('click');

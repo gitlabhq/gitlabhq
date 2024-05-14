@@ -16,7 +16,7 @@ RSpec.describe Gitlab::Themes, lib: true do
   describe '.by_id' do
     it 'returns a Theme by its ID' do
       expect(described_class.by_id(1).name).to eq 'Indigo'
-      expect(described_class.by_id(3).name).to eq 'Light Gray'
+      expect(described_class.by_id(3).name).to eq 'Neutral'
     end
   end
 
@@ -45,6 +45,12 @@ RSpec.describe Gitlab::Themes, lib: true do
       ids = []
       described_class.each { |theme| ids << theme.id }
       expect(ids).not_to be_empty
+    end
+  end
+
+  describe '.valid_ids' do
+    it 'returns array of available_themes ids with DEPRECATED_DARK_THEME_ID' do
+      expect(described_class.valid_ids).to match_array [1, 6, 4, 7, 5, 8, 9, 10, 2, 3, 11]
     end
   end
 end

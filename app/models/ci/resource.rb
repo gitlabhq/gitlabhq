@@ -7,7 +7,7 @@ module Ci
 
     scope :free, -> { where(processable: nil) }
     scope :retained, -> { where.not(processable: nil) }
-    scope :retained_by, -> (processable) { where(processable: processable) }
+    scope :retained_by, ->(processable) { where(processable: processable) }
 
     class << self
       # In some cases, state machine hooks in `Ci::Build` are skipped

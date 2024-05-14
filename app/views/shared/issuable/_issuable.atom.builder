@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-builder.title   truncate(issuable.title, length: 80)
+builder.title   truncate(issuable.title, length: 160)
 builder.updated issuable.updated_at.xmlschema
 builder.media   :thumbnail, width: "40", height: "40", url: image_url(avatar_icon_for_user(issuable.author))
 

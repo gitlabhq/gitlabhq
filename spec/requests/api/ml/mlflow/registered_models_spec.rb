@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe API::Ml::Mlflow::RegisteredModels, feature_category: :mlops do
   let_it_be(:project) { create(:project) }
-  let_it_be(:developer) { create(:user).tap { |u| project.add_developer(u) } }
+  let_it_be(:developer) { create(:user, developer_of: project) }
   let_it_be(:model) do
     create(:ml_models, :with_metadata, project: project)
   end
@@ -215,7 +215,8 @@ RSpec.describe API::Ml::Mlflow::RegisteredModels, feature_category: :mlops do
     describe 'Error States' do
       context 'when destroy fails' do
         it 'returns an error' do
-          allow(Ml::DestroyModelService).to receive_message_chain(:new, :execute).and_return(false)
+          allow(Ml::DestroyModelService).to receive_message_chain(:new,
+            :execute).and_return(ServiceResponse.error(message: ""))
 
           is_expected.to have_gitlab_http_status(:bad_request)
           expect(json_response["message"]).to eq("Model could not be deleted")

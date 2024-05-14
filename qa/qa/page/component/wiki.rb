@@ -23,24 +23,12 @@ module QA
           end
 
           base.view 'app/views/shared/empty_states/_wikis.html.haml' do
-            element 'create-first-page-link'
-          end
-
-          base.view 'app/views/shared/empty_states/_wikis_layout.html.haml' do
-            element 'svg-content'
+            element 'wiki-empty-state'
           end
         end
 
         def click_create_your_first_page
-          # The svg takes a fraction of a second to load after which the
-          # "Create your first page" button shifts up a bit. This can cause
-          # webdriver to miss the hit so we wait for the svg to load before
-          # clicking the button.
-          within_element('svg-content') do
-            has_element?('js-lazy-loaded-content')
-          end
-
-          click_element('create-first-page-link')
+          click_link 'Create your first page'
         end
 
         def click_new_page
@@ -69,7 +57,7 @@ module QA
         end
 
         def has_no_page?
-          has_element?('create-first-page-link')
+          has_css?('[data-testid="wiki-empty-state"]')
         end
 
         def has_heading?(heading_type, text)

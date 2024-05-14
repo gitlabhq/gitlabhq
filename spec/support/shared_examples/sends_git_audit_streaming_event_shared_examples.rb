@@ -26,6 +26,7 @@ RSpec.shared_examples 'sends git audit streaming event' do
           request.headers.merge! auth_env(user.username, nil, nil)
         end
       end
+
       it 'sends the audit streaming event' do
         expect(AuditEvents::AuditEventStreamingWorker).not_to receive(:perform_async)
         subject

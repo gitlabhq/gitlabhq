@@ -1,4 +1,4 @@
-%li.todo.gl-hover-border-blue-200.gl-hover-bg-blue-50.gl-hover-cursor-pointer.gl-relative{ class: "todo-#{todo.done? ? 'done' : 'pending'}", id: dom_id(todo) }
+%li.todo.gl-border-t.gl-border-gray-50.gl-hover-border-blue-200.gl-hover-bg-blue-50.gl-hover-cursor-pointer.gl-relative{ class: "hover:gl-z-1 todo-#{todo.done? ? 'done' : 'pending'}", id: dom_id(todo) }
   .gl-display-flex.gl-flex-direction-column.gl-sm-flex-direction-row.gl-sm-align-items-center
     .todo-item.gl-overflow-hidden.gl-overflow-x-auto.gl-align-self-center.gl-w-full{ data: { testid: "todo-item-container" } }
       .todo-title.gl-pt-2.gl-pb-3.gl-px-2.gl-md-mb-1.gl-font-sm.gl-text-secondary
@@ -45,12 +45,11 @@
               \.
           - if todo.note.present?
             %span.action-description<
-            = first_line_in_markdown(todo, :body, 125, is_todo: true, project: todo.project, group: todo.group)
+            = first_line_in_markdown(todo, :body, 125, project: todo.project, group: todo.group)
 
-          = render_if_exists "dashboard/todos/diff_summary", local_assigns: { todo: todo }
           = render_if_exists "dashboard/todos/review_summary", local_assigns: { todo: todo }
 
-    .todo-timestamp.gl-white-space-nowrap.gl-sm-ml-3.gl-mt-2.gl-mb-2.gl-sm-my-0.gl-px-2.gl-sm-px-0
+    .todo-timestamp.gl-whitespace-nowrap.gl-sm-ml-3.gl-mt-2.gl-mb-2.gl-sm-my-0.gl-px-2.gl-sm-px-0
       %span.todo-timestamp.gl-font-sm.gl-text-secondary
         = todo_due_date(todo)
         #{time_ago_with_tooltip(todo.created_at)}
@@ -65,6 +64,6 @@
           = gl_loading_icon(inline: true)
           = sprite_icon('redo', css_class: 'js-todo-button-icon')
       - else
-        = render Pajamas::ButtonComponent.new(button_options: { class: 'btn-loading btn-icon gl-display-flex js-add-todo has-tooltip', title: _('Add a to do')}, method: :patch, href: restore_dashboard_todo_path(todo)), 'aria-label' => _('Add a to do') do
+        = render Pajamas::ButtonComponent.new(button_options: { class: 'btn-loading btn-icon gl-display-flex js-add-todo has-tooltip', title: _('Re-add this to-do item')}, method: :patch, href: restore_dashboard_todo_path(todo)), 'aria-label' => _('Re-add this to-do item') do
           = gl_loading_icon(inline: true)
-          = sprite_icon('todo-add', css_class: 'js-todo-button-icon')
+          = sprite_icon('redo', css_class: 'js-todo-button-icon')

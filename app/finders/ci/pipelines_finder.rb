@@ -23,12 +23,9 @@ module Ci
     end
 
     def execute
-      unless Ability.allowed?(current_user, :read_pipeline, project)
-        return Ci::Pipeline.none
-      end
+      return Ci::Pipeline.none unless Ability.allowed?(current_user, :read_pipeline, project)
 
-      items = pipelines
-      items = items.no_child unless params[:iids].present?
+      items = prefiltered_pipelines
       items = by_iids(items)
       items = by_scope(items)
       items = by_status(items)
@@ -63,6 +60,13 @@ module Ci
 
     def tags
       project.repository.tag_names
+    end
+
+    def prefiltered_pipelines
+      return pipelines if params[:iids].present?
+      return pipelines if params[:source] == 'parent_pipeline'
+
+      pipelines.no_child
     end
 
     def by_iids(items)

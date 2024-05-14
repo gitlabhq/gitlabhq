@@ -4,7 +4,7 @@ key_path: database.pg_system_id
 description: TBD
 product_section: enablement
 product_stage: enablement
-product_group: distribution
+product_group: distribution_deploy
 value_type: number
 status: active
 time_frame: all

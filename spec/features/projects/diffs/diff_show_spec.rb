@@ -48,7 +48,7 @@ RSpec.describe 'Diff file viewer', :js, :with_clean_rails_cache, feature_categor
       end
 
       it 'shows an error message' do
-        expect(page).to have_content('This source diff could not be displayed because it is stored in LFS. You can view the blob instead.')
+        expect(page).to have_content('source diff could not be displayed: it is stored in LFS. Options to address this: view the blob.')
       end
     end
 

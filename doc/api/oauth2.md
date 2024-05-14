@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 GitLab provides an API to allow third-party services to access GitLab resources on a user's behalf
 with the [OAuth 2.0](https://oauth.net/2/) protocol.
@@ -271,6 +271,10 @@ The Resource Owner Password Credentials is disabled for users with
 [two-factor authentication](../user/profile/account/two_factor_authentication.md) turned on.
 These users can access the API using [personal access tokens](../user/profile/personal_access_tokens.md)
 instead.
+
+NOTE:
+Ensure the [**Allow password authentication for Git over HTTP(S)**](../administration/settings/sign_in_restrictions.md#password-authentication-enabled)
+checkbox is selected for the GitLab instance to support the password credentials flow.
 
 In this flow, a token is requested in exchange for the resource owner credentials
 (username and password).

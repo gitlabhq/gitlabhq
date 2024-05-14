@@ -3,9 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe Ci::PipelineSchedule, feature_category: :continuous_integration do
-  let_it_be_with_reload(:project) { create_default(:project) }
+  let_it_be_with_reload(:project) { create_default(:project, :repository) }
+  let_it_be(:repository) { project.repository }
 
-  subject { build(:ci_pipeline_schedule) }
+  subject { build(:ci_pipeline_schedule, project: project) }
 
   it { is_expected.to belong_to(:project) }
   it { is_expected.to belong_to(:owner) }
@@ -25,31 +26,53 @@ RSpec.describe Ci::PipelineSchedule, feature_category: :continuous_integration d
 
   it_behaves_like 'cleanup by a loose foreign key' do
     let!(:parent) { create(:user) }
-    let!(:model) { create(:ci_pipeline_schedule, owner: parent) }
+    let!(:model) { create(:ci_pipeline_schedule, owner: parent, project: project) }
   end
 
   describe 'validations' do
     it 'does not allow invalid cron patterns' do
-      pipeline_schedule = build(:ci_pipeline_schedule, cron: '0 0 0 * *')
+      pipeline_schedule = build(:ci_pipeline_schedule, cron: '0 0 0 * *', project: project)
 
       expect(pipeline_schedule).not_to be_valid
     end
 
     it 'does not allow invalid cron patterns' do
-      pipeline_schedule = build(:ci_pipeline_schedule, cron_timezone: 'invalid')
+      pipeline_schedule = build(:ci_pipeline_schedule, cron_timezone: 'invalid', project: project)
 
       expect(pipeline_schedule).not_to be_valid
     end
 
     it 'does not allow empty variable key' do
-      pipeline_schedule = build(:ci_pipeline_schedule, variables_attributes: [{ secret_value: 'test_value' }])
+      pipeline_schedule = build(:ci_pipeline_schedule,
+        variables_attributes: [{ secret_value: 'test_value' }],
+        project: project)
 
       expect(pipeline_schedule).not_to be_valid
     end
 
+    context 'when an short ref record is being updated' do
+      let(:new_description) { 'some description' }
+      let(:ref) { 'other' }
+      let(:pipeline_schedule) do
+        build(:ci_pipeline_schedule, cron: ' 0 0 * * *   ', ref: ref, project: project)
+      end
+
+      before do
+        repository.add_branch(project.creator, ref, 'master')
+        pipeline_schedule.save!(validate: false)
+      end
+
+      it 'does not update the ref' do
+        pipeline_schedule.update!(description: new_description)
+
+        expect(pipeline_schedule.reload.ref).to eq(ref)
+        expect(pipeline_schedule.description).to eq(new_description)
+      end
+    end
+
     context 'when active is false' do
       it 'does not allow nullified ref' do
-        pipeline_schedule = build(:ci_pipeline_schedule, :inactive, ref: nil)
+        pipeline_schedule = build(:ci_pipeline_schedule, :inactive, ref: nil, project: project)
 
         expect(pipeline_schedule).not_to be_valid
       end
@@ -57,7 +80,7 @@ RSpec.describe Ci::PipelineSchedule, feature_category: :continuous_integration d
 
     context 'when cron contains trailing whitespaces' do
       it 'strips the attribute' do
-        pipeline_schedule = build(:ci_pipeline_schedule, cron: ' 0 0 * * *   ')
+        pipeline_schedule = build(:ci_pipeline_schedule, cron: ' 0 0 * * *   ', project: project)
 
         expect(pipeline_schedule).to be_valid
         expect(pipeline_schedule.cron).to eq('0 0 * * *')
@@ -70,7 +93,7 @@ RSpec.describe Ci::PipelineSchedule, feature_category: :continuous_integration d
 
     let!(:pipeline_schedule) do
       travel_to(1.day.ago) do
-        create(:ci_pipeline_schedule, :hourly)
+        create(:ci_pipeline_schedule, :hourly, project: project)
       end
     end
 
@@ -91,7 +114,7 @@ RSpec.describe Ci::PipelineSchedule, feature_category: :continuous_integration d
     subject { described_class.preloaded }
 
     before do
-      create_list(:ci_pipeline_schedule, 3)
+      create_list(:ci_pipeline_schedule, 3, project: project)
     end
 
     it 'preloads the associations' do
@@ -105,8 +128,8 @@ RSpec.describe Ci::PipelineSchedule, feature_category: :continuous_integration d
 
   describe '.owned_by' do
     let(:user) { create(:user) }
-    let!(:owned_pipeline_schedule) { create(:ci_pipeline_schedule, owner: user) }
-    let!(:other_pipeline_schedule) { create(:ci_pipeline_schedule) }
+    let!(:owned_pipeline_schedule) { create(:ci_pipeline_schedule, owner: user, project: project) }
+    let!(:other_pipeline_schedule) { create(:ci_pipeline_schedule, project: project) }
 
     subject { described_class.owned_by(user) }
 
@@ -116,7 +139,6 @@ RSpec.describe Ci::PipelineSchedule, feature_category: :continuous_integration d
   end
 
   describe '.for_project' do
-    let(:project) { create(:project) }
     let!(:project_pipeline_schedule) { create(:ci_pipeline_schedule, project: project) }
     let!(:other_pipeline_schedule) { create(:ci_pipeline_schedule) }
 
@@ -129,7 +151,7 @@ RSpec.describe Ci::PipelineSchedule, feature_category: :continuous_integration d
 
   describe '#set_next_run_at' do
     let(:now) { Time.zone.local(2021, 3, 2, 1, 0) }
-    let(:pipeline_schedule) { create(:ci_pipeline_schedule, cron: "0 1 * * *") }
+    let(:pipeline_schedule) { create(:ci_pipeline_schedule, cron: "0 1 * * *", project: project) }
 
     it 'calls fallback method next_run_at if there is no plan limit' do
       allow(Settings).to receive(:cron_jobs).and_return({ 'pipeline_schedule_worker' => { 'cron' => "0 1 2 3 *" } })
@@ -144,8 +166,13 @@ RSpec.describe Ci::PipelineSchedule, feature_category: :continuous_integration d
     end
 
     context 'when there are two different pipeline schedules in different time zones' do
-      let(:pipeline_schedule_1) { create(:ci_pipeline_schedule, :weekly, cron_timezone: 'Eastern Time (US & Canada)') }
-      let(:pipeline_schedule_2) { create(:ci_pipeline_schedule, :weekly, cron_timezone: 'UTC') }
+      let(:pipeline_schedule_1) do
+        create(:ci_pipeline_schedule, :weekly, cron_timezone: 'Eastern Time (US & Canada)', project: project)
+      end
+
+      let(:pipeline_schedule_2) do
+        create(:ci_pipeline_schedule, :weekly, cron_timezone: 'UTC', project: project)
+      end
 
       it 'sets different next_run_at' do
         expect(pipeline_schedule_1.next_run_at).not_to eq(pipeline_schedule_2.next_run_at)
@@ -154,7 +181,7 @@ RSpec.describe Ci::PipelineSchedule, feature_category: :continuous_integration d
   end
 
   describe '#schedule_next_run!' do
-    let!(:pipeline_schedule) { create(:ci_pipeline_schedule, :nightly) }
+    let!(:pipeline_schedule) { create(:ci_pipeline_schedule, :nightly, project: project) }
 
     before do
       pipeline_schedule.update_column(:next_run_at, nil)
@@ -179,7 +206,7 @@ RSpec.describe Ci::PipelineSchedule, feature_category: :continuous_integration d
   end
 
   describe '#job_variables' do
-    let!(:pipeline_schedule) { create(:ci_pipeline_schedule) }
+    let!(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project) }
 
     let!(:pipeline_schedule_variables) do
       create_list(:ci_pipeline_schedule_variable, 2, pipeline_schedule: pipeline_schedule)
@@ -289,13 +316,13 @@ RSpec.describe Ci::PipelineSchedule, feature_category: :continuous_integration d
 
   context 'loose foreign key on ci_pipeline_schedules.project_id' do
     it_behaves_like 'cleanup by a loose foreign key' do
-      let!(:parent) { create(:project) }
+      let_it_be(:parent) { create(:project, :repository) }
       let!(:model) { create(:ci_pipeline_schedule, project: parent) }
     end
   end
 
   describe 'before_destroy' do
-    let_it_be_with_reload(:pipeline_schedule) { create(:ci_pipeline_schedule, cron: ' 0 0 * * *   ') }
+    let_it_be_with_reload(:pipeline_schedule) { create(:ci_pipeline_schedule, cron: ' 0 0 * * *   ', project: project) }
     let_it_be_with_reload(:pipeline) { create(:ci_pipeline, pipeline_schedule: pipeline_schedule) }
 
     it 'nullifys associated pipelines' do

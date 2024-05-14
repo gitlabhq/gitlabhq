@@ -21,6 +21,15 @@ module Integrations
                 data_fields_hash(:update)
               )
           end
+
+          if integration.is_a?(GitlabSlackApplication) &&
+              Feature.enabled?(:gitlab_for_slack_app_instance_and_group_level, type: :beta)
+            if integration.active? # rubocop: disable Cop/LineBreakAroundConditionalBlock -- Misidentified
+              bulk_update_slack_integrations
+            else
+              bulk_delete_slack_integrations
+            end
+          end
         end
       end
       # rubocop: enable CodeReuse/ActiveRecord
@@ -41,6 +50,23 @@ module Integrations
           else
             batch.map(&:id)
           end
+      end
+
+      def bulk_update_slack_integrations
+        slack_integration_batch = SlackIntegration.by_integration(batch_ids)
+
+        slack_integration_batch.update_all(
+          integration.slack_integration.to_database_hash
+        )
+
+        Integrations::SlackWorkspace::IntegrationApiScope.update_scopes(
+          slack_integration_batch.pluck_primary_key,
+          integration.slack_integration.slack_api_scopes
+        )
+      end
+
+      def bulk_delete_slack_integrations
+        SlackIntegration.by_integration(batch_ids).delete_all
       end
     end
   end

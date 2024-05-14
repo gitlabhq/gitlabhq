@@ -3,11 +3,11 @@
 module Tooling
   module Danger
     module ProjectHelper
-      CI_ONLY_RULES ||= %w[
+      CI_ONLY_RULES = %w[
         ce_ee_vue_templates
-        ci_templates
         datateam
         feature_flag
+        master_pipeline_status
         roulette
         sidekiq_queues
         specialization_labels
@@ -66,6 +66,7 @@ module Tooling
           spec/frontend/tracking_spec\.js
         )\z}x => [:frontend, :analytics_instrumentation],
         [%r{\.(vue|js)\z}, %r{trackRedis}] => [:frontend, :analytics_instrumentation],
+        [%r{\.(vue|js)\z}, %r{InternalEvents\.trackEvent}] => [:frontend, :analytics_instrumentation],
         %r{\A((ee|jh)/)?app/assets/} => :frontend,
         %r{\A((ee|jh)/)?app/views/.*\.svg} => :frontend,
         %r{\A((ee|jh)/)?app/views/} => [:frontend, :backend],
@@ -133,6 +134,9 @@ module Tooling
         %r{gitlab/usage_data(_spec)?\.rb} => [:analytics_instrumentation],
         [%r{\.haml\z}, %r{data: \{ track}] => [:analytics_instrumentation],
         [%r{\.(rb|haml)\z}, %r{Gitlab::Tracking\.(event|enabled\?|options)}] => [:analytics_instrumentation],
+        [%r{\.(rb|haml)\z}, %r{Gitlab::InternalEvents\.track_event}] => [:analytics_instrumentation],
+        [%r{\.(rb|haml)\z}, %r{Gitlab::InternalEventsTracking}] => [:analytics_instrumentation],
+        [%r{\.(rb|haml)\z}, %r{track_internal_event}] => [:analytics_instrumentation],
         [%r{\.(vue|js)\z}, %r{(Tracking.event|/\btrack\(/|data-track-action)}] => [:analytics_instrumentation],
 
         %r{\A((ee|jh)/)?app/(?!assets|views)[^/]+} => :backend,

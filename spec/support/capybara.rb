@@ -89,8 +89,10 @@ Capybara.register_driver :chrome do |app|
     end
   end
 
+  hmr_host = ViteRuby.env['VITE_HMR_HOST']
+  bypass_list = ['127.0.0.1', 'localhost', Gitlab.config.gitlab.host, hmr_host].compact.join(',')
   options.add_argument("--proxy-server=http://127.0.0.1:#{@blackhole_tcp_server.addr[1]}")
-  options.add_argument("--proxy-bypass-list=127.0.0.1,localhost,#{Gitlab.config.gitlab.host}")
+  options.add_argument("--proxy-bypass-list=#{bypass_list}")
 
   Capybara::Selenium::Driver.new(
     app,

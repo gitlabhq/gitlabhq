@@ -8,20 +8,20 @@ module Types
       description 'Connection details for an Agent'
 
       field :connected_at,
-            Types::TimeType,
-            null: true,
-            description: 'When the connection was established.'
+        Types::TimeType,
+        null: true,
+        description: 'When the connection was established.'
 
       field :connection_id,
-            GraphQL::Types::BigInt,
-            null: true,
-            description: 'ID of the connection.'
+        GraphQL::Types::BigInt,
+        null: true,
+        description: 'ID of the connection.'
 
       field :metadata,
-            Types::Kas::AgentMetadataType,
-            method: :agent_meta,
-            null: true,
-            description: 'Information about the Agent.'
+        Types::Kas::AgentMetadataType,
+        method: :agent_meta,
+        null: true,
+        description: 'Information about the Agent.'
 
       def connected_at
         Time.at(object.connected_at.seconds)

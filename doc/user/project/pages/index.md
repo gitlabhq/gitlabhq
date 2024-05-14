@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 With GitLab Pages, you can publish static websites directly from a repository
 in GitLab.
@@ -157,13 +157,29 @@ cookies manually with JavaScript.
 
 By default, every project in a group shares the same domain, for example, `group.gitlab.io`. This means that cookies are also shared for all projects in a group.
 
-To ensure each project uses different cookies, enable the Pages [unique domains](introduction.md#enable-unique-domains) feature for your project.
+To ensure each project uses different cookies, enable the Pages [unique domains](#unique-domains) feature for your project.
+
+## Unique domains
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9347) in GitLab 15.9 [with a flag](../../../administration/feature_flags.md) named `pages_unique_domain`. Disabled by default.
+> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/388151) in GitLab 15.11.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122229) in GitLab 16.3.
+
+By default, every new project uses pages unique domain. This is to avoid projects on the same group
+to share cookies.
+
+The project maintainer can disable this feature on:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Deploy > Pages**.
+1. Deselect the **Use unique domain** checkbox.
+1. Select **Save changes**.
 
 ## Create multiple deployments
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Status:** Experiment
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129534) in GitLab 16.7 as an [Experiment](../../../policy/experiment-beta-support.md) [with a flag](../../feature_flags.md) named `pages_multiple_versions_setting`, disabled by default.
@@ -171,12 +187,26 @@ DETAILS:
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available,
 an administrator can [enable the feature flag](../../../administration/feature_flags.md) named
-`pages_multiple_versions_setting`. On GitLab.com, this feature is not available. This feature is not ready for production use.
+`pages_multiple_versions_setting`. On GitLab.com and GitLab Dedicated, this feature is not available. This feature is not ready for production use.
 
-Use the [`pages.path_prefix`](../../../ci/yaml/index.md#pagespagespath_prefix) CI/CD option to configure a prefix for the GitLab Pages URL. A prefix allows you
-to differentiate between multiple GitLab Pages deployments.
+Use the [`pages.path_prefix`](../../../ci/yaml/index.md#pagespagespath_prefix) CI/CD option to configure a prefix for the GitLab Pages URL.
+A prefix allows you to differentiate between multiple GitLab Pages deployments:
 
-Multiple GitLab Pages deployments (pages created with a `path_prefix`) count toward your [storage](../../../user/usage_quotas.md) usage.
+- Main Pages deployment: a Pages deployment created with a blank `path_prefix`.
+- Extra Pages deployment: a Pages deployment created with a non-blank `path_prefix`
+
+### Example configuration
+
+Consider a project such as `https://gitlab.example.com/namespace/project`. By default, its main Pages deployment can be accessed through:
+
+- When using a [unique domain](#unique-domains): `https://project-namespace-uniqueid.gitlab.io/`.
+- When not using a unique domain: `https://namespace.gitlab.io/project`.
+
+If a `pages.path_prefix` is configured to the project branch names, and there's a
+branch named `staging`, this extra Pages deployment would be accessible through:
+
+- When using a [unique domain](#unique-domains): `https://project-namespace-uniqueid.gitlab.io/staging`.
+- When not using a unique domain: `https://namespace.gitlab.io/project/staging`.
 
 ### Enable multiple deployments
 
@@ -185,6 +215,14 @@ To enable multiple GitLab Pages deployments:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Deploy > Pages**.
 1. Select **Use multiple deployments**.
+
+### Limits
+
+The number of extra deployments is limited by the root-level namespace. For specific limits for:
+
+- GitLab.com, see [Other limits](../../gitlab_com/index.md#other-limits).
+- Self-managed GitLab instances, see
+  [Number of extra Pages deployments when using multiple deployments](../../../administration/instance_limits.md#number-of-extra-pages-deployments-when-using-multiple-deployments).
 
 ### Path clash
 
@@ -211,19 +249,19 @@ pages:
   script:
     - echo "Pages accessible through ${CI_PAGES_URL}/${PAGES_PREFIX}"
   variables:
-    PAGES_PREFIX: ""  # No prefix by default (master)
+    PAGES_PREFIX: "" # No prefix by default (master)
   pages:
     path_prefix: "$PAGES_PREFIX"
   artifacts:
     paths:
     - public
   rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH  # Run on default branch (with default PAGES_PREFIX)
-    - if: $CI_COMMIT_BRANCH == "staging"  # Run on master (with default PAGES_PREFIX)
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH # Run on default branch (with default PAGES_PREFIX)
+    - if: $CI_COMMIT_BRANCH == "staging" # Run on master (with default PAGES_PREFIX)
       variables:
-        PAGES_PREFIX: '_stg'  # Prefix with _stg for the staging branch
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"  # Conditionally change the prefix for Merge Requests
-      when: manual  # Run pages manually on Merge Requests
+        PAGES_PREFIX: '_stg' # Prefix with _stg for the staging branch
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" # Conditionally change the prefix for Merge Requests
+      when: manual # Run pages manually on Merge Requests
       variables:
         PAGES_PREFIX: 'mr$CI_MERGE_REQUEST_IID' # Prefix with the mr<iid>, like `mr123`
 ```
@@ -266,3 +304,10 @@ pages:
 With this configuration, users will have the access to each GitLab Pages deployment through the UI.
 When using [environments](../../../ci/environments/index.md) for pages, all pages environments are
 listed on the project environment list.
+
+### Deployments deletion
+
+#### Auto-clean
+
+Extra Pages deployments, created by a merge request with a `path_prefix`, are automatically deleted when the
+merge request is closed or merged.

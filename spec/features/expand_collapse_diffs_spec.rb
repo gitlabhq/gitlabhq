@@ -16,10 +16,6 @@ RSpec.describe 'Expand and collapse diffs', :js, feature_category: :source_code_
 
     wait_for_requests
 
-    # Ensure that undiffable.md is in .gitattributes
-    # this line can be removed once gitaly stops using info/attributes
-    project.repository.copy_gitattributes(branch)
-
     # This line is added to make sure this test works when gitaly stops using
     # info/attributes. See https://gitlab.com/gitlab-org/gitaly/-/issues/5348 for details.
     project.repository.raw_repository.write_ref("HEAD", "refs/heads/#{branch}")
@@ -270,7 +266,7 @@ RSpec.describe 'Expand and collapse diffs', :js, feature_category: :source_code_
 
       # Wait for elements to appear to ensure full page reload
       expect(page).to have_content("File suppressed by a .gitattributes entry or the file's encoding is unsupported.")
-      expect(page).to have_content('This source diff could not be displayed because it is too large.')
+      expect(page).to have_content('source diff could not be displayed: it is too large.')
       expect(page).to have_content('too_large_image.jpg')
       find('.note-textarea')
 

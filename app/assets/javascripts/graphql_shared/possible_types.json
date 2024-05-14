@@ -11,6 +11,9 @@
     "AuditEventStreamingHeader",
     "AuditEventsStreamingInstanceHeader"
   ],
+  "CiRunnerCloudProvisioning": [
+    "CiRunnerGoogleCloudProvisioning"
+  ],
   "CiVariable": [
     "CiGroupVariable",
     "CiInstanceVariable",
@@ -52,6 +55,16 @@
     "ExternalAuditEventDestination",
     "InstanceExternalAuditEventDestination"
   ],
+  "AuditEventStreamingDestinationInterface": [
+    "GroupAuditEventStreamingDestination",
+    "InstanceAuditEventStreamingDestination"
+  ],
+  "GoogleCloudArtifactRegistryArtifact": [
+    "GoogleCloudArtifactRegistryDockerImage"
+  ],
+  "GoogleCloudArtifactRegistryArtifactDetails": [
+    "GoogleCloudArtifactRegistryDockerImageDetails"
+  ],
   "GoogleCloudLoggingConfigurationInterface": [
     "GoogleCloudLoggingConfigurationType",
     "InstanceGoogleCloudLoggingConfigurationType"
@@ -90,6 +103,7 @@
   ],
   "OrchestrationPolicy": [
     "ApprovalPolicy",
+    "PipelineExecutionPolicy",
     "ScanExecutionPolicy",
     "ScanResultPolicy"
   ],
@@ -192,6 +206,7 @@
     "WorkItemWidgetCurrentUserTodos",
     "WorkItemWidgetDescription",
     "WorkItemWidgetDesigns",
+    "WorkItemWidgetDevelopment",
     "WorkItemWidgetHealthStatus",
     "WorkItemWidgetHierarchy",
     "WorkItemWidgetIteration",

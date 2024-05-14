@@ -87,12 +87,12 @@ export default {
       <transition name="issuable-header-slide">
         <div
           v-if="stickyTitleVisible"
-          class="issue-sticky-header gl-fixed gl-z-index-3 gl-bg-white gl-border-1 gl-border-b-solid gl-border-b-gray-100 gl-py-3"
+          class="issue-sticky-header gl-fixed gl-z-3 gl-bg-white gl-border-1 gl-border-b-solid gl-border-b-gray-100 gl-py-3"
           data-testid="header"
         >
           <div class="issue-sticky-header-text gl-display-flex gl-align-items-baseline gl-mx-auto">
             <gl-badge
-              class="gl-white-space-nowrap gl-mr-3 gl-align-self-center"
+              class="gl-whitespace-nowrap gl-mr-3 gl-align-self-center"
               :variant="badgeVariant"
             >
               <gl-icon v-if="statusIcon" class="gl-sm-display-none" :name="statusIcon" />
@@ -102,12 +102,12 @@ export default {
             </gl-badge>
             <confidentiality-badge
               v-if="issuable.confidential"
-              class="gl-white-space-nowrap gl-mr-3 gl-align-self-center"
+              class="gl-whitespace-nowrap gl-mr-3 gl-align-self-center"
               :issuable-type="issuable.type"
               :workspace-type="workspaceType"
             />
             <p
-              class="gl-font-weight-bold gl-overflow-hidden gl-white-space-nowrap gl-text-overflow-ellipsis gl-my-0"
+              class="gl-font-weight-bold gl-overflow-hidden gl-whitespace-nowrap gl-text-overflow-ellipsis gl-my-0"
               :title="issuable.title"
             >
               {{ issuable.title }}

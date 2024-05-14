@@ -14,8 +14,9 @@ RSpec.describe ProjectHookPolicy, feature_category: :webhooks do
       hook.project.add_developer(user)
     end
 
-    it "cannot read and destroy web-hooks" do
-      expect(policy).to be_disallowed(:destroy_web_hook)
+    it "cannot read and admin web-hooks" do
+      expect(policy).to be_disallowed(:read_web_hook)
+      expect(policy).to be_disallowed(:admin_web_hook)
     end
   end
 
@@ -24,8 +25,9 @@ RSpec.describe ProjectHookPolicy, feature_category: :webhooks do
       hook.project.add_maintainer(user)
     end
 
-    it "can read and destroy web-hooks" do
-      expect(policy).to be_allowed(:destroy_web_hook)
+    it "can read and admin web-hooks" do
+      expect(policy).to be_allowed(:read_web_hook)
+      expect(policy).to be_allowed(:admin_web_hook)
     end
   end
 end

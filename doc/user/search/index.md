@@ -8,14 +8,21 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-GitLab has two types of searches available: **basic** and **advanced**.
+GitLab has three types of search: **basic search**, [**advanced search**](advanced_search.md),
+and [**exact code search**](exact_code_search.md).
 
-Both types of search are the same, except when you are searching through code.
+For code search, GitLab uses these types in this order:
 
-- When you use basic search to search code, your search includes one project at a time.
-- When you use [advanced search](advanced_search.md) to search code, your search includes all projects at once.
+- **Exact code search:** where you can use regular expression and exact match modes.
+- **Advanced search:** when exact code search is not available.
+- **Basic search:** when exact code search and advanced search are not available
+  or when you search against a non-default branch.
+  This type does not support group or global search.
+
+You can search in all GitLab or in a specific project and filter the results.
+Autocomplete suggestions are displayed as you type.
 
 ## Global search scopes
 
@@ -163,13 +170,16 @@ and gives you the option to return to the search results page.
 
 ## Run a search from history
 
-You can run a search from history for issues and merge requests. Search history is stored locally
-in your browser. To run a search from history:
+You can run a search from history for issues and merge requests.
+Search history is stored locally in your browser.
+
+To run a search from history:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. To view recent searches:
 
-   - For issues, on the left sidebar, select **Plan > Issues**. Above the list, to the left of the search box, select (**{history}**).
-   - For merge requests, on the left sidebar, select **Code > Merge requests**. Above the list, to the left of the search box, select **Recent searches**.
+   - For issues, select **Plan > Issues**.
+   - For merge requests, select **Code > Merge requests**.
 
+1. To the left of the search box, select **Recent searches** (**{history}**).
 1. From the dropdown list, select a search.

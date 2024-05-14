@@ -90,6 +90,8 @@ module Gitlab
       def instrument_errors(instrumentation_class, error)
         if error.message.start_with?('MOVED', 'ASK')
           instrumentation_class.instance_count_cluster_redirection(error)
+        elsif error.is_a?(::RedisClient::Cluster::Pipeline::RedirectionNeeded)
+          instrumentation_class.instance_count_cluster_pipeline_redirection(error)
         else
           instrumentation_class.instance_count_exception(error)
         end

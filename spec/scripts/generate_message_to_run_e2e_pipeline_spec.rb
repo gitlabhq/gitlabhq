@@ -224,7 +224,7 @@ RSpec.describe GenerateMessageToRunE2ePipeline, feature_category: :tooling do
       <!-- Run e2e warning begin -->
       @#{author_username} Some end-to-end (E2E) tests should run based on the stage label.
 
-      Please start the `trigger-omnibus-and-follow-up-e2e` job in the `qa` stage and wait for the tests in the `follow-up-e2e:package-and-test-ee` pipeline
+      Please start the `manual:e2e-test-pipeline-generate` job in the `prepare` stage and wait for the tests in the `follow-up:e2e:package-and-test-ee` pipeline
       to pass **before merging this MR**. Do not use **Auto-merge**, unless these tests have already completed successfully, because a failure in these tests do not block the auto-merge.
       (E2E tests are computationally intensive and don't run automatically for every push/rebase, so we ask you to run this job manually at least once.)
 

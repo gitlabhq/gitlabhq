@@ -21,7 +21,6 @@ module SshKeys
             attribute_name: 'expires_at_utc',
             order_expression: Arel.sql("date(expires_at AT TIME ZONE 'UTC')").asc,
             nullable: :not_nullable,
-            distinct: false,
             add_to_projections: true
           ),
           Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(

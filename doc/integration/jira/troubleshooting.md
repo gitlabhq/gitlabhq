@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 When working with the [Jira issue integration](configure.md), you might encounter the following issues.
 
@@ -132,31 +132,21 @@ To change all Jira projects to use instance-level integration settings:
 
 1. In a [Rails console](../../administration/operations/rails_console.md#starting-a-rails-console-session), run the following:
 
-   - In GitLab 15.0 and later:
+   ```ruby
+   Integrations::Jira.where(active: true, instance: false, inherit_from_id: nil).find_each do |integration|
+     default_integration = Integration.default_integration(integration.type, integration.project)
 
-     ```ruby
-     Integrations::Jira.where(active: true, instance: false, inherit_from_id: nil).find_each do |integration|
-       default_integration = Integration.default_integration(integration.type, integration.project)
+     integration.inherit_from_id = default_integration.id
 
-       integration.inherit_from_id = default_integration.id
-
-       if integration.save(context: :manual_change)
-         # In GitLab 16.9 and later:
+     if integration.save(context: :manual_change)
+       if Gitlab.version_info >= Gitlab::VersionInfo.new(16, 9)
          Integrations::Propagation::BulkUpdateService.new(default_integration, [integration]).execute
-         # In GitLab 16.8 and earlier, instead do:
-         # BulkUpdateIntegrationService.new(default_integration, [integration]).execute
+       else
+         BulkUpdateIntegrationService.new(default_integration, [integration]).execute
        end
      end
-     ```
-
-   - In GitLab 14.10 and earlier:
-
-     ```ruby
-     jira_integration_instance_id = Integrations::Jira.find_by(instance: true).id
-     Integrations::Jira.where(active: true, instance: false, template: false, inherit_from_id: nil).find_each do |integration|
-       integration.update_attribute(:inherit_from_id, jira_integration_instance_id)
-     end
-     ```
+   end
+   ```
 
 1. Modify and save the instance-level integration from the UI to propagate the changes to all group-level and project-level integrations.
 
@@ -178,22 +168,31 @@ To change all Jira projects in a group (and its subgroups) to use group-level in
     integration.inherit_from_id = default_integration.id
 
     if integration.save(context: :manual_change)
-      # In GitLab 16.9 and later:
-      Integrations::Propagation::BulkUpdateService.new(default_integration, [integration]).execute
-      # In GitLab 16.8 and earlier, instead do:
-      # BulkUpdateIntegrationService.new(default_integration, [integration]).execute
+      if Gitlab.version_info >= Gitlab::VersionInfo.new(16, 9)
+        Integrations::Propagation::BulkUpdateService.new(default_integration, [integration]).execute
+      else
+        BulkUpdateIntegrationService.new(default_integration, [integration]).execute
+      end
     end
   end
 
   parent_group = Group.find_by_full_path('top-level-group') # Add the full path of your top-level group
   current_user = User.find_by_username('admin-user') # Add the username of a user with administrator access
 
-  groups = GroupsFinder.new(current_user, { parent: parent_group, include_parent_descendants: true }).execute
+  unless parent_group.nil?
+    groups = GroupsFinder.new(current_user, { parent: parent_group, include_parent_descendants: true }).execute
 
-  groups.find_each do |group|
-    reset_integration(group)
+    # Reset any projects in subgroups to use the parent group integration settings
+    groups.find_each do |group|
+      reset_integration(group)
 
-    group.projects.find_each do |project|
+      group.projects.find_each do |project|
+        reset_integration(project)
+      end
+    end
+
+    # Reset any direct projects in the parent group to use the parent group integration settings
+    parent_group.projects.find_each do |project|
       reset_integration(project)
     end
   end
@@ -230,15 +229,19 @@ Check [`production.log`](../../administration/logs/index.md#productionlog) to se
 
 If that's the case, ensure the [**Due date** field is visible for issues](https://confluence.atlassian.com/jirakb/due-date-field-is-missing-189431917.html) in the integrated Jira project.
 
-### `An error occurred while requesting data from Jira`
+### Error when requesting data from Jira
 
-When you try to view the Jira issue list in GitLab, you might get this message:
+When you try to view the Jira issue list or create a Jira issue in GitLab, you might get one of the following errors:
 
 ```plaintext
 An error occurred while requesting data from Jira
 ```
 
-This error occurs when the authentication for the Jira issue integration is not complete or correct.
+```plaintext
+An error occurred while fetching issue list. Connection failed. Check your integration settings.
+```
+
+These errors occur when the authentication for the Jira issue integration is not complete or correct.
 
 To resolve this issue, [configure the Jira issue integration](configure.md#configure-the-integration) again.
 Ensure the authentication details are correct, enter your API token or password again, and save your changes.
@@ -262,7 +265,7 @@ has permission to view issues associated with the specified Jira project key.
 
 To verify the Jira user has this permission, do one of the following:
 
-- In your browser, sign into Jira with the user you configured in the Jira issue integration. Because the Jira API supports
+- In your browser, sign in to Jira with the user you configured in the Jira issue integration. Because the Jira API supports
   [cookie-based authentication](https://developer.atlassian.com/server/jira/platform/security-overview/#cookie-based-authentication),
   you can see if any issues are returned in the browser:
 

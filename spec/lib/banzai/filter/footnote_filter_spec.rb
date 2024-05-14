@@ -15,6 +15,7 @@ RSpec.describe Banzai::Filter::FootnoteFilter, feature_category: :team_planning 
   let(:footnote) do
     <<~EOF.strip_heredoc
       <p>first<sup><a href="#fn-1" id="fnref-1" data-footnote-ref>1</a></sup> and second<sup><a href="#fn-second" id="fnref-second" data-footnote-ref>2</a></sup> and third<sup><a href="#fn-_%F0%9F%98%84_" id="fnref-_%F0%9F%98%84_" data-footnote-ref>3</a></sup></p>
+      <p>missing id<sup><a href="#fn-10" data-footnote-ref>1</a></sup></p>
       <section data-footnotes>
       <ol>
       <li id="fn-1">
@@ -32,6 +33,7 @@ RSpec.describe Banzai::Filter::FootnoteFilter, feature_category: :team_planning 
   let(:filtered_footnote) do
     <<~EOF.strip_heredoc
       <p>first<sup class="footnote-ref"><a href="#fn-1-#{identifier}" id="fnref-1-#{identifier}" data-footnote-ref>1</a></sup> and second<sup class="footnote-ref"><a href="#fn-second-#{identifier}" id="fnref-second-#{identifier}" data-footnote-ref>2</a></sup> and third<sup class="footnote-ref"><a href="#fn-_%F0%9F%98%84_-#{identifier}" id="fnref-_%F0%9F%98%84_-#{identifier}" data-footnote-ref>3</a></sup></p>
+      <p>missing id<sup><a href="#fn-10" data-footnote-ref>1</a></sup></p>
       <section data-footnotes class=\"footnotes\">
       <ol>
       <li id="fn-1-#{identifier}">

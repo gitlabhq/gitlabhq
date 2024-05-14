@@ -149,6 +149,11 @@ export default {
       required: false,
       default: false,
     },
+    isImported: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     isLocked: {
       type: Boolean,
       required: false,
@@ -551,6 +556,7 @@ export default {
         v-if="shouldShowStickyHeader"
         :is-confidential="isConfidential"
         :is-hidden="isHidden"
+        :is-imported="isImported"
         :is-locked="isLocked"
         :issuable-status="issuableStatus"
         :issuable-type="issuableType"
@@ -570,6 +576,7 @@ export default {
           :duplicated-to-issue-url="duplicatedToIssueUrl"
           :is-first-contribution="isFirstContribution"
           :is-hidden="isHidden"
+          :is-imported="isImported"
           :is-locked="isLocked"
           :issuable-state="issuableStatus"
           :issuable-type="issuableType"

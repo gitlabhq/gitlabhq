@@ -134,7 +134,7 @@ export default {
 
       if (!this.editor.isActive('diagram')) return;
 
-      this.diagramSource = this.$refs.nodeViewContent.$el.textContent;
+      this.diagramSource = this.$refs.nodeViewContent?.$el.textContent || '';
 
       if (this.node.attrs.language !== 'mermaid') {
         this.diagramUrl = await this.contentEditor.renderDiagram(
@@ -187,18 +187,18 @@ export default {
       <div
         v-if="isCodeSuggestion"
         :contenteditable="false"
-        class="gl-relative gl-z-index-0"
+        class="gl-relative gl-z-0"
         data-testid="code-suggestion-box"
       >
         <div
-          class="md-suggestion-header gl-flex-wrap gl-z-index-1 gl-w-full gl-border-none! gl-font-regular gl-px-4 gl-py-3 gl-border-b-1! gl-border-b-solid! gl-mr-n10!"
+          class="md-suggestion-header gl-flex-wrap gl-z-1 gl-w-full gl-border-none! gl-font-regular gl-px-4 gl-py-3 gl-border-b-1! gl-border-b-solid! gl-mr-n10!"
         >
           <div class="gl-font-weight-bold gl-pr-3">
             {{ __('Suggested change') }}
           </div>
 
           <div
-            class="gl-display-flex gl-flex-wrap gl-align-items-center gl-pl-3 gl-gap-2 gl-white-space-nowrap"
+            class="gl-display-flex gl-flex-wrap gl-align-items-center gl-pl-3 gl-gap-2 gl-whitespace-nowrap"
           >
             <gl-sprintf :message="__('From line %{line1} to %{line2}')">
               <template #line1>
@@ -280,7 +280,7 @@ export default {
           >
         </div>
       </div>
-      <node-view-content ref="nodeViewContent" as="code" class="gl-relative gl-z-index-1" />
+      <node-view-content ref="nodeViewContent" as="code" class="gl-relative gl-z-1" />
     </node-view-wrapper>
   </editor-state-observer>
 </template>

@@ -10,8 +10,9 @@ module Projects
     def initialize(project)
       @project = project
 
-      @default_branch_protection = Gitlab::Access::BranchProtection
-        .new(project.namespace.default_branch_protection)
+      @default_branch_protection = Gitlab::Access::DefaultBranchProtection.new(
+        project.namespace.default_branch_protection_settings
+      )
     end
 
     def execute
@@ -29,7 +30,9 @@ module Projects
       params = {
         name: default_branch,
         push_access_levels_attributes: [{ access_level: push_access_level }],
-        merge_access_levels_attributes: [{ access_level: merge_access_level }]
+        merge_access_levels_attributes: [{ access_level: merge_access_level }],
+        code_owner_approval_required: code_owner_approval_required?,
+        allow_force_push: allow_force_push?
       }
 
       # The creator of the project is always allowed to create protected
@@ -37,6 +40,15 @@ module Projects
       ProtectedBranches::CreateService
         .new(project, project.creator, params)
         .execute(skip_authorization: true)
+    end
+
+    # overriden in EE
+    def code_owner_approval_required?
+      false
+    end
+
+    def allow_force_push?
+      default_branch_protection.allow_force_push?
     end
 
     def protect_branch?

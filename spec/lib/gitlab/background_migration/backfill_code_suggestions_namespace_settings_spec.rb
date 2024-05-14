@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::BackfillCodeSuggestionsNamespaceSettings, schema: 20230518071251, feature_category: :code_suggestions do # rubocop:disable Layout/LineLength
+RSpec.describe Gitlab::BackgroundMigration::BackfillCodeSuggestionsNamespaceSettings, schema: 20230718020825, feature_category: :code_suggestions do # rubocop:disable Layout/LineLength
   let(:namespaces_table) { table(:namespaces) }
   let(:namespace_settings_table) { table(:namespace_settings) }
 

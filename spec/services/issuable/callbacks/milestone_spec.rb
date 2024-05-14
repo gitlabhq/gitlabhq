@@ -8,7 +8,7 @@ RSpec.describe Issuable::Callbacks::Milestone, feature_category: :team_planning 
   let_it_be(:project_milestone) { create(:milestone, project: project) }
   let_it_be(:group_milestone) { create(:milestone, group: group) }
   let_it_be(:reporter) do
-    create(:user).tap { |u| project.add_reporter(u) }
+    create(:user, reporter_of: project)
   end
 
   let(:issuable) { build(:issue, project: project) }

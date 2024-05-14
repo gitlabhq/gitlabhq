@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script>
-import { GlLoadingIcon, GlIcon, GlTooltipDirective } from '@gitlab/ui';
+import { GlButton, GlLoadingIcon, GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
 
 const MARK_TEXT = __('Mark as done');
@@ -8,6 +8,7 @@ const TODO_TEXT = __('Add a to do');
 
 export default {
   components: {
+    GlButton,
     GlIcon,
     GlLoadingIcon,
   },
@@ -42,8 +43,11 @@ export default {
   computed: {
     buttonClasses() {
       return this.collapsed
-        ? 'btn-blank btn-todo sidebar-collapsed-icon js-dont-change-state'
-        : 'gl-button btn btn-default btn-todo issuable-header-btn gl-float-right';
+        ? 'sidebar-collapsed-icon js-dont-change-state'
+        : 'issuable-header-btn gl-float-right';
+    },
+    buttonVariant() {
+      return this.collapsed ? 'link' : 'default';
     },
     buttonLabel() {
       return this.isTodo ? MARK_TEXT : TODO_TEXT;
@@ -70,13 +74,15 @@ export default {
 </script>
 
 <template>
-  <button
+  <gl-button
     v-gl-tooltip.left.viewport
     :class="buttonClasses"
+    :variant="buttonVariant"
     :title="buttonTooltip"
     :aria-label="buttonLabel"
     :data-issuable-id="issuableId"
     :data-issuable-type="issuableType"
+    size="small"
     type="button"
     @click="handleButtonClick"
   >
@@ -85,7 +91,7 @@ export default {
       :class="collapsedButtonIconClasses"
       :name="collapsedButtonIcon"
     />
-    <span v-show="!collapsed" class="issuable-todo-inner">{{ buttonLabel }}</span>
-    <gl-loading-icon v-show="isActionActive" size="sm" :inline="true" />
-  </button>
+    <span v-if="!collapsed" class="issuable-todo-inner">{{ buttonLabel }}</span>
+    <gl-loading-icon v-if="isActionActive" size="sm" inline />
+  </gl-button>
 </template>

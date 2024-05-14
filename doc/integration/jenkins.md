@@ -1,6 +1,6 @@
 ---
-stage: Manage
-group: Import and Integrate
+stage: Verify
+group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/246756) to GitLab Free in 13.7.
 
@@ -157,7 +157,7 @@ If you cannot [provide GitLab with your Jenkins server URL and authentication in
 1. Under **Secret Token**, select **Generate**.
 1. Copy the token, and save the job configuration.
 1. In GitLab:
-   - [Create a webhook for your project](../user/project/integrations/webhooks.md#configure-a-webhook-in-gitlab).
+   - [Create a webhook for your project](../user/project/integrations/webhooks.md#configure-webhooks-in-gitlab).
    - Enter the trigger URL (such as `https://JENKINS_URL/project/YOUR_JOB`).
    - Paste the token in **Secret Token**.
 1. To test the webhook, select **Test**.
@@ -202,8 +202,7 @@ To fix this issue:
 
 ### Merge request event does not trigger a Jenkins pipeline
 
-This issue can occur when the request exceeds the
-[webhook timeout](../user/project/integrations/webhooks.md#webhook-fails-or-multiple-webhook-requests-are-triggered),
+This issue might occur when the request exceeds the [webhook timeout limit](../user/gitlab_com/index.md#webhooks),
 which is set to 10 seconds by default.
 
 For this issue, check:

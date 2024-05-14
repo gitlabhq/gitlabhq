@@ -39,7 +39,9 @@ module Atlassian
             public_key        = retrieve_public_key(jwt_headers['kid'])
 
             decoded_claims(public_key)
-          rescue JWT::DecodeError, OpenSSL::PKey::PKeyError, KeyFetchError
+          rescue JWT::DecodeError, OpenSSL::PKey::PKeyError, KeyFetchError => e
+            Gitlab::ErrorTracking.track_exception(e)
+            nil
           end
         end
 

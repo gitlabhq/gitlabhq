@@ -8,10 +8,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - `CI_JOB_JWT` variable for reading secrets from Vault [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207125) in GitLab 12.10.
-> - `CI_JOB_JWT_V2` variable to support additional OIDC providers [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/346737) in GitLab 14.7.
 > - [ID tokens](../yaml/index.md#id_tokens) to support any OIDC provider, including HashiCorp Vault, [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356986) in GitLab 15.7.
 
 WARNING:
@@ -24,8 +22,7 @@ Historically, teams stored secrets in projects or applied permissions on the Git
 instance to build and deploy. OIDC capable [ID tokens](../yaml/index.md#id_tokens) are configurable
 in the CI/CD job allowing you to follow a scalable and least-privilege security approach.
 
-In GitLab 15.6 and earlier, you must use `CI_JOB_JWT_V2` instead of an ID token,
-but it is not customizable. In GitLab 14.6 an earlier you must use the `CI_JOB_JWT`, which has limited support.
+In GitLab 15.6 and earlier, you must use `CI_JOB_JWT_V2` instead of an ID token, but it is not customizable.
 
 ## Prerequisites
 

@@ -9,7 +9,9 @@ module RspecProfilingExt
     class CSVWithTimestamps < ::RspecProfiling::Collectors::CSV
       TIMESTAMP_FIELDS = %w[created_at updated_at].freeze
       METADATA_FIELDS = %w[feature_category].freeze
-      HEADERS = (::RspecProfiling::Collectors::CSV::HEADERS + TIMESTAMP_FIELDS + METADATA_FIELDS).freeze
+      EXCLUDED_FIELDS = %w[seed owner_tag start_memory end_memory].freeze
+      HEADERS = (::RspecProfiling::Collectors::CSV::HEADERS + TIMESTAMP_FIELDS + METADATA_FIELDS \
+                 - EXCLUDED_FIELDS).freeze
 
       def insert(attributes)
         output << HEADERS.map do |field|

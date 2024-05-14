@@ -8,9 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/26019) in GitLab 12.6.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Each time a release is created, GitLab takes a snapshot of data that's related to it.
 This data is saved in a JSON file and called *release evidence*. The feature
@@ -91,9 +89,7 @@ Here is an example of a release evidence object:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/199065) in GitLab 12.10.
+**Offering:** Self-managed, GitLab Dedicated
 
 When a release is created, release evidence is automatically collected. To initiate evidence collection any other time, use an [API call](../../../api/releases/index.md#collect-release-evidence). You can collect release evidence multiple times for one release.
 
@@ -103,9 +99,7 @@ Evidence collection snapshots are visible on the Releases page, along with the t
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, Self-managed
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32773) in GitLab 13.2.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 When you create a release, if [job artifacts](../../../ci/yaml/index.md#artifactsreports) are included in the last pipeline that ran, they are automatically included in the release as release evidence.
 
@@ -138,8 +132,6 @@ the [`artifacts:expire_in`](../../../ci/yaml/index.md#artifactsexpire_in)
 keyword. For more information, see [issue 222351](https://gitlab.com/gitlab-org/gitlab/-/issues/222351).
 
 ## Schedule release evidence collection
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/23697) in GitLab 12.8.
 
 In the API:
 

@@ -1,17 +1,30 @@
 import { GlLoadingIcon } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { mockTracking, triggerEvent } from 'helpers/tracking_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import Component from '~/sidebar/components/reviewers/reviewer_title.vue';
 
 describe('ReviewerTitle component', () => {
   let wrapper;
 
-  const createComponent = (props) => {
-    return shallowMount(Component, {
+  const findEditButton = () => wrapper.findByTestId('reviewers-edit-button');
+
+  const createComponent = (props, { reviewerAssignDrawer = false } = {}) => {
+    return mountExtended(Component, {
       propsData: {
         numberOfReviewers: 0,
         editable: false,
         ...props,
+      },
+      provide: {
+        projectPath: 'gitlab-org/gitlab',
+        issuableId: '1',
+        issuableIid: '1',
+        multipleApprovalRulesAvailable: false,
+        glFeatures: {
+          reviewerAssignDrawer,
+        },
       },
     });
   };
@@ -85,6 +98,55 @@ describe('ReviewerTitle component', () => {
     expect(spy).toHaveBeenCalledWith('_category_', 'click_edit_button', {
       label: 'right_sidebar',
       property: 'reviewer',
+    });
+  });
+
+  it('sets title for dropdown toggle as `Change reviewer`', () => {
+    wrapper = createComponent(
+      {
+        editable: true,
+      },
+      { reviewerAssignDrawer: false },
+    );
+
+    expect(findEditButton().attributes('title')).toBe('Change reviewer');
+  });
+
+  describe('when reviewerAssignDrawer is enabled', () => {
+    beforeEach(() => {
+      setHTMLFixture('<div id="js-reviewer-drawer-portal"></div>');
+    });
+
+    afterEach(() => {
+      resetHTMLFixture();
+    });
+
+    it('sets title for dropdown toggle as `Quick assign`', () => {
+      wrapper = createComponent(
+        {
+          editable: true,
+        },
+        { reviewerAssignDrawer: true },
+      );
+
+      expect(findEditButton().attributes('title')).toBe('Quick assign');
+    });
+
+    it('clicking toggle opens reviewer drawer', async () => {
+      wrapper = createComponent(
+        {
+          editable: true,
+        },
+        { reviewerAssignDrawer: true },
+      );
+
+      expect(document.querySelector('.gl-drawer')).toBe(null);
+
+      wrapper.find('[data-testid="drawer-toggle"]').vm.$emit('click');
+
+      await waitForPromises();
+
+      expect(document.querySelector('.gl-drawer')).not.toBe(null);
     });
   });
 });

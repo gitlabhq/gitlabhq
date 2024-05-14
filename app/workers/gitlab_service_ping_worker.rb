@@ -42,7 +42,8 @@ class GitlabServicePingWorker # rubocop:disable Scalability/IdempotentWorker
         recorded_at: payload[:recorded_at],
         payload: payload,
         created_at: Time.current,
-        updated_at: Time.current
+        updated_at: Time.current,
+        organization_id: Organizations::Organization::DEFAULT_ORGANIZATION_ID
       }
 
       RawUsageData.upsert(record, unique_by: :recorded_at)

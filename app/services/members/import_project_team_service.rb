@@ -3,6 +3,7 @@
 module Members
   class ImportProjectTeamService < BaseService
     ImportProjectTeamForbiddenError = Class.new(StandardError)
+    SeatLimitExceededError = Class.new(StandardError)
 
     def initialize(*args)
       super
@@ -13,13 +14,14 @@ module Members
     def execute
       check_target_and_source_projects_exist!
       check_user_permissions!
+      check_seats!
 
       import_project_team
       process_import_result
 
       result
-    rescue ArgumentError, ImportProjectTeamForbiddenError => e
-      ServiceResponse.error(message: e.message, reason: :unprocessable_entity)
+    rescue ArgumentError, ImportProjectTeamForbiddenError, SeatLimitExceededError => e
+      ServiceResponse.error(message: e.message, reason: e.class.name.demodulize.underscore.to_sym)
     end
 
     private
@@ -32,7 +34,7 @@ module Members
       if members.is_a?(Array)
         members.each { |member| check_member_validity(member) }
       else
-        @result = ServiceResponse.error(message: 'Import failed', reason: :unprocessable_entity)
+        @result = ServiceResponse.error(message: 'Import failed', reason: :import_failed_error)
       end
     end
 
@@ -42,6 +44,10 @@ module Members
       elsif source_project.blank?
         raise ArgumentError, 'Source project does not exist'
       end
+    end
+
+    def check_seats!
+      # Overridden in EE
     end
 
     def check_user_permissions!
@@ -82,3 +88,5 @@ module Members
     end
   end
 end
+
+Members::ImportProjectTeamService.prepend_mod_with('Members::ImportProjectTeamService')

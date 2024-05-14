@@ -15,7 +15,8 @@ class Projects::PipelinesController < Projects::ApplicationController
   before_action :pipeline, except: [:index, :new, :create, :charts]
   before_action :set_pipeline_path, only: [:show]
   before_action :authorize_read_pipeline!
-  before_action :authorize_read_build!, only: [:index, :show]
+  before_action :authorize_read_build!, only: [:index]
+  before_action :authorize_read_build_on_pipeline!, only: [:show]
   before_action :authorize_read_ci_cd_analytics!, only: [:charts]
   before_action :authorize_create_pipeline!, only: [:new, :create]
   before_action :authorize_update_pipeline!, only: [:retry]
@@ -226,26 +227,17 @@ class Projects::PipelinesController < Projects::ApplicationController
   private
 
   def serialize_pipelines
-    serializer_options = {
-      disable_coverage: true,
-      disable_manual_and_scheduled_actions: true,
-      preload: true
-    }
-
-    if Feature.enabled?(:skip_status_preload_in_pipeline_lists, @project, type: :gitlab_com_derisk)
-      serializer_options.merge!(
-        disable_failed_builds: true,
-        preload_statuses: false,
-        preload_downstream_statuses: false
-      )
-    end
-
     PipelineSerializer
       .new(project: @project, current_user: @current_user)
       .with_pagination(request, response)
       .represent(
         @pipelines,
-        **serializer_options
+        disable_coverage: true,
+        disable_failed_builds: true,
+        disable_manual_and_scheduled_actions: true,
+        preload: true,
+        preload_statuses: false,
+        preload_downstream_statuses: false
       )
   end
 
@@ -323,11 +315,15 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def authorize_update_pipeline!
-    return access_denied! unless can?(current_user, :update_pipeline, @pipeline)
+    access_denied! unless can?(current_user, :update_pipeline, @pipeline)
   end
 
   def authorize_cancel_pipeline!
-    return access_denied! unless can?(current_user, :cancel_pipeline, @pipeline)
+    access_denied! unless can?(current_user, :cancel_pipeline, @pipeline)
+  end
+
+  def authorize_read_build_on_pipeline!
+    access_denied! unless can?(current_user, :read_build, @pipeline)
   end
 
   def limited_pipelines_count(project, scope = nil)

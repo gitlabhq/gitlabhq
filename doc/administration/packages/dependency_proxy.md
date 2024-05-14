@@ -13,7 +13,7 @@ DETAILS:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7934) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.11.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/273655) from GitLab Premium to GitLab Free in 13.6.
 
-GitLab can be used as a dependency proxy for a variety of common package managers.
+GitLab can be used as a dependency proxy for your frequently-accessed upstream images.
 
 This is the administration documentation. If you want to learn how to use the
 dependency proxies, see the [user guide](../../user/packages/dependency_proxy/index.md).
@@ -22,8 +22,6 @@ The GitLab Dependency Proxy:
 
 - Is turned on by default.
 - Can be turned off by an administrator.
-- Requires the [Puma web server](../operations/puma.md)
-  to be enabled. Puma is enabled by default in GitLab 13.0 and later.
 
 ## Turn off the Dependency Proxy
 
@@ -124,8 +122,7 @@ installations under `shared/dependency_proxy/` (relative to the Git home directo
 
 ### Using object storage
 
-Instead of relying on the local storage, you can use an object storage to
-store the blobs of the Dependency Proxy. In GitLab 13.2 and later, you should use the
+Instead of relying on the local storage, you can use the
 [consolidated object storage settings](../object_storage.md#configure-a-single-storage-connection-for-all-object-types-consolidated-form).
 This section describes the earlier configuration format. [Migration steps still apply](#migrate-local-dependency-proxy-blobs-and-manifests-to-object-storage).
 
@@ -202,8 +199,6 @@ This section describes the earlier configuration format. [Migration steps still 
 
 #### Migrate local Dependency Proxy blobs and manifests to object storage
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79663) in GitLab 14.8.
-
 After [configuring object storage](#using-object-storage),
 use the following task to migrate existing Dependency Proxy blobs and manifests from local storage
 to remote storage. The processing is done in a background worker and requires no downtime.
@@ -252,7 +247,7 @@ sudo find /var/opt/gitlab/gitlab-rails/shared/dependency_proxy -type f | grep -v
 
 ## Changing the JWT expiration
 
-The Dependency Proxy follows the [Docker v2 token authentication flow](https://docs.docker.com/registry/spec/auth/token/),
+The Dependency Proxy follows the [Docker v2 token authentication flow](https://distribution.github.io/distribution/spec/auth/token/),
 issuing the client a JWT to use for the pull requests. The token expiration time is a configurable
 using the application setting `container_registry_token_expire_delay`. It can be changed from the
 rails console:

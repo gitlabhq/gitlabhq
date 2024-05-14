@@ -51,6 +51,26 @@ describe('ProjectList', () => {
     });
   });
 
+  describe('Sorting', () => {
+    it('will allow sorting for fields that have sorting enabled', () => {
+      createComponent({
+        props: {
+          sortableFields: { storage: true },
+        },
+      });
+      expect(findTable().props('fields')).toEqual(
+        expect.arrayContaining([expect.objectContaining({ key: 'storage', sortable: true })]),
+      );
+    });
+
+    it('will disable sorting by storage field', () => {
+      createComponent();
+      expect(findTable().props('fields')).toEqual(
+        expect.arrayContaining([expect.objectContaining({ key: 'storage', sortable: false })]),
+      );
+    });
+  });
+
   describe('Project items are rendered', () => {
     describe.each(projectList)('$name', (project) => {
       let tableText;

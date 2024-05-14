@@ -192,7 +192,7 @@ by a reviewer before passing it to a maintainer as described in the
 | Analytics Instrumentation (telemetry or analytics) changes | [Analytics Instrumentation engineer](https://gitlab.com/gitlab-org/analytics-section/analytics-instrumentation/engineers). |
 | An addition of, or changes to a [Feature spec](testing_guide/testing_levels.md#frontend-feature-tests) | [Quality maintainer](https://handbook.gitlab.com/handbook/engineering/projects/#gitlab_maintainers_qa) or [Quality reviewer](https://handbook.gitlab.com/handbook/engineering/projects/#gitlab_reviewers_qa). |
 | A new service to GitLab (Puma, Sidekiq, Gitaly are examples) | [Product manager](https://about.gitlab.com/company/team/). See the [process for adding a service component to GitLab](adding_service_component.md) for details. |
-| Changes related to authentication | [Manage:Authentication](https://about.gitlab.com/company/team/). Check the [code review section on the group page](https://handbook.gitlab.com/handbook/engineering/development/dev/manage/authentication/#additional-considerations) for more details. Patterns for files known to require review from the team are listed in the in the `Authentication` section of the [`CODEOWNERS`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/CODEOWNERS) file, and the team will be listed in the approvers section of all merge requests that modify these files. |
+| Changes related to authentication | [Manage:Authentication](https://about.gitlab.com/company/team/). Check the [code review section on the group page](https://handbook.gitlab.com/handbook/engineering/development/sec/govern/authentication/#code-review) for more details. Patterns for files known to require review from the team are listed in the in the `Authentication` section of the [`CODEOWNERS`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/CODEOWNERS) file, and the team will be listed in the approvers section of all merge requests that modify these files. |
 | Changes related to custom roles or policies | [Manage:Authorization Engineer](https://gitlab.com/gitlab-org/govern/authorization/approvers). |
 
 1. Specs other than JavaScript specs are considered `~backend` code. Haml markup is considered `~frontend` code. However, Ruby code in Haml templates is considered `~backend` code. When in doubt, request both a frontend and backend review.
@@ -582,7 +582,12 @@ experience, refactors the existing code). Then:
   - Consider using the [Conventional Comment format](https://conventionalcomments.org#format) to
     convey your intent.
   - For non-mandatory suggestions, decorate with (non-blocking) so the author knows they can
-    optionally resolve within the merge request or follow-up at a later stage.
+    optionally resolve within the merge request or follow-up at a later stage. When the only suggestions are
+    non-blocking, move the MR onto the next stage to reduce async cycles. When you are a first round
+    reviewer, pass to a maintainer to review. When you are the final approving maintainer,
+    generate follow-ups from the non-blocking suggestions and merge or set auto-merge.
+    The author then has the option to either cancel the auto-merge by implementing the non-blocking suggestions,
+    they provide a follow-up MR after the MR got merged, or decide to not implement the suggestions.
   - There's a [Chrome/Firefox add-on](https://gitlab.com/conventionalcomments/conventional-comments-button) which you can use to apply [Conventional Comment](https://conventionalcomments.org/) prefixes.
 - Ensure there are no open dependencies. Check [linked issues](../user/project/issues/related_issues.md) for blockers. Clarify with the authors
   if necessary. If blocked by one or more open MRs, set an [MR dependency](../user/project/merge_requests/dependencies.md).
@@ -810,7 +815,7 @@ Properties of customer critical merge requests:
 - It is required to prioritize work for those involved on a customer critical merge request so that they have the time available necessary to focus on it.
 - It is required to adhere to GitLab [values](https://handbook.gitlab.com/handbook/values/) and processes when working on customer critical merge requests, taking particular note of family and friends first/work second, definition of done, iteration, and release when it's ready.
 - Customer critical merge requests are required to not reduce security, introduce data-loss risk, reduce availability, nor break existing functionality per the process for [prioritizing technical decisions](https://handbook.gitlab.com/handbook/engineering/development/principles/#prioritizing-technical-decisions).
-- On customer critical requests, it is _recommended_ that those involved _consider_ coordinating synchronously (Zoom, Slack) in addition to asynchronously (merge requests comments) if they believe this may reduce the elapsed time to merge even though this _may_ sacrifice [efficiency](https://about.gitlab.com/company/culture/all-remote/asynchronous/#evaluating-efficiency.md).
+- On customer critical requests, it is _recommended_ that those involved _consider_ coordinating synchronously (Zoom, Slack) in addition to asynchronously (merge requests comments) if they believe this may reduce the elapsed time to merge even though this _may_ sacrifice [efficiency](https://handbook.gitlab.com/handbook/company/culture/all-remote/asynchronous/#evaluating-efficiency).
 - After a customer critical merge request is merged, a retrospective must be completed with the intention of reducing the frequency of future customer critical merge requests.
 
 ## Examples

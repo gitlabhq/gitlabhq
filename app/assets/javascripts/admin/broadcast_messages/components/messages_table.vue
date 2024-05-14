@@ -4,7 +4,7 @@ import SafeHtml from '~/vue_shared/directives/safe_html';
 import { __, s__ } from '~/locale';
 import { formatDate } from '~/lib/utils/datetime/date_format_utility';
 
-const DEFAULT_TD_CLASSES = 'gl-vertical-align-middle!';
+const DEFAULT_TD_CLASSES = '!gl-align-middle';
 
 export default {
   name: 'MessagesTable',
@@ -84,7 +84,7 @@ export default {
     {
       key: 'buttons',
       label: '',
-      tdClass: `${DEFAULT_TD_CLASSES} gl-white-space-nowrap`,
+      tdClass: `${DEFAULT_TD_CLASSES} gl-whitespace-nowrap`,
     },
   ],
   methods: {

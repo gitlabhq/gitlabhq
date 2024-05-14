@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 This tutorial teaches you how to set up Flux for GitOps. You'll complete a bootstrap installation,
 install `agentk` in your cluster, and deploy a simple `nginx` application.
@@ -41,13 +41,12 @@ the `api` scope:
 1. Select the `api` scope.
 1. Select **Create personal access token**.
 
-You can also use a [project](../../../project/settings/project_access_tokens.md) or [group access token](../../../group/settings/group_access_tokens.md) with the `api` scope.
+You can also use a [project](../../../project/settings/project_access_tokens.md) or [group access token](../../../group/settings/group_access_tokens.md) with the `api` scope and the `developer` role.
 
 ## Complete a bootstrap installation
 
 In this section, you'll bootstrap Flux into an empty GitLab repository with the
-[`flux bootstrap`](https://fluxcd.io/flux/installation/#gitlab-and-gitlab-enterprise)
-command.
+[`flux bootstrap`](https://fluxcd.io/flux/installation/bootstrap/gitlab/) command.
 
 To bootstrap a Flux installation:
 
@@ -55,6 +54,7 @@ To bootstrap a Flux installation:
 
   ```shell
   flux bootstrap gitlab \
+  --hostname=gitlab.example.org \
   --owner=example-org \
   --repository=my-repository \
   --branch=master \
@@ -62,12 +62,22 @@ To bootstrap a Flux installation:
   --deploy-token-auth
   ```
 
+The arguments of `bootstrap` are:
+
+| Argument | Description |
+|--------------|-------------|
+|`hostname` | Hostname of your GitLab instance. |
+|`owner` | GitLab group containing the Flux repository. |
+|`repository` | GitLab project containing the Flux repository. |
+|`branch` | Git branch the changes are committed to. |
+|`path` | File path to a folder where the Flux configuration is stored. |
+
 The bootstrap script does the following:
 
 1. Creates a deploy token and saves it as a Kubernetes `secret`.
-1. Creates an empty GitLab project, if the project specified by `--repository` doesn't exist.
-1. Generates Flux definition files for your project.
-1. Commits the definition files to the specified branch.
+1. Creates an empty GitLab project, if the project specified by the `--repository` argument doesn't exist.
+1. Generates Flux definition files for your project in a folder specified by the `--path` argument.
+1. Commits the definition files to the branch specified by the `--branch` argument.
 1. Applies the definition files to your cluster.
 
 After you run the script, Flux will be ready to manage itself and any other resources
@@ -104,6 +114,7 @@ In the next step, you'll use Flux to install `agentk` in your cluster.
 ## Install `agentk`
 
 Next, use Flux to create a namespace for `agentk` and install it in your cluster.
+Keep in mind it takes a few minutes for Flux to pick up and apply configuration changes defined in the repository.
 
 This tutorial uses the namespace `gitlab` for `agentk`.
 
@@ -138,7 +149,7 @@ To install `agentk`:
    ```
 
    Although this step does not follow GitOps principles, it simplifies configuration for new Flux users.
-   For a proper GitOps setup, you should use a secret management solution. See the [Flux documentation](https://fluxcd.io/flux/guides).
+   For a proper GitOps setup, you should use a secret management solution. See the [Flux documentation](https://fluxcd.io/flux/guides/).
 
 1. Commit and push the following file to `clusters/testing/agentk.yaml`, replacing the values of
    `.spec.values.config.kasAddress` and `.spec.values.config.secretName` with your saved `kas` address and secret `name`:

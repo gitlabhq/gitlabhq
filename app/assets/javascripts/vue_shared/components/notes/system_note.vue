@@ -36,6 +36,7 @@ const ICON_COLORS = {
   merge: 'gl-bg-blue-100 gl-text-blue-700',
   'issue-close': 'gl-bg-blue-100 gl-text-blue-700',
   issues: 'gl-bg-green-100 gl-text-green-700',
+  error: 'gl-bg-red-100 gl-text-red-700',
 };
 
 export default {
@@ -167,6 +168,7 @@ export default {
           :created-at="note.created_at"
           :note-id="note.id"
           :is-system-note="true"
+          :is-imported="note.imported"
         >
           <span ref="gfm-content" v-safe-html="actionTextHtml"></span>
           <template

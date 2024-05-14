@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 You can estimate and track the time you spend on [issues](issues/index.md)
 and [merge requests](merge_requests/index.md).
@@ -83,6 +83,7 @@ Prerequisites:
 #### Using the user interface
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101563) in GitLab 15.7.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150564) in GitLab 17.0. When you don't specify when time was spent, current time is used.
 
 To add a time entry using the user interface:
 
@@ -90,7 +91,7 @@ To add a time entry using the user interface:
 1. Enter:
 
    - The amount of time spent.
-   - Optional. When it was spent.
+   - Optional. When it was spent. If empty, uses current time.
    - Optional. A summary.
 
 1. Select **Save**.
@@ -134,7 +135,6 @@ so if you remove more time than already entered, GitLab ignores the subtraction.
 
 ### Delete time spent
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356796) in GitLab 14.10.
 > - Delete button [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356796) in GitLab 15.1.
 
 A timelog is a single entry of time spent, either positive or negative.
@@ -179,7 +179,7 @@ DETAILS:
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `global_time_tracking_report`.
-On GitLab.com, this feature is available.
+On GitLab.com, this feature is available. On GitLab Dedicated, this feature is not available.
 This feature is not ready for production use.
 
 View a report of time spent in issues and merge requests across all of GitLab.
@@ -214,7 +214,7 @@ The following time units are available:
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 In GitLab self-managed instances, you can limit the display of time units to hours.
 To do so:
@@ -229,7 +229,6 @@ With this option enabled, `75h` is displayed instead of `1w 4d 3h`.
 
 ## Related topics
 
-- [Time tracking solutions page](https://about.gitlab.com/solutions/time-tracking/)
 - Time tracking GraphQL references:
   - [Connection](../../api/graphql/reference/index.md#timelogconnection)
   - [Edge](../../api/graphql/reference/index.md#timelogedge)

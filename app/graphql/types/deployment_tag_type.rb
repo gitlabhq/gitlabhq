@@ -8,13 +8,17 @@ module Types
     description 'Tags for a given deployment'
 
     field :name,
-          GraphQL::Types::String,
-          description: 'Name of this git tag.'
+      GraphQL::Types::String,
+      description: 'Name of this git tag.'
 
     field :path,
-          GraphQL::Types::String,
-          description: 'Path for this tag.',
-          hash_key: :path
+      GraphQL::Types::String,
+      description: 'Path for this tag.',
+      hash_key: :path
+
+    field :web_path,
+      GraphQL::Types::String,
+      description: 'Web path for this tag.'
   end
   # rubocop:enable Graphql/AuthorizeTypes
 end

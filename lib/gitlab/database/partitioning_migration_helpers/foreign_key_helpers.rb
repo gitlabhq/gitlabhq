@@ -6,6 +6,7 @@ module Gitlab
       module ForeignKeyHelpers
         include ::Gitlab::Database::SchemaHelpers
         include ::Gitlab::Database::Migrations::LockRetriesHelpers
+        include ::Gitlab::Database::MigrationHelpers::Swapping
 
         ERROR_SCOPE = 'foreign keys'
 
@@ -94,9 +95,44 @@ module Gitlab
         def validate_partitioned_foreign_key(source, column, name: nil)
           assert_not_in_transaction_block(scope: ERROR_SCOPE)
 
+          fk_name = name || concurrent_partitioned_foreign_key_name(source, column)
+
           Gitlab::Database::PostgresPartitionedTable.each_partition(source) do |partition|
-            validate_foreign_key(partition.identifier, column, name: name)
+            unless foreign_key_exists?(partition.identifier, name: fk_name)
+              Gitlab::AppLogger.warn("Missing #{fk_name} on #{partition.identifier}")
+              next
+            end
+
+            validate_foreign_key(partition.identifier, column, name: fk_name)
           end
+        end
+
+        # Rename the foreign key for partitioned table and its partitions.
+        #
+        # Example:
+        #
+        #     rename_partitioned_foreign_key :users, 'existing_partitioned_fk_name', 'new_fk_name'
+        def rename_partitioned_foreign_key(table_name, old_foreign_key, new_foreign_key)
+          partitioned_table = find_partitioned_table(table_name)
+          partitioned_table.postgres_partitions.order(:name).each do |partition|
+            rename_constraint(partition.identifier, old_foreign_key, new_foreign_key)
+          end
+
+          rename_constraint(partitioned_table.name, old_foreign_key, new_foreign_key)
+        end
+
+        # Swap the foreign key names for partitioned table and its partitions.
+        #
+        # Example:
+        #
+        #     swap_partitioned_foreign_keys :users, 'existing_partitioned_fk_name_1', 'existing_partitioned_fk_name_2'
+        def swap_partitioned_foreign_keys(table_name, old_foreign_key, new_foreign_key)
+          partitioned_table = find_partitioned_table(table_name)
+          partitioned_table.postgres_partitions.order(:name).each do |partition|
+            swap_foreign_keys(partition.identifier, old_foreign_key, new_foreign_key)
+          end
+
+          swap_foreign_keys(partitioned_table.name, old_foreign_key, new_foreign_key)
         end
 
         private

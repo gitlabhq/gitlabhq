@@ -22,9 +22,12 @@ module BulkImports
             raise(GroupCreationError, 'User requires Two-Factor Authentication')
           end
 
-          group = ::Groups::CreateService.new(current_user, data).execute
+          data['organization_id'] = organization_id(destination_namespace, current_user)
 
-          raise(GroupCreationError, group.errors.full_messages.to_sentence) if group.errors.any?
+          response = ::Groups::CreateService.new(current_user, data).execute
+          group = response[:group]
+
+          raise(GroupCreationError, group.errors.full_messages.to_sentence) if response.error?
 
           context.entity.update!(group: group)
 
@@ -32,6 +35,18 @@ module BulkImports
         end
 
         private
+
+        def organization_id(destination_namespace, user)
+          if destination(destination_namespace)
+            destination(destination_namespace).organization_id
+          else
+            user.namespace.organization_id
+          end
+        end
+
+        def destination(path)
+          Namespace.find_by_full_path(path)
+        end
 
         def user_can_create_group?(current_user, data)
           if data['parent_id']
@@ -58,7 +73,7 @@ module BulkImports
         def user_namespace_destination?(destination_namespace)
           return false unless destination_namespace.present?
 
-          Namespace.find_by_full_path(destination_namespace)&.user_namespace?
+          destination(destination_namespace)&.user_namespace?
         end
       end
     end

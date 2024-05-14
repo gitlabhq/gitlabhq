@@ -12,6 +12,8 @@ The policy used is based on the subject's class name - so `Ability.allowed?(user
 
 The Ruby gem source is available in the [declarative-policy](https://gitlab.com/gitlab-org/ruby/gems/declarative-policy) GitLab project.
 
+For information about naming and conventions, please refer to [Permission conventions page](permissions/conventions.md).
+
 ## Managing Permission Rules
 
 Permissions are broken into two parts: `conditions` and `rules`. Conditions are boolean expressions that can access the database and the environment, while rules are statically configured combinations of expressions and other rules that enable or prevent certain abilities. For an ability to be allowed, it must be enabled by at least one rule, and not prevented by any.

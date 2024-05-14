@@ -7,7 +7,7 @@ RSpec.describe Gitlab::Ci::ProjectConfig::Source, feature_category: :continuous_
   let_it_be(:project) { build_stubbed(:project) }
   let_it_be(:sha) { '123456' }
 
-  subject(:custom_config) { custom_config_class.new(project, sha, nil, nil, nil) }
+  subject(:custom_config) { custom_config_class.new(project: project, sha: sha) }
 
   describe '#content' do
     subject(:content) { custom_config.content }

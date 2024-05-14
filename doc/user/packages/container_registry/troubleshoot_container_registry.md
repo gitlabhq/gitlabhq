@@ -29,14 +29,14 @@ the [project path](../../project/working_with_projects.md#rename-a-repository) o
 
 You may get a `404 Not Found` or `Unknown Manifest` error message if you use
 Docker Engine 17.11 or earlier. Current versions of Docker Engine use
-the [v2 API](https://docs.docker.com/registry/spec/manifest-v2-2/).
+the [v2 API](https://distribution.github.io/distribution/spec/manifest-v2-2/).
 
 The images in your GitLab container registry must use the Docker v2 API.
-For information on how to update version 1 images to version 2, see the [Docker documentation](https://docs.docker.com/registry/spec/deprecated-schema-v1).
+For information on how to update version 1 images to version 2, see the [Docker documentation](https://distribution.github.io/distribution/spec/deprecated-schema-v1/).
 
 ## `Blob unknown to registry` error when pushing a manifest list
 
-When [pushing a Docker manifest list](https://docs.docker.com/engine/reference/commandline/manifest/#create-and-push-a-manifest-list)
+When [pushing a Docker manifest list](https://docs.docker.com/reference/cli/docker/manifest/#create-and-push-a-manifest-list)
 to the GitLab container registry, you may receive the error
 `manifest blob unknown: blob unknown to registry`. This error is likely caused by having multiple images
 with different architectures spread out over several repositories instead of the same repository.

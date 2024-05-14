@@ -81,32 +81,16 @@ module Gitlab
         # For development and testing purposes, an extra storage is added to gitaly,
         # which is not known to Rails, but must be explicitly stubbed.
         def configuration_toml(gitaly_dir, storage_paths, options)
-          storages = []
-          address = nil
-
-          Gitlab.config.repositories.storages.each do |key, val|
-            if address
-              if address != val['gitaly_address']
-                raise ArgumentError, "Your gitlab.yml contains more than one gitaly_address."
-              end
-            elsif URI(val['gitaly_address']).scheme != 'unix'
-              raise ArgumentError, "Automatic config.toml generation only supports 'unix:' addresses."
-            else
-              address = val['gitaly_address']
-            end
-
-            storages << { name: key, path: storage_paths[key] }
-          end
-
-          config = { socket_path: address.delete_prefix('unix:') }
+          socket_path = ensure_single_socket!
+          config = { socket_path: socket_path.delete_prefix('unix:') }
 
           if Rails.env.test?
-            socket_filename = options[:gitaly_socket] || "gitaly.socket"
+            # Override the set gitaly_address since Praefect is in the loop
+            socket_path = File.join(gitaly_dir, options[:gitaly_socket] || "gitaly.socket")
             prometheus_listen_addr = options[:prometheus_listen_addr]
 
             config = {
-              # Override the set gitaly_address since Praefect is in the loop
-              socket_path: File.join(gitaly_dir, socket_filename),
+              socket_path: socket_path.delete_prefix('unix:'),
               auth: { token: 'secret' },
               # Compared to production, tests run in constrained environments. This
               # number is meant to grow with the number of concurrent rails requests /
@@ -117,12 +101,9 @@ module Gitlab
               },
               prometheus_listen_addr: prometheus_listen_addr
             }.compact
-
-            storage_path = Rails.root.join('tmp', 'tests', 'second_storage').to_s
-            storages << { name: 'test_second_storage', path: storage_path }
           end
 
-          config[:storage] = storages
+          config[:storage] = storage_paths.map { |name, _| { name: name, path: storage_paths[name].to_s } }
 
           runtime_dir = options[:runtime_dir] || File.join(gitaly_dir, 'run')
           FileUtils.mkdir(runtime_dir) unless File.exist?(runtime_dir)
@@ -134,6 +115,26 @@ module Gitlab
           config[:logging] = { dir: Rails.root.join('log').to_s }
 
           TomlRB.dump(config)
+        end
+
+        # We cannot create config.toml files for all possible Gitaly
+        # configurations. For instance, if Gitaly is running on another machine
+        # then it makes no sense to write a config.toml file on the current
+        # machine. This method validates that we have the most common and
+        # simplest case: when we have exactly one Gitaly process and we are
+        # sure it is running locally because it uses a Unix socket.
+        def ensure_single_socket!
+          addresses = Gitlab.config.repositories.storages.map { |_, storage| storage[:gitaly_address] }.uniq
+
+          raise ArgumentError, "Your gitlab.yml contains more than one gitaly_address." if addresses.length > 1
+
+          address = addresses.first
+
+          if URI(address).scheme != 'unix'
+            raise ArgumentError, "Automatic config.toml generation only supports 'unix:' addresses."
+          end
+
+          address
         end
 
         private

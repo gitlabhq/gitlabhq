@@ -1,15 +1,7 @@
 <script>
-import {
-  GlDisclosureDropdown,
-  GlButton,
-  GlIcon,
-  GlForm,
-  GlFormCheckbox,
-  GlFormRadioGroup,
-} from '@gitlab/ui';
+import { GlDisclosureDropdown, GlButton, GlIcon, GlForm, GlFormRadioGroup } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapGetters, mapActions, mapState } from 'vuex';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { __ } from '~/locale';
 import { createAlert } from '~/alert';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
@@ -43,13 +35,11 @@ export default {
     GlIcon,
     GlForm,
     GlFormRadioGroup,
-    GlFormCheckbox,
     MarkdownEditor,
     ApprovalPassword: () => import('ee_component/batch_comments/components/approval_password.vue'),
     SummarizeMyReview: () =>
       import('ee_component/batch_comments/components/summarize_my_review.vue'),
   },
-  mixins: [glFeatureFlagsMixin()],
   inject: {
     canSummarize: { default: false },
   },
@@ -119,11 +109,6 @@ export default {
     },
   },
   watch: {
-    'noteData.approve': function noteDataApproveWatch() {
-      setTimeout(() => {
-        this.repositionDropdown();
-      });
-    },
     dropdownVisible(val) {
       if (!val) {
         this.userPermissions = {};
@@ -141,7 +126,7 @@ export default {
     this.noteData.noteable_id = this.getNoteableData.id;
   },
   methods: {
-    ...mapActions('batchComments', ['publishReview']),
+    ...mapActions('batchComments', ['publishReview', 'clearDrafts']),
     repositionDropdown() {
       this.$refs.submitDropdown?.$refs.dropdown?.updatePopper();
     },
@@ -151,12 +136,18 @@ export default {
       trackSavedUsingEditor(this.$refs.markdownEditor.isContentEditorActive, 'MergeRequest_review');
 
       try {
+        const { note, reviewer_state: reviewerState } = this.noteData;
+
         await this.publishReview(this.noteData);
 
-        markdownEditorEventHub.$emit(CLEAR_AUTOSAVE_ENTRY_EVENT, this.descriptionAutosaveKey);
+        markdownEditorEventHub.$emit(CLEAR_AUTOSAVE_ENTRY_EVENT, this.autosaveKey);
 
-        if (window.mrTabs && (this.noteData.note || this.noteData.approve)) {
-          if (this.noteData.note) {
+        this.noteData.note = '';
+        this.noteData.reviewer_state = 'reviewed';
+        this.noteData.approval_password = '';
+
+        if (window.mrTabs && (note || reviewerState === 'approved')) {
+          if (note) {
             window.location.hash = `note_${this.getCurrentUserLastNote.id}`;
           }
 
@@ -166,6 +157,8 @@ export default {
             scrollToElement(document.getElementById(`note_${this.getCurrentUserLastNote.id}`)),
           );
         }
+
+        this.clearDrafts();
       } catch (e) {
         if (e.data?.message) {
           createAlert({ message: e.data.message, captureError: true });
@@ -252,24 +245,14 @@ export default {
           />
         </div>
         <gl-form-radio-group
-          v-if="glFeatures.mrRequestChanges"
           v-model="noteData.reviewer_state"
           :options="radioGroupOptions"
           class="gl-mt-4"
           data-testid="reviewer_states"
         />
-        <template v-else-if="userPermissions.canApprove">
-          <gl-form-checkbox
-            v-model="noteData.approve"
-            data-testid="approve_merge_request"
-            class="gl-mt-4"
-          >
-            {{ __('Approve merge request') }}
-          </gl-form-checkbox>
-        </template>
         <approval-password
           v-if="userPermissions.canApprove && getNoteableData.require_password_to_approve"
-          v-show="noteData.approve || noteData.reviewer_state === 'approved'"
+          v-show="noteData.reviewer_state === 'approved'"
           v-model="noteData.approval_password"
           class="gl-mt-3"
           data-testid="approve_password"

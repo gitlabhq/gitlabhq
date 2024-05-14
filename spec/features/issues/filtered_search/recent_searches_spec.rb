@@ -85,7 +85,6 @@ RSpec.describe 'Recent searches', :js, feature_category: :team_planning do
     expect_recent_searches_history_item_count 1
 
     click_button 'Clear recent searches'
-    click_button 'Toggle history'
 
     expect(page).to have_text "You don't have any recent searches"
     expect_recent_searches_history_item_count 0

@@ -1,0 +1,8 @@
+---
+name: access_rest_chat
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133015
+rollout_issue_url:
+milestone: '16.5'
+type: ops
+group: group::ai framework
+default_enabled: false

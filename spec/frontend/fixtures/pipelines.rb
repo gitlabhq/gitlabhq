@@ -19,7 +19,7 @@ RSpec.describe Projects::PipelinesController, '(JavaScript fixtures)', type: :co
   let!(:build_pipeline_without_commit) { create(:ci_build, pipeline: pipeline_without_commit, stage: 'test') }
 
   let(:commit) { create(:commit, project: project) }
-  let(:user) { create(:user, developer_projects: [project], email: commit.author_email) }
+  let(:user) { create(:user, developer_of: project, email: commit.author_email) }
   let!(:pipeline) { create(:ci_pipeline, :with_test_reports, project: project, sha: commit.id, user: user) }
   let!(:build_success) { create(:ci_build, pipeline: pipeline, stage: 'build') }
   let!(:build_test) { create(:ci_build, pipeline: pipeline, stage: 'test') }

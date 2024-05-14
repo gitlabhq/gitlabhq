@@ -1,12 +1,11 @@
 <script>
-import { GlButton, GlEmptyState, GlLoadingIcon, GlTableLite } from '@gitlab/ui';
+import { GlEmptyState, GlLoadingIcon, GlTableLite } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { __, s__ } from '~/locale';
 import getCiCatalogResourceComponents from '../../graphql/queries/get_ci_catalog_resource_components.query.graphql';
 
 export default {
   components: {
-    GlButton,
     GlEmptyState,
     GlLoadingIcon,
     GlTableLite,
@@ -31,7 +30,7 @@ export default {
         };
       },
       update(data) {
-        return data?.ciCatalogResource?.latestVersion?.components?.nodes || [];
+        return data?.ciCatalogResource?.versions?.nodes[0].components?.nodes || [];
       },
       error() {
         createAlert({ message: this.$options.i18n.fetchError });
@@ -61,22 +60,20 @@ export default {
     {
       key: 'name',
       label: s__('CiCatalogComponent|Parameters'),
-      thClass: 'gl-w-40p',
+      thClass: 'gl-w-2/5',
     },
     {
       key: 'default',
       label: s__('CiCatalogComponent|Default Value'),
-      thClass: 'gl-w-40p',
+      thClass: 'gl-w-2/5',
     },
     {
       key: 'required',
       label: s__('CiCatalogComponent|Mandatory'),
-      thClass: 'gl-w-20p',
+      thClass: 'gl-w-1/5',
     },
   ],
   i18n: {
-    copyText: __('Copy value'),
-    copyAriaText: __('Copy to clipboard'),
     emptyStateTitle: s__('CiCatalogComponent|Component details not available'),
     emptyStateDesc: s__(
       'CiCatalogComponent|This tab displays auto-collected information about the components in the repository, but no information was found.',
@@ -103,24 +100,13 @@ export default {
         data-testid="component-section"
       >
         <h3 class="gl-font-size-h2" data-testid="component-name">{{ component.name }}</h3>
-        <div class="gl-display-flex">
-          <pre
-            class="gl-w-85p gl-py-4 gl-display-flex gl-justify-content-space-between gl-m-0 gl-border-r-none"
-          ><span>{{ generateSnippet(component.includePath) }}</span>
-        </pre>
-          <div class="gl--flex-center gl-bg-gray-10 gl-border gl-border-l-none">
-            <gl-button
-              class="gl-p-4! gl-mr-3!"
-              category="tertiary"
-              icon="copy-to-clipboard"
-              size="small"
-              :title="$options.i18n.copyText"
-              :data-clipboard-text="generateSnippet(component.includePath)"
-              data-testid="copy-to-clipboard"
-              :aria-label="$options.i18n.copyAriaText"
-            />
-          </div>
-        </div>
+        <pre
+          data-testid="copy-to-clipboard"
+          class="code highlight js-syntax-highlight language-yaml"
+          lang="yaml"
+        ><code>{{
+          generateSnippet(component.includePath)
+        }}</code></pre>
         <div class="gl-mt-5">
           <b class="gl-display-block gl-mb-4"> {{ $options.i18n.inputTitle }}</b>
           <gl-table-lite :items="component.inputs" :fields="$options.fields">

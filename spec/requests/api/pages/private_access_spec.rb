@@ -74,6 +74,7 @@ RSpec.describe "Private Project Pages Access", feature_category: :pages do
         before do
           project.project_feature.update!(pages_access_level: pages_access_level)
         end
+
         it "correct return value" do
           if !with_user.nil?
             user = public_send(with_user)

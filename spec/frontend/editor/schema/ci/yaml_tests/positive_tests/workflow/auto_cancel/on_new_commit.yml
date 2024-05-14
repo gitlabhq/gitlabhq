@@ -1,3 +1,14 @@
-workflow:
-  auto_cancel:
-    on_new_commit: conservative
+accepts workflow:auto_cancel:on_new_commit value conservative:
+  workflow:
+    auto_cancel:
+      on_new_commit: conservative
+
+accepts workflow:auto_cancel:on_new_commit value interruptible:
+  workflow:
+    auto_cancel:
+      on_new_commit: interruptible
+
+accepts workflow:auto_cancel:on_new_commit value none:
+  workflow:
+    auto_cancel:
+      on_new_commit: none

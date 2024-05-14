@@ -2,6 +2,7 @@ import { nextTick } from 'vue';
 import { GlFormRadioGroup, GlIcon, GlLink } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import RunnerPlatformsRadio from '~/ci/runner/components/runner_platforms_radio.vue';
+
 import {
   LINUX_PLATFORM,
   MACOS_PLATFORM,
@@ -25,7 +26,7 @@ describe('RunnerPlatformsRadioGroup', () => {
   const createComponent = ({
     props = {},
     mountFn = shallowMountExtended,
-    gcpRunner = false,
+    googleCloudSupportFeatureFlag = false,
     ...options
   } = {}) => {
     wrapper = mountFn(RunnerPlatformsRadioGroup, {
@@ -35,7 +36,7 @@ describe('RunnerPlatformsRadioGroup', () => {
       },
       provide: {
         glFeatures: {
-          gcpRunner,
+          googleCloudSupportFeatureFlag,
         },
       },
       ...options,
@@ -96,34 +97,18 @@ describe('RunnerPlatformsRadioGroup', () => {
     });
   });
 
-  describe('with gcpRunner flag enabled', () => {
-    it('contains expected options with images', () => {
-      createComponent({ props: {}, mountFn: shallowMountExtended, gcpRunner: true });
+  describe('with googleCloudSupportFeatureFlag flag enabled', () => {
+    it('contains google cloud platform option', () => {
+      createComponent({
+        props: {},
+        mountFn: shallowMountExtended,
+        googleCloudSupportFeatureFlag: true,
+        slots: {
+          'cloud-options': 'Google cloud',
+        },
+      });
 
-      const labels = findFormRadios().map((w) => [w.text(), w.props('image')]);
-
-      expect(labels).toStrictEqual([
-        ['Linux', expect.any(String)],
-        ['macOS', null],
-        ['Windows', null],
-        ['Google Cloud', null],
-        ['Docker', expect.any(String)],
-        ['Kubernetes', expect.any(String)],
-      ]);
-    });
-
-    it('does not contain cloud option when admin prop is passed', () => {
-      createComponent({ props: { admin: true }, mountFn: shallowMountExtended, gcpRunner: true });
-
-      const labels = findFormRadios().map((w) => [w.text(), w.props('image')]);
-
-      expect(labels).toStrictEqual([
-        ['Linux', expect.any(String)],
-        ['macOS', null],
-        ['Windows', null],
-        ['Docker', expect.any(String)],
-        ['Kubernetes', expect.any(String)],
-      ]);
+      expect(findFormRadioGroup().text()).toContain('Google cloud');
     });
   });
 });

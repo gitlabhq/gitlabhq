@@ -44,12 +44,12 @@ RSpec.describe Projects::IssueLinksController, feature_category: :team_planning 
     let(:issue_b) { create :issue, project: project }
 
     before do
-      project.add_role(user, user_role)
+      project.add_role(user, user_role) if defined?(user_role)
       login_as user
     end
 
     context 'with success' do
-      let(:user_role) { :developer }
+      let(:user_role) { :guest }
       let(:issuable_references) { [issue_b.to_reference] }
 
       it 'returns success JSON' do
@@ -64,8 +64,8 @@ RSpec.describe Projects::IssueLinksController, feature_category: :team_planning 
 
     context 'with failure' do
       context 'when unauthorized' do
-        let(:user_role) { :guest }
         let(:issuable_references) { [issue_b.to_reference] }
+        let_it_be(:project) { create(:project_empty_repo, :public) }
 
         it 'returns 403' do
           post namespace_project_issue_links_path(issue_links_params(issuable_references: issuable_references))
@@ -94,14 +94,14 @@ RSpec.describe Projects::IssueLinksController, feature_category: :team_planning 
     let(:issue_link) { create :issue_link, source: issue, target: referenced_issue }
 
     before do
-      project.add_role(user, user_role)
+      project.add_role(user, user_role) if defined?(user_role)
       login_as user
     end
 
     context 'when unauthorized' do
       context 'when no authorization on current project' do
+        let_it_be(:project) { create(:project_empty_repo, :public) }
         let(:referenced_issue) { create :issue, project: project }
-        let(:user_role) { :guest }
 
         it 'returns 403' do
           delete namespace_project_issue_link_path(issue_links_params(id: issue_link.id))
@@ -113,7 +113,7 @@ RSpec.describe Projects::IssueLinksController, feature_category: :team_planning 
       context 'when no authorization on the related issue project' do
         # unauthorized project issue
         let(:referenced_issue) { create :issue }
-        let(:user_role) { :developer }
+        let(:user_role) { :guest }
 
         it 'returns 404' do
           delete namespace_project_issue_link_path(issue_links_params(id: issue_link.id))
@@ -125,7 +125,7 @@ RSpec.describe Projects::IssueLinksController, feature_category: :team_planning 
 
     context 'when authorized' do
       let(:referenced_issue) { create :issue, project: project }
-      let(:user_role) { :developer }
+      let(:user_role) { :guest }
 
       it 'returns success JSON' do
         delete namespace_project_issue_link_path(issue_links_params(id: issue_link.id))
@@ -136,11 +136,11 @@ RSpec.describe Projects::IssueLinksController, feature_category: :team_planning 
       end
     end
 
-    context 'when non of issues of the link is not the issue requested in the path' do
+    context 'when none of issues of the link is not the issue requested in the path' do
       let(:referenced_issue) { create(:issue, project: project) }
       let(:another_issue) { create(:issue, project: project) }
       let(:issue) { create(:issue, project: project) }
-      let(:user_role) { :developer }
+      let(:user_role) { :guest }
 
       let!(:issue_link) { create :issue_link, source: another_issue, target: referenced_issue }
 

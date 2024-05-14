@@ -8,14 +8,14 @@ module Mutations
         description "Creates a Note.\n#{QUICK_ACTION_ONLY_WARNING}"
 
         argument :discussion_id,
-                  ::Types::GlobalIDType[::Discussion],
-                  required: false,
-                  description: 'Global ID of the discussion the note is in reply to.'
+          ::Types::GlobalIDType[::Discussion],
+          required: false,
+          description: 'Global ID of the discussion the note is in reply to.'
 
         argument :merge_request_diff_head_sha,
-                  GraphQL::Types::String,
-                  required: false,
-                  description: 'SHA of the head commit which is used to ensure that the merge request has not been updated since the request was sent.'
+          GraphQL::Types::String,
+          required: false,
+          description: 'SHA of the head commit which is used to ensure that the merge request has not been updated since the request was sent.'
 
         private
 

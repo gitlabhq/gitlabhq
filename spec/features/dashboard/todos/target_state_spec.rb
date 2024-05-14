@@ -5,11 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Dashboard > Todo target states', feature_category: :team_planning do
   let_it_be(:user)    { create(:user) }
   let_it_be(:author)  { create(:user) }
-  let_it_be(:project) { create(:project, :public) }
-
-  before_all do
-    project.add_developer(user)
-  end
+  let_it_be(:project) { create(:project, :public, developers: user) }
 
   before do
     sign_in(user)

@@ -22,6 +22,25 @@ module AppearancesHelper
     current_appearance&.title.presence || default_brand_title
   end
 
+  def appearance_apple_touch_icon
+    link_tags = favicon_link_tag('apple-touch-icon.png', rel: 'apple-touch-icon')
+
+    return link_tags unless current_appearance&.pwa_icon.present?
+
+    link_tags = favicon_link_tag(
+      appearance_pwa_icon_path_scaled(Appearance::ALLOWED_PWA_ICON_SCALER_WIDTHS.first),
+      rel: 'apple-touch-icon'
+    )
+
+    Appearance::ALLOWED_PWA_ICON_SCALER_WIDTHS.each do |width|
+      link_tags += "\n"
+      link_tags += favicon_link_tag(appearance_pwa_icon_path_scaled(width),
+        sizes: "#{width}x#{width}", rel: 'apple-touch-icon')
+    end
+
+    link_tags
+  end
+
   def appearance_pwa_name
     current_appearance&.pwa_name.presence || _('GitLab')
   end
@@ -44,7 +63,7 @@ module AppearancesHelper
   end
 
   def brand_image
-    image_tag(brand_image_path, alt: brand_title, class: 'gl-visibility-hidden gl-h-10 js-portrait-logo-detection')
+    image_tag(brand_image_path, alt: brand_title, class: 'gl-invisible gl-h-10 js-portrait-logo-detection')
   end
 
   def brand_image_path
@@ -56,7 +75,7 @@ module AppearancesHelper
   def custom_sign_in_description
     [
       markdown_field(current_appearance, :description),
-      markdown_field(Gitlab::CurrentSettings.current_application_settings, :sign_in_text),
+      markdown(Gitlab::CurrentSettings.sign_in_text),
       markdown(Gitlab::CurrentSettings.help_text)
     ].compact_blank.join("<br>").html_safe
   end

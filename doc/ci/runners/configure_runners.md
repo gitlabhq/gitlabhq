@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 If you have installed your own runners, you can configure and secure them in GitLab.
 
@@ -19,7 +19,7 @@ If you need to configure runners on the machine where you installed GitLab Runne
 
 You can specify a maximum job timeout for each runner to prevent projects
 with longer job timeouts from using the runner. The maximum job timeout is
-used of it is shorter than the job timeout defined in the project.
+used if it is shorter than the job timeout defined in the project.
 
 ### For an instance runner
 
@@ -140,6 +140,10 @@ on an _instance runner_ can access another user's code that runs on the runner.
 Users with access to the runner authentication token can use it to create a clone of
 a runner and submit false jobs in a vector attack. For more information, see [Security Considerations](https://docs.gitlab.com/runner/security/).
 
+## Configuring long polling
+
+To reduce job queueing times and load on your GitLab server, configure [long polling](long_polling.md).
+
 ### Using instance runners in forked projects
 
 When a project is forked, the job settings related to jobs are copied. If you have instance runners
@@ -158,7 +162,7 @@ To work around this issue, ensure that the instance runner settings are consiste
 
 WARNING:
 The ability to pass a runner registration token, and support for certain configuration arguments was
-[deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/380872) in GitLab 15.6 and will be removed in GitLab 17.0. Authentication tokens
+[deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/380872) in GitLab 15.6 and will be removed in GitLab 18.0. Authentication tokens
 should be used instead. For more information, see [Migrating to the new runner registration workflow](new_creation_workflow.md).
 
 If you think that a registration token for a project was revealed, you should
@@ -401,7 +405,7 @@ You can use tags to run different jobs on different platforms. For
 example, if you have an OS X runner with tag `osx` and a Windows runner with tag
 `windows`, you can run a job on each platform.
 
-Update the `tags` field in the `config.toml`:
+Update the `tags` field in the `.gitlab-ci.yml`:
 
 ```yaml
 windows job:
@@ -420,8 +424,6 @@ osx job:
 ```
 
 ### Use CI/CD variables in tags
-
-> - Introduced in [GitLab 14.1](https://gitlab.com/gitlab-org/gitlab/-/issues/35742).
 
 In the `.gitlab-ci.yml` file, use [CI/CD variables](../variables/index.md) with `tags` for dynamic runner selection:
 
@@ -497,7 +499,8 @@ to [your `.gitlab-ci.yml` script](../yaml/index.md#script).
 
 It can be used for jobs that operate exclusively on artifacts, like a deployment job.
 Git repository data may be present, but it's likely out of date. You should only
-rely on files brought into the local working copy from cache or artifacts.
+rely on files brought into the local working copy from cache or artifacts, and be
+aware that cache and artifact files from previous pipelines might still be present.
 
 ### Git submodule strategy
 

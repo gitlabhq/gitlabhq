@@ -148,6 +148,58 @@ RSpec.shared_examples 'shared package sorting' do
   it_behaves_like 'correctly sorted packages list', 'Published', ascending: true do
     let(:packages) { [package_one, package_two] }
   end
+
+  context 'when sorted by name ascending' do
+    before do
+      click_sort_option('Name', true)
+    end
+
+    it 'updates query params to contain orderBy:name and sort:asc' do
+      queryparams = Rack::Utils.parse_query(URI.parse(current_url).query)
+      expect(queryparams).to include(
+        'orderBy' => 'name',
+        'sort' => 'asc'
+      )
+    end
+  end
+end
+
+RSpec.shared_examples 'shared package filtering' do
+  include FilteredSearchHelpers
+
+  context 'filters by Type' do
+    let(:packages) { [npm_package] }
+
+    before do
+      select_tokens('Type', 'npm', submit: true, input_text: 'Filter results')
+    end
+
+    it_behaves_like 'packages list'
+
+    it 'updates query params' do
+      queryparams = Rack::Utils.parse_query(URI.parse(current_url).query)
+      expect(queryparams).to eq(
+        'type' => 'npm',
+        'orderBy' => 'created_at',
+        'sort' => 'desc'
+      )
+    end
+
+    context 'when cleared' do
+      before do
+        wait_for_requests
+        click_button 'Clear'
+      end
+
+      it 'resets query params' do
+        queryparams = Rack::Utils.parse_query(URI.parse(current_url).query)
+        expect(queryparams).to eq(
+          'orderBy' => 'created_at',
+          'sort' => 'desc'
+        )
+      end
+    end
+  end
 end
 
 def packages_table_selector

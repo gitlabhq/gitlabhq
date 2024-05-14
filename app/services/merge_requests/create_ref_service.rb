@@ -20,8 +20,11 @@ module MergeRequests
     end
 
     def execute
-      # TODO: Update this message with the removal of FF merge_trains_create_ref_service and update tests
-      # This is for compatibility with MergeToRefService during the rollout.
+      # The "3:" prefix is for compatibility with the output of
+      # MergeToRefService, which is still used to create merge refs and some
+      # merge train refs. The prefix can be dropped once MergeToRefService is no
+      # longer used. See https://gitlab.com/gitlab-org/gitlab/-/issues/455421
+      # and https://gitlab.com/gitlab-org/gitlab/-/issues/421025
       return ServiceResponse.error(message: '3:Invalid merge source') unless first_parent_sha.present?
 
       result = {

@@ -2,7 +2,7 @@
 
 desc "GitLab | Build internal ids for issues and merge requests"
 task migrate_iids: :environment do
-  puts 'Issues'.color(:yellow)
+  puts Rainbow('Issues').yellow
   Issue.where(iid: nil).find_each(batch_size: 100) do |issue|
     issue.set_iid
 
@@ -16,7 +16,7 @@ task migrate_iids: :environment do
   end
 
   puts 'done'
-  puts 'Merge Requests'.color(:yellow)
+  puts Rainbow('Merge Requests').yellow
   MergeRequest.where(iid: nil).find_each(batch_size: 100) do |mr|
     mr.set_iid
 
@@ -30,7 +30,7 @@ task migrate_iids: :environment do
   end
 
   puts 'done'
-  puts 'Milestones'.color(:yellow)
+  puts Rainbow('Milestones').yellow
   Milestone.where(iid: nil).find_each(batch_size: 100) do |m|
     m.set_iid
 

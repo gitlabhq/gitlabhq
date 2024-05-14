@@ -14,7 +14,7 @@ RSpec.describe 'User sorts projects and order persists', feature_category: :grou
     find('button[data-testid=base-dropdown-toggle]')
   end
 
-  shared_examples_for "sort order persists across all views" do |project_paths_label, group_paths_label|
+  shared_examples_for "sort order persists across all views" do |project_paths_label, vue_sort_label|
     it "is set on the dashboard_projects_path" do
       visit(dashboard_projects_path)
 
@@ -24,14 +24,16 @@ RSpec.describe 'User sorts projects and order persists', feature_category: :grou
     it "is set on the explore_projects_path" do
       visit(explore_projects_path)
 
-      expect(find('#sort-projects-dropdown')).to have_content(project_paths_label)
+      within '[data-testid=groups-projects-sort]' do
+        expect(find_dropdown_toggle).to have_content(vue_sort_label)
+      end
     end
 
     it "is set on the group_canonical_path" do
       visit(group_canonical_path(group))
 
       within '[data-testid=group_sort_by_dropdown]' do
-        expect(find_dropdown_toggle).to have_content(group_paths_label)
+        expect(find_dropdown_toggle).to have_content(vue_sort_label)
       end
     end
 
@@ -39,7 +41,7 @@ RSpec.describe 'User sorts projects and order persists', feature_category: :grou
       visit(details_group_path(group))
 
       within '[data-testid=group_sort_by_dropdown]' do
-        expect(find_dropdown_toggle).to have_content(group_paths_label)
+        expect(find_dropdown_toggle).to have_content(vue_sort_label)
       end
     end
   end
@@ -48,11 +50,14 @@ RSpec.describe 'User sorts projects and order persists', feature_category: :grou
     before do
       sign_in(user)
       visit(explore_projects_path)
-      find('#sort-projects-dropdown').click
-      first(:link, 'Updated date').click
+      within '[data-testid=groups-projects-sort]' do
+        find_dropdown_toggle.click
+        find('li', text: 'Name').click
+        wait_for_requests
+      end
     end
 
-    it_behaves_like "sort order persists across all views", 'Updated date', 'Updated'
+    it_behaves_like "sort order persists across all views", 'Name', 'Name'
   end
 
   context 'from dashboard projects', :js do

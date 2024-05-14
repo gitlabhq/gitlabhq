@@ -52,6 +52,23 @@ export default {
       default: '',
     },
   },
+  props: {
+    buttonClass: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    variant: {
+      type: String,
+      required: false,
+      default: 'link',
+    },
+    text: {
+      type: String,
+      required: false,
+      default: __('Email a new %{name} to this project'),
+    },
+  },
   data() {
     return {
       email: this.initialEmail,
@@ -90,8 +107,8 @@ export default {
 
 <template>
   <div>
-    <gl-button v-gl-modal="$options.modalId" variant="link"
-      ><gl-sprintf :message="__('Email a new %{name} to this project')"
+    <gl-button v-gl-modal="$options.modalId" :class="buttonClass" :variant="variant"
+      ><gl-sprintf :message="text"
         ><template #name>{{ issuableName }}</template></gl-sprintf
       ></gl-button
     >

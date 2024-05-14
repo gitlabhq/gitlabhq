@@ -34,7 +34,11 @@ func deleteURL(url string) {
 		log.WithError(err).WithField("object", mask.URL(url)).Warning("Delete failed")
 		return
 	}
-	resp.Body.Close()
+	defer func() {
+		if err := resp.Body.Close(); err != nil {
+			log.WithError(err).WithField("object", mask.URL(url)).Warning("Failed to close response body")
+		}
+	}()
 }
 
 func extractETag(rawETag string) string {

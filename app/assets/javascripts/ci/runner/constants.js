@@ -39,40 +39,19 @@ export const I18N_STATUS_STALE = s__('Runners|Stale');
 export const I18N_JOB_STATUS_RUNNING = s__('Runners|Running');
 export const I18N_JOB_STATUS_IDLE = s__('Runners|Idle');
 
-// Status help popover
-export const I18N_STATUS_POPOVER_TITLE = s__('Runners|Runner statuses');
-
-export const I18N_STATUS_POPOVER_NEVER_CONTACTED = s__('Runners|Never contacted:');
-export const I18N_STATUS_POPOVER_NEVER_CONTACTED_DESCRIPTION = s__(
-  'Runners|Runner has never contacted GitLab (when you register a runner, use %{codeStart}gitlab-runner run%{codeEnd} to bring it online)',
-);
-export const I18N_STATUS_POPOVER_ONLINE = s__('Runners|Online:');
-export const I18N_STATUS_POPOVER_ONLINE_DESCRIPTION = s__(
-  'Runners|Runner has contacted GitLab within the last %{elapsedTime}',
-);
-export const I18N_STATUS_POPOVER_OFFLINE = s__('Runners|Offline:');
-export const I18N_STATUS_POPOVER_OFFLINE_DESCRIPTION = s__(
-  'Runners|Runner has not contacted GitLab in more than %{elapsedTime}',
-);
-export const I18N_STATUS_POPOVER_STALE = s__('Runners|Stale:');
-export const I18N_STATUS_POPOVER_STALE_DESCRIPTION = s__(
-  'Runners|Runner has not contacted GitLab in more than %{elapsedTime}',
-);
-
 // Status tooltips
-export const I18N_ONLINE_TIMEAGO_TOOLTIP = s__(
-  'Runners|Runner is online; last contact was %{timeAgo}',
-);
+export const I18N_ONLINE_TOOLTIP = s__('Runners|Last contact was %{timeAgo}');
 export const I18N_NEVER_CONTACTED_TOOLTIP = s__('Runners|Runner has never contacted this instance');
-export const I18N_OFFLINE_TIMEAGO_TOOLTIP = s__(
-  'Runners|Runner is offline; last contact was %{timeAgo}',
+export const I18N_NEVER_CONTACTED_STALE_TOOLTIP = s__(
+  'Runners|Runner is older than %{elapsedTime} and has never contacted GitLab',
 );
-export const I18N_STALE_TIMEAGO_TOOLTIP = s__(
-  'Runners|Runner is stale; last contact was %{timeAgo}',
+export const I18N_DISCONNECTED_TOOLTIP = s__(
+  "Runners|Runner hasn't contacted GitLab in more than %{elapsedTime} and last contact was %{timeAgo}",
 );
-export const I18N_STALE_NEVER_CONTACTED_TOOLTIP = s__(
-  'Runners|Runner is stale; it has never contacted this instance',
-);
+
+// Default online/stale status timeouts, actual values
+export const ONLINE_CONTACT_TIMEOUT_SECS = 2 * 60 * 60; // 2 hours
+export const STALE_TIMEOUT_SECS = 7889238; // Ruby's `3.months`
 
 // Registration dropdown
 export const I18N_REGISTER_INSTANCE_TYPE = s__('Runners|Register an instance runner');
@@ -96,6 +75,7 @@ export const I18N_DELETE_RUNNER = s__('Runners|Delete runner');
 export const I18N_DELETED_TOAST = s__('Runners|Runner %{name} was deleted');
 
 // List
+export const I18N_CREATOR = s__('Runners|Creator');
 export const I18N_LOCKED_RUNNER_DESCRIPTION = s__(
   'Runners|Runner is locked and available for currently assigned projects only. Only administrators can change the assigned projects.',
 );
@@ -141,8 +121,6 @@ export const I18N_NO_PROJECTS_FOUND = __('No projects found');
 
 // Runner registration
 
-export const I18N_REGISTRATION_SUCCESS = s__("Runners|You've created a new runner!");
-
 export const RUNNER_REGISTRATION_POLLING_INTERVAL_MS = 2000;
 
 // Styles
@@ -154,6 +132,7 @@ export const RUNNER_TAG_BG_CLASS = 'gl-bg-blue-100';
 // - Used for URL params names
 // - GlFilteredSearch tokens type
 
+export const PARAM_KEY_CREATOR = 'creator';
 export const PARAM_KEY_STATUS = 'status';
 export const PARAM_KEY_PAUSED = 'paused';
 export const PARAM_KEY_RUNNER_TYPE = 'runner_type';
@@ -220,7 +199,11 @@ export const GROUP_FILTERED_SEARCH_NAMESPACE = 'group_runners';
 export const LINUX_PLATFORM = 'linux';
 export const MACOS_PLATFORM = 'osx';
 export const WINDOWS_PLATFORM = 'windows';
-export const GOOGLE_CLOUD_PLATFORM = 'google';
+export const GOOGLE_CLOUD_PLATFORM = 'google_cloud';
+
+// Stages for the google cloud setup
+export const GOOGLE_CLOUD_SETUP_START = 'google_cloud_setup_start';
+export const GOOGLE_CLOUD_SETUP_END = 'google_cloud_setup_end';
 
 // About Gitlab Runner Package host
 export const RUNNER_PACKAGE_HOST = 'gitlab-runner-downloads.s3.amazonaws.com';

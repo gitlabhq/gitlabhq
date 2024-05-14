@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 ## Filter parameters
 
@@ -93,7 +93,9 @@ Example response:
       "avatar_url":"http://www.gravatar.com/avatar/97d6d9441ff85fdc730e02a6068d267b?s=80\u0026d=identicon",
       "web_url":"https://gitlab.example.com/user3"
     },
-    "author_username":"user3"
+    "author_username":"user3",
+    "imported":false,
+    "imported_from": "none"
   },
   {
     "id": 2,
@@ -114,7 +116,9 @@ Example response:
       "avatar_url":"http://www.gravatar.com/avatar/80fb888c9a48b9a3f87477214acaa63f?s=80\u0026d=identicon",
       "web_url":"https://gitlab.example.com/ted"
     },
-    "author_username":"ted"
+    "author_username":"ted",
+    "imported":false,
+    "imported_from": "none"
   }
 ]
 ```
@@ -167,7 +171,9 @@ Example response:
       "avatar_url": "http://localhost:3000/uploads/user/avatar/1/fox_avatar.png",
       "web_url": "http://localhost:3000/root"
     },
-    "author_username": "root"
+    "author_username": "root",
+    "imported": false,
+    "imported_from": "none"
   },
   {
     "id": 4,
@@ -187,6 +193,8 @@ Example response:
       "web_url": "http://localhost:3000/root"
     },
     "author_username": "john",
+    "imported": false,
+    "imported_from": "none",
     "push_data": {
       "commit_count": 1,
       "action": "pushed",
@@ -216,7 +224,9 @@ Example response:
       "avatar_url": "http://localhost:3000/uploads/user/avatar/1/fox_avatar.png",
       "web_url": "http://localhost:3000/root"
     },
-    "author_username": "root"
+    "author_username": "root",
+    "imported": false,
+    "imported_from": "none"
   },
   {
     "id": 7,
@@ -254,7 +264,9 @@ Example response:
       "avatar_url": "http://localhost:3000/uploads/user/avatar/1/fox_avatar.png",
       "web_url": "http://localhost:3000/root"
     },
-    "author_username": "root"
+    "author_username": "root",
+    "imported": false,
+    "imported_from": "none"
   }
 ]
 ```
@@ -310,7 +322,9 @@ Example response:
       "avatar_url":"http://www.gravatar.com/avatar/97d6d9441ff85fdc730e02a6068d267b?s=80\u0026d=identicon",
       "web_url":"https://gitlab.example.com/user3"
     },
-    "author_username":"user3"
+    "author_username":"user3",
+    "imported":false,
+    "imported_from": "none"
   },
   {
     "id": 9,
@@ -331,7 +345,9 @@ Example response:
       "avatar_url":"http://www.gravatar.com/avatar/80fb888c9a48b9a3f87477214acaa63f?s=80\u0026d=identicon",
       "web_url":"https://gitlab.example.com/ted"
     },
-    "author_username":"ted"
+    "author_username":"ted",
+    "imported":false,
+    "imported_from": "none"
   },
   {
     "id": 10,
@@ -371,7 +387,9 @@ Example response:
       "avatar_url": "https://gitlab.example.com/uploads/user/avatar/1/fox_avatar.png",
       "web_url": "https://gitlab.example.com/root"
     },
-    "author_username": "root"
+    "author_username": "root",
+    "imported": false,
+    "imported_from": "none"
   }
 ]
 ```

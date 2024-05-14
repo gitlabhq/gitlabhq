@@ -23,7 +23,10 @@ export const PROMO_URL = `https://${PROMO_HOST}`;
 // eslint-disable-next-line no-restricted-syntax
 export const DOCS_URL_IN_EE_DIR = `${DOCS_URL}/ee`;
 
-// Reset the cursor in a Regex so that multiple uses before a recompile don't fail
+/**
+ * Reset the cursor in a Regex so that multiple uses before a recompile don't fail
+ * @param {RegExp} regex
+ */
 function resetRegExp(regex) {
   regex.lastIndex = 0; /* eslint-disable-line no-param-reassign */
 
@@ -32,6 +35,7 @@ function resetRegExp(regex) {
 
 /**
  * Returns the absolute pathname for a relative or absolute URL string.
+ * @param {string} url
  *
  * A few examples of inputs and outputs:
  * 1) 'http://a.com/b/c/d' => '/b/c/d'
@@ -44,8 +48,11 @@ export const parseUrlPathname = (url) => {
   return pathname;
 };
 
-// Returns a decoded url parameter value
-// - Treats '+' as '%20'
+/**
+ * Returns a decoded url parameter value
+ * - Treats '+' as '%20'
+ * @param {string} val
+ */
 function decodeUrlParameter(val) {
   return decodeURIComponent(val.replace(/\+/g, '%20'));
 }
@@ -94,10 +101,16 @@ export function encodeSaferUrl(potentiallyUnsafePath) {
   return saferPath;
 }
 
+/**
+ * @param {string} path
+ */
 export function cleanLeadingSeparator(path) {
   return path.replace(PATH_SEPARATOR_LEADING_REGEX, '');
 }
 
+/**
+ * @param {string} path
+ */
 export function cleanEndingSeparator(path) {
   return path.replace(PATH_SEPARATOR_ENDING_REGEX, '');
 }
@@ -109,8 +122,8 @@ export function cleanEndingSeparator(path) {
  * - `joinPaths('abc/', '/def') === 'abc/def'`
  * - `joinPaths(null, 'abc/def', 'zoo) === 'abc/def/zoo'`
  *
- * @param  {...String} paths
- * @returns {String}
+ * @param  {...string} paths
+ * @returns {string}
  */
 export function joinPaths(...paths) {
   return paths.reduce((acc, path) => {
@@ -148,10 +161,10 @@ export function getParameterValues(sParam, url = window.location) {
  * Also removes `null` param values from the resulting URL.
  *
  * @param {Object} params - url keys and value to merge
- * @param {String} url
- * @param {Object} options
- * @param {Boolean} options.spreadArrays - split array values into separate key/value-pairs
- * @param {Boolean} options.sort - alphabetically sort params in the returned url (in asc order, i.e., a-z)
+ * @param {string} url
+ * @param {Object} [options]
+ * @param {boolean} [options.spreadArrays] - split array values into separate key/value-pairs
+ * @param {boolean} [options.sort] - alphabetically sort params in the returned url (in asc order, i.e., a-z)
  */
 export function mergeUrlParams(params, url, options = {}) {
   const { spreadArrays = false, sort = false } = options;
@@ -251,6 +264,7 @@ export const getLocationHash = () => window.location.hash?.split('#')[1];
 
 /**
  * Returns a boolean indicating whether the URL hash contains the given string value
+ * @param {string} hashName
  */
 export function doesHashExistInUrl(hashName) {
   const hash = getLocationHash();

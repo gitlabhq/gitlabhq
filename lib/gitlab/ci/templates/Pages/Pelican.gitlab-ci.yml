@@ -5,12 +5,13 @@
 
 default:
   # Full project: https://gitlab.com/pages/pelican
-  image: python:2.7-alpine
+  image: python:3.12-alpine
 
 pages:
   script:
+    - apk add --update --no-cache make subversion
     - pip install -r requirements.txt
-    - pelican -s publishconf.py
+    - make publish
   artifacts:
     paths:
       - public/

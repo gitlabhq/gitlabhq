@@ -42,19 +42,8 @@ module Gitlab
 
         def move_to_next_stage(project, waiters = {})
           AdvanceStageWorker.perform_async(
-            project.id, waiters.deep_stringify_keys, next_stage(project)
+            project.id, waiters.deep_stringify_keys, 'issues_and_diff_notes'
           )
-        end
-
-        def next_stage(project)
-          if import_settings(project).prioritize_collaborators?
-            'pull_requests'
-          else
-
-            return 'issues_and_diff_notes' if import_settings(project).extended_events?
-
-            'pull_requests_merged_by'
-          end
         end
       end
     end

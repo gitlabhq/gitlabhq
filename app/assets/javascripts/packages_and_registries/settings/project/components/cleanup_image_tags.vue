@@ -78,7 +78,9 @@ export default {
 
 <template>
   <div data-testid="container-expiration-policy-project-settings">
-    <h4 data-testid="title">{{ $options.i18n.CONTAINER_CLEANUP_POLICY_TITLE }}</h4>
+    <h3 data-testid="title" class="gl-heading-3 gl-mt-3!">
+      {{ $options.i18n.CONTAINER_CLEANUP_POLICY_TITLE }}
+    </h3>
     <p data-testid="description">
       <gl-sprintf :message="$options.i18n.CONTAINER_CLEANUP_POLICY_DESCRIPTION">
         <template #link="{ content }">

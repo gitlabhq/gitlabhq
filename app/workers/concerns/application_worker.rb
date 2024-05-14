@@ -67,6 +67,10 @@ module ApplicationWorker
       set(status_expiration: status_from_class || Gitlab::SidekiqStatus::DEFAULT_EXPIRATION)
     end
 
+    def deferred(count = 0, by = nil)
+      set(deferred: true, deferred_count: count, deferred_by: by)
+    end
+
     def generated_queue_name
       Gitlab::SidekiqConfig::WorkerRouter.queue_name_from_worker_name(self)
     end
@@ -98,9 +102,22 @@ module ApplicationWorker
       validate_worker_attributes!
     end
 
+    # Only override perform_at and perform_in since perform_async calls Setter.new(..).perform_async
+    # which is handled in the Gitlab::Patch::SidekiqJobSetter.
+    %i[perform_at perform_in].each do |name|
+      define_method(name) do |*args|
+        Gitlab::SidekiqSharding::Router.route(self) do
+          super(*args)
+        end
+      end
+    end
+
     def set_queue
       queue_name = ::Gitlab::SidekiqConfig::WorkerRouter.global.route(self)
       sidekiq_options queue: queue_name # rubocop:disable Cop/SidekiqOptionsQueue
+
+      store_name = ::Gitlab::SidekiqConfig::WorkerRouter.global.store(self)
+      sidekiq_options store: store_name # rubocop:disable Cop/SidekiqOptionsQueue
     end
 
     def queue_namespace(new_namespace = nil)
@@ -179,16 +196,20 @@ module ApplicationWorker
         schedule_at = bulk_schedule_at
       end
 
-      in_safe_limit_batches(args_list, schedule_at) do |args_batch, schedule_at_for_batch|
-        Sidekiq::Client.push_bulk('class' => self, 'args' => args_batch, 'at' => schedule_at_for_batch) # rubocop:disable Cop/SidekiqApiUsage
+      Gitlab::SidekiqSharding::Router.route(self) do
+        in_safe_limit_batches(args_list, schedule_at) do |args_batch, schedule_at_for_batch|
+          Sidekiq::Client.push_bulk('class' => self, 'args' => args_batch, 'at' => schedule_at_for_batch)
+        end
       end
     end
 
     private
 
     def do_push_bulk(args_list)
-      in_safe_limit_batches(args_list) do |args_batch, _|
-        Sidekiq::Client.push_bulk('class' => self, 'args' => args_batch) # rubocop:disable Cop/SidekiqApiUsage
+      Gitlab::SidekiqSharding::Router.route(self) do
+        in_safe_limit_batches(args_list) do |args_batch, _|
+          Sidekiq::Client.push_bulk('class' => self, 'args' => args_batch)
+        end
       end
     end
 

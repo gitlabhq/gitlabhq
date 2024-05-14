@@ -138,12 +138,12 @@ RSpec.describe Gitlab::Middleware::Go, feature_category: :source_code_management
 
                     context 'with a denylisted ip' do
                       it 'returns forbidden' do
-                        expect(Gitlab::Auth).to receive(:find_for_git_client).and_raise(Gitlab::Auth::IpBlocked)
+                        err = Gitlab::Auth::IpBlocked.new
+                        expect(Gitlab::Auth).to receive(:find_for_git_client).and_raise(err)
                         response = go
 
                         expect(response[0]).to eq(403)
-                        expect(response[1]['Content-Length']).to be_nil
-                        expect(response[2]).to eq([''])
+                        expect(response[2]).to eq([err.message])
                       end
                     end
                   end

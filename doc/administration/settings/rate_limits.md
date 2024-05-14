@@ -9,6 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 You can change network settings to limit the rate of connections with your instance.
 
 - [Deprecated API rate limits](deprecated_api_rate_limits.md)
+- [Git HTTP](git_http_rate_limits.md)
 - [Git LFS](git_lfs_rate_limits.md)
 - [Git SSH operations](rate_limits_on_git_ssh_operations.md)
 - [Incident management](incident_management_rate_limits.md)

@@ -5,16 +5,18 @@ require 'spec_helper'
 RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: :backup_restore do
   let(:enable_registry) { true }
   let(:backup_restore_pid_path) { "#{Rails.application.root}/tmp/backup_restore.pid" }
-  let(:backup_tasks) do
+  let(:backup_rake_task_names) do
     %w[db repo uploads builds artifacts pages lfs terraform_state registry packages ci_secure_files]
   end
 
-  let(:backup_types) do
+  let(:progress) { StringIO.new }
+
+  let(:backup_task_ids) do
     %w[db repositories uploads builds artifacts pages lfs terraform_state registry packages ci_secure_files]
   end
 
   def tars_glob
-    Dir.glob(File.join(Gitlab.config.backup.path, '*_gitlab_backup.tar'))
+    Dir.glob(backup_path.join('*_gitlab_backup.tar'))
   end
 
   def backup_tar
@@ -31,11 +33,16 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: 
       pages.tar.gz
       packages.tar.gz
       ci_secure_files.tar.gz
+      uploads.tar.gz
     ]
   end
 
   def backup_directories
     %w[db repositories]
+  end
+
+  def backup_path
+    Pathname(Gitlab.config.backup.path)
   end
 
   before(:all) do
@@ -65,7 +72,7 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: 
   end
 
   def reenable_backup_sub_tasks
-    backup_tasks.each do |subtask|
+    backup_rake_task_names.each do |subtask|
       Rake::Task["gitlab:backup:#{subtask}:create"].reenable
     end
   end
@@ -127,8 +134,9 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: 
         allow(progress).to receive(:puts).with(delete_message).once
         allow(progress).to receive(:puts).with(rewritten_message).once
 
-        allow_next_instance_of(::Backup::Manager) do |instance|
-          allow(instance).to receive(:run_restore_task).with('db')
+        allow_next_instance_of(::Backup::Manager) do |manager|
+          task = manager.find_task('db')
+          allow(manager).to receive(:run_restore_task).with(task)
         end
 
         expect(pid_file).to receive(:flock).with(File::LOCK_EX)
@@ -164,9 +172,10 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: 
           allow(File).to receive(:delete).with(backup_restore_pid_path)
           allow(progress).to receive(:puts).at_least(:once)
 
-          allow_next_instance_of(::Backup::Manager) do |instance|
-            Array(task_name).each do |task|
-              allow(instance).to receive(:run_restore_task).with(task)
+          allow_next_instance_of(::Backup::Manager) do |manager|
+            Array(task_name).each do |t|
+              task = manager.find_task(t)
+              allow(manager).to receive(:run_restore_task).with(task)
             end
           end
         end
@@ -202,11 +211,13 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: 
         before do
           allow(YAML).to receive(:safe_load_file)
             .and_return({ gitlab_version: gitlab_version })
-          expect_next_instance_of(::Backup::Manager) do |instance|
-            backup_types.each do |subtask|
-              expect(instance).to receive(:run_restore_task).with(subtask).ordered
+          expect_next_instance_of(::Backup::Manager) do |manager|
+            backup_task_ids.each do |t|
+              task = manager.find_task(t)
+
+              expect(manager).to receive(:run_restore_task).with(task).ordered
             end
-            expect(instance).not_to receive(:run_restore_task)
+            expect(manager).not_to receive(:run_restore_task)
           end
           expect(Rake::Task['gitlab:shell:setup']).to receive(:invoke)
         end
@@ -245,7 +256,7 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: 
       before do
         expect { run_rake_task('gitlab:backup:create') }.to output.to_stdout_from_any_process
 
-        backup_tar = Dir.glob(File.join(Gitlab.config.backup.path, '*_gitlab_backup.tar')).last
+        backup_tar = Dir.glob(backup_path.join('*_gitlab_backup.tar')).last
         allow(Dir).to receive(:glob).and_return([backup_tar])
         allow(File).to receive(:exist?).and_return(true)
         allow(File).to receive(:exist?).with(backup_restore_pid_path).and_return(false)
@@ -255,11 +266,12 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: 
         allow(YAML).to receive(:safe_load_file)
           .and_return({ gitlab_version: Gitlab::VERSION })
 
-        expect_next_instance_of(::Backup::Manager) do |instance|
-          backup_types.each do |subtask|
-            expect(instance).to receive(:run_restore_task).with(subtask).ordered
+        expect_next_instance_of(::Backup::Manager) do |manager|
+          backup_task_ids.each do |t|
+            task = manager.find_task(t)
+            expect(manager).to receive(:run_restore_task).with(task).ordered
           end
-          expect(instance).not_to receive(:run_restore_task)
+          expect(manager).not_to receive(:run_restore_task)
         end
 
         expect(Rake::Task['gitlab:shell:setup']).to receive(:invoke)
@@ -289,38 +301,43 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: 
     context 'with specific backup tasks' do
       before do
         stub_env('SKIP', 'db')
+        allow_next_instance_of(Gitlab::BackupLogger) do |instance|
+          allow(instance).to receive(:info).and_call_original
+        end
       end
 
       it 'prints a progress message to stdout' do
-        backup_tasks.each do |task|
+        backup_rake_task_names.each do |task|
           expect { run_rake_task("gitlab:backup:#{task}:create") }.to output(/Dumping /).to_stdout_from_any_process
         end
       end
 
       it 'logs the progress to log file' do
-        expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping database ... [SKIPPED]")
-        expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping repositories ... ")
-        expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping repositories ... done")
-        expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping uploads ... ")
-        expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping uploads ... done")
-        expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping builds ... ")
-        expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping builds ... done")
-        expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping artifacts ... ")
-        expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping artifacts ... done")
-        expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping pages ... ")
-        expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping pages ... done")
-        expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping lfs objects ... ")
-        expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping lfs objects ... done")
-        expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping terraform states ... ")
-        expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping terraform states ... done")
-        expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping container registry images ... ")
-        expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping container registry images ... done")
-        expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping packages ... ")
-        expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping packages ... done")
-        expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping ci secure files ... ")
-        expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping ci secure files ... done")
+        expect_logger_to_receive_messages([
+          "Dumping database ... [SKIPPED]",
+          "Dumping repositories ... ",
+          "Dumping repositories ... done",
+          "Dumping uploads ... ",
+          "Dumping uploads ... done",
+          "Dumping builds ... ",
+          "Dumping builds ... done",
+          "Dumping artifacts ... ",
+          "Dumping artifacts ... done",
+          "Dumping pages ... ",
+          "Dumping pages ... done",
+          "Dumping lfs objects ... ",
+          "Dumping lfs objects ... done",
+          "Dumping terraform states ... ",
+          "Dumping terraform states ... done",
+          "Dumping container registry images ... ",
+          "Dumping container registry images ... done",
+          "Dumping packages ... ",
+          "Dumping packages ... done",
+          "Dumping ci secure files ... ",
+          "Dumping ci secure files ... done"
+        ])
 
-        backup_tasks.each do |task|
+        backup_rake_task_names.each do |task|
           run_rake_task("gitlab:backup:#{task}:create")
         end
       end
@@ -352,7 +369,15 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: 
         end
 
         it "raises an error with message" do
-          expect { run_rake_task(rake_task) }.to output(Regexp.new(error.message)).to_stdout_from_any_process
+          expect do
+            expect { run_rake_task(rake_task) }.to raise_error(SystemExit)
+          end.to output(Regexp.new(error.message)).to_stdout_from_any_process
+        end
+
+        it "raises an error with message when subtask fails" do
+          expect do
+            run_rake_task('gitlab:backup:create')
+          end.to raise_error(Backup::Error)
         end
       end
     end
@@ -419,10 +444,7 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: 
         expect { run_rake_task('gitlab:backup:create') }.to output.to_stdout_from_any_process
 
         temp_dirs = Dir.glob(
-          File.join(
-            Gitlab.config.backup.path,
-            '{db,repositories,uploads,builds,artifacts,pages,lfs,terraform_state,registry,packages}'
-          )
+          backup_path.join('{db,repositories,uploads,builds,artifacts,pages,lfs,terraform_state,registry,packages}')
         )
 
         expect(temp_dirs).to be_empty
@@ -481,12 +503,12 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: 
           expect(exit_status).to eq(0)
 
           %W[
-            #{project_a.disk_path}/.+/001.bundle
-            #{project_a.disk_path}.wiki/.+/001.bundle
-            #{project_a.disk_path}.design/.+/001.bundle
-            #{project_b.disk_path}/.+/001.bundle
-            #{project_snippet_a.disk_path}/.+/001.bundle
-            #{project_snippet_b.disk_path}/.+/001.bundle
+            #{project_a.repository.relative_path}/.+/001.bundle
+            #{project_a.wiki.repository.relative_path}/.+/001.bundle
+            #{project_a.design_management_repository.repository.relative_path}/.+/001.bundle
+            #{project_b.repository.relative_path}/.+/001.bundle
+            #{project_snippet_a.repository.relative_path}/.+/001.bundle
+            #{project_snippet_b.repository.relative_path}/.+/001.bundle
           ].each do |repo_name|
             expect(tar_lines).to include(a_string_matching(repo_name))
           end
@@ -534,17 +556,17 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: 
           expect(exit_status).to eq(0)
 
           %W[
-            #{project_a.disk_path}/.+/001.bundle
-            #{project_a.disk_path}.wiki/.+/001.bundle
-            #{project_a.disk_path}.design/.+/001.bundle
-            #{project_snippet_a.disk_path}/.+/001.bundle
+            #{project_a.repository.relative_path}/.+/001.bundle
+            #{project_a.wiki.repository.relative_path}/.+/001.bundle
+            #{project_a.design_management_repository.repository.relative_path}/.+/001.bundle
+            #{project_snippet_a.repository.relative_path}/.+/001.bundle
           ].each do |repo_name|
             expect(tar_lines).to include(a_string_matching(repo_name))
           end
 
           %W[
-            #{project_b.disk_path}/.+/001.bundle
-            #{project_snippet_b.disk_path}/.+/001.bundle
+            #{project_b.repository.relative_path}/.+/001.bundle
+            #{project_snippet_b.repository.relative_path}/.+/001.bundle
           ].each do |repo_name|
             expect(tar_lines).not_to include(a_string_matching(repo_name))
           end
@@ -638,11 +660,12 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: 
       allow(Rake::Task['gitlab:shell:setup'])
         .to receive(:invoke).and_return(true)
 
-      expect_next_instance_of(::Backup::Manager) do |instance|
-        (backup_types - %w[repositories uploads]).each do |subtask|
-          expect(instance).to receive(:run_restore_task).with(subtask).ordered
+      expect_next_instance_of(::Backup::Manager) do |manager|
+        (backup_task_ids - %w[repositories uploads]).each do |t|
+          task = manager.find_task(t)
+          expect(manager).to receive(:run_restore_task).with(task).ordered
         end
-        expect(instance).not_to receive(:run_restore_task)
+        expect(manager).not_to receive(:run_restore_task)
       end
       expect(Rake::Task['gitlab:shell:setup']).to receive :invoke
       expect { run_rake_task('gitlab:backup:restore') }.to output.to_stdout_from_any_process
@@ -659,7 +682,7 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: 
     it 'created files with backup content and no tar archive' do
       expect { run_rake_task('gitlab:backup:create') }.to output.to_stdout_from_any_process
 
-      dir_contents = Dir.children(Gitlab.config.backup.path)
+      dir_contents = Dir.children(backup_path)
 
       expect(dir_contents).to contain_exactly(
         'backup_information.yml',
@@ -683,11 +706,13 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: 
       allow(Rake::Task['gitlab:shell:setup'])
         .to receive(:invoke).and_return(true)
 
-      expect_next_instance_of(::Backup::Manager) do |instance|
-        backup_types.each do |subtask|
-          expect(instance).to receive(:run_restore_task).with(subtask).ordered
+      expect_next_instance_of(::Backup::Manager) do |manager|
+        backup_task_ids.each do |t|
+          task = manager.find_task(t)
+
+          expect(manager).to receive(:run_restore_task).with(task).ordered
         end
-        expect(instance).not_to receive(:run_restore_task)
+        expect(manager).not_to receive(:run_restore_task)
       end
       expect(Rake::Task['gitlab:shell:setup']).to receive :invoke
       expect { run_rake_task("gitlab:backup:restore") }.to output.to_stdout_from_any_process
@@ -699,6 +724,24 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: 
       expect { run_rake_task('gitlab:backup:create') }.to output.to_stdout_from_any_process
 
       expect(backup_tar).to match(/\d+_\d{4}_\d{2}_\d{2}_\d+\.\d+\.\d+.*_gitlab_backup.tar$/)
+    end
+  end
+
+  describe 'verifying a backup' do
+    it 'delegates to Backup::Manager#verify!' do
+      expect_next_instance_of(::Backup::Manager) do |manager|
+        expect(manager).to receive(:verify!)
+      end
+
+      run_rake_task('gitlab:backup:verify')
+    end
+  end
+
+  def expect_logger_to_receive_messages(messages)
+    expect_any_instance_of(Gitlab::BackupLogger) do |logger|
+      messages.each do |message|
+        allow(logger).to receive(:info).with(message).ordered
+      end
     end
   end
 end

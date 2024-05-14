@@ -15,35 +15,35 @@ module Resolvers
       authorize :create_pipeline
 
       argument :project_path, GraphQL::Types::ID,
-               required: true,
-               description: 'Project of the CI config.'
+        required: true,
+        description: 'Project of the CI config.'
 
       argument :sha, GraphQL::Types::String,
-               required: false,
-               description: "Sha for the pipeline."
+        required: false,
+        description: "Sha for the pipeline."
 
       argument :content, GraphQL::Types::String,
-               required: true,
-               description: "Contents of `.gitlab-ci.yml`."
+        required: true,
+        description: "Contents of `.gitlab-ci.yml`."
 
       argument :dry_run, GraphQL::Types::Boolean,
-               required: false,
-               description: 'Run pipeline creation simulation, or only do static check.'
+        required: false,
+        description: 'Run pipeline creation simulation, or only do static check.'
 
       argument :skip_verify_project_sha, GraphQL::Types::Boolean,
-               required: false,
-               alpha: { milestone: '16.5' },
-               description: "If the provided `sha` is found in the project's repository but is not " \
-                            "associated with a Git reference (a detached commit), the verification fails and a " \
-                            "validation error is returned. Otherwise, verification passes, even if the `sha` is " \
-                            "invalid. Set to `true` to skip this verification process."
+        required: false,
+        alpha: { milestone: '16.5' },
+        description: "If the provided `sha` is found in the project's repository but is not " \
+                     "associated with a Git reference (a detached commit), the verification fails and a " \
+                     "validation error is returned. Otherwise, verification passes, even if the `sha` is " \
+                     "invalid. Set to `true` to skip this verification process."
 
       def resolve(project_path:, content:, sha: nil, dry_run: false, skip_verify_project_sha: false)
         project = authorized_find!(project_path: project_path)
 
         result = ::Gitlab::Ci::Lint
           .new(project: project, current_user: context[:current_user], sha: sha,
-               verify_project_sha: !skip_verify_project_sha)
+            verify_project_sha: !skip_verify_project_sha)
           .validate(content, dry_run: dry_run)
 
         response(result)

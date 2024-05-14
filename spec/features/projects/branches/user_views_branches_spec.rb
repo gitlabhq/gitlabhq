@@ -10,6 +10,22 @@ RSpec.describe "User views branches", :js, feature_category: :source_code_manage
     sign_in(user)
   end
 
+  context 'when project has default settings' do
+    before do
+      visit project_branches_path(project)
+    end
+
+    it 'renders the breadcrumbs' do
+      within('.breadcrumbs') do
+        expect(page).to have_content("#{project.creator.name} #{project.name} Branches")
+
+        expect(page).to have_link(project.creator.name, href: user_path(project.creator))
+        expect(page).to have_link(project.name, href: project_path(project))
+        expect(page).to have_link('Branches', href: project_branches_path(project))
+      end
+    end
+  end
+
   context "all branches" do
     before do
       visit(project_branches_path(project))

@@ -14,6 +14,7 @@ export default class Profile {
     this.setRepoRadio();
     this.bindEvents();
     this.initAvatarGlCrop();
+    this.form.attr('data-testid', 'form-ready');
   }
 
   initAvatarGlCrop() {

@@ -70,6 +70,7 @@ models for different features.
 ### Git push over SSH
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 graph TD
   Repositories::GitHttpController --> Gitlab::GitAccess
   Api::Internal::Base --> Gitlab::GitAccess

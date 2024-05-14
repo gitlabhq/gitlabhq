@@ -75,7 +75,7 @@ export const doThing = () => {
 ## Relation to frontend observability
 
 Client-side logging is strongly related to
-[Frontend observability](https://about.gitlab.com/company/team/structure/working-groups/frontend-observability/).
+[Frontend observability](https://handbook.gitlab.com/handbook/company/working-groups/frontend-observability/).
 We want unexpected errors to be observed by our monitoring systems, so
 we can quickly react to user-facing issues. For a number of reasons, it is
 unfeasible to send every log to the monitoring system. Don't shy away from using

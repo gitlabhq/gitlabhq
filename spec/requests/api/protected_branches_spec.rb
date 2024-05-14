@@ -4,21 +4,15 @@ require 'spec_helper'
 
 RSpec.describe API::ProtectedBranches, feature_category: :source_code_management do
   let_it_be_with_reload(:project) { create(:project, :repository) }
-  let_it_be(:maintainer) { create(:user) }
-  let_it_be(:developer) { create(:user) }
-  let_it_be(:guest) { create(:user) }
+  let_it_be(:maintainer) { create(:user, maintainer_of: project) }
+  let_it_be(:developer) { create(:user, developer_of: project) }
+  let_it_be(:guest) { create(:user, guest_of: project) }
 
   let(:protected_name) { 'feature' }
   let(:branch_name) { protected_name }
 
   let!(:protected_branch) do
     create(:protected_branch, project: project, name: protected_name)
-  end
-
-  before_all do
-    project.add_maintainer(maintainer)
-    project.add_developer(developer)
-    project.add_guest(guest)
   end
 
   describe "GET /projects/:id/protected_branches" do

@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Group Level Work Items', feature_category: :team_planning do
   let_it_be(:group) { create(:group, :private) }
-  let_it_be(:developer) { create(:user).tap { |u| group.add_developer(u) } }
+  let_it_be(:developer) { create(:user, developer_of: group) }
 
   describe 'GET /groups/:group/-/work_items' do
     let(:work_items_path) { url_for(controller: 'groups/work_items', action: :index, group_id: group.full_path) }

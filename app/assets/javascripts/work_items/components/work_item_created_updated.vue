@@ -83,7 +83,7 @@ export default {
         return !this.workItemIid;
       },
       update(data) {
-        return data.workspace.workItems.nodes[0] ?? {};
+        return data.workspace.workItem ?? {};
       },
     },
   },
@@ -97,23 +97,19 @@ export default {
     <gl-loading-icon v-if="updateInProgress" inline />
     <confidentiality-badge
       v-if="isWorkItemConfidential"
-      class="gl-vertical-align-middle gl-display-inline-flex!"
+      class="gl-align-middle gl-display-inline-flex!"
       :issuable-type="workItemType"
       :workspace-type="$options.WORKSPACE_PROJECT"
       hide-text-in-small-screens
     />
-    <locked-badge
-      v-if="isDiscussionLocked"
-      class="gl-vertical-align-middle"
-      :issuable-type="workItemType"
-    />
+    <locked-badge v-if="isDiscussionLocked" class="gl-align-middle" :issuable-type="workItemType" />
     <work-item-type-icon
-      class="gl-vertical-align-middle"
+      class="gl-align-middle"
       :work-item-icon-name="workItemIconName"
       :work-item-type="workItemType"
       show-text
     />
-    <span data-testid="work-item-created" class="gl-vertical-align-middle">
+    <span data-testid="work-item-created" class="gl-align-middle">
       <gl-sprintf v-if="author.name" :message="__('created %{timeAgo} by %{author}')">
         <template #timeAgo>
           <time-ago-tooltip :time="createdAt" />
@@ -138,7 +134,7 @@ export default {
 
     <span
       v-if="updatedAt"
-      class="gl-ml-5 gl-display-none gl-sm-display-inline-block gl-vertical-align-middle"
+      class="gl-ml-5 gl-display-none gl-sm-display-inline-block gl-align-middle"
       data-testid="work-item-updated"
     >
       <gl-sprintf :message="__('Updated %{timeAgo}')">

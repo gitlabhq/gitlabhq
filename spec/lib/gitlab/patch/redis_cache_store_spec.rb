@@ -13,6 +13,8 @@ RSpec.describe Gitlab::Patch::RedisCacheStore, :use_clean_rails_redis_caching, f
     cache.write('{user1}:x', 1)
     cache.write('{user1}:y', 2)
     cache.write('{user1}:z', 3)
+
+    cache.instance_variable_set(:@pipeline_batch_size, nil)
   end
 
   describe '#read_multi_mget' do
@@ -34,7 +36,7 @@ RSpec.describe Gitlab::Patch::RedisCacheStore, :use_clean_rails_redis_caching, f
       end
 
       context 'when reading large amount of keys' do
-        let(:input_size) { 2000 }
+        let(:input_size) { 2100 }
         let(:chunk_size) { 1000 }
 
         shared_examples 'read large amount of keys' do
@@ -45,10 +47,11 @@ RSpec.describe Gitlab::Patch::RedisCacheStore, :use_clean_rails_redis_caching, f
                 ::Gitlab::Redis::ClusterUtil.cluster?(redis.default_store)
 
               if normal_cluster || multistore_cluster
-                expect_next_instances_of(Gitlab::Redis::CrossSlot::Pipeline, 2) do |pipeline|
-                  obj = instance_double(::Redis)
-                  expect(pipeline).to receive(:pipelined).and_yield(obj)
-                  expect(obj).to receive(:get).exactly(chunk_size).times
+                times = (input_size.to_f / chunk_size).ceil
+                expect(redis).to receive(:pipelined).exactly(times).times.and_call_original
+
+                expect_next_instances_of(::Redis::PipelinedConnection, times) do |p|
+                  expect(p).to receive(:get).at_most(chunk_size).times
                 end
               else
                 expect(redis).to receive(:mget).and_call_original
@@ -59,25 +62,6 @@ RSpec.describe Gitlab::Patch::RedisCacheStore, :use_clean_rails_redis_caching, f
               cache.read_multi(*Array.new(input_size) { |i| i })
             end
           end
-        end
-
-        context 'when GITLAB_REDIS_CLUSTER_PIPELINE_BATCH_LIMIT is smaller than the default' do
-          before do
-            stub_env('GITLAB_REDIS_CLUSTER_PIPELINE_BATCH_LIMIT', 10)
-          end
-
-          it_behaves_like 'read large amount of keys'
-        end
-
-        context 'when GITLAB_REDIS_CLUSTER_PIPELINE_BATCH_LIMIT is larger than the default' do
-          let(:input_size) { 4000 }
-          let(:chunk_size) { 2000 }
-
-          before do
-            stub_env('GITLAB_REDIS_CLUSTER_PIPELINE_BATCH_LIMIT', chunk_size)
-          end
-
-          it_behaves_like 'read large amount of keys'
         end
 
         it_behaves_like 'read large amount of keys'

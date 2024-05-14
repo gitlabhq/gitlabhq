@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 When mirroring fails, project maintainers can see a link similar to **{warning-solid}** **Pull mirroring failed 1 hour ago.**
 on the project details page. Select this link to go directly to the mirroring settings,
@@ -34,14 +34,14 @@ One of these issues might be occurring:
      setting.
 1. Your repository exceeds GitHub's file size limit of 100 MB. To fix this problem,
    check the file size limit configured for on GitHub, and consider using
-   [Git Large File Storage](https://git-lfs.github.com) to manage large files.
+   [Git Large File Storage](https://git-lfs.com/) to manage large files.
 
 ## Deadline Exceeded
 
 When upgrading GitLab, a change in how usernames are represented means that you
 must update your mirroring username and password to ensure that `%40` characters are replaced with `@`.
 
-## Connection blocked because server only allows public key authentication
+## Connection blocked: server only allows public key authentication
 
 The connection between GitLab and the remote repository is blocked. Even if a
 [TCP Check](../../../../administration/raketasks/maintenance.md#check-tcp-connectivity-to-a-remote-site)
@@ -97,8 +97,6 @@ In some cases, pull mirroring does not transfer LFS files. This issue occurs whe
 
 - You use an SSH repository URL. The workaround is to use an HTTPS repository URL instead.
   An issue exists [to fix this problem for SSH URLs](https://gitlab.com/gitlab-org/gitlab/-/issues/11997).
-- You're using GitLab 14.0 or older, and the source repository is a public Bitbucket URL.
-  [Fixed](https://gitlab.com/gitlab-org/gitlab/-/issues/335123) in GitLab 14.0.6.
 - You mirror an external repository using object storage.
   An issue exists [to fix this problem](https://gitlab.com/gitlab-org/gitlab/-/issues/335495).
 
@@ -154,10 +152,10 @@ fail nor succeed. They also do not leave a clear log. To check for this problem:
 
 If you receive this error while setting up mirroring over [SSH](index.md#ssh-authentication), make sure the URL is in a valid format.
 
-Mirroring does not support the short version of SSH clone URLs (`git@gitlab.com:gitlab-org/gitlab.git`)
-and requires the full version including the protocol (`ssh://git@gitlab.com/gitlab-org/gitlab.git`).
-
-Make sure that host and project path are separated using `/` instead of `:`.
+Mirroring **does not** support SCP-like clone URLs in the form of
+`git@gitlab.com:gitlab-org/gitlab.git`, with host and project path separated using `:`.
+It requires a [standard URL](https://git-scm.com/docs/git-clone#_git_urls)
+that includes the `ssh://` protocol, like `ssh://git@gitlab.com/gitlab-org/gitlab.git`.
 
 ## Host key verification failed
 
@@ -182,7 +180,7 @@ To resolve the issue:
 
 - Select **Mirror repository**.
 
-## Transfer mirror users and tokens to a single service account in Rails console
+## Transfer mirror users and tokens to a single service account
 
 This requires access to the [GitLab Rails console](../../../../administration/operations/rails_console.md#starting-a-rails-console-session).
 
@@ -230,7 +228,7 @@ HTTP redirects are not followed and omitting `.git` can result in a 301 error:
 13:fetch remote: "fatal: unable to access 'https://gitlab.com/group/project': The requested URL returned error: 301\n": exit status 128.
 ```
 
-## Push mirror from GitLab instance to Geo secondary fails: `The requested URL returned error: 302`
+## Push mirror from GitLab instance to Geo secondary fails
 
 Push mirroring of a GitLab repository using the HTTP or HTTPS protocols fails when the destination
 is a Geo secondary node due to the proxying of the push request to the Geo primary node,

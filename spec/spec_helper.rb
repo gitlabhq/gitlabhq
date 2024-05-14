@@ -69,10 +69,10 @@ require_relative('../jh/spec/spec_helper') if Gitlab.jh?
 require Rails.root.join("spec/support/helpers/stub_requests.rb")
 
 # Then the rest
-Dir[Rails.root.join("spec/support/helpers/*.rb")].sort.each { |f| require f }
-Dir[Rails.root.join("spec/support/shared_contexts/*.rb")].sort.each { |f| require f }
-Dir[Rails.root.join("spec/support/shared_examples/*.rb")].sort.each { |f| require f }
-Dir[Rails.root.join("spec/support/**/*.rb")].sort.each { |f| require f }
+Dir[Rails.root.join("spec/support/helpers/*.rb")].each { |f| require f }
+Dir[Rails.root.join("spec/support/shared_contexts/*.rb")].each { |f| require f }
+Dir[Rails.root.join("spec/support/shared_examples/*.rb")].each { |f| require f }
+Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
 
 require_relative '../tooling/quality/test_level'
 
@@ -205,6 +205,7 @@ RSpec.configure do |config|
   config.include UnlockPipelinesHelpers, :unlock_pipelines
   config.include UserWithNamespaceShim
   config.include OrphanFinalArtifactsCleanupHelpers, :orphan_final_artifacts_cleanup
+  config.include ClickHouseHelpers, :click_house
 
   config.include_context 'when rendered has no HTML escapes', type: :view
 
@@ -213,27 +214,12 @@ RSpec.configure do |config|
   include StubMember
 
   if ENV['CI'] || ENV['RETRIES']
-    # This includes the first try, i.e. tests will be run 2 times before failing.
-    config.default_retry_count = ENV.fetch('RETRIES', 1).to_i + 1
-
-    # Do not retry controller tests because rspec-retry cannot properly
-    # reset the controller which may contain data from last attempt. See
-    # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/73360
-    config.prepend_before(:each, type: :controller) do |example|
-      example.metadata[:retry] = 1
-    end
-
     # Gradually stop using rspec-retry
     # See https://gitlab.com/gitlab-org/gitlab/-/issues/438388
-    %i[
-      lib mailers metrics_server
-      migrations models policies presenters rack_servers requests
-      routing rubocop scripts serializers services sidekiq sidekiq_cluster
-      spam support_specs tasks tooling uploaders validators views workers
-    ].each do |type|
-      config.prepend_before(:each, type: type) do |example|
-        example.metadata[:retry] = 1
-      end
+    config.default_retry_count = 1
+    config.prepend_before(:each, type: :feature) do |example|
+      # This includes the first try, i.e. tests will be run 2 times before failing.
+      example.metadata[:retry] = ENV.fetch('RETRIES', 1).to_i + 1
     end
 
     config.exceptions_to_hard_fail = [DeprecationToolkitEnv::DeprecationBehaviors::SelectiveRaise::RaiseDisallowedDeprecation]
@@ -333,16 +319,29 @@ RSpec.configure do |config|
       # Keep-around refs should only be turned off for specific projects/repositories.
       stub_feature_flags(disable_keep_around_refs: false)
 
-      # Postgres is the primary data source, and ClickHouse only when enabled in certain cases.
-      stub_feature_flags(clickhouse_data_collection: false)
+      # The Vue version of the merge request list app is missing a lot of information
+      # disabling this for now whilst we work on it across multiple merge requests
+      stub_feature_flags(vue_merge_request_list: false)
 
-      # This is going to be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/432866
-      stub_feature_flags(redis_hll_property_name_tracking: false)
+      # Work in progress reviewer sidebar that does not have most of the features yet
+      stub_feature_flags(reviewer_assign_drawer: false)
 
-      # The code under this flag will be removed soon
-      # We are temporarily keeping it in place while we confirm some assumptions
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/440667
-      stub_feature_flags(ci_text_interpolation: false)
+      # Disable suspending ClickHouse data ingestion workers
+      stub_feature_flags(suspend_click_house_data_ingestion: false)
+
+      # Disable license requirement for duo chat, which is subject to change.
+      # See https://gitlab.com/gitlab-org/gitlab/-/issues/457090
+      stub_feature_flags(duo_chat_requires_licensed_seat: false)
+
+      # Disable license requirement for duo chat (self managed), which is subject to change.
+      # See https://gitlab.com/gitlab-org/gitlab/-/issues/457283
+      stub_feature_flags(duo_chat_requires_licensed_seat_sm: false)
+
+      # Experimental merge request dashboard
+      stub_feature_flags(merge_request_dashboard: false)
+
+      # Disable new Vue breadcrumbs while feature flag is still in wip state
+      stub_feature_flags(vue_page_breadcrumbs: false)
     else
       unstub_all_feature_flags
     end
@@ -405,6 +404,12 @@ RSpec.configure do |config|
     end
   end
 
+  config.around(:example, :allow_unrouted_sidekiq_calls) do |example|
+    ::Gitlab::SidekiqSharding::Validator.allow_unrouted_sidekiq_calls do
+      example.run
+    end
+  end
+
   # previous test runs may have left some resources throttled
   config.before do
     ::Gitlab::ExclusiveLease.reset_all!("el:throttle:*")
@@ -437,6 +442,12 @@ RSpec.configure do |config|
       chain.add DisableQueryLimit
       chain.insert_after ::Gitlab::SidekiqMiddleware::RequestStoreMiddleware, IsolatedRequestStore
 
+      example.run
+    end
+  end
+
+  config.around do |example|
+    Gitlab::SidekiqSharding::Validator.enabled do
       example.run
     end
   end
@@ -544,15 +555,35 @@ end
 
 Rack::Test::UploadedFile.prepend(TouchRackUploadedFile)
 
-# Monkey-patch to enable ActiveSupport::Notifications for Redis commands
+# Inject middleware to enable ActiveSupport::Notifications for Redis commands
 module RedisCommands
   module Instrumentation
-    def process(commands, &block)
-      ActiveSupport::Notifications.instrument('redis.process_commands', commands: commands) do
-        super(commands, &block)
+    def call(command, redis_config)
+      ActiveSupport::Notifications.instrument('redis.process_commands', commands: command) do
+        super(command, redis_config)
       end
     end
   end
 end
 
-Redis::Client.prepend(RedisCommands::Instrumentation)
+RedisClient.register(RedisCommands::Instrumentation)
+
+module UsersInternalAllowExclusiveLease
+  extend ActiveSupport::Concern
+
+  class_methods do
+    def unique_internal(scope, username, email_pattern, &block)
+      # this lets skip transaction checks when Users::Internal bots are created in
+      # let_it_be blocks during test set-up.
+      #
+      # Users::Internal bot creation within examples are still checked since the RSPec.current_scope is :example
+      if ::RSpec.respond_to?(:current_scope) && ::RSpec.current_scope == :before_all
+        Gitlab::ExclusiveLease.skipping_transaction_check { super }
+      else
+        super
+      end
+    end
+  end
+end
+
+Users::Internal.prepend(UsersInternalAllowExclusiveLease)

@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe ErrorTracking::ListProjectsService, feature_category: :integrations do
   let_it_be(:user) { create(:user) }
-  let_it_be(:project, reload: true) { create(:project) }
+  let_it_be(:project, reload: true) { create(:project, maintainers: user) }
 
   let(:sentry_url) { 'https://sentrytest.gitlab.com/api/0/projects/org/proj/' }
   let(:token) { 'test-token' }
@@ -17,10 +17,6 @@ RSpec.describe ErrorTracking::ListProjectsService, feature_category: :integratio
   end
 
   subject { described_class.new(project, user, params) }
-
-  before do
-    project.add_maintainer(user)
-  end
 
   describe '#execute' do
     let(:result) { subject.execute }

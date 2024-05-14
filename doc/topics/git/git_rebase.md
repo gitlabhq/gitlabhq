@@ -260,7 +260,7 @@ you can't approve a merge request if you have rebased it.
 
 ## Related topics
 
-- [Numerous undo possibilities in Git](numerous_undo_possibilities_in_git/index.md#undo-staged-local-changes-without-modifying-history)
+- [Numerous undo possibilities in Git](undo.md#undo-staged-local-changes-without-modifying-history)
 - [Git documentation for branches and rebases](https://git-scm.com/book/en/v2/Git-Branching-Rebasing)
 - [Project squash and merge settings](../../user/project/merge_requests/squash_and_merge.md#configure-squash-options-for-a-project)
 

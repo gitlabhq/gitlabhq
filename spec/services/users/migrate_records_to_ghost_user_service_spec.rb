@@ -17,14 +17,16 @@ RSpec.describe Users::MigrateRecordsToGhostUserService, feature_category: :user_
       context 'when deleted user is present as both author and edited_user' do
         include_examples 'migrating records to the ghost user', Issue, [:author, :last_edited_by] do
           let(:created_record) do
-            create(:issue, project: project, author: user, last_edited_by: user)
+            create(:issue, project: project, author: user, last_edited_by: user, last_edited_at: Time.current)
           end
         end
       end
 
       context 'when deleted user is present only as edited_user' do
         include_examples 'migrating records to the ghost user', Issue, [:last_edited_by] do
-          let(:created_record) { create(:issue, project: project, author: create(:user), last_edited_by: user) }
+          let(:created_record) do
+            create(:issue, project: project, author: create(:user), last_edited_by: user, last_edited_at: Time.current)
+          end
         end
       end
 

@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Releases::Links::UpdateService, feature_category: :release_orchestration do
   let(:service) { described_class.new(release, user, params) }
   let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user) { create(:user, developer_of: project) }
   let_it_be(:release) { create(:release, project: project, author: user, tag: 'v1.1.0') }
 
   let(:release_link) do
@@ -22,10 +22,6 @@ RSpec.describe Releases::Links::UpdateService, feature_category: :release_orches
   let(:url) { 'https://example.com' }
   let(:direct_asset_path) { '/path' }
   let(:link_type) { 'other' }
-
-  before do
-    project.add_developer(user)
-  end
 
   describe '#execute' do
     subject(:execute) { service.execute(release_link) }

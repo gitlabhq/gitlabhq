@@ -6,18 +6,12 @@ RSpec.describe Projects::GoogleCloud::ConfigurationController, feature_category:
   let_it_be(:project) { create(:project, :public) }
   let_it_be(:url) { project_google_cloud_configuration_path(project) }
 
-  let_it_be(:user_guest) { create(:user) }
-  let_it_be(:user_developer) { create(:user) }
-  let_it_be(:user_maintainer) { create(:user) }
+  let_it_be(:user_guest) { create(:user, guest_of: project) }
+  let_it_be(:user_developer) { create(:user, developer_of: project) }
+  let_it_be(:user_maintainer) { create(:user, maintainer_of: project) }
 
   let_it_be(:unauthorized_members) { [user_guest, user_developer] }
   let_it_be(:authorized_members) { [user_maintainer] }
-
-  before do
-    project.add_guest(user_guest)
-    project.add_developer(user_developer)
-    project.add_maintainer(user_maintainer)
-  end
 
   context 'when accessed by unauthorized members' do
     it 'returns not found on GET request' do

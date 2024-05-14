@@ -8,14 +8,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 This API enables you to work with external services that integrate with GitLab.
-
-NOTE:
-In GitLab 14.4, the `services` endpoint was [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/334500) to `integrations`.
-Calls to the integrations API can be made to both `/projects/:id/services` and `/projects/:id/integrations`.
-The examples in this document refer to the endpoint at `/projects/:id/integrations`.
 
 This API requires an access token with the Maintainer or Owner role.
 
@@ -293,11 +288,14 @@ Get the Buildkite integration settings for a project.
 GET /projects/:id/integrations/buildkite
 ```
 
-## Campfire
+## Campfire Classic
 
-### Set up Campfire
+You can integrate with Campfire Classic. Note that Campfire Classic is an old product that is
+[no longer sold](https://gitlab.com/gitlab-org/gitlab/-/issues/329337) by Basecamp.
 
-Set up the Campfire integration for a project.
+### Set up Campfire Classic
+
+Set up the Campfire Classic integration for a project.
 
 ```plaintext
 PUT /projects/:id/integrations/campfire
@@ -307,21 +305,21 @@ Parameters:
 
 | Parameter     | Type    | Required | Description                                                                                 |
 |---------------|---------|----------|---------------------------------------------------------------------------------------------|
-| `token`       | string  | true     | API authentication token from Campfire. To get the token, sign in to Campfire and select **My info**. |
+| `token`       | string  | true     | API authentication token from Campfire Classic. To get the token, sign in to Campfire Classic and select **My info**. |
 | `subdomain`   | string  | false    | `.campfirenow.com` subdomain when you're signed in. |
-| `room`        | string  | false    | ID portion of the Campfire room URL. |
+| `room`        | string  | false    | ID portion of the Campfire Classic room URL. |
 
-### Disable Campfire
+### Disable Campfire Classic
 
-Disable the Campfire integration for a project. Integration settings are reset.
+Disable the Campfire Classic integration for a project. Integration settings are reset.
 
 ```plaintext
 DELETE /projects/:id/integrations/campfire
 ```
 
-### Get Campfire settings
+### Get Campfire Classic settings
 
-Get the Campfire integration settings for a project.
+Get the Campfire Classic integration settings for a project.
 
 ```plaintext
 GET /projects/:id/integrations/campfire
@@ -444,10 +442,10 @@ Parameters:
 |------------------------|---------|----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `api_key`              | string  | true     | API key used for authentication with Datadog.                                                                                                                                          |
 | `api_url`              | string  | false    | (Advanced) The full URL for your Datadog site.                                                                                                                                          |
-| `datadog_env`          | string  | false    | For self-managed deployments, set the `env%` tag for all the data sent to Datadog.                                                                                                       |
-| `datadog_service`      | string  | false    | Tag all data from this GitLab instance in Datadog. Can be used when managing several self-managed deployments.                                                                               |
+| `datadog_env`          | string  | false    | For self-managed deployments, set the `env%` tag for all the data sent to Datadog.                                                                                                      |
+| `datadog_service`      | string  | false    | Tag all data from this GitLab instance in Datadog. Can be used when managing several self-managed deployments.                                                                          |
 | `datadog_site`         | string  | false    | The Datadog site to send data to. To send data to the EU site, use `datadoghq.eu`.                                                                                                      |
-| `datadog_tags`         | string  | false    | Custom tags in Datadog. Specify one tag per line in the format `key:value\nkey2:value2` ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79665) in GitLab 14.8.).   |
+| `datadog_tags`         | string  | false    | Custom tags in Datadog. Specify one tag per line in the format `key:value\nkey2:value2`                                                                                                 |
 | `archive_trace_events` | boolean | false    | When enabled, job logs are collected by Datadog and displayed along with pipeline execution traces ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/346339) in GitLab 15.3). |
 
 ### Disable Datadog
@@ -704,15 +702,13 @@ GET /projects/:id/integrations/external-wiki
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
-**Status:** Beta
+**Offering:** Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/435706) in GitLab 16.9 [with a flag](../administration/feature_flags.md) named `git_guardian_integration`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/435706) in GitLab 16.9 [with a flag](../administration/feature_flags.md) named `git_guardian_integration`. Enabled by default. Disabled on GitLab.com.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../administration/feature_flags.md) named `git_guardian_integration`.
-On GitLab.com, this feature is not available.
-This feature is not ready for production use.
+On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](../administration/feature_flags.md) named `git_guardian_integration`.
+On GitLab.com, this feature is not available. On GitLab Dedicated, this feature is available.
 
 [GitGuardian](https://www.gitguardian.com/) is a cybersecurity service that detects sensitive data such as API keys
 and passwords in source code repositories.
@@ -721,7 +717,15 @@ fix security issues before hackers can exploit them.
 
 You can configure GitLab to reject commits based on GitGuardian policies.
 
-This feature is in [Beta](../policy/experiment-beta-support.md#beta)  and subject to change without notice.
+### Known issues
+
+- Pushes can be delayed or can time out. With the GitGuardian integration, pushes are sent to a third-party, and GitLab has no control over the connection with GitGuardian or the GitGuardian process.
+- Due to a [GitGuardian API limitation](https://api.gitguardian.com/docs#operation/multiple_scan), the integration ignores files over the size of 1 MB. They are not scanned.
+- If a pushed file has a name over 256 characters long the push won't go through.
+  For more information, see [GitGuardian API documentation](https://api.gitguardian.com/docs#operation/multiple_scan) .
+
+Troubleshooting steps on [the integration page](../user/project/integrations/git_guardian.md#troubleshooting)
+show how to mitigate some of these problems.
 
 ### Set up GitGuardian
 
@@ -757,7 +761,7 @@ GET /projects/:id/integrations/git-guardian
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 ### Set up GitHub
 
@@ -797,7 +801,10 @@ GET /projects/:id/integrations/github
 
 Update the GitLab for Slack app integration for a project.
 
-You cannot create a GitLab for Slack app. You must [install the app](../user/project/integrations/gitlab_slack_application.md#install-the-gitlab-for-slack-app) from the GitLab UI.
+You cannot create a GitLab for Slack app through the API because the integration
+requires an OAuth 2.0 token that you cannot get from the GitLab API alone.
+Instead, you must [install the app](../user/project/integrations/gitlab_slack_application.md#install-the-gitlab-for-slack-app) from the GitLab UI.
+You can then use this API endpoint to update the integration.
 
 ```plaintext
 PUT /projects/:id/integrations/gitlab-slack-application
@@ -885,20 +892,20 @@ Get the Google Chat integration settings for a project.
 GET /projects/:id/integrations/hangouts-chat
 ```
 
-## Google Cloud Artifact Registry
+## Google Artifact Management
 
 DETAILS:
-**Offering:** SaaS
+**Offering:** GitLab.com
 **Status:** Beta
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/425066) in GitLab 16.9 as a [Beta](../policy/experiment-beta-support.md) feature [with a flag](../administration/feature_flags.md) named `gcp_artifact_registry`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/425066) in GitLab 16.9 as a [Beta](../policy/experiment-beta-support.md) feature [with a flag](../administration/feature_flags.md) named `google_cloud_support_feature_flag`. Disabled by default.
 
 FLAG:
-On GitLab.com, this feature is not available. The feature is not ready for production use.
+On GitLab.com, this feature is not available. This feature is not ready for production use.
 
-### Set up Google Cloud Artifact Registry
+### Set up Google Artifact Management
 
-Set up the Google Cloud Artifact Registry integration for a project.
+Set up the Google Artifact Management integration for a project.
 
 ```plaintext
 PUT /projects/:id/integrations/google-cloud-platform-artifact-registry
@@ -908,27 +915,65 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `workload_identity_pool_project_number` | string | true | Project number of the Workload Identity Pool. |
-| `workload_identity_pool_id` | string | true | ID of the Workload Identity Pool. |
-| `workload_identity_pool_provider_id` | string | true | ID of the Workload Identity Pool provider. |
 | `artifact_registry_project_id` | string | true | ID of the Google Cloud project. |
 | `artifact_registry_location` | string | true | Location of the Artifact Registry repository. |
 | `artifact_registry_repositories` | string | true | Repository of Artifact Registry. |
 
-### Disable Google Cloud Artifact Registry
+### Disable Google Artifact Management
 
-Disable the Google Cloud Artifact Registry integration for a project. Integration settings are reset.
+Disable the Google Artifact Management integration for a project. Integration settings are reset.
 
 ```plaintext
 DELETE /projects/:id/integrations/google-cloud-platform-artifact-registry
 ```
 
-### Get Google Cloud Artifact Registry settings
+### Get Google Artifact Management settings
 
-Get the Google Cloud Artifact Registry integration settings for a project.
+Get the Google Artifact Management integration settings for a project.
 
 ```plaintext
 GET /projects/:id/integrations/google-cloud-platform-artifact-registry
+```
+
+## Google Cloud Identity and Access Management (IAM)
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/439200) in GitLab 16.10 as a [Beta](../policy/experiment-beta-support.md) feature [with a flag](../administration/feature_flags.md) named `google_cloud_support_feature_flag`. Disabled by default.
+
+FLAG:
+On GitLab.com, this feature is not available.
+This feature is not ready for production use.
+
+### Set up Google Cloud Identity and Access Management
+
+Set up the Google Cloud Identity and Access Management integration for a project.
+
+```plaintext
+PUT /projects/:id/integrations/google-cloud-platform-workload-identity-federation
+```
+
+Parameters:
+
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `workload_identity_federation_project_id` | string | true | Google Cloud project ID for the Workload Identity Federation. |
+| `workload_identity_federation_project_number` | integer | true | Google Cloud project number for the Workload Identity Federation. |
+| `workload_identity_pool_id` | string | true | ID of the Workload Identity Pool. |
+| `workload_identity_pool_provider_id` | string | true | ID of the Workload Identity Pool provider. |
+
+### Disable Google Cloud Identity and Access Management
+
+Disable the Google Cloud Identity and Access Management integration for a project. Integration settings are reset.
+
+```plaintext
+DELETE /projects/:id/integrations/google-cloud-platform-workload-identity-federation
+```
+
+### Get Google Cloud Identity and Access Management
+
+Get the settings for the Google Cloud Identity and Access Management for a project.
+
+```plaintext
+GET /projects/:id/integration/google-cloud-platform-workload-identity-federation
 ```
 
 ## Google Play
@@ -1144,6 +1189,8 @@ Parameters:
 | `commit_events` | boolean | false | Enable notifications for commit events. |
 | `merge_requests_events` | boolean | false | Enable notifications for merge request events. |
 | `comment_on_event_enabled` | boolean | false | Enable comments in Jira issues on each GitLab event (commit or merge request). |
+| `issues_enabled` | boolean | false | Enable viewing Jira issues in GitLab. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267015) in GitLab 17.0. |
+| `project_keys` | array of strings | false | Keys of Jira projects. When `issues_enabled` is `true`, this setting specifies which Jira projects to view issues from in GitLab. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267015) in GitLab 17.0. |
 
 ### Disable Jira
 
@@ -1365,6 +1412,41 @@ Get the Packagist integration settings for a project.
 
 ```plaintext
 GET /projects/:id/integrations/packagist
+```
+
+## Phorge
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145863) in GitLab 16.11.
+
+### Set up Phorge
+
+Set up the Phorge integration for a project.
+
+```plaintext
+PUT /projects/:id/integrations/phorge
+```
+
+Parameters:
+
+| Parameter       | Type   | Required | Description           |
+|-----------------|--------|----------|-----------------------|
+| `issues_url`    | string | true     | URL of the issue.     |
+| `project_url`   | string | true     | URL of the project.   |
+
+### Disable Phorge
+
+Disable the Phorge integration for a project. Integration settings are reset.
+
+```plaintext
+DELETE /projects/:id/integrations/phorge
+```
+
+### Get Phorge settings
+
+Get the Phorge integration settings for a project.
+
+```plaintext
+GET /projects/:id/integrations/phorge
 ```
 
 ## Pipeline status emails
@@ -1722,6 +1804,7 @@ Parameters:
 | --------- | ---- | -------- | ----------- |
 | `token`   | string | true | The Telegram bot token (for example, `123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11`). |
 | `room` | string | true | Unique identifier for the target chat or the username of the target channel (in the format `@channelusername`). |
+| `thread` | integer | false | Unique identifier for the target message thread (topic in a forum supergroup). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/441097) in GitLab 16.11. |
 | `notify_only_broken_pipelines` | boolean | false | Send notifications for broken pipelines. |
 | `branches_to_be_notified` | string | false | Branches to send notifications for ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134361) in GitLab 16.5). Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default value is `default`. |
 | `push_events` | boolean | true | Enable notifications for push events. |

@@ -14,89 +14,102 @@ We manage design tokens in the [`gitlab-ui`](https://gitlab.com/gitlab-org/gitla
 
 Design tokens are provided in different modes (default/dark) and file formats for use in CSS (custom properties), JavaScript (ES6 Constants/JSON), and SCSS (variables), for example:
 
-**JavaScript**
-
-```javascript
-import { BLUE_500 } from '@gitlab/ui/dist/tokens/js/tokens';
-
-const color = BLUE_500; // #1f75cb
-```
-
 **CSS**
 
 ```css
-@import '@gitlab/ui/dist/tokens/css/tokens';
+@import '@gitlab/ui/src/tokens/build/css/tokens';
 
-.elem {
-  color: var(--blue-500); /* #1f75cb */
+h1 {
+  color: var(--gl-text-color-heading); /* #1f1e24 */
 }
 ```
 
 **SCSS**
 
 ```scss
-@import '@gitlab/ui/dist/tokens/scss/tokens';
+@import '@gitlab/ui/src/tokens/build/scss/tokens';
 
-.elem {
-  color: $blue-500; /* #1f75cb */
+h1 {
+  color: $gl-text-color-heading; /* #1f1e24 */
 }
+```
+
+**JavaScript**
+
+```javascript
+import { GL_TEXT_COLOR_HEADING } from '@gitlab/ui/src/tokens/build/js/tokens';
+
+const color = GL_TEXT_COLOR_HEADING; // #1f1e24
 ```
 
 ### Dark mode
 
 Where color design tokens are updated for dark mode, their values are provided with the same name in files appended with `.dark`, for example:
 
-**JavaScript**
-
-```javascript
-import { BLUE_500 } from '@gitlab/ui/dist/tokens/js/tokens.dark';
-
-const color = BLUE_500; // #428fdc
-```
-
 **CSS**
 
 ```css
-@import '@gitlab/ui/dist/tokens/css/tokens.dark';
+@import '@gitlab/ui/src/tokens/build/css/tokens.dark';
 
-.elem {
-  color: var(--blue-500); /* #428fdc */
+h1 {
+  color: var(--gl-text-color-heading); /* #fff */
 }
 ```
 
 **SCSS**
 
 ```scss
-@import '@gitlab/ui/dist/tokens/scss/tokens.dark';
+@import '@gitlab/ui/src/tokens/build/scss/tokens.dark';
 
-.elem {
-  color: $blue-500; /* #428fdc */
+h1 {
+  color: $gl-text-color-heading; /* #fff */
 }
+```
+
+**JavaScript**
+
+```javascript
+import { GL_TEXT_COLOR_HEADING } from '@gitlab/ui/src/tokens/build/js/tokens.dark';
+
+const color = GL_TEXT_COLOR_HEADING; // #fff
 ```
 
 ## Creating or updating design tokens
 
 ### Format
 
-Our design tokens use the [Design Tokens Format Module](https://tr.designtokens.org/format/) for defining design tokens that integrate with different tools and are converted to required file formats. It is a [community group draft report](https://www.w3.org/standards/types#reports), published by the [Design Tokens Community Group](https://www.w3.org/community/design-tokens/).
+Our design tokens use the [Design Tokens Format Module](https://tr.designtokens.org/format/) for defining design tokens that integrate with different tools and are converted to required file formats. It is a [community group draft report](https://www.w3.org/standards/types/#reports), published by the [Design Tokens Community Group](https://www.w3.org/community/design-tokens/).
 
 The Design Tokens Format Module promotes a `*.token.json` extension standard for design token files, with a format that includes [a name and `$value`](https://tr.designtokens.org/format/#name-and-value) and an explicit [`$type`](https://tr.designtokens.org/format/#type-0):
 
 ```json
-// color.tokens.json
+// text.color.tokens.json
 {
-  "token name": {
-    "$value": "#000",
+  "heading": {
+    "$value": "#1f1e24",
     "$type": "color"
   }
 }
 ```
 
-### Transformations
+### Automation
 
-Our design tokens use [style-dictionary](https://amzn.github.io/style-dictionary/) to convert design tokens into consumable file formats (CSS/SCSS/JavaScript/JSON).
+Our design tokens use [style-dictionary](https://amzn.github.io/style-dictionary/) to compile design tokens into consumable file formats (CSS/SCSS/JavaScript/JSON).
 
-A parser makes [design tokens format properties](https://tr.designtokens.org/format/#design-token-properties) compatible with [style-dictionary design token attributes](https://amzn.github.io/style-dictionary/#/tokens?id=design-token-attributes).
+#### Transforms
+
+[Transforms](https://amzn.github.io/style-dictionary/#/api?id=registertransform) modify design tokens before being compiled and are
+used to prefix compiled output, and use [mode](#modes) values when provided.
+
+#### Transform groups
+
+[Transform groups](https://amzn.github.io/style-dictionary/#/api?id=registertransform) apply transforms to platforms, for example, CSS and
+JavaScript have different transform groups for casing `kebab-case` for
+CSS and SCSS output, `CONSTANT_CASE` for JavaScript output.
+
+#### Parser
+
+A parser makes [Design Tokens Format Module properties](https://tr.designtokens.org/format/#design-token-properties) compatible with [style-dictionary design token attributes](https://amzn.github.io/style-dictionary/#/tokens?id=design-token-attributes).
 
 | Design Tokens Format Module                                                | style-dictionary                                                                                                                    |
 | -------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
@@ -106,42 +119,65 @@ A parser makes [design tokens format properties](https://tr.designtokens.org/for
 
 ### Names
 
-A design token name is a unique and case-sensitive identifier of a value. A name can be used across different [modes](#modes) to generate style overrides.
+A design token [name](https://tr.designtokens.org/format/#name-and-value)
+is a unique and case-sensitive identifier of a value.
+
+Names have [character restrictions](https://tr.designtokens.org/format/#character-restrictions) including:
+
+1. Names must not begin with `$`
+1. Names must not contain `{` or `}`
+1. Names must not contain `.`
 
 ### Groups
 
-Groups are arbitrary ways to cluster tokens together in a category. They should not be used to infer the type or purpose of design tokens. For that purpose, use the [`$type`](#type) property.
+[Groups](https://tr.designtokens.org/format/#groups) are arbitrary ways to cluster tokens together in a category. They should not be used to infer the type or purpose of design tokens. For that purpose, use the [`$type`](#type) property.
 
 ```json
 {
-  "group name": {
-    "token name": {
-      "$value": "#000"
+  "color": {
+    "heading": {
+       "$value": "#1f1e24",
+       "$type": "color"
     }
+  }
+}
+```
+
+Groups can also be nested for greater context setting:
+
+```json
+{
+  "text": {
+     "color": {
+       "heading": {
+          "$value": "#1f1e24",
+          "$type": "color"
+       }
+     }
   }
 }
 ```
 
 Group names prepend design token names in generated output, for example:
 
-**JavaScript**
-
-```javascript
-const GROUP_NAME_TOKEN_NAME = "#000";
-```
-
 **CSS**
 
 ```css
 :root {
-  --group-name-token-name: #000;
+  --gl-text-color-heading: #1f1e24;
 }
 ```
 
 **SCSS**
 
 ```scss
-$group-name-token-name: #000;
+$gl-text-color-heading: #1f1e24;
+```
+
+**JavaScript**
+
+```javascript
+const GL_TEXT_COLOR_HEADING = "#1f1e24";
 ```
 
 ### Values
@@ -160,7 +196,7 @@ A design token value can be a string or [alias](#aliases), for example:
 
 | Example       | Value               |
 | ------------- | ------------------- |
-| color         | `"#1f75cb"`         |
+| color         | `"#1f1e24"`         |
 | font weight   | `"bold"`            |
 | spacing scale | `"16"`              |
 | easing        | `"ease-out"`        |
@@ -169,12 +205,13 @@ A design token value can be a string or [alias](#aliases), for example:
 
 ### Aliases
 
-A design token's value can be a reference to another token, for example the alias token `text-color` has the value `{color.default}`:
+[Aliases](https://tr.designtokens.org/format/#aliases-references) allow
+a design token value to reference to another token, for example the alias token `custom-token` has the value `{text.color.heading}`:
 
 ```json
 {
-  "text-color": {
-    "$value": "{color.default}"
+  "custom-token": {
+    "$value": "{text.color.heading}"
   }
 }
 ```
@@ -185,19 +222,19 @@ This allows generated CSS and SCSS that are output by using [Output References](
 
 ```css
 :root {
-  --text-color: var(--color-default);
+  --gl-custom-token: var(--gl-text-color-heading);
 }
 ```
 
 **SCSS**
 
 ```scss
-$text-color: $color-default;
+$gl-custom-token: $gl-text-color-heading;
 ```
 
 ### Type
 
-An optional [$type](https://tr.designtokens.org/format/#type-0) property is used for value transformations and grouping tokens together, for example:
+An optional [$type](https://tr.designtokens.org/format/#type-0) property is used for tools to reliably interpret their value.
 
 ```json
 {
@@ -208,58 +245,28 @@ An optional [$type](https://tr.designtokens.org/format/#type-0) property is used
 }
 ```
 
-Results in the output `tokens.grouped.json` that can be used for documentation or tooling configuration:
+## Modes
 
-```json
-{
-  "color": {
-    "token name": "#000"
-  }
-}
-```
+Modes allow design tokens to update value for different use cases, for
+example, light and dark mode colors.
 
-### Modes
-
-Modes are processed on top of default tokens and can be combined with other modes, and inherited separately from stylesheets. Modes are denoted with a `.{mode}.token.json` filename which is used to filter tokens by file, for example: for dark mode token files, end with `.dark.token.json`.
-
-#### Default design tokens
-
-**Input**
-
-`color.tokens.json`
+Modes are defined as an object in the `$value` property:
 
 ```json
 {
   "text-color": {
-    "$value": "#000",
+    "$value": {
+      "default": "#000",
+      "dark": "#fff",
+    },
     "$type": "color"
   }
 }
 ```
 
-**Output**
+When defined each mode value is compiled into separate output:
 
-`tokens.grouped.json`
-
-```json
-{
-  "color": {
-    "text-color": "#000"
-  }
-}
-```
-
-`tokens.js`
-
-```javascript
-export const TEXT_COLOR = "#000";
-```
-
-`tokens.scss`
-
-```scss
-$text-color: #000;
-```
+**CSS**
 
 `tokens.css`
 
@@ -269,39 +276,20 @@ $text-color: #000;
 }
 ```
 
-#### Dark mode design tokens
+`tokens.dark.css`
 
-Design tokens for different modes are generated separately from default tokens. Using the same name for tokens ensures they will override default values when imported, for example:
-
-**Input**
-
-`color.dark.tokens.json`
-
-```json
-{
-  "text-color": {
-    "$value": "#fff",
-    "$type": "color"
-  }
+```css
+:root {
+  --text-color: #fff;
 }
 ```
 
-**Output**
+**CSS**
 
-`tokens.dark.grouped.json`
+`tokens.scss`
 
-```json
-{
-  "color": {
-    "text-color": "#fff"
-  }
-}
-```
-
-`tokens.dark.js`
-
-```javascript
-export const TEXT_COLOR = "#fff";
+```scss
+$text-color: #000;
 ```
 
 `tokens.dark.scss`
@@ -310,10 +298,16 @@ export const TEXT_COLOR = "#fff";
 $text-color: #fff;
 ```
 
-`tokens.dark.css`
+**JavaScript**
 
-```css
-:root {
-  --text: #fff;
-}
+`tokens.js`
+
+```javascript
+export const TEXT_COLOR = "#000";
+```
+
+`tokens.dark.js`
+
+```javascript
+export const TEXT_COLOR = "#fff";
 ```

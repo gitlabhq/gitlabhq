@@ -26,6 +26,7 @@ module Gitlab
 
       attr_accessor :size, :mode, :id, :commit_id, :loaded_size, :binary
       attr_writer :name, :path, :data
+      attr_reader :raw
 
       def self.gitlab_blob_truncated_true
         @gitlab_blob_truncated_true ||= ::Gitlab::Metrics.counter(:gitlab_blob_truncated_true, 'blob.truncated? == true')
@@ -128,6 +129,9 @@ module Gitlab
         @loaded_size = @data.bytesize if @data
         @loaded_all_data = @loaded_size == size
 
+        # Retain the data before it is encoded
+        @raw = @data.dup
+
         # Recalculate binary status if we loaded all data
         @binary = nil if @loaded_all_data
 
@@ -149,7 +153,7 @@ module Gitlab
         return if @data == '' # don't mess with submodule blobs
 
         # Even if we return early, recalculate whether this blob is binary in
-        # case a blob was initialized as text but the full data isn'tspec/requests/api/graphql/mutations/branch_rules/update_spec.rb:
+        # case a blob was initialized as text but the full data isn't
         @binary = nil
 
         return if @loaded_all_data

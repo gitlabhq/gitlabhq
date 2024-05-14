@@ -4,11 +4,7 @@ require 'spec_helper'
 
 RSpec.describe FeatureFlagsUserListsFinder do
   let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:user) { create(:user) }
-
-  before_all do
-    project.add_maintainer(user)
-  end
+  let_it_be(:user) { create(:user, maintainer_of: project) }
 
   describe '#execute' do
     it 'returns user lists' do

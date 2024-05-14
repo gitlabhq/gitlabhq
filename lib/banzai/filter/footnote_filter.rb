@@ -37,6 +37,8 @@ module Banzai
         modified_footnotes = {}
 
         doc.xpath(XPATH_FOOTNOTE).each do |link_node|
+          next unless link_node[:id]
+
           ref_num = link_node[:id].delete_prefix(FOOTNOTE_LINK_ID_PREFIX)
           ref_num.gsub!(/[[:punct:]]/, '\\\\\&')
 

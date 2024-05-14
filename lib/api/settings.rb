@@ -58,6 +58,7 @@ module API
         optional :allowed_to_merge, type: Array, desc: 'An array of access levels allowed to merge' do
           requires :access_level, type: Integer, values: [::Gitlab::Access::DEVELOPER, ::Gitlab::Access::MAINTAINER], desc: 'A valid access level'
         end
+        optional :code_owner_approval_required, type: Boolean, desc: "Require approval from code owners"
         optional :developer_can_initial_push, type: Boolean, desc: 'Allow developers to initial push'
       end
       optional :default_group_visibility, type: String, values: Gitlab::VisibilityLevel.string_values, desc: 'The default group visibility'
@@ -68,8 +69,8 @@ module API
       optional :disable_feed_token, type: Boolean, desc: 'Disable display of RSS/Atom and Calendar `feed_tokens`'
       optional :disabled_oauth_sign_in_sources, type: Array[String], coerce_with: Validations::Types::CommaSeparatedToArray.coerce, desc: 'Disable certain OAuth sign-in sources'
       optional :domain_denylist_enabled, type: Boolean, desc: 'Enable domain denylist for sign ups'
-      optional :domain_denylist, type: Array[String], coerce_with: Validations::Types::CommaSeparatedToArray.coerce, desc: 'Users with e-mail addresses that match these domain(s) will NOT be able to sign-up. Wildcards allowed. Use separate lines for multiple entries. Ex: domain.com, *.domain.com'
-      optional :domain_allowlist, type: Array[String], coerce_with: Validations::Types::CommaSeparatedToArray.coerce, desc: 'ONLY users with e-mail addresses that match these domain(s) will be able to sign-up. Wildcards allowed. Use separate lines for multiple entries. Ex: domain.com, *.domain.com'
+      optional :domain_denylist, type: Array[String], coerce_with: Validations::Types::CommaSeparatedToArray.coerce, desc: 'Users with e-mail addresses that match these domain(s) will NOT be able to sign-up. Wildcards allowed. Enter multiple entries on separate lines. Ex: domain.com, *.domain.com'
+      optional :domain_allowlist, type: Array[String], coerce_with: Validations::Types::CommaSeparatedToArray.coerce, desc: 'ONLY users with e-mail addresses that match these domain(s) will be able to sign-up. Wildcards allowed. Enter multiple entries on separate lines. Ex: domain.com, *.domain.com'
       optional :eks_integration_enabled, type: Boolean, desc: 'Enable integration with Amazon EKS'
       given eks_integration_enabled: -> (val) { val } do
         requires :eks_account_id, type: String, desc: 'Amazon account ID for EKS integration'
@@ -169,7 +170,6 @@ module API
         requires :shared_runners_text, type: String, desc: 'Shared runners text '
       end
       optional :valid_runner_registrars, type: Array[String], desc: 'List of types which are allowed to register a GitLab runner'
-      optional :sign_in_text, type: String, desc: 'The sign in text of the GitLab application'
       optional :signin_enabled, type: Boolean, desc: 'Flag indicating if password authentication is enabled for the web interface' # support legacy names, can be removed in v5
       optional :signup_enabled, type: Boolean, desc: 'Flag indicating if sign up is enabled'
       optional :sourcegraph_enabled, type: Boolean, desc: 'Enable Sourcegraph'
@@ -216,6 +216,9 @@ module API
       optional :bulk_import_concurrent_pipeline_batch_limit, type: Integer, desc: 'Maximum simultaneous Direct Transfer pipeline batches to process'
       optional :bulk_import_enabled, type: Boolean, desc: 'Enable migrating GitLab groups and projects by direct transfer'
       optional :bulk_import_max_download_file, type: Integer, desc: 'Maximum download file size in MB when importing from source GitLab instances by direct transfer'
+      optional :concurrent_github_import_jobs_limit, type: Integer, desc: 'Github Importer maximum number of simultaneous import jobs'
+      optional :concurrent_bitbucket_import_jobs_limit, type: Integer, desc: 'Bitbucket Cloud Importer maximum number of simultaneous import jobs'
+      optional :concurrent_bitbucket_server_import_jobs_limit, type: Integer, desc: 'Bitbucket Server Importer maximum number of simultaneous import jobs'
       optional :allow_runner_registration_token, type: Boolean, desc: 'Allow registering runners using a registration token'
       optional :ci_max_includes, type: Integer, desc: 'Maximum number of includes per pipeline'
       optional :security_policy_global_group_approvers_enabled, type: Boolean, desc: 'Query scan result policy approval groups globally'
@@ -229,6 +232,7 @@ module API
       optional :namespace_aggregation_schedule_lease_duration_in_seconds, type: Integer, desc: 'Maximum duration (in seconds) between refreshes of namespace statistics (Default: 300)'
       optional :project_jobs_api_rate_limit, type: Integer, desc: 'Maximum authenticated requests to /project/:id/jobs per minute'
       optional :security_txt_content, type: String, desc: 'Public security contact information made available at https://gitlab.example.com/.well-known/security.txt'
+      optional :downstream_pipeline_trigger_limit_per_project_user_sha, type: Integer, desc: 'Maximum number of downstream pipelines that can be triggered per minute (for a given project, user, and commit).'
 
       Gitlab::SSHPublicKey.supported_types.each do |type|
         optional :"#{type}_key_restriction",

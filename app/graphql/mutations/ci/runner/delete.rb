@@ -11,8 +11,8 @@ module Mutations
         RunnerID = ::Types::GlobalIDType[::Ci::Runner]
 
         argument :id, RunnerID,
-                 required: true,
-                 description: 'ID of the runner to delete.'
+          required: true,
+          description: 'ID of the runner to delete.'
 
         def resolve(id:, **runner_attrs)
           runner = authorized_find!(id: id)

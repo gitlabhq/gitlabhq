@@ -16,6 +16,8 @@ module ResolvesMergeRequests
       args[:include_subgroups] = true
     end
 
+    rewrite_param_name(args, :reviewer_wildcard_id, :reviewer_id)
+
     mr_finder = MergeRequestsFinder.new(current_user, args.compact)
     finder = Gitlab::Graphql::Loaders::IssuableLoader.new(mr_parent, mr_finder)
 
@@ -40,6 +42,10 @@ module ResolvesMergeRequests
 
   def unconditional_includes
     [:target_project, :author]
+  end
+
+  def rewrite_param_name(params, old_name, new_name)
+    params[new_name] = params.delete(old_name) if params && params[old_name].present?
   end
 
   def preloads

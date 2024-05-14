@@ -7,15 +7,11 @@ RSpec.describe ActivityPub::Projects::ReleasesController, feature_category: :gro
 
   let_it_be(:project) { create(:project, :repository, :public) }
   let_it_be(:private_project) { create(:project, :repository, :private) }
-  let_it_be(:developer) { create(:user) }
+  let_it_be(:developer) { create(:user, developer_of: project) }
   let_it_be(:release_1) { create(:release, project: project, released_at: Time.zone.parse('2018-10-18')) }
   let_it_be(:release_2) { create(:release, project: project, released_at: Time.zone.parse('2019-10-19')) }
 
   let(:request_body) { '' }
-
-  before_all do
-    project.add_developer(developer)
-  end
 
   shared_examples 'common access controls' do
     it 'renders a 200' do

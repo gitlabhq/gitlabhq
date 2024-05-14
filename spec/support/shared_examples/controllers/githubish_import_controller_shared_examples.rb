@@ -140,7 +140,7 @@ RSpec.shared_examples 'a GitHub-ish import controller: GET status' do
 
   context 'when user is not allowed to import projects' do
     let(:user) { create(:user) }
-    let!(:group) { create(:group).tap { |group| group.add_developer(user) } }
+    let!(:group) { create(:group, developers: user) }
 
     it 'returns 404' do
       expect(stub_client(repos: [], orgs: [])).to receive(:repos)

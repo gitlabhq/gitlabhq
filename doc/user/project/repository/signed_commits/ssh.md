@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/343879) in GitLab 15.7 [with a flag](../../../../administration/feature_flags.md) named `ssh_commit_signatures`. Enabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/384202) in GitLab 15.8. Feature flag `ssh_commit_signatures` removed.
@@ -34,7 +34,7 @@ configure Git to begin using the key.
 Prerequisites:
 
 - Git 2.34.0 or newer.
-- OpenSSH 8.0 or newer.
+- OpenSSH 8.1 or newer.
 
   NOTE:
   OpenSSH 8.7 has broken signing functionality. If you are on OpenSSH 8.7, upgrade to OpenSSH 8.8.
@@ -156,12 +156,16 @@ If an SSH key becomes compromised, revoke it. Revoking a key changes both future
 - Past commits signed by this key are marked as unverified.
 - Future commits signed by this key are marked as unverified.
 
+Revoking an SSH key removes it from your account.
+SSH keys that are only used for authentication do not have the option to be revoked.
+
 To revoke an SSH key:
 
 1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **SSH Keys** (**{key}**).
-1. Select **Revoke** next to the SSH key you want to delete.
+1. Next to the SSH key you want to revoke, select **Revoke**.
+1. Optional. [Delete the SSH key.](../../../ssh.md#delete-an-ssh-key)
 
 ## Related topics
 

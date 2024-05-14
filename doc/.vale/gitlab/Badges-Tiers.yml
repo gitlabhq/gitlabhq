@@ -1,0 +1,12 @@
+# Warning: gitlab.Badges-Tiers
+#
+# Tests the tier information in the tier badges that appear below topic titles.
+#
+# For a list of all options, see https://docs.gitlab.com/ee/development/documentation/styleguide/#available-product-tier-badges
+extends: existence
+message: "Tiers should be capitalized, comma-separated, and ordered lowest to highest."
+link: https://docs.gitlab.com/ee/development/documentation/styleguide/#available-product-tier-badges
+level: error
+scope: raw
+raw:
+- (?<=\n\*\*Tier:\*\*)[^\n]*(free|premium|ultimate|, Free|Ultimate,)

@@ -1,0 +1,13 @@
+---
+table_name: audit_events_group_streaming_event_type_filters
+classes:
+- AuditEvents::Group::EventTypeFilter
+feature_categories:
+- audit_events
+description: Stores audit event type filters for external audit event destinations
+  configurations of top-level groups.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141739
+milestone: '16.10'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  namespace_id: namespaces

@@ -93,11 +93,11 @@ above. You can find more information at each of the pages below:
 
 - [Container scanning offline directions](../container_scanning/index.md#running-container-scanning-in-an-offline-environment)
 - [SAST offline directions](../sast/index.md#running-sast-in-an-offline-environment)
-- [Secret Detection offline directions](../secret_detection/index.md#running-secret-detection-in-an-offline-environment)
+- [Secret Detection offline directions](../secret_detection/pipeline/index.md#offline-configuration)
 - [DAST offline directions](../dast/run_dast_offline.md#run-dast-in-an-offline-environment)
 - [API Fuzzing offline directions](../api_fuzzing/configuration/offline_configuration.md)
 - [License Scanning offline directions](../../compliance/license_scanning_of_cyclonedx_files/index.md#running-in-an-offline-environment)
-- [Dependency Scanning offline directions](../dependency_scanning/index.md#running-dependency-scanning-in-an-offline-environment)
+- [Dependency Scanning offline directions](../dependency_scanning/index.md#offline-environment)
 
 ## Loading Docker images onto your offline host
 
@@ -129,7 +129,7 @@ include:
 The pipeline downloads the Docker images needed for the Security Scanners and saves them as
 [job artifacts](../../../ci/jobs/job_artifacts.md) or pushes them to the [container registry](../../packages/container_registry/index.md)
 of the project where the pipeline is executed. These archives can be transferred to another location
-and [loaded](https://docs.docker.com/engine/reference/commandline/load/) in a Docker daemon.
+and [loaded](https://docs.docker.com/reference/cli/docker/image/load/) in a Docker daemon.
 This method requires a runner with access to both `gitlab.com` (including
 `registry.gitlab.com`) and the local offline instance. This runner must run in
 [privileged mode](https://docs.gitlab.com/runner/executors/docker.html#use-docker-in-docker-with-privileged-mode)

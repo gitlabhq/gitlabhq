@@ -13,7 +13,6 @@ import { truncate } from '~/lib/utils/text_utility';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import isLastDeployment from '../graphql/queries/is_last_deployment.query.graphql';
-import getEnvironmentClusterAgent from '../graphql/queries/environment_cluster_agent.query.graphql';
 import ExternalUrl from './environment_external_url.vue';
 import Actions from './environment_actions.vue';
 import StopComponent from './environment_stop.vue';
@@ -23,7 +22,6 @@ import Terminal from './environment_terminal_button.vue';
 import Delete from './environment_delete.vue';
 import Deployment from './deployment.vue';
 import DeployBoardWrapper from './deploy_board_wrapper.vue';
-import KubernetesOverview from './kubernetes_overview.vue';
 
 export default {
   components: {
@@ -43,7 +41,6 @@ export default {
     Terminal,
     TimeAgoTooltip,
     Delete,
-    KubernetesOverview,
     EnvironmentAlert: () => import('ee_component/environments/components/environment_alert.vue'),
     EnvironmentApproval: () =>
       import('ee_component/environments/components/environment_approval.vue'),
@@ -82,7 +79,7 @@ export default {
     tierTooltip: s__('Environment|Deployment tier'),
   },
   data() {
-    return { visible: false, clusterAgent: null, kubernetesNamespace: '', fluxResourcePath: '' };
+    return { visible: false };
   },
   computed: {
     icon() {
@@ -168,27 +165,6 @@ export default {
   methods: {
     toggleEnvironmentCollapse() {
       this.visible = !this.visible;
-
-      if (this.visible) {
-        this.getClusterAgent();
-      }
-    },
-    getClusterAgent() {
-      if (this.clusterAgent) return;
-
-      this.$apollo.addSmartQuery('environmentClusterAgent', {
-        variables() {
-          return { environmentName: this.environment.name, projectFullPath: this.projectPath };
-        },
-        query() {
-          return getEnvironmentClusterAgent;
-        },
-        update(data) {
-          this.clusterAgent = data?.project?.environment?.clusterAgent;
-          this.kubernetesNamespace = data?.project?.environment?.kubernetesNamespace || '';
-          this.fluxResourcePath = data?.project?.environment?.fluxResourcePath || '';
-        },
-      });
     },
   },
   deploymentClasses: [
@@ -205,13 +181,6 @@ export default {
     'gl-border-1',
     'gl-py-4',
     'gl-md-pl-7',
-    'gl-bg-gray-10',
-  ],
-  kubernetesOverviewClasses: [
-    'gl-border-gray-100',
-    'gl-border-t-solid',
-    'gl-border-1',
-    'gl-py-4',
     'gl-bg-gray-10',
   ],
 };
@@ -365,15 +334,6 @@ export default {
             <gl-link :href="helpPagePath">{{ content }}</gl-link>
           </template>
         </gl-sprintf>
-      </div>
-      <div v-if="clusterAgent" :class="$options.kubernetesOverviewClasses">
-        <kubernetes-overview
-          :class="{ 'gl-ml-7': inFolder }"
-          :cluster-agent="clusterAgent"
-          :namespace="kubernetesNamespace"
-          :flux-resource-path="fluxResourcePath"
-          :environment-name="environment.name"
-        />
       </div>
       <div v-if="rolloutStatus" :class="$options.deployBoardClasses">
         <deploy-board-wrapper

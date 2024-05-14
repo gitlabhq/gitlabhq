@@ -40,7 +40,7 @@ module RuboCop
           '`response.status`.'
 
         MSG_UNKNOWN_STATUS = 'HTTP status `%{code}` is unknown. ' \
-          'Please provide a valid one or disable this cop.'
+                             'Please provide a valid one or disable this cop.'
 
         MSG_DOCS_LINK = 'https://docs.gitlab.com/ee/development/testing_guide/best_practices.html#have_gitlab_http_status'
 
@@ -91,9 +91,9 @@ module RuboCop
         end
 
         def corrector(node)
-          lambda do |corrector|
+          ->(corrector) do
             replacement = replace_matcher(node) || replace_response_status(node)
-            corrector.replace(node.source_range, replacement)
+            corrector.replace(node.source_range, replacement) if node.source_range.source != replacement
           end
         end
 

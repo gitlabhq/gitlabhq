@@ -33,25 +33,19 @@ export default {
 };
 </script>
 <template>
-  <div>
-    <gl-empty-state
-      :title="$options.i18n.emptyState.title"
-      :svg-path="emptyAlertSvgPath"
-      :svg-height="null"
-    >
-      <template #description>
-        <div class="gl-display-block">
-          <span>{{ $options.i18n.emptyState.info }}</span>
-          <gl-link :href="alertsHelpUrl" target="_blank">
-            {{ $options.i18n.moreInformation }}
-          </gl-link>
-        </div>
-        <div v-if="userCanEnableAlertManagement" class="gl-display-block center gl-pt-4">
-          <gl-button category="primary" variant="confirm" :href="enableAlertManagementPath">
-            {{ $options.i18n.emptyState.buttonText }}
-          </gl-button>
-        </div>
-      </template>
-    </gl-empty-state>
-  </div>
+  <gl-empty-state :title="$options.i18n.emptyState.title" :svg-path="emptyAlertSvgPath">
+    <template #description>
+      <div class="gl-display-block">
+        <span>{{ $options.i18n.emptyState.info }}</span>
+        <gl-link :href="alertsHelpUrl" target="_blank">
+          {{ $options.i18n.moreInformation }}
+        </gl-link>
+      </div>
+    </template>
+    <template v-if="userCanEnableAlertManagement" #actions>
+      <gl-button category="primary" variant="confirm" :href="enableAlertManagementPath">
+        {{ $options.i18n.emptyState.buttonText }}
+      </gl-button>
+    </template>
+  </gl-empty-state>
 </template>

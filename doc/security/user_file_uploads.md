@@ -8,18 +8,22 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Users can upload files to:
 
 - Issues or merge requests in a project.
 - Epics in a group.
 
-GitLab generates direct URLs for these images with a random 32-character ID to prevent unauthorized users from guessing the URLs. This randomization offers some security for images containing sensitive information.
+GitLab generates direct URLs for these uploaded files with a random 32-character ID to prevent unauthorized users from guessing the URLs. This randomization offers some security for files containing sensitive information.
+
+Files uploaded by users to GitLab issues, merge requests, and epics contain `/uploads/<32-character-id>` in the URL path.
+
+WARNING:
+Exercise caution in downloading files uploaded by unknown or untrusted sources, especially if the file is an executable or script.
 
 ## Access control for uploaded files
 
-> - Enforced authorization checks [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80117) in GitLab 14.8 [with a flag](../administration/feature_flags.md) named `enforce_auth_checks_on_uploads`. Disabled by default.
 > - Enforced authorization checks became [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/352291) in GitLab 15.3. Feature flag `enforce_auth_checks_on_uploads` removed.
 > - Project settings in the user interface [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88567) in GitLab 15.3.
 

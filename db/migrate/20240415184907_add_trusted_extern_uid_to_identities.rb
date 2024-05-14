@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class AddTrustedExternUidToIdentities < Gitlab::Database::Migration[2.2]
-  milestone '16.9'
+  milestone '17.0'
 
   enable_lock_retries!
 

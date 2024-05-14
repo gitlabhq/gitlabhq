@@ -1,0 +1,18 @@
+fragment AchievementFragment on Achievement {
+  id
+  name
+  description
+  avatarUrl
+  userAchievements {
+    nodes {
+      id
+      user {
+        id
+        username
+        name
+        avatarUrl
+        webUrl
+      }
+    }
+  }
+}

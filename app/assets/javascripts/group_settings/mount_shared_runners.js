@@ -5,6 +5,8 @@ import UpdateSharedRunnersForm from './components/shared_runners_form.vue';
 export default (containerId = 'update-shared-runners-form') => {
   const containerEl = document.getElementById(containerId);
 
+  if (!containerEl) return null;
+
   const {
     groupId,
     groupName,

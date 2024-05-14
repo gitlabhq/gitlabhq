@@ -16,10 +16,12 @@ RSpec.describe Gitlab::Auth::Saml::AuthHash do
   end
 
   let(:omniauth_auth_hash) do
-    OmniAuth::AuthHash.new(uid: 'my-uid',
-                           provider: 'saml',
-                           info: info_hash,
-                           extra: { raw_info: OneLogin::RubySaml::Attributes.new(raw_info_attr) } )
+    OmniAuth::AuthHash.new(
+      uid: 'my-uid',
+      provider: 'saml',
+      info: info_hash,
+      extra: { raw_info: OneLogin::RubySaml::Attributes.new(raw_info_attr) }
+    )
   end
 
   before do

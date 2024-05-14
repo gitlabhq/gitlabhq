@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 You can enable Pages access control on your project
 if your administrator has [enabled the access control feature](../../../administration/pages/index.md#access-control)
@@ -44,7 +44,7 @@ For a demonstration, see [Pages access controls](https://www.youtube.com/watch?v
    invalidated, which usually takes less than a minute.
 
 The next time someone tries to access your website and the access control is
-enabled, they're presented with a page to sign into GitLab and verify they
+enabled, they're presented with a page to sign in to GitLab and verify they
 can access the website.
 
 ## Terminating a Pages session

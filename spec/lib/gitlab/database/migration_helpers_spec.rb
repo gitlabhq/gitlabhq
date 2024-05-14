@@ -1756,6 +1756,42 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
     end
   end
 
+  describe '#install_sharding_key_assignment_trigger' do
+    let(:trigger) { double }
+    let(:connection) { ActiveRecord::Base.connection }
+
+    it do
+      expect(Gitlab::Database::Triggers::AssignDesiredShardingKey).to receive(:new)
+        .with(table: :test_table, sharding_key: :project_id, parent_table: :parent_table,
+          parent_sharding_key: :parent_project_id, foreign_key: :foreign_key, connection: connection,
+          trigger_name: 'trigger_name').and_return(trigger)
+
+      expect(trigger).to receive(:create)
+
+      model.install_sharding_key_assignment_trigger(table: :test_table, sharding_key: :project_id,
+        parent_table: :parent_table, parent_sharding_key: :parent_project_id, foreign_key: :foreign_key,
+        trigger_name: 'trigger_name')
+    end
+  end
+
+  describe '#remove_sharding_key_assignment_trigger' do
+    let(:trigger) { double }
+    let(:connection) { ActiveRecord::Base.connection }
+
+    it do
+      expect(Gitlab::Database::Triggers::AssignDesiredShardingKey).to receive(:new)
+        .with(table: :test_table, sharding_key: :project_id, parent_table: :parent_table,
+          parent_sharding_key: :parent_project_id, foreign_key: :foreign_key, connection: connection,
+          trigger_name: 'trigger_name').and_return(trigger)
+
+      expect(trigger).to receive(:drop)
+
+      model.remove_sharding_key_assignment_trigger(table: :test_table, sharding_key: :project_id,
+        parent_table: :parent_table, parent_sharding_key: :parent_project_id, foreign_key: :foreign_key,
+        trigger_name: 'trigger_name')
+    end
+  end
+
   describe '#indexes_for' do
     it 'returns the indexes for a column' do
       idx1 = double(:idx, columns: %w[project_id])

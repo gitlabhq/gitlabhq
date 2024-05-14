@@ -4,6 +4,7 @@ import Tracking from '~/tracking';
 import { ASC } from '~/notes/constants';
 import { __ } from '~/locale';
 import { clearDraft } from '~/lib/utils/autosave';
+import DiscussionReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
 import createNoteMutation from '../../graphql/notes/create_work_item_note.mutation.graphql';
 import groupWorkItemByIidQuery from '../../graphql/group_work_item_by_iid.query.graphql';
 import workItemByIidQuery from '../../graphql/work_item_by_iid.query.graphql';
@@ -17,6 +18,7 @@ export default {
     avatarUrl: window.gon.current_user_avatar_url,
   },
   components: {
+    DiscussionReplyPlaceholder,
     WorkItemNoteSignedOut,
     WorkItemCommentLocked,
     WorkItemCommentForm,
@@ -110,7 +112,7 @@ export default {
         };
       },
       update(data) {
-        return data.workspace.workItems.nodes[0] ?? {};
+        return data.workspace.workItem ?? {};
       },
       skip() {
         return !this.workItemIid;
@@ -285,21 +287,17 @@ export default {
             :comment-button-text="commentButtonText"
             :is-discussion-locked="isDiscussionLocked"
             :is-work-item-confidential="isWorkItemConfidential"
+            :full-path="fullPath"
+            :work-item-iid="workItemIid"
             @submitForm="updateWorkItem"
             @cancelEditing="cancelEditing"
             @error="$emit('error', $event)"
           />
-          <textarea
+          <discussion-reply-placeholder
             v-else
-            ref="textarea"
-            rows="1"
-            class="reply-placeholder-text-field"
             data-testid="note-reply-textarea"
-            :placeholder="__('Reply…')"
-            :aria-label="__('Reply to comment')"
             @focus="showReplyForm"
-            @click="showReplyForm"
-          ></textarea>
+          />
         </div>
       </div>
     </div>

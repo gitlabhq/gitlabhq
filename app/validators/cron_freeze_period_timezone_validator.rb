@@ -8,6 +8,6 @@ class CronFreezePeriodTimezoneValidator < ActiveModel::EachValidator
     freeze_start_parser = Gitlab::Ci::CronParser.new(record.freeze_start, record.cron_timezone)
     freeze_end_parser = Gitlab::Ci::CronParser.new(record.freeze_end, record.cron_timezone)
 
-    record.errors.add(attribute, " is invalid syntax") unless freeze_start_parser.cron_timezone_valid? && freeze_end_parser.cron_timezone_valid?
+    record.errors.add(attribute, 'syntax is invalid') unless freeze_start_parser.cron_timezone_valid? && freeze_end_parser.cron_timezone_valid?
   end
 end

@@ -5,12 +5,19 @@ require 'spec_helper'
 module Gitlab
   module Ci
     class YamlProcessor
-      RSpec.describe Result do
+      RSpec.describe Result, feature_category: :pipeline_composition do
         include StubRequests
 
         let(:user) { create(:user) }
         let(:ci_config) { Gitlab::Ci::Config.new(config_content, user: user) }
         let(:result) { described_class.new(ci_config: ci_config, warnings: ci_config&.warnings) }
+
+        let(:config_content) do
+          <<~YAML
+            job:
+              script: echo 'hello'
+          YAML
+        end
 
         describe '#builds' do
           context 'when a job has ID tokens' do
@@ -22,6 +29,18 @@ module Gitlab
 
             it 'includes `id_tokens`' do
               expect(result.builds.first[:id_tokens]).to eq({ TEST_ID_TOKEN: { aud: 'https://gitlab.com' } })
+            end
+          end
+
+          context 'when a job has manual_confirmation' do
+            let(:config_content) do
+              YAML.dump(
+                test: { stage: 'test', script: 'echo', manual_confirmation: 'manual confirmation message' }
+              )
+            end
+
+            it 'includes `manual_confirmation`' do
+              expect(result.builds.first[:options][:manual_confirmation]).to eq('manual confirmation message')
             end
           end
         end
@@ -100,13 +119,6 @@ module Gitlab
         end
 
         describe '#stage_for' do
-          let(:config_content) do
-            <<~YAML
-              job:
-                script: echo 'hello'
-            YAML
-          end
-
           let(:job_name) { :job }
 
           subject(:stage_for) { result.stage_for(job_name) }
@@ -117,6 +129,15 @@ module Gitlab
             let(:job_name) { :invalid_job }
 
             it { is_expected.to be_nil }
+          end
+        end
+
+        describe '#included_components' do
+          it 'delegates to ci_config and memoizes the result' do
+            expect(ci_config).to receive(:included_components).once
+
+            result.included_components
+            result.included_components
           end
         end
       end

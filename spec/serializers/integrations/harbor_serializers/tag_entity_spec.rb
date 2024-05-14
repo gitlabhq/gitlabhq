@@ -10,14 +10,14 @@ RSpec.describe Integrations::HarborSerializers::TagEntity do
 
   let(:tag) do
     {
-      "artifact_id": 5,
-      "id": 6,
-      "immutable": false,
-      "name": "1",
-      "push_time": push_time,
-      "pull_time": pull_time,
-      "repository_id": 5,
-      "signed": false
+      artifact_id: 5,
+      id: 6,
+      immutable: false,
+      name: "1",
+      push_time: push_time,
+      pull_time: pull_time,
+      repository_id: 5,
+      signed: false
     }.deep_stringify_keys
   end
 

@@ -23,7 +23,7 @@ func TestNewSmartHTTPClient(t *testing.T) {
 		serverFixture(),
 	)
 	require.NoError(t, err)
-	testOutgoingMetadata(t, ctx)
+	testOutgoingMetadata(ctx, t)
 	require.NotNil(t, client.sidechannelRegistry)
 }
 
@@ -33,7 +33,7 @@ func TestNewBlobClient(t *testing.T) {
 		serverFixture(),
 	)
 	require.NoError(t, err)
-	testOutgoingMetadata(t, ctx)
+	testOutgoingMetadata(ctx, t)
 }
 
 func TestNewRepositoryClient(t *testing.T) {
@@ -43,7 +43,7 @@ func TestNewRepositoryClient(t *testing.T) {
 	)
 
 	require.NoError(t, err)
-	testOutgoingMetadata(t, ctx)
+	testOutgoingMetadata(ctx, t)
 }
 
 func TestNewDiffClient(t *testing.T) {
@@ -52,10 +52,10 @@ func TestNewDiffClient(t *testing.T) {
 		serverFixture(),
 	)
 	require.NoError(t, err)
-	testOutgoingMetadata(t, ctx)
+	testOutgoingMetadata(ctx, t)
 }
 
-func testOutgoingMetadata(t *testing.T, ctx context.Context) {
+func testOutgoingMetadata(ctx context.Context, t *testing.T) {
 	t.Helper()
 	md, ok := metadata.FromOutgoingContext(ctx)
 	require.True(t, ok, "get metadata from context")

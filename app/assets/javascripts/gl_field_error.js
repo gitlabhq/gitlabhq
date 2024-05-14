@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import { sanitize } from '~/lib/dompurify';
 import { __ } from '~/locale';
 
 /**
@@ -64,7 +65,9 @@ export default class GlFieldError {
     this.inputDomElement = this.inputElement.get(0);
     this.form = formErrors;
     this.errorMessage = this.inputElement.attr('title') || __('This field is required.');
-    this.fieldErrorElement = $(`<p class='${errorMessageClass} hidden'>${this.errorMessage}</p>`);
+    this.fieldErrorElement = $(
+      `<p class='${errorMessageClass} hidden'>${sanitize(this.errorMessage)}</p>`,
+    );
 
     this.state = {
       valid: false,

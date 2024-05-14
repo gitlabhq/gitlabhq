@@ -6,11 +6,11 @@ module Mutations
       graphql_name 'MergeRequestSetLocked'
 
       argument :locked,
-               GraphQL::Types::Boolean,
-               required: true,
-               description: <<~DESC
+        GraphQL::Types::Boolean,
+        required: true,
+        description: <<~DESC
                  Whether or not to lock the merge request.
-               DESC
+        DESC
 
       def resolve(project_path:, iid:, locked:)
         merge_request = authorized_find!(project_path: project_path, iid: iid)

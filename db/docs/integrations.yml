@@ -31,6 +31,7 @@ classes:
 - Integrations::Github
 - Integrations::GitlabSlackApplication
 - Integrations::GoogleCloudPlatform::ArtifactRegistry
+- Integrations::GoogleCloudPlatform::WorkloadIdentityFederation
 - Integrations::GooglePlay
 - Integrations::HangoutsChat
 - Integrations::Harbor
@@ -43,6 +44,7 @@ classes:
 - Integrations::MockCi
 - Integrations::MockMonitoring
 - Integrations::Packagist
+- Integrations::Phorge
 - Integrations::PipelinesEmail
 - Integrations::Pivotaltracker
 - Integrations::Prometheus

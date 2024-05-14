@@ -279,9 +279,7 @@ export default {
       <span v-safe-html="serverErrorMessage || i18n.errorMsg"></span>
     </gl-alert>
 
-    <div
-      class="list-header gl-display-flex gl-justify-content-space-between gl-border-b-solid gl-border-b-1 gl-border-gray-100"
-    >
+    <div class="list-header gl-display-flex gl-justify-content-space-between">
       <gl-tabs content-class="gl-p-0" @input="filterItemsByStatus">
         <gl-tab v-for="tab in statusTabs" :key="tab.status" :data-testid="tab.status">
           <template #title>
@@ -303,6 +301,7 @@ export default {
         :initial-filter-value="filteredSearchValue"
         initial-sortby="created_desc"
         :recent-searches-storage-key="filterSearchKey"
+        :class="{ 'gl-border-bottom-0': showItems }"
         class="row-content-block"
         @onFilter="handleFilterItems"
       />

@@ -76,6 +76,6 @@ module Members
     end
 
     alias_method :cannot_revoke_owner_responsibilities_from_member_in_project?,
-                 :cannot_assign_owner_responsibilities_to_member_in_project?
+      :cannot_assign_owner_responsibilities_to_member_in_project?
   end
 end

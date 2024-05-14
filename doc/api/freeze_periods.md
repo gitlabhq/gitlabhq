@@ -8,9 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/29382) in GitLab 13.0.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 You can use the Freeze Periods API to manipulate GitLab [Freeze Period](../user/project/releases/index.md#prevent-unintentional-releases-by-setting-a-deploy-freeze) entries.
 

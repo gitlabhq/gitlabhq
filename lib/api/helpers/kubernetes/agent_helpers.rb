@@ -90,7 +90,7 @@ module API
 
         def increment_count_events
           events = params[:counters]&.slice(
-            :gitops_sync, :k8s_api_proxy_request, :flux_git_push_notifications_total,
+            :k8s_api_proxy_request, :flux_git_push_notifications_total,
             :k8s_api_proxy_requests_via_ci_access, :k8s_api_proxy_requests_via_user_access,
             :k8s_api_proxy_requests_via_pat_access
           )

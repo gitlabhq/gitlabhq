@@ -15,17 +15,16 @@
   }
 
   &.ci-failed {
-    @include status-color(
-      var(--red-100, $red-100),
+    @include status-color(var(--red-100, $red-100),
       var(--red-500, $red-500),
-      var(--red-600, $red-600)
-    );
+      var(--red-600, $red-600));
   }
 
   &.ci-success {
     @include green-status-color;
   }
 
+  &.ci-canceling,
   &.ci-canceled,
   &.ci-disabled,
   &.ci-scheduled,
@@ -39,11 +38,9 @@
   }
 
   &.ci-preparing {
-    @include status-color(
-      var(--gray-100, $gray-100),
+    @include status-color(var(--gray-100, $gray-100),
       var(--gray-300, $gray-300),
-      var(--gray-400, $gray-400)
-    );
+      var(--gray-400, $gray-400));
   }
 
   &.ci-pending,
@@ -51,20 +48,16 @@
   &.ci-waiting-for-callback,
   &.ci-failed-with-warnings,
   &.ci-success-with-warnings {
-    @include status-color(
-      var(--orange-50, $orange-50),
+    @include status-color(var(--orange-50, $orange-50),
       var(--orange-500, $orange-500),
-      var(--orange-700, $orange-700)
-    );
+      var(--orange-700, $orange-700));
   }
 
   &.ci-info,
   &.ci-running {
-    @include status-color(
-      var(--blue-100, $blue-100),
+    @include status-color(var(--blue-100, $blue-100),
       var(--blue-500, $blue-500),
-      var(--blue-600, $blue-600)
-    );
+      var(--blue-600, $blue-600));
   }
 
   &.ci-created,

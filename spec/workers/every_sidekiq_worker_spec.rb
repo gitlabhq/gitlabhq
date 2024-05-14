@@ -120,7 +120,6 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
       {
         'AdjournedProjectDeletionWorker' => 3,
         'AdminEmailsWorker' => 3,
-        'Ai::SyncServiceTokenWorker' => 3,
         'Analytics::CodeReviewMetricsWorker' => 3,
         'Analytics::DevopsAdoption::CreateSnapshotWorker' => 3,
         'Analytics::UsageTrends::CounterJobWorker' => 3,
@@ -135,7 +134,6 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'AutoMergeProcessWorker' => 3,
         'BackgroundMigrationWorker' => 3,
         'BackgroundMigration::CiDatabaseWorker' => 3,
-        'BuildHooksWorker' => 3,
         'BuildQueueWorker' => 3,
         'BuildSuccessWorker' => 3,
         'BulkImportWorker' => 3,
@@ -161,6 +159,7 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'Ci::DeleteObjectsWorker' => 0,
         'Ci::DropPipelineWorker' => 3,
         'Ci::InitialPipelineProcessWorker' => 3,
+        'Ci::UpdateBuildNamesWorker' => 3,
         'Ci::MergeRequests::AddTodoWhenBuildFailsWorker' => 3,
         'Ci::Minutes::UpdateProjectAndNamespaceUsageWorker' => 3,
         'Ci::PipelineArtifacts::CoverageReportWorker' => 3,
@@ -256,6 +255,7 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'Gitlab::BitbucketImport::Stage::ImportPullRequestsWorker' => 6,
         'Gitlab::BitbucketImport::Stage::ImportPullRequestsNotesWorker' => 6,
         'Gitlab::BitbucketImport::Stage::ImportRepositoryWorker' => 6,
+        'Gitlab::BitbucketImport::Stage::ImportUsersWorker' => 6,
         'Gitlab::BitbucketServerImport::AdvanceStageWorker' => 6,
         'Gitlab::BitbucketServerImport::Stage::FinishImportWorker' => 6,
         'Gitlab::BitbucketServerImport::Stage::ImportLfsObjectsWorker' => 6,
@@ -342,7 +342,7 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'LdapGroupSyncWorker' => 3,
         'Licenses::ResetSubmitLicenseUsageDataBannerWorker' => 13,
         'Llm::Embedding::GitlabDocumentation::SetEmbeddingsOnTheRecordWorker' => 5,
-        'Llm::Embedding::GitlabDocumentation::CreateEmptyEmbeddingsRecordsWorker' => 3,
+        'Llm::Embedding::GitlabDocumentation::CreateEmbeddingsRecordsWorker' => 3,
         'Llm::Embedding::GitlabDocumentation::CreateDbEmbeddingsPerDocFileWorker' => 5,
         'MailScheduler::IssueDueWorker' => 3,
         'MailScheduler::NotificationServiceWorker' => 3,
@@ -407,6 +407,7 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'Projects::DeregisterSuggestedReviewersProjectWorker' => 3,
         'Projects::DisableLegacyOpenSourceLicenseForInactiveProjectsWorker' => 3,
         'Projects::GitGarbageCollectWorker' => false,
+        'Projects::ImportExport::RelationImportWorker' => 6,
         'Projects::InactiveProjectsDeletionNotificationWorker' => 3,
         'Projects::PostCreationWorker' => 3,
         'Projects::ScheduleBulkRepositoryShardMovesWorker' => 3,
@@ -437,7 +438,6 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'RunPipelineScheduleWorker' => 3,
         'ScanSecurityReportSecretsWorker' => 17,
         'Search::ElasticGroupAssociationDeletionWorker' => 3,
-        'Security::AutoFixWorker' => 3,
         'Security::StoreScansWorker' => 3,
         'Security::TrackSecureScansWorker' => 1,
         'ServiceDeskEmailReceiverWorker' => 3,
@@ -478,7 +478,8 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'Issuable::RelatedLinksCreateWorker' => 3,
         'BulkImports::RelationBatchExportWorker' => 6,
         'BulkImports::RelationExportWorker' => 6,
-        'Ci::Runners::ExportUsageCsvWorker' => 3
+        'Ci::Runners::ExportUsageCsvWorker' => 3,
+        'AppSec::ContainerScanning::ScanImageWorker' => 3
       }.merge(extra_retry_exceptions)
     end
 

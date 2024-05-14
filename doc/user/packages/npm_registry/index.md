@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 For documentation of the specific API endpoints that the npm package manager client uses, see the [npm API documentation](../../../api/packages/npm.md).
 
@@ -111,7 +111,7 @@ publish-npm:
     - npm publish
 ```
 
-- Replace `@scope` with the [scope](https://docs.npmjs.com/cli/v10/using-npm/scope) of the package that is being published.
+- Replace `@scope` with the [scope](https://docs.npmjs.com/cli/v10/using-npm/scope/) of the package that is being published.
 
 Your package is published to the package registry when the `publish-npm` job in your pipeline runs.
 
@@ -239,6 +239,7 @@ To install a package from the instance level, the package must have been publish
 ### Package forwarding to npmjs.com
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/55344) in GitLab 12.9.
+> - Required role [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/370471) from Maintainer to Owner in GitLab 17.0.
 
 When an npm package is not found in the package registry, GitLab responds with an HTTP redirect so the requesting client can resend the request to [npmjs.com](https://www.npmjs.com/).
 
@@ -441,25 +442,3 @@ This is also true even if the prior published package shares the same name, but 
 ### Package JSON file is too large
 
 Make sure that your `package.json` file does not exceed `20,000` characters.
-
-### `npm publish` returns `npm ERR! 500 Internal Server Error - PUT`
-
-This is a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/238950) in GitLab 13.3.x and later. The error in the logs appears as:
-
-```plaintext
->NoMethodError - undefined method `preferred_language' for #<Rack::Response
-```
-
-This might be accompanied by another error:
-
-```plaintext
->Errno::EACCES","exception.message":"Permission denied
-```
-
-This is usually a permissions issue with either:
-
-- `'packages_storage_path'` default `/var/opt/gitlab/gitlab-rails/shared/packages/`.
-- The remote bucket if [object storage](../../../administration/packages/index.md#use-object-storage)
-  is used.
-
-In the latter case, ensure the bucket exists and GitLab has write access to it.

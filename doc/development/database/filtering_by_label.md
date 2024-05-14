@@ -97,9 +97,7 @@ projects and groups that the user has access to.
 
 ## Attempt B: Denormalize using an array column
 
-Having [removed MySQL support in GitLab 12.1](https://about.gitlab.com/blog/2019/06/27/removing-mysql-support/),
-using [PostgreSQL's arrays](https://www.postgresql.org/docs/11/arrays.html) became more
-tractable as we didn't have to support two databases. We discussed denormalizing
+We discussed denormalizing
 the `label_links` table for querying in
 [issue #49651](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/49651),
 with two options: label IDs and titles.

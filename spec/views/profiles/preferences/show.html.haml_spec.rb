@@ -12,6 +12,16 @@ RSpec.describe 'profiles/preferences/show' do
     allow(controller).to receive(:current_user).and_return(user)
   end
 
+  context 'appearance' do
+    before do
+      render
+    end
+
+    it 'has an id for anchoring' do
+      expect(rendered).to have_css('#appearance')
+    end
+  end
+
   context 'navigation theme' do
     before do
       render

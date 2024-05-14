@@ -11,21 +11,56 @@
     "updated_at"
   ],
   "properties": {
-    "id": { "type": "integer" },
-    "name": { "type": "string" },
-    "slug": { "type": "string" },
-    "tier": { "type": "string" },
-    "external_url": { "$ref": "../../types/nullable_string.json" },
+    "id": {
+      "type": "integer"
+    },
+    "name": {
+      "type": "string"
+    },
+    "slug": {
+      "type": "string"
+    },
+    "tier": {
+      "type": "string"
+    },
+    "external_url": {
+      "$ref": "../../types/nullable_string.json"
+    },
     "last_deployment": {
       "oneOf": [
-        { "type": "null" },
-        { "$ref": "deployment.json" }
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "deployment.json"
+        }
       ]
     },
-    "state": { "type": "string" },
-    "created_at": { "type": "string", "format": "date-time" },
-    "updated_at": { "type": "string", "format": "date-time" },
-    "project": { "$ref": "project.json" }
+    "state": {
+      "type": "string"
+    },
+    "auto_stop_at": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "string",
+          "format": "date-time"
+        }
+      ]
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "project": {
+      "$ref": "project.json"
+    }
   },
   "additionalProperties": false
 }

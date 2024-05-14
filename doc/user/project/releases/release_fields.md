@@ -20,13 +20,13 @@ The release tag name should include the release version. GitLab uses [Semantic V
 for our releases, and we recommend you do too. Use `(Major).(Minor).(Patch)`, as detailed in the
 [GitLab Policy for Versioning](../../../policy/maintenance.md#versioning).
 
-For example, for GitLab version `10.5.7`:
+For example, for GitLab version `16.1.1`:
 
-- `10` represents the major version. The major release was `10.0.0`, but often referred to as `10.0`.
-- `5` represents the minor version. The minor release was `10.5.0`, but often referred to as `10.5`.
-- `7` represents the patch number.
+- `16` represents the major version. The major release was `16.0.0`, but often referred to as `16.0`.
+- `10` represents the minor version. The minor release was `16.1.0`, but often referred to as `16.1`.
+- `1` represents the patch number.
 
-Any part of the version number can be multiple digits, for example, `13.10.11`.
+Any part of the version number can be multiple digits, for example, `16.10.11`.
 
 ## Release notes description
 
@@ -67,28 +67,6 @@ Each link as an asset has the following attributes:
 | `filepath`  | The redirect link to the `url`. Must start with a slash (`/`). See [this section](#permanent-links-to-release-assets) for more information. | No       |
 | `link_type` | The content kind of what users can download via `url`. See [this section](#link-types) for more information. | No       |
 
-#### Permanent link to latest release
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/16821) in GitLab 14.9.
-
-Latest release page is accessible through a permanent URL.
-GitLab redirects to the latest release page URL when it is visited.
-
-The format of the URL is:
-
-```plaintext
-https://host/namespace/project/-/releases/permalink/latest
-```
-
-We also support, suffix path carry forward on the redirect to the latest release.
-Example if release `v14.8.0-ee` is the latest release and has a readable link `https://host/namespace/project/-/releases/v14.8.0-ee#release` then it can be addressed as `https://host/namespace/project/-/releases/permalink/latest#release`.
-
-Refer [permanent links to latest release assets](#permanent-links-to-latest-release-assets) section to understand more about the suffix path carry forward usage.
-
-##### Sorting preferences
-
-By default, GitLab fetches the release using `released_at` time. The use of the query parameter `?order_by=released_at` is optional, and support for `?order_by=semver` is tracked [in this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/352945).
-
 #### Permanent links to release assets
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375489) in GitLab 15.9, links for private releases can be accessed using a Personal Access Token.
@@ -104,14 +82,14 @@ The format of the URL is:
 https://host/namespace/project/-/releases/:release/downloads:filepath
 ```
 
-If you have an asset for the `v11.9.0-rc2` release in the `gitlab-org`
+If you have an asset for the `v16.9.0-rc2` release in the `gitlab-org`
 namespace and `gitlab-runner` project on `gitlab.com`, for example:
 
 ```json
 {
   "name": "linux amd64",
   "filepath": "/binaries/gitlab-runner-linux-amd64",
-  "url": "https://gitlab-runner-downloads.s3.amazonaws.com/v11.9.0-rc2/binaries/gitlab-runner-linux-amd64",
+  "url": "https://gitlab-runner-downloads.s3.amazonaws.com/v16.9.0-rc2/binaries/gitlab-runner-linux-amd64",
   "link_type": "other"
 }
 ```
@@ -119,7 +97,7 @@ namespace and `gitlab-runner` project on `gitlab.com`, for example:
 This asset has a direct link of:
 
 ```plaintext
-https://gitlab.com/gitlab-org/gitlab-runner/-/releases/v11.9.0-rc2/downloads/binaries/gitlab-runner-linux-amd64
+https://gitlab.com/gitlab-org/gitlab-runner/-/releases/v16.9.0-rc2/downloads/binaries/gitlab-runner-linux-amd64
 ```
 
 The physical location of the asset can change at any time and the direct link remains unchanged.
@@ -134,9 +112,7 @@ curl --location --output filename --header "PRIVATE-TOKEN: <your_access_token>" 
 
 #### Permanent links to latest release assets
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/16821) in GitLab 14.9.
-
-You can use the `filepath` from [permanent links to release assets](#permanent-links-to-release-assets) in combination with a [permanent link to the latest release](#permanent-link-to-latest-release). The `filepath` must start with a slash (`/`).
+You can use the `filepath` from [permanent links to release assets](#permanent-links-to-release-assets) in combination with a [permanent link to the latest release](index.md#permanent-link-to-latest-release). The `filepath` must start with a slash (`/`).
 
 The format of the URL is:
 
@@ -146,14 +122,14 @@ https://host/namespace/project/-/releases/permalink/latest/downloads:filepath
 
 You can use this format to provide a permanent link to an asset from the latest release.
 
-If you have an asset with [`filepath`](../../../api/releases/links.md#create-a-release-link) for the `v11.9.0-rc2` latest release in the `gitlab-org`
+If you have an asset with [`filepath`](../../../api/releases/links.md#create-a-release-link) for the `v16.9.0-rc2` latest release in the `gitlab-org`
 namespace and `gitlab-runner` project on `gitlab.com`, for example:
 
 ```json
 {
   "name": "linux amd64",
   "filepath": "/binaries/gitlab-runner-linux-amd64",
-  "url": "https://gitlab-runner-downloads.s3.amazonaws.com/v11.9.0-rc2/binaries/gitlab-runner-linux-amd64",
+  "url": "https://gitlab-runner-downloads.s3.amazonaws.com/v16.9.0-rc2/binaries/gitlab-runner-linux-amd64",
   "link_type": "other"
 }
 ```
@@ -165,8 +141,6 @@ https://gitlab.com/gitlab-org/gitlab-runner/-/releases/permalink/latest/download
 ```
 
 #### Link Types
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207257) in GitLab 13.1.
 
 The four types of links are "Runbook," "Package," "Image," and "Other."
 The `link_type` parameter accepts one of the following four values:
@@ -267,9 +241,7 @@ they could either expire or someone might manually delete them.
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/235618) in GitLab 13.5.
+**Offering:** GitLab.com
 
 On [GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/releases), you can view the number of new and total features in the project.
 

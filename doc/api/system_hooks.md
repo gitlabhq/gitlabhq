@@ -40,6 +40,8 @@ Example response:
   {
     "id":1,
     "url":"https://gitlab.example.com/hook",
+    "name": "Hook name",
+    "description": "Hook description",
     "created_at":"2016-10-31T12:32:15.192Z",
     "push_events":true,
     "tag_push_events":false,
@@ -51,8 +53,6 @@ Example response:
 ```
 
 ## Get system hook
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81595) in GitLab 14.9.
 
 Get a system hook by its ID.
 
@@ -77,6 +77,8 @@ Example response:
   {
     "id": 1,
     "url": "https://gitlab.example.com/hook",
+    "name": "Hook name",
+    "description": "Hook description",
     "created_at": "2016-10-31T12:32:15.192Z",
     "push_events": true,
     "tag_push_events": false,
@@ -98,6 +100,8 @@ POST /hooks
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `url` | string | yes | The hook URL |
+| `name` | string | no | Name of the hook ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.1) |
+| `description` | string | no | Description of the hook ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.1) |
 | `token` | string | no | Secret token to validate received payloads; this isn't returned in the response |
 | `push_events` | boolean |  no | When true, the hook fires on push events |
 | `tag_push_events` | boolean | no | When true, the hook fires on new tags being pushed |
@@ -118,6 +122,8 @@ Example response:
   {
     "id":1,
     "url":"https://gitlab.example.com/hook",
+    "name": "Hook name",
+    "description": "Hook description",
     "created_at":"2016-10-31T12:32:15.192Z",
     "push_events":true,
     "tag_push_events":false,

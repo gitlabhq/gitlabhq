@@ -37,11 +37,6 @@
 
 .detail-page-header-actions {
   flex: 0 0 auto;
-
-  @include media-breakpoint-down(sm) {
-    width: 100%;
-    margin-top: 10px;
-  }
 }
 
 .detail-page-header-meta {

@@ -3,8 +3,8 @@
 RSpec.shared_examples 'a correct instrumented metric value' do |params|
   let(:time_frame) { params[:time_frame] }
   let(:options) { params[:options] }
-  let(:events) { params[:events] }
-  let(:metric) { described_class.new(time_frame: time_frame, options: options, events: events) }
+  let(:events) { params.slice(:events) }
+  let(:metric) { described_class.new({ time_frame: time_frame, options: options }.merge(events)) }
 
   around do |example|
     freeze_time { example.run }

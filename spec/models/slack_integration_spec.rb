@@ -3,12 +3,14 @@
 require 'spec_helper'
 
 RSpec.describe SlackIntegration, feature_category: :integrations do
+  let_it_be(:integration) { create(:slack_integration) }
+
   describe "Associations" do
     it { is_expected.to belong_to(:integration) }
   end
 
   describe 'authorized_scope_names' do
-    subject(:slack_integration) { create(:slack_integration) }
+    subject(:slack_integration) { integration }
 
     it 'accepts assignment to nil' do
       slack_integration.update!(authorized_scope_names: nil)
@@ -42,7 +44,7 @@ RSpec.describe SlackIntegration, feature_category: :integrations do
   end
 
   describe 'all_features_supported?/upgrade_needed?' do
-    subject(:slack_integration) { create(:slack_integration) }
+    subject(:slack_integration) { integration }
 
     context 'with enough scopes' do
       before do
@@ -67,7 +69,7 @@ RSpec.describe SlackIntegration, feature_category: :integrations do
   end
 
   describe 'feature_available?' do
-    subject(:slack_integration) { create(:slack_integration) }
+    subject(:slack_integration) { integration }
 
     context 'without any scopes' do
       it 'is always true for :commands' do
@@ -117,8 +119,28 @@ RSpec.describe SlackIntegration, feature_category: :integrations do
     end
   end
 
+  describe '#to_database_hash' do
+    subject(:slack_integration) { integration }
+
+    it 'includes the correct attributes' do
+      expect(slack_integration.to_database_hash.keys).to contain_exactly(*described_class::DATABASE_ATTRIBUTES)
+    end
+  end
+
+  it 'toggles the integration to active when created' do
+    integration = create(:gitlab_slack_application_integration, active: false, slack_integration: nil)
+
+    expect { create(:slack_integration, integration: integration) }.to change { integration.reload.active }.to(true)
+  end
+
+  it 'toggles the integration to inactive when destroyed' do
+    integration = create(:gitlab_slack_application_integration)
+
+    expect { integration.slack_integration.destroy! }.to change { integration.reload.active }.to(false)
+  end
+
   describe 'Scopes' do
-    let_it_be(:slack_integration) { create(:slack_integration) }
+    let_it_be(:slack_integration) { integration }
     let_it_be(:legacy_slack_integration) { create(:slack_integration, :legacy) }
 
     describe '#with_bot' do
@@ -133,6 +155,14 @@ RSpec.describe SlackIntegration, feature_category: :integrations do
         team_slack_integration = create(:slack_integration, team_id: team_id)
 
         expect(described_class.by_team(team_id)).to contain_exactly(slack_integration, team_slack_integration)
+      end
+    end
+
+    describe '#by_integration' do
+      it 'returns records by the integration' do
+        integration = legacy_slack_integration.integration
+
+        expect(described_class.by_integration(integration)).to contain_exactly(legacy_slack_integration)
       end
     end
   end

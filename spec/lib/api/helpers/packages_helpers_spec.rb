@@ -104,34 +104,45 @@ RSpec.describe API::Helpers::PackagesHelpers, feature_category: :package_registr
 
   describe '#authorize_workhorse!' do
     let_it_be(:headers) { {} }
+    let_it_be(:params) { { subject: project } }
 
-    subject { helper.authorize_workhorse!(subject: project) }
+    subject { helper.authorize_workhorse!(**params) }
 
-    before do
-      allow(helper).to receive(:headers).and_return(headers)
-    end
-
-    it 'authorizes workhorse' do
-      expect(helper).to receive(:authorize_upload!).with(project)
-      expect(helper).to receive(:status).with(200)
-      expect(helper).to receive(:content_type).with(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
-      expect(Gitlab::Workhorse).to receive(:verify_api_request!).with(headers)
-      expect(::Packages::PackageFileUploader).to receive(:workhorse_authorize).with(has_length: true)
-
-      expect(subject).to eq nil
-    end
-
-    context 'without length' do
-      subject { helper.authorize_workhorse!(subject: project, has_length: false) }
-
+    shared_examples 'workhorse authorize' do
       it 'authorizes workhorse' do
         expect(helper).to receive(:authorize_upload!).with(project)
         expect(helper).to receive(:status).with(200)
         expect(helper).to receive(:content_type).with(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
         expect(Gitlab::Workhorse).to receive(:verify_api_request!).with(headers)
-        expect(::Packages::PackageFileUploader).to receive(:workhorse_authorize).with(has_length: false, maximum_size: ::API::Helpers::PackagesHelpers::MAX_PACKAGE_FILE_SIZE)
+        expect(::Packages::PackageFileUploader).to receive(:workhorse_authorize).with(workhorse_authorize_params)
 
         expect(subject).to eq nil
+      end
+    end
+
+    before do
+      allow(helper).to receive(:headers).and_return(headers)
+    end
+
+    it_behaves_like 'workhorse authorize' do
+      let(:workhorse_authorize_params) { { has_length: true, use_final_store_path: false } }
+    end
+
+    context 'without length' do
+      let(:params) { super().merge(has_length: false) }
+
+      it_behaves_like 'workhorse authorize' do
+        let(:workhorse_authorize_params) do
+          { has_length: false, maximum_size: ::API::Helpers::PackagesHelpers::MAX_PACKAGE_FILE_SIZE, use_final_store_path: false }
+        end
+      end
+    end
+
+    context 'when use_final_store_path is true' do
+      let(:params) { super().merge(use_final_store_path: true) }
+
+      it_behaves_like 'workhorse authorize' do
+        let(:workhorse_authorize_params) { { has_length: true, use_final_store_path: true, final_store_path_root_id: project.id } }
       end
     end
   end

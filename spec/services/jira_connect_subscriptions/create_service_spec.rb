@@ -5,17 +5,13 @@ require 'spec_helper'
 RSpec.describe JiraConnectSubscriptions::CreateService, feature_category: :integrations do
   let_it_be(:installation) { create(:jira_connect_installation) }
   let_it_be(:current_user) { create(:user) }
-  let_it_be(:group) { create(:group) }
+  let_it_be(:group) { create(:group, maintainers: current_user) }
 
   let(:path) { group.full_path }
   let(:params) { { namespace_path: path, jira_user: jira_user } }
   let(:jira_user) { double(:JiraUser, jira_admin?: true) }
 
   subject { described_class.new(installation, current_user, params).execute }
-
-  before do
-    group.add_maintainer(current_user)
-  end
 
   shared_examples 'a failed execution' do |**status_attributes|
     it 'does not create a subscription' do

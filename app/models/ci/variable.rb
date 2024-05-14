@@ -5,6 +5,7 @@ module Ci
     include Ci::HasVariable
     include Ci::Maskable
     include Ci::RawVariable
+    include Ci::HidableVariable
     include Limitable
     include Presentable
 
@@ -21,7 +22,7 @@ module Ci
     }
 
     scope :unprotected, -> { where(protected: false) }
-    scope :by_environment_scope, -> (environment_scope) { where(environment_scope: environment_scope) }
+    scope :by_environment_scope, ->(environment_scope) { where(environment_scope: environment_scope) }
 
     self.limit_name = 'project_ci_variables'
     self.limit_scope = :project

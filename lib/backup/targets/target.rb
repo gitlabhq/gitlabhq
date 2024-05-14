@@ -6,7 +6,7 @@ module Backup
       # Backup creation and restore option flags
       #
       # @return [Backup::Options]
-      attr_reader :options
+      attr_reader :options, :progress
 
       def initialize(progress, options:)
         @progress = progress
@@ -24,21 +24,6 @@ module Backup
       # restore task backup from `path`
       def restore(path, backup_id)
         raise NotImplementedError
-      end
-
-      # a string returned here will be displayed to the user before calling #restore
-      def pre_restore_warning = ''
-
-      # a string returned here will be displayed to the user after calling #restore
-      def post_restore_warning = ''
-
-      private
-
-      attr_reader :progress
-
-      def puts_time(msg)
-        progress.puts "#{Time.zone.now} -- #{msg}"
-        Gitlab::BackupLogger.info(message: Rainbow.uncolor(msg).to_s)
       end
     end
   end

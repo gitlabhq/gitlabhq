@@ -8,7 +8,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - Introduced in GitLab 16.2 [with a flag](../../administration/feature_flags.md) named `command_palette`. Enabled by default.
 > - Feature flag `command_palette` removed in GitLab 16.4.

@@ -208,9 +208,9 @@ describe('UserToken', () => {
 
       const baseTokenEl = findBaseToken();
 
-      expect(baseTokenEl.exists()).toBe(true);
       expect(baseTokenEl.props()).toMatchObject({
         suggestions: mockUsers,
+        valueIdentifier: 'username',
         getActiveTokenValue: baseTokenEl.props('getActiveTokenValue'),
       });
     });

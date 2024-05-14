@@ -129,11 +129,12 @@ export default {
       return this.sortOrder === DESC;
     },
     markdownPreviewPath() {
-      return markdownPreviewPath(this.fullPath, this.workItemIid);
+      const { fullPath, isGroup, workItemIid: iid } = this;
+      return markdownPreviewPath({ fullPath, iid, isGroup });
     },
     autocompleteDataSources() {
       const { fullPath, isGroup, workItemIid: iid } = this;
-      return autocompleteDataSources({ fullPath, isGroup, iid });
+      return autocompleteDataSources({ fullPath, iid, isGroup });
     },
     workItemCommentFormProps() {
       return {
@@ -195,7 +196,7 @@ export default {
         };
       },
       update(data) {
-        const widgets = data.workspace?.workItems?.nodes[0]?.widgets;
+        const widgets = data.workspace?.workItem?.widgets;
         return widgets?.find((widget) => widget.type === 'NOTES')?.discussions || [];
       },
       skip() {
@@ -348,14 +349,14 @@ export default {
     />
     <div v-if="initialLoading" class="gl-mt-5">
       <gl-skeleton-loader
-        v-for="index in $options.loader.repeat"
-        :key="index"
-        :width="$options.loader.width"
+        v-for="i in $options.loader.repeat"
+        :key="i"
+        :width="1000"
         :height="$options.loader.height"
         preserve-aspect-ratio="xMinYMax meet"
       >
         <circle cx="20" cy="20" r="16" />
-        <rect width="500" x="45" y="15" height="10" rx="4" />
+        <rect width="950" x="45" y="15" height="10" rx="4" />
       </gl-skeleton-loader>
     </div>
     <div v-else class="issuable-discussion gl-mb-5 gl-clearfix!">

@@ -24,3 +24,5 @@ class WorkItemPolicy < IssuePolicy
 
   rule { is_member & can?(:read_work_item) }.enable :admin_work_item_link
 end
+
+WorkItemPolicy.prepend_mod

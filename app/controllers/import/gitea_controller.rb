@@ -6,9 +6,7 @@ class Import::GiteaController < Import::GithubController
   before_action :verify_blocked_uri, only: :status
 
   def new
-    if session[access_token_key].present? && provider_url.present?
-      redirect_to status_import_url
-    end
+    redirect_to status_import_url if session[access_token_key].present? && provider_url.present?
   end
 
   def personal_access_token

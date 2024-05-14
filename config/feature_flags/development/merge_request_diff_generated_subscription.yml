@@ -1,8 +1,0 @@
----
-name: merge_request_diff_generated_subscription
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140287
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/435917
-milestone: '16.8'
-group: group::code review
-type: development
-default_enabled: false

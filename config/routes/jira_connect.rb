@@ -15,6 +15,18 @@ namespace :jira_connect do
   resources :branches, only: [:new]
   resources :public_keys, only: :show
 
+  resources :workspaces, only: [] do
+    collection do
+      get :search
+    end
+  end
+  resources :repositories, only: [] do
+    collection do
+      get :search
+      post :associate
+    end
+  end
+
   resources :installations, only: [:index] do
     collection do
       put :update

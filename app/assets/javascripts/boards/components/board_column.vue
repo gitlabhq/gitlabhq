@@ -28,6 +28,11 @@ export default {
       default: () => [],
     },
   },
+  data() {
+    return {
+      showNewForm: false,
+    };
+  },
   computed: {
     highlighted() {
       return this.highlightedLists.includes(this.list.id);
@@ -48,6 +53,11 @@ export default {
       immediate: true,
     },
   },
+  methods: {
+    toggleNewForm() {
+      this.showNewForm = !this.showNewForm;
+    },
+  },
 };
 </script>
 
@@ -59,7 +69,7 @@ export default {
       'board-type-assignee': list.listType === 'assignee',
     }"
     :data-list-id="list.id"
-    class="board gl-display-inline-block gl-h-full gl-px-3 gl-vertical-align-top gl-white-space-normal is-expandable"
+    class="board gl-display-inline-block gl-h-full gl-px-3 gl-align-top gl-white-space-normal is-expandable"
     data-testid="board-list"
   >
     <div
@@ -70,9 +80,18 @@ export default {
         :list="list"
         :filter-params="filters"
         :board-id="boardId"
+        @toggleNewForm="toggleNewForm"
         @setActiveList="$emit('setActiveList', $event)"
       />
-      <board-list ref="board-list" :board-id="boardId" :list="list" :filter-params="filters" />
+      <board-list
+        ref="board-list"
+        :board-id="boardId"
+        :list="list"
+        :filter-params="filters"
+        :show-new-form="showNewForm"
+        @toggleNewForm="toggleNewForm"
+        @setFilters="$emit('setFilters', $event)"
+      />
     </div>
   </div>
 </template>

@@ -3,5 +3,5 @@
 
 - if current_user
   - unless has_label
-    %span.gl-float-left.gl-white-space-nowrap= _("Visibility:")
+    %span.gl-float-left.gl-whitespace-nowrap= _("Visibility:")
   = gl_redirect_listbox_tag(projects_filter_items, selected, class: 'gl-ml-3', data: { placement: 'right' })

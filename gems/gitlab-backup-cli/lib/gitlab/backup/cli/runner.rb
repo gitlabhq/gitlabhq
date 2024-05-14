@@ -9,25 +9,20 @@ module Gitlab
       #
       # This supersedes the previous backup rake files and will be
       # the default interface to handle backups
-      class Runner < Thor
-        def self.exit_on_failure?
-          true
-        end
+      class Runner < Commands::Command
+        package_name 'GitLab Backup CLI'
 
         map %w[--version -v] => :version
         desc 'version', 'Display the version information'
-
         def version
           puts "GitLab Backup CLI (#{VERSION})" # rubocop:disable Rails/Output -- CLI output
         end
 
-        private
+        desc 'backup', 'Manage repositories, database and files backup creation'
+        subcommand 'backup', Commands::BackupSubcommand
 
-        def rails_environment!
-          require APP_PATH
-
-          Rails.application.load_tasks
-        end
+        desc 'restore', 'Restore previously captured backup data'
+        subcommand 'restore', Commands::RestoreSubcommand
       end
     end
   end

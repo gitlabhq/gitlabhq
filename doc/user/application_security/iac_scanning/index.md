@@ -8,9 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
-
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6655) in GitLab 14.5.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Infrastructure as Code (IaC) scanning runs in your CI/CD pipeline, checking your infrastructure
 definition files for known vulnerabilities. Identify vulnerabilities before they're committed to
@@ -34,9 +32,8 @@ Prerequisites:
 - The `test` stage is required in the `.gitlab-ci.yml` file.
 - On GitLab self-managed you need GitLab Runner with the
   [`docker`](https://docs.gitlab.com/runner/executors/docker.html) or
-  [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html) executor. On GitLab.com this
-  is enabled by default on the shared runners. The analyzer images provided are for the Linux/amd64
-  architecture.
+  [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html) executor.
+- If you're using SaaS runners on GitLab.com, this is enabled by default.
 
 To enable IaC scanning of a project:
 
@@ -47,7 +44,7 @@ To enable IaC scanning of a project:
 
    ```yaml
    include:
-     - template: Security/SAST-IaC.gitlab-ci.yml
+     - template: Jobs/SAST-IaC.gitlab-ci.yml
    ```
 
 1. Select the **Validate** tab, then select **Validate pipeline**.
@@ -67,29 +64,29 @@ Supported configuration formats:
 
 - Ansible
 - AWS CloudFormation
-- Azure Resource Manager <sup>1</sup>
+- Azure Resource Manager
+
+  NOTE:
+  IaC scanning can analyze Azure Resource Manager templates in JSON format.
+  If you write templates in [Bicep](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/overview),
+  you must use the [Bicep CLI](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/bicep-cli) to
+  convert your Bicep files into JSON before IaC scanning can analyze them.
+
 - Dockerfile
 - Google Deployment Manager
 - Kubernetes
 - OpenAPI
-- Terraform <sup>2</sup>
+- Terraform
 
-<html>
-<small>Footnotes:
-  <ol>
-    <li>IaC Scanning can analyze Azure Resource Manager templates in JSON format. If you write templates in the <a href="https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/overview">Bicep</a> language, you must use the <a href="https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/bicep-cli">bicep CLI</a> to convert your Bicep files into JSON before IaC scanning can analyze them.</li>
-    <li>Terraform modules in a custom registry are not scanned for vulnerabilities. You can follow <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/357004">issue 357004</a> for the proposed feature.</li>
-  </ol>
-</small>
-</html>
+  NOTE:
+  Terraform modules in a custom registry are not scanned for vulnerabilities.
+  For more information about the proposed feature, see [issue 357004](https://gitlab.com/gitlab-org/gitlab/-/issues/357004).
 
 ## Customize rules
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, Self-managed
-
-> Support for overriding rules [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/235359) in GitLab 14.8.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 You can customize the default IaC scanning rules provided with GitLab.
 
@@ -141,6 +138,16 @@ the `kics` analyzer by matching the `type` and `value` of identifiers:
       type = "kics_id"
       value = "b03a748a-542d-44f4-bb86-9199ab4fd2d5"
 ```
+
+### Disable scanning using comments
+
+You can use [KICS annotations](https://docs.kics.io/latest/running-kics/#using_commands_on_scanned_files_as_comments) to control how the KICS-based GitLab IaC Scanning analyzer scans your codebase. For example:
+
+- To skip scanning an entire file, you can add `# kics-scan ignore` as a comment at the top of the file.
+- To disable a specific rule in an entire file, you can add `# kics-scan disable=<kics_id>` as a comment at the top of the file.
+
+NOTE:
+This feature is only available for some types of IaC files. See the [KICS documentation](https://docs.kics.io/latest/running-kics/#using_commands_on_scanned_files_as_comments) for a list of supported file types.
 
 ### Override rules
 
@@ -203,7 +210,7 @@ This example uses a specific minor version of the IaC analyzer:
 
 ```yaml
 include:
-  - template: Security/SAST-IaC.gitlab-ci.yml
+  - template: Jobs/SAST-IaC.gitlab-ci.yml
 
 kics-iac-sast:
   variables:
@@ -215,8 +222,6 @@ kics-iac-sast:
 GitLab scanners are provided with a base Alpine image for size and maintainability.
 
 ### Use FIPS-enabled images
-
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6479) in GitLab 14.10.
 
 GitLab provides [FIPS-enabled Red Hat UBI](https://www.redhat.com/en/blog/introducing-red-hat-universal-base-image)
 versions of the scanners' images, in addition to the standard images.
@@ -231,7 +236,7 @@ variables:
   SAST_IMAGE_SUFFIX: '-fips'
 
 include:
-  - template: Security/SAST-IaC.gitlab-ci.yml
+  - template: Jobs/SAST-IaC.gitlab-ci.yml
 ```
 
 ## Automatic vulnerability resolution

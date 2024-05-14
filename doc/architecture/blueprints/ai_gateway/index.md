@@ -24,22 +24,26 @@ will use the same gateway. However, in the future we could also deploy
 regional gateways, or even customer-specific gateways if the need
 arises.
 
-The AI-Gateway is an API-Gateway that takes traffic from clients, in
-this case GitLab installations, and directing it to different
-services, in this case AI-providers and their models. This North/South
-traffic pattern allows us to control what requests go where and to
-translate the content of the redirected request where needed.
+The AI-Gateway is an API-Gateway that handles traffic steered to it from a
+globally reachable `cloud.gitlab.com/ai/*` route. IDEs currently use `cloud.gitlab.com/ai/*`
+indirectly through a GitLab Rails instance. In
+future we plan to allow network endpoints such as IDEs to connect directly to
+`cloud.gitlab.com` (for more information, see [directly connected clients](#directly-connected-clients)).
+The AI-Gateway then directs this traffic to other services, in this case
+AI-providers and their models. This north/south traffic pattern allows us to
+control what requests go where and to translate the content of the redirected
+request where needed.
 
 ![architecture diagram](img/architecture.png)
 
 **Currently, multi-region deployment is not supported; it's a feature under consideration. The existing diagram illustrates a potential architecture for deploying across multiple regions.**
 
-[Diagram source](https://docs.google.com/drawings/d/1PYl5Q5oWHnQAuxM-Jcw0C3eYoGw8a9w8atFpoLhhEas/edit)
+[Diagram source](https://docs.google.com/drawings/d/1xhGElN4rGvCY-SOvSkRpSdZ_MZ3IgVQiiTlKQpkPyLE/edit)
 
 By using a hosted service under the control of GitLab we can ensure
 that we provide all GitLab instances with AI features in a scalable
 way. It is easier to scale this small stateless service, than scaling
-GitLab-rails with it's dependencies (database, Redis).
+GitLab Rails with its dependencies (database, Redis).
 
 It allows users of self-managed installations to have access to
 features using AI without them having to host their own models or
@@ -56,16 +60,30 @@ Rubyists to pick up through in the younger codebase that is the
 AI-gateway. It also makes it easy for data- and ML-engineers that
 already have Python experience to contribute.
 
+## Directly connected clients
+
+Direct connections are not supported yet and this work is tracked in
+[this epic](https://gitlab.com/groups/gitlab-org/-/epics/12224#proposed-solution).
+
+Decision: [ADR-001: Allow direct connections](decisions/001_direct_connections.md)
+
+Code completion requests will be sent directly from a client to AI Gateway to
+improve latency of these requests. It will be up to the client to decide if a
+request can be sent directly to AI Gateway or to GitLab Rails for additional
+enrichment. Usage of direct connections will be optional and backward
+compatible. If a client will not support detection of completion requests, it
+can still send these requests through GitLab Rails (as is now) without
+specifying the type of code suggestion request.
+
 ## API
 
 ### Basic stable API for the AI-gateway
 
 Because the API of the AI-gateway will be consumed by a wide variety
-of GitLab instances, it is important that we design a stable, yet
-flexible API.
+of clients, it is important that we design a stable, yet flexible API.
 
 To do this, we can implement an API-endpoint per use-case we
-build. This means that the interface between GitLab and the AI-gateway
+build. This means that the interface between client and the AI-gateway
 is one that we build and own. This ensures future scalability,
 composability and security.
 
@@ -74,8 +92,9 @@ for details. The AI-gateway will support the last 2 major
 versions. For example when working on GitLab 17.2, we would support
 both GitLab 17 and GitLab 16.
 
-We can add common functionality like rate-limiting, circuit-breakers and
-secret redaction at this level of the stack as well as in GitLab-rails.
+Because clients can connect directly to AI Gateway, common functionality like
+rate-limiting, circuit-breakers and secret redaction should be added both at
+this level of the stack as well as in GitLab Rails.
 
 #### Protocol
 
@@ -83,7 +102,7 @@ The communication between the AI-Gateway service and its clients (including the 
 
 The AI-Gateway API shall expose single-purpose endpoints responsible for providing access to different AI features. [A later section](#single-purpose-endpoints) of this document provides detailed guidelines for building specific endpoints.
 
-The AI Gateway communication protocol shall only expect a rudimentary envelope that wraps all feature-specific dynamic information. The proposed architecture of the protocol allows the API endpoints to be version agnostic, and the AI-Gateway APIs compatible with multiple versions of GitLab(or other clients that use the gateway through GitLab).
+The AI Gateway communication protocol shall only expect a rudimentary envelope that wraps all feature-specific dynamic information. The proposed architecture of the protocol allows the API endpoints to be version agnostic, and the AI-Gateway APIs compatible with multiple versions of GitLab(or other clients that use the gateway).
 
  **This means
 that all clients regardless of their versions use the same set of AI-Gateway API feature endpoints. The AI-gateway feature endpoints have to support different client versions, instead of creating multiple feature endpoints per different supported client versions**.
@@ -129,13 +148,18 @@ endpoint, while several features that summarize issues or merge
 requests could use the same endpoint but make the distinction on what
 information is provided in the payload.
 
-The end goal is to build an API that exposes AI for building
-features without having to touch the AI-gateway. This is analogous to
-how we built Gitaly, adding features to Gitaly where it was needed,
-and reusing existing endpoints when that was possible. We had some
-cost to pay up-front in the case where we needed to implement a new
-endpoint (RPC), but pays off in the long run when most of the required
-functionality is implemented.
+Our goal is to minimize code that we can't update on a customer's behalf, which means avoiding hard-coding AI-related logic in the GitLab monolith codebase:
+
+- We want to minimize the time required for customers to adopt our latest features, and
+- We want to retain the flexibility to make changes in our product without breaking support for a long-tail of older instances.
+- We want to be able to serve all GitLab distributions (.com SaaS, Self-managed, and Dedicated) with minimal complexity.
+- We want to isolate AI capabilities to reduce risk and have a unified control plane.
+- We want to provide a unified implementation that can support our "best-in-class" multi-model ensemble approach allowing us to easily support many AI models and AI vendors.
+- We want a single point for controlling and measuring cost.
+- As much as possible, we want to track metrics (usage statistics, failures to respond, usage pattern, question categories, etc.) in the gateway rather than distributed across many points. (Of course some metrics can only be captured on the client side.)
+
+Having the business logic in GitLab Rails requires customers to upgrade their GitLab instances, which affects the first point. Some of the on-premises users cannot upgrade their instances immediately due to their company policy.
+For example, if we had a bug in a prompt template in GitLab Rails and fixed it in 16.6, and customers are using 16.5 and the next upgrade is scheduled in 3 months, they have to use the buggy feature for 3 months.
 
 **This does not mean that prompts need to be built inside the
 AI-gateway.** But if prompts are part of the payload to a single
@@ -148,7 +172,7 @@ GitLab installations as the AI landscape changes.
 
 ### The AI-Gateway API protocol
 
-It is important to build each single-purpose endpoint, in a version-agnostic way so it can be used by different GitLab instances (and indirectly by external clients). To achieve this goal:
+It is important to build each single-purpose endpoint, in a version-agnostic way so it can be used by different GitLab instances and by external clients. To achieve this goal:
 
 **The AI-Gateway protocol shall rely on a simple JSON envelope wrapping all feature-specific information.** The AI-Gateway protocol can be seen as a transport layer protocol from [the OSI model](https://en.wikipedia.org/wiki/OSI_model) (eg: TCP, UDP) which defines how to transport information between nodes, without being aware of what information is being transported.
 
@@ -162,12 +186,12 @@ The AI-Gateway protocol defines each request in the following way:
 Each JSON envelope contains 3 elements:
 
 1. `type`: A string identifier specifying a type of information that is being presented in the envelopes
-  `payload`. The AI-gateway single-purpose endpoint may ignore any types it does not know about.
+   `payload`. The AI-gateway single-purpose endpoint may ignore any types it does not know about.
 1. `payload`: The actual information that can be used by the AI-Gateway single-purpose endpoint to send requests to 3rd party AI services providers. The data inside the `payload` element can differ depending on the `type`, and the version of
-  the client providing the `payload`. This means that the AI-Gateway
- single-purpose endpoint must consider the structure and the type of data present inside the `payload` optional, and gracefully handle missing or malformed information.
+   the client providing the `payload`. This means that the AI-Gateway
+   single-purpose endpoint must consider the structure and the type of data present inside the `payload` optional, and gracefully handle missing or malformed information.
 1. `metadata`: This field contains information about a client that built this `prompt_components` envelope. Information from the `metadata` field may, or may not be used by GitLab for
-  telemetry. The same as with the `payload` all fields inside the `metadata` shall be considered optional.
+   telemetry. The same as with the `payload` all fields inside the `metadata` shall be considered optional.
 
 The only envelope field that is expected to likely change often is the
 `payload` one. There we need to make sure that all fields are
@@ -340,14 +364,13 @@ We will try to come up with an architecture for all AI-related features.
 
 #### Exposing AI providers
 
-A lot of AI functionality has already been built into GitLab-Rails
+A lot of AI functionality has already been built into GitLab Rails
 that currently builds prompts and submits this directly to different
 AI providers. At the time of writing, GitLab has API-clients for the
 following providers:
 
 - [Anthropic](https://gitlab.com/gitlab-org/gitlab/blob/4344729240496a5018e19a82030d6d4b227e9c79/ee/lib/gitlab/llm/anthropic/client.rb#L6)
 - [Vertex](https://gitlab.com/gitlab-org/gitlab/blob/4344729240496a5018e19a82030d6d4b227e9c79/ee/lib/gitlab/llm/vertex_ai/client.rb#L6)
-- [OpenAI](https://gitlab.com/gitlab-org/gitlab/blob/4344729240496a5018e19a82030d6d4b227e9c79/ee/lib/gitlab/llm/open_ai/client.rb#L8)
 
 To make these features available to self-managed instances, we should
 provide endpoints for each of these that GitLab.com, self-managed or
@@ -411,7 +434,7 @@ clients as for the AI gateway.
 
 In a first iteration we could consider keeping the current REST
 payloads that the VSCode extension and the Web-IDE send, but direct it
-to the appropriate GitLab installation. GitLab-rails can wrap the
+to the appropriate GitLab installation. GitLab Rails can wrap the
 payload in an envelope for the AI-gateway without having to interpret
 it.
 
@@ -422,7 +445,7 @@ it on to the AI-Gateway. GitLab can add information to the
 straight through to the AI-gateway.
 
 If a request is initiated from another client (for example VSCode),
-GitLab-rails needs to forward the entire payload in addition to any
+GitLab Rails needs to forward the entire payload in addition to any
 other enhancements and prompts. This is required so we can potentially
 support changes from a newer version of the client, traveling through
 an outdated GitLab installation to a recent AI-gateway.
@@ -451,6 +474,18 @@ in:
 
 The specific mechanism by which trust is delegated between end-users, GitLab instances,
 and the AI-gateway is covered in the [Cloud Connector access control documentation](../../../development/cloud_connector/architecture.md#access-control).
+
+AI Gateway is accessed only through Cloud connector which handles instance
+authentication (among others). Cloud connector will need to support also end-user
+authentication because some requests (e.g. code completion) will be sent
+directly by clients instead of sending all requests indirectly through
+GitLab Rails. A possible solution in
+which short-term user tokens are used is described in [Epic 13252](https://gitlab.com/groups/gitlab-org/-/epics/13252).
+AI Gateway needs to be able to distinguish between requests proxied by
+GitLab Rails and direct client requests because some endpoints or parameters
+may not be available for direct requests (for example clients should not be
+able to send final prompt, but rather only sub-components from which the final
+prompt is built by AI Gateway).
 
 ## Embeddings
 
@@ -518,3 +553,65 @@ Further testing strategy is being discussed in
 
 Alternative solutions were discussed in
 [applied-ml/code-suggestions/ai-assist#161](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/issues/161#what-are-the-alternatives).
+
+## Decisions
+
+- [ADR-001: Allow direct connections](decisions/001_direct_connections.md)
+- [ADR-002: Exposing proxy endpoints to AI providers](decisions/002_proxy.md)
+
+## Future work
+
+AI Gateway aim is to become the primary method for the monolith to **access** machine learning models across all usages of GitLab and create a consistent user journey when developing AI-backed features. To do so, these goal is split down into three categories:
+
+- Centralized Access Through AI Gateway
+- Self Managed AI Gateway
+- Unit Primitives
+
+### Centralized Access Through AI Gateway
+
+The AI Gateway, a standalone service, is the sole access point for all communication between GitLab installations and third-party AI models. It is designed to centralize and manage access to all GitLab features, whether they are in-app functionalities or code suggestions, irrespective of their deployment methods.
+
+This strategy significantly simplifies enterprise management and abstracts machine learning away from the monolith. With future expansions including telemetry, embeddings API, and multi-region/customer-specific deployments, our goal is to provide a scalable, comprehensive AI solution for all GitLab users, regardless of their installation type.
+
+[Model registry](../../../user/project/ml/model_registry/index.md) is a feature that allows users to use GitLab to manage the machine learning models. While not solely focused on large language models, and currently more targeted at smaller model applications, which could be deployed in various ways: as a standalone library, a service, a pod, a cloud deployment, and so forth. For these user-deployed models, the ability to auto-configure an API that's accessible through the AI Gateway could be a significant feature.
+
+- [AI Gateway as the Sole Access Point for Monolith to Access Models](https://gitlab.com/groups/gitlab-org/-/epics/13024)
+
+### Unit Primitives
+
+Unit Primitives are a fundamental part of our strategy for managing access to AI features through the AI Gateway. They represent the smallest unit of functionality that can be accessed and managed through the Gateway. This approach provides a more granular control over the functionalities exposed through the AI Gateway and simplifies the management of AI features. It also paves the way for future work on supporting user-deployed models and locally hosted models. From a business perspective, unit primitives are the smallest pieces that may be shuffled across various tiers or packaging models, providing flexibility and adaptability in our offerings.
+
+In the initial iteration, we will support two primitives: Code Suggestions and Chat. The latter will encompass all Chat features in one primitive.
+
+In the next iteration, we plan to decompose the Chat primitive into multiple primitives based on top-level tools. This work is dependent on the completion of the task to move classification into the AI Gateway.
+
+The introduction of Unit Primitives will simplify the management of AI features and provide a more granular control over the functionalities exposed through the AI Gateway. This will also pave the way for future work on supporting user-deployed models and locally hosted models.
+
+For more details, refer to the [Initial Set of Unit Primitives](https://gitlab.com/gitlab-org/gitlab/-/issues/444934) issue.
+
+- [Unit Primitives for Accessing CC Features](https://gitlab.com/groups/gitlab-org/-/epics/12556)
+
+### Self Managed AI Gateway
+
+Self-managed instances can either use GitLab-hosted AI Gateway or have their own AI Gateway if they want to use self-deployed models, with Runway likely being the deployment method. This means part of our work will be to ensure that the AI Gateway can be deployed in a self-managed environment. This work will go hand-in-hand with the work to support locally hosted models (local inference) in support of GitLab AI features.
+
+- [Self Managed AI Gateway](https://gitlab.com/groups/gitlab-org/-/epics/13162)
+
+## Other components in the AI stack
+
+While AI Gateway centralizes _access_ to AI features and models, it interacts with other components to help users achieve their goals:
+
+- AI Agents: create and manage agents and prompts
+- Model registry: manage and deployment machine learning models
+
+### Model registry
+
+[Model registry](../../../user/project/ml/model_registry/index.md) is a feature that allows users to use GitLab to manage the machine learning models. While not solely focused on large language models, and currently more targeted at smaller model applications, which could be deployed in various ways: as a standalone library, a service, a pod, a cloud deployment, and so forth. For these user-deployed models, the ability to auto-configure an API that's accessible through the AI Gateway could be a significant feature.
+
+### AI Agents
+
+[AI Agents](https://gitlab.com/groups/gitlab-org/-/epics/12330) is a feature that allows users to implement and manage their own chats and AI features, managing prompts, models and tools. Development is currently in its early stages. Once mature, we intend to move GitLab feature to agents, but there are blockers that currently prevent us from doing so:
+
+- [Lack of prompt templating](https://gitlab.com/gitlab-org/gitlab/-/issues/441081).
+- Implement replication of user-defined prompts into ai-gateway.
+- Implement replication of GitLab-defined prompts into self-managed installations (e.g., organization-level agents where we prepopulate with a few agents).

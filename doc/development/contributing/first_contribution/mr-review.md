@@ -62,7 +62,7 @@ However, you can type `@gitlab-bot ready` in a comment to alert reviewers that y
 - After you have resolved all of their feedback and the MR has been approved, the MR is ready for merge.
 
 If you need help at any point in the process, type `@gitlab-bot help` in a comment or initiate a
-[mentor session](https://about.gitlab.com/community/contribute/mentor-sessions/) on [Discord](https://discord.gg/gitlab).
+[mentor session](https://about.gitlab.com/community/contribute/mentor-sessions/) on [Discord](https://discord.com/invite/gitlab).
 
 When the merge request is merged, your change becomes part of the GitLab codebase.
 Great job! Thank you for your contribution!

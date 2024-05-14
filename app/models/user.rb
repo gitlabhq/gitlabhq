@@ -72,6 +72,8 @@ class User < MainClusterwide::ApplicationRecord
   INCOMING_MAIL_TOKEN_PREFIX = 'glimt-'
   FEED_TOKEN_PREFIX = 'glft-'
 
+  FIRST_GROUP_PATHS_LIMIT = 200
+
   # lib/tasks/tokens.rake needs to be updated when changing mail and feed tokens
   add_authentication_token_field :incoming_email_token, token_generator: -> { self.generate_incoming_mail_token } # rubocop:disable Gitlab/TokenWithoutPrefix -- wontfix: the prefix is in the generator
   add_authentication_token_field :feed_token, format_with_prefix: :prefix_for_feed_token
@@ -90,6 +92,7 @@ class User < MainClusterwide::ApplicationRecord
   attribute :preferred_language, default: -> { Gitlab::CurrentSettings.default_preferred_language }
   attribute :theme_id, default: -> { gitlab_config.default_theme }
   attribute :color_scheme_id, default: -> { Gitlab::CurrentSettings.default_syntax_highlighting_theme }
+  attribute :color_mode_id, default: -> { Gitlab::ColorModes::APPLICATION_DEFAULT }
 
   attr_encrypted :otp_secret,
     key: Gitlab::Application.secrets.otp_key_base,
@@ -168,6 +171,8 @@ class User < MainClusterwide::ApplicationRecord
 
   has_many :emails
   has_many :personal_access_tokens, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :expiring_soon_and_unnotified_personal_access_tokens, -> { expiring_and_not_notified_without_impersonation }, class_name: 'PersonalAccessToken'
+
   has_many :identities, dependent: :destroy, autosave: true # rubocop:disable Cop/ActiveRecordDependent
   has_many :webauthn_registrations
   has_many :chat_names, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
@@ -180,7 +185,7 @@ class User < MainClusterwide::ApplicationRecord
   has_many :followees, through: :followed_users
 
   has_many :following_users, foreign_key: :followee_id, class_name: 'Users::UserFollowUser'
-  has_many :followers, through: :following_users
+  has_many :followers, -> { active }, through: :following_users
 
   # Namespaces
   has_many :members
@@ -215,6 +220,7 @@ class User < MainClusterwide::ApplicationRecord
   has_many :project_members, -> { where(requested_at: nil) }
   has_many :projects,                 through: :project_members
   has_many :created_projects,         foreign_key: :creator_id, class_name: 'Project', dependent: :nullify # rubocop:disable Cop/ActiveRecordDependent
+  has_many :created_namespace_details, foreign_key: :creator_id, class_name: 'Namespace::Detail'
   has_many :projects_with_active_memberships, -> { where(members: { state: ::Member::STATE_ACTIVE }) }, through: :project_members, source: :project
   has_many :users_star_projects, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :starred_projects, through: :users_star_projects, source: :project
@@ -293,6 +299,7 @@ class User < MainClusterwide::ApplicationRecord
   has_many :issue_assignment_events, class_name: 'ResourceEvents::IssueAssignmentEvent', dependent: :nullify # rubocop:disable Cop/ActiveRecordDependent
   has_many :merge_request_assignment_events, class_name: 'ResourceEvents::MergeRequestAssignmentEvent', dependent: :nullify # rubocop:disable Cop/ActiveRecordDependent
   has_many :authored_events, class_name: 'Event', dependent: :destroy, foreign_key: :author_id # rubocop:disable Cop/ActiveRecordDependent
+  has_many :early_access_program_tracking_events, class_name: 'EarlyAccessProgram::TrackingEvent', inverse_of: :user
   has_many :namespace_commit_emails, class_name: 'Users::NamespaceCommitEmail'
   has_many :user_achievements, class_name: 'Achievements::UserAchievement', inverse_of: :user
   has_many :awarded_user_achievements, class_name: 'Achievements::UserAchievement', foreign_key: 'awarded_by_user_id', inverse_of: :awarded_by_user
@@ -335,7 +342,8 @@ class User < MainClusterwide::ApplicationRecord
 
   validates :theme_id, allow_nil: true, inclusion: { in: Gitlab::Themes.valid_ids,
                                                      message: ->(*) { _("%{placeholder} is not a valid theme") % { placeholder: '%{value}' } } }
-
+  validates :color_mode_id, allow_nil: true, inclusion: { in: Gitlab::ColorModes.valid_ids,
+                                                          message: ->(*) { _("%{placeholder} is not a valid color mode") % { placeholder: '%{value}' } } }
   validates :color_scheme_id, allow_nil: true, inclusion: { in: Gitlab::ColorSchemes.valid_ids,
                                                             message: ->(*) { _("%{placeholder} is not a valid color scheme") % { placeholder: '%{value}' } } }
   validates :hide_no_ssh_key, allow_nil: false, inclusion: { in: [true, false] }
@@ -402,6 +410,8 @@ class User < MainClusterwide::ApplicationRecord
     :sourcegraph_enabled, :sourcegraph_enabled=,
     :gitpod_enabled, :gitpod_enabled=,
     :use_web_ide_extension_marketplace, :use_web_ide_extension_marketplace=,
+    :extensions_marketplace_opt_in_status, :extensions_marketplace_opt_in_status=,
+    :extensions_marketplace_enabled, :extensions_marketplace_enabled=,
     :setup_for_company, :setup_for_company=,
     :project_shortcut_buttons, :project_shortcut_buttons=,
     :keyboard_shortcuts_enabled, :keyboard_shortcuts_enabled=,
@@ -615,6 +625,11 @@ class User < MainClusterwide::ApplicationRecord
         .where('keys.user_id = users.id')
         .expiring_soon_and_not_notified)
   end
+
+  scope :with_personal_access_tokens_expiring_soon, -> do
+    includes(:expiring_soon_and_unnotified_personal_access_tokens)
+  end
+
   scope :order_recent_sign_in, -> { reorder(arel_table[:current_sign_in_at].desc.nulls_last) }
   scope :order_oldest_sign_in, -> { reorder(arel_table[:current_sign_in_at].asc.nulls_last) }
   scope :order_recent_last_activity, -> { reorder(arel_table[:last_activity_on].desc.nulls_last, arel_table[:id].asc) }
@@ -633,6 +648,14 @@ class User < MainClusterwide::ApplicationRecord
       .trusted_with_spam)
   end
 
+  # This scope to be used only for bot_users since for
+  # regular users this may lead to memory allocation issues
+  scope :with_personal_access_tokens_and_resources, -> do
+    includes(:personal_access_tokens)
+    .includes(:groups)
+    .includes(:projects)
+  end
+
   scope :preload_user_detail, -> { preload(:user_detail) }
 
   def self.supported_keyset_orderings
@@ -646,10 +669,6 @@ class User < MainClusterwide::ApplicationRecord
   end
 
   strip_attributes! :name
-
-  def user_belongs_to_organization?(organization)
-    organization_users.exists?(organization: organization)
-  end
 
   def preferred_language
     read_attribute('preferred_language').presence || Gitlab::CurrentSettings.default_preferred_language
@@ -848,7 +867,7 @@ class User < MainClusterwide::ApplicationRecord
         END
       SQL
 
-      sanitized_order_sql = Arel.sql(sanitize_sql_array([order, query: query]))
+      sanitized_order_sql = Arel.sql(sanitize_sql_array([order, { query: query }]))
 
       scope = options[:with_private_emails] ? with_primary_or_secondary_email(query) : with_public_email(query)
       scope = scope.or(search_by_name_or_username(query, use_minimum_char_limit: options[:use_minimum_char_limit]))
@@ -858,22 +877,19 @@ class User < MainClusterwide::ApplicationRecord
           Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
             attribute_name: 'users_match_priority',
             order_expression: sanitized_order_sql.asc,
-            add_to_projections: true,
-            distinct: false
+            add_to_projections: true
           ),
           Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
             attribute_name: 'users_name',
             order_expression: arel_table[:name].asc,
             add_to_projections: true,
-            nullable: :not_nullable,
-            distinct: false
+            nullable: :not_nullable
           ),
           Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
             attribute_name: 'users_id',
             order_expression: arel_table[:id].asc,
             add_to_projections: true,
-            nullable: :not_nullable,
-            distinct: true
+            nullable: :not_nullable
           )
         ])
       scope.reorder(order)
@@ -889,8 +905,8 @@ class User < MainClusterwide::ApplicationRecord
       ).order(
         Arel.sql(sanitize_sql(
           [
-            "CASE WHEN starts_with(REPLACE(users.name, ' ', ''), :pattern) OR starts_with(users.username, :pattern) THEN 1 ELSE 2 END",
-            { pattern: query }
+            "CASE WHEN REPLACE(users.name, ' ', '') ILIKE :prefix_pattern OR users.username ILIKE :prefix_pattern THEN 1 ELSE 2 END",
+            { prefix_pattern: "#{sanitize_sql_like(query)}%" }
           ]
         )),
         :username,
@@ -999,6 +1015,10 @@ class User < MainClusterwide::ApplicationRecord
     def generate_incoming_mail_token
       "#{INCOMING_MAIL_TOKEN_PREFIX}#{SecureRandom.hex.to_i(16).to_s(36)}"
     end
+
+    def username_exists?(username)
+      exists?(username: username)
+    end
   end
 
   #
@@ -1044,6 +1064,7 @@ class User < MainClusterwide::ApplicationRecord
   def valid_password?(password)
     return false unless password_allowed?(password)
     return false if password_automatically_set?
+    return false unless allow_password_authentication?
 
     super
   end
@@ -1134,9 +1155,9 @@ class User < MainClusterwide::ApplicationRecord
 
   def two_factor_otp_enabled?
     otp_required_for_login? ||
-    forti_authenticator_enabled?(self) ||
-    forti_token_cloud_enabled?(self) ||
-    duo_auth_enabled?(self)
+      forti_authenticator_enabled?(self) ||
+      forti_token_cloud_enabled?(self) ||
+      duo_auth_enabled?(self)
   end
 
   def two_factor_webauthn_enabled?
@@ -1172,10 +1193,23 @@ class User < MainClusterwide::ApplicationRecord
   end
 
   def unique_email
-    return if errors.added?(:email, _('has already been taken'))
+    email_taken = errors.added?(:email, _('has already been taken'))
 
-    if !emails.exists?(email: email) && Email.exists?(email: email)
+    if !email_taken && !emails.exists?(email: email) && Email.exists?(email: email)
       errors.add(:email, _('has already been taken'))
+      email_taken = true
+    end
+
+    if email_taken &&
+        ::Feature.enabled?(:delay_delete_own_user) &&
+        User.find_by_any_email(email)&.deleted_own_account?
+
+      help_page_url = Rails.application.routes.url_helpers.help_page_url(
+        'user/profile/account/delete_account',
+        anchor: 'delete-your-own-account'
+      )
+
+      errors.add(:email, _('is linked to an account pending deletion.'), help_page_url: help_page_url)
     end
   end
 
@@ -1234,6 +1268,18 @@ class User < MainClusterwide::ApplicationRecord
     Gitlab::ObjectHierarchy.new(expanded_groups_requiring_two_factor_authentication)
       .all_objects
       .where(id: groups)
+  end
+
+  def direct_groups_with_route
+    groups.with_route.order_id_asc
+  end
+
+  def first_group_paths
+    first_groups = direct_groups_with_route.take(FIRST_GROUP_PATHS_LIMIT + 1)
+
+    return if first_groups.count > FIRST_GROUP_PATHS_LIMIT
+
+    first_groups.map(&:full_path).sort!
   end
 
   # rubocop: disable CodeReuse/ServiceClass
@@ -1390,6 +1436,12 @@ class User < MainClusterwide::ApplicationRecord
     read_attribute(:last_name) || begin
       name.split(' ').drop(1).join(' ') unless name.blank?
     end
+  end
+
+  def color_mode_id
+    return Gitlab::ColorModes::APPLICATION_DARK if theme_id == 11
+
+    read_attribute(:color_mode_id)
   end
 
   def projects_limit_left
@@ -1624,7 +1676,7 @@ class User < MainClusterwide::ApplicationRecord
 
     # handle the outdated private commit email case
     return true if persisted? &&
-        id == Gitlab::PrivateCommitEmail.user_id_for_email(downcased)
+      id == Gitlab::PrivateCommitEmail.user_id_for_email(downcased)
 
     all_emails.include?(check_email.downcase)
   end
@@ -1634,7 +1686,7 @@ class User < MainClusterwide::ApplicationRecord
 
     # handle the outdated private commit email case
     return true if persisted? &&
-        id == Gitlab::PrivateCommitEmail.user_id_for_email(downcased)
+      id == Gitlab::PrivateCommitEmail.user_id_for_email(downcased)
 
     verified_emails.include?(check_email.downcase)
   end
@@ -1656,10 +1708,15 @@ class User < MainClusterwide::ApplicationRecord
     end
   end
 
-  def assign_personal_namespace
+  def assign_personal_namespace(organization)
     return namespace if namespace
 
-    build_namespace(path: username, name: name)
+    namespace_attributes = { path: username, name: name }
+
+    # Do not explicitly assign if organization is `nil`
+    namespace_attributes[:organization] = organization if organization
+
+    build_namespace(namespace_attributes)
     namespace.build_namespace_settings
 
     namespace
@@ -1767,14 +1824,6 @@ class User < MainClusterwide::ApplicationRecord
       followee
     rescue ActiveRecord::RecordNotUnique
       nil
-    end
-  end
-
-  def unfollow(user)
-    if Users::UserFollowUser.where(follower_id: self.id, followee_id: user.id).delete_all > 0
-      self.followees.reset
-    else
-      false
     end
   end
 
@@ -1925,15 +1974,27 @@ class User < MainClusterwide::ApplicationRecord
     @global_notification_setting
   end
 
+  def merge_request_dashboard_enabled?
+    Feature.enabled?(:merge_request_dashboard, self, type: :wip)
+  end
+
   def assigned_open_merge_requests_count(force: false)
-    Rails.cache.fetch(['users', id, 'assigned_open_merge_requests_count'], force: force, expires_in: COUNT_CACHE_VALIDITY_PERIOD) do
-      MergeRequestsFinder.new(self, assignee_id: self.id, state: 'opened', non_archived: true).execute.count
+    Rails.cache.fetch(['users', id, 'assigned_open_merge_requests_count', merge_request_dashboard_enabled?], force: force, expires_in: COUNT_CACHE_VALIDITY_PERIOD) do
+      review_states = if merge_request_dashboard_enabled?
+                        %w[requested_changes reviewed]
+                      end
+
+      MergeRequestsFinder.new(self, assignee_id: self.id, review_states: review_states, state: 'opened', non_archived: true).execute.count
     end
   end
 
   def review_requested_open_merge_requests_count(force: false)
-    Rails.cache.fetch(['users', id, 'review_requested_open_merge_requests_count'], force: force, expires_in: COUNT_CACHE_VALIDITY_PERIOD) do
-      MergeRequestsFinder.new(self, reviewer_id: id, state: 'opened', non_archived: true).execute.count
+    Rails.cache.fetch(['users', id, 'review_requested_open_merge_requests_count', merge_request_dashboard_enabled?], force: force, expires_in: COUNT_CACHE_VALIDITY_PERIOD) do
+      review_state = if merge_request_dashboard_enabled?
+                       'unreviewed'
+                     end
+
+      MergeRequestsFinder.new(self, reviewer_id: id, review_state: review_state, state: 'opened', non_archived: true).execute.count
     end
   end
 
@@ -1979,8 +2040,8 @@ class User < MainClusterwide::ApplicationRecord
   end
 
   def invalidate_merge_request_cache_counts
-    Rails.cache.delete(['users', id, 'assigned_open_merge_requests_count'])
-    Rails.cache.delete(['users', id, 'review_requested_open_merge_requests_count'])
+    Rails.cache.delete(['users', id, 'assigned_open_merge_requests_count', merge_request_dashboard_enabled?])
+    Rails.cache.delete(['users', id, 'review_requested_open_merge_requests_count', merge_request_dashboard_enabled?])
   end
 
   def invalidate_todos_cache_counts
@@ -2033,6 +2094,20 @@ class User < MainClusterwide::ApplicationRecord
 
   def can_admin_all_resources?
     can?(:admin_all_resources)
+  end
+
+  def owns_organization?(organization)
+    strong_memoize_with(:owns_organization, organization) do
+      break false unless organization
+
+      organization_id = organization.is_a?(Integer) ? organization : organization.id
+
+      organization_users.where(organization_id: organization_id).owner.exists?
+    end
+  end
+
+  def can_admin_organization?(organization)
+    owns_organization?(organization)
   end
 
   def update_two_factor_requirement
@@ -2314,6 +2389,10 @@ class User < MainClusterwide::ApplicationRecord
 
   def deleted_own_account?
     custom_attributes.by_key(UserCustomAttribute::DELETED_OWN_ACCOUNT_AT).exists?
+  end
+
+  def supports_saved_replies?
+    true
   end
 
   protected

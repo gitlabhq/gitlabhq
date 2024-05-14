@@ -9,10 +9,10 @@
   reporter: digitalmoksha
   stage: plan
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/440733
-  impact: low # Can be one of: [critical, high, medium, low]
-  scope: project # Can be one or a combination of: [instance, group, project]
-  resolution_role: Developer # Can be one of: [Admin, Owner, Maintainer, Developer]
-  manual_task: true # Can be true or false. Use this to denote whether a resolution action must be performed manually (true), or if it can be automated by using the API or other automation (false).
+  impact: low  # Can be one of: [critical, high, medium, low]
+  scope: project  # Can be one or a combination of: [instance, group, project]
+  resolution_role: Developer  # Can be one of: [Admin, Owner, Maintainer, Developer]
+  manual_task: true  # Can be true or false. Use this to denote whether a resolution action must be performed manually (true), or if it can be automated by using the API or other automation (false).
   body: |  # (required) Don't change this line.
     GitLab automatically creates anchor links for all headings, so you can link to
     a specific place in a Markdown document or wiki page. But in some edge cases,

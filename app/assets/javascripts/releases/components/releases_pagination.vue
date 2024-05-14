@@ -27,8 +27,6 @@ export default {
   <div class="gl-display-flex gl-justify-content-center">
     <gl-keyset-pagination
       v-bind="pageInfo"
-      :prev-text="__('Prev')"
-      :next-text="__('Next')"
       v-on="$listeners"
       @prev="onPrev($event)"
       @next="onNext($event)"

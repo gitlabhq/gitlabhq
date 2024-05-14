@@ -8,10 +8,6 @@ include:
 .code-pattern-changes: &code-pattern-changes
   if: $MR_CODE_PATTERNS == "true"
 
-# Run all tests when QA framework changes present, full suite execution is explicitly enabled or a feature flag file is removed
-.qa-run-all-tests: &qa-run-all-tests
-  if: $QA_FRAMEWORK_CHANGES == "true" || $QA_RUN_ALL_TESTS == "true" || $QA_RUN_ALL_E2E_LABEL == "true" || $QA_FEATURE_FLAGS =~ /deleted/
-
 .rules:gdk:qa-selective:
   rules:
     - <<: *code-pattern-changes
@@ -22,23 +18,13 @@ include:
 .rules:gdk:qa-parallel:
   rules:
     # To account for cases where a group label is set which may trigger selective execution
-    # But we want to execute full reliable suite on gdk in case of code-pattern-changes
+    # But we want to execute full blocking suite on gdk in case of code-pattern-changes
     - <<: *code-pattern-changes
       variables:
         QA_TESTS: ""
+        KNAPSACK_TEST_FILE_PATTERN: ""
     - !reference [.rules:test:qa-parallel, rules]
     - if: $QA_SUITES =~ /Test::Instance::Blocking/
-    - !reference [.rules:test:manual, rules]
-
-.rules:gdk:qa-smoke:
-  rules:
-    - <<: *code-pattern-changes
-      variables:
-        QA_TESTS: ""
-    - <<: *qa-run-all-tests
-      variables:
-        QA_TESTS: ""
-    - if: $QA_SUITES =~ /Test::Instance::Smoke/
     - !reference [.rules:test:manual, rules]
 
 .rules:test:gdk-load-balancer-changes:
@@ -49,12 +35,15 @@ include:
         - ".gitlab/ci/test-on-gdk/**"
         - "lib/gitlab/database/load_balancing/**/*"
 
+.with-parallel:
+  parallel: 15
+
 .with-gdk-log:
   after_script:
     - mv $CI_BUILDS_DIR/*.log $CI_PROJECT_DIR/
 
 .gdk-qa-base:
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}:bundler-${BUNDLER_VERSION}-git-2.36-lfs-2.9-chrome-${CHROME_VERSION}-docker-${DOCKER_VERSION}-gcloud-383-kubectl-1.23
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/${BUILD_OS}-${OS_VERSION}-ruby-${RUBY_VERSION}:bundler-${BUNDLER_VERSION}-git-2.36-lfs-2.9-chrome-${CHROME_VERSION}-docker-${DOCKER_VERSION}-gcloud-383-kubectl-1.23
   extends:
     - .qa-cache
     - .default-retry
@@ -76,20 +65,27 @@ include:
     QA_INTERCEPT_REQUESTS: "false"
     QA_SUITE_STATUS_ENV_FILE: "$CI_PROJECT_DIR/suite_status.env"
     QA_DOCKER_NETWORK: host
+    QA_DISABLE_RSPEC_RETRY: "true"
     GITLAB_QA_ADMIN_ACCESS_TOKEN: $QA_ADMIN_ACCESS_TOKEN
-    RSPEC_REPORT_OPTS: "--order random --force-color --format documentation --format RspecJunitFormatter --out tmp/rspec-${CI_JOB_ID}.xml --format QA::Support::JsonFormatter --out tmp/rspec-${CI_JOB_ID}.json  --format html --out tmp/rspec-${CI_JOB_ID}.htm"
     GDK_URL: http://gdk.test:3000
     FF_NETWORK_PER_BUILD: "true"
+    RSPEC_LAST_RUN_RESULTS_FILE: "$CI_PROJECT_DIR/qa/tmp/examples.txt"
   before_script:
     - echo "SUITE_RAN=true" > "$QA_SUITE_STATUS_ENV_FILE"
     - echo -e "\e[0Ksection_start:`date +%s`:install_gems[collapsed=true]\r\e[0KInstall gems"
     - source scripts/utils.sh
-    - cd qa && bundle config set --local without 'development' && bundle install
+    - source scripts/rspec_helpers.sh
+    - cd qa && bundle install
     - echo -e "\e[0Ksection_end:`date +%s`:install_gems\r\e[0K"
   script:
-    - export QA_COMMAND="bundle exec bin/qa ${QA_SCENARIO:=Test::Instance::All} $GDK_URL $GITLAB_QA_OPTS -- $QA_TESTS $QA_RSPEC_TAGS $RSPEC_REPORT_OPTS"
+    - export QA_COMMAND="bundle exec bin/qa ${QA_SCENARIO:=Test::Instance::All} $GDK_URL $GITLAB_QA_OPTS -- $QA_TESTS --order random --force-color --format documentation --format QA::Support::JsonFormatter --out tmp/rspec-${CI_JOB_ID}-\${QA_RSPEC_RETRIED:-false}.json"
     - echo "Running - '$QA_COMMAND'"
-    - eval "$QA_COMMAND"
+    - |
+      if eval "$QA_COMMAND --format RspecJunitFormatter --out tmp/rspec-${CI_JOB_ID}.xml"; then
+        echo "Test run finished successfully"
+      else
+        retry_failed_e2e_rspec_examples
+      fi
   after_script:
     - !reference [.with-gdk-log, after_script]
     - !reference [.gitlab-qa-report, after_script]
@@ -134,22 +130,21 @@ download-knapsack-report:
 # ------------------------------------------
 # Blocking tests
 # ------------------------------------------
-gdk-qa-smoke:
-  extends:
-    - .gdk-qa-base
-    - .rules:gdk:qa-smoke
-  variables:
-    QA_SCENARIO: Test::Instance::Smoke
-    QA_RUN_TYPE: gdk-qa-smoke
-
 gdk-qa-blocking:
   extends:
     - .gdk-qa-base
+    - .with-parallel
     - .rules:gdk:qa-parallel
   variables:
     QA_SCENARIO: Test::Instance::Blocking
     QA_RUN_TYPE: gdk-qa-blocking
-  parallel: 10
+
+gdk-qa-blocking-ff-inverse:
+  extends: gdk-qa-blocking
+  variables:
+    QA_FEATURE_FLAGS: $FEATURE_FLAGS
+  rules:
+    - !reference [.rules:test:feature-flags-set, rules]
 
 gdk-qa-blocking-selective:
   extends:
@@ -162,32 +157,15 @@ gdk-qa-blocking-selective:
 # ------------------------------------------
 # Non Blocking tests
 # ------------------------------------------
-gdk-qa-smoke-with-load-balancer:
-  extends:
-    - .gdk-qa-base
-    - .gdk-with-load-balancer-setup
-    - .with-gdk-log
-  variables:
-    QA_SCENARIO: Test::Instance::Smoke
-    QA_RUN_TYPE: gdk-qa-smoke
-  artifacts:
-    paths:
-      - gdk.log
-    reports:
-      dotenv: ""
-  rules:
-    - !reference [".rules:test:never-schedule-pipeline", rules]
-    - !reference [".rules:test:gdk-load-balancer-changes", rules]
-
 gdk-qa-blocking-with-load-balancer:
   extends:
     - .gdk-qa-base
     - .gdk-with-load-balancer-setup
     - .with-gdk-log
+    - .with-parallel
   variables:
     QA_SCENARIO: Test::Instance::Blocking
     QA_RUN_TYPE: gdk-qa-blocking
-  parallel: 5
   artifacts:
     paths:
       - log

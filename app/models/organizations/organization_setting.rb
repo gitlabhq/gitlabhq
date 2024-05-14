@@ -2,8 +2,6 @@
 
 module Organizations
   class OrganizationSetting < ApplicationRecord
-    extend ::Organization::CurrentOrganization
-
     belongs_to :organization
 
     validates :settings, json_schema: { filename: "organization_settings" }
@@ -19,10 +17,10 @@ module Organizations
       end
     end
 
-    def self.for_current_organization
-      return unless current_organization
+    def self.for(organization_id)
+      return unless organization_id
 
-      current_organization.settings || current_organization.build_settings
+      Organizations::OrganizationSetting.find_or_initialize_by(organization_id: organization_id)
     end
   end
 end

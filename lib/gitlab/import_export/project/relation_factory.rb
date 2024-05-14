@@ -91,6 +91,7 @@ module Gitlab
         def setup_models
           case @relation_name
           when :merge_request_diff_files then setup_diff
+          when :note_diff_file then setup_diff
           when :notes, :Note then setup_note
           when :'Ci::Pipeline' then setup_pipeline
           when *BUILD_MODELS then setup_build
@@ -229,7 +230,7 @@ module Gitlab
         def compute_relative_position
           return unless max_relative_position
 
-          max_relative_position + (@relation_index + 1) * Gitlab::RelativePositioning::IDEAL_DISTANCE
+          max_relative_position + ((@relation_index + 1) * Gitlab::RelativePositioning::IDEAL_DISTANCE)
         end
 
         def max_relative_position

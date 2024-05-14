@@ -203,7 +203,7 @@ domains
 The move to a modular monolith architecture enables a lot of opportunities that we could explore in the future:
 
 - We could align the concept of domain expert with explicitly owning specific modules of the monolith.
-- The use of static analysis tool (such as Packwerk, Rubocop) can catch design violations in development and CI, ensuring
+- The use of static analysis tool (such as Packwerk, RuboCop) can catch design violations in development and CI, ensuring
   that best practices are honored.
 - By defining dependencies between modules explicitly we could speed up CI by testing only the parts that are affected by
   the changes.

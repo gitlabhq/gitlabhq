@@ -1,7 +1,7 @@
 ---
-stage: Secure
-group: Incubation
-info: Breach and Attack Simulation is a GitLab Incubation Engineering program. No technical writer assigned to this group.
+stage: none
+group: unassigned
+info: This is a GitLab Incubation Engineering program. No technical writer assigned to this group.
 ---
 
 <!--- start_remove The following content will be removed on remove_date: '2024-08-15' -->
@@ -10,7 +10,7 @@ info: Breach and Attack Simulation is a GitLab Incubation Engineering program. N
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Status:** Experiment
 
 WARNING:
@@ -114,8 +114,7 @@ DISCLAIMER:
 This page contains information related to upcoming products, features, and functionality.
 It is important to note that the information presented is for informational purposes only.
 Please do not rely on this information for purchasing or planning purposes.
-As with all projects, the items mentioned on this page are subject to change or delay.
-The development, release, and timing of any products, features, or functionality remain at the
+The development, release, and timing of any products, features, or functionality may be subject to change or delay and remain at the
 sole discretion of GitLab Inc.
 
 Perform Out-of-Band Application Security Testing (OAST) for certain [active checks](../dast/browser/checks/index.md#active-checks).

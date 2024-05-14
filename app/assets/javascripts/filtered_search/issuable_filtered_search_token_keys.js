@@ -43,7 +43,7 @@ export const createTokenKeys = ({ disableReleaseFilter = false } = {}) => {
       type: 'string',
       param: 'title',
       symbol: '%',
-      icon: 'clock',
+      icon: 'milestone',
       tag: '%milestone',
     },
     {

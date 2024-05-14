@@ -98,7 +98,7 @@ RSpec.describe 'Project Jobs Permissions', feature_category: :groups_and_project
 
         it_behaves_like 'project jobs page responds with status', 200 do
           it 'renders job', :js do
-            page.within('[data-testid="jobs-table"]') do
+            within_testid('jobs-table') do
               expect(page).to have_content("##{job.id}")
                 .and have_content(job.sha[0..7])
                 .and have_content(job.ref)

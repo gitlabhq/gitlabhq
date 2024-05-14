@@ -9,25 +9,19 @@ module Mutations
         authorize :create_note
 
         argument :noteable_id,
-                 ::Types::GlobalIDType[::Noteable],
-                  required: true,
-                  description: 'Global ID of the resource to add a note to.'
+          ::Types::GlobalIDType[::Noteable],
+          required: true,
+          description: 'Global ID of the resource to add a note to.'
 
         argument :body,
-                  GraphQL::Types::String,
-                  required: true,
-                  description: copy_field_description(Types::Notes::NoteType, :body)
-
-        argument :confidential,
-                  GraphQL::Types::Boolean,
-                  required: false,
-                  description: 'Confidentiality flag of a note. Default is false.',
-                  deprecated: { reason: :renamed, replacement: 'internal', milestone: '15.3' }
+          GraphQL::Types::String,
+          required: true,
+          description: copy_field_description(Types::Notes::NoteType, :body)
 
         argument :internal,
-                  GraphQL::Types::Boolean,
-                  required: false,
-                  description: 'Internal flag for a note. Default is false.'
+          GraphQL::Types::Boolean,
+          required: false,
+          description: 'Internal flag for a note. Default is false.'
 
         def resolve(args)
           noteable = authorized_find!(id: args[:noteable_id])
@@ -51,7 +45,7 @@ module Mutations
           {
             noteable: noteable,
             note: args[:body],
-            internal: args[:internal] || args[:confidential]
+            internal: args[:internal]
           }
         end
 

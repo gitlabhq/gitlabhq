@@ -80,9 +80,6 @@ class IssuePolicy < IssuablePolicy
     prevent :create_design
     prevent :update_design
     prevent :destroy_design
-  end
-
-  rule { ~can?(:read_design) }.policy do
     prevent :move_design
   end
 
@@ -93,6 +90,7 @@ class IssuePolicy < IssuablePolicy
 
   rule { can?(:admin_issue) }.policy do
     enable :set_issue_metadata
+    enable :admin_issue_link
   end
 
   # guest members need to be able to set issue metadata per https://gitlab.com/gitlab-org/gitlab/-/issues/300100
@@ -110,6 +108,10 @@ class IssuePolicy < IssuablePolicy
 
   rule { can?(:guest_access) & can?(:read_issue) }.policy do
     enable :admin_issue_relation
+  end
+
+  rule { can?(:guest_access) & can?(:read_issue) & is_project_member }.policy do
+    enable :admin_issue_link
   end
 
   rule { support_bot & service_desk_enabled }.enable :admin_issue_relation

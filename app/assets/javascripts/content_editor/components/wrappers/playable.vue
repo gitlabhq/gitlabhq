@@ -44,7 +44,7 @@ export default {
 </script>
 <template>
   <node-view-wrapper
-    v-if="!isStaleUploadedMedia"
+    v-show="!isStaleUploadedMedia"
     as="span"
     :class="`media-container ${node.type.name}-container`"
   >

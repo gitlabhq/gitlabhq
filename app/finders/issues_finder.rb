@@ -67,38 +67,6 @@ class IssuesFinder < IssuableFinder
     super.with_projects_matching_search_data
   end
 
-  override :use_full_text_search?
-  def use_full_text_search?
-    return false if include_namespace_level_work_items?
-
-    super
-  end
-
-  override :by_parent
-  def by_parent(items)
-    return super unless include_namespace_level_work_items?
-
-    relations = [group_namespaces, project_namespaces].compact
-
-    namespaces = if relations.one?
-                   relations.first
-                 else
-                   Namespace.from_union(relations)
-                 end
-
-    items.in_namespaces(namespaces)
-  end
-
-  def group_namespaces
-    return if params[:project_id] || params[:projects]
-
-    Group.id_in(params.group).select(:id)
-  end
-
-  def project_namespaces
-    params.projects.select(:project_namespace_id)
-  end
-
   def by_confidential(items)
     Issues::ConfidentialityFilter.new(
       current_user: current_user,
@@ -145,10 +113,6 @@ class IssuesFinder < IssuableFinder
     return items if issue_type_params.blank?
 
     items.without_issue_type(issue_type_params)
-  end
-
-  def include_namespace_level_work_items?
-    params.group? && Feature.enabled?(:namespace_level_work_items, params.group)
   end
 end
 

@@ -1,0 +1,17 @@
+- return if Gitlab.com?
+
+%h5
+  = s_('PackageRegistry|Skip metadata URL validation for the NuGet package')
+%p
+  = s_('PackageRegistry|By default, the NuGet package validates the %{code_open}projectUrl%{code_close}, %{code_open}iconUrl%{code_close}, and %{code_open}licenseUrl%{code_close} metadata. In an offline environment, you cannot upload the NuGet package with this validation because these URLs cannot be resolved. You might want to select the checkbox to skip validation.').html_safe % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
+%p
+  = s_('PackageRegistry|Validate these URLs manually to ensure malicious packages are not uploaded to the NuGet package registry. Selecting and clearing the checkbox might lead to invalid records in the package registry that you cannot update.')
+= gitlab_ui_form_for @application_setting, url: ci_cd_admin_application_settings_path(anchor: 'js-package-settings'), html: { class: 'fieldset-form' }, data: { testid: 'forward-package-requests-form' } do |f|
+  = form_errors(@application_setting)
+
+  %fieldset
+    .form-group
+      = f.gitlab_ui_checkbox_component :nuget_skip_metadata_url_validation,
+        s_('PackageRegistry|Skip metadata URL validation for the NuGet package')
+
+    = f.submit _('Save changes'), pajamas_button: true

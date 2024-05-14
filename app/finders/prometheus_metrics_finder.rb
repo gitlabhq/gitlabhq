@@ -105,7 +105,10 @@ class PrometheusMetricsFinder
   # Protect against the caller "finding" the wrong metric
   def validate_id_params!
     raise ArgumentError, 'Only one of :identifier, :id is permitted' if params[:identifier] && params[:id]
-    raise ArgumentError, ':identifier must be scoped to a :project or :common' if params[:identifier] && !(params[:project] || params[:common])
+
+    return unless params[:identifier] && !(params[:project] || params[:common])
+
+    raise ArgumentError, ':identifier must be scoped to a :project or :common'
   end
 
   # Protect against unaccounted-for, complex/slow queries.
@@ -116,7 +119,9 @@ class PrometheusMetricsFinder
     indexable_params << :project_id if params[:project]
     indexable_params.sort!
 
-    raise ArgumentError, "An index should exist for params: #{indexable_params}" unless appropriate_index?(indexable_params)
+    return if appropriate_index?(indexable_params)
+
+    raise ArgumentError, "An index should exist for params: #{indexable_params}"
   end
 
   def appropriate_index?(indexable_params)

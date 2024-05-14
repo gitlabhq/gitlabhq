@@ -4,7 +4,7 @@ key_path: counts.package_events_i_package_terraform_module_delete_package
 description: Total count of Terraform Module packages delete events
 product_section: ops
 product_stage: package
-product_group: package
+product_group: package_registry
 value_type: number
 status: active
 milestone: '13.11'

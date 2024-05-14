@@ -20,7 +20,7 @@ export default {
     copyLinkText: __('Copy link'),
     assignUserText: __('Assign to commenting user'),
     unassignUserText: __('Unassign from commenting user'),
-    reportAbuseText: __('Report abuse to administrator'),
+    reportAbuseText: __('Report abuse'),
   },
   components: {
     EmojiPicker: () => import('~/emoji/components/picker.vue'),

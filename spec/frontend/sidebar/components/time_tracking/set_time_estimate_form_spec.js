@@ -1,6 +1,6 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlModal, GlAlert } from '@gitlab/ui';
+import { GlModal, GlAlert, GlLink, GlFormInput } from '@gitlab/ui';
 import setIssueTimeEstimateWithErrors from 'test_fixtures/graphql/issue_set_time_estimate_with_errors.json';
 import setIssueTimeEstimateWithoutErrors from 'test_fixtures/graphql/issue_set_time_estimate_without_errors.json';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -9,6 +9,8 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { stubComponent } from 'helpers/stub_component';
 import SetTimeEstimateForm from '~/sidebar/components/time_tracking/set_time_estimate_form.vue';
 import issueSetTimeEstimateMutation from '~/sidebar/queries/issue_set_time_estimate.mutation.graphql';
+import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
+import { updateWorkItemMutationResponse } from 'jest/work_items/mock_data';
 
 const mockProjectFullPath = 'group/project';
 const mockMutationErrorMessage = setIssueTimeEstimateWithErrors.errors[0].message;
@@ -27,6 +29,8 @@ const resolvedMutationWithErrorsMock = jest.fn().mockResolvedValue(setIssueTimeE
 const rejectedMutationMock = jest.fn().mockRejectedValue();
 const modalCloseMock = jest.fn();
 
+const updateWorkItemMutationHandler = jest.fn().mockResolvedValue(updateWorkItemMutationResponse);
+
 describe('Set Time Estimate Form', () => {
   Vue.use(VueApollo);
 
@@ -35,7 +39,8 @@ describe('Set Time Estimate Form', () => {
   const findModal = () => wrapper.findComponent(GlModal);
   const findModalTitle = () => findModal().props('title');
   const findAlert = () => wrapper.findComponent(GlAlert);
-  const findDocsLink = () => wrapper.findByTestId('timetracking-docs-link');
+  const findDocsLink = () => wrapper.findComponent(GlLink);
+  const findGlFormInput = () => wrapper.findComponent(GlFormInput);
   const findSaveButton = () => findModal().props('actionPrimary');
   const findSaveButtonLoadingState = () => findSaveButton().attributes.loading;
   const findSaveButtonDisabledState = () => findSaveButton().attributes.disabled;
@@ -57,6 +62,7 @@ describe('Set Time Estimate Form', () => {
   const mountComponent = async ({
     timeTracking = mockTimeTrackingData,
     data,
+    props,
     providedProps,
     mutationResolverMock = resolvedMutationWithoutErrorsMock,
   } = {}) => {
@@ -74,8 +80,12 @@ describe('Set Time Estimate Form', () => {
         issuableIid: mockIssuableIid,
         fullPath: mockProjectFullPath,
         timeTracking,
+        ...props,
       },
-      apolloProvider: createMockApollo([[issueSetTimeEstimateMutation, mutationResolverMock]]),
+      apolloProvider: createMockApollo([
+        [issueSetTimeEstimateMutation, mutationResolverMock],
+        [updateWorkItemMutation, updateWorkItemMutationHandler],
+      ]),
       stubs: {
         GlModal: stubComponent(GlModal, {
           methods: { close: modalCloseMock },
@@ -414,7 +424,36 @@ describe('Set Time Estimate Form', () => {
     it('is present', async () => {
       await mountComponent();
 
-      expect(findDocsLink().exists()).toBe(true);
+      expect(findDocsLink().text()).toBe('How do I estimate and track time?');
+      expect(findDocsLink().attributes('href')).toBe('/help/user/project/time_tracking.md');
+    });
+  });
+
+  describe('with work item task', () => {
+    beforeEach(() => {
+      mountComponent({
+        props: { workItemId: 'gid://gitlab/WorkItem/1', workItemType: 'Task' },
+        providedProps: { issuableType: null },
+      });
+    });
+
+    it('mentions the correct work item type', () => {
+      expect(wrapper.text()).toContain('Set estimated time to complete this task.');
+    });
+
+    it('calls mutation to update work item when setting estimate', async () => {
+      findGlFormInput().vm.$emit('input', '2d');
+      triggerSave();
+      await waitForPromises();
+
+      expect(updateWorkItemMutationHandler).toHaveBeenCalledWith({
+        input: {
+          id: 'gid://gitlab/WorkItem/1',
+          timeTrackingWidget: {
+            timeEstimate: '2d',
+          },
+        },
+      });
     });
   });
 });

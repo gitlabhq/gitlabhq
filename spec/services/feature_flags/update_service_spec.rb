@@ -4,16 +4,11 @@ require 'spec_helper'
 
 RSpec.describe FeatureFlags::UpdateService, :with_license, feature_category: :feature_flags do
   let_it_be(:project) { create(:project) }
-  let_it_be(:developer) { create(:user) }
-  let_it_be(:reporter) { create(:user) }
+  let_it_be(:developer) { create(:user, developer_of: project) }
+  let_it_be(:reporter) { create(:user, reporter_of: project) }
 
   let(:user) { developer }
   let(:feature_flag) { create(:operations_feature_flag, project: project, active: true) }
-
-  before_all do
-    project.add_developer(developer)
-    project.add_reporter(reporter)
-  end
 
   describe '#execute' do
     subject { described_class.new(project, user, params).execute(feature_flag) }
@@ -111,8 +106,8 @@ RSpec.describe FeatureFlags::UpdateService, :with_license, feature_category: :fe
       it 'creates audit event with changed description' do
         expect { subject }.to change { AuditEvent.count }.by(1)
         expect(audit_event_message).to(
-          include("Updated description from \"\""\
-                  " to \"new description\".")
+          include("Updated description from \"\" "\
+                  "to \"new description\".")
         )
       end
     end

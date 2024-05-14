@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 This is the API documentation for [npm Packages](../../user/packages/npm_registry/index.md).
 
@@ -135,7 +135,7 @@ The examples in this document all use the project-level prefix.
 ### Instance-level
 
 ```plaintext
- /packages/npm`
+/packages/npm
 ```
 
 | Attribute | Type   | Required | Description |
@@ -145,7 +145,7 @@ The examples in this document all use the project-level prefix.
 ### Project-level
 
 ```plaintext
- /projects/:id/packages/npm`
+/projects/:id/packages/npm
 ```
 
 | Attribute | Type   | Required | Description |
@@ -158,7 +158,7 @@ The examples in this document all use the project-level prefix.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121837) in GitLab 16.1. Feature flag `npm_group_level_endpoints` removed.
 
 ```plaintext
- /groups/:id/-/packages/npm`
+/groups/:id/-/packages/npm
 ```
 
 | Attribute | Type   | Required | Description |
@@ -209,8 +209,6 @@ the instance-level route, the returned URLs contain `/api/v4/packages/npm`.
 
 ### List tags
 
-> - Introduced in GitLab 12.7.
-
 Lists the dist-tags for the package.
 
 ```plaintext
@@ -239,8 +237,6 @@ the instance-level route, the returned URLs contain `/api/v4/packages/npm`.
 
 ### Create or update a tag
 
-> - Introduced in GitLab 12.7.
-
 Create or update a dist-tag.
 
 ```plaintext
@@ -260,8 +256,6 @@ curl --request PUT --header "Authorization: Bearer <personal_access_token>" "htt
 This endpoint responds successfully with `204 No Content`.
 
 ### Delete a tag
-
-> - Introduced in GitLab 12.7.
 
 Delete a dist-tag.
 

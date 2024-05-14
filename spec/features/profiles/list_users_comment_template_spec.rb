@@ -14,7 +14,7 @@ RSpec.describe 'Profile > Comment templates > List users comment templates', :js
   it 'shows the user a list of their comment templates' do
     visit profile_comment_templates_path
 
-    expect(page).to have_content('My comment templates')
+    expect(page).to have_content('Comment templates')
     expect(page).to have_content(saved_reply.name)
     expect(page).to have_content(saved_reply.content)
   end

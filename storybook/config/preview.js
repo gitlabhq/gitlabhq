@@ -20,4 +20,5 @@ Vue.use(Vuex);
 
 stylesheetsRequireCtx('./application.scss');
 stylesheetsRequireCtx('./application_utilities.scss');
+import('../../app/assets/builds/tailwind.css');
 stylesheetsRequireCtx('./highlight/themes/white.scss');

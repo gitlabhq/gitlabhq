@@ -226,6 +226,7 @@ RSpec.shared_examples 'group and project milestones' do |route_definition|
     before do
       milestone.issues << create(:issue, project: project)
     end
+
     it 'returns issues for a particular milestone' do
       get api(issues_route, user)
 

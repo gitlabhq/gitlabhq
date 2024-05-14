@@ -163,7 +163,7 @@ export default {
     v-if="displayFilters"
     id="discussion-preferences"
     data-testid="discussion-preferences"
-    class="gl-display-inline-block gl-vertical-align-bottom full-width-mobile"
+    class="gl-display-inline-block gl-align-bottom full-width-mobile"
   >
     <local-storage-sync
       :value="sortDirection"
@@ -194,7 +194,7 @@ export default {
               data-testid="dropdown-item-checkbox"
               :class="[
                 'gl-dropdown-item-check-icon',
-                { 'gl-visibility-hidden': !isSortDropdownItemActive(key) },
+                { 'gl-invisible': !isSortDropdownItemActive(key) },
                 'gl-text-blue-400',
               ]"
             />
@@ -222,7 +222,7 @@ export default {
               data-testid="dropdown-item-checkbox"
               :class="[
                 'gl-dropdown-item-check-icon',
-                { 'gl-visibility-hidden': filter.value !== currentValue },
+                { 'gl-invisible': filter.value !== currentValue },
                 'gl-text-blue-400',
               ]"
             />

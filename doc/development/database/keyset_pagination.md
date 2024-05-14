@@ -242,14 +242,12 @@ order = Gitlab::Pagination::Keyset::Order.build([
     order_expression: Issue.arel_table[:relative_position].desc.nulls_last,
     reversed_order_expression: Issue.arel_table[:relative_position].asc.nulls_first,
     nullable: :nulls_last,
-    order_direction: :desc,
-    distinct: false
+    order_direction: :desc
   ),
   Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
     attribute_name: 'id',
     order_expression: Issue.arel_table[:id].asc,
-    nullable: :not_nullable,
-    distinct: true
+    nullable: :not_nullable
   )
 ])
 
@@ -270,7 +268,6 @@ order = Gitlab::Pagination::Keyset::Order.build([
     order_expression: Arel.sql('id * 10').asc,
     nullable: :not_nullable,
     order_direction: :asc,
-    distinct: true,
     add_to_projections: true
   )
 ])
@@ -296,8 +293,7 @@ order = Gitlab::Pagination::Keyset::Order.build([
   Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
     attribute_name: 'iid',
     order_expression: Issue.arel_table[:iid].asc,
-    nullable: :not_nullable,
-    distinct: true
+    nullable: :not_nullable
   )
 ])
 

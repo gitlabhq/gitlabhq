@@ -42,6 +42,7 @@ class UserPreference < MainClusterwide::ApplicationRecord
   attribute :use_web_ide_extension_marketplace, default: false
 
   enum visibility_pipeline_id_type: { id: 0, iid: 1 }
+  enum extensions_marketplace_opt_in_status: Enums::WebIde::ExtensionsMarketplaceOptInStatus.statuses
 
   class << self
     def notes_filters
@@ -51,16 +52,6 @@ class UserPreference < MainClusterwide::ApplicationRecord
         s_('Notes|Show history only') => NOTES_FILTERS[:only_activity]
       }
     end
-  end
-
-  def user_belongs_to_home_organization
-    # If we don't ignore the default organization id below then all users need to have their corresponding entry
-    # with default organization id as organization id in the `organization_users` table.
-    # Otherwise, the user won't be able to the default organization as the home organization.
-    return if home_organization_id == Organizations::Organization::DEFAULT_ORGANIZATION_ID
-    return if user.user_belongs_to_organization?(home_organization_id)
-
-    errors.add(:user, _("is not part of the given organization"))
   end
 
   def set_notes_filter(filter_id, issuable)
@@ -136,7 +127,33 @@ class UserPreference < MainClusterwide::ApplicationRecord
     end
   end
 
+  def early_access_event_tracking?
+    early_access_program_participant? && early_access_program_tracking?
+  end
+
+  # NOTE: Despite this returning a boolean, it does not end in `?` out of
+  #       symmetry with the other integration fields like `gitpod_enabled`
+  def extensions_marketplace_enabled
+    extensions_marketplace_opt_in_status == "enabled"
+  end
+
+  def extensions_marketplace_enabled=(value)
+    status = ActiveRecord::Type::Boolean.new.cast(value) ? 'enabled' : 'disabled'
+
+    self.extensions_marketplace_opt_in_status = status
+  end
+
   private
+
+  def user_belongs_to_home_organization
+    # If we don't ignore the default organization id below then all users need to have their corresponding entry
+    # with default organization id as organization id in the `organization_users` table.
+    # Otherwise, the user won't be able to set the default organization as the home organization.
+    return if home_organization.default?
+    return if home_organization.user?(user)
+
+    errors.add(:user, _("is not part of the given organization"))
+  end
 
   def notes_filter_field_for(resource)
     field_key =

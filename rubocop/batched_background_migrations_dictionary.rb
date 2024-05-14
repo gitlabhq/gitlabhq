@@ -21,6 +21,10 @@ module RuboCop
           }
         end
       end
+
+      def checksum
+        @checksum ||= Digest::SHA256.hexdigest(dictionary_data.to_s)
+      end
     end
 
     def initialize(queued_migration_version)

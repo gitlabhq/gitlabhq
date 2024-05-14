@@ -216,11 +216,19 @@ module Gitlab
 
           return Gitlab::AppLogger.warn "Could not find batched background migration for the given configuration: #{configuration}" if migration.nil?
 
-          return if migration.finished?
+          return if migration.finalized?
+
+          if migration.finished?
+            migration.confirm_finalize!
+            return
+          end
 
           finalize_batched_background_migration(job_class_name: job_class_name, table_name: table_name, column_name: column_name, job_arguments: job_arguments) if finalize
 
-          return if migration.reload.finished? # rubocop:disable Cop/ActiveRecordAssociationReload
+          if migration.reload.finished? # rubocop:disable Cop/ActiveRecordAssociationReload -- TODO: ensure that we have latest version of the batched migration
+            migration.confirm_finalize!
+            return
+          end
 
           raise "Expected batched background migration for the given configuration to be marked as 'finished', " \
             "but it is '#{migration.status_name}':" \

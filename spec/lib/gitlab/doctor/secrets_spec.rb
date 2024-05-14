@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Doctor::Secrets do
   let!(:user) { create(:user, otp_secret: "test") }
-  let!(:group) { create(:group, runners_token: "test") }
+  let!(:group) { create(:group, :allow_runner_registration_token, runners_token: "test") }
   let!(:project) { create(:project) }
   let!(:grafana_integration) { create(:grafana_integration, project: project, token: "test") }
   let!(:integration) { create(:integration, project: project, properties: { test_key: "test_value" }) }
@@ -47,13 +47,27 @@ RSpec.describe Gitlab::Doctor::Secrets do
   end
 
   context 'when TokenAuthenticatable values are not decrypting' do
-    it 'marks undecryptable values as bad' do
+    before do
       group.runners_token_encrypted = "invalid"
       group.save!
+    end
 
+    it 'marks undecryptable values as bad' do
       expect(logger).to receive(:info).with(/Group failures: 1/)
 
       subject
+    end
+
+    context 'when allow_runner_registration_token is false' do
+      before do
+        stub_application_setting(allow_runner_registration_token: false)
+      end
+
+      it 'does not report error as registration tokens are nil' do
+        expect(logger).to receive(:info).with(/Group failures: 0/)
+
+        subject
+      end
     end
   end
 

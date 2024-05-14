@@ -1,3 +1,4 @@
+// Package s3api provides functionality for interacting with the Amazon S3 API.
 package s3api
 
 import (
@@ -31,6 +32,7 @@ type CompleteMultipartUpload struct {
 	Part []*CompleteMultipartUploadPart
 }
 
+// CompleteMultipartUploadPart represents a part of a completed multipart upload.
 type CompleteMultipartUploadPart struct {
 	PartNumber int
 	ETag       string

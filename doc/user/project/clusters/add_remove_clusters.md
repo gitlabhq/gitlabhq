@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed
 
 > - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/327908) in GitLab 14.0.
 
@@ -29,8 +29,6 @@ When you successfully connect an existing cluster using cluster certificates, th
 1. Select **Save changes**.
 
 ## Remove a cluster
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/26815) in GitLab 12.6, you can remove cluster integrations and resources.
 
 When you remove a cluster integration, you only remove the cluster relationship
 to GitLab, not the cluster. To remove the cluster itself, go to your cluster's
@@ -55,7 +53,7 @@ To remove the Kubernetes cluster integration:
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 [Start a Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session).
 

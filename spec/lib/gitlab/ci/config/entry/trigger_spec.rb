@@ -29,7 +29,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Trigger, feature_category: :pipeline_c
     describe '#errors' do
       it 'returns an error about an empty config' do
         expect(subject.errors.first)
-          .to match /config can't be blank/
+          .to match(/config can't be blank/)
       end
     end
   end
@@ -50,7 +50,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Trigger, feature_category: :pipeline_c
         it 'returns error' do
           expect(subject).not_to be_valid
           expect(subject.errors.first)
-            .to match /project can't be blank/
+            .to match(/project can't be blank/)
         end
       end
     end
@@ -62,7 +62,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Trigger, feature_category: :pipeline_c
         it 'returns error' do
           expect(subject).not_to be_valid
           expect(subject.errors.first)
-            .to match /should be a string/
+            .to match(/should be a string/)
         end
       end
 
@@ -72,7 +72,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Trigger, feature_category: :pipeline_c
         it 'returns error' do
           expect(subject).not_to be_valid
           expect(subject.errors.first)
-            .to match /should be a string/
+            .to match(/should be a string/)
         end
       end
     end
@@ -118,7 +118,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Trigger, feature_category: :pipeline_c
         describe '#errors' do
           it 'returns an error about unknown config key' do
             expect(subject.errors.first)
-              .to match /trigger strategy should be depend/
+              .to match(/trigger strategy should be depend/)
           end
         end
       end
@@ -134,7 +134,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Trigger, feature_category: :pipeline_c
       describe '#errors' do
         it 'returns an error about unknown config key' do
           expect(subject.errors.first)
-            .to match /config contains unknown keys: unknown/
+            .to match(/config contains unknown keys: unknown/)
         end
       end
     end
@@ -174,7 +174,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Trigger, feature_category: :pipeline_c
 
       it 'returns an error' do
         expect(subject.errors.first)
-          .to match /config contains unknown keys: project/
+          .to match(/config contains unknown keys: project/)
       end
     end
 
@@ -185,7 +185,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Trigger, feature_category: :pipeline_c
 
       it 'returns an error' do
         expect(subject.errors.first)
-          .to match /config contains unknown keys: branch/
+          .to match(/config contains unknown keys: branch/)
       end
     end
 
@@ -217,7 +217,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Trigger, feature_category: :pipeline_c
       describe '#errors' do
         it 'returns an error message' do
           expect(subject.errors.first)
-            .to match /has to be either a string or a hash/
+            .to match(/has to be either a string or a hash/)
         end
       end
     end

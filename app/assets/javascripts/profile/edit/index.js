@@ -15,6 +15,8 @@ export const initProfileEdit = () => {
     currentAvailability,
     defaultEmoji,
     currentClearStatusAfter,
+    timezones,
+    userTimezone,
     ...provides
   } = mountEl.dataset;
 
@@ -31,6 +33,8 @@ export const initProfileEdit = () => {
       hasAvatar: parseBoolean(provides.hasAvatar),
       gravatarEnabled: parseBoolean(provides.gravatarEnabled),
       gravatarLink: JSON.parse(provides.gravatarLink),
+      timezones: JSON.parse(timezones),
+      userTimezone,
     },
     render(createElement) {
       return createElement(ProfileEditApp, {

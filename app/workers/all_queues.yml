@@ -237,15 +237,6 @@
   :weight: 1
   :idempotent: true
   :tags: []
-- :name: cronjob:bulk_imports_stuck_import
-  :worker_name: BulkImports::StuckImportWorker
-  :feature_category: :importers
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
 - :name: cronjob:ci_archive_traces_cron
   :worker_name: Ci::ArchiveTracesCronWorker
   :feature_category: :continuous_integration
@@ -327,6 +318,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: cronjob:ci_stuck_builds_drop_canceling
+  :worker_name: Ci::StuckBuilds::DropCancelingWorker
+  :feature_category: :continuous_integration
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: cronjob:ci_stuck_builds_drop_running
   :worker_name: Ci::StuckBuilds::DropRunningWorker
   :feature_category: :continuous_integration
@@ -363,42 +363,6 @@
   :weight: 1
   :idempotent: true
   :tags: []
-- :name: cronjob:click_house_event_authors_consistency_cron
-  :worker_name: ClickHouse::EventAuthorsConsistencyCronWorker
-  :feature_category: :value_stream_management
-  :has_external_dependencies: true
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
-- :name: cronjob:click_house_event_paths_consistency_cron
-  :worker_name: ClickHouse::EventPathsConsistencyCronWorker
-  :feature_category: :value_stream_management
-  :has_external_dependencies: true
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
-- :name: cronjob:click_house_events_sync
-  :worker_name: ClickHouse::EventsSyncWorker
-  :feature_category: :value_stream_management
-  :has_external_dependencies: true
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
-- :name: cronjob:click_house_rebuild_materialized_view_cron
-  :worker_name: ClickHouse::RebuildMaterializedViewCronWorker
-  :feature_category: :value_stream_management
-  :has_external_dependencies: true
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
 - :name: cronjob:concurrency_limit_resume
   :worker_name: ConcurrencyLimit::ResumeWorker
   :feature_category: :global_search
@@ -419,33 +383,6 @@
   :tags: []
 - :name: cronjob:container_registry_cleanup
   :worker_name: ContainerRegistry::CleanupWorker
-  :feature_category: :container_registry
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
-- :name: cronjob:container_registry_migration_enqueuer
-  :worker_name: ContainerRegistry::Migration::EnqueuerWorker
-  :feature_category: :container_registry
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
-- :name: cronjob:container_registry_migration_guard
-  :worker_name: ContainerRegistry::Migration::GuardWorker
-  :feature_category: :container_registry
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
-- :name: cronjob:container_registry_migration_observer
-  :worker_name: ContainerRegistry::Migration::ObserverWorker
   :feature_category: :container_registry
   :has_external_dependencies: false
   :urgency: :low
@@ -567,6 +504,15 @@
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: cronjob:gitlab_performance_bar_stats
+  :worker_name: GitlabPerformanceBarStatsWorker
+  :feature_category: :metrics
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :cpu
   :weight: 1
   :idempotent: true
   :tags: []
@@ -768,15 +714,6 @@
   :weight: 1
   :idempotent: false
   :tags: []
-- :name: cronjob:partition_creation
-  :worker_name: PartitionCreationWorker
-  :feature_category: :database
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
 - :name: cronjob:pause_control_resume
   :worker_name: PauseControl::ResumeWorker
   :feature_category: :global_search
@@ -815,7 +752,7 @@
   :tags: []
 - :name: cronjob:projects_inactive_projects_deletion_cron
   :worker_name: Projects::InactiveProjectsDeletionCronWorker
-  :feature_category: :compliance_management
+  :feature_category: :groups_and_projects
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -1032,6 +969,15 @@
 - :name: cronjob:users_migrate_records_to_ghost_user_in_batches
   :worker_name: Users::MigrateRecordsToGhostUserInBatchesWorker
   :feature_category: :user_profile
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: cronjob:users_unconfirmed_secondary_emails_deletion_cron
+  :worker_name: Users::UnconfirmedSecondaryEmailsDeletionCronWorker
+  :feature_category: :user_management
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -1911,6 +1857,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: package_repositories:packages_npm_process_package_file
+  :worker_name: Packages::Npm::ProcessPackageFileWorker
+  :feature_category: :package_registry
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: package_repositories:packages_nuget_extraction
   :worker_name: Packages::Nuget::ExtractionWorker
   :feature_category: :package_registry
@@ -1928,6 +1883,15 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: false
+  :tags: []
+- :name: package_repositories:packages_terraform_module_process_package_file
+  :worker_name: Packages::TerraformModule::ProcessPackageFileWorker
+  :feature_category: :package_registry
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
   :tags: []
 - :name: pipeline_background:ci_archive_trace
   :worker_name: Ci::ArchiveTraceWorker
@@ -2152,15 +2116,6 @@
   :urgency: :high
   :resource_boundary: :cpu
   :weight: 3
-  :idempotent: false
-  :tags: []
-- :name: pipeline_hooks:build_hooks
-  :worker_name: BuildHooksWorker
-  :feature_category: :continuous_integration
-  :has_external_dependencies: false
-  :urgency: :high
-  :resource_boundary: :unknown
-  :weight: 2
   :idempotent: false
   :tags: []
 - :name: pipeline_hooks:pipeline_hooks
@@ -2586,6 +2541,15 @@
   :weight: 1
   :idempotent: false
   :tags: []
+- :name: bitbucket_import_stage_import_users
+  :worker_name: Gitlab::BitbucketImport::Stage::ImportUsersWorker
+  :feature_category: :importers
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: bitbucket_server_import_advance_stage
   :worker_name: Gitlab::BitbucketServerImport::AdvanceStageWorker
   :feature_category: :importers
@@ -2606,6 +2570,15 @@
   :tags: []
 - :name: bitbucket_server_import_import_pull_request
   :worker_name: Gitlab::BitbucketServerImport::ImportPullRequestWorker
+  :feature_category: :importers
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: false
+  :tags: []
+- :name: bitbucket_server_import_import_pull_request_note
+  :worker_name: Gitlab::BitbucketServerImport::ImportPullRequestNoteWorker
   :feature_category: :importers
   :has_external_dependencies: true
   :urgency: :low
@@ -2861,6 +2834,24 @@
   :feature_category: :build_artifacts
   :has_external_dependencies: false
   :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: ci_update_build_names
+  :worker_name: Ci::UpdateBuildNamesWorker
+  :feature_category: :continuous_integration
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: ci_user_cancel_pipeline
+  :worker_name: Ci::UserCancelPipelineWorker
+  :feature_category: :continuous_integration
+  :has_external_dependencies: false
+  :urgency: :high
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
@@ -3126,15 +3117,6 @@
   :weight: 1
   :idempotent: false
   :tags: []
-- :name: gitlab_performance_bar_stats
-  :worker_name: GitlabPerformanceBarStatsWorker
-  :feature_category: :metrics
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :cpu
-  :weight: 1
-  :idempotent: true
-  :tags: []
 - :name: google_cloud_create_cloudsql_instance
   :worker_name: GoogleCloud::CreateCloudsqlInstanceWorker
   :feature_category: :not_owned
@@ -3278,6 +3260,15 @@
   :resource_boundary: :unknown
   :weight: 2
   :idempotent: false
+  :tags: []
+- :name: issuable_create_reminder
+  :worker_name: Issuable::CreateReminderWorker
+  :feature_category: :code_review_workflow
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
   :tags: []
 - :name: issuable_export_csv
   :worker_name: IssuableExportCsvWorker
@@ -3459,6 +3450,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: merge_requests_process_auto_merge_from_event
+  :worker_name: MergeRequests::ProcessAutoMergeFromEventWorker
+  :feature_category: :continuous_delivery
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: merge_requests_resolve_todos
   :worker_name: MergeRequests::ResolveTodosWorker
   :feature_category: :code_review_workflow
@@ -3470,15 +3470,6 @@
   :tags: []
 - :name: merge_requests_resolve_todos_after_approval
   :worker_name: MergeRequests::ResolveTodosAfterApprovalWorker
-  :feature_category: :code_review_workflow
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
-- :name: merge_requests_set_reviewer_reviewed
-  :worker_name: MergeRequests::SetReviewerReviewedWorker
   :feature_category: :code_review_workflow
   :has_external_dependencies: false
   :urgency: :low
@@ -3765,6 +3756,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: projects_import_export_relation_import
+  :worker_name: Projects::ImportExport::RelationImportWorker
+  :feature_category: :importers
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :memory
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: projects_import_export_wait_relation_exports
   :worker_name: Projects::ImportExport::WaitRelationExportsWorker
   :feature_category: :importers
@@ -3776,7 +3776,7 @@
   :tags: []
 - :name: projects_inactive_projects_deletion_notification
   :worker_name: Projects::InactiveProjectsDeletionNotificationWorker
-  :feature_category: :compliance_management
+  :feature_category: :groups_and_projects
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown

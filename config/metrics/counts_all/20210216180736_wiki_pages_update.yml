@@ -8,11 +8,9 @@ product_group: knowledge
 value_type: number
 status: active
 time_frame: all
-data_source: redis
-instrumentation_class: RedisMetric
-options:
-  prefix: wiki_pages
-  event: update
+data_source: internal_events
+events:
+  - name: update_wiki_page
 distribution:
 - ce
 - ee

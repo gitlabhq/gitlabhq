@@ -5,7 +5,6 @@ import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
 import { provideWebIdeLink } from 'ee_else_ce/pages/projects/shared/web_ide_link/provide_web_ide_link';
 import TableOfContents from '~/blob/components/table_contents.vue';
-import PipelineTourSuccessModal from '~/blob/pipeline_tour_success_modal.vue';
 import { BlobViewer, initAuxiliaryViewer } from '~/blob/viewer/index';
 import GpgBadges from '~/gpg_badges';
 import createDefaultClient from '~/lib/graphql';
@@ -22,6 +21,8 @@ import { joinPaths, visitUrl } from '~/lib/utils/url_utility';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import HighlightWorker from '~/vue_shared/components/source_viewer/workers/highlight_worker?worker';
 import initAmbiguousRefModal from '~/ref/init_ambiguous_ref_modal';
+import { InternalEvents } from '~/tracking';
+import { initFindFileShortcut } from '~/projects/behaviors';
 
 Vue.use(Vuex);
 Vue.use(VueApollo);
@@ -54,6 +55,7 @@ const initRefSwitcher = () => {
         },
         on: {
           input(selectedRef) {
+            InternalEvents.trackEvent('click_ref_selector_on_blob_page');
             visitUrl(generateRefDestinationPath(projectRootPath, ref, selectedRef));
           },
         },
@@ -64,6 +66,7 @@ const initRefSwitcher = () => {
 
 initRefSwitcher();
 initAmbiguousRefModal();
+initFindFileShortcut();
 
 if (viewBlobEl) {
   const {
@@ -75,6 +78,7 @@ if (viewBlobEl) {
     userId,
     explainCodeAvailable,
     refType,
+    canDownloadCode,
     ...dataset
   } = viewBlobEl.dataset;
 
@@ -91,6 +95,7 @@ if (viewBlobEl) {
       resourceId,
       userId,
       explainCodeAvailable: parseBoolean(explainCodeAvailable),
+      canDownloadCode: parseBoolean(canDownloadCode),
       ...provideWebIdeLink(dataset),
     },
     render(createElement) {
@@ -189,22 +194,6 @@ if (codeNavEl && !viewBlobEl) {
       definitionPathPrefix,
     }),
   );
-}
-
-const successPipelineEl = document.querySelector('.js-success-pipeline-modal');
-
-if (successPipelineEl) {
-  // eslint-disable-next-line no-new
-  new Vue({
-    el: successPipelineEl,
-    render(createElement) {
-      return createElement(PipelineTourSuccessModal, {
-        props: {
-          ...successPipelineEl.dataset,
-        },
-      });
-    },
-  });
 }
 
 const tableContentsEl = document.querySelector('.js-table-contents');

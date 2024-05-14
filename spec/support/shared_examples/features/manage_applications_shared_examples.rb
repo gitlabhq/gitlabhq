@@ -37,10 +37,10 @@ RSpec.shared_examples 'manage applications' do
 
     visit_applications_path
 
-    page.within '.oauth-applications' do
+    page.within('[data-testid="oauth-applications"]') do
       click_on 'Destroy'
     end
-    expect(page.find('.oauth-applications')).not_to have_content 'test_changed'
+    expect(page.find('[data-testid="oauth-applications"]')).not_to have_content 'test_changed'
   end
 
   context 'when scopes are blank' do

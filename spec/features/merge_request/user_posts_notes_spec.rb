@@ -121,7 +121,7 @@ RSpec.describe 'Merge request > User posts notes', :js, feature_category: :code_
 
           click_button 'Add comment now'
 
-          expect(page).to have_content('Your comment could not be submitted because discussion to reply to cannot be found')
+          expect(page).to have_content('Comment could not be submitted: discussion to reply to cannot be found')
         end
       end
     end

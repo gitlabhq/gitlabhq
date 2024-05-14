@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Organizations::OrganizationUser, type: :model, feature_category: :cell do
+  using RSpec::Parameterized::TableSyntax
+
   describe 'associations' do
     it { is_expected.to belong_to(:organization).inverse_of(:organization_users).required }
     it { is_expected.to belong_to(:user).inverse_of(:organization_users).required }
@@ -17,6 +19,41 @@ RSpec.describe Organizations::OrganizationUser, type: :model, feature_category: 
 
     it 'does not allow invalid enum value' do
       expect { build(:organization_user, access_level: '_invalid_') }.to raise_error(ArgumentError)
+    end
+
+    context 'on destroy' do
+      let(:user) { create(:user, :without_default_org) }
+
+      subject(:organization_user) { create(:organization_user, user: user) }
+
+      it 'prevents user leaving all organizations' do
+        organization_user.destroy!
+
+        expect(organization_user.errors[:base]).to include(_('A user must associate with at least one organization'))
+      end
+
+      context 'when user is in multiple organizations' do
+        let!(:other_organization_user) { create(:organization_user, user: user) }
+
+        it 'does not prevent user from leaving organization' do
+          organization_user.destroy!
+
+          expect(organization_user.errors[:base]).to be_empty
+        end
+      end
+
+      context 'when user is not available' do
+        before do
+          user.destroy!
+        end
+
+        it 'does not prevent deletion' do
+          organization_user.reload
+
+          expect { organization_user.destroy! }.not_to raise_error
+          expect(organization_user).to be_destroyed
+        end
+      end
     end
   end
 
@@ -34,12 +71,36 @@ RSpec.describe Organizations::OrganizationUser, type: :model, feature_category: 
     end
   end
 
-  describe '.owners' do
-    it 'returns the owners of the organization' do
-      organization_user = create(:organization_user, :owner)
-      create(:organization_user)
+  describe 'scopes' do
+    describe '.owners' do
+      it 'returns the owners of the organization' do
+        organization_user = create(:organization_user, :owner)
+        create(:organization_user)
 
-      expect(described_class.owners).to match([organization_user])
+        expect(described_class.owners).to match([organization_user])
+      end
+    end
+
+    describe '.in_organization' do
+      let_it_be(:organization) { create(:organization) }
+      let_it_be(:organization_users) { create_pair(:organization_user, organization: organization) }
+
+      before do
+        create(:organization_user)
+      end
+
+      subject { described_class.in_organization(organization) }
+
+      it { is_expected.to match_array(organization_users) }
+    end
+
+    describe '#with_active_users' do
+      let_it_be(:active_organization_user) { create(:organization_user) }
+      let_it_be(:inactive_organization_user) { create(:organization_user) { |org_user| org_user.user.block! } }
+
+      subject(:active_user) { described_class.with_active_users }
+
+      it { is_expected.to include(active_organization_user).and exclude(inactive_organization_user) }
     end
   end
 
@@ -197,6 +258,45 @@ RSpec.describe Organizations::OrganizationUser, type: :model, feature_category: 
         expect { create_organization_record }.to change { described_class.count }.by(1)
         expect(organization.user?(user)).to be(true)
         expect(organization.owner?(user)).to be(false)
+      end
+    end
+  end
+
+  describe '#last_owner?' do
+    subject(:last_owner?) { organization_user.last_owner? }
+
+    context 'when user is not the owner' do
+      let(:organization_user) { build(:organization_user) }
+
+      it { is_expected.to eq(false) }
+    end
+
+    context 'when user is the owner' do
+      let_it_be(:organization_user, reload: true) { create(:organization_owner) }
+      let_it_be(:organization) { organization_user.organization }
+
+      context 'when another owner does not exist' do
+        it { is_expected.to eq(true) }
+      end
+
+      context 'when another owner exists' do
+        let_it_be(:another_owner, reload: true) { create(:organization_owner, organization: organization) }
+
+        where(:current_owner_active?, :another_owner_active?, :last_owner?) do
+          true  | true  | false
+          true  | false | true
+          false | true  | false
+          false | false | false
+        end
+
+        with_them do
+          before do
+            organization_user.user.block! unless current_owner_active?
+            another_owner.user.block! unless another_owner_active?
+          end
+
+          it { is_expected.to eq(last_owner?) }
+        end
       end
     end
   end

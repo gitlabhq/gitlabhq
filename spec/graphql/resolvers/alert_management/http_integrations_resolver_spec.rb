@@ -8,7 +8,7 @@ RSpec.describe Resolvers::AlertManagement::HttpIntegrationsResolver, feature_cat
   let_it_be(:guest) { create(:user) }
   let_it_be(:developer) { create(:user) }
   let_it_be(:maintainer) { create(:user) }
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project) { create(:project, developers: developer, maintainers: maintainer) }
   let_it_be(:prometheus_integration) { create(:prometheus_integration, project: project) }
   let_it_be(:active_http_integration) { create(:alert_management_http_integration, project: project) }
   let_it_be(:inactive_http_integration) { create(:alert_management_http_integration, :inactive, project: project) }
@@ -18,11 +18,6 @@ RSpec.describe Resolvers::AlertManagement::HttpIntegrationsResolver, feature_cat
   let(:params) { {} }
 
   subject { sync(resolve_http_integrations(params)) }
-
-  before do
-    project.add_developer(developer)
-    project.add_maintainer(maintainer)
-  end
 
   specify do
     expect(described_class).to have_nullable_graphql_type(Types::AlertManagement::HttpIntegrationType.connection_type)

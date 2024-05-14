@@ -13,7 +13,7 @@ module Db
                   confirmed_at: DateTime.now,
                   password: ::User.random_password
                 ) do |user|
-                  user.assign_personal_namespace
+                  user.assign_personal_namespace(Organizations::Organization.default_organization)
                 end
 
               ::AbuseReport.create(reporter: ::User.take, user: reported_user, message: 'User sends spam')

@@ -37,9 +37,9 @@ export default (EmptyStateComponent) => {
       GroupsApp,
     },
     provide() {
-      const { groupsEmptyStateIllustration } = dataset;
+      const { groupsEmptyStateIllustration, emptySearchIllustration } = dataset;
 
-      return { groupsEmptyStateIllustration };
+      return { groupsEmptyStateIllustration, emptySearchIllustration };
     },
     data() {
       const showSchemaMarkup = parseBoolean(dataset.showSchemaMarkup);

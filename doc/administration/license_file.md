@@ -4,8 +4,6 @@ group: Provision
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-<!-- To promote the workflow described in license.md, this page is not included in global left nav. -->
-
 # Activate GitLab EE with a license file or key
 
 If you receive a license file from GitLab (for example, for a trial), you can
@@ -23,10 +21,6 @@ Otherwise, to add your license:
 1. In the **Add License** area, add a license by either uploading the file or entering the key.
 1. Select the **Terms of Service** checkbox.
 1. Select **Add license**.
-
-NOTE:
-In GitLab 14.7.x to 14.9.x, you can add the license file with the UI.
-In GitLab 14.1.x to 14.7, if you have already activated your subscription with an activation code, you cannot access **Add License** from the Admin Area. You must access **Add License** directly from the URL, `<YourGitLabURL>/admin/license/new`.
 
 ## Activate subscription during installation
 
@@ -118,12 +112,6 @@ You can view all active subscriptions in the **Subscription history** table.
 
 You can also [export](../subscriptions/self_managed/index.md) your license usage information to a CSV file.
 
-NOTE:
-In GitLab 13.6 and earlier, a banner about an expiring license may continue to display
-when you add a new license. This happens when the start date of the new license
-is in the future and the expiring one is still active.
-The banner disappears after the new license becomes active.
-
 ## License commands in the Rails console
 
 The following commands can be run in the [Rails console](../administration/operations/rails_console.md#starting-a-rails-console-session).
@@ -160,7 +148,7 @@ License.current.license_id
 License.current.data
 
 # Confirm the current billable seat count excluding guest users. This is useful for customers who use an Ultimate subscription tier where Guest seats are not counted.
-User.active.without_bots.excluding_guests.count
+User.active.without_bots.excluding_guests_and_requests.count
 
 ```
 

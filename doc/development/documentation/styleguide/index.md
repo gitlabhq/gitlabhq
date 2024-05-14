@@ -30,7 +30,7 @@ use, and troubleshooting. The documentation evolves continuously. It is updated 
 new products and features, and with improvements for clarity, accuracy, and completeness.
 
 This policy prevents information silos, making it easier to find information
-about GitLab products. It also informs decisions about the kinds of content 
+about GitLab products. It also informs decisions about the kinds of content
 included in the documentation.
 
 ## Topic types
@@ -65,7 +65,7 @@ the documentation helps others efficiently accomplish tasks and solve problems.
 The GitLab documentation is not localized, but we follow guidelines that help us write for a global audience.
 
 [The GitLab voice](#the-gitlab-voice) dictates that we write clearly and directly with translation in mind.
-Our style guide, [word list](word_list.md), and [Vale rules](../testing.md) ensure consistency in the documentation.
+Our style guide, [word list](word_list.md), and [Vale rules](../testing/index.md) ensure consistency in the documentation.
 
 When documentation is translated into other languages, the meaning of each word must be clear.
 The increasing use of machine translation, GitLab Duo Chat, and other AI tools
@@ -96,7 +96,7 @@ Also, keep the following guidance in mind:
   use **custom settings for project integrations**.
 - Format [dates and times](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/term-collections/date-time-terms)
   consistently and for an international audience.
-- Use [images](#images), including screenshots, sparingly.
+- Use [illustrations](#illustrations), including screenshots, sparingly.
 - For [UI text](#ui-text), allow for up to 30% expansion and contraction in translation.
   To see how much a string expands or contracts in another language, paste the string
   into [Google Translate](https://translate.google.com/) and review the results.
@@ -114,7 +114,7 @@ linked style guide. You can't use Kramdown-specific markup (for example, `{:.cla
 For a complete Kramdown reference, see the
 [GitLab Markdown Guide](https://handbook.gitlab.com/handbook/markdown-guide/).
 
-The Markdown format is [tested](../testing.md) by using markdownlint and Vale.
+The Markdown format is tested by using [markdownlint](../testing/markdownlint.md) and [Vale](../testing/vale.md).
 
 ### HTML in Markdown
 
@@ -568,7 +568,7 @@ indentation as the list item. You can do this with:
 - [Code blocks](#code-blocks)
 - [Blockquotes](#blockquotes)
 - [Alert boxes](#alert-boxes)
-- [Images](#images)
+- [Illustrations](#illustrations)
 - [Tabs](#tabs)
 
 Nested items should always align with the first character of the list
@@ -677,7 +677,7 @@ To enable the setting:
   ```
 
 To format a table with this extension, select the entire table, right-click the selection,
-and select **Format selection**.
+and select **Format Selection With**. Select **Markdown Table Formatter** in the VS Code Command Palette.
 
 Alternatively, if you use Sublime Text you can try the [Markdown Table Formatter](https://packagecontrol.io/packages/Markdown%20Table%20Formatter)
 plugin, but it does not have a **Follow header row length** setting.
@@ -712,18 +712,16 @@ Instead, follow the [API topic template](../restful_api_styleguide.md#api-topic-
 
 ### Footnotes
 
-Use footnotes below tables when it's not suitable to include the content in the table
-itself. For example, use footnotes when you need to:
+Use footnotes below tables only when you cannot include the content in the table itself.
+For example, use footnotes when you must:
 
-- Provide the same reference information on several table cells.
+- Provide the same information in several table cells.
 - Include content that would disrupt the table's layout.
 
 #### Footnote format
 
-For each footnote, use the HTML superscript tag `<sup>`.
-Put the tag at the end of the sentence or term.
-
-When you add a footnote, do not re-sort the existing tags in the table.
+In the table, use the HTML superscript tag `<sup>` for each footnote.
+Put the tag at the end of the sentence. Leave one space between the sentence and the tag.
 
 For example:
 
@@ -734,39 +732,51 @@ For example:
 | App B    | Description text. <sup>2</sup> |
 ```
 
-For the footnotes below the table, use the HTML tags `<small>`, `<ol>` and `<li>`.
+When you add a footnote, do not re-sort the existing tags in the table.
 
-NOTE:
-To format text in footnotes (for example, to use emphasis or links), you must use HTML rather than Markdown.
+For the footnotes below the table, use `**Footnotes:**` followed by an ordered list.
 
 For example:
 
-```html
-<html>
-<small>Footnotes:
-  <ol>
-    <li>This is the footnote.</li>
-    <li>This is the other footnote.</li>
-  </ol>
-</small>
-</html>
+```markdown
+**Footnotes:**
+
+1. This is the first footnote.
+1. This is the second footnote.
 ```
 
-This text renders as this output:
+The table and footnotes would render as follows:
 
 | App name | Description                    |
 |:---------|:-------------------------------|
 | App A    | Description text. <sup>1</sup> |
 | App B    | Description text. <sup>2</sup> |
 
-<html>
-<small>Footnotes:
-  <ol>
-    <li>This is the footnote.</li>
-    <li>This is the other footnote.</li>
-  </ol>
-</small>
-</html>
+**Footnotes:**
+
+1. This is the first footnote.
+1. This is the second footnote.
+
+##### Five or more footnotes
+
+If you have five or more footnotes that you cannot include in the table itself,
+you can use consecutive numbers for the list items.
+If you use consecutive numbers, you must disable Markdown rule `029`:
+
+```markdown
+**Footnotes:**
+
+<!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
+<!-- markdownlint-disable MD029 -->
+
+1. This is the first footnote.
+2. This is the second footnote.
+3. This is the third footnote.
+4. This is the fourth footnote.
+5. This is the fifth footnote.
+
+<!-- markdownlint-enable MD029 -->
+```
 
 ## Quotes
 
@@ -803,7 +813,7 @@ use a relative file path. For example, `../user/gitlab_com/index.md`.
 Use inline link Markdown markup `[Text](https://example.com)`,
 rather than reference-style links, like `[Text][identifier]`.
 
-Put the entire link on a single line so that [linters](../testing.md) can find it.
+Put the entire link on a single line so that [linters](../testing/index.md) can find it.
 
 ### Links in separate repositories
 
@@ -836,7 +846,7 @@ any related links, search these directories:
 - `app/views/*`
 - `ee/app/views/*`
 
-If you do not fix these links, the [`ui-docs-lint` job](../testing.md#ui-link-tests)
+If you do not fix these links, the [`ui-docs-lint` job](../testing/index.md#tests-in-ui-docs-links-lint)
 in your merge request fails.
 
 ### Text for links
@@ -1111,21 +1121,71 @@ To describe multiple fields, use unordered list items:
    - **Branch name** must be a regular expression.
    - **User** must be a user with at least the **Maintainer** role.
 
-## Images
+## Illustrations
 
-Images, including screenshots, can help a reader better understand a concept.
-However, they should be used sparingly because:
+Use illustrations only to supplement text, not replace it.
 
-- They tend to become out-of-date.
-- They are difficult and expensive to localize.
-- They cannot be read by screen readers.
+Illustrations can help the reader understand:
 
-When needed, use images to help the reader understand:
-
+- A concept.
 - Where they are in a complicated process.
 - How they should interact with the application.
 
-### Capture the image
+Use illustrations sparingly because:
+
+- They tend to become out-of-date.
+- They are difficult and expensive to localize.
+- Their content cannot be read by screen readers.
+
+Types of illustrations used in GitLab documentation are:
+
+- Diagram. Use a diagram to illustrate a process or the relationship between entities, for example.
+- Screenshot. Use a screenshot when you need to show a portion of the GitLab user interface.
+
+Use a diagram instead of a screenshot when possible because:
+
+- A diagram's file size is usually much smaller than that of a screenshot.
+- A screenshot often needs to be compressed, which generally reduces the image's quality.
+- A diagram in SVG format can be displayed at any size without affecting the image's quality.
+
+### Diagram
+
+Use a diagram to illustrate a process or the relationship between entities, for example.
+
+Use [Mermaid](https://mermaid.js.org/#/) to create a diagram. This method has several advantages
+over a static image format (screenshot):
+
+- The Mermaid format is easier to maintain because:
+  - Their definition is stored as a code block in the documentation's Markdown source.
+  - The diagram is rendered dynamically at runtime.
+  - Text content that may change over time, such as feature names, can be found using text search
+    tools and edited.
+- The diagram is rendered as an scalable image, better suited to various output devices and sizes.
+
+#### Create a diagram
+
+To create a diagram:
+
+1. Use the [Mermaid Live Editor](https://mermaid.live/) to create the diagram.
+1. Copy the content of the **Code** pane into a `mermaid` code block in the Markdown file. For more
+   details, see [Mermaid](../../../user/markdown.md#mermaid).
+1. To improve accessibility of diagrams, add a title and description. Add these lines on the next
+   line after declaring the type of diagram, like `flowchart` or `sequenceDiagram`:
+
+   ```yaml
+   accTitle: your diagram title here
+   accDescr: describe what your diagram does in a single sentence, with no line breaks.
+   ```
+
+The Mermaid diagram syntax can be difficult to learn. To make this a little easier, see the Mermaid
+[Beginner's Guide](https://mermaid.js.org/intro/getting-started.html) and the examples on the
+Mermaid site.
+
+### Screenshot
+
+Use a screenshot when you need to show a portion of the GitLab user interface.
+
+#### Capture the screenshot
 
 When you take screenshots:
 
@@ -1145,7 +1205,7 @@ When you take screenshots:
   a documentation page for a consistent reading experience. Ensure your navigation theme
   is **Indigo** and the syntax highlighting theme is **Light**. These are the default preferences.
 
-### Add callouts
+#### Add callouts
 
 If you need to emphasize an area in a screenshot, use an arrow.
 
@@ -1156,7 +1216,7 @@ If you need to emphasize an area in a screenshot, use an arrow.
 
 ![callout example](img/callouts.png)
 
-### Save the image
+#### Save the image
 
 - Resize any wide or tall screenshots if needed, but make sure the screenshot is
   still clear after being resized and compressed.
@@ -1174,23 +1234,9 @@ If you need to emphasize an area in a screenshot, use an arrow.
   the `.md` document that you're working on is located.
 - Consider using PNG images instead of JPEG.
 - Compress GIFs with <https://ezgif.com/optimize> or similar tool.
-- Images should be used (only when necessary) to illustrate the description
-  of a process, not to replace it.
 - See also how to link and embed [videos](#videos) to illustrate the documentation.
 
-### Add the image link to content
-
-The Markdown code for including an image in a document is:
-`![Image description which will be the alt tag](img/document_image_title_vX_Y.png)`
-
-The image description is the alt text for the rendered image on the
-documentation site. For accessibility and SEO, use [descriptions](https://webaim.org/techniques/alttext/)
-that:
-
-- Are accurate, succinct, and unique.
-- Don't use **image of** or **graphic of** to describe the image.
-
-### Compress images
+#### Compress images
 
 You should always compress any new images you add to the documentation. One
 known tool is [`pngquant`](https://pngquant.org/), which is cross-platform and
@@ -1229,7 +1275,7 @@ copy of `https://gitlab.com/gitlab-org/gitlab`, run in a terminal:
   bin/pngquant compress doc/user/img
   ```
 
-### Animated images
+#### Animated images
 
 Avoid using animated images (such as animated GIFs). They can be distracting
 and annoying for users.
@@ -1240,19 +1286,30 @@ include a visual representation to help readers understand it, you can:
 - Use a static image (screenshot) and if necessary, add callouts to emphasize an area of the screen.
 - Create a short video of the interaction and link to it.
 
-### Automatic screenshot generator
+#### Add the image link to content
+
+The Markdown code for including an image in a document is:
+`![Image description, used for alt tag](img/document_image_title_vX_Y.png)`
+
+The image description is the alt text for the rendered image on the
+documentation site. For accessibility and SEO, use [descriptions](https://webaim.org/techniques/alttext/)
+that are accurate, succinct, and unique.
+
+Don't use **image of** or **graphic of** to describe the image.
+
+#### Automatic screenshot generator
 
 You can use an automatic screenshot generator to take and compress screenshots.
 
 1. Set up the [GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/howto/gitlab_docs.md).
-1. Navigate to the subdirectory with your cloned GitLab repository, typically `gdk/gitlab`.
+1. Go to the subdirectory with your cloned GitLab repository, typically `gdk/gitlab`.
 1. Make sure that your GDK database is fully migrated: `bin/rake db:migrate RAILS_ENV=development`.
 1. Install `pngquant`, see the tool website for more information: [`pngquant`](https://pngquant.org/)
 1. Run `scripts/docs_screenshots.rb spec/docs_screenshots/<name_of_screenshot_generator>.rb <milestone-version>`.
 1. Identify the location of the screenshots, based on the `gitlab/doc` location defined by the `it` parameter in your script.
 1. Commit the newly created screenshots.
 
-#### Extending the tool
+##### Extending the tool
 
 To add an additional screenshot generator:
 
@@ -1279,7 +1336,7 @@ To add an additional screenshot generator:
 You can take a screenshot of a page with `visit <path>`.
 To avoid blank screenshots, use `expect` to wait for the content to load.
 
-##### Single-element screenshots
+###### Single-element screenshots
 
 You can take a screenshot of a single element.
 
@@ -1303,8 +1360,6 @@ Use of emoji in Markdown requires GitLab Flavored Markdown, which is not support
 the Markdown rendering engine used for GitLab documentation.
 
 ## GitLab SVG icons
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-docs/-/issues/384) in GitLab 12.7.
 
 You can use icons from the [GitLab SVG library](https://gitlab-org.gitlab.io/gitlab-svgs/)
 directly in the documentation. For example, `**{tanuki}**` renders as: **{tanuki}**.
@@ -1361,8 +1416,6 @@ For an overview, see [Video Title](link-to-video).
 You can link any up-to-date video that's useful to the GitLab user.
 
 ### Embed videos
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-docs/-/merge_requests/472) in GitLab 12.1.
 
 The [GitLab documentation site](https://docs.gitlab.com) supports embedded
 videos.
@@ -1699,7 +1752,7 @@ The Markdown for tier badges should look like the following:
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Status:** Experiment
 
 > - [Introduced](<link-to-issue>) in GitLab 16.3.
@@ -1708,17 +1761,16 @@ DETAILS:
 
 For offering, use any combination of these words, in this order, separated by commas:
 
-- SaaS
-- Self-managed (lowercase when not the first item)
+- GitLab.com
+- Self-managed
+- GitLab Dedicated
 
 For example:
 
-- SaaS
-- SaaS, self-managed
+- GitLab.com
+- GitLab.com, Self-managed
 - Self-managed
-
-NOTE:
-SaaS will be changing to GitLab.com and we will be adding GitLab Dedicated. We will update this page when the change occurs.
+- Self-managed, GitLab Dedicated
 
 For tier, choose one:
 
@@ -1732,6 +1784,40 @@ For status, choose one:
 - Experiment
 
 Generally available features should not have a status.
+
+##### GitLab Duo Pro add-on
+
+The add-on belongs with other subscription tiers. Document it by using the phrase `with GitLab Duo Pro`.
+For example:
+
+```markdown
+**Tier:** Premium or Ultimate with GitLab Duo Pro
+```
+
+##### Duplicating tier, offering, or status on subheadings
+
+If a subheading has the same tier, offering, or status as its parent
+topic, you don't need to repeat the information in the subheading's
+badge.
+
+For example, if the heading 1 is:
+
+```markdown
+# My title
+
+DETAILS:
+**Offering:** GitLab.com
+**Tier:** Premium, Ultimate
+```
+
+Any lower-level heading that applies to a different tier but same offering would be:
+
+```markdown
+## My title
+
+DETAILS:
+**Tier:** Ultimate
+```
 
 ##### Inline tier badges
 
@@ -1767,9 +1853,8 @@ sections are outlined in this section.
 
 ### Help and feedback section
 
-This section ([introduced](https://gitlab.com/gitlab-org/gitlab-docs/-/merge_requests/319) in GitLab 11.4)
-is displayed at the end of each document and can be omitted by adding a key into
-the front matter:
+This section is displayed at the end of each document and can be omitted
+by adding a key into the front matter:
 
 ```yaml
 ---
@@ -2013,7 +2098,7 @@ Use the following template to add information to the page.
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 This page contains upgrade information for minor and patch versions of GitLab X. Review these instructions for:
 

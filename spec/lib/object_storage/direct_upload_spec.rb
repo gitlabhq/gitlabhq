@@ -67,7 +67,7 @@ RSpec.describe ObjectStorage::DirectUpload, feature_category: :shared do
         let(:maximum_size) { nil }
 
         it "raises an error" do
-          expect { direct_upload }.to raise_error /maximum_size has to be specified if length is unknown/
+          expect { direct_upload }.to raise_error(/maximum_size has to be specified if length is unknown/)
         end
       end
     end
@@ -203,16 +203,6 @@ RSpec.describe ObjectStorage::DirectUpload, feature_category: :shared do
           expect(subject[:RemoteTempObjectID]).to eq(object_name)
           expect(subject[:ObjectStorage][:Provider]).to eq('Google')
           expect(subject[:ObjectStorage][:GoCloudConfig]).to eq({ URL: gocloud_url })
-        end
-      end
-
-      context 'with workhorse_google_client disabled' do
-        before do
-          stub_feature_flags(workhorse_google_client: false)
-        end
-
-        it 'does not set Workhorse client data' do
-          expect(subject.keys).not_to include(:UseWorkhorseClient, :RemoteTempObjectID, :ObjectStorage)
         end
       end
     end

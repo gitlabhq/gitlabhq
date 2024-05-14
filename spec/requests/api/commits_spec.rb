@@ -9,15 +9,15 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
 
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :repository, creator: user, path: 'my.project') }
-  let_it_be(:guest) { create(:user).tap { |u| project.add_guest(u) } }
-  let_it_be(:developer) { create(:user).tap { |u| project.add_developer(u) } }
+  let_it_be(:guest) { create(:user, guest_of: project) }
+  let_it_be(:developer) { create(:user, developer_of: project) }
 
   let(:branch_with_dot) { project.repository.find_branch('ends-with.json') }
   let(:branch_with_slash) { project.repository.find_branch('improve/awesome') }
   let(:project_id) { project.id }
   let(:current_user) { nil }
   let(:group) { create(:group, :public) }
-  let(:inherited_guest) { create(:user).tap { |u| group.add_guest(u) } }
+  let(:inherited_guest) { create(:user, guest_of: group) }
 
   before do
     project.add_maintainer(user)
@@ -89,6 +89,16 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
           let(:current_user) { user }
 
           it_behaves_like 'project commits'
+
+          context 'when repository does not have commits' do
+            let_it_be(:project) { create(:project, :empty_repo) }
+
+            it 'returns an empty array' do
+              get api("/projects/#{project_id}/repository/commits", user)
+
+              expect(json_response).to eq([])
+            end
+          end
 
           context "since optional parameter" do
             it "returns project commits since provided parameter" do
@@ -263,6 +273,29 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
                 expect(json_response.first['stats']['additions']).to eq(commit.stats.additions)
                 expect(json_response.first['stats']['deletions']).to eq(commit.stats.deletions)
                 expect(json_response.first['stats']['total']).to eq(commit.stats.total)
+              end
+            end
+          end
+
+          context 'with ref_name + path params' do
+            let(:params) { { ref_name: ref_name, path: 'files/ruby/popen.rb' } }
+            let(:ref_name) { 'master' }
+
+            it 'returns project commits matching provided path parameter' do
+              get api("/projects/#{project_id}/repository/commits", user), params: params
+
+              expect(json_response.size).to eq(3)
+              expect(json_response.first["id"]).to eq("570e7b2abdd848b95f2f578043fc23bd6f6fd24d")
+              expect(response).to include_limited_pagination_headers
+            end
+
+            context 'when ref_name does not exist' do
+              let(:ref_name) { 'does-not-exist' }
+
+              it 'returns an empty response' do
+                get api("/projects/#{project_id}/repository/commits", user), params: params
+
+                expect(json_response).to eq([])
               end
             end
           end
@@ -589,7 +622,7 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
 
       context 'when using warden', :snowplow, :clean_gitlab_redis_sessions do
         before do
-          stub_session('warden.user.user.key' => [[user.id], user.authenticatable_salt])
+          stub_session(session_data: { 'warden.user.user.key' => [[user.id], user.authenticatable_salt] })
         end
 
         subject { post api(url), params: valid_c_params }
@@ -709,7 +742,7 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
         context 'when the API user is a guest' do
           let(:public_project) { create(:project, :public, :repository) }
           let(:url) { "/projects/#{public_project.id}/repository/commits" }
-          let(:guest) { create(:user).tap { |u| public_project.add_guest(u) } }
+          let(:guest) { create(:user, guest_of: public_project) }
 
           it 'returns a 403' do
             post api(url, guest), params: valid_c_params
@@ -1919,8 +1952,10 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
           expect(response).to have_gitlab_http_status(:created)
           expect(response).to match_response_schema('public_api/v4/commit/basic')
           expect(json_response['title']).to eq(commit.title)
-          expect(json_response['message']).to eq(commit.cherry_pick_message(user))
-          expect(json_response['author_name']).to eq(commit.author_name)
+          expect(json_response['message']).to eq(
+            "#{commit.cherry_pick_message(user)}\n\nCo-authored-by: #{commit.author_name} <#{commit.author_email}>"
+          )
+          expect(json_response['author_name']).to eq(user.name)
           expect(json_response['committer_name']).to eq(user.name)
         end
 

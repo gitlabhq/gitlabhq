@@ -41,7 +41,7 @@
 %section.settings.as-files-limits.no-animate#js-files-limits-settings{ class: ('expanded' if expanded_by_default?) }
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-      = _('Files API Rate Limits')
+      = _('Files API rate limits')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p.gl-text-secondary
@@ -72,10 +72,22 @@
   .settings-content
     = render partial: 'network_rate_limits', locals: { anchor: 'js-deprecated-limits-settings', setting_fragment: 'deprecated_api' }
 
+%section.settings.as-git-http-limits.no-animate#js-git-http-limits-settings{ class: ('expanded' if expanded_by_default?) }
+  .settings-header
+    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
+      = _('Git HTTP rate limits')
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
+      = expanded_by_default? ? _('Collapse') : _('Expand')
+    %p.gl-text-secondary
+      = _('Configure specific limits for Git HTTP requests.')
+      = link_to _('Learn more.'), help_page_path('administration/settings/git_http_rate_limits'), target: '_blank', rel: 'noopener noreferrer'
+  .settings-content
+    = render 'git_http_limits'
+
 %section.settings.as-git-lfs-limits.no-animate#js-git-lfs-limits-settings{ class: ('expanded' if expanded_by_default?) }
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-      = _('Git LFS Rate Limits')
+      = _('Git LFS rate limits')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p.gl-text-secondary
@@ -116,7 +128,7 @@
 %section.settings.as-issue-limits.no-animate#js-issue-limits-settings{ class: ('expanded' if expanded_by_default?) }
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-      = _('Issues Rate Limits')
+      = _('Issues rate limits')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p.gl-text-secondary
@@ -128,7 +140,7 @@
 %section.settings.as-note-limits.no-animate#js-note-limits-settings{ class: ('expanded' if expanded_by_default?) }
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-      = _('Notes rate limit')
+      = _('Notes rate limits')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p.gl-text-secondary
@@ -140,7 +152,7 @@
 %section.settings.as-users-api-limits.no-animate#js-users-api-limits-settings{ class: ('expanded' if expanded_by_default?) }
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-      = _('Users API rate limit')
+      = _('Users API rate limits')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p.gl-text-secondary

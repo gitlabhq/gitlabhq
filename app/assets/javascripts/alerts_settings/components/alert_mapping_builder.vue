@@ -1,10 +1,8 @@
 <script>
 import {
+  GlCollapsibleListbox,
   GlIcon,
   GlFormInput,
-  GlDropdown,
-  GlDropdownItem,
-  GlSearchBoxByType,
   GlTooltipDirective as GlTooltip,
 } from '@gitlab/ui';
 import { cloneDeep, isEqual } from 'lodash';
@@ -36,11 +34,9 @@ export default {
   i18n,
   mappingFields,
   components: {
+    GlCollapsibleListbox,
     GlIcon,
     GlFormInput,
-    GlDropdown,
-    GlDropdownItem,
-    GlSearchBoxByType,
   },
   directives: {
     GlTooltip,
@@ -86,9 +82,15 @@ export default {
     },
   },
   methods: {
-    setMapping(gitlabKey, mappingKey, valueKey = mappingFields.mapping) {
+    setMapping(gitlabKey, mappingFieldLabel, valueKey = mappingFields.mapping) {
       const fieldIndex = this.gitlabFields.findIndex((field) => field.name === gitlabKey);
-      const updatedField = { ...this.gitlabFields[fieldIndex], ...{ [valueKey]: mappingKey } };
+      const mappingField = this.mappingData[fieldIndex].mappingFields.find(
+        (field) => field.label === mappingFieldLabel,
+      );
+      const updatedField = {
+        ...this.gitlabFields[fieldIndex],
+        ...{ [valueKey]: mappingField.path },
+      };
       Vue.set(this.gitlabFields, fieldIndex, updatedField);
       this.$emit('onMappingUpdate', transformForSave(this.mappingData));
     },
@@ -103,8 +105,10 @@ export default {
         field.displayLabel.replace('...', '').toLowerCase().includes(search),
       );
     },
-    isSelected(fieldValue, mapping) {
-      return isEqual(fieldValue, mapping);
+    dropdownItems(searchTerm, fields) {
+      return this.filterFields(searchTerm, fields).map((field) => {
+        return { text: field.displayLabel, value: field.label, tooltip: field.tooltip };
+      });
     },
     selectedValue(mapping) {
       return (
@@ -116,9 +120,6 @@ export default {
       const type = types.map((t) => capitalizeFirstCharacter(t.toLowerCase())).join(__(' or '));
 
       return `${label} (${type})`;
-    },
-    noResults(searchTerm, fields) {
-      return !this.filterFields(searchTerm, fields).length;
     },
   },
 };
@@ -150,7 +151,7 @@ export default {
     </div>
 
     <div v-for="gitlabField in mappingData" :key="gitlabField.name" class="gl-display-table-row">
-      <div class="gl-display-table-cell gl-py-3 gl-pr-3 gl-w-30p gl-vertical-align-middle">
+      <div class="gl-display-table-cell gl-py-3 gl-pr-3 gl-w-3/10 gl-align-middle">
         <gl-form-input
           aria-labelledby="gitlabFieldsHeader"
           disabled
@@ -158,7 +159,7 @@ export default {
         />
       </div>
 
-      <div class="gl-display-table-cell gl-pr-3 gl-vertical-align-middle">
+      <div class="gl-display-table-cell gl-pr-3 gl-align-middle">
         <div class="right-arrow gl-relative gl-w-full gl-bg-gray-400">
           <i
             class="right-arrow-head gl-absolute gl-border-solid gl-border-gray-400 gl-display-inline-block gl-p-2"
@@ -166,66 +167,47 @@ export default {
         </div>
       </div>
 
-      <div class="gl-display-table-cell gl-py-3 gl-pr-3 gl-w-30p gl-vertical-align-middle">
-        <gl-dropdown
+      <div class="gl-display-table-cell gl-py-3 gl-pr-3 gl-w-3/10 gl-align-middle">
+        <gl-collapsible-listbox
+          :items="dropdownItems(gitlabField.searchTerm, gitlabField.mappingFields)"
+          :selected="selectedValue(gitlabField.mapping)"
+          :toggle-text="selectedValue(gitlabField.mapping)"
+          :header-text="$options.i18n.selectMappingKey"
+          :no-results-text="$options.i18n.noResults"
+          block
+          searchable
           :disabled="!gitlabField.mappingFields.length"
           aria-labelledby="parsedFieldsHeader"
-          :text="selectedValue(gitlabField.mapping)"
           class="gl-w-full"
-          :header-text="$options.i18n.selectMappingKey"
+          @select="setMapping(gitlabField.name, $event)"
+          @search="setSearchTerm($event, 'searchTerm', gitlabField.name)"
         >
-          <gl-search-box-by-type @input="setSearchTerm($event, 'searchTerm', gitlabField.name)" />
-          <gl-dropdown-item
-            v-for="mappingField in filterFields(gitlabField.searchTerm, gitlabField.mappingFields)"
-            :key="`${mappingField.path}__mapping`"
-            v-gl-tooltip
-            :is-checked="isSelected(gitlabField.mapping, mappingField.path)"
-            is-check-item
-            :title="mappingField.tooltip"
-            @click="setMapping(gitlabField.name, mappingField.path)"
-          >
-            {{ mappingField.displayLabel }}
-          </gl-dropdown-item>
-          <gl-dropdown-item v-if="noResults(gitlabField.searchTerm, gitlabField.mappingFields)">
-            {{ $options.i18n.noResults }}
-          </gl-dropdown-item>
-        </gl-dropdown>
+          <template #list-item="{ item }">
+            <div v-gl-tooltip :title="item.tooltip">{{ item.text }}</div>
+          </template>
+        </gl-collapsible-listbox>
       </div>
 
-      <div class="gl-display-table-cell gl-py-3 gl-w-30p">
-        <gl-dropdown
+      <div class="gl-display-table-cell gl-py-3 gl-w-3/10">
+        <gl-collapsible-listbox
           v-if="Boolean(gitlabField.numberOfFallbacks)"
+          :items="dropdownItems(gitlabField.fallbackSearchTerm, gitlabField.mappingFields)"
+          :selected="selectedValue(gitlabField.fallback)"
+          :toggle-text="selectedValue(gitlabField.fallback)"
+          :header-text="$options.i18n.selectMappingKey"
+          :no-results-text="$options.i18n.noResults"
+          block
+          searchable
           :disabled="!gitlabField.mappingFields.length"
           aria-labelledby="fallbackFieldsHeader"
-          :text="selectedValue(gitlabField.fallback)"
           class="gl-w-full"
-          :header-text="$options.i18n.selectMappingKey"
+          @select="setMapping(gitlabField.name, $event, $options.mappingFields.fallback)"
+          @search="setSearchTerm($event, 'fallbackSearchTerm', gitlabField.name)"
         >
-          <gl-search-box-by-type
-            @input="setSearchTerm($event, 'fallbackSearchTerm', gitlabField.name)"
-          />
-          <gl-dropdown-item
-            v-for="mappingField in filterFields(
-              gitlabField.fallbackSearchTerm,
-              gitlabField.mappingFields,
-            )"
-            :key="`${mappingField.path}__fallback`"
-            v-gl-tooltip
-            :is-checked="isSelected(gitlabField.fallback, mappingField.path)"
-            is-check-item
-            :title="mappingField.tooltip"
-            @click="
-              setMapping(gitlabField.name, mappingField.path, $options.mappingFields.fallback)
-            "
-          >
-            {{ mappingField.displayLabel }}
-          </gl-dropdown-item>
-          <gl-dropdown-item
-            v-if="noResults(gitlabField.fallbackSearchTerm, gitlabField.mappingFields)"
-          >
-            {{ $options.i18n.noResults }}
-          </gl-dropdown-item>
-        </gl-dropdown>
+          <template #list-item="{ item }">
+            <div v-gl-tooltip :title="item.tooltip">{{ item.text }}</div>
+          </template>
+        </gl-collapsible-listbox>
       </div>
     </div>
   </div>

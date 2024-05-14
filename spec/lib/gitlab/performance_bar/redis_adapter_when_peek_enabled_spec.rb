@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::PerformanceBar::RedisAdapterWhenPeekEnabled do
+RSpec.describe Gitlab::PerformanceBar::RedisAdapterWhenPeekEnabled, feature_category: :metrics do
   include ExclusiveLeaseHelpers
 
   let(:peek_adapter) do
@@ -28,8 +28,7 @@ RSpec.describe Gitlab::PerformanceBar::RedisAdapterWhenPeekEnabled do
     end
 
     it 'stores request id and enqueues stats job' do
-      expect_to_obtain_exclusive_lease(GitlabPerformanceBarStatsWorker::LEASE_KEY, uuid)
-      expect(GitlabPerformanceBarStatsWorker).to receive(:perform_in).with(GitlabPerformanceBarStatsWorker::WORKER_DELAY, uuid)
+      expect(client).to receive(:exists?).with(GitlabPerformanceBarStatsWorker::STATS_KEY).and_return(false)
       expect(client).to receive(:sadd?).with(GitlabPerformanceBarStatsWorker::STATS_KEY, uuid)
       expect(client).to receive(:expire).with(GitlabPerformanceBarStatsWorker::STATS_KEY, GitlabPerformanceBarStatsWorker::STATS_KEY_EXPIRE)
 
@@ -42,21 +41,7 @@ RSpec.describe Gitlab::PerformanceBar::RedisAdapterWhenPeekEnabled do
       end
 
       it 'ignores stats processing for the request' do
-        expect(GitlabPerformanceBarStatsWorker).not_to receive(:perform_in)
         expect(client).not_to receive(:sadd)
-
-        peek_adapter.new(client).save('foo')
-      end
-    end
-
-    context 'when exclusive lease has been already taken' do
-      before do
-        stub_exclusive_lease_taken(GitlabPerformanceBarStatsWorker::LEASE_KEY)
-      end
-
-      it 'stores request id but does not enqueue any job' do
-        expect(GitlabPerformanceBarStatsWorker).not_to receive(:perform_in)
-        expect(client).to receive(:sadd?).with(GitlabPerformanceBarStatsWorker::STATS_KEY, uuid)
 
         peek_adapter.new(client).save('foo')
       end

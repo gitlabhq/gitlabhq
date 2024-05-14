@@ -2,28 +2,41 @@
 import { GlBadge, GlTooltipDirective } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
 import { getTimeago } from '~/lib/utils/datetime_utility';
+import { duration } from '~/lib/utils/datetime/timeago_utility';
 import {
   I18N_STATUS_ONLINE,
   I18N_STATUS_NEVER_CONTACTED,
   I18N_STATUS_OFFLINE,
   I18N_STATUS_STALE,
-  I18N_ONLINE_TIMEAGO_TOOLTIP,
+  I18N_ONLINE_TOOLTIP,
   I18N_NEVER_CONTACTED_TOOLTIP,
-  I18N_OFFLINE_TIMEAGO_TOOLTIP,
-  I18N_STALE_TIMEAGO_TOOLTIP,
-  I18N_STALE_NEVER_CONTACTED_TOOLTIP,
+  I18N_NEVER_CONTACTED_STALE_TOOLTIP,
+  I18N_DISCONNECTED_TOOLTIP,
   STATUS_ONLINE,
   STATUS_NEVER_CONTACTED,
   STATUS_OFFLINE,
   STATUS_STALE,
+  ONLINE_CONTACT_TIMEOUT_SECS,
+  STALE_TIMEOUT_SECS,
 } from '../constants';
 
 export default {
+  name: 'RunnerStatusBadge',
   components: {
     GlBadge,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
+  },
+  inject: {
+    onlineContactTimeoutSecs: {
+      // Real value must be provided from ::Ci::Runner::ONLINE_CONTACT_TIMEOUT
+      default: ONLINE_CONTACT_TIMEOUT_SECS,
+    },
+    staleTimeoutSecs: {
+      // Real value must be provided from ::Ci::Runner::STALE_TIMEOUT
+      default: STALE_TIMEOUT_SECS,
+    },
   },
   props: {
     contactedAt: {
@@ -38,6 +51,12 @@ export default {
     },
   },
   computed: {
+    onlineContactTimeoutDuration() {
+      return duration(this.onlineContactTimeoutSecs * 1000);
+    },
+    staleTimeoutDuration() {
+      return duration(this.staleTimeoutSecs * 1000);
+    },
     contactedAtTimeAgo() {
       if (this.contactedAt) {
         return getTimeago().format(this.contactedAt);
@@ -52,7 +71,9 @@ export default {
             icon: 'status-active',
             variant: 'success',
             label: I18N_STATUS_ONLINE,
-            tooltip: this.timeAgoTooltip(I18N_ONLINE_TIMEAGO_TOOLTIP),
+            tooltip: sprintf(I18N_ONLINE_TOOLTIP, {
+              timeAgo: this.contactedAtTimeAgo,
+            }),
           };
         case STATUS_NEVER_CONTACTED:
           return {
@@ -66,7 +87,10 @@ export default {
             icon: 'time-out',
             variant: 'muted',
             label: I18N_STATUS_OFFLINE,
-            tooltip: this.timeAgoTooltip(I18N_OFFLINE_TIMEAGO_TOOLTIP),
+            tooltip: sprintf(I18N_DISCONNECTED_TOOLTIP, {
+              elapsedTime: this.onlineContactTimeoutDuration,
+              timeAgo: this.contactedAtTimeAgo,
+            }),
           };
         case STATUS_STALE:
           return {
@@ -75,17 +99,17 @@ export default {
             label: I18N_STATUS_STALE,
             // runner may have contacted (or not) and be stale: consider both cases.
             tooltip: this.contactedAt
-              ? this.timeAgoTooltip(I18N_STALE_TIMEAGO_TOOLTIP)
-              : I18N_STALE_NEVER_CONTACTED_TOOLTIP,
+              ? sprintf(I18N_DISCONNECTED_TOOLTIP, {
+                  elapsedTime: this.staleTimeoutDuration,
+                  timeAgo: this.contactedAtTimeAgo,
+                })
+              : sprintf(I18N_NEVER_CONTACTED_STALE_TOOLTIP, {
+                  elapsedTime: this.staleTimeoutDuration,
+                }),
           };
         default:
           return null;
       }
-    },
-  },
-  methods: {
-    timeAgoTooltip(text) {
-      return sprintf(text, { timeAgo: this.contactedAtTimeAgo });
     },
   },
 };

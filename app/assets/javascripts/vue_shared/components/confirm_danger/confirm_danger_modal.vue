@@ -56,6 +56,16 @@ export default {
       type: String,
       required: true,
     },
+    confirmLoading: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    modalTitle: {
+      type: String,
+      required: false,
+      default: CONFIRM_DANGER_MODAL_TITLE,
+    },
   },
   data() {
     return { confirmationPhrase: '' };
@@ -72,6 +82,7 @@ export default {
         attributes: {
           variant: 'danger',
           disabled: !this.isValid,
+          loading: this.confirmLoading,
           'data-testid': 'confirm-danger-modal-button',
         },
       };
@@ -82,9 +93,21 @@ export default {
       };
     },
   },
+  watch: {
+    confirmLoading(isLoading, wasLoading) {
+      // If the button was loading and now no longer is
+      if (!isLoading && wasLoading) {
+        // Hide the modal
+        this.$emit('change', false);
+      }
+    },
+  },
   methods: {
     equalString(a, b) {
       return a.trim().toLowerCase() === b.trim().toLowerCase();
+    },
+    focusConfirmInput() {
+      this.$refs.confirmInput.$el.focus();
     },
   },
   i18n: {
@@ -101,12 +124,13 @@ export default {
     :visible="visible"
     :modal-id="modalId"
     :data-testid="modalId"
-    :title="$options.i18n.CONFIRM_DANGER_MODAL_TITLE"
+    :title="modalTitle"
     :action-primary="actionPrimary"
     :action-cancel="actionCancel"
     size="sm"
-    @primary="$emit('confirm')"
+    @primary="$emit('confirm', $event)"
     @change="$emit('change', $event)"
+    @shown="focusConfirmInput()"
   >
     <gl-alert
       v-if="confirmDangerMessage"
@@ -120,22 +144,28 @@ export default {
         {{ confirmDangerMessage }}
       </span>
     </gl-alert>
-    <p data-testid="confirm-danger-warning">{{ additionalInformation }}</p>
-    <p data-testid="confirm-danger-phrase">
+    <slot name="modal-body">
+      <p data-testid="confirm-danger-warning">
+        {{ additionalInformation }}
+      </p>
+    </slot>
+    <p data-testid="confirm-danger-phrase" class="gl-mb-1">
       <gl-sprintf :message="$options.i18n.CONFIRM_DANGER_PHRASE_TEXT">
         <template #phrase_code>
           <code>{{ phrase }}</code>
         </template>
       </gl-sprintf>
     </p>
-    <gl-form-group :state="isValid">
+    <gl-form-group :state="isValid" class="gl-mb-0">
       <gl-form-input
         id="confirm_name_input"
+        ref="confirmInput"
         v-model="confirmationPhrase"
         class="form-control"
         data-testid="confirm-danger-field"
         type="text"
       />
     </gl-form-group>
+    <slot name="modal-footer"></slot>
   </gl-modal>
 </template>

@@ -283,3 +283,7 @@ export const searchOptions = (state, getters) => {
 
   return (getters.scopedSearchOptions ?? []).concat(sortedAutocompleteOptions);
 };
+
+export const isCommandMode = (state) => {
+  return state.commandChar !== '';
+};

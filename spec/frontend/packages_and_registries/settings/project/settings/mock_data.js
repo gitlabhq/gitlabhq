@@ -138,3 +138,101 @@ export const createPackagesProtectionRuleMutationInput = {
 export const createPackagesProtectionRuleMutationPayloadErrors = [
   'Package name pattern has already been taken',
 ];
+
+export const deletePackagesProtectionRuleMutationPayload = ({
+  packageProtectionRule = { ...packagesProtectionRulesData[0] },
+  errors = [],
+} = {}) => ({
+  data: {
+    deletePackagesProtectionRule: {
+      packageProtectionRule,
+      errors,
+    },
+  },
+});
+
+export const updatePackagesProtectionRuleMutationPayload = ({
+  packageProtectionRule = {
+    ...packagesProtectionRulesData[0],
+    pushProtectedUpToAccessLevel: 'OWNER',
+  },
+  errors = [],
+} = {}) => ({
+  data: {
+    updatePackagesProtectionRule: {
+      packageProtectionRule,
+      errors,
+    },
+  },
+});
+
+export const containerProtectionRulesData = [
+  ...Array.from(Array(15)).map((_e, i) => ({
+    id: `gid://gitlab/ContainerRegistry::Protection::Rule/${i}`,
+    repositoryPathPattern: `@flight/flight/maintainer-${i}-*`,
+    minimumAccessLevelForPush: 'MAINTAINER',
+    minimumAccessLevelForDelete: 'MAINTAINER',
+  })),
+  {
+    id: 'gid://gitlab/ContainerRegistry::Protection::Rule/16',
+    repositoryPathPattern: '@flight/flight/owner-16-*',
+    minimumAccessLevelForPush: 'OWNER',
+    minimumAccessLevelForDelete: 'OWNER',
+  },
+];
+
+export const containerProtectionRuleQueryPayload = ({
+  errors = [],
+  nodes = containerProtectionRulesData.slice(0, 10),
+  pageInfo = {
+    hasNextPage: true,
+    hasPreviousPage: false,
+    startCursor: '0',
+    endCursor: '10',
+  },
+} = {}) => ({
+  data: {
+    project: {
+      id: '1',
+      containerRegistryProtectionRules: {
+        nodes,
+        pageInfo: { __typename: 'PageInfo', ...pageInfo },
+      },
+      errors,
+    },
+  },
+});
+
+export const createContainerProtectionRuleMutationPayload = ({ override, errors = [] } = {}) => ({
+  data: {
+    createContainerRegistryProtectionRule: {
+      containerRegistryProtectionRule: {
+        ...containerProtectionRulesData[0],
+        ...override,
+      },
+      errors,
+    },
+  },
+});
+
+export const createContainerProtectionRuleMutationInput = {
+  repositoryPathPattern: `@flight/flight-maintainer-14-*`,
+  minimumAccessLevelForPush: 'MAINTAINER',
+  minimumAccessLevelForDelete: 'MAINTAINER',
+};
+
+export const createContainerProtectionRuleMutationPayloadErrors = [
+  'Repository path pattern has already been taken',
+];
+
+export const deleteContainerProtectionRuleMutationPayload = ({
+  containerRegistryProtectionRule = { ...containerProtectionRulesData[0] },
+  errors = [],
+} = {}) => ({
+  data: {
+    deleteContainerRegistryProtectionRule: {
+      containerRegistryProtectionRule,
+      errors,
+    },
+  },
+});

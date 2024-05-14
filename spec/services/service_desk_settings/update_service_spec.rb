@@ -18,7 +18,8 @@ RSpec.describe ServiceDeskSettings::UpdateService, :aggregate_failures, feature_
           outgoing_name: 'some name',
           project_key: 'foo',
           reopen_issue_on_external_participant_note: true,
-          add_external_participants_from_cc: true
+          add_external_participants_from_cc: true,
+          tickets_confidential_by_default: false
         }
       end
 
@@ -30,7 +31,8 @@ RSpec.describe ServiceDeskSettings::UpdateService, :aggregate_failures, feature_
           outgoing_name: 'some name',
           project_key: 'foo',
           reopen_issue_on_external_participant_note: true,
-          add_external_participants_from_cc: true
+          add_external_participants_from_cc: true,
+          tickets_confidential_by_default: false
         )
       end
 
@@ -65,6 +67,23 @@ RSpec.describe ServiceDeskSettings::UpdateService, :aggregate_failures, feature_
             outgoing_name: 'some name',
             project_key: 'foo',
             add_external_participants_from_cc: false
+          )
+        end
+      end
+
+      context 'when service_desk_tickets_confidentiality feature flag is disabled' do
+        before do
+          stub_feature_flags(service_desk_tickets_confidentiality: false)
+        end
+
+        it 'updates service desk setting but not tickets_confidential_by_default value' do
+          response = described_class.new(settings.project, user, params).execute
+
+          expect(response).to be_success
+          expect(settings.reset).to have_attributes(
+            outgoing_name: 'some name',
+            project_key: 'foo',
+            tickets_confidential_by_default: true
           )
         end
       end

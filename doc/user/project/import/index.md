@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 To bring existing projects to GitLab, or copy GitLab groups and projects to a different location, you can:
 
@@ -41,7 +41,7 @@ GitLab can import projects from these supported import sources.
 |:----------------------------------------------|:------------|
 | [Bitbucket Cloud](bitbucket.md)               | Using [Bitbucket.org as an OmniAuth provider](../../../integration/bitbucket.md), import Bitbucket repositories. |
 | [Bitbucket Server](bitbucket_server.md)       | Import repositories from Bitbucket Server (also known as Stash). |
-| [FogBugz](fogbugz.md)                         | Import FogBuz projects. |
+| [FogBugz](fogbugz.md)                         | Import FogBugz projects. |
 | [Gitea](gitea.md)                             | Import Gitea projects. |
 | [GitHub](github.md)                           | Import from either GitHub.com or GitHub Enterprise. |
 | [GitLab export](../settings/import_export.md) | Migrate projects one by one by using a GitLab export file. |
@@ -123,3 +123,9 @@ If an imported repository does not contain all branches of the source repository
 1. Retry the import with a [different group, subgroup, or project name](https://about.gitlab.com/releases/2023/02/22/gitlab-15-9-released/#re-import-projects-from-external-providers).
 1. If some branches are still missing, inspect [`importer.log`](../../../administration/logs/index.md#importerlog)
    (for example, with [`jq`](../../../administration/logs/log_parsing.md#parsing-gitlab-railsimporterlog)).
+
+### Exception: `Error Importing repository - No such file or directory @ rb_sysopen - (filename)`
+
+The error occurs if you attempt to import a `tar.gz` file download of a repository's source code.
+
+Imports require a [GitLab export](../settings/import_export.md#export-a-project-and-its-data) file, not just a repository download file.

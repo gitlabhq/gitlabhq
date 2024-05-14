@@ -61,7 +61,7 @@ RSpec.describe 'Projects > Settings > Merge requests', feature_category: :code_r
           end
         end
 
-        find('[data-testid="project-features-save-button"]').send_keys(:return)
+        find_by_testid('project-features-save-button').send_keys(:return)
 
         visit project_settings_merge_requests_path(project)
 
@@ -88,7 +88,7 @@ RSpec.describe 'Projects > Settings > Merge requests', feature_category: :code_r
           end
         end
 
-        find('[data-testid="project-features-save-button"]').send_keys(:return)
+        find_by_testid('project-features-save-button').send_keys(:return)
 
         visit project_settings_merge_requests_path(project)
 
@@ -98,33 +98,9 @@ RSpec.describe 'Projects > Settings > Merge requests', feature_category: :code_r
     end
   end
 
-  describe 'With the fast_forward_merge_trains_support feature flag turned off' do
-    before do
-      sign_in(user)
-      stub_feature_flags(fast_forward_merge_trains_support: false)
-
-      visit(project_settings_merge_requests_path(project))
-    end
-
-    it 'does not display the fast forward merge train message' do
-      page.within '.merge-request-settings-form' do
-        expect(page).not_to have_content 'merging is only possible if the branch can be rebased without conflicts.'
-      end
-    end
-  end
-
-  describe 'With the fast_forward_merge_trains_support feature flag turned on' do
-    before do
-      sign_in(user)
-      stub_feature_flags(fast_forward_merge_trains_support: true)
-
-      visit(project_settings_merge_requests_path(project))
-    end
-
-    it 'displays the fast forward merge train message' do
-      page.within '.merge-request-settings-form' do
-        expect(page).to have_content 'merging is only possible if the branch can be rebased without conflicts.'
-      end
+  it 'displays the fast forward merge train message' do
+    page.within '.merge-request-settings-form' do
+      expect(page).to have_content 'merging is only possible if the branch can be rebased without conflicts.'
     end
   end
 
@@ -146,7 +122,7 @@ RSpec.describe 'Projects > Settings > Merge requests', feature_category: :code_r
         end
       end
 
-      find('[data-testid="project-features-save-button"]').send_keys(:return)
+      find_by_testid('project-features-save-button').send_keys(:return)
 
       visit project_settings_merge_requests_path(project)
 

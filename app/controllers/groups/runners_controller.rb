@@ -1,20 +1,23 @@
 # frozen_string_literal: true
 
 class Groups::RunnersController < Groups::ApplicationController
-  before_action :authorize_read_group_runners!, only: [:index, :show]
-  before_action :authorize_create_group_runners!, only: [:new, :register]
-  before_action :authorize_update_runner!, only: [:edit, :update, :destroy, :pause, :resume]
-  before_action :runner, only: [:edit, :update, :destroy, :pause, :resume, :show, :register]
-
-  before_action do
-    push_frontend_feature_flag(:gcp_runner, @project, type: :wip)
+  # overrriden in EE
+  def self.needs_authorize_read_group_runners
+    [:index, :show]
   end
+
+  before_action :authorize_read_group_runners!, only: needs_authorize_read_group_runners
+  before_action :authorize_create_group_runners!, only: [:new, :register]
+  before_action :authorize_update_runner!, only: [:edit, :update]
+  before_action :runner, only: [:edit, :update, :show, :register]
 
   feature_category :runner
   urgency :low
 
   def index
+    @allow_registration_token = @group.allow_runner_registration_token?
     @group_runner_registration_token = @group.runners_token if can?(current_user, :register_group_runners, group)
+
     @group_new_runner_path = new_group_runner_path(@group) if can?(current_user, :create_runner, group)
 
     Gitlab::Tracking.event(self.class.name, 'index', user: current_user, namespace: @group)

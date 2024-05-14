@@ -14,10 +14,13 @@ module Gitlab
           include ::Gitlab::Config::Entry::Configurable
           include ::Gitlab::Config::Entry::Attributable
 
-          attributes :if, :exists, :when, :start_in, :allow_failure
+          attributes :if, :when, :start_in, :allow_failure, :interruptible
 
           entry :changes, Entry::Rules::Rule::Changes,
             description: 'File change condition rule.'
+
+          entry :exists, Entry::Rules::Rule::Exists,
+            description: 'File exists condition rule.'
 
           entry :variables, Entry::Variables,
             description: 'Environment variables to define for rule conditions.'
@@ -39,8 +42,8 @@ module Gitlab
 
             with_options allow_nil: true do
               validates :if, expression: true
-              validates :exists, array_of_strings: true, length: { maximum: 50 }
               validates :allow_failure, boolean: true
+              validates :interruptible, boolean: true
             end
 
             validate do
@@ -62,6 +65,7 @@ module Gitlab
           def value
             config.merge(
               changes: (changes_value if changes_defined?),
+              exists: (exists_value if exists_defined?),
               variables: (variables_value if variables_defined?),
               needs: (needs_value if needs_defined?),
               auto_cancel: (auto_cancel_value if auto_cancel_defined?)

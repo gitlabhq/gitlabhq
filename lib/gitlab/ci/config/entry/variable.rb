@@ -16,13 +16,13 @@ module Gitlab
 
             class << self
               def applies_to?(config)
-                Gitlab::Config::Entry::Validators::AlphanumericValidator.validate(config)
+                Gitlab::Config::Entry::Validators::ScalarValidator.validate(config)
               end
             end
 
             validations do
               validates :key, alphanumeric: true
-              validates :config, alphanumeric: true
+              validates :config, scalar: true
             end
 
             def value
@@ -52,7 +52,7 @@ module Gitlab
 
             validations do
               validates :key, alphanumeric: true
-              validates :config_value, alphanumeric: true, allow_nil: true
+              validates :config_value, scalar: true, allow_nil: true
               validates :config_description, alphanumeric: true, allow_nil: true
               validates :config_expand, boolean: true, allow_nil: true
               validates :config_options, array_of_strings: true, allow_nil: true

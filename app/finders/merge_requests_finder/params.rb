@@ -29,5 +29,13 @@ class MergeRequestsFinder
         end
       end
     end
+
+    def review_state
+      if params[:review_state].present?
+        MergeRequestReviewer.states[params[:review_state]]
+      elsif params[:review_states].present?
+        params[:review_states].map { |state| MergeRequestReviewer.states[state] }
+      end
+    end
   end
 end

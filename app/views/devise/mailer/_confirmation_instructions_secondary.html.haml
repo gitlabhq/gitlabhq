@@ -6,3 +6,5 @@
   %p
     = _('If this email was added in error, you can remove it here:')
     = link_to _("Emails"), profile_emails_url
+  %p
+    = format(_('Confirm this email address within %{cut_off_days} days, otherwise the email address is removed.'), cut_off_days: ApplicationSetting::USERS_UNCONFIRMED_SECONDARY_EMAILS_DELETE_AFTER_DAYS)

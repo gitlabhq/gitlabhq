@@ -20,11 +20,12 @@
 
 - content_for :before_content do
   = render 'projects/invite_members_modal', project: @project
+  = render_if_exists "shared/saml_reload_modal", group_or_project: @project
 
 = dispensable_render_if_exists "projects/importing_alert", project: @project
 = dispensable_render_if_exists "shared/web_hooks/web_hook_disabled_alert"
 = dispensable_render_if_exists "projects/free_user_cap_alert", project: @project
+= dispensable_render_if_exists "shared/seat_overage_alert", resource: @project
 = dispensable_render_if_exists 'shared/unlimited_members_during_trial_alert', resource: @project
-= dispensable_render_if_exists 'projects/code_suggestions_ga_owner_alert', project: @project
 
 = render template: "layouts/application"

@@ -22,10 +22,14 @@
     "releases_events",
     "alert_status",
     "disabled_until",
-    "emoji_events"
+    "emoji_events",
+    "custom_webhook_template",
+    "resource_access_token_events"
   ],
   "optional": [
-    "url_variables"
+    "url_variables",
+    "name",
+    "description"
   ],
   "properties": {
     "id": {
@@ -36,6 +40,18 @@
     },
     "url": {
       "type": "string"
+    },
+    "name": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "description": {
+      "type": [
+        "string",
+        "null"
+      ]
     },
     "created_at": {
       "type": "string",
@@ -98,6 +114,9 @@
     "emoji_events": {
       "type": "boolean"
     },
+    "resource_access_token_events": {
+      "type": "boolean"
+    },
     "alert_status": {
       "type": "string",
       "enum": [
@@ -126,6 +145,12 @@
           }
         }
       }
+    },
+    "custom_webhook_template": {
+      "type": [
+        "string",
+        "null"
+      ]
     }
   },
   "additionalProperties": false

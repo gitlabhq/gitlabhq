@@ -6,8 +6,8 @@ module Resolvers
       type Types::Projects::ForkDetailsType, null: true
 
       argument :ref, GraphQL::Types::String,
-               required: false,
-               description: 'Ref of the fork. Default value is HEAD.'
+        required: false,
+        description: 'Ref of the fork. Default value is HEAD.'
 
       alias_method :project, :object
 

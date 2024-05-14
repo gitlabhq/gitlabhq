@@ -8,13 +8,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Use the following tasks when you work with the agent for Kubernetes.
 
 ## View your agents
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340882) in GitLab 14.8, the installed `agentk` version is displayed on the **Agent** tab.
+The installed `agentk` version is displayed on the **Agent** tab.
 
 Prerequisites:
 
@@ -51,8 +51,6 @@ To view the list of shared agents:
 The list of shared agents and their clusters are displayed.
 
 ## View an agent's activity information
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/277323) in GitLab 14.6.
 
 The activity logs help you to identify problems and get the information
 you need for troubleshooting. You can see events from a week before the
@@ -109,8 +107,6 @@ For more information about debugging, see [troubleshooting documentation](troubl
 
 ## Reset the agent token
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327152) in GitLab 14.9.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/336641) in GitLab 14.10, the agent token can be revoked from the UI.
 > - Two-token limit [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/361030/) in GitLab 16.1 with a [flag](../../../administration/feature_flags.md) named `cluster_agents_limit_tokens_created`.
 > - Two-token limit [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/412399) in GitLab 16.2. Feature flag `cluster_agents_limit_tokens_created` removed.
 
@@ -136,8 +132,6 @@ are removed from GitLab, but no changes are made in your Kubernetes cluster. You
 clean up those resources manually.
 
 ### Remove an agent through the GitLab UI
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/323055) in GitLab 14.7.
 
 To remove an agent from the UI:
 

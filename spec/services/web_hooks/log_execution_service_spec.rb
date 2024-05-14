@@ -37,7 +37,9 @@ RSpec.describe WebHooks::LogExecutionService, feature_category: :webhooks do
     end
 
     it 'updates the last failure' do
-      expect(project_hook).to receive(:update_last_failure)
+      # Avoid pruning AR caches in `update_hook_failure_state` so the following expectation works.
+      allow(project_hook).to receive(:reset)
+      expect(project_hook.parent).to receive(:update_last_webhook_failure).with(project_hook)
 
       service.execute
     end

@@ -8,10 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/47063) in GitLab 12.2.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/206902) in GitLab 12.10.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 A [directed acyclic graph](https://en.wikipedia.org/wiki/Directed_acyclic_graph) can be
 used in the context of a CI/CD pipeline to build relationships between jobs such that
@@ -84,10 +81,6 @@ are certain use cases that you may need to work around. For more information, ch
 
 ## Needs Visualization
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/215517) in GitLab 13.1 as a [Beta feature](../../policy/experiment-beta-support.md#beta).
-> - It became a [standard feature](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38517) in 13.3.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52208) in GitLab 13.9.
-
 The needs visualization makes it easier to visualize the relationships between dependent jobs in a DAG. This graph displays all the jobs in a pipeline that need or are needed by other jobs. Jobs with no relationships are not displayed in this view.
 
 To see the needs visualization, select **Needs** when viewing a pipeline that uses the `needs` keyword.
@@ -98,4 +91,4 @@ Selecting a node highlights all the job paths it depends on.
 
 ![Needs visualization with path highlight](img/dag_graph_example_clicked_v13_1.png)
 
-You can also see `needs` relationships in [full pipeline graphs](../pipelines/index.md#view-full-pipeline-graph).
+You can also see `needs` relationships in [full pipeline graphs](../pipelines/index.md#group-jobs-by-stage-or-needs-configuration).

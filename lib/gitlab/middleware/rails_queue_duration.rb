@@ -18,7 +18,7 @@ module Gitlab
         proxy_start = env['HTTP_GITLAB_WORKHORSE_PROXY_START'].presence
         if trans && proxy_start
           # Time in milliseconds since gitlab-workhorse started the request
-          duration = Time.now.to_f * 1_000 - proxy_start.to_f / 1_000_000
+          duration = (Time.now.to_f * 1_000) - (proxy_start.to_f / 1_000_000)
           trans.set(:gitlab_transaction_rails_queue_duration_total, duration) do
             multiprocess_mode :livesum
           end

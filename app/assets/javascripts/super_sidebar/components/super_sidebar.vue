@@ -7,9 +7,9 @@ import { TAB_KEY_CODE } from '~/lib/utils/keycodes';
 import { keysFor, TOGGLE_SUPER_SIDEBAR } from '~/behaviors/shortcuts/keybindings';
 import { __, s__ } from '~/locale';
 import Tracking from '~/tracking';
-import eventHub from '../event_hub';
 import {
   sidebarState,
+  JS_TOGGLE_EXPAND_CLASS,
   SUPER_SIDEBAR_PEEK_STATE_CLOSED as STATE_CLOSED,
   SUPER_SIDEBAR_PEEK_STATE_WILL_OPEN as STATE_WILL_OPEN,
   SUPER_SIDEBAR_PEEK_STATE_OPEN as STATE_OPEN,
@@ -39,6 +39,8 @@ export default {
       import('ee_component/contextual_sidebar/components/trial_status_widget.vue'),
     TrialStatusPopover: () =>
       import('ee_component/contextual_sidebar/components/trial_status_popover.vue'),
+    DuoProTrialStatusWidget: () =>
+      import('ee_component/contextual_sidebar/components/duo_pro_trial_status_widget.vue'),
   },
   mixins: [Tracking.mixin()],
   i18n: {
@@ -46,7 +48,7 @@ export default {
     primaryNavigation: s__('Navigation|Primary navigation'),
     adminArea: s__('Navigation|Admin Area'),
   },
-  inject: ['showTrialStatusWidget'],
+  inject: ['showTrialStatusWidget', 'showDuoProTrialStatusWidget'],
   props: {
     sidebarData: {
       type: Object,
@@ -59,7 +61,6 @@ export default {
       showPeekHint: false,
       isMouseover: false,
       breakpoint: null,
-      showSuperSidebarContextHeader: true,
     };
   },
   computed: {
@@ -79,8 +80,14 @@ export default {
   },
   watch: {
     'sidebarState.isCollapsed': {
-      handler() {
+      handler(collapsed) {
         this.setupFocusTrapListener();
+
+        if (this.isNotPeeking() && !collapsed) {
+          this.$nextTick(() => {
+            this.firstFocusableElement().focus();
+          });
+        }
       },
     },
   },
@@ -98,7 +105,6 @@ export default {
   mounted() {
     this.setupFocusTrapListener();
     Mousetrap.bind(keysFor(TOGGLE_SUPER_SIDEBAR), this.toggleSidebar);
-    eventHub.$on('toggle-menu-header', this.onToggleMenuHeader);
   },
   beforeDestroy() {
     document.removeEventListener('keydown', this.focusTrap);
@@ -112,12 +118,18 @@ export default {
       });
       toggleSuperSidebarCollapsed(!isCollapsed(), true);
     },
+    isOverlapping() {
+      return GlBreakpointInstance.windowWidth() < breakpoints.xl;
+    },
+    isNotPeeking() {
+      return !(sidebarState.isHoverPeek || sidebarState.isPeek);
+    },
     setupFocusTrapListener() {
       /**
        * Only trap focus when sidebar displays over page content to avoid
        * focus moving to page content and being obscured by the sidebar
        */
-      if (GlBreakpointInstance.windowWidth() < breakpoints.xl && !this.sidebarState.isCollapsed) {
+      if (this.isOverlapping() && !this.sidebarState.isCollapsed) {
         document.addEventListener('keydown', this.focusTrap);
       } else {
         document.removeEventListener('keydown', this.focusTrap);
@@ -125,6 +137,12 @@ export default {
     },
     collapseSidebar() {
       toggleSuperSidebarCollapsed(true, false);
+    },
+    handleEscKey() {
+      if (this.isOverlapping() && this.isNotPeeking()) {
+        this.collapseSidebar();
+        document.querySelector(`.${JS_TOGGLE_EXPAND_CLASS}`)?.focus();
+      }
     },
     onPeekChange(state) {
       if (state === STATE_CLOSED) {
@@ -152,10 +170,19 @@ export default {
         this.sidebarState.isCollapsed = true;
       }
     },
+    firstFocusableElement() {
+      return this.$refs.userBar.$el.querySelector('a');
+    },
+    lastFocusableElement() {
+      if (this.sidebarData.is_admin) {
+        return this.$refs.adminAreaLink.$el;
+      }
+      return this.$refs.helpCenter.$el.querySelector('button');
+    },
     focusTrap(event) {
       const { keyCode, shiftKey } = event;
-      const firstFocusableElement = this.$refs.userBar.$el.querySelector('a');
-      const lastFocusableElement = this.$refs.helpCenter.$el.querySelector('button');
+      const firstFocusableElement = this.firstFocusableElement();
+      const lastFocusableElement = this.lastFocusableElement();
 
       if (keyCode !== TAB_KEY_CODE) return;
 
@@ -169,16 +196,13 @@ export default {
         event.preventDefault();
       }
     },
-    onToggleMenuHeader(forceState) {
-      this.showSuperSidebarContextHeader = forceState;
-    },
   },
 };
 </script>
 
 <template>
   <div>
-    <div class="super-sidebar-overlay" @click="collapseSidebar"></div>
+    <div ref="overlay" class="super-sidebar-overlay" @click="collapseSidebar"></div>
     <gl-button
       v-if="sidebarData.is_logged_in"
       class="super-sidebar-skip-to gl-sr-only-focusable gl-fixed gl-left-0 gl-m-3"
@@ -197,6 +221,7 @@ export default {
       :inert="sidebarState.isCollapsed"
       @mouseenter="isMouseover = true"
       @mouseleave="isMouseover = false"
+      @keydown.esc="handleEscKey"
     >
       <h2 id="super-sidebar-heading" class="gl-sr-only">
         {{ $options.i18n.primaryNavigation }}
@@ -208,12 +233,17 @@ export default {
         />
         <trial-status-popover />
       </div>
+      <div v-else-if="showDuoProTrialStatusWidget" class="gl-px-2 gl-py-2">
+        <duo-pro-trial-status-widget
+          class="super-sidebar-nav-item gl-rounded-base gl-relative gl-display-flex gl-align-items-center gl-mb-1 gl-px-3 gl-line-height-normal gl-text-black-normal! gl-text-decoration-none! gl-py-3"
+        />
+      </div>
       <div
         class="contextual-nav gl-display-flex gl-flex-direction-column gl-flex-grow-1 gl-overflow-hidden"
       >
         <scroll-scrim class="gl-flex-grow-1" data-testid="nav-container">
           <div
-            v-if="showSuperSidebarContextHeader"
+            v-if="sidebarData.current_context_header"
             id="super-sidebar-context-header"
             class="gl-px-5 gl-pt-3 gl-pb-2 gl-m-0 gl-reset-line-height gl-font-weight-bold gl-font-sm super-sidebar-context-header"
           >
@@ -233,6 +263,7 @@ export default {
           <help-center ref="helpCenter" :sidebar-data="sidebarData" />
           <gl-button
             v-if="sidebarData.is_admin"
+            ref="adminAreaLink"
             class="gl-fixed gl-right-0 gl-mr-3 gl-mt-2"
             data-testid="sidebar-admin-link"
             :href="sidebarData.admin_url"

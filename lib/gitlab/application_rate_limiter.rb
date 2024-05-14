@@ -35,6 +35,7 @@ module Gitlab
           web_hook_calls: { interval: 1.minute },
           web_hook_calls_mid: { interval: 1.minute },
           web_hook_calls_low: { interval: 1.minute },
+          web_hook_test_api_endpoint: { threshold: 3, interval: 1.minute },
           users_get_by_id: { threshold: -> { application_settings.users_get_by_id_limit }, interval: 10.minutes },
           username_exists: { threshold: 20, interval: 1.minute },
           user_sign_up: { threshold: 20, interval: 1.minute },
@@ -67,7 +68,7 @@ module Gitlab
             threshold: -> { application_settings.projects_api_rate_limit_unauthenticated }, interval: 10.minutes
           },
           downstream_pipeline_trigger: {
-            threshold: -> { ::Ci::TriggerDownstreamPipelineService::DOWNSTREAM_PIPELINE_TRIGGER_LIMIT_PER_PROJECT_USER_SHA }, interval: 1.minute
+            threshold: -> { application_settings.downstream_pipeline_trigger_limit_per_project_user_sha }, interval: 1.minute
           }
         }.freeze
       end

@@ -38,8 +38,8 @@ export default {
   },
   mixins: [glFeatureFlagsMixin()],
   inject: {
-    newCommentTemplatePath: {
-      default: null,
+    newCommentTemplatePaths: {
+      default: () => [],
     },
     editorAiActions: { default: () => [] },
     mrGeneratedContent: { default: null },
@@ -130,6 +130,16 @@ export default {
     mdCollapsibleSection() {
       const expandText = s__('MarkdownEditor|Click to expand');
       return [`<details><summary>${expandText}</summary>`, `{text}`, '</details>'].join('\n');
+    },
+    hideDividerBeforeTable() {
+      return (
+        this.previewMarkdown ||
+        (this.restrictedToolBarItems.includes('table') &&
+          this.restrictedToolBarItems.includes('attach-file') &&
+          !this.drawioEnabled &&
+          !this.supportsQuickActions &&
+          !this.newCommentTemplatePath)
+      );
     },
   },
   watch: {
@@ -271,7 +281,7 @@ export default {
           >
           <template v-if="!previewMarkdown && canSuggest">
             <div class="gl-display-flex gl-row-gap-2">
-              <header-divider :preview-markdown="previewMarkdown" />
+              <header-divider v-if="!previewMarkdown" />
               <toolbar-button
                 ref="suggestButton"
                 :tag="mdSuggestion"
@@ -318,14 +328,14 @@ export default {
               v-if="!previewMarkdown && editorAiActions.length"
               class="gl-display-flex gl-row-gap-2"
             >
-              <header-divider :preview-markdown="previewMarkdown" />
+              <header-divider v-if="!previewMarkdown" />
               <ai-actions-dropdown
                 :actions="editorAiActions"
                 @input="insertAIAction"
                 @replace="replaceTextarea"
               />
             </div>
-            <header-divider :preview-markdown="previewMarkdown" />
+            <header-divider v-if="enablePreview && !previewMarkdown" />
           </div>
           <toolbar-button
             v-show="!previewMarkdown"
@@ -369,7 +379,7 @@ export default {
               icon="strikethrough"
               tracking-property="strike"
             />
-            <header-divider :preview-markdown="previewMarkdown" />
+            <header-divider v-if="!previewMarkdown" />
           </div>
           <toolbar-button
             v-if="!restrictedToolBarItems.includes('quote')"
@@ -472,7 +482,7 @@ export default {
               icon="details-block"
               tracking-property="details"
             />
-            <header-divider :preview-markdown="previewMarkdown" />
+            <header-divider v-if="!hideDividerBeforeTable" />
           </div>
           <toolbar-button
             v-if="!restrictedToolBarItems.includes('table')"
@@ -512,8 +522,8 @@ export default {
             tracking-property="quickAction"
           />
           <comment-templates-dropdown
-            v-if="!previewMarkdown && newCommentTemplatePath"
-            :new-comment-template-path="newCommentTemplatePath"
+            v-if="!previewMarkdown && newCommentTemplatePaths.length"
+            :new-comment-template-paths="newCommentTemplatePaths"
             @select="insertSavedReply"
           />
         </div>

@@ -152,7 +152,7 @@ RSpec.describe 'Copy as GFM', :js, feature_category: :team_planning do
       )
 
       verify(
-        'TableOfContentsFilter',
+        'TableOfContentsTagFilter',
         <<~GFM,
           [[_TOC_]]
 

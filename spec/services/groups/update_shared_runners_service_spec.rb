@@ -246,12 +246,6 @@ RSpec.describe Groups::UpdateSharedRunnersService, feature_category: :groups_and
 
         include_examples 'allow descendants to override'
       end
-
-      context "when using SR_DISABLED_WITH_OVERRIDE" do
-        let(:params) { { shared_runners_setting: Namespace::SR_DISABLED_WITH_OVERRIDE } }
-
-        include_examples 'allow descendants to override'
-      end
     end
   end
 end

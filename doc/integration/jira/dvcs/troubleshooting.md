@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 When working with the [Jira DVCS connector](index.md), you might encounter the following issues.
 
@@ -89,23 +89,6 @@ Potential resolutions:
    [GitLab account configuration](index.md#create-a-gitlab-application-for-dvcs). Review
    the **Scopes** field and ensure the `api` checkbox is selected.
 
-## Error when adding an account in Jira
-
-After you complete the **Add New Account** form in Jira and authorize access, you might
-encounter these issues:
-
-- An `Error! Failed adding the account: [Error retrieving list of repositories]` error.
-- An `Account is already integrated with JIRA` error when you select **Try Again**.
-- An account is visible in the DVCS accounts view, but no repositories are listed.
-
-To resolve this issue:
-
-- If you're using GitLab Free, ensure you're using GitLab 13.4 or later.
-- If you're using GitLab versions 11.10-12.7, upgrade to GitLab 12.8.10 or later
-  to resolve [an identified issue](https://gitlab.com/gitlab-org/gitlab/-/issues/37012).
-
-[Contact GitLab Support](https://about.gitlab.com/support/) if none of these reasons apply.
-
 ## `410 Gone` when connecting to Jira
 
 When you connect to Jira and synchronize repositories, you might get a `410 Gone` error.
@@ -137,7 +120,7 @@ Failed to execute request [https://gitlab.com/api/v4/projects/:id/merge_requests
 {"message":"403 Forbidden"}
 ```
 
-If you get a `403 Forbidden` error, this project might have some [GitLab features disabled](../../../user/project/settings/project_features_permissions.md#configure-project-features-and-permissions).
+If you get a `403 Forbidden` error, this project might have some [GitLab features disabled](../../../user/project/settings/index.md#configure-project-features-and-permissions).
 In the previous example, the merge requests feature is disabled.
 
 To resolve the issue, enable the relevant feature:

@@ -108,7 +108,7 @@ rubocop:
   script:
     - |
       # For non-merge request, or when RUN_ALL_RUBOCOP is 'true', run all RuboCop rules
-      if [ -z "${CI_MERGE_REQUEST_IID}" ] || [ "${RUN_ALL_RUBOCOP}" == "true" ]; then
+      if [ -z "${CI_MERGE_REQUEST_IID:-$FIND_CHANGES_MERGE_REQUEST_IID}" ] || [ "${RUN_ALL_RUBOCOP}" == "true" ]; then
         # Silence cop offenses for rules with "grace period".
         # We won't notify Slack if offenses were silenced to avoid frequent messages.
         # Job `update-static-analysis-cache` takes care of Slack notifications every 2 hours.
@@ -172,20 +172,22 @@ semgrep-appsec-custom-rules:
   image: returntocorp/semgrep
   needs: []
   script:
-    # Required to avoid a timeout https://github.com/returntocorp/semgrep/issues/5395
     - git fetch origin master
     - git clone $CUSTOM_RULES_REPOSITORY "${CI_BUILDS_DIR}/sast-custom-rules"
     # Include/exclude list isn't ideal https://github.com/returntocorp/semgrep/issues/5399
     - |
-      semgrep ci --gitlab-sast --metrics off --config "${CI_BUILDS_DIR}/sast-custom-rules" \
+      rm "${CI_BUILDS_DIR}/sast-custom-rules/.gitlab-ci.yml" # semgrep fails when there are yaml files that are not rules
+      semgrep ci --metrics off --config "${CI_BUILDS_DIR}/sast-custom-rules" \
         --include app --include lib --include workhorse \
-        --exclude '*_test.go' --exclude spec --exclude qa --exclude tooling > gl-sast-report.json || true
+        --exclude '*_test.go' --exclude spec --exclude qa --exclude tooling --json --verbose > gl-sast-report.json || true
+
   variables:
-    CUSTOM_RULES_REPOSITORY: https://gitlab.com/gitlab-com/gl-security/appsec/sast-custom-rules.git
+    CUSTOM_RULES_REPOSITORY: https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules.git
   artifacts:
     expire_in: 30 days
     paths:
       - gl-sast-report.json
+    access: 'developer'
 
 audit-event-types-verify:
   variables:
@@ -200,19 +202,46 @@ audit-event-types-verify:
   script:
     - bundle exec rake gitlab:audit_event_types:check_docs
 
+custom-roles-verify:
+  variables:
+    SETUP_DB: "false"
+  extends:
+    - .default-retry
+    - .ruby-cache
+    - .default-before_script
+    - .custom-roles:rules:custom-roles-verify
+  stage: lint
+  needs: []
+  script:
+    - bundle exec rake gitlab:custom_roles:check_docs
+
+templates-shellcheck:
+  extends:
+    - .ci-templates:rules:shellcheck
+    - .default-before_script
+    - .default-retry
+    - .ruby-cache
+    - .use-pg16
+  stage: lint
+  needs:
+    - setup-test-env
+  script:
+    - bundle exec scripts/lint_templates_bash.rb
+
 ping-appsec-for-sast-findings:
   stage: lint
   image: alpine:latest
   extends:
     - .ping-appsec-for-sast-findings:rules
   variables:
-    # Project Access Token bot ID for /gitlab-com/gl-security/appsec/sast-custom-rules
-    BOT_USER_ID: 14406065
+    # Project Access Token bot ID for /gitlab-com/gl-security/product-security/appsec/sast-custom-rules
+    BOT_USER_ID: 19650678
   needs:
     - semgrep-appsec-custom-rules
   script:
-    - apk add jq curl
-    - scripts/process_custom_semgrep_results.sh
+    - apk update
+    - apk add ruby
+    - ruby scripts/process_custom_semgrep_results.rb
 
 trigger-depsaster:
   extends: .static-analysis:rules:trigger-depsaster
@@ -221,7 +250,7 @@ trigger-depsaster:
     MERGE_REQUEST_PROJECT_ID: $CI_MERGE_REQUEST_PROJECT_ID
     MERGE_REQUEST_IID: $CI_MERGE_REQUEST_IID
   trigger:
-    project: "gitlab-com/gl-security/appsec/tooling/depsaster"
+    project: "gitlab-com/gl-security/product-security/appsec/tooling/depsaster"
   allow_failure: true
 
 ping-appsec-for-dependency-review:
@@ -232,7 +261,7 @@ ping-appsec-for-dependency-review:
     DISABLE_MENTIONS: "false"
     DISABLE_SCORING: "true"
     DISABLE_COMMENTING: "false"
-    DEPENDENCY_REVIEW_BOT_CI_REG: "${CI_REGISTRY}/gitlab-com/gl-security/appsec/tooling/depscore/master"
+    DEPENDENCY_REVIEW_BOT_CI_REG: "${CI_REGISTRY}/gitlab-com/gl-security/product-security/appsec/tooling/depscore/master"
   extends: [".ping-appsec-for-dependency-review:rules", ".use-docker-in-docker"]
   before_script:
     - apk add jq curl

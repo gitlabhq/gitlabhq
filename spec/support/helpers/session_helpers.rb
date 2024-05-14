@@ -3,7 +3,7 @@
 module SessionHelpers
   # Stub a session in Redis, for use in request specs where we can't mock the session directly.
   # This also needs the :clean_gitlab_redis_sessions tag on the spec.
-  def stub_session(session_hash)
+  def stub_session(session_data:, user_id: nil)
     unless RSpec.current_example.metadata[:clean_gitlab_redis_sessions]
       raise 'Add :clean_gitlab_redis_sessions to your spec!'
     end
@@ -11,10 +11,11 @@ module SessionHelpers
     session_id = Rack::Session::SessionId.new(SecureRandom.hex)
 
     Gitlab::Redis::Sessions.with do |redis|
-      redis.set("session:gitlab:#{session_id.private_id}", Marshal.dump(session_hash))
+      redis.set("session:gitlab:#{session_id.private_id}", Marshal.dump(session_data))
+      redis.sadd("session:lookup:user:gitlab:#{user_id}", [session_id.private_id]) if user_id
     end
 
-    cookies[Gitlab::Application.config.session_options[:key]] = session_id.public_id
+    defined?(cookies) && cookies[Gitlab::Application.config.session_options[:key]] = session_id.public_id
   end
 
   def expect_single_session_with_authenticated_ttl

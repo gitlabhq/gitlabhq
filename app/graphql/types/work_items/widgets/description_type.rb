@@ -13,18 +13,18 @@ module Types
         implements Types::WorkItems::WidgetInterface
 
         field :description, GraphQL::Types::String,
-              null: true,
-              description: 'Description of the work item.'
+          null: true,
+          description: 'Description of the work item.'
         field :edited, GraphQL::Types::Boolean,
-              null: false,
-              description: 'Whether the description has been edited since the work item was created.',
-              method: :edited?
+          null: false,
+          description: 'Whether the description has been edited since the work item was created.',
+          method: :edited?
         field :last_edited_at, Types::TimeType,
-              null: true,
-              description: 'Timestamp of when the work item\'s description was last edited.'
+          null: true,
+          description: 'Timestamp of when the work item\'s description was last edited.'
         field :last_edited_by, Types::UserType,
-              null: true,
-              description: 'User that made the last edit to the work item\'s description.'
+          null: true,
+          description: 'User that made the last edit to the work item\'s description.'
 
         markdown_field :description_html, null: true, &:work_item
       end

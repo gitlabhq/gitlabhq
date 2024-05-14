@@ -12,8 +12,7 @@ do not work, because a fresh Docker daemon is started with the service.
 
 ## Option 1: Run `docker login`
 
-In [`before_script`](../yaml/index.md#before_script), run `docker
-login`:
+In [`before_script`](../yaml/index.md#before_script), run `docker login`:
 
 ```yaml
 default:

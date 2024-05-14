@@ -71,7 +71,7 @@ the current status of these issues, refer to the referenced issues and epics.
 
 | Issue                                                                                 | Summary                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | How to avoid |
 |:--------------------------------------------------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:--------------------------------|
-| Gitaly Cluster + Geo - Issues retrying failed syncs                             | If Gitaly Cluster is used on a Geo secondary site, repositories that have failed to sync could continue to fail when Geo tries to resync them. Recovering from this state requires assistance from support to run manual steps. | No known solution prior to GitLab 15.0. In GitLab 15.0 to 15.2, enable the [`gitaly_praefect_generated_replica_paths` feature flag](#praefect-generated-replica-paths-gitlab-150-and-later) on your Geo primary site. In GitLab 15.3, the feature flag is enabled by default. |
+| Gitaly Cluster + Geo - Issues retrying failed syncs                             | If Gitaly Cluster is used on a Geo secondary site, repositories that have failed to sync could continue to fail when Geo tries to resync them. Recovering from this state requires assistance from support to run manual steps. | In GitLab 15.0 to 15.2, enable the [`gitaly_praefect_generated_replica_paths` feature flag](#praefect-generated-replica-paths) on your Geo primary site. In GitLab 15.3, the feature flag is enabled by default. |
 | Praefect unable to insert data into the database due to migrations not being applied after an upgrade | If the database is not kept up to date with completed migrations, then the Praefect node is unable to perform standard operation. | Make sure the Praefect database is up and running with all migrations completed (For example: `/opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml sql-migrate-status` should show a list of all applied migrations). Consider [requesting upgrade assistance](https://about.gitlab.com/support/scheduling-upgrade-assistance/) so your upgrade plan can be reviewed by support. |
 | Restoring a Gitaly Cluster node from a snapshot in a running cluster | Because the Gitaly Cluster runs with consistent state, introducing a single node that is behind results in the cluster not being able to reconcile the nodes data and other nodes data | Don't restore a single Gitaly Cluster node from a backup snapshot. If you must restore from backup:<br/><br/>1. [Shut down GitLab](../read_only_gitlab.md#shut-down-the-gitlab-ui).<br/>2. Snapshot all Gitaly Cluster nodes at the same time.<br/>3. Take a database dump of the Praefect database. |
 | Limitations when running in Kubernetes, Amazon ECS, or similar | Praefect (Gitaly Cluster) is not supported and Gitaly has known limitations. For more information, see [epic 6127](https://gitlab.com/groups/gitlab-org/-/epics/6127). | Use our [reference architectures](../reference_architectures/index.md). |
@@ -167,9 +167,9 @@ E --> F
 ### Configure Gitaly
 
 Gitaly comes pre-configured with a Linux package installation, which is a configuration
-[suitable for up to 1000 users](../reference_architectures/1k_users.md). For:
+[suitable for up to 20 RPS / 1,000 users](../reference_architectures/1k_users.md). For:
 
-- Linux package installations for up to 2000 users, see [specific Gitaly configuration instructions](../reference_architectures/2k_users.md#configure-gitaly).
+- Linux package installations for up to 40 RPS / 2,000 users, see [specific Gitaly configuration instructions](../reference_architectures/2k_users.md#configure-gitaly).
 - Self-compiled installations or custom Gitaly installations, see [Configure Gitaly](configure_gitaly.md).
 
 GitLab installations for more than 2000 active users performing daily Git write operation may be
@@ -190,6 +190,11 @@ For more information on the other subcommands, run `gitaly --help`.
 
 When backing up or syncing repositories using tools other than GitLab, you must [prevent writes](../../administration/backup_restore/backup_gitlab.md#prevent-writes-and-copy-the-git-repository-data)
 while copying repository data.
+
+### Bundle URIs
+
+You can use Git [bundle URIs](https://git-scm.com/docs/bundle-uri) with Gitaly.
+For more information, see the [Bundle URIs documentation](bundle_uris.md).
 
 ## Gitaly Cluster
 
@@ -344,7 +349,7 @@ Repositories are stored in the storages at the relative path determined by the [
 identified by them not beginning with the `@cluster` prefix. The relative paths
 follow the [hashed storage](../repository_storage_paths.md#hashed-storage) schema.
 
-#### Praefect-generated replica paths (GitLab 15.0 and later)
+#### Praefect-generated replica paths
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/4218) in GitLab 15.0 [with a flag](../feature_flags.md) named `gitaly_praefect_generated_replica_paths`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitaly/-/issues/4218) in GitLab 15.2.
@@ -494,8 +499,6 @@ You can [monitor distribution of reads](monitoring.md#monitor-gitaly-cluster) us
 
 #### Strong consistency
 
-> - In GitLab 14.0, strong consistency is the primary replication method.
-
 Gitaly Cluster provides strong consistency by writing changes synchronously to all healthy, up-to-date replicas. If a
 replica is outdated or unhealthy at the time of the transaction, the write is asynchronously replicated to it.
 
@@ -529,7 +532,7 @@ For more information on configuring Gitaly Cluster, see [Configure Gitaly Cluste
 ### Upgrade Gitaly Cluster
 
 To upgrade a Gitaly Cluster, follow the documentation for
-[zero downtime upgrades](../../update/zero_downtime.md#gitaly-or-gitaly-cluster).
+[zero-downtime upgrades](../../update/zero_downtime.md).
 
 ### Downgrade Gitaly Cluster to a previous version
 

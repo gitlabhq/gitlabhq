@@ -80,6 +80,7 @@ describe('ProjectFilter', () => {
 
         it('calls setUrlParams with null, no group id, nav_source null, then calls visitUrl', () => {
           expect(setUrlParams).toHaveBeenCalledWith({
+            include_archived: null,
             [PROJECT_DATA.queryParam]: null,
             nav_source: null,
             scope: CURRENT_SCOPE,
@@ -100,6 +101,7 @@ describe('ProjectFilter', () => {
         it('calls setUrlParams with project id, group id, nav_source null, then calls visitUrl', () => {
           expect(setUrlParams).toHaveBeenCalledWith({
             [GROUP_DATA.queryParam]: MOCK_PROJECT.namespace.id,
+            include_archived: null,
             [PROJECT_DATA.queryParam]: MOCK_PROJECT.id,
             nav_source: null,
             scope: CURRENT_SCOPE,

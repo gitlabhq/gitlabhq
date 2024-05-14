@@ -1,0 +1,16 @@
+fragment DesignFile on Design {
+  id
+  event
+  filename
+  notesCount
+  image
+  imageV432x230
+  description
+  descriptionHtml
+  fullPath
+  currentUserTodos(state: pending) {
+    nodes {
+      id
+    }
+  }
+}

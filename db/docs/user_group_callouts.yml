@@ -8,3 +8,5 @@ description: TODO
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68785
 milestone: '14.3'
 gitlab_schema: gitlab_main_cell
+sharding_key:
+  group_id: namespaces

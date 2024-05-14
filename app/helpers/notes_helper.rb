@@ -197,10 +197,6 @@ module NotesHelper
     data
   end
 
-  def discussion_resolved_intro(discussion)
-    discussion.resolved_by_push? ? 'Automatically resolved' : 'Resolved'
-  end
-
   def rendered_for_merge_request?
     params[:from_merge_request].present?
   end

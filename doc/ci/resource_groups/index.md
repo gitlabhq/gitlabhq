@@ -9,9 +9,7 @@ description: Control the job concurrency in GitLab CI/CD
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15536) in GitLab 12.7.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 By default, pipelines in GitLab CI/CD run concurrently. Concurrency is an important factor to improve
 the feedback loop in merge requests, however, there are some situations that
@@ -69,10 +67,6 @@ can still run `build` jobs concurrently for maximizing the pipeline efficiency.
 Only one resource can be attached to a resource group.
 
 ## Process modes
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/202186) in GitLab 14.3.
-> - [Feature flag `ci_resource_group_process_modes`](https://gitlab.com/gitlab-org/gitlab/-/issues/340380) removed in GitLab 14.4.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/202186) in GitLab 14.4.
 
 You can choose a process mode to strategically control the job concurrency for your deployment preferences.
 The following modes are supported:
@@ -144,8 +138,6 @@ Depending on the process mode of the resource group:
   - `deploy-3` runs first, `deploy-2` runs second and `deploy-1` runs last.
 
 ## Pipeline-level concurrency control with cross-project/parent-child pipelines
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/39057) in GitLab 13.9.
 
 You can define `resource_group` for downstream pipelines that are sensitive to concurrent
 executions. The [`trigger` keyword](../yaml/index.md#trigger) can trigger downstream pipelines and the
@@ -273,11 +265,32 @@ first check that the resource group is working correctly:
 1. If **View job currently using resource** is not available, the resource is not assigned to a job. Instead, check the resource's upcoming jobs.
 
     1. Get the resource's upcoming jobs with the [REST API](../../api/resource_groups.md#list-upcoming-jobs-for-a-specific-resource-group).
-    1. Verify that the job's [process mode](#process-modes) is **Oldest first**.
+    1. Verify that the resource group's [process mode](#process-modes) is **Oldest first**.
     1. Find the first job in the list of upcoming jobs, and get the job details [with GraphQL](#get-job-details-through-graphql).
     1. If the first job's pipeline is an older pipeline, try to cancel the pipeline or the job itself.
     1. Optional. Repeat this process if the next upcoming job is still in an older pipeline that should no longer run.
     1. If the problem persists, [report the issue to GitLab](#report-an-issue).
+
+#### Race conditions in complex or busy pipelines
+
+If you can't resolve your issue with the solutions above, you might be encountering a known race condition issue. The race condition happens in complex or busy pipelines.
+For example, you might encounter the race condition if you have:
+
+- A pipeline with multiple child pipelines.
+- A single project with multiple pipelines running simultaneously.
+
+If you think you are running into this problem, [report the issue to GitLab](#report-an-issue) and leave a comment on [issue 436988](https://gitlab.com/gitlab-org/gitlab/-/issues/436988) with a link to your new issue.
+To confirm the problem, GitLab might ask for additional details such
+as your full pipeline configuration.
+
+As a temporary workaround, you can:
+
+- Start a new pipeline.
+- Re-run a finished job that has the same resource group as the stuck job.
+
+  For example, if you have a `setup_job` and a `deploy_job` with the same resource group,
+  the `setup_job` might finish while the `deploy_job` is stuck at "waiting for resource".
+  Re-run the `setup_job` to restart the whole process and allow `deploy_job` to finish.
 
 #### Get job details through GraphQL
 

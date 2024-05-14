@@ -2,6 +2,7 @@
 
 module Ci
   class RunnerManager < Ci::ApplicationRecord
+    include EachBatch
     include FromUnion
     include RedisCacheable
     include Ci::HasRunnerExecutor
@@ -15,7 +16,31 @@ module Ci
     # The `UPDATE_CONTACT_COLUMN_EVERY` defines how often the Runner Machine DB entry can be updated
     UPDATE_CONTACT_COLUMN_EVERY = (40.minutes)..(55.minutes)
 
+    EXECUTOR_NAME_TO_TYPES = {
+      'unknown' => :unknown,
+      'custom' => :custom,
+      'shell' => :shell,
+      'docker' => :docker,
+      'docker-windows' => :docker_windows,
+      'docker-ssh' => :docker_ssh,
+      'ssh' => :ssh,
+      'parallels' => :parallels,
+      'virtualbox' => :virtualbox,
+      'docker+machine' => :docker_machine,
+      'docker-ssh+machine' => :docker_ssh_machine,
+      'kubernetes' => :kubernetes,
+      'docker-autoscaler' => :docker_autoscaler,
+      'instance' => :instance
+    }.freeze
+
+    EXECUTOR_TYPE_TO_NAMES = EXECUTOR_NAME_TO_TYPES.invert.freeze
+
     belongs_to :runner
+
+    enum creation_state: {
+      started: 0,
+      finished: 100
+    }, _suffix: true
 
     has_many :runner_manager_builds, inverse_of: :runner_manager, foreign_key: :runner_machine_id,
       class_name: 'Ci::RunnerManagerBuild'
@@ -71,6 +96,7 @@ module Ci
     end
 
     scope :order_id_desc, -> { order(id: :desc) }
+    scope :order_contacted_at_desc, -> { order(arel_table[:contacted_at].desc.nulls_last) }
 
     scope :with_version_prefix, ->(value) do
       regex = version_regex_expression_for_version(value)
@@ -109,9 +135,11 @@ module Ci
       #
       ::Gitlab::Database::LoadBalancing::Session.without_sticky_writes do
         values = values&.slice(:version, :revision, :platform, :architecture, :ip_address, :config, :executor) || {}
-        values[:contacted_at] = Time.current if update_contacted_at
+
+        values.merge!(contacted_at: Time.current, creation_state: :finished) if update_contacted_at
+
         if values.include?(:executor)
-          values[:executor_type] = Ci::Runner::EXECUTOR_NAME_TO_TYPES.fetch(values.delete(:executor), :unknown)
+          values[:executor_type] = EXECUTOR_NAME_TO_TYPES.fetch(values.delete(:executor), :unknown)
         end
 
         new_version = values[:version]

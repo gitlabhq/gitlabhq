@@ -64,7 +64,7 @@ const createWikiFormApp = () => {
   const el = document.getElementById('js-wiki-form');
 
   if (el) {
-    const { pageInfo, formatOptions } = el.dataset;
+    const { pageInfo, formatOptions, templates } = el.dataset;
 
     Vue.use(VueApollo);
 
@@ -78,6 +78,7 @@ const createWikiFormApp = () => {
         formatOptions: JSON.parse(formatOptions),
         pageInfo: convertObjectPropsToCamelCase(JSON.parse(pageInfo)),
         drawioUrl: gon.diagramsnet_url,
+        templates: JSON.parse(templates),
       },
       render(createElement) {
         return createElement(wikiForm);

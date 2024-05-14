@@ -1,6 +1,6 @@
 <script>
 // eslint-disable-next-line no-restricted-imports
-import { mapState } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 import { GlSprintf, GlLink, GlTooltipDirective } from '@gitlab/ui';
 import { s__, __ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
@@ -28,7 +28,7 @@ export default {
   },
   i18n: {
     zoekt_enabled: s__(
-      'GlobalSearch|%{linkStart}Exact code search (powered by Zoekt)%{linkEnd} is enabled',
+      'GlobalSearch|%{linkStart}Exact code search (powered by Zoekt)%{linkEnd} is enabled.',
     ),
     zoekt_disabled: s__(
       'GlobalSearch|%{linkStart}Exact code search (powered by Zoekt)%{linkEnd} is disabled since %{ref_elem} is not the default branch. %{docs_link}',
@@ -45,6 +45,7 @@ export default {
   },
   computed: {
     ...mapState(['searchType', 'defaultBranchName', 'query', 'searchLevel', 'query']),
+    ...mapGetters(['currentScope']),
     zoektHelpUrl() {
       return helpPagePath(ZOEKT_HELP_PAGE);
     },
@@ -62,12 +63,12 @@ export default {
       });
     },
     isZoekt() {
-      return this.searchType === ZOEKT_SEARCH_TYPE && this.query.scope === SCOPE_BLOB;
+      return this.searchType === ZOEKT_SEARCH_TYPE && this.currentScope === SCOPE_BLOB;
     },
     isAdvancedSearch() {
       return (
         this.searchType === ADVANCED_SEARCH_TYPE ||
-        (this.searchType === ZOEKT_SEARCH_TYPE && this.query.scope !== SCOPE_BLOB)
+        (this.searchType === ZOEKT_SEARCH_TYPE && this.currentScope !== SCOPE_BLOB)
       );
     },
     searchTypeTestId() {
@@ -87,7 +88,7 @@ export default {
         case SEARCH_LEVEL_GROUP:
           return true;
         case SEARCH_LEVEL_PROJECT: {
-          if (this.query.scope !== SCOPE_BLOB) {
+          if (this.currentScope !== SCOPE_BLOB) {
             return true;
           }
           return !repoRef || repoRef === this.defaultBranchName;
@@ -118,19 +119,19 @@ export default {
 </script>
 
 <template>
-  <div class="gl-text-gray-600">
-    <div v-if="isBasicSearch" data-testid="basic">&nbsp;</div>
-    <div v-else-if="isEnabled" :data-testid="`${searchTypeTestId}-enabled`">
+  <div class="gl-inline gl-text-gray-600">
+    <div v-if="isBasicSearch" data-testid="basic"></div>
+    <div v-else-if="isEnabled" :data-testid="`${searchTypeTestId}-enabled`" class="gl-inline">
       <gl-sprintf :message="enabledMessage">
         <template #link="{ content }">
-          <gl-link :href="helpUrl" target="_blank" data-testid="docs-link">{{ content }} </gl-link>
+          <gl-link :href="helpUrl" target="_blank" data-testid="docs-link">{{ content }}</gl-link>
         </template>
       </gl-sprintf>
     </div>
-    <div v-else :data-testid="`${searchTypeTestId}-disabled`">
+    <div v-else :data-testid="`${searchTypeTestId}-disabled`" class="gl-inline">
       <gl-sprintf :message="disabledMessage">
         <template #link="{ content }">
-          <gl-link :href="helpUrl" target="_blank" data-testid="docs-link">{{ content }} </gl-link>
+          <gl-link :href="helpUrl" target="_blank" data-testid="docs-link">{{ content }}</gl-link>
         </template>
         <template #ref_elem>
           <code v-gl-tooltip :title="query.repository_ref">{{ query.repository_ref }}</code>

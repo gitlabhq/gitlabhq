@@ -8,26 +8,26 @@ module Types
       description 'Details of the fork project compared to its upstream project.'
 
       field :ahead, GraphQL::Types::Int,
-            null: true,
-            calls_gitaly: true,
-            method: :ahead,
-            description: 'Number of commits ahead of upstream.'
+        null: true,
+        calls_gitaly: true,
+        method: :ahead,
+        description: 'Number of commits ahead of upstream.'
 
       field :behind, GraphQL::Types::Int,
-            null: true,
-            calls_gitaly: true,
-            method: :behind,
-            description: 'Number of commits behind upstream.'
+        null: true,
+        calls_gitaly: true,
+        method: :behind,
+        description: 'Number of commits behind upstream.'
 
       field :is_syncing, GraphQL::Types::Boolean,
-            null: true,
-            method: :syncing?,
-            description: 'Indicates if there is a synchronization in progress.'
+        null: true,
+        method: :syncing?,
+        description: 'Indicates if there is a synchronization in progress.'
 
       field :has_conflicts, GraphQL::Types::Boolean,
-            null: true,
-            method: :has_conflicts?,
-            description: 'Indicates if the fork conflicts with its upstream project.'
+        null: true,
+        method: :has_conflicts?,
+        description: 'Indicates if the fork conflicts with its upstream project.'
 
       def ahead
         counts[:ahead]

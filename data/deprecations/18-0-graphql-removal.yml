@@ -1,0 +1,32 @@
+- title: "Remove `previousStageJobsOrNeeds` from GraphQL"
+  # The milestones for the deprecation announcement, and the removal.
+  removal_milestone: "18.0"
+  announcement_milestone: "17.0"
+  # Change breaking_change to false if needed.
+  breaking_change: true
+  # The stage and GitLab username of the person reporting the change,
+  # and a link to the deprecation issue
+  reporter: dhershkovitch
+  stage: verify
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/424417
+  body: |  # (required) Don't change this line.
+    The `previousStageJobsOrNeeds` field in GraphQL will be removed as it has been replaced by the `previousStageJobs` and `needs` fields.
+
+# ==============================
+# OPTIONAL END-OF-SUPPORT FIELDS
+# ==============================
+#
+# If an End of Support period applies:
+# 1) Share this announcement in the `#spt_managers` Support channel in Slack
+# 2) Mention `@gitlab-com/support` in this merge request.
+#
+  # When support for this feature ends, in XX.YY milestone format.
+  end_of_support_milestone:
+  # Array of tiers the feature is currently available to,
+  # like [Free, Silver, Gold, Core, Premium, Ultimate]
+  tiers:
+  # Links to documentation and thumbnail image
+  documentation_url:
+  image_url:
+  # Use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg
+  video_url:

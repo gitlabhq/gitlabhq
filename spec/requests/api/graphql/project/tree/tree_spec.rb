@@ -86,7 +86,7 @@ RSpec.describe 'getting a tree in a project', feature_category: :source_code_man
   context 'when the ref points to a gpg-signed commit with a user' do
     let_it_be(:name) { GpgHelpers::User1.names.first }
     let_it_be(:email) { GpgHelpers::User1.emails.first }
-    let_it_be(:current_user) { create(:user, name: name, email: email).tap { |user| project.add_owner(user) } }
+    let_it_be(:current_user) { create(:user, name: name, email: email, owner_of: project) }
     let_it_be(:gpg_key) { create(:gpg_key, user: current_user, key: GpgHelpers::User1.public_key) }
 
     let(:ref) { GpgHelpers::SIGNED_AND_AUTHORED_SHA }
@@ -121,7 +121,7 @@ RSpec.describe 'getting a tree in a project', feature_category: :source_code_man
 
   context 'when the ref points to a X.509-signed commit' do
     let_it_be(:email) { X509Helpers::User1.certificate_email }
-    let_it_be(:current_user) { create(:user, email: email).tap { |user| project.add_owner(user) } }
+    let_it_be(:current_user) { create(:user, email: email, owner_of: project) }
 
     let(:ref) { X509Helpers::User1.commit }
     let(:fields) do
@@ -171,7 +171,7 @@ RSpec.describe 'getting a tree in a project', feature_category: :source_code_man
 
     let_it_be(:ref) { 'ssh-signed-commit' }
     let_it_be(:commit) { project.commit(ref) }
-    let_it_be(:current_user) { create(:user, email: commit.committer_email).tap { |user| project.add_owner(user) } }
+    let_it_be(:current_user) { create(:user, email: commit.committer_email, owner_of: project) }
 
     let(:fields) do
       <<~QUERY

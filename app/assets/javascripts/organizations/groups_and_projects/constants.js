@@ -5,6 +5,7 @@ export const DISPLAY_QUERY_GROUPS = 'groups';
 export const DISPLAY_QUERY_PROJECTS = 'projects';
 
 export const FILTERED_SEARCH_TERM_KEY = 'search';
+export const FILTERED_SEARCH_NAMESPACE = 'organization';
 
 export const DISPLAY_LISTBOX_ITEMS = [
   {

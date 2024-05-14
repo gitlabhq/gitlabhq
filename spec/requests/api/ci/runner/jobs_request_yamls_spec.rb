@@ -6,14 +6,10 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
   include StubGitlabCalls
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project, :repository, shared_runners_enabled: false) }
+  let_it_be(:project) { create(:project, :repository, shared_runners_enabled: false, maintainers: user) }
   let_it_be(:runner) { create(:ci_runner, :project, projects: [project]) }
 
   let(:user_agent) { 'gitlab-runner 9.0.0 (9-0-stable; go1.7.4; linux/amd64)' }
-
-  before_all do
-    project.add_maintainer(user)
-  end
 
   Dir[Rails.root.join("spec/requests/api/ci/runner/yamls/*.yml")].each do |yml_file|
     context "for #{File.basename(yml_file)}" do

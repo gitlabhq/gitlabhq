@@ -57,6 +57,10 @@ export default {
       required: false,
       default: false,
     },
+    filters: {
+      type: Object,
+      required: true,
+    },
   },
   computed: {
     tokensCE() {
@@ -141,7 +145,7 @@ export default {
         {
           type: TOKEN_TYPE_MILESTONE,
           title: TOKEN_TITLE_MILESTONE,
-          icon: 'clock',
+          icon: 'milestone',
           symbol: '%',
           token: MilestoneToken,
           unique: true,
@@ -210,6 +214,7 @@ export default {
     :tokens="tokens"
     :board="board"
     :is-swimlanes-on="isSwimlanesOn"
+    :filters="filters"
     @setFilters="$emit('setFilters', $event)"
   />
 </template>

@@ -91,15 +91,6 @@ RSpec.describe ::Namespaces::PackageSettings::UpdateService, feature_category: :
       end
     end
 
-    # To be removed when raise_group_admin_package_permission_to_owner FF is removed
-    shared_examples 'disabling admin_package feature flag' do |action:|
-      before do
-        stub_feature_flags(raise_group_admin_package_permission_to_owner: false)
-      end
-
-      it_behaves_like "#{action} the namespace package setting"
-    end
-
     context 'with existing namespace package setting' do
       let_it_be(:package_settings) { create(:namespace_package_setting, namespace: namespace) }
       let_it_be(:params) do
@@ -137,7 +128,6 @@ RSpec.describe ::Namespaces::PackageSettings::UpdateService, feature_category: :
         end
 
         it_behaves_like params[:shared_examples_name]
-        it_behaves_like 'disabling admin_package feature flag', action: :updating if params[:user_role] == :maintainer
       end
     end
 
@@ -159,7 +149,6 @@ RSpec.describe ::Namespaces::PackageSettings::UpdateService, feature_category: :
         end
 
         it_behaves_like params[:shared_examples_name]
-        it_behaves_like 'disabling admin_package feature flag', action: :creating if params[:user_role] == :maintainer
       end
     end
   end

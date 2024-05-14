@@ -260,6 +260,38 @@ RSpec.describe Gitlab::InstrumentationHelper, :clean_gitlab_redis_repository_cac
         })
       end
     end
+
+    context 'when an excluside lock is made' do
+      before do
+        Gitlab::SafeRequestStore[:exclusive_lock_requested_count] = 1
+      end
+
+      it 'adds excluside lock data' do
+        subject
+
+        expect(payload).to include({
+          exclusive_lock_requested_count: 1,
+          exclusive_lock_wait_duration_s: 0,
+          exclusive_lock_hold_duration_s: 0
+        })
+      end
+    end
+
+    context 'when an excluside lock is not made' do
+      before do
+        Gitlab::SafeRequestStore[:exclusive_lock_requested_count] = 0
+      end
+
+      it 'does not add excluside lock data' do
+        subject
+
+        expect(payload.keys).not_to include(
+          :exclusive_lock_requested_count,
+          :exclusive_lock_wait_duration_s,
+          :exclusive_lock_hold_duration_s
+        )
+      end
+    end
   end
 
   describe '.queue_duration_for_job' do

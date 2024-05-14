@@ -4,7 +4,7 @@ key_path: counts.lfs_objects
 description: Count of lfs objects
 product_section: ops
 product_stage: create
-product_group: create
+product_group: source_code
 value_type: number
 status: active
 time_frame: all

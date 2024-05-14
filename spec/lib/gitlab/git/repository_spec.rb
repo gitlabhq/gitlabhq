@@ -1706,7 +1706,6 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
     let_it_be(:commit_3) { repository.commit('6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9') }
 
     let_it_be(:initial_commit) { repository.commit('1a0b36b3cdad1d2ee32457c102a8c0b7056fa863') }
-    let_it_be(:diff_tree) { Gitlab::Git::DiffTree.from_commit(initial_commit) }
 
     let(:commit_1_files) do
       [
@@ -1739,7 +1738,7 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
       ]
     end
 
-    let(:diff_tree_files) do
+    let(:initial_commit_files) do
       [
         Gitlab::Git::ChangedPath.new(
           status: :ADDED, path: ".gitignore", old_mode: "0", new_mode: "100644",
@@ -1757,10 +1756,10 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
     end
 
     it 'returns a list of paths' do
-      collection = repository.find_changed_paths([commit_1, commit_2, commit_3, diff_tree])
+      collection = repository.find_changed_paths([commit_1, commit_2, commit_3, initial_commit])
 
       expect(collection).to be_a(Enumerable)
-      expect(collection.as_json).to eq((commit_1_files + commit_2_files + commit_3_files + diff_tree_files).as_json)
+      expect(collection.as_json).to eq((commit_1_files + commit_2_files + commit_3_files + initial_commit_files).as_json)
     end
 
     it 'returns only paths with valid SHAs' do
@@ -1853,40 +1852,11 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
     end
   end
 
-  describe "#copy_gitattributes" do
-    let(:repository) { mutable_repository }
-
-    it "raises an error with invalid ref" do
-      expect { repository.copy_gitattributes("invalid") }.to raise_error(Gitlab::Git::Repository::InvalidRef)
-    end
-
-    context 'when forcing encoding issues' do
-      let(:branch_name) { "ʕ•ᴥ•ʔ" }
-
-      before do
-        repository.create_branch(branch_name)
-      end
-
-      after do
-        repository.rm_branch(branch_name, user: build(:admin))
-      end
-
-      it "doesn't raise with a valid unicode ref" do
-        expect { repository.copy_gitattributes(branch_name) }.not_to raise_error
-
-        repository
-      end
-    end
-  end
-
   describe '#gitattribute' do
     let(:repository) { mutable_repository }
 
     context 'with gitattributes' do
       before do
-        # this line can be removed once gitaly stops using info/attributes
-        repository.copy_gitattributes('gitattributes')
-
         # This line is added to make sure this test works when gitaly stops using
         # info/attributes. See https://gitlab.com/gitlab-org/gitaly/-/issues/5348 for details.
         repository.write_ref('HEAD', 'refs/heads/gitattributes')
@@ -2269,52 +2239,6 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
     end
   end
 
-  describe '#set_full_path' do
-    let(:full_path) { 'some/path' }
-
-    before do
-      repository.set_full_path(full_path: full_path)
-    end
-
-    it 'writes full_path to gitaly' do
-      repository.set_full_path(full_path: "not-the/real-path.git")
-
-      expect(repository.full_path).to eq('not-the/real-path.git')
-    end
-
-    context 'it is given an empty path' do
-      it 'does not write it to disk' do
-        repository.set_full_path(full_path: "")
-
-        expect(repository.full_path).to eq(full_path)
-      end
-    end
-
-    context 'repository does not exist' do
-      it 'raises NoRepository and does not call SetFullPath' do
-        repository = Gitlab::Git::Repository.new('default', 'does/not/exist.git', '', 'group/project')
-
-        expect(repository.gitaly_repository_client).not_to receive(:set_full_path)
-
-        expect do
-          repository.set_full_path(full_path: 'foo/bar.git')
-        end.to raise_error(Gitlab::Git::Repository::NoRepository)
-      end
-    end
-  end
-
-  describe '#full_path' do
-    let(:full_path) { 'some/path' }
-
-    before do
-      repository.set_full_path(full_path: full_path)
-    end
-
-    it 'returns the full path' do
-      expect(repository.full_path).to eq(full_path)
-    end
-  end
-
   describe '#merge_to_ref' do
     let(:repository) { mutable_repository }
     let(:branch_head) { '6d394385cf567f80a8fd85055db1ab4c5295806f' }
@@ -2617,21 +2541,24 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
   describe '#disconnect_alternates' do
     let(:project) { mutable_project }
     let(:repository) { mutable_repository }
-    let(:pool_repository) { create(:pool_repository) }
+    let(:pool_repository) { create(:pool_repository, :ready, source_project: project) }
     let(:object_pool) { pool_repository.object_pool }
-
-    before do
-      object_pool.create # rubocop:disable Rails/SaveBang
-    end
 
     it 'does not raise an error when disconnecting a non-linked repository' do
       expect { repository.disconnect_alternates }.not_to raise_error
     end
 
     it 'can still access objects in the object pool' do
-      object_pool.link(repository)
-      new_commit_id = object_pool.repository.commit_files(
-        project.owner,
+      # Create a commit into a separate repository and fetch it into the object pool.
+      # Writing directly to an object pool fails as we don't support them in the
+      # authorization checks. Gitaly's pre-receive hook fails as a gl_repository is
+      # not set object pools.
+      #
+      # Write the commit into a fork of the project. Gitaly places the fork into the same partition
+      # with the main project and the object pool which enables fetching it later.
+      forked_project = create(:project, :fork_repository, forked_from_project: project)
+      new_commit_id = forked_project.repository.commit_files(
+        forked_project.owner,
         branch_name: object_pool.repository.root_ref,
         message: 'Add a file',
         actions: [{
@@ -2639,7 +2566,12 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
           file_path: 'a.file',
           content: 'This is a file.'
         }]
-      ).newrev
+      )
+
+      # Fetch the new object into the object pool
+      Gitlab::GitalyClient::ObjectPoolService.new(object_pool).fetch(forked_project.repository)
+
+      object_pool.link(repository)
 
       expect(repository.commit(new_commit_id).id).to eq(new_commit_id)
 

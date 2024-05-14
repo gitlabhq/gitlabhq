@@ -6,7 +6,7 @@ RSpec.describe 'Project.cluster_agents', feature_category: :deployment_managemen
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project, :public) }
-  let_it_be(:current_user) { create(:user, maintainer_projects: [project]) }
+  let_it_be(:current_user) { create(:user, maintainer_of: project) }
   let_it_be(:agents) { create_list(:cluster_agent, 3, project: project) }
 
   let(:first) { var('Int') }

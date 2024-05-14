@@ -9,12 +9,16 @@ import {
 } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapGetters, mapState } from 'vuex';
+import { __ } from '~/locale';
 import SafeHtml from '~/vue_shared/directives/safe_html';
+import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
+import { sanitize } from '~/lib/dompurify';
 import { TYPENAME_MERGE_REQUEST } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import StatusBadge from '~/issuable/components/status_badge.vue';
+import ImportedBadge from '~/vue_shared/components/imported_badge.vue';
 import { TYPE_MERGE_REQUEST } from '~/issues/constants';
 import DiscussionCounter from '~/notes/components/discussion_counter.vue';
 import TodoWidget from '~/sidebar/components/todo_toggle/sidebar_todo_widget.vue';
@@ -55,6 +59,7 @@ export default {
     GlIcon,
     DiscussionCounter,
     StatusBadge,
+    ImportedBadge,
     TodoWidget,
     SubscriptionsWidget,
     ClipboardButton,
@@ -72,6 +77,11 @@ export default {
     blocksMerge: { default: false },
   },
   props: {
+    isImported: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     tabs: {
       type: Array,
       required: true,
@@ -115,6 +125,12 @@ export default {
 
       return this.getNoteableData.source_branch;
     },
+    copySourceBranchTooltip() {
+      const description = __('Copy branch name');
+      return shouldDisableShortcuts()
+        ? description
+        : sanitize(`${description} <kbd class="flat gl-ml-1" aria-hidden=true>b</kbd>`);
+    },
   },
   watch: {
     discussionTabCounter(val) {
@@ -139,38 +155,34 @@ export default {
 
 <template>
   <gl-intersection-observer
-    class="gl-relative gl-top-n5"
+    class="gl-relative -gl-top-5"
     @appear="setStickyHeaderVisible(false)"
     @disappear="setStickyHeaderVisible(true)"
   >
     <div
       class="issue-sticky-header merge-request-sticky-header gl-fixed gl-bg-white gl-display-none gl-md-display-flex gl-flex-direction-column gl-justify-content-end gl-border-b"
-      :class="{ 'gl-visibility-hidden': !isStickyHeaderVisible }"
+      :class="{ 'gl-invisible': !isStickyHeaderVisible }"
     >
       <div
         class="issue-sticky-header-text gl-display-flex gl-flex-direction-column gl-align-items-center gl-mx-auto gl-w-full"
         :class="{ 'container-limited': !isFluidLayout }"
       >
-        <div class="gl-w-full gl-display-flex gl-align-items-baseline">
-          <status-badge
-            class="gl-align-self-center gl-mr-3"
-            :issuable-type="$options.TYPE_MERGE_REQUEST"
-            :state="badgeState.state"
-          />
+        <div class="gl-w-full gl-display-flex gl-align-items-center gl-gap-2">
+          <status-badge :issuable-type="$options.TYPE_MERGE_REQUEST" :state="badgeState.state" />
+          <imported-badge v-if="isImported" :importable-type="$options.TYPE_MERGE_REQUEST" />
           <a
             v-safe-html:[$options.safeHtmlConfig]="titleHtml"
             href="#top"
-            class="gl-display-none gl-lg-display-block gl-font-weight-bold gl-overflow-hidden gl-white-space-nowrap gl-text-overflow-ellipsis gl-my-0 gl-mr-4 gl-text-black-normal"
+            class="gl-display-none gl-lg-display-block gl-font-weight-bold gl-overflow-hidden gl-whitespace-nowrap gl-text-overflow-ellipsis gl-my-0 gl-ml-1 gl-mr-2 gl-text-black-normal"
           ></a>
-          <div class="gl-display-flex gl-align-items-baseline">
+          <div class="gl-display-flex gl-align-items-center">
             <gl-sprintf :message="__('%{source} %{copyButton} into %{target}')">
               <template #copyButton>
                 <clipboard-button
+                  v-gl-tooltip.bottom.html="copySourceBranchTooltip"
                   :text="getNoteableData.source_branch"
-                  :title="__('Copy branch name')"
                   size="small"
                   category="tertiary"
-                  tooltip-placement="bottom"
                   class="gl-m-0! gl-mx-1! js-source-branch-copy gl-align-self-center"
                 />
               </template>
@@ -184,7 +196,7 @@ export default {
                   <span
                     v-if="isForked"
                     v-gl-tooltip
-                    class="gl-vertical-align-middle gl-mr-n2"
+                    class="gl-align-middle gl-mr-n2"
                     :title="__('The source project is a fork')"
                   >
                     <gl-icon name="fork" :size="12" class="gl-ml-1" />

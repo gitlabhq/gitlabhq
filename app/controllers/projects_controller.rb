@@ -3,7 +3,6 @@
 class ProjectsController < Projects::ApplicationController
   include API::Helpers::RelatedResourcesHelpers
   include IssuableCollections
-  include ExtractsPath
   include PreviewMarkdown
   include SendFileUpload
   include RecordUserLastActivity
@@ -41,16 +40,19 @@ class ProjectsController < Projects::ApplicationController
     push_frontend_feature_flag(:remove_monitor_metrics, @project)
     push_frontend_feature_flag(:explain_code_chat, current_user)
     push_frontend_feature_flag(:issue_email_participants, @project)
-    push_frontend_feature_flag(:encoding_logs_tree)
-    push_frontend_feature_flag(:add_branch_rule, @project)
+    push_frontend_feature_flag(:service_desk_tickets_confidentiality, @project)
+    push_frontend_feature_flag(:edit_branch_rules, @project)
     # TODO: We need to remove the FF eventually when we rollout page_specific_styles
     push_frontend_feature_flag(:page_specific_styles, current_user)
     push_licensed_feature(:file_locks) if @project.present? && @project.licensed_feature_available?(:file_locks)
-    push_licensed_feature(:security_orchestration_policies) if @project.present? && @project.licensed_feature_available?(:security_orchestration_policies)
+
+    if @project.present? && @project.licensed_feature_available?(:security_orchestration_policies)
+      push_licensed_feature(:security_orchestration_policies)
+    end
+
     push_force_frontend_feature_flag(:work_items, @project&.work_items_feature_flag_enabled?)
-    push_force_frontend_feature_flag(:work_items_mvc, @project&.work_items_mvc_feature_flag_enabled?)
+    push_force_frontend_feature_flag(:work_items_beta, @project&.work_items_beta_feature_flag_enabled?)
     push_force_frontend_feature_flag(:work_items_mvc_2, @project&.work_items_mvc_2_feature_flag_enabled?)
-    push_force_frontend_feature_flag(:linked_work_items, @project&.linked_work_items_feature_flag_enabled?)
   end
 
   layout :determine_layout
@@ -88,14 +90,9 @@ class ProjectsController < Projects::ApplicationController
 
     manageable_groups = ::Groups::AcceptingProjectCreationsFinder.new(current_user).execute.limit(2)
 
-    if manageable_groups.empty? && !can?(current_user, :create_projects, current_user.namespace)
-      return access_denied!
-    end
+    return access_denied! if manageable_groups.empty? && !can?(current_user, :create_projects, current_user.namespace)
 
-    @current_user_group =
-      if manageable_groups.one?
-        manageable_groups.first
-      end
+    @current_user_group = manageable_groups.first if manageable_groups.one?
 
     @project = Project.new(namespace_id: @namespace&.id)
   end
@@ -125,14 +122,7 @@ class ProjectsController < Projects::ApplicationController
     # Refresh the repo in case anything changed
     @repository = @project.repository
 
-    if result[:status] == :success
-      flash[:notice] = _("Project '%{project_name}' was successfully updated.") % { project_name: @project.name }
-      redirect_to(edit_project_path(@project, anchor: 'js-general-project-settings'))
-    else
-      flash[:alert] = result[:message]
-      @project.reset
-      render 'edit'
-    end
+    handle_update_result(result)
   end
 
   # rubocop: disable CodeReuse/ActiveRecord
@@ -172,7 +162,8 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def show
-    @id, @ref, @path = extract_ref_path
+    @id = @ref = repository_root
+    @path = ''
 
     if @project.import_in_progress?
       redirect_to project_import_path(@project, custom_import_params)
@@ -185,18 +176,8 @@ class ProjectsController < Projects::ApplicationController
 
     @ref_type = 'heads'
 
-    if !Feature.enabled?(:ambiguous_ref_modal, @project) && ambiguous_ref?(@project, @ref)
-      branch = @project.repository.find_branch(@ref)
-
-      # The files view would render a ref other than the default branch
-      # This redirect can be removed once the view is fixed
-      redirect_to(project_tree_path(@project, branch.target), alert: _("The default branch of this project clashes with another ref"))
-      return
-    end
-
     respond_to do |format|
       format.html do
-        @notification_setting = current_user.notification_settings_for(@project) if current_user
         @project = @project.present(current_user: current_user)
         render_landing_page
       end
@@ -479,6 +460,7 @@ class ProjectsController < Projects::ApplicationController
   def project_setting_attributes
     %i[
       show_default_award_emojis
+      show_diff_preview_in_email
       squash_option
       mr_default_target_self
       warn_about_potentially_unwanted_characters
@@ -526,8 +508,9 @@ class ProjectsController < Projects::ApplicationController
       :service_desk_enabled,
       :merge_commit_template_or_default,
       :squash_commit_template_or_default,
-      project_setting_attributes: project_setting_attributes
-    ] + [project_feature_attributes: project_feature_attributes]
+      { project_setting_attributes: project_setting_attributes,
+        project_feature_attributes: project_feature_attributes }
+    ]
   end
 
   def project_params_create_attributes
@@ -557,15 +540,7 @@ class ProjectsController < Projects::ApplicationController
     false
   end
 
-  # Override extract_ref from ExtractsPath, which returns the branch and file path
-  # for the blob/tree, which in this case is just the root of the default branch.
-  # This way we avoid to access the repository.ref_names.
-  def extract_ref(_id)
-    [get_id, '']
-  end
-
-  # Override get_id from ExtractsPath in this case is just the root of the default branch.
-  def get_id
+  def repository_root
     project.repository.root_ref
   rescue Gitlab::Git::CommandError
     # Empty string is intentional and prevent the @ref reload

@@ -2,13 +2,14 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: "Documentation for the REST API for Git commits in GitLab."
 ---
 
 # Commits API
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 This API operates on [repository commits](https://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository). Read more about [GitLab-specific information](../user/project/repository/index.md#commit-changes-to-a-repository) for commits.
 
@@ -361,8 +362,8 @@ Parameters:
 | `id`      | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
 | `sha` | string | yes | The commit hash  |
 | `branch` | string | yes | The name of the branch  |
-| `dry_run` | boolean | no | Does not commit any changes. Default is false. [Introduced in GitLab 13.3](https://gitlab.com/gitlab-org/gitlab/-/issues/231032) |
-| `message` | string | no | A custom commit message to use for the new commit. [Introduced in GitLab 14.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62481) |
+| `dry_run` | boolean | no | Does not commit any changes. Default is false. |
+| `message` | string | no | A custom commit message to use for the new commit. |
 
 ```shell
 curl --request POST \
@@ -436,7 +437,7 @@ Parameters:
 | `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
 | `sha`     | string         | yes      | Commit SHA to revert                                                            |
 | `branch`  | string         | yes      | Target branch name                                                              |
-| `dry_run` | boolean        | no       | Does not commit any changes. Default is false. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/231032) in GitLab 13.3 |
+| `dry_run` | boolean        | no       | Does not commit any changes. Default is false. |
 
 ```shell
 curl --request POST \
@@ -893,9 +894,9 @@ Example response:
 ]
 ```
 
-## Get GPG signature of a commit
+## Get signature of a commit
 
-Get the [GPG signature from a commit](../user/project/repository/signed_commits/gpg.md),
+Get the [signature from a commit](../user/project/repository/signed_commits),
 if it is signed. For unsigned commits, it results in a 404 response.
 
 ```plaintext
@@ -925,6 +926,24 @@ Example response if commit is GPG signed:
   "gpg_key_user_name": "John Doe",
   "gpg_key_user_email": "johndoe@example.com",
   "gpg_key_subkey_id": null,
+  "commit_source": "gitaly"
+}
+```
+
+Example response if commit is signed with SSH:
+
+```json
+{
+  "signature_type": "SSH",
+  "verification_status": "verified",
+  "key": {
+    "id": 11,
+    "title": "Key",
+    "created_at": "2023-05-08T09:12:38.503Z",
+    "expires_at": "2024-05-07T00:00:00.000Z",
+    "key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILZzYDq6DhLp3aX84DGIV3F6Vf+Ae4yCTTz7RnqMJOlR MyKey)",
+    "usage_type": "auth_and_signing"
+  },
   "commit_source": "gitaly"
 }
 ```

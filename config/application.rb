@@ -230,6 +230,7 @@ module Gitlab
       sharedSecret
       redirect
       question
+      SAMLResponse
     ]
 
     # This config option can be removed after Rails 7.1 by https://gitlab.com/gitlab-org/gitlab/-/issues/416270
@@ -255,19 +256,6 @@ module Gitlab
     config.active_record.has_many_inversing = false
     config.active_record.belongs_to_required_by_default = false
 
-    # Switch between cssbundling-rails and sassc-rails conditionally
-    # To activate cssbundling-rails you can set `USE_NEW_CSS_PIPELINE=1`
-    # For more context, see: https://gitlab.com/gitlab-org/gitlab/-/issues/438278
-    # Need to be loaded before initializers
-    config.before_configuration do
-      if Gitlab::Utils.to_boolean(ENV["USE_NEW_CSS_PIPELINE"])
-        require 'cssbundling-rails'
-      else
-        require 'fileutils'
-        require 'sassc-rails'
-      end
-    end
-
     # Enable the asset pipeline
     config.assets.enabled = true
 
@@ -281,6 +269,7 @@ module Gitlab
     config.assets.precompile << "application_utilities.css"
     config.assets.precompile << "application_utilities_dark.css"
     config.assets.precompile << "application_dark.css"
+    config.assets.precompile << "tailwind.css"
 
     config.assets.precompile << "print.css"
     config.assets.precompile << "mailer.css"
@@ -303,6 +292,8 @@ module Gitlab
     config.assets.precompile << "page_bundles/ci_cd_settings.css"
     config.assets.precompile << "page_bundles/cluster_agents.css"
     config.assets.precompile << "page_bundles/clusters.css"
+    config.assets.precompile << "page_bundles/commits.css"
+    config.assets.precompile << "page_bundles/commit_description.css"
     config.assets.precompile << "page_bundles/cycle_analytics.css"
     config.assets.precompile << "page_bundles/dashboard.css"
     config.assets.precompile << "page_bundles/dashboard_projects.css"
@@ -326,6 +317,7 @@ module Gitlab
     config.assets.precompile << "page_bundles/issues_show.css"
     config.assets.precompile << "page_bundles/jira_connect.css"
     config.assets.precompile << "page_bundles/learn_gitlab.css"
+    config.assets.precompile << "page_bundles/log_viewer.css"
     config.assets.precompile << "page_bundles/login.css"
     config.assets.precompile << "page_bundles/members.css"
     config.assets.precompile << "page_bundles/merge_conflicts.css"
@@ -404,6 +396,7 @@ module Gitlab
     config.assets.precompile << "icons.svg"
     config.assets.precompile << "icons.json"
     config.assets.precompile << "file_icons/file_icons.svg"
+    config.assets.precompile << "file_icons/file_icons.json"
     config.assets.precompile << "illustrations/*.svg"
     config.assets.precompile << "illustrations/*.png"
 
@@ -451,7 +444,7 @@ module Gitlab
 
     # Allow access to GitLab API from other domains
     config.middleware.insert_before Warden::Manager, Rack::Cors do
-      headers_to_expose = %w[Link X-Total X-Total-Pages X-Per-Page X-Page X-Next-Page X-Prev-Page X-Gitlab-Blob-Id X-Gitlab-Commit-Id X-Gitlab-Content-Sha256 X-Gitlab-Encoding X-Gitlab-File-Name X-Gitlab-File-Path X-Gitlab-Last-Commit-Id X-Gitlab-Ref X-Gitlab-Size]
+      headers_to_expose = %w[Link X-Total X-Total-Pages X-Per-Page X-Page X-Next-Page X-Prev-Page X-Gitlab-Blob-Id X-Gitlab-Commit-Id X-Gitlab-Content-Sha256 X-Gitlab-Encoding X-Gitlab-File-Name X-Gitlab-File-Path X-Gitlab-Last-Commit-Id X-Gitlab-Ref X-Gitlab-Size X-Request-Id]
 
       allow do
         origins Gitlab.config.gitlab.url
@@ -501,6 +494,14 @@ module Gitlab
         end
       end
 
+      allow do
+        origins '*'
+        resource '/oauth/token/info',
+          headers: %w[Authorization],
+          credentials: false,
+          methods: %i[get head options]
+      end
+
       # These are routes from doorkeeper-openid_connect:
       # https://github.com/doorkeeper-gem/doorkeeper-openid_connect#routes
       allow do
@@ -515,8 +516,8 @@ module Gitlab
         allow do
           origins '*'
           resource openid_path,
-          credentials: false,
-          methods: %i[get head]
+            credentials: false,
+            methods: %i[get head]
         end
       end
 
@@ -525,8 +526,8 @@ module Gitlab
       allow do
         origins 'https://*.web-ide.gitlab-static.net'
         resource '/assets/webpack/*',
-                 credentials: false,
-                 methods: %i[get head]
+          credentials: false,
+          methods: %i[get head]
       end
     end
 
@@ -584,7 +585,7 @@ module Gitlab
 
       LOOSE_APP_ASSETS = lambda do |logical_path, filename|
         filename.start_with?(*asset_roots) &&
-          !['.js', '.css', '.md', '.vue', '.graphql', ''].include?(File.extname(logical_path))
+          ['.js', '.css', '.md', '.vue', '.graphql', ''].exclude?(File.extname(logical_path))
       end
 
       app.config.assets.precompile << LOOSE_APP_ASSETS
@@ -599,7 +600,7 @@ module Gitlab
 
     # We need this for initializers that need to be run before Zeitwerk is loaded
     initializer :before_zeitwerk, before: :setup_main_autoloader, after: :prepend_helpers_path do
-      Dir[Rails.root.join('config/initializers_before_autoloader/*.rb')].sort.each do |initializer|
+      Dir[Rails.root.join('config/initializers_before_autoloader/*.rb')].each do |initializer|
         load_config_initializer(initializer)
       end
     end
@@ -621,11 +622,8 @@ module Gitlab
     end
 
     # Add `app/assets/builds` as the highest precedence to find assets
-    # This is required if cssbundling-rails is used, but should not affect sassc-rails. it would be empty
-    if defined?(Cssbundling)
-      initializer :add_cssbundling_output_dir, after: :prefer_specialized_assets do |app|
-        app.config.assets.paths.unshift("#{config.root}/app/assets/builds")
-      end
+    initializer :add_cssbundling_output_dir, after: :prefer_specialized_assets do |app|
+      app.config.assets.paths.unshift("#{config.root}/app/assets/builds")
     end
 
     # We run the contents of active_record.clear_active_connections again

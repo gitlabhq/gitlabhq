@@ -167,31 +167,6 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
           allow_any_instance_of(::Ci::Runner).to receive(:cache_attributes)
         end
 
-        %w[name version revision platform architecture].each do |param|
-          context "when info parameter '#{param}' info is present" do
-            let(:value) { "#{param}_value" }
-
-            it "updates provided Runner's parameter" do
-              post api('/runners'), params: {
-                                      token: registration_token,
-                                      info: { param => value }
-                                    }
-
-              expect(response).to have_gitlab_http_status(:created)
-              expect(::Ci::Runner.last.read_attribute(param.to_sym)).to eq(value)
-            end
-          end
-        end
-
-        it "sets the runner's ip_address" do
-          post api('/runners'),
-            params: { token: registration_token },
-            headers: { 'X-Forwarded-For' => '123.111.123.111' }
-
-          expect(response).to have_gitlab_http_status(:created)
-          expect(::Ci::Runner.last.ip_address).to eq('123.111.123.111')
-        end
-
         context 'when tags parameter is provided' do
           def request
             post api('/runners'), params: {

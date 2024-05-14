@@ -21,6 +21,10 @@ RSpec.describe Gitlab::Utils, feature_category: :shared do
     it 'returns false if path is not allowed' do
       expect(allowlisted?('/test/test', allowed_paths)).to be(false)
     end
+
+    it 'returns false if path is in different case' do
+      expect(allowlisted?('/Foo/bar', allowed_paths)).to be(false)
+    end
   end
 
   describe '.decode_path' do

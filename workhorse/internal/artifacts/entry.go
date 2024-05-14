@@ -1,3 +1,4 @@
+// Package artifacts provides functionality for managing artifacts.
 package artifacts
 
 import (
@@ -25,6 +26,7 @@ import (
 type entry struct{ senddata.Prefix }
 type entryParams struct{ Archive, Entry string }
 
+// SendEntry is a predefined entry used for sending artifacts.
 var SendEntry = &entry{"artifacts-entry:"}
 
 // Artifacts downloader doesn't support ranges when downloading a single file
@@ -81,10 +83,14 @@ func unpackFileFromZip(ctx context.Context, archivePath, encodedFilename string,
 		return fmt.Errorf("create gitlab-zip-cat stdout pipe: %v", err)
 	}
 
-	if err := catFile.Start(); err != nil {
+	if err = catFile.Start(); err != nil {
 		return fmt.Errorf("start %v: %v", catFile.Args, err)
 	}
-	defer command.KillProcessGroup(catFile)
+	defer func() {
+		if err = command.KillProcessGroup(catFile); err != nil {
+			fmt.Printf("failed to kill process group: %v\n", err)
+		}
+	}()
 
 	basename := filepath.Base(fileName)
 	reader := bufio.NewReader(stdout)
@@ -116,10 +122,8 @@ func waitCatFile(cmd *exec.Cmd) error {
 	}
 
 	st, ok := command.ExitStatus(err)
-
 	if ok && (st == zipartifacts.CodeArchiveNotFound || st == zipartifacts.CodeEntryNotFound) {
 		return os.ErrNotExist
 	}
 	return fmt.Errorf("wait for %v to finish: %v", cmd.Args, err)
-
 }

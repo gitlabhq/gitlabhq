@@ -547,19 +547,6 @@ See https://gitlab.com/gitlab-org/gitlab/issues/36857 for more details.
 **/
 .gl-line-height-14 { line-height: $gl-line-height-14; }
 
-// TODO: To be removed once `split` option for new dropdowns is implemented.
-//  See issue at https://gitlab.com/gitlab-org/gitlab-ui/-/issues/2263
-.gl-new-dropdown.split:nth-child(n+2) {
-  .gl-new-dropdown-toggle {
-    margin-left: 1px;
-
-    &.btn-tertiary,
-    &.disabled {
-      margin-left: -1px;
-    }
-  }
-}
-
 // --- moved from labels.scss when moving to page_bundles ---
 // Fix scoped label padding in cases where old markdown uses the old label structure */
 .gl-label-text + .gl-label-text {
@@ -574,10 +561,6 @@ See https://gitlab.com/gitlab-org/gitlab/issues/36857 for more details.
 
 .gl-label-scoped {
   box-shadow: 0 0 0 2px currentColor inset;
-
-  &.gl-label-sm {
-    box-shadow: 0 0 0 1px inset;
-  }
 }
 
 .ref-container,

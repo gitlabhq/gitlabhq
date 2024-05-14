@@ -94,7 +94,7 @@ RSpec.describe Spammable, feature_category: :instance_resiliency do
 
           it 'has an error related to spam on the model' do
             expect(subject.errors.messages[:base])
-              .to match_array /Your #{subject.spammable_entity_type} has been recognized as spam./
+              .to match_array(/Your #{subject.spammable_entity_type} has been recognized as spam./)
           end
         end
       end
@@ -103,7 +103,7 @@ RSpec.describe Spammable, feature_category: :instance_resiliency do
         subject { invalidate_if_spam(needs_recaptcha: true) }
 
         it 'has an error related to spam on the model' do
-          expect(subject.errors.messages[:base]).to match_array /content or solve the/
+          expect(subject.errors.messages[:base]).to match_array(/content or solve the/)
         end
       end
 
@@ -115,7 +115,7 @@ RSpec.describe Spammable, feature_category: :instance_resiliency do
         end
 
         it 'has an error that discards the spammable' do
-          expect(subject.errors.messages[:base]).to match_array /has been recognized as spam/
+          expect(subject.errors.messages[:base]).to match_array(/has been recognized as spam/)
         end
       end
 
@@ -123,7 +123,7 @@ RSpec.describe Spammable, feature_category: :instance_resiliency do
         subject { invalidate_if_spam(is_spam: true, needs_recaptcha: true) }
 
         it 'has an error related to spam on the model' do
-          expect(subject.errors.messages[:base]).to match_array /content or solve the/
+          expect(subject.errors.messages[:base]).to match_array(/content or solve the/)
         end
       end
 
@@ -143,7 +143,7 @@ RSpec.describe Spammable, feature_category: :instance_resiliency do
         subject { invalidate_if_spam(needs_recaptcha: true) }
 
         it 'has no errors' do
-          expect(subject.errors.messages[:base]).to match_array /has been recognized as spam/
+          expect(subject.errors.messages[:base]).to match_array(/has been recognized as spam/)
         end
       end
 

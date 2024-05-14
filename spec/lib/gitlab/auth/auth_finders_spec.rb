@@ -10,12 +10,12 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
   let_it_be(:user, freeze: true) { create(:user).tap(&:feed_token).tap(&:static_object_token) }
   let_it_be(:personal_access_token, freeze: true) { create(:personal_access_token, user: user) }
 
-  let_it_be(:project, freeze: true) { create(:project, :private) }
+  let_it_be(:project, freeze: true) { create(:project, :private, developers: user) }
   let_it_be(:pipeline, freeze: true) { create(:ci_pipeline, project: project) }
   let_it_be(:job, freeze: true) { create(:ci_build, :running, pipeline: pipeline, user: user) }
   let_it_be(:failed_job, freeze: true) { create(:ci_build, :failed, pipeline: pipeline, user: user) }
 
-  let_it_be(:project2, freeze: true) { create(:project, :private) }
+  let_it_be(:project2, freeze: true) { create(:project, :private, developers: user) }
   let_it_be(:pipeline2, freeze: true) { create(:ci_pipeline, project: project2) }
   let_it_be(:job2, freeze: true) { create(:ci_build, :running, pipeline: pipeline2, user: user) }
 
@@ -27,11 +27,6 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
 
   let(:request) { ActionDispatch::Request.new(env) }
   let(:params) { {} }
-
-  before_all do
-    project.add_developer(user)
-    project2.add_developer(user)
-  end
 
   def set_param(key, value)
     request.update_param(key, value)
@@ -77,6 +72,15 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
         let(:token) { failed_job.token }
 
         it 'returns an Unauthorized exception' do
+          expect { subject }.to raise_error(Gitlab::Auth::UnauthorizedError)
+          expect(@current_authenticated_job).to be_nil
+        end
+      end
+
+      context 'for an array of tokens' do
+        let(:token) { [job.token, 'invalid token'] }
+
+        it "returns an Unauthorized exception" do
           expect { subject }.to raise_error(Gitlab::Auth::UnauthorizedError)
           expect(@current_authenticated_job).to be_nil
         end
@@ -241,6 +245,12 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
 
           expect { find_user_from_feed_token(:rss) }.to raise_error(Gitlab::Auth::UnauthorizedError)
         end
+
+        it 'returns exception if an array is passed' do
+          set_param(:feed_token, [feed_token, 'fake'])
+
+          expect { find_user_from_feed_token(:rss) }.to raise_error(Gitlab::Auth::UnauthorizedError)
+        end
       end
 
       context 'when old format rss_token param is provided' do
@@ -301,8 +311,16 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
         end
 
         context 'when token is incorrect' do
-          it 'returns the user' do
+          it 'returns an error' do
             request.headers['X-Gitlab-Static-Object-Token'] = 'foobar'
+
+            expect { find_user_from_static_object_token(format) }.to raise_error(Gitlab::Auth::UnauthorizedError)
+          end
+        end
+
+        context 'when token is an array' do
+          it 'returns an error' do
+            request.headers['X-Gitlab-Static-Object-Token'] = [user.static_object_token, 'foobar']
 
             expect { find_user_from_static_object_token(format) }.to raise_error(Gitlab::Auth::UnauthorizedError)
           end
@@ -319,8 +337,16 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
         end
 
         context 'when token is incorrect' do
-          it 'returns the user' do
+          it 'raises an error' do
             set_param(:token, 'foobar')
+
+            expect { find_user_from_static_object_token(format) }.to raise_error(Gitlab::Auth::UnauthorizedError)
+          end
+        end
+
+        context 'when token is an array' do
+          it 'raises an error' do
+            set_param(:token, [user.static_object_token, 'foobar'])
 
             expect { find_user_from_static_object_token(format) }.to raise_error(Gitlab::Auth::UnauthorizedError)
           end
@@ -760,8 +786,8 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
     end
   end
 
-  describe '#find_user_from_basic_auth_job' do
-    subject { find_user_from_basic_auth_job }
+  describe '#find_user_from_job_token_basic_auth' do
+    subject { find_user_from_job_token_basic_auth }
 
     context 'when the request does not have AUTHORIZATION header' do
       it { is_expected.to be_nil }
@@ -1008,6 +1034,60 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
         end
 
         it_behaves_like 'find user from job token'
+      end
+    end
+
+    context 'for route_authentication_setting[job_token_allowed]' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:route_setting, :expect_user_via_request, :expect_user_via_basic_auth) do
+        true                    | true  | false
+        :request                | true  | false
+        [:request]              | true  | false
+        :basic_auth             | false | true
+        [:basic_auth]           | false | true
+        [:request, :basic_auth] | true  | true
+
+        # unexpected values
+        :foo                    | false | false
+        [:foo]                  | false | false
+        [:foo, :bar]            | false | false
+      end
+
+      with_them do
+        let(:route_authentication_setting) { { job_token_allowed: route_setting } }
+
+        context 'when the token is in the headers' do
+          before do
+            set_header(described_class::JOB_TOKEN_HEADER, token)
+          end
+
+          it { is_expected.to eq(expect_user_via_request ? user : nil) }
+        end
+
+        context 'when the token is in the job_token param' do
+          before do
+            set_param(described_class::JOB_TOKEN_PARAM, token)
+          end
+
+          it { is_expected.to eq(expect_user_via_request ? user : nil) }
+        end
+
+        context 'when the token is in the token param' do
+          before do
+            set_param(described_class::RUNNER_JOB_TOKEN_PARAM, token)
+          end
+
+          it { is_expected.to eq(expect_user_via_request ? user : nil) }
+        end
+
+        context 'when the token is in basic auth header' do
+          before do
+            set_basic_auth_header(::Gitlab::Auth::CI_JOB_USER, token)
+          end
+
+          it { is_expected.to eq(expect_user_via_basic_auth ? user : nil) }
+        end
       end
     end
 

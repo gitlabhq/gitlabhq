@@ -73,6 +73,9 @@ if (IS_EE) {
   getIssuesQueryCompleteResponse.data.project.issues.nodes[0].blockingCount = 1;
   getIssuesQueryCompleteResponse.data.project.issues.nodes[0].healthStatus = null;
   getIssuesQueryCompleteResponse.data.project.issues.nodes[0].weight = 5;
+  getIssuesQueryCompleteResponse.data.project.issues.nodes[0].epic = {
+    id: 'gid://gitlab/Epic/1',
+  };
 }
 
 const mockIssueResult = {

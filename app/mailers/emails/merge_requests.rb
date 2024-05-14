@@ -169,7 +169,7 @@ module Emails
     def setup_merge_request_mail(merge_request_id, recipient_id, present: false)
       @merge_request = MergeRequest.find(merge_request_id)
       @project = @merge_request.project
-      @target_url = project_merge_request_url(@project, @merge_request)
+      @target_url = Gitlab::Routing.url_helpers.project_merge_request_url(@project, @merge_request)
       @recipient = User.find(recipient_id)
 
       if present

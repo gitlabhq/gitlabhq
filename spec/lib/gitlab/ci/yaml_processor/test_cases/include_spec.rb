@@ -43,37 +43,6 @@ module Gitlab
 
           expect(logger.observations_hash['config_mapper_process_duration_s']['count']).to eq(1)
         end
-
-        # Remove with the FF ci_parallel_remote_includes
-        it 'does not store log with config_file_fetch_remote_content' do
-          result
-
-          expect(logger.observations_hash).not_to have_key('config_file_fetch_remote_content_duration_s')
-        end
-
-        context 'when the FF ci_parallel_remote_includes is disabled' do
-          before do
-            stub_feature_flags(ci_parallel_remote_includes: false)
-          end
-
-          it 'stores log with config_file_fetch_remote_content' do
-            result
-
-            expect(logger.observations_hash['config_file_fetch_remote_content_duration_s']['count']).to eq(2)
-          end
-
-          context 'when the FF is specifically enabled for the project' do
-            before do
-              stub_feature_flags(ci_parallel_remote_includes: [project])
-            end
-
-            it 'does not store log with config_file_fetch_remote_content' do
-              result
-
-              expect(logger.observations_hash).not_to have_key('config_file_fetch_remote_content_duration_s')
-            end
-          end
-        end
       end
     end
   end

@@ -6,10 +6,6 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 
 # Project access tokens
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/210181) in GitLab 13.0.
-> - [Became available on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/235765) in GitLab 13.5 for paid groups only.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/235765) in GitLab 13.5.
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/342327) in GitLab 14.5. Default prefix added.
 > - [Became available in trial subscriptions](https://gitlab.com/gitlab-org/gitlab/-/issues/386041) in GitLab 16.1. Default prefix added.
 
 Project access tokens are similar to passwords, except you can [limit access to resources](#scopes-for-a-project-access-token),
@@ -101,8 +97,6 @@ See the warning in [create a project access token](#create-a-project-access-toke
 
 ## Enable or disable project access token creation
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/287707) in GitLab 13.11.
-
 To enable or disable project access token creation for all projects in a top-level group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
@@ -113,9 +107,6 @@ To enable or disable project access token creation for all projects in a top-lev
 Even when creation is disabled, you can still use and revoke existing project access tokens.
 
 ## Bot users for projects
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/210181) in GitLab 13.0.
-> - [Excluded from license seat use](https://gitlab.com/gitlab-org/gitlab/-/issues/223695) in GitLab 13.5.
 
 Bot users for projects are [GitLab-created service accounts](../../../subscriptions/self_managed/index.md#billable-users).
 Each time you create a project access token, a bot user is created and added to the project.

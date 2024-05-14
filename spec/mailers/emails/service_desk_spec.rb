@@ -22,6 +22,8 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
   let_it_be(:issue_email_participant) { create(:issue_email_participant, issue: issue, email: email) }
 
   let(:template) { double(content: template_content) }
+  let(:attachments_count) { 0 }
+  let(:issue_id) { issue.id }
 
   before do
     # Because we use global project and custom email instances, make sure
@@ -33,7 +35,7 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
     service_desk_setting.update!(custom_email_enabled: false) unless service_desk_setting.custom_email_enabled?
   end
 
-  shared_examples 'a service desk notification email' do |attachments_count|
+  shared_examples 'a service desk notification email' do
     it 'builds the email correctly' do
       aggregate_failures do
         is_expected.to have_referable_subject(issue, include_project: false, reply: reply_in_subject)
@@ -58,7 +60,7 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
     end
   end
 
-  shared_examples 'a service desk notification email with template content' do |template_key, attachments_count|
+  shared_examples 'a service desk notification email with template content' do
     before do
       expect(Gitlab::Template::ServiceDeskTemplate).to receive(:find)
         .with(template_key, issue.project)
@@ -84,7 +86,7 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
     end
   end
 
-  shared_examples 'read template from repository' do |template_key|
+  shared_examples 'read template from repository' do
     let(:template_content) { 'custom text' }
     let(:issue) { create(:issue, project: project) }
 
@@ -124,6 +126,104 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
       it 'uses the default template' do
         expect(subject.text_part.to_s).to include(expected_text)
         expect(subject.html_part.to_s).to include(expected_html)
+      end
+    end
+  end
+
+  shared_examples 'a service desk notification email with markdown template content' do
+    context 'with a simple text' do
+      let(:template_content) { 'thank you, **your new issue** has been created.' }
+      let(:expected_template_html) { 'thank you, <strong>your new issue</strong> has been created.' }
+
+      it_behaves_like 'a service desk notification email with template content'
+    end
+
+    context 'with an issue id, issue path and unsubscribe url placeholders' do
+      let(:template_content) do
+        'thank you, **your new issue:** %{ISSUE_ID}, path: %{ISSUE_PATH}' \
+          '[Unsubscribe](%{UNSUBSCRIBE_URL})'
+      end
+
+      let(:expected_template_html) do
+        "<p dir=\"auto\">thank you, <strong>your new issue:</strong> ##{issue.iid}, path: #{project.full_path}##{issue.iid}" \
+          "<a href=\"#{expected_unsubscribe_url}\">Unsubscribe</a></p>"
+      end
+
+      it_behaves_like 'a service desk notification email with template content'
+    end
+
+    context 'with header and footer placeholders' do
+      let(:template_content) do
+        '%{SYSTEM_HEADER}' \
+          'thank you, **your new issue** has been created.' \
+          '%{SYSTEM_FOOTER}'
+      end
+
+      it_behaves_like 'appearance header and footer enabled'
+      it_behaves_like 'appearance header and footer not enabled'
+    end
+
+    context 'with an issue id placeholder with whitespace' do
+      let(:template_content) { 'thank you, **your new issue:** %{  ISSUE_ID}' }
+      let(:expected_template_html) { "thank you, <strong>your new issue:</strong> ##{issue.iid}" }
+
+      it_behaves_like 'a service desk notification email with template content'
+    end
+
+    context 'with unexpected placeholder' do
+      let(:template_content) { 'thank you, **your new issue:** %{this is issue}' }
+      let(:expected_template_html) { "thank you, <strong>your new issue:</strong> %{this is issue}" }
+
+      it_behaves_like 'a service desk notification email with template content'
+    end
+
+    context 'when issue description placeholder is used' do
+      let(:template_content) { 'thank you, your new issue has been created. %{ISSUE_DESCRIPTION}' }
+      let(:expected_template_html) { "<p dir=\"auto\">thank you, your new issue has been created. </p>#{issue.description_html}" }
+
+      it_behaves_like 'a service desk notification email with template content'
+
+      context 'when GitLab-specific-reference is in description' do
+        let(:full_issue_reference) { "#{issue.project.full_path}#{issue.to_reference}" }
+        let(:other_issue) { create(:issue, project: project, description: full_issue_reference) }
+
+        let(:template_content) { '%{ISSUE_DESCRIPTION}' }
+        let(:expected_template_html) { full_issue_reference }
+        let(:issue_id) { other_issue.id }
+
+        before do
+          expect(Gitlab::Template::ServiceDeskTemplate).to receive(:find)
+            .with(template_key, other_issue.project)
+            .and_return(template)
+
+          other_issue.issue_email_participants.create!(email: email)
+        end
+
+        it 'does not render GitLab-specific-reference links with title attribute' do
+          expect(subject.body.to_s).to include(expected_template_html)
+        end
+      end
+    end
+
+    context 'when issue url placeholder is used' do
+      let(:full_issue_url) { issue_url(issue) }
+      let(:template_content) { 'thank you, your new issue has been created. %{ISSUE_URL}' }
+      let(:expected_template_html) do
+        "<p dir=\"auto\">thank you, your new issue has been created. " \
+          "<a href=\"#{full_issue_url}\">#{full_issue_url}</a></p>"
+      end
+
+      it_behaves_like 'a service desk notification email with template content'
+
+      context 'when it is used in markdown format' do
+        let(:template_content) { 'thank you, your new issue has been created. [%{ISSUE_PATH}](%{ISSUE_URL})' }
+        let(:issue_path) { "#{project.full_path}##{issue.iid}" }
+        let(:expected_template_html) do
+          "<p dir=\"auto\">thank you, your new issue has been created. " \
+            "<a href=\"#{full_issue_url}\">#{issue_path}</a></p>"
+        end
+
+        it_behaves_like 'a service desk notification email with template content'
       end
     end
   end
@@ -202,6 +302,8 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
   end
 
   describe '.service_desk_thank_you_email' do
+    let(:template_key) { 'thank_you' }
+
     let_it_be(:reply_in_subject) { true }
     let_it_be(:expected_text) do
       "Thank you for your support request! We are tracking your request as ticket #{issue.to_reference}, and will respond as soon as we can."
@@ -213,175 +315,34 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
       issue.update!(external_author: email)
     end
 
-    subject { ServiceEmailClass.service_desk_thank_you_email(issue.id) }
+    subject { ServiceEmailClass.service_desk_thank_you_email(issue_id) }
 
     it_behaves_like 'a service desk notification email'
     it_behaves_like 'read template from repository', 'thank_you'
-
-    context 'handling template markdown' do
-      context 'with a simple text' do
-        let(:template_content) { 'thank you, **your new issue** has been created.' }
-        let(:expected_template_html) { 'thank you, <strong>your new issue</strong> has been created.' }
-
-        it_behaves_like 'a service desk notification email with template content', 'thank_you'
-      end
-
-      context 'with an issue id, issue path and unsubscribe url placeholders' do
-        let(:template_content) do
-          'thank you, **your new issue:** %{ISSUE_ID}, path: %{ISSUE_PATH}' \
-            '[Unsubscribe](%{UNSUBSCRIBE_URL})'
-        end
-
-        let(:expected_template_html) do
-          "<p dir=\"auto\">thank you, <strong>your new issue:</strong> ##{issue.iid}, path: #{project.full_path}##{issue.iid}" \
-            "<a href=\"#{expected_unsubscribe_url}\">Unsubscribe</a></p>"
-        end
-
-        it_behaves_like 'a service desk notification email with template content', 'thank_you'
-      end
-
-      context 'with header and footer placeholders' do
-        let(:template_content) do
-          '%{SYSTEM_HEADER}' \
-            'thank you, **your new issue** has been created.' \
-            '%{SYSTEM_FOOTER}'
-        end
-
-        it_behaves_like 'appearance header and footer enabled'
-        it_behaves_like 'appearance header and footer not enabled'
-      end
-
-      context 'with an issue id placeholder with whitespace' do
-        let(:template_content) { 'thank you, **your new issue:** %{  ISSUE_ID}' }
-        let(:expected_template_html) { "thank you, <strong>your new issue:</strong> ##{issue.iid}" }
-
-        it_behaves_like 'a service desk notification email with template content', 'thank_you'
-      end
-
-      context 'with unexpected placeholder' do
-        let(:template_content) { 'thank you, **your new issue:** %{this is issue}' }
-        let(:expected_template_html) { "thank you, <strong>your new issue:</strong> %{this is issue}" }
-
-        it_behaves_like 'a service desk notification email with template content', 'thank_you'
-      end
-
-      context 'when issue description placeholder is used' do
-        let(:template_content) { 'thank you, your new issue has been created. %{ISSUE_DESCRIPTION}' }
-        let(:expected_template_html) { "<p dir=\"auto\">thank you, your new issue has been created. </p>#{issue.description_html}" }
-
-        it_behaves_like 'a service desk notification email with template content', 'thank_you'
-
-        context 'when GitLab-specific-reference is in description' do
-          let(:full_issue_reference) { "#{issue.project.full_path}#{issue.to_reference}" }
-          let(:other_issue) { create(:issue, project: project, description: full_issue_reference) }
-
-          let(:template_content) { '%{ISSUE_DESCRIPTION}' }
-          let(:expected_template_html) { full_issue_reference }
-
-          subject(:message) { ServiceEmailClass.service_desk_thank_you_email(other_issue.id) }
-
-          before do
-            expect(Gitlab::Template::ServiceDeskTemplate).to receive(:find)
-              .with('thank_you', other_issue.project)
-              .and_return(template)
-
-            other_issue.issue_email_participants.create!(email: email)
-          end
-
-          it 'does not render GitLab-specific-reference links with title attribute' do
-            expect(message.body.to_s).to include(expected_template_html)
-          end
-        end
-      end
-
-      context 'when issue url placeholder is used' do
-        let(:full_issue_url) { issue_url(issue) }
-        let(:template_content) { 'thank you, your new issue has been created. %{ISSUE_URL}' }
-        let(:expected_template_html) do
-          "<p dir=\"auto\">thank you, your new issue has been created. " \
-            "<a href=\"#{full_issue_url}\">#{full_issue_url}</a></p>"
-        end
-
-        it_behaves_like 'a service desk notification email with template content', 'thank_you'
-
-        context 'when it is used in markdown format' do
-          let(:template_content) { 'thank you, your new issue has been created. [%{ISSUE_PATH}](%{ISSUE_URL})' }
-          let(:issue_path) { "#{project.full_path}##{issue.iid}" }
-          let(:expected_template_html) do
-            "<p dir=\"auto\">thank you, your new issue has been created. " \
-              "<a href=\"#{full_issue_url}\">#{issue_path}</a></p>"
-          end
-
-          it_behaves_like 'a service desk notification email with template content', 'thank_you'
-        end
-      end
-    end
+    it_behaves_like 'a service desk notification email with markdown template content'
 
     context 'when custom email is enabled' do
-      subject { Notify.service_desk_thank_you_email(issue.id) }
+      subject { Notify.service_desk_thank_you_email(issue_id) }
 
       it_behaves_like 'a service desk notification email that uses custom email'
     end
   end
 
   describe '.service_desk_new_note_email' do
+    let(:template_key) { 'new_note' }
+
     let_it_be(:reply_in_subject) { false }
     let_it_be(:expected_text) { 'My **note**' }
     let_it_be(:expected_html) { 'My <strong>note</strong>' }
     let_it_be(:note) { create(:note_on_issue, noteable: issue, project: project, note: expected_text) }
 
-    subject { ServiceEmailClass.service_desk_new_note_email(issue.id, note.id, issue_email_participant) }
+    subject { ServiceEmailClass.service_desk_new_note_email(issue_id, note.id, issue_email_participant) }
 
     it_behaves_like 'a service desk notification email'
-    it_behaves_like 'read template from repository', 'new_note'
+    it_behaves_like 'read template from repository'
+    it_behaves_like 'a service desk notification email with markdown template content'
 
     context 'with template' do
-      context 'with a simple text' do
-        let(:template_content) { 'thank you, **new note on issue** has been created.' }
-        let(:expected_template_html) { 'thank you, <strong>new note on issue</strong> has been created.' }
-
-        it_behaves_like 'a service desk notification email with template content', 'new_note'
-      end
-
-      context 'with an issue id, issue path, note and unsubscribe url placeholders' do
-        let(:template_content) do
-          'thank you, **new note on issue:** %{ISSUE_ID}, path: %{ISSUE_PATH}: %{NOTE_TEXT}' \
-            '[Unsubscribe](%{UNSUBSCRIBE_URL})'
-        end
-
-        let(:expected_template_html) do
-          "<p dir=\"auto\">thank you, <strong>new note on issue:</strong> ##{issue.iid}, path: #{project.full_path}##{issue.iid}: #{expected_html}" \
-            "<a href=\"#{expected_unsubscribe_url}\">Unsubscribe</a></p>"
-        end
-
-        it_behaves_like 'a service desk notification email with template content', 'new_note'
-      end
-
-      context 'with header and footer placeholders' do
-        let(:template_content) do
-          '%{SYSTEM_HEADER}' \
-            'thank you, **your new issue** has been created.' \
-            '%{SYSTEM_FOOTER}'
-        end
-
-        it_behaves_like 'appearance header and footer enabled'
-        it_behaves_like 'appearance header and footer not enabled'
-      end
-
-      context 'with an issue id placeholder with whitespace' do
-        let(:template_content) { 'thank you, **new note on issue:** %{  ISSUE_ID}: %{ NOTE_TEXT  }' }
-        let(:expected_template_html) { "thank you, <strong>new note on issue:</strong> ##{issue.iid}: #{expected_html}" }
-
-        it_behaves_like 'a service desk notification email with template content', 'new_note'
-      end
-
-      context 'with unexpected placeholder' do
-        let(:template_content) { 'thank you, **new note on issue:** %{this is issue}' }
-        let(:expected_template_html) { "thank you, <strong>new note on issue:</strong> %{this is issue}" }
-
-        it_behaves_like 'a service desk notification email with template content', 'new_note'
-      end
-
       context 'with all-user reference in a an external author comment' do
         let_it_be(:note) { create(:note_on_issue, noteable: issue, project: project, note: "Hey @all, just a ping", author: Users::Internal.support_bot) }
 
@@ -394,7 +355,7 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
             stub_feature_flags(disable_all_mention: false)
           end
 
-          it_behaves_like 'a service desk notification email with template content', 'new_note'
+          it_behaves_like 'a service desk notification email with template content'
         end
 
         context 'when `disable_all_mention` is enabled' do
@@ -404,7 +365,7 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
             stub_feature_flags(disable_all_mention: true)
           end
 
-          it_behaves_like 'a service desk notification email with template content', 'new_note'
+          it_behaves_like 'a service desk notification email with template content'
         end
       end
     end
@@ -432,11 +393,13 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
         let_it_be(:expected_template_html) { %(some text #{expected_html}) }
 
         it_behaves_like 'a service desk notification email'
-        it_behaves_like 'a service desk notification email with template content', 'new_note'
+        it_behaves_like 'a service desk notification email with template content'
       end
 
       context 'when total uploads size is less or equal 10mb' do
         context 'when it has only one upload' do
+          let(:attachments_count) { 1 }
+
           before do
             allow_next_instance_of(FileUploader) do |instance|
               allow(instance).to receive(:size).and_return(10.megabytes)
@@ -447,8 +410,8 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
           context 'when upload name is not changed in markdown' do
             let_it_be(:expected_template_html) { %(some text a new comment with <strong>#{filename}</strong>) }
 
-            it_behaves_like 'a service desk notification email', 1
-            it_behaves_like 'a service desk notification email with template content', 'new_note', 1
+            it_behaves_like 'a service desk notification email'
+            it_behaves_like 'a service desk notification email with template content'
           end
 
           context 'when upload name is changed in markdown' do
@@ -458,12 +421,12 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
             let_it_be(:expected_html) { %(a new comment with <strong>#{upload_name_in_markdown} (#{filename})</strong>) }
             let_it_be(:expected_template_html) { %(some text #{expected_html}) }
 
-            it_behaves_like 'a service desk notification email', 1
-            it_behaves_like 'a service desk notification email with template content', 'new_note', 1
+            it_behaves_like 'a service desk notification email'
+            it_behaves_like 'a service desk notification email with template content'
           end
         end
 
-        context 'when it has more than one upload' do
+        context 'when it has more than one upload' do # rubocop:disable RSpec/MultipleMemoizedHelpers -- Avoid duplication with heavy use of helpers
           let_it_be(:secret_1) { '17817c73e368777e6f743392e334fb8a' }
           let_it_be(:filename_1) { 'test1.jpg' }
           let_it_be(:path_1) { "#{secret_1}/#{filename_1}" }
@@ -478,21 +441,25 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
               end
             end
 
+            let(:attachments_count) { 2 }
+
             let_it_be(:upload_1) { create(:upload, :issuable_upload, :with_file, model: note.project, path: path_1, secret: secret_1) }
 
             let_it_be(:expected_html) { %(a new comment with <strong>#{filename}</strong> <strong>#{filename_1}</strong>) }
             let_it_be(:expected_template_html) { %(some text #{expected_html}) }
 
-            it_behaves_like 'a service desk notification email', 2
-            it_behaves_like 'a service desk notification email with template content', 'new_note', 2
+            it_behaves_like 'a service desk notification email'
+            it_behaves_like 'a service desk notification email with template content'
           end
 
-          context 'when not all uploads processed correct' do
+          context 'when not all uploads processed correct' do # rubocop:disable RSpec/MultipleMemoizedHelpers -- Avoid duplication with heavy use of helpers
+            let(:attachments_count) { 1 }
+
             let_it_be(:expected_html) { %(a new comment with <strong>#{filename}</strong> <a href="#{project.web_url}#{upload_path_1}" data-canonical-src="#{upload_path_1}" data-link="true" class="gfm">#{filename_1}</a>) }
             let_it_be(:expected_template_html) { %(some text #{expected_html}) }
 
-            it_behaves_like 'a service desk notification email', 1
-            it_behaves_like 'a service desk notification email with template content', 'new_note', 1
+            it_behaves_like 'a service desk notification email'
+            it_behaves_like 'a service desk notification email with template content'
           end
         end
       end
@@ -507,7 +474,7 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
 
         let_it_be(:expected_template_html) { %(some text a new comment with <a href="#{project.web_url}#{upload_path}" data-canonical-src="#{upload_path}" data-link="true" class="gfm">#{filename}</a>) }
 
-        it_behaves_like 'a service desk notification email with template content', 'new_note'
+        it_behaves_like 'a service desk notification email with template content'
       end
 
       context 'when FileUploader is raising error' do
@@ -520,12 +487,36 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
 
         let_it_be(:expected_template_html) { %(some text a new comment with <a href="#{project.web_url}#{upload_path}" data-canonical-src="#{upload_path}" data-link="true" class="gfm">#{filename}</a>) }
 
-        it_behaves_like 'a service desk notification email with template content', 'new_note'
+        it_behaves_like 'a service desk notification email with template content'
       end
     end
 
     context 'when custom email is enabled' do
-      subject { Notify.service_desk_new_note_email(issue.id, note.id, issue_email_participant) }
+      subject { Notify.service_desk_new_note_email(issue_id, note.id, issue_email_participant) }
+
+      it_behaves_like 'a service desk notification email that uses custom email'
+    end
+  end
+
+  describe '.service_desk_new_participant_email' do
+    let(:template_key) { 'new_participant' }
+
+    let_it_be(:reply_in_subject) { true }
+    let_it_be(:expected_text) { "You have been added to ticket #{issue.to_reference}" }
+    let_it_be(:expected_html) { expected_text }
+
+    before do
+      issue.update!(external_author: email)
+    end
+
+    subject { ServiceEmailClass.service_desk_new_participant_email(issue_id, issue_email_participant) }
+
+    it_behaves_like 'a service desk notification email'
+    it_behaves_like 'read template from repository'
+    it_behaves_like 'a service desk notification email with markdown template content'
+
+    context 'when custom email is enabled' do
+      subject { Notify.service_desk_new_participant_email(issue_id, issue_email_participant) }
 
       it_behaves_like 'a service desk notification email that uses custom email'
     end

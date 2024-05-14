@@ -16,19 +16,30 @@ module Types
       implements Types::TodoableInterface
 
       field :description,
-            GraphQL::Types::String,
-            null: true,
-            description: 'Description of the design.'
+        GraphQL::Types::String,
+        null: true,
+        description: 'Description of the design.'
 
       field :web_url,
-            GraphQL::Types::String,
-            null: false,
-            description: 'URL of the design.'
+        GraphQL::Types::String,
+        null: false,
+        description: 'URL of the design.'
 
       field :versions,
-            Types::DesignManagement::VersionType.connection_type,
-            resolver: Resolvers::DesignManagement::VersionsResolver,
-            description: "All versions related to this design ordered newest first."
+        Types::DesignManagement::VersionType.connection_type,
+        resolver: Resolvers::DesignManagement::VersionsResolver,
+        description: "All versions related to this design ordered newest first."
+
+      field :imported,
+        GraphQL::Types::Boolean,
+        null: false,
+        method: :imported?,
+        description: 'Indicates whether the design was imported.'
+
+      field :imported_from,
+        Types::Import::ImportSourceEnum,
+        null: false,
+        description: 'Import source of the design.'
 
       markdown_field :description_html, null: true
 

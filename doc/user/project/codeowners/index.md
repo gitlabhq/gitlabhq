@@ -2,13 +2,14 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: "Use Code Owners to define experts for your code base, and set review requirements based on file type or location."
 ---
 
 # Code Owners
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Use the Code Owners feature to define who has expertise for specific parts of your project's codebase.
 Define the owners of files and directories in a repository to:
@@ -113,6 +114,7 @@ file.md @group-x @group-x/subgroup-y
 #### Group inheritance and eligibility
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 graph TD
     A[Parent group X] -->|owns| B[Project A]
     A -->|contains| C[Subgroup Y]
@@ -137,6 +139,7 @@ You can [invite](../members/share_project_with_groups.md) **Subgroup Y** to **Pr
 so that their members also become eligible Code Owners.
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 graph LR
     A[Parent group X] -->|owns| B[Project A]
     A -->|also contains| C[Subgroup Y]
@@ -425,7 +428,7 @@ A Code Owner approval rule is optional if any of these conditions are true:
 - [Code Owner approval on a protected branch](../protected_branches.md#require-code-owner-approval-on-a-protected-branch) has not been set up.
 - The section is [marked as optional](#make-a-code-owners-section-optional).
 - No eligible code owners are available to approve the merge request due to conflicts
-  with other [merge request approval settings](../merge_requests/approvals/settings.md#approval-settings).
+  with other [merge request approval settings](../merge_requests/approvals/settings.md).
 
 ### Approvals do not show
 

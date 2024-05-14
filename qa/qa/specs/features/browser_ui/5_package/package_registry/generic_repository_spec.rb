@@ -61,7 +61,7 @@ module QA
         package.remove_via_api!
       end
 
-      it 'uploads a generic package and downloads it', :reliable,
+      it 'uploads a generic package and downloads it', :blocking,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348017' do
         Page::Project::Menu.perform(&:go_to_package_registry)
 

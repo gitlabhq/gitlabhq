@@ -168,7 +168,7 @@ class Projects::ArtifactsController < Projects::ApplicationController
   end
 
   def zip_artifact?
-    types = HashWithIndifferentAccess.new(Ci::JobArtifact::TYPE_AND_FORMAT_PAIRS)
+    types = HashWithIndifferentAccess.new(Enums::Ci::JobArtifact.type_and_format_pairs)
     file_type = params[:file_type] || :archive
 
     types[file_type] == :zip
@@ -187,7 +187,7 @@ class Projects::ArtifactsController < Projects::ApplicationController
   end
 
   def authorize_read_job_artifacts!
-    return access_denied! unless can?(current_user, :read_job_artifacts, job_artifact)
+    access_denied! unless can?(current_user, :read_job_artifacts, job_artifact)
   end
 end
 

@@ -59,6 +59,12 @@ export default {
     errorStatusRow() {
       return this.packageEntity?.status === PACKAGE_ERROR_STATUS;
     },
+    errorPackageStyle() {
+      return {
+        'gl-text-red-500': this.errorStatusRow,
+        'gl-font-weight-normal': this.errorStatusRow,
+      };
+    },
     dropdownItems() {
       return [
         {
@@ -85,26 +91,35 @@ export default {
   <list-item :selected="selected" v-bind="$attrs">
     <template #left-action>
       <gl-form-checkbox
-        v-if="packageEntity.canDestroy"
+        v-if="packageEntity.userPermissions.destroyPackage"
         class="gl-m-0"
         :checked="selected"
         @change="$emit('select')"
       />
     </template>
     <template #left-primary>
-      <div class="gl-display-flex gl-align-items-center gl-mr-3 gl-min-w-0">
-        <gl-link v-if="containsWebPathLink" class="gl-text-body gl-min-w-0" :href="packageLink">
-          <gl-truncate :text="packageEntity.name" />
+      <div
+        class="gl-display-flex gl-align-items-center gl-gap-3 gl-mr-5 gl-min-w-0"
+        data-testid="package-name"
+      >
+        <gl-link
+          v-if="containsWebPathLink"
+          class="gl-text-body gl-min-w-0 gl-break-all"
+          :class="errorPackageStyle"
+          :href="packageLink"
+        >
+          {{ packageEntity.name }}
         </gl-link>
-        <gl-truncate v-else :text="packageEntity.name" />
+        <span v-else :class="errorPackageStyle">
+          {{ packageEntity.name }}
+        </span>
 
-        <package-tags
+        <div
           v-if="packageEntity.tags.nodes && packageEntity.tags.nodes.length"
-          class="gl-ml-3"
-          :tags="packageEntity.tags.nodes"
-          hide-label
-          :tag-display-limit="1"
-        />
+          class="gl-display-flex gl-gap-2"
+        >
+          <package-tags :tags="packageEntity.tags.nodes" hide-label :tag-display-limit="1" />
+        </div>
       </div>
     </template>
     <template #left-secondary>
@@ -138,7 +153,7 @@ export default {
       </span>
     </template>
 
-    <template v-if="packageEntity.canDestroy" #right-action>
+    <template v-if="packageEntity.userPermissions.destroyPackage" #right-action>
       <gl-disclosure-dropdown
         data-testid="delete-dropdown"
         icon="ellipsis_v"

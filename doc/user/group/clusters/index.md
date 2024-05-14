@@ -8,10 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/34758) in GitLab 11.6.
-> - [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 WARNING:
 This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5. To connect clusters to GitLab,
@@ -35,9 +32,6 @@ installation, such as an Ingress controller.
 
 ## RBAC compatibility
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/29398) in GitLab 11.4.
-> - Project namespace restriction was [introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/51716) in GitLab 11.5.
-
 For each project under a group with a Kubernetes cluster, GitLab creates a restricted
 service account with [`edit` privileges](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles)
 in the project namespace.
@@ -52,8 +46,6 @@ to the project, provided the cluster is not disabled.
 
 ## Multiple Kubernetes clusters
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35094) in GitLab 13.2.
-
 You can associate more than one Kubernetes cluster to your group, and maintain different clusters
 for different environments, such as development, staging, and production.
 
@@ -62,9 +54,6 @@ When adding another cluster,
 differentiate the new cluster from your other clusters.
 
 ## GitLab-managed clusters
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22011) in GitLab 11.5.
-> - Became [optional](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/26565) in GitLab 11.11.
 
 You can choose to allow GitLab to manage your cluster for you. If GitLab manages
 your cluster, resources for your projects are automatically created. See the
@@ -83,8 +72,6 @@ for deployments with a cluster not managed by GitLab, you must ensure:
 
 ### Clearing the cluster cache
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31759) in GitLab 12.6.
-
 If you choose to allow GitLab to manage your cluster for you, GitLab stores a cached
 version of the namespaces and service accounts it creates for your projects. If you
 modify these resources in your cluster manually, this cache can fall out of sync with
@@ -100,8 +87,6 @@ To clear the cache:
 
 ## Base domain
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/24580) in GitLab 11.8.
-
 Domains at the cluster level permit support for multiple domains
 per [multiple Kubernetes clusters](#multiple-kubernetes-clusters) When specifying a domain,
 this is automatically set as an environment variable (`KUBE_INGRESS_BASE_DOMAIN`) during
@@ -113,7 +98,7 @@ The domain should have a wildcard DNS configured to the Ingress IP address. [Mor
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 When adding more than one Kubernetes cluster to your project, you need to differentiate
 them with an environment scope. The environment scope associates clusters with
@@ -137,7 +122,7 @@ For example, if your project has the following Kubernetes clusters:
 | Test       | `test`              | Group     |
 | Development| `*`                 | Group     |
 
-And the following environments are set in the [`.gitlab-ci.yml` file](../../../ci/index.md#the-gitlab-ciyml-file):
+And the following environments are set in the `.gitlab-ci.yml` file:
 
 ```yaml
 stages:
@@ -173,7 +158,7 @@ The result is:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 For a consolidated view of which CI [environments](../../../ci/environments/index.md)
 are deployed to the Kubernetes cluster, see the documentation for

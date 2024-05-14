@@ -72,7 +72,7 @@ RSpec.describe Onboarding::ProgressService, feature_category: :onboarding do
       it 'does not register a namespace onboarding progress action' do
         execute_service
 
-        expect(Onboarding::Progress.completed?(group, :subscription_created)).to be(nil)
+        expect(Onboarding::Progress.completed?(group, :subscription_created)).to be(false)
       end
     end
 
@@ -82,7 +82,7 @@ RSpec.describe Onboarding::ProgressService, feature_category: :onboarding do
       it 'does not register a namespace onboarding progress action' do
         execute_service
 
-        expect(Onboarding::Progress.completed?(namespace, :subscription_created)).to be(nil)
+        expect(Onboarding::Progress.completed?(namespace, :subscription_created)).to be(false)
       end
     end
   end

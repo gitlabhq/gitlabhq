@@ -4,6 +4,7 @@ import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import setWindowLocation from 'helpers/set_window_location_helper';
 import { createAlert } from '~/alert';
 
 import CatalogHeader from '~/ci/catalog/components/list/catalog_header.vue';
@@ -197,15 +198,27 @@ describe('CiResourcesPage', () => {
 
   describe('search and sort', () => {
     describe('on initial load', () => {
-      beforeEach(async () => {
+      beforeEach(() => {
         catalogResourcesResponse.mockResolvedValue(catalogResponseBody);
-        await createComponent();
       });
 
-      it('calls the query without search or sort', () => {
+      it('calls the query without search or sort', async () => {
+        await createComponent();
+
         expect(catalogResourcesResponse).toHaveBeenCalledTimes(1);
         expect(catalogResourcesResponse.mock.calls[0][0]).toEqual({
           ...defaultQueryVariables,
+        });
+      });
+
+      it('calls the query with search when present in URL', async () => {
+        setWindowLocation('?search=Hello');
+        await createComponent();
+
+        expect(catalogResourcesResponse).toHaveBeenCalledTimes(1);
+        expect(catalogResourcesResponse.mock.calls[0][0]).toEqual({
+          ...defaultQueryVariables,
+          searchTerm: 'Hello',
         });
       });
     });

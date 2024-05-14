@@ -1,8 +1,10 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe Packages::Pypi::CreatePackageService, :aggregate_failures, feature_category: :package_registry do
   include PackagesManagerApiSpecHelpers
+  using RSpec::Parameterized::TableSyntax
 
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
@@ -23,13 +25,13 @@ RSpec.describe Packages::Pypi::CreatePackageService, :aggregate_failures, featur
   end
 
   describe '#execute' do
-    subject { described_class.new(project, user, params).execute }
+    subject(:execute_service) { described_class.new(project, user, params).execute }
 
     let(:created_package) { Packages::Package.pypi.last }
 
     context 'without an existing package' do
       it 'creates the package' do
-        expect { subject }.to change { Packages::Package.pypi.count }.by(1)
+        expect { execute_service }.to change { Packages::Package.pypi.count }.by(1)
 
         expect(created_package.name).to eq 'foo'
         expect(created_package.version).to eq '1.0'
@@ -44,7 +46,7 @@ RSpec.describe Packages::Pypi::CreatePackageService, :aggregate_failures, featur
 
     context 'with FIPS mode', :fips_mode do
       it 'does not generate file_md5' do
-        expect { subject }.to change { Packages::Package.pypi.count }.by(1)
+        expect { execute_service }.to change { Packages::Package.pypi.count }.by(1)
 
         expect(created_package.name).to eq 'foo'
         expect(created_package.version).to eq '1.0'
@@ -63,7 +65,7 @@ RSpec.describe Packages::Pypi::CreatePackageService, :aggregate_failures, featur
       end
 
       it 'creates the package' do
-        expect { subject }.to change { Packages::Package.pypi.count }.by(1)
+        expect { execute_service }.to change { Packages::Package.pypi.count }.by(1)
 
         expect(created_package.pypi_metadatum.required_python).to eq ''
       end
@@ -82,7 +84,7 @@ RSpec.describe Packages::Pypi::CreatePackageService, :aggregate_failures, featur
       end
 
       it 'creates the package' do
-        expect { subject }.to change { Packages::Package.pypi.count }.by(1)
+        expect { execute_service }.to change { Packages::Package.pypi.count }.by(1)
 
         expect(created_package.pypi_metadatum.metadata_version).to eq('2.3')
         expect(created_package.pypi_metadatum.author_email).to eq('cschultz@example.com, snoopy@peanuts.com')
@@ -93,28 +95,34 @@ RSpec.describe Packages::Pypi::CreatePackageService, :aggregate_failures, featur
       end
     end
 
-    context 'with a very long metadata description field' do
-      let(:max_length) { ::Packages::Pypi::Metadatum::MAX_DESCRIPTION_LENGTH }
-      let(:truncated_description) { ('x' * (max_length + 1)).truncate(max_length) }
-
-      before do
-        params.merge!(
-          description: 'x' * (max_length + 1)
-        )
+    context 'with a very long metadata field' do
+      where(:field_name, :param_name, :max_length) do
+        :required_python          | :requires_python | ::Packages::Pypi::Metadatum::MAX_REQUIRED_PYTHON_LENGTH
+        :keywords                 | nil              | ::Packages::Pypi::Metadatum::MAX_KEYWORDS_LENGTH
+        :metadata_version         | nil              | ::Packages::Pypi::Metadatum::MAX_METADATA_VERSION_LENGTH
+        :description              | nil              | ::Packages::Pypi::Metadatum::MAX_DESCRIPTION_LENGTH
+        :summary                  | nil              | ::Packages::Pypi::Metadatum::MAX_SUMMARY_LENGTH
+        :description_content_type | nil              | ::Packages::Pypi::Metadatum::MAX_DESCRIPTION_CONTENT_TYPE_LENGTH
+        :author_email             | nil              | ::Packages::Pypi::Metadatum::MAX_AUTHOR_EMAIL_LENGTH
       end
 
-      it 'truncates the description field' do
-        expect { subject }.to change { Packages::Package.pypi.count }.by(1)
+      with_them do
+        let(:truncated_field) { ('x' * (max_length + 1)).truncate(max_length) }
 
-        expect(created_package.pypi_metadatum.description).to eq(truncated_description)
-      end
-    end
+        before do
+          key = param_name || field_name
 
-    context 'with an invalid metadata' do
-      let(:requires_python) { 'x' * 256 }
+          params.merge!(
+            { key.to_sym => 'x' * (max_length + 1) }
+          )
+        end
 
-      it_behaves_like 'returning an error service response', /Pypi package metadata invalid/ do
-        it { is_expected.to have_attributes(reason: :invalid_parameter) }
+        it 'truncates the field and creates the package and its metadata' do
+          expect { execute_service }.to change { Packages::Package.pypi.count }.by(1)
+                                    .and change { Packages::Pypi::Metadatum.count }.by(1)
+
+          expect(created_package.pypi_metadatum.public_send(field_name)).to eq(truncated_field)
+        end
       end
     end
 
@@ -142,12 +150,13 @@ RSpec.describe Packages::Pypi::CreatePackageService, :aggregate_failures, featur
           params[:md5_digest] = md5
         end
 
-        it_behaves_like 'returning an error service response', /File name has already been taken/ do
+        it_behaves_like 'returning an error service response',
+          message: 'Validation failed: File name has already been taken' do
           it { is_expected.to have_attributes(reason: :invalid_parameter) }
         end
 
         it 'does not create a pypi package' do
-          expect { subject }
+          expect { execute_service }
             .to change { Packages::Package.pypi.count }.by(0)
             .and change { Packages::PackageFile.count }.by(0)
         end
@@ -158,7 +167,7 @@ RSpec.describe Packages::Pypi::CreatePackageService, :aggregate_failures, featur
           end
 
           it 'creates a new package' do
-            expect { subject }
+            expect { execute_service }
               .to change { Packages::Package.pypi.count }.by(1)
               .and change { Packages::PackageFile.count }.by(1)
 
@@ -180,7 +189,7 @@ RSpec.describe Packages::Pypi::CreatePackageService, :aggregate_failures, featur
         end
 
         it 'adds the file' do
-          expect { subject }
+          expect { execute_service }
             .to change { Packages::Package.pypi.count }.by(0)
             .and change { Packages::PackageFile.count }.by(1)
 

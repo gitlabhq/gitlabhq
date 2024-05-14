@@ -10,7 +10,7 @@ query getPackageDetails($id: PackagesPackageID!) {
     createdAt
     updatedAt
     status
-    canDestroy
+    statusMessage
     publicPackage
     npmUrl
     mavenUrl
@@ -20,6 +20,7 @@ query getPackageDetails($id: PackagesPackageID!) {
     pypiSetupUrl
     composerUrl
     composerConfigRepositoryUrl
+    packageProtectionRuleExists
     project {
       id
       path
@@ -77,6 +78,9 @@ query getPackageDetails($id: PackagesPackageID!) {
         id
         iconUrl
       }
+    }
+    userPermissions {
+      destroyPackage
     }
   }
 }

@@ -8,9 +8,9 @@ module Mutations
       authorize :destroy_package
 
       argument :id,
-               ::Types::GlobalIDType[::Packages::Package],
-               required: true,
-               description: 'ID of the Package.'
+        ::Types::GlobalIDType[::Packages::Package],
+        required: true,
+        description: 'ID of the Package.'
 
       def resolve(id:)
         package = authorized_find!(id: id)

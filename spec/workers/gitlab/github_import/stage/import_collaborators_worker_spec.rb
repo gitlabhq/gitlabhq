@@ -21,9 +21,6 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportCollaboratorsWorker, feature_c
       settings.write({ optional_stages: { collaborators_import: stage_enabled } })
       allow(client).to receive(:repository).with(project.import_source)
         .and_return({ permissions: { push: push_rights_granted } })
-      allow_next_instance_of(Gitlab::GithubImport::Settings) do |setting|
-        allow(setting).to receive(:prioritize_collaborators?).and_return(true)
-      end
     end
 
     context 'when user has push access for this repo' do
@@ -38,7 +35,7 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportCollaboratorsWorker, feature_c
 
         expect(Gitlab::GithubImport::AdvanceStageWorker)
           .to receive(:perform_async)
-          .with(project.id, { '123' => 2 }, 'pull_requests')
+          .with(project.id, { '123' => 2 }, 'issues_and_diff_notes')
 
         worker.import(client, project)
       end
@@ -52,7 +49,7 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportCollaboratorsWorker, feature_c
 
         expect(Gitlab::GithubImport::AdvanceStageWorker)
           .to receive(:perform_async)
-          .with(project.id, {}, 'pull_requests')
+          .with(project.id, {}, 'issues_and_diff_notes')
 
         worker.import(client, project)
       end
@@ -66,29 +63,7 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportCollaboratorsWorker, feature_c
 
         expect(Gitlab::GithubImport::AdvanceStageWorker)
           .to receive(:perform_async)
-          .with(project.id, {}, 'pull_requests')
-
-        worker.import(client, project)
-      end
-    end
-
-    context 'when prioritize_collaborators import setting is disabled' do
-      it 'imports all collaborators and advances to the correct next stage' do
-        allow_next_instance_of(Gitlab::GithubImport::Settings) do |setting|
-          allow(setting).to receive(:prioritize_collaborators?).and_return(false)
-        end
-
-        waiter = Gitlab::JobWaiter.new(2, '123')
-
-        expect(Gitlab::GithubImport::Importer::CollaboratorsImporter)
-          .to receive(:new)
-          .with(project, client)
-          .and_return(importer)
-        expect(importer).to receive(:execute).and_return(waiter)
-
-        expect(Gitlab::GithubImport::AdvanceStageWorker)
-          .to receive(:perform_async)
-          .with(project.id, { '123' => 2 }, 'pull_requests_merged_by')
+          .with(project.id, {}, 'issues_and_diff_notes')
 
         worker.import(client, project)
       end

@@ -27,7 +27,6 @@ RSpec.describe 'Work item linked items', :js, feature_category: :team_planning d
       sign_in(user)
 
       stub_feature_flags(work_items: true)
-      stub_feature_flags(linked_work_items: true)
 
       visit work_items_path
 

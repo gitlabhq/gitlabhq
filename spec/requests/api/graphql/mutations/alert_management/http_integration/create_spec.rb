@@ -6,7 +6,7 @@ RSpec.describe 'Creating a new HTTP Integration', feature_category: :incident_ma
   include GraphqlHelpers
 
   let_it_be(:current_user) { create(:user) }
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project) { create(:project, maintainers: current_user) }
 
   let(:variables) do
     {
@@ -35,10 +35,6 @@ RSpec.describe 'Creating a new HTTP Integration', feature_category: :incident_ma
   end
 
   let(:mutation_response) { graphql_mutation_response(:http_integration_create) }
-
-  before do
-    project.add_maintainer(current_user)
-  end
 
   it_behaves_like 'creating a new HTTP integration'
 

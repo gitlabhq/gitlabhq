@@ -48,7 +48,8 @@ module Enums
           parent_pipeline: 12,
           ondemand_dast_scan: 13,
           ondemand_dast_validation: 14,
-          security_orchestration_policy: 15
+          security_orchestration_policy: 15,
+          container_registry_push: 16
         }
       end
 
@@ -61,8 +62,10 @@ module Enums
       #   not affect the ref CI status.
       # - when an ondemand_dast_validation pipeline runs it is for validating a DAST site
       #   profile and should not affect the ref CI status.
+      # - when a container_registry_push pipeline runs it is for security testing purpose and should
+      #   not affect the ref CI status.
       def self.dangling_sources
-        sources.slice(:webide, :parent_pipeline, :ondemand_dast_scan, :ondemand_dast_validation, :security_orchestration_policy)
+        sources.slice(:webide, :parent_pipeline, :ondemand_dast_scan, :ondemand_dast_validation, :security_orchestration_policy, :container_registry_push)
       end
 
       # CI sources are those pipeline events that affect the CI status of the ref

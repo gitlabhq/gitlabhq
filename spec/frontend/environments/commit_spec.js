@@ -37,12 +37,13 @@ describe('~/environments/components/commit.vue', () => {
       expect(avatar.attributes('src')).toBe(commit.author.avatarUrl);
     });
 
-    it('links the commit message to the commit', () => {
-      const message = wrapper.findByRole('link', { name: commit.message });
+    it('links the commit title to the commit', () => {
+      const message = wrapper.findByRole('link', { name: commit.title });
 
       expect(message.attributes('href')).toBe(commit.commitPath);
     });
   });
+
   describe('without gitlab user', () => {
     beforeEach(() => {
       commit = {
@@ -62,10 +63,33 @@ describe('~/environments/components/commit.vue', () => {
       expect(avatar.attributes('src')).toBe(commit.authorGravatarUrl);
     });
 
-    it('displays the commit message', () => {
-      const message = wrapper.findByRole('link', { name: commit.message });
+    it('displays the commit title', () => {
+      const title = wrapper.findByRole('link', { name: commit.title });
 
-      expect(message.attributes('href')).toBe(commit.commitPath);
+      expect(title.attributes('href')).toBe(commit.commitPath);
+    });
+  });
+
+  describe('from graphql', () => {
+    beforeEach(() => {
+      commit = { ...commit, webPath: commit.commitPath, commitPath: null };
+      wrapper = createWrapper();
+    });
+
+    it('links to the user profile', () => {
+      const link = wrapper.findByRole('link', { name: commit.author.name });
+      expect(link.attributes('href')).toBe(commit.author.path);
+    });
+
+    it('displays the user avatar', () => {
+      const avatar = wrapper.findByRole('img', { name: 'avatar' });
+      expect(avatar.attributes('src')).toBe(commit.author.avatarUrl);
+    });
+
+    it('links the commit title to the commit', () => {
+      const message = wrapper.findByRole('link', { name: commit.title });
+
+      expect(message.attributes('href')).toBe(commit.webPath);
     });
   });
 });

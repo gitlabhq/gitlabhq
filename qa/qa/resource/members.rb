@@ -28,6 +28,29 @@ module QA
         end
       end
 
+      # Update the access level for single user in a group or project
+      #
+      # @param [Resource::User] user
+      # @param [Integer] access_level (default Developer)
+      def update_member(user, access_level: AccessLevel::DEVELOPER)
+        Support::Retrier.retry_until do
+          QA::Runtime::Logger.info(%(Updating user #{user.username} in #{full_path} #{self.class.name}))
+          response = put Runtime::API::Request.new(api_client, "#{api_members_path}/#{user.id}").url,
+            { access_level: access_level }
+          next true if success?(response.code)
+        end
+      end
+
+      # Update the access level for multiple users in a group or project
+      #
+      # @param [Array<Resource::User>] users
+      # @param [Integer] access_level (default Developer)
+      def update_members(*users, access_level: AccessLevel::DEVELOPER)
+        users.each do |user|
+          update_member(user, access_level: access_level)
+        end
+      end
+
       def remove_member(user)
         QA::Runtime::Logger.info(%(Removing user #{user.username} from #{full_path} #{self.class.name}))
 

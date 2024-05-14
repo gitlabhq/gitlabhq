@@ -25,12 +25,32 @@ RSpec.describe Sbom::PackageUrl::Normalizer, feature_category: :dependency_manag
       end
     end
 
+    context 'with golang url' do
+      let(:type) { 'golang' }
+      let(:text) { 'github.com/Docker/docker' }
+
+      it 'downcases text' do
+        is_expected.to eq('github.com/docker/docker')
+      end
+    end
+
     context 'with pypi url' do
       let(:type) { 'pypi' }
-      let(:text) { 'Purl_Spec' }
 
-      it 'downcases text and replaces underscores' do
-        is_expected.to eq('purl-spec')
+      %w[Purl_Spec Purl.Spec Purl-Spec Purl--Spec].each do |input_text|
+        context "and based on #{described_class::PYPI_REGEX}" do
+          let(:text) { input_text }
+
+          it { is_expected.to eq 'purl-spec' }
+        end
+      end
+
+      %w[purl-spec purlspec].each do |input_text|
+        context "and not based on #{described_class::PYPI_REGEX}" do
+          let(:text) { input_text }
+
+          it { is_expected.to eq input_text }
+        end
       end
     end
 

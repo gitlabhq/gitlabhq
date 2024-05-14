@@ -6,8 +6,6 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # GitLab Application Service Level Indicators (SLIs)
 
-> - [Introduced](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/525) in GitLab 14.4
-
 It is possible to define [Service Level Indicators(SLIs)](https://en.wikipedia.org/wiki/Service_level_indicator)
 directly in the Ruby codebase. This keeps the definition of operations
 and their success close to the implementation and allows the people
@@ -34,7 +32,7 @@ The following metrics are defined:
 - `Gitlab::Metrics::Sli::Apdex.new('foo')` defines:
   - `gitlab_sli_foo_apdex_total` for the total number of measurements.
   - `gitlab_sli_foo_apdex_success_total` for the number of successful
-       measurements.
+    measurements.
 - `Gitlab::Metrics::Sli::ErrorRate.new('foo')` defines:
   - `gitlab_sli_foo_total` for the total number of measurements.
   - `gitlab_sli_foo_error_total` for the number of error

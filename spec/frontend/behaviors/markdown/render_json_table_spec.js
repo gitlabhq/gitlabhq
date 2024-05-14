@@ -26,7 +26,7 @@ describe('behaviors/markdown/render_json_table', () => {
   const TEST_LABELS = TEST_DATA.fields.map((x) => x.label);
 
   const tableAsData = (table) => ({
-    head: Array.from(table.querySelectorAll('thead th')).map((td) => td.textContent),
+    head: Array.from(table.querySelectorAll('thead th')).map((td) => td.textContent.trim()),
     body: Array.from(table.querySelectorAll('tbody > tr')).map((tr) =>
       Array.from(tr.querySelectorAll('td')).map((x) => x.textContent),
     ),

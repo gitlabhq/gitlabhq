@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 source: /doc/user/search/advanced_search.md
 ---
 
-# Search tips
+# Syntax options
 
 <!-- markdownlint-disable -->
 

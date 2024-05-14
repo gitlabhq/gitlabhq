@@ -12,6 +12,7 @@ def save(settings, topic)
   end
 end
 
+# NOTE: Will be removed in 18.0, see https://gitlab.com/gitlab-org/gitlab/-/issues/453949
 if ENV['GITLAB_SHARED_RUNNERS_REGISTRATION_TOKEN'].present?
   settings = Gitlab::CurrentSettings.current_application_settings
   settings.set_runners_registration_token(ENV['GITLAB_SHARED_RUNNERS_REGISTRATION_TOKEN'])

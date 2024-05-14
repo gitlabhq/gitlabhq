@@ -10,7 +10,7 @@ RSpec.describe 'Deleting a container registry protection rule', :aggregate_failu
     create(:container_registry_protection_rule, project: project)
   end
 
-  let_it_be(:current_user) { create(:user, maintainer_projects: [project]) }
+  let_it_be(:current_user) { create(:user, maintainer_of: project) }
 
   let(:mutation) { graphql_mutation(:delete_container_registry_protection_rule, input) }
   let(:mutation_response) { graphql_mutation_response(:delete_container_registry_protection_rule) }
@@ -42,8 +42,8 @@ RSpec.describe 'Deleting a container registry protection rule', :aggregate_failu
       'containerRegistryProtectionRule' => {
         'id' => container_protection_rule.to_global_id.to_s,
         'repositoryPathPattern' => container_protection_rule.repository_path_pattern,
-        'deleteProtectedUpToAccessLevel' => container_protection_rule.delete_protected_up_to_access_level.upcase,
-        'pushProtectedUpToAccessLevel' => container_protection_rule.push_protected_up_to_access_level.upcase
+        'minimumAccessLevelForDelete' => container_protection_rule.minimum_access_level_for_delete.upcase,
+        'minimumAccessLevelForPush' => container_protection_rule.minimum_access_level_for_push.upcase
       }
     )
   end
@@ -68,9 +68,9 @@ RSpec.describe 'Deleting a container registry protection rule', :aggregate_failu
   end
 
   context 'when current_user does not have permission' do
-    let_it_be(:developer) { create(:user).tap { |u| project.add_developer(u) } }
-    let_it_be(:reporter) { create(:user).tap { |u| project.add_reporter(u) } }
-    let_it_be(:guest) { create(:user).tap { |u| project.add_guest(u) } }
+    let_it_be(:developer) { create(:user, developer_of: project) }
+    let_it_be(:reporter) { create(:user, reporter_of: project) }
+    let_it_be(:guest) { create(:user, guest_of: project) }
     let_it_be(:anonymous) { create(:user) }
 
     where(:current_user) do

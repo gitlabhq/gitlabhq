@@ -36,7 +36,6 @@ module Ci
 
       return bad_request(response.message) if response.error?
 
-      update_merge_request_head_pipeline
       response
     end
 
@@ -73,6 +72,10 @@ module Ci
       ).tap do |new_pipeline|
         new_pipeline.ensure_project_iid!
         new_pipeline.save!
+
+        Gitlab::EventStore.publish(
+          Ci::PipelineCreatedEvent.new(data: { pipeline_id: new_pipeline.id })
+        )
       end
     end
 
@@ -104,14 +107,6 @@ module Ci
       ::Ci::Pipelines::AddJobService.new(pipeline).execute!(commit_status) do |job|
         apply_job_state!(job)
       end
-    end
-
-    def update_merge_request_head_pipeline
-      return unless pipeline.latest?
-
-      ::MergeRequest
-        .from_project(project).from_source_branches(ref)
-        .update_all(head_pipeline_id: pipeline.id)
     end
 
     def apply_job_state!(job)

@@ -55,6 +55,7 @@ module API
         authenticated user'
         requires :value, type: String, desc: 'The value of a variable'
         optional :protected, type: String, desc: 'Whether the variable is protected'
+        optional :masked_and_hidden, type: String, desc: 'Whether the variable is masked and hidden'
         optional :masked, type: String, desc: 'Whether the variable is masked'
         optional :raw, type: String, desc: 'Whether the variable will be expanded'
         optional :variable_type, type: String, values: ::Ci::GroupVariable.variable_types.keys, desc: 'The type of the variable. Default: env_var'

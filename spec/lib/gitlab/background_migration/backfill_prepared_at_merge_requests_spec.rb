@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::BackfillPreparedAtMergeRequests, :migration,
-  feature_category: :code_review_workflow, schema: 20230202135758 do
+  feature_category: :code_review_workflow, schema: 20230718020825 do
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }
   let(:mr_table) { table(:merge_requests) }

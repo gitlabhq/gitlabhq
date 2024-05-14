@@ -8,9 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/53016) in GitLab 13.9.
+**Offering:** Self-managed, GitLab Dedicated
 
 Group wiki repositories can be moved between storages. This API can help you, for example,
 [migrate to Gitaly Cluster](../administration/gitaly/index.md#migrate-to-gitaly-cluster)
@@ -213,7 +211,7 @@ Supported attributes:
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `group_id` | integer | yes | ID of the group. |
-| `destination_storage_name` | string | no | Name of the destination storage shard. In [GitLab 13.5 and later](https://gitlab.com/gitlab-org/gitaly/-/issues/3209), the storage is selected [based on storage weights](../administration/repository_storage_paths.md#configure-where-new-repositories-are-stored) if not provided. |
+| `destination_storage_name` | string | no | Name of the destination storage shard. The storage is selected [based on storage weights](../administration/repository_storage_paths.md#configure-where-new-repositories-are-stored) if not provided. |
 
 Example request:
 

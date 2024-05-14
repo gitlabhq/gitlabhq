@@ -19,14 +19,14 @@ RSpec.describe Gitlab::Utils::MimeType do
       using RSpec::Parameterized::TableSyntax
 
       where(:fixture, :mime_type) do
-        "banana_sample.gif"          | "image/gif"
-        "rails_sample.jpg"           | "image/jpeg"
-        "rails_sample.png"           | "image/png"
-        "rails_sample.bmp"           | "image/bmp"
-        "rails_sample.tif"           | "image/tiff"
-        "sample.ico"                 | "image/vnd.microsoft.icon"
-        "blockquote_fence_before.md" | "text/plain"
-        "csv_empty.csv"              | "application/x-empty"
+        "banana_sample.gif"                 | "image/gif"
+        "rails_sample.jpg"                  | "image/jpeg"
+        "rails_sample.png"                  | "image/png"
+        "rails_sample.bmp"                  | "image/bmp"
+        "rails_sample.tif"                  | "image/tiff"
+        "sample.ico"                        | "image/vnd.microsoft.icon"
+        "blockquote_fence_legacy_before.md" | "text/plain"
+        "csv_empty.csv"                     | "application/x-empty"
       end
 
       with_them do

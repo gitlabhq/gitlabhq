@@ -8,9 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/198550) in GitLab 13.1.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 For applications that use RSpec for running tests, we've introduced the `Verify/Failfast`
 [template to run subsets of your test suite](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates/Verify/FailFast.gitlab-ci.yml),

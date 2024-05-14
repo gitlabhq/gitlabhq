@@ -6,8 +6,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # Performance Guidelines
 
-This document describes various guidelines to follow to ensure good and
-consistent performance of GitLab. Refer to the [Index](#performance-documentation) section below to navigate to Performance-related pages.
+This document describes various guidelines to ensure good and consistent performance of GitLab.
 
 ## Performance Documentation
 
@@ -136,13 +135,13 @@ In short:
 
 - Don't trust benchmarks you find on the internet.
 - Never make claims based on just benchmarks, always measure in production to
-   confirm your findings.
+  confirm your findings.
 - X being N times faster than Y is meaningless if you don't know what impact it
-   has on your production environment.
+  has on your production environment.
 - A production environment is the _only_ benchmark that always tells the truth
-   (unless your performance monitoring systems are not set up correctly).
+  (unless your performance monitoring systems are not set up correctly).
 - If you must write a benchmark use the benchmark-ips Gem instead of Ruby's
-   `Benchmark` module.
+  `Benchmark` module.
 
 ## Profiling with Stackprof
 
@@ -267,8 +266,8 @@ This can be done via `pkill -USR2 puma:`. The `:` distinguishes between `puma
 4.3.3.gitlab.2 ...` (the master process) from `puma: cluster worker 0: ...` (the
 worker processes), selecting the latter.
 
-For Sidekiq, the signal can be sent to the `sidekiq-cluster` process via `pkill
--USR2 bin/sidekiq-cluster`, which forwards the signal to all Sidekiq
+For Sidekiq, the signal can be sent to the `sidekiq-cluster` process with
+`pkill -USR2 bin/sidekiq-cluster` which forwards the signal to all Sidekiq
 children. Alternatively, you can also select a specific PID of interest.
 
 ### Reading a Stackprof profile
@@ -443,7 +442,7 @@ There are two ways of measuring your own code:
 The `mem_*` values represent different aspects of how objects and memory are allocated in Ruby:
 
 - The following example will create around of `1000` of `mem_objects` since strings
-   can be frozen, and while the underlying string object remains the same, we still need to allocate 1000 references to this string:
+  can be frozen, and while the underlying string object remains the same, we still need to allocate 1000 references to this string:
 
   ```ruby
   Gitlab::Memory::Instrumentation.with_memory_allocations do
@@ -454,7 +453,7 @@ The `mem_*` values represent different aspects of how objects and memory are all
   ```
 
 - The following example will create around of `1000` of `mem_objects`, as strings are created dynamically.
-   Each of them will not allocate additional memory, as they fit into Ruby slot of 40 bytes:
+  Each of them will not allocate additional memory, as they fit into Ruby slot of 40 bytes:
 
   ```ruby
   Gitlab::Memory::Instrumentation.with_memory_allocations do
@@ -466,7 +465,7 @@ The `mem_*` values represent different aspects of how objects and memory are all
   ```
 
 - The following example will create around of `1000` of `mem_objects`, as strings are created dynamically.
-   Each of them will allocate additional memory as strings are larger than Ruby slot of 40 bytes:
+  Each of them will allocate additional memory as strings are larger than Ruby slot of 40 bytes:
 
   ```ruby
   Gitlab::Memory::Instrumentation.with_memory_allocations do
@@ -478,7 +477,7 @@ The `mem_*` values represent different aspects of how objects and memory are all
   ```
 
 - The following example will allocate over 40 kB of data, and perform only a single memory allocation.
-   The existing object will be reallocated/resized on subsequent iterations:
+  The existing object will be reallocated/resized on subsequent iterations:
 
   ```ruby
   Gitlab::Memory::Instrumentation.with_memory_allocations do
@@ -490,7 +489,7 @@ The `mem_*` values represent different aspects of how objects and memory are all
   ```
 
 - The following example will create over 1k of objects, perform over 1k of allocations, each time mutating the object.
-   This does result in copying a lot of data and perform a lot of memory allocations
+  This does result in copying a lot of data and perform a lot of memory allocations
   (as represented by `mem_bytes` counter) indicating very inefficient method of appending string:
 
   ```ruby
@@ -956,3 +955,19 @@ Assuming you are working with ActiveRecord models, you might also find these lin
 ### Examples
 
 You may find some useful examples in [this snippet](https://gitlab.com/gitlab-org/gitlab-foss/snippets/33946).
+
+## ExclusiveLease
+
+`Gitlab::ExclusiveLease` is a Redis-based locking mechanism that lets developers achieve mutual exclusion across distributed servers. There are several wrappers available for developers to make use of:
+
+1. The `Gitlab::ExclusiveLeaseHelpers` module provides a helper method to block the process or thread until the lease can be expired.
+1. The `ExclusiveLease::Guard` module helps get an exclusive lease for a running block of code.
+
+You should not use `ExclusiveLease` in a database transaction because any slow Redis I/O could increase idle transaction duration. The `.try_obtain` method checks if the lease attempt is within any database transactions, and tracks an exception in Sentry and the `log/exceptions_json.log`.
+
+In a test or development environment, any lease attempts in database transactions will raise a `Gitlab::ExclusiveLease::LeaseWithinTransactionError` unless performed within a `Gitlab::ExclusiveLease.skipping_transaction_check` block. You should only use the skip functionality in specs where possible, and placed as close to the lease as possible for ease of understanding. To keep the specs DRY, there are two parts of the codebase where the transaction check skips are re-used:
+
+1. `Users::Internal` is patched to skip transaction checks for bot creation in `let_it_be`.
+1. `FactoryBot` factory for `:deploy_key` skips transaction during the `DeployKey` model creation.
+
+Any use of `Gitlab::ExclusiveLease.skipping_transaction_check` in non-spec or non-fixture files should include links to an infradev issue for plans to remove it.

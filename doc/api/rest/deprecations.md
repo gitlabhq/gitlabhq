@@ -6,10 +6,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # REST API deprecations and removals
 
-The following API changes will occur when the v4 API is removed.
+The following API changes will occur between REST API v4 and v5.
+No date is set for this upgrade.
 
-The date of this change is unknown.
-For details, see [issue 216456](https://gitlab.com/gitlab-org/gitlab/-/issues/216456)
+For more information, see [issue 216456](https://gitlab.com/gitlab-org/gitlab/-/issues/216456)
 and [issue 387485](https://gitlab.com/gitlab-org/gitlab/-/issues/387485).
 
 ## `geo_nodes` API endpoints
@@ -87,7 +87,7 @@ Breaking change. [Related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/3
 Occurrences of the `active` identifier in the GitLab Runner GraphQL API endpoints will be
 renamed to `paused` in GitLab 16.0.
 
-- In v4 of the REST API, starting in GitLab 14.8, you can use the `paused` property in place of `active`
+- In v4 of the REST API, you can use the `paused` property in place of `active`
 - In v5 of the REST API, this change will affect endpoints taking or returning `active` property, such as:
   - `GET /runners`
   - `GET /runners/all`
@@ -116,3 +116,26 @@ Breaking change. [Related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/4
 
 In GitLab 17.0, the [Runners API](../runners.md) will return `""` in place of `ip_address` for runners.
 In v5 of the REST API, the field will be removed.
+
+## Runner will not return `version`, `revision`, `platform`, or `architecture`
+
+Breaking change. [Related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/457128).
+
+In GitLab 18.0, the [Runners API](../runners.md) will return `""` in place of `version`, `revision`, `platform`,
+and `architecture` for runners.
+In v5 of the REST API, the fields will be removed.
+
+## `default_branch_protection` API field 
+
+Breaking change. [Related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/408315).
+
+The `default_branch_protection` field is deprecated in GitLab 17.0 for the following APIs:
+
+- [New group API](../groups.md#new-group).
+- [Update group API](../groups.md#update-group).
+- [Application API](../settings.md#change-application-settings)
+
+You should use the `default_branch_protection_defaults` field instead, which provides more finer grained control
+over the default branch protections.
+
+The `default_branch_protection` field will be removed in v5 of the GitLab REST API.

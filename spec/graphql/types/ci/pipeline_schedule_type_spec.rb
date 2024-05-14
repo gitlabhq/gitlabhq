@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Types::Ci::PipelineScheduleType do
+RSpec.describe Types::Ci::PipelineScheduleType, feature_category: :continuous_integration do
   include GraphqlHelpers
 
   specify { expect(described_class.graphql_name).to eq('PipelineSchedule') }

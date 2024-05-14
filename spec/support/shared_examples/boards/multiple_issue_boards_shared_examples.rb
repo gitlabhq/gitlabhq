@@ -77,7 +77,7 @@ RSpec.shared_examples 'multiple issue boards' do
         expect(page).to have_content(board2.name)
       end
 
-      click_button 'Create list'
+      click_button 'New list'
 
       click_button 'Select a label'
 

@@ -26,7 +26,7 @@ RSpec.describe 'User searches for merge requests', :js, :clean_gitlab_redis_rate
   it 'shows scopes when there is no search term' do
     submit_dashboard_search('')
 
-    page.within('[data-testid="search-filter"]') do
+    within_testid('search-filter') do
       expect(page).to have_selector('[data-testid="nav-item"]', minimum: 5)
     end
   end
@@ -53,7 +53,7 @@ RSpec.describe 'User searches for merge requests', :js, :clean_gitlab_redis_rate
       expect(page.all('.search-result-row').last).to have_link(merge_request1.title)
     end
 
-    find('[data-testid="sort-highest-icon"]').click
+    find_by_testid('sort-highest-icon').click
 
     page.within('.results') do
       expect(page.all('.search-result-row').first).to have_link(merge_request1.title)
@@ -63,11 +63,11 @@ RSpec.describe 'User searches for merge requests', :js, :clean_gitlab_redis_rate
 
   context 'when on a project page' do
     it 'finds a merge request' do
-      find('[data-testid="project-filter"]').click
+      find_by_testid('project-filter').click
 
       wait_for_requests
 
-      page.within('[data-testid="project-filter"]') do
+      within_testid('project-filter') do
         select_listbox_item project.name
       end
 

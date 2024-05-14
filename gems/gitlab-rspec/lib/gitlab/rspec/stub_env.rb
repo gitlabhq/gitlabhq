@@ -29,7 +29,9 @@ module StubENV
   def add_stubbed_value(key, value)
     allow(ENV).to receive(:[]).with(key).and_return(value)
     allow(ENV).to receive(:key?).with(key).and_return(true)
-    allow(ENV).to receive(:fetch).with(key).and_return(value)
+    allow(ENV).to receive(:fetch).with(key) do |_|
+      value || raise(KeyError, "key not found: \"#{key}\"")
+    end
     allow(ENV).to receive(:fetch).with(key, anything) do |_, default_val|
       value || default_val
     end

@@ -11,7 +11,7 @@ module MergeRequests
 
     MAX_RETARGET_MERGE_REQUESTS = 4
 
-    def execute(merge_request)
+    def execute(merge_request, source = nil)
       return if merge_request.merged?
 
       # Mark the merge request as merged, everything that happens afterwards is
@@ -23,7 +23,7 @@ module MergeRequests
 
       merge_request_activity_counter.track_merge_mr_action(user: current_user)
 
-      create_note(merge_request)
+      create_note(merge_request, source)
       close_issues(merge_request)
       notification_service.merge_mr(merge_request, current_user)
       invalidate_cache_counts(merge_request, users: merge_request.assignees | merge_request.reviewers)
@@ -35,6 +35,16 @@ module MergeRequests
       deactivate_pages_deployments(merge_request)
 
       execute_hooks(merge_request, 'merge')
+    end
+
+    def create_note(merge_request, source)
+      SystemNoteService.change_status(
+        merge_request,
+        merge_request.target_project,
+        current_user,
+        merge_request.state,
+        source
+      )
     end
 
     private

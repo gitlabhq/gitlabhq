@@ -8,7 +8,7 @@
       .block.issuable-sidebar-header
         .filter-item.inline.update-issues-btn.float-left
           = render Pajamas::ButtonComponent.new(variant: :confirm, button_options: { type: 'submit', disabled: true, class: 'js-update-selected-issues' }) do
-            = _('Update all')
+            = _('Update selected')
         = render Pajamas::ButtonComponent.new(button_options: { class: 'js-bulk-update-menu-hide gl-float-right' }) do
           = _('Cancel')
       - if params[:state] != 'merged'
@@ -28,7 +28,7 @@
         .title
           = _('Labels')
         .filter-item.labels-filter
-          = render "shared/issuable/label_dropdown", classes: ["js-filter-bulk-update", "js-multiselect"], dropdown_title: _("Apply a label"), show_create: false, show_footer: false, extra_options: false, filter_submit: false, data_options: { persist_when_hide: "true", field_name: "update[label_ids][]", show_no: false, show_any: false, use_id: true, default_label: _("Labels") }, label_name: _("Select labels"), no_default_styles: true
+          = render "shared/issuable/label_dropdown", classes: ["js-filter-bulk-update", "js-multiselect"], dropdown_title: _("Apply a label"), show_footer: false, extra_options: false, filter_submit: false, data_options: { persist_when_hide: "true", field_name: "update[label_ids][]", show_no: false, show_any: false, use_id: true, default_label: _("Labels") }, label_name: _("Select labels"), no_default_styles: true
       .block
         .title
           = _('Milestone')

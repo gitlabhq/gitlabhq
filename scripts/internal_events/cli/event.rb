@@ -3,6 +3,7 @@
 module InternalEventsCli
   NEW_EVENT_FIELDS = [
     :description,
+    :internal_events,
     :category,
     :action,
     :label_description,
@@ -21,11 +22,11 @@ module InternalEventsCli
   ].freeze
 
   EVENT_DEFAULTS = {
+    internal_events: true,
     product_section: nil,
     product_stage: nil,
     product_group: nil,
-    introduced_by_url: 'TODO',
-    category: 'InternalEventTracking'
+    introduced_by_url: 'TODO'
   }.freeze
 
   Event = Struct.new(*NEW_EVENT_FIELDS, keyword_init: true) do

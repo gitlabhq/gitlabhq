@@ -21,9 +21,9 @@ For more information about Cells, see also:
 ## Cells Iterations
 
 - The [Cells 1.0](iterations/cells-1.0.md) target is to deliver a solution
-  for new enterprise customers using the SaaS GitLab.com offering.
+  for internal customers using the SaaS GitLab.com offering, and foundational work for Cells.
 - The [Cells 1.5](iterations/cells-1.5.md) target is to deliver a migration solution
-  for existing enterprise customers using the SaaS GitLab.com offering, built on top of architecture
+  for existing and new enterprise customers using the SaaS GitLab.com offering, built on top of architecture
   of Cells 1.0.
 - The [Cells 2.0](iterations/cells-2.0.md) target is to support a public and open source contribution
   model in a cellular architecture.
@@ -32,15 +32,11 @@ For more information about Cells, see also:
 
 See [Goals, Glossary and Requirements](goals.md).
 
-## Deployment Architecture
-
-See [Deployment Architecture](deployment-architecture.md).
-
-## Work streams
+## Workstreams
 
 We can't ship the entire Cells architecture in one go - it is too large.
-Instead, we are defining key work streams required by the project.
-For each work stream, we need to define the effort necessary to make features compliant with Cell 1.0, Cell 1.5, and Cell 2.0, respectively.
+Instead, we are defining key workstreams required by the project.
+For each workstream, we need to define the effort necessary to make features compliant with Cell 1.0, Cell 1.5, and Cell 2.0, respectively.
 
 It is expected that some objectives will not be completed for General Availability (GA), but will be enough to run Cells in production.
 
@@ -70,7 +66,7 @@ Under this objective the following steps are expected:
 
 1. **Cluster-wide deletions**
 
-    If entities deleted in Cell 2 are cross-referenced, they are properly deleted or nullified across clusters. We will likely re-use existing [loose foreign keys](../../../development/database/loose_foreign_keys.md) to extend it with cross-Cells data removal.
+    If entities deleted in Cell 2 are cross-referenced, they are properly deleted or nullified across clusters. We will likely reuse existing [loose foreign keys](../../../development/database/loose_foreign_keys.md) to extend it with cross-Cells data removal.
 
 1. **Data access layer**
 
@@ -83,7 +79,7 @@ Under this objective the following steps are expected:
 ### 2. Workflows
 
 To make Cells viable we require to define and support essential workflows before we can consider the Cells to be of Beta quality.
-Workflows are meant to cover the majority of application functionality that makes the product mostly useable, but with some caveats.
+Workflows are meant to cover the majority of application functionality that makes the product mostly usable, but with some caveats.
 
 The current approach is to define workflows from top to bottom.
 The order defines the presumed priority of the items.
@@ -190,11 +186,13 @@ flowchart TD
 
 ### 3. Routing layer
 
-See [Cells: Routing Service](routing-service.md).
+See [Cells: Routing Service](routing-service.md) for HTTP Routing.
 
-### 4. Cell deployment
+See [Cells: SSH Routing Service](ssh_routing_service.md) for SSH Routing.
 
-See [Cell: Application deployment](application-deployment.md).
+### 4. Infrastructure
+
+See [Cell: Infrastructure](infrastructure/index.md).
 
 ### 5. Migration
 
@@ -222,7 +220,7 @@ We are following the [Support for Experiment, Beta, and Generally Available feat
 
 Expectations:
 
-- We can deploy a Cell on staging or another testing environment by using a separate domain (for example `cell2.staging.gitlab.com`) using [Cell deployment](#4-cell-deployment) tooling.
+- We can deploy a Cell on staging or another testing environment by using a separate domain (for example `cell2.staging.gitlab.com`) using [infrastructure](#4-infrastructure) tooling.
 - User can create Organization, Group and Project, and run some of the [workflows](#2-workflows).
 - It is not expected to be able to run a router to serve all requests under a single domain.
 - We expect data loss of data stored on additional Cells.
@@ -251,60 +249,16 @@ Expectations:
 
 - We can [migrate](#5-migration) existing Organizations onto new Cells.
 
-## Iteration plan
-
-The delivered iterations will focus on solving particular steps of a given key work stream.
-It is expected that initial iterations will be rather slow, because they require substantially more changes to prepare the codebase for data split.
-
-### [Iteration 1](https://gitlab.com/groups/gitlab-org/-/epics/9667) (FY24Q1)
-
-- Data access layer: Initial Admin Area settings are shared across cluster.
-- Workflow: Allow to share cluster-wide data with database-level data access layer.
-
-### [Iteration 2](https://gitlab.com/groups/gitlab-org/-/epics/9813) (FY24Q2-FY24Q3)
-
-- Workflow: User accounts are shared across cluster.
-- Workflow: User can create Group.
-
-### [Iteration 3](https://gitlab.com/groups/gitlab-org/-/epics/10997) (FY24Q4-FY25Q1)
-
-- Workflow: User can create Project.
-- Routing: Technology.
-- Routing: Cell discovery.
-
-### [Iteration 4](https://gitlab.com/groups/gitlab-org/-/epics/10998) (FY25Q1-FY25Q2)
-
-- Workflow: User can create Organization on Cell 2.
-
-### Iteration 5..N - starting FY25Q3
-
-- Data access layer: Cluster-unique identifiers.
-- Data access layer: Evaluate the efficiency of database-level access vs. API-oriented access layer.
-- Data access layer: Data access layer.
-- Routing: User can use single domain to interact with many Cells.
-- Cell deployment: Extend GitLab Dedicated to support GCP.
-- Workflow: User can create Project with a README file.
-- Workflow: User can push to Git repository.
-- Workflow: User can run CI pipeline.
-- Workflow: Instance-wide settings are shared across cluster.
-- Workflow: User can change profile avatar that is shared in cluster.
-- Workflow: User can create issue.
-- Workflow: User can create merge request, and merge it after it is green.
-- Workflow: User can manage Group and Project members.
-- Workflow: User can manage instance-wide runners.
-- Workflow: User is part of Organization and can only see information from the Organization.
-- Routing: Router endpoints classification.
-- Routing: GraphQL and other ambiguous endpoints.
-- Data access layer: Allow to share cluster-wide data with database-level data access layer.
-- Data access layer: Cluster-wide deletions.
-- Data access layer: Database migrations.
-
 ## Technical proposals
 
 The Cells architecture has long lasting implications to data processing, location, scalability and the GitLab architecture.
 This section links all different technical proposals that are being evaluated.
 
-- [Routing Service](routing-service.md)
+- [HTTP Routing Service](routing-service.md)
+- [Topology Service](topology_service.md)
+- [Feature Flags](feature_flags.md)
+- Planned: SSH Routing Service
+- Planned: Indexing Service
 
 ## Impacted features
 
@@ -351,13 +305,15 @@ The following list of impacted features only represents placeholders that still 
 
 ### What's the difference between Cells architecture and GitLab Dedicated?
 
+We've captured individual thoughts and differences between Cells and Dedicated over [here](infrastructure/diff-between-dedicated.md)
+
 The new Cells architecture is meant to scale GitLab.com.
 The way to achieve this is by moving Organizations into Cells, but different Organizations can still share server resources, even if the application provides isolation from other Organizations.
 But all of them still operate under the existing GitLab SaaS domain name `gitlab.com`.
 Also, Cells still share some common data, like `users`, and routing information of Groups and Projects.
 For example, no two users can have the same username even if they belong to different Organizations that exist on different Cells.
 
-With the aforementioned differences, [GitLab Dedicated](https://about.gitlab.com/dedicated/) is still offered at higher costs due to the fact that it's provisioned via dedicated server resources for each customer, while Cells use shared resources.
+With the aforementioned differences, [GitLab Dedicated](https://about.gitlab.com/dedicated/) is still offered at higher costs due to the fact that it's provisioned with dedicated server resources for each customer, while Cells use shared resources.
 This makes GitLab Dedicated more suited for bigger customers, and GitLab Cells more suitable for small to mid-size companies that are starting on GitLab.com.
 
 On the other hand, GitLab Dedicated is meant to provide a completely isolated GitLab instance for any Organization.
@@ -366,8 +322,7 @@ For example, users on GitLab Dedicated don't have to have a different and unique
 
 ### Can different Cells communicate with each other?
 
-Up until iteration 3, Cells communicate with each other only via a shared database that contains common data.
-In iteration 4 we are going to evaluate the option of Cells calling each other via API to provide more isolation and reliability.
+Not directly, our goal is to keep them isolated and only communicate using global services.
 
 ### How are Cells provisioned?
 
@@ -414,10 +369,13 @@ Cluster-wide features are strongly discouraged because:
 - They might require implementation of non-trivial [data aggregation](goals.md#aggregation-of-cluster-wide-data) that reduces resilience to [single node failure](goals.md#high-resilience-to-a-single-cell-failure).
 - They are harder to build due to the need of being able to run [mixed deployments](goals.md#cells-running-in-mixed-deployments). Cluster-wide features need to take this into account.
 - They might affect our ability to provide an [on-premise like experience on GitLab.com](goals.md#on-premise-like-experience).
-- Some features that are expected to be cluster-wide might in fact be better implemented using federation techniques that use trusted intra-cluster communication using the same user identity. User Profile is shared across the cluster.
-- The Cells architecture limits what services can be considered cluster-wide. Services that might initially be cluster-wide are still expected to be split in the future to achieve full service isolation. No feature should be built to depend on such a service (like Elasticsearch).
+- Some features that are expected to be cluster-wide might in fact be better implemented using aggregation techniques that use trusted intra-cluster communication using the same user identity.
+  For example, user Profile is shared across the cluster.
+- The Cells architecture limits what services can be considered cluster-wide.
+  Services that might initially be cluster-wide are still expected to be split in the future to achieve full service isolation.
+  No feature should be built to depend on such a service (like Elasticsearch).
 
-### Will Cells use the [reference architecture for 50,000 users](../../../administration/reference_architectures/50k_users.md)?
+### Will Cells use the [reference architecture for up to 1000 RPS or 50,000 users](../../../administration/reference_architectures/50k_users.md)?
 
 The infrastructure team will properly size Cells depending on the load.
 The Tenant Scale team sees an opportunity to use GitLab Dedicated as a base for Cells deployment.
@@ -425,6 +383,12 @@ The Tenant Scale team sees an opportunity to use GitLab Dedicated as a base for 
 ## Decision log
 
 - [ADR-001: Routing Technology using Cloudflare Workers](decisions/001_routing_technology.md)
+- [ADR-002: One GCP Project per Cell](decisions/002_gcp_project_boundary.md)
+- [ADR-003: One GKE Cluster per Cell](decisions/003_num_gke_clusters_per_cell.md)
+- [ADR-004: One VPC per Cell, with Private Service Connect for internal communication between Cells](decisions/004_vpc_subnet_design.md)
+- [ADR-005: Cells use Flexible Reference Architectures](decisions/005_flexible_reference_architectures.md)
+- [ADR-006: Use Geo for Disaster Recovery](decisions/006_disaster_recovery_geo.md)
+- [ADR-007: Cells 1.0 for internal customers only](decisions/007_internal_customers.md)
 
 ## Links
 

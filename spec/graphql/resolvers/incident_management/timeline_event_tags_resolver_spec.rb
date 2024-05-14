@@ -6,7 +6,7 @@ RSpec.describe Resolvers::IncidentManagement::TimelineEventTagsResolver do
   include GraphqlHelpers
 
   let_it_be(:current_user) { create(:user) }
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project) { create(:project, guests: current_user) }
   let_it_be(:incident) { create(:incident, project: project) }
 
   let_it_be(:timeline_event) do
@@ -35,10 +35,6 @@ RSpec.describe Resolvers::IncidentManagement::TimelineEventTagsResolver do
 
   subject(:resolved_timeline_event_tags) do
     sync(resolve_timeline_event_tags(timeline_event, current_user: current_user).to_a)
-  end
-
-  before do
-    project.add_guest(current_user)
   end
 
   specify do

@@ -133,10 +133,12 @@ module SystemNotes
       create_note(NoteSummary.new(noteable, project, author, body, action: 'reviewer'))
     end
 
-    def request_review(user)
-      body = "#{self.class.issuable_events[:review_requested]} #{user.to_reference}"
+    def request_review(user, has_unapproved)
+      body = ["#{self.class.issuable_events[:review_requested]} #{user.to_reference}"]
 
-      create_note(NoteSummary.new(noteable, project, author, body, action: 'reviewer'))
+      body << "removed approval" if has_unapproved
+
+      create_note(NoteSummary.new(noteable, project, author, body.to_sentence, action: 'reviewer'))
     end
 
     # Called when the contacts of an issuable are changed or removed
@@ -208,7 +210,7 @@ module SystemNotes
       params = hierarchy_note_params(action, noteable, work_item)
 
       create_note(NoteSummary.new(noteable, project, author, params[:parent_note_body], action: params[:parent_action]))
-      create_note(NoteSummary.new(work_item, project, author, params[:child_note_body], action: params[:child_action]))
+      create_note(NoteSummary.new(work_item, work_item.project, author, params[:child_note_body], action: params[:child_action]))
     end
 
     # Called when the description of a Noteable is changed
@@ -438,7 +440,7 @@ module SystemNotes
     end
 
     def email_participants(body)
-      create_note(NoteSummary.new(noteable, project, author, body))
+      create_note(NoteSummary.new(noteable, project, author, body, action: 'issue_email_participants'))
     end
 
     def discussion_lock

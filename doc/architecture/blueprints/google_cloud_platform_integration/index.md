@@ -20,15 +20,15 @@ available in [GitLab-internal project](https://gitlab.com/gitlab-org/architectur
 
 <!-- vale gitlab.Spelling = NO -->
 
-| Who                    | Role
-|------------------------|--------------------------------------------------|
-| Sam Goldstein          | Director of Engineering, Engineering DRI         |
-| Grzegorz Bizon         | Distinguished Engineer - Technical Lead                          |
-| Jessie Young           | Principal Engineer                               |
-| David Fernandez        | Staff Engineer                                   |
-| Imre Farkas            | Staff Engineer                                   |
-| João Pereira           | Staff Engineer                                   |
-| Joe Burnett            | Staff Engineer                                   |
-| Tomasz Maczukin        | Senior Engineer                                  |
+| Who             | Role |
+|-----------------|------|
+| Sam Goldstein   | Director of Engineering, Engineering DRI |
+| Grzegorz Bizon  | Distinguished Engineer - Technical Lead |
+| Jessie Young    | Principal Engineer |
+| David Fernandez | Staff Engineer |
+| Imre Farkas     | Staff Engineer |
+| João Pereira    | Staff Engineer |
+| Joe Burnett     | Staff Engineer |
+| Tomasz Maczukin | Senior Engineer |
 
 <!-- vale gitlab.Spelling = YES -->

@@ -1,3 +1,8 @@
+/*
+Package upstream provides functionality for handling upstream requests.
+
+This package includes handlers for managing request routing and interaction with upstream servers.
+*/
 package upstream
 
 import (
@@ -29,7 +34,7 @@ func contentEncodingHandler(h http.Handler) http.Handler {
 			fail.Request(w, r, fmt.Errorf("contentEncodingHandler: %v", err))
 			return
 		}
-		defer body.Close()
+		defer func() { _ = body.Close() }()
 
 		r.Body = body
 		r.Header.Del("Content-Encoding")

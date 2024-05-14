@@ -104,7 +104,7 @@ export default {
                 >
               </gl-sprintf>
             </li>
-            <li class="gl-list-style-none">
+            <li class="gl-list-none">
               <div class="gl-display-flex align-items-start">
                 <pre
                   :id="modalInfoCopyId"

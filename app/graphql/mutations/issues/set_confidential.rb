@@ -8,9 +8,9 @@ module Mutations
       include Mutations::SpamProtection
 
       argument :confidential,
-               GraphQL::Types::Boolean,
-               required: true,
-               description: 'Whether or not to set the issue as a confidential.'
+        GraphQL::Types::Boolean,
+        required: true,
+        description: 'Whether or not to set the issue as a confidential.'
 
       def resolve(project_path:, iid:, confidential:)
         issue = authorized_find!(project_path: project_path, iid: iid)

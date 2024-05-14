@@ -2,9 +2,7 @@
 
 class UnionFinder
   def find_union(segments, klass)
-    unless klass < FromUnion
-      raise TypeError, "#{klass.inspect} must include the FromUnion module"
-    end
+    raise TypeError, "#{klass.inspect} must include the FromUnion module" unless klass < FromUnion
 
     if segments.length > 1
       klass.from_union(segments)

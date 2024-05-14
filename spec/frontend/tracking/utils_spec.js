@@ -6,6 +6,7 @@ import {
   filterOldReferrersCacheEntries,
   InternalEventHandler,
   createInternalEventPayload,
+  validateAdditionalProperties,
 } from '~/tracking/utils';
 import { TRACKING_CONTEXT_SCHEMA } from '~/experimentation/constants';
 import { REFERRER_TTL, URLS_CACHE_STORAGE_KEY } from '~/tracking/constants';
@@ -102,7 +103,22 @@ describe('~/tracking/utils', () => {
       it('should return event name from element', () => {
         const mockEl = { dataset: { eventTracking: 'click' } };
         const result = createInternalEventPayload(mockEl);
-        expect(result).toEqual('click');
+        expect(result).toEqual({ additionalProperties: {}, event: 'click' });
+      });
+      it('should return event and additional Properties from element', () => {
+        const mockEl = {
+          dataset: {
+            eventTracking: 'click',
+            eventProperty: 'test-property',
+            eventLabel: 'test-label',
+            eventValue: 2,
+          },
+        };
+        const result = createInternalEventPayload(mockEl);
+        expect(result).toEqual({
+          additionalProperties: { property: 'test-property', label: 'test-label', value: 2 },
+          event: 'click',
+        });
       });
     });
 
@@ -126,11 +142,48 @@ describe('~/tracking/utils', () => {
         InternalEventHandler(mockEvent, mockFunc);
 
         if (shouldCallFunc) {
-          expect(mockFunc).toHaveBeenCalledWith(payload);
+          expect(mockFunc).toHaveBeenCalledWith(payload, {});
         } else {
           expect(mockFunc).not.toHaveBeenCalled();
         }
       });
+    });
+  });
+
+  describe('validateAdditionalProperties', () => {
+    it('returns undefined for allowed additional properties', () => {
+      const additionalProperties = {
+        label: 'value',
+        property: 'property',
+        value: 123,
+      };
+
+      expect(validateAdditionalProperties(additionalProperties)).toBe(undefined);
+    });
+
+    it('throws an error if unallowed additional properties are passed', () => {
+      const additionalProperties = {
+        role: 'admin',
+      };
+
+      expect(() => {
+        validateAdditionalProperties(additionalProperties);
+      }).toThrow(
+        'Allowed additional properties are label, property, value for InternalEvents tracking.\nDisallowed additional properties were provided: role.',
+      );
+    });
+
+    it('throws an error and lists all disallowed additional properties if multiple are passed', () => {
+      const additionalProperties = {
+        node: 'admin',
+        lang: 'golang',
+      };
+
+      expect(() => {
+        validateAdditionalProperties(additionalProperties);
+      }).toThrow(
+        'Allowed additional properties are label, property, value for InternalEvents tracking.\nDisallowed additional properties were provided: node, lang.',
+      );
     });
   });
 });

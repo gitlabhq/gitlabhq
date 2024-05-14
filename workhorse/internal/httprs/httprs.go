@@ -28,9 +28,9 @@ import (
 
 const shortSeekBytes = 1024
 
-// A HttpReadSeeker reads from a http.Response.Body. It can Seek
+// A HTTPReadSeeker reads from a http.Response.Body. It can Seek
 // by doing range requests.
-type HttpReadSeeker struct {
+type HTTPReadSeeker struct {
 	c   *http.Client
 	req *http.Request
 	res *http.Response
@@ -41,8 +41,8 @@ type HttpReadSeeker struct {
 	Requests int
 }
 
-var _ io.ReadCloser = (*HttpReadSeeker)(nil)
-var _ io.Seeker = (*HttpReadSeeker)(nil)
+var _ io.ReadCloser = (*HTTPReadSeeker)(nil)
+var _ io.Seeker = (*HTTPReadSeeker)(nil)
 
 var (
 	// ErrNoContentLength is returned by Seek when the initial http response did not include a Content-Length header
@@ -56,13 +56,13 @@ var (
 	ErrContentHasChanged = errors.New("content has changed since first request")
 )
 
-// NewHttpReadSeeker returns a HttpReadSeeker, using the http.Response and, optionaly, the http.Client
+// NewHTTPReadSeeker returns a HttpReadSeeker, using the http.Response and, optionaly, the http.Client
 // that needs to be used for future range requests. If no http.Client is given, http.DefaultClient will
 // be used.
 //
 // res.Request will be reused for range requests, headers may be added/removed
-func NewHttpReadSeeker(res *http.Response, client ...*http.Client) *HttpReadSeeker {
-	r := &HttpReadSeeker{
+func NewHTTPReadSeeker(res *http.Response, client ...*http.Client) *HTTPReadSeeker {
+	r := &HTTPReadSeeker{
 		req: res.Request,
 		ctx: res.Request.Context(),
 		res: res,
@@ -77,12 +77,12 @@ func NewHttpReadSeeker(res *http.Response, client ...*http.Client) *HttpReadSeek
 }
 
 // Clone clones the reader to enable parallel downloads of ranges
-func (r *HttpReadSeeker) Clone() (*HttpReadSeeker, error) {
+func (r *HTTPReadSeeker) Clone() (*HTTPReadSeeker, error) {
 	req, err := copystructure.Copy(r.req)
 	if err != nil {
 		return nil, err
 	}
-	return &HttpReadSeeker{
+	return &HTTPReadSeeker{
 		req: req.(*http.Request),
 		res: r.res,
 		r:   nil,
@@ -93,7 +93,7 @@ func (r *HttpReadSeeker) Clone() (*HttpReadSeeker, error) {
 // Read reads from the response body. It does a range request if Seek was called before.
 //
 // May return ErrRangeRequestsNotSupported, ErrInvalidRange or ErrContentHasChanged
-func (r *HttpReadSeeker) Read(p []byte) (n int, err error) {
+func (r *HTTPReadSeeker) Read(p []byte) (n int, err error) {
 	if r.r == nil {
 		err = r.rangeRequest()
 	}
@@ -107,10 +107,10 @@ func (r *HttpReadSeeker) Read(p []byte) (n int, err error) {
 // ReadAt reads from the response body starting at offset off.
 //
 // May return ErrRangeRequestsNotSupported, ErrInvalidRange or ErrContentHasChanged
-func (r *HttpReadSeeker) ReadAt(p []byte, off int64) (n int, err error) {
+func (r *HTTPReadSeeker) ReadAt(p []byte, off int64) (n int, err error) {
 	var nn int
 
-	r.Seek(off, 0)
+	_, _ = r.Seek(off, 0)
 
 	for n < len(p) && err == nil {
 		nn, err = r.Read(p[n:])
@@ -120,7 +120,7 @@ func (r *HttpReadSeeker) ReadAt(p []byte, off int64) (n int, err error) {
 }
 
 // Close closes the response body
-func (r *HttpReadSeeker) Close() error {
+func (r *HTTPReadSeeker) Close() error {
 	if r.r != nil {
 		return r.r.Close()
 	}
@@ -133,7 +133,7 @@ func (r *HttpReadSeeker) Close() error {
 // The http request will be sent by the next Read call.
 //
 // May return ErrNoContentLength or ErrRangeRequestsNotSupported
-func (r *HttpReadSeeker) Seek(offset int64, whence int) (int64, error) {
+func (r *HTTPReadSeeker) Seek(offset int64, whence int) (int64, error) {
 	var err error
 	switch whence {
 	case 0:
@@ -148,9 +148,9 @@ func (r *HttpReadSeeker) Seek(offset int64, whence int) (int64, error) {
 	if r.r != nil {
 		// Try to read, which is cheaper than doing a request
 		if r.pos < offset && offset-r.pos <= shortSeekBytes {
-			_, err := io.CopyN(io.Discard, r, offset-r.pos)
-			if err != nil {
-				return 0, err
+			_, copyNErr := io.CopyN(io.Discard, r, offset-r.pos)
+			if copyNErr != nil {
+				return 0, copyNErr
 			}
 		}
 
@@ -173,7 +173,7 @@ func cloneHeader(h http.Header) http.Header {
 	return h2
 }
 
-func (r *HttpReadSeeker) newRequest() *http.Request {
+func (r *HTTPReadSeeker) newRequest() *http.Request {
 	newreq := r.req.WithContext(r.ctx) // includes shallow copies of maps, but okay
 	if r.req.ContentLength == 0 {
 		newreq.Body = nil // Issue 16036: nil Body for http.Transport retries
@@ -182,7 +182,7 @@ func (r *HttpReadSeeker) newRequest() *http.Request {
 	return newreq
 }
 
-func (r *HttpReadSeeker) rangeRequest() error {
+func (r *HTTPReadSeeker) rangeRequest() error {
 	r.req = r.newRequest()
 	r.req.Header.Set("Range", fmt.Sprintf("bytes=%d-", r.pos))
 	etag, last := r.res.Header.Get("ETag"), r.res.Header.Get("Last-Modified")
@@ -213,5 +213,7 @@ func (r *HttpReadSeeker) rangeRequest() error {
 		r.r = res.Body
 		return nil
 	}
+
+	_ = res.Body.Close()
 	return ErrRangeRequestsNotSupported
 }

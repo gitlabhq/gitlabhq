@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe API::SidekiqMetrics, :aggregate_failures, feature_category: :shared do
+  let(:instance_count) { 1 }
   let(:admin) { create(:user, :admin) }
 
   describe 'GET sidekiq/*' do
@@ -13,50 +14,71 @@ RSpec.describe API::SidekiqMetrics, :aggregate_failures, feature_category: :shar
       end
     end
 
-    it 'defines the `queue_metrics` endpoint' do
-      get api('/sidekiq/queue_metrics', admin, admin_mode: true)
+    shared_examples 'GET sidekiq metrics' do
+      it 'defines the `queue_metrics` endpoint' do
+        expect(Gitlab::SidekiqConfig).to receive(:routing_queues).exactly(instance_count).times.and_call_original
+        get api('/sidekiq/queue_metrics', admin, admin_mode: true)
 
-      expect(response).to have_gitlab_http_status(:ok)
-      expect(json_response).to match a_hash_including(
-        'queues' => a_hash_including(
-          'default' => {
-            'backlog' => be_a(Integer),
-            'latency' => be_a(Integer)
-          },
-          'mailers' => {
-            'backlog' => be_a(Integer),
-            'latency' => be_a(Integer)
-          }
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to match a_hash_including(
+          'queues' => a_hash_including(
+            'default' => {
+              'backlog' => be_a(Integer),
+              'latency' => be_a(Integer)
+            },
+            'mailers' => {
+              'backlog' => be_a(Integer),
+              'latency' => be_a(Integer)
+            }
+          )
         )
-      )
+      end
+
+      it 'defines the `process_metrics` endpoint' do
+        expect(Sidekiq::ProcessSet).to receive(:new).exactly(instance_count).times.and_call_original
+        get api('/sidekiq/process_metrics', admin, admin_mode: true)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['processes']).to be_an Array
+      end
+
+      it 'defines the `job_stats` endpoint' do
+        expect(Sidekiq::Stats).to receive(:new).exactly(instance_count).times.and_call_original
+        get api('/sidekiq/job_stats', admin, admin_mode: true)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to be_a Hash
+        expect(json_response['jobs']).to be_a Hash
+        expect(json_response['jobs'].keys)
+          .to contain_exactly(*%w[processed failed enqueued dead])
+        expect(json_response['jobs'].values).to all(be_an(Integer))
+      end
+
+      it 'defines the `compound_metrics` endpoint' do
+        expect(Sidekiq::Stats).to receive(:new).exactly(instance_count).times.and_call_original
+        expect(Sidekiq::ProcessSet).to receive(:new).exactly(instance_count).times.and_call_original
+        expect(Gitlab::SidekiqConfig).to receive(:routing_queues).exactly(instance_count).times.and_call_original
+        get api('/sidekiq/compound_metrics', admin, admin_mode: true)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to be_a Hash
+        expect(json_response['queues']).to be_a Hash
+        expect(json_response['processes']).to be_an Array
+        expect(json_response['jobs']).to be_a Hash
+      end
     end
 
-    it 'defines the `process_metrics` endpoint' do
-      get api('/sidekiq/process_metrics', admin, admin_mode: true)
+    context 'with multiple Sidekiq Redis' do
+      let(:instance_count) { 2 }
 
-      expect(response).to have_gitlab_http_status(:ok)
-      expect(json_response['processes']).to be_an Array
+      before do
+        allow(Gitlab::Redis::Queues)
+          .to receive(:instances).and_return({ 'main' => Gitlab::Redis::Queues, 'shard' => Gitlab::Redis::Queues })
+      end
+
+      it_behaves_like 'GET sidekiq metrics'
     end
 
-    it 'defines the `job_stats` endpoint' do
-      get api('/sidekiq/job_stats', admin, admin_mode: true)
-
-      expect(response).to have_gitlab_http_status(:ok)
-      expect(json_response).to be_a Hash
-      expect(json_response['jobs']).to be_a Hash
-      expect(json_response['jobs'].keys)
-        .to contain_exactly(*%w[processed failed enqueued dead])
-      expect(json_response['jobs'].values).to all(be_an(Integer))
-    end
-
-    it 'defines the `compound_metrics` endpoint' do
-      get api('/sidekiq/compound_metrics', admin, admin_mode: true)
-
-      expect(response).to have_gitlab_http_status(:ok)
-      expect(json_response).to be_a Hash
-      expect(json_response['queues']).to be_a Hash
-      expect(json_response['processes']).to be_an Array
-      expect(json_response['jobs']).to be_a Hash
-    end
+    it_behaves_like 'GET sidekiq metrics'
   end
 end

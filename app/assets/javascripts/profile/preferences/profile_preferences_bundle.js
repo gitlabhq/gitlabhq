@@ -8,7 +8,7 @@ export default () => {
 
   const el = document.querySelector('#js-profile-preferences-app');
   const formEl = document.querySelector('#profile-preferences-form');
-  const shouldParse = ['integrationViews', 'themes', 'userFields'];
+  const shouldParse = ['integrationViews', 'colorModes', 'themes', 'userFields'];
 
   const provide = Object.keys(el.dataset).reduce(
     (memo, key) => {

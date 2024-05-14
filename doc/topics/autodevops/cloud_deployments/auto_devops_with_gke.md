@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 In this tutorial, we'll help you to get started with [Auto DevOps](../index.md)
 through an example of how to deploy an application to Google Kubernetes Engine (GKE).
@@ -81,7 +81,7 @@ Now you have an application project you are going to deploy to the GKE cluster.
 Now we need to configure the GitLab agent for Kubernetes for us to be able to use it to deploy the application project.
 
 1. Go to the project [we created to manage the cluster](#create-a-kubernetes-cluster).
-1. Navigate to the [agent configuration file](../../../user/clusters/agent/install/index.md#create-an-agent-configuration-file) (`.gitlab/agents/<agent-name>/config.yaml`) and edit it.
+1. Go to the [agent configuration file](../../../user/clusters/agent/install/index.md#create-an-agent-configuration-file) (`.gitlab/agents/<agent-name>/config.yaml`) and edit it.
 1. Configure `ci_access:projects` attribute. Use application's project path as `id`:
 
 ```yaml
@@ -175,7 +175,7 @@ The jobs are separated into stages:
   are allowed to fail in the test stage:
 
   - The `test` job runs unit and integration tests by detecting the language and
-    framework ([Auto Test](../stages.md#auto-test-deprecated))
+    framework ([Auto Test](../stages.md#auto-test))
   - The `code_quality` job checks the code quality and is allowed to fail
     ([Auto Code Quality](../stages.md#auto-code-quality))
   - The `container_scanning` job checks the Docker container if it has any

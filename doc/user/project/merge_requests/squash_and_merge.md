@@ -2,13 +2,14 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: "Understand and configure the commit squashing options available in GitLab."
 ---
 
 # Squash and merge
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 As you work on a feature branch, you often create small, self-contained commits. These small commits
 help describe the process of building a feature, but can clutter your Git history after the feature
@@ -46,7 +47,9 @@ Prerequisites:
 
 To do this:
 
-1. Go to the merge request and select **Edit**.
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Code > Merge requests** and find your merge request.
+1. Select **Edit**.
 1. Select or clear the **Squash commits when merge request is accepted** checkbox.
 1. Select **Save changes**.
 
@@ -55,8 +58,9 @@ To do this:
 If your project allows you to select squashing options for merge requests, to
 squash the commits as part of the merge process:
 
-1. Go to the merge request, and scroll to the merge request reports section that
-   contains the **Merge** button.
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Code > Merge requests** and find your merge request.
+1. Scroll to the merge request reports section that contains the **Merge** button.
 1. Ensure the **Squash commits** checkbox is selected. This checkbox doesn't display
    if the project's squashing option is set to either **Do not allow** or **Require**.
 1. Optional. To modify either the squash commit message or the merge commit message
@@ -64,10 +68,6 @@ squash the commits as part of the merge process:
 1. When the merge request is ready to merge, select **Merge**.
 
 ## Configure squash options for a project
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17613) in GitLab 13.2 [with a flag](../../../administration/feature_flags.md) named `squash_options`, disabled by default.
-> - [Enabled on GitLab.com and self-managed by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/39382) in GitLab 13.3.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/232536) in GitLab 13.8. Feature flag `squash_options` removed.
 
 Prerequisites:
 

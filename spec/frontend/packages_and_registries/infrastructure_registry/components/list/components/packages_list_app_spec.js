@@ -4,6 +4,7 @@ import Vue from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import setWindowLocation from 'helpers/set_window_location_helper';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import { createAlert, VARIANT_INFO } from '~/alert';
 import * as commonUtils from '~/lib/utils/common_utils';
 import PackageListApp from '~/packages_and_registries/infrastructure_registry/list/components/packages_list_app.vue';
@@ -12,6 +13,7 @@ import { SHOW_DELETE_SUCCESS_ALERT } from '~/packages_and_registries/shared/cons
 
 import * as packageUtils from '~/packages_and_registries/shared/utils';
 import InfrastructureSearch from '~/packages_and_registries/infrastructure_registry/list/components/infrastructure_search.vue';
+import InfrastructureTitle from '~/packages_and_registries/infrastructure_registry/list/components/infrastructure_title.vue';
 import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
 
 jest.mock('~/lib/utils/common_utils');
@@ -29,10 +31,10 @@ describe('packages_list_app', () => {
   };
   const GlLoadingIcon = { name: 'gl-loading-icon', template: '<div>loading</div>' };
 
-  const emptyListHelpUrl = 'helpUrl';
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findListComponent = () => wrapper.findComponent(PackageList);
   const findInfrastructureSearch = () => wrapper.findComponent(InfrastructureSearch);
+  const findInfrastructureTitle = () => wrapper.findComponent(InfrastructureTitle);
 
   const createStore = ({ isGroupPage = false, filter = [], packageCount = 0 } = {}) => {
     store = new Vuex.Store({
@@ -41,8 +43,6 @@ describe('packages_list_app', () => {
         config: {
           resourceId: 'project_id',
           emptyListIllustration: 'helpSvg',
-          emptyListHelpUrl,
-          packageHelpUrl: 'foo',
           isGroupPage,
         },
         filter,
@@ -150,12 +150,18 @@ describe('packages_list_app', () => {
     it('generate the correct empty list link', () => {
       const link = findListComponent().findComponent(GlLink);
 
-      expect(link.attributes('href')).toBe(emptyListHelpUrl);
+      expect(link.attributes('href')).toBe(
+        helpPagePath('user/packages/terraform_module_registry/index'),
+      );
       expect(link.text()).toBe('publish and share your packages');
     });
 
     it('includes the right content on the default tab', () => {
       expect(heading().text()).toBe('You have no Terraform modules in your project');
+    });
+
+    it('does not show infrastructure registry title', () => {
+      expect(findInfrastructureTitle().exists()).toBe(false);
     });
 
     describe('when group page', () => {
@@ -199,6 +205,10 @@ describe('packages_list_app', () => {
 
       it('exists', () => {
         expect(findInfrastructureSearch().exists()).toBe(true);
+      });
+
+      it('shows infrastructure registry title', () => {
+        expect(findInfrastructureTitle().exists()).toBe(true);
       });
 
       it('on update fetches data from the store', () => {

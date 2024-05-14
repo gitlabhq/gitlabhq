@@ -70,7 +70,7 @@ class Import::BitbucketController < Import::BaseController
         render json: { errors: project_save_error(project) }, status: :unprocessable_entity
       end
     else
-      render json: { errors: _('You are not allowed to import projects in this namespace.') }, status: :unprocessable_entity
+      render json: { errors: s_('BitbucketImport|You are not allowed to import projects in this namespace.') }, status: :unprocessable_entity
     end
   end
 

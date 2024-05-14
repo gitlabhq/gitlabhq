@@ -3,6 +3,7 @@ import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import NoteHeader from '~/notes/components/note_header.vue';
+import ImportedBadge from '~/vue_shared/components/imported_badge.vue';
 
 Vue.use(Vuex);
 
@@ -24,6 +25,7 @@ describe('NoteHeader component', () => {
   const findSpinner = () => wrapper.findComponent({ ref: 'spinner' });
   const authorUsernameLink = () => wrapper.findComponent({ ref: 'authorUsernameLink' });
   const findAuthorNameLink = () => wrapper.findComponent({ ref: 'authorNameLink' });
+  const findImportedBadge = () => wrapper.findComponent(ImportedBadge);
 
   const statusHtml =
     '"<span class="user-status-emoji has-tooltip" title="foo bar" data-html="true" data-placement="top"><gl-emoji title="basketball and hoop" data-name="basketball" data-unicode-version="6.0">🏀</gl-emoji></span>"';
@@ -196,6 +198,21 @@ describe('NoteHeader component', () => {
       expect(findTimestamp().exists()).toBe(false);
     });
 
+    it('generates correct link for alphanumeric noteId', () => {
+      createComponent({
+        createdAt: new Date().toISOString(),
+        noteId: 'afccb75d1ce204bd6f96c3a58dfb4be906b14a6e',
+      });
+      expect(findTimestampLink().attributes('href')).toBe(
+        '#note_afccb75d1ce204bd6f96c3a58dfb4be906b14a6e',
+      );
+    });
+
+    it('generates correct link for GraphQL GID', () => {
+      createComponent({ createdAt: new Date().toISOString(), noteId: 'gid://gitlab/Note/123' });
+      expect(findTimestampLink().attributes('href')).toBe('#note_123');
+    });
+
     it('shows timestamp as plain text if a noteId was not provided', () => {
       createComponent({ createdAt: new Date().toISOString() });
       expect(findTimestampLink().exists()).toBe(false);
@@ -242,6 +259,26 @@ describe('NoteHeader component', () => {
       await nextTick();
       expect(authorNameLink.classes()).not.toContain('hover');
       expect(authorNameLink.classes()).not.toContain('text-underline');
+    });
+  });
+
+  describe('imported badge', () => {
+    it('renders with "comment" when note is imported', () => {
+      createComponent({ isImported: true });
+
+      expect(findImportedBadge().props('importableType')).toBe('comment');
+    });
+
+    it('renders with "activity" when note is imported and is system note', () => {
+      createComponent({ isImported: true, isSystemNote: true });
+
+      expect(findImportedBadge().props('importableType')).toBe('activity');
+    });
+
+    it('does not render when note is not imported', () => {
+      createComponent({ isImported: false });
+
+      expect(findImportedBadge().exists()).toBe(false);
     });
   });
 

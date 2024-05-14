@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Create', product_group: :source_code do
-    describe 'Multiple file snippet' do
+    describe 'Multiple file snippet', :blocking do
       let(:personal_snippet) do
         create(:snippet,
           title: 'Personal snippet to add file to',

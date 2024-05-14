@@ -26,13 +26,11 @@ export default {
       v-if="badge.tooltipText"
       placement="top"
       boundary="window"
-      title="Tooltip title"
+      :title="badge.tooltipText"
       :target="() => $refs.badge"
-    >
-      {{ badge.tooltipText }}
-    </gl-tooltip>
+    />
     <span ref="badge">
-      <gl-badge size="sm" :href="badgeHref" :variant="badge.variant">
+      <gl-badge size="sm" class="gl-cursor-pointer" :href="badgeHref" :variant="badge.variant">
         {{ badge.text }}
       </gl-badge>
     </span>

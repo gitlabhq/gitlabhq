@@ -52,7 +52,7 @@ class Repository
   # stores its data in the `commit_count` cache key.
   CACHED_METHODS = %i[size recent_objects_size commit_count readme_path contribution_guide
                       changelog license_blob license_gitaly gitignore
-                      gitlab_ci_yml branch_names tag_names branch_count
+                      branch_names tag_names branch_count
                       tag_count avatar exists? root_ref merged_branch_names
                       has_visible_content? issue_template_names_hash merge_request_template_names_hash
                       xcode_project? has_ambiguous_refs?].freeze
@@ -66,7 +66,6 @@ class Repository
     license: %i[license_blob license_gitaly],
     contributing: :contribution_guide,
     gitignore: :gitignore,
-    gitlab_ci: :gitlab_ci_yml,
     avatar: :avatar,
     issue_template: :issue_template_names_hash,
     merge_request_template: :merge_request_template_names_hash,
@@ -153,7 +152,7 @@ class Repository
       ref: ref,
       path: opts[:path],
       author: opts[:author],
-      follow: Array(opts[:path]).length == 1,
+      follow: Array(opts[:path]).length == 1 && Feature.disabled?(:remove_file_commit_history_following, type: :ops),
       limit: opts[:limit],
       offset: opts[:offset],
       skip_merges: !!opts[:skip_merges],
@@ -326,8 +325,8 @@ class Repository
     raw_repository.languages(root_ref)
   end
 
-  def keep_around(*shas)
-    Gitlab::Git::KeepAround.execute(self, shas)
+  def keep_around(*shas, source:)
+    Gitlab::Git::KeepAround.execute(self, shas, source: source)
   end
 
   def archive_metadata(ref, storage_path, format = "tar.gz", append_sha:, path: nil)
@@ -450,6 +449,10 @@ class Repository
     expire_status_cache
 
     repository_event(:create_repository)
+
+    return unless project.present?
+
+    project.run_after_commit_or_now { Onboarding::ProgressWorker.perform_async(namespace_id, 'git_write') }
   end
 
   # Runs code just before a repository is deleted.
@@ -673,12 +676,6 @@ class Repository
     file_on_head(:gitignore)
   end
   cache_method :gitignore
-
-  # Deprecated, use `project.has_ci_config_file?` instead.
-  def gitlab_ci_yml
-    file_on_head(:gitlab_ci)
-  end
-  cache_method :gitlab_ci_yml
 
   def jenkinsfile?
     file_on_head(:jenkinsfile).present?
@@ -951,7 +948,8 @@ class Repository
 
   def cherry_pick(
     user, commit, branch_name, message,
-    start_branch_name: nil, start_project: project, dry_run: false)
+    start_branch_name: nil, start_project: project,
+    author_name: nil, author_email: nil, dry_run: false)
 
     with_cache_hooks do
       raw_repository.cherry_pick(
@@ -961,6 +959,8 @@ class Repository
         message: message,
         start_branch_name: start_branch_name,
         start_repository: start_project.repository.raw_repository,
+        author_name: author_name,
+        author_email: author_email,
         dry_run: dry_run
       )
     end
@@ -1076,16 +1076,6 @@ class Repository
     regexp_string.gsub!('\*', anything_but_not_slash)
 
     raw_repository.search_files_by_regexp("^#{regexp_string}$", ref)
-  end
-
-  def copy_gitattributes(ref)
-    actual_ref = ref || root_ref
-    begin
-      raw_repository.copy_gitattributes(actual_ref)
-      true
-    rescue Gitlab::Git::Repository::InvalidRef
-      false
-    end
   end
 
   def file_on_head(type, object_type = :blob)
@@ -1223,7 +1213,6 @@ class Repository
     if branch_exists?(branch)
       before_change_head
       raw_repository.write_ref('HEAD', "refs/heads/#{branch}")
-      copy_gitattributes(branch)
       after_change_head
     else
       container.after_change_head_branch_does_not_exist(branch)
@@ -1239,7 +1228,7 @@ class Repository
   def remove_prohibited_branches
     return unless exists?
 
-    prohibited_branches = raw_repository.branch_names.select { |name| name.match(/\A\h{40}\z/) }
+    prohibited_branches = raw_repository.branch_names.select { |name| name.match(Gitlab::Git::COMMIT_ID) }
 
     return if prohibited_branches.blank?
 
@@ -1292,6 +1281,17 @@ class Repository
     end
   rescue Gitlab::Git::Repository::NoRepository
     nil
+  end
+
+  def empty_tree_id
+    return Gitlab::Git::SHA1_EMPTY_TREE_ID unless exists?
+
+    case object_format
+    when FORMAT_SHA1
+      Gitlab::Git::SHA1_EMPTY_TREE_ID
+    when FORMAT_SHA256
+      Gitlab::Git::SHA256_EMPTY_TREE_ID
+    end
   end
 
   def blank_ref

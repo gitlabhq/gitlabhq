@@ -1,3 +1,4 @@
+// Package transport provides a roundtripper for HTTP clients with Workhorse integration.
 package transport
 
 import (
@@ -11,12 +12,12 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/version"
 )
 
-// Creates a new default transport that has Workhorse's User-Agent header set.
+// NewDefaultTransport creates a new default transport that has Workhorse's User-Agent header set.
 func NewDefaultTransport() http.RoundTripper {
 	return &DefaultTransport{Next: http.DefaultTransport}
 }
 
-// Defines a http.Transport with values that are more restrictive than for
+// NewRestrictedTransport defines a http.Transport with values that are more restrictive than for
 // http.DefaultTransport, they define shorter TLS Handshake, and more
 // aggressive connection closing to prevent the connection hanging and reduce
 // FD usage
@@ -24,24 +25,29 @@ func NewRestrictedTransport(options ...Option) http.RoundTripper {
 	return &DefaultTransport{Next: newRestrictedTransport(options...)}
 }
 
+// DefaultTransport is a roundtripper that sets the User-Agent header in requests
 type DefaultTransport struct {
 	Next http.RoundTripper
 }
 
+// RoundTrip sets the User-Agent header in the request and then forwards the request to the next RoundTripper.
 func (t DefaultTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 	req.Header.Set("User-Agent", version.GetUserAgent())
 
 	return t.Next.RoundTrip(req)
 }
 
+// Option is a functional option to configure the restricted transport.
 type Option func(*http.Transport)
 
+// WithDisabledCompression disables compression for the transport.
 func WithDisabledCompression() Option {
 	return func(t *http.Transport) {
 		t.DisableCompression = true
 	}
 }
 
+// WithDialTimeout sets the dial timeout for the transport.
 func WithDialTimeout(timeout time.Duration) Option {
 	return func(t *http.Transport) {
 		t.DialContext = (&net.Dialer{
@@ -50,6 +56,7 @@ func WithDialTimeout(timeout time.Duration) Option {
 	}
 }
 
+// WithResponseHeaderTimeout sets the response header timeout for the transport.
 func WithResponseHeaderTimeout(timeout time.Duration) Option {
 	return func(t *http.Transport) {
 		t.ResponseHeaderTimeout = timeout

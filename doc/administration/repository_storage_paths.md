@@ -124,7 +124,7 @@ To look up a project's name using the `config` file in the `*.git` directory:
 
 ### Hashed object pools
 
-Object pools are repositories used to deduplicate forks of public and internal projects and
+Object pools are repositories used to deduplicate [forks of public and internal projects](../user/project/repository/forking_workflow.md) and
 contain the objects from the source project. Using `objects/info/alternates`, the source project and
 forks use the object pool for shared objects. For more information, see
 [How Git object deduplication works in GitLab](../development/git_object_deduplication.md).
@@ -140,6 +140,25 @@ project. Object pool repositories are stored similarly to regular repositories i
 WARNING:
 Do not run `git prune` or `git gc` in object pool repositories, which are stored in the `@pools` directory.
 This can cause data loss in the regular repositories that depend on the object pool.
+
+### Translate hashed object pool storage paths
+
+To look up a project's object pool using a Rails console:
+
+1. Start a [Rails console](operations/rails_console.md#starting-a-rails-console-session).
+1. Run a command similar to the following example:
+
+   ```ruby
+   project_id = 1
+   pool_repository = Project.find(project_id).pool_repository
+   pool_repository = Project.find_by_full_path('group/project').pool_repository
+
+   # Get more details about the pool repository
+   pool_repository.source_project
+   pool_repository.member_projects
+   pool_repository.shard
+   pool_repository.disk_path
+   ```
 
 ### Group wiki storage
 
@@ -157,7 +176,7 @@ For example:
 
 If Gitaly Cluster is used, Praefect manages storage locations. The internal path used by Praefect for the repository
 differs from the hashed path. For more information, see
-[Praefect-generated replica paths](gitaly/index.md#praefect-generated-replica-paths-gitlab-150-and-later).
+[Praefect-generated replica paths](gitaly/index.md#praefect-generated-replica-paths).
 
 ### Object storage support
 
@@ -206,7 +225,7 @@ LFS objects are also [S3-compatible](lfs/index.md#storing-lfs-objects-in-remote-
 
 ## Configure where new repositories are stored
 
-After you configure multiple repository storages, you can choose where new repositories are stored:
+After you [configure multiple repository storages](https://docs.gitlab.com/omnibus/settings/configuration.html#store-git-data-in-an-alternative-directory), you can choose where new repositories are stored:
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > Repository**.

@@ -9,20 +9,20 @@ module Types
     description 'Represents signing information for a commit'
 
     field :verification_status, CommitSignatures::VerificationStatusEnum,
-                                null: true,
-                                description: 'Indicates verification status of the associated key or certificate.'
+      null: true,
+      description: 'Indicates verification status of the associated key or certificate.'
 
     field :commit_sha, GraphQL::Types::String,
-                       null: true,
-                       description: 'SHA of the associated commit.'
+      null: true,
+      description: 'SHA of the associated commit.'
 
     field :project, Types::ProjectType,
-                    null: true,
-                    description: 'Project of the associated commit.'
+      null: true,
+      description: 'Project of the associated commit.'
 
     orphan_types Types::CommitSignatures::GpgSignatureType,
-                 Types::CommitSignatures::X509SignatureType,
-                 Types::CommitSignatures::SshSignatureType
+      Types::CommitSignatures::X509SignatureType,
+      Types::CommitSignatures::SshSignatureType
 
     def self.resolve_type(object, context)
       case object

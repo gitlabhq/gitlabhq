@@ -9,10 +9,10 @@ import { __, s__ } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import Deployment from '~/environments/components/deployment.vue';
 import Commit from '~/environments/components/commit.vue';
-import DeploymentStatusBadge from '~/environments/components/deployment_status_badge.vue';
-import createMockApollo from '../__helpers__/mock_apollo_helper';
-import waitForPromises from '../__helpers__/wait_for_promises';
-import getDeploymentDetails from '../../../app/assets/javascripts/environments/graphql/queries/deployment_details.query.graphql';
+import DeploymentStatusLink from '~/environments/components/deployment_status_link.vue';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
+import getDeploymentDetails from '~/environments/graphql/queries/deployment_details.query.graphql';
 import { resolvedEnvironment, resolvedDeploymentDetails } from './graphql/mock_data';
 
 describe('~/environments/components/deployment.vue', () => {
@@ -49,9 +49,13 @@ describe('~/environments/components/deployment.vue', () => {
   });
 
   describe('status', () => {
-    it('should pass the deployable status to the badge', () => {
+    it('should pass the deployable status to the link', () => {
       wrapper = createWrapper();
-      expect(wrapper.findComponent(DeploymentStatusBadge).props('status')).toBe(deployment.status);
+      expect(wrapper.findComponent(DeploymentStatusLink).props()).toEqual({
+        status: deployment.status,
+        deploymentJob: deployment.deployable,
+        deployment,
+      });
     });
   });
 
@@ -153,16 +157,22 @@ describe('~/environments/components/deployment.vue', () => {
       });
     });
   });
-
-  describe('created at time', () => {
+  describe('deployedAt', () => {
     describe('is present', () => {
       it('shows the timestamp the deployment was deployed at', () => {
         wrapper = createWrapper();
-        const date = wrapper.findByTitle(
-          localeDateFormat.asDateTimeFull.format(deployment.createdAt),
-        );
+        const date = wrapper.findByTestId('deployment-timestamp');
+        expect(date.text()).toBe('Deployed 1 day ago');
+      });
+    });
+  });
+  describe('created at time', () => {
+    describe('is present and deploymentAt is null', () => {
+      it('shows the timestamp the deployment was created at', () => {
+        wrapper = createWrapper({ propsData: { deployment: { ...deployment, deployedAt: null } } });
 
-        expect(date.text()).toBe('1 day ago');
+        const date = wrapper.findByTestId('deployment-timestamp');
+        expect(date.text()).toBe('Created 1 day ago');
       });
     });
     describe('is not present', () => {
@@ -232,7 +242,7 @@ describe('~/environments/components/deployment.vue', () => {
       await waitForPromises();
 
       for (let i = 1; i < 6; i += 1) {
-        const tagName = __(`testTag${i}`);
+        const tagName = `testTag${i}`;
         const testTag = wrapper.findByText(tagName);
         expect(testTag.exists()).toBe(true);
         expect(testTag.attributes('href')).toBe(`tags/${tagName}`);

@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - Parallel imports from Bitbucket Cloud [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412614) in GitLab 16.6 [with a flag](../../../administration/feature_flags.md) named `bitbucket_parallel_importer`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/423530) in GitLab 16.6.
@@ -107,6 +107,30 @@ For user contributions to be mapped, each user must complete the following befor
 1. To import a project:
    - For the first time: Select **Import**.
    - Again: Select **Re-import**. Specify a new name and select **Re-import** again. Re-importing creates a new copy of the source project.
+
+### Generate a Bitbucket Cloud app password
+
+If you want to use the [GitLab REST API](../../../api/import.md#import-repository-from-bitbucket-cloud) to import a
+Bitbucket Cloud repository, you must create a Bitbucket Cloud app password.
+
+To generate a Bitbucket Cloud app password:
+
+1. Go to <https://bitbucket.org/account/settings/>.
+1. In the **Access Management** section, select **App passwords**.
+1. Select **Create app password**.
+1. Enter password name.
+1. Select at least the following permissions:
+
+   ```plaintext
+   Account: Email, Read
+   Projects: Read
+   Repositories: Read
+   Pull Requests: Read
+   Issues: Read
+   Wiki: Read and Write
+   ```
+
+1. Select **Create**.
 
 ## Troubleshooting
 

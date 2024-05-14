@@ -1,0 +1,18 @@
+fragment TimelogFragment on WorkItemTimelog {
+  __typename
+  id
+  timeSpent
+  user {
+    id
+    name
+  }
+  spentAt
+  note {
+    id
+    body
+  }
+  summary
+  userPermissions {
+    adminTimelog
+  }
+}

@@ -330,9 +330,9 @@ RSpec.shared_examples 'a class that supports relative positioning' do
       let(:start) { RelativePositioning::START_POSITION }
 
       before do
-        item1.update!(relative_position: start - RelativePositioning::IDEAL_DISTANCE * 0)
-        item2.update!(relative_position: start - RelativePositioning::IDEAL_DISTANCE * 1)
-        item3.update!(relative_position: start - RelativePositioning::IDEAL_DISTANCE * 2)
+        item1.update!(relative_position: start - (RelativePositioning::IDEAL_DISTANCE * 0))
+        item2.update!(relative_position: start - (RelativePositioning::IDEAL_DISTANCE * 1))
+        item3.update!(relative_position: start - (RelativePositioning::IDEAL_DISTANCE * 2))
       end
 
       def leap_frog
@@ -414,9 +414,9 @@ RSpec.shared_examples 'a class that supports relative positioning' do
     context 'leap-frogging' do
       before do
         start = RelativePositioning::START_POSITION
-        item1.update!(relative_position: start + RelativePositioning::IDEAL_DISTANCE * 0)
-        item2.update!(relative_position: start + RelativePositioning::IDEAL_DISTANCE * 1)
-        item3.update!(relative_position: start + RelativePositioning::IDEAL_DISTANCE * 2)
+        item1.update!(relative_position: start + (RelativePositioning::IDEAL_DISTANCE * 0))
+        item2.update!(relative_position: start + (RelativePositioning::IDEAL_DISTANCE * 1))
+        item3.update!(relative_position: start + (RelativePositioning::IDEAL_DISTANCE * 2))
       end
 
       let(:item3) { create(factory, default_params) }

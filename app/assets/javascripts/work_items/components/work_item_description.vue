@@ -1,6 +1,5 @@
 <script>
-import { GlAlert, GlButton, GlForm, GlFormGroup } from '@gitlab/ui';
-import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import { GlAlert, GlButton, GlForm, GlFormGroup, GlFormTextarea } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { getDraft, clearDraft, updateDraft } from '~/lib/utils/autosave';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
@@ -9,7 +8,6 @@ import EditedAt from '~/issues/show/components/edited.vue';
 import Tracking from '~/tracking';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import { autocompleteDataSources, markdownPreviewPath } from '../utils';
-import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
 import groupWorkItemByIidQuery from '../graphql/group_work_item_by_iid.query.graphql';
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
 import { i18n, TRACKING_CATEGORY_SHOW, WIDGET_TYPE_DESCRIPTION } from '../constants';
@@ -22,6 +20,7 @@ export default {
     GlButton,
     GlForm,
     GlFormGroup,
+    GlFormTextarea,
     MarkdownEditor,
     WorkItemDescriptionRendered,
   },
@@ -34,18 +33,20 @@ export default {
     },
     workItemId: {
       type: String,
-      required: true,
+      required: false,
+      default: '',
     },
     workItemIid: {
       type: String,
-      required: true,
+      required: false,
+      default: '',
     },
-    disableInlineEditing: {
+    editMode: {
       type: Boolean,
       required: false,
       default: false,
     },
-    editMode: {
+    autofocus: {
       type: Boolean,
       required: false,
       default: false,
@@ -55,11 +56,17 @@ export default {
       required: false,
       default: false,
     },
+    showButtonsBelowField: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   markdownDocsPath: helpPagePath('user/markdown'),
   data() {
     return {
       workItem: {},
+      disableTruncation: false,
       isEditing: this.editMode,
       isSubmitting: false,
       isSubmittingWithKeydown: false,
@@ -78,6 +85,9 @@ export default {
       query() {
         return this.isGroup ? groupWorkItemByIidQuery : workItemByIidQuery;
       },
+      skip() {
+        return !this.workItemIid;
+      },
       variables() {
         return {
           fullPath: this.fullPath,
@@ -85,7 +95,7 @@ export default {
         };
       },
       update(data) {
-        return data.workspace.workItems.nodes[0];
+        return data.workspace.workItem || {};
       },
       result() {
         if (this.isEditing) {
@@ -99,7 +109,7 @@ export default {
   },
   computed: {
     autosaveKey() {
-      return this.workItemId;
+      return this.workItemId || `new-${this.workItemType}-description-draft`;
     },
     canEdit() {
       return this.workItem?.userPermissions?.updateWorkItem || false;
@@ -136,22 +146,25 @@ export default {
       return this.workItemDescription?.lastEditedBy?.webPath;
     },
     markdownPreviewPath() {
-      return markdownPreviewPath(this.fullPath, this.workItem.iid);
-    },
-    autocompleteDataSources() {
       const {
         fullPath,
         isGroup,
         workItem: { iid },
       } = this;
-      return autocompleteDataSources({ fullPath, isGroup, iid });
+      return markdownPreviewPath({ fullPath, iid, isGroup });
+    },
+    autocompleteDataSources() {
+      return autocompleteDataSources({
+        fullPath: this.fullPath,
+        isGroup: this.isGroup,
+        iid: this.workItem?.iid,
+      });
     },
     saveButtonText() {
       return this.editMode ? __('Save changes') : __('Save');
     },
     formGroupClass() {
       return {
-        'gl-border-t gl-pt-6': !this.disableInlineEditing,
         'gl-mb-5 common-note-form': true,
       };
     },
@@ -175,6 +188,7 @@ export default {
     },
     async startEditing() {
       this.isEditing = true;
+      this.disableTruncation = true;
 
       this.descriptionText = getDraft(this.autosaveKey) || this.workItemDescription?.description;
 
@@ -216,53 +230,16 @@ export default {
         this.isSubmittingWithKeydown = true;
       }
 
-      if (this.disableInlineEditing) {
-        this.$emit('updateWorkItem');
-        return;
-      }
-
-      this.isSubmitting = true;
-
-      try {
-        this.track('updated_description');
-
-        const {
-          data: { workItemUpdate },
-        } = await this.$apollo.mutate({
-          mutation: updateWorkItemMutation,
-          variables: {
-            input: {
-              id: this.workItem.id,
-              descriptionWidget: {
-                description: this.descriptionText,
-              },
-            },
-          },
-        });
-
-        if (workItemUpdate.errors?.length) {
-          throw new Error(workItemUpdate.errors[0]);
-        }
-
-        this.isEditing = false;
-        clearDraft(this.autosaveKey);
-        this.conflictedDescription = '';
-      } catch (error) {
-        this.$emit('error', error.message);
-        Sentry.captureException(error);
-      }
-
-      this.isSubmitting = false;
+      this.$emit('updateWorkItem');
     },
     setDescriptionText(newText) {
       this.descriptionText = newText;
-      if (this.disableInlineEditing) {
-        this.$emit('updateDraft', this.descriptionText);
-      }
+      this.$emit('updateDraft', this.descriptionText);
       updateDraft(this.autosaveKey, this.descriptionText);
     },
     handleDescriptionTextUpdated(newText) {
       this.descriptionText = newText;
+      this.$emit('updateDraft', this.descriptionText);
       this.updateWorkItem();
     },
   },
@@ -275,7 +252,7 @@ export default {
       <gl-form-group
         :class="formGroupClass"
         :label="__('Description')"
-        :label-sr-only="disableInlineEditing"
+        label-sr-only
         label-for="work-item-description"
       >
         <markdown-editor
@@ -288,7 +265,7 @@ export default {
           :autocomplete-data-sources="autocompleteDataSources"
           enable-autocomplete
           supports-quick-actions
-          autofocus
+          :autofocus="autofocus"
           @input="setDescriptionText"
           @keydown.meta.enter="updateWorkItem"
           @keydown.ctrl.enter="updateWorkItem"
@@ -304,11 +281,12 @@ export default {
             </p>
             <details class="gl-mb-5">
               <summary class="gl-text-blue-500">{{ s__('WorkItem|View current version') }}</summary>
-              <textarea
-                class="note-textarea js-gfm-input js-autosize markdown-area gl-p-3"
+              <gl-form-textarea
+                class="js-gfm-input js-autosize markdown-area !gl-font-monospace"
+                data-testid="conflicted-description"
                 readonly
                 :value="conflictedDescription"
-              ></textarea>
+              />
             </details>
             <template #actions>
               <gl-button
@@ -328,7 +306,7 @@ export default {
               </gl-button>
             </template>
           </gl-alert>
-          <template v-else>
+          <template v-else-if="showButtonsBelowField">
             <gl-button
               category="primary"
               variant="confirm"
@@ -346,9 +324,9 @@ export default {
     </gl-form>
     <work-item-description-rendered
       v-else
-      :disable-inline-editing="disableInlineEditing"
       :work-item-description="workItemDescription"
       :can-edit="canEdit"
+      :disable-truncation="disableTruncation"
       @startEditing="startEditing"
       @descriptionUpdated="handleDescriptionTextUpdated"
     />

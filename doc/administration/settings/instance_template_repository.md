@@ -10,9 +10,6 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** Self-managed
 
-> - [Improved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52360) to behave like group-level templates in GitLab 13.9.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/321247) in GitLab 14.0.
-
 In hosted systems, enterprises often have a need to share their own templates
 across teams. This feature allows an administrator to pick a project to be the
 instance-wide collection of file templates. These templates are then exposed to

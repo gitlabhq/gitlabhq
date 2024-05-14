@@ -32,7 +32,8 @@ RSpec.describe Groups::GroupMembersHelper do
         access_requests: present_members(access_requests),
         banned: [],
         include_relations: [:inherited, :direct],
-        search: nil
+        search: nil,
+        pending_members: []
       )
     end
 
@@ -107,7 +108,8 @@ RSpec.describe Groups::GroupMembersHelper do
             access_requests: present_members(access_requests),
             banned: [],
             include_relations: include_relations,
-            search: nil
+            search: nil,
+            pending_members: []
           )
         end
 

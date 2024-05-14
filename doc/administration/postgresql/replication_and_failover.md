@@ -20,6 +20,12 @@ for the Linux packages.
 It's recommended to read this document fully before attempting to configure PostgreSQL with
 replication and failover for GitLab.
 
+## Operating system upgrades
+
+If you are failing over to a system with a different operating system,
+read the [documentation on upgrading operating systems for PostgreSQL](upgrading_os.md).
+Failing to account for local changes with operating system upgrades may result in data corruption.
+
 ## Architecture
 
 The Linux package-recommended configuration for a PostgreSQL cluster with
@@ -77,9 +83,8 @@ sure you have redundant connectivity between all Database and GitLab instances
 to avoid the network becoming a single point of failure.
 
 NOTE:
-As of GitLab 13.3, PostgreSQL 12 is shipped with Linux package installations. Clustering for PostgreSQL 12 is supported only with
-Patroni. See the [Patroni](#patroni) section for further details. Starting with GitLab 14.0, only PostgreSQL 12 is
-shipped with Linux package installations, and thus Patroni becomes mandatory for replication and failover.
+PostgreSQL 12 is shipped with Linux package installations. Clustering for PostgreSQL 12 is supported only with
+Patroni, and thus Patroni becomes mandatory for replication and failover. See the [Patroni](#patroni) section for further details.
 
 ### Database node
 
@@ -258,11 +263,6 @@ Patroni honours any other PostgreSQL configuration that was made with the `postg
 `max_wal_senders` by default is set to `5`. If you wish to change this you must set it with the `patroni['postgresql']['max_wal_senders']`
 configuration key.
 
-NOTE:
-The configuration of a Patroni node is very similar to a repmgr but shorter. When Patroni is enabled, first you can ignore
-any replication setting of PostgreSQL (which is overwritten). Then, you can remove any `repmgr[...]` or
-repmgr-specific configuration as well. Especially, make sure that you remove `postgresql['shared_preload_libraries'] = 'repmgr_funcs'`.
-
 Here is an example:
 
 ```ruby
@@ -339,8 +339,6 @@ becomes the leader. You do not need to sequence the nodes reconfiguration. You c
 If you choose an arbitrary order, you do not have any predetermined leader.
 
 #### Enable Monitoring
-
-> - [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/3786) in GitLab 12.0.
 
 If you enable Monitoring, it must be enabled on **all** database servers.
 
@@ -452,9 +450,6 @@ authentication mode (`patroni['tls_client_mode']`), must each have the same valu
    #
    # END user configuration
    ```
-
-   NOTE:
-   `pgbouncer_role` was introduced with GitLab 10.3.
 
 1. Run `gitlab-ctl reconfigure`
 
@@ -732,10 +727,7 @@ After deploying the configuration follow these steps:
 
 ## Patroni
 
-NOTE:
-Using Patroni instead of Repmgr is supported for PostgreSQL 11 and required for PostgreSQL 12. Starting with GitLab 14.0, only PostgreSQL 12 is available and hence Patroni is mandatory to achieve failover and replication.
-
-Patroni is an opinionated solution for PostgreSQL high-availability. It takes the control of PostgreSQL, overrides its configuration, and manages its lifecycle (start, stop, restart). Patroni is the only option for PostgreSQL 12 clustering and for cascading replication for Geo deployments.
+Patroni is an opinionated solution for PostgreSQL high-availability. It takes the control of PostgreSQL, overrides its configuration, and manages its lifecycle (start, stop, restart). Patroni is the only option for PostgreSQL 12+ clustering and for cascading replication for Geo deployments.
 
 The fundamental [architecture](#example-recommended-setup-manual-steps) (mentioned above) does not change for Patroni.
 You do not need any special consideration for Patroni while provisioning your database nodes. Patroni heavily relies on Consul to store the state of the cluster and elect a leader. Any failure in Consul cluster and its leader election propagates to the Patroni cluster as well.
@@ -962,56 +954,9 @@ sudo gitlab-ctl patroni resume
 
 For further details, see [Patroni documentation on this subject](https://patroni.readthedocs.io/en/latest/pause.html).
 
-### Switching from repmgr to Patroni
-
-WARNING:
-Switching from repmgr to Patroni is straightforward, the other way around is _not_. Rolling back from Patroni to repmgr can be complicated and may involve deletion of data directory. If you need to do that, contact GitLab support.
-
-You can switch an exiting database cluster to use Patroni instead of repmgr with the following steps:
-
-1. Stop repmgr on all replica nodes and lastly with the primary node:
-
-   ```shell
-   sudo gitlab-ctl stop repmgrd
-   ```
-
-1. Stop PostgreSQL on all replica nodes:
-
-   ```shell
-   sudo gitlab-ctl stop postgresql
-   ```
-
-   NOTE:
-   Ensure that there is no `walsender` process running on the primary node.
-   `ps aux | grep walsender` must not show any running process.
-
-1. On the primary node, [configure Patroni](#configuring-patroni-cluster). Remove `repmgr` and any other
-   repmgr-specific configuration. Also remove any configuration that is related to PostgreSQL replication.
-1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) on the primary node.
-   It makes it the leader. You can check this with:
-
-   ```shell
-   sudo gitlab-ctl tail patroni
-   ```
-
-1. Repeat the last two steps for all replica nodes. `gitlab.rb` should look the same on all nodes.
-1. If present, remove the `gitlab_repmgr` database and role on the primary. If you don't delete the `gitlab_repmgr`
-   database, upgrading PostgreSQL 11 to 12 fails with:
-
-   ```plaintext
-   could not load library "$libdir/repmgr_funcs": ERROR:  could not access file "$libdir/repmgr_funcs": No such file or directory
-   ```
-
 ### Upgrading PostgreSQL major version in a Patroni cluster
 
-As of GitLab 14.1, PostgreSQL 12.6 and 13.3 are both shipped with the Linux package by default. As of GitLab 15.0,
-PostgreSQL 13 is the default. If you want to upgrade to PostgreSQL 13 in versions prior to GitLab 15.0, you must ask for
-it explicitly.
-
-WARNING:
-The procedure for upgrading PostgreSQL in a Patroni cluster is different than when upgrading using repmgr.
-The following outlines the key differences and important considerations that need to be accounted for when
-upgrading PostgreSQL.
+For a list of the bundled PostgreSQL versions and the default version for each release, see the [PostgreSQL versions of the Linux package](../package_information/postgresql_versions.md).
 
 Here are a few key facts that you must consider before upgrading PostgreSQL:
 
@@ -1056,13 +1001,14 @@ Considering these, you should carefully plan your PostgreSQL upgrade:
 1. Upgrade PostgreSQL on **the leader node** and make sure that the upgrade is completed successfully:
 
    ```shell
-   sudo gitlab-ctl pg-upgrade -V 13
+   # Default command timeout is 600s, configurable with '--timeout'
+   sudo gitlab-ctl pg-upgrade
    ```
 
    NOTE:
    `gitlab-ctl pg-upgrade` tries to detect the role of the node. If for any reason the auto-detection
    does not work or you believe it did not detect the role correctly, you can use the `--leader` or
-   `--replica` arguments to manually override it.
+   `--replica` arguments to manually override it. Use `gitlab-ctl pg-upgrade --help` for more details on available options.
 
 1. Check the status of the leader and cluster. You can proceed only if you have a healthy leader:
 
@@ -1083,7 +1029,7 @@ Considering these, you should carefully plan your PostgreSQL upgrade:
 1. Upgrade PostgreSQL **on replicas** (you can do this in parallel on all of them):
 
    ```shell
-   sudo gitlab-ctl pg-upgrade -V 13
+   sudo gitlab-ctl pg-upgrade
    ```
 
 If issues are encountered upgrading the replicas,
@@ -1094,7 +1040,7 @@ Reverting the PostgreSQL upgrade with `gitlab-ctl revert-pg-upgrade` has the sam
 `gitlab-ctl pg-upgrade`. You should follow the same procedure by first stopping the replicas,
 then reverting the leader, and finally reverting the replicas.
 
-### Near zero downtime upgrade of PostgreSQL in a Patroni cluster
+### Near-zero-downtime upgrade of PostgreSQL in a Patroni cluster
 
 DETAILS:
 **Status:** Experiment
@@ -1133,7 +1079,7 @@ cluster.
 #### Preflight check
 
 We rely on PostgreSQL [logical replication](https://www.postgresql.org/docs/current/logical-replication.html)
-to support near-zero downtime upgrades of Patroni clusters. The of
+to support near-zero-downtime upgrades of Patroni clusters. The of
 [logical replication requirements](https://www.postgresql.org/docs/current/logical-replication-restrictions.html)
 must be met. In particular, `wal_level` must be `logical`. To check the `wal_level`,
 run the following command with `gitlab-psql` on any node of the existing cluster:
@@ -1144,7 +1090,7 @@ SHOW wal_level;
 
 By default, Patroni sets `wal_level` to `replica`. You must increase it to `logical`.
 Changing `wal_level` requires restarting PostgreSQL, so this step leads to a short
-downtime (hence near-zero downtime). To do this on the Patroni **leader** node:
+downtime (hence near-zero-downtime). To do this on the Patroni **leader** node:
 
 1. Edit `gitlab.rb` by setting:
 

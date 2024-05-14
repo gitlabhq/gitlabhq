@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Planning hierarchies are an integral part of breaking down your work in GitLab.
 To understand how you can use epics and issues together in hierarchies, remember the following:
@@ -38,7 +38,7 @@ graph TD
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 With the addition of [multi-level epics](../epics/manage_epics.md#multi-level-child-epics) and up to
 seven levels of nested epics, you can achieve the following hierarchy:

@@ -1,7 +1,7 @@
 import { isEmpty } from 'lodash';
 import { STATUS_CLOSED, STATUS_MERGED, STATUS_OPEN, STATUS_REOPENED } from '~/issues/constants';
 import { formatDate } from '~/lib/utils/datetime_utility';
-import { sprintf, __ } from '~/locale';
+import { __ } from '~/locale';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 
 const mixins = {
@@ -101,7 +101,7 @@ const mixins = {
     pipelineStatus: {
       type: Object,
       required: false,
-      default: () => ({}),
+      default: null,
     },
   },
   mixins: [timeagoMixin],
@@ -110,7 +110,7 @@ const mixins = {
       return this.state && this.state.length > 0;
     },
     hasPipeline() {
-      return this.isMergeRequest && this.pipelineStatus && Object.keys(this.pipelineStatus).length;
+      return this.isMergeRequest && this.pipelineStatus;
     },
     isOpen() {
       return this.state === STATUS_OPEN || this.state === STATUS_REOPENED;
@@ -196,11 +196,6 @@ const mixins = {
       }
 
       return this.isOpen ? this.createdAtTimestamp : this.closedAtTimestamp;
-    },
-    pipelineStatusTooltip() {
-      return this.hasPipeline
-        ? sprintf(__('Pipeline: %{status}'), { status: this.pipelineStatus.label })
-        : '';
     },
   },
   methods: {

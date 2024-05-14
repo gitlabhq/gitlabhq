@@ -28,27 +28,30 @@ module Pajamas
       text: "Edit"
     )
       render(Pajamas::ButtonComponent.new(
-               category: category,
-               variant: variant,
-               size: size,
-               type: type,
-               disabled: disabled,
-               loading: loading,
-               block: block,
-               selected: selected,
-               icon: icon
-             )) do
+        category: category,
+        variant: variant,
+        size: size,
+        type: type,
+        disabled: disabled,
+        loading: loading,
+        block: block,
+        selected: selected,
+        icon: icon
+      )) do
         text.presence
       end
     end
 
     # The component can also be used to create links that look and feel like buttons.
     # Just provide a `href` and optionally a `target` to create an `<a>` tag.
-    def link
+    # For links with target="_blank", the component automatically adds rel="noopener noreferrer".
+    #
+    # @param target select {{ Pajamas::ButtonComponent::TARGET_OPTIONS }}
+    def link(target: nil)
       render(Pajamas::ButtonComponent.new(
-               href: "https://gitlab.com",
-               target: "_blank"
-             )) do
+        href: "https://gitlab.com",
+        target: target
+      )) do
         "This is a link"
       end
     end

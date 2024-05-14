@@ -7,33 +7,33 @@ RSpec.describe Integrations::HarborSerializers::ArtifactEntity do
 
   let(:artifact) do
     {
-      "digest": "sha256:14d4f50961544fdb669075c442509f194bdc4c0e344bde06e35dbd55af842a38",
-      "id": 5,
-      "project_id": 14,
-      "push_time": "2022-03-22T09:04:56.170Z",
-      "repository_id": 5,
-      "size": 774790,
-      "tags": [
+      digest: "sha256:14d4f50961544fdb669075c442509f194bdc4c0e344bde06e35dbd55af842a38",
+      id: 5,
+      project_id: 14,
+      push_time: "2022-03-22T09:04:56.170Z",
+      repository_id: 5,
+      size: 774790,
+      tags: [
         {
-          "artifact_id": 5,
-          "id": 7,
-          "immutable": false,
-          "name": "2",
-          "push_time": "2022-03-22T09:05:04.844Z",
-          "repository_id": 5,
-          "signed": false
+          artifact_id: 5,
+          id: 7,
+          immutable: false,
+          name: "2",
+          push_time: "2022-03-22T09:05:04.844Z",
+          repository_id: 5,
+          signed: false
         },
         {
-          "artifact_id": 5,
-          "id": 6,
-          "immutable": false,
-          "name": "1",
-          "push_time": "2022-03-22T09:04:56.186Z",
-          "repository_id": 5,
-          "signed": false
+          artifact_id: 5,
+          id: 6,
+          immutable: false,
+          name: "1",
+          push_time: "2022-03-22T09:04:56.186Z",
+          repository_id: 5,
+          signed: false
         }
       ],
-      "type": "IMAGE"
+      type: "IMAGE"
     }.deep_stringify_keys
   end
 

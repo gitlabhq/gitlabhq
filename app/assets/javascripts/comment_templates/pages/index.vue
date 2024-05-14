@@ -15,6 +15,7 @@ export default {
       update: (r) => r.object?.savedReplies?.nodes,
       variables() {
         return {
+          path: this.path,
           ...this.pagination,
         };
       },
@@ -37,7 +38,10 @@ export default {
     CreateForm,
     List,
   },
-  inject: ['fetchAllQuery'],
+  inject: {
+    path: { default: '' },
+    fetchAllQuery: { required: true },
+  },
   data() {
     return {
       savedReplies: [],
@@ -65,14 +69,14 @@ export default {
 
 <template>
   <gl-card
-    class="gl-new-card gl-overflow-hidden"
+    class="gl-new-card"
     header-class="gl-new-card-header"
     body-class="gl-new-card-body gl-px-0"
   >
     <template #header>
       <div class="gl-new-card-title-wrapper" data-testid="title">
         <h3 class="gl-new-card-title">
-          {{ __('My comment templates') }}
+          {{ __('Comment templates') }}
         </h3>
         <div class="gl-new-card-count">
           <gl-icon name="comment-lines" class="gl-mr-2" />
@@ -89,13 +93,13 @@ export default {
     </div>
     <gl-loading-icon v-if="$apollo.queries.savedReplies.loading" size="sm" class="gl-my-5" />
     <list
-      v-else-if="savedReplies"
+      v-else-if="savedReplies && savedReplies.length"
       :saved-replies="savedReplies"
       :page-info="pageInfo"
       @input="changePage"
     />
     <div v-else class="gl-new-card-empty gl-px-5 gl-py-4">
-      {{ __('You have no saved replies yet.') }}
+      {{ __('You have no comment templates yet.') }}
     </div>
   </gl-card>
 </template>

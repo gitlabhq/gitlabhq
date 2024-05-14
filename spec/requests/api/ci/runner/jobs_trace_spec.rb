@@ -142,17 +142,35 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_trace_chunks, feature_catego
             expect(job.reload.trace.raw).to eq 'BUILD TRACE appended appended'
           end
 
-          context 'when job is cancelled' do
-            before do
-              job.cancel
-            end
+          context 'when canceling is supported' do
+            include_context 'when canceling support'
 
-            context 'when trace is patched' do
+            context 'when job is cancelled' do
               before do
-                patch_the_trace
+                job.cancel
               end
 
-              it 'returns Forbidden' do
+              it 'patching the trace is allowed' do
+                patch_the_trace
+
+                expect(response).to have_gitlab_http_status(:accepted)
+              end
+            end
+          end
+
+          context 'when canceling is not supported' do
+            before do
+              stub_feature_flags(ci_canceling_status: false)
+            end
+
+            context 'when job is canceled' do
+              before do
+                job.cancel
+              end
+
+              it 'patching the trace returns forbidden' do
+                patch_the_trace
+
                 expect(response).to have_gitlab_http_status(:forbidden)
               end
             end
@@ -203,13 +221,26 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_trace_chunks, feature_catego
           end
         end
 
-        context 'when the job is canceled' do
-          before do
+        context 'when canceling is supported' do
+          include_context 'when canceling support'
+
+          it 'receives status in header' do
             job.cancel
             patch_the_trace
+
+            expect(response.header['Job-Status']).to eq 'canceling'
+          end
+        end
+
+        context 'when canceling is not supported' do
+          before do
+            stub_feature_flags(ci_canceling_status: false)
           end
 
           it 'receives status in header' do
+            job.cancel
+            patch_the_trace
+
             expect(response.header['Job-Status']).to eq 'canceled'
           end
         end

@@ -4,26 +4,26 @@ RSpec.shared_examples 'a service that handles Jira API errors' do
   include AfterNextHelpers
   using RSpec::Parameterized::TableSyntax
 
-  where(:exception_class, :exception_message, :expected_message) do
-    Errno::ECONNRESET | ''    | 'A connection error occurred'
-    Errno::ECONNREFUSED | ''  | 'A connection error occurred'
-    Errno::ETIMEDOUT | ''     | 'A timeout error occurred'
-    Timeout::Error | ''       | 'A timeout error occurred'
-    URI::InvalidURIError | '' | 'The Jira API URL'
-    SocketError | ''          | 'The Jira API URL'
-    Gitlab::HTTP::BlockedUrlError | '' | 'Unable to connect to the Jira URL. Please verify your'
-    OpenSSL::SSL::SSLError | 'foo'   | 'An SSL error occurred while connecting to Jira: foo'
-    JIRA::HTTPError | 'Unauthorized' | 'The credentials for accessing Jira are not valid'
-    JIRA::HTTPError | 'Forbidden'    | 'The credentials for accessing Jira are not allowed'
-    JIRA::HTTPError | 'Bad Request'  | 'An error occurred while requesting data from Jira'
-    JIRA::HTTPError | 'Foo'          | 'An error occurred while requesting data from Jira.'
-    JIRA::HTTPError | '{"errorMessages":["foo","bar"]}' | 'An error occurred while requesting data from Jira: foo and bar'
-    JIRA::HTTPError | '{"errorMessages":[""]}'          | 'An error occurred while requesting data from Jira.'
+  where(:exception_class, :exception_message, :exception_body, :expected_message) do
+    Errno::ECONNRESET | ''    | '' | 'A connection error occurred'
+    Errno::ECONNREFUSED | ''  | '' | 'A connection error occurred'
+    Errno::ETIMEDOUT | ''     | '' | 'A timeout error occurred'
+    Timeout::Error | ''       | '' | 'A timeout error occurred'
+    URI::InvalidURIError | '' | '' | 'The Jira API URL'
+    SocketError | ''          | '' | 'The Jira API URL'
+    Gitlab::HTTP::BlockedUrlError | '' | '' | 'Unable to connect to the Jira URL. Please verify your'
+    OpenSSL::SSL::SSLError | 'foo'   | '' | 'An SSL error occurred while connecting to Jira: foo'
+    JIRA::HTTPError | 'Unauthorized' | '' | 'The credentials for accessing Jira are not valid'
+    JIRA::HTTPError | 'Forbidden'    | '' | 'The credentials for accessing Jira are not allowed'
+    JIRA::HTTPError | 'Bad Request'  | '' | 'An error occurred while requesting data from Jira'
+    JIRA::HTTPError | 'Bad Request'  | 'Foo' | 'An error occurred while requesting data from Jira.'
+    JIRA::HTTPError | 'Bad Request' | '{"errorMessages":["foo","bar"]}' | 'An error occurred while requesting data from Jira: foo and bar'
+    JIRA::HTTPError | 'Bad Request' | '{"errorMessages":[""]}' | 'An error occurred while requesting data from Jira.'
   end
 
   with_them do
     it 'handles the error' do
-      stub_client_and_raise(exception_class, exception_message)
+      stub_client_and_raise(exception_class, exception_message, exception_body)
 
       expect(subject).to be_a(ServiceResponse)
       expect(subject).to be_error
@@ -36,11 +36,11 @@ RSpec.shared_examples 'a service that handles Jira API errors' do
     let(:docs_link_start) { '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: config_docs_link_url } }
 
     before do
-      stub_client_and_raise(JIRA::HTTPError, error)
+      stub_client_and_raise(JIRA::HTTPError, 'Bad Request', body)
     end
 
-    context 'when JSON is malformed' do
-      let(:error) { '{"errorMessages":' }
+    context 'when JSON body is malformed' do
+      let(:body) { '{"errorMessages":' }
 
       it 'returns the default error message' do
         error_message = 'An error occurred while requesting data from Jira. Check your %{docs_link_start}Jira integration configuration</a> and try again.' % { docs_link_start: docs_link_start }
@@ -49,10 +49,10 @@ RSpec.shared_examples 'a service that handles Jira API errors' do
     end
 
     context 'when JSON contains tags' do
-      let(:error) { '{"errorMessages":["<script>alert(true)</script>foo"]}' }
+      let(:body) { '{"errorMessages":["<script>alert(true)</script>foo"]}' }
 
       it 'sanitizes it' do
-        error_message = 'An error occurred while requesting data from Jira: foo. Check your %{docs_link_start}Jira integration configuration</a> and try again.' % { docs_link_start: docs_link_start }
+        error_message = 'An error occurred while requesting data from Jira: foo Check your %{docs_link_start}Jira integration configuration</a> and try again.' % { docs_link_start: docs_link_start }
         expect(subject.message).to eq(error_message)
       end
     end
@@ -76,9 +76,9 @@ RSpec.shared_examples 'a service that handles Jira API errors' do
     expect(subject).to be_error
   end
 
-  def stub_client_and_raise(exception_class, message = '')
+  def stub_client_and_raise(exception_class, message = '', exception_body = nil)
     # `JIRA::HTTPError` classes take a response from the JIRA API, rather than a `String`.
-    message = double(body: message) if exception_class == JIRA::HTTPError
+    message = double(message: message, body: exception_body) if exception_class == JIRA::HTTPError
 
     allow_next(JIRA::Client).to receive(:get).and_raise(exception_class, message)
   end

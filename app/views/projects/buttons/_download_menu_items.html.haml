@@ -1,8 +1,0 @@
-- project = local_assigns.fetch(:project)
-- ref = local_assigns.fetch(:ref)
-- archive_prefix = "#{project.path}-#{ref.tr('/', '-')}"
-
-%li.gl-dropdown-item{ class: 'gl-pt-3!', role: 'menuitem' }
-  %label.label-bold{ class: 'gl-px-4!' }= _('Download source code')
-  = render 'projects/buttons/download_links', project: project, ref: ref, archive_prefix: archive_prefix, path: nil
-.js-directory-downloads{ data: { links: directory_download_links(project, ref, archive_prefix).to_json } }

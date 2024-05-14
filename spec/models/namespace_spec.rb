@@ -278,6 +278,14 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     let_it_be(:another_namespace_project) { create(:project) }
     let_it_be(:another_namespace_project_namespace) { another_namespace_project.project_namespace }
 
+    context 'when absolute_path is true' do
+      it 'returns complete path to the project with leading slash', :aggregate_failures do
+        be_full_path = eq("/#{parent.full_path}")
+
+        expect(parent.to_reference_base(full: true, absolute_path: true)).to be_full_path
+      end
+    end
+
     # testing references with namespace being: group, project namespace and user namespace
     where(:namespace, :full, :from, :result) do
       ref(:parent)             | false | nil                                       | nil
@@ -455,6 +463,21 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
       end
     end
 
+    describe '.by_name' do
+      it 'includes correct namespaces' do
+        expect(described_class.by_name(namespace1.name)).to eq([namespace1])
+        expect(described_class.by_name(namespace2.name.chop)).to match_array([namespace1, namespace2])
+      end
+    end
+
+    describe '.ordered_by_name' do
+      let!(:namespace) { create(:group, name: 'Beta') }
+
+      it 'includes namespaces in order' do
+        expect(described_class.ordered_by_name).to eq [namespace, namespace1, namespace2, namespace1sub, namespace2sub]
+      end
+    end
+
     describe '.sorted_by_similarity_and_parent_id_desc' do
       it 'returns exact matches and top level groups first' do
         expect(described_class.sorted_by_similarity_and_parent_id_desc(namespace1.path)).to eq([namespace1, namespace2, namespace2sub, namespace1sub, namespace])
@@ -590,6 +613,17 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
         it 'returns the instance level setting' do
           expected_settings = Gitlab::Access::BranchProtection.protected_against_developer_pushes.deep_stringify_keys
           settings = namespace.default_branch_protection_settings.to_hash
+
+          expect(settings).to eq(expected_settings)
+        end
+      end
+
+      context 'for a user namespace' do
+        let_it_be(:user_namespace) { create(:user_namespace) }
+
+        it 'returns the instance level setting' do
+          expected_settings = Gitlab::Access::BranchProtection.protected_against_developer_pushes.deep_stringify_keys
+          settings = user_namespace.default_branch_protection_settings.to_hash
 
           expect(settings).to eq(expected_settings)
         end
@@ -1151,7 +1185,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     end
 
     it 'prioritizes sorting of matches that start with the query' do
-      expect(described_class.gfm_autocomplete_search('pare')).to eq([parent_group, group_1, group_2])
+      expect(described_class.gfm_autocomplete_search('pArE')).to eq([parent_group, group_1, group_2])
     end
 
     it 'falls back to sorting by full path' do
@@ -1934,64 +1968,16 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
   end
 
   describe '#emails_disabled?' do
-    context 'when not a subgroup' do
-      let(:group) { create(:group) }
+    let_it_be_with_refind(:group) { create(:group) }
 
-      it 'returns false' do
-        group.update_attribute(:emails_enabled, true)
-
-        expect(group.emails_disabled?).to be_falsey
-      end
-
-      it 'returns true' do
-        group.update_attribute(:emails_enabled, false)
-
-        expect(group.emails_disabled?).to be_truthy
-      end
-
-      it 'does not query the db when there is no parent group' do
-        group.update_attribute(:emails_enabled, false)
-
-        expect { group.emails_disabled? }.not_to exceed_query_limit(0)
-      end
+    it 'returns false when emails are enabled' do
+      expect(group.emails_disabled?).to be_falsey
     end
 
-    context 'when a subgroup' do
-      let(:grandparent) { create(:group) }
-      let(:parent)      { create(:group, parent: grandparent) }
-      let(:group)       { create(:group, parent: parent) }
+    it 'returns true when emails are disabled' do
+      group.emails_enabled = false
 
-      it 'returns false' do
-        expect(group.emails_disabled?).to be_falsey
-      end
-
-      context 'when ancestor emails are disabled' do
-        it 'returns true' do
-          grandparent.update_attribute(:emails_disabled, true)
-
-          expect(group.emails_disabled?).to be_truthy
-        end
-      end
-    end
-  end
-
-  describe '#emails_enabled?' do
-    context 'without a persisted namespace_setting object' do
-      let(:group_settings) { create(:namespace_settings) }
-      let(:group) { build(:group, emails_disabled: false, namespace_settings: group_settings) }
-
-      it "is the opposite of emails_disabled" do
-        expect(group.emails_enabled?).to be_truthy
-      end
-    end
-
-    context 'with a persisted namespace_setting object' do
-      let(:namespace_settings) { create(:namespace_settings, emails_enabled: true) }
-      let(:group) { build(:group, emails_disabled: false, namespace_settings: namespace_settings) }
-
-      it "is the opposite of emails_disabled" do
-        expect(group.emails_enabled?).to be_truthy
-      end
+      expect(group.emails_disabled?).to be_truthy
     end
   end
 
@@ -2115,15 +2101,12 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
 
     where(:shared_runners_enabled, :allow_descendants_override_disabled_shared_runners, :other_setting, :result) do
       true  | true  | Namespace::SR_ENABLED                    | false
-      true  | true  | Namespace::SR_DISABLED_WITH_OVERRIDE     | true
       true  | true  | Namespace::SR_DISABLED_AND_OVERRIDABLE   | true
       true  | true  | Namespace::SR_DISABLED_AND_UNOVERRIDABLE | true
       false | true  | Namespace::SR_ENABLED                    | false
-      false | true  | Namespace::SR_DISABLED_WITH_OVERRIDE     | false
       false | true  | Namespace::SR_DISABLED_AND_OVERRIDABLE   | false
       false | true  | Namespace::SR_DISABLED_AND_UNOVERRIDABLE | true
       false | false | Namespace::SR_ENABLED                    | false
-      false | false | Namespace::SR_DISABLED_WITH_OVERRIDE     | false
       false | false | Namespace::SR_DISABLED_AND_OVERRIDABLE   | false
       false | false | Namespace::SR_DISABLED_AND_UNOVERRIDABLE | false
     end

@@ -1,11 +1,11 @@
 <script>
-import { GlFormInput } from '@gitlab/ui';
+import { GlFormTextarea } from '@gitlab/ui';
 import setupCollapsibleInputs from '~/snippet/collapsible_input';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 
 export default {
   components: {
-    GlFormInput,
+    GlFormTextarea,
     MarkdownField,
   },
   props: {
@@ -33,8 +33,10 @@ export default {
     <label for="snippet-description">{{ s__('Snippets|Description (optional)') }}</label>
     <div class="js-collapsible-input">
       <div class="js-collapsed" :class="{ 'd-none': value }">
-        <gl-form-input
+        <gl-form-textarea
           class="form-control"
+          rows="2"
+          :no-resize="true"
           :placeholder="s__('Snippets|Describe what your snippet does or how to use it…')"
           data-testid="description-placeholder"
         />
@@ -57,7 +59,7 @@ export default {
             data-testid="snippet-description-field"
             data-supports-quick-actions="false"
             :aria-label="__('Description')"
-            :placeholder="__('Write a comment or drag your files here…')"
+            :placeholder="s__('Snippets|Describe what your snippet does or how to use it…')"
             v-bind="$attrs"
             @input="$emit('input', $event.target.value)"
           >

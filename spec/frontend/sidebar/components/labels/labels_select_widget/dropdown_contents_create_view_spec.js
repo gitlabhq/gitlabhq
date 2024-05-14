@@ -13,6 +13,7 @@ import {
   mockCreateLabelResponse as createAbuseReportLabelSuccessfulResponse,
   mockLabelsQueryResponse as abuseReportLabelsQueryResponse,
 } from '../../../../admin/abuse_report/mock_data';
+import { mockSuggestedColors } from '../../mock_data';
 import {
   mockRegularLabel,
   createLabelSuccessfulResponse,
@@ -89,6 +90,10 @@ describe('DropdownContentsCreateView', () => {
       },
     });
   };
+
+  beforeEach(() => {
+    gon.suggested_label_colors = mockSuggestedColors;
+  });
 
   it('disables a Create button if label title is not set', async () => {
     createComponent();

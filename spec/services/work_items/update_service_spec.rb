@@ -5,18 +5,13 @@ require 'spec_helper'
 RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
   let_it_be(:developer) { create(:user) }
   let_it_be(:guest) { create(:user) }
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project) { create(:project, developers: developer, guests: guest) }
   let_it_be(:parent) { create(:work_item, project: project) }
   let_it_be_with_reload(:work_item) { create(:work_item, project: project, assignees: [developer]) }
 
   let(:widget_params) { {} }
   let(:opts) { {} }
   let(:current_user) { developer }
-
-  before do
-    project.add_developer(developer)
-    project.add_guest(guest)
-  end
 
   describe '#execute' do
     let(:service) do
@@ -38,8 +33,40 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
       end
     end
 
+    shared_examples 'publish WorkItems::WorkItemUpdatedEvent event' do |attributes: nil, widgets: nil|
+      specify do
+        expect { expect(update_work_item[:status]).to eq(:success) }
+          .to publish_event(WorkItems::WorkItemUpdatedEvent)
+          .with({
+            id: work_item.id,
+            namespace_id: work_item.namespace.id,
+            updated_attributes: attributes,
+            updated_widgets: widgets
+          }.tap(&:compact_blank!))
+      end
+    end
+
+    shared_examples 'does not publish WorkItems::WorkItemUpdatedEvent event' do
+      specify do
+        expect { update_work_item }.not_to publish_event(WorkItems::WorkItemUpdatedEvent)
+      end
+    end
+
+    include_examples 'does not publish WorkItems::WorkItemUpdatedEvent event'
+
     context 'when applying quick actions' do
       let(:opts) { { description: "/shrug" } }
+
+      include_examples 'publish WorkItems::WorkItemUpdatedEvent event',
+        attributes: %w[
+          description
+          description_html
+          last_edited_at
+          last_edited_by_id
+          lock_version
+          updated_at
+          updated_by_id
+        ]
 
       context 'when work item type is not the default Issue' do
         before do
@@ -68,6 +95,15 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
     context 'when title is changed' do
       let(:opts) { { title: 'changed' } }
 
+      include_examples 'publish WorkItems::WorkItemUpdatedEvent event',
+        attributes: %w[
+          lock_version
+          title
+          title_html
+          updated_at
+          updated_by_id
+        ]
+
       it 'triggers issuable_title_updated graphql subscription' do
         expect(GraphqlTriggers).to receive(:issuable_title_updated).with(work_item).and_call_original
         expect(Gitlab::UsageDataCounters::WorkItemActivityUniqueCounter).to receive(:track_work_item_title_changed_action).with(author: current_user)
@@ -91,6 +127,17 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
     context 'when title is not changed' do
       let(:opts) { { description: 'changed' } }
 
+      include_examples 'publish WorkItems::WorkItemUpdatedEvent event',
+        attributes: %w[
+          description
+          description_html
+          last_edited_at
+          last_edited_by_id
+          lock_version
+          updated_at
+          updated_by_id
+        ]
+
       it 'does not trigger issuable_title_updated graphql subscription' do
         expect(GraphqlTriggers).not_to receive(:issuable_title_updated)
         expect(Gitlab::UsageDataCounters::WorkItemActivityUniqueCounter).not_to receive(:track_work_item_title_changed_action)
@@ -107,6 +154,13 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
     context 'when dates are changed' do
       let(:opts) { { start_date: Date.today } }
 
+      include_examples 'publish WorkItems::WorkItemUpdatedEvent event',
+        attributes: %w[
+          start_date
+          updated_at
+          updated_by_id
+        ]
+
       it 'tracks users updating work item dates' do
         expect(Gitlab::UsageDataCounters::WorkItemActivityUniqueCounter).to receive(:track_work_item_date_changed_action).with(author: current_user)
 
@@ -120,6 +174,17 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
 
     context 'when decription is changed' do
       let(:opts) { { description: 'description changed' } }
+
+      include_examples 'publish WorkItems::WorkItemUpdatedEvent event',
+        attributes: %w[
+          description
+          description_html
+          last_edited_at
+          last_edited_by_id
+          lock_version
+          updated_at
+          updated_by_id
+        ]
 
       it 'triggers GraphQL description updated subscription' do
         expect(GraphqlTriggers).to receive(:issuable_description_updated).with(work_item).and_call_original
@@ -146,6 +211,8 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
       context 'when state_event is close' do
         let(:opts) { { state_event: 'close' } }
 
+        include_examples 'does not publish WorkItems::WorkItemUpdatedEvent event'
+
         it 'closes the work item' do
           expect do
             update_work_item
@@ -160,6 +227,8 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
         before do
           work_item.close!
         end
+
+        include_examples 'does not publish WorkItems::WorkItemUpdatedEvent event'
 
         it 'reopens the work item' do
           expect do
@@ -226,6 +295,20 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
       end
 
       context 'for the description widget' do
+        include_examples 'publish WorkItems::WorkItemUpdatedEvent event',
+          attributes: %w[
+            description
+            description_html
+            last_edited_at
+            last_edited_by_id
+            lock_version
+            updated_at
+            updated_by_id
+          ],
+          widgets: %w[
+            description_widget
+          ]
+
         it 'updates the description of the work item' do
           update_work_item
 
@@ -280,6 +363,20 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
       context 'for start and due date widget' do
         let(:updated_date) { 1.week.from_now.to_date }
 
+        include_examples 'publish WorkItems::WorkItemUpdatedEvent event',
+          attributes: %w[
+            description
+            description_html
+            last_edited_at
+            last_edited_by_id
+            lock_version
+            updated_at
+            updated_by_id
+          ],
+          widgets: %w[
+            description_widget
+          ]
+
         context 'when due_date is updated' do
           let(:widget_params) { { start_and_due_date_widget: { due_date: updated_date } } }
 
@@ -308,6 +405,18 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
         let_it_be(:child_work_item) { create(:work_item, :task, project: project) }
 
         let(:widget_params) { { hierarchy_widget: { children: [child_work_item] } } }
+
+        include_examples 'publish WorkItems::WorkItemUpdatedEvent event',
+          attributes: %w[
+            title
+            title_html
+            lock_version
+            updated_at
+            updated_by_id
+          ],
+          widgets: %w[
+            hierarchy_widget
+          ]
 
         it 'updates the children of the work item' do
           expect do
@@ -342,6 +451,8 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
         context 'when work item validation fails' do
           let(:opts) { { title: '' } }
 
+          include_examples 'does not publish WorkItems::WorkItemUpdatedEvent event'
+
           it 'returns validation errors' do
             expect(update_work_item[:message]).to contain_exactly("Title can't be blank")
           end
@@ -360,6 +471,16 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
         let_it_be(:milestone) { create(:milestone, project: project) }
 
         let(:widget_params) { { milestone_widget: { milestone_id: milestone.id } } }
+
+        include_examples 'publish WorkItems::WorkItemUpdatedEvent event',
+          attributes: %w[
+            milestone_id
+            updated_at
+            updated_by_id
+          ],
+          widgets: %w[
+            milestone_widget
+          ]
 
         context 'when milestone is updated' do
           it "triggers 'issuableMilestoneUpdated'" do
@@ -392,8 +513,31 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
         let_it_be(:user_todo) { create(:todo, target: work_item, user: developer, project: project, state: :pending) }
         let_it_be(:other_todo) { create(:todo, target: work_item, user: create(:user), project: project, state: :pending) }
 
+        include_examples 'publish WorkItems::WorkItemUpdatedEvent event',
+          attributes: %w[
+            description
+            description_html
+            last_edited_at
+            last_edited_by_id
+            lock_version
+            updated_at
+            updated_by_id
+          ],
+          widgets: %w[
+            description_widget
+          ]
+
         context 'when action is mark_as_done' do
           let(:widget_params) { { current_user_todos_widget: { action: 'mark_as_done' } } }
+
+          include_examples 'publish WorkItems::WorkItemUpdatedEvent event',
+            attributes: %w[
+              updated_at
+              updated_by_id
+            ],
+            widgets: %w[
+              current_user_todos_widget
+            ]
 
           it 'marks current user todo as done' do
             expect do
@@ -419,6 +563,37 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
           end
         end
       end
+
+      context 'for assignees widget' do
+        let_it_be(:assignee) { create(:user, developer_of: project) }
+
+        let(:widget_params) { { assignees_widget: { assignee_ids: [assignee.id] } } }
+
+        it 'updates assignees of the work item' do
+          expect do
+            update_work_item
+            work_item.reload
+          end.to change(work_item, :assignees).from([developer]).to([assignee]).and change(work_item, :updated_at)
+        end
+
+        it_behaves_like 'publish WorkItems::WorkItemUpdatedEvent event',
+          attributes: %w[
+            updated_at
+            updated_by_id
+          ],
+          widgets: %w[
+            assignees_widget
+          ]
+
+        context 'when work item validation fails' do
+          let(:opts) { { title: '' } }
+
+          it 'does not update assignees and returns validation errors' do
+            expect(update_work_item[:message]).to contain_exactly("Title can't be blank")
+            expect(work_item.reload.assignees).to contain_exactly(developer)
+          end
+        end
+      end
     end
 
     describe 'label updates' do
@@ -428,6 +603,12 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
       context 'when labels are changed' do
         let(:label) { create(:label, project: project) }
         let(:opts) { { label_ids: [label1.id] } }
+
+        include_examples 'publish WorkItems::WorkItemUpdatedEvent event',
+          attributes: %w[
+            updated_at
+            updated_by_id
+          ]
 
         it 'tracks users updating work item labels' do
           expect(Gitlab::UsageDataCounters::WorkItemActivityUniqueCounter).to receive(:track_work_item_labels_changed_action).with(author: current_user)

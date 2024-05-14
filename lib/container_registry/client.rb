@@ -58,6 +58,10 @@ module ContainerRegistry
       }
     end
 
+    def connected?
+      !registry_info.empty?
+    end
+
     def repository_tags(name, page_size: DEFAULT_TAGS_PAGE_SIZE)
       response = faraday.get("/v2/#{name}/tags/list") do |req|
         req.params['n'] = page_size

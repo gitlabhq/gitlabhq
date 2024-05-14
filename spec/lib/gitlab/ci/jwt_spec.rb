@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::Ci::Jwt, feature_category: :secrets_management do
   let(:namespace) { build_stubbed(:namespace) }
   let(:project) { build_stubbed(:project, namespace: namespace) }
-  let(:user) { build_stubbed(:user) }
+  let_it_be(:user) { create(:user) }
   let(:pipeline) { build_stubbed(:ci_pipeline, ref: 'auto-deploy-2020-03-19') }
   let(:build) do
     build_stubbed(
@@ -34,6 +34,7 @@ RSpec.describe Gitlab::Ci::Jwt, feature_category: :secrets_management do
 
     it 'has correct values for the custom attributes' do
       aggregate_failures do
+        expect(payload[:groups_direct]).to match_array([])
         expect(payload[:namespace_id]).to eq(namespace.id.to_s)
         expect(payload[:namespace_path]).to eq(namespace.full_path)
         expect(payload[:project_id]).to eq(project.id.to_s)
@@ -63,6 +64,44 @@ RSpec.describe Gitlab::Ci::Jwt, feature_category: :secrets_management do
       allow(build).to receive(:user).and_return(nil)
 
       expect { payload }.not_to raise_error
+    end
+
+    describe 'groups_direct' do
+      context 'with less than max allowed direct group memberships' do
+        let_it_be(:group) { create(:group, path: 'mygroup') }
+        let_it_be(:other_group) { create(:group, path: 'other-group') }
+        let_it_be(:subgroup) { create(:group, parent: group, path: 'mysubgroup') }
+        let_it_be(:other_subgroup) { create(:group, parent: other_group, path: 'other-subgroup') }
+
+        # ['mygroup','mygroup/mysubgroup','other-group']
+        let(:expected_groups) { [group.full_path, other_group.full_path, subgroup.full_path].sort! }
+
+        before do
+          group.add_member(user, GroupMember::DEVELOPER)
+          other_group.add_member(user, GroupMember::MAINTAINER)
+          subgroup.add_member(user, GroupMember::OWNER)
+        end
+
+        it 'has correct values for the sorted direct group full paths' do
+          expect(payload[:groups_direct]).to eq(expected_groups)
+        end
+      end
+
+      context 'with more than max allowed direct group memberships' do
+        before do
+          stub_const("User::FIRST_GROUP_PATHS_LIMIT", 4)
+
+          5.times do
+            create(:group).tap do |new_group|
+              new_group.add_member(user, Gitlab::Access::GUEST)
+            end
+          end
+        end
+
+        it 'is not present in the payload' do
+          expect(payload).not_to have_key(:groups_direct)
+        end
+      end
     end
 
     describe 'references' do

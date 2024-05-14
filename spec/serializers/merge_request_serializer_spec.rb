@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequestSerializer do
+RSpec.describe MergeRequestSerializer, feature_category: :code_review_workflow do
   let_it_be(:user) { create(:user) }
   let_it_be(:resource) { create(:merge_request, description: "Description") }
 

@@ -26,6 +26,33 @@ RSpec.describe SearchController, feature_category: :global_search do
       end
     end
 
+    shared_examples_for 'metadata is set' do |action|
+      it 'renders a 408 when a timeout occurs' do
+        expect(controller).to receive(:append_info_to_payload).and_wrap_original do |method, payload|
+          method.call(payload)
+
+          expect(payload[:metadata]['meta.search.group_id']).to eq('123')
+          expect(payload[:metadata]['meta.search.project_id']).to eq('456')
+          expect(payload[:metadata]).not_to have_key('meta.search.search')
+          expect(payload[:metadata]['meta.search.scope']).to eq('issues')
+          expect(payload[:metadata]['meta.search.force_search_results']).to eq('true')
+          expect(payload[:metadata]['meta.search.filters.confidential']).to eq('true')
+          expect(payload[:metadata]['meta.search.filters.state']).to eq('true')
+          expect(payload[:metadata]['meta.search.project_ids']).to eq(%w[456 789])
+          expect(payload[:metadata]['meta.search.type']).to eq('basic')
+          expect(payload[:metadata]['meta.search.level']).to eq('global')
+          expect(payload[:metadata]['meta.search.filters.language']).to eq('ruby')
+          expect(payload[:metadata]['meta.search.page']).to eq('2')
+          expect(payload[:metadata][:global_search_duration_s]).to be_a_kind_of(Numeric)
+        end
+        params = {
+          scope: 'issues', search: 'hello world', group_id: '123', page: '2', project_id: '456', language: 'ruby',
+          project_ids: %w[456 789], confidential: true, include_archived: true, state: true, force_search_results: true
+        }
+        get action, params: params
+      end
+    end
+
     describe 'GET #show', :snowplow do
       it_behaves_like 'when the user cannot read cross project', :show, { search: 'hello' } do
         it 'still allows accessing the search page' do
@@ -35,8 +62,32 @@ RSpec.describe SearchController, feature_category: :global_search do
         end
       end
 
+      it_behaves_like 'internal event tracking' do
+        let(:params) { { search: 'foobar' } }
+        let(:event) { 'perform_search' }
+        let(:category) { described_class.to_s }
+        let(:namespace) { nil }
+        let(:project) { nil }
+
+        subject(:tracked_event) { get :show, params: params }
+      end
+
+      context 'for navbar search' do
+        let(:params) { { search: 'foobar', nav_source: 'navbar' } }
+        let(:category) { described_class.to_s }
+        let(:namespace) { nil }
+        let(:project) { nil }
+
+        it_behaves_like 'internal event tracking' do
+          let(:event) { 'perform_navbar_search' }
+
+          subject(:tracked_event) { get :show, params: params }
+        end
+      end
+
       it_behaves_like 'with external authorization service enabled', :show, { search: 'hello' }
       it_behaves_like 'support for active record query timeouts', :show, { search: 'hello' }, :search_objects, :html
+      it_behaves_like 'metadata is set', :show
 
       describe 'rate limit scope' do
         it 'uses current_user and search scope' do
@@ -387,6 +438,7 @@ RSpec.describe SearchController, feature_category: :global_search do
       it_behaves_like 'when the user cannot read cross project', :count, { search: 'hello', scope: 'projects' }
       it_behaves_like 'with external authorization service enabled', :count, { search: 'hello', scope: 'projects' }
       it_behaves_like 'support for active record query timeouts', :count, { search: 'hello', scope: 'projects' }, :search_results, :json
+      it_behaves_like 'metadata is set', :count
 
       it 'returns the result count for the given term and scope' do
         create(:project, :public, name: 'hello world')

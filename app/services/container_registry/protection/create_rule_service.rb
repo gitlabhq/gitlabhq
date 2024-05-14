@@ -5,8 +5,8 @@ module ContainerRegistry
     class CreateRuleService < BaseService
       ALLOWED_ATTRIBUTES = %i[
         repository_path_pattern
-        push_protected_up_to_access_level
-        delete_protected_up_to_access_level
+        minimum_access_level_for_push
+        minimum_access_level_for_delete
       ].freeze
 
       def execute

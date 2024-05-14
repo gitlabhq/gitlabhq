@@ -122,6 +122,56 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
     end
   end
 
+  describe 'state machine events' do
+    describe 'start_cancel!' do
+      valid_statuses = Ci::HasStatus::CANCELABLE_STATUSES.map(&:to_sym) + [:manual]
+      # Invalid statuses are statuses that are COMPLETED_STATUSES or already canceling
+      invalid_statuses = Ci::HasStatus::AVAILABLE_STATUSES.map(&:to_sym) - valid_statuses
+
+      valid_statuses.each do |status|
+        it "transitions from #{status} to canceling" do
+          bridge = create(:ci_bridge, status: status)
+
+          bridge.start_cancel!
+
+          expect(bridge.status).to eq('canceling')
+        end
+      end
+
+      invalid_statuses.each do |status|
+        it "does not transition from #{status} to canceling" do
+          bridge = create(:ci_bridge, status: status)
+
+          expect { bridge.start_cancel! }
+            .to raise_error(StateMachines::InvalidTransition)
+        end
+      end
+    end
+
+    describe 'finish_cancel!' do
+      valid_statuses = Ci::HasStatus::CANCELABLE_STATUSES.map(&:to_sym) + [:manual, :canceling]
+      invalid_statuses = Ci::HasStatus::AVAILABLE_STATUSES.map(&:to_sym) - valid_statuses
+      valid_statuses.each do |status|
+        it "transitions from #{status} to canceling" do
+          bridge = create(:ci_bridge, status: status)
+
+          bridge.finish_cancel!
+
+          expect(bridge.status).to eq('canceled')
+        end
+      end
+
+      invalid_statuses.each do |status|
+        it "does not transition from #{status} to canceling" do
+          bridge = create(:ci_bridge, status: status)
+
+          expect { bridge.finish_cancel! }
+            .to raise_error(StateMachines::InvalidTransition)
+        end
+      end
+    end
+  end
+
   describe 'state machine transitions' do
     context 'when bridge points towards downstream' do
       %i[created manual].each do |status|
@@ -293,16 +343,6 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
 
         expect(bridge.downstream_variables).to contain_exactly(*expected_vars)
       end
-
-      context 'and feature flag is disabled' do
-        before do
-          stub_feature_flags(ci_prevent_file_var_expansion_downstream_pipeline: false)
-        end
-
-        it 'expands the file variable' do
-          expect(bridge.downstream_variables).to contain_exactly({ key: 'EXPANDED_FILE', value: 'test-file-value' })
-        end
-      end
     end
 
     context 'when recursive interpolation has been used' do
@@ -405,21 +445,6 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
 
           expect(bridge.downstream_variables).to contain_exactly(*expected_vars)
         end
-
-        context 'and feature flag is disabled' do
-          before do
-            stub_feature_flags(ci_prevent_file_var_expansion_downstream_pipeline: false)
-          end
-
-          it 'expands the file variable' do
-            expected_vars = [
-              { key: 'FILE_VAR', value: 'project file' },
-              { key: 'YAML_VAR', value: 'project file' }
-            ]
-
-            expect(bridge.downstream_variables).to contain_exactly(*expected_vars)
-          end
-        end
       end
 
       context 'when the pipeline runs from a pipeline schedule' do
@@ -486,16 +511,6 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
         ]
 
         expect(bridge.downstream_variables).to contain_exactly(*expected_vars)
-      end
-
-      context 'and feature flag is disabled' do
-        before do
-          stub_feature_flags(ci_prevent_file_var_expansion_downstream_pipeline: false)
-        end
-
-        it 'expands the file variable' do
-          expect(bridge.downstream_variables).to contain_exactly({ key: 'schedule_var_key', value: 'project file' })
-        end
       end
     end
 
@@ -761,6 +776,8 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
     end
   end
 
+  it_behaves_like 'a triggerable processable', :ci_bridge
+
   describe '#pipeline_variables' do
     it 'returns the pipeline variables' do
       expect(bridge.pipeline_variables).to eq(bridge.pipeline.variables)
@@ -993,6 +1010,12 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
 
       it { is_expected.to be_falsey }
     end
+  end
+
+  describe '#can_auto_cancel_pipeline_on_job_failure?' do
+    subject { bridge.can_auto_cancel_pipeline_on_job_failure? }
+
+    it { is_expected.to be true }
   end
 
   describe '#dependency_variables' do

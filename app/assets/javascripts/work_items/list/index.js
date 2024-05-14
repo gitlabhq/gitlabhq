@@ -18,6 +18,9 @@ export const mountWorkItemsListApp = () => {
     hasEpicsFeature,
     hasIssuableHealthStatusFeature,
     hasIssueWeightsFeature,
+    initialSort,
+    isSignedIn,
+    workItemType,
   } = el.dataset;
 
   return new Vue({
@@ -31,6 +34,10 @@ export const mountWorkItemsListApp = () => {
       hasEpicsFeature: parseBoolean(hasEpicsFeature),
       hasIssuableHealthStatusFeature: parseBoolean(hasIssuableHealthStatusFeature),
       hasIssueWeightsFeature: parseBoolean(hasIssueWeightsFeature),
+      initialSort,
+      isSignedIn: parseBoolean(isSignedIn),
+      isGroup: true,
+      workItemType,
     },
     render: (createComponent) => createComponent(WorkItemsListApp),
   });

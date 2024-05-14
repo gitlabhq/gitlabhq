@@ -50,16 +50,18 @@ RSpec.describe 'Environment', feature_category: :environment_management do
     context 'without deployments' do
       before do
         visit_environment(environment)
+        click_link s_('Environments|Deployment history')
       end
 
       it 'does not show deployments' do
-        expect(page).to have_content('You don\'t have any deployments right now.')
+        expect(page).to have_content('No deployment history')
       end
     end
 
     context 'with deployments' do
       before do
         visit_environment(environment)
+        click_link s_('Environments|Deployment history')
       end
 
       context 'when there is no related deployable' do
@@ -124,6 +126,7 @@ RSpec.describe 'Environment', feature_category: :environment_management do
 
         before do
           visit_environment(environment)
+          click_link s_('Environments|Deployment history')
         end
 
         # This ordering is unexpected and to be fixed.
@@ -155,6 +158,7 @@ RSpec.describe 'Environment', feature_category: :environment_management do
 
         before do
           visit_environment(environment)
+          click_link s_('Environments|Deployment history')
         end
 
         it 'shows deployment information and buttons', :js do
@@ -304,8 +308,10 @@ RSpec.describe 'Environment', feature_category: :environment_management do
 
       remove_branch_with_hooks(project, user, 'feature') do
         page.within('.js-branch-feature') do
-          find('[data-testid="branch-more-actions"] .gl-new-dropdown-toggle').click
-          find('[data-testid="delete-branch-button"]').click
+          within_testid('branch-more-actions') do
+            find('.gl-new-dropdown-toggle').click
+          end
+          find_by_testid('delete-branch-button').click
         end
       end
 

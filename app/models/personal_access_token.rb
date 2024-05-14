@@ -42,6 +42,7 @@ class PersonalAccessToken < ApplicationRecord
   scope :owner_is_human, -> { includes(:user).references(:user).merge(User.human) }
   scope :last_used_before, -> (date) { where("last_used_at <= ?", date) }
   scope :last_used_after, -> (date) { where("last_used_at >= ?", date) }
+  scope :expiring_and_not_notified_without_impersonation, -> { where(["(revoked = false AND expire_notification_delivered = false AND expires_at >= CURRENT_DATE AND expires_at <= :date) and impersonation = false", { date: DAYS_TO_EXPIRE.days.from_now.to_date }]) }
 
   validates :scopes, presence: true
   validates :expires_at, presence: true, on: :create, unless: :allow_expires_at_to_be_empty?
@@ -72,6 +73,10 @@ class PersonalAccessToken < ApplicationRecord
 
   def self.search(query)
     fuzzy_search(query, [:name])
+  end
+
+  def hook_attrs
+    Gitlab::HookData::ResourceAccessTokenBuilder.new(self).build
   end
 
   protected

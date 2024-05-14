@@ -105,28 +105,23 @@ describe('GlobalSearchSidebar', () => {
     });
 
     describe.each`
-      scope      | filter              | searchType              | isShown
-      ${'blobs'} | ${findBlobsFilters} | ${SEARCH_TYPE_BASIC}    | ${false}
-      ${'blobs'} | ${findBlobsFilters} | ${SEARCH_TYPE_ADVANCED} | ${true}
-      ${'blobs'} | ${findBlobsFilters} | ${SEARCH_TYPE_ZOEKT}    | ${false}
-    `('sidebar blobs scope:', ({ scope, filter, searchType, isShown }) => {
+      scope      | searchType              | isShown
+      ${'blobs'} | ${SEARCH_TYPE_BASIC}    | ${false}
+      ${'blobs'} | ${SEARCH_TYPE_ADVANCED} | ${true}
+      ${'blobs'} | ${SEARCH_TYPE_ZOEKT}    | ${true}
+    `('sidebar blobs scope:', ({ scope, searchType, isShown }) => {
       beforeEach(() => {
         getterSpies.currentScope = jest.fn(() => scope);
-        createComponent({ urlQuery: { scope }, searchType });
+        createComponent({
+          urlQuery: { scope },
+          searchType,
+        });
       });
 
-      it(`renders correctly filter BlobsFilters when search_type ${searchType}`, () => {
-        expect(filter().exists()).toBe(isShown);
-      });
-    });
-
-    describe('filters for blobs will not load if zoekt is enabled', () => {
-      beforeEach(() => {
-        createComponent({ urlQuery: { scope: 'blobs' }, searchType: SEARCH_TYPE_ZOEKT });
-      });
-
-      it("doesn't render blobs filters", () => {
-        expect(findBlobsFilters().exists()).toBe(false);
+      it(`does ${
+        isShown ? '' : 'not '
+      }render filter BlobsFilters when search_type ${searchType}`, () => {
+        expect(findBlobsFilters().exists()).toBe(isShown);
       });
     });
 

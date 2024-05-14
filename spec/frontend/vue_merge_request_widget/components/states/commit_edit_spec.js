@@ -1,3 +1,4 @@
+import { GlFormTextarea } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import CommitEdit from '~/vue_merge_request_widget/components/states/commit_edit.vue';
@@ -19,6 +20,9 @@ describe('Commits edit component', () => {
       slots: {
         ...slots,
       },
+      stubs: {
+        GlFormTextarea,
+      },
     });
   };
 
@@ -26,7 +30,7 @@ describe('Commits edit component', () => {
     createComponent();
   });
 
-  const findTextarea = () => wrapper.find('.form-control');
+  const findTextarea = () => wrapper.findComponent(GlFormTextarea);
 
   it('has a correct label', () => {
     const labelElement = wrapper.find('.col-form-label');
@@ -40,18 +44,17 @@ describe('Commits edit component', () => {
     });
 
     it('has a correct value', () => {
-      expect(findTextarea().element.value).toBe(testCommitMessage);
+      expect(findTextarea().props('value')).toBe(testCommitMessage);
     });
 
     it('emits an input event and receives changed value', async () => {
       const changedCommitMessage = 'Changed commit message';
 
-      findTextarea().element.value = changedCommitMessage;
-      findTextarea().trigger('input');
+      findTextarea().vm.$emit('input', changedCommitMessage);
 
       await nextTick();
       expect(wrapper.emitted().input[0]).toEqual([changedCommitMessage]);
-      expect(findTextarea().element.value).toBe(changedCommitMessage);
+      expect(findTextarea().props('value')).toBe(changedCommitMessage);
     });
   });
 

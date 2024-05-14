@@ -157,7 +157,7 @@ export default {
       const sourceData = cache.readQuery(query);
 
       const newData = produce(sourceData, (draftState) => {
-        const { widgets } = draftState.workspace.workItems.nodes[0];
+        const { widgets } = draftState.workspace.workItem;
 
         const widgetCurrentUserTodos = widgets.find(
           (widget) => widget.type === WIDGET_TYPE_CURRENT_USER_TODOS,
@@ -175,9 +175,10 @@ export default {
 <template>
   <gl-button
     v-gl-tooltip.hover
-    :loading="isLoading"
+    :disabled="isLoading"
     :title="buttonLabel"
     category="secondary"
+    class="btn-icon"
     :aria-label="buttonLabel"
     @click="onToggle"
   >

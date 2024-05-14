@@ -70,8 +70,8 @@ RSpec.describe Achievements::UserAchievementPolicy, feature_category: :user_prof
     end
 
     context 'for others' do
-      it 'is visible' do
-        is_expected.to be_allowed(:read_user_achievement)
+      it 'is not visible' do
+        is_expected.to be_disallowed(:read_user_achievement)
       end
     end
   end

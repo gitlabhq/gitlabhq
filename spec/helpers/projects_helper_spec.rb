@@ -118,6 +118,31 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     end
   end
 
+  describe '#can_set_diff_preview_in_email?' do
+    stub_feature_flags(diff_preview_in_email: true)
+    let_it_be(:user) { create(:project_member, :maintainer, user: create(:user), project: project).user }
+
+    it 'returns true for the project owner' do
+      expect(helper.can_set_diff_preview_in_email?(project, project.owner)).to be_truthy
+    end
+
+    it 'returns false for anyone else' do
+      expect(helper.can_set_diff_preview_in_email?(project, user)).to be_falsey
+    end
+
+    context 'respects the settings of a parent group' do
+      context 'when a parent group has disabled diff previews ' do
+        it 'returns false for all users' do
+          new_project = create(:project, group: create(:group))
+          new_project.group.update_attribute(:show_diff_preview_in_email, false)
+
+          expect(helper.can_set_diff_preview_in_email?(new_project, new_project.owner)).to be_falsey
+          expect(helper.can_set_diff_preview_in_email?(new_project, user)).to be_falsey
+        end
+      end
+    end
+  end
+
   describe '#load_pipeline_status' do
     it 'loads the pipeline status in batch' do
       helper.load_pipeline_status([project])
@@ -852,7 +877,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
 
     it 'enqueues the elements in the breadcrumb schema list' do
       expect(helper).to receive(:push_to_schema_breadcrumb).with(project.namespace.name, user_path(project.owner))
-      expect(helper).to receive(:push_to_schema_breadcrumb).with(project.name, project_path(project))
+      expect(helper).to receive(:push_to_schema_breadcrumb).with(project.name, project_path(project), nil)
 
       subject
     end
@@ -1078,6 +1103,128 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     end
   end
 
+  describe '#star_count_data_attributes' do
+    before do
+      allow(user).to receive(:starred?).with(project).and_return(starred)
+      allow(helper).to receive(:new_session_path).and_return(sign_in_path)
+      allow(project).to receive(:star_count).and_return(5)
+    end
+
+    let(:sign_in_path) { 'sign/in/path' }
+    let(:common_data_attributes) do
+      {
+        project_id: project.id,
+        sign_in_path: sign_in_path,
+        star_count: 5,
+        starrers_path: "/#{project.full_path}/-/starrers"
+      }
+    end
+
+    subject { helper.star_count_data_attributes(project) }
+
+    context 'when user has already starred the project' do
+      let(:starred) { true }
+      let(:expected) { common_data_attributes.merge({ starred: "true" }) }
+
+      it { is_expected.to eq(expected) }
+    end
+
+    context 'when user has not starred the project' do
+      let(:starred) { false }
+      let(:expected) { common_data_attributes.merge({ starred: "false" }) }
+
+      it { is_expected.to eq(expected) }
+    end
+  end
+
+  describe '#notification_data_attributes' do
+    before do
+      allow(helper).to receive(:help_page_path).and_return(notification_help_path)
+      allow(project).to receive(:emails_disabled?).and_return(false)
+    end
+
+    let(:notification_help_path) { 'notification/help/path' }
+    let(:notification_dropdown_items) { '["global","watch","participating","mention","disabled"]' }
+
+    context "returns default user notification settings" do
+      let(:expected) do
+        {
+          emails_disabled: "false",
+          notification_dropdown_items: notification_dropdown_items,
+          notification_help_page_path: notification_help_path,
+          notification_level: "global"
+        }
+      end
+
+      subject { helper.notification_data_attributes(project) }
+
+      it { is_expected.to eq(expected) }
+    end
+
+    context "returns configured users notification settings" do
+      before do
+        allow(project).to receive(:emails_disabled?).and_return(true)
+        setting = user.notification_settings_for(project)
+        setting.level = :watch
+        setting.save!
+      end
+
+      let(:expected) do
+        {
+          emails_disabled: "true",
+          notification_dropdown_items: notification_dropdown_items,
+          notification_help_page_path: notification_help_path,
+          notification_level: "watch"
+        }
+      end
+
+      subject { helper.notification_data_attributes(project) }
+
+      it { is_expected.to eq(expected) }
+    end
+  end
+
+  describe '#home_panel_data_attributes' do
+    using RSpec::Parameterized::TableSyntax
+
+    before do
+      allow(helper).to receive(:groups_projects_more_actions_dropdown_data).and_return(nil)
+      allow(helper).to receive(:fork_button_data_attributes).and_return(nil)
+      allow(helper).to receive(:notification_data_attributes).and_return(nil)
+      allow(helper).to receive(:star_count_data_attributes).and_return({})
+    end
+
+    where(:can_read_project, :is_empty_repo, :is_admin, :has_admin_path) do
+      true  | true  | true  | true
+      false | false | true  | true
+      true  | true  | false | false
+      false | false | false | false
+    end
+
+    with_them do
+      context "returns default user project details" do
+        before do
+          allow(helper).to receive(:can?).with(user, :read_project, project).and_return(can_read_project)
+          allow(project).to receive(:empty_repo?).and_return(is_empty_repo)
+          allow(user).to receive(:can_admin_all_resources?).and_return(is_admin)
+        end
+
+        let(:expected) do
+          {
+            admin_path: (admin_project_path(project) if has_admin_path),
+            can_read_project: can_read_project.to_s,
+            is_project_empty: is_empty_repo.to_s,
+            project_id: project.id
+          }
+        end
+
+        subject { helper.home_panel_data_attributes }
+
+        it { is_expected.to eq(expected) }
+      end
+    end
+  end
+
   shared_examples 'configure import method modal' do
     context 'as a user' do
       it 'returns a link to contact an administrator' do
@@ -1102,6 +1249,46 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     subject { helper.import_from_bitbucket_message }
 
     it_behaves_like 'configure import method modal'
+  end
+
+  describe "#show_archived_project_banner?" do
+    shared_examples 'does not show the banner' do |pass_project: true|
+      it do
+        expect(project.archived?).to be(false)
+        expect(helper.show_archived_project_banner?(pass_project ? project : nil)).to be(false)
+      end
+    end
+
+    context 'with no project' do
+      it_behaves_like 'does not show the banner', pass_project: false
+    end
+
+    context 'with unsaved project' do
+      let_it_be(:project) { build(:project) }
+
+      it_behaves_like 'does not show the banner'
+    end
+
+    context 'with the setting enabled' do
+      context 'with an active project' do
+        it_behaves_like 'does not show the banner'
+      end
+
+      context 'with an inactive project' do
+        before do
+          project.archived = true
+          project.save!
+        end
+
+        it 'shows the banner' do
+          expect(project.present?).to be(true)
+          expect(project.saved?).to be(true)
+          expect(project.archived?).to be(true)
+          expect(helper.show_archived_project_banner?(project)).to be(true)
+          expect(helper.show_inactive_project_deletion_banner?(project)).to be(false)
+        end
+      end
+    end
   end
 
   describe '#show_inactive_project_deletion_banner?' do
@@ -1146,6 +1333,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
         end
 
         it 'shows the banner' do
+          expect(helper.show_archived_project_banner?(project)).to be(false)
           expect(helper.show_inactive_project_deletion_banner?(project)).to be(true)
         end
       end
@@ -1584,6 +1772,92 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
 
         it_behaves_like 'returns visibility level content_tag'
       end
+    end
+  end
+
+  describe '#hidden_issue_icon' do
+    let_it_be(:mock_svg) { '<svg></svg>'.html_safe }
+
+    before do
+      allow(helper).to receive(:hidden_resource_icon).with(resource).and_return(mock_svg)
+    end
+
+    context 'when issue is hidden' do
+      let_it_be(:banned_user) { build(:user, :banned) }
+      let_it_be(:resource) { build(:issue, author: banned_user) }
+
+      it 'returns icon with tooltip' do
+        expect(helper.hidden_issue_icon(resource)).to eq(mock_svg)
+      end
+    end
+
+    context 'when issue is not hidden' do
+      let_it_be(:resource) { build(:issue) }
+
+      it 'returns `nil`' do
+        expect(helper.hidden_issue_icon(resource)).to be_nil
+      end
+    end
+  end
+
+  describe '#issue_manual_ordering_class' do
+    context 'when sorting by relative position' do
+      before do
+        assign(:sort, 'relative_position')
+      end
+
+      it 'returns manual ordering class' do
+        expect(helper.issue_manual_ordering_class).to eq('manual-ordering')
+      end
+
+      context 'when manual sorting disabled' do
+        before do
+          allow(helper).to receive(:issue_repositioning_disabled?).and_return(true)
+        end
+
+        it 'returns nil' do
+          expect(helper.issue_manual_ordering_class).to eq(nil)
+        end
+      end
+    end
+  end
+
+  describe '#show_invalid_gpg_key_message?' do
+    subject { helper.show_invalid_gpg_key_message? }
+
+    it { is_expected.to be_falsey }
+
+    context 'when external verification is required for gpg keys' do
+      let!(:integration) { create(:beyond_identity_integration) }
+
+      context 'and user has a gpg key' do
+        let!(:gpg_key) { create :gpg_key, externally_verified: externally_verified, user: user }
+
+        context 'and the gpg key is not verified' do
+          let(:externally_verified) { false }
+
+          it { is_expected.to be_truthy }
+        end
+
+        context 'and the gpg key is verified' do
+          let(:externally_verified) { true }
+
+          it { is_expected.to be_falsy }
+        end
+      end
+    end
+  end
+
+  describe '#projects_explore_filtered_search_and_sort_app_data' do
+    it 'returns expected json' do
+      expect(Gitlab::Json.parse(helper.projects_explore_filtered_search_and_sort_app_data)).to eq(
+        {
+          'initial_sort' => 'created_desc',
+          'programming_languages' => ProgrammingLanguage.most_popular,
+          'starred_explore_projects_path' => starred_explore_projects_path,
+          'explore_root_path' => explore_root_path
+        }
+      )
     end
   end
 end

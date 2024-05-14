@@ -101,7 +101,7 @@ module Routable
         .where(source_type_condition)
         .where(path_condition)
 
-      source_ids = routes_matching_condition.pluck(:source_id)
+      source_ids = routes_matching_condition.select(:source_id)
       result = route_scope.where(id: source_ids)
 
       if preload_routes

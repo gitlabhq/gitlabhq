@@ -24,7 +24,6 @@ import getIssuesCountsQuery from '~/issues/dashboard/queries/get_issues_counts.q
 import {
   CREATED_DESC,
   defaultTypeTokenOptions,
-  i18n,
   TYPE_TOKEN_KEY_RESULT_OPTION,
   TYPE_TOKEN_OBJECTIVE_OPTION,
   UPDATED_DESC,
@@ -89,13 +88,13 @@ describe('IssuesDashboardApp component', () => {
     defaultQueryResponse.data.issues.nodes[0].weight = 5;
   }
 
-  const findCalendarButton = () => wrapper.findByRole('link', { name: i18n.calendarLabel });
+  const findCalendarButton = () => wrapper.findByRole('link', { name: 'Subscribe to calendar' });
   const findDisclosureDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findIssuableList = () => wrapper.findComponent(IssuableList);
   const findIssueCardStatistics = () => wrapper.findComponent(IssueCardStatistics);
   const findIssueCardTimeInfo = () => wrapper.findComponent(IssueCardTimeInfo);
-  const findRssButton = () => wrapper.findByRole('link', { name: i18n.rssLabel });
+  const findRssButton = () => wrapper.findByRole('link', { name: 'Subscribe to RSS feed' });
 
   const mountComponent = ({
     provide = {},
@@ -116,6 +115,9 @@ describe('IssuesDashboardApp component', () => {
       },
       propsData: {
         eeTypeTokenOptions,
+      },
+      stubs: {
+        GlIntersperse: true,
       },
     });
   };
@@ -233,9 +235,9 @@ describe('IssuesDashboardApp component', () => {
 
         it('renders empty state', () => {
           expect(findEmptyState().props()).toMatchObject({
-            description: i18n.noSearchResultsDescription,
+            description: 'To widen your search, change or remove filters above',
             svgPath: defaultProvide.emptyStateWithFilterSvgPath,
-            title: i18n.noSearchResultsTitle,
+            title: 'Sorry, your filter produced no results',
           });
         });
       });
@@ -258,7 +260,7 @@ describe('IssuesDashboardApp component', () => {
         expect(findEmptyState().props()).toMatchObject({
           description: null,
           svgPath: defaultProvide.emptyStateWithoutFilterSvgPath,
-          title: i18n.noSearchNoFilterTitle,
+          title: 'Please select at least one filter to see results',
         });
       });
     });
@@ -330,8 +332,8 @@ describe('IssuesDashboardApp component', () => {
   describe('errors', () => {
     describe.each`
       error                      | mountOption                   | message
-      ${'fetching issues'}       | ${'issuesQueryHandler'}       | ${i18n.errorFetchingIssues}
-      ${'fetching issue counts'} | ${'issuesCountsQueryHandler'} | ${i18n.errorFetchingCounts}
+      ${'fetching issues'}       | ${'issuesQueryHandler'}       | ${'An error occurred while loading issues'}
+      ${'fetching issue counts'} | ${'issuesCountsQueryHandler'} | ${'An error occurred while getting issue counts'}
     `('when there is an error $error', ({ mountOption, message }) => {
       beforeEach(async () => {
         setWindowLocation(locationSearch);

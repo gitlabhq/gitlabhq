@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Use scheduled pipelines to run GitLab CI/CD [pipelines](index.md) at regular intervals.
 
@@ -19,13 +19,11 @@ For a scheduled pipeline to run:
 - The schedule owner must have the Developer role. For pipelines on protected branches,
   the schedule owner must be [allowed to merge](../../user/project/protected_branches.md#add-protection-to-existing-branches)
   to the branch.
-- The [`.gitlab-ci.yml` file](../index.md#the-gitlab-ciyml-file) must have valid syntax.
+- The `.gitlab-ci.yml` file must have valid syntax.
 
 Otherwise, the pipeline is not created. No error message is displayed.
 
 ## Add a pipeline schedule
-
-> - Scheduled pipelines for tags [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23292) in GitLab 14.9.
 
 To add a pipeline schedule:
 
@@ -46,8 +44,6 @@ you must delete unused schedules before you can add another.
 
 ## Edit a pipeline schedule
 
-> - Introduced in GitLab 14.8, only a pipeline schedule owner can edit the schedule.
-
 The owner of a pipeline schedule can edit it:
 
 1. On the left sidebar, select **Search or go to** and find your project.
@@ -66,7 +62,7 @@ the next scheduled time:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Build > Pipeline schedules**.
 1. On the right of the list, for
-   the pipeline you want to run, select **Play** (**{play}**).
+   the pipeline you want to run, select **Run** (**{play}**).
 
 You can manually run scheduled pipelines once per minute.
 
@@ -92,7 +88,7 @@ You need at least the Maintainer role to take ownership of a pipeline created by
 ## Related topics
 
 - [Pipeline schedules API](../../api/pipeline_schedules.md)
-- [Adding jobs to scheduled pipelines](../jobs/job_control.md#run-jobs-for-scheduled-pipelines)
+- [Run jobs for scheduled pipelines](../jobs/job_rules.md#run-jobs-for-scheduled-pipelines)
 
 <!-- ## Troubleshooting
 
@@ -105,3 +101,19 @@ questions that you know someone might ask.
 Each scenario can be a third-level heading, for example `### Getting error message X`.
 If you have none to add when creating a doc, leave this section in place
 but commented out to help encourage others to add to it in the future. -->
+
+## Troubleshooting
+
+### Short refs are expanded to Full refs
+
+This behavior is normal and it introduced in order to enforce explicit resources.
+The API still accepts both `short` (e.g. `main`) and `full` (e.g. `refs/heads/main` or `refs/tags/main`) refs and expands any `short`
+ref provided, to a `full` ref.
+
+### Ambiguous Refs
+
+When a ref is being expanded, there can be cases where the full ref can't be automatically inferred.
+Such cases can be:
+
+- A `short` ref is provided (e.g. `main`) but **both** a branch and a tag exist with the provided `short` ref name
+- A `short` ref is provided, but **neither** a branch or tag with the provided `short` ref name exist

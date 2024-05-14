@@ -156,8 +156,8 @@ export const workItemThreeAncestorsQueryResponse = {
                 webUrl: '/gitlab-org/gitlab-test/-/work_items/6',
                 workItemType: {
                   id: 'gid://gitlab/WorkItems::Type/2',
-                  name: 'Issue',
-                  iconName: 'issue-type-issue',
+                  name: 'Epic',
+                  iconName: 'issue-type-epic',
                 },
               },
             ],

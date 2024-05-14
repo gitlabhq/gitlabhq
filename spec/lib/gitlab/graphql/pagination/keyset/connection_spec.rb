@@ -9,7 +9,7 @@ RSpec.describe Gitlab::Graphql::Pagination::Keyset::Connection do
   # The spec will be merged with connection_spec.rb in the future.
   let(:nodes) { Project.all.order(id: :asc) }
   let(:arguments) { {} }
-  let(:context) { GraphQL::Query::Context.new(query: query_double, values: nil, object: nil) }
+  let(:context) { GraphQL::Query::Context.new(query: query_double, values: nil) }
 
   let_it_be(:column_order_id) { Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(attribute_name: 'id', order_expression: Project.arel_table[:id].asc) }
   let_it_be(:column_order_id_desc) { Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(attribute_name: 'id', order_expression: Project.arel_table[:id].desc) }
@@ -22,8 +22,7 @@ RSpec.describe Gitlab::Graphql::Pagination::Keyset::Connection do
       order_expression: Project.arel_table[:last_repository_check_at].asc.nulls_last,
       reversed_order_expression: Project.arel_table[:last_repository_check_at].desc.nulls_last,
       order_direction: :asc,
-      nullable: :nulls_last,
-      distinct: false)
+      nullable: :nulls_last)
   end
 
   let_it_be(:column_order_last_repo_desc) do
@@ -33,8 +32,7 @@ RSpec.describe Gitlab::Graphql::Pagination::Keyset::Connection do
       order_expression: Project.arel_table[:last_repository_check_at].desc.nulls_last,
       reversed_order_expression: Project.arel_table[:last_repository_check_at].asc.nulls_last,
       order_direction: :desc,
-      nullable: :nulls_last,
-      distinct: false)
+      nullable: :nulls_last)
   end
 
   subject(:connection) do
@@ -46,7 +44,7 @@ RSpec.describe Gitlab::Graphql::Pagination::Keyset::Connection do
   end
 
   def decoded_cursor(cursor)
-    Gitlab::Json.parse(Base64Bp.urlsafe_decode64(cursor))
+    Gitlab::Json.parse(Base64.urlsafe_decode64(cursor))
   end
 
   before do
@@ -290,7 +288,7 @@ RSpec.describe Gitlab::Graphql::Pagination::Keyset::Connection do
 
         let_it_be(:nodes) do
           # Note: sorted_by_similarity_desc scope internally supports the generic keyset order.
-          Project.sorted_by_similarity_desc('test', include_in_select: true)
+          Project.sorted_by_similarity_desc('test')
         end
 
         let_it_be(:descending_nodes) { nodes.to_a }
@@ -299,7 +297,7 @@ RSpec.describe Gitlab::Graphql::Pagination::Keyset::Connection do
       end
 
       context 'when an invalid cursor is provided' do
-        let(:arguments) { { before: Base64Bp.urlsafe_encode64('invalidcursor', padding: false) } }
+        let(:arguments) { { before: Base64.urlsafe_encode64('invalidcursor', padding: false) } }
 
         it 'raises an error' do
           expect { subject.sliced_nodes }.to raise_error(Gitlab::Graphql::Errors::ArgumentError)
@@ -343,6 +341,12 @@ RSpec.describe Gitlab::Graphql::Pagination::Keyset::Connection do
             self.table_name  = 'no_primary_key'
             self.primary_key = nil
           end
+
+          # Gitlab::Pagination::Keyset::SimpleOrderBuilder checks for multiple primary keys
+          # directly, without this mock it fails because the table doesn't actually exist.
+          allow(NoPrimaryKey.connection).to receive(:primary_keys)
+                                   .with('no_primary_key')
+                                   .and_return([])
         end
 
         let(:nodes) { NoPrimaryKey.all }

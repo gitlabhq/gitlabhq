@@ -71,6 +71,42 @@ RSpec.describe Projects::UpdateRemoteMirrorService, feature_category: :source_co
       end
     end
 
+    context "when the URL local" do
+      before do
+        allow(remote_mirror).to receive(:url).and_return('https://localhost:3000')
+      end
+
+      context "when local requests are allowed" do
+        before do
+          stub_application_setting(allow_local_requests_from_web_hooks_and_services: true)
+
+          # stub_application_setting does not work with `app/validators/addressable_url_validator.rb`
+          settings = ApplicationSetting.new(allow_local_requests_from_web_hooks_and_services: true)
+          allow(ApplicationSetting).to receive(:current).and_return(settings)
+        end
+
+        it "succeeds" do
+          expect(execute![:status]).to eq(:success)
+          expect(execute![:message]).to be_nil
+        end
+      end
+
+      context "when local requests are not allowed" do
+        before do
+          stub_application_setting(allow_local_requests_from_web_hooks_and_services: false)
+
+          # stub_application_setting does not work with `app/validators/addressable_url_validator.rb`
+          settings = ApplicationSetting.new(allow_local_requests_from_web_hooks_and_services: false)
+          allow(ApplicationSetting).to receive(:current).and_return(settings)
+        end
+
+        it "fails and returns error status" do
+          expect(execute![:status]).to eq(:error)
+          expect(execute![:message]).to eq('The remote mirror URL is invalid.')
+        end
+      end
+    end
+
     context "when given URLs containing escaped elements" do
       it_behaves_like "URLs containing escaped elements return expected status" do
         let(:result) { execute! }

@@ -57,7 +57,6 @@ To enable Arkose Protect:
 1. Enable the ArkoseLabs login challenge. Run the following commands in the Rails console, replacing `<your_public_api_key>` and `<your_private_api_key>` with your own API keys.
 
    ```ruby
-   Feature.enable(:arkose_labs_signup_challenge)
    ApplicationSetting.current.update(arkose_labs_public_api_key: '<your_public_api_key>')
    ApplicationSetting.current.update(arkose_labs_private_api_key: '<your_private_api_key>')
    ```
@@ -91,7 +90,7 @@ If the query is valid, the result contains debug information about the user's se
 To check if a user failed to sign in because the ArkoseLabs challenge was not solved, [query the GitLab production logs](https://log.gprd.gitlab.net/goto/b97c8a80-935a-11ed-85ed-e7557b0a598c) with the following KQL:
 
 ```plaintext
-KQL: json.message:"Challenge was not solved" AND json.username:replace_username_here`
+KQL: json.message:"Challenge was not solved" AND json.username:replace_username_here
 ```
 
 ## Allowlists

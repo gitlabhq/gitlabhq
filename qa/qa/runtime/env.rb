@@ -39,7 +39,7 @@ module QA
       end
 
       def additional_repository_storage
-        ENV['QA_ADDITIONAL_REPOSITORY_STORAGE']
+        ENV['QA_ADDITIONAL_REPOSITORY_STORAGE'] || 'secondary'
       end
 
       def non_cluster_repository_storage
@@ -47,7 +47,7 @@ module QA
       end
 
       def praefect_repository_storage
-        ENV['QA_PRAEFECT_REPOSITORY_STORAGE']
+        ENV['QA_PRAEFECT_REPOSITORY_STORAGE'] || 'default'
       end
 
       def interception_enabled?
@@ -84,6 +84,10 @@ module QA
 
       def ci_project_name
         ENV['CI_PROJECT_NAME']
+      end
+
+      def ci_project_path
+        ENV['CI_PROJECT_PATH']
       end
 
       def schedule_type
@@ -517,10 +521,6 @@ module QA
         ENV['QA_RUNTIME_SCENARIO_ATTRIBUTES']
       end
 
-      def disable_rspec_retry?
-        enabled?(ENV['QA_DISABLE_RSPEC_RETRY'], default: false)
-      end
-
       def simulate_slow_connection?
         enabled?(ENV['QA_SIMULATE_SLOW_CONNECTION'], default: false)
       end
@@ -598,10 +598,6 @@ module QA
 
       def validate_resource_reuse?
         enabled?(ENV['QA_VALIDATE_RESOURCE_REUSE'], default: false)
-      end
-
-      def skip_smoke_reliable?
-        enabled?(ENV['QA_SKIP_SMOKE_RELIABLE'], default: false)
       end
 
       def fips?
@@ -689,6 +685,41 @@ module QA
       # @return [String]
       def docker_network
         ENV["QA_DOCKER_NETWORK"]
+      end
+
+      # Product analytics configurator string (e.g. https://usr:pass@gl-configurator.gitlab.com)
+      #
+      # @return [String]
+      def pa_configurator_url
+        ENV['PA_CONFIGURATOR_URL']
+      end
+
+      # Product analytics collector url (e.g. https://collector.gitlab.com)
+      #
+      # @return [String]
+      def pa_collector_host
+        ENV['PA_COLLECTOR_HOST']
+      end
+
+      # Product analytics cube api url (e.g. https://cube.gitlab.com)
+      #
+      # @return [String]
+      def pa_cube_api_url
+        ENV['PA_CUBE_API_URL']
+      end
+
+      # Product analytics cube api key
+      #
+      # @return [String]
+      def pa_cube_api_key
+        ENV['PA_CUBE_API_KEY']
+      end
+
+      # Test run is in rspec retried process
+      #
+      # @return [Boolean]
+      def rspec_retried?
+        enabled?(ENV['QA_RSPEC_RETRIED'], default: false)
       end
 
       private

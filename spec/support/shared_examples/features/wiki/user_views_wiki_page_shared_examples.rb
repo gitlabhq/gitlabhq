@@ -28,8 +28,6 @@ RSpec.shared_examples 'User views a wiki page' do
     before do
       visit wiki_path(wiki)
 
-      wait_for_svg_to_be_loaded
-
       click_link "Create your first page"
 
       fill_in(:wiki_title, with: 'one/two/three-test')
@@ -276,8 +274,6 @@ RSpec.shared_examples 'User views a wiki page' do
       click_button 'Plan'
       click_link 'Wiki'
     end
-
-    wait_for_svg_to_be_loaded
 
     click_link "Create your first page"
 

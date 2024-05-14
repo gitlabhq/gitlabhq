@@ -882,7 +882,7 @@ RSpec.describe 'Git LFS API and storage', feature_category: :source_code_managem
                 where(:size, :sha256, :status) do
                   nil | nil | :ok # Test setup sanity check
                   0 | nil | :bad_request
-                  nil | 'a' * 64 | :bad_request
+                  nil | ('a' * 64) | :bad_request
                 end
 
                 with_them do
@@ -1119,10 +1119,12 @@ RSpec.describe 'Git LFS API and storage', feature_category: :source_code_managem
               context 'an MR exists on target forked project' do
                 let(:allow_collaboration) { true }
                 let(:merge_request) do
-                  create(:merge_request,
-                         target_project: upstream_project,
-                         source_project: project,
-                         allow_collaboration: allow_collaboration)
+                  create(
+                    :merge_request,
+                    target_project: upstream_project,
+                    source_project: project,
+                    allow_collaboration: allow_collaboration
+                  )
                 end
 
                 before do

@@ -13,8 +13,8 @@ module Types
 
       SCOPES_DESCRIPTION.each do |scope, description|
         value scope.to_s.upcase,
-              description: description,
-              value: scope.to_s
+          description: description,
+          value: scope.to_s
       end
     end
   end

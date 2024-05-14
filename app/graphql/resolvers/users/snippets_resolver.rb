@@ -11,8 +11,8 @@ module Resolvers
       alias_method :user, :object
 
       argument :type, Types::Snippets::TypeEnum,
-               required: false,
-               description: 'Type of snippet.'
+        required: false,
+        description: 'Type of snippet.'
 
       private
 

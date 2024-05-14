@@ -12,7 +12,7 @@ class EnvironmentStatus
   delegate :deployable, to: :deployment, allow_nil: true
 
   def self.for_merge_request(mr, user)
-    build_environments_status(mr, user, mr.actual_head_pipeline)
+    build_environments_status(mr, user, mr.diff_head_pipeline)
   end
 
   def self.after_merge_request(mr, user)

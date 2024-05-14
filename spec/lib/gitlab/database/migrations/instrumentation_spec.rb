@@ -10,6 +10,7 @@ RSpec.describe Gitlab::Database::Migrations::Instrumentation do
   after do
     FileUtils.rm_rf(result_dir)
   end
+
   describe '#observe' do
     def load_observation(result_dir, migration_name)
       Gitlab::Json.parse(File.read(File.join(result_dir, migration_name, described_class::STATS_FILENAME)))

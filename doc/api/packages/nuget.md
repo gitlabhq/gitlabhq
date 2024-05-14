@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 This is the API documentation for [NuGet Packages](../../user/packages/nuget_repository/index.md).
 
@@ -25,8 +25,6 @@ See the [NuGet package registry documentation](../../user/packages/nuget_reposit
 for details on which headers and token types are supported. Undocumented authentication methods might be removed in the future.
 
 ## Package index
-
-> - Introduced in GitLab 12.8.
 
 Returns the index for a given package, which includes a list of available versions:
 
@@ -55,8 +53,6 @@ Example response:
 
 ## Download a package file
 
-> - Introduced in GitLab 12.8.
-
 Download a NuGet package file. The [metadata service](#metadata-service) provides this URL.
 
 ```plaintext
@@ -84,7 +80,6 @@ This writes the downloaded file to `MyNuGetPkg.1.3.0.17.nupkg` in the current di
 
 ## Upload a package file
 
-> - Introduced in GitLab 12.8 for NuGet v3 feed.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416404) in GitLab 16.2 for NuGet v2 feed.
 
 Upload a NuGet package file:
@@ -128,8 +123,6 @@ Upload a NuGet package file:
 
 ## Upload a symbol package file
 
-> - Introduced in GitLab 12.8.
-
 Upload a NuGet symbol package file (`.snupkg`):
 
 ```plaintext
@@ -163,7 +156,7 @@ The examples in this document all use the project-level prefix.
 ### Group-level
 
 ```plaintext
- /groups/:id/-/packages/nuget`
+/groups/:id/-/packages/nuget
 ```
 
 | Attribute | Type   | Required | Description |
@@ -173,7 +166,7 @@ The examples in this document all use the project-level prefix.
 ### Project-level
 
 ```plaintext
- /projects/:id/packages/nuget`
+/projects/:id/packages/nuget
 ```
 
 | Attribute | Type   | Required | Description |
@@ -213,7 +206,6 @@ Example response:
 
 ### V3 source feed/protocol
 
-> - Introduced in GitLab 12.6.
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/214674) to be public in GitLab 16.1.
 
 Returns a list of available API resources.
@@ -289,8 +281,6 @@ the group-level route, the returned URLs contain `/groups/:id/-`.
 
 ## Metadata Service
 
-> - Introduced in GitLab 12.8.
-
 Returns metadata for a package:
 
 ```plaintext
@@ -341,8 +331,6 @@ Example response:
 
 ## Version Metadata Service
 
-> - Introduced in GitLab 12.8.
-
 Returns metadata for a specific package version:
 
 ```plaintext
@@ -380,8 +368,6 @@ Example response:
 ```
 
 ## Search Service
-
-> - Introduced in GitLab 12.8.
 
 Given a query, search for NuGet packages in the repository:
 

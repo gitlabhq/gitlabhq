@@ -1,16 +1,17 @@
 import { GlButton } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import organizationsGraphQlResponse from 'test_fixtures/graphql/organizations/organizations.query.graphql.json';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
 import { DEFAULT_PER_PAGE } from '~/api';
-import { organizations as nodes, pageInfo, pageInfoEmpty } from '~/organizations/mock_data';
 import organizationsQuery from '~/organizations/shared/graphql/queries/organizations.query.graphql';
 import OrganizationsIndexApp from '~/organizations/index/components/app.vue';
-import OrganizationsView from '~/organizations/index/components/organizations_view.vue';
-import { MOCK_NEW_ORG_URL } from '../mock_data';
+import OrganizationsView from '~/organizations/shared/components/organizations_view.vue';
+import { pageInfoEmpty } from 'jest/organizations/mock_data';
+import { MOCK_NEW_ORG_URL } from '../../shared/mock_data';
 
 jest.mock('~/alert');
 
@@ -20,24 +21,18 @@ describe('OrganizationsIndexApp', () => {
   let wrapper;
   let mockApollo;
 
-  const organizations = {
-    nodes,
-    pageInfo,
-  };
+  const {
+    data: {
+      currentUser: { organizations },
+    },
+  } = organizationsGraphQlResponse;
 
   const organizationEmpty = {
     nodes: [],
     pageInfo: pageInfoEmpty,
   };
 
-  const successHandler = jest.fn().mockResolvedValue({
-    data: {
-      currentUser: {
-        id: 'gid://gitlab/User/1',
-        organizations,
-      },
-    },
-  });
+  const successHandler = jest.fn().mockResolvedValue(organizationsGraphQlResponse);
 
   const createComponent = (handler = successHandler) => {
     mockApollo = createMockApollo([[organizationsQuery, handler]]);
@@ -90,34 +85,76 @@ describe('OrganizationsIndexApp', () => {
     });
   };
 
-  describe('when API call is loading', () => {
+  describe('`allowOrganizationCreation` is enabled', () => {
     beforeEach(() => {
-      createComponent(jest.fn().mockReturnValue(new Promise(() => {})));
+      gon.features = { allowOrganizationCreation: true };
     });
 
-    itRendersHeaderText();
-    itRendersNewOrganizationButton();
-    itDoesNotRenderErrorMessage();
+    describe('when API call is loading', () => {
+      beforeEach(() => {
+        createComponent(jest.fn().mockResolvedValue({}));
+      });
 
-    it('renders the organizations view with loading prop set to true', () => {
-      expect(findOrganizationsView().props('loading')).toBe(true);
+      itRendersHeaderText();
+      itRendersNewOrganizationButton();
+      itDoesNotRenderErrorMessage();
+
+      it('renders the organizations view with loading prop set to true', () => {
+        expect(findOrganizationsView().props('loading')).toBe(true);
+      });
+    });
+    describe('when API call is successful', () => {
+      beforeEach(async () => {
+        createComponent();
+        await waitForPromises();
+      });
+
+      itRendersHeaderText();
+      itRendersNewOrganizationButton();
+      itDoesNotRenderErrorMessage();
+
+      it('passes organizations to view component', () => {
+        expect(findOrganizationsView().props()).toMatchObject({
+          loading: false,
+          organizations,
+        });
+      });
     });
   });
 
-  describe('when API call is successful', () => {
-    beforeEach(async () => {
-      createComponent();
-      await waitForPromises();
+  describe('`allowOrganizationCreation` is disabled', () => {
+    beforeEach(() => {
+      gon.features = { allowOrganizationCreation: false };
     });
 
-    itRendersHeaderText();
-    itRendersNewOrganizationButton();
-    itDoesNotRenderErrorMessage();
+    describe('when API call is loading', () => {
+      beforeEach(() => {
+        createComponent(jest.fn().mockResolvedValue({}));
+      });
 
-    it('passes organizations to view component', () => {
-      expect(findOrganizationsView().props()).toMatchObject({
-        loading: false,
-        organizations,
+      itRendersHeaderText();
+      itDoesNotRenderNewOrganizationButton();
+      itDoesNotRenderErrorMessage();
+
+      it('renders the organizations view with loading prop set to true', () => {
+        expect(findOrganizationsView().props('loading')).toBe(true);
+      });
+    });
+    describe('when API call is successful', () => {
+      beforeEach(() => {
+        createComponent();
+        return waitForPromises();
+      });
+
+      itRendersHeaderText();
+      itDoesNotRenderNewOrganizationButton();
+      itDoesNotRenderErrorMessage();
+
+      it('passes organizations to view component', () => {
+        expect(findOrganizationsView().props()).toMatchObject({
+          loading: false,
+          organizations,
+        });
       });
     });
   });

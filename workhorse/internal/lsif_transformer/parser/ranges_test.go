@@ -29,10 +29,10 @@ func TestRangesRead(t *testing.T) {
 func TestSerialize(t *testing.T) {
 	r := setup(t)
 
-	docs := map[Id]string{6: "def-path", 7: "ref-path"}
+	docs := map[ID]string{6: "def-path", 7: "ref-path"}
 
 	var buf bytes.Buffer
-	err := r.Serialize(&buf, []Id{1}, docs)
+	err := r.Serialize(&buf, []ID{1}, docs)
 	want := `[{"start_line":1,"start_char":2,"definition_path":"def-path#L2","hover":null,"references":[{"path":"ref-path#L6"},{"path":"ref-path#L8"}]}` + "\n]"
 
 	require.NoError(t, err)

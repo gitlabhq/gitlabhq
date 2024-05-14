@@ -117,8 +117,10 @@ into the partitioned copy.
 Continuing the above example, the migration would look like:
 
 ```ruby
-class BackfillPartitionMergeRequestDiffCommits < Gitlab::Database::Migration[2.1]
+class BackfillPartitionMergeRequestDiffCommits < Gitlab::Database::Migration[2.2]
   include Gitlab::Database::PartitioningMigrationHelpers
+
+  milestone '16.10'
 
   disable_ddl_transaction!
 

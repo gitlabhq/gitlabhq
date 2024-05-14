@@ -186,14 +186,12 @@ RSpec.describe Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder 
             order_expression: Issue.arel_table[:relative_position].desc.nulls_last,
             reversed_order_expression: Issue.arel_table[:relative_position].asc.nulls_first,
             order_direction: :desc,
-            nullable: :nulls_last,
-            distinct: false
+            nullable: :nulls_last
           ),
           Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
             attribute_name: :id,
             order_expression: Issue.arel_table[:id].desc,
-            nullable: :not_nullable,
-            distinct: true
+            nullable: :not_nullable
           )
         ])
     end
@@ -414,8 +412,7 @@ RSpec.describe Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder 
                                                     attribute_name: 'projects_id',
                                                     order_expression: Issue.arel_table[:projects_id].asc,
                                                     sql_type: 'integer',
-                                                    nullable: :not_nullable,
-                                                    distinct: false
+                                                    nullable: :not_nullable
                                                   ),
                                                   Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
                                                     attribute_name: :id,
@@ -446,8 +443,7 @@ RSpec.describe Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder 
                                                     attribute_name: 'projects_id',
                                                     order_expression: Issue.arel_table[:projects_id].desc,
                                                     sql_type: 'integer',
-                                                    nullable: :not_nullable,
-                                                    distinct: false
+                                                    nullable: :not_nullable
                                                   ),
                                                   Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
                                                     attribute_name: :id,
@@ -478,15 +474,13 @@ RSpec.describe Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder 
                                                     attribute_name: 'projects_name',
                                                     order_expression: Issue.arel_table[:projects_name].asc,
                                                     sql_type: 'character varying',
-                                                    nullable: :not_nullable,
-                                                    distinct: false
+                                                    nullable: :not_nullable
                                                   ),
                                                   Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
                                                     attribute_name: 'projects_id',
                                                     order_expression: Issue.arel_table[:projects_id].asc,
                                                     sql_type: 'integer',
-                                                    nullable: :not_nullable,
-                                                    distinct: false
+                                                    nullable: :not_nullable
                                                   ),
                                                   Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
                                                     attribute_name: :id,
@@ -516,8 +510,7 @@ RSpec.describe Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder 
                                                     attribute_name: 'projects_name',
                                                     order_expression: Issue.arel_table[:projects_name].asc,
                                                     sql_type: 'character varying',
-                                                    nullable: :nulls_last,
-                                                    distinct: false
+                                                    nullable: :nulls_last
                                                   ),
                                                   Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
                                                     attribute_name: :id,

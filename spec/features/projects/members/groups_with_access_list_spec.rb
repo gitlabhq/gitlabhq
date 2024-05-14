@@ -56,7 +56,7 @@ RSpec.describe 'Projects > Members > Groups with access list', :js, feature_cate
       page.within find_group_row(group) do
         expect(page).to have_field('Expiration date', with: expiration_date)
 
-        find('[data-testid="clear-button"]').click
+        find_by_testid('clear-button').click
 
         wait_for_requests
 

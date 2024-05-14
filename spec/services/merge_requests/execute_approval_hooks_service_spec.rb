@@ -15,6 +15,7 @@ RSpec.describe MergeRequests::ExecuteApprovalHooksService, feature_category: :co
     before do
       allow(service).to receive(:notification_service).and_return(notification_service)
     end
+
     it 'sends a notification when approving' do
       expect(notification_service).to receive_message_chain(:async, :approve_mr)
         .with(merge_request, user)

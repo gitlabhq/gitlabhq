@@ -3,4 +3,7 @@
 - if use_startup_query_for_index_page?
   - add_page_startup_graphql_call('releases/all_releases', index_page_startup_query_variables)
 
+= content_for :meta_tags do
+  = auto_discovery_link_tag(:atom, project_releases_path(@project, rss_url_options), title: "#{@project.name} releases")
+
 #js-releases-page{ data: data_for_releases_page }

@@ -160,23 +160,23 @@ module PrometheusHelpers
 
   def prometheus_empty_body(type)
     {
-      "status": "success",
-      "data": {
-        "resultType": type,
-        "result": []
+      status: "success",
+      data: {
+        resultType: type,
+        result: []
       }
     }
   end
 
   def prometheus_value_body(type = 'vector')
     {
-      "status": "success",
-      "data": {
-        "resultType": type,
-        "result": [
+      status: "success",
+      data: {
+        resultType: type,
+        result: [
           {
-            "metric": {},
-            "value": [
+            metric: {},
+            value: [
               1488772511.004,
               "0.000041021495238095323"
             ]
@@ -188,13 +188,13 @@ module PrometheusHelpers
 
   def prometheus_values_body(type = 'matrix')
     {
-      "status": "success",
-      "data": {
-        "resultType": type,
-        "result": [
+      status: "success",
+      data: {
+        resultType: type,
+        result: [
           {
-            "metric": {},
-            "values": [
+            metric: {},
+            values: [
               [1488758662.506, "0.00002996364761904785"],
               [1488758722.506, "0.00003090239047619091"]
             ]
@@ -206,32 +206,32 @@ module PrometheusHelpers
 
   def prometheus_label_values
     {
-      'status': 'success',
-      'data': %w[job_adds job_controller_rate_limiter_use job_depth job_queue_latency job_work_duration_sum up]
+      status: 'success',
+      data: %w[job_adds job_controller_rate_limiter_use job_depth job_queue_latency job_work_duration_sum up]
     }
   end
 
   def prometheus_series(name)
     {
-      'status': 'success',
-      'data': [
+      status: 'success',
+      data: [
         {
-          '__name__': name,
-          'container_name': 'gitlab',
-          'environment': 'mattermost',
-          'id': '/docker/9953982f95cf5010dfc59d7864564d5f188aaecddeda343699783009f89db667',
-          'image': 'gitlab/gitlab-ce:8.15.4-ce.1',
-          'instance': 'minikube',
-          'job': 'kubernetes-nodes',
-          'name': 'k8s_gitlab.e6611886_mattermost-4210310111-77z8r_gitlab_2298ae6b-da24-11e6-baee-8e7f67d0eb3a_43536cb6',
-          'namespace': 'gitlab',
-          'pod_name': 'mattermost-4210310111-77z8r'
+          __name__: name,
+          container_name: 'gitlab',
+          environment: 'mattermost',
+          id: '/docker/9953982f95cf5010dfc59d7864564d5f188aaecddeda343699783009f89db667',
+          image: 'gitlab/gitlab-ce:8.15.4-ce.1',
+          instance: 'minikube',
+          job: 'kubernetes-nodes',
+          name: 'k8s_gitlab.e6611886_mattermost-4210310111-77z8r_gitlab_2298ae6b-da24-11e6-baee-8e7f67d0eb3a_43536cb6',
+          namespace: 'gitlab',
+          pod_name: 'mattermost-4210310111-77z8r'
         },
         {
-          '__name__': name,
-          'id': '/docker',
-          'instance': 'minikube',
-          'job': 'kubernetes-nodes'
+          __name__: name,
+          id: '/docker',
+          instance: 'minikube',
+          job: 'kubernetes-nodes'
         }
       ]
     }

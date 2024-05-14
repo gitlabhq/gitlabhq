@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Confidential issues are [issues](index.md) visible only to members of a project with
 [sufficient permissions](#who-can-see-confidential-issues).
@@ -40,7 +40,7 @@ To create a confidential issue:
 1. On the left sidebar, at the top, select **Create new** (**{plus}**).
 1. From the dropdown list, select **New issue**.
 1. Complete the [fields](create_issues.md#fields-in-the-new-issue-form).
-   - Select the **This issue is confidential...** checkbox.
+   - Select the **This issue is confidential** checkbox.
 1. Select **Create issue**.
 
 ### In an existing issue
@@ -101,4 +101,4 @@ Learn how to create [merge requests for confidential issues](../merge_requests/c
 - [Merge requests for confidential issues](../merge_requests/confidential.md)
 - [Make an epic confidential](../../group/epics/manage_epics.md#make-an-epic-confidential)
 - [Add an internal note](../../discussions/index.md#add-an-internal-note)
-- [Security practices for confidential merge requests](https://gitlab.com/gitlab-org/release/docs/blob/master/general/security/developer.md#security-releases-critical-non-critical-as-a-developer) at GitLab
+- [Security practices for confidential merge requests](https://gitlab.com/gitlab-org/release/docs/blob/master/general/security/engineer.md#security-releases-critical-non-critical-as-a-developer) at GitLab

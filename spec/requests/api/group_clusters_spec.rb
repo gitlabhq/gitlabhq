@@ -18,8 +18,7 @@ RSpec.describe API::GroupClusters, feature_category: :deployment_management do
     let!(:extra_cluster) { create(:cluster, :provided_by_gcp, :group) }
 
     let!(:clusters) do
-      create_list(:cluster, 5, :provided_by_gcp, :group, :production_environment,
-                  groups: [group])
+      create_list(:cluster, 5, :provided_by_gcp, :group, :production_environment, groups: [group])
     end
 
     include_examples ':certificate_based_clusters feature flag API responses' do
@@ -64,10 +63,15 @@ RSpec.describe API::GroupClusters, feature_category: :deployment_management do
     end
 
     let(:cluster) do
-      create(:cluster, :group, :provided_by_gcp, :with_domain,
-             platform_kubernetes: platform_kubernetes,
-             user: current_user,
-             groups: [group])
+      create(
+        :cluster,
+        :group,
+        :provided_by_gcp,
+        :with_domain,
+        platform_kubernetes: platform_kubernetes,
+        user: current_user,
+        groups: [group]
+      )
     end
 
     include_examples ':certificate_based_clusters feature flag API responses' do
@@ -137,8 +141,7 @@ RSpec.describe API::GroupClusters, feature_category: :deployment_management do
 
       context 'when cluster has no provider' do
         let(:cluster) do
-          create(:cluster, :group, :provided_by_user,
-                 groups: [group])
+          create(:cluster, :group, :provided_by_user, groups: [group])
         end
 
         it 'does not include GCP provider info' do
@@ -333,8 +336,7 @@ RSpec.describe API::GroupClusters, feature_category: :deployment_management do
 
     context 'when another cluster exists' do
       before do
-        create(:cluster, :provided_by_gcp, :group,
-               groups: [group])
+        create(:cluster, :provided_by_gcp, :group, groups: [group])
 
         post api("/groups/#{group.id}/clusters/user", current_user), params: cluster_params
       end
@@ -370,8 +372,7 @@ RSpec.describe API::GroupClusters, feature_category: :deployment_management do
     let(:management_project_id) { management_project.id }
 
     let(:cluster) do
-      create(:cluster, :group, :provided_by_gcp,
-             groups: [group], domain: 'old-domain.com')
+      create(:cluster, :group, :provided_by_gcp, groups: [group], domain: 'old-domain.com')
     end
 
     include_examples ':certificate_based_clusters feature flag API responses' do
@@ -470,8 +471,7 @@ RSpec.describe API::GroupClusters, feature_category: :deployment_management do
         let(:api_url) { 'https://new-api-url.com' }
 
         let(:cluster) do
-          create(:cluster, :group, :provided_by_user,
-                 groups: [group])
+          create(:cluster, :group, :provided_by_user, groups: [group])
         end
 
         let(:platform_kubernetes_attributes) do
@@ -515,8 +515,7 @@ RSpec.describe API::GroupClusters, feature_category: :deployment_management do
     let(:cluster_params) { { cluster_id: cluster.id } }
 
     let(:cluster) do
-      create(:cluster, :group, :provided_by_gcp,
-             groups: [group])
+      create(:cluster, :group, :provided_by_gcp, groups: [group])
     end
 
     include_examples ':certificate_based_clusters feature flag API responses' do

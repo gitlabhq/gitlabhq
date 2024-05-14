@@ -54,6 +54,24 @@ RSpec.describe CommitStatus, feature_category: :continuous_integration do
     it { is_expected.to eq(commit_status.user) }
   end
 
+  describe '#success' do
+    it 'transitions canceling to canceled' do
+      commit_status = create_status(stage: 'test', status: 'canceling')
+
+      expect { commit_status.success! }.to change { commit_status.status }.from('canceling').to('canceled')
+    end
+
+    context 'when status is one that transitions to success' do
+      [:created, :waiting_for_resource, :preparing, :waiting_for_callback, :pending, :running].each do |status|
+        it 'transitions to success' do
+          commit_status = create_status(stage: 'test', status: status.to_s)
+
+          expect { commit_status.success! }.to change { commit_status.status }.from(status.to_s).to('success')
+        end
+      end
+    end
+  end
+
   describe 'status state machine' do
     let!(:commit_status) { create(:commit_status, :running, project: project) }
 
@@ -792,6 +810,23 @@ RSpec.describe CommitStatus, feature_category: :continuous_integration do
           commit_status.drop!(reason)
 
           expect(commit_status).to be_script_failure
+        end
+      end
+    end
+
+    it 'transitions canceling to canceled' do
+      commit_status = create_status(stage: 'test', status: 'canceling')
+
+      expect { commit_status.drop! }.to change { commit_status.status }.from('canceling').to('canceled')
+    end
+
+    context 'when status is one that transitions to success' do
+      [:created, :waiting_for_resource, :preparing, :waiting_for_callback, :pending, :running, :manual,
+:scheduled].each do |status|
+        it 'transitions to success' do
+          commit_status = create_status(stage: 'test', status: status.to_s)
+
+          expect { commit_status.drop! }.to change { commit_status.status }.from(status.to_s).to('failed')
         end
       end
     end

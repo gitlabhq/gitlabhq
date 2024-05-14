@@ -5,18 +5,13 @@ require 'spec_helper'
 RSpec.describe IncidentManagement::TimelineEvents::DestroyService, feature_category: :incident_management do
   let_it_be(:user_with_permissions) { create(:user) }
   let_it_be(:user_without_permissions) { create(:user) }
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project) { create(:project, developers: user_with_permissions, reporters: user_without_permissions) }
   let_it_be_with_refind(:incident) { create(:incident, project: project) }
 
   let!(:timeline_event) { create(:incident_management_timeline_event, incident: incident, project: project) }
   let(:current_user) { user_with_permissions }
   let(:params) { {} }
   let(:service) { described_class.new(timeline_event, current_user) }
-
-  before_all do
-    project.add_developer(user_with_permissions)
-    project.add_reporter(user_without_permissions)
-  end
 
   describe '#execute' do
     shared_examples 'error response' do |message|

@@ -17,7 +17,7 @@ export const FILE_TYPE_ARCHIVE = 'ARCHIVE';
 export const ACTIONS_DOWNLOAD_ARTIFACTS = __('Download artifacts');
 export const ACTIONS_START_NOW = s__('DelayedJobs|Start now');
 export const ACTIONS_UNSCHEDULE = s__('DelayedJobs|Unschedule');
-export const ACTIONS_PLAY = __('Play');
+export const ACTIONS_PLAY = __('Run');
 export const ACTIONS_RETRY = __('Retry');
 export const ACTIONS_RUN_AGAIN = __('Run again');
 
@@ -34,34 +34,34 @@ export const DEFAULT_FIELDS = [
   {
     key: 'status',
     label: __('Status'),
-    columnClass: 'gl-w-10p',
+    columnClass: 'gl-w-2/20',
   },
   {
     key: 'job',
     label: __('Job'),
-    columnClass: 'gl-w-quarter',
+    columnClass: 'gl-w-5/20',
   },
   {
     key: 'pipeline',
     label: __('Pipeline'),
-    columnClass: 'gl-w-10p',
+    columnClass: 'gl-w-2/20',
   },
   {
     key: 'stage',
     label: __('Stage'),
-    columnClass: 'gl-w-10p',
+    columnClass: 'gl-w-2/20',
   },
   {
     key: 'coverage',
     label: __('Coverage'),
     tdClass: 'gl-display-none! gl-lg-display-table-cell!',
-    columnClass: 'gl-w-10p',
+    columnClass: 'gl-w-2/20',
   },
   {
     key: 'actions',
     label: '',
     tdClass: 'gl-text-right',
-    columnClass: 'gl-w-10p',
+    columnClass: 'gl-w-2/20',
   },
 ];
 

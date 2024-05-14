@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 module FormHelper
-  def form_errors(model, type: 'form', truncate: [], custom_message: [])
+  def form_errors(model, type: 'form', truncate: [], custom_message: [], custom_headline: nil)
     errors = model.errors
 
     return unless errors.any?
 
-    headline = n_(
+    headline = custom_headline || n_(
       'The %{type} contains the following error:',
       'The %{type} contains the following errors:',
       errors.count

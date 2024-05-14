@@ -28,7 +28,7 @@ module Ml
     end
 
     def random_candidate_name
-      parts = Array.new(3).map { FFaker::Animal.common_name.downcase.delete(' ') } << rand(10000)
+      parts = Array.new(3).map { FFaker::AnimalUS.common_name.downcase.delete(' ') } << rand(10000)
       parts.join('-').truncate(255)
     end
 

@@ -1,6 +1,6 @@
 ---
-stage: Manage
-group: Import and Integrate
+stage: Verify
+group: Runner
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -8,9 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/270123) in GitLab 14.1
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 The Datadog integration enables you to send CI/CD pipeline and job information to
 [Datadog](https://www.datadoghq.com/). The [Datadog CI Visibility](https://app.datadoghq.com/ci)
@@ -48,7 +46,7 @@ project, group, or instance level:
    the integration generates.
 <!-- vale gitlab.Spelling = YES -->
 1. Optional. To define any custom tags for all spans at which the integration is being configured,
-   enter one tag per line in **Tags**. Each line must be in the format `key:value`. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79665) in GitLab 14.8.)
+   enter one tag per line in **Tags**. Each line must be in the format `key:value`.
 1. Optional. Select **Test settings**.
 1. Select **Save changes**.
 

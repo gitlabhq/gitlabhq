@@ -15,7 +15,8 @@ RSpec.describe Integrations::Jira, feature_category: :integrations do
   let(:jira_issue_prefix) { '' }
   let(:jira_issue_regex) { '' }
   let(:password) { 'jira-password' }
-  let(:project_key) { nil }
+  let(:project_key) { 'TEST' }
+  let(:project_keys) { %w[TEST1 TEST2] }
   let(:transition_id) { 'test27' }
   let(:server_info_results) { { 'deploymentType' => 'Cloud' } }
   let(:jira_integration) do
@@ -24,13 +25,16 @@ RSpec.describe Integrations::Jira, feature_category: :integrations do
       url: url,
       username: username,
       password: password,
-      project_key: project_key
+      project_key: project_key,
+      project_keys: project_keys
     )
   end
 
   before do
     WebMock.stub_request(:get, /serverInfo/).to_return(body: server_info_results.to_json)
   end
+
+  it_behaves_like Integrations::HasAvatar
 
   it_behaves_like Integrations::ResetSecretFields do
     let(:integration) { jira_integration }
@@ -126,6 +130,19 @@ RSpec.describe Integrations::Jira, feature_category: :integrations do
     end
   end
 
+  describe 'callbacks' do
+    context 'before_save' do
+      context "when project_keys are changed" do
+        let(:project_keys) { [' GTL  ', 'JR ', '  GTL', ''] }
+
+        it "formats and removes duplicates from project_keys" do
+          jira_integration.save!
+          expect(jira_integration.project_keys).to contain_exactly('GTL', 'JR')
+        end
+      end
+    end
+  end
+
   describe '#options' do
     let(:options) do
       {
@@ -204,7 +221,7 @@ RSpec.describe Integrations::Jira, feature_category: :integrations do
     subject(:fields) { integration.fields }
 
     it 'returns custom fields' do
-      expect(fields.pluck(:name)).to eq(%w[url api_url jira_auth_type username password jira_issue_regex jira_issue_prefix jira_issue_transition_id])
+      expect(fields.pluck(:name)).to eq(%w[url api_url jira_auth_type username password jira_issue_regex jira_issue_prefix jira_issue_transition_id issues_enabled project_keys])
     end
   end
 
@@ -236,6 +253,10 @@ RSpec.describe Integrations::Jira, feature_category: :integrations do
       it 'includes SECTION_TYPE_JIRA_ISSUES' do
         expect(sections).to include(described_class::SECTION_TYPE_JIRA_ISSUES)
       end
+
+      it 'includes SECTION_TYPE_JIRA_ISSUE_CREATION' do
+        expect(sections).to include(described_class::SECTION_TYPE_JIRA_ISSUE_CREATION)
+      end
     end
 
     context 'when instance_level? is true' do
@@ -245,6 +266,10 @@ RSpec.describe Integrations::Jira, feature_category: :integrations do
 
       it 'does not include SECTION_TYPE_JIRA_ISSUES' do
         expect(sections).not_to include(described_class::SECTION_TYPE_JIRA_ISSUES)
+      end
+
+      it 'does not include SECTION_TYPE_JIRA_ISSUE_CREATION' do
+        expect(sections).not_to include(described_class::SECTION_TYPE_JIRA_ISSUE_CREATION)
       end
     end
   end
@@ -380,7 +405,9 @@ RSpec.describe Integrations::Jira, feature_category: :integrations do
         username: username, password: password,
         jira_issue_regex: jira_issue_regex,
         jira_issue_prefix: jira_issue_prefix,
-        jira_issue_transition_id: transition_id
+        jira_issue_transition_id: transition_id,
+        project_key: project_key,
+        project_keys: project_keys
       }
     end
 
@@ -400,6 +427,8 @@ RSpec.describe Integrations::Jira, feature_category: :integrations do
       expect(integration.jira_tracker_data.jira_issue_prefix).to eq(jira_issue_prefix)
       expect(integration.jira_tracker_data.jira_issue_transition_id).to eq(transition_id)
       expect(integration.jira_tracker_data.deployment_cloud?).to be_truthy
+      expect(integration.jira_tracker_data.project_key).to eq(project_key)
+      expect(integration.jira_tracker_data.project_keys).to eq(project_keys)
     end
 
     context 'when loading serverInfo' do
@@ -690,8 +719,18 @@ RSpec.describe Integrations::Jira, feature_category: :integrations do
 
       it { is_expected.to eq(nil) }
 
-      context 'and project_key matches' do
-        let(:project_key) { 'JIRA' }
+      context 'when project_keys includes issue_key' do
+        let(:project_keys) { ['JIRA'] }
+
+        it 'calls the Jira API to get the issue' do
+          find_issue
+
+          expect(WebMock).to have_requested(:get, issue_url)
+        end
+      end
+
+      context 'when project_keys are empty' do
+        let(:project_keys) { [] }
 
         it 'calls the Jira API to get the issue' do
           find_issue
@@ -1394,11 +1433,9 @@ RSpec.describe Integrations::Jira, feature_category: :integrations do
     end
   end
 
-  describe '#avatar_url' do
-    it 'returns the avatar image path' do
-      expect(subject.avatar_url).to eq(
-        ActionController::Base.helpers.image_path('illustrations/third-party-logos/integrations-logos/jira.svg')
-      )
+  describe '#project_keys_as_string' do
+    it 'returns comma separated project_keys' do
+      expect(jira_integration.project_keys_as_string).to eq 'TEST1,TEST2'
     end
   end
 end

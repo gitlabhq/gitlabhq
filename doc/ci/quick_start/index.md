@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 This tutorial shows you how to configure and run your first CI/CD pipeline in GitLab.
 
@@ -162,7 +162,20 @@ For the complete `.gitlab-ci.yml` syntax, see the full [CI/CD YAML syntax refere
 
 ## Related topics
 
-- [Migrate from CircleCI](../migration/circleci.md)
-- [Migrate from Jenkins](../migration/jenkins.md)
-- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>&nbsp;Watch [First time GitLab & CI/CD](https://www.youtube.com/watch?v=kTNfi5z6Uvk&t=553s). This includes a quick introduction to GitLab, the first steps with CI/CD, building a Go project, running tests, using the CI/CD pipeline editor, detecting secrets and security vulnerabilities and offers more exercises for asynchronous practice.
-- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>&nbsp;Watch [Intro to GitLab CI](https://www.youtube.com/watch?v=l5705U8s_nQ&t=358s). This workshop uses the Web IDE to quickly get going with building source code using CI/CD, and run unit tests.
+Migrate from:
+
+- [Bamboo](../migration/bamboo.md)
+- [CircleCI](../migration/circleci.md)
+- [GitHub Actions](../migration/github_actions.md)
+- [Jenkins](../migration/jenkins.md)
+- [TeamCity](../migration/teamcity.md)
+
+Watch:
+
+- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>&nbsp;[First time GitLab & CI/CD](https://www.youtube.com/watch?v=kTNfi5z6Uvk&t=553s).
+  This includes a quick introduction to GitLab, the first steps with CI/CD, building a Go project,
+  running tests, using the CI/CD pipeline editor, detecting secrets and security vulnerabilities
+  and offers more exercises for asynchronous practice.
+- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>&nbsp;[Intro to GitLab CI](https://www.youtube.com/watch?v=l5705U8s_nQ&t=358s).
+  This workshop uses the Web IDE to quickly get going with building source code using CI/CD,
+  and run unit tests.

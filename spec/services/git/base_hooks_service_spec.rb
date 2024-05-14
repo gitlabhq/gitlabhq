@@ -239,7 +239,7 @@ RSpec.describe Git::BaseHooksService, feature_category: :source_code_management 
           ci: {
             variable: {
               "FOO=123": 1,
-              "BAR": 1,
+              BAR: 1,
               "=MNO": 1
             }
           }

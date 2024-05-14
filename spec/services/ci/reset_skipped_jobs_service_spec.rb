@@ -123,7 +123,7 @@ RSpec.describe Ci::ResetSkippedJobsService, :sidekiq_inline, feature_category: :
     end
 
     context 'when executed by a different user than the original owner' do
-      let(:retryer) { create(:user).tap { |u| project.add_maintainer(u) } }
+      let(:retryer) { create(:user, maintainer_of: project) }
       let(:service) { described_class.new(project, retryer) }
 
       it 'reassigns jobs with updated statuses to the retryer' do

@@ -2,16 +2,20 @@
 
 module Features
   module DomHelpers
-    def has_testid?(testid, **kwargs)
-      page.has_selector?("[data-testid='#{testid}']", **kwargs)
+    def has_testid?(testid, context: page, **kwargs)
+      context.has_selector?("[data-testid='#{testid}']", **kwargs)
     end
 
-    def find_by_testid(testid, **kwargs)
-      page.find("[data-testid='#{testid}']", **kwargs)
+    def find_by_testid(testid, context: page, **kwargs)
+      context.find("[data-testid='#{testid}']", **kwargs)
     end
 
-    def within_testid(testid, **kwargs, &block)
-      page.within("[data-testid='#{testid}']", **kwargs, &block)
+    def all_by_testid(testid, context: page, **kwargs)
+      context.all("[data-testid='#{testid}']", **kwargs)
+    end
+
+    def within_testid(testid, context: page, **kwargs, &block)
+      context.within("[data-testid='#{testid}']", **kwargs, &block)
     end
   end
 end

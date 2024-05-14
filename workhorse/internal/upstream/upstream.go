@@ -1,9 +1,8 @@
 /*
-The upstream type implements http.Handler.
+Package upstream implements handlers for handling upstream requests.
 
-In this file we handle request routing and interaction with the authBackend.
+The upstream package provides functionality for routing requests and interacting with backend servers.
 */
-
 package upstream
 
 import (
@@ -34,11 +33,12 @@ import (
 )
 
 var (
+	// DefaultBackend is the default URL for the backend.
 	DefaultBackend         = helper.URLMustParse("http://localhost:8080")
 	requestHeaderBlacklist = []string{
 		upload.RewrittenFieldsHeader,
 	}
-	geoProxyApiPollingInterval = 10 * time.Second
+	geoProxyAPIPollingInterval = 10 * time.Second
 )
 
 type upstream struct {
@@ -61,6 +61,7 @@ type upstream struct {
 	watchKeyHandler       builds.WatchKeyHandler
 }
 
+// NewUpstream creates a new HTTP handler for handling upstream requests based on the provided configuration.
 func NewUpstream(cfg config.Config, accessLogger *logrus.Logger, watchKeyHandler builds.WatchKeyHandler) http.Handler {
 	return newUpstream(cfg, accessLogger, configureRoutes, watchKeyHandler)
 }
@@ -215,7 +216,7 @@ func (u *upstream) pollGeoProxyAPI() {
 		}
 
 		u.callGeoProxyAPI()
-		u.geoProxyPollSleep(geoProxyApiPollingInterval)
+		u.geoProxyPollSleep(geoProxyAPIPollingInterval)
 	}
 }
 

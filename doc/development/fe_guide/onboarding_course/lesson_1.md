@@ -47,7 +47,7 @@ Tips for using the GDK:
   This command fetches the latest branch of the GitLab project, as well as the latest branch of the GDK and its dependencies.
   Keeping your GDK up to date helps ensure you will be working with the latest version of GitLab and make sure you have the latest bug fixes.
 
-Remember, if you need further assistance or have specific questions, you can reach out to the GitLab community through our [Discord](https://discord.gg/gitlab) or [other available support channels](https://about.gitlab.com/community/contribute/).
+Remember, if you need further assistance or have specific questions, you can reach out to the GitLab community through our [Discord](https://discord.com/invite/gitlab) or [other available support channels](https://about.gitlab.com/community/contribute/).
 
 ## Installing and using the GDK locally
 
@@ -69,7 +69,7 @@ Here's a step-by-step summary:
    - [Create an account](https://gitlab.com/users/sign_up) or [sign in](https://gitlab.com/users/sign_in) on GitLab.com and join the [community members group](https://gitlab.com/gitlab-community/meta#request-access-to-community-forks).
 1. Installation:
    - Choose a directory to install the GitLab Development Kit (GDK).
-   - Open your terminal and navigate to the chosen directory.
+   - Open your terminal and go to the chosen directory.
    - Download and run the installation script from the terminal:
 
      ```shell
@@ -106,6 +106,8 @@ Gitpod is useful for quickly getting a GDK environment up and running, for makin
 
 To use Gitpod:
 
+1. [Request access to the GitLab community forks](https://gitlab.com/groups/gitlab-community/community-members/-/group_members/request_access).
+   Alternatively, you can create your own public fork, but will miss out on [the benefits of the community forks](https://gitlab.com/gitlab-community/meta#why).
 1. Go to the [GitLab community fork website](https://gitlab.com/gitlab-community/gitlab), select **Edit**, then select **Gitpod**.
 1. Configure your settings, such as the editor (VS Code desktop or browser) and the context (usually the `main` or `master` branch).
 1. Select **Open** to create your Gitpod workspace. This process may take up to 20 minutes. The GitLab Development Kit (GDK) will be installed in the Gitpod workspace. This installation is faster than downloading and installing the full GDK locally.
@@ -140,7 +142,7 @@ If you already know the file you are going to work on and now you want to find w
 1. Start by gathering clues to understand the file’s purpose. Look for relevant information within the file itself, such as keywords or specific content that might indicate its context.
 1. You can also examine the file path (or folder structure) to gain insights into where the file might be rendered.
    A lot of routing in GitLab is very similar to the folder structure.
-1. If you can work out which feature (or one of the features) that this component is used in, you can then leverage the GitLab user documentation to find out how to navigate to the feature page.
+1. If you can work out which feature (or one of the features) that this component is used in, you can then leverage the GitLab user documentation to find out how to go to the feature page.
 1. Follow the component hierarchy, do a global search for the filename to identify the parent component that renders the component.
    Continue to follow the hierarchy of components to trace back to a feature you recognize or can search for in the GitLab user docs.
 1. You can use `git blame` with an extension like GitLens to find a recent MR where this file was changed.
@@ -180,4 +182,4 @@ When writing a merge request there are some important things to be aware of:
   <iframe src="https://www.youtube-nocookie.com/embed/BJCCwc1Czt4" frameborder="0" allowfullscreen> </iframe>
 </figure>
 
-Now it is your turn to complete your first MR, there is a list of issues that are very similar to the one we just finished that need completing [here in the "Linked items" section](https://gitlab.com/gitlab-org/gitlab/-/issues/389920). Thanks for contributing! (if there are none left, let us know on [Discord](https://discord.gg/gitlab) or [other available support channels](https://about.gitlab.com/community/contribute/) and we'll find more for you)
+Now it is your turn to complete your first MR, there is a list of issues that are very similar to the one we just finished that need completing [here in the "Linked items" section](https://gitlab.com/gitlab-org/gitlab/-/issues/389920). Thanks for contributing! (if there are none left, let us know on [Discord](https://discord.com/invite/gitlab) or [other available support channels](https://about.gitlab.com/community/contribute/) and we'll find more for you)

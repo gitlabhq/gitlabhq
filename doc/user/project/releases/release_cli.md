@@ -6,6 +6,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # GitLab Release CLI tool
 
+WARNING:
+**The `release-cli` is in maintenance mode**.
+The `release-cli` does not accept new features.
+All new feature development happens in the `glab` CLI,
+so you should use the [`glab` CLI](../../../editor_extensions/gitlab_cli/index.md) whenever possible.
+The `release-cli` is in maintenance mode, and [issue cli#7450](https://gitlab.com/gitlab-org/cli/-/issues/7450) proposes to deprecate it as the `glab` CLI matures.
+
 The [GitLab Release CLI (`release-cli`)](https://gitlab.com/gitlab-org/release-cli)
 is a command-line tool for managing releases from the command line or from a CI/CD pipeline.
 You can use the release CLI to create, update, modify, and delete releases.
@@ -29,10 +36,9 @@ release-cli create --name "Release $CI_COMMIT_SHA" --description \
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/release-cli/-/issues/21) in GitLab 13.8.
-> - [Changed](https://gitlab.com/gitlab-org/release-cli/-/merge_requests/108) in GitLab 14.2, the `release-cli` binaries are also [available in the package registry](https://gitlab.com/gitlab-org/release-cli/-/packages).
+The `release-cli` binaries are also [available in the package registry](https://gitlab.com/gitlab-org/release-cli/-/packages).
 
 When you use a runner with the Shell executor, you can download and install
 the `release-cli` manually for your [supported OS and architecture](https://release-cli-downloads.s3.amazonaws.com/latest/index.html).

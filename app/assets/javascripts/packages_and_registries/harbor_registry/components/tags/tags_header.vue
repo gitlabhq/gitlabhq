@@ -43,7 +43,7 @@ export default {
 <template>
   <title-area :metadata-loading="tagsLoading">
     <template #title>
-      <span class="gl-word-break-all" data-testid="title">
+      <span class="gl-break-all" data-testid="title">
         {{ artifactDetail.digest }}
       </span>
     </template>

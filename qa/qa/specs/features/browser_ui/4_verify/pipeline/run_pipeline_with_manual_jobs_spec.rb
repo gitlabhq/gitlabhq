@@ -10,11 +10,10 @@ module QA
       end
 
       let!(:runner) do
-        Resource::ProjectRunner.fabricate! do |runner|
-          runner.project = project
-          runner.name = executor
-          runner.tags = [executor]
-        end
+        create(:project_runner,
+          project: project,
+          tags: [executor],
+          name: executor)
       end
 
       let!(:ci_file) do
@@ -70,7 +69,7 @@ module QA
       end
 
       it(
-        'does not leave any job in skipped state', :reliable,
+        'does not leave any job in skipped state', :blocking,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/349158'
       ) do
         Page::Project::Pipeline::Show.perform do |show|

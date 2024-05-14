@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe ReleasesHelper do
   describe '#illustration' do
     it 'returns the correct image path' do
-      expect(helper.illustration).to match(%r{illustrations/releases-(\w+)\.svg})
+      expect(helper.illustration).to match(%r{illustrations/rocket-launch-md-(\w+)\.svg})
     end
   end
 
@@ -20,7 +20,7 @@ RSpec.describe ReleasesHelper do
     let(:release) { create(:release, project: project) }
     let(:user) { create(:user) }
     let(:can_user_create_release) { false }
-    let(:common_keys) { [:project_id, :project_path, :illustration_path, :documentation_path] }
+    let(:common_keys) { [:project_id, :project_path, :illustration_path, :documentation_path, :atom_feed_path] }
 
     # rubocop: disable CodeReuse/ActiveRecord
     before do

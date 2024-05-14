@@ -8,17 +8,14 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/38366) in GitLab 11.0.
-> - Support for the GitLab agent was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299350) in GitLab 14.5.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 GitLab Auto DevOps is a collection of pre-configured features and integrations
 that work together to support your software delivery process.
 
 Auto DevOps detects your programming language and uses [CI/CD templates](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates)
 to create and run default pipelines to build and test your application. Then, you can [configure deployments](requirements.md) to deploy your apps to staging
-and production, and set up [Review Apps](stages.md#auto-review-apps)
+and production, and set up [review apps](stages.md#auto-review-apps)
 to preview your changes per branch.
 
 You can use default settings to quickly ship your apps, and iterate and [customize](customize.md) later.
@@ -26,7 +23,8 @@ You can use default settings to quickly ship your apps, and iterate and [customi
 You can also [manage Auto DevOps with APIs](customize.md#extend-auto-devops-with-the-api).
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an introduction to Auto DevOps, watch [Auto DevOps in GitLab 11.0](https://youtu.be/0Tc0YYBxqi4).
+For an introduction to Auto DevOps, watch [Auto DevOps](https://youtu.be/0Tc0YYBxqi4).
+<!-- Video published on 2018-06-22 -->
 
 ## Auto DevOps features
 
@@ -36,7 +34,7 @@ Auto DevOps supports development during each of the [DevOps stages](stages.md).
 |---------|-------------|
 | Build | [Auto Build](stages.md#auto-build) |
 | Build | [Auto Dependency Scanning](stages.md#auto-dependency-scanning) |
-| Test | [Auto Test](stages.md#auto-test-deprecated) |
+| Test | [Auto Test](stages.md#auto-test) |
 | Test | [Auto Browser Performance Testing](stages.md#auto-browser-performance-testing) |
 | Test | [Auto Code Intelligence](stages.md#auto-code-intelligence) |
 | Test | [Auto Code Quality](stages.md#auto-code-quality) |
@@ -74,8 +72,7 @@ If you want to build, test, and deploy your app:
 
 ### Enable or disable Auto DevOps
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/41729) in GitLab 11.3, Auto DevOps is enabled by default.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/26655) in GitLab 12.7, Auto DevOps runs pipelines automatically only if a [`Dockerfile` or matching buildpack](stages.md#auto-build) exists.
+Auto DevOps runs pipelines automatically only if a [`Dockerfile` or matching buildpack](stages.md#auto-build) exists.
 
 Depending on your instance type, you can enable or disable Auto DevOps at the
 following levels:
@@ -119,8 +116,6 @@ To disable it, follow the same process and clear the
 
 #### At the group level
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/52447) in GitLab 11.10.
-
 When you enable Auto DevOps at the group level, the subgroups and
 projects in that group inherit the configuration. You can save time by
 enabling Auto DevOps for a group instead of enabling it for each
@@ -156,7 +151,7 @@ Auto DevOps pipeline for any project that belongs to that group:
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 To enable Auto DevOps by default for all projects, you can enable it at the instance level.
 You can still disable Auto DevOps for each group and project
@@ -182,7 +177,7 @@ When enabled, Auto DevOps attempts to run pipelines in every project. If the
 pipeline fails in a particular project, it disables itself.
 GitLab administrators can change this in the [Auto DevOps settings](../../administration/settings/continuous_integration.md#auto-devops).
 
-If a [`.gitlab-ci.yml` file](../../ci/index.md#the-gitlab-ciyml-file) is present,
+If a `.gitlab-ci.yml` file is present,
 it remains unchanged and Auto DevOps does not affect it.
 
 To disable Auto DevOps in the instance level, follow the same process

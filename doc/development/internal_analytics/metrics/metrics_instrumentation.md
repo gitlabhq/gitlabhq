@@ -170,8 +170,6 @@ end
 
 #### Estimated batch counters
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/48233) in GitLab 13.7.
-
 Estimated batch counter functionality handles `ActiveRecord::StatementInvalid` errors
 when used through the provided `estimate_batch_distinct_count` method.
 Errors return a value of `-1`.
@@ -253,9 +251,6 @@ You can use a YAML file to define your aggregated metrics. The following argumen
   use the same data source. Additional data source requirements are described in
   [Database sourced aggregated metrics](#database-sourced-aggregated-metrics) and
   [Event sourced aggregated metrics](#event-sourced-aggregated-metrics).
-- `options.aggregate.operator`: Operator that defines how the aggregated metric data is counted. Available operators are:
-  - `OR`: Removes duplicates and counts all entries that triggered any of the listed events.
-  - `AND`: Removes duplicates and counts all elements that were observed triggering all of the following events.
 - `options.aggregate.attribute`: Information pointing to the attribute that is being aggregated across events.
 - `time_frame`: One or more valid time frames. Use these to limit the data included in aggregated metrics to events within a specific date-range. Valid time frames are:
   - `7d`: The last 7 days of data.
@@ -268,7 +263,7 @@ You can use a YAML file to define your aggregated metrics. The following argumen
 
 Refer to merge request [98206](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98206) for an example of a merge request that adds an `AggregatedMetric` metric.
 
-Count unique `user_ids` that occurred in at least one of the events: `incident_management_alert_status_changed`,
+Count unique `user.id`s that occurred in at least one of the events: `incident_management_alert_status_changed`,
 `incident_management_alert_assigned`, `incident_management_alert_todo`, `incident_management_alert_create_incident`.
 
 ```yaml
@@ -277,8 +272,7 @@ instrumentation_class: AggregatedMetric
 data_source: internal_events
 options:
     aggregate:
-        operator: OR
-        attribute: user_id
+        attribute: user.id
     events:
         - `incident_management_alert_status_changed`
         - `incident_management_alert_assigned`
@@ -288,15 +282,11 @@ options:
 
 ### Event sourced aggregated metrics
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45979) in GitLab 13.6.
-
 To declare the aggregate of events collected with Internal Events, make sure `time_frame` does not include the `all` value, which is unavailable for Redis-sourced aggregated metrics.
 
 While it is possible to aggregate EE-only events together with events that occur in all GitLab editions, it's important to remember that doing so may produce high variance between data collected from EE and CE GitLab instances.
 
 ### Database sourced aggregated metrics
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52784) in GitLab 13.9.
 
 To declare an aggregate of metrics based on events collected from database, follow
 these steps:
@@ -384,8 +374,7 @@ instrumentation_class: MergeUsageCountAggregatedMetric
 data_source: redis_hll
 options:
     aggregate:
-        operator: OR
-        attribute: user_id
+        attribute: user.id
     events:
         - `incident_management_alert_status_changed`
         - `incident_management_alert_assigned`

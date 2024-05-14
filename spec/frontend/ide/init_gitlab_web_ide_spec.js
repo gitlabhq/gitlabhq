@@ -36,6 +36,13 @@ const TEST_START_REMOTE_PARAMS = {
   remotePath: '/test/projects/f oo',
   connectionToken: '123abc',
 };
+const TEST_EXTENSIONS_GALLERY_SETTINGS = {
+  enabled: true,
+  vscode_settings: {
+    item_url: 'https://gitlab.test/vscode/marketplace/item/url',
+    service_url: 'https://gitlab.test/vscode/marketplace/service/url',
+  },
+};
 const TEST_EDITOR_FONT_SRC_URL = 'http://gitlab.test/assets/gitlab-mono/GitLabMono.woff2';
 const TEST_EDITOR_FONT_FORMAT = 'woff2';
 const TEST_EDITOR_FONT_FAMILY = 'GitLab Mono';
@@ -133,6 +140,10 @@ describe('ide/init_gitlab_web_ide', () => {
           userPreferences: TEST_USER_PREFERENCES_PATH,
           feedbackIssue: GITLAB_WEB_IDE_FEEDBACK_ISSUE,
           signIn: TEST_SIGN_IN_PATH,
+        },
+        featureFlags: {
+          settingsSync: true,
+          crossOriginExtensionHost: false,
         },
         editorFont: {
           fallbackFontFamily: 'monospace',
@@ -258,5 +269,69 @@ describe('ide/init_gitlab_web_ide', () => {
         }),
       );
     });
+  });
+
+  describe('when extensionsGallerySettings is in dataset', () => {
+    function setMockExtensionGallerySettingsDataset(
+      mockSettings = TEST_EXTENSIONS_GALLERY_SETTINGS,
+    ) {
+      findRootElement().dataset.extensionsGallerySettings = JSON.stringify(mockSettings);
+
+      createSubject();
+    }
+
+    it('calls start with element and extensionsGallerySettings', () => {
+      setMockExtensionGallerySettingsDataset();
+      expect(start).toHaveBeenCalledTimes(1);
+      expect(start).toHaveBeenCalledWith(
+        findRootElement(),
+        expect.objectContaining({
+          extensionsGallerySettings: {
+            enabled: true,
+            vscodeSettings: {
+              itemUrl: 'https://gitlab.test/vscode/marketplace/item/url',
+              serviceUrl: 'https://gitlab.test/vscode/marketplace/service/url',
+            },
+          },
+        }),
+      );
+    });
+
+    it('calls start with element and crossOriginExtensionHost flag if extensionsGallerySettings is enabled', () => {
+      setMockExtensionGallerySettingsDataset();
+      expect(start).toHaveBeenCalledTimes(1);
+      expect(start).toHaveBeenCalledWith(
+        findRootElement(),
+        expect.objectContaining({
+          featureFlags: {
+            settingsSync: true,
+            crossOriginExtensionHost: true,
+          },
+        }),
+      );
+    });
+
+    it.each(['opt_in_unset', 'opt_in_disabled'])(
+      'calls start with element and crossOriginExtensionHost flag if extensionsGallerySettings reason is $reason',
+      (reason) => {
+        const TEST_EXTENSIONS_GALLERY_SETTINGS_WITH_REASON = {
+          ...TEST_EXTENSIONS_GALLERY_SETTINGS,
+          enabled: false,
+          reason,
+        };
+        setMockExtensionGallerySettingsDataset(TEST_EXTENSIONS_GALLERY_SETTINGS_WITH_REASON);
+
+        expect(start).toHaveBeenCalledTimes(1);
+        expect(start).toHaveBeenCalledWith(
+          findRootElement(),
+          expect.objectContaining({
+            featureFlags: {
+              settingsSync: true,
+              crossOriginExtensionHost: true,
+            },
+          }),
+        );
+      },
+    );
   });
 });

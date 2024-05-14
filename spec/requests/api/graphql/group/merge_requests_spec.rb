@@ -14,7 +14,7 @@ RSpec.describe 'Query.group.mergeRequests', feature_category: :code_review_workf
   let_it_be(:project_b) { create(:project, :repository, group: group) }
   let_it_be(:project_c) { create(:project, :repository, group: sub_group) }
   let_it_be(:project_x) { create(:project, :repository) }
-  let_it_be(:user)      { create(:user, developer_projects: [project_x]) }
+  let_it_be(:user)      { create(:user, developer_of: [project_x, group]) }
 
   let_it_be(:archived_project) { create(:project, :archived, :repository, group: group) }
   let_it_be(:archived_mr) { create(:merge_request, source_project: archived_project) }
@@ -33,10 +33,6 @@ RSpec.describe 'Query.group.mergeRequests', feature_category: :code_review_workf
   let_it_be(:other_mr) { create(:merge_request, source_project: project_x) }
 
   let(:mrs_data) { graphql_data_at(:group, :merge_requests, :nodes) }
-
-  before do
-    group.add_developer(user)
-  end
 
   def expected_mrs(mrs)
     mrs.map { |mr| a_graphql_entity_for(mr) }

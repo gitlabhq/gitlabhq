@@ -8,12 +8,12 @@ module Resolvers
     type Types::MemberInterface.connection_type, null: true
 
     argument :search, GraphQL::Types::String,
-              required: false,
-              description: 'Search query.'
+      required: false,
+      description: 'Search query.'
 
     argument :sort, ::Types::MemberSortEnum,
-              required: false,
-              description: 'sort query.'
+      required: false,
+      description: 'sort query.'
 
     def resolve_with_lookahead(**args)
       authorize!(object)

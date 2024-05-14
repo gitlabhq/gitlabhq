@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Every API call to the [issues](../user/project/issues/index.md) statistics API must be authenticated.
 
@@ -45,7 +45,7 @@ GET /issues_statistics?confidential=true
 | `author_username`   | string           | no         | Return issues created by the given `username`. Similar to `author_id` and mutually exclusive with `author_id`. |
 | `assignee_id`       | integer          | no         | Return issues assigned to the given user `id`. Mutually exclusive with `assignee_username`. `None` returns unassigned issues. `Any` returns issues with an assignee. |
 | `assignee_username` | string array     | no         | Return issues assigned to the given `username`. Similar to `assignee_id` and mutually exclusive with `assignee_id`. In GitLab CE `assignee_username` array should only contain a single value or an invalid parameter error is returned otherwise. |
-| `epic_id`           | integer      | no         | Return issues associated with the given epic ID. `None` returns issues that are not associated with an epic. `Any` returns issues that are associated with an epic. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/46887) in GitLab 13.6. Premium and Ultimate only. |
+| `epic_id`           | integer      | no         | Return issues associated with the given epic ID. `None` returns issues that are not associated with an epic. `Any` returns issues that are associated with an epic. Premium and Ultimate only. |
 | `my_reaction_emoji` | string           | no         | Return issues reacted by the authenticated user by the given `emoji`. `None` returns issues not given a reaction. `Any` returns issues given at least one reaction. |
 | `iids[]`            | integer array    | no         | Return only the issues having the given `iid`                                                                                                       |
 | `search`            | string           | no         | Search issues against their `title` and `description`                                                                                               |

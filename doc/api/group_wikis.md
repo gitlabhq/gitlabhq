@@ -8,12 +8,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/212199) in GitLab 13.5.
-> - The `encoding` field was [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81150) in GitLab 14.9.
-> - The `render_html` attribute was [added](https://gitlab.com/gitlab-org/gitlab/-/issues/336792) in GitLab 14.9.
-> - The `version` attribute was [added](https://gitlab.com/gitlab-org/gitlab/-/issues/336792) in GitLab 14.9.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 The [group wikis](../user/project/wiki/group.md) API is available only in APIv4.
 An API for [project wikis](wikis.md) is also available.

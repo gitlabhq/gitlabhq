@@ -34,8 +34,8 @@ RSpec.describe Gitlab::Audit::CiRunnerTokenAuthor do
         {}
       end
 
-      it 'raises ArgumentError' do
-        expect { subject }.to raise_error ArgumentError, 'Runner token missing'
+      it 'returns token not available' do
+        is_expected.to have_attributes(id: -1, name: 'Token not available')
       end
     end
   end

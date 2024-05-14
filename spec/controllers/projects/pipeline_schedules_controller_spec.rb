@@ -7,12 +7,8 @@ RSpec.describe Projects::PipelineSchedulesController, feature_category: :continu
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:user) { create(:user) }
-  let_it_be_with_reload(:project) { create(:project, :public, :repository) }
+  let_it_be_with_reload(:project) { create(:project, :public, :repository, developers: user) }
   let_it_be_with_reload(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project) }
-
-  before do
-    project.add_developer(user)
-  end
 
   shared_examples 'access update schedule' do
     describe 'security' do
@@ -255,7 +251,7 @@ RSpec.describe Projects::PipelineSchedulesController, feature_category: :continu
 
       context 'when a pipeline schedule has no variables' do
         let(:basic_param) do
-          { description: 'updated_desc', cron: '0 1 * * *', cron_timezone: 'UTC', ref: 'patch-x', active: true }
+          { description: 'updated_desc', cron: '0 1 * * *', cron_timezone: 'UTC', ref: 'master', active: true }
         end
 
         context 'when params include one variable' do
@@ -309,7 +305,7 @@ RSpec.describe Projects::PipelineSchedulesController, feature_category: :continu
 
       context 'when a pipeline schedule has one variable' do
         let(:basic_param) do
-          { description: 'updated_desc', cron: '0 1 * * *', cron_timezone: 'UTC', ref: 'patch-x', active: true }
+          { description: 'updated_desc', cron: '0 1 * * *', cron_timezone: 'UTC', ref: 'master', active: true }
         end
 
         let!(:pipeline_schedule_variable) do

@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Preventing wasted work caused by unresolvable merge conflicts requires
 a different way of working. This means explicitly requesting write permissions,
@@ -27,8 +27,8 @@ said to have "released the lock".
 
 GitLab supports two different modes of file locking:
 
-- [Exclusive file locks](#exclusive-file-locks) for binary files: done **through
-  the command line** with Git LFS and `.gitattributes`, it prevents locked
+- [Exclusive file locks](#exclusive-file-locks) for binary files: done
+  **through the command line** with Git LFS and `.gitattributes`, it prevents locked
   files from being modified on any branch.
 - [Default branch locks](#default-branch-file-and-directory-locks): done
   **through the GitLab UI**, it prevents locked files and directories being
@@ -77,7 +77,7 @@ you can skip this step. If you're unsure, re-installing it does no harm:
 git lfs install
 ```
 
-For more information, see [Using Git LFS](../../topics/git/lfs/index.md#using-git-lfs).
+For more information, see [Git Large File Storage (LFS)](../../topics/git/lfs/index.md).
 
 ### Configure Exclusive File Locks
 
@@ -198,9 +198,7 @@ Suggested workflow for shared projects:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/440) in GitLab 8.9.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 This process allows you to lock one file at a time through the GitLab UI and
 requires access to the [GitLab Premium or Ultimate tier](https://about.gitlab.com/pricing/).

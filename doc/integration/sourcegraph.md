@@ -8,11 +8,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/16556) in GitLab 12.5 [with a flag](../administration/feature_flags.md) named `sourcegraph`. Disabled by default.
-> - Enabled on GitLab.com in GitLab 12.5.
-> - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/73116) in GitLab 14.8.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 FLAG:
 On self-managed GitLab, by default this feature is available. To hide the feature, an administrator can [disable the feature flag](../administration/feature_flags.md) named `sourcegraph`.
@@ -35,7 +31,7 @@ you can choose to enable Sourcegraph [through your user preferences](#enable-sou
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 Before you can enable Sourcegraph code intelligence in GitLab you must:
 configure a Sourcegraph instance with your GitLab instance as an external service.
@@ -44,7 +40,7 @@ configure a Sourcegraph instance with your GitLab instance as an external servic
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 If you are new to Sourcegraph, head over to the [Sourcegraph installation documentation](https://docs.sourcegraph.com/admin) and get your instance up and running.
 
@@ -52,7 +48,7 @@ If you are using an HTTPS connection to GitLab, you must [configure HTTPS](https
 
 ### Connect your Sourcegraph instance to your GitLab instance
 
-1. Navigate to the site Admin Area in Sourcegraph.
+1. Go to the site Admin Area in Sourcegraph.
 1. [Configure your GitLab external service](https://docs.sourcegraph.com/admin/external_service/gitlab).
    You can skip this step if you already have your GitLab repositories searchable in Sourcegraph.
 1. Validate that you can search your repositories from GitLab in your Sourcegraph instance by running a test query.
@@ -93,8 +89,8 @@ the following code views:
 When visiting one of these views, you can now hover over a code reference to see a popover with:
 
 - Details on how this reference was defined.
-- **Go to definition**, which navigates to the line of code where this reference was defined.
-- **Find references**, which navigates to the configured Sourcegraph instance, showing a list of references to the highlighted code.
+- **Go to definition**, which goes to the line of code where this reference was defined.
+- **Find references**, which goes to the configured Sourcegraph instance, showing a list of references to the highlighted code.
 
 ![Sourcegraph demo](img/sourcegraph_popover_v12_5.png)
 

@@ -20,14 +20,10 @@ RSpec.describe Gitlab::GithubImport::JobDelayCalculator, feature_category: :impo
   describe "#parallel_import_batch" do
     subject { importer_class.new(project).parallel_import_batch }
 
-    it { is_expected.to eq({ size: 5000, delay: 1.minute }) }
-
-    context 'when `github_import_increased_concurrent_workers` feature flag is disabled' do
-      before do
-        stub_feature_flags(github_import_increased_concurrent_workers: false)
-      end
-
-      it { is_expected.to eq({ size: 1000, delay: 1.minute }) }
+    before do
+      stub_application_setting(concurrent_github_import_jobs_limit: 10)
     end
+
+    it { is_expected.to eq({ size: 10, delay: 1.minute }) }
   end
 end

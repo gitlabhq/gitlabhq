@@ -16,8 +16,10 @@ module TestHooks
     def data
       strong_memoize(:data) do
         case trigger
-        when 'push_events', 'tag_push_events'
+        when 'push_events'
           push_events_data
+        when 'tag_push_events'
+          tag_push_events_data
         when 'note_events'
           note_events_data
         when 'issues_events', 'confidential_issues_events'
@@ -34,6 +36,8 @@ module TestHooks
           releases_events_data
         when 'emoji_events'
           emoji_events_data
+        when 'resource_access_token_events'
+          access_tokens_events_data
         end
       end
     end

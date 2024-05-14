@@ -1,17 +1,17 @@
 # frozen_string_literal: true
 
-SEE_DOC = "See the [feature flag documentation](https://docs.gitlab.com/ee/development/feature_flags#feature-flag-definition-and-validation)."
+FF_SEE_DOC = "See the [feature flag documentation](https://docs.gitlab.com/ee/development/feature_flags#feature-flag-definition-and-validation)."
 FEATURE_FLAG_LABEL = "feature flag"
 FEATURE_FLAG_EXISTS_LABEL = "#{FEATURE_FLAG_LABEL}::exists"
 FEATURE_FLAG_SKIPPED_LABEL = "#{FEATURE_FLAG_LABEL}::skipped"
 DEVOPS_LABELS_REQUIRING_FEATURE_FLAG_REVIEW = ["devops::verify"]
 
-SUGGEST_MR_COMMENT = <<~SUGGEST_COMMENT
+FF_SUGGEST_MR_COMMENT = <<~SUGGEST_COMMENT
 ```suggestion
 group: "%<group>s"
 ```
 
-#{SEE_DOC}
+#{FF_SEE_DOC}
 SUGGEST_COMMENT
 
 FEATURE_FLAG_ENFORCEMENT_WARNING = <<~WARNING_MESSAGE
@@ -35,21 +35,21 @@ def check_feature_flag_yaml(feature_flag)
   end
 rescue Psych::Exception
   # YAML could not be parsed, fail the build.
-  fail "#{helper.html_link(feature_flag.path)} isn't valid YAML! #{SEE_DOC}"
+  fail "#{helper.html_link(feature_flag.path)} isn't valid YAML! #{FF_SEE_DOC}"
 rescue StandardError => e
   warn "There was a problem trying to check the Feature Flag file. Exception: #{e.class.name} - #{e.message}"
 end
 
 def message_for_feature_flag_missing_group!(feature_flag:, mr_group_label:)
   if mr_group_label.nil?
-    warn "Consider setting `group` in #{helper.html_link(feature_flag.path)}. #{SEE_DOC}"
+    warn "Consider setting `group` in #{helper.html_link(feature_flag.path)}. #{FF_SEE_DOC}"
   else
     mr_line = feature_flag.raw.lines.find_index("group:\n")
 
     if mr_line
-      markdown(format(SUGGEST_MR_COMMENT, group: mr_group_label), file: feature_flag.path, line: mr_line.succ)
+      markdown(format(FF_SUGGEST_MR_COMMENT, group: mr_group_label), file: feature_flag.path, line: mr_line.succ)
     else
-      warn %(Consider setting `group: "#{mr_group_label}"` in #{helper.html_link(feature_flag.path)}. #{SEE_DOC})
+      warn %(Consider setting `group: "#{mr_group_label}"` in #{helper.html_link(feature_flag.path)}. #{FF_SEE_DOC})
     end
   end
 end

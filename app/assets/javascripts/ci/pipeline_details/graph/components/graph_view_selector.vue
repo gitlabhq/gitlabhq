@@ -1,6 +1,5 @@
 <script>
 import { GlAlert, GlButton, GlButtonGroup, GlLoadingIcon, GlToggle } from '@gitlab/ui';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { __, s__ } from '~/locale';
 import { STAGE_VIEW, LAYER_VIEW } from '../constants';
 
@@ -13,7 +12,6 @@ export default {
     GlLoadingIcon,
     GlToggle,
   },
-  mixins: [glFeatureFlagMixin()],
   props: {
     showLinks: {
       type: Boolean,
@@ -77,9 +75,6 @@ export default {
         };
       });
     },
-    isNewPipelineGraph() {
-      return this.glFeatures.newPipelineGraph;
-    },
   },
   watch: {
     /*
@@ -142,16 +137,12 @@ export default {
 <template>
   <div>
     <div
-      class="gl-relative gl-display-flex gl-align-items-center gl-my-4"
-      :class="{
-        'gl-w-max-content': !isNewPipelineGraph,
-        'gl-flex-wrap gl-sm-flex-nowrap': isNewPipelineGraph,
-      }"
+      class="gl-relative gl-display-flex gl-flex-wrap gl-sm-flex-nowrap gl-align-items-center gl-my-4"
     >
       <gl-loading-icon
         v-if="isSwitcherLoading"
         data-testid="switcher-loading-state"
-        class="gl-absolute gl-w-full gl-bg-white gl-opacity-5 gl-z-index-2"
+        class="gl-absolute gl-w-full gl-bg-white gl-opacity-5 gl-z-2"
         size="lg"
       />
       <span class="gl-font-weight-bold">{{ $options.i18n.viewLabelText }}</span>
@@ -170,10 +161,7 @@ export default {
         <gl-toggle
           v-model="showLinksActive"
           data-testid="show-links-toggle"
-          :class="{
-            'gl-mx-4': !isNewPipelineGraph,
-            'gl-sm-ml-4 gl-mt-4 gl-sm-mt-0': isNewPipelineGraph,
-          }"
+          class="gl-sm-ml-4 gl-mt-4 gl-sm-mt-0"
           :label="$options.i18n.linksLabelText"
           :is-loading="isToggleLoading"
           label-position="left"

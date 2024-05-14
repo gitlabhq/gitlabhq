@@ -46,7 +46,7 @@ module API
         end
         post '/', urgency: :low, feature_category: :runner do
           attributes = attributes_for_keys(%i[description maintainer_note maintenance_note active paused locked run_untagged tag_list access_level maximum_timeout])
-            .merge(get_runner_details_from_request)
+            .merge(attributes_for_keys(%w[name], params['info']))
 
           # Pull in deprecated maintainer_note if that's the only note value available
           deprecated_note = attributes.delete(:maintainer_note)
@@ -250,6 +250,7 @@ module API
           service.execute.then do |result|
             track_ci_minutes_usage!(job, current_runner)
 
+            header 'Job-Status', job.status
             header 'X-GitLab-Trace-Update-Interval', result.backoff
             status result.status
             body result.status.to_s

@@ -1,6 +1,7 @@
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import GroupsList from '~/vue_shared/components/groups_list/groups_list.vue';
 import GroupsListItem from '~/vue_shared/components/groups_list/groups_list_item.vue';
+import { TIMESTAMP_TYPE_CREATED_AT } from '~/vue_shared/components/resource_lists/constants';
 import { groups } from './mock_data';
 
 describe('GroupsList', () => {
@@ -32,6 +33,7 @@ describe('GroupsList', () => {
       defaultPropsData.groups.map((group) => ({
         group,
         showGroupIcon: false,
+        timestampType: TIMESTAMP_TYPE_CREATED_AT,
       })),
     );
     expect(expectedClasses).toEqual(

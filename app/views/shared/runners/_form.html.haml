@@ -18,11 +18,6 @@
       .col-sm-10
         = f.gitlab_ui_checkbox_component :locked, _('When a runner is locked, it cannot be assigned to other projects')
   .form-group.row
-    = label_tag :ip_address, class: 'col-form-label col-sm-2' do
-      = _('IP Address')
-    .col-sm-10
-      = f.text_field :ip_address, class: 'form-control', readonly: true
-  .form-group.row
     = label_tag :description, class: 'col-form-label col-sm-2' do
       = _('Description')
     .col-sm-10

@@ -120,14 +120,16 @@ module SortingHelper
   end
 
   def label_sort_options_hash
-    {
+    options = {}
+    options[sort_value_relevance] = sort_title_relevance if params[:search].present?
+    options.merge({
       sort_value_name => sort_title_name,
       sort_value_name_desc => sort_title_name_desc,
       sort_value_recently_created => sort_title_recently_created,
       sort_value_oldest_created => sort_title_oldest_created,
       sort_value_recently_updated => sort_title_recently_updated,
       sort_value_oldest_updated => sort_title_oldest_updated
-    }
+    })
   end
 
   def users_sort_options_hash

@@ -5,8 +5,8 @@ module Resolvers
     include ::API::Concerns::Milestones::GroupProjectParams
 
     argument :include_ancestors, GraphQL::Types::Boolean,
-             required: false,
-             description: "Also return milestones in the project's parent group and its ancestors."
+      required: false,
+      description: "Also return milestones in the project's parent group and its ancestors."
 
     type Types::MilestoneType.connection_type, null: true
 

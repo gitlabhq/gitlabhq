@@ -42,7 +42,7 @@ RSpec.describe 'User sees correct active nav items in the super sidebar', :js, f
 
     context 'when visiting SSH keys page' do
       before do
-        visit profile_keys_path
+        visit user_settings_ssh_keys_path
       end
 
       it 'renders the side navigation with the correct submenu set as active' do

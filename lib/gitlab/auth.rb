@@ -3,7 +3,6 @@
 module Gitlab
   module Auth
     MissingPersonalAccessTokenError = Class.new(StandardError)
-    IpBlocked = Class.new(StandardError)
 
     # Scopes used for GitLab internal API (Kubernetes cluster access)
     K8S_PROXY_SCOPE = :k8s_proxy
@@ -306,6 +305,8 @@ module Gitlab
       end
 
       def lfs_token_check(login, encoded_token, project)
+        return unless login
+
         deploy_key_matches = login.match(/\Alfs\+deploy-key-(\d+)\z/)
 
         actor =

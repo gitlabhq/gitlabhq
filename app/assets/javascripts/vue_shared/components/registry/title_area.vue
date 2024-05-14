@@ -63,9 +63,9 @@ export default {
 <template>
   <div class="gl-display-flex gl-flex-direction-column">
     <div
-      class="gl-display-flex gl-flex-direction-column gl-sm-flex-direction-row gl-justify-content-space-between gl-py-3"
+      class="gl-display-flex gl-flex-wrap gl-sm-flex-nowrap gl-justify-content-space-between gl-py-3"
     >
-      <div class="gl-flex-direction-column gl-flex-grow-1">
+      <div class="gl-flex-direction-column gl-flex-grow-1 gl-min-w-0">
         <div class="gl-display-flex">
           <gl-avatar
             v-if="avatar"
@@ -74,7 +74,7 @@ export default {
             class="gl-align-self-center gl-mr-4"
           />
 
-          <div class="gl-display-flex gl-flex-direction-column">
+          <div class="gl-display-flex gl-flex-direction-column gl-min-w-0">
             <h2 class="gl-font-size-h1 gl-mt-3 gl-mb-0" data-testid="title">
               <slot name="title">{{ title }}</slot>
             </h2>
@@ -111,11 +111,14 @@ export default {
           </template>
         </div>
       </div>
-      <div v-if="$scopedSlots['right-actions']" class="gl-mt-3">
+      <div
+        v-if="$scopedSlots['right-actions']"
+        class="gl-display-flex gl-align-items-flex-start gl-gap-3 gl-mt-3"
+      >
         <slot name="right-actions"></slot>
       </div>
     </div>
-    <p>
+    <p v-if="infoMessages.length">
       <span
         v-for="(message, index) in infoMessages"
         :key="index"

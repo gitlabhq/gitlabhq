@@ -1,0 +1,13 @@
+mutation reconnectToCluster(
+  $configuration: LocalConfiguration
+  $namespace: String
+  $resourceTypeParam: ResourceTypeParam
+) {
+  reconnectToCluster(
+    configuration: $configuration
+    namespace: $namespace
+    resourceTypeParam: $resourceTypeParam
+  ) @client {
+    errors
+  }
+}

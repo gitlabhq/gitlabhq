@@ -60,13 +60,6 @@ module Gitlab
       #   my_record = Issue.select(:id, 'LOWER(title) as lowercase_title').last
       #   value = my_record[:lowercase_title]
       #
-      # **distinct**
-      #
-      # Boolean value.
-      #
-      # Tells us whether the database column contains only distinct values. If the column is covered by
-      # a unique index then set to true.
-      #
       # **nullable** (:not_nullable | :nulls_last | :nulls_first)
       #
       # Tells us whether the database column is nullable or not. This information can be
@@ -137,13 +130,12 @@ module Gitlab
         attr_reader :attribute_name, :column_expression, :order_expression, :add_to_projections, :order_direction
 
         # rubocop: disable Metrics/ParameterLists
-        def initialize(attribute_name:, order_expression:, column_expression: nil, reversed_order_expression: nil, nullable: :not_nullable, distinct: true, order_direction: nil, sql_type: nil, add_to_projections: false)
+        def initialize(attribute_name:, order_expression:, column_expression: nil, reversed_order_expression: nil, nullable: :not_nullable, order_direction: nil, sql_type: nil, add_to_projections: false)
           @attribute_name = attribute_name
           @order_expression = order_expression
           @column_expression = column_expression || calculate_column_expression(order_expression)
-          @distinct = distinct
           @reversed_order_expression = reversed_order_expression || calculate_reversed_order(order_expression)
-          @nullable = parse_nullable(nullable, distinct)
+          @nullable = parse_nullable(nullable)
           @order_direction = parse_order_direction(order_expression, order_direction)
           @sql_type = sql_type
           @add_to_projections = add_to_projections
@@ -157,7 +149,6 @@ module Gitlab
             order_expression: reversed_order_expression,
             reversed_order_expression: order_expression,
             nullable: not_nullable? ? :not_nullable : REVERSED_NULL_POSITIONS[nullable],
-            distinct: distinct,
             order_direction: REVERSED_ORDER_DIRECTIONS[order_direction]
           )
         end
@@ -186,10 +177,6 @@ module Gitlab
           !not_nullable?
         end
 
-        def distinct?
-          distinct
-        end
-
         def order_direction_as_sql_string
           sql_string = ascending_order? ? +'ASC' : +'DESC'
 
@@ -210,7 +197,7 @@ module Gitlab
 
         private
 
-        attr_reader :reversed_order_expression, :nullable, :distinct
+        attr_reader :reversed_order_expression, :nullable
 
         def calculate_reversed_order(order_expression)
           unless order_expression.is_a?(Arel::Nodes::Ordering)
@@ -242,13 +229,9 @@ module Gitlab
           transformed_order_direction
         end
 
-        def parse_nullable(nullable, distinct)
+        def parse_nullable(nullable)
           if ALLOWED_NULLABLE_VALUES.exclude?(nullable)
             raise "Invalid `nullable` is given (value: #{nullable}), the allowed values are: #{ALLOWED_NULLABLE_VALUES.join(', ')}"
-          end
-
-          if nullable != :not_nullable && distinct
-            raise 'Invalid column definition, `distinct` and `nullable` columns are not allowed at the same time'
           end
 
           nullable

@@ -2,17 +2,17 @@
 
 require 'spec_helper'
 
-RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute', feature_category: :fleet_visibility do
+RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute', feature_category: :runner do
   let(:registration_token) { 'abcdefg123456' }
   let(:token) {}
   let(:args) { {} }
   let(:runner) { execute.payload[:runner] }
-  let(:allow_runner_registration_token) { true }
 
   before do
-    stub_application_setting(runners_registration_token: registration_token)
-    stub_application_setting(valid_runner_registrars: ApplicationSetting::VALID_RUNNER_REGISTRAR_TYPES)
-    stub_application_setting(allow_runner_registration_token: allow_runner_registration_token)
+    stub_application_setting(
+      runners_registration_token: registration_token,
+      valid_runner_registrars: ApplicationSetting::VALID_RUNNER_REGISTRAR_TYPES
+    )
   end
 
   subject(:execute) { described_class.new(token, args).execute }
@@ -62,7 +62,9 @@ RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute', feature_categor
       end
 
       context 'when registering instance runners is disallowed' do
-        let(:allow_runner_registration_token) { false }
+        before do
+          stub_application_setting(allow_runner_registration_token: false)
+        end
 
         it_behaves_like 'runner registration is disallowed'
       end
@@ -77,19 +79,11 @@ RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute', feature_categor
             tag_list: %w[tag1 tag2],
             access_level: 'ref_protected',
             maximum_timeout: 600,
-            name: 'some name',
-            version: 'some version',
-            revision: 'some revision',
-            platform: 'some platform',
-            architecture: 'some architecture',
-            ip_address: '10.0.0.1',
-            config: {
-              gpus: 'some gpu config'
-            }
+            name: 'some name'
           }
         end
 
-        it 'creates runner with specified values', :aggregate_failures do
+        it 'creates runner with relevant values', :aggregate_failures do
           expect(execute).to be_success
 
           expect(runner).to be_an_instance_of(::Ci::Runner)
@@ -103,11 +97,6 @@ RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute', feature_categor
           expect(runner.access_level).to eq args[:access_level]
           expect(runner.maximum_timeout).to eq args[:maximum_timeout]
           expect(runner.name).to eq args[:name]
-          expect(runner.version).to eq args[:version]
-          expect(runner.revision).to eq args[:revision]
-          expect(runner.platform).to eq args[:platform]
-          expect(runner.architecture).to eq args[:architecture]
-          expect(runner.ip_address).to eq args[:ip_address]
 
           expect(Ci::Runner.tagged_with('tag1')).to include(runner)
           expect(Ci::Runner.tagged_with('tag2')).to include(runner)
@@ -129,9 +118,10 @@ RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute', feature_categor
     end
 
     context 'when project registration token is used' do
-      let_it_be(:project) { create(:project, :with_namespace_settings) }
+      let_it_be_with_reload(:project) { create(:project, :allow_runner_registration_token) }
 
-      let(:token) { project.runners_token }
+      # Ensure we have a valid token to start with (runners_token is nil when allow_runner_registration_token is false)
+      let!(:token) { project.runners_token }
       let(:allow_group_runner_registration_token) { true }
 
       before do
@@ -150,7 +140,9 @@ RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute', feature_categor
       end
 
       context 'with runner registration disabled at instance level' do
-        let(:allow_runner_registration_token) { false }
+        before do
+          stub_application_setting(allow_runner_registration_token: false)
+        end
 
         it_behaves_like 'runner registration is disallowed'
       end
@@ -208,9 +200,10 @@ RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute', feature_categor
     end
 
     context 'when group registration token is used' do
-      let_it_be_with_refind(:group) { create(:group) }
+      let_it_be_with_reload(:group) { create(:group, :allow_runner_registration_token) }
 
-      let(:token) { group.runners_token }
+      # Ensure we have a valid token to start with (runners_token is nil when allow_runner_registration_token is false)
+      let!(:token) { group.runners_token }
       let(:allow_group_runner_registration_token) { true }
 
       before do
@@ -229,7 +222,9 @@ RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute', feature_categor
       end
 
       context 'with runner registration disabled at instance level' do
-        let(:allow_runner_registration_token) { false }
+        before do
+          stub_application_setting(allow_runner_registration_token: false)
+        end
 
         it_behaves_like 'runner registration is disallowed'
       end
@@ -242,7 +237,7 @@ RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute', feature_categor
 
       context 'when it exceeds the application limits' do
         before do
-          create(:ci_runner, runner_type: :group_type, groups: [group], contacted_at: nil, created_at: 1.month.ago)
+          create(:ci_runner, :unregistered, runner_type: :group_type, groups: [group], created_at: 1.month.ago)
           create(:plan_limits, :default_plan, ci_registered_group_runners: 1)
         end
 
@@ -261,7 +256,7 @@ RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute', feature_categor
       context 'when abandoned runners cause application limits to not be exceeded' do
         before do
           create(:ci_runner, runner_type: :group_type, groups: [group], created_at: 4.months.ago, contacted_at: 3.months.ago)
-          create(:ci_runner, runner_type: :group_type, groups: [group], contacted_at: nil, created_at: 4.months.ago)
+          create(:ci_runner, :unregistered, runner_type: :group_type, groups: [group], created_at: 4.months.ago)
           create(:plan_limits, :default_plan, ci_registered_group_runners: 1)
         end
 

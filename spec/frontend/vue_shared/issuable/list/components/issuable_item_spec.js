@@ -227,7 +227,7 @@ describe('IssuableItem', () => {
     describe('showDiscussions', () => {
       it.each`
         userDiscussionsCount | returnValue
-        ${0}                 | ${true}
+        ${0}                 | ${false}
         ${1}                 | ${true}
         ${undefined}         | ${false}
         ${null}              | ${false}
@@ -274,17 +274,21 @@ describe('IssuableItem', () => {
 
   describe('template', () => {
     it.each`
-      gitlabWebUrl           | webUrl                        | expectedHref                  | expectedTarget
-      ${undefined}           | ${`${MOCK_GITLAB_URL}/issue`} | ${`${MOCK_GITLAB_URL}/issue`} | ${undefined}
-      ${undefined}           | ${'https://jira.com/issue'}   | ${'https://jira.com/issue'}   | ${'_blank'}
-      ${'/gitlab-org/issue'} | ${'https://jira.com/issue'}   | ${'/gitlab-org/issue'}        | ${undefined}
+      webPath                                 | gitlabWebUrl           | webUrl                        | expectedHref                            | expectedTarget
+      ${undefined}                            | ${undefined}           | ${`${MOCK_GITLAB_URL}/issue`} | ${`${MOCK_GITLAB_URL}/issue`}           | ${undefined}
+      ${undefined}                            | ${undefined}           | ${'https://jira.com/issue'}   | ${'https://jira.com/issue'}             | ${'_blank'}
+      ${undefined}                            | ${'/gitlab-org/issue'} | ${'https://jira.com/issue'}   | ${'/gitlab-org/issue'}                  | ${undefined}
+      ${'/gitlab-org/gitlab-test/-/issues/1'} | ${undefined}           | ${'https://jira.com/issue'}   | ${'/gitlab-org/gitlab-test/-/issues/1'} | ${undefined}
+      ${'/gitlab-org/gitlab-test/-/issues/1'} | ${'/gitlab-org/issue'} | ${undefined}                  | ${'/gitlab-org/gitlab-test/-/issues/1'} | ${undefined}
+      ${'/gitlab-org/gitlab-test/-/issues/1'} | ${undefined}           | ${undefined}                  | ${'/gitlab-org/gitlab-test/-/issues/1'} | ${undefined}
     `(
-      'renders issuable title correctly when `gitlabWebUrl` is `$gitlabWebUrl` and webUrl is `$webUrl`',
-      async ({ webUrl, gitlabWebUrl, expectedHref, expectedTarget }) => {
+      'renders issuable title correctly when `gitlabWebUrl` is `$gitlabWebUrl`, webUrl is `$webUrl`, and webPath is `$webPath`',
+      async ({ webUrl, gitlabWebUrl, webPath, expectedHref, expectedTarget }) => {
         wrapper = createComponent({
           issuable: {
             ...mockIssuable,
             webUrl,
+            webPath,
             gitlabWebUrl,
           },
         });
@@ -435,7 +439,7 @@ describe('IssuableItem', () => {
         'data-username': mockAuthor.username,
         'data-name': mockAuthor.name,
         'data-avatar-url': mockAuthor.avatarUrl,
-        href: mockAuthor.webUrl,
+        href: mockAuthor.webPath,
       });
       expect(authorEl.text()).toBe(mockAuthor.name);
     });
@@ -494,7 +498,6 @@ describe('IssuableItem', () => {
         description: mockLabels[0].description,
         scoped: false,
         target: wrapper.vm.labelTarget(mockLabels[0]),
-        size: 'sm',
       });
     });
 
@@ -552,12 +555,9 @@ describe('IssuableItem', () => {
       const discussionsEl = wrapper.findByTestId('issuable-comments');
 
       expect(discussionsEl.exists()).toBe(true);
-      expect(discussionsEl.findComponent(GlLink).attributes()).toMatchObject({
-        title: 'Comments',
-        href: `${mockIssuable.webUrl}#notes`,
-      });
+
       expect(discussionsEl.findComponent(GlIcon).props('name')).toBe('comments');
-      expect(discussionsEl.findComponent(GlLink).text()).toContain('2');
+      expect(discussionsEl.text()).toBe('2');
     });
 
     it('renders issuable-assignees component', () => {

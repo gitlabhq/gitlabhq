@@ -169,3 +169,20 @@ If you do not have the Maintainer role to perform this task, ask for help in the
 
 The [`dockerfiles` directory](https://gitlab.com/gitlab-org/gitlab-docs/-/tree/main/dockerfiles) contains Dockerfiles needed
 to build, test, and deploy <https://docs.gitlab.com>.
+
+## Troubleshooting
+
+### Not a known icon in `@gitlab-org/gitlab-svg`
+
+If you attempt to use an icon in the UI or documentation and receive this error
+in the `docs-lint links` job, the `html-lint` Docker image needs an update:
+
+```plaintext
+ArgumentError: example-image is not a known icon in @gitlab-org/gitlab-svg
+926lib/helpers/icons_helper.rb:22:in `icon':
+example-image is not a known icon in @gitlab-org/gitlab-svg (ArgumentError)
+```
+
+Use the `#docs` channel in Slack to request a member of the Technical Writing team
+update the Docker image. For more information, see the
+[internal Technical Writing team documentation](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/doc/troubleshooting.md?ref_type=heads#error-argumenterror-icon-name-is-not-a-known-icon-in-gitlab-orggitlab-svg).

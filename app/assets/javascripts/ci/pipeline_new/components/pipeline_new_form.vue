@@ -29,6 +29,7 @@ import createPipelineMutation from '../graphql/mutations/create_pipeline.mutatio
 import ciConfigVariablesQuery from '../graphql/queries/ci_config_variables.graphql';
 import filterVariables from '../utils/filter_variables';
 import RefsDropdown from './refs_dropdown.vue';
+import VariableValuesListbox from './variable_values_listbox.vue';
 
 let pollTimeout;
 export const POLLING_INTERVAL = 2000;
@@ -67,6 +68,7 @@ export default {
     GlSprintf,
     GlLoadingIcon,
     RefsDropdown,
+    VariableValuesListbox,
     CcValidationRequiredAlert: () =>
       import('ee_component/billings/components/cc_validation_required_alert.vue'),
   },
@@ -471,12 +473,10 @@ export default {
             data-testid="pipeline-form-ci-variable-key-field"
             @change="addEmptyVariable(refFullName)"
           />
-          <gl-collapsible-listbox
+          <variable-values-listbox
             v-if="shouldShowValuesDropdown(variable.key)"
             :items="createListItemsFromVariableOptions(variable.key)"
             :selected="variable.value"
-            block
-            fluid-width
             :class="$options.formElementClasses"
             class="gl-flex-grow-1 gl-mr-0!"
             data-testid="pipeline-form-ci-variable-value-dropdown"
@@ -507,7 +507,7 @@ export default {
             </gl-button>
             <gl-button
               v-else
-              class="gl-md-ml-3 gl-mb-3 gl-display-none gl-md-display-block gl-visibility-hidden"
+              class="gl-md-ml-3 gl-mb-3 gl-display-none gl-md-display-block gl-invisible"
               icon="clear"
               :aria-label="$options.i18n.removeVariableLabel"
             />

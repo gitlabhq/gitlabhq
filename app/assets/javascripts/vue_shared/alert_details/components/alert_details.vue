@@ -310,7 +310,7 @@ export default {
           <alert-summary-row v-if="alert.severity" :label="`${s__('AlertManagement|Severity')}:`">
             <span data-testid="severity">
               <gl-icon
-                class="gl-vertical-align-middle"
+                class="gl-align-middle"
                 :size="12"
                 :name="`severity-${alert.severity.toLowerCase()}`"
                 :class="`icon-${alert.severity.toLowerCase()}`"

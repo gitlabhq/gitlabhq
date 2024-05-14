@@ -43,7 +43,7 @@ export default {
 <template>
   <div>
     <gl-card
-      class="gl-new-card gl-overflow-hidden"
+      class="gl-new-card"
       header-class="gl-new-card-header gl-border-b-0"
       body-class="gl-new-card-body gl-px-0"
     >
@@ -59,7 +59,7 @@ export default {
       />
     </gl-card>
     <gl-card
-      class="gl-new-card gl-overflow-hidden"
+      class="gl-new-card"
       header-class="gl-new-card-header gl-border-b-0"
       body-class="gl-new-card-body gl-px-0"
     >

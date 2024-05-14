@@ -338,8 +338,8 @@ RSpec.describe EventsHelper, factory_default: :keep, feature_category: :user_pro
 
     it 'produces a suitable title chunk' do
       html = [
-        "<span class=\"event-target-type gl-mr-2 \">wiki page</span>",
-        "<a title=\"#{title}\" class=\"has-tooltip event-target-link gl-mr-2\" href=\"#{url}\">",
+        "<span class=\"event-target-type \">wiki page </span>",
+        "<a title=\"#{title}\" class=\"has-tooltip event-target-link\" href=\"#{url}\">",
         title,
         "</a>"
       ].join
@@ -352,8 +352,8 @@ RSpec.describe EventsHelper, factory_default: :keep, feature_category: :user_pro
         'gl-font-weight-semibold gl-text-black-normal')
 
       html = [
-        "<span class=\"event-target-type gl-mr-2 gl-font-weight-semibold gl-text-black-normal\">wiki page</span>",
-        "<a title=\"#{title}\" class=\"has-tooltip event-target-link gl-mr-2\" href=\"#{url}\">",
+        "<span class=\"event-target-type gl-font-weight-semibold gl-text-black-normal\">wiki page </span>",
+        "<a title=\"#{title}\" class=\"has-tooltip event-target-link\" href=\"#{url}\">",
         title,
         "</a>"
       ].join

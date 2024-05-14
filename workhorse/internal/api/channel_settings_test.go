@@ -3,6 +3,8 @@ package api
 import (
 	"net/http"
 	"testing"
+
+	"github.com/stretchr/testify/require"
 )
 
 func channel(url string, subprotocols ...string) *ChannelSettings {
@@ -15,7 +17,26 @@ func channel(url string, subprotocols ...string) *ChannelSettings {
 
 func ca(channel *ChannelSettings) *ChannelSettings {
 	channel = channel.Clone()
-	channel.CAPem = "Valid CA data"
+	channel.CAPem = `-----BEGIN CERTIFICATE-----
+MIIDJzCCAg+gAwIBAgIUVIL4Kds+1NAurWOrbruWOED104wwDQYJKoZIhvcNAQEL
+BQAwIzEhMB8GA1UEAwwYd29ya2hvcnNlLXdlYnNvY2tldC10ZXN0MB4XDTIyMDMw
+MjE2Mjk1MloXDTIzMDMwMjE2Mjk1MlowIzEhMB8GA1UEAwwYd29ya2hvcnNlLXdl
+YnNvY2tldC10ZXN0MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtvDg
+SlvuPROo6BeyjRVLYfS93rHV0bC+dm4waYFZpf+0nfiajXa5oZM+I6P3Vlim6OFg
+kkq1KX8X4ZftEOdsA2dKgaELpsaIOYeeKgvWQgF7+oxCB9CBt67wpI6s8oWUTe2O
+mvQqicPdZ53pbv+qRPJcfsckWXWHFM99lOJmeMoA56VoZNNrbmeDPX4+um2fr6Cp
+pJ7pJ2UkkJeAWTAZHsYNJClLuIAw7J/AjXJf7gWQkUO2BFKgxC618Un2aQqw+EAX
+N81Nn2lPqxsgu1y5VLOng7ZxpvxpDEpsRQoe+sglee+pbMqbpI1OC7tvr6Nvop4H
+BmYkHxDDe00JVJXRLwIDAQABo1MwUTAdBgNVHQ4EFgQUnfnpeFXJwCtr3odLWcQa
+Fe50ZeIwHwYDVR0jBBgwFoAUnfnpeFXJwCtr3odLWcQaFe50ZeIwDwYDVR0TAQH/
+BAUwAwEB/zANBgkqhkiG9w0BAQsFAAOCAQEAXJzX6qcWIRff/k6Vt5OugvGWPYqg
+dl2cc/usxmM42q7RfFcgvePjHN0hDTMJFgC8//vmm+i1oTh36ULZebeKH6HyN6gj
+wj2a+xDElqRSVkO2xy8LNX5AsI0n+5G/oxVX7cH9eW16zRVntZrQg+4Fc6K6as0l
+qF8ccAdMixYh6obn1ij3ThZNwhMTDloQ50LI+ydZpBXPn+LugmpcP6VSE3Wz98/s
+FZuUBARp/QnNJO/2eWIZ1K+W/e9U31QhxFxM4niNS21NsZ6yqd/IWrR76Mkxv1PI
+h7UpUazMISSqd/AvvZ8XDiAlsHCuppx3AJ4tzE73mdHP5Sf2DWhx/hwuZg==
+-----END CERTIFICATE-----
+`
 
 	return channel
 }
@@ -96,16 +117,12 @@ func TestDialer(t *testing.T) {
 		}
 	}
 
-	if dialer.TLSClientConfig != nil {
-		t.Fatalf("Unexpected TLSClientConfig: %+v", dialer)
-	}
-
 	channel = ca(channel)
 	dialer = channel.Dialer()
 
-	if dialer.TLSClientConfig == nil || dialer.TLSClientConfig.RootCAs == nil {
-		t.Fatalf("Custom CA certificates not recognised!")
-	}
+	subjectOfTestCertificate := []byte{48, 35, 49, 33, 48, 31, 6, 3, 85, 4, 3, 12, 24, 119, 111, 114, 107, 104, 111, 114, 115, 101, 45, 119, 101, 98, 115, 111, 99, 107, 101, 116, 45, 116, 101, 115, 116}
+	//lint:ignore SA1019 Ignore the deprecation warnings
+	require.Contains(t, dialer.TLSClientConfig.RootCAs.Subjects(), subjectOfTestCertificate)
 }
 
 func TestIsEqual(t *testing.T) {

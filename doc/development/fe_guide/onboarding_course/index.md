@@ -22,7 +22,7 @@ Our teaching style prioritizes practical learning.
 Lessons include an introduction to the problem, theory, live coding walkthroughs, and similar issues for you to tackle.
 As you progress, the complexity of the tasks increase, helping you grow your skills.
 
-Join us on this journey of front-end development at GitLab. Say hello in [the Discord community](https://discord.gg/gitlab) and let's learn and improve together.
+Join us on this journey of front-end development at GitLab. Say hello in [the Discord community](https://discord.com/invite/gitlab) and let's learn and improve together.
 
 ## Lessons
 

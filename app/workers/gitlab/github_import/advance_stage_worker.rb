@@ -25,12 +25,8 @@ module Gitlab
         base_data: Stage::ImportBaseDataWorker,
         pull_requests: Stage::ImportPullRequestsWorker,
         collaborators: Stage::ImportCollaboratorsWorker,
-        pull_requests_merged_by: Stage::ImportPullRequestsMergedByWorker, # Skipped on extended_events
-        pull_request_review_requests: Stage::ImportPullRequestsReviewRequestsWorker, # Skipped on extended_events
-        pull_request_reviews: Stage::ImportPullRequestsReviewsWorker, # Skipped on extended_events
         issues_and_diff_notes: Stage::ImportIssuesAndDiffNotesWorker,
         issue_events: Stage::ImportIssueEventsWorker,
-        notes: Stage::ImportNotesWorker, # Skipped on extended_events
         attachments: Stage::ImportAttachmentsWorker,
         protected_branches: Stage::ImportProtectedBranchesWorker,
         lfs_objects: Stage::ImportLfsObjectsWorker,

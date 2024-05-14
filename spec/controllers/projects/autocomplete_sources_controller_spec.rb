@@ -11,7 +11,7 @@ RSpec.describe Projects::AutocompleteSourcesController do
   let_it_be(:private_issue) { create(:labeled_issue, project: project, labels: [development]) }
   let_it_be(:private_work_item) { create(:work_item, project: project) }
   let_it_be(:issue) { create(:labeled_issue, project: public_project, labels: [development]) }
-  let_it_be(:work_item) { create(:work_item, project: public_project, id: 1, iid: 100) }
+  let_it_be(:work_item) { create(:work_item, project: public_project) }
   let_it_be(:user) { create(:user) }
 
   def members_by_username(username)
@@ -283,6 +283,44 @@ RSpec.describe Projects::AutocompleteSourcesController do
         get :milestones, format: :json, params: { namespace_id: group.path, project_id: project.path }
 
         expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+  end
+
+  describe 'GET wikis' do
+    before do
+      create(:wiki_page, project: project, title: 'foo')
+      create(:wiki_page, project: project, title: 'templates/template1')
+    end
+
+    context 'when user can read wiki pages' do
+      before do
+        group.add_owner(user)
+        sign_in(user)
+      end
+
+      it 'lists wiki pages (except templates)' do
+        get :wikis, format: :json, params: { namespace_id: group.path, project_id: project.path }
+
+        expect(json_response.pluck('title')).to eq(['foo'])
+      end
+    end
+
+    context 'when user cannot read wiki pages' do
+      let_it_be(:group2) { create(:group, :public) }
+      let_it_be(:project2) { create(:project, :public, namespace: group2) }
+
+      before do
+        create(:wiki_page, project: project2, title: 'foo')
+
+        # set wikis feature to members only
+        project2.project_feature.update!(wiki_access_level: ProjectFeature::PRIVATE)
+      end
+
+      it 'returns an empty list' do
+        get :wikis, format: :json, params: { namespace_id: group2.path, project_id: project2.path }
+
+        expect(json_response).to eq([])
       end
     end
   end

@@ -8,9 +8,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78227) in GitLab 14.8 [with a flag](../../administration/feature_flags.md) named `ci_secure_files`. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/350748) in GitLab 15.7. Feature flag `ci_secure_files` removed.
 
 This feature is part of [Mobile DevOps](../mobile_devops.md) developed by [GitLab Incubation Engineering](https://handbook.gitlab.com/handbook/engineering/development/incubation/).
@@ -85,5 +84,5 @@ tool. This tool automatically verifies the checksum of each file as it is downlo
 
 Any project member with at least the Developer role can access Project-level secure files.
 Interactions with Project-level secure files are not included in Audit Events, but
-[issue 117](https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/readme/-/issues/117).
+[issue 117](https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/readme/-/issues/117)
 proposes adding this functionality.

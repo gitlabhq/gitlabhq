@@ -6,8 +6,8 @@ RSpec.describe Mutations::Releases::Update do
   let_it_be(:project) { create(:project, :public, :repository) }
   let_it_be(:milestone_12_3) { create(:milestone, project: project, title: '12.3') }
   let_it_be(:milestone_12_4) { create(:milestone, project: project, title: '12.4') }
-  let_it_be(:reporter) { create(:user) }
-  let_it_be(:developer) { create(:user) }
+  let_it_be(:reporter) { create(:user, reporter_of: project) }
+  let_it_be(:developer) { create(:user, developer_of: project) }
 
   let_it_be(:tag) { 'v1.1.0' }
   let_it_be(:name) { 'Version 1.0' }
@@ -40,11 +40,6 @@ RSpec.describe Mutations::Releases::Update do
 
   around do |example|
     freeze_time { example.run }
-  end
-
-  before do
-    project.add_reporter(reporter)
-    project.add_developer(developer)
   end
 
   shared_examples 'no changes to the release except for the' do |except_for|

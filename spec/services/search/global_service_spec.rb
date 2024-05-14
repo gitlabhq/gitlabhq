@@ -6,15 +6,11 @@ RSpec.describe Search::GlobalService, feature_category: :global_search do
   let_it_be(:user) { create(:user) }
   let_it_be(:internal_user) { create(:user) }
 
-  let_it_be(:found_project)    { create(:project, :private, name: 'searchable_project') }
+  let_it_be(:found_project)    { create(:project, :private, name: 'searchable_project', maintainers: user) }
   let_it_be(:unfound_project)  { create(:project, :private, name: 'unfound_project') }
   let_it_be(:internal_project) { create(:project, :internal, name: 'searchable_internal_project') }
   let_it_be(:public_project)   { create(:project, :public, name: 'searchable_public_project') }
   let_it_be(:archived_project) { create(:project, :public, archived: true, name: 'archived_project') }
-
-  before do
-    found_project.add_maintainer(user)
-  end
 
   describe '#execute' do
     context 'unauthenticated' do

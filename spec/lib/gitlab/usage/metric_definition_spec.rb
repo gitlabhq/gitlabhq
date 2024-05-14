@@ -98,6 +98,16 @@ RSpec.describe Gitlab::Usage::MetricDefinition, feature_category: :service_ping 
     end
   end
 
+  describe 'invalid product_group' do
+    before do
+      attributes[:product_group] = 'a_product_group'
+    end
+
+    it 'has validation errors' do
+      expect_validation_errors
+    end
+  end
+
   describe '#with_instrumentation_class' do
     let(:all_definitions) do
       metrics_definitions = [
@@ -308,20 +318,18 @@ RSpec.describe Gitlab::Usage::MetricDefinition, feature_category: :service_ping 
           'RedisHLLMetric'   | { events: [2] } | false
           'RedisHLLMetric'   | { events: 'a' } | false
           'RedisHLLMetric'   | { event: ['a'] } | false
-          'AggregatedMetric' | { aggregate: { operator: 'OR', attribute: 'user_id' }, events: ['a'] } | true
-          'AggregatedMetric' | { aggregate: { operator: 'AND', attribute: 'project_id' }, events: %w[b c] } | true
+          'AggregatedMetric' | { aggregate: { attribute: 'user.id' }, events: ['a'] } | true
+          'AggregatedMetric' | { aggregate: { attribute: 'project.id' }, events: %w[b c] } | true
           'AggregatedMetric' | nil | false
           'AggregatedMetric' | {} | false
-          'AggregatedMetric' | { aggregate: { operator: 'OR', attribute: 'user_id' }, events: ['a'], event: 'a' } | false
-          'AggregatedMetric' | { aggregate: { operator: 'OR', attribute: 'user_id' } } | false
+          'AggregatedMetric' | { aggregate: { attribute: 'user.id' }, events: ['a'], event: 'a' } | false
+          'AggregatedMetric' | { aggregate: { attribute: 'user.id' } } | false
           'AggregatedMetric' | { events: ['a'] } | false
-          'AggregatedMetric' | { aggregate: { operator: 'OR', attribute: 'user_id' }, events: 'a' } | false
+          'AggregatedMetric' | { aggregate: { attribute: 'user.id' }, events: 'a' } | false
           'AggregatedMetric' | { aggregate: 'a', events: ['a'] } | false
-          'AggregatedMetric' | { aggregate: { operator: 'OR' }, events: ['a'] } | false
-          'AggregatedMetric' | { aggregate: { attribute: 'user_id' }, events: ['a'] } | false
-          'AggregatedMetric' | { aggregate: { operator: 'OR', attribute: 'user_id', a: 'b' }, events: ['a'] } | false
-          'AggregatedMetric' | { aggregate: { operator: '???', attribute: 'user_id' }, events: ['a'] } | false
-          'AggregatedMetric' | { aggregate: { operator: 'OR', attribute: ['user_id'] }, events: ['a'] } | false
+          'AggregatedMetric' | { aggregate: {}, events: ['a'] } | false
+          'AggregatedMetric' | { aggregate: { attribute: 'user.id', a: 'b' }, events: ['a'] } | false
+          'AggregatedMetric' | { aggregate: { attribute: ['user.id'] }, events: ['a'] } | false
         end
 
         with_them do
@@ -369,12 +377,12 @@ RSpec.describe Gitlab::Usage::MetricDefinition, feature_category: :service_ping 
           options: {
             events: ['a_event']
           },
-          events: [{ name: 'my_event', unique: 'project_id' }]
+          events: [{ name: 'my_event', unique: 'project.id' }]
         }
       end
 
       it 'uses the new format' do
-        expect(definition.events).to eq({ 'my_event' => :project_id })
+        expect(definition.events).to eq({ 'my_event' => :'project.id' })
       end
     end
   end

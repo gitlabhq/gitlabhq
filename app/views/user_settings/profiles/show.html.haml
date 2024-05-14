@@ -36,7 +36,9 @@
           = s_("Profiles|Choose file...")
         %span.gl-ml-3.js-avatar-filename= s_("Profiles|No file chosen.")
         = f.file_field :avatar, class: 'js-user-avatar-input hidden', accept: 'image/*'
-      .gl-text-gray-500= s_("Profiles|The maximum file size allowed is 200KB.")
+      .gl-text-gray-500
+        = s_("Profiles|The ideal image size is 192 x 192 pixels.")
+        = s_("Profiles|The maximum file size allowed is 200 KiB.")
       - if @user.avatar?
         = render Pajamas::ButtonComponent.new(variant: :danger,
           category: :secondary,
@@ -85,12 +87,12 @@
       .form-group.gl-form-group
         = f.label :pronouns, s_('Profiles|Pronouns')
         = f.text_field :pronouns, class: 'gl-form-input form-control gl-md-form-input-lg'
-        %small.form-text.text-gl-muted
+        %small.form-text.gl-text-secondary
           = s_("Profiles|Enter your pronouns to let people know how to refer to you.")
       .form-group.gl-form-group
         = f.label :pronunciation, s_('Profiles|Pronunciation')
         = f.text_field :pronunciation, class: 'gl-form-input form-control gl-md-form-input-lg'
-        %small.form-text.text-gl-muted
+        %small.form-text.gl-text-secondary
           = s_("Profiles|Enter how your name is pronounced to help people address you correctly.")
       = render_if_exists 'profiles/extra_settings', form: f
       = render_if_exists 'user_settings/profiles/email_settings', form: f
@@ -99,8 +101,10 @@
         = f.text_field :skype, class: 'gl-form-input form-control gl-md-form-input-lg', placeholder: s_("Profiles|username")
       .form-group.gl-form-group
         = f.label :linkedin
-        = f.text_field :linkedin, class: 'gl-form-input form-control gl-md-form-input-lg'
-        %small.form-text.text-gl-muted
+        = f.text_field :linkedin,
+          class: 'gl-form-input form-control gl-md-form-input-lg',
+          placeholder: "profilename"
+        %small.form-text.gl-text-secondary
           = s_("Profiles|Your LinkedIn profile name from linkedin.com/in/profilename")
       .form-group.gl-form-group
         = f.label :twitter, _('X (formerly Twitter)')
@@ -120,7 +124,7 @@
           max_length: max_discord_length,
           max_length_message: s_('Profiles|Discord ID is too long (maximum is %{max_length} characters).') % { max_length: max_discord_length },
           allow_empty: true}
-        %small.form-text.text-gl-muted
+        %small.form-text.gl-text-secondary
           = external_accounts_docs_link
       .form-group.gl-form-group
         = f.label :mastodon
@@ -133,7 +137,7 @@
         = f.label :location, s_('Profiles|Location')
         - if @user.read_only_attribute?(:location)
           = f.text_field :location, class: 'gl-form-input form-control gl-md-form-input-lg', readonly: true
-          %small.form-text.text-gl-muted
+          %small.form-text.gl-text-secondary
             = s_("Profiles|Your location was automatically set based on your %{provider_label} account") % { provider_label: attribute_provider_label(:location) }
         - else
           = f.text_field :location, class: 'gl-form-input form-control gl-md-form-input-lg', placeholder: s_("Profiles|City, country")
@@ -143,12 +147,12 @@
       .form-group.gl-form-group
         = f.label :organization, s_('Profiles|Organization')
         = f.text_field :organization, class: 'gl-form-input form-control gl-md-form-input-lg'
-        %small.form-text.text-gl-muted
+        %small.form-text.gl-text-secondary
           = s_("Profiles|Who you represent or work for.")
       .form-group.gl-form-group.gl-mb-6.gl-max-w-80
         = f.label :bio, s_('Profiles|Bio')
         = f.text_area :bio, class: 'gl-form-input gl-form-textarea form-control', rows: 4, maxlength: 250
-        %small.form-text.text-gl-muted
+        %small.form-text.gl-text-secondary
           = s_("Profiles|Tell us about yourself in fewer than 250 characters.")
       .gl-border-t.gl-pt-6
         %fieldset.form-group.gl-form-group

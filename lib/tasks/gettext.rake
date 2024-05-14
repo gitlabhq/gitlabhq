@@ -12,7 +12,7 @@ namespace :gettext do
       "--output-dir", Rails.root.join('app/assets/javascripts/locale').to_s
     ]
 
-    abort 'Error: Unable to convert gettext files to js.'.color(:red) unless Kernel.system(*command)
+    abort Rainbow('Error: Unable to convert gettext files to js.').red unless Kernel.system(*command)
   end
 
   desc 'Regenerate gitlab.pot file'
@@ -101,7 +101,7 @@ namespace :gettext do
       puts "  #{message_id}"
       errors.each do |error|
         spaces = ' ' * 4
-        error = error.lines.join("#{spaces}")
+        error = error.lines.join(spaces.to_s)
         puts "#{spaces}#{error}"
       end
     end

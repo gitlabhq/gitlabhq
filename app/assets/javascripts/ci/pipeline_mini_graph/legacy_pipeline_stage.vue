@@ -12,7 +12,7 @@
  * 4. Commit widget
  */
 
-import { GlDropdown, GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
+import { GlDisclosureDropdown, GlButton, GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import { createAlert } from '~/alert';
 import eventHub from '~/ci/event_hub';
@@ -25,21 +25,23 @@ export default {
     errorMessage: __('Something went wrong on our end.'),
     loadingText: __('Loading...'),
     mergeTrainMessage: s__('Pipeline|Merge train pipeline jobs can not be retried'),
-    stage: __('Stage:'),
+    stage: __('Stage'),
     viewStageLabel: __('View Stage: %{title}'),
-  },
-  dropdownPopperOpts: {
-    placement: 'bottom',
-    positionFixed: true,
   },
   components: {
     CiIcon,
     GlLoadingIcon,
-    GlDropdown,
+    GlDisclosureDropdown,
+    GlButton,
     LegacyJobItem,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
+  },
+  tooltipConfig: {
+    boundary: 'viewport',
+    placement: 'top',
+    customClass: 'gl-pointer-events-none',
   },
   props: {
     stage: {
@@ -95,7 +97,7 @@ export default {
           this.isLoading = false;
         })
         .catch(() => {
-          this.$refs.dropdown.hide();
+          this.$refs.dropdown.close();
           this.isLoading = false;
 
           createAlert({
@@ -111,58 +113,73 @@ export default {
 </script>
 
 <template>
-  <gl-dropdown
+  <gl-disclosure-dropdown
     ref="dropdown"
-    v-gl-tooltip.hover.ds0
-    v-gl-tooltip="stage.title"
     data-testid="mini-pipeline-graph-dropdown"
+    class="mini-pipeline-graph-dropdown"
     variant="link"
     :aria-label="stageAriaLabel(stage.title)"
-    :lazy="true"
-    :popper-opts="$options.dropdownPopperOpts"
-    :toggle-class="['gl-rounded-full!']"
-    menu-class="mini-pipeline-graph-dropdown-menu"
-    @hide="onHideDropdown"
-    @show="onShowDropdown"
+    no-caret
+    @hidden="onHideDropdown"
+    @shown="onShowDropdown"
   >
-    <template #button-content>
-      <ci-icon :status="stage.status" :show-tooltip="false" :use-link="false" class="gl-mb-0!" />
+    <template #toggle>
+      <gl-button
+        v-gl-tooltip.ds0="$options.tooltipConfig"
+        :title="isDropdownOpen ? '' : stage.title"
+        variant="link"
+        class="gl-rounded-full!"
+        data-testid="mini-pipeline-graph-dropdown-toggle"
+      >
+        <ci-icon :status="stage.status" :show-tooltip="false" :use-link="false" class="gl-mb-0!" />
+      </gl-button>
     </template>
-    <div v-if="isLoading" class="gl--flex-center gl-p-2" data-testid="pipeline-stage-loading-state">
+
+    <template #header>
+      <div
+        class="gl-display-flex gl-align-items-center gl-p-4! gl-min-h-8 gl-border-b-1 gl-border-b-solid gl-border-b-gray-200 gl-font-sm gl-font-weight-bold gl-line-height-1"
+      >
+        <template v-if="isLoading">
+          <span>{{ $options.i18n.stage }}</span>
+        </template>
+        <template v-else>
+          <span class="gl-mr-1">{{ $options.i18n.stage }}:</span>
+          <span data-testid="pipeline-stage-dropdown-menu-title">{{ stageName }}</span>
+        </template>
+      </div>
+    </template>
+
+    <div
+      v-if="isLoading"
+      class="gl-display-flex gl-py-3 gl-px-4"
+      data-testid="pipeline-stage-loading-state"
+    >
       <gl-loading-icon size="sm" class="gl-mr-3" />
       <p class="gl-line-height-normal gl-mb-0">{{ $options.i18n.loadingText }}</p>
     </div>
     <ul
       v-else
-      class="js-builds-dropdown-list scrollable-menu"
+      class="mini-pipeline-graph-dropdown-menu gl-overflow-y-auto gl-m-0 gl-p-0"
       data-testid="mini-pipeline-graph-dropdown-menu-list"
+      @click.stop
     >
-      <div class="gl--flex-center gl-border-b gl-font-weight-bold gl-mb-3 gl-pb-3">
-        <span class="gl-mr-1">{{ $options.i18n.stage }}</span>
-        <span data-testid="pipeline-stage-dropdown-menu-title">{{ stageName }}</span>
-      </div>
-      <li v-for="job in dropdownContent" :key="job.id">
-        <legacy-job-item
-          :dropdown-length="dropdownContent.length"
-          :job="job"
-          css-class-job-name="pipeline-job-item"
-        />
-      </li>
-      <template v-if="isMergeTrain">
-        <li class="gl-dropdown-divider" role="presentation">
-          <hr role="separator" aria-orientation="horizontal" class="dropdown-divider" />
-        </li>
-        <li>
-          <div
-            class="gl-display-flex gl-align-items-center"
-            data-testid="warning-message-merge-trains"
-          >
-            <div class="menu-item gl-font-sm gl-text-gray-300!">
-              {{ $options.i18n.mergeTrainMessage }}
-            </div>
-          </div>
-        </li>
-      </template>
+      <legacy-job-item
+        v-for="job in dropdownContent"
+        :key="job.id"
+        :dropdown-length="dropdownContent.length"
+        :job="job"
+        css-class-job-name="pipeline-job-item"
+      />
     </ul>
-  </gl-dropdown>
+
+    <template #footer>
+      <div
+        v-if="!isLoading && isMergeTrain"
+        class="gl-font-sm gl-text-secondary gl-py-3 gl-px-4 gl-border-t"
+        data-testid="warning-message-merge-trains"
+      >
+        {{ $options.i18n.mergeTrainMessage }}
+      </div>
+    </template>
+  </gl-disclosure-dropdown>
 </template>

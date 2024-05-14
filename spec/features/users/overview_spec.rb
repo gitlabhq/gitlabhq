@@ -182,6 +182,7 @@ RSpec.describe 'Overview tab on a user profile', :js, feature_category: :user_pr
         visit user.username
         click_nav 'Followers'
       end
+
       it 'shows paginated followers' do
         page.within('#followers') do
           other_users.each_with_index do |follower, i|
@@ -242,6 +243,7 @@ RSpec.describe 'Overview tab on a user profile', :js, feature_category: :user_pr
         visit user.username
         click_nav 'Following'
       end
+
       it 'shows paginated following' do
         page.within('#following') do
           other_users.each_with_index do |followee, i|
@@ -267,40 +269,16 @@ RSpec.describe 'Overview tab on a user profile', :js, feature_category: :user_pr
       end
     end
 
-    describe 'feature flag enabled' do
-      before do
-        stub_feature_flags(security_auto_fix: true)
-      end
+    include_context "visit bot's overview tab"
 
-      include_context "visit bot's overview tab"
-
-      it "activity panel's title is 'Bot activity'" do
-        page.within('.activities-block') do
-          expect(page).to have_text('Bot activity')
-        end
-      end
-
-      it 'does not show projects panel' do
-        expect(page).not_to have_selector('.projects-block')
+    it "activity panel's title is 'Activity'" do
+      page.within('.activities-block') do
+        expect(page).to have_text('Activity')
       end
     end
 
-    describe 'feature flag disabled' do
-      before do
-        stub_feature_flags(security_auto_fix: false)
-      end
-
-      include_context "visit bot's overview tab"
-
-      it "activity panel's title is not 'Bot activity'" do
-        page.within('.activities-block') do
-          expect(page).not_to have_text('Bot activity')
-        end
-      end
-
-      it 'shows projects panel' do
-        expect(page).not_to have_selector('.projects-block')
-      end
+    it 'does not show projects panel' do
+      expect(page).not_to have_selector('.projects-block')
     end
   end
 
