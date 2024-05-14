@@ -25905,7 +25905,7 @@ msgstr ""
 msgid "Homepage"
 msgstr ""
 
-msgid "Hook execution failed. Ensure the group has a project with commits."
+msgid "Hook execution failed. %{error}"
 msgstr ""
 
 msgid "Horizontal rule"
@@ -43620,7 +43620,7 @@ msgstr ""
 msgid "Requests"
 msgstr ""
 
-msgid "Requests for pages at %{code_start}%{help_text_url}%{code_end} redirect to the URL. The destination must meet certain requirements. %{docs_link_start}Learn more.%{docs_link_end}"
+msgid "Requests for pages at %{code_start}%{help_text_url}%{code_end} redirect to the URL. The destination must meet certain requirements. %{docs_link_start}Learn more%{docs_link_end}."
 msgstr ""
 
 msgid "Requests per period"

@@ -589,18 +589,18 @@ class User < MainClusterwide::ApplicationRecord
     .where(project_authorizations: { user_id: nil })
     .allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/422045')
   end
-  scope :by_username, -> (usernames) { iwhere(username: Array(usernames).map(&:to_s)) }
-  scope :by_name, -> (names) { iwhere(name: Array(names)) }
-  scope :by_login, -> (login) do
+  scope :by_username, ->(usernames) { iwhere(username: Array(usernames).map(&:to_s)) }
+  scope :by_name, ->(names) { iwhere(name: Array(names)) }
+  scope :by_login, ->(login) do
     return none if login.blank?
 
     login.include?('@') ? iwhere(email: login) : iwhere(username: login)
   end
-  scope :by_user_email, -> (emails) { iwhere(email: Array(emails)) }
-  scope :by_emails, -> (emails) { joins(:emails).where(emails: { email: Array(emails).map(&:downcase) }) }
-  scope :for_todos, -> (todos) { where(id: todos.select(:user_id).distinct) }
+  scope :by_user_email, ->(emails) { iwhere(email: Array(emails)) }
+  scope :by_emails, ->(emails) { joins(:emails).where(emails: { email: Array(emails).map(&:downcase) }) }
+  scope :for_todos, ->(todos) { where(id: todos.select(:user_id).distinct) }
   scope :with_emails, -> { preload(:emails) }
-  scope :with_dashboard, -> (dashboard) { where(dashboard: dashboard) }
+  scope :with_dashboard, ->(dashboard) { where(dashboard: dashboard) }
   scope :with_public_profile, -> { where(private_profile: false) }
   scope :with_expiring_and_not_notified_personal_access_tokens, ->(at) do
     where('EXISTS (?)', ::PersonalAccessToken
@@ -639,7 +639,7 @@ class User < MainClusterwide::ApplicationRecord
   scope :dormant, -> { with_state(:active).human_or_service_user.where('last_activity_on <= ?', Gitlab::CurrentSettings.deactivate_dormant_users_period.day.ago.to_date) }
   scope :with_no_activity, -> { with_state(:active).human_or_service_user.where(last_activity_on: nil).where('created_at <= ?', MINIMUM_DAYS_CREATED.day.ago.to_date) }
   scope :by_provider_and_extern_uid, ->(provider, extern_uid) { joins(:identities).merge(Identity.with_extern_uid(provider, extern_uid)) }
-  scope :by_ids_or_usernames, -> (ids, usernames) { where(username: usernames).or(where(id: ids)) }
+  scope :by_ids_or_usernames, ->(ids, usernames) { where(username: usernames).or(where(id: ids)) }
   scope :without_forbidden_states, -> { where.not(state: FORBIDDEN_SEARCH_STATES) }
   scope :trusted, -> do
     where('EXISTS (?)', ::UserCustomAttribute

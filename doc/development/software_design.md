@@ -363,7 +363,7 @@ We have `Groups::UpdateService` which is entity-centric and reused for radically
 use cases:
 
 - Update group description, which requires group admin access.
-- Set namespace-level limit for [compute quota](../ci/pipelines/cicd_minutes.md), like `shared_runners_minutes_limit`
+- Set namespace-level limit for [compute quota](../ci/pipelines/compute_minutes.md), like `shared_runners_minutes_limit`
   which requires instance admin access.
 
 These 2 different use cases support different sets of parameters. It's not likely or expected that

@@ -1,0 +1,20 @@
+---
+description: User activates the command palette with the search button
+internal_events: true
+action: click_search_button_to_activate_command_palette
+identifiers:
+- namespace
+- project
+- user
+product_section: core_platform
+product_stage: data_stores
+product_group: global_search
+milestone: '17.0'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151651
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

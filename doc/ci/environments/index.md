@@ -606,7 +606,7 @@ manually.
 
 There may be times when you want to stop an environment without running the defined
 [`on_stop`](../yaml/index.md#environmenton_stop) action. For example, you want to delete many
-environments without using [compute quota](../pipelines/cicd_minutes.md).
+environments without using [compute quota](../pipelines/compute_minutes.md).
 
 To stop an environment without running the defined `on_stop` action, execute the
 [Stop an environment API](../../api/environments.md#stop-an-environment) with the parameter

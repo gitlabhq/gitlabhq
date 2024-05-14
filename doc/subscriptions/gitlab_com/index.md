@@ -396,12 +396,12 @@ To add a secondary contact for your subscription:
 Compute is the resource consumed when running [pipelines](../../ci/pipelines/index.md)
 on GitLab instance runners.
 
-Refer to [Compute usage](../../ci/pipelines/cicd_minutes.md)
+Refer to [Compute usage](../../ci/pipelines/compute_minutes.md)
 for more information.
 
 ### Purchase additional compute minutes
 
-You can [purchase additional compute minutes](../../ci/pipelines/cicd_minutes.md#purchase-additional-compute-minutes)
+You can [purchase additional compute minutes](../../ci/pipelines/compute_minutes.md#purchase-additional-compute-minutes)
 for your personal or group namespace. Compute minutes are a **one-time purchase**, so they do not renew.
 
 ## Add-on subscription for additional Storage and Transfer

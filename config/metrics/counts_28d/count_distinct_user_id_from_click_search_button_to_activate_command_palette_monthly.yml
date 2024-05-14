@@ -1,0 +1,24 @@
+---
+key_path: redis_hll_counters.count_distinct_user_id_from_click_search_button_to_activate_command_palette_monthly
+description: Monthly count of unique users User activates the command palette with the search button
+product_section: core_platform
+product_stage: data_stores
+product_group: global_search
+performance_indicator_type: []
+value_type: number
+status: active
+milestone: '17.0'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151651
+time_frame: 28d
+data_source: internal_events
+data_category: optional
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate
+events:
+- name: click_search_button_to_activate_command_palette
+  unique: user.id

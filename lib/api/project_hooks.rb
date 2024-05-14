@@ -147,36 +147,10 @@ module API
         end
       end
 
-      desc 'Triggers a project hook test' do
-        detail 'Triggers a project hook test'
-        success code: 201
-        failure [
-          { code: 400, message: 'Bad request' },
-          { code: 404, message: 'Not found' },
-          { code: 422, message: 'Unprocessable entity' },
-          { code: 429, message: 'Too many requests' }
-        ]
-      end
-      params do
-        requires :trigger,
-          type: String,
-          desc: 'The type of trigger hook',
-          values: ProjectHook.triggers.values.map(&:to_s)
-      end
-      post ":id/hooks/:hook_id/test/:trigger", urgency: :low do
-        hook = find_hook
-
-        if Feature.enabled?(:web_hook_test_api_endpoint_rate_limit)
-          check_rate_limit!(:web_hook_test_api_endpoint, scope: hook)
-        end
-
-        result = TestHooks::ProjectService.new(hook, current_user, params[:trigger]).execute
-        success = (200..299).cover?(result.payload[:http_status])
-        if success
-          created!
-        else
-          render_api_error!(result.message, 422)
-        end
+      namespace ':id/hooks/' do
+        mount ::API::Hooks::TriggerTest, with: {
+          entity: ProjectHook
+        }
       end
     end
   end

@@ -24,7 +24,7 @@ module Terraform
       inverse_of: :terraform_state
 
     scope :ordered_by_name, -> { order(:name) }
-    scope :with_name, -> (name) { where(name: name) }
+    scope :with_name, ->(name) { where(name: name) }
 
     validates :project_id, :name, presence: true
     validates :uuid, presence: true, uniqueness: true, length: { is: UUID_LENGTH },

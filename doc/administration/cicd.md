@@ -116,7 +116,7 @@ balanced across many projects.
 
 ### Disable compute quota enforcement
 
-To disable the enforcement of [compute quotas](../ci/pipelines/cicd_minutes.md) on instance runners, you can temporarily
+To disable the enforcement of [compute quotas](../ci/pipelines/compute_minutes.md) on instance runners, you can temporarily
 enable the `ci_queueing_disaster_recovery_disable_quota` [feature flag](../administration/feature_flags.md).
 This flag reduces system resource usage on the `jobs/request` endpoint.
 

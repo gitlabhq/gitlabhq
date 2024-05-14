@@ -12,7 +12,7 @@ class RedirectRoute < MainClusterwide::ApplicationRecord
     presence: true,
     uniqueness: { case_sensitive: false }
 
-  scope :matching_path_and_descendants, -> (path) do
+  scope :matching_path_and_descendants, ->(path) do
     wheres = 'LOWER(redirect_routes.path) = LOWER(?) OR LOWER(redirect_routes.path) LIKE LOWER(?)'
 
     where(wheres, path, "#{sanitize_sql_like(path)}/%")

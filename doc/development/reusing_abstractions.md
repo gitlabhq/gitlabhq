@@ -302,7 +302,7 @@ Some examples:
 - [`DesignManagement::DesignAtVersion`](https://gitlab.com/gitlab-org/gitlab/-/blob/b62ce98cff8e0530210670f9cb0314221181b77f/app/models/design_management/design_at_version.rb)
   is a model that leverages validations to combine designs and versions.
 - [`Ci::Minutes::Usage`](https://gitlab.com/gitlab-org/gitlab/-/blob/ec52f19f7325410177c00fef06379f55ab7cab67/ee/app/models/ci/minutes/usage.rb)
-  is a Value Object that provides [compute usage](../ci/pipelines/cicd_minutes.md)
+  is a Value Object that provides [compute usage](../ci/pipelines/compute_minutes.md)
   for a given namespace.
 
 #### Model class methods

@@ -50,7 +50,7 @@ module QA
         # @param [Hash] change mr file change
         # @return [Hash] a hash containing the YAML data for the feature flag definition
         def ff_yaml_for_file(change)
-          return unless change[:path] =~ %r{/feature_flags/(development|ops)/.*\.yml}
+          return unless change[:path] =~ %r{/feature_flags/.*\.yml}
           if change[:deleted_file]
             return { name: change[:path].split("/").last.gsub(/\.(yml|yaml)/, ""), deleted: true }
           end

@@ -30,6 +30,21 @@ RSpec.describe QA::Tools::Ci::FfChanges do
       end
     end
 
+    context 'with feature flags outside of development and ops' do
+      let(:mr_diff) do
+        [
+          {
+            path: "config/feature_flags/gitlab_com_derisk/async_commit_diff_files.yml",
+            deleted_filed: false
+          }
+        ]
+      end
+
+      it "returns inverse ff state option" do
+        expect(ff_changes.fetch).to eq("async_commit_diff_files=enabled")
+      end
+    end
+
     context "with deleted feature flag" do
       let(:deleted_file) { true }
 

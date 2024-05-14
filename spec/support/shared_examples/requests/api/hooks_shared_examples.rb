@@ -418,3 +418,232 @@ RSpec.shared_examples 'web-hook API endpoints' do |prefix|
     end
   end
 end
+
+RSpec.shared_examples 'test web-hook endpoint' do
+  include StubRequests
+  context "when trigger webhook test", :aggregate_failures, :clean_gitlab_redis_rate_limiting do
+    before do
+      stub_full_request(hook.url, method: :post).to_return(status: 200)
+    end
+
+    it_behaves_like 'rate limited endpoint', rate_limit_key: :web_hook_test_api_endpoint do
+      let(:current_user) { user }
+
+      def request
+        post api("#{hook_uri}/test/push_events", user), params: {}
+      end
+
+      context 'when ops flag is disabled' do
+        before do
+          stub_feature_flags(web_hook_test_api_endpoint_rate_limit: false)
+        end
+
+        it 'does not block the request' do
+          request
+
+          expect(response).to have_gitlab_http_status(:created)
+        end
+      end
+    end
+
+    context 'when testing is not available for trigger' do
+      where(:trigger_name) do
+        %w[confidential_note_events deployment_events feature_flag_events]
+      end
+      with_them do
+        it 'returns error message that testing is not available' do
+          post api("#{hook_uri}/test/#{trigger_name}", user, admin_mode: user.admin?), params: {}
+
+          expect(response).to have_gitlab_http_status(:unprocessable_entity)
+          expect(json_response['message']).to eq('Testing not available for this hook')
+        end
+      end
+    end
+
+    context 'when push_events' do
+      where(:trigger_name) do
+        [
+          ["push_events"],
+          ["tag_push_events"]
+        ]
+      end
+      with_them do
+        it 'executes hook' do
+          post api("#{hook_uri}/test/#{trigger_name}", user, admin_mode: user.admin?), params: {}
+
+          expect(response).to have_gitlab_http_status(:created)
+        end
+      end
+    end
+
+    context 'when issue_events' do
+      where(:trigger_name) do
+        %w[issues_events confidential_issues_events]
+      end
+      with_them do
+        it 'executes hook' do
+          create(:issue, project: project)
+
+          post api("#{hook_uri}/test/#{trigger_name}", user, admin_mode: user.admin?), params: {}
+
+          expect(response).to have_gitlab_http_status(:created)
+        end
+
+        it 'returns error message if not enough data' do
+          post api("#{hook_uri}/test/#{trigger_name}", user, admin_mode: user.admin?), params: {}
+
+          expect(response).to have_gitlab_http_status(:unprocessable_entity)
+          expect(json_response['message']).to eq('Ensure the project has issues.')
+        end
+      end
+    end
+
+    context 'when note_events' do
+      where(:trigger_name) do
+        [
+          ["note_events"],
+          ["emoji_events"]
+        ]
+      end
+      with_them do
+        it 'executes hook' do
+          create(:note, :on_issue, project: project)
+
+          post api("#{hook_uri}/test/#{trigger_name}", user, admin_mode: user.admin?), params: {}
+
+          expect(response).to have_gitlab_http_status(:created)
+        end
+
+        it 'returns error message if not enough data' do
+          post api("#{hook_uri}/test/#{trigger_name}", user, admin_mode: user.admin?), params: {}
+
+          expect(response).to have_gitlab_http_status(:unprocessable_entity)
+          expect(json_response['message']).to eq('Ensure the project has notes.')
+        end
+      end
+    end
+
+    context 'when merge_request_events' do
+      let(:trigger_name) { 'merge_requests_events' }
+
+      it 'executes hook' do
+        create(:merge_request, source_project: project, target_project: project)
+
+        post api("#{hook_uri}/test/#{trigger_name}", user, admin_mode: user.admin?), params: {}
+
+        expect(response).to have_gitlab_http_status(:created)
+      end
+
+      it 'returns error message if not enough data' do
+        post api("#{hook_uri}/test/#{trigger_name}", user, admin_mode: user.admin?), params: {}
+
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+        expect(json_response['message']).to eq('Ensure the project has merge requests.')
+      end
+    end
+
+    context 'when job_events' do
+      let(:trigger_name) { 'job_events' }
+
+      it 'executes hook' do
+        create(:ci_build, project: project, name: 'build')
+
+        post api("#{hook_uri}/test/#{trigger_name}", user, admin_mode: user.admin?), params: {}
+
+        expect(response).to have_gitlab_http_status(:created)
+      end
+
+      it 'returns error message if not enough data' do
+        post api("#{hook_uri}/test/#{trigger_name}", user, admin_mode: user.admin?), params: {}
+
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+        expect(json_response['message']).to eq('Ensure the project has CI jobs.')
+      end
+    end
+
+    context 'when pipeline_events' do
+      let(:trigger_name) { 'pipeline_events' }
+
+      it 'executes hook' do
+        create(:ci_pipeline, project: project, user: user)
+
+        post api("#{hook_uri}/test/#{trigger_name}", user, admin_mode: user.admin?), params: {}
+
+        expect(response).to have_gitlab_http_status(:created)
+      end
+
+      it 'returns error message if not enough data' do
+        post api("#{hook_uri}/test/#{trigger_name}", user, admin_mode: user.admin?), params: {}
+
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+        expect(json_response['message']).to eq('Ensure the project has CI pipelines.')
+      end
+    end
+
+    context 'when wiki_page_events' do
+      let(:trigger_name) { 'wiki_page_events' }
+
+      it 'executes hook' do
+        create(:wiki_page, wiki: project.wiki)
+
+        post api("#{hook_uri}/test/#{trigger_name}", user, admin_mode: user.admin?), params: {}
+
+        expect(response).to have_gitlab_http_status(:created)
+      end
+
+      it 'returns error message if wiki is not enabled' do
+        project.project_feature.update!(wiki_access_level: ProjectFeature::DISABLED)
+
+        post api("#{hook_uri}/test/#{trigger_name}", user, admin_mode: user.admin?), params: {}
+
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+        expect(json_response['message']).to eq('Ensure the wiki is enabled and has pages.')
+      end
+    end
+
+    context 'when release_events' do
+      let(:trigger_name) { 'releases_events' }
+
+      it 'executes hook' do
+        create(:release, project: project)
+
+        post api("#{hook_uri}/test/#{trigger_name}", user, admin_mode: user.admin?), params: {}
+
+        expect(response).to have_gitlab_http_status(:created)
+      end
+
+      it 'returns error message if not enough data' do
+        post api("#{hook_uri}/test/#{trigger_name}", user, admin_mode: user.admin?), params: {}
+
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+        expect(json_response['message']).to eq('Ensure the project has releases.')
+      end
+    end
+
+    context 'when resource_access_token_events' do
+      let(:trigger_name) { 'resource_access_token_events' }
+
+      it 'executes hook' do
+        post api("#{hook_uri}/test/#{trigger_name}", user, admin_mode: user.admin?), params: {}
+
+        expect(response).to have_gitlab_http_status(:created)
+      end
+    end
+
+    it "returns a 400 error when trigger is invalid" do
+      post api("#{hook_uri}/test/xyz", user, admin_mode: user.admin?), params: {}
+
+      expect(response).to have_gitlab_http_status(:bad_request)
+      expect(json_response['error']).to eq('trigger does not have a valid value')
+    end
+
+    it "returns a 422 error when request trigger test is not successful" do
+      stub_full_request(hook.url, method: :post).to_return(status: 400, body: 'Error response')
+
+      post api("#{hook_uri}/test/push_events", user, admin_mode: user.admin?), params: {}
+
+      expect(response).to have_gitlab_http_status(:unprocessable_entity)
+      expect(json_response['message']).to eq('Error response')
+    end
+  end
+end

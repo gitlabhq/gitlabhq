@@ -18,7 +18,6 @@ This page describes endpoints for runners registered to an instance. To create a
 GET /runners
 GET /runners/all
 GET /runners/:id/jobs
-GET /runners/:id/managers/:system_id/jobs
 GET /projects/:id/runners
 GET /groups/:id/runners
 ```
@@ -151,11 +150,11 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 ```
 
 NOTE:
-The `active` and `paused` values in the `status` query parameter were deprecated 
+The `active` and `paused` values in the `status` query parameter were deprecated
 and will be removed in [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109). They are replaced by the `paused` query parameter.
 
 NOTE:
-The `active` attribute in the response was deprecated 
+The `active` attribute in the response was deprecated
 and will be removed in [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109). It is replaced by the `paused` attribute.
 
 NOTE:
@@ -249,7 +248,7 @@ The `token` attribute in the response was deprecated [in GitLab 12.10](https://g
 and removed in [GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/issues/214322).
 
 NOTE:
-The `active` attribute in the response was deprecated 
+The `active` attribute in the response was deprecated
 and will be removed in [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109). It is replaced by the `paused` attribute.
 
 NOTE:
@@ -337,7 +336,7 @@ The `token` attribute in the response was [deprecated](https://gitlab.com/gitlab
 and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/214322) in GitLab 13.0.
 
 NOTE:
-The `active` query parameter was deprecated 
+The `active` query parameter was deprecated
 and will be removed in [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109). It is replaced by the `paused` attribute.
 
 NOTE:
@@ -416,7 +415,7 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
 ```
 
 NOTE:
-The `active` form attribute was deprecated 
+The `active` form attribute was deprecated
 and will be removed in [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109). It is replaced by the `paused` attribute.
 
 ## List jobs processed by a runner
@@ -540,11 +539,11 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 ```
 
 NOTE:
-The `active` and `paused` values in the `status` query parameter were deprecated 
+The `active` and `paused` values in the `status` query parameter were deprecated
 and will be removed in [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109). They are replaced by the `paused` query parameter.
 
 NOTE:
-The `active` attribute in the response was deprecated 
+The `active` attribute in the response was deprecated
 and will be removed in [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109). It is replaced by the `paused` attribute.
 
 NOTE:
@@ -673,11 +672,11 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 ```
 
 NOTE:
-The `active` and `paused` values in the `status` query parameter were deprecated 
+The `active` and `paused` values in the `status` query parameter were deprecated
 and will be removed in [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109). They are replaced by the `paused` query parameter.
 
 NOTE:
-The `active` attribute in the response was deprecated 
+The `active` attribute in the response was deprecated
 and will be removed in [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109). It is replaced by the `paused` attribute.
 
 NOTE:

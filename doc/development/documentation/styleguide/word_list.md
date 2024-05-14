@@ -413,7 +413,7 @@ Use **compute** for the resources used by runners to run CI/CD jobs.
 Related terms:
 
 - [**compute minutes**](#compute-minutes): How compute usage is calculated. For example, `400 compute minutes`.
-- [**compute quota**](../../../ci/pipelines/cicd_minutes.md): The limit of compute minutes that a namespace can use each month.
+- [**compute quota**](../../../ci/pipelines/compute_minutes.md): The limit of compute minutes that a namespace can use each month.
 - **compute usage**: The number of compute minutes that the namespace has used from the monthly quota.
 
 ## compute minutes

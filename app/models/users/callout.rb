@@ -98,6 +98,6 @@ module Users
       uniqueness: { scope: :user_id },
       inclusion: { in: Users::Callout.feature_names.keys }
 
-    scope :with_feature_name, -> (feature_name) { where(feature_name: feature_name) }
+    scope :with_feature_name, ->(feature_name) { where(feature_name: feature_name) }
   end
 end

@@ -69,17 +69,17 @@ class Todo < ApplicationRecord
 
   scope :pending, -> { with_state(:pending) }
   scope :done, -> { with_state(:done) }
-  scope :for_action, -> (action) { where(action: action) }
-  scope :for_author, -> (author) { where(author: author) }
-  scope :for_user, -> (user) { where(user: user) }
-  scope :for_project, -> (projects) { where(project: projects) }
-  scope :for_note, -> (notes) { where(note: notes) }
+  scope :for_action, ->(action) { where(action: action) }
+  scope :for_author, ->(author) { where(author: author) }
+  scope :for_user, ->(user) { where(user: user) }
+  scope :for_project, ->(projects) { where(project: projects) }
+  scope :for_note, ->(notes) { where(note: notes) }
   scope :for_undeleted_projects, -> { joins(:project).merge(Project.without_deleted) }
-  scope :for_group, -> (group) { where(group: group) }
-  scope :for_type, -> (type) { where(target_type: type) }
-  scope :for_target, -> (id) { where(target_id: id) }
-  scope :for_commit, -> (id) { where(commit_id: id) }
-  scope :not_in_users, -> (user_ids) { where.not('todos.user_id' => user_ids) }
+  scope :for_group, ->(group) { where(group: group) }
+  scope :for_type, ->(type) { where(target_type: type) }
+  scope :for_target, ->(id) { where(target_id: id) }
+  scope :for_commit, ->(id) { where(commit_id: id) }
+  scope :not_in_users, ->(user_ids) { where.not('todos.user_id' => user_ids) }
   scope :with_entity_associations, -> do
     preload(:target, :author, :note, group: :route, project: [:route, :group, { namespace: [:route, :owner] }, :project_setting])
   end
