@@ -276,7 +276,7 @@ module API
 
         present_cached merge_requests,
           expires_in: 8.hours,
-          cache_context: -> (mr) do
+          cache_context: ->(mr) do
             [
               current_user&.cache_key,
               mr.merge_status,

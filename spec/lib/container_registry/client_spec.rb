@@ -199,7 +199,7 @@ RSpec.describe ContainerRegistry::Client, feature_category: :container_registry 
         # https://github.com/bblimke/webmock/blob/master/lib/webmock/matchers/hash_excluding_matcher.rb
         stub_request(:get, redirect_location)
           .with(headers: redirect_header) do |request|
-            !request.headers.include?('Authorization')
+            request.headers.exclude?('Authorization')
           end
           .to_return(status: 200, body: "Successfully redirected")
       end

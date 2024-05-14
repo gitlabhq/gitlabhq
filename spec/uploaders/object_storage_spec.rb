@@ -313,7 +313,7 @@ RSpec.describe ObjectStorage, :clean_gitlab_redis_shared_state, feature_category
 
             # We need to check the Host header not including the port because AWS does not accept
             stub_request(:get, %r{s3.amazonaws.com/#{uploader.path}})
-              .with { |request| !request.headers['Host'].to_s.include?(':443') }
+              .with { |request| request.headers['Host'].to_s.exclude?(':443') }
               .to_return(status: 200, body: '')
           end
 

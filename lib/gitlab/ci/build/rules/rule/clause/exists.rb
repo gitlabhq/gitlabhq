@@ -119,19 +119,19 @@ module Gitlab
 
         # matches glob patterns that only match files in the top level directory
         def top_level_glob?(glob)
-          !glob.include?('/') && !glob.include?('**')
+          glob.exclude?('/') && glob.exclude?('**')
         end
 
         # matches glob patterns that have no metacharacters for File#fnmatch?
         def exact_glob?(glob)
-          !glob.include?('*') && !glob.include?('?') && !glob.include?('[') && !glob.include?('{')
+          glob.exclude?('*') && glob.exclude?('?') && glob.exclude?('[') && glob.exclude?('{')
         end
 
         # matches glob patterns like **/*.js or **/*.so.1 to optimize with path.end_with?('.js')
         def extension_glob?(glob)
           without_nested = without_wildcard_nested_pattern(glob)
 
-          without_nested.start_with?('.') && !without_nested.include?('/') && exact_glob?(without_nested)
+          without_nested.start_with?('.') && without_nested.exclude?('/') && exact_glob?(without_nested)
         end
 
         def without_wildcard_nested_pattern(glob)

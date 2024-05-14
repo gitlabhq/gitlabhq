@@ -109,7 +109,7 @@ module API
                         # `current_user` could be absent if the releases are publicly accesible.
                         # We should not use `cache_key` for the user because the version/updated_at
                         # context is unnecessary here.
-                        cache_context: -> (_) { "user:{#{current_user&.id}}" },
+                        cache_context: ->(_) { "user:{#{current_user&.id}}" },
                         expires_in: 5.minutes,
                         current_user: current_user,
                         include_html_description: declared_params[:include_html_description]

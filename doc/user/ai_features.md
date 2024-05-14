@@ -80,6 +80,16 @@ DETAILS:
 - LLM: Vertex AI Codey [`text-bison`](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/text)
 - [View documentation](project/merge_requests/ai_in_merge_requests.md#summarize-merge-request-changes).
 
+### Merge request template population
+
+DETAILS:
+**Tier:** Freely available for Ultimate for a limited time. In the future, will require Ultimate with [GitLab Duo Enterprise](../subscriptions/subscription-add-ons.md).
+**Offering:** GitLab.com
+
+- Generates a description for the merge request based on the contents of the template.
+- LLM: Vertex AI Codey [`text-bison`](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/text)
+- [View documentation](project/merge_requests/ai_in_merge_requests.md#fill-in-merge-request-templates).
+
 ### Vulnerability explanation
 
 DETAILS:
@@ -123,16 +133,6 @@ DETAILS:
 - Generates issue descriptions.
 - LLM: Anthropic [`Claude-2.1`](https://docs.anthropic.com/claude/docs/models-overview#model-comparison)
 - [View documentation](ai_experiments.md#summarize-an-issue-with-issue-description-generation).
-
-### Merge request template population
-
-DETAILS:
-**Tier:** Freely available for Ultimate for a limited time. In the future, will require Ultimate with [GitLab Duo Enterprise](../subscriptions/subscription-add-ons.md).
-**Offering:** GitLab.com
-
-- Generates a description for the merge request based on the contents of the template.
-- LLM: Vertex AI Codey [`text-bison`](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/text)
-- [View documentation](project/merge_requests/ai_in_merge_requests.md#fill-in-merge-request-templates).
 
 ### Code review summary
 

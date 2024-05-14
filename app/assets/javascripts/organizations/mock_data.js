@@ -4,11 +4,6 @@
 // https://gitlab.com/gitlab-org/gitlab/-/issues/420777
 // https://gitlab.com/gitlab-org/gitlab/-/issues/421441
 
-import { organizationProjects } from 'ee_else_ce/organizations/mock_projects';
-import { organizationGroups } from 'ee_else_ce/organizations/mock_groups';
-
-export { organizationProjects, organizationGroups };
-
 export const defaultOrganization = {
   id: 1,
   name: 'Default',

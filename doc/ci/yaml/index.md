@@ -5101,10 +5101,11 @@ trigger-multi-project-pipeline:
   for more details.
 - You cannot [manually specify CI/CD variables](../jobs/index.md#specifying-variables-when-running-manual-jobs)
   before running a manual trigger job.
-- [Manual pipeline variables](../variables/index.md#override-a-defined-cicd-variable)
-  and [scheduled pipeline variables](../pipelines/schedules.md#add-a-pipeline-schedule)
-  are not passed to downstream pipelines by default. Use [trigger:forward](#triggerforward)
-  to forward these variables to downstream pipelines.
+- [CI/CD variables](#variables) defined in a top-level `variables` section (globally) or in the trigger job are forwarded
+  to the downstream pipeline as [trigger variables](../pipelines/downstream_pipelines.md#pass-cicd-variables-to-a-downstream-pipeline).
+- [Pipeline variables](../variables/index.md#cicd-variable-precedence) are not passed
+  to downstream pipelines by default. Use [trigger:forward](#triggerforward) to forward
+  these variables to downstream pipelines.
 - [Job-level persisted variables](../variables/where_variables_can_be_used.md#persisted-variables)
   are not available in trigger jobs.
 - Environment variables [defined in the runner's `config.toml`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section) are not available to trigger jobs and are not passed to downstream pipelines.
@@ -5226,12 +5227,15 @@ Use `trigger:forward` to specify what to forward to the downstream pipeline. You
 what is forwarded to both [parent-child pipelines](../pipelines/downstream_pipelines.md#parent-child-pipelines)
 and [multi-project pipelines](../pipelines/downstream_pipelines.md#multi-project-pipelines).
 
+Forwarded variables do not get forwarded again in nested downstream pipelines by default,
+unless the nested downstream trigger job also uses `trigger:forward`.
+
 **Possible inputs**:
 
 - `yaml_variables`: `true` (default), or `false`. When `true`, variables defined
   in the trigger job are passed to downstream pipelines.
-- `pipeline_variables`: `true` or `false` (default). When `true`, [manual pipeline variables](../variables/index.md#override-a-defined-cicd-variable) and [scheduled pipeline variables](../pipelines/schedules.md#add-a-pipeline-schedule)
-  are passed to downstream pipelines.
+- `pipeline_variables`: `true` or `false` (default). When `true`, [pipeline variables](../variables/index.md#cicd-variable-precedence)
+  are passed to the downstream pipeline.
 
 **Example of `trigger:forward`**:
 
@@ -5270,10 +5274,9 @@ child3:
 
 **Additional details**:
 
-- CI/CD variables forwarded to downstream pipelines with `trigger:forward` have the
-  [highest precedence](../variables/index.md#cicd-variable-precedence). If a variable
-  with the same name is defined in the downstream pipeline, that variable is overwritten
-  by the forwarded variable.
+- CI/CD variables forwarded to downstream pipelines with `trigger:forward` are [pipeline variables](../variables/index.md#cicd-variable-precedence),
+  which have high precedence. If a variable with the same name is defined in the downstream pipeline,
+  that variable is usually overwritten by the forwarded variable.
 
 ### `variables`
 

@@ -1,7 +1,7 @@
 ---
 status: proposed
 creation-date: "2023-10-10"
-authors: [ "@thomasrandolph", "@patrickbajao", "@igor.drozdov", "@jerasmus", "@iamphill", "@slashmanov", "@psjakubowska" ]
+authors: [ "@patrickbajao", "@igor.drozdov", "@jerasmus", "@iamphill", "@slashmanov", "@psjakubowska", "@thomasrandolph" ]
 coach: [ "@ntepluhina" ]
 approvers: [ ]
 owning-stage: "~devops::create"

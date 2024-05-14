@@ -9,35 +9,19 @@ module Types
 
       field :col, GraphQL::Types::String,
         null: true,
-        description: 'Function in which the Sentry error occurred.'
+        description: 'Function in which the Sentry error occurred.', hash_key: "colNo"
       field :file_name, GraphQL::Types::String,
         null: true,
-        description: 'File in which the Sentry error occurred.'
+        description: 'File in which the Sentry error occurred.', hash_key: "filename"
       field :function, GraphQL::Types::String,
         null: true,
-        description: 'Function in which the Sentry error occurred.'
+        description: 'Function in which the Sentry error occurred.', hash_key: "function"
       field :line, GraphQL::Types::String,
         null: true,
-        description: 'Function in which the Sentry error occurred.'
+        description: 'Function in which the Sentry error occurred.', hash_key: "lineNo"
       field :trace_context, [Types::ErrorTracking::SentryErrorStackTraceContextType],
         null: true,
         description: 'Context of the Sentry error.'
-
-      def function
-        object['function']
-      end
-
-      def col
-        object['colNo']
-      end
-
-      def line
-        object['lineNo']
-      end
-
-      def file_name
-        object['filename']
-      end
 
       def trace_context
         object['context']

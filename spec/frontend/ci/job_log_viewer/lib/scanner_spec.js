@@ -65,6 +65,25 @@ describe('Log scanner', () => {
     ]);
   });
 
+  it('scans a section with options', () => {
+    const lines = [
+      'section_start:1000:my_section[key1=value1,key2=value2]\rheader 1',
+      'line 1',
+      'section_end:1010:my_section',
+    ];
+
+    expect(lines.map((l) => scanner.scan(l))).toEqual([
+      {
+        content: [{ style: [], text: 'header 1' }],
+        header: 'my_section',
+        options: { key1: 'value1', key2: 'value2' },
+        sections: [],
+      },
+      { content: [{ style: [], text: 'line 1' }], sections: ['my_section'] },
+      { content: [{ duration: 10, section: 'my_section' }], sections: [] },
+    ]);
+  });
+
   it('scans a sub section with their durations', () => {
     const lines = [
       'section_start:1010:my_section\rheader 1',

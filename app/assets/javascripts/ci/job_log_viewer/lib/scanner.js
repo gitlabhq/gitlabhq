@@ -33,6 +33,16 @@ const parseSection = (input, offset) => {
   return [null, to];
 };
 
+const parseSectionOptions = (optionsStr = '') => {
+  return optionsStr.split(',').reduce((acc, option) => {
+    const [key, value] = option.split('=');
+    return {
+      ...acc,
+      [key]: value,
+    };
+  }, {});
+};
+
 const parseAnsi = (input, offset) => {
   const from = offset;
   let to = offset;
@@ -111,6 +121,7 @@ export default class {
       // returns a header line, which can toggle other lines
       return {
         header: section.name,
+        options: section.options,
         sections: this.sections.map(({ name }) => name).slice(0, -1),
         content,
       };
@@ -136,7 +147,17 @@ export default class {
   handleSection(type, time, name) {
     switch (type) {
       case SECTION_START: {
-        this.sections.push({ name, time, start: true });
+        const section = { name, time, start: true };
+
+        // Find options of a section with shape: section_name[key=value]
+        const optsFrom = name.indexOf('[');
+        const optsTo = name.lastIndexOf(']');
+        if (optsFrom > 0 && optsTo > optsFrom) {
+          section.name = name.substring(0, optsFrom);
+          section.options = parseSectionOptions(name.substring(optsFrom + 1, optsTo));
+        }
+
+        this.sections.push(section);
         break;
       }
       case SECTION_END: {

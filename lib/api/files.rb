@@ -125,7 +125,7 @@ module API
       requires :id, type: String, desc: 'The project ID', documentation: { example: 'gitlab-org/gitlab' }
     end
     resource :projects, requirements: FILE_ENDPOINT_REQUIREMENTS do
-      allow_access_with_scope :read_repository, if: -> (request) { request.get? || request.head? }
+      allow_access_with_scope :read_repository, if: ->(request) { request.get? || request.head? }
 
       desc 'Get blame file metadata from repository'
       params do

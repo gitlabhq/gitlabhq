@@ -1,5 +1,0 @@
----
-# Cop supports --autocorrect.
-GraphQL/FieldHashKey:
-  Exclude:
-    - 'app/graphql/types/error_tracking/sentry_error_stack_trace_entry_type.rb'

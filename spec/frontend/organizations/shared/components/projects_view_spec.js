@@ -1,6 +1,7 @@
 import VueApollo from 'vue-apollo';
 import Vue from 'vue';
 import { GlLoadingIcon, GlEmptyState, GlKeysetPagination } from '@gitlab/ui';
+import organizationProjectsGraphQlResponse from 'test_fixtures/graphql/organizations/projects.query.graphql.json';
 import ProjectsView from '~/organizations/shared/components/projects_view.vue';
 import { SORT_DIRECTION_ASC, SORT_ITEM_NAME } from '~/organizations/shared/constants';
 import NewProjectButton from '~/organizations/shared/components/new_project_button.vue';
@@ -19,7 +20,6 @@ import { DEFAULT_PER_PAGE } from '~/api';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { organizationProjects as nodes } from '~/organizations/mock_data';
 import {
   pageInfoMultiplePages,
   pageInfoEmpty,
@@ -40,6 +40,14 @@ jest.mock('ee_else_ce/organizations/shared/utils', () => ({
 }));
 
 Vue.use(VueApollo);
+
+const {
+  data: {
+    organization: {
+      projects: { nodes },
+    },
+  },
+} = organizationProjectsGraphQlResponse;
 
 describe('ProjectsView', () => {
   let wrapper;

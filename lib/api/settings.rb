@@ -72,7 +72,7 @@ module API
       optional :domain_denylist, type: Array[String], coerce_with: Validations::Types::CommaSeparatedToArray.coerce, desc: 'Users with e-mail addresses that match these domain(s) will NOT be able to sign-up. Wildcards allowed. Enter multiple entries on separate lines. Ex: domain.com, *.domain.com'
       optional :domain_allowlist, type: Array[String], coerce_with: Validations::Types::CommaSeparatedToArray.coerce, desc: 'ONLY users with e-mail addresses that match these domain(s) will be able to sign-up. Wildcards allowed. Enter multiple entries on separate lines. Ex: domain.com, *.domain.com'
       optional :eks_integration_enabled, type: Boolean, desc: 'Enable integration with Amazon EKS'
-      given eks_integration_enabled: -> (val) { val } do
+      given eks_integration_enabled: ->(val) { val } do
         requires :eks_account_id, type: String, desc: 'Amazon account ID for EKS integration'
         requires :eks_access_key_id, type: String, desc: 'Access key ID for the EKS integration IAM user'
         requires :eks_secret_access_key, type: String, desc: 'Secret access key for the EKS integration IAM user'
@@ -223,7 +223,7 @@ module API
       optional :ci_max_includes, type: Integer, desc: 'Maximum number of includes per pipeline'
       optional :security_policy_global_group_approvers_enabled, type: Boolean, desc: 'Query scan result policy approval groups globally'
       optional :slack_app_enabled, type: Grape::API::Boolean, desc: 'Enable the GitLab for Slack app'
-      given slack_app_enabled: -> (val) { val } do
+      given slack_app_enabled: ->(val) { val } do
         requires :slack_app_id, type: String, desc: 'The client ID of the GitLab for Slack app'
         requires :slack_app_secret, type: String, desc: 'The client secret of the GitLab for Slack app. Used for authenticating OAuth requests from the app'
         requires :slack_app_signing_secret, type: String, desc: 'The signing secret of the GitLab for Slack app. Used for authenticating API requests from the app'

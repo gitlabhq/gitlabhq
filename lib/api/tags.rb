@@ -58,7 +58,7 @@ module API
                        project: user_project,
                        releases: find_releases(paginated_tags),
                        current_user: current_user,
-                       cache_context: -> (_tag) do
+                       cache_context: ->(_tag) do
                          [user_project.cache_key, can?(current_user, :read_release, user_project)].join(':')
                        end
 

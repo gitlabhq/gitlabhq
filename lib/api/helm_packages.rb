@@ -20,7 +20,7 @@ module API
     content_type :binary, 'application/octet-stream'
     content_type :yaml, 'text/yaml'
 
-    formatter :yaml, -> (object, _) { object.serializable_hash.stringify_keys.to_yaml }
+    formatter :yaml, ->(object, _) { object.serializable_hash.stringify_keys.to_yaml }
 
     authenticate_with do |accept|
       accept.token_types(:personal_access_token, :deploy_token, :job_token)

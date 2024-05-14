@@ -33,7 +33,7 @@ module API
                                    desc: 'Date time string, ISO 8601 formatted, such as 2016-03-11T03:45:40Z.'\
                                     'Timestamp marking end point of annotation.'\
                                     'When not supplied, an annotation displays as a single event at the start point.'
-              requires :dashboard_path, type: String, coerce_with: -> (val) { CGI.unescape(val) },
+              requires :dashboard_path, type: String, coerce_with: ->(val) { CGI.unescape(val) },
                                         desc: 'ID of the dashboard which needs to be annotated.'\
                                           'Treated as a CGI-escaped path, and automatically un-escaped.'
               requires :description, type: String, desc: 'Description of the annotation.'

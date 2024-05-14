@@ -262,6 +262,10 @@ you must take one of the following actions based on your configuration:
   in GitLab 16.7 and earlier have been implemented on all self-managed instances. Dependent changes can then be released
   in GitLab 16.8 and later. [Issue 429611](https://gitlab.com/gitlab-org/gitlab/-/issues/429611) provides more details.
 
+  - If you skip 16.6 in your upgrade path, you might experience performance issues after upgrading to 16.7
+    when your instance processes a background database migration from the GitLab 16.6 release.
+    Read more about the `ci_builds` migration in the [16.6.0 upgrade notes](#1660).
+
 - Normally, backups in environments that have PgBouncer must [bypass PgBouncer by setting variables that are prefixed with `GITLAB_BACKUP_`](../../administration/backup_restore/backup_gitlab.md#bypassing-pgbouncer). However, due to an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/422163), `gitlab-backup` uses the regular database connection through PgBouncer instead of the direct connection defined in the override, and the database backup fails. The workaround is to use `pg_dump` directly.
 
     **Affected releases**:
@@ -328,6 +332,33 @@ take one of the following actions based on your configuration:
   | 16.9                    |  16.9.0 - 16.9.1        | 16.9.2   |
 
 ## 16.6.0
+
+- GitLab 16.6 introduces a background migration that re-writes every row in the
+  CI jobs table (`ci_builds`) as part of upgrading the primary key to 64 bits.
+  `ci_builds` is one of the largest tables on most GitLab instances, so this
+  migration runs more aggressively than usual to ensure it takes a reasonable amount of time.
+  Background migrations usually pause between batches of rows, but this migration does not.
+
+  This might cause performance issues in self-managed environments:
+
+  - Disk I/O will be higher than usual. This will be a particular issue for instances
+    hosted by cloud providers where disk I/O is restricted.
+  - Autovacuum might run more frequently in the background to ensure the old
+    rows (dead tuples) are removed, and to perform other related housekeeping.
+  - Queries might run slowly, temporarily, because inefficient query plans get
+    selected by PostgreSQL. This might be triggered by the volume of change on the table.
+
+  Workarounds:
+
+  - Pause the running migration in the [Admin Area](../background_migrations.md#from-the-gitlab-ui).
+  - Recreate table statistics manually on the
+    [database console](../../administration/troubleshooting/postgresql.md#start-a-database-console)
+    to ensure the right query plan is selected:
+
+    ```sql
+    SET statement_timeout = 0;
+    VACUUM FREEZE VERBOSE ANALYZE public.ci_builds;
+    ```
 
 - Old [CI Environment destroy jobs may be spawned](https://gitlab.com/gitlab-org/gitlab/-/issues/433264#) after upgrading to GitLab 16.6.
 - Normally, backups in environments that have PgBouncer must [bypass PgBouncer by setting variables that are prefixed with `GITLAB_BACKUP_`](../../administration/backup_restore/backup_gitlab.md#bypassing-pgbouncer). However, due to an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/422163), `gitlab-backup` uses the regular database connection through PgBouncer instead of the direct connection defined in the override, and the database backup fails. The workaround is to use `pg_dump` directly.

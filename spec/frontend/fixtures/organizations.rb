@@ -34,6 +34,15 @@ RSpec.describe 'Organizations (GraphQL fixtures)', feature_category: :cell do
 
     let_it_be(:current_user) { create(:user) }
     let_it_be(:organizations) { create_list(:organization, 3) }
+    let_it_be(:organization) { organizations.first }
+    let_it_be(:groups) { create_list(:group, 3, organization: organization) }
+    let_it_be(:group) { groups.first }
+    let_it_be(:projects) do
+      groups.map do |group|
+        create(:project, :public, namespace: group, organization: organization)
+      end
+    end
+
     let_it_be(:organization_users) do
       organizations.map do |organization|
         create(:organization_user, organization: organization, user: current_user)
@@ -44,6 +53,10 @@ RSpec.describe 'Organizations (GraphQL fixtures)', feature_category: :cell do
       organizations.map do |organization|
         create(:organization_detail, organization: organization)
       end
+    end
+
+    before_all do
+      group.add_owner(current_user)
     end
 
     before do
@@ -59,6 +72,42 @@ RSpec.describe 'Organizations (GraphQL fixtures)', feature_category: :cell do
         query = get_graphql_query_as_string("#{base_input_path}#{query_name}")
 
         post_graphql(query, current_user: current_user, variables: { search: '', first: 3 })
+
+        expect_graphql_errors_to_be_empty
+      end
+    end
+
+    describe 'organization groups' do
+      base_input_path = 'organizations/shared/graphql/queries/'
+      base_output_path = 'graphql/organizations/'
+      query_name = 'groups.query.graphql'
+
+      it "#{base_output_path}#{query_name}.json" do
+        query = get_graphql_query_as_string("#{base_input_path}#{query_name}")
+
+        post_graphql(
+          query,
+          current_user: current_user,
+          variables: { id: organization.to_global_id, search: '', first: 3, sort: 'created_at_asc' }
+        )
+
+        expect_graphql_errors_to_be_empty
+      end
+    end
+
+    describe 'organization projects' do
+      base_input_path = 'organizations/shared/graphql/queries/'
+      base_output_path = 'graphql/organizations/'
+      query_name = 'projects.query.graphql'
+
+      it "#{base_output_path}#{query_name}.json" do
+        query = get_graphql_query_as_string("#{base_input_path}#{query_name}")
+
+        post_graphql(
+          query,
+          current_user: current_user,
+          variables: { id: organization.to_global_id, search: '', first: 3, sort: 'created_at_asc' }
+        )
 
         expect_graphql_errors_to_be_empty
       end

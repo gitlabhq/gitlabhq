@@ -62,7 +62,7 @@ module Gitlab
       begin
         print(message)
         answer = $stdin.gets.chomp
-      end while choices.present? && !choices.include?(answer)
+      end while choices.present? && choices.exclude?(answer)
       answer
     end
 
