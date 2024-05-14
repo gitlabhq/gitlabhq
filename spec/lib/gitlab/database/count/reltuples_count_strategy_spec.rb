@@ -19,7 +19,7 @@ RSpec.describe Gitlab::Database::Count::ReltuplesCountStrategy do
         Ci::InstanceVariable.connection.execute('ANALYZE ci_instance_variables')
       end
 
-      it 'uses statistics to do the count' do
+      it 'uses statistics to do the count', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/446141' do
         models.each { |model| expect(model).not_to receive(:count) }
 
         expect(subject).to eq({ Project => 3, Ci::InstanceVariable => 2 })

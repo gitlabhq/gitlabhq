@@ -253,6 +253,7 @@ export default {
         class="gl-new-card"
         header-class="gl-new-card-header"
         body-class="gl-new-card-body gl-p-5"
+        data-testid="rule-target-card"
       >
         <template #header>
           <strong>{{ $options.i18n.ruleTarget }}</strong>
@@ -318,7 +319,7 @@ export default {
           <strong class="gl-ml-2">{{ forcePushAttributes.title }}</strong>
         </div>
 
-        <div class="gl-text-gray-400 gl-mb-2">{{ $options.i18n.forcePushDescription }}</div>
+        <div class="gl-text-secondary gl-mb-2">{{ $options.i18n.forcePushDescription }}</div>
 
         <!-- EE start -->
         <!-- Code Owners -->
@@ -333,7 +334,7 @@ export default {
             <strong class="gl-ml-2">{{ codeOwnersApprovalAttributes.title }}</strong>
           </div>
 
-          <div class="gl-text-gray-400">{{ codeOwnersApprovalAttributes.description }}</div>
+          <div class="gl-text-secondary">{{ codeOwnersApprovalAttributes.description }}</div>
         </div>
       </section>
 

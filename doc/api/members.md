@@ -549,8 +549,9 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86705) in GitLab 15.0.
 
-Changes the membership state of a user in a group. The state is applied to
-all subgroups and projects.
+Changes the membership state of a user in a group. 
+When a user is over [the free user limit](../user/free_user_limit.md), changing their membership state for a group or project to `awaiting` or `active` can allow them to
+access that group or project. The change is applied to applied to all subgroups and projects.
 
 ```plaintext
 PUT /groups/:id/members/:user_id/state

@@ -132,7 +132,7 @@ export default {
     :class="[
       cssClassJobName,
       {
-        'js-pipeline-graph-job-link gl-text-gray-900 gl-active-text-decoration-none gl-focus-text-decoration-none gl-hover-text-decoration-none': hasDetails,
+        'gl-text-gray-900 gl-active-text-decoration-none gl-focus-text-decoration-none gl-hover-text-decoration-none': hasDetails,
         'js-job-component-tooltip non-details-job-component': !hasDetails,
       },
     ]"

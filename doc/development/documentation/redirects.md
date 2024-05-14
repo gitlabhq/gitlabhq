@@ -91,14 +91,14 @@ After your changes are committed, search for and update all links that point to 
   grep -r "docs.gitlab.com/ee/path/to/file.html" .
   ```
 
-- In <https://gitlab.com/gitlab-org/gitlab-docs/-/tree/master/content/_data>,
+- In <https://gitlab.com/gitlab-org/gitlab-docs/-/tree/main/content/_data>,
   search the navigation bar configuration files for the path with `.html`:
 
   ```shell
   grep -r "path/to/file.html" .
    ```
 
-- In any of the four internal projects, search for links in the docs
+- In [all of the doc projects](site_architecture/index.md#source-files), search for links in the docs
   and codebase. Search for all variations, including full URL and just the path.
   For example, go to the root directory of the `gitlab` project and run:
 

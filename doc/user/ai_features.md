@@ -101,7 +101,7 @@ DETAILS:
 
 - Helps you discover or recall Git commands when and where you need them.
 - LLM: Vertex AI Codey [`codechat-bison`](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/code-chat)
-- [View documentation](../editor_extensions/gitlab_cli/index.md#gitlab-duo-commands).
+- [View documentation](../editor_extensions/gitlab_cli/index.md#git-suggestions).
 
 ### Discussion summary
 

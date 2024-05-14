@@ -181,9 +181,6 @@ export default {
     status() {
       return this.job && this.job.status ? this.job.status : {};
     },
-    testId() {
-      return this.hasDetails ? 'job-with-link' : 'job-without-link';
-    },
     tooltipText() {
       if (!this.hideTooltip) {
         const textBuilder = [];
@@ -313,6 +310,7 @@ export default {
   <div
     :id="computedJobId"
     class="ci-job-component gl-display-flex gl-justify-content-space-between gl-pipeline-job-width"
+    data-testid="ci-job-item"
   >
     <component
       :is="nameComponent"
@@ -320,8 +318,8 @@ export default {
       :title="tooltipText"
       :class="jobClasses"
       :href="detailsPath"
-      class="js-pipeline-graph-job-link menu-item gl-text-gray-900 gl-active-text-decoration-none gl-focus-text-decoration-none gl-hover-text-decoration-none gl-hover-bg-gray-50 gl-focus-bg-gray-50 gl-w-full"
-      :data-testid="testId"
+      class="menu-item gl-text-gray-900 gl-active-text-decoration-none gl-focus-text-decoration-none gl-hover-text-decoration-none gl-hover-bg-gray-50 gl-focus-bg-gray-50 gl-w-full"
+      data-testid="ci-job-item-content"
       @click="jobItemClick"
       @mouseout="hideTooltips"
     >

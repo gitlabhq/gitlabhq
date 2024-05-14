@@ -131,7 +131,7 @@ gem 'net-ldap', '~> 0.17.1' # rubocop:todo Gemfile/MissingFeatureCategory
 # API
 gem 'grape', '~> 2.0.0', feature_category: :api
 gem 'grape-entity', '~> 1.0.1', feature_category: :api
-gem 'grape-swagger', '~> 2.0.2', group: [:development, :test], feature_category: :api
+gem 'grape-swagger', '~> 2.0.3', group: [:development, :test], feature_category: :api
 gem 'grape-swagger-entity', '~> 0.5.1', group: [:development, :test], feature_category: :api
 gem 'grape-path-helpers', '~> 2.0.1', feature_category: :api
 gem 'rack-cors', '~> 2.0.1', require: 'rack/cors' # rubocop:todo Gemfile/MissingFeatureCategory

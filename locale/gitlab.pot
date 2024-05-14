@@ -16048,9 +16048,6 @@ msgstr ""
 msgid "DORA4Metrics|Days for an open incident"
 msgstr ""
 
-msgid "DORA4Metrics|Days from merge to deploy"
-msgstr ""
-
 msgid "DORA4Metrics|Deployment frequency"
 msgstr ""
 
@@ -16228,6 +16225,9 @@ msgid "DORA4Metrics|This is a lower-bound approximation. Your group has too many
 msgstr ""
 
 msgid "DORA4Metrics|This visualization is not supported for project namespaces."
+msgstr ""
+
+msgid "DORA4Metrics|Time from merge to deploy"
 msgstr ""
 
 msgid "DORA4Metrics|Time to restore service"

@@ -15,20 +15,17 @@ For additional practical examples, see the [GitLab Duo examples](gitlab_duo_exam
 
 DETAILS:
 **Tier:** Freely available for Premium and Ultimate for a limited time. In the future, will require Premium or Ultimate with [GitLab Duo Pro or Duo Enterprise](../subscriptions/subscription-add-ons.md).
-**Offering:** GitLab.com
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Editors:** GitLab UI, Web IDE, VS Code, and JetBrains IDEs
 **LLMs:** Anthopic: [`claude-3-sonnet-20240229`](https://docs.anthropic.com/en/docs/models-overview#claude-3-a-new-generation-of-ai), Vertex AI Codey [`textembedding-gecko`](https://cloud.google.com/vertex-ai/generative-ai/docs/embeddings/get-text-embeddings)
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117695) for GitLab.com in GitLab 16.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/451215) on self-managed in GitLab 17.0.
 
 You can ask questions about how GitLab works. Things like:
 
 - `Explain the concept of a 'fork' in a concise manner.`
 - `Provide step-by-step instructions on how to reset a user's password.`
-
-NOTE:
-This feature is not currently supported on self-managed instances.
-For more information, see [issue 451215](https://gitlab.com/gitlab-org/gitlab/-/issues/451215).
 
 ## Ask about code
 
