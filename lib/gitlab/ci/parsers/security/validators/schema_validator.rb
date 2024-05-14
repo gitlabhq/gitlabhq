@@ -111,16 +111,16 @@ module Gitlab
 
             def add_schema_version_errors
               if report_version.nil?
-                template = _("Report version not provided,"\
-                " %{report_type} report type supports versions: %{supported_schema_versions}."\
-                " GitLab will attempt to validate this report against the earliest supported versions of this report"\
-                " type, to show all the errors but will not ingest the report")
+                template = _("Report version not provided, "\
+                "%{report_type} report type supports versions: %{supported_schema_versions}. "\
+                "GitLab will attempt to validate this report against the earliest supported versions of this report "\
+                "type, to show all the errors but will not ingest the report")
                 message = format(template, report_type: report_type, supported_schema_versions: supported_schema_versions)
               else
-                template = _("Version %{report_version} for report type %{report_type} is unsupported, supported versions"\
-                " for this report type are: %{supported_schema_versions}."\
-                " GitLab will attempt to validate this report against the earliest supported versions of this report"\
-                " type, to show all the errors but will not ingest the report")
+                template = _("Version %{report_version} for report type %{report_type} is unsupported, supported versions "\
+                "for this report type are: %{supported_schema_versions}. "\
+                "GitLab will attempt to validate this report against the earliest supported versions of this report "\
+                "type, to show all the errors but will not ingest the report")
                 message = format(template, report_version: report_version, report_type: report_type, supported_schema_versions: supported_schema_versions)
               end
 
@@ -165,9 +165,9 @@ module Gitlab
             end
 
             def add_supported_major_minor_behavior_warning
-              template = _("This report uses a supported MAJOR.MINOR schema version but the PATCH version doesn't match"\
-                " any vendored schema version. Validation will be attempted against version"\
-                " %{find_latest_patch_version}")
+              template = _("This report uses a supported MAJOR.MINOR schema version but the PATCH version doesn't match "\
+                "any vendored schema version. Validation will be attempted against version "\
+                "%{find_latest_patch_version}")
 
               message = format(template, find_latest_patch_version: find_latest_patch_version)
 

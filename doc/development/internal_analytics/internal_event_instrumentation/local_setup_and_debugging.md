@@ -111,10 +111,10 @@ Monitored events: i_code_review_user_create_mr
 +-----------------------------------------------------------------------------+------------------------------+-----------------------+---------------+---------------+
 | Key Path                                                                    | Monitored Events             | Instrumentation Class | Initial Value | Current Value |
 +-----------------------------------------------------------------------------+------------------------------+-----------------------+---------------+---------------+
-| counts_monthly.aggregated_metrics.code_review_category_monthly_active_users | i_code_review_user_create_mr | AggregatedMetric      | 13            | 14            |
-| counts_monthly.aggregated_metrics.code_review_group_monthly_active_users    | i_code_review_user_create_mr | AggregatedMetric      | 13            | 14            |
-| counts_weekly.aggregated_metrics.code_review_category_monthly_active_users  | i_code_review_user_create_mr | AggregatedMetric      | 0             | 1             |
-| counts_weekly.aggregated_metrics.code_review_group_monthly_active_users     | i_code_review_user_create_mr | AggregatedMetric      | 0             | 1             |
+| counts_monthly.aggregated_metrics.code_review_category_monthly_active_users | i_code_review_user_create_mr | RedisHLLMetric        | 13            | 14            |
+| counts_monthly.aggregated_metrics.code_review_group_monthly_active_users    | i_code_review_user_create_mr | RedisHLLMetric        | 13            | 14            |
+| counts_weekly.aggregated_metrics.code_review_category_monthly_active_users  | i_code_review_user_create_mr | RedisHLLMetric        | 0             | 1             |
+| counts_weekly.aggregated_metrics.code_review_group_monthly_active_users     | i_code_review_user_create_mr | RedisHLLMetric        | 0             | 1             |
 | redis_hll_counters.code_review.i_code_review_user_create_mr_monthly         | i_code_review_user_create_mr | RedisHLLMetric        | 8             | 9             |
 | redis_hll_counters.code_review.i_code_review_user_create_mr_weekly          | i_code_review_user_create_mr | RedisHLLMetric        | 0             | 1             |
 +-----------------------------------------------------------------------------+------------------------------+-----------------------+---------------+---------------+

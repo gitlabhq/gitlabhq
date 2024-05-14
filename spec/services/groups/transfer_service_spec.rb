@@ -61,7 +61,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
 
       context 'with a project within subgroup' do
         let_it_be(:root_group) { create(:group) }
-        let_it_be(:group) { create(:group, parent: root_group) }
+        let_it_be_with_reload(:group) { create(:group, parent: root_group) }
         let_it_be(:project) { create(:project, namespace: group) }
 
         before do
@@ -79,7 +79,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
         context 'with namespaced packages present' do
           let_it_be(:package) { create(:npm_package, project: project, name: "@#{project.root_namespace.path}/test") }
 
-          it 'does not allow transfer', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/444687' do
+          it 'does not allow transfer' do
             transfer_service.execute(new_group)
 
             expect(transfer_service.error).to eq('Transfer failed: Group contains projects with NPM packages scoped to the current root level group.')

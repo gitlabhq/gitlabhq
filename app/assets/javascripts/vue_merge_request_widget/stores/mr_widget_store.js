@@ -30,11 +30,10 @@ export default class MergeRequestStore {
 
     this.stateMachine = machine(STATE_MACHINE.definition);
     this.machineValue = this.stateMachine.value;
-    this.mergeDetailsCollapsed =
-      !window.gon?.features?.mergeBlockedComponent && window.innerWidth < 768;
     this.mergeError = data.mergeError;
     this.multipleApprovalRulesAvailable = data.multiple_approval_rules_available || false;
     this.id = data.id;
+    this.autoMergeEnabled = false;
 
     this.setPaths(data);
 
@@ -419,13 +418,5 @@ export default class MergeRequestStore {
     }
 
     this.transitionStateMachine(transitionOptions);
-  }
-
-  toggleMergeDetails(val = !this.mergeDetailsCollapsed) {
-    if (window.gon?.features?.mergeBlockedComponent) {
-      return;
-    }
-
-    this.mergeDetailsCollapsed = val;
   }
 }

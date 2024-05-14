@@ -10,8 +10,7 @@ module ServicePing
 
     SubmissionError = Class.new(StandardError)
 
-    def initialize(skip_db_write: false, payload: nil)
-      @skip_db_write = skip_db_write
+    def initialize(payload: nil)
       @payload = payload
     end
 
@@ -36,7 +35,7 @@ module ServicePing
 
     private
 
-    attr_reader :payload, :skip_db_write
+    attr_reader :payload
 
     def metadata(service_ping_payload)
       {
@@ -82,8 +81,6 @@ module ServicePing
       unless version_usage_data_id.is_a?(Integer) && version_usage_data_id > 0
         raise SubmissionError, "Invalid usage_data_id in response: #{version_usage_data_id}"
       end
-
-      return if skip_db_write
 
       raw_usage_data = save_raw_usage_data(payload)
       raw_usage_data.update_version_metadata!(usage_data_id: version_usage_data_id)

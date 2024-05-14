@@ -292,7 +292,6 @@ To declare an aggregate of metrics based on events collected from database, foll
 these steps:
 
 1. [Persist the metrics for aggregation](#persist-metrics-for-aggregation).
-1. [Add new aggregated metric definition](#add-new-aggregated-metric-definition).
 
 #### Persist metrics for aggregation
 
@@ -335,51 +334,6 @@ class UsageData
     end
   end
 end
-```
-
-#### Add new aggregated metric definition
-
-After all metrics are persisted, you can add an aggregated metric definition.
-To declare the aggregate of metrics collected with [Estimated Batch Counters](#estimated-batch-counters),
-you must fulfill the following requirements:
-
-- Metrics names listed in the `events:` attribute, have to use the same names you passed in the `metric_name` argument while persisting metrics in previous step.
-- Every metric listed in the `events:` attribute, has to be persisted for **every** selected `time_frame:` value.
-
-### Availability-restrained Aggregated metrics
-
-If the Aggregated metric should only be available in the report under specific conditions, then you must specify these conditions in a new class that is a child of the `AggregatedMetric` class.
-
-```ruby
-# frozen_string_literal: true
-
-module Gitlab
-  module Usage
-    module Metrics
-      module Instrumentations
-        class MergeUsageCountAggregatedMetric < AggregatedMetric
-          available? { Feature.enabled?(:merge_usage_data_missing_key_paths) }
-        end
-      end
-    end
-  end
-end
-```
-
-You must also use the class's name in the YAML setup.
-
-```yaml
-time_frame: 28d
-instrumentation_class: MergeUsageCountAggregatedMetric
-data_source: redis_hll
-options:
-    aggregate:
-        attribute: user.id
-    events:
-        - `incident_management_alert_status_changed`
-        - `incident_management_alert_assigned`
-        - `incident_management_alert_todo`
-        - `incident_management_alert_create_incident`
 ```
 
 ## Numbers metrics

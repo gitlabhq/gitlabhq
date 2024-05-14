@@ -31,6 +31,64 @@ RSpec.describe Gitlab::Database::PostgresPartition, type: :model, feature_catego
 
   it_behaves_like 'a postgres model'
 
+  describe 'scopes' do
+    describe '.with_parent_tables' do
+      subject(:with_parent_tables) { described_class.with_parent_tables(parent_tables) }
+
+      let(:parent_tables) { ['_test_partitioned_table'] }
+
+      it 'returns all partitions with parent tables', :aggregate_failures do
+        results = with_parent_tables
+
+        expect(results.size).to eq(1)
+        expect(results.first.identifier).to eq(identifier)
+      end
+    end
+
+    describe '.with_list_constraint' do
+      subject(:with_list_constraint) { described_class.with_list_constraint(partition_id) }
+
+      context 'when condition matches' do
+        let(:partition_id) { '102' }
+        let(:expected_size) { Ci::Partitionable.registered_models.size }
+
+        it 'returns the partitions containing the match' do
+          results = with_list_constraint
+
+          expect(results.size).to eq(expected_size)
+        end
+      end
+
+      context 'when condition does not match' do
+        let(:partition_id) { non_existing_record_id }
+
+        it 'returns an empty relation' do
+          expect(with_list_constraint).to be_empty
+        end
+      end
+    end
+
+    describe '.above_threshold' do
+      subject(:above_threshold) { described_class.above_threshold(threshold) }
+
+      context 'when the partition size is above a given threshold' do
+        let(:threshold) { 1.byte }
+
+        it 'returns all partitions above the threshold' do
+          expect(above_threshold.size).not_to be_zero
+        end
+      end
+
+      context 'when the partition size is below a given threshold' do
+        let(:threshold) { 100.megabytes }
+
+        it 'returns an empty relation' do
+          expect(above_threshold).to be_empty
+        end
+      end
+    end
+  end
+
   describe '.for_parent_table' do
     let(:second_name) { '_test_partition_02' }
 

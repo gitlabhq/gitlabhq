@@ -33,8 +33,8 @@ module Gitlab
           partitioned_table = find_partitioned_table(table_name)
 
           if index_name_exists?(table_name, options[:name])
-            Gitlab::AppLogger.warn "Index not created because it already exists (this may be due to an aborted" \
-              " migration or similar): table_name: #{table_name}, index_name: #{options[:name]}"
+            Gitlab::AppLogger.warn "Index not created because it already exists (this may be due to an aborted " \
+              "migration or similar): table_name: #{table_name}, index_name: #{options[:name]}"
 
             return
           end

@@ -50,7 +50,10 @@ The following example shows a sequence of requests and responses between:
 - The content delivery network.
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 sequenceDiagram
+    accTitle: Request and response flow
+    accDescr: Describes how requests and responses flow from the user, GitLab, and a CDN.
     User->>GitLab: GET /project/-/archive/master.zip
     GitLab->>User: 302 Found
     Note over User,GitLab: Location: https://cdn.com/project/-/archive/master.zip?token=secure-user-token

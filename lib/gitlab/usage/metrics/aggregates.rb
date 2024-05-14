@@ -10,15 +10,9 @@ module Gitlab
         UndefinedEvents = Class.new(AggregatedMetricError)
 
         DATABASE_SOURCE = 'database'
-        REDIS_SOURCE = 'redis_hll'
-        INTERNAL_EVENTS_SOURCE = 'internal_events'
 
         SOURCES = {
-          DATABASE_SOURCE => Sources::PostgresHll,
-          REDIS_SOURCE => Sources::RedisHll,
-          # Same strategy as RedisHLL, since they are a part of internal events
-          # and should get counted together with other RedisHLL-based aggregations
-          INTERNAL_EVENTS_SOURCE => Sources::RedisHll
+          DATABASE_SOURCE => Sources::PostgresHll
         }.freeze
       end
     end

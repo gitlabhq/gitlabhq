@@ -33,11 +33,7 @@ module Gitlab
       end
 
       def api_request?
-        if ::Feature.enabled?(:rate_limit_oauth_api, ::Feature.current_request)
-          matches?(API_PATH_REGEX)
-        else
-          logical_path.start_with?('/api')
-        end
+        matches?(API_PATH_REGEX)
       end
 
       def logical_path

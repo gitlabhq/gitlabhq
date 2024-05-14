@@ -45,10 +45,8 @@ with the _upstream_ project after merge.
 
 - The Git LFS original v1 API is unsupported.
 - Even when Git communicates with the repository over SSH, Git LFS objects still use HTTPS.
-- Git LFS requests use HTTPS credentials, which means:
-  - You should use a good Git [credentials store](https://git-scm.com/book/en/v2/Git-Tools-Credential-Storage).
-  - If your GitLab server uses HTTP instead, you must
-    [add the URL to Git configuration manually](troubleshooting.md#getsockopt-connection-refused).
+- Git LFS requests use HTTPS credentials, which means you should use a good Git
+  [credentials store](https://git-scm.com/book/en/v2/Git-Tools-Credential-Storage).
 - [Group wikis](../../../user/project/wiki/group.md) do not support Git LFS.
 
 ## Add a file with Git LFS

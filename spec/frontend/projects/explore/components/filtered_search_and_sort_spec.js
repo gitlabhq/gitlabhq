@@ -15,6 +15,7 @@ import ProjectsExploreFilteredSearchAndSort from '~/projects/explore/components/
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { visitUrl } from '~/lib/utils/url_utility';
+import { OPERATORS_IS } from '~/vue_shared/components/filtered_search_bar/constants';
 
 jest.mock('~/lib/utils/url_utility', () => ({
   ...jest.requireActual('~/lib/utils/url_utility'),
@@ -72,6 +73,20 @@ describe('ProjectsExploreFilteredSearchAndSort', () => {
             { value: '10', title: 'Makefile' },
             { value: '6', title: 'Ruby' },
             { value: '11', title: 'Shell' },
+          ],
+        },
+        {
+          type: 'min_access_level',
+          icon: 'user',
+          title: 'Role',
+          token: GlFilteredSearchToken,
+          unique: true,
+          operators: OPERATORS_IS,
+          options: [
+            {
+              value: '50',
+              title: 'Owner',
+            },
           ],
         },
       ],

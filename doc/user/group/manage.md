@@ -426,32 +426,6 @@ Approval settings should not be confused with [approval rules](../project/merge_
 for the ability to set merge request approval rules for groups is tracked in
 [epic 4367](https://gitlab.com/groups/gitlab-org/-/epics/4367).
 
-## Enable Experiment and Beta features
-
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118222) in GitLab 16.0.
-> - [Added to GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147833) in GitLab 16.11.
-
-WARNING:
-[Experiment and Beta features](../../policy/experiment-beta-support.md) may produce unexpected results
-(for example, the results might be low-quality, incomplete, incoherent, offensive, or insensitive,
-and might include insecure code or failed pipelines).
-
-You can give all users in a top-level group access to Experiment and Beta features.
-This setting [cascades to all projects](../project/merge_requests/approvals/settings.md#cascade-settings-from-the-instance-or-top-level-group)
-that belong to the group.
-
-To enable Experiment features for a top-level group:
-
-1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > General**.
-1. Expand **Permissions and group features**.
-1. Under **Experiment and Beta features**, select the **Use Experiment and Beta features** checkbox.
-1. Select **Save changes**.
-
 ## Group activity analytics
 
 DETAILS:

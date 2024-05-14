@@ -341,7 +341,6 @@
   - "{,ee/,jh/}{,spec/}app/models/ci/build_trace_chunks/redis{,_base,_trace_chunks}{,_spec}.rb"
   - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/usage_data_counters/{hll_redis_counter,redis_counter}{,_spec}.rb"
   - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/usage/metrics/instrumentations/redis{_metric,hll_metric}{,_spec}.rb"
-  - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/usage/metrics/aggregates/sources/redis_hll{,_spec}.rb"
   - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/merge_requests/mergeability/redis_interface{,_spec}.rb"
   - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/markdown_cache/redis/*.rb"
   - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/redis/**/*.rb"

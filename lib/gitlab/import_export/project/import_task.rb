@@ -72,9 +72,9 @@ module Gitlab
         end
 
         def show_import_start_message
-          logger.info "Importing GitLab export: #{file_path} into GitLab" \
-            " #{full_path}" \
-            " as #{current_user.name}"
+          logger.info "Importing GitLab export: #{file_path} into GitLab " \
+            "#{full_path} " \
+            "as #{current_user.name}"
         end
 
         def import_params

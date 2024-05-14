@@ -19,7 +19,6 @@ import { SUCCESS } from '~/vue_merge_request_widget/components/deployment/consta
 import eventHub from '~/vue_merge_request_widget/event_hub';
 import MrWidgetOptions from '~/vue_merge_request_widget/mr_widget_options.vue';
 import Approvals from '~/vue_merge_request_widget/components/approvals/approvals.vue';
-import ConflictsState from '~/vue_merge_request_widget/components/states/mr_widget_conflicts.vue';
 import Preparing from '~/vue_merge_request_widget/components/states/mr_widget_preparing.vue';
 import ShaMismatch from '~/vue_merge_request_widget/components/states/sha_mismatch.vue';
 import MergedState from '~/vue_merge_request_widget/components/states/mr_widget_merged.vue';
@@ -35,6 +34,8 @@ import approvalsQuery from 'ee_else_ce/vue_merge_request_widget/components/appro
 import approvedBySubscription from 'ee_else_ce/vue_merge_request_widget/components/approvals/queries/approvals.subscription.graphql';
 import userPermissionsQuery from '~/vue_merge_request_widget/queries/permissions.query.graphql';
 import conflictsStateQuery from '~/vue_merge_request_widget/queries/states/conflicts.query.graphql';
+import mergeChecksQuery from '~/vue_merge_request_widget/queries/merge_checks.query.graphql';
+import mergeChecksSubscription from '~/vue_merge_request_widget/queries/merge_checks.subscription.graphql';
 import MRWidgetStore from 'ee_else_ce/vue_merge_request_widget/stores/mr_widget_store';
 
 import { faviconDataUrl, overlayDataUrl } from '../lib/utils/mock_data';
@@ -104,12 +105,24 @@ describe('MrWidgetOptions', () => {
         jest.fn().mockResolvedValue({ data: { project: { mergeRequest: {} } } }),
       ],
       [securityReportMergeRequestDownloadPathsQuery, jest.fn().mockResolvedValue(null)],
+      [
+        mergeChecksQuery,
+        jest.fn().mockResolvedValue({
+          data: {
+            project: {
+              id: 1,
+              mergeRequest: { id: 1, userPermissions: { canMerge: true }, mergeabilityChecks: [] },
+            },
+          },
+        }),
+      ],
       ...(options.apolloMock || []),
     ];
     const subscriptionHandlers = [
       [approvedBySubscription, () => mockedApprovalsSubscription],
       [getStateSubscription, stateSubscriptionHandler],
       [readyToMergeSubscription, () => createMockApolloSubscription()],
+      [mergeChecksSubscription, () => createMockApolloSubscription()],
     ];
     const apolloProvider = createMockApollo(queryHandlers);
 
@@ -158,10 +171,9 @@ describe('MrWidgetOptions', () => {
     describe('computed', () => {
       describe('componentName', () => {
         it.each`
-          state            | componentName       | component
-          ${STATUS_MERGED} | ${'MergedState'}    | ${MergedState}
-          ${'conflicts'}   | ${'ConflictsState'} | ${ConflictsState}
-          ${'shaMismatch'} | ${'ShaMismatch'}    | ${ShaMismatch}
+          state            | componentName    | component
+          ${STATUS_MERGED} | ${'MergedState'} | ${MergedState}
+          ${'shaMismatch'} | ${'ShaMismatch'} | ${ShaMismatch}
         `('should translate $state into $componentName component', async ({ state, component }) => {
           await createComponent();
           Vue.set(wrapper.vm.mr, 'state', state);

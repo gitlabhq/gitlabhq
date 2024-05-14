@@ -317,7 +317,11 @@ export default {
       return this.preferredAutoMergeStrategy === MT_MERGE_STRATEGY && this.isPipelineFailed;
     },
     shouldShowMergeControls() {
-      return this.state.userPermissions?.canMerge && this.mr.state === 'readyToMerge';
+      return (
+        this.state.userPermissions?.canMerge &&
+        !this.mr.autoMergeEnabled &&
+        this.mr.state === 'readyToMerge'
+      );
     },
     sourceBranchDeletedText() {
       const isPreMerge = this.mr.state !== STATUS_MERGED;
@@ -352,6 +356,9 @@ export default {
   },
   watch: {
     'mr.state': function mrStateWatcher() {
+      this.isMakingRequest = false;
+    },
+    'state.autoMergeEnabled': function mrAutoMergeEnabledWatcher() {
       this.isMakingRequest = false;
     },
   },

@@ -318,18 +318,6 @@ RSpec.describe Gitlab::Usage::MetricDefinition, feature_category: :service_ping 
           'RedisHLLMetric'   | { events: [2] } | false
           'RedisHLLMetric'   | { events: 'a' } | false
           'RedisHLLMetric'   | { event: ['a'] } | false
-          'AggregatedMetric' | { aggregate: { attribute: 'user.id' }, events: ['a'] } | true
-          'AggregatedMetric' | { aggregate: { attribute: 'project.id' }, events: %w[b c] } | true
-          'AggregatedMetric' | nil | false
-          'AggregatedMetric' | {} | false
-          'AggregatedMetric' | { aggregate: { attribute: 'user.id' }, events: ['a'], event: 'a' } | false
-          'AggregatedMetric' | { aggregate: { attribute: 'user.id' } } | false
-          'AggregatedMetric' | { events: ['a'] } | false
-          'AggregatedMetric' | { aggregate: { attribute: 'user.id' }, events: 'a' } | false
-          'AggregatedMetric' | { aggregate: 'a', events: ['a'] } | false
-          'AggregatedMetric' | { aggregate: {}, events: ['a'] } | false
-          'AggregatedMetric' | { aggregate: { attribute: 'user.id', a: 'b' }, events: ['a'] } | false
-          'AggregatedMetric' | { aggregate: { attribute: ['user.id'] }, events: ['a'] } | false
         end
 
         with_them do

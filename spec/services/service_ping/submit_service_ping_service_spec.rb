@@ -285,25 +285,6 @@ RSpec.describe ServicePing::SubmitService, feature_category: :service_ping do
         expect { subject.execute }.to raise_error(described_class::SubmissionError)
       end
     end
-
-    context 'when skip_db_write passed to service' do
-      let(:subject) { described_class.new(payload: usage_data, skip_db_write: true) }
-
-      before do
-        stub_response(body: with_dev_ops_score_params)
-      end
-
-      it 'does not save RawUsageData' do
-        expect { subject.execute }
-          .not_to change { RawUsageData.count }
-      end
-
-      it 'does not call DevOpsReport service' do
-        expect(ServicePing::DevopsReport).not_to receive(:new)
-
-        subject.execute
-      end
-    end
   end
 
   context 'metadata reporting' do

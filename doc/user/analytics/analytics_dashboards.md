@@ -299,7 +299,8 @@ DETAILS:
 
 Prerequisites:
 
-- The parent group of the project must have [experiment and beta features enabled](../group/manage.md#enable-experiment-and-beta-features).
+- The top-level group of the project must have GitLab Duo
+ [experiment and beta features enabled](../ai_features_enable.md#turn-on-beta-and-experimental-features).
 
 To generate a custom visualization with GitLab Duo using a natural language query:
 

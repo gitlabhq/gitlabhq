@@ -134,19 +134,37 @@ to override the setting for specific groups or projects.
 
 ## Turn on Beta and Experimental features
 
-Features listed as Experiment and Beta are turned off by default.
+GitLab Duo features that are Experiment and Beta are turned off by default.
 These features are subject to the [Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
 
 ### On GitLab.com
 
-You can turn on Experiment and Beta features for your group on GitLab.com.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** GitLab.com, Self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118222) in GitLab 16.0.
+> - [Added to GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147833) in GitLab 16.11.
+
+You can turn on GitLab Duo Experiment and Beta features for your group on GitLab.com.
 
 Prerequisites:
 
 - You must have the Owner role in the top-level group.
 
-To turn on Beta and Experimental GitLab Duo features, use the [Experiment and Beta features checkbox](group/manage.md#enable-experiment-and-beta-features).
+To turn on GitLab Duo Experiment and Beta features for a top-level group:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Settings > General**.
+1. Expand **Permissions and group features**.
+1. Under **Experiment and Beta features**, select the **Use Experiment and Beta features** checkbox.
+1. Select **Save changes**.
+
+This setting [cascades to all projects](../user/project/merge_requests/approvals/settings.md#cascade-settings-from-the-instance-or-top-level-group)
+that belong to the group.
 
 ### On self-managed
 
-To enable Beta and Experimental GitLab Duo features for GitLab versions where GitLab Duo Chat is not yet generally available, see the [GitLab Duo Chat documentation](gitlab_duo_chat_enable.md#for-self-managed).
+To enable GitLab Duo Beta and Experimental features for GitLab versions
+where GitLab Duo Chat is not yet generally available, see the
+[GitLab Duo Chat documentation](gitlab_duo_chat_enable.md#for-self-managed).

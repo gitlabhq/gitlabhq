@@ -33,7 +33,7 @@ RSpec.describe 'Merge request > User resolves Draft', :js, feature_category: :co
     let(:feature_flags_state) { true }
 
     before do
-      stub_feature_flags(merge_when_checks_pass: feature_flags_state, merge_blocked_component: feature_flags_state)
+      stub_feature_flags(merge_when_checks_pass: feature_flags_state)
 
       create(:ci_build, pipeline: pipeline)
 
@@ -73,7 +73,8 @@ RSpec.describe 'Merge request > User resolves Draft', :js, feature_category: :co
 
       it 'retains merge request data after clicking Resolve WIP status' do
         expect(page.find('.ci-widget-content')).to have_content("Pipeline ##{pipeline.id}")
-        expect(page).to have_content "Merge blocked: Select Mark as ready to remove it from Draft status."
+        expect(page).to have_content "Merge blocked: 1 check failed"
+        expect(page).to have_content "Merge request must not be draft"
 
         page.within('.mr-state-widget') do
           click_button('Mark as ready')

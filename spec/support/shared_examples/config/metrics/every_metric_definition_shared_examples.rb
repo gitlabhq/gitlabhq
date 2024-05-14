@@ -141,9 +141,6 @@ RSpec.shared_examples 'every metric definition' do
 
         case constant
         when Class
-          # This check can be removed when AggregatedMetric is removed
-          next if constant == Gitlab::Usage::Metrics::Instrumentations::AggregatedMetric
-
           metric_class_instance = instance_double(constant)
           expect(constant).to receive(:new).at_least(:once).and_return(metric_class_instance)
           allow(metric_class_instance).to receive(:available?).and_return(true)

@@ -104,7 +104,7 @@ class PipelineTestReportBuilder
     fetch("#{pipeline_url}/tests/suite.json?build_ids[]=#{build_id}").tap do |suite|
       suite['job_url'] = job_url(pipeline_url, build_id)
     end
-  rescue Net::HTTPServerException => e
+  rescue Net::HTTPClientException => e
     raise e unless e.response.code.to_i == 404
 
     puts "[PipelineTestReportBuilder] Artifacts not found. They may have expired. Skipping this build."

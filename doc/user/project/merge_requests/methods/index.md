@@ -20,6 +20,8 @@ The examples on this page assume a `main` branch with commits A, C, and E, and a
 ```mermaid
 %%{init: { "fontFamily": "GitLab Sans" }}%%
 gitGraph
+   accTitle: Diagram of a merge
+   accDescr: A Git graph of five commits on two branches, which will be expanded on in other graphs in this page.
    commit id: "A"
    branch feature
    commit id: "B"
@@ -60,6 +62,8 @@ The merge strategy:
 ```mermaid
 %%{init: { 'gitGraph': {'logLevel': 'debug', 'showBranches': true, 'showCommitLabel':true,'mainBranchName': 'main', 'fontFamily': 'GitLab Sans'}} }%%
 gitGraph
+   accTitle: Diagram of a merge commit
+   accDescr: A Git graph showing how merge commits are created in GitLab when a feature branch is merged.
    commit id: "A"
    branch feature
    commit id: "B"
@@ -76,6 +80,8 @@ looks like this:
 ```mermaid
 %%{init: { 'gitGraph': {'logLevel': 'debug', 'showBranches': true, 'showCommitLabel':true,'mainBranchName': 'main', 'fontFamily': 'GitLab Sans'}} }%%
 gitGraph
+   accTitle: Diagram of the Merge Commit method
+   accDescr: A Git graph showing the structure of a Git repository after a feature branch is merged.
    commit id: "A"
    commit id: "C"
    commit id: "E"
@@ -90,6 +96,8 @@ on the `feature` branch, and the squash commit is placed on the `main` branch:
 ```mermaid
 %%{init: { 'gitGraph': {'showBranches': true, 'showCommitLabel':true,'mainBranchName': 'main', 'fontFamily': 'GitLab Sans'}} }%%
 gitGraph
+   accTitle: Diagram of of a squash merge
+   accDescr: A Git graph showing repository and branch structure after a squash commit is added to the main branch.
    commit id:"A"
    branch feature
    checkout main
@@ -129,6 +137,8 @@ commit graph generated using this merge method:
 ```mermaid
 %%{init: { "fontFamily": "GitLab Sans" }}%%
 gitGraph
+  accTitle: Diagram of a merge commit
+  accDescr: Shows the flow of commits when a branch merges with a merge commit.
   commit id: "Init"
   branch mr-branch-1
   commit
@@ -169,6 +179,8 @@ generated using this merge method:
 ```mermaid
 %%{init: { "fontFamily": "GitLab Sans" }}%%
 gitGraph
+  accTitle: Diagram of a fast-forward merge
+  accDescr: Shows how a fast-forwarded merge request maintains a linear Git history, but does not add a merge commit.
   commit id: "Init"
   commit id: "Merge mr-branch-1"
   commit id: "Merge mr-branch-2"

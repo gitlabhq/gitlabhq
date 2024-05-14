@@ -506,7 +506,6 @@ Lint/UnusedMethodArgument:
     - 'lib/gitlab/testing/robots_blocker_middleware.rb'
     - 'lib/gitlab/tracking.rb'
     - 'lib/gitlab/untrusted_regexp/ruby_syntax.rb'
-    - 'lib/gitlab/usage/metrics/aggregates/sources/redis_hll.rb'
     - 'lib/gitlab/usage_data.rb'
     - 'lib/gitlab/usage_data_non_sql_metrics.rb'
     - 'lib/gitlab/usage_data_queries.rb'

@@ -57,8 +57,7 @@ module DeprecationToolkitEnv
   # the dependency causing the problem.
   # See https://gitlab.com/gitlab-org/gitlab/-/commit/aea37f506bbe036378998916d374966c031bf347#note_647515736
   def self.allowed_kwarg_warning_paths
-    %w[
-    ]
+    %w[]
   end
 
   def self.configure!

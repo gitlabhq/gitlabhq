@@ -359,6 +359,8 @@ commit C has no other trailer, only commit A is added to the changelog:
 ```mermaid
 %%{init: { "fontFamily": "GitLab Sans" }}%%
 graph LR
+    accTitle: Flowchart of 3 commits
+    accDescr: Shows the flow of 3 commits, where commit C reverts commit B, but it contains no trailer
     A[Commit A<br>Changelog: changed] --> B[Commit B<br>Changelog: changed]
     B --> C[Commit C<br>Reverts commit B]
 ```
@@ -369,6 +371,8 @@ both commits A and C are included in the changelog:
 ```mermaid
 %%{init: { "fontFamily": "GitLab Sans" }}%%
 graph LR
+    accTitle: Flowchart of 3 commits
+    accDescr: Shows the flow of 3 commits, where commit C reverts commit B, but both commits A and C contain trailers
     A[Commit A<br><br>Changelog: changed] --> B[Commit B<br><br>Changelog: changed]
     B --> C[Commit C<br>Reverts commit B<br>Changelog: changed]
 ```

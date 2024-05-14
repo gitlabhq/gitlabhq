@@ -24,20 +24,13 @@ import AutoMergeFailed from './components/states/mr_widget_auto_merge_failed.vue
 import CheckingState from './components/states/mr_widget_checking.vue';
 import PreparingState from './components/states/mr_widget_preparing.vue';
 import ClosedState from './components/states/mr_widget_closed.vue';
-import ConflictsState from './components/states/mr_widget_conflicts.vue';
 import FailedToMerge from './components/states/mr_widget_failed_to_merge.vue';
 import MergedState from './components/states/mr_widget_merged.vue';
 import MergingState from './components/states/mr_widget_merging.vue';
 import MissingBranchState from './components/states/mr_widget_missing_branch.vue';
-import NotAllowedState from './components/states/mr_widget_not_allowed.vue';
-import PipelineBlockedState from './components/states/mr_widget_pipeline_blocked.vue';
-import RebaseState from './components/states/mr_widget_rebase.vue';
 import NothingToMergeState from './components/states/nothing_to_merge.vue';
-import PipelineFailedState from './components/states/pipeline_failed.vue';
 import ReadyToMergeState from './components/states/ready_to_merge.vue';
 import ShaMismatch from './components/states/sha_mismatch.vue';
-import UnresolvedDiscussionsState from './components/states/unresolved_discussions.vue';
-import WorkInProgressState from './components/states/work_in_progress.vue';
 import WidgetContainer from './components/widget/app.vue';
 import {
   STATE_MACHINE,
@@ -71,25 +64,17 @@ export default {
     MrWidgetClosed: ClosedState,
     MrWidgetMerging: MergingState,
     MrWidgetFailedToMerge: FailedToMerge,
-    MrWidgetWip: WorkInProgressState,
     MrWidgetArchived: ArchivedState,
-    MrWidgetConflicts: ConflictsState,
     MrWidgetNothingToMerge: NothingToMergeState,
-    MrWidgetNotAllowed: NotAllowedState,
     MrWidgetMissingBranch: MissingBranchState,
     MrWidgetReadyToMerge,
     ShaMismatch,
     MrWidgetChecking: CheckingState,
     MrWidgetPreparing: PreparingState,
-    MrWidgetUnresolvedDiscussions: UnresolvedDiscussionsState,
-    MrWidgetPipelineBlocked: PipelineBlockedState,
-    MrWidgetPipelineFailed: PipelineFailedState,
     MrWidgetAutoMergeEnabled,
     MrWidgetAutoMergeFailed: AutoMergeFailed,
-    MrWidgetRebase: RebaseState,
     SourceBranchRemovalStatus,
     MrWidgetApprovals,
-    MergeChecksFailed: () => import('./components/states/merge_checks_failed.vue'),
     ReadyToMerge: ReadyToMergeState,
     ReportWidgetContainer,
     MergeChecks,
@@ -243,28 +228,23 @@ export default {
     hasAlerts() {
       return this.hasMergeError || this.showMergePipelineForkWarning;
     },
-    shouldShowMergeDetails() {
-      if (this.mr.state === 'readyToMerge') return true;
-
-      return !this.mr.mergeDetailsCollapsed;
-    },
-    mergeBlockedComponentEnabled() {
-      return (
-        window.gon?.features?.mergeBlockedComponent &&
-        !(
-          [
-            'checking',
-            'preparing',
-            'nothingToMerge',
-            'archived',
-            'missingBranch',
-            'merged',
-            'closed',
-            'merging',
-            'shaMismatch',
-          ].includes(this.mr.state) || this.mr.machineValue === 'MERGING'
-        )
+    mergeBlockedComponentVisible() {
+      return !(
+        [
+          'checking',
+          'preparing',
+          'nothingToMerge',
+          'archived',
+          'missingBranch',
+          'merged',
+          'closed',
+          'merging',
+          'shaMismatch',
+        ].includes(this.mr.state) || this.mr.machineValue === 'MERGING'
       );
+    },
+    autoMergeEnabled() {
+      return this.mr.autoMergeEnabled;
     },
   },
   watch: {
@@ -338,12 +318,6 @@ export default {
 
       this.bindEventHubListeners();
       eventHub.$on('mr.discussion.updated', this.checkStatus);
-
-      window.addEventListener('resize', () => {
-        if (window.innerWidth >= 768) {
-          this.mr.toggleMergeDetails(false);
-        }
-      });
     },
     getServiceEndpoints(store) {
       return {
@@ -581,9 +555,9 @@ export default {
       </div>
 
       <div class="mr-widget-section" data-testid="mr-widget-content">
-        <template v-if="mergeBlockedComponentEnabled">
+        <template v-if="mergeBlockedComponentVisible">
           <mr-widget-auto-merge-enabled
-            v-if="mr.autoMergeEnabled"
+            v-if="autoMergeEnabled"
             :mr="mr"
             :service="service"
             class="gl-border-b-1 gl-border-b-solid gl-border-gray-100"
@@ -591,12 +565,7 @@ export default {
           <merge-checks :mr="mr" :service="service" />
         </template>
         <component :is="componentName" v-else :mr="mr" :service="service" />
-        <ready-to-merge
-          v-if="mr.commitsCount"
-          v-show="shouldShowMergeDetails"
-          :mr="mr"
-          :service="service"
-        />
+        <ready-to-merge v-if="mr.commitsCount" :mr="mr" :service="service" />
       </div>
     </div>
     <mr-widget-pipeline-container

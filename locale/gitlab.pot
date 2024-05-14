@@ -61690,46 +61690,13 @@ msgstr ""
 msgid "mrWidget|%{boldHeaderStart}Looks like there's no pipeline here.%{boldHeaderEnd}"
 msgstr ""
 
-msgid "mrWidget|%{boldStart}Merge blocked:%{boldEnd} Select %{boldStart}Mark as ready%{boldEnd} to remove it from Draft status."
-msgstr ""
-
-msgid "mrWidget|%{boldStart}Merge blocked:%{boldEnd} Users who can write to the source or target branches can resolve the conflicts."
-msgstr ""
-
 msgid "mrWidget|%{boldStart}Merge blocked:%{boldEnd} a Jira issue key must be mentioned in the title or description."
-msgstr ""
-
-msgid "mrWidget|%{boldStart}Merge blocked:%{boldEnd} all required approvals must be given."
-msgstr ""
-
-msgid "mrWidget|%{boldStart}Merge blocked:%{boldEnd} all status checks must pass."
-msgstr ""
-
-msgid "mrWidget|%{boldStart}Merge blocked:%{boldEnd} all threads must be resolved."
 msgstr ""
 
 msgid "mrWidget|%{boldStart}Merge blocked:%{boldEnd} denied licenses must be removed."
 msgstr ""
 
-msgid "mrWidget|%{boldStart}Merge blocked:%{boldEnd} fast-forward merge is not possible. To merge this request, first rebase locally."
-msgstr ""
-
-msgid "mrWidget|%{boldStart}Merge blocked:%{boldEnd} merge conflicts must be resolved."
-msgstr ""
-
 msgid "mrWidget|%{boldStart}Merge blocked:%{boldEnd} new changes were just added."
-msgstr ""
-
-msgid "mrWidget|%{boldStart}Merge blocked:%{boldEnd} pipeline must succeed. It's waiting for a manual action to continue."
-msgstr ""
-
-msgid "mrWidget|%{boldStart}Merge blocked:%{boldEnd} pipeline must succeed. Push a commit that fixes the failure or %{linkStart}learn about other solutions.%{linkEnd}"
-msgstr ""
-
-msgid "mrWidget|%{boldStart}Merge blocked:%{boldEnd} the source branch must be rebased onto the target branch."
-msgstr ""
-
-msgid "mrWidget|%{boldStart}Merge blocked:%{boldEnd} you can only merge after the above items are resolved."
 msgstr ""
 
 msgid "mrWidget|%{boldStart}Merge unavailable:%{boldEnd} merge requests are read-only in a secondary Geo node."
@@ -61763,9 +61730,6 @@ msgid "mrWidget|%{boldStart}Merging!%{boldEnd} This is going to be great…"
 msgstr ""
 
 msgid "mrWidget|%{boldStart}Merging!%{boldEnd} We're almost there…"
-msgstr ""
-
-msgid "mrWidget|%{boldStart}Ready to be merged automatically.%{boldEnd} Ask someone with write access to this repository to merge this request."
 msgstr ""
 
 msgid "mrWidget|%{dangerStart}%{rules} rule can't be approved%{dangerEnd}"
@@ -61911,9 +61875,6 @@ msgstr ""
 msgid "mrWidget|Loading deployment statistics"
 msgstr ""
 
-msgid "mrWidget|Mark as ready"
-msgstr ""
-
 msgid "mrWidget|Members who can merge are allowed to add commits."
 msgstr ""
 
@@ -61943,9 +61904,6 @@ msgstr ""
 msgid "mrWidget|Rebase"
 msgstr ""
 
-msgid "mrWidget|Rebase in progress"
-msgstr ""
-
 msgid "mrWidget|Rebase without pipeline"
 msgstr ""
 
@@ -61959,12 +61917,6 @@ msgid "mrWidget|Refreshing now"
 msgstr ""
 
 msgid "mrWidget|Remove from merge train"
-msgstr ""
-
-msgid "mrWidget|Resolve conflicts"
-msgstr ""
-
-msgid "mrWidget|Resolve locally"
 msgstr ""
 
 msgid "mrWidget|Revert"

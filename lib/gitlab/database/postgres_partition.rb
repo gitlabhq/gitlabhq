@@ -29,6 +29,20 @@ module Gitlab
         end
       end
 
+      scope :with_parent_tables, ->(parent_tables) do
+        parent_identifiers = parent_tables.map { |name| "#{connection.current_schema}.#{name}" }
+
+        where(parent_identifier: parent_identifiers).order(:name)
+      end
+
+      scope :with_list_constraint, ->(condition) do
+        where(sanitize_sql_for_conditions(['condition LIKE ?', "FOR VALUES IN (%'#{condition.to_i}'%)"]))
+      end
+
+      scope :above_threshold, ->(threshold) do
+        where('pg_table_size(identifier) > ?', threshold)
+      end
+
       def self.partition_exists?(table_name)
         where("identifier = concat(current_schema(), '.', ?)", table_name).exists?
       end

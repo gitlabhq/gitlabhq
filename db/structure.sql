@@ -24487,8 +24487,6 @@ CREATE UNIQUE INDEX index_alert_management_alerts_on_project_id_and_iid ON alert
 
 CREATE INDEX index_alert_management_alerts_on_prometheus_alert_id ON alert_management_alerts USING btree (prometheus_alert_id) WHERE (prometheus_alert_id IS NOT NULL);
 
-CREATE INDEX index_alert_management_http_integrations_on_project_id ON alert_management_http_integrations USING btree (project_id);
-
 CREATE UNIQUE INDEX index_alert_user_mentions_on_alert_id ON alert_management_alert_user_mentions USING btree (alert_management_alert_id) WHERE (note_id IS NULL);
 
 CREATE UNIQUE INDEX index_alert_user_mentions_on_alert_id_and_note_id ON alert_management_alert_user_mentions USING btree (alert_management_alert_id, note_id);

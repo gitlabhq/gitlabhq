@@ -5,6 +5,7 @@ import FilteredSearchAndSort from '~/groups_projects/components/filtered_search_
 import { RECENT_SEARCHES_STORAGE_KEY_PROJECTS } from '~/filtered_search/recent_searches_storage_keys';
 import { queryToObject, objectToQuery, visitUrl } from '~/lib/utils/url_utility';
 import { OPERATORS_IS } from '~/vue_shared/components/filtered_search_bar/constants';
+import { ACCESS_LEVEL_OWNER_INTEGER } from '~/access_level/constants';
 import {
   SORT_OPTIONS,
   SORT_DIRECTION_ASC,
@@ -40,6 +41,21 @@ export default {
             value: id.toString(),
             title: name,
           })),
+        },
+        {
+          type: 'min_access_level',
+          icon: 'user',
+          title: __('Role'),
+          token: GlFilteredSearchToken,
+          unique: true,
+          operators: OPERATORS_IS,
+          options: [
+            {
+              // Cast to string so it matches value from query string
+              value: ACCESS_LEVEL_OWNER_INTEGER.toString(),
+              title: __('Owner'),
+            },
+          ],
         },
       ];
     },
