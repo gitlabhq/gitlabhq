@@ -104,11 +104,11 @@ RSpec.describe Gitlab::Ci::Parsers::Codequality::CodeClimate do
       let(:code_climate) do
         [
           {
-          "type": "Issue",
-          "check_name": "Rubocop/Metrics/ParameterLists",
-          "description": "Avoid parameter lists longer than 5 parameters. [12/5]",
-          "fingerprint": "ab5f8b935886b942d621399aefkaehfiaehf",
-          "severity": "minor"
+            "type": "Issue",
+            "check_name": "Rubocop/Metrics/ParameterLists",
+            "description": "Avoid parameter lists longer than 5 parameters. [12/5]",
+            "fingerprint": "ab5f8b935886b942d621399aefkaehfiaehf",
+            "severity": "minor"
           },
           {
             "categories": [

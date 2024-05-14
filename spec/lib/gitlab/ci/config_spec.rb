@@ -766,7 +766,7 @@ RSpec.describe Gitlab::Ci::Config, feature_category: :pipeline_composition do
             job1: {
               script: ["echo 'hello from main file'"],
               variables: {
-               VARIABLE_DEFINED_IN_MAIN_FILE: 'some value'
+                VARIABLE_DEFINED_IN_MAIN_FILE: 'some value'
               }
             }
           })

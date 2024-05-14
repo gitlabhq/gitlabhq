@@ -63,6 +63,56 @@ the large language model.
 After the tools have gathered the required information, it is returned to the zero-shot agent, which asks the large language
 model if enough information has been gathered to provide the final answer to the user's question.
 
+### Customizing interaction with GitLab Duo Chat
+
+You can customize user interaction with GitLab Duo Chat in several ways.
+
+#### Programmatically open GitLab Duo Chat
+
+To provide users with a more dynamic way to access GitLab Duo Chat, you can integrate functionality directly into their applications to open the GitLab Duo Chat interface. The
+following example shows how to open the GitLab Duo Chat drawer by using an event listener and the GitLab Duo Chat global state:
+
+```javascript
+import { helpCenterState } from '~/super_sidebar/constants';
+myFancyToggleToOpenChat.addEventListener('click', () => {
+  helpCenterState.showTanukiBotChatDrawer = true;
+});
+```
+
+#### Initiating GitLab Duo Chat with a pre-defined prompt
+
+In some scenarios, you may want to direct users towards a specific topic or query when they open GitLab Duo Chat. The following example method:
+
+1. Opens the GitLab Duo Chat drawer.
+1. Sends a pre-defined prompt to GitLab Duo Chat.
+
+```javascript
+import chatMutation from 'ee/ai/graphql/chat.mutation.graphql';
+import { helpCenterState } from '~/super_sidebar/constants';
+[...]
+
+methods: {
+  openChatWithPrompt() {
+    const myPrompt = "What is the meaning of life?"
+    helpCenterState.showTanukiBotChatDrawer = true;
+
+    this.$apollo
+      .mutate({
+        mutation: chatMutation,
+        variables: {
+          question: myPrompt,
+          resourceId: this.resourceId,
+        },
+      })
+      .catch((error) => {
+        // handle potential errors here
+      });
+  }
+}
+```
+
+This enhancement allows for a more tailored user experience by guiding the conversation in GitLab Duo Chat towards predefined areas of interest or concern.
+
 ### Adding a new tool
 
 To add a new tool:

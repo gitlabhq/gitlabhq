@@ -326,9 +326,9 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
 
       let(:attributes) do
         base_attributes.merge({
-                                user_id: current_user.id,
-                                username: current_user.username
-                              })
+          user_id: current_user.id,
+          username: current_user.username
+        })
       end
 
       it 'logs information to auth.log' do

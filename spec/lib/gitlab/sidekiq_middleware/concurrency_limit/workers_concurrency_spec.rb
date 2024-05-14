@@ -42,7 +42,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkersConcurrency, 
     context 'without cache' do
       let(:skip_cache) { true }
 
-      it 'returns the current concurrency' do
+      it 'returns the current concurrency', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/451677' do
         expect(described_class).to receive(:workers_uncached).and_call_original
         expect(current_for).to eq(current_concurrency)
       end

@@ -13,16 +13,16 @@ RSpec.describe BulkImports::Common::Pipelines::MilestonesPipeline, feature_categ
   let(:exported_milestone_for_project) do
     exported_milestone_for_group.merge(
       'events' => [{
-         'project_id' => source_project_id,
-         'author_id' => 9,
-         'created_at' => "2021-08-12T19:12:49.810Z",
-         'updated_at' => "2021-08-12T19:12:49.810Z",
-         'target_type' => "Milestone",
-         'group_id' => source_group_id,
-         'fingerprint' => 'f270eb9b27d0',
-         'id' => 66,
-         'action' => "created"
-       }]
+        'project_id' => source_project_id,
+        'author_id' => 9,
+        'created_at' => "2021-08-12T19:12:49.810Z",
+        'updated_at' => "2021-08-12T19:12:49.810Z",
+        'target_type' => "Milestone",
+        'group_id' => source_group_id,
+        'fingerprint' => 'f270eb9b27d0',
+        'id' => 66,
+        'action' => "created"
+      }]
     )
   end
 

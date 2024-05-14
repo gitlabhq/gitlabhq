@@ -85,7 +85,7 @@ module Users
       joining_a_project_alert: 83, # EE-only
       transition_to_jihu_callout: 84,
       summarize_code_changes: 85, # EE-only
-      duo_pro_trial_alert: 86, # EE-only
+      # 86 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152619
       deployment_details_feedback: 87,
       duo_chat_ga_alert: 88, # EE-only
       board_add_new_column_trigger_popover: 89,

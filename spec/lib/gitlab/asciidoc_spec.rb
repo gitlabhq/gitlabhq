@@ -18,10 +18,10 @@ module Gitlab
 
       it "converts the input using Asciidoctor and default options" do
         expected_asciidoc_opts = {
-            safe: :secure,
-            backend: :gitlab_html5,
-            attributes: described_class::DEFAULT_ADOC_ATTRS.merge({ "kroki-server-url" => nil, "allow-uri-read" => false }),
-            extensions: be_a(Proc)
+          safe: :secure,
+          backend: :gitlab_html5,
+          attributes: described_class::DEFAULT_ADOC_ATTRS.merge({ "kroki-server-url" => nil, "allow-uri-read" => false }),
+          extensions: be_a(Proc)
         }
 
         expect(Asciidoctor).to receive(:convert)
@@ -33,10 +33,10 @@ module Gitlab
       context "with asciidoc_opts" do
         it "merges the options with default ones" do
           expected_asciidoc_opts = {
-              safe: :secure,
-              backend: :gitlab_html5,
-              attributes: described_class::DEFAULT_ADOC_ATTRS.merge({ "kroki-server-url" => nil, "allow-uri-read" => false }),
-              extensions: be_a(Proc)
+            safe: :secure,
+            backend: :gitlab_html5,
+            attributes: described_class::DEFAULT_ADOC_ATTRS.merge({ "kroki-server-url" => nil, "allow-uri-read" => false }),
+            extensions: be_a(Proc)
           }
 
           expect(Asciidoctor).to receive(:convert)
@@ -74,8 +74,8 @@ module Gitlab
             output: "<div>\n<p><a href=\"mylink\">Click Here</a></p>\n</div>"
           },
           'link with unsafe scheme' => {
-              input: 'link:data://danger[Click Here]',
-              output: "<div>\n<p><a>Click Here</a></p>\n</div>"
+            input: 'link:data://danger[Click Here]',
+            output: "<div>\n<p><a>Click Here</a></p>\n</div>"
           },
           'image with onerror' => {
             input: 'image:https://localhost.com/image.png[Alt text" onerror="alert(7)]',

@@ -64,9 +64,9 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build::Cache do
         context 'without a prefix' do
           it 'builds a string key with an index and file names as a prefix' do
             expected = {
-                  key: "#{cache_prefix}-703ecc8fef1635427a1f86a8a1a308831c122392",
-                  paths: ['vendor/ruby']
-              }
+              key: "#{cache_prefix}-703ecc8fef1635427a1f86a8a1a308831c122392",
+              paths: ['vendor/ruby']
+            }
 
             is_expected.to include(expected)
           end
@@ -169,9 +169,9 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build::Cache do
 
         it 'adds prefix to default key' do
           expected = {
-                key: 'a-prefix-default',
-                paths: ['vendor/ruby']
-              }
+            key: 'a-prefix-default',
+            paths: ['vendor/ruby']
+          }
 
           is_expected.to include(expected)
         end
@@ -190,9 +190,9 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build::Cache do
 
         it 'adds prefix key' do
           expected = {
-                key: 'a-prefix-703ecc8fef1635427a1f86a8a1a308831c122392',
-                paths: ['vendor/ruby']
-              }
+            key: 'a-prefix-703ecc8fef1635427a1f86a8a1a308831c122392',
+            paths: ['vendor/ruby']
+          }
 
           is_expected.to include(expected)
         end
@@ -211,9 +211,9 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build::Cache do
 
         it 'adds prefix to default key' do
           expected = {
-                key: 'a-prefix-default',
-                paths: ['vendor/ruby']
-              }
+            key: 'a-prefix-default',
+            paths: ['vendor/ruby']
+          }
 
           is_expected.to include(expected)
         end

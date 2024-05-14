@@ -75,10 +75,10 @@ RSpec.describe ContainerRegistry::Client, feature_category: :container_registry 
     it 'GET /v2/:name/manifests/mytag' do
       stub_request(method, url)
         .with(headers: {
-                'Accept' => 'application/vnd.docker.distribution.manifest.v2+json, application/vnd.oci.image.manifest.v1+json',
-                'Authorization' => "bearer #{token}",
-                'User-Agent' => "GitLab/#{Gitlab::VERSION}"
-              })
+          'Accept' => 'application/vnd.docker.distribution.manifest.v2+json, application/vnd.oci.image.manifest.v1+json',
+          'Authorization' => "bearer #{token}",
+          'User-Agent' => "GitLab/#{Gitlab::VERSION}"
+        })
         .to_return(status: 200, body: manifest.to_json, headers: { content_type: manifest_type })
 
       expect_new_faraday
@@ -163,9 +163,9 @@ RSpec.describe ContainerRegistry::Client, feature_category: :container_registry 
     let(:url) { 'http://container-registry/v2/group/test/blobs/sha256:0123456789012345' }
     let(:blob_headers) do
       {
-          'Accept' => 'application/octet-stream',
-          'Authorization' => "bearer #{token}",
-          'User-Agent' => "GitLab/#{Gitlab::VERSION}"
+        'Accept' => 'application/octet-stream',
+        'Authorization' => "bearer #{token}",
+        'User-Agent' => "GitLab/#{Gitlab::VERSION}"
       }
     end
 
@@ -287,10 +287,10 @@ RSpec.describe ContainerRegistry::Client, feature_category: :container_registry 
   describe '#put_tag' do
     let(:manifest_headers) do
       {
-          'Accept' => 'application/vnd.docker.distribution.manifest.v2+json, application/vnd.oci.image.manifest.v1+json',
-          'Authorization' => "bearer #{token}",
-          'Content-Type' => 'application/vnd.docker.distribution.manifest.v2+json',
-          'User-Agent' => "GitLab/#{Gitlab::VERSION}"
+        'Accept' => 'application/vnd.docker.distribution.manifest.v2+json, application/vnd.oci.image.manifest.v1+json',
+        'Authorization' => "bearer #{token}",
+        'Content-Type' => 'application/vnd.docker.distribution.manifest.v2+json',
+        'User-Agent' => "GitLab/#{Gitlab::VERSION}"
       }
     end
 

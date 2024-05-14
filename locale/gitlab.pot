@@ -19137,21 +19137,6 @@ msgstr ""
 msgid "DuoChat|What is a fork?"
 msgstr ""
 
-msgid "DuoProTrialAlert|Dismiss Code Suggestions banner"
-msgstr ""
-
-msgid "DuoProTrialAlert|Learn more about GitLab Duo Pro"
-msgstr ""
-
-msgid "DuoProTrialAlert|Start trial now"
-msgstr ""
-
-msgid "DuoProTrialAlert|Try GitLab Duo Pro for free"
-msgstr ""
-
-msgid "DuoProTrialAlert|You can now try GitLab Duo Pro for free for 30 days, no credit card required. Code Suggestions, GitLab Duo Chat (Beta), and other AI features are part of the GitLab Duo Pro add-on, which is designed to help give you a productivity boost across the software development life cycle."
-msgstr ""
-
 msgid "DuoProTrial|Activate my trial"
 msgstr ""
 
@@ -39876,6 +39861,9 @@ msgid "Profiles|Two-factor authentication"
 msgstr ""
 
 msgid "Profiles|Type your %{confirmationValue} to confirm:"
+msgstr ""
+
+msgid "Profiles|Unverified secondary email addresses are automatically deleted after three days"
 msgstr ""
 
 msgid "Profiles|Update profile settings"

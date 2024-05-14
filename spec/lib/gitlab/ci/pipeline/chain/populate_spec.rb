@@ -75,8 +75,8 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Populate, feature_category: :continu
   context 'when pipeline is empty' do
     let(:config) do
       { rspec: {
-          script: 'ls',
-          only: ['something']
+        script: 'ls',
+        only: ['something']
       } }
     end
 

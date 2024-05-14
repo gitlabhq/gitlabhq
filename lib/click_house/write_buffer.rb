@@ -7,7 +7,15 @@ module ClickHouse
     class << self
       def write_event(event_hash)
         Gitlab::Redis::SharedState.with do |redis|
-          redis.lpush(BUFFER_KEY, event_hash.to_json)
+          redis.rpush(BUFFER_KEY, event_hash.to_json)
+        end
+      end
+
+      def pop_events(limit)
+        Gitlab::Redis::SharedState.with do |redis|
+          Array.wrap(redis.lpop(BUFFER_KEY, limit)).map do |hash|
+            Gitlab::Json.parse(hash, symbolize_names: true)
+          end
         end
       end
     end
