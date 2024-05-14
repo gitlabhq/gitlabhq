@@ -69,7 +69,7 @@ module DeprecationToolkitEnv
     DeprecationToolkit::Configuration.deprecation_path = 'deprecations'
     DeprecationToolkit::Configuration.warnings_treated_as_deprecation = [kwargs_warning]
 
-    disallowed_deprecations = -> (deprecations) do
+    disallowed_deprecations = ->(deprecations) do
       deprecations.any? do |deprecation|
         kwargs_warning.match?(deprecation) &&
           allowed_kwarg_warning_paths.none? { |path| deprecation.include?(path) }

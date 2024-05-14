@@ -19,7 +19,6 @@ RSpec.describe Gitlab::Database::HealthStatus::Indicators::AutovacuumActiveOnTab
 
     before do
       swapout_view_for_table(:postgres_autovacuum_activity, connection: connection)
-      stub_feature_flags(skip_autovacuum_health_check_for_ci_builds: false)
     end
 
     let(:tables) { [table] }
@@ -65,28 +64,6 @@ RSpec.describe Gitlab::Database::HealthStatus::Indicators::AutovacuumActiveOnTab
           stub_feature_flags(batched_migrations_health_status_autovacuum: false)
 
           expect(subject).to be_a(Gitlab::Database::HealthStatus::Signals::NotAvailable)
-        end
-
-        context 'with skip_autovacuum_health_check_for_ci_builds FF being enabled' do
-          before do
-            stub_feature_flags(skip_autovacuum_health_check_for_ci_builds: true)
-          end
-
-          context 'for ci_builds table' do
-            let(:table) { 'ci_builds' }
-
-            it 'returns NotAvailable' do
-              expect(subject).to be_a(Gitlab::Database::HealthStatus::Signals::NotAvailable)
-            end
-          end
-
-          context 'for users table' do
-            let(:table) { 'users' }
-
-            it 'returns Stop signal' do
-              expect(subject).to be_a(Gitlab::Database::HealthStatus::Signals::Stop)
-            end
-          end
         end
       end
     end

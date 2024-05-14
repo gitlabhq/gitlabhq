@@ -46,7 +46,7 @@ module Gitlab
       store.subscribe ::MergeRequests::ExecuteApprovalHooksWorker, to: ::MergeRequests::ApprovedEvent
       store.subscribe ::Ml::ExperimentTracking::AssociateMlCandidateToPackageWorker,
         to: ::Packages::PackageCreatedEvent,
-        if: -> (event) { ::Ml::ExperimentTracking::AssociateMlCandidateToPackageWorker.handles_event?(event) }
+        if: ->(event) { ::Ml::ExperimentTracking::AssociateMlCandidateToPackageWorker.handles_event?(event) }
       store.subscribe ::Ci::InitializePipelinesIidSequenceWorker, to: ::Projects::ProjectCreatedEvent
     end
     private_class_method :configure!

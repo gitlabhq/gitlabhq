@@ -19,11 +19,11 @@ RSpec.describe 'Admin sees unconfirmed user', feature_category: :user_management
 
     where(:path_helper) do
       [
-        [-> (user) { admin_user_path(user) }],
-        [-> (user) { projects_admin_user_path(user) }],
-        [-> (user) { keys_admin_user_path(user) }],
-        [-> (user) { admin_user_identities_path(user) }],
-        [-> (user) { admin_user_impersonation_tokens_path(user) }]
+        [->(user) { admin_user_path(user) }],
+        [->(user) { projects_admin_user_path(user) }],
+        [->(user) { keys_admin_user_path(user) }],
+        [->(user) { admin_user_identities_path(user) }],
+        [->(user) { admin_user_impersonation_tokens_path(user) }]
       ]
     end
 

@@ -8,8 +8,8 @@ module Gitlab
 
       self.table_name = :background_migration_jobs
 
-      scope :for_migration_class, -> (class_name) { where(class_name: normalize_class_name(class_name)) }
-      scope :for_migration_execution, -> (class_name, arguments) do
+      scope :for_migration_class, ->(class_name) { where(class_name: normalize_class_name(class_name)) }
+      scope :for_migration_execution, ->(class_name, arguments) do
         for_migration_class(class_name).where('arguments = ?', arguments.to_json) # rubocop:disable Rails/WhereEquals
       end
 

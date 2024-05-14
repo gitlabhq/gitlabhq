@@ -60,7 +60,7 @@ Below is a sample `.gitlab-ci.yml` file that shows how to start using the runner
   before_script:
     - Set-Variable -Name "time" -Value (date -Format "%H:%m")
     - echo ${time}
-    - echo "started by ${GITLAB_USER_NAME}"
+    - echo "started by ${GITLAB_USER_NAME} / @${GITLAB_USER_LOGIN}"
 
 build:
   extends:

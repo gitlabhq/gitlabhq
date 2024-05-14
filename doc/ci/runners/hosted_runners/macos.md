@@ -61,7 +61,7 @@ The following sample `.gitlab-ci.yml` file shows how to start using the hosted r
     - saas-macos-medium-m1
   image: macos-14-xcode-15
   before_script:
-    - echo "started by ${GITLAB_USER_NAME}"
+    - echo "started by ${GITLAB_USER_NAME} / @${GITLAB_USER_LOGIN}"
 
 build:
   extends:

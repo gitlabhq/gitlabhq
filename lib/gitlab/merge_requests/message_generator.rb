@@ -53,12 +53,12 @@ module Gitlab
         'reference' => ->(merge_request, _, _) { merge_request.to_reference(full: true) },
         'local_reference' => ->(merge_request, _, _) { merge_request.to_reference(full: false) },
         'source_project_id' => ->(merge_request, _, _) { merge_request.source_project.id.to_s },
-        'first_commit' => -> (merge_request, _, _) {
+        'first_commit' => ->(merge_request, _, _) {
           return unless merge_request.persisted? || merge_request.compare_commits.present?
 
           merge_request.first_commit&.safe_message&.strip
         },
-        'first_multiline_commit' => -> (merge_request, _, _) {
+        'first_multiline_commit' => ->(merge_request, _, _) {
           merge_request.first_multiline_commit&.safe_message&.strip.presence || merge_request.title
         },
         'url' => ->(merge_request, _, _) { Gitlab::UrlBuilder.build(merge_request) },
@@ -81,7 +81,7 @@ module Gitlab
                        .map { |author_email, author_name| "Co-authored-by: #{author_name} <#{author_email}>" }
                        .join("\n")
         end,
-        'all_commits' => -> (merge_request, _, _) do
+        'all_commits' => ->(merge_request, _, _) do
           merge_request
             .recent_commits
             .without_merge_commits

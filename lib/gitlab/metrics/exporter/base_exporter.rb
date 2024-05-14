@@ -87,7 +87,7 @@ module Gitlab
             use Gitlab::Metrics::Exporter::MetricsMiddleware, pid
             use Gitlab::Metrics::Exporter::GcRequestMiddleware if gc_requests
             use ::Prometheus::Client::Rack::Exporter if ::Gitlab::Metrics.metrics_folder_present?
-            run -> (env) { [404, {}, ['']] }
+            run ->(env) { [404, {}, ['']] }
           end
         end
 

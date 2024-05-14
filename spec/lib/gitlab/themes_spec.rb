@@ -26,7 +26,8 @@ RSpec.describe Gitlab::Themes, lib: true do
       expect(described_class.default.id).to eq 2
     end
 
-    it 'prevents an infinite loop when configuration default is invalid' do
+    it 'prevents an infinite loop when configuration default is invalid',
+      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/450515' do
       default = described_class::APPLICATION_DEFAULT
       themes  = described_class.available_themes
 

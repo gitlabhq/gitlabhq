@@ -50,7 +50,7 @@ module Gitlab
         Rack::Builder.app do
           use Rack::Deflater
           use HealthChecks::Middleware, readiness, liveness
-          run -> (env) { [404, {}, ['']] }
+          run ->(env) { [404, {}, ['']] }
         end
       end
 
