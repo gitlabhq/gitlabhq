@@ -942,10 +942,9 @@
 # When new minor release tag is pushed, re-tag gdk image with pattern ignored by registry cleanup
 .build-images:rules:retag-gdk-image:
   rules:
-    - !reference [".qa:rules:package-and-test-never-run", rules]
-    - if: '$CI_COMMIT_TAG =~ /^v\d+\.\d+\.0-ee$/ && $CI_PIPELINE_SOURCE == "push"'
+    - if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && $CI_COMMIT_TAG =~ /^v\d+\.\d+\.0-ee$/ && $CI_PIPELINE_SOURCE == "push"'
     # In case gdk base tag is updated via backport mr, make sure we retag it with stable prefix as well
-    - if: '$CI_MERGE_REQUEST_IID && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /^[\d-]+-stable-ee$/'
+    - if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && $CI_MERGE_REQUEST_IID && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /^[\d-]+-stable-ee$/'
       changes:
         - qa/gdk/Dockerfile.gdk
 
