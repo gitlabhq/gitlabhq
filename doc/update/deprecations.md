@@ -3389,7 +3389,7 @@ However, since certificate-based integration with Kubernetes clusters is depreca
 </div>
 
 Access tokens that have no expiration date are valid indefinitely, which presents a security risk if the access token
-is divulged. Because access tokens that have an exipiration date are better, from GitLab 15.3 we
+is divulged. Because access tokens that have an expiration date are better, from GitLab 15.3 we
 [populate a default expiration date](https://gitlab.com/gitlab-org/gitlab/-/issues/348660).
 
 In GitLab 16.0, any [personal](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html),

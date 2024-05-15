@@ -24,7 +24,7 @@ module API
         expose :commit, with: ::API::Entities::Commit
         expose :pipeline, with: ::API::Entities::Ci::PipelineBasic
         expose :failure_reason,
-               documentation: { type: 'string', example: 'script_failure' }, if: -> (job) { job.failed? }
+               documentation: { type: 'string', example: 'script_failure' }, if: ->(job) { job.failed? }
 
         expose(
           :web_url,

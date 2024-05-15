@@ -16,14 +16,14 @@ module API
         expose :hidden?, as: :hidden, documentation: { type: 'boolean' }, if: ->(variable, _) do
           variable.respond_to?(:hidden?)
         end
-        expose :protected?, as: :protected, if: -> (entity, _) { entity.respond_to?(:protected?) },
+        expose :protected?, as: :protected, if: ->(entity, _) { entity.respond_to?(:protected?) },
                             documentation: { type: 'boolean' }
-        expose :masked?, as: :masked, if: -> (entity, _) { entity.respond_to?(:masked?) },
+        expose :masked?, as: :masked, if: ->(entity, _) { entity.respond_to?(:masked?) },
                          documentation: { type: 'boolean' }
-        expose :raw?, as: :raw, if: -> (entity, _) { entity.respond_to?(:raw?) }, documentation: { type: 'boolean' }
-        expose :environment_scope, if: -> (entity, _) { entity.respond_to?(:environment_scope) },
+        expose :raw?, as: :raw, if: ->(entity, _) { entity.respond_to?(:raw?) }, documentation: { type: 'boolean' }
+        expose :environment_scope, if: ->(entity, _) { entity.respond_to?(:environment_scope) },
                                    documentation: { type: 'string', example: '*' }
-        expose :description, if: -> (entity, _) { entity.respond_to?(:description) },
+        expose :description, if: ->(entity, _) { entity.respond_to?(:description) },
                                    documentation: { type: 'string', example: 'This variable is being used for ...' }
       end
     end

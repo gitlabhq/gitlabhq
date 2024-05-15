@@ -5,7 +5,7 @@ module API
     module Ci
       class ResetTokenResult < Grape::Entity
         expose(:token)
-        expose(:token_expires_at, if: -> (object, options) { object.expirable? })
+        expose(:token_expires_at, if: ->(object, options) { object.expirable? })
       end
     end
   end

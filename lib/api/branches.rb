@@ -64,7 +64,7 @@ module API
             project: user_project,
             merged_branch_names: merged_branch_names,
             expires_in: 60.minutes,
-            cache_context: -> (branch) { [current_user&.cache_key, merged_branch_names.include?(branch.name)] }
+            cache_context: ->(branch) { [current_user&.cache_key, merged_branch_names.include?(branch.name)] }
           )
         end
       end
